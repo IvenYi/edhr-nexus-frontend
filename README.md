@@ -7,6 +7,8 @@
 ## 当前文档
 
 - [医疗器械 eDHR MVP 产品需求文档](docs/prd/edhr-mvp-prd.md)
+- [医疗器械 eDHR 正式商用版产品需求文档](docs/prd/edhr-commercial-prd.md)
+- [LLM 协作编码规范](codeplzreadme.md)
 
 ## 第一阶段建议
 
