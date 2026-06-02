@@ -8,6 +8,7 @@
 
 - [医疗器械 eDHR MVP 产品需求文档](docs/prd/edhr-mvp-prd.md)
 - [医疗器械 eDHR 正式商用版产品需求文档](docs/prd/edhr-commercial-prd.md)
+- [技术栈与 AI 协作开发策略](docs/architecture/technology-stack-and-ai-development.md)
 - [LLM 协作编码规范](codeplzreadme.md)
 
 ## 第一阶段建议
