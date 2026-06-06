@@ -1,0 +1,108 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import {
+  Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress,
+} from '@mui/material';
+import { Add, Edit, Delete } from '@mui/icons-material';
+import { getRoles, createRole, updateRole, deleteRole } from '@/api/identity';
+import type { PageResult } from '@/types/common';
+
+interface Role {
+  id: number;
+  code: string;
+  name: string;
+  description: string;
+}
+
+export default function RolePage() {
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [form, setForm] = useState({ code: '', name: '', description: '' });
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
+  const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['roles', page],
+    queryFn: async () => {
+      const res = await getRoles({ page, size: 10 });
+      return res.data.data as PageResult<Role>;
+    },
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: (body: typeof form) =>
+      editingId ? updateRole(editingId, body) : createRole(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+      setOpen(false); setEditingId(null); setForm({ code: '', name: '', description: '' });
+      setSnackbar({ open: true, message: editingId ? '更新成功' : '创建成功', severity: 'success' });
+    },
+    onError: () => setSnackbar({ open: true, message: '操作失败', severity: 'error' }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteRole(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['roles'] });
+      setSnackbar({ open: true, message: '删除成功', severity: 'success' });
+    },
+  });
+
+  const handleEdit = (item: Role) => {
+    setEditingId(item.id); setForm({ code: item.code, name: item.name, description: item.description || '' }); setOpen(true);
+  };
+
+  const content = data?.content ?? [];
+
+  return (
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="h5">角色管理</Typography>
+        <Button variant="contained" startIcon={<Add />} onClick={() => { setEditingId(null); setForm({ code: '', name: '', description: '' }); setOpen(true); }}>新增角色</Button>
+      </Box>
+      <TableContainer>
+        <Table>
+          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>编码</TableCell><TableCell>名称</TableCell><TableCell>描述</TableCell><TableCell>操作</TableCell></TableRow></TableHead>
+          <TableBody>
+            {isLoading ? <TableRow><TableCell colSpan={5} align="center"><CircularProgress size={24} /></TableCell></TableRow>
+            : isError ? <TableRow><TableCell colSpan={5} align="center">加载失败</TableCell></TableRow>
+            : content.length === 0 ? <TableRow><TableCell colSpan={5} align="center">暂无数据</TableCell></TableRow>
+            : content.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>{item.id}</TableCell><TableCell>{item.code}</TableCell><TableCell>{item.name}</TableCell><TableCell>{item.description}</TableCell>
+                <TableCell>
+                  <IconButton size="small" onClick={() => handleEdit(item)}><Edit /></IconButton>
+                  <IconButton size="small" color="error" onClick={() => setDeleteConfirm(item.id)}><Delete /></IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>{editingId ? '编辑角色' : '新增角色'}</DialogTitle>
+        <DialogContent>
+          <TextField label="编码" fullWidth margin="normal" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
+          <TextField label="名称" fullWidth margin="normal" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          <TextField label="描述" fullWidth margin="normal" multiline rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>取消</Button>
+          <Button variant="contained" onClick={() => saveMutation.mutate(form)} disabled={!form.code || !form.name || saveMutation.isPending}>保存</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
+        <DialogTitle>确认删除</DialogTitle><DialogContent>确定要删除该角色吗？</DialogContent>
+        <DialogActions><Button onClick={() => setDeleteConfirm(null)}>取消</Button><Button color="error" variant="contained" onClick={() => { if (deleteConfirm) { deleteMutation.mutate(deleteConfirm); setDeleteConfirm(null); } }}>删除</Button></DialogActions>
+      </Dialog>
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+        <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>{snackbar.message}</Alert>
+      </Snackbar>
+    </Box>
+  );
+}
