@@ -135,7 +135,10 @@ function QueryFieldInput({ field, page, value, onChange }: QueryFieldInputProps)
       label={field.label}
       type={getInputType(fieldType)}
       value={formatInputValue(value, fieldType)}
-      onChange={(event) => onChange(fieldType === 'number' ? Number(event.target.value) : event.target.value)}
+      onChange={(event) => {
+        const nextValue = event.target.value;
+        onChange(fieldType === 'number' ? (event.target.value === '' ? '' : Number(nextValue)) : nextValue);
+      }}
       InputLabelProps={fieldType === 'date' || fieldType === 'datetime' ? { shrink: true } : undefined}
     />
   );

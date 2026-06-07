@@ -48,6 +48,10 @@ export default function AuditPanel({ auditEntries, statusHistory }: AuditPanelPr
                         <Typography variant="caption" color="text.secondary">
                           {entry.remark || '无备注'}
                         </Typography>
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mt: 0.75 }}>
+                          <ChangeValue title="变更前" value={entry.beforeValue} />
+                          <ChangeValue title="变更后" value={entry.afterValue} />
+                        </Stack>
                       </Box>
                     }
                   />
@@ -99,6 +103,48 @@ function EmptyLine({ text }: { text: string }) {
       {text}
     </Typography>
   );
+}
+
+function ChangeValue({ title, value }: { title: string; value?: Record<string, unknown> }) {
+  return (
+    <Box sx={{ flex: 1, minWidth: 0, p: 0.75, bgcolor: '#f7f9fc', border: '1px solid #eef0f3', borderRadius: 1 }}>
+      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.25 }}>
+        {title}
+      </Typography>
+      <Typography
+        variant="caption"
+        component="pre"
+        sx={{
+          m: 0,
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+          fontFamily: 'monospace',
+          color: 'text.primary',
+          maxHeight: 110,
+          overflow: 'auto',
+        }}
+      >
+        {formatChangeValue(value)}
+      </Typography>
+    </Box>
+  );
+}
+
+function formatChangeValue(value?: Record<string, unknown>): string {
+  if (!value) return '无';
+  const summary = pickSummaryFields(value);
+  return JSON.stringify(summary, null, 2);
+}
+
+function pickSummaryFields(value: Record<string, unknown>): Record<string, unknown> {
+  const preferredKeys = ['id', 'status', 'updatedBy', 'updatedAt', 'remark', 'createdRecordId'];
+  const entries = preferredKeys
+    .filter((key) => value[key] !== undefined)
+    .map((key) => [key, value[key]] as const);
+
+  if (entries.length >= 3) return Object.fromEntries(entries);
+
+  return Object.fromEntries(Object.entries(value).slice(0, 6));
 }
 
 function formatDateTime(value: string): string {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Box, Paper, Snackbar, Stack, Typography } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import ApprovalPanel from '../components/adapters/ApprovalPanel';
@@ -16,7 +16,7 @@ import StateTransitionDialog from '../components/StateTransitionDialog';
 import { GCT_EDHR_PAGES } from '../metadata/generatedPages';
 import { useMockEdhrStore } from '../store/mockEdhrStore';
 import type { EdhrActionMeta, EdhrPageMeta, EdhrRecord } from '../types';
-import { getActionLabel, getDisplayActionsForPage } from '../utils/actionPolicy';
+import { getActionLabel, getActionPolicy, getDisplayActionsForPage } from '../utils/actionPolicy';
 
 interface FormState {
   open: boolean;
@@ -43,19 +43,6 @@ const emptyTransitionState: TransitionState = {
   record: null,
   action: null,
 };
-
-const stateTransitionActions = new Set([
-  'process',
-  'finish',
-  'approve',
-  'reject',
-  'release',
-  'withdraw',
-  'transfer',
-  'delete',
-  'disable',
-  'enable',
-]);
 
 const formActionCodes = new Set(['fill', 'inspect', 'configure', 'save', 'add_field', 'import']);
 
@@ -89,10 +76,12 @@ export default function GenericEdhrPage() {
   const [formState, setFormState] = useState<FormState>(emptyFormState);
   const [transitionState, setTransitionState] = useState<TransitionState>(emptyTransitionState);
   const [snackbar, setSnackbar] = useState('');
+  const selectRecordRequestRef = useRef(0);
   const displayActions = useMemo(() => (page ? getDisplayActionsForPage(page) : []), [page]);
 
   useEffect(() => {
     if (page) {
+      selectRecordRequestRef.current += 1;
       void loadPage(page.code);
       setDetailOpen(false);
       setFormState(emptyFormState);
@@ -105,8 +94,11 @@ export default function GenericEdhrPage() {
   }
 
   const handleSelectRecord = async (recordId: string | null) => {
+    const requestId = ++selectRecordRequestRef.current;
     await selectRecord(recordId);
-    setDetailOpen(Boolean(recordId));
+    if (selectRecordRequestRef.current === requestId) {
+      setDetailOpen(Boolean(recordId));
+    }
   };
 
   const handleGlobalAction = async (action: EdhrActionMeta) => {
@@ -136,8 +128,7 @@ export default function GenericEdhrPage() {
   const handleRecordAction = async (action: EdhrActionMeta, record: EdhrRecord) => {
     const normalizedLabel = getActionLabel(action.code, action);
     if (isDetailAction(action.code)) {
-      await selectRecord(record.id);
-      setDetailOpen(true);
+      await handleSelectRecord(record.id);
       return;
     }
     if (action.code === 'edit') {
@@ -152,12 +143,12 @@ export default function GenericEdhrPage() {
       setFormState({ open: true, mode: 'version', record, action });
       return;
     }
-    if (stateTransitionActions.has(action.code)) {
-      setTransitionState({ open: true, record, action });
-      return;
-    }
     if (formActionCodes.has(action.code)) {
       setFormState({ open: true, mode: 'action', record, action });
+      return;
+    }
+    if (isStateTransitionAction(action)) {
+      setTransitionState({ open: true, record, action });
       return;
     }
 
@@ -217,6 +208,7 @@ export default function GenericEdhrPage() {
         actions={displayActions}
         open={detailOpen}
         onClose={() => {
+          selectRecordRequestRef.current += 1;
           setDetailOpen(false);
           void selectRecord(null);
         }}
@@ -294,6 +286,11 @@ function isCreateAction(actionCode: string): boolean {
 
 function isDetailAction(actionCode: string): boolean {
   return actionCode === 'detail' || actionCode === 'view' || actionCode.endsWith('_detail');
+}
+
+function isStateTransitionAction(action: EdhrActionMeta): boolean {
+  const policy = getActionPolicy(action.code);
+  return Boolean(policy.targetStatus && !policy.cloneMode);
 }
 
 function NotFoundState({ pathname }: { pathname: string }) {

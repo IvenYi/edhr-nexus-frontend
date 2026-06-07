@@ -918,8 +918,10 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
     'useMockEdhrStore',
     'GCT_EDHR_PAGES',
     'getDisplayActionsForPage',
+    'getActionPolicy',
     'useLocation',
     'useEffect',
+    'useRef',
     'loadPage',
     'setQuery',
     'resetQuery',
@@ -943,6 +945,9 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
     'ReportPanel',
     'DashboardPanel',
     'DemoChainPanel',
+    'targetStatus',
+    'selectRecordRequestRef',
+    'requestId',
   ], messages);
 
   if (/页面占位|<Typography[^>]*>\s*GCT eDHR\s*<\/Typography>/.test(genericPageSourceText)) {
@@ -957,6 +962,19 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
     messages.push('GenericEdhrPage.tsx must render a NotFound-style empty state when page metadata is missing');
   }
 
+  if (!/getActionPolicy\(action\.code\)[\s\S]{0,600}targetStatus/.test(genericPageSourceText)) {
+    messages.push('GenericEdhrPage.tsx must use getActionPolicy(action.code).targetStatus to route semantic state actions');
+  }
+  if (/stateTransitionActions\.has\(action\.code\)/.test(genericPageSourceText)) {
+    messages.push('GenericEdhrPage.tsx must not route state transitions only through a hard-coded action set');
+  }
+  if (!/const\s+requestId\s*=\s*\+\+selectRecordRequestRef\.current/.test(genericPageSourceText)) {
+    messages.push('GenericEdhrPage.tsx handleSelectRecord must guard async selectRecord with a request sequence ref');
+  }
+  if (!/selectRecordRequestRef\.current\s*===\s*requestId/.test(genericPageSourceText)) {
+    messages.push('GenericEdhrPage.tsx handleSelectRecord must check the latest request before opening detail drawer');
+  }
+
   if (!sources.EdhrQueryBar || !sources.EdhrDataTable || !sources.EdhrToolbar || !sources.DetailDrawer) {
     return;
   }
@@ -969,6 +987,12 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
     '查询',
     '重置',
   ], messages);
+  if (/fieldType === ['"]number['"]\s*\?\s*Number\(event\.target\.value\)/.test(sources.EdhrQueryBar)) {
+    messages.push('EdhrQueryBar.tsx number query fields must not convert an empty input with Number(event.target.value)');
+  }
+  if (!/event\.target\.value\s*===\s*['"]{2}/.test(sources.EdhrQueryBar)) {
+    messages.push('EdhrQueryBar.tsx must preserve empty number input as an empty filter value');
+  }
 
   requireTokens('EdhrToolbar.tsx', sources.EdhrToolbar, [
     'getDisplayActionsForPage',
@@ -1030,13 +1054,28 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
     'transfer',
     'disable',
     'enable',
+    'validationError',
+    'setValidationError',
+    'isConfirmDisabled',
+    'isRemarkRequired',
+    'extraField.required',
+    'extraValue.trim',
+    'remark.trim',
   ], messages);
+  if (!/disabled=\{[\s\S]{0,160}isConfirmDisabled/.test(sources.StateTransitionDialog ?? '')) {
+    messages.push('StateTransitionDialog.tsx confirm button must be disabled when required validation fails');
+  }
 
   requireTokens('AuditPanel.tsx', sources.AuditPanel ?? '', [
     'auditEntries',
     'statusHistory',
     'Accordion',
     'List',
+    'beforeValue',
+    'afterValue',
+    '变更前',
+    '变更后',
+    'JSON.stringify',
   ], messages);
 
   requireTokens('ExecutionPanel.tsx', sources.ExecutionPanel ?? '', [

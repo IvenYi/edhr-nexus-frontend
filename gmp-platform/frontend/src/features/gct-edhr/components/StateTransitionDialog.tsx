@@ -49,19 +49,34 @@ export default function StateTransitionDialog({
 }: StateTransitionDialogProps) {
   const [remark, setRemark] = useState('');
   const [extraValue, setExtraValue] = useState('');
+  const [validationError, setValidationError] = useState('');
   const [saving, setSaving] = useState(false);
   const actionCode = action?.code ?? '';
   const actionLabel = action ? getActionLabel(action.code, action) : '状态流转';
   const extraField = useMemo(() => getExtraField(actionCode), [actionCode]);
+  const isRemarkRequired = actionCode === 'reject' || actionCode === 'withdraw' || actionCode === 'delete';
+  const isExtraValueMissing = Boolean(extraField?.required && extraValue.trim() === '');
+  const isRemarkMissing = isRemarkRequired && remark.trim() === '';
+  const isConfirmDisabled = saving || !record || !action || isExtraValueMissing || isRemarkMissing;
 
   useEffect(() => {
     if (!open) return;
     setRemark(defaultRemark(actionCode));
     setExtraValue('');
+    setValidationError('');
   }, [actionCode, open]);
 
   const handleConfirm = async () => {
     if (!record || !action) return;
+    if (extraField?.required && extraValue.trim() === '') {
+      setValidationError(`请填写${extraField.label}`);
+      return;
+    }
+    if (isRemarkRequired && remark.trim() === '') {
+      setValidationError('请填写处理备注');
+      return;
+    }
+    setValidationError('');
     setSaving(true);
     try {
       const input: EdhrActionExecuteInput = {
@@ -102,14 +117,20 @@ export default function StateTransitionDialog({
               请确认本次{actionLabel}操作，提交后将写入状态历史和审计记录。
             </Alert>
           )}
+          {validationError ? <Alert severity="error">{validationError}</Alert> : null}
           {extraField ? (
             <TextField
               fullWidth
               size="small"
               label={extraField.label}
               value={extraValue}
-              onChange={(event) => setExtraValue(event.target.value)}
+              onChange={(event) => {
+                setExtraValue(event.target.value);
+                setValidationError('');
+              }}
               required={extraField.required}
+              error={isExtraValueMissing}
+              helperText={isExtraValueMissing ? `请填写${extraField.label}` : undefined}
             />
           ) : null}
           <TextField
@@ -119,8 +140,13 @@ export default function StateTransitionDialog({
             size="small"
             label="处理备注"
             value={remark}
-            onChange={(event) => setRemark(event.target.value)}
-            required={actionCode === 'reject' || actionCode === 'withdraw' || actionCode === 'delete'}
+            onChange={(event) => {
+              setRemark(event.target.value);
+              setValidationError('');
+            }}
+            required={isRemarkRequired}
+            error={isRemarkMissing}
+            helperText={isRemarkMissing ? '请填写处理备注' : undefined}
           />
           <Typography variant="caption" color="text.secondary">
             页面：{page.title} · 动作代码：{actionCode || '-'}
@@ -133,7 +159,7 @@ export default function StateTransitionDialog({
           variant="contained"
           color={actionCode === 'delete' || actionCode === 'reject' ? 'error' : 'primary'}
           onClick={handleConfirm}
-          disabled={saving || !record || !action}
+          disabled={isConfirmDisabled}
         >
           确认
         </Button>
