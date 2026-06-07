@@ -59,6 +59,14 @@ mustInclude('src/components/shared/AppLayout.tsx', /data-mobile-sidebar-backdrop
 mustInclude('src/components/shared/AppLayout.tsx', /onClick=\{\(\)\s*=>\s*setFuncMenuOpen\(false\)\}/, 'mobile sidebar close affordance should close the overlay');
 mustInclude('src/components/shared/AppLayout.tsx', /(?:p|padding):\s*['"]20px['"]/, 'main content should use 20px padding');
 
+mustInclude('src/pages/LoginPage.tsx', /backgroundSize:\s*'cover(?:'|,)/, 'login background should use cover-scale technical artwork');
+mustInclude('src/pages/LoginPage.tsx', /ml:\s*'auto'/, 'desktop login panel should sit on the right');
+mustInclude('src/pages/LoginPage.tsx', /width:\s*349\b/, 'login panel should match Vue Admin Plus width');
+mustInclude('src/pages/LoginPage.tsx', /minHeight:\s*583\b/, 'login panel should match Vue Admin Plus height rhythm');
+mustInclude('src/pages/LoginPage.tsx', /height:\s*50\b/, 'login inputs and button should use 50px controls');
+mustNotInclude('src/pages/LoginPage.tsx', 'radial-gradient(circle', 'login page should avoid decorative radial circles');
+mustNotInclude('src/pages/LoginPage.tsx', 'backdropFilter', 'login card should avoid glassmorphism blur');
+
 if (failures.length > 0) {
   console.error('Style constraint verification failed:');
   for (const failure of failures) console.error(`- ${failure}`);
