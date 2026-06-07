@@ -82,6 +82,13 @@ const backendSpecFile = resolve(
 );
 const generatorFile = resolve(workspaceRoot, 'scripts/gct/generate-gct-specs.mjs');
 const sourceSpecFile = resolve(workspaceRoot, EXPECTED_SOURCE_FILE);
+const task3MockFiles = {
+  fieldInfer: resolve(projectRoot, 'src/features/gct-edhr/utils/fieldInfer.ts'),
+  actionPolicy: resolve(projectRoot, 'src/features/gct-edhr/utils/actionPolicy.ts'),
+  mockDataFactory: resolve(projectRoot, 'src/features/gct-edhr/utils/mockDataFactory.ts'),
+  mockEdhrClient: resolve(projectRoot, 'src/features/gct-edhr/api/mockEdhrClient.ts'),
+  mockEdhrStore: resolve(projectRoot, 'src/features/gct-edhr/store/mockEdhrStore.ts'),
+};
 
 const requiredFiles = [
   generatedPagesFile,
@@ -168,6 +175,7 @@ verifyMenus(spec.menus, pages, failures);
 verifyFrontendSources(pages, pagesSource, menusSource, failures);
 verifyFrontendStructuredOutput(frontendPages, frontendMenuModule, spec, failures);
 verifyTask2Integration(routerSource, constantsSource, appLayoutSource, failures);
+verifyTask3MockLayer(task3MockFiles, failures);
 
 if (failures.length) {
   reportAndExit(failures);
@@ -733,6 +741,146 @@ function verifyTask2Integration(routerSourceText, constantsSourceText, appLayout
   }
   if (!appLayoutSourceText.includes('getCurrentPageTitle(currentModuleForPath, location.pathname)')) {
     messages.push('AppLayout currentPageTitle must use getCurrentPageTitle(currentModuleForPath, location.pathname)');
+  }
+}
+
+function verifyTask3MockLayer(files, messages) {
+  const sources = {};
+
+  for (const [name, filePath] of Object.entries(files)) {
+    if (!existsSync(filePath)) {
+      messages.push(`Task 3 mock layer missing ${name}: ${filePath}`);
+      continue;
+    }
+    sources[name] = readFileSync(filePath, 'utf8');
+  }
+
+  if (Object.keys(sources).length !== Object.keys(files).length) {
+    return;
+  }
+
+  requireTokens('fieldInfer.ts', sources.fieldInfer, [
+    'inferEdhrFieldType',
+    'createDeterministicMockValue',
+    'date',
+    'datetime',
+    'number',
+    'status',
+    'user',
+    'code',
+    'text',
+    'textarea',
+    'select',
+  ], messages);
+
+  requireTokens('actionPolicy.ts', sources.actionPolicy, [
+    'getActionPolicy',
+    'getDisplayActionsForPage',
+    'ACTION_POLICY_MAP',
+    'query',
+    'reset',
+    'create',
+    'detail',
+    'edit',
+    'delete',
+    'disable',
+    'enable',
+    'copy',
+    'version_create',
+    'version_copy',
+    'process',
+    'finish',
+    'approve',
+    'reject',
+    'release',
+    'withdraw',
+    'transfer',
+    'reset_password',
+    'print',
+    'download',
+    'export',
+    'import',
+    'publish',
+    'unpublish',
+    'save',
+    'configure',
+    'execution',
+    'approval',
+    'report',
+    'dashboard',
+  ], messages);
+
+  requireTokens('mockDataFactory.ts', sources.mockDataFactory, [
+    'MOCK_RECORDS_PER_PAGE',
+    'generateMockRecordsForPage',
+    'generateMockRecordsByPage',
+    'createDeterministicRecord',
+    'createDeterministicMockValue',
+    'EdhrRecord',
+    'tenantId',
+    'pageCode',
+    'createdBy',
+    'createdAt',
+    'updatedBy',
+    'updatedAt',
+    'values',
+  ], messages);
+
+  requireTokens('mockEdhrClient.ts', sources.mockEdhrClient, [
+    'queryRecords',
+    'pageSize',
+    'filters',
+    'sortField',
+    'sortDirection',
+    'applyFilters',
+    'applySorting',
+    'getRecord',
+    'createRecord',
+    'updateRecord',
+    'deleteRecord',
+    'executeAction',
+    'appendAuditEntry',
+    'appendStatusHistory',
+    'getAuditEntries',
+    'getStatusHistory',
+    'version_create',
+    'version_copy',
+    'copy',
+    '已删除',
+    '禁用',
+  ], messages);
+
+  requireTokens('mockEdhrStore.ts', sources.mockEdhrStore, [
+    'create<GctEdhrMockStoreState>',
+    'loadPage',
+    'setQuery',
+    'resetQuery',
+    'setPagination',
+    'setSorting',
+    'selectRecord',
+    'createRecord',
+    'updateRecord',
+    'deleteRecord',
+    'executeAction',
+    'loadAuditTrail',
+    'records',
+    'total',
+    'loading',
+    'query',
+    'pagination',
+    'sorting',
+    'selectedRecord',
+    'auditEntries',
+    'statusHistory',
+    'lastActionResult',
+  ], messages);
+}
+
+function requireTokens(label, sourceText, tokens, messages) {
+  for (const token of tokens) {
+    if (!sourceText.includes(token)) {
+      messages.push(`${label} is missing Task 3 token: ${token}`);
+    }
   }
 }
 

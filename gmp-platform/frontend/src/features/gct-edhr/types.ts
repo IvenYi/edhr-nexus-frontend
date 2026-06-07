@@ -102,3 +102,58 @@ export interface EdhrPageMeta {
   actions: EdhrActionMeta[];
   stateTransitions: EdhrStateTransition[];
 }
+
+export type EdhrFieldDataType =
+  | 'date'
+  | 'datetime'
+  | 'number'
+  | 'status'
+  | 'user'
+  | 'code'
+  | 'text'
+  | 'textarea'
+  | 'select';
+
+export type EdhrSortDirection = 'asc' | 'desc';
+
+export type EdhrQueryFilters = Record<string, unknown>;
+
+export interface EdhrRecordQuery {
+  page?: number;
+  pageSize?: number;
+  filters?: EdhrQueryFilters;
+  sortField?: string;
+  sortDirection?: EdhrSortDirection;
+}
+
+export interface EdhrRecordPageResult {
+  records: EdhrRecord[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface EdhrRecordMutationInput {
+  values?: Record<string, unknown>;
+  status?: string;
+  remark?: string;
+  operatorId?: string;
+  operatorName?: string;
+}
+
+export interface EdhrActionExecuteInput {
+  values?: Record<string, unknown>;
+  remark?: string;
+  operatorId?: string;
+  operatorName?: string;
+}
+
+export interface EdhrActionResult {
+  actionCode: string;
+  actionLabel: string;
+  record: EdhrRecord;
+  createdRecord?: EdhrRecord;
+  auditEntry: EdhrAuditEntry;
+  statusHistory: EdhrRecordStatusHistory;
+  message: string;
+}
