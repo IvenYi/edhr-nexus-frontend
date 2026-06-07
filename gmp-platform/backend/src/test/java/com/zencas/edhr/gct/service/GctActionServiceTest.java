@@ -117,6 +117,23 @@ class GctActionServiceTest {
     }
 
     @Test
+    void actionMustBeDeclaredByCurrentPageMetadata() {
+        GctRecordDto record = recordService.query(PRODUCT_PAGE, GctRecordQueryRequest.builder()
+                .page(1)
+                .size(1)
+                .sort("id")
+                .order("asc")
+                .build()).getContent().getFirst();
+
+        assertThatThrownBy(() -> actionService.executeAction(PRODUCT_PAGE, record.getId(), "process",
+                GctActionRequest.builder().actor("tester").remark("页面未声明动作").build()))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(error -> assertThat(((BusinessException) error).getErrorCode())
+                        .isEqualTo(ErrorCode.GENERAL_003))
+                .hasMessageContaining("gct_2_3_product_list/process");
+    }
+
+    @Test
     void authenticatedPrincipalOverridesSpoofedRequestActorForAudit() {
         GctRecordDto record = recordService.query(WORKBENCH_PAGE, GctRecordQueryRequest.builder()
                 .page(1)

@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GctDemoFlowService {
 
-    private static final String DEMO_PAGE = "gct_1_1_workbench";
+    private static final String DEMO_PAGE = "gct_3_6_batch_transaction";
 
     private final InMemoryGctRecordStore store;
 

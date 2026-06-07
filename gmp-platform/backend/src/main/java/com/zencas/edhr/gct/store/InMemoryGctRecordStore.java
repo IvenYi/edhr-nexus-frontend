@@ -40,17 +40,6 @@ public class InMemoryGctRecordStore {
     private static final String DELETED_STATUS = "已删除";
     private static final String TENANT_ID = "demo-tenant";
     private static final Instant BASE_TIME = Instant.parse("2026-01-01T00:00:00Z");
-    private static final Set<String> KNOWN_BACKEND_ACTIONS = Set.of(
-            "delete", "delete_file", "remove_and_transfer",
-            "disable", "enable", "publish", "unpublish",
-            "process", "fill", "inspect", "forward", "transfer", "split",
-            "finish", "approve", "reject", "release", "withdraw", "summarize",
-            "create_dataset", "create_report", "reset_password",
-            "save", "create", "add", "add_field", "create_category",
-            "copy", "version_create", "version_copy",
-            "detail", "query", "reset"
-    );
-
     private final GctPageRegistry registry;
     private final GctActorResolver actorResolver;
     private final Map<String, List<GctRecordDto>> records = new ConcurrentHashMap<>();
@@ -482,7 +471,7 @@ public class InMemoryGctRecordStore {
     }
 
     private void validateActionAllowed(GctPageSpecDto page, String actionCode) {
-        if (isBlank(actionCode) || (!findAction(page, actionCode).isPresent() && !KNOWN_BACKEND_ACTIONS.contains(actionCode))) {
+        if (isBlank(actionCode) || findAction(page, actionCode).isEmpty()) {
             throw new BusinessException(ErrorCode.GENERAL_003,
                     "Unsupported GCT action: " + page.getCode() + "/" + actionCode);
         }
