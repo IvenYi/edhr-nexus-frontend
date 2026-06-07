@@ -3,8 +3,9 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem as MuiMenuItem,
   List, ListItemButton, ListItemIcon, ListItemText, Collapse,
-  Box, Divider, Badge, Tooltip, Chip,
+  Box, Divider, Badge, Tooltip, Chip, useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import {
   Dashboard, AccountTree, Storage, Settings,
   ExpandLess, ExpandMore, Notifications, Logout,
@@ -106,6 +107,8 @@ function getCurrentPageTitle(module: SidebarModule, pathname: string): string {
 export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const autoModuleId = useMemo(() => getModuleIdByPath(location.pathname), [location.pathname]);
 
@@ -132,6 +135,10 @@ export default function AppLayout() {
     }
   }, [autoModuleId, location.pathname]);
 
+  useEffect(() => {
+    setFuncMenuOpen(!isMobile);
+  }, [isMobile]);
+
   const handleModuleClick = useCallback((moduleId: string) => {
     setActiveModuleId(moduleId);
     setFuncMenuOpen(true);
@@ -147,8 +154,11 @@ export default function AppLayout() {
   }, []);
 
   const handleSubMenuClick = useCallback(
-    (path: string) => navigate(path),
-    [navigate],
+    (path: string) => {
+      navigate(path);
+      if (isMobile) setFuncMenuOpen(false);
+    },
+    [isMobile, navigate],
   );
 
   const handleLogout = () => {
@@ -163,6 +173,7 @@ export default function AppLayout() {
   const activeModule: SidebarModule =
     SIDEBAR_MODULES.find((m) => m.id === activeModuleId) || SIDEBAR_MODULES[0];
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
+  const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
   const currentPageTitle = getCurrentPageTitle(activeModule, location.pathname);
 
   return (
@@ -172,9 +183,9 @@ export default function AppLayout() {
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          left: `${sidebarTotalWidth}px`,
+          left: `${effectiveSidebarWidth}px`,
           right: 0,
-          width: `calc(100% - ${sidebarTotalWidth}px)`,
+          width: `calc(100% - ${effectiveSidebarWidth}px)`,
           height: TOP_NAV_HEIGHT,
           bgcolor: COLORS.funcMenuBg,
           color: COLORS.textPrimary,
@@ -283,7 +294,7 @@ export default function AppLayout() {
         sx={{
           position: 'fixed',
           top: TOP_NAV_HEIGHT,
-          left: `${sidebarTotalWidth}px`,
+          left: `${effectiveSidebarWidth}px`,
           right: 0,
           height: TABS_BAR_HEIGHT,
           zIndex: (theme) => theme.zIndex.drawer,
@@ -337,8 +348,8 @@ export default function AppLayout() {
           top: 0,
           left: 0,
           bottom: 0,
-          zIndex: 1200,
-          display: 'flex',
+          zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 2 : theme.zIndex.drawer),
+          display: isMobile && !funcMenuOpen ? 'none' : 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           pt: 1,
@@ -442,7 +453,8 @@ export default function AppLayout() {
           top: 0,
           left: MODULE_BAR_WIDTH,
           bottom: 0,
-          zIndex: 1199,
+          zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 2 : theme.zIndex.drawer - 1),
+          display: isMobile && !funcMenuOpen ? 'none' : 'block',
           overflow: 'hidden',
           transition: 'width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
           bgcolor: COLORS.funcMenuBg,
@@ -494,7 +506,7 @@ export default function AppLayout() {
                       if (menu.children) {
                         handleToggleMenu(menu.label);
                       } else if (menu.path) {
-                        navigate(menu.path);
+                        handleSubMenuClick(menu.path);
                       }
                     }}
                     sx={{
@@ -607,7 +619,7 @@ export default function AppLayout() {
           flexGrow: 1,
           padding: '20px',
           mt: `${HEADER_TOTAL_HEIGHT}px`,
-          ml: `${sidebarTotalWidth}px`,
+          ml: `${effectiveSidebarWidth}px`,
           transition: 'margin-left 280ms cubic-bezier(0.4, 0, 0.2, 1)',
           minHeight: `calc(100vh - ${HEADER_TOTAL_HEIGHT}px)`,
           bgcolor: COLORS.pageBg,

@@ -48,7 +48,12 @@ mustInclude('src/components/shared/AppLayout.tsx', /const TABS_BAR_HEIGHT\s*=\s*
 mustInclude('src/components/shared/AppLayout.tsx', /const HEADER_TOTAL_HEIGHT\s*=\s*TOP_NAV_HEIGHT\s*\+\s*TABS_BAR_HEIGHT\b/, 'combined header height should derive from top nav and tabs bar');
 mustInclude('src/components/shared/AppLayout.tsx', /sidebarDark:\s*'#282c34'/, 'dark module rail background');
 mustInclude('src/components/shared/AppLayout.tsx', /funcMenuBg:\s*'#ffffff'/, 'white secondary menu and header areas');
-mustInclude('src/components/shared/AppLayout.tsx', /ml:\s*`\$\{sidebarTotalWidth\}px`/, 'content should offset by total sidebar width');
+mustInclude('src/components/shared/AppLayout.tsx', /useMediaQuery/, 'shell should detect mobile breakpoints');
+mustInclude('src/components/shared/AppLayout.tsx', /const effectiveSidebarWidth\s*=\s*isMobile\s*\?\s*0\s*:\s*sidebarTotalWidth\b/, 'mobile content should not be pushed by the sidebar');
+mustInclude('src/components/shared/AppLayout.tsx', /left:\s*`\$\{effectiveSidebarWidth\}px`/, 'header and tabs should offset by effective sidebar width');
+mustInclude('src/components/shared/AppLayout.tsx', /ml:\s*`\$\{effectiveSidebarWidth\}px`/, 'content should offset by effective sidebar width');
+mustInclude('src/components/shared/AppLayout.tsx', /display:\s*isMobile\s*&&\s*!funcMenuOpen\s*\?\s*'none'\s*:\s*'flex'/, 'mobile module rail should be hidden unless overlay is open');
+mustInclude('src/components/shared/AppLayout.tsx', /display:\s*isMobile\s*&&\s*!funcMenuOpen\s*\?\s*'none'\s*:\s*'block'/, 'mobile function menu should be hidden unless overlay is open');
 mustInclude('src/components/shared/AppLayout.tsx', /(?:p|padding):\s*['"]20px['"]/, 'main content should use 20px padding');
 
 if (failures.length > 0) {
