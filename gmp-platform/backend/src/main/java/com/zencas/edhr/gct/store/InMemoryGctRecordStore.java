@@ -1,6 +1,8 @@
 package com.zencas.edhr.gct.store;
 
 import com.zencas.edhr.common.dto.PageResult;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.gct.dto.GctActionMetaDto;
 import com.zencas.edhr.gct.dto.GctActionRequest;
 import com.zencas.edhr.gct.dto.GctActionResultDto;
@@ -11,7 +13,9 @@ import com.zencas.edhr.gct.dto.GctRecordDto;
 import com.zencas.edhr.gct.dto.GctRecordMutationRequest;
 import com.zencas.edhr.gct.dto.GctRecordQueryRequest;
 import com.zencas.edhr.gct.dto.GctStatusHistoryDto;
+import com.zencas.edhr.gct.service.GctActorResolver;
 import com.zencas.edhr.gct.service.GctPageRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -36,8 +40,19 @@ public class InMemoryGctRecordStore {
     private static final String DELETED_STATUS = "已删除";
     private static final String TENANT_ID = "demo-tenant";
     private static final Instant BASE_TIME = Instant.parse("2026-01-01T00:00:00Z");
+    private static final Set<String> KNOWN_BACKEND_ACTIONS = Set.of(
+            "delete", "delete_file", "remove_and_transfer",
+            "disable", "enable", "publish", "unpublish",
+            "process", "fill", "inspect", "forward", "transfer", "split",
+            "finish", "approve", "reject", "release", "withdraw", "summarize",
+            "create_dataset", "create_report", "reset_password",
+            "save", "create", "add", "add_field", "create_category",
+            "copy", "version_create", "version_copy",
+            "detail", "query", "reset"
+    );
 
     private final GctPageRegistry registry;
+    private final GctActorResolver actorResolver;
     private final Map<String, List<GctRecordDto>> records = new ConcurrentHashMap<>();
     private final Map<String, List<GctAuditEntryDto>> auditEntries = new ConcurrentHashMap<>();
     private final Map<String, List<GctStatusHistoryDto>> statusHistoryEntries = new ConcurrentHashMap<>();
@@ -45,7 +60,13 @@ public class InMemoryGctRecordStore {
     private final AtomicLong eventSequence = new AtomicLong(1);
 
     public InMemoryGctRecordStore(GctPageRegistry registry) {
+        this(registry, new GctActorResolver());
+    }
+
+    @Autowired
+    public InMemoryGctRecordStore(GctPageRegistry registry, GctActorResolver actorResolver) {
         this.registry = registry;
+        this.actorResolver = actorResolver;
         reset();
     }
 
@@ -93,7 +114,7 @@ public class InMemoryGctRecordStore {
         GctPageSpecDto page = registry.getPageOrThrow(pageCode);
         GctRecordMutationRequest mutation = request == null ? new GctRecordMutationRequest() : request;
         String now = Instant.now().toString();
-        String actor = defaultActor(mutation.getActor());
+        String actor = resolveActor(mutation.getActor());
         String id = pageCode + "-NEW-" + String.format("%03d", recordSequence.getAndIncrement());
         GctRecordDto record = GctRecordDto.builder()
                 .id(id)
@@ -122,10 +143,10 @@ public class InMemoryGctRecordStore {
         GctRecordMutationRequest mutation = request == null ? new GctRecordMutationRequest() : request;
         GctRecordDto record = findMutable(pageCode, recordId);
         String beforeStatus = record.getStatus();
-        String actor = defaultActor(mutation.getActor());
+        String actor = resolveActor(mutation.getActor());
         if (mutation.getValues() != null && !mutation.getValues().isEmpty()) {
             Map<String, Object> values = copyMap(record.getValues());
-            values.putAll(mutation.getValues());
+            values.putAll(copyMap(mutation.getValues()));
             record.setValues(values);
         }
         if (!isBlank(mutation.getStatus())) {
@@ -145,7 +166,7 @@ public class InMemoryGctRecordStore {
 
     public synchronized GctRecordDto delete(String pageCode, String recordId) {
         return executeAction(pageCode, recordId, "delete",
-                GctActionRequest.builder().actor("system").remark("逻辑删除").build()).getRecord();
+                GctActionRequest.builder().remark("逻辑删除").build()).getRecord();
     }
 
     public synchronized GctActionResultDto executeAction(
@@ -154,9 +175,10 @@ public class InMemoryGctRecordStore {
             String actionCode,
             GctActionRequest request) {
         GctPageSpecDto page = registry.getPageOrThrow(pageCode);
+        validateActionAllowed(page, actionCode);
         GctRecordDto record = findMutable(pageCode, recordId);
         GctActionRequest actionRequest = request == null ? new GctActionRequest() : request;
-        String actor = defaultActor(actionRequest.getActor());
+        String actor = resolveActor(actionRequest.getActor());
         String beforeStatus = record.getStatus();
         String actionLabel = actionLabel(page, actionCode);
         GctRecordDto createdRecord = null;
@@ -198,6 +220,7 @@ public class InMemoryGctRecordStore {
 
     public synchronized List<GctAuditEntryDto> listAudit(String pageCode, String recordId) {
         registry.getPageOrThrow(pageCode);
+        findMutable(pageCode, recordId);
         return auditEntries.getOrDefault(recordKey(pageCode, recordId), List.of()).stream()
                 .map(this::copyAudit)
                 .toList();
@@ -205,6 +228,7 @@ public class InMemoryGctRecordStore {
 
     public synchronized List<GctStatusHistoryDto> listStatusHistory(String pageCode, String recordId) {
         registry.getPageOrThrow(pageCode);
+        findMutable(pageCode, recordId);
         return statusHistoryEntries.getOrDefault(recordKey(pageCode, recordId), List.of()).stream()
                 .map(this::copyStatusHistory)
                 .toList();
@@ -283,7 +307,7 @@ public class InMemoryGctRecordStore {
     private List<GctRecordDto> pageRecords(String pageCode) {
         List<GctRecordDto> pageRecords = records.get(pageCode);
         if (pageRecords == null) {
-            throw new IllegalArgumentException("GCT page records not initialized: " + pageCode);
+            throw new BusinessException(ErrorCode.GENERAL_001, "GCT page records not initialized: " + pageCode);
         }
         return pageRecords;
     }
@@ -292,7 +316,8 @@ public class InMemoryGctRecordStore {
         return pageRecords(pageCode).stream()
                 .filter(record -> Objects.equals(record.getId(), recordId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("GCT record not found: " + pageCode + "/" + recordId));
+                .orElseThrow(() -> new BusinessException(
+                        ErrorCode.GENERAL_001, "GCT record not found: " + pageCode + "/" + recordId));
     }
 
     private boolean matchesStatus(GctRecordDto record, String status) {
@@ -456,6 +481,13 @@ public class InMemoryGctRecordStore {
                 .findFirst();
     }
 
+    private void validateActionAllowed(GctPageSpecDto page, String actionCode) {
+        if (isBlank(actionCode) || (!findAction(page, actionCode).isPresent() && !KNOWN_BACKEND_ACTIONS.contains(actionCode))) {
+            throw new BusinessException(ErrorCode.GENERAL_003,
+                    "Unsupported GCT action: " + page.getCode() + "/" + actionCode);
+        }
+    }
+
     private boolean isCopyAction(String actionCode) {
         return Set.of("copy", "version_create", "version_copy").contains(actionCode);
     }
@@ -540,7 +572,26 @@ public class InMemoryGctRecordStore {
     }
 
     private Map<String, Object> copyMap(Map<String, Object> source) {
-        return source == null ? new LinkedHashMap<>() : new LinkedHashMap<>(source);
+        Map<String, Object> target = new LinkedHashMap<>();
+        if (source == null) {
+            return target;
+        }
+        source.forEach((key, value) -> target.put(key, deepCopyValue(value)));
+        return target;
+    }
+
+    private Object deepCopyValue(Object value) {
+        if (value instanceof Map<?, ?> map) {
+            Map<String, Object> target = new LinkedHashMap<>();
+            map.forEach((key, nestedValue) -> target.put(Objects.toString(key, ""), deepCopyValue(nestedValue)));
+            return target;
+        }
+        if (value instanceof List<?> list) {
+            List<Object> target = new ArrayList<>();
+            list.forEach(item -> target.add(deepCopyValue(item)));
+            return target;
+        }
+        return value;
     }
 
     private String recordKey(String pageCode, String recordId) {
@@ -555,8 +606,8 @@ public class InMemoryGctRecordStore {
         return size == null || size < 1 ? 20 : size;
     }
 
-    private String defaultActor(String actor) {
-        return isBlank(actor) ? "demo-user" : actor;
+    private String resolveActor(String requestedActor) {
+        return actorResolver.resolve(requestedActor);
     }
 
     private boolean contains(String value, String lowerNeedle) {

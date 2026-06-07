@@ -24,12 +24,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/gct/pages/{pageCode}/records")
 @RequiredArgsConstructor
 public class GctRecordController {
+
+    private static final Set<String> RESERVED_QUERY_PARAMS = Set.of("page", "size", "sort", "order", "status", "q");
 
     private final GctRecordService recordService;
     private final GctActionService actionService;
@@ -44,7 +49,8 @@ public class GctRecordController {
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String q) {
+            @RequestParam(required = false) String q,
+            @RequestParam Map<String, String> requestParams) {
         return ApiResponse.success(recordService.query(pageCode, GctRecordQueryRequest.builder()
                 .page(page)
                 .size(size)
@@ -52,6 +58,7 @@ public class GctRecordController {
                 .order(order)
                 .status(status)
                 .q(q)
+                .filters(filters(requestParams))
                 .build()));
     }
 
@@ -105,5 +112,18 @@ public class GctRecordController {
             @PathVariable String pageCode,
             @PathVariable String recordId) {
         return ApiResponse.success(statusService.listStatusHistory(pageCode, recordId));
+    }
+
+    private Map<String, Object> filters(Map<String, String> requestParams) {
+        Map<String, Object> filters = new LinkedHashMap<>();
+        if (requestParams == null) {
+            return filters;
+        }
+        requestParams.forEach((key, value) -> {
+            if (!RESERVED_QUERY_PARAMS.contains(key)) {
+                filters.put(key, value);
+            }
+        });
+        return filters;
     }
 }

@@ -1,6 +1,8 @@
 package com.zencas.edhr.gct.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.gct.dto.GctPageSpecDto;
 import com.zencas.edhr.gct.dto.GctSpecBundleDto;
 import org.springframework.core.io.ClassPathResource;
@@ -46,7 +48,7 @@ public class GctPageRegistry {
     public GctPageSpecDto getPageOrThrow(String pageCode) {
         GctPageSpecDto page = getPage(pageCode);
         if (page == null) {
-            throw new IllegalArgumentException("GCT page not found: " + pageCode);
+            throw new BusinessException(ErrorCode.GENERAL_001, "GCT page not found: " + pageCode);
         }
         return page;
     }

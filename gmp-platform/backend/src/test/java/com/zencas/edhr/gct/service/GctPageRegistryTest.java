@@ -1,6 +1,8 @@
 package com.zencas.edhr.gct.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.gct.dto.GctPageSpecDto;
 import com.zencas.edhr.gct.dto.GctSpecBundleDto;
 import org.junit.jupiter.api.Test;
@@ -54,7 +56,9 @@ class GctPageRegistryTest {
         assertThat(registry.findPage("gct_1_1_workbench")).contains(page);
         assertThat(registry.getPage("gct_1_1_workbench")).isEqualTo(page);
         assertThatThrownBy(() -> registry.getPageOrThrow("missing_page"))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BusinessException.class)
+                .satisfies(error -> assertThat(((BusinessException) error).getErrorCode())
+                        .isEqualTo(ErrorCode.GENERAL_001))
                 .hasMessageContaining("missing_page");
     }
 }

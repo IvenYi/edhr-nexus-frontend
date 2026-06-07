@@ -2,6 +2,9 @@ package com.zencas.edhr.gct.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.dto.PageResult;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
+import com.zencas.edhr.gct.controller.GctRecordController;
 import com.zencas.edhr.gct.dto.GctRecordDto;
 import com.zencas.edhr.gct.dto.GctRecordMutationRequest;
 import com.zencas.edhr.gct.dto.GctRecordQueryRequest;
@@ -9,22 +12,35 @@ import com.zencas.edhr.gct.store.InMemoryGctRecordStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class GctRecordServiceTest {
 
     private static final String PAGE_CODE = "gct_2_3_product_list";
 
     private GctRecordService recordService;
+    private GctRecordController recordController;
 
     @BeforeEach
     void setUp() {
         GctPageRegistry registry = new GctPageRegistry(new ObjectMapper());
         InMemoryGctRecordStore store = new InMemoryGctRecordStore(registry);
         recordService = new GctRecordService(store);
+        recordController = new GctRecordController(
+                recordService,
+                new GctActionService(store),
+                new GctAuditService(store),
+                new GctStatusService(store));
     }
 
     @Test
@@ -94,6 +110,21 @@ class GctRecordServiceTest {
     }
 
     @Test
+    void controllerPassesGeneratedQueryFieldParamsIntoFilters() throws Exception {
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(recordController).build();
+
+        mockMvc.perform(get("/api/v1/gct/pages/{pageCode}/records", PAGE_CODE)
+                        .param("page", "1")
+                        .param("size", "20")
+                        .param("sort", "id")
+                        .param("order", "asc")
+                        .param("field_c94faa71", "演示记录-05"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.totalElements").value(1))
+                .andExpect(jsonPath("$.data.content[0].id").value("gct_2_3_product_list-005"));
+    }
+
+    @Test
     void createsAndUpdatesRecords() {
         GctRecordDto created = recordService.create(PAGE_CODE, GctRecordMutationRequest.builder()
                 .status("草稿")
@@ -126,6 +157,15 @@ class GctRecordServiceTest {
 
         GctRecordDto reloaded = recordService.find(PAGE_CODE, created.getId());
         assertThat(reloaded.getValues()).containsEntry("field_c94faa71", "NEW-001-UPDATED");
+    }
+
+    @Test
+    void missingRecordRaisesBusinessException() {
+        assertThatThrownBy(() -> recordService.find(PAGE_CODE, "missing-record"))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(error -> assertThat(((BusinessException) error).getErrorCode())
+                        .isEqualTo(ErrorCode.GENERAL_001))
+                .hasMessageContaining("missing-record");
     }
 
     @Test

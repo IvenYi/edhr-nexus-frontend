@@ -2,17 +2,26 @@ package com.zencas.edhr.gct.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.dto.PageResult;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.gct.dto.GctActionRequest;
 import com.zencas.edhr.gct.dto.GctActionResultDto;
+import com.zencas.edhr.gct.dto.GctAuditEntryDto;
 import com.zencas.edhr.gct.dto.GctRecordDto;
 import com.zencas.edhr.gct.dto.GctRecordQueryRequest;
 import com.zencas.edhr.gct.store.InMemoryGctRecordStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GctActionServiceTest {
 
@@ -91,6 +100,47 @@ class GctActionServiceTest {
     }
 
     @Test
+    void unknownActionRaisesBusinessException() {
+        GctRecordDto record = recordService.query(PRODUCT_PAGE, GctRecordQueryRequest.builder()
+                .page(1)
+                .size(1)
+                .sort("id")
+                .order("asc")
+                .build()).getContent().getFirst();
+
+        assertThatThrownBy(() -> actionService.executeAction(PRODUCT_PAGE, record.getId(), "unknown_action",
+                GctActionRequest.builder().actor("tester").build()))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(error -> assertThat(((BusinessException) error).getErrorCode())
+                        .isEqualTo(ErrorCode.GENERAL_003))
+                .hasMessageContaining("unknown_action");
+    }
+
+    @Test
+    void authenticatedPrincipalOverridesSpoofedRequestActorForAudit() {
+        GctRecordDto record = recordService.query(WORKBENCH_PAGE, GctRecordQueryRequest.builder()
+                .page(1)
+                .size(1)
+                .sort("id")
+                .order("asc")
+                .build()).getContent().getFirst();
+        TestingAuthenticationToken authentication =
+                new TestingAuthenticationToken("authenticated-user", "n/a", "ROLE_USER");
+
+        try {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            GctActionResultDto result = actionService.executeAction(WORKBENCH_PAGE, record.getId(), "process",
+                    GctActionRequest.builder().actor("spoofed-user").remark("认证用户优先").build());
+
+            assertThat(result.getAuditEntry().getActor()).isEqualTo("authenticated-user");
+            assertThat(auditService.listAudit(WORKBENCH_PAGE, record.getId()).getFirst().getActor())
+                    .isEqualTo("authenticated-user");
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    @Test
     void copyAndVersionActionsCreateRecordsWithoutMutatingSource() {
         GctRecordDto source = recordService.query(PRODUCT_PAGE, GctRecordQueryRequest.builder()
                 .page(1)
@@ -135,5 +185,52 @@ class GctActionServiceTest {
                 .page(1)
                 .size(50)
                 .build()).getTotalElements()).isEqualTo(22);
+    }
+
+    @Test
+    void nestedRequestValuesAndInputAreStoredAsSnapshots() {
+        GctRecordDto source = recordService.query(PRODUCT_PAGE, GctRecordQueryRequest.builder()
+                .page(1)
+                .size(1)
+                .sort("id")
+                .order("asc")
+                .build()).getContent().getFirst();
+        Map<String, Object> nestedValue = new LinkedHashMap<>();
+        nestedValue.put("stage", "before");
+        Map<String, Object> listItem = new LinkedHashMap<>();
+        listItem.put("name", "before-item");
+        List<Object> nestedList = new ArrayList<>();
+        nestedList.add(listItem);
+        Map<String, Object> values = new LinkedHashMap<>();
+        values.put("nestedValue", nestedValue);
+        values.put("nestedList", nestedList);
+
+        Map<String, Object> nestedInput = new LinkedHashMap<>();
+        nestedInput.put("reason", "before");
+        Map<String, Object> input = new LinkedHashMap<>();
+        input.put("nestedInput", nestedInput);
+
+        GctActionResultDto result = actionService.executeAction(PRODUCT_PAGE, source.getId(), "copy",
+                GctActionRequest.builder()
+                        .actor("tester")
+                        .values(values)
+                        .input(input)
+                        .build());
+
+        nestedValue.put("stage", "after");
+        listItem.put("name", "after-item");
+        nestedInput.put("reason", "after");
+
+        GctRecordDto storedCopy = recordService.find(PRODUCT_PAGE, result.getCreatedRecord().getId());
+        assertThat(((Map<?, ?>) storedCopy.getValues().get("nestedValue")).get("stage"))
+                .isEqualTo("before");
+        assertThat(((Map<?, ?>) ((List<?>) storedCopy.getValues().get("nestedList")).getFirst()).get("name"))
+                .isEqualTo("before-item");
+
+        GctAuditEntryDto audit = auditService.listAudit(PRODUCT_PAGE, source.getId()).getFirst();
+        assertThat(((Map<?, ?>) audit.getInput().get("nestedInput")).get("reason"))
+                .isEqualTo("before");
+        assertThat(((Map<?, ?>) ((Map<?, ?>) audit.getInput().get("values")).get("nestedValue")).get("stage"))
+                .isEqualTo("before");
     }
 }
