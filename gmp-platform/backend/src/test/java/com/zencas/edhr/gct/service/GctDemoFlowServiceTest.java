@@ -34,4 +34,32 @@ class GctDemoFlowServiceTest {
         assertThat(flow.getCurrentRecord().getStatus()).isEqualTo("已完成");
         assertThat(flow.getSteps()).containsExactly("load-page", "process", "finish");
     }
+
+    @Test
+    void resetGetAndRunExposeConsistentFlowAndRecordStatus() {
+        GctDemoFlowDto reset = demoFlowService.reset();
+        assertThat(reset.getStatus()).isEqualTo("reset");
+        assertThat(reset.getSteps()).containsExactly("reset-store", "load-page", "query-record");
+        assertThat(reset.getMetrics())
+                .containsEntry("recordId", reset.getCurrentRecord().getId())
+                .containsEntry("recordStatus", reset.getCurrentRecord().getStatus());
+
+        GctDemoFlowDto ready = demoFlowService.getDemoFlow();
+        assertThat(ready.getStatus()).isEqualTo("ready");
+        assertThat(ready.getCurrentRecord().getId()).isEqualTo(reset.getCurrentRecord().getId());
+        assertThat(ready.getCurrentRecord().getStatus()).isEqualTo(reset.getCurrentRecord().getStatus());
+        assertThat(ready.getSteps()).containsExactly("load-page", "query-record", "process", "finish");
+
+        GctDemoFlowDto completed = demoFlowService.run();
+        assertThat(completed.getStatus()).isEqualTo("completed");
+        assertThat(completed.getCurrentRecord().getId()).isEqualTo(reset.getCurrentRecord().getId());
+        assertThat(completed.getCurrentRecord().getStatus()).isEqualTo("已完成");
+        assertThat(completed.getMetrics()).containsEntry("recordStatus", "已完成");
+
+        GctDemoFlowDto readyAfterRun = demoFlowService.getDemoFlow();
+        assertThat(readyAfterRun.getStatus()).isEqualTo("ready");
+        assertThat(readyAfterRun.getCurrentRecord().getId()).isEqualTo(completed.getCurrentRecord().getId());
+        assertThat(readyAfterRun.getCurrentRecord().getStatus()).isEqualTo("已完成");
+        assertThat(readyAfterRun.getMetrics()).containsEntry("recordStatus", "已完成");
+    }
 }

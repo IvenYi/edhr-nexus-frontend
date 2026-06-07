@@ -23,14 +23,16 @@ export const GCT_EDHR_DEMO_CHAIN_STEPS = [
 
 export default function DemoChainPanel({ currentPage }: DemoChainPanelProps) {
   const navigate = useNavigate();
-  const steps = useMemo(
-    () =>
-      GCT_EDHR_DEMO_CHAIN_STEPS.map((step) => ({
-        ...step,
-        page: GCT_EDHR_PAGES.find((page) => page.code === step.pageCode) ?? currentPage ?? GCT_EDHR_PAGES[0],
-      })),
-    [currentPage],
-  );
+  const steps = useMemo(() => {
+    const pagesByCode = new Map(GCT_EDHR_PAGES.map((page) => [page.code, page]));
+    return GCT_EDHR_DEMO_CHAIN_STEPS.map((step) => {
+      const page = pagesByCode.get(step.pageCode);
+      if (!page) {
+        throw new Error(`GCT demo chain step "${step.label}" references missing pageCode "${step.pageCode}"`);
+      }
+      return { ...step, page };
+    });
+  }, []);
 
   return (
     <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1, bgcolor: '#fff' }}>

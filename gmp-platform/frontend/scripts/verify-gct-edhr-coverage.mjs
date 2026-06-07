@@ -125,6 +125,7 @@ const requiredFiles = [
   generatedMenusFile,
   typesFile,
   genericEdhrPageFile,
+  demoChainPanelFile,
   routerFile,
   constantsFile,
   appLayoutFile,
@@ -1145,6 +1146,10 @@ async function verifyTask6DemoChain(frontendPages, demoChainSourceText, messages
   if (!demoChainSourceText.includes('export const GCT_EDHR_DEMO_CHAIN_STEPS')) {
     messages.push('DemoChainPanel.tsx must export GCT_EDHR_DEMO_CHAIN_STEPS for automated demo-chain verification');
     return;
+  }
+
+  if (/\?\?\s*currentPage|\?\?\s*GCT_EDHR_PAGES\[[^\]]+\]/.test(demoChainSourceText)) {
+    messages.push('DemoChainPanel.tsx must not fall back to currentPage or the first GCT page when a demo-chain pageCode is invalid');
   }
 
   const tempDir = mkdtempSync(resolve(tmpdir(), 'gct-edhr-demo-chain-probe-'));
