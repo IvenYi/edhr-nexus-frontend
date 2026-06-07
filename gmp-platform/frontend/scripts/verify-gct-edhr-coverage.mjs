@@ -32,6 +32,18 @@ const EXPECTED_TYPE_COUNTS = {
   dashboard: 3,
 };
 
+const EXPECTED_DEMO_CHAIN_STEPS = [
+  '基础建模',
+  '工单',
+  '批次/SN',
+  '生产执行',
+  '检验执行',
+  '放行',
+  '表单/DHR',
+  '打印',
+  '追溯报表',
+];
+
 const SYSTEM_FIELDS = [
   'id',
   'tenantId',
@@ -74,6 +86,7 @@ const generatedPagesFile = resolve(projectRoot, 'src/features/gct-edhr/metadata/
 const generatedMenusFile = resolve(projectRoot, 'src/features/gct-edhr/metadata/generatedMenus.ts');
 const typesFile = resolve(projectRoot, 'src/features/gct-edhr/types.ts');
 const genericEdhrPageFile = resolve(projectRoot, 'src/features/gct-edhr/pages/GenericEdhrPage.tsx');
+const demoChainPanelFile = resolve(projectRoot, 'src/features/gct-edhr/components/DemoChainPanel.tsx');
 const routerFile = resolve(projectRoot, 'src/router/index.tsx');
 const constantsFile = resolve(projectRoot, 'src/utils/constants.ts');
 const appLayoutFile = resolve(projectRoot, 'src/components/shared/AppLayout.tsx');
@@ -139,6 +152,7 @@ const pagesSource = readFileSync(generatedPagesFile, 'utf8');
 const menusSource = readFileSync(generatedMenusFile, 'utf8');
 const typesSource = readFileSync(typesFile, 'utf8');
 const genericEdhrPageSource = readFileSync(genericEdhrPageFile, 'utf8');
+const demoChainPanelSource = readFileSync(demoChainPanelFile, 'utf8');
 const routerSource = readFileSync(routerFile, 'utf8');
 const constantsSource = readFileSync(constantsFile, 'utf8');
 const appLayoutSource = readFileSync(appLayoutFile, 'utf8');
@@ -197,6 +211,7 @@ verifyTask2Integration(routerSource, constantsSource, appLayoutSource, failures)
 verifyTask3MockLayer(task3MockFiles, failures);
 await verifyTask3MockBehavior(failures);
 verifyTask4GenericUi(genericEdhrPageSource, task4GenericUiFiles, failures);
+await verifyTask6DemoChain(frontendPages, demoChainPanelSource, failures);
 
 if (failures.length) {
   reportAndExit(failures);
@@ -1107,6 +1122,7 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
   ], messages);
 
   requireTokens('DemoChainPanel.tsx', sources.DemoChainPanel ?? '', [
+    'GCT_EDHR_DEMO_CHAIN_STEPS',
     '基础建模',
     '工单',
     '批次/SN',
@@ -1118,6 +1134,46 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
     '追溯报表',
     'useNavigate',
   ], messages);
+}
+
+async function verifyTask6DemoChain(frontendPages, demoChainSourceText, messages) {
+  if (!Array.isArray(frontendPages)) {
+    messages.push('Task 6 demo chain cannot run without frontend pages metadata');
+    return;
+  }
+
+  if (!demoChainSourceText.includes('export const GCT_EDHR_DEMO_CHAIN_STEPS')) {
+    messages.push('DemoChainPanel.tsx must export GCT_EDHR_DEMO_CHAIN_STEPS for automated demo-chain verification');
+    return;
+  }
+
+  const tempDir = mkdtempSync(resolve(tmpdir(), 'gct-edhr-demo-chain-probe-'));
+  const entryFile = resolve(tempDir, 'probe.ts');
+  const bundleFile = resolve(tempDir, 'probe.mjs');
+
+  writeFileSync(entryFile, createTask6DemoChainProbeSource(), 'utf8');
+
+  try {
+    const { build } = await import('esbuild');
+    await build({
+      entryPoints: [entryFile],
+      outfile: bundleFile,
+      bundle: true,
+      platform: 'node',
+      format: 'esm',
+      target: 'node20',
+      absWorkingDir: projectRoot,
+      logLevel: 'silent',
+    });
+
+    const probeModule = await import(pathToFileURL(bundleFile).href);
+    const probeFailures = Array.isArray(probeModule.failures) ? probeModule.failures : [];
+    messages.push(...probeFailures.map((failure) => `Task 6 demo chain probe: ${failure}`));
+  } catch (error) {
+    messages.push(`Task 6 demo chain probe failed to execute: ${error instanceof Error ? error.message : error}`);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
 }
 
 function requireTokens(label, sourceText, tokens, messages) {
@@ -1363,6 +1419,73 @@ if (listPage) {
       mockEdhrClient.getRecord = originalGetRecord;
     }
   }
+}
+
+const actionChainPage = pickPage((page) => ['query', 'reset', 'detail', 'process', 'finish']
+  .every((code) => getDisplayActionsForPage(page).some((action) => action.code === code)), 'query/reset/detail/process/finish action chain');
+if (actionChainPage) {
+  const store = useMockEdhrStore;
+  await store.getState().loadPage(actionChainPage.code);
+  assert(store.getState().records.length > 0, 'store loadPage should execute query against action-chain page');
+  const businessField = firstBusinessField(actionChainPage);
+  const firstRecord = store.getState().records[0];
+  if (businessField && firstRecord) {
+    await store.getState().setQuery({ [businessField.name]: String(firstRecord.values[businessField.name]).slice(0, 4) });
+    assert(Object.keys(store.getState().query).length === 1, 'store setQuery should keep query filters');
+    await store.getState().resetQuery();
+    assert(Object.keys(store.getState().query).length === 0, 'store resetQuery should clear query filters');
+  }
+  const record = store.getState().records[0];
+  if (record) {
+    await store.getState().selectRecord(record.id);
+    assert(store.getState().selectedRecord?.id === record.id, 'store selectRecord should execute detail-equivalent record load');
+    const detailResult = await store.getState().executeAction(record.id, 'detail');
+    assert(detailResult.actionCode === 'detail', 'store executeAction should execute detail action');
+    const processResult = await store.getState().executeAction(record.id, 'process', { remark: 'demo process' });
+    assert(processResult.actionCode === 'process', 'store executeAction should execute process action');
+    const finishResult = await store.getState().executeAction(record.id, 'finish', { remark: 'demo finish' });
+    assert(finishResult.actionCode === 'finish', 'store executeAction should execute finish action');
+    assert(store.getState().lastActionResult?.actionCode === 'finish', 'store should retain the latest action result after finish');
+  }
+}
+
+export const failures = probeFailures;
+`;
+}
+
+function createTask6DemoChainProbeSource() {
+  return `
+import { GCT_EDHR_PAGES } from ${JSON.stringify(generatedPagesFile)};
+import { GCT_EDHR_DEMO_CHAIN_STEPS } from ${JSON.stringify(demoChainPanelFile)};
+
+const probeFailures = [];
+const expectedLabels = ${JSON.stringify(EXPECTED_DEMO_CHAIN_STEPS)};
+const pageByCode = new Map(GCT_EDHR_PAGES.map((page) => [page.code, page]));
+
+function assert(condition, message) {
+  if (!condition) probeFailures.push(message);
+}
+
+assert(GCT_EDHR_PAGES.length === ${EXPECTED_PAGE_COUNT}, 'metadata should expose all ${EXPECTED_PAGE_COUNT} GCT pages');
+assert(GCT_EDHR_PAGES.every((page) => page.path?.startsWith('/gct-edhr/')), 'every metadata path should be mounted under /gct-edhr/*');
+assert(GCT_EDHR_DEMO_CHAIN_STEPS.length === expectedLabels.length, 'demo chain should contain exactly ' + expectedLabels.length + ' steps');
+assert(
+  JSON.stringify(GCT_EDHR_DEMO_CHAIN_STEPS.map((step) => step.label)) === JSON.stringify(expectedLabels),
+  'demo chain labels should match the expected main flow order',
+);
+
+const seenPaths = new Set();
+const seenCodes = new Set();
+for (const step of GCT_EDHR_DEMO_CHAIN_STEPS) {
+  assert(Boolean(step.pageCode), 'demo chain step ' + step.label + ' must declare pageCode');
+  const page = pageByCode.get(step.pageCode);
+  assert(Boolean(page), 'demo chain step ' + step.label + ' pageCode has no metadata page: ' + step.pageCode);
+  if (!page) continue;
+  assert(page.path.startsWith('/gct-edhr/'), 'demo chain step ' + step.label + ' must route through /gct-edhr/*');
+  assert(!seenPaths.has(page.path), 'demo chain page path must be unique: ' + page.path);
+  assert(!seenCodes.has(page.code), 'demo chain page code must be unique: ' + page.code);
+  seenPaths.add(page.path);
+  seenCodes.add(page.code);
 }
 
 export const failures = probeFailures;
