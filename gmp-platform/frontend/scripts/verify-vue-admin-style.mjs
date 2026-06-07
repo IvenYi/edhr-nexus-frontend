@@ -54,6 +54,9 @@ mustInclude('src/components/shared/AppLayout.tsx', /left:\s*`\$\{effectiveSideba
 mustInclude('src/components/shared/AppLayout.tsx', /ml:\s*`\$\{effectiveSidebarWidth\}px`/, 'content should offset by effective sidebar width');
 mustInclude('src/components/shared/AppLayout.tsx', /display:\s*isMobile\s*&&\s*!funcMenuOpen\s*\?\s*'none'\s*:\s*'flex'/, 'mobile module rail should be hidden unless overlay is open');
 mustInclude('src/components/shared/AppLayout.tsx', /display:\s*isMobile\s*&&\s*!funcMenuOpen\s*\?\s*'none'\s*:\s*'block'/, 'mobile function menu should be hidden unless overlay is open');
+mustInclude('src/components/shared/AppLayout.tsx', /isMobile\s*&&\s*funcMenuOpen\s*&&\s*\(/, 'mobile overlay close affordance should render only when the overlay is open');
+mustInclude('src/components/shared/AppLayout.tsx', /data-mobile-sidebar-backdrop/, 'mobile sidebar should have an outside-click backdrop close path');
+mustInclude('src/components/shared/AppLayout.tsx', /onClick=\{\(\)\s*=>\s*setFuncMenuOpen\(false\)\}/, 'mobile sidebar close affordance should close the overlay');
 mustInclude('src/components/shared/AppLayout.tsx', /(?:p|padding):\s*['"]20px['"]/, 'main content should use 20px padding');
 
 if (failures.length > 0) {

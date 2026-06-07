@@ -338,6 +338,22 @@ export default function AppLayout() {
         />
       </Box>
 
+      {isMobile && funcMenuOpen && (
+        <Box
+          data-mobile-sidebar-backdrop="true"
+          onClick={() => setFuncMenuOpen(false)}
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: `${sidebarTotalWidth}px`,
+            right: 0,
+            bottom: 0,
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            bgcolor: 'rgba(0, 0, 0, 0.24)',
+          }}
+        />
+      )}
+
       {/* ==================== Module Bar ==================== */}
       <Box
         sx={{
@@ -348,7 +364,7 @@ export default function AppLayout() {
           top: 0,
           left: 0,
           bottom: 0,
-          zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 2 : theme.zIndex.drawer),
+          zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 3 : theme.zIndex.drawer),
           display: isMobile && !funcMenuOpen ? 'none' : 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -453,7 +469,7 @@ export default function AppLayout() {
           top: 0,
           left: MODULE_BAR_WIDTH,
           bottom: 0,
-          zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 2 : theme.zIndex.drawer - 1),
+          zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 3 : theme.zIndex.drawer - 1),
           display: isMobile && !funcMenuOpen ? 'none' : 'block',
           overflow: 'hidden',
           transition: 'width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
@@ -477,19 +493,44 @@ export default function AppLayout() {
           }}
         >
           {/* Module name label */}
-          <Typography
+          <Box
             sx={{
-              fontSize: 12,
-              color: COLORS.textDisabled,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
               px: '20px',
               pt: '12px',
               pb: '8px',
             }}
           >
-            {activeModule.label}
-          </Typography>
+            <Typography
+              sx={{
+                fontSize: 12,
+                color: COLORS.textDisabled,
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+              }}
+            >
+              {activeModule.label}
+            </Typography>
+            {isMobile && (
+              <IconButton
+                data-mobile-sidebar-close="true"
+                size="small"
+                aria-label="关闭侧栏"
+                onClick={() => setFuncMenuOpen(false)}
+                sx={{
+                  color: COLORS.textSecondary,
+                  '&:hover': {
+                    color: COLORS.primary,
+                    bgcolor: COLORS.primaryLight,
+                  },
+                }}
+              >
+                <ChevronLeftRounded fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
           <List
             disablePadding
             key={activeModule.id}
