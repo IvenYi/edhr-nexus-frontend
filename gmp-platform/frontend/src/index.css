@@ -14,16 +14,16 @@ html {
 }
 
 body {
-  font-family: 'Noto Sans SC', 'Inter', 'Roboto', -apple-system, sans-serif;
-  background-color: #F0F2F5;
-  color: #1A2332;
+  font-family: 'PingFang SC', Arial, 'Microsoft YaHei', sans-serif;
+  background-color: #f6f8f9;
+  color: #515a6e;
+  font-size: 14px;
 }
 
 #root {
   min-height: 100vh;
 }
 
-/* Animation utilities */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -32,7 +32,7 @@ body {
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -40,22 +40,14 @@ body {
   }
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.2s ease-out;
 }
 
 .animate-slide-up {
-  animation: slideUp 0.35s ease-out;
+  animation: slideUp 0.25s ease-out;
 }
 
-/* ============================================
-   Scrollbar styling (Webkit)
-   ============================================ */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -66,10 +58,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #C4CDD5;
+  background-color: #c0c4cc;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #A0AAB4;
+  background-color: #909399;
 }

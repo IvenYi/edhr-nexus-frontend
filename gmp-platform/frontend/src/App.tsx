@@ -15,106 +15,74 @@ const queryClient = new QueryClient({
   },
 });
 
-/**
- * eDHR Design System — Industrial-Grade Color Palette
- *
- * Primary  : #1565C0 (deep professional blue — trust, precision, authority)
- * Secondary: #00897B (teal green — compliance, approval, completion)
- * Success  : #2E7D32 (green — pass, effective, released)
- * Warning  : #F57F17 (amber — pending, attention needed)
- * Error    : #C62828 (red — rejected, terminated, invalid) — MUST be red, not orange
- * Info     : #0277BD (light blue — running, in-progress)
- */
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1565C0',
-      light: '#1E88E5',
-      dark: '#0D47A1',
-      contrastText: '#FFFFFF',
+      main: '#1890ff',
+      light: '#40a9ff',
+      dark: '#096dd9',
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: '#00897B',
-      light: '#26A69A',
-      dark: '#00695C',
-      contrastText: '#FFFFFF',
+      main: '#41b584',
+      light: '#67c23a',
+      dark: '#2f8f68',
+      contrastText: '#ffffff',
     },
     success: {
-      main: '#2E7D32',
-      light: '#4CAF50',
-      dark: '#1B5E20',
-      contrastText: '#FFFFFF',
+      main: '#13ce66',
+      light: '#67c23a',
+      dark: '#0c9f4d',
+      contrastText: '#ffffff',
     },
     warning: {
-      main: '#F57F17',
-      light: '#FFB300',
-      dark: '#E65100',
-      contrastText: '#FFFFFF',
+      main: '#ffba00',
+      light: '#ffd666',
+      dark: '#d48806',
+      contrastText: '#ffffff',
     },
     error: {
-      main: '#C62828',
-      light: '#EF5350',
-      dark: '#B71C1C',
-      contrastText: '#FFFFFF',
+      main: '#ff4d4f',
+      light: '#ff7875',
+      dark: '#cf1322',
+      contrastText: '#ffffff',
     },
     info: {
-      main: '#0277BD',
-      light: '#03A9F4',
-      dark: '#01579B',
-      contrastText: '#FFFFFF',
+      main: '#909399',
+      light: '#c0c4cc',
+      dark: '#606266',
+      contrastText: '#ffffff',
     },
     background: {
-      default: '#F0F2F5',
-      paper: '#FFFFFF',
+      default: '#f6f8f9',
+      paper: '#ffffff',
     },
     text: {
-      primary: '#1A2332',
-      secondary: '#5A6878',
-      disabled: '#8E9BAF',
+      primary: '#303133',
+      secondary: '#606266',
+      disabled: '#909399',
     },
-    divider: '#E2E6EC',
+    divider: '#e4e7ed',
   },
   typography: {
-    fontFamily: "'Noto Sans SC', 'Inter', 'Roboto', -apple-system, sans-serif",
-    fontSize: 14.5,
-    h4: {
-      fontSize: 26,
-      fontWeight: 700,
-      letterSpacing: '-0.02em',
-      lineHeight: 1.3,
-    },
-    h5: {
-      fontSize: 20,
-      fontWeight: 600,
-      letterSpacing: '-0.01em',
-      lineHeight: 1.35,
-    },
-    h6: {
-      fontSize: 16.5,
-      fontWeight: 600,
-      lineHeight: 1.4,
-    },
-    body1: {
-      fontSize: 14.5,
-      lineHeight: 1.6,
-    },
-    body2: {
-      fontSize: 13,
-      lineHeight: 1.5,
-    },
-    caption: {
-      fontSize: 12,
-      lineHeight: 1.4,
-    },
+    fontFamily: "'PingFang SC', Arial, 'Microsoft YaHei', sans-serif",
+    fontSize: 14,
+    h4: { fontSize: 20, fontWeight: 700, lineHeight: 1.3 },
+    h5: { fontSize: 18, fontWeight: 600, lineHeight: 1.35 },
+    h6: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 },
+    body1: { fontSize: 14, lineHeight: 1.5 },
+    body2: { fontSize: 14, lineHeight: 1.5 },
+    caption: { fontSize: 12, lineHeight: 1.4 },
   },
   shape: {
-    borderRadius: 8,
+    borderRadius: 5,
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: '#F0F2F5',
+          backgroundColor: '#f6f8f9',
+          color: '#515a6e',
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale',
         },
@@ -123,34 +91,46 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
+          height: 32,
+          padding: '8px 15px',
+          borderRadius: 5,
           textTransform: 'none',
+          fontSize: 14,
           fontWeight: 500,
-          borderRadius: 8,
+          transition: 'all 0.1s ease',
         },
         contained: {
           boxShadow: 'none',
-          '&:hover': {
-            boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-          },
+          '&:hover': { boxShadow: 'none' },
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
-          border: '1px solid #E8ECF0',
+          borderRadius: 5,
+          boxShadow: 'none',
+          border: '1px solid #e4e7ed',
+          backgroundImage: 'none',
+          overflow: 'hidden',
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          padding: 20,
+          '&:last-child': { paddingBottom: 20 },
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#FFFFFF',
-          color: '#1A2332',
-          boxShadow: 'none',
-          borderBottom: '1px solid #E2E6EC',
+          backgroundColor: '#ffffff',
+          color: '#303133',
+          boxShadow: '0 1px 4px rgba(0, 21, 41, 0.08)',
+          borderBottom: 'none',
         },
       },
     },
@@ -158,11 +138,13 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiTableCell-head': {
+            height: 63,
+            padding: '8px 16px',
             fontWeight: 600,
-            fontSize: 13,
-            color: '#5A6878',
-            backgroundColor: '#F8FAFB',
-            borderBottom: '2px solid #E2E6EC',
+            fontSize: 14,
+            color: '#909399',
+            backgroundColor: '#f5f7fa',
+            borderBottom: '1px solid #ebeef5',
             whiteSpace: 'nowrap',
           },
         },
@@ -171,48 +153,53 @@ const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: '1px solid #EEF0F3',
-          padding: '10px 16px',
+          padding: '8px 16px',
+          color: '#606266',
+          borderBottom: '1px solid #ebeef5',
+          fontSize: 14,
         },
       },
     },
     MuiTableRow: {
       styleOverrides: {
         root: {
-          '&:nth-of-type(even)': {
-            backgroundColor: '#FAFBFC',
-          },
-          '&:hover': {
-            backgroundColor: '#F0F4F8 !important',
-          },
-          '&.MuiTableRow-head': {
-            '&:nth-of-type(even)': {
-              backgroundColor: 'transparent',
-            },
-          },
+          height: 72,
+          '&:hover': { backgroundColor: '#f6f8f9' },
         },
       },
     },
     MuiChip: {
       styleOverrides: {
         root: {
-          fontWeight: 500,
+          height: 24,
+          borderRadius: 5,
           fontSize: 12,
+          fontWeight: 500,
         },
       },
     },
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 12,
+          borderRadius: 5,
+          boxShadow: '0 1px 4px rgba(0, 21, 41, 0.08)',
         },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 8,
+          '& .MuiInputBase-root': {
+            minHeight: 32,
+            borderRadius: 5,
+            backgroundColor: '#ffffff',
+          },
+          '& .MuiOutlinedInput-input': {
+            padding: '7px 11px',
+            fontSize: 14,
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#dcdfe6',
           },
         },
       },
@@ -221,7 +208,17 @@ const theme = createTheme({
       styleOverrides: {
         ul: {
           '& .MuiPaginationItem-root': {
-            borderRadius: 6,
+            width: 32,
+            height: 32,
+            margin: '0 4px',
+            borderRadius: 2,
+            color: '#303133',
+            backgroundColor: '#f0f2f5',
+            '&.Mui-selected': {
+              backgroundColor: '#1890ff',
+              color: '#ffffff',
+              fontWeight: 700,
+            },
           },
         },
       },
