@@ -57,6 +57,9 @@ interface GctEdhrMockStoreState {
 const DEFAULT_PAGINATION: GctEdhrPaginationState = { page: 1, pageSize: 10 };
 const DEFAULT_SORTING: GctEdhrSortingState = { sortDirection: 'asc' };
 
+let loadPageRequestSeq = 0;
+let auditTrailRequestSeq = 0;
+
 export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
   records: [],
   total: 0,
@@ -70,6 +73,7 @@ export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
   lastActionResult: null,
 
   loadPage: async (pageCode) => {
+    const requestId = ++loadPageRequestSeq;
     const current = get();
     const pageChanged = current.pageCode !== pageCode;
     const pageMeta = findPageMeta(pageCode);
@@ -98,6 +102,9 @@ export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
         sortField: sorting.sortField,
         sortDirection: sorting.sortDirection,
       });
+      if (requestId !== loadPageRequestSeq || get().pageCode !== pageCode) {
+        return;
+      }
       set({
         records: result.records,
         total: result.total,
@@ -105,7 +112,9 @@ export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      set({ loading: false, error: toErrorMessage(error) });
+      if (requestId === loadPageRequestSeq) {
+        set({ loading: false, error: toErrorMessage(error) });
+      }
       throw error;
     }
   },
@@ -183,13 +192,15 @@ export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
   executeAction: async (recordId, actionCode, input = {}) => {
     const pageCode = requireCurrentPageCode(get());
     const result = await mockEdhrClient.executeAction(pageCode, recordId, actionCode, input);
-    set({ selectedRecord: result.record, lastActionResult: result });
+    const selectedRecord = result.createdRecord ?? result.record;
+    set({ selectedRecord, lastActionResult: result });
     await get().loadPage(pageCode);
-    await get().loadAuditTrail(recordId);
+    await get().loadAuditTrail(selectedRecord.id);
     return result;
   },
 
   loadAuditTrail: async (recordId) => {
+    const requestId = ++auditTrailRequestSeq;
     const state = get();
     const pageCode = requireCurrentPageCode(state);
     const targetRecordId = recordId ?? state.selectedRecord?.id;
@@ -203,6 +214,15 @@ export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
       mockEdhrClient.getAuditEntries(pageCode, targetRecordId),
       mockEdhrClient.getStatusHistory(pageCode, targetRecordId),
     ]);
+
+    const current = get();
+    if (
+      requestId !== auditTrailRequestSeq ||
+      current.pageCode !== pageCode ||
+      (current.selectedRecord?.id && current.selectedRecord.id !== targetRecordId)
+    ) {
+      return;
+    }
 
     set({ auditEntries, statusHistory });
   },

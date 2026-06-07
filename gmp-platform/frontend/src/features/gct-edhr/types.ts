@@ -153,7 +153,7 @@ export interface EdhrActionResult {
   actionLabel: string;
   record: EdhrRecord;
   createdRecord?: EdhrRecord;
-  auditEntry: EdhrAuditEntry;
-  statusHistory: EdhrRecordStatusHistory;
+  auditEntry?: EdhrAuditEntry;
+  statusHistory?: EdhrRecordStatusHistory;
   message: string;
 }

@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const scriptsDir = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptsDir, '..');
@@ -176,6 +177,7 @@ verifyFrontendSources(pages, pagesSource, menusSource, failures);
 verifyFrontendStructuredOutput(frontendPages, frontendMenuModule, spec, failures);
 verifyTask2Integration(routerSource, constantsSource, appLayoutSource, failures);
 verifyTask3MockLayer(task3MockFiles, failures);
+await verifyTask3MockBehavior(failures);
 
 if (failures.length) {
   reportAndExit(failures);
@@ -848,6 +850,8 @@ function verifyTask3MockLayer(files, messages) {
     'copy',
     '已删除',
     '禁用',
+    'recordSequence',
+    'timeSequence',
   ], messages);
 
   requireTokens('mockEdhrStore.ts', sources.mockEdhrStore, [
@@ -873,6 +877,9 @@ function verifyTask3MockLayer(files, messages) {
     'auditEntries',
     'statusHistory',
     'lastActionResult',
+    'loadPageRequestSeq',
+    'auditTrailRequestSeq',
+    'requestId',
   ], messages);
 }
 
@@ -882,6 +889,202 @@ function requireTokens(label, sourceText, tokens, messages) {
       messages.push(`${label} is missing Task 3 token: ${token}`);
     }
   }
+}
+
+async function verifyTask3MockBehavior(messages) {
+  const tempDir = mkdtempSync(resolve(tmpdir(), 'gct-edhr-probe-'));
+  const entryFile = resolve(tempDir, 'probe.ts');
+  const bundleFile = resolve(tempDir, 'probe.mjs');
+
+  writeFileSync(entryFile, createTask3ProbeSource(), 'utf8');
+
+  try {
+    const { build } = await import('esbuild');
+    await build({
+      entryPoints: [entryFile],
+      outfile: bundleFile,
+      bundle: true,
+      platform: 'node',
+      format: 'esm',
+      target: 'node20',
+      absWorkingDir: projectRoot,
+      logLevel: 'silent',
+    });
+
+    const probeModule = await import(pathToFileURL(bundleFile).href);
+    const probeFailures = Array.isArray(probeModule.failures) ? probeModule.failures : [];
+    messages.push(...probeFailures.map((failure) => `Task 3 behavior probe: ${failure}`));
+  } catch (error) {
+    messages.push(`Task 3 behavior probe failed to execute: ${error instanceof Error ? error.message : error}`);
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+}
+
+function createTask3ProbeSource() {
+  return `
+import { GCT_EDHR_PAGES } from ${JSON.stringify(generatedPagesFile)};
+import { GctEdhrMockClient } from ${JSON.stringify(task3MockFiles.mockEdhrClient)};
+import { getDisplayActionsForPage } from ${JSON.stringify(task3MockFiles.actionPolicy)};
+import { useMockEdhrStore } from ${JSON.stringify(task3MockFiles.mockEdhrStore)};
+
+const probeFailures = [];
+
+function assert(condition, message) {
+  if (!condition) probeFailures.push(message);
+}
+
+function firstBusinessField(page) {
+  return page.fields.find((field) => !field.system) ?? page.listFields.find((field) => !field.system);
+}
+
+function pickPage(predicate, label) {
+  const page = GCT_EDHR_PAGES.find(predicate);
+  assert(Boolean(page), 'missing probe page: ' + label);
+  return page;
+}
+
+function compareDescending(values) {
+  for (let index = 1; index < values.length; index += 1) {
+    if (String(values[index - 1]).localeCompare(String(values[index]), 'zh-CN') < 0) return false;
+  }
+  return true;
+}
+
+const listPage = pickPage((page) => page.listFields.length > 0, 'list fields');
+if (listPage) {
+  const client = new GctEdhrMockClient();
+  const all = await client.queryRecords(listPage.code, { page: 1, pageSize: 50 });
+  assert(all.total === 20, 'each page should seed 20 mock records');
+
+  const pageOne = await client.queryRecords(listPage.code, { page: 1, pageSize: 5 });
+  const pageTwo = await client.queryRecords(listPage.code, { page: 2, pageSize: 5 });
+  assert(pageOne.records.length === 5 && pageTwo.records.length === 5, 'pagination should return requested page size');
+  assert(pageOne.records[0]?.id !== pageTwo.records[0]?.id, 'pagination page 2 should not repeat page 1 first record');
+
+  const field = firstBusinessField(listPage);
+  const filterValue = field ? all.records[0]?.values[field.name] : undefined;
+  if (field && filterValue !== undefined) {
+    const filtered = await client.queryRecords(listPage.code, {
+      page: 1,
+      pageSize: 50,
+      filters: { [field.name]: String(filterValue).slice(0, 4) },
+    });
+    assert(filtered.total > 0, 'filtering should match deterministic field values');
+    assert(filtered.records.every((record) => String(record.values[field.name]).includes(String(filterValue).slice(0, 4))), 'filtering should restrict records by field value');
+  }
+
+  const sorted = await client.queryRecords(listPage.code, {
+    page: 1,
+    pageSize: 20,
+    sortField: 'createdAt',
+    sortDirection: 'desc',
+  });
+  assert(compareDescending(sorted.records.map((record) => record.createdAt)), 'sorting desc should order by createdAt');
+}
+
+const deletePage = pickPage((page) => page.actions.some((action) => action.code === 'delete'), 'delete action');
+if (deletePage) {
+  const client = new GctEdhrMockClient();
+  const before = await client.queryRecords(deletePage.code, { page: 1, pageSize: 5 });
+  const record = before.records[0];
+  await client.deleteRecord(deletePage.code, record.id);
+  const hidden = await client.queryRecords(deletePage.code, { page: 1, pageSize: 50 });
+  const deleted = await client.queryRecords(deletePage.code, { page: 1, pageSize: 50, filters: { status: '已删除' } });
+  assert(!hidden.records.some((item) => item.id === record.id), 'logical delete should hide record by default');
+  assert(deleted.records.some((item) => item.id === record.id), 'logical delete should be queryable with status=已删除');
+}
+
+const clonePage = pickPage((page) => page.actions.some((action) => action.code === 'copy'), 'copy action');
+if (clonePage) {
+  const client = new GctEdhrMockClient();
+  const pageResult = await client.queryRecords(clonePage.code, { page: 1, pageSize: 1 });
+  const source = pageResult.records[0];
+  const field = firstBusinessField(clonePage);
+  if (source && field) {
+    const beforeSource = await client.getRecord(clonePage.code, source.id);
+    const result = await client.executeAction(clonePage.code, source.id, 'copy', {
+      values: { [field.name]: 'COPY_ONLY_VALUE' },
+      remark: 'copy-only-remark',
+      operatorName: '复制操作员',
+    });
+    const afterSource = await client.getRecord(clonePage.code, source.id);
+    assert(Boolean(result.createdRecord), 'copy should return createdRecord');
+    assert(result.createdRecord?.values[field.name] === 'COPY_ONLY_VALUE', 'copy input.values should be applied to createdRecord');
+    assert(afterSource?.values[field.name] === beforeSource?.values[field.name], 'copy input.values must not mutate source record');
+    assert(afterSource?.remark === beforeSource?.remark, 'copy remark must not mutate source record');
+    assert(afterSource?.updatedAt === beforeSource?.updatedAt, 'copy must not update source updatedAt');
+  }
+}
+
+const versionPage = pickPage((page) => page.actions.some((action) => action.code === 'version_create' || action.code === 'version_copy'), 'version action');
+if (versionPage) {
+  const client = new GctEdhrMockClient();
+  const actionCode = versionPage.actions.some((action) => action.code === 'version_copy') ? 'version_copy' : 'version_create';
+  const pageResult = await client.queryRecords(versionPage.code, { page: 1, pageSize: 1 });
+  const source = pageResult.records[0];
+  const field = firstBusinessField(versionPage);
+  if (source && field) {
+    const beforeSource = await client.getRecord(versionPage.code, source.id);
+    const result = await client.executeAction(versionPage.code, source.id, actionCode, {
+      values: { [field.name]: 'VERSION_ONLY_VALUE' },
+      remark: 'version-only-remark',
+      operatorName: '版本操作员',
+    });
+    const afterSource = await client.getRecord(versionPage.code, source.id);
+    assert(Boolean(result.createdRecord), 'version action should return createdRecord');
+    assert(result.createdRecord?.values[field.name] === 'VERSION_ONLY_VALUE', 'version input.values should be applied to createdRecord');
+    assert(afterSource?.values[field.name] === beforeSource?.values[field.name], 'version input.values must not mutate source record');
+    assert(afterSource?.updatedAt === beforeSource?.updatedAt, 'version must not update source updatedAt');
+  }
+}
+
+const detailPage = pickPage((page) => page.actions.some((action) => action.code === 'detail'), 'detail action');
+if (detailPage) {
+  const client = new GctEdhrMockClient();
+  const pageResult = await client.queryRecords(detailPage.code, { page: 1, pageSize: 1 });
+  const record = pageResult.records[0];
+  const beforeHistory = await client.getStatusHistory(detailPage.code, record.id);
+  const beforeAudit = await client.getAuditEntries(detailPage.code, record.id);
+  const beforeRecord = await client.getRecord(detailPage.code, record.id);
+  await client.executeAction(detailPage.code, record.id, 'detail');
+  const afterHistory = await client.getStatusHistory(detailPage.code, record.id);
+  const afterAudit = await client.getAuditEntries(detailPage.code, record.id);
+  const afterRecord = await client.getRecord(detailPage.code, record.id);
+  assert(afterHistory.length === beforeHistory.length, 'readonly detail should not append status history');
+  assert(afterAudit.length === beforeAudit.length, 'auditRequired=false detail should not append audit');
+  assert(afterRecord?.updatedAt === beforeRecord?.updatedAt, 'readonly detail should not update updatedAt');
+  assert(afterRecord?.status === beforeRecord?.status, 'readonly detail should not change status');
+}
+
+const noActionListPage = pickPage((page) => page.type === 'list' && page.actions.length === 0, 'no-action list page');
+if (noActionListPage) {
+  const actionCodes = getDisplayActionsForPage(noActionListPage).map((action) => action.code);
+  for (const code of ['query', 'reset', 'detail', 'export']) {
+    assert(actionCodes.includes(code), 'no-action list fallback should include ' + code);
+  }
+}
+
+if (clonePage) {
+  const store = useMockEdhrStore;
+  await store.getState().loadPage(clonePage.code);
+  const state = store.getState();
+  const source = state.records[0];
+  const field = firstBusinessField(clonePage);
+  if (source && field) {
+    const result = await store.getState().executeAction(source.id, 'copy', {
+      values: { [field.name]: 'STORE_COPY_VALUE' },
+      remark: 'store-copy',
+    });
+    const afterState = store.getState();
+    assert(Boolean(result.createdRecord), 'store copy should receive createdRecord');
+    assert(afterState.selectedRecord?.id === result.createdRecord?.id, 'store copy should select createdRecord');
+    assert(afterState.auditEntries.every((entry) => entry.recordId === result.createdRecord?.id), 'store copy auditTrail should point at createdRecord');
+  }
+}
+
+export const failures = probeFailures;
+`;
 }
 
 function extractPathTokens(sourceText) {

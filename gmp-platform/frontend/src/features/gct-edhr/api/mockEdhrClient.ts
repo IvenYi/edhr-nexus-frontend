@@ -30,12 +30,19 @@ const DEFAULT_PAGE_SIZE = 10;
 const LOGICAL_DISABLE_STATUS = '禁用';
 const MUTATION_TIME = Date.UTC(2026, 1, 1, 9, 0, 0);
 
+interface ClonedRecordResult {
+  record: EdhrRecord;
+  auditEntry: EdhrAuditEntry;
+  statusHistory: EdhrRecordStatusHistory;
+}
+
 export class GctEdhrMockClient {
   private readonly pagesByCode = new Map(GCT_EDHR_PAGES.map((page) => [page.code, page]));
   private readonly recordsByPage = new Map<string, EdhrRecord[]>();
   private readonly auditEntriesByRecord = new Map<string, EdhrAuditEntry[]>();
   private readonly statusHistoryByRecord = new Map<string, EdhrRecordStatusHistory[]>();
-  private mutationSequence = 0;
+  private recordSequence = 0;
+  private timeSequence = 0;
 
   constructor() {
     const recordsByPage = generateMockRecordsByPage(GCT_EDHR_PAGES);
@@ -74,7 +81,7 @@ export class GctEdhrMockClient {
   async createRecord(pageCode: string, input: EdhrRecordMutationInput = {}): Promise<EdhrRecord> {
     const pageMeta = this.requirePage(pageCode);
     const records = this.getPageRecords(pageCode);
-    const sequence = this.nextMutationSequence();
+    const sequence = this.nextRecordSequence();
     const baseRecord = createDeterministicRecord(pageMeta, records.length + sequence);
     const operatorId = input.operatorId ?? DEFAULT_OPERATOR_ID;
     const operatorName = input.operatorName ?? DEFAULT_OPERATOR_NAME;
@@ -171,51 +178,76 @@ export class GctEdhrMockClient {
     const policy = getActionPolicy(actionCode);
     const operatorId = input.operatorId ?? DEFAULT_OPERATOR_ID;
     const operatorName = input.operatorName ?? DEFAULT_OPERATOR_NAME;
+    const auditRequired = policy.auditRequired && (actionMeta?.auditRequired ?? true);
     let createdRecord: EdhrRecord | undefined;
-
-    if (input.values) {
-      record.values = { ...record.values, ...input.values };
-    }
+    let auditEntry: EdhrAuditEntry | undefined;
+    let statusHistory: EdhrRecordStatusHistory | undefined;
 
     if (policy.cloneMode) {
-      createdRecord = this.createClonedRecord(pageMeta, record, policy.cloneMode, actionCode, actionLabel, input);
-    } else {
-      record.status = getNextStatusForAction(actionCode, record.status, pageMeta);
+      const cloneResult = this.createClonedRecord(pageMeta, record, policy.cloneMode, actionCode, actionLabel, input);
+      createdRecord = cloneResult.record;
+      statusHistory = cloneResult.statusHistory;
+
+      if (auditRequired) {
+        const afterValue = serializeRecord(record);
+        afterValue.createdRecordId = createdRecord.id;
+        auditEntry = this.appendAuditEntry(
+          pageCode,
+          record.id,
+          actionCode,
+          actionLabel,
+          serializeRecord(before),
+          afterValue,
+          {
+            operatorId,
+            operatorName,
+            remark: input.remark,
+          },
+        );
+      }
+
+      return {
+        actionCode,
+        actionLabel,
+        record: cloneRecord(record),
+        createdRecord: cloneRecord(createdRecord),
+        auditEntry,
+        statusHistory,
+        message: policy.message,
+      };
     }
 
-    record.remark = input.remark ?? record.remark;
-    record.updatedBy = operatorName;
-    record.updatedAt = this.nextTimestamp();
-    mirrorSystemValues(record);
+    const nextStatus = getNextStatusForAction(actionCode, record.status, pageMeta);
+    const shouldUpdateRecord = Boolean(policy.targetStatus);
+    const shouldAppendStatusHistory = shouldUpdateRecord && nextStatus !== before.status;
 
-    const afterValue = serializeRecord(record);
-    if (createdRecord) {
-      afterValue.createdRecordId = createdRecord.id;
+    if (shouldUpdateRecord) {
+      if (input.values) {
+        record.values = { ...record.values, ...input.values };
+      }
+      record.status = nextStatus;
+      record.remark = input.remark ?? record.remark;
+      record.updatedBy = operatorName;
+      record.updatedAt = this.nextTimestamp();
+      mirrorSystemValues(record);
     }
 
-    const auditEntry = this.appendAuditEntry(pageCode, record.id, actionCode, actionLabel, serializeRecord(before), afterValue, {
-      operatorId,
-      operatorName,
-      remark: input.remark,
-    });
-    const statusHistory = this.appendStatusHistory(
-      record,
-      before.status,
-      record.status,
-      actionCode,
-      operatorName,
-      input.remark,
-    );
+    if (auditRequired) {
+      auditEntry = this.appendAuditEntry(pageCode, record.id, actionCode, actionLabel, serializeRecord(before), serializeRecord(record), {
+        operatorId,
+        operatorName,
+        remark: input.remark,
+      });
+    }
 
-    if (createdRecord) {
-      this.appendStatusHistory(createdRecord, '', createdRecord.status, actionCode, operatorName, input.remark);
+    if (shouldAppendStatusHistory) {
+      statusHistory = this.appendStatusHistory(record, before.status, record.status, actionCode, operatorName, input.remark);
     }
 
     return {
       actionCode,
       actionLabel,
       record: cloneRecord(record),
-      createdRecord: createdRecord ? cloneRecord(createdRecord) : undefined,
       auditEntry,
       statusHistory,
       message: policy.message,
@@ -293,9 +325,9 @@ export class GctEdhrMockClient {
     actionCode: 'copy' | 'version_create' | 'version_copy' | string,
     actionLabel: string,
     input: EdhrActionExecuteInput,
-  ): EdhrRecord {
+  ): ClonedRecordResult {
     const records = this.getPageRecords(pageMeta.code);
-    const sequence = this.nextMutationSequence();
+    const sequence = this.nextRecordSequence();
     const operatorName = input.operatorName ?? DEFAULT_OPERATOR_NAME;
     const timestamp = this.nextTimestamp();
     const record: EdhrRecord = {
@@ -315,12 +347,13 @@ export class GctEdhrMockClient {
 
     mirrorSystemValues(record);
     records.unshift(record);
-    this.appendAuditEntry(pageMeta.code, record.id, actionCode, actionLabel, undefined, serializeRecord(record), {
+    const auditEntry = this.appendAuditEntry(pageMeta.code, record.id, actionCode, actionLabel, undefined, serializeRecord(record), {
       operatorId: input.operatorId ?? DEFAULT_OPERATOR_ID,
       operatorName,
       remark: input.remark,
     });
-    return record;
+    const statusHistory = this.appendStatusHistory(record, '', record.status, actionCode, operatorName, input.remark);
+    return { record, auditEntry, statusHistory };
   }
 
   private requirePage(pageCode: string): EdhrPageMeta {
@@ -377,14 +410,14 @@ export class GctEdhrMockClient {
     ]);
   }
 
-  private nextMutationSequence(): number {
-    this.mutationSequence += 1;
-    return this.mutationSequence;
+  private nextRecordSequence(): number {
+    this.recordSequence += 1;
+    return this.recordSequence;
   }
 
   private nextTimestamp(): string {
-    this.mutationSequence += 1;
-    return new Date(MUTATION_TIME + this.mutationSequence * 60_000).toISOString();
+    this.timeSequence += 1;
+    return new Date(MUTATION_TIME + this.timeSequence * 60_000).toISOString();
   }
 }
 

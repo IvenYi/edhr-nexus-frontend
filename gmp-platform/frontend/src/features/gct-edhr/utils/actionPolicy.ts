@@ -39,6 +39,20 @@ const ACTION_LABELS: Record<string, string> = {
   unpublish: '取消发布',
   save: '保存',
   configure: '配置',
+  design: '设计',
+  split: '拆分',
+  dhr: 'DHR',
+  summarize: '汇总',
+  move: '移动',
+  delete_file: '删除文件',
+  create_dataset: '创建数据集',
+  create_report: '创建报表',
+  batch_download: '批量下载',
+  execution_detail: '执行详情',
+  fill: '填写',
+  inspect: '检查',
+  forward: '转发',
+  add_field: '添加字段',
 };
 
 export const ACTION_POLICY_MAP: Record<string, EdhrActionPolicy> = {
@@ -81,9 +95,26 @@ export const ACTION_POLICY_MAP: Record<string, EdhrActionPolicy> = {
   unpublish: { code: 'unpublish', auditRequired: true, targetStatus: '禁用', message: '记录已取消发布' },
   save: { code: 'save', auditRequired: true, targetStatus: '草稿', message: '记录已保存' },
   configure: { code: 'configure', auditRequired: true, message: '配置已保存' },
+  design: { code: 'design', auditRequired: true, readonly: true, message: '设计视图已打开' },
+  split: { code: 'split', auditRequired: true, targetStatus: '处理中', message: '记录已拆分' },
+  dhr: { code: 'dhr', auditRequired: true, readonly: true, message: 'DHR 记录已打开' },
+  summarize: { code: 'summarize', auditRequired: true, readonly: true, message: '汇总任务已生成' },
+  move: { code: 'move', auditRequired: true, message: '记录移动已登记' },
+  delete_file: { code: 'delete_file', auditRequired: true, message: '文件删除已登记' },
+  create_dataset: { code: 'create_dataset', auditRequired: true, targetStatus: '草稿', message: '数据集已创建' },
+  create_report: { code: 'create_report', auditRequired: true, targetStatus: '草稿', message: '报表已创建' },
+  batch_download: { code: 'batch_download', auditRequired: true, readonly: true, message: '批量下载任务已生成' },
+  execution_detail: { code: 'execution_detail', auditRequired: false, readonly: true, message: '执行详情已打开' },
+  fill: { code: 'fill', auditRequired: true, targetStatus: '处理中', message: '记录已填写' },
+  inspect: { code: 'inspect', auditRequired: true, targetStatus: '处理中', message: '检查已记录' },
+  forward: { code: 'forward', auditRequired: true, targetStatus: '待处理', message: '记录已转发' },
+  add_field: { code: 'add_field', auditRequired: true, message: '字段已添加' },
 };
 
 const FALLBACK_ACTIONS_BY_PAGE_TYPE: Partial<Record<EdhrPageMeta['type'], string[]>> = {
+  master: ['query', 'reset', 'create', 'detail', 'edit', 'delete'],
+  list: ['query', 'reset', 'detail', 'export'],
+  transaction: ['process', 'detail'],
   execution: ['process', 'finish', 'detail'],
   approval: ['approve', 'reject', 'detail'],
   report: ['query', 'reset', 'export', 'download'],
@@ -167,7 +198,6 @@ function normalizeActionCode(actionCode: string): string {
     return 'configure';
   }
   if (actionCode.endsWith('_detail') || actionCode === 'view' || actionCode === 'compare_version') return 'detail';
-  if (actionCode === 'fill' || actionCode === 'inspect' || actionCode === 'forward') return 'process';
   if (actionCode === 'remove_and_transfer') return 'transfer';
   return actionCode;
 }
