@@ -879,6 +879,7 @@ function verifyTask3MockLayer(files, messages) {
     'lastActionResult',
     'loadPageRequestSeq',
     'auditTrailRequestSeq',
+    'selectRecordRequestSeq',
     'requestId',
   ], messages);
 }
@@ -924,7 +925,7 @@ async function verifyTask3MockBehavior(messages) {
 function createTask3ProbeSource() {
   return `
 import { GCT_EDHR_PAGES } from ${JSON.stringify(generatedPagesFile)};
-import { GctEdhrMockClient } from ${JSON.stringify(task3MockFiles.mockEdhrClient)};
+import { GctEdhrMockClient, mockEdhrClient } from ${JSON.stringify(task3MockFiles.mockEdhrClient)};
 import { getDisplayActionsForPage } from ${JSON.stringify(task3MockFiles.actionPolicy)};
 import { useMockEdhrStore } from ${JSON.stringify(task3MockFiles.mockEdhrStore)};
 
@@ -951,11 +952,33 @@ function compareDescending(values) {
   return true;
 }
 
+function deterministicSnapshot(records) {
+  return records.slice(0, 3).map((record) => ({
+    id: record.id,
+    status: record.status,
+    createdAt: record.createdAt,
+    values: record.values,
+  }));
+}
+
+function sleep(ms) {
+  return new Promise((resolveDelay) => setTimeout(resolveDelay, ms));
+}
+
 const listPage = pickPage((page) => page.listFields.length > 0, 'list fields');
 if (listPage) {
   const client = new GctEdhrMockClient();
   const all = await client.queryRecords(listPage.code, { page: 1, pageSize: 50 });
   assert(all.total === 20, 'each page should seed 20 mock records');
+
+  const deterministicClientA = new GctEdhrMockClient();
+  const deterministicClientB = new GctEdhrMockClient();
+  const deterministicA = await deterministicClientA.queryRecords(listPage.code, { page: 1, pageSize: 3 });
+  const deterministicB = await deterministicClientB.queryRecords(listPage.code, { page: 1, pageSize: 3 });
+  assert(
+    JSON.stringify(deterministicSnapshot(deterministicA.records)) === JSON.stringify(deterministicSnapshot(deterministicB.records)),
+    'independent clients should produce identical deterministic record snapshots',
+  );
 
   const pageOne = await client.queryRecords(listPage.code, { page: 1, pageSize: 5 });
   const pageTwo = await client.queryRecords(listPage.code, { page: 2, pageSize: 5 });
@@ -1080,6 +1103,29 @@ if (clonePage) {
     assert(Boolean(result.createdRecord), 'store copy should receive createdRecord');
     assert(afterState.selectedRecord?.id === result.createdRecord?.id, 'store copy should select createdRecord');
     assert(afterState.auditEntries.every((entry) => entry.recordId === result.createdRecord?.id), 'store copy auditTrail should point at createdRecord');
+  }
+}
+
+if (listPage) {
+  const store = useMockEdhrStore;
+  await store.getState().loadPage(listPage.code);
+  const raceRecords = store.getState().records.slice(0, 2);
+  if (raceRecords.length === 2) {
+    const [slowRecord, fastRecord] = raceRecords;
+    const originalGetRecord = mockEdhrClient.getRecord.bind(mockEdhrClient);
+    mockEdhrClient.getRecord = async (pageCode, recordId) => {
+      if (recordId === slowRecord.id) await sleep(25);
+      return originalGetRecord(pageCode, recordId);
+    };
+
+    try {
+      const slowSelect = store.getState().selectRecord(slowRecord.id);
+      const fastSelect = store.getState().selectRecord(fastRecord.id);
+      await Promise.all([slowSelect, fastSelect]);
+      assert(store.getState().selectedRecord?.id === fastRecord.id, 'selectRecord stale guard should preserve the latest selection');
+    } finally {
+      mockEdhrClient.getRecord = originalGetRecord;
+    }
   }
 }
 

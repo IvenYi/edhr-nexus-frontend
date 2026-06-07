@@ -59,6 +59,7 @@ const DEFAULT_SORTING: GctEdhrSortingState = { sortDirection: 'asc' };
 
 let loadPageRequestSeq = 0;
 let auditTrailRequestSeq = 0;
+let selectRecordRequestSeq = 0;
 
 export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
   records: [],
@@ -151,6 +152,7 @@ export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
   },
 
   selectRecord: async (recordId) => {
+    const requestId = ++selectRecordRequestSeq;
     const pageCode = requireCurrentPageCode(get());
     if (!recordId) {
       set({ selectedRecord: null, auditEntries: [], statusHistory: [] });
@@ -158,6 +160,9 @@ export const useMockEdhrStore = create<GctEdhrMockStoreState>((set, get) => ({
     }
 
     const selectedRecord = await mockEdhrClient.getRecord(pageCode, recordId);
+    if (requestId !== selectRecordRequestSeq || get().pageCode !== pageCode) {
+      return;
+    }
     set({ selectedRecord: selectedRecord ?? null });
     await get().loadAuditTrail(recordId);
   },
