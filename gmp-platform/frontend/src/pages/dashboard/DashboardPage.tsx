@@ -105,7 +105,7 @@ export default function DashboardPage() {
           <Grid item xs={6} sm={3} key={entry.label}>
             <Card sx={cardSx}>
               <CardActionArea onClick={() => navigate(entry.path)} sx={{ height: 104 }}>
-                <CardContent sx={{ textAlign: 'center', p: '16px 12px' }}>
+                <CardContent sx={{ textAlign: 'center', p: '16px 12px', '&:last-child': { pb: '16px' } }}>
                   <Box sx={{ color: entry.color, mb: 1 }}>{entry.icon}</Box>
                   <Typography variant="body1" fontWeight={500}>{entry.label}</Typography>
                 </CardContent>

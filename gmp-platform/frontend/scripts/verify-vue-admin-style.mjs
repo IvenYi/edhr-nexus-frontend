@@ -73,6 +73,11 @@ mustInclude('src/pages/dashboard/DashboardPage.tsx', "boxShadow: 'none'", 'dashb
 mustInclude('src/pages/dashboard/DashboardPage.tsx', 'width: 40', 'compact shortcut icon size');
 mustNotInclude('src/pages/dashboard/DashboardPage.tsx', 'borderRadius: 2.5', 'old oversized icon radius removed');
 mustNotInclude('src/pages/dashboard/DashboardPage.tsx', "variant=\"h4\"", 'oversized page title removed');
+mustInclude(
+  'src/pages/dashboard/DashboardPage.tsx',
+  /CardContent\s+sx=\{\{[\s\S]*?p:\s*'16px 12px'[\s\S]*?'&:last-child':\s*\{\s*pb:\s*'16px'\s*\}/,
+  'quick-entry last-child padding override',
+);
 
 if (failures.length > 0) {
   console.error('Style constraint verification failed:');
