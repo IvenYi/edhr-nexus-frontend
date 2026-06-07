@@ -38,15 +38,25 @@ const quickEntries = [
   { label: '我的已办', icon: <CheckCircle fontSize="large" />, path: '/workflow/instances', color: '#0277BD' },
 ];
 
+const cardSx = {
+  border: '1px solid #e4e7ed',
+  borderRadius: '5px',
+  boxShadow: 'none',
+  backgroundColor: '#ffffff',
+  '&:hover': {
+    borderColor: '#d1e9ff',
+  },
+};
+
 export default function DashboardPage() {
   const navigate = useNavigate();
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ mb: 0.5 }}>
+      <Typography sx={{ mb: 0.5, fontSize: 20, fontWeight: 700, color: '#303133' }}>
         首页工作台
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: '20px' }}>
         欢迎回来，以下是你当前的工作概览
       </Typography>
 
@@ -54,14 +64,14 @@ export default function DashboardPage() {
       <Grid container spacing={2.5} sx={{ mb: 3 }}>
         {statCards.map((stat) => (
           <Grid item xs={12} sm={6} md={4} lg={4} key={stat.label}>
-            <Card sx={{ '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }, transition: 'box-shadow 0.2s' }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card sx={cardSx}>
+              <CardContent sx={{ p: '20px' }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
                   <Box>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
                       {stat.label}
                     </Typography>
-                    <Typography variant="h4" fontWeight={700} sx={{ mb: 0.5 }}>
+                    <Typography sx={{ mb: 0.5, fontSize: 24, fontWeight: 700, color: '#303133' }}>
                       {stat.value}
                     </Typography>
                     <Typography variant="caption" color="text.disabled">
@@ -70,9 +80,9 @@ export default function DashboardPage() {
                   </Box>
                   <Box
                     sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 2.5,
+                      width: 40,
+                      height: 40,
+                      borderRadius: '5px',
                       bgcolor: stat.bg,
                       display: 'flex',
                       alignItems: 'center',
@@ -93,9 +103,9 @@ export default function DashboardPage() {
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         {quickEntries.map((entry) => (
           <Grid item xs={6} sm={3} key={entry.label}>
-            <Card sx={{ '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }, transition: 'box-shadow 0.2s' }}>
-              <CardActionArea onClick={() => navigate(entry.path)} sx={{ py: 0.5 }}>
-                <CardContent sx={{ textAlign: 'center', py: 3 }}>
+            <Card sx={cardSx}>
+              <CardActionArea onClick={() => navigate(entry.path)} sx={{ height: 104 }}>
+                <CardContent sx={{ textAlign: 'center', p: '16px 12px' }}>
                   <Box sx={{ color: entry.color, mb: 1 }}>{entry.icon}</Box>
                   <Typography variant="body1" fontWeight={500}>{entry.label}</Typography>
                 </CardContent>
@@ -106,8 +116,8 @@ export default function DashboardPage() {
       </Grid>
 
       {/* Recent Activity Timeline */}
-      <Card sx={{ mb: 4 }}>
-        <CardContent sx={{ p: 3 }}>
+      <Card sx={{ ...cardSx, mb: 4 }}>
+        <CardContent sx={{ p: '20px' }}>
           <Typography variant="h6" sx={{ mb: 2 }}>最近活动</Typography>
           <Stack spacing={2}>
             {[

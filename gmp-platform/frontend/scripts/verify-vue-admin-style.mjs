@@ -67,6 +67,13 @@ mustInclude('src/pages/LoginPage.tsx', /height:\s*50\b/, 'login inputs and butto
 mustNotInclude('src/pages/LoginPage.tsx', 'radial-gradient(circle', 'login page should avoid decorative radial circles');
 mustNotInclude('src/pages/LoginPage.tsx', 'backdropFilter', 'login card should avoid glassmorphism blur');
 
+mustInclude('src/pages/dashboard/DashboardPage.tsx', 'cardSx', 'shared dashboard card style');
+mustInclude('src/pages/dashboard/DashboardPage.tsx', "border: '1px solid #e4e7ed'", 'dashboard card border');
+mustInclude('src/pages/dashboard/DashboardPage.tsx', "boxShadow: 'none'", 'dashboard card shadow removed');
+mustInclude('src/pages/dashboard/DashboardPage.tsx', 'width: 40', 'compact shortcut icon size');
+mustNotInclude('src/pages/dashboard/DashboardPage.tsx', 'borderRadius: 2.5', 'old oversized icon radius removed');
+mustNotInclude('src/pages/dashboard/DashboardPage.tsx', "variant=\"h4\"", 'oversized page title removed');
+
 if (failures.length > 0) {
   console.error('Style constraint verification failed:');
   for (const failure of failures) console.error(`- ${failure}`);
