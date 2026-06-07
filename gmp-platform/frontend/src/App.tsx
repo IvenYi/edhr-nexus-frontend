@@ -157,6 +157,7 @@ const theme = createTheme({
           borderRadius: 5,
           boxShadow: 'none',
           overflow: 'hidden',
+          overflowX: 'auto',
         },
       },
     },
