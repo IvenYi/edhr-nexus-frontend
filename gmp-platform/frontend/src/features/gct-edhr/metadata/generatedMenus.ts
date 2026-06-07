@@ -2,7 +2,7 @@
 // Do not edit by hand.
 import type { SidebarModule } from '@/utils/constants';
 
-export const GCT_EDHR_MENU_MODULE: SidebarModule = {
+export const GCT_EDHR_MENU_MODULE = {
   "id": "gct-edhr",
   "label": "GCT",
   "icon": "Dashboard",
@@ -136,11 +136,11 @@ export const GCT_EDHR_MENU_MODULE: SidebarModule = {
           "path": "/gct-edhr/production-management/production-preparation/serial-management-3-3"
         },
         {
-          "label": "生产执行",
+          "label": "批次生产 / 生产执行",
           "path": "/gct-edhr/production-management/batch-production/production-execution-3-4"
         },
         {
-          "label": "返工执行",
+          "label": "批次生产 / 返工执行",
           "path": "/gct-edhr/production-management/batch-production/rework-execution-3-5"
         },
         {
@@ -148,15 +148,15 @@ export const GCT_EDHR_MENU_MODULE: SidebarModule = {
           "path": "/gct-edhr/production-management/batch-production/batch-transaction-3-6"
         },
         {
-          "label": "返工列表",
+          "label": "批次生产 / 返工列表",
           "path": "/gct-edhr/production-management/batch-production/rework-list-3-7"
         },
         {
-          "label": "生产执行",
+          "label": "SN生产 / 生产执行",
           "path": "/gct-edhr/production-management/serial-production/production-execution-3-8"
         },
         {
-          "label": "返工执行",
+          "label": "SN生产 / 返工执行",
           "path": "/gct-edhr/production-management/serial-production/rework-execution-3-9"
         },
         {
@@ -164,7 +164,7 @@ export const GCT_EDHR_MENU_MODULE: SidebarModule = {
           "path": "/gct-edhr/production-management/serial-production/serial-transaction-3-10"
         },
         {
-          "label": "返工列表",
+          "label": "SN生产 / 返工列表",
           "path": "/gct-edhr/production-management/serial-production/rework-list-3-11"
         },
         {
@@ -452,4 +452,4 @@ export const GCT_EDHR_MENU_MODULE: SidebarModule = {
       ]
     }
   ]
-}
+} as const as unknown as SidebarModule;

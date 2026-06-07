@@ -2,7 +2,14 @@
 // Do not edit by hand.
 import type { EdhrPageMeta } from '../types';
 
-export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
+export const GCT_EDHR_SPEC_METADATA = {
+  "schemaVersion": "1.0.0",
+  "sourceFile": "GCT_eDHR_功能详细规格与AI实现提示词.md",
+  "sourceHash": "fdd06132c94bff7a6aa1a07249ec8406a436dc18699150d3dff7712d2858b13d",
+  "generatedAt": "2026-06-07T00:00:00.000+08:00"
+} as const;
+
+export const GCT_EDHR_PAGES = [
   {
     "code": "gct_1_1_workbench",
     "section": "1.1",
@@ -1076,7 +1083,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_2_product_family",
@@ -1543,7 +1563,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_3_product_list",
@@ -2096,7 +2129,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -2120,7 +2153,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -2131,7 +2164,37 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
         "auditRequired": true
       }
     ]
@@ -2651,7 +2714,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -2675,7 +2738,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -2686,7 +2749,25 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
         "auditRequired": true
       }
     ]
@@ -3176,7 +3257,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_6_equipment_type",
@@ -3643,7 +3737,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_7_equipment_list",
@@ -4172,7 +4279,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_8_form_template",
@@ -4759,7 +4879,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -4775,7 +4895,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -4807,6 +4927,30 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       }
     ],
     "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
+        "auditRequired": true
+      },
       {
         "from": "当前状态",
         "to": "目标状态",
@@ -5288,7 +5432,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -5304,7 +5448,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -5320,6 +5464,24 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       }
     ],
     "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
+        "auditRequired": true
+      },
       {
         "from": "当前状态",
         "to": "目标状态",
@@ -5935,6 +6097,12 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
         "auditRequired": true
       }
@@ -6404,7 +6572,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -6420,7 +6588,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -6435,7 +6603,26 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_12_operation_modeling",
@@ -6902,7 +7089,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_13_process_route",
@@ -7346,7 +7546,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -7370,7 +7570,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -7381,7 +7581,25 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
         "auditRequired": true
       }
     ]
@@ -7901,7 +8119,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -7925,7 +8143,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -7944,7 +8162,31 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "configure",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
         "auditRequired": true
       }
     ]
@@ -8445,7 +8687,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_16_defect_reason",
@@ -8912,7 +9167,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_17_scrap_category",
@@ -9410,7 +9678,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_18_scrap_reason",
@@ -9877,7 +10158,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_19_approval_workflow",
@@ -10266,7 +10560,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "configure",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_20_workflow_log",
@@ -11438,7 +11739,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-a52c1691",
-        "code": "item_a52c1691",
+        "code": "transfer",
         "label": "转办",
         "sourceLabel": "转办",
         "permissionRequired": true,
@@ -11446,14 +11747,27 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-f16418c4",
-        "code": "item_f16418c4",
+        "code": "withdraw",
         "label": "撤回",
         "sourceLabel": "撤回",
         "permissionRequired": true,
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "transfer",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "withdraw",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_2_22_label_parameter",
@@ -12397,7 +12711,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-ac283153",
-        "code": "item_ac283153",
+        "code": "label_template_import",
         "label": "导入标签模板",
         "sourceLabel": "导入标签模板",
         "permissionRequired": true,
@@ -12413,7 +12727,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -12445,7 +12759,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -12472,7 +12786,37 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "label_template_import",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
         "auditRequired": true
       }
     ]
@@ -12899,7 +13243,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -12923,7 +13267,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -12934,7 +13278,25 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
         "auditRequired": true
       }
     ]
@@ -13741,7 +14103,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-726ca479",
-        "code": "item_726ca479",
+        "code": "split",
         "label": "拆分",
         "sourceLabel": "拆分",
         "permissionRequired": true,
@@ -13757,14 +14119,33 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-76b98808",
-        "code": "item_76b98808",
+        "code": "finish",
         "label": "结束",
         "sourceLabel": "结束",
         "permissionRequired": true,
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "finish",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_3_2_batch_management",
@@ -14584,7 +14965,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-3c977df7",
-        "code": "item_3c977df7",
+        "code": "print",
         "label": "打印",
         "sourceLabel": "打印",
         "permissionRequired": true,
@@ -14600,7 +14981,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-76b98808",
-        "code": "item_76b98808",
+        "code": "finish",
         "label": "结束",
         "sourceLabel": "结束",
         "permissionRequired": true,
@@ -14615,7 +14996,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "print",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "finish",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_3_3_serial_management",
@@ -15260,7 +15654,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-76b98808",
-        "code": "item_76b98808",
+        "code": "finish",
         "label": "结束",
         "sourceLabel": "结束",
         "permissionRequired": true,
@@ -15292,7 +15686,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-3c977df7",
-        "code": "item_3c977df7",
+        "code": "print",
         "label": "打印",
         "sourceLabel": "打印",
         "permissionRequired": true,
@@ -15300,7 +15694,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-8d0204b0",
-        "code": "item_8d0204b0",
+        "code": "execution_detail",
         "label": "执行详情",
         "sourceLabel": "执行详情",
         "permissionRequired": true,
@@ -15311,7 +15705,19 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "finish",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "print",
         "auditRequired": true
       }
     ]
@@ -16914,7 +17320,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-76b98808",
-        "code": "item_76b98808",
+        "code": "finish",
         "label": "结束",
         "sourceLabel": "结束",
         "permissionRequired": true,
@@ -16926,6 +17332,12 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "from": "当前状态",
         "to": "目标状态",
         "action": "process",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "finish",
         "auditRequired": true
       }
     ]
@@ -17643,7 +18055,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-8d0204b0",
-        "code": "item_8d0204b0",
+        "code": "execution_detail",
         "label": "执行详情",
         "sourceLabel": "执行详情",
         "permissionRequired": true,
@@ -19180,7 +19592,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-76b98808",
-        "code": "item_76b98808",
+        "code": "finish",
         "label": "结束",
         "sourceLabel": "结束",
         "permissionRequired": true,
@@ -19192,6 +19604,12 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "from": "当前状态",
         "to": "目标状态",
         "action": "process",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "finish",
         "auditRequired": true
       }
     ]
@@ -20302,7 +20720,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-baa6d344",
-        "code": "item_baa6d344",
+        "code": "workflow_configure",
         "label": "流程配置",
         "sourceLabel": "流程配置",
         "permissionRequired": true,
@@ -20318,6 +20736,12 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       }
     ],
     "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "workflow_configure",
+        "auditRequired": true
+      },
       {
         "from": "当前状态",
         "to": "目标状态",
@@ -20852,7 +21276,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-baa6d344",
-        "code": "item_baa6d344",
+        "code": "workflow_configure",
         "label": "流程配置",
         "sourceLabel": "流程配置",
         "permissionRequired": true,
@@ -20867,7 +21291,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "workflow_configure",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_4_1_inspection_execution",
@@ -21929,7 +22360,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-8cb2643a",
-        "code": "item_8cb2643a",
+        "code": "inspect",
         "label": "检验",
         "sourceLabel": "检验",
         "permissionRequired": true,
@@ -21953,7 +22384,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-76b98808",
-        "code": "item_76b98808",
+        "code": "finish",
         "label": "结束",
         "sourceLabel": "结束",
         "permissionRequired": true,
@@ -21965,6 +22396,12 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "from": "当前状态",
         "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "finish",
         "auditRequired": true
       }
     ]
@@ -23196,7 +23633,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_4_5_inspection_item",
@@ -23798,7 +24248,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_4_6_inspection_category",
@@ -24296,7 +24759,20 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "template_import",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_4_7_inspection_plan",
@@ -24771,7 +25247,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7d4999b2",
-        "code": "create_version",
+        "code": "version_create",
         "label": "版本创建",
         "sourceLabel": "版本创建",
         "permissionRequired": true,
@@ -24795,7 +25271,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-37eed8b1",
-        "code": "copy_version",
+        "code": "version_copy",
         "label": "版本复制",
         "sourceLabel": "版本复制",
         "permissionRequired": true,
@@ -24806,7 +25282,25 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_create",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "version_copy",
         "auditRequired": true
       }
     ]
@@ -25777,7 +26271,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-baa6d344",
-        "code": "item_baa6d344",
+        "code": "workflow_configure",
         "label": "流程配置",
         "sourceLabel": "流程配置",
         "permissionRequired": true,
@@ -25792,7 +26286,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "workflow_configure",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_4_10_transaction_list",
@@ -26340,7 +26841,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-baa6d344",
-        "code": "item_baa6d344",
+        "code": "workflow_configure",
         "label": "流程配置",
         "sourceLabel": "流程配置",
         "permissionRequired": true,
@@ -26355,7 +26856,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "workflow_configure",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_5_1_release_list",
@@ -27027,7 +27535,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-af5d5f13",
-        "code": "item_af5d5f13",
+        "code": "release",
         "label": "放行",
         "sourceLabel": "放行",
         "permissionRequired": true,
@@ -27042,7 +27550,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "release",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_5_2_release_procedure",
@@ -28010,7 +28525,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-baa6d344",
-        "code": "item_baa6d344",
+        "code": "workflow_configure",
         "label": "流程配置",
         "sourceLabel": "流程配置",
         "permissionRequired": true,
@@ -28025,7 +28540,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "workflow_configure",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_5_4_transaction_list",
@@ -28542,7 +29064,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-baa6d344",
-        "code": "item_baa6d344",
+        "code": "workflow_configure",
         "label": "流程配置",
         "sourceLabel": "流程配置",
         "permissionRequired": true,
@@ -28557,7 +29079,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "workflow_configure",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_6_1_form_filling",
@@ -29117,7 +29646,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-cda867c3",
-        "code": "item_cda867c3",
+        "code": "fill",
         "label": "填报",
         "sourceLabel": "填报",
         "permissionRequired": true,
@@ -29125,7 +29654,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-0d5a8ac3",
-        "code": "item_0d5a8ac3",
+        "code": "forward",
         "label": "转发",
         "sourceLabel": "转发",
         "permissionRequired": true,
@@ -31223,7 +31752,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-3824d4e1",
-        "code": "item_3824d4e1",
+        "code": "summarize",
         "label": "汇总",
         "sourceLabel": "汇总",
         "permissionRequired": true,
@@ -32976,7 +33505,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-f7acefd2",
-        "code": "item_f7acefd2",
+        "code": "view",
         "label": "查看",
         "sourceLabel": "查看",
         "permissionRequired": true,
@@ -33535,7 +34064,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-cda867c3",
-        "code": "item_cda867c3",
+        "code": "fill",
         "label": "填报",
         "sourceLabel": "填报",
         "permissionRequired": true,
@@ -36828,7 +37357,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-59479606",
-        "code": "item_59479606",
+        "code": "batch_download",
         "label": "批量下载",
         "sourceLabel": "批量下载",
         "permissionRequired": true,
@@ -36836,14 +37365,27 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-2b9d0131",
-        "code": "item_2b9d0131",
+        "code": "download",
         "label": "下载",
         "sourceLabel": "下载",
         "permissionRequired": true,
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "batch_download",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "download",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_6_17_print_list",
@@ -37302,7 +37844,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-59479606",
-        "code": "item_59479606",
+        "code": "batch_download",
         "label": "批量下载",
         "sourceLabel": "批量下载",
         "permissionRequired": true,
@@ -37310,14 +37852,27 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-2b9d0131",
-        "code": "item_2b9d0131",
+        "code": "download",
         "label": "下载",
         "sourceLabel": "下载",
         "permissionRequired": true,
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "batch_download",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "download",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_7_1_production_traceability",
@@ -41937,7 +42492,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_7_8_scrap_record",
@@ -42674,7 +43236,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_7_9_consumption_record",
@@ -45394,7 +45963,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
     "actions": [
       {
         "id": "action-e78bd5fa",
-        "code": "item_e78bd5fa",
+        "code": "create_dataset",
         "label": "新建数据集",
         "sourceLabel": "新建数据集",
         "permissionRequired": true,
@@ -46396,7 +46965,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-0cf89ce8",
-        "code": "item_0cf89ce8",
+        "code": "create_report",
         "label": "新建报表",
         "sourceLabel": "新建报表",
         "permissionRequired": true,
@@ -46412,7 +46981,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-591f3aa5",
-        "code": "item_591f3aa5",
+        "code": "move",
         "label": "移动",
         "sourceLabel": "移动",
         "permissionRequired": true,
@@ -46420,7 +46989,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-94f172d0",
-        "code": "item_94f172d0",
+        "code": "publish",
         "label": "发布",
         "sourceLabel": "发布",
         "permissionRequired": true,
@@ -46436,7 +47005,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-2761f9be",
-        "code": "item_2761f9be",
+        "code": "unpublish",
         "label": "取消发布",
         "sourceLabel": "取消发布",
         "permissionRequired": true,
@@ -46447,7 +47016,19 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "publish",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "unpublish",
         "auditRequired": true
       }
     ]
@@ -47074,14 +47655,21 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-7e422146",
-        "code": "item_7e422146",
+        "code": "reset_password",
         "label": "重置密码",
         "sourceLabel": "重置密码",
         "permissionRequired": true,
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "reset_password",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_8_2_organization_member",
@@ -48179,7 +48767,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       },
       {
         "id": "action-f9f59a98",
-        "code": "item_f9f59a98",
+        "code": "permission_configure",
         "label": "权限配置",
         "sourceLabel": "权限配置",
         "permissionRequired": true,
@@ -48203,6 +48791,12 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       }
     ],
     "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "permission_configure",
+        "auditRequired": true
+      },
       {
         "from": "当前状态",
         "to": "目标状态",
@@ -49373,6 +49967,12 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "import",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
         "auditRequired": true
       }
@@ -49918,6 +50518,18 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       }
     ],
     "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "import",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "configure",
+        "auditRequired": true
+      },
       {
         "from": "当前状态",
         "to": "目标状态",
@@ -50840,6 +51452,18 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
+        "action": "import",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "copy",
+        "auditRequired": true
+      },
+      {
+        "from": "当前状态",
+        "to": "目标状态",
         "action": "delete",
         "auditRequired": true
       }
@@ -51466,7 +52090,14 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
         "auditRequired": true
       }
     ],
-    "stateTransitions": []
+    "stateTransitions": [
+      {
+        "from": "当前状态",
+        "to": "目标状态",
+        "action": "export",
+        "auditRequired": true
+      }
+    ]
   },
   {
     "code": "gct_8_11_login_log",
@@ -52529,7 +53160,7 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       {
         "from": "当前状态",
         "to": "目标状态",
-        "action": "delete_file",
+        "action": "save",
         "auditRequired": true
       }
     ]
@@ -52871,4 +53502,4 @@ export const GCT_EDHR_PAGES: EdhrPageMeta[] = [
       }
     ]
   }
-]
+] as const as unknown as EdhrPageMeta[];

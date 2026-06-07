@@ -5,8 +5,10 @@ import { fileURLToPath } from 'node:url';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(scriptDir, '../..');
+const SCHEMA_VERSION = '1.0.0';
+const SOURCE_FILE_NAME = 'GCT_eDHR_功能详细规格与AI实现提示词.md';
 
-const sourceFile = resolve(workspaceRoot, 'GCT_eDHR_功能详细规格与AI实现提示词.md');
+const sourceFile = resolve(workspaceRoot, SOURCE_FILE_NAME);
 const frontendMetadataDir = resolve(
   workspaceRoot,
   'gmp-platform/frontend/src/features/gct-edhr/metadata',
@@ -209,8 +211,8 @@ const SLUGS = {
   编辑: 'edit',
   删除: 'delete',
   复制: 'copy',
-  版本创建: 'create-version',
-  版本复制: 'copy-version',
+  版本创建: 'version-create',
+  版本复制: 'version-copy',
   设计: 'design',
   版本对比: 'compare-version',
   配置: 'configure',
@@ -222,10 +224,67 @@ const SLUGS = {
   新建分类: 'create-category',
   禁用: 'disable',
   启用: 'enable',
+  查看: 'view',
+  拆分: 'split',
+  撤回: 'withdraw',
+  打印: 'print',
+  导入标签模板: 'label-template-import',
+  发布: 'publish',
+  放行: 'release',
+  汇总: 'summarize',
+  检验: 'inspect',
+  结束: 'finish',
+  流程配置: 'workflow-configure',
+  批量下载: 'batch-download',
+  取消发布: 'unpublish',
+  权限配置: 'permission-configure',
+  填报: 'fill',
+  下载: 'download',
+  新建报表: 'create-report',
+  新建数据集: 'create-dataset',
+  移动: 'move',
+  执行详情: 'execution-detail',
+  重置密码: 'reset-password',
+  转办: 'transfer',
+  转发: 'forward',
+  审核: 'approve',
+  审批: 'approve',
+  驳回: 'reject',
+  提交: 'submit',
 };
+
+const SEMANTIC_TRANSITION_ACTION_CODES = new Set([
+  'release',
+  'withdraw',
+  'finish',
+  'transfer',
+  'reset_password',
+  'approve',
+  'reject',
+  'submit',
+  'process',
+  'disable',
+  'enable',
+  'delete',
+  'copy',
+  'version_create',
+  'version_copy',
+  'print',
+  'download',
+  'export',
+  'import',
+  'publish',
+  'unpublish',
+  'save',
+  'configure',
+]);
 
 function stableHash(value) {
   return createHash('sha1').update(value).digest('hex').slice(0, 8);
+}
+
+function sourceHash(value) {
+  return createHash('sha256').update(value).digest('hex');
 }
 
 function slugifyLabel(label) {
@@ -404,17 +463,24 @@ function parseApiSuggestions(raw) {
 
 function makeStateTransitions(actions) {
   return actions
-    .filter((action) =>
-      ['process', 'submit', 'approve', 'release', 'withdraw', 'disable', 'enable', 'delete'].some(
-        (prefix) => action.code.includes(prefix),
-      ),
-    )
+    .filter((action) => isSemanticTransitionAction(action.code))
     .map((action) => ({
       from: '当前状态',
       to: '目标状态',
       action: action.code,
       auditRequired: true,
     }));
+}
+
+function isSemanticTransitionAction(actionCode) {
+  return (
+    SEMANTIC_TRANSITION_ACTION_CODES.has(actionCode) ||
+    actionCode.endsWith('_import') ||
+    actionCode.endsWith('_export') ||
+    actionCode.endsWith('_download') ||
+    actionCode.endsWith('_print') ||
+    actionCode.endsWith('_configure')
+  );
 }
 
 function makePage(sectionData) {
@@ -515,20 +581,28 @@ function assertGeneratedPages(pages) {
     if (!/^\/gct-edhr\/[a-z0-9-]+\/[a-z0-9-]+\/[a-z0-9-]+$/.test(page.path)) {
       throw new Error(`Generated non-ASCII or invalid path for ${page.title}: ${page.path}`);
     }
+
+    const fallbackAction = page.actions.find((action) => action.code.startsWith('item_'));
+    if (fallbackAction) {
+      throw new Error(`Generated fallback action code for ${page.title}: ${fallbackAction.label}`);
+    }
   }
 }
 
 function makeMenus(pages) {
-  return Object.keys(EXPECTED_MODULE_COUNTS).map((module) => ({
-    label: module,
-    icon: MODULE_MENU_ICONS[module],
-    children: pages
-      .filter((page) => page.module === module)
-      .map((page) => ({
-        label: page.label,
+  return Object.keys(EXPECTED_MODULE_COUNTS).map((module) => {
+    const modulePages = pages.filter((page) => page.module === module);
+    const labelCounts = countBy(modulePages, (page) => page.label);
+
+    return {
+      label: module,
+      icon: MODULE_MENU_ICONS[module],
+      children: modulePages.map((page) => ({
+        label: labelCounts[page.label] > 1 ? `${page.group} / ${page.label}` : page.label,
         path: page.path,
       })),
-  }));
+    };
+  });
 }
 
 function makeFrontendMenuModule(menus) {
@@ -552,11 +626,17 @@ function serialize(value) {
   return `${JSON.stringify(value, null, 2)}\n`;
 }
 
-async function writeGeneratedFiles(pages, menus, documentDate) {
+function normalizeGeneratedAt(documentDate) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(documentDate)
+    ? `${documentDate}T00:00:00.000+08:00`
+    : documentDate;
+}
+
+async function writeGeneratedFiles(pages, menus, metadata) {
   const menuModule = makeFrontendMenuModule(menus);
   const backendPayload = {
-    source: 'GCT_eDHR_功能详细规格与AI实现提示词.md',
-    generatedAt: documentDate,
+    ...metadata,
+    source: SOURCE_FILE_NAME,
     pageCount: pages.length,
     moduleCounts: countBy(pages, (page) => page.module),
     pageTypeCounts: countBy(pages, (page) => page.type),
@@ -569,16 +649,24 @@ async function writeGeneratedFiles(pages, menus, documentDate) {
 
   await writeFile(
     generatedPagesFile,
-    `${makeGeneratedHeader()}import type { EdhrPageMeta } from '../types';\n\nexport const GCT_EDHR_PAGES: EdhrPageMeta[] = ${serialize(
+    `${makeGeneratedHeader()}import type { EdhrPageMeta } from '../types';\n\nexport const GCT_EDHR_SPEC_METADATA = ${JSON.stringify(
+      metadata,
+      null,
+      2,
+    )} as const;\n\nexport const GCT_EDHR_PAGES = ${JSON.stringify(
       pages,
-    )}`,
+      null,
+      2,
+    )} as const as unknown as EdhrPageMeta[];\n`,
   );
 
   await writeFile(
     generatedMenusFile,
-    `${makeGeneratedHeader()}import type { SidebarModule } from '@/utils/constants';\n\nexport const GCT_EDHR_MENU_MODULE: SidebarModule = ${serialize(
+    `${makeGeneratedHeader()}import type { SidebarModule } from '@/utils/constants';\n\nexport const GCT_EDHR_MENU_MODULE = ${JSON.stringify(
       menuModule,
-    )}`,
+      null,
+      2,
+    )} as const as unknown as SidebarModule;\n`,
   );
 
   await writeFile(backendSpecFile, serialize(backendPayload));
@@ -587,12 +675,18 @@ async function writeGeneratedFiles(pages, menus, documentDate) {
 async function main() {
   const markdown = await readFile(sourceFile, 'utf8');
   const documentDate = markdown.match(/^生成日期：(.+)$/m)?.[1].trim() ?? 'unknown';
+  const metadata = {
+    schemaVersion: SCHEMA_VERSION,
+    sourceFile: SOURCE_FILE_NAME,
+    sourceHash: sourceHash(markdown),
+    generatedAt: normalizeGeneratedAt(documentDate),
+  };
   const pages = parseMarkdownSections(markdown).map(makePage);
 
   assertGeneratedPages(pages);
 
   const menus = makeMenus(pages);
-  await writeGeneratedFiles(pages, menus, documentDate);
+  await writeGeneratedFiles(pages, menus, metadata);
 
   console.log(`Generated ${pages.length} GCT eDHR page specs.`);
   console.log(`- ${generatedPagesFile}`);
