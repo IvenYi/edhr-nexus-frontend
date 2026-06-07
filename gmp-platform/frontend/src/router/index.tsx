@@ -6,6 +6,7 @@ import AppLayout from '@/components/shared/AppLayout';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage'));
+const GenericEdhrPage = lazy(() => import('@/features/gct-edhr/pages/GenericEdhrPage'));
 
 const ReviewTemplateList = lazy(() => import('@/pages/workflow-center/ReviewTemplateList'));
 const ReviewTemplateEditor = lazy(() => import('@/pages/workflow-center/ReviewTemplateEditor'));
@@ -101,6 +102,7 @@ const AppRouter = () => {
           <Route path="signatures" element={<Suspense fallback={<Loading />}><SignatureLogPage /></Suspense>} />
           <Route path="form-templates" element={<Suspense fallback={<Loading />}><FormTemplatePage /></Suspense>} />
         </Route>
+        <Route path="gct-edhr/*" element={<Suspense fallback={<Loading />}><GenericEdhrPage /></Suspense>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -72,6 +72,9 @@ const SEMANTIC_TRANSITION_ACTION_CODES = new Set([
 const generatedPagesFile = resolve(projectRoot, 'src/features/gct-edhr/metadata/generatedPages.ts');
 const generatedMenusFile = resolve(projectRoot, 'src/features/gct-edhr/metadata/generatedMenus.ts');
 const typesFile = resolve(projectRoot, 'src/features/gct-edhr/types.ts');
+const routerFile = resolve(projectRoot, 'src/router/index.tsx');
+const constantsFile = resolve(projectRoot, 'src/utils/constants.ts');
+const appLayoutFile = resolve(projectRoot, 'src/components/shared/AppLayout.tsx');
 const packageJsonFile = resolve(projectRoot, 'package.json');
 const backendSpecFile = resolve(
   workspaceRoot,
@@ -84,6 +87,9 @@ const requiredFiles = [
   generatedPagesFile,
   generatedMenusFile,
   typesFile,
+  routerFile,
+  constantsFile,
+  appLayoutFile,
   packageJsonFile,
   backendSpecFile,
   generatorFile,
@@ -107,6 +113,9 @@ const packageJson = readJson(packageJsonFile);
 const pagesSource = readFileSync(generatedPagesFile, 'utf8');
 const menusSource = readFileSync(generatedMenusFile, 'utf8');
 const typesSource = readFileSync(typesFile, 'utf8');
+const routerSource = readFileSync(routerFile, 'utf8');
+const constantsSource = readFileSync(constantsFile, 'utf8');
+const appLayoutSource = readFileSync(appLayoutFile, 'utf8');
 const sourceSpec = readFileSync(sourceSpecFile, 'utf8');
 const sourceHash = sha256(sourceSpec);
 const frontendPages = extractGeneratedJsonLiteral(pagesSource, 'GCT_EDHR_PAGES', failures);
@@ -158,6 +167,7 @@ verifyPages(pages, failures);
 verifyMenus(spec.menus, pages, failures);
 verifyFrontendSources(pages, pagesSource, menusSource, failures);
 verifyFrontendStructuredOutput(frontendPages, frontendMenuModule, spec, failures);
+verifyTask2Integration(routerSource, constantsSource, appLayoutSource, failures);
 
 if (failures.length) {
   reportAndExit(failures);
@@ -650,6 +660,35 @@ function verifyStructuredMenu(frontendMenuModule, backendMenus, messages) {
 
     comparePathSet(`frontend menu ${backendMenu.label} leaf label+path`, frontendLeaves, backendLeaves, messages);
   });
+}
+
+function verifyTask2Integration(routerSourceText, constantsSourceText, appLayoutSourceText, messages) {
+  if (!/const\s+GenericEdhrPage\s*=\s*lazy\(/.test(routerSourceText)) {
+    messages.push('router index.tsx must lazy import GenericEdhrPage');
+  }
+  if (!/<Route\s+path=["']gct-edhr\/\*["']/.test(routerSourceText)) {
+    messages.push('router index.tsx must mount a protected gct-edhr/* route');
+  }
+
+  if (!/import\s*\{\s*GCT_EDHR_MENU_MODULE\s*\}\s*from\s*['"]@\/features\/gct-edhr\/metadata\/generatedMenus['"]/.test(constantsSourceText)) {
+    messages.push('constants.ts must import GCT_EDHR_MENU_MODULE from generatedMenus');
+  }
+  if (!/SIDEBAR_MODULES[\s\S]*GCT_EDHR_MENU_MODULE[\s\S]*\]\s*;/.test(constantsSourceText)) {
+    messages.push('constants.ts must append GCT_EDHR_MENU_MODULE to SIDEBAR_MODULES');
+  }
+
+  if (!appLayoutSourceText.includes("pathname.startsWith('/gct-edhr')")) {
+    messages.push("AppLayout getModuleIdByPath must support pathname.startsWith('/gct-edhr')");
+  }
+  if (!/pathname\.startsWith\('\/gct-edhr'\)\)\s*return\s+['"]gct-edhr['"]/.test(appLayoutSourceText)) {
+    messages.push("AppLayout getModuleIdByPath must map /gct-edhr paths to module id 'gct-edhr'");
+  }
+  if (!/\bcurrentModuleForPath\b/.test(appLayoutSourceText)) {
+    messages.push('AppLayout must keep currentModuleForPath derived from location.pathname');
+  }
+  if (!appLayoutSourceText.includes('getCurrentPageTitle(currentModuleForPath, location.pathname)')) {
+    messages.push('AppLayout currentPageTitle must use getCurrentPageTitle(currentModuleForPath, location.pathname)');
+  }
 }
 
 function extractPathTokens(sourceText) {

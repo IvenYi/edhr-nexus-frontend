@@ -53,6 +53,12 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   Settings: <Settings />,
 };
 
+const FALLBACK_ICON = <Settings />;
+
+function getIcon(iconName?: string): React.ReactNode {
+  return iconName ? ICON_MAP[iconName] || FALLBACK_ICON : FALLBACK_ICON;
+}
+
 // ============================================================
 // Helper functions
 // ============================================================
@@ -62,6 +68,7 @@ function getModuleIdByPath(pathname: string): string {
   if (pathname.startsWith('/master-data')) return 'data';
   if (pathname.startsWith('/workflow')) return 'production';
   if (pathname.startsWith('/system')) return 'system';
+  if (pathname.startsWith('/gct-edhr')) return 'gct-edhr';
   return 'home';
 }
 
@@ -172,9 +179,11 @@ export default function AppLayout() {
 
   const activeModule: SidebarModule =
     SIDEBAR_MODULES.find((m) => m.id === activeModuleId) || SIDEBAR_MODULES[0];
+  const currentModuleForPath: SidebarModule =
+    SIDEBAR_MODULES.find((m) => m.id === autoModuleId) || SIDEBAR_MODULES[0];
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
   const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
-  const currentPageTitle = getCurrentPageTitle(activeModule, location.pathname);
+  const currentPageTitle = getCurrentPageTitle(currentModuleForPath, location.pathname);
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -430,7 +439,7 @@ export default function AppLayout() {
                     },
                   }}
                 >
-                  {ICON_MAP[module.icon] || <Settings />}
+                  {getIcon(module.icon)}
                 </ListItemIcon>
                 <Typography
                   variant="caption"
@@ -568,7 +577,7 @@ export default function AppLayout() {
                           '& .MuiSvgIcon-root': { fontSize: 20 },
                         }}
                       >
-                        {ICON_MAP[menu.icon] || <Settings />}
+                        {getIcon(menu.icon)}
                       </ListItemIcon>
                     )}
                     <ListItemText
