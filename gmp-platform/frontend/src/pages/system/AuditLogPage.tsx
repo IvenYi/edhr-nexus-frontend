@@ -2,10 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, TextField, MenuItem, Pagination, Chip, CircularProgress,
+  TableHead, TableRow, TextField, MenuItem, Pagination, CircularProgress,
 } from '@mui/material';
 import { getAuditLogs } from '@/api/audit';
 import { AUDIT_ACTION_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface AuditLog {
@@ -86,8 +87,10 @@ export default function AuditLogPage() {
                 <TableRow key={item.id}>
                   <TableCell>{item.id}</TableCell>
                   <TableCell>
-                    <Chip size="small" label={AUDIT_ACTION_MAP[item.action as keyof typeof AUDIT_ACTION_MAP]?.label || item.action}
-                      color={AUDIT_ACTION_MAP[item.action as keyof typeof AUDIT_ACTION_MAP]?.color || 'default'} />
+                    <StatusBadge
+                      label={AUDIT_ACTION_MAP[item.action as keyof typeof AUDIT_ACTION_MAP]?.label || item.action}
+                      color={AUDIT_ACTION_MAP[item.action as keyof typeof AUDIT_ACTION_MAP]?.color || 'default'}
+                    />
                   </TableCell>
                   <TableCell>{item.entityType}</TableCell>
                   <TableCell>{item.entityId}</TableCell>

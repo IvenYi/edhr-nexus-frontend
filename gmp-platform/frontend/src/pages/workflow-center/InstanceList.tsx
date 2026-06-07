@@ -2,11 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Chip, Pagination, CircularProgress, Button,
+  TableHead, TableRow, Pagination, CircularProgress, Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { listInstances } from '@/api/workflow-instances';
 import { INSTANCE_STATUS_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface WorkflowInstance {
@@ -62,12 +63,14 @@ export default function InstanceList() {
             ) : (
               content.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.id}</TableCell>
+                  <TableCell sx={{ fontFamily: 'monospace' }}>{item.id}</TableCell>
                   <TableCell>{item.templateName}</TableCell>
                   <TableCell>{item.businessKey}</TableCell>
                   <TableCell>
-                    <Chip size="small" label={INSTANCE_STATUS_MAP[item.status as keyof typeof INSTANCE_STATUS_MAP]?.label || item.status}
-                      color={INSTANCE_STATUS_MAP[item.status as keyof typeof INSTANCE_STATUS_MAP]?.color || 'default'} />
+                    <StatusBadge
+                      label={INSTANCE_STATUS_MAP[item.status as keyof typeof INSTANCE_STATUS_MAP]?.label || item.status}
+                      color={INSTANCE_STATUS_MAP[item.status as keyof typeof INSTANCE_STATUS_MAP]?.color || 'default'}
+                    />
                   </TableCell>
                   <TableCell>{item.startUserName}</TableCell>
                   <TableCell>{item.startTime}</TableCell>

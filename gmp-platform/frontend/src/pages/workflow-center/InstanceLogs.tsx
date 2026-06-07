@@ -3,9 +3,10 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Pagination, CircularProgress, Chip,
+  TableHead, TableRow, Pagination, CircularProgress,
 } from '@mui/material';
 import { getInstanceLogs } from '@/api/workflow-logs';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface InstanceLog {
@@ -70,8 +71,10 @@ export default function InstanceLogs() {
                   <TableCell>{log.action}</TableCell>
                   <TableCell>{log.operatorName}</TableCell>
                   <TableCell>
-                    <Chip size="small" label={LOG_STATUS_MAP[log.status]?.label || log.status}
-                      color={LOG_STATUS_MAP[log.status]?.color || 'default'} />
+                    <StatusBadge
+                      label={LOG_STATUS_MAP[log.status]?.label || log.status}
+                      color={LOG_STATUS_MAP[log.status]?.color || 'default'}
+                    />
                   </TableCell>
                   <TableCell>{log.comment}</TableCell>
                   <TableCell>{log.createdAt}</TableCell>

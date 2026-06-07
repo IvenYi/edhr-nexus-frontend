@@ -3,11 +3,12 @@ import { useState } from 'react';
 import {
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress, Chip,
+  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { getFormTemplates, createFormTemplate, updateFormTemplate, deleteFormTemplate } from '@/api/form-templates';
 import { WORKFLOW_STATUS_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface FormTemplate {
@@ -80,8 +81,10 @@ export default function FormTemplatePage() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.code}</TableCell><TableCell>{item.name}</TableCell><TableCell>{item.type}</TableCell>
                 <TableCell>
-                  <Chip size="small" label={WORKFLOW_STATUS_MAP[item.status as keyof typeof WORKFLOW_STATUS_MAP]?.label || item.status}
-                    color={WORKFLOW_STATUS_MAP[item.status as keyof typeof WORKFLOW_STATUS_MAP]?.color || 'default'} />
+                  <StatusBadge
+                    label={WORKFLOW_STATUS_MAP[item.status as keyof typeof WORKFLOW_STATUS_MAP]?.label || item.status}
+                    color={WORKFLOW_STATUS_MAP[item.status as keyof typeof WORKFLOW_STATUS_MAP]?.color || 'default'}
+                  />
                 </TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>

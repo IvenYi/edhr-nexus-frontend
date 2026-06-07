@@ -6,6 +6,9 @@ import {
   IconButton, CircularProgress,
 } from '@mui/material';
 import { Add, Edit, Delete, ExpandMore, ExpandLess } from '@mui/icons-material';
+import PageHeader from '@/components/PageHeader';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import EmptyState from '@/components/EmptyState';
 import client from '@/api/client';
 
 interface Site { id: number; code: string; name: string; }
@@ -20,6 +23,7 @@ export default function SiteWorkshopPage() {
   const [form, setForm] = useState({ code: '', name: '' });
   const [dialogTitle, setDialogTitle] = useState('');
   const [createBody, setCreateBody] = useState<Record<string, unknown>>({});
+  const [deleteTarget, setDeleteTarget] = useState<{ type: string; id: number; name?: string } | null>(null);
 
   const { data: sites, isLoading } = useQuery({
     queryKey: ['sites'],
@@ -60,6 +64,7 @@ export default function SiteWorkshopPage() {
       queryClient.invalidateQueries({ queryKey: ['sites'] });
       queryClient.invalidateQueries({ queryKey: ['workshops'] });
       queryClient.invalidateQueries({ queryKey: ['production-lines'] });
+      setDeleteTarget(null);
     },
   });
 
@@ -70,74 +75,118 @@ export default function SiteWorkshopPage() {
     setExpandedWorkshops(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
   };
 
-  if (isLoading) return <Box sx={{ p: 4 }}><CircularProgress /></Box>;
+  const getDeleteMessage = () => {
+    if (!deleteTarget) return '';
+    switch (deleteTarget.type) {
+      case 'site': return `确定删除工厂「${deleteTarget.name}」及其下属所有车间和产线吗？`;
+      case 'workshop': return `确定删除车间「${deleteTarget.name}」及其下属产线吗？`;
+      case 'line': return `确定删除产线「${deleteTarget.name}」吗？`;
+      default: return '确定删除吗？';
+    }
+  };
+
+  if (isLoading) return <Box sx={{ p: 4, textAlign: 'center' }}><CircularProgress /></Box>;
+
+  const sitesList = sites ?? [];
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Box>
-          <Typography variant="h5">工厂/车间/产线管理</Typography>
-          <Typography variant="body2" color="text.secondary">Site → Workshop → Production Line 三级结构</Typography>
-        </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={() => {
-          setDialogTitle('新增工厂'); setForm({ code: '', name: '' });
-          setCreateBody({ type: 'site' }); setOpen(true);
-        }}>新增工厂</Button>
-      </Box>
+      <PageHeader
+        title="工厂 / 车间 / 产线"
+        subtitle="Site → Workshop → Production Line 三级生产组织架构"
+        actions={
+          <Button variant="contained" startIcon={<Add />} onClick={() => {
+            setDialogTitle('新增工厂'); setForm({ code: '', name: '' });
+            setCreateBody({ type: 'site' }); setOpen(true);
+          }}>新增工厂</Button>
+        }
+      />
 
-      <List>
-        {sites?.map(site => (
-          <Box key={site.id} sx={{ border: '1px solid #e0e0e0', borderRadius: 1, mb: 1, overflow: 'hidden' }}>
-            <ListItem sx={{ bgcolor: '#f5f5f5' }}
-              secondaryAction={
-                <Box>
-                  <IconButton size="small" onClick={() => {
-                    setDialogTitle('新增车间'); setForm({ code: '', name: '' });
-                    setCreateBody({ type: 'workshop', siteId: site.id }); setOpen(true);
-                  }}><Add fontSize="small" /></IconButton>
-                  <IconButton size="small" onClick={() => { if (window.confirm('删除工厂及下属？')) deleteMutation.mutate({ type: 'site', id: site.id }); }}>
-                    <Delete fontSize="small" /></IconButton>
-                </Box>
-              }>
-              <IconButton size="small" onClick={() => toggleSite(site.id)}>
-                {expandedSites.has(site.id) ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-              <ListItemText primary={site.name} secondary={site.code} />
-            </ListItem>
-            <Collapse in={expandedSites.has(site.id)}>
-              {workshops?.filter(w => w.siteId === site.id).map(ws => (
-                <Box key={ws.id} sx={{ borderTop: '1px solid #f0f0f0' }}>
-                  <ListItem sx={{ pl: 6, bgcolor: '#fafafa' }}
-                    secondaryAction={
-                      <Box>
-                        <IconButton size="small" onClick={() => {
-                          setDialogTitle('新增产线'); setForm({ code: '', name: '' });
-                          setCreateBody({ type: 'line', workshopId: ws.id }); setOpen(true);
-                        }}><Add fontSize="small" /></IconButton>
-                        <IconButton size="small" onClick={() => { if (window.confirm('删除车间及下属？')) deleteMutation.mutate({ type: 'workshop', id: ws.id }); }}>
-                          <Delete fontSize="small" /></IconButton>
-                      </Box>
-                    }>
-                    <IconButton size="small" onClick={() => toggleWorkshop(ws.id)}>
-                      {expandedWorkshops.has(ws.id) ? <ExpandLess /> : <ExpandMore />}
-                    </IconButton>
-                    <ListItemText primary={ws.name} secondary={ws.code} />
+      {sitesList.length === 0 ? (
+        <EmptyState
+          title="暂无工厂数据"
+          description="点击「新增工厂」创建第一个工厂，然后添加车间和产线"
+          action={{ label: '新增工厂', onClick: () => { setDialogTitle('新增工厂'); setForm({ code: '', name: '' }); setCreateBody({ type: 'site' }); setOpen(true); } }}
+        />
+      ) : (
+        <List>
+          {sitesList.map(site => (
+            <Box key={site.id} sx={{ border: '1px solid #E2E6EC', borderRadius: 2, mb: 1.5, overflow: 'hidden' }}>
+              <ListItem
+                sx={{
+                  bgcolor: '#F8FAFB',
+                  borderBottom: expandedSites.has(site.id) ? '1px solid #E2E6EC' : 'none',
+                }}
+                secondaryAction={
+                  <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    <IconButton size="small" onClick={() => {
+                      setDialogTitle('新增车间'); setForm({ code: '', name: '' });
+                      setCreateBody({ type: 'workshop', siteId: site.id }); setOpen(true);
+                    }}><Add fontSize="small" /></IconButton>
+                    <IconButton size="small" color="error" onClick={() => setDeleteTarget({ type: 'site', id: site.id, name: site.name })}>
+                      <Delete fontSize="small" /></IconButton>
+                  </Box>
+                }>
+                <IconButton size="small" onClick={() => toggleSite(site.id)}>
+                  {expandedSites.has(site.id) ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+                <ListItemText
+                  primary={<Typography variant="body1" fontWeight={500}>{site.name}</Typography>}
+                  secondary={site.code}
+                />
+              </ListItem>
+              <Collapse in={expandedSites.has(site.id)}>
+                {(workshops ?? []).filter(w => w.siteId === site.id).map(ws => (
+                  <Box key={ws.id} sx={{ borderTop: '1px solid #EEF0F3' }}>
+                    <ListItem
+                      sx={{ pl: 6, bgcolor: expandedWorkshops.has(ws.id) ? '#F8FAFB' : '#FFFFFF' }}
+                      secondaryAction={
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <IconButton size="small" onClick={() => {
+                            setDialogTitle('新增产线'); setForm({ code: '', name: '' });
+                            setCreateBody({ type: 'line', workshopId: ws.id }); setOpen(true);
+                          }}><Add fontSize="small" /></IconButton>
+                          <IconButton size="small" color="error" onClick={() => setDeleteTarget({ type: 'workshop', id: ws.id, name: ws.name })}>
+                            <Delete fontSize="small" /></IconButton>
+                        </Box>
+                      }>
+                      <IconButton size="small" onClick={() => toggleWorkshop(ws.id)}>
+                        {expandedWorkshops.has(ws.id) ? <ExpandLess /> : <ExpandMore />}
+                      </IconButton>
+                      <ListItemText
+                        primary={ws.name}
+                        secondary={ws.code}
+                      />
+                    </ListItem>
+                    <Collapse in={expandedWorkshops.has(ws.id)}>
+                      {(lines ?? []).filter(l => l.workshopId === ws.id).map(line => (
+                        <ListItem key={line.id} sx={{ pl: 10 }}>
+                          <ListItemText
+                            primary={line.name}
+                            secondary={line.code}
+                          />
+                          <IconButton size="small" color="error" onClick={() => setDeleteTarget({ type: 'line', id: line.id, name: line.name })}>
+                            <Delete fontSize="small" /></IconButton>
+                        </ListItem>
+                      ))}
+                      {(lines ?? []).filter(l => l.workshopId === ws.id).length === 0 && (
+                        <ListItem sx={{ pl: 10 }}>
+                          <ListItemText secondary="暂无产线" />
+                        </ListItem>
+                      )}
+                    </Collapse>
+                  </Box>
+                ))}
+                {(workshops ?? []).filter(w => w.siteId === site.id).length === 0 && (
+                  <ListItem sx={{ pl: 6 }}>
+                    <ListItemText secondary="暂无车间" />
                   </ListItem>
-                  <Collapse in={expandedWorkshops.has(ws.id)}>
-                    {lines?.filter(l => l.workshopId === ws.id).map(line => (
-                      <ListItem key={line.id} sx={{ pl: 10 }}>
-                        <ListItemText primary={line.name} secondary={line.code} />
-                        <IconButton size="small" onClick={() => { if (window.confirm('删除？')) deleteMutation.mutate({ type: 'line', id: line.id }); }}>
-                          <Delete fontSize="small" /></IconButton>
-                      </ListItem>
-                    ))}
-                  </Collapse>
-                </Box>
-              ))}
-            </Collapse>
-          </Box>
-        ))}
-      </List>
+                )}
+              </Collapse>
+            </Box>
+          ))}
+        </List>
+      )}
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{dialogTitle}</DialogTitle>
@@ -149,9 +198,21 @@ export default function SiteWorkshopPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
-          <Button variant="contained" onClick={() => createMutation.mutate({ ...createBody, ...form })}>创建</Button>
+          <Button variant="contained" onClick={() => createMutation.mutate({ ...createBody, ...form })}>
+            创建
+          </Button>
         </DialogActions>
       </Dialog>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        message={getDeleteMessage()}
+        confirmText="删除"
+        onConfirm={() => deleteTarget && deleteMutation.mutate({ type: deleteTarget.type, id: deleteTarget.id })}
+        onCancel={() => setDeleteTarget(null)}
+        loading={deleteMutation.isPending}
+        destructive
+      />
     </Box>
   );
 }

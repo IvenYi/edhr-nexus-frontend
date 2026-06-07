@@ -3,10 +3,11 @@ import { useState } from 'react';
 import {
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress, Chip,
+  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { getTenants, createTenant, updateTenant, deleteTenant } from '@/api/identity';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface Tenant {
@@ -82,8 +83,10 @@ export default function TenantPage() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.code}</TableCell><TableCell>{item.name}</TableCell>
                 <TableCell>
-                  <Chip size="small" label={STATUS_MAP[item.status]?.label || item.status}
-                    color={STATUS_MAP[item.status]?.color || 'default'} />
+                  <StatusBadge
+                    label={STATUS_MAP[item.status]?.label || item.status}
+                    color={STATUS_MAP[item.status]?.color || 'default'}
+                  />
                 </TableCell>
                 <TableCell>
                   <IconButton size="small" onClick={() => handleEdit(item)}><Edit /></IconButton>

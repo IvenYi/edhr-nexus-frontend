@@ -14,8 +14,25 @@ import {
 import { SIDEBAR_MODULES, type SidebarModule, type SidebarMenu } from '@/utils/constants';
 
 // ============================================================
-// Constants
+// Design Tokens (synced with MUI theme)
 // ============================================================
+
+const COLORS = {
+  primary: '#1565C0',
+  primaryLight: 'rgba(21, 101, 192, 0.08)',
+  primaryHover: 'rgba(21, 101, 192, 0.12)',
+  secondary: '#00897B',
+  error: '#C62828',
+  errorBg: 'rgba(198, 40, 40, 0.06)',
+  textPrimary: '#1A2332',
+  textSecondary: '#5A6878',
+  textDisabled: '#8E9BAF',
+  divider: '#E2E6EC',
+  sidebarDark: '#121C2D',
+  sidebarActiveBg: 'rgba(21, 101, 192, 0.18)',
+  sidebarActiveHover: 'rgba(21, 101, 192, 0.26)',
+  funcMenuBg: '#F5F7FA',
+};
 
 const MODULE_BAR_WIDTH = 72;
 const FUNC_MENU_WIDTH = 220;
@@ -35,7 +52,6 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 // Helper functions
 // ============================================================
 
-/** Determine which module owns the given pathname. */
 function getModuleIdByPath(pathname: string): string {
   if (pathname === '/') return 'home';
   if (pathname.startsWith('/master-data')) return 'data';
@@ -44,20 +60,17 @@ function getModuleIdByPath(pathname: string): string {
   return 'home';
 }
 
-/** Check whether a menu (or its children) matches the current pathname. */
 function isMenuActive(menu: SidebarMenu, pathname: string): boolean {
   if (menu.path === pathname) return true;
   if (menu.children?.some((child) => matchPath(child.path, pathname))) return true;
   return false;
 }
 
-/** Check if a sub-menu path matches the current pathname (exact for '/', prefix for others). */
 function matchPath(menuPath: string, pathname: string): boolean {
   if (menuPath === '/') return pathname === '/';
   return pathname.startsWith(menuPath);
 }
 
-/** Compute initial set of menu labels that should be expanded. */
 function getInitialExpandedMenus(moduleId: string, pathname: string): Set<string> {
   const expanded = new Set<string>();
   const module = SIDEBAR_MODULES.find((m) => m.id === moduleId);
@@ -75,15 +88,12 @@ function getInitialExpandedMenus(moduleId: string, pathname: string): Set<string
 // Main Layout Component
 // ============================================================
 
-/** Main application layout with dual-column sidebar (module bar + function menu bar). */
 export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ---------- derived from route ----------
   const autoModuleId = useMemo(() => getModuleIdByPath(location.pathname), [location.pathname]);
 
-  // ---------- state ----------
   const [activeModuleId, setActiveModuleId] = useState<string>(autoModuleId);
   const [funcMenuOpen, setFuncMenuOpen] = useState(true);
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(
@@ -91,10 +101,8 @@ export default function AppLayout() {
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  // ---------- auto-sync on route change ----------
   useEffect(() => {
     setActiveModuleId(autoModuleId);
-    // Auto-expand the menu that contains the current route (never collapse others)
     const module = SIDEBAR_MODULES.find((m) => m.id === autoModuleId);
     if (module) {
       setExpandedMenus((prev) => {
@@ -109,7 +117,6 @@ export default function AppLayout() {
     }
   }, [autoModuleId, location.pathname]);
 
-  // ---------- handlers ----------
   const handleModuleClick = useCallback((moduleId: string) => {
     setActiveModuleId(moduleId);
     setFuncMenuOpen(true);
@@ -118,19 +125,14 @@ export default function AppLayout() {
   const handleToggleMenu = useCallback((menuLabel: string) => {
     setExpandedMenus((prev) => {
       const next = new Set(prev);
-      if (next.has(menuLabel)) {
-        next.delete(menuLabel);
-      } else {
-        next.add(menuLabel);
-      }
+      if (next.has(menuLabel)) next.delete(menuLabel);
+      else next.add(menuLabel);
       return next;
     });
   }, []);
 
   const handleSubMenuClick = useCallback(
-    (path: string) => {
-      navigate(path);
-    },
+    (path: string) => navigate(path),
     [navigate],
   );
 
@@ -140,11 +142,9 @@ export default function AppLayout() {
     navigate('/login');
   };
 
-  // ---------- user info ----------
   const userJson = localStorage.getItem('user');
   const user = userJson ? JSON.parse(userJson) : { displayName: '管理员' };
 
-  // ---------- derived data ----------
   const activeModule: SidebarModule =
     SIDEBAR_MODULES.find((m) => m.id === activeModuleId) || SIDEBAR_MODULES[0];
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
@@ -162,36 +162,36 @@ export default function AppLayout() {
             onClick={() => setFuncMenuOpen((prev) => !prev)}
             sx={{
               mr: 1,
-              color: '#5A6F88',
+              color: COLORS.textSecondary,
               borderRadius: '8px',
               transition: 'all 150ms ease-out',
               '&:hover': {
-                color: '#0D6EAA',
-                bgcolor: 'rgba(13, 110, 170, 0.08)',
+                color: COLORS.primary,
+                bgcolor: COLORS.primaryLight,
               },
             }}
           >
             {funcMenuOpen ? <ChevronLeftRounded /> : <MenuRounded />}
           </IconButton>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <LocalHospitalRounded sx={{ fontSize: 28, color: '#0D6EAA', mr: '10px' }} />
+            <LocalHospitalRounded sx={{ fontSize: 28, color: COLORS.primary, mr: '10px' }} />
             <Typography variant="h6" noWrap>
-              <Box component="span" sx={{ color: '#0D6EAA', fontWeight: 700 }}>eDHR</Box>
+              <Box component="span" sx={{ color: COLORS.primary, fontWeight: 700 }}>eDHR</Box>
               {' '}
-              <Box component="span" sx={{ color: '#2C3E56', fontWeight: 400 }}>系统</Box>
+              <Box component="span" sx={{ color: COLORS.textPrimary, fontWeight: 400 }}>系统</Box>
             </Typography>
           </Box>
           <IconButton
             sx={{
               mr: 1,
-              color: '#5A6F88',
+              color: COLORS.textSecondary,
               transition: 'color 150ms ease-out',
-              '&:hover': { color: '#0D6EAA' },
+              '&:hover': { color: COLORS.primary },
             }}
           >
             <Badge
               badgeContent={0}
-              sx={{ '& .MuiBadge-badge': { bgcolor: '#E65100' } }}
+              sx={{ '& .MuiBadge-badge': { bgcolor: COLORS.error } }}
             >
               <Notifications />
             </Badge>
@@ -200,12 +200,12 @@ export default function AppLayout() {
             onClick={(e) => setAnchorEl(e.currentTarget)}
             sx={{
               '&:hover .MuiAvatar-root': {
-                boxShadow: '0 0 0 2px rgba(13, 110, 170, 0.3)',
+                boxShadow: `0 0 0 2px ${COLORS.primaryLight}`,
               },
               transition: 'all 150ms ease-out',
             }}
           >
-            <Avatar sx={{ width: 32, height: 32, bgcolor: '#00897B' }}>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: COLORS.secondary }}>
               {user.displayName?.charAt(0) || 'A'}
             </Avatar>
           </IconButton>
@@ -215,13 +215,13 @@ export default function AppLayout() {
             onClose={() => setAnchorEl(null)}
             PaperProps={{
               sx: {
-                boxShadow: '0 4px 16px rgba(27, 42, 74, 0.12)',
-                borderRadius: '8px',
+                boxShadow: '0 4px 16px rgba(18, 28, 45, 0.12)',
+                borderRadius: '10px',
                 '& .MuiMenuItem-root': {
                   minHeight: 40,
                 },
                 '& .MuiDivider-root': {
-                  borderColor: '#D6DEE8',
+                  borderColor: COLORS.divider,
                 },
               },
             }}
@@ -233,9 +233,9 @@ export default function AppLayout() {
             <MuiMenuItem
               onClick={handleLogout}
               sx={{
-                color: '#E65100',
+                color: COLORS.error,
                 '&:hover': {
-                  bgcolor: 'rgba(230, 81, 0, 0.06)',
+                  bgcolor: COLORS.errorBg,
                 },
               }}
             >
@@ -246,12 +246,12 @@ export default function AppLayout() {
         </Toolbar>
       </AppBar>
 
-      {/* ==================== Module Bar (narrow, dark, always visible) ==================== */}
+      {/* ==================== Module Bar ==================== */}
       <Box
         sx={{
           width: MODULE_BAR_WIDTH,
           flexShrink: 0,
-          bgcolor: '#1B2A4A',
+          bgcolor: COLORS.sidebarDark,
           position: 'fixed',
           top: HEADER_HEIGHT,
           left: 0,
@@ -263,10 +263,9 @@ export default function AppLayout() {
           pt: 1,
           overflowY: 'auto',
           overflowX: 'hidden',
-          /* Custom narrow scrollbar */
           '&::-webkit-scrollbar': { width: 4 },
           '&::-webkit-scrollbar-thumb': {
-            bgcolor: 'rgba(255,255,255,0.2)',
+            bgcolor: 'rgba(255,255,255,0.15)',
             borderRadius: 2,
           },
           '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
@@ -286,19 +285,16 @@ export default function AppLayout() {
                   width: '100%',
                   borderRadius: 0,
                   position: 'relative',
-                  color: isActive ? '#FFFFFF' : '#7B8FA8',
-                  bgcolor: isActive
-                    ? 'rgba(13, 110, 170, 0.20)'
-                    : 'transparent',
+                  color: isActive ? '#FFFFFF' : COLORS.textDisabled,
+                  bgcolor: isActive ? COLORS.sidebarActiveBg : 'transparent',
                   '&:hover': {
                     bgcolor: isActive
-                      ? 'rgba(13, 110, 170, 0.28)'
-                      : 'rgba(255, 255, 255, 0.08)',
+                      ? COLORS.sidebarActiveHover
+                      : 'rgba(255, 255, 255, 0.06)',
                     '& .MuiSvgIcon-root': {
                       transform: 'scale(1.08)',
                     },
                   },
-                  /* Left brand color indicator for selected module */
                   '&::before': isActive
                     ? {
                         content: '""',
@@ -308,7 +304,7 @@ export default function AppLayout() {
                         transform: 'translateY(-50%)',
                         height: 32,
                         width: 3,
-                        bgcolor: '#0D6EAA',
+                        bgcolor: COLORS.primary,
                         borderRadius: '0 2px 2px 0',
                       }
                     : {},
@@ -343,11 +339,10 @@ export default function AppLayout() {
             </Tooltip>
           );
         })}
-        {/* Version number at bottom */}
         <Box sx={{ flexGrow: 1 }} />
         <Typography
           sx={{
-            color: '#7B8FA8',
+            color: COLORS.textDisabled,
             fontSize: 10,
             textAlign: 'center',
             mb: '12px',
@@ -357,7 +352,7 @@ export default function AppLayout() {
         </Typography>
       </Box>
 
-      {/* ==================== Function Menu Bar (wider, light, collapsible) ==================== */}
+      {/* ==================== Function Menu Bar ==================== */}
       <Box
         sx={{
           width: funcMenuOpen ? FUNC_MENU_WIDTH : 0,
@@ -369,11 +364,10 @@ export default function AppLayout() {
           zIndex: 1199,
           overflow: 'hidden',
           transition: 'width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
-          bgcolor: '#F7F9FC',
-          borderRight: funcMenuOpen ? '1px solid #D6DEE8' : 'none',
+          bgcolor: COLORS.funcMenuBg,
+          borderRight: funcMenuOpen ? `1px solid ${COLORS.divider}` : 'none',
         }}
       >
-        {/* Inner container keeps fixed width so content doesn't reflow during collapse */}
         <Box
           sx={{
             width: FUNC_MENU_WIDTH,
@@ -381,10 +375,9 @@ export default function AppLayout() {
             overflowY: 'auto',
             overflowX: 'hidden',
             pt: 0,
-            /* Custom narrow scrollbar */
             '&::-webkit-scrollbar': { width: 4 },
             '&::-webkit-scrollbar-thumb': {
-              bgcolor: 'rgba(0,0,0,0.15)',
+              bgcolor: 'rgba(0,0,0,0.12)',
               borderRadius: 2,
             },
             '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
@@ -394,7 +387,7 @@ export default function AppLayout() {
           <Typography
             sx={{
               fontSize: 12,
-              color: '#7B8FA8',
+              color: COLORS.textDisabled,
               letterSpacing: '0.5px',
               textTransform: 'uppercase',
               px: '20px',
@@ -415,7 +408,6 @@ export default function AppLayout() {
 
               return (
                 <Box key={menu.label}>
-                  {/* Menu header (clickable: expand/collapse or navigate) */}
                   <ListItemButton
                     onClick={() => {
                       if (menu.children) {
@@ -427,9 +419,9 @@ export default function AppLayout() {
                     sx={{
                       pl: 3,
                       pr: 2,
-                      color: menuActive ? '#0D6EAA' : '#2C3E56',
+                      color: menuActive ? COLORS.primary : COLORS.textPrimary,
                       '&:hover': {
-                        bgcolor: 'rgba(13, 110, 170, 0.05)',
+                        bgcolor: COLORS.primaryLight,
                       },
                       transition: 'all 150ms ease-out',
                     }}
@@ -460,7 +452,6 @@ export default function AppLayout() {
                       ))}
                   </ListItemButton>
 
-                  {/* Sub-menu items (collapsible) */}
                   {menu.children && (
                     <Collapse in={menuExpanded} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
@@ -475,19 +466,19 @@ export default function AppLayout() {
                                 pl: 4,
                                 pr: 2,
                                 position: 'relative',
-                                color: subActive ? '#0D6EAA' : '#4A5E76',
+                                color: subActive ? COLORS.primary : COLORS.textSecondary,
                                 bgcolor: subActive
-                                  ? 'rgba(13, 110, 170, 0.08)'
+                                  ? COLORS.primaryLight
                                   : 'transparent',
                                 '&:hover': {
                                   bgcolor: subActive
-                                    ? 'rgba(13, 110, 170, 0.12)'
-                                    : 'rgba(13, 110, 170, 0.05)',
+                                    ? COLORS.primaryHover
+                                    : COLORS.primaryLight,
                                 },
                                 '&.Mui-selected': {
-                                  bgcolor: 'rgba(13, 110, 170, 0.08)',
+                                  bgcolor: COLORS.primaryLight,
                                   '&:hover': {
-                                    bgcolor: 'rgba(13, 110, 170, 0.12)',
+                                    bgcolor: COLORS.primaryHover,
                                   },
                                   '&::before': {
                                     content: '""',
@@ -497,7 +488,7 @@ export default function AppLayout() {
                                     transform: 'translateY(-50%)',
                                     width: 3,
                                     height: 24,
-                                    bgcolor: '#0D6EAA',
+                                    bgcolor: COLORS.primary,
                                     borderRadius: '2px',
                                   },
                                 },
@@ -539,6 +530,7 @@ export default function AppLayout() {
           transition: 'margin-left 280ms cubic-bezier(0.4, 0, 0.2, 1)',
           minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
           bgcolor: 'background.default',
+          maxWidth: '100vw',
         }}
       >
         <Outlet />

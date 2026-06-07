@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import {
-  Box, Typography, Paper, Chip, CircularProgress,
+  Box, Typography, Paper, CircularProgress,
 } from '@mui/material';
 import { getInstance } from '@/api/workflow-instances';
 import { getInstanceLogs } from '@/api/workflow-logs';
 import { INSTANCE_STATUS_MAP, NODE_TYPE_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 
 interface WorkflowNode {
   id: string;
@@ -79,8 +80,10 @@ export default function InstanceDetail() {
           </Box>
           <Box>
             <Typography variant="body2" color="text.secondary">状态</Typography>
-            <Chip size="small" label={INSTANCE_STATUS_MAP[instance.status as keyof typeof INSTANCE_STATUS_MAP]?.label || instance.status}
-              color={INSTANCE_STATUS_MAP[instance.status as keyof typeof INSTANCE_STATUS_MAP]?.color || 'default'} />
+            <StatusBadge
+                label={INSTANCE_STATUS_MAP[instance.status as keyof typeof INSTANCE_STATUS_MAP]?.label || instance.status}
+                color={INSTANCE_STATUS_MAP[instance.status as keyof typeof INSTANCE_STATUS_MAP]?.color || 'default'}
+              />
           </Box>
           <Box>
             <Typography variant="body2" color="text.secondary">发起人</Typography>

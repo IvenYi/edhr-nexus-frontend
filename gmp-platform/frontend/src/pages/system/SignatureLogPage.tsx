@@ -2,9 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Pagination, Chip, CircularProgress,
+  TableHead, TableRow, Pagination, CircularProgress,
 } from '@mui/material';
 import { getSignatures } from '@/api/signatures';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface Signature {
@@ -70,8 +71,10 @@ export default function SignatureLogPage() {
                   <TableCell>{item.targetType}</TableCell>
                   <TableCell>{item.targetId}</TableCell>
                   <TableCell>
-                    <Chip size="small" label={SIG_STATUS_MAP[item.status]?.label || item.status}
-                      color={SIG_STATUS_MAP[item.status]?.color || 'default'} />
+                    <StatusBadge
+                      label={SIG_STATUS_MAP[item.status]?.label || item.status}
+                      color={SIG_STATUS_MAP[item.status]?.color || 'default'}
+                    />
                   </TableCell>
                   <TableCell>{item.signedAt}</TableCell>
                 </TableRow>

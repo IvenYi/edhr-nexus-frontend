@@ -2,10 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   Card, CardContent, Typography, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, Chip, Button, Box,
+  TableContainer, TableHead, TableRow, Button, Box,
 } from '@mui/material';
 import client from '@/api/client';
 import { TASK_STATUS_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 
 interface Task {
   id: number;
@@ -60,8 +61,7 @@ export default function TodoList() {
                     <TableCell>{task.taskType}</TableCell>
                     <TableCell>{task.instanceName || '-'}</TableCell>
                     <TableCell>
-                      <Chip
-                        size="small"
+                      <StatusBadge
                         label={TASK_STATUS_MAP[task.status as keyof typeof TASK_STATUS_MAP]?.label || task.status}
                         color={TASK_STATUS_MAP[task.status as keyof typeof TASK_STATUS_MAP]?.color || 'default'}
                       />

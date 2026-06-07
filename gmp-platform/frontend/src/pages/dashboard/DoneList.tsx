@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   Card, CardContent, Typography, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, Chip,
+  TableContainer, TableHead, TableRow,
 } from '@mui/material';
 import client from '@/api/client';
 import { TASK_STATUS_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 
 interface DoneTask {
   id: number;
@@ -53,8 +54,7 @@ export default function DoneList() {
                     <TableCell>{task.action}</TableCell>
                     <TableCell>{task.opinion || '-'}</TableCell>
                     <TableCell>
-                      <Chip
-                        size="small"
+                      <StatusBadge
                         label={TASK_STATUS_MAP[task.status as keyof typeof TASK_STATUS_MAP]?.label || task.status}
                         color={TASK_STATUS_MAP[task.status as keyof typeof TASK_STATUS_MAP]?.color || 'default'}
                       />

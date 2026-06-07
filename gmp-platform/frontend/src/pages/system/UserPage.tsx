@@ -3,11 +3,12 @@ import { useState } from 'react';
 import {
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress, Chip,
+  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { getUsers, createUser, updateUser, deleteUser } from '@/api/identity';
 import { USER_STATUS_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface User {
@@ -76,8 +77,10 @@ export default function UserPage() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.username}</TableCell><TableCell>{item.name}</TableCell>
                 <TableCell>
-                  <Chip size="small" label={USER_STATUS_MAP[item.status as keyof typeof USER_STATUS_MAP]?.label || item.status}
-                    color={USER_STATUS_MAP[item.status as keyof typeof USER_STATUS_MAP]?.color || 'default'} />
+                  <StatusBadge
+                    label={USER_STATUS_MAP[item.status as keyof typeof USER_STATUS_MAP]?.label || item.status}
+                    color={USER_STATUS_MAP[item.status as keyof typeof USER_STATUS_MAP]?.color || 'default'}
+                  />
                 </TableCell>
                 <TableCell>
                   <IconButton size="small" onClick={() => handleEdit(item)}><Edit /></IconButton>

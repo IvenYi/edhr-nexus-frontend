@@ -5,10 +5,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Chip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Pagination,
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, Pagination,
 } from '@mui/material';
 import client from '@/api/client';
 import { WORKFLOW_STATUS_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 export default function TxnTemplateList() {
@@ -52,7 +53,12 @@ export default function TxnTemplateList() {
                 <TableRow key={t.id}>
                   <TableCell>{t.id}</TableCell><TableCell>{t.name}</TableCell>
                   <TableCell>{t.description}</TableCell>
-                  <TableCell><Chip size="small" label={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.label || t.status} color={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.color || 'default'} /></TableCell>
+                  <TableCell>
+                    <StatusBadge
+                      label={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.label || t.status}
+                      color={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.color || 'default'}
+                    />
+                  </TableCell>
                   <TableCell>{t.createdAt}</TableCell>
                   <TableCell><Button size="small" onClick={() => navigate(`/workflow/txn-templates/${t.id}`)}>编辑</Button></TableCell>
                 </TableRow>

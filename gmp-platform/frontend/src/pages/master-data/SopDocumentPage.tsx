@@ -2,10 +2,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Chip, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Pagination, CircularProgress, Alert,
+  TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField, Pagination,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
+import PageHeader from '@/components/PageHeader';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import StatusBadge from '@/components/StatusBadge';
+import TableSkeleton from '@/components/TableSkeleton';
+import EmptyState from '@/components/EmptyState';
 import client from '@/api/client';
 import type { PageResult } from '@/types/common';
 
@@ -25,6 +30,7 @@ export default function SopDocumentPage() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Partial<Item>>({ code: '', title: '', version: '', fileReference: '' });
   const [editing, setEditing] = useState<Item | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Item | null>(null);
 
   const apiBase = '/master-data/sop-documents';
 
@@ -48,7 +54,7 @@ export default function SopDocumentPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => client.delete(`${apiBase}/${id}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sop-documents'] }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['sop-documents'] }); setDeleteTarget(null); },
   });
 
   const handleSubmit = () => {
@@ -57,60 +63,89 @@ export default function SopDocumentPage() {
     else createMutation.mutate(body);
   };
 
+  const content = data?.content ?? [];
+
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h5">SOP文档管理</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => { setEditing(null); setForm({ code: '', title: '', version: '', fileReference: '' }); setOpen(true); }}>新增</Button>
-      </Box>
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{String(error)}</Alert>}
-      <TableContainer>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell><TableCell>编码</TableCell><TableCell>标题</TableCell><TableCell>版本</TableCell><TableCell>文件引用</TableCell><TableCell>状态</TableCell><TableCell>创建时间</TableCell><TableCell>操作</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
-              <TableRow><TableCell colSpan={8} align="center"><CircularProgress size={24} /></TableCell></TableRow>
-            ) : !data?.content?.length ? (
-              <TableRow><TableCell colSpan={8} align="center" sx={{ py: 4, color: 'text.secondary' }}>暂无数据</TableCell></TableRow>
-            ) : (
-              data.content.map((item) => (
-                <TableRow key={item.id} hover>
-                  <TableCell>{item.id}</TableCell>
-                  <TableCell>{item.code}</TableCell>
+      <PageHeader
+        title="SOP 文档管理"
+        subtitle="管理标准操作规程文档，支持版本控制与文件引用"
+        actions={
+          <Button variant="contained" startIcon={<Add />} onClick={() => {
+            setEditing(null); setForm({ code: '', title: '', version: '', fileReference: '' }); setOpen(true);
+          }}>新增</Button>
+        }
+      />
+
+      {error && (
+        <EmptyState title="加载失败" description={String(error)} />
+      )}
+
+      {isLoading ? (
+        <TableSkeleton columns={8} rows={8} />
+      ) : content.length === 0 ? (
+        <EmptyState
+          title="暂无 SOP 文档"
+          description="点击「新增」按钮创建第一个 SOP 文档"
+          action={{ label: '新增', onClick: () => { setEditing(null); setForm({ code: '', title: '', version: '', fileReference: '' }); setOpen(true); } }}
+        />
+      ) : (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>编码</TableCell>
+                <TableCell>标题</TableCell>
+                <TableCell>版本</TableCell>
+                <TableCell>文件引用</TableCell>
+                <TableCell>状态</TableCell>
+                <TableCell>创建时间</TableCell>
+                <TableCell>操作</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {content.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell sx={{ fontFamily: 'monospace' }}>{item.id}</TableCell>
+                  <TableCell>{item.code || '-'}</TableCell>
                   <TableCell>{item.title || '-'}</TableCell>
                   <TableCell>{item.version || '-'}</TableCell>
                   <TableCell>{item.fileReference || '-'}</TableCell>
-                  <TableCell><Chip size="small" label={item.status} color={item.status === 'EFFECTIVE' ? 'success' : 'default'} /></TableCell>
+                  <TableCell>
+                    <StatusBadge
+                      label={item.status}
+                      color={item.status === 'EFFECTIVE' ? 'success' : 'default'}
+                    />
+                  </TableCell>
                   <TableCell>{item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN') : '-'}</TableCell>
                   <TableCell>
                     <IconButton size="small" onClick={() => { setEditing(item); setForm(item); setOpen(true); }}><Edit /></IconButton>
-                    <IconButton size="small" onClick={() => { if (window.confirm('确定删除？')) deleteMutation.mutate(item.id); }}><Delete /></IconButton>
+                    <IconButton size="small" color="error" onClick={() => setDeleteTarget(item)}><Delete /></IconButton>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
       {data && data.totalPages > 1 && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
           <Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} />
         </Box>
       )}
+
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{editing ? '编辑' : '新增'}SOP文档</DialogTitle>
+        <DialogTitle>{editing ? '编辑' : '新增'}SOP 文档</DialogTitle>
         <DialogContent>
-          <TextField label="编码" fullWidth margin="dense" value={form.code || ''}
+          <TextField label="编码" fullWidth margin="dense" value={form.code ?? ''}
             onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))} />
-          <TextField label="标题" fullWidth margin="dense" value={form.title || ''}
+          <TextField label="标题" fullWidth margin="dense" value={form.title ?? ''}
             onChange={e => setForm(prev => ({ ...prev, title: e.target.value }))} />
-          <TextField label="版本" fullWidth margin="dense" value={form.version || ''}
+          <TextField label="版本" fullWidth margin="dense" value={form.version ?? ''}
             onChange={e => setForm(prev => ({ ...prev, version: e.target.value }))} />
-          <TextField label="文件引用" fullWidth margin="dense" value={form.fileReference || ''}
+          <TextField label="文件引用" fullWidth margin="dense" value={form.fileReference ?? ''}
             onChange={e => setForm(prev => ({ ...prev, fileReference: e.target.value }))} />
         </DialogContent>
         <DialogActions>
@@ -120,6 +155,16 @@ export default function SopDocumentPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        message={`确定删除 SOP 文档「${deleteTarget?.title || deleteTarget?.code}」吗？此操作不可撤销。`}
+        confirmText="删除"
+        onConfirm={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+        loading={deleteMutation.isPending}
+        destructive
+      />
     </Box>
   );
 }

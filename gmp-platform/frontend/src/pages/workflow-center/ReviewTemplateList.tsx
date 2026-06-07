@@ -2,13 +2,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Chip, IconButton, Dialog, DialogTitle, DialogContent,
+  TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
   DialogActions, TextField, Pagination,
 } from '@mui/material';
-import { Add, Edit, Delete, Publish } from '@mui/icons-material';
+import { Add, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import client from '@/api/client';
 import { WORKFLOW_STATUS_MAP } from '@/utils/constants';
+import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
 
 interface WfTemplate {
@@ -76,20 +77,19 @@ export default function ReviewTemplateList() {
             ) : (
               data?.content?.map((t) => (
                 <TableRow key={t.id}>
-                  <TableCell>{t.id}</TableCell>
+                  <TableCell sx={{ fontFamily: 'monospace' }}>{t.id}</TableCell>
                   <TableCell>{t.name}</TableCell>
                   <TableCell>{t.description}</TableCell>
                   <TableCell>
-                    <Chip size="small" label={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.label || t.status}
-                      color={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.color || 'default'} />
+                    <StatusBadge
+                      label={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.label || t.status}
+                      color={WORKFLOW_STATUS_MAP[t.status as keyof typeof WORKFLOW_STATUS_MAP]?.color || 'default'}
+                    />
                   </TableCell>
                   <TableCell>{t.createdAt}</TableCell>
                   <TableCell>
                     <IconButton size="small" onClick={() => navigate(`/workflow/review-templates/${t.id}`)}>
                       <Edit />
-                    </IconButton>
-                    <IconButton size="small" onClick={() => deleteMutation.mutate(t.id)}>
-                      <Delete />
                     </IconButton>
                   </TableCell>
                 </TableRow>
