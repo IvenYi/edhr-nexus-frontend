@@ -1262,6 +1262,16 @@ function sleep(ms) {
   return new Promise((resolveDelay) => setTimeout(resolveDelay, ms));
 }
 
+async function expectReject(operation, message) {
+  let rejected = false;
+  try {
+    await operation();
+  } catch {
+    rejected = true;
+  }
+  assert(rejected, message);
+}
+
 const listPage = pickPage((page) => page.listFields.length > 0, 'list fields');
 if (listPage) {
   const client = new GctEdhrMockClient();
@@ -1303,6 +1313,26 @@ if (listPage) {
   assert(compareDescending(sorted.records.map((record) => record.createdAt)), 'sorting desc should order by createdAt');
 }
 
+const offPageActionPage = pickPage(
+  (page) => page.actions.length > 0 && !page.actions.some((action) => action.code === 'process'),
+  'page that does not declare process action',
+);
+if (offPageActionPage) {
+  const client = new GctEdhrMockClient();
+  const pageResult = await client.queryRecords(offPageActionPage.code, { page: 1, pageSize: 1 });
+  const record = pageResult.records[0];
+  if (record) {
+    await expectReject(
+      () => client.executeAction(offPageActionPage.code, record.id, 'process', { remark: 'off-page action' }),
+      'mock client should reject actions not declared by the current page metadata',
+    );
+    await expectReject(
+      () => client.executeAction(offPageActionPage.code, record.id, 'unknown_action', { remark: 'unknown action' }),
+      'mock client should reject unknown actions',
+    );
+  }
+}
+
 const deletePage = pickPage((page) => page.actions.some((action) => action.code === 'delete'), 'delete action');
 if (deletePage) {
   const client = new GctEdhrMockClient();
@@ -1334,6 +1364,43 @@ if (clonePage) {
     assert(afterSource?.values[field.name] === beforeSource?.values[field.name], 'copy input.values must not mutate source record');
     assert(afterSource?.remark === beforeSource?.remark, 'copy remark must not mutate source record');
     assert(afterSource?.updatedAt === beforeSource?.updatedAt, 'copy must not update source updatedAt');
+  }
+}
+
+if (clonePage) {
+  const client = new GctEdhrMockClient();
+  const pageResult = await client.queryRecords(clonePage.code, { page: 1, pageSize: 1 });
+  const source = pageResult.records[0];
+  if (source) {
+    const nestedValue = { stage: 'before', items: [{ name: 'before-item' }] };
+    await client.updateRecord(clonePage.code, source.id, {
+      values: { nestedValue },
+      remark: 'nested-snapshot',
+      operatorName: '嵌套值操作员',
+    });
+
+    nestedValue.stage = 'after';
+    nestedValue.items[0].name = 'after-item';
+
+    const stored = await client.getRecord(clonePage.code, source.id);
+    const storedNested = stored?.values.nestedValue;
+    assert(storedNested?.stage === 'before', 'updateRecord should snapshot nested input values');
+    assert(storedNested?.items?.[0]?.name === 'before-item', 'updateRecord should snapshot nested list input values');
+
+    if (storedNested) {
+      storedNested.stage = 'client-mutated';
+      storedNested.items[0].name = 'client-mutated-item';
+    }
+
+    const storedAgain = await client.getRecord(clonePage.code, source.id);
+    assert(storedAgain?.values.nestedValue?.stage === 'before', 'getRecord should return deep-cloned values');
+    assert(storedAgain?.values.nestedValue?.items?.[0]?.name === 'before-item', 'getRecord should deep-clone nested list values');
+
+    const audits = await client.getAuditEntries(clonePage.code, source.id);
+    const editAudit = audits.find((entry) => entry.actionCode === 'edit' && entry.remark === 'nested-snapshot');
+    const auditNested = editAudit?.afterValue?.values?.nestedValue;
+    assert(auditNested?.stage === 'before', 'audit afterValue should snapshot nested values');
+    assert(auditNested?.items?.[0]?.name === 'before-item', 'audit afterValue should snapshot nested list values');
   }
 }
 
@@ -1375,6 +1442,18 @@ if (detailPage) {
   assert(afterAudit.length === beforeAudit.length, 'auditRequired=false detail should not append audit');
   assert(afterRecord?.updatedAt === beforeRecord?.updatedAt, 'readonly detail should not update updatedAt');
   assert(afterRecord?.status === beforeRecord?.status, 'readonly detail should not change status');
+
+  const wrongPage = GCT_EDHR_PAGES.find((page) => page.code !== detailPage.code);
+  if (wrongPage) {
+    await expectReject(
+      () => client.getAuditEntries(wrongPage.code, record.id),
+      'mock client should reject cross-page audit trail reads',
+    );
+    await expectReject(
+      () => client.getStatusHistory(wrongPage.code, record.id),
+      'mock client should reject cross-page status history reads',
+    );
+  }
 }
 
 const noActionListPage = pickPage((page) => page.type === 'list' && page.actions.length === 0, 'no-action list page');

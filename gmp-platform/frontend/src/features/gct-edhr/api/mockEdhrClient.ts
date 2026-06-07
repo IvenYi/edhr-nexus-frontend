@@ -20,6 +20,7 @@ import {
 import {
   copyRecordValues,
   createDeterministicRecord,
+  deepCopyRecordValues,
   generateMockRecordsByPage,
   MOCK_TENANT_ID,
 } from '../utils/mockDataFactory';
@@ -99,8 +100,8 @@ export class GctEdhrMockClient {
       updatedAt: timestamp,
       remark: input.remark ?? baseRecord.remark,
       values: {
-        ...baseRecord.values,
-        ...input.values,
+        ...deepCopyRecordValues(baseRecord.values),
+        ...deepCopyRecordValues(input.values),
       },
     };
 
@@ -127,8 +128,8 @@ export class GctEdhrMockClient {
     const operatorName = input.operatorName ?? DEFAULT_OPERATOR_NAME;
 
     record.values = {
-      ...record.values,
-      ...input.values,
+      ...deepCopyRecordValues(record.values),
+      ...deepCopyRecordValues(input.values),
     };
     record.status = input.status ?? record.status;
     record.remark = input.remark ?? record.remark;
@@ -174,6 +175,9 @@ export class GctEdhrMockClient {
     const record = this.requireRecord(pageCode, recordId);
     const before = cloneRecord(record);
     const actionMeta = getDisplayActionsForPage(pageMeta).find((action) => action.code === actionCode);
+    if (!actionMeta) {
+      throw new Error(`Unsupported GCT eDHR action: ${pageCode}/${actionCode}`);
+    }
     const actionLabel = getActionLabel(actionCode, actionMeta);
     const policy = getActionPolicy(actionCode);
     const operatorId = input.operatorId ?? DEFAULT_OPERATOR_ID;
@@ -223,7 +227,10 @@ export class GctEdhrMockClient {
 
     if (shouldUpdateRecord) {
       if (input.values) {
-        record.values = { ...record.values, ...input.values };
+        record.values = {
+          ...deepCopyRecordValues(record.values),
+          ...deepCopyRecordValues(input.values),
+        };
       }
       record.status = nextStatus;
       record.remark = input.remark ?? record.remark;
@@ -255,13 +262,13 @@ export class GctEdhrMockClient {
   }
 
   async getAuditEntries(pageCode: string, recordId: string): Promise<EdhrAuditEntry[]> {
-    this.requirePage(pageCode);
-    return (this.auditEntriesByRecord.get(recordId) ?? []).map((entry) => ({ ...entry }));
+    this.requireRecord(pageCode, recordId);
+    return (this.auditEntriesByRecord.get(recordId) ?? []).map((entry) => cloneAuditEntry(entry));
   }
 
   async getStatusHistory(pageCode: string, recordId: string): Promise<EdhrRecordStatusHistory[]> {
-    this.requirePage(pageCode);
-    return (this.statusHistoryByRecord.get(recordId) ?? []).map((entry) => ({ ...entry }));
+    this.requireRecord(pageCode, recordId);
+    return (this.statusHistoryByRecord.get(recordId) ?? []).map((entry) => cloneStatusHistory(entry));
   }
 
   appendAuditEntry(
@@ -282,15 +289,15 @@ export class GctEdhrMockClient {
       operatorId: options.operatorId,
       operatorName: options.operatorName,
       operatedAt: this.nextTimestamp(),
-      beforeValue,
-      afterValue,
+      beforeValue: beforeValue ? deepCopyRecordValues(beforeValue) : undefined,
+      afterValue: afterValue ? deepCopyRecordValues(afterValue) : undefined,
       remark: options.remark,
     };
 
     const entries = this.auditEntriesByRecord.get(recordId) ?? [];
     entries.push(entry);
     this.auditEntriesByRecord.set(recordId, entries);
-    return { ...entry };
+    return cloneAuditEntry(entry);
   }
 
   appendStatusHistory(
@@ -315,7 +322,7 @@ export class GctEdhrMockClient {
     const histories = this.statusHistoryByRecord.get(record.id) ?? [];
     histories.push(history);
     this.statusHistoryByRecord.set(record.id, histories);
-    return { ...history };
+    return cloneStatusHistory(history);
   }
 
   private createClonedRecord(
@@ -341,7 +348,7 @@ export class GctEdhrMockClient {
       remark: input.remark ?? `${sourceRecord.remark ?? pageMeta.label} ${mode === 'version' ? '版本' : '副本'}`,
       values: {
         ...copyRecordValues(sourceRecord, pageMeta, mode, sequence),
-        ...input.values,
+        ...deepCopyRecordValues(input.values),
       },
     };
 
@@ -535,7 +542,7 @@ function mirrorSystemValues(record: EdhrRecord): void {
 function cloneRecord(record: EdhrRecord): EdhrRecord {
   return {
     ...record,
-    values: { ...record.values },
+    values: deepCopyRecordValues(record.values),
   };
 }
 
@@ -550,6 +557,18 @@ function serializeRecord(record: EdhrRecord): Record<string, unknown> {
     updatedBy: record.updatedBy,
     updatedAt: record.updatedAt,
     remark: record.remark,
-    values: { ...record.values },
+    values: deepCopyRecordValues(record.values),
   };
+}
+
+function cloneAuditEntry(entry: EdhrAuditEntry): EdhrAuditEntry {
+  return {
+    ...entry,
+    beforeValue: entry.beforeValue ? deepCopyRecordValues(entry.beforeValue) : undefined,
+    afterValue: entry.afterValue ? deepCopyRecordValues(entry.afterValue) : undefined,
+  };
+}
+
+function cloneStatusHistory(entry: EdhrRecordStatusHistory): EdhrRecordStatusHistory {
+  return { ...entry };
 }

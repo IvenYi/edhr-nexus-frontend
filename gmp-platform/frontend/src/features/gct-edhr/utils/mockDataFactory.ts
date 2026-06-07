@@ -81,11 +81,34 @@ export function copyRecordValues(
     } else if (mode === 'version' && inferEdhrFieldType(field) === 'code' && field.label.includes('版本')) {
       values[field.name] = `V${sequence}`;
     } else {
-      values[field.name] = currentValue;
+      values[field.name] = deepCopyMockValue(currentValue);
     }
   }
 
   return values;
+}
+
+export function deepCopyRecordValues(values: Record<string, unknown> | undefined): Record<string, unknown> {
+  if (!values) return {};
+  return Object.fromEntries(Object.entries(values).map(([key, value]) => [key, deepCopyMockValue(value)]));
+}
+
+export function deepCopyMockValue<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((item) => deepCopyMockValue(item)) as T;
+  }
+  if (value instanceof Date) {
+    return new Date(value.getTime()) as T;
+  }
+  if (typeof value === 'object' && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, nestedValue]) => [
+        key,
+        deepCopyMockValue(nestedValue),
+      ]),
+    ) as T;
+  }
+  return value;
 }
 
 export function createDeterministicTimestamp(pageCode: string, recordIndex: number, minuteOffset: number): string {
