@@ -41,6 +41,16 @@ mustInclude('src/App.tsx', /MuiTextField:\s*{[\s\S]*?defaultProps:\s*{[\s\S]*?si
 mustInclude('src/App.tsx', /& \.MuiOutlinedInput-root:not\(\.MuiInputBase-multiline\)/, 'compact text field sizing should skip multiline inputs');
 mustNotInclude('src/App.tsx', /MuiTableRow:\s*{[\s\S]*?root:\s*{\s*height:\s*72/, 'table rows should not force fixed height');
 
+mustInclude('src/components/shared/AppLayout.tsx', /const MODULE_BAR_WIDTH\s*=\s*64\b/, 'Vue Admin Plus dark module rail width');
+mustInclude('src/components/shared/AppLayout.tsx', /const FUNC_MENU_WIDTH\s*=\s*202\b/, 'Vue Admin Plus function menu width');
+mustInclude('src/components/shared/AppLayout.tsx', /const TOP_NAV_HEIGHT\s*=\s*60\b/, 'Vue Admin Plus top nav height');
+mustInclude('src/components/shared/AppLayout.tsx', /const TABS_BAR_HEIGHT\s*=\s*50\b/, 'Vue Admin Plus tabs bar height');
+mustInclude('src/components/shared/AppLayout.tsx', /const HEADER_TOTAL_HEIGHT\s*=\s*TOP_NAV_HEIGHT\s*\+\s*TABS_BAR_HEIGHT\b/, 'combined header height should derive from top nav and tabs bar');
+mustInclude('src/components/shared/AppLayout.tsx', /sidebarDark:\s*'#282c34'/, 'dark module rail background');
+mustInclude('src/components/shared/AppLayout.tsx', /funcMenuBg:\s*'#ffffff'/, 'white secondary menu and header areas');
+mustInclude('src/components/shared/AppLayout.tsx', /ml:\s*`\$\{sidebarTotalWidth\}px`/, 'content should offset by total sidebar width');
+mustInclude('src/components/shared/AppLayout.tsx', /(?:p|padding):\s*['"]20px['"]/, 'main content should use 20px padding');
+
 if (failures.length > 0) {
   console.error('Style constraint verification failed:');
   for (const failure of failures) console.error(`- ${failure}`);

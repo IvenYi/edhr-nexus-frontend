@@ -3,7 +3,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem as MuiMenuItem,
   List, ListItemButton, ListItemIcon, ListItemText, Collapse,
-  Box, Divider, Badge, Tooltip,
+  Box, Divider, Badge, Tooltip, Chip,
 } from '@mui/material';
 import {
   Dashboard, AccountTree, Storage, Settings,
@@ -18,25 +18,29 @@ import { SIDEBAR_MODULES, type SidebarModule, type SidebarMenu } from '@/utils/c
 // ============================================================
 
 const COLORS = {
-  primary: '#1565C0',
-  primaryLight: 'rgba(21, 101, 192, 0.08)',
-  primaryHover: 'rgba(21, 101, 192, 0.12)',
-  secondary: '#00897B',
-  error: '#C62828',
-  errorBg: 'rgba(198, 40, 40, 0.06)',
-  textPrimary: '#1A2332',
-  textSecondary: '#5A6878',
-  textDisabled: '#8E9BAF',
-  divider: '#E2E6EC',
-  sidebarDark: '#121C2D',
-  sidebarActiveBg: 'rgba(21, 101, 192, 0.18)',
-  sidebarActiveHover: 'rgba(21, 101, 192, 0.26)',
-  funcMenuBg: '#F5F7FA',
+  primary: '#1890ff',
+  primaryLight: '#e8f4ff',
+  primaryHover: '#d1e9ff',
+  success: '#13ce66',
+  warning: '#ffba00',
+  error: '#ff4d4f',
+  errorBg: '#fff1f0',
+  textPrimary: '#303133',
+  textSecondary: '#606266',
+  textDisabled: '#909399',
+  divider: '#e4e7ed',
+  sidebarDark: '#282c34',
+  sidebarDarkText: 'hsla(0,0%,100%,.95)',
+  funcMenuBg: '#ffffff',
+  pageBg: '#f6f8f9',
+  shadow: '0 1px 4px rgba(0, 21, 41, 0.08)',
 };
 
-const MODULE_BAR_WIDTH = 72;
-const FUNC_MENU_WIDTH = 220;
-const HEADER_HEIGHT = 56;
+const MODULE_BAR_WIDTH = 64;
+const FUNC_MENU_WIDTH = 202;
+const TOP_NAV_HEIGHT = 60;
+const TABS_BAR_HEIGHT = 50;
+const HEADER_TOTAL_HEIGHT = TOP_NAV_HEIGHT + TABS_BAR_HEIGHT;
 
 /** Map icon name strings to MUI icon components. */
 const ICON_MAP: Record<string, React.ReactNode> = {
@@ -82,6 +86,17 @@ function getInitialExpandedMenus(moduleId: string, pathname: string): Set<string
     });
   }
   return expanded;
+}
+
+function getCurrentPageTitle(module: SidebarModule, pathname: string): string {
+  for (const menu of module.menus) {
+    if (menu.path && matchPath(menu.path, pathname)) return menu.label;
+
+    const child = menu.children?.find((subMenu) => matchPath(subMenu.path, pathname));
+    if (child) return child.label;
+  }
+
+  return module.label;
 }
 
 // ============================================================
@@ -148,15 +163,32 @@ export default function AppLayout() {
   const activeModule: SidebarModule =
     SIDEBAR_MODULES.find((m) => m.id === activeModuleId) || SIDEBAR_MODULES[0];
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
+  const currentPageTitle = getCurrentPageTitle(activeModule, location.pathname);
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* ==================== Header ==================== */}
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          left: `${sidebarTotalWidth}px`,
+          right: 0,
+          width: `calc(100% - ${sidebarTotalWidth}px)`,
+          height: TOP_NAV_HEIGHT,
+          bgcolor: COLORS.funcMenuBg,
+          color: COLORS.textPrimary,
+          boxShadow: COLORS.shadow,
+          transition: 'left 280ms cubic-bezier(0.4, 0, 0.2, 1), width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
       >
-        <Toolbar sx={{ minHeight: `${HEADER_HEIGHT}px !important` }}>
+        <Toolbar
+          sx={{
+            minHeight: `${TOP_NAV_HEIGHT}px !important`,
+            height: TOP_NAV_HEIGHT,
+            px: '20px !important',
+          }}
+        >
           <IconButton
             edge="start"
             onClick={() => setFuncMenuOpen((prev) => !prev)}
@@ -205,7 +237,7 @@ export default function AppLayout() {
               transition: 'all 150ms ease-out',
             }}
           >
-            <Avatar sx={{ width: 32, height: 32, bgcolor: COLORS.secondary }}>
+            <Avatar sx={{ width: 32, height: 32, bgcolor: COLORS.success }}>
               {user.displayName?.charAt(0) || 'A'}
             </Avatar>
           </IconButton>
@@ -246,6 +278,55 @@ export default function AppLayout() {
         </Toolbar>
       </AppBar>
 
+      {/* ==================== Tabs Bar ==================== */}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: TOP_NAV_HEIGHT,
+          left: `${sidebarTotalWidth}px`,
+          right: 0,
+          height: TABS_BAR_HEIGHT,
+          zIndex: (theme) => theme.zIndex.drawer,
+          bgcolor: COLORS.funcMenuBg,
+          boxShadow: COLORS.shadow,
+          px: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          transition: 'left 280ms cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
+      >
+        <Chip
+          label="首页"
+          onClick={() => navigate('/')}
+          sx={{
+            height: 32,
+            borderRadius: '5px',
+            bgcolor: COLORS.funcMenuBg,
+            color: COLORS.textSecondary,
+            border: `1px solid ${COLORS.divider}`,
+            '&:hover': {
+              bgcolor: COLORS.primaryLight,
+              color: COLORS.primary,
+            },
+          }}
+        />
+        <Chip
+          label={currentPageTitle}
+          sx={{
+            height: 32,
+            borderRadius: '5px',
+            bgcolor: COLORS.primaryLight,
+            color: COLORS.primary,
+            fontWeight: 500,
+            border: `1px solid ${COLORS.primaryLight}`,
+            '& .MuiChip-label': {
+              px: '12px',
+            },
+          }}
+        />
+      </Box>
+
       {/* ==================== Module Bar ==================== */}
       <Box
         sx={{
@@ -253,7 +334,7 @@ export default function AppLayout() {
           flexShrink: 0,
           bgcolor: COLORS.sidebarDark,
           position: 'fixed',
-          top: HEADER_HEIGHT,
+          top: 0,
           left: 0,
           bottom: 0,
           zIndex: 1200,
@@ -285,11 +366,11 @@ export default function AppLayout() {
                   width: '100%',
                   borderRadius: 0,
                   position: 'relative',
-                  color: isActive ? '#FFFFFF' : COLORS.textDisabled,
-                  bgcolor: isActive ? COLORS.sidebarActiveBg : 'transparent',
+                  color: isActive ? COLORS.sidebarDarkText : 'hsla(0,0%,100%,.65)',
+                  bgcolor: isActive ? COLORS.primary : 'transparent',
                   '&:hover': {
                     bgcolor: isActive
-                      ? COLORS.sidebarActiveHover
+                      ? COLORS.primary
                       : 'rgba(255, 255, 255, 0.06)',
                     '& .MuiSvgIcon-root': {
                       transform: 'scale(1.08)',
@@ -304,7 +385,7 @@ export default function AppLayout() {
                         transform: 'translateY(-50%)',
                         height: 32,
                         width: 3,
-                        bgcolor: COLORS.primary,
+                        bgcolor: COLORS.sidebarDarkText,
                         borderRadius: '0 2px 2px 0',
                       }
                     : {},
@@ -358,7 +439,7 @@ export default function AppLayout() {
           width: funcMenuOpen ? FUNC_MENU_WIDTH : 0,
           flexShrink: 0,
           position: 'fixed',
-          top: HEADER_HEIGHT,
+          top: 0,
           left: MODULE_BAR_WIDTH,
           bottom: 0,
           zIndex: 1199,
@@ -524,12 +605,12 @@ export default function AppLayout() {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          mt: `${HEADER_HEIGHT}px`,
+          padding: '20px',
+          mt: `${HEADER_TOTAL_HEIGHT}px`,
           ml: `${sidebarTotalWidth}px`,
           transition: 'margin-left 280ms cubic-bezier(0.4, 0, 0.2, 1)',
-          minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
-          bgcolor: 'background.default',
+          minHeight: `calc(100vh - ${HEADER_TOTAL_HEIGHT}px)`,
+          bgcolor: COLORS.pageBg,
           maxWidth: '100vw',
         }}
       >
