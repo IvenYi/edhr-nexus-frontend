@@ -677,11 +677,56 @@ function verifyTask2Integration(routerSourceText, constantsSourceText, appLayout
     messages.push('constants.ts must append GCT_EDHR_MENU_MODULE to SIDEBAR_MODULES');
   }
 
-  if (!appLayoutSourceText.includes("pathname.startsWith('/gct-edhr')")) {
-    messages.push("AppLayout getModuleIdByPath must support pathname.startsWith('/gct-edhr')");
+  if (!/function\s+getMenuExpansionKey\s*\(\s*moduleId:\s*string,\s*menuLabel:\s*string\s*\)/.test(appLayoutSourceText)) {
+    messages.push('AppLayout must define getMenuExpansionKey(moduleId, menuLabel)');
   }
-  if (!/pathname\.startsWith\('\/gct-edhr'\)\)\s*return\s+['"]gct-edhr['"]/.test(appLayoutSourceText)) {
-    messages.push("AppLayout getModuleIdByPath must map /gct-edhr paths to module id 'gct-edhr'");
+  if (!appLayoutSourceText.includes('return `${moduleId}::${menuLabel}`')) {
+    messages.push('AppLayout menu expansion key must include both module id and menu label');
+  }
+  for (const rawMenuKeySnippet of [
+    'expanded.add(menu.label)',
+    'expandedMenus.has(menu.label)',
+    'handleToggleMenu(menu.label)',
+    'next.has(menuLabel)',
+    'next.delete(menuLabel)',
+    'next.add(menuLabel)',
+  ]) {
+    if (appLayoutSourceText.includes(rawMenuKeySnippet)) {
+      messages.push(`AppLayout menu expansion state must not use raw label key: ${rawMenuKeySnippet}`);
+    }
+  }
+  for (const requiredMenuKeySnippet of [
+    'getMenuExpansionKey(moduleId, menu.label)',
+    'getMenuExpansionKey(autoModuleId, menu.label)',
+    'getMenuExpansionKey(activeModule.id, menu.label)',
+  ]) {
+    if (!appLayoutSourceText.includes(requiredMenuKeySnippet)) {
+      messages.push(`AppLayout must use unique menu expansion keys for ${requiredMenuKeySnippet}`);
+    }
+  }
+
+  if (!/function\s+isPathSegmentMatch\s*\(\s*pathname:\s*string,\s*prefix:\s*string\s*\)/.test(appLayoutSourceText)) {
+    messages.push('AppLayout must define isPathSegmentMatch(pathname, prefix)');
+  }
+  if (!appLayoutSourceText.includes('pathname === prefix') || !appLayoutSourceText.includes('pathname.startsWith(`${prefix}/`)')) {
+    messages.push('AppLayout path matching helper must require exact match or a following slash segment');
+  }
+  for (const rawPathSnippet of [
+    "pathname.startsWith('/master-data')",
+    "pathname.startsWith('/workflow')",
+    "pathname.startsWith('/system')",
+    "pathname.startsWith('/gct-edhr')",
+    'pathname.startsWith(menuPath)',
+  ]) {
+    if (appLayoutSourceText.includes(rawPathSnippet)) {
+      messages.push(`AppLayout must not use bare startsWith for path matching: ${rawPathSnippet}`);
+    }
+  }
+  if (!/isPathSegmentMatch\(pathname,\s*['"]\/gct-edhr['"]\)\)\s*return\s+['"]gct-edhr['"]/.test(appLayoutSourceText)) {
+    messages.push("AppLayout getModuleIdByPath must map only the /gct-edhr segment to module id 'gct-edhr'");
+  }
+  if (!/return\s+isPathSegmentMatch\(pathname,\s*menuPath\)/.test(appLayoutSourceText)) {
+    messages.push('AppLayout matchPath must use segment-boundary matching for menu paths');
   }
   if (!/\bcurrentModuleForPath\b/.test(appLayoutSourceText)) {
     messages.push('AppLayout must keep currentModuleForPath derived from location.pathname');

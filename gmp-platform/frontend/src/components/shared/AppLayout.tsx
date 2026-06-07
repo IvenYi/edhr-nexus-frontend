@@ -63,13 +63,22 @@ function getIcon(iconName?: string): React.ReactNode {
 // Helper functions
 // ============================================================
 
+function isPathSegmentMatch(pathname: string, prefix: string): boolean {
+  if (prefix === '/') return pathname === '/';
+  return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
 function getModuleIdByPath(pathname: string): string {
   if (pathname === '/') return 'home';
-  if (pathname.startsWith('/master-data')) return 'data';
-  if (pathname.startsWith('/workflow')) return 'production';
-  if (pathname.startsWith('/system')) return 'system';
-  if (pathname.startsWith('/gct-edhr')) return 'gct-edhr';
+  if (isPathSegmentMatch(pathname, '/master-data')) return 'data';
+  if (isPathSegmentMatch(pathname, '/workflow')) return 'production';
+  if (isPathSegmentMatch(pathname, '/system')) return 'system';
+  if (isPathSegmentMatch(pathname, '/gct-edhr')) return 'gct-edhr';
   return 'home';
+}
+
+function getMenuExpansionKey(moduleId: string, menuLabel: string): string {
+  return `${moduleId}::${menuLabel}`;
 }
 
 function isMenuActive(menu: SidebarMenu, pathname: string): boolean {
@@ -79,8 +88,7 @@ function isMenuActive(menu: SidebarMenu, pathname: string): boolean {
 }
 
 function matchPath(menuPath: string, pathname: string): boolean {
-  if (menuPath === '/') return pathname === '/';
-  return pathname.startsWith(menuPath);
+  return isPathSegmentMatch(pathname, menuPath);
 }
 
 function getInitialExpandedMenus(moduleId: string, pathname: string): Set<string> {
@@ -89,7 +97,7 @@ function getInitialExpandedMenus(moduleId: string, pathname: string): Set<string
   if (module) {
     module.menus.forEach((menu) => {
       if (menu.children && isMenuActive(menu, pathname)) {
-        expanded.add(menu.label);
+        expanded.add(getMenuExpansionKey(moduleId, menu.label));
       }
     });
   }
@@ -134,7 +142,7 @@ export default function AppLayout() {
         const next = new Set(prev);
         module.menus.forEach((menu) => {
           if (menu.children && isMenuActive(menu, location.pathname)) {
-            next.add(menu.label);
+            next.add(getMenuExpansionKey(autoModuleId, menu.label));
           }
         });
         return next;
@@ -151,11 +159,11 @@ export default function AppLayout() {
     setFuncMenuOpen(true);
   }, []);
 
-  const handleToggleMenu = useCallback((menuLabel: string) => {
+  const handleToggleMenu = useCallback((menuKey: string) => {
     setExpandedMenus((prev) => {
       const next = new Set(prev);
-      if (next.has(menuLabel)) next.delete(menuLabel);
-      else next.add(menuLabel);
+      if (next.has(menuKey)) next.delete(menuKey);
+      else next.add(menuKey);
       return next;
     });
   }, []);
@@ -546,7 +554,8 @@ export default function AppLayout() {
             sx={{ animation: 'fadeIn 180ms ease-out' }}
           >
             {activeModule.menus.map((menu) => {
-              const menuExpanded = expandedMenus.has(menu.label);
+              const menuKey = getMenuExpansionKey(activeModule.id, menu.label);
+              const menuExpanded = expandedMenus.has(menuKey);
               const menuActive = isMenuActive(menu, location.pathname);
 
               return (
@@ -554,7 +563,7 @@ export default function AppLayout() {
                   <ListItemButton
                     onClick={() => {
                       if (menu.children) {
-                        handleToggleMenu(menu.label);
+                        handleToggleMenu(menuKey);
                       } else if (menu.path) {
                         handleSubMenuClick(menu.path);
                       }
