@@ -73,6 +73,7 @@ const SEMANTIC_TRANSITION_ACTION_CODES = new Set([
 const generatedPagesFile = resolve(projectRoot, 'src/features/gct-edhr/metadata/generatedPages.ts');
 const generatedMenusFile = resolve(projectRoot, 'src/features/gct-edhr/metadata/generatedMenus.ts');
 const typesFile = resolve(projectRoot, 'src/features/gct-edhr/types.ts');
+const genericEdhrPageFile = resolve(projectRoot, 'src/features/gct-edhr/pages/GenericEdhrPage.tsx');
 const routerFile = resolve(projectRoot, 'src/router/index.tsx');
 const constantsFile = resolve(projectRoot, 'src/utils/constants.ts');
 const appLayoutFile = resolve(projectRoot, 'src/components/shared/AppLayout.tsx');
@@ -90,11 +91,27 @@ const task3MockFiles = {
   mockEdhrClient: resolve(projectRoot, 'src/features/gct-edhr/api/mockEdhrClient.ts'),
   mockEdhrStore: resolve(projectRoot, 'src/features/gct-edhr/store/mockEdhrStore.ts'),
 };
+const task4GenericUiFiles = {
+  EdhrQueryBar: resolve(projectRoot, 'src/features/gct-edhr/components/EdhrQueryBar.tsx'),
+  EdhrDataTable: resolve(projectRoot, 'src/features/gct-edhr/components/EdhrDataTable.tsx'),
+  EdhrToolbar: resolve(projectRoot, 'src/features/gct-edhr/components/EdhrToolbar.tsx'),
+  PermissionButton: resolve(projectRoot, 'src/features/gct-edhr/components/PermissionButton.tsx'),
+  DetailDrawer: resolve(projectRoot, 'src/features/gct-edhr/components/DetailDrawer.tsx'),
+  FormDialog: resolve(projectRoot, 'src/features/gct-edhr/components/FormDialog.tsx'),
+  StateTransitionDialog: resolve(projectRoot, 'src/features/gct-edhr/components/StateTransitionDialog.tsx'),
+  AuditPanel: resolve(projectRoot, 'src/features/gct-edhr/components/AuditPanel.tsx'),
+  ExecutionPanel: resolve(projectRoot, 'src/features/gct-edhr/components/adapters/ExecutionPanel.tsx'),
+  ApprovalPanel: resolve(projectRoot, 'src/features/gct-edhr/components/adapters/ApprovalPanel.tsx'),
+  ReportPanel: resolve(projectRoot, 'src/features/gct-edhr/components/adapters/ReportPanel.tsx'),
+  DashboardPanel: resolve(projectRoot, 'src/features/gct-edhr/components/adapters/DashboardPanel.tsx'),
+  DemoChainPanel: resolve(projectRoot, 'src/features/gct-edhr/components/DemoChainPanel.tsx'),
+};
 
 const requiredFiles = [
   generatedPagesFile,
   generatedMenusFile,
   typesFile,
+  genericEdhrPageFile,
   routerFile,
   constantsFile,
   appLayoutFile,
@@ -121,6 +138,7 @@ const packageJson = readJson(packageJsonFile);
 const pagesSource = readFileSync(generatedPagesFile, 'utf8');
 const menusSource = readFileSync(generatedMenusFile, 'utf8');
 const typesSource = readFileSync(typesFile, 'utf8');
+const genericEdhrPageSource = readFileSync(genericEdhrPageFile, 'utf8');
 const routerSource = readFileSync(routerFile, 'utf8');
 const constantsSource = readFileSync(constantsFile, 'utf8');
 const appLayoutSource = readFileSync(appLayoutFile, 'utf8');
@@ -178,6 +196,7 @@ verifyFrontendStructuredOutput(frontendPages, frontendMenuModule, spec, failures
 verifyTask2Integration(routerSource, constantsSource, appLayoutSource, failures);
 verifyTask3MockLayer(task3MockFiles, failures);
 await verifyTask3MockBehavior(failures);
+verifyTask4GenericUi(genericEdhrPageSource, task4GenericUiFiles, failures);
 
 if (failures.length) {
   reportAndExit(failures);
@@ -881,6 +900,184 @@ function verifyTask3MockLayer(files, messages) {
     'auditTrailRequestSeq',
     'selectRecordRequestSeq',
     'requestId',
+  ], messages);
+}
+
+function verifyTask4GenericUi(genericPageSourceText, files, messages) {
+  const sources = {};
+
+  for (const [name, filePath] of Object.entries(files)) {
+    if (!existsSync(filePath)) {
+      messages.push(`Task 4 generic UI missing ${name}: ${filePath}`);
+      continue;
+    }
+    sources[name] = readFileSync(filePath, 'utf8');
+  }
+
+  requireTokens('GenericEdhrPage.tsx', genericPageSourceText, [
+    'useMockEdhrStore',
+    'GCT_EDHR_PAGES',
+    'getDisplayActionsForPage',
+    'useLocation',
+    'useEffect',
+    'loadPage',
+    'setQuery',
+    'resetQuery',
+    'setPagination',
+    'setSorting',
+    'selectRecord',
+    'createRecord',
+    'updateRecord',
+    'deleteRecord',
+    'executeAction',
+    'auditEntries',
+    'statusHistory',
+    'EdhrQueryBar',
+    'EdhrToolbar',
+    'EdhrDataTable',
+    'DetailDrawer',
+    'FormDialog',
+    'StateTransitionDialog',
+    'ExecutionPanel',
+    'ApprovalPanel',
+    'ReportPanel',
+    'DashboardPanel',
+    'DemoChainPanel',
+  ], messages);
+
+  if (/页面占位|<Typography[^>]*>\s*GCT eDHR\s*<\/Typography>/.test(genericPageSourceText)) {
+    messages.push('GenericEdhrPage.tsx must render a functional GCT eDHR workbench instead of the placeholder page');
+  }
+
+  if (!genericPageSourceText.includes('page.path') || !genericPageSourceText.includes('location.pathname')) {
+    messages.push('GenericEdhrPage.tsx must resolve page metadata from location.pathname and page.path');
+  }
+
+  if (!genericPageSourceText.includes('NotFound') && !genericPageSourceText.includes('未找到')) {
+    messages.push('GenericEdhrPage.tsx must render a NotFound-style empty state when page metadata is missing');
+  }
+
+  if (!sources.EdhrQueryBar || !sources.EdhrDataTable || !sources.EdhrToolbar || !sources.DetailDrawer) {
+    return;
+  }
+
+  requireTokens('EdhrQueryBar.tsx', sources.EdhrQueryBar, [
+    'page.queryFields',
+    'setQuery',
+    'resetQuery',
+    'TextField',
+    '查询',
+    '重置',
+  ], messages);
+
+  requireTokens('EdhrToolbar.tsx', sources.EdhrToolbar, [
+    'getDisplayActionsForPage',
+    'PermissionButton',
+    'page.title',
+    'page.type',
+    'page.baseStatuses',
+    'page.businessStatuses',
+  ], messages);
+
+  requireTokens('PermissionButton.tsx', sources.PermissionButton ?? '', [
+    '@mui/icons-material',
+    'Tooltip',
+    'IconButton',
+    'getActionLabel',
+    'getActionPolicy',
+  ], messages);
+
+  requireTokens('EdhrDataTable.tsx', sources.EdhrDataTable, [
+    'page.listFields',
+    'page.formFields',
+    'TableSortLabel',
+    'TablePagination',
+    'setPagination',
+    'setSorting',
+    'selectRecord',
+    'PermissionButton',
+  ], messages);
+
+  requireTokens('DetailDrawer.tsx', sources.DetailDrawer, [
+    'Drawer',
+    'AuditPanel',
+    'auditEntries',
+    'statusHistory',
+    'page.systemFields',
+    'selectedRecord',
+  ], messages);
+
+  requireTokens('FormDialog.tsx', sources.FormDialog ?? '', [
+    'createRecord',
+    'updateRecord',
+    'executeAction',
+    'copy',
+    'version',
+    'page.formFields',
+    'TextField',
+  ], messages);
+
+  requireTokens('StateTransitionDialog.tsx', sources.StateTransitionDialog ?? '', [
+    'executeAction',
+    'deleteRecord',
+    'remark',
+    'process',
+    'finish',
+    'approve',
+    'reject',
+    'release',
+    'withdraw',
+    'transfer',
+    'disable',
+    'enable',
+  ], messages);
+
+  requireTokens('AuditPanel.tsx', sources.AuditPanel ?? '', [
+    'auditEntries',
+    'statusHistory',
+    'Accordion',
+    'List',
+  ], messages);
+
+  requireTokens('ExecutionPanel.tsx', sources.ExecutionPanel ?? '', [
+    '扫码',
+    '当前工序',
+    '执行进度',
+    'PermissionButton',
+  ], messages);
+
+  requireTokens('ApprovalPanel.tsx', sources.ApprovalPanel ?? '', [
+    '审批队列',
+    'approve',
+    'reject',
+    'PermissionButton',
+  ], messages);
+
+  requireTokens('ReportPanel.tsx', sources.ReportPanel ?? '', [
+    '指标摘要',
+    'export',
+    'download',
+    'records',
+  ], messages);
+
+  requireTokens('DashboardPanel.tsx', sources.DashboardPanel ?? '', [
+    'KPI',
+    '待办',
+    '趋势',
+    'records',
+  ], messages);
+
+  requireTokens('DemoChainPanel.tsx', sources.DemoChainPanel ?? '', [
+    '基础建模',
+    '工单',
+    '批次/SN',
+    '生产执行',
+    '检验执行',
+    '放行',
+    '表单/DHR',
+    '打印',
+    '追溯报表',
+    'useNavigate',
   ], messages);
 }
 
