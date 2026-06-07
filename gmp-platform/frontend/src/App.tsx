@@ -91,13 +91,28 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          height: 32,
-          padding: '8px 15px',
+          minHeight: 32,
+          padding: '6px 15px',
           borderRadius: 5,
           textTransform: 'none',
           fontSize: 14,
           fontWeight: 500,
+          lineHeight: 1.2,
           transition: 'all 0.1s ease',
+        },
+        sizeSmall: {
+          height: 32,
+          padding: '7px 12px',
+          lineHeight: 1.2,
+        },
+        sizeMedium: {
+          minHeight: 32,
+          padding: '7px 15px',
+        },
+        sizeLarge: {
+          minHeight: 40,
+          padding: '9px 22px',
+          lineHeight: 1.3,
         },
         contained: {
           boxShadow: 'none',
@@ -163,7 +178,6 @@ const theme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
-          height: 72,
           '&:hover': { backgroundColor: '#f6f8f9' },
         },
       },
@@ -187,16 +201,22 @@ const theme = createTheme({
       },
     },
     MuiTextField: {
+      defaultProps: {
+        size: 'small',
+      },
       styleOverrides: {
         root: {
-          '& .MuiInputBase-root': {
-            minHeight: 32,
+          '& .MuiOutlinedInput-root': {
             borderRadius: 5,
             backgroundColor: '#ffffff',
           },
-          '& .MuiOutlinedInput-input': {
+          '& .MuiOutlinedInput-root:not(.MuiInputBase-multiline)': {
+            minHeight: 32,
+          },
+          '& .MuiOutlinedInput-root:not(.MuiInputBase-multiline) .MuiOutlinedInput-input': {
             padding: '7px 11px',
             fontSize: 14,
+            lineHeight: '18px',
           },
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: '#dcdfe6',
