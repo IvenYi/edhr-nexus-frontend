@@ -59,13 +59,13 @@ mustInclude('src/components/shared/AppLayout.tsx', /data-mobile-sidebar-backdrop
 mustInclude('src/components/shared/AppLayout.tsx', /onClick=\{\(\)\s*=>\s*setFuncMenuOpen\(false\)\}/, 'mobile sidebar close affordance should close the overlay');
 mustInclude('src/components/shared/AppLayout.tsx', /(?:p|padding):\s*['"]20px['"]/, 'main content should use 20px padding');
 
-mustInclude('src/pages/LoginPage.tsx', /backgroundSize:\s*'cover(?:'|,)/, 'login background should use cover-scale technical artwork');
-mustInclude('src/pages/LoginPage.tsx', /ml:\s*'auto'/, 'desktop login panel should sit on the right');
-mustInclude('src/pages/LoginPage.tsx', /width:\s*349\b/, 'login panel should match Vue Admin Plus width');
-mustInclude('src/pages/LoginPage.tsx', /minHeight:\s*583\b/, 'login panel should match Vue Admin Plus height rhythm');
-mustInclude('src/pages/LoginPage.tsx', /height:\s*50\b/, 'login inputs and button should use 50px controls');
-mustNotInclude('src/pages/LoginPage.tsx', 'radial-gradient(circle', 'login page should avoid decorative radial circles');
-mustNotInclude('src/pages/LoginPage.tsx', 'backdropFilter', 'login card should avoid glassmorphism blur');
+mustInclude('src/pages/LoginPage.tsx', /flex:\s*'0 0 480px'/, 'restored login desktop brand panel width');
+mustInclude('src/pages/LoginPage.tsx', /display:\s*\{\s*xs:\s*'none',\s*md:\s*'flex'\s*\}/, 'restored login should hide brand panel on mobile');
+mustInclude('src/pages/LoginPage.tsx', 'eDHR 系统', 'restored login brand title');
+mustInclude('src/pages/LoginPage.tsx', '21 CFR Part 11', 'restored login compliance standard');
+mustInclude('src/pages/LoginPage.tsx', '登录 eDHR', 'restored login form title');
+mustInclude('src/pages/LoginPage.tsx', /minWidth:\s*0/, 'mobile login flex item should be allowed to shrink');
+mustInclude('src/pages/LoginPage.tsx', /boxSizing:\s*'border-box'/, 'mobile login card width should include padding');
 
 mustInclude('src/pages/dashboard/DashboardPage.tsx', 'cardSx', 'shared dashboard card style');
 mustInclude('src/pages/dashboard/DashboardPage.tsx', "border: '1px solid #e4e7ed'", 'dashboard card border');

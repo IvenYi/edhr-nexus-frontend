@@ -1,10 +1,10 @@
-import { type FormEvent, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Card, TextField, Button, Typography, Alert,
+  Box, Card, TextField, Button, Typography, Alert, Divider,
 } from '@mui/material';
 import {
-  LockOutlined, PersonOutline,
+  Visibility, LockOutlined, PersonOutline,
 } from '@mui/icons-material';
 import client from '@/api/client';
 
@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -38,98 +38,131 @@ export default function LoginPage() {
       sx={{
         minHeight: '100vh',
         display: 'flex',
-        alignItems: { xs: 'center', md: 'flex-start' },
-        px: { xs: 2, md: 7, lg: 10 },
-        py: { xs: 3, md: 0 },
-        position: 'relative',
-        overflow: 'auto',
-        bgcolor: '#dceff5',
-        backgroundImage: [
-          'linear-gradient(112deg, #14507f 0%, #2a80b8 45%, #e2f2f6 100%)',
-          'linear-gradient(rgba(255,255,255,0.22) 1px, transparent 1px)',
-          'linear-gradient(90deg, rgba(255,255,255,0.22) 1px, transparent 1px)',
-        ].join(', '),
-        backgroundSize: 'cover, 44px 44px, 44px 44px',
-        backgroundPosition: 'center, center, center',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          inset: 0,
-          pointerEvents: 'none',
-          backgroundImage: [
-            'linear-gradient(135deg, transparent 0 56%, rgba(255,255,255,0.18) 56% 57%, transparent 57% 100%)',
-            'linear-gradient(120deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 38%)',
-          ].join(', '),
-          opacity: 0.8,
-        },
+        bgcolor: '#F0F2F5',
       }}
     >
+      {/* Left: Branding Panel */}
       <Box
         sx={{
-          width: 349,
-          maxWidth: 'calc(100vw - 32px)',
-          minHeight: 583,
-          mt: { xs: 0, md: 'calc(50vh - 277.5px)' },
-          ml: 'auto',
-          mr: { xs: 'auto', md: 0 },
-          p: '4.5vh',
-          boxSizing: 'border-box',
-          display: 'flex',
+          flex: '0 0 480px',
+          display: { xs: 'none', md: 'flex' },
           flexDirection: 'column',
           justifyContent: 'center',
+          alignItems: 'center',
+          bgcolor: '#0D233A',
+          color: '#FFFFFF',
+          p: 8,
           position: 'relative',
-          zIndex: 1,
+          overflow: 'hidden',
         }}
       >
-        <Box sx={{ mb: 3.5 }}>
-          <Typography
-            component="h1"
-            sx={{
-              color: '#fff',
-              fontSize: { xs: 46, md: 54 },
-              fontWeight: 700,
-              lineHeight: 1,
-              letterSpacing: 0,
-              textShadow: '0 1px 2px rgba(12,45,80,0.18)',
-            }}
-          >
-            eDHR
-          </Typography>
-          <Typography
-            sx={{
-              mt: 1.25,
-              color: 'rgba(255,255,255,0.94)',
-              fontSize: { xs: 22, md: 26 },
-              fontWeight: 500,
-              lineHeight: 1.25,
-              letterSpacing: 0,
-            }}
-          >
-            电子批记录平台
-          </Typography>
-        </Box>
+        {/* Background geometric decoration */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: -120,
+            right: -120,
+            width: 500,
+            height: 500,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(21,101,192,0.3) 0%, transparent 70%)',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: -80,
+            left: -80,
+            width: 400,
+            height: 400,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(0,137,123,0.2) 0%, transparent 70%)',
+          }}
+        />
 
+        {/* Brand content */}
+        <Box sx={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 360 }}>
+          <Box
+            sx={{
+              width: 72,
+              height: 72,
+              borderRadius: 3,
+              bgcolor: 'rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(12px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 4,
+              mx: 'auto',
+              border: '1px solid rgba(255,255,255,0.15)',
+            }}
+          >
+            <Visibility sx={{ fontSize: 36, color: '#64B5F6' }} />
+          </Box>
+
+          <Typography variant="h4" fontWeight={700} sx={{ mb: 1.5, color: '#FFFFFF' }}>
+            eDHR 系统
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
+            电子设备历史记录平台
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
+            面向医疗器械生产的 GMP 合规数字化解决方案，确保每一批次全程可追溯、可审计。
+          </Typography>
+
+          <Divider sx={{ my: 5, borderColor: 'rgba(255,255,255,0.1)' }} />
+
+          <Box sx={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+            {[
+              { num: '21 CFR Part 11', label: '合规标准' },
+              { num: 'ISO 13485', label: '质量体系' },
+              { num: 'GAMP 5', label: '验证框架' },
+            ].map((item) => (
+              <Box key={item.label} sx={{ textAlign: 'center' }}>
+                <Typography variant="body2" fontWeight={600} sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                  {item.num}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.45)' }}>
+                  {item.label}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Right: Login Form */}
+      <Box
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: { xs: 2, sm: 4 },
+        }}
+      >
         <Card
           sx={{
-            width: '100%',
-            p: 2.5,
-            border: '1px solid rgba(255,255,255,0.68)',
-            borderRadius: 1.5,
-            bgcolor: 'rgba(255,255,255,0.86)',
-            boxShadow: '0 4px 12px rgba(14,55,94,0.10)',
+            width: 400,
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            p: { xs: 3, sm: 4 },
+            boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
           }}
         >
-          <Box sx={{ textAlign: 'center', mb: 2.5 }}>
-            <Typography variant="h6" fontWeight={600} sx={{ color: '#1f2d3d', lineHeight: 1.35 }}>
-              账号登录
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <LockOutlined sx={{ fontSize: 40, color: 'primary.main', mb: 1.5 }} />
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+              登录 eDHR
             </Typography>
-            <Typography variant="body2" sx={{ color: '#6b778c', mt: 0.5 }}>
+            <Typography variant="body2" color="text.secondary">
               请输入您的账号和密码
             </Typography>
           </Box>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 2, borderRadius: 1, fontSize: 13 }}>
+            <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
               {error}
             </Alert>
           )}
@@ -138,58 +171,33 @@ export default function LoginPage() {
             <TextField
               label="用户名"
               fullWidth
-              margin="none"
+              margin="normal"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
               InputProps={{
-                startAdornment: <PersonOutline sx={{ mr: 1, color: '#9aa6b2' }} />,
-              }}
-              sx={{
-                mb: 2,
-                '& .MuiOutlinedInput-root': {
-                  height: 50,
-                  borderRadius: 1,
-                  bgcolor: 'rgba(255,255,255,0.96)',
-                },
+                startAdornment: <PersonOutline sx={{ mr: 1, color: 'text.disabled' }} />,
               }}
             />
             <TextField
               label="密码"
               type="password"
               fullWidth
-              margin="none"
+              margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               InputProps={{
-                startAdornment: <LockOutlined sx={{ mr: 1, color: '#9aa6b2' }} />,
-              }}
-              sx={{
-                mb: 2.5,
-                '& .MuiOutlinedInput-root': {
-                  height: 50,
-                  borderRadius: 1,
-                  bgcolor: 'rgba(255,255,255,0.96)',
-                },
+                startAdornment: <LockOutlined sx={{ mr: 1, color: 'text.disabled' }} />,
               }}
             />
             <Button
               type="submit"
               variant="contained"
+              fullWidth
+              size="large"
               disabled={loading}
-              sx={{
-                width: 220,
-                height: 50,
-                mx: 'auto',
-                display: 'flex',
-                fontWeight: 600,
-                fontSize: 15,
-                boxShadow: 'none',
-                '&:hover': {
-                  boxShadow: 'none',
-                },
-              }}
+              sx={{ mt: 3, py: 1.5, fontWeight: 600, fontSize: 15 }}
             >
               {loading ? '登录中...' : '登 录'}
             </Button>
