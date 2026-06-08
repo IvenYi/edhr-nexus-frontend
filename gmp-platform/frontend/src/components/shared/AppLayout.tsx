@@ -115,6 +115,56 @@ function getCurrentPageTitle(module: SidebarModule, pathname: string): string {
   return module.label;
 }
 
+interface StoredUser {
+  displayName?: string;
+  username?: string;
+  permissions?: string[];
+}
+
+function readStoredUser(): StoredUser {
+  const userJson = localStorage.getItem('user');
+  if (!userJson) return { displayName: '管理员' };
+  try {
+    return JSON.parse(userJson) as StoredUser;
+  } catch {
+    return { displayName: '管理员' };
+  }
+}
+
+function inferPermissionCode(path: string): string | undefined {
+  if (path === '/') return 'dashboard';
+  if (path.startsWith('/gct-edhr')) return undefined;
+  return path.replace(/^\//, '').replace(/\//g, '.');
+}
+
+function canAccessPath(path: string, permissionSet: Set<string>): boolean {
+  if (permissionSet.size === 0) return true;
+  const permissionCode = inferPermissionCode(path);
+  return !permissionCode || permissionSet.has(permissionCode);
+}
+
+function filterModulesByPermissions(
+  modules: SidebarModule[],
+  permissionSet: Set<string>,
+): SidebarModule[] {
+  if (permissionSet.size === 0) return modules;
+
+  return modules
+    .map((module) => ({
+      ...module,
+      menus: module.menus
+        .map((menu) => {
+          if (menu.children) {
+            const children = menu.children.filter((child) => canAccessPath(child.path, permissionSet));
+            return children.length > 0 ? { ...menu, children } : null;
+          }
+          return menu.path && canAccessPath(menu.path, permissionSet) ? menu : null;
+        })
+        .filter((menu): menu is SidebarMenu => menu !== null),
+    }))
+    .filter((module) => module.menus.length > 0);
+}
+
 // ============================================================
 // Main Layout Component
 // ============================================================
@@ -125,6 +175,12 @@ export default function AppLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const user = useMemo(() => readStoredUser(), []);
+  const permissionSet = useMemo(() => new Set(user.permissions ?? []), [user.permissions]);
+  const visibleModules = useMemo(
+    () => filterModulesByPermissions(SIDEBAR_MODULES, permissionSet),
+    [permissionSet],
+  );
   const autoModuleId = useMemo(() => getModuleIdByPath(location.pathname), [location.pathname]);
 
   const [activeModuleId, setActiveModuleId] = useState<string>(autoModuleId);
@@ -136,7 +192,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     setActiveModuleId(autoModuleId);
-    const module = SIDEBAR_MODULES.find((m) => m.id === autoModuleId);
+    const module = visibleModules.find((m) => m.id === autoModuleId);
     if (module) {
       setExpandedMenus((prev) => {
         const next = new Set(prev);
@@ -148,7 +204,7 @@ export default function AppLayout() {
         return next;
       });
     }
-  }, [autoModuleId, location.pathname]);
+  }, [autoModuleId, location.pathname, visibleModules]);
 
   useEffect(() => {
     setFuncMenuOpen(!isMobile);
@@ -182,13 +238,10 @@ export default function AppLayout() {
     navigate('/login');
   };
 
-  const userJson = localStorage.getItem('user');
-  const user = userJson ? JSON.parse(userJson) : { displayName: '管理员' };
-
   const activeModule: SidebarModule =
-    SIDEBAR_MODULES.find((m) => m.id === activeModuleId) || SIDEBAR_MODULES[0];
+    visibleModules.find((m) => m.id === activeModuleId) || visibleModules[0] || SIDEBAR_MODULES[0];
   const currentModuleForPath: SidebarModule =
-    SIDEBAR_MODULES.find((m) => m.id === autoModuleId) || SIDEBAR_MODULES[0];
+    visibleModules.find((m) => m.id === autoModuleId) || activeModule;
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
   const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
   const currentPageTitle = getCurrentPageTitle(currentModuleForPath, location.pathname);
@@ -396,7 +449,7 @@ export default function AppLayout() {
           '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
         }}
       >
-        {SIDEBAR_MODULES.map((module) => {
+        {visibleModules.map((module) => {
           const isActive = activeModuleId === module.id;
           return (
             <Tooltip key={module.id} title={module.label} placement="right" arrow>

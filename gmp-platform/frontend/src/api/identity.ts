@@ -15,10 +15,12 @@ export const getUsers = (params?: Record<string, unknown>) =>
   client.get('/identity/users', { params });
 export const createUser = (body: Record<string, unknown>) =>
   client.post('/identity/users', body);
-export const updateUser = (id: number, body: Record<string, unknown>) =>
+export const updateUser = (id: number | string, body: Record<string, unknown>) =>
   client.put(`/identity/users/${id}`, body);
-export const deleteUser = (id: number) =>
+export const deleteUser = (id: number | string) =>
   client.delete(`/identity/users/${id}`);
+export const resetUserPassword = (id: number | string, body: Record<string, unknown>) =>
+  client.post(`/identity/users/${id}/reset-password`, body);
 
 // Roles
 export const getRoles = (params?: Record<string, unknown>) =>
@@ -29,6 +31,10 @@ export const updateRole = (id: number, body: Record<string, unknown>) =>
   client.put(`/identity/roles/${id}`, body);
 export const deleteRole = (id: number) =>
   client.delete(`/identity/roles/${id}`);
+export const getRolePermissions = (id: number) =>
+  client.get(`/identity/roles/${id}/permissions`);
+export const updateRolePermissions = (id: number, body: Record<string, unknown>) =>
+  client.put(`/identity/roles/${id}/permissions`, body);
 
 // Permissions
 export const getPermissions = (params?: Record<string, unknown>) =>
@@ -47,9 +53,11 @@ export const deleteSite = (id: number) =>
 // Departments
 export const getDepartments = (params?: Record<string, unknown>) =>
   client.get('/identity/departments', { params });
+export const getDepartmentTree = () =>
+  client.get('/identity/departments/tree');
 export const createDepartment = (body: Record<string, unknown>) =>
   client.post('/identity/departments', body);
-export const updateDepartment = (id: number, body: Record<string, unknown>) =>
+export const updateDepartment = (id: number | string, body: Record<string, unknown>) =>
   client.put(`/identity/departments/${id}`, body);
-export const deleteDepartment = (id: number) =>
+export const deleteDepartment = (id: number | string) =>
   client.delete(`/identity/departments/${id}`);

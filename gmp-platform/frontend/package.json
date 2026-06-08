@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "verify:organization": "node scripts/verify-organization-layout.mjs",
     "verify:gct-edhr": "node scripts/verify-gct-edhr-coverage.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },

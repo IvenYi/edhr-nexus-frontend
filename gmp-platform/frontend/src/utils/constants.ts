@@ -47,8 +47,7 @@ export const AUDIT_ACTION_MAP = {
 
 export const USER_STATUS_MAP = {
   ACTIVE: { label: '正常', color: 'success' as const },
-  DISABLED: { label: '已禁用', color: 'error' as const },
-  LOCKED: { label: '已锁定', color: 'warning' as const },
+  DISABLED: { label: '禁用', color: 'error' as const },
 } as const;
 
 // ============================================================
@@ -166,13 +165,19 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
     icon: 'Settings',
     menus: [
       {
+        label: '组织管理',
+        icon: 'AccountTree',
+        children: [
+          { label: '组织架构', path: '/system/organization' },
+          { label: '岗位角色', path: '/system/roles' },
+          { label: '用户管理', path: '/system/users' },
+        ],
+      },
+      {
         label: '系统管理',
         icon: 'Settings',
         children: [
           { label: '租户设置', path: '/system/tenant' },
-          { label: '组织管理', path: '/system/organization' },
-          { label: '用户管理', path: '/system/users' },
-          { label: '角色管理', path: '/system/roles' },
           { label: '权限配置', path: '/system/permissions' },
           { label: '编码规则', path: '/system/numbering-rules' },
           { label: '表单模板', path: '/system/form-templates' },
