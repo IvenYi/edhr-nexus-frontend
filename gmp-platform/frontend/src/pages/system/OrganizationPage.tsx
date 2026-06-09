@@ -158,6 +158,7 @@ type PersonnelColumnId =
   | 'phone'
   | 'status'
   | 'departmentName'
+  | 'roleName'
   | 'createdBy'
   | 'createdAt'
   | 'actions';
@@ -248,6 +249,7 @@ const personnelColumns: PersonnelColumn[] = [
   { id: 'username', label: '账号', defaultWidth: 140, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'phone', label: '手机号', defaultWidth: 132, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'departmentName', label: '所属架构', defaultWidth: 160, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'roleName', label: '岗位角色', defaultWidth: 150, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'status', label: '状态', defaultWidth: 96, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdAt', label: '创建时间', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -974,13 +976,7 @@ export default function OrganizationPage() {
     }
 
     if (column.id === 'displayName') {
-      return (
-        <TableCell key={column.id} sx={cellSx}>
-          <Typography sx={{ color: '#1890ff', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {row.displayName}
-          </Typography>
-        </TableCell>
-      );
+      return <TableCell key={column.id} sx={cellSx}>{row.displayName}</TableCell>;
     }
 
     if (column.id === 'username') {
@@ -1004,6 +1000,17 @@ export default function OrganizationPage() {
 
     if (column.id === 'departmentName') {
       return <TableCell key={column.id} sx={cellSx}>{row.departmentName}</TableCell>;
+    }
+
+    if (column.id === 'roleName') {
+      const roleSummary = getUserRoleSummary(row, roleNameById);
+      return (
+        <TableCell key={column.id} sx={cellSx} title={roleSummary}>
+          <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {roleSummary}
+          </Typography>
+        </TableCell>
+      );
     }
 
     if (column.id === 'createdBy') {
@@ -1071,7 +1078,7 @@ export default function OrganizationPage() {
           sx={{
             minHeight: 44,
             mb: '5px',
-            pl: 1 + depth * 2,
+            pl: 1,
             pr: 0.75,
             borderRadius: '5px',
             color: '#303133',
@@ -1096,7 +1103,13 @@ export default function OrganizationPage() {
               {expanded.has(node.id) ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
             </IconButton>
           ) : (
-            <Box sx={{ width: 34, mr: 0.5, flex: '0 0 34px' }} />
+            <Box
+              sx={{
+                width: depth >= 2 ? 5 : 30,
+                mr: depth >= 2 ? 0 : 0.5,
+                flex: depth >= 2 ? '0 0 5px' : '0 0 30px',
+              }}
+            />
           )}
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 1, color: 'inherit' }}>
             {nodeIcon}
@@ -1138,7 +1151,28 @@ export default function OrganizationPage() {
           </IconButton>
         </ListItemButton>
         {expanded.has(node.id) && hasChildren && (
-          <Box>{node.children!.map((child) => renderNode(child, depth + 1))}</Box>
+          <Box
+            data-organization-tree-branch
+            sx={{
+              position: 'relative',
+              ml: 0,
+              pl: '30px',
+            }}
+          >
+            <Box
+              data-organization-tree-guide
+              sx={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: '23px',
+                transform: 'translateX(-50%)',
+                width: '1px',
+                bgcolor: '#dcdfe6',
+              }}
+            />
+            {node.children!.map((child) => renderNode(child, depth + 1))}
+          </Box>
         )}
       </Box>
     );

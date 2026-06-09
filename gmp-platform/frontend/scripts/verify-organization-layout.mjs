@@ -39,6 +39,18 @@ mustInclude('新增部门', 'explicit company-to-department creation affordance'
 mustInclude('新增班组', 'explicit department-to-team creation affordance');
 mustInclude('{childLabel ? (', 'tree child creation action should render as a compact icon affordance');
 mustInclude("color: isSelected ? '#1890ff' : '#909399'", 'selected tree create affordance should be icon-only with color state');
+mustInclude('data-organization-tree-branch', 'organization tree child ranges should render a visible vertical guide line');
+mustInclude('data-organization-tree-guide', 'organization tree branch guide should align under the expand icon center');
+mustInclude("left: '23px'", 'organization tree branch guide should sit under the expand icon center');
+mustInclude("transform: 'translateX(-50%)'", 'organization tree branch guide center should align with the expand icon center');
+mustInclude("width: '1px'", 'organization tree branch guide should render as one subtle divider');
+mustInclude("bgcolor: '#dcdfe6'", 'organization tree branch guide should use the subtle divider color');
+mustInclude("ml: 0", 'organization tree branch guide should not add extra left offset');
+mustInclude("pl: '30px'", 'organization tree branch children should indent by the fixed expand control column');
+mustInclude('width: depth >= 2 ? 5 : 30', 'organization tree team nodes should keep a compact 5px terminal placeholder');
+mustInclude('mr: depth >= 2 ? 0 : 0.5', 'organization tree team nodes should not keep expand placeholder margin');
+mustInclude("flex: depth >= 2 ? '0 0 5px' : '0 0 30px'", 'organization tree team nodes should use a compact 5px terminal placeholder while department leaves stay aligned');
+mustInclude('pl: 1,', 'organization tree nodes should avoid compounding depth indentation with branch guide indentation');
 mustInclude('id: string;', 'department snowflake ids stay as strings in the organization tree');
 mustInclude('parentId?: string | null;', 'department parent ids stay as strings in the organization tree');
 mustInclude('useState<Set<string>>', 'expanded tree state preserves string ids');
@@ -53,11 +65,13 @@ mustAppearInOrder([
   "{ id: 'username', label: '账号'",
   "{ id: 'phone', label: '手机号'",
   "{ id: 'departmentName', label: '所属架构'",
+  "{ id: 'roleName', label: '岗位角色'",
   "{ id: 'status', label: '状态'",
   "{ id: 'createdBy', label: '创建人'",
   "{ id: 'createdAt', label: '创建时间'",
 ], 'personnel table field columns should follow the customer-facing order');
 mustInclude('共 {filteredRows.length} 条数据', 'personnel table total summary');
+mustInclude("return <TableCell key={column.id} sx={cellSx}>{row.displayName}</TableCell>;", 'personnel name cells should use the same plain text rendering as account cells');
 mustInclude('createUser', 'organization personnel panel should create users');
 mustInclude('updateUser', 'organization personnel panel should edit users');
 mustInclude('getRoles', 'organization personnel panel should load role options');
@@ -144,7 +158,7 @@ mustInclude('personnelColumns', 'personnel table columns should be driven by a r
 mustInclude("{ id: 'select', label: '', defaultWidth: 50, minWidth: 50, resizable: false, align: 'center' }", 'personnel selection column should be fixed at 50px and not draggable');
 mustInclude("{ id: 'actions', label: '操作', defaultWidth: 150, minWidth: 150, resizable: false }", 'personnel action column should be fixed at 150px and not draggable');
 mustInclude('const PERSONNEL_FIELD_COLUMN_MIN_WIDTH = 60;', 'personnel business field columns should share the 60px minimum width standard');
-for (const fieldColumnId of ['displayName', 'username', 'phone', 'departmentName', 'status', 'createdBy', 'createdAt']) {
+for (const fieldColumnId of ['displayName', 'username', 'phone', 'departmentName', 'roleName', 'status', 'createdBy', 'createdAt']) {
   const fieldMinWidthPattern = new RegExp(`\\{ id: '${fieldColumnId}'[^}]*minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH`);
   if (!fieldMinWidthPattern.test(content)) {
     failures.push(`missing 60px min-width standard for personnel field column ${JSON.stringify(fieldColumnId)}`);
@@ -199,8 +213,10 @@ mustNotInclude('班组为末级', 'disabled terminal-level button should not be 
 mustNotInclude("childLabel.replace('新增', '')", 'selected tree create affordance should not render label text');
 mustNotInclude('minWidth: 62', 'selected tree create affordance should not keep button sizing');
 mustNotInclude('& .MuiButton-startIcon', 'selected tree create affordance should not use button start-icon styling');
+mustNotInclude('pl: 1 + depth * 2', 'organization tree nodes should not compound depth indentation with branch guide indentation');
 mustNotInclude('<TextField label="编码"', 'organization dialog should not require users to type a code');
 mustNotInclude('label="用户名"', 'personnel dialog should not use username wording');
+mustNotInclude("color: '#1890ff', fontWeight: 500", 'personnel name cells should not use blue emphasized link-like styling');
 mustNotInclude('multiple\n                label="岗位角色"', 'personnel role selector should not allow selecting multiple roles');
 mustNotInclude('input={<OutlinedInput size="small" label="岗位角色" />}', 'single role selector should not use the multi-select outlined input renderer');
 mustNotInclude('(selected as string[]).map((roleId)', 'single role selector should not render selected roles as multiple chips');
