@@ -19,6 +19,8 @@ export const updateUser = (id: number | string, body: Record<string, unknown>) =
   client.put(`/identity/users/${id}`, body);
 export const deleteUser = (id: number | string) =>
   client.delete(`/identity/users/${id}`);
+export const removeUserFromOrganization = (id: number | string) =>
+  client.post(`/identity/users/${id}/remove-from-organization`);
 export const resetUserPassword = (id: number | string, body: Record<string, unknown>) =>
   client.post(`/identity/users/${id}/reset-password`, body);
 

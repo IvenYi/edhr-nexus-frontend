@@ -1,11 +1,10 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type MouseEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
   Box,
   Button,
   Checkbox,
-  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -20,7 +19,6 @@ import {
   List,
   ListItemButton,
   MenuItem,
-  OutlinedInput,
   Pagination,
   Select,
   Snackbar,
@@ -32,6 +30,7 @@ import {
   TableHead,
   TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import {
@@ -43,6 +42,8 @@ import {
   ExpandLess,
   ExpandMore,
   Groups,
+  LockReset,
+  PersonRemove,
   RestartAlt,
   Search,
 } from '@mui/icons-material';
@@ -50,16 +51,17 @@ import {
   createDepartment,
   createUser,
   deleteDepartment,
-  deleteUser,
   getDepartmentTree,
   getRoles,
+  removeUserFromOrganization,
   resetUserPassword,
   updateDepartment,
   updateUser,
 } from '@/api/identity';
+import { getAuditLogs } from '@/api/audit';
 import StatusBadge from '@/components/StatusBadge';
 import type { PageResult } from '@/types/common';
-import { USER_STATUS_MAP } from '@/utils/constants';
+import { AUDIT_ACTION_MAP, USER_STATUS_MAP } from '@/utils/constants';
 
 interface OrgUser {
   id: string;
@@ -70,6 +72,8 @@ interface OrgUser {
   email?: string;
   createdBy?: string;
   createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
   roleIds?: string[];
   departmentIds?: string[];
   primaryDepartmentId?: string | null;
@@ -101,6 +105,8 @@ interface PersonnelRow {
   departmentName: string;
   createdBy?: string;
   createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
   roleIds: string[];
   departmentIds: string[];
   primaryDepartmentId?: string | null;
@@ -123,7 +129,52 @@ interface UserForm {
   primaryDepartmentId: string;
 }
 
+interface AuditEvent {
+  id: string | number;
+  entityType?: string;
+  entityId?: string | number;
+  action?: string;
+  contentBefore?: unknown;
+  contentAfter?: unknown;
+  detail?: string;
+  operatorName?: string;
+  createdAt?: string;
+  reason?: string;
+}
+
+interface UserAuditRecord {
+  id: string;
+  operatorName: string;
+  actionLabel: string;
+  operatedAt?: string;
+  beforeContent: string;
+  afterContent: string;
+}
+
+type PersonnelColumnId =
+  | 'select'
+  | 'displayName'
+  | 'username'
+  | 'phone'
+  | 'status'
+  | 'departmentName'
+  | 'createdBy'
+  | 'createdAt'
+  | 'actions';
+
+interface PersonnelColumn {
+  id: PersonnelColumnId;
+  label: string;
+  defaultWidth: number;
+  minWidth: number;
+  resizable?: boolean;
+  align?: 'left' | 'center' | 'right';
+}
+
+type PersonnelColumnWidths = Partial<Record<PersonnelColumnId, number>>;
+
 const PAGE_SIZE = 20;
+const PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX = 'organization-personnel-column-widths:';
 const emptyUserForm: UserForm = {
   username: '',
   displayName: '',
@@ -153,6 +204,55 @@ const userSelectSx = {
     overflow: 'hidden',
   },
 };
+
+const tableHeaderCellSx = {
+  height: 48,
+  py: 0,
+  color: '#606266',
+  fontWeight: 600,
+  bgcolor: '#f5f7fa',
+  borderBottom: '1px solid #e4e7ed',
+};
+
+const tableBodyCellSx = {
+  height: 48,
+  py: 0,
+  borderBottom: '1px solid #ebeef5',
+};
+
+const appContentDrawerSx = {
+  top: 0,
+  bottom: 0,
+  zIndex: 1300,
+};
+
+const appContentDrawerPaperSx = {
+  ...appContentDrawerSx,
+  height: 'auto',
+};
+
+const organizationWorkspaceHeight = { xs: 'auto', lg: 'calc(100vh - 150px)' };
+const PERSONNEL_FIELD_COLUMN_MIN_WIDTH = 60;
+
+const dateFieldSx = {
+  userSelect: 'none',
+  '& input': {
+    userSelect: 'none',
+    cursor: 'pointer',
+  },
+};
+
+const personnelColumns: PersonnelColumn[] = [
+  { id: 'select', label: '', defaultWidth: 50, minWidth: 50, resizable: false, align: 'center' },
+  { id: 'displayName', label: '姓名', defaultWidth: 140, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'username', label: '账号', defaultWidth: 140, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'phone', label: '手机号', defaultWidth: 132, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'departmentName', label: '所属架构', defaultWidth: 160, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'status', label: '状态', defaultWidth: 96, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'createdAt', label: '创建时间', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'actions', label: '操作', defaultWidth: 150, minWidth: 150, resizable: false },
+];
 
 function flattenDepartments(nodes: DepartmentNode[], depth = 0): FlatDepartment[] {
   return nodes.flatMap((node) => [
@@ -202,6 +302,8 @@ function collectPersonnel(node: DepartmentNode | undefined, includeChildren: boo
     departmentName: node.name,
     createdBy: user.createdBy,
     createdAt: user.createdAt,
+    updatedBy: user.updatedBy,
+    updatedAt: user.updatedAt,
     roleIds: user.roleIds ?? [],
     departmentIds: user.departmentIds ?? [],
     primaryDepartmentId: user.primaryDepartmentId,
@@ -220,6 +322,11 @@ function formatDate(value?: string): string {
   return value.length > 10 ? value.slice(0, 10) : value;
 }
 
+function formatDateTime(value?: string): string {
+  if (!value) return '-';
+  return value.replace('T', ' ').slice(0, 16);
+}
+
 function includesText(value: string | undefined, keyword: string): boolean {
   if (!keyword.trim()) return true;
   return (value ?? '').toLowerCase().includes(keyword.trim().toLowerCase());
@@ -227,6 +334,230 @@ function includesText(value: string | undefined, keyword: string): boolean {
 
 function getUserStatusMeta(status: string) {
   return USER_STATUS_MAP[status as keyof typeof USER_STATUS_MAP] ?? { label: status, color: 'default' as const };
+}
+
+function getAuditActionLabel(action?: string): string {
+  if (!action) return '操作';
+  return AUDIT_ACTION_MAP[action as keyof typeof AUDIT_ACTION_MAP]?.label || action;
+}
+
+function getOperatorName(value?: string): string {
+  return value?.trim() || '系统记录';
+}
+
+function getUserRoleSummary(user: PersonnelRow, roleNameById: Map<string, string>): string {
+  if (user.roleIds.length === 0) return '-';
+  return user.roleIds.map((roleId) => roleNameById.get(roleId) || roleId).join('、');
+}
+
+function getUserSnapshot(user: PersonnelRow, roleNameById: Map<string, string>): string {
+  const statusMeta = getUserStatusMeta(user.status);
+  return [
+    `账号：${user.username || '-'}`,
+    `姓名：${user.displayName || '-'}`,
+    `所属组织：${user.departmentName || '-'}`,
+    `岗位角色：${getUserRoleSummary(user, roleNameById)}`,
+    `状态：${statusMeta.label}`,
+  ].join('；');
+}
+
+function normalizeAuditValue(value: unknown): unknown {
+  if (typeof value !== 'string') return value;
+
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    return trimmed;
+  }
+}
+
+function formatAuditContent(value: unknown): string {
+  const normalized = normalizeAuditValue(value);
+  if (normalized === undefined || normalized === null || normalized === '') return '-';
+  if (typeof normalized === 'string') return normalized;
+
+  try {
+    return JSON.stringify(normalized, null, 2);
+  } catch {
+    return String(normalized);
+  }
+}
+
+function isAuditEventForUser(item: AuditEvent, user: PersonnelRow): boolean {
+  const entityType = String(item.entityType ?? '').toLowerCase();
+  const entityId = String(item.entityId ?? '');
+  const userId = String(user.id);
+  const payload = [
+    item.contentBefore,
+    item.contentAfter,
+    item.detail,
+    item.reason,
+  ].map((value) => (typeof value === 'string' ? value : JSON.stringify(value ?? '')))
+    .join(' ')
+    .toLowerCase();
+
+  const isUserEntity = entityType.includes('user') || entityType.includes('account');
+  return (
+    (isUserEntity && entityId === userId) ||
+    payload.includes(userId.toLowerCase()) ||
+    payload.includes(user.username.toLowerCase())
+  );
+}
+
+function getUserAuditRecords(
+  selectedUser: PersonnelRow | null,
+  auditEvents: AuditEvent[],
+  roleNameById: Map<string, string>,
+): UserAuditRecord[] {
+  if (!selectedUser) return [];
+
+  const realRecords = auditEvents
+    .filter((item) => isAuditEventForUser(item, selectedUser))
+    .map((item) => ({
+      id: String(item.id),
+      operatorName: getOperatorName(item.operatorName),
+      actionLabel: getAuditActionLabel(item.action),
+      operatedAt: item.createdAt,
+      beforeContent: formatAuditContent(item.contentBefore),
+      afterContent: formatAuditContent(item.contentAfter ?? item.detail ?? item.reason),
+    }));
+
+  if (realRecords.length > 0) return realRecords;
+
+  const snapshot = getUserSnapshot(selectedUser, roleNameById);
+  const fallbackRecords: UserAuditRecord[] = [];
+
+  if (selectedUser.updatedAt) {
+    fallbackRecords.push({
+      id: `updated-${selectedUser.id}`,
+      operatorName: getOperatorName(selectedUser.updatedBy),
+      actionLabel: '更新',
+      operatedAt: selectedUser.updatedAt,
+      beforeContent: '系统未提供变更前快照',
+      afterContent: snapshot,
+    });
+  }
+
+  if (selectedUser.createdAt) {
+    fallbackRecords.push({
+      id: `created-${selectedUser.id}`,
+      operatorName: getOperatorName(selectedUser.createdBy),
+      actionLabel: '创建',
+      operatedAt: selectedUser.createdAt,
+      beforeContent: '-',
+      afterContent: snapshot,
+    });
+  }
+
+  if (fallbackRecords.length > 0) return fallbackRecords;
+
+  return [{
+    id: `snapshot-${selectedUser.id}`,
+    operatorName: '系统记录',
+    actionLabel: '当前快照',
+    operatedAt: undefined,
+    beforeContent: '-',
+    afterContent: snapshot,
+  }];
+}
+
+function getUpdatedByValue(user: PersonnelRow, auditRecords: UserAuditRecord[]): string {
+  if (user.updatedBy) return user.updatedBy;
+  const updateRecord = auditRecords.find((record) => record.actionLabel !== '创建');
+  return updateRecord?.operatorName || '-';
+}
+
+function getPersonnelColumnWidthStorageKey(): string {
+  if (typeof window === 'undefined') return `${PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX}anonymous`;
+
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || 'null') as {
+      id?: string | number;
+      username?: string;
+      displayName?: string;
+    } | null;
+    const userKey = user?.id ?? user?.username ?? user?.displayName ?? 'anonymous';
+    return `${PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX}${String(userKey)}`;
+  } catch {
+    return `${PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX}anonymous`;
+  }
+}
+
+function loadPersonnelColumnWidths(storageKey: string): PersonnelColumnWidths {
+  if (typeof window === 'undefined') return {};
+
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) return {};
+
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return personnelColumns.reduce<PersonnelColumnWidths>((result, column) => {
+      if (!column.resizable) return result;
+
+      const width = Number(parsed[column.id]);
+      if (Number.isFinite(width)) {
+        result[column.id] = Math.max(column.minWidth, width);
+      }
+      return result;
+    }, {});
+  } catch {
+    return {};
+  }
+}
+
+function resolvePersonnelColumnWidths(
+  columnWidths: PersonnelColumnWidths,
+  tableContainerWidth: number,
+): Record<PersonnelColumnId, number> {
+  const resolved = personnelColumns.reduce<Record<PersonnelColumnId, number>>((result, column) => {
+    const persistedWidth = column.resizable ? columnWidths[column.id] : undefined;
+    result[column.id] = Math.max(column.minWidth, persistedWidth ?? column.defaultWidth);
+    return result;
+  }, {} as Record<PersonnelColumnId, number>);
+
+  const baseTotalWidth = personnelColumns.reduce((sum, column) => sum + resolved[column.id], 0);
+  const availableWidth = Math.floor(tableContainerWidth);
+  if (!Number.isFinite(availableWidth) || availableWidth <= baseTotalWidth) {
+    return resolved;
+  }
+
+  const flexibleColumns = personnelColumns.filter((column) => column.resizable);
+  const flexibleWeight = flexibleColumns.reduce((sum, column) => sum + column.defaultWidth, 0);
+  if (flexibleWeight <= 0) return resolved;
+
+  const spareWidth = availableWidth - baseTotalWidth;
+  let assignedSpareWidth = 0;
+  flexibleColumns.forEach((column, index) => {
+    const extraWidth = index === flexibleColumns.length - 1
+      ? spareWidth - assignedSpareWidth
+      : Math.floor((spareWidth * column.defaultWidth) / flexibleWeight);
+    assignedSpareWidth += extraWidth;
+    resolved[column.id] += extraWidth;
+  });
+
+  return resolved;
+}
+
+function openDatePickerWithoutSelection(event: MouseEvent<HTMLDivElement>) {
+  event.preventDefault();
+
+  const input = event.currentTarget.querySelector<HTMLInputElement>('input[type="date"]');
+  if (!input) return;
+
+  if (typeof input.showPicker === 'function') {
+    input.focus({ preventScroll: true });
+    try {
+      input.showPicker();
+    } catch {
+      // Some browsers reject showPicker unless the event is considered a trusted user gesture.
+    }
+    return;
+  }
+
+  input.focus({ preventScroll: true });
 }
 
 function DetailSection({ title, children }: { title: string; children: ReactNode }) {
@@ -243,7 +574,7 @@ function DetailField({ label, children }: { label: string; children: ReactNode }
   return (
     <Box sx={{ minHeight: 54 }}>
       <Typography variant="caption" color="text.secondary">{label}</Typography>
-      <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>{children || '-'}</Typography>
+      <Typography component="div" variant="body2" sx={{ wordBreak: 'break-word' }}>{children || '-'}</Typography>
     </Box>
   );
 }
@@ -262,7 +593,7 @@ export default function OrganizationPage() {
   const [userForm, setUserForm] = useState<UserForm>(emptyUserForm);
   const [resetDialog, setResetDialog] = useState<{ id: string; username: string } | null>(null);
   const [newPassword, setNewPassword] = useState('');
-  const [deleteUserConfirm, setDeleteUserConfirm] = useState<{ id: string; username: string } | null>(null);
+  const [removeUserConfirm, setRemoveUserConfirm] = useState<{ id: string; username: string } | null>(null);
   const [selectedUser, setSelectedUser] = useState<PersonnelRow | null>(null);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -279,6 +610,12 @@ export default function OrganizationPage() {
     message: '',
     severity: 'success',
   });
+  const [columnWidthStorageKey] = useState(getPersonnelColumnWidthStorageKey);
+  const [columnWidths, setColumnWidths] = useState<PersonnelColumnWidths>(() =>
+    loadPersonnelColumnWidths(columnWidthStorageKey),
+  );
+  const tableContainerRef = useRef<HTMLDivElement | null>(null);
+  const [tableContainerWidth, setTableContainerWidth] = useState(0);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['departments-tree'],
@@ -297,6 +634,22 @@ export default function OrganizationPage() {
     },
   });
 
+  const { data: auditLogData } = useQuery({
+    queryKey: ['organization-user-audit-logs', selectedUser?.id],
+    enabled: userDrawerOpen && Boolean(selectedUser),
+    queryFn: async () => {
+      const res = await getAuditLogs({
+        page: 1,
+        size: 200,
+        sort: 'createdAt',
+        order: 'desc',
+        entityType: 'USER_ACCOUNT',
+        entityId: selectedUser?.id,
+      });
+      return res.data.data as PageResult<AuditEvent>;
+    },
+  });
+
   const departments = data ?? [];
   const flatDepartments = useMemo(() => flattenDepartments(departments), [departments]);
   const departmentOptions = useMemo(
@@ -310,6 +663,11 @@ export default function OrganizationPage() {
   const roleNameById = useMemo(
     () => new Map(roles.map((role) => [String(role.id), role.name])),
     [roles],
+  );
+  const auditLogItems = auditLogData?.content ?? [];
+  const userAuditRecords = useMemo(
+    () => getUserAuditRecords(selectedUser, auditLogItems, roleNameById),
+    [selectedUser, auditLogItems, roleNameById],
   );
   const selected = flatDepartments.find((item) => item.node.id === selectedId) ?? flatDepartments[0];
   const allRows = useMemo(
@@ -334,6 +692,14 @@ export default function OrganizationPage() {
   }, [allRows, filters]);
   const pageCount = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const pagedRows = filteredRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const resolvedColumnWidths = useMemo(
+    () => resolvePersonnelColumnWidths(columnWidths, tableContainerWidth),
+    [columnWidths, tableContainerWidth],
+  );
+  const totalTableWidth = useMemo(
+    () => personnelColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0),
+    [resolvedColumnWidths],
+  );
   const dialogParent = parentId !== null
     ? flatDepartments.find((item) => item.node.id === parentId)
     : undefined;
@@ -369,6 +735,25 @@ export default function OrganizationPage() {
   useEffect(() => {
     setPage(1);
   }, [filters, selectedId]);
+
+  useEffect(() => {
+    localStorage.setItem(columnWidthStorageKey, JSON.stringify(columnWidths));
+  }, [columnWidthStorageKey, columnWidths]);
+
+  useEffect(() => {
+    const container = tableContainerRef.current;
+    if (!container) return undefined;
+
+    const updateTableContainerWidth = () => {
+      setTableContainerWidth(container.clientWidth);
+    };
+
+    updateTableContainerWidth();
+
+    const observer = new ResizeObserver(updateTableContainerWidth);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   const saveMutation = useMutation({
     mutationFn: (body: { name: string; parentId?: string | null }) =>
@@ -433,18 +818,20 @@ export default function OrganizationPage() {
     onError: () => setSnackbar({ open: true, message: '密码重置失败', severity: 'error' }),
   });
 
-  const deleteUserMutation = useMutation({
+  const removeUserMutation = useMutation({
     mutationFn: async () => {
-      if (!deleteUserConfirm) throw new Error('missing user');
-      await deleteUser(deleteUserConfirm.id);
+      if (!removeUserConfirm) throw new Error('missing user');
+      await removeUserFromOrganization(removeUserConfirm.id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['departments-tree'] });
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      setDeleteUserConfirm(null);
-      setSnackbar({ open: true, message: '用户删除成功', severity: 'success' });
+      setRemoveUserConfirm(null);
+      setSelectedUser(null);
+      setUserDrawerOpen(false);
+      setSnackbar({ open: true, message: '用户已移出组织', severity: 'success' });
     },
-    onError: () => setSnackbar({ open: true, message: '用户删除失败', severity: 'error' }),
+    onError: () => setSnackbar({ open: true, message: '移出失败', severity: 'error' }),
   });
 
   const toggleExpand = (id: string) => {
@@ -521,6 +908,149 @@ export default function OrganizationPage() {
       createdFrom: '',
       createdTo: '',
     });
+  };
+
+  const updateCreatedFrom = (value: string) => {
+    setFilters((current) => ({
+      ...current,
+      createdFrom: value,
+      createdTo: current.createdTo && value && current.createdTo < value ? value : current.createdTo,
+    }));
+  };
+
+  const updateCreatedTo = (value: string) => {
+    setFilters((current) => ({
+      ...current,
+      createdTo: current.createdFrom && value && value < current.createdFrom ? current.createdFrom : value,
+    }));
+  };
+
+  const getColumnWidth = (column: PersonnelColumn) => resolvedColumnWidths[column.id];
+
+  const beginColumnResize = (event: MouseEvent<HTMLDivElement>, columnId: PersonnelColumnId) => {
+    const column = personnelColumns.find((item) => item.id === columnId);
+    if (!column?.resizable) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const startX = event.clientX;
+    const startWidth = getColumnWidth(column);
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    const resizeColumn = (moveEvent: globalThis.MouseEvent) => {
+      const nextWidth = Math.max(column.minWidth, startWidth + moveEvent.clientX - startX);
+      setColumnWidths((current) => ({ ...current, [columnId]: nextWidth }));
+    };
+
+    const stopResize = () => {
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener('mousemove', resizeColumn);
+      window.removeEventListener('mouseup', stopResize);
+    };
+
+    window.addEventListener('mousemove', resizeColumn);
+    window.addEventListener('mouseup', stopResize);
+  };
+
+  const renderPersonnelCell = (row: PersonnelRow, column: PersonnelColumn) => {
+    const cellSx = {
+      ...tableBodyCellSx,
+      width: getColumnWidth(column),
+      minWidth: column.minWidth,
+    };
+
+    if (column.id === 'select') {
+      return (
+        <TableCell key={column.id} padding="checkbox" align={column.align} sx={cellSx}>
+          <Checkbox size="small" onClick={(event) => event.stopPropagation()} />
+        </TableCell>
+      );
+    }
+
+    if (column.id === 'displayName') {
+      return (
+        <TableCell key={column.id} sx={cellSx}>
+          <Typography sx={{ color: '#1890ff', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {row.displayName}
+          </Typography>
+        </TableCell>
+      );
+    }
+
+    if (column.id === 'username') {
+      return <TableCell key={column.id} sx={cellSx}>{row.username}</TableCell>;
+    }
+
+    if (column.id === 'phone') {
+      return <TableCell key={column.id} sx={cellSx}>{row.phone || '-'}</TableCell>;
+    }
+
+    if (column.id === 'status') {
+      return (
+        <TableCell key={column.id} sx={cellSx}>
+          <StatusBadge
+            label={getUserStatusMeta(row.status).label}
+            color={getUserStatusMeta(row.status).color}
+          />
+        </TableCell>
+      );
+    }
+
+    if (column.id === 'departmentName') {
+      return <TableCell key={column.id} sx={cellSx}>{row.departmentName}</TableCell>;
+    }
+
+    if (column.id === 'createdBy') {
+      return <TableCell key={column.id} sx={cellSx}>{row.createdBy || '-'}</TableCell>;
+    }
+
+    if (column.id === 'createdAt') {
+      return <TableCell key={column.id} sx={cellSx}>{formatDate(row.createdAt)}</TableCell>;
+    }
+
+    return (
+      <TableCell key={column.id} sx={cellSx}>
+        <Stack
+          direction="row"
+          spacing={0.25}
+          onClick={(event) => event.stopPropagation()}
+          sx={{ alignItems: 'center' }}
+        >
+          <Tooltip title="编辑" arrow>
+            <IconButton size="small" aria-label="编辑" onClick={() => openEditUserDialog(row)}>
+              <Edit fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="重置密码" arrow>
+            <IconButton
+              size="small"
+              aria-label="重置密码"
+              onClick={() => {
+                setResetDialog({ id: row.id, username: row.username });
+                setNewPassword('');
+              }}
+            >
+              <LockReset fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="移出" arrow>
+            <IconButton
+              size="small"
+              aria-label="移出"
+              onClick={() => setRemoveUserConfirm({ id: row.id, username: row.username })}
+            >
+              <PersonRemove fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </TableCell>
+    );
   };
 
   const renderNode = (node: DepartmentNode, depth: number) => {
@@ -615,13 +1145,15 @@ export default function OrganizationPage() {
   };
 
   return (
-    <Box>
+    <Box sx={{ minHeight: 0 }}>
       <Box
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', lg: '266px minmax(0, 1fr)' },
+          alignItems: 'stretch',
           gap: '20px',
-          minHeight: { lg: 'calc(100vh - 190px)' },
+          minHeight: organizationWorkspaceHeight,
+          height: organizationWorkspaceHeight,
         }}
       >
         <Box
@@ -630,7 +1162,10 @@ export default function OrganizationPage() {
             border: '1px solid #e4e7ed',
             borderRadius: '5px',
             overflow: 'hidden',
-            minHeight: 520,
+            height: '100%',
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           <Box
@@ -651,7 +1186,7 @@ export default function OrganizationPage() {
           ) : isError ? (
             <Box sx={{ textAlign: 'center', py: 6, color: '#909399' }}>加载失败</Box>
           ) : departments.length === 0 ? (
-            <Box sx={{ px: 2, py: 5, textAlign: 'center', color: '#909399' }}>
+            <Box sx={{ px: 2, py: 5, textAlign: 'center', color: '#909399', flex: 1 }}>
               <Typography sx={{ mb: 2 }}>暂无组织架构</Typography>
               <Typography sx={{ mb: 2.5, fontSize: 13, lineHeight: 1.6 }}>
                 创建公司主体后，可在公司节点下新增部门，再在部门下新增班组。
@@ -661,13 +1196,13 @@ export default function OrganizationPage() {
               </Button>
             </Box>
           ) : (
-            <List disablePadding sx={{ p: '10px' }}>
+            <List disablePadding sx={{ p: '10px', flex: 1, minHeight: 0, overflow: 'auto' }}>
               {departments.map((department) => renderNode(department, 0))}
             </List>
           )}
         </Box>
 
-        <Box sx={{ minWidth: 0 }}>
+        <Box sx={{ minWidth: 0, height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           <Box
             sx={{
               bgcolor: '#fff',
@@ -719,16 +1254,24 @@ export default function OrganizationPage() {
                   label="创建时间"
                   type="date"
                   value={filters.createdFrom}
-                  onChange={(event) => setFilters({ ...filters, createdFrom: event.target.value })}
+                  onInput={(event) => updateCreatedFrom((event.target as HTMLInputElement).value)}
+                  onChange={(event) => updateCreatedFrom(event.target.value)}
+                  onMouseDown={openDatePickerWithoutSelection}
                   InputLabelProps={{ shrink: true }}
+                  inputProps={{ max: filters.createdTo || undefined }}
                   fullWidth
+                  sx={dateFieldSx}
                 />
                 <Typography sx={{ color: '#909399' }}>-</Typography>
                 <TextField
                   type="date"
                   value={filters.createdTo}
-                  onChange={(event) => setFilters({ ...filters, createdTo: event.target.value })}
+                  onInput={(event) => updateCreatedTo((event.target as HTMLInputElement).value)}
+                  onChange={(event) => updateCreatedTo(event.target.value)}
+                  onMouseDown={openDatePickerWithoutSelection}
+                  inputProps={{ min: filters.createdFrom || undefined }}
                   fullWidth
+                  sx={dateFieldSx}
                 />
               </Stack>
               <Stack direction="row" spacing={1.5} justifyContent={{ xs: 'flex-start', md: 'flex-end' }}>
@@ -748,11 +1291,15 @@ export default function OrganizationPage() {
               border: '1px solid #e4e7ed',
               borderRadius: '5px',
               overflow: 'hidden',
+              flex: 1,
+              minHeight: 0,
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <Box
               sx={{
-                minHeight: 58,
+                minHeight: 48,
                 px: '20px',
                 display: 'flex',
                 alignItems: 'center',
@@ -769,30 +1316,76 @@ export default function OrganizationPage() {
                   onClick={openCreateUserDialog}
                   disabled={!selected}
                 >
-                  添加
+                  新增
                 </Button>
               </Stack>
             </Box>
 
-            <TableContainer sx={{ maxHeight: 560 }}>
-              <Table stickyHeader size="small">
+            <TableContainer ref={tableContainerRef} sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+              <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth }}>
+                <colgroup>
+                  {personnelColumns.map((column) => (
+                    <col key={column.id} style={{ width: getColumnWidth(column) }} />
+                  ))}
+                </colgroup>
                 <TableHead>
-                  <TableRow>
-                    <TableCell padding="checkbox"><Checkbox size="small" /></TableCell>
-                    <TableCell>姓名</TableCell>
-                    <TableCell>账号</TableCell>
-                    <TableCell>手机号</TableCell>
-                    <TableCell>状态</TableCell>
-                    <TableCell>所属部门</TableCell>
-                    <TableCell>创建人</TableCell>
-                    <TableCell>创建时间</TableCell>
-                    <TableCell>操作</TableCell>
+                  <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
+                    {personnelColumns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        padding={column.id === 'select' ? 'checkbox' : 'normal'}
+                        align={column.align}
+                        sx={{
+                          width: getColumnWidth(column),
+                          minWidth: column.minWidth,
+                          position: 'relative',
+                          userSelect: 'none',
+                          pr: column.resizable ? 2 : undefined,
+                        }}
+                      >
+                        {column.id === 'select' ? <Checkbox size="small" /> : column.label}
+                        {column.resizable ? (
+                          <Box
+                            data-column-resizer
+                            onMouseDown={(event) => beginColumnResize(event, column.id)}
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              right: 0,
+                              zIndex: 3,
+                              width: 8,
+                              height: '100%',
+                              cursor: 'col-resize',
+                              userSelect: 'none',
+                              '&::after': {
+                                content: '""',
+                                position: 'absolute',
+                                top: '50%',
+                                right: 0,
+                                transform: 'translateY(-50%)',
+                                width: '1px',
+                                height: 18,
+                                bgcolor: '#dcdfe6',
+                                borderRadius: '1px',
+                                transition: 'background-color 120ms ease',
+                              },
+                              '&:hover': {
+                                bgcolor: '#d1e9ff',
+                              },
+                              '&:hover::after': {
+                                bgcolor: '#1890ff',
+                              },
+                            }}
+                          />
+                        ) : null}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {pagedRows.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={9} align="center" sx={{ py: 7, color: '#909399' }}>
+                      <TableCell colSpan={personnelColumns.length} align="center" sx={{ py: 7, color: '#909399' }}>
                         {selected ? '暂无人员' : '请选择左侧组织节点'}
                       </TableCell>
                     </TableRow>
@@ -801,54 +1394,9 @@ export default function OrganizationPage() {
                       key={`${row.departmentName}-${row.id}`}
                       hover
                       onClick={() => openUserDetailDrawer(row)}
-                      sx={{ cursor: 'pointer' }}
+                      sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox size="small" onClick={(event) => event.stopPropagation()} />
-                      </TableCell>
-                      <TableCell>
-                        <Typography sx={{ color: '#1890ff', fontWeight: 500 }}>{row.displayName}</Typography>
-                      </TableCell>
-                      <TableCell>{row.username}</TableCell>
-                      <TableCell>{row.phone || '-'}</TableCell>
-                      <TableCell>
-                        <StatusBadge
-                          label={getUserStatusMeta(row.status).label}
-                          color={getUserStatusMeta(row.status).color}
-                        />
-                      </TableCell>
-                      <TableCell>{row.departmentName}</TableCell>
-                      <TableCell>{row.createdBy || '-'}</TableCell>
-                      <TableCell>{formatDate(row.createdAt)}</TableCell>
-                      <TableCell>
-                        <Stack
-                          direction="row"
-                          spacing={0.5}
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          <Button size="small" variant="text" onClick={() => openEditUserDialog(row)}>
-                            编辑
-                          </Button>
-                          <Button
-                            size="small"
-                            variant="text"
-                            onClick={() => {
-                              setResetDialog({ id: row.id, username: row.username });
-                              setNewPassword('');
-                            }}
-                          >
-                            重置密码
-                          </Button>
-                          <Button
-                            size="small"
-                            variant="text"
-                            color="error"
-                            onClick={() => setDeleteUserConfirm({ id: row.id, username: row.username })}
-                          >
-                            删除
-                          </Button>
-                        </Stack>
-                      </TableCell>
+                      {personnelColumns.map((column) => renderPersonnelCell(row, column))}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -863,7 +1411,7 @@ export default function OrganizationPage() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: 2,
-                borderTop: '1px solid #ebeef5',
+                borderTop: 'none',
               }}
             >
               <Typography sx={{ color: '#909399' }}>共 {filteredRows.length} 条数据</Typography>
@@ -891,18 +1439,15 @@ export default function OrganizationPage() {
         </Box>
       </Box>
 
-      <Drawer anchor="right" open={userDrawerOpen} onClose={closeUserDetailDrawer}>
+      <Drawer anchor="right"
+        open={userDrawerOpen}
+        onClose={closeUserDetailDrawer}
+        sx={appContentDrawerSx}
+        slotProps={{ backdrop: { sx: appContentDrawerSx } }}
+        PaperProps={{ sx: appContentDrawerPaperSx }}
+      >
         <Box sx={{ width: { xs: '100vw', sm: 560 }, p: 2, bgcolor: '#f7f9fc', minHeight: '100%' }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-            <Box sx={{ minWidth: 0 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>用户详情</Typography>
-              {selectedUser ? (
-                <Stack direction="row" spacing={1} sx={{ mt: 0.75 }} flexWrap="wrap" useFlexGap>
-                  <Chip size="small" label={selectedUser.displayName} color="primary" variant="outlined" />
-                  <Chip size="small" label={selectedUser.username} />
-                </Stack>
-              ) : null}
-            </Box>
+          <Stack direction="row" justifyContent="flex-end">
             <IconButton size="small" onClick={closeUserDetailDrawer} aria-label="关闭详情">
               <Close />
             </IconButton>
@@ -913,31 +1458,7 @@ export default function OrganizationPage() {
               请选择一名用户查看详情。
             </Typography>
           ) : (
-            <Stack spacing={2} sx={{ mt: 2 }}>
-              <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
-                <Button size="small" variant="contained" onClick={() => openEditUserDialog(selectedUser)}>
-                  编辑
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => {
-                    setResetDialog({ id: selectedUser.id, username: selectedUser.username });
-                    setNewPassword('');
-                  }}
-                >
-                  重置密码
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  onClick={() => setDeleteUserConfirm({ id: selectedUser.id, username: selectedUser.username })}
-                >
-                  删除
-                </Button>
-              </Stack>
-
+            <Stack spacing={2} sx={{ mt: 1 }}>
               <DetailSection title="基本信息">
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
                   <DetailField label="姓名">{selectedUser.displayName}</DetailField>
@@ -966,9 +1487,46 @@ export default function OrganizationPage() {
 
               <DetailSection title="系统信息">
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
-                  <DetailField label="创建人">{selectedUser.createdBy || '-'}</DetailField>
-                  <DetailField label="创建时间">{formatDate(selectedUser.createdAt)}</DetailField>
+                  <DetailField label="创建人">{selectedUser.createdBy || '系统记录'}</DetailField>
+                  <DetailField label="创建时间">{formatDateTime(selectedUser.createdAt)}</DetailField>
+                  <DetailField label="更新人">{getUpdatedByValue(selectedUser, userAuditRecords)}</DetailField>
+                  <DetailField label="更新时间">{formatDateTime(selectedUser.updatedAt)}</DetailField>
                 </Box>
+              </DetailSection>
+
+              <DetailSection title="审计记录">
+                <TableContainer sx={{ maxHeight: 320, overflowX: 'hidden' }}>
+                  <Table size="small" stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
+                    <TableHead>
+                      <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
+                        <TableCell sx={{ width: 72 }}>操作人</TableCell>
+                        <TableCell sx={{ width: 72 }}>操作动作</TableCell>
+                        <TableCell sx={{ width: 108 }}>操作时间</TableCell>
+                        <TableCell sx={{ width: '24%' }}>变更前内容</TableCell>
+                        <TableCell sx={{ width: '24%' }}>变更后内容</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {userAuditRecords.map((record) => (
+                        <TableRow key={record.id} sx={{ '& .MuiTableCell-root': tableBodyCellSx }}>
+                          <TableCell>{record.operatorName}</TableCell>
+                          <TableCell>{record.actionLabel}</TableCell>
+                          <TableCell>{formatDateTime(record.operatedAt)}</TableCell>
+                          <TableCell>
+                            <Typography component="pre" variant="caption" sx={{ m: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                              {record.beforeContent}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography component="pre" variant="caption" sx={{ m: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                              {record.afterContent}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </DetailSection>
             </Stack>
           )}
@@ -1062,27 +1620,14 @@ export default function OrganizationPage() {
             <FormControl fullWidth required size="small" sx={userSelectSx}>
               <InputLabel required>岗位角色</InputLabel>
               <Select
-                multiple
                 label="岗位角色"
-                value={userForm.roleIds}
-                input={<OutlinedInput size="small" label="岗位角色" />}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  setUserForm({
-                    ...userForm,
-                    roleIds: typeof value === 'string'
-                      ? value.split(',').filter(Boolean)
-                      : (value as string[]).map(String),
-                  });
-                }}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {(selected as string[]).map((roleId) => (
-                      <Chip key={roleId} label={roleNameById.get(roleId) || roleId} size="small" />
-                    ))}
-                  </Box>
-                )}
+                value={userForm.roleIds[0] ?? ''}
+                onChange={(event) => setUserForm({
+                  ...userForm,
+                  roleIds: event.target.value ? [String(event.target.value)] : [],
+                })}
               >
+                <MenuItem value="">未选择</MenuItem>
                 {roles.map((role) => (
                   <MenuItem key={String(role.id)} value={String(role.id)}>{role.name}</MenuItem>
                 ))}
@@ -1134,18 +1679,19 @@ export default function OrganizationPage() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={deleteUserConfirm !== null} onClose={() => setDeleteUserConfirm(null)}>
-        <DialogTitle>确认删除用户</DialogTitle>
-        <DialogContent>确定要删除用户 {deleteUserConfirm?.username} 吗？</DialogContent>
+      <Dialog open={removeUserConfirm !== null} onClose={() => setRemoveUserConfirm(null)}>
+        <DialogTitle>确认移出人员</DialogTitle>
+        <DialogContent>
+          确定要将用户 {removeUserConfirm?.username} 移出当前组织架构吗？用户信息、账号和角色会保留，所属组织将变为未分配。
+        </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteUserConfirm(null)}>取消</Button>
+          <Button onClick={() => setRemoveUserConfirm(null)}>取消</Button>
           <Button
-            color="error"
             variant="contained"
-            onClick={() => deleteUserMutation.mutate()}
-            disabled={deleteUserMutation.isPending}
+            onClick={() => removeUserMutation.mutate()}
+            disabled={removeUserMutation.isPending}
           >
-            删除
+            移出
           </Button>
         </DialogActions>
       </Dialog>

@@ -115,6 +115,14 @@ public class UserController {
         return ApiResponse.success(null);
     }
 
+    @PostMapping("/{id}/remove-from-organization")
+    @Transactional
+    public ApiResponse<Void> removeFromOrganization(@PathVariable Long id) {
+        findUser(id);
+        userDepartmentRepository.deleteByUserId(id);
+        return ApiResponse.success(null);
+    }
+
     @PostMapping("/{id}/reset-password")
     public ApiResponse<Void> resetPassword(@PathVariable Long id, @RequestBody ResetPasswordRequest request) {
         if (request == null || !StringUtils.hasText(request.getPassword())) {

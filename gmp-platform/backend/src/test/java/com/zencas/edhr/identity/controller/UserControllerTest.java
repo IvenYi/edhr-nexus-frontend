@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,5 +46,22 @@ class UserControllerTest {
 
         assertThat(user.getPasswordHash()).isEqualTo("encoded-password");
         verify(userAccountRepository).save(user);
+    }
+
+    @Test
+    void removeFromOrganizationClearsDepartmentMembershipsWithoutDeletingTheUserOrRoles() {
+        UserAccount user = UserAccount.builder()
+                .id(1L)
+                .username("operator")
+                .displayName("生产操作员")
+                .status("ACTIVE")
+                .build();
+        when(userAccountRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        controller.removeFromOrganization(1L);
+
+        verify(userDepartmentRepository).deleteByUserId(1L);
+        verify(userRoleRepository, never()).deleteByUserId(1L);
+        verify(userAccountRepository, never()).deleteById(1L);
     }
 }
