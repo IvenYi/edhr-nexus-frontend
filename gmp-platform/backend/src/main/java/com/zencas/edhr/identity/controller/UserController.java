@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private static final String DEFAULT_INITIAL_PASSWORD = "Zencas@123";
+    private static final String SYSTEM_SUPER_ADMIN_USERNAME = "admin";
     private static final String USER_AUDIT_ENTITY_TYPE = "USER_ACCOUNT";
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper();
 
@@ -141,6 +142,8 @@ public class UserController {
     @DeleteMapping("/{id}")
     @Transactional
     public ApiResponse<Void> delete(@PathVariable Long id) {
+        UserAccount user = findUser(id);
+        ensureUserCanBeDeleted(user);
         userRoleRepository.deleteByUserId(id);
         userDepartmentRepository.deleteByUserId(id);
         userAccountRepository.deleteById(id);
@@ -170,6 +173,18 @@ public class UserController {
     private UserAccount findUser(Long id) {
         return userAccountRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.IDN_002));
+    }
+
+    private void ensureUserCanBeDeleted(UserAccount user) {
+        if (isSystemSuperAdminUser(user)) {
+            throw new BusinessException(ErrorCode.GENERAL_003, "系统超级管理员账号不允许删除");
+        }
+    }
+
+    private boolean isSystemSuperAdminUser(UserAccount user) {
+        return user != null
+                && StringUtils.hasText(user.getUsername())
+                && SYSTEM_SUPER_ADMIN_USERNAME.equalsIgnoreCase(user.getUsername().trim());
     }
 
     private String resolveDisplayName(UserRequest request) {

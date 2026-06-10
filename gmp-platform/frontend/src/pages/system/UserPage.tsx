@@ -1,4 +1,5 @@
 import {
+  type DragEvent as ReactDragEvent,
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
@@ -30,6 +31,7 @@ import {
   InputLabel,
   MenuItem,
   Pagination,
+  Popover,
   Select,
   Snackbar,
   Stack,
@@ -45,7 +47,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Add, Close, Delete, Edit, ExpandMore, LockReset, RestartAlt, Search } from '@mui/icons-material';
+import { Add, Close, Delete, DragIndicator, Edit, ExpandMore, LockReset, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import {
   createUser,
   deleteUser,
@@ -174,6 +176,8 @@ type UserColumnId =
   | 'updatedAt'
   | 'actions';
 
+type ConfigurableUserColumnId = Exclude<UserColumnId, 'select' | 'actions'>;
+
 interface UserColumn {
   id: UserColumnId;
   label: string;
@@ -184,6 +188,11 @@ interface UserColumn {
 }
 
 type UserColumnWidths = Partial<Record<UserColumnId, number>>;
+
+interface UserColumnSettings {
+  order: ConfigurableUserColumnId[];
+  hidden: ConfigurableUserColumnId[];
+}
 
 interface UserFilters {
   displayName: string;
@@ -198,7 +207,10 @@ const PAGE_SIZE = 20;
 const USER_PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const USER_FETCH_PAGE_SIZE = 200;
 const USER_COLUMN_WIDTH_STORAGE_PREFIX = 'user-management-column-widths:';
+const USER_COLUMN_SETTINGS_STORAGE_PREFIX = 'user-management-column-settings:';
 const USER_FIELD_COLUMN_MIN_WIDTH = 60;
+const SYSTEM_SUPER_ADMIN_USERNAME = 'admin';
+const TABLE_DATA_ROW_HEIGHT = 40;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CHINA_MOBILE_PATTERN = /^1[3-9]\d{9}$/;
 
@@ -251,9 +263,22 @@ const tableHeaderCellSx = {
 };
 
 const tableBodyCellSx = {
-  height: 48,
+  height: TABLE_DATA_ROW_HEIGHT,
+  lineHeight: '20px',
+  py: 0,
+  borderBottom: 'none',
+  boxShadow: 'inset 0 -1px 0 #ebeef5',
+};
+
+const emptyTableBodyCellSx = {
+  height: '100%',
   py: 0,
   borderBottom: '1px solid #ebeef5',
+  color: '#909399',
+};
+
+const emptyTableRowSx = {
+  height: '100%',
 };
 
 const dateFieldSx = {
@@ -294,6 +319,18 @@ const userColumns: UserColumn[] = [
   { id: 'updatedAt', label: '更新时间', defaultWidth: 130, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'actions', label: '操作', defaultWidth: USER_ACTION_COLUMN_WIDTH, minWidth: USER_ACTION_COLUMN_WIDTH, resizable: false },
 ];
+
+function isConfigurableUserColumn(column: UserColumn): column is UserColumn & { id: ConfigurableUserColumnId } {
+  return column.id !== 'select' && column.id !== 'actions';
+}
+
+function isConfigurableUserColumnId(value: unknown): value is ConfigurableUserColumnId {
+  return typeof value === 'string' && userColumns.some((column) => column.id === value && isConfigurableUserColumn(column));
+}
+
+function getConfigurableUserColumnIds(): ConfigurableUserColumnId[] {
+  return userColumns.filter(isConfigurableUserColumn).map((column) => column.id);
+}
 
 const auditFieldLabelMap: Record<string, string> = {
   username: '账号',
@@ -409,6 +446,15 @@ function getOperatorName(value?: string): string {
 function getUserRoleSummary(user: UserRow, roleNameById: Map<string, string>): string {
   if (user.roleIds.length === 0) return '-';
   return user.roleIds.map((roleId) => roleNameById.get(roleId) || roleId).join('、');
+}
+
+function isSystemSuperAdminUsername(username?: string): boolean {
+  return username?.trim().toLowerCase() === SYSTEM_SUPER_ADMIN_USERNAME;
+}
+
+function isSystemSuperAdminUser(user: UserRow, roleNameById: Map<string, string>): boolean {
+  const roleSummary = getUserRoleSummary(user, roleNameById);
+  return isSystemSuperAdminUsername(user.username) || (user.id === '1' && roleSummary.includes('系统管理员'));
 }
 
 function getUserCreatedBy(user: UserRow): string {
@@ -576,8 +622,8 @@ function getUpdatedByValue(user: UserRow, auditRecords: UserAuditRecord[]): stri
   return updateRecord?.operatorName || '-';
 }
 
-function getUserColumnWidthStorageKey(): string {
-  if (typeof window === 'undefined') return `${USER_COLUMN_WIDTH_STORAGE_PREFIX}anonymous`;
+function getUserPreferenceStorageKey(prefix: string): string {
+  if (typeof window === 'undefined') return `${prefix}anonymous`;
 
   try {
     const user = JSON.parse(localStorage.getItem('user') || 'null') as {
@@ -586,10 +632,18 @@ function getUserColumnWidthStorageKey(): string {
       displayName?: string;
     } | null;
     const userKey = user?.id ?? user?.username ?? user?.displayName ?? 'anonymous';
-    return `${USER_COLUMN_WIDTH_STORAGE_PREFIX}${String(userKey)}`;
+    return `${prefix}${String(userKey)}`;
   } catch {
-    return `${USER_COLUMN_WIDTH_STORAGE_PREFIX}anonymous`;
+    return `${prefix}anonymous`;
   }
+}
+
+function getUserColumnWidthStorageKey(): string {
+  return getUserPreferenceStorageKey(USER_COLUMN_WIDTH_STORAGE_PREFIX);
+}
+
+function getUserColumnSettingsStorageKey(): string {
+  return getUserPreferenceStorageKey(USER_COLUMN_SETTINGS_STORAGE_PREFIX);
 }
 
 function loadUserColumnWidths(storageKey: string): UserColumnWidths {
@@ -614,9 +668,60 @@ function loadUserColumnWidths(storageKey: string): UserColumnWidths {
   }
 }
 
+function normalizeUserColumnSettings(value: unknown): UserColumnSettings {
+  const defaults = getConfigurableUserColumnIds();
+  const parsed = value as { order?: unknown[]; hidden?: unknown[] } | null | undefined;
+  const seen = new Set<ConfigurableUserColumnId>();
+  const storedOrder = Array.isArray(parsed?.order) ? parsed.order : [];
+  const order = [
+    ...storedOrder.filter((id): id is ConfigurableUserColumnId => {
+      if (!isConfigurableUserColumnId(id) || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }),
+    ...defaults.filter((id) => !seen.has(id)),
+  ];
+  const hidden = Array.from(new Set(
+    (Array.isArray(parsed?.hidden) ? parsed.hidden : [])
+      .filter((id): id is ConfigurableUserColumnId => isConfigurableUserColumnId(id) && order.includes(id)),
+  ));
+
+  if (hidden.length >= order.length && order.length > 0) {
+    return { order, hidden: hidden.filter((id) => id !== order[0]) };
+  }
+
+  return { order, hidden };
+}
+
+function loadUserColumnSettings(storageKey: string): UserColumnSettings {
+  if (typeof window === 'undefined') return normalizeUserColumnSettings(null);
+
+  try {
+    const raw = localStorage.getItem(storageKey);
+    return normalizeUserColumnSettings(raw ? JSON.parse(raw) : null);
+  } catch {
+    return normalizeUserColumnSettings(null);
+  }
+}
+
+function getColumnSettingsItems(settings: UserColumnSettings): Array<UserColumn & { id: ConfigurableUserColumnId }> {
+  const columnsById = new Map(userColumns.filter(isConfigurableUserColumn).map((column) => [column.id, column]));
+  return settings.order
+    .map((id) => columnsById.get(id))
+    .filter((column): column is UserColumn & { id: ConfigurableUserColumnId } => Boolean(column));
+}
+
+function getVisibleUserColumns(settings: UserColumnSettings): UserColumn[] {
+  const selectColumn = userColumns.find((column) => column.id === 'select');
+  const actionColumn = userColumns.find((column) => column.id === 'actions');
+  const visibleDataColumns = getColumnSettingsItems(settings).filter((column) => !settings.hidden.includes(column.id));
+  return [selectColumn, ...visibleDataColumns, actionColumn].filter((column): column is UserColumn => Boolean(column));
+}
+
 function resolveUserColumnWidths(
   columnWidths: UserColumnWidths,
   tableContainerWidth: number,
+  visibleColumns: UserColumn[] = userColumns,
 ): Record<UserColumnId, number> {
   const resolved = userColumns.reduce<Record<UserColumnId, number>>((result, column) => {
     const persistedWidth = column.resizable ? columnWidths[column.id] : undefined;
@@ -624,13 +729,13 @@ function resolveUserColumnWidths(
     return result;
   }, {} as Record<UserColumnId, number>);
 
-  const baseTotalWidth = userColumns.reduce((sum, column) => sum + resolved[column.id], 0);
+  const baseTotalWidth = visibleColumns.reduce((sum, column) => sum + resolved[column.id], 0);
   const availableWidth = Math.floor(tableContainerWidth);
   if (!Number.isFinite(availableWidth) || availableWidth <= baseTotalWidth) {
     return resolved;
   }
 
-  const flexibleColumns = userColumns.filter((column) => column.resizable);
+  const flexibleColumns = visibleColumns.filter((column) => column.resizable);
   const flexibleWeight = flexibleColumns.reduce((sum, column) => sum + column.defaultWidth, 0);
   if (flexibleWeight <= 0) return resolved;
 
@@ -796,7 +901,12 @@ export default function UserPage() {
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const [tableScrollbarWidth, setTableScrollbarWidth] = useState(0);
   const columnWidthStorageKey = useMemo(() => getUserColumnWidthStorageKey(), []);
+  const columnSettingsStorageKey = useMemo(() => getUserColumnSettingsStorageKey(), []);
   const [columnWidths, setColumnWidths] = useState<UserColumnWidths>(() => loadUserColumnWidths(columnWidthStorageKey));
+  const [columnSettings, setColumnSettings] = useState<UserColumnSettings>(() => loadUserColumnSettings(columnSettingsStorageKey));
+  const [columnSettingsAnchorEl, setColumnSettingsAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [draggingColumnId, setDraggingColumnId] = useState<ConfigurableUserColumnId | null>(null);
+  const columnSettingDragSourceRef = useRef<ConfigurableUserColumnId | null>(null);
   const resizingColumnRef = useRef<UserColumnId | null>(null);
 
   const { data: usersData, isLoading, isError } = useQuery({
@@ -890,21 +1000,33 @@ export default function UserPage() {
   const pageCount = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
   const currentPage = Math.min(page, pageCount);
   const pagedRows = filteredRows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  const columnSettingsItems = useMemo(() => getColumnSettingsItems(columnSettings), [columnSettings]);
+  const visibleUserColumns = useMemo(() => getVisibleUserColumns(columnSettings), [columnSettings]);
+  const visibleConfigurableColumnCount = columnSettings.order.length - columnSettings.hidden.length;
   const resolvedColumnWidths = useMemo(
-    () => resolveUserColumnWidths(columnWidths, tableContainerWidth),
-    [columnWidths, tableContainerWidth],
+    () => resolveUserColumnWidths(columnWidths, tableContainerWidth, visibleUserColumns),
+    [columnWidths, tableContainerWidth, visibleUserColumns],
   );
-  const totalTableWidth = userColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0);
+  const totalTableWidth = visibleUserColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0);
   const userAuditRecords = useMemo(
     () => getUserAuditRecords(selectedUser, auditEventsData ?? [], { departmentPathById, roleNameById }),
     [auditEventsData, departmentPathById, roleNameById, selectedUser],
+  );
+  const selectablePagedRows = useMemo(
+    () => pagedRows.filter((row) => !isSystemSuperAdminUser(row, roleNameById)),
+    [pagedRows, roleNameById],
   );
   const selectedBatchDeleteUsers = useMemo(
     () => users.filter((user) => selectedUserIds.has(user.id)),
     [selectedUserIds, users],
   );
-  const allPagedRowsSelected = pagedRows.length > 0 && pagedRows.every((row) => selectedUserIds.has(row.id));
-  const isPagedRowsPartiallySelected = pagedRows.some((row) => selectedUserIds.has(row.id)) && !allPagedRowsSelected;
+  const selectedDeletableBatchUsers = useMemo(
+    () => selectedBatchDeleteUsers.filter((user) => !isSystemSuperAdminUser(user, roleNameById)),
+    [roleNameById, selectedBatchDeleteUsers],
+  );
+  const allPagedRowsSelected = selectablePagedRows.length > 0 && selectablePagedRows.every((row) => selectedUserIds.has(row.id));
+  const isPagedRowsPartiallySelected = selectablePagedRows.some((row) => selectedUserIds.has(row.id)) && !allPagedRowsSelected;
+  const isUserTableEmptyState = isLoading || isError || pagedRows.length === 0;
   const formValidationError = getUserFormValidationError(form);
   const emailFormatError = Boolean(form.email.trim()) && !EMAIL_PATTERN.test(form.email.trim());
   const phoneFormatError = Boolean(form.phone.trim()) && !CHINA_MOBILE_PATTERN.test(form.phone.trim());
@@ -939,6 +1061,23 @@ export default function UserPage() {
     localStorage.setItem(columnWidthStorageKey, JSON.stringify(columnWidths));
   }, [columnWidthStorageKey, columnWidths]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(columnSettingsStorageKey, JSON.stringify(columnSettings));
+  }, [columnSettingsStorageKey, columnSettings]);
+
+  useEffect(() => {
+    setSelectedUserIds((current) => {
+      const next = new Set(
+        [...current].filter((id) => {
+          const user = users.find((item) => item.id === id);
+          return !user || !isSystemSuperAdminUser(user, roleNameById);
+        }),
+      );
+      return next.size === current.size ? current : next;
+    });
+  }, [roleNameById, users]);
+
   const beginColumnResize = (event: MouseEvent<HTMLDivElement> | ReactPointerEvent<HTMLDivElement>, column: UserColumn) => {
     if (!column.resizable) return;
     event.preventDefault();
@@ -971,6 +1110,99 @@ export default function UserPage() {
     window.addEventListener(isPointerEvent ? 'pointerup' : 'mouseup', stopResize);
   };
 
+  const getColumnSettingDropPlacement = (
+    clientY: number,
+    targetRow: HTMLElement,
+  ): 'before' | 'after' => {
+    const rect = targetRow.getBoundingClientRect();
+    return clientY > rect.top + rect.height / 2 ? 'after' : 'before';
+  };
+
+  const moveUserColumnSetting = (
+    sourceId: ConfigurableUserColumnId,
+    targetId: ConfigurableUserColumnId,
+    placement: 'before' | 'after' = 'before',
+  ) => {
+    if (sourceId === targetId) return;
+
+    setColumnSettings((current) => {
+      const nextOrder = current.order.filter((id) => id !== sourceId);
+      const targetIndex = nextOrder.indexOf(targetId);
+      if (targetIndex === -1) return current;
+      nextOrder.splice(targetIndex + (placement === 'after' ? 1 : 0), 0, sourceId);
+      return normalizeUserColumnSettings({ ...current, order: nextOrder });
+    });
+  };
+
+  const toggleUserColumnVisibility = (columnId: ConfigurableUserColumnId) => {
+    setColumnSettings((current) => {
+      const isHidden = current.hidden.includes(columnId);
+      if (!isHidden && visibleConfigurableColumnCount <= 1) return current;
+      const hidden = isHidden
+        ? current.hidden.filter((id) => id !== columnId)
+        : [...current.hidden, columnId];
+      return normalizeUserColumnSettings({ ...current, hidden });
+    });
+  };
+
+  const handleColumnSettingDragStart = (event: ReactDragEvent<HTMLDivElement>, columnId: ConfigurableUserColumnId) => {
+    setDraggingColumnId(columnId);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', columnId);
+  };
+
+  const handleColumnSettingDragOver = (event: ReactDragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleColumnSettingDrop = (event: ReactDragEvent<HTMLDivElement>, columnId: ConfigurableUserColumnId) => {
+    event.preventDefault();
+    const sourceId = event.dataTransfer.getData('text/plain') || draggingColumnId;
+    if (isConfigurableUserColumnId(sourceId)) {
+      moveUserColumnSetting(sourceId, columnId, getColumnSettingDropPlacement(event.clientY, event.currentTarget));
+    }
+    setDraggingColumnId(null);
+  };
+
+  const handleColumnSettingDragEnd = () => {
+    setDraggingColumnId(null);
+  };
+
+  const beginColumnSettingPointerDrag = (event: ReactPointerEvent<HTMLDivElement>, columnId: ConfigurableUserColumnId) => {
+    if (event.button !== 0) return;
+    const target = event.target as HTMLElement;
+    if (target.closest('input,button')) return;
+
+    event.preventDefault();
+    columnSettingDragSourceRef.current = columnId;
+    setDraggingColumnId(columnId);
+    const previousUserSelect = document.body.style.userSelect;
+    document.body.style.userSelect = 'none';
+
+    const moveColumnByPointer = (moveEvent: globalThis.PointerEvent) => {
+      const targetRow = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)
+        ?.closest<HTMLElement>('[data-user-column-settings-row]');
+      if (!targetRow) return;
+      const targetId = targetRow.dataset.columnId;
+      const sourceId = columnSettingDragSourceRef.current;
+      if (sourceId && isConfigurableUserColumnId(targetId) && targetId !== sourceId) {
+        moveUserColumnSetting(sourceId, targetId, getColumnSettingDropPlacement(moveEvent.clientY, targetRow));
+      }
+    };
+
+    const stopPointerDrag = () => {
+      document.body.style.userSelect = previousUserSelect;
+      columnSettingDragSourceRef.current = null;
+      setDraggingColumnId(null);
+      window.removeEventListener('pointermove', moveColumnByPointer);
+      window.removeEventListener('pointerup', stopPointerDrag);
+    };
+
+    window.addEventListener('pointermove', moveColumnByPointer);
+    window.addEventListener('pointerup', stopPointerDrag);
+  };
+
   const updateCreatedFrom = (value: string) => {
     setFilters((current) => ({
       ...current,
@@ -995,6 +1227,9 @@ export default function UserPage() {
   };
 
   const toggleUserSelection = (id: string, checked?: boolean) => {
+    const targetUser = users.find((user) => user.id === id);
+    if (targetUser && isSystemSuperAdminUser(targetUser, roleNameById)) return;
+
     setSelectedUserIds((current) => {
       const next = new Set(current);
       const shouldSelect = checked ?? !next.has(id);
@@ -1006,7 +1241,7 @@ export default function UserPage() {
   const togglePageUserSelection = (checked: boolean) => {
     setSelectedUserIds((current) => {
       const next = new Set(current);
-      pagedRows.forEach((row) => {
+      selectablePagedRows.forEach((row) => {
         checked ? next.add(row.id) : next.delete(row.id);
       });
       return next;
@@ -1044,6 +1279,10 @@ export default function UserPage() {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!deleteConfirm) throw new Error('missing user');
+      const targetUser = users.find((user) => user.id === deleteConfirm.id);
+      if ((targetUser && isSystemSuperAdminUser(targetUser, roleNameById)) || isSystemSuperAdminUsername(deleteConfirm.username)) {
+        throw new Error('系统超级管理员账号不允许删除');
+      }
       await deleteUser(deleteConfirm.id);
     },
     onSuccess: () => {
@@ -1059,7 +1298,11 @@ export default function UserPage() {
 
   const batchDeleteMutation = useMutation({
     mutationFn: async () => {
-      const userIds = Array.from(selectedUserIds);
+      const blockedBatchDeleteUsers = selectedBatchDeleteUsers.filter((user) => isSystemSuperAdminUser(user, roleNameById));
+      if (blockedBatchDeleteUsers.length > 0) {
+        throw new Error('系统超级管理员账号不允许删除');
+      }
+      const userIds = selectedDeletableBatchUsers.map((user) => user.id);
       if (userIds.length === 0) throw new Error('请选择需要删除的账号');
       await Promise.all(userIds.map((id) => deleteUser(id)));
       return userIds;
@@ -1132,6 +1375,14 @@ export default function UserPage() {
     saveMutation.mutate();
   };
 
+  const openDeleteConfirm = (row: UserRow) => {
+    if (isSystemSuperAdminUser(row, roleNameById)) {
+      showSnackbar('系统超级管理员账号不允许删除', 'error');
+      return;
+    }
+    setDeleteConfirm({ id: row.id, username: row.username });
+  };
+
   const renderCell = (row: UserRow, column: UserColumn) => {
     const cellSx = {
       ...tableBodyCellSx,
@@ -1151,12 +1402,14 @@ export default function UserPage() {
           sx={cellSx}
           onClick={(event) => {
             event.stopPropagation();
+            if (isSystemSuperAdminUser(row, roleNameById)) return;
             toggleUserSelection(row.id);
           }}
         >
 	          <Checkbox
 	            size="small"
 	            checked={selectedUserIds.has(row.id)}
+              disabled={isSystemSuperAdminUser(row, roleNameById)}
 	            onClick={(event) => event.stopPropagation()}
 	            onChange={(event) => toggleUserSelection(row.id, event.target.checked)}
 	          />
@@ -1241,12 +1494,13 @@ export default function UserPage() {
               <LockReset fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="删除" arrow>
+          <Tooltip title={isSystemSuperAdminUser(row, roleNameById) ? '系统超级管理员账号不允许删除' : '删除'} arrow>
             <IconButton
               size="small"
               color="error"
               aria-label="删除"
-              onClick={() => setDeleteConfirm({ id: row.id, username: row.username })}
+              disabled={isSystemSuperAdminUser(row, roleNameById)}
+              onClick={() => openDeleteConfirm(row)}
             >
               <Delete fontSize="small" />
             </IconButton>
@@ -1340,21 +1594,143 @@ export default function UserPage() {
         </Box>
       </Box>
 
-	      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' }}>
-        <Stack direction="row" spacing={1} justifyContent="flex-end" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
-          <Button
-            size="small"
-            variant="outlined"
-            color="error"
-            startIcon={<Delete />}
-            disabled={selectedUserIds.size === 0}
-            onClick={() => setBatchDeleteConfirm(true)}
-          >
-            批量删除
-          </Button>
-          <Button size="small" variant="contained" startIcon={<Add />} onClick={openCreateDialog}>新增</Button>
-        </Stack>
-	        <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
+		      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' }}>
+	        <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
+	          <Tooltip title="字段设置" arrow>
+	            <IconButton
+	              data-user-column-settings-trigger
+	              size="small"
+	              aria-label="字段设置"
+	              onClick={(event) => setColumnSettingsAnchorEl(event.currentTarget)}
+	              sx={{
+	                width: 36,
+	                height: 36,
+	                border: '1px solid #e4e7ed',
+	                borderRadius: 1,
+	                color: '#606266',
+	                bgcolor: '#fff',
+	                '&:hover': {
+	                  color: '#1890ff',
+	                  bgcolor: '#e8f4ff',
+	                },
+	              }}
+	            >
+	              <Box
+	                aria-hidden="true"
+	                sx={{
+	                  position: 'relative',
+	                  width: 22,
+	                  height: 22,
+	                  display: 'inline-flex',
+	                  alignItems: 'center',
+	                  justifyContent: 'center',
+	                }}
+	              >
+	                <ViewColumnRounded sx={{ fontSize: 21 }} />
+	                <TuneRounded
+	                  sx={{
+	                    position: 'absolute',
+	                    right: -3,
+	                    bottom: -2,
+	                    fontSize: 13,
+	                    p: '1px',
+	                    borderRadius: '50%',
+	                    bgcolor: '#fff',
+	                    boxShadow: '0 0 0 1px #fff',
+	                  }}
+	                />
+	              </Box>
+	            </IconButton>
+	          </Tooltip>
+	          <Stack direction="row" spacing={1} justifyContent="flex-end" alignItems="center">
+	            <Button
+	              size="small"
+	              variant="outlined"
+	              color="error"
+	              startIcon={<Delete />}
+	              disabled={selectedDeletableBatchUsers.length === 0}
+	              onClick={() => setBatchDeleteConfirm(true)}
+	            >
+	              批量删除
+	            </Button>
+	            <Button size="small" variant="contained" startIcon={<Add />} onClick={openCreateDialog}>新增</Button>
+	          </Stack>
+	        </Stack>
+	        <Popover
+	          open={Boolean(columnSettingsAnchorEl)}
+	          anchorEl={columnSettingsAnchorEl}
+	          onClose={() => setColumnSettingsAnchorEl(null)}
+	          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+	          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+	          PaperProps={{
+	            sx: {
+	              mt: 1,
+	              width: 220,
+	              overflow: 'visible',
+	              border: '1px solid #e4e7ed',
+	              borderRadius: 1,
+	              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+	              '&::before': {
+	                content: '""',
+	                position: 'absolute',
+	                top: -7,
+	                left: 28,
+	                width: 12,
+	                height: 12,
+	                bgcolor: '#fff',
+	                borderTop: '1px solid #e4e7ed',
+	                borderLeft: '1px solid #e4e7ed',
+	                transform: 'rotate(45deg)',
+	              },
+	            },
+	          }}
+	        >
+	          <Stack data-user-column-settings-panel spacing={0.5} sx={{ p: 1.5 }}>
+	            {columnSettingsItems.map((column) => {
+	              const checked = !columnSettings.hidden.includes(column.id);
+	              const disabled = checked && visibleConfigurableColumnCount <= 1;
+	              return (
+	                <Box
+	                  key={column.id}
+	                  data-user-column-settings-row
+	                  data-column-id={column.id}
+	                  draggable
+	                  onDragStart={(event) => handleColumnSettingDragStart(event, column.id)}
+	                  onDragOver={handleColumnSettingDragOver}
+	                  onDrop={(event) => handleColumnSettingDrop(event, column.id)}
+	                  onDragEnd={handleColumnSettingDragEnd}
+	                  onPointerDown={(event) => beginColumnSettingPointerDrag(event, column.id)}
+	                  sx={{
+	                    display: 'grid',
+	                    gridTemplateColumns: '24px 34px minmax(0, 1fr)',
+	                    alignItems: 'center',
+	                    minHeight: 40,
+	                    borderRadius: 1,
+	                    cursor: 'move',
+	                    touchAction: 'none',
+	                    color: checked ? '#1890ff' : '#a8abb2',
+	                    '&:hover': {
+	                      bgcolor: '#f5f7fa',
+	                    },
+	                  }}
+	                >
+	                  <DragIndicator fontSize="small" sx={{ color: '#909399' }} />
+	                  <Checkbox
+	                    size="small"
+	                    checked={checked}
+	                    disabled={disabled}
+	                    onChange={() => toggleUserColumnVisibility(column.id)}
+	                    inputProps={{ 'aria-label': `${column.label}字段显隐` }}
+	                  />
+	                  <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>
+	                    {column.label}
+	                  </Typography>
+	                </Box>
+	              );
+	            })}
+	          </Stack>
+	        </Popover>
+		        <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
 	          <TableContainer
 	            ref={tableContainerRef}
 	            sx={{
@@ -1366,17 +1742,17 @@ export default function UserPage() {
 	              overflow: 'auto',
 	            }}
 	          >
-          <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth }}>
-            <colgroup>
-              {userColumns.map((column) => (
-                <col key={column.id} style={{ width: resolvedColumnWidths[column.id] }} />
-              ))}
-            </colgroup>
-	            <TableHead>
-	              <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
-	                {userColumns.map((column) => (
-	                  <TableCell
-	                    key={column.id}
+	          <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth, height: isUserTableEmptyState ? '100%' : 'auto' }}>
+	            <colgroup>
+	              {visibleUserColumns.map((column) => (
+	                <col key={column.id} style={{ width: resolvedColumnWidths[column.id] }} />
+	              ))}
+	            </colgroup>
+		            <TableHead>
+		              <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
+		                {visibleUserColumns.map((column) => (
+		                  <TableCell
+		                    key={column.id}
 	                    padding={column.id === 'select' ? 'checkbox' : 'normal'}
 	                    align={column.align}
 		                    sx={{
@@ -1395,6 +1771,7 @@ export default function UserPage() {
 	                        size="small"
 	                        checked={allPagedRowsSelected}
 	                        indeterminate={isPagedRowsPartiallySelected}
+                          disabled={selectablePagedRows.length === 0}
 	                        onClick={(event) => event.stopPropagation()}
 	                        onChange={(event) => togglePageUserSelection(event.target.checked)}
 	                      />
@@ -1433,34 +1810,34 @@ export default function UserPage() {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={userColumns.length} align="center" sx={{ height: 160 }}>
-                    <CircularProgress size={24} />
-                  </TableCell>
-                </TableRow>
-              ) : isError ? (
-                <TableRow>
-                  <TableCell colSpan={userColumns.length} align="center" sx={{ height: 160 }}>
-                    加载失败
-                  </TableCell>
-                </TableRow>
-              ) : pagedRows.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={userColumns.length} align="center" sx={{ height: 160, color: '#909399' }}>
-                    暂无数据
-                  </TableCell>
+	            <TableBody sx={{ height: isUserTableEmptyState ? '100%' : 'auto' }}>
+	              {isLoading ? (
+	                <TableRow sx={emptyTableRowSx}>
+	                  <TableCell colSpan={visibleUserColumns.length} align="center" sx={emptyTableBodyCellSx}>
+	                    <CircularProgress size={24} />
+	                  </TableCell>
+	                </TableRow>
+	              ) : isError ? (
+	                <TableRow sx={emptyTableRowSx}>
+	                  <TableCell colSpan={visibleUserColumns.length} align="center" sx={emptyTableBodyCellSx}>
+	                    加载失败
+	                  </TableCell>
+	                </TableRow>
+	              ) : pagedRows.length === 0 ? (
+	                <TableRow sx={emptyTableRowSx}>
+	                  <TableCell colSpan={visibleUserColumns.length} align="center" sx={emptyTableBodyCellSx}>
+	                    暂无数据
+	                  </TableCell>
                 </TableRow>
               ) : pagedRows.map((row) => (
                 <TableRow
                   key={row.id}
                   hover
-                  onClick={() => openUserDetailDrawer(row)}
-                  sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}
-                >
-                  {userColumns.map((column) => renderCell(row, column))}
-                </TableRow>
+	                  onClick={() => openUserDetailDrawer(row)}
+	                  sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}
+	                >
+	                  {visibleUserColumns.map((column) => renderCell(row, column))}
+	                </TableRow>
               ))}
             </TableBody>
           </Table>

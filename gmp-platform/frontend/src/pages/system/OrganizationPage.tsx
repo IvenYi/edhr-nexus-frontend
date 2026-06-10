@@ -1,4 +1,14 @@
-import { type MouseEvent, type ReactNode, type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type DragEvent as ReactDragEvent,
+  type MouseEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+  type SyntheticEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
@@ -23,6 +33,7 @@ import {
   ListItemButton,
   MenuItem,
   Pagination,
+  Popover,
   Select,
   Snackbar,
   Stack,
@@ -43,6 +54,7 @@ import {
   Apartment,
   Business,
   Close,
+  DragIndicator,
   Edit,
   ExpandLess,
   ExpandMore,
@@ -51,6 +63,8 @@ import {
   PersonRemove,
   RestartAlt,
   Search,
+  TuneRounded,
+  ViewColumnRounded,
 } from '@mui/icons-material';
 import {
   createDepartment,
@@ -178,7 +192,11 @@ type PersonnelColumnId =
   | 'roleName'
   | 'createdBy'
   | 'createdAt'
+  | 'updatedBy'
+  | 'updatedAt'
   | 'actions';
+
+type ConfigurablePersonnelColumnId = Exclude<PersonnelColumnId, 'select' | 'actions'>;
 
 interface PersonnelColumn {
   id: PersonnelColumnId;
@@ -191,8 +209,15 @@ interface PersonnelColumn {
 
 type PersonnelColumnWidths = Partial<Record<PersonnelColumnId, number>>;
 
+interface PersonnelColumnSettings {
+  order: ConfigurablePersonnelColumnId[];
+  hidden: ConfigurablePersonnelColumnId[];
+}
+
 const PAGE_SIZE = 20;
 const PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX = 'organization-personnel-column-widths:';
+const PERSONNEL_COLUMN_SETTINGS_STORAGE_PREFIX = 'organization-personnel-column-settings:';
+const TABLE_DATA_ROW_HEIGHT = 40;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CHINA_MOBILE_PATTERN = /^1[3-9]\d{9}$/;
 const emptyUserForm: UserForm = {
@@ -235,9 +260,22 @@ const tableHeaderCellSx = {
 };
 
 const tableBodyCellSx = {
-  height: 48,
+  height: TABLE_DATA_ROW_HEIGHT,
+  lineHeight: '20px',
+  py: 0,
+  borderBottom: 'none',
+  boxShadow: 'inset 0 -1px 0 #ebeef5',
+};
+
+const emptyTableBodyCellSx = {
+  height: '100%',
   py: 0,
   borderBottom: '1px solid #ebeef5',
+  color: '#909399',
+};
+
+const emptyTableRowSx = {
+  height: '100%',
 };
 
 const appContentDrawerSx = {
@@ -272,9 +310,27 @@ const personnelColumns: PersonnelColumn[] = [
   { id: 'roleName', label: '岗位角色', defaultWidth: 150, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'status', label: '状态', defaultWidth: 96, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'createdAt', label: '创建时间', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'createdAt', label: '创建时间', defaultWidth: 130, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'updatedAt', label: '更新时间', defaultWidth: 130, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false },
 ];
+
+function isConfigurablePersonnelColumn(
+  column: PersonnelColumn,
+): column is PersonnelColumn & { id: ConfigurablePersonnelColumnId } {
+  return column.id !== 'select' && column.id !== 'actions';
+}
+
+function isConfigurablePersonnelColumnId(value: unknown): value is ConfigurablePersonnelColumnId {
+  return typeof value === 'string' && personnelColumns.some((column) =>
+    column.id === value && isConfigurablePersonnelColumn(column),
+  );
+}
+
+function getConfigurablePersonnelColumnIds(): ConfigurablePersonnelColumnId[] {
+  return personnelColumns.filter(isConfigurablePersonnelColumn).map((column) => column.id);
+}
 
 const auditFieldLabelMap: Record<string, string> = {
   username: '账号',
@@ -355,8 +411,8 @@ function collectPersonnel(node: DepartmentNode | undefined, includeChildren: boo
     departmentName: departmentPath.join('/'),
     createdBy: user.createdBy,
     createdAt: user.createdAt,
-    updatedBy: user.updatedBy,
-    updatedAt: user.updatedAt,
+    updatedBy: user.updatedBy || user.createdBy,
+    updatedAt: user.updatedAt || user.createdAt,
     roleIds: user.roleIds ?? [],
     departmentIds: user.departmentIds ?? [],
     primaryDepartmentId: user.primaryDepartmentId,
@@ -432,6 +488,11 @@ function getPersonnelCreatedBy(user: PersonnelRow, roleNameById: Map<string, str
   if (user.createdBy?.trim()) return user.createdBy;
   const roleSummary = getUserRoleSummary(user, roleNameById);
   return roleSummary.includes('系统管理员') ? '系统管理员' : '-';
+}
+
+function getPersonnelUpdatedBy(user: PersonnelRow, roleNameById: Map<string, string>): string {
+  if (user.updatedBy?.trim()) return user.updatedBy;
+  return getPersonnelCreatedBy(user, roleNameById);
 }
 
 function preserveAuditJsonLargeNumbers(raw: string): string {
@@ -584,14 +645,14 @@ function getUserAuditRecords(
     }));
 }
 
-function getUpdatedByValue(user: PersonnelRow, auditRecords: UserAuditRecord[]): string {
+function getUpdatedByValue(user: PersonnelRow, auditRecords: UserAuditRecord[], roleNameById: Map<string, string>): string {
   if (user.updatedBy) return user.updatedBy;
   const updateRecord = auditRecords.find((record) => record.actionLabel !== '创建');
-  return updateRecord?.operatorName || '-';
+  return updateRecord?.operatorName || getPersonnelCreatedBy(user, roleNameById);
 }
 
-function getPersonnelColumnWidthStorageKey(): string {
-  if (typeof window === 'undefined') return `${PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX}anonymous`;
+function getPersonnelPreferenceStorageKey(prefix: string): string {
+  if (typeof window === 'undefined') return `${prefix}anonymous`;
 
   try {
     const user = JSON.parse(localStorage.getItem('user') || 'null') as {
@@ -600,10 +661,18 @@ function getPersonnelColumnWidthStorageKey(): string {
       displayName?: string;
     } | null;
     const userKey = user?.id ?? user?.username ?? user?.displayName ?? 'anonymous';
-    return `${PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX}${String(userKey)}`;
+    return `${prefix}${String(userKey)}`;
   } catch {
-    return `${PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX}anonymous`;
+    return `${prefix}anonymous`;
   }
+}
+
+function getPersonnelColumnWidthStorageKey(): string {
+  return getPersonnelPreferenceStorageKey(PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX);
+}
+
+function getPersonnelColumnSettingsStorageKey(): string {
+  return getPersonnelPreferenceStorageKey(PERSONNEL_COLUMN_SETTINGS_STORAGE_PREFIX);
 }
 
 function loadPersonnelColumnWidths(storageKey: string): PersonnelColumnWidths {
@@ -628,9 +697,62 @@ function loadPersonnelColumnWidths(storageKey: string): PersonnelColumnWidths {
   }
 }
 
+function normalizePersonnelColumnSettings(value: unknown): PersonnelColumnSettings {
+  const defaults = getConfigurablePersonnelColumnIds();
+  const parsed = value as { order?: unknown[]; hidden?: unknown[] } | null | undefined;
+  const seen = new Set<ConfigurablePersonnelColumnId>();
+  const storedOrder = Array.isArray(parsed?.order) ? parsed.order : [];
+  const order = [
+    ...storedOrder.filter((id): id is ConfigurablePersonnelColumnId => {
+      if (!isConfigurablePersonnelColumnId(id) || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }),
+    ...defaults.filter((id) => !seen.has(id)),
+  ];
+  const hidden = Array.from(new Set(
+    (Array.isArray(parsed?.hidden) ? parsed.hidden : [])
+      .filter((id): id is ConfigurablePersonnelColumnId => isConfigurablePersonnelColumnId(id) && order.includes(id)),
+  ));
+
+  if (hidden.length >= order.length && order.length > 0) {
+    return { order, hidden: hidden.filter((id) => id !== order[0]) };
+  }
+
+  return { order, hidden };
+}
+
+function loadPersonnelColumnSettings(storageKey: string): PersonnelColumnSettings {
+  if (typeof window === 'undefined') return normalizePersonnelColumnSettings(null);
+
+  try {
+    const raw = localStorage.getItem(storageKey);
+    return normalizePersonnelColumnSettings(raw ? JSON.parse(raw) : null);
+  } catch {
+    return normalizePersonnelColumnSettings(null);
+  }
+}
+
+function getColumnSettingsItems(
+  settings: PersonnelColumnSettings,
+): Array<PersonnelColumn & { id: ConfigurablePersonnelColumnId }> {
+  const columnsById = new Map(personnelColumns.filter(isConfigurablePersonnelColumn).map((column) => [column.id, column]));
+  return settings.order
+    .map((id) => columnsById.get(id))
+    .filter((column): column is PersonnelColumn & { id: ConfigurablePersonnelColumnId } => Boolean(column));
+}
+
+function getVisiblePersonnelColumns(settings: PersonnelColumnSettings): PersonnelColumn[] {
+  const selectColumn = personnelColumns.find((column) => column.id === 'select');
+  const actionColumn = personnelColumns.find((column) => column.id === 'actions');
+  const visibleDataColumns = getColumnSettingsItems(settings).filter((column) => !settings.hidden.includes(column.id));
+  return [selectColumn, ...visibleDataColumns, actionColumn].filter((column): column is PersonnelColumn => Boolean(column));
+}
+
 function resolvePersonnelColumnWidths(
   columnWidths: PersonnelColumnWidths,
   tableContainerWidth: number,
+  visibleColumns: PersonnelColumn[] = personnelColumns,
 ): Record<PersonnelColumnId, number> {
   const resolved = personnelColumns.reduce<Record<PersonnelColumnId, number>>((result, column) => {
     const persistedWidth = column.resizable ? columnWidths[column.id] : undefined;
@@ -638,13 +760,13 @@ function resolvePersonnelColumnWidths(
     return result;
   }, {} as Record<PersonnelColumnId, number>);
 
-  const baseTotalWidth = personnelColumns.reduce((sum, column) => sum + resolved[column.id], 0);
+  const baseTotalWidth = visibleColumns.reduce((sum, column) => sum + resolved[column.id], 0);
   const availableWidth = Math.floor(tableContainerWidth);
   if (!Number.isFinite(availableWidth) || availableWidth <= baseTotalWidth) {
     return resolved;
   }
 
-  const flexibleColumns = personnelColumns.filter((column) => column.resizable);
+  const flexibleColumns = visibleColumns.filter((column) => column.resizable);
   const flexibleWeight = flexibleColumns.reduce((sum, column) => sum + column.defaultWidth, 0);
   if (flexibleWeight <= 0) return resolved;
 
@@ -804,6 +926,13 @@ export default function OrganizationPage() {
   const [columnWidths, setColumnWidths] = useState<PersonnelColumnWidths>(() =>
     loadPersonnelColumnWidths(columnWidthStorageKey),
   );
+  const [columnSettingsStorageKey] = useState(getPersonnelColumnSettingsStorageKey);
+  const [columnSettings, setColumnSettings] = useState<PersonnelColumnSettings>(() =>
+    loadPersonnelColumnSettings(columnSettingsStorageKey),
+  );
+  const [columnSettingsAnchorEl, setColumnSettingsAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [draggingColumnId, setDraggingColumnId] = useState<ConfigurablePersonnelColumnId | null>(null);
+  const columnSettingDragSourceRef = useRef<ConfigurablePersonnelColumnId | null>(null);
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const [tableScrollbarWidth, setTableScrollbarWidth] = useState(0);
@@ -889,17 +1018,21 @@ export default function OrganizationPage() {
   }, [allRows, filters]);
   const pageCount = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const pagedRows = filteredRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const isPersonnelTableEmptyState = pagedRows.length === 0;
   const pagedRowIds = useMemo(() => pagedRows.map((row) => row.id), [pagedRows]);
   const selectedPagedRowCount = pagedRowIds.filter((id) => selectedPersonnelIds.has(id)).length;
   const allPagedRowsSelected = pagedRowIds.length > 0 && selectedPagedRowCount === pagedRowIds.length;
   const isPagedRowsPartiallySelected = selectedPagedRowCount > 0 && selectedPagedRowCount < pagedRowIds.length;
+  const columnSettingsItems = useMemo(() => getColumnSettingsItems(columnSettings), [columnSettings]);
+  const visiblePersonnelColumns = useMemo(() => getVisiblePersonnelColumns(columnSettings), [columnSettings]);
+  const visibleConfigurablePersonnelColumnCount = columnSettings.order.length - columnSettings.hidden.length;
   const resolvedColumnWidths = useMemo(
-    () => resolvePersonnelColumnWidths(columnWidths, tableContainerWidth),
-    [columnWidths, tableContainerWidth],
+    () => resolvePersonnelColumnWidths(columnWidths, tableContainerWidth, visiblePersonnelColumns),
+    [columnWidths, tableContainerWidth, visiblePersonnelColumns],
   );
   const totalTableWidth = useMemo(
-    () => personnelColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0),
-    [resolvedColumnWidths],
+    () => visiblePersonnelColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0),
+    [resolvedColumnWidths, visiblePersonnelColumns],
   );
   const dialogParent = parentId !== null
     ? flatDepartments.find((item) => item.node.id === parentId)
@@ -951,8 +1084,14 @@ export default function OrganizationPage() {
   }, [filters, selectedId]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     localStorage.setItem(columnWidthStorageKey, JSON.stringify(columnWidths));
   }, [columnWidthStorageKey, columnWidths]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(columnSettingsStorageKey, JSON.stringify(columnSettings));
+  }, [columnSettingsStorageKey, columnSettings]);
 
   useEffect(() => {
     const container = tableContainerRef.current;
@@ -1184,6 +1323,108 @@ export default function OrganizationPage() {
     window.addEventListener('mouseup', stopResize);
   };
 
+  const getColumnSettingDropPlacement = (
+    clientY: number,
+    targetRow: HTMLElement,
+  ): 'before' | 'after' => {
+    const rect = targetRow.getBoundingClientRect();
+    return clientY > rect.top + rect.height / 2 ? 'after' : 'before';
+  };
+
+  const movePersonnelColumnSetting = (
+    sourceId: ConfigurablePersonnelColumnId,
+    targetId: ConfigurablePersonnelColumnId,
+    placement: 'before' | 'after' = 'before',
+  ) => {
+    if (sourceId === targetId) return;
+
+    setColumnSettings((current) => {
+      const nextOrder = current.order.filter((id) => id !== sourceId);
+      const targetIndex = nextOrder.indexOf(targetId);
+      if (targetIndex === -1) return current;
+      nextOrder.splice(targetIndex + (placement === 'after' ? 1 : 0), 0, sourceId);
+      return normalizePersonnelColumnSettings({ ...current, order: nextOrder });
+    });
+  };
+
+  const togglePersonnelColumnVisibility = (columnId: ConfigurablePersonnelColumnId) => {
+    setColumnSettings((current) => {
+      const isHidden = current.hidden.includes(columnId);
+      if (!isHidden && visibleConfigurablePersonnelColumnCount <= 1) return current;
+      const hidden = isHidden
+        ? current.hidden.filter((id) => id !== columnId)
+        : [...current.hidden, columnId];
+      return normalizePersonnelColumnSettings({ ...current, hidden });
+    });
+  };
+
+  const handleColumnSettingDragStart = (
+    event: ReactDragEvent<HTMLDivElement>,
+    columnId: ConfigurablePersonnelColumnId,
+  ) => {
+    setDraggingColumnId(columnId);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', columnId);
+  };
+
+  const handleColumnSettingDragOver = (event: ReactDragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleColumnSettingDrop = (
+    event: ReactDragEvent<HTMLDivElement>,
+    columnId: ConfigurablePersonnelColumnId,
+  ) => {
+    event.preventDefault();
+    const sourceId = event.dataTransfer.getData('text/plain') || draggingColumnId;
+    if (isConfigurablePersonnelColumnId(sourceId)) {
+      movePersonnelColumnSetting(sourceId, columnId, getColumnSettingDropPlacement(event.clientY, event.currentTarget));
+    }
+    setDraggingColumnId(null);
+  };
+
+  const handleColumnSettingDragEnd = () => {
+    setDraggingColumnId(null);
+  };
+
+  const beginColumnSettingPointerDrag = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    columnId: ConfigurablePersonnelColumnId,
+  ) => {
+    if (event.button !== 0) return;
+    const target = event.target as HTMLElement;
+    if (target.closest('input,button')) return;
+
+    event.preventDefault();
+    columnSettingDragSourceRef.current = columnId;
+    setDraggingColumnId(columnId);
+    const previousUserSelect = document.body.style.userSelect;
+    document.body.style.userSelect = 'none';
+
+    const moveColumnByPointer = (moveEvent: globalThis.PointerEvent) => {
+      const targetRow = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)
+        ?.closest<HTMLElement>('[data-personnel-column-settings-row]');
+      if (!targetRow) return;
+      const targetId = targetRow.dataset.columnId;
+      const sourceId = columnSettingDragSourceRef.current;
+      if (sourceId && isConfigurablePersonnelColumnId(targetId) && targetId !== sourceId) {
+        movePersonnelColumnSetting(sourceId, targetId, getColumnSettingDropPlacement(moveEvent.clientY, targetRow));
+      }
+    };
+
+    const stopPointerDrag = () => {
+      document.body.style.userSelect = previousUserSelect;
+      columnSettingDragSourceRef.current = null;
+      setDraggingColumnId(null);
+      window.removeEventListener('pointermove', moveColumnByPointer);
+      window.removeEventListener('pointerup', stopPointerDrag);
+    };
+
+    window.addEventListener('pointermove', moveColumnByPointer);
+    window.addEventListener('pointerup', stopPointerDrag);
+  };
+
   const togglePersonnelSelection = (rowId: string, checked?: boolean) => {
     setSelectedPersonnelIds((current) => {
       const next = new Set(current);
@@ -1291,6 +1532,14 @@ export default function OrganizationPage() {
 
     if (column.id === 'createdAt') {
       return <TableCell key={column.id} sx={cellSx}>{formatDateTime(row.createdAt)}</TableCell>;
+    }
+
+    if (column.id === 'updatedBy') {
+      return <TableCell key={column.id} sx={cellSx}>{getPersonnelUpdatedBy(row, roleNameById)}</TableCell>;
+    }
+
+    if (column.id === 'updatedAt') {
+      return <TableCell key={column.id} sx={cellSx}>{formatDateTime(row.updatedAt)}</TableCell>;
     }
 
     return (
@@ -1609,11 +1858,57 @@ export default function OrganizationPage() {
                 px: '20px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
                 gap: 2,
                 borderBottom: '1px solid #e4e7ed',
               }}
             >
+              <Tooltip title="字段设置" arrow>
+                <IconButton
+                  data-personnel-column-settings-trigger
+                  size="small"
+                  aria-label="字段设置"
+                  onClick={(event) => setColumnSettingsAnchorEl(event.currentTarget)}
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    border: '1px solid #e4e7ed',
+                    borderRadius: 1,
+                    color: '#606266',
+                    bgcolor: '#fff',
+                    '&:hover': {
+                      color: '#1890ff',
+                      bgcolor: '#e8f4ff',
+                    },
+                  }}
+                >
+                  <Box
+                    aria-hidden="true"
+                    sx={{
+                      position: 'relative',
+                      width: 22,
+                      height: 22,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <ViewColumnRounded sx={{ fontSize: 21 }} />
+                    <TuneRounded
+                      sx={{
+                        position: 'absolute',
+                        right: -3,
+                        bottom: -2,
+                        fontSize: 13,
+                        p: '1px',
+                        borderRadius: '50%',
+                        bgcolor: '#fff',
+                        boxShadow: '0 0 0 1px #fff',
+                      }}
+                    />
+                  </Box>
+                </IconButton>
+              </Tooltip>
               <Stack direction="row" spacing={1.5} alignItems="center">
                 <Button
                   variant="contained"
@@ -1626,18 +1921,92 @@ export default function OrganizationPage() {
                 </Button>
               </Stack>
             </Box>
+            <Popover
+              open={Boolean(columnSettingsAnchorEl)}
+              anchorEl={columnSettingsAnchorEl}
+              onClose={() => setColumnSettingsAnchorEl(null)}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+              PaperProps={{
+                sx: {
+                  mt: 1,
+                  width: 220,
+                  overflow: 'visible',
+                  border: '1px solid #e4e7ed',
+                  borderRadius: 1,
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: -7,
+                    left: 28,
+                    width: 12,
+                    height: 12,
+                    bgcolor: '#fff',
+                    borderTop: '1px solid #e4e7ed',
+                    borderLeft: '1px solid #e4e7ed',
+                    transform: 'rotate(45deg)',
+                  },
+                },
+              }}
+            >
+              <Stack data-personnel-column-settings-panel spacing={0.5} sx={{ p: 1.5 }}>
+                {columnSettingsItems.map((column) => {
+                  const checked = !columnSettings.hidden.includes(column.id);
+                  const disabled = checked && visibleConfigurablePersonnelColumnCount <= 1;
+                  return (
+                    <Box
+                      key={column.id}
+                      data-personnel-column-settings-row
+                      data-column-id={column.id}
+                      draggable
+                      onDragStart={(event) => handleColumnSettingDragStart(event, column.id)}
+                      onDragOver={handleColumnSettingDragOver}
+                      onDrop={(event) => handleColumnSettingDrop(event, column.id)}
+                      onDragEnd={handleColumnSettingDragEnd}
+                      onPointerDown={(event) => beginColumnSettingPointerDrag(event, column.id)}
+                      sx={{
+                        display: 'grid',
+                        gridTemplateColumns: '24px 34px minmax(0, 1fr)',
+                        alignItems: 'center',
+                        minHeight: 40,
+                        borderRadius: 1,
+                        cursor: 'move',
+                        touchAction: 'none',
+                        color: checked ? '#1890ff' : '#a8abb2',
+                        '&:hover': {
+                          bgcolor: '#f5f7fa',
+                        },
+                      }}
+                    >
+                      <DragIndicator fontSize="small" sx={{ color: '#909399' }} />
+                      <Checkbox
+                        size="small"
+                        checked={checked}
+                        disabled={disabled}
+                        onChange={() => togglePersonnelColumnVisibility(column.id)}
+                        inputProps={{ 'aria-label': `${column.label}字段显隐` }}
+                      />
+                      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>
+                        {column.label}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Stack>
+            </Popover>
 
 	            <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
 	              <TableContainer ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
-	                <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth }}>
+                <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth, height: isPersonnelTableEmptyState ? '100%' : 'auto' }}>
                 <colgroup>
-                  {personnelColumns.map((column) => (
+                  {visiblePersonnelColumns.map((column) => (
                     <col key={column.id} style={{ width: getColumnWidth(column) }} />
                   ))}
                 </colgroup>
                 <TableHead>
                   <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
-                    {personnelColumns.map((column) => (
+                    {visiblePersonnelColumns.map((column) => (
                       <TableCell
                         key={column.id}
                         padding={column.id === 'select' ? 'checkbox' : 'normal'}
@@ -1701,12 +2070,12 @@ export default function OrganizationPage() {
                     ))}
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {pagedRows.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={personnelColumns.length} align="center" sx={{ py: 7, color: '#909399' }}>
-                        {selected ? '暂无人员' : '请选择左侧组织节点'}
-                      </TableCell>
+	                <TableBody sx={{ height: isPersonnelTableEmptyState ? '100%' : 'auto' }}>
+	                  {isPersonnelTableEmptyState ? (
+	                    <TableRow sx={emptyTableRowSx}>
+	                      <TableCell colSpan={visiblePersonnelColumns.length} align="center" sx={emptyTableBodyCellSx}>
+	                        {selected ? '暂无人员' : '请选择左侧组织节点'}
+	                      </TableCell>
                     </TableRow>
                   ) : pagedRows.map((row) => (
                     <TableRow
@@ -1715,7 +2084,7 @@ export default function OrganizationPage() {
                       onClick={() => openUserDetailDrawer(row)}
                       sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}
                     >
-                      {personnelColumns.map((column) => renderPersonnelCell(row, column))}
+                      {visiblePersonnelColumns.map((column) => renderPersonnelCell(row, column))}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1836,9 +2205,9 @@ export default function OrganizationPage() {
 
                   <DetailSection title="系统信息">
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
-                      <DetailField label="创建人">{selectedUser.createdBy || '系统记录'}</DetailField>
+                      <DetailField label="创建人">{getPersonnelCreatedBy(selectedUser, roleNameById)}</DetailField>
                       <DetailField label="创建时间">{formatDateTime(selectedUser.createdAt)}</DetailField>
-                      <DetailField label="更新人">{getUpdatedByValue(selectedUser, userAuditRecords)}</DetailField>
+                      <DetailField label="更新人">{getUpdatedByValue(selectedUser, userAuditRecords, roleNameById)}</DetailField>
                       <DetailField label="更新时间">{formatDateTime(selectedUser.updatedAt)}</DetailField>
                     </Box>
                   </DetailSection>

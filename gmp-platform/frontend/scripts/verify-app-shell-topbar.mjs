@@ -34,6 +34,14 @@ mustInclude('const HEADER_TOTAL_HEIGHT = TOP_NAV_HEIGHT + TABS_BAR_HEIGHT;', 'sh
 mustInclude('data-app-shell-header', 'shell header should expose a QA selector');
 mustInclude('data-app-top-breadcrumb-bar', 'top breadcrumb bar should expose a QA selector');
 mustInclude('data-app-tabs-bar', 'tabs bar should expose a QA selector');
+mustInclude('data-app-function-menu-toggle', 'function menu toggle should expose a QA selector');
+mustInclude('FunctionMenuToggleIcon', 'function menu toggle should use the requested menu-line arrow icon');
+mustInclude("direction={funcMenuOpen ? 'collapse' : 'expand'}", 'function menu toggle should switch icon direction with menu state');
+mustInclude("bgcolor: 'transparent'", 'function menu toggle should not have a default filled background');
+mustNotInclude('KeyboardDoubleArrowLeftRounded', 'function menu toggle should not use the old double-arrow collapse icon');
+mustNotInclude('KeyboardDoubleArrowRightRounded', 'function menu toggle should not use the old double-arrow expand icon');
+mustNotInclude('border: `1px solid ${funcMenuOpen ? COLORS.primaryHover : COLORS.divider}`', 'function menu toggle should not have a default border');
+mustNotInclude('MenuRounded', 'function menu toggle should not use a generic hamburger icon');
 mustInclude('getBreadcrumbItems', 'breadcrumb should derive from the active route');
 mustInclude('breadcrumbItems.map', 'breadcrumb should render active route levels');
 mustInclude('NavigateNextRounded', 'breadcrumb should use compact chevrons');

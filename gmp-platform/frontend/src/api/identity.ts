@@ -1,15 +1,5 @@
 import client from './client';
 
-// Tenants
-export const getTenants = (params?: Record<string, unknown>) =>
-  client.get('/identity/tenants', { params });
-export const createTenant = (body: Record<string, unknown>) =>
-  client.post('/identity/tenants', body);
-export const updateTenant = (id: number, body: Record<string, unknown>) =>
-  client.put(`/identity/tenants/${id}`, body);
-export const deleteTenant = (id: number) =>
-  client.delete(`/identity/tenants/${id}`);
-
 // Users
 export const getUsers = (params?: Record<string, unknown>) =>
   client.get('/identity/users', { params });
@@ -40,7 +30,7 @@ export const updateRolePermissions = (id: number, body: Record<string, unknown>)
 
 // Permissions
 export const getPermissions = (params?: Record<string, unknown>) =>
-  client.get('/identity/permissions', { params });
+  client.get('/identity/roles/permissions', { params });
 
 // Sites
 export const getSites = (params?: Record<string, unknown>) =>

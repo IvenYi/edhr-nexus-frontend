@@ -201,6 +201,10 @@ Dashboard-specific cards:
 - Table header font weight: `600`.
 - Header cell padding: `8px 0`.
 - Data row height: about `73.5px`.
+- Operational table implementations should keep real data rows at the compact configured 40px visual height; draw the row divider with an inset shadow or another non-layout-affecting technique, and do not let remaining container height stretch data rows.
+- Empty, loading, and error table states should fill the available table body height through inherited `height: 100%` on the table/body/empty row/empty cell, not through large fixed padding. When real data is present, the table height should return to `auto`.
+- Generated data tables must include audit metadata columns in both frontend and backend contracts: `createdBy`, `createdAt`, `updatedBy`, and `updatedAt`. User-facing tables render these as 创建人、创建时间、更新人、更新时间, and initial creation rows must display updated metadata as the same values as created metadata until a real update exists.
+- Table toolbars should expose an icon-only field settings entry on the left side. The settings popover lists every configurable data field, supports drag sorting and show/hide toggles, immediately syncs `colgroup`, headers, body cells, and empty-state `colSpan`, and persists settings per current user. Treat field settings as a standard reusable table capability for later admin pages.
 - Data cell text: `#606266`.
 - Cell bottom border: `1px solid #ebeef5`.
 - Avoid oversized table controls; keep dense but readable.

@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 
 const content = readFileSync(new URL('../src/pages/system/OrganizationPage.tsx', import.meta.url), 'utf8');
 const constantsContent = readFileSync(new URL('../src/utils/constants.ts', import.meta.url), 'utf8');
+const uiStandardContent = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
+const departmentControllerContent = readFileSync(new URL('../../backend/src/main/java/com/zencas/edhr/identity/controller/DepartmentController.java', import.meta.url), 'utf8');
 const legacyAuditEmptyText = ['暂无真实', '审计记录'].join('');
 const failures = [];
 
@@ -19,6 +21,14 @@ function constantsMustInclude(token, reason) {
 
 function constantsMustNotInclude(token, reason) {
   if (constantsContent.includes(token)) failures.push(`unexpected constants ${JSON.stringify(token)} (${reason})`);
+}
+
+function uiStandardMustInclude(token, reason) {
+  if (!uiStandardContent.includes(token)) failures.push(`missing UI standard ${JSON.stringify(token)} (${reason})`);
+}
+
+function departmentControllerMustInclude(token, reason) {
+  if (!departmentControllerContent.includes(token)) failures.push(`missing DepartmentController ${JSON.stringify(token)} (${reason})`);
 }
 
 function mustAppearInOrder(tokens, reason) {
@@ -68,9 +78,16 @@ mustInclude("departmentName: departmentPath.join('/')", 'personnel table organiz
 mustInclude('collectPersonnel(child, true, departmentPath)', 'personnel child rows should preserve the parent organization path');
 mustInclude('selected ? selected.path.slice(0, -1) : []', 'personnel rows should keep the full path even when a nested organization is selected');
 mustInclude('getPersonnelCreatedBy', 'personnel table should derive creator display with a system-admin fallback');
+mustInclude('getPersonnelUpdatedBy', 'personnel table should derive updater display with the same fallback rules');
 mustInclude("roleSummary.includes('系统管理员') ? '系统管理员' : '-'", 'system-admin personnel should display a creator when backend creator metadata is empty');
 mustInclude('{getPersonnelCreatedBy(row, roleNameById)}', 'personnel table created-by cells should use the derived creator display');
 mustInclude('{formatDateTime(row.createdAt)}', 'personnel table created-at cells should render year-month-day hour-minute precision');
+mustInclude('updatedBy: user.updatedBy || user.createdBy', 'newly-created organization personnel should display updater as creator until a real update exists');
+mustInclude('updatedAt: user.updatedAt || user.createdAt', 'newly-created organization personnel should display updated time as created time until a real update exists');
+mustInclude("column.id === 'updatedBy'", 'personnel table should render an updated-by column');
+mustInclude("column.id === 'updatedAt'", 'personnel table should render an updated-at column');
+mustInclude('{getPersonnelUpdatedBy(row, roleNameById)}', 'personnel table updated-by cells should use the derived updater display');
+mustInclude('{formatDateTime(row.updatedAt)}', 'personnel table updated-at cells should render year-month-day hour-minute precision');
 mustNotInclude('{formatDate(row.createdAt)}', 'personnel table created-at cells should not collapse to date-only display');
 mustAppearInOrder([
   "{ id: 'displayName', label: '姓名'",
@@ -81,6 +98,8 @@ mustAppearInOrder([
   "{ id: 'status', label: '状态'",
   "{ id: 'createdBy', label: '创建人'",
   "{ id: 'createdAt', label: '创建时间'",
+  "{ id: 'updatedBy', label: '更新人'",
+  "{ id: 'updatedAt', label: '更新时间'",
 ], 'personnel table field columns should follow the customer-facing order');
 mustInclude('共 {filteredRows.length} 条数据', 'personnel table total summary');
 mustInclude('PERSONNEL_ACTION_COLUMN_WIDTH', 'personnel table action column should use a reusable fixed width');
@@ -137,6 +156,7 @@ mustInclude('slotProps={{ backdrop: { sx: appContentDrawerSx } }}', 'personnel d
 mustInclude('PaperProps={{ sx: appContentDrawerPaperSx }}', 'personnel details drawer paper should use the paper-specific sizing override');
 mustInclude('DetailField label="更新人"', 'personnel detail system info should show updated-by metadata');
 mustInclude('DetailField label="更新时间"', 'personnel detail system info should show updated-at metadata');
+mustInclude('getUpdatedByValue(selectedUser, userAuditRecords, roleNameById)', 'personnel detail updated-by should apply the same fallback rules as the table');
 mustInclude('DetailField label="所属组织"', 'personnel detail drawer should use organization wording for full paths');
 mustNotInclude('DetailField label="所属部门"', 'personnel detail drawer should not use department-only wording after switching to paths');
 mustInclude('DetailSection title="审计记录"', 'personnel detail drawer should fill the lower area with audit records');
@@ -245,7 +265,7 @@ mustInclude('columnGap: 1.5', 'user dialog field columns should use a consistent
 mustNotInclude("? '请输入正确的邮箱地址' : ' '", 'email helper text should not reserve blank vertical space when valid');
 mustNotInclude("? '请输入正确的手机号' : ' '", 'mobile helper text should not reserve blank vertical space when valid');
 mustInclude('size="small" sx={userSelectSx}', 'user dialog select controls should use the compact GCT size');
-mustInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth }}>', 'personnel table should use compact density with computed full-width columns');
+mustInclude('<Table stickyHeader size="small"', 'personnel table should use compact density with sticky headers');
 mustInclude('size="small"', 'personnel add action and user dialog should use compact GCT sizing');
 mustInclude('startIcon={<Add />}', 'personnel add action should keep the add icon affordance');
 mustInclude('openDatePickerWithoutSelection', 'date fields should open the picker without selecting date text');
@@ -253,6 +273,21 @@ mustInclude('updateCreatedFrom', 'start date changes should normalize the create
 mustInclude('updateCreatedTo', 'end date changes should not allow dates before the start date');
 mustInclude('onInput={(event) => updateCreatedFrom((event.target as HTMLInputElement).value)}', 'start date should react to keyboard input as well as picker change');
 mustInclude('onInput={(event) => updateCreatedTo((event.target as HTMLInputElement).value)}', 'end date should react to keyboard input as well as picker change');
+departmentControllerMustInclude('private static final String USER_AUDIT_ENTITY_TYPE = "USER_ACCOUNT";', 'organization tree backend should read user-account audit events');
+departmentControllerMustInclude('AuditEventRepository auditEventRepository', 'organization tree backend should depend on audit events for creator/updater names');
+departmentControllerMustInclude('Map<Long, UserAuditOperators> auditOperatorsByUser = findUserAuditOperators(userIds);', 'organization tree backend should collect audit operators before building user summaries');
+departmentControllerMustInclude('findOperatorDisplayNames(auditEvents)', 'organization tree backend should resolve audit operator ids and usernames to display names');
+departmentControllerMustInclude('resolveAuditOperatorName(event, operatorDisplayNameByIdentity)', 'organization tree backend should avoid exposing raw operator ids or login names');
+departmentControllerMustInclude('userAccountRepository.findByUsername(operatorName)', 'organization tree backend should resolve username-only audit operators');
+departmentControllerMustInclude('operatorId', 'organization tree backend should account for audit operator ids');
+departmentControllerMustInclude('.createdBy(createdBy)', 'organization tree user summary should expose created-by metadata');
+departmentControllerMustInclude('.updatedBy(hasText(updatedBy) ? updatedBy : createdBy)', 'organization tree user summary should fallback updater to creator on initial create');
+departmentControllerMustInclude('.updatedAt(updatedAt)', 'organization tree user summary should expose updated-at metadata');
+departmentControllerMustInclude('private String createdBy;', 'organization tree DTO should serialize created-by metadata');
+departmentControllerMustInclude('private String updatedBy;', 'organization tree DTO should serialize updated-by metadata');
+uiStandardMustInclude('标准用户列顺序：姓名、账号、手机号、所属组织、岗位角色、状态、创建人、创建时间、更新人、更新时间', 'UI standard should require the full audit metadata column order');
+uiStandardMustInclude('后端列表、树形或分页 DTO 必须自动返回 `createdBy`、`createdAt`、`updatedBy`、`updatedAt`', 'UI standard should require backend-generated table DTOs to include audit metadata');
+uiStandardMustInclude('前端数据表格必须自动渲染创建人、创建时间、更新人、更新时间', 'UI standard should require frontend-generated tables to render audit metadata');
 mustInclude('onMouseDown={openDatePickerWithoutSelection}', 'date fields should prevent default mouse selection before opening the picker');
 mustInclude('catch {', 'date picker should not emit console errors when showPicker is rejected outside a trusted user gesture');
 mustInclude("userSelect: 'none'", 'date fields and resize interactions should suppress accidental text selection');
@@ -269,6 +304,26 @@ mustInclude('tableContainerWidth', 'personnel table should track container width
 mustInclude('ResizeObserver', 'personnel table should recompute automatic column widths when the container changes size');
 mustInclude('tableHeaderCellSx', 'personnel table header should use compact fixed-height cells');
 mustInclude('tableBodyCellSx', 'personnel table body should use compact fixed-height cells');
+mustInclude('TABLE_DATA_ROW_HEIGHT = 40', 'personnel table should define the standard 40px visual data row height');
+mustInclude('height: TABLE_DATA_ROW_HEIGHT', 'personnel table data cells should render to a 40px row');
+mustInclude("lineHeight: '20px'", 'personnel table data cells should keep compact text line height');
+mustInclude("boxShadow: 'inset 0 -1px 0 #ebeef5'", 'personnel table data row divider should not add to row height');
+mustInclude('emptyTableBodyCellSx', 'personnel table empty state should share full-height empty cell styling');
+mustInclude('emptyTableRowSx', 'personnel table empty state should use a full-height row');
+mustInclude('const isPersonnelTableEmptyState = pagedRows.length === 0;', 'personnel table should track empty state for full-height rendering');
+mustInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth, height: isPersonnelTableEmptyState ? \'100%\' : \'auto\' }}>', 'personnel table should stretch only empty states so data rows keep their normal height');
+mustNotInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth, height: \'100%\' }}>', 'personnel table should not force data rows to stretch to the container height');
+mustInclude('<TableBody sx={{ height: isPersonnelTableEmptyState ? \'100%\' : \'auto\' }}>', 'personnel table empty state should stretch the body to fill the container');
+mustInclude('<TableRow sx={emptyTableRowSx}>', 'personnel table empty state should stretch its row to fill the body');
+mustInclude('sx={emptyTableBodyCellSx}', 'personnel table empty state cell should fill the remaining container height');
+uiStandardMustInclude('空数据、加载中、加载失败等非数据行状态必须撑满表格容器', 'UI standard should require full-height empty table states');
+uiStandardMustInclude('数据行视觉高度统一为 40px', 'UI standard should require compact 40px visual data rows');
+uiStandardMustInclude('底部分割线使用单元格内侧阴影绘制', 'UI standard should require row dividers that do not add to row height');
+uiStandardMustInclude('有数据时 `Table` 高度必须回到 `auto`', 'UI standard should prevent data rows from stretching with the table container');
+uiStandardMustInclude('字段设置作为后续表格页面的标准能力和复用模板', 'UI standard should make reusable field settings mandatory for later tables');
+uiStandardMustInclude('字段设置弹层展示所有可配置数据字段', 'UI standard should require all configurable fields to appear in field settings');
+uiStandardMustInclude('支持拖拽排序和勾选显隐', 'UI standard should require field sorting and visibility toggles');
+uiStandardMustInclude('按当前用户持久化', 'UI standard should require per-user persistence for field settings');
 mustInclude('personnelColumns', 'personnel table columns should be driven by a resizable column model');
 mustInclude("{ id: 'select', label: '', defaultWidth: 50, minWidth: 50, resizable: false, align: 'center' }", 'personnel selection column should be fixed at 50px and not draggable');
 mustInclude("{ id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false }", 'personnel action column should be fixed at 150px and not draggable');
@@ -297,7 +352,7 @@ for (const fieldColumnId of ['displayName', 'username', 'phone', 'departmentName
 }
 mustInclude('columnWidths', 'personnel table should track user-adjusted column widths');
 mustInclude('resolvedColumnWidths', 'personnel table should derive rendered widths from container width and saved column widths');
-mustInclude('resolvePersonnelColumnWidths(columnWidths, tableContainerWidth)', 'personnel table should automatically distribute spare width to field columns on first render');
+mustInclude('resolvePersonnelColumnWidths(columnWidths, tableContainerWidth, visiblePersonnelColumns)', 'personnel table should automatically distribute spare width across visible columns on first render');
 mustInclude('columnWidthStorageKey', 'personnel column widths should persist per current user');
 mustInclude('organization-personnel-column-widths:', 'personnel column width storage should be namespaced by page and user');
 mustInclude('loadPersonnelColumnWidths', 'personnel column widths should restore from localStorage');
@@ -314,6 +369,35 @@ mustNotInclude("borderRight: column.id === 'actions' ? 'none' : '1px solid #e4e7
 mustInclude("tableLayout: 'fixed'", 'personnel table should honor persisted column widths');
 mustInclude('width: totalTableWidth', 'personnel table should use the actual column sum as its rendered width so fixed columns stay fixed');
 mustInclude('<colgroup>', 'personnel table should apply column widths through a colgroup');
+mustInclude('ConfigurablePersonnelColumnId', 'personnel field settings should exclude selection and action columns from user configuration');
+mustInclude('PersonnelColumnSettings', 'personnel field settings should use a normalized settings contract');
+mustInclude('PERSONNEL_COLUMN_SETTINGS_STORAGE_PREFIX', 'personnel field settings should use a namespaced storage prefix');
+mustInclude('organization-personnel-column-settings:', 'personnel field settings should persist under an organization-specific namespace');
+mustInclude('getPersonnelColumnSettingsStorageKey', 'personnel field settings should persist per current user');
+mustInclude('loadPersonnelColumnSettings', 'personnel field settings should restore from localStorage');
+mustInclude('normalizePersonnelColumnSettings', 'personnel field settings should tolerate stale or partial saved settings');
+mustInclude('columnSettingsItems', 'personnel field settings popover should render normalized field rows');
+mustInclude('visiblePersonnelColumns', 'personnel table should render only visible configured fields');
+mustInclude('getVisiblePersonnelColumns', 'personnel table should derive visible columns from field settings');
+mustInclude('visibleConfigurablePersonnelColumnCount <= 1', 'personnel field settings should prevent hiding the last visible data column');
+mustInclude('localStorage.setItem(columnSettingsStorageKey', 'personnel field settings should persist changes to localStorage');
+mustInclude('data-personnel-column-settings-trigger', 'personnel toolbar should expose a testable field settings trigger');
+mustInclude('aria-label="字段设置"', 'personnel field settings trigger should be icon-only with an accessible label');
+mustInclude('data-personnel-column-settings-panel', 'personnel field settings popover should expose a testable panel');
+mustInclude('data-personnel-column-settings-row', 'each personnel field setting should expose a testable row');
+mustInclude('data-column-id={column.id}', 'field setting rows should expose the configured column id');
+mustInclude('draggable', 'personnel field settings should support native drag sorting');
+mustInclude('handleColumnSettingDragStart', 'personnel field settings should handle native drag start');
+mustInclude('handleColumnSettingDrop', 'personnel field settings should handle native drop');
+mustInclude('beginColumnSettingPointerDrag', 'personnel field settings should support pointer drag sorting in browser QA');
+mustInclude('document.elementFromPoint', 'pointer drag sorting should identify the hovered field setting row');
+mustInclude('movePersonnelColumnSetting', 'personnel field settings should centralize sort updates');
+mustInclude('togglePersonnelColumnVisibility(column.id)', 'personnel field settings should toggle column visibility from the popover');
+mustInclude('ViewColumn', 'personnel field settings trigger should use a column icon');
+mustInclude('DragIndicator', 'personnel field setting rows should show a drag affordance icon');
+mustInclude('Popover', 'personnel field settings should render in a popover');
+mustInclude('visiblePersonnelColumns.map((column)', 'personnel table should map visible columns in colgroup, header, and body');
+mustInclude('<TableCell colSpan={visiblePersonnelColumns.length}', 'personnel empty state should sync colSpan with visible columns');
 mustInclude("minHeight: 48", 'personnel table toolbar should be compact');
 mustInclude("borderTop: 'none'", 'personnel pagination footer should not double the table bottom divider');
 mustInclude('新增', 'personnel add button should use create wording');
@@ -362,6 +446,8 @@ mustNotInclude('alignSelf: \'start\'', 'left organization card should stretch wi
 mustNotInclude('openDatePickerFromField', 'date picker opener should prevent selection on mouse down instead of click-only focus');
 mustNotInclude('onClick={openDatePickerFromField}', 'date fields should not use click-only picker opening that selects text');
 mustNotInclude('maxHeight: 560', 'personnel table should fill remaining card height rather than keep a fixed max height');
+mustNotInclude('<TableBody>\n                  {pagedRows.length === 0 ? (', 'personnel table body should not keep natural-height empty state rendering');
+mustNotInclude("sx={{ py: 7, color: '#909399' }}", 'personnel table empty state should not use fixed padding instead of filling the container');
 mustNotInclude('<Button size="small" variant="text" onClick={() => openEditUserDialog(row)}>', 'personnel action column should not use text buttons');
 mustNotInclude("{ id: 'actions', label: '操作', defaultWidth: 132, minWidth: 120, resizable: true }", 'personnel action column should no longer be a draggable 132px column');
 mustNotInclude("{ id: 'actions', label: '操作', defaultWidth: 100, minWidth: 100, resizable: false }", 'personnel action column should no longer use the old 100px fixed width');

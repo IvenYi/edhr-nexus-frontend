@@ -12,6 +12,7 @@ import {
   ListItemText,
   Menu,
   MenuItem as MuiMenuItem,
+  SvgIcon,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -30,7 +31,6 @@ import {
   LocalHospitalRounded,
   LockOutlined,
   Logout,
-  MenuRounded,
   NavigateNextRounded,
   Notifications,
   PersonOutlineRounded,
@@ -124,6 +124,18 @@ function getIcon(iconName?: string): ReactNode {
   return iconName ? ICON_MAP[iconName] || FALLBACK_ICON : FALLBACK_ICON;
 }
 
+function FunctionMenuToggleIcon({ direction }: { direction: 'collapse' | 'expand' }) {
+  const arrowPath = direction === 'collapse' ? 'M9 7 4 12l5 5' : 'M15 7l5 5-5 5';
+  const linePath = direction === 'collapse' ? 'M12 8h8M12 16h8' : 'M4 8h8M4 16h8';
+
+  return (
+    <SvgIcon viewBox="0 0 24 24" sx={{ fontSize: 22 }}>
+      <path d={arrowPath} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={linePath} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    </SvgIcon>
+  );
+}
+
 function isPathSegmentMatch(pathname: string, prefix: string): boolean {
   if (prefix === '/') return pathname === '/';
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
@@ -155,7 +167,7 @@ function readStoredUser(): StoredUser {
 function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
   if (path.startsWith('/gct-edhr')) return undefined;
-  if (path === '/system/menu-management') return 'system.permissions';
+  if (path === '/system/menu-management') return 'system.edit';
   return path.replace(/^\//, '').replace(/\//g, '.');
 }
 
@@ -482,11 +494,21 @@ export default function AppLayout() {
           <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
             <Tooltip title={funcMenuOpen ? '收起菜单' : '展开菜单'} arrow>
               <IconButton
+                data-app-function-menu-toggle
                 aria-label={funcMenuOpen ? '收起菜单' : '展开菜单'}
                 onClick={() => setFuncMenuOpen((prev) => !prev)}
-                sx={{ ...headerIconButtonSx, mr: '14px' }}
+                sx={{
+                  ...headerIconButtonSx,
+                  mr: '14px',
+                  color: COLORS.textSecondary,
+                  bgcolor: 'transparent',
+                  '&:hover': {
+                    color: COLORS.primary,
+                    bgcolor: COLORS.primaryLight,
+                  },
+                }}
               >
-                {funcMenuOpen ? <ChevronLeftRounded /> : <MenuRounded />}
+                <FunctionMenuToggleIcon direction={funcMenuOpen ? 'collapse' : 'expand'} />
               </IconButton>
             </Tooltip>
             <Box aria-label="当前位置" sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>

@@ -1,6 +1,8 @@
 package com.zencas.edhr.identity.controller;
 
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.compliance.entity.AuditEvent;
+import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.identity.entity.Department;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.entity.UserDepartment;
@@ -23,6 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +35,7 @@ class DepartmentControllerTest {
     @Mock private UserDepartmentRepository userDepartmentRepository;
     @Mock private UserAccountRepository userAccountRepository;
     @Mock private UserRoleRepository userRoleRepository;
+    @Mock private AuditEventRepository auditEventRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
 
     @InjectMocks private DepartmentController controller;
@@ -75,6 +79,7 @@ class DepartmentControllerTest {
         long userId = 9_007_199_254_740_995L;
         long roleId = 9_007_199_254_740_997L;
         LocalDateTime createdAt = LocalDateTime.parse("2026-06-08T10:00:00");
+        LocalDateTime updatedAt = LocalDateTime.parse("2026-06-09T11:20:00");
         Department department = Department.builder()
                 .id(departmentId)
                 .tenantId(1L)
@@ -92,6 +97,7 @@ class DepartmentControllerTest {
                 .status("ACTIVE")
                 .passwordHash("encoded")
                 .createdAt(createdAt)
+                .updatedAt(updatedAt)
                 .build();
         UserDepartment membership = UserDepartment.builder()
                 .id(1L)
@@ -108,6 +114,24 @@ class DepartmentControllerTest {
         when(userDepartmentRepository.findAll()).thenReturn(List.of(membership));
         when(userAccountRepository.findAllById(any())).thenReturn(List.of(user));
         when(userRoleRepository.findByUserIdIn(any())).thenReturn(List.of(role));
+        when(auditEventRepository.findByEntityTypeAndEntityIdIn(eq("USER_ACCOUNT"), eq(List.of(String.valueOf(userId)))))
+                .thenReturn(List.of(
+                        AuditEvent.builder()
+                                .id(201L)
+                                .entityType("USER_ACCOUNT")
+                                .entityId(String.valueOf(userId))
+                                .action("CREATE")
+                                .operatorName("系统管理员")
+                                .createdAt(createdAt)
+                                .build(),
+                        AuditEvent.builder()
+                                .id(202L)
+                                .entityType("USER_ACCOUNT")
+                                .entityId(String.valueOf(userId))
+                                .action("UPDATE")
+                                .operatorName("质量经理")
+                                .createdAt(updatedAt)
+                                .build()));
 
         DepartmentController.UserSummary summary = controller.tree().getData().getFirst().getUsers().getFirst();
 
@@ -117,10 +141,77 @@ class DepartmentControllerTest {
         assertThat(summary.getEmail()).isEqualTo("qa01@example.com");
         assertThat(summary.getPhone()).isEqualTo("13800000000");
         assertThat(summary.getStatus()).isEqualTo("ACTIVE");
+        assertThat(summary.getCreatedBy()).isEqualTo("系统管理员");
         assertThat(summary.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(summary.getUpdatedBy()).isEqualTo("质量经理");
+        assertThat(summary.getUpdatedAt()).isEqualTo(updatedAt);
         assertThat(summary.getRoleIds()).containsExactly(String.valueOf(roleId));
         assertThat(summary.getDepartmentIds()).containsExactly(String.valueOf(departmentId));
         assertThat(summary.getPrimaryDepartmentId()).isEqualTo(String.valueOf(departmentId));
+    }
+
+    @Test
+    void treeFallsBackUpdatedMetadataToCreatedMetadataForNewOrganizationPersonnel() {
+        long departmentId = 9_007_199_254_740_993L;
+        long userId = 9_007_199_254_740_995L;
+        long adminId = 1L;
+        LocalDateTime createdAt = LocalDateTime.parse("2026-06-08T10:00:00");
+        Department department = Department.builder()
+                .id(departmentId)
+                .tenantId(1L)
+                .code("QA")
+                .name("质量部")
+                .sortOrder(0)
+                .build();
+        UserAccount user = UserAccount.builder()
+                .id(userId)
+                .tenantId(1L)
+                .username("qa01")
+                .displayName("质量员")
+                .status("ACTIVE")
+                .passwordHash("encoded")
+                .createdAt(createdAt)
+                .build();
+        UserAccount admin = UserAccount.builder()
+                .id(adminId)
+                .tenantId(1L)
+                .username("admin")
+                .displayName("系统管理员")
+                .status("ACTIVE")
+                .passwordHash("encoded")
+                .build();
+        UserDepartment membership = UserDepartment.builder()
+                .id(1L)
+                .userId(userId)
+                .departmentId(departmentId)
+                .isPrimary(true)
+                .build();
+        when(departmentRepository.findAll(any(Sort.class))).thenReturn(List.of(department));
+        when(userDepartmentRepository.findAll()).thenReturn(List.of(membership));
+        when(userAccountRepository.findAllById(any())).thenAnswer(invocation -> {
+            Iterable<Long> ids = invocation.getArgument(0);
+            List<Long> requestedIds = new java.util.ArrayList<>();
+            ids.forEach(requestedIds::add);
+            return requestedIds.contains(adminId) ? List.of(admin) : List.of(user);
+        });
+        when(userRoleRepository.findByUserIdIn(any())).thenReturn(List.of());
+        when(auditEventRepository.findByEntityTypeAndEntityIdIn(eq("USER_ACCOUNT"), eq(List.of(String.valueOf(userId)))))
+                .thenReturn(List.of(AuditEvent.builder()
+                        .id(201L)
+                        .entityType("USER_ACCOUNT")
+                        .entityId(String.valueOf(userId))
+                        .action("CREATE")
+                        .operatorId(String.valueOf(adminId))
+                        .operatorName("admin")
+                        .createdAt(createdAt)
+                        .build()));
+
+        DepartmentController.UserSummary summary = controller.tree().getData().getFirst().getUsers().getFirst();
+
+        assertThat(summary.getCreatedBy()).isEqualTo("系统管理员");
+        assertThat(summary.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(summary.getUpdatedBy()).isEqualTo("系统管理员");
+        assertThat(summary.getUpdatedAt()).isEqualTo(createdAt);
     }
 
     @Test

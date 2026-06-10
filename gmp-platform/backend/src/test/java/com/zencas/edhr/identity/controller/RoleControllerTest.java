@@ -1,9 +1,14 @@
 package com.zencas.edhr.identity.controller;
 
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.identity.entity.Permission;
 import com.zencas.edhr.identity.entity.RolePermission;
+import com.zencas.edhr.identity.repository.PermissionRepository;
 import com.zencas.edhr.identity.repository.RolePermissionRepository;
 import com.zencas.edhr.identity.repository.RoleRepository;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -23,9 +28,28 @@ class RoleControllerTest {
 
     @Mock private RoleRepository roleRepository;
     @Mock private RolePermissionRepository rolePermissionRepository;
+    @Mock private PermissionRepository permissionRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
 
     @InjectMocks private RoleController controller;
+
+    @Test
+    void listAssignablePermissionsReturnsPagedPermissionDataForRoleAssignment() {
+        PageRequest pageable = PageRequest.of(0, 50, Sort.by(Sort.Direction.ASC, "sortOrder"));
+        Permission permission = Permission.builder()
+                .id(60L)
+                .code("system")
+                .name("系统管理")
+                .type("PAGE")
+                .sortOrder(1)
+                .build();
+        when(permissionRepository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(permission), pageable, 1));
+
+        var response = controller.listAssignablePermissions(1, 50, "sortOrder", "asc");
+
+        assertThat(response.getData().getContent()).containsExactly(permission);
+        assertThat(response.getData().getTotalElements()).isEqualTo(1);
+    }
 
     @Test
     void updatePermissionsReplacesRolePermissionBindings() {

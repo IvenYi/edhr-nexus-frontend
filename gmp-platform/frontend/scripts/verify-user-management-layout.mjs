@@ -46,8 +46,16 @@ function mustAppearInOrder(tokens, reason) {
 
 mustInclude('USER_COLUMN_WIDTH_STORAGE_PREFIX', 'user table column widths should have a user-management namespace');
 mustInclude('user-management-column-widths:', 'user table column width storage should not collide with organization personnel widths');
+mustInclude('USER_COLUMN_SETTINGS_STORAGE_PREFIX', 'user table column settings should have a user-management namespace');
+mustInclude('user-management-column-settings:', 'user table column setting storage should not collide with column widths or other pages');
+mustInclude('getUserColumnSettingsStorageKey', 'user table column settings should be scoped to the current login user');
+mustInclude('loadUserColumnSettings', 'user table should restore persisted column visibility and order');
+mustInclude('localStorage.setItem(columnSettingsStorageKey', 'user table should persist column visibility and order');
 mustInclude('USER_FIELD_COLUMN_MIN_WIDTH', 'user table field columns should share a compact minimum width');
 mustInclude('userColumns', 'user table columns should be model-driven');
+mustInclude('ConfigurableUserColumnId', 'user table should separate configurable data fields from fixed select/action columns');
+mustInclude('visibleUserColumns', 'user table should render from current visible column settings');
+mustInclude('columnSettingsItems', 'user table settings panel should list all configurable table fields');
 mustAppearInOrder([
   "{ id: 'displayName', label: '姓名'",
   "{ id: 'username', label: '账号'",
@@ -60,7 +68,16 @@ mustAppearInOrder([
   "{ id: 'updatedBy', label: '更新人'",
   "{ id: 'updatedAt', label: '更新时间'",
 ], 'user table field columns should follow the organization personnel standard order');
-mustInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth }}>', 'user table should use fixed compact sticky-header layout');
+mustInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth, height: isUserTableEmptyState ? \'100%\' : \'auto\' }}>', 'user table should stretch only empty/loading/error states so data rows keep their normal height');
+mustNotInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth, height: \'100%\' }}>', 'user table should not force data rows to stretch to the container height');
+mustInclude('<TableBody sx={{ height: isUserTableEmptyState ? \'100%\' : \'auto\' }}>', 'user table empty/loading/error states should stretch the body to fill the container');
+mustInclude('colSpan={visibleUserColumns.length}', 'user table empty/loading/error states should respect hidden columns');
+mustInclude('TABLE_DATA_ROW_HEIGHT = 40', 'user table should define the standard 40px visual data row height');
+mustInclude('height: TABLE_DATA_ROW_HEIGHT', 'user table data cells should render to a 40px row');
+mustInclude("lineHeight: '20px'", 'user table data cells should keep compact text line height');
+mustInclude("boxShadow: 'inset 0 -1px 0 #ebeef5'", 'user table data row divider should not add to row height');
+mustInclude('emptyTableBodyCellSx', 'user table empty/loading/error cells should share full-height empty state styling');
+mustInclude("height: '100%'", 'user table empty state should be able to fill the available container height');
 mustInclude('top: 0', 'user table header cells should stay visible while table rows scroll');
 mustNotInclude("position: column.id === 'actions' ? 'sticky' : 'relative'", 'user table header cells should not override stickyHeader with relative positioning');
 mustInclude('<colgroup>', 'user table should apply column widths through colgroup');
@@ -87,18 +104,45 @@ mustNotInclude("boxShadow: '-1px 0 0 #dcdfe6'", 'user table fixed action column 
 mustInclude('selectedUserIds', 'user table should track selected rows');
 mustInclude('toggleUserSelection', 'user table should support controlled row selection');
 mustInclude('togglePageUserSelection', 'user table should support selecting the current page');
+mustInclude('SYSTEM_SUPER_ADMIN_USERNAME', 'user table should define the protected default super administrator account');
+mustInclude("SYSTEM_SUPER_ADMIN_USERNAME = 'admin'", 'default backend super administrator username should be protected');
+mustInclude('isSystemSuperAdminUser', 'user table should detect protected super administrator rows');
+mustInclude('selectablePagedRows', 'page selection should skip protected super administrator rows');
+mustInclude('selectedDeletableBatchUsers', 'batch deletion should only count deletable selected rows');
+mustInclude('blockedBatchDeleteUsers', 'batch deletion should guard against protected super administrator rows');
+mustInclude('const targetUser = users.find((user) => user.id === deleteConfirm.id);', 'single deletion mutation should re-check the target user before calling the API');
+mustInclude('isSystemSuperAdminUser(targetUser, roleNameById)', 'single deletion mutation should block protected super administrator rows even if the UI is bypassed');
+mustInclude('系统超级管理员账号不允许删除', 'delete attempts against the super administrator should show a concrete message');
 mustInclude('batchDeleteConfirm', 'user table should track batch delete confirmation state');
 mustInclude('selectedBatchDeleteUsers', 'user table should derive selected rows for batch delete confirmation');
 mustInclude('batchDeleteMutation', 'user table should execute batch deletion through a dedicated mutation');
 mustInclude('Promise.all(userIds.map((id) => deleteUser(id)))', 'batch deletion should delete every selected user id');
-mustInclude('disabled={selectedUserIds.size === 0}', 'batch delete button should be disabled when no rows are selected');
+mustInclude('disabled={selectedDeletableBatchUsers.length === 0}', 'batch delete button should be disabled when no deletable rows are selected');
 mustInclude('onClick={() => setBatchDeleteConfirm(true)}', 'batch delete button should open a second confirmation dialog');
 mustInclude('确认批量删除账号', 'batch delete should use a clear confirmation dialog title');
 mustInclude('危险的操作，请仔细阅读并确认数据后操作', 'batch delete confirmation should warn users to carefully review the dangerous operation');
+mustInclude('justifyContent="space-between"', 'field settings should sit at the left edge while user actions stay on the right');
+mustInclude('data-user-column-settings-trigger', 'field settings should render before the right-side table actions in the toolbar');
 mustAppearInOrder([
-  '批量删除',
-  '新增',
+  'onClick={() => setBatchDeleteConfirm(true)}',
+  '<Button size="small" variant="contained" startIcon={<Add />} onClick={openCreateDialog}>新增</Button>',
 ], 'batch delete button should sit before the add button in the table toolbar');
+mustInclude('Popover', 'user table field settings should render as a popover like the reference');
+mustInclude('aria-label="字段设置"', 'field settings trigger should be an icon-only accessible button');
+mustInclude('data-user-column-settings-panel', 'field settings popover should expose a testable panel');
+mustInclude('data-user-column-settings-row', 'each configurable field should render as one draggable settings row');
+mustInclude('draggable', 'field setting rows should support drag sorting');
+mustInclude('onDragStart={(event) => handleColumnSettingDragStart(event, column.id)}', 'field setting rows should start drag sorting');
+mustInclude('onDrop={(event) => handleColumnSettingDrop(event, column.id)}', 'field setting rows should apply drag sorting');
+mustInclude('beginColumnSettingPointerDrag', 'field setting rows should support pointer-based drag sorting in addition to native drag/drop');
+mustInclude('onPointerDown={(event) => beginColumnSettingPointerDrag(event, column.id)}', 'field setting rows should start pointer drag sorting from direct row movement');
+mustInclude('document.elementFromPoint', 'field setting pointer drag should reorder by the row currently under the pointer');
+mustInclude('toggleUserColumnVisibility(column.id)', 'field setting checkboxes should toggle column visibility');
+mustInclude('moveUserColumnSetting', 'field setting drag sorting should update the persisted column order');
+mustInclude('visibleConfigurableColumnCount <= 1', 'field settings should keep at least one data field visible');
+mustInclude('ViewColumnRounded', 'field settings trigger should use a polished table-column icon');
+mustInclude('TuneRounded', 'field settings trigger should include a tuning affordance to communicate settings');
+mustInclude('DragIndicator', 'field settings rows should show a drag handle icon');
 mustInclude('onChange={(event) => toggleUserSelection(row.id, event.target.checked)}', 'row selection checkbox should use controlled change handling');
 mustInclude('openUserDetailDrawer(row)', 'clicking a user row should open the detail drawer');
 mustInclude("onClick={(event) => event.stopPropagation()}", 'row action controls should not open the detail drawer');
@@ -117,6 +161,8 @@ mustInclude('setRowsPerPage(Number(event.target.value))', 'user table footer sho
 mustInclude('startAdornment: <InputAdornment position="start" sx={{ mr: 0 }}>每页</InputAdornment>', 'user table footer should match organization page page-size adornment');
 mustInclude('{USER_PAGE_SIZE_OPTIONS.map((size) => (', 'user table footer should render all standard page-size menu items');
 mustInclude('padding="checkbox"', 'user row selection cell should use checkbox padding to align with the header checkbox');
+mustInclude('disabled={isSystemSuperAdminUser(row, roleNameById)}', 'protected super administrator row checkbox and delete action should be disabled');
+mustInclude("title={isSystemSuperAdminUser(row, roleNameById) ? '系统超级管理员账号不允许删除' : '删除'}", 'protected super administrator delete action should explain why it is disabled');
 mustInclude('userDisplayNameByIdentity', 'user table should resolve creator/updater ids to user display names');
 mustInclude('updatedBy: item.updatedBy || item.createdBy', 'newly-created users should display updater as creator until a real update exists');
 mustInclude('updatedAt: item.updatedAt || item.createdAt', 'newly-created users should display updated time as created time until a real update exists');
@@ -129,11 +175,17 @@ appLayoutMustInclude('maxWidth: `calc(100vw - ${effectiveSidebarWidth}px)`', 'ma
 appLayoutMustInclude("overflowX: 'hidden'", 'page-level horizontal scroll should be suppressed so tables scroll internally');
 uiStandardMustInclude('查询、重置按钮必须始终居右显示', 'UI standard should require right-aligned filter actions');
 uiStandardMustInclude('表头必须在表格容器内保持 sticky', 'UI standard should require sticky table headers');
+uiStandardMustInclude('数据行视觉高度统一为 40px', 'UI standard should require compact 40px visual data rows');
+uiStandardMustInclude('底部分割线使用单元格内侧阴影绘制', 'UI standard should require row dividers that do not add to row height');
+uiStandardMustInclude('有数据时 `Table` 高度必须回到 `auto`', 'UI standard should prevent data rows from stretching with the table container');
 uiStandardMustInclude('操作列固定在右侧，左侧分隔必须使用从表头到表体贯通的阴影效果', 'UI standard should require full-height sticky action shadow');
 uiStandardMustInclude('阴影由表格容器或独立覆盖层统一绘制，覆盖操作列宽度，不得在每行操作单元格上重复绘制', 'UI standard should require a single full-height action-column shadow layer');
 uiStandardMustInclude('首次创建时如果没有独立更新人或更新时间，更新人和更新时间显示创建人和创建时间', 'UI standard should require initial updated metadata to match created metadata');
 uiStandardMustInclude('分页器固定使用“总数 + 分页 + 每页条数选择”布局', 'UI standard should require the standard footer pagination layout');
 uiStandardMustInclude('每页条数选项统一为 20、50、100、200', 'UI standard should require standard page-size choices');
+uiStandardMustInclude('表格工具栏左侧必须提供字段设置入口', 'UI standard should require table field settings on the left side of the toolbar');
+uiStandardMustInclude('支持拖拽排序和勾选显隐', 'UI standard should require field setting sort and visibility controls');
+uiStandardMustInclude('按当前用户持久化', 'UI standard should require per-user field setting persistence');
 
 mustInclude('filters', 'user management should expose query filters');
 mustInclude('姓名', 'user query/table should include display name');
@@ -214,7 +266,7 @@ mustInclude('Delete', 'delete action should use a delete icon on the global user
 mustInclude('aria-label="编辑"', 'edit action should expose an accessible icon label');
 mustInclude('aria-label="重置密码"', 'reset action should expose an accessible icon label');
 mustInclude('aria-label="删除"', 'delete action should expose an accessible icon label');
-mustInclude('<Tooltip title="删除" arrow>', 'delete action tooltip should use delete wording on global user page');
+mustInclude("<Tooltip title={isSystemSuperAdminUser(row, roleNameById) ? '系统超级管理员账号不允许删除' : '删除'} arrow>", 'delete action tooltip should use delete wording while explaining protected super administrator rows');
 mustInclude('确认删除账号', 'delete confirmation title should distinguish account deletion from organization removal');
 
 mustNotInclude('label="用户名"', 'user management should not use username wording in visible labels');

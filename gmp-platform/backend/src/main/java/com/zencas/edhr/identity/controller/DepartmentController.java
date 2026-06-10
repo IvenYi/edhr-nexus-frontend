@@ -2,6 +2,8 @@ package com.zencas.edhr.identity.controller;
 
 import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.dto.PageResult;
+import com.zencas.edhr.compliance.entity.AuditEvent;
+import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.identity.entity.Department;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.entity.UserDepartment;
@@ -23,10 +25,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,10 +40,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DepartmentController {
 
+    private static final String USER_AUDIT_ENTITY_TYPE = "USER_ACCOUNT";
+
     private final DepartmentRepository departmentRepository;
     private final UserDepartmentRepository userDepartmentRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserRoleRepository userRoleRepository;
+    private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
 
     @GetMapping
@@ -68,13 +77,15 @@ public class DepartmentController {
                 ? Map.of()
                 : userRoleRepository.findByUserIdIn(userIds).stream()
                 .collect(Collectors.groupingBy(UserRole::getUserId));
+        Map<Long, UserAuditOperators> auditOperatorsByUser = findUserAuditOperators(userIds);
         Map<Long, UserSummary> usersById = userAccountRepository.findAllById(userIds).stream()
                 .collect(Collectors.toMap(
                         UserAccount::getId,
                         user -> toUserSummary(
                                 user,
                                 departmentsByUser.getOrDefault(user.getId(), List.of()),
-                                rolesByUser.getOrDefault(user.getId(), List.of()))));
+                                rolesByUser.getOrDefault(user.getId(), List.of()),
+                                auditOperatorsByUser.get(user.getId()))));
 
         Map<Long, List<UserSummary>> usersByDepartment = new HashMap<>();
         for (UserDepartment membership : memberships) {
@@ -184,7 +195,8 @@ public class DepartmentController {
     private UserSummary toUserSummary(
             UserAccount user,
             List<UserDepartment> departments,
-            List<UserRole> roles) {
+            List<UserRole> roles,
+            UserAuditOperators auditOperators) {
         List<String> departmentIds = departments.stream()
                 .map(UserDepartment::getDepartmentId)
                 .map(String::valueOf)
@@ -195,6 +207,9 @@ public class DepartmentController {
                 .map(UserDepartment::getDepartmentId)
                 .map(String::valueOf)
                 .orElse(departmentIds.isEmpty() ? null : departmentIds.getFirst());
+        String createdBy = auditOperators == null ? null : auditOperators.createdBy();
+        String updatedBy = auditOperators == null ? null : auditOperators.updatedBy();
+        LocalDateTime updatedAt = user.getUpdatedAt() == null ? user.getCreatedAt() : user.getUpdatedAt();
 
         return UserSummary.builder()
                 .id(String.valueOf(user.getId()))
@@ -209,9 +224,147 @@ public class DepartmentController {
                         .toList())
                 .departmentIds(departmentIds)
                 .primaryDepartmentId(primaryDepartmentId)
+                .createdBy(createdBy)
                 .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
+                .updatedBy(hasText(updatedBy) ? updatedBy : createdBy)
+                .updatedAt(updatedAt)
                 .build();
+    }
+
+    private Map<Long, UserAuditOperators> findUserAuditOperators(List<Long> userIds) {
+        if (userIds.isEmpty()) return Map.of();
+
+        List<String> entityIds = userIds.stream().map(String::valueOf).toList();
+        List<AuditEvent> auditEvents = Optional
+                .ofNullable(auditEventRepository.findByEntityTypeAndEntityIdIn(USER_AUDIT_ENTITY_TYPE, entityIds))
+                .orElse(List.of());
+        Map<String, String> operatorDisplayNameByIdentity = findOperatorDisplayNames(auditEvents);
+        Map<Long, UserAuditOperatorAccumulator> operatorsByUser = new HashMap<>();
+        auditEvents.stream()
+                .sorted(Comparator.comparing(
+                        AuditEvent::getCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder())))
+                .forEach(event -> {
+                    Long userId = parseAuditUserId(event.getEntityId());
+                    String operatorName = resolveAuditOperatorName(event, operatorDisplayNameByIdentity);
+                    if (userId == null || !hasText(operatorName)) return;
+                    operatorsByUser
+                            .computeIfAbsent(userId, ignored -> new UserAuditOperatorAccumulator())
+                            .accept(event, operatorName);
+                });
+
+        return operatorsByUser.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        item -> item.getValue().toOperators()));
+    }
+
+    private Map<String, String> findOperatorDisplayNames(List<AuditEvent> auditEvents) {
+        Set<Long> operatorIds = new LinkedHashSet<>();
+        Set<String> operatorNames = new LinkedHashSet<>();
+        for (AuditEvent event : auditEvents) {
+            Long operatorId = parseAuditUserId(event.getOperatorId());
+            if (operatorId != null) operatorIds.add(operatorId);
+
+            String operatorName = trimToNull(event.getOperatorName());
+            if (operatorName == null) continue;
+            Long operatorNameAsId = parseAuditUserId(operatorName);
+            if (operatorNameAsId != null) {
+                operatorIds.add(operatorNameAsId);
+            } else {
+                operatorNames.add(operatorName);
+            }
+        }
+
+        Map<String, String> displayNameByIdentity = new HashMap<>();
+        if (!operatorIds.isEmpty()) {
+            userAccountRepository.findAllById(operatorIds).forEach(user -> putOperatorDisplayName(displayNameByIdentity, user));
+        }
+        operatorNames.forEach(operatorName -> {
+            if (displayNameByIdentity.containsKey(operatorName)) return;
+            userAccountRepository.findByUsername(operatorName)
+                    .ifPresent(user -> putOperatorDisplayName(displayNameByIdentity, user));
+        });
+        return displayNameByIdentity;
+    }
+
+    private void putOperatorDisplayName(Map<String, String> displayNameByIdentity, UserAccount user) {
+        String displayName = trimToNull(user.getDisplayName());
+        if (displayName == null) return;
+        displayNameByIdentity.put(String.valueOf(user.getId()), displayName);
+        if (hasText(user.getUsername())) displayNameByIdentity.put(user.getUsername().trim(), displayName);
+        displayNameByIdentity.put(displayName, displayName);
+    }
+
+    private String resolveAuditOperatorName(AuditEvent event, Map<String, String> operatorDisplayNameByIdentity) {
+        String operatorId = trimToNull(event.getOperatorId());
+        if (operatorId != null && operatorDisplayNameByIdentity.containsKey(operatorId)) {
+            return operatorDisplayNameByIdentity.get(operatorId);
+        }
+
+        String operatorName = trimToNull(event.getOperatorName());
+        if (operatorName == null) return null;
+        return operatorDisplayNameByIdentity.getOrDefault(operatorName, operatorName);
+    }
+
+    private Long parseAuditUserId(String value) {
+        if (!hasText(value)) return null;
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
+    private String trimToNull(String value) {
+        if (!hasText(value)) return null;
+        return value.trim();
+    }
+
+    private record UserAuditOperators(String createdBy, String updatedBy) {
+    }
+
+    private static class UserAuditOperatorAccumulator {
+        private String createdBy;
+        private LocalDateTime createdAt;
+        private String updatedBy;
+        private LocalDateTime updatedAt;
+
+        void accept(AuditEvent event, String operatorName) {
+            String action = event.getAction() == null ? "" : event.getAction().trim().toUpperCase();
+            if ("CREATE".equals(action)) {
+                if (createdBy == null || isBefore(event.getCreatedAt(), createdAt)) {
+                    createdBy = operatorName;
+                    createdAt = event.getCreatedAt();
+                }
+                return;
+            }
+
+            if (updatedBy == null || isAfter(event.getCreatedAt(), updatedAt)) {
+                updatedBy = operatorName;
+                updatedAt = event.getCreatedAt();
+            }
+        }
+
+        UserAuditOperators toOperators() {
+            return new UserAuditOperators(createdBy, updatedBy);
+        }
+
+        private boolean isBefore(LocalDateTime candidate, LocalDateTime current) {
+            if (current == null) return true;
+            if (candidate == null) return false;
+            return candidate.isBefore(current);
+        }
+
+        private boolean isAfter(LocalDateTime candidate, LocalDateTime current) {
+            if (current == null) return true;
+            if (candidate == null) return false;
+            return candidate.isAfter(current);
+        }
     }
 
     @Data
@@ -253,7 +406,9 @@ public class DepartmentController {
         private List<String> roleIds;
         private List<String> departmentIds;
         private String primaryDepartmentId;
+        private String createdBy;
         private LocalDateTime createdAt;
+        private String updatedBy;
         private LocalDateTime updatedAt;
     }
 }

@@ -5,7 +5,9 @@ import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.identity.entity.Role;
+import com.zencas.edhr.identity.entity.Permission;
 import com.zencas.edhr.identity.entity.RolePermission;
+import com.zencas.edhr.identity.repository.PermissionRepository;
 import com.zencas.edhr.identity.repository.RolePermissionRepository;
 import com.zencas.edhr.identity.repository.RoleRepository;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
@@ -29,6 +31,7 @@ public class RoleController {
 
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
+    private final PermissionRepository permissionRepository;
     private final SnowflakeIdGenerator idGenerator;
 
     @GetMapping
@@ -74,6 +77,19 @@ public class RoleController {
         rolePermissionRepository.deleteByRoleId(id);
         roleRepository.deleteById(id);
         return ApiResponse.success(null);
+    }
+
+    @GetMapping("/permissions")
+    public ApiResponse<PageResult<Permission>> listAssignablePermissions(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "desc") String order) {
+        Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
+        Page<Permission> result = permissionRepository.findAll(pageable);
+        return ApiResponse.success(PageResult.of(
+                result.getContent(), page, size, result.getTotalElements()));
     }
 
     @GetMapping("/{id}/permissions")

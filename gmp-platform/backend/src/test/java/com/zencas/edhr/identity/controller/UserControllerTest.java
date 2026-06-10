@@ -3,6 +3,8 @@ package com.zencas.edhr.identity.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.audit.AuditContext;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
@@ -28,6 +30,7 @@ import java.util.Optional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
@@ -85,6 +88,27 @@ class UserControllerTest {
 
         verify(userDepartmentRepository).deleteByUserId(1L);
         verify(userRoleRepository, never()).deleteByUserId(1L);
+        verify(userAccountRepository, never()).deleteById(1L);
+    }
+
+    @Test
+    void deleteRejectsTheSystemSuperAdministratorAccount() {
+        UserAccount user = UserAccount.builder()
+                .id(1L)
+                .username("admin")
+                .displayName("系统管理员")
+                .status("ACTIVE")
+                .build();
+        when(userAccountRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> controller.delete(1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("系统超级管理员账号不允许删除")
+                .satisfies(error -> assertThat(((BusinessException) error).getErrorCode())
+                        .isEqualTo(ErrorCode.GENERAL_003));
+
+        verify(userRoleRepository, never()).deleteByUserId(1L);
+        verify(userDepartmentRepository, never()).deleteByUserId(1L);
         verify(userAccountRepository, never()).deleteById(1L);
     }
 

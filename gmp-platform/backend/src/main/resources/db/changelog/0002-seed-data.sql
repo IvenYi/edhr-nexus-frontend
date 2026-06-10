@@ -15,7 +15,7 @@ INSERT INTO site (id, tenant_id, code, name, status) VALUES
 
 -- Default admin user (password: admin123, BCrypt encoded)
 INSERT INTO user_account (id, tenant_id, username, password_hash, display_name, email, status) VALUES
-(1, 1, 'admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', '系统管理员', 'admin@zencas.com', 'ACTIVE');
+(1, 1, 'admin', '$2a$10$2qksi9uRWGtf4q8NN0gmceSCwi/LsXEnAVfC4Of0y.sOK5q8G2Bby', '系统管理员', 'admin@zencas.com', 'ACTIVE');
 
 -- Core roles
 INSERT INTO role (id, tenant_id, code, name, description) VALUES
@@ -63,15 +63,12 @@ INSERT INTO permission (id, code, name, type, parent_code, sort_order) VALUES
 -- System
 INSERT INTO permission (id, code, name, type, parent_code, sort_order) VALUES
 (60, 'system', '系统管理', 'PAGE', NULL, 4),
-(61, 'system.tenant', '租户设置', 'PAGE', 'system', 1),
 (62, 'system.organization', '组织管理', 'PAGE', 'system', 2),
 (63, 'system.users', '用户管理', 'PAGE', 'system', 3),
 (64, 'system.roles', '角色管理', 'PAGE', 'system', 4),
-(65, 'system.permissions', '权限配置', 'PAGE', 'system', 5),
 (66, 'system.numbering-rules', '编码规则', 'PAGE', 'system', 6),
 (67, 'system.audit-logs', '审计日志', 'PAGE', 'system', 7),
 (68, 'system.signatures', '签名记录', 'PAGE', 'system', 8),
-(69, 'system.form-templates', '表单模板', 'PAGE', 'system', 9),
 (70, 'system.edit', '编辑系统配置', 'BUTTON', 'system', 1);
 
 -- Set sequence to a high value (MUST be created before role_permission insert)

@@ -53,7 +53,7 @@ mustInclude('src/utils/menuManagement.ts', 'window.dispatchEvent(new CustomEvent
 mustInclude('src/components/shared/AppLayout.tsx', 'useManagedSidebarModules', 'layout should consume editable menu modules');
 mustInclude('src/components/shared/AppLayout.tsx', 'const sidebarModules = useManagedSidebarModules()', 'layout should read managed modules instead of only static constants');
 mustInclude('src/components/shared/AppLayout.tsx', 'filterModulesByPermissions(sidebarModules, permissionSet)', 'layout permission filtering should run against managed modules');
-mustInclude('src/components/shared/AppLayout.tsx', "if (path === '/system/menu-management') return 'system.permissions';", 'menu management should be visible to administrators who can manage permissions');
+mustInclude('src/components/shared/AppLayout.tsx', "if (path === '/system/menu-management') return 'system.edit';", 'menu management should be visible to administrators who can edit system configuration');
 mustInclude('src/components/shared/AppLayout.tsx', "type: 'group'", 'left function menu should keep module menu group rows for two-level menus');
 mustInclude('src/components/shared/AppLayout.tsx', 'depth: 2', 'left function menu should render child menus as second-level rows');
 mustInclude('src/components/shared/AppLayout.tsx', 'data-sidebar-menu-level', 'left function menu rows should expose their rendered level for QA');
