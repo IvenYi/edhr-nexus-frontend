@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +25,25 @@ public class AuditController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
-            @RequestParam(defaultValue = "desc") String order) {
+            @RequestParam(defaultValue = "desc") String order,
+            @RequestParam(required = false) String entityType,
+            @RequestParam(required = false) String entityId,
+            @RequestParam(required = false) String action,
+            @RequestParam(required = false) String operatorName) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<AuditEvent> result = auditEventRepository.findAll(pageable);
+        Page<AuditEvent> result = auditEventRepository.search(
+                blankToEmpty(entityType),
+                blankToEmpty(entityId),
+                blankToEmpty(action),
+                blankToEmpty(operatorName),
+                pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
+    }
+
+    private String blankToEmpty(String value) {
+        return StringUtils.hasText(value) ? value : "";
     }
 
     @GetMapping("/{id}")

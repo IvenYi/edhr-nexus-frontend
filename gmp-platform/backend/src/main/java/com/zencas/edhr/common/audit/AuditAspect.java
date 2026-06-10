@@ -1,6 +1,5 @@
 package com.zencas.edhr.common.audit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
@@ -16,8 +15,8 @@ import java.time.LocalDateTime;
 
 /**
  * AOP aspect that intercepts @Auditable methods and persists audit_event records.
- * Captures method execution context, parameters (content_after),
- * and optionally reads the entity before modification (content_before).
+ * Captures method execution context only. Business endpoints that need field-level
+ * before/after diffs should write those snapshots explicitly.
  */
 @Aspect
 @Component
@@ -27,7 +26,6 @@ public class AuditAspect {
 
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
-    private final ObjectMapper objectMapper;
 
     @Around("@annotation(auditable)")
     public Object audit(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
@@ -46,15 +44,6 @@ public class AuditAspect {
                     .ipAddress(AuditContext.getIpAddress())
                     .createdAt(LocalDateTime.now())
                     .build();
-
-            // Capture method args as content_after (serialize to JSON string)
-            if (joinPoint.getArgs().length > 0) {
-                try {
-                    event.setContentAfter(objectMapper.writeValueAsString(joinPoint.getArgs()));
-                } catch (Exception e) {
-                    log.debug("Failed to serialize content_after: {}", e.getMessage());
-                }
-            }
 
             auditEventRepository.save(event);
         } catch (Exception e) {

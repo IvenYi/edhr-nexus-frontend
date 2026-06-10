@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 const content = readFileSync(new URL('../src/pages/system/OrganizationPage.tsx', import.meta.url), 'utf8');
 const constantsContent = readFileSync(new URL('../src/utils/constants.ts', import.meta.url), 'utf8');
+const legacyAuditEmptyText = ['暂无真实', '审计记录'].join('');
 const failures = [];
 
 function mustInclude(token, reason) {
@@ -59,12 +60,23 @@ mustInclude('姓名', 'personnel query/table name field');
 mustInclude('账号', 'personnel query/table account field');
 mustInclude('手机号', 'personnel query/table phone field');
 mustInclude('创建时间', 'personnel query/table created-at field');
-mustInclude('所属架构', 'personnel table organization column');
+mustInclude('所属组织', 'personnel table organization column');
+mustNotInclude('所属架构', 'personnel table should use organization wording consistently');
+mustInclude('parentPath: string[] = []', 'personnel rows should carry organization path context when collected from any selected node');
+mustInclude('const departmentPath = [...parentPath, node.name];', 'personnel rows should derive the current organization full path');
+mustInclude("departmentName: departmentPath.join('/')", 'personnel table organization cells should show company/department/team paths');
+mustInclude('collectPersonnel(child, true, departmentPath)', 'personnel child rows should preserve the parent organization path');
+mustInclude('selected ? selected.path.slice(0, -1) : []', 'personnel rows should keep the full path even when a nested organization is selected');
+mustInclude('getPersonnelCreatedBy', 'personnel table should derive creator display with a system-admin fallback');
+mustInclude("roleSummary.includes('系统管理员') ? '系统管理员' : '-'", 'system-admin personnel should display a creator when backend creator metadata is empty');
+mustInclude('{getPersonnelCreatedBy(row, roleNameById)}', 'personnel table created-by cells should use the derived creator display');
+mustInclude('{formatDateTime(row.createdAt)}', 'personnel table created-at cells should render year-month-day hour-minute precision');
+mustNotInclude('{formatDate(row.createdAt)}', 'personnel table created-at cells should not collapse to date-only display');
 mustAppearInOrder([
   "{ id: 'displayName', label: '姓名'",
   "{ id: 'username', label: '账号'",
   "{ id: 'phone', label: '手机号'",
-  "{ id: 'departmentName', label: '所属架构'",
+  "{ id: 'departmentName', label: '所属组织'",
   "{ id: 'roleName', label: '岗位角色'",
   "{ id: 'status', label: '状态'",
   "{ id: 'createdBy', label: '创建人'",
@@ -72,6 +84,8 @@ mustAppearInOrder([
 ], 'personnel table field columns should follow the customer-facing order');
 mustInclude('共 {filteredRows.length} 条数据', 'personnel table total summary');
 mustInclude("return <TableCell key={column.id} sx={cellSx}>{row.displayName}</TableCell>;", 'personnel name cells should use the same plain text rendering as account cells');
+mustInclude('title={row.departmentName}', 'personnel table organization cells should expose the full organization path on hover');
+mustInclude('whiteSpace: \'nowrap\'', 'personnel table path-like cells should remain single-line and truncate cleanly');
 mustInclude('createUser', 'organization personnel panel should create users');
 mustInclude('updateUser', 'organization personnel panel should edit users');
 mustInclude('getRoles', 'organization personnel panel should load role options');
@@ -81,6 +95,25 @@ mustInclude('selectedUser', 'personnel row click should track the user selected 
 mustInclude('userDrawerOpen', 'personnel row click should open a right-side detail drawer');
 mustInclude('openUserDetailDrawer(row)', 'personnel row click should invoke the detail drawer handler');
 mustInclude('<Drawer anchor="right"', 'personnel details should render in a right-side drawer');
+mustInclude('信息查看', 'personnel details drawer should show the view title in the header');
+mustInclude('userDrawerTab', 'personnel details drawer should track the active details tab');
+mustInclude('setUserDrawerTab(0);', 'personnel details drawer should open on the data information tab');
+mustInclude('aria-label="用户详情切换"', 'personnel details drawer tabs should expose a clear accessible label');
+mustInclude('<Tab label="数据信息" />', 'personnel details drawer should expose a data information tab');
+mustInclude('<Tab label="数据审计" />', 'personnel details drawer should expose a data audit tab');
+mustInclude('{userDrawerTab === 0 ? (', 'basic, organization, and system information should render only in the data information tab');
+mustInclude('{userDrawerTab === 1 ? (', 'audit records should render only in the data audit tab');
+mustAppearInOrder([
+  '<Tabs',
+  '<Tab label="数据信息" />',
+  '<Tab label="数据审计" />',
+  '{userDrawerTab === 0 ? (',
+  'DetailSection title="基本信息"',
+  'DetailSection title="组织与角色"',
+  'DetailSection title="系统信息"',
+  '{userDrawerTab === 1 ? (',
+  'DetailSection title="审计记录"',
+], 'personnel details drawer should split information and audit content into two tabs');
 mustInclude('updatedBy?: string;', 'personnel detail data should expose an updated-by field');
 mustInclude('updatedAt?: string;', 'personnel detail data should expose an updated-at field');
 mustInclude('appContentDrawerSx', 'personnel details drawer should cover the full viewport height');
@@ -94,14 +127,34 @@ mustInclude('slotProps={{ backdrop: { sx: appContentDrawerSx } }}', 'personnel d
 mustInclude('PaperProps={{ sx: appContentDrawerPaperSx }}', 'personnel details drawer paper should use the paper-specific sizing override');
 mustInclude('DetailField label="更新人"', 'personnel detail system info should show updated-by metadata');
 mustInclude('DetailField label="更新时间"', 'personnel detail system info should show updated-at metadata');
+mustInclude('DetailField label="所属组织"', 'personnel detail drawer should use organization wording for full paths');
+mustNotInclude('DetailField label="所属部门"', 'personnel detail drawer should not use department-only wording after switching to paths');
 mustInclude('DetailSection title="审计记录"', 'personnel detail drawer should fill the lower area with audit records');
+mustInclude('Accordion', 'personnel detail audit records should use an accordion row pattern');
+mustInclude('AccordionSummary', 'personnel detail audit records should expose a clickable row summary');
+mustInclude('AccordionDetails', 'personnel detail audit records should expose expandable details');
+mustInclude('AuditJsonBlock', 'personnel detail audit records should render JSON blocks in expanded content');
+mustInclude('data-audit-accordion-list', 'personnel detail audit records should expose a testable accordion list');
+mustInclude('data-audit-accordion-row', 'each audit record should render as one accordion row');
+mustInclude('data-audit-json-before', 'expanded audit record should expose before JSON content');
+mustInclude('data-audit-json-after', 'expanded audit record should expose after JSON content');
 mustInclude('操作人', 'personnel detail audit records should identify who operated');
 mustInclude('操作动作', 'personnel detail audit records should identify the operation action');
 mustInclude('操作时间', 'personnel detail audit records should identify when the operation happened');
-mustInclude('变更前内容', 'personnel detail audit records should show before content');
-mustInclude('变更后内容', 'personnel detail audit records should show after content');
+mustInclude('AuditJsonBlock title="变更前"', 'expanded audit record should show before JSON content');
+mustInclude('AuditJsonBlock title="变更后"', 'expanded audit record should show after JSON content');
+mustInclude("JSON.stringify(normalized, null, 2)", 'audit detail content should be formatted as JSON');
+mustNotInclude('变更前内容', 'audit accordion summary should not keep the old wide before-content column');
+mustNotInclude('变更后内容', 'audit accordion summary should not keep the old wide after-content column');
+mustNotInclude('<Table size="small" stickyHeader sx={{ tableLayout: \'fixed\', width: \'100%\' }}>', 'audit drawer should not use the old wide table layout for JSON content');
 mustInclude('getUserAuditRecords(selectedUser', 'personnel detail drawer should derive audit records from the selected user');
 mustInclude('getAuditLogs', 'personnel detail drawer should load available backend audit logs');
+mustInclude("entityType: 'USER_ACCOUNT'", 'personnel detail drawer should request backend user-account audit records');
+mustInclude("queryClient.invalidateQueries({ queryKey: ['organization-user-audit-logs'] });", 'saving users should refresh personnel audit records');
+mustInclude('暂无审计记录', 'personnel detail drawer should show a concise empty audit state');
+mustNotInclude(legacyAuditEmptyText, 'personnel detail drawer empty audit state should not expose implementation wording');
+mustNotInclude('fallbackRecords', 'personnel detail drawer should not synthesize fake audit records from the current snapshot');
+mustNotInclude('当前快照', 'personnel detail drawer should not present current user data as an audit event');
 mustInclude("onClick={(event) => event.stopPropagation()}", 'personnel row action area should not open the detail drawer');
 mustInclude('saveUserMutation', 'personnel dialog should persist user changes');
 mustInclude("queryClient.invalidateQueries({ queryKey: ['departments-tree'] });", 'saving users should refresh organization tree personnel');
@@ -115,11 +168,32 @@ mustInclude("saveMutation.mutate({ name: form.name, parentId })", 'organization 
 mustInclude('编辑组织节点', 'organization node edit dialog should be explicit');
 mustInclude('新增用户', 'personnel dialog should support user creation');
 mustInclude('编辑用户', 'personnel dialog should support user editing');
+mustInclude('EMAIL_PATTERN', 'personnel dialog should validate email format before saving');
+mustInclude('CHINA_MOBILE_PATTERN', 'personnel dialog should validate mobile phone format before saving');
+mustInclude('getUserFormValidationError', 'personnel dialog should centralize user form validation');
+mustInclude("return '请输入正确的邮箱地址';", 'personnel dialog should show a concrete email validation message');
+mustInclude("return '请输入正确的手机号';", 'personnel dialog should show a concrete mobile validation message');
+mustInclude('const userFormValidationError = getUserFormValidationError(userForm);', 'personnel save button should use computed validation state');
+mustInclude('showSnackbar(getUserFormValidationError(userForm) || \'用户保存失败\', \'error\')', 'personnel save should surface validation failures in the snackbar');
+mustNotInclude('Boolean(userFormValidationError)', 'personnel save button should stay clickable for format errors so the top-right snackbar can show the concrete message');
+mustInclude('getApiErrorMessage', 'personnel mutations should extract concrete backend error text');
+mustInclude("getApiErrorMessage(error, '用户保存失败')", 'personnel save failure should show backend-provided error text when available');
+mustInclude("anchorOrigin={{ vertical: 'top', horizontal: 'right' }}", 'operation feedback should appear in the top-right corner');
+mustInclude('showSnackbar', 'operation feedback should use a shared snackbar helper');
+mustInclude("reason === 'clickaway'", 'operation feedback should not close immediately from the same click that opens it');
+mustInclude('onClose={handleSnackbarClose}', 'operation feedback should use the clickaway-aware close handler');
 mustInclude('label="账号"', 'personnel dialog should use account wording instead of username wording');
 mustInclude('label="账号"\n              required', 'personnel account field should be required');
+mustInclude('disabled={Boolean(editingUserId)}', 'personnel account field should be disabled while editing');
 mustInclude('label="姓名"\n              value={userForm.displayName}\n              onChange', 'personnel name field should be present before required validation');
 mustInclude('label="姓名"\n              value={userForm.displayName}\n              onChange={(event) => setUserForm({ ...userForm, displayName: event.target.value })}\n              fullWidth\n              required', 'personnel name field should be required');
 mustInclude('<FormControl fullWidth required size="small" sx={userSelectSx}>', 'personnel organization and role controls should be required');
+mustInclude('getDepartmentPathLabel', 'organization options should show company/department/team paths by depth');
+mustInclude("join('/')", 'organization option labels should use slash-separated organization paths');
+mustNotInclude('data-organization-select-guide', 'organization select menu options should not render vertical guide markers');
+mustNotInclude("borderLeft: '1px solid #dcdfe6'", 'organization select menu options should not render vertical guide lines');
+mustInclude('width: item.depth * 22', 'organization select menu options should keep indentation without guide lines');
+mustInclude('renderValue={(value) => getDepartmentSelectValueLabel(String(value), departmentPathById)}', 'organization select selected value should show the full path');
 mustInclude('岗位角色', 'personnel dialog should support role assignment');
 mustInclude("value={userForm.roleIds[0] ?? ''}", 'personnel role selector should behave as a single-select control');
 mustInclude("roleIds: event.target.value ? [String(event.target.value)] : []", 'personnel role selector should persist one selected role id in the existing roleIds array contract');
@@ -129,6 +203,10 @@ mustInclude('userFieldSx', 'user dialog controls should share the same visual he
 mustInclude('userSelectSx', 'user dialog select controls should share the same visual height as text fields');
 mustInclude('height: 40', 'user dialog controls should follow the compact GCT user-management height');
 mustInclude('<DialogContent dividers>', 'user dialog should follow the GCT divided content pattern');
+mustInclude('rowGap: 1.5', 'user dialog field rows should use a consistent vertical gap');
+mustInclude('columnGap: 1.5', 'user dialog field columns should use a consistent horizontal gap');
+mustNotInclude("? '请输入正确的邮箱地址' : ' '", 'email helper text should not reserve blank vertical space when valid');
+mustNotInclude("? '请输入正确的手机号' : ' '", 'mobile helper text should not reserve blank vertical space when valid');
 mustInclude('size="small" sx={userSelectSx}', 'user dialog select controls should use the compact GCT size');
 mustInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth }}>', 'personnel table should use compact density with computed full-width columns');
 mustInclude('size="small"', 'personnel add action and user dialog should use compact GCT sizing');

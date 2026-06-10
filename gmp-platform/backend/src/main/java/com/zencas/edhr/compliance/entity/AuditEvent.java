@@ -2,6 +2,9 @@ package com.zencas.edhr.compliance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.LocalDateTime;
 
 @Entity @Table(name = "audit_event")
@@ -17,8 +20,10 @@ public class AuditEvent {
     @Column(name = "action")
     private String action;
     @Column(name = "content_before", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String contentBefore;
     @Column(name = "content_after", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String contentAfter;
     @Column(name = "operator_id")
     private String operatorId;

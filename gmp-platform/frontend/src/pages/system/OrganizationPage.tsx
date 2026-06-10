@@ -1,6 +1,9 @@
-import { type MouseEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type MouseEvent, type ReactNode, type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
   Box,
   Button,
@@ -23,12 +26,14 @@ import {
   Select,
   Snackbar,
   Stack,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -93,6 +98,7 @@ interface DepartmentNode {
 interface FlatDepartment {
   node: DepartmentNode;
   depth: number;
+  path: string[];
 }
 
 interface PersonnelRow {
@@ -176,6 +182,8 @@ type PersonnelColumnWidths = Partial<Record<PersonnelColumnId, number>>;
 
 const PAGE_SIZE = 20;
 const PERSONNEL_COLUMN_WIDTH_STORAGE_PREFIX = 'organization-personnel-column-widths:';
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const CHINA_MOBILE_PATTERN = /^1[3-9]\d{9}$/;
 const emptyUserForm: UserForm = {
   username: '',
   displayName: '',
@@ -248,7 +256,7 @@ const personnelColumns: PersonnelColumn[] = [
   { id: 'displayName', label: '姓名', defaultWidth: 140, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'username', label: '账号', defaultWidth: 140, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'phone', label: '手机号', defaultWidth: 132, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'departmentName', label: '所属架构', defaultWidth: 160, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'departmentName', label: '所属组织', defaultWidth: 160, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'roleName', label: '岗位角色', defaultWidth: 150, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'status', label: '状态', defaultWidth: 96, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -256,11 +264,20 @@ const personnelColumns: PersonnelColumn[] = [
   { id: 'actions', label: '操作', defaultWidth: 150, minWidth: 150, resizable: false },
 ];
 
-function flattenDepartments(nodes: DepartmentNode[], depth = 0): FlatDepartment[] {
+function flattenDepartments(nodes: DepartmentNode[], depth = 0, parentPath: string[] = []): FlatDepartment[] {
   return nodes.flatMap((node) => [
-    { node, depth },
-    ...flattenDepartments(node.children ?? [], depth + 1),
+    { node, depth, path: [...parentPath, node.name] },
+    ...flattenDepartments(node.children ?? [], depth + 1, [...parentPath, node.name]),
   ]);
+}
+
+function getDepartmentPathLabel(item: FlatDepartment): string {
+  return item.path.join('/');
+}
+
+function getDepartmentSelectValueLabel(value: string, departmentPathById: Map<string, string>): string {
+  if (!value) return '未分配';
+  return departmentPathById.get(value) ?? value;
 }
 
 function getLevelLabel(depth: number): string {
@@ -291,9 +308,10 @@ function getDeleteBlockReason(node: DepartmentNode | undefined): string {
   return '';
 }
 
-function collectPersonnel(node: DepartmentNode | undefined, includeChildren: boolean): PersonnelRow[] {
+function collectPersonnel(node: DepartmentNode | undefined, includeChildren: boolean, parentPath: string[] = []): PersonnelRow[] {
   if (!node) return [];
 
+  const departmentPath = [...parentPath, node.name];
   const rows = (node.users ?? []).map((user) => ({
     id: user.id,
     username: user.username,
@@ -301,7 +319,7 @@ function collectPersonnel(node: DepartmentNode | undefined, includeChildren: boo
     email: user.email,
     phone: user.phone,
     status: user.status,
-    departmentName: node.name,
+    departmentName: departmentPath.join('/'),
     createdBy: user.createdBy,
     createdAt: user.createdAt,
     updatedBy: user.updatedBy,
@@ -315,7 +333,7 @@ function collectPersonnel(node: DepartmentNode | undefined, includeChildren: boo
 
   return [
     ...rows,
-    ...(node.children ?? []).flatMap((child) => collectPersonnel(child, true)),
+    ...(node.children ?? []).flatMap((child) => collectPersonnel(child, true, departmentPath)),
   ];
 }
 
@@ -338,6 +356,31 @@ function getUserStatusMeta(status: string) {
   return USER_STATUS_MAP[status as keyof typeof USER_STATUS_MAP] ?? { label: status, color: 'default' as const };
 }
 
+function getUserFormValidationError(form: UserForm): string {
+  if (!form.username.trim()) return '请输入账号';
+  if (!form.displayName.trim()) return '请输入姓名';
+  if (!form.primaryDepartmentId) return '请选择所属组织';
+  if (form.roleIds.length === 0) return '请选择岗位角色';
+  if (form.email.trim() && !EMAIL_PATTERN.test(form.email.trim())) {
+    return '请输入正确的邮箱地址';
+  }
+  if (form.phone.trim() && !CHINA_MOBILE_PATTERN.test(form.phone.trim())) {
+    return '请输入正确的手机号';
+  }
+  return '';
+}
+
+function getApiErrorMessage(error: unknown, fallback: string): string {
+  if (typeof error === 'object' && error !== null) {
+    const response = (error as { response?: { data?: { message?: string } } }).response;
+    if (response?.data?.message) return response.data.message;
+  }
+
+  if (error instanceof Error && error.message) return error.message;
+
+  return fallback;
+}
+
 function getAuditActionLabel(action?: string): string {
   if (!action) return '操作';
   return AUDIT_ACTION_MAP[action as keyof typeof AUDIT_ACTION_MAP]?.label || action;
@@ -352,15 +395,10 @@ function getUserRoleSummary(user: PersonnelRow, roleNameById: Map<string, string
   return user.roleIds.map((roleId) => roleNameById.get(roleId) || roleId).join('、');
 }
 
-function getUserSnapshot(user: PersonnelRow, roleNameById: Map<string, string>): string {
-  const statusMeta = getUserStatusMeta(user.status);
-  return [
-    `账号：${user.username || '-'}`,
-    `姓名：${user.displayName || '-'}`,
-    `所属组织：${user.departmentName || '-'}`,
-    `岗位角色：${getUserRoleSummary(user, roleNameById)}`,
-    `状态：${statusMeta.label}`,
-  ].join('；');
+function getPersonnelCreatedBy(user: PersonnelRow, roleNameById: Map<string, string>): string {
+  if (user.createdBy?.trim()) return user.createdBy;
+  const roleSummary = getUserRoleSummary(user, roleNameById);
+  return roleSummary.includes('系统管理员') ? '系统管理员' : '-';
 }
 
 function normalizeAuditValue(value: unknown): unknown {
@@ -378,13 +416,12 @@ function normalizeAuditValue(value: unknown): unknown {
 
 function formatAuditContent(value: unknown): string {
   const normalized = normalizeAuditValue(value);
-  if (normalized === undefined || normalized === null || normalized === '') return '-';
-  if (typeof normalized === 'string') return normalized;
+  if (normalized === undefined || normalized === null || normalized === '') return '{}';
 
   try {
     return JSON.stringify(normalized, null, 2);
   } catch {
-    return String(normalized);
+    return JSON.stringify(String(normalized), null, 2);
   }
 }
 
@@ -412,11 +449,10 @@ function isAuditEventForUser(item: AuditEvent, user: PersonnelRow): boolean {
 function getUserAuditRecords(
   selectedUser: PersonnelRow | null,
   auditEvents: AuditEvent[],
-  roleNameById: Map<string, string>,
 ): UserAuditRecord[] {
   if (!selectedUser) return [];
 
-  const realRecords = auditEvents
+  return auditEvents
     .filter((item) => isAuditEventForUser(item, selectedUser))
     .map((item) => ({
       id: String(item.id),
@@ -426,44 +462,6 @@ function getUserAuditRecords(
       beforeContent: formatAuditContent(item.contentBefore),
       afterContent: formatAuditContent(item.contentAfter ?? item.detail ?? item.reason),
     }));
-
-  if (realRecords.length > 0) return realRecords;
-
-  const snapshot = getUserSnapshot(selectedUser, roleNameById);
-  const fallbackRecords: UserAuditRecord[] = [];
-
-  if (selectedUser.updatedAt) {
-    fallbackRecords.push({
-      id: `updated-${selectedUser.id}`,
-      operatorName: getOperatorName(selectedUser.updatedBy),
-      actionLabel: '更新',
-      operatedAt: selectedUser.updatedAt,
-      beforeContent: '系统未提供变更前快照',
-      afterContent: snapshot,
-    });
-  }
-
-  if (selectedUser.createdAt) {
-    fallbackRecords.push({
-      id: `created-${selectedUser.id}`,
-      operatorName: getOperatorName(selectedUser.createdBy),
-      actionLabel: '创建',
-      operatedAt: selectedUser.createdAt,
-      beforeContent: '-',
-      afterContent: snapshot,
-    });
-  }
-
-  if (fallbackRecords.length > 0) return fallbackRecords;
-
-  return [{
-    id: `snapshot-${selectedUser.id}`,
-    operatorName: '系统记录',
-    actionLabel: '当前快照',
-    operatedAt: undefined,
-    beforeContent: '-',
-    afterContent: snapshot,
-  }];
 }
 
 function getUpdatedByValue(user: PersonnelRow, auditRecords: UserAuditRecord[]): string {
@@ -581,6 +579,51 @@ function DetailField({ label, children }: { label: string; children: ReactNode }
   );
 }
 
+function AuditJsonBlock({
+  title,
+  kind,
+  children,
+}: {
+  title: string;
+  kind: 'before' | 'after';
+  children: string;
+}) {
+  return (
+    <Box
+      data-audit-json-before={kind === 'before' ? 'true' : undefined}
+      data-audit-json-after={kind === 'after' ? 'true' : undefined}
+      sx={{
+        minHeight: 176,
+        p: 1.5,
+        bgcolor: '#f5f7fa',
+        border: '1px solid #dcdfe6',
+        borderRadius: 1,
+        overflow: 'hidden',
+      }}
+    >
+      <Typography variant="body2" sx={{ color: '#606266', mb: 1 }}>
+        {title}
+      </Typography>
+      <Typography
+        component="pre"
+        variant="caption"
+        sx={{
+          m: 0,
+          maxHeight: 240,
+          overflow: 'auto',
+          color: '#303133',
+          fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", monospace',
+          lineHeight: 1.65,
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+        }}
+      >
+        {children}
+      </Typography>
+    </Box>
+  );
+}
+
 export default function OrganizationPage() {
   const queryClient = useQueryClient();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -598,6 +641,7 @@ export default function OrganizationPage() {
   const [removeUserConfirm, setRemoveUserConfirm] = useState<{ id: string; username: string } | null>(null);
   const [selectedUser, setSelectedUser] = useState<PersonnelRow | null>(null);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
+  const [userDrawerTab, setUserDrawerTab] = useState(0);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
     name: '',
@@ -654,10 +698,16 @@ export default function OrganizationPage() {
 
   const departments = data ?? [];
   const flatDepartments = useMemo(() => flattenDepartments(departments), [departments]);
+  const departmentPathById = useMemo(
+    () => new Map(flatDepartments.map((item) => [item.node.id, getDepartmentPathLabel(item)])),
+    [flatDepartments],
+  );
   const departmentOptions = useMemo(
     () => flatDepartments.map((item) => ({
       id: item.node.id,
-      label: `${'　'.repeat(item.depth)}${item.node.name}`,
+      depth: item.depth,
+      name: item.node.name,
+      pathLabel: getDepartmentPathLabel(item),
     })),
     [flatDepartments],
   );
@@ -668,12 +718,12 @@ export default function OrganizationPage() {
   );
   const auditLogItems = auditLogData?.content ?? [];
   const userAuditRecords = useMemo(
-    () => getUserAuditRecords(selectedUser, auditLogItems, roleNameById),
-    [selectedUser, auditLogItems, roleNameById],
+    () => getUserAuditRecords(selectedUser, auditLogItems),
+    [selectedUser, auditLogItems],
   );
   const selected = flatDepartments.find((item) => item.node.id === selectedId) ?? flatDepartments[0];
   const allRows = useMemo(
-    () => collectPersonnel(selected?.node, true),
+    () => collectPersonnel(selected?.node, true, selected ? selected.path.slice(0, -1) : []),
     [selected],
   );
   const filteredRows = useMemo(() => {
@@ -718,6 +768,19 @@ export default function OrganizationPage() {
         : dialogParent?.depth === 1
           ? '新增班组'
           : '新增组织节点';
+  const userFormValidationError = getUserFormValidationError(userForm);
+  const emailFormatError = Boolean(userForm.email.trim()) && !EMAIL_PATTERN.test(userForm.email.trim());
+  const phoneFormatError = Boolean(userForm.phone.trim()) && !CHINA_MOBILE_PATTERN.test(userForm.phone.trim());
+  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+    setSnackbar({ open: true, message, severity });
+  };
+  const closeSnackbar = () => {
+    setSnackbar((current) => ({ ...current, open: false }));
+  };
+  const handleSnackbarClose = (_event?: SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') return;
+    closeSnackbar();
+  };
 
   useEffect(() => {
     if (flatDepartments.length === 0) {
@@ -765,9 +828,9 @@ export default function OrganizationPage() {
       setDialogOpen(false);
       setEditingId(null);
       setForm({ name: '' });
-      setSnackbar({ open: true, message: editingId ? '更新成功' : '创建成功', severity: 'success' });
+      showSnackbar(editingId ? '更新成功' : '创建成功', 'success');
     },
-    onError: () => setSnackbar({ open: true, message: '操作失败', severity: 'error' }),
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '操作失败'), 'error'),
   });
 
   const deleteMutation = useMutation({
@@ -775,9 +838,9 @@ export default function OrganizationPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['departments-tree'] });
       setDeleteConfirm(null);
-      setSnackbar({ open: true, message: '删除成功', severity: 'success' });
+      showSnackbar('删除成功', 'success');
     },
-    onError: () => setSnackbar({ open: true, message: '删除失败', severity: 'error' }),
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '删除失败'), 'error'),
   });
 
   const saveUserMutation = useMutation({
@@ -786,8 +849,8 @@ export default function OrganizationPage() {
       const body = {
         username: userForm.username,
         displayName: userForm.displayName,
-        email: userForm.email,
-        phone: userForm.phone,
+        email: userForm.email.trim() || undefined,
+        phone: userForm.phone.trim() || undefined,
         status: userForm.status,
         password: userForm.password || undefined,
         roleIds: userForm.roleIds,
@@ -799,12 +862,13 @@ export default function OrganizationPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['departments-tree'] });
       queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['organization-user-audit-logs'] });
       setUserDialogOpen(false);
       setEditingUserId(null);
       setUserForm(emptyUserForm);
-      setSnackbar({ open: true, message: '用户保存成功', severity: 'success' });
+      showSnackbar('用户保存成功', 'success');
     },
-    onError: () => setSnackbar({ open: true, message: '用户保存失败', severity: 'error' }),
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '用户保存失败'), 'error'),
   });
 
   const resetPasswordMutation = useMutation({
@@ -815,9 +879,9 @@ export default function OrganizationPage() {
     onSuccess: () => {
       setResetDialog(null);
       setNewPassword('');
-      setSnackbar({ open: true, message: '密码已重置', severity: 'success' });
+      showSnackbar('密码已重置', 'success');
     },
-    onError: () => setSnackbar({ open: true, message: '密码重置失败', severity: 'error' }),
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '密码重置失败'), 'error'),
   });
 
   const removeUserMutation = useMutation({
@@ -831,9 +895,9 @@ export default function OrganizationPage() {
       setRemoveUserConfirm(null);
       setSelectedUser(null);
       setUserDrawerOpen(false);
-      setSnackbar({ open: true, message: '用户已移出组织', severity: 'success' });
+      showSnackbar('用户已移出组织', 'success');
     },
-    onError: () => setSnackbar({ open: true, message: '移出失败', severity: 'error' }),
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '移出失败'), 'error'),
   });
 
   const toggleExpand = (id: string) => {
@@ -869,7 +933,7 @@ export default function OrganizationPage() {
 
   const openCreateUserDialog = () => {
     if (!selected) {
-      setSnackbar({ open: true, message: '请先选择组织节点', severity: 'error' });
+      showSnackbar('请先选择组织节点', 'error');
       return;
     }
     setEditingUserId(null);
@@ -894,7 +958,17 @@ export default function OrganizationPage() {
 
   const openUserDetailDrawer = (row: PersonnelRow) => {
     setSelectedUser(row);
+    setUserDrawerTab(0);
     setUserDrawerOpen(true);
+  };
+
+  const handleSaveUser = () => {
+    const validationError = userFormValidationError;
+    if (validationError) {
+      showSnackbar(getUserFormValidationError(userForm) || '用户保存失败', 'error');
+      return;
+    }
+    saveUserMutation.mutate();
   };
 
   const closeUserDetailDrawer = () => {
@@ -999,7 +1073,13 @@ export default function OrganizationPage() {
     }
 
     if (column.id === 'departmentName') {
-      return <TableCell key={column.id} sx={cellSx}>{row.departmentName}</TableCell>;
+      return (
+        <TableCell key={column.id} sx={cellSx} title={row.departmentName}>
+          <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {row.departmentName}
+          </Typography>
+        </TableCell>
+      );
     }
 
     if (column.id === 'roleName') {
@@ -1014,11 +1094,11 @@ export default function OrganizationPage() {
     }
 
     if (column.id === 'createdBy') {
-      return <TableCell key={column.id} sx={cellSx}>{row.createdBy || '-'}</TableCell>;
+      return <TableCell key={column.id} sx={cellSx}>{getPersonnelCreatedBy(row, roleNameById)}</TableCell>;
     }
 
     if (column.id === 'createdAt') {
-      return <TableCell key={column.id} sx={cellSx}>{formatDate(row.createdAt)}</TableCell>;
+      return <TableCell key={column.id} sx={cellSx}>{formatDateTime(row.createdAt)}</TableCell>;
     }
 
     return (
@@ -1481,7 +1561,10 @@ export default function OrganizationPage() {
         PaperProps={{ sx: appContentDrawerPaperSx }}
       >
         <Box sx={{ width: { xs: '100vw', sm: 560 }, p: 2, bgcolor: '#f7f9fc', minHeight: '100%' }}>
-          <Stack direction="row" justifyContent="flex-end">
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#303133' }}>
+              信息查看
+            </Typography>
             <IconButton size="small" onClick={closeUserDetailDrawer} aria-label="关闭详情">
               <Close />
             </IconButton>
@@ -1492,77 +1575,169 @@ export default function OrganizationPage() {
               请选择一名用户查看详情。
             </Typography>
           ) : (
-            <Stack spacing={2} sx={{ mt: 1 }}>
-              <DetailSection title="基本信息">
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
-                  <DetailField label="姓名">{selectedUser.displayName}</DetailField>
-                  <DetailField label="账号">{selectedUser.username}</DetailField>
-                  <DetailField label="手机号">{selectedUser.phone || '-'}</DetailField>
-                  <DetailField label="邮箱">{selectedUser.email || '-'}</DetailField>
-                  <DetailField label="状态">
-                    <StatusBadge
-                      label={getUserStatusMeta(selectedUser.status).label}
-                      color={getUserStatusMeta(selectedUser.status).color}
-                    />
-                  </DetailField>
-                </Box>
-              </DetailSection>
+            <>
+              <Box sx={{ mt: 1, borderBottom: '1px solid #e4e7ed' }}>
+                <Tabs
+                  value={userDrawerTab}
+                  onChange={(_, value: number) => setUserDrawerTab(value)}
+                  aria-label="用户详情切换"
+                >
+                  <Tab label="数据信息" />
+                  <Tab label="数据审计" />
+                </Tabs>
+              </Box>
 
-              <DetailSection title="组织与角色">
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
-                  <DetailField label="所属部门">{selectedUser.departmentName}</DetailField>
-                  <DetailField label="岗位角色">
-                    {selectedUser.roleIds.length > 0
-                      ? selectedUser.roleIds.map((roleId) => roleNameById.get(roleId) || roleId).join('、')
-                      : '-'}
-                  </DetailField>
-                </Box>
-              </DetailSection>
+              {userDrawerTab === 0 ? (
+                <Stack spacing={2} sx={{ mt: 2 }}>
+                  <DetailSection title="基本信息">
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+                      <DetailField label="姓名">{selectedUser.displayName}</DetailField>
+                      <DetailField label="账号">{selectedUser.username}</DetailField>
+                      <DetailField label="手机号">{selectedUser.phone || '-'}</DetailField>
+                      <DetailField label="邮箱">{selectedUser.email || '-'}</DetailField>
+                      <DetailField label="状态">
+                        <StatusBadge
+                          label={getUserStatusMeta(selectedUser.status).label}
+                          color={getUserStatusMeta(selectedUser.status).color}
+                        />
+                      </DetailField>
+                    </Box>
+                  </DetailSection>
 
-              <DetailSection title="系统信息">
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
-                  <DetailField label="创建人">{selectedUser.createdBy || '系统记录'}</DetailField>
-                  <DetailField label="创建时间">{formatDateTime(selectedUser.createdAt)}</DetailField>
-                  <DetailField label="更新人">{getUpdatedByValue(selectedUser, userAuditRecords)}</DetailField>
-                  <DetailField label="更新时间">{formatDateTime(selectedUser.updatedAt)}</DetailField>
-                </Box>
-              </DetailSection>
+                  <DetailSection title="组织与角色">
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+                      <DetailField label="所属组织">{selectedUser.departmentName}</DetailField>
+                      <DetailField label="岗位角色">
+                        {selectedUser.roleIds.length > 0
+                          ? selectedUser.roleIds.map((roleId) => roleNameById.get(roleId) || roleId).join('、')
+                          : '-'}
+                      </DetailField>
+                    </Box>
+                  </DetailSection>
 
-              <DetailSection title="审计记录">
-                <TableContainer sx={{ maxHeight: 320, overflowX: 'hidden' }}>
-                  <Table size="small" stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
-                    <TableHead>
-                      <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
-                        <TableCell sx={{ width: 72 }}>操作人</TableCell>
-                        <TableCell sx={{ width: 72 }}>操作动作</TableCell>
-                        <TableCell sx={{ width: 108 }}>操作时间</TableCell>
-                        <TableCell sx={{ width: '24%' }}>变更前内容</TableCell>
-                        <TableCell sx={{ width: '24%' }}>变更后内容</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {userAuditRecords.map((record) => (
-                        <TableRow key={record.id} sx={{ '& .MuiTableCell-root': tableBodyCellSx }}>
-                          <TableCell>{record.operatorName}</TableCell>
-                          <TableCell>{record.actionLabel}</TableCell>
-                          <TableCell>{formatDateTime(record.operatedAt)}</TableCell>
-                          <TableCell>
-                            <Typography component="pre" variant="caption" sx={{ m: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                              {record.beforeContent}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Typography component="pre" variant="caption" sx={{ m: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                              {record.afterContent}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </DetailSection>
-            </Stack>
+                  <DetailSection title="系统信息">
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+                      <DetailField label="创建人">{selectedUser.createdBy || '系统记录'}</DetailField>
+                      <DetailField label="创建时间">{formatDateTime(selectedUser.createdAt)}</DetailField>
+                      <DetailField label="更新人">{getUpdatedByValue(selectedUser, userAuditRecords)}</DetailField>
+                      <DetailField label="更新时间">{formatDateTime(selectedUser.updatedAt)}</DetailField>
+                    </Box>
+                  </DetailSection>
+                </Stack>
+              ) : null}
+
+              {userDrawerTab === 1 ? (
+                <Stack spacing={2} sx={{ mt: 2 }}>
+                  <DetailSection title="审计记录">
+                    <Box data-audit-accordion-list sx={{ overflow: 'hidden' }}>
+                      <Box
+                        sx={{
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr 1.35fr 32px',
+                          columnGap: 1,
+                          px: 1.5,
+                          py: 1,
+                          color: '#606266',
+                          bgcolor: '#f5f7fa',
+                          border: '1px solid #e4e7ed',
+                          borderBottom: 'none',
+                          borderRadius: '4px 4px 0 0',
+                          fontSize: 12,
+                          fontWeight: 600,
+                        }}
+                      >
+                        <Typography variant="caption" sx={{ fontWeight: 600 }}>操作人</Typography>
+                        <Typography variant="caption" sx={{ fontWeight: 600 }}>操作动作</Typography>
+                        <Typography variant="caption" sx={{ fontWeight: 600 }}>操作时间</Typography>
+                        <Box aria-hidden />
+                      </Box>
+
+                      <Stack spacing={1}>
+                        {userAuditRecords.length === 0 ? (
+                          <Box
+                            sx={{
+                              px: 1.5,
+                              py: 3,
+                              textAlign: 'center',
+                              color: '#909399',
+                              bgcolor: '#fff',
+                              border: '1px solid #e4e7ed',
+                              borderRadius: '4px',
+                            }}
+                          >
+                            <Typography variant="body2">暂无审计记录</Typography>
+                          </Box>
+                        ) : userAuditRecords.map((record, index) => (
+                          <Accordion
+                            key={record.id}
+                            data-audit-accordion-row={record.id}
+                            disableGutters
+                            elevation={0}
+                            sx={{
+                              border: '1px solid #e4e7ed',
+                              borderRadius: '4px !important',
+                              bgcolor: '#fff',
+                              overflow: 'hidden',
+                              '&::before': { display: 'none' },
+                              '&.Mui-expanded': { m: 0 },
+                            }}
+                          >
+                            <AccordionSummary
+                              expandIcon={<ExpandMore fontSize="small" />}
+                              aria-label={`展开审计记录 ${index + 1}`}
+                              sx={{
+                                minHeight: 44,
+                                px: 1.5,
+                                '&.Mui-expanded': { minHeight: 44 },
+                                '& .MuiAccordionSummary-content': { m: 0, minWidth: 0 },
+                                '& .MuiAccordionSummary-content.Mui-expanded': { m: 0 },
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: 'grid',
+                                  gridTemplateColumns: '1fr 1fr 1.35fr',
+                                  columnGap: 1,
+                                  width: '100%',
+                                  minWidth: 0,
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {record.operatorName}
+                                </Typography>
+                                <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {record.actionLabel}
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: '#606266', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {formatDateTime(record.operatedAt)}
+                                </Typography>
+                              </Box>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ px: 1.5, pt: 0, pb: 1.5 }}>
+                              <Box
+                                sx={{
+                                  display: 'grid',
+                                  gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                                  gap: 1.5,
+                                }}
+                              >
+                                <AuditJsonBlock title="变更前" kind="before">
+                                  {record.beforeContent}
+                                </AuditJsonBlock>
+                                <AuditJsonBlock title="变更后" kind="after">
+                                  {record.afterContent}
+                                </AuditJsonBlock>
+                              </Box>
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                      </Stack>
+                    </Box>
+                  </DetailSection>
+                </Stack>
+              ) : null}
+            </>
           )}
         </Box>
       </Drawer>
@@ -1570,13 +1745,14 @@ export default function OrganizationPage() {
       <Dialog open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingUserId ? '编辑用户' : '新增用户'}</DialogTitle>
         <DialogContent dividers>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 1.5 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
             <TextField
               label="账号"
               required
               value={userForm.username}
               onChange={(event) => setUserForm({ ...userForm, username: event.target.value })}
               fullWidth
+              disabled={Boolean(editingUserId)}
               size="small"
               sx={userFieldSx}
             />
@@ -1607,6 +1783,8 @@ export default function OrganizationPage() {
               onChange={(event) => setUserForm({ ...userForm, email: event.target.value })}
               fullWidth
               size="small"
+              error={emailFormatError}
+              helperText={emailFormatError ? '请输入正确的邮箱地址' : undefined}
               sx={userFieldSx}
             />
             <TextField
@@ -1615,6 +1793,8 @@ export default function OrganizationPage() {
               onChange={(event) => setUserForm({ ...userForm, phone: event.target.value })}
               fullWidth
               size="small"
+              error={phoneFormatError}
+              helperText={phoneFormatError ? '请输入正确的手机号' : undefined}
               sx={userFieldSx}
             />
             <TextField
@@ -1644,10 +1824,24 @@ export default function OrganizationPage() {
                 label="所属组织"
                 value={userForm.primaryDepartmentId}
                 onChange={(event) => setUserForm({ ...userForm, primaryDepartmentId: String(event.target.value) })}
+                renderValue={(value) => getDepartmentSelectValueLabel(String(value), departmentPathById)}
               >
                 <MenuItem value="">未分配</MenuItem>
                 {departmentOptions.map((item) => (
-                  <MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>
+                  <MenuItem key={item.id} value={item.id}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+                      <Box
+                        aria-hidden
+                        sx={{
+                          width: item.depth * 22,
+                          flex: '0 0 auto',
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.name}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -1673,7 +1867,7 @@ export default function OrganizationPage() {
           <Button onClick={() => setUserDialogOpen(false)}>取消</Button>
           <Button
             variant="contained"
-            onClick={() => saveUserMutation.mutate()}
+            onClick={handleSaveUser}
             disabled={
               !userForm.username ||
               !userForm.displayName ||
@@ -1797,8 +1991,13 @@ export default function OrganizationPage() {
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
-        <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>{snackbar.message}</Alert>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        onClose={handleSnackbarClose}
+      >
+        <Alert severity={snackbar.severity} onClose={closeSnackbar}>{snackbar.message}</Alert>
       </Snackbar>
     </Box>
   );
