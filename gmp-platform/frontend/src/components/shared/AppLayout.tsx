@@ -729,13 +729,16 @@ export default function AppLayout() {
         component="main"
         sx={{
           flexGrow: 1,
+          width: `calc(100vw - ${effectiveSidebarWidth}px)`,
+          maxWidth: `calc(100vw - ${effectiveSidebarWidth}px)`,
+          minWidth: 0,
           padding: '20px',
           mt: `${HEADER_TOTAL_HEIGHT}px`,
           ml: `${effectiveSidebarWidth}px`,
           transition: 'margin-left 280ms cubic-bezier(0.4, 0, 0.2, 1)',
           minHeight: `calc(100vh - ${HEADER_TOTAL_HEIGHT}px)`,
           bgcolor: COLORS.pageBg,
-          maxWidth: '100vw',
+          overflowX: 'hidden',
         }}
       >
         <Outlet />

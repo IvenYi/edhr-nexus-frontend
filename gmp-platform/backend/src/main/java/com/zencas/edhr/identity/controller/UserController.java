@@ -29,11 +29,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -69,10 +73,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ApiResponse<UserResponse> getById(@PathVariable Long id) {
         UserAccount user = findUser(id);
+        Map<Long, UserAuditOperators> auditOperatorsByUser = findUserAuditOperators(List.of(id));
         return ApiResponse.success(toUserResponse(
                 user,
                 userRoleRepository.findByUserId(id),
-                userDepartmentRepository.findByUserId(id)));
+                userDepartmentRepository.findByUserId(id),
+                auditOperatorsByUser.get(id)));
     }
 
     @PostMapping
@@ -179,18 +185,21 @@ public class UserController {
                 .collect(Collectors.groupingBy(UserRole::getUserId));
         Map<Long, List<UserDepartment>> departmentsByUser = userDepartmentRepository.findByUserIdIn(userIds).stream()
                 .collect(Collectors.groupingBy(UserDepartment::getUserId));
+        Map<Long, UserAuditOperators> auditOperatorsByUser = findUserAuditOperators(userIds);
         return users.stream()
                 .map(user -> toUserResponse(
                         user,
                         rolesByUser.getOrDefault(user.getId(), List.of()),
-                        departmentsByUser.getOrDefault(user.getId(), List.of())))
+                        departmentsByUser.getOrDefault(user.getId(), List.of()),
+                        auditOperatorsByUser.get(user.getId())))
                 .toList();
     }
 
     private UserResponse toUserResponse(
             UserAccount user,
             List<UserRole> roles,
-            List<UserDepartment> departments) {
+            List<UserDepartment> departments,
+            UserAuditOperators auditOperators) {
         List<Long> roleIds = roles.stream().map(UserRole::getRoleId).toList();
         List<Long> departmentIds = departments.stream().map(UserDepartment::getDepartmentId).toList();
         Long primaryDepartmentId = departments.stream()
@@ -200,21 +209,58 @@ public class UserController {
                 .orElse(departmentIds.isEmpty() ? null : departmentIds.getFirst());
 
         return UserResponse.builder()
-                .id(user.getId())
-                .tenantId(user.getTenantId())
+                .id(String.valueOf(user.getId()))
+                .tenantId(String.valueOf(user.getTenantId()))
                 .username(user.getUsername())
                 .displayName(user.getDisplayName())
                 .name(user.getDisplayName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .status(user.getStatus())
-                .roleIds(roleIds)
-                .departmentIds(departmentIds)
-                .primaryDepartmentId(primaryDepartmentId)
+                .roleIds(roleIds.stream().map(String::valueOf).toList())
+                .departmentIds(departmentIds.stream().map(String::valueOf).toList())
+                .primaryDepartmentId(primaryDepartmentId == null ? null : String.valueOf(primaryDepartmentId))
                 .lastLoginAt(user.getLastLoginAt())
+                .createdBy(auditOperators == null ? null : auditOperators.createdBy())
                 .createdAt(user.getCreatedAt())
+                .updatedBy(auditOperators == null ? null : auditOperators.updatedBy())
                 .updatedAt(user.getUpdatedAt())
                 .build();
+    }
+
+    private Map<Long, UserAuditOperators> findUserAuditOperators(List<Long> userIds) {
+        if (userIds.isEmpty()) return Map.of();
+
+        List<String> entityIds = userIds.stream().map(String::valueOf).toList();
+        List<AuditEvent> auditEvents = Optional
+                .ofNullable(auditEventRepository.findByEntityTypeAndEntityIdIn(USER_AUDIT_ENTITY_TYPE, entityIds))
+                .orElse(List.of());
+        Map<Long, UserAuditOperatorAccumulator> operatorsByUser = new HashMap<>();
+        auditEvents.stream()
+                .sorted(Comparator.comparing(
+                        AuditEvent::getCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder())))
+                .forEach(event -> {
+                    Long userId = parseAuditUserId(event.getEntityId());
+                    if (userId == null || !StringUtils.hasText(event.getOperatorName())) return;
+                    operatorsByUser
+                            .computeIfAbsent(userId, ignored -> new UserAuditOperatorAccumulator())
+                            .accept(event);
+                });
+
+        return operatorsByUser.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        item -> item.getValue().toOperators()));
+    }
+
+    private Long parseAuditUserId(String value) {
+        if (!StringUtils.hasText(value)) return null;
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private void replaceUserRoles(Long userId, List<Long> roleIds) {
@@ -275,9 +321,9 @@ public class UserController {
                 user.getEmail(),
                 user.getPhone(),
                 user.getStatus(),
-                normalizeIds(roles.stream().map(UserRole::getRoleId).toList()),
-                departmentIds,
-                primaryDepartmentId);
+                normalizeIdStrings(roles.stream().map(UserRole::getRoleId).toList()),
+                idStringsFromNormalizedIds(departmentIds),
+                idToString(primaryDepartmentId));
     }
 
     private UserAuditSnapshot captureUserSnapshot(
@@ -295,9 +341,9 @@ public class UserController {
                 user.getEmail(),
                 user.getPhone(),
                 user.getStatus(),
-                normalizeIds(roleIds),
-                normalizedDepartmentIds,
-                effectivePrimaryDepartmentId);
+                normalizeIdStrings(roleIds),
+                idStringsFromNormalizedIds(normalizedDepartmentIds),
+                idToString(effectivePrimaryDepartmentId));
     }
 
     private List<Long> normalizeIds(List<Long> ids) {
@@ -307,6 +353,18 @@ public class UserController {
                 .distinct()
                 .sorted()
                 .toList();
+    }
+
+    private List<String> normalizeIdStrings(List<Long> ids) {
+        return idStringsFromNormalizedIds(normalizeIds(ids));
+    }
+
+    private List<String> idStringsFromNormalizedIds(List<Long> ids) {
+        return ids.stream().map(String::valueOf).toList();
+    }
+
+    private String idToString(Long id) {
+        return id == null ? null : String.valueOf(id);
     }
 
     private List<Long> normalizeDepartmentIds(List<Long> departmentIds, Long primaryDepartmentId) {
@@ -402,9 +460,51 @@ public class UserController {
             String email,
             String phone,
             String status,
-            List<Long> roleIds,
-            List<Long> departmentIds,
-            Long primaryDepartmentId) {
+            List<String> roleIds,
+            List<String> departmentIds,
+            String primaryDepartmentId) {
+    }
+
+    private record UserAuditOperators(String createdBy, String updatedBy) {
+    }
+
+    private static class UserAuditOperatorAccumulator {
+        private String createdBy;
+        private LocalDateTime createdAt;
+        private String updatedBy;
+        private LocalDateTime updatedAt;
+
+        void accept(AuditEvent event) {
+            String action = event.getAction() == null ? "" : event.getAction().trim().toUpperCase();
+            if ("CREATE".equals(action)) {
+                if (createdBy == null || isBefore(event.getCreatedAt(), createdAt)) {
+                    createdBy = event.getOperatorName();
+                    createdAt = event.getCreatedAt();
+                }
+                return;
+            }
+
+            if (updatedBy == null || isAfter(event.getCreatedAt(), updatedAt)) {
+                updatedBy = event.getOperatorName();
+                updatedAt = event.getCreatedAt();
+            }
+        }
+
+        UserAuditOperators toOperators() {
+            return new UserAuditOperators(createdBy, updatedBy);
+        }
+
+        private boolean isBefore(LocalDateTime candidate, LocalDateTime current) {
+            if (current == null) return true;
+            if (candidate == null) return false;
+            return candidate.isBefore(current);
+        }
+
+        private boolean isAfter(LocalDateTime candidate, LocalDateTime current) {
+            if (current == null) return true;
+            if (candidate == null) return false;
+            return candidate.isAfter(current);
+        }
     }
 
     @Data
@@ -436,19 +536,21 @@ public class UserController {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserResponse {
-        private Long id;
-        private Long tenantId;
+        private String id;
+        private String tenantId;
         private String username;
         private String displayName;
         private String name;
         private String email;
         private String phone;
         private String status;
-        private List<Long> roleIds;
-        private List<Long> departmentIds;
-        private Long primaryDepartmentId;
+        private List<String> roleIds;
+        private List<String> departmentIds;
+        private String primaryDepartmentId;
         private java.time.LocalDateTime lastLoginAt;
+        private String createdBy;
         private java.time.LocalDateTime createdAt;
+        private String updatedBy;
         private java.time.LocalDateTime updatedAt;
     }
 }

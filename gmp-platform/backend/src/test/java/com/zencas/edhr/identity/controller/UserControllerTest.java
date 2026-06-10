@@ -19,6 +19,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -86,6 +89,85 @@ class UserControllerTest {
     }
 
     @Test
+    void userResponseSerializesSnowflakeIdsAsStrings() throws Exception {
+        UserController.UserResponse response = UserController.UserResponse.builder()
+                .id("339738050987466752")
+                .tenantId("1")
+                .username("auditqa181103")
+                .displayName("审计新增测试181103")
+                .status("ACTIVE")
+                .roleIds(List.of("3"))
+                .departmentIds(List.of("339481676007841792"))
+                .primaryDepartmentId("339481676007841792")
+                .build();
+
+        JsonNode json = objectMapper.readTree(objectMapper.writeValueAsString(response));
+
+        assertThat(json.get("id").isTextual()).isTrue();
+        assertThat(json.get("id").asText()).isEqualTo("339738050987466752");
+        assertThat(json.get("tenantId").isTextual()).isTrue();
+        assertThat(json.get("roleIds").get(0).isTextual()).isTrue();
+        assertThat(json.get("departmentIds").get(0).asText()).isEqualTo("339481676007841792");
+        assertThat(json.get("primaryDepartmentId").asText()).isEqualTo("339481676007841792");
+    }
+
+    @Test
+    void listMapsMembershipIdsAsStringsAndAuditOperators() {
+        long userId = 339738050987466752L;
+        long roleId = 339481676007841793L;
+        long departmentId = 339481676007841792L;
+        LocalDateTime createdAt = LocalDateTime.parse("2026-06-09T18:11:00");
+        LocalDateTime updatedAt = LocalDateTime.parse("2026-06-10T09:30:00");
+        UserAccount user = UserAccount.builder()
+                .id(userId)
+                .tenantId(1L)
+                .username("auditqa181103")
+                .displayName("审计新增测试181103")
+                .passwordHash("hash")
+                .status("ACTIVE")
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+        when(userAccountRepository.findAll(any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(List.of(user), PageRequest.of(0, 20), 1));
+        when(userRoleRepository.findByUserIdIn(List.of(userId))).thenReturn(List.of(
+                UserRole.builder().id(101L).userId(userId).roleId(roleId).build()));
+        when(userDepartmentRepository.findByUserIdIn(List.of(userId))).thenReturn(List.of(
+                UserDepartment.builder().id(102L).userId(userId).departmentId(departmentId).isPrimary(true).build()));
+        when(auditEventRepository.findByEntityTypeAndEntityIdIn(eq("USER_ACCOUNT"), eq(List.of(String.valueOf(userId)))))
+                .thenReturn(List.of(
+                        AuditEvent.builder()
+                                .id(201L)
+                                .entityType("USER_ACCOUNT")
+                                .entityId(String.valueOf(userId))
+                                .action("CREATE")
+                                .operatorName("系统管理员")
+                                .createdAt(createdAt)
+                                .build(),
+                        AuditEvent.builder()
+                                .id(202L)
+                                .entityType("USER_ACCOUNT")
+                                .entityId(String.valueOf(userId))
+                                .action("UPDATE")
+                                .operatorName("质量经理")
+                                .createdAt(updatedAt)
+                                .build()));
+
+        UserController.UserResponse response = controller
+                .list(1, 20, "createdAt", "desc")
+                .getData()
+                .getContent()
+                .getFirst();
+
+        assertThat(response.getId()).isEqualTo(String.valueOf(userId));
+        assertThat(response.getRoleIds()).containsExactly(String.valueOf(roleId));
+        assertThat(response.getDepartmentIds()).containsExactly(String.valueOf(departmentId));
+        assertThat(response.getPrimaryDepartmentId()).isEqualTo(String.valueOf(departmentId));
+        assertThat(response.getCreatedBy()).isEqualTo("系统管理员");
+        assertThat(response.getUpdatedBy()).isEqualTo("质量经理");
+    }
+
+    @Test
     void createWritesAuditSnapshotForCreatedUser() throws Exception {
         AuditContext.setOperator("99", "系统管理员");
         UserController.UserRequest request = new UserController.UserRequest();
@@ -136,9 +218,9 @@ class UserControllerTest {
         assertThat(after.get("email").asText()).isEqualTo("new-operator@example.com");
         assertThat(after.get("phone").asText()).isEqualTo("13800000001");
         assertThat(after.get("status").asText()).isEqualTo("ACTIVE");
-        assertThat(after.get("roleIds").get(0).asLong()).isEqualTo(10L);
-        assertThat(after.get("departmentIds").get(0).asLong()).isEqualTo(20L);
-        assertThat(after.get("primaryDepartmentId").asLong()).isEqualTo(20L);
+        assertThat(after.get("roleIds").get(0).asText()).isEqualTo("10");
+        assertThat(after.get("departmentIds").get(0).asText()).isEqualTo("20");
+        assertThat(after.get("primaryDepartmentId").asText()).isEqualTo("20");
     }
 
     @Test
@@ -229,15 +311,15 @@ class UserControllerTest {
         assertThat(before.get("status").asText()).isEqualTo("ACTIVE");
         assertThat(after.get("status").asText()).isEqualTo("DISABLED");
         assertThat(before.get("roleIds")).hasSize(1);
-        assertThat(before.get("roleIds").get(0).asLong()).isEqualTo(10L);
+        assertThat(before.get("roleIds").get(0).asText()).isEqualTo("10");
         assertThat(after.get("roleIds")).hasSize(1);
-        assertThat(after.get("roleIds").get(0).asLong()).isEqualTo(11L);
+        assertThat(after.get("roleIds").get(0).asText()).isEqualTo("11");
         assertThat(before.get("departmentIds")).hasSize(1);
-        assertThat(before.get("departmentIds").get(0).asLong()).isEqualTo(20L);
+        assertThat(before.get("departmentIds").get(0).asText()).isEqualTo("20");
         assertThat(after.get("departmentIds")).hasSize(1);
-        assertThat(after.get("departmentIds").get(0).asLong()).isEqualTo(21L);
-        assertThat(before.get("primaryDepartmentId").asLong()).isEqualTo(20L);
-        assertThat(after.get("primaryDepartmentId").asLong()).isEqualTo(21L);
+        assertThat(after.get("departmentIds").get(0).asText()).isEqualTo("21");
+        assertThat(before.get("primaryDepartmentId").asText()).isEqualTo("20");
+        assertThat(after.get("primaryDepartmentId").asText()).isEqualTo("21");
         assertThat(before.has("username")).isFalse();
         assertThat(after.has("username")).isFalse();
         assertThat(before.has("email")).isFalse();

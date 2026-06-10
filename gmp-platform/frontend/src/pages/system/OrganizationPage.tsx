@@ -153,8 +153,19 @@ interface UserAuditRecord {
   operatorName: string;
   actionLabel: string;
   operatedAt?: string;
-  beforeContent: string;
-  afterContent: string;
+  beforeFields: AuditFieldRow[];
+  afterFields: AuditFieldRow[];
+}
+
+interface AuditFieldRow {
+  key: string;
+  label: string;
+  value: string;
+}
+
+interface AuditDisplayContext {
+  departmentPathById: Map<string, string>;
+  roleNameById: Map<string, string>;
 }
 
 type PersonnelColumnId =
@@ -242,6 +253,7 @@ const appContentDrawerPaperSx = {
 
 const organizationWorkspaceHeight = { xs: 'auto', lg: 'calc(100vh - 150px)' };
 const PERSONNEL_FIELD_COLUMN_MIN_WIDTH = 60;
+const PERSONNEL_ACTION_COLUMN_WIDTH = 150;
 
 const dateFieldSx = {
   userSelect: 'none',
@@ -261,8 +273,29 @@ const personnelColumns: PersonnelColumn[] = [
   { id: 'status', label: '状态', defaultWidth: 96, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdAt', label: '创建时间', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: 150, minWidth: 150, resizable: false },
+  { id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false },
 ];
+
+const auditFieldLabelMap: Record<string, string> = {
+  username: '账号',
+  displayName: '姓名',
+  name: '姓名',
+  email: '邮箱',
+  phone: '手机号',
+  status: '状态',
+  primaryDepartmentId: '所属组织',
+  departmentId: '所属组织',
+  departmentIds: '所属组织',
+  departmentName: '所属组织',
+  roleIds: '岗位角色',
+  roles: '岗位角色',
+  password: '初始密码',
+  createdBy: '创建人',
+  createdAt: '创建时间',
+  updatedBy: '更新人',
+  updatedAt: '更新时间',
+};
+const auditFieldOrder = ['username', 'displayName', 'password', 'email', 'phone', 'status', 'primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName', 'roleIds', 'roles'];
 
 function flattenDepartments(nodes: DepartmentNode[], depth = 0, parentPath: string[] = []): FlatDepartment[] {
   return nodes.flatMap((node) => [
@@ -401,28 +434,114 @@ function getPersonnelCreatedBy(user: PersonnelRow, roleNameById: Map<string, str
   return roleSummary.includes('系统管理员') ? '系统管理员' : '-';
 }
 
+function preserveAuditJsonLargeNumbers(raw: string): string {
+  return raw.replace(/([:[,])\s*(-?\d{16,})(?=\s*[,}\]])/g, '$1"$2"');
+}
+
 function normalizeAuditValue(value: unknown): unknown {
   if (typeof value !== 'string') return value;
 
   const trimmed = value.trim();
   if (!trimmed) return undefined;
+  if (/^-?\d{16,}$/.test(trimmed)) return trimmed;
 
   try {
-    return JSON.parse(trimmed);
+    return JSON.parse(preserveAuditJsonLargeNumbers(trimmed));
   } catch {
     return trimmed;
   }
 }
 
-function formatAuditContent(value: unknown): string {
-  const normalized = normalizeAuditValue(value);
-  if (normalized === undefined || normalized === null || normalized === '') return '{}';
+function getAuditFieldLabel(field: string): string {
+  return auditFieldLabelMap[field] ?? field;
+}
 
-  try {
-    return JSON.stringify(normalized, null, 2);
-  } catch {
-    return JSON.stringify(String(normalized), null, 2);
+function getAuditFieldOrderIndex(field: string): number {
+  const index = auditFieldOrder.indexOf(field);
+  return index === -1 ? auditFieldOrder.length : index;
+}
+
+function sortAuditFieldRows(entries: Array<[string, unknown]>): Array<[string, unknown]> {
+  return entries
+    .map((entry, index) => ({ entry, index }))
+    .sort((left, right) => {
+      const orderDelta = getAuditFieldOrderIndex(left.entry[0]) - getAuditFieldOrderIndex(right.entry[0]);
+      return orderDelta === 0 ? left.index - right.index : orderDelta;
+    })
+    .map((item) => item.entry);
+}
+
+function dedupeAuditFieldRows(rows: AuditFieldRow[]): AuditFieldRow[] {
+  const seenRows = new Set<string>();
+  return rows.filter((row) => {
+    const signature = `${row.label}\u0000${row.value}`;
+    if (seenRows.has(signature)) return false;
+    seenRows.add(signature);
+    return true;
+  });
+}
+
+function getAuditScalarDisplayValue(field: string, trimmed: string, context?: AuditDisplayContext): string {
+  if (field === 'status') {
+    const statusKey = trimmed.toUpperCase() as keyof typeof USER_STATUS_MAP;
+    return USER_STATUS_MAP[statusKey]?.label ?? trimmed;
   }
+
+  if (field === 'primaryDepartmentId' || field === 'departmentId' || field === 'departmentIds') {
+    return context?.departmentPathById.get(trimmed) ?? trimmed;
+  }
+
+  if (field === 'roleIds' || field === 'roles') {
+    return context?.roleNameById.get(trimmed) ?? trimmed;
+  }
+
+  return trimmed;
+}
+
+function getAuditDisplayValue(field: string, value: unknown, context?: AuditDisplayContext): string {
+  const normalized = normalizeAuditValue(value);
+  if (normalized === undefined || normalized === null) return '-';
+
+  if (typeof normalized === 'string') {
+    const trimmed = normalized.trim();
+    if (!trimmed || trimmed === 'undefined') return '-';
+    return getAuditScalarDisplayValue(field, trimmed, context);
+  }
+
+  if (Array.isArray(normalized)) {
+    if (normalized.length === 0) return '-';
+    return normalized.map((item) => getAuditDisplayValue(field, item, context)).join('、');
+  }
+
+  if (typeof normalized === 'number') {
+    return getAuditScalarDisplayValue(field, String(normalized), context);
+  }
+
+  if (typeof normalized === 'object') {
+    const entries = Object.entries(normalized as Record<string, unknown>);
+    if (entries.length === 0) return '-';
+    return entries
+      .map(([nestedField, fieldValue]) => `${getAuditFieldLabel(nestedField)}:${getAuditDisplayValue(nestedField, fieldValue, context)}`)
+      .join('；');
+  }
+
+  return String(normalized);
+}
+
+function formatAuditFieldRows(value: unknown, context: AuditDisplayContext): AuditFieldRow[] {
+  const normalized = normalizeAuditValue(value);
+  if (normalized === undefined || normalized === null || normalized === '') return [];
+
+  if (typeof normalized === 'object' && !Array.isArray(normalized)) {
+    const rows = sortAuditFieldRows(Object.entries(normalized as Record<string, unknown>)).map(([field, fieldValue]) => ({
+      key: field,
+      label: getAuditFieldLabel(field),
+      value: getAuditDisplayValue(field, fieldValue, context),
+    }));
+    return dedupeAuditFieldRows(rows);
+  }
+
+  return [{ key: 'content', label: '内容', value: getAuditDisplayValue('content', normalized, context) }];
 }
 
 function isAuditEventForUser(item: AuditEvent, user: PersonnelRow): boolean {
@@ -449,6 +568,7 @@ function isAuditEventForUser(item: AuditEvent, user: PersonnelRow): boolean {
 function getUserAuditRecords(
   selectedUser: PersonnelRow | null,
   auditEvents: AuditEvent[],
+  context: AuditDisplayContext,
 ): UserAuditRecord[] {
   if (!selectedUser) return [];
 
@@ -459,8 +579,8 @@ function getUserAuditRecords(
       operatorName: getOperatorName(item.operatorName),
       actionLabel: getAuditActionLabel(item.action),
       operatedAt: item.createdAt,
-      beforeContent: formatAuditContent(item.contentBefore),
-      afterContent: formatAuditContent(item.contentAfter ?? item.detail ?? item.reason),
+      beforeFields: formatAuditFieldRows(item.contentBefore, context),
+      afterFields: formatAuditFieldRows(item.contentAfter ?? item.detail ?? item.reason, context),
     }));
 }
 
@@ -541,6 +661,17 @@ function resolvePersonnelColumnWidths(
   return resolved;
 }
 
+function getStickyActionColumnSx(column: PersonnelColumn, section: 'head' | 'body') {
+  if (column.id !== 'actions') return {};
+
+  return {
+    position: 'sticky',
+    right: 0,
+    zIndex: section === 'head' ? 6 : 4,
+    bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+  };
+}
+
 function openDatePickerWithoutSelection(event: MouseEvent<HTMLDivElement>) {
   event.preventDefault();
 
@@ -579,19 +710,19 @@ function DetailField({ label, children }: { label: string; children: ReactNode }
   );
 }
 
-function AuditJsonBlock({
+function AuditFieldBlock({
   title,
   kind,
-  children,
+  fields,
 }: {
   title: string;
   kind: 'before' | 'after';
-  children: string;
+  fields: AuditFieldRow[];
 }) {
   return (
     <Box
-      data-audit-json-before={kind === 'before' ? 'true' : undefined}
-      data-audit-json-after={kind === 'after' ? 'true' : undefined}
+      data-audit-field-before={kind === 'before' ? 'true' : undefined}
+      data-audit-field-after={kind === 'after' ? 'true' : undefined}
       sx={{
         minHeight: 176,
         p: 1.5,
@@ -604,22 +735,34 @@ function AuditJsonBlock({
       <Typography variant="body2" sx={{ color: '#606266', mb: 1 }}>
         {title}
       </Typography>
-      <Typography
-        component="pre"
-        variant="caption"
+      <Stack
+        spacing={0.5}
         sx={{
-          m: 0,
           maxHeight: 240,
           overflow: 'auto',
           color: '#303133',
-          fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", monospace',
           lineHeight: 1.65,
-          whiteSpace: 'pre-wrap',
           wordBreak: 'break-word',
         }}
       >
-        {children}
-      </Typography>
+        {fields.length === 0 ? (
+          <Typography variant="caption" sx={{ color: '#303133', lineHeight: 1.65 }}>
+            -
+          </Typography>
+        ) : fields.map((field, index) => (
+          <Box
+            key={`${field.key}-${index}`}
+            sx={{ display: 'flex', gap: 0.5, alignItems: 'baseline', minWidth: 0 }}
+          >
+            <Typography component="span" variant="caption" sx={{ flex: '0 0 auto', color: '#606266', lineHeight: 1.65 }}>
+              {field.label}:
+            </Typography>
+            <Typography component="span" variant="caption" sx={{ minWidth: 0, color: '#303133', lineHeight: 1.65, wordBreak: 'break-word' }}>
+              {field.value}
+            </Typography>
+          </Box>
+        ))}
+      </Stack>
     </Box>
   );
 }
@@ -640,6 +783,7 @@ export default function OrganizationPage() {
   const [newPassword, setNewPassword] = useState('');
   const [removeUserConfirm, setRemoveUserConfirm] = useState<{ id: string; username: string } | null>(null);
   const [selectedUser, setSelectedUser] = useState<PersonnelRow | null>(null);
+  const [selectedPersonnelIds, setSelectedPersonnelIds] = useState<Set<string>>(new Set());
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
   const [userDrawerTab, setUserDrawerTab] = useState(0);
   const [page, setPage] = useState(1);
@@ -662,6 +806,7 @@ export default function OrganizationPage() {
   );
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
+  const [tableScrollbarWidth, setTableScrollbarWidth] = useState(0);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['departments-tree'],
@@ -718,8 +863,8 @@ export default function OrganizationPage() {
   );
   const auditLogItems = auditLogData?.content ?? [];
   const userAuditRecords = useMemo(
-    () => getUserAuditRecords(selectedUser, auditLogItems),
-    [selectedUser, auditLogItems],
+    () => getUserAuditRecords(selectedUser, auditLogItems, { departmentPathById, roleNameById }),
+    [selectedUser, auditLogItems, departmentPathById, roleNameById],
   );
   const selected = flatDepartments.find((item) => item.node.id === selectedId) ?? flatDepartments[0];
   const allRows = useMemo(
@@ -744,6 +889,10 @@ export default function OrganizationPage() {
   }, [allRows, filters]);
   const pageCount = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const pagedRows = filteredRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const pagedRowIds = useMemo(() => pagedRows.map((row) => row.id), [pagedRows]);
+  const selectedPagedRowCount = pagedRowIds.filter((id) => selectedPersonnelIds.has(id)).length;
+  const allPagedRowsSelected = pagedRowIds.length > 0 && selectedPagedRowCount === pagedRowIds.length;
+  const isPagedRowsPartiallySelected = selectedPagedRowCount > 0 && selectedPagedRowCount < pagedRowIds.length;
   const resolvedColumnWidths = useMemo(
     () => resolvePersonnelColumnWidths(columnWidths, tableContainerWidth),
     [columnWidths, tableContainerWidth],
@@ -811,6 +960,7 @@ export default function OrganizationPage() {
 
     const updateTableContainerWidth = () => {
       setTableContainerWidth(container.clientWidth);
+      setTableScrollbarWidth(Math.max(0, container.offsetWidth - container.clientWidth));
     };
 
     updateTableContainerWidth();
@@ -1034,17 +1184,59 @@ export default function OrganizationPage() {
     window.addEventListener('mouseup', stopResize);
   };
 
+  const togglePersonnelSelection = (rowId: string, checked?: boolean) => {
+    setSelectedPersonnelIds((current) => {
+      const next = new Set(current);
+      const shouldSelect = checked ?? !next.has(rowId);
+      if (shouldSelect) {
+        next.add(rowId);
+      } else {
+        next.delete(rowId);
+      }
+      return next;
+    });
+  };
+
+  const togglePagePersonnelSelection = (checked: boolean) => {
+    setSelectedPersonnelIds((current) => {
+      const next = new Set(current);
+      pagedRowIds.forEach((rowId) => {
+        if (checked) {
+          next.add(rowId);
+        } else {
+          next.delete(rowId);
+        }
+      });
+      return next;
+    });
+  };
+
   const renderPersonnelCell = (row: PersonnelRow, column: PersonnelColumn) => {
     const cellSx = {
       ...tableBodyCellSx,
       width: getColumnWidth(column),
       minWidth: column.minWidth,
+      ...getStickyActionColumnSx(column, 'body'),
     };
 
     if (column.id === 'select') {
       return (
-        <TableCell key={column.id} padding="checkbox" align={column.align} sx={cellSx}>
-          <Checkbox size="small" onClick={(event) => event.stopPropagation()} />
+        <TableCell
+          key={column.id}
+          padding="checkbox"
+          align={column.align}
+          onClick={(event) => {
+            event.stopPropagation();
+            togglePersonnelSelection(row.id);
+          }}
+          sx={{ ...cellSx, cursor: 'default' }}
+        >
+          <Checkbox
+            size="small"
+            checked={selectedPersonnelIds.has(row.id)}
+            onClick={(event) => event.stopPropagation()}
+            onChange={(event) => togglePersonnelSelection(row.id, event.target.checked)}
+          />
         </TableCell>
       );
     }
@@ -1435,8 +1627,9 @@ export default function OrganizationPage() {
               </Stack>
             </Box>
 
-            <TableContainer ref={tableContainerRef} sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-              <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth }}>
+	            <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
+	              <TableContainer ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
+	                <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth }}>
                 <colgroup>
                   {personnelColumns.map((column) => (
                     <col key={column.id} style={{ width: getColumnWidth(column) }} />
@@ -1452,12 +1645,24 @@ export default function OrganizationPage() {
                         sx={{
                           width: getColumnWidth(column),
                           minWidth: column.minWidth,
-                          position: 'relative',
-                          userSelect: 'none',
-                          pr: column.resizable ? 2 : undefined,
+	                          position: 'sticky',
+	                          top: 0,
+	                          zIndex: 5,
+	                          userSelect: 'none',
+                          ...(column.resizable ? { pr: 2 } : {}),
+                          ...getStickyActionColumnSx(column, 'head'),
                         }}
                       >
-                        {column.id === 'select' ? <Checkbox size="small" /> : column.label}
+                        {column.id === 'select' ? (
+                          <Checkbox
+                            size="small"
+                            checked={allPagedRowsSelected}
+                            indeterminate={isPagedRowsPartiallySelected}
+                            disabled={pagedRows.length === 0}
+                            onClick={(event) => event.stopPropagation()}
+                            onChange={(event) => togglePagePersonnelSelection(event.target.checked)}
+                          />
+                        ) : column.label}
                         {column.resizable ? (
                           <Box
                             data-column-resizer
@@ -1514,8 +1719,22 @@ export default function OrganizationPage() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
-            </TableContainer>
+	                </Table>
+	              </TableContainer>
+	              <Box
+	                data-personnel-action-column-shadow
+	                sx={{
+	                  position: 'absolute',
+	                  top: 0,
+	                  bottom: 0,
+	                  right: tableScrollbarWidth,
+	                  width: PERSONNEL_ACTION_COLUMN_WIDTH,
+	                  boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+	                  pointerEvents: 'none',
+	                  zIndex: 7,
+	                }}
+	              />
+	            </Box>
 
             <Box
               sx={{
@@ -1722,12 +1941,8 @@ export default function OrganizationPage() {
                                   gap: 1.5,
                                 }}
                               >
-                                <AuditJsonBlock title="变更前" kind="before">
-                                  {record.beforeContent}
-                                </AuditJsonBlock>
-                                <AuditJsonBlock title="变更后" kind="after">
-                                  {record.afterContent}
-                                </AuditJsonBlock>
+                                <AuditFieldBlock title="变更前" kind="before" fields={record.beforeFields} />
+                                <AuditFieldBlock title="变更后" kind="after" fields={record.afterFields} />
                               </Box>
                             </AccordionDetails>
                           </Accordion>

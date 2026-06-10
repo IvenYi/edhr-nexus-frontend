@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
+
 @Repository
 public interface AuditEventRepository extends JpaRepository<AuditEvent, Long>, JpaSpecificationExecutor<AuditEvent> {
     @Query("""
@@ -24,4 +27,6 @@ public interface AuditEventRepository extends JpaRepository<AuditEvent, Long>, J
             @Param("action") String action,
             @Param("operatorName") String operatorName,
             Pageable pageable);
+
+    List<AuditEvent> findByEntityTypeAndEntityIdIn(String entityType, Collection<String> entityIds);
 }
