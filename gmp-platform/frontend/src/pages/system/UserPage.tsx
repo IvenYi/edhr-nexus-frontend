@@ -782,6 +782,7 @@ export default function UserPage() {
   const [resetDialog, setResetDialog] = useState<{ id: string; username: string } | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; username: string } | null>(null);
+  const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserRow | null>(null);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
   const [userDrawerTab, setUserDrawerTab] = useState(0);
@@ -897,6 +898,10 @@ export default function UserPage() {
   const userAuditRecords = useMemo(
     () => getUserAuditRecords(selectedUser, auditEventsData ?? [], { departmentPathById, roleNameById }),
     [auditEventsData, departmentPathById, roleNameById, selectedUser],
+  );
+  const selectedBatchDeleteUsers = useMemo(
+    () => users.filter((user) => selectedUserIds.has(user.id)),
+    [selectedUserIds, users],
   );
   const allPagedRowsSelected = pagedRows.length > 0 && pagedRows.every((row) => selectedUserIds.has(row.id));
   const isPagedRowsPartiallySelected = pagedRows.some((row) => selectedUserIds.has(row.id)) && !allPagedRowsSelected;
@@ -1050,6 +1055,28 @@ export default function UserPage() {
       showSnackbar('用户删除成功', 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '用户删除失败'), 'error'),
+  });
+
+  const batchDeleteMutation = useMutation({
+    mutationFn: async () => {
+      const userIds = Array.from(selectedUserIds);
+      if (userIds.length === 0) throw new Error('请选择需要删除的账号');
+      await Promise.all(userIds.map((id) => deleteUser(id)));
+      return userIds;
+    },
+    onSuccess: (userIds) => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      queryClient.invalidateQueries({ queryKey: ['departments-tree'] });
+      queryClient.invalidateQueries({ queryKey: ['user-management-audit-logs'] });
+      setBatchDeleteConfirm(false);
+      setSelectedUserIds(new Set());
+      if (selectedUser && userIds.includes(selectedUser.id)) {
+        setSelectedUser(null);
+        setUserDrawerOpen(false);
+      }
+      showSnackbar(`已删除 ${userIds.length} 个用户`, 'success');
+    },
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '批量删除失败'), 'error'),
   });
 
   const resetMutation = useMutation({
@@ -1314,7 +1341,17 @@ export default function UserPage() {
       </Box>
 
 	      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' }}>
-        <Stack direction="row" justifyContent="flex-end" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
+        <Stack direction="row" spacing={1} justifyContent="flex-end" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
+          <Button
+            size="small"
+            variant="outlined"
+            color="error"
+            startIcon={<Delete />}
+            disabled={selectedUserIds.size === 0}
+            onClick={() => setBatchDeleteConfirm(true)}
+          >
+            批量删除
+          </Button>
           <Button size="small" variant="contained" startIcon={<Add />} onClick={openCreateDialog}>新增</Button>
         </Stack>
 	        <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
@@ -1808,6 +1845,45 @@ export default function UserPage() {
         <DialogActions>
           <Button onClick={() => setDeleteConfirm(null)}>取消</Button>
           <Button color="error" variant="contained" onClick={() => deleteMutation.mutate()} disabled={deleteMutation.isPending}>删除</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={batchDeleteConfirm} onClose={() => setBatchDeleteConfirm(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>确认批量删除账号</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={1.5}>
+            <Alert severity="error">危险的操作，请仔细阅读并确认数据后操作</Alert>
+            <Typography variant="body2">
+              本次将删除已勾选的 {selectedBatchDeleteUsers.length} 个账号。删除后账号将无法继续登录系统，请确认数据无误后再操作。
+            </Typography>
+            <Box sx={{ maxHeight: 180, overflow: 'auto', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#f8fafc' }}>
+              {selectedBatchDeleteUsers.map((user) => (
+                <Box
+                  key={user.id}
+                  sx={{
+                    px: 1.5,
+                    py: 1,
+                    borderBottom: '1px solid #e4e7ed',
+                    '&:last-of-type': { borderBottom: 'none' },
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>{user.displayName}</Typography>
+                  <Typography variant="caption" sx={{ color: '#606266' }}>{user.username}</Typography>
+                </Box>
+              ))}
+            </Box>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBatchDeleteConfirm(false)}>取消</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => batchDeleteMutation.mutate()}
+            disabled={batchDeleteMutation.isPending || selectedBatchDeleteUsers.length === 0}
+          >
+            确认删除
+          </Button>
         </DialogActions>
       </Dialog>
 

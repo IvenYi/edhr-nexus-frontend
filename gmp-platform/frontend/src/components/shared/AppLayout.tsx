@@ -1,31 +1,54 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { type MouseEvent as ReactMouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
-  AppBar, Toolbar, Typography, IconButton, Avatar, Menu, MenuItem as MuiMenuItem,
-  List, ListItemButton, ListItemIcon, ListItemText, Collapse,
-  Box, Divider, Badge, Tooltip, Chip, useMediaQuery,
+  Avatar,
+  Badge,
+  Box,
+  Divider,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem as MuiMenuItem,
+  Tooltip,
+  Typography,
+  useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import {
-  Dashboard, AccountTree, Storage, Settings,
-  ExpandLess, ExpandMore, Notifications, Logout,
-  Home, PrecisionManufacturing,
-  LocalHospitalRounded, MenuRounded, ChevronLeftRounded,
+  AccountTree,
+  AppsRounded,
+  ChevronLeftRounded,
+  CloseRounded,
+  ColorLensOutlined,
+  Dashboard,
+  FullscreenRounded,
+  Home,
+  KeyboardArrowDownRounded,
+  LocalHospitalRounded,
+  LockOutlined,
+  Logout,
+  MenuRounded,
+  NavigateNextRounded,
+  Notifications,
+  PersonOutlineRounded,
+  PrecisionManufacturing,
+  RefreshRounded,
+  SearchRounded,
+  Settings,
+  Storage,
+  TranslateRounded,
 } from '@mui/icons-material';
-import { SIDEBAR_MODULES, type SidebarModule, type SidebarMenu } from '@/utils/constants';
-
-// ============================================================
-// Design Tokens (synced with MUI theme)
-// ============================================================
+import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
+import { useManagedSidebarModules } from '@/utils/menuManagement';
 
 const COLORS = {
   primary: '#1890ff',
   primaryLight: '#e8f4ff',
   primaryHover: '#d1e9ff',
-  success: '#13ce66',
-  warning: '#ffba00',
   error: '#ff4d4f',
-  errorBg: '#fff1f0',
   textPrimary: '#303133',
   textSecondary: '#606266',
   textDisabled: '#909399',
@@ -38,13 +61,13 @@ const COLORS = {
 };
 
 const MODULE_BAR_WIDTH = 64;
+const MODULE_ITEM_HEIGHT = 64;
 const FUNC_MENU_WIDTH = 202;
-const TOP_NAV_HEIGHT = 60;
+const TOP_NAV_HEIGHT = 52;
 const TABS_BAR_HEIGHT = 50;
 const HEADER_TOTAL_HEIGHT = TOP_NAV_HEIGHT + TABS_BAR_HEIGHT;
 
-/** Map icon name strings to MUI icon components. */
-const ICON_MAP: Record<string, React.ReactNode> = {
+const ICON_MAP: Record<string, ReactNode> = {
   Home: <Home />,
   Dashboard: <Dashboard />,
   Storage: <Storage />,
@@ -55,17 +78,59 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 
 const FALLBACK_ICON = <Settings />;
 
-function getIcon(iconName?: string): React.ReactNode {
-  return iconName ? ICON_MAP[iconName] || FALLBACK_ICON : FALLBACK_ICON;
+interface StoredUser {
+  displayName?: string;
+  username?: string;
+  permissions?: string[];
 }
 
-// ============================================================
-// Helper functions
-// ============================================================
+interface BreadcrumbItem {
+  label: string;
+  iconName?: string;
+}
+
+interface RenderedMenu {
+  label: string;
+  path?: string;
+  icon?: string;
+  parentLabel?: string;
+  type: 'group' | 'item';
+  depth: 1 | 2;
+}
+
+interface AppTab {
+  label: string;
+  path: string;
+  iconName?: string;
+  closable: boolean;
+}
+
+interface TabContextMenuState {
+  mouseX: number;
+  mouseY: number;
+  tab: AppTab;
+}
+
+const HOME_TAB: AppTab = {
+  label: '首页',
+  path: '/',
+  iconName: 'Home',
+  closable: false,
+};
+
+const initialTabs: AppTab[] = [HOME_TAB];
+
+function getIcon(iconName?: string): ReactNode {
+  return iconName ? ICON_MAP[iconName] || FALLBACK_ICON : FALLBACK_ICON;
+}
 
 function isPathSegmentMatch(pathname: string, prefix: string): boolean {
   if (prefix === '/') return pathname === '/';
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
+function matchPath(menuPath: string, pathname: string): boolean {
+  return isPathSegmentMatch(pathname, menuPath);
 }
 
 function getModuleIdByPath(pathname: string): string {
@@ -75,50 +140,6 @@ function getModuleIdByPath(pathname: string): string {
   if (isPathSegmentMatch(pathname, '/system')) return 'system';
   if (isPathSegmentMatch(pathname, '/gct-edhr')) return 'gct-edhr';
   return 'home';
-}
-
-function getMenuExpansionKey(moduleId: string, menuLabel: string): string {
-  return `${moduleId}::${menuLabel}`;
-}
-
-function isMenuActive(menu: SidebarMenu, pathname: string): boolean {
-  if (menu.path === pathname) return true;
-  if (menu.children?.some((child) => matchPath(child.path, pathname))) return true;
-  return false;
-}
-
-function matchPath(menuPath: string, pathname: string): boolean {
-  return isPathSegmentMatch(pathname, menuPath);
-}
-
-function getInitialExpandedMenus(moduleId: string, pathname: string): Set<string> {
-  const expanded = new Set<string>();
-  const module = SIDEBAR_MODULES.find((m) => m.id === moduleId);
-  if (module) {
-    module.menus.forEach((menu) => {
-      if (menu.children && isMenuActive(menu, pathname)) {
-        expanded.add(getMenuExpansionKey(moduleId, menu.label));
-      }
-    });
-  }
-  return expanded;
-}
-
-function getCurrentPageTitle(module: SidebarModule, pathname: string): string {
-  for (const menu of module.menus) {
-    if (menu.path && matchPath(menu.path, pathname)) return menu.label;
-
-    const child = menu.children?.find((subMenu) => matchPath(subMenu.path, pathname));
-    if (child) return child.label;
-  }
-
-  return module.label;
-}
-
-interface StoredUser {
-  displayName?: string;
-  username?: string;
-  permissions?: string[];
 }
 
 function readStoredUser(): StoredUser {
@@ -134,6 +155,7 @@ function readStoredUser(): StoredUser {
 function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
   if (path.startsWith('/gct-edhr')) return undefined;
+  if (path === '/system/menu-management') return 'system.permissions';
   return path.replace(/^\//, '').replace(/\//g, '.');
 }
 
@@ -165,9 +187,108 @@ function filterModulesByPermissions(
     .filter((module) => module.menus.length > 0);
 }
 
-// ============================================================
-// Main Layout Component
-// ============================================================
+function flattenModuleMenus(menus: SidebarMenu[]): RenderedMenu[] {
+  return menus.flatMap((menu) => {
+    if (menu.children?.length) {
+      const group: RenderedMenu = {
+        label: menu.label,
+        icon: menu.icon,
+        type: 'group',
+        depth: 1,
+      };
+      const children = menu.children.map(
+        (child): RenderedMenu => ({
+          label: child.label,
+          path: child.path,
+          icon: menu.icon,
+          parentLabel: menu.label,
+          type: 'item',
+          depth: 2,
+        }),
+      );
+      return [group, ...children];
+    }
+
+    if (menu.path) {
+      return [{
+        label: menu.label,
+        path: menu.path,
+        icon: menu.icon,
+        type: 'item',
+        depth: 1,
+      }];
+    }
+
+    return [];
+  });
+}
+
+function findRouteModule(modules: SidebarModule[], pathname: string): SidebarModule | undefined {
+  return modules.find((module) => module.menus.some((menu) => {
+    if (menu.path && matchPath(menu.path, pathname)) return true;
+    return menu.children?.some((child) => matchPath(child.path, pathname));
+  }));
+}
+
+function getBreadcrumbItems(module: SidebarModule, pathname: string): BreadcrumbItem[] {
+  const items: BreadcrumbItem[] = [{ label: module.label, iconName: module.icon }];
+
+  for (const menu of module.menus) {
+    if (menu.path && matchPath(menu.path, pathname)) {
+      if (menu.label !== module.label) {
+        items.push({ label: menu.label, iconName: menu.icon });
+      }
+      return items;
+    }
+
+    const child = menu.children?.find((subMenu) => matchPath(subMenu.path, pathname));
+    if (child) {
+      items.push({ label: menu.label, iconName: menu.icon });
+      items.push({ label: child.label, iconName: menu.icon });
+      return items;
+    }
+  }
+
+  return items;
+}
+
+function getRouteTab(module: SidebarModule, pathname: string): AppTab {
+  if (pathname === '/') return HOME_TAB;
+
+  for (const menu of module.menus) {
+    if (menu.path && matchPath(menu.path, pathname)) {
+      return {
+        label: menu.label,
+        path: menu.path,
+        iconName: menu.icon,
+        closable: true,
+      };
+    }
+
+    const child = menu.children?.find((subMenu) => matchPath(subMenu.path, pathname));
+    if (child) {
+      return {
+        label: child.label,
+        path: child.path,
+        iconName: menu.icon,
+        closable: true,
+      };
+    }
+  }
+
+  return {
+    label: module.label,
+    path: pathname,
+    iconName: module.icon,
+    closable: pathname !== '/',
+  };
+}
+
+function getNextPathAfterClose(tabs: AppTab[], closingPath: string): string {
+  const closingIndex = tabs.findIndex((tab) => tab.path === closingPath);
+  const nextTabs = tabs.filter((tab) => tab.path !== closingPath || !tab.closable);
+  return nextTabs[closingIndex]?.path ?? nextTabs[closingIndex - 1]?.path ?? HOME_TAB.path;
+}
 
 export default function AppLayout() {
   const navigate = useNavigate();
@@ -177,54 +298,60 @@ export default function AppLayout() {
 
   const user = useMemo(() => readStoredUser(), []);
   const permissionSet = useMemo(() => new Set(user.permissions ?? []), [user.permissions]);
+  const sidebarModules = useManagedSidebarModules();
   const visibleModules = useMemo(
-    () => filterModulesByPermissions(SIDEBAR_MODULES, permissionSet),
-    [permissionSet],
+    () => filterModulesByPermissions(sidebarModules, permissionSet),
+    [permissionSet, sidebarModules],
   );
   const autoModuleId = useMemo(() => getModuleIdByPath(location.pathname), [location.pathname]);
-
-  const [activeModuleId, setActiveModuleId] = useState<string>(autoModuleId);
+  const [activeModuleId, setActiveModuleId] = useState(autoModuleId);
   const [funcMenuOpen, setFuncMenuOpen] = useState(true);
-  const [expandedMenus, setExpandedMenus] = useState<Set<string>>(
-    () => getInitialExpandedMenus(autoModuleId, location.pathname),
-  );
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openTabs, setOpenTabs] = useState<AppTab[]>(initialTabs);
+  const [tabContextMenu, setTabContextMenu] = useState<TabContextMenuState | null>(null);
+  const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    setActiveModuleId(autoModuleId);
-    const module = visibleModules.find((m) => m.id === autoModuleId);
-    if (module) {
-      setExpandedMenus((prev) => {
-        const next = new Set(prev);
-        module.menus.forEach((menu) => {
-          if (menu.children && isMenuActive(menu, location.pathname)) {
-            next.add(getMenuExpansionKey(autoModuleId, menu.label));
-          }
-        });
-        return next;
-      });
+    if (visibleModules.some((module) => module.id === autoModuleId)) {
+      setActiveModuleId(autoModuleId);
     }
-  }, [autoModuleId, location.pathname, visibleModules]);
+  }, [autoModuleId, visibleModules]);
 
   useEffect(() => {
     setFuncMenuOpen(!isMobile);
   }, [isMobile]);
+
+  const activeModule: SidebarModule =
+    visibleModules.find((module) => module.id === activeModuleId) || visibleModules[0] || sidebarModules[0];
+  const currentModuleForPath: SidebarModule =
+    findRouteModule(visibleModules, location.pathname) ||
+    visibleModules.find((module) => module.id === autoModuleId) ||
+    activeModule;
+  const renderedMenus = useMemo(() => flattenModuleMenus(activeModule.menus), [activeModule]);
+  const breadcrumbItems = useMemo(
+    () => getBreadcrumbItems(currentModuleForPath, location.pathname),
+    [currentModuleForPath, location.pathname],
+  );
+  const currentRouteTab = useMemo(
+    () => getRouteTab(currentModuleForPath, location.pathname),
+    [currentModuleForPath, location.pathname],
+  );
+  const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
+  const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
+  const userDisplayName = user.username || user.displayName || 'admin';
+
+  useEffect(() => {
+    setOpenTabs((prev) => {
+      if (prev.some((tab) => tab.path === currentRouteTab.path)) return prev;
+      return [...prev, currentRouteTab];
+    });
+  }, [currentRouteTab]);
 
   const handleModuleClick = useCallback((moduleId: string) => {
     setActiveModuleId(moduleId);
     setFuncMenuOpen(true);
   }, []);
 
-  const handleToggleMenu = useCallback((menuKey: string) => {
-    setExpandedMenus((prev) => {
-      const next = new Set(prev);
-      if (next.has(menuKey)) next.delete(menuKey);
-      else next.add(menuKey);
-      return next;
-    });
-  }, []);
-
-  const handleSubMenuClick = useCallback(
+  const handleMenuClick = useCallback(
     (path: string) => {
       navigate(path);
       if (isMobile) setFuncMenuOpen(false);
@@ -232,181 +359,326 @@ export default function AppLayout() {
     [isMobile, navigate],
   );
 
-  const handleLogout = () => {
+  const handleTabClick = useCallback(
+    (tab: AppTab) => {
+      navigate(tab.path);
+    },
+    [navigate],
+  );
+
+  const handleCloseTab = useCallback(
+    (tab: AppTab, event?: ReactMouseEvent) => {
+      event?.stopPropagation();
+      if (!tab.closable) return;
+      const nextPath = getNextPathAfterClose(openTabs, tab.path);
+      setOpenTabs((prev) => prev.filter((item) => item.path !== tab.path));
+      if (location.pathname === tab.path) navigate(nextPath);
+    },
+    [location.pathname, navigate, openTabs],
+  );
+
+  const handleTabContextMenu = useCallback((tab: AppTab, event: ReactMouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    setTabContextMenu({ mouseX: event.clientX + 2, mouseY: event.clientY - 6, tab });
+  }, []);
+
+  const closeContextMenu = useCallback(() => {
+    setTabContextMenu(null);
+  }, []);
+
+  const handleCloseOtherTabs = useCallback(() => {
+    if (!tabContextMenu) return;
+    const keep = tabContextMenu.tab.path === HOME_TAB.path ? [HOME_TAB] : [HOME_TAB, tabContextMenu.tab];
+    setOpenTabs(keep);
+    if (!keep.some((tab) => tab.path === location.pathname)) navigate(tabContextMenu.tab.path);
+    closeContextMenu();
+  }, [closeContextMenu, location.pathname, navigate, tabContextMenu]);
+
+  const handleCloseLeftTabs = useCallback(() => {
+    if (!tabContextMenu) return;
+    const index = openTabs.findIndex((tab) => tab.path === tabContextMenu.tab.path);
+    const nextTabs = openTabs.filter((tab, tabIndex) => !tab.closable || tabIndex >= index);
+    setOpenTabs(nextTabs);
+    if (!nextTabs.some((tab) => tab.path === location.pathname)) navigate(tabContextMenu.tab.path);
+    closeContextMenu();
+  }, [closeContextMenu, location.pathname, navigate, openTabs, tabContextMenu]);
+
+  const handleCloseRightTabs = useCallback(() => {
+    if (!tabContextMenu) return;
+    const index = openTabs.findIndex((tab) => tab.path === tabContextMenu.tab.path);
+    const nextTabs = openTabs.filter((tab, tabIndex) => !tab.closable || tabIndex <= index);
+    setOpenTabs(nextTabs);
+    if (!nextTabs.some((tab) => tab.path === location.pathname)) navigate(tabContextMenu.tab.path);
+    closeContextMenu();
+  }, [closeContextMenu, location.pathname, navigate, openTabs, tabContextMenu]);
+
+  const handleCloseAllTabs = useCallback(() => {
+    setOpenTabs([HOME_TAB]);
+    navigate(HOME_TAB.path);
+    closeContextMenu();
+  }, [closeContextMenu, navigate]);
+
+  const handleRefreshCurrentTab = useCallback(() => {
+    window.location.reload();
+  }, []);
+
+  const handleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen();
+      return;
+    }
+    void document.documentElement.requestFullscreen?.();
+  }, []);
+
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+  }, [navigate]);
+
+  const headerIconButtonSx = {
+    width: 28,
+    height: 28,
+    color: '#666',
+    borderRadius: '5px',
+    '& .MuiSvgIcon-root': { fontSize: 18 },
+    '&:hover': {
+      color: COLORS.primary,
+      bgcolor: COLORS.primaryLight,
+    },
   };
 
-  const activeModule: SidebarModule =
-    visibleModules.find((m) => m.id === activeModuleId) || visibleModules[0] || SIDEBAR_MODULES[0];
-  const currentModuleForPath: SidebarModule =
-    visibleModules.find((m) => m.id === autoModuleId) || activeModule;
-  const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
-  const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
-  const currentPageTitle = getCurrentPageTitle(currentModuleForPath, location.pathname);
-
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      {/* ==================== Header ==================== */}
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          left: `${effectiveSidebarWidth}px`,
-          right: 0,
-          width: `calc(100% - ${effectiveSidebarWidth}px)`,
-          height: TOP_NAV_HEIGHT,
-          bgcolor: COLORS.funcMenuBg,
-          color: COLORS.textPrimary,
-          boxShadow: COLORS.shadow,
-          transition: 'left 280ms cubic-bezier(0.4, 0, 0.2, 1), width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
-        }}
-      >
-        <Toolbar
-          sx={{
-            minHeight: `${TOP_NAV_HEIGHT}px !important`,
-            height: TOP_NAV_HEIGHT,
-            px: '20px !important',
-          }}
-        >
-          <IconButton
-            edge="start"
-            onClick={() => setFuncMenuOpen((prev) => !prev)}
-            sx={{
-              mr: 1,
-              color: COLORS.textSecondary,
-              borderRadius: '8px',
-              transition: 'all 150ms ease-out',
-              '&:hover': {
-                color: COLORS.primary,
-                bgcolor: COLORS.primaryLight,
-              },
-            }}
-          >
-            {funcMenuOpen ? <ChevronLeftRounded /> : <MenuRounded />}
-          </IconButton>
-          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-            <LocalHospitalRounded sx={{ fontSize: 28, color: COLORS.primary, mr: '10px' }} />
-            <Typography variant="h6" noWrap>
-              <Box component="span" sx={{ color: COLORS.primary, fontWeight: 700 }}>eDHR</Box>
-              {' '}
-              <Box component="span" sx={{ color: COLORS.textPrimary, fontWeight: 400 }}>系统</Box>
-            </Typography>
-          </Box>
-          <IconButton
-            sx={{
-              mr: 1,
-              color: COLORS.textSecondary,
-              transition: 'color 150ms ease-out',
-              '&:hover': { color: COLORS.primary },
-            }}
-          >
-            <Badge
-              badgeContent={0}
-              sx={{ '& .MuiBadge-badge': { bgcolor: COLORS.error } }}
-            >
-              <Notifications />
-            </Badge>
-          </IconButton>
-          <IconButton
-            onClick={(e) => setAnchorEl(e.currentTarget)}
-            sx={{
-              '&:hover .MuiAvatar-root': {
-                boxShadow: `0 0 0 2px ${COLORS.primaryLight}`,
-              },
-              transition: 'all 150ms ease-out',
-            }}
-          >
-            <Avatar sx={{ width: 32, height: 32, bgcolor: COLORS.success }}>
-              {user.displayName?.charAt(0) || 'A'}
-            </Avatar>
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-            PaperProps={{
-              sx: {
-                boxShadow: '0 4px 16px rgba(18, 28, 45, 0.12)',
-                borderRadius: '10px',
-                '& .MuiMenuItem-root': {
-                  minHeight: 40,
-                },
-                '& .MuiDivider-root': {
-                  borderColor: COLORS.divider,
-                },
-              },
-            }}
-          >
-            <MuiMenuItem disabled>
-              <Typography variant="body2">{user.displayName}</Typography>
-            </MuiMenuItem>
-            <Divider />
-            <MuiMenuItem
-              onClick={handleLogout}
-              sx={{
-                color: COLORS.error,
-                '&:hover': {
-                  bgcolor: COLORS.errorBg,
-                },
-              }}
-            >
-              <Logout fontSize="small" sx={{ mr: 1 }} />
-              退出登录
-            </MuiMenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
-
-      {/* ==================== Tabs Bar ==================== */}
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: COLORS.pageBg }}>
       <Box
+        data-app-shell-header="true"
         sx={{
           position: 'fixed',
-          top: TOP_NAV_HEIGHT,
+          top: 0,
           left: `${effectiveSidebarWidth}px`,
           right: 0,
-          height: TABS_BAR_HEIGHT,
-          zIndex: (theme) => theme.zIndex.drawer,
+          width: `calc(100vw - ${effectiveSidebarWidth}px)`,
+          height: HEADER_TOTAL_HEIGHT,
+          zIndex: (theme) => theme.zIndex.drawer + 1,
           bgcolor: COLORS.funcMenuBg,
           boxShadow: COLORS.shadow,
-          px: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          transition: 'left 280ms cubic-bezier(0.4, 0, 0.2, 1)',
+          overflow: 'hidden',
+          transition: 'left 220ms cubic-bezier(0.4, 0, 0.2, 1), width 220ms cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
-        <Chip
-          label="首页"
-          onClick={() => navigate('/')}
+        <Box
+          data-app-top-breadcrumb-bar="true"
           sx={{
-            height: 32,
-            borderRadius: '5px',
+            height: TOP_NAV_HEIGHT,
+            px: '16px',
             bgcolor: COLORS.funcMenuBg,
-            color: COLORS.textSecondary,
-            border: `1px solid ${COLORS.divider}`,
-            '&:hover': {
-              bgcolor: COLORS.primaryLight,
-              color: COLORS.primary,
-            },
+            borderBottom: `1px solid ${COLORS.divider}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            minWidth: 0,
           }}
-        />
-        <Chip
-          label={currentPageTitle}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+            <Tooltip title={funcMenuOpen ? '收起菜单' : '展开菜单'} arrow>
+              <IconButton
+                aria-label={funcMenuOpen ? '收起菜单' : '展开菜单'}
+                onClick={() => setFuncMenuOpen((prev) => !prev)}
+                sx={{ ...headerIconButtonSx, mr: '14px' }}
+              >
+                {funcMenuOpen ? <ChevronLeftRounded /> : <MenuRounded />}
+              </IconButton>
+            </Tooltip>
+            <Box aria-label="当前位置" sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+              {breadcrumbItems.map((item, index) => {
+                const isLast = index === breadcrumbItems.length - 1;
+                return (
+                  <Box key={`${item.label}-${index}`} sx={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+                    <Box
+                      component="span"
+                      sx={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        color: isLast ? COLORS.textSecondary : COLORS.textDisabled,
+                        fontWeight: isLast ? 500 : 400,
+                        minWidth: 0,
+                      }}
+                    >
+                      <Box component="span" sx={{ display: 'inline-flex', '& .MuiSvgIcon-root': { fontSize: 16 } }}>
+                        {getIcon(item.iconName)}
+                      </Box>
+                      <Typography
+                        component="span"
+                        sx={{
+                          fontSize: 13,
+                          color: 'inherit',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          maxWidth: { xs: 96, md: 180 },
+                        }}
+                      >
+                        {item.label}
+                      </Typography>
+                    </Box>
+                    {!isLast && <NavigateNextRounded sx={{ mx: '8px', color: COLORS.textDisabled, fontSize: 16 }} />}
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+            <Tooltip title="锁屏" arrow><IconButton sx={headerIconButtonSx}><LockOutlined /></IconButton></Tooltip>
+            <Tooltip title="搜索" arrow><IconButton sx={headerIconButtonSx}><SearchRounded /></IconButton></Tooltip>
+            <Tooltip title="通知" arrow>
+              <IconButton sx={headerIconButtonSx}>
+                <Badge
+                  badgeContent={4}
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      minWidth: 16,
+                      height: 16,
+                      fontSize: 10,
+                      bgcolor: COLORS.error,
+                      color: '#fff',
+                    },
+                  }}
+                >
+                  <Notifications />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="全屏" arrow><IconButton onClick={handleFullscreen} sx={headerIconButtonSx}><FullscreenRounded /></IconButton></Tooltip>
+            <Tooltip title="语言" arrow><IconButton sx={headerIconButtonSx}><TranslateRounded /></IconButton></Tooltip>
+            <Tooltip title="主题" arrow><IconButton sx={headerIconButtonSx}><ColorLensOutlined /></IconButton></Tooltip>
+            <Tooltip title="刷新" arrow><IconButton onClick={handleRefreshCurrentTab} sx={headerIconButtonSx}><RefreshRounded /></IconButton></Tooltip>
+            <Box
+              component="button"
+              type="button"
+              onClick={(event) => setUserAnchorEl(event.currentTarget)}
+              sx={{
+                ml: '4px',
+                p: 0,
+                border: 0,
+                bgcolor: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                height: 40,
+                cursor: 'pointer',
+                color: COLORS.textSecondary,
+                font: 'inherit',
+                '&:hover': { color: COLORS.primary },
+              }}
+            >
+              <Avatar sx={{ width: 34, height: 34, fontSize: 14, bgcolor: '#c9a24f', color: '#fff', border: '2px solid #f3dfaa' }}>
+                {(user.displayName || user.username || 'A').charAt(0)}
+              </Avatar>
+              <Typography component="span" sx={{ fontSize: 13, color: 'inherit' }}>{userDisplayName}</Typography>
+              <KeyboardArrowDownRounded sx={{ fontSize: 16, color: 'inherit' }} />
+            </Box>
+            <Menu anchorEl={userAnchorEl} open={Boolean(userAnchorEl)} onClose={() => setUserAnchorEl(null)}>
+              <MuiMenuItem disabled><Typography variant="body2">{user.displayName || userDisplayName}</Typography></MuiMenuItem>
+              <Divider />
+              <MuiMenuItem onClick={handleLogout} sx={{ color: COLORS.error }}><Logout fontSize="small" sx={{ mr: 1 }} />退出登录</MuiMenuItem>
+            </Menu>
+          </Box>
+        </Box>
+
+        <Box
+          data-app-tabs-bar="true"
           sx={{
-            height: 32,
-            borderRadius: '5px',
-            bgcolor: COLORS.primaryLight,
-            color: COLORS.primary,
-            fontWeight: 500,
-            border: `1px solid ${COLORS.primaryLight}`,
-            '& .MuiChip-label': {
-              px: '12px',
-            },
+            height: TABS_BAR_HEIGHT,
+            px: '20px',
+            bgcolor: COLORS.funcMenuBg,
+            borderBottom: `1px solid ${COLORS.divider}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            minWidth: 0,
           }}
-        />
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', minWidth: 0, overflowX: 'auto', overflowY: 'hidden', '&::-webkit-scrollbar': { height: 0 } }}>
+            {openTabs.map((tab) => {
+              const isActive = tab.path === location.pathname;
+              return (
+                <Box
+                  key={tab.path}
+                  role="button"
+                  onClick={() => handleTabClick(tab)}
+                  onContextMenu={(event) => handleTabContextMenu(tab, event)}
+                  data-app-tab-path={tab.path}
+                  sx={{
+                    height: isActive ? 40 : 34,
+                    px: isActive ? '20px' : '16px',
+                    mr: isActive ? '-2px' : '10px',
+                    borderRadius: '5px 5px 0 0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    flexShrink: 0,
+                    color: isActive ? COLORS.primary : COLORS.textPrimary,
+                    bgcolor: isActive ? COLORS.primaryLight : 'transparent',
+                    fontSize: 14,
+                    fontWeight: isActive ? 500 : 400,
+                    cursor: 'pointer',
+                    '& .MuiSvgIcon-root': { fontSize: 16 },
+                    '&:hover': { color: COLORS.primary, bgcolor: COLORS.primaryLight },
+                  }}
+                >
+                  {getIcon(tab.iconName)}
+                  <Typography component="span" sx={{ fontSize: 14, color: 'inherit', whiteSpace: 'nowrap' }}>{tab.label}</Typography>
+                  {tab.closable && (
+                    <IconButton
+                      aria-label="关闭当前标签"
+                      size="small"
+                      onClick={(event) => handleCloseTab(tab, event)}
+                      sx={{ ml: '2px', width: 18, height: 18, color: 'inherit', '& .MuiSvgIcon-root': { fontSize: 14 } }}
+                    >
+                      <CloseRounded />
+                    </IconButton>
+                  )}
+                </Box>
+              );
+            })}
+          </Box>
+          <Tooltip title="标签操作" arrow>
+            <IconButton
+              sx={{ ...headerIconButtonSx, color: COLORS.textDisabled }}
+              onClick={(event) => setTabContextMenu({ mouseX: event.clientX, mouseY: event.clientY, tab: currentRouteTab })}
+            >
+              <AppsRounded />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
+
+      <Menu
+        open={Boolean(tabContextMenu)}
+        onClose={closeContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          tabContextMenu
+            ? { top: tabContextMenu.mouseY, left: tabContextMenu.mouseX }
+            : undefined
+        }
+        PaperProps={{
+          sx: {
+            minWidth: 150,
+            borderRadius: '5px',
+            boxShadow: '0 6px 18px rgba(18, 28, 45, 0.16)',
+            border: `1px solid ${COLORS.divider}`,
+          },
+        }}
+      >
+        <MuiMenuItem onClick={handleRefreshCurrentTab}><RefreshRounded fontSize="small" sx={{ mr: 1 }} />刷新</MuiMenuItem>
+        <MuiMenuItem onClick={handleCloseOtherTabs}><CloseRounded fontSize="small" sx={{ mr: 1 }} />关闭其他</MuiMenuItem>
+        <MuiMenuItem onClick={handleCloseLeftTabs}><ChevronLeftRounded fontSize="small" sx={{ mr: 1 }} />关闭左侧</MuiMenuItem>
+        <MuiMenuItem onClick={handleCloseRightTabs}><NavigateNextRounded fontSize="small" sx={{ mr: 1 }} />关闭右侧</MuiMenuItem>
+        <MuiMenuItem onClick={handleCloseAllTabs}><CloseRounded fontSize="small" sx={{ mr: 1 }} />关闭全部</MuiMenuItem>
+      </Menu>
 
       {isMobile && funcMenuOpen && (
         <Box
@@ -424,8 +696,8 @@ export default function AppLayout() {
         />
       )}
 
-      {/* ==================== Module Bar ==================== */}
       <Box
+        data-app-module-rail="true"
         sx={{
           width: MODULE_BAR_WIDTH,
           flexShrink: 0,
@@ -434,13 +706,14 @@ export default function AppLayout() {
           top: 0,
           left: 0,
           bottom: 0,
+          height: '100vh',
           zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 3 : theme.zIndex.drawer),
           display: isMobile && !funcMenuOpen ? 'none' : 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          pt: 1,
           overflowY: 'auto',
           overflowX: 'hidden',
+          boxShadow: '2px 0 10px rgba(0, 0, 0, 0.06)',
           '&::-webkit-scrollbar': { width: 4 },
           '&::-webkit-scrollbar-thumb': {
             bgcolor: 'rgba(255,255,255,0.15)',
@@ -449,8 +722,21 @@ export default function AppLayout() {
           '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
         }}
       >
+        <Box
+          sx={{
+            width: '100%',
+            height: 58,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: COLORS.sidebarDarkText,
+          }}
+        >
+          <LocalHospitalRounded sx={{ fontSize: 30 }} />
+        </Box>
+
         {visibleModules.map((module) => {
-          const isActive = activeModuleId === module.id;
+          const isActive = activeModule.id === module.id;
           return (
             <Tooltip key={module.id} title={module.label} placement="right" arrow>
               <ListItemButton
@@ -459,54 +745,37 @@ export default function AppLayout() {
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  minHeight: 64,
-                  width: '100%',
-                  borderRadius: 0,
-                  position: 'relative',
-                  color: isActive ? COLORS.sidebarDarkText : 'hsla(0,0%,100%,.65)',
+                  width: 54,
+                  height: MODULE_ITEM_HEIGHT,
+                  minHeight: MODULE_ITEM_HEIGHT,
+                  flex: '0 0 auto',
+                  mx: '5px',
+                  mb: '8px',
+                  p: 0,
+                  borderRadius: '4px',
+                  color: isActive ? COLORS.sidebarDarkText : 'hsla(0,0%,100%,.78)',
                   bgcolor: isActive ? COLORS.primary : 'transparent',
                   '&:hover': {
-                    bgcolor: isActive
-                      ? COLORS.primary
-                      : 'rgba(255, 255, 255, 0.06)',
-                    '& .MuiSvgIcon-root': {
-                      transform: 'scale(1.08)',
-                    },
+                    bgcolor: isActive ? COLORS.primary : 'rgba(255, 255, 255, 0.08)',
                   },
-                  '&::before': isActive
-                    ? {
-                        content: '""',
-                        position: 'absolute',
-                        left: 0,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        height: 32,
-                        width: 3,
-                        bgcolor: COLORS.sidebarDarkText,
-                        borderRadius: '0 2px 2px 0',
-                      }
-                    : {},
-                  transition: 'all 150ms ease-out',
+                  transition: 'background-color 150ms ease-out, color 150ms ease-out',
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 'auto',
                     color: 'inherit',
-                    mb: 0.5,
-                    '& .MuiSvgIcon-root': {
-                      fontSize: 22,
-                      transition: 'transform 150ms ease-out',
-                    },
+                    mb: '4px',
+                    '& .MuiSvgIcon-root': { fontSize: 20 },
                   }}
                 >
                   {getIcon(module.icon)}
                 </ListItemIcon>
                 <Typography
-                  variant="caption"
                   sx={{
-                    fontSize: 11,
-                    lineHeight: 1.2,
+                    fontSize: 14,
+                    lineHeight: 1.15,
+                    fontWeight: isActive ? 600 : 500,
                     textAlign: 'center',
                     color: 'inherit',
                   }}
@@ -517,21 +786,13 @@ export default function AppLayout() {
             </Tooltip>
           );
         })}
+
         <Box sx={{ flexGrow: 1 }} />
-        <Typography
-          sx={{
-            color: COLORS.textDisabled,
-            fontSize: 10,
-            textAlign: 'center',
-            mb: '12px',
-          }}
-        >
-          v2.1
-        </Typography>
+        <Typography sx={{ color: COLORS.textDisabled, fontSize: 10, textAlign: 'center', mb: '12px' }}>v2.1</Typography>
       </Box>
 
-      {/* ==================== Function Menu Bar ==================== */}
       <Box
+        data-app-function-menu="true"
         sx={{
           width: funcMenuOpen ? FUNC_MENU_WIDTH : 0,
           flexShrink: 0,
@@ -539,12 +800,14 @@ export default function AppLayout() {
           top: 0,
           left: MODULE_BAR_WIDTH,
           bottom: 0,
+          height: '100vh',
           zIndex: (theme) => (isMobile ? theme.zIndex.drawer + 3 : theme.zIndex.drawer - 1),
           display: isMobile && !funcMenuOpen ? 'none' : 'block',
           overflow: 'hidden',
-          transition: 'width 280ms cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'width 220ms cubic-bezier(0.4, 0, 0.2, 1)',
           bgcolor: COLORS.funcMenuBg,
           borderRight: funcMenuOpen ? `1px solid ${COLORS.divider}` : 'none',
+          boxShadow: funcMenuOpen ? '2px 0 8px rgba(0, 0, 0, 0.04)' : 'none',
         }}
       >
         <Box
@@ -553,7 +816,7 @@ export default function AppLayout() {
             height: '100%',
             overflowY: 'auto',
             overflowX: 'hidden',
-            pt: 0,
+            bgcolor: COLORS.funcMenuBg,
             '&::-webkit-scrollbar': { width: 4 },
             '&::-webkit-scrollbar-thumb': {
               bgcolor: 'rgba(0,0,0,0.12)',
@@ -562,28 +825,38 @@ export default function AppLayout() {
             '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
           }}
         >
-          {/* Module name label */}
           <Box
             sx={{
+              height: 58,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              px: '20px',
-              pt: '12px',
-              pb: '8px',
+              justifyContent: 'center',
+              px: '12px',
+              color: '#515a6e',
+              fontSize: 20,
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
             }}
           >
-            <Typography
-              sx={{
-                fontSize: 12,
-                color: COLORS.textDisabled,
-                letterSpacing: '0.5px',
-                textTransform: 'uppercase',
-              }}
-            >
-              {activeModule.label}
-            </Typography>
-            {isMobile && (
+            eDHR 系统
+          </Box>
+
+          <Box
+            sx={{
+              mx: '14px',
+              height: 42,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderTop: `1px solid ${COLORS.divider}`,
+              borderBottom: `1px solid ${COLORS.divider}`,
+            }}
+          >
+            <Typography sx={{ color: COLORS.textPrimary, fontSize: 15, fontWeight: 500 }}>{activeModule.label}</Typography>
+          </Box>
+
+          {isMobile && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 1, pt: 1 }}>
               <IconButton
                 data-mobile-sidebar-close="true"
                 size="small"
@@ -599,132 +872,106 @@ export default function AppLayout() {
               >
                 <ChevronLeftRounded fontSize="small" />
               </IconButton>
-            )}
-          </Box>
-          <List
-            disablePadding
-            key={activeModule.id}
-            sx={{ animation: 'fadeIn 180ms ease-out' }}
-          >
-            {activeModule.menus.map((menu) => {
-              const menuKey = getMenuExpansionKey(activeModule.id, menu.label);
-              const menuExpanded = expandedMenus.has(menuKey);
-              const menuActive = isMenuActive(menu, location.pathname);
+            </Box>
+          )}
 
-              return (
-                <Box key={menu.label}>
-                  <ListItemButton
-                    onClick={() => {
-                      if (menu.children) {
-                        handleToggleMenu(menuKey);
-                      } else if (menu.path) {
-                        handleSubMenuClick(menu.path);
-                      }
-                    }}
+          <List disablePadding key={activeModule.id} sx={{ py: '12px', px: '10px' }}>
+            {renderedMenus.map((menu) => {
+              if (menu.type === 'group') {
+                return (
+                  <Box
+                    key={`group-${menu.label}`}
+                    data-sidebar-menu-level={menu.depth}
                     sx={{
-                      pl: 3,
-                      pr: 2,
-                      color: menuActive ? COLORS.primary : COLORS.textPrimary,
-                      '&:hover': {
-                        bgcolor: COLORS.primaryLight,
-                      },
-                      transition: 'all 150ms ease-out',
+                      minHeight: 36,
+                      mt: 1,
+                      px: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      color: COLORS.textDisabled,
                     }}
                   >
-                    {menu.icon && (
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 36,
-                          color: 'inherit',
-                          '& .MuiSvgIcon-root': { fontSize: 20 },
-                        }}
-                      >
-                        {getIcon(menu.icon)}
-                      </ListItemIcon>
-                    )}
-                    <ListItemText
-                      primary={menu.label}
-                      primaryTypographyProps={{
-                        fontSize: 14,
-                        fontWeight: menuActive ? 600 : 400,
+                    <Box sx={{ display: 'inline-flex', '& .MuiSvgIcon-root': { fontSize: 16 } }}>
+                      {getIcon(menu.icon)}
+                    </Box>
+                    <Typography sx={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {menu.label}
+                    </Typography>
+                  </Box>
+                );
+              }
+
+              const menuPath = menu.path;
+              if (!menuPath) return null;
+
+              const menuActive = matchPath(menuPath, location.pathname);
+              return (
+                <ListItemButton
+                  key={menuPath}
+                  data-sidebar-menu-level={menu.depth}
+                  selected={menuActive}
+                  onClick={() => handleMenuClick(menuPath)}
+                  sx={{
+                    minHeight: menu.depth === 2 ? 38 : 50,
+                    mb: '4px',
+                    pl: menu.depth === 2 ? '34px' : '18px',
+                    pr: '18px',
+                    borderRadius: '4px',
+                    color: menuActive ? COLORS.primary : COLORS.textPrimary,
+                    bgcolor: menuActive ? COLORS.primaryLight : 'transparent',
+                    '&:hover': {
+                      bgcolor: menuActive ? COLORS.primaryHover : COLORS.primaryLight,
+                      color: COLORS.primary,
+                    },
+                    '&.Mui-selected': {
+                      bgcolor: COLORS.primaryLight,
+                      color: COLORS.primary,
+                      '&:hover': {
+                        bgcolor: COLORS.primaryHover,
+                      },
+                    },
+                  }}
+                >
+                  {menu.depth === 1 ? (
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 28,
+                        color: 'inherit',
+                        '& .MuiSvgIcon-root': { fontSize: 17 },
+                      }}
+                    >
+                      {getIcon(menu.icon)}
+                    </ListItemIcon>
+                  ) : (
+                    <Box
+                      aria-hidden
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        mr: '12px',
+                        borderRadius: '50%',
+                        bgcolor: menuActive ? COLORS.primary : '#c0c4cc',
+                        flex: '0 0 auto',
                       }}
                     />
-                    {menu.children &&
-                      (menuExpanded ? (
-                        <ExpandLess sx={{ fontSize: 18 }} />
-                      ) : (
-                        <ExpandMore sx={{ fontSize: 18 }} />
-                      ))}
-                  </ListItemButton>
-
-                  {menu.children && (
-                    <Collapse in={menuExpanded} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {menu.children.map((subMenu, index) => {
-                          const subActive = matchPath(subMenu.path, location.pathname);
-                          return (
-                            <ListItemButton
-                              key={subMenu.path}
-                              selected={subActive}
-                              onClick={() => handleSubMenuClick(subMenu.path)}
-                              sx={{
-                                pl: 4,
-                                pr: 2,
-                                position: 'relative',
-                                color: subActive ? COLORS.primary : COLORS.textSecondary,
-                                bgcolor: subActive
-                                  ? COLORS.primaryLight
-                                  : 'transparent',
-                                '&:hover': {
-                                  bgcolor: subActive
-                                    ? COLORS.primaryHover
-                                    : COLORS.primaryLight,
-                                },
-                                '&.Mui-selected': {
-                                  bgcolor: COLORS.primaryLight,
-                                  '&:hover': {
-                                    bgcolor: COLORS.primaryHover,
-                                  },
-                                  '&::before': {
-                                    content: '""',
-                                    position: 'absolute',
-                                    left: 8,
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    width: 3,
-                                    height: 24,
-                                    bgcolor: COLORS.primary,
-                                    borderRadius: '2px',
-                                  },
-                                },
-                                transition: 'all 150ms ease-out',
-                              }}
-                              style={{
-                                animation: 'staggerIn 150ms ease-out both',
-                                animationDelay: `${(index % 5) * 30}ms`,
-                              }}
-                            >
-                              <ListItemText
-                                primary={subMenu.label}
-                                primaryTypographyProps={{
-                                  fontSize: 13,
-                                  fontWeight: subActive ? 500 : 400,
-                                }}
-                              />
-                            </ListItemButton>
-                          );
-                        })}
-                      </List>
-                    </Collapse>
                   )}
-                </Box>
+                  <ListItemText
+                    primary={menu.label}
+                    primaryTypographyProps={{
+                      noWrap: true,
+                      title: menu.parentLabel ? `${menu.parentLabel} / ${menu.label}` : menu.label,
+                      fontSize: menu.depth === 2 ? 13 : 14,
+                      fontWeight: menuActive ? 500 : 400,
+                    }}
+                  />
+                </ListItemButton>
               );
             })}
           </List>
         </Box>
       </Box>
 
-      {/* ==================== Main Content ==================== */}
       <Box
         component="main"
         sx={{
@@ -735,7 +982,7 @@ export default function AppLayout() {
           padding: '20px',
           mt: `${HEADER_TOTAL_HEIGHT}px`,
           ml: `${effectiveSidebarWidth}px`,
-          transition: 'margin-left 280ms cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'margin-left 220ms cubic-bezier(0.4, 0, 0.2, 1), width 220ms cubic-bezier(0.4, 0, 0.2, 1)',
           minHeight: `calc(100vh - ${HEADER_TOTAL_HEIGHT}px)`,
           bgcolor: COLORS.pageBg,
           overflowX: 'hidden',

@@ -87,6 +87,18 @@ mustNotInclude("boxShadow: '-1px 0 0 #dcdfe6'", 'user table fixed action column 
 mustInclude('selectedUserIds', 'user table should track selected rows');
 mustInclude('toggleUserSelection', 'user table should support controlled row selection');
 mustInclude('togglePageUserSelection', 'user table should support selecting the current page');
+mustInclude('batchDeleteConfirm', 'user table should track batch delete confirmation state');
+mustInclude('selectedBatchDeleteUsers', 'user table should derive selected rows for batch delete confirmation');
+mustInclude('batchDeleteMutation', 'user table should execute batch deletion through a dedicated mutation');
+mustInclude('Promise.all(userIds.map((id) => deleteUser(id)))', 'batch deletion should delete every selected user id');
+mustInclude('disabled={selectedUserIds.size === 0}', 'batch delete button should be disabled when no rows are selected');
+mustInclude('onClick={() => setBatchDeleteConfirm(true)}', 'batch delete button should open a second confirmation dialog');
+mustInclude('确认批量删除账号', 'batch delete should use a clear confirmation dialog title');
+mustInclude('危险的操作，请仔细阅读并确认数据后操作', 'batch delete confirmation should warn users to carefully review the dangerous operation');
+mustAppearInOrder([
+  '批量删除',
+  '新增',
+], 'batch delete button should sit before the add button in the table toolbar');
 mustInclude('onChange={(event) => toggleUserSelection(row.id, event.target.checked)}', 'row selection checkbox should use controlled change handling');
 mustInclude('openUserDetailDrawer(row)', 'clicking a user row should open the detail drawer');
 mustInclude("onClick={(event) => event.stopPropagation()}", 'row action controls should not open the detail drawer');

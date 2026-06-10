@@ -179,6 +179,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         children: [
           { label: '租户设置', path: '/system/tenant' },
           { label: '权限配置', path: '/system/permissions' },
+          { label: '菜单管理', path: '/system/menu-management' },
           { label: '编码规则', path: '/system/numbering-rules' },
           { label: '表单模板', path: '/system/form-templates' },
           { label: '审计日志', path: '/system/audit-logs' },

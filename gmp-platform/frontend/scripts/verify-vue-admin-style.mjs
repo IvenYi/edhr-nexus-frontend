@@ -43,14 +43,15 @@ mustNotInclude('src/App.tsx', /MuiTableRow:\s*{[\s\S]*?root:\s*{\s*height:\s*72/
 
 mustInclude('src/components/shared/AppLayout.tsx', /const MODULE_BAR_WIDTH\s*=\s*64\b/, 'Vue Admin Plus dark module rail width');
 mustInclude('src/components/shared/AppLayout.tsx', /const FUNC_MENU_WIDTH\s*=\s*202\b/, 'Vue Admin Plus function menu width');
-mustInclude('src/components/shared/AppLayout.tsx', /const TOP_NAV_HEIGHT\s*=\s*60\b/, 'Vue Admin Plus top nav height');
-mustInclude('src/components/shared/AppLayout.tsx', /const TABS_BAR_HEIGHT\s*=\s*50\b/, 'Vue Admin Plus tabs bar height');
-mustInclude('src/components/shared/AppLayout.tsx', /const HEADER_TOTAL_HEIGHT\s*=\s*TOP_NAV_HEIGHT\s*\+\s*TABS_BAR_HEIGHT\b/, 'combined header height should derive from top nav and tabs bar');
 mustInclude('src/components/shared/AppLayout.tsx', /sidebarDark:\s*'#282c34'/, 'dark module rail background');
 mustInclude('src/components/shared/AppLayout.tsx', /funcMenuBg:\s*'#ffffff'/, 'white secondary menu and header areas');
+mustInclude('src/components/shared/AppLayout.tsx', 'eDHR 系统', 'function menu should carry the app brand like the reference shell');
+mustInclude('src/components/shared/AppLayout.tsx', 'activeModule.label', 'function menu heading should switch with the active module');
+mustInclude('src/components/shared/AppLayout.tsx', 'flattenModuleMenus', 'function menu should flatten module children into a two-level module/menu model');
+mustInclude('src/components/shared/AppLayout.tsx', 'renderedMenus', 'function menu should render the flattened active module menu list');
+mustInclude('src/components/shared/AppLayout.tsx', /borderBottom:\s*`1px solid \$\{COLORS\.divider\}`/, 'active module title should sit under a divider like the reference');
 mustInclude('src/components/shared/AppLayout.tsx', /useMediaQuery/, 'shell should detect mobile breakpoints');
 mustInclude('src/components/shared/AppLayout.tsx', /const effectiveSidebarWidth\s*=\s*isMobile\s*\?\s*0\s*:\s*sidebarTotalWidth\b/, 'mobile content should not be pushed by the sidebar');
-mustInclude('src/components/shared/AppLayout.tsx', /left:\s*`\$\{effectiveSidebarWidth\}px`/, 'header and tabs should offset by effective sidebar width');
 mustInclude('src/components/shared/AppLayout.tsx', /ml:\s*`\$\{effectiveSidebarWidth\}px`/, 'content should offset by effective sidebar width');
 mustInclude('src/components/shared/AppLayout.tsx', /display:\s*isMobile\s*&&\s*!funcMenuOpen\s*\?\s*'none'\s*:\s*'flex'/, 'mobile module rail should be hidden unless overlay is open');
 mustInclude('src/components/shared/AppLayout.tsx', /display:\s*isMobile\s*&&\s*!funcMenuOpen\s*\?\s*'none'\s*:\s*'block'/, 'mobile function menu should be hidden unless overlay is open');
@@ -58,6 +59,11 @@ mustInclude('src/components/shared/AppLayout.tsx', /isMobile\s*&&\s*funcMenuOpen
 mustInclude('src/components/shared/AppLayout.tsx', /data-mobile-sidebar-backdrop/, 'mobile sidebar should have an outside-click backdrop close path');
 mustInclude('src/components/shared/AppLayout.tsx', /onClick=\{\(\)\s*=>\s*setFuncMenuOpen\(false\)\}/, 'mobile sidebar close affordance should close the overlay');
 mustInclude('src/components/shared/AppLayout.tsx', /(?:p|padding):\s*['"]20px['"]/, 'main content should use 20px padding');
+mustNotInclude('src/components/shared/AppLayout.tsx', 'AppBar', 'reference shell should not keep a top app bar');
+mustNotInclude('src/components/shared/AppLayout.tsx', 'Toolbar', 'reference shell should not keep a top toolbar');
+mustNotInclude('src/components/shared/AppLayout.tsx', 'Collapse', 'function menu should not render a third expandable level');
+mustNotInclude('src/components/shared/AppLayout.tsx', 'ExpandLess', 'function menu should not render expand controls');
+mustNotInclude('src/components/shared/AppLayout.tsx', 'ExpandMore', 'function menu should not render expand controls');
 
 mustInclude('src/pages/LoginPage.tsx', /flex:\s*'0 0 480px'/, 'restored login desktop brand panel width');
 mustInclude('src/pages/LoginPage.tsx', /display:\s*\{\s*xs:\s*'none',\s*md:\s*'flex'\s*\}/, 'restored login should hide brand panel on mobile');

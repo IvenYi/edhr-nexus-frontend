@@ -722,31 +722,34 @@ function verifyTask2Integration(routerSourceText, constantsSourceText, appLayout
     messages.push('constants.ts must append GCT_EDHR_MENU_MODULE to SIDEBAR_MODULES');
   }
 
-  if (!/function\s+getMenuExpansionKey\s*\(\s*moduleId:\s*string,\s*menuLabel:\s*string\s*\)/.test(appLayoutSourceText)) {
-    messages.push('AppLayout must define getMenuExpansionKey(moduleId, menuLabel)');
+  if (!/interface\s+RenderedMenu\s*{[\s\S]*parentLabel\?:\s*string[\s\S]*}/.test(appLayoutSourceText)) {
+    messages.push('AppLayout must define RenderedMenu for flattened second-level menu items');
   }
-  if (!appLayoutSourceText.includes('return `${moduleId}::${menuLabel}`')) {
-    messages.push('AppLayout menu expansion key must include both module id and menu label');
+  if (!/function\s+flattenModuleMenus\s*\(\s*menus:\s*SidebarMenu\[\]\s*\):\s*RenderedMenu\[\]/.test(appLayoutSourceText)) {
+    messages.push('AppLayout must define flattenModuleMenus(menus: SidebarMenu[]): RenderedMenu[]');
   }
-  for (const rawMenuKeySnippet of [
-    'expanded.add(menu.label)',
-    'expandedMenus.has(menu.label)',
-    'handleToggleMenu(menu.label)',
-    'next.has(menuLabel)',
-    'next.delete(menuLabel)',
-    'next.add(menuLabel)',
+  if (!appLayoutSourceText.includes('return menus.flatMap((menu) => {')) {
+    messages.push('AppLayout flattenModuleMenus must flatten parent menu groups into one rendered list');
+  }
+  if (!appLayoutSourceText.includes('const renderedMenus = useMemo(() => flattenModuleMenus(activeModule.menus), [activeModule]);')) {
+    messages.push('AppLayout must memoize renderedMenus from flattenModuleMenus(activeModule.menus)');
+  }
+  if (!appLayoutSourceText.includes('{activeModule.label}')) {
+    messages.push('AppLayout function menu heading must render activeModule.label');
+  }
+  if (!appLayoutSourceText.includes('renderedMenus.map((menu)')) {
+    messages.push('AppLayout function menu must render renderedMenus instead of nested menu groups');
+  }
+  for (const forbiddenNestedMenuSnippet of [
+    'getMenuExpansionKey',
+    'expandedMenus',
+    'handleToggleMenu',
+    'Collapse',
+    'ExpandLess',
+    'ExpandMore',
   ]) {
-    if (appLayoutSourceText.includes(rawMenuKeySnippet)) {
-      messages.push(`AppLayout menu expansion state must not use raw label key: ${rawMenuKeySnippet}`);
-    }
-  }
-  for (const requiredMenuKeySnippet of [
-    'getMenuExpansionKey(moduleId, menu.label)',
-    'getMenuExpansionKey(autoModuleId, menu.label)',
-    'getMenuExpansionKey(activeModule.id, menu.label)',
-  ]) {
-    if (!appLayoutSourceText.includes(requiredMenuKeySnippet)) {
-      messages.push(`AppLayout must use unique menu expansion keys for ${requiredMenuKeySnippet}`);
+    if (appLayoutSourceText.includes(forbiddenNestedMenuSnippet)) {
+      messages.push(`AppLayout must not keep third-level expandable menu behavior: ${forbiddenNestedMenuSnippet}`);
     }
   }
 
@@ -772,12 +775,6 @@ function verifyTask2Integration(routerSourceText, constantsSourceText, appLayout
   }
   if (!/return\s+isPathSegmentMatch\(pathname,\s*menuPath\)/.test(appLayoutSourceText)) {
     messages.push('AppLayout matchPath must use segment-boundary matching for menu paths');
-  }
-  if (!/\bcurrentModuleForPath\b/.test(appLayoutSourceText)) {
-    messages.push('AppLayout must keep currentModuleForPath derived from location.pathname');
-  }
-  if (!appLayoutSourceText.includes('getCurrentPageTitle(currentModuleForPath, location.pathname)')) {
-    messages.push('AppLayout currentPageTitle must use getCurrentPageTitle(currentModuleForPath, location.pathname)');
   }
 }
 

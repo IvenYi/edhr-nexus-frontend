@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "verify:organization": "node scripts/verify-organization-layout.mjs",
     "verify:user-management": "node scripts/verify-user-management-layout.mjs",
+    "verify:menu-management": "node scripts/verify-menu-management.mjs",
+    "verify:app-shell": "node scripts/verify-app-shell-topbar.mjs",
     "verify:gct-edhr": "node scripts/verify-gct-edhr-coverage.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
