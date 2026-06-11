@@ -10,9 +10,11 @@ import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
+import com.zencas.edhr.identity.entity.Role;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.entity.UserDepartment;
 import com.zencas.edhr.identity.entity.UserRole;
+import com.zencas.edhr.identity.repository.RoleRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserDepartmentRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
@@ -51,6 +53,7 @@ public class UserController {
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper();
 
     private final UserAccountRepository userAccountRepository;
+    private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserDepartmentRepository userDepartmentRepository;
     private final AuditEventRepository auditEventRepository;
@@ -336,7 +339,7 @@ public class UserController {
                 user.getEmail(),
                 user.getPhone(),
                 user.getStatus(),
-                normalizeIdStrings(roles.stream().map(UserRole::getRoleId).toList()),
+                resolveRoleAuditNames(roles.stream().map(UserRole::getRoleId).toList()),
                 idStringsFromNormalizedIds(departmentIds),
                 idToString(primaryDepartmentId));
     }
@@ -356,9 +359,28 @@ public class UserController {
                 user.getEmail(),
                 user.getPhone(),
                 user.getStatus(),
-                normalizeIdStrings(roleIds),
+                resolveRoleAuditNames(roleIds),
                 idStringsFromNormalizedIds(normalizedDepartmentIds),
                 idToString(effectivePrimaryDepartmentId));
+    }
+
+    private List<String> resolveRoleAuditNames(List<Long> roleIds) {
+        List<Long> normalizedRoleIds = normalizeIds(roleIds);
+        if (normalizedRoleIds.isEmpty()) return List.of();
+
+        Map<Long, String> roleNamesById = new LinkedHashMap<>();
+        Iterable<Role> roles = Optional.ofNullable(roleRepository.findAllById(normalizedRoleIds)).orElse(List.of());
+        roles.forEach(role -> {
+            if (role.getId() == null) return;
+            roleNamesById.put(role.getId(), role.getName());
+        });
+
+        return normalizedRoleIds.stream()
+                .map(roleId -> {
+                    String roleName = roleNamesById.get(roleId);
+                    return StringUtils.hasText(roleName) ? roleName : "未知岗位角色(" + roleId + ")";
+                })
+                .toList();
     }
 
     private List<Long> normalizeIds(List<Long> ids) {
@@ -368,10 +390,6 @@ public class UserController {
                 .distinct()
                 .sorted()
                 .toList();
-    }
-
-    private List<String> normalizeIdStrings(List<Long> ids) {
-        return idStringsFromNormalizedIds(normalizeIds(ids));
     }
 
     private List<String> idStringsFromNormalizedIds(List<Long> ids) {
@@ -399,7 +417,7 @@ public class UserController {
         putChanged(contentBefore, contentAfter, "email", before.email(), after.email());
         putChanged(contentBefore, contentAfter, "phone", before.phone(), after.phone());
         putChanged(contentBefore, contentAfter, "status", before.status(), after.status());
-        putChanged(contentBefore, contentAfter, "roleIds", before.roleIds(), after.roleIds());
+        putChanged(contentBefore, contentAfter, "roles", before.roles(), after.roles());
         putChanged(contentBefore, contentAfter, "departmentIds", before.departmentIds(), after.departmentIds());
         putChanged(contentBefore, contentAfter, "primaryDepartmentId", before.primaryDepartmentId(), after.primaryDepartmentId());
         if (contentBefore.isEmpty()) return;
@@ -444,7 +462,7 @@ public class UserController {
         content.put("email", snapshot.email());
         content.put("phone", snapshot.phone());
         content.put("status", snapshot.status());
-        content.put("roleIds", snapshot.roleIds());
+        content.put("roles", snapshot.roles());
         content.put("departmentIds", snapshot.departmentIds());
         content.put("primaryDepartmentId", snapshot.primaryDepartmentId());
         return content;
@@ -475,7 +493,7 @@ public class UserController {
             String email,
             String phone,
             String status,
-            List<String> roleIds,
+            List<String> roles,
             List<String> departmentIds,
             String primaryDepartmentId) {
     }

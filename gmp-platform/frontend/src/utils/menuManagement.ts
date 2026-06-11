@@ -101,3 +101,9 @@ export function useManagedSidebarModules(): SidebarModule[] {
 
   return modules;
 }
+
+export function inferPermissionCode(path: string): string | undefined {
+  if (path === '/') return 'dashboard';
+  if (path === '/system/menu-management') return 'system.edit';
+  return path.replace(/^\//, '').replace(/\//g, '.');
+}

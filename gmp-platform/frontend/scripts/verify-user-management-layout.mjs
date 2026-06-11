@@ -163,6 +163,9 @@ mustInclude('{USER_PAGE_SIZE_OPTIONS.map((size) => (', 'user table footer should
 mustInclude('padding="checkbox"', 'user row selection cell should use checkbox padding to align with the header checkbox');
 mustInclude('disabled={isSystemSuperAdminUser(row, roleNameById)}', 'protected super administrator row checkbox and delete action should be disabled');
 mustInclude("title={isSystemSuperAdminUser(row, roleNameById) ? '系统超级管理员账号不允许删除' : '删除'}", 'protected super administrator delete action should explain why it is disabled');
+mustInclude('<Button variant="outlined" startIcon={<RestartAlt />} onClick={resetFilters}>重置</Button>', 'user filter reset button should use the organization page default button size');
+mustInclude('<Button variant="contained" startIcon={<Search />} onClick={() => setPage(1)}>查询</Button>', 'user filter search button should use the same default button size as reset');
+mustNotInclude('<Button size="small" variant="contained" startIcon={<Search />} onClick={() => setPage(1)}>查询</Button>', 'user filter search button should not be smaller than reset');
 mustInclude('userDisplayNameByIdentity', 'user table should resolve creator/updater ids to user display names');
 mustInclude('updatedBy: item.updatedBy || item.createdBy', 'newly-created users should display updater as creator until a real update exists');
 mustInclude('updatedAt: item.updatedAt || item.createdAt', 'newly-created users should display updated time as created time until a real update exists');
@@ -174,6 +177,8 @@ appLayoutMustInclude('width: `calc(100vw - ${effectiveSidebarWidth}px)`', 'main 
 appLayoutMustInclude('maxWidth: `calc(100vw - ${effectiveSidebarWidth}px)`', 'main content should not create document-level horizontal scroll');
 appLayoutMustInclude("overflowX: 'hidden'", 'page-level horizontal scroll should be suppressed so tables scroll internally');
 uiStandardMustInclude('查询、重置按钮必须始终居右显示', 'UI standard should require right-aligned filter actions');
+uiStandardMustInclude('同一查询区内的重置和查询按钮必须使用相同尺寸规格', 'UI standard should require equal query action button sizing');
+uiStandardMustInclude('页面可选默认按钮或统一 `size="small"`', 'UI standard should allow either default or small query buttons as long as the pair is consistent');
 uiStandardMustInclude('表头必须在表格容器内保持 sticky', 'UI standard should require sticky table headers');
 uiStandardMustInclude('数据行视觉高度统一为 40px', 'UI standard should require compact 40px visual data rows');
 uiStandardMustInclude('底部分割线使用单元格内侧阴影绘制', 'UI standard should require row dividers that do not add to row height');
@@ -220,6 +225,10 @@ mustInclude('data-audit-field-before', 'expanded audit record should expose befo
 mustInclude('data-audit-field-after', 'expanded audit record should expose after fields');
 mustInclude('preserveAuditJsonLargeNumbers', 'audit JSON parsing should preserve Snowflake ids from older numeric snapshots');
 mustInclude('getAuditScalarDisplayValue', 'audit values should translate status, organization and role ids');
+mustInclude('getAuditRoleDisplayValue', 'user audit role values should display saved role-name snapshots when present');
+mustInclude("field === 'roles'", 'user audit should treat roles as a business-name snapshot, not a live reference');
+mustInclude("field === 'roleIds'", 'user audit should keep backwards-compatible handling for older role id audit records');
+mustNotInclude("context?.roleNameById.get(trimmed) ?? trimmed", 'user audit should not expose deleted role ids as raw codes when current role lookup is missing');
 mustInclude('getAuditLogs', 'user detail drawer should load backend audit logs');
 mustInclude("entityType: 'USER_ACCOUNT'", 'user detail drawer should request user-account audit records');
 mustInclude('getUserAuditRecords(selectedUser', 'user detail drawer should derive records for the selected user');

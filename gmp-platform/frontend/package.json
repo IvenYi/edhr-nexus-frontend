@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "verify:organization": "node scripts/verify-organization-layout.mjs",
     "verify:user-management": "node scripts/verify-user-management-layout.mjs",
+    "verify:role-management": "node scripts/verify-role-management-layout.mjs",
     "verify:menu-management": "node scripts/verify-menu-management.mjs",
     "verify:system-menu-pruned": "node scripts/verify-system-menu-pruned.mjs",
     "verify:app-shell": "node scripts/verify-app-shell-topbar.mjs",

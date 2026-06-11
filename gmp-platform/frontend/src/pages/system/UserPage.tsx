@@ -514,6 +514,11 @@ function dedupeAuditFieldRows(rows: AuditFieldRow[]): AuditFieldRow[] {
   });
 }
 
+function getAuditRoleDisplayValue(field: string, trimmed: string, context?: AuditDisplayContext): string {
+  if (field === 'roles') return trimmed;
+  return context?.roleNameById.get(trimmed) ?? `未知岗位角色(${trimmed})`;
+}
+
 function getAuditScalarDisplayValue(field: string, trimmed: string, context?: AuditDisplayContext): string {
   if (field === 'status') {
     const statusKey = trimmed.toUpperCase() as keyof typeof USER_STATUS_MAP;
@@ -525,7 +530,7 @@ function getAuditScalarDisplayValue(field: string, trimmed: string, context?: Au
   }
 
   if (field === 'roleIds' || field === 'roles') {
-    return context?.roleNameById.get(trimmed) ?? trimmed;
+    return getAuditRoleDisplayValue(field, trimmed, context);
   }
 
   return trimmed;
@@ -1589,7 +1594,7 @@ export default function UserPage() {
 	          </Stack>
 	          <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end">
 	            <Button variant="outlined" startIcon={<RestartAlt />} onClick={resetFilters}>重置</Button>
-	            <Button size="small" variant="contained" startIcon={<Search />} onClick={() => setPage(1)}>查询</Button>
+	            <Button variant="contained" startIcon={<Search />} onClick={() => setPage(1)}>查询</Button>
 	          </Stack>
         </Box>
       </Box>

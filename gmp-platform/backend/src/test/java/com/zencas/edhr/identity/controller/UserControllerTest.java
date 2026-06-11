@@ -8,9 +8,11 @@ import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
+import com.zencas.edhr.identity.entity.Role;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.entity.UserDepartment;
 import com.zencas.edhr.identity.entity.UserRole;
+import com.zencas.edhr.identity.repository.RoleRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserDepartmentRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
@@ -42,6 +44,7 @@ import static org.mockito.Mockito.when;
 class UserControllerTest {
 
     @Mock private UserAccountRepository userAccountRepository;
+    @Mock private RoleRepository roleRepository;
     @Mock private UserRoleRepository userRoleRepository;
     @Mock private UserDepartmentRepository userDepartmentRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
@@ -218,6 +221,8 @@ class UserControllerTest {
         when(idGenerator.nextId()).thenReturn(1L, 101L, 102L, 103L);
         when(userAccountRepository.save(any(UserAccount.class))).thenReturn(saved);
         when(userAccountRepository.findById(1L)).thenReturn(Optional.of(saved));
+        when(roleRepository.findAllById(List.of(10L))).thenReturn(List.of(
+                Role.builder().id(10L).code("QA_ROLE").name("QA角色").build()));
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of(
                 UserRole.builder().id(101L).userId(1L).roleId(10L).build()));
         when(userDepartmentRepository.findByUserId(1L)).thenReturn(List.of(
@@ -242,7 +247,8 @@ class UserControllerTest {
         assertThat(after.get("email").asText()).isEqualTo("new-operator@example.com");
         assertThat(after.get("phone").asText()).isEqualTo("13800000001");
         assertThat(after.get("status").asText()).isEqualTo("ACTIVE");
-        assertThat(after.get("roleIds").get(0).asText()).isEqualTo("10");
+        assertThat(after.has("roleIds")).isFalse();
+        assertThat(after.get("roles").get(0).asText()).isEqualTo("QA角色");
         assertThat(after.get("departmentIds").get(0).asText()).isEqualTo("20");
         assertThat(after.get("primaryDepartmentId").asText()).isEqualTo("20");
     }
@@ -310,6 +316,10 @@ class UserControllerTest {
         when(userAccountRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of(
                 UserRole.builder().id(3L).userId(1L).roleId(10L).build()));
+        when(roleRepository.findAllById(List.of(10L))).thenReturn(List.of(
+                Role.builder().id(10L).code("OLD_ROLE").name("旧岗位角色").build()));
+        when(roleRepository.findAllById(List.of(11L))).thenReturn(List.of(
+                Role.builder().id(11L).code("NEW_ROLE").name("新岗位角色").build()));
         when(userDepartmentRepository.findByUserId(1L)).thenReturn(List.of(
                 UserDepartment.builder().id(4L).userId(1L).departmentId(20L).isPrimary(true).build()));
         when(userAccountRepository.save(user)).thenReturn(user);
@@ -334,10 +344,12 @@ class UserControllerTest {
         assertThat(after.get("phone").asText()).isEqualTo("13900000000");
         assertThat(before.get("status").asText()).isEqualTo("ACTIVE");
         assertThat(after.get("status").asText()).isEqualTo("DISABLED");
-        assertThat(before.get("roleIds")).hasSize(1);
-        assertThat(before.get("roleIds").get(0).asText()).isEqualTo("10");
-        assertThat(after.get("roleIds")).hasSize(1);
-        assertThat(after.get("roleIds").get(0).asText()).isEqualTo("11");
+        assertThat(before.has("roleIds")).isFalse();
+        assertThat(after.has("roleIds")).isFalse();
+        assertThat(before.get("roles")).hasSize(1);
+        assertThat(before.get("roles").get(0).asText()).isEqualTo("旧岗位角色");
+        assertThat(after.get("roles")).hasSize(1);
+        assertThat(after.get("roles").get(0).asText()).isEqualTo("新岗位角色");
         assertThat(before.get("departmentIds")).hasSize(1);
         assertThat(before.get("departmentIds").get(0).asText()).isEqualTo("20");
         assertThat(after.get("departmentIds")).hasSize(1);

@@ -4,19 +4,21 @@ import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.identity.entity.Permission;
+import com.zencas.edhr.identity.entity.RolePermission;
 import com.zencas.edhr.identity.entity.UserAccount;
+import com.zencas.edhr.identity.entity.UserRole;
 import com.zencas.edhr.identity.repository.PermissionRepository;
 import com.zencas.edhr.identity.repository.RolePermissionRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
 import com.zencas.edhr.identity.security.JwtTokenProvider;
+import com.zencas.edhr.identity.service.GctPermissionCatalog;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -27,6 +29,7 @@ public class AuthController {
     private final UserRoleRepository userRoleRepository;
     private final RolePermissionRepository rolePermissionRepository;
     private final PermissionRepository permissionRepository;
+    private final GctPermissionCatalog gctPermissionCatalog;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -43,19 +46,8 @@ public class AuthController {
             throw new BusinessException(ErrorCode.AUTH_003, "账户已被禁用或锁定");
         }
 
-        // Collect permissions from user's roles
-        List<Long> roleIds = userRoleRepository.findByUserId(user.getId()).stream()
-                .map(ur -> ur.getRoleId())
-                .collect(Collectors.toList());
-
-        List<Long> permIds = rolePermissionRepository.findByRoleIdIn(roleIds).stream()
-                .map(rp -> rp.getPermissionId())
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<String> permissions = permissionRepository.findAllById(permIds).stream()
-                .map(Permission::getCode)
-                .collect(Collectors.toList());
+        UserPermissionSnapshot permissionSnapshot = resolveUserPermissionSnapshot(user.getId());
+        List<String> permissions = permissionSnapshot.permissions();
 
         String token = jwtTokenProvider.generateToken(
                 user.getId().toString(), user.getUsername(), permissions);
@@ -69,6 +61,7 @@ public class AuthController {
         userMap.put("username", user.getUsername());
         userMap.put("displayName", user.getDisplayName());
         userMap.put("email", user.getEmail());
+        userMap.put("roleIds", permissionSnapshot.roleIds());
         userMap.put("permissions", permissions);
 
         Map<String, Object> result = new LinkedHashMap<>();
@@ -97,12 +90,51 @@ public class AuthController {
         result.put("username", user.getUsername());
         result.put("displayName", user.getDisplayName());
         result.put("email", user.getEmail());
+        UserPermissionSnapshot permissionSnapshot = resolveUserPermissionSnapshot(user.getId());
+        result.put("roleIds", permissionSnapshot.roleIds());
+        result.put("permissions", permissionSnapshot.permissions());
         return ApiResponse.success(result);
+    }
+
+    private UserPermissionSnapshot resolveUserPermissionSnapshot(Long userId) {
+        List<Long> roleIds = userRoleRepository.findByUserId(userId).stream()
+                .map(UserRole::getRoleId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        List<Long> permissionIds = roleIds.isEmpty()
+                ? List.of()
+                : rolePermissionRepository.findByRoleIdIn(roleIds).stream()
+                        .map(RolePermission::getPermissionId)
+                        .filter(Objects::nonNull)
+                        .distinct()
+                        .toList();
+
+        List<Long> persistedPermissionIds = permissionIds.stream()
+                .filter(permissionId -> permissionId > 0)
+                .toList();
+
+        LinkedHashSet<String> permissions = new LinkedHashSet<>();
+        if (!persistedPermissionIds.isEmpty()) {
+            permissionRepository.findAllById(persistedPermissionIds).stream()
+                    .map(Permission::getCode)
+                    .filter(Objects::nonNull)
+                    .forEach(permissions::add);
+        }
+        gctPermissionCatalog.findCodesByIds(permissionIds).forEach(permissions::add);
+
+        return new UserPermissionSnapshot(
+                roleIds.stream().map(String::valueOf).toList(),
+                List.copyOf(permissions));
     }
 
     @Data
     public static class LoginRequest {
         private String username;
         private String password;
+    }
+
+    private record UserPermissionSnapshot(List<String> roleIds, List<String> permissions) {
     }
 }

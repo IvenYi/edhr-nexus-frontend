@@ -1,5 +1,13 @@
 import client from './client';
 
+interface RequestOptions {
+  skipAuthRedirect?: boolean;
+}
+
+// Auth
+export const getCurrentUser = (options?: RequestOptions) =>
+  client.get('/auth/me', options);
+
 // Users
 export const getUsers = (params?: Record<string, unknown>) =>
   client.get('/identity/users', { params });
@@ -19,13 +27,13 @@ export const getRoles = (params?: Record<string, unknown>) =>
   client.get('/identity/roles', { params });
 export const createRole = (body: Record<string, unknown>) =>
   client.post('/identity/roles', body);
-export const updateRole = (id: number, body: Record<string, unknown>) =>
+export const updateRole = (id: number | string, body: Record<string, unknown>) =>
   client.put(`/identity/roles/${id}`, body);
-export const deleteRole = (id: number) =>
+export const deleteRole = (id: number | string) =>
   client.delete(`/identity/roles/${id}`);
-export const getRolePermissions = (id: number) =>
+export const getRolePermissions = (id: number | string) =>
   client.get(`/identity/roles/${id}/permissions`);
-export const updateRolePermissions = (id: number, body: Record<string, unknown>) =>
+export const updateRolePermissions = (id: number | string, body: Record<string, unknown>) =>
   client.put(`/identity/roles/${id}/permissions`, body);
 
 // Permissions

@@ -13,6 +13,16 @@ function mustNotInclude(token, reason) {
   if (appLayout.includes(token)) failures.push(`unexpected ${JSON.stringify(token)} (${reason})`);
 }
 
+function extractBlock(startToken, endToken, reason) {
+  const start = appLayout.indexOf(startToken);
+  const end = start === -1 ? -1 : appLayout.indexOf(endToken, start);
+  if (start === -1 || end === -1) {
+    failures.push(`missing block ${JSON.stringify(startToken)}..${JSON.stringify(endToken)} (${reason})`);
+    return '';
+  }
+  return appLayout.slice(start, end);
+}
+
 function mustMatch(pattern, reason) {
   if (!pattern.test(appLayout)) failures.push(`missing ${pattern} (${reason})`);
 }
@@ -23,6 +33,16 @@ function packageMustInclude(token, reason) {
 
 function docMustInclude(token, reason) {
   if (!standardDoc.includes(token)) failures.push(`missing standard doc token ${JSON.stringify(token)} (${reason})`);
+}
+
+const routeTabsBlock = extractBlock('const renderRouteTab =', '<Tooltip title="标签操作"', 'route tab style checks should be scoped to the tabs bar');
+
+function routeTabMustInclude(token, reason) {
+  if (!routeTabsBlock.includes(token)) failures.push(`missing route tab token ${JSON.stringify(token)} (${reason})`);
+}
+
+function routeTabMustNotInclude(token, reason) {
+  if (routeTabsBlock.includes(token)) failures.push(`unexpected route tab token ${JSON.stringify(token)} (${reason})`);
 }
 
 mustInclude('const MODULE_BAR_WIDTH = 64;', 'module rail should match the narrow reference rail');
@@ -45,14 +65,49 @@ mustNotInclude('MenuRounded', 'function menu toggle should not use a generic ham
 mustInclude('getBreadcrumbItems', 'breadcrumb should derive from the active route');
 mustInclude('breadcrumbItems.map', 'breadcrumb should render active route levels');
 mustInclude('NavigateNextRounded', 'breadcrumb should use compact chevrons');
+mustInclude('AUTH_USER_CHANGE_EVENT', 'app shell should listen for current-user permission refresh events');
+mustInclude('EMPTY_SIDEBAR_MODULE', 'app shell should not fall back to real menus when no module is authorized');
+mustInclude('const [user, setUser] = useState<StoredUser>(() => readStoredUser());', 'app shell should keep current user in state instead of a one-time memo');
+mustInclude('setUser(readStoredUser())', 'app shell should refresh current user permissions from localStorage');
+mustInclude("window.addEventListener(AUTH_USER_CHANGE_EVENT, refreshStoredUser);", 'app shell should react to same-tab permission changes');
+mustInclude("if (event.key === 'user') refreshStoredUser();", 'app shell should react to cross-tab user storage changes');
+mustInclude('const hasPermissionSnapshot = Array.isArray(user.permissions);', 'app shell should distinguish missing permission snapshots from explicit empty permissions');
+mustInclude('filterModulesByPermissions(sidebarModules, permissionSet)', 'app shell should filter menus whenever current user has an explicit permission list');
+mustInclude('if (!permissionSet) return modules;', 'app shell should only show all menus when no permission snapshot exists');
+mustInclude('return Boolean(permissionCode && permissionSet.has(permissionCode));', 'unmapped or unauthorized routes should not remain visible under permission filtering');
+mustNotInclude('if (permissionSet.size === 0) return modules;', 'empty permission lists should not show every menu');
 mustInclude('const initialTabs: AppTab[] = [HOME_TAB];', 'tabs should default to only the home tab');
 mustInclude('const [openTabs, setOpenTabs] = useState<AppTab[]>(initialTabs);', 'tabs should be stateful and route-driven');
 mustInclude('setOpenTabs((prev) =>', 'route changes should add missing tabs');
-mustInclude('openTabs.map((tab)', 'tabs bar should render open tabs instead of static shortcuts');
+mustInclude('const homeTab = openTabs.find((tab) => tab.path === HOME_TAB.path) || HOME_TAB;', 'home tab should remain available even after tab operations');
+mustInclude('const scrollableTabs = openTabs.filter((tab) => tab.path !== HOME_TAB.path);', 'non-home tabs should be separated into the scrollable strip');
+mustInclude('activeScrollableTabRef', 'active non-home tab should expose a scroll anchor');
+mustInclude('requestAnimationFrame', 'active tab scrolling should wait for layout to settle');
+mustInclude('scrollIntoView({', 'newly opened or selected tabs should scroll into view');
+mustInclude("inline: 'nearest'", 'active tab scrolling should keep movement minimal');
+mustInclude('{showIcon && getIcon(tab.iconName)}', 'route tab icons should be opt-in instead of always shown');
+routeTabMustInclude('renderRouteTab(homeTab, true)', 'home tab should render outside the scrollable strip and keep its icon');
+mustInclude('data-app-home-tab', 'home tab should expose a QA selector');
+routeTabMustInclude('data-app-tabs-scroll-area', 'scrollable non-home tabs should expose a QA selector');
+routeTabMustInclude('scrollableTabs.map((tab) => renderRouteTab(tab))', 'only non-home tabs should render in the scrollable strip');
+mustInclude('data-app-active-tab-anchor', 'active non-home tab should expose an anchor selector');
+routeTabMustNotInclude('{getIcon(tab.iconName)}', 'non-home route tabs should not render menu icons unconditionally');
 mustInclude('handleTabClick', 'clicking a tab should navigate to that tab route');
 mustInclude('handleCloseTab', 'non-home tabs should be closable');
 mustInclude('handleTabContextMenu', 'right-click should open the tab action panel');
 mustInclude('tabContextMenu', 'right-click menu state should be tracked');
+routeTabMustInclude('height: 40', 'all route tabs should use the same fixed height');
+routeTabMustInclude('minHeight: 40', 'route tabs should not shrink below the fixed height');
+routeTabMustInclude("px: '18px'", 'all route tabs should use the same horizontal padding');
+routeTabMustInclude("mr: '10px'", 'all route tabs should use the same right spacing');
+routeTabMustInclude('boxSizing: \'border-box\'', 'route tab sizing should include padding without changing total height');
+routeTabMustInclude('fontWeight: 500', 'route tabs should not change weight when active');
+routeTabMustInclude("bgcolor: isActive ? COLORS.primaryLight : 'transparent'", 'active route tab should own the blue selected background');
+routeTabMustInclude("bgcolor: isActive ? COLORS.primaryLight : '#f5f7fa'", 'hover route tab should use gray background unless already active');
+routeTabMustNotInclude('height: isActive ?', 'route tabs should not change height when selected');
+routeTabMustNotInclude('px: isActive ?', 'route tabs should not change padding when selected');
+routeTabMustNotInclude('mr: isActive ?', 'route tabs should not change spacing when selected');
+routeTabMustNotInclude('fontWeight: isActive ?', 'route tabs should not change weight when selected');
 mustInclude('刷新', 'right-click panel should include refresh');
 mustInclude('关闭其他', 'right-click panel should include close others');
 mustInclude('关闭左侧', 'right-click panel should include close left');
@@ -89,6 +144,11 @@ mustNotInclude('top: HEADER_TOTAL_HEIGHT', 'left navigation should not start bel
 packageMustInclude('"verify:app-shell"', 'package script should expose the app shell verifier');
 docMustInclude('默认只保留“首页”标签', 'standard should document the default tab behavior');
 docMustInclude('右键标签时显示操作面板', 'standard should document the context menu behavior');
+docMustInclude('标签项尺寸必须一致', 'standard should document consistent tab sizing');
+docMustInclude('标签 hover 和选中样式必须区分', 'standard should document different hover and selected states');
+docMustInclude('首页标签必须固定显示', 'standard should document the fixed home tab');
+docMustInclude('除“首页”以外的标签不展示菜单图标', 'standard should document non-home tabs without menu icons');
+docMustInclude('新打开或切换到的菜单标签必须自动滚动到可视区域', 'standard should document active tab scroll anchoring');
 docMustInclude('模块入口高度和最小高度固定为 64px', 'standard should document the module entry height clamp');
 docMustInclude('不得在纵向 flex 容器中被拉伸', 'standard should document that module entries must not stretch vertically');
 

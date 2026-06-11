@@ -1,6 +1,12 @@
 import axios from 'axios';
 import type { ApiResponse } from '@/types/common';
 
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipAuthRedirect?: boolean;
+  }
+}
+
 const client = axios.create({
   baseURL: '/api/v1',
   timeout: 30000,
@@ -31,7 +37,7 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';

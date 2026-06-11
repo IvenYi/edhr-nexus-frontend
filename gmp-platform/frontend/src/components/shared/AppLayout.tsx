@@ -1,4 +1,4 @@
-import { type MouseEvent as ReactMouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type MouseEvent as ReactMouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Avatar,
@@ -42,7 +42,7 @@ import {
   TranslateRounded,
 } from '@mui/icons-material';
 import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
-import { useManagedSidebarModules } from '@/utils/menuManagement';
+import { inferPermissionCode, useManagedSidebarModules } from '@/utils/menuManagement';
 
 const COLORS = {
   primary: '#1890ff',
@@ -66,6 +66,14 @@ const FUNC_MENU_WIDTH = 202;
 const TOP_NAV_HEIGHT = 52;
 const TABS_BAR_HEIGHT = 50;
 const HEADER_TOTAL_HEIGHT = TOP_NAV_HEIGHT + TABS_BAR_HEIGHT;
+const AUTH_USER_CHANGE_EVENT = 'edhr:auth-user-change';
+
+const EMPTY_SIDEBAR_MODULE: SidebarModule = {
+  id: 'empty',
+  label: '',
+  icon: 'Settings',
+  menus: [],
+};
 
 const ICON_MAP: Record<string, ReactNode> = {
   Home: <Home />,
@@ -164,24 +172,21 @@ function readStoredUser(): StoredUser {
   }
 }
 
-function inferPermissionCode(path: string): string | undefined {
-  if (path === '/') return 'dashboard';
-  if (path.startsWith('/gct-edhr')) return undefined;
+function getLayoutPermissionCode(path: string): string | undefined {
   if (path === '/system/menu-management') return 'system.edit';
-  return path.replace(/^\//, '').replace(/\//g, '.');
+  return inferPermissionCode(path);
 }
 
 function canAccessPath(path: string, permissionSet: Set<string>): boolean {
-  if (permissionSet.size === 0) return true;
-  const permissionCode = inferPermissionCode(path);
-  return !permissionCode || permissionSet.has(permissionCode);
+  const permissionCode = getLayoutPermissionCode(path);
+  return Boolean(permissionCode && permissionSet.has(permissionCode));
 }
 
 function filterModulesByPermissions(
   modules: SidebarModule[],
-  permissionSet: Set<string>,
+  permissionSet?: Set<string>,
 ): SidebarModule[] {
-  if (permissionSet.size === 0) return modules;
+  if (!permissionSet) return modules;
 
   return modules
     .map((module) => ({
@@ -308,8 +313,9 @@ export default function AppLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const user = useMemo(() => readStoredUser(), []);
-  const permissionSet = useMemo(() => new Set(user.permissions ?? []), [user.permissions]);
+  const [user, setUser] = useState<StoredUser>(() => readStoredUser());
+  const hasPermissionSnapshot = Array.isArray(user.permissions);
+  const permissionSet = useMemo(() => (hasPermissionSnapshot ? new Set(user.permissions ?? []) : undefined), [hasPermissionSnapshot, user.permissions]);
   const sidebarModules = useManagedSidebarModules();
   const visibleModules = useMemo(
     () => filterModulesByPermissions(sidebarModules, permissionSet),
@@ -321,6 +327,21 @@ export default function AppLayout() {
   const [openTabs, setOpenTabs] = useState<AppTab[]>(initialTabs);
   const [tabContextMenu, setTabContextMenu] = useState<TabContextMenuState | null>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
+  const activeScrollableTabRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const refreshStoredUser = () => setUser(readStoredUser());
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === 'user') refreshStoredUser();
+    };
+
+    window.addEventListener(AUTH_USER_CHANGE_EVENT, refreshStoredUser);
+    window.addEventListener('storage', handleStorage);
+    return () => {
+      window.removeEventListener(AUTH_USER_CHANGE_EVENT, refreshStoredUser);
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, []);
 
   useEffect(() => {
     if (visibleModules.some((module) => module.id === autoModuleId)) {
@@ -333,7 +354,7 @@ export default function AppLayout() {
   }, [isMobile]);
 
   const activeModule: SidebarModule =
-    visibleModules.find((module) => module.id === activeModuleId) || visibleModules[0] || sidebarModules[0];
+    visibleModules.find((module) => module.id === activeModuleId) || visibleModules[0] || EMPTY_SIDEBAR_MODULE;
   const currentModuleForPath: SidebarModule =
     findRouteModule(visibleModules, location.pathname) ||
     visibleModules.find((module) => module.id === autoModuleId) ||
@@ -350,6 +371,8 @@ export default function AppLayout() {
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
   const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
   const userDisplayName = user.username || user.displayName || 'admin';
+  const homeTab = openTabs.find((tab) => tab.path === HOME_TAB.path) || HOME_TAB;
+  const scrollableTabs = openTabs.filter((tab) => tab.path !== HOME_TAB.path);
 
   useEffect(() => {
     setOpenTabs((prev) => {
@@ -357,6 +380,18 @@ export default function AppLayout() {
       return [...prev, currentRouteTab];
     });
   }, [currentRouteTab]);
+
+  useEffect(() => {
+    if (location.pathname === HOME_TAB.path) return undefined;
+    const animationFrame = window.requestAnimationFrame(() => {
+      activeScrollableTabRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    });
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [location.pathname, scrollableTabs.length]);
 
   const handleModuleClick = useCallback((moduleId: string) => {
     setActiveModuleId(moduleId);
@@ -458,6 +493,58 @@ export default function AppLayout() {
       color: COLORS.primary,
       bgcolor: COLORS.primaryLight,
     },
+  };
+
+  const renderRouteTab = (tab: AppTab, showIcon = false) => {
+    const isActive = tab.path === location.pathname;
+    const isHome = tab.path === HOME_TAB.path;
+    return (
+      <Box
+        key={tab.path}
+        ref={isActive && !isHome ? activeScrollableTabRef : undefined}
+        role="button"
+        onClick={() => handleTabClick(tab)}
+        onContextMenu={(event) => handleTabContextMenu(tab, event)}
+        data-app-tab-path={tab.path}
+        data-app-home-tab={isHome ? 'true' : undefined}
+        data-app-active-tab-anchor={isActive && !isHome ? 'true' : undefined}
+        sx={{
+          height: 40,
+          minHeight: 40,
+          px: '18px',
+          mr: '10px',
+          borderRadius: '5px 5px 0 0',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          boxSizing: 'border-box',
+          flexShrink: 0,
+          color: isActive ? COLORS.primary : COLORS.textPrimary,
+          bgcolor: isActive ? COLORS.primaryLight : 'transparent',
+          fontSize: 14,
+          fontWeight: 500,
+          cursor: 'pointer',
+          '& .MuiSvgIcon-root': { fontSize: 16 },
+          '&:hover': {
+            color: COLORS.primary,
+            bgcolor: isActive ? COLORS.primaryLight : '#f5f7fa',
+          },
+        }}
+      >
+        {showIcon && getIcon(tab.iconName)}
+        <Typography component="span" sx={{ fontSize: 14, color: 'inherit', whiteSpace: 'nowrap' }}>{tab.label}</Typography>
+        {tab.closable && (
+          <IconButton
+            aria-label="关闭当前标签"
+            size="small"
+            onClick={(event) => handleCloseTab(tab, event)}
+            sx={{ ml: '2px', width: 18, height: 18, color: 'inherit', '& .MuiSvgIcon-root': { fontSize: 14 } }}
+          >
+            <CloseRounded />
+          </IconButton>
+        )}
+      </Box>
+    );
   };
 
   return (
@@ -622,49 +709,23 @@ export default function AppLayout() {
             minWidth: 0,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', minWidth: 0, overflowX: 'auto', overflowY: 'hidden', '&::-webkit-scrollbar': { height: 0 } }}>
-            {openTabs.map((tab) => {
-              const isActive = tab.path === location.pathname;
-              return (
-                <Box
-                  key={tab.path}
-                  role="button"
-                  onClick={() => handleTabClick(tab)}
-                  onContextMenu={(event) => handleTabContextMenu(tab, event)}
-                  data-app-tab-path={tab.path}
-                  sx={{
-                    height: isActive ? 40 : 34,
-                    px: isActive ? '20px' : '16px',
-                    mr: isActive ? '-2px' : '10px',
-                    borderRadius: '5px 5px 0 0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    flexShrink: 0,
-                    color: isActive ? COLORS.primary : COLORS.textPrimary,
-                    bgcolor: isActive ? COLORS.primaryLight : 'transparent',
-                    fontSize: 14,
-                    fontWeight: isActive ? 500 : 400,
-                    cursor: 'pointer',
-                    '& .MuiSvgIcon-root': { fontSize: 16 },
-                    '&:hover': { color: COLORS.primary, bgcolor: COLORS.primaryLight },
-                  }}
-                >
-                  {getIcon(tab.iconName)}
-                  <Typography component="span" sx={{ fontSize: 14, color: 'inherit', whiteSpace: 'nowrap' }}>{tab.label}</Typography>
-                  {tab.closable && (
-                    <IconButton
-                      aria-label="关闭当前标签"
-                      size="small"
-                      onClick={(event) => handleCloseTab(tab, event)}
-                      sx={{ ml: '2px', width: 18, height: 18, color: 'inherit', '& .MuiSvgIcon-root': { fontSize: 14 } }}
-                    >
-                      <CloseRounded />
-                    </IconButton>
-                  )}
-                </Box>
-              );
-            })}
+          <Box sx={{ display: 'flex', alignItems: 'center', height: '100%', minWidth: 0, flex: 1 }}>
+            {renderRouteTab(homeTab, true)}
+            <Box
+              data-app-tabs-scroll-area="true"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                height: '100%',
+                minWidth: 0,
+                flex: 1,
+                overflowX: 'auto',
+                overflowY: 'hidden',
+                '&::-webkit-scrollbar': { height: 0 },
+              }}
+            >
+              {scrollableTabs.map((tab) => renderRouteTab(tab))}
+            </Box>
           </Box>
           <Tooltip title="标签操作" arrow>
             <IconButton
