@@ -51,6 +51,7 @@ mustInclude('src/utils/menuManagement.ts', 'normalizeSidebarSubMenu', 'module me
 mustInclude('src/utils/menuManagement.ts', 'window.dispatchEvent(new CustomEvent(MENU_MANAGEMENT_EVENT))', 'saving menus should refresh the active app shell immediately');
 
 mustInclude('src/components/shared/AppLayout.tsx', 'useManagedSidebarModules', 'layout should consume editable menu modules');
+mustInclude('src/components/shared/AppLayout.tsx', 'renderManagedIcon', 'layout should render uploaded icon assets selected from icon management');
 mustInclude('src/components/shared/AppLayout.tsx', 'const sidebarModules = useManagedSidebarModules()', 'layout should read managed modules instead of only static constants');
 mustInclude('src/components/shared/AppLayout.tsx', 'filterModulesByPermissions(sidebarModules, permissionSet)', 'layout permission filtering should run against managed modules');
 mustInclude('src/components/shared/AppLayout.tsx', "if (path === '/system/menu-management') return 'system.edit';", 'menu management should be visible to administrators who can edit system configuration');
@@ -81,10 +82,34 @@ mustInclude('src/pages/system/MenuManagementPage.tsx', "height: '100%'", 'menu m
 mustInclude('src/pages/system/MenuManagementPage.tsx', "overflow: 'hidden'", 'menu management page should prevent page-level scrolling');
 mustInclude('src/pages/system/MenuManagementPage.tsx', 'data-menu-management-menu-scroll', 'module menu list should own the vertical scrollbar');
 mustInclude('src/pages/system/MenuManagementPage.tsx', "overflow: 'auto'", 'module menu list should scroll inside its container');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'IconSelectorField', 'module and menu icon fields should use an icon picker');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'getIconPage', 'icon picker should read icon management data');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'getIconGroups', 'icon picker should read icon management groups');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'menu-icon-picker', 'icon picker query should have an isolated cache key');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'menu-icon-picker-groups', 'icon picker group query should have an isolated cache key');
+mustInclude('src/pages/system/MenuManagementPage.tsx', "selectedIconGroupId, iconKeyword", 'icon picker cache should include selected category');
+mustInclude('src/pages/system/MenuManagementPage.tsx', "getIconPage({ groupId: selectedIconGroupId, keyword: iconKeyword.trim(), page: iconPickerPage, size: iconPickerPageSize })", 'icon picker should query icons by selected category and keyword');
+mustInclude('src/pages/system/MenuManagementPage.tsx', '<DialogTitle sx={{ p: 0 }}>', 'icon picker should use a custom title row');
+mustInclude('src/pages/system/MenuManagementPage.tsx', '<Typography sx={{ fontWeight: 600, color: \'#303133\' }}>图标选择</Typography>', 'icon picker dialog title should be 图标选择');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'aria-label="关闭图标选择"', 'icon picker should expose a top-right close button');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'label="分类"', 'icon picker should show a category selector before search');
+mustInclude('src/pages/system/MenuManagementPage.tsx', '<MenuItem value="ALL">全部</MenuItem>', 'icon picker category selector should default to all');
+mustInclude('src/pages/system/MenuManagementPage.tsx', '按图标名称模糊查询', 'icon picker should support fuzzy search by name');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'toIconAssetValue', 'uploaded icon selections should persist as asset references');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'data-menu-icon-picker-option', 'icon picker options should be exposed for QA');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'ICON_PICKER_PAGE_SIZE_OPTIONS = [20, 50, 100, 200]', 'icon picker should follow the standard page-size options');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'Pagination', 'icon picker should support paging through all icons');
+mustInclude('src/pages/system/MenuManagementPage.tsx', '共 {totalElements} 条数据', 'icon picker pagination should use the standard total text');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'startAdornment: <InputAdornment position="start" sx={{ mr: 0 }}>每页</InputAdornment>', 'icon picker page-size selector should match the standard pagination control');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'DialogActions', 'icon picker should not keep a bottom close action area');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', '当前选择：', 'icon picker should not show current selection below search');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', '{label}选择器', 'icon picker dialog title should not use old selector wording');
 mustInclude('src/pages/system/MenuManagementPage.tsx', "key={`root-menu-${rootIndex}`}", 'root menu row key should not depend on editable menu name');
 mustInclude('src/pages/system/MenuManagementPage.tsx', "key={`child-menu-${rootIndex}-${childIndex}`}", 'child menu row key should not depend on editable menu name');
 mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'key={`${menu.label}-${rootIndex}`}', 'editing a root menu name should not remount the row and blur the input');
 mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'key={`${child.label}-${childIndex}`}', 'editing a child menu name should not remount the row and blur the input');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'label="模块图标" value={selectedModule.icon}', 'module icon should no longer be a plain text field');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'label="图标" value={menu.icon', 'menu icon should no longer be a plain text field');
 
 if (failures.length > 0) {
   console.error('Menu management verification failed:');

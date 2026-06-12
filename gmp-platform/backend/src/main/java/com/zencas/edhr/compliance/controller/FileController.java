@@ -7,6 +7,8 @@ import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
+import com.zencas.edhr.system.repository.IconAssetRepository;
+import com.zencas.edhr.system.repository.SystemSettingRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Set;
 
 /**
  * File management controller for upload/download/preview/delete/list operations.
@@ -46,6 +49,8 @@ import java.util.List;
 public class FileController {
 
     private final FileObjectRepository fileObjectRepository;
+    private final IconAssetRepository iconAssetRepository;
+    private final SystemSettingRepository systemSettingRepository;
     private final SnowflakeIdGenerator idGenerator;
 
     @Value("${edhr.file.storage-path:#{systemProperties['user.home'] + '/.edhr/files'}}")
@@ -64,6 +69,7 @@ public class FileController {
     );
 
     private static final long MAX_FILE_SIZE = 50L * 1024 * 1024; // 50 MB
+    private static final Set<String> PUBLIC_PREVIEW_TARGET_TYPES = Set.of("ICON_ASSET", "SYSTEM_LOGO", "SYSTEM_FAVICON");
 
     // ======================== Upload ========================
 
@@ -157,9 +163,36 @@ public class FileController {
         FileObject fileObject = fileObjectRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.FILE_001));
 
+        return buildInlinePreviewResponse(fileObject);
+    }
+
+    /**
+     * Public inline preview for UI assets that must render inside browser image tags.
+     */
+    @GetMapping("/{id}/public-preview")
+    public ResponseEntity<Resource> publicPreview(@PathVariable Long id) {
+        FileObject fileObject = fileObjectRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.FILE_001));
+        if (!canPublicPreview(fileObject)) {
+            throw new BusinessException(ErrorCode.GENERAL_003, "文件不允许公开预览");
+        }
+
+        return buildInlinePreviewResponse(fileObject);
+    }
+
+    private boolean canPublicPreview(FileObject fileObject) {
+        if (fileObject == null || !PUBLIC_PREVIEW_TARGET_TYPES.contains(fileObject.getTargetType())) return false;
+        Long fileId = fileObject.getId();
+        if ("ICON_ASSET".equals(fileObject.getTargetType())) {
+            return iconAssetRepository.existsByFileId(fileId);
+        }
+        return systemSettingRepository.existsBySystemLogoFileIdOrBrowserIconFileId(fileId, fileId);
+    }
+
+    private ResponseEntity<Resource> buildInlinePreviewResponse(FileObject fileObject) {
         Path filePath = Path.of(fileObject.getStoredPath());
         if (!Files.exists(filePath)) {
-            throw new BusinessException(ErrorCode.FILE_001, "文件物理存储丢失: " + id);
+            throw new BusinessException(ErrorCode.FILE_001, "文件物理存储丢失: " + fileObject.getId());
         }
 
         Resource resource = new FileSystemResource(filePath);
@@ -167,6 +200,9 @@ public class FileController {
 
         return ResponseEntity.ok()
                 .contentType(mediaType)
+                .header(HttpHeaders.CACHE_CONTROL, "private, max-age=300")
+                .header("X-Content-Type-Options", "nosniff")
+                .header("Content-Security-Policy", "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'none'; sandbox")
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "inline; filename=\"" + encodeFileName(fileObject.getOriginalName()) + "\"")
                 .body(resource);

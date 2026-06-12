@@ -1,4 +1,4 @@
-import { type DragEvent as ReactDragEvent, type PointerEvent as ReactPointerEvent, type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type DragEvent as ReactDragEvent, type PointerEvent as ReactPointerEvent, type ReactNode, type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
@@ -25,11 +25,10 @@ import {
   Add,
   Delete,
   DragIndicator,
-  DriveFileMove,
   Edit,
-  FileUpload,
   Folder,
   ImageOutlined,
+  InfoOutlined,
   Search,
   UploadFile,
 } from '@mui/icons-material';
@@ -40,7 +39,6 @@ import {
   deleteIconGroup,
   getIconPage,
   getIconGroups,
-  importIcons,
   reorderIconGroups,
   reorderIcons,
   updateIcon,
@@ -50,6 +48,7 @@ import {
   type IconGroup,
 } from '@/api/system';
 import { renderBuiltinIcon } from '@/utils/builtinIcons';
+import { getIconAssetPreviewUrl } from '@/utils/iconAssets';
 
 const COLORS = {
   primary: '#1890ff',
@@ -72,21 +71,20 @@ const toolbarButtonSx = {
   '& .MuiButton-startIcon': { mr: 0.75 },
 };
 
-const pageSizeOptions = [20, 40, 80];
+const ICON_PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
+const ICON_PREVIEW_SIZE = 42;
+const USER_UPLOAD_TAG = '用户上传';
 
-function getApiErrorMessage(error: unknown, fallback: string) {
+function getApiErrorMessage(error: unknown, fallback: string): string {
+  if (typeof error === 'object' && error !== null) {
+    const response = (error as { response?: { data?: { message?: string } } }).response;
+    if (response?.data?.message) return response.data.message;
+  }
   return error instanceof Error && error.message ? error.message : fallback;
 }
 
 function toId(value: string | number | null | undefined) {
   return value === null || value === undefined ? '' : String(value);
-}
-
-function getIconPreviewUrl(icon: IconAsset) {
-  if (icon.previewUrl) return icon.previewUrl;
-  if (icon.fileUrl) return icon.fileUrl;
-  if (icon.fileId) return `/api/v1/files/${icon.fileId}/preview`;
-  return '';
 }
 
 function normalizeTags(tags: IconAsset['tags']): string[] {
@@ -99,8 +97,45 @@ function isBuiltinIcon(icon: IconAsset) {
   return icon.source === 'BUILTIN';
 }
 
+function getIconDisplayTags(icon: IconAsset) {
+  const tags = normalizeTags(icon.tags);
+  if (tags.length > 0) return tags;
+  return isBuiltinIcon(icon) ? [] : [USER_UPLOAD_TAG];
+}
+
 function isBuiltinGroup(group: IconGroup) {
   return Boolean(group.builtin);
+}
+
+function IconPreview({ icon, builtinIcon }: { icon: IconAsset; builtinIcon: ReactNode }) {
+  const [loadFailed, setLoadFailed] = useState(false);
+  const previewSrc = isBuiltinIcon(icon) ? '' : getIconAssetPreviewUrl(icon);
+
+  useEffect(() => {
+    setLoadFailed(false);
+    return undefined;
+  }, [previewSrc]);
+
+  if (builtinIcon) return <>{builtinIcon}</>;
+  if (previewSrc && !loadFailed) {
+    return (
+      <Box
+        component="img"
+        src={previewSrc}
+        alt={icon.name}
+        onError={() => setLoadFailed(true)}
+        sx={{
+          width: ICON_PREVIEW_SIZE,
+          height: ICON_PREVIEW_SIZE,
+          maxWidth: ICON_PREVIEW_SIZE,
+          maxHeight: ICON_PREVIEW_SIZE,
+          objectFit: 'contain',
+          display: 'block',
+        }}
+      />
+    );
+  }
+  return <ImageOutlined sx={{ color: COLORS.textDisabled, fontSize: ICON_PREVIEW_SIZE }} />;
 }
 
 interface GroupDialogState {
@@ -110,10 +145,14 @@ interface GroupDialogState {
   name: string;
 }
 
+interface DeleteGroupConfirmState {
+  open: boolean;
+  group?: IconGroup;
+}
+
 export default function IconManagementPage() {
   const queryClient = useQueryClient();
   const uploadInputRef = useRef<HTMLInputElement | null>(null);
-  const importInputRef = useRef<HTMLInputElement | null>(null);
   const pointerDraggedGroupIdRef = useRef('');
   const [selectedGroupId, setSelectedGroupId] = useState<string>('ALL');
   const [keyword, setKeyword] = useState('');
@@ -123,6 +162,7 @@ export default function IconManagementPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [groupDialog, setGroupDialog] = useState<GroupDialogState>({ open: false, mode: 'create', name: '' });
+  const [deleteGroupConfirm, setDeleteGroupConfirm] = useState<DeleteGroupConfirmState>({ open: false });
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
@@ -153,7 +193,6 @@ export default function IconManagementPage() {
     if (selectedGroupId === builtinGroupId) return icons.filter(isBuiltinIcon);
     return icons.filter((icon) => !isBuiltinIcon(icon));
   }, [builtinGroupId, icons, selectedGroupId]);
-  const selectedGroup = groups.find((group) => toId(group.id) === selectedGroupId);
   const selectedCount = selectedIconIds.size;
   const selectedHasBuiltinIcon = visibleIcons.some((icon) => selectedIconIds.has(toId(icon.id)) && isBuiltinIcon(icon));
   const batchDeleteDisabled = selectedCount === 0 || selectedHasBuiltinIcon;
@@ -213,13 +252,21 @@ export default function IconManagementPage() {
   });
 
   const groupDeleteMutation = useMutation({
-    mutationFn: deleteIconGroup,
+    mutationFn: ({ group, cascade }: { group: IconGroup; cascade: boolean }) => deleteIconGroup(group.id, { cascade }),
     onSuccess: async () => {
+      setDeleteGroupConfirm({ open: false });
       setSelectedGroupId('ALL');
       await invalidateIconData();
       showSnackbar('分组已删除', 'success');
     },
-    onError: (error) => showSnackbar(getApiErrorMessage(error, '分组删除失败'), 'error'),
+    onError: (error, variables) => {
+      const message = getApiErrorMessage(error, '分组删除失败');
+      if (!variables.cascade && message.includes('分组下存在图标')) {
+        setDeleteGroupConfirm({ open: true, group: variables.group });
+        return;
+      }
+      showSnackbar(message, 'error');
+    },
   });
 
   const getCustomUploadGroupId = () => {
@@ -231,21 +278,15 @@ export default function IconManagementPage() {
   };
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => uploadIcon({ file, groupId: getCustomUploadGroupId() }),
-    onSuccess: async () => {
+    mutationFn: async (files: File[]) => {
+      const groupId = getCustomUploadGroupId();
+      return Promise.all(files.map((file) => uploadIcon({ file, groupId })));
+    },
+    onSuccess: async (uploadedIcons) => {
       await invalidateIconData();
-      showSnackbar('图标上传成功', 'success');
+      showSnackbar(`图标上传成功，共 ${uploadedIcons.length} 个`, 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '图标上传失败'), 'error'),
-  });
-
-  const importMutation = useMutation({
-    mutationFn: (files: File[]) => importIcons({ files, groupId: getCustomUploadGroupId() }),
-    onSuccess: async () => {
-      await invalidateIconData();
-      showSnackbar('图标导入成功', 'success');
-    },
-    onError: (error) => showSnackbar(getApiErrorMessage(error, '图标导入失败'), 'error'),
   });
 
   const deleteMutation = useMutation({
@@ -290,6 +331,17 @@ export default function IconManagementPage() {
 
   const openCreateGroupDialog = () => setGroupDialog({ open: true, mode: 'create', name: '' });
   const openEditGroupDialog = (group: IconGroup) => setGroupDialog({ open: true, mode: 'edit', group, name: group.name });
+  const requestDeleteGroup = (group: IconGroup) => {
+    if ((group.iconCount ?? 0) > 0) {
+      setDeleteGroupConfirm({ open: true, group });
+      return;
+    }
+    groupDeleteMutation.mutate({ group, cascade: false });
+  };
+  const confirmCascadeDeleteGroup = () => {
+    if (!deleteGroupConfirm.group) return;
+    groupDeleteMutation.mutate({ group: deleteGroupConfirm.group, cascade: true });
+  };
   const openUploadDialog = () => {
     if (selectedGroupId === builtinGroupId) {
       showSnackbar('系统内置图标分组不能放入自定义图标', 'error');
@@ -303,22 +355,10 @@ export default function IconManagementPage() {
   };
 
   const handleUploadChange = (files: FileList | null) => {
-    const file = files?.[0];
-    if (!file) return;
-    uploadMutation.mutate(file);
-    if (uploadInputRef.current) uploadInputRef.current.value = '';
-  };
-
-  const handleImportChange = (files: FileList | null) => {
     const nextFiles = Array.from(files ?? []);
     if (nextFiles.length === 0) return;
-    if (selectedGroupId === builtinGroupId) {
-      showSnackbar('系统内置图标分组不能放入自定义图标', 'error');
-      if (importInputRef.current) importInputRef.current.value = '';
-      return;
-    }
-    importMutation.mutate(nextFiles);
-    if (importInputRef.current) importInputRef.current.value = '';
+    uploadMutation.mutate(nextFiles);
+    if (uploadInputRef.current) uploadInputRef.current.value = '';
   };
 
   const toggleIcon = (iconId: string) => {
@@ -446,9 +486,8 @@ export default function IconManagementPage() {
           const iconId = toId(icon.id);
           const selected = selectedIconIds.has(iconId);
           const builtin = isBuiltinIcon(icon);
-          const builtinIcon = builtin ? renderBuiltinIcon(icon.builtinKey, { sx: { color: COLORS.textSecondary, fontSize: 42 } }) : null;
-          const previewUrl = getIconPreviewUrl(icon);
-          const tags = normalizeTags(icon.tags);
+          const builtinIcon = builtin ? renderBuiltinIcon(icon.builtinKey, { sx: { color: COLORS.textSecondary, fontSize: ICON_PREVIEW_SIZE } }) : null;
+          const tags = getIconDisplayTags(icon);
           return (
             <Box
               key={iconId}
@@ -496,11 +535,7 @@ export default function IconManagementPage() {
                 </Stack>
               </Stack>
               <Stack alignItems="center" justifyContent="center" sx={{ height: 76, bgcolor: COLORS.pageBg }}>
-                {builtinIcon ?? (previewUrl ? (
-                  <Box component="img" src={previewUrl} alt={icon.name} sx={{ maxWidth: 46, maxHeight: 46, objectFit: 'contain' }} />
-                ) : (
-                  <ImageOutlined sx={{ color: COLORS.textDisabled, fontSize: 36 }} />
-                ))}
+                <IconPreview icon={icon} builtinIcon={builtinIcon} />
               </Stack>
               <Stack spacing={0.75} sx={{ p: 1.25, minWidth: 0 }}>
                 <Typography title={icon.name} sx={{ fontSize: 14, color: COLORS.textPrimary, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -508,7 +543,6 @@ export default function IconManagementPage() {
                 </Typography>
                 <Stack direction="row" spacing={0.5} sx={{ minHeight: 22, overflow: 'hidden' }}>
                   {tags.slice(0, 2).map((tag) => <Chip key={tag} size="small" label={tag} sx={{ height: 20, fontSize: 12 }} />)}
-                  {tags.length === 0 && <Typography sx={{ color: COLORS.textDisabled, fontSize: 12 }}>无标签</Typography>}
                 </Stack>
               </Stack>
             </Box>
@@ -599,7 +633,7 @@ export default function IconManagementPage() {
                 {!builtinGroup && (
                   <>
                     <Tooltip title="重命名" arrow><IconButton size="small" onClick={() => openEditGroupDialog(group)}><Edit fontSize="small" /></IconButton></Tooltip>
-                    <Tooltip title="删除分组" arrow><IconButton size="small" color="error" onClick={() => groupDeleteMutation.mutate(group.id)}><Delete fontSize="small" /></IconButton></Tooltip>
+                    <Tooltip title="删除分组" arrow><IconButton size="small" color="error" onClick={() => requestDeleteGroup(group)}><Delete fontSize="small" /></IconButton></Tooltip>
                   </>
                 )}
               </Box>
@@ -616,7 +650,7 @@ export default function IconManagementPage() {
           spacing={1}
           sx={{ p: 2, borderBottom: `1px solid ${COLORS.divider}`, flexShrink: 0 }}
         >
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ minWidth: 0 }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'center' }} spacing={1.5} sx={{ minWidth: 0, flex: 1 }}>
             <TextField
               size="small"
               placeholder="关键词搜索"
@@ -625,12 +659,21 @@ export default function IconManagementPage() {
               sx={{ ...fieldSx, width: { xs: '100%', sm: 200 } }}
               InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }}
             />
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={0.75}
+              sx={{ minWidth: 0, color: COLORS.textSecondary, fontSize: 13 }}
+            >
+              <InfoOutlined sx={{ color: COLORS.textDisabled, fontSize: 18, flexShrink: 0 }} />
+              <Typography sx={{ color: 'inherit', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: { xs: 'normal', sm: 'nowrap' } }}>
+                可拖拽图标到左侧分组移动，或在网格内拖拽排序。
+              </Typography>
+            </Stack>
           </Stack>
           <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ flexShrink: 0, flexWrap: 'nowrap' }}>
-            <input ref={uploadInputRef} hidden type="file" accept="image/svg+xml,image/png,image/jpeg,image/gif,image/webp" onChange={(event) => handleUploadChange(event.target.files)} />
-            <input ref={importInputRef} hidden type="file" multiple accept="image/svg+xml,image/png,image/jpeg,image/gif,image/webp" onChange={(event) => handleImportChange(event.target.files)} />
+            <input ref={uploadInputRef} hidden type="file" multiple accept="image/svg+xml,image/png,image/jpeg,image/gif,image/webp" onChange={(event) => handleUploadChange(event.target.files)} />
             <Tooltip title="上传图标" arrow><Button variant="contained" startIcon={<UploadFile />} onClick={openUploadDialog} sx={toolbarButtonSx}>上传图标</Button></Tooltip>
-            <Tooltip title="导入图标" arrow><Button variant="outlined" startIcon={<FileUpload />} onClick={() => importInputRef.current?.click()} sx={toolbarButtonSx}>导入图标</Button></Tooltip>
             <Tooltip title={selectedHasBuiltinIcon ? '系统内置图标不能删除' : selectedCount === 0 ? '请先选择图标' : '批量删除'} arrow>
               <span>
                 <Button color="error" variant="outlined" startIcon={<Delete />} disabled={batchDeleteDisabled} onClick={() => batchDeleteMutation.mutate()} sx={toolbarButtonSx}>
@@ -639,12 +682,6 @@ export default function IconManagementPage() {
               </span>
             </Tooltip>
           </Stack>
-        </Stack>
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ height: 42, px: 2, borderBottom: `1px solid ${COLORS.divider}`, flexShrink: 0 }}>
-          <DriveFileMove fontSize="small" sx={{ color: COLORS.textDisabled }} />
-          <Typography sx={{ color: COLORS.textSecondary, fontSize: 13 }}>
-            当前分组：{selectedGroup?.name ?? '全部图标'}，可拖拽图标到左侧分组移动，或在网格内拖拽排序。
-          </Typography>
         </Stack>
         {renderIconState()}
         <Stack
@@ -655,29 +692,33 @@ export default function IconManagementPage() {
           sx={{ minHeight: 48, px: 2, borderTop: `1px solid ${COLORS.divider}`, flexShrink: 0 }}
         >
           <Typography sx={{ color: COLORS.textSecondary, fontSize: 13 }}>
-            共 {iconsPage?.totalElements ?? 0} 条
+            共 {iconsPage?.totalElements ?? 0} 条数据
           </Typography>
           <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end">
-            <TextField
-              select
-              size="small"
-              value={pageSize}
-              onChange={(event) => setPageSize(Number(event.target.value))}
-              sx={{ ...fieldSx, width: 104 }}
-            >
-              {pageSizeOptions.map((option) => (
-                <MenuItem key={option} value={option}>每页 {option}</MenuItem>
-              ))}
-            </TextField>
             <Pagination
               count={Math.max(iconsPage?.totalPages ?? 1, 1)}
               page={Math.min(page, Math.max(iconsPage?.totalPages ?? 1, 1))}
               onChange={(_, nextPage) => setPage(nextPage)}
               size="small"
               color="primary"
-              showFirstButton
-              showLastButton
             />
+            <TextField
+              select
+              size="small"
+              value={pageSize}
+              onChange={(event) => {
+                setPageSize(Number(event.target.value));
+                setPage(1);
+              }}
+              sx={{ ...fieldSx, width: 110 }}
+              InputProps={{
+                startAdornment: <InputAdornment position="start" sx={{ mr: 0 }}>每页</InputAdornment>,
+              }}
+            >
+              {ICON_PAGE_SIZE_OPTIONS.map((option) => (
+                <MenuItem key={option} value={option}>{option}</MenuItem>
+              ))}
+            </TextField>
           </Stack>
         </Stack>
       </Box>
@@ -704,7 +745,7 @@ export default function IconManagementPage() {
         <DialogTitle>上传图标说明</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1}>
-            <Typography sx={{ color: COLORS.textPrimary, fontSize: 14 }}>请上传单个图标素材文件。</Typography>
+            <Typography sx={{ color: COLORS.textPrimary, fontSize: 14 }}>请上传图标素材文件。</Typography>
             <Typography sx={{ color: COLORS.textSecondary, fontSize: 14 }}>支持 .svg、.png、.jpg、.jpeg、.gif、.webp 格式。</Typography>
             <Typography sx={{ color: COLORS.textSecondary, fontSize: 14 }}>单个文件大小不超过 2MB，建议优先使用透明背景 SVG 或 PNG。</Typography>
           </Stack>
@@ -712,6 +753,24 @@ export default function IconManagementPage() {
         <DialogActions>
           <Button onClick={() => setUploadDialogOpen(false)}>取消</Button>
           <Button variant="contained" onClick={confirmUploadDialog}>选择文件</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={deleteGroupConfirm.open} onClose={() => setDeleteGroupConfirm({ open: false })} fullWidth maxWidth="xs">
+        <DialogTitle>删除图标分组</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={1.25}>
+            <Alert severity="warning">
+              当前分组下已有 {deleteGroupConfirm.group?.iconCount ?? 0} 个图标，删除后会将当前分类以及分类下所有图标全部删除。
+            </Alert>
+            <Typography sx={{ color: COLORS.textPrimary, fontSize: 14 }}>
+              确认删除分组“{deleteGroupConfirm.group?.name ?? ''}”以及该分组下所有图标吗？
+            </Typography>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteGroupConfirm({ open: false })}>取消</Button>
+          <Button color="error" variant="contained" onClick={confirmCascadeDeleteGroup} disabled={groupDeleteMutation.isPending}>确认删除</Button>
         </DialogActions>
       </Dialog>
 

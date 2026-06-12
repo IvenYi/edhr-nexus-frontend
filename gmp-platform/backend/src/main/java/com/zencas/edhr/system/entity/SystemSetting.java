@@ -27,6 +27,10 @@ public class SystemSetting {
     private String systemName;
     @Column(name = "system_logo_file_id")
     private Long systemLogoFileId;
+    @Column(name = "logo_width")
+    private Integer logoWidth;
+    @Column(name = "logo_height")
+    private Integer logoHeight;
     @Column(name = "browser_title")
     private String browserTitle;
     @Column(name = "browser_icon_file_id")

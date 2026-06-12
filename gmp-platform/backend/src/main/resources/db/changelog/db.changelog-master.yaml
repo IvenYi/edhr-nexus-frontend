@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/0005-normalize-builtin-icon-group.sql
   - include:
       file: db/changelog/0006-icon-group-builtin-flag.sql
+  - include:
+      file: db/changelog/0007-system-logo-size-settings.sql

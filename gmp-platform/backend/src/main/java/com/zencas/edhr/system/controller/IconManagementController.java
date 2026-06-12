@@ -59,6 +59,8 @@ public class IconManagementController {
 
     private static final String TENANT_ID = "default";
     private static final String BUILTIN_SOURCE = "BUILTIN";
+    private static final String UPLOAD_SOURCE = "UPLOAD";
+    private static final String USER_UPLOAD_TAG = "用户上传";
     private static final String BUILTIN_GROUP_NAME = "系统内置图标";
     private static final String BUILTIN_DELETE_MESSAGE = "系统内置图标不能删除";
     private static final String BUILTIN_GROUP_NAME_CONFLICT_MESSAGE = "系统内置图标分组已存在，不能创建同名分组";
@@ -133,17 +135,33 @@ public class IconManagementController {
 
     @DeleteMapping("/icon-groups/{id}")
     @Transactional
-    public ApiResponse<Void> deleteGroup(@PathVariable Long id) {
+    public ApiResponse<Void> deleteGroup(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "false") boolean cascade) {
         IconGroup existing = iconGroupRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "图标分组不存在"));
         if (isBuiltinGroup(existing)) {
             throw new BusinessException(ErrorCode.GENERAL_003, "系统内置图标分组不能删除");
         }
-        if (iconAssetRepository.existsByGroupId(id)) {
+        if (!cascade && iconAssetRepository.existsByGroupId(id)) {
             throw new BusinessException(ErrorCode.GENERAL_003, "分组下存在图标，不能删除");
         }
+        List<IconAsset> icons = cascade
+                ? iconAssetRepository.findByGroupIdOrderBySortOrderAscCreatedAtAsc(id)
+                : List.of();
+        if (icons.stream().anyMatch(this::isBuiltinIcon)) {
+            throw new BusinessException(ErrorCode.GENERAL_003, BUILTIN_DELETE_MESSAGE);
+        }
+        if (!icons.isEmpty()) {
+            List<Long> fileIds = icons.stream().map(IconAsset::getFileId).filter(Objects::nonNull).distinct().toList();
+            iconAssetRepository.deleteAll(icons);
+            cleanupFiles(fileIds);
+        }
         iconGroupRepository.deleteById(id);
-        writeAudit("ICON_GROUP", id, "DELETE", groupSnapshot(existing), Map.of());
+        Map<String, Object> before = icons.isEmpty()
+                ? groupSnapshot(existing)
+                : Map.of("group", groupSnapshot(existing), "icons", icons.stream().map(this::iconSnapshot).toList());
+        writeAudit("ICON_GROUP", id, "DELETE", before, Map.of());
         return ApiResponse.success(null);
     }
 
@@ -204,7 +222,7 @@ public class IconManagementController {
             @RequestParam(value = "tags", required = false) String tags) throws IOException {
         ensureCustomIconTargetGroup(groupId);
         FileObject fileObject = storeFile(file, "ICON_ASSET", ICON_MIME_TYPES, ICON_MAX_FILE_SIZE);
-        IconAsset icon = createIconMetadata(fileObject, groupId, name, tags, "UPLOAD");
+        IconAsset icon = createIconMetadata(fileObject, groupId, name, tags, UPLOAD_SOURCE);
         writeAudit("ICON_ASSET", icon.getId(), "CREATE", Map.of(), iconSnapshot(icon));
         return ApiResponse.success(IconAssetResponse.from(icon));
     }
@@ -307,13 +325,14 @@ public class IconManagementController {
 
     private IconAsset createIconMetadata(FileObject fileObject, Long groupId, String name, String tags, String source) {
         String iconName = StringUtils.hasText(name) ? name.trim() : stripExtension(fileObject.getOriginalName());
+        String normalizedTags = StringUtils.hasText(tags) ? tags.trim() : (UPLOAD_SOURCE.equals(source) ? USER_UPLOAD_TAG : tags);
         IconAsset icon = IconAsset.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
                 .groupId(groupId)
                 .fileId(fileObject.getId())
                 .name(requireText(iconName, "图标名称不能为空"))
-                .tags(tags)
+                .tags(normalizedTags)
                 .source(source)
                 .sortOrder(0)
                 .createdBy(AuditContext.getOperatorId())

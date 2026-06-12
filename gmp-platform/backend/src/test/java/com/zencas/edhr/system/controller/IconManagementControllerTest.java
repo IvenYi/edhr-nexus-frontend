@@ -316,6 +316,26 @@ class IconManagementControllerTest {
     }
 
     @Test
+    void uploadIconDefaultsTagToUserUploadWhenTagIsBlank() throws Exception {
+        AuditContext.setOperator("99", "系统管理员");
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "custom.svg",
+                "image/svg+xml",
+                "<svg />".getBytes());
+        when(idGenerator.nextId()).thenReturn(501L, 101L, 901L);
+        when(fileObjectRepository.save(any(FileObject.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(iconAssetRepository.save(any(IconAsset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = controller.uploadIcon(file, 10L, null, null);
+
+        assertThat(response.getData().tags()).isEqualTo("用户上传");
+        ArgumentCaptor<IconAsset> iconCaptor = ArgumentCaptor.forClass(IconAsset.class);
+        verify(iconAssetRepository).save(iconCaptor.capture());
+        assertThat(iconCaptor.getValue().getTags()).isEqualTo("用户上传");
+    }
+
+    @Test
     void refusesToDeleteGroupWhenIconsExist() {
         IconGroup group = IconGroup.builder()
                 .id(10L)
@@ -326,11 +346,69 @@ class IconManagementControllerTest {
         when(iconGroupRepository.findById(10L)).thenReturn(Optional.of(group));
         when(iconAssetRepository.existsByGroupId(10L)).thenReturn(true);
 
-        assertThatThrownBy(() -> controller.deleteGroup(10L))
+        assertThatThrownBy(() -> controller.deleteGroup(10L, false))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("分组下存在图标，不能删除");
 
         verify(iconGroupRepository, never()).deleteById(10L);
+        verify(auditEventRepository, never()).save(any(AuditEvent.class));
+    }
+
+    @Test
+    void cascadeDeleteGroupRemovesGroupIconsAndFiles() throws Exception {
+        AuditContext.setOperator("99", "系统管理员");
+        Path tempFile = Files.createTempFile("icon-group-delete", ".svg");
+        IconGroup group = IconGroup.builder()
+                .id(10L)
+                .tenantId("default")
+                .name("质量图标")
+                .sortOrder(1)
+                .build();
+        IconAsset icon = IconAsset.builder()
+                .id(101L)
+                .tenantId("default")
+                .groupId(10L)
+                .fileId(501L)
+                .name("上传图标")
+                .source("UPLOAD")
+                .build();
+        when(iconGroupRepository.findById(10L)).thenReturn(Optional.of(group));
+        when(iconAssetRepository.findByGroupIdOrderBySortOrderAscCreatedAtAsc(10L)).thenReturn(List.of(icon));
+        when(fileObjectRepository.findAllById(List.of(501L))).thenReturn(List.of(
+                FileObject.builder().id(501L).originalName("icon.svg").storedPath(tempFile.toString()).build()));
+        when(idGenerator.nextId()).thenReturn(901L);
+
+        controller.deleteGroup(10L, true);
+
+        verify(iconAssetRepository).deleteAll(List.of(icon));
+        verify(iconGroupRepository).deleteById(10L);
+        verify(fileObjectRepository).deleteAllById(List.of(501L));
+        assertThat(Files.exists(tempFile)).isFalse();
+
+        ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(auditEventRepository).save(auditCaptor.capture());
+        JsonNode before = objectMapper.readTree(auditCaptor.getValue().getContentBefore());
+        assertThat(before.get("icons")).hasSize(1);
+        assertThat(before.get("group").get("name").asText()).isEqualTo("质量图标");
+    }
+
+    @Test
+    void refusesToCascadeDeleteBuiltinGroup() {
+        IconGroup builtin = IconGroup.builder()
+                .id(10040L)
+                .tenantId("default")
+                .name("系统内置图标")
+                .sortOrder(0)
+                .builtin(true)
+                .build();
+        when(iconGroupRepository.findById(10040L)).thenReturn(Optional.of(builtin));
+
+        assertThatThrownBy(() -> controller.deleteGroup(10040L, true))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage("系统内置图标分组不能删除");
+
+        verify(iconAssetRepository, never()).deleteAll(any());
+        verify(iconGroupRepository, never()).deleteById(10040L);
         verify(auditEventRepository, never()).save(any(AuditEvent.class));
     }
 
@@ -345,7 +423,7 @@ class IconManagementControllerTest {
                 .build();
         when(iconGroupRepository.findById(10040L)).thenReturn(Optional.of(builtin));
 
-        assertThatThrownBy(() -> controller.deleteGroup(10040L))
+        assertThatThrownBy(() -> controller.deleteGroup(10040L, false))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("系统内置图标分组不能删除");
 

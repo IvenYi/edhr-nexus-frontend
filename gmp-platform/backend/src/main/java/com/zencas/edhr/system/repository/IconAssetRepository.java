@@ -12,6 +12,8 @@ import java.util.List;
 public interface IconAssetRepository extends JpaRepository<IconAsset, Long>, JpaSpecificationExecutor<IconAsset> {
     boolean existsByGroupId(Long groupId);
 
+    boolean existsByFileId(Long fileId);
+
     List<IconAsset> findByGroupIdOrderBySortOrderAscCreatedAtAsc(Long groupId);
 
     @Query("select new com.zencas.edhr.system.repository.IconAssetRepository$GroupIconCount(i.groupId, count(i)) "

@@ -3,6 +3,7 @@ package com.zencas.edhr.system.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.audit.AuditContext;
+import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
@@ -21,6 +22,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,10 +72,14 @@ class SystemSettingsControllerTest {
 
         var response = controller.updateSettings(new SystemSettingsController.UpdateSettingsRequest(
                 "  新系统  ",
-                "  新标题  "));
+                "  新标题  ",
+                48,
+                40));
 
         assertThat(response.getData().getSystemName()).isEqualTo("新系统");
         assertThat(response.getData().getBrowserTitle()).isEqualTo("新标题");
+        assertThat(response.getData().getLogoWidth()).isEqualTo(48);
+        assertThat(response.getData().getLogoHeight()).isEqualTo(40);
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository).save(auditCaptor.capture());
         AuditEvent event = auditCaptor.getValue();
@@ -85,6 +91,29 @@ class SystemSettingsControllerTest {
         assertThat(after.get("systemName").asText()).isEqualTo("新系统");
         assertThat(before.get("browserTitle").asText()).isEqualTo("旧标题");
         assertThat(after.get("browserTitle").asText()).isEqualTo("新标题");
+        assertThat(after.get("logoWidth").asInt()).isEqualTo(48);
+        assertThat(after.get("logoHeight").asInt()).isEqualTo(40);
+    }
+
+    @Test
+    void rejectsLogoSizeGreaterThanSixtyPixels() {
+        SystemSetting existing = SystemSetting.builder()
+                .id(10L)
+                .tenantId("default")
+                .systemName("旧系统")
+                .browserTitle("旧标题")
+                .logoWidth(32)
+                .logoHeight(32)
+                .build();
+        when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.of(existing));
+
+        assertThatThrownBy(() -> controller.updateSettings(new SystemSettingsController.UpdateSettingsRequest(
+                "新系统",
+                "新标题",
+                61,
+                32)))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Logo 长度不能超过 60px");
     }
 
     @Test
@@ -110,7 +139,7 @@ class SystemSettingsControllerTest {
 
         assertThat(response.getData().getSystemLogoFileId()).isEqualTo(601L);
         assertThat(response.getData().getLogoFileId()).isEqualTo(601L);
-        assertThat(response.getData().getLogoUrl()).isEqualTo("/api/v1/files/601/preview");
+        assertThat(response.getData().getLogoUrl()).isEqualTo("/api/v1/files/601/public-preview");
         verify(fileObjectRepository).save(any());
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository).save(auditCaptor.capture());

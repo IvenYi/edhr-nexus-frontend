@@ -38,8 +38,20 @@ const fieldSx = {
   '& .MuiInputBase-root': { height: 40 },
 };
 
+const LOGO_SIZE_MAX = 60;
+
 function getApiErrorMessage(error: unknown, fallback: string) {
   return error instanceof Error && error.message ? error.message : fallback;
+}
+
+function normalizeLogoSize(value?: number): number {
+  if (!Number.isFinite(value)) return 32;
+  return Math.min(Math.max(Number(value), 1), LOGO_SIZE_MAX);
+}
+
+function readLogoSizeInput(value: string): number {
+  if (!value) return 1;
+  return normalizeLogoSize(Number(value));
 }
 
 function normalizeSettings(settings?: SystemSettings): SystemSettings {
@@ -48,6 +60,8 @@ function normalizeSettings(settings?: SystemSettings): SystemSettings {
     ...(settings ?? {}),
     systemName: settings?.systemName?.trim() || DEFAULT_SYSTEM_BRANDING.systemName,
     browserTitle: settings?.browserTitle?.trim() || DEFAULT_SYSTEM_BRANDING.browserTitle,
+    logoWidth: normalizeLogoSize(settings?.logoWidth),
+    logoHeight: normalizeLogoSize(settings?.logoHeight),
   };
 }
 
@@ -128,7 +142,7 @@ export default function SystemSettingsPage() {
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const faviconInputRef = useRef<HTMLInputElement | null>(null);
   const { refreshBranding } = useSystemBranding();
-  const [form, setForm] = useState({ systemName: '', browserTitle: '' });
+  const [form, setForm] = useState({ systemName: '', browserTitle: '', logoWidth: 32, logoHeight: 32 });
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
     message: '',
@@ -148,6 +162,8 @@ export default function SystemSettingsPage() {
     setForm({
       systemName: nextSettings.systemName,
       browserTitle: nextSettings.browserTitle,
+      logoWidth: normalizeLogoSize(nextSettings.logoWidth),
+      logoHeight: normalizeLogoSize(nextSettings.logoHeight),
     });
   }, [settingsQuery.data]);
 
@@ -160,9 +176,12 @@ export default function SystemSettingsPage() {
     setSnackbar((current) => ({ ...current, open: false }));
   };
 
-  const refreshSettings = async () => {
+  const refreshSettings = async (nextSettings?: SystemSettings) => {
+    if (nextSettings) {
+      queryClient.setQueryData(['system', 'settings'], nextSettings);
+    }
     await queryClient.invalidateQueries({ queryKey: ['system', 'settings'] });
-    await refreshBranding();
+    await refreshBranding(nextSettings);
   };
 
   const saveMutation = useMutation({
@@ -171,10 +190,17 @@ export default function SystemSettingsPage() {
       const browserTitle = form.browserTitle.trim();
       if (!systemName) throw new Error('系统名称不能为空');
       if (!browserTitle) throw new Error('浏览器标题不能为空');
-      return updateSystemSettings({ systemName, browserTitle });
+      if (form.logoWidth > LOGO_SIZE_MAX) throw new Error('Logo 长度不能超过 60px');
+      if (form.logoHeight > LOGO_SIZE_MAX) throw new Error('Logo 高度不能超过 60px');
+      return updateSystemSettings({
+        systemName,
+        browserTitle,
+        logoWidth: normalizeLogoSize(form.logoWidth),
+        logoHeight: normalizeLogoSize(form.logoHeight),
+      });
     },
-    onSuccess: async () => {
-      await refreshSettings();
+    onSuccess: async (savedSettings) => {
+      await refreshSettings(savedSettings);
       showSnackbar('系统设置已保存', 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '系统设置保存失败'), 'error'),
@@ -182,8 +208,8 @@ export default function SystemSettingsPage() {
 
   const logoUploadMutation = useMutation({
     mutationFn: uploadSystemLogo,
-    onSuccess: async () => {
-      await refreshSettings();
+    onSuccess: async (savedSettings) => {
+      await refreshSettings(savedSettings);
       showSnackbar('系统 Logo 已上传', 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '系统 Logo 上传失败'), 'error'),
@@ -191,8 +217,8 @@ export default function SystemSettingsPage() {
 
   const faviconUploadMutation = useMutation({
     mutationFn: uploadSystemFavicon,
-    onSuccess: async () => {
-      await refreshSettings();
+    onSuccess: async (savedSettings) => {
+      await refreshSettings(savedSettings);
       showSnackbar('浏览器标签 Icon 已上传', 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '浏览器标签 Icon 上传失败'), 'error'),
@@ -200,8 +226,8 @@ export default function SystemSettingsPage() {
 
   const logoDeleteMutation = useMutation({
     mutationFn: deleteSystemLogo,
-    onSuccess: async () => {
-      await refreshSettings();
+    onSuccess: async (savedSettings) => {
+      await refreshSettings(savedSettings);
       showSnackbar('系统 Logo 已删除', 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '系统 Logo 删除失败'), 'error'),
@@ -209,8 +235,8 @@ export default function SystemSettingsPage() {
 
   const faviconDeleteMutation = useMutation({
     mutationFn: deleteSystemFavicon,
-    onSuccess: async () => {
-      await refreshSettings();
+    onSuccess: async (savedSettings) => {
+      await refreshSettings(savedSettings);
       showSnackbar('浏览器标签 Icon 已删除', 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '浏览器标签 Icon 删除失败'), 'error'),
@@ -280,6 +306,30 @@ export default function SystemSettingsPage() {
                 fullWidth
                 sx={fieldSx}
               />
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField
+                  label="Logo 长度"
+                  type="number"
+                  value={form.logoWidth}
+                  onChange={(event) => setForm((current) => ({ ...current, logoWidth: readLogoSizeInput(event.target.value) }))}
+                  required
+                  fullWidth
+                  inputProps={{ min: 1, max: LOGO_SIZE_MAX }}
+                  helperText="单位 px，最大 60px"
+                  sx={fieldSx}
+                />
+                <TextField
+                  label="Logo 高度"
+                  type="number"
+                  value={form.logoHeight}
+                  onChange={(event) => setForm((current) => ({ ...current, logoHeight: readLogoSizeInput(event.target.value) }))}
+                  required
+                  fullWidth
+                  inputProps={{ min: 1, max: LOGO_SIZE_MAX }}
+                  helperText="单位 px，最大 60px"
+                  sx={fieldSx}
+                />
+              </Stack>
             </Stack>
           </Box>
 

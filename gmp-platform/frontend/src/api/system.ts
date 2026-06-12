@@ -43,6 +43,8 @@ export interface SystemSettings {
   browserTitle: string;
   logoFileId?: string | number | null;
   logoUrl?: string;
+  logoWidth?: number;
+  logoHeight?: number;
   faviconFileId?: string | number | null;
   faviconUrl?: string;
 }
@@ -50,6 +52,8 @@ export interface SystemSettings {
 export interface SystemSettingsUpdate {
   systemName: string;
   browserTitle: string;
+  logoWidth: number;
+  logoHeight: number;
 }
 
 function unwrap<T>(response: { data: { data: T } }): T {
@@ -71,8 +75,8 @@ export const updateIconGroup = async (id: string | number, payload: { name: stri
   return unwrap<IconGroup>(response);
 };
 
-export const deleteIconGroup = async (id: string | number): Promise<void> => {
-  await client.delete(`/system/icon-groups/${id}`);
+export const deleteIconGroup = async (id: string | number, options?: { cascade?: boolean }): Promise<void> => {
+  await client.delete(`/system/icon-groups/${id}`, { params: { cascade: options?.cascade ?? false } });
 };
 
 export const reorderIconGroups = async (groupIds: Array<string | number>): Promise<void> => {

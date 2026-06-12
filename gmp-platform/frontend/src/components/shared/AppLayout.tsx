@@ -44,6 +44,7 @@ import {
 import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
 import { inferPermissionCode, useManagedSidebarModules } from '@/utils/menuManagement';
 import { useSystemBranding } from '@/hooks/useSystemBranding';
+import { renderManagedIcon } from '@/utils/iconAssets';
 
 const COLORS = {
   primary: '#1890ff',
@@ -131,7 +132,7 @@ const HOME_TAB: AppTab = {
 const initialTabs: AppTab[] = [HOME_TAB];
 
 function getIcon(iconName?: string): ReactNode {
-  return iconName ? ICON_MAP[iconName] || FALLBACK_ICON : FALLBACK_ICON;
+  return renderManagedIcon(iconName) || (iconName ? ICON_MAP[iconName] || FALLBACK_ICON : FALLBACK_ICON);
 }
 
 function FunctionMenuToggleIcon({ direction }: { direction: 'collapse' | 'expand' }) {
@@ -812,7 +813,7 @@ export default function AppLayout() {
         <Box
           sx={{
             width: '100%',
-            height: 58,
+            height: 60,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -820,7 +821,18 @@ export default function AppLayout() {
           }}
         >
           {branding.logoUrl ? (
-            <Box component="img" src={branding.logoUrl} alt={systemName} sx={{ width: 32, height: 32, objectFit: 'contain' }} />
+            <Box
+              component="img"
+              src={branding.logoUrl}
+              alt={systemName}
+              sx={{
+                width: branding.logoWidth,
+                height: branding.logoHeight,
+                maxWidth: 60,
+                maxHeight: 60,
+                objectFit: 'contain',
+              }}
+            />
           ) : (
             <LocalHospitalRounded sx={{ fontSize: 30 }} />
           )}

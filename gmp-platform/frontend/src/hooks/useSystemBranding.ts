@@ -6,10 +6,23 @@ export const DEFAULT_SYSTEM_BRANDING: SystemSettings = {
   systemName: 'eDHR 系统',
   browserTitle: 'eDHR - 医疗器械电子设备历史记录系统',
   logoUrl: '',
+  logoWidth: 32,
+  logoHeight: 32,
   faviconUrl: '',
 };
 
 export const SYSTEM_BRANDING_QUERY_KEY = ['system-branding', 'public'] as const;
+
+export function normalizeSystemBranding(settings?: Partial<SystemSettings>): SystemSettings {
+  return {
+    ...DEFAULT_SYSTEM_BRANDING,
+    ...(settings ?? {}),
+    systemName: settings?.systemName?.trim() || DEFAULT_SYSTEM_BRANDING.systemName,
+    browserTitle: settings?.browserTitle?.trim() || DEFAULT_SYSTEM_BRANDING.browserTitle,
+    logoWidth: settings?.logoWidth ?? DEFAULT_SYSTEM_BRANDING.logoWidth,
+    logoHeight: settings?.logoHeight ?? DEFAULT_SYSTEM_BRANDING.logoHeight,
+  };
+}
 
 export function applySystemBranding(settings: Partial<SystemSettings> = DEFAULT_SYSTEM_BRANDING) {
   const title = settings.browserTitle?.trim() || DEFAULT_SYSTEM_BRANDING.browserTitle;
@@ -37,18 +50,18 @@ export function useSystemBranding() {
     retry: 1,
   });
 
-  const branding = useMemo<SystemSettings>(() => ({
-    ...DEFAULT_SYSTEM_BRANDING,
-    ...(query.data ?? {}),
-    systemName: query.data?.systemName?.trim() || DEFAULT_SYSTEM_BRANDING.systemName,
-    browserTitle: query.data?.browserTitle?.trim() || DEFAULT_SYSTEM_BRANDING.browserTitle,
-  }), [query.data]);
+  const branding = useMemo<SystemSettings>(() => normalizeSystemBranding(query.data), [query.data]);
 
   useEffect(() => {
     applySystemBranding(branding);
   }, [branding]);
 
-  const refreshBranding = useCallback(async () => {
+  const refreshBranding = useCallback(async (settings?: SystemSettings) => {
+    if (settings) {
+      const nextBranding = normalizeSystemBranding(settings);
+      queryClient.setQueryData<SystemSettings>(SYSTEM_BRANDING_QUERY_KEY, nextBranding);
+      applySystemBranding(nextBranding);
+    }
     await queryClient.invalidateQueries({ queryKey: SYSTEM_BRANDING_QUERY_KEY });
   }, [queryClient]);
 

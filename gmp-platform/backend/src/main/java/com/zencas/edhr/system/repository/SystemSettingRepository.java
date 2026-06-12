@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface SystemSettingRepository extends JpaRepository<SystemSetting, Long> {
     Optional<SystemSetting> findByTenantId(String tenantId);
+
+    boolean existsBySystemLogoFileIdOrBrowserIconFileId(Long systemLogoFileId, Long browserIconFileId);
 }

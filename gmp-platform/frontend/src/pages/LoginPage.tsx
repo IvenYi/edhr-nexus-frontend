@@ -105,7 +105,18 @@ export default function LoginPage() {
             }}
           >
             {branding.logoUrl ? (
-              <Box component="img" src={branding.logoUrl} alt={systemName} sx={{ width: 46, height: 46, objectFit: 'contain' }} />
+              <Box
+                component="img"
+                src={branding.logoUrl}
+                alt={systemName}
+                sx={{
+                  width: branding.logoWidth,
+                  height: branding.logoHeight,
+                  maxWidth: 60,
+                  maxHeight: 60,
+                  objectFit: 'contain',
+                }}
+              />
             ) : (
               <Visibility sx={{ fontSize: 36, color: '#64B5F6' }} />
             )}

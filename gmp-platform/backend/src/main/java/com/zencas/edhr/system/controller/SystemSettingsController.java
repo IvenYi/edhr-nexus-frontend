@@ -50,6 +50,8 @@ public class SystemSettingsController {
     private static final String TENANT_ID = "default";
     private static final String DEFAULT_SYSTEM_NAME = "eDHR 系统";
     private static final String DEFAULT_BROWSER_TITLE = "eDHR - 医疗器械电子设备历史记录系统";
+    private static final int DEFAULT_LOGO_SIZE = 32;
+    private static final int LOGO_SIZE_MAX = 60;
     private static final long BRAND_MAX_FILE_SIZE = 2L * 1024 * 1024;
     private static final List<String> LOGO_MIME_TYPES = List.of("image/svg+xml", "image/png", "image/jpeg", "image/webp");
     private static final List<String> FAVICON_MIME_TYPES = List.of("image/x-icon", "image/vnd.microsoft.icon", "image/png", "image/svg+xml");
@@ -80,6 +82,8 @@ public class SystemSettingsController {
         Map<String, Object> before = settingSnapshot(setting);
         setting.setSystemName(requireText(request == null ? null : request.systemName(), "系统名称不能为空"));
         setting.setBrowserTitle(requireText(request == null ? null : request.browserTitle(), "浏览器标题不能为空"));
+        setting.setLogoWidth(normalizeLogoSize(request == null ? null : request.logoWidth(), "Logo 长度"));
+        setting.setLogoHeight(normalizeLogoSize(request == null ? null : request.logoHeight(), "Logo 高度"));
         setting.setUpdatedBy(AuditContext.getOperatorId());
         SystemSetting saved = systemSettingRepository.save(setting);
         writeAudit(saved.getId(), "UPDATE", before, settingSnapshot(saved));
@@ -202,6 +206,13 @@ public class SystemSettingsController {
         return value.trim();
     }
 
+    private Integer normalizeLogoSize(Integer value, String label) {
+        int size = value == null ? DEFAULT_LOGO_SIZE : value;
+        if (size < 1) throw new BusinessException(ErrorCode.GENERAL_001, label + "不能小于 1px");
+        if (size > LOGO_SIZE_MAX) throw new BusinessException(ErrorCode.GENERAL_001, label + "不能超过 60px");
+        return size;
+    }
+
     private SystemSettingResponse toResponse(SystemSetting setting) {
         return SystemSettingResponse.builder()
                 .id(setting.getId())
@@ -209,6 +220,8 @@ public class SystemSettingsController {
                 .systemLogoFileId(setting.getSystemLogoFileId())
                 .logoFileId(setting.getSystemLogoFileId())
                 .logoUrl(previewUrl(setting.getSystemLogoFileId()))
+                .logoWidth(normalizeLogoSize(setting.getLogoWidth(), "Logo 长度"))
+                .logoHeight(normalizeLogoSize(setting.getLogoHeight(), "Logo 高度"))
                 .browserTitle(setting.getBrowserTitle())
                 .browserIconFileId(setting.getBrowserIconFileId())
                 .faviconFileId(setting.getBrowserIconFileId())
@@ -218,7 +231,7 @@ public class SystemSettingsController {
     }
 
     private String previewUrl(Long fileId) {
-        return fileId == null ? "" : "/api/v1/files/" + fileId + "/preview";
+        return fileId == null ? "" : "/api/v1/files/" + fileId + "/public-preview";
     }
 
     private Map<String, Object> settingSnapshot(SystemSetting setting) {
@@ -226,6 +239,8 @@ public class SystemSettingsController {
         snapshot.put("id", setting.getId());
         snapshot.put("systemName", setting.getSystemName());
         snapshot.put("systemLogoFileId", setting.getSystemLogoFileId());
+        snapshot.put("logoWidth", normalizeLogoSize(setting.getLogoWidth(), "Logo 长度"));
+        snapshot.put("logoHeight", normalizeLogoSize(setting.getLogoHeight(), "Logo 高度"));
         snapshot.put("browserTitle", setting.getBrowserTitle());
         snapshot.put("browserIconFileId", setting.getBrowserIconFileId());
         return snapshot;
@@ -280,7 +295,7 @@ public class SystemSettingsController {
         }
     }
 
-    public record UpdateSettingsRequest(String systemName, String browserTitle) {
+    public record UpdateSettingsRequest(String systemName, String browserTitle, Integer logoWidth, Integer logoHeight) {
     }
 
     @Data
@@ -291,6 +306,8 @@ public class SystemSettingsController {
         private Long systemLogoFileId;
         private Long logoFileId;
         private String logoUrl;
+        private Integer logoWidth;
+        private Integer logoHeight;
         private String browserTitle;
         private Long browserIconFileId;
         private Long faviconFileId;
