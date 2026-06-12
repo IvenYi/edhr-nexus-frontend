@@ -48,6 +48,8 @@ public class SecurityConfig {
                     response, HttpStatus.FORBIDDEN, "无操作权限")))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/login").permitAll()
+                .requestMatchers("/api/v1/system/settings/public").permitAll()
+                .requestMatchers("/api/v1/files/*/public-preview").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .anyRequest().authenticated())

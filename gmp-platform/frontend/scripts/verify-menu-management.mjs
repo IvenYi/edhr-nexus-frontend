@@ -75,6 +75,16 @@ mustInclude('src/pages/system/MenuManagementPage.tsx', 'saveManagedSidebarModule
 mustInclude('src/pages/system/MenuManagementPage.tsx', 'resetManagedSidebarModules()', 'page should restore default sidebar menus');
 mustInclude('src/pages/system/MenuManagementPage.tsx', 'MAX_MENU_CHILDREN_DEPTH', 'page should surface the two-level menu limit');
 mustInclude('src/pages/system/MenuManagementPage.tsx', '不能超过 2 级', 'page should communicate the two-level menu limit');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'label="模块编码"', 'module code should not be displayed on the menu management page');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'data-menu-management-page', 'menu management page should expose a full-height page container');
+mustInclude('src/pages/system/MenuManagementPage.tsx', "height: '100%'", 'menu management page should fill the routed content height');
+mustInclude('src/pages/system/MenuManagementPage.tsx', "overflow: 'hidden'", 'menu management page should prevent page-level scrolling');
+mustInclude('src/pages/system/MenuManagementPage.tsx', 'data-menu-management-menu-scroll', 'module menu list should own the vertical scrollbar');
+mustInclude('src/pages/system/MenuManagementPage.tsx', "overflow: 'auto'", 'module menu list should scroll inside its container');
+mustInclude('src/pages/system/MenuManagementPage.tsx', "key={`root-menu-${rootIndex}`}", 'root menu row key should not depend on editable menu name');
+mustInclude('src/pages/system/MenuManagementPage.tsx', "key={`child-menu-${rootIndex}-${childIndex}`}", 'child menu row key should not depend on editable menu name');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'key={`${menu.label}-${rootIndex}`}', 'editing a root menu name should not remount the row and blur the input');
+mustNotInclude('src/pages/system/MenuManagementPage.tsx', 'key={`${child.label}-${childIndex}`}', 'editing a child menu name should not remount the row and blur the input');
 
 if (failures.length > 0) {
   console.error('Menu management verification failed:');

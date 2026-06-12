@@ -43,6 +43,7 @@ import {
 } from '@mui/icons-material';
 import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
 import { inferPermissionCode, useManagedSidebarModules } from '@/utils/menuManagement';
+import { useSystemBranding } from '@/hooks/useSystemBranding';
 
 const COLORS = {
   primary: '#1890ff',
@@ -67,6 +68,7 @@ const TOP_NAV_HEIGHT = 52;
 const TABS_BAR_HEIGHT = 50;
 const HEADER_TOTAL_HEIGHT = TOP_NAV_HEIGHT + TABS_BAR_HEIGHT;
 const AUTH_USER_CHANGE_EVENT = 'edhr:auth-user-change';
+const DEFAULT_SYSTEM_NAME = 'eDHR 系统';
 
 const EMPTY_SIDEBAR_MODULE: SidebarModule = {
   id: 'empty',
@@ -312,6 +314,7 @@ export default function AppLayout() {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { branding } = useSystemBranding();
 
   const [user, setUser] = useState<StoredUser>(() => readStoredUser());
   const hasPermissionSnapshot = Array.isArray(user.permissions);
@@ -371,6 +374,7 @@ export default function AppLayout() {
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
   const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
   const userDisplayName = user.username || user.displayName || 'admin';
+  const systemName = branding.systemName || DEFAULT_SYSTEM_NAME;
   const homeTab = openTabs.find((tab) => tab.path === HOME_TAB.path) || HOME_TAB;
   const scrollableTabs = openTabs.filter((tab) => tab.path !== HOME_TAB.path);
 
@@ -815,7 +819,11 @@ export default function AppLayout() {
             color: COLORS.sidebarDarkText,
           }}
         >
-          <LocalHospitalRounded sx={{ fontSize: 30 }} />
+          {branding.logoUrl ? (
+            <Box component="img" src={branding.logoUrl} alt={systemName} sx={{ width: 32, height: 32, objectFit: 'contain' }} />
+          ) : (
+            <LocalHospitalRounded sx={{ fontSize: 30 }} />
+          )}
         </Box>
 
         {visibleModules.map((module) => {
@@ -921,7 +929,7 @@ export default function AppLayout() {
               whiteSpace: 'nowrap',
             }}
           >
-            eDHR 系统
+            {systemName}
           </Box>
 
           <Box

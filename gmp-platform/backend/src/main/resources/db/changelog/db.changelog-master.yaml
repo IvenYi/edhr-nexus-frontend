@@ -3,3 +3,11 @@ databaseChangeLog:
       file: db/changelog/0001-init-schema.sql
   - include:
       file: db/changelog/0002-seed-data.sql
+  - include:
+      file: db/changelog/0003-system-icon-settings.sql
+  - include:
+      file: db/changelog/0004-builtin-icons.sql
+  - include:
+      file: db/changelog/0005-normalize-builtin-icon-group.sql
+  - include:
+      file: db/changelog/0006-icon-group-builtin-flag.sql

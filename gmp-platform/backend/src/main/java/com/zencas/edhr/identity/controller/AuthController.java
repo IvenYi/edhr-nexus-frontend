@@ -50,7 +50,7 @@ public class AuthController {
         List<String> permissions = permissionSnapshot.permissions();
 
         String token = jwtTokenProvider.generateToken(
-                user.getId().toString(), user.getUsername(), permissions);
+                user.getId().toString(), user.getUsername());
 
         // Update last login
         user.setLastLoginAt(java.time.LocalDateTime.now());

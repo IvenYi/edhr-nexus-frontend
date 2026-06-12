@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = SecurityConfigTest.ProtectedApiController.class)
-@Import({SecurityConfig.class, JwtAuthenticationFilter.class})
+@Import({SecurityConfig.class, JwtAuthenticationFilter.class, SecurityConfigTest.ProtectedApiController.class})
 class SecurityConfigTest {
 
     @Autowired
@@ -45,11 +45,35 @@ class SecurityConfigTest {
                 .andExpect(jsonPath("$.message").value("未登录或登录已过期"));
     }
 
+    @Test
+    void publicFilePreviewCanBeRequestedWithoutJwtForImageTags() throws Exception {
+        mockMvc.perform(get("/api/v1/files/123/public-preview"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void authenticatedFilePreviewStillRequiresJwt() throws Exception {
+        mockMvc.perform(get("/api/v1/files/123/preview"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(401))
+                .andExpect(jsonPath("$.message").value("未登录或登录已过期"));
+    }
+
     @RestController
     static class ProtectedApiController {
         @GetMapping("/api/v1/protected/ping")
         String ping() {
             return "pong";
+        }
+
+        @GetMapping("/api/v1/files/{id}/preview")
+        String preview() {
+            return "preview";
+        }
+
+        @GetMapping("/api/v1/files/{id}/public-preview")
+        String publicPreview() {
+            return "public-preview";
         }
     }
 }

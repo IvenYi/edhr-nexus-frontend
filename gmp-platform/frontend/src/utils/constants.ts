@@ -178,6 +178,8 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         icon: 'Settings',
         children: [
           { label: '菜单管理', path: '/system/menu-management' },
+          { label: '图标管理', path: '/system/icons' },
+          { label: '系统设置', path: '/system/settings' },
           { label: '编码规则', path: '/system/numbering-rules' },
           { label: '审计日志', path: '/system/audit-logs' },
           { label: '签名记录', path: '/system/signatures' },

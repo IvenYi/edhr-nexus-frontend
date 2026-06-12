@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.List;
 
 /** JWT token provider for generating and validating JWT tokens. */
 @Slf4j
@@ -26,14 +25,13 @@ public class JwtTokenProvider {
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(String userId, String username, List<String> permissions) {
+    public String generateToken(String userId, String username) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
                 .subject(userId)
                 .claim("username", username)
-                .claim("permissions", permissions)
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)
@@ -46,11 +44,6 @@ public class JwtTokenProvider {
 
     public String getUsername(String token) {
         return parseClaims(token).get("username", String.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<String> getPermissions(String token) {
-        return parseClaims(token).get("permissions", List.class);
     }
 
     public boolean validateToken(String token) {

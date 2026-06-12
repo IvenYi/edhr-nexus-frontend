@@ -7,8 +7,15 @@ import {
   Visibility, LockOutlined, PersonOutline,
 } from '@mui/icons-material';
 import client from '@/api/client';
+import { useSystemBranding } from '@/hooks/useSystemBranding';
+
+const DEFAULT_SYSTEM_NAME = 'eDHR 系统';
+const DEFAULT_LOGIN_TITLE = '登录 eDHR';
 
 export default function LoginPage() {
+  const { branding } = useSystemBranding();
+  const systemName = branding.systemName || DEFAULT_SYSTEM_NAME;
+  const loginTitle = systemName === DEFAULT_SYSTEM_NAME ? DEFAULT_LOGIN_TITLE : `登录 ${systemName}`;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -97,11 +104,15 @@ export default function LoginPage() {
               border: '1px solid rgba(255,255,255,0.15)',
             }}
           >
-            <Visibility sx={{ fontSize: 36, color: '#64B5F6' }} />
+            {branding.logoUrl ? (
+              <Box component="img" src={branding.logoUrl} alt={systemName} sx={{ width: 46, height: 46, objectFit: 'contain' }} />
+            ) : (
+              <Visibility sx={{ fontSize: 36, color: '#64B5F6' }} />
+            )}
           </Box>
 
           <Typography variant="h4" fontWeight={700} sx={{ mb: 1.5, color: '#FFFFFF' }}>
-            eDHR 系统
+            {systemName}
           </Typography>
           <Typography variant="body1" sx={{ mb: 1, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
             电子设备历史记录平台
@@ -154,7 +165,7 @@ export default function LoginPage() {
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <LockOutlined sx={{ fontSize: 40, color: 'primary.main', mb: 1.5 }} />
             <Typography variant="h5" fontWeight={600} gutterBottom>
-              登录 eDHR
+              {loginTitle}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               请输入您的账号和密码
@@ -208,7 +219,7 @@ export default function LoginPage() {
             color="text.disabled"
             sx={{ display: 'block', textAlign: 'center', mt: 3 }}
           >
-            v2.1.0 · Zencas eDHR Platform
+            v2.1.0 · Zencas {systemName}
           </Typography>
         </Card>
       </Box>

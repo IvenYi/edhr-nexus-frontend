@@ -211,8 +211,19 @@ export default function MenuManagementPage() {
   };
 
   return (
-    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '260px minmax(0, 1fr)' }, gap: 2, minHeight: 'calc(100vh - 40px)' }}>
-      <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' }}>
+    <Box
+      data-menu-management-page
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', lg: '260px minmax(0, 1fr)' },
+        gridTemplateRows: { xs: '220px minmax(0, 1fr)', lg: 'minmax(0, 1fr)' },
+        gap: 2,
+        height: 'calc(100vh - 142px)',
+        minHeight: 0,
+        overflow: 'hidden',
+      }}
+    >
+      <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
           <Typography sx={{ fontWeight: 600, color: '#303133' }}>系统模块</Typography>
           <Tooltip title="新增模块" arrow>
@@ -222,7 +233,7 @@ export default function MenuManagementPage() {
           </Tooltip>
         </Stack>
 
-        <Stack spacing={0.5} sx={{ p: 1 }}>
+        <Stack spacing={0.5} sx={{ p: 1, flex: 1, minHeight: 0, overflow: 'auto' }}>
           {modules.map((module) => {
             const selected = module.id === selectedModule?.id;
             return (
@@ -244,7 +255,7 @@ export default function MenuManagementPage() {
         </Stack>
       </Box>
 
-      <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', minWidth: 0 }}>
+      <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', minWidth: 0, display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
           <Typography sx={{ fontWeight: 600, color: '#303133' }}>菜单管理</Typography>
           <Stack direction="row" spacing={1}>
@@ -253,7 +264,7 @@ export default function MenuManagementPage() {
           </Stack>
         </Stack>
 
-        <Stack spacing={2} sx={{ p: 2 }}>
+        <Stack spacing={2} sx={{ p: 2, flex: 1, minHeight: 0, overflow: 'hidden' }}>
           <Alert severity="info">
             模块下菜单支持 {MAX_MENU_CHILDREN_DEPTH} 级，不能超过 2 级。
           </Alert>
@@ -262,26 +273,25 @@ export default function MenuManagementPage() {
             <>
               <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 2 }}>
                 <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} alignItems={{ xs: 'stretch', md: 'center' }}>
-                  <TextField label="模块编码" value={selectedModule.id} disabled sx={{ ...fieldSx, flex: 1 }} />
                   <TextField label="模块名称" value={selectedModule.label} onChange={(event) => updateModule({ label: event.target.value })} sx={{ ...fieldSx, flex: 1 }} />
                   <TextField label="模块图标" value={selectedModule.icon} onChange={(event) => updateModule({ icon: event.target.value })} sx={{ ...fieldSx, flex: 1 }} />
                   <Button color="error" variant="outlined" startIcon={<Delete />} onClick={deleteModule}>删除模块</Button>
                 </Stack>
               </Box>
 
-              <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' }}>
+              <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ minHeight: 46, px: 2, bgcolor: '#f5f7fa', borderBottom: '1px solid #e4e7ed' }}>
                   <Typography sx={{ fontWeight: 600, color: '#303133' }}>模块菜单</Typography>
                   <Button size="small" variant="contained" startIcon={<Add />} onClick={addRootMenu}>新增一级菜单</Button>
                 </Stack>
 
-                <Stack divider={<Divider />} sx={{ p: 2 }}>
+                <Stack data-menu-management-menu-scroll divider={<Divider />} sx={{ p: 2, flex: 1, minHeight: 0, overflow: 'auto' }}>
                   {selectedModule.menus.length === 0 ? (
                     <Box sx={{ py: 6, color: '#909399', textAlign: 'center' }}>暂无菜单</Box>
                   ) : selectedModule.menus.map((menu, rootIndex) => {
                     const children = menu.children ?? [];
                     return (
-                      <Box key={`${menu.label}-${rootIndex}`} sx={{ py: 1.5 }}>
+                      <Box key={`root-menu-${rootIndex}`} sx={{ py: 1.5 }}>
                         <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} alignItems={{ xs: 'stretch', md: 'center' }}>
                           <TextField label="一级菜单名称" value={menu.label} onChange={(event) => updateRootMenu(rootIndex, { label: event.target.value })} sx={{ ...fieldSx, flex: 1 }} />
                           <TextField label="图标" value={menu.icon ?? ''} onChange={(event) => updateRootMenu(rootIndex, { icon: event.target.value })} sx={{ ...fieldSx, flex: 1 }} />
@@ -305,7 +315,7 @@ export default function MenuManagementPage() {
                           <Stack spacing={1} sx={{ mt: 1.5, ml: { xs: 0, md: 3 }, pl: { xs: 0, md: 2 }, borderLeft: { xs: 'none', md: '2px solid #e4e7ed' } }}>
                             {children.map((child, childIndex) => (
                               <Stack
-                                key={`${child.label}-${childIndex}`}
+                                key={`child-menu-${rootIndex}-${childIndex}`}
                                 direction={{ xs: 'column', md: 'row' }}
                                 spacing={1.5}
                                 alignItems={{ xs: 'stretch', md: 'center' }}

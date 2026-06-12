@@ -1,5 +1,6 @@
 --liquibase formatted sql
 --changeset edhr:0002-seed-data
+--validCheckSum: 9:1ce12afc133d77632f79ae871d79b6e8
 
 -- ============================================================
 -- Seed Data: Default tenant, admin user, core roles, permissions

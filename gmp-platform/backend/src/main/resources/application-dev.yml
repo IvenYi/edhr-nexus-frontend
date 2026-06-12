@@ -11,7 +11,7 @@ spring:
       connection-timeout: 20000
 
   liquibase:
-    enabled: false
+    enabled: true
 
   jpa:
     show-sql: true

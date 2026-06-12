@@ -9,6 +9,11 @@ function cloneSidebarModules(modules: SidebarModule[]): SidebarModule[] {
   return JSON.parse(JSON.stringify(modules)) as SidebarModule[];
 }
 
+const REQUIRED_SYSTEM_MANAGEMENT_CHILDREN: SidebarSubMenu[] = [
+  { label: '图标管理', path: '/system/icons' },
+  { label: '系统设置', path: '/system/settings' },
+];
+
 function normalizeText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -48,24 +53,59 @@ export function normalizeManagedSidebarModules(modules: SidebarModule[]): Sideba
     })
     .filter((module): module is SidebarModule => module !== null);
 
-  return normalized.length > 0 ? normalized : cloneSidebarModules(SIDEBAR_MODULES);
+  return ensureRequiredSystemMenus(normalized.length > 0 ? normalized : cloneSidebarModules(SIDEBAR_MODULES));
+}
+
+export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModule[] {
+  const nextModules = cloneSidebarModules(modules);
+  let systemModule = nextModules.find((module) => module.id === 'system');
+
+  if (!systemModule) {
+    systemModule = {
+      id: 'system',
+      label: '系统',
+      icon: 'Settings',
+      menus: [],
+    };
+    nextModules.push(systemModule);
+  }
+
+  let systemManagement = systemModule.menus.find((menu) => menu.label === '系统管理');
+  if (!systemManagement) {
+    systemManagement = {
+      label: '系统管理',
+      icon: 'Settings',
+      children: [],
+    };
+    systemModule.menus.push(systemManagement);
+  }
+
+  const children = systemManagement.children ?? [];
+  const existingPaths = new Set(children.map((child) => child.path));
+  const requiredChildren = REQUIRED_SYSTEM_MANAGEMENT_CHILDREN.filter((child) => !existingPaths.has(child.path));
+
+  if (requiredChildren.length === 0) return nextModules;
+
+  systemManagement.children = [...children, ...requiredChildren];
+  delete systemManagement.path;
+  return nextModules;
 }
 
 export function loadManagedSidebarModules(): SidebarModule[] {
-  if (typeof window === 'undefined') return cloneSidebarModules(SIDEBAR_MODULES);
+  if (typeof window === 'undefined') return ensureRequiredSystemMenus(SIDEBAR_MODULES);
 
   try {
     const raw = window.localStorage.getItem(MENU_MANAGEMENT_STORAGE_KEY);
-    if (!raw) return cloneSidebarModules(SIDEBAR_MODULES);
+    if (!raw) return ensureRequiredSystemMenus(SIDEBAR_MODULES);
     const parsed = JSON.parse(raw) as SidebarModule[];
     return normalizeManagedSidebarModules(parsed);
   } catch {
-    return cloneSidebarModules(SIDEBAR_MODULES);
+    return ensureRequiredSystemMenus(SIDEBAR_MODULES);
   }
 }
 
 export function saveManagedSidebarModules(modules: SidebarModule[]): SidebarModule[] {
-  const normalized = normalizeManagedSidebarModules(modules);
+  const normalized = ensureRequiredSystemMenus(normalizeManagedSidebarModules(modules));
   if (typeof window !== 'undefined') {
     window.localStorage.setItem(MENU_MANAGEMENT_STORAGE_KEY, JSON.stringify(normalized));
     window.dispatchEvent(new CustomEvent(MENU_MANAGEMENT_EVENT));
@@ -74,7 +114,7 @@ export function saveManagedSidebarModules(modules: SidebarModule[]): SidebarModu
 }
 
 export function resetManagedSidebarModules(): SidebarModule[] {
-  const defaults = cloneSidebarModules(SIDEBAR_MODULES);
+  const defaults = ensureRequiredSystemMenus(SIDEBAR_MODULES);
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem(MENU_MANAGEMENT_STORAGE_KEY);
     window.dispatchEvent(new CustomEvent(MENU_MANAGEMENT_EVENT));
@@ -105,5 +145,7 @@ export function useManagedSidebarModules(): SidebarModule[] {
 export function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
   if (path === '/system/menu-management') return 'system.edit';
+  if (path === '/system/icons') return 'system.icons';
+  if (path === '/system/settings') return 'system.settings';
   return path.replace(/^\//, '').replace(/\//g, '.');
 }
