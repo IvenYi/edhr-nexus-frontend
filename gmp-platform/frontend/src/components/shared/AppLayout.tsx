@@ -45,6 +45,7 @@ import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
 import { inferPermissionCode, useManagedSidebarModules } from '@/utils/menuManagement';
 import { useSystemBranding } from '@/hooks/useSystemBranding';
 import { renderManagedIcon } from '@/utils/iconAssets';
+import { getMe, logout } from '@/api/auth';
 
 const COLORS = {
   primary: '#1890ff',
@@ -85,6 +86,7 @@ const ICON_MAP: Record<string, ReactNode> = {
   AccountTree: <AccountTree />,
   PrecisionManufacturing: <PrecisionManufacturing />,
   Settings: <Settings />,
+  LockOutlined: <LockOutlined />,
 };
 
 const FALLBACK_ICON = <Settings />;
@@ -348,6 +350,22 @@ export default function AppLayout() {
   }, []);
 
   useEffect(() => {
+    const refreshCurrentUserFromServer = async () => {
+      if (!localStorage.getItem('token')) return;
+      try {
+        const response = await getMe();
+        const refreshedUser = response.data.data;
+        localStorage.setItem('user', JSON.stringify(refreshedUser));
+        window.dispatchEvent(new CustomEvent(AUTH_USER_CHANGE_EVENT));
+      } catch {
+        // Keep the current shell usable when the session refresh endpoint is temporarily unavailable.
+      }
+    };
+
+    void refreshCurrentUserFromServer();
+  }, []);
+
+  useEffect(() => {
     if (visibleModules.some((module) => module.id === autoModuleId)) {
       setActiveModuleId(autoModuleId);
     }
@@ -482,7 +500,12 @@ export default function AppLayout() {
     void document.documentElement.requestFullscreen?.();
   }, []);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
+    try {
+      await logout();
+    } catch {
+      // Local sign-out should still proceed when the server session has expired.
+    }
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');

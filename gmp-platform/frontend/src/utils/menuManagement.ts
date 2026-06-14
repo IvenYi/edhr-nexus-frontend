@@ -14,6 +14,21 @@ const REQUIRED_SYSTEM_MANAGEMENT_CHILDREN: SidebarSubMenu[] = [
   { label: '系统设置', path: '/system/settings' },
 ];
 
+const REQUIRED_SECURITY_MANAGEMENT_CHILDREN: SidebarSubMenu[] = [
+  { label: '登录日志', path: '/system/login-logs' },
+  { label: '审计日志', path: '/system/audit-logs' },
+  { label: '签名记录', path: '/system/signatures' },
+];
+
+const SECURITY_MANAGEMENT_PATHS = new Set(REQUIRED_SECURITY_MANAGEMENT_CHILDREN.map((child) => child.path));
+
+const REMOVED_SYSTEM_MENU_PATHS = new Set([
+  '/system/tenant',
+  '/system/permissions',
+  '/system/form-templates',
+  '/system/numbering-rules',
+]);
+
 function normalizeText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -22,6 +37,7 @@ export function normalizeSidebarSubMenu(item: Partial<SidebarSubMenu>): SidebarS
   const label = normalizeText(item.label);
   const path = normalizeText(item.path);
   if (!label || !path) return null;
+  if (REMOVED_SYSTEM_MENU_PATHS.has(path)) return null;
   return { label, path };
 }
 
@@ -30,13 +46,15 @@ function normalizeSidebarMenu(menu: Partial<SidebarMenu>): SidebarMenu | null {
   const icon = normalizeText(menu.icon) || undefined;
   const children = (Array.isArray(menu.children) ? menu.children : [])
     .map((child) => normalizeSidebarSubMenu(child))
-    .filter((child): child is SidebarSubMenu => child !== null);
+    .filter((child): child is SidebarSubMenu => child !== null)
+    .filter((child) => !REMOVED_SYSTEM_MENU_PATHS.has(child.path));
   const path = normalizeText(menu.path);
 
   if (!label) return null;
   if (children.length > 0) return { label, icon, children };
   if (!path) return null;
-  return { label, icon, path };
+  if (!REMOVED_SYSTEM_MENU_PATHS.has(path)) return { label, icon, path };
+  return null;
 }
 
 export function normalizeManagedSidebarModules(modules: SidebarModule[]): SidebarModule[] {
@@ -84,11 +102,38 @@ export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModu
   const existingPaths = new Set(children.map((child) => child.path));
   const requiredChildren = REQUIRED_SYSTEM_MANAGEMENT_CHILDREN.filter((child) => !existingPaths.has(child.path));
 
-  if (requiredChildren.length === 0) return nextModules;
-
-  systemManagement.children = [...children, ...requiredChildren];
+  if (requiredChildren.length > 0) {
+    systemManagement.children = [...children, ...requiredChildren];
+  }
   delete systemManagement.path;
+  ensureRequiredSecurityManagement(systemModule);
   return nextModules;
+}
+
+function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
+  for (const menu of systemModule.menus) {
+    if (menu.label === '安全管理') continue;
+    if (menu.children) {
+      menu.children = menu.children.filter((child) => !SECURITY_MANAGEMENT_PATHS.has(child.path));
+    }
+  }
+  systemModule.menus = systemModule.menus.filter((menu) => menu.path ? !SECURITY_MANAGEMENT_PATHS.has(menu.path) : true);
+
+  let securityManagement = systemModule.menus.find((menu) => menu.label === '安全管理');
+  if (!securityManagement) {
+    securityManagement = {
+      label: '安全管理',
+      icon: 'LockOutlined',
+      children: [],
+    };
+    systemModule.menus.push(securityManagement);
+  }
+
+  const children = securityManagement.children ?? [];
+  const existingPaths = new Set(children.map((child) => child.path));
+  const requiredChildren = REQUIRED_SECURITY_MANAGEMENT_CHILDREN.filter((child) => !existingPaths.has(child.path));
+  securityManagement.children = [...children, ...requiredChildren];
+  delete securityManagement.path;
 }
 
 export function loadManagedSidebarModules(): SidebarModule[] {
@@ -147,5 +192,6 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/icons') return 'system.icons';
   if (path === '/system/settings') return 'system.settings';
+  if (path === '/system/login-logs') return 'system.login-logs';
   return path.replace(/^\//, '').replace(/\//g, '.');
 }

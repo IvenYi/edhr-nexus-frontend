@@ -334,7 +334,12 @@ public class RoleController {
                 .contentAfter(toAuditJson(toAuditContent(captureRoleSnapshot(role))))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("岗位角色")
+                .functionName("新增岗位角色")
+                .dataSummary(roleDataSummary(role.getId(), role.getName()))
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(LocalDateTime.now())
                 .build());
@@ -358,7 +363,12 @@ public class RoleController {
                 .contentAfter(toAuditJson(contentAfter))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("岗位角色")
+                .functionName("编辑岗位角色")
+                .dataSummary(roleDataSummary(roleId, after.name()))
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(LocalDateTime.now())
                 .build());
@@ -384,7 +394,12 @@ public class RoleController {
                 .contentAfter(toAuditJson(contentAfter))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("岗位角色")
+                .functionName("菜单权限设置")
+                .dataSummary(roleDataSummary(roleId, null))
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(LocalDateTime.now())
                 .build());
@@ -410,10 +425,19 @@ public class RoleController {
                 .contentAfter(toAuditJson(contentAfter))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("用户管理")
+                .functionName("岗位角色删除影响用户")
+                .dataSummary("用户 #" + userId)
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(LocalDateTime.now())
                 .build());
+    }
+
+    private String roleDataSummary(Long roleId, String roleName) {
+        return org.springframework.util.StringUtils.hasText(roleName) ? "岗位角色 " + roleName : "岗位角色 #" + roleId;
     }
 
     private List<Long> normalizePermissionAuditIds(List<Long> permissionIds) {

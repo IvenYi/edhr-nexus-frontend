@@ -1,12 +1,12 @@
 package com.zencas.edhr.identity.security;
 
 import com.zencas.edhr.common.audit.AuditContext;
+import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,11 +30,16 @@ class JwtAuthenticationFilterTest {
         when(jwtTokenProvider.validateToken("good-token")).thenReturn(true);
         when(jwtTokenProvider.getUserId("good-token")).thenReturn("1");
         when(jwtTokenProvider.getUsername("good-token")).thenReturn("admin");
+        when(jwtTokenProvider.getDisplayName("good-token")).thenReturn("系统管理员");
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtTokenProvider);
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/auth/me");
         request.addHeader("Authorization", "Bearer good-token");
+        FilterChain filterChain = (servletRequest, servletResponse) -> {
+            assertThat(AuditContext.getOperatorName()).isEqualTo("系统管理员");
+            assertThat(AuditContext.getOperatorAccount()).isEqualTo("admin");
+        };
 
-        filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
+        filter.doFilter(request, new MockHttpServletResponse(), filterChain);
 
         assertThat(request.getAttribute("userId")).isEqualTo("1");
         assertThat(SecurityContextHolder.getContext().getAuthentication().getAuthorities()).isEmpty();

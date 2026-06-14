@@ -32,9 +32,9 @@ const RolePage = lazy(() => import('@/pages/system/RolePage'));
 const MenuManagementPage = lazy(() => import('@/pages/system/MenuManagementPage'));
 const IconManagementPage = lazy(() => import('@/pages/system/IconManagementPage'));
 const SystemSettingsPage = lazy(() => import('@/pages/system/SystemSettingsPage'));
-const NumberingRulePage = lazy(() => import('@/pages/system/NumberingRulePage'));
 const AuditLogPage = lazy(() => import('@/pages/system/AuditLogPage'));
 const SignatureLogPage = lazy(() => import('@/pages/system/SignatureLogPage'));
+const LoginLogPage = lazy(() => import('@/pages/system/LoginLogPage'));
 
 const Loading = () => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', py: 8 }}>
@@ -98,7 +98,7 @@ const AppRouter = () => {
           <Route path="menu-management" element={<Suspense fallback={<Loading />}><MenuManagementPage /></Suspense>} />
           <Route path="icons" element={<Suspense fallback={<Loading />}><IconManagementPage /></Suspense>} />
           <Route path="settings" element={<Suspense fallback={<Loading />}><SystemSettingsPage /></Suspense>} />
-          <Route path="numbering-rules" element={<Suspense fallback={<Loading />}><NumberingRulePage /></Suspense>} />
+          <Route path="login-logs" element={<Suspense fallback={<Loading />}><LoginLogPage /></Suspense>} />
           <Route path="audit-logs" element={<Suspense fallback={<Loading />}><AuditLogPage /></Suspense>} />
           <Route path="signatures" element={<Suspense fallback={<Loading />}><SignatureLogPage /></Suspense>} />
         </Route>

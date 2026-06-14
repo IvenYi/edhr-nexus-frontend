@@ -432,7 +432,12 @@ public class UserController {
                 .contentAfter(toAuditJson(contentAfter))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("用户管理")
+                .functionName("编辑用户")
+                .dataSummary(userDataSummary(userId, after))
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(java.time.LocalDateTime.now())
                 .build());
@@ -449,10 +454,26 @@ public class UserController {
                 .contentAfter(toAuditJson(toAuditContent(after)))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("用户管理")
+                .functionName("新增用户")
+                .dataSummary(userDataSummary(userId, after))
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(java.time.LocalDateTime.now())
                 .build());
+    }
+
+    private String userDataSummary(Long userId, UserAuditSnapshot snapshot) {
+        if (snapshot == null) return "用户 #" + userId;
+        if (org.springframework.util.StringUtils.hasText(snapshot.username())) {
+            return "账号 " + snapshot.username();
+        }
+        if (org.springframework.util.StringUtils.hasText(snapshot.displayName())) {
+            return "用户 " + snapshot.displayName();
+        }
+        return "用户 #" + userId;
     }
 
     private Map<String, Object> toAuditContent(UserAuditSnapshot snapshot) {

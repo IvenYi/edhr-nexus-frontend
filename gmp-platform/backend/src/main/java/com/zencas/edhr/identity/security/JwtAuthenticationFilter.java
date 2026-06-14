@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
             String userId = jwtTokenProvider.getUserId(token);
             String username = jwtTokenProvider.getUsername(token);
+            String displayName = jwtTokenProvider.getDisplayName(token);
 
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(userId, null, List.of());
@@ -37,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             request.setAttribute("userId", userId);
 
             // Set audit context
-            AuditContext.setOperator(userId, username);
+            AuditContext.setOperator(userId, displayName, username);
             AuditContext.setIpAddress(getClientIp(request));
         }
 

@@ -26,12 +26,17 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(String userId, String username) {
+        return generateToken(userId, username, username);
+    }
+
+    public String generateToken(String userId, String username, String displayName) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
                 .subject(userId)
                 .claim("username", username)
+                .claim("displayName", displayName)
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)
@@ -44,6 +49,11 @@ public class JwtTokenProvider {
 
     public String getUsername(String token) {
         return parseClaims(token).get("username", String.class);
+    }
+
+    public String getDisplayName(String token) {
+        String displayName = parseClaims(token).get("displayName", String.class);
+        return displayName == null ? getUsername(token) : displayName;
     }
 
     public boolean validateToken(String token) {

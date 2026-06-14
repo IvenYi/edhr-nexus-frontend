@@ -1,5 +1,6 @@
 --liquibase formatted sql
 --changeset edhr:0002-seed-data
+--validCheckSum: 9:66667c278c075f6f0fae02047f30e0b8
 --validCheckSum: 9:1ce12afc133d77632f79ae871d79b6e8
 
 -- ============================================================

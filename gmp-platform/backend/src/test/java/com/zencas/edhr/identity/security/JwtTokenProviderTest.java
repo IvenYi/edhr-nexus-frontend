@@ -12,10 +12,11 @@ class JwtTokenProviderTest {
                 "edhr-test-secret-key-for-jwt-provider-384",
                 86_400_000L);
 
-        String token = provider.generateToken("1", "admin");
+        String token = provider.generateToken("1", "admin", "系统管理员");
 
         assertThat(token.length()).isLessThan(512);
         assertThat(provider.getUserId(token)).isEqualTo("1");
         assertThat(provider.getUsername(token)).isEqualTo("admin");
+        assertThat(provider.getDisplayName(token)).isEqualTo("系统管理员");
     }
 }

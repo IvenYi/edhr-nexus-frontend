@@ -13,3 +13,11 @@ databaseChangeLog:
       file: db/changelog/0006-icon-group-builtin-flag.sql
   - include:
       file: db/changelog/0007-system-logo-size-settings.sql
+  - include:
+      file: db/changelog/0008-audit-log-context-fields.sql
+  - include:
+      file: db/changelog/0009-login-log.sql
+  - include:
+      file: db/changelog/0010-remove-numbering-rule.sql
+  - include:
+      file: db/changelog/0011-login-log-permission.sql

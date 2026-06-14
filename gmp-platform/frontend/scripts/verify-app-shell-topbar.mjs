@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const appLayout = readFileSync(new URL('../src/components/shared/AppLayout.tsx', import.meta.url), 'utf8');
+const authApi = readFileSync(new URL('../src/api/auth.ts', import.meta.url), 'utf8');
 const packageJson = readFileSync(new URL('../package.json', import.meta.url), 'utf8');
 const standardDoc = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
 const failures = [];
@@ -29,6 +30,10 @@ function mustMatch(pattern, reason) {
 
 function packageMustInclude(token, reason) {
   if (!packageJson.includes(token)) failures.push(`missing package token ${JSON.stringify(token)} (${reason})`);
+}
+
+function authApiMustInclude(token, reason) {
+  if (!authApi.includes(token)) failures.push(`missing auth api token ${JSON.stringify(token)} (${reason})`);
 }
 
 function docMustInclude(token, reason) {
@@ -66,6 +71,12 @@ mustInclude('getBreadcrumbItems', 'breadcrumb should derive from the active rout
 mustInclude('breadcrumbItems.map', 'breadcrumb should render active route levels');
 mustInclude('NavigateNextRounded', 'breadcrumb should use compact chevrons');
 mustInclude('AUTH_USER_CHANGE_EVENT', 'app shell should listen for current-user permission refresh events');
+mustInclude("import { getMe, logout } from '@/api/auth';", 'app shell should be able to refresh the current user permission snapshot');
+mustInclude('refreshCurrentUserFromServer', 'app shell should refresh cached user permissions from /auth/me after migrations or role authorization changes');
+mustInclude('getMe()', 'app shell should call the backend current-user API to avoid stale localStorage permissions hiding newly mapped menus');
+mustInclude("localStorage.setItem('user', JSON.stringify(refreshedUser));", 'app shell should persist refreshed current-user permissions');
+mustInclude("window.dispatchEvent(new CustomEvent(AUTH_USER_CHANGE_EVENT));", 'app shell should notify itself and sibling components after refreshing current-user permissions');
+authApiMustInclude("client.get('/auth/me', { skipAuthRedirect: true })", 'silent permission refresh should not clear token or redirect on a transient /auth/me failure');
 mustInclude('EMPTY_SIDEBAR_MODULE', 'app shell should not fall back to real menus when no module is authorized');
 mustInclude('const [user, setUser] = useState<StoredUser>(() => readStoredUser());', 'app shell should keep current user in state instead of a one-time memo');
 mustInclude('setUser(readStoredUser())', 'app shell should refresh current user permissions from localStorage');

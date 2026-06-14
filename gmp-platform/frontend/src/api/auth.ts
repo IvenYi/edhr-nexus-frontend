@@ -1,5 +1,5 @@
 import client from './client';
 
-export const login = (params?: Record<string, unknown>) => client.get('/auth', { params });
-export const logout = (params?: Record<string, unknown>) => client.get('/auth', { params });
-export const getMe = (params?: Record<string, unknown>) => client.get('/auth', { params });
+export const login = (body: Record<string, unknown>) => client.post('/auth/login', body);
+export const logout = () => client.post('/auth/logout');
+export const getMe = () => client.get('/auth/me', { skipAuthRedirect: true });

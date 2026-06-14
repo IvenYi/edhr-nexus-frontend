@@ -40,7 +40,12 @@ public class AuditAspect {
                     .action(auditable.action())
                     .operatorId(AuditContext.getOperatorId())
                     .operatorName(AuditContext.getOperatorName())
+                    .operatorAccount(AuditContext.getOperatorAccount())
                     .source(AuditContext.getSource())
+                    .moduleName(auditable.moduleName())
+                    .menuName(auditable.menuName())
+                    .functionName(auditable.functionName())
+                    .dataSummary(auditable.dataSummary())
                     .ipAddress(AuditContext.getIpAddress())
                     .createdAt(LocalDateTime.now())
                     .build();

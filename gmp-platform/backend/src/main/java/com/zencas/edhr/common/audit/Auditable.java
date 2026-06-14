@@ -23,6 +23,18 @@ public @interface Auditable {
     /** SpEL expression to extract entity ID from method parameters. */
     String entityIdExpr() default "";
 
+    /** Function module displayed in audit logs. */
+    String moduleName() default "";
+
+    /** Menu displayed in audit logs. */
+    String menuName() default "";
+
+    /** Concrete function displayed in audit logs. */
+    String functionName() default "";
+
+    /** Business data summary displayed in audit logs. */
+    String dataSummary() default "";
+
     /** Whether to capture content_before (requires DB read). Default true. */
     boolean captureBefore() default true;
 }

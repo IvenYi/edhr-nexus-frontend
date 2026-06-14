@@ -41,6 +41,7 @@ import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/system/settings")
@@ -145,21 +146,26 @@ public class SystemSettingsController {
     }
 
     private SystemSetting findOrDefault() {
-        return systemSettingRepository.findByTenantId(TENANT_ID).orElseGet(() -> SystemSetting.builder()
-                .tenantId(TENANT_ID)
-                .systemName(DEFAULT_SYSTEM_NAME)
-                .browserTitle(DEFAULT_BROWSER_TITLE)
-                .build());
+        return systemSettingRepository.findByTenantId(TENANT_ID).orElseGet(this::defaultSetting);
     }
 
     private SystemSetting findOrCreate() {
-        return systemSettingRepository.findByTenantId(TENANT_ID).orElseGet(() -> SystemSetting.builder()
-                .id(idGenerator.nextId())
+        return systemSettingRepository.findByTenantId(TENANT_ID).orElseGet(() -> {
+            SystemSetting setting = defaultSetting();
+            setting.setId(idGenerator.nextId());
+            setting.setCreatedBy(AuditContext.getOperatorId());
+            return setting;
+        });
+    }
+
+    private SystemSetting defaultSetting() {
+        return SystemSetting.builder()
                 .tenantId(TENANT_ID)
                 .systemName(DEFAULT_SYSTEM_NAME)
                 .browserTitle(DEFAULT_BROWSER_TITLE)
-                .createdBy(AuditContext.getOperatorId())
-                .build());
+                .logoWidth(DEFAULT_LOGO_SIZE)
+                .logoHeight(DEFAULT_LOGO_SIZE)
+                .build();
     }
 
     private FileObject storeFile(MultipartFile file, String targetType, List<String> allowedTypes) throws IOException {
@@ -239,10 +245,26 @@ public class SystemSettingsController {
         snapshot.put("id", setting.getId());
         snapshot.put("systemName", setting.getSystemName());
         snapshot.put("systemLogoFileId", setting.getSystemLogoFileId());
+        snapshot.put("systemLogo", fileSnapshot(setting.getSystemLogoFileId()));
         snapshot.put("logoWidth", normalizeLogoSize(setting.getLogoWidth(), "Logo 长度"));
         snapshot.put("logoHeight", normalizeLogoSize(setting.getLogoHeight(), "Logo 高度"));
         snapshot.put("browserTitle", setting.getBrowserTitle());
         snapshot.put("browserIconFileId", setting.getBrowserIconFileId());
+        snapshot.put("browserIcon", fileSnapshot(setting.getBrowserIconFileId()));
+        return snapshot;
+    }
+
+    private Map<String, Object> fileSnapshot(Long fileId) {
+        if (fileId == null) return Map.of();
+        Optional<FileObject> file = fileObjectRepository.findById(fileId);
+        if (file.isEmpty()) return Map.of("fileId", fileId, "previewUrl", previewUrl(fileId));
+        FileObject fileObject = file.get();
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("fileId", fileObject.getId());
+        snapshot.put("originalName", fileObject.getOriginalName());
+        snapshot.put("mimeType", fileObject.getMimeType());
+        snapshot.put("fileSize", fileObject.getFileSize());
+        snapshot.put("previewUrl", previewUrl(fileObject.getId()));
         return snapshot;
     }
 
@@ -257,7 +279,12 @@ public class SystemSettingsController {
                 .contentAfter(toAuditJson(after))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("系统设置")
+                .functionName("编辑系统设置")
+                .dataSummary(entityId == null ? "系统设置" : "系统设置 #" + entityId)
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(LocalDateTime.now())
                 .build());

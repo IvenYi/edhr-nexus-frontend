@@ -1,5 +1,6 @@
 --liquibase formatted sql
 --changeset edhr:0001-init-schema
+--validCheckSum: 9:8d772a914cd3477393fdd7164ab41631
 
 -- ============================================================
 -- Identity Domain: Tenant, Organization, Users, Roles, Permissions

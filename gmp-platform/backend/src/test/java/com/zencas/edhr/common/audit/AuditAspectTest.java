@@ -44,4 +44,29 @@ class AuditAspectTest {
         assertThat(captor.getValue().getContentBefore()).isNull();
         assertThat(captor.getValue().getContentAfter()).isNull();
     }
+
+    @Test
+    void auditStoresModuleMenuFunctionAndDataSummaryFromAnnotation() throws Throwable {
+        AuditAspect aspect = new AuditAspect(auditEventRepository, idGenerator);
+        when(joinPoint.proceed()).thenReturn("result");
+        when(joinPoint.getArgs()).thenReturn(new Object[]{42L});
+        when(auditable.entityType()).thenReturn("USER_ACCOUNT");
+        when(auditable.entityIdExpr()).thenReturn("#id");
+        when(auditable.action()).thenReturn("UPDATE");
+        when(auditable.moduleName()).thenReturn("系统");
+        when(auditable.menuName()).thenReturn("用户管理");
+        when(auditable.functionName()).thenReturn("编辑用户");
+        when(auditable.dataSummary()).thenReturn("账号 admin");
+        when(idGenerator.nextId()).thenReturn(2L);
+
+        aspect.audit(joinPoint, auditable);
+
+        ArgumentCaptor<AuditEvent> captor = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(auditEventRepository).save(captor.capture());
+        AuditEvent event = captor.getValue();
+        assertThat(event.getModuleName()).isEqualTo("系统");
+        assertThat(event.getMenuName()).isEqualTo("用户管理");
+        assertThat(event.getFunctionName()).isEqualTo("编辑用户");
+        assertThat(event.getDataSummary()).isEqualTo("账号 admin");
+    }
 }

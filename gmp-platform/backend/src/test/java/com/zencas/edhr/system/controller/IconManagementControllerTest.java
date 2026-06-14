@@ -280,6 +280,13 @@ class IconManagementControllerTest {
                 .builtin(true)
                 .build();
         when(iconAssetRepository.findById(101L)).thenReturn(Optional.of(customIcon));
+        when(iconGroupRepository.findById(10L)).thenReturn(Optional.of(IconGroup.builder()
+                .id(10L)
+                .tenantId("default")
+                .name("自建分组")
+                .sortOrder(1)
+                .builtin(false)
+                .build()));
         when(iconGroupRepository.findById(10040L)).thenReturn(Optional.of(builtinGroup));
 
         assertThatThrownBy(() -> controller.updateIcon(101L, objectMapper.readTree("{\"groupId\":10040}")))
@@ -333,6 +340,46 @@ class IconManagementControllerTest {
         ArgumentCaptor<IconAsset> iconCaptor = ArgumentCaptor.forClass(IconAsset.class);
         verify(iconAssetRepository).save(iconCaptor.capture());
         assertThat(iconCaptor.getValue().getTags()).isEqualTo("用户上传");
+    }
+
+    @Test
+    void uploadIconAuditSnapshotIncludesReadableIconAndFilePreview() throws Exception {
+        AuditContext.setOperator("99", "系统管理员");
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "custom.svg",
+                "image/svg+xml",
+                "<svg />".getBytes());
+        IconGroup group = IconGroup.builder()
+                .id(10L)
+                .tenantId("default")
+                .name("质量图标")
+                .sortOrder(1)
+                .build();
+        when(iconGroupRepository.findById(10L)).thenReturn(Optional.of(group));
+        when(idGenerator.nextId()).thenReturn(501L, 101L, 901L);
+        when(fileObjectRepository.save(any(FileObject.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(fileObjectRepository.findById(501L)).thenReturn(Optional.of(FileObject.builder()
+                .id(501L)
+                .originalName("custom.svg")
+                .mimeType("image/svg+xml")
+                .fileSize(7L)
+                .build()));
+        when(iconAssetRepository.save(any(IconAsset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        controller.uploadIcon(file, 10L, "通过", null);
+
+        ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(auditEventRepository).save(auditCaptor.capture());
+        JsonNode after = objectMapper.readTree(auditCaptor.getValue().getContentAfter());
+        assertThat(after.get("name").asText()).isEqualTo("通过");
+        assertThat(after.get("displayName").asText()).isEqualTo("通过");
+        assertThat(after.get("sourceLabel").asText()).isEqualTo("用户上传");
+        assertThat(after.get("groupName").asText()).isEqualTo("质量图标");
+        assertThat(after.get("previewUrl").asText()).isEqualTo("/api/v1/files/501/public-preview");
+        assertThat(after.get("file").get("originalName").asText()).isEqualTo("custom.svg");
+        assertThat(after.get("file").get("mimeType").asText()).isEqualTo("image/svg+xml");
+        assertThat(after.get("file").get("previewUrl").asText()).isEqualTo("/api/v1/files/501/public-preview");
     }
 
     @Test

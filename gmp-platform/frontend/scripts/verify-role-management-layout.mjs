@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 const content = readFileSync(new URL('../src/pages/system/RolePage.tsx', import.meta.url), 'utf8');
 const menuManagementContent = readFileSync(new URL('../src/utils/menuManagement.ts', import.meta.url), 'utf8');
+const loginLogPermissionMigrationContent = readFileSync(new URL('../../backend/src/main/resources/db/changelog/0011-login-log-permission.sql', import.meta.url), 'utf8');
 const packageContent = readFileSync(new URL('../package.json', import.meta.url), 'utf8');
 const uiStandardContent = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
 const failures = [];
@@ -24,6 +25,10 @@ function menuManagementMustInclude(token, reason) {
 
 function menuManagementMustNotInclude(token, reason) {
   if (menuManagementContent.includes(token)) failures.push(`unexpected menu management ${JSON.stringify(token)} (${reason})`);
+}
+
+function loginLogPermissionMigrationMustInclude(token, reason) {
+  if (!loginLogPermissionMigrationContent.includes(token)) failures.push(`missing login log permission migration ${JSON.stringify(token)} (${reason})`);
 }
 
 function uiStandardMustInclude(token, reason) {
@@ -183,6 +188,9 @@ mustInclude('getPermissions', 'menu permission dialog should load assignable per
 mustInclude('ROLE_PERMISSION_FETCH_SIZE', 'permission dialog should fetch enough permissions for generated GCT page and action permissions');
 mustInclude('useManagedSidebarModules', 'permission dialog should render modules and menus from the same source as the sidebar');
 mustInclude('inferPermissionCode', 'permission dialog should map sidebar routes to backend permission codes');
+menuManagementMustInclude("if (path === '/system/login-logs') return 'system.login-logs';", 'login log route should map to an assignable backend permission instead of showing 未映射');
+loginLogPermissionMigrationMustInclude("'system.login-logs'", 'login log permission should exist in backend permission catalog');
+loginLogPermissionMigrationMustInclude('INSERT INTO role_permission', 'login log permission should be granted to ADMIN by migration so the menu appears after relogin');
 menuManagementMustInclude("path.replace(/^\\//, '').replace(/\\//g, '.')", 'GCT menu routes should map to backend permission codes instead of staying unselectable');
 menuManagementMustNotInclude("path.startsWith('/gct-edhr')) return undefined", 'GCT menu routes should not stay unselectable');
 mustInclude('permissionModules', 'permission dialog should derive display modules from sidebar modules');

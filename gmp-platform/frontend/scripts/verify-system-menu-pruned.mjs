@@ -52,15 +52,24 @@ function mustNotExist(root, path, reason) {
 
 mustInclude(frontendRoot, 'package.json', '"verify:system-menu-pruned": "node scripts/verify-system-menu-pruned.mjs"', 'system menu pruning verification should be runnable from npm');
 
-for (const label of ['租户设置', '权限配置', '表单模板']) {
+for (const label of ['租户设置', '权限配置', '表单模板', '编码规则']) {
   mustNotInclude(frontendRoot, 'src/utils/constants.ts', label, 'removed system management menu labels should not render in the sidebar');
 }
 
-for (const route of ['/system/tenant', '/system/permissions', '/system/form-templates']) {
+for (const route of ['/system/tenant', '/system/permissions', '/system/form-templates', '/system/numbering-rules']) {
   mustNotInclude(frontendRoot, 'src/utils/constants.ts', route, 'removed system management menu paths should not render in the sidebar');
 }
 
-for (const token of ['TenantPage', 'PermissionPage', 'FormTemplatePage', 'path="tenant"', 'path="permissions"', 'path="form-templates"']) {
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', 'REMOVED_SYSTEM_MENU_PATHS', 'managed menu normalization should prune removed system routes from cached menus');
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', "'/system/numbering-rules'", 'cached managed menus should drop the removed numbering route');
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', '!REMOVED_SYSTEM_MENU_PATHS.has(child.path)', 'removed child menu routes should be filtered during normalization');
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', '!REMOVED_SYSTEM_MENU_PATHS.has(path)', 'removed direct menu routes should be filtered during normalization');
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', 'SECURITY_MANAGEMENT_PATHS', 'managed menu normalization should migrate security paths out of stale cached groups');
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', "if (menu.label === '安全管理') continue;", 'security management group should keep its own children during migration');
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', 'menu.children = menu.children.filter((child) => !SECURITY_MANAGEMENT_PATHS.has(child.path));', 'stale non-security groups should drop security children');
+mustInclude(frontendRoot, 'src/utils/menuManagement.ts', 'systemModule.menus = systemModule.menus.filter((menu) => menu.path ? !SECURITY_MANAGEMENT_PATHS.has(menu.path) : true);', 'stale direct security menu paths should be removed outside security management');
+
+for (const token of ['TenantPage', 'PermissionPage', 'FormTemplatePage', 'NumberingRulePage', 'path="tenant"', 'path="permissions"', 'path="form-templates"', 'path="numbering-rules"']) {
   mustNotInclude(frontendRoot, 'src/router/index.tsx', token, 'removed system management pages should not be routable');
 }
 
@@ -74,7 +83,9 @@ for (const path of [
   'src/pages/system/TenantPage.tsx',
   'src/pages/system/PermissionPage.tsx',
   'src/pages/system/FormTemplatePage.tsx',
+  'src/pages/system/NumberingRulePage.tsx',
   'src/api/form-templates.ts',
+  'src/api/numbering.ts',
 ]) {
   mustNotExist(frontendRoot, path, 'removed system management frontend code should be deleted');
 }
@@ -83,12 +94,25 @@ for (const path of [
   'gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/TenantController.java',
   'gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/PermissionController.java',
   'gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormTemplateController.java',
+  'gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/NumberingController.java',
   'gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/Tenant.java',
+  'gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/NumberingRule.java',
   'gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/TenantRepository.java',
+  'gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/NumberingRuleRepository.java',
+  'gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/numbering/NumberingService.java',
   'gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplate.java',
   'gmp-platform/backend/src/main/java/com/zencas/edhr/template/repository/FormTemplateRepository.java',
 ]) {
   mustNotExist(repoRoot, path, 'removed system management backend endpoints should be deleted');
+}
+
+mustInclude(repoRoot, 'gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml', '0010-remove-numbering-rule.sql', 'numbering rule removal should be applied as an incremental migration');
+mustInclude(repoRoot, 'gmp-platform/backend/src/main/resources/db/changelog/0010-remove-numbering-rule.sql', 'DROP TABLE IF EXISTS numbering_rule', 'numbering rule table should be removed by incremental migration');
+mustInclude(repoRoot, 'gmp-platform/backend/src/main/resources/db/changelog/0010-remove-numbering-rule.sql', "DELETE FROM permission WHERE code = 'system.numbering-rules'", 'numbering rule permission should be removed by incremental migration');
+mustInclude(repoRoot, 'gmp-platform/backend/src/main/resources/db/changelog/0010-remove-numbering-rule.sql', 'DELETE FROM role_permission', 'numbering rule role permissions should be cleaned before deleting permission');
+
+for (const token of ['NUM_001', 'NUM_002', 'NUM_003', 'NUM_004']) {
+  mustNotInclude(repoRoot, 'gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/ErrorCode.java', token, 'numbering rule error codes should be removed with the backend feature');
 }
 
 mustInclude(repoRoot, 'gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/Permission.java', 'public class Permission', 'permission entity is still required by authentication and role assignment');

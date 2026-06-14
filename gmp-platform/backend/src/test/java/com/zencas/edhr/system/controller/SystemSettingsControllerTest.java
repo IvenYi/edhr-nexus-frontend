@@ -6,6 +6,7 @@ import com.zencas.edhr.common.audit.AuditContext;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
+import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
 import com.zencas.edhr.system.entity.SystemSetting;
@@ -149,5 +150,62 @@ class SystemSettingsControllerTest {
         JsonNode after = objectMapper.readTree(event.getContentAfter());
         assertThat(before.get("systemLogoFileId").asLong()).isEqualTo(501L);
         assertThat(after.get("systemLogoFileId").asLong()).isEqualTo(601L);
+    }
+
+    @Test
+    void uploadLogoAuditSnapshotIncludesReadableFilePreview() throws Exception {
+        AuditContext.setOperator("99", "系统管理员");
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "logo.png",
+                "image/png",
+                new byte[] {1, 2, 3});
+        SystemSetting existing = SystemSetting.builder()
+                .id(10L)
+                .tenantId("default")
+                .systemName("eDHR 系统")
+                .browserTitle("eDHR - 医疗器械电子设备历史记录系统")
+                .build();
+        when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.of(existing));
+        when(systemSettingRepository.save(existing)).thenReturn(existing);
+        when(idGenerator.nextId()).thenReturn(601L, 901L);
+        when(fileObjectRepository.findById(601L)).thenReturn(Optional.of(FileObject.builder()
+                .id(601L)
+                .originalName("logo.png")
+                .mimeType("image/png")
+                .fileSize(3L)
+                .build()));
+
+        controller.uploadLogo(file);
+
+        ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(auditEventRepository).save(auditCaptor.capture());
+        JsonNode after = objectMapper.readTree(auditCaptor.getValue().getContentAfter());
+        assertThat(after.get("systemLogo").get("fileId").asLong()).isEqualTo(601L);
+        assertThat(after.get("systemLogo").get("previewUrl").asText()).isEqualTo("/api/v1/files/601/public-preview");
+        assertThat(after.get("systemLogo").get("originalName").asText()).isEqualTo("logo.png");
+        assertThat(after.get("systemLogo").get("mimeType").asText()).isEqualTo("image/png");
+    }
+
+    @Test
+    void uploadLogoCreatesSettingsWithDefaultLogoSizeWhenNoRowExists() throws Exception {
+        AuditContext.setOperator("99", "系统管理员");
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "logo.png",
+                "image/png",
+                new byte[] {1, 2, 3});
+        when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
+        when(idGenerator.nextId()).thenReturn(10L, 601L, 901L);
+        when(systemSettingRepository.save(any(SystemSetting.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = controller.uploadLogo(file);
+
+        assertThat(response.getData().getLogoWidth()).isEqualTo(32);
+        assertThat(response.getData().getLogoHeight()).isEqualTo(32);
+        ArgumentCaptor<SystemSetting> settingCaptor = ArgumentCaptor.forClass(SystemSetting.class);
+        verify(systemSettingRepository).save(settingCaptor.capture());
+        assertThat(settingCaptor.getValue().getLogoWidth()).isEqualTo(32);
+        assertThat(settingCaptor.getValue().getLogoHeight()).isEqualTo(32);
     }
 }

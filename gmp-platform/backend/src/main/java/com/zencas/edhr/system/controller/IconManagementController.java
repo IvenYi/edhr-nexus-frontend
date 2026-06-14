@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/system")
@@ -61,6 +62,8 @@ public class IconManagementController {
     private static final String BUILTIN_SOURCE = "BUILTIN";
     private static final String UPLOAD_SOURCE = "UPLOAD";
     private static final String USER_UPLOAD_TAG = "用户上传";
+    private static final String ICON_ASSET_ENTITY_TYPE = "ICON_ASSET";
+    private static final String ICON_GROUP_ENTITY_TYPE = "ICON_GROUP";
     private static final String BUILTIN_GROUP_NAME = "系统内置图标";
     private static final String BUILTIN_DELETE_MESSAGE = "系统内置图标不能删除";
     private static final String BUILTIN_GROUP_NAME_CONFLICT_MESSAGE = "系统内置图标分组已存在，不能创建同名分组";
@@ -417,6 +420,7 @@ public class IconManagementController {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("id", group.getId());
         snapshot.put("name", group.getName());
+        snapshot.put("displayName", group.getName());
         snapshot.put("sortOrder", group.getSortOrder());
         return snapshot;
     }
@@ -425,12 +429,50 @@ public class IconManagementController {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("id", icon.getId());
         snapshot.put("groupId", icon.getGroupId());
+        snapshot.put("groupName", resolveGroupName(icon.getGroupId()));
         snapshot.put("fileId", icon.getFileId());
         snapshot.put("builtinKey", icon.getBuiltinKey());
         snapshot.put("name", icon.getName());
+        snapshot.put("displayName", icon.getName());
         snapshot.put("tags", icon.getTags());
+        snapshot.put("sourceLabel", resolveIconSourceLabel(icon.getSource()));
         snapshot.put("source", icon.getSource());
         snapshot.put("sortOrder", icon.getSortOrder());
+        snapshot.put("previewUrl", resolvePreviewUrl(icon.getFileId()));
+        snapshot.put("file", resolveFileSnapshot(icon.getFileId()));
+        return snapshot;
+    }
+
+    private String resolveGroupName(Long groupId) {
+        if (groupId == null) return "";
+        return iconGroupRepository.findById(groupId).map(IconGroup::getName).orElse("");
+    }
+
+    private String resolveIconSourceLabel(String source) {
+        if (!StringUtils.hasText(source)) return "-";
+        return switch (source.trim().toUpperCase()) {
+            case BUILTIN_SOURCE -> "系统内置";
+            case UPLOAD_SOURCE -> "用户上传";
+            case "IMPORT" -> "导入";
+            default -> source;
+        };
+    }
+
+    private String resolvePreviewUrl(Long fileId) {
+        return fileId == null ? "" : "/api/v1/files/" + fileId + "/public-preview";
+    }
+
+    private Map<String, Object> resolveFileSnapshot(Long fileId) {
+        if (fileId == null) return Map.of();
+        Optional<FileObject> file = fileObjectRepository.findById(fileId);
+        if (file.isEmpty()) return Map.of("fileId", fileId, "previewUrl", resolvePreviewUrl(fileId));
+        FileObject fileObject = file.get();
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("fileId", fileObject.getId());
+        snapshot.put("originalName", fileObject.getOriginalName());
+        snapshot.put("mimeType", fileObject.getMimeType());
+        snapshot.put("fileSize", fileObject.getFileSize());
+        snapshot.put("previewUrl", resolvePreviewUrl(fileObject.getId()));
         return snapshot;
     }
 
@@ -486,10 +528,35 @@ public class IconManagementController {
                 .contentAfter(toAuditJson(after))
                 .operatorId(AuditContext.getOperatorId())
                 .operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource())
+                .moduleName("系统")
+                .menuName("图标管理")
+                .functionName(resolveIconAuditFunctionName(entityType, action))
+                .dataSummary(resolveIconAuditDataSummary(entityType, entityId))
                 .ipAddress(AuditContext.getIpAddress())
                 .createdAt(LocalDateTime.now())
                 .build());
+    }
+
+    private String resolveIconAuditFunctionName(String entityType, String action) {
+        String target = ICON_GROUP_ENTITY_TYPE.equals(entityType) ? "图标分组" : "图标素材";
+        String normalizedAction = action == null ? "" : action.trim().toUpperCase();
+        return switch (normalizedAction) {
+            case "CREATE" -> "新增" + target;
+            case "UPDATE" -> "编辑" + target;
+            case "DELETE" -> "删除" + target;
+            case "UPLOAD" -> "上传" + target;
+            case "IMPORT" -> "导入" + target;
+            case "BATCH_DELETE" -> "批量删除" + target;
+            case "REORDER" -> "调整" + target + "排序";
+            default -> target + "变更";
+        };
+    }
+
+    private String resolveIconAuditDataSummary(String entityType, Long entityId) {
+        String target = ICON_GROUP_ENTITY_TYPE.equals(entityType) ? "图标分组" : "图标素材";
+        return entityId == null ? target : target + " #" + entityId;
     }
 
     private String toAuditJson(Map<String, Object> content) {

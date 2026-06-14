@@ -29,8 +29,18 @@ public class AuditEvent {
     private String operatorId;
     @Column(name = "operator_name")
     private String operatorName;
+    @Column(name = "operator_account")
+    private String operatorAccount;
     @Column(name = "source")
     @Builder.Default private String source = "UI";
+    @Column(name = "module_name")
+    private String moduleName;
+    @Column(name = "menu_name")
+    private String menuName;
+    @Column(name = "function_name")
+    private String functionName;
+    @Column(name = "data_summary")
+    private String dataSummary;
     @Column(name = "reason", columnDefinition = "TEXT")
     private String reason;
     @Column(name = "ip_address")

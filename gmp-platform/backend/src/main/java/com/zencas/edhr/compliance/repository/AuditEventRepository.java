@@ -20,12 +20,20 @@ public interface AuditEventRepository extends JpaRepository<AuditEvent, Long>, J
               and (:entityId = '' or event.entityId = :entityId)
               and (:action = '' or lower(event.action) = lower(:action))
               and (:operatorName = '' or lower(coalesce(event.operatorName, '')) like lower(concat('%', :operatorName, '%')))
+              and (:operatorAccount = '' or lower(coalesce(event.operatorAccount, '')) like lower(concat('%', :operatorAccount, '%')))
+              and (:moduleName = '' or lower(coalesce(event.moduleName, '')) like lower(concat('%', :moduleName, '%')))
+              and (:menuName = '' or lower(coalesce(event.menuName, '')) like lower(concat('%', :menuName, '%')))
+              and (:dataKeyword = '' or lower(coalesce(event.dataSummary, '')) like lower(concat('%', :dataKeyword, '%')))
             """)
     Page<AuditEvent> search(
             @Param("entityType") String entityType,
             @Param("entityId") String entityId,
             @Param("action") String action,
             @Param("operatorName") String operatorName,
+            @Param("operatorAccount") String operatorAccount,
+            @Param("moduleName") String moduleName,
+            @Param("menuName") String menuName,
+            @Param("dataKeyword") String dataKeyword,
             Pageable pageable);
 
     List<AuditEvent> findByEntityTypeAndEntityIdIn(String entityType, Collection<String> entityIds);

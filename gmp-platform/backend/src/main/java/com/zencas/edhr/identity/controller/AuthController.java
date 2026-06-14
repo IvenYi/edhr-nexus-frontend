@@ -3,21 +3,27 @@ package com.zencas.edhr.identity.controller;
 import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
+import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.identity.entity.LoginLog;
 import com.zencas.edhr.identity.entity.Permission;
 import com.zencas.edhr.identity.entity.RolePermission;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.entity.UserRole;
+import com.zencas.edhr.identity.repository.LoginLogRepository;
 import com.zencas.edhr.identity.repository.PermissionRepository;
 import com.zencas.edhr.identity.repository.RolePermissionRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
 import com.zencas.edhr.identity.security.JwtTokenProvider;
 import com.zencas.edhr.identity.service.GctPermissionCatalog;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -32,9 +38,12 @@ public class AuthController {
     private final GctPermissionCatalog gctPermissionCatalog;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final LoginLogRepository loginLogRepository;
+    private final SnowflakeIdGenerator idGenerator;
 
     @PostMapping("/login")
-    public ApiResponse<Map<String, Object>> login(@RequestBody LoginRequest request) {
+    public ApiResponse<Map<String, Object>> login(@RequestBody LoginRequest request,
+                                                  HttpServletRequest servletRequest) {
         UserAccount user = userAccountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_001));
 
@@ -50,11 +59,12 @@ public class AuthController {
         List<String> permissions = permissionSnapshot.permissions();
 
         String token = jwtTokenProvider.generateToken(
-                user.getId().toString(), user.getUsername());
+                user.getId().toString(), user.getUsername(), user.getDisplayName());
 
         // Update last login
         user.setLastLoginAt(java.time.LocalDateTime.now());
         userAccountRepository.save(user);
+        recordLoginEvent(user, "LOGIN", "PASSWORD", servletRequest);
 
         Map<String, Object> userMap = new LinkedHashMap<>();
         userMap.put("id", user.getId());
@@ -72,7 +82,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ApiResponse<Void> logout() {
+    public ApiResponse<Void> logout(@RequestAttribute(value = "userId", required = false) String userId,
+                                    HttpServletRequest servletRequest) {
+        if (StringUtils.hasText(userId)) {
+            userAccountRepository.findById(Long.parseLong(userId))
+                    .ifPresent(user -> recordLoginEvent(user, "LOGOUT", "TOKEN", servletRequest));
+        }
         // Stateless JWT - client discards token
         return ApiResponse.success(null);
     }
@@ -129,6 +144,62 @@ public class AuthController {
                 List.copyOf(permissions));
     }
 
+    private void recordLoginEvent(UserAccount user, String eventType, String authMethod, HttpServletRequest request) {
+        ClientInfo clientInfo = resolveClientInfo(request);
+        loginLogRepository.save(LoginLog.builder()
+                .id(idGenerator.nextId())
+                .tenantId(user.getTenantId())
+                .operatorId(user.getId())
+                .operatorName(user.getDisplayName())
+                .username(user.getUsername())
+                .eventType(eventType)
+                .authMethod(authMethod)
+                .occurredAt(LocalDateTime.now())
+                .platform(clientInfo.platform())
+                .clientType(clientInfo.clientType())
+                .browser(clientInfo.browser())
+                .ipAddress(getClientIp(request))
+                .userAgent(clientInfo.userAgent())
+                .build());
+    }
+
+    private ClientInfo resolveClientInfo(HttpServletRequest request) {
+        String userAgent = request == null ? "" : Optional.ofNullable(request.getHeader("User-Agent")).orElse("");
+        String lowerUserAgent = userAgent.toLowerCase(Locale.ROOT);
+        boolean mobile = lowerUserAgent.contains("mobile")
+                || lowerUserAgent.contains("android")
+                || lowerUserAgent.contains("iphone")
+                || lowerUserAgent.contains("ipad");
+        return new ClientInfo(
+                mobile ? "MOBILE" : "PC",
+                mobile ? "H5" : "WEB",
+                resolveBrowser(lowerUserAgent),
+                userAgent);
+    }
+
+    private String resolveBrowser(String lowerUserAgent) {
+        if (!StringUtils.hasText(lowerUserAgent)) return "未知";
+        if (lowerUserAgent.contains("micromessenger")) return "WeChat";
+        if (lowerUserAgent.contains("edg/") || lowerUserAgent.contains("edge/")) return "Edge";
+        if (lowerUserAgent.contains("chrome/") || lowerUserAgent.contains("crios/")) return "Chrome";
+        if (lowerUserAgent.contains("firefox/") || lowerUserAgent.contains("fxios/")) return "Firefox";
+        if (lowerUserAgent.contains("safari/")) return "Safari";
+        return "未知";
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        if (request == null) return "-";
+        String ip = request.getHeader("X-Forwarded-For");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            return ip.split(",")[0].trim();
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (StringUtils.hasText(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            return ip.trim();
+        }
+        return StringUtils.hasText(request.getRemoteAddr()) ? request.getRemoteAddr() : "-";
+    }
+
     @Data
     public static class LoginRequest {
         private String username;
@@ -136,5 +207,8 @@ public class AuthController {
     }
 
     private record UserPermissionSnapshot(List<String> roleIds, List<String> permissions) {
+    }
+
+    private record ClientInfo(String platform, String clientType, String browser, String userAgent) {
     }
 }

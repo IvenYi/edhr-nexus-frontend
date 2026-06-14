@@ -314,6 +314,8 @@ assertContains(settingsPage, [
   'inputProps={{ min: 1, max: LOGO_SIZE_MAX }}',
   'Logo 长度不能超过 60px',
   'Logo 高度不能超过 60px',
+  'logoWidth: normalizeLogoSize(form.logoWidth)',
+  'logoHeight: normalizeLogoSize(form.logoHeight)',
   '浏览器标签 Icon',
   '上传',
   '删除',
@@ -343,6 +345,9 @@ assertContains(systemSettingsController, [
   'logoHeight(normalizeLogoSize(setting.getLogoHeight(), "Logo 高度"))',
   'private Integer logoWidth',
   'private Integer logoHeight',
+  'defaultSetting',
+  '.logoWidth(DEFAULT_LOGO_SIZE)',
+  '.logoHeight(DEFAULT_LOGO_SIZE)',
 ], 'SystemSettingsController.java');
 
 const systemSettingsSql = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/0007-system-logo-size-settings.sql'), 'utf8');
@@ -350,6 +355,11 @@ assertContains(systemSettingsSql, [
   'ALTER TABLE system_setting ADD COLUMN IF NOT EXISTS logo_width INTEGER NOT NULL DEFAULT 32',
   'ALTER TABLE system_setting ADD COLUMN IF NOT EXISTS logo_height INTEGER NOT NULL DEFAULT 32',
 ], '0007-system-logo-size-settings.sql');
+
+const changelogMaster = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/db.changelog-master.yaml'), 'utf8');
+assertContains(changelogMaster, [
+  'db/changelog/0007-system-logo-size-settings.sql',
+], 'db.changelog-master.yaml');
 
 const packageJson = read(files.packageJson);
 assertContains(packageJson, [
