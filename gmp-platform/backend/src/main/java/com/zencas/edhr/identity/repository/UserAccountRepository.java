@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long>, JpaSpecificationExecutor<UserAccount> {
     Optional<UserAccount> findByUsername(String username);
     boolean existsByUsername(String username);
+    boolean existsByAvatarFileId(Long avatarFileId);
 }

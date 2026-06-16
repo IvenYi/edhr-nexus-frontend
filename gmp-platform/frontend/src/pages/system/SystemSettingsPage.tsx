@@ -62,6 +62,9 @@ function normalizeSettings(settings?: SystemSettings): SystemSettings {
     browserTitle: settings?.browserTitle?.trim() || DEFAULT_SYSTEM_BRANDING.browserTitle,
     logoWidth: normalizeLogoSize(settings?.logoWidth),
     logoHeight: normalizeLogoSize(settings?.logoHeight),
+    loginSubtitle: settings?.loginSubtitle?.trim() || DEFAULT_SYSTEM_BRANDING.loginSubtitle,
+    loginDescription: settings?.loginDescription?.trim() || DEFAULT_SYSTEM_BRANDING.loginDescription,
+    loginComplianceItems: settings?.loginComplianceItems?.trim() || DEFAULT_SYSTEM_BRANDING.loginComplianceItems,
   };
 }
 
@@ -142,7 +145,15 @@ export default function SystemSettingsPage() {
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const faviconInputRef = useRef<HTMLInputElement | null>(null);
   const { refreshBranding } = useSystemBranding();
-  const [form, setForm] = useState({ systemName: '', browserTitle: '', logoWidth: 32, logoHeight: 32 });
+  const [form, setForm] = useState({
+    systemName: '',
+    browserTitle: '',
+    logoWidth: 32,
+    logoHeight: 32,
+    loginSubtitle: '',
+    loginDescription: '',
+    loginComplianceItems: '',
+  });
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
     message: '',
@@ -164,6 +175,9 @@ export default function SystemSettingsPage() {
       browserTitle: nextSettings.browserTitle,
       logoWidth: normalizeLogoSize(nextSettings.logoWidth),
       logoHeight: normalizeLogoSize(nextSettings.logoHeight),
+      loginSubtitle: nextSettings.loginSubtitle ?? '',
+      loginDescription: nextSettings.loginDescription ?? '',
+      loginComplianceItems: nextSettings.loginComplianceItems ?? '',
     });
   }, [settingsQuery.data]);
 
@@ -197,6 +211,9 @@ export default function SystemSettingsPage() {
         browserTitle,
         logoWidth: normalizeLogoSize(form.logoWidth),
         logoHeight: normalizeLogoSize(form.logoHeight),
+        loginSubtitle: form.loginSubtitle.trim(),
+        loginDescription: form.loginDescription.trim(),
+        loginComplianceItems: form.loginComplianceItems.trim(),
       });
     },
     onSuccess: async (savedSettings) => {
@@ -330,6 +347,38 @@ export default function SystemSettingsPage() {
                   sx={fieldSx}
                 />
               </Stack>
+            </Stack>
+          </Box>
+
+          <Box sx={{ bgcolor: '#fff', border: `1px solid ${COLORS.divider}`, borderRadius: 1, overflow: 'hidden' }}>
+            <Box sx={{ height: 48, px: 2, display: 'flex', alignItems: 'center', borderBottom: `1px solid ${COLORS.divider}` }}>
+              <Typography sx={{ color: COLORS.textPrimary, fontWeight: 600, fontSize: 14 }}>登录页展示内容</Typography>
+            </Box>
+            <Stack spacing={2} sx={{ p: 2 }}>
+              <TextField
+                label="登录页副标题"
+                value={form.loginSubtitle}
+                onChange={(event) => setForm((current) => ({ ...current, loginSubtitle: event.target.value }))}
+                fullWidth
+                sx={fieldSx}
+              />
+              <TextField
+                label="登录页说明"
+                value={form.loginDescription}
+                onChange={(event) => setForm((current) => ({ ...current, loginDescription: event.target.value }))}
+                fullWidth
+                multiline
+                minRows={2}
+              />
+              <TextField
+                label="登录页标准卡片"
+                value={form.loginComplianceItems}
+                onChange={(event) => setForm((current) => ({ ...current, loginComplianceItems: event.target.value }))}
+                fullWidth
+                multiline
+                minRows={3}
+                helperText="一行一个卡片，格式：标题|说明"
+              />
             </Stack>
           </Box>
 

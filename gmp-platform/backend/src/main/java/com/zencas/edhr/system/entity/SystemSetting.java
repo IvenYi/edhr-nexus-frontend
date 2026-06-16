@@ -33,6 +33,12 @@ public class SystemSetting {
     private Integer logoHeight;
     @Column(name = "browser_title")
     private String browserTitle;
+    @Column(name = "login_subtitle")
+    private String loginSubtitle;
+    @Column(name = "login_description")
+    private String loginDescription;
+    @Column(name = "login_compliance_items")
+    private String loginComplianceItems;
     @Column(name = "browser_icon_file_id")
     private Long browserIconFileId;
     @Column(name = "created_by")

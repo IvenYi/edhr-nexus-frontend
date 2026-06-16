@@ -10,6 +10,7 @@ function cloneSidebarModules(modules: SidebarModule[]): SidebarModule[] {
 }
 
 const REQUIRED_SYSTEM_MANAGEMENT_CHILDREN: SidebarSubMenu[] = [
+  { label: '业务字典', path: '/system/dictionaries' },
   { label: '图标管理', path: '/system/icons' },
   { label: '系统设置', path: '/system/settings' },
 ];
@@ -20,6 +21,27 @@ const REQUIRED_SECURITY_MANAGEMENT_CHILDREN: SidebarSubMenu[] = [
   { label: '签名记录', path: '/system/signatures' },
 ];
 
+const REQUIRED_PROCESS_MODELING_MENU: SidebarMenu = {
+  label: '工艺建模',
+  icon: 'AccountTree',
+  children: [
+    { label: '物料管理', path: '/master-data/materials' },
+    { label: '工序管理', path: '/master-data/operations' },
+    { label: '工艺路线', path: '/master-data/routes' },
+    { label: '产品管理', path: '/master-data/products' },
+    { label: '产品簇', path: '/master-data/product-families' },
+    { label: '文档管理', path: '/master-data/documents' },
+  ],
+};
+
+const PROCESS_MODELING_PATHS = new Set(REQUIRED_PROCESS_MODELING_MENU.children?.map((child) => child.path) ?? []);
+const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
+  '/master-data/material-types',
+  '/master-data/units',
+  '/master-data/equipment',
+  '/master-data/sop-documents',
+  '/master-data/sites',
+]);
 const SECURITY_MANAGEMENT_PATHS = new Set(REQUIRED_SECURITY_MANAGEMENT_CHILDREN.map((child) => child.path));
 
 const REMOVED_SYSTEM_MENU_PATHS = new Set([
@@ -38,6 +60,7 @@ export function normalizeSidebarSubMenu(item: Partial<SidebarSubMenu>): SidebarS
   const path = normalizeText(item.path);
   if (!label || !path) return null;
   if (REMOVED_SYSTEM_MENU_PATHS.has(path)) return null;
+  if (REMOVED_MASTER_DATA_MENU_PATHS.has(path)) return null;
   return { label, path };
 }
 
@@ -71,11 +94,18 @@ export function normalizeManagedSidebarModules(modules: SidebarModule[]): Sideba
     })
     .filter((module): module is SidebarModule => module !== null);
 
-  return ensureRequiredSystemMenus(normalized.length > 0 ? normalized : cloneSidebarModules(SIDEBAR_MODULES));
+  return ensureRequiredMenus(normalized.length > 0 ? normalized : cloneSidebarModules(SIDEBAR_MODULES));
+}
+
+export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
+  const nextModules = cloneSidebarModules(modules);
+  ensureRequiredProcessModeling(nextModules);
+  ensureRequiredSystemMenus(nextModules);
+  return nextModules;
 }
 
 export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModule[] {
-  const nextModules = cloneSidebarModules(modules);
+  const nextModules = modules;
   let systemModule = nextModules.find((module) => module.id === 'system');
 
   if (!systemModule) {
@@ -110,6 +140,34 @@ export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModu
   return nextModules;
 }
 
+function ensureRequiredProcessModeling(modules: SidebarModule[]) {
+  let dataModule = modules.find((module) => module.id === 'data');
+
+  if (!dataModule) {
+    dataModule = {
+      id: 'data',
+      label: '数据',
+      icon: 'Storage',
+      menus: [],
+    };
+    modules.push(dataModule);
+  }
+
+  dataModule.label = '数据';
+  dataModule.icon = dataModule.icon || 'Storage';
+  dataModule.menus = dataModule.menus
+    .map((menu) => {
+      if (menu.children) {
+        menu.children = menu.children.filter((child) => !PROCESS_MODELING_PATHS.has(child.path) && !REMOVED_MASTER_DATA_MENU_PATHS.has(child.path));
+      }
+      if (menu.path && (PROCESS_MODELING_PATHS.has(menu.path) || REMOVED_MASTER_DATA_MENU_PATHS.has(menu.path))) return null;
+      if (menu.label === '基础主数据' || menu.label === '工艺建模') return null;
+      return menu;
+    })
+    .filter((menu): menu is SidebarMenu => menu !== null);
+  dataModule.menus.unshift(cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU] }])[0].menus[0]);
+}
+
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
   for (const menu of systemModule.menus) {
     if (menu.label === '安全管理') continue;
@@ -137,20 +195,20 @@ function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
 }
 
 export function loadManagedSidebarModules(): SidebarModule[] {
-  if (typeof window === 'undefined') return ensureRequiredSystemMenus(SIDEBAR_MODULES);
+  if (typeof window === 'undefined') return ensureRequiredSystemMenus(ensureRequiredMenus(SIDEBAR_MODULES));
 
   try {
     const raw = window.localStorage.getItem(MENU_MANAGEMENT_STORAGE_KEY);
-    if (!raw) return ensureRequiredSystemMenus(SIDEBAR_MODULES);
+    if (!raw) return ensureRequiredSystemMenus(ensureRequiredMenus(SIDEBAR_MODULES));
     const parsed = JSON.parse(raw) as SidebarModule[];
-    return normalizeManagedSidebarModules(parsed);
+    return ensureRequiredSystemMenus(normalizeManagedSidebarModules(parsed));
   } catch {
-    return ensureRequiredSystemMenus(SIDEBAR_MODULES);
+    return ensureRequiredSystemMenus(ensureRequiredMenus(SIDEBAR_MODULES));
   }
 }
 
 export function saveManagedSidebarModules(modules: SidebarModule[]): SidebarModule[] {
-  const normalized = ensureRequiredSystemMenus(normalizeManagedSidebarModules(modules));
+  const normalized = ensureRequiredSystemMenus(ensureRequiredMenus(normalizeManagedSidebarModules(modules)));
   if (typeof window !== 'undefined') {
     window.localStorage.setItem(MENU_MANAGEMENT_STORAGE_KEY, JSON.stringify(normalized));
     window.dispatchEvent(new CustomEvent(MENU_MANAGEMENT_EVENT));
@@ -159,7 +217,7 @@ export function saveManagedSidebarModules(modules: SidebarModule[]): SidebarModu
 }
 
 export function resetManagedSidebarModules(): SidebarModule[] {
-  const defaults = ensureRequiredSystemMenus(SIDEBAR_MODULES);
+  const defaults = ensureRequiredMenus(SIDEBAR_MODULES);
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem(MENU_MANAGEMENT_STORAGE_KEY);
     window.dispatchEvent(new CustomEvent(MENU_MANAGEMENT_EVENT));
@@ -190,6 +248,7 @@ export function useManagedSidebarModules(): SidebarModule[] {
 export function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
   if (path === '/system/menu-management') return 'system.edit';
+  if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';
   if (path === '/system/settings') return 'system.settings';
   if (path === '/system/login-logs') return 'system.login-logs';

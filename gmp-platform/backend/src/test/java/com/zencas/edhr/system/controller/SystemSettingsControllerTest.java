@@ -56,6 +56,9 @@ class SystemSettingsControllerTest {
         assertThat(response.getData().getBrowserIconFileId()).isNull();
         assertThat(response.getData().getLogoUrl()).isBlank();
         assertThat(response.getData().getFaviconUrl()).isBlank();
+        assertThat(response.getData().getLoginSubtitle()).isEqualTo("电子设备历史记录平台");
+        assertThat(response.getData().getLoginDescription()).isEqualTo("面向医疗器械生产的 GMP 合规数字化解决方案，确保每一批次全程可追溯、可审计。");
+        assertThat(response.getData().getLoginComplianceItems()).isEqualTo("21 CFR Part 11|合规标准\nISO 13485|质量体系\nGAMP 5|验证框架");
     }
 
     @Test
@@ -75,12 +78,18 @@ class SystemSettingsControllerTest {
                 "  新系统  ",
                 "  新标题  ",
                 48,
-                40));
+                40,
+                "  新平台  ",
+                "  新说明  ",
+                "A|甲\nB|乙\nC|丙"));
 
         assertThat(response.getData().getSystemName()).isEqualTo("新系统");
         assertThat(response.getData().getBrowserTitle()).isEqualTo("新标题");
         assertThat(response.getData().getLogoWidth()).isEqualTo(48);
         assertThat(response.getData().getLogoHeight()).isEqualTo(40);
+        assertThat(response.getData().getLoginSubtitle()).isEqualTo("新平台");
+        assertThat(response.getData().getLoginDescription()).isEqualTo("新说明");
+        assertThat(response.getData().getLoginComplianceItems()).isEqualTo("A|甲\nB|乙\nC|丙");
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository).save(auditCaptor.capture());
         AuditEvent event = auditCaptor.getValue();
@@ -94,6 +103,9 @@ class SystemSettingsControllerTest {
         assertThat(after.get("browserTitle").asText()).isEqualTo("新标题");
         assertThat(after.get("logoWidth").asInt()).isEqualTo(48);
         assertThat(after.get("logoHeight").asInt()).isEqualTo(40);
+        assertThat(after.get("loginSubtitle").asText()).isEqualTo("新平台");
+        assertThat(after.get("loginDescription").asText()).isEqualTo("新说明");
+        assertThat(after.get("loginComplianceItems").asText()).isEqualTo("A|甲\nB|乙\nC|丙");
     }
 
     @Test
@@ -112,7 +124,10 @@ class SystemSettingsControllerTest {
                 "新系统",
                 "新标题",
                 61,
-                32)))
+                32,
+                "电子设备历史记录平台",
+                "说明",
+                "21 CFR Part 11|合规标准")))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("Logo 长度不能超过 60px");
     }

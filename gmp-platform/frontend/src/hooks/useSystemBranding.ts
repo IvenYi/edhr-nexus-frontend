@@ -8,6 +8,9 @@ export const DEFAULT_SYSTEM_BRANDING: SystemSettings = {
   logoUrl: '',
   logoWidth: 32,
   logoHeight: 32,
+  loginSubtitle: '电子设备历史记录平台',
+  loginDescription: '面向医疗器械生产的 GMP 合规数字化解决方案，确保每一批次全程可追溯、可审计。',
+  loginComplianceItems: '21 CFR Part 11|合规标准\nISO 13485|质量体系\nGAMP 5|验证框架',
   faviconUrl: '',
 };
 
@@ -21,6 +24,9 @@ export function normalizeSystemBranding(settings?: Partial<SystemSettings>): Sys
     browserTitle: settings?.browserTitle?.trim() || DEFAULT_SYSTEM_BRANDING.browserTitle,
     logoWidth: settings?.logoWidth ?? DEFAULT_SYSTEM_BRANDING.logoWidth,
     logoHeight: settings?.logoHeight ?? DEFAULT_SYSTEM_BRANDING.logoHeight,
+    loginSubtitle: settings?.loginSubtitle?.trim() || DEFAULT_SYSTEM_BRANDING.loginSubtitle,
+    loginDescription: settings?.loginDescription?.trim() || DEFAULT_SYSTEM_BRANDING.loginDescription,
+    loginComplianceItems: settings?.loginComplianceItems?.trim() || DEFAULT_SYSTEM_BRANDING.loginComplianceItems,
   };
 }
 

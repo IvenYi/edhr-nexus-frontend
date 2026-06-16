@@ -7,6 +7,27 @@ interface RequestOptions {
 // Auth
 export const getCurrentUser = (options?: RequestOptions) =>
   client.get('/auth/me', options);
+export const uploadUserAvatar = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return client.post('/auth/me/avatar', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+export const uploadSignatureEvidence = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('targetType', 'SIGNATURE_EVIDENCE');
+  return client.post('/files/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+export const updateCurrentUserProfile = (body: Record<string, unknown>) =>
+  client.put('/auth/me/profile', body);
+export const changeCurrentUserPassword = (body: Record<string, unknown>) =>
+  client.post('/auth/me/password', body);
+export const createPersonalSignature = (body: Record<string, unknown>) =>
+  client.post('/auth/me/signature', body);
 
 // Users
 export const getUsers = (params?: Record<string, unknown>) =>

@@ -18,9 +18,25 @@ public class SopDocument {
     private String version;
     @Column(name = "file_reference")
     private String fileReference;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
     @Column(name = "status")
     @Builder.Default private String status = "DRAFT";
+    @Column(name = "remark", columnDefinition = "TEXT")
+    private String remark;
+    @Column(name = "created_by")
+    private String createdBy;
     @Column(name = "created_at") private LocalDateTime createdAt;
+    @Column(name = "updated_by")
+    private String updatedBy;
     @Column(name = "updated_at") private LocalDateTime updatedAt;
-    @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }
+    @PrePersist void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (updatedAt == null) updatedAt = createdAt;
+        if (updatedBy == null) updatedBy = createdBy;
+    }
+    @PreUpdate void preUpdate() {
+        updatedAt = LocalDateTime.now();
+        if (updatedBy == null) updatedBy = createdBy;
+    }
 }

@@ -1,5 +1,6 @@
 import { type MouseEvent as ReactMouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
   Avatar,
   Badge,
@@ -27,10 +28,10 @@ import {
   Dashboard,
   FullscreenRounded,
   Home,
-  KeyboardArrowDownRounded,
   LocalHospitalRounded,
   LockOutlined,
   Logout,
+  MoreVertRounded,
   NavigateNextRounded,
   Notifications,
   PersonOutlineRounded,
@@ -39,6 +40,7 @@ import {
   SearchRounded,
   Settings,
   Storage,
+  SwapHorizRounded,
   TranslateRounded,
 } from '@mui/icons-material';
 import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
@@ -46,6 +48,7 @@ import { inferPermissionCode, useManagedSidebarModules } from '@/utils/menuManag
 import { useSystemBranding } from '@/hooks/useSystemBranding';
 import { renderManagedIcon } from '@/utils/iconAssets';
 import { getMe, logout } from '@/api/auth';
+import { getRoles } from '@/api/identity';
 
 const COLORS = {
   primary: '#1890ff',
@@ -71,6 +74,7 @@ const TABS_BAR_HEIGHT = 50;
 const HEADER_TOTAL_HEIGHT = TOP_NAV_HEIGHT + TABS_BAR_HEIGHT;
 const AUTH_USER_CHANGE_EVENT = 'edhr:auth-user-change';
 const DEFAULT_SYSTEM_NAME = 'eDHR 系统';
+const PERSONAL_SETTINGS_ROUTE = '/account/settings';
 
 const EMPTY_SIDEBAR_MODULE: SidebarModule = {
   id: 'empty',
@@ -87,6 +91,7 @@ const ICON_MAP: Record<string, ReactNode> = {
   PrecisionManufacturing: <PrecisionManufacturing />,
   Settings: <Settings />,
   LockOutlined: <LockOutlined />,
+  PersonOutlineRounded: <PersonOutlineRounded />,
 };
 
 const FALLBACK_ICON = <Settings />;
@@ -94,7 +99,19 @@ const FALLBACK_ICON = <Settings />;
 interface StoredUser {
   displayName?: string;
   username?: string;
+  avatarUrl?: string;
+  roleNames?: string[];
+  roleIds?: string[];
   permissions?: string[];
+}
+
+interface RoleOption {
+  id: string | number;
+  name: string;
+}
+
+interface PageResult<T> {
+  content?: T[];
 }
 
 interface BreadcrumbItem {
@@ -131,6 +148,17 @@ const HOME_TAB: AppTab = {
   closable: false,
 };
 
+const PERSONAL_SETTINGS_TAB: AppTab = {
+  label: '个人设置',
+  path: PERSONAL_SETTINGS_ROUTE,
+  iconName: 'PersonOutlineRounded',
+  closable: true,
+};
+
+const PERSONAL_SETTINGS_BREADCRUMBS: BreadcrumbItem[] = [
+  { label: '个人设置', iconName: 'PersonOutlineRounded' },
+];
+
 const initialTabs: AppTab[] = [HOME_TAB];
 
 function getIcon(iconName?: string): ReactNode {
@@ -160,6 +188,7 @@ function matchPath(menuPath: string, pathname: string): boolean {
 
 function getModuleIdByPath(pathname: string): string {
   if (pathname === '/') return 'home';
+  if (isPathSegmentMatch(pathname, PERSONAL_SETTINGS_ROUTE)) return 'home';
   if (isPathSegmentMatch(pathname, '/master-data')) return 'data';
   if (isPathSegmentMatch(pathname, '/workflow')) return 'production';
   if (isPathSegmentMatch(pathname, '/system')) return 'system';
@@ -185,6 +214,10 @@ function getLayoutPermissionCode(path: string): string | undefined {
 function canAccessPath(path: string, permissionSet: Set<string>): boolean {
   const permissionCode = getLayoutPermissionCode(path);
   return Boolean(permissionCode && permissionSet.has(permissionCode));
+}
+
+function isRoleIdText(value: string): boolean {
+  return /^\d{12,}$/.test(value.trim());
 }
 
 function filterModulesByPermissions(
@@ -253,6 +286,7 @@ function findRouteModule(modules: SidebarModule[], pathname: string): SidebarMod
 }
 
 function getBreadcrumbItems(module: SidebarModule, pathname: string): BreadcrumbItem[] {
+  if (pathname === PERSONAL_SETTINGS_ROUTE) return PERSONAL_SETTINGS_BREADCRUMBS;
   const items: BreadcrumbItem[] = [{ label: module.label, iconName: module.icon }];
 
   for (const menu of module.menus) {
@@ -276,6 +310,7 @@ function getBreadcrumbItems(module: SidebarModule, pathname: string): Breadcrumb
 
 function getRouteTab(module: SidebarModule, pathname: string): AppTab {
   if (pathname === '/') return HOME_TAB;
+  if (pathname === PERSONAL_SETTINGS_ROUTE) return PERSONAL_SETTINGS_TAB;
 
   for (const menu of module.menus) {
     if (menu.path && matchPath(menu.path, pathname)) {
@@ -334,6 +369,14 @@ export default function AppLayout() {
   const [tabContextMenu, setTabContextMenu] = useState<TabContextMenuState | null>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
   const activeScrollableTabRef = useRef<HTMLDivElement | null>(null);
+  const { data: roleData } = useQuery({
+    queryKey: ['roles-all'],
+    queryFn: async () => {
+      const res = await getRoles({ page: 1, size: 200 });
+      const body = res.data.data as PageResult<RoleOption>;
+      return body.content ?? [];
+    },
+  });
 
   useEffect(() => {
     const refreshStoredUser = () => setUser(readStoredUser());
@@ -392,7 +435,22 @@ export default function AppLayout() {
   );
   const sidebarTotalWidth = MODULE_BAR_WIDTH + (funcMenuOpen ? FUNC_MENU_WIDTH : 0);
   const effectiveSidebarWidth = isMobile ? 0 : sidebarTotalWidth;
-  const userDisplayName = user.username || user.displayName || 'admin';
+  const userDisplayName = user.displayName || user.username || '管理员';
+  const userInitial = userDisplayName.trim().charAt(0) || '管';
+  const roleNameById = useMemo(
+    () => new Map((roleData ?? []).map((role) => [String(role.id), role.name])),
+    [roleData],
+  );
+  const userRoleText = useMemo(() => {
+    const roleNames = user.roleNames?.filter((roleName) => Boolean(roleName) && !isRoleIdText(roleName));
+    if (roleNames?.length) return roleNames.join('、');
+    const roleIds = user.roleIds?.filter(Boolean) ?? [];
+    if (roleIds.length === 0) return '未分配角色';
+    const resolvedRoleNames = roleIds
+      .map((roleId) => roleNameById.get(String(roleId)))
+      .filter((roleName): roleName is string => Boolean(roleName));
+    return resolvedRoleNames.length > 0 ? resolvedRoleNames.join('、') : '岗位角色未映射';
+  }, [roleNameById, user.roleIds, user.roleNames]);
   const systemName = branding.systemName || DEFAULT_SYSTEM_NAME;
   const homeTab = openTabs.find((tab) => tab.path === HOME_TAB.path) || HOME_TAB;
   const scrollableTabs = openTabs.filter((tab) => tab.path !== HOME_TAB.path);
@@ -501,6 +559,7 @@ export default function AppLayout() {
   }, []);
 
   const handleLogout = useCallback(async () => {
+    setUserAnchorEl(null);
     try {
       await logout();
     } catch {
@@ -509,6 +568,11 @@ export default function AppLayout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+  }, [navigate]);
+
+  const handleOpenPersonalSettings = useCallback(() => {
+    setUserAnchorEl(null);
+    navigate(PERSONAL_SETTINGS_ROUTE);
   }, [navigate]);
 
   const headerIconButtonSx = {
@@ -694,32 +758,186 @@ export default function AppLayout() {
             <Box
               component="button"
               type="button"
+              data-app-user-pill="true"
+              aria-label="打开用户菜单"
+              aria-haspopup="menu"
+              aria-expanded={Boolean(userAnchorEl)}
               onClick={(event) => setUserAnchorEl(event.currentTarget)}
               sx={{
                 ml: '4px',
-                p: 0,
+                p: '4px 6px 4px 4px',
                 border: 0,
-                bgcolor: 'transparent',
+                borderRadius: '999px',
+                bgcolor: '#dbeafe',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                height: 40,
+                height: 34,
+                minWidth: 0,
                 cursor: 'pointer',
-                color: COLORS.textSecondary,
+                color: '#111827',
                 font: 'inherit',
-                '&:hover': { color: COLORS.primary },
+                boxShadow: 'inset 0 0 0 1px rgba(64, 146, 255, 0.08)',
+                '&:hover': { bgcolor: '#cfe3ff' },
               }}
             >
-              <Avatar sx={{ width: 34, height: 34, fontSize: 14, bgcolor: '#c9a24f', color: '#fff', border: '2px solid #f3dfaa' }}>
-                {(user.displayName || user.username || 'A').charAt(0)}
+              <Avatar src={user.avatarUrl || undefined} sx={{ width: 26, height: 26, fontSize: 15, fontWeight: 700, bgcolor: '#4092ff', color: '#fff' }}>
+                {!user.avatarUrl && userInitial}
               </Avatar>
-              <Typography component="span" sx={{ fontSize: 13, color: 'inherit' }}>{userDisplayName}</Typography>
-              <KeyboardArrowDownRounded sx={{ fontSize: 16, color: 'inherit' }} />
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: 'inherit',
+                  lineHeight: 1,
+                  maxWidth: 72,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {userDisplayName}
+              </Typography>
+              <MoreVertRounded sx={{ fontSize: 18, color: 'inherit' }} />
             </Box>
-            <Menu anchorEl={userAnchorEl} open={Boolean(userAnchorEl)} onClose={() => setUserAnchorEl(null)}>
-              <MuiMenuItem disabled><Typography variant="body2">{user.displayName || userDisplayName}</Typography></MuiMenuItem>
-              <Divider />
-              <MuiMenuItem onClick={handleLogout} sx={{ color: COLORS.error }}><Logout fontSize="small" sx={{ mr: 1 }} />退出登录</MuiMenuItem>
+            <Menu
+              anchorEl={userAnchorEl}
+              open={Boolean(userAnchorEl)}
+              onClose={() => setUserAnchorEl(null)}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              disableAutoFocusItem
+              PaperProps={{
+                'data-app-user-menu': 'true',
+                sx: {
+                  mt: '8px',
+                  minWidth: 236,
+                  borderRadius: '18px',
+                  boxShadow: '0 16px 38px rgba(27, 31, 36, 0.16)',
+                  border: '1px solid #d8dee4',
+                  overflow: 'hidden',
+                },
+              }}
+              MenuListProps={{ sx: { py: '10px' } }}
+            >
+              <Box sx={{ px: '14px', pb: '10px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Avatar
+                    src={user.avatarUrl || undefined}
+                    sx={{
+                      width: 42,
+                      height: 42,
+                      fontSize: 21,
+                      fontWeight: 700,
+                      bgcolor: '#4092ff',
+                      color: '#fff',
+                      border: '2px solid #e8f4ff',
+                    }}
+                  >
+                    {!user.avatarUrl && userInitial}
+                  </Avatar>
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Typography
+                      sx={{
+                        fontSize: 16,
+                        lineHeight: 1.15,
+                        fontWeight: 800,
+                        color: '#24292f',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {userDisplayName}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        mt: '3px',
+                        fontSize: 14,
+                        lineHeight: 1.2,
+                        color: '#57606a',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {userRoleText}
+                    </Typography>
+                  </Box>
+                  <IconButton
+                    aria-label="切换账号"
+                    size="small"
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      color: '#57606a',
+                      '& .MuiSvgIcon-root': { fontSize: 21 },
+                      '&:hover': { bgcolor: '#f6f8fa' },
+                    }}
+                  >
+                    <SwapHorizRounded />
+                  </IconButton>
+                </Box>
+              </Box>
+              <Divider sx={{ mx: '14px', my: '7px', borderColor: '#d8dee4' }} />
+              <MuiMenuItem
+                onClick={handleOpenPersonalSettings}
+                sx={{
+                  minHeight: 36,
+                  px: '14px',
+                  py: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  color: '#24292f',
+                  '&:hover': { bgcolor: '#f6f8fa' },
+                }}
+              >
+                <Box
+                  component="span"
+                  sx={{
+                    width: 28,
+                    minWidth: 28,
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    color: '#57606a',
+                    '& .MuiSvgIcon-root': { fontSize: 21 },
+                  }}
+                >
+                  <PersonOutlineRounded />
+                </Box>
+                <Typography component="span" sx={{ flex: 1, fontSize: 15, fontWeight: 650, lineHeight: 1.2 }}>个人设置</Typography>
+              </MuiMenuItem>
+              <Divider sx={{ mx: '14px', my: '7px', borderColor: '#d8dee4' }} />
+              <MuiMenuItem
+                onClick={handleLogout}
+                sx={{
+                  minHeight: 36,
+                  px: '14px',
+                  py: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  color: '#24292f',
+                  '&:hover': { bgcolor: '#f6f8fa' },
+                }}
+              >
+                <Box
+                  component="span"
+                  sx={{
+                    width: 28,
+                    minWidth: 28,
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    color: '#57606a',
+                    '& .MuiSvgIcon-root': { fontSize: 21 },
+                  }}
+                >
+                  <Logout />
+                </Box>
+                <Typography component="span" sx={{ flex: 1, fontSize: 15, fontWeight: 650, lineHeight: 1.2 }}>登出</Typography>
+              </MuiMenuItem>
             </Menu>
           </Box>
         </Box>

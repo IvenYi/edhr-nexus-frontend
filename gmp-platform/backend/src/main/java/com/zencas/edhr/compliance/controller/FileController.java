@@ -7,6 +7,7 @@ import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
+import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.system.repository.IconAssetRepository;
 import com.zencas.edhr.system.repository.SystemSettingRepository;
 import jakarta.persistence.criteria.Predicate;
@@ -51,6 +52,7 @@ public class FileController {
     private final FileObjectRepository fileObjectRepository;
     private final IconAssetRepository iconAssetRepository;
     private final SystemSettingRepository systemSettingRepository;
+    private final UserAccountRepository userAccountRepository;
     private final SnowflakeIdGenerator idGenerator;
 
     @Value("${edhr.file.storage-path:#{systemProperties['user.home'] + '/.edhr/files'}}")
@@ -59,7 +61,7 @@ public class FileController {
     /** Allowed MIME types for upload (whitelist). */
     private static final List<String> ALLOWED_MIME_TYPES = List.of(
             "application/pdf",
-            "image/png", "image/jpeg", "image/gif",
+            "image/png", "image/jpeg", "image/webp", "image/gif",
             "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "application/vnd.ms-excel",
@@ -69,7 +71,7 @@ public class FileController {
     );
 
     private static final long MAX_FILE_SIZE = 50L * 1024 * 1024; // 50 MB
-    private static final Set<String> PUBLIC_PREVIEW_TARGET_TYPES = Set.of("ICON_ASSET", "SYSTEM_LOGO", "SYSTEM_FAVICON");
+    private static final Set<String> PUBLIC_PREVIEW_TARGET_TYPES = Set.of("ICON_ASSET", "SYSTEM_LOGO", "SYSTEM_FAVICON", "USER_AVATAR");
 
     // ======================== Upload ========================
 
@@ -185,6 +187,9 @@ public class FileController {
         Long fileId = fileObject.getId();
         if ("ICON_ASSET".equals(fileObject.getTargetType())) {
             return iconAssetRepository.existsByFileId(fileId);
+        }
+        if ("USER_AVATAR".equals(fileObject.getTargetType())) {
+            return userAccountRepository.existsByAvatarFileId(fileId);
         }
         return systemSettingRepository.existsBySystemLogoFileIdOrBrowserIconFileId(fileId, fileId);
     }

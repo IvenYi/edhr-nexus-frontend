@@ -51,6 +51,9 @@ public class SystemSettingsController {
     private static final String TENANT_ID = "default";
     private static final String DEFAULT_SYSTEM_NAME = "eDHR 系统";
     private static final String DEFAULT_BROWSER_TITLE = "eDHR - 医疗器械电子设备历史记录系统";
+    private static final String DEFAULT_LOGIN_SUBTITLE = "电子设备历史记录平台";
+    private static final String DEFAULT_LOGIN_DESCRIPTION = "面向医疗器械生产的 GMP 合规数字化解决方案，确保每一批次全程可追溯、可审计。";
+    private static final String DEFAULT_LOGIN_COMPLIANCE_ITEMS = "21 CFR Part 11|合规标准\nISO 13485|质量体系\nGAMP 5|验证框架";
     private static final int DEFAULT_LOGO_SIZE = 32;
     private static final int LOGO_SIZE_MAX = 60;
     private static final long BRAND_MAX_FILE_SIZE = 2L * 1024 * 1024;
@@ -85,6 +88,9 @@ public class SystemSettingsController {
         setting.setBrowserTitle(requireText(request == null ? null : request.browserTitle(), "浏览器标题不能为空"));
         setting.setLogoWidth(normalizeLogoSize(request == null ? null : request.logoWidth(), "Logo 长度"));
         setting.setLogoHeight(normalizeLogoSize(request == null ? null : request.logoHeight(), "Logo 高度"));
+        setting.setLoginSubtitle(normalizeOptionalText(request == null ? null : request.loginSubtitle(), DEFAULT_LOGIN_SUBTITLE));
+        setting.setLoginDescription(normalizeOptionalText(request == null ? null : request.loginDescription(), DEFAULT_LOGIN_DESCRIPTION));
+        setting.setLoginComplianceItems(normalizeOptionalText(request == null ? null : request.loginComplianceItems(), DEFAULT_LOGIN_COMPLIANCE_ITEMS));
         setting.setUpdatedBy(AuditContext.getOperatorId());
         SystemSetting saved = systemSettingRepository.save(setting);
         writeAudit(saved.getId(), "UPDATE", before, settingSnapshot(saved));
@@ -163,6 +169,9 @@ public class SystemSettingsController {
                 .tenantId(TENANT_ID)
                 .systemName(DEFAULT_SYSTEM_NAME)
                 .browserTitle(DEFAULT_BROWSER_TITLE)
+                .loginSubtitle(DEFAULT_LOGIN_SUBTITLE)
+                .loginDescription(DEFAULT_LOGIN_DESCRIPTION)
+                .loginComplianceItems(DEFAULT_LOGIN_COMPLIANCE_ITEMS)
                 .logoWidth(DEFAULT_LOGO_SIZE)
                 .logoHeight(DEFAULT_LOGO_SIZE)
                 .build();
@@ -212,6 +221,10 @@ public class SystemSettingsController {
         return value.trim();
     }
 
+    private String normalizeOptionalText(String value, String defaultValue) {
+        return StringUtils.hasText(value) ? value.trim() : defaultValue;
+    }
+
     private Integer normalizeLogoSize(Integer value, String label) {
         int size = value == null ? DEFAULT_LOGO_SIZE : value;
         if (size < 1) throw new BusinessException(ErrorCode.GENERAL_001, label + "不能小于 1px");
@@ -229,6 +242,9 @@ public class SystemSettingsController {
                 .logoWidth(normalizeLogoSize(setting.getLogoWidth(), "Logo 长度"))
                 .logoHeight(normalizeLogoSize(setting.getLogoHeight(), "Logo 高度"))
                 .browserTitle(setting.getBrowserTitle())
+                .loginSubtitle(normalizeOptionalText(setting.getLoginSubtitle(), DEFAULT_LOGIN_SUBTITLE))
+                .loginDescription(normalizeOptionalText(setting.getLoginDescription(), DEFAULT_LOGIN_DESCRIPTION))
+                .loginComplianceItems(normalizeOptionalText(setting.getLoginComplianceItems(), DEFAULT_LOGIN_COMPLIANCE_ITEMS))
                 .browserIconFileId(setting.getBrowserIconFileId())
                 .faviconFileId(setting.getBrowserIconFileId())
                 .faviconUrl(previewUrl(setting.getBrowserIconFileId()))
@@ -249,6 +265,9 @@ public class SystemSettingsController {
         snapshot.put("logoWidth", normalizeLogoSize(setting.getLogoWidth(), "Logo 长度"));
         snapshot.put("logoHeight", normalizeLogoSize(setting.getLogoHeight(), "Logo 高度"));
         snapshot.put("browserTitle", setting.getBrowserTitle());
+        snapshot.put("loginSubtitle", normalizeOptionalText(setting.getLoginSubtitle(), DEFAULT_LOGIN_SUBTITLE));
+        snapshot.put("loginDescription", normalizeOptionalText(setting.getLoginDescription(), DEFAULT_LOGIN_DESCRIPTION));
+        snapshot.put("loginComplianceItems", normalizeOptionalText(setting.getLoginComplianceItems(), DEFAULT_LOGIN_COMPLIANCE_ITEMS));
         snapshot.put("browserIconFileId", setting.getBrowserIconFileId());
         snapshot.put("browserIcon", fileSnapshot(setting.getBrowserIconFileId()));
         return snapshot;
@@ -322,7 +341,14 @@ public class SystemSettingsController {
         }
     }
 
-    public record UpdateSettingsRequest(String systemName, String browserTitle, Integer logoWidth, Integer logoHeight) {
+    public record UpdateSettingsRequest(
+            String systemName,
+            String browserTitle,
+            Integer logoWidth,
+            Integer logoHeight,
+            String loginSubtitle,
+            String loginDescription,
+            String loginComplianceItems) {
     }
 
     @Data
@@ -336,6 +362,9 @@ public class SystemSettingsController {
         private Integer logoWidth;
         private Integer logoHeight;
         private String browserTitle;
+        private String loginSubtitle;
+        private String loginDescription;
+        private String loginComplianceItems;
         private Long browserIconFileId;
         private Long faviconFileId;
         private String faviconUrl;

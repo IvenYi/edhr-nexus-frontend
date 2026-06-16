@@ -128,16 +128,15 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
     icon: 'Storage',
     menus: [
       {
-        label: '基础主数据',
-        icon: 'Storage',
+        label: '工艺建模',
+        icon: 'AccountTree',
         children: [
-          { label: '产品家族', path: '/master-data/product-families' },
-          { label: '计量单位', path: '/master-data/units' },
-          { label: '设备管理', path: '/master-data/equipment' },
-          { label: 'SOP文档', path: '/master-data/sop-documents' },
+          { label: '物料管理', path: '/master-data/materials' },
           { label: '工序管理', path: '/master-data/operations' },
           { label: '工艺路线', path: '/master-data/routes' },
-          { label: '工厂/车间/产线', path: '/master-data/sites' },
+          { label: '产品管理', path: '/master-data/products' },
+          { label: '产品簇', path: '/master-data/product-families' },
+          { label: '文档管理', path: '/master-data/documents' },
         ],
       },
     ],
@@ -178,6 +177,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         icon: 'Settings',
         children: [
           { label: '菜单管理', path: '/system/menu-management' },
+          { label: '业务字典', path: '/system/dictionaries' },
           { label: '图标管理', path: '/system/icons' },
           { label: '系统设置', path: '/system/settings' },
         ],

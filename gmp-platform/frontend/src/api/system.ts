@@ -45,6 +45,9 @@ export interface SystemSettings {
   logoUrl?: string;
   logoWidth?: number;
   logoHeight?: number;
+  loginSubtitle?: string;
+  loginDescription?: string;
+  loginComplianceItems?: string;
   faviconFileId?: string | number | null;
   faviconUrl?: string;
 }
@@ -54,11 +57,95 @@ export interface SystemSettingsUpdate {
   browserTitle: string;
   logoWidth: number;
   logoHeight: number;
+  loginSubtitle: string;
+  loginDescription: string;
+  loginComplianceItems: string;
+}
+
+export interface BusinessDictionaryRecord {
+  id: string | number;
+  tenantId?: string;
+  code: string;
+  name: string;
+  description?: string;
+  status: string;
+  sortOrder?: number;
+  builtin?: boolean;
+  itemCount?: number;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+}
+
+export interface BusinessDictionaryItemRecord {
+  id: string | number;
+  dictionaryId: string | number;
+  dictionaryCode: string;
+  dictionaryName: string;
+  value: string;
+  label: string;
+  sortOrder?: number;
+  status: string;
+  remark?: string;
+  builtin?: boolean;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
 }
 
 function unwrap<T>(response: { data: { data: T } }): T {
   return response.data.data;
 }
+
+export const getBusinessDictionaries = async (params: Record<string, unknown> = {}): Promise<PageResult<BusinessDictionaryRecord>> => {
+  const response = await client.get('/system/business-dictionaries', { params });
+  return unwrap<PageResult<BusinessDictionaryRecord>>(response);
+};
+
+export const createBusinessDictionary = async (payload: Record<string, unknown>): Promise<BusinessDictionaryRecord> => {
+  const response = await client.post('/system/business-dictionaries', payload);
+  return unwrap<BusinessDictionaryRecord>(response);
+};
+
+export const updateBusinessDictionary = async (id: string | number, payload: Record<string, unknown>): Promise<BusinessDictionaryRecord> => {
+  const response = await client.put(`/system/business-dictionaries/${id}`, payload);
+  return unwrap<BusinessDictionaryRecord>(response);
+};
+
+export const deleteBusinessDictionary = async (id: string | number, options?: { cascade?: boolean }): Promise<void> => {
+  await client.delete(`/system/business-dictionaries/${id}`, { params: { cascade: options?.cascade ?? false } });
+};
+
+export const getBusinessDictionaryItems = async (dictionaryId: string | number, params: Record<string, unknown> = {}): Promise<PageResult<BusinessDictionaryItemRecord>> => {
+  const response = await client.get(`/system/business-dictionaries/${dictionaryId}/items`, { params });
+  return unwrap<PageResult<BusinessDictionaryItemRecord>>(response);
+};
+
+export const createBusinessDictionaryItem = async (dictionaryId: string | number, payload: Record<string, unknown>): Promise<BusinessDictionaryItemRecord> => {
+  const response = await client.post(`/system/business-dictionaries/${dictionaryId}/items`, payload);
+  return unwrap<BusinessDictionaryItemRecord>(response);
+};
+
+export const updateBusinessDictionaryItem = async (id: string | number, payload: Record<string, unknown>): Promise<BusinessDictionaryItemRecord> => {
+  const response = await client.put(`/system/business-dictionary-items/${id}`, payload);
+  return unwrap<BusinessDictionaryItemRecord>(response);
+};
+
+export const deleteBusinessDictionaryItem = async (id: string | number): Promise<void> => {
+  await client.delete(`/system/business-dictionary-items/${id}`);
+};
+
+export const reorderBusinessDictionaryItems = async (payload: { dictionaryId: string | number; ids: Array<string | number> }): Promise<BusinessDictionaryItemRecord[]> => {
+  const response = await client.put('/system/business-dictionary-items/order', payload);
+  return unwrap<BusinessDictionaryItemRecord[]>(response);
+};
+
+export const getBusinessDictionaryOptions = async (code: string): Promise<Array<{ dictionaryCode: string; value: string; label: string; sortOrder?: number; remark?: string }>> => {
+  const response = await client.get(`/system/business-dictionaries/${code}/options`);
+  return unwrap<Array<{ dictionaryCode: string; value: string; label: string; sortOrder?: number; remark?: string }>>(response);
+};
 
 export const getIconGroups = async (): Promise<IconGroup[]> => {
   const response = await client.get('/system/icon-groups');

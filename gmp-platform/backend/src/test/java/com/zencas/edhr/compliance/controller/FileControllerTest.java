@@ -5,6 +5,7 @@ import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
+import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.system.repository.IconAssetRepository;
 import com.zencas.edhr.system.repository.SystemSettingRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ class FileControllerTest {
     private FileObjectRepository fileObjectRepository;
     private IconAssetRepository iconAssetRepository;
     private SystemSettingRepository systemSettingRepository;
+    private UserAccountRepository userAccountRepository;
     private FileController controller;
     private Path tempDir;
 
@@ -32,7 +34,8 @@ class FileControllerTest {
         fileObjectRepository = mock(FileObjectRepository.class);
         iconAssetRepository = mock(IconAssetRepository.class);
         systemSettingRepository = mock(SystemSettingRepository.class);
-        controller = new FileController(fileObjectRepository, iconAssetRepository, systemSettingRepository, mock(SnowflakeIdGenerator.class));
+        userAccountRepository = mock(UserAccountRepository.class);
+        controller = new FileController(fileObjectRepository, iconAssetRepository, systemSettingRepository, userAccountRepository, mock(SnowflakeIdGenerator.class));
         tempDir = Files.createTempDirectory("edhr-file-preview-test");
     }
 
@@ -72,6 +75,32 @@ class FileControllerTest {
         when(fileObjectRepository.findById(202L)).thenReturn(Optional.of(fileObject(202L, file, "application/pdf", "DHR_ATTACHMENT")));
 
         assertThatThrownBy(() -> controller.publicPreview(202L))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(error -> assertThat(((BusinessException) error).getErrorCode()).isEqualTo(ErrorCode.GENERAL_003))
+                .hasMessageContaining("文件不允许公开预览");
+    }
+
+    @Test
+    void publicPreviewAllowsUserAvatarFilesReferencedByUserAccount() throws Exception {
+        Path file = tempDir.resolve("avatar.png");
+        Files.write(file, new byte[] {1, 2, 3});
+        when(fileObjectRepository.findById(404L)).thenReturn(Optional.of(fileObject(404L, file, "image/png", "USER_AVATAR")));
+        when(userAccountRepository.existsByAvatarFileId(404L)).thenReturn(true);
+
+        var response = controller.publicPreview(404L);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        assertThat(response.getHeaders().getContentType().toString()).isEqualTo("image/png");
+    }
+
+    @Test
+    void publicPreviewRejectsUserAvatarFileWhenNoUserReferencesIt() throws Exception {
+        Path file = tempDir.resolve("spoofed-avatar.png");
+        Files.write(file, new byte[] {1, 2, 3});
+        when(fileObjectRepository.findById(405L)).thenReturn(Optional.of(fileObject(405L, file, "image/png", "USER_AVATAR")));
+        when(userAccountRepository.existsByAvatarFileId(405L)).thenReturn(false);
+
+        assertThatThrownBy(() -> controller.publicPreview(405L))
                 .isInstanceOf(BusinessException.class)
                 .satisfies(error -> assertThat(((BusinessException) error).getErrorCode()).isEqualTo(ErrorCode.GENERAL_003))
                 .hasMessageContaining("文件不允许公开预览");

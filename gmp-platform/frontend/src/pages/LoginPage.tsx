@@ -7,15 +7,30 @@ import {
   Visibility, LockOutlined, PersonOutline,
 } from '@mui/icons-material';
 import client from '@/api/client';
-import { useSystemBranding } from '@/hooks/useSystemBranding';
+import { DEFAULT_SYSTEM_BRANDING, useSystemBranding } from '@/hooks/useSystemBranding';
 
 const DEFAULT_SYSTEM_NAME = 'eDHR 系统';
 const DEFAULT_LOGIN_TITLE = '登录 eDHR';
+
+function parseLoginComplianceItems(value?: string) {
+  const source = value?.trim() || DEFAULT_SYSTEM_BRANDING.loginComplianceItems || '';
+  return source
+    .split('\n')
+    .map((line) => {
+      const [num, label] = line.split('|').map((item) => item.trim());
+      return num && label ? { num, label } : null;
+    })
+    .filter((item): item is { num: string; label: string } => Boolean(item))
+    .slice(0, 3);
+}
 
 export default function LoginPage() {
   const { branding } = useSystemBranding();
   const systemName = branding.systemName || DEFAULT_SYSTEM_NAME;
   const loginTitle = systemName === DEFAULT_SYSTEM_NAME ? DEFAULT_LOGIN_TITLE : `登录 ${systemName}`;
+  const loginSubtitle = branding.loginSubtitle || DEFAULT_SYSTEM_BRANDING.loginSubtitle;
+  const loginDescription = branding.loginDescription || DEFAULT_SYSTEM_BRANDING.loginDescription;
+  const loginComplianceItems = parseLoginComplianceItems(branding.loginComplianceItems);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -126,20 +141,16 @@ export default function LoginPage() {
             {systemName}
           </Typography>
           <Typography variant="body1" sx={{ mb: 1, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
-            电子设备历史记录平台
+            {loginSubtitle}
           </Typography>
           <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
-            面向医疗器械生产的 GMP 合规数字化解决方案，确保每一批次全程可追溯、可审计。
+            {loginDescription}
           </Typography>
 
           <Divider sx={{ my: 5, borderColor: 'rgba(255,255,255,0.1)' }} />
 
           <Box sx={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
-            {[
-              { num: '21 CFR Part 11', label: '合规标准' },
-              { num: 'ISO 13485', label: '质量体系' },
-              { num: 'GAMP 5', label: '验证框架' },
-            ].map((item) => (
+            {loginComplianceItems.map((item) => (
               <Box key={item.label} sx={{ textAlign: 'center' }}>
                 <Typography variant="body2" fontWeight={600} sx={{ color: 'rgba(255,255,255,0.8)' }}>
                   {item.num}

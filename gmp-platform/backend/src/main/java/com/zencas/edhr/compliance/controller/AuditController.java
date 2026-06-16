@@ -145,7 +145,7 @@ public class AuditController {
     private String resolveModuleName(AuditEvent event) {
         if (StringUtils.hasText(event.getModuleName())) return resolveLeftSidebarModuleName(event.getModuleName());
         return switch (normalizeEntityType(event.getEntityType())) {
-            case "USER_ACCOUNT", "ROLE", "DEPARTMENT", "ICON_ASSET", "ICON_GROUP", "SYSTEM_SETTING", "AUDIT_LOG", "AUDIT_EVENT", "LOGIN_LOG" -> "系统";
+            case "USER_ACCOUNT", "ROLE", "DEPARTMENT", "ICON_ASSET", "ICON_GROUP", "SYSTEM_SETTING", "BUSINESS_DICTIONARY", "BUSINESS_DICTIONARY_ITEM", "AUDIT_LOG", "AUDIT_EVENT", "LOGIN_LOG" -> "系统";
             default -> "-";
         };
     }
@@ -188,7 +188,7 @@ public class AuditController {
     private String normalizeModuleLabel(String moduleName) {
         if (!StringUtils.hasText(moduleName)) return "-";
         return switch (moduleName.trim()) {
-            case "系统", "系统管理", "菜单管理", "图标管理", "系统设置" -> "系统管理";
+            case "系统", "系统管理", "菜单管理", "图标管理", "系统设置", "业务字典" -> "系统管理";
             case "组织", "组织管理", "组织架构", "岗位角色", "用户管理" -> "组织管理";
             case "安全", "安全管理", "审计日志", "登录日志", "签名记录" -> "安全管理";
             default -> moduleName.trim();
@@ -198,7 +198,7 @@ public class AuditController {
     private String resolveLeftSidebarModuleName(String moduleName) {
         if (!StringUtils.hasText(moduleName)) return "-";
         return switch (moduleName.trim()) {
-            case "系统", "系统管理", "组织", "组织管理", "安全", "安全管理", "菜单管理", "图标管理", "系统设置", "组织架构", "岗位角色", "用户管理", "审计日志", "登录日志", "签名记录" -> "系统";
+            case "系统", "系统管理", "组织", "组织管理", "安全", "安全管理", "菜单管理", "图标管理", "系统设置", "业务字典", "组织架构", "岗位角色", "用户管理", "审计日志", "登录日志", "签名记录" -> "系统";
             default -> moduleName.trim();
         };
     }
@@ -206,7 +206,7 @@ public class AuditController {
     private String resolveMenuParent(AuditEvent event) {
         return switch (normalizeEntityType(event.getEntityType())) {
             case "USER_ACCOUNT", "ROLE", "DEPARTMENT" -> "组织管理";
-            case "ICON_ASSET", "ICON_GROUP", "SYSTEM_SETTING" -> "系统管理";
+            case "ICON_ASSET", "ICON_GROUP", "SYSTEM_SETTING", "BUSINESS_DICTIONARY", "BUSINESS_DICTIONARY_ITEM" -> "系统管理";
             case "AUDIT_LOG", "AUDIT_EVENT", "LOGIN_LOG" -> "安全管理";
             default -> "-";
         };
@@ -219,6 +219,7 @@ public class AuditController {
             case "DEPARTMENT" -> "组织架构";
             case "ICON_ASSET", "ICON_GROUP" -> "图标管理";
             case "SYSTEM_SETTING" -> "系统设置";
+            case "BUSINESS_DICTIONARY", "BUSINESS_DICTIONARY_ITEM" -> "业务字典";
             case "AUDIT_LOG", "AUDIT_EVENT" -> "审计日志";
             case "LOGIN_LOG" -> "登录日志";
             default -> StringUtils.hasText(event.getEntityType()) ? event.getEntityType().trim() : "";

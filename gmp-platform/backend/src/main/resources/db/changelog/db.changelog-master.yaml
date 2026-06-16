@@ -21,3 +21,23 @@ databaseChangeLog:
       file: db/changelog/0010-remove-numbering-rule.sql
   - include:
       file: db/changelog/0011-login-log-permission.sql
+  - include:
+      file: db/changelog/0012-process-modeling-master-data.sql
+  - include:
+      file: db/changelog/0013-login-branding-settings.sql
+  - include:
+      file: db/changelog/0014-process-modeling-permissions.sql
+  - include:
+      file: db/changelog/0015-material-versioning.sql
+  - include:
+      file: db/changelog/0015-business-dictionary.sql
+  - include:
+      file: db/changelog/0016-remove-material-type-page-permission.sql
+  - include:
+      file: db/changelog/0017-business-dictionary-item-foreign-key.sql
+  - include:
+      file: db/changelog/0018-user-profile-settings.sql
+  - include:
+      file: db/changelog/0019-signature-created-at.sql
+  - include:
+      file: db/changelog/0020-user-profile-extra-fields.sql

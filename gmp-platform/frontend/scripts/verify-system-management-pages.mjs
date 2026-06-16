@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const uiStandardPath = path.join(root, '../../docs/design-audit/organization-management-ui-standard.md');
 
 const files = {
   constants: 'src/utils/constants.ts',
@@ -47,6 +48,13 @@ function assertNotContains(source, snippets, label) {
     throw new Error(`${label} 不应包含: ${unexpected.join(', ')}`);
   }
 }
+
+const uiStandard = fs.readFileSync(uiStandardPath, 'utf8');
+assertContains(uiStandard, [
+  '登录页左侧品牌展示内容必须从系统管理-系统设置读取',
+  '系统 Logo、系统名称、登录页副标题、登录页说明和标准卡片均可配置',
+  '不允许在登录页组件内硬编码展示文案或卡片',
+], 'organization-management-ui-standard.md');
 
 const constants = read(files.constants);
 assertContains(constants, [
@@ -100,6 +108,9 @@ assertContains(api, [
   'updateSystemSettings',
   'logoWidth',
   'logoHeight',
+  'loginSubtitle',
+  'loginDescription',
+  'loginComplianceItems',
   'uploadSystemLogo',
   'uploadSystemFavicon',
   'deleteSystemLogo',
@@ -132,6 +143,9 @@ assertContains(brandingHook, [
   'getPublicSystemSettings',
   'logoWidth',
   'logoHeight',
+  'loginSubtitle',
+  'loginDescription',
+  'loginComplianceItems',
   'refreshBranding = useCallback(async (settings?: SystemSettings)',
   'queryClient.setQueryData<SystemSettings>(SYSTEM_BRANDING_QUERY_KEY, nextBranding)',
   'applySystemBranding(nextBranding)',
@@ -162,8 +176,18 @@ assertContains(iconAssets, [
 const loginPage = read(files.loginPage);
 assertContains(loginPage, [
   'useSystemBranding',
+  'DEFAULT_SYSTEM_BRANDING',
   'branding.systemName',
   'branding.logoUrl',
+  'branding.loginSubtitle',
+  'branding.loginDescription',
+  'branding.loginComplianceItems',
+  'parseLoginComplianceItems',
+], files.loginPage);
+assertNotContains(loginPage, [
+  '电子设备历史记录平台</Typography>',
+  '面向医疗器械生产的 GMP 合规数字化解决方案，确保每一批次全程可追溯、可审计。</Typography>',
+  "{ num: '21 CFR Part 11', label: '合规标准' }",
 ], files.loginPage);
 
 const iconPage = read(files.iconPage);
@@ -316,6 +340,14 @@ assertContains(settingsPage, [
   'Logo 高度不能超过 60px',
   'logoWidth: normalizeLogoSize(form.logoWidth)',
   'logoHeight: normalizeLogoSize(form.logoHeight)',
+  '登录页展示内容',
+  '登录页副标题',
+  '登录页说明',
+  '登录页标准卡片',
+  'loginSubtitle',
+  'loginDescription',
+  'loginComplianceItems',
+  'helperText="一行一个卡片，格式：标题|说明"',
   '浏览器标签 Icon',
   '上传',
   '删除',
@@ -331,8 +363,14 @@ const systemSettingEntity = fs.readFileSync(path.join(root, '../backend/src/main
 assertContains(systemSettingEntity, [
   '@Column(name = "logo_width")',
   '@Column(name = "logo_height")',
+  '@Column(name = "login_subtitle")',
+  '@Column(name = "login_description")',
+  '@Column(name = "login_compliance_items")',
   'private Integer logoWidth',
   'private Integer logoHeight',
+  'private String loginSubtitle',
+  'private String loginDescription',
+  'private String loginComplianceItems',
 ], 'SystemSetting.java');
 
 const systemSettingsController = fs.readFileSync(path.join(root, '../backend/src/main/java/com/zencas/edhr/system/controller/SystemSettingsController.java'), 'utf8');
@@ -341,13 +379,25 @@ assertContains(systemSettingsController, [
   'normalizeLogoSize',
   'setting.setLogoWidth',
   'setting.setLogoHeight',
+  'setting.setLoginSubtitle',
+  'setting.setLoginDescription',
+  'setting.setLoginComplianceItems',
   'logoWidth(normalizeLogoSize(setting.getLogoWidth(), "Logo 长度"))',
   'logoHeight(normalizeLogoSize(setting.getLogoHeight(), "Logo 高度"))',
+  'loginSubtitle(normalizeOptionalText(setting.getLoginSubtitle(), DEFAULT_LOGIN_SUBTITLE))',
+  'loginDescription(normalizeOptionalText(setting.getLoginDescription(), DEFAULT_LOGIN_DESCRIPTION))',
+  'loginComplianceItems(normalizeOptionalText(setting.getLoginComplianceItems(), DEFAULT_LOGIN_COMPLIANCE_ITEMS))',
   'private Integer logoWidth',
   'private Integer logoHeight',
+  'private String loginSubtitle',
+  'private String loginDescription',
+  'private String loginComplianceItems',
   'defaultSetting',
   '.logoWidth(DEFAULT_LOGO_SIZE)',
   '.logoHeight(DEFAULT_LOGO_SIZE)',
+  '.loginSubtitle(DEFAULT_LOGIN_SUBTITLE)',
+  '.loginDescription(DEFAULT_LOGIN_DESCRIPTION)',
+  '.loginComplianceItems(DEFAULT_LOGIN_COMPLIANCE_ITEMS)',
 ], 'SystemSettingsController.java');
 
 const systemSettingsSql = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/0007-system-logo-size-settings.sql'), 'utf8');
@@ -359,7 +409,17 @@ assertContains(systemSettingsSql, [
 const changelogMaster = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/db.changelog-master.yaml'), 'utf8');
 assertContains(changelogMaster, [
   'db/changelog/0007-system-logo-size-settings.sql',
+  'db/changelog/0013-login-branding-settings.sql',
 ], 'db.changelog-master.yaml');
+
+const loginBrandingSql = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/0013-login-branding-settings.sql'), 'utf8');
+assertContains(loginBrandingSql, [
+  'login_subtitle',
+  'login_description',
+  'login_compliance_items',
+  '电子设备历史记录平台',
+  '21 CFR Part 11|合规标准',
+], '0013-login-branding-settings.sql');
 
 const packageJson = read(files.packageJson);
 assertContains(packageJson, [
