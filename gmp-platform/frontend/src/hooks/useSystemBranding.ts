@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPublicSystemSettings, type SystemSettings } from '@/api/system';
+import { DEFAULT_IDLE_LOGOUT_MINUTES, DEFAULT_TOKEN_VALIDITY_MINUTES } from '@/utils/sessionPolicy';
 
 export const DEFAULT_SYSTEM_BRANDING: SystemSettings = {
   systemName: 'eDHR 系统',
@@ -12,6 +13,17 @@ export const DEFAULT_SYSTEM_BRANDING: SystemSettings = {
   loginDescription: '面向医疗器械生产的 GMP 合规数字化解决方案，确保每一批次全程可追溯、可审计。',
   loginComplianceItems: '21 CFR Part 11|合规标准\nISO 13485|质量体系\nGAMP 5|验证框架',
   faviconUrl: '',
+  forcePasswordChangeOnFirstLogin: true,
+  passwordChangeCycleEnabled: false,
+  passwordChangeCycleDays: 90,
+  passwordComplexity: 'MEDIUM',
+  passwordFailureLockThreshold: 5,
+  passwordFailureLockMinutes: 30,
+  idleLogoutMinutes: DEFAULT_IDLE_LOGOUT_MINUTES,
+  tokenValidityMinutes: DEFAULT_TOKEN_VALIDITY_MINUTES,
+  forceSignatureOnFirstLogin: false,
+  signatureChangeCycleEnabled: false,
+  signatureChangeCycleDays: 365,
 };
 
 export const SYSTEM_BRANDING_QUERY_KEY = ['system-branding', 'public'] as const;
@@ -27,6 +39,8 @@ export function normalizeSystemBranding(settings?: Partial<SystemSettings>): Sys
     loginSubtitle: settings?.loginSubtitle?.trim() || DEFAULT_SYSTEM_BRANDING.loginSubtitle,
     loginDescription: settings?.loginDescription?.trim() || DEFAULT_SYSTEM_BRANDING.loginDescription,
     loginComplianceItems: settings?.loginComplianceItems?.trim() || DEFAULT_SYSTEM_BRANDING.loginComplianceItems,
+    idleLogoutMinutes: settings?.idleLogoutMinutes ?? DEFAULT_SYSTEM_BRANDING.idleLogoutMinutes,
+    tokenValidityMinutes: settings?.tokenValidityMinutes ?? DEFAULT_SYSTEM_BRANDING.tokenValidityMinutes,
   };
 }
 

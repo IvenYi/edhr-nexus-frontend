@@ -27,7 +27,7 @@ export const updateCurrentUserProfile = (body: Record<string, unknown>) =>
 export const changeCurrentUserPassword = (body: Record<string, unknown>) =>
   client.post('/auth/me/password', body);
 export const createPersonalSignature = (body: Record<string, unknown>) =>
-  client.post('/auth/me/signature', body);
+  client.post('/auth/me/signature', body, { timeout: 60000 });
 
 // Users
 export const getUsers = (params?: Record<string, unknown>) =>

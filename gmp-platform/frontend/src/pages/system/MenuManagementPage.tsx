@@ -19,7 +19,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Add, Close, Delete, ImageOutlined, RestartAlt, Save, Search, SubdirectoryArrowRight } from '@mui/icons-material';
+import { Add, Close, Delete, ImageOutlined, InfoOutlined, RestartAlt, Save, Search, SubdirectoryArrowRight } from '@mui/icons-material';
 import { getIconGroups, getIconPage, type IconAsset, type IconGroup } from '@/api/system';
 import type { SidebarMenu, SidebarModule, SidebarSubMenu } from '@/utils/constants';
 import { renderBuiltinIcon } from '@/utils/builtinIcons';
@@ -544,7 +544,27 @@ export default function MenuManagementPage() {
 
       <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', minWidth: 0, display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
-          <Typography sx={{ fontWeight: 600, color: '#303133' }}>菜单管理</Typography>
+          <Stack direction="row" alignItems="center" spacing={0.75} sx={{ minWidth: 0 }}>
+            <Typography sx={{ fontWeight: 600, color: '#303133' }}>菜单管理</Typography>
+            <Tooltip title={`模块下菜单支持 ${MAX_MENU_CHILDREN_DEPTH} 级，不能超过 2 级。`} arrow>
+              <Box
+                component="span"
+                aria-label="菜单层级提示"
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 18,
+                  height: 18,
+                  color: '#909399',
+                  cursor: 'help',
+                  '&:hover': { color: '#409eff' },
+                }}
+              >
+                <InfoOutlined sx={{ fontSize: 17 }} />
+              </Box>
+            </Tooltip>
+          </Stack>
           <Stack direction="row" spacing={1}>
             <Button variant="outlined" startIcon={<RestartAlt />} onClick={handleReset}>重置</Button>
             <Button variant="contained" startIcon={<Save />} onClick={handleSave}>保存</Button>
@@ -552,10 +572,6 @@ export default function MenuManagementPage() {
         </Stack>
 
         <Stack spacing={2} sx={{ p: 2, flex: 1, minHeight: 0, overflow: 'hidden' }}>
-          <Alert severity="info">
-            模块下菜单支持 {MAX_MENU_CHILDREN_DEPTH} 级，不能超过 2 级。
-          </Alert>
-
           {selectedModule ? (
             <>
               <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 2 }}>

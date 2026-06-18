@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { clearAuthStorage } from '@/utils/sessionPolicy';
 
 interface User {
   id: number;
@@ -27,8 +28,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ token, user, isAuthenticated: true });
   },
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    clearAuthStorage();
     set({ token: null, user: null, isAuthenticated: false });
   },
   hasPermission: (code) => {

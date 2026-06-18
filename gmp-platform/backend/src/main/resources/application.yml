@@ -39,6 +39,14 @@ app:
     upload-dir: ${FILE_UPLOAD_DIR:./uploads}
     max-size: 10MB
 
+edhr:
+  ocr:
+    paddle:
+      enabled: ${OCR_PADDLE_ENABLED:true}
+      python-command: ${OCR_PADDLE_PYTHON_COMMAND:python3}
+      script-path: ${OCR_PADDLE_SCRIPT_PATH:./scripts/paddle_id_card_ocr.py}
+      timeout-seconds: ${OCR_PADDLE_TIMEOUT_SECONDS:30}
+
 # SpringDoc OpenAPI
 springdoc:
   api-docs:

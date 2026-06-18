@@ -30,8 +30,13 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(String userId, String username, String displayName) {
+        long configuredMinutes = Math.max(1L, expirationMs / 60_000L);
+        return generateToken(userId, username, displayName, (int) Math.min(Integer.MAX_VALUE, configuredMinutes));
+    }
+
+    public String generateToken(String userId, String username, String displayName, int validityMinutes) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + expirationMs);
+        Date expiry = new Date(now.getTime() + Math.max(1, validityMinutes) * 60_000L);
 
         return Jwts.builder()
                 .subject(userId)

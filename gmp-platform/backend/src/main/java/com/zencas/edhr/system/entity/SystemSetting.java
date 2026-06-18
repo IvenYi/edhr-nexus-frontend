@@ -41,6 +41,42 @@ public class SystemSetting {
     private String loginComplianceItems;
     @Column(name = "browser_icon_file_id")
     private Long browserIconFileId;
+    @Column(name = "force_password_change_on_first_login")
+    @Builder.Default private Boolean forcePasswordChangeOnFirstLogin = true;
+    @Column(name = "password_change_cycle_enabled")
+    @Builder.Default private Boolean passwordChangeCycleEnabled = false;
+    @Column(name = "password_change_cycle_days")
+    @Builder.Default private Integer passwordChangeCycleDays = 90;
+    @Column(name = "password_complexity")
+    @Builder.Default private String passwordComplexity = "MEDIUM";
+    @Column(name = "password_failure_lock_threshold")
+    @Builder.Default private Integer passwordFailureLockThreshold = 5;
+    @Column(name = "password_failure_lock_minutes")
+    @Builder.Default private Integer passwordFailureLockMinutes = 30;
+    @Column(name = "idle_logout_minutes")
+    @Builder.Default private Integer idleLogoutMinutes = 30;
+    @Column(name = "token_validity_minutes")
+    @Builder.Default private Integer tokenValidityMinutes = 480;
+    @Column(name = "force_signature_on_first_login")
+    @Builder.Default private Boolean forceSignatureOnFirstLogin = false;
+    @Column(name = "signature_change_cycle_enabled")
+    @Builder.Default private Boolean signatureChangeCycleEnabled = true;
+    @Column(name = "signature_change_cycle_days")
+    @Builder.Default private Integer signatureChangeCycleDays = 30;
+    @Column(name = "email_enabled")
+    @Builder.Default private Boolean emailEnabled = true;
+    @Column(name = "smtp_host")
+    private String smtpHost;
+    @Column(name = "smtp_port")
+    @Builder.Default private Integer smtpPort = 25;
+    @Column(name = "smtp_ssl_enabled")
+    @Builder.Default private Boolean smtpSslEnabled = false;
+    @Column(name = "smtp_username")
+    private String smtpUsername;
+    @Column(name = "smtp_password")
+    private String smtpPassword;
+    @Column(name = "mail_from_name")
+    private String mailFromName;
     @Column(name = "created_by")
     private String createdBy;
     @Column(name = "created_at")

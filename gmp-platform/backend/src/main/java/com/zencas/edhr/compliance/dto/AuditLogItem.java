@@ -25,6 +25,7 @@ public class AuditLogItem {
     String dataSummary;
     String contentBefore;
     String contentAfter;
+    String snapshotHash;
     String reason;
     String ipAddress;
     LocalDateTime createdAt;

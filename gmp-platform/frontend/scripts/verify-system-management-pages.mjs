@@ -115,6 +115,25 @@ assertContains(api, [
   'uploadSystemFavicon',
   'deleteSystemLogo',
   'deleteSystemFavicon',
+  'forcePasswordChangeOnFirstLogin',
+  'passwordChangeCycleEnabled',
+  'passwordChangeCycleDays',
+  'passwordComplexity',
+  'passwordFailureLockThreshold',
+  'passwordFailureLockMinutes',
+  'idleLogoutMinutes',
+  'tokenValidityMinutes',
+  'forceSignatureOnFirstLogin',
+  'signatureChangeCycleEnabled',
+  'signatureChangeCycleDays',
+  'emailEnabled',
+  'smtpHost',
+  'smtpPort',
+  'smtpSslEnabled',
+  'smtpUsername',
+  'smtpPasswordConfigured',
+  'getMailTestRecipients',
+  'sendTestMail',
 ], files.api);
 
 const builtinIcons = read(files.builtinIcons);
@@ -151,6 +170,8 @@ assertContains(brandingHook, [
   'applySystemBranding(nextBranding)',
   'document.title',
   'rel="icon"',
+  'idleLogoutMinutes',
+  'tokenValidityMinutes',
 ], files.brandingHook);
 
 const appLayout = read(files.appLayout);
@@ -161,6 +182,12 @@ assertContains(appLayout, [
   'branding.logoWidth',
   'branding.logoHeight',
   'renderManagedIcon',
+  'SESSION_STORAGE_KEYS',
+  'sessionStartedAt',
+  'lastActivityAt',
+  'idleLogoutMinutes',
+  'tokenValidityMinutes',
+  'handleSessionTimeoutLogout',
 ], files.appLayout);
 
 const iconAssets = read(files.iconAssets);
@@ -183,6 +210,12 @@ assertContains(loginPage, [
   'branding.loginDescription',
   'branding.loginComplianceItems',
   'parseLoginComplianceItems',
+  'storeSessionPolicy',
+  'idleLogoutMinutes',
+  'tokenValidityMinutes',
+  'forcePasswordChange',
+  'forceSignatureVerification',
+  '/account/settings',
 ], files.loginPage);
 assertNotContains(loginPage, [
   '电子设备历史记录平台</Typography>',
@@ -357,7 +390,71 @@ assertContains(settingsPage, [
   'onSuccess: async (savedSettings)',
   'await refreshSettings(savedSettings)',
   'refreshBranding',
+  '安全设置',
+  '密码策略',
+  '账号验证策略',
+  '电子签名策略',
+  '首次登录强制修改登录密码',
+  '固定周期强制修改登录密码',
+  '登录密码复杂程度',
+  '密码输错几次开始锁定',
+  '锁定时长',
+  '无操作自动登出',
+  'token 有效期自动登出',
+  '首次登录时强制验证',
+  '固定周期强制修改签名密码',
+  '当前系统使用电子签名认证密码复核；该策略会控制认证到期与首次认证强制要求。',
+  'checked={true}',
+  'disabled',
+  '签名密码修改周期不能超过 30 天',
+  'max: SIGNATURE_CHANGE_CYCLE_DAYS_MAX',
+  '邮箱设置',
+  'SMTP 发信配置',
+  '系统对外发送邮件，通知、告警、验证码都靠它',
+  '发送测试邮件',
+  '启用邮箱服务',
+  '启用 SMTP SSL/TLS',
+  'SMTP 服务器',
+  '对应邮箱服务商的 SMTP 域名，例如 smtp.xxx.com',
+  'SMTP 端口',
+  'SMTP 账号',
+  '完整邮箱地址，例如 xxxx.qq.com',
+  '您已将',
+  '做为发件的账号',
+  'SMTP 密码',
+  '不是登录密码，是第三方客户端授权码，需要去邮箱网页端获取',
+  '系统默认通知',
+  'handleSmtpSslChange',
+  '接收用户',
+  '仅展示已配置邮箱的用户',
+  '暂无用户配置邮箱',
+  'sendTestMail',
+  'getMailTestRecipients',
+  'form.emailEnabled &&',
+  '保存后，当前页面、登录页、浏览器标题和浏览器网页图标会立即刷新；',
 ], files.settingsPage);
+assertNotContains(settingsPage, [
+  'IMAP 收信配置',
+  'IMAP 服务器',
+  'IMAP 端口',
+  'IMAP 账号',
+  'IMAP 密码',
+  '测试邮件使用当前 SMTP 配置发送',
+  '保存或更新品牌资源后，当前页面、登录页、浏览器标题和 favicon 会立即刷新。',
+  '当前系统仍使用电子签名认证密码复核，不单独存储另一套签名密码；该策略会控制认证到期与首次认证强制要求。',
+], 'SystemSettingsPage.tsx');
+
+const personalSettingsPage = fs.readFileSync(path.join(root, 'src/pages/account/PersonalSettingsPage.tsx'), 'utf8');
+assertContains(personalSettingsPage, [
+  'FORCE_PASSWORD_CHANGE_KEY',
+  'FORCE_SIGNATURE_VERIFICATION_KEY',
+  'forcePasswordChangeRequired',
+  'forceSignatureVerificationRequired',
+  '当前安全策略要求先完成登录密码修改',
+  '当前安全策略要求完成电子签名认证',
+  'localStorage.removeItem(FORCE_PASSWORD_CHANGE_KEY)',
+  'localStorage.removeItem(FORCE_SIGNATURE_VERIFICATION_KEY)',
+], 'PersonalSettingsPage.tsx');
 
 const systemSettingEntity = fs.readFileSync(path.join(root, '../backend/src/main/java/com/zencas/edhr/system/entity/SystemSetting.java'), 'utf8');
 assertContains(systemSettingEntity, [
@@ -398,6 +495,22 @@ assertContains(systemSettingsController, [
   '.loginSubtitle(DEFAULT_LOGIN_SUBTITLE)',
   '.loginDescription(DEFAULT_LOGIN_DESCRIPTION)',
   '.loginComplianceItems(DEFAULT_LOGIN_COMPLIANCE_ITEMS)',
+  '@GetMapping("/mail/test-recipients")',
+  '@PostMapping("/mail/test")',
+  'MailSenderFactory',
+  'JavaMailSenderImpl',
+  'findByEmailIsNotNull',
+  '只能选择配置了邮箱的用户发送测试邮件',
+  '请先启用并完整配置 SMTP 邮箱服务',
+], 'SystemSettingsController.java');
+assertNotContains(systemSettingsController, [
+  'DEFAULT_IMAP_PORT',
+  'imapEnabled',
+  'imapHost',
+  'imapPort',
+  'imapSslEnabled',
+  'imapUsername',
+  'imapPassword',
 ], 'SystemSettingsController.java');
 
 const systemSettingsSql = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/0007-system-logo-size-settings.sql'), 'utf8');
@@ -410,7 +523,31 @@ const changelogMaster = fs.readFileSync(path.join(root, '../backend/src/main/res
 assertContains(changelogMaster, [
   'db/changelog/0007-system-logo-size-settings.sql',
   'db/changelog/0013-login-branding-settings.sql',
+  'db/changelog/0022-mail-settings.sql',
 ], 'db.changelog-master.yaml');
+
+const mailSettingsSql = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/0022-mail-settings.sql'), 'utf8');
+assertContains(mailSettingsSql, [
+  'email_enabled BOOLEAN NOT NULL DEFAULT TRUE',
+  'smtp_host',
+  'smtp_port',
+  'smtp_ssl_enabled',
+  'smtp_username',
+  'smtp_password',
+], '0022-mail-settings.sql');
+assertNotContains(mailSettingsSql, [
+  'imap_enabled',
+  'imap_host',
+  'imap_port',
+  'imap_ssl_enabled',
+  'imap_username',
+  'imap_password',
+], '0022-mail-settings.sql');
+
+const backendPom = fs.readFileSync(path.join(root, '../backend/pom.xml'), 'utf8');
+assertContains(backendPom, [
+  'spring-boot-starter-mail',
+], 'backend/pom.xml');
 
 const loginBrandingSql = fs.readFileSync(path.join(root, '../backend/src/main/resources/db/changelog/0013-login-branding-settings.sql'), 'utf8');
 assertContains(loginBrandingSql, [

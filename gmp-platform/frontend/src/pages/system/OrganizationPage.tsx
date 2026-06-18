@@ -339,6 +339,8 @@ const auditFieldLabelMap: Record<string, string> = {
   email: '邮箱',
   phone: '手机号',
   status: '状态',
+  organizationName: '所属组织',
+  organization: '所属组织',
   primaryDepartmentId: '所属组织',
   departmentId: '所属组织',
   departmentIds: '所属组织',
@@ -351,7 +353,7 @@ const auditFieldLabelMap: Record<string, string> = {
   updatedBy: '更新人',
   updatedAt: '更新时间',
 };
-const auditFieldOrder = ['username', 'displayName', 'password', 'email', 'phone', 'status', 'primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName', 'roleIds', 'roles'];
+const auditFieldOrder = ['username', 'displayName', 'password', 'email', 'phone', 'status', 'organizationName', 'organization', 'primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName', 'roleIds', 'roles'];
 
 function flattenDepartments(nodes: DepartmentNode[], depth = 0, parentPath: string[] = []): FlatDepartment[] {
   return nodes.flatMap((node) => [
@@ -548,8 +550,12 @@ function getAuditScalarDisplayValue(field: string, trimmed: string, context?: Au
     return USER_STATUS_MAP[statusKey]?.label ?? trimmed;
   }
 
+  if (field === 'organizationName' || field === 'organization' || field === 'departmentName') {
+    return trimmed;
+  }
+
   if (field === 'primaryDepartmentId' || field === 'departmentId' || field === 'departmentIds') {
-    return context?.departmentPathById.get(trimmed) ?? trimmed;
+    return `历史组织ID(${trimmed})`;
   }
 
   if (field === 'roleIds' || field === 'roles') {
@@ -594,7 +600,10 @@ function formatAuditFieldRows(value: unknown, context: AuditDisplayContext): Aud
   if (normalized === undefined || normalized === null || normalized === '') return [];
 
   if (typeof normalized === 'object' && !Array.isArray(normalized)) {
-    const rows = sortAuditFieldRows(Object.entries(normalized as Record<string, unknown>)).map(([field, fieldValue]) => ({
+    const record = normalized as Record<string, unknown>;
+    const hasOrganizationSnapshot = record.organizationName !== undefined || record.organization !== undefined;
+    const rows = sortAuditFieldRows(Object.entries(record)
+      .filter(([field]) => !hasOrganizationSnapshot || !['primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName'].includes(field))).map(([field, fieldValue]) => ({
       key: field,
       label: getAuditFieldLabel(field),
       value: getAuditDisplayValue(field, fieldValue, context),

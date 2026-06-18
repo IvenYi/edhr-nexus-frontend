@@ -63,6 +63,7 @@ public class ProcessModelingController {
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper();
     private static final Set<String> PRODUCT_MATERIAL_TYPE_NAMES = Set.of("半成品", "产成品");
     private static final String DEFAULT_MATERIAL_VERSION = "V1.0";
+    private static final String DEFAULT_MATERIAL_PURPOSE = "生产物料";
     private static final Pattern VERSION_NUMBER_PATTERN = Pattern.compile("\\d+");
 
     private final MaterialTypeRepository materialTypeRepository;
@@ -107,6 +108,9 @@ public class ProcessModelingController {
                 .name(requireName(request))
                 .specification(trimToNull(request.getSpecification()))
                 .version(resolveMaterialVersion(request))
+                .materialPurpose(resolveMaterialPurpose(request))
+                .effectiveDate(request == null ? null : request.getEffectiveDate())
+                .expiryDate(request == null ? null : request.getExpiryDate())
                 .materialTypeId(resolveMaterialTypeId(request))
                 .unit(trimToNull(request.getUnit()))
                 .description(trimToNull(request.getDescription()))
@@ -132,6 +136,9 @@ public class ProcessModelingController {
         existing.setCode(StringUtils.hasText(request == null ? null : request.getCode()) ? request.getCode().trim() : existing.getCode());
         existing.setSpecification(trimToNull(request.getSpecification()));
         existing.setVersion(resolveMaterialVersion(request));
+        existing.setMaterialPurpose(resolveMaterialPurpose(request));
+        existing.setEffectiveDate(request == null ? null : request.getEffectiveDate());
+        existing.setExpiryDate(request == null ? null : request.getExpiryDate());
         existing.setMaterialTypeId(resolveMaterialTypeId(request));
         existing.setUnit(trimToNull(request.getUnit()));
         existing.setDescription(trimToNull(request.getDescription()));
@@ -480,6 +487,11 @@ public class ProcessModelingController {
                 .name(latest.getName())
                 .specification(latest.getSpecification())
                 .version(latest.getVersion())
+                .versionCount(sortedVersions.size())
+                .effectiveVersionCount((int) sortedVersions.stream().filter(this::isEffectiveMaterialVersion).count())
+                .materialPurpose(latest.getMaterialPurpose())
+                .effectiveDate(latest.getEffectiveDate() == null ? null : latest.getEffectiveDate().toString())
+                .expiryDate(latest.getExpiryDate() == null ? null : latest.getExpiryDate().toString())
                 .materialTypeId(latest.getMaterialTypeId())
                 .materialTypeName(latest.getMaterialTypeName())
                 .unit(latest.getUnit())
@@ -606,6 +618,15 @@ public class ProcessModelingController {
         return leftValue.compareToIgnoreCase(rightValue);
     }
 
+    private boolean isEffectiveMaterialVersion(Material material) {
+        if (material == null || !"ACTIVE".equals(material.getStatus())) return false;
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime effectiveDate = material.getEffectiveDate();
+        LocalDateTime expiryDate = material.getExpiryDate();
+        return (effectiveDate == null || !effectiveDate.isAfter(now))
+                && (expiryDate == null || expiryDate.isAfter(now));
+    }
+
     private PageRequest pageable(int page, int size, String sort, String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         return PageRequest.of(Math.max(page - 1, 0), Math.max(size, 1), Sort.by(direction, safeSort(sort)));
@@ -667,6 +688,11 @@ public class ProcessModelingController {
     private String resolveMaterialVersion(ProcessModelingRequest request) {
         if (request != null && StringUtils.hasText(request.getVersion())) return request.getVersion().trim();
         return DEFAULT_MATERIAL_VERSION;
+    }
+
+    private String resolveMaterialPurpose(ProcessModelingRequest request) {
+        if (request != null && StringUtils.hasText(request.getMaterialPurpose())) return request.getMaterialPurpose().trim();
+        return DEFAULT_MATERIAL_PURPOSE;
     }
 
     private String trimToNull(String value) {
@@ -751,6 +777,9 @@ public class ProcessModelingController {
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
         snapshot.put("specification", entity.getSpecification());
         snapshot.put("version", entity.getVersion());
+        snapshot.put("materialPurpose", entity.getMaterialPurpose());
+        snapshot.put("effectiveDate", entity.getEffectiveDate() == null ? null : entity.getEffectiveDate().toString());
+        snapshot.put("expiryDate", entity.getExpiryDate() == null ? null : entity.getExpiryDate().toString());
         snapshot.put("materialTypeName", entity.getMaterialTypeName());
         snapshot.put("unit", entity.getUnit());
         snapshot.put("description", entity.getDescription());

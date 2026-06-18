@@ -9,11 +9,15 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
+import com.zencas.edhr.compliance.entity.Signature;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
+import com.zencas.edhr.compliance.repository.SignatureRepository;
+import com.zencas.edhr.identity.entity.Department;
 import com.zencas.edhr.identity.entity.Role;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.entity.UserDepartment;
 import com.zencas.edhr.identity.entity.UserRole;
+import com.zencas.edhr.identity.repository.DepartmentRepository;
 import com.zencas.edhr.identity.repository.RoleRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserDepartmentRepository;
@@ -50,13 +54,16 @@ public class UserController {
     private static final String DEFAULT_INITIAL_PASSWORD = "Zencas@123";
     private static final String SYSTEM_SUPER_ADMIN_USERNAME = "admin";
     private static final String USER_AUDIT_ENTITY_TYPE = "USER_ACCOUNT";
+    private static final String USER_PROFILE_SIGNATURE_TARGET_TYPE = "USER_PROFILE";
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper();
 
     private final UserAccountRepository userAccountRepository;
+    private final DepartmentRepository departmentRepository;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final UserDepartmentRepository userDepartmentRepository;
     private final AuditEventRepository auditEventRepository;
+    private final SignatureRepository signatureRepository;
     private final SnowflakeIdGenerator idGenerator;
     private final PasswordEncoder passwordEncoder;
 
@@ -78,11 +85,13 @@ public class UserController {
     public ApiResponse<UserResponse> getById(@PathVariable Long id) {
         UserAccount user = findUser(id);
         Map<Long, UserAuditOperators> auditOperatorsByUser = findUserAuditOperators(List.of(id));
+        Map<Long, Signature> signaturesByUser = findLatestSignatures(List.of(id));
         return ApiResponse.success(toUserResponse(
                 user,
                 userRoleRepository.findByUserId(id),
                 userDepartmentRepository.findByUserId(id),
-                auditOperatorsByUser.get(id)));
+                auditOperatorsByUser.get(id),
+                signaturesByUser.get(id)));
     }
 
     @PostMapping
@@ -168,6 +177,9 @@ public class UserController {
         }
         UserAccount user = findUser(id);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setPasswordChangedAt(null);
+        user.setFailedLoginAttempts(0);
+        user.setLockedUntil(null);
         user.setUpdatedAt(java.time.LocalDateTime.now());
         userAccountRepository.save(user);
         return ApiResponse.success(null);
@@ -204,12 +216,14 @@ public class UserController {
         Map<Long, List<UserDepartment>> departmentsByUser = userDepartmentRepository.findByUserIdIn(userIds).stream()
                 .collect(Collectors.groupingBy(UserDepartment::getUserId));
         Map<Long, UserAuditOperators> auditOperatorsByUser = findUserAuditOperators(userIds);
+        Map<Long, Signature> signaturesByUser = findLatestSignatures(userIds);
         return users.stream()
                 .map(user -> toUserResponse(
                         user,
                         rolesByUser.getOrDefault(user.getId(), List.of()),
                         departmentsByUser.getOrDefault(user.getId(), List.of()),
-                        auditOperatorsByUser.get(user.getId())))
+                        auditOperatorsByUser.get(user.getId()),
+                        signaturesByUser.get(user.getId())))
                 .toList();
     }
 
@@ -217,7 +231,8 @@ public class UserController {
             UserAccount user,
             List<UserRole> roles,
             List<UserDepartment> departments,
-            UserAuditOperators auditOperators) {
+            UserAuditOperators auditOperators,
+            Signature signature) {
         List<Long> roleIds = roles.stream().map(UserRole::getRoleId).toList();
         List<Long> departmentIds = departments.stream().map(UserDepartment::getDepartmentId).toList();
         Long primaryDepartmentId = departments.stream()
@@ -239,11 +254,42 @@ public class UserController {
                 .departmentIds(departmentIds.stream().map(String::valueOf).toList())
                 .primaryDepartmentId(primaryDepartmentId == null ? null : String.valueOf(primaryDepartmentId))
                 .lastLoginAt(user.getLastLoginAt())
+                .electronicSignatureStatus(resolveElectronicSignatureStatus(signature))
+                .electronicSignatureCertifiedAt(signature == null ? null : signature.getCertifiedAt())
+                .electronicSignatureExpiresAt(signature == null ? null : signature.getExpiresAt())
                 .createdBy(auditOperators == null ? null : auditOperators.createdBy())
                 .createdAt(user.getCreatedAt())
                 .updatedBy(auditOperators == null ? null : auditOperators.updatedBy())
                 .updatedAt(user.getUpdatedAt())
                 .build();
+    }
+
+    private Map<Long, Signature> findLatestSignatures(List<Long> userIds) {
+        if (userIds.isEmpty()) return Map.of();
+        List<String> targetIds = userIds.stream().map(String::valueOf).toList();
+        return Optional.ofNullable(signatureRepository.findLatestByTargetTypeAndTargetIdIn(
+                        USER_PROFILE_SIGNATURE_TARGET_TYPE,
+                        targetIds))
+                .orElse(List.of())
+                .stream()
+                .filter(signature -> StringUtils.hasText(signature.getTargetId()))
+                .collect(Collectors.toMap(
+                        signature -> Long.valueOf(signature.getTargetId()),
+                        signature -> signature,
+                        (first, second) -> {
+                            LocalDateTime firstAt = first.getSignedAt();
+                            LocalDateTime secondAt = second.getSignedAt();
+                            if (firstAt == null) return second;
+                            if (secondAt == null) return first;
+                            return secondAt.isAfter(firstAt) ? second : first;
+                        }));
+    }
+
+    private String resolveElectronicSignatureStatus(Signature signature) {
+        if (signature == null) return "UNCERTIFIED";
+        LocalDateTime expiresAt = signature.getExpiresAt();
+        if (expiresAt != null && expiresAt.isBefore(LocalDateTime.now())) return "EXPIRED";
+        return "CERTIFIED";
     }
 
     private Map<Long, UserAuditOperators> findUserAuditOperators(List<Long> userIds) {
@@ -341,7 +387,8 @@ public class UserController {
                 user.getStatus(),
                 resolveRoleAuditNames(roles.stream().map(UserRole::getRoleId).toList()),
                 idStringsFromNormalizedIds(departmentIds),
-                idToString(primaryDepartmentId));
+                idToString(primaryDepartmentId),
+                resolveDepartmentPath(primaryDepartmentId));
     }
 
     private UserAuditSnapshot captureUserSnapshot(
@@ -361,7 +408,8 @@ public class UserController {
                 user.getStatus(),
                 resolveRoleAuditNames(roleIds),
                 idStringsFromNormalizedIds(normalizedDepartmentIds),
-                idToString(effectivePrimaryDepartmentId));
+                idToString(effectivePrimaryDepartmentId),
+                resolveDepartmentPath(effectivePrimaryDepartmentId));
     }
 
     private List<String> resolveRoleAuditNames(List<Long> roleIds) {
@@ -381,6 +429,35 @@ public class UserController {
                     return StringUtils.hasText(roleName) ? roleName : "未知岗位角色(" + roleId + ")";
                 })
                 .toList();
+    }
+
+    private String resolveDepartmentPath(Long departmentId) {
+        if (departmentId == null) return "-";
+
+        Map<Long, Department> departmentsById = new LinkedHashMap<>();
+        Optional.ofNullable(departmentRepository.findAllById(List.of(departmentId))).orElse(List.of()).forEach(department -> {
+            if (department.getId() != null) departmentsById.put(department.getId(), department);
+        });
+
+        Long currentId = departmentId;
+        List<String> names = new ArrayList<>();
+        int guard = 0;
+        while (currentId != null && guard++ < 20) {
+            Department department = departmentsById.get(currentId);
+            if (department == null) {
+                Optional<Department> loaded = departmentRepository.findById(currentId);
+                if (loaded.isEmpty()) break;
+                department = loaded.get();
+                departmentsById.put(department.getId(), department);
+            }
+            if (StringUtils.hasText(department.getName())) {
+                names.add(department.getName());
+            }
+            currentId = department.getParentId();
+        }
+        if (names.isEmpty()) return "-";
+        java.util.Collections.reverse(names);
+        return String.join("/", names);
     }
 
     private List<Long> normalizeIds(List<Long> ids) {
@@ -420,6 +497,7 @@ public class UserController {
         putChanged(contentBefore, contentAfter, "roles", before.roles(), after.roles());
         putChanged(contentBefore, contentAfter, "departmentIds", before.departmentIds(), after.departmentIds());
         putChanged(contentBefore, contentAfter, "primaryDepartmentId", before.primaryDepartmentId(), after.primaryDepartmentId());
+        putChanged(contentBefore, contentAfter, "organizationName", before.organizationName(), after.organizationName());
         if (contentBefore.isEmpty()) return;
 
         auditEventRepository.save(AuditEvent.builder()
@@ -486,6 +564,7 @@ public class UserController {
         content.put("roles", snapshot.roles());
         content.put("departmentIds", snapshot.departmentIds());
         content.put("primaryDepartmentId", snapshot.primaryDepartmentId());
+        content.put("organizationName", snapshot.organizationName());
         return content;
     }
 
@@ -516,7 +595,8 @@ public class UserController {
             String status,
             List<String> roles,
             List<String> departmentIds,
-            String primaryDepartmentId) {
+            String primaryDepartmentId,
+            String organizationName) {
     }
 
     private record UserAuditOperators(String createdBy, String updatedBy) {
@@ -602,6 +682,9 @@ public class UserController {
         private List<String> departmentIds;
         private String primaryDepartmentId;
         private java.time.LocalDateTime lastLoginAt;
+        private String electronicSignatureStatus;
+        private java.time.LocalDateTime electronicSignatureCertifiedAt;
+        private java.time.LocalDateTime electronicSignatureExpiresAt;
         private String createdBy;
         private java.time.LocalDateTime createdAt;
         private String updatedBy;

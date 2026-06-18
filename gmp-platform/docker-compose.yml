@@ -31,6 +31,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: edhr_dev_pwd
       JWT_SECRET: docker-edhr-jwt-secret-change-in-production
       FILE_UPLOAD_DIR: /app/uploads
+      OCR_PADDLE_ENABLED: "true"
+      OCR_PADDLE_PYTHON_COMMAND: python3
+      OCR_PADDLE_SCRIPT_PATH: /app/scripts/paddle_id_card_ocr.py
     volumes:
       - uploads_data:/app/uploads
     depends_on:

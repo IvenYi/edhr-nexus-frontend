@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,13 +50,50 @@ public class LoginLogController {
         return ApiResponse.success(PageResult.of(items, page, size, result.getTotalElements()));
     }
 
+    @GetMapping("/me")
+    public ApiResponse<PageResult<LoginLogItem>> listMine(
+            @RequestAttribute(value = "userId", required = false) String userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "occurredAt") String sort,
+            @RequestParam(defaultValue = "desc") String order,
+            @RequestParam(required = false) String eventType,
+            @RequestParam(required = false) LocalDateTime startTime,
+            @RequestParam(required = false) LocalDateTime endTime) {
+        if (!StringUtils.hasText(userId)) {
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                    com.zencas.edhr.common.exception.ErrorCode.AUTH_004);
+        }
+        Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        PageRequest pageable = PageRequest.of(Math.max(page - 1, 0), size, Sort.by(direction, sort));
+        Page<LoginLog> result = loginLogRepository.findAll(
+                buildSpecification(eventType, null, startTime, endTime, Long.parseLong(userId)),
+                pageable);
+        List<LoginLogItem> items = result.getContent().stream()
+                .map(this::toItem)
+                .toList();
+        return ApiResponse.success(PageResult.of(items, page, size, result.getTotalElements()));
+    }
+
     private Specification<LoginLog> buildSpecification(
             String eventType,
             String keyword,
             LocalDateTime startTime,
             LocalDateTime endTime) {
+        return buildSpecification(eventType, keyword, startTime, endTime, null);
+    }
+
+    private Specification<LoginLog> buildSpecification(
+            String eventType,
+            String keyword,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            Long operatorId) {
         return (root, query, cb) -> {
             var predicates = cb.conjunction();
+            if (operatorId != null) {
+                predicates = cb.and(predicates, cb.equal(root.get("operatorId"), operatorId));
+            }
             if (StringUtils.hasText(eventType)) {
                 predicates = cb.and(predicates, cb.equal(
                         cb.upper(root.get("eventType")),

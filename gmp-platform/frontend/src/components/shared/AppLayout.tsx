@@ -49,6 +49,13 @@ import { useSystemBranding } from '@/hooks/useSystemBranding';
 import { renderManagedIcon } from '@/utils/iconAssets';
 import { getMe, logout } from '@/api/auth';
 import { getRoles } from '@/api/identity';
+import {
+  clearAuthStorage,
+  DEFAULT_IDLE_LOGOUT_MINUTES,
+  DEFAULT_TOKEN_VALIDITY_MINUTES,
+  readStoredPositiveNumber,
+  SESSION_STORAGE_KEYS,
+} from '@/utils/sessionPolicy';
 
 const COLORS = {
   primary: '#1890ff',
@@ -204,6 +211,11 @@ function readStoredUser(): StoredUser {
   } catch {
     return { displayName: '管理员' };
   }
+}
+
+function hasForcedSecurityAction(): boolean {
+  return localStorage.getItem(SESSION_STORAGE_KEYS.forcePasswordChange) === 'true'
+    || localStorage.getItem(SESSION_STORAGE_KEYS.forceSignatureVerification) === 'true';
 }
 
 function getLayoutPermissionCode(path: string): string | undefined {
@@ -408,6 +420,62 @@ export default function AppLayout() {
     void refreshCurrentUserFromServer();
   }, []);
 
+  const handleSessionTimeoutLogout = useCallback(async () => {
+    setUserAnchorEl(null);
+    try {
+      await logout();
+    } catch {
+      // Timeout sign-out should still clear the local session when the server token is already invalid.
+    }
+    clearAuthStorage();
+    navigate('/login', { replace: true });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!localStorage.getItem('token')) return undefined;
+    const now = Date.now();
+    if (!localStorage.getItem(SESSION_STORAGE_KEYS.sessionStartedAt)) {
+      localStorage.setItem(SESSION_STORAGE_KEYS.sessionStartedAt, String(now));
+    }
+    if (!localStorage.getItem(SESSION_STORAGE_KEYS.lastActivityAt)) {
+      localStorage.setItem(SESSION_STORAGE_KEYS.lastActivityAt, String(now));
+    }
+
+    const fallbackIdleMinutes = branding.idleLogoutMinutes ?? DEFAULT_IDLE_LOGOUT_MINUTES;
+    const fallbackTokenMinutes = branding.tokenValidityMinutes ?? DEFAULT_TOKEN_VALIDITY_MINUTES;
+    const touchActivity = () => {
+      localStorage.setItem(SESSION_STORAGE_KEYS.lastActivityAt, String(Date.now()));
+    };
+    const checkSession = () => {
+      const sessionStartedAt = Number(localStorage.getItem(SESSION_STORAGE_KEYS.sessionStartedAt) || now);
+      const lastActivityAt = Number(localStorage.getItem(SESSION_STORAGE_KEYS.lastActivityAt) || now);
+      const idleLogoutMinutes = readStoredPositiveNumber(SESSION_STORAGE_KEYS.idleLogoutMinutes, fallbackIdleMinutes);
+      const tokenValidityMinutes = readStoredPositiveNumber(SESSION_STORAGE_KEYS.tokenValidityMinutes, fallbackTokenMinutes);
+      const currentTime = Date.now();
+      const idleExpired = currentTime - lastActivityAt >= idleLogoutMinutes * 60 * 1000;
+      const tokenExpired = currentTime - sessionStartedAt >= tokenValidityMinutes * 60 * 1000;
+      if (idleExpired || tokenExpired) {
+        void handleSessionTimeoutLogout();
+      }
+    };
+    const activityEvents = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'] as const;
+    activityEvents.forEach((eventName) => window.addEventListener(eventName, touchActivity, { passive: true }));
+    const timer = window.setInterval(checkSession, 30 * 1000);
+    checkSession();
+    return () => {
+      activityEvents.forEach((eventName) => window.removeEventListener(eventName, touchActivity));
+      window.clearInterval(timer);
+    };
+  }, [branding.idleLogoutMinutes, branding.tokenValidityMinutes, handleSessionTimeoutLogout]);
+
+  useEffect(() => {
+    if (!localStorage.getItem('token')) return;
+    if (location.pathname === PERSONAL_SETTINGS_ROUTE) return;
+    if (hasForcedSecurityAction()) {
+      navigate(PERSONAL_SETTINGS_ROUTE, { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
   useEffect(() => {
     if (visibleModules.some((module) => module.id === autoModuleId)) {
       setActiveModuleId(autoModuleId);
@@ -565,8 +633,7 @@ export default function AppLayout() {
     } catch {
       // Local sign-out should still proceed when the server session has expired.
     }
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    clearAuthStorage();
     navigate('/login');
   }, [navigate]);
 

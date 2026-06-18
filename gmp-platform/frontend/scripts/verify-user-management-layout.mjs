@@ -229,6 +229,12 @@ mustInclude('getAuditRoleDisplayValue', 'user audit role values should display s
 mustInclude("field === 'roles'", 'user audit should treat roles as a business-name snapshot, not a live reference');
 mustInclude("field === 'roleIds'", 'user audit should keep backwards-compatible handling for older role id audit records');
 mustNotInclude("context?.roleNameById.get(trimmed) ?? trimmed", 'user audit should not expose deleted role ids as raw codes when current role lookup is missing');
+mustInclude("organizationName: '所属组织'", 'user audit should translate saved organization snapshots');
+mustInclude('getAuditOrganizationDisplayValue', 'user audit should centralize organization audit display');
+mustInclude("return `历史组织ID(${trimmed})`;", 'legacy organization id audit values should be clearly marked as historical ids');
+mustInclude("record.organizationName !== undefined || record.organization !== undefined", 'user audit should prefer saved organization-name snapshots');
+mustInclude("!['primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName'].includes(field)", 'user audit should hide raw organization ids when a readable snapshot exists');
+mustNotInclude("context?.departmentPathById.get(trimmed) ?? trimmed", 'user audit should not translate historical organization ids through the current organization tree');
 mustInclude('getAuditLogs', 'user detail drawer should load backend audit logs');
 mustInclude("entityType: 'USER_ACCOUNT'", 'user detail drawer should request user-account audit records');
 mustInclude('getUserAuditRecords(selectedUser', 'user detail drawer should derive records for the selected user');

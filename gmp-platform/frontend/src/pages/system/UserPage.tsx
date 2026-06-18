@@ -79,6 +79,9 @@ interface ApiUser {
   createdAt?: string;
   updatedBy?: string;
   updatedAt?: string;
+  electronicSignatureStatus?: string;
+  electronicSignatureCertifiedAt?: string;
+  electronicSignatureExpiresAt?: string;
 }
 
 interface UserRow {
@@ -93,6 +96,9 @@ interface UserRow {
   createdAt?: string;
   updatedBy?: string;
   updatedAt?: string;
+  electronicSignatureStatus: string;
+  electronicSignatureCertifiedAt?: string;
+  electronicSignatureExpiresAt?: string;
   roleIds: string[];
   departmentIds: string[];
   primaryDepartmentId?: string | null;
@@ -170,6 +176,9 @@ type UserColumnId =
   | 'departmentName'
   | 'roleName'
   | 'status'
+  | 'electronicSignatureStatus'
+  | 'electronicSignatureCertifiedAt'
+  | 'electronicSignatureExpiresAt'
   | 'createdBy'
   | 'createdAt'
   | 'updatedBy'
@@ -313,6 +322,9 @@ const userColumns: UserColumn[] = [
   { id: 'departmentName', label: '所属组织', defaultWidth: 180, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'roleName', label: '岗位角色', defaultWidth: 150, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'status', label: '状态', defaultWidth: 96, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'electronicSignatureStatus', label: '电子签状态', defaultWidth: 118, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'electronicSignatureCertifiedAt', label: '电子签认证时间', defaultWidth: 150, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'electronicSignatureExpiresAt', label: '电子签过期时间', defaultWidth: 150, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdAt', label: '创建时间', defaultWidth: 130, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -339,6 +351,8 @@ const auditFieldLabelMap: Record<string, string> = {
   email: '邮箱',
   phone: '手机号',
   status: '状态',
+  organizationName: '所属组织',
+  organization: '所属组织',
   primaryDepartmentId: '所属组织',
   departmentId: '所属组织',
   departmentIds: '所属组织',
@@ -359,6 +373,8 @@ const auditFieldOrder = [
   'email',
   'phone',
   'status',
+  'organizationName',
+  'organization',
   'primaryDepartmentId',
   'departmentId',
   'departmentIds',
@@ -407,6 +423,13 @@ function includesText(value: string | undefined, keyword: string): boolean {
 
 function getUserStatusMeta(status: string) {
   return USER_STATUS_MAP[status as keyof typeof USER_STATUS_MAP] ?? { label: status, color: 'default' as const };
+}
+
+function getElectronicSignatureStatusMeta(status: string) {
+  const normalized = status || 'UNCERTIFIED';
+  if (normalized === 'CERTIFIED') return { label: '已认证', color: 'success' as const };
+  if (normalized === 'EXPIRED') return { label: '已过期', color: 'error' as const };
+  return { label: '未认证', color: 'default' as const };
 }
 
 function getUserFormValidationError(form: UserForm): string {
@@ -519,14 +542,19 @@ function getAuditRoleDisplayValue(field: string, trimmed: string, context?: Audi
   return context?.roleNameById.get(trimmed) ?? `未知岗位角色(${trimmed})`;
 }
 
+function getAuditOrganizationDisplayValue(field: string, trimmed: string): string {
+  if (field === 'organizationName' || field === 'organization' || field === 'departmentName') return trimmed;
+  return `历史组织ID(${trimmed})`;
+}
+
 function getAuditScalarDisplayValue(field: string, trimmed: string, context?: AuditDisplayContext): string {
   if (field === 'status') {
     const statusKey = trimmed.toUpperCase() as keyof typeof USER_STATUS_MAP;
     return USER_STATUS_MAP[statusKey]?.label ?? trimmed;
   }
 
-  if (field === 'primaryDepartmentId' || field === 'departmentId' || field === 'departmentIds') {
-    return context?.departmentPathById.get(trimmed) ?? trimmed;
+  if (field === 'organizationName' || field === 'organization' || field === 'departmentName' || field === 'primaryDepartmentId' || field === 'departmentId' || field === 'departmentIds') {
+    return getAuditOrganizationDisplayValue(field, trimmed);
   }
 
   if (field === 'roleIds' || field === 'roles') {
@@ -571,7 +599,10 @@ function formatAuditFieldRows(value: unknown, context: AuditDisplayContext): Aud
   if (normalized === undefined || normalized === null || normalized === '') return [];
 
   if (typeof normalized === 'object' && !Array.isArray(normalized)) {
-    const rows = sortAuditFieldRows(Object.entries(normalized as Record<string, unknown>)).map(([field, fieldValue]) => ({
+    const record = normalized as Record<string, unknown>;
+    const hasOrganizationSnapshot = record.organizationName !== undefined || record.organization !== undefined;
+    const rows = sortAuditFieldRows(Object.entries(record)
+      .filter(([field]) => !hasOrganizationSnapshot || !['primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName'].includes(field))).map(([field, fieldValue]) => ({
       key: field,
       label: getAuditFieldLabel(field),
       value: getAuditDisplayValue(field, fieldValue, context),
@@ -975,6 +1006,9 @@ export default function UserPage() {
       createdAt: item.createdAt,
       updatedBy: item.updatedBy || item.createdBy,
       updatedAt: item.updatedAt || item.createdAt,
+      electronicSignatureStatus: item.electronicSignatureStatus || 'UNCERTIFIED',
+      electronicSignatureCertifiedAt: item.electronicSignatureCertifiedAt,
+      electronicSignatureExpiresAt: item.electronicSignatureExpiresAt,
       roleIds: (item.roleIds ?? []).map(toId).filter(Boolean),
       departmentIds,
       primaryDepartmentId: primaryDepartmentId || null,
@@ -1461,6 +1495,23 @@ export default function UserPage() {
           <StatusBadge label={meta.label} color={meta.color} />
         </TableCell>
       );
+    }
+
+    if (column.id === 'electronicSignatureStatus') {
+      const meta = getElectronicSignatureStatusMeta(row.electronicSignatureStatus);
+      return (
+        <TableCell key={column.id} sx={cellSx}>
+          <StatusBadge label={meta.label} color={meta.color} />
+        </TableCell>
+      );
+    }
+
+    if (column.id === 'electronicSignatureCertifiedAt') {
+      return <TableCell key={column.id} sx={cellSx}>{formatDateTime(row.electronicSignatureCertifiedAt)}</TableCell>;
+    }
+
+    if (column.id === 'electronicSignatureExpiresAt') {
+      return <TableCell key={column.id} sx={cellSx}>{formatDateTime(row.electronicSignatureExpiresAt)}</TableCell>;
     }
 
     if (column.id === 'createdBy') {
@@ -1956,6 +2007,19 @@ export default function UserPage() {
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
                       <DetailField label="所属组织">{selectedUser.departmentName}</DetailField>
                       <DetailField label="岗位角色">{getUserRoleSummary(selectedUser, roleNameById)}</DetailField>
+                    </Box>
+                  </DetailSection>
+
+                  <DetailSection title="电子签名">
+                    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+                      <DetailField label="电子签状态">
+                        <StatusBadge
+                          label={getElectronicSignatureStatusMeta(selectedUser.electronicSignatureStatus).label}
+                          color={getElectronicSignatureStatusMeta(selectedUser.electronicSignatureStatus).color}
+                        />
+                      </DetailField>
+                      <DetailField label="认证时间">{formatDateTime(selectedUser.electronicSignatureCertifiedAt)}</DetailField>
+                      <DetailField label="过期时间">{formatDateTime(selectedUser.electronicSignatureExpiresAt)}</DetailField>
                     </Box>
                   </DetailSection>
 

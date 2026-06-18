@@ -67,6 +67,39 @@ public class AuditController {
                 filteredItems.subList(fromIndex, toIndex), page, size, filteredItems.size()));
     }
 
+    @GetMapping("/me")
+    public ApiResponse<PageResult<AuditLogItem>> listMyProfileLogs(
+            @RequestAttribute(value = "userId", required = false) String userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "desc") String order) {
+        UserAccount currentUser = findCurrentUser(userId);
+        return list(
+                page,
+                size,
+                sort,
+                order,
+                "USER_ACCOUNT",
+                String.valueOf(currentUser.getId()),
+                "",
+                "",
+                "",
+                "",
+                "",
+                "");
+    }
+
+    private UserAccount findCurrentUser(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                    com.zencas.edhr.common.exception.ErrorCode.AUTH_004);
+        }
+        return userAccountRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new com.zencas.edhr.common.exception.BusinessException(
+                        com.zencas.edhr.common.exception.ErrorCode.IDN_002));
+    }
+
     private String blankToEmpty(String value) {
         return StringUtils.hasText(value) ? value : "";
     }
@@ -100,6 +133,7 @@ public class AuditController {
                 .dataSummary(resolveDataSummary(event, entityType, entityId))
                 .contentBefore(event.getContentBefore())
                 .contentAfter(event.getContentAfter())
+                .snapshotHash(event.getSnapshotHash())
                 .reason(event.getReason())
                 .ipAddress(event.getIpAddress())
                 .createdAt(event.getCreatedAt())

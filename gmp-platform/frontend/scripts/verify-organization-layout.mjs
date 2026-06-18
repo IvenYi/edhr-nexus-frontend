@@ -183,14 +183,14 @@ mustInclude('JSON.parse(preserveAuditJsonLargeNumbers(trimmed))', 'audit detail 
 mustInclude("typeof normalized === 'number'", 'audit detail should translate numeric organization and role values too');
 mustInclude('getAuditScalarDisplayValue', 'audit detail should share scalar translation for string and numeric values');
 mustInclude("return '-';", 'audit detail should display null, undefined, and empty field values as a dash');
-mustInclude("const auditFieldOrder = ['username', 'displayName', 'password', 'email', 'phone', 'status', 'primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName', 'roleIds', 'roles'];", 'audit detail fields should follow the user dialog field order');
+mustInclude("const auditFieldOrder = ['username', 'displayName', 'password', 'email', 'phone', 'status', 'organizationName', 'organization', 'primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName', 'roleIds', 'roles'];", 'audit detail fields should prefer saved organization snapshots before legacy ids');
 mustInclude("password: '初始密码'", 'audit detail should keep password label aligned with the create-user dialog');
 mustInclude('sortAuditFieldRows', 'audit detail fields should be sorted before rendering');
 mustInclude('dedupeAuditFieldRows', 'audit detail should avoid duplicate display rows for equivalent organization fields');
 mustInclude("field === 'status'", 'audit detail should detect status fields for display translation');
 mustInclude('USER_STATUS_MAP[statusKey]?.label', 'audit detail should translate status values to Chinese labels');
 mustInclude("field === 'primaryDepartmentId' || field === 'departmentId' || field === 'departmentIds'", 'audit detail should detect organization fields for display translation');
-mustInclude('departmentPathById.get(trimmed) ?? trimmed', 'audit detail should translate organization ids to organization paths');
+mustInclude("return `历史组织ID(${trimmed})`;", 'audit detail should not translate legacy organization ids through current organization data');
 mustInclude('formatAuditFieldRows(item.contentBefore, context)', 'audit before-content formatting should receive display context');
 mustInclude('formatAuditFieldRows(item.contentAfter ?? item.detail ?? item.reason, context)', 'audit after-content formatting should receive display context');
 mustInclude('getUserAuditRecords(selectedUser, auditLogItems, { departmentPathById, roleNameById })', 'audit records should receive organization and role lookup maps');
@@ -207,6 +207,11 @@ mustNotInclude('<Table size="small" stickyHeader sx={{ tableLayout: \'fixed\', w
 mustInclude('getUserAuditRecords(selectedUser', 'personnel detail drawer should derive audit records from the selected user');
 mustInclude('getAuditLogs', 'personnel detail drawer should load available backend audit logs');
 mustInclude("entityType: 'USER_ACCOUNT'", 'personnel detail drawer should request backend user-account audit records');
+mustInclude("organizationName: '所属组织'", 'personnel audit should translate saved organization snapshots');
+mustInclude("return `历史组织ID(${trimmed})`;", 'legacy personnel organization id audit values should be clearly marked as historical ids');
+mustInclude("record.organizationName !== undefined || record.organization !== undefined", 'personnel audit should prefer saved organization-name snapshots');
+mustInclude("!['primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName'].includes(field)", 'personnel audit should hide raw organization ids when a readable snapshot exists');
+mustNotInclude("context?.departmentPathById.get(trimmed) ?? trimmed", 'personnel audit should not translate historical organization ids through the current organization tree');
 mustInclude("queryClient.invalidateQueries({ queryKey: ['organization-user-audit-logs'] });", 'saving users should refresh personnel audit records');
 mustInclude('暂无审计记录', 'personnel detail drawer should show a concise empty audit state');
 mustNotInclude(legacyAuditEmptyText, 'personnel detail drawer empty audit state should not expose implementation wording');

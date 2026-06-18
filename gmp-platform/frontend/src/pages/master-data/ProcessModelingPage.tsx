@@ -56,6 +56,7 @@ import {
   TuneRounded,
   ViewColumnRounded,
 } from '@mui/icons-material';
+import StatusBadge from '@/components/StatusBadge';
 import {
   createMaterial,
   createProcessDocument,
@@ -100,6 +101,10 @@ type ProcessColumnId =
   | 'code'
   | 'specification'
   | 'materialTypeId'
+  | 'materialPurpose'
+  | 'effectiveVersionCount'
+  | 'effectiveDate'
+  | 'expiryDate'
   | 'productFamilyId'
   | 'unit'
   | 'version'
@@ -125,6 +130,8 @@ interface ProcessColumn {
   align?: 'left' | 'center' | 'right';
 }
 
+type ProcessColumnLabelOverrides = Partial<Record<ConfigurableProcessColumnId, string>>;
+
 interface ProcessColumnSettings {
   version: number;
   order: ConfigurableProcessColumnId[];
@@ -148,6 +155,7 @@ interface ProcessModelingPageConfig {
   auditQueryKey: string;
   columns: ProcessColumn[];
   formFields: ProcessFormField[];
+  labels?: ProcessColumnLabelOverrides;
   readOnly?: boolean;
   derivedFrom?: string;
   list: (params: ProcessModelingQuery) => Promise<{ data: { data: PageResult<ProcessModelingRecord> } }>;
@@ -183,6 +191,8 @@ interface MaterialGroupRow {
   groupKey: string;
   materialGroupDisplayName: string;
   code: string;
+  versionCount: number;
+  effectiveVersionCount: number;
   latestVersion: MaterialRecord;
   versions: MaterialRecord[];
 }
@@ -261,12 +271,17 @@ const statusOptions = [
 ] as const;
 
 const STANDARD_MATERIAL_TYPE_OPTIONS = ['原材料', '半成品', '产成品', '辅材', '包材'].map((name) => ({ id: name, name }));
+const MATERIAL_PURPOSE_OPTIONS = ['试验物料', '生产物料'].map((name) => ({ id: name, name }));
 
 const processColumnLabels: Record<ConfigurableProcessColumnId, string> = {
   name: '名称',
   code: '编码',
   specification: '规格型号',
   materialTypeId: '物料类型',
+  materialPurpose: '物料用途',
+  effectiveVersionCount: '生效版本数量',
+  effectiveDate: '生效日期',
+  expiryDate: '失效日期',
   productFamilyId: '产品簇',
   unit: '单位',
   version: '版本',
@@ -289,6 +304,10 @@ const processAuditFieldLabels: Record<string, string> = {
   description: '描述',
   specification: '规格型号',
   materialTypeId: '物料类型',
+  materialPurpose: '物料用途',
+  effectiveVersionCount: '生效版本数量',
+  effectiveDate: '生效日期',
+  expiryDate: '失效日期',
   productFamilyId: '产品簇',
   familyId: '产品簇',
   unit: '单位',
@@ -320,7 +339,8 @@ const PROCESS_MODELING_PAGE_CONFIGS: Record<ProcessModelingPageKey, ProcessModel
     create: createMaterial,
     update: updateMaterial,
     remove: deleteMaterial,
-    columns: baseColumns(['name', 'code', 'specification', 'materialTypeId', 'unit', 'version', 'status', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt']),
+    labels: { name: '物料名称', code: '物料料号', version: '版本数量' },
+    columns: baseColumns(['name', 'code', 'specification', 'materialTypeId', 'unit', 'version', 'effectiveVersionCount', 'materialPurpose', 'status', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt'], { labels: { name: '物料名称', code: '物料料号', version: '版本数量' } }),
     formFields: [
       { id: 'name', label: '物料名称', required: true },
       { id: 'code', label: '物料料号', required: true },
@@ -328,6 +348,9 @@ const PROCESS_MODELING_PAGE_CONFIGS: Record<ProcessModelingPageKey, ProcessModel
       { id: 'materialTypeId', label: '物料类型' },
       { id: 'unit', label: '单位' },
       { id: 'version', label: '版本', required: true },
+      { id: 'materialPurpose', label: '物料用途' },
+      { id: 'effectiveDate', label: '生效日期' },
+      { id: 'expiryDate', label: '失效日期' },
       { id: 'description', label: '描述', multiline: true },
       { id: 'status', label: '状态' },
     ],
@@ -414,10 +437,10 @@ const PROCESS_MODELING_PAGE_CONFIGS: Record<ProcessModelingPageKey, ProcessModel
   },
 };
 
-function baseColumns(ids: ConfigurableProcessColumnId[], options?: { actions?: boolean }): ProcessColumn[] {
+function baseColumns(ids: ConfigurableProcessColumnId[], options?: { actions?: boolean; labels?: ProcessColumnLabelOverrides }): ProcessColumn[] {
   const dataColumns = ids.map((id) => PROCESS_SYSTEM_COLUMNS[id as keyof typeof PROCESS_SYSTEM_COLUMNS] ?? ({
     id,
-    label: processColumnLabels[id],
+    label: options?.labels?.[id] ?? processColumnLabels[id],
     defaultWidth: defaultWidthForColumn(id),
     minWidth: PROCESS_FIELD_COLUMN_MIN_WIDTH,
     resizable: true,
@@ -429,6 +452,9 @@ function baseColumns(ids: ConfigurableProcessColumnId[], options?: { actions?: b
 function defaultWidthForColumn(id: ProcessColumnId) {
   if (id === 'description' || id === 'fileReference') return 220;
   if (id === 'createdAt' || id === 'updatedAt') return 160;
+  if (id === 'effectiveVersionCount') return 130;
+  if (id === 'materialPurpose') return 120;
+  if (id === 'effectiveDate' || id === 'expiryDate') return 150;
   if (id === 'status') return 100;
   return 140;
 }
@@ -449,6 +475,14 @@ function compareMaterialVersionDesc(a: MaterialRecord, b: MaterialRecord) {
   return getMaterialVersion(b).localeCompare(getMaterialVersion(a), 'zh-Hans-CN', { numeric: true, sensitivity: 'base' });
 }
 
+function isEffectiveMaterialVersion(row: MaterialRecord) {
+  if (row.status !== 'ACTIVE') return false;
+  const now = Date.now();
+  const effectiveDate = row.effectiveDate ? Date.parse(row.effectiveDate) : Number.NaN;
+  const expiryDate = row.expiryDate ? Date.parse(row.expiryDate) : Number.NaN;
+  return (Number.isNaN(effectiveDate) || effectiveDate <= now) && (Number.isNaN(expiryDate) || expiryDate > now);
+}
+
 function getMaterialGroupRows(rows: ProcessModelingRecord[]): MaterialGroupRow[] {
   return rows.map((row) => {
     const materialVersions = ('versions' in row && Array.isArray(row.versions) ? row.versions : [row]) as MaterialRecord[];
@@ -456,11 +490,17 @@ function getMaterialGroupRows(rows: ProcessModelingRecord[]): MaterialGroupRow[]
     const latestVersion = sortedVersions[0];
     const groupKey = `${row.code || latestVersion.code || row.id}::${getDisplayName(row)}`;
     const materialGroupDisplayName = getDisplayName(latestVersion);
+    const versionCount = 'versionCount' in row && typeof row.versionCount === 'number' ? row.versionCount : sortedVersions.length;
+    const effectiveVersionCount = 'effectiveVersionCount' in row && typeof row.effectiveVersionCount === 'number'
+      ? row.effectiveVersionCount
+      : sortedVersions.filter(isEffectiveMaterialVersion).length;
     return {
       id: `process-modeling-material-groups:${groupKey}`,
       groupKey,
       materialGroupDisplayName,
       code: latestVersion.code,
+      versionCount,
+      effectiveVersionCount,
       latestVersion,
       versions: sortedVersions,
     };
@@ -482,10 +522,10 @@ function getStatusLabel(status?: string) {
 }
 
 function getStatusColor(status?: string) {
-  if (status === 'ACTIVE') return '#13ce66';
-  if (status === 'DISABLED' || status === 'OBSOLETE') return '#ff4d4f';
-  if (status === 'DRAFT') return '#ffba00';
-  return '#909399';
+  if (status === 'ACTIVE') return 'success';
+  if (status === 'DISABLED' || status === 'OBSOLETE') return 'error';
+  if (status === 'DRAFT') return 'warning';
+  return 'default';
 }
 
 function formatDateTime(value?: string) {
@@ -494,6 +534,14 @@ function formatDateTime(value?: string) {
   if (Number.isNaN(date.getTime())) return value;
   const pad = (input: number) => String(input).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function formatDateTimeInput(value?: string) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value.slice(0, 16);
+  const pad = (input: number) => String(input).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
 function getApiErrorMessage(error: unknown, fallback = '操作失败') {
@@ -656,30 +704,6 @@ function AuditFieldBlock({ title, fields }: { title: string; fields: AuditFieldR
           </Box>
         ))}
       </Stack>
-    </Box>
-  );
-}
-
-function StatusPill({ status }: { status?: string }) {
-  const color = getStatusColor(status);
-  return (
-    <Box
-      component="span"
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 0.75,
-        minWidth: 74,
-        height: 32,
-        px: 1.5,
-        borderRadius: '8px',
-        bgcolor: status === 'ACTIVE' ? '#e8f5e9' : status === 'DRAFT' ? '#fff7e6' : '#fdecea',
-        color,
-        fontWeight: 600,
-      }}
-    >
-      <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: color, flex: '0 0 auto' }} />
-      {getStatusLabel(status)}
     </Box>
   );
 }
@@ -848,7 +872,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   };
 
   const renderMaterialFilters = () => (
-    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(150px, 1.1fr) minmax(150px, 1.1fr) minmax(150px, 1fr) minmax(130px, .9fr) minmax(172px, auto)' }, gap: 1.5, alignItems: 'center' }}>
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center' }}>
       <TextField
         size="small"
         label="物料名称"
@@ -887,7 +911,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       >
         {statusOptions.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
       </TextField>
-      <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end">
+      <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: '1', md: '3' } }}>
         <Button size="small" sx={QUERY_BUTTON_SX} variant="outlined" startIcon={<RestartAlt />} onClick={resetFilters}>重置</Button>
         <Button size="small" sx={QUERY_BUTTON_SX} variant="contained" startIcon={<Search />} onClick={() => setPage(1)}>查询</Button>
       </Stack>
@@ -910,6 +934,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       ...emptyForm,
       status: pageKey === 'routes' || pageKey === 'documents' ? 'DRAFT' : 'ACTIVE',
       version: pageKey === 'materials' ? 'V1.0' : undefined,
+      materialPurpose: pageKey === 'materials' ? '生产物料' : undefined,
     });
     setDialogOpen(true);
   };
@@ -929,6 +954,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       productFamilyId: 'productFamilyId' in row ? row.productFamilyId ?? '' : 'familyId' in row ? row.familyId ?? '' : '',
       unit: 'unit' in row ? row.unit ?? '' : '',
       version: 'version' in row ? row.version ?? '' : '',
+      materialPurpose: 'materialPurpose' in row ? row.materialPurpose ?? '生产物料' : undefined,
+      effectiveDate: 'effectiveDate' in row ? formatDateTimeInput(row.effectiveDate) : undefined,
+      expiryDate: 'expiryDate' in row ? formatDateTimeInput(row.expiryDate) : undefined,
       fileReference: 'fileReference' in row ? row.fileReference ?? '' : '',
       defaultDurationMinutes: 'defaultDurationMinutes' in row ? row.defaultDurationMinutes ?? null : null,
       sortOrder: 'sortOrder' in row ? row.sortOrder ?? null : null,
@@ -973,6 +1001,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     specification: input.specification?.trim() || undefined,
     unit: input.unit?.trim() || undefined,
     version: input.version?.trim() || undefined,
+    materialPurpose: input.materialPurpose?.trim() || undefined,
+    effectiveDate: input.effectiveDate || null,
+    expiryDate: input.expiryDate || null,
     fileReference: input.fileReference?.trim() || undefined,
     materialTypeId: typeof input.materialTypeId === 'number' ? input.materialTypeId : null,
     materialTypeName: typeof input.materialTypeName === 'string' && input.materialTypeName.trim() ? input.materialTypeName.trim() : undefined,
@@ -1112,6 +1143,43 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </TextField>
       );
     }
+    if (field.id === 'materialPurpose') {
+      return (
+        <TextField
+          key={field.id}
+          select
+          label={field.label}
+          value={typeof form.materialPurpose === 'string' ? form.materialPurpose : '生产物料'}
+          onChange={(event) => setForm((current) => ({ ...current, materialPurpose: event.target.value }))}
+          size="small"
+          fullWidth
+          required={field.required}
+          sx={fieldSx}
+          style={gridColumn ? { gridColumn } : undefined}
+        >
+          {MATERIAL_PURPOSE_OPTIONS.map((option) => (
+            <MenuItem key={option.id} value={option.name}>{option.name}</MenuItem>
+          ))}
+        </TextField>
+      );
+    }
+    if (field.id === 'effectiveDate' || field.id === 'expiryDate') {
+      return (
+        <TextField
+          key={field.id}
+          label={field.label}
+          value={(form[field.id] ?? '') as string}
+          onChange={(event) => setForm((current) => ({ ...current, [field.id]: event.target.value || null }))}
+          type="datetime-local"
+          size="small"
+          fullWidth
+          required={field.required}
+          sx={fieldSx}
+          InputLabelProps={{ shrink: true }}
+          style={gridColumn ? { gridColumn } : undefined}
+        />
+      );
+    }
     if (field.id === 'code') {
       return (
         <TextField
@@ -1168,7 +1236,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return (
       <TableCell key={column.id} align={column.align} sx={commonSx} title={getColumnDisplayValue(row, column.id)}>
         {column.id === 'status' ? (
-          <StatusPill status={row.status} />
+          <StatusBadge label={getStatusLabel(row.status)} color={getStatusColor(row.status)} />
         ) : getColumnDisplayValue(row, column.id)}
       </TableCell>
     );
@@ -1193,9 +1261,40 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const latest = group.latestVersion;
     if (column.id === 'name') return group.materialGroupDisplayName;
     if (column.id === 'code') return group.code;
-    if (column.id === 'version') return `${group.versions.length} 个版本`;
+    if (column.id === 'version') return String(group.versionCount);
+    if (column.id === 'effectiveVersionCount') return String(group.effectiveVersionCount);
     return getColumnDisplayValue(latest, column.id);
   };
+
+  const renderMaterialVersionTable = (group: MaterialGroupRow) => (
+    <TableRow key={`${group.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
+      <TableCell colSpan={visibleColumns.length} sx={{ p: 0, bgcolor: '#fafcff' }}>
+        <Box sx={{ pl: 5.5, pr: 1.5, py: 1.25 }}>
+          <TableContainer sx={{ border: '1px solid #e4e7ed', borderRadius: '4px', bgcolor: '#fff' }}>
+            <Table stickyHeader size="small" aria-label="物料版本列表">
+              <TableHead>
+                <TableRow>
+                  {['物料版本号', '版本状态', '生效日期', '失效日期'].map((label) => (
+                    <TableCell key={label} sx={{ ...tableHeaderCellSx, height: 40 }}>{label}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {group.versions.map((versionRow) => (
+                  <TableRow key={`${group.groupKey}:${getMaterialVersion(versionRow)}`} hover onClick={() => openDetailDrawer(versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+                    <TableCell>{getMaterialVersion(versionRow)}</TableCell>
+                    <TableCell><StatusBadge label={getStatusLabel(versionRow.status)} color={getStatusColor(versionRow.status)} /></TableCell>
+                    <TableCell>{formatDateTime(versionRow.effectiveDate)}</TableCell>
+                    <TableCell>{formatDateTime(versionRow.expiryDate)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </TableCell>
+    </TableRow>
+  );
 
   const renderTableRow = (row: ProcessTableRow) => {
     if (isMaterialGroupRow(row)) {
@@ -1233,7 +1332,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   ) : column.id === 'version' ? (
                     <Typography sx={{ color: '#606266' }}>{renderMaterialGroupCell(row, column)}</Typography>
                   ) : column.id === 'status' ? (
-                    <StatusPill status={row.latestVersion.status} />
+                    <StatusBadge label={getStatusLabel(row.latestVersion.status)} color={getStatusColor(row.latestVersion.status)} />
                   ) : (
                     renderMaterialGroupCell(row, column)
                   )}
@@ -1241,40 +1340,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               );
             })}
           </TableRow>
-          {isExpanded
-            ? row.versions.map((versionRow) => (
-                <TableRow
-                  key={`${row.groupKey}:${getMaterialVersion(versionRow)}`}
-                  hover
-                  onClick={() => openDetailDrawer(versionRow)}
-                  sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx, bgcolor: '#fafcff' }}
-                >
-                  {visibleColumns.map((column, index) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      sx={{
-                        width: getColumnWidth(column),
-                        minWidth: column.minWidth,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        ...getStickyActionColumnSx(column, 'body'),
-                        color: index === 0 ? '#909399' : 'inherit',
-                        ...(index === 0 ? { pl: 6 } : {}),
-                      }}
-                      title={getColumnDisplayValue(versionRow, column.id)}
-                    >
-                      {column.id === 'actions' ? (
-                        renderRowActions(versionRow)
-                      ) : column.id === 'status' ? (
-                        <StatusPill status={versionRow.status} />
-                      ) : getColumnDisplayValue(versionRow, column.id)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            : null}
+          {isExpanded ? renderMaterialVersionTable(row) : null}
         </>
       );
     }
@@ -1290,6 +1356,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     if (columnId === 'name') return getDisplayName(row);
     if (columnId === 'status') return getStatusLabel(row.status);
     if (columnId === 'createdAt' || columnId === 'updatedAt') return formatDateTime(row[columnId]);
+    if (columnId === 'effectiveDate' || columnId === 'expiryDate') return 'effectiveDate' in row || 'expiryDate' in row ? formatDateTime(row[columnId as 'effectiveDate' | 'expiryDate']) : '-';
     if (columnId === 'version') return 'version' in row ? row.version || '-' : '-';
     if (columnId === 'code') return row.code || '-';
     if (columnId === 'materialTypeId') {
@@ -1499,6 +1566,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                           <DetailField label="物料类型">{'materialTypeName' in selectedRow ? selectedRow.materialTypeName || materialTypeMapValue(selectedRow.materialTypeId) || '-' : '-'}</DetailField>
                           <DetailField label="单位">{'unit' in selectedRow ? selectedRow.unit || '-' : '-'}</DetailField>
                           <DetailField label="版本">{'version' in selectedRow ? selectedRow.version || '-' : '-'}</DetailField>
+                          <DetailField label="物料用途">{'materialPurpose' in selectedRow ? selectedRow.materialPurpose || '-' : '-'}</DetailField>
+                          <DetailField label="生效日期">{'effectiveDate' in selectedRow ? formatDateTime(selectedRow.effectiveDate) : '-'}</DetailField>
+                          <DetailField label="失效日期">{'expiryDate' in selectedRow ? formatDateTime(selectedRow.expiryDate) : '-'}</DetailField>
                         </>
                       ) : null}
                       <DetailField label="状态">{getStatusLabel(selectedRow.status)}</DetailField>

@@ -10,9 +10,11 @@ import com.zencas.edhr.system.repository.IconAssetRepository;
 import com.zencas.edhr.system.repository.SystemSettingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -104,6 +106,53 @@ class FileControllerTest {
                 .isInstanceOf(BusinessException.class)
                 .satisfies(error -> assertThat(((BusinessException) error).getErrorCode()).isEqualTo(ErrorCode.GENERAL_003))
                 .hasMessageContaining("文件不允许公开预览");
+    }
+
+    @Test
+    void uploadReturnsStringFileIdToAvoidFrontendLargeNumberPrecisionLoss() throws Exception {
+        SnowflakeIdGenerator uploadIdGenerator = mock(SnowflakeIdGenerator.class);
+        when(uploadIdGenerator.nextId()).thenReturn(341657966238777344L);
+        controller = new FileController(
+                fileObjectRepository,
+                iconAssetRepository,
+                systemSettingRepository,
+                userAccountRepository,
+                uploadIdGenerator);
+        org.springframework.test.util.ReflectionTestUtils.setField(controller, "storagePath", tempDir.toString());
+        MockMultipartFile file = new MockMultipartFile("file", "id-card-front.png", "image/png", new byte[] {1, 2, 3});
+
+        var response = controller.upload(file, "SIGNATURE_EVIDENCE", "1");
+
+        assertThat(response.getData()).isInstanceOf(Map.class);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> data = (Map<String, Object>) response.getData();
+        assertThat(data.get("fileId")).isEqualTo("341657966238777344");
+        assertThat(data.get("id")).isEqualTo("341657966238777344");
+        assertThat(data.get("targetType")).isEqualTo("SIGNATURE_EVIDENCE");
+    }
+
+    @Test
+    void uploadAllowsMissingTargetIdForSignatureEvidenceUploads() throws Exception {
+        SnowflakeIdGenerator uploadIdGenerator = mock(SnowflakeIdGenerator.class);
+        when(uploadIdGenerator.nextId()).thenReturn(341657966238777345L);
+        controller = new FileController(
+                fileObjectRepository,
+                iconAssetRepository,
+                systemSettingRepository,
+                userAccountRepository,
+                uploadIdGenerator);
+        org.springframework.test.util.ReflectionTestUtils.setField(controller, "storagePath", tempDir.toString());
+        MockMultipartFile file = new MockMultipartFile("file", "id-card-back.png", "image/png", new byte[] {1, 2, 3});
+
+        var response = controller.upload(file, "SIGNATURE_EVIDENCE", null);
+
+        assertThat(response.getData()).isInstanceOf(Map.class);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> data = (Map<String, Object>) response.getData();
+        assertThat(data.get("fileId")).isEqualTo("341657966238777345");
+        assertThat(data.get("targetType")).isEqualTo("SIGNATURE_EVIDENCE");
+        assertThat(data).containsKey("targetId");
+        assertThat(data.get("targetId")).isNull();
     }
 
     private FileObject fileObject(Long id, Path file, String mimeType, String targetType) {

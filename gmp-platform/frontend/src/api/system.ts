@@ -50,6 +50,24 @@ export interface SystemSettings {
   loginComplianceItems?: string;
   faviconFileId?: string | number | null;
   faviconUrl?: string;
+  forcePasswordChangeOnFirstLogin?: boolean;
+  passwordChangeCycleEnabled?: boolean;
+  passwordChangeCycleDays?: number;
+  passwordComplexity?: 'LOW' | 'MEDIUM' | 'HIGH' | string;
+  passwordFailureLockThreshold?: number;
+  passwordFailureLockMinutes?: number;
+  idleLogoutMinutes?: number;
+  tokenValidityMinutes?: number;
+  forceSignatureOnFirstLogin?: boolean;
+  signatureChangeCycleEnabled?: boolean;
+  signatureChangeCycleDays?: number;
+  emailEnabled?: boolean;
+  smtpHost?: string;
+  smtpPort?: number;
+  smtpSslEnabled?: boolean;
+  smtpUsername?: string;
+  smtpPasswordConfigured?: boolean;
+  mailFromName?: string;
 }
 
 export interface SystemSettingsUpdate {
@@ -60,6 +78,38 @@ export interface SystemSettingsUpdate {
   loginSubtitle: string;
   loginDescription: string;
   loginComplianceItems: string;
+  forcePasswordChangeOnFirstLogin: boolean;
+  passwordChangeCycleEnabled: boolean;
+  passwordChangeCycleDays: number;
+  passwordComplexity: string;
+  passwordFailureLockThreshold: number;
+  passwordFailureLockMinutes: number;
+  idleLogoutMinutes: number;
+  tokenValidityMinutes: number;
+  forceSignatureOnFirstLogin: boolean;
+  signatureChangeCycleEnabled: boolean;
+  signatureChangeCycleDays: number;
+  emailEnabled: boolean;
+  smtpHost: string;
+  smtpPort: number;
+  smtpSslEnabled: boolean;
+  smtpUsername: string;
+  smtpPassword: string;
+  mailFromName: string;
+}
+
+export interface MailTestRecipient {
+  id: string;
+  username: string;
+  displayName?: string;
+  email: string;
+}
+
+export interface TestMailResponse {
+  recipientUserId: string;
+  username: string;
+  recipientEmail: string;
+  sentAt: string;
 }
 
 export interface BusinessDictionaryRecord {
@@ -238,6 +288,16 @@ export const getSystemSettings = async (): Promise<SystemSettings> => {
 export const updateSystemSettings = async (payload: SystemSettingsUpdate): Promise<SystemSettings> => {
   const response = await client.put('/system/settings', payload);
   return unwrap<SystemSettings>(response);
+};
+
+export const getMailTestRecipients = async (): Promise<MailTestRecipient[]> => {
+  const response = await client.get('/system/settings/mail/test-recipients');
+  return unwrap<MailTestRecipient[]>(response);
+};
+
+export const sendTestMail = async (userId: string | number): Promise<TestMailResponse> => {
+  const response = await client.post('/system/settings/mail/test', { userId: Number(userId) }, { timeout: 60000 });
+  return unwrap<TestMailResponse>(response);
 };
 
 export const uploadSystemLogo = async (file: File): Promise<SystemSettings> => {

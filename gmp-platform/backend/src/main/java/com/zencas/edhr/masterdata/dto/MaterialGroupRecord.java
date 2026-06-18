@@ -18,6 +18,11 @@ public class MaterialGroupRecord {
     private String name;
     private String specification;
     private String version;
+    private Integer versionCount;
+    private Integer effectiveVersionCount;
+    private String materialPurpose;
+    private String effectiveDate;
+    private String expiryDate;
     private Long materialTypeId;
     private String materialTypeName;
     private String unit;

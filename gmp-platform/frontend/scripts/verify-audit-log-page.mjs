@@ -45,6 +45,7 @@ const auditable = read(repoRoot, 'gmp-platform/backend/src/main/java/com/zencas/
 const auditAspect = read(repoRoot, 'gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java');
 const auditControllerTest = read(repoRoot, 'gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditControllerTest.java');
 const auditMigration = read(repoRoot, 'gmp-platform/backend/src/main/resources/db/changelog/0008-audit-log-context-fields.sql');
+const auditHashMigration = read(repoRoot, 'gmp-platform/backend/src/main/resources/db/changelog/0023-audit-event-snapshot-hash.sql');
 
 mustInclude(packageJson, '"verify:audit-log-page": "node scripts/verify-audit-log-page.mjs"', 'audit log verification should be runnable from npm');
 
@@ -60,6 +61,9 @@ mustInclude(uiStandard, 'operatorDisplayName', 'UI standard should document audi
 mustInclude(uiStandard, 'operatorAccount', 'UI standard should document audit operator account contract');
 mustInclude(uiStandard, 'operationTime', 'UI standard should document audit operation time contract');
 mustInclude(uiStandard, 'triggerMethodLabel', 'UI standard should document audit trigger method label contract');
+mustInclude(uiStandard, 'snapshotHash', 'UI standard should document immutable audit snapshot hashes');
+mustInclude(uiStandard, '所属组织审计必须在写入时保存当时的组织路径名称快照', 'UI standard should require organization-name audit snapshots');
+mustInclude(uiStandard, '不允许使用当前组织表反查并伪装成历史名称', 'UI standard should forbid live organization lookups for historical audit values');
 mustInclude(uiStandard, 'moduleName', 'UI standard should document audit module name contract');
 mustInclude(uiStandard, 'menuName', 'UI standard should document audit menu name contract');
 mustInclude(uiStandard, 'functionName', 'UI standard should document audit function name contract');
@@ -74,6 +78,7 @@ mustInclude(api, 'moduleName?: string', 'audit API type should include module na
 mustInclude(api, 'menuName?: string', 'audit API type should include menu name');
 mustInclude(api, 'functionName?: string', 'audit API type should include function name');
 mustInclude(api, 'dataSummary?: string', 'audit API type should include operated data summary');
+mustInclude(api, 'snapshotHash?: string', 'audit API type should include snapshot hashes');
 
 mustInclude(page, 'AUDIT_COLUMN_SETTINGS_STORAGE_PREFIX', 'audit table should persist field settings by current user');
 mustInclude(page, 'audit-log-column-settings:', 'audit table settings should have a dedicated namespace');
@@ -135,6 +140,10 @@ mustNotInclude(page, 'label: key', 'audit data diff must not display raw technic
 mustNotInclude(page, 'auditFieldLabelMap[field] ?? field', 'audit field label fallback must not directly expose technical field keys');
 mustInclude(page, 'AuditSummaryRecord', 'audit drawer should show operated data using the audit record display pattern');
 mustInclude(page, 'title="操作数据"', 'audit drawer should include operated data in the audit-style record');
+mustInclude(page, '快照指纹', 'audit drawer should show the immutable snapshot hash');
+mustInclude(page, "return `历史组织ID(${value})`;", 'legacy organization ids should be marked as historical ids');
+mustInclude(page, "record.organizationName !== undefined || record.organization !== undefined", 'audit data should prefer saved organization snapshots');
+mustInclude(page, "!['primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName'].includes(key)", 'audit data should hide raw organization ids when a readable snapshot exists');
 mustInclude(page, 'AuditFieldBlock title="变更前"', 'audit drawer should show before content');
 mustInclude(page, 'AuditFieldBlock title="变更后"', 'audit drawer should show after content');
 mustInclude(page, '暂无审计记录', 'audit page should use concise empty audit text');
@@ -184,6 +193,11 @@ mustInclude(dto, 'operationTime', 'audit list DTO should expose operation time')
 mustInclude(dto, 'actionLabel', 'audit list DTO should expose action display name');
 mustInclude(dto, 'triggerMethod', 'audit list DTO should expose trigger method');
 mustInclude(dto, 'triggerMethodLabel', 'audit list DTO should expose trigger method label');
+mustInclude(dto, 'snapshotHash', 'audit list DTO should include immutable snapshot hash');
+mustInclude(event, 'snapshotHash', 'AuditEvent entity should include immutable snapshot hash');
+mustInclude(event, '@PrePersist', 'AuditEvent should seal snapshot hash on insert');
+mustInclude(event, '@PreUpdate', 'AuditEvent should reject updates');
+mustInclude(auditHashMigration, 'snapshot_hash', 'audit migration should add snapshot_hash');
 mustInclude(controller, 'PageResult<AuditLogItem>', 'audit list endpoint should return the richer audit DTO');
 mustInclude(controller, 'toAuditLogItem', 'audit controller should map entity to display DTO');
 mustInclude(controller, 'matchesAuditText', 'audit controller should filter against resolved display fields');

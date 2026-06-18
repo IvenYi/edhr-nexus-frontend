@@ -393,6 +393,9 @@ class ProcessModelingControllerTest {
                 .code("RM-RESIN-001")
                 .name("医用级树脂")
                 .version("V1.0")
+                .materialPurpose("生产物料")
+                .effectiveDate(LocalDateTime.of(2026, 6, 1, 0, 0))
+                .expiryDate(LocalDateTime.of(2026, 6, 2, 0, 0))
                 .status("ACTIVE")
                 .createdAt(LocalDateTime.of(2026, 6, 1, 9, 0))
                 .build();
@@ -402,6 +405,8 @@ class ProcessModelingControllerTest {
                 .code("RM-RESIN-001")
                 .name("医用级树脂")
                 .version("V2.0")
+                .materialPurpose("试验物料")
+                .effectiveDate(LocalDateTime.now().minusDays(1))
                 .status("ACTIVE")
                 .createdAt(LocalDateTime.of(2026, 6, 2, 9, 0))
                 .build();
@@ -411,18 +416,24 @@ class ProcessModelingControllerTest {
                 .code("RM-RESIN-001")
                 .name("医用级树脂")
                 .version("V10.0")
-                .status("ACTIVE")
+                .materialPurpose("生产物料")
+                .effectiveDate(LocalDateTime.now().plusDays(1))
+                .status("DRAFT")
                 .createdAt(LocalDateTime.of(2026, 6, 3, 9, 0))
                 .build();
         when(materialRepository.findAll()).thenReturn(List.of(v1, v2, v10));
 
-        var response = controller.listMaterials(null, null, null, null, "ACTIVE", 1, 20, "createdAt", "desc");
+        var response = controller.listMaterials(null, null, null, null, null, 1, 20, "createdAt", "desc");
 
         assertThat(response.getData().getContent()).hasSize(1);
         var group = response.getData().getContent().getFirst();
         assertThat(group.getCode()).isEqualTo("RM-RESIN-001");
         assertThat(group.getName()).isEqualTo("医用级树脂");
         assertThat(group.getVersion()).isEqualTo("V10.0");
+        assertThat(group.getVersionCount()).isEqualTo(3);
+        assertThat(group.getEffectiveVersionCount()).isEqualTo(1);
+        assertThat(group.getMaterialPurpose()).isEqualTo("生产物料");
+        assertThat(group.getEffectiveDate()).startsWith(String.valueOf(LocalDateTime.now().plusDays(1).getYear()));
         assertThat(group.getVersions()).extracting(Material::getVersion)
                 .containsExactly("V10.0", "V2.0", "V1.0");
     }

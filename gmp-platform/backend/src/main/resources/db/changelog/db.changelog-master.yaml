@@ -41,3 +41,17 @@ databaseChangeLog:
       file: db/changelog/0019-signature-created-at.sql
   - include:
       file: db/changelog/0020-user-profile-extra-fields.sql
+  - include:
+      file: db/changelog/0021-security-settings-policy.sql
+  - include:
+      file: db/changelog/0022-signature-certification-metadata.sql
+  - include:
+      file: db/changelog/0022-mail-settings.sql
+  - include:
+      file: db/changelog/0023-audit-event-snapshot-hash.sql
+  - include:
+      file: db/changelog/0024-signature-password-hash.sql
+  - include:
+      file: db/changelog/0025-material-version-display-fields.sql
+  - include:
+      file: db/changelog/0026-signature-policy-cycle-default.sql

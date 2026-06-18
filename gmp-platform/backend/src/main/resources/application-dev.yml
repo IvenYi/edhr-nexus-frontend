@@ -26,3 +26,9 @@ logging:
     org.springframework.security: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+edhr:
+  ocr:
+    paddle:
+      python-command: ${OCR_PADDLE_PYTHON_COMMAND:.venv-ocr/bin/python}
+      script-path: ${OCR_PADDLE_SCRIPT_PATH:./scripts/paddle_id_card_ocr.py}

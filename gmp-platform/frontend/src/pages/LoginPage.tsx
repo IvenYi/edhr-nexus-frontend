@@ -8,6 +8,11 @@ import {
 } from '@mui/icons-material';
 import client from '@/api/client';
 import { DEFAULT_SYSTEM_BRANDING, useSystemBranding } from '@/hooks/useSystemBranding';
+import {
+  DEFAULT_IDLE_LOGOUT_MINUTES,
+  DEFAULT_TOKEN_VALIDITY_MINUTES,
+  SESSION_STORAGE_KEYS,
+} from '@/utils/sessionPolicy';
 
 const DEFAULT_SYSTEM_NAME = 'eDHR 系统';
 const DEFAULT_LOGIN_TITLE = '登录 eDHR';
@@ -22,6 +27,37 @@ function parseLoginComplianceItems(value?: string) {
     })
     .filter((item): item is { num: string; label: string } => Boolean(item))
     .slice(0, 3);
+}
+
+function normalizePositiveNumber(value: unknown, fallback: number): number {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric >= 1 ? numeric : fallback;
+}
+
+function storeSessionPolicy(payload: Record<string, unknown>) {
+  const now = Date.now();
+  localStorage.setItem(SESSION_STORAGE_KEYS.sessionStartedAt, String(now));
+  localStorage.setItem(SESSION_STORAGE_KEYS.lastActivityAt, String(now));
+  localStorage.setItem(
+    SESSION_STORAGE_KEYS.idleLogoutMinutes,
+    String(normalizePositiveNumber(payload.idleLogoutMinutes, DEFAULT_IDLE_LOGOUT_MINUTES)),
+  );
+  localStorage.setItem(
+    SESSION_STORAGE_KEYS.tokenValidityMinutes,
+    String(normalizePositiveNumber(payload.tokenValidityMinutes, DEFAULT_TOKEN_VALIDITY_MINUTES)),
+  );
+
+  if (payload.forcePasswordChange) {
+    localStorage.setItem(SESSION_STORAGE_KEYS.forcePasswordChange, 'true');
+  } else {
+    localStorage.removeItem(SESSION_STORAGE_KEYS.forcePasswordChange);
+  }
+
+  if (payload.forceSignatureVerification) {
+    localStorage.setItem(SESSION_STORAGE_KEYS.forceSignatureVerification, 'true');
+  } else {
+    localStorage.removeItem(SESSION_STORAGE_KEYS.forceSignatureVerification);
+  }
 }
 
 export default function LoginPage() {
@@ -43,10 +79,13 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await client.post('/auth/login', { username, password });
-      const { token, user } = res.data.data;
+      const loginData = res.data.data as Record<string, unknown>;
+      const { token, user } = loginData as { token: string; user: unknown };
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
-      navigate('/', { replace: true });
+      storeSessionPolicy(loginData);
+      const requiresSecurityAction = Boolean(loginData.forcePasswordChange || loginData.forceSignatureVerification);
+      navigate(requiresSecurityAction ? '/account/settings' : '/', { replace: true });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : '登录失败';
       setError(message);

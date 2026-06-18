@@ -5,7 +5,11 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.HexFormat;
 
 @Entity @Table(name = "audit_event")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
@@ -25,6 +29,8 @@ public class AuditEvent {
     @Column(name = "content_after", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private String contentAfter;
+    @Column(name = "snapshot_hash", length = 64)
+    private String snapshotHash;
     @Column(name = "operator_id")
     private String operatorId;
     @Column(name = "operator_name")
@@ -47,4 +53,62 @@ public class AuditEvent {
     private String ipAddress;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void sealSnapshotHash() {
+        if (!hasText(snapshotHash)) {
+            snapshotHash = computeSnapshotHash();
+        }
+    }
+
+    @PreUpdate
+    public void preventMutation() {
+        throw new IllegalStateException("Audit events are immutable snapshots and cannot be updated");
+    }
+
+    public String computeSnapshotHash() {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(canonicalAuditPayload().getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 is not available", e);
+        }
+    }
+
+    private String canonicalAuditPayload() {
+        StringBuilder payload = new StringBuilder();
+        appendCanonical(payload, id);
+        appendCanonical(payload, tenantId);
+        appendCanonical(payload, entityType);
+        appendCanonical(payload, entityId);
+        appendCanonical(payload, action);
+        appendCanonical(payload, contentBefore);
+        appendCanonical(payload, contentAfter);
+        appendCanonical(payload, operatorId);
+        appendCanonical(payload, operatorName);
+        appendCanonical(payload, operatorAccount);
+        appendCanonical(payload, source);
+        appendCanonical(payload, moduleName);
+        appendCanonical(payload, menuName);
+        appendCanonical(payload, functionName);
+        appendCanonical(payload, dataSummary);
+        appendCanonical(payload, reason);
+        appendCanonical(payload, ipAddress);
+        appendCanonical(payload, createdAt);
+        return payload.toString();
+    }
+
+    private void appendCanonical(StringBuilder payload, Object value) {
+        if (value == null) {
+            payload.append("-1:");
+            return;
+        }
+        String text = String.valueOf(value);
+        payload.append(text.length()).append(':').append(text);
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
 }

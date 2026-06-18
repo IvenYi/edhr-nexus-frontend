@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS signature (
     auth_event_ref VARCHAR(256),
     snapshot_hash VARCHAR(256),
     snapshot_data JSONB,
+    signature_password_hash VARCHAR(256),
     signed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_sig_target ON signature(target_type, target_id);

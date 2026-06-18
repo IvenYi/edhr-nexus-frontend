@@ -320,9 +320,12 @@ const auditFieldLabelMap: Record<string, string> = {
   description: '描述',
   phone: '手机号',
   email: '邮箱',
-  primaryDepartmentId: '主属组织',
+  organizationName: '所属组织',
+  organization: '所属组织',
+  primaryDepartmentId: '所属组织',
   departmentId: '所属组织',
   departmentIds: '所属组织',
+  departmentName: '所属组织',
   roles: '岗位角色',
   roleIds: '岗位角色',
   permissionIds: '菜单权限',
@@ -374,6 +377,8 @@ const auditFieldOrder = [
   'logoHeight',
   'groupName',
   'groupId',
+  'organizationName',
+  'organization',
   'sourceLabel',
   'source',
   'tags',
@@ -419,6 +424,12 @@ function translateAuditScalar(field: string, value: string): string {
   if (field === 'status') {
     const statusMap: Record<string, string> = { ACTIVE: '正常', DISABLED: '禁用', ENABLED: '启用', INACTIVE: '停用' };
     return statusMap[value.toUpperCase()] ?? value;
+  }
+  if (field === 'organizationName' || field === 'organization' || field === 'departmentName') {
+    return value;
+  }
+  if (field === 'primaryDepartmentId' || field === 'departmentId' || field === 'departmentIds') {
+    return `历史组织ID(${value})`;
   }
   return value;
 }
@@ -612,7 +623,10 @@ function formatAuditRows(value: unknown): AuditFieldRow[] {
   if (typeof parsed !== 'object' || Array.isArray(parsed)) {
     return [{ label: '内容', value: getDisplayValue(parsed) }];
   }
-  return sortAuditEntries(Object.entries(parsed as Record<string, unknown>))
+  const record = parsed as Record<string, unknown>;
+  const hasOrganizationSnapshot = record.organizationName !== undefined || record.organization !== undefined;
+  return sortAuditEntries(Object.entries(record)
+    .filter(([key]) => !hasOrganizationSnapshot || !['primaryDepartmentId', 'departmentId', 'departmentIds', 'departmentName'].includes(key)))
     .filter(([, entry]) => {
       if (entry === null || entry === undefined || entry === '') return false;
       if (typeof entry === 'object' && !Array.isArray(entry) && Object.keys(entry as Record<string, unknown>).length === 0) return false;
@@ -763,6 +777,7 @@ export default function AuditLogPage() {
     { label: '操作动作', value: getDisplayValue(selectedAudit.actionLabel || selectedAudit.action) },
     { label: '操作时间', value: formatDateTime(selectedAudit.operationTime || selectedAudit.createdAt) },
     { label: '操作数据', value: getDisplayValue(selectedAudit.dataSummary) },
+    { label: '快照指纹', value: getDisplayValue(selectedAudit.snapshotHash) },
   ] : [], [selectedAudit]);
 
   const resetFilters = () => {
@@ -1071,6 +1086,7 @@ export default function AuditLogPage() {
                   <Stack spacing={1}>
                     <DetailField label="触发方式">{selectedAudit.triggerMethodLabel || selectedAudit.triggerMethod}</DetailField>
                     <DetailField label="IP地址">{selectedAudit.ipAddress}</DetailField>
+                    <DetailField label="快照指纹">{selectedAudit.snapshotHash}</DetailField>
                     <DetailField label="说明">{selectedAudit.reason}</DetailField>
                   </Stack>
                 </DetailSection>

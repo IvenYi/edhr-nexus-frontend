@@ -21,7 +21,13 @@ public class UserAccount {
     @Column(name = "birthday") private LocalDate birthday;
     @Column(nullable = false, length = 32) @Builder.Default private String status = "ACTIVE";
     @Column(name = "last_login_at") private LocalDateTime lastLoginAt;
+    @Column(name = "password_changed_at") private LocalDateTime passwordChangedAt;
+    @Column(name = "failed_login_attempts") @Builder.Default private Integer failedLoginAttempts = 0;
+    @Column(name = "locked_until") private LocalDateTime lockedUntil;
     @Column(name = "created_at") private LocalDateTime createdAt;
     @Column(name = "updated_at") private LocalDateTime updatedAt;
-    @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }
+    @PrePersist void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (failedLoginAttempts == null) failedLoginAttempts = 0;
+    }
 }

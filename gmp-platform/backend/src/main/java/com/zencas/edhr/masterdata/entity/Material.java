@@ -33,6 +33,13 @@ public class Material {
     @Column(name = "version", length = 64)
     @Builder.Default
     private String version = "V1.0";
+    @Column(name = "material_purpose", length = 32)
+    @Builder.Default
+    private String materialPurpose = "生产物料";
+    @Column(name = "effective_date")
+    private LocalDateTime effectiveDate;
+    @Column(name = "expiry_date")
+    private LocalDateTime expiryDate;
     @Column(name = "material_type_id")
     private Long materialTypeId;
     @Transient

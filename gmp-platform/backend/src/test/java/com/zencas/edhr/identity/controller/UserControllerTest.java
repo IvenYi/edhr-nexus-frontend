@@ -7,11 +7,15 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
+import com.zencas.edhr.compliance.entity.Signature;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
+import com.zencas.edhr.compliance.repository.SignatureRepository;
+import com.zencas.edhr.identity.entity.Department;
 import com.zencas.edhr.identity.entity.Role;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.entity.UserDepartment;
 import com.zencas.edhr.identity.entity.UserRole;
+import com.zencas.edhr.identity.repository.DepartmentRepository;
 import com.zencas.edhr.identity.repository.RoleRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserDepartmentRepository;
@@ -45,11 +49,13 @@ class UserControllerTest {
 
     @Mock private UserAccountRepository userAccountRepository;
     @Mock private RoleRepository roleRepository;
+    @Mock private DepartmentRepository departmentRepository;
     @Mock private UserRoleRepository userRoleRepository;
     @Mock private UserDepartmentRepository userDepartmentRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private AuditEventRepository auditEventRepository;
+    @Mock private SignatureRepository signatureRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks private UserController controller;
@@ -195,6 +201,60 @@ class UserControllerTest {
     }
 
     @Test
+    void listMapsElectronicSignatureStatusAndCertificationWindow() {
+        long certifiedUserId = 1001L;
+        long expiredUserId = 1002L;
+        long uncertifiedUserId = 1003L;
+        LocalDateTime certifiedAt = LocalDateTime.now().minusDays(3);
+        LocalDateTime certifiedExpiresAt = LocalDateTime.now().plusDays(10);
+        LocalDateTime expiredAt = LocalDateTime.now().minusDays(60);
+        LocalDateTime expiredExpiresAt = LocalDateTime.now().minusDays(1);
+        List<UserAccount> users = List.of(
+                UserAccount.builder().id(certifiedUserId).tenantId(1L).username("certified").displayName("已认证用户").status("ACTIVE").build(),
+                UserAccount.builder().id(expiredUserId).tenantId(1L).username("expired").displayName("已过期用户").status("ACTIVE").build(),
+                UserAccount.builder().id(uncertifiedUserId).tenantId(1L).username("none").displayName("未认证用户").status("ACTIVE").build());
+        when(userAccountRepository.findAll(any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(users, PageRequest.of(0, 20), 3));
+        when(userRoleRepository.findByUserIdIn(List.of(certifiedUserId, expiredUserId, uncertifiedUserId))).thenReturn(List.of());
+        when(userDepartmentRepository.findByUserIdIn(List.of(certifiedUserId, expiredUserId, uncertifiedUserId))).thenReturn(List.of());
+        when(auditEventRepository.findByEntityTypeAndEntityIdIn(eq("USER_ACCOUNT"), eq(List.of("1001", "1002", "1003"))))
+                .thenReturn(List.of());
+        when(signatureRepository.findLatestByTargetTypeAndTargetIdIn(eq("USER_PROFILE"), eq(List.of("1001", "1002", "1003"))))
+                .thenReturn(List.of(
+                        Signature.builder()
+                                .id(701L)
+                                .targetType("USER_PROFILE")
+                                .targetId("1001")
+                                .signedAt(certifiedAt)
+                                .certifiedAt(certifiedAt)
+                                .expiresAt(certifiedExpiresAt)
+                                .build(),
+                        Signature.builder()
+                                .id(702L)
+                                .targetType("USER_PROFILE")
+                                .targetId("1002")
+                                .signedAt(expiredAt)
+                                .certifiedAt(expiredAt)
+                                .expiresAt(expiredExpiresAt)
+                                .build()));
+
+        List<UserController.UserResponse> responses = controller
+                .list(1, 20, "createdAt", "desc")
+                .getData()
+                .getContent();
+
+        assertThat(responses.get(0).getElectronicSignatureStatus()).isEqualTo("CERTIFIED");
+        assertThat(responses.get(0).getElectronicSignatureCertifiedAt()).isEqualTo(certifiedAt);
+        assertThat(responses.get(0).getElectronicSignatureExpiresAt()).isEqualTo(certifiedExpiresAt);
+        assertThat(responses.get(1).getElectronicSignatureStatus()).isEqualTo("EXPIRED");
+        assertThat(responses.get(1).getElectronicSignatureCertifiedAt()).isEqualTo(expiredAt);
+        assertThat(responses.get(1).getElectronicSignatureExpiresAt()).isEqualTo(expiredExpiresAt);
+        assertThat(responses.get(2).getElectronicSignatureStatus()).isEqualTo("UNCERTIFIED");
+        assertThat(responses.get(2).getElectronicSignatureCertifiedAt()).isNull();
+        assertThat(responses.get(2).getElectronicSignatureExpiresAt()).isNull();
+    }
+
+    @Test
     void createWritesAuditSnapshotForCreatedUser() throws Exception {
         AuditContext.setOperator("99", "系统管理员");
         UserController.UserRequest request = new UserController.UserRequest();
@@ -223,6 +283,10 @@ class UserControllerTest {
         when(userAccountRepository.findById(1L)).thenReturn(Optional.of(saved));
         when(roleRepository.findAllById(List.of(10L))).thenReturn(List.of(
                 Role.builder().id(10L).code("QA_ROLE").name("QA角色").build()));
+        when(departmentRepository.findAllById(List.of(20L))).thenReturn(List.of(
+                Department.builder().id(20L).parentId(10L).name("质量部").build()));
+        when(departmentRepository.findById(10L)).thenReturn(Optional.of(
+                Department.builder().id(10L).name("公司").build()));
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of(
                 UserRole.builder().id(101L).userId(1L).roleId(10L).build()));
         when(userDepartmentRepository.findByUserId(1L)).thenReturn(List.of(
@@ -234,10 +298,12 @@ class UserControllerTest {
         ArgumentCaptor<AuditEvent> captor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository).save(captor.capture());
         AuditEvent event = captor.getValue();
+        event.sealSnapshotHash();
         assertThat(event.getEntityType()).isEqualTo("USER_ACCOUNT");
         assertThat(event.getEntityId()).isEqualTo("1");
         assertThat(event.getAction()).isEqualTo("CREATE");
         assertThat(event.getOperatorName()).isEqualTo("系统管理员");
+        assertThat(event.getSnapshotHash()).hasSize(64);
 
         JsonNode before = objectMapper.readTree(event.getContentBefore());
         JsonNode after = objectMapper.readTree(event.getContentAfter());
@@ -251,6 +317,7 @@ class UserControllerTest {
         assertThat(after.get("roles").get(0).asText()).isEqualTo("QA角色");
         assertThat(after.get("departmentIds").get(0).asText()).isEqualTo("20");
         assertThat(after.get("primaryDepartmentId").asText()).isEqualTo("20");
+        assertThat(after.get("organizationName").asText()).isEqualTo("公司/质量部");
     }
 
     @Test
@@ -320,6 +387,12 @@ class UserControllerTest {
                 Role.builder().id(10L).code("OLD_ROLE").name("旧岗位角色").build()));
         when(roleRepository.findAllById(List.of(11L))).thenReturn(List.of(
                 Role.builder().id(11L).code("NEW_ROLE").name("新岗位角色").build()));
+        when(departmentRepository.findAllById(List.of(20L))).thenReturn(List.of(
+                Department.builder().id(20L).parentId(10L).name("生产一组").build()));
+        when(departmentRepository.findAllById(List.of(21L))).thenReturn(List.of(
+                Department.builder().id(21L).parentId(10L).name("生产二组").build()));
+        when(departmentRepository.findById(10L)).thenReturn(Optional.of(
+                Department.builder().id(10L).name("生产部").build()));
         when(userDepartmentRepository.findByUserId(1L)).thenReturn(List.of(
                 UserDepartment.builder().id(4L).userId(1L).departmentId(20L).isPrimary(true).build()));
         when(userAccountRepository.save(user)).thenReturn(user);
@@ -331,10 +404,12 @@ class UserControllerTest {
         ArgumentCaptor<AuditEvent> captor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository).save(captor.capture());
         AuditEvent event = captor.getValue();
+        event.sealSnapshotHash();
         assertThat(event.getEntityType()).isEqualTo("USER_ACCOUNT");
         assertThat(event.getEntityId()).isEqualTo("1");
         assertThat(event.getAction()).isEqualTo("UPDATE");
         assertThat(event.getOperatorName()).isEqualTo("系统管理员");
+        assertThat(event.getSnapshotHash()).hasSize(64);
 
         JsonNode before = objectMapper.readTree(event.getContentBefore());
         JsonNode after = objectMapper.readTree(event.getContentAfter());
@@ -356,6 +431,8 @@ class UserControllerTest {
         assertThat(after.get("departmentIds").get(0).asText()).isEqualTo("21");
         assertThat(before.get("primaryDepartmentId").asText()).isEqualTo("20");
         assertThat(after.get("primaryDepartmentId").asText()).isEqualTo("21");
+        assertThat(before.get("organizationName").asText()).isEqualTo("生产部/生产一组");
+        assertThat(after.get("organizationName").asText()).isEqualTo("生产部/生产二组");
         assertThat(before.has("username")).isFalse();
         assertThat(after.has("username")).isFalse();
         assertThat(before.has("email")).isFalse();

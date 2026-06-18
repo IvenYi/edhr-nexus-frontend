@@ -11,6 +11,7 @@ import com.zencas.edhr.compliance.entity.Signature;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
 import com.zencas.edhr.compliance.repository.SignatureRepository;
+import com.zencas.edhr.compliance.service.IdCardOcrService;
 import com.zencas.edhr.identity.entity.LoginLog;
 import com.zencas.edhr.identity.entity.Department;
 import com.zencas.edhr.identity.entity.Permission;
@@ -29,16 +30,27 @@ import com.zencas.edhr.identity.repository.UserDepartmentRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
 import com.zencas.edhr.identity.security.JwtTokenProvider;
 import com.zencas.edhr.identity.service.GctPermissionCatalog;
+import com.zencas.edhr.system.entity.SystemSetting;
+import com.zencas.edhr.system.repository.SystemSettingRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.Color;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +59,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.*;
@@ -64,6 +79,25 @@ public class AuthController {
     private static final int SIGNATURE_CONFIRMATION_STATEMENT_COUNT = 3;
     private static final long AVATAR_MAX_FILE_SIZE = 2L * 1024 * 1024;
     private static final List<String> AVATAR_MIME_TYPES = List.of("image/png", "image/jpeg", "image/webp", "image/gif");
+    private static final int DEFAULT_PASSWORD_CHANGE_CYCLE_DAYS = 90;
+    private static final String DEFAULT_PASSWORD_COMPLEXITY = "MEDIUM";
+    private static final int DEFAULT_PASSWORD_FAILURE_LOCK_THRESHOLD = 5;
+    private static final int DEFAULT_PASSWORD_FAILURE_LOCK_MINUTES = 30;
+    private static final int DEFAULT_IDLE_LOGOUT_MINUTES = 30;
+    private static final int DEFAULT_TOKEN_VALIDITY_MINUTES = 480;
+    private static final int DEFAULT_SIGNATURE_CHANGE_CYCLE_DAYS = 30;
+    private static final int SIGNATURE_CHANGE_CYCLE_DAYS_MAX = 30;
+    private static final String SIGNATURE_NOTICE_TARGET_TYPE = "SIGNATURE_AUTHORIZATION_NOTICE";
+    private static final DateTimeFormatter SIGNATURE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final SecureRandom SIGNATURE_KEY_RANDOM = new SecureRandom();
+    private static final float PDF_MARGIN = 26F;
+    private static final float PDF_TABLE_WIDTH = PDRectangle.A4.getWidth() - PDF_MARGIN * 2F;
+    private static final float PDF_LABEL_COLUMN_WIDTH = 134F;
+    private static final float PDF_LINE_HEIGHT = 15F;
+    private static final List<String> PDF_FONT_CANDIDATES = List.of(
+            "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+            "/Library/Fonts/Arial Unicode.ttf",
+            "/System/Library/Fonts/Supplemental/Songti.ttc");
     private static final java.util.regex.Pattern EMAIL_PATTERN = java.util.regex.Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
     private static final java.util.regex.Pattern CHINA_MOBILE_PATTERN = java.util.regex.Pattern.compile("^1[3-9]\\d{9}$");
 
@@ -81,6 +115,8 @@ public class AuthController {
     private final FileObjectRepository fileObjectRepository;
     private final SignatureRepository signatureRepository;
     private final AuditEventRepository auditEventRepository;
+    private final IdCardOcrService idCardOcrService;
+    private final SystemSettingRepository systemSettingRepository;
     private final SnowflakeIdGenerator idGenerator;
 
     @Value("${edhr.file.storage-path:#{systemProperties['user.home'] + '/.edhr/files'}}")
@@ -89,10 +125,14 @@ public class AuthController {
     @PostMapping("/login")
     public ApiResponse<Map<String, Object>> login(@RequestBody LoginRequest request,
                                                   HttpServletRequest servletRequest) {
+        SecurityPolicy policy = currentSecurityPolicy();
         UserAccount user = userAccountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_001));
 
+        ensureLoginAllowed(user);
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            handleFailedLogin(user, policy);
             throw new BusinessException(ErrorCode.AUTH_001);
         }
 
@@ -100,12 +140,14 @@ public class AuthController {
             throw new BusinessException(ErrorCode.AUTH_003, "账户已被禁用或锁定");
         }
 
+        clearFailedLoginState(user);
+
         UserPermissionSnapshot permissionSnapshot = resolveUserPermissionSnapshot(user.getId());
         List<String> permissions = permissionSnapshot.permissions();
         List<String> roleNames = permissionSnapshot.roleNames();
 
         String token = jwtTokenProvider.generateToken(
-                user.getId().toString(), user.getUsername(), user.getDisplayName());
+                user.getId().toString(), user.getUsername(), user.getDisplayName(), policy.tokenValidityMinutes());
 
         // Update last login
         user.setLastLoginAt(java.time.LocalDateTime.now());
@@ -131,6 +173,10 @@ public class AuthController {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("token", token);
         result.put("user", userMap);
+        result.put("idleLogoutMinutes", policy.idleLogoutMinutes());
+        result.put("tokenValidityMinutes", policy.tokenValidityMinutes());
+        result.put("forcePasswordChange", requiresPasswordChange(user, policy));
+        result.put("forceSignatureVerification", requiresSignatureVerification(user, policy));
 
         return ApiResponse.success(result);
     }
@@ -178,6 +224,8 @@ public class AuthController {
                     result.put("latestSignatureId", idToString(signature.getId()));
                     result.put("signatureCertifiedAt", signature.getSignedAt() == null ? null : signature.getSignedAt().toString());
                     result.put("signatureAuthMethod", signature.getAuthMethod());
+                    result.put("signatureExpiresAt", signature.getExpiresAt() == null ? null : signature.getExpiresAt().toString());
+                    result.put("signatureAuthorizationNoticeFileId", idToString(signature.getAuthorizationNoticeFileId()));
                 });
         return ApiResponse.success(result);
     }
@@ -245,10 +293,14 @@ public class AuthController {
         if (!Objects.equals(request.getNewPassword(), request.getConfirmPassword())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "两次输入的新密码不一致");
         }
+        validatePasswordComplexity(request.getNewPassword(), currentSecurityPolicy());
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "当前密码不正确");
         }
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        user.setPasswordChangedAt(LocalDateTime.now());
+        user.setFailedLoginAttempts(0);
+        user.setLockedUntil(null);
         user.setUpdatedAt(LocalDateTime.now());
         userAccountRepository.save(user);
         writePasswordChangeAudit(user, servletRequest);
@@ -262,24 +314,52 @@ public class AuthController {
             @RequestBody PersonalSignatureRequest request,
             HttpServletRequest servletRequest) {
         UserAccount user = findCurrentUser(userId);
-        if (request == null || !StringUtils.hasText(request.getPassword())) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "请输入认证密码");
+        if (request == null || !StringUtils.hasText(request.getSignaturePassword())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "请输入电子签名密码");
+        }
+        if (!StringUtils.hasText(request.getLoginPassword())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "请输入当前系统登录密码");
         }
         validateSignatureEvidence(request);
-        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "电子签名认证密码错误");
+        if (!passwordEncoder.matches(request.getLoginPassword(), user.getPasswordHash())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "当前系统登录密码错误");
         }
 
         FileObject signatureImage = requireSignatureEvidenceFile(request.getSignatureImageFileId(), "请上传手写签名");
         FileObject idCardFront = requireSignatureEvidenceFile(request.getIdCardFrontFileId(), "请上传身份证正面");
         FileObject idCardBack = requireSignatureEvidenceFile(request.getIdCardBackFileId(), "请上传身份证反面");
 
-        LocalDateTime signedAt = LocalDateTime.now();
+        LocalDateTime signedAt = LocalDateTime.now().withNano(0);
+        SecurityPolicy policy = currentSecurityPolicy();
+        LocalDateTime expiresAt = signedAt.plusDays(policy.signatureChangeCycleDays());
         String meaning = StringUtils.hasText(request.getMeaning()) ? request.getMeaning().trim() : "个人设置确认";
+        String signaturePasswordHash = passwordEncoder.encode(request.getSignaturePassword());
+        String signatureKey = generateSignatureKey();
         Map<String, Object> snapshot = signatureSnapshot(user, meaning, request.getStatements(), signatureImage, idCardFront, idCardBack, signedAt);
+        snapshot.put("signatureKey", signatureKey);
+        snapshot.put("certifiedAtEpoch", toEpochMillis(signedAt));
+        snapshot.put("certifiedAt", formatSignatureTime(signedAt));
+        snapshot.put("expiresAtEpoch", toEpochMillis(expiresAt));
+        snapshot.put("expiresAt", formatSignatureTime(expiresAt));
         String snapshotData = toJson(snapshot);
+        String snapshotHash = sha256(snapshotData);
+        Long signatureId = idGenerator.nextId();
+        FileObject authorizationNotice = storeSignatureAuthorizationNotice(
+                user,
+                signatureId,
+                signatureKey,
+                signedAt,
+                expiresAt,
+                meaning,
+                snapshotHash,
+                toEpochMillis(signedAt),
+                toEpochMillis(expiresAt),
+                request.getStatements(),
+                signatureImage,
+                idCardFront,
+                idCardBack);
         Signature signature = Signature.builder()
-                .id(idGenerator.nextId())
+                .id(signatureId)
                 .tenantId(TENANT_ID)
                 .targetType(USER_PROFILE_TARGET_TYPE)
                 .targetId(String.valueOf(user.getId()))
@@ -288,9 +368,16 @@ public class AuthController {
                 .signerName(user.getDisplayName())
                 .authMethod("PASSWORD")
                 .authEventRef("PASSWORD_REAUTH:HANDWRITTEN_SIGNATURE_ID_CARD:" + signedAt)
-                .snapshotHash(sha256(snapshotData))
+                .snapshotHash(snapshotHash)
                 .snapshotData(snapshotData)
                 .signedAt(signedAt)
+                .signatureKey(signatureKey)
+                .signaturePasswordHash(signaturePasswordHash)
+                .certifiedAtEpoch(toEpochMillis(signedAt))
+                .certifiedAt(signedAt)
+                .expiresAtEpoch(toEpochMillis(expiresAt))
+                .expiresAt(expiresAt)
+                .authorizationNoticeFileId(authorizationNotice.getId())
                 .createdAt(signedAt)
                 .build();
         Signature saved = signatureRepository.save(signature);
@@ -299,9 +386,124 @@ public class AuthController {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("signatureId", idToString(saved.getId()));
         response.put("signedAt", saved.getSignedAt() == null ? null : saved.getSignedAt().toString());
+        response.put("signatureKey", saved.getSignatureKey());
+        response.put("certifiedAtEpoch", saved.getCertifiedAtEpoch());
+        response.put("certifiedAt", saved.getCertifiedAt() == null ? null : saved.getCertifiedAt().toString());
+        response.put("expiresAtEpoch", saved.getExpiresAtEpoch());
+        response.put("expiresAt", saved.getExpiresAt() == null ? null : saved.getExpiresAt().toString());
+        response.put("authorizationNoticeFileId", idToString(saved.getAuthorizationNoticeFileId()));
         response.put("authMethod", saved.getAuthMethod());
         response.put("snapshotHash", saved.getSnapshotHash());
         return ApiResponse.success(response);
+    }
+
+    private SecurityPolicy currentSecurityPolicy() {
+        return systemSettingRepository.findByTenantId(TENANT_ID)
+                .map(this::toSecurityPolicy)
+                .orElse(SecurityPolicy.defaults());
+    }
+
+    private SecurityPolicy toSecurityPolicy(SystemSetting setting) {
+        return new SecurityPolicy(
+                resolveBoolean(setting.getForcePasswordChangeOnFirstLogin(), true),
+                resolveBoolean(setting.getPasswordChangeCycleEnabled(), false),
+                resolveInteger(setting.getPasswordChangeCycleDays(), DEFAULT_PASSWORD_CHANGE_CYCLE_DAYS),
+                normalizePasswordComplexity(setting.getPasswordComplexity()),
+                resolveInteger(setting.getPasswordFailureLockThreshold(), DEFAULT_PASSWORD_FAILURE_LOCK_THRESHOLD),
+                resolveInteger(setting.getPasswordFailureLockMinutes(), DEFAULT_PASSWORD_FAILURE_LOCK_MINUTES),
+                resolveInteger(setting.getIdleLogoutMinutes(), DEFAULT_IDLE_LOGOUT_MINUTES),
+                resolveInteger(setting.getTokenValidityMinutes(), DEFAULT_TOKEN_VALIDITY_MINUTES),
+                resolveBoolean(setting.getForceSignatureOnFirstLogin(), false),
+                resolveBoolean(setting.getSignatureChangeCycleEnabled(), true),
+                normalizeSignatureChangeCycleDays(setting.getSignatureChangeCycleDays()));
+    }
+
+    private int normalizeSignatureChangeCycleDays(Integer value) {
+        if (value == null || value < 1) return DEFAULT_SIGNATURE_CHANGE_CYCLE_DAYS;
+        return Math.min(value, SIGNATURE_CHANGE_CYCLE_DAYS_MAX);
+    }
+
+    private void ensureLoginAllowed(UserAccount user) {
+        if ("DISABLED".equals(user.getStatus()) || "LOCKED".equals(user.getStatus())) {
+            throw new BusinessException(ErrorCode.AUTH_003, "账户已被禁用或锁定");
+        }
+        LocalDateTime lockedUntil = user.getLockedUntil();
+        if (lockedUntil != null && lockedUntil.isAfter(LocalDateTime.now())) {
+            throw new BusinessException(ErrorCode.AUTH_003, "账户已锁定，请稍后再试");
+        }
+    }
+
+    private void handleFailedLogin(UserAccount user, SecurityPolicy policy) {
+        int failedAttempts = Optional.ofNullable(user.getFailedLoginAttempts()).orElse(0) + 1;
+        user.setFailedLoginAttempts(failedAttempts);
+        if (failedAttempts >= policy.passwordFailureLockThreshold()) {
+            user.setLockedUntil(LocalDateTime.now().plusMinutes(policy.passwordFailureLockMinutes()));
+        }
+        userAccountRepository.save(user);
+    }
+
+    private void clearFailedLoginState(UserAccount user) {
+        if (Optional.ofNullable(user.getFailedLoginAttempts()).orElse(0) == 0 && user.getLockedUntil() == null) return;
+        user.setFailedLoginAttempts(0);
+        user.setLockedUntil(null);
+    }
+
+    private boolean requiresPasswordChange(UserAccount user, SecurityPolicy policy) {
+        if (policy.forcePasswordChangeOnFirstLogin() && user.getPasswordChangedAt() == null) return true;
+        if (!policy.passwordChangeCycleEnabled()) return false;
+        LocalDateTime changedAt = user.getPasswordChangedAt();
+        if (changedAt == null) return true;
+        return changedAt.plusDays(policy.passwordChangeCycleDays()).isBefore(LocalDateTime.now());
+    }
+
+    private boolean requiresSignatureVerification(UserAccount user, SecurityPolicy policy) {
+        Optional<Signature> latestSignature = Optional.ofNullable(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc(
+                        USER_PROFILE_TARGET_TYPE,
+                        String.valueOf(user.getId())))
+                .orElse(Optional.empty());
+        if (latestSignature.isEmpty()) return policy.forceSignatureOnFirstLogin();
+        if (!policy.signatureChangeCycleEnabled()) return false;
+        LocalDateTime expiresAt = Optional.ofNullable(latestSignature.get().getExpiresAt())
+                .orElseGet(() -> {
+                    LocalDateTime signedAt = latestSignature.get().getSignedAt();
+                    return signedAt == null ? null : signedAt.plusDays(policy.signatureChangeCycleDays());
+                });
+        if (expiresAt == null) return true;
+        return expiresAt.isBefore(LocalDateTime.now());
+    }
+
+    private void validatePasswordComplexity(String password, SecurityPolicy policy) {
+        String complexity = policy.passwordComplexity();
+        if ("LOW".equals(complexity)) {
+            if (password.length() < 6) throw new BusinessException(ErrorCode.GENERAL_001, "登录密码复杂度不足");
+            return;
+        }
+        boolean hasLetter = password.chars().anyMatch(Character::isLetter);
+        boolean hasDigit = password.chars().anyMatch(Character::isDigit);
+        boolean hasSpecial = password.chars().anyMatch(ch -> !Character.isLetterOrDigit(ch));
+        if ("MEDIUM".equals(complexity)) {
+            if (password.length() < 8 || !hasLetter || !hasDigit) {
+                throw new BusinessException(ErrorCode.GENERAL_001, "登录密码复杂度不足");
+            }
+            return;
+        }
+        if (password.length() < 10 || !hasLetter || !hasDigit || !hasSpecial) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "登录密码复杂度不足");
+        }
+    }
+
+    private Boolean resolveBoolean(Boolean value, boolean defaultValue) {
+        return value == null ? defaultValue : value;
+    }
+
+    private Integer resolveInteger(Integer value, int defaultValue) {
+        return value == null || value < 1 ? defaultValue : value;
+    }
+
+    private String normalizePasswordComplexity(String value) {
+        if (!StringUtils.hasText(value)) return DEFAULT_PASSWORD_COMPLEXITY;
+        String normalized = value.trim().toUpperCase();
+        return List.of("LOW", "MEDIUM", "HIGH").contains(normalized) ? normalized : DEFAULT_PASSWORD_COMPLEXITY;
     }
 
     private void validateSignatureEvidence(PersonalSignatureRequest request) {
@@ -329,6 +531,312 @@ public class AuthController {
             throw new BusinessException(ErrorCode.GENERAL_001, message);
         }
         return fileObject;
+    }
+
+    private FileObject storeSignatureAuthorizationNotice(
+            UserAccount user,
+            Long signatureId,
+            String signatureKey,
+            LocalDateTime certifiedAt,
+            LocalDateTime expiresAt,
+            String meaning,
+            String snapshotHash,
+            Long certifiedAtEpoch,
+            Long expiresAtEpoch,
+            List<SignatureStatementRequest> statements,
+            FileObject signatureImage,
+            FileObject idCardFront,
+            FileObject idCardBack) {
+        try {
+            byte[] pdfBytes = buildAuthorizationNoticePdf(
+                    user,
+                    signatureId,
+                    signatureKey,
+                    certifiedAt,
+                    expiresAt,
+                    meaning,
+                    snapshotHash,
+                    certifiedAtEpoch,
+                    expiresAtEpoch,
+                    statements,
+                    signatureImage,
+                    idCardFront,
+                    idCardBack);
+            Long fileId = idGenerator.nextId();
+            Path storageDir = resolveStoragePath();
+            Files.createDirectories(storageDir);
+            String originalName = "电子签名授权通知书-" + sanitizeFileName(user.getUsername()) + ".pdf";
+            Path targetPath = storageDir.resolve(fileId + "_" + originalName);
+            Files.copy(new ByteArrayInputStream(pdfBytes), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            FileObject fileObject = FileObject.builder()
+                    .id(fileId)
+                    .tenantId(TENANT_ID)
+                    .originalName(originalName)
+                    .storedPath(targetPath.toString())
+                    .mimeType("application/pdf")
+                    .fileSize((long) pdfBytes.length)
+                    .md5Hash(computeMd5(new ByteArrayInputStream(pdfBytes)))
+                    .targetType(SIGNATURE_NOTICE_TARGET_TYPE)
+                    .targetId(String.valueOf(user.getId()))
+                    .uploadedBy(String.valueOf(user.getId()))
+                    .createdAt(certifiedAt)
+                    .build();
+            fileObjectRepository.save(fileObject);
+            return fileObject;
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.GENERAL_002, "电子签名授权通知书生成失败: " + e.getMessage());
+        }
+    }
+
+    private byte[] buildAuthorizationNoticePdf(
+            UserAccount user,
+            Long signatureId,
+            String signatureKey,
+            LocalDateTime certifiedAt,
+            LocalDateTime expiresAt,
+            String meaning,
+            String snapshotHash,
+            Long certifiedAtEpoch,
+            Long expiresAtEpoch,
+            List<SignatureStatementRequest> statements,
+            FileObject signatureImage,
+            FileObject idCardFront,
+            FileObject idCardBack) throws IOException {
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+            PDType0Font font = loadAuthorizationNoticeFont(document);
+            ByteArrayOutputStream pdf = new ByteArrayOutputStream();
+            try (PDPageContentStream content = new PDPageContentStream(document, page)) {
+                drawAuthorizationNotice(content, document, font, user, certifiedAt, expiresAt, snapshotHash,
+                        certifiedAtEpoch, expiresAtEpoch, statements, signatureImage, idCardFront, idCardBack);
+            }
+            document.save(pdf);
+            return pdf.toByteArray();
+        }
+    }
+
+    private void drawAuthorizationNotice(
+            PDPageContentStream content,
+            PDDocument document,
+            PDType0Font font,
+            UserAccount user,
+            LocalDateTime certifiedAt,
+            LocalDateTime expiresAt,
+            String snapshotHash,
+            Long certifiedAtEpoch,
+            Long expiresAtEpoch,
+            List<SignatureStatementRequest> statements,
+            FileObject signatureImage,
+            FileObject idCardFront,
+            FileObject idCardBack) throws IOException {
+        float pageTop = PDRectangle.A4.getHeight() - 40F;
+        drawCenteredText(content, font, 23F, Color.decode("#164863"), pageTop, "授权通知书");
+        float tableTop = pageTop - 38F;
+        float x = PDF_MARGIN;
+        float y = tableTop;
+        float col = PDF_TABLE_WIDTH / 4F;
+        float half = PDF_TABLE_WIDTH / 2F;
+
+        y = drawTableCells(content, font, y, 38F, List.of(
+                new PdfCell(x, col, "授权人姓名", true, true),
+                new PdfCell(x + col, col, pdfValue(user.getDisplayName()), false, true),
+                new PdfCell(x + col * 2F, col, "授权人系统账号", true, true),
+                new PdfCell(x + col * 3F, col, pdfValue(user.getUsername()), false, true)
+        ));
+        y = drawTableCells(content, font, y, 38F, List.of(
+                new PdfCell(x, col, "授权认证时间", true, true),
+                new PdfCell(x + col, col, formatSignatureTime(certifiedAt), false, true),
+                new PdfCell(x + col * 2F, col, "授权截止时间", true, true),
+                new PdfCell(x + col * 3F, col, formatSignatureTime(expiresAt), false, true)
+        ));
+
+        float noticeHeight = 178F;
+        drawCell(content, font, x, y - noticeHeight, PDF_LABEL_COLUMN_WIDTH, noticeHeight, "授权告知", true, true);
+        drawCellBorder(content, x + PDF_LABEL_COLUMN_WIDTH, y - noticeHeight, PDF_TABLE_WIDTH - PDF_LABEL_COLUMN_WIDTH, noticeHeight);
+        List<String> noticeLines = new ArrayList<>();
+        int index = 1;
+        for (SignatureStatementRequest statement : confirmedStatements(statements)) {
+            String text = pdfValue(statement.getText());
+            noticeLines.addAll(wrapPdfText(font, 10.5F, "已勾选 " + index++ + "、" + text, PDF_TABLE_WIDTH - PDF_LABEL_COLUMN_WIDTH - 18F));
+            noticeLines.add("");
+        }
+        drawTextLines(content, font, 10.5F, x + PDF_LABEL_COLUMN_WIDTH + 10F, y - 17F, noticeLines, 15F, false);
+        y -= noticeHeight;
+
+        y = drawTableCells(content, font, y, 34F, List.of(
+                new PdfCell(x, half, "授权人身份证正面", true, true),
+                new PdfCell(x + half, half, "授权人身份证反面", true, true)
+        ));
+        float imageRowHeight = 154F;
+        drawCellBorder(content, x, y - imageRowHeight, half, imageRowHeight);
+        drawCellBorder(content, x + half, y - imageRowHeight, half, imageRowHeight);
+        drawPdfImageInBox(content, document, idCardFront, x + 8F, y - imageRowHeight + 10F, half - 16F, imageRowHeight - 20F);
+        drawPdfImageInBox(content, document, idCardBack, x + half + 8F, y - imageRowHeight + 10F, half - 16F, imageRowHeight - 20F);
+        y -= imageRowHeight;
+
+        float signatureRowHeight = 82F;
+        drawCell(content, font, x, y - signatureRowHeight, PDF_LABEL_COLUMN_WIDTH, signatureRowHeight, "授权人签字", true, true);
+        drawCellBorder(content, x + PDF_LABEL_COLUMN_WIDTH, y - signatureRowHeight, PDF_TABLE_WIDTH - PDF_LABEL_COLUMN_WIDTH, signatureRowHeight);
+        drawPdfImageInBox(content, document, signatureImage, x + PDF_LABEL_COLUMN_WIDTH + 10F, y - signatureRowHeight + 10F, 220F, signatureRowHeight - 20F);
+        y -= signatureRowHeight;
+
+        y = drawMetadataRow(content, font, x, y, "授权认证时间戳", String.valueOf(certifiedAtEpoch));
+        y = drawMetadataRow(content, font, x, y, "授权截止时间戳", String.valueOf(expiresAtEpoch));
+        drawMetadataRow(content, font, x, y, "快照指纹", snapshotHash);
+    }
+
+    private float drawMetadataRow(PDPageContentStream content, PDType0Font font, float x, float y, String label, String value) throws IOException {
+        float rowHeight = 30F;
+        drawCell(content, font, x, y - rowHeight, PDF_LABEL_COLUMN_WIDTH, rowHeight, label, true, true);
+        drawCell(content, font, x + PDF_LABEL_COLUMN_WIDTH, y - rowHeight, PDF_TABLE_WIDTH - PDF_LABEL_COLUMN_WIDTH, rowHeight, pdfValue(value), false, false);
+        return y - rowHeight;
+    }
+
+    private String generateSignatureKey() {
+        byte[] randomBytes = new byte[12];
+        SIGNATURE_KEY_RANDOM.nextBytes(randomBytes);
+        return "ESIGN-" + HexFormat.of().formatHex(randomBytes).toUpperCase(Locale.ROOT);
+    }
+
+    private Long toEpochMillis(LocalDateTime time) {
+        return time == null ? null : time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
+    private String formatSignatureTime(LocalDateTime time) {
+        return time == null ? null : time.format(SIGNATURE_TIME_FORMATTER);
+    }
+
+    private PDType0Font loadAuthorizationNoticeFont(PDDocument document) throws IOException {
+        for (String fontPath : PDF_FONT_CANDIDATES) {
+            Path path = Path.of(fontPath);
+            if (Files.exists(path)) {
+                return PDType0Font.load(document, path.toFile());
+            }
+        }
+        throw new IOException("缺少授权通知书 PDF 中文字体");
+    }
+
+    private void drawCenteredText(PDPageContentStream content, PDType0Font font, float fontSize, Color color, float y, String text) throws IOException {
+        float textWidth = font.getStringWidth(pdfValue(text)) / 1000F * fontSize;
+        writePdfText(content, font, fontSize, color, (PDRectangle.A4.getWidth() - textWidth) / 2F, y, text);
+    }
+
+    private float drawTableCells(PDPageContentStream content, PDType0Font font, float y, float rowHeight, List<PdfCell> cells) throws IOException {
+        for (PdfCell cell : cells) {
+            drawCell(content, font, cell.x(), y - rowHeight, cell.width(), rowHeight, cell.text(), cell.bold(), cell.center());
+        }
+        return y - rowHeight;
+    }
+
+    private void drawCell(PDPageContentStream content, PDType0Font font, float x, float bottomY, float width, float height, String text, boolean bold, boolean center) throws IOException {
+        drawCellBorder(content, x, bottomY, width, height);
+        float fontSize = bold ? 12F : 11F;
+        String value = pdfValue(text);
+        if (center) {
+            float textWidth = font.getStringWidth(value) / 1000F * fontSize;
+            float textX = x + Math.max(4F, (width - textWidth) / 2F);
+            float textY = bottomY + (height - fontSize) / 2F + 1.5F;
+            writePdfText(content, font, fontSize, Color.BLACK, textX, textY, value);
+            return;
+        }
+        List<String> lines = wrapPdfText(font, fontSize, value, width - 12F);
+        float startY = bottomY + height - 18F;
+        drawTextLines(content, font, fontSize, x + 6F, startY, lines, 14F, false);
+    }
+
+    private void drawCellBorder(PDPageContentStream content, float x, float bottomY, float width, float height) throws IOException {
+        content.setStrokingColor(Color.BLACK);
+        content.setLineWidth(0.7F);
+        content.addRect(x, bottomY, width, height);
+        content.stroke();
+    }
+
+    private void drawTextLines(
+            PDPageContentStream content,
+            PDType0Font font,
+            float fontSize,
+            float x,
+            float startY,
+            List<String> lines,
+            float lineHeight,
+            boolean bold) throws IOException {
+        float y = startY;
+        for (String line : lines) {
+            if (!StringUtils.hasText(line)) {
+                y -= lineHeight;
+                continue;
+            }
+            writePdfText(content, font, fontSize, Color.BLACK, x, y, line);
+            y -= lineHeight;
+        }
+    }
+
+    private void writePdfText(PDPageContentStream content, PDType0Font font, float fontSize, Color color, float x, float y, String text) throws IOException {
+        content.setNonStrokingColor(color);
+        content.beginText();
+        content.setFont(font, fontSize);
+        content.newLineAtOffset(x, y);
+        content.showText(pdfValue(text));
+        content.endText();
+    }
+
+    private List<String> wrapPdfText(PDType0Font font, float fontSize, String text, float maxWidth) throws IOException {
+        String value = pdfValue(text);
+        List<String> lines = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        for (int offset = 0; offset < value.length(); ) {
+            int codePoint = value.codePointAt(offset);
+            String ch = new String(Character.toChars(codePoint));
+            String candidate = current + ch;
+            if (!current.isEmpty() && font.getStringWidth(candidate) / 1000F * fontSize > maxWidth) {
+                lines.add(current.toString());
+                current = new StringBuilder(ch);
+            } else {
+                current.append(ch);
+            }
+            offset += Character.charCount(codePoint);
+        }
+        if (!current.isEmpty()) lines.add(current.toString());
+        return lines.isEmpty() ? List.of("-") : lines;
+    }
+
+    private void drawPdfImageInBox(
+            PDPageContentStream content,
+            PDDocument document,
+            FileObject fileObject,
+            float x,
+            float bottomY,
+            float boxWidth,
+            float boxHeight) throws IOException {
+        if (fileObject == null || !StringUtils.hasText(fileObject.getStoredPath())) {
+            return;
+        }
+        Path imagePath = Path.of(fileObject.getStoredPath());
+        if (!Files.exists(imagePath)) {
+            return;
+        }
+        PDImageXObject image = PDImageXObject.createFromFileByContent(imagePath.toFile(), document);
+        float scale = Math.min(boxWidth / image.getWidth(), boxHeight / image.getHeight());
+        float width = image.getWidth() * scale;
+        float height = image.getHeight() * scale;
+        float drawX = x + (boxWidth - width) / 2F;
+        float drawY = bottomY + (boxHeight - height) / 2F;
+        content.drawImage(image, drawX, drawY, width, height);
+    }
+
+    private List<SignatureStatementRequest> confirmedStatements(List<SignatureStatementRequest> statements) {
+        if (statements == null) return List.of();
+        return statements.stream()
+                .filter(statement -> statement != null && Boolean.TRUE.equals(statement.getConfirmed()))
+                .toList();
+    }
+
+    private String pdfValue(String value) {
+        return StringUtils.hasText(value) ? value : "-";
+    }
+
+    private record PdfCell(float x, float width, String text, boolean bold, boolean center) {
     }
 
     private UserPermissionSnapshot resolveUserPermissionSnapshot(Long userId) {
@@ -451,7 +959,7 @@ public class AuthController {
             throw new BusinessException(ErrorCode.FILE_003, "不支持的头像文件类型: " + contentType);
         }
         Long fileId = idGenerator.nextId();
-        Path storageDir = Path.of(storagePath);
+        Path storageDir = resolveStoragePath();
         Files.createDirectories(storageDir);
         Path targetPath = storageDir.resolve(fileId + "_" + sanitizeFileName(file.getOriginalFilename()));
         Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
@@ -490,6 +998,7 @@ public class AuthController {
         snapshot.put("biography", user.getBiography());
         snapshot.put("avatarFileId", idToString(user.getAvatarFileId()));
         snapshot.put("birthday", user.getBirthday() == null ? null : user.getBirthday().toString());
+        putDepartmentSnapshot(snapshot, user.getId());
         snapshot.put("meaning", meaning);
         snapshot.put("signatureImage", fileSnapshot(signatureImage));
         snapshot.put("idCardFront", fileSnapshot(idCardFront));
@@ -549,6 +1058,7 @@ public class AuthController {
         snapshot.put("gender", user.getGender());
         snapshot.put("biography", user.getBiography());
         snapshot.put("birthday", user.getBirthday() == null ? null : user.getBirthday().toString());
+        putDepartmentSnapshot(snapshot, user.getId());
         return snapshot;
     }
 
@@ -567,6 +1077,8 @@ public class AuthController {
             }
         });
         if (contentBefore.isEmpty()) return;
+        putProfileAuditContext(contentBefore, beforeSnapshot);
+        putProfileAuditContext(contentAfter, afterSnapshot);
         auditEventRepository.save(AuditEvent.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
@@ -587,6 +1099,12 @@ public class AuthController {
                 .ipAddress(StringUtils.hasText(AuditContext.getIpAddress()) ? AuditContext.getIpAddress() : getClientIp(request))
                 .createdAt(LocalDateTime.now())
                 .build());
+    }
+
+    private void putProfileAuditContext(Map<String, Object> target, Map<String, Object> snapshot) {
+        List.of("departmentIds", "primaryDepartmentId", "organizationName").forEach(field -> {
+            if (snapshot.containsKey(field)) target.putIfAbsent(field, snapshot.get(field));
+        });
     }
 
     private void writePasswordChangeAudit(UserAccount user, HttpServletRequest request) {
@@ -620,6 +1138,13 @@ public class AuthController {
     private String normalizeNullableText(String value) {
         if (!StringUtils.hasText(value)) return null;
         return value.trim();
+    }
+
+    private Path resolveStoragePath() {
+        String path = StringUtils.hasText(storagePath)
+                ? storagePath
+                : System.getProperty("java.io.tmpdir") + "/edhr-files";
+        return Path.of(path);
     }
 
     private String previewUrl(Long fileId) {
@@ -728,7 +1253,8 @@ public class AuthController {
 
     @Data
     public static class PersonalSignatureRequest {
-        private String password;
+        private String signaturePassword;
+        private String loginPassword;
         private String meaning;
         private String signatureImageFileId;
         private String idCardFrontFileId;
@@ -747,5 +1273,33 @@ public class AuthController {
     }
 
     private record ClientInfo(String platform, String clientType, String browser, String userAgent) {
+    }
+
+    private record SecurityPolicy(
+            boolean forcePasswordChangeOnFirstLogin,
+            boolean passwordChangeCycleEnabled,
+            int passwordChangeCycleDays,
+            String passwordComplexity,
+            int passwordFailureLockThreshold,
+            int passwordFailureLockMinutes,
+            int idleLogoutMinutes,
+            int tokenValidityMinutes,
+            boolean forceSignatureOnFirstLogin,
+            boolean signatureChangeCycleEnabled,
+            int signatureChangeCycleDays) {
+        private static SecurityPolicy defaults() {
+            return new SecurityPolicy(
+                    true,
+                    false,
+                    DEFAULT_PASSWORD_CHANGE_CYCLE_DAYS,
+                    DEFAULT_PASSWORD_COMPLEXITY,
+                    DEFAULT_PASSWORD_FAILURE_LOCK_THRESHOLD,
+                    DEFAULT_PASSWORD_FAILURE_LOCK_MINUTES,
+                    DEFAULT_IDLE_LOGOUT_MINUTES,
+                    DEFAULT_TOKEN_VALIDITY_MINUTES,
+                    false,
+                    true,
+                    DEFAULT_SIGNATURE_CHANGE_CYCLE_DAYS);
+        }
     }
 }

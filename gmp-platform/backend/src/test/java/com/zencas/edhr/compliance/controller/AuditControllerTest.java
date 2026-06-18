@@ -58,6 +58,8 @@ class AuditControllerTest {
                 .entityType("USER_ACCOUNT")
                 .entityId("339707003864260608")
                 .action("UPDATE")
+                .contentBefore("{\"organizationName\":\"公司/质量部\"}")
+                .contentAfter("{\"organizationName\":\"公司/生产部\"}")
                 .operatorId("99")
                 .operatorName("admin")
                 .operatorAccount("admin")
@@ -67,6 +69,7 @@ class AuditControllerTest {
                 .dataSummary("账号 admin")
                 .source("UI")
                 .build();
+        event.sealSnapshotHash();
         when(auditEventRepository.search(
                 "USER_ACCOUNT",
                 "339707003864260608",
@@ -120,6 +123,8 @@ class AuditControllerTest {
         assertThat(item.getMenuName()).isEqualTo("安全管理 · 审计日志");
         assertThat(item.getFunctionName()).isEqualTo("查看审计日志");
         assertThat(item.getDataSummary()).isEqualTo("账号 admin");
+        assertThat(item.getContentAfter()).contains("公司/生产部");
+        assertThat(item.getSnapshotHash()).isEqualTo(event.getSnapshotHash());
         assertThat(response.getData().getTotalElements()).isEqualTo(1);
     }
 
@@ -329,6 +334,90 @@ class AuditControllerTest {
         assertThat(response.getData().getContent())
                 .extracting(AuditLogItem::getActionLabel)
                 .containsExactly("排序调整", "批量删除", "上传系统 Logo", "上传网站图标", "删除系统 Logo", "删除网站图标");
+    }
+
+    @Test
+    void listMyProfileAuditLogsOnlyReturnsCurrentUserTargetRows() {
+        PageRequest queryAll = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        AuditEvent selfChange = AuditEvent.builder()
+                .id(61L)
+                .entityType("USER_ACCOUNT")
+                .entityId("1001")
+                .action("UPDATE")
+                .operatorId("1001")
+                .operatorName("张三")
+                .operatorAccount("zhangsan")
+                .menuName("个人设置")
+                .functionName("编辑个人设置")
+                .dataSummary("账号 zhangsan 更新个人设置")
+                .source("UI")
+                .build();
+        AuditEvent adminChange = AuditEvent.builder()
+                .id(62L)
+                .entityType("USER_ACCOUNT")
+                .entityId("1001")
+                .action("UPDATE")
+                .operatorId("1")
+                .operatorName("管理员")
+                .operatorAccount("admin")
+                .menuName("用户管理")
+                .functionName("编辑用户")
+                .dataSummary("管理员编辑账号 zhangsan")
+                .source("UI")
+                .build();
+        when(userAccountRepository.findById(1001L)).thenReturn(Optional.of(UserAccount.builder()
+                .id(1001L)
+                .username("zhangsan")
+                .displayName("张三")
+                .passwordHash("hash")
+                .build()));
+        when(auditEventRepository.search(
+                "USER_ACCOUNT",
+                "1001",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                queryAll))
+                .thenReturn(new PageImpl<>(List.of(selfChange, adminChange), queryAll, 2));
+        when(userAccountRepository.findByUsername("zhangsan")).thenReturn(Optional.of(UserAccount.builder()
+                .id(1001L)
+                .username("zhangsan")
+                .displayName("张三")
+                .passwordHash("hash")
+                .build()));
+        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.of(UserAccount.builder()
+                .id(1L)
+                .username("admin")
+                .displayName("管理员")
+                .passwordHash("hash")
+                .build()));
+
+        ApiResponse<PageResult<AuditLogItem>> response = controller.listMyProfileLogs(
+                "1001",
+                1,
+                20,
+                "createdAt",
+                "desc");
+
+        verify(auditEventRepository).search(
+                "USER_ACCOUNT",
+                "1001",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                queryAll);
+        assertThat(response.getData().getContent())
+                .extracting(AuditLogItem::getId)
+                .containsExactly(61L, 62L);
+        assertThat(response.getData().getContent())
+                .extracting(AuditLogItem::getOperatorAccount)
+                .containsExactly("zhangsan", "admin");
     }
 
     private AuditEvent auditEvent(Long id, String action) {

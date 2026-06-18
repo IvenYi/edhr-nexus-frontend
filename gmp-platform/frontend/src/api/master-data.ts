@@ -27,12 +27,17 @@ export interface ProcessModelingBaseRecord {
 export interface MaterialRecord extends ProcessModelingBaseRecord {
   specification?: string;
   version?: string;
+  materialPurpose?: string;
+  effectiveDate?: string;
+  expiryDate?: string;
   materialTypeId?: string | number | null;
   materialTypeName?: string | null;
   unit?: string;
 }
 
 export interface MaterialGroupRecord extends MaterialRecord {
+  versionCount?: number;
+  effectiveVersionCount?: number;
   versions: MaterialRecord[];
 }
 
@@ -95,6 +100,9 @@ export interface ProcessModelingPayload {
   materialTypeName?: string | null;
   productFamilyId?: string | number | null;
   version?: string;
+  materialPurpose?: string;
+  effectiveDate?: string | null;
+  expiryDate?: string | null;
   fileReference?: string;
   defaultDurationMinutes?: number | null;
   sortOrder?: number | null;

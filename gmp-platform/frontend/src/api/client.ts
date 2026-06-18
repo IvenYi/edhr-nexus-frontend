@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { ApiResponse } from '@/types/common';
+import { clearAuthStorage } from '@/utils/sessionPolicy';
 
 declare module 'axios' {
   export interface AxiosRequestConfig {
@@ -38,8 +39,7 @@ client.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      clearAuthStorage();
       window.location.href = '/login';
     }
     return Promise.reject(error);

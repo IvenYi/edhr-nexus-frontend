@@ -36,6 +36,8 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
@@ -79,7 +81,7 @@ public class FileController {
      * Upload a file and register it in the database.
      */
     @PostMapping("/upload")
-    public ApiResponse<FileObject> upload(
+    public ApiResponse<Map<String, Object>> upload(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "targetType", required = false) String targetType,
             @RequestParam(value = "targetId", required = false) String targetId) throws IOException {
@@ -126,7 +128,16 @@ public class FileController {
 
         log.info("File uploaded: id={}, originalName={}, size={}", fileId,
                 file.getOriginalFilename(), file.getSize());
-        return ApiResponse.success(fileObject);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("id", String.valueOf(fileObject.getId()));
+        response.put("fileId", String.valueOf(fileObject.getId()));
+        response.put("originalName", fileObject.getOriginalName());
+        response.put("targetType", fileObject.getTargetType());
+        response.put("targetId", fileObject.getTargetId());
+        response.put("mimeType", fileObject.getMimeType());
+        response.put("fileSize", fileObject.getFileSize());
+        response.put("previewUrl", "/api/v1/files/" + fileObject.getId() + "/public-preview");
+        return ApiResponse.success(response);
     }
 
     // ======================== Download ========================
