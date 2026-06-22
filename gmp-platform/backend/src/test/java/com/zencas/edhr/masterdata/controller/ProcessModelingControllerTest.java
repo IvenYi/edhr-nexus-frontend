@@ -116,6 +116,120 @@ class ProcessModelingControllerTest {
     }
 
     @Test
+    void updatesMaterialBaseFieldsWithoutResettingVersionDates() {
+        Material existing = Material.builder()
+                .id(13L)
+                .tenantId("default")
+                .code("RM-BASE-001")
+                .name("旧物料")
+                .specification("A1")
+                .materialTypeId(3L)
+                .unit("pcs")
+                .version("V2.0")
+                .materialPurpose("生产物料")
+                .effectiveDate(LocalDateTime.of(2026, 6, 18, 10, 0))
+                .expiryDate(LocalDateTime.of(2026, 6, 30, 18, 0))
+                .description("旧版本说明")
+                .status("ACTIVE")
+                .createdBy("张三")
+                .createdAt(LocalDateTime.of(2026, 6, 1, 9, 0))
+                .updatedBy("张三")
+                .updatedAt(LocalDateTime.of(2026, 6, 1, 9, 0))
+                .build();
+        when(materialRepository.findById(13L)).thenReturn(Optional.of(existing));
+        when(materialRepository.save(existing)).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = controller.updateMaterial(13L, ProcessModelingRequest.builder()
+                .name("新物料")
+                .code("RM-BASE-001")
+                .specification("A2")
+                .unit("kg")
+                .materialPurpose("试验物料")
+                .build());
+
+        assertThat(response.getData().getName()).isEqualTo("新物料");
+        assertThat(response.getData().getSpecification()).isEqualTo("A2");
+        assertThat(response.getData().getUnit()).isEqualTo("kg");
+        assertThat(response.getData().getMaterialPurpose()).isEqualTo("试验物料");
+        assertThat(response.getData().getVersion()).isEqualTo("V2.0");
+        assertThat(response.getData().getEffectiveDate()).isEqualTo(LocalDateTime.of(2026, 6, 18, 10, 0));
+        assertThat(response.getData().getExpiryDate()).isEqualTo(LocalDateTime.of(2026, 6, 30, 18, 0));
+        assertThat(response.getData().getDescription()).isEqualTo("旧版本说明");
+    }
+
+    @Test
+    void updatesMaterialBaseFieldsAcrossAllVersionsInSameMaterialGroup() {
+        AuditContext.setOperator("99", "系统管理员", "admin");
+        Material v1 = Material.builder()
+                .id(131L)
+                .tenantId("default")
+                .code("RM-GROUP-001")
+                .name("旧物料")
+                .specification("A1")
+                .materialTypeId(3L)
+                .unit("pcs")
+                .version("V1.0")
+                .materialPurpose("生产物料")
+                .effectiveDate(LocalDateTime.of(2026, 6, 1, 0, 0))
+                .expiryDate(LocalDateTime.of(2026, 6, 10, 0, 0))
+                .description("V1说明")
+                .createdBy("张三")
+                .createdAt(LocalDateTime.of(2026, 6, 1, 9, 0))
+                .updatedBy("张三")
+                .updatedAt(LocalDateTime.of(2026, 6, 1, 9, 0))
+                .build();
+        Material v2 = Material.builder()
+                .id(132L)
+                .tenantId("default")
+                .code("RM-GROUP-001")
+                .name("旧物料")
+                .specification("A1")
+                .materialTypeId(3L)
+                .unit("pcs")
+                .version("V2.0")
+                .materialPurpose("生产物料")
+                .effectiveDate(LocalDateTime.of(2026, 6, 11, 0, 0))
+                .description("V2说明")
+                .createdBy("张三")
+                .createdAt(LocalDateTime.of(2026, 6, 2, 9, 0))
+                .updatedBy("张三")
+                .updatedAt(LocalDateTime.of(2026, 6, 2, 9, 0))
+                .build();
+        when(materialRepository.findById(132L)).thenReturn(Optional.of(v2));
+        when(materialRepository.findByTenantIdAndCodeIgnoreCase("default", "RM-GROUP-002"))
+                .thenReturn(List.of());
+        when(materialRepository.findByTenantIdAndCodeIgnoreCase("default", "RM-GROUP-001"))
+                .thenReturn(List.of(v1, v2));
+        when(materialRepository.save(any(Material.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = controller.updateMaterial(132L, ProcessModelingRequest.builder()
+                .name("新物料")
+                .code("RM-GROUP-002")
+                .specification("A2")
+                .materialTypeId(5L)
+                .unit("kg")
+                .materialPurpose("试验物料")
+                .build());
+
+        assertThat(response.getData().getId()).isEqualTo(132L);
+        assertThat(List.of(v1, v2)).allSatisfy(material -> {
+            assertThat(material.getName()).isEqualTo("新物料");
+            assertThat(material.getCode()).isEqualTo("RM-GROUP-002");
+            assertThat(material.getSpecification()).isEqualTo("A2");
+            assertThat(material.getMaterialTypeId()).isEqualTo(5L);
+            assertThat(material.getUnit()).isEqualTo("kg");
+            assertThat(material.getMaterialPurpose()).isEqualTo("试验物料");
+        });
+        assertThat(v1.getVersion()).isEqualTo("V1.0");
+        assertThat(v1.getEffectiveDate()).isEqualTo(LocalDateTime.of(2026, 6, 1, 0, 0));
+        assertThat(v1.getExpiryDate()).isEqualTo(LocalDateTime.of(2026, 6, 10, 0, 0));
+        assertThat(v1.getDescription()).isEqualTo("V1说明");
+        assertThat(v2.getVersion()).isEqualTo("V2.0");
+        assertThat(v2.getEffectiveDate()).isEqualTo(LocalDateTime.of(2026, 6, 11, 0, 0));
+        assertThat(v2.getDescription()).isEqualTo("V2说明");
+    }
+
+    @Test
     void listsMaterialsWithSplitNameCodeAndTypeFilters() {
         MaterialType raw = MaterialType.builder()
                 .id(61L)
@@ -346,6 +460,113 @@ class ProcessModelingControllerTest {
     }
 
     @Test
+    void rejectsCreatingMaterialWithDuplicateCodeAndVersion() {
+        Material existing = Material.builder()
+                .id(92L)
+                .tenantId("default")
+                .code("RM-RESIN-001")
+                .name("医用级树脂")
+                .version("V1.0")
+                .build();
+        when(materialRepository.findByTenantIdAndCodeIgnoreCase("default", "RM-RESIN-001"))
+                .thenReturn(List.of(existing));
+
+        assertThatThrownBy(() -> controller.createMaterial(ProcessModelingRequest.builder()
+                .name("医用级树脂")
+                .code("RM-RESIN-001")
+                .version("V1.0")
+                .build()))
+                .hasMessageContaining("物料料号已存在");
+    }
+
+    @Test
+    void rejectsCreatingDifferentMaterialWithExistingCode() {
+        Material existing = Material.builder()
+                .id(96L)
+                .tenantId("default")
+                .code("RM-RESIN-001")
+                .name("医用级树脂")
+                .version("V1.0")
+                .build();
+        when(materialRepository.findByTenantIdAndCodeIgnoreCase("default", "RM-RESIN-001"))
+                .thenReturn(List.of(existing));
+
+        assertThatThrownBy(() -> controller.createMaterial(ProcessModelingRequest.builder()
+                .name("另一种物料")
+                .code("RM-RESIN-001")
+                .version("V2.0")
+                .build()))
+                .hasMessageContaining("物料料号已存在");
+    }
+
+    @Test
+    void allowsCreatingMaterialVersionWithExistingCodeAndNewVersion() {
+        Material existing = Material.builder()
+                .id(93L)
+                .tenantId("default")
+                .code("RM-RESIN-001")
+                .name("医用级树脂")
+                .version("V1.0")
+                .build();
+        when(materialRepository.findByTenantIdAndCodeIgnoreCase("default", "RM-RESIN-001"))
+                .thenReturn(List.of(existing));
+        when(idGenerator.nextId()).thenReturn(93001L, 93002L);
+        when(materialRepository.save(any(Material.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = controller.createMaterial(ProcessModelingRequest.builder()
+                .name("医用级树脂")
+                .code("RM-RESIN-001")
+                .version("V2.0")
+                .build());
+
+        assertThat(response.getData().getCode()).isEqualTo("RM-RESIN-001");
+        assertThat(response.getData().getVersion()).isEqualTo("V2.0");
+    }
+
+    @Test
+    void rejectsUpdatingMaterialCodeToExistingCode() {
+        Material existing = Material.builder()
+                .id(94L)
+                .tenantId("default")
+                .code("RM-OLD-001")
+                .name("旧物料")
+                .version("V1.0")
+                .build();
+        Material other = Material.builder()
+                .id(95L)
+                .tenantId("default")
+                .code("RM-RESIN-001")
+                .name("医用级树脂")
+                .version("V1.0")
+                .build();
+        when(materialRepository.findById(94L)).thenReturn(Optional.of(existing));
+        when(materialRepository.findByTenantIdAndCodeIgnoreCase("default", "RM-RESIN-001"))
+                .thenReturn(List.of(other));
+
+        assertThatThrownBy(() -> controller.updateMaterial(94L, ProcessModelingRequest.builder()
+                .name("旧物料")
+                .code("RM-RESIN-001")
+                .build()))
+                .hasMessageContaining("物料料号已存在");
+    }
+
+    @Test
+    void serializesMaterialVersionIdAsStringToAvoidFrontendPrecisionLoss() throws Exception {
+        Material material = Material.builder()
+                .id(343069305207431168L)
+                .tenantId("default")
+                .code("RM-PRECISION-001")
+                .name("高位ID物料")
+                .version("V1.0")
+                .build();
+
+        String json = objectMapper.writeValueAsString(material);
+
+        assertThat(objectMapper.readTree(json).get("id").isTextual()).isTrue();
+        assertThat(objectMapper.readTree(json).get("id").asText()).isEqualTo("343069305207431168");
+    }
+
+    @Test
     void updatesMaterialVersionWithoutChangingCodeUniquenessSemantics() throws Exception {
         AuditContext.setOperator("99", "系统管理员", "admin");
         Material existing = Material.builder()
@@ -432,10 +653,72 @@ class ProcessModelingControllerTest {
         assertThat(group.getVersion()).isEqualTo("V10.0");
         assertThat(group.getVersionCount()).isEqualTo(3);
         assertThat(group.getEffectiveVersionCount()).isEqualTo(1);
+        assertThat(group.getStatus()).isEqualTo("ACTIVE");
         assertThat(group.getMaterialPurpose()).isEqualTo("生产物料");
         assertThat(group.getEffectiveDate()).startsWith(String.valueOf(LocalDateTime.now().plusDays(1).getYear()));
         assertThat(group.getVersions()).extracting(Material::getVersion)
                 .containsExactly("V10.0", "V2.0", "V1.0");
+    }
+
+    @Test
+    void derivesMaterialStatusFromEffectiveAndExpiryDates() {
+        Material active = Material.builder()
+                .id(201L)
+                .tenantId("default")
+                .code("MAT-ACTIVE")
+                .name("当前生效物料")
+                .version("V1.0")
+                .effectiveDate(LocalDateTime.now().minusDays(1))
+                .expiryDate(LocalDateTime.now().plusDays(1))
+                .status("DRAFT")
+                .createdAt(LocalDateTime.of(2026, 6, 1, 9, 0))
+                .build();
+        Material pending = Material.builder()
+                .id(202L)
+                .tenantId("default")
+                .code("MAT-PENDING")
+                .name("未来生效物料")
+                .version("V1.0")
+                .effectiveDate(LocalDateTime.now().plusDays(1))
+                .status("ACTIVE")
+                .createdAt(LocalDateTime.of(2026, 6, 2, 9, 0))
+                .build();
+        Material expired = Material.builder()
+                .id(203L)
+                .tenantId("default")
+                .code("MAT-EXPIRED")
+                .name("已经失效物料")
+                .version("V1.0")
+                .expiryDate(LocalDateTime.now().minusDays(1))
+                .status("ACTIVE")
+                .createdAt(LocalDateTime.of(2026, 6, 3, 9, 0))
+                .build();
+        when(materialRepository.findAll()).thenReturn(List.of(active, pending, expired));
+
+        var response = controller.listMaterials(null, null, null, null, "ACTIVE", 1, 20, "createdAt", "desc");
+
+        assertThat(response.getData().getContent()).hasSize(1);
+        var group = response.getData().getContent().getFirst();
+        assertThat(group.getCode()).isEqualTo("MAT-ACTIVE");
+        assertThat(group.getStatus()).isEqualTo("ACTIVE");
+        assertThat(group.getVersions().getFirst().getStatus()).isEqualTo("ACTIVE");
+
+        var all = controller.listMaterials(null, null, null, null, null, 1, 20, "createdAt", "desc");
+        assertThat(all.getData().getContent()).extracting("status")
+                .containsExactly("DISABLED", "PENDING", "ACTIVE");
+    }
+
+    @Test
+    void rejectsMaterialExpiryEarlierThanEffectiveDate() {
+        ProcessModelingRequest request = ProcessModelingRequest.builder()
+                .name("错误日期物料")
+                .version("V1.0")
+                .effectiveDate(LocalDateTime.of(2026, 6, 18, 10, 0))
+                .expiryDate(LocalDateTime.of(2026, 6, 18, 9, 0))
+                .build();
+
+        assertThatThrownBy(() -> controller.createMaterial(request))
+                .hasMessageContaining("失效时间不能早于生效时间");
     }
 
     @Test

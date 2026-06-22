@@ -3,6 +3,7 @@ import {
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  type SyntheticEvent,
   useEffect,
   useMemo,
   useRef,
@@ -51,9 +52,12 @@ import {
   Edit,
   ExpandLess,
   ExpandMore,
+  PlaylistAdd,
   RestartAlt,
   Search,
   TuneRounded,
+  UnfoldLessRounded,
+  UnfoldMoreRounded,
   ViewColumnRounded,
 } from '@mui/icons-material';
 import StatusBadge from '@/components/StatusBadge';
@@ -120,6 +124,8 @@ type ProcessColumnId =
   | 'actions';
 
 type ConfigurableProcessColumnId = Exclude<ProcessColumnId, 'actions'>;
+type ColumnSettingsTarget = 'main' | 'materialVersion';
+type DeleteTargetScope = 'record' | 'material' | 'materialVersion';
 
 interface ProcessColumn {
   id: ProcessColumnId;
@@ -131,6 +137,11 @@ interface ProcessColumn {
 }
 
 type ProcessColumnLabelOverrides = Partial<Record<ConfigurableProcessColumnId, string>>;
+type MaterialDialogMode = 'createMaterial' | 'editMaterial' | 'createVersion' | 'editVersion';
+
+interface ProcessColumnSettingsConfig {
+  columns: ProcessColumn[];
+}
 
 interface ProcessColumnSettings {
   version: number;
@@ -191,10 +202,15 @@ interface MaterialGroupRow {
   groupKey: string;
   materialGroupDisplayName: string;
   code: string;
+  status: string;
   versionCount: number;
   effectiveVersionCount: number;
   latestVersion: MaterialRecord;
   versions: MaterialRecord[];
+}
+
+interface DrawerAuditTarget {
+  entityIds: Array<string | number>;
 }
 
 type ProcessTableRow = ProcessModelingRecord | MaterialGroupRow;
@@ -204,10 +220,14 @@ const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const TABLE_DATA_ROW_HEIGHT = 40;
 const PROCESS_MODELING_COLUMN_WIDTH_STORAGE_PREFIX = 'process-modeling-column-widths:';
 const PROCESS_MODELING_COLUMN_SETTINGS_STORAGE_PREFIX = 'process-modeling-column-settings:';
+const PROCESS_MODELING_MATERIAL_VERSION_COLUMN_WIDTH_STORAGE_PREFIX = 'process-modeling-material-version-column-widths:';
+const PROCESS_MODELING_MATERIAL_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX = 'process-modeling-material-version-column-settings:';
 const PROCESS_MODELING_COLUMN_SETTINGS_VERSION = 1;
 const PROCESS_FIELD_COLUMN_MIN_WIDTH = 80;
 const PROCESS_ACTION_COLUMN_WIDTH = 112;
 const QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
+const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose'];
+const MATERIAL_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'description'];
 const PROCESS_SYSTEM_COLUMNS: Record<'createdBy' | 'createdAt' | 'updatedBy' | 'updatedAt', ProcessColumn> = {
   createdBy: { id: 'createdBy', label: '创建人', defaultWidth: 140, minWidth: PROCESS_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   createdAt: { id: 'createdAt', label: '创建时间', defaultWidth: 160, minWidth: PROCESS_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -260,6 +280,7 @@ const appContentDrawerPaperSx = {
   top: 0,
   bottom: 0,
   height: '100vh',
+  transform: 'none !important',
 };
 
 const statusOptions = [
@@ -269,9 +290,25 @@ const statusOptions = [
   { value: 'DISABLED', label: '禁用' },
   { value: 'OBSOLETE', label: '作废' },
 ] as const;
+const materialRuntimeStatusOptions = [
+  { value: 'ALL', label: '全部' },
+  { value: 'ACTIVE', label: '启用' },
+  { value: 'PENDING', label: '待生效' },
+  { value: 'DISABLED', label: '禁用' },
+] as const;
 
 const STANDARD_MATERIAL_TYPE_OPTIONS = ['原材料', '半成品', '产成品', '辅材', '包材'].map((name) => ({ id: name, name }));
 const MATERIAL_PURPOSE_OPTIONS = ['试验物料', '生产物料'].map((name) => ({ id: name, name }));
+
+const MATERIAL_VERSION_COLUMNS: ProcessColumn[] = (['version', 'status', 'effectiveDate', 'expiryDate', 'description', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'actions'] as const).map((id) => ({
+  id,
+  label: id === 'version' ? '物料版本号' : id === 'status' ? '版本状态' : id === 'effectiveDate' ? '生效日期' : id === 'expiryDate' ? '失效日期' : id === 'description' ? '版本说明' : id === 'createdBy' ? '创建人' : id === 'createdAt' ? '创建时间' : id === 'updatedBy' ? '更新人' : id === 'updatedAt' ? '更新时间' : '操作',
+  defaultWidth: id === 'actions' ? PROCESS_ACTION_COLUMN_WIDTH : defaultWidthForColumn(id),
+  minWidth: id === 'actions' ? PROCESS_ACTION_COLUMN_WIDTH : PROCESS_FIELD_COLUMN_MIN_WIDTH,
+  resizable: id !== 'actions',
+  align: id === 'actions' ? 'center' : 'left',
+}));
+const materialVersionColumnSettingsConfig: ProcessColumnSettingsConfig = { columns: MATERIAL_VERSION_COLUMNS };
 
 const processColumnLabels: Record<ConfigurableProcessColumnId, string> = {
   name: '名称',
@@ -351,8 +388,7 @@ const PROCESS_MODELING_PAGE_CONFIGS: Record<ProcessModelingPageKey, ProcessModel
       { id: 'materialPurpose', label: '物料用途' },
       { id: 'effectiveDate', label: '生效日期' },
       { id: 'expiryDate', label: '失效日期' },
-      { id: 'description', label: '描述', multiline: true },
-      { id: 'status', label: '状态' },
+      { id: 'description', label: '版本说明', multiline: true },
     ],
   },
   operations: {
@@ -476,11 +512,43 @@ function compareMaterialVersionDesc(a: MaterialRecord, b: MaterialRecord) {
 }
 
 function isEffectiveMaterialVersion(row: MaterialRecord) {
-  if (row.status !== 'ACTIVE') return false;
   const now = Date.now();
   const effectiveDate = row.effectiveDate ? Date.parse(row.effectiveDate) : Number.NaN;
   const expiryDate = row.expiryDate ? Date.parse(row.expiryDate) : Number.NaN;
   return (Number.isNaN(effectiveDate) || effectiveDate <= now) && (Number.isNaN(expiryDate) || expiryDate > now);
+}
+
+function getMaterialVersionRuntimeStatus(row: MaterialRecord) {
+  const now = Date.now();
+  const effectiveDate = row.effectiveDate ? Date.parse(row.effectiveDate) : Number.NaN;
+  const expiryDate = row.expiryDate ? Date.parse(row.expiryDate) : Number.NaN;
+  if (!Number.isNaN(effectiveDate) && effectiveDate > now) return 'PENDING';
+  if (!Number.isNaN(expiryDate) && expiryDate <= now) return 'EXPIRED';
+  return 'ACTIVE';
+}
+
+function getMaterialGroupRuntimeStatus(versions: MaterialRecord[]) {
+  const statuses = versions.map(getMaterialVersionRuntimeStatus);
+  if (statuses.includes('ACTIVE')) return 'ACTIVE';
+  if (statuses.every((status) => status === 'EXPIRED')) return 'DISABLED';
+  if (statuses.includes('PENDING')) return 'PENDING';
+  return 'DISABLED';
+}
+
+function isExpiryBeforeEffective(effectiveDate?: string | null, expiryDate?: string | null) {
+  if (!effectiveDate || !expiryDate) return false;
+  const effectiveTime = Date.parse(effectiveDate);
+  const expiryTime = Date.parse(expiryDate);
+  return !Number.isNaN(effectiveTime) && !Number.isNaN(expiryTime) && expiryTime < effectiveTime;
+}
+
+function pickMaterialPayload(input: ProcessModelingPayload, fieldIds: Array<keyof ProcessModelingPayload>) {
+  return fieldIds.reduce<ProcessModelingPayload>((payload, fieldId) => {
+    if (fieldId in input) {
+      return { ...payload, [fieldId]: input[fieldId] };
+    }
+    return payload;
+  }, {} as ProcessModelingPayload);
 }
 
 function getMaterialGroupRows(rows: ProcessModelingRecord[]): MaterialGroupRow[] {
@@ -499,6 +567,7 @@ function getMaterialGroupRows(rows: ProcessModelingRecord[]): MaterialGroupRow[]
       groupKey,
       materialGroupDisplayName,
       code: latestVersion.code,
+      status: getMaterialGroupRuntimeStatus(sortedVersions),
       versionCount,
       effectiveVersionCount,
       latestVersion,
@@ -511,10 +580,18 @@ function getRecordId(row: ProcessModelingRecord) {
   return String(row.id);
 }
 
+function getAuditEntityIds(entityIds: Array<string | number>) {
+  return Array.from(new Set(entityIds
+    .map((entityId) => String(entityId ?? '').trim())
+    .filter((auditEntityId) => auditEntityId && !auditEntityId.startsWith('process-modeling-material-groups:'))));
+}
+
 function getStatusLabel(status?: string) {
   if (!status) return '-';
   return {
     ACTIVE: '启用',
+    PENDING: '待生效',
+    EXPIRED: '已失效',
     DRAFT: '草稿',
     DISABLED: '禁用',
     OBSOLETE: '作废',
@@ -523,8 +600,8 @@ function getStatusLabel(status?: string) {
 
 function getStatusColor(status?: string) {
   if (status === 'ACTIVE') return 'success';
-  if (status === 'DISABLED' || status === 'OBSOLETE') return 'error';
-  if (status === 'DRAFT') return 'warning';
+  if (status === 'DISABLED' || status === 'OBSOLETE' || status === 'EXPIRED') return 'error';
+  if (status === 'DRAFT' || status === 'PENDING') return 'warning';
   return 'default';
 }
 
@@ -542,6 +619,12 @@ function formatDateTimeInput(value?: string) {
   if (Number.isNaN(date.getTime())) return value.slice(0, 16);
   const pad = (input: number) => String(input).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function getTodayDateTimeInput() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return formatDateTimeInput(date.toISOString());
 }
 
 function getApiErrorMessage(error: unknown, fallback = '操作失败') {
@@ -571,7 +654,7 @@ function isReadOnlyPage(config: ProcessModelingPageConfig) {
   return Boolean(config.readOnly);
 }
 
-function normalizeColumnSettings(config: ProcessModelingPageConfig, raw?: Partial<ProcessColumnSettings> | null): ProcessColumnSettings {
+function normalizeColumnSettings(config: ProcessColumnSettingsConfig, raw?: Partial<ProcessColumnSettings> | null): ProcessColumnSettings {
   const defaults = config.columns.filter(isConfigurableColumn).map((column) => column.id);
   if (!raw || raw.version !== PROCESS_MODELING_COLUMN_SETTINGS_VERSION) {
     return { version: PROCESS_MODELING_COLUMN_SETTINGS_VERSION, order: defaults, hidden: [] };
@@ -585,7 +668,7 @@ function normalizeColumnSettings(config: ProcessModelingPageConfig, raw?: Partia
   return { version: PROCESS_MODELING_COLUMN_SETTINGS_VERSION, order, hidden: hidden.length >= order.length ? hidden.slice(1) : hidden };
 }
 
-function loadColumnSettings(storageKey: string, config: ProcessModelingPageConfig): ProcessColumnSettings {
+function loadColumnSettings(storageKey: string, config: ProcessColumnSettingsConfig): ProcessColumnSettings {
   if (typeof window === 'undefined') return normalizeColumnSettings(config);
   try {
     return normalizeColumnSettings(config, JSON.parse(localStorage.getItem(storageKey) || 'null'));
@@ -604,12 +687,12 @@ function loadColumnWidths(storageKey: string): ProcessColumnWidths {
   }
 }
 
-function getColumnSettingsItems(config: ProcessModelingPageConfig, settings: ProcessColumnSettings) {
+function getColumnSettingsItems(config: ProcessColumnSettingsConfig, settings: ProcessColumnSettings) {
   const byId = new Map(config.columns.filter(isConfigurableColumn).map((column) => [column.id, column]));
   return settings.order.map((id) => byId.get(id)).filter((column): column is ProcessColumn & { id: ConfigurableProcessColumnId } => Boolean(column));
 }
 
-function getVisibleColumns(config: ProcessModelingPageConfig, settings: ProcessColumnSettings): ProcessColumn[] {
+function getVisibleColumns(config: ProcessColumnSettingsConfig, settings: ProcessColumnSettings): ProcessColumn[] {
   const actionColumn = config.columns.find((column) => column.id === 'actions');
   const visibleDataColumns = getColumnSettingsItems(config, settings).filter((column) => !settings.hidden.includes(column.id));
   return [...visibleDataColumns, actionColumn].filter((column): column is ProcessColumn => Boolean(column));
@@ -719,9 +802,12 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [filters, setFilters] = useState<ProcessFilters>(emptyFilters);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRow, setEditingRow] = useState<ProcessModelingRecord | null>(null);
+  const [creatingMaterialVersionFrom, setCreatingMaterialVersionFrom] = useState<MaterialRecord | null>(null);
+  const [materialDialogMode, setMaterialDialogMode] = useState<MaterialDialogMode | null>(null);
   const [form, setForm] = useState<ProcessModelingPayload>(emptyForm);
-  const [deleteTarget, setDeleteTarget] = useState<ProcessModelingRecord | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ row: ProcessModelingRecord; scope: DeleteTargetScope } | null>(null);
   const [selectedRow, setSelectedRow] = useState<ProcessModelingRecord | null>(null);
+  const [drawerAuditTarget, setDrawerAuditTarget] = useState<DrawerAuditTarget | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerTab, setDrawerTab] = useState(0);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
@@ -730,16 +816,23 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const [tableScrollbarWidth, setTableScrollbarWidth] = useState(0);
   const columnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
+  const materialVersionColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_MATERIAL_VERSION_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
   const columnSettingsStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_COLUMN_SETTINGS_STORAGE_PREFIX, pageKey), [pageKey]);
+  const materialVersionColumnSettingsStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_MATERIAL_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX, pageKey), [pageKey]);
   const [columnWidths, setColumnWidths] = useState<ProcessColumnWidths>(() => loadColumnWidths(columnWidthStorageKey));
+  const [materialVersionColumnWidths, setMaterialVersionColumnWidths] = useState<ProcessColumnWidths>(() => loadColumnWidths(materialVersionColumnWidthStorageKey));
   const [columnSettings, setColumnSettings] = useState<ProcessColumnSettings>(() => loadColumnSettings(columnSettingsStorageKey, config));
+  const [materialVersionColumnSettings, setMaterialVersionColumnSettings] = useState<ProcessColumnSettings>(() => loadColumnSettings(materialVersionColumnSettingsStorageKey, materialVersionColumnSettingsConfig));
   const [columnSettingsAnchorEl, setColumnSettingsAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [columnSettingsTab, setColumnSettingsTab] = useState<ColumnSettingsTarget>('main');
   const [draggingColumnId, setDraggingColumnId] = useState<ConfigurableProcessColumnId | null>(null);
   const columnSettingDragSourceRef = useRef<ConfigurableProcessColumnId | null>(null);
   useEffect(() => {
     setColumnWidths(loadColumnWidths(columnWidthStorageKey));
+    setMaterialVersionColumnWidths(loadColumnWidths(materialVersionColumnWidthStorageKey));
     setColumnSettings(loadColumnSettings(columnSettingsStorageKey, config));
-  }, [columnSettingsStorageKey, columnWidthStorageKey, config]);
+    setMaterialVersionColumnSettings(loadColumnSettings(materialVersionColumnSettingsStorageKey, materialVersionColumnSettingsConfig));
+  }, [columnSettingsStorageKey, columnWidthStorageKey, materialVersionColumnSettingsStorageKey, materialVersionColumnWidthStorageKey, config]);
 
   const materialTypeNameMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -770,19 +863,23 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     },
   });
 
-  const { data: auditData } = useQuery({
-    queryKey: [config.auditQueryKey, selectedRow?.id],
-    enabled: Boolean(selectedRow?.id),
+  const selectedAuditEntityIds = useMemo(() => getAuditEntityIds(drawerAuditTarget?.entityIds ?? []), [drawerAuditTarget]);
+  const selectedAuditEntityKey = selectedAuditEntityIds.join(',');
+  const { data: auditData, isLoading: isAuditLoading, isError: isAuditError } = useQuery({
+    queryKey: [config.auditQueryKey, selectedAuditEntityKey],
+    enabled: selectedAuditEntityIds.length > 0,
     queryFn: async () => {
-      const res = await getAuditLogs({
-        page: 1,
-        size: 100,
-        sort: 'createdAt',
-        order: 'desc',
-        entityType: config.entityType,
-        entityId: selectedRow?.id,
-      });
-      return (res.data.data as PageResult<AuditLogItem>).content ?? [];
+      const responses = await Promise.all(selectedAuditEntityIds.map((entityId) => getAuditLogs({
+          page: 1,
+          size: 100,
+          sort: 'createdAt',
+          order: 'desc',
+          entityType: config.entityType,
+          entityId,
+        })));
+      return responses
+        .flatMap((res) => (res.data.data as PageResult<AuditLogItem>).content ?? [])
+        .sort((left, right) => Date.parse(right.createdAt ?? right.operationTime ?? '') - Date.parse(left.createdAt ?? left.operationTime ?? ''));
     },
   });
 
@@ -799,6 +896,16 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const visibleConfigurableColumnCount = columnSettings.order.length - columnSettings.hidden.length;
   const resolvedColumnWidths = useMemo(() => resolveColumnWidths(columnWidths, tableContainerWidth, visibleColumns), [columnWidths, tableContainerWidth, visibleColumns]);
   const totalTableWidth = visibleColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0);
+  const materialVersionColumns = MATERIAL_VERSION_COLUMNS;
+  const materialVersionColumnSettingsItems = useMemo(() => getColumnSettingsItems(materialVersionColumnSettingsConfig, materialVersionColumnSettings), [materialVersionColumnSettings]);
+  const visibleMaterialVersionColumns = useMemo(() => getVisibleColumns(materialVersionColumnSettingsConfig, materialVersionColumnSettings), [materialVersionColumnSettings]);
+  const visibleMaterialVersionConfigurableColumnCount = materialVersionColumnSettings.order.length - materialVersionColumnSettings.hidden.length;
+  const activeColumnSettings = columnSettingsTab === 'materialVersion' ? materialVersionColumnSettings : columnSettings;
+  const activeColumnSettingsItems = columnSettingsTab === 'materialVersion' ? materialVersionColumnSettingsItems : columnSettingsItems;
+  const activeVisibleConfigurableColumnCount = columnSettingsTab === 'materialVersion' ? visibleMaterialVersionConfigurableColumnCount : visibleConfigurableColumnCount;
+  const setActiveColumnSettings = columnSettingsTab === 'materialVersion' ? setMaterialVersionColumnSettings : setColumnSettings;
+  const resolvedMaterialVersionColumnWidths = useMemo(() => resolveColumnWidths(materialVersionColumnWidths, totalTableWidth, visibleMaterialVersionColumns), [materialVersionColumnWidths, totalTableWidth, visibleMaterialVersionColumns]);
+  const totalMaterialVersionTableWidth = visibleMaterialVersionColumns.reduce((sum, column) => sum + resolvedMaterialVersionColumnWidths[column.id], 0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -807,8 +914,22 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    localStorage.setItem(materialVersionColumnWidthStorageKey, JSON.stringify(materialVersionColumnWidths));
+  }, [materialVersionColumnWidthStorageKey, materialVersionColumnWidths]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
     localStorage.setItem(columnSettingsStorageKey, JSON.stringify(columnSettings));
   }, [columnSettingsStorageKey, columnSettings]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(materialVersionColumnSettingsStorageKey, JSON.stringify(materialVersionColumnSettings));
+  }, [materialVersionColumnSettingsStorageKey, materialVersionColumnSettings]);
+
+  useEffect(() => {
+    if (pageKey !== 'materials') setColumnSettingsTab('main');
+  }, [pageKey]);
 
   useEffect(() => {
     const container = tableContainerRef.current;
@@ -823,6 +944,17 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return () => observer.disconnect();
   }, []);
 
+  const showSnackbar = (message: string, severity: 'success' | 'error') => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const closeSnackbar = () => setSnackbar((current) => ({ ...current, open: false }));
+
+  const handleSnackbarClose = (_event?: SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') return;
+    closeSnackbar();
+  };
+
   const createMutation = useMutation({
     mutationFn: (body: ProcessModelingPayload) => {
       if (!config.create) throw new Error(`${config.title}不支持新增`);
@@ -832,9 +964,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       queryClient.invalidateQueries({ queryKey: [config.listQueryKey] });
       setDialogOpen(false);
       setForm(emptyForm);
-      setSnackbar({ open: true, message: '新增成功', severity: 'success' });
+      setCreatingMaterialVersionFrom(null);
+      setMaterialDialogMode(null);
+      showSnackbar(`${config.title}保存成功`, 'success');
     },
-    onError: (error) => setSnackbar({ open: true, message: getApiErrorMessage(error, '新增失败'), severity: 'error' }),
+    onError: (error) => showSnackbar(getApiErrorMessage(error, `${config.title}保存失败`), 'error'),
   });
 
   const updateMutation = useMutation({
@@ -847,10 +981,12 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
       setDialogOpen(false);
       setEditingRow(null);
+      setCreatingMaterialVersionFrom(null);
+      setMaterialDialogMode(null);
       setForm(emptyForm);
-      setSnackbar({ open: true, message: '保存成功', severity: 'success' });
+      showSnackbar(`${config.title}保存成功`, 'success');
     },
-    onError: (error) => setSnackbar({ open: true, message: getApiErrorMessage(error, '保存失败'), severity: 'error' }),
+    onError: (error) => showSnackbar(getApiErrorMessage(error, `${config.title}保存失败`), 'error'),
   });
 
   const deleteMutation = useMutation({
@@ -865,6 +1001,10 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     },
     onError: (error) => setSnackbar({ open: true, message: getApiErrorMessage(error, '删除失败'), severity: 'error' }),
   });
+
+  const openDeleteDialog = (row: ProcessModelingRecord, scope: DeleteTargetScope = pageKey === 'materials' ? 'materialVersion' : 'record') => {
+    setDeleteTarget({ row, scope });
+  };
 
   const resetFilters = () => {
     setFilters(emptyFilters);
@@ -909,7 +1049,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))}
         sx={fieldSx}
       >
-        {statusOptions.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
+        {materialRuntimeStatusOptions.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
       </TextField>
       <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: '1', md: '3' } }}>
         <Button size="small" sx={QUERY_BUTTON_SX} variant="outlined" startIcon={<RestartAlt />} onClick={resetFilters}>重置</Button>
@@ -927,22 +1067,56 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     });
   };
 
+  const expandAllMaterialGroups = () => {
+    setExpandedMaterialGroups(new Set(materialGroupRows.map((row) => row.groupKey)));
+  };
+
+  const collapseAllMaterialGroups = () => {
+    setExpandedMaterialGroups(new Set());
+  };
+
   const openCreateDialog = () => {
     if (isReadOnlyPage(config)) return;
     setEditingRow(null);
+    setCreatingMaterialVersionFrom(null);
+    setMaterialDialogMode(pageKey === 'materials' ? 'createMaterial' : null);
     setForm({
       ...emptyForm,
-      status: pageKey === 'routes' || pageKey === 'documents' ? 'DRAFT' : 'ACTIVE',
+      status: pageKey === 'materials' ? undefined : pageKey === 'routes' || pageKey === 'documents' ? 'DRAFT' : 'ACTIVE',
       version: pageKey === 'materials' ? 'V1.0' : undefined,
       materialPurpose: pageKey === 'materials' ? '生产物料' : undefined,
+      effectiveDate: pageKey === 'materials' ? getTodayDateTimeInput() : undefined,
     });
     setDialogOpen(true);
   };
 
-  const openEditDialog = (row: ProcessModelingRecord) => {
+  const openCreateMaterialVersionDialog = (row: MaterialRecord) => {
+    if (isReadOnlyPage(config)) return;
+    setEditingRow(null);
+    setCreatingMaterialVersionFrom(row);
+    setMaterialDialogMode('createVersion');
+    const materialTypeValue = row.materialTypeId ?? '';
+    setForm({
+      name: getDisplayName(row) === '-' ? '' : getDisplayName(row),
+      code: row.code ?? '',
+      specification: row.specification ?? '',
+      materialTypeId: materialTypeValue,
+      materialTypeName: row.materialTypeName ?? (materialTypeMapValue(materialTypeValue) || ''),
+      unit: row.unit ?? '',
+      materialPurpose: row.materialPurpose ?? '生产物料',
+      version: '',
+      effectiveDate: getTodayDateTimeInput(),
+      expiryDate: null,
+    });
+    setDialogOpen(true);
+  };
+
+  const openEditDialog = (row: ProcessModelingRecord, materialMode?: Extract<MaterialDialogMode, 'editMaterial' | 'editVersion'>) => {
     if (isReadOnlyPage(config)) return;
     const materialTypeValue = 'materialTypeId' in row ? row.materialTypeId ?? '' : '';
     setEditingRow(row);
+    setCreatingMaterialVersionFrom(null);
+    setMaterialDialogMode(materialMode ?? (pageKey === 'materials' ? 'editMaterial' : null));
     setForm({
       name: getDisplayName(row) === '-' ? '' : getDisplayName(row),
       code: row.code ?? '',
@@ -964,11 +1138,33 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setDialogOpen(true);
   };
 
-  const openDetailDrawer = (row: ProcessModelingRecord) => {
+  const openDetailDrawer = (row: ProcessModelingRecord, entityIds: Array<string | number> = [row.id]) => {
     setSelectedRow(row);
+    setDrawerAuditTarget({ entityIds });
     setDrawerTab(0);
     setDrawerOpen(true);
   };
+
+  const openMaterialGroupDrawer = (group: MaterialGroupRow) => {
+    openDetailDrawer({ ...group.latestVersion, status: group.status }, group.versions.map((version) => version.id));
+  };
+
+  const openMaterialVersionDrawer = (row: MaterialRecord) => {
+    openDetailDrawer(row, [row.id]);
+  };
+
+  const deleteTargetName = deleteTarget ? getDisplayName(deleteTarget.row) : '';
+  const deleteTargetVersion = deleteTarget?.scope === 'materialVersion' ? getMaterialVersion(deleteTarget.row) : '';
+  const deleteDialogTitle = pageKey === 'materials'
+    ? deleteTarget?.scope === 'materialVersion'
+      ? '确认删除物料版本'
+      : '确认删除物料'
+    : `确认删除${config.title}`;
+  const deleteDialogMessage = pageKey === 'materials'
+    ? deleteTarget?.scope === 'materialVersion'
+      ? `确定要删除物料 ${deleteTargetName} 的版本 ${deleteTargetVersion} 吗？删除后该物料版本将无法恢复。`
+      : `确定要删除物料 ${deleteTargetName} 吗？删除后该物料将无法恢复。`
+    : `确定要删除${config.title} ${deleteTargetName} 吗？删除后该数据将无法恢复。`;
 
   const submitForm = () => {
     if (isReadOnlyPage(config)) {
@@ -987,7 +1183,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       setSnackbar({ open: true, message: '请填写版本', severity: 'error' });
       return;
     }
-    const payload = normalizePayload(form);
+    if (pageKey === 'materials' && isExpiryBeforeEffective(form.effectiveDate, form.expiryDate)) {
+      setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
+      return;
+    }
+    const payload = pageKey === 'materials' ? normalizeMaterialPayload(form) : normalizePayload(form);
     if (editingRow) updateMutation.mutate(payload);
     else createMutation.mutate(payload);
   };
@@ -997,7 +1197,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     code: input.code?.trim() || undefined,
     name: input.name?.trim() ?? '',
     description: input.description?.trim() || undefined,
-    status: input.status || undefined,
+    status: pageKey === 'materials' ? undefined : input.status || undefined,
     specification: input.specification?.trim() || undefined,
     unit: input.unit?.trim() || undefined,
     version: input.version?.trim() || undefined,
@@ -1012,7 +1212,22 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     sortOrder: input.sortOrder === null || input.sortOrder === undefined ? null : Number(input.sortOrder),
   });
 
+  const normalizeMaterialPayload = (input: ProcessModelingPayload): ProcessModelingPayload => {
+    const normalized = normalizePayload(input);
+    if (materialDialogMode === 'editMaterial') {
+      return {
+        ...pickMaterialPayload(normalized, MATERIAL_BASE_FIELD_IDS),
+        materialTypeName: normalized.materialTypeName,
+      };
+    }
+    if (materialDialogMode === 'editVersion') {
+      return pickMaterialPayload(normalized, MATERIAL_VERSION_FIELD_IDS);
+    }
+    return normalized;
+  };
+
   const getColumnWidth = (column: ProcessColumn) => resolvedColumnWidths[column.id] ?? column.defaultWidth;
+  const getMaterialVersionColumnWidth = (column: ProcessColumn) => resolvedMaterialVersionColumnWidths[column.id] ?? column.defaultWidth;
 
   const beginColumnResize = (event: MouseEvent, columnId: ProcessColumnId) => {
     event.preventDefault();
@@ -1028,6 +1243,31 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const handleMouseMove = (moveEvent: globalThis.MouseEvent) => {
       const nextWidth = Math.max(column.minWidth, startWidth + moveEvent.clientX - startX);
       setColumnWidths((current) => ({ ...current, [columnId]: nextWidth }));
+    };
+    const handleMouseUp = () => {
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const beginMaterialVersionColumnResize = (event: MouseEvent, columnId: ProcessColumnId) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const column = materialVersionColumns.find((item) => item.id === columnId);
+    if (!column || column.resizable === false) return;
+    const startX = event.clientX;
+    const startWidth = getMaterialVersionColumnWidth(column);
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    const handleMouseMove = (moveEvent: globalThis.MouseEvent) => {
+      const nextWidth = Math.max(column.minWidth, startWidth + moveEvent.clientX - startX);
+      setMaterialVersionColumnWidths((current) => ({ ...current, [columnId]: nextWidth }));
     };
     const handleMouseUp = () => {
       document.body.style.cursor = previousCursor;
@@ -1085,7 +1325,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   const moveColumnSetting = (sourceId: ConfigurableProcessColumnId | null, targetId: ConfigurableProcessColumnId) => {
     if (!sourceId || sourceId === targetId) return;
-    setColumnSettings((current) => {
+    setActiveColumnSettings((current) => {
       const nextOrder = current.order.filter((id) => id !== sourceId);
       const targetIndex = nextOrder.indexOf(targetId);
       nextOrder.splice(targetIndex < 0 ? nextOrder.length : targetIndex, 0, sourceId);
@@ -1094,12 +1334,25 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   };
 
   const toggleColumnVisibility = (columnId: ConfigurableProcessColumnId) => {
-    setColumnSettings((current) => {
+    setActiveColumnSettings((current) => {
       const hidden = current.hidden.includes(columnId)
         ? current.hidden.filter((id) => id !== columnId)
         : [...current.hidden, columnId];
       if (hidden.length >= current.order.length) return current;
       return { ...current, hidden };
+    });
+  };
+
+  const handleMaterialDateChange = (fieldId: 'effectiveDate' | 'expiryDate', value: string | null) => {
+    setForm((current) => {
+      if (fieldId === 'effectiveDate') {
+        return {
+          ...current,
+          effectiveDate: value,
+          expiryDate: isExpiryBeforeEffective(value, current.expiryDate) ? null : current.expiryDate,
+        };
+      }
+      return { ...current, expiryDate: value };
     });
   };
 
@@ -1164,17 +1417,19 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       );
     }
     if (field.id === 'effectiveDate' || field.id === 'expiryDate') {
+      const dateFieldId: 'effectiveDate' | 'expiryDate' = field.id;
       return (
         <TextField
-          key={field.id}
+          key={dateFieldId}
           label={field.label}
-          value={(form[field.id] ?? '') as string}
-          onChange={(event) => setForm((current) => ({ ...current, [field.id]: event.target.value || null }))}
+          value={(form[dateFieldId] ?? '') as string}
+          onChange={(event) => handleMaterialDateChange(dateFieldId, event.target.value || null)}
           type="datetime-local"
           size="small"
           fullWidth
           required={field.required}
           sx={fieldSx}
+          inputProps={dateFieldId === 'expiryDate' && form.effectiveDate ? { min: form.effectiveDate } : undefined}
           InputLabelProps={{ shrink: true }}
           style={gridColumn ? { gridColumn } : undefined}
         />
@@ -1216,6 +1471,19 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     );
   };
 
+  const renderMaterialFormSection = (title: string, fieldIds: Array<keyof ProcessModelingPayload>) => {
+    const fields = config.formFields.filter((field) => fieldIds.includes(field.id));
+    return (
+      <DetailSection title={title}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+          {fields.map(renderFormField)}
+        </Box>
+      </DetailSection>
+    );
+  };
+  const shouldRenderMaterialBaseSection = materialDialogMode === 'createMaterial' || materialDialogMode === 'editMaterial';
+  const shouldRenderMaterialVersionSection = materialDialogMode === 'createMaterial' || materialDialogMode === 'createVersion' || materialDialogMode === 'editVersion';
+
   const renderCell = (row: ProcessModelingRecord, column: ProcessColumn) => {
     const commonSx = {
       width: getColumnWidth(column),
@@ -1236,24 +1504,66 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return (
       <TableCell key={column.id} align={column.align} sx={commonSx} title={getColumnDisplayValue(row, column.id)}>
         {column.id === 'status' ? (
-          <StatusBadge label={getStatusLabel(row.status)} color={getStatusColor(row.status)} />
+          <StatusBadge label={getStatusLabel(pageKey === 'materials' ? getMaterialVersionRuntimeStatus(row as MaterialRecord) : row.status)} color={getStatusColor(pageKey === 'materials' ? getMaterialVersionRuntimeStatus(row as MaterialRecord) : row.status)} />
         ) : getColumnDisplayValue(row, column.id)}
       </TableCell>
     );
   };
 
+  const renderEditAction = (row: ProcessModelingRecord, label = '编辑', materialMode?: Extract<MaterialDialogMode, 'editMaterial' | 'editVersion'>) => (
+    <Tooltip title={label} arrow>
+      <IconButton size="small" aria-label={label} onClick={(event) => { event.stopPropagation(); openEditDialog(row, materialMode); }}>
+        <Edit fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  );
+
+  const renderDeleteAction = (row: ProcessModelingRecord, scope?: DeleteTargetScope) => (
+    <Tooltip title="删除" arrow>
+      <IconButton size="small" aria-label="删除" color="error" onClick={(event) => { event.stopPropagation(); openDeleteDialog(row, scope); }}>
+        <Delete fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  );
+
+  const renderAddMaterialVersionAction = (group: MaterialGroupRow) => (
+    <Tooltip title="新增子版本" arrow>
+      <IconButton title="新增子版本" size="small" aria-label="新增子版本" onClick={(event) => { event.stopPropagation(); openCreateMaterialVersionDialog(group.latestVersion); }}>
+        <PlaylistAdd fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  );
+
   const renderRowActions = (row: ProcessModelingRecord) => (
     <Stack direction="row" spacing={0.5} justifyContent="center">
+      {renderEditAction(row)}
+      {renderDeleteAction(row)}
+    </Stack>
+  );
+
+  const renderSingleVersionMaterialGroupActions = (group: MaterialGroupRow) => (
+    <Stack direction="row" spacing={0.5} justifyContent="center">
+      {renderAddMaterialVersionAction(group)}
+      {renderEditAction(group.latestVersion, '编辑', 'editMaterial')}
+      {renderDeleteAction(group.latestVersion, 'material')}
+    </Stack>
+  );
+
+  const renderMultiVersionMaterialGroupActions = (group: MaterialGroupRow) => (
+    <Stack direction="row" spacing={0.5} justifyContent="center">
+      {renderAddMaterialVersionAction(group)}
+      {renderEditAction(group.latestVersion, '编辑', 'editMaterial')}
+    </Stack>
+  );
+
+  const renderMaterialVersionActions = (row: MaterialRecord, canDelete: boolean) => (
+    <Stack direction="row" spacing={0.5} justifyContent="center">
       <Tooltip title="编辑" arrow>
-        <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openEditDialog(row); }}>
+        <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openEditDialog(row, 'editVersion'); }}>
           <Edit fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="删除" arrow>
-        <IconButton size="small" aria-label="删除" color="error" onClick={(event) => { event.stopPropagation(); setDeleteTarget(row); }}>
-          <Delete fontSize="small" />
-        </IconButton>
-      </Tooltip>
+      {canDelete ? renderDeleteAction(row) : null}
     </Stack>
   );
 
@@ -1266,42 +1576,69 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return getColumnDisplayValue(latest, column.id);
   };
 
-  const renderMaterialVersionTable = (group: MaterialGroupRow) => (
-    <TableRow key={`${group.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
-      <TableCell colSpan={visibleColumns.length} sx={{ p: 0, bgcolor: '#fafcff' }}>
-        <Box sx={{ pl: 5.5, pr: 1.5, py: 1.25 }}>
-          <TableContainer sx={{ border: '1px solid #e4e7ed', borderRadius: '4px', bgcolor: '#fff' }}>
-            <Table stickyHeader size="small" aria-label="物料版本列表">
+  const renderMaterialVersionTable = (group: MaterialGroupRow) => {
+    return (
+      <TableRow key={`${group.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
+        <TableCell colSpan={visibleColumns.length} sx={{ p: 0, bgcolor: '#fafcff' }}>
+          <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
+            <Table stickyHeader size="small" aria-label="物料版本列表" sx={{ tableLayout: 'fixed', width: totalMaterialVersionTableWidth, minWidth: totalMaterialVersionTableWidth }}>
+              <colgroup>
+                {visibleMaterialVersionColumns.map((column) => <col key={`${group.id}:${column.id}`} style={{ width: getMaterialVersionColumnWidth(column) }} />)}
+              </colgroup>
               <TableHead>
-                <TableRow>
-                  {['物料版本号', '版本状态', '生效日期', '失效日期'].map((label) => (
-                    <TableCell key={label} sx={{ ...tableHeaderCellSx, height: 40 }}>{label}</TableCell>
+                <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
+                  {visibleMaterialVersionColumns.map((column) => (
+                      <TableCell key={column.id} align={column.align} sx={{ width: getMaterialVersionColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
+                        {column.label}
+                        {column.resizable ? (
+                          <Box
+                            data-process-material-version-column-resizer
+                            onMouseDown={(event) => beginMaterialVersionColumnResize(event, column.id)}
+                            sx={{ position: 'absolute', top: 0, right: 0, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
+                          />
+                        ) : null}
+                      </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {group.versions.map((versionRow) => (
-                  <TableRow key={`${group.groupKey}:${getMaterialVersion(versionRow)}`} hover onClick={() => openDetailDrawer(versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
-                    <TableCell>{getMaterialVersion(versionRow)}</TableCell>
-                    <TableCell><StatusBadge label={getStatusLabel(versionRow.status)} color={getStatusColor(versionRow.status)} /></TableCell>
-                    <TableCell>{formatDateTime(versionRow.effectiveDate)}</TableCell>
-                    <TableCell>{formatDateTime(versionRow.expiryDate)}</TableCell>
+                  <TableRow key={`${group.groupKey}:${getMaterialVersion(versionRow)}`} hover onClick={() => openMaterialVersionDrawer(versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+                    {visibleMaterialVersionColumns.map((column) => {
+                      const commonSx = {
+                        width: getMaterialVersionColumnWidth(column),
+                        minWidth: column.minWidth,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        ...getStickyActionColumnSx(column, 'body'),
+                      };
+                      return (
+                        <TableCell key={column.id} align={column.align} sx={commonSx} title={column.id === 'description' ? versionRow.description || '-' : undefined}>
+                          {column.id === 'version' ? getMaterialVersion(versionRow) : column.id === 'status' ? (
+                            <StatusBadge label={getStatusLabel(getMaterialVersionRuntimeStatus(versionRow))} color={getStatusColor(getMaterialVersionRuntimeStatus(versionRow))} />
+                          ) : column.id === 'effectiveDate' ? formatDateTime(versionRow.effectiveDate) : column.id === 'expiryDate' ? formatDateTime(versionRow.expiryDate) : column.id === 'description' ? versionRow.description || '-' : column.id === 'createdBy' ? versionRow.createdBy || '-' : column.id === 'createdAt' ? formatDateTime(versionRow.createdAt) : column.id === 'updatedBy' ? versionRow.updatedBy || '-' : column.id === 'updatedAt' ? formatDateTime(versionRow.updatedAt) : column.id === 'actions' ? (
+                            renderMaterialVersionActions(versionRow, group.versions.length > 1)
+                          ) : ''}
+                        </TableCell>
+                      );
+                    })}
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
-        </Box>
-      </TableCell>
-    </TableRow>
-  );
+        </TableCell>
+      </TableRow>
+    );
+  };
 
   const renderTableRow = (row: ProcessTableRow) => {
     if (isMaterialGroupRow(row)) {
       const isExpanded = expandedMaterialGroups.has(row.groupKey);
       return (
         <>
-          <TableRow key={row.id} hover onClick={() => openDetailDrawer(row.latestVersion)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+          <TableRow key={row.id} hover onClick={() => openMaterialGroupDrawer(row)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
             {visibleColumns.map((column, index) => {
               const commonSx = {
                 width: getColumnWidth(column),
@@ -1313,7 +1650,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               };
               return (
                 <TableCell key={column.id} align={column.align} sx={commonSx} title={String(renderMaterialGroupCell(row, column))}>
-                  {column.id === 'actions' ? renderRowActions(row.latestVersion) : index === 0 ? (
+                  {column.id === 'actions' ? (row.versions.length > 1 ? renderMultiVersionMaterialGroupActions(row) : renderSingleVersionMaterialGroupActions(row)) : index === 0 ? (
                     <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
                       <IconButton
                         size="small"
@@ -1332,7 +1669,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   ) : column.id === 'version' ? (
                     <Typography sx={{ color: '#606266' }}>{renderMaterialGroupCell(row, column)}</Typography>
                   ) : column.id === 'status' ? (
-                    <StatusBadge label={getStatusLabel(row.latestVersion.status)} color={getStatusColor(row.latestVersion.status)} />
+                    <StatusBadge label={getStatusLabel(row.status)} color={getStatusColor(row.status)} />
                   ) : (
                     renderMaterialGroupCell(row, column)
                   )}
@@ -1354,7 +1691,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   function getColumnDisplayValue(row: ProcessModelingRecord, columnId: ProcessColumnId) {
     if (columnId === 'name') return getDisplayName(row);
-    if (columnId === 'status') return getStatusLabel(row.status);
+    if (columnId === 'status') return getStatusLabel(pageKey === 'materials' ? getMaterialVersionRuntimeStatus(row as MaterialRecord) : row.status);
     if (columnId === 'createdAt' || columnId === 'updatedAt') return formatDateTime(row[columnId]);
     if (columnId === 'effectiveDate' || columnId === 'expiryDate') return 'effectiveDate' in row || 'expiryDate' in row ? formatDateTime(row[columnId as 'effectiveDate' | 'expiryDate']) : '-';
     if (columnId === 'version') return 'version' in row ? row.version || '-' : '-';
@@ -1422,20 +1759,36 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
       <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
-          <Tooltip title="字段设置" arrow>
-            <IconButton
-              data-process-column-settings-trigger
-              size="small"
-              aria-label="字段设置"
-              onClick={(event) => setColumnSettingsAnchorEl(event.currentTarget)}
-              sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } }}
-            >
-              <Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ViewColumnRounded sx={{ fontSize: 21 }} />
-                <TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} />
-              </Box>
-            </IconButton>
-          </Tooltip>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Tooltip title="字段设置" arrow>
+              <IconButton
+                data-process-column-settings-trigger
+                size="small"
+                aria-label="字段设置"
+                onClick={(event) => setColumnSettingsAnchorEl(event.currentTarget)}
+                sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } }}
+              >
+                <Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ViewColumnRounded sx={{ fontSize: 21 }} />
+                  <TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} />
+                </Box>
+              </IconButton>
+            </Tooltip>
+            {pageKey === 'materials' ? (
+              <>
+                <Tooltip title="全部展开" arrow>
+                  <IconButton size="small" aria-label="全部展开" onClick={expandAllMaterialGroups} sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } }}>
+                    <UnfoldMoreRounded fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="全部收起" arrow>
+                  <IconButton size="small" aria-label="全部收起" onClick={collapseAllMaterialGroups} sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } }}>
+                    <UnfoldLessRounded fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ) : null}
+          </Stack>
           {isReadOnlyPage(config) ? (
             <Typography variant="body2" sx={{ color: '#606266' }}>{config.derivedFrom}</Typography>
           ) : (
@@ -1452,9 +1805,15 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           PaperProps={{ sx: { mt: 1, width: 220, border: '1px solid #e4e7ed', borderRadius: 1, boxShadow: '0 8px 24px rgba(0,0,0,.12)' } }}
         >
           <Stack data-process-column-settings-panel spacing={0.5} sx={{ p: 1.5 }}>
-            {columnSettingsItems.map((column) => {
-              const checked = !columnSettings.hidden.includes(column.id);
-              const disabled = checked && visibleConfigurableColumnCount <= 1;
+            {pageKey === 'materials' ? (
+              <Tabs value={columnSettingsTab} onChange={(_, value: ColumnSettingsTarget) => setColumnSettingsTab(value)} aria-label="物料字段设置切换" sx={{ minHeight: 32, mb: 0.5, '& .MuiTab-root': { minHeight: 32, py: 0, fontSize: 13 } }}>
+                <Tab label="主表" value="main" />
+                <Tab label="子表" value="materialVersion" />
+              </Tabs>
+            ) : null}
+            {activeColumnSettingsItems.map((column) => {
+              const checked = !activeColumnSettings.hidden.includes(column.id);
+              const disabled = checked && activeVisibleConfigurableColumnCount <= 1;
               return (
                 <Box
                   key={column.id}
@@ -1589,7 +1948,15 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                 <Stack spacing={2} sx={{ mt: 2 }}>
                   <DetailSection title="审计记录">
                     <Stack spacing={1}>
-                      {auditRecords.length === 0 ? (
+                      {isAuditLoading ? (
+                        <Box sx={{ px: 1.5, py: 3, textAlign: 'center', color: '#909399', bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: '4px' }}>
+                          <Typography variant="body2">审计记录加载中</Typography>
+                        </Box>
+                      ) : isAuditError ? (
+                        <Box sx={{ px: 1.5, py: 3, textAlign: 'center', color: '#f56c6c', bgcolor: '#fff', border: '1px solid #fbc4c4', borderRadius: '4px' }}>
+                          <Typography variant="body2">审计记录加载失败</Typography>
+                        </Box>
+                      ) : auditRecords.length === 0 ? (
                         <Box sx={{ px: 1.5, py: 3, textAlign: 'center', color: '#909399', bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: '4px' }}>
                           <Typography variant="body2">暂无审计记录</Typography>
                         </Box>
@@ -1620,11 +1987,18 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       </Drawer>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingRow ? `编辑${config.title}` : `新增${config.title}`}</DialogTitle>
+        <DialogTitle>{editingRow ? `编辑${config.title}` : creatingMaterialVersionFrom ? '新增子版本' : `新增${config.title}`}</DialogTitle>
         <DialogContent dividers>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5, pt: 0.5 }}>
-            {config.formFields.map(renderFormField)}
-          </Box>
+          {pageKey === 'materials' ? (
+            <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+              {shouldRenderMaterialBaseSection ? renderMaterialFormSection('物料基础信息', MATERIAL_BASE_FIELD_IDS) : null}
+              {shouldRenderMaterialVersionSection ? renderMaterialFormSection('物料版本信息', MATERIAL_VERSION_FIELD_IDS) : null}
+            </Stack>
+          ) : (
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5, pt: 0.5 }}>
+              {config.formFields.map(renderFormField)}
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>取消</Button>
@@ -1633,18 +2007,27 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       </Dialog>
 
       <Dialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
-        <DialogTitle>确认删除</DialogTitle>
+        <DialogTitle>{deleteDialogTitle}</DialogTitle>
         <DialogContent dividers>
-          <Alert severity="error">确定删除「{deleteTarget ? getDisplayName(deleteTarget) : ''}」吗？此操作不可撤销。</Alert>
+          <Typography variant="body2">
+            {deleteDialogMessage}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteTarget(null)}>取消</Button>
-          <Button color="error" variant="contained" onClick={() => deleteTarget && deleteMutation.mutate(deleteTarget)} disabled={deleteMutation.isPending}>删除</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => deleteTarget && deleteMutation.mutate(deleteTarget.row)}
+            disabled={deleteMutation.isPending}
+          >
+            删除
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <Alert severity={snackbar.severity} variant="filled" onClose={() => setSnackbar((current) => ({ ...current, open: false }))}>{snackbar.message}</Alert>
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert severity={snackbar.severity} onClose={closeSnackbar}>{snackbar.message}</Alert>
       </Snackbar>
     </Box>
   );

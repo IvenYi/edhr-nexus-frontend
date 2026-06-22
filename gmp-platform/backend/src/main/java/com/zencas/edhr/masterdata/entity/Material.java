@@ -1,5 +1,7 @@
 package com.zencas.edhr.masterdata.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Material {
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     @Column(name = "tenant_id")
     @Builder.Default

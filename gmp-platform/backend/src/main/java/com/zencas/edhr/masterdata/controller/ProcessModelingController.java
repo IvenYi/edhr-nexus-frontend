@@ -89,32 +89,38 @@ public class ProcessModelingController {
             @RequestParam(defaultValue = "desc") String order) {
         List<Material> materials = materialRepository.findAll().stream()
                 .filter(material -> matchesMaterialKeyword(material, keyword, materialName, materialCode, materialTypeName))
-                .filter(material -> matchesStatus(material.getStatus(), status))
                 .sorted(materialComparator(safeSort(sort), order))
                 .toList();
         enrichMaterialTypeNames(materials);
-        List<MaterialGroupRecord> groups = toMaterialGroups(materials);
+        List<MaterialGroupRecord> groups = toMaterialGroups(materials).stream()
+                .filter(group -> matchesStatus(group.getStatus(), status))
+                .toList();
         return ApiResponse.success(toPagedResult(groups, page, size));
     }
 
     @PostMapping("/materials")
     @Transactional
     public ApiResponse<Material> createMaterial(@RequestBody ProcessModelingRequest request) {
+        validateMaterialDateRange(request);
+        String code = resolveCode(request, "MAT");
+        String name = requireName(request);
+        String version = resolveMaterialVersion(request);
+        validateMaterialCodeForCreate(code, name, version);
         LocalDateTime now = LocalDateTime.now();
         Material entity = Material.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
-                .code(resolveCode(request, "MAT"))
-                .name(requireName(request))
+                .code(code)
+                .name(name)
                 .specification(trimToNull(request.getSpecification()))
-                .version(resolveMaterialVersion(request))
+                .version(version)
                 .materialPurpose(resolveMaterialPurpose(request))
                 .effectiveDate(request == null ? null : request.getEffectiveDate())
                 .expiryDate(request == null ? null : request.getExpiryDate())
                 .materialTypeId(resolveMaterialTypeId(request))
                 .unit(trimToNull(request.getUnit()))
                 .description(trimToNull(request.getDescription()))
-                .status(resolveStatus(request, "ACTIVE"))
+                .status(resolveMaterialRuntimeStatus(request == null ? null : request.getEffectiveDate(), request == null ? null : request.getExpiryDate()))
                 .createdBy(currentOperatorName())
                 .createdAt(now)
                 .updatedBy(currentOperatorName())
@@ -129,26 +135,67 @@ public class ProcessModelingController {
     @PutMapping("/materials/{id}")
     @Transactional
     public ApiResponse<Material> updateMaterial(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
+        validateMaterialDateRange(request);
         Material existing = materialRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "物料不存在"));
+        boolean versionUpdate = request != null && request.getVersion() != null;
+        if (!versionUpdate) {
+            return updateMaterialBaseInformation(existing, request);
+        }
         Map<String, Object> before = materialSnapshot(existing);
-        existing.setName(requireName(request));
-        existing.setCode(StringUtils.hasText(request == null ? null : request.getCode()) ? request.getCode().trim() : existing.getCode());
-        existing.setSpecification(trimToNull(request.getSpecification()));
-        existing.setVersion(resolveMaterialVersion(request));
-        existing.setMaterialPurpose(resolveMaterialPurpose(request));
-        existing.setEffectiveDate(request == null ? null : request.getEffectiveDate());
-        existing.setExpiryDate(request == null ? null : request.getExpiryDate());
-        existing.setMaterialTypeId(resolveMaterialTypeId(request));
-        existing.setUnit(trimToNull(request.getUnit()));
-        existing.setDescription(trimToNull(request.getDescription()));
-        existing.setStatus(resolveStatus(request, existing.getStatus()));
+        if (request != null && (StringUtils.hasText(request.getCode()) || versionUpdate)) {
+            validateMaterialCodeForUpdate(existing,
+                    StringUtils.hasText(request.getCode()) ? request.getCode().trim() : existing.getCode(),
+                    versionUpdate ? resolveMaterialVersion(request) : existing.getVersion());
+        }
+        if (request != null && StringUtils.hasText(request.getName())) existing.setName(request.getName().trim());
+        if (request != null && StringUtils.hasText(request.getCode())) existing.setCode(request.getCode().trim());
+        if (request != null && request.getSpecification() != null) existing.setSpecification(trimToNull(request.getSpecification()));
+        if (versionUpdate) existing.setVersion(resolveMaterialVersion(request));
+        if (request != null && request.getMaterialPurpose() != null) existing.setMaterialPurpose(resolveMaterialPurpose(request));
+        if (versionUpdate) existing.setEffectiveDate(request.getEffectiveDate());
+        if (versionUpdate) existing.setExpiryDate(request.getExpiryDate());
+        if (request != null && (request.getMaterialTypeId() != null || StringUtils.hasText(request.getMaterialTypeName()))) existing.setMaterialTypeId(resolveMaterialTypeId(request));
+        if (request != null && request.getUnit() != null) existing.setUnit(trimToNull(request.getUnit()));
+        if (versionUpdate || (request != null && request.getDescription() != null)) existing.setDescription(trimToNull(request == null ? null : request.getDescription()));
+        existing.setStatus(resolveMaterialRuntimeStatus(existing.getEffectiveDate(), existing.getExpiryDate()));
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
         Material saved = materialRepository.save(existing);
         enrichMaterialTypeName(saved, materialTypeNameMap());
         writeChangedAudit("MATERIAL", saved.getId(), "物料管理", "编辑物料", before, materialSnapshot(saved));
         return ApiResponse.success(saved);
+    }
+
+    private ApiResponse<Material> updateMaterialBaseInformation(Material existing, ProcessModelingRequest request) {
+        if (request != null && StringUtils.hasText(request.getCode())) {
+            validateMaterialBaseCodeForUpdate(existing, request.getCode().trim());
+        }
+        List<Material> versions = findMaterialGroupVersions(existing);
+        Map<Long, Map<String, Object>> beforeSnapshots = versions.stream()
+                .filter(material -> material.getId() != null)
+                .collect(Collectors.toMap(
+                        Material::getId,
+                        this::materialSnapshot,
+                        (left, right) -> left,
+                        LinkedHashMap::new));
+        versions.forEach(material -> applyMaterialBaseFields(material, request));
+        List<Material> savedVersions = versions.stream()
+                .map(materialRepository::save)
+                .toList();
+        Map<Long, String> typeNames = materialTypeNameMap();
+        savedVersions.forEach(material -> {
+            enrichMaterialTypeName(material, typeNames);
+            Map<String, Object> before = beforeSnapshots.get(material.getId());
+            if (before != null) {
+                writeChangedAudit("MATERIAL", material.getId(), "物料管理", "编辑物料", before, materialSnapshot(material));
+            }
+        });
+        Material savedCurrent = savedVersions.stream()
+                .filter(material -> Objects.equals(material.getId(), existing.getId()))
+                .findFirst()
+                .orElse(existing);
+        return ApiResponse.success(savedCurrent);
     }
 
     @DeleteMapping("/materials/{id}")
@@ -479,6 +526,7 @@ public class ProcessModelingController {
     private MaterialGroupRecord toMaterialGroup(List<Material> versions) {
         List<Material> sortedVersions = versions.stream()
                 .sorted(this::compareMaterialVersionDesc)
+                .peek(material -> material.setStatus(resolveMaterialRuntimeStatus(material)))
                 .toList();
         Material latest = sortedVersions.getFirst();
         return MaterialGroupRecord.builder()
@@ -496,7 +544,7 @@ public class ProcessModelingController {
                 .materialTypeName(latest.getMaterialTypeName())
                 .unit(latest.getUnit())
                 .description(latest.getDescription())
-                .status(latest.getStatus())
+                .status(resolveMaterialGroupRuntimeStatus(sortedVersions))
                 .createdBy(latest.getCreatedBy())
                 .createdAt(latest.getCreatedAt() == null ? null : latest.getCreatedAt().toString())
                 .updatedBy(latest.getUpdatedBy())
@@ -593,7 +641,7 @@ public class ProcessModelingController {
         Comparator<Material> comparator = switch (sort) {
             case "name" -> Comparator.comparing(Material::getName, Comparator.nullsLast(String::compareToIgnoreCase));
             case "code" -> Comparator.comparing(Material::getCode, Comparator.nullsLast(String::compareToIgnoreCase));
-            case "status" -> Comparator.comparing(Material::getStatus, Comparator.nullsLast(String::compareToIgnoreCase));
+            case "status" -> Comparator.comparing(this::resolveMaterialRuntimeStatus, Comparator.nullsLast(String::compareToIgnoreCase));
             case "updatedAt" -> Comparator.comparing(Material::getUpdatedAt, Comparator.nullsLast(LocalDateTime::compareTo));
             default -> Comparator.comparing(Material::getCreatedAt, Comparator.nullsLast(LocalDateTime::compareTo));
         };
@@ -619,12 +667,29 @@ public class ProcessModelingController {
     }
 
     private boolean isEffectiveMaterialVersion(Material material) {
-        if (material == null || !"ACTIVE".equals(material.getStatus())) return false;
+        return "ACTIVE".equals(resolveMaterialRuntimeStatus(material));
+    }
+
+    private String resolveMaterialRuntimeStatus(Material material) {
+        if (material == null) return "ACTIVE";
+        return resolveMaterialRuntimeStatus(material.getEffectiveDate(), material.getExpiryDate());
+    }
+
+    private String resolveMaterialRuntimeStatus(LocalDateTime effectiveDate, LocalDateTime expiryDate) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime effectiveDate = material.getEffectiveDate();
-        LocalDateTime expiryDate = material.getExpiryDate();
-        return (effectiveDate == null || !effectiveDate.isAfter(now))
-                && (expiryDate == null || expiryDate.isAfter(now));
+        if (effectiveDate != null && effectiveDate.isAfter(now)) return "PENDING";
+        if (expiryDate != null && !expiryDate.isAfter(now)) return "EXPIRED";
+        return "ACTIVE";
+    }
+
+    private String resolveMaterialGroupRuntimeStatus(List<Material> versions) {
+        List<String> statuses = versions.stream()
+                .map(this::resolveMaterialRuntimeStatus)
+                .toList();
+        if (statuses.contains("ACTIVE")) return "ACTIVE";
+        if (statuses.stream().allMatch("EXPIRED"::equals)) return "DISABLED";
+        if (statuses.contains("PENDING")) return "PENDING";
+        return "DISABLED";
     }
 
     private PageRequest pageable(int page, int size, String sort, String order) {
@@ -673,6 +738,81 @@ public class ProcessModelingController {
             throw new BusinessException(ErrorCode.GENERAL_001, "名称不能为空");
         }
         return request.getName().trim();
+    }
+
+    private void validateMaterialDateRange(ProcessModelingRequest request) {
+        if (request == null || request.getEffectiveDate() == null || request.getExpiryDate() == null) return;
+        if (request.getExpiryDate().isBefore(request.getEffectiveDate())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "失效时间不能早于生效时间");
+        }
+    }
+
+    private void validateMaterialCodeForCreate(String code, String name, String version) {
+        List<Material> sameCodeMaterials = findMaterialsByCode(code);
+        if (sameCodeMaterials.isEmpty()) return;
+        boolean sameMaterialName = sameCodeMaterials.stream()
+                .allMatch(material -> sameText(material.getName(), name));
+        boolean sameVersion = sameCodeMaterials.stream()
+                .anyMatch(material -> sameText(material.getVersion(), version));
+        if (!sameMaterialName || sameVersion) {
+            throw duplicatedMaterialCodeException();
+        }
+    }
+
+    private void validateMaterialCodeForUpdate(Material existing, String code, String version) {
+        boolean codeChanged = !sameText(existing.getCode(), code);
+        boolean conflicts = findMaterialsByCode(code).stream()
+                .filter(material -> !Objects.equals(material.getId(), existing.getId()))
+                .anyMatch(material -> codeChanged || sameText(material.getVersion(), version));
+        if (conflicts) {
+            throw duplicatedMaterialCodeException();
+        }
+    }
+
+    private void validateMaterialBaseCodeForUpdate(Material existing, String code) {
+        boolean conflicts = findMaterialsByCode(code).stream()
+                .filter(material -> !sameText(material.getCode(), existing.getCode()))
+                .findAny()
+                .isPresent();
+        if (conflicts) {
+            throw duplicatedMaterialCodeException();
+        }
+    }
+
+    private List<Material> findMaterialGroupVersions(Material existing) {
+        if (existing == null || !StringUtils.hasText(existing.getCode())) return List.of(existing);
+        List<Material> versions = findMaterialsByCode(existing.getCode());
+        if (versions.isEmpty()) return List.of(existing);
+        return versions;
+    }
+
+    private void applyMaterialBaseFields(Material material, ProcessModelingRequest request) {
+        if (material == null || request == null) return;
+        if (StringUtils.hasText(request.getName())) material.setName(request.getName().trim());
+        if (StringUtils.hasText(request.getCode())) material.setCode(request.getCode().trim());
+        if (request.getSpecification() != null) material.setSpecification(trimToNull(request.getSpecification()));
+        if (request.getMaterialPurpose() != null) material.setMaterialPurpose(resolveMaterialPurpose(request));
+        if (request.getMaterialTypeId() != null || StringUtils.hasText(request.getMaterialTypeName())) material.setMaterialTypeId(resolveMaterialTypeId(request));
+        if (request.getUnit() != null) material.setUnit(trimToNull(request.getUnit()));
+        material.setStatus(resolveMaterialRuntimeStatus(material.getEffectiveDate(), material.getExpiryDate()));
+        material.setUpdatedBy(currentOperatorName());
+        material.setUpdatedAt(LocalDateTime.now());
+    }
+
+    private List<Material> findMaterialsByCode(String code) {
+        if (!StringUtils.hasText(code)) return List.of();
+        List<Material> materials = materialRepository.findByTenantIdAndCodeIgnoreCase(TENANT_ID, code.trim());
+        return materials == null ? List.of() : materials;
+    }
+
+    private boolean sameText(String left, String right) {
+        String leftValue = StringUtils.hasText(left) ? left.trim() : "";
+        String rightValue = StringUtils.hasText(right) ? right.trim() : "";
+        return leftValue.equalsIgnoreCase(rightValue);
+    }
+
+    private BusinessException duplicatedMaterialCodeException() {
+        return new BusinessException(ErrorCode.GENERAL_001, "物料料号已存在");
     }
 
     private String resolveStatus(ProcessModelingRequest request, String fallback) {
@@ -773,7 +913,7 @@ public class ProcessModelingController {
     }
 
     private Map<String, Object> materialSnapshot(Material entity) {
-        Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getName(), entity.getStatus(),
+        Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getName(), resolveMaterialRuntimeStatus(entity),
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
         snapshot.put("specification", entity.getSpecification());
         snapshot.put("version", entity.getVersion());
