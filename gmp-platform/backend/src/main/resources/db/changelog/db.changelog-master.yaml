@@ -55,3 +55,13 @@ databaseChangeLog:
       file: db/changelog/0025-material-version-display-fields.sql
   - include:
       file: db/changelog/0026-signature-policy-cycle-default.sql
+  - include:
+      file: db/changelog/0027-process-operation-standard-fields.sql
+  - include:
+      file: db/changelog/0028-process-operation-categories.sql
+  - include:
+      file: db/changelog/0029-route-template-version-graph.sql
+  - include:
+      file: db/changelog/0030-route-version-description.sql
+  - include:
+      file: db/changelog/0031-operation-category-sort-order.sql

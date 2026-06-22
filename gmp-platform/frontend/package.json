@@ -15,6 +15,8 @@
     "verify:audit-log-page": "node scripts/verify-audit-log-page.mjs",
     "verify:login-log-page": "node scripts/verify-login-log-page.mjs",
     "verify:process-modeling": "node scripts/verify-process-modeling-pages.mjs",
+    "verify:no-external-fonts": "node scripts/verify-no-external-fonts.mjs",
+    "qa:process-route-delete": "node scripts/qa-process-route-delete.mjs",
     "verify:system-management-pages": "node scripts/verify-system-management-pages.mjs",
     "verify:system-menu-pruned": "node scripts/verify-system-menu-pruned.mjs",
     "verify:app-shell": "node scripts/verify-app-shell-topbar.mjs",

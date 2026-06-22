@@ -53,12 +53,79 @@ export interface ProductRecord extends ProcessModelingBaseRecord {
 export interface ProductFamilyRecord extends ProcessModelingBaseRecord {}
 
 export interface OperationRecord extends ProcessModelingBaseRecord {
+  operationCategory?: string;
+  generalDescription?: string;
+  defaultOperationType?: string;
   defaultDurationMinutes?: number | null;
   sortOrder?: number | null;
 }
 
+export interface OperationCategoryRecord {
+  id: string | number;
+  name: string;
+  count: number;
+  sortOrder?: number | null;
+  system?: boolean;
+}
+
 export interface RouteRecord extends ProcessModelingBaseRecord {
   productFamilyId?: string | number | null;
+  commonAsset?: boolean;
+  versionCount?: number;
+  latestVersionId?: string | number | null;
+  latestVersion?: string;
+  latestVersionStatus?: string;
+  versions?: RouteVersionRecord[];
+}
+
+export interface RouteVersionRecord {
+  id: string | number;
+  routeId: string | number;
+  version: string;
+  versionStatus?: string;
+  description?: string | null;
+  versionDescription?: string | null;
+  effectiveDate?: string | null;
+  expiryDate?: string | null;
+  createdBy?: string;
+  createdAt?: string;
+  updatedBy?: string;
+  updatedAt?: string;
+}
+
+export interface RouteNodeRecord {
+  id?: string | number;
+  routeVersionId?: string | number;
+  nodeKey: string;
+  operationId?: string | number | null;
+  operationCode?: string | null;
+  operationName?: string | null;
+  nodeType?: string;
+  positionX?: number;
+  positionY?: number;
+  sortOrder?: number;
+  configJson?: string | null;
+}
+
+export interface RouteRelationRecord {
+  id?: string | number;
+  routeVersionId?: string | number;
+  sourceNodeKey: string;
+  targetNodeKey: string;
+  relationType: string;
+  label?: string | null;
+  ruleExpression?: string | null;
+  priority?: number;
+}
+
+export interface RouteGraphPayload {
+  nodes: RouteNodeRecord[];
+  relations: RouteRelationRecord[];
+}
+
+export interface RouteGraphResponse extends RouteGraphPayload {
+  routeId: string | number;
+  routeVersionId: string | number;
 }
 
 export interface ProcessDocumentRecord extends ProcessModelingBaseRecord {
@@ -80,9 +147,12 @@ export interface ProcessModelingQuery {
   page?: number;
   size?: number;
   keyword?: string;
+  operationName?: string;
+  operationCode?: string;
   materialName?: string;
   materialCode?: string;
   materialTypeName?: string;
+  operationCategory?: string;
   status?: string;
   sort?: string;
   order?: 'asc' | 'desc';
@@ -100,10 +170,15 @@ export interface ProcessModelingPayload {
   materialTypeName?: string | null;
   productFamilyId?: string | number | null;
   version?: string;
+  versionDescription?: string;
+  commonAsset?: boolean;
   materialPurpose?: string;
   effectiveDate?: string | null;
   expiryDate?: string | null;
   fileReference?: string;
+  operationCategory?: string;
+  generalDescription?: string;
+  defaultOperationType?: string;
   defaultDurationMinutes?: number | null;
   sortOrder?: number | null;
 }
@@ -128,6 +203,16 @@ export const updateMaterial = (id: string | number, body: ProcessModelingPayload
 export const deleteMaterial = (id: string | number) => deleteProcessModelingRecord('materials', id);
 
 export const getProcessOperations = (params?: ProcessModelingQuery) => getProcessModelingList<OperationRecord>('operations', params);
+export const getProcessOperationCategories = () =>
+  client.get(`${processModelingBase}/operations/categories`) as Promise<{ data: { data: OperationCategoryRecord[] } }>;
+export const createProcessOperationCategory = (body: { name: string }) =>
+  client.post(`${processModelingBase}/operations/categories`, body) as Promise<{ data: { data: OperationCategoryRecord } }>;
+export const updateProcessOperationCategory = (id: string | number, body: { name: string }) =>
+  client.put(`${processModelingBase}/operations/categories/${id}`, body) as Promise<{ data: { data: OperationCategoryRecord } }>;
+export const deleteProcessOperationCategory = (id: string | number) =>
+  client.delete(`${processModelingBase}/operations/categories/${id}`);
+export const reorderProcessOperationCategories = (ids: Array<string | number>) =>
+  client.put(`${processModelingBase}/operations/categories/order`, { ids }) as Promise<{ data: { data: OperationCategoryRecord[] } }>;
 export const createProcessOperation = (body: ProcessModelingPayload) => createProcessModelingRecord<OperationRecord>('operations', body);
 export const updateProcessOperation = (id: string | number, body: ProcessModelingPayload) => updateProcessModelingRecord<OperationRecord>('operations', id, body);
 export const deleteProcessOperation = (id: string | number) => deleteProcessModelingRecord('operations', id);
@@ -136,6 +221,12 @@ export const getProcessRoutes = (params?: ProcessModelingQuery) => getProcessMod
 export const createProcessRoute = (body: ProcessModelingPayload) => createProcessModelingRecord<RouteRecord>('routes', body);
 export const updateProcessRoute = (id: string | number, body: ProcessModelingPayload) => updateProcessModelingRecord<RouteRecord>('routes', id, body);
 export const deleteProcessRoute = (id: string | number) => deleteProcessModelingRecord('routes', id);
+export const createProcessRouteVersion = (routeId: string | number, body: ProcessModelingPayload) =>
+  client.post(`${processModelingBase}/routes/${routeId}/versions`, body) as Promise<{ data: { data: RouteVersionRecord } }>;
+export const getProcessRouteGraph = (routeId: string | number, versionId: string | number) =>
+  client.get(`${processModelingBase}/routes/${routeId}/versions/${versionId}/graph`) as Promise<{ data: { data: RouteGraphResponse } }>;
+export const saveProcessRouteGraph = (routeId: string | number, versionId: string | number, body: RouteGraphPayload) =>
+  client.put(`${processModelingBase}/routes/${routeId}/versions/${versionId}/graph`, body) as Promise<{ data: { data: RouteGraphResponse } }>;
 
 export const getProducts = (params?: ProcessModelingQuery) => getProcessModelingList<ProductRecord>('products', params);
 export const createProduct = (body: ProcessModelingPayload) => createProcessModelingRecord<ProductRecord>('products', body);

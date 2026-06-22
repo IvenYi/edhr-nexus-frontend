@@ -1,13 +1,18 @@
 package com.zencas.edhr.masterdata.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity @Table(name = "route")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Route {
-    @Id private Long id;
+    @Id
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
     @Column(name = "tenant_id")
     @Builder.Default private String tenantId = "default";
     @Column(name = "code", nullable = false, length = 64)
@@ -18,6 +23,8 @@ public class Route {
     private String description;
     @Column(name = "product_family_id")
     private String productFamilyId;
+    @Column(name = "common_asset")
+    @Builder.Default private Boolean commonAsset = true;
     @Column(name = "status")
     @Builder.Default private String status = "DRAFT";
     @Column(name = "remark", columnDefinition = "TEXT")
@@ -28,6 +35,13 @@ public class Route {
     @Column(name = "updated_by")
     private String updatedBy;
     @Column(name = "updated_at") private LocalDateTime updatedAt;
+    @Transient private Integer versionCount;
+    @Transient
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long latestVersionId;
+    @Transient private String latestVersion;
+    @Transient private String latestVersionStatus;
+    @Transient private List<RouteVersion> versions;
     @PrePersist void prePersist() {
         if (createdAt == null) createdAt = LocalDateTime.now();
         if (updatedAt == null) updatedAt = createdAt;

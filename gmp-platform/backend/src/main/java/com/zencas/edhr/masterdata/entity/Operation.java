@@ -1,5 +1,7 @@
 package com.zencas.edhr.masterdata.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -7,7 +9,9 @@ import java.time.LocalDateTime;
 @Entity @Table(name = "operation")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Operation {
-    @Id private Long id;
+    @Id
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
     @Column(name = "tenant_id")
     @Builder.Default private String tenantId = "default";
     @Column(name = "code", nullable = false, length = 64)
@@ -16,6 +20,12 @@ public class Operation {
     private String name;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+    @Column(name = "operation_category", length = 128)
+    private String operationCategory;
+    @Column(name = "general_description", columnDefinition = "TEXT")
+    private String generalDescription;
+    @Column(name = "default_operation_type", length = 64)
+    @Builder.Default private String defaultOperationType = "普通工序";
     @Column(name = "default_duration_minutes")
     private Integer defaultDurationMinutes;
     @Column(name = "sort_order")

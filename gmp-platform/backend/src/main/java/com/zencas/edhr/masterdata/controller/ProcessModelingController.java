@@ -12,19 +12,29 @@ import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.dto.MaterialGroupRecord;
 import com.zencas.edhr.masterdata.dto.ProcessModelingRequest;
+import com.zencas.edhr.masterdata.dto.RouteGraphRequest;
+import com.zencas.edhr.masterdata.dto.RouteGraphResponse;
 import com.zencas.edhr.masterdata.entity.Material;
 import com.zencas.edhr.masterdata.entity.MaterialType;
 import com.zencas.edhr.masterdata.entity.Operation;
+import com.zencas.edhr.masterdata.entity.OperationCategory;
 import com.zencas.edhr.masterdata.entity.Product;
 import com.zencas.edhr.masterdata.entity.ProductFamily;
 import com.zencas.edhr.masterdata.entity.Route;
+import com.zencas.edhr.masterdata.entity.RouteNode;
+import com.zencas.edhr.masterdata.entity.RouteRelation;
+import com.zencas.edhr.masterdata.entity.RouteVersion;
 import com.zencas.edhr.masterdata.entity.SopDocument;
 import com.zencas.edhr.masterdata.repository.MaterialRepository;
 import com.zencas.edhr.masterdata.repository.MaterialTypeRepository;
+import com.zencas.edhr.masterdata.repository.OperationCategoryRepository;
 import com.zencas.edhr.masterdata.repository.OperationRepository;
 import com.zencas.edhr.masterdata.repository.ProductFamilyRepository;
 import com.zencas.edhr.masterdata.repository.ProductRepository;
+import com.zencas.edhr.masterdata.repository.RouteNodeRepository;
+import com.zencas.edhr.masterdata.repository.RouteRelationRepository;
 import com.zencas.edhr.masterdata.repository.RouteRepository;
+import com.zencas.edhr.masterdata.repository.RouteVersionRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +72,11 @@ public class ProcessModelingController {
     private static final String TENANT_ID = "default";
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper();
     private static final Set<String> PRODUCT_MATERIAL_TYPE_NAMES = Set.of("半成品", "产成品");
+    private static final Set<String> OPERATION_TYPES = Set.of("普通工序", "关键工序", "特殊过程", "检验工序", "外协工序");
+    private static final Set<String> ROUTE_RELATION_TYPES = Set.of("SEQUENTIAL", "PARALLEL", "OPTIONAL", "REWORK", "JUMP", "ALTERNATIVE");
+    private static final String DEFAULT_OPERATION_TYPE = "普通工序";
+    private static final String OPERATION_CATEGORY_ALL = "ALL";
+    private static final String OPERATION_CATEGORY_UNCATEGORIZED = "UNCATEGORIZED";
     private static final String DEFAULT_MATERIAL_VERSION = "V1.0";
     private static final String DEFAULT_MATERIAL_PURPOSE = "生产物料";
     private static final Pattern VERSION_NUMBER_PATTERN = Pattern.compile("\\d+");
@@ -70,8 +85,12 @@ public class ProcessModelingController {
     private final MaterialRepository materialRepository;
     private final ProductRepository productRepository;
     private final ProductFamilyRepository productFamilyRepository;
+    private final OperationCategoryRepository operationCategoryRepository;
     private final OperationRepository operationRepository;
     private final RouteRepository routeRepository;
+    private final RouteVersionRepository routeVersionRepository;
+    private final RouteNodeRepository routeNodeRepository;
+    private final RouteRelationRepository routeRelationRepository;
     private final SopDocumentRepository sopDocumentRepository;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
@@ -309,25 +328,135 @@ public class ProcessModelingController {
     @GetMapping("/operations")
     public ApiResponse<PageResult<Operation>> listOperations(
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String operationName,
+            @RequestParam(required = false) String operationCode,
+            @RequestParam(required = false) String operationCategory,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order) {
         return ApiResponse.success(toResult(operationRepository.findAll(
-                keywordStatusSpec(keyword, status), pageable(page, size, sort, order)), page, size));
+                operationSpec(keyword, operationName, operationCode, operationCategory, status), pageable(page, size, sort, order)), page, size));
+    }
+
+    @GetMapping("/operations/categories")
+    public ApiResponse<List<OperationCategoryResponse>> listOperationCategories() {
+        return ApiResponse.success(toOperationCategoryResponses());
+    }
+
+    @PostMapping("/operations/categories")
+    @Transactional
+    public ApiResponse<OperationCategoryResponse> createOperationCategory(@RequestBody OperationCategoryRequest request) {
+        String name = requireOperationCategoryName(request);
+        if (operationCategoryRepository.existsByTenantIdAndNameIgnoreCase(TENANT_ID, name)) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工序分类已存在");
+        }
+        OperationCategory saved = operationCategoryRepository.save(OperationCategory.builder()
+                .id(idGenerator.nextId())
+                .tenantId(TENANT_ID)
+                .name(name)
+                .sortOrder(nextOperationCategorySortOrder())
+                .createdBy(currentOperatorName())
+                .createdAt(LocalDateTime.now())
+                .updatedBy(currentOperatorName())
+                .updatedAt(LocalDateTime.now())
+                .build());
+        writeAudit("OPERATION_CATEGORY", saved.getId(), "CREATE", "工序管理", "新增工序分类", Map.of(), operationCategorySnapshot(saved, 0L));
+        return ApiResponse.success(toOperationCategoryResponse(saved, 0L));
+    }
+
+    @PutMapping("/operations/categories/{id}")
+    @Transactional
+    public ApiResponse<OperationCategoryResponse> updateOperationCategory(@PathVariable Long id, @RequestBody OperationCategoryRequest request) {
+        OperationCategory existing = operationCategoryRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "工序分类不存在"));
+        String name = requireOperationCategoryName(request);
+        operationCategoryRepository.findByTenantIdAndNameIgnoreCase(TENANT_ID, name)
+                .filter(category -> !Objects.equals(category.getId(), existing.getId()))
+                .ifPresent(category -> {
+                    throw new BusinessException(ErrorCode.GENERAL_001, "工序分类已存在");
+                });
+        String oldName = existing.getName();
+        Map<String, Object> before = operationCategorySnapshot(existing, countOperationsByCategory(oldName));
+        existing.setName(name);
+        existing.setUpdatedBy(currentOperatorName());
+        existing.setUpdatedAt(LocalDateTime.now());
+        OperationCategory saved = operationCategoryRepository.save(existing);
+        if (!sameText(oldName, name)) {
+            List<Operation> operations = operationRepository.findAll().stream()
+                    .filter(operation -> sameText(operation.getOperationCategory(), oldName))
+                    .peek(operation -> {
+                        operation.setOperationCategory(name);
+                        operation.setUpdatedBy(currentOperatorName());
+                        operation.setUpdatedAt(LocalDateTime.now());
+                    })
+                    .toList();
+            operationRepository.saveAll(operations);
+        }
+        writeChangedAudit("OPERATION_CATEGORY", saved.getId(), "工序管理", "编辑工序分类", before, operationCategorySnapshot(saved, countOperationsByCategory(name)));
+        return ApiResponse.success(toOperationCategoryResponse(saved, countOperationsByCategory(name)));
+    }
+
+    @DeleteMapping("/operations/categories/{id}")
+    @Transactional
+    public ApiResponse<Void> deleteOperationCategory(@PathVariable Long id) {
+        OperationCategory existing = operationCategoryRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "工序分类不存在"));
+        Map<String, Object> before = operationCategorySnapshot(existing, countOperationsByCategory(existing.getName()));
+        List<Operation> operations = operationRepository.findAll().stream()
+                .filter(operation -> sameText(operation.getOperationCategory(), existing.getName()))
+                .peek(operation -> {
+                    Map<String, Object> operationBefore = operationSnapshot(operation);
+                    operation.setOperationCategory(null);
+                    operation.setUpdatedBy(currentOperatorName());
+                    operation.setUpdatedAt(LocalDateTime.now());
+                    writeChangedAudit("OPERATION", operation.getId(), "工序管理", "删除工序分类后自动转为未分类", operationBefore, operationSnapshot(operation));
+                })
+                .toList();
+        operationRepository.saveAll(operations);
+        operationCategoryRepository.delete(existing);
+        writeAudit("OPERATION_CATEGORY", existing.getId(), "DELETE", "工序管理", "删除工序分类", before, Map.of());
+        return ApiResponse.success(null);
+    }
+
+    @PutMapping("/operations/categories/order")
+    @Transactional
+    public ApiResponse<List<OperationCategoryResponse>> reorderOperationCategories(@RequestBody OperationCategoryOrderRequest request) {
+        List<String> orderedIds = request == null || request.ids() == null ? List.of() : request.ids();
+        if (orderedIds.isEmpty()) return ApiResponse.success(toOperationCategoryResponses());
+        Map<String, OperationCategory> categoryById = operationCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID)
+                .stream()
+                .collect(Collectors.toMap(category -> String.valueOf(category.getId()), category -> category, (left, right) -> left, LinkedHashMap::new));
+        int index = 1;
+        for (String id : orderedIds) {
+            OperationCategory category = categoryById.get(String.valueOf(id));
+            if (category == null) continue;
+            category.setSortOrder(index * 10);
+            category.setUpdatedBy(currentOperatorName());
+            category.setUpdatedAt(LocalDateTime.now());
+            index++;
+        }
+        operationCategoryRepository.saveAll(new java.util.ArrayList<>(categoryById.values()));
+        return ApiResponse.success(toOperationCategoryResponses());
     }
 
     @PostMapping("/operations")
     @Transactional
     public ApiResponse<Operation> createOperation(@RequestBody ProcessModelingRequest request) {
         LocalDateTime now = LocalDateTime.now();
+        String code = requireOperationCode(request);
+        validateOperationCodeForCreate(code);
+        String operationCategory = resolveOperationCategory(request);
         Operation entity = Operation.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
-                .code(generateCode("OP"))
+                .code(code)
                 .name(requireName(request))
                 .description(trimToNull(request.getDescription()))
+                .operationCategory(operationCategory)
+                .generalDescription(trimToNull(request.getGeneralDescription()))
+                .defaultOperationType(resolveOperationType(request))
                 .defaultDurationMinutes(request.getDefaultDurationMinutes())
                 .sortOrder(request.getSortOrder() == null ? 0 : request.getSortOrder())
                 .status(resolveStatus(request, "ACTIVE"))
@@ -347,9 +476,16 @@ public class ProcessModelingController {
     public ApiResponse<Operation> updateOperation(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
         Operation existing = operationRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_007));
+        String code = requireOperationCode(request);
+        validateOperationCodeForUpdate(existing, code);
+        String operationCategory = resolveOperationCategory(request);
         Map<String, Object> before = operationSnapshot(existing);
+        existing.setCode(code);
         existing.setName(requireName(request));
         existing.setDescription(trimToNull(request.getDescription()));
+        existing.setOperationCategory(operationCategory);
+        existing.setGeneralDescription(trimToNull(request.getGeneralDescription()));
+        existing.setDefaultOperationType(resolveOperationType(request));
         existing.setDefaultDurationMinutes(request.getDefaultDurationMinutes());
         existing.setSortOrder(request.getSortOrder() == null ? existing.getSortOrder() : request.getSortOrder());
         existing.setStatus(resolveStatus(request, existing.getStatus()));
@@ -379,8 +515,10 @@ public class ProcessModelingController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order) {
-        return ApiResponse.success(toResult(routeRepository.findAll(
-                keywordStatusSpec(keyword, status), pageable(page, size, sort, order)), page, size));
+        Page<Route> result = routeRepository.findAll(
+                keywordStatusSpec(keyword, status), pageable(page, size, sort, order));
+        result.getContent().forEach(this::enrichRouteVersions);
+        return ApiResponse.success(toResult(result, page, size));
     }
 
     @PostMapping("/routes")
@@ -394,6 +532,7 @@ public class ProcessModelingController {
                 .name(requireName(request))
                 .description(trimToNull(request.getDescription()))
                 .productFamilyId(request.getProductFamilyId() == null ? null : String.valueOf(request.getProductFamilyId()))
+                .commonAsset(request == null || request.getCommonAsset() == null ? true : request.getCommonAsset())
                 .status(resolveStatus(request, "DRAFT"))
                 .remark(trimToNull(request.getRemark()))
                 .createdBy(currentOperatorName())
@@ -402,6 +541,12 @@ public class ProcessModelingController {
                 .updatedAt(now)
                 .build();
         Route saved = routeRepository.save(entity);
+        RouteVersion version = createInitialRouteVersion(saved, request, now);
+        saved.setVersions(List.of(version));
+        saved.setVersionCount(1);
+        saved.setLatestVersionId(version.getId());
+        saved.setLatestVersion(version.getVersion());
+        saved.setLatestVersionStatus(version.getVersionStatus());
         writeAudit("ROUTE", saved.getId(), "CREATE", "工艺路线", "新增工艺路线", Map.of(), routeSnapshot(saved));
         return ApiResponse.success(saved);
     }
@@ -414,7 +559,8 @@ public class ProcessModelingController {
         Map<String, Object> before = routeSnapshot(existing);
         existing.setName(requireName(request));
         existing.setDescription(trimToNull(request.getDescription()));
-        existing.setProductFamilyId(request.getProductFamilyId() == null ? null : String.valueOf(request.getProductFamilyId()));
+        existing.setProductFamilyId(request.getProductFamilyId() == null ? existing.getProductFamilyId() : String.valueOf(request.getProductFamilyId()));
+        existing.setCommonAsset(request == null || request.getCommonAsset() == null ? existing.getCommonAsset() : request.getCommonAsset());
         existing.setStatus(resolveStatus(request, existing.getStatus()));
         existing.setRemark(trimToNull(request.getRemark()));
         existing.setUpdatedBy(currentOperatorName());
@@ -432,6 +578,57 @@ public class ProcessModelingController {
         routeRepository.deleteById(id);
         writeAudit("ROUTE", id, "DELETE", "工艺路线", "删除工艺路线", routeSnapshot(existing), Map.of());
         return ApiResponse.success(null);
+    }
+
+    @PostMapping("/routes/{routeId}/versions")
+    @Transactional
+    public ApiResponse<RouteVersion> createRouteVersion(@PathVariable Long routeId, @RequestBody ProcessModelingRequest request) {
+        Route route = routeRepository.findById(routeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MD_008));
+        RouteVersion version = createInitialRouteVersion(route, request, LocalDateTime.now());
+        writeAudit("ROUTE_VERSION", version.getId(), "CREATE", "工艺路线", "新增工艺路线版本", Map.of(), routeVersionSnapshot(version));
+        return ApiResponse.success(version);
+    }
+
+    @GetMapping("/routes/{routeId}/versions/{versionId}/graph")
+    public ApiResponse<RouteGraphResponse> getRouteGraph(@PathVariable Long routeId, @PathVariable Long versionId) {
+        requireRouteVersion(routeId, versionId);
+        return ApiResponse.success(RouteGraphResponse.builder()
+                .routeId(routeId)
+                .routeVersionId(versionId)
+                .nodes(routeNodeRepository.findByRouteVersionIdOrderBySortOrderAsc(versionId))
+                .relations(routeRelationRepository.findByRouteVersionIdOrderByPriorityAsc(versionId))
+                .build());
+    }
+
+    @PutMapping("/routes/{routeId}/versions/{versionId}/graph")
+    @Transactional
+    public ApiResponse<RouteGraphResponse> saveRouteGraph(
+            @PathVariable Long routeId,
+            @PathVariable Long versionId,
+            @RequestBody RouteGraphRequest request) {
+        requireRouteVersion(routeId, versionId);
+        routeNodeRepository.deleteByRouteVersionId(versionId);
+        routeRelationRepository.deleteByRouteVersionId(versionId);
+        List<RouteNode> nodes = (request == null || request.getNodes() == null ? List.<RouteGraphRequest.NodePayload>of() : request.getNodes())
+                .stream()
+                .map(node -> toRouteNode(versionId, node))
+                .toList();
+        List<RouteRelation> relations = (request == null || request.getRelations() == null ? List.<RouteGraphRequest.RelationPayload>of() : request.getRelations())
+                .stream()
+                .map(relation -> toRouteRelation(versionId, relation))
+                .toList();
+        List<RouteNode> savedNodes = routeNodeRepository.saveAll(nodes);
+        List<RouteRelation> savedRelations = routeRelationRepository.saveAll(relations);
+        writeAudit("ROUTE_GRAPH", versionId, "UPDATE", "工艺路线", "配置工艺路线图", Map.of(), Map.of(
+                "nodeCount", savedNodes.size(),
+                "relationCount", savedRelations.size()));
+        return ApiResponse.success(RouteGraphResponse.builder()
+                .routeId(routeId)
+                .routeVersionId(versionId)
+                .nodes(savedNodes)
+                .relations(savedRelations)
+                .build());
     }
 
     @GetMapping("/documents")
@@ -592,6 +789,96 @@ public class ProcessModelingController {
                 .orElse(null);
     }
 
+    private void enrichRouteVersions(Route route) {
+        if (route == null || route.getId() == null) return;
+        List<RouteVersion> versions = routeVersionRepository.findByRouteIdOrderByCreatedAtDesc(route.getId());
+        if (versions == null) versions = List.of();
+        route.setVersions(versions);
+        route.setVersionCount(versions.size());
+        if (!versions.isEmpty()) {
+            RouteVersion latest = versions.getFirst();
+            route.setLatestVersionId(latest.getId());
+            route.setLatestVersion(latest.getVersion());
+            route.setLatestVersionStatus(latest.getVersionStatus());
+        }
+    }
+
+    private RouteVersion createInitialRouteVersion(Route route, ProcessModelingRequest request, LocalDateTime now) {
+        RouteVersion version = RouteVersion.builder()
+                .id(idGenerator.nextId())
+                .tenantId(TENANT_ID)
+                .routeId(route.getId())
+                .version(resolveRouteVersion(request))
+                .versionStatus(resolveRouteVersionStatus(request))
+                .description(trimToNull(request == null ? null : request.getVersionDescription()))
+                .effectiveDate(request == null ? null : request.getEffectiveDate())
+                .expiryDate(request == null ? null : request.getExpiryDate())
+                .createdBy(currentOperatorName())
+                .createdAt(now)
+                .updatedBy(currentOperatorName())
+                .updatedAt(now)
+                .build();
+        return routeVersionRepository.save(version);
+    }
+
+    private RouteVersion requireRouteVersion(Long routeId, Long versionId) {
+        routeRepository.findById(routeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MD_008));
+        return routeVersionRepository.findByRouteIdAndId(routeId, versionId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "工艺路线版本不存在"));
+    }
+
+    private RouteNode toRouteNode(Long versionId, RouteGraphRequest.NodePayload payload) {
+        if (payload == null || !StringUtils.hasText(payload.getNodeKey())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线节点不能为空");
+        }
+        return RouteNode.builder()
+                .id(idGenerator.nextId())
+                .tenantId(TENANT_ID)
+                .routeVersionId(versionId)
+                .nodeKey(payload.getNodeKey().trim())
+                .operationId(payload.getOperationId())
+                .operationCode(trimToNull(payload.getOperationCode()))
+                .operationName(trimToNull(payload.getOperationName()))
+                .nodeType(StringUtils.hasText(payload.getNodeType()) ? payload.getNodeType().trim() : "OPERATION")
+                .positionX(payload.getPositionX() == null ? 0 : payload.getPositionX())
+                .positionY(payload.getPositionY() == null ? 0 : payload.getPositionY())
+                .sortOrder(payload.getSortOrder() == null ? 0 : payload.getSortOrder())
+                .configJson(trimToNull(payload.getConfigJson()))
+                .build();
+    }
+
+    private RouteRelation toRouteRelation(Long versionId, RouteGraphRequest.RelationPayload payload) {
+        if (payload == null || !StringUtils.hasText(payload.getSourceNodeKey()) || !StringUtils.hasText(payload.getTargetNodeKey())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线关系节点不能为空");
+        }
+        String relationType = StringUtils.hasText(payload.getRelationType()) ? payload.getRelationType().trim().toUpperCase() : "SEQUENTIAL";
+        if (!ROUTE_RELATION_TYPES.contains(relationType)) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线关系类型不正确");
+        }
+        return RouteRelation.builder()
+                .id(idGenerator.nextId())
+                .tenantId(TENANT_ID)
+                .routeVersionId(versionId)
+                .sourceNodeKey(payload.getSourceNodeKey().trim())
+                .targetNodeKey(payload.getTargetNodeKey().trim())
+                .relationType(relationType)
+                .label(trimToNull(payload.getLabel()))
+                .ruleExpression(trimToNull(payload.getRuleExpression()))
+                .priority(payload.getPriority() == null ? 0 : payload.getPriority())
+                .build();
+    }
+
+    private String resolveRouteVersion(ProcessModelingRequest request) {
+        if (request != null && StringUtils.hasText(request.getVersion())) return request.getVersion().trim();
+        return DEFAULT_MATERIAL_VERSION;
+    }
+
+    private String resolveRouteVersionStatus(ProcessModelingRequest request) {
+        if (request != null && StringUtils.hasText(request.getStatus())) return request.getStatus().trim();
+        return "DRAFT";
+    }
+
     private BusinessException derivedProductMutationException() {
         return new BusinessException(ErrorCode.GENERAL_001, "产品管理由物料管理自动派生，请在物料管理中维护半成品或产成品物料");
     }
@@ -733,11 +1020,78 @@ public class ProcessModelingController {
         };
     }
 
+    private Specification<Operation> operationSpec(String keyword, String operationName, String operationCode, String operationCategory, String status) {
+        return (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+            if (StringUtils.hasText(keyword)) {
+                String like = "%" + keyword.trim() + "%";
+                predicates.add(cb.or(cb.like(root.get("name"), like), cb.like(root.get("code"), like)));
+            }
+            if (StringUtils.hasText(operationName)) {
+                predicates.add(cb.like(root.get("name"), "%" + operationName.trim() + "%"));
+            }
+            if (StringUtils.hasText(operationCode)) {
+                predicates.add(cb.like(root.get("code"), "%" + operationCode.trim() + "%"));
+            }
+            if (StringUtils.hasText(operationCategory) && !OPERATION_CATEGORY_ALL.equalsIgnoreCase(operationCategory)) {
+                if (OPERATION_CATEGORY_UNCATEGORIZED.equalsIgnoreCase(operationCategory)) {
+                    predicates.add(cb.or(
+                            cb.isNull(root.get("operationCategory")),
+                            cb.equal(cb.trim(root.get("operationCategory")), "")));
+                } else {
+                    predicates.add(cb.equal(root.get("operationCategory"), operationCategory.trim()));
+                }
+            }
+            if (StringUtils.hasText(status) && !"ALL".equalsIgnoreCase(status)) {
+                predicates.add(cb.equal(root.get("status"), status.trim()));
+            }
+            return predicates.isEmpty() ? cb.conjunction() : cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+    }
+
     private String requireName(ProcessModelingRequest request) {
         if (request == null || !StringUtils.hasText(request.getName())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "名称不能为空");
         }
         return request.getName().trim();
+    }
+
+    private String requireOperationCode(ProcessModelingRequest request) {
+        if (request == null || !StringUtils.hasText(request.getCode())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工序编码不能为空");
+        }
+        return request.getCode().trim();
+    }
+
+    private void validateOperationCodeForCreate(String code) {
+        if (!findOperationsByCode(code).isEmpty()) {
+            throw duplicatedOperationCodeException();
+        }
+    }
+
+    private void validateOperationCodeForUpdate(Operation existing, String code) {
+        boolean conflicts = findOperationsByCode(code).stream()
+                .anyMatch(operation -> !Objects.equals(operation.getId(), existing.getId()));
+        if (conflicts) {
+            throw duplicatedOperationCodeException();
+        }
+    }
+
+    private List<Operation> findOperationsByCode(String code) {
+        if (!StringUtils.hasText(code)) return List.of();
+        List<Operation> operations = operationRepository.findByTenantIdAndCodeIgnoreCase(TENANT_ID, code.trim());
+        return operations == null ? List.of() : operations;
+    }
+
+    private BusinessException duplicatedOperationCodeException() {
+        return new BusinessException(ErrorCode.GENERAL_001, "工序编码已存在，请更换后重试");
+    }
+
+    private String requireOperationCategoryName(OperationCategoryRequest request) {
+        if (request == null || !StringUtils.hasText(request.name())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工序分类名称不能为空");
+        }
+        return request.name().trim();
     }
 
     private void validateMaterialDateRange(ProcessModelingRequest request) {
@@ -833,6 +1187,75 @@ public class ProcessModelingController {
     private String resolveMaterialPurpose(ProcessModelingRequest request) {
         if (request != null && StringUtils.hasText(request.getMaterialPurpose())) return request.getMaterialPurpose().trim();
         return DEFAULT_MATERIAL_PURPOSE;
+    }
+
+    private String resolveOperationType(ProcessModelingRequest request) {
+        if (request == null || !StringUtils.hasText(request.getDefaultOperationType())) return DEFAULT_OPERATION_TYPE;
+        String value = request.getDefaultOperationType().trim();
+        if (!OPERATION_TYPES.contains(value)) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "默认工序类型不正确");
+        }
+        return value;
+    }
+
+    private String resolveOperationCategory(ProcessModelingRequest request) {
+        String category = request == null ? null : trimToNull(request.getOperationCategory());
+        if (category == null) return null;
+        operationCategoryRepository.findByTenantIdAndNameIgnoreCase(TENANT_ID, category)
+                .orElseGet(() -> operationCategoryRepository.save(OperationCategory.builder()
+                        .id(idGenerator.nextId())
+                        .tenantId(TENANT_ID)
+                        .name(category)
+                        .sortOrder(nextOperationCategorySortOrder())
+                        .createdBy(currentOperatorName())
+                        .createdAt(LocalDateTime.now())
+                        .updatedBy(currentOperatorName())
+                        .updatedAt(LocalDateTime.now())
+                        .build()));
+        return category;
+    }
+
+    private List<OperationCategoryResponse> toOperationCategoryResponses() {
+        List<Operation> operations = operationRepository.findAll();
+        Map<String, Long> categoryCounts = operations.stream()
+                .map(Operation::getOperationCategory)
+                .filter(StringUtils::hasText)
+                .map(String::trim)
+                .collect(Collectors.groupingBy(
+                        category -> category,
+                        LinkedHashMap::new,
+                        Collectors.counting()));
+        long uncategorizedCount = operations.stream()
+                .filter(operation -> !StringUtils.hasText(operation.getOperationCategory()))
+                .count();
+        List<OperationCategoryResponse> responses = new java.util.ArrayList<>();
+        responses.add(new OperationCategoryResponse(OPERATION_CATEGORY_ALL, "全部", (long) operations.size(), 0));
+        responses.add(new OperationCategoryResponse(OPERATION_CATEGORY_UNCATEGORIZED, "未分类", uncategorizedCount, 1));
+        operationCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
+                .sorted(Comparator.comparing(OperationCategory::getSortOrder, Comparator.nullsLast(Integer::compareTo))
+                        .thenComparing(OperationCategory::getName, Comparator.nullsLast(String::compareToIgnoreCase)))
+                .map(category -> toOperationCategoryResponse(category, categoryCounts.getOrDefault(category.getName(), 0L)))
+                .forEach(responses::add);
+        return responses;
+    }
+
+    private OperationCategoryResponse toOperationCategoryResponse(OperationCategory category, Long count) {
+        return new OperationCategoryResponse(String.valueOf(category.getId()), category.getName(), count == null ? 0L : count, category.getSortOrder() == null ? 0 : category.getSortOrder());
+    }
+
+    private long countOperationsByCategory(String category) {
+        if (!StringUtils.hasText(category)) return 0L;
+        return operationRepository.findAll().stream()
+                .filter(operation -> sameText(operation.getOperationCategory(), category))
+                .count();
+    }
+
+    private int nextOperationCategorySortOrder() {
+        return operationCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
+                .map(OperationCategory::getSortOrder)
+                .filter(Objects::nonNull)
+                .max(Integer::compareTo)
+                .orElse(0) + 10;
     }
 
     private String trimToNull(String value) {
@@ -948,9 +1371,19 @@ public class ProcessModelingController {
         Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getName(), entity.getStatus(),
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
         snapshot.put("description", entity.getDescription());
+        snapshot.put("operationCategory", entity.getOperationCategory());
+        snapshot.put("generalDescription", entity.getGeneralDescription());
+        snapshot.put("defaultOperationType", entity.getDefaultOperationType());
         snapshot.put("defaultDurationMinutes", entity.getDefaultDurationMinutes());
         snapshot.put("sortOrder", entity.getSortOrder());
         snapshot.put("remark", entity.getRemark());
+        return snapshot;
+    }
+
+    private Map<String, Object> operationCategorySnapshot(OperationCategory entity, Long count) {
+        Map<String, Object> snapshot = commonSnapshot(entity.getId(), null, entity.getName(), "ACTIVE",
+                entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
+        snapshot.put("operationCount", count == null ? 0L : count);
         return snapshot;
     }
 
@@ -959,7 +1392,27 @@ public class ProcessModelingController {
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
         snapshot.put("description", entity.getDescription());
         snapshot.put("productFamilyId", entity.getProductFamilyId());
+        snapshot.put("commonAsset", entity.getCommonAsset());
+        snapshot.put("versionCount", entity.getVersionCount());
+        snapshot.put("latestVersion", entity.getLatestVersion());
+        snapshot.put("latestVersionStatus", entity.getLatestVersionStatus());
         snapshot.put("remark", entity.getRemark());
+        return snapshot;
+    }
+
+    private Map<String, Object> routeVersionSnapshot(RouteVersion entity) {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("id", entity.getId() == null ? null : String.valueOf(entity.getId()));
+        snapshot.put("routeId", entity.getRouteId() == null ? null : String.valueOf(entity.getRouteId()));
+        snapshot.put("version", entity.getVersion());
+        snapshot.put("versionStatus", entity.getVersionStatus());
+        snapshot.put("description", entity.getDescription());
+        snapshot.put("effectiveDate", entity.getEffectiveDate() == null ? null : entity.getEffectiveDate().toString());
+        snapshot.put("expiryDate", entity.getExpiryDate() == null ? null : entity.getExpiryDate().toString());
+        snapshot.put("createdBy", entity.getCreatedBy());
+        snapshot.put("createdAt", entity.getCreatedAt() == null ? null : entity.getCreatedAt().toString());
+        snapshot.put("updatedBy", entity.getUpdatedBy());
+        snapshot.put("updatedAt", entity.getUpdatedAt() == null ? null : entity.getUpdatedAt().toString());
         return snapshot;
     }
 
@@ -993,5 +1446,14 @@ public class ProcessModelingController {
         snapshot.put("updatedBy", updatedBy);
         snapshot.put("updatedAt", updatedAt == null ? null : updatedAt.toString());
         return snapshot;
+    }
+
+    public record OperationCategoryRequest(String name) {
+    }
+
+    public record OperationCategoryOrderRequest(List<String> ids) {
+    }
+
+    public record OperationCategoryResponse(String id, String name, Long count, Integer sortOrder) {
     }
 }

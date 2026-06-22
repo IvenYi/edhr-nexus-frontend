@@ -35,6 +35,7 @@ function mustAppearInOrder(content, tokens, reason) {
 mustInclude(packageContent, '"verify:process-modeling": "node scripts/verify-process-modeling-pages.mjs"', 'process modeling verification should be runnable from npm scripts');
 mustInclude(standardContent, '数据模块下的工艺建模页面统一沿用系统模块后台工作台标准', 'UI standard should include the process modeling page standard');
 mustInclude(standardContent, 'Snackbar 内部提示沿用系统-用户管理样式：使用 MUI Alert 默认外观，不使用 filled 变体。', 'UI standard should document the user-management feedback style');
+mustInclude(standardContent, '工序通用描述放在新增和编辑弹窗字段的最后', 'UI standard should document operation general description placement');
 
 mustInclude(constantsContent, "label: '工艺建模'", 'data module should expose the renamed process modeling group');
 mustAppearInOrder(constantsContent, [
@@ -70,6 +71,25 @@ mustInclude(apiContent, 'effectiveVersionCount?: number', 'material groups shoul
 mustNotInclude(apiContent, 'MaterialTypeRecord', 'master data API should not expose material type rows');
 mustInclude(apiContent, 'ProductRecord', 'master data API should type product rows');
 mustInclude(apiContent, 'ProcessDocumentRecord', 'master data API should type document rows');
+mustInclude(apiContent, 'RouteVersionRecord', 'master data API should type route versions');
+mustInclude(apiContent, 'versionDescription?: string', 'route versions should expose a version description');
+mustInclude(apiContent, 'RouteNodeRecord', 'master data API should type route graph nodes');
+mustInclude(apiContent, 'RouteRelationRecord', 'master data API should type route graph relations');
+mustInclude(apiContent, 'RouteGraphPayload', 'master data API should expose route graph payload shape');
+mustInclude(apiContent, 'createProcessRouteVersion', 'master data API should expose route template version create');
+mustInclude(apiContent, 'getProcessRouteGraph', 'master data API should expose route graph read');
+mustInclude(apiContent, 'saveProcessRouteGraph', 'master data API should expose route graph save');
+mustInclude(apiContent, 'operationCategory?: string', 'operation rows should expose operation category');
+mustInclude(apiContent, 'operationName?: string', 'operation query should support an independent operation name filter');
+mustInclude(apiContent, 'operationCode?: string', 'operation query should support an independent operation code filter');
+mustInclude(apiContent, 'defaultOperationType?: string', 'operation rows should expose default operation type');
+mustInclude(apiContent, 'generalDescription?: string', 'operation rows should expose general operation description');
+mustInclude(apiContent, 'getProcessOperationCategories', 'master data API should expose process operation categories');
+mustInclude(apiContent, 'createProcessOperationCategory', 'master data API should expose operation category create');
+mustInclude(apiContent, 'updateProcessOperationCategory', 'master data API should expose operation category update');
+mustInclude(apiContent, 'deleteProcessOperationCategory', 'master data API should expose operation category delete');
+mustInclude(apiContent, 'reorderProcessOperationCategories', 'master data API should expose operation category drag sorting');
+mustInclude(apiContent, "client.put(`${processModelingBase}/operations/categories/order`, { ids })", 'operation category drag sorting should persist through the backend');
 mustInclude(apiContent, 'getMaterials', 'master data API should expose material list');
 mustInclude(apiContent, 'createMaterial', 'master data API should expose material create');
 mustInclude(apiContent, 'updateMaterial', 'master data API should expose material update');
@@ -86,8 +106,194 @@ mustInclude(processModelingPermissionMigrationContent, "'master-data.products'",
 mustInclude(processModelingPermissionMigrationContent, "'master-data.documents'", 'document management should be granted through persisted permissions');
 mustInclude(processModelingPermissionMigrationContent, 'INSERT INTO role_permission', 'admin role should receive process modeling permissions');
 mustInclude(changelogMasterContent, '0025-material-version-display-fields.sql', 'material version display fields should have a database migration');
+mustInclude(changelogMasterContent, '0027-process-operation-standard-fields.sql', 'process operation standard fields should have a database migration');
+mustInclude(changelogMasterContent, '0028-process-operation-categories.sql', 'process operation categories should have a database migration');
 
 mustInclude(pageContent, 'PROCESS_MODELING_PAGE_CONFIGS', 'reusable page should be config-driven');
+mustInclude(pageContent, 'PROCESS_OPERATION_TYPES', 'operation management should define default operation type options');
+mustInclude(pageContent, 'PROCESS_OPERATION_STATUS_OPTIONS', 'operation management should define operation-only status options');
+mustInclude(pageContent, "const statusOptions = [\n  { value: 'ALL', label: '全部' },\n  { value: 'ACTIVE', label: '启用' },\n  { value: 'DISABLED', label: '禁用' },\n] as const;", 'process modeling status filters should only expose all, active, and disabled');
+mustNotInclude(pageContent, "{ value: 'DRAFT', label: '草稿' }", 'process modeling status options should not expose draft');
+mustNotInclude(pageContent, "{ value: 'OBSOLETE', label: '作废' }", 'process modeling status options should not expose obsolete');
+mustInclude(pageContent, "const PROCESS_OPERATION_STATUS_OPTIONS = [\n  { value: 'ALL', label: '全部' },\n  { value: 'ACTIVE', label: '启用' },\n  { value: 'DISABLED', label: '禁用' },\n] as const;", 'operation status should only allow all/active/disabled in filters');
+mustInclude(pageContent, "const availableStatusOptions = pageKey === 'operations' ? PROCESS_OPERATION_STATUS_OPTIONS : statusOptions;", 'operation forms should only allow active and disabled statuses');
+mustNotInclude(pageContent, 'ROUTE_RELATION_OPTIONS', 'route designer should remove the old top relation toolbar');
+mustInclude(pageContent, "'普通工序'", 'operation type options should include normal operations');
+mustInclude(pageContent, "'关键工序'", 'operation type options should include critical operations');
+mustInclude(pageContent, "'特殊过程'", 'operation type options should include special processes');
+mustInclude(pageContent, "'检验工序'", 'operation type options should include inspection operations');
+mustInclude(pageContent, "'外协工序'", 'operation type options should include outsourced operations');
+mustInclude(pageContent, 'operationCategory', 'operation management should expose operation category');
+mustInclude(pageContent, "defaultDurationMinutes: '标准工时'", 'operation audit fields should translate standard working time');
+mustInclude(pageContent, "columns: baseColumns(['name', 'code', 'operationCategory', 'defaultOperationType', 'defaultDurationMinutes', 'generalDescription', 'status', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt']", 'operation table should expose standard working time');
+mustInclude(pageContent, "{ id: 'defaultDurationMinutes', label: '标准工时', type: 'number' }", 'operation form should expose standard working time as a number field');
+mustInclude(pageContent, "if (field === 'status' || field === 'latestVersionStatus') return getStatusLabel(String(value));", 'operation audit status values should be translated');
+mustInclude(pageContent, "if (field === 'createdAt' || field === 'updatedAt' || field === 'effectiveDate' || field === 'expiryDate') return formatDateTime(String(value));", 'operation audit date values should be formatted');
+mustInclude(pageContent, 'operationName: string', 'operation filters should store operation name independently');
+mustInclude(pageContent, 'operationCode: string', 'operation filters should store operation code independently');
+mustInclude(pageContent, "label=\"工序名称\"", 'operation query should expose an independent operation name field');
+mustInclude(pageContent, "label=\"工序编码\"", 'operation query should expose an independent operation code field');
+mustNotInclude(pageContent, 'label="工序名称/编码"', 'operation query should not merge operation name and code into one field');
+mustInclude(pageContent, 'operationName: pageKey === \'operations\' ? filters.operationName.trim() || undefined : undefined', 'operation query should submit operationName separately');
+mustInclude(pageContent, 'operationCode: pageKey === \'operations\' ? filters.operationCode.trim() || undefined : undefined', 'operation query should submit operationCode separately');
+mustInclude(pageContent, 'defaultOperationType', 'operation management should expose default operation type');
+mustInclude(pageContent, 'generalDescription', 'operation management should expose general operation description');
+mustInclude(pageContent, 'renderOperationCategoryPanel', 'operation management should render a left category panel');
+mustInclude(pageContent, 'data-process-operation-category-panel', 'operation category panel should be testable and structurally isolated');
+mustInclude(pageContent, 'OPERATION_CATEGORY_ALL', 'operation category panel should use a stable all-category value');
+mustInclude(pageContent, 'OPERATION_CATEGORY_UNCATEGORIZED', 'operation category panel should use a stable uncategorized-category value');
+mustInclude(pageContent, "label: '全部'", 'operation category panel should default to all categories');
+mustInclude(pageContent, "label: '未分类'", 'operation category panel should expose an uncategorized bucket');
+mustInclude(pageContent, 'system: true', 'virtual operation categories should be marked as system categories');
+mustInclude(pageContent, 'category.system', 'system operation categories should not expose edit/delete controls');
+mustInclude(pageContent, 'isConcreteOperationCategory(filters.operationCategory)', 'new operations should prefill only concrete selected categories');
+mustInclude(pageContent, 'operationCategoryDialog', 'operation category panel should manage create and edit dialog state');
+mustInclude(pageContent, 'openCreateOperationCategoryDialog', 'operation category panel should expose a create action');
+mustInclude(pageContent, 'openEditOperationCategoryDialog', 'operation category panel should expose edit actions');
+mustInclude(pageContent, 'deleteOperationCategoryMutation', 'operation category panel should support deleting categories');
+mustInclude(pageContent, 'reorderOperationCategoryMutation', 'operation category panel should persist drag sorting');
+mustInclude(pageContent, 'handleOperationCategoryDrop', 'operation category panel should support drag dropping categories');
+mustInclude(pageContent, 'data-process-operation-category-drag-handle', 'operation category rows should expose a drag handle');
+mustInclude(pageContent, 'draggable={!category.system}', 'system operation categories should not be draggable');
+mustInclude(pageContent, '新增分类', 'operation category panel should expose a create action label');
+mustInclude(pageContent, '编辑分类', 'operation category panel should expose edit action labels');
+mustInclude(pageContent, '删除分类', 'operation category panel should expose delete action labels');
+mustInclude(pageContent, '<Dialog open={operationCategoryDialog.open}', 'operation category create and edit should render a real dialog');
+mustInclude(pageContent, '<Dialog open={deleteOperationCategoryTarget !== null}', 'operation category delete should render a real confirmation dialog');
+mustInclude(pageContent, '工序分类名称', 'operation category dialog should expose a category name field');
+mustInclude(pageContent, 'Autocomplete', 'operation form category should use a searchable select');
+mustInclude(pageContent, 'noOptionsText="暂无数据"', 'operation form category searchable select should show an empty-state text');
+mustInclude(pageContent, 'renderOperationFilters', 'operation management should render dedicated three-field filters');
+mustInclude(pageContent, 'renderRouteDesignerPanel', 'route management should render a visual route designer');
+mustInclude(pageContent, 'renderRouteDialogContent', 'route designer should live inside the route create and edit dialog');
+mustInclude(pageContent, 'pageKey === \'routes\' ? renderRouteDialogContent()', 'route create and edit dialog should render route-specific content');
+mustInclude(pageContent, 'data-process-route-dialog-side-panel', 'route dialog should group base and version information on the left side');
+mustInclude(pageContent, 'data-process-route-dialog-config-panel', 'route dialog should dedicate the right side to route configuration');
+mustInclude(pageContent, "gridTemplateColumns: { xs: '1fr', lg: '320px minmax(0, 1fr)' }", 'route dialog should use a left information column and a larger right configuration area on wide screens');
+mustInclude(pageContent, 'data-process-route-dialog-title-bar', 'route dialog title and close action should share one title bar');
+mustInclude(pageContent, 'aria-label="关闭工艺路线弹窗"', 'route dialog should expose a close icon in the title row');
+mustInclude(pageContent, "fullScreen={pageKey === 'routes'}", 'route create and edit dialog should fill the screen');
+mustInclude(pageContent, "width: '100vw'", 'route create and edit dialog should use the full viewport width');
+mustInclude(pageContent, "height: '100vh'", 'route create and edit dialog should use the full viewport height');
+mustInclude(pageContent, "gridTemplateColumns: '1fr'", 'route dialog base and version fields should render one field per row');
+mustInclude(pageContent, "renderRouteFormSection('工艺路线配置', [], renderRouteDesignerPanel()", 'route designer should live in its own dialog card');
+mustNotInclude(pageContent, "renderRouteFormSection('版本信息', ROUTE_VERSION_FIELD_IDS, renderRouteDesignerPanel()", 'route designer should not be nested inside the version information card');
+mustNotInclude(pageContent, '>工序库</Typography>', 'route designer operation list should not waste vertical space on a library title');
+mustNotInclude(pageContent, "{pageKey === 'routes' ? renderRouteDesignerPanel() : null}\n        </Box>\n      </Box>", 'route designer should not be mounted as a persistent list-page split panel');
+mustInclude(pageContent, 'data-process-route-designer-panel', 'route designer should be testable and structurally isolated');
+mustInclude(pageContent, 'ReactFlowProvider', 'route designer should provide React Flow context');
+mustInclude(pageContent, '<ReactFlow', 'route designer should render a React Flow canvas');
+mustInclude(pageContent, 'defaultViewport={{ x: 0, y: 0, zoom: 1 }}', 'route canvas should default to 100 percent zoom');
+mustNotInclude(pageContent, '\n              fitView\n', 'route canvas should not auto-fit single dropped nodes to 200 percent');
+mustInclude(pageContent, "const ROUTE_START_NODE_KEY = '__route_start__';", 'route designer should define a stable virtual start node key');
+mustInclude(pageContent, "const ROUTE_END_NODE_KEY = '__route_end__';", 'route designer should define a stable virtual end node key');
+mustInclude(pageContent, 'ensureRouteBoundaryNodes', 'route designer should auto-generate virtual start and end nodes');
+mustInclude(pageContent, "nodeType: 'START'", 'route designer should save the virtual start node type');
+mustInclude(pageContent, "nodeType: 'END'", 'route designer should save the virtual end node type');
+mustInclude(pageContent, 'deletable: false', 'route virtual boundary nodes should not be deletable');
+mustInclude(pageContent, 'draggable: true', 'route virtual boundary nodes should be draggable for manual layout adjustment');
+mustInclude(pageContent, 'function RouteDesignerNode', 'route designer should render custom nodes so virtual boundary handles can be controlled');
+mustInclude(pageContent, 'nodeTypes={routeDesignerNodeTypes}', 'route canvas should use the custom route designer node renderer');
+mustInclude(pageContent, "data.nodeType !== 'START'", 'route start node should not render a target handle above the node');
+mustInclude(pageContent, "data.nodeType !== 'END'", 'route end node should not render a source handle below the node');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_HANDLE_STYLE', 'route designer should enlarge connection handles for easier dragging');
+mustInclude(pageContent, 'width: 10', 'route designer connection handles should render at the requested 10px size');
+mustInclude(pageContent, 'height: 10', 'route designer connection handles should render at the requested 10px size');
+mustInclude(pageContent, 'snapRouteNodeToPeers', 'route designer should support node-to-node magnetic alignment while dragging');
+mustInclude(pageContent, 'ROUTE_DESIGNER_ALIGNMENT_THRESHOLD', 'route designer should define an alignment snap threshold');
+mustInclude(pageContent, 'onNodeDrag={handleRouteNodeDrag}', 'route canvas should apply magnetic alignment during node drag');
+mustInclude(pageContent, 'onNodeDragStop={handleRouteNodeDrag}', 'route canvas should finalize magnetic alignment after node drag ends');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_EDGE_MARKER', 'route designer should define a larger edge arrow marker');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_EDGE_MARKER_SIZE', 'route designer should share one arrow marker size across normal and blue edges');
+mustInclude(pageContent, 'ROUTE_DESIGNER_EDGE_MARKER_SIZE = 14', 'route designer edge arrow marker should use the requested compact size');
+mustInclude(pageContent, 'width: ROUTE_DESIGNER_EDGE_MARKER_SIZE', 'route designer edge arrow markers should share the same width');
+mustInclude(pageContent, 'height: ROUTE_DESIGNER_EDGE_MARKER_SIZE', 'route designer edge arrow markers should share the same height');
+mustInclude(pageContent, 'markerEnd: ROUTE_DESIGNER_EDGE_MARKER', 'route canvas edges should use the larger arrow marker');
+mustInclude(pageContent, 'usedRouteOperationIds', 'route operation library should track operations already dropped onto the canvas');
+mustInclude(pageContent, '!usedRouteOperationIds.has(String(operation.id))', 'route operation library should hide operations already used by canvas nodes');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_CONNECTED_COLOR', 'route designer should define a blue color for connected lines and handles');
+mustInclude(pageContent, 'ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE', 'route designer should render connected handles in blue');
+mustInclude(pageContent, 'ROUTE_DESIGNER_CONNECTED_EDGE_STYLE', 'route designer should render connected edges in blue');
+mustInclude(pageContent, 'sourceConnected', 'route designer should color every source handle that participates in a connected edge');
+mustInclude(pageContent, 'targetConnected', 'route designer should color every target handle that participates in a connected edge');
+mustInclude(pageContent, 'routeNodesWithConnectionState', 'route designer should derive handle color state from all current edges');
+mustInclude(pageContent, 'getRouteEdgePresentation', 'route designer should resolve blue edge style for connected edges');
+mustNotInclude(pageContent, 'sourceNodeKey === ROUTE_START_NODE_KEY || targetNodeKey === ROUTE_END_NODE_KEY', 'route edge color should not be limited to start/end closure edges');
+mustNotInclude(pageContent, 'isStartNode ? ROUTE_DESIGNER_BOUNDARY_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE', 'route start handle should not be blue unless it is connected');
+mustNotInclude(pageContent, 'isEndNode ? ROUTE_DESIGNER_BOUNDARY_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE', 'route end handle should not be blue unless it is connected');
+mustNotInclude(pageContent, '\n      label,\n      markerEnd: { type: MarkerType.ArrowClosed },', 'route canvas edges should not render visible text labels');
+mustInclude(pageContent, 'data-process-route-canvas-toolbar', 'route canvas should render the custom top-right toolbar');
+mustInclude(pageContent, 'routeDesignerInteractionMode', 'route canvas toolbar should keep a mouse/hand interaction mode');
+mustInclude(pageContent, 'data-process-route-interaction-select', 'route canvas toolbar should expose the mouse selection mode button for QA');
+mustInclude(pageContent, 'data-process-route-interaction-pan', 'route canvas toolbar should expose the hand pan mode button for QA');
+mustInclude(pageContent, "panOnDrag={routeDesignerInteractionMode === 'pan'}", 'route canvas should pan only in hand mode');
+mustInclude(pageContent, "selectionOnDrag={routeDesignerInteractionMode === 'select'}", 'route canvas should box-select only in mouse mode');
+mustInclude(pageContent, 'routeDesignerZoomPercent', 'route canvas toolbar should display the current zoom percent');
+mustInclude(pageContent, 'routeDesignerZoomInput', 'route canvas toolbar should render the zoom percent as an editable input');
+mustInclude(pageContent, 'data-process-route-zoom-input', 'route canvas toolbar should expose the zoom input for QA');
+mustInclude(pageContent, 'data-process-route-toolbar-divider', 'route canvas toolbar should render a divider after the zoom-out action');
+mustAppearInOrder(pageContent, [
+  'title="框选"',
+  'title="拖动画布"',
+  'title="放大"',
+  'data-process-route-zoom-input',
+  'title="缩小"',
+  'data-process-route-toolbar-divider',
+  'title="适配画布"',
+], 'route canvas toolbar should order controls as select, pan, plus, percent input, minus, divider, fit view');
+mustNotInclude(pageContent, 'title="展开工具"', 'route canvas toolbar should remove the left-side expand control');
+mustNotInclude(pageContent, 'title="工序列表"', 'route canvas toolbar should remove the left-side list control');
+mustNotInclude(pageContent, 'title="画布视图"', 'route canvas toolbar should remove the left-side viewport control');
+mustNotInclude(pageContent, '<KeyboardArrowRightRounded', 'route canvas toolbar should not render the left-side expand icon');
+mustNotInclude(pageContent, '<DesktopWindowsRounded', 'route canvas toolbar should not render the left-side canvas icon');
+mustNotInclude(pageContent, 'minWidth: 28', 'route canvas toolbar should not render the page number block');
+mustNotInclude(pageContent, '<MiniMap', 'route canvas should hide the default minimap control');
+mustNotInclude(pageContent, '<Controls', 'route canvas should hide the default bottom-left controls');
+mustInclude(pageContent, 'onDragStart={(event) => handleRouteOperationDragStart(event, operation)}', 'route designer should support dragging operations onto the canvas');
+mustInclude(pageContent, 'onDragEnd={handleRouteOperationDragEnd}', 'route operation dragging should clear the canvas drop preview when drag ends');
+mustInclude(pageContent, 'onDrop={handleRouteCanvasDrop}', 'route designer should support dropping operation nodes onto the canvas');
+mustInclude(pageContent, 'onDragLeave={handleRouteCanvasDragLeave}', 'route designer should clear the operation drop preview when leaving the canvas');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_OPERATION_NODE_WIDTH = 128', 'route designer operation node width should be centralized for drop positioning and preview');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_OPERATION_NODE_HEIGHT = 38', 'route designer operation node height should be centralized for drop positioning and preview');
+mustInclude(pageContent, 'getRouteCanvasDropPosition', 'route canvas drops should use a shared centered coordinate helper');
+mustInclude(pageContent, 'x: position.x - ROUTE_DESIGNER_OPERATION_NODE_WIDTH / 2', 'route canvas drops should place the dragged operation around the cursor instead of using the cursor as the top-left corner');
+mustInclude(pageContent, 'routeCanvasDropPreview', 'route canvas should keep a live drop preview while dragging operations');
+mustInclude(pageContent, 'data-process-route-drop-preview', 'route canvas should render a visual shadow preview for the drop location');
+mustInclude(pageContent, 'onConnect={handleRouteConnect}', 'route designer should support modeling route relations by connecting nodes');
+mustInclude(pageContent, 'selectionOnDrag', 'route designer should support box selection');
+mustNotInclude(pageContent, 'copySelectedRouteSegment', 'route designer should remove the old copy segment toolbar action');
+mustNotInclude(pageContent, 'pasteRouteSegment', 'route designer should remove the old paste segment toolbar action');
+mustNotInclude(pageContent, 'batchReplaceRouteOperations', 'route designer should remove the old batch replace toolbar action');
+mustNotInclude(pageContent, 'routeRelationType', 'route designer should remove the old relation type toolbar selector');
+mustInclude(pageContent, 'routeOperationLibraryKeyword', 'route operation library should support fuzzy search by operation name or code');
+mustInclude(pageContent, 'routeOperationLibraryCategory', 'route operation library should support category filtering');
+mustInclude(pageContent, 'filteredRouteOperations', 'route operation library should render the filtered operation list');
+mustInclude(pageContent, 'ROUTE_DESIGNER_LIBRARY_DEFAULT_WIDTH', 'route designer should define a default operation library width');
+mustInclude(pageContent, 'routeDesignerLibraryWidth', 'route designer should keep operation library width in state');
+mustInclude(pageContent, 'beginRouteDesignerLibraryResize', 'route designer should allow dragging the operation-library/canvas divider');
+mustInclude(pageContent, 'data-process-route-library-resizer', 'route designer should expose a draggable divider between operation list and canvas');
+mustInclude(pageContent, "gridTemplateColumns: { xs: '1fr', xl: 'repeat(auto-fit, minmax(158px, 1fr))' }", 'route operation library controls and operation cards should fall back to one column when the library is too narrow');
+mustInclude(pageContent, 'proOptions={{ hideAttribution: true }}', 'route canvas should hide the React Flow attribution');
+mustInclude(pageContent, 'label="工序分类"', 'route operation library should expose an operation category filter');
+mustInclude(pageContent, 'placeholder="搜索工序名称/编码"', 'route operation library should expose a name/code fuzzy search input');
+mustInclude(pageContent, "overflow: 'hidden'", 'route dialog should keep outer scrolling disabled');
+mustInclude(pageContent, 'createRouteVersionMutation', 'route designer should support creating new route template versions');
+mustInclude(pageContent, 'saveRouteGraphMutation', 'route designer should persist nodes and relations separately');
+mustInclude(pageContent, 'toRouteGraphPayload', 'route designer should serialize canvas nodes and relations to the backend graph payload');
+mustInclude(pageContent, 'fromRouteGraphResponse', 'route designer should hydrate canvas nodes and relations from backend graph data');
+mustInclude(pageContent, "gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }", 'operation query filters should show three fields per row on desktop');
+mustInclude(pageContent, "gridColumn: { xs: '1', md: '3' }", 'operation query buttons should attach to the end of the last filter row');
+mustInclude(pageContent, "{ id: 'code', label: '工序编码', required: true }", 'operation form should require a user-entered operation code');
+mustInclude(pageContent, '请填写工序编码', 'operation form should validate operation code before saving');
+mustAppearInOrder(pageContent, [
+  "{ id: 'name', label: '工序名称', required: true }",
+  "{ id: 'code', label: '工序编码', required: true }",
+  "{ id: 'operationCategory', label: '工序分类' }",
+  "{ id: 'defaultOperationType', label: '默认工序类型' }",
+  "{ id: 'defaultDurationMinutes', label: '标准工时', type: 'number' }",
+  "{ id: 'status', label: '状态' }",
+  "{ id: 'generalDescription', label: '工序通用描述', multiline: true }",
+], 'operation form fields should put general description last');
 mustAppearInOrder(pageContent, [
   'const processColumnLabels',
   'const PROCESS_MODELING_PAGE_CONFIGS',
@@ -108,13 +314,13 @@ mustNotInclude(pageContent, 'KeyboardDoubleArrowUp', 'material toolbar should no
 mustInclude(pageContent, 'handleColumnSettingDragStart', 'field settings should support drag sorting');
 mustInclude(pageContent, 'beginColumnResize', 'table columns should support drag width changes');
 mustInclude(pageContent, 'beginMaterialVersionColumnResize', 'material version child table columns should support drag width changes');
-mustInclude(pageContent, "type ColumnSettingsTarget = 'main' | 'materialVersion';", 'field settings should support main table and material version child table targets');
+mustInclude(pageContent, "type ColumnSettingsTarget = 'main' | 'materialVersion' | 'routeVersion';", 'field settings should support main table, material version, and route version child table targets');
 mustInclude(pageContent, 'const [columnSettingsTab, setColumnSettingsTab] = useState<ColumnSettingsTarget>(\'main\');', 'field settings popover should track the active main or child table tab');
 mustInclude(pageContent, 'const materialVersionColumnSettingsStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_MATERIAL_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX, pageKey), [pageKey]);', 'material version field settings should use a separate persistence key');
 mustInclude(pageContent, 'const [materialVersionColumnSettings, setMaterialVersionColumnSettings] = useState<ProcessColumnSettings>(() => loadColumnSettings(materialVersionColumnSettingsStorageKey, materialVersionColumnSettingsConfig));', 'material version field settings should load persisted order and visibility');
-mustInclude(pageContent, 'const activeColumnSettings = columnSettingsTab === \'materialVersion\' ? materialVersionColumnSettings : columnSettings;', 'field settings panel should switch between main and child table settings');
-mustInclude(pageContent, 'const activeColumnSettingsItems = columnSettingsTab === \'materialVersion\' ? materialVersionColumnSettingsItems : columnSettingsItems;', 'field settings panel should switch between main and child table columns');
-mustInclude(pageContent, 'const setActiveColumnSettings = columnSettingsTab === \'materialVersion\' ? setMaterialVersionColumnSettings : setColumnSettings;', 'field settings changes should update the active main or child table settings');
+mustInclude(pageContent, "const activeColumnSettings = columnSettingsTab === 'materialVersion' ? materialVersionColumnSettings : columnSettingsTab === 'routeVersion' ? routeVersionColumnSettings : columnSettings;", 'field settings panel should switch between main and child table settings');
+mustInclude(pageContent, "const activeColumnSettingsItems = columnSettingsTab === 'materialVersion' ? materialVersionColumnSettingsItems : columnSettingsTab === 'routeVersion' ? routeVersionColumnSettingsItems : columnSettingsItems;", 'field settings panel should switch between main and child table columns');
+mustInclude(pageContent, "const setActiveColumnSettings = columnSettingsTab === 'materialVersion' ? setMaterialVersionColumnSettings : columnSettingsTab === 'routeVersion' ? setRouteVersionColumnSettings : setColumnSettings;", 'field settings changes should update the active main or child table settings');
 mustInclude(pageContent, '<Tab label="主表" value="main" />', 'material field settings should expose the main table tab');
 mustInclude(pageContent, '<Tab label="子表" value="materialVersion" />', 'material field settings should expose the material version child table tab');
 mustInclude(pageContent, 'visibleMaterialVersionColumns', 'material version child table should render only visible child columns');
@@ -137,6 +343,7 @@ mustInclude(pageContent, "auditEntityId.startsWith('process-modeling-material-gr
 mustInclude(pageContent, '审计记录加载中', 'audit tab should show a loading state instead of an empty state while querying');
 mustInclude(pageContent, '审计记录加载失败', 'audit tab should show query failures instead of silently showing an empty state');
 mustInclude(pageContent, 'getApiErrorMessage', 'mutations should show concrete backend error messages');
+mustInclude(pageContent, '工序编码已存在，请更换后重试', 'duplicate operation code should show a readable friendly message');
 mustInclude(pageContent, "anchorOrigin={{ vertical: 'top', horizontal: 'right' }}", 'operation feedback should appear in the top-right corner');
 mustInclude(pageContent, "<Alert severity={snackbar.severity} onClose={closeSnackbar}>{snackbar.message}</Alert>", 'operation feedback should follow the system user management alert style');
 mustNotInclude(pageContent, 'variant="filled"', 'operation feedback should not use filled alerts');
@@ -159,6 +366,31 @@ mustInclude(pageContent, "effectiveDate: '生效日期'", 'material version rows
 mustInclude(pageContent, "expiryDate: '失效日期'", 'material version rows should expose expiry date label');
 mustInclude(pageContent, "labels: { name: '物料名称', code: '物料料号', version: '版本数量' }", 'material main table should use material-specific name/code/version labels');
 mustInclude(pageContent, "columns: baseColumns(['name', 'code', 'specification', 'materialTypeId', 'unit', 'version', 'effectiveVersionCount', 'materialPurpose', 'status', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt']", 'material table should include version count, effective version count, and material purpose');
+mustInclude(pageContent, "columns: baseColumns(['name', 'version', 'description', 'status', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt']", 'route main table should hide generated template code, product family, common asset, and duplicated version-count fields');
+mustInclude(pageContent, "labels: { name: '工艺路线模板名称', version: '版本数量' }", 'route table should use the requested route-template labels');
+mustInclude(pageContent, "{ id: 'name', label: '工艺路线模板名称', required: true }", 'route create form should name route templates explicitly');
+mustInclude(pageContent, "{ id: 'version', label: '版本', required: true }", 'route create form should create an initial version');
+mustNotInclude(pageContent, "labels: { name: '模板名称', code: '模板编码', version: '当前版本' }", 'route table should not expose the generated template code label');
+mustNotInclude(pageContent, "columns: baseColumns(['name', 'code', 'version', 'versionCount', 'commonAsset', 'productFamilyId', 'description', 'status', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt']", 'route table should not include generated code, product family, or common asset columns');
+mustNotInclude(pageContent, "{ id: 'commonAsset', label: '通用资产' }", 'route form should remove common asset input');
+mustNotInclude(pageContent, "{ id: 'productFamilyId', label: '产品簇' }", 'route form should remove product family input');
+mustInclude(pageContent, 'ROUTE_VERSION_COLUMNS', 'route version child table should define its own configurable columns');
+mustInclude(pageContent, "label: id === 'version' ? '工艺路线版本号' : id === 'status' ? '版本状态' : id === 'effectiveDate' ? '生效日期' : id === 'expiryDate' ? '失效日期' : id === 'description' ? '版本说明'", 'route version child table should expose version description');
+mustInclude(pageContent, 'PROCESS_MODELING_ROUTE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX', 'route version child table columns should persist widths per user');
+mustInclude(pageContent, 'PROCESS_MODELING_ROUTE_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX', 'route version child table columns should persist order and visibility per user');
+mustInclude(pageContent, 'visibleRouteVersionColumns', 'route version child table should render only visible child columns');
+mustInclude(pageContent, 'renderRouteVersionTable', 'route rows should expand into a route version child table');
+mustInclude(pageContent, 'expandedRouteGroups', 'route rows should track expanded route templates');
+mustInclude(pageContent, 'expandAllRouteGroups', 'route toolbar should support expanding all route versions');
+mustInclude(pageContent, 'collapseAllRouteGroups', 'route toolbar should support collapsing all route versions');
+mustInclude(pageContent, 'resolveDeleteRowId', 'route delete should refresh stale numeric ids before deleting');
+mustInclude(pageContent, "getProcessRoutes({ page: 1, size: 1, keyword: row.code })", 'route delete should resolve a stale route id by route code');
+mustInclude(pageContent, '<Tab label="子表" value="routeVersion" />', 'route field settings should expose the route version child table tab');
+mustInclude(pageContent, "const ROUTE_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'description'];", 'route dialog should split template base information fields');
+mustInclude(pageContent, "const ROUTE_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'versionDescription'];", 'route dialog should split version information fields');
+mustInclude(pageContent, "renderRouteFormSection('基础信息', ROUTE_BASE_FIELD_IDS)", 'route dialog should show a base information section');
+mustInclude(pageContent, "{ id: 'versionDescription', label: '版本说明', multiline: true }", 'route version section should expose version description');
+mustInclude(pageContent, "version: pageKey === 'routes' ? 'V1.0'", 'new route templates should default an initial version');
 mustInclude(pageContent, "{ id: 'expiryDate', label: '失效日期' },\n      { id: 'description', label: '版本说明', multiline: true },\n    ],\n  },", 'material form should expose version description without a manual status control');
 mustNotInclude(pageContent, "{ id: 'expiryDate', label: '失效日期' },\n      { id: 'description', label: '描述', multiline: true },", 'material form should not expose description field');
 mustNotInclude(pageContent, "const MATERIAL_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'status'", 'material version dialog should not expose manual status');
@@ -280,6 +512,13 @@ mustNotInclude(pageContent, 'getMaterialTypes', 'material type page endpoint sho
 mustNotInclude(pageContent, 'label="编码"', 'forms should not expose manual code input');
 
 mustInclude(processModelingControllerContent, 'resolveMaterialRuntimeStatus', 'backend material status should be derived from effective and expiry time');
+mustInclude(processModelingControllerContent, 'OperationCategoryRepository', 'operation category management should use a persisted category repository');
+mustInclude(processModelingControllerContent, 'createOperationCategory', 'backend should expose operation category create');
+mustInclude(processModelingControllerContent, 'updateOperationCategory', 'backend should expose operation category update');
+mustInclude(processModelingControllerContent, 'deleteOperationCategory', 'backend should expose operation category delete');
+mustInclude(processModelingControllerContent, 'requireOperationCode', 'backend should require user-entered operation code');
+mustInclude(processModelingControllerContent, '工序编码不能为空', 'backend should return a concrete message when operation code is missing');
+mustInclude(processModelingControllerContent, '工序编码已存在', 'backend should prevent duplicate operation codes');
 mustInclude(processModelingControllerContent, 'resolveMaterialGroupRuntimeStatus', 'backend material group status should be derived from all version runtime statuses');
 mustInclude(processModelingControllerContent, '.filter(group -> matchesStatus(group.getStatus(), status))', 'material list should filter by grouped derived runtime status');
 mustInclude(processModelingControllerContent, 'case "status" -> Comparator.comparing(this::resolveMaterialRuntimeStatus', 'material status sorting should use derived runtime status');
@@ -290,6 +529,15 @@ mustInclude(processModelingControllerContent, 'if (expiryDate != null && !expiry
 mustInclude(processModelingControllerContent, 'if (statuses.stream().allMatch("EXPIRED"::equals)) return "DISABLED";', 'material group should be disabled when all versions are expired');
 mustInclude(processModelingControllerContent, 'validateMaterialDateRange(request);', 'backend material create/update should validate effective and expiry time range');
 mustInclude(processModelingControllerContent, 'throw new BusinessException(ErrorCode.GENERAL_001, "失效时间不能早于生效时间");', 'backend should reject material expiry time earlier than effective time');
+mustInclude(processModelingControllerContent, 'RouteVersionRepository', 'backend should persist route template versions separately');
+mustInclude(processModelingControllerContent, 'RouteNodeRepository', 'backend should persist route graph nodes separately');
+mustInclude(processModelingControllerContent, 'RouteRelationRepository', 'backend should persist route graph relations separately');
+mustInclude(processModelingControllerContent, 'createRouteVersion', 'backend should expose route version create');
+mustInclude(processModelingControllerContent, 'getRouteGraph', 'backend should expose route graph read');
+mustInclude(processModelingControllerContent, 'saveRouteGraph', 'backend should expose route graph save');
+mustInclude(processModelingControllerContent, 'ROUTE_RELATION_TYPES', 'backend should validate route relation types');
+mustInclude(processModelingControllerContent, 'routeRelationRepository.saveAll(relations)', 'backend should save route relations independently from operation master data');
+mustInclude(changelogMasterContent, '0029-route-template-version-graph.sql', 'route template version and graph tables should have a database migration');
 
 if (failures.length > 0) {
   console.error('Process modeling verification failed:');

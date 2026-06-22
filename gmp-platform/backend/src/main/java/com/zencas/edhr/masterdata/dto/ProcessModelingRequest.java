@@ -15,6 +15,8 @@ public class ProcessModelingRequest {
     private String code;
     private String name;
     private String description;
+    private String generalDescription;
+    private Boolean commonAsset;
     private String status;
     private String remark;
     private String specification;
@@ -23,10 +25,13 @@ public class ProcessModelingRequest {
     private Long materialTypeId;
     private Long productFamilyId;
     private String version;
+    private String versionDescription;
     private String materialPurpose;
     private LocalDateTime effectiveDate;
     private LocalDateTime expiryDate;
     private String fileReference;
+    private String operationCategory;
+    private String defaultOperationType;
     private Integer defaultDurationMinutes;
     private Integer sortOrder;
 }
