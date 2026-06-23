@@ -65,3 +65,5 @@ databaseChangeLog:
       file: db/changelog/0030-route-version-description.sql
   - include:
       file: db/changelog/0031-operation-category-sort-order.sql
+  - include:
+      file: db/changelog/0032-route-relation-handles.sql

@@ -590,6 +590,47 @@ public class ProcessModelingController {
         return ApiResponse.success(version);
     }
 
+    @PutMapping("/routes/{routeId}/versions/{versionId}")
+    @Transactional
+    public ApiResponse<RouteVersion> updateRouteVersion(
+            @PathVariable Long routeId,
+            @PathVariable Long versionId,
+            @RequestBody ProcessModelingRequest request) {
+        validateRouteDateRange(request);
+        if (request == null || !StringUtils.hasText(request.getVersion())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "版本不能为空");
+        }
+        RouteVersion existing = requireRouteVersion(routeId, versionId);
+        Map<String, Object> before = routeVersionSnapshot(existing);
+        existing.setVersion(request.getVersion().trim());
+        if (StringUtils.hasText(request.getStatus())) existing.setVersionStatus(request.getStatus().trim());
+        existing.setDescription(trimToNull(request == null ? null : request.getVersionDescription()));
+        existing.setEffectiveDate(request == null ? null : request.getEffectiveDate());
+        existing.setExpiryDate(request == null ? null : request.getExpiryDate());
+        existing.setUpdatedBy(currentOperatorName());
+        existing.setUpdatedAt(LocalDateTime.now());
+        RouteVersion saved = routeVersionRepository.save(existing);
+        writeChangedAudit("ROUTE_VERSION", saved.getId(), "工艺路线", "编辑工艺路线版本", before, routeVersionSnapshot(saved));
+        return ApiResponse.success(saved);
+    }
+
+    @DeleteMapping("/routes/{routeId}/versions/{versionId}")
+    @Transactional
+    public ApiResponse<Void> deleteRouteVersion(@PathVariable Long routeId, @PathVariable Long versionId) {
+        RouteVersion existing = requireRouteVersion(routeId, versionId);
+        if (routeVersionRepository.countByRouteId(routeId) <= 1) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线模板仅剩一个版本，请删除父表工艺路线模板");
+        }
+        Map<String, Object> before = routeVersionSnapshot(existing);
+        routeRelationRepository.deleteByRouteVersionId(versionId);
+        routeRelationRepository.flush();
+        routeNodeRepository.deleteByRouteVersionId(versionId);
+        routeNodeRepository.flush();
+        routeVersionRepository.delete(existing);
+        writeAudit("ROUTE_VERSION", versionId, "DELETE", "工艺路线", "删除工艺路线版本", before, Map.of());
+        return ApiResponse.success(null);
+    }
+
     @GetMapping("/routes/{routeId}/versions/{versionId}/graph")
     public ApiResponse<RouteGraphResponse> getRouteGraph(@PathVariable Long routeId, @PathVariable Long versionId) {
         requireRouteVersion(routeId, versionId);
@@ -608,8 +649,10 @@ public class ProcessModelingController {
             @PathVariable Long versionId,
             @RequestBody RouteGraphRequest request) {
         requireRouteVersion(routeId, versionId);
-        routeNodeRepository.deleteByRouteVersionId(versionId);
         routeRelationRepository.deleteByRouteVersionId(versionId);
+        routeRelationRepository.flush();
+        routeNodeRepository.deleteByRouteVersionId(versionId);
+        routeNodeRepository.flush();
         List<RouteNode> nodes = (request == null || request.getNodes() == null ? List.<RouteGraphRequest.NodePayload>of() : request.getNodes())
                 .stream()
                 .map(node -> toRouteNode(versionId, node))
@@ -793,8 +836,10 @@ public class ProcessModelingController {
         if (route == null || route.getId() == null) return;
         List<RouteVersion> versions = routeVersionRepository.findByRouteIdOrderByCreatedAtDesc(route.getId());
         if (versions == null) versions = List.of();
+        versions.forEach(version -> version.setVersionStatus(resolveRouteVersionRuntimeStatus(version)));
         route.setVersions(versions);
         route.setVersionCount(versions.size());
+        route.setStatus(resolveRouteGroupRuntimeStatus(versions));
         if (!versions.isEmpty()) {
             RouteVersion latest = versions.getFirst();
             route.setLatestVersionId(latest.getId());
@@ -862,6 +907,8 @@ public class ProcessModelingController {
                 .routeVersionId(versionId)
                 .sourceNodeKey(payload.getSourceNodeKey().trim())
                 .targetNodeKey(payload.getTargetNodeKey().trim())
+                .sourceHandle(trimToNull(payload.getSourceHandle()))
+                .targetHandle(trimToNull(payload.getTargetHandle()))
                 .relationType(relationType)
                 .label(trimToNull(payload.getLabel()))
                 .ruleExpression(trimToNull(payload.getRuleExpression()))
@@ -877,6 +924,28 @@ public class ProcessModelingController {
     private String resolveRouteVersionStatus(ProcessModelingRequest request) {
         if (request != null && StringUtils.hasText(request.getStatus())) return request.getStatus().trim();
         return "DRAFT";
+    }
+
+    private String resolveRouteVersionRuntimeStatus(RouteVersion version) {
+        if (version == null) return "ACTIVE";
+        return resolveRouteVersionRuntimeStatus(version.getEffectiveDate(), version.getExpiryDate());
+    }
+
+    private String resolveRouteVersionRuntimeStatus(LocalDateTime effectiveDate, LocalDateTime expiryDate) {
+        LocalDateTime now = LocalDateTime.now();
+        if (effectiveDate != null && effectiveDate.isAfter(now)) return "PENDING";
+        if (expiryDate != null && !expiryDate.isAfter(now)) return "EXPIRED";
+        return "ACTIVE";
+    }
+
+    private String resolveRouteGroupRuntimeStatus(List<RouteVersion> versions) {
+        List<String> statuses = versions.stream()
+                .map(this::resolveRouteVersionRuntimeStatus)
+                .toList();
+        if (statuses.contains("ACTIVE")) return "ACTIVE";
+        if (statuses.stream().allMatch("EXPIRED"::equals)) return "DISABLED";
+        if (statuses.contains("PENDING")) return "PENDING";
+        return "DISABLED";
     }
 
     private BusinessException derivedProductMutationException() {
@@ -1095,6 +1164,13 @@ public class ProcessModelingController {
     }
 
     private void validateMaterialDateRange(ProcessModelingRequest request) {
+        if (request == null || request.getEffectiveDate() == null || request.getExpiryDate() == null) return;
+        if (request.getExpiryDate().isBefore(request.getEffectiveDate())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "失效时间不能早于生效时间");
+        }
+    }
+
+    private void validateRouteDateRange(ProcessModelingRequest request) {
         if (request == null || request.getEffectiveDate() == null || request.getExpiryDate() == null) return;
         if (request.getExpiryDate().isBefore(request.getEffectiveDate())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "失效时间不能早于生效时间");

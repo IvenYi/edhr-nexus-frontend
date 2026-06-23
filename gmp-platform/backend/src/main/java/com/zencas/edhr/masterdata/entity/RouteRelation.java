@@ -34,6 +34,10 @@ public class RouteRelation {
     private String sourceNodeKey;
     @Column(name = "target_node_key", nullable = false, length = 128)
     private String targetNodeKey;
+    @Column(name = "source_handle", length = 64)
+    private String sourceHandle;
+    @Column(name = "target_handle", length = 64)
+    private String targetHandle;
     @Column(name = "relation_type", nullable = false, length = 32)
     private String relationType;
     @Column(name = "label", length = 128)

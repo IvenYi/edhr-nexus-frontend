@@ -19,12 +19,14 @@ import {
   ReactFlow,
   ReactFlowProvider,
   addEdge,
+  reconnectEdge,
   useEdgesState,
   useNodesState,
   type Connection,
   type Edge,
   type Node,
   type NodeProps,
+  type OnReconnect,
   type OnNodeDrag,
   type ReactFlowInstance,
 } from '@xyflow/react';
@@ -38,6 +40,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   Dialog,
   DialogActions,
   DialogContent,
@@ -46,6 +49,7 @@ import {
   FormControl,
   IconButton,
   InputAdornment,
+  Menu,
   MenuItem,
   Pagination,
   Popover,
@@ -66,8 +70,10 @@ import {
 } from '@mui/material';
 import {
   Add,
+  CallSplit,
   CenterFocusStrongRounded,
   Close,
+  ContentCopy,
   Delete,
   DragIndicator,
   Edit,
@@ -99,6 +105,7 @@ import {
   deleteProcessOperation,
   deleteProcessProductFamily,
   deleteProcessRoute,
+  deleteProcessRouteVersion,
   getMaterials,
   getProcessDocuments,
   getProcessOperationCategories,
@@ -116,6 +123,7 @@ import {
   updateProcessOperation,
   updateProcessProductFamily,
   updateProcessRoute,
+  updateProcessRouteVersion,
   type ProcessModelingEntityType,
   type ProcessModelingPayload,
   type ProcessModelingQuery,
@@ -171,7 +179,7 @@ type ProcessColumnId =
 
 type ConfigurableProcessColumnId = Exclude<ProcessColumnId, 'actions'>;
 type ColumnSettingsTarget = 'main' | 'materialVersion' | 'routeVersion';
-type DeleteTargetScope = 'record' | 'material' | 'materialVersion';
+type DeleteTargetScope = 'record' | 'material' | 'materialVersion' | 'routeVersion';
 
 interface ProcessColumn {
   id: ProcessColumnId;
@@ -258,8 +266,17 @@ interface MaterialGroupRow {
   versions: MaterialRecord[];
 }
 
+type ProcessAuditEntityType = ProcessModelingEntityType | 'ROUTE_VERSION' | 'ROUTE_GRAPH';
+
+interface AuditEntityTarget {
+  entityId: string | number;
+  entityType?: ProcessAuditEntityType;
+}
+
+type AuditEntityTargetInput = string | number | AuditEntityTarget;
+
 interface DrawerAuditTarget {
-  entityIds: Array<string | number>;
+  entityTargets: AuditEntityTargetInput[];
 }
 
 interface OperationCategoryDialogState {
@@ -275,9 +292,15 @@ interface RouteFlowNodeData extends Record<string, unknown> {
   operationCode?: string | null;
   operationName?: string | null;
   nodeType?: string | null;
+  routeOperationKind?: RouteOperationKind;
   virtual?: boolean;
   sourceConnected?: boolean;
   targetConnected?: boolean;
+  connectedHandleIds?: string[];
+  showConnectableHandles?: boolean;
+  parallelBadges?: string[];
+  mergeBadges?: string[];
+  reworkBadges?: string[];
 }
 
 interface RouteFlowEdgeData extends Record<string, unknown> {
@@ -289,12 +312,20 @@ interface RouteFlowEdgeData extends Record<string, unknown> {
 type RouteFlowNode = Node<RouteFlowNodeData>;
 type RouteFlowEdge = Edge<RouteFlowEdgeData>;
 type RouteDesignerInteractionMode = 'pan' | 'select';
+type RouteOperationKind = 'PRODUCTION' | 'REWORK';
 
 interface RouteCanvasDropPreview {
   left: number;
   top: number;
   zoom: number;
   label: string;
+}
+
+interface RouteCanvasContextMenuState {
+  mouseX: number;
+  mouseY: number;
+  selectedNodeIds: string[];
+  selectedEdgeIds: string[];
 }
 
 type ProcessTableRow = ProcessModelingRecord | MaterialGroupRow;
@@ -310,7 +341,7 @@ const PROCESS_MODELING_ROUTE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX = 'process-mode
 const PROCESS_MODELING_ROUTE_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX = 'process-modeling-route-version-column-settings:';
 const PROCESS_MODELING_COLUMN_SETTINGS_VERSION = 1;
 const PROCESS_FIELD_COLUMN_MIN_WIDTH = 80;
-const PROCESS_ACTION_COLUMN_WIDTH = 112;
+const PROCESS_ACTION_COLUMN_WIDTH = 100;
 const OPERATION_CATEGORY_ALL = 'ALL';
 const OPERATION_CATEGORY_UNCATEGORIZED = 'UNCATEGORIZED';
 const QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
@@ -328,6 +359,21 @@ const ROUTE_DESIGNER_OPERATION_NODE_WIDTH = 128;
 const ROUTE_DESIGNER_OPERATION_NODE_HEIGHT = 38;
 const ROUTE_DESIGNER_EDGE_MARKER_SIZE = 14;
 const ROUTE_DESIGNER_CONNECTED_COLOR = '#1890ff';
+const ROUTE_DESIGNER_REWORK_COLOR = '#f56c6c';
+const ROUTE_DESIGNER_HANDLE_IDS = {
+  TOP: 'route-handle-top',
+  RIGHT: 'route-handle-right',
+  BOTTOM: 'route-handle-bottom',
+  LEFT: 'route-handle-left',
+} as const;
+const PROCESS_ROUTE_VISIBLE_HANDLE_CLASS = 'process-route-visible-handle';
+const PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS = 'process-route-force-visible-handle';
+const ROUTE_DESIGNER_HANDLE_POSITIONS = [
+  { id: ROUTE_DESIGNER_HANDLE_IDS.TOP, position: Position.Top },
+  { id: ROUTE_DESIGNER_HANDLE_IDS.RIGHT, position: Position.Right },
+  { id: ROUTE_DESIGNER_HANDLE_IDS.BOTTOM, position: Position.Bottom },
+  { id: ROUTE_DESIGNER_HANDLE_IDS.LEFT, position: Position.Left },
+] as const;
 const routeDesignerNodeTypes = {
   routeDesigner: RouteDesignerNode,
 };
@@ -343,15 +389,30 @@ const ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE = {
   background: ROUTE_DESIGNER_CONNECTED_COLOR,
   boxShadow: '0 1px 4px rgba(24, 144, 255, 0.32)',
 } as const;
+const ROUTE_DESIGNER_INVISIBLE_HANDLE_STYLE = {
+  ...ROUTE_DESIGNER_HANDLE_STYLE,
+  opacity: 0,
+} as const;
 const ROUTE_DESIGNER_EDGE_MARKER = {
   type: MarkerType.ArrowClosed,
   width: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
   height: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
   color: ROUTE_DESIGNER_CONNECTED_COLOR,
 } as const;
+const ROUTE_DESIGNER_REWORK_EDGE_MARKER = {
+  type: MarkerType.ArrowClosed,
+  width: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
+  height: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
+  color: ROUTE_DESIGNER_REWORK_COLOR,
+} as const;
 const ROUTE_DESIGNER_CONNECTED_EDGE_STYLE = {
   stroke: ROUTE_DESIGNER_CONNECTED_COLOR,
   strokeWidth: 2,
+} as const;
+const ROUTE_DESIGNER_REWORK_EDGE_STYLE = {
+  stroke: ROUTE_DESIGNER_REWORK_COLOR,
+  strokeWidth: 2,
+  strokeDasharray: '6 4',
 } as const;
 const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose'];
 const MATERIAL_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'description'];
@@ -373,7 +434,22 @@ function RouteDesignerNode({ data, selected, isConnectable }: NodeProps<RouteFlo
   const isStartNode = data.nodeType === 'START';
   const isEndNode = data.nodeType === 'END';
   const isVirtualNode = isStartNode || isEndNode || data.virtual;
+  const shouldRenderInteractiveTargetHandle = !isVirtualNode || isEndNode;
   const nodeLabel = data.label || '';
+  const routeBadges = [...(data.parallelBadges ?? []), ...(data.mergeBadges ?? []), ...(data.reworkBadges ?? [])];
+  const connectedHandleIds = new Set(data.connectedHandleIds ?? []);
+  const getVisibleHandleStyle = (handleId: string) => (
+    connectedHandleIds.has(handleId) ? ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE
+  );
+  const shouldForceShowHandle = (handleId: string) => selected || data.showConnectableHandles || connectedHandleIds.has(handleId);
+  const getRouteHandleClassName = (handleId: string, enabled = true) => (
+    enabled
+      ? [PROCESS_ROUTE_VISIBLE_HANDLE_CLASS, shouldForceShowHandle(handleId) ? PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS : null].filter(Boolean).join(' ')
+      : undefined
+  );
+  const getRouteVisibleHandleStyle = (handleId: string) => getVisibleHandleStyle(handleId);
+  const targetHandlePositions = ROUTE_DESIGNER_HANDLE_POSITIONS.filter(({ id }) => data.nodeType !== 'START' && !(isEndNode && id === ROUTE_DESIGNER_HANDLE_IDS.BOTTOM));
+  const sourceHandlePositions = ROUTE_DESIGNER_HANDLE_POSITIONS.filter(({ id }) => data.nodeType !== 'END' && !(isStartNode && id === ROUTE_DESIGNER_HANDLE_IDS.TOP));
 
   return (
     <Box
@@ -397,17 +473,72 @@ function RouteDesignerNode({ data, selected, isConnectable }: NodeProps<RouteFlo
         color: 'inherit',
         boxShadow: !isVirtualNode && selected ? '0 0 0 2px rgba(24, 144, 255, 0.12)' : 'none',
         transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+        [`& .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: 0, transition: 'opacity 0.12s ease' },
+        [`& .${PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
+        [`&:hover .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
+        [`.react-flow__node:hover & .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
+        [`.react-flow__node.selected & .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
       }}
     >
-      {data.nodeType !== 'START' ? (
-        <Handle type="target" position={Position.Top} isConnectable={isConnectable} style={data.targetConnected ? ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE} />
+      {targetHandlePositions.map(({ id: handleId, position }) => (
+        <Handle
+          key={`target-${handleId}`}
+          id={handleId}
+          type="target"
+          position={position}
+          isConnectable={isConnectable}
+          className={getRouteHandleClassName(handleId, shouldRenderInteractiveTargetHandle)}
+          style={shouldRenderInteractiveTargetHandle ? getRouteVisibleHandleStyle(handleId) : ROUTE_DESIGNER_INVISIBLE_HANDLE_STYLE}
+        />
+      ))}
+      {sourceHandlePositions.map(({ id: handleId, position }) => (
+        <Handle
+          key={`source-${handleId}`}
+          id={handleId}
+          type="source"
+          position={position}
+          isConnectable={isConnectable}
+          className={getRouteHandleClassName(handleId)}
+          style={getRouteVisibleHandleStyle(handleId)}
+        />
+      ))}
+      {routeBadges.length > 0 ? (
+        <Stack direction="row" spacing={0.5} sx={{ position: 'absolute', top: -12, right: -10, zIndex: 2, pointerEvents: 'none' }}>
+          {routeBadges.map((badge) => {
+            const isMergeBadge = badge.startsWith('合');
+            const isReworkBadge = badge.startsWith('返');
+            return (
+              <Box
+                key={badge}
+                data-process-route-parallel-badge={!isMergeBadge && !isReworkBadge ? true : undefined}
+                data-process-route-merge-badge={isMergeBadge ? true : undefined}
+                data-process-route-rework-badge={isReworkBadge ? true : undefined}
+                sx={{
+                  minWidth: 30,
+                  height: 18,
+                  px: 0.75,
+                  borderRadius: 9,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  color: isReworkBadge ? '#c45656' : isMergeBadge ? '#7a4d00' : '#075985',
+                  border: isReworkBadge ? '1px solid #f56c6c' : isMergeBadge ? '1px solid #f5c56b' : '1px solid #7dd3fc',
+                  bgcolor: isReworkBadge ? '#fef0f0' : isMergeBadge ? '#fff7e6' : '#e0f2fe',
+                  boxShadow: '0 2px 6px rgba(15, 23, 42, 0.12)',
+                }}
+              >
+                {badge}
+              </Box>
+            );
+          })}
+        </Stack>
       ) : null}
       <Typography variant="body2" sx={{ color: 'inherit', fontWeight: isVirtualNode ? 600 : 500, lineHeight: 1.2, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
         {nodeLabel}
       </Typography>
-      {data.nodeType !== 'END' ? (
-        <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} style={data.sourceConnected ? ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE} />
-      ) : null}
     </Box>
   );
 }
@@ -768,6 +899,15 @@ function pickMaterialPayload(input: ProcessModelingPayload, fieldIds: Array<keyo
   }, {} as ProcessModelingPayload);
 }
 
+function pickRoutePayload(input: ProcessModelingPayload, fieldIds: Array<keyof ProcessModelingPayload>) {
+  return fieldIds.reduce<ProcessModelingPayload>((payload, fieldId) => {
+    if (fieldId in input) {
+      return { ...payload, [fieldId]: input[fieldId] };
+    }
+    return payload;
+  }, {} as ProcessModelingPayload);
+}
+
 function getMaterialGroupRows(rows: ProcessModelingRecord[]): MaterialGroupRow[] {
   return rows.map((row) => {
     const materialVersions = ('versions' in row && Array.isArray(row.versions) ? row.versions : [row]) as MaterialRecord[];
@@ -797,10 +937,20 @@ function getRecordId(row: ProcessModelingRecord) {
   return String(row.id);
 }
 
-function getAuditEntityIds(entityIds: Array<string | number>) {
-  return Array.from(new Set(entityIds
-    .map((entityId) => String(entityId ?? '').trim())
-    .filter((auditEntityId) => auditEntityId && !auditEntityId.startsWith('process-modeling-material-groups:'))));
+function getAuditEntityTargets(entityTargets: AuditEntityTargetInput[], defaultEntityType: ProcessAuditEntityType): Required<AuditEntityTarget>[] {
+  const seen = new Set<string>();
+  const targets: Required<AuditEntityTarget>[] = [];
+  entityTargets.forEach((target) => {
+    const entityId = typeof target === 'object' && target !== null ? target.entityId : target;
+    const entityType = typeof target === 'object' && target !== null ? target.entityType ?? defaultEntityType : defaultEntityType;
+    const auditEntityId = String(entityId ?? '').trim();
+    if (!auditEntityId || auditEntityId.startsWith('process-modeling-material-groups:')) return;
+    const key = `${entityType}:${auditEntityId}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    targets.push({ entityId: auditEntityId, entityType });
+  });
+  return targets;
 }
 
 function getStatusLabel(status?: string) {
@@ -848,6 +998,342 @@ function getRouteRelationLabel(type?: string | null) {
   return type ? ROUTE_RELATION_LABELS[type] ?? type : '串行';
 }
 
+interface RouteEdgeMaps {
+  outgoing: Map<string, string[]>;
+  incoming: Map<string, string[]>;
+}
+
+interface RouteParallelGroup {
+  source: string;
+  index: string;
+  branchStartIds: string[];
+  branchNodeIds: Set<string>;
+  mergeNodeId?: string;
+}
+
+function appendRouteBadge(map: Map<string, string[]>, nodeId: string, badge: string) {
+  const current = map.get(nodeId) ?? [];
+  if (!current.includes(badge)) {
+    map.set(nodeId, [...current, badge]);
+  }
+}
+
+function getRouteEdgeMaps(edges: RouteFlowEdge[]): RouteEdgeMaps {
+  const outgoing = new Map<string, string[]>();
+  const incoming = new Map<string, string[]>();
+  edges.forEach((edge) => {
+    if (!edge.source || !edge.target || edge.source === edge.target) return;
+    const sourceTargets = outgoing.get(edge.source) ?? [];
+    if (!sourceTargets.includes(edge.target)) {
+      outgoing.set(edge.source, [...sourceTargets, edge.target]);
+    }
+    const targetSources = incoming.get(edge.target) ?? [];
+    if (!targetSources.includes(edge.source)) {
+      incoming.set(edge.target, [...targetSources, edge.source]);
+    }
+  });
+  return { outgoing, incoming };
+}
+
+function getRouteNodeDepths(nodes: RouteFlowNode[], edgeMaps: RouteEdgeMaps) {
+  const nodeIds = new Set(nodes.map((node) => node.id));
+  const startIds = nodeIds.has(ROUTE_START_NODE_KEY)
+    ? [ROUTE_START_NODE_KEY]
+    : nodes.filter((node) => (edgeMaps.incoming.get(node.id) ?? []).length === 0).map((node) => node.id);
+  const depths = new Map<string, number>();
+  const queue = startIds.map((id) => ({ id, depth: 0 }));
+  queue.forEach(({ id, depth }) => depths.set(id, depth));
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current) continue;
+    (edgeMaps.outgoing.get(current.id) ?? []).forEach((targetId) => {
+      const nextDepth = current.depth + 1;
+      if (!depths.has(targetId) || nextDepth < (depths.get(targetId) ?? Number.MAX_SAFE_INTEGER)) {
+        depths.set(targetId, nextDepth);
+        queue.push({ id: targetId, depth: nextDepth });
+      }
+    });
+  }
+  return depths;
+}
+
+function getRouteReachableDistances(startNodeId: string, outgoing: Map<string, string[]>) {
+  const distances = new Map<string, number>();
+  const queue = [{ id: startNodeId, distance: 0 }];
+  distances.set(startNodeId, 0);
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current) continue;
+    (outgoing.get(current.id) ?? []).forEach((targetId) => {
+      if (distances.has(targetId)) return;
+      const distance = current.distance + 1;
+      distances.set(targetId, distance);
+      queue.push({ id: targetId, distance });
+    });
+  }
+  return distances;
+}
+
+function getRouteParallelMergeNode(sourceNodeId: string, branchStartIds: string[], outgoing: Map<string, string[]>) {
+  const branchDistances = branchStartIds.map((branchStartId) => getRouteReachableDistances(branchStartId, outgoing));
+  if (branchDistances.length < 2) return undefined;
+  const blockedNodeIds = new Set([sourceNodeId, ...branchStartIds]);
+  const commonNodeIds = [...branchDistances[0].keys()].filter((nodeId) => (
+    !blockedNodeIds.has(nodeId) && branchDistances.every((distances) => distances.has(nodeId))
+  ));
+  commonNodeIds.sort((left, right) => {
+    const leftDistances = branchDistances.map((distances) => distances.get(left) ?? Number.MAX_SAFE_INTEGER);
+    const rightDistances = branchDistances.map((distances) => distances.get(right) ?? Number.MAX_SAFE_INTEGER);
+    const leftMax = Math.max(...leftDistances);
+    const rightMax = Math.max(...rightDistances);
+    if (leftMax !== rightMax) return leftMax - rightMax;
+    const leftTotal = leftDistances.reduce((sum, distance) => sum + distance, 0);
+    const rightTotal = rightDistances.reduce((sum, distance) => sum + distance, 0);
+    return leftTotal === rightTotal ? left.localeCompare(right) : leftTotal - rightTotal;
+  });
+  return commonNodeIds[0];
+}
+
+function getRouteParallelBranchNodeIds(branchStartIds: string[], outgoing: Map<string, string[]>, mergeNodeId?: string) {
+  const branchNodeIds = new Set<string>();
+  branchStartIds.forEach((branchStartId) => {
+    const visitedNodeIds = new Set<string>();
+    const queue = [branchStartId];
+    while (queue.length > 0) {
+      const nodeId = queue.shift();
+      if (!nodeId || visitedNodeIds.has(nodeId) || nodeId === mergeNodeId) continue;
+      visitedNodeIds.add(nodeId);
+      branchNodeIds.add(nodeId);
+      (outgoing.get(nodeId) ?? []).forEach((targetId) => {
+        if (targetId !== mergeNodeId) {
+          queue.push(targetId);
+        }
+      });
+    }
+  });
+  return branchNodeIds;
+}
+
+function getRouteProductionBranchTargets(targetIds: string[], nodeById: Map<string, RouteFlowNode>) {
+  return targetIds.filter((targetId) => {
+    const targetNode = nodeById.get(targetId);
+    return targetNode && !targetNode.data.virtual && getRouteOperationKind(targetNode) === 'PRODUCTION';
+  });
+}
+
+function getRouteParallelGroups(nodes: RouteFlowNode[], edges: RouteFlowEdge[]): RouteParallelGroup[] {
+  const edgeMaps = getRouteEdgeMaps(edges);
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const nodeDepths = getRouteNodeDepths(nodes, edgeMaps);
+  const forkSourceIds = nodes
+    .map((node) => node.id)
+    .filter((nodeId) => {
+      const outgoing = edgeMaps.outgoing.get(nodeId) ?? [];
+      const productionOutgoing = getRouteProductionBranchTargets(outgoing, nodeById);
+      return productionOutgoing.length >= 2;
+    })
+    .sort((left, right) => {
+      const leftNode = nodeById.get(left);
+      const rightNode = nodeById.get(right);
+      const depthDelta = (nodeDepths.get(left) ?? Number.MAX_SAFE_INTEGER) - (nodeDepths.get(right) ?? Number.MAX_SAFE_INTEGER);
+      if (depthDelta !== 0) return depthDelta;
+      const yDelta = (leftNode?.position.y ?? 0) - (rightNode?.position.y ?? 0);
+      if (yDelta !== 0) return yDelta;
+      return (leftNode?.position.x ?? 0) - (rightNode?.position.x ?? 0);
+    });
+  const groups: RouteParallelGroup[] = [];
+  const childGroupCounters = new Map<string, number>();
+  let topLevelGroupIndex = 0;
+  forkSourceIds.forEach((source) => {
+    const outgoing = getRouteProductionBranchTargets(edgeMaps.outgoing.get(source) ?? [], nodeById);
+    if (outgoing.length < 2) return;
+    const parentGroup = [...groups].reverse().find((group) => group.branchNodeIds.has(source));
+    let index: string;
+    if (parentGroup) {
+      const localIndex = (childGroupCounters.get(parentGroup.index) ?? 0) + 1;
+      childGroupCounters.set(parentGroup.index, localIndex);
+      index = `${parentGroup.index}-${localIndex}`;
+    } else {
+      topLevelGroupIndex += 1;
+      index = String(topLevelGroupIndex);
+    }
+    const mergeNodeId = getRouteParallelMergeNode(source, outgoing, edgeMaps.outgoing);
+    groups.push({
+      source,
+      index,
+      branchStartIds: outgoing,
+      branchNodeIds: getRouteParallelBranchNodeIds(outgoing, edgeMaps.outgoing, mergeNodeId),
+      mergeNodeId,
+    });
+  });
+  return groups;
+}
+
+function getRouteParallelBadgeMaps(groups: RouteParallelGroup[]) {
+  const parallel = new Map<string, string[]>();
+  const merge = new Map<string, string[]>();
+  groups.forEach((group) => {
+    group.branchStartIds.forEach((nodeId) => appendRouteBadge(parallel, nodeId, `并${group.index}`));
+    if (group.mergeNodeId) {
+      appendRouteBadge(merge, group.mergeNodeId, `合${group.index}`);
+    }
+  });
+  return { parallel, merge };
+}
+
+function getRouteReworkBadgeMaps(nodes: RouteFlowNode[]) {
+  const rework = new Map<string, string[]>();
+  nodes
+    .filter((node) => getRouteOperationKind(node) === 'REWORK')
+    .sort((left, right) => {
+      const yDelta = left.position.y - right.position.y;
+      return yDelta === 0 ? left.position.x - right.position.x : yDelta;
+    })
+    .forEach((node, index) => appendRouteBadge(rework, node.id, `返${index + 1}`));
+  return { rework };
+}
+
+function getRouteParallelSourceIds(nodes: RouteFlowNode[], edges: RouteFlowEdge[]) {
+  const { outgoing } = getRouteEdgeMaps(edges);
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  return new Set([...outgoing.entries()]
+    .filter(([, targets]) => getRouteProductionBranchTargets(targets, nodeById).length >= 2)
+    .map(([source]) => source));
+}
+
+function getRouteNodeCenter(node: RouteFlowNode) {
+  const size = getRouteNodeSize(node);
+  return {
+    x: node.position.x + size.width / 2,
+    y: node.position.y + size.height / 2,
+  };
+}
+
+function getRouteParallelBoundaryNodeId(nodes: RouteFlowNode[], edges: RouteFlowEdge[], selectedNodeIds: string[], direction: 'upstream' | 'downstream') {
+  const selectedNodeIdSet = new Set(selectedNodeIds);
+  const selectedNodes = nodes.filter((node) => selectedNodeIdSet.has(node.id));
+  if (selectedNodes.length === 0) return undefined;
+  const selectedCenters = selectedNodes.map(getRouteNodeCenter);
+  const selectedAverageX = selectedCenters.reduce((sum, center) => sum + center.x, 0) / selectedCenters.length;
+  const selectedMinY = Math.min(...selectedCenters.map((center) => center.y));
+  const selectedMaxY = Math.max(...selectedCenters.map((center) => center.y));
+  const existingBoundaryIds = direction === 'upstream'
+    ? [...new Set(edges.filter((edge) => selectedNodeIdSet.has(edge.target) && !selectedNodeIdSet.has(edge.source)).map((edge) => edge.source))]
+    : [...new Set(edges.filter((edge) => selectedNodeIdSet.has(edge.source) && !selectedNodeIdSet.has(edge.target)).map((edge) => edge.target))];
+  if (existingBoundaryIds.length === 1) return existingBoundaryIds[0];
+  const candidates = nodes
+    .filter((node) => !selectedNodeIdSet.has(node.id))
+    .map((node) => ({ node, center: getRouteNodeCenter(node) }))
+    .filter(({ center }) => (direction === 'upstream' ? center.y < selectedMinY : center.y > selectedMaxY));
+  candidates.sort((left, right) => {
+    const leftYDistance = direction === 'upstream' ? selectedMinY - left.center.y : left.center.y - selectedMaxY;
+    const rightYDistance = direction === 'upstream' ? selectedMinY - right.center.y : right.center.y - selectedMaxY;
+    if (leftYDistance !== rightYDistance) return leftYDistance - rightYDistance;
+    return Math.abs(left.center.x - selectedAverageX) - Math.abs(right.center.x - selectedAverageX);
+  });
+  return candidates[0]?.node.id;
+}
+
+function createRouteParallelEdge(source: string, target: string): RouteFlowEdge {
+  const edgePresentation = getRouteEdgePresentation();
+  return {
+    id: `edge-${source}-${target}-${Date.now()}-${Math.round(Math.random() * 10000)}`,
+    source,
+    target,
+    sourceHandle: getRouteFallbackSourceHandleId(source),
+    targetHandle: getRouteFallbackTargetHandleId(target),
+    type: 'smoothstep',
+    ...edgePresentation,
+    data: {
+      relationType: 'PARALLEL',
+      label: getRouteRelationLabel('PARALLEL'),
+    },
+  };
+}
+
+function getRouteOperationKind(node: RouteFlowNode): RouteOperationKind {
+  return node.data.routeOperationKind === 'REWORK' || node.data.nodeType === 'REWORK' ? 'REWORK' : 'PRODUCTION';
+}
+
+function getRouteOperationIdentity(node: RouteFlowNode) {
+  if (node.data.virtual) return '';
+  if (node.data.operationId !== null && node.data.operationId !== undefined) return `id:${node.data.operationId}`;
+  const operationCode = String(node.data.operationCode ?? '').trim();
+  if (operationCode) return `code:${operationCode}`;
+  const operationName = String(node.data.operationName || node.data.label || '').trim();
+  return operationName ? `name:${operationName}` : '';
+}
+
+function hasRouteProductionConflict(nodes: RouteFlowNode[], selectedNodeIds: string[]) {
+  const selectedNodeIdSet = new Set(selectedNodeIds);
+  const selectedReworkOperationIds = new Set(nodes
+    .filter((node) => selectedNodeIdSet.has(node.id) && !node.data.virtual && getRouteOperationKind(node) === 'REWORK')
+    .map(getRouteOperationIdentity)
+    .filter(Boolean));
+  if (selectedReworkOperationIds.size === 0) return false;
+  return nodes.some((node) => (
+    !node.data.virtual
+    && getRouteOperationKind(node) === 'PRODUCTION'
+    && selectedReworkOperationIds.has(getRouteOperationIdentity(node))
+  ));
+}
+
+function hasRouteReworkConflict(nodes: RouteFlowNode[], selectedNodeIds: string[]) {
+  const selectedNodeIdSet = new Set(selectedNodeIds);
+  const selectedProductionOperationIds = new Set(nodes
+    .filter((node) => selectedNodeIdSet.has(node.id) && !node.data.virtual && getRouteOperationKind(node) === 'PRODUCTION')
+    .map(getRouteOperationIdentity)
+    .filter(Boolean));
+  if (selectedProductionOperationIds.size === 0) return false;
+  return nodes.some((node) => (
+    !node.data.virtual
+    && getRouteOperationKind(node) === 'REWORK'
+    && selectedProductionOperationIds.has(getRouteOperationIdentity(node))
+  ));
+}
+
+function getRouteCopyBaseLabel(label?: string | null, routeOperationKind: RouteOperationKind = 'PRODUCTION') {
+  const normalizedLabel = label?.trim() || '工序';
+  const baseLabel = normalizedLabel.replace(/\s+\d+$/, '').replace(/\s*返工$/, '').trim() || normalizedLabel;
+  return routeOperationKind === 'REWORK' ? `${baseLabel} 返工` : baseLabel;
+}
+
+function getNextRouteCopyLabel(nodes: RouteFlowNode[], sourceLabel?: string | null, routeOperationKind: RouteOperationKind = 'PRODUCTION') {
+  const baseLabel = getRouteCopyBaseLabel(sourceLabel, routeOperationKind);
+  const initialIndex = routeOperationKind === 'REWORK' ? 0 : 1;
+  const maxIndex = nodes.reduce((currentMax, node) => {
+    const nodeLabel = String(node.data.label || node.data.operationName || '').trim();
+    if (nodeLabel === baseLabel) return Math.max(currentMax, 1);
+    if (!nodeLabel.startsWith(`${baseLabel} `)) return currentMax;
+    const suffix = nodeLabel.slice(baseLabel.length).trim();
+    return /^\d+$/.test(suffix) ? Math.max(currentMax, Number(suffix)) : currentMax;
+  }, initialIndex);
+  return `${baseLabel} ${maxIndex + 1}`;
+}
+
+function createRouteCopiedNode(node: RouteFlowNode, label: string, offsetIndex: number, routeOperationKind: RouteOperationKind): RouteFlowNode {
+  return {
+    ...node,
+    id: `${node.id}-copy-${Date.now()}-${Math.round(Math.random() * 10000)}`,
+    position: {
+      x: node.position.x + ROUTE_DESIGNER_OPERATION_NODE_WIDTH + 72,
+      y: node.position.y + offsetIndex * (ROUTE_DESIGNER_OPERATION_NODE_HEIGHT + 18),
+    },
+    selected: true,
+    data: {
+      ...node.data,
+      label,
+      operationName: label,
+      nodeType: routeOperationKind === 'REWORK' ? 'REWORK' : 'OPERATION',
+      routeOperationKind,
+      sourceConnected: false,
+      targetConnected: false,
+      parallelBadges: [],
+      mergeBadges: [],
+    },
+  };
+}
+
 function createRouteFlowNode(operation: OperationRecord, position: { x: number; y: number }): RouteFlowNode {
   const operationName = getDisplayName(operation);
   return {
@@ -860,6 +1346,7 @@ function createRouteFlowNode(operation: OperationRecord, position: { x: number; 
       operationCode: operation.code,
       operationName,
       nodeType: 'OPERATION',
+      routeOperationKind: 'PRODUCTION',
     },
   };
 }
@@ -871,10 +1358,60 @@ function getRouteBoundaryNodeType(nodeKey?: string | null, nodeType?: string | n
   return null;
 }
 
-function getRouteEdgePresentation() {
+function getRouteEdgePresentation(edge?: Pick<RouteFlowEdge, 'source' | 'target'>, routeNodeKindById = new Map<string, RouteOperationKind>()) {
+  const sourceKind = edge ? routeNodeKindById.get(edge.source) : undefined;
+  const targetKind = edge ? routeNodeKindById.get(edge.target) : undefined;
+  const isReworkEdge = sourceKind === 'REWORK' || targetKind === 'REWORK';
+  if (!isReworkEdge) {
+    return {
+      markerEnd: ROUTE_DESIGNER_EDGE_MARKER,
+      style: ROUTE_DESIGNER_CONNECTED_EDGE_STYLE,
+    };
+  }
   return {
-    markerEnd: ROUTE_DESIGNER_EDGE_MARKER,
-    style: ROUTE_DESIGNER_CONNECTED_EDGE_STYLE,
+    markerEnd: ROUTE_DESIGNER_REWORK_EDGE_MARKER,
+    style: ROUTE_DESIGNER_REWORK_EDGE_STYLE,
+  };
+}
+
+function getRouteFallbackSourceHandleId(nodeId?: string | null) {
+  return nodeId === ROUTE_END_NODE_KEY ? ROUTE_DESIGNER_HANDLE_IDS.TOP : ROUTE_DESIGNER_HANDLE_IDS.BOTTOM;
+}
+
+function getRouteFallbackTargetHandleId(nodeId?: string | null) {
+  return nodeId === ROUTE_START_NODE_KEY ? ROUTE_DESIGNER_HANDLE_IDS.BOTTOM : ROUTE_DESIGNER_HANDLE_IDS.TOP;
+}
+
+function getRouteFallbackHandlePair(sourceNodeKey?: string | null, targetNodeKey?: string | null, nodeById = new Map<string, RouteFlowNode>()) {
+  const fallbackHandles = {
+    sourceHandle: getRouteFallbackSourceHandleId(sourceNodeKey),
+    targetHandle: getRouteFallbackTargetHandleId(targetNodeKey),
+  };
+  if (!sourceNodeKey || !targetNodeKey) return fallbackHandles;
+  const sourceNode = nodeById.get(sourceNodeKey);
+  const targetNode = nodeById.get(targetNodeKey);
+  if (!sourceNode || !targetNode) return fallbackHandles;
+  const sourceCenter = getRouteNodeCenter(sourceNode);
+  const targetCenter = getRouteNodeCenter(targetNode);
+  const deltaX = targetCenter.x - sourceCenter.x;
+  const deltaY = targetCenter.y - sourceCenter.y;
+  if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+    return {
+      sourceHandle: deltaX >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.RIGHT : ROUTE_DESIGNER_HANDLE_IDS.LEFT,
+      targetHandle: deltaX >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.LEFT : ROUTE_DESIGNER_HANDLE_IDS.RIGHT,
+    };
+  }
+  return {
+    sourceHandle: deltaY >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.BOTTOM : ROUTE_DESIGNER_HANDLE_IDS.TOP,
+    targetHandle: deltaY >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.TOP : ROUTE_DESIGNER_HANDLE_IDS.BOTTOM,
+  };
+}
+
+function normalizeRouteConnectionHandles(connection: Connection): Connection {
+  return {
+    ...connection,
+    sourceHandle: connection.sourceHandle || getRouteFallbackSourceHandleId(connection.source),
+    targetHandle: connection.targetHandle || getRouteFallbackTargetHandleId(connection.target),
   };
 }
 
@@ -1020,17 +1557,22 @@ function fromRouteGraphResponse(graph?: RouteGraphResponse | null): { nodes: Rou
         operationCode: boundaryNodeType ? null : node.operationCode ?? null,
         operationName: boundaryNodeType ? ROUTE_VIRTUAL_NODE_LABELS[boundaryNodeType] : node.operationName ?? null,
         nodeType: boundaryNodeType ?? node.nodeType ?? 'OPERATION',
+        routeOperationKind: node.nodeType === 'REWORK' ? 'REWORK' : 'PRODUCTION',
         virtual: Boolean(boundaryNodeType),
       },
     };
   }));
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
   const edges = (graph?.relations ?? []).map<RouteFlowEdge>((relation, index) => {
     const label = relation.label || getRouteRelationLabel(relation.relationType);
     const edgePresentation = getRouteEdgePresentation();
+    const fallbackHandles = getRouteFallbackHandlePair(relation.sourceNodeKey, relation.targetNodeKey, nodeById);
     return {
       id: `${relation.sourceNodeKey}-${relation.targetNodeKey}-${index}`,
       source: relation.sourceNodeKey,
       target: relation.targetNodeKey,
+      sourceHandle: relation.sourceHandle || fallbackHandles.sourceHandle,
+      targetHandle: relation.targetHandle || fallbackHandles.targetHandle,
       type: 'smoothstep',
       ...edgePresentation,
       data: {
@@ -1045,13 +1587,15 @@ function fromRouteGraphResponse(graph?: RouteGraphResponse | null): { nodes: Rou
 
 function toRouteGraphPayload(nodes: RouteFlowNode[], edges: RouteFlowEdge[]): RouteGraphPayload {
   const graphNodes = ensureRouteBoundaryNodes(nodes);
+  const nodeById = new Map(graphNodes.map((node) => [node.id, node]));
+  const parallelSourceIds = getRouteParallelSourceIds(graphNodes, edges);
   return {
     nodes: graphNodes.map<RouteNodeRecord>((node, index) => ({
       nodeKey: node.id,
       operationId: node.data.virtual ? null : node.data.operationId ?? null,
       operationCode: node.data.virtual ? null : node.data.operationCode ?? null,
       operationName: node.data.operationName ?? node.data.label,
-      nodeType: node.data.nodeType === 'START' ? 'START' : node.data.nodeType === 'END' ? 'END' : 'OPERATION',
+      nodeType: node.data.nodeType === 'START' ? 'START' : node.data.nodeType === 'END' ? 'END' : node.data.routeOperationKind === 'REWORK' ? 'REWORK' : 'OPERATION',
       positionX: Math.round(node.position.x),
       positionY: Math.round(node.position.y),
       sortOrder: index + 1,
@@ -1059,10 +1603,13 @@ function toRouteGraphPayload(nodes: RouteFlowNode[], edges: RouteFlowEdge[]): Ro
     relations: edges
       .filter((edge) => edge.source && edge.target)
       .map<RouteRelationRecord>((edge, index) => {
-        const relationType = edge.data?.relationType || 'SEQUENTIAL';
+        const relationType = parallelSourceIds.has(edge.source) ? 'PARALLEL' : edge.data?.relationType || 'SEQUENTIAL';
+        const fallbackHandles = getRouteFallbackHandlePair(edge.source, edge.target, nodeById);
         return {
           sourceNodeKey: edge.source,
           targetNodeKey: edge.target,
+          sourceHandle: edge.sourceHandle || fallbackHandles.sourceHandle,
+          targetHandle: edge.targetHandle || fallbackHandles.targetHandle,
           relationType,
           label: edge.data?.label || getRouteRelationLabel(relationType),
           ruleExpression: edge.data?.ruleExpression ?? null,
@@ -1170,7 +1717,7 @@ function resolveColumnWidths(widths: ProcessColumnWidths, containerWidth: number
   const result: Record<ProcessColumnId, number> = {} as Record<ProcessColumnId, number>;
   let total = 0;
   visibleColumns.forEach((column) => {
-    const width = Math.max(column.minWidth, widths[column.id] ?? column.defaultWidth);
+    const width = column.resizable ? Math.max(column.minWidth, widths[column.id] ?? column.defaultWidth) : Math.max(column.minWidth, column.defaultWidth);
     result[column.id] = width;
     total += width;
   });
@@ -1282,6 +1829,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRow, setEditingRow] = useState<ProcessModelingRecord | null>(null);
   const [creatingMaterialVersionFrom, setCreatingMaterialVersionFrom] = useState<MaterialRecord | null>(null);
+  const [creatingRouteVersionFrom, setCreatingRouteVersionFrom] = useState<RouteRecord | null>(null);
+  const [editingRouteVersionFrom, setEditingRouteVersionFrom] = useState<{ route: RouteRecord; version: RouteVersionRecord } | null>(null);
   const [materialDialogMode, setMaterialDialogMode] = useState<MaterialDialogMode | null>(null);
   const [form, setForm] = useState<ProcessModelingPayload>(emptyForm);
   const [deleteTarget, setDeleteTarget] = useState<{ row: ProcessModelingRecord; scope: DeleteTargetScope } | null>(null);
@@ -1296,7 +1845,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [expandedRouteGroups, setExpandedRouteGroups] = useState<Set<string>>(() => new Set());
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
-  const [tableScrollbarWidth, setTableScrollbarWidth] = useState(0);
   const columnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
   const materialVersionColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_MATERIAL_VERSION_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
   const routeVersionColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_ROUTE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
@@ -1316,7 +1864,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const columnSettingDragSourceRef = useRef<ConfigurableProcessColumnId | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string | number | null>(null);
   const [selectedRouteVersionId, setSelectedRouteVersionId] = useState<string | number | null>(null);
-  const [newRouteVersion, setNewRouteVersion] = useState('');
   const [routeOperationLibraryKeyword, setRouteOperationLibraryKeyword] = useState('');
   const [routeOperationLibraryCategory, setRouteOperationLibraryCategory] = useState(OPERATION_CATEGORY_ALL);
   const [routeDesignerLibraryWidth, setRouteDesignerLibraryWidth] = useState(ROUTE_DESIGNER_LIBRARY_DEFAULT_WIDTH);
@@ -1326,6 +1873,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [routeDesignerZoomInput, setRouteDesignerZoomInput] = useState('100');
   const [routeDraggingOperation, setRouteDraggingOperation] = useState<OperationRecord | null>(null);
   const [routeCanvasDropPreview, setRouteCanvasDropPreview] = useState<RouteCanvasDropPreview | null>(null);
+  const [routeCanvasContextMenu, setRouteCanvasContextMenu] = useState<RouteCanvasContextMenuState | null>(null);
+  const [routeConnectionDragging, setRouteConnectionDragging] = useState(false);
+  const [routeConnectionHoverNodeId, setRouteConnectionHoverNodeId] = useState<string | null>(null);
   const [routeNodes, setRouteNodes, onRouteNodesChange] = useNodesState<RouteFlowNode>([]);
   const [routeEdges, setRouteEdges, onRouteEdgesChange] = useEdgesState<RouteFlowEdge>([]);
 
@@ -1379,19 +1929,22 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     },
   });
 
-  const selectedAuditEntityIds = useMemo(() => getAuditEntityIds(drawerAuditTarget?.entityIds ?? []), [drawerAuditTarget]);
-  const selectedAuditEntityKey = selectedAuditEntityIds.join(',');
+  const selectedAuditEntityTargets = useMemo(
+    () => getAuditEntityTargets(drawerAuditTarget?.entityTargets ?? [], config.entityType),
+    [drawerAuditTarget, config.entityType],
+  );
+  const selectedAuditEntityKey = selectedAuditEntityTargets.map((target) => `${target.entityType}:${target.entityId}`).join(',');
   const { data: auditData, isLoading: isAuditLoading, isError: isAuditError } = useQuery({
     queryKey: [config.auditQueryKey, selectedAuditEntityKey],
-    enabled: selectedAuditEntityIds.length > 0,
+    enabled: selectedAuditEntityTargets.length > 0,
     queryFn: async () => {
-      const responses = await Promise.all(selectedAuditEntityIds.map((entityId) => getAuditLogs({
+      const responses = await Promise.all(selectedAuditEntityTargets.map((target) => getAuditLogs({
           page: 1,
           size: 100,
           sort: 'createdAt',
           order: 'desc',
-          entityType: config.entityType,
-          entityId,
+          entityType: target.entityType,
+          entityId: target.entityId,
         })));
       return responses
         .flatMap((res) => (res.data.data as PageResult<AuditLogItem>).content ?? [])
@@ -1438,11 +1991,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     () => routeRecords.find((route) => String(route.id) === String(selectedRouteId)) ?? null,
     [routeRecords, selectedRouteId],
   );
-  const selectedRouteVersions = selectedRoute?.versions ?? [];
-  const selectedRouteVersion = useMemo(
-    () => selectedRouteVersions.find((version) => String(version.id) === String(selectedRouteVersionId)) ?? selectedRouteVersions[0] ?? null,
-    [selectedRouteVersionId, selectedRouteVersions],
-  );
   const routeOperationLibraryQuery = useQuery({
     queryKey: ['route-operation-library'],
     enabled: pageKey === 'routes',
@@ -1484,12 +2032,22 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const routeNodesWithConnectionState = useMemo<RouteFlowNode[]>(() => {
     const connectedSourceNodeIds = new Set<string>();
     const connectedTargetNodeIds = new Set<string>();
+    const connectedHandleIdsByNode = new Map<string, Set<string>>();
+    const addConnectedHandleId = (nodeId: string, handleId: string) => {
+      const current = connectedHandleIdsByNode.get(nodeId) ?? new Set<string>();
+      current.add(handleId);
+      connectedHandleIdsByNode.set(nodeId, current);
+    };
+    const routeParallelBadges = getRouteParallelBadgeMaps(getRouteParallelGroups(routeNodes, routeEdges));
+    const routeReworkBadges = getRouteReworkBadgeMaps(routeNodes);
     routeEdges.forEach((edge) => {
       if (edge.source) {
         connectedSourceNodeIds.add(edge.source);
+        addConnectedHandleId(edge.source, edge.sourceHandle || getRouteFallbackSourceHandleId(edge.source));
       }
       if (edge.target) {
         connectedTargetNodeIds.add(edge.target);
+        addConnectedHandleId(edge.target, edge.targetHandle || getRouteFallbackTargetHandleId(edge.target));
       }
     });
     return routeNodes.map((node) => ({
@@ -1498,12 +2056,24 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         ...node.data,
         sourceConnected: connectedSourceNodeIds.has(node.id),
         targetConnected: connectedTargetNodeIds.has(node.id),
+        connectedHandleIds: [...(connectedHandleIdsByNode.get(node.id) ?? [])],
+        showConnectableHandles: routeConnectionDragging && routeConnectionHoverNodeId === node.id && node.data.nodeType !== 'START',
+        parallelBadges: routeParallelBadges.parallel.get(node.id) ?? [],
+        mergeBadges: routeParallelBadges.merge.get(node.id) ?? [],
+        reworkBadges: routeReworkBadges.rework.get(node.id) ?? [],
       },
+    }));
+  }, [routeConnectionDragging, routeConnectionHoverNodeId, routeEdges, routeNodes]);
+  const routeEdgesWithPresentation = useMemo<RouteFlowEdge[]>(() => {
+    const routeNodeKindById = new Map(routeNodes.map((node) => [node.id, getRouteOperationKind(node)]));
+    return routeEdges.map((edge) => ({
+      ...edge,
+      ...getRouteEdgePresentation(edge, routeNodeKindById),
     }));
   }, [routeEdges, routeNodes]);
   const routeGraphQuery = useQuery({
     queryKey: ['process-route-graph', selectedRouteId, selectedRouteVersionId],
-    enabled: pageKey === 'routes' && dialogOpen && editingRow !== null && selectedRouteId !== null && selectedRouteVersionId !== null,
+    enabled: pageKey === 'routes' && dialogOpen && (editingRow !== null || creatingRouteVersionFrom !== null || editingRouteVersionFrom !== null) && selectedRouteId !== null && selectedRouteVersionId !== null,
     queryFn: async () => {
       const res = await getProcessRouteGraph(selectedRouteId as string | number, selectedRouteVersionId as string | number);
       return res.data.data;
@@ -1531,6 +2101,10 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const totalMaterialVersionTableWidth = visibleMaterialVersionColumns.reduce((sum, column) => sum + resolvedMaterialVersionColumnWidths[column.id], 0);
   const resolvedRouteVersionColumnWidths = useMemo(() => resolveColumnWidths(routeVersionColumnWidths, totalTableWidth, visibleRouteVersionColumns), [routeVersionColumnWidths, totalTableWidth, visibleRouteVersionColumns]);
   const totalRouteVersionTableWidth = visibleRouteVersionColumns.reduce((sum, column) => sum + resolvedRouteVersionColumnWidths[column.id], 0);
+  const effectiveMainTableWidth = Math.max(totalTableWidth, pageKey === 'materials' ? totalMaterialVersionTableWidth : pageKey === 'routes' ? totalRouteVersionTableWidth : totalTableWidth);
+  const mainTableSpacerWidth = Math.max(0, effectiveMainTableWidth - totalTableWidth);
+  const hasMainTableSpacer = mainTableSpacerWidth > 0;
+  const mainTableColSpan = visibleColumns.length + (hasMainTableSpacer ? 1 : 0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -1573,7 +2147,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       setRouteEdges([]);
       return;
     }
-    if (!editingRow) {
+    if (!editingRow && !creatingRouteVersionFrom && !editingRouteVersionFrom) {
       setRouteNodes((current) => ensureRouteBoundaryNodes(current));
       return;
     }
@@ -1586,14 +2160,13 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const graph = fromRouteGraphResponse(routeGraphQuery.data);
     setRouteNodes(graph.nodes);
     setRouteEdges(graph.edges);
-  }, [dialogOpen, editingRow, pageKey, routeGraphQuery.data, selectedRouteVersionId, setRouteEdges, setRouteNodes]);
+  }, [creatingRouteVersionFrom, dialogOpen, editingRouteVersionFrom, editingRow, pageKey, routeGraphQuery.data, selectedRouteVersionId, setRouteEdges, setRouteNodes]);
 
   useEffect(() => {
     const container = tableContainerRef.current;
     if (!container) return undefined;
     const updateWidth = () => {
       setTableContainerWidth(container.clientWidth);
-      setTableScrollbarWidth(Math.max(0, container.offsetWidth - container.clientWidth));
     };
     updateWidth();
     const observer = new ResizeObserver(updateWidth);
@@ -1632,12 +2205,13 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setDialogOpen(false);
     setEditingRow(null);
     setCreatingMaterialVersionFrom(null);
+    setCreatingRouteVersionFrom(null);
+    setEditingRouteVersionFrom(null);
     setMaterialDialogMode(null);
     setForm(emptyForm);
     if (pageKey === 'routes') {
       setSelectedRouteId(null);
       setSelectedRouteVersionId(null);
-      setNewRouteVersion('');
       setRouteOperationLibraryKeyword('');
       setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
       setRouteNodes(ensureRouteBoundaryNodes([]));
@@ -1696,6 +2270,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   const deleteMutation = useMutation({
     mutationFn: async (row: ProcessModelingRecord) => {
+      if (pageKey === 'routes' && deleteTarget?.scope === 'routeVersion') {
+        const routeId = 'routeId' in deleteTarget.row ? deleteTarget.row.routeId : null;
+        if ((typeof routeId !== 'string' && typeof routeId !== 'number') || !deleteTarget.row.id) throw new Error('请选择要删除的工艺路线版本');
+        return deleteProcessRouteVersion(routeId, deleteTarget.row.id);
+      }
       if (!config.remove) throw new Error(`${config.title}不支持删除`);
       return config.remove(await resolveDeleteRowId(row));
     },
@@ -1755,24 +2334,52 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   });
 
   const createRouteVersionMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: (body: ProcessModelingPayload) => {
       if (!selectedRouteId) throw new Error('请先选择工艺路线模板');
-      const version = newRouteVersion.trim();
+      const version = body.version?.trim() ?? '';
       if (!version) throw new Error('请填写版本号');
-      return createProcessRouteVersion(selectedRouteId, {
-        name: selectedRoute?.name || selectedRoute?.title || '工艺路线',
-        version,
-        status: 'ACTIVE',
-      });
+      return createProcessRouteVersion(selectedRouteId, { ...body, version });
     },
     onSuccess: async (response) => {
       const saved = response.data.data;
-      setNewRouteVersion('');
-      setSelectedRouteVersionId(saved.id);
+      const routeId = saved.routeId ?? selectedRouteId;
+      if (routeId && saved.id && (routeNodes.length > 0 || routeEdges.length > 0)) {
+        try {
+          await saveRouteGraphMutation.mutateAsync({ routeId, versionId: saved.id, silent: true });
+        } catch (error) {
+          showSnackbar(getApiErrorMessage(error, '工艺路线图保存失败'), 'error');
+          return;
+        }
+      }
       await queryClient.invalidateQueries({ queryKey: [config.listQueryKey] });
-      showSnackbar('工艺路线版本已新增', 'success');
+      resetDialogState();
+      showSnackbar('新增子版本保存成功', 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, '工艺路线版本新增失败'), 'error'),
+  });
+
+  const updateRouteVersionMutation = useMutation({
+    mutationFn: (body: ProcessModelingPayload) => {
+      if (!selectedRouteId || !selectedRouteVersionId) throw new Error('请先选择工艺路线模板和版本');
+      const version = body.version?.trim() ?? '';
+      if (!version) throw new Error('请填写版本号');
+      return updateProcessRouteVersion(selectedRouteId, selectedRouteVersionId, { ...body, version });
+    },
+    onSuccess: async () => {
+      if (selectedRouteId && selectedRouteVersionId) {
+        try {
+          await saveRouteGraphMutation.mutateAsync({ routeId: selectedRouteId, versionId: selectedRouteVersionId, silent: true });
+        } catch (error) {
+          showSnackbar(getApiErrorMessage(error, '工艺路线图保存失败'), 'error');
+          return;
+        }
+      }
+      await queryClient.invalidateQueries({ queryKey: [config.listQueryKey] });
+      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
+      resetDialogState();
+      showSnackbar('编辑子版本保存成功', 'success');
+    },
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '工艺路线版本编辑失败'), 'error'),
   });
 
   const saveRouteGraphMutation = useMutation({
@@ -2122,11 +2729,12 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const handleRouteConnect = (connection: Connection) => {
     const label = getRouteRelationLabel(DEFAULT_ROUTE_RELATION_TYPE);
     const edgePresentation = getRouteEdgePresentation();
+    const normalizedConnection = normalizeRouteConnectionHandles(connection);
     const edge: RouteFlowEdge = {
-      ...connection,
-      id: `edge-${connection.source}-${connection.target}-${Date.now()}`,
-      source: connection.source ?? '',
-      target: connection.target ?? '',
+      ...normalizedConnection,
+      id: `edge-${normalizedConnection.source}-${normalizedConnection.target}-${Date.now()}`,
+      source: normalizedConnection.source ?? '',
+      target: normalizedConnection.target ?? '',
       type: 'smoothstep',
       ...edgePresentation,
       data: {
@@ -2135,6 +2743,190 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       },
     };
     setRouteEdges((current) => addEdge(edge, current));
+  };
+
+  const handleRouteConnectStart = () => {
+    setRouteConnectionDragging(true);
+    setRouteConnectionHoverNodeId(null);
+  };
+
+  const handleRouteConnectEnd = () => {
+    setRouteConnectionDragging(false);
+    setRouteConnectionHoverNodeId(null);
+  };
+
+  const handleRouteNodeMouseEnter = (_event: MouseEvent, node: RouteFlowNode) => {
+    if (routeConnectionDragging) {
+      setRouteConnectionHoverNodeId(node.id);
+    }
+  };
+
+  const handleRouteNodeMouseLeave = (_event: MouseEvent, node: RouteFlowNode) => {
+    if (routeConnectionHoverNodeId === node.id) {
+      setRouteConnectionHoverNodeId(null);
+    }
+  };
+
+  const handleRouteReconnect: OnReconnect<RouteFlowEdge> = (oldEdge, newConnection) => {
+    const normalizedConnection = normalizeRouteConnectionHandles(newConnection);
+    setRouteEdges((current) => reconnectEdge(oldEdge, normalizedConnection, current, { shouldReplaceId: false }));
+  };
+
+  const closeRouteCanvasContextMenu = () => setRouteCanvasContextMenu(null);
+
+  const getRouteContextSelection = (node?: RouteFlowNode): Pick<RouteCanvasContextMenuState, 'selectedNodeIds' | 'selectedEdgeIds'> => {
+    const selectedNodeIds = routeNodes.filter((item) => item.selected && !item.data.virtual).map((item) => item.id);
+    const selectedEdgeIds = routeEdges.filter((item) => item.selected).map((item) => item.id);
+    if (node && !node.data.virtual && !selectedNodeIds.includes(node.id)) {
+      return { selectedNodeIds: [node.id], selectedEdgeIds };
+    }
+    return { selectedNodeIds, selectedEdgeIds };
+  };
+
+  const openRouteCanvasContextMenu = (event: { clientX: number; clientY: number }, selection: Pick<RouteCanvasContextMenuState, 'selectedNodeIds' | 'selectedEdgeIds'>) => {
+    if (selection.selectedNodeIds.length === 0 && selection.selectedEdgeIds.length === 0) return;
+    setRouteCanvasContextMenu({
+      mouseX: event.clientX + 2,
+      mouseY: event.clientY - 6,
+      ...selection,
+    });
+  };
+
+  const handleRouteNodeContextMenu = (event: MouseEvent, node: RouteFlowNode) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openRouteCanvasContextMenu(event, getRouteContextSelection(node));
+  };
+
+  const handleRoutePaneContextMenu = (event: MouseEvent | globalThis.MouseEvent) => {
+    event.preventDefault();
+    openRouteCanvasContextMenu(event, getRouteContextSelection());
+  };
+
+  const handleRouteSelectionContextMenu = (event: MouseEvent, nodes: RouteFlowNode[]) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openRouteCanvasContextMenu(event, {
+      selectedNodeIds: nodes.filter((item) => !item.data.virtual).map((item) => item.id),
+      selectedEdgeIds: routeEdges.filter((item) => item.selected).map((item) => item.id),
+    });
+  };
+
+  const setSelectedRouteNodesAsParallelBranch = () => {
+    const selectedNodeIds = routeCanvasContextMenu?.selectedNodeIds ?? [];
+    closeRouteCanvasContextMenu();
+    if (selectedNodeIds.length < 2) {
+      showSnackbar('请至少框选 2 个工序节点', 'error');
+      return;
+    }
+    const sourceNodeId = getRouteParallelBoundaryNodeId(routeNodes, routeEdges, selectedNodeIds, 'upstream');
+    const mergeNodeId = getRouteParallelBoundaryNodeId(routeNodes, routeEdges, selectedNodeIds, 'downstream');
+    if (!sourceNodeId || !mergeNodeId || sourceNodeId === mergeNodeId) {
+      showSnackbar('未识别到并行分支的上游节点或汇合节点', 'error');
+      return;
+    }
+    const selectedNodeIdSet = new Set(selectedNodeIds);
+    setRouteEdges((current) => {
+      const requiredPairs = selectedNodeIds.flatMap((nodeId) => [[sourceNodeId, nodeId], [nodeId, mergeNodeId]] as const);
+      const requiredPairKeys = new Set(requiredPairs.map(([source, target]) => `${source}->${target}`));
+      const existingPairKeys = new Set<string>();
+      const nextEdges = current
+        .filter((edge) => !(selectedNodeIdSet.has(edge.source) && selectedNodeIdSet.has(edge.target)))
+        .map((edge) => {
+          const pairKey = `${edge.source}->${edge.target}`;
+          existingPairKeys.add(pairKey);
+          if (!requiredPairKeys.has(pairKey)) return edge;
+          return {
+            ...edge,
+            sourceHandle: edge.sourceHandle || getRouteFallbackSourceHandleId(edge.source),
+            targetHandle: edge.targetHandle || getRouteFallbackTargetHandleId(edge.target),
+            ...getRouteEdgePresentation(),
+            data: {
+              ...(edge.data ?? {}),
+              relationType: 'PARALLEL',
+              label: getRouteRelationLabel('PARALLEL'),
+            },
+          };
+        });
+      requiredPairs.forEach(([source, target]) => {
+        const pairKey = `${source}->${target}`;
+        if (!existingPairKeys.has(pairKey)) {
+          nextEdges.push(createRouteParallelEdge(source, target));
+        }
+      });
+      return nextEdges;
+    });
+    showSnackbar('并行分支已自动补全', 'success');
+  };
+
+  const copyRouteContextSelection = (routeOperationKind: RouteOperationKind) => {
+    const selectedNodeIds = routeCanvasContextMenu?.selectedNodeIds ?? [];
+    closeRouteCanvasContextMenu();
+    if (selectedNodeIds.length === 0) {
+      showSnackbar('请选择要复制的工序节点', 'error');
+      return;
+    }
+    const selectedNodeIdSet = new Set(selectedNodeIds);
+    setRouteNodes((current) => {
+      const nodesToCopy = current.filter((node) => selectedNodeIdSet.has(node.id) && !node.data.virtual);
+      if (nodesToCopy.length === 0) return current;
+      const nextNodes = current.map((node) => ({ ...node, selected: false }));
+      const labelSourceNodes: RouteFlowNode[] = [...nextNodes];
+      const copiedNodes = nodesToCopy.map((node, index) => {
+        const label = routeOperationKind === 'REWORK' ? String(node.data.label || node.data.operationName || '') : getNextRouteCopyLabel(labelSourceNodes, String(node.data.label || node.data.operationName || ''), routeOperationKind);
+        const copiedNode = createRouteCopiedNode(node, label, index, routeOperationKind);
+        labelSourceNodes.push(copiedNode);
+        return copiedNode;
+      });
+      return [...nextNodes, ...copiedNodes];
+    });
+    showSnackbar(routeOperationKind === 'REWORK' ? '已复制为返工工序' : '已复制为生产工序', 'success');
+  };
+
+  const setRouteContextSelectionOperationKind = () => {
+    const selectedNodeIds = routeCanvasContextMenu?.selectedNodeIds ?? [];
+    const selectedNodeIdSet = new Set(selectedNodeIds);
+    const routeContextSelectedNodes = routeNodes.filter((node) => selectedNodeIdSet.has(node.id) && !node.data.virtual);
+    const routeContextSelectionIsProduction = routeContextSelectedNodes.length > 0
+      && routeContextSelectedNodes.every((node) => getRouteOperationKind(node) === 'PRODUCTION');
+    const nextRouteOperationKind = routeContextSelectionIsProduction ? 'REWORK' : 'PRODUCTION';
+    closeRouteCanvasContextMenu();
+    if (routeContextSelectedNodes.length === 0) {
+      showSnackbar('请选择要设置的工序节点', 'error');
+      return;
+    }
+    if (nextRouteOperationKind === 'REWORK' && hasRouteReworkConflict(routeNodes, selectedNodeIds)) {
+      showSnackbar('该工序已存在返工工序，不能重复设为返工工序', 'error');
+      return;
+    }
+    if (nextRouteOperationKind === 'PRODUCTION' && hasRouteProductionConflict(routeNodes, selectedNodeIds)) {
+      showSnackbar('该工序已存在生产工序，不能重复设为生产工序', 'error');
+      return;
+    }
+    setRouteNodes((current) => current.map((node) => {
+      if (!selectedNodeIdSet.has(node.id) || node.data.virtual) return node;
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          nodeType: nextRouteOperationKind === 'REWORK' ? 'REWORK' : 'OPERATION',
+          routeOperationKind: nextRouteOperationKind,
+        },
+      };
+    }));
+    showSnackbar(nextRouteOperationKind === 'REWORK' ? '已设为返工工序' : '已设为生产工序', 'success');
+  };
+
+  const deleteRouteContextSelection = () => {
+    const selectedNodeIdSet = new Set(routeCanvasContextMenu?.selectedNodeIds ?? []);
+    const selectedEdgeIdSet = new Set(routeCanvasContextMenu?.selectedEdgeIds ?? []);
+    closeRouteCanvasContextMenu();
+    if (selectedNodeIdSet.size > 0) {
+      setRouteNodes((current) => current.filter((node) => node.data.virtual || !selectedNodeIdSet.has(node.id)));
+    }
+    setRouteEdges((current) => current.filter((edge) => (
+      !selectedEdgeIdSet.has(edge.id) && !selectedNodeIdSet.has(edge.source) && !selectedNodeIdSet.has(edge.target)
+    )));
   };
 
   const handleRouteNodeDrag: OnNodeDrag<RouteFlowNode> = (_event, node) => {
@@ -2190,11 +2982,12 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     if (isReadOnlyPage(config)) return;
     setEditingRow(null);
     setCreatingMaterialVersionFrom(null);
+    setCreatingRouteVersionFrom(null);
+    setEditingRouteVersionFrom(null);
     setMaterialDialogMode(pageKey === 'materials' ? 'createMaterial' : null);
     if (pageKey === 'routes') {
       setSelectedRouteId(null);
       setSelectedRouteVersionId(null);
-      setNewRouteVersion('');
       setRouteOperationLibraryKeyword('');
       setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
       setRouteNodes([]);
@@ -2213,15 +3006,16 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setDialogOpen(true);
   };
 
-  const openEditRouteDialog = (route: RouteRecord, versionId?: string | number | null) => {
+ const openEditRouteDialog = (route: RouteRecord, versionId?: string | number | null) => {
     if (isReadOnlyPage(config)) return;
     const selectedVersion = route.versions?.find((version) => String(version.id) === String(versionId ?? route.latestVersionId)) ?? route.versions?.[0] ?? null;
     setEditingRow(route);
     setCreatingMaterialVersionFrom(null);
+    setCreatingRouteVersionFrom(null);
+    setEditingRouteVersionFrom(null);
     setMaterialDialogMode(null);
     setSelectedRouteId(route.id);
     setSelectedRouteVersionId(versionId ?? route.latestVersionId ?? route.versions?.[0]?.id ?? null);
-    setNewRouteVersion('');
     setRouteOperationLibraryKeyword('');
     setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
     setRouteNodes([]);
@@ -2239,10 +3033,86 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setDialogOpen(true);
   };
 
+  const openCreateRouteVersionDialog = (route: RouteRecord) => {
+    if (isReadOnlyPage(config)) return;
+    const sourceVersion = route.versions?.find((version) => String(version.id) === String(route.latestVersionId)) ?? route.versions?.[0] ?? null;
+    setEditingRow(null);
+    setCreatingMaterialVersionFrom(null);
+    setCreatingRouteVersionFrom(route);
+    setEditingRouteVersionFrom(null);
+    setMaterialDialogMode(null);
+    setSelectedRouteId(route.id);
+    setSelectedRouteVersionId(sourceVersion?.id ?? route.latestVersionId ?? null);
+    setRouteOperationLibraryKeyword('');
+    setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
+    setRouteNodes([]);
+    setRouteEdges([]);
+    setForm({
+      ...emptyForm,
+      name: getDisplayName(route) === '-' ? '' : getDisplayName(route),
+      description: route.description ?? '',
+      status: 'ACTIVE',
+      version: '',
+      effectiveDate: getTodayDateTimeInput(),
+      expiryDate: null,
+      versionDescription: '',
+    });
+    setDialogOpen(true);
+  };
+
+  const openEditRouteVersionDialog = (route: RouteRecord, version: RouteVersionRecord) => {
+    if (isReadOnlyPage(config)) return;
+    setEditingRow(null);
+    setCreatingMaterialVersionFrom(null);
+    setCreatingRouteVersionFrom(null);
+    setEditingRouteVersionFrom({ route, version });
+    setMaterialDialogMode(null);
+    setSelectedRouteId(route.id);
+    setSelectedRouteVersionId(version.id);
+    setRouteOperationLibraryKeyword('');
+    setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
+    setRouteNodes([]);
+    setRouteEdges([]);
+    setForm({
+      ...emptyForm,
+      name: getDisplayName(route) === '-' ? '' : getDisplayName(route),
+      status: version.versionStatus || 'ACTIVE',
+      version: version.version ?? '',
+      effectiveDate: formatDateTimeInput(version.effectiveDate ?? undefined),
+      expiryDate: formatDateTimeInput(version.expiryDate ?? undefined),
+      versionDescription: version.versionDescription ?? version.description ?? '',
+    });
+    setDialogOpen(true);
+  };
+
+  const openEditRouteBaseDialog = (route: RouteRecord) => {
+    if (isReadOnlyPage(config)) return;
+    setEditingRow(route);
+    setCreatingMaterialVersionFrom(null);
+    setCreatingRouteVersionFrom(null);
+    setEditingRouteVersionFrom(null);
+    setMaterialDialogMode(null);
+    setSelectedRouteId(route.id);
+    setSelectedRouteVersionId(null);
+    setRouteOperationLibraryKeyword('');
+    setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
+    setRouteNodes([]);
+    setRouteEdges([]);
+    setForm({
+      ...emptyForm,
+      name: getDisplayName(route) === '-' ? '' : getDisplayName(route),
+      description: route.description ?? '',
+      status: route.status && route.status !== 'DRAFT' && route.status !== 'OBSOLETE' ? route.status : 'DISABLED',
+    });
+    setDialogOpen(true);
+  };
+
   const openCreateMaterialVersionDialog = (row: MaterialRecord) => {
     if (isReadOnlyPage(config)) return;
     setEditingRow(null);
     setCreatingMaterialVersionFrom(row);
+    setCreatingRouteVersionFrom(null);
+    setEditingRouteVersionFrom(null);
     setMaterialDialogMode('createVersion');
     const materialTypeValue = row.materialTypeId ?? '';
     setForm({
@@ -2263,12 +3133,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const openEditDialog = (row: ProcessModelingRecord, materialMode?: Extract<MaterialDialogMode, 'editMaterial' | 'editVersion'>) => {
     if (isReadOnlyPage(config)) return;
     if (pageKey === 'routes') {
-      openEditRouteDialog(row as RouteRecord);
+      openEditRouteBaseDialog(row as RouteRecord);
       return;
     }
     const materialTypeValue = 'materialTypeId' in row ? row.materialTypeId ?? '' : '';
     setEditingRow(row);
     setCreatingMaterialVersionFrom(null);
+    setCreatingRouteVersionFrom(null);
+    setEditingRouteVersionFrom(null);
     setMaterialDialogMode(materialMode ?? (pageKey === 'materials' ? 'editMaterial' : null));
     setForm({
       name: getDisplayName(row) === '-' ? '' : getDisplayName(row),
@@ -2295,9 +3167,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setDialogOpen(true);
   };
 
-  const openDetailDrawer = (row: ProcessModelingRecord, entityIds: Array<string | number> = [row.id]) => {
+  const openDetailDrawer = (row: ProcessModelingRecord, entityTargets: AuditEntityTargetInput[] = [row.id]) => {
     setSelectedRow(row);
-    setDrawerAuditTarget({ entityIds });
+    setDrawerAuditTarget({ entityTargets });
     setDrawerTab(0);
     setDrawerOpen(true);
   };
@@ -2310,25 +3182,75 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     openDetailDrawer(row, [row.id]);
   };
 
+  const routeVersionToDrawerRow = (route: RouteRecord, version: RouteVersionRecord): ProcessModelingRecord => ({
+    id: version.id,
+    tenantId: route.tenantId,
+    routeId: route.id,
+    code: route.code,
+    name: getDisplayName(route),
+    description: version.versionDescription ?? version.description ?? '',
+    status: version.versionStatus ?? route.latestVersionStatus ?? route.status,
+    version: version.version,
+    effectiveDate: version.effectiveDate,
+    expiryDate: version.expiryDate,
+    versionDescription: version.versionDescription ?? version.description ?? '',
+    createdBy: version.createdBy,
+    createdAt: version.createdAt,
+    updatedBy: version.updatedBy,
+    updatedAt: version.updatedAt,
+  } as ProcessModelingRecord);
+
+  const getRouteVersionAuditTargets = (version: RouteVersionRecord): AuditEntityTarget[] => [
+    { entityId: version.id, entityType: 'ROUTE_VERSION' },
+    { entityId: version.id, entityType: 'ROUTE_GRAPH' },
+  ];
+
+  const getRouteAuditTargets = (route: RouteRecord): AuditEntityTarget[] => [
+    { entityId: route.id, entityType: 'ROUTE' },
+    ...(route.versions ?? []).flatMap((version) => getRouteVersionAuditTargets(version)),
+  ];
+
+  const openRouteGroupDrawer = (route: RouteRecord) => {
+    openDetailDrawer(route, getRouteAuditTargets(route));
+  };
+
+  const openRouteVersionDrawer = (route: RouteRecord, version: RouteVersionRecord) => {
+    openDetailDrawer(routeVersionToDrawerRow(route, version), getRouteVersionAuditTargets(version));
+  };
+
+  const getSelectedRouteVersionDescription = () => {
+    if (!selectedRow || !('versionDescription' in selectedRow)) return selectedRow?.description || '-';
+    return String(selectedRow.versionDescription || selectedRow.description || '-');
+  };
+
   const deleteTargetName = deleteTarget ? getDisplayName(deleteTarget.row) : '';
   const deleteTargetVersion = deleteTarget?.scope === 'materialVersion' ? getMaterialVersion(deleteTarget.row) : '';
-  const deleteDialogTitle = pageKey === 'materials'
+  const deleteRouteVersionName = deleteTarget?.scope === 'routeVersion' && 'version' in deleteTarget.row ? String(deleteTarget.row.version || '-') : '';
+  const deleteDialogTitle = pageKey === 'routes' && deleteTarget?.scope === 'routeVersion'
+    ? '确认删除子版本工艺路线'
+    : pageKey === 'materials'
     ? deleteTarget?.scope === 'materialVersion'
       ? '确认删除物料版本'
       : '确认删除物料'
     : `确认删除${config.title}`;
-  const deleteDialogMessage = pageKey === 'materials'
+  const deleteDialogMessage = pageKey === 'routes' && deleteTarget?.scope === 'routeVersion'
+    ? `确定要删除工艺路线模板 ${deleteTargetName} 的子版本 ${deleteRouteVersionName} 吗？删除后该版本的路线配置将无法恢复。`
+    : pageKey === 'materials'
     ? deleteTarget?.scope === 'materialVersion'
       ? `确定要删除物料 ${deleteTargetName} 的版本 ${deleteTargetVersion} 吗？删除后该物料版本将无法恢复。`
       : `确定要删除物料 ${deleteTargetName} 吗？删除后该物料将无法恢复。`
     : `确定要删除${config.title} ${deleteTargetName} 吗？删除后该数据将无法恢复。`;
+  const isEditingRouteBaseOnly = pageKey === 'routes' && editingRow !== null && selectedRouteVersionId === null;
+  const isEditingRouteVersion = pageKey === 'routes' && editingRouteVersionFrom !== null;
+  const isCreatingRouteVersion = pageKey === 'routes' && creatingRouteVersionFrom !== null;
+  const isRouteFullScreenDialog = pageKey === 'routes' && !isEditingRouteBaseOnly;
 
   const submitForm = () => {
     if (isReadOnlyPage(config)) {
       setSnackbar({ open: true, message: `${config.title}仅支持查看`, severity: 'error' });
       return;
     }
-    if (!form.name?.trim()) {
+    if (!isCreatingRouteVersion && !isEditingRouteVersion && !form.name?.trim()) {
       setSnackbar({ open: true, message: '请填写名称', severity: 'error' });
       return;
     }
@@ -2344,15 +3266,27 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       setSnackbar({ open: true, message: '请填写版本', severity: 'error' });
       return;
     }
-    if (pageKey === 'routes' && !editingRow && !form.version?.trim()) {
-      setSnackbar({ open: true, message: '请填写初始版本', severity: 'error' });
+    if (pageKey === 'routes' && (isCreatingRouteVersion || isEditingRouteVersion || !editingRow) && !form.version?.trim()) {
+      setSnackbar({ open: true, message: isCreatingRouteVersion || isEditingRouteVersion ? '请填写版本' : '请填写初始版本', severity: 'error' });
       return;
     }
     if (pageKey === 'materials' && isExpiryBeforeEffective(form.effectiveDate, form.expiryDate)) {
       setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
       return;
     }
-    const payload = pageKey === 'materials' ? normalizeMaterialPayload(form) : normalizePayload(form);
+    if (pageKey === 'routes' && isExpiryBeforeEffective(form.effectiveDate, form.expiryDate)) {
+      setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
+      return;
+    }
+    const payload = pageKey === 'materials' ? normalizeMaterialPayload(form) : pageKey === 'routes' ? normalizeRoutePayload(form) : normalizePayload(form);
+    if (isCreatingRouteVersion) {
+      createRouteVersionMutation.mutate(payload);
+      return;
+    }
+    if (isEditingRouteVersion) {
+      updateRouteVersionMutation.mutate(payload);
+      return;
+    }
     if (editingRow) updateMutation.mutate(payload);
     else createMutation.mutate(payload);
   };
@@ -2392,6 +3326,24 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     }
     if (materialDialogMode === 'editVersion') {
       return pickMaterialPayload(normalized, MATERIAL_VERSION_FIELD_IDS);
+    }
+    return normalized;
+  };
+
+  const normalizeRoutePayload = (input: ProcessModelingPayload): ProcessModelingPayload => {
+    const normalized = normalizePayload(input);
+    if (isCreatingRouteVersion) {
+      return {
+        ...pickRoutePayload(normalized, ROUTE_VERSION_FIELD_IDS),
+        name: creatingRouteVersionFrom?.name || creatingRouteVersionFrom?.title || selectedRoute?.name || selectedRoute?.title || '工艺路线',
+        status: 'ACTIVE',
+      };
+    }
+    if (isEditingRouteVersion) {
+      return pickRoutePayload(normalized, ROUTE_VERSION_FIELD_IDS);
+    }
+    if (isEditingRouteBaseOnly) {
+      return pickRoutePayload(normalized, ROUTE_BASE_FIELD_IDS);
     }
     return normalized;
   };
@@ -2796,9 +3748,12 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     if (column.id === 'actions') {
       if (isReadOnlyPage(config)) return null;
       return (
-        <TableCell key={column.id} align="center" sx={commonSx}>
-          {renderRowActions(row)}
-        </TableCell>
+        <Fragment key={column.id}>
+          {renderMainTableActionSpacerCell('body')}
+          <TableCell align="center" data-process-main-action-column="true" sx={commonSx}>
+            {renderRowActions(row)}
+          </TableCell>
+        </Fragment>
       );
     }
     return (
@@ -2835,8 +3790,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   );
 
   const renderAddRouteVersionAction = (route: RouteRecord) => (
-    <Tooltip title="新增版本" arrow>
-      <IconButton size="small" aria-label="新增版本" onClick={(event) => { event.stopPropagation(); openEditRouteDialog(route); }}>
+    <Tooltip title="新增子版本" arrow>
+      <IconButton size="small" aria-label="新增子版本" onClick={(event) => { event.stopPropagation(); openCreateRouteVersionDialog(route); }}>
         <PlaylistAdd fontSize="small" />
       </IconButton>
     </Tooltip>
@@ -2890,13 +3845,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     </Stack>
   );
 
-  const renderRouteVersionActions = (route: RouteRecord, version: RouteVersionRecord) => (
+  const renderRouteVersionActions = (route: RouteRecord, version: RouteVersionRecord, canDelete: boolean) => (
     <Stack direction="row" spacing={0.5} justifyContent="center">
       <Tooltip title="编辑" arrow>
-        <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openEditRouteDialog(route, version.id); }}>
+        <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openEditRouteVersionDialog(route, version); }}>
           <Edit fontSize="small" />
         </IconButton>
       </Tooltip>
+      {canDelete ? renderDeleteAction(routeVersionToDrawerRow(route, version), 'routeVersion') : null}
     </Stack>
   );
 
@@ -2920,7 +3876,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const renderMaterialVersionTable = (group: MaterialGroupRow) => {
     return (
       <TableRow key={`${group.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
-        <TableCell colSpan={visibleColumns.length} sx={{ p: 0, bgcolor: '#fafcff' }}>
+        <TableCell colSpan={mainTableColSpan} sx={{ p: 0, bgcolor: '#fafcff' }}>
           <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
             <Table stickyHeader size="small" aria-label="物料版本列表" sx={{ tableLayout: 'fixed', width: totalMaterialVersionTableWidth, minWidth: totalMaterialVersionTableWidth }}>
               <colgroup>
@@ -2978,7 +3934,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const versions = route.versions ?? [];
     return (
       <TableRow key={`${route.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
-        <TableCell colSpan={visibleColumns.length} sx={{ p: 0, bgcolor: '#fafcff' }}>
+        <TableCell colSpan={mainTableColSpan} sx={{ p: 0, bgcolor: '#fafcff' }}>
           <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
             <Table stickyHeader size="small" aria-label="工艺路线版本列表" sx={{ tableLayout: 'fixed', width: totalRouteVersionTableWidth, minWidth: totalRouteVersionTableWidth }}>
               <colgroup>
@@ -3006,7 +3962,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                     <TableCell colSpan={visibleRouteVersionColumns.length} align="center" sx={{ color: '#909399' }}>暂无版本</TableCell>
                   </TableRow>
                 ) : versions.map((versionRow) => (
-                  <TableRow key={`${route.id}:${versionRow.id}`} hover sx={{ '& .MuiTableCell-root': tableBodyCellSx }}>
+                  <TableRow key={`${route.id}:${versionRow.id}`} hover onClick={() => openRouteVersionDrawer(route, versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
                     {visibleRouteVersionColumns.map((column) => {
                       const commonSx = {
                         width: getRouteVersionColumnWidth(column),
@@ -3021,7 +3977,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                           {column.id === 'version' ? versionRow.version || '-' : column.id === 'status' ? (
                             <StatusBadge label={getStatusLabel(versionRow.versionStatus)} color={getStatusColor(versionRow.versionStatus)} />
                           ) : column.id === 'effectiveDate' ? formatDateTime(versionRow.effectiveDate ?? undefined) : column.id === 'expiryDate' ? formatDateTime(versionRow.expiryDate ?? undefined) : column.id === 'description' ? versionRow.versionDescription || versionRow.description || '-' : column.id === 'createdBy' ? versionRow.createdBy || '-' : column.id === 'createdAt' ? formatDateTime(versionRow.createdAt) : column.id === 'updatedBy' ? versionRow.updatedBy || '-' : column.id === 'updatedAt' ? formatDateTime(versionRow.updatedAt) : column.id === 'actions' ? (
-                            renderRouteVersionActions(route, versionRow)
+                            renderRouteVersionActions(route, versionRow, getRouteVersionCount(route) > 1)
                           ) : ''}
                         </TableCell>
                       );
@@ -3140,31 +4096,76 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     );
   };
 
+  const renderRouteCanvasContextMenu = () => {
+    const routeContextSelectedNodes = routeCanvasContextMenu
+      ? routeNodes.filter((node) => routeCanvasContextMenu.selectedNodeIds.includes(node.id) && !node.data.virtual)
+      : [];
+    const routeContextSelectionIsProduction = routeContextSelectedNodes.length > 0
+      && routeContextSelectedNodes.every((node) => getRouteOperationKind(node) === 'PRODUCTION');
+    const routeContextSetReworkDisabled = routeContextSelectionIsProduction
+      && hasRouteReworkConflict(routeNodes, routeCanvasContextMenu?.selectedNodeIds ?? []);
+    const routeContextSetProductionDisabled = !routeContextSelectionIsProduction
+      && hasRouteProductionConflict(routeNodes, routeCanvasContextMenu?.selectedNodeIds ?? []);
+    return (
+      <Menu
+        open={Boolean(routeCanvasContextMenu)}
+        onClose={closeRouteCanvasContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={routeCanvasContextMenu ? { top: routeCanvasContextMenu.mouseY, left: routeCanvasContextMenu.mouseX } : undefined}
+        PaperProps={{ sx: { minWidth: 180, border: '1px solid #e4e7ed', borderRadius: 1, boxShadow: '0 8px 24px rgba(15, 23, 42, .14)' } }}
+      >
+        <MenuItem
+          data-process-route-set-parallel-branch
+          disabled={(routeCanvasContextMenu?.selectedNodeIds.length ?? 0) < 2}
+          onClick={setSelectedRouteNodesAsParallelBranch}
+          sx={{ gap: 1, minHeight: 34, fontSize: 13 }}
+        >
+          <CallSplit fontSize="small" />
+          设为并行分支
+        </MenuItem>
+        <MenuItem
+          data-process-route-copy-production-operation
+          disabled={(routeCanvasContextMenu?.selectedNodeIds.length ?? 0) === 0}
+          onClick={() => copyRouteContextSelection('PRODUCTION')}
+          sx={{ gap: 1, minHeight: 34, fontSize: 13 }}
+        >
+          <ContentCopy fontSize="small" />
+          复制为生产工序
+        </MenuItem>
+        {routeContextSelectionIsProduction ? (
+          <MenuItem
+            data-process-route-copy-rework-operation
+            onClick={() => copyRouteContextSelection('REWORK')}
+            sx={{ gap: 1, minHeight: 34, fontSize: 13 }}
+          >
+            <ContentCopy fontSize="small" />
+            复制为返工工序
+          </MenuItem>
+        ) : null}
+        <MenuItem
+          data-process-route-set-operation-kind
+          disabled={routeContextSelectedNodes.length === 0 || routeContextSetProductionDisabled || routeContextSetReworkDisabled}
+          onClick={setRouteContextSelectionOperationKind}
+          sx={{ gap: 1, minHeight: 34, fontSize: 13 }}
+        >
+          <RestartAlt fontSize="small" />
+          {routeContextSelectionIsProduction ? '设为返工工序' : '设为生产工序'}
+        </MenuItem>
+        <Divider data-process-route-context-menu-divider />
+        <MenuItem
+          data-process-route-delete-selection
+          onClick={deleteRouteContextSelection}
+          sx={{ gap: 1, minHeight: 34, fontSize: 13, color: '#f56c6c' }}
+        >
+          <Delete fontSize="small" />
+          删除
+        </MenuItem>
+      </Menu>
+    );
+  };
+
   const renderRouteDesignerPanel = () => (
     <Box data-process-route-designer-panel sx={{ flex: 1, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      {editingRow ? (
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ flex: '0 0 auto', minHeight: 44, px: 1.5, borderBottom: '1px solid #e4e7ed', flexWrap: 'wrap', rowGap: 1 }}>
-          <TextField
-            select
-            size="small"
-            label="版本"
-            value={selectedRouteVersion?.id ?? ''}
-            onChange={(event) => setSelectedRouteVersionId(event.target.value)}
-            sx={{ width: 130, ...fieldSx }}
-          >
-            {selectedRouteVersions.map((version) => <MenuItem key={version.id} value={version.id}>{version.version}</MenuItem>)}
-          </TextField>
-          <TextField
-            size="small"
-            label="新增版本"
-            placeholder="如 V1.1"
-            value={newRouteVersion}
-            onChange={(event) => setNewRouteVersion(event.target.value)}
-            sx={{ width: 120, ...fieldSx }}
-          />
-          <Button size="small" variant="outlined" startIcon={<PlaylistAdd />} onClick={() => createRouteVersionMutation.mutate()} disabled={createRouteVersionMutation.isPending || !selectedRouteId}>新增版本</Button>
-        </Stack>
-      ) : null}
       <Box sx={{ flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: { xs: '1fr', lg: `${routeDesignerLibraryWidth}px 8px minmax(0, 1fr)` }, gridTemplateRows: { xs: 'auto minmax(360px, 1fr)', lg: 'minmax(0, 1fr)' } }}>
         <Box sx={{ borderBottom: { xs: '1px solid #e4e7ed', lg: 'none' }, p: 1.25, minHeight: 0, maxHeight: { xs: 260, lg: 'none' }, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', xl: 'repeat(auto-fit, minmax(158px, 1fr))' }, gap: 1, mb: 1 }}>
@@ -3221,11 +4222,20 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           <ReactFlowProvider>
             <ReactFlow
               nodes={routeNodesWithConnectionState}
-              edges={routeEdges}
+              edges={routeEdgesWithPresentation}
               nodeTypes={routeDesignerNodeTypes}
               onNodesChange={onRouteNodesChange}
               onEdgesChange={onRouteEdgesChange}
               onConnect={handleRouteConnect}
+              onConnectStart={handleRouteConnectStart}
+              onConnectEnd={handleRouteConnectEnd}
+              onReconnect={handleRouteReconnect}
+              onNodeContextMenu={handleRouteNodeContextMenu}
+              onNodeMouseEnter={handleRouteNodeMouseEnter}
+              onNodeMouseLeave={handleRouteNodeMouseLeave}
+              onPaneContextMenu={handleRoutePaneContextMenu}
+              onSelectionContextMenu={handleRouteSelectionContextMenu}
+              onPaneClick={closeRouteCanvasContextMenu}
               onNodeDrag={handleRouteNodeDrag}
               onNodeDragStop={handleRouteNodeDrag}
               onInit={(instance) => {
@@ -3242,23 +4252,39 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               panOnDrag={routeDesignerInteractionMode === 'pan'}
               selectionOnDrag={routeDesignerInteractionMode === 'select'}
               multiSelectionKeyCode={['Meta', 'Shift']}
+              edgesReconnectable
+              reconnectRadius={16}
             >
               <Background />
             </ReactFlow>
           </ReactFlowProvider>
           {renderRouteCanvasDropPreview()}
           {renderRouteCanvasToolbar()}
+          {renderRouteCanvasContextMenu()}
         </Box>
       </Box>
     </Box>
   );
 
   const renderRouteDialogContent = () => {
+    if (isEditingRouteBaseOnly) {
+      return (
+        <Box data-process-route-base-only-dialog sx={{ width: { xs: '100%', md: 640 }, maxWidth: '100%', pt: 0.5 }}>
+          {renderRouteFormSection('基础信息', ROUTE_BASE_FIELD_IDS)}
+        </Box>
+      );
+    }
     return (
       <Box sx={{ flex: 1, minHeight: 0, height: '100%', display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '320px minmax(0, 1fr)' }, gridTemplateRows: { xs: 'auto minmax(420px, 1fr)', lg: 'minmax(0, 1fr)' }, gap: 1.5, pt: 0.5, overflow: 'hidden' }}>
         <Stack data-process-route-dialog-side-panel spacing={1.5} sx={{ minHeight: 0, overflow: 'auto', pr: { xs: 0, lg: 0.5 } }}>
-          {renderRouteFormSection('基础信息', ROUTE_BASE_FIELD_IDS)}
-          {editingRow ? null : renderRouteFormSection('版本信息', ROUTE_VERSION_FIELD_IDS)}
+          {isCreatingRouteVersion || isEditingRouteVersion ? (
+            renderRouteFormSection('版本信息', ROUTE_VERSION_FIELD_IDS)
+          ) : (
+            <>
+              {renderRouteFormSection('基础信息', ROUTE_BASE_FIELD_IDS)}
+              {editingRow ? null : renderRouteFormSection('版本信息', ROUTE_VERSION_FIELD_IDS)}
+            </>
+          )}
         </Stack>
         <Box data-process-route-dialog-config-panel sx={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           {renderRouteFormSection('工艺路线配置', [], renderRouteDesignerPanel(), { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }, { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' })}
@@ -3266,6 +4292,23 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       </Box>
     );
   };
+
+  const renderMainTableActionSpacerCell = (layer: 'head' | 'body') => (
+    hasMainTableSpacer ? (
+      <TableCell
+        data-process-main-action-spacer
+        aria-hidden="true"
+        sx={{
+          width: mainTableSpacerWidth,
+          minWidth: mainTableSpacerWidth,
+          maxWidth: mainTableSpacerWidth,
+          p: 0,
+          bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
+          ...(layer === 'head' ? { position: 'sticky', top: 0, zIndex: 5 } : {}),
+        }}
+      />
+    ) : null
+  );
 
   const renderTableRow = (row: ProcessTableRow) => {
     if (isMaterialGroupRow(row)) {
@@ -3283,7 +4326,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                 ...getStickyActionColumnSx(column, 'body'),
               };
               return (
-                <TableCell key={column.id} align={column.align} sx={commonSx} title={String(renderMaterialGroupCell(row, column))}>
+                <Fragment key={column.id}>
+                  {column.id === 'actions' ? renderMainTableActionSpacerCell('body') : null}
+                  <TableCell align={column.align} data-process-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx} title={String(renderMaterialGroupCell(row, column))}>
                   {column.id === 'actions' ? (row.versions.length > 1 ? renderMultiVersionMaterialGroupActions(row) : renderSingleVersionMaterialGroupActions(row)) : index === 0 ? (
                     <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
                       <IconButton
@@ -3307,7 +4352,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   ) : (
                     renderMaterialGroupCell(row, column)
                   )}
-                </TableCell>
+                  </TableCell>
+                </Fragment>
               );
             })}
           </TableRow>
@@ -3322,7 +4368,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       const versions = route.versions ?? [];
       return (
         <Fragment key={route.id}>
-          <TableRow key={route.id} hover onClick={() => openDetailDrawer(route)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+          <TableRow key={route.id} hover onClick={() => openRouteGroupDrawer(route)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
             {visibleColumns.map((column, index) => {
               const commonSx = {
                 width: getColumnWidth(column),
@@ -3333,7 +4379,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                 ...getStickyActionColumnSx(column, 'body'),
               };
               return (
-                <TableCell key={column.id} align={column.align} sx={commonSx} title={String(renderRouteGroupCell(route, column))}>
+                <Fragment key={column.id}>
+                  {column.id === 'actions' ? renderMainTableActionSpacerCell('body') : null}
+                  <TableCell align={column.align} data-process-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx} title={String(renderRouteGroupCell(route, column))}>
                   {column.id === 'actions' ? (versions.length > 1 ? renderMultiVersionRouteActions(route) : renderSingleVersionRouteActions(route)) : index === 0 ? (
                     <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
                       <IconButton
@@ -3357,7 +4405,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   ) : (
                     renderRouteGroupCell(route, column)
                   )}
-                </TableCell>
+                  </TableCell>
+                </Fragment>
               );
             })}
           </TableRow>
@@ -3411,8 +4460,13 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return {
       position: 'sticky',
       right: 0,
-      zIndex: layer === 'head' ? 8 : 4,
+      width: PROCESS_ACTION_COLUMN_WIDTH,
+      minWidth: PROCESS_ACTION_COLUMN_WIDTH,
+      maxWidth: PROCESS_ACTION_COLUMN_WIDTH,
+      zIndex: layer === 'head' ? 10 : 6,
       bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
+      backgroundClip: 'padding-box',
+      boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)',
     };
   }
 
@@ -3542,40 +4596,47 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
         <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
           <TableContainer ref={tableContainerRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
-            <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
+            <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: effectiveMainTableWidth, minWidth: effectiveMainTableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
               <colgroup>
-                {visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}
+                {visibleColumns.map((column) => (
+                  column.id === 'actions' ? (
+                    <Fragment key={column.id}>
+                      {hasMainTableSpacer ? <col data-process-main-action-spacer style={{ width: mainTableSpacerWidth }} /> : null}
+                      <col style={{ width: getColumnWidth(column) }} />
+                    </Fragment>
+                  ) : <col key={column.id} style={{ width: getColumnWidth(column) }} />
+                ))}
               </colgroup>
               <TableHead>
                 <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
                   {visibleColumns.map((column) => (
-                    <TableCell key={column.id} align={column.align} sx={{ width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
-                      {column.label}
-                      {column.resizable ? (
-                        <Box
-                          data-process-column-resizer
-                          onMouseDown={(event) => beginColumnResize(event, column.id)}
-                          sx={{ position: 'absolute', top: 0, right: 0, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
-                        />
-                      ) : null}
-                    </TableCell>
+                    <Fragment key={column.id}>
+                      {column.id === 'actions' ? renderMainTableActionSpacerCell('head') : null}
+                      <TableCell align={column.align} data-process-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={{ width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
+                        {column.label}
+                        {column.resizable ? (
+                          <Box
+                            data-process-column-resizer
+                            onMouseDown={(event) => beginColumnResize(event, column.id)}
+                            sx={{ position: 'absolute', top: 0, right: 0, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
+                          />
+                        ) : null}
+                      </TableCell>
+                    </Fragment>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody sx={{ height: isTableEmptyState ? '100%' : 'auto' }}>
                 {isLoading ? (
-                  <TableRow sx={emptyTableRowSx}><TableCell colSpan={visibleColumns.length} align="center" sx={emptyTableBodyCellSx}><CircularProgress size={24} /></TableCell></TableRow>
+                  <TableRow sx={emptyTableRowSx}><TableCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}><CircularProgress size={24} /></TableCell></TableRow>
                 ) : isError ? (
-                  <TableRow sx={emptyTableRowSx}><TableCell colSpan={visibleColumns.length} align="center" sx={emptyTableBodyCellSx}>加载失败</TableCell></TableRow>
+                  <TableRow sx={emptyTableRowSx}><TableCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>加载失败</TableCell></TableRow>
                 ) : displayRows.length === 0 ? (
-                  <TableRow sx={emptyTableRowSx}><TableCell colSpan={visibleColumns.length} align="center" sx={emptyTableBodyCellSx}>暂无数据</TableCell></TableRow>
+                  <TableRow sx={emptyTableRowSx}><TableCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>暂无数据</TableCell></TableRow>
                 ) : displayRows.map((row) => renderTableRow(row))}
               </TableBody>
             </Table>
           </TableContainer>
-          {visibleColumns.some((column) => column.id === 'actions') ? (
-            <Box data-process-action-column-shadow sx={{ position: 'absolute', top: 0, bottom: 0, right: tableScrollbarWidth, width: PROCESS_ACTION_COLUMN_WIDTH, boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)', pointerEvents: 'none', zIndex: 7 }} />
-          ) : null}
         </Box>
 
         <Box sx={{ minHeight: 56, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
@@ -3639,10 +4700,19 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                         </>
                       ) : null}
                       {pageKey === 'routes' ? (
-                        <>
-                          <DetailField label="当前版本">{'latestVersion' in selectedRow ? selectedRow.latestVersion || '-' : '-'}</DetailField>
-                          <DetailField label="版本数量">{'versionCount' in selectedRow ? selectedRow.versionCount ?? '-' : '-'}</DetailField>
-                        </>
+                        'version' in selectedRow ? (
+                          <>
+                            <DetailField label="版本">{selectedRow.version || '-'}</DetailField>
+                            <DetailField label="生效时间">{'effectiveDate' in selectedRow ? formatDateTime(selectedRow.effectiveDate) : '-'}</DetailField>
+                            <DetailField label="失效时间">{'expiryDate' in selectedRow ? formatDateTime(selectedRow.expiryDate) : '-'}</DetailField>
+                            <DetailField label="版本说明">{getSelectedRouteVersionDescription()}</DetailField>
+                          </>
+                        ) : (
+                          <>
+                            <DetailField label="当前版本">{'latestVersion' in selectedRow ? selectedRow.latestVersion || '-' : '-'}</DetailField>
+                            <DetailField label="版本数量">{'versionCount' in selectedRow ? selectedRow.versionCount ?? '-' : '-'}</DetailField>
+                          </>
+                        )
                       ) : null}
                       <DetailField label="状态">{getStatusLabel(selectedRow.status)}</DetailField>
                       <DetailField label="描述">{selectedRow.description || '-'}</DetailField>
@@ -3703,22 +4773,22 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       <Dialog
         open={dialogOpen}
         onClose={() => resetDialogState()}
-        maxWidth={pageKey === 'routes' ? 'xl' : 'sm'}
-        fullScreen={pageKey === 'routes'}
+        maxWidth={isRouteFullScreenDialog ? 'xl' : 'sm'}
+        fullScreen={isRouteFullScreenDialog}
         fullWidth
-        PaperProps={pageKey === 'routes' ? { sx: { width: '100vw', maxWidth: '100vw', height: '100vh', maxHeight: '100vh', m: 0, borderRadius: 0 } } : undefined}
+        PaperProps={isRouteFullScreenDialog ? { sx: { width: '100vw', maxWidth: '100vw', height: '100vh', maxHeight: '100vh', m: 0, borderRadius: 0 } } : undefined}
       >
-        <DialogTitle sx={pageKey === 'routes' ? { px: 2, py: 1.25 } : undefined}>
+        <DialogTitle sx={isRouteFullScreenDialog ? { px: 2, py: 1.25 } : undefined}>
           {pageKey === 'routes' ? (
             <Box data-process-route-dialog-title-bar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 32 }}>
-              <Typography sx={{ fontSize: 18, fontWeight: 600, color: '#303133' }}>{editingRow ? `编辑${config.title}` : `新增${config.title}`}</Typography>
+              <Typography sx={{ fontSize: 18, fontWeight: 600, color: '#303133' }}>{isEditingRouteVersion ? '编辑子版本工艺路线' : isCreatingRouteVersion ? '新增子版本' : editingRow ? `编辑${config.title}` : `新增${config.title}`}</Typography>
               <IconButton size="small" aria-label="关闭工艺路线弹窗" onClick={() => resetDialogState()} sx={{ width: 32, height: 32, color: '#606266', '&:hover': { bgcolor: '#f2f3f5', color: '#303133' } }}>
                 <Close fontSize="small" />
               </IconButton>
             </Box>
           ) : editingRow ? `编辑${config.title}` : creatingMaterialVersionFrom ? '新增子版本' : `新增${config.title}`}
         </DialogTitle>
-        <DialogContent dividers sx={pageKey === 'routes' ? { minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' } : undefined}>
+        <DialogContent dividers sx={isRouteFullScreenDialog ? { minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' } : undefined}>
           {pageKey === 'routes' ? renderRouteDialogContent() : pageKey === 'materials' ? (
             <Stack spacing={1.5} sx={{ pt: 0.5 }}>
               {shouldRenderMaterialBaseSection ? renderMaterialFormSection('物料基础信息', MATERIAL_BASE_FIELD_IDS) : null}
@@ -3732,7 +4802,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </DialogContent>
         <DialogActions>
           <Button onClick={() => resetDialogState()}>取消</Button>
-          <Button variant="contained" onClick={submitForm} disabled={createMutation.isPending || updateMutation.isPending || saveRouteGraphMutation.isPending}>{createMutation.isPending || updateMutation.isPending || saveRouteGraphMutation.isPending ? '保存中...' : '保存'}</Button>
+          <Button variant="contained" onClick={submitForm} disabled={createMutation.isPending || updateMutation.isPending || createRouteVersionMutation.isPending || updateRouteVersionMutation.isPending || saveRouteGraphMutation.isPending}>{createMutation.isPending || updateMutation.isPending || createRouteVersionMutation.isPending || updateRouteVersionMutation.isPending || saveRouteGraphMutation.isPending ? '保存中...' : '保存'}</Button>
         </DialogActions>
       </Dialog>
 

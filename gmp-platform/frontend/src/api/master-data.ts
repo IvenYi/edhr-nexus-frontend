@@ -112,6 +112,8 @@ export interface RouteRelationRecord {
   routeVersionId?: string | number;
   sourceNodeKey: string;
   targetNodeKey: string;
+  sourceHandle?: string | null;
+  targetHandle?: string | null;
   relationType: string;
   label?: string | null;
   ruleExpression?: string | null;
@@ -223,6 +225,10 @@ export const updateProcessRoute = (id: string | number, body: ProcessModelingPay
 export const deleteProcessRoute = (id: string | number) => deleteProcessModelingRecord('routes', id);
 export const createProcessRouteVersion = (routeId: string | number, body: ProcessModelingPayload) =>
   client.post(`${processModelingBase}/routes/${routeId}/versions`, body) as Promise<{ data: { data: RouteVersionRecord } }>;
+export const updateProcessRouteVersion = (routeId: string | number, versionId: string | number, body: ProcessModelingPayload) =>
+  client.put(`${processModelingBase}/routes/${routeId}/versions/${versionId}`, body) as Promise<{ data: { data: RouteVersionRecord } }>;
+export const deleteProcessRouteVersion = (routeId: string | number, versionId: string | number) =>
+  client.delete(`${processModelingBase}/routes/${routeId}/versions/${versionId}`);
 export const getProcessRouteGraph = (routeId: string | number, versionId: string | number) =>
   client.get(`${processModelingBase}/routes/${routeId}/versions/${versionId}/graph`) as Promise<{ data: { data: RouteGraphResponse } }>;
 export const saveProcessRouteGraph = (routeId: string | number, versionId: string | number, body: RouteGraphPayload) =>

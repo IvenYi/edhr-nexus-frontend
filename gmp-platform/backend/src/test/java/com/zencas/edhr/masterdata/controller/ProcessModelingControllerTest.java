@@ -51,6 +51,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.inOrder;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessModelingControllerTest {
@@ -1026,6 +1027,47 @@ class ProcessModelingControllerTest {
     }
 
     @Test
+    void derivesRouteVersionStatusFromEffectiveAndExpiryDates() {
+        Route route = Route.builder()
+                .id(82101L)
+                .tenantId("default")
+                .code("RT-82101")
+                .name("通用无菌灌装路线")
+                .status("ACTIVE")
+                .commonAsset(true)
+                .createdAt(LocalDateTime.of(2026, 6, 22, 9, 0))
+                .build();
+        RouteVersion expired = RouteVersion.builder()
+                .id(82111L)
+                .routeId(82101L)
+                .version("V1.0")
+                .versionStatus("ACTIVE")
+                .effectiveDate(LocalDateTime.now().minusDays(2))
+                .expiryDate(LocalDateTime.now().minusDays(1))
+                .createdAt(LocalDateTime.of(2026, 6, 22, 9, 0))
+                .build();
+        RouteVersion pending = RouteVersion.builder()
+                .id(82112L)
+                .routeId(82101L)
+                .version("V2.0")
+                .versionStatus("ACTIVE")
+                .effectiveDate(LocalDateTime.now().plusDays(1))
+                .createdAt(LocalDateTime.of(2026, 6, 22, 10, 0))
+                .build();
+        when(routeRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class), any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(List.of(route)));
+        when(routeVersionRepository.findByRouteIdOrderByCreatedAtDesc(82101L)).thenReturn(List.of(pending, expired));
+
+        var response = controller.listRoutes(null, null, 1, 20, "createdAt", "desc");
+
+        Route row = response.getData().getContent().getFirst();
+        assertThat(row.getStatus()).isEqualTo("PENDING");
+        assertThat(row.getLatestVersionStatus()).isEqualTo("PENDING");
+        assertThat(row.getVersions()).extracting(RouteVersion::getVersionStatus)
+                .containsExactly("PENDING", "EXPIRED");
+    }
+
+    @Test
     void updatesRouteWithoutResettingHiddenProductFamilyOrCommonAsset() {
         Route existing = Route.builder()
                 .id(82501L)
@@ -1048,6 +1090,95 @@ class ProcessModelingControllerTest {
 
         assertThat(response.getData().getProductFamilyId()).isEqualTo("PF-001");
         assertThat(response.getData().getCommonAsset()).isFalse();
+    }
+
+    @Test
+    void updatesRouteVersionInformationOnly() {
+        Route route = Route.builder()
+                .id(82601L)
+                .tenantId("default")
+                .code("RT-82601")
+                .name("通用无菌灌装路线")
+                .status("ACTIVE")
+                .build();
+        RouteVersion version = RouteVersion.builder()
+                .id(82611L)
+                .routeId(82601L)
+                .version("V1.0")
+                .versionStatus("DRAFT")
+                .description("原版本说明")
+                .effectiveDate(LocalDateTime.of(2026, 6, 20, 0, 0))
+                .build();
+        when(routeRepository.findById(82601L)).thenReturn(Optional.of(route));
+        when(routeVersionRepository.findByRouteIdAndId(82601L, 82611L)).thenReturn(Optional.of(version));
+        when(routeVersionRepository.save(version)).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = controller.updateRouteVersion(82601L, 82611L, ProcessModelingRequest.builder()
+                .version("V1.1")
+                .versionDescription("新版说明")
+                .effectiveDate(LocalDateTime.of(2026, 6, 23, 0, 0))
+                .expiryDate(LocalDateTime.of(2026, 7, 23, 0, 0))
+                .build());
+
+        assertThat(response.getData().getVersion()).isEqualTo("V1.1");
+        assertThat(response.getData().getDescription()).isEqualTo("新版说明");
+        assertThat(response.getData().getEffectiveDate()).isEqualTo(LocalDateTime.of(2026, 6, 23, 0, 0));
+        assertThat(response.getData().getExpiryDate()).isEqualTo(LocalDateTime.of(2026, 7, 23, 0, 0));
+        verify(routeRepository).findById(82601L);
+        verify(routeVersionRepository).save(version);
+    }
+
+    @Test
+    void deletesRouteVersionWhenRouteHasMultipleVersions() {
+        Route route = Route.builder()
+                .id(82701L)
+                .tenantId("default")
+                .code("RT-82701")
+                .name("通用无菌灌装路线")
+                .status("ACTIVE")
+                .build();
+        RouteVersion version = RouteVersion.builder()
+                .id(82711L)
+                .routeId(82701L)
+                .version("V1.0")
+                .build();
+        when(routeRepository.findById(82701L)).thenReturn(Optional.of(route));
+        when(routeVersionRepository.findByRouteIdAndId(82701L, 82711L)).thenReturn(Optional.of(version));
+        when(routeVersionRepository.countByRouteId(82701L)).thenReturn(2L);
+
+        controller.deleteRouteVersion(82701L, 82711L);
+
+        var deleteOrder = inOrder(routeRelationRepository, routeNodeRepository, routeVersionRepository);
+        deleteOrder.verify(routeRelationRepository).deleteByRouteVersionId(82711L);
+        deleteOrder.verify(routeRelationRepository).flush();
+        deleteOrder.verify(routeNodeRepository).deleteByRouteVersionId(82711L);
+        deleteOrder.verify(routeNodeRepository).flush();
+        deleteOrder.verify(routeVersionRepository).delete(version);
+        verify(routeVersionRepository).countByRouteId(82701L);
+    }
+
+    @Test
+    void refusesToDeleteLastRouteVersion() {
+        Route route = Route.builder()
+                .id(82801L)
+                .tenantId("default")
+                .code("RT-82801")
+                .name("通用无菌灌装路线")
+                .status("ACTIVE")
+                .build();
+        RouteVersion version = RouteVersion.builder()
+                .id(82811L)
+                .routeId(82801L)
+                .version("V1.0")
+                .build();
+        when(routeRepository.findById(82801L)).thenReturn(Optional.of(route));
+        when(routeVersionRepository.findByRouteIdAndId(82801L, 82811L)).thenReturn(Optional.of(version));
+        when(routeVersionRepository.countByRouteId(82801L)).thenReturn(1L);
+
+        assertThatThrownBy(() -> controller.deleteRouteVersion(82801L, 82811L))
+                .hasMessageContaining("工艺路线模板仅剩一个版本，请删除父表工艺路线模板");
+
+        verifyNoInteractions(routeRelationRepository, routeNodeRepository);
     }
 
     @Test
@@ -1097,6 +1228,8 @@ class ProcessModelingControllerTest {
                         RouteGraphRequest.RelationPayload.builder()
                                 .sourceNodeKey("sterilize")
                                 .targetNodeKey("fill")
+                                .sourceHandle("route-handle-right")
+                                .targetHandle("route-handle-left")
                                 .relationType("SEQUENTIAL")
                                 .label("串行")
                                 .priority(1)
@@ -1104,6 +1237,8 @@ class ProcessModelingControllerTest {
                         RouteGraphRequest.RelationPayload.builder()
                                 .sourceNodeKey("fill")
                                 .targetNodeKey("sterilize")
+                                .sourceHandle("route-handle-bottom")
+                                .targetHandle("route-handle-right")
                                 .relationType("REWORK")
                                 .label("返工回流")
                                 .ruleExpression("qc_failed == true")
@@ -1121,8 +1256,17 @@ class ProcessModelingControllerTest {
         verify(routeRelationRepository).deleteByRouteVersionId(83011L);
         verify(routeNodeRepository).saveAll(nodeCaptor.capture());
         verify(routeRelationRepository).saveAll(relationCaptor.capture());
+        var graphWriteOrder = inOrder(routeRelationRepository, routeNodeRepository);
+        graphWriteOrder.verify(routeRelationRepository).deleteByRouteVersionId(83011L);
+        graphWriteOrder.verify(routeRelationRepository).flush();
+        graphWriteOrder.verify(routeNodeRepository).deleteByRouteVersionId(83011L);
+        graphWriteOrder.verify(routeNodeRepository).flush();
+        graphWriteOrder.verify(routeNodeRepository).saveAll(any());
+        graphWriteOrder.verify(routeRelationRepository).saveAll(any());
         assertThat(nodeCaptor.getValue()).extracting(RouteNode::getNodeKey).containsExactly("sterilize", "fill");
         assertThat(relationCaptor.getValue()).extracting(RouteRelation::getRelationType).containsExactly("SEQUENTIAL", "REWORK");
+        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getSourceHandle).containsExactly("route-handle-right", "route-handle-bottom");
+        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getTargetHandle).containsExactly("route-handle-left", "route-handle-right");
     }
 
     private Stream<String> mappingValues(Method method) {

@@ -38,6 +38,8 @@ public class RouteGraphRequest {
     public static class RelationPayload {
         private String sourceNodeKey;
         private String targetNodeKey;
+        private String sourceHandle;
+        private String targetHandle;
         private String relationType;
         private String label;
         private String ruleExpression;
