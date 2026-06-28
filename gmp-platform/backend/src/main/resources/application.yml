@@ -46,6 +46,13 @@ edhr:
       python-command: ${OCR_PADDLE_PYTHON_COMMAND:python3}
       script-path: ${OCR_PADDLE_SCRIPT_PATH:./scripts/paddle_id_card_ocr.py}
       timeout-seconds: ${OCR_PADDLE_TIMEOUT_SECONDS:30}
+  onlyoffice:
+    enabled: ${ONLYOFFICE_ENABLED:false}
+    document-server-url: ${ONLYOFFICE_DOCUMENT_SERVER_URL:http://localhost:8088}
+    converter-url: ${ONLYOFFICE_CONVERTER_URL:${ONLYOFFICE_DOCUMENT_SERVER_URL:http://localhost:8088}}
+    public-backend-url: ${ONLYOFFICE_PUBLIC_BACKEND_URL:http://localhost:8081}
+    jwt-secret: ${ONLYOFFICE_JWT_SECRET:dev-onlyoffice-secret-change-me}
+    download-allowed-hosts: ${ONLYOFFICE_DOWNLOAD_ALLOWED_HOSTS:localhost,127.0.0.1,onlyoffice-document-server}
 
 # SpringDoc OpenAPI
 springdoc:

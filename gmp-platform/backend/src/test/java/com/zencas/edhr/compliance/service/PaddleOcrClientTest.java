@@ -40,4 +40,17 @@ class PaddleOcrClientTest {
 
         assertThat(lines).containsExactly("姓名 张三", "公民身份号码 32010219900102001X");
     }
+
+    @Test
+    void recognizeTextBoxesParsesPositionedItemsFromLocalScript() throws Exception {
+        Files.writeString(scriptFile, """
+                #!/bin/sh
+                echo '{"ok": true, "lines": ["设备编号"], "items": [{"text": "设备编号", "x": 72, "y": 96, "width": 120, "height": 24, "confidence": 0.91}]}'
+                """, StandardCharsets.UTF_8);
+
+        List<PaddleOcrClient.OcrTextBox> textBoxes = client.recognizeTextBoxes(imageFile);
+
+        assertThat(textBoxes)
+                .containsExactly(new PaddleOcrClient.OcrTextBox("设备编号", 72, 96, 120, 24, 0.91));
+    }
 }

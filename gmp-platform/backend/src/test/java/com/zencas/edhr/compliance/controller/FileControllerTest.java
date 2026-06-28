@@ -83,6 +83,18 @@ class FileControllerTest {
     }
 
     @Test
+    void publicPreviewRejectsFormTemplateBackgroundFiles() throws Exception {
+        Path file = tempDir.resolve("form-template-background.png");
+        Files.write(file, new byte[] {1, 2, 3});
+        when(fileObjectRepository.findById(302L)).thenReturn(Optional.of(fileObject(302L, file, "image/png", "FORM_TEMPLATE_BACKGROUND")));
+
+        assertThatThrownBy(() -> controller.publicPreview(302L))
+                .isInstanceOf(BusinessException.class)
+                .satisfies(error -> assertThat(((BusinessException) error).getErrorCode()).isEqualTo(ErrorCode.GENERAL_003))
+                .hasMessageContaining("文件不允许公开预览");
+    }
+
+    @Test
     void publicPreviewAllowsUserAvatarFilesReferencedByUserAccount() throws Exception {
         Path file = tempDir.resolve("avatar.png");
         Files.write(file, new byte[] {1, 2, 3});

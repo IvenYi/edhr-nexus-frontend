@@ -16,9 +16,25 @@ public class DhrTemplate {
     private String name;
     @Column(name = "product_family_id")
     private Long productFamilyId;
+    @Column(name = "category_name", length = 128)
+    private String categoryName;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
     @Column(name = "status")
     @Builder.Default private String status = "DRAFT";
+    @Column(name = "created_by")
+    private String createdBy;
     @Column(name = "created_at") private LocalDateTime createdAt;
+    @Column(name = "updated_by")
+    private String updatedBy;
     @Column(name = "updated_at") private LocalDateTime updatedAt;
-    @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }
+    @PrePersist void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (updatedAt == null) updatedAt = createdAt;
+        if (updatedBy == null) updatedBy = createdBy;
+    }
+    @PreUpdate void preUpdate() {
+        updatedAt = LocalDateTime.now();
+        if (updatedBy == null) updatedBy = createdBy;
+    }
 }

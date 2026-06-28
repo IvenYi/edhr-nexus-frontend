@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "form_template_version")
+@Table(name = "form_template")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FormTemplateVersion {
+public class FormTemplate {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
@@ -30,59 +30,29 @@ public class FormTemplateVersion {
     @Builder.Default
     private String tenantId = "default";
 
-    @Column(name = "template_id")
-    private Long templateId;
+    @Column(name = "code", nullable = false, length = 64)
+    private String code;
 
-    @Column(name = "version_number")
+    @Column(name = "name", nullable = false, length = 256)
+    private String name;
+
+    @Column(name = "type", length = 32)
     @Builder.Default
-    private Integer versionNumber = 1;
+    private String type = "FORM";
 
-    @Column(name = "version_label", length = 64)
-    private String version;
+    @Column(name = "category_name", length = 128)
+    private String categoryName;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "effective_from")
-    private LocalDateTime effectiveFrom;
-
-    @Column(name = "effective_to")
-    private LocalDateTime effectiveTo;
-
-    @Column(name = "source_file_name", length = 256)
-    private String sourceFileName;
-
-    @Column(name = "source_file_id")
-    private Long sourceFileId;
-
-    @Column(name = "source_file_type", length = 32)
-    private String sourceFileType;
-
-    @Column(name = "import_status", length = 32)
-    private String importStatus;
-
-    @Column(name = "model_design_json", columnDefinition = "TEXT")
-    private String modelDesignJson;
-
-    @Column(name = "canvas_design_json", columnDefinition = "TEXT")
-    private String canvasDesignJson;
-
-    @Column(name = "workflow_design_json", columnDefinition = "TEXT")
-    private String workflowDesignJson;
+    @Column(name = "current_version_id")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long currentVersionId;
 
     @Column(name = "status")
     @Builder.Default
-    private String status = "DRAFT";
-
-    @Column(name = "structure_snapshot", columnDefinition = "jsonb", insertable = false, updatable = false)
-    private String structureSnapshot;
-
-    @Column(name = "is_current")
-    @Builder.Default
-    private Boolean isCurrent = false;
-
-    @Column(name = "published_at")
-    private LocalDateTime publishedAt;
+    private String status = "ACTIVE";
 
     @Column(name = "created_by")
     private String createdBy;
@@ -101,7 +71,6 @@ public class FormTemplateVersion {
         if (createdAt == null) createdAt = LocalDateTime.now();
         if (updatedAt == null) updatedAt = createdAt;
         if (updatedBy == null) updatedBy = createdBy;
-        if (importStatus == null) importStatus = "未导入";
     }
 
     @PreUpdate

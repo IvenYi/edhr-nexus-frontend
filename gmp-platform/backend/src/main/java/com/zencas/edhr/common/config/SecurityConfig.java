@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -50,6 +51,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/login").permitAll()
                 .requestMatchers("/api/v1/system/settings/public").permitAll()
                 .requestMatchers("/api/v1/files/*/public-preview").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/master-data/template-modeling/form-templates/*/versions/*/onlyoffice/source").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/master-data/template-modeling/form-templates/*/versions/*/onlyoffice/conversion-source").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/master-data/template-modeling/form-templates/*/versions/*/onlyoffice/callback").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .anyRequest().authenticated())

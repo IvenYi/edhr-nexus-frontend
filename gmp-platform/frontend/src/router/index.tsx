@@ -20,6 +20,7 @@ const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
+const TemplateModelingPage = lazy(() => import('@/pages/master-data/TemplateModelingPage'));
 
 const OrganizationPage = lazy(() => import('@/pages/system/OrganizationPage'));
 const UserPage = lazy(() => import('@/pages/system/UserPage'));
@@ -88,6 +89,8 @@ const AppRouter = () => {
           <Route path="products" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="products" /></Suspense>} />
           <Route path="product-families" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="productFamilies" /></Suspense>} />
           <Route path="documents" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="documents" /></Suspense>} />
+          <Route path="form-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="formTemplates" /></Suspense>} />
+          <Route path="batch-record-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="batchRecordTemplates" /></Suspense>} />
         </Route>
         <Route path="system">
           <Route path="organization" element={<Suspense fallback={<Loading />}><OrganizationPage /></Suspense>} />

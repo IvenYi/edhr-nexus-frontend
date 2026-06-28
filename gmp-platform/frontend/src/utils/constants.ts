@@ -139,6 +139,14 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
           { label: '文档管理', path: '/master-data/documents' },
         ],
       },
+      {
+        label: '模板建模',
+        icon: 'Article',
+        children: [
+          { label: '表单模板', path: '/master-data/form-templates' },
+          { label: '批记录模板', path: '/master-data/batch-record-templates' },
+        ],
+      },
     ],
   },
   {

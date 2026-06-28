@@ -34,11 +34,19 @@ services:
       OCR_PADDLE_ENABLED: "true"
       OCR_PADDLE_PYTHON_COMMAND: python3
       OCR_PADDLE_SCRIPT_PATH: /app/scripts/paddle_id_card_ocr.py
+      ONLYOFFICE_ENABLED: "true"
+      ONLYOFFICE_DOCUMENT_SERVER_URL: http://localhost:8088
+      ONLYOFFICE_CONVERTER_URL: http://onlyoffice-document-server
+      ONLYOFFICE_PUBLIC_BACKEND_URL: http://backend:8081
+      ONLYOFFICE_JWT_SECRET: docker-onlyoffice-jwt-secret-change-in-production
+      ONLYOFFICE_DOWNLOAD_ALLOWED_HOSTS: localhost,127.0.0.1,onlyoffice-document-server,backend
     volumes:
       - uploads_data:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
+      onlyoffice-document-server:
+        condition: service_started
 
   frontend:
     build:
@@ -50,6 +58,18 @@ services:
     depends_on:
       - backend
 
+  onlyoffice-document-server:
+    image: onlyoffice/documentserver:8.2
+    container_name: edhr-onlyoffice-document-server
+    ports:
+      - "8088:80"
+    environment:
+      JWT_ENABLED: "true"
+      JWT_SECRET: docker-onlyoffice-jwt-secret-change-in-production
+    volumes:
+      - onlyoffice_data:/var/www/onlyoffice/Data
+
 volumes:
   postgres_data:
   uploads_data:
+  onlyoffice_data:

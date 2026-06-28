@@ -34,7 +34,17 @@ const REQUIRED_PROCESS_MODELING_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_TEMPLATE_MODELING_MENU: SidebarMenu = {
+  label: '模板建模',
+  icon: 'Article',
+  children: [
+    { label: '表单模板', path: '/master-data/form-templates' },
+    { label: '批记录模板', path: '/master-data/batch-record-templates' },
+  ],
+};
+
 const PROCESS_MODELING_PATHS = new Set(REQUIRED_PROCESS_MODELING_MENU.children?.map((child) => child.path) ?? []);
+const TEMPLATE_MODELING_PATHS = new Set(REQUIRED_TEMPLATE_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
   '/master-data/units',
@@ -158,14 +168,14 @@ function ensureRequiredProcessModeling(modules: SidebarModule[]) {
   dataModule.menus = dataModule.menus
     .map((menu) => {
       if (menu.children) {
-        menu.children = menu.children.filter((child) => !PROCESS_MODELING_PATHS.has(child.path) && !REMOVED_MASTER_DATA_MENU_PATHS.has(child.path));
+        menu.children = menu.children.filter((child) => !PROCESS_MODELING_PATHS.has(child.path) && !TEMPLATE_MODELING_PATHS.has(child.path) && !REMOVED_MASTER_DATA_MENU_PATHS.has(child.path));
       }
-      if (menu.path && (PROCESS_MODELING_PATHS.has(menu.path) || REMOVED_MASTER_DATA_MENU_PATHS.has(menu.path))) return null;
-      if (menu.label === '基础主数据' || menu.label === '工艺建模') return null;
+      if (menu.path && (PROCESS_MODELING_PATHS.has(menu.path) || TEMPLATE_MODELING_PATHS.has(menu.path) || REMOVED_MASTER_DATA_MENU_PATHS.has(menu.path))) return null;
+      if (menu.label === '基础主数据' || menu.label === '工艺建模' || menu.label === '模板建模') return null;
       return menu;
     })
     .filter((menu): menu is SidebarMenu => menu !== null);
-  dataModule.menus.unshift(cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU] }])[0].menus[0]);
+  dataModule.menus.unshift(...cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU, REQUIRED_TEMPLATE_MODELING_MENU] }])[0].menus);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {

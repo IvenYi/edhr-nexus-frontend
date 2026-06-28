@@ -36,6 +36,14 @@ public class PaddleOcrClient {
     private long timeoutSeconds;
 
     public List<String> recognize(Path imagePath) {
+        return parseLines(executeOcr(imagePath));
+    }
+
+    public List<OcrTextBox> recognizeTextBoxes(Path imagePath) {
+        return parseTextBoxes(executeOcr(imagePath));
+    }
+
+    private String executeOcr(Path imagePath) {
         if (!enabled) {
             throw new BusinessException(ErrorCode.GENERAL_001, "身份证 OCR 识别未启用，请联系管理员");
         }
@@ -55,7 +63,7 @@ public class PaddleOcrClient {
             if (process.exitValue() != 0) {
                 throw new BusinessException(ErrorCode.GENERAL_001, "身份证 OCR 识别失败，请确认 PaddleOCR 本地环境可用");
             }
-            return parseLines(output);
+            return output;
         } catch (IOException ex) {
             throw new BusinessException(ErrorCode.GENERAL_001, "身份证 OCR 识别失败，请确认 PaddleOCR 本地环境可用");
         } catch (InterruptedException ex) {
@@ -87,5 +95,35 @@ public class PaddleOcrClient {
         } catch (Exception ex) {
             throw new BusinessException(ErrorCode.GENERAL_001, "身份证 OCR 识别结果解析失败，请重试");
         }
+    }
+
+    private List<OcrTextBox> parseTextBoxes(String output) {
+        try {
+            JsonNode root = objectMapper.readTree(output);
+            if (!root.path("ok").asBoolean(false)) {
+                throw new BusinessException(ErrorCode.GENERAL_001, "OCR 识别失败，请上传清晰的图片");
+            }
+            List<OcrTextBox> boxes = new ArrayList<>();
+            root.path("items").forEach(node -> {
+                String text = node.path("text").asText("");
+                if (!StringUtils.hasText(text)) return;
+                double x = node.path("x").asDouble(0);
+                double y = node.path("y").asDouble(0);
+                double width = node.path("width").asDouble(0);
+                double height = node.path("height").asDouble(0);
+                if (width <= 0 && node.has("x2")) width = Math.max(1, node.path("x2").asDouble() - x);
+                if (height <= 0 && node.has("y2")) height = Math.max(1, node.path("y2").asDouble() - y);
+                if (width <= 0 || height <= 0) return;
+                boxes.add(new OcrTextBox(text.trim(), x, y, width, height, node.path("confidence").asDouble(0)));
+            });
+            return boxes;
+        } catch (BusinessException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "OCR 识别结果解析失败，请重试");
+        }
+    }
+
+    public record OcrTextBox(String text, double x, double y, double width, double height, double confidence) {
     }
 }

@@ -89,6 +89,9 @@ public class FileController {
         if (file.isEmpty()) {
             throw new BusinessException(ErrorCode.GENERAL_001, "上传文件不能为空");
         }
+        if ("FORM_TEMPLATE_BACKGROUND".equals(targetType)) {
+            throw new BusinessException(ErrorCode.GENERAL_003, "表单模板背景文件只能由模板导入生成");
+        }
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new BusinessException(ErrorCode.FILE_002,
                     "文件大小超出限制: " + (file.getSize() / 1024 / 1024) + "MB (最大 50MB)");
