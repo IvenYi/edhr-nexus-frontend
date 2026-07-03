@@ -1,0 +1,29 @@
+import { defHttp } from '@/utils/http/axios';
+import { ResponseEntityPageBaseDesignerOperateLogResponse } from './model/index';
+
+/**
+ * 应用操作日志分页查询
+ * import { getDesignerOperateLogPageList } from "/@/apis/gct-apaas/DesignerOperateLogController"
+ */
+export interface getDesignerOperateLogPageListQueryInterface {
+  bizModel?: string; // 模块
+  endTime?: string; // 截止时间
+  keyword?: string; // 内容
+  operateType?: string; // 操作类型
+  pageNo?: number; // 页码
+  pageSize?: number; // 每页数据条数
+  startTime?: string; // 开始时间
+  username?: string; // 操作人
+}
+export async function getDesignerOperateLogPageList(params: getDesignerOperateLogPageListQueryInterface = {}, config = {}): Promise<ResponseEntityPageBaseDesignerOperateLogResponse['data']> {
+  return defHttp.get(
+    {
+      url: `/gct-apaas/api/designer-operate-log/page/list`,
+      params,
+    },
+    {
+      joinTenantIdToHeader: true,
+      ...config,
+    },
+  );
+}

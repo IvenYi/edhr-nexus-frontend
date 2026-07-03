@@ -1,0 +1,120 @@
+@prefix-cls: ~'@{namespace}-default-layout';
+
+.@{prefix-cls} {
+  &.running-layout {
+    .@{prefix-cls}-main {
+      padding-top: var(--padding, 16px);
+
+      .vben-layout-content {
+        // background: #fff;
+
+        .basic-page {
+          padding: 0;
+        }
+      }
+    }
+
+    .vben-multiple-tabs {
+      height: 32px;
+      margin-bottom: -1px;
+      padding: 0 24px;
+      border-bottom: none;
+      background: transparent;
+      line-height: 32px;
+
+      .vben-multiple-tabs-content__info {
+        font-size: 14px;
+      }
+
+      .ant-tabs.ant-tabs-card {
+        height: 100%;
+
+        .ant-tabs-nav {
+          height: 100%;
+          padding-top: 0;
+          background: transparent;
+
+          .ant-tabs-tab {
+            height: 100%;
+            padding-right: 18px;
+            padding-left: 12px;
+            border: none !important;
+            border-radius: 6px 6px 0 0;
+            background: transparent;
+            font-size: 14px;
+            line-height: 1;
+
+            &:hover svg {
+              fill: var(--ant-primary-color) !important;
+            }
+
+            .ant-tabs-tab-remove {
+              height: 100%;
+              opacity: 1;
+              font-size: 14px;
+            }
+
+            .anticon-close {
+              font-size: 14px;
+
+              svg {
+                width: 0.8em;
+              }
+            }
+
+            &-active {
+              background: #fff;
+
+              .ant-tabs-tab-btn {
+                font-weight: 500;
+                text-shadow: none;
+              }
+
+              span {
+                color: var(--ant-primary-color) !important;
+              }
+
+              svg {
+                fill: var(--ant-primary-color) !important;
+              }
+
+              &::before {
+                content: '' !important;
+                position: absolute;
+                bottom: -1px;
+                left: -10px;
+                width: 10px;
+                height: 10px;
+                background-image: url('@/assets/svg/tab-sider.svg');
+                background-repeat: no-repeat;
+                background-size: contain;
+              }
+
+              &::after {
+                content: '' !important;
+                position: absolute;
+                right: -10px;
+                bottom: -1px;
+                width: 10px;
+                height: 10px;
+                transform: rotate(90deg);
+                background-image: url('@/assets/svg/tab-sider.svg');
+                background-repeat: no-repeat;
+                background-size: contain;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .menu-title {
+      &:hover,
+      &.menu--selected {
+        background-color: rgba(from var(--ant-primary-color) r g b / 5%);
+        color: var(--ant-primary-color) !important;
+        font-weight: 500;
+      }
+    }
+  }
+}

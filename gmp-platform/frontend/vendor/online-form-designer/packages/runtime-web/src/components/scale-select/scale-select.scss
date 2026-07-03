@@ -1,0 +1,52 @@
+@include b(scale-select) {
+  display: flex;
+  align-items: center;
+
+  @include e(action) {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: getCssVar(border-radius, s);
+    @include flex-center;
+
+    &:hover {
+      background-color: getCssVar(color-tertiary-light-active);
+    }
+  }
+
+  @include e(content_info) {
+    cursor: pointer;
+    width: 46px;
+    height: 24px;
+    @include flex-center;
+    border-radius: getCssVar(border-radius, s);
+
+    &:hover {
+      background-color: getCssVar(color-tertiary-light-active);
+    }
+  }
+
+  @include e(scale-option-item) {
+    cursor: pointer;
+    width: 112px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 getCssVar(spacing, 7);
+    color: getCssVar(color-text, 1);
+
+    &:hover {
+      background-color: getCssVar(color-tertiary-light-active);
+    }
+
+    @include when(active) {
+      background-color: getCssVar(color-tertiary-light-active);
+    }
+  }
+
+  @include e(scale-options-tooltip) {
+    .ant-tooltip-inner {
+      padding: 0;
+    }
+  }
+}

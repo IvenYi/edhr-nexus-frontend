@@ -1,0 +1,33 @@
+{
+  "imports": {
+    "@gct-paas/api": "./@gct-paas/api/index.system.min.js",
+    "@gct-paas/core": "./@gct-paas/core/index.system.min.js",
+    "@gct-paas/design": "./@gct-paas/design/index.system.min.js",
+    "@gct-paas/design-mobile": "./@gct-paas/design-mobile/index.system.min.js",
+    "@gct-paas/design-web": "./@gct-paas/design-web/index.system.min.js",
+    "@gct-paas/mobile": "./@gct-paas/mobile/index.system.min.js",
+    "@gct-paas/web": "./@gct-paas/web/index.system.min.js",
+    "axios": "./axios/1.6.1/axios.system.min.js",
+    "dayjs": "./dayjs/1.11.10/dayjs.system.min.js",
+    "lodash-es": "./lodash/4.17.21/lodash.system.min.js",
+    "qs": "./qs/6.11.2/qs.system.min.js",
+    "vue": "./vue/3.3.8/vue.runtime.global.system.prod.js",
+    "vue-router": "./vue-router/4.2.5/vue-router.system.min.js",
+    "vue-i18n": "./vue-i18n/9.6.5/vue-i18n.runtime.system.prod.js",
+    "vuedraggable": "./vuedraggable/4.1.0/vuedraggable.system.min.js",
+    "pinia": "./pinia/2.1.7/pinia.system.prod.js",
+    "sortablejs": "./sortablejs/1.15.0/sortable.system.min.js",
+    "vue-grid-layout": "./vue-grid-layout/3.0.0-beta1/index.system.min.js",
+    "vant": "./vant/4.9.15/vant.system.min.js",
+    "ant-design-vue": "./ant-design-vue/3.2.20/antd.system.min.js",
+    "wujie": "./wujie/1.0.28/wujie.system.min.js"
+  },
+  "styles": {
+    "vue-grid-layout": "./vue-grid-layout/3.0.0-beta1/index.min.css",
+    "@gct-paas/design": "./@gct-paas/design/index.min.css",
+    "@gct-paas/design-mobile": "./@gct-paas/design-mobile/index.min.css",
+    "@gct-paas/design-web": "./@gct-paas/design-web/index.min.css",
+    "@gct-paas/mobile": "./@gct-paas/mobile/index.min.css",
+    "@gct-paas/web": "./@gct-paas/web/index.min.css"
+  }
+}

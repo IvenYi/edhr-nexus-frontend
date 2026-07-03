@@ -1,0 +1,113 @@
+@include b(report-data-set-preview) {
+  height: 100%;
+  padding: getCssVar(padding, 7);
+
+  @include e(crumbs) {
+    margin-bottom: getCssVar(padding, 7);
+  }
+
+  @include e(header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @include e(title) {
+    @include font-4;
+    display: flex;
+    align-items: center;
+
+    span {
+      display: inline-block;
+    }
+
+    @include m(icon) {
+      background-color: getCssVar(color, primary);
+      border-radius: getCssVar(border-radius, s);
+      padding: getCssVar(padding, 2);
+      font-size: 24px;
+      width: 32px;
+      height: 32px;
+      display: inline-flex !important;
+      align-items: center;
+      margin-right: getCssVar(padding, 4);
+    }
+  }
+
+  @include e(actions) {
+    .ant-btn.ant-btn-background-ghost {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  @include e(form) {
+    margin-top: 10px;
+    background-color: rgba(247, 248, 250, 1);
+    border-radius: 4px;
+    margin-bottom: 20px;
+
+    .gct-gct-form-info {
+      color: rgba(60, 63, 66, 1);
+    }
+
+    .gct-gct-form-item {
+      --gct-form-item-label-color: rgba(121, 122, 125, 1);
+    }
+  }
+
+  @include e(tabs) {
+    height: calc(100% - 38px - 166px - 30px);
+
+    .ant-tag-orange {
+      background-color: #FFF7E6;
+      border-color: #ffd591;
+      color: #E17005;
+    }
+
+    .gct-report-data-set-data-preview {
+      .gct-report-data-set-data-preview__header {
+        padding: 0;
+        height: 32px;
+      }
+      .gct-report-data-set-data-preview__body {
+        padding: 0;
+      }
+    }
+
+    .gct-gct-table {
+      height: 100%;
+    }
+
+    .ant-tabs-nav {
+      margin: 0;
+    }
+
+    .ant-tabs {
+      height: 100%;
+
+      .ant-tabs-tab {
+        margin-left: 0 !important;
+      }
+    }
+
+    .ant-tabs-content {
+      padding: 0 getCssVar(padding, 7);
+      padding-top: getCssVar(padding, 4);
+      height: 100%;
+      border: 1px solid getCssVar(color, border);
+      border-top: 0;
+    }
+  }
+
+  @include e(field-list-header) {
+    height: 32px;
+    text-align: right;
+    color: rgb(93, 100, 116);
+  }
+
+  @include e(field-list-content) {
+    height: calc(100% - 32px);
+  }
+}

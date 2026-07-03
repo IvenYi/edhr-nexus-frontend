@@ -1,0 +1,17 @@
+export type { IBarcode, IBarcodeProps } from './i-barcode';
+export type { ICombineFields, ICombineFieldsProps } from './i-combine-fields';
+export type { IDiagonal, IDiagonalProps } from './i-diagonal';
+export type { IDynValue, IDynValueProps } from './i-dyn-value';
+export type { IFixedTable, IFixedTableProps } from './i-fixed-table';
+export type { IImage, IImageProps } from './i-image';
+export type { ILine, ILineProps } from './i-line';
+export type { IPaper, IPaperProps } from './i-paper';
+export type { IPower, IPowerProps } from './i-power';
+export type { IQrcode, IQrcodeProps } from './i-qrcode';
+export type { IRangeLimit, IRangeLimitProps } from './i-range-limit';
+export type { IRO, IROProps } from './i-ro';
+export type { ISerialnumber, ISerialnumberProps } from './i-serialnumber';
+export type { ISubTable, ISubTableProps } from './i-sub-table';
+export type { ITd, ITdProps } from './i-td';
+export type { ITimediff, ITimediffProps } from './i-timediff';
+export type { ITr, ITrProps } from './i-tr';

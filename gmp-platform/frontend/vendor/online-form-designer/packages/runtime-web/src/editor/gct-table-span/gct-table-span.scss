@@ -1,0 +1,21 @@
+@include b(table-span) {
+  line-height: 22px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  @include e(icon) {
+    color: var(--ant-primary-color);
+    margin-right: 4px;
+    font-size: 16px;
+    line-height: 1;
+    width: 16px;
+    display: inline-block;
+  }
+  @include e(text) {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #212528;
+  }
+}

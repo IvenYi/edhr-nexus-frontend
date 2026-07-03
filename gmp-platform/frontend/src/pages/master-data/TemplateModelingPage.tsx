@@ -1,22 +1,12 @@
 import {
-  ArticleOutlined,
-  ArrowBackIosNewRounded,
-  DesignServices,
   DragIndicator,
   ExpandLess,
-  FormatAlignCenterRounded,
-  FormatAlignLeftRounded,
-  FormatAlignRightRounded,
-  FormatBoldRounded,
-  FormatItalicRounded,
-  FormatUnderlinedRounded,
   PlaylistAdd,
   RestartAlt,
   Search,
   TuneRounded,
   UnfoldLessRounded,
   UnfoldMoreRounded,
-  UploadFile,
   ViewColumnRounded,
 } from '@mui/icons-material';
 import {
@@ -57,6 +47,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
@@ -73,7 +64,6 @@ import {
   useState,
 } from 'react';
 import {
-  confirmFormTemplateAnalysisCandidates,
   createBatchRecordTemplate,
   createFormTemplate,
   createFormTemplateVersion,
@@ -83,27 +73,11 @@ import {
   deleteFormTemplateVersion,
   deleteTemplateModelingCategory,
   getBatchRecordTemplates,
-  getFormTemplateAnalysisDraft,
-  getFormTemplateOnlyOfficeConfig,
   getFormTemplates,
   getTemplateModelingCategories,
-  importFormTemplateSourceFile,
-  reparseFormTemplateSourceFile,
   reorderTemplateModelingCategories,
-  saveFormTemplateDesign,
-  type OnlyOfficeEditorConfig,
-  type TemplateAnalysisBlock,
-  type TemplateAnalysisCandidate,
-  type TemplateAnalysisDraft,
-  type TemplateCanvasDesign,
-  type TemplateCanvasLayer,
-  type TemplateCanvasPage,
-  type TemplateCanvasSource,
-  type TemplateCandidateDecisionItem,
+  saveFormTemplateVersionDesign,
   type TemplateCategoryRecord,
-  type TemplateImportResponse,
-  type TemplateInteractiveField,
-  type TemplateModelDesign,
   type TemplateModelingPageKey,
   type TemplateModelingPayload,
   type TemplateModelingRecord,
@@ -114,6 +88,8 @@ import {
 } from '@/api/template-modeling';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
+import TemplateDesignerDialog from './TemplateDesignerDialog';
+import TemplateDesignerPreloadFrame from './template-designer/TemplateDesignerPreloadFrame';
 
 const TEMPLATE_CATEGORY_ALL = 'ALL';
 const TEMPLATE_CATEGORY_UNCATEGORIZED = 'UNCATEGORIZED';
@@ -145,32 +121,11 @@ interface TemplateColumnSettings {
 }
 
 type TemplateColumnWidths = Partial<Record<TemplateColumnId, number>>;
-type TemplateCanvasTarget = { type: 'layer' | 'field'; pageId: string; id: string };
-type OnlyOfficeEditorStatus = 'idle' | 'loading' | 'ready' | 'dirty' | 'saved' | 'error';
-interface OnlyOfficeEditorState {
-  status: OnlyOfficeEditorStatus;
-  message?: string;
+interface TemplateDesignerState {
+  open: boolean;
+  row: TemplateModelingRecord | null;
+  version: TemplateVersionRecord | null;
 }
-
-const onlyOfficeDocumentState = (dirty?: boolean): OnlyOfficeEditorState => (
-  dirty ? { status: 'dirty' } : { status: 'saved' }
-);
-
-interface TemplateDesignerSnapshot {
-  fieldCandidates: TemplateImportResponse['fieldCandidates'];
-  analysisDraft: TemplateAnalysisDraft | null;
-  candidateDecisions: Record<string, TemplateCandidateDecisionItem>;
-  selectedAnalysisCandidateId: string | null;
-  templateModelDesign: TemplateModelDesign;
-  templateCanvasDesign: TemplateCanvasDesign;
-  activeCanvasPageId: string | null;
-  selectedCanvasTarget: TemplateCanvasTarget | null;
-  fieldPreviewValues: Record<string, string>;
-}
-type TemplateCanvasToolPayload =
-  | { kind: 'text' }
-  | { kind: 'field' }
-  | { kind: 'candidate'; candidate: TemplateImportResponse['fieldCandidates'][number] };
 
 interface TemplatePageConfig {
   title: string;
@@ -226,8 +181,6 @@ const TEMPLATE_FIELD_COLUMN_MIN_WIDTH = 80;
 const TEMPLATE_ACTION_COLUMN_WIDTH = 100;
 const TEMPLATE_VERSION_FIELD_IDS: Array<keyof TemplateModelingPayload> = ['version', 'versionDescription', 'effectiveFrom', 'effectiveTo', 'status'];
 const QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
-const TEMPLATE_CANVAS_MAX_VISUAL_WIDTH = 1600;
-const TEMPLATE_EXCEL_CANVAS_MIN_VISUAL_WIDTH = 1180;
 const appContentDrawerSx = {
   top: 0,
   bottom: 0,
@@ -242,9 +195,6 @@ const appContentDrawerPaperSx = {
   bottom: 0,
   height: '100vh',
   transform: 'none !important',
-};
-const onlyOfficeDialogSx = {
-  zIndex: (theme: { zIndex: { modal: number } }) => theme.zIndex.modal + 20,
 };
 
 const formTemplateColumns: TemplateColumn[] = [
@@ -503,670 +453,6 @@ function validateEffectiveDateRange(effectiveFrom: string, effectiveTo: string) 
   return !start || !end || end.getTime() >= start.getTime();
 }
 
-function parseFieldCandidates(version?: TemplateVersionRecord | null): TemplateImportResponse['fieldCandidates'] {
-  if (!version?.modelDesignJson) return [];
-  try {
-    const parsed = JSON.parse(version.modelDesignJson) as { fields?: TemplateImportResponse['fieldCandidates'] };
-    return Array.isArray(parsed.fields) ? parsed.fields : [];
-  } catch {
-    return [];
-  }
-}
-
-function resolveDesignerVersion(row: TemplateModelingRecord, version?: TemplateVersionRecord | null) {
-  return version
-    ?? row.currentVersion
-    ?? row.versions?.find((candidate) => String(candidate.id) === String(row.currentVersionId))
-    ?? (row.versions?.length === 1 ? row.versions[0] : null);
-}
-
-function getDesignerVersionId(record?: TemplateModelingRecord | null) {
-  if (!record) return null;
-  const version = resolveDesignerVersion(record, record.currentVersion);
-  return version?.id ?? record.currentVersionId ?? null;
-}
-
-function emptyTemplateCanvasPage(): TemplateCanvasPage {
-  return {
-    id: 'page-1',
-    pageNumber: 1,
-    width: 595,
-    height: 842,
-    orientation: 'portrait',
-    deskewApplied: false,
-    background: null,
-    layers: [],
-  };
-}
-
-function emptyTemplateModelDesign(): TemplateModelDesign {
-  return { schemaVersion: '1.0', fields: [] };
-}
-
-function emptyTemplateCanvasDesign(): TemplateCanvasDesign {
-  return {
-    schemaVersion: '1.0',
-    strategy: '图层锚定+格式复刻',
-    orientation: 'portrait',
-    pages: [emptyTemplateCanvasPage()],
-    interactiveFields: [],
-    fieldBindings: [],
-  };
-}
-
-function filePreviewPath(fileId: string | number) {
-  return `/api/v1/files/${fileId}/preview`;
-}
-
-function getCanvasBackgroundFileId(page: TemplateCanvasPage) {
-  const fileId = page.background?.fileId;
-  return fileId === null || fileId === undefined || fileId === '' ? '' : String(fileId);
-}
-
-function getCanvasLayerFileId(layer: TemplateCanvasLayer) {
-  const fileId = layer.type === 'image' ? layer.fileId : null;
-  return fileId === null || fileId === undefined || fileId === '' ? '' : String(fileId);
-}
-
-function resolveCanvasBackgroundSrc(page: TemplateCanvasPage, backgroundObjectUrls: Record<string, string>) {
-  const objectUrl = backgroundObjectUrls[getCanvasBackgroundFileId(page)] || '';
-  const fallbackUrl = page.background?.url || '';
-  return objectUrl || fallbackUrl;
-}
-
-async function fetchAuthenticatedTemplateFileBlob(fileUrl: string) {
-  const token = localStorage.getItem('token');
-  const response = await fetch(fileUrl, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
-  if (!response.ok) {
-    let message = '表单模板背景获取失败';
-    try {
-      const responseText = await response.text();
-      if (responseText) {
-        const parsed = JSON.parse(responseText) as { message?: string; detail?: string; error?: string };
-        message = parsed.message || parsed.detail || parsed.error || responseText;
-      }
-    } catch {
-      // Keep the default message when the response is not JSON.
-    }
-    throw new Error(message);
-  }
-  return response.blob();
-}
-
-function normalizeInteractiveField(field: Partial<TemplateInteractiveField>, index: number): TemplateInteractiveField {
-  const code = field.code || `field_${index + 1}`;
-  const normalizedType = field.type || typeForComponent(field.component || field.binding?.component);
-  const normalizedComponent = field.component || field.binding?.component || componentForTemplateFieldType(normalizedType);
-  return {
-    id: field.id || code,
-    code,
-    name: field.name || code,
-    type: normalizedType,
-    required: Boolean(field.required),
-    pageId: field.pageId || 'page-1',
-    x: Number.isFinite(field.x ?? NaN) ? Number(field.x) : 96,
-    y: Number.isFinite(field.y ?? NaN) ? Number(field.y) : 128 + index * 42,
-    width: Number.isFinite(field.width ?? NaN) ? Number(field.width) : 160,
-    height: Number.isFinite(field.height ?? NaN) ? Number(field.height) : 28,
-    fontFamily: field.fontFamily || 'default',
-    fontSize: Number.isFinite(field.fontSize ?? NaN) ? Number(field.fontSize) : 12,
-    textAlign: field.textAlign || 'left',
-    component: normalizedComponent,
-    fillable: field.fillable ?? field.binding?.fillable ?? true,
-    draggable: field.draggable ?? true,
-    resizable: field.resizable ?? true,
-    anchor: field.anchor,
-    validation: field.validation,
-    dataBinding: field.dataBinding,
-    binding: field.binding ? { ...field.binding, component: field.binding.component || normalizedComponent } : { fillable: true, component: normalizedComponent },
-    sourceText: field.sourceText,
-    keyText: field.keyText,
-    valueText: field.valueText,
-    semanticRole: field.semanticRole,
-    pairing: field.pairing,
-    sourceCandidateId: field.sourceCandidateId,
-  };
-}
-
-function parseTemplateModelDesign(version?: TemplateVersionRecord | null): TemplateModelDesign {
-  if (!version?.modelDesignJson) return emptyTemplateModelDesign();
-  try {
-    const parsed = JSON.parse(version.modelDesignJson) as Partial<TemplateModelDesign>;
-    const fields = Array.isArray(parsed.fields) ? parsed.fields.map((field, index) => normalizeInteractiveField(field, index)) : [];
-    return { schemaVersion: parsed.schemaVersion || '1.0', source: parsed.source, analysisDraft: parsed.analysisDraft, analysis: parsed.analysis, fields };
-  } catch {
-    return emptyTemplateModelDesign();
-  }
-}
-
-function parseTemplateCanvasDesign(version?: TemplateVersionRecord | null): TemplateCanvasDesign {
-  if (!version?.canvasDesignJson) return emptyTemplateCanvasDesign();
-  try {
-    const parsed = JSON.parse(version.canvasDesignJson) as Partial<TemplateCanvasDesign>;
-    const pages = Array.isArray(parsed.pages) && parsed.pages.length > 0 ? parsed.pages : [emptyTemplateCanvasPage()];
-    const interactiveFields = Array.isArray(parsed.interactiveFields)
-      ? parsed.interactiveFields.map((field, index) => normalizeInteractiveField(field, index))
-      : parseTemplateModelDesign(version).fields;
-    return {
-      schemaVersion: parsed.schemaVersion || '1.0',
-      strategy: parsed.strategy || '图层锚定+格式复刻',
-      coordinateSystem: parsed.coordinateSystem,
-      editorCapabilities: parsed.editorCapabilities,
-      orientation: parsed.orientation || pages[0]?.orientation || 'portrait',
-      source: parsed.source,
-      pages,
-      interactiveFields,
-      fieldBindings: Array.isArray(parsed.fieldBindings) ? parsed.fieldBindings : [],
-      fillRuntime: parsed.fillRuntime,
-    };
-  } catch {
-    return emptyTemplateCanvasDesign();
-  }
-}
-
-function syncTemplateCanvasFieldBindings(canvasDesign: TemplateCanvasDesign, fallbackFields: TemplateInteractiveField[]): TemplateCanvasDesign {
-  const interactiveFields = canvasDesign.interactiveFields.length > 0 ? canvasDesign.interactiveFields : fallbackFields;
-  const existingBindingsByFieldId = new Map((canvasDesign.fieldBindings ?? [])
-    .map((binding) => [String(binding.fieldId ?? ''), binding] as const)
-    .filter(([fieldId]) => Boolean(fieldId)));
-  const fieldBindings = interactiveFields.map((field) => {
-    const existingBinding = existingBindingsByFieldId.get(field.id) ?? {};
-    return {
-      ...existingBinding,
-      fieldId: field.id,
-      fieldCode: field.code,
-      pageId: field.pageId,
-      valuePath: field.dataBinding?.valuePath ?? `fields.${field.code}`,
-      submissionPath: field.dataBinding?.submissionPath ?? `submission.fields.${field.code}`,
-    };
-  });
-  return { ...canvasDesign, interactiveFields, fieldBindings };
-}
-
-function coordinatePercent(value: number | undefined, total: number | undefined) {
-  if (!Number.isFinite(value) || !Number.isFinite(total) || !total) return '0%';
-  return `${Math.max(0, (Number(value) / Number(total)) * 100)}%`;
-}
-
-function dimensionPercent(value: number | undefined, total: number | undefined) {
-  if (!Number.isFinite(value) || !Number.isFinite(total) || !total) return '1%';
-  return `${Math.max(1, (Number(value) / Number(total)) * 100)}%`;
-}
-
-function isExcelCanvasPage(source?: TemplateCanvasSource | null) {
-  const fileType = String(source?.fileType ?? '').toLowerCase();
-  return ['xls', 'xlsx'].includes(fileType);
-}
-
-function resolveTemplateCanvasPageWidth(canvasPage: TemplateCanvasPage, source?: TemplateCanvasSource | null) {
-  const fallbackWidth = canvasPage.orientation === 'landscape' ? 980 : 760;
-  const coordinateWidth = Number(canvasPage.width || 0);
-  const minimumWidth = isExcelCanvasPage(source) ? TEMPLATE_EXCEL_CANVAS_MIN_VISUAL_WIDTH : fallbackWidth;
-  if (!Number.isFinite(coordinateWidth) || coordinateWidth <= minimumWidth) return minimumWidth;
-  return Math.min(coordinateWidth, TEMPLATE_CANVAS_MAX_VISUAL_WIDTH);
-}
-
-function clampCanvasPosition(value: number, size: number | undefined, total: number | undefined) {
-  const max = Math.max(0, Number(total || 0) - Number(size || 0));
-  return Math.min(Math.max(0, value), max);
-}
-
-function createCanvasElementId(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
-function resolveUniqueTemplateFieldCode(baseCode: string, existingCodes: Set<string>) {
-  const candidateCode = baseCode.trim() || 'field';
-  if (!existingCodes.has(candidateCode)) return candidateCode;
-  let suffix = 2;
-  while (existingCodes.has(`${candidateCode}_${suffix}`)) suffix += 1;
-  return `${candidateCode}_${suffix}`;
-}
-
-function parseCanvasNumber(value: string) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function parseCanvasDimension(value: string) {
-  const parsed = parseCanvasNumber(value);
-  return parsed === null ? null : Math.max(1, parsed);
-}
-
-function componentForTemplateFieldType(type?: string) {
-  if (type === 'datetime') return 'DateTimePicker';
-  if (type === 'number') return 'NumberInput';
-  if (type === 'signature') return 'SignaturePad';
-  if (type === 'textarea') return 'TextArea';
-  return 'TextInput';
-}
-
-function typeForComponent(component?: string) {
-  if (component === 'DateTimePicker') return 'datetime';
-  if (component === 'NumberInput') return 'number';
-  if (component === 'SignaturePad') return 'signature';
-  if (component === 'TextArea') return 'textarea';
-  return 'text';
-}
-
-function renderTemplateInteractiveFieldControl(field: TemplateInteractiveField, previewValue: string, onPreviewValueChange: (value: string) => void) {
-  const component = field.component || field.binding?.component || componentForTemplateFieldType(field.type);
-  const label = field.name || field.code;
-  const inputSx = {
-    width: '100%',
-    height: '100%',
-    '& .MuiInputBase-root': { height: '100%', minHeight: 0, fontSize: 12, bgcolor: '#fff' },
-    '& .MuiInputBase-input': { p: '2px 6px', boxSizing: 'border-box' },
-    '& textarea.MuiInputBase-input': { p: '4px 6px' },
-  };
-  const stopPreviewPointer = (event: ReactPointerEvent) => event.stopPropagation();
-  const sharedSx = {
-    width: '100%',
-    height: '100%',
-    minWidth: 0,
-    minHeight: 0,
-    boxSizing: 'border-box',
-    display: 'flex',
-    alignItems: 'center',
-    overflow: 'hidden',
-    fontSize: 12,
-    lineHeight: 1.2,
-  };
-  if (component === 'SignaturePad') {
-    return (
-      <Box
-        data-form-template-field-control
-        data-form-template-field-signature-pad
-        onPointerDown={stopPreviewPointer}
-        onClick={(event) => event.stopPropagation()}
-        sx={{ ...sharedSx, alignItems: 'flex-end', px: 0.75, pb: 0.35, bgcolor: '#fff', color: '#606266' }}
-      >
-        <Box
-          role="button"
-          tabIndex={0}
-          onClick={() => onPreviewValueChange(previewValue ? '' : label)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') onPreviewValueChange(previewValue ? '' : label);
-          }}
-          sx={{ width: '100%', borderBottom: '1px solid #909399', fontStyle: 'italic', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', cursor: 'text' }}
-        >
-          {previewValue || label}
-        </Box>
-      </Box>
-    );
-  }
-  if (component === 'TextArea') {
-    return (
-      <TextField
-        data-form-template-field-control
-        data-form-template-field-textarea
-        value={previewValue}
-        placeholder={label}
-        onChange={(event) => onPreviewValueChange(event.target.value)}
-        onPointerDown={stopPreviewPointer}
-        onClick={(event) => event.stopPropagation()}
-        multiline
-        minRows={1}
-        variant="outlined"
-        sx={inputSx}
-      />
-    );
-  }
-  if (component === 'DateTimePicker') {
-    return (
-      <TextField
-        data-form-template-field-control
-        data-form-template-field-datetime
-        value={previewValue}
-        placeholder={label}
-        onChange={(event) => onPreviewValueChange(event.target.value)}
-        onPointerDown={stopPreviewPointer}
-        onClick={(event) => event.stopPropagation()}
-        type="datetime-local"
-        variant="outlined"
-        sx={inputSx}
-      />
-    );
-  }
-  if (component === 'NumberInput') {
-    return (
-      <TextField
-        data-form-template-field-control
-        data-form-template-field-number
-        value={previewValue}
-        placeholder={label}
-        onChange={(event) => onPreviewValueChange(event.target.value)}
-        onPointerDown={stopPreviewPointer}
-        onClick={(event) => event.stopPropagation()}
-        type="number"
-        variant="outlined"
-        sx={inputSx}
-      />
-    );
-  }
-  return (
-    <TextField
-      data-form-template-field-control
-      data-form-template-field-text
-      value={previewValue}
-      placeholder={label}
-      onChange={(event) => onPreviewValueChange(event.target.value)}
-      onPointerDown={stopPreviewPointer}
-      onClick={(event) => event.stopPropagation()}
-      variant="outlined"
-      sx={inputSx}
-    />
-  );
-}
-
-const analysisCandidateToFieldCandidate = (candidate: TemplateAnalysisCandidate): TemplateImportResponse['fieldCandidates'][number] => ({
-  id: candidate.id,
-  code: candidate.fieldCode,
-  name: candidate.fieldName,
-  type: typeForComponent(candidate.suggestedComponent),
-  required: candidate.required ?? false,
-  status: candidate.status,
-  suggestedAction: candidate.suggestedAction,
-  suggestedComponent: candidate.suggestedComponent,
-  pageId: candidate.pageId,
-  valueAnchor: candidate.valueAnchor,
-  sourceText: candidate.sourceText,
-  keyText: candidate.keyText,
-  valueText: candidate.valueText,
-  semanticRole: candidate.semanticRole,
-  pairing: candidate.pairing,
-  reason: candidate.reason,
-  confidence: candidate.confidence,
-});
-
-const candidateDecisionToFieldCandidate = (candidate: TemplateAnalysisCandidate, decision?: TemplateCandidateDecisionItem): TemplateImportResponse['fieldCandidates'][number] => ({
-  ...analysisCandidateToFieldCandidate(candidate),
-  code: decision?.fieldCode ?? candidate.fieldCode,
-  name: decision?.fieldName ?? candidate.fieldName,
-  type: typeForComponent(decision?.component ?? candidate.suggestedComponent),
-  required: decision?.required ?? candidate.required ?? false,
-  suggestedAction: decision?.action ?? candidate.suggestedAction,
-  suggestedComponent: decision?.component ?? candidate.suggestedComponent,
-});
-
-const candidateDecisionToStaticTextLayer = (candidate: TemplateAnalysisCandidate, decision?: TemplateCandidateDecisionItem): TemplateCanvasLayer => {
-  const anchor = candidate.valueAnchor ?? { x: 96, y: 144, width: 180, height: 28 };
-  const text = candidate.sourceText || decision?.fieldName || candidate.fieldName;
-  return {
-    id: `static-candidate-${candidate.id}`,
-    type: 'text',
-    text,
-    x: anchor.x,
-    y: anchor.y,
-    width: Math.max(anchor.width, 48),
-    height: Math.max(anchor.height, 20),
-    fontSize: 12,
-    textAlign: 'left',
-    selectable: true,
-    draggable: true,
-    zIndex: 3,
-    sourceCandidateId: candidate.id,
-    sourceType: 'analysis-candidate',
-    confidence: candidate.confidence,
-  };
-};
-
-function analysisDraftFromImport(result: TemplateImportResponse): TemplateAnalysisDraft | null {
-  if (result.analysisDraft) return result.analysisDraft;
-  const parsedCanvas = result.canvasDesign ?? parseTemplateCanvasDesign(result.version);
-  const parsedModel = result.modelDesign ?? parseTemplateModelDesign(result.version);
-  const analysisId = String(parsedModel.analysisDraft?.analysisId ?? '');
-  if (!analysisId && result.fieldCandidates.length === 0) return null;
-  return {
-    schemaVersion: '1.0',
-    analysisId,
-    source: parsedCanvas.source ?? parsedModel.source,
-    pages: parsedCanvas.pages.map((pageItem) => ({
-      id: pageItem.id,
-      pageNumber: pageItem.pageNumber,
-      width: pageItem.width,
-      height: pageItem.height,
-      orientation: pageItem.orientation || (pageItem.width >= pageItem.height ? 'landscape' : 'portrait'),
-      background: pageItem.background,
-      layerSummary: pageItem.layerSummary,
-    })),
-    blocks: [],
-    candidates: result.fieldCandidates.map((candidate, index) => ({
-      id: candidate.id || candidate.code || `candidate-${index + 1}`,
-      status: candidate.status || 'pending',
-      suggestedAction: candidate.suggestedAction || 'component',
-      suggestedComponent: candidate.suggestedComponent || componentForTemplateFieldType(candidate.type),
-      fieldCode: candidate.code,
-      fieldName: candidate.name,
-      required: candidate.required,
-      pageId: candidate.pageId || parsedCanvas.pages[0]?.id || 'page-1',
-      valueAnchor: candidate.valueAnchor || { x: 96, y: 128 + index * 36, width: 168, height: 30 },
-      sourceText: candidate.sourceText || candidate.name,
-      keyText: candidate.keyText || candidate.name,
-      valueText: candidate.valueText || '',
-      semanticRole: candidate.semanticRole || (candidate.suggestedAction === 'staticText' ? 'staticText' : 'keyValue'),
-      pairing: candidate.pairing,
-      reason: candidate.reason || '解析生成的字段候选',
-      confidence: candidate.confidence ?? 0.7,
-    })),
-  };
-}
-
-function getPendingAnalysisDraftId(modelDesign: TemplateModelDesign) {
-  const draft = modelDesign.analysisDraft;
-  if (!draft?.analysisId || draft.status === 'CONFIRMED') return '';
-  return String(draft.analysisId);
-}
-
-function layerBorderStyle(style?: string) {
-  if (!style || style === 'none') return 'none';
-  return style === 'dashed' ? '1px dashed' : '1px solid';
-}
-
-function layerBorder(border?: string, color = '#dcdfe6') {
-  const style = layerBorderStyle(border);
-  return style === 'none' ? 'none' : `${style} ${color}`;
-}
-
-function layerAlignItems(verticalAlign?: string) {
-  if (verticalAlign === 'top') return 'flex-start';
-  if (verticalAlign === 'middle' || verticalAlign === 'center') return 'center';
-  return 'flex-end';
-}
-
-function shapeBorderRadius(shapeType?: string) {
-  if (shapeType === 'ELLIPSE') return '50%';
-  if (shapeType?.includes('ROUND')) return 8;
-  return 0;
-}
-
-function renderTemplateCanvasLayer(
-  layer: TemplateCanvasLayer,
-  canvasPage: TemplateCanvasPage,
-  assetObjectUrls: Record<string, string>,
-  selected: boolean,
-  onSelect: () => void,
-  onPointerDown: (event: ReactPointerEvent) => void,
-) {
-  const selectable = layer.selectable !== false;
-  const draggable = layer.draggable !== false;
-  const baseSx = {
-    position: 'absolute',
-    left: coordinatePercent(layer.x, canvasPage.width),
-    top: coordinatePercent(layer.y, canvasPage.height),
-    width: dimensionPercent(layer.width, canvasPage.width),
-    height: dimensionPercent(layer.height, canvasPage.height),
-    pointerEvents: selectable ? 'auto' : 'none',
-    boxSizing: 'border-box',
-    cursor: draggable ? 'move' : 'default',
-    zIndex: layer.zIndex ?? 1,
-    ...(selected ? { outline: '2px solid #409eff', outlineOffset: 1, boxShadow: '0 0 0 2px rgba(64, 158, 255, 0.16)' } : {}),
-  };
-  const eventProps = {
-    onClick: (event: MouseEvent) => {
-      event.stopPropagation();
-      onSelect();
-    },
-    onPointerDown: (event: ReactPointerEvent) => {
-      event.stopPropagation();
-      onSelect();
-      if (draggable) onPointerDown(event);
-    },
-  };
-  if (layer.type === 'table') {
-    const rows = Math.max(1, layer.rows || 1);
-    const columns = Math.max(1, layer.columns || 1);
-    const showGrid = layer.showGrid !== false;
-    return (
-      <Box
-        key={layer.id}
-        data-form-template-table-layer
-        data-form-template-selected-layer={selected ? true : undefined}
-        {...eventProps}
-        sx={{
-          ...baseSx,
-          border: `${layer.borderWidth || 1}px ${layer.borderStyle || 'solid'} ${layer.borderColor || '#dcdfe6'}`,
-          bgcolor: 'transparent',
-          display: 'grid',
-          gridTemplateColumns: `repeat(${Math.max(1, layer.columns || 1)}, minmax(0, 1fr))`,
-          gridTemplateRows: `repeat(${Math.max(1, layer.rows || 1)}, minmax(0, 1fr))`,
-          overflow: 'hidden',
-        }}
-      >
-        {showGrid && Array.from({ length: rows * columns }).map((_, index) => (
-          <Box
-            key={index}
-            data-form-template-table-grid-cell
-            sx={{
-              borderRight: (index + 1) % columns === 0 ? 'none' : `1px solid ${layer.borderColor || '#dcdfe6'}`,
-              borderBottom: index >= columns * (rows - 1) ? 'none' : `1px solid ${layer.borderColor || '#dcdfe6'}`,
-              boxSizing: 'border-box',
-              minWidth: 0,
-              minHeight: 0,
-            }}
-          />
-        ))}
-      </Box>
-    );
-  }
-  if (layer.type === 'cell') {
-    return (
-      <Box
-        key={layer.id}
-        data-form-template-cell-layer
-        data-form-template-selected-layer={selected ? true : undefined}
-        {...eventProps}
-        sx={{
-          ...baseSx,
-          display: 'flex',
-          alignItems: layerAlignItems(layer.verticalAlign),
-          justifyContent: layer.textAlign === 'center' ? 'center' : layer.textAlign === 'right' ? 'flex-end' : 'flex-start',
-          px: 0.5,
-          color: '#303133',
-          bgcolor: layer.backgroundColor && layer.backgroundColor !== 'transparent' ? layer.backgroundColor : 'transparent',
-          fontFamily: layer.fontFamily || 'inherit',
-          fontSize: layer.fontSize || 12,
-          fontWeight: layer.fontWeight || 'normal',
-          fontStyle: layer.fontStyle || 'normal',
-          textAlign: layer.textAlign || 'left',
-          lineHeight: 1.2,
-          overflow: 'hidden',
-          whiteSpace: 'pre-wrap',
-          borderTop: layerBorder(layer.borderTop, layer.borderColor),
-          borderRight: layerBorder(layer.borderRight, layer.borderColor),
-          borderBottom: layerBorder(layer.borderBottom, layer.borderColor),
-          borderLeft: layerBorder(layer.borderLeft, layer.borderColor),
-        }}
-      >
-        {layer.text}
-      </Box>
-    );
-  }
-  if (layer.type === 'line') {
-    const isVerticalLine = Number(layer.height || 0) > Number(layer.width || 0);
-    return (
-      <Box
-        key={layer.id}
-        data-form-template-line-layer
-        data-form-template-selected-layer={selected ? true : undefined}
-        {...eventProps}
-        sx={{
-          ...baseSx,
-          borderTop: isVerticalLine ? 'none' : `${layer.borderWidth || 1}px ${layer.borderStyle || 'solid'} ${layer.borderColor || '#303133'}`,
-          borderLeft: isVerticalLine ? `${layer.borderWidth || 1}px ${layer.borderStyle || 'solid'} ${layer.borderColor || '#303133'}` : 'none',
-          bgcolor: 'transparent',
-        }}
-      />
-    );
-  }
-  if (layer.type === 'shape') {
-    return (
-      <Box
-        key={layer.id}
-        data-form-template-shape-layer
-        data-form-template-selected-layer={selected ? true : undefined}
-        {...eventProps}
-        sx={{
-          ...baseSx,
-          bgcolor: layer.backgroundColor && layer.backgroundColor !== 'transparent' ? layer.backgroundColor : 'transparent',
-          border: `${layer.borderWidth || 1}px ${layer.borderStyle || 'solid'} ${layer.borderColor || '#dcdfe6'}`,
-          borderRadius: shapeBorderRadius(layer.shapeType),
-        }}
-      />
-    );
-  }
-  if (layer.type === 'image') {
-    const imageFileId = getCanvasLayerFileId(layer);
-    const imageSrc = (imageFileId && assetObjectUrls[imageFileId]) || layer.url || '';
-    return (
-      <Box
-        key={layer.id}
-        component="img"
-        alt={layer.text || '导入图片'}
-        src={imageSrc}
-        data-form-template-image-layer
-        data-form-template-selected-layer={selected ? true : undefined}
-        {...eventProps}
-        sx={{
-          ...baseSx,
-          display: 'block',
-          objectFit: layer.objectFit || 'fill',
-          opacity: layer.opacity ?? 1,
-          transform: `rotate(${layer.rotation || 0}deg)`,
-          transformOrigin: 'center center',
-          border: selected ? 'none' : `${layer.borderWidth || 0}px ${layer.borderStyle || 'solid'} ${layer.borderColor || 'transparent'}`,
-          userSelect: 'none',
-        }}
-      />
-    );
-  }
-  return (
-    <Box
-      key={layer.id}
-      data-form-template-text-layer
-      data-form-template-static-candidate-layer={layer.sourceCandidateId ? true : undefined}
-      data-form-template-selected-layer={selected ? true : undefined}
-      {...eventProps}
-      sx={{
-        ...baseSx,
-        color: '#303133',
-        fontFamily: layer.fontFamily || 'inherit',
-        fontSize: layer.fontSize || 12,
-        fontWeight: layer.fontWeight || 'normal',
-        fontStyle: layer.fontStyle || 'normal',
-        textAlign: layer.textAlign || 'left',
-        lineHeight: 1.3,
-        overflow: 'hidden',
-        whiteSpace: 'pre-wrap',
-      }}
-    >
-      {layer.text}
-    </Box>
-  );
-}
-
 const fieldSx = {
   '& .MuiInputBase-root': { height: 40 },
   '& .MuiInputBase-input': { boxSizing: 'border-box' },
@@ -1316,7 +602,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [form, setForm] = useState<TemplateFormState>(() => emptyForm());
   const effectiveFromInputRef = useRef<HTMLInputElement | null>(null);
   const effectiveToInputRef = useRef<HTMLInputElement | null>(null);
-  const templateSourceFileInputRef = useRef<HTMLInputElement | null>(null);
   const [categoryDialog, setCategoryDialog] = useState<{ open: boolean; target: TemplateCategoryRecord | null; name: string }>({ open: false, target: null, name: '' });
   const [deleteCategoryTarget, setDeleteCategoryTarget] = useState<TemplateCategoryRecord | null>(null);
   const [deleteRowTarget, setDeleteRowTarget] = useState<TemplateModelingRecord | null>(null);
@@ -1324,30 +609,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [drawerRow, setDrawerRow] = useState<TemplateModelingRecord | null>(null);
   const [drawerVersionRow, setDrawerVersionRow] = useState<TemplateVersionRecord | null>(null);
   const [drawerTab, setDrawerTab] = useState(0);
-  const [designerRecord, setDesignerRecord] = useState<TemplateModelingRecord | null>(null);
-  const [pageThumbnailsOpen, setPageThumbnailsOpen] = useState(true);
-  const [pageThumbnailWidth, setPageThumbnailWidth] = useState(150);
-  const [activeCanvasPageId, setActiveCanvasPageId] = useState<string | null>(null);
-  const [fieldCandidates, setFieldCandidates] = useState<TemplateImportResponse['fieldCandidates']>([]);
-  const [analysisDraft, setAnalysisDraft] = useState<TemplateAnalysisDraft | null>(null);
-  const [candidateDecisions, setCandidateDecisions] = useState<Record<string, TemplateCandidateDecisionItem>>({});
-  const [selectedAnalysisCandidateId, setSelectedAnalysisCandidateId] = useState<string | null>(null);
-  const [templateModelDesign, setTemplateModelDesign] = useState<TemplateModelDesign>(() => emptyTemplateModelDesign());
-  const [templateCanvasDesign, setTemplateCanvasDesign] = useState<TemplateCanvasDesign>(() => emptyTemplateCanvasDesign());
-  const [fieldPreviewValues, setFieldPreviewValues] = useState<Record<string, string>>({});
-  const [selectedCanvasTarget, setSelectedCanvasTarget] = useState<TemplateCanvasTarget | null>(null);
-  const [templateImportRevision, setTemplateImportRevision] = useState(0);
-  const [backgroundObjectUrls, setBackgroundObjectUrls] = useState<Record<string, string>>({});
-  const templateImportSequenceRef = useRef(0);
-  const templateImportSnapshotRef = useRef<{ sequence: number; snapshot: TemplateDesignerSnapshot } | null>(null);
-  const analysisDraftRestoreSequenceRef = useRef(0);
-  const [onlyOfficeDialog, setOnlyOfficeDialog] = useState<{ open: boolean; config: OnlyOfficeEditorConfig | null }>({ open: false, config: null });
-  const [onlyOfficeEditorState, setOnlyOfficeEditorState] = useState<OnlyOfficeEditorState>({ status: 'idle' });
-  const onlyOfficeContainerRef = useRef<HTMLDivElement | null>(null);
-  const onlyOfficeEditorRef = useRef<{ destroyEditor?: () => void } | null>(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({ open: false, message: '', severity: 'success' });
+  const [designerState, setDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
 
   const categoryQuery = useQuery({
     queryKey: [config.categoryQueryKey],
@@ -1387,6 +652,14 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   });
 
   const rows = listQuery.data?.content ?? [];
+  const designerPreloadTarget = useMemo(() => {
+    const row = rows.find((item) => item.versions?.length || item.currentVersion);
+    if (!row) return { row: null, version: null };
+    return {
+      row,
+      version: row.versions?.[0] ?? row.currentVersion ?? null,
+    };
+  }, [rows]);
   const isTableEmptyState = listQuery.isLoading || listQuery.isError || rows.length === 0;
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(allColumns, columnSettings), [allColumns, columnSettings]);
   const visibleColumns = useMemo(() => getVisibleColumns(allColumns, columnSettings), [allColumns, columnSettings]);
@@ -1408,23 +681,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const mainTableColSpan = visibleColumns.length + (hasMainTableSpacer ? 1 : 0);
   const pageCount = Math.max(1, listQuery.data?.totalPages ?? Math.ceil((listQuery.data?.totalElements ?? 0) / pageSize));
   const totalElements = listQuery.data?.totalElements ?? 0;
-  const templateCanvasPages = templateCanvasDesign.pages.length > 0 ? templateCanvasDesign.pages : [emptyTemplateCanvasPage()];
-  const activeCanvasPage = templateCanvasPages.find((pageItem) => pageItem.id === activeCanvasPageId) ?? templateCanvasPages[0] ?? emptyTemplateCanvasPage();
-  const interactiveFields = templateCanvasDesign.interactiveFields.length > 0 ? templateCanvasDesign.interactiveFields : templateModelDesign.fields;
-  const shouldLeftAlignCanvasPages = isExcelCanvasPage(templateCanvasDesign.source)
-    || templateCanvasPages.some((canvasPage) => resolveTemplateCanvasPageWidth(canvasPage, templateCanvasDesign.source) > TEMPLATE_CANVAS_MAX_VISUAL_WIDTH);
-  const canvasAssetFileIds = useMemo(
-    () => Array.from(new Set(templateCanvasPages.flatMap((pageItem) => [
-      getCanvasBackgroundFileId(pageItem),
-      ...(pageItem.layers ?? []).map(getCanvasLayerFileId),
-    ]).filter(Boolean))),
-    [templateCanvasPages],
-  );
-  const canvasRenderKey = `${designerRecord?.id || 'template'}-${designerRecord?.currentVersion?.id || designerRecord?.currentVersionId || 'version'}-${templateImportRevision}`;
-  const selectedCanvasPage = selectedCanvasTarget ? templateCanvasPages.find((pageItem) => pageItem.id === selectedCanvasTarget.pageId) ?? null : null;
-  const selectedCanvasLayer = selectedCanvasTarget?.type === 'layer' ? selectedCanvasPage?.layers?.find((layer) => layer.id === selectedCanvasTarget.id) ?? null : null;
-  const selectedInteractiveField = selectedCanvasTarget?.type === 'field' ? interactiveFields.find((field) => field.pageId === selectedCanvasTarget.pageId && field.id === selectedCanvasTarget.id) ?? null : null;
-  const allCandidatesDecided = Boolean(analysisDraft?.candidates?.length) && Boolean(analysisDraft?.candidates.every((candidate) => candidateDecisions[candidate.id]));
   const templateCategoryOptions = useMemo<TemplateCategoryOption[]>(() => {
     const virtualCounts = new Map(categories
       .filter((category) => category.id === TEMPLATE_CATEGORY_ALL || category.id === TEMPLATE_CATEGORY_UNCATEGORIZED)
@@ -1479,47 +735,9 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   }, [templateVersionColumnSettingsStorageKey, templateVersionColumnSettings]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-    let cancelled = false;
-    const nextUrls: Record<string, string> = {};
-    Promise.all(canvasAssetFileIds.map(async (fileId) => {
-      try {
-        const blob = await fetchAuthenticatedTemplateFileBlob(filePreviewPath(fileId));
-        if (!cancelled) nextUrls[fileId] = URL.createObjectURL(blob);
-      } catch (error) {
-        if (!cancelled) {
-          setSnackbar({ open: true, message: error instanceof Error ? error.message : '表单模板背景获取失败', severity: 'error' });
-        }
-      }
-    })).then(() => {
-      if (!cancelled) {
-        setBackgroundObjectUrls((current) => {
-          Object.values(current).forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
-          return nextUrls;
-        });
-      } else {
-        Object.values(nextUrls).forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [canvasAssetFileIds.join('|'), templateImportRevision]);
-
-  useEffect(() => () => {
-    Object.values(backgroundObjectUrls).forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
-  }, [backgroundObjectUrls]);
-
-  useEffect(() => {
     setColumnSettingsTab('main');
     setExpandedTemplateGroups(new Set());
   }, [pageKey]);
-
-  useEffect(() => {
-    if (!templateCanvasPages.some((pageItem) => pageItem.id === activeCanvasPageId)) {
-      setActiveCanvasPageId(templateCanvasPages[0]?.id ?? null);
-    }
-  }, [activeCanvasPageId, templateCanvasPages]);
 
   useEffect(() => {
     const container = tableContainerRef.current;
@@ -1531,64 +749,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!onlyOfficeDialog.open || !onlyOfficeDialog.config || !onlyOfficeContainerRef.current) {
-      setOnlyOfficeEditorState({ status: 'idle' });
-      return undefined;
-    }
-    setOnlyOfficeEditorState({ status: 'loading' });
-    const scriptId = 'onlyoffice-docs-api-script';
-    const scriptSrc = `${onlyOfficeDialog.config.documentServerUrl.replace(/\/$/, '')}/web-apps/apps/api/documents/api.js`;
-    const loadScript = () => new Promise<void>((resolve, reject) => {
-      const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
-      if (existing) {
-        if ((window as typeof window & { DocsAPI?: unknown }).DocsAPI) resolve();
-        else existing.addEventListener('load', () => resolve(), { once: true });
-        return;
-      }
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = scriptSrc;
-      script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('OnlyOffice 编辑器脚本加载失败'));
-      document.body.appendChild(script);
-    });
-    let cancelled = false;
-    loadScript()
-      .then(() => {
-        if (cancelled || !onlyOfficeContainerRef.current || !onlyOfficeDialog.config) return;
-        const docsApi = (window as typeof window & { DocsAPI?: { DocEditor: new (id: string, config: OnlyOfficeEditorConfig) => { destroyEditor?: () => void } } }).DocsAPI;
-        if (!docsApi?.DocEditor) throw new Error('OnlyOffice 编辑器不可用');
-        onlyOfficeContainerRef.current.innerHTML = '';
-        const holder = document.createElement('div');
-        holder.id = 'onlyoffice-form-template-editor';
-        holder.style.width = '100%';
-        holder.style.height = '100%';
-        onlyOfficeContainerRef.current.appendChild(holder);
-        const editorConfig: OnlyOfficeEditorConfig & { events: Record<string, (event?: { data?: boolean }) => void> } = {
-          ...onlyOfficeDialog.config,
-          events: {
-            onAppReady: () => setOnlyOfficeEditorState({ status: 'ready' }),
-            onDocumentStateChange: (event) => setOnlyOfficeEditorState(onlyOfficeDocumentState(event?.data)),
-          },
-        };
-        onlyOfficeEditorRef.current = new docsApi.DocEditor(holder.id, editorConfig);
-      })
-      .catch((error: unknown) => {
-        setOnlyOfficeEditorState({ status: 'error', message: error instanceof Error ? error.message : 'OnlyOffice 编辑器加载失败' });
-        setSnackbar({ open: true, message: error instanceof Error ? error.message : 'OnlyOffice 编辑器加载失败', severity: 'error' });
-      });
-    return () => {
-      cancelled = true;
-      onlyOfficeEditorRef.current?.destroyEditor?.();
-      onlyOfficeEditorRef.current = null;
-      setOnlyOfficeEditorState({ status: 'idle' });
-    };
-  }, [onlyOfficeDialog.open, onlyOfficeDialog.config]);
-
   const saveMutation = useMutation({
-    mutationFn: async ({ designAfterSave }: { designAfterSave: boolean }) => {
+    mutationFn: async () => {
       const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
       const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
       const payload: TemplateModelingPayload = {
@@ -1604,14 +766,12 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       };
       if (creatingVersionFrom) {
         const versionResponse = await createFormTemplateVersion(creatingVersionFrom.id, pickTemplatePayload(payload, TEMPLATE_VERSION_FIELD_IDS));
-        return { response: null, versionResponse, designAfterSave, versionParent: creatingVersionFrom };
+        return { response: null, versionResponse };
       }
       const response = editingRow ? await config.updateAction(editingRow.id, payload) : await config.createAction(payload);
-      return { response, versionResponse: null, designAfterSave, versionParent: null };
+      return { response, versionResponse: null };
     },
-    onSuccess: async ({ response, versionResponse, designAfterSave, versionParent }) => {
-      const saved = response?.data.data;
-      const savedVersion = versionResponse?.data.data;
+    onSuccess: async () => {
       setSnackbar({ open: true, message: creatingVersionFrom ? '子版本新增成功' : editingRow ? '保存成功' : '新增成功', severity: 'success' });
       setDialogOpen(false);
       setEditingRow(null);
@@ -1619,11 +779,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
-      if (designAfterSave && pageKey === 'formTemplates' && savedVersion && versionParent) {
-        openDesigner({ ...versionParent, currentVersionId: savedVersion.id, currentVersion: savedVersion }, savedVersion);
-      } else if (designAfterSave && pageKey === 'formTemplates' && saved) {
-        openDesigner(saved);
-      }
     },
     onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '保存失败', severity: 'error' }),
   });
@@ -1685,242 +840,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '分类排序失败', severity: 'error' }),
   });
 
-  const clearTemplateDesignerCanvas = () => {
-    setSelectedCanvasTarget(null);
-    setActiveCanvasPageId(null);
-    setFieldCandidates([]);
-    setAnalysisDraft(null);
-    setCandidateDecisions({});
-    setSelectedAnalysisCandidateId(null);
-    setTemplateModelDesign(emptyTemplateModelDesign());
-    setTemplateCanvasDesign(emptyTemplateCanvasDesign());
-    setFieldPreviewValues({});
-    setTemplateImportRevision((current) => current + 1);
-    setBackgroundObjectUrls((current) => {
-      Object.values(current).forEach((objectUrl) => URL.revokeObjectURL(objectUrl));
-      return {};
-    });
-  };
-
-  const captureTemplateDesignerSnapshot = (): TemplateDesignerSnapshot => ({
-    fieldCandidates,
-    analysisDraft,
-    candidateDecisions,
-    selectedAnalysisCandidateId,
-    templateModelDesign,
-    templateCanvasDesign,
-    activeCanvasPageId,
-    selectedCanvasTarget,
-    fieldPreviewValues,
-  });
-
-  const restoreTemplateDesignerSnapshot = (importSequence: number) => {
-    const snapshotState = templateImportSnapshotRef.current;
-    if (!snapshotState || snapshotState.sequence !== importSequence) return;
-    const { snapshot } = snapshotState;
-    setFieldCandidates(snapshot.fieldCandidates);
-    setAnalysisDraft(snapshot.analysisDraft);
-    setCandidateDecisions(snapshot.candidateDecisions);
-    setSelectedAnalysisCandidateId(snapshot.selectedAnalysisCandidateId);
-    setTemplateModelDesign(snapshot.templateModelDesign);
-    setTemplateCanvasDesign(snapshot.templateCanvasDesign);
-    setActiveCanvasPageId(snapshot.activeCanvasPageId);
-    setSelectedCanvasTarget(snapshot.selectedCanvasTarget);
-    setFieldPreviewValues(snapshot.fieldPreviewValues);
-    setTemplateImportRevision((current) => current + 1);
-    templateImportSnapshotRef.current = null;
-  };
-
-  const beginTemplateSourceImport = () => {
-    templateImportSequenceRef.current += 1;
-    templateImportSnapshotRef.current = { sequence: templateImportSequenceRef.current, snapshot: captureTemplateDesignerSnapshot() };
-    clearTemplateDesignerCanvas();
-    return templateImportSequenceRef.current;
-  };
-
-  const applyTemplateImportResult = (result: TemplateImportResponse) => {
-    const nextAnalysisDraft = analysisDraftFromImport(result);
-    const nextModelDesign = result.modelDesign ?? parseTemplateModelDesign(result.version);
-    const nextCanvasDesign = result.canvasDesign ?? parseTemplateCanvasDesign(result.version);
-    setFieldCandidates(result.fieldCandidates);
-    setAnalysisDraft(nextAnalysisDraft);
-    setCandidateDecisions({});
-    setSelectedAnalysisCandidateId(nextAnalysisDraft?.candidates?.[0]?.id ?? null);
-    setTemplateModelDesign(nextModelDesign);
-    setTemplateCanvasDesign(nextCanvasDesign);
-    setFieldPreviewValues({});
-    setActiveCanvasPageId(nextCanvasDesign.pages[0]?.id ?? null);
-    setTemplateImportRevision((current) => current + 1);
-    setDesignerRecord((current) => current ? { ...current, currentVersionId: result.version.id, currentVersion: result.version } : current);
-  };
-
-  const formatTemplateImportSuccessMessage = (result: TemplateImportResponse) => {
-    const pageCount = result.canvasDesign?.pages?.length ?? result.analysisDraft?.pages?.length ?? 0;
-    const candidateCount = result.fieldCandidates?.length ?? result.analysisDraft?.candidates?.length ?? 0;
-    const prefix = '源文件已导入：';
-    const pageText = pageCount > 0 ? `${pageCount} 页` : '画布已更新';
-    return `${prefix}${pageText}，生成 ${candidateCount} 个字段候选`;
-  };
-
-  const importMutation = useMutation({
-    onMutate: beginTemplateSourceImport,
-    mutationFn: async (file: File) => {
-      const versionId = getDesignerVersionId(designerRecord);
-      if (!designerRecord || !versionId) throw new Error('当前模板没有可设计版本');
-      return importFormTemplateSourceFile(designerRecord.id, versionId, file);
-    },
-    onSuccess: async (response, _file, importSequence) => {
-      if (importSequence !== templateImportSequenceRef.current) return;
-      templateImportSnapshotRef.current = null;
-      const result = response.data.data;
-      applyTemplateImportResult(result);
-      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
-      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
-      setSnackbar({ open: true, message: formatTemplateImportSuccessMessage(result), severity: 'success' });
-    },
-    onError: (error: unknown, _file, importSequence) => {
-      if (importSequence !== templateImportSequenceRef.current) return;
-      restoreTemplateDesignerSnapshot(importSequence);
-      setSnackbar({ open: true, message: error instanceof Error ? error.message : '导入失败', severity: 'error' });
-    },
-  });
-
-  const reparseSourceMutation = useMutation({
-    onMutate: beginTemplateSourceImport,
-    mutationFn: async () => {
-      const versionId = getDesignerVersionId(designerRecord);
-      if (!designerRecord || !versionId) throw new Error('当前模板没有可同步的源文件版本');
-      return reparseFormTemplateSourceFile(designerRecord.id, versionId);
-    },
-    onSuccess: async (response, _variables, importSequence) => {
-      if (importSequence !== templateImportSequenceRef.current) return;
-      templateImportSnapshotRef.current = null;
-      applyTemplateImportResult(response.data.data);
-      setOnlyOfficeDialog({ open: false, config: null });
-      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
-      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
-      setSnackbar({ open: true, message: '源文档已重新解析并同步到画布', severity: 'success' });
-    },
-    onError: (error: unknown, _variables, importSequence) => {
-      if (importSequence !== templateImportSequenceRef.current) return;
-      restoreTemplateDesignerSnapshot(importSequence);
-      setSnackbar({ open: true, message: error instanceof Error ? error.message : '重新解析失败', severity: 'error' });
-    },
-  });
-
-  const confirmCandidatesMutation = useMutation({
-    mutationFn: async () => {
-      const versionId = getDesignerVersionId(designerRecord);
-      if (!designerRecord || !versionId || !analysisDraft?.analysisId) throw new Error('当前模板没有可确认的解析草稿');
-      if (!allCandidatesDecided) throw new Error('请逐项确认候选，或点击按推荐批量选择后再保存');
-      return confirmFormTemplateAnalysisCandidates(designerRecord.id, versionId, analysisDraft.analysisId, Object.values(candidateDecisions));
-    },
-    onSuccess: async (response) => {
-      const version = response.data.data;
-      setDesignerRecord((current) => current ? { ...current, currentVersionId: version.id, currentVersion: version } : current);
-      setTemplateModelDesign(parseTemplateModelDesign(version));
-      setTemplateCanvasDesign(parseTemplateCanvasDesign(version));
-      setFieldPreviewValues({});
-      setFieldCandidates([]);
-      setAnalysisDraft(null);
-      setCandidateDecisions({});
-      setSelectedAnalysisCandidateId(null);
-      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
-      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
-      setSnackbar({ open: true, message: '候选确认已保存', severity: 'success' });
-    },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '候选确认失败', severity: 'error' }),
-  });
-
-  const onlyOfficeConfigMutation = useMutation({
-    mutationFn: async () => {
-      const versionId = getDesignerVersionId(designerRecord);
-      if (!designerRecord || !versionId) throw new Error('当前模板没有可预览源文件的版本');
-      return getFormTemplateOnlyOfficeConfig(designerRecord.id, versionId);
-    },
-    onSuccess: (response) => {
-      setOnlyOfficeEditorState({ status: 'loading' });
-      setOnlyOfficeDialog({ open: true, config: response.data.data });
-    },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : 'OnlyOffice 文档服务未配置', severity: 'error' }),
-  });
-
-  const canSyncOnlyOfficeToCanvas = ['ready', 'saved'].includes(onlyOfficeEditorState.status);
-  const onlyOfficeSyncDisabledReason = !designerRecord?.currentVersion?.sourceFileId
-    ? '当前版本没有源文件'
-    : !canSyncOnlyOfficeToCanvas
-      ? onlyOfficeEditorState.status === 'dirty' ? '请先在 OnlyOffice 中保存源文档' : '请等待 OnlyOffice 编辑器加载完成'
-      : '';
-  const onlyOfficeSyncDisabled = reparseSourceMutation.isPending || Boolean(onlyOfficeSyncDisabledReason);
-
-  const saveDesignMutation = useMutation({
-    mutationFn: async () => {
-      const versionId = getDesignerVersionId(designerRecord);
-      if (!designerRecord || !versionId) throw new Error('当前模板没有可设计版本');
-      const currentVersion = resolveDesignerVersion(designerRecord, designerRecord.currentVersion);
-      const syncedCanvasDesign = syncTemplateCanvasFieldBindings(templateCanvasDesign, templateModelDesign.fields);
-      return saveFormTemplateDesign(designerRecord.id, versionId, {
-        modelDesignJson: JSON.stringify(templateModelDesign, null, 2),
-        canvasDesignJson: JSON.stringify(syncedCanvasDesign, null, 2),
-        workflowDesignJson: currentVersion?.workflowDesignJson || JSON.stringify({ nodes: [], edges: [] }, null, 2),
-      });
-    },
-    onSuccess: async (response) => {
-      const version = response.data.data;
-      setDesignerRecord((current) => current ? { ...current, currentVersionId: version.id, currentVersion: version } : current);
-      setTemplateModelDesign(parseTemplateModelDesign(version));
-      setTemplateCanvasDesign(parseTemplateCanvasDesign(version));
-      setFieldPreviewValues({});
-      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
-      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
-      setSnackbar({ open: true, message: '设计已保存', severity: 'success' });
-    },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '设计保存失败', severity: 'error' }),
-  });
-
-  const openTemplateSourceFilePicker = () => {
-    if (importMutation.isPending) return;
-    templateSourceFileInputRef.current?.click();
-  };
-
-  const restorePendingAnalysisDraft = async (row: TemplateModelingRecord, version: TemplateVersionRecord | null | undefined, modelDesign: TemplateModelDesign) => {
-    const analysisId = getPendingAnalysisDraftId(modelDesign);
-    const versionId = version?.id;
-    if (!analysisId || !versionId) return;
-    analysisDraftRestoreSequenceRef.current += 1;
-    const restoreSequence = analysisDraftRestoreSequenceRef.current;
-    try {
-      const response = await getFormTemplateAnalysisDraft(row.id, versionId, analysisId);
-      if (restoreSequence !== analysisDraftRestoreSequenceRef.current) return;
-      const draft = response.data.data;
-      setAnalysisDraft(draft);
-      setFieldCandidates(draft.candidates.map((candidate) => ({
-        id: candidate.id,
-        code: candidate.fieldCode,
-        name: candidate.fieldName,
-        type: typeForComponent(candidate.suggestedComponent),
-        required: Boolean(candidate.required),
-        status: candidate.status,
-        suggestedAction: candidate.suggestedAction,
-        suggestedComponent: candidate.suggestedComponent,
-        pageId: candidate.pageId,
-        valueAnchor: candidate.valueAnchor,
-        sourceText: candidate.sourceText,
-        keyText: candidate.keyText,
-        valueText: candidate.valueText,
-        semanticRole: candidate.semanticRole,
-        pairing: candidate.pairing,
-        reason: candidate.reason,
-        confidence: candidate.confidence,
-      })));
-      setCandidateDecisions({});
-      setSelectedAnalysisCandidateId(draft.candidates[0]?.id ?? null);
-    } catch (error) {
-      if (restoreSequence !== analysisDraftRestoreSequenceRef.current) return;
-      setSnackbar({ open: true, message: error instanceof Error ? error.message : '解析草稿恢复失败', severity: 'error' });
-    }
-  };
-
   const openCreateDialog = () => {
     const selectedCategory = templateCategoryOptions.find((category) => category.value === categoryId);
     const selectedName = selectedCategory && !selectedCategory.system ? selectedCategory.name : '';
@@ -1964,396 +883,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setDialogOpen(true);
   };
 
-  const openDesigner = (row: TemplateModelingRecord, version: TemplateVersionRecord | null | undefined = row.currentVersion) => {
-    if (pageKey !== 'formTemplates') return;
-    const currentVersion = resolveDesignerVersion(row, version);
-    const parsedModelDesign = parseTemplateModelDesign(currentVersion);
-    const parsedCanvasDesign = parseTemplateCanvasDesign(currentVersion);
-    analysisDraftRestoreSequenceRef.current += 1;
-    setDesignerRecord({ ...row, currentVersionId: currentVersion?.id ?? row.currentVersionId, currentVersion });
-    setSelectedCanvasTarget(null);
-    setAnalysisDraft(null);
-    setCandidateDecisions({});
-    setSelectedAnalysisCandidateId(null);
-    setFieldCandidates(parseFieldCandidates(currentVersion));
-    setTemplateModelDesign(parsedModelDesign);
-    setTemplateCanvasDesign(parsedCanvasDesign);
-    setFieldPreviewValues({});
-    setActiveCanvasPageId(parsedCanvasDesign.pages[0]?.id ?? null);
-    setTemplateImportRevision((current) => current + 1);
-    void restorePendingAnalysisDraft(row, currentVersion, parsedModelDesign);
-  };
-
-  const handleTemplateSourceFileSelected = (file: File) => {
-    setSnackbar({ open: true, message: `正在导入并解析 ${file.name}，请稍候`, severity: 'info' });
-    importMutation.mutate(file);
-  };
-
-  const updateCanvasLayer = (pageId: string, layerId: string, patch: Partial<TemplateCanvasLayer>) => {
-    setTemplateCanvasDesign((current) => ({
-      ...current,
-      pages: current.pages.map((pageItem) => pageItem.id === pageId ? {
-        ...pageItem,
-        layers: (pageItem.layers ?? []).map((layer) => layer.id === layerId ? { ...layer, ...patch } : layer),
-      } : pageItem),
-    }));
-  };
-
-  const deleteCanvasLayer = (pageId: string, layerId: string) => {
-    setTemplateCanvasDesign((current) => ({
-      ...current,
-      pages: current.pages.map((pageItem) => pageItem.id === pageId ? {
-        ...pageItem,
-        layers: (pageItem.layers ?? []).filter((layer) => layer.id !== layerId),
-      } : pageItem),
-    }));
-    setSelectedCanvasTarget((current) => current?.type === 'layer' && current.pageId === pageId && current.id === layerId ? null : current);
-  };
-
-  const moveCanvasLayer = (pageId: string, layerId: string, nextX: number, nextY: number) => {
-    setTemplateCanvasDesign((current) => ({
-      ...current,
-      pages: current.pages.map((pageItem) => pageItem.id === pageId ? {
-        ...pageItem,
-        layers: (pageItem.layers ?? []).map((layer) => layer.id === layerId ? {
-          ...layer,
-          x: clampCanvasPosition(nextX, layer.width, pageItem.width),
-          y: clampCanvasPosition(nextY, layer.height, pageItem.height),
-        } : layer),
-      } : pageItem),
-    }));
-  };
-
-  const updateInteractiveField = (fieldId: string, patch: Partial<TemplateInteractiveField>) => {
-    setTemplateCanvasDesign((current) => {
-      const sourceFields = current.interactiveFields.length > 0 ? current.interactiveFields : templateModelDesign.fields;
-      return {
-        ...current,
-        interactiveFields: sourceFields.map((field) => field.id === fieldId ? { ...field, ...patch } : field),
-      };
-    });
-    setTemplateModelDesign((current) => ({
-      ...current,
-      fields: current.fields.map((field) => field.id === fieldId ? { ...field, ...patch } : field),
-    }));
-  };
-
-  const updateFieldPreviewValue = (field: TemplateInteractiveField, value: string) => {
-    const key = field.code || field.id;
-    setFieldPreviewValues((current) => ({ ...current, [key]: value }));
-  };
-
-  const deleteInteractiveField = (fieldId: string) => {
-    setTemplateCanvasDesign((current) => {
-      const sourceFields = current.interactiveFields.length > 0 ? current.interactiveFields : templateModelDesign.fields;
-      return {
-        ...current,
-        interactiveFields: sourceFields.filter((field) => field.id !== fieldId),
-      };
-    });
-    setTemplateModelDesign((current) => ({
-      ...current,
-      fields: current.fields.filter((field) => field.id !== fieldId),
-    }));
-    setSelectedCanvasTarget((current) => current?.type === 'field' && current.id === fieldId ? null : current);
-  };
-
-  const moveInteractiveField = (fieldId: string, nextX: number, nextY: number) => {
-    const field = interactiveFields.find((candidate) => candidate.id === fieldId);
-    const pageItem = templateCanvasPages.find((candidate) => candidate.id === field?.pageId);
-    if (!field || !pageItem) return;
-    updateInteractiveField(fieldId, {
-      x: clampCanvasPosition(nextX, field.width, pageItem.width),
-      y: clampCanvasPosition(nextY, field.height, pageItem.height),
-    });
-  };
-
-  const addCanvasTextLayer = (pageItem = activeCanvasPage, point = { x: 96, y: 96 }) => {
-    const layer: TemplateCanvasLayer = {
-      id: createCanvasElementId('text-layer'),
-      type: 'text',
-      text: '文本',
-      x: clampCanvasPosition(point.x, 160, pageItem.width),
-      y: clampCanvasPosition(point.y, 32, pageItem.height),
-      width: 160,
-      height: 32,
-      fontSize: 14,
-      selectable: true,
-      draggable: true,
-      zIndex: (pageItem.layers?.length ?? 0) + 2,
-    };
-    setTemplateCanvasDesign((current) => ({
-      ...current,
-      pages: (current.pages.length > 0 ? current.pages : [pageItem]).map((candidate) => candidate.id === pageItem.id ? {
-        ...candidate,
-        layers: [...(candidate.layers ?? []), layer],
-      } : candidate),
-    }));
-    setSelectedCanvasTarget({ type: 'layer', pageId: pageItem.id, id: layer.id });
-  };
-
-  const resolveCandidateCanvasPlacement = (candidate?: TemplateImportResponse['fieldCandidates'][number], pageItem = activeCanvasPage, point?: { x: number; y: number }) => {
-    const resolvedPage = point ? pageItem : templateCanvasPages.find((item) => item.id === candidate?.pageId) ?? pageItem;
-    const resolvedPoint = point ?? { x: candidate?.valueAnchor?.x ?? 96, y: candidate?.valueAnchor?.y ?? 144 };
-    return {
-      resolvedPage,
-      resolvedPoint,
-      width: candidate?.valueAnchor?.width ?? 168,
-      height: candidate?.valueAnchor?.height ?? 30,
-    };
-  };
-
-  const addFieldCandidateToCanvas = (candidate?: TemplateImportResponse['fieldCandidates'][number], pageItem = activeCanvasPage, point?: { x: number; y: number }, replaceSameCandidate = false) => {
-    const { resolvedPage, resolvedPoint, width, height } = resolveCandidateCanvasPlacement(candidate, pageItem, point);
-    const sourceFields = templateModelDesign.fields.filter((field) => !replaceSameCandidate || field.sourceCandidateId !== candidate?.id);
-    const sourceInteractiveFields = interactiveFields.filter((field) => !replaceSameCandidate || field.sourceCandidateId !== candidate?.id);
-    const existingFieldCodes = new Set([...sourceFields, ...sourceInteractiveFields].map((field) => field.code));
-    const baseCode = candidate?.code || `field_${interactiveFields.length + 1}`;
-    const code = resolveUniqueTemplateFieldCode(baseCode, existingFieldCodes);
-    const component = candidate?.suggestedComponent || componentForTemplateFieldType(candidate?.type);
-    const fieldType = candidate?.type || typeForComponent(component);
-    const field: TemplateInteractiveField = {
-      id: createCanvasElementId('field'),
-      code,
-      name: candidate?.name || `字段${interactiveFields.length + 1}`,
-      type: fieldType,
-      required: candidate?.required ?? false,
-      pageId: resolvedPage.id,
-      x: clampCanvasPosition(resolvedPoint.x, width, resolvedPage.width),
-      y: clampCanvasPosition(resolvedPoint.y, height, resolvedPage.height),
-      width,
-      height,
-      fontSize: 12,
-      textAlign: 'left',
-      component,
-      fillable: true,
-      draggable: true,
-      resizable: true,
-      anchor: { pageId: resolvedPage.id, source: candidate ? 'field-candidate' : 'manual-tool', unit: 'source-point' },
-      validation: { required: candidate?.required ?? false, rules: [] },
-      dataBinding: { valuePath: `fields.${code}`, submissionPath: `submission.fields.${code}` },
-      binding: { fillable: true, component },
-      sourceText: candidate?.sourceText,
-      keyText: candidate?.keyText,
-      valueText: candidate?.valueText,
-      semanticRole: candidate?.semanticRole,
-      pairing: candidate?.pairing,
-      sourceCandidateId: candidate?.id,
-    };
-    setTemplateCanvasDesign((current) => {
-      const sourceFields = current.interactiveFields.length > 0 ? current.interactiveFields : templateModelDesign.fields;
-      const nextSourceFields = sourceFields.filter((field) => !replaceSameCandidate || field.sourceCandidateId !== candidate?.id);
-      return {
-        ...current,
-        interactiveFields: [...nextSourceFields, field],
-      };
-    });
-    setTemplateModelDesign((current) => ({
-      ...current,
-      fields: [...current.fields.filter((field) => !replaceSameCandidate || field.sourceCandidateId !== candidate?.id), field],
-    }));
-    setActiveCanvasPageId(resolvedPage.id);
-    setSelectedCanvasTarget({ type: 'field', pageId: resolvedPage.id, id: field.id });
-  };
-
-  const removeCandidatePreviewArtifacts = (candidate: TemplateAnalysisCandidate) => {
-    setTemplateCanvasDesign((current) => ({
-      ...current,
-      pages: current.pages.map((pageItem) => ({
-        ...pageItem,
-        layers: (pageItem.layers ?? []).filter((layer) => layer.sourceCandidateId !== candidate.id),
-      })),
-      interactiveFields: (current.interactiveFields.length > 0 ? current.interactiveFields : templateModelDesign.fields)
-        .filter((field) => field.sourceCandidateId !== candidate.id),
-    }));
-    setTemplateModelDesign((current) => ({
-      ...current,
-      fields: current.fields.filter((field) => field.sourceCandidateId !== candidate.id),
-    }));
-    setSelectedCanvasTarget((current) => {
-      if (current?.type === 'layer' && current.id === `static-candidate-${candidate.id}`) return null;
-      if (current?.type === 'field' && [...templateModelDesign.fields, ...interactiveFields].some((field) => field.id === current.id && field.sourceCandidateId === candidate.id)) return null;
-      return current;
-    });
-  };
-
-  const candidateDecisionFromPatch = (
-    candidate: TemplateAnalysisCandidate,
-    action: TemplateCandidateDecisionItem['action'],
-    currentDecision?: TemplateCandidateDecisionItem,
-    patch: Partial<TemplateCandidateDecisionItem> = {},
-  ): TemplateCandidateDecisionItem => ({
-    candidateId: candidate.id,
-    action,
-    fieldCode: patch.fieldCode ?? currentDecision?.fieldCode ?? candidate.fieldCode,
-    fieldName: patch.fieldName ?? currentDecision?.fieldName ?? candidate.fieldName,
-    component: patch.component ?? currentDecision?.component ?? candidate.suggestedComponent ?? 'TextInput',
-    required: patch.required ?? currentDecision?.required ?? candidate.required ?? false,
-  });
-
-  const applyCandidateDecisionToCanvas = (candidate: TemplateAnalysisCandidate, action: TemplateCandidateDecisionItem['action']) => {
-    const nextDecision = candidateDecisionFromPatch(candidate, action, candidateDecisions[candidate.id]);
-    updateCandidateDecision(candidate, action);
-    const resolvedPage = templateCanvasPages.find((item) => item.id === candidate.pageId) ?? activeCanvasPage;
-    removeCandidatePreviewArtifacts(candidate);
-    if (action === 'component') {
-      addFieldCandidateToCanvas(candidateDecisionToFieldCandidate(candidate, nextDecision), resolvedPage, undefined, true);
-      return;
-    }
-    if (action !== 'staticText') return;
-    const staticLayer = candidateDecisionToStaticTextLayer(candidate, nextDecision);
-    const nextLayer: TemplateCanvasLayer = {
-      ...staticLayer,
-      x: clampCanvasPosition(staticLayer.x, staticLayer.width, resolvedPage.width),
-      y: clampCanvasPosition(staticLayer.y, staticLayer.height, resolvedPage.height),
-    };
-    setTemplateCanvasDesign((current) => {
-      const pages = current.pages.length > 0 ? current.pages : [resolvedPage];
-      return {
-        ...current,
-        pages: pages.map((pageItem) => pageItem.id === resolvedPage.id ? {
-          ...pageItem,
-          layers: [
-            ...(pageItem.layers ?? []).filter((layer) => layer.sourceCandidateId !== candidate.id),
-            nextLayer,
-          ],
-        } : {
-          ...pageItem,
-          layers: (pageItem.layers ?? []).filter((layer) => layer.sourceCandidateId !== candidate.id),
-        }),
-      };
-    });
-    setActiveCanvasPageId(resolvedPage.id);
-    setSelectedCanvasTarget({ type: 'layer', pageId: resolvedPage.id, id: nextLayer.id });
-  };
-
-  const addInteractiveFieldToCanvas = () => {
-    addFieldCandidateToCanvas();
-  };
-
-  const syncCandidateComponentPreview = (candidate: TemplateAnalysisCandidate, nextDecision: TemplateCandidateDecisionItem) => {
-    if (nextDecision.action !== 'component') return;
-    const component = nextDecision.component ?? candidate.suggestedComponent ?? 'TextInput';
-    const fieldType = typeForComponent(component);
-    const patch: Partial<TemplateInteractiveField> = {
-      code: nextDecision.fieldCode || candidate.fieldCode,
-      name: nextDecision.fieldName || candidate.fieldName,
-      type: fieldType,
-      required: nextDecision.required ?? candidate.required ?? false,
-      component,
-      validation: { required: nextDecision.required ?? candidate.required ?? false, rules: [] },
-      dataBinding: { valuePath: `fields.${nextDecision.fieldCode || candidate.fieldCode}`, submissionPath: `submission.fields.${nextDecision.fieldCode || candidate.fieldCode}` },
-      binding: { fillable: true, component },
-    };
-    setTemplateCanvasDesign((current) => ({
-      ...current,
-      interactiveFields: (current.interactiveFields.length > 0 ? current.interactiveFields : templateModelDesign.fields)
-        .map((field) => field.sourceCandidateId === candidate.id ? { ...field, ...patch } : field),
-    }));
-    setTemplateModelDesign((current) => ({
-      ...current,
-      fields: current.fields.map((field) => field.sourceCandidateId === candidate.id ? { ...field, ...patch } : field),
-    }));
-  };
-
-  const updateCandidateDecision = (candidate: TemplateAnalysisCandidate, action: TemplateCandidateDecisionItem['action'], patch: Partial<TemplateCandidateDecisionItem> = {}) => {
-    setCandidateDecisions((current) => {
-      const nextDecision = candidateDecisionFromPatch(candidate, action, current[candidate.id], patch);
-      syncCandidateComponentPreview(candidate, nextDecision);
-      return {
-        ...current,
-        [candidate.id]: nextDecision,
-      };
-    });
-  };
-
-  const recommendedDecisionForCandidate = (candidate: TemplateAnalysisCandidate): TemplateCandidateDecisionItem => ({
-    candidateId: candidate.id,
-    action: candidate.suggestedAction === 'staticText' ? 'staticText' : candidate.suggestedAction === 'ignore' ? 'ignore' : 'component',
-    fieldCode: candidate.fieldCode,
-    fieldName: candidate.fieldName,
-    component: candidate.suggestedComponent || 'TextInput',
-    required: candidate.required ?? false,
-  });
-
-  const applySuggestedCandidateDecisions = () => {
-    if (!analysisDraft) return;
-    setCandidateDecisions(Object.fromEntries(analysisDraft.candidates.map((candidate) => [candidate.id, recommendedDecisionForCandidate(candidate)])));
-  };
-
-  const candidateSourceBlock = (candidate: TemplateAnalysisCandidate): TemplateAnalysisBlock | null => {
-    if (!analysisDraft?.blocks?.length || !candidate.labelBlockId) return null;
-    return analysisDraft.blocks.find((block) => block.id === candidate.labelBlockId) ?? null;
-  };
-
-  const candidatePageLabel = (candidate: TemplateAnalysisCandidate) => {
-    const pageItem = analysisDraft?.pages.find((item) => item.id === candidate.pageId);
-    return pageItem ? `第 ${pageItem.pageNumber} 页` : candidate.pageId;
-  };
-
-  const candidateCoordinateLabel = (candidate: TemplateAnalysisCandidate) => {
-    const anchor = candidate.valueAnchor;
-    if (!anchor) return '坐标未识别';
-    return `x ${Math.round(anchor.x)}, y ${Math.round(anchor.y)}, w ${Math.round(anchor.width)}, h ${Math.round(anchor.height)}`;
-  };
-
-  const handleCanvasToolDragStart = (event: ReactDragEvent, payload: TemplateCanvasToolPayload) => {
-    const serializedPayload = JSON.stringify(payload);
-    event.dataTransfer.setData('application/json', serializedPayload);
-    event.dataTransfer.setData('text/plain', serializedPayload);
-    event.dataTransfer.effectAllowed = 'copy';
-  };
-
-  const handleCanvasPageDrop = (dropEvent: ReactDragEvent, canvasPage: TemplateCanvasPage) => {
-    dropEvent.preventDefault();
-    const rawPayload = dropEvent.dataTransfer.getData('application/json') || dropEvent.dataTransfer.getData('text/plain');
-    if (!rawPayload) return;
-    let payload: TemplateCanvasToolPayload;
-    try {
-      payload = JSON.parse(rawPayload) as TemplateCanvasToolPayload;
-    } catch {
-      return;
-    }
-    const pageRect = dropEvent.currentTarget.getBoundingClientRect();
-    if (!pageRect.width || !pageRect.height) return;
-    const dropPoint = {
-      x: Math.max(0, dropEvent.clientX - pageRect.left),
-      y: Math.max(0, dropEvent.clientY - pageRect.top),
-    };
-    const dropX = (dropPoint.x / pageRect.width) * canvasPage.width;
-    const dropY = (dropPoint.y / pageRect.height) * canvasPage.height;
-    setActiveCanvasPageId(canvasPage.id);
-    if (payload.kind === 'text') addCanvasTextLayer(canvasPage, { x: dropX, y: dropY });
-    if (payload.kind === 'field') addFieldCandidateToCanvas(undefined, canvasPage, { x: dropX, y: dropY });
-    if (payload.kind === 'candidate') addFieldCandidateToCanvas(payload.candidate, canvasPage, { x: dropX, y: dropY });
-  };
-
-  const beginCanvasTargetDrag = (event: ReactPointerEvent, target: TemplateCanvasTarget, pageItem: TemplateCanvasPage) => {
-    if (event.button !== 0) return;
-    event.preventDefault();
-    const startX = event.clientX;
-    const startY = event.clientY;
-    const startLayer = target.type === 'layer' ? pageItem.layers?.find((layer) => layer.id === target.id) : null;
-    const startField = target.type === 'field' ? interactiveFields.find((field) => field.id === target.id) : null;
-    const startTargetX = target.type === 'layer' ? startLayer?.x : startField?.x;
-    const startTargetY = target.type === 'layer' ? startLayer?.y : startField?.y;
-    const pageRect = (event.currentTarget.closest('[data-form-template-canvas-page]') as HTMLElement | null)?.getBoundingClientRect();
-    if (!pageRect?.width || !pageRect.height || startTargetX === undefined || startTargetY === undefined) return;
-    const handlePointerMove = (moveEvent: PointerEvent) => {
-      const deltaX = ((moveEvent.clientX - startX) / pageRect.width) * pageItem.width;
-      const deltaY = ((moveEvent.clientY - startY) / pageRect.height) * pageItem.height;
-      if (target.type === 'layer') moveCanvasLayer(target.pageId, target.id, startTargetX + deltaX, startTargetY + deltaY);
-      else moveInteractiveField(target.id, startTargetX + deltaX, startTargetY + deltaY);
-    };
-    const handlePointerUp = () => {
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', handlePointerUp);
-    };
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp);
-  };
-
-  const handleSubmit = (designAfterSave = false) => {
+  const handleSubmit = () => {
     if (!creatingVersionFrom && !form.name.trim()) {
       setSnackbar({ open: true, message: '请输入模板名称', severity: 'error' });
       return;
@@ -2372,7 +902,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
       return;
     }
-    saveMutation.mutate({ designAfterSave });
+    saveMutation.mutate();
   };
 
   const selectTemplateCategory = (category: string) => {
@@ -2441,6 +971,11 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setDrawerTab(0);
   };
 
+  const handleOpenTemplateVersionDesign = (event: MouseEvent<HTMLButtonElement>, row: TemplateModelingRecord, version: TemplateVersionRecord) => {
+    event.stopPropagation();
+    setDesignerState({ open: true, row, version });
+  };
+
   const expandTemplateGroup = (templateId: string | number) => {
     const groupKey = String(templateId);
     setExpandedTemplateGroups((current) => {
@@ -2458,6 +993,22 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const collapseAllTemplateGroups = () => {
     setExpandedTemplateGroups(new Set());
   };
+
+  const saveDesignerMutation = useMutation({
+    mutationFn: async (payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
+      if (!designerState.row || !designerState.version) {
+        throw new Error('设计器上下文缺失');
+      }
+      return saveFormTemplateVersionDesign(designerState.row.id, designerState.version.id, payload);
+    },
+    onSuccess: async () => {
+      setSnackbar({ open: true, message: '设计已保存', severity: 'success' });
+      setDesignerState({ open: false, row: null, version: null });
+      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
+      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
+    },
+    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '设计保存失败', severity: 'error' }),
+  });
 
   const renderTemplateCategoryPanel = () => (
     <Box data-template-category-panel sx={{ height: '100%', minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -2583,28 +1134,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     window.addEventListener('mouseup', handleMouseUp);
   };
 
-  const beginPageThumbnailResize = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const startX = event.clientX;
-    const startWidth = pageThumbnailWidth;
-    const previousCursor = document.body.style.cursor;
-    const previousUserSelect = document.body.style.userSelect;
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-    const handleMouseMove = (moveEvent: globalThis.MouseEvent) => {
-      setPageThumbnailWidth(Math.max(150, startWidth + moveEvent.clientX - startX));
-    };
-    const handleMouseUp = () => {
-      document.body.style.cursor = previousCursor;
-      document.body.style.userSelect = previousUserSelect;
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-  };
-
   const handleColumnSettingDragStart = (event: ReactDragEvent, columnId: ConfigurableTemplateColumnId) => {
     columnSettingDragSourceRef.current = columnId;
     setDraggingColumnId(columnId);
@@ -2704,8 +1233,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const renderTemplateVersionActions = (row: TemplateModelingRecord, version: TemplateVersionRecord, canDeleteVersion: boolean) => (
     <Stack direction="row" spacing={0.5} justifyContent="center">
       <Tooltip title="设计" arrow>
-        <IconButton size="small" aria-label="设计" onClick={(event) => { event.stopPropagation(); openDesigner(row, version); }}>
-          <DesignServices fontSize="small" />
+        <IconButton size="small" aria-label="设计" onClick={(event) => handleOpenTemplateVersionDesign(event, row, version)}>
+          <DesignServicesIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       {canDeleteVersion ? (
@@ -3172,8 +1701,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogContent>
         <DialogActions>
           <Button onClick={() => { setDialogOpen(false); setCreatingVersionFrom(null); }}>取消</Button>
-          <Button variant="contained" disabled={saveMutation.isPending} onClick={() => handleSubmit(false)}>保存</Button>
-          {pageKey === 'formTemplates' ? <Button variant="contained" disabled={saveMutation.isPending} onClick={() => handleSubmit(true)}>保存并设计</Button> : null}
+          <Button variant="contained" disabled={saveMutation.isPending} onClick={handleSubmit}>保存</Button>
         </DialogActions>
       </Dialog>
 
@@ -3214,6 +1742,20 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           <Button color="error" variant="contained" disabled={!deleteVersionTarget || deleteVersionMutation.isPending} onClick={() => deleteVersionTarget && deleteVersionMutation.mutate(deleteVersionTarget)}>删除</Button>
         </DialogActions>
       </Dialog>
+
+      <TemplateDesignerDialog
+        open={designerState.open}
+        row={designerState.row}
+        version={designerState.version}
+        saving={saveDesignerMutation.isPending}
+        onClose={() => setDesignerState({ open: false, row: null, version: null })}
+        onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
+      />
+      <TemplateDesignerPreloadFrame
+        row={designerPreloadTarget.row}
+        version={designerPreloadTarget.version}
+        disabled={designerState.open}
+      />
 
       <Drawer
         anchor="right"
@@ -3295,254 +1837,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           )}
         </Box>
       </Drawer>
-
-      {designerRecord ? (
-        <Box
-          data-form-template-designer
-          data-form-template-designer-fullscreen
-          sx={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: (theme) => theme.zIndex.modal + 10,
-            width: '100vw',
-            height: '100vh',
-            overflow: 'hidden',
-            bgcolor: '#f2f3f5',
-            color: '#303133',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Stack data-form-template-top-toolbar direction="row" alignItems="center" sx={{ height: 50, minHeight: 50, px: 1, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed', gap: 1, overflow: 'hidden' }}>
-            <Button size="small" variant="text" startIcon={<ArrowBackIosNewRounded fontSize="small" />} onClick={() => { setDesignerRecord(null); setSelectedCanvasTarget(null); setFieldPreviewValues({}); }} sx={{ color: '#303133', minWidth: 100, px: 1, '& .MuiButton-startIcon': { mr: 0.5 } }}>
-              返回列表页
-            </Button>
-            <Box data-form-template-title-divider sx={{ width: '1px', height: 20, bgcolor: '#dcdfe6', mx: 0.5 }} />
-            <Typography data-form-template-toolbar-title variant="caption" sx={{ color: '#606266', minWidth: 126, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {designerRecord.name || '-'}：{designerRecord.currentVersion?.version || '-'}
-            </Typography>
-            <Stack data-form-template-file-import-actions direction="row" alignItems="center" spacing={0.5} sx={{ flex: 1, minWidth: 0, justifyContent: 'flex-end', overflow: 'hidden' }}>
-              <Box data-form-template-file-import-divider sx={{ width: '1px', height: 20, bgcolor: '#dcdfe6', mx: 0.25 }} />
-              <Button
-                size="small"
-                variant="text"
-                startIcon={importMutation.isPending ? <CircularProgress color="inherit" size={14} /> : <UploadFile fontSize="small" />}
-                disabled={importMutation.isPending}
-                onClick={openTemplateSourceFilePicker}
-                sx={{ color: '#606266', minWidth: 84 }}
-              >
-                {importMutation.isPending ? '导入中...' : '文件导入'}
-              </Button>
-              <input
-                ref={templateSourceFileInputRef}
-                hidden
-                type="file"
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (file) handleTemplateSourceFileSelected(file);
-                  event.target.value = '';
-                }}
-              />
-              <Button
-                data-form-template-onlyoffice-entry
-                size="small"
-                variant="text"
-                disabled={onlyOfficeConfigMutation.isPending || !designerRecord.currentVersion?.sourceFileId}
-                onClick={() => onlyOfficeConfigMutation.mutate()}
-                sx={{ color: '#606266', minWidth: 96 }}
-              >
-                原文编辑/预览
-              </Button>
-              <Box data-form-template-file-import-end-divider sx={{ width: '1px', height: 20, bgcolor: '#dcdfe6', mx: 0.25 }} />
-            </Stack>
-            <Stack direction="row" alignItems="center" spacing={0.75} sx={{ minWidth: 232, justifyContent: 'flex-end' }}>
-              <Stack data-form-template-collaborator-avatars direction="row" alignItems="center" sx={{ minWidth: 58 }}>
-                {['管', '质', '审'].map((name, index) => (
-                  <Box key={name} sx={{ width: 24, height: 24, ml: index === 0 ? 0 : -1.75, zIndex: 10 - index, borderRadius: '50%', bgcolor: ['#303133', '#e6a23c', '#409eff'][index], color: '#fff', fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff', boxSizing: 'border-box' }}>{name}</Box>
-                ))}
-              </Stack>
-              <Box data-form-template-collaborator-divider sx={{ width: '1px', height: 20, bgcolor: '#dcdfe6', mx: 0.25 }} />
-              <IconButton size="small" aria-label="添加协作者"><AddIcon fontSize="small" /></IconButton>
-              <Button size="small" variant="contained" disabled={saveDesignMutation.isPending} onClick={() => saveDesignMutation.mutate()} sx={{ minWidth: 74, height: 30 }}>
-                保存设计
-              </Button>
-              <IconButton size="small" aria-label="更多保存选项"><ExpandMoreIcon fontSize="small" /></IconButton>
-            </Stack>
-          </Stack>
-
-          <Box data-form-template-metadata-bar sx={{ height: 40, minHeight: 40, px: 1.5, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', gap: 1, overflow: 'hidden' }}>
-            <Stack data-form-template-toolbar-controls direction="row" alignItems="center" spacing={0.5} sx={{ flex: 1, minWidth: 0, justifyContent: 'flex-start', overflow: 'hidden' }}>
-              <Select size="small" value="默认字体" sx={{ height: 28, width: 92, fontSize: 12 }}>
-                <MenuItem value="默认字体">默认字体</MenuItem>
-              </Select>
-              <Select size="small" value="12" sx={{ height: 28, width: 58, fontSize: 12 }}>
-                <MenuItem value="12">12</MenuItem>
-              </Select>
-              <IconButton size="small" aria-label="加粗"><FormatBoldRounded fontSize="small" /></IconButton>
-              <IconButton size="small" aria-label="斜体"><FormatItalicRounded fontSize="small" /></IconButton>
-              <IconButton size="small" aria-label="下划线"><FormatUnderlinedRounded fontSize="small" /></IconButton>
-              <IconButton size="small" aria-label="左对齐"><FormatAlignLeftRounded fontSize="small" /></IconButton>
-              <IconButton size="small" aria-label="居中"><FormatAlignCenterRounded fontSize="small" /></IconButton>
-              <IconButton size="small" aria-label="右对齐"><FormatAlignRightRounded fontSize="small" /></IconButton>
-              <Box data-form-template-toolbar-divider sx={{ width: '1px', height: 24, bgcolor: '#dcdfe6', mx: 0.75 }} />
-            </Stack>
-            <Typography variant="caption" sx={{ color: '#c0c4cc', ml: 'auto', whiteSpace: 'nowrap' }}>13:00:37 已触发自动保存</Typography>
-          </Box>
-
-          <Box sx={{ flex: 1, minHeight: 0, display: 'flex', overflow: 'hidden' }}>
-            <Stack data-form-template-tool-rail sx={{ width: 50, minWidth: 50, bgcolor: '#fff', borderRight: '1px solid #e4e7ed', alignItems: 'center', py: 1, gap: 1 }}>
-              <Tooltip title="页面" arrow placement="right"><IconButton data-form-template-page-thumbnail-opener size="small" onClick={() => setPageThumbnailsOpen(true)} sx={{ width: 50, height: 50, borderRadius: 0, bgcolor: pageThumbnailsOpen ? '#ecf5ff' : 'transparent', color: pageThumbnailsOpen ? '#1677ff' : '#606266', '&:hover': { bgcolor: '#ecf5ff' } }}><ArticleOutlined fontSize="small" /></IconButton></Tooltip>
-              <Tooltip title="文字" arrow placement="right"><IconButton data-form-template-add-text-tool size="small" onClick={() => addCanvasTextLayer()} draggable onDragStart={(event) => handleCanvasToolDragStart(event, { kind: 'text' })} sx={{ width: 50, height: 50, borderRadius: 0 }}><Typography sx={{ width: 50, textAlign: 'center', fontSize: 13, fontWeight: 600 }}>Aa</Typography></IconButton></Tooltip>
-              <Tooltip title="字段" arrow placement="right"><IconButton data-form-template-add-field-tool size="small" onClick={addInteractiveFieldToCanvas} draggable onDragStart={(event) => handleCanvasToolDragStart(event, { kind: 'field' })} sx={{ width: 50, height: 50, borderRadius: 0 }}><TuneRounded fontSize="small" /></IconButton></Tooltip>
-              <Tooltip title="流程" arrow placement="right"><IconButton size="small" sx={{ width: 50, height: 50, borderRadius: 0 }}><PlaylistAdd fontSize="small" /></IconButton></Tooltip>
-            </Stack>
-
-            {pageThumbnailsOpen ? (
-            <Box data-form-template-page-thumbnails sx={{ position: 'relative', width: pageThumbnailWidth, minWidth: pageThumbnailWidth, bgcolor: '#fff', borderRight: '1px solid #dcdfe6', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1, height: 34, minHeight: 34, borderBottom: '1px solid #ebeef5' }}>
-                <Typography variant="caption" sx={{ color: '#303133' }}>分页缩略图</Typography>
-                <IconButton size="small" aria-label="关闭缩略图" onClick={() => setPageThumbnailsOpen(false)}><CloseIcon sx={{ fontSize: 14 }} /></IconButton>
-              </Stack>
-              <Stack spacing={1.25} sx={{ p: 1, overflow: 'auto', minHeight: 0, alignItems: 'center' }}>
-                {templateCanvasPages.map((canvasPage) => {
-                  const backgroundSrc = resolveCanvasBackgroundSrc(canvasPage, backgroundObjectUrls);
-                  return (
-                    <Box data-form-template-page-thumbnail-card key={canvasPage.id} onClick={() => setActiveCanvasPageId(canvasPage.id)} sx={{ width: 'clamp(96px, calc(100% - 54px), 220px)', minHeight: 86, bgcolor: activeCanvasPage.id === canvasPage.id ? '#ecf5ff' : '#d9d9d9', border: activeCanvasPage.id === canvasPage.id ? '1px solid #409eff' : '1px solid transparent', borderRadius: '2px', p: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.75, boxSizing: 'border-box', cursor: 'pointer' }}>
-                      <Box data-form-template-page-thumbnail-preview sx={{ width: '72%', aspectRatio: `${canvasPage.width || 70} / ${canvasPage.height || 54}`, flexShrink: 0, bgcolor: '#fff', border: '1px solid #ebeef5', boxSizing: 'border-box', overflow: 'hidden' }}>
-                        {backgroundSrc ? <Box component="img" alt={`第 ${canvasPage.pageNumber} 页`} src={backgroundSrc} sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} /> : null}
-                      </Box>
-                      <Typography variant="caption" sx={{ color: '#303133', lineHeight: 1 }}>第 {canvasPage.pageNumber} 页</Typography>
-                    </Box>
-                  );
-                })}
-              </Stack>
-              <Box
-                data-form-template-page-thumbnail-resizer
-                onMouseDown={beginPageThumbnailResize}
-                sx={{ position: 'absolute', top: 0, right: 0, zIndex: 4, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 32, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
-              />
-            </Box>
-            ) : null}
-
-            <Box data-form-template-editor-canvas sx={{ flex: 1, minWidth: 0, minHeight: 0, overflow: 'auto', bgcolor: '#f2f3f5', p: 3.5 }}>
-              <Stack spacing={3} sx={{ minWidth: 720, alignItems: shouldLeftAlignCanvasPages ? 'flex-start' : 'center' }}>
-                {templateCanvasPages.map((canvasPage) => {
-                  const pageFields = interactiveFields.filter((field) => field.pageId === canvasPage.id);
-                  const pageLayers = canvasPage.layers ?? [];
-                  const backgroundSrc = resolveCanvasBackgroundSrc(canvasPage, backgroundObjectUrls);
-                  const pageVisualWidth = resolveTemplateCanvasPageWidth(canvasPage, templateCanvasDesign.source);
-                  return (
-                    <Box
-                      data-form-template-editor-page
-                      data-form-template-canvas-page
-                      key={`${canvasRenderKey}-${canvasPage.id}`}
-                      onClick={() => setSelectedCanvasTarget(null)}
-                      onDragOver={(event) => event.preventDefault()}
-                      onDrop={(event) => handleCanvasPageDrop(event, canvasPage)}
-                      sx={{
-                        position: 'relative',
-                        width: pageVisualWidth,
-                        maxWidth: 'none',
-                        minWidth: pageVisualWidth,
-                        aspectRatio: `${canvasPage.width || 595} / ${canvasPage.height || 842}`,
-                        bgcolor: '#fff',
-                        border: '1px solid #d8dce5',
-                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06)',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <Box data-form-template-background-layer sx={{ position: 'absolute', inset: 0, bgcolor: '#fff' }}>
-                        {backgroundSrc ? <Box component="img" alt={`第 ${canvasPage.pageNumber} 页背景`} src={backgroundSrc} sx={{ width: '100%', height: '100%', objectFit: 'fill', display: 'block' }} /> : null}
-                      </Box>
-                      {pageLayers.map((layer: TemplateCanvasLayer) => {
-                        const selected = selectedCanvasTarget?.type === 'layer' && selectedCanvasTarget.pageId === canvasPage.id && selectedCanvasTarget.id === layer.id;
-                        const target = { type: 'layer' as const, pageId: canvasPage.id, id: layer.id };
-                        return renderTemplateCanvasLayer(
-                          layer,
-                          canvasPage,
-                          backgroundObjectUrls,
-                          selected,
-                          () => setSelectedCanvasTarget(target),
-                          (event) => beginCanvasTargetDrag(event, target, canvasPage),
-                        );
-                      })}
-                      {pageFields.map((field: TemplateInteractiveField) => (
-                        <Tooltip key={field.id} title={`${field.name || field.code}${field.required ? ' · 必填' : ''}`} arrow>
-                          <Box
-                            data-form-template-field-overlay
-                            data-form-template-selected-layer={selectedCanvasTarget?.type === 'field' && selectedCanvasTarget.pageId === canvasPage.id && selectedCanvasTarget.id === field.id ? true : undefined}
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              setSelectedCanvasTarget({ type: 'field', pageId: canvasPage.id, id: field.id });
-                            }}
-                            onPointerDown={(event) => {
-                              event.stopPropagation();
-                              setSelectedCanvasTarget({ type: 'field', pageId: canvasPage.id, id: field.id });
-                              beginCanvasTargetDrag(event, { type: 'field', pageId: canvasPage.id, id: field.id }, canvasPage);
-                            }}
-                            sx={{
-                              position: 'absolute',
-                              left: coordinatePercent(field.x, canvasPage.width),
-                              top: coordinatePercent(field.y, canvasPage.height),
-                              width: dimensionPercent(field.width, canvasPage.width),
-                              height: dimensionPercent(field.height, canvasPage.height),
-                              minWidth: 42,
-                              minHeight: 22,
-                              border: '1px solid #409eff',
-                              bgcolor: 'rgba(64, 158, 255, 0.12)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              p: 0.25,
-                              boxSizing: 'border-box',
-                              cursor: 'move',
-                              overflow: 'hidden',
-                              outline: selectedCanvasTarget?.type === 'field' && selectedCanvasTarget.pageId === canvasPage.id && selectedCanvasTarget.id === field.id ? '2px solid #1677ff' : 'none',
-                              outlineOffset: 1,
-                              '&:hover': { boxShadow: '0 0 0 2px rgba(64, 158, 255, 0.18)' },
-                            }}
-                          >
-                            {renderTemplateInteractiveFieldControl(
-                              field,
-                              fieldPreviewValues[field.code] ?? fieldPreviewValues[field.id] ?? '',
-                              (value) => updateFieldPreviewValue(field, value),
-                            )}
-                          </Box>
-                        </Tooltip>
-                      ))}
-                    </Box>
-                  );
-                })}
-              </Stack>
-            </Box>
-          </Box>
-        </Box>
-      ) : null}
-
-      <Dialog open={onlyOfficeDialog.open} onClose={() => setOnlyOfficeDialog({ open: false, config: null })} fullScreen sx={onlyOfficeDialogSx}>
-        <Box sx={{ height: 48, px: 2, display: 'flex', alignItems: 'center', borderBottom: '1px solid #e4e7ed', bgcolor: '#fff' }}>
-          <Typography sx={{ fontSize: 14, fontWeight: 600, flex: 1 }}>原文编辑/预览</Typography>
-          <Tooltip title={onlyOfficeSyncDisabledReason || ''} arrow>
-            <span>
-              <Button
-                data-form-template-onlyoffice-reparse
-                size="small"
-                variant="contained"
-                startIcon={reparseSourceMutation.isPending ? <CircularProgress color="inherit" size={14} /> : <RestartAlt fontSize="small" />}
-                disabled={onlyOfficeSyncDisabled}
-                onClick={() => reparseSourceMutation.mutate()}
-                sx={{ mr: 1, height: 30, minWidth: 108 }}
-              >
-                同步到画布
-              </Button>
-            </span>
-          </Tooltip>
-          <IconButton aria-label="关闭原文预览" onClick={() => setOnlyOfficeDialog({ open: false, config: null })}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        </Box>
-        <Box ref={onlyOfficeContainerRef} data-form-template-onlyoffice-frame sx={{ flex: 1, minHeight: 0, height: 'calc(100vh - 48px)', bgcolor: '#fff' }} />
-      </Dialog>
 
       <Snackbar
         open={snackbar.open}

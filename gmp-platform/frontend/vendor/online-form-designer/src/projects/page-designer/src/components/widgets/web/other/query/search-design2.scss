@@ -1,0 +1,43 @@
+@include b(search-design2) {
+  --search-design2-line-display-count: var(--search-design-line-display-count, 2);
+
+  &.#{bem(vue3-dnd-container)} {
+    display: flex;
+    flex-wrap: wrap;
+
+    &.widget-drag {
+      margin: 0;
+    }
+
+    >.#{bem(vue3-dnd-item)} {
+      display: inline-block;
+      padding: 0 5px;
+
+      .ant-form-item {
+        margin-bottom: 0;
+        padding: 10px 0;
+        pointer-events: none;
+      }
+    }
+
+    >.#{bem(vue3-dnd-item)} {
+      flex-basis: calc(100% / var(--search-design2-line-display-count));
+    }
+
+    >.button-area.widget-drag-item-search-btn {
+      width: var(--drag-item-btn-width);
+    }
+  }
+
+  &.#{bem(vue3-dnd-container)}.is-expansion {
+    >.#{bem(vue3-dnd-item)} {
+      transition: all 0.3s ease-in-out;
+      flex-basis: calc(100% / var(--search-design2-line-display-count) - var(--vue3-dnd-drop-line-width) * (var(--search-design2-line-display-count) - 1));
+    }
+
+    >.button-area.widget-drag-item-search-btn {
+      transition: all 0.3s ease-in-out;
+      width: calc(var(--drag-item-btn-width) - var(--vue3-dnd-drop-line-width) * 3);
+    }
+  }
+}

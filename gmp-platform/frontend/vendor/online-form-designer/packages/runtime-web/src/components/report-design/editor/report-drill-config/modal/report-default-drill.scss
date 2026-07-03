@@ -1,0 +1,90 @@
+@include b(report-default-drill) {
+  width: 280px;
+  height: 356px;
+  border-radius: getCssVar(border-radius-s);
+
+  @include e(header) {
+    padding: getCssVar(padding, 6) getCssVar(padding, 7);
+    border-bottom: 1px solid getCssVar(color, border);
+    @include font-2;
+    font-weight: 600;
+  }
+
+  @include e(body) {
+    position: relative;
+    height: calc(100% - 98px);
+    padding: 0 getCssVar(padding, 7);
+    overflow-y: auto;
+
+    .gct-dnd-item {
+      background-color: transparent;
+    }
+  }
+
+  @include e(footer) {
+    padding: getCssVar(padding, 6) getCssVar(padding, 7);
+    border-top: 1px solid getCssVar(color, border);
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    .ant-btn {
+      margin-left: getCssVar(spacing, 7);
+    }
+  }
+
+  @include e(item-field) {
+    position: relative;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 getCssVar(padding, 3);
+  }
+
+  @include e(item-field-icon) {
+    color: getCssVar(color, primary);
+    margin-right: getCssVar(spacing, 2);
+  }
+
+  @include e(add) {
+    position: relative;
+    padding-left: getCssVar(spacing, 4);
+    padding-top: getCssVar(spacing, 3);
+
+    .ant-btn {
+      display: flex;
+      align-items: center;
+
+      .iconfont {
+        margin-right: getCssVar(spacing, 2);
+      }
+    }
+  }
+
+  @include e(line) {
+    position: absolute;
+    left: -3px;
+    top: -4px;
+    bottom: -4px;
+    border-left: 1px dashed getCssVar(color, border);
+  }
+
+  @include e(half-line) {
+    height: 50%;
+    top: 60%;
+  }
+
+  @include e(dot) {
+    z-index: 1;
+    position: absolute;
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: getCssVar(color, primary);
+  }
+}

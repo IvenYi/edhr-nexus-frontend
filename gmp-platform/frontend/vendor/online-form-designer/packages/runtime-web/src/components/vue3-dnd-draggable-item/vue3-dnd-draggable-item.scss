@@ -1,0 +1,13 @@
+@include b(vue3-dnd-draggable-item) {
+  position: relative;
+
+  @include when(dragging) {
+    .#{bem(vue3-dnd-draggable-preview)} {
+      display: inline;
+    }
+  }
+
+  @include when(dragging) {
+    opacity: 0.3;
+  }
+}

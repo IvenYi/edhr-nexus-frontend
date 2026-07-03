@@ -1,0 +1,80 @@
+.gct-dragClass {
+  .gct-widget-wrapper-action-bar {
+    display: none;
+  }
+}
+
+@include b(widget-wrapper-action-bar) {
+  // @include e(mask) {
+  //   position: absolute;
+  //   inset: 0;
+  //   background-color: rgb(0 0 0 / 20%);
+  // }
+
+  @include e(content) {
+    display: flex;
+    z-index: 1;
+  }
+
+  @include when(hidden) {
+    display: none;
+  }
+
+  @include when(info) {
+    opacity: 0.64;
+  }
+
+  @include when(top) {
+    top: -32px;
+  }
+
+  @include when(bottom) {
+    bottom: -32px;
+  }
+
+  @include when(container) {
+    top: -2px !important;
+  }
+
+  @include e(span) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding-top: 2px;
+    border-radius: 2px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgb(255 255 255 / 48%);
+    }
+
+    &:active {
+      background-color: #fff;
+
+      .iconfont {
+        color: var(--ant-primary-color);
+      }
+    }
+  }
+
+  display: block;
+  display: flex;
+  position: fixed;
+  z-index: 30;
+  align-items: center;
+  justify-content: space-around;
+  height: 30px;
+  padding: 5px 8px;
+  overflow: hidden;
+  transform: translateX(-100%);
+  border-radius: 2px 2px 0 0;
+  color: #fff;
+  white-space: nowrap;
+
+  .iconfont {
+    color: #fff;
+    font-size: 14px;
+  }
+}

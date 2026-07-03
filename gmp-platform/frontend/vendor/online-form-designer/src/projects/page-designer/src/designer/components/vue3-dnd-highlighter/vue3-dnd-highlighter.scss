@@ -1,0 +1,11 @@
+@include b(vue3-dnd-highlighter) {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  opacity: 1;
+
+  @include when(dragging) {
+    opacity: 0;
+  }
+}

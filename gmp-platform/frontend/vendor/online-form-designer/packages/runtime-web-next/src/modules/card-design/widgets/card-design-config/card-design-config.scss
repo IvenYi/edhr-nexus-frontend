@@ -1,0 +1,251 @@
+@include b(card-design-config) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  @include m(simple) {
+    // .gct-design-item-highlighter {
+    //   display: none !important;
+    // }
+  }
+
+  @include e(design-header) {
+    width: 100%;
+    height: 42px;
+    background-color: getCssVar(color, white);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: getCssVar(padding, 7);
+  }
+
+  @include e(undo) {
+    margin-right: getCssVar(spacing, 7);
+
+    .iconfont {
+      font-size: 14px;
+    }
+  }
+
+  @include e(redo) {
+    margin-right: 40px;
+
+    .iconfont {
+      font-size: 14px;
+    }
+  }
+
+  @include e(scale) {
+    .ant-input-number-group-addon {
+      background-color: transparent;
+      border: 0;
+    }
+
+    .ant-input-number-input-wrap {
+      width: 60px;
+    }
+  }
+
+  @include e(left) {
+    flex-shrink: 0;
+  }
+
+  @include e(content) {
+    flex-grow: 1;
+  }
+
+  @include e(right) {
+    flex-shrink: 0;
+    width: 256px;
+
+    .#{bem('gct-edit-form')} {
+      color: getCssVar(color, text, 1);
+
+      .ant-form-item-control-input {
+        min-height: 26px;
+      }
+
+      .ant-tabs-tab {
+        width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .gct-form-tab-pane {
+        width: 256px;
+      }
+
+      .ant-collapse-header {
+        height: 34px;
+      }
+
+      .gct-gct-form-item {
+        --gct-form-item-label-color: #1a1d23;
+        --gct-form-item-min-height: 26px;
+      }
+
+      .gct-form-collapse-pane {
+        --gct-form-collapse-pane-padding: #{getCssVar('padding', 7)};
+      }
+
+      .gct-gct-form-radio {
+        .gct-gct-form-radio__item:last-child {
+          margin-right: 0;
+        }
+      }
+
+      .gct-gct-form-radio__item {
+        span:last-child {
+          padding-right: 0;
+        }
+      }
+
+      .gct-design-page-size_mode_info {
+        font-weight: 400;
+        --gct-form-item-min-height: 16px;
+
+        .ant-form-item-control-input {
+          min-height: 16px;
+          display: block;
+        }
+      }
+
+      .gct-design-page-layout_mode_info {
+        font-weight: 400;
+        --gct-form-item-min-height: 16px;
+
+        .ant-form-item-control-input {
+          min-height: 16px;
+        }
+
+        .gct-gct-form-info__content {
+          text-align: start;
+        }
+      }
+
+      .gct-form-collapse.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+        color: #1a1d23;
+        background-color: #f9fafb;
+      }
+
+      .gct-design-page-border-radius {
+        .gct-gct-form-select {
+          text-align: right;
+        }
+
+        .ant-select-selector {
+          width: 168px;
+          text-align: left;
+
+          .ant-select-selection-search,
+          .ant-select-selection-search-input {
+            height: 26px;
+            line-height: 26px;
+          }
+        }
+
+        // .ant-select {
+        //   width: 138px;
+        // }
+
+        .ant-select-arrow {
+          background-color: #f9fafb;
+          height: 26px;
+          width: 26px;
+          margin-top: -13px;
+          border-radius: 0px 4px 4px 0px;
+          border: 1px solid #e0e3eb;
+          right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .ant-select-clear {
+          right: 30px;
+        }
+      }
+
+      .gct-form-color {
+        border: 1px solid getCssVar(color, border);
+        border-radius: getCssVar(border, radius, s);
+        padding: 2px;
+
+        > .box {
+          width: 20px;
+          height: 20px;
+          border: 0;
+        }
+      }
+
+      .gct-style-spacing {
+        .label {
+          color: getCssVar(color, text, 4);
+        }
+        .spacing-editor__container .box {
+          margin-top: 26px;
+        }
+      }
+
+      .gct-design-page__label-width,
+      .gct-design-page__label-wrap-mode {
+        padding: getCssVar(spacing, 4) 0;
+      }
+
+      .ant-select-single.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector {
+        height: 26px;
+        line-height: 26px;
+      }
+
+      // .gct-design-page__card_width {
+      //   .ant-input-number-group-wrapper {
+      //     width: 100% !important;
+      //   }
+      // }
+
+      .gct-gct-form-number {
+
+        .ant-input-number-group-addon {
+          padding: 0 6px;
+        }
+      }
+
+      .ant-input-number {
+        height: 26px;
+
+        .ant-input-number-input {
+          height: 24px;
+        }
+      }
+    }
+  }
+
+  @include e(design-wrapper) {
+    width: 100%;
+    height: 100%;
+    padding: 40px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @include e(design-container) {
+    width: 480px;
+    min-height: 110px;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  @include e(design-not-font) {
+    width: 100%;
+    height: 100%;
+    @include flex-center;
+    flex-direction: column;
+
+    @include m(text) {
+      color: getCssVar(color, text, 4);
+    }
+  }
+}

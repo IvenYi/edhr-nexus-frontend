@@ -1,0 +1,38 @@
+@include b(designer-view-info) {
+  height: 100%;
+
+  @include e(form) {
+    width: 400px;
+    margin: 0 auto;
+    padding-top: 36px;
+    position: relative;
+
+    input.ant-input {
+      border-radius: 4px !important;
+    }
+
+    .ant-radio-wrapper.ant-radio-wrapper-checked {
+      .gct-gct-form-radio__item-icon {
+        color: var(--color-primary);
+      }
+    }
+
+    .gct-gct-form-radio__item-icon {
+      background-color: rgba(2, 106, 200, 0.08);
+      border-color: transparent;
+      color: getCssVar(color-text, 1);
+    }
+
+    .gct-gct-form-radio__item-label {
+      line-height: 14px;
+    }
+  }
+
+  @include e(key-copy) {
+    cursor: pointer;
+    position: absolute;
+    top: 236px;
+    right: -27px;
+    color: getCssVar(color-primary);
+  }
+}

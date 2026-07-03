@@ -1,0 +1,9 @@
+html,body,#app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@include b(preview-app) {
+  --van-primary-color: var(--ant-primary-color);
+}

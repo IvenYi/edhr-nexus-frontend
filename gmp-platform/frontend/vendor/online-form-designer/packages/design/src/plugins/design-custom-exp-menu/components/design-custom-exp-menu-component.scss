@@ -1,0 +1,25 @@
+@include b(design-custom-exp-menu-component) {
+  height: 100%;
+  background-color: #F7F8FA;
+  display: flex;
+  flex-direction: column;
+
+  @include e(preview) {
+    flex-grow: 1;
+  }
+
+  @include e(menus) {
+    flex-shrink: 0;
+    height: 60px;
+  }
+
+  @include e(icon) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .iconfont {
+      font-size: 18px;
+    }
+  }
+}

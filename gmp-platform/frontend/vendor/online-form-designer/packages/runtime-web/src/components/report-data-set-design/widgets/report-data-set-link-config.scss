@@ -1,0 +1,143 @@
+@include b(report-data-set-link-config) {
+  display: flex;
+  height: 100%;
+
+  @include e(left) {
+    flex-shrink: 0;
+    width: 402px;
+    padding: getCssVar(padding, 7);
+    border-right: 1px solid getCssVar(color, border);
+  }
+
+  @include e(right) {
+    flex-grow: 1;
+    width: calc(100% - 402px);
+  }
+}
+
+@include b(report-data-set-link-config-link-mode) {
+  @include e(header) {
+    @include font-3;
+    font-weight: 600;
+    padding-bottom: getCssVar(padding, 2);
+  }
+
+  @include e(body) {
+    display: flex;
+    gap: getCssVar(padding, 4);
+  }
+
+  @include e(item) {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 86px;
+    height: 54px;
+    border: 1px solid rgba(151, 151, 151, 1);
+    border-radius: 4px;
+    color: rgba(151, 151, 151, 1);
+
+    @include when(active) {
+      border-color: getCssVar(color, primary);
+      color: getCssVar(color, primary);
+    }
+
+    &:hover {
+      background-color: rgba(242, 244, 247, 1);
+    }
+  }
+
+  @include e(item-icon) {
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+  }
+
+  @include e(item-label) {
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(item-tooltip) {
+    width: auto;
+
+    .ant-tooltip-inner {
+      width: 350px;
+    }
+  }
+}
+
+@include b(report-data-set-link-config-link-field-config) {
+  height: calc(100% - 80px);
+  padding-top: getCssVar(padding, 4);
+
+  @include e(header) {
+    @include font-3;
+    font-weight: 600;
+    padding-bottom: getCssVar(padding, 2);
+  }
+
+  @include e(body) {
+    height: calc(100% - 26px);
+    display: flex;
+    flex-direction: column;
+    gap: getCssVar(padding, 4);
+  }
+
+  @include e(model-name) {
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(fields) {
+    height: calc(100% - 30px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  @include e(model-name-item) {
+    width: 160px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+
+    &:last-child {
+      margin-left: 34px;
+    }
+
+    @include m(info) {
+      flex-shrink: 0;
+      border-radius: getCssVar(border-radius, s);
+      background-color: color-mix(in srgb, getCssVar(color, primary) 10%, transparent);
+      color: getCssVar(color, primary);
+      padding: getCssVar(padding, 2) getCssVar(padding, 4);
+      margin-right: getCssVar(padding, 4);
+    }
+
+    @include m(label) {
+      flex-grow: 1;
+      @include font-3;
+      @include utils-ellipsis;
+    }
+
+    @include m(filter) {
+      cursor: pointer;
+
+      @include when(active) {
+        color: getCssVar(color, primary);
+      }
+    }
+  }
+
+  @include e(add) {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: getCssVar(color, primary);
+
+    .iconfont {
+      margin-right: getCssVar(padding, 4);
+    }
+  }
+}

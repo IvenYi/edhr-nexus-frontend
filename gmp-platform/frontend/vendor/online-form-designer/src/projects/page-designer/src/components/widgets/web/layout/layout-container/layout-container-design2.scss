@@ -1,0 +1,15 @@
+@include b(layout-container-design2) {
+  --layout-container-margin: 5px;
+
+  min-height: 60px;
+
+  > .#{bem(vue3-dnd-item)} {
+    // display: inline-block;
+    margin-right: var(--layout-container-margin);
+    vertical-align: top;
+  }
+
+  > .#{bem(vue3-dnd-item)}:last-child {
+    margin-right: 0;
+  }
+}

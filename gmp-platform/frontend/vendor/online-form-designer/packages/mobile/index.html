@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>冠骋云</title>
+    <link rel="stylesheet" href="/iconfont/iconfont.css" />
+    <link rel="stylesheet" href="/gct-iconfont/iconfont.css" />
+    <%- injectScript %>
+    <script src="/extras/systemjs/6.15.1/system.min.js"></script>
+    <script
+      type="systemjs-importmap"
+      src="/extras/system-imports.json"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="gct-logo"></div>
+    </div>
+  </body>
+</html>
+<style>
+  #app > .gct-logo {
+    height: 100vh;
+    background: url('/logo.svg') no-repeat center center;
+    background-size: 200px;
+  }
+</style>

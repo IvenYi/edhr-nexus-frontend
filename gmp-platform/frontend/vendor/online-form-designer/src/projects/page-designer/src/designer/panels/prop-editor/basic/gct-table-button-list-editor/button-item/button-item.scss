@@ -1,0 +1,39 @@
+@include b(button-item) {
+  position: relative;
+  padding-bottom: 8px;
+}
+
+@include b(button-item-drag) {
+  padding: 4px 8px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  background-color: #f2f4f7;
+
+  @include e(icon) {
+    flex-shrink: 0;
+  }
+
+  @include e(label) {
+    flex-grow: 1;
+  }
+
+  @include e(actions) {
+    flex-shrink: 0;
+    display: flex;
+  }
+}
+
+@include b(button-item-indicator) {
+  position: absolute;
+  bottom: 6px;
+  width: 100%;
+  height: 2px;
+  background-color: #E0E3EA;
+  z-index: 1;
+
+  @include when(before) {
+    top: 0;
+    bottom: unset;
+  }
+}

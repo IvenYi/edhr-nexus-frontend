@@ -1,0 +1,8 @@
+@include b(timed-task-content) {
+  height: calc(100% - 95px);
+  padding: 24px;
+}
+
+@include b(timed-task-divider) {
+  margin: 0;
+}

@@ -1,0 +1,8 @@
+@include b(report-field-menu-select) {
+  @include e(select) {
+    @include when(active) {
+      color: getCssVar(color-primary);
+      background-color: getCssVar(color-primary-light-hover);
+    }
+  }
+}

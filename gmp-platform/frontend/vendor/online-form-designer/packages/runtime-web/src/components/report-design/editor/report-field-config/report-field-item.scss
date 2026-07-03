@@ -1,0 +1,104 @@
+@include b(report-field-item) {
+  height: 26px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: getCssVar(spacing, 2) getCssVar(spacing, 4);
+
+  &:hover {
+    .#{bem(report-field-item, actions)} {
+      display: flex;
+    }
+    @include e(action-config) {
+      display: block;
+    }
+  }
+
+  @include e(content) {
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(handle) {
+    cursor: pointer;
+    width: 18px;
+    flex-shrink: 0;
+    padding-right: getCssVar(spacing, 2);
+
+    .iconfont {
+      font-size: 16px;
+      color: getCssVar(color, text, 7);
+    }
+  }
+
+  @include e(body) {
+    flex-grow: 1;
+    @include utils-ellipsis;
+  }
+
+  @include e(actions) {
+    display: none;
+    align-items: center;
+    width: 34px;
+    flex-shrink: 0;
+    transform: translateY(2px);
+    color: getCssVar(color, text, 4);
+
+    @include e(action-change) {
+      font-size: 16px;
+      padding-right: getCssVar(spacing, 4);
+
+      &:hover {
+        color: getCssVar(color, primary);
+      }
+    }
+
+    @include e(action-config) {
+      > a {
+        color: getCssVar(color, text, 4);
+      }
+
+      &:hover {
+        > a {
+          color: getCssVar(color, primary);
+        }
+      }
+    }
+  }
+
+  @include e(actions-active) {
+    display: flex;
+    color: getCssVar(color, primary);
+  }
+
+  @include e(config-none) {
+    display: none;
+  }
+
+  @include e(item-icon) {
+    flex-shrink: 0;
+    color: getCssVar(color, primary);
+    margin-right: getCssVar(spacing, 2);
+  }
+
+  @include e(item-title) {
+    transform: translateY(1px);
+  }
+}
+
+@include b(report-field-item-tooltip) {
+  .ant-tooltip-content {
+    .ant-tooltip-inner {
+      height: 50px;
+      box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.12);
+      border-radius: getCssVar(border-radius, s);
+      background-color: getCssVar(color, white);
+      padding: getCssVar(padding, 4);
+    }
+  }
+
+  .ant-tooltip-arrow-content {
+    background-color: getCssVar(color, white);
+  }
+}

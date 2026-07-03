@@ -1,0 +1,23 @@
+@include b(material-content) {
+  height: 100%;
+}
+
+@include b(material-content-header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 42px;
+  color: #212528;
+  padding: 4px 12px;
+  border-bottom: 1px solid #E0E3EA;
+  border-right: 1px solid #E0E3EA;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+@include b(material-content-content) {
+  height: calc(100% - 42px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid #E0E3EA;
+}

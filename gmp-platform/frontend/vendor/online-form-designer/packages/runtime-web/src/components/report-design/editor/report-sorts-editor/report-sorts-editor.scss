@@ -1,0 +1,54 @@
+@include b(report-sorts-editor) {
+  @include e(header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @include e(body) {
+    .gct-dnd-item {
+      border-radius: 4px;
+    }
+  }
+
+  @include e(title) {
+    @include font-2;
+  }
+}
+
+@include b(report-sorts-editor-item) {
+  padding: getCssVar(padding, 2);
+  border-radius: getCssVar(border-radius, s);
+  background-color: #f2f4f7;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .iconfont {
+    font-size: 16px;
+  }
+
+  .ant-select-selection-item {
+    @include font-2;
+  }
+
+  @include e(handle) {
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  @include e(field) {
+    width: 85px;
+    flex-shrink: 0;
+  }
+
+  @include e(sort) {
+    width: 86px;
+    flex-shrink: 0;
+  }
+
+  @include e(delete) {
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}

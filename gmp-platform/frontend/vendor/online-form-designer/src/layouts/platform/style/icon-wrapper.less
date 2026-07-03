@@ -1,0 +1,51 @@
+.platform-header {
+  .icon-wrapper {
+    // padding: 4px;
+    // border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    color: rgba(from #fff r g b / 72%);
+    cursor: pointer;
+    height: 54px;
+    width: 54px;
+
+    .iconfont, .gct-iconfont {
+      --size: 20px;
+      font-size: var(--size) !important;
+      height: var(--size);
+      width: var(--size);
+      line-height: var(--size);
+    }
+
+    &:hover {
+      background-color: rgba(from #fff r g b / 12%);
+      color: #fff;
+    }
+
+    .ant-badge {
+      color: rgba(from #fff r g b / 72%);
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+}
+.horizontal-mix-sider-layout {
+  .platform-header {
+    .icon-wrapper {
+      color: #212528;
+      &:hover {
+        color: #212528;
+      }
+
+      .ant-badge {
+        color: #212528;
+        &:hover {
+          color: #212528;
+        }
+      }
+    }
+  }
+}

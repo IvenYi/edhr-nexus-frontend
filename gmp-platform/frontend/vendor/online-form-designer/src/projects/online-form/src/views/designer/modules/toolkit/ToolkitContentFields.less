@@ -1,0 +1,119 @@
+.toolkit-fields-cascader {
+  max-height: 50vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .field-search {
+    padding: 8px 12px 4px;
+  }
+
+  .toolkit-fields-cascader-area {
+    overflow-y: auto;
+    position: relative !important;
+    > div {
+      position: relative !important;
+    }
+  }
+
+  .toolkit-fields-cascader-search {
+    width: 242px;
+    padding: 8px;
+    min-height: 300px;
+    .field-item {
+      height: 32px;
+      &:hover {
+        background: #f5f5f5;
+      }
+    }
+  }
+
+  .toolkit-fields-dropdown-cascader {
+    position: relative !important;
+    padding: 0;
+    box-shadow: none;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 500;
+
+    .ant-cascader-menu {
+      height: auto;
+      width: 242px;
+      padding: 8px;
+      &:last-child {
+        border-right: none;
+      }
+
+      .ant-cascader-menu-item {
+        padding: 0;
+        overflow: hidden;
+        width: 100%;
+        border-radius: 4px;
+
+        .ant-cascader-menu-item-content {
+          overflow: hidden;
+        }
+
+        .ant-cascader-menu-item-expand-icon {
+          margin-right: 4px;
+          margin-left: 0;
+        }
+
+        &.ant-cascader-menu-item-disabled {
+          cursor: default;
+          color: #c3c3c3;
+        }
+      }
+    }
+  }
+
+  .field-item {
+    display: flex;
+    align-items: center;
+    border-radius: 2px;
+    padding: 5px 8px;
+
+    cursor: pointer;
+
+    .field-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      color: var(--ant-primary-color);
+      font-size: 16px;
+
+      .icon-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #cfdeff;
+      }
+    }
+
+    .field-title {
+      overflow: hidden;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      .is-highlight {
+        color: var(--ant-primary-color);
+      }
+    }
+
+    .field-action {
+      margin-left: auto;
+      .iconfont {
+        margin-left: 10px;
+      }
+    }
+
+    //暂存字段样式
+    &.is-stashed {
+      .field-title {
+        color: #415fa5;
+      }
+    }
+  }
+}

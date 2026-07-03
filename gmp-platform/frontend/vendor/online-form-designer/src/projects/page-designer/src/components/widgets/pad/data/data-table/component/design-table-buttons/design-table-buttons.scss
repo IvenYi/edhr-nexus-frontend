@@ -1,0 +1,40 @@
+@include b(design-table-buttons) {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 16px;
+
+  .ant-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .gct-vue3-dnd-container {
+    display: flex;
+    gap: 16px;
+  }
+}
+
+.gct-table-actionItem {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+
+  >.gct-vue3-dnd-container {
+    gap: 0;
+  }
+
+  .ant-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .ant-btn-link {
+    padding: 0;
+  }
+}

@@ -1,0 +1,25 @@
+$gct-form-title-group: (
+  min-height: 32px,
+  width: auto,
+  height: auto,
+);
+
+@include b(gct-form-title-group) {
+  @include set-component-css-var('form-title-group', $gct-form-title-group);
+
+  @include when(hidden) {
+    display: none;
+  }
+
+  @include e(title) {
+    color: #252525;
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  @include e(content) {
+    .ant-form-item-label {
+      --gct-form-item-label-color: #797A7D;
+    }
+  }
+}

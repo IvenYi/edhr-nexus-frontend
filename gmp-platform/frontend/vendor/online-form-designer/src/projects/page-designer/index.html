@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0"
+    />
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="-1" />
+    <title><%= VITE_GLOB_APP_TITLE %></title>
+    <link rel="icon" href="/src/assets/images/favicon.png" />
+    <script src="/lib/@babel_standalone@7.22.9.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/extras/ant-design-vue/3.2.20/antd.min.css" />
+  <!-- <link type="text/css" rel="stylesheet" src="/extras/ant-design-vue/3.2.20/antd.variable.min.css" /> -->
+    <link rel="stylesheet" href="/index.css" />
+    <script src="/extras/systemjs/6.15.1/system.min.js"></script>
+    <script type="systemjs-importmap" src="/extras/system-imports.json" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="app">
+      <style>
+        /* 基础样式 */
+        .gct-skeleton-wrapper {
+          position: fixed;
+          z-index: 10;
+          inset: 0;
+          background-color: white;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+          width: 100%;
+          height: 70px;
+          border-bottom: 1px solid rgb(228 228 231);
+          flex-shrink: 0;
+        }
+
+        .header-left,
+        .header-right {
+          width: 25%;
+        }
+
+        .header-center {
+          width: 50%;
+          display: flex;
+          justify-content: center;
+        }
+
+        .header-right {
+          display: flex;
+          justify-content: end;  
+        }
+
+        .main-step-1 {
+          display: none;
+          width: 400px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 2rem;
+        }
+
+        .gct-skeleton-wrapper.is-creating .main-step-1 {
+          display: block;
+        }
+
+        .main-step-2 {
+          display: none;
+          flex-grow: 1;
+        }
+
+        .gct-skeleton-wrapper.is-editing .main-step-2 {
+          display: flex;
+        }
+
+        .main-step-2 .inner {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .main-step-2 .col {
+          padding: 12px;
+        }
+
+        .main-step-2 .col-1 {
+          flex-shrink: 0;
+          width: 300px;
+          height: 100%;
+          border-radius: 0 !important;
+        }
+
+        .main-step-2 .col-2 {
+          height: 100%;
+          flex-grow: 1;
+        }
+
+        .main-step-2 .col-3 {
+          flex-shrink: 0;
+          height: 100%;
+          width: 248px;
+          border-left: 1px solid #e0e3eb;
+        }
+
+        /* 骨架屏通用样式 */
+        .skeleton {
+          position: relative;
+          overflow: hidden;
+          background-color: rgb(228 228 231);
+          border-radius: 0.25rem;
+        }
+
+        .skeleton::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -150%;
+          width: 150%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            transparent 100%
+          );
+          animation: skeleton-shine 1.5s infinite;
+        }
+
+        @keyframes skeleton-shine {
+          100% {
+            left: 100%;
+          }
+        }
+
+        .skeleton-small {
+          width: 6rem;
+          height: 12px;
+        }
+
+        .skeleton-medium {
+          margin-top: 0.25rem;
+          width: 9rem;
+          height: 12px;
+        }
+
+        .skeleton-search {
+          width: 298px;
+          height: 20px;
+        }
+
+        .skeleton-btn {
+          width: 76px;
+          height: 20px;
+        }
+
+        .skeleton-label {
+          width: 6rem;
+          height: 20px;
+          margin-top: 0.5rem;
+        }
+
+        .skeleton-input {
+          width: 100%;
+          height: 20px;
+          margin-top: 0.5rem;
+          margin-bottom: 1rem;
+        }
+      </style>
+      <div class="gct-skeleton-wrapper">
+        <div class="header">
+          <div class="header-left">
+            <div class="skeleton skeleton-small"></div>
+            <div class="skeleton skeleton-medium"></div>
+          </div>
+          <div class="header-center">
+            <div class="skeleton skeleton-search"></div>
+          </div>
+          <div class="header-right">
+            <div class="skeleton skeleton-btn"></div>
+          </div>
+        </div>
+
+        <div class="main-step-1">
+          <div class="skeleton skeleton-label"></div>
+          <div class="skeleton skeleton-input"></div>
+          <div class="skeleton skeleton-label"></div>
+          <div class="skeleton skeleton-input"></div>
+          <div class="skeleton skeleton-label"></div>
+          <div class="skeleton skeleton-input"></div>
+        </div>
+
+        <div class="main-step-2">
+          <div class="col col-1 skeleton"></div>
+          <div class="col col-2">
+            <div class="inner">
+              <div class="skeleton skeleton-label"></div>
+              <div class="skeleton skeleton-input"></div>
+              <div class="skeleton skeleton-label"></div>
+              <div class="skeleton skeleton-input"></div>
+              <div class="skeleton skeleton-label"></div>
+              <div class="skeleton skeleton-input"></div>
+            </div>
+          </div>
+          <div class="col col-3">
+            <div class="skeleton skeleton-label"></div>
+            <div class="skeleton skeleton-input"></div>
+            <div class="skeleton skeleton-label"></div>
+            <div class="skeleton skeleton-input"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const isCreating = location.href.includes('=___new___');
+
+      document
+        .querySelector('.gct-skeleton-wrapper')
+        .classList
+        .add(isCreating ? 'is-creating' : 'is-editing');
+    </script>
+    <script type="module" src="main.ts"></script>
+  </body>
+</html>

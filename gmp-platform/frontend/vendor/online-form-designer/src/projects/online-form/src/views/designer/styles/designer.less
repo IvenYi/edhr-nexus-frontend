@@ -1,0 +1,82 @@
+.designer {
+  --toolkit-size: 48px;
+  --panel-size: 248px;
+  --header-size: 54px;
+  --toolbar-size: 42px;
+  --sheets-size: 32px;
+  --window-scroll-x: 0px;
+
+  width: 100vw;
+  height: calc(100vh - var(--header-height, 0px) - var(--window-scroll-x));
+
+  &.apaas-si {
+    --header-size: 1px;
+  }
+
+  &.collect-view,
+  &.refer-view {
+    .spread-sheet {
+      --x-size: 0px;
+      --y-size: 0px;
+    }
+  }
+
+  &.refer-view {
+    --toolkit-size: 0px;
+    --toolbar-size: 0px;
+    .designer__toolkit {
+      border: none;
+    }
+  }
+
+  display: grid;
+  grid-template-columns: calc(100% - var(--toolkit-size) - var(--panel-size)) var(--toolkit-size) var(
+      --panel-size
+    );
+  grid-template-rows: var(--header-size) var(--toolbar-size) calc(
+      100% - var(--header-size) - var(--toolbar-size)
+    );
+  grid-template-areas:
+    'header header header'
+    'toolbar toolkit panel'
+    'spread-sheet toolkit panel';
+
+  @areas: header, toolbar, toolkit, panel, spread-sheet, sheets, no-data;
+  each(@areas, {
+    &__@{value} {
+      grid-area: @value;
+    }
+  });
+
+  &__spread-sheet,
+  &__toolbar,
+  &__toolkit {
+    background: #e6e9ef;
+  }
+
+  &__spread-sheet {
+    position: relative;
+  }
+}
+
+// 需要减去底部滚动条高度
+@media screen and (max-width: 1280px) {
+  .designer {
+    --window-scroll-x: 6px;
+    &.apaas-si {
+      --window-scroll-x: 16px;
+    }
+  }
+}
+
+// 操作栏高度需要撑高
+@media screen and (max-width: 1398px) {
+  .designer {
+    &.apaas-si {
+      --toolbar-size: 66px;
+    }
+    &.refer-view {
+      --toolbar-size: 0px;
+    }
+  }
+}

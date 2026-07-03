@@ -1,0 +1,23 @@
+@include b(row-column-conversion) {
+  position: relative;
+  height: 16px;
+  padding: 7.5px;
+
+  @include e(line) {
+    width: 100%;
+    border-top: 1px solid getCssVar(color-bg-3);
+  }
+
+  @include e(action) {
+    cursor: pointer;
+    height: 16px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: rotate(90deg);
+
+    &:hover {
+      color: getCssVar(color-primary);
+    }
+  }
+}

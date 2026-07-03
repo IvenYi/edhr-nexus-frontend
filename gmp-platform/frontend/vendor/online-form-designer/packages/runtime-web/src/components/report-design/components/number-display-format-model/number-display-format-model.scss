@@ -1,0 +1,38 @@
+@include b(number-display-format-model) {
+  @include e(header) {
+    height: 54px;
+    padding: getCssVar(padding, 7);
+    border-bottom: 1px solid getCssVar(color, border);
+  }
+
+  @include e(title) {
+    @include font-4;
+    font-weight: 600;
+  }
+
+  @include e(tag) {
+    color: getCssVar(color, primary);
+    background-color: getCssVar(color, primary, light, hover);
+    border-radius: getCssVar(border-radius, xs);
+    padding: getCssVar(padding, 1) getCssVar(padding, 4);
+    margin-left: getCssVar(spacing, 2);
+  }
+
+  @include e(body) {
+    height: 250px;
+    padding: 0 80px;
+    padding-top: 24px;
+
+    .gct-gct-form-text.gct-gct-form-item__editor {
+      border-radius: getCssVar(border-radius, s);
+    }
+  }
+
+  @include e(form-item-separator) {
+    padding: 0 8px !important;
+  }
+
+  @include e(form-item-thousand) {
+    margin-left: 27px;
+  }
+}

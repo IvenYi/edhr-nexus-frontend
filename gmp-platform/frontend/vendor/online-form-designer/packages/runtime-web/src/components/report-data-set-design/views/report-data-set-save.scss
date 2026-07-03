@@ -1,0 +1,10 @@
+@include b(report-data-set-save) {
+  padding: getCssVar(padding, 7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .gct-gct-edit-form {
+    width: 420px;
+  }
+}

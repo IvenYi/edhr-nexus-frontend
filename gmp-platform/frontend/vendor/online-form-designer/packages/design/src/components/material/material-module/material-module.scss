@@ -1,0 +1,51 @@
+@include b(material-module) {
+  height: 100%;
+  font-size: 12px;
+
+  @include e(search) {
+    padding: 16px 12px;
+    border-bottom: 1px solid #E0E3EA;
+  }
+
+  @include e(content) {
+    padding: 0 12px;
+  }
+
+
+  .ant-input {
+    font-size: 12px;
+  }
+
+  @include e(search-icon) {
+    cursor: pointer;
+  }
+
+  .ant-input::placeholder {
+    font-size: 12px;
+    font-weight: 400;
+    color: #C4C4C4;
+    line-height: 18px;
+  }
+
+  .ant-collapse {
+    >.ant-collapse-item {
+      >.ant-collapse-header {
+        font-size: 12px;
+        padding: 14px 3px;
+
+        .ant-collapse-arrow {
+          margin-right: 0;
+        }
+      }
+    }
+
+    .ant-collapse-content {
+      padding-top: 6px;
+      padding-bottom: 14px;
+
+      .ant-collapse-content-box {
+        padding: 0;
+      }
+    }
+  }
+}

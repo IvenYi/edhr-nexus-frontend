@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const templateDesignerDevTarget = process.env.TEMPLATE_DESIGNER_DEV_SERVER || 'http://localhost:3100';
 
 export default defineConfig({
   plugins: [react()],
@@ -18,6 +19,11 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8081',
         changeOrigin: true,
+      },
+      '/template-designer-runtime': {
+        target: templateDesignerDevTarget,
+        changeOrigin: true,
+        ws: true,
       },
     },
   },

@@ -1,0 +1,16 @@
+@include b(design-content) {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  --design-drop-line-width: 4px;
+
+  @include e(container) {
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

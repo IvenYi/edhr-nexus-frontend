@@ -1,0 +1,18 @@
+// $gct-form: (
+//   // 'label-width': 100px,
+// );
+
+@include b(gct-form) {
+  // @include set-component-css-var('form', $gct-form);
+
+  @include m(small) {
+    label {
+      @include font-2;
+      font-size: 12px !important;
+    }
+  }
+
+  @include when(info) {
+    padding: 18px 12px 2px 12px;
+  }
+}

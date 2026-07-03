@@ -37,6 +37,8 @@ export PATH="$JAVA_HOME/bin:$PATH"
 http://localhost:3000
 ```
 
+本项目本地前端端口固定只使用 `3000`。如果 `3000` 被占用，必须先确认并处理占用进程，不得临时改用 `3002` 或其他端口绕开；浏览器验证、文档和对外沟通也统一使用 `http://localhost:3000`。
+
 前端 API 客户端使用 `baseURL: /api/v1`，开发期由 Vite 代理 `/api`：
 
 ```text
@@ -119,6 +121,14 @@ npm run dev
 ```text
 http://localhost:3000
 ```
+
+若启动时提示 `3000` 端口占用，先用以下命令定位占用来源，再决定是否停止旧的前端进程：
+
+```bash
+lsof -nP -iTCP:3000 -sTCP:LISTEN
+```
+
+不要通过 `--port 3002` 或其他端口临时启动前端。
 
 ## 5. 构建命令
 

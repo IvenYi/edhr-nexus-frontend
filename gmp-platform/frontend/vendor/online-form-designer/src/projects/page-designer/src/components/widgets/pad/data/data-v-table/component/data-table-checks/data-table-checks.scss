@@ -1,0 +1,54 @@
+@include b(data-table-checks) {
+  width: 100%;
+  height: 100%;
+}
+
+@include b(data-table-checks-header) {
+  height: 54px;
+  border-bottom: 1px solid #E0E3EA;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@include b(data-table-checks-content) {
+  height: calc(100% - 54px - 62px);
+  overflow-y: auto;
+  padding-top: 16px;
+}
+
+@include b(data-table-checks-footer) {
+  height: 62px;
+  border-top: 1px solid #E0E3EA;
+  padding: 16px;
+  text-align: right;
+
+  .ant-btn {
+    margin-left: 16px;
+  }
+}
+
+@include b(data-table-checks-item) {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  font-size: 14px;
+  padding: 4px 16px;
+
+  @include e(count) {
+    min-width: 28px;
+    flex-shrink: 0;
+  }
+
+  @include e(content) {
+    flex-grow: 1;
+  }
+
+  @include e(action) {
+    width: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+}

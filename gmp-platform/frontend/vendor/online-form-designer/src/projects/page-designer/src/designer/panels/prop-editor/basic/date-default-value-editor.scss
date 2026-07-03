@@ -1,0 +1,28 @@
+@include b(date-default-value-editor) {
+  @include e(group) {
+    &.ant-input-group.ant-input-group-compact {
+      display: flex;
+
+      .ant-select {
+        width: 85px;
+        flex-shrink: 0;
+      }
+
+      .ant-input-number {
+        flex-grow: 1;
+      }
+    }
+
+    @include when(full) {
+      &.ant-input-group.ant-input-group-compact {
+        .ant-select {
+          width: 100%;
+        }
+
+        .ant-input-number {
+          display: none;
+        }
+      }
+    }
+  }
+}

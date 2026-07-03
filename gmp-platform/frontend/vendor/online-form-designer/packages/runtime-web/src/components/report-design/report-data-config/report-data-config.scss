@@ -1,0 +1,101 @@
+@include b(report-data-config) {
+  height: 100%;
+  width: 188px;
+  background-color: getCssVar(color, white);
+
+  @include e(not-data) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 54px;
+
+    .ant-btn {
+      width: 164px;
+
+      .iconfont {
+        padding-right: getCssVar(padding, 4);
+      }
+    }
+  }
+
+  @include e(not-data-info) {
+    padding-bottom: 15px;
+    @include font-2;
+    color: getCssVar(color, text, 4);
+  }
+
+  @include e(header) {
+    height: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: getCssVar(padding, 4) getCssVar(padding, 6);
+    background-color: getCssVar(color, bg, 2);
+    @include font-2;
+  }
+
+  @include e(title) {
+    color: #8B8B8B;
+    @include utils-ellipsis;
+  }
+
+  @include e(search) {
+    height: 44px;
+    padding: getCssVar(padding, 6) getCssVar(padding, 6) getCssVar(padding, 4);
+
+    .ant-input-affix-wrapper.ant-input-affix-wrapper-sm {
+      height: 26px;
+    }
+
+    .ant-input.ant-input-sm {
+      font-size: 12px;
+      line-height: 16px;
+    }
+  }
+
+  @include e(actions) {
+    display: flex;
+    gap: 8px;
+  }
+
+  @include e(action-item) {
+    cursor: pointer;
+
+    &:hover {
+      color: getCssVar(color, primary);
+    }
+  }
+
+  @include e(body) {
+    height: calc(100% - 34px - 51px - 44px);
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .gct-dnd-item {
+      background-color: transparent;
+    }
+  }
+
+  @include e(item) {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: getCssVar(padding, 3) getCssVar(padding, 6);
+
+    &:hover {
+      background-color: getCssVar(color, bg, 3);
+    }
+  }
+
+  @include e(item-icon) {
+    flex-shrink: 0;
+    color: getCssVar(color, primary);
+    margin-right: getCssVar(spacing, 2);
+  }
+
+  @include e(item-title) {
+    flex-grow: 1;
+    @include font-2;
+    @include utils-ellipsis;
+  }
+}

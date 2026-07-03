@@ -1,0 +1,14 @@
+@include b(form-date-format-select) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @include e(first) {
+    flex-shrink: 0;
+  }
+
+  @include e(second) {
+    flex-shrink: 0;
+    flex-grow: 1;
+  }
+}

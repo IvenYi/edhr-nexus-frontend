@@ -1,0 +1,38 @@
+@include b(web-render-page-preview) {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+
+  &.is-no-header {
+    overflow-y: auto;
+
+    * {
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+
+  @include e(header) {
+    height: 64px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(title) {
+    font-size: 14px;
+    color: var(--gct-color-text-1);
+  }
+
+  @include e(content) {
+    height: calc(100% - 64px);
+    padding: 24px;
+    background-color: rgb(232, 235, 240);
+    background-image: radial-gradient(circle at center, rgb(221, 223, 230) 1px, transparent 1px);
+    background-size: 12px 12px;
+
+    >.web-render-content {
+      background-color: #fff;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@include b(service-script-picker) {
+  display: flex;
+}
+
+@include b(service-script-picker-picker) {
+  flex-grow: 1;
+
+  .ant-select {
+    width: 100%;
+  }
+}
+
+@include b(service-script-picker-action) {
+  width: 64px;
+  flex-shrink: 0;
+}

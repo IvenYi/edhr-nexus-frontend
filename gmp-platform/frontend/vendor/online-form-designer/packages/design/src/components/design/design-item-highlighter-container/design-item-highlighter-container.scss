@@ -1,0 +1,25 @@
+@include b(design-item-highlighter-container) {
+  position: absolute;
+  pointer-events: none;
+
+  @include m(hover) {
+    background-color: rgba(49,104,236,0.08);
+    border: 2px dashed var(--ant-primary-color);
+    z-index: 1;
+  }
+
+  @include m(select) {
+    border: 2px solid var(--ant-primary-color);
+    z-index: 2;
+  }
+
+  @include e(mask) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+}

@@ -1,0 +1,74 @@
+@include b(mobile-container) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  background-color: #F2F4F7;
+  min-height: 800px;
+}
+
+@include b(mobile-container-phone) {
+  width: 375px;
+  height: 800px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px #F7F8FA;
+  border-radius: 0px 0px 0px 0px;
+}
+
+@include b(mobile-container-phone-header) {
+  font-weight: 600;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  padding: 0 18px;
+
+  @include e(right) {
+    display: flex;
+    gap: 6px;
+
+    .iconfont {
+      font-size: 18px;
+    }
+  }
+}
+
+@include b(mobile-container-phone-content) {
+  height: calc(100% - 44px);
+}
+
+@include b(mobile-container-phone-app-header) {
+  font-weight: 600;
+  font-size: 16px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-bottom: 1px solid #E8EBF0;
+
+  @include when(bg-color) {
+    --van-primary-color: var(--ant-primary-color);
+    color: #fff;
+    background-color: var(--van-primary-color);
+  }
+
+  @include e(center) {
+    text-align: center;
+  }
+
+  @include e(close) {
+    transform: rotate(45deg);
+  }
+}
+
+@include b(mobile-container-phone-app-content) {
+  height: calc(100% - 44px);
+  overflow: hidden;
+
+  @include when(hidden-title-bar) {
+    height: 100%;
+  }
+}

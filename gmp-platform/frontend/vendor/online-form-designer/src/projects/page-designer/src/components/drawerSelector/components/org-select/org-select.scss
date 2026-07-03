@@ -1,0 +1,78 @@
+@include b(org-select) {
+  height: 100%;
+  color: getCssVar(color-text-1);
+
+  @include e(org-list) {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  @include e(breadcrumb) {
+    font-size: 14px;
+    padding: 12px 16px;
+    color: getCssVar(color-text-1);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+
+    @include e(breadcrumb-item) {
+      font-size: 15px;
+
+      @include m(current) {
+        color: getCssVar(color-text-1);
+      }
+
+      @include m(clickable) {
+        color: getCssVar(color-primary);
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    @include e(breadcrumb-separator) {
+      margin: 0 4px;
+      color: getCssVar(color-text-3);
+    }
+  }
+
+  @include e(content) {
+    height: calc(100% - 45px - 24px);
+    overflow: hidden;
+  }
+
+  @include e(org-item) {
+    height: 64px;
+    padding: 0 8px;
+    gap: 12px;
+    margin: 0 8px;
+
+    &:active {
+      background-color: getCssVar(color-bg-4);
+    }
+  }
+
+  @include e(item-icon) {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    color: getCssVar(color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @include e(drill-area) {
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+}

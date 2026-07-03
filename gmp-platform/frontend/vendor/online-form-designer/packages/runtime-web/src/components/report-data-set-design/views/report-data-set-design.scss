@@ -1,0 +1,87 @@
+@include b(report-data-set-design) {
+  .ant-btn.ant-btn-primary[disabled] {
+    background-color: getCssVar(color, primary, disabled) !important;
+    border-color: getCssVar(color, primary, disabled) !important;
+    color: #fff !important;
+  }
+
+  @include e(steps-container) {
+    display: flex;
+    align-items: center;
+    background-color: #e8ebf0;
+    border-radius: 20px;
+    padding: 2px;
+  }
+
+  @include e(step-item) {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px;
+    padding-right: 16px;
+    height: 32px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    color: getCssVar(color, text, 4);
+
+    @include when(active) {
+      background-color: getCssVar(color, white);
+      color: getCssVar(color, text, 1);
+    }
+  }
+
+  @include e(step-number) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 14px;
+
+    .is-active & {
+      background-color: getCssVar(color, primary);
+      color: #fff;
+    }
+  }
+
+  @include e(step-label) {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  @include e(step-divider) {
+    width: 1px;
+    height: 16px;
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  @include e(actions) {
+    width: 76px;
+    text-align: right;
+  }
+
+  @include e(save-button) {
+    .gct-iconfont {
+      margin-right: 4px;
+    }
+  }
+}
+
+@include b(report-data-set-design-confirm-dialog) {
+  .ant-modal-confirm-confirm {
+    position: fixed;
+    left: 17px;
+    top: 62px;
+  }
+
+  .ant-btn.continue-btn {
+    position: absolute;
+    left: 38px;
+    bottom: 16px;
+    padding: 0;
+    height: 24px;
+  }
+}

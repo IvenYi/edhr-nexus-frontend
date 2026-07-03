@@ -1,0 +1,37 @@
+{
+  "name": "@gct/universal-component",
+  "version": "0.0.1-dev.0",
+  "description": "GCT 通用组件库，不区分端",
+  "exports": {
+    "./gct-v-table": {
+      "types": "./src/gct-v-table/index.ts",
+      "import": "./src/gct-v-table/index.ts",
+      "default": "./src/gct-v-table/index.ts"
+    },
+    "./gct-v-table-pad": {
+      "types": "./src/gct-v-table-pad/index.ts",
+      "import": "./src/gct-v-table-pad/index.ts",
+      "default": "./src/gct-v-table-pad/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "runtime"
+  ],
+  "author": "gct",
+  "license": "MIT",
+  "dependencies": {
+    "@gct/runtime": "workspace:*",
+    "@visactor/vtable": "^1.22.9",
+    "colord": "^2.9.3",
+    "lodash-es": "^4.17.21",
+    "mitt": "^3.0.1",
+    "overlayscrollbars": "^2.14.0",
+    "photoswipe": "^5.4.4",
+    "pinia": "2.1.7",
+    "qx-util": "^0.4.8",
+    "vue": "3.3.4"
+  }
+}

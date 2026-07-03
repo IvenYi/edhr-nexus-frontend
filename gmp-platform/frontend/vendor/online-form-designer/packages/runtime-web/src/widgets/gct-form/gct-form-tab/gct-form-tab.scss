@@ -1,0 +1,68 @@
+$gct-form-tab: (
+  tab-spacing: 52px,
+  width: auto,
+  height: auto,
+);
+
+@include b(form-tab) {
+  @include set-component-css-var('form-tab', $gct-form-tab);
+
+  width: getCssVar(form-tab, width);
+  height: getCssVar(form-tab, height);
+
+  &.ant-tabs {
+    height: 100%;
+  }
+
+  @include when(hidden) {
+    display: none;
+  }
+
+  // 原组件样式调整
+  >.ant-tabs-nav{
+    margin-bottom: 0 !important;
+    background-color: #fff;
+
+    >.ant-tabs-nav-wrap{
+      border-bottom: 1px solid #E0E3EA;
+    }
+
+    .ant-tabs-tab+.ant-tabs-tab{
+      margin-left: getCssVar(form-tab, tab-spacing);
+    }
+
+    .ant-tabs-tab{
+      padding: 7px 0;
+    }
+  }
+
+  &.ant-tabs {
+
+    .ant-tabs-tabpane {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
+
+  >.ant-tabs-content-holder >.ant-tabs-content{
+    height: 100%;
+  }
+
+  @include m(left){
+    >.ant-tabs-nav .ant-tabs-nav-wrap{
+      justify-content: flex-start;
+    }
+  }
+
+  @include m(right){
+    >.ant-tabs-nav .ant-tabs-nav-wrap{
+      justify-content: flex-end;
+    }
+  }
+
+  @include m(center){
+    >.ant-tabs-nav .ant-tabs-nav-wrap{
+      justify-content: center;
+    }
+  }
+}

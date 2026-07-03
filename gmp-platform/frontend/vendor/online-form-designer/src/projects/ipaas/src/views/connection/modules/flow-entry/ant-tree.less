@@ -1,0 +1,45 @@
+.ant-tree__override {
+  .ant-tree-treenode {
+    padding: 0;
+  }
+
+  .ant-tree-treenode {
+    transition: all 0.3s;
+    border-radius: 4px;
+  }
+
+  .ant-tree-treenode:hover {
+    background: #f5f5f5;
+  }
+
+  &.ant-tree .ant-tree-node-content-wrapper {
+    line-height: 36px;
+    min-height: 36px;
+    padding: 0;
+    width: 1px;
+  }
+
+  &.ant-tree .ant-tree-node-content-wrapper:hover {
+    background-color: transparent;
+  }
+
+  .ant-tree-switcher {
+    line-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ant-tree-treenode .ant-tree-switcher .ant-tree-switcher-icon {
+    color: #797a7d;
+    font-size: 14px;
+  }
+
+  .ant-tree-treenode-selected {
+    background-color: rgba(from rgb(2, 106, 200) r g b / 8%) !important;
+    color: var(--ant-primary-color) !important;
+  }
+  .ant-tree-treenode-selected .ant-tree-node-selected {
+    background-color: transparent;
+  }
+}

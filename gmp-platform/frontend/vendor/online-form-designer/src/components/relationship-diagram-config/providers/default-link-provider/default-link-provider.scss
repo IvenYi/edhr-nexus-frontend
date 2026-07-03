@@ -1,0 +1,87 @@
+@include b(diagram-config-default-link) {
+
+  @include e(line-hover) {
+    color: red;
+  }
+}
+
+@include b(diagram-config-default-link-custom-overlay-line) {
+  cursor: pointer;
+
+  @include e(not-special-line) {
+    width: 50px;
+    height: 10px;
+  }
+
+  @include e(special-line) {
+    width: 10px;
+    height: 80px;
+  }
+}
+
+@include b(diagram-config-default-link-custom-overlay) {
+  cursor: pointer;
+  position: relative;
+
+  .iconfont {
+    width: 16px;
+    height: 16px;
+    display: none;
+  }
+
+  .iconfont.delete-action {
+    &:hover {
+      color: #F54547;
+    }
+  }
+
+  .iconfont.reverse-action {
+    &:hover {
+      color: #3168EC;
+    }
+  }
+
+  @include e(not-special-line) {
+    width: 16px;
+    height: 50px;
+
+    .iconfont.delete-action {
+      position: absolute;
+      bottom: 9px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .iconfont.reverse-action {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.jtk-hover {
+    .iconfont {
+      display: block;
+    }
+  }
+
+  @include e(special-line) {
+    width: 50px;
+    height: 16px;
+
+    .iconfont.delete-action {
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .iconfont.reverse-action {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}

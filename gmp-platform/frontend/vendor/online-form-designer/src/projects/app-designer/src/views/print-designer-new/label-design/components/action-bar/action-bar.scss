@@ -1,0 +1,53 @@
+@include b(label-design-action-bar) {
+  z-index: 1000;
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  width: 160px;
+  height: 26px;
+  background-color: #FFFFFF;
+  border-radius: 4px 4px 4px 4px;
+  border: 1px solid #E8EBF0;
+  top: 35px;
+  right: 6px;
+
+  @include e(action) {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+
+    &:hover {
+      color: var(--ant-primary-color);
+    }
+  }
+
+  @include e(zoom) {
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(zoom-action) {
+    flex-shrink: 0;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    background-color: #F7F8FA;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: var(--ant-primary-color);
+    }
+  }
+
+  @include e(zoom-info) {
+    height: 16px;
+    width: 48px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

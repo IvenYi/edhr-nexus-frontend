@@ -1,0 +1,16 @@
+@include b(formula-display-field-modal) {
+  padding: 16px;
+
+  @include e(form) {
+    padding: 8px;
+
+    .ant-collapse-header {
+      padding: 0 !important;
+      background-color: #fff !important;
+
+      .ant-collapse-arrow {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}

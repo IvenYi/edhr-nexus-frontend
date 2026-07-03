@@ -1,0 +1,27 @@
+@include b(button-container-design2) {
+  min-height: 52px;
+  --button-container-margin: 8px;
+
+  @include when(between) {
+    display: flex;
+    justify-content: space-between;
+
+    >.#{bem(vue3-dnd-container)}:last-child {
+      text-align: right;
+    }
+  }
+
+  >.#{bem(vue3-dnd-container)} {
+    flex-grow: 1;
+
+    >.#{bem(vue3-dnd-item)} {
+      vertical-align: top;
+      display: inline-block;
+      margin-right: var(--button-container-margin);
+    }
+
+    >.#{bem(vue3-dnd-item)}:last-child {
+      margin-right: 0;
+    }
+  }
+}

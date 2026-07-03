@@ -1,0 +1,2895 @@
+{
+  "info": {
+    "title": "ipaas",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "分类",
+      "description": "Ipaas Category Controller"
+    },
+    {
+      "name": "连接流",
+      "description": "Ipaas Data Flow Controller"
+    },
+    {
+      "name": "日志",
+      "description": "Ipaas Log Controller"
+    },
+    {
+      "name": "BFF",
+      "description": "Ipaas BackForFront Controller"
+    },
+    {
+      "name": "工具",
+      "description": "Ipaas Tool Controller"
+    }
+  ],
+  "paths": {
+    "/gct-ipaas/api/bff/flow/{fuuid}": {
+      "get": {
+        "summary": "获取连接流信息",
+        "deprecated": false,
+        "description": "聚合信息接口\n获取连接流信息带版本",
+        "tags": [
+          "BFF"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "9acd76c9171f46e99d4a28e891c8ff36"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "title": "代码"
+                },
+                "data": {
+                  "title": "数据",
+                  "$ref": "#/definitions/BizFlowMainResp"
+                },
+                "message": {
+                  "type": "string",
+                  "title": "消息"
+                },
+                "ok": {
+                  "type": "boolean",
+                  "title": "结果"
+                },
+                "subCode": {
+                  "type": "string",
+                  "title": "子代码"
+                },
+                "subMessage": {
+                  "type": "string",
+                  "title": "子消息"
+                }
+              },
+              "required": [
+                "ok",
+                "code"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/log/page/list": {
+      "get": {
+        "summary": "连接流日志获取",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "description": "当前页",
+            "required": false,
+            "type": "string",
+            "x-example": "2"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "当前条数",
+            "required": false,
+            "type": "string",
+            "x-example": "5"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "{{'Snake'}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "x-200:日志分页": {
+            "description": "日志分页",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "title": "数据",
+                      "$ref": "#/definitions/FlowLogResp1"
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "title": "页数"
+                    },
+                    "pageNo": {
+                      "type": "integer",
+                      "title": "当前页"
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "title": "总记录"
+                    },
+                    "totalPage": {
+                      "type": "integer",
+                      "title": "总页数"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pageSize",
+                    "pageNo",
+                    "totalCount",
+                    "totalPage"
+                  ]
+                },
+                "message": {
+                  "type": "string"
+                },
+                "ok": {
+                  "type": "boolean"
+                },
+                "subCode": {
+                  "type": "null"
+                },
+                "subMessage": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "code",
+                "data",
+                "message",
+                "ok",
+                "subCode",
+                "subMessage"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/index/version": {
+      "get": {
+        "summary": "ipaas版本",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "工具"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/camel/create": {
+      "post": {
+        "summary": "创建路由",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "camel"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "flowName": {
+                  "type": "string"
+                },
+                "flowUuid": {
+                  "type": "string"
+                },
+                "tenantId": {
+                  "type": "string"
+                },
+                "meta": {
+                  "type": "object",
+                  "properties": {
+                    "elements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "nodeId": {
+                            "type": "string"
+                          },
+                          "nodeName": {
+                            "type": "string"
+                          },
+                          "endpointType": {
+                            "type": "string"
+                          },
+                          "nodeConfig": {
+                            "type": "object",
+                            "properties": {
+                              "requestMethod": {
+                                "type": "string"
+                              },
+                              "path": {
+                                "type": "string"
+                              },
+                              "headerParameters": {
+                                "type": "object",
+                                "properties": {
+                                  "aa": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "aa"
+                                ],
+                                "x-nullable": true
+                              },
+                              "queryParameters": {
+                                "type": "object",
+                                "properties": {
+                                  "aa": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "aa"
+                                ]
+                              },
+                              "body": {
+                                "type": "array",
+                                "properties": {
+                                  "aa": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "integer"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "aa"
+                                ],
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "key": {
+                                      "type": "string"
+                                    },
+                                    "keyType": {
+                                      "type": "string"
+                                    },
+                                    "value": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "key",
+                                    "keyType",
+                                    "value"
+                                  ]
+                                }
+                              },
+                              "responseParamType": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "headerParameters",
+                              "responseParamType",
+                              "body"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "nodeId",
+                          "nodeName",
+                          "endpointType",
+                          "nodeConfig"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "elements"
+                  ]
+                },
+                "viewMetaZip": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "flowName",
+                "flowUuid",
+                "tenantId",
+                "meta",
+                "viewMetaZip"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/def": {
+      "post": {
+        "summary": "连接流定义保存",
+        "deprecated": false,
+        "description": "后端检查定义的json还没有完成，主流程完成了",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "nfhkptqj"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/app/{id}": {
+      "put": {
+        "summary": "更新应用",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "1805468847055036418"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "Snake"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowAppUpdateReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      },
+      "delete": {
+        "summary": "删除应用",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "1805468739550830594"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "Snake"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "x-200:通用返回": {
+            "description": "通用返回",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "title": "代码"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string",
+                  "title": "消息"
+                },
+                "ok": {
+                  "type": "boolean",
+                  "title": "是否正确"
+                },
+                "subCode": {
+                  "type": "string",
+                  "title": "子代码",
+                  "x-nullable": true
+                },
+                "subMessage": {
+                  "type": "string",
+                  "title": "子消息",
+                  "x-nullable": true
+                }
+              },
+              "required": [
+                "code",
+                "data",
+                "message",
+                "ok",
+                "subCode",
+                "subMessage"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/webhook/rest/ba26fe245a99438993547569efbb2339": {
+      "get": {
+        "summary": "调用路由",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "camel"
+        ],
+        "parameters": [
+          {
+            "name": "aaa",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "bbb"
+          },
+          {
+            "name": "ccc",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "小杨"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/log/page/search": {
+      "post": {
+        "summary": "连接流日志搜索",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "description": "页码",
+            "required": false,
+            "type": "string",
+            "x-example": "1"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页数量",
+            "required": false,
+            "type": "string",
+            "x-example": "5"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "{{'Snake'}}"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowLogSearchReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "title": "代码"
+                },
+                "data": {
+                  "title": "数据",
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/FlowLogResp"
+                      },
+                      "title": "数据"
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "title": "页数"
+                    },
+                    "pageNo": {
+                      "type": "integer",
+                      "title": "当前页"
+                    },
+                    "totalCount": {
+                      "type": "integer",
+                      "title": "总记录"
+                    },
+                    "totalPage": {
+                      "type": "integer",
+                      "title": "总页数"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pageSize",
+                    "pageNo",
+                    "totalCount",
+                    "totalPage"
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "title": "消息"
+                },
+                "ok": {
+                  "type": "boolean",
+                  "title": "结果"
+                },
+                "subCode": {
+                  "type": "string",
+                  "title": "子代码"
+                },
+                "subMessage": {
+                  "type": "string",
+                  "title": "子消息"
+                }
+              },
+              "required": [
+                "code",
+                "ok"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/log/{fuuid}/{reqId}": {
+      "get": {
+        "summary": "获取连接流请求详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "连接流id",
+            "required": true,
+            "type": "string",
+            "x-example": "97ab1419cb2e4cfe985ee76f4bdf9d6e"
+          },
+          {
+            "name": "reqId",
+            "in": "path",
+            "description": "请求id",
+            "required": true,
+            "type": "string",
+            "x-example": "1792385803130245120"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "nfhkptqj"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "x-200:通用返回": {
+            "description": "通用返回",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "title": "代码"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string",
+                  "title": "消息"
+                },
+                "ok": {
+                  "type": "boolean",
+                  "title": "是否正确"
+                },
+                "subCode": {
+                  "type": "string",
+                  "title": "子代码",
+                  "x-nullable": true
+                },
+                "subMessage": {
+                  "type": "string",
+                  "title": "子消息",
+                  "x-nullable": true
+                }
+              },
+              "required": [
+                "code",
+                "data",
+                "message",
+                "ok",
+                "subCode",
+                "subMessage"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/camel/rand/test": {
+      "get": {
+        "summary": "随机添加路由",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "camel"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/node/log/{reqId}": {
+      "get": {
+        "summary": "获取日志详情",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "reqId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "DD6B4ECB024EF7E-0000000000000003"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "title": "代码"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/FlowNodeLogResp"
+                  },
+                  "title": "数据"
+                },
+                "message": {
+                  "type": "string",
+                  "title": "消息"
+                },
+                "ok": {
+                  "type": "boolean",
+                  "title": "结果"
+                },
+                "subCode": {
+                  "type": "string",
+                  "title": "子代码"
+                },
+                "subMessage": {
+                  "type": "string",
+                  "title": "子消息"
+                }
+              },
+              "required": [
+                "code",
+                "ok"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/category/{id}/drag": {
+      "put": {
+        "summary": "分类拖拽",
+        "deprecated": true,
+        "description": "",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "nfhkptqj"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowCategoryDragReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/category/flow": {
+      "post": {
+        "summary": "新建连接流",
+        "deprecated": false,
+        "description": "新建数据流\n目的是为了生成flow的uuid",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "租户Id",
+            "required": false,
+            "type": "string",
+            "x-example": "{{'Snake'}}"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowCreateWithCategoryReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/camel/route/status": {
+      "get": {
+        "summary": "路由状态",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "camel"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/online/{fuuid}": {
+      "get": {
+        "summary": "获取连接流上下线日志",
+        "deprecated": false,
+        "description": "获取连接流上下限日志流水",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "ca09d102e2214740a65fc58201a68d1a"
+          },
+          {
+            "name": "pageNo",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "1"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "5"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "{{'Snake'}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/def/{uuid}": {
+      "put": {
+        "summary": "更新连接流定义",
+        "deprecated": false,
+        "description": "更新连接流",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "881d752bfec84502b9fd10458a5e0a4d"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "x-200:通用返回": {
+            "description": "通用返回",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "title": "代码"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string",
+                  "title": "消息"
+                },
+                "ok": {
+                  "type": "boolean",
+                  "title": "是否正确"
+                },
+                "subCode": {
+                  "type": "string",
+                  "title": "子代码",
+                  "x-nullable": true
+                },
+                "subMessage": {
+                  "type": "string",
+                  "title": "子消息",
+                  "x-nullable": true
+                }
+              },
+              "required": [
+                "code",
+                "data",
+                "message",
+                "ok",
+                "subCode",
+                "subMessage"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/{fuuid}": {
+      "put": {
+        "summary": "更新连接流",
+        "deprecated": false,
+        "description": "更新连接流\n\n这边接口是填了相关的值才更新\n不填就跳过不更新",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "881d752bfec84502b9fd10458a5e0a4d"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "租户Id",
+            "required": false,
+            "type": "string",
+            "x-example": "{{'Snake'}}"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowUpdateReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      },
+      "delete": {
+        "summary": "删除连接流",
+        "deprecated": false,
+        "description": "删除连接流",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "99701e5305ce4e008f19529803d49ee6"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "{{'aee2615cbb2148c1a2340fc7b2738a58'}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      },
+      "get": {
+        "summary": "获取连接流信息",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "944ae73441ce46e9be2511840c36c7df"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "41rF9KACBgshDlyLa"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/{fuuid}/version/{version}": {
+      "delete": {
+        "summary": "删除连接流带版本",
+        "deprecated": false,
+        "description": "删除连接流",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "11470d8210384cb49320369c2d79ebe1"
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "1"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "nfhkptqj"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/node/log": {
+      "post": {
+        "summary": "获取连接流节点日志详情",
+        "deprecated": false,
+        "description": "获取连接流节点日志详情",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowNodeLogDetailReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/categories": {
+      "get": {
+        "summary": "获取分类",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "Snake"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "title": "代码"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CategoryResp"
+                  },
+                  "title": "数据"
+                },
+                "message": {
+                  "type": "string",
+                  "title": "消息"
+                },
+                "ok": {
+                  "type": "boolean",
+                  "title": "结果"
+                },
+                "subCode": {
+                  "type": "string",
+                  "title": "子代码"
+                },
+                "subMessage": {
+                  "type": "string",
+                  "title": "子消息"
+                }
+              },
+              "required": [
+                "code",
+                "ok"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/node/log/io": {
+      "post": {
+        "summary": "获取连接流节点日志详情输入输出",
+        "deprecated": false,
+        "description": "获取连接流节点日志详情",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowNodeLogDetailReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/invoke/methods": {
+      "get": {
+        "summary": "获取连接流调用方式",
+        "deprecated": false,
+        "description": "连接流日志搜索中的调用方式",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "{{'Snake'}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "subCode": {
+                  "type": "null"
+                },
+                "subMessage": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ok": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message",
+                "subCode",
+                "subMessage",
+                "data",
+                "ok"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/category/app": {
+      "post": {
+        "summary": "新建应用",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "Snake"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowAppReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/publish": {
+      "put": {
+        "summary": "连接流发布",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowActionReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/invoke/status": {
+      "get": {
+        "summary": "获取连接流调用结果",
+        "deprecated": false,
+        "description": "用于连接流日志搜索中调用结果",
+        "tags": [
+          "日志"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/online": {
+      "put": {
+        "summary": "连接流上线",
+        "deprecated": false,
+        "description": "连接流上线\n注意：只有连接流处于发布状态之后才能够上线",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowActionReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/category/apps": {
+      "get": {
+        "summary": "获取应用列表",
+        "deprecated": false,
+        "description": "用于选择应用，从列表中选择",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "Snake"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/offline": {
+      "put": {
+        "summary": "连接流下线",
+        "deprecated": false,
+        "description": "连接流下线\n注意：只有原来的状态是上线状态才可以下线",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowActionReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/category/tree": {
+      "get": {
+        "summary": "获取应用树",
+        "deprecated": false,
+        "description": "获取应用列表树",
+        "tags": [
+          "分类"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "x-example": "Snake"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "subCode": {
+                  "type": "null"
+                },
+                "subMessage": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CategoryTreeResp"
+                  }
+                },
+                "ok": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "message",
+                "subCode",
+                "subMessage",
+                "data",
+                "ok"
+              ]
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/def/{fuuid}/{version}": {
+      "get": {
+        "summary": "获取连接流定义",
+        "deprecated": false,
+        "description": "获取连接流定义json",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "ca09d102e2214740a65fc58201a68d1a"
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "1"
+          },
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/def/copy": {
+      "post": {
+        "summary": "复制指定版本连接流",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "Tenant-Id",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "{% mock 'pick', '[\"tenantid1\",\"tenantid2\",\"tenantid3\",\"tenantid4\"]' %}"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/FlowActionReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/gct-ipaas/api/flow/onoffline/{fuuid}": {
+      "put": {
+        "summary": "连接流上下线",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "连接流"
+        ],
+        "parameters": [
+          {
+            "name": "fuuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string",
+            "x-example": "124d2974e0bf475f97d67bec6cbf29e9"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          }
+        },
+        "security": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "swagger": "2.0",
+  "host": "paas.dev.gct-paas.com",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/",
+  "definitions": {
+    "CategoryTreeResp": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "名称"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CategoryTreeL2Resp"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "children"
+      ]
+    },
+    "CategoryTreeL2Resp": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "名称"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CategoryResp"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "children"
+      ]
+    },
+    "FlowAppUpdateReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "名称"
+        },
+        "brand": {
+          "type": "string",
+          "description": "品牌"
+        },
+        "version": {
+          "type": "string",
+          "description": "版本"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "brand",
+        "version"
+      ]
+    },
+    "FlowNodeLogDetailReq": {
+      "type": "object",
+      "properties": {
+        "fuuid": {
+          "type": "string",
+          "title": "连接流fuuid"
+        },
+        "reqId": {
+          "type": "string",
+          "title": "请求Id"
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点Id"
+        }
+      },
+      "required": [
+        "fuuid",
+        "reqId",
+        "nodeId"
+      ]
+    },
+    "FlowNodeLogResp": {
+      "type": "object",
+      "properties": {
+        "fuuid": {
+          "type": "string",
+          "title": "连接流uuid"
+        },
+        "nodeId": {
+          "type": "string",
+          "title": "节点id"
+        },
+        "nodeName": {
+          "type": "string",
+          "title": "节点名称"
+        },
+        "processTime": {
+          "type": "integer",
+          "title": "处理时间"
+        },
+        "status": {
+          "type": "string",
+          "title": "状态"
+        },
+        "reqId": {
+          "type": "string",
+          "title": "请求Id"
+        },
+        "processTimeStart": {
+          "type": "string",
+          "title": "开始处理时间"
+        },
+        "processTimeEnd": {
+          "type": "string",
+          "title": "结束处理时间"
+        },
+        "nodeDesc": {
+          "type": "string",
+          "title": "调用方式"
+        }
+      },
+      "required": [
+        "fuuid",
+        "nodeId",
+        "nodeName",
+        "processTime",
+        "status",
+        "reqId",
+        "processTimeStart",
+        "processTimeEnd",
+        "nodeDesc"
+      ]
+    },
+    "FlowLogResp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "title": "雪花"
+        },
+        "reqId": {
+          "type": "string",
+          "title": "请求Id"
+        },
+        "fuuid": {
+          "type": "string",
+          "title": "连接流uuid"
+        },
+        "name": {
+          "type": "string",
+          "title": "名称"
+        },
+        "fkey": {
+          "type": "string",
+          "title": "应用id"
+        },
+        "modelKey": {
+          "type": "string",
+          "title": "模型key"
+        },
+        "triggerKey": {
+          "type": "string",
+          "title": "调用方式"
+        },
+        "version": {
+          "type": "string",
+          "title": "版本"
+        },
+        "versionStr": {
+          "type": "string",
+          "title": "版本描述"
+        },
+        "processTime": {
+          "type": "string",
+          "title": "处理时间"
+        },
+        "status": {
+          "type": "string",
+          "title": "运行结果",
+          "description": "1 执行 2成功 3失败"
+        },
+        "statusStr": {
+          "type": "string",
+          "title": "运行结果描述"
+        },
+        "triggerTime": {
+          "type": "string",
+          "title": "调用时间"
+        },
+        "tenantId": {
+          "type": "string",
+          "title": "租户Id"
+        }
+      },
+      "required": [
+        "id",
+        "reqId",
+        "fuuid",
+        "name",
+        "fkey",
+        "modelKey",
+        "triggerKey",
+        "version",
+        "versionStr",
+        "processTime",
+        "status",
+        "statusStr",
+        "triggerTime",
+        "tenantId"
+      ]
+    },
+    "FlowCreateWithCategoryReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "连接流名称"
+        },
+        "fAppId": {
+          "type": "string",
+          "title": "应用Id"
+        },
+        "modelKey": {
+          "type": "string",
+          "title": "模型key"
+        },
+        "mark": {
+          "type": "string",
+          "title": "描述"
+        }
+      },
+      "required": [
+        "name",
+        "fAppId",
+        "modelKey",
+        "mark"
+      ]
+    },
+    "FlowAppReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "名称"
+        },
+        "brand": {
+          "type": "string",
+          "title": "品牌"
+        },
+        "version": {
+          "type": "string",
+          "title": "版本"
+        }
+      },
+      "required": [
+        "name",
+        "brand",
+        "version"
+      ]
+    },
+    "BizFlowMainResp": {
+      "type": "object",
+      "properties": {
+        "flow": {
+          "$ref": "#/definitions/FlowMainResp",
+          "title": "连接流信息",
+          "description": "摘要信息"
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FlowVersionResp"
+          },
+          "title": "版本列表"
+        },
+        "currentVersion": {
+          "title": "当前版本",
+          "type": "object",
+          "properties": {
+            "version": {
+              "type": "string",
+              "title": "版本信息",
+              "description": "不带V的"
+            },
+            "status": {
+              "type": "integer",
+              "title": "状态",
+              "description": "默认1"
+            },
+            "statusStr": {
+              "type": "string",
+              "title": "状态中文",
+              "description": "草稿、上线、下线、发布"
+            },
+            "displayName": {
+              "type": "string",
+              "title": "显示名称",
+              "description": "前端使用"
+            },
+            "fuuid": {
+              "type": "string",
+              "title": "连接流id"
+            }
+          },
+          "required": [
+            "version",
+            "status",
+            "statusStr",
+            "displayName",
+            "fuuid"
+          ]
+        },
+        "category": {
+          "$ref": "#/definitions/CategoryResp"
+        }
+      },
+      "required": [
+        "flow",
+        "versions",
+        "currentVersion",
+        "category"
+      ]
+    },
+    "FlowVersionResp": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "title": "版本信息",
+          "description": "不带V的"
+        },
+        "status": {
+          "type": "integer",
+          "title": "状态",
+          "description": "默认1"
+        },
+        "statusStr": {
+          "type": "string",
+          "title": "状态中文",
+          "description": "草稿、上线、下线、发布"
+        },
+        "displayName": {
+          "type": "string",
+          "title": "显示名称",
+          "description": "前端使用"
+        },
+        "fuuid": {
+          "type": "string",
+          "title": "连接流id"
+        }
+      },
+      "required": [
+        "version",
+        "status",
+        "statusStr",
+        "displayName",
+        "fuuid"
+      ]
+    },
+    "FlowActionReq": {
+      "type": "object",
+      "properties": {
+        "fuuid": {
+          "type": "string",
+          "title": "连接流id"
+        },
+        "version": {
+          "type": "string",
+          "title": "连接流版本",
+          "description": "不包含V，例如1，2，3"
+        }
+      },
+      "required": [
+        "fuuid",
+        "version"
+      ]
+    },
+    "FlowUpdateReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "连接流名称",
+          "description": "名称"
+        },
+        "fAppId": {
+          "type": "string",
+          "title": "应用Id"
+        },
+        "modelKey": {
+          "type": "string",
+          "title": "skey"
+        },
+        "mark": {
+          "type": "string",
+          "title": "描述"
+        }
+      }
+    },
+    "ResponseEntity": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "title": "代码"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string",
+          "title": "消息"
+        },
+        "ok": {
+          "type": "boolean",
+          "title": "结果"
+        },
+        "subCode": {
+          "type": "string",
+          "title": "子代码"
+        },
+        "subMessage": {
+          "type": "string",
+          "title": "子消息"
+        }
+      },
+      "required": [
+        "ok",
+        "code"
+      ]
+    },
+    "FlowLogSearchReq": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "title": "连接流key"
+        },
+        "name": {
+          "type": "string",
+          "title": "名称"
+        },
+        "appId": {
+          "type": "string",
+          "title": "应用id"
+        },
+        "triggerType": {
+          "type": "string",
+          "title": "调用方式"
+        },
+        "status": {
+          "type": "integer",
+          "title": "调用结果"
+        }
+      },
+      "required": [
+        "key",
+        "status",
+        "name",
+        "appId",
+        "triggerType"
+      ]
+    },
+    "PageBase": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        },
+        "pageSize": {
+          "type": "integer",
+          "title": "页数"
+        },
+        "pageNo": {
+          "type": "integer",
+          "title": "当前页"
+        },
+        "totalCount": {
+          "type": "integer",
+          "title": "总记录"
+        },
+        "totalPage": {
+          "type": "integer",
+          "title": "总页数"
+        }
+      },
+      "required": [
+        "data",
+        "pageSize",
+        "pageNo",
+        "totalCount",
+        "totalPage"
+      ]
+    },
+    "CategoryFlowResp": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CategoryResp"
+          },
+          "x-nullable": true
+        }
+      },
+      "required": [
+        "categories"
+      ]
+    },
+    "CategoryResp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "分类id",
+          "description": "ID 编号"
+        },
+        "name": {
+          "type": "string",
+          "title": "分类名称"
+        },
+        "brand": {
+          "type": "string",
+          "title": "品牌",
+          "description": "品牌"
+        },
+        "version": {
+          "type": "string",
+          "title": "版本"
+        },
+        "nameStr": {
+          "type": "string",
+          "title": "分类组合名称"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FlowMainResp",
+            "title": "连接流信息",
+            "description": "摘要信息"
+          },
+          "x-nullable": true
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "brand",
+        "version",
+        "nameStr",
+        "children"
+      ]
+    },
+    "FlowCategoryDragReq": {
+      "type": "object",
+      "properties": {
+        "targetSortNum": {
+          "type": "integer",
+          "title": "目标顺序",
+          "description": "最高顺序+1"
+        }
+      },
+      "required": [
+        "targetSortNum"
+      ]
+    },
+    "FlowCategoryReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "分类名称"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "FlowLogResp1": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "title": "id",
+          "description": "ID 编号"
+        },
+        "reqId": {
+          "type": "string",
+          "title": "请求Id"
+        },
+        "fuuid": {
+          "type": "string",
+          "title": "连接流uuid"
+        },
+        "name": {
+          "type": "string",
+          "title": "连接流名称"
+        },
+        "fkey": {
+          "type": "string",
+          "title": "连接流key"
+        },
+        "triggerType": {
+          "type": "string",
+          "title": "调用类型"
+        },
+        "processTime": {
+          "type": "integer",
+          "title": "耗时"
+        },
+        "status": {
+          "type": "string",
+          "title": "状态"
+        },
+        "triggerTime": {
+          "type": "string",
+          "title": "执行时间"
+        },
+        "tenantId": {
+          "type": "string",
+          "title": "租户Id"
+        }
+      },
+      "required": [
+        "id",
+        "fuuid",
+        "name",
+        "fkey",
+        "triggerType",
+        "processTime",
+        "status",
+        "triggerTime",
+        "reqId",
+        "tenantId"
+      ]
+    },
+    "AccountMain": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "title": "id",
+          "description": "雪花"
+        },
+        "aTypeId": {
+          "type": "string",
+          "title": "账号类型id"
+        },
+        "aTypeName": {
+          "type": "string",
+          "title": "账号类型名称"
+        },
+        "name": {
+          "type": "string",
+          "title": "账号名称"
+        },
+        "createTime": {
+          "type": "string",
+          "title": "创建时间"
+        },
+        "lastUsedTime": {
+          "type": "string",
+          "title": "最后使用时间"
+        },
+        "status": {
+          "type": "integer",
+          "title": "状态"
+        },
+        "links": {
+          "type": "integer",
+          "title": "关联连接流",
+          "description": "关联连接流"
+        }
+      },
+      "required": [
+        "id",
+        "aTypeId",
+        "aTypeName",
+        "name",
+        "createTime",
+        "lastUsedTime",
+        "status",
+        "links"
+      ]
+    },
+    "FlowMainResp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "title": "标识id",
+          "format": "long"
+        },
+        "name": {
+          "type": "string",
+          "title": "连接流名称",
+          "maxLength": 32
+        },
+        "nameStr": {
+          "type": "string",
+          "title": "连接流名称描述"
+        },
+        "fuuid": {
+          "type": "string",
+          "title": "连接流id"
+        },
+        "createTime": {
+          "type": "string",
+          "title": "创建时间"
+        },
+        "updateTime": {
+          "type": "string",
+          "title": "更新时间"
+        },
+        "status": {
+          "type": "integer",
+          "title": "状态"
+        },
+        "statusStr": {
+          "type": "string",
+          "title": "状态描述",
+          "x-nullable": true
+        },
+        "modelKey": {
+          "type": "string",
+          "title": "模型key"
+        },
+        "appName": {
+          "type": "string",
+          "title": "应用名称"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fuuid",
+        "createTime",
+        "updateTime",
+        "status",
+        "statusStr",
+        "modelKey",
+        "nameStr",
+        "appName"
+      ]
+    },
+    "ComponentOutpuHandlerDef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "字段处理类型"
+        },
+        "fun": {
+          "type": "string",
+          "title": "处理表达式"
+        },
+        "k": {
+          "type": "string",
+          "title": "输出key"
+        },
+        "desc": {
+          "type": "string",
+          "title": "key描述"
+        },
+        "fieldPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "路径"
+        }
+      },
+      "required": [
+        "type",
+        "fun",
+        "k",
+        "desc",
+        "fieldPaths"
+      ]
+    },
+    "WebHookComponentDef": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "组件名称"
+        },
+        "type": {
+          "type": "string",
+          "title": "组件类型",
+          "description": "webhook必定是trigger"
+        },
+        "service": {
+          "type": "string",
+          "title": "服务实现类",
+          "description": "WebHookComponentService"
+        },
+        "version": {
+          "type": "string",
+          "title": "版本",
+          "description": "0.0.1"
+        },
+        "input": {
+          "$ref": "#/definitions/WebHookInputParamDef",
+          "title": "输入参数"
+        },
+        "outputHandlers": {
+          "$ref": "#/definitions/ComponentOutpuHandlerDef"
+        },
+        "netxRef": {
+          "type": "string",
+          "title": "下一个组件引用",
+          "description": "下一个组件的name"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "service",
+        "version",
+        "input",
+        "outputHandlers",
+        "netxRef"
+      ]
+    },
+    "FlowDef": {
+      "type": "object",
+      "properties": {
+        "flowName": {
+          "type": "string",
+          "title": "流程名称"
+        },
+        "flowUuid": {
+          "type": "string",
+          "title": "流程标识"
+        },
+        "tenantId": {
+          "type": "string",
+          "title": "租户id"
+        },
+        "elements": {
+          "title": "组件列表"
+        }
+      },
+      "required": [
+        "flowName",
+        "flowUuid",
+        "tenantId",
+        "elements"
+      ]
+    },
+    "WebHookInputParamDef": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "title": "http方法"
+        },
+        "apiPath": {
+          "type": "string",
+          "title": "hook路径"
+        },
+        "authType": {
+          "type": "string",
+          "title": "验证类型",
+          "enum": [
+            "base"
+          ]
+        },
+        "authCode": {
+          "type": "string",
+          "title": "验证字符串"
+        },
+        "condition": {
+          "type": "string",
+          "title": "条件表达式",
+          "description": "可选"
+        }
+      },
+      "required": [
+        "method",
+        "apiPath"
+      ]
+    }
+  },
+  "securityDefinitions": {},
+  "x-components": {}
+}

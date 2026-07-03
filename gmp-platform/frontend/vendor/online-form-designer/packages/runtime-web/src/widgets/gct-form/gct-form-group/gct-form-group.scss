@@ -1,0 +1,33 @@
+$gct-form-group: (
+  min-height: 32px,
+  width: auto,
+  height: 100%,
+);
+
+@include b(gct-form-group) {
+  @include set-component-css-var('form-group', $gct-form-group);
+
+  width: getCssVar(form-group, width);
+  height: getCssVar(form-group, height);
+  min-height: getCssVar(form-group, min-height);
+
+  @include when(hidden-header) {
+
+    @include e(title) {
+      display: none;
+    }
+
+    @include e(content) {
+      overflow: auto;
+      height: 100%;
+    }
+  }
+
+  @include e(content) {
+    height: 100%;
+  }
+
+  @include when(hidden) {
+    display: none;
+  }
+}

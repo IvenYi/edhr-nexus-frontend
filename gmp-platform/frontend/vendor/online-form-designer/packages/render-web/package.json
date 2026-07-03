@@ -1,0 +1,26 @@
+{
+  "name": "@gct/runtime-render-web",
+  "version": "0.0.1-dev.0",
+  "description": "运行时基础",
+  "main": "src/index.ts",
+  "module": "./src/index.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "runtime"
+  ],
+  "author": "gct",
+  "license": "MIT",
+  "dependencies": {
+    "@gct/base": "workspace:*",
+    "@gct/runtime-render": "workspace:*",
+    "qx-util": "^0.4.8",
+    "vue": "3.3.4"
+  }
+}

@@ -1,0 +1,35 @@
+@include b(vue3-dnd-highlighter-container) {
+  @include e(mask) {
+    @include m(hover) {
+      outline: 2px dashed rgba($color: #000, $alpha: 16%);
+      outline-offset: -2px;
+    }
+
+    @include m(select) {
+      outline: 2px solid rgba($color: #000, $alpha: 16%);
+      outline-offset: -2px;
+    }
+
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  @include m(hover) {
+    z-index: 1;
+    outline: 1px dashed var(--ant-primary-color);
+    outline-offset: -1px;
+    background-color: color-mix(in srgb, var(--ant-primary-color) 4%, transparent);
+  }
+
+  @include m(select) {
+    z-index: 2;
+    outline: 2px solid var(--ant-primary-color);
+    outline-offset: -2px;
+  }
+
+  position: absolute;
+  pointer-events: none;
+  clip-path: inset(-2px -2px -2px -2px);
+}

@@ -1,0 +1,18 @@
+@include b(table-text) {
+  height: 26px;
+  padding: 0 8px;
+
+  @include e(info) {
+    display: flex;
+    align-items: center;
+    border: 1px solid transparent;
+  }
+
+  .ant-input-affix-wrapper-focused, .ant-input-affix-wrapper:focus {
+    border-color: #3168EC;
+  }
+
+  .ant-input-prefix, .ant-input-suffix {
+    color: #C3C3C3;
+  }
+}

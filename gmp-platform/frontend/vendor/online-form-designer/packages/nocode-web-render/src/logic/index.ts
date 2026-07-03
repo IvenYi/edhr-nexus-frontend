@@ -1,0 +1,1 @@
+export { initWebPaasUploadApis } from './utils';

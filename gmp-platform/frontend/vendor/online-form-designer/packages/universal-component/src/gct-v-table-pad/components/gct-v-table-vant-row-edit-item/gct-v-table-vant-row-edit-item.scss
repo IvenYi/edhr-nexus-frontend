@@ -1,0 +1,155 @@
+@include b(v-table-vant-row-edit-item) {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 16px;
+
+  .van-cell {
+    padding: 0 12px !important;
+    overflow: visible;
+  }
+
+  .van-field {
+    &.van-field--error {
+      --van-field-input-error-text-color: #{getCssVar(color-text, 1)};
+
+      .van-field__body {
+        border-color: #{getCssVar(color-danger)} !important;
+      }
+    }
+
+    &.van-cell--clickable {
+      .van-icon-arrow {
+        margin-left: -20px;
+      }
+    }
+
+    &.van-field--disabled {
+      .van-field__body {
+        color: #{getCssVar(color-text-5)} !important;
+        background-color: #f7f8fa !important;
+      }
+    }
+
+    .van-field__error-message {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 20px;
+      width: 100%;
+      word-break: break-all; // 强制打断换行
+      overflow-wrap: break-word;
+      white-space: pre-wrap; // 保留空格并允许换行
+    }
+  }
+
+  .van-field__label {
+    display: none !important;
+  }
+
+  .van-field__value {
+    flex-direction: column !important;
+    height: 32px !important;
+    overflow: visible !important;
+    width: 100%;
+  }
+
+  .van-field__body {
+    height: 32px;
+    padding: 4px 12px !important;
+    border: 1px solid #{getCssVar(color-border)};
+    border-radius: 4px !important;
+  }
+
+  @include e(boolean) {
+    .van-field__body {
+      padding: 0 !important;
+      border: 0 !important;
+    }
+
+    .van-switch {
+      --van-switch-on-background: #{getCssVar(color-primary)};
+      --van-switch-width: 44px;
+      --van-switch-height: 26px;
+      --van-switch-node-size: 22px;
+    }
+
+    .van-checkbox-group.mobile-field-checkbox-group {
+      .van-checkbox {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    .van-radio.van-radio--horizontal {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  @include e((long, integer)) {
+    @include m(time) {
+      .has-time .van-field__body {
+        border: 0 !important;
+        padding-left: 0 !important;
+      }
+
+      .time-input {
+        >.time-input__body {
+          > input {
+            height: 32px !important;
+            border: 1px solid #{getCssVar(color-border)} !important;
+            border-radius: 4px;
+            padding: 4px 12px 4px 0 ;
+            background-color: #fff !important;
+
+            &.day {
+              width: 76px !important;
+            }
+
+            &.hour {
+              width: 76px !important;
+            }
+          }
+        }
+      }
+
+      .van-field__control--error {
+        .time-input {
+        >.time-input__body {
+          > input {
+            border-color: #{getCssVar(color-danger)} !important;
+          }
+        }
+      }
+      }
+    }
+  }
+
+
+  @include e(enum) {
+    @include m(radio) {
+      .van-field__body {
+        border: 0 !important;
+        padding: 0 !important;
+      }
+  
+      .van-radio {
+        margin-bottom: 0 !important;
+        margin-right: 4px !important;
+      }
+    }
+  }
+
+  @include e(enum_multi) {
+    @include m(checkbox) {
+      .van-field__body {
+        border: 0 !important;
+        padding: 0 !important;
+      }
+    }
+  }
+
+  @include when(readonly) {
+    .van-field__body {
+      border: 0 !important;
+    }
+  }
+}

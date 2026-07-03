@@ -1,0 +1,88 @@
+@include b(designer-view-content) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+
+  @include when(hidden) {
+    display: none !important;
+  }
+
+  > div {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  @include e(toolkit) {
+    display: inline-block;
+    height: 100%;
+    width: calc(var(--drag-resize-width, 250px) + 49px);
+    border-right: 1px solid getCssVar('color-border');
+    vertical-align: top;
+
+    @include when(fixed) {
+      position: absolute !important;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+      width: calc(var(--drag-resize-width, 650px) + 49px);
+    }
+
+    .designer-nav {
+      float: left;
+      width: 48px;
+      height: 100%;
+      border-right: 2px solid #e0e3ea;
+      background-color: #e6e9ef;
+    }
+
+    .designer-toolkit {
+      float: left;
+      width: calc(100% - 48px);
+      height: 100%;
+      background-color: #f2f4f7;
+    }
+  }
+
+  @include e(content) {
+    display: inline-block;
+    height: 100%;
+    width: calc(100% - var(--drag-resize-width, 250px) - 50px - 250px);
+    // 点阵背景
+    background-color: rgba(232, 235, 240, 1);
+    background-image: radial-gradient(circle, rgba(216, 219, 227, 1) 1px, transparent 1px);
+    background-size: 20px 20px;
+
+    @include when(fixed) {
+      width: calc(100% - 250px);
+    }
+
+    .view-message {
+      position: relative;
+
+      .convert-btn {
+        position: absolute;
+        top: 0;
+        right: 30px;
+      }
+    }
+  }
+
+  @include e(panel) {
+    display: inline-block;
+    height: 100%;
+    width: 249px;
+    border-left: 1px solid getCssVar('color-border');
+
+    > div {
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+
+  @include e(stage) {
+    height: 100%;
+  }
+}

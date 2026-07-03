@@ -1,0 +1,48 @@
+@include b(timed-task-table) {
+  height: 100%;
+
+  @include e(state-row) {
+    padding: 3px 6px;
+    background: #DEF8E2;
+    border-radius: 4px 4px 4px 4px;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    font-size: 14px;
+    color: #309C41;
+    line-height: 22px;
+
+    @include when(disable) {
+      background: #E8EBF0;
+      color: #C3C3C3;
+    }
+  }
+}
+
+@include b(timed-task-table-header) {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  @include e(quick-search) {
+    width: 396px;
+
+    .ant-input-search-button {
+      border-left: 0;
+    }
+
+    .ant-input-search-button:hover {
+      border-color: #E8EBF0;
+    }
+  }
+}
+
+@include b(timed-task-table-header-toolbar-item) {
+  padding: 0 14px;
+}
+
+@include b(timed-task-table-column-actions) {
+
+  .ant-btn[label='删除'] {
+    color: rgba(56, 67, 86, 1);
+  }
+}

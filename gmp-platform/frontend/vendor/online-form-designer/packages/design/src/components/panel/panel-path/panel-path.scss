@@ -1,0 +1,29 @@
+@include b(design-panel-path) {
+  padding: 0 12px;
+  border-bottom: 1px solid #E0E3EA;
+  height: 100%;
+  width: 100%;
+  color: #797A7D;
+  font-size: 12px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+
+  @include e(arrow) {
+    padding: 0 6px;
+
+    >.iconfont {
+      font-size: 10px;
+    }
+  }
+
+  @include e(item){
+    cursor: pointer;
+
+    &:last-child{
+      color: #212528;
+    }
+  }
+}

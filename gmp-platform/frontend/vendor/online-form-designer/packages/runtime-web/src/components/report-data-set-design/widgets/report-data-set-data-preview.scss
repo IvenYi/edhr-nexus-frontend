@@ -1,0 +1,70 @@
+@include b(report-data-set-data-preview) {
+  @include e(loading) {
+    @include flex-center;
+
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+  }
+
+  @include e(header) {
+    height: 46px;
+    padding: #{getCssVar(padding, 7)};
+    padding-bottom: #{getCssVar(padding, 4)};
+  }
+
+  @include e(header-title) {
+    @include font-3;
+
+    display: inline-flex;
+    align-items: center;
+    font-weight: 600;
+
+    .iconfont {
+      color: rgb(87 91 102 / 100%);
+    }
+  }
+
+  @include e(header-total) {
+    float: right;
+    color: rgb(93 100 116 / 100%);
+  }
+
+  @include e(header-refresh) {
+    margin-left: #{getCssVar(padding, 4)};
+    float: right;
+    cursor: pointer;
+  }
+
+  @include e(body) {
+    height: calc(100% - 46px);
+    padding: 0 #{getCssVar(padding, 7)};
+    padding-bottom: #{getCssVar(padding, 7)};
+    overflow: auto;
+
+    .gct-gct-table {
+      height: 100%;
+
+      .ant-table-container {
+        height: 100%;
+      }
+    }
+  }
+
+  @include e(preview-empty) {
+    @include flex-center;
+
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    color: rgb(143 143 143 / 100%);
+    font-size: 14px;
+  }
+
+  position: relative;
+  height: 100%;
+}

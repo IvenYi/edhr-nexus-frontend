@@ -1,0 +1,24 @@
+@include b(datav-field-context-menu) {
+  @include e(icon) {
+    display: inline-block; 
+    font-size: 16px;
+    &.icon-str {
+      vertical-align: top;
+      font-size: 20px;
+      width: 22px
+    }
+    &.icon-shuzi {
+      vertical-align: top;
+      font-size: 20px;
+      width: 22px
+    }
+  }
+  @include e(dim) {
+    width: 20px;
+    color: var(--ant-primary-color);
+  }
+  @include e(meas) {
+    width: 20px;
+    color: var(--ant-success-color);
+  } 
+}

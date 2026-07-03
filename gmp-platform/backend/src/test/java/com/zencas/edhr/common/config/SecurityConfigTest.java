@@ -7,14 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,31 +59,6 @@ class SecurityConfigTest {
                 .andExpect(jsonPath("$.message").value("未登录或登录已过期"));
     }
 
-    @Test
-    void onlyOfficeDocumentServerEndpointsCanBeRequestedWithoutPlatformJwt() throws Exception {
-        mockMvc.perform(get("/api/v1/master-data/template-modeling/form-templates/101/versions/102/onlyoffice/source")
-                        .queryParam("token", "onlyoffice-document-token"))
-                .andExpect(status().isOk());
-        mockMvc.perform(get("/api/v1/master-data/template-modeling/form-templates/101/versions/102/onlyoffice/conversion-source")
-                        .queryParam("token", "onlyoffice-conversion-token"))
-                .andExpect(status().isOk());
-        mockMvc.perform(post("/api/v1/master-data/template-modeling/form-templates/101/versions/102/onlyoffice/callback"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void onlyOfficeDocumentServerPermitAllIsMethodScoped() throws Exception {
-        mockMvc.perform(post("/api/v1/master-data/template-modeling/form-templates/101/versions/102/onlyoffice/source"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value(401));
-        mockMvc.perform(post("/api/v1/master-data/template-modeling/form-templates/101/versions/102/onlyoffice/conversion-source"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value(401));
-        mockMvc.perform(get("/api/v1/master-data/template-modeling/form-templates/101/versions/102/onlyoffice/callback"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value(401));
-    }
-
     @RestController
     static class ProtectedApiController {
         @GetMapping("/api/v1/protected/ping")
@@ -101,21 +74,6 @@ class SecurityConfigTest {
         @GetMapping("/api/v1/files/{id}/public-preview")
         String publicPreview() {
             return "public-preview";
-        }
-
-        @GetMapping("/api/v1/master-data/template-modeling/form-templates/{id}/versions/{versionId}/onlyoffice/source")
-        String onlyOfficeSource() {
-            return "onlyoffice-source";
-        }
-
-        @GetMapping("/api/v1/master-data/template-modeling/form-templates/{id}/versions/{versionId}/onlyoffice/conversion-source")
-        String onlyOfficeConversionSource() {
-            return "onlyoffice-conversion-source";
-        }
-
-        @PostMapping("/api/v1/master-data/template-modeling/form-templates/{id}/versions/{versionId}/onlyoffice/callback")
-        String onlyOfficeCallback() {
-            return "onlyoffice-callback";
         }
     }
 }

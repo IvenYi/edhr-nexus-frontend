@@ -1,0 +1,7 @@
+@include b(monaco-editor) {
+  height: 100%;
+
+  @include e(editor) {
+    height: 100%;
+  }
+}

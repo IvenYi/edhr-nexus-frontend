@@ -1,0 +1,44 @@
+.dynamic-area {
+  &__title {
+    position: absolute;
+    padding: 0 10px;
+    height: 22px;
+    line-height: 22px;
+    border-bottom-left-radius: 4px;
+    font-size: 12px;
+    color: #fff;
+    transform: translateX(-100%);
+    white-space: nowrap;
+    cursor: pointer;
+    background: rgba(from var(--hover-color) r g b / 64%);
+
+    &:hover {
+      color: #fff;
+      background: rgba(from var(--hover-color) r g b / 64%);
+      & + .dynamic-area__mask {
+        background: rgba(from var(--hover-color) r g b / 8%);
+      }
+    }
+
+    &.selected {
+      z-index: 10;
+      color: #fff;
+      background: var(--hover-color);
+      & + .dynamic-area__mask {
+        background: rgba(from var(--hover-color) r g b / 12%);
+      }
+    }
+  }
+
+  &__mask {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+
+    border: 2px dashed rgba(from var(--hover-color) r g b / 100%);
+    &.selected {
+      border: 2px solid var(--hover-color);
+      z-index: 110;
+    }
+  }
+}

@@ -1,0 +1,42 @@
+@include b(field-select-container) {
+  height: 100%;
+  padding: 16px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.06);
+  border-radius: 4px;
+}
+
+@include b(field-select-container-header) {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #212528;
+
+  @include e(left) {
+    &::before {
+      content: ' ';
+      height: 12px;
+      width: 2px;
+      background-color: var(--ant-primary-color);
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: -1px;
+    }
+  }
+
+  @include e(total) {
+    color: #797A7D;
+  }
+}
+
+@include b(field-select-container-search) {
+  padding: 8px 0;
+
+  .ant-input-suffix {
+    cursor: pointer;
+  }
+}
+
+@include b(field-select-container-content) {
+  height: calc(100% - 60px);
+}

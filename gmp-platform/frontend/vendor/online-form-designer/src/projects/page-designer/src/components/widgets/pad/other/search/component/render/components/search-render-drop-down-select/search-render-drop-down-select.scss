@@ -1,0 +1,40 @@
+@include b(search-render-drop-down-select) {
+  cursor: pointer;
+
+  @include when(readonly) {
+    cursor: default;
+    min-height: var(--editor-height);
+    font-size: var(--editor-font-size);
+    color: var(--editor-font-color);
+    padding: 0;
+    background-color: transparent;
+    overflow: hidden;
+  }
+
+  @include e(select) {
+    width: 100%;
+    border: 0;
+    background-color: transparent;
+
+    &:focus-visible {
+      outline: none;
+      border: 0;
+    }
+  }
+
+  @include e(label) {
+    flex: 1;
+
+    @include when(placeholder) {
+      color: var(--editor-placeholder-color);
+
+      @include utils-ellipsis;
+    }
+  }
+
+  @include e(icon) {
+    height: 21px;
+    font-size: 16px;
+    color: var(--editor-placeholder-color);
+  }
+}

@@ -1,0 +1,38 @@
+@include b(report-jump-config) {
+  @include e(header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    @include font-2;
+
+    .ant-btn.ant-btn-link {
+      padding-right: 0;
+    }
+  }
+
+  @include e(info) {
+    @include font-2;
+
+    color: getCssVar(color, text, 5);
+    margin-bottom: getCssVar(spacing, 2);
+  }
+
+  @include e(item) {
+    height: 28px;
+    background-color: getCssVar(color, bg, 2);
+    border-radius: getCssVar(border, radius, s);
+    display: flex;
+    align-items: center;
+    margin-bottom: getCssVar(spacing, 2);
+    padding: 0 getCssVar(padding, 2);
+  }
+
+  @include e(item-icon) {
+    color: getCssVar(color-primary);
+    margin-right: getCssVar(spacing, 2);
+  }
+
+  @include e(item-title) {
+    @include font-2;
+  }
+}

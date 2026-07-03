@@ -1,0 +1,33 @@
+@include b(cron-editor) {
+  display: flex;
+
+  @include e(label) {
+    font-size: 14px;
+    line-height: 16px;
+    color: #212528;
+    padding-left: 3px;
+  }
+
+  .ant-form-item {
+    margin: 0;
+  }
+
+  .ant-form-item-control-input-content {
+    display: flex;
+    align-items: center;
+  }
+
+  .ant-input-affix-wrapper {
+    padding: 0 6px;
+    width: 50px;
+    height: 26px;
+  }
+}
+
+@include b(cron-editor-item) {
+  // width: 50px;
+}
+
+@include b(cron-editor-separator) {
+  padding: 0 10px;
+}

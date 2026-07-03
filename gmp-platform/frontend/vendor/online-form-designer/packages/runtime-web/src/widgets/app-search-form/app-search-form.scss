@@ -1,0 +1,22 @@
+@include b(app-search-form) {
+  position: relative;
+}
+
+@include b(app-search-form-actions) {
+  padding: 0 16px 16px 16px;
+  text-align: right;
+
+  .ant-btn {
+    margin-right: 12px;
+  }
+
+  .ant-btn:last-child {
+    margin-right: 0;
+  }
+
+  @include when(fixed) {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+}
