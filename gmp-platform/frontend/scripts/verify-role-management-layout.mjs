@@ -185,14 +185,14 @@ mustInclude('功能权限', 'permission dialog should show function permissions'
 mustInclude('数据权限', 'permission dialog should show data permissions');
 mustInclude('selectedPermissionIds', 'menu permission dialog should track checked permissions');
 mustInclude('getPermissions', 'menu permission dialog should load assignable permissions');
-mustInclude('ROLE_PERMISSION_FETCH_SIZE', 'permission dialog should fetch enough permissions for generated GCT page and action permissions');
+mustInclude('ROLE_PERMISSION_FETCH_SIZE', 'permission dialog should fetch enough permissions for generated eDHR page and action permissions');
 mustInclude('useManagedSidebarModules', 'permission dialog should render modules and menus from the same source as the sidebar');
 mustInclude('inferPermissionCode', 'permission dialog should map sidebar routes to backend permission codes');
 menuManagementMustInclude("if (path === '/system/login-logs') return 'system.login-logs';", 'login log route should map to an assignable backend permission instead of showing 未映射');
 loginLogPermissionMigrationMustInclude("'system.login-logs'", 'login log permission should exist in backend permission catalog');
 loginLogPermissionMigrationMustInclude('INSERT INTO role_permission', 'login log permission should be granted to ADMIN by migration so the menu appears after relogin');
-menuManagementMustInclude("path.replace(/^\\//, '').replace(/\\//g, '.')", 'GCT menu routes should map to backend permission codes instead of staying unselectable');
-menuManagementMustNotInclude("path.startsWith('/gct-edhr')) return undefined", 'GCT menu routes should not stay unselectable');
+menuManagementMustInclude("path.replace(/^\\//, '').replace(/\\//g, '.')", 'eDHR menu routes should map to backend permission codes instead of staying unselectable');
+menuManagementMustNotInclude("path.startsWith('/gct-edhr')) return undefined", 'eDHR menu routes should not stay unselectable');
 mustInclude('permissionModules', 'permission dialog should derive display modules from sidebar modules');
 mustInclude('getRolePermissions', 'menu permission dialog should load role permission ids');
 mustInclude('updateRolePermissions', 'menu permission dialog should save permission ids');

@@ -309,7 +309,7 @@ const buildXmlJson = function (data, isBusiness = false, callback?: Function): a
       'xmlns:bpmndi': 'http://www.omg.org/spec/BPMN/20100524/DI',
       'xmlns:dc': 'http://www.omg.org/spec/DD/20100524/DC',
       'xmlns:di': 'http://www.omg.org/spec/DD/20100524/DI',
-      exporter: 'GCT',
+      exporter: 'eDHR',
       exporterVersion: '5.2.2',
       targetNamespace: 'http://bpmn.io/schema/bpmn',
       'xmlns:camunda': 'http://camunda.org/schema/1.0/bpmn',

@@ -48,7 +48,7 @@ public class GctPageRegistry {
     public GctPageSpecDto getPageOrThrow(String pageCode) {
         GctPageSpecDto page = getPage(pageCode);
         if (page == null) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "GCT page not found: " + pageCode);
+            throw new BusinessException(ErrorCode.GENERAL_001, "eDHR page not found: " + pageCode);
         }
         return page;
     }
@@ -58,7 +58,7 @@ public class GctPageRegistry {
         try (InputStream inputStream = resource.getInputStream()) {
             return objectMapper.readValue(inputStream, GctSpecBundleDto.class);
         } catch (IOException ex) {
-            throw new IllegalStateException("Failed to load GCT page specs from classpath:" + SPEC_RESOURCE, ex);
+            throw new IllegalStateException("Failed to load eDHR page specs from classpath:" + SPEC_RESOURCE, ex);
         }
     }
 

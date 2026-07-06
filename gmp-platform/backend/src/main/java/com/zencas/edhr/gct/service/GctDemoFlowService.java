@@ -48,7 +48,7 @@ public class GctDemoFlowService {
                 .order("asc")
                 .build());
         if (result.getContent().isEmpty()) {
-            throw new IllegalStateException("GCT demo flow has no records");
+            throw new IllegalStateException("eDHR demo flow has no records");
         }
         return result.getContent().getFirst();
     }
@@ -61,7 +61,7 @@ public class GctDemoFlowService {
         metrics.put("steps", steps.size());
         return GctDemoFlowDto.builder()
                 .id("gct-demo-flow")
-                .title("GCT eDHR 演示流程")
+                .title("eDHR 演示流程")
                 .status(status)
                 .currentRecord(record)
                 .steps(steps)

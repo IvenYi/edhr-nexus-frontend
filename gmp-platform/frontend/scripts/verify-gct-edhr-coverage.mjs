@@ -10,7 +10,7 @@ const workspaceRoot = resolve(projectRoot, '..', '..');
 
 const EXPECTED_PAGE_COUNT = 99;
 const EXPECTED_SCHEMA_VERSION = '1.0.0';
-const EXPECTED_SOURCE_FILE = 'GCT_eDHR_功能详细规格与AI实现提示词.md';
+const EXPECTED_SOURCE_FILE = 'eDHR_功能详细规格与AI实现提示词.md';
 const EXPECTED_MODULE_COUNTS = {
   操作面板: 1,
   基础建模: 24,
@@ -218,7 +218,7 @@ if (failures.length) {
   reportAndExit(failures);
 }
 
-console.log('GCT eDHR coverage verification passed.');
+console.log('eDHR coverage verification passed.');
 console.log(`- pages: ${pages.length}`);
 console.log(`- modules: ${Object.entries(EXPECTED_MODULE_COUNTS).map(([name, count]) => `${name}=${count}`).join(', ')}`);
 console.log(`- page types: ${Object.entries(EXPECTED_TYPE_COUNTS).map(([name, count]) => `${name}=${count}`).join(', ')}`);
@@ -343,7 +343,7 @@ function extractGeneratedJsonLiteral(sourceText, exportName, messages) {
 }
 
 function reportAndExit(messages) {
-  console.error('GCT eDHR coverage verification failed:');
+  console.error('eDHR coverage verification failed:');
   messages.forEach((failure) => console.error(`- ${failure}`));
   process.exit(1);
 }
@@ -609,8 +609,8 @@ function verifyFrontendSources(pages, pagesSourceText, menusSourceText, messages
   if (!menusSourceText.includes('"id": "gct-edhr"')) {
     messages.push('generatedMenus.ts must define module id gct-edhr');
   }
-  if (!menusSourceText.includes('"label": "GCT"')) {
-    messages.push('generatedMenus.ts must define module label GCT');
+  if (!menusSourceText.includes('"label": "eDHR"')) {
+    messages.push('generatedMenus.ts must define module label eDHR');
   }
   if (!menusSourceText.includes('"icon": "Dashboard"')) {
     messages.push('generatedMenus.ts must define module icon Dashboard');
@@ -673,8 +673,8 @@ function verifyStructuredMenu(frontendMenuModule, backendMenus, messages) {
   if (frontendMenuModule.id !== 'gct-edhr') {
     messages.push(`frontend menu module id expected gct-edhr, got ${frontendMenuModule.id}`);
   }
-  if (frontendMenuModule.label !== 'GCT') {
-    messages.push(`frontend menu module label expected GCT, got ${frontendMenuModule.label}`);
+  if (frontendMenuModule.label !== 'eDHR') {
+    messages.push(`frontend menu module label expected eDHR, got ${frontendMenuModule.label}`);
   }
   if (frontendMenuModule.icon !== 'Dashboard') {
     messages.push(`frontend menu module icon expected Dashboard, got ${frontendMenuModule.icon}`);
@@ -963,8 +963,8 @@ function verifyTask4GenericUi(genericPageSourceText, files, messages) {
     'requestId',
   ], messages);
 
-  if (/页面占位|<Typography[^>]*>\s*GCT eDHR\s*<\/Typography>/.test(genericPageSourceText)) {
-    messages.push('GenericEdhrPage.tsx must render a functional GCT eDHR workbench instead of the placeholder page');
+  if (/页面占位|<Typography[^>]*>\s*eDHR\s*<\/Typography>/.test(genericPageSourceText)) {
+    messages.push('GenericEdhrPage.tsx must render a functional eDHR workbench instead of the placeholder page');
   }
 
   if (!genericPageSourceText.includes('page.path') || !genericPageSourceText.includes('location.pathname')) {
@@ -1146,7 +1146,7 @@ async function verifyTask6DemoChain(frontendPages, demoChainSourceText, messages
   }
 
   if (/\?\?\s*currentPage|\?\?\s*GCT_EDHR_PAGES\[[^\]]+\]/.test(demoChainSourceText)) {
-    messages.push('DemoChainPanel.tsx must not fall back to currentPage or the first GCT page when a demo-chain pageCode is invalid');
+    messages.push('DemoChainPanel.tsx must not fall back to currentPage or the first eDHR page when a demo-chain pageCode is invalid');
   }
 
   const tempDir = mkdtempSync(resolve(tmpdir(), 'gct-edhr-demo-chain-probe-'));
@@ -1547,7 +1547,7 @@ function assert(condition, message) {
   if (!condition) probeFailures.push(message);
 }
 
-assert(GCT_EDHR_PAGES.length === ${EXPECTED_PAGE_COUNT}, 'metadata should expose all ${EXPECTED_PAGE_COUNT} GCT pages');
+assert(GCT_EDHR_PAGES.length === ${EXPECTED_PAGE_COUNT}, 'metadata should expose all ${EXPECTED_PAGE_COUNT} eDHR pages');
 assert(GCT_EDHR_PAGES.every((page) => page.path?.startsWith('/gct-edhr/')), 'every metadata path should be mounted under /gct-edhr/*');
 assert(GCT_EDHR_DEMO_CHAIN_STEPS.length === expectedLabels.length, 'demo chain should contain exactly ' + expectedLabels.length + ' steps');
 assert(

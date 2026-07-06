@@ -4,7 +4,7 @@ import type { SidebarModule } from '@/utils/constants';
 
 export const GCT_EDHR_MENU_MODULE = {
   "id": "gct-edhr",
-  "label": "GCT",
+  "label": "eDHR",
   "icon": "Dashboard",
   "menus": [
     {

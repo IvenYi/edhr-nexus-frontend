@@ -176,7 +176,7 @@ export class GctEdhrMockClient {
     const before = cloneRecord(record);
     const actionMeta = getDisplayActionsForPage(pageMeta).find((action) => action.code === actionCode);
     if (!actionMeta) {
-      throw new Error(`Unsupported GCT eDHR action: ${pageCode}/${actionCode}`);
+      throw new Error(`Unsupported eDHR action: ${pageCode}/${actionCode}`);
     }
     const actionLabel = getActionLabel(actionCode, actionMeta);
     const policy = getActionPolicy(actionCode);
@@ -366,7 +366,7 @@ export class GctEdhrMockClient {
   private requirePage(pageCode: string): EdhrPageMeta {
     const page = this.pagesByCode.get(pageCode);
     if (!page) {
-      throw new Error(`Unknown GCT eDHR page: ${pageCode}`);
+      throw new Error(`Unknown eDHR page: ${pageCode}`);
     }
     return page;
   }
@@ -374,7 +374,7 @@ export class GctEdhrMockClient {
   private getPageRecords(pageCode: string): EdhrRecord[] {
     const records = this.recordsByPage.get(pageCode);
     if (!records) {
-      throw new Error(`No mock records for GCT eDHR page: ${pageCode}`);
+      throw new Error(`No mock records for eDHR page: ${pageCode}`);
     }
     return records;
   }
@@ -383,7 +383,7 @@ export class GctEdhrMockClient {
     this.requirePage(pageCode);
     const record = this.getPageRecords(pageCode).find((item) => item.id === recordId);
     if (!record) {
-      throw new Error(`Unknown GCT eDHR record: ${pageCode}/${recordId}`);
+      throw new Error(`Unknown eDHR record: ${pageCode}/${recordId}`);
     }
     return record;
   }

@@ -13,12 +13,12 @@ import { omit } from 'lodash-es';
 // 基础配置信息
 const basicSetting: PlatformBaseConfig = reactive({
   copyright:
-    '© 2016-<span class="ownInput">${当前年份}</span> 冠骋信息技术（苏州）有限公司 版权所有',
+    '© 2016-<span class="ownInput">${当前年份}</span> 平台服务 版权所有',
   description: '',
   icon: '',
   loadingImage: '',
   logo: '',
-  name: '冠骋云PaaS平台',
+  name: 'PaaS平台',
   thumbnail: '',
   version: __APP_INFO__.pkg.version,
 });

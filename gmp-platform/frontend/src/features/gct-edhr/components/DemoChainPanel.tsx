@@ -28,7 +28,7 @@ export default function DemoChainPanel({ currentPage }: DemoChainPanelProps) {
     return GCT_EDHR_DEMO_CHAIN_STEPS.map((step) => {
       const page = pagesByCode.get(step.pageCode);
       if (!page) {
-        throw new Error(`GCT demo chain step "${step.label}" references missing pageCode "${step.pageCode}"`);
+        throw new Error(`eDHR demo chain step "${step.label}" references missing pageCode "${step.pageCode}"`);
       }
       return { ...step, page };
     });

@@ -85,7 +85,7 @@ async function bootstrap() {
   // 配置全局错误处理
   setupErrorHandle(app);
 
-  // 初始化GCT Word的全局配置（核心能力注册）
+  // 初始化eDHR Word的全局配置（核心能力注册）
   initGctWordGlobalConfig();
 
   // https://next.router.vuejs.org/api/#isready

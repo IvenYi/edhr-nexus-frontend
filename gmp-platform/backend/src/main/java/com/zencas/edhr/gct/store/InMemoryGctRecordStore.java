@@ -296,7 +296,7 @@ public class InMemoryGctRecordStore {
     private List<GctRecordDto> pageRecords(String pageCode) {
         List<GctRecordDto> pageRecords = records.get(pageCode);
         if (pageRecords == null) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "GCT page records not initialized: " + pageCode);
+            throw new BusinessException(ErrorCode.GENERAL_001, "eDHR page records not initialized: " + pageCode);
         }
         return pageRecords;
     }
@@ -306,7 +306,7 @@ public class InMemoryGctRecordStore {
                 .filter(record -> Objects.equals(record.getId(), recordId))
                 .findFirst()
                 .orElseThrow(() -> new BusinessException(
-                        ErrorCode.GENERAL_001, "GCT record not found: " + pageCode + "/" + recordId));
+                        ErrorCode.GENERAL_001, "eDHR record not found: " + pageCode + "/" + recordId));
     }
 
     private boolean matchesStatus(GctRecordDto record, String status) {
@@ -473,7 +473,7 @@ public class InMemoryGctRecordStore {
     private void validateActionAllowed(GctPageSpecDto page, String actionCode) {
         if (isBlank(actionCode) || findAction(page, actionCode).isEmpty()) {
             throw new BusinessException(ErrorCode.GENERAL_003,
-                    "Unsupported GCT action: " + page.getCode() + "/" + actionCode);
+                    "Unsupported eDHR action: " + page.getCode() + "/" + actionCode);
         }
     }
 

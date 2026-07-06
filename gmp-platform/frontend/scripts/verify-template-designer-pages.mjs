@@ -18,9 +18,16 @@ const files = [
   '../vendor/online-form-designer/src/projects/online-form/main.ts',
   '../vendor/online-form-designer/src/projects/online-form/src/router/index.ts',
   '../vendor/online-form-designer/src/projects/online-form/src/views/integration/apaas_dp/designer/apaas-dp-print.vue',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/toolbar.vue',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/toolkit.vue',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/designer-side-panel.vue',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/page-thumbnails.vue',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/sheet.vue',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/bridge/template-designer-host.ts',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/bridge/template-designer-protocol.ts',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/hooks/local-designer-cache.ts',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/styles/designer.less',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/styles/spread-sheet.less',
   '../vendor/online-form-designer/src/projects/online-form/src/router/routes/index.ts',
   '../vendor/online-form-designer/src/router/guard/permissionGuard.ts',
 ];
@@ -31,6 +38,10 @@ function mustInclude(content, token, reason) {
 
 function mustNotInclude(content, token, reason) {
   if (content.includes(token)) failures.push(`unexpected ${JSON.stringify(token)} (${reason})`);
+}
+
+function mustMatch(content, pattern, reason) {
+  if (!pattern.test(content)) failures.push(`missing pattern ${pattern} (${reason})`);
 }
 
 for (const relativePath of files) {
@@ -154,10 +165,121 @@ for (const relativePath of files) {
     mustInclude(content, 'initializeHostedDesigner', 'migrated designer entry should support hosted initialization');
     mustInclude(content, "route.query.hosted === '1'", 'migrated designer should switch by hosted query');
     mustInclude(content, 'designer--hosted', 'hosted designer should hide its internal black header to avoid duplicate operation bars');
+    mustInclude(content, 'designer--page-thumbnails-open', 'hosted designer should expose a layout state when page thumbnails are open');
+    mustInclude(content, 'DesignerSidePanel', 'hosted designer should render the shared embedded left side panel');
+    mustInclude(content, 'pageThumbnailsVisible', 'hosted designer should own the page thumbnail open/close state');
+    mustInclude(content, 'activeSidePanel', 'hosted designer should track the selected left side panel content');
+    mustInclude(content, 'selectSidePanel', 'hosted designer should switch side panel content from the left rail');
+    mustInclude(content, 'pageThumbnailsWidth', 'hosted designer should own the resizable page thumbnail width state');
+    mustInclude(content, 'pageThumbnailsStyle', 'hosted designer should pass page thumbnail width through a CSS variable');
+    mustInclude(content, 'startPageThumbnailsResize', 'hosted designer should start resizing from the thumbnail/canvas separator');
+    mustInclude(content, 'designer__page-thumbnails-resizer', 'hosted designer should render a draggable separator between thumbnails and canvas');
+    mustInclude(content, '@select-side-panel="selectSidePanel"', 'hosted designer toolkit should select embedded side panel content');
+    mustInclude(content, ':active-panel="activeSidePanel"', 'hosted side panel should receive the selected content key');
+    mustInclude(content, '@close="pageThumbnailsVisible = false"', 'hosted side panel should be closable from the panel header');
     mustInclude(content, 'v-if="!hostedDesigner"', 'hosted designer should not render the embedded designer header');
     mustInclude(content, 'activeTab', 'hosted designer entry should manage the active center tab state');
     mustInclude(content, '建模设计', 'hosted designer entry should provide the model design view content');
     mustInclude(content, '流程设计', 'hosted designer entry should provide the process design view content');
+  }
+
+  if (relativePath.endsWith('modules/toolbar.vue')) {
+    mustInclude(content, 'useRoute', 'hosted toolbar should derive embedded mode from the current route');
+    mustInclude(content, "route.query.hosted === '1'", 'hosted toolbar should switch by hosted query');
+    mustInclude(content, 'HOSTED_TEMPLATE_FONT_FAMILY', 'hosted toolbar should keep a stable Microsoft YaHei font fallback');
+    mustInclude(content, 'Microsoft YaHei', 'hosted toolbar should prefer Microsoft YaHei');
+    mustInclude(content, '微软雅黑', 'hosted toolbar should include the Chinese Microsoft YaHei name');
+    mustMatch(
+      content,
+      /<font-family-selector\s+v-if="!hostedDesigner"[\s\S]*?v-model:value="cellFontFamily"/,
+      'hosted toolbar should hide the font family selector',
+    );
+    mustMatch(
+      content,
+      /<font-size-selector\s+v-if="!hostedDesigner"[\s\S]*?v-model:value="cellFontSize"/,
+      'hosted toolbar should hide the font size selector',
+    );
+    mustMatch(
+      content,
+      /v-if="!isTextOnlineForm && !hostedDesigner"[\s\S]*?TableIcon2d/,
+      'hosted toolbar should hide the 2D sub-table image button',
+    );
+    mustMatch(
+      content,
+      /v-if="!isTextOnlineForm && !hostedDesigner"[\s\S]*?TableIconCheck/,
+      'hosted toolbar should hide the check-table image button',
+    );
+  }
+
+  if (relativePath.endsWith('modules/toolkit.vue')) {
+    mustInclude(content, 'useRoute', 'hosted toolkit should derive embedded mode from the current route');
+    mustInclude(content, "route.query.hosted === '1'", 'hosted toolkit should switch by hosted query');
+    mustInclude(content, 'pageThumbnailsVisible', 'hosted toolkit should receive page thumbnail visibility state');
+    mustInclude(content, 'activeSidePanel', 'hosted toolkit should receive the selected side panel key');
+    mustInclude(content, "type HostedSidePanelKey = 'pages' | 'fields' | 'widgets';", 'hosted toolkit should share the side panel key contract');
+    mustInclude(content, "(e: 'select-side-panel', panel: HostedSidePanelKey): void", 'hosted toolkit should emit side panel selections');
+    mustInclude(content, "emit('select-side-panel', panel)", 'hosted toolkit clicks should switch the embedded panel');
+    mustInclude(content, 'v-if="hostedDesigner"', 'hosted toolkit should render direct rail buttons instead of popovers');
+    mustInclude(content, 'v-if="!hostedDesigner"', 'non-hosted toolkit should keep the old popover behavior');
+    mustInclude(content, 'designer__toolkit-page-icon', 'hosted toolkit should render a dedicated page icon');
+    mustInclude(content, 'designer__toolkit-field-icon', 'hosted toolkit should render a semantic field icon instead of Aa text');
+    mustInclude(content, 'designer__toolkit-widget-icon', 'hosted toolkit should render a compact component icon instead of large sliders');
+    mustInclude(content, 'designer__toolkit--hosted', 'hosted toolkit should apply the icon-only side rail style');
+    mustInclude(content, "hostedDesigner.value ? 'rightTop' : 'leftTop'", 'hosted toolkit popovers should open into the page after moving left');
+    mustInclude(content, ':placement="toolkitPlacement"', 'hosted toolkit should use the computed popover placement');
+  }
+
+  if (relativePath.endsWith('modules/designer-side-panel.vue')) {
+    mustInclude(content, "type HostedSidePanelKey = 'pages' | 'fields' | 'widgets';", 'side panel should define the shared content key contract');
+    mustInclude(content, '字段管理', 'side panel should title the field list as field management');
+    mustInclude(content, '组件管理', 'side panel should title the component list as component management');
+    mustInclude(content, '分页缩略图', 'side panel should title the thumbnail list as page thumbnails');
+    mustInclude(content, 'ToolkitContentFields', 'side panel should embed field management content directly');
+    mustInclude(content, 'ToolkitContentWidgets', 'side panel should embed component management content directly');
+    mustInclude(content, 'PageThumbnails', 'side panel should embed page thumbnails directly');
+    mustInclude(content, "defineEmits<{ (e: 'close'): void }>()", 'side panel close button should emit close');
+    mustInclude(content, 'designer-side-panel__body--fields', 'side panel should style field content as an embedded panel');
+    mustInclude(content, 'designer-side-panel__body--widgets', 'side panel should style widget content as an embedded panel');
+  }
+
+  if (relativePath.endsWith('modules/page-thumbnails.vue')) {
+    mustNotInclude(content, 'page-thumbnails__header', 'page thumbnails should no longer own the shared side panel title');
+    mustNotInclude(content, 'page-thumbnails__close', 'page thumbnails should no longer own the shared side panel close button');
+    mustInclude(content, 'useAllSpreadSheets', 'page thumbnail panel should reuse existing sheet state');
+    mustInclude(content, 'sheetsData', 'page thumbnail panel should list current pages from sheets');
+    mustInclude(content, 'activeSheetId', 'page thumbnail panel should highlight the active page');
+    mustInclude(content, 'changeActiveSheet(sheet)', 'page thumbnail panel should switch pages when a thumbnail is clicked');
+    mustInclude(content, '第 {{ index + 1 }} 页', 'page thumbnail panel should render numbered page labels');
+    mustInclude(content, 'aspect-ratio', 'page thumbnails should resize their cards proportionally with the side panel');
+    mustInclude(content, 'calc(100% - 28px)', 'page thumbnails should adapt to the draggable side panel width');
+  }
+
+  if (relativePath.endsWith('modules/sheet.vue')) {
+    mustInclude(content, 'showSheetTabs', 'hosted sheet should use an explicit sheet tab visibility gate');
+    mustInclude(content, "route.query.hosted === '1'", 'hosted sheet should switch by hosted query');
+    mustInclude(content, '<SheetsComp v-if="showSheetTabs" />', 'hosted sheet should not render the bottom sheet tab strip');
+  }
+
+  if (relativePath.endsWith('styles/designer.less')) {
+    mustInclude(content, '&.designer--hosted', 'hosted designer should own its embedded grid override');
+    mustInclude(content, '--page-thumbnails-size', 'hosted designer should define a stable page thumbnail panel width');
+    mustInclude(content, 'designer--page-thumbnails-open', 'hosted designer should switch grid layout when thumbnails are open');
+    mustInclude(
+      content,
+      "'toolkit page-thumbnails page-thumbnails-resizer spread-sheet panel'",
+      'hosted designer should place the draggable separator between thumbnails and canvas',
+    );
+    mustInclude(content, '&__page-thumbnails', 'hosted designer should expose the page thumbnail grid area');
+    mustInclude(content, '&__page-thumbnails-resizer', 'hosted designer should expose the draggable page thumbnail separator');
+    mustInclude(content, 'cursor: col-resize', 'hosted designer thumbnail separator should clearly resize horizontally');
+    mustInclude(content, 'minmax(180px, var(--page-thumbnails-size))', 'hosted designer thumbnail column should have a small usable minimum');
+  }
+
+  if (relativePath.endsWith('styles/spread-sheet.less')) {
+    mustInclude(content, '.designer.designer--hosted .spread-sheet', 'hosted sheet should reclaim the hidden sheet tab height');
+    mustInclude(content, 'height: 100%', 'hosted sheet should fill the full canvas slot after sheet tabs are hidden');
+    mustInclude(content, 'Microsoft YaHei', 'hosted sheet should use Microsoft YaHei by default');
+    mustInclude(content, '微软雅黑', 'hosted sheet should include the Chinese Microsoft YaHei name');
   }
 
   if (relativePath.endsWith('template-designer-host.ts')) {

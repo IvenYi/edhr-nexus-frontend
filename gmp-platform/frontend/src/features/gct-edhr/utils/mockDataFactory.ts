@@ -123,7 +123,7 @@ function shouldRewriteCopiedField(field: EdhrFieldMeta): boolean {
 }
 
 function createCopiedCodeValue(currentValue: unknown, mode: 'copy' | 'version', sequence: number): string {
-  const value = String(currentValue || 'GCT-MOCK');
+  const value = String(currentValue || 'eDHR-MOCK');
   const suffix = mode === 'version' ? `V${sequence}` : `COPY${sequence}`;
   return `${value}-${suffix}`;
 }

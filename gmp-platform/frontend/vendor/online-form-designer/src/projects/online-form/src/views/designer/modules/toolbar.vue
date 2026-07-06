@@ -18,8 +18,16 @@
     <div class="vertical-divider"></div> -->
     <HistoryToolbar />
 
-    <font-family-selector v-model:value="cellFontFamily" class="w-100px mr-4px" />
-    <font-size-selector v-model:value="cellFontSize" class="w-72px mr-18px" />
+    <font-family-selector
+      v-if="!hostedDesigner"
+      v-model:value="cellFontFamily"
+      class="w-100px mr-4px"
+    />
+    <font-size-selector
+      v-if="!hostedDesigner"
+      v-model:value="cellFontSize"
+      class="w-72px mr-18px"
+    />
 
     <a-tooltip placement="bottom">
       <template #title>
@@ -246,7 +254,7 @@
       </i>
     </a-tooltip>
 
-    <a-tooltip v-if="!isTextOnlineForm" placement="bottom">
+    <a-tooltip v-if="!isTextOnlineForm && !hostedDesigner" placement="bottom">
       <template #title>
         <span>{{ $t('sys.onlineForm.subTableType.2D') }}</span>
       </template>
@@ -255,7 +263,7 @@
       </i>
     </a-tooltip>
 
-    <a-tooltip v-if="!isTextOnlineForm" placement="bottom">
+    <a-tooltip v-if="!isTextOnlineForm && !hostedDesigner" placement="bottom">
       <template #title>
         <span>{{ $t('sys.onlineForm.subTableType.CHECK') }}</span>
       </template>
@@ -276,6 +284,7 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue';
+  import { useRoute } from 'vue-router';
   import { useSpreadSheet } from '../hooks/useSpreadSheet';
   import { useState } from '../hooks/useState';
   import ColorPicker from '/@/components/ColorPicker/src/ColorPicker.vue';
@@ -292,6 +301,10 @@
   import HistoryToolbar from './history-toolbar.vue';
   import TableIcon2d from '/@online-form/assets/table-2d.svg';
   import TableIconCheck from '/@online-form/assets/table-check.svg';
+
+  const route = useRoute();
+  const hostedDesigner = computed(() => route.query.hosted === '1');
+  const HOSTED_TEMPLATE_FONT_FAMILY = '"Microsoft YaHei", "微软雅黑", sans-serif';
 
   const {
     setMerge,
@@ -343,7 +356,8 @@
    */
   const cellFontFamily = computed<string>({
     get() {
-      return (cellStyleValue.value['font-family'] ?? FontFamilyEnum.Serif) as string;
+      return (cellStyleValue.value['font-family'] ??
+        (hostedDesigner.value ? HOSTED_TEMPLATE_FONT_FAMILY : FontFamilyEnum.Serif)) as string;
     },
     set(value) {
       setStyle({

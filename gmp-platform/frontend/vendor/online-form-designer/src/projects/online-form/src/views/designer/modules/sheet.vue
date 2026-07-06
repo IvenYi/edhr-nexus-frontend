@@ -29,12 +29,13 @@
         </div>
       </div>
     </div>
-    <SheetsComp v-if="!isPaperCanvas" />
+    <SheetsComp v-if="showSheetTabs" />
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, watch, computed, onUnmounted } from 'vue';
+  import { useRoute } from 'vue-router';
   import SpreadSheetTl from './sheet/sheet-tl.vue';
   import SpreadSheetX from './sheet/sheet-x.vue';
   import SpreadSheetY from './sheet/sheet-y.vue';
@@ -56,6 +57,8 @@
 
   const SpreadSheetRef = ref();
   const ViewPortScrollRef = ref();
+  const route = useRoute();
+  const hostedDesigner = computed(() => route.query.hosted === '1');
 
   const {
     paperLayout,
@@ -78,6 +81,7 @@
 
   const { activeSheet } = useAllSpreadSheets();
   const isPaperCanvas = computed(() => paper.value.canvasMode === CanvasMode.Paper);
+  const showSheetTabs = computed(() => !isPaperCanvas.value && !hostedDesigner.value);
   const domRef = computed(() => {
     return ViewPortScrollRef.value?.querySelector('.scrollbar__wrap') || ViewPortScrollRef.value;
   });

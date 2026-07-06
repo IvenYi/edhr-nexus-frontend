@@ -196,25 +196,25 @@
       readListTotal.value = 142;
       unReadList.value = [
         {
-          appName: 'GCT-MedPro',
+          appName: 'eDHR-MedPro',
           modifyTime: '今天 11:00:03',
           content: '设备申请了维修，请及时处理',
           read: 0,
         },
         {
-          appName: 'GCT-eDHR',
+          appName: 'eDHR-eDHR',
           modifyTime: '昨天 11:00:15',
           content: '张三提交的清场记录待您处理，请及时处理',
           read: 0,
         },
         {
-          appName: 'GCT-电子记录',
+          appName: 'eDHR-电子记录',
           modifyTime: '星期二 11:00:10',
           content: '李四提交的超声换能器成品检验报告待您处理，请及时处理',
           read: 0,
         },
         {
-          appName: 'GCT-MedPro',
+          appName: 'eDHR-MedPro',
           modifyTime: '2022-05-20 11:10',
           content: '设备申请了维修，请及时处理',
           read: 0,

@@ -139,6 +139,6 @@ export function registerGlobComp(app: App) {
 
   // 注册全局指令
   setupGlobDirectives(app);
-  // 注册GCT Word的运行时能力
+  // 注册eDHR Word的运行时能力
   registerGctWordRuntime(app);
 }

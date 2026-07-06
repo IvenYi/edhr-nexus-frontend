@@ -105,7 +105,7 @@ const initAfterScript = '}';
 
 const formStateDemo = `
  * const formState = {
- *  fieldKey1: '冠骋',
+ *  fieldKey1: '平台',
  *  fieldKey2: '研发中心',
  *  fieldKey3: 10000,
  *  subFieldKey: {

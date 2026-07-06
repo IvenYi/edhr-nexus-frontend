@@ -31,7 +31,7 @@ export default {
   offline: '离线授权',
   getLicenseFile: '获取授权文件',
   uploadLicenseFile: '上传授权文件',
-  scanQrcodeTip: '进入冠骋云PaaS小程序扫描此二维码获取授权信息',
+  scanQrcodeTip: '进入PaaS小程序扫描此二维码获取授权信息',
   appletAdress: '小程序地址',
   clickHere: '点此获取',
   prodLicense: '生产授权码',

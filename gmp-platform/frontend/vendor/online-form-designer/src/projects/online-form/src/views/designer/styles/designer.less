@@ -1,10 +1,12 @@
 .designer {
-  --toolkit-size: 48px;
+  --toolkit-size: 44px;
   --panel-size: 248px;
   --header-size: 54px;
   --toolbar-size: 42px;
   --sheets-size: 32px;
   --window-scroll-x: 0px;
+  --page-thumbnails-size: 0px;
+  --page-thumbnails-resizer-size: 6px;
 
   width: 100vw;
   height: calc(100vh - var(--header-height, 0px) - var(--window-scroll-x));
@@ -41,7 +43,31 @@
     'toolbar toolkit panel'
     'spread-sheet toolkit panel';
 
-  @areas: header, toolbar, toolkit, panel, spread-sheet, sheets, no-data;
+  &.designer--hosted {
+    grid-template-columns: var(--toolkit-size) calc(
+        100% - var(--toolkit-size) - var(--panel-size)
+      ) var(--panel-size);
+    grid-template-areas:
+      'header header header'
+      'toolbar toolbar panel'
+      'toolkit spread-sheet panel';
+  }
+
+  &.designer--page-thumbnails-open {
+    grid-template-columns: var(--toolkit-size) minmax(180px, var(--page-thumbnails-size)) var(
+        --page-thumbnails-resizer-size
+      ) calc(
+        100% - var(--toolkit-size) - var(--page-thumbnails-size) - var(--page-thumbnails-resizer-size) - var(
+            --panel-size
+          )
+      ) var(--panel-size);
+    grid-template-areas:
+      'header header header header header'
+      'toolbar toolbar toolbar toolbar panel'
+      'toolkit page-thumbnails page-thumbnails-resizer spread-sheet panel';
+  }
+
+  @areas: header, toolbar, toolkit, page-thumbnails, page-thumbnails-resizer, panel, spread-sheet, sheets, no-data;
   each(@areas, {
     &__@{value} {
       grid-area: @value;
@@ -56,6 +82,41 @@
 
   &__spread-sheet {
     position: relative;
+  }
+
+  &__page-thumbnails {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  &__page-thumbnails-resizer {
+    position: relative;
+    min-width: var(--page-thumbnails-resizer-size);
+    min-height: 0;
+    cursor: col-resize;
+    background: #f4f6fa;
+    touch-action: none;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 2px;
+      width: 1px;
+      background: #d8dde6;
+    }
+
+    &:hover,
+    body.designer-page-thumbnails-resizing & {
+      background: #eaf6ff;
+
+      &::before {
+        background: #1687e8;
+      }
+    }
   }
 }
 

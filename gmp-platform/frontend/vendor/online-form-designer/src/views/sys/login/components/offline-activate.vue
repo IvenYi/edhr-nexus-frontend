@@ -23,7 +23,7 @@
           <LeftOutlined /> &nbsp;{{ t('sys.back') }}
         </div>
         <img :src="appCode" alt="" style="width: 180px; height: 180px" />
-        <div class="text-[#666666] mt-25px">{{ t('冠骋云PaaS小程序') }}</div>
+        <div class="text-[#666666] mt-25px">{{ t('PaaS小程序') }}</div>
       </div>
     </div>
     <div class="mt32px" v-if="curStep === 1">

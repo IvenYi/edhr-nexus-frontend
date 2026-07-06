@@ -235,7 +235,7 @@ export default {
   entry: '进入系统',
   placeholder: '请输入锁屏密码或者用户密码',
   backSignIn: '返回',
-  signInFormTitle: '欢迎登录冠骋云PaaS平台',
+  signInFormTitle: '欢迎登录PaaS平台',
   signInFormSubTitle: '让数字化赋能客户成功！',
   mobileSignInFormTitle: '短信登录',
   qrSignInFormTitle: '二维码登录',
@@ -325,7 +325,7 @@ export default {
   googleBrowser: '谷歌浏览器',
   platformVersion: '平台版本号',
   adLogin: 'AD域登录',
-  company: "{'@'}Copyright2016-2023 冠骋信息技术 (苏州) 有限公司",
+  company: "{'@'}Copyright2016-2023 平台服务",
 
   new: '新建',
   create: '创建',

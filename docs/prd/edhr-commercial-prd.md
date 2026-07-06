@@ -16,8 +16,8 @@
 
 - `docs/superpowers/specs/2026-06-05-edhr-p0-business-closure-and-function-matrix-design.md`：当前最高优先级业务设计依据。
 - `edhr探索之旅.docx`、`edhr生产业务.png`：用于校准基础数据、生产执行、DHR 汇总、放行和追溯主线。
-- 冠骋在线 eDHR 页面观察：用于反推流程模板、表单审核、事务配置、制程配置、DHR 汇总、变更/作废和流程日志等能力。
-- 冠骋 MedPro eDHR、Siemens eDHR、MasterControl eDHR、Tulip electronic records、Greenlight Guru eDHR 等公开资料：仅作行业产品参考。
+- 平台在线 eDHR 页面观察：用于反推流程模板、表单审核、事务配置、制程配置、DHR 汇总、变更/作废和流程日志等能力。
+- 平台 MedPro eDHR、Siemens eDHR、MasterControl eDHR、Tulip electronic records、Greenlight Guru eDHR 等公开资料：仅作行业产品参考。
 - 国家药监局 2025 年第 107 号《医疗器械生产质量管理规范》及相关公开资料：作为医疗器械实施包和高监管电子记录场景参考。
 
 本文件是正式商用产品 PRD，不替代 MVP PRD。MVP PRD 用于指导第一阶段 0-1 闭环；本文件用于描述完整商用产品边界、模块体系、版本规划、交付责任和长期路线。

@@ -81,7 +81,7 @@ async function transformOfficeDocxJson(file: File) {
 }
 
 /**
- * 初始化GCT Word的全局配置（核心能力注册）
+ * 初始化eDHR Word的全局配置（核心能力注册）
  * @description 注册Word组件的全局拦截器、文件解析/上传方法、业务套件，应用启动时仅需调用一次
  */
 export function initGctWordGlobalConfig() {
@@ -112,7 +112,7 @@ export function initGctWordGlobalConfig() {
 }
 
 /**
- * 注册GCT Word的运行时能力到Vue应用
+ * 注册eDHR Word的运行时能力到Vue应用
  * @description 为Vue应用实例挂载Word相关的运行时插件（如FloatingVue、VueKonva）和全局指令
  * @param {ReturnType<typeof createApp>} app - Vue应用实例
  */

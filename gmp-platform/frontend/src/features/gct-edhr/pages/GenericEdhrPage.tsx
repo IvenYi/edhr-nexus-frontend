@@ -297,9 +297,9 @@ function NotFoundState({ pathname }: { pathname: string }) {
   return (
     <Paper variant="outlined" sx={{ p: 3, borderRadius: 1, bgcolor: '#fff' }}>
       <Stack spacing={1}>
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>未找到 GCT eDHR 页面</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 700 }}>未找到 eDHR 页面</Typography>
         <Typography variant="body2" color="text.secondary">
-          当前路径 {pathname} 未匹配到页面元数据，请从左侧菜单进入已生成的 GCT 页面。
+          当前路径 {pathname} 未匹配到页面元数据，请从左侧菜单进入已生成的 eDHR 页面。
         </Typography>
       </Stack>
     </Paper>

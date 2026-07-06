@@ -138,27 +138,27 @@
       const example = [
         {
           logoType: 'SVG',
-          name: 'GCT-MedPro',
+          name: 'eDHR-MedPro',
           logo: gctMedpro,
         },
         {
           logoType: 'SVG',
-          name: 'GCT-EAP',
+          name: 'eDHR-EAP',
           logo: gctEAP,
         },
         {
           logoType: 'SVG',
-          name: 'GCT-BI',
+          name: 'eDHR-BI',
           logo: gctBI,
         },
         {
           logoType: 'SVG',
-          name: 'GCT-WMS',
+          name: 'eDHR-WMS',
           logo: gctWMS,
         },
         {
           logoType: 'SVG',
-          name: 'GCT-SPC',
+          name: 'eDHR-SPC',
           logo: gctSPC,
         },
       ];

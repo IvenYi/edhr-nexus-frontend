@@ -286,7 +286,7 @@ class RoleControllerTest {
         Permission gctPermission = Permission.builder()
                 .id(-7_001L)
                 .code("gct-edhr.operation-panel.workbench.workbench-1-1")
-                .name("GCT / 工作台")
+                .name("eDHR / 工作台")
                 .type("PAGE")
                 .sortOrder(10_001)
                 .build();

@@ -84,7 +84,7 @@
 gmp-platform/frontend
 ├── src/api                  # axios API 封装
 ├── src/components           # 通用组件
-├── src/features/gct-edhr    # GCT 模块
+├── src/features/gct-edhr    # eDHR 模块
 ├── src/pages/system         # 系统模块页面
 ├── src/pages/master-data    # 数据模块页面
 ├── src/pages/account        # 个人设置

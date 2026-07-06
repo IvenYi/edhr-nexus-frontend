@@ -29,7 +29,7 @@ const openIDOAuthAuthSort = ref<any[]>(getLoginTypeOptions(OtherLoginKeys));
 
 const loginSetting: AuthConfig = reactive({
   theme: 'full',
-  title: '欢迎登录冠骋云PaaS平台',
+  title: '欢迎登录PaaS平台',
   subtitle: '让数字化赋能客户成功！',
   logo: '',
   banner: '',

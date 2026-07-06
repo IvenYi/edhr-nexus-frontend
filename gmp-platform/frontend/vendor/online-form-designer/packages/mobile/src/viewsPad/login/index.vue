@@ -8,7 +8,7 @@
         <div class="text-32px lh-40px login-form-title pt100px">
           <div> 欢迎登录 </div>
           <div class="flex items-center">
-            <div class="mt8px"> 冠骋云PaaS平台 </div>
+            <div class="mt8px"> PaaS平台 </div>
             <!-- 沙箱黄精标识 -->
             <div v-if="isSandbox" class="sandbox-symbol ml8px mt2px">
               <span class="sandbox-text">

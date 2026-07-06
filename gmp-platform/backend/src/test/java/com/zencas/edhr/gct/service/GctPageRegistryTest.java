@@ -21,7 +21,7 @@ class GctPageRegistryTest {
         GctSpecBundleDto bundle = registry.getBundle();
 
         assertThat(bundle.getSchemaVersion()).isEqualTo("1.0.0");
-        assertThat(bundle.getSourceFile()).isEqualTo("GCT_eDHR_功能详细规格与AI实现提示词.md");
+        assertThat(bundle.getSourceFile()).isEqualTo("eDHR_功能详细规格与AI实现提示词.md");
         assertThat(bundle.getPageCount()).isEqualTo(99);
         assertThat(bundle.getPages()).hasSize(99);
         assertThat(bundle.getModuleCounts()).containsExactlyInAnyOrderEntriesOf(Map.of(

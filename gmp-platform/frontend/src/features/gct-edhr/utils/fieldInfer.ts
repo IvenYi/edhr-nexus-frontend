@@ -136,7 +136,7 @@ function createNumberValue(label: string, seed: number, ordinal: number): number
 
 function createCodeValue(label: string, pageCode: string, seed: number, ordinal: number): string {
   const prefix = pageCode
-    .replace(/^gct_/, 'GCT-')
+    .replace(/^gct_/, 'eDHR-')
     .replace(/_/g, '-')
     .toUpperCase();
   const suffix = String((seed % 10_000) + ordinal).padStart(4, '0');

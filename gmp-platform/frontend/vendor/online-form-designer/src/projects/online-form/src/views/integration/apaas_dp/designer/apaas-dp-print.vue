@@ -1,5 +1,12 @@
 <template>
-  <div class="designer" :class="{ 'designer--hosted': hostedDesigner }">
+  <div
+    class="designer"
+    :style="pageThumbnailsStyle"
+    :class="{
+      'designer--hosted': hostedDesigner,
+      'designer--page-thumbnails-open': hostedDesigner && activeTab === 'form' && pageThumbnailsVisible,
+    }"
+  >
     <div v-if="!hostedDesigner" class="designer__header">
       <designer-header />
     </div>
@@ -10,8 +17,24 @@
       <div class="designer__spread-sheet">
         <spread-sheet :loading="loading" />
       </div>
+      <div v-if="hostedDesigner && pageThumbnailsVisible" class="designer__page-thumbnails">
+        <DesignerSidePanel :active-panel="activeSidePanel" @close="pageThumbnailsVisible = false" />
+      </div>
+      <div
+        v-if="hostedDesigner && pageThumbnailsVisible"
+        class="designer__page-thumbnails-resizer"
+        role="separator"
+        aria-label="调整分页缩略图宽度"
+        aria-orientation="vertical"
+        @pointerdown="startPageThumbnailsResize"
+      ></div>
       <div class="designer__toolkit">
-        <toolkit :show-fields="true" />
+        <toolkit
+          :show-fields="true"
+          :page-thumbnails-visible="pageThumbnailsVisible"
+          :active-side-panel="activeSidePanel"
+          @select-side-panel="selectSidePanel"
+        />
       </div>
       <div class="designer__panel">
         <panel />
@@ -52,6 +75,7 @@
   import Toolbar from '/@online-form/views/designer/modules/toolbar.vue';
   import DesignerHeader from '/@online-form/views/designer/modules/header.vue';
   import Toolkit from '/@online-form/views/designer/modules//toolkit.vue';
+  import DesignerSidePanel from '/@online-form/views/designer/modules/designer-side-panel.vue';
   import Panel from '/@online-form/views/designer/modules/panel.vue';
   import { usePrint } from '/@online-form/views/designer/hooks/usePrint';
   import { useSpreadSheet } from '/@online-form/views/designer/hooks/useSpreadSheet';
@@ -70,10 +94,67 @@
   const { setPlatformType } = useSpreadSheet();
   const { initialize, loading } = usePrint();
   let cleanupHostedDesigner: (() => void) | undefined;
+  let cleanupPageThumbnailsResize: (() => void) | undefined;
+  const PAGE_THUMBNAILS_MIN_WIDTH = 180;
+  const PAGE_THUMBNAILS_MAX_WIDTH = 300;
+  type HostedSidePanelKey = 'pages' | 'fields' | 'widgets';
   const hostedDesigner = computed(() => route.query.hosted === '1');
   const activeTab = ref<TemplateDesignerTabKey>('form');
+  const activeSidePanel = ref<HostedSidePanelKey>('pages');
+  const pageThumbnailsVisible = ref(true);
+  const pageThumbnailsWidth = ref(220);
+  const pageThumbnailsStyle = computed<Record<string, string>>(() => ({
+    '--page-thumbnails-size': `${pageThumbnailsWidth.value}px`,
+  }));
   const localModelInfo = computed(() => getLocalDesignerModelInfo());
   const localFields = computed(() => getLocalDesignerFieldList());
+
+  const clampPageThumbnailsWidth = (width: number) => {
+    return Math.min(PAGE_THUMBNAILS_MAX_WIDTH, Math.max(PAGE_THUMBNAILS_MIN_WIDTH, width));
+  };
+
+  const selectSidePanel = (panel: HostedSidePanelKey) => {
+    activeSidePanel.value = panel;
+    pageThumbnailsVisible.value = true;
+  };
+
+  const stopPageThumbnailsResize = () => {
+    cleanupPageThumbnailsResize?.();
+    cleanupPageThumbnailsResize = undefined;
+  };
+
+  const startPageThumbnailsResize = (event: PointerEvent) => {
+    event.preventDefault();
+    stopPageThumbnailsResize();
+
+    const startX = event.clientX;
+    const startWidth = pageThumbnailsWidth.value;
+    const previousCursor = document.body.style.cursor;
+    const previousUserSelect = document.body.style.userSelect;
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      pageThumbnailsWidth.value = clampPageThumbnailsWidth(startWidth + moveEvent.clientX - startX);
+    };
+    const handlePointerUp = () => {
+      stopPageThumbnailsResize();
+    };
+
+    document.body.classList.add('designer-page-thumbnails-resizing');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp, { once: true });
+    document.addEventListener('pointercancel', handlePointerUp, { once: true });
+
+    cleanupPageThumbnailsResize = () => {
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('pointercancel', handlePointerUp);
+      document.body.classList.remove('designer-page-thumbnails-resizing');
+      document.body.style.cursor = previousCursor;
+      document.body.style.userSelect = previousUserSelect;
+    };
+  };
 
   setPlatformType(PlatformEnum.INTEGRATION_PAAS_DP);
   if (hostedDesigner.value) {
@@ -89,6 +170,7 @@
   }
 
   onBeforeUnmount(() => {
+    stopPageThumbnailsResize();
     cleanupHostedDesigner?.();
   });
 </script>
@@ -111,7 +193,7 @@
   }
 
   .designer__hosted-content {
-    grid-column: 1 / 4;
+    grid-column: 1 / -1;
     grid-row: 2 / 4;
     min-width: 0;
     min-height: 0;

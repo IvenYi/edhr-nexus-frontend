@@ -423,7 +423,7 @@ export default {
   editForm: '编辑表单',
   modifyParameters: '修改参数',
   formPublishedSuccessfully: '表单发布成功',
-  guanCheng: '冠骋',
+  guanCheng: '平台',
   rdCenter: '研发中心',
   china: '中国',
   taiwanChina: '中国台湾',

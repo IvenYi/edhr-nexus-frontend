@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const workspaceRoot = resolve(scriptDir, '../..');
 const SCHEMA_VERSION = '1.0.0';
-const SOURCE_FILE_NAME = 'GCT_eDHR_功能详细规格与AI实现提示词.md';
+const SOURCE_FILE_NAME = 'eDHR_功能详细规格与AI实现提示词.md';
 
 const sourceFile = resolve(workspaceRoot, SOURCE_FILE_NAME);
 const frontendMetadataDir = resolve(
@@ -316,7 +316,7 @@ function normalizeActionLabel(label) {
 function parseMarkdownSections(markdown) {
   const stopIndex = markdown.search(/^## 12\./m);
   if (stopIndex < 0) {
-    throw new Error('Could not find "## 12." stop marker in GCT spec document.');
+    throw new Error('Could not find "## 12." stop marker in eDHR spec document.');
   }
 
   const content = markdown.slice(0, stopIndex);
@@ -566,7 +566,7 @@ function assertExpectedCounts(label, actual, expected) {
 
 function assertGeneratedPages(pages) {
   if (pages.length !== 99) {
-    throw new Error(`Expected 99 GCT eDHR pages, got ${pages.length}.`);
+    throw new Error(`Expected 99 eDHR pages, got ${pages.length}.`);
   }
 
   assertExpectedCounts('module', countBy(pages, (page) => page.module), EXPECTED_MODULE_COUNTS);
@@ -608,7 +608,7 @@ function makeMenus(pages) {
 function makeFrontendMenuModule(menus) {
   return {
     id: 'gct-edhr',
-    label: 'GCT',
+    label: 'eDHR',
     icon: 'Dashboard',
     menus,
   };
@@ -688,7 +688,7 @@ async function main() {
   const menus = makeMenus(pages);
   await writeGeneratedFiles(pages, menus, metadata);
 
-  console.log(`Generated ${pages.length} GCT eDHR page specs.`);
+  console.log(`Generated ${pages.length} eDHR page specs.`);
   console.log(`- ${generatedPagesFile}`);
   console.log(`- ${generatedMenusFile}`);
   console.log(`- ${backendSpecFile}`);

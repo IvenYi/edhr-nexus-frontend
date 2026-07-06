@@ -246,7 +246,7 @@ function findPageMeta(pageCode: string): EdhrPageMeta | undefined {
 
 function requireCurrentPageCode(state: GctEdhrMockStoreState): string {
   if (!state.pageCode) {
-    throw new Error('GCT eDHR mock store has no loaded page');
+    throw new Error('eDHR mock store has no loaded page');
   }
   return state.pageCode;
 }

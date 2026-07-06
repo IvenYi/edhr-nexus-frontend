@@ -74,7 +74,7 @@
       menuName ||
       route.meta.title ||
       pageDataforJson.value.pageName ||
-      '冠骋云'
+      '平台'
     );
   });
   const themeVars = {

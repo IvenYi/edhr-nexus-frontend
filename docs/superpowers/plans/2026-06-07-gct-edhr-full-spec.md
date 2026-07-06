@@ -1,12 +1,12 @@
-# GCT eDHR Full Spec Implementation Plan
+# eDHR Full Spec Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Implement every page and acceptance capability described in `GCT_eDHR_功能详细规格与AI实现提示词.md` as a demonstrable GCT eDHR module.
+**Goal:** Implement every page and acceptance capability described in `eDHR_功能详细规格与AI实现提示词.md` as a demonstrable eDHR module.
 
 **Architecture:** Keep the existing React + MUI frontend and Spring Boot backend intact. Add a parallel `/gct-edhr/*` frontend module driven by generated page metadata, plus a backend `/api/v1/gct/**` facade with generic page specs, records, actions, status history, audit events, and a demo-chain API. Existing `/master-data`, `/workflow`, `/system`, auth, and current APIs remain available.
 
-**Tech Stack:** React 18, TypeScript, MUI 5, Zustand, Vite, Node.js metadata generation/verification scripts, Spring Boot 3.3, Java 21, in-memory GCT record store for first-pass demonstration, existing audit/security utilities.
+**Tech Stack:** React 18, TypeScript, MUI 5, Zustand, Vite, Node.js metadata generation/verification scripts, Spring Boot 3.3, Java 21, in-memory eDHR record store for first-pass demonstration, existing audit/security utilities.
 
 ---
 
@@ -36,7 +36,7 @@ Page type distribution:
 ## File Structure
 
 - Create: `scripts/gct/generate-gct-specs.mjs`
-  - Parses `GCT_eDHR_功能详细规格与AI实现提示词.md` and generates frontend/backend specs from the same source.
+  - Parses `eDHR_功能详细规格与AI实现提示词.md` and generates frontend/backend specs from the same source.
 - Create: `gmp-platform/frontend/scripts/verify-gct-edhr-coverage.mjs`
   - Verifies generated metadata covers all 99 pages, unique routes, menu links, and type distribution.
 - Create: `gmp-platform/frontend/src/features/gct-edhr/types.ts`
@@ -44,7 +44,7 @@ Page type distribution:
 - Create: `gmp-platform/frontend/src/features/gct-edhr/metadata/generatedPages.ts`
   - Generated 99 page metadata.
 - Create: `gmp-platform/frontend/src/features/gct-edhr/metadata/generatedMenus.ts`
-  - Generated GCT menu metadata.
+  - Generated eDHR menu metadata.
 - Create: `gmp-platform/frontend/src/features/gct-edhr/utils/fieldInfer.ts`
 - Create: `gmp-platform/frontend/src/features/gct-edhr/utils/actionPolicy.ts`
 - Create: `gmp-platform/frontend/src/features/gct-edhr/utils/mockDataFactory.ts`
@@ -67,7 +67,7 @@ Page type distribution:
 - Modify: `gmp-platform/frontend/src/router/index.tsx`
   - Adds `/gct-edhr/*` route.
 - Modify: `gmp-platform/frontend/src/utils/constants.ts`
-  - Adds generated GCT menu module.
+  - Adds generated eDHR menu module.
 - Modify: `gmp-platform/frontend/src/components/shared/AppLayout.tsx`
   - Supports `/gct-edhr` active module and fixes current tab title derivation from actual pathname.
 - Create: `gmp-platform/backend/src/main/resources/gct/gct-page-specs.json`
@@ -114,12 +114,12 @@ if (!pagesModule?.GCT_EDHR_PAGES) failures.push('missing GCT_EDHR_PAGES export')
 if (!menusModule?.GCT_EDHR_MENU_MODULE) failures.push('missing GCT_EDHR_MENU_MODULE export');
 
 if (failures.length) {
-  console.error('GCT eDHR coverage verification failed:');
+  console.error('eDHR coverage verification failed:');
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exit(1);
 }
 
-console.log('GCT eDHR coverage verification passed.');
+console.log('eDHR coverage verification passed.');
 ```
 
 - [ ] **Step 2: Run verifier and confirm RED**
@@ -223,7 +223,7 @@ Expected: FAIL because route/menu/app-shell integration is missing.
 
 Lazy import `GenericEdhrPage` and mount it under protected `AppLayout`.
 
-- [ ] **Step 4: Add GCT menu module**
+- [ ] **Step 4: Add eDHR menu module**
 
 Import `GCT_EDHR_MENU_MODULE` and append it to `SIDEBAR_MODULES`.
 
@@ -339,7 +339,7 @@ git add gmp-platform/frontend/scripts/verify-gct-edhr-coverage.mjs gmp-platform/
 git commit -m "feat: render gct edhr generic pages"
 ```
 
-## Task 5: Backend GCT Facade
+## Task 5: Backend eDHR Facade
 
 **Files:**
 - Create backend `gct` package files listed in File Structure.
@@ -393,7 +393,7 @@ git commit -m "feat: add gct edhr backend facade"
 ## Task 6: Demo Chain And End-To-End Verification
 
 **Files:**
-- Modify frontend GCT demo chain components/client as needed.
+- Modify frontend eDHR demo chain components/client as needed.
 - Modify backend `GctDemoFlowController` as needed.
 - Test: frontend verifier/build, backend tests/package, browser QA.
 
@@ -407,7 +407,7 @@ Run the chain:
 
 基础建模 -> 工单 -> 批次/SN -> 生产执行 -> 检验执行 -> 放行 -> 表单/DHR -> 打印 -> 追溯报表
 
-Expected: every step creates or transitions a GCT record and appends status history/audit entries.
+Expected: every step creates or transitions a eDHR record and appends status history/audit entries.
 
 - [ ] **Step 3: Browser QA desktop/mobile**
 

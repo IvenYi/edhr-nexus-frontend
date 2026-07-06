@@ -102,7 +102,7 @@
       reload();
     } else {
       loading.value = false;
-      activeKey.value = 'GCT-MedPro';
+      activeKey.value = 'eDHR-MedPro';
       const example = [
         {
           invalid: 1,
@@ -110,7 +110,7 @@
           name: '生产操作台',
           type: 'MENU',
           sortNum: 1,
-          appId: 'GCT-MedPro',
+          appId: 'eDHR-MedPro',
         },
         {
           invalid: 1,
@@ -118,7 +118,7 @@
           name: '保养操作台',
           type: 'MENU',
           sortNum: 2,
-          appId: 'GCT-MedPro',
+          appId: 'eDHR-MedPro',
         },
         {
           invalid: 1,
@@ -126,7 +126,7 @@
           name: '维修操作台',
           type: 'MENU',
           sortNum: 3,
-          appId: 'GCT-MedPro',
+          appId: 'eDHR-MedPro',
         },
         {
           invalid: 1,
@@ -134,7 +134,7 @@
           name: '工单管理',
           type: 'MENU',
           sortNum: 4,
-          appId: 'GCT-MedPro',
+          appId: 'eDHR-MedPro',
         },
         {
           invalid: 1,
@@ -142,7 +142,7 @@
           name: '设备操作台',
           type: 'MENU',
           sortNum: 5,
-          appId: 'GCT-MedPro',
+          appId: 'eDHR-MedPro',
         },
         {
           invalid: 1,
@@ -150,25 +150,25 @@
           name: '标准eDHR',
           type: 'MENU',
           sortNum: 6,
-          appId: 'GCT-MedPro',
+          appId: 'eDHR-MedPro',
         },
       ];
       mineAppData.value = [
         {
-          appId: 'GCT-MedPro',
-          name: 'GCT-MedPro',
+          appId: 'eDHR-MedPro',
+          name: 'eDHR-MedPro',
           type: 'APP',
           children: example,
         },
         {
-          appId: 'GCT-EAP',
-          name: 'GCT-EAP',
+          appId: 'eDHR-EAP',
+          name: 'eDHR-EAP',
           type: 'APP',
           children: [],
         },
         {
-          appId: 'GCT-BI',
-          name: 'GCT-BI',
+          appId: 'eDHR-BI',
+          name: 'eDHR-BI',
           type: 'APP',
           children: example,
         },

@@ -17,7 +17,7 @@
           </div>
           <div class="ks-row" style="align-items: flex-start">
             <div v-if="displayContent.includes(PersonalCenterType.ENTERPRISE)" class="mr8px"
-              >冠骋信息技术</div
+              >平台信息技术</div
             >
             <div class="px6px py2px post text-[12px]" style="min-width: 60px">职务名称</div>
           </div>

@@ -1,4 +1,4 @@
-# GCT Field Tree Select 组件
+# eDHR Field Tree Select 组件
 
 这是一个带有层级限制的树形选择组件，支持多级表头配置。
 

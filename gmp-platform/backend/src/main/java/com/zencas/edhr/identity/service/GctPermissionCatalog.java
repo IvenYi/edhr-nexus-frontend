@@ -112,7 +112,7 @@ public class GctPermissionCatalog {
 
     private String buildPageName(GctPageSpecDto page) {
         String title = firstText(page.getTitle(), page.getLabel(), page.getModule(), page.getCode());
-        return "GCT / " + title;
+        return "eDHR / " + title;
     }
 
     private String buildActionName(GctPageSpecDto page, GctActionMetaDto action) {

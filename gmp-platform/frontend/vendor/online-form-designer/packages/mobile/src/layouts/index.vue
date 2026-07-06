@@ -25,7 +25,7 @@
   }
 
   const title = ref<string>(
-    (route.query.title as string) || (route.meta.title as string) || '冠骋云',
+    (route.query.title as string) || (route.meta.title as string) || '平台',
   );
 
   const themeVars = {
