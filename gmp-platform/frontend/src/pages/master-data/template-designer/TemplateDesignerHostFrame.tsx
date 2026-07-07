@@ -6,8 +6,10 @@ import type { TemplateModelingRecord, TemplateVersionRecord } from '@/api/templa
 import {
   buildHostContext,
   buildHostedDesignerSnapshot,
+  buildTemplateMockFillUrl,
   buildVueDesignerUrl,
   isTemplateDesignerHostEvent,
+  saveTemplateMockFillSnapshot,
   type TemplateDesignerBridgeMessage,
   type TemplateDesignerTabKey,
   type TemplateDesignerSavePayload,
@@ -41,6 +43,7 @@ export default function TemplateDesignerHostFrame({
   onSave,
 }: TemplateDesignerHostFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const mockFillWindowRef = useRef<Window | null>(null);
   const [ready, setReady] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [frameError, setFrameError] = useState('');
@@ -88,11 +91,32 @@ export default function TemplateDesignerHostFrame({
           });
         return;
       }
+      if (event.data.type === 'simulate-fill-snapshot') {
+        const sessionId = saveTemplateMockFillSnapshot(event.data.snapshot);
+        const mockFillUrl = buildTemplateMockFillUrl(sessionId);
+        const mockFillWindow = mockFillWindowRef.current;
+        mockFillWindowRef.current = null;
+
+        if (mockFillWindow && !mockFillWindow.closed) {
+          mockFillWindow.location.href = mockFillUrl;
+          return;
+        }
+
+        const opened = window.open(buildTemplateMockFillUrl(sessionId), '_blank', 'noopener,noreferrer');
+        if (!opened) {
+          setFrameError('浏览器拦截了模拟填报页面，请允许弹出窗口后重试');
+        }
+        return;
+      }
       if (event.data.type === 'close-request') {
         onClose();
         return;
       }
       if (event.data.type === 'error') {
+        if (mockFillWindowRef.current && !mockFillWindowRef.current.closed) {
+          mockFillWindowRef.current.close();
+          mockFillWindowRef.current = null;
+        }
         setFrameError(event.data.message || '设计器加载失败');
       }
     };
@@ -123,7 +147,12 @@ export default function TemplateDesignerHostFrame({
   };
 
   const handleSimulateFill = () => {
-    postToChild(iframeRef.current, { type: 'simulate-fill' });
+    mockFillWindowRef.current = window.open('', '_blank');
+    if (mockFillWindowRef.current) {
+      mockFillWindowRef.current.document.title = '正在打开模拟填报';
+      mockFillWindowRef.current.document.body.innerHTML = '<div style="font:14px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;padding:24px;color:#303133;">正在打开模拟填报...</div>';
+    }
+    postToChild(iframeRef.current, { type: 'simulate-fill-snapshot-request' });
   };
 
   const titleName = row.name?.trim() || '未命名表单';

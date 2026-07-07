@@ -33,6 +33,10 @@ export interface DesignerSheets {
   sheets?: ISheet[];
 }
 
+interface SaveSheetsOptions {
+  markClean?: boolean;
+}
+
 const designerConfig = ref<DesignerSheets>({});
 const formDesignInfo = ref<any>({});
 const sheetsData = ref<ISheet[]>([]);
@@ -253,8 +257,20 @@ function replaceAllFieldKeysLocal(
   });
 }
 
+const hostedDesignerOnlyBuild = import.meta.env.VITE_ONLINE_FORM_HOSTED_ONLY === 'true';
+
+async function loadHostedReverseModeling() {
+  return import('/src/projects/online-form/src/hosted-shims/reverse-modeling.ts');
+}
+
+async function loadStandaloneReverseModeling() {
+  return import(
+    /* @vite-ignore */ '/src/projects/online-form/src/views/designer/hooks/reverse-modeling/index.ts'
+  );
+}
+
 async function loadReverseModeling() {
-  return import('./reverse-modeling');
+  return hostedDesignerOnlyBuild ? loadHostedReverseModeling() : loadStandaloneReverseModeling();
 }
 
 export const useAllSpreadSheets = () => {
@@ -408,7 +424,7 @@ export const useAllSpreadSheets = () => {
    * @param isEasyEdition 是否是傻瓜模式
    * @returns
    */
-  async function saveSheets(isEasyEdition?: boolean) {
+  async function saveSheets(isEasyEdition?: boolean, options: SaveSheetsOptions = {}) {
     try {
       // 删除反向建模未使用的字段
       if (isEasyEdition && !isLocalDesignerInfo()) {
@@ -468,7 +484,9 @@ export const useAllSpreadSheets = () => {
           item.cellId = cellItem?.preId;
         });
       }
-      cloneSheetsData.value = cloneDeep(sheetsData.value);
+      if (options.markClean !== false) {
+        cloneSheetsData.value = cloneDeep(sheetsData.value);
+      }
       return {
         designerJson: JSON.stringify({ ...designerConfig.value, sheets: sheetsData.value }),
         runtimeJson: JSON.stringify({

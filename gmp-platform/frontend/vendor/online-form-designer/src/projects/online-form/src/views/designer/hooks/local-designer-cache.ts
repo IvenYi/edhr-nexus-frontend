@@ -19,6 +19,10 @@ export const LOCAL_FORM_MODEL_KEY = 'local_form_model';
 const LOCAL_FORM_DESIGNER_STORAGE_KEY = 'paas_main_front.local_form_designer.document';
 const DEFAULT_ROW_HEIGHT = 30;
 const DEFAULT_COL_WIDTH = 75;
+const HOSTED_DEFAULT_COL_COUNT = 9;
+const HOSTED_DEFAULT_COL_WIDTH = 80;
+const HOSTED_DEFAULT_ROW_COUNT = 20;
+const HOSTED_DEFAULT_LEGACY_COL_COUNT = 10;
 const LOCAL_DEFAULT_PAPER = {
   canvasMode: 'sheet',
   padding: {
@@ -28,20 +32,20 @@ const LOCAL_DEFAULT_PAPER = {
     l: 10,
   },
   orientation: 'portrait',
-  cols: Array(10)
+  cols: Array(HOSTED_DEFAULT_COL_COUNT)
     .fill('')
     .map(() => ({
-      width: DEFAULT_COL_WIDTH,
+      width: HOSTED_DEFAULT_COL_WIDTH,
     })),
-  rows: Array(20)
+  rows: Array(HOSTED_DEFAULT_ROW_COUNT)
     .fill('')
     .map(() => ({
       height: DEFAULT_ROW_HEIGHT,
     })),
-  cells: Array(20)
+  cells: Array(HOSTED_DEFAULT_ROW_COUNT)
     .fill('')
     .map(() =>
-      Array(12)
+      Array(HOSTED_DEFAULT_COL_COUNT)
         .fill('')
         .map(() => ({})),
     ),
@@ -51,6 +55,53 @@ const LOCAL_DEFAULT_PAPER = {
 
 function createDefaultPaper() {
   return cloneDeep(LOCAL_DEFAULT_PAPER);
+}
+
+function hasMeaningfulCellContent(cell?: Record<string, any>) {
+  if (!cell) return false;
+  if (
+    cell.value !== undefined ||
+    cell.type ||
+    cell.fieldMeta ||
+    cell.fieldWidget ||
+    cell.paperWidget ||
+    cell.multiFields ||
+    cell.multiFieldsContent?.length
+  ) {
+    return true;
+  }
+
+  return Boolean(
+    (cell.style && Object.keys(cell.style).length > 0) ||
+      (cell.border && Object.keys(cell.border).length > 0),
+  );
+}
+
+function hasMeaningfulPaperContent(paper: Record<string, any>) {
+  const hasCellContent = paper.cells?.some?.((row) => row?.some?.(hasMeaningfulCellContent));
+
+  return Boolean(
+    hasCellContent ||
+      paper.images?.length ||
+      paper.medias?.length ||
+      paper.mergedCells?.length ||
+      paper.paperWidgets?.length ||
+      paper.dynamicTables?.length ||
+      paper.fixedTables?.length ||
+      paper.dataGroups?.length ||
+      paper.dataGroups2D?.length,
+  );
+}
+
+function isLegacyBlankDefaultPaper(paper: Record<string, any>) {
+  return (
+    Array.isArray(paper.cols) &&
+    paper.cols.length === HOSTED_DEFAULT_LEGACY_COL_COUNT &&
+    paper.cols.every((col) => col?.width === DEFAULT_COL_WIDTH) &&
+    Array.isArray(paper.rows) &&
+    paper.rows.length === HOSTED_DEFAULT_ROW_COUNT &&
+    !hasMeaningfulPaperContent(paper)
+  );
 }
 
 function normalizePaper(paper?: Record<string, any>) {
@@ -89,6 +140,11 @@ function normalizePaper(paper?: Record<string, any>) {
   }
   if (!nextPaper.padding) {
     nextPaper.padding = defaultPaper.padding;
+  }
+
+  if (isLegacyBlankDefaultPaper(nextPaper)) {
+    nextPaper.cols = defaultPaper.cols;
+    nextPaper.cells = defaultPaper.cells;
   }
 
   const colCount = nextPaper.cols.length;

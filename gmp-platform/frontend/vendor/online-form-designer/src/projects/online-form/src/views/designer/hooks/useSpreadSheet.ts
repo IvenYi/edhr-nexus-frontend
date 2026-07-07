@@ -25,18 +25,19 @@ import {
   FieldTypeToCellWidgetMap,
 } from '../constants';
 import { useModelFields } from './useModelFields';
-import type {
-  IPaper,
-  IRange,
-  ICellStyle,
-  IMedia,
-  ITable,
-  ICell,
-  ICallback,
-  IFixedTable,
-  ICopyData,
-  ISelectionPaperData,
-  ICheckTableDataSource,
+import {
+  CanvasMode,
+  type IPaper,
+  type IRange,
+  type ICellStyle,
+  type IMedia,
+  type ITable,
+  type ICell,
+  type ICallback,
+  type IFixedTable,
+  type ICopyData,
+  type ISelectionPaperData,
+  type ICheckTableDataSource,
 } from '../types';
 import type { IBindField } from '@gct/nocode-base';
 import type { CellWidget } from '../types/cell-widget';
@@ -118,8 +119,20 @@ const formStateDemo = `
  * }
 `;
 
+const hostedDesignerOnlyBuild = import.meta.env.VITE_ONLINE_FORM_HOSTED_ONLY === 'true';
+
+function loadHostedReverseModeling() {
+  return import('/src/projects/online-form/src/hosted-shims/reverse-modeling.ts');
+}
+
+function loadStandaloneReverseModeling() {
+  return import(
+    /* @vite-ignore */ '/src/projects/online-form/src/views/designer/hooks/reverse-modeling/index.ts'
+  );
+}
+
 function loadReverseModeling() {
-  return import('./reverse-modeling');
+  return hostedDesignerOnlyBuild ? loadHostedReverseModeling() : loadStandaloneReverseModeling();
 }
 
 function loadTableModal() {
@@ -826,6 +839,51 @@ export function useSpreadSheet() {
     paper.value = p;
   }
 
+  function switchCanvasMode(mode: CanvasMode) {
+    if ((paper.value.canvasMode ?? CanvasMode.Sheet) === mode) {
+      return;
+    }
+
+    const {
+      orientation,
+      padding,
+      paperHeader,
+      paperFooter,
+      javascript,
+      globalOptions,
+      parameterMapping,
+      customDataSource,
+      checkTableDataSource,
+      mainModelKey,
+      modelMetaMap,
+    } = paper.value;
+    const nextPaper: IPaper = {
+      ...cloneDeep(DefaultPaper),
+      ...createPaperConfig(doc.value),
+      canvasMode: mode,
+      orientation: orientation ?? DefaultPaper.orientation,
+      padding: cloneDeep(padding ?? DefaultPaper.padding),
+      paperHeader,
+      paperHeaderWidgets: [],
+      paperFooter,
+      paperFooterWidgets: [],
+      paperWidgets: [],
+      javascript,
+      globalOptions,
+      parameterMapping,
+      customDataSource,
+      checkTableDataSource,
+      mainModelKey: mainModelKey ?? doc.value.modelKey,
+      modelMetaMap,
+    };
+    const mutablePaper = paper.value as Record<string, unknown>;
+    Object.keys(mutablePaper).forEach((key) => {
+      delete mutablePaper[key];
+    });
+    Object.assign(mutablePaper, nextPaper);
+    clearSelection();
+  }
+
   // function getSaveData() {
   //   // 删除反向建模未使用的字段
   //   if (isEasyEdition.value) {
@@ -850,6 +908,10 @@ export function useSpreadSheet() {
     const data = await saveSheets(isEasyEdition.value);
     await APIS.save(data);
     // APIS.save(getSaveData());
+  }
+
+  async function exportDesignSnapshot() {
+    return saveSheets(isEasyEdition.value, { markClean: false });
   }
 
   /**
@@ -2929,10 +2991,12 @@ export function useSpreadSheet() {
   return {
     init,
     save,
+    exportDesignSnapshot,
 
     setSheetMaps,
     setDoc,
     setPaper,
+    switchCanvasMode,
     getPaper,
     // getSaveData,
 

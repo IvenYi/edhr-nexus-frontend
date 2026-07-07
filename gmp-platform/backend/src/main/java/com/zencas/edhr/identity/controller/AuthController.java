@@ -29,7 +29,6 @@ import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserDepartmentRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
 import com.zencas.edhr.identity.security.JwtTokenProvider;
-import com.zencas.edhr.identity.service.GctPermissionCatalog;
 import com.zencas.edhr.system.entity.SystemSetting;
 import com.zencas.edhr.system.repository.SystemSettingRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -108,7 +107,6 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final RolePermissionRepository rolePermissionRepository;
     private final PermissionRepository permissionRepository;
-    private final GctPermissionCatalog gctPermissionCatalog;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final LoginLogRepository loginLogRepository;
@@ -872,8 +870,6 @@ public class AuthController {
                     .filter(Objects::nonNull)
                     .forEach(permissions::add);
         }
-        gctPermissionCatalog.findCodesByIds(permissionIds).forEach(permissions::add);
-
         return new UserPermissionSnapshot(
                 roleIds.stream().map(String::valueOf).toList(),
                 roleIds.stream().map(roleNameById::get).filter(Objects::nonNull).toList(),

@@ -191,8 +191,6 @@ mustInclude('inferPermissionCode', 'permission dialog should map sidebar routes 
 menuManagementMustInclude("if (path === '/system/login-logs') return 'system.login-logs';", 'login log route should map to an assignable backend permission instead of showing 未映射');
 loginLogPermissionMigrationMustInclude("'system.login-logs'", 'login log permission should exist in backend permission catalog');
 loginLogPermissionMigrationMustInclude('INSERT INTO role_permission', 'login log permission should be granted to ADMIN by migration so the menu appears after relogin');
-menuManagementMustInclude("path.replace(/^\\//, '').replace(/\\//g, '.')", 'eDHR menu routes should map to backend permission codes instead of staying unselectable');
-menuManagementMustNotInclude("path.startsWith('/gct-edhr')) return undefined", 'eDHR menu routes should not stay unselectable');
 mustInclude('permissionModules', 'permission dialog should derive display modules from sidebar modules');
 mustInclude('getRolePermissions', 'menu permission dialog should load role permission ids');
 mustInclude('updateRolePermissions', 'menu permission dialog should save permission ids');

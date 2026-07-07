@@ -1,5 +1,3 @@
-import { GCT_EDHR_MENU_MODULE } from '@/features/gct-edhr/metadata/generatedMenus';
-
 // ============================================================
 // Status Enum Maps (label + MUI color)
 // ============================================================
@@ -201,5 +199,4 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
       },
     ],
   },
-  GCT_EDHR_MENU_MODULE,
 ];

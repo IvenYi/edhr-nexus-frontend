@@ -27,7 +27,7 @@
     "build:mobile": "pnpm -r --filter=@gct/mobile  run build",
     "build:mobile-start": "pnpm -r --filter=@gct/mobile  run build:start",
     "build:no-cache": "pnpm clean:cache && npm run build",
-    "build:online-form": "cross-env NODE_OPTIONS=--max-old-space-size=20480 pnpm vite build --base /online-form/",
+    "build:online-form": "cross-env NODE_OPTIONS=--max-old-space-size=20480 VITE_ONLINE_FORM_HOSTED_ONLY=true VITE_SKIP_BUILD_GZIP=true pnpm vite build --base /online-form/",
     "build:page-designer": "cross-env NODE_OPTIONS=--max-old-space-size=8192 pnpm vite build --base /page-designer/",
     "build:portal": "cross-env NODE_OPTIONS=--max-old-space-size=8192 pnpm vite build --base /portal/",
     "build:print-ssr": "cross-env NODE_OPTIONS=--max-old-space-size=8192 pnpm vite build --base /print-ssr/",

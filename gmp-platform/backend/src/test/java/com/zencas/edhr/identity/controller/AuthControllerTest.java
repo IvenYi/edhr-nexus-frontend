@@ -25,7 +25,6 @@ import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserDepartmentRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
 import com.zencas.edhr.identity.security.JwtTokenProvider;
-import com.zencas.edhr.identity.service.GctPermissionCatalog;
 import com.zencas.edhr.system.entity.SystemSetting;
 import com.zencas.edhr.system.repository.SystemSettingRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -76,7 +75,6 @@ class AuthControllerTest {
     @Mock private RoleRepository roleRepository;
     @Mock private RolePermissionRepository rolePermissionRepository;
     @Mock private PermissionRepository permissionRepository;
-    @Mock private GctPermissionCatalog gctPermissionCatalog;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private JwtTokenProvider jwtTokenProvider;
     @Mock private LoginLogRepository loginLogRepository;
@@ -114,12 +112,9 @@ class AuthControllerTest {
         when(roleRepository.findAllById(List.of(10L))).thenReturn(List.of(
                 Role.builder().id(10L).name("系统管理员").build()));
         when(rolePermissionRepository.findByRoleIdIn(List.of(10L))).thenReturn(List.of(
-                RolePermission.builder().roleId(10L).permissionId(60L).build(),
-                RolePermission.builder().roleId(10L).permissionId(-7001L).build()));
+                RolePermission.builder().roleId(10L).permissionId(60L).build()));
         when(permissionRepository.findAllById(List.of(60L))).thenReturn(List.of(
                 Permission.builder().id(60L).code("system").name("系统管理").build()));
-        when(gctPermissionCatalog.findCodesByIds(List.of(60L, -7001L))).thenReturn(List.of(
-                "gct-edhr.operation-panel.workbench.workbench-1-1"));
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
         when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 480)).thenReturn("compact-token");
 
@@ -130,9 +125,7 @@ class AuthControllerTest {
         var userPayload = (java.util.Map<String, Object>) data.get("user");
 
         assertThat(data.get("token")).isEqualTo("compact-token");
-        assertThat(userPayload.get("permissions")).isEqualTo(List.of(
-                "system",
-                "gct-edhr.operation-panel.workbench.workbench-1-1"));
+        assertThat(userPayload.get("permissions")).isEqualTo(List.of("system"));
         assertThat(userPayload.get("roleNames")).isEqualTo(List.of("系统管理员"));
         verify(jwtTokenProvider).generateToken("1", "admin", "系统管理员", 480);
     }
@@ -164,7 +157,6 @@ class AuthControllerTest {
                 .signatureChangeCycleDays(365)
                 .build()));
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of());
-        when(gctPermissionCatalog.findCodesByIds(List.of())).thenReturn(List.of());
         when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
                 .thenReturn(Optional.empty());
         when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 120)).thenReturn("compact-token");
@@ -250,7 +242,6 @@ class AuthControllerTest {
         when(userAccountRepository.findByUsername("qa.admin")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of());
-        when(gctPermissionCatalog.findCodesByIds(List.of())).thenReturn(List.of());
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
         when(jwtTokenProvider.generateToken("1", "qa.admin", "质量管理员", 480)).thenReturn("compact-token");
         when(idGenerator.nextId()).thenReturn(9001L);
@@ -325,13 +316,10 @@ class AuthControllerTest {
                 Role.builder().id(10L).name("系统管理员").build()));
         when(rolePermissionRepository.findByRoleIdIn(List.of(10L))).thenReturn(List.of(
                 RolePermission.builder().roleId(10L).permissionId(60L).build(),
-                RolePermission.builder().roleId(10L).permissionId(64L).build(),
-                RolePermission.builder().roleId(10L).permissionId(-7001L).build()));
+                RolePermission.builder().roleId(10L).permissionId(64L).build()));
         when(permissionRepository.findAllById(List.of(60L, 64L))).thenReturn(List.of(
                 Permission.builder().id(60L).code("system").name("系统管理").build(),
                 Permission.builder().id(64L).code("system.roles").name("角色管理").build()));
-        when(gctPermissionCatalog.findCodesByIds(List.of(60L, 64L, -7001L))).thenReturn(List.of(
-                "gct-edhr.operation-panel.workbench.workbench-1-1"));
 
         var response = controller.me("1");
         var data = response.getData();
@@ -340,8 +328,7 @@ class AuthControllerTest {
         assertThat(data.get("roleNames")).isEqualTo(List.of("系统管理员"));
         assertThat(data.get("permissions")).isEqualTo(List.of(
                 "system",
-                "system.roles",
-                "gct-edhr.operation-panel.workbench.workbench-1-1"));
+                "system.roles"));
     }
 
     @Test
@@ -369,7 +356,6 @@ class AuthControllerTest {
                 Department.builder().id(20L).tenantId(0L).parentId(10L).name("质量部").build()));
         when(departmentRepository.findById(10L)).thenReturn(Optional.of(
                 Department.builder().id(10L).tenantId(0L).name("公司").build()));
-        when(gctPermissionCatalog.findCodesByIds(List.of())).thenReturn(List.of());
         when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
                 .thenReturn(Optional.of(Signature.builder()
                         .id(601L)
@@ -421,7 +407,6 @@ class AuthControllerTest {
         when(idGenerator.nextId()).thenReturn(501L);
         when(userAccountRepository.save(user)).thenReturn(user);
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of());
-        when(gctPermissionCatalog.findCodesByIds(List.of())).thenReturn(List.of());
         when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
                 .thenReturn(Optional.empty());
 
@@ -468,7 +453,6 @@ class AuthControllerTest {
                 Department.builder().id(20L).tenantId(0L).parentId(10L).name("质量部").build()));
         when(departmentRepository.findById(10L)).thenReturn(Optional.of(
                 Department.builder().id(10L).tenantId(0L).name("公司").build()));
-        when(gctPermissionCatalog.findCodesByIds(List.of())).thenReturn(List.of());
         when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
                 .thenReturn(Optional.empty());
 
@@ -892,7 +876,6 @@ class AuthControllerTest {
                 UserRole.builder().userId(1L).roleId(341646126926241792L).build()));
         when(roleRepository.findAllById(List.of(341646126926241792L))).thenReturn(List.of());
         when(rolePermissionRepository.findByRoleIdIn(List.of(341646126926241792L))).thenReturn(List.of());
-        when(gctPermissionCatalog.findCodesByIds(List.of())).thenReturn(List.of());
 
         var response = controller.me("1");
         var data = response.getData();
@@ -921,7 +904,6 @@ class AuthControllerTest {
                 UserRole.builder().userId(1L).roleId(341646126926241792L).build()));
         when(roleRepository.findAllById(List.of(341646126926241792L))).thenReturn(List.of());
         when(rolePermissionRepository.findByRoleIdIn(List.of(341646126926241792L))).thenReturn(List.of());
-        when(gctPermissionCatalog.findCodesByIds(List.of())).thenReturn(List.of());
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
         when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 480)).thenReturn("compact-token");
 

@@ -17,6 +17,8 @@ export const NumColMap: Record<number, string> = Array(1000)
 
 export const DEFAULT_ROW_HEIGHT = 30;
 export const DEFAULT_COL_WIDTH = 75;
+export const DEFAULT_PAPER_COL_COUNT = 9;
+export const DEFAULT_PAPER_COL_WIDTH = 80;
 
 export const PaperWidgetDropBoxId = 'PaperWidgetDropBoxId';
 export const ValueEditorFieldDropBoxId = 'ValueEditorFieldDropBoxId';
@@ -36,10 +38,10 @@ export const DefaultPaper: IPaper = {
     l: 10,
   },
   orientation: Orientation.Portrait,
-  cols: Array(10)
+  cols: Array(DEFAULT_PAPER_COL_COUNT)
     .fill('')
     .map(() => ({
-      width: DEFAULT_COL_WIDTH,
+      width: DEFAULT_PAPER_COL_WIDTH,
     })),
   rows: Array(20)
     .fill('')
@@ -49,7 +51,7 @@ export const DefaultPaper: IPaper = {
   cells: Array(20)
     .fill('')
     .map(() =>
-      Array(12)
+      Array(DEFAULT_PAPER_COL_COUNT)
         .fill('')
         .map(() => ({})),
     ),

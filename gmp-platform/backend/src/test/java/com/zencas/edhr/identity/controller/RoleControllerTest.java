@@ -17,7 +17,6 @@ import com.zencas.edhr.identity.repository.RolePermissionRepository;
 import com.zencas.edhr.identity.repository.RoleRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
-import com.zencas.edhr.identity.service.GctPermissionCatalog;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -52,7 +51,6 @@ class RoleControllerTest {
     @Mock private PermissionRepository permissionRepository;
     @Mock private UserRoleRepository userRoleRepository;
     @Mock private UserAccountRepository userAccountRepository;
-    @Mock private GctPermissionCatalog gctPermissionCatalog;
     @Mock private SnowflakeIdGenerator idGenerator;
     @Mock private AuditEventRepository auditEventRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -283,20 +281,12 @@ class RoleControllerTest {
                 .type("PAGE")
                 .sortOrder(1)
                 .build();
-        Permission gctPermission = Permission.builder()
-                .id(-7_001L)
-                .code("gct-edhr.operation-panel.workbench.workbench-1-1")
-                .name("eDHR / 工作台")
-                .type("PAGE")
-                .sortOrder(10_001)
-                .build();
         when(permissionRepository.findAll(Sort.by(Sort.Direction.ASC, "sortOrder"))).thenReturn(List.of(permission));
-        when(gctPermissionCatalog.listPermissions()).thenReturn(List.of(gctPermission));
 
         var response = controller.listAssignablePermissions(1, 50, "sortOrder", "asc");
 
-        assertThat(response.getData().getContent()).containsExactly(permission, gctPermission);
-        assertThat(response.getData().getTotalElements()).isEqualTo(2);
+        assertThat(response.getData().getContent()).containsExactly(permission);
+        assertThat(response.getData().getTotalElements()).isEqualTo(1);
     }
 
     @Test

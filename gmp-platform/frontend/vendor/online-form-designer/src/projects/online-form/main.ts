@@ -5,22 +5,24 @@ import '@/design/index.less';
 // Register icon sprite
 import 'virtual:svg-icons-register';
 
+import Antd from 'ant-design-vue';
 import { App, createApp } from 'vue';
 
-import { registerGlobComp } from '@/components/registerGlobComp';
-import { registerGlobLayout } from '@/layouts/registerGlobLayout';
-import { setupGlobDirectives } from '@/directives';
 import { i18n, setupI18n } from '@/locales/setupI18n';
-import { setupErrorHandle } from '@/logics/error-handle';
-import { initAppConfigStore } from '@/logics/initAppConfig';
 import { setupRouter } from '/@online-form/router';
-import { setupRouterGuard } from '/@/router/guard';
 import { setupStore } from '/@/store';
 import { usePathQueryStore } from '/@/store/modules/pathQuery';
-import { usePlatformSetting } from '/@/hooks/platform';
-import { AsyncGctOnlineComponents } from './src/views/render/__components__/index';
-import AppComponent from './App.vue';
-import { OverlayContainer } from '@gct/runtime-web';
+
+async function importStandaloneModule<T = any>(modulePath: string): Promise<T> {
+  return import(/* @vite-ignore */ modulePath) as Promise<T>;
+}
+
+async function loadRootComponent(hostedDesignerMode: boolean) {
+  if (hostedDesignerMode) {
+    return (await import('./HostedApp.vue')).default;
+  }
+  return (await importStandaloneModule('/src/projects/online-form/App.vue')).default;
+}
 
 function isHostedDesignerMode() {
   const hashQuery = window.location.hash.split('?')[1] || '';
@@ -33,23 +35,39 @@ function createVueApp(rootComponent: any, rootProps?: any): App<Element> {
   // 配置 store
   setupStore(app);
 
-  // 注册全局组件
-  registerGlobComp(app);
-
-  // 注册全局布局
-  registerGlobLayout(app);
-
-  // 注册全局指令
-  setupGlobDirectives(app);
-
   app.use(i18n);
 
   return app;
 }
 
+async function registerStandaloneGlobals(app: App<Element>) {
+  const [{ registerGlobComp }, { registerGlobLayout }] = await Promise.all([
+    importStandaloneModule('/src/components/registerGlobComp.ts'),
+    importStandaloneModule('/src/layouts/registerGlobLayout.ts'),
+  ]);
+
+  registerGlobComp(app);
+  registerGlobLayout(app);
+
+  const { OverlayContainer } = await import('@gct/runtime-web');
+  OverlayContainer.createVueApp = createVueApp;
+}
+
+function registerHostedDesignerGlobals(app: App<Element>) {
+  app.use(Antd);
+}
+
 async function bootstrap() {
+  const hostedDesignerOnlyBuild = import.meta.env.VITE_ONLINE_FORM_HOSTED_ONLY === 'true';
+  const hostedDesignerMode = hostedDesignerOnlyBuild || isHostedDesignerMode();
+  const AppComponent = await loadRootComponent(hostedDesignerMode);
   const app = createVueApp(AppComponent);
-  const hostedDesignerMode = isHostedDesignerMode();
+
+  if (hostedDesignerMode) {
+    registerHostedDesignerGlobals(app);
+  } else {
+    await registerStandaloneGlobals(app);
+  }
 
   // Configure store
   // 配置 store
@@ -57,7 +75,10 @@ async function bootstrap() {
 
   // Initialize internal system configuration
   // 初始化内部系统配置
-  initAppConfigStore('online-form');
+  if (!hostedDesignerMode) {
+    const { initAppConfigStore } = await importStandaloneModule('/src/logics/initAppConfig.ts');
+    initAppConfigStore('online-form');
+  }
 
   // Register global components
   // 注册全局组件
@@ -72,7 +93,12 @@ async function bootstrap() {
   // 异步案例：语言文件可能从服务器端获取
   await setupI18n(app, { loadRemote: !hostedDesignerMode });
 
-  AsyncGctOnlineComponents.init(true);
+  if (!hostedDesignerMode) {
+    const { AsyncGctOnlineComponents } = await importStandaloneModule(
+      '/src/projects/online-form/src/views/render/__components__/index.ts',
+    );
+    await AsyncGctOnlineComponents.init(true);
+  }
 
   // Configure routing
   // 配置路由
@@ -80,15 +106,17 @@ async function bootstrap() {
 
   // router-guard
   // 路由守卫
-  setupRouterGuard(router);
-
-  // Register global directive
-  // 注册全局指令
-  setupGlobDirectives(app);
+  if (!hostedDesignerMode) {
+    const { setupRouterGuard } = await importStandaloneModule('/src/router/guard/index.ts');
+    setupRouterGuard(router);
+  }
 
   // Configure global error handling
   // 配置全局错误处理
-  setupErrorHandle(app);
+  if (!hostedDesignerMode) {
+    const { setupErrorHandle } = await importStandaloneModule('/src/logics/error-handle/index.ts');
+    setupErrorHandle(app);
+  }
 
   // https://next.router.vuejs.org/api/#isready
   // await router.isReady();
@@ -99,14 +127,13 @@ async function bootstrap() {
   /**
    * 加载平台配置信息
    */
-  if (!isHostedDesignerMode()) {
+  if (!hostedDesignerMode) {
+    const { usePlatformSetting } = await importStandaloneModule('/src/hooks/platform/index.ts');
     const { loadPlatformSetting } = usePlatformSetting();
     loadPlatformSetting(true);
   }
 
   app.mount('#app');
 }
-
-OverlayContainer.createVueApp = createVueApp;
 
 bootstrap();

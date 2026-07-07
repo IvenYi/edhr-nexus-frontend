@@ -44,27 +44,23 @@
     'spread-sheet toolkit panel';
 
   &.designer--hosted {
-    grid-template-columns: var(--toolkit-size) calc(
-        100% - var(--toolkit-size) - var(--panel-size)
-      ) var(--panel-size);
+    grid-template-columns: var(--toolkit-size) calc(100% - var(--toolkit-size));
     grid-template-areas:
-      'header header header'
-      'toolbar toolbar panel'
-      'toolkit spread-sheet panel';
+      'header header'
+      'toolbar toolbar'
+      'toolkit spread-sheet';
   }
 
   &.designer--page-thumbnails-open {
-    grid-template-columns: var(--toolkit-size) minmax(180px, var(--page-thumbnails-size)) var(
+    grid-template-columns: var(--toolkit-size) minmax(210px, var(--page-thumbnails-size)) var(
         --page-thumbnails-resizer-size
       ) calc(
-        100% - var(--toolkit-size) - var(--page-thumbnails-size) - var(--page-thumbnails-resizer-size) - var(
-            --panel-size
-          )
-      ) var(--panel-size);
+        100% - var(--toolkit-size) - var(--page-thumbnails-size) - var(--page-thumbnails-resizer-size)
+      );
     grid-template-areas:
-      'header header header header header'
-      'toolbar toolbar toolbar toolbar panel'
-      'toolkit page-thumbnails page-thumbnails-resizer spread-sheet panel';
+      'header header header header'
+      'toolbar toolbar toolbar toolbar'
+      'toolkit page-thumbnails page-thumbnails-resizer spread-sheet';
   }
 
   @areas: header, toolbar, toolkit, page-thumbnails, page-thumbnails-resizer, panel, spread-sheet, sheets, no-data;

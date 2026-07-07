@@ -20,7 +20,6 @@ import com.zencas.edhr.identity.repository.RolePermissionRepository;
 import com.zencas.edhr.identity.repository.RoleRepository;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.repository.UserRoleRepository;
-import com.zencas.edhr.identity.service.GctPermissionCatalog;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,7 +54,6 @@ public class RoleController {
     private final UserRoleRepository userRoleRepository;
     private final UserAccountRepository userAccountRepository;
     private final PermissionRepository permissionRepository;
-    private final GctPermissionCatalog gctPermissionCatalog;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
 
@@ -138,7 +136,6 @@ public class RoleController {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sortSpec = Sort.by(direction, sort);
         List<Permission> permissions = new ArrayList<>(permissionRepository.findAll(sortSpec));
-        permissions.addAll(gctPermissionCatalog.listPermissions());
         permissions.sort(permissionComparator(sort, direction));
 
         int safePage = Math.max(page, 1);

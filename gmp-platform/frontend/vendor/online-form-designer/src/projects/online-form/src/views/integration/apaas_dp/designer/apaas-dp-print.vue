@@ -7,8 +7,8 @@
       'designer--page-thumbnails-open': hostedDesigner && activeTab === 'form' && pageThumbnailsVisible,
     }"
   >
-    <div v-if="!hostedDesigner" class="designer__header">
-      <designer-header />
+    <div v-if="!hostedDesigner && StandaloneDesignerHeader" class="designer__header">
+      <component :is="StandaloneDesignerHeader" />
     </div>
     <template v-if="activeTab === 'form'">
       <div class="designer__toolbar">
@@ -36,8 +36,8 @@
           @select-side-panel="selectSidePanel"
         />
       </div>
-      <div class="designer__panel">
-        <panel />
+      <div v-if="!hostedDesigner && StandalonePanel" class="designer__panel">
+        <component :is="StandalonePanel" />
       </div>
     </template>
     <div v-else class="designer__hosted-content">
@@ -73,10 +73,8 @@
 <script setup lang="ts" name="apaas-dp-print">
   import SpreadSheet from '/@online-form/views/designer/modules/sheet.vue';
   import Toolbar from '/@online-form/views/designer/modules/toolbar.vue';
-  import DesignerHeader from '/@online-form/views/designer/modules/header.vue';
   import Toolkit from '/@online-form/views/designer/modules//toolkit.vue';
   import DesignerSidePanel from '/@online-form/views/designer/modules/designer-side-panel.vue';
-  import Panel from '/@online-form/views/designer/modules/panel.vue';
   import { usePrint } from '/@online-form/views/designer/hooks/usePrint';
   import { useSpreadSheet } from '/@online-form/views/designer/hooks/useSpreadSheet';
   import {
@@ -87,17 +85,25 @@
   import type { TemplateDesignerTabKey } from '/@online-form/views/designer/bridge/template-designer-protocol';
   import { PlatformEnum } from '@gct/nocode-base';
 
-  import { computed, onBeforeUnmount, ref } from 'vue';
+  import { computed, defineAsyncComponent, onBeforeUnmount, ref } from 'vue';
   import { useRoute } from 'vue-router';
+
+  const hostedDesignerOnlyBuild = import.meta.env.VITE_ONLINE_FORM_HOSTED_ONLY === 'true';
+  const StandaloneDesignerHeader = hostedDesignerOnlyBuild
+    ? null
+    : defineAsyncComponent(() => import('/@online-form/views/designer/modules/header.vue'));
+  const StandalonePanel = hostedDesignerOnlyBuild
+    ? null
+    : defineAsyncComponent(() => import('/@online-form/views/designer/modules/panel.vue'));
 
   const route = useRoute();
   const { setPlatformType } = useSpreadSheet();
   const { initialize, loading } = usePrint();
   let cleanupHostedDesigner: (() => void) | undefined;
   let cleanupPageThumbnailsResize: (() => void) | undefined;
-  const PAGE_THUMBNAILS_MIN_WIDTH = 180;
+  const PAGE_THUMBNAILS_MIN_WIDTH = 210;
   const PAGE_THUMBNAILS_MAX_WIDTH = 300;
-  type HostedSidePanelKey = 'pages' | 'fields' | 'widgets';
+  type HostedSidePanelKey = 'pages' | 'fields' | 'widgets' | 'properties';
   const hostedDesigner = computed(() => route.query.hosted === '1');
   const activeTab = ref<TemplateDesignerTabKey>('form');
   const activeSidePanel = ref<HostedSidePanelKey>('pages');

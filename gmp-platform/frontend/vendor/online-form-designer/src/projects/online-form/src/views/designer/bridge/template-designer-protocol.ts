@@ -30,7 +30,7 @@ export type TemplateDesignerBridgeMessage =
   | { type: 'save' }
   | { type: 'set-active-tab'; tab: TemplateDesignerTabKey }
   | { type: 'import-template' }
-  | { type: 'simulate-fill' }
+  | { type: 'simulate-fill-snapshot-request' }
   | { type: 'save-success' }
   | { type: 'save-error'; message: string }
   | { type: 'close' };
@@ -39,6 +39,7 @@ export type TemplateDesignerHostEvent =
   | { type: 'ready' }
   | { type: 'dirty-change'; dirty: boolean }
   | { type: 'save-request'; payload: TemplateDesignerSavePayload }
+  | { type: 'simulate-fill-snapshot'; snapshot: HostedDesignerSnapshot }
   | { type: 'close-request' }
   | { type: 'error'; message: string };
 
@@ -49,7 +50,7 @@ export function isTemplateDesignerBridgeMessage(input: unknown): input is Templa
     || type === 'save'
     || type === 'set-active-tab'
     || type === 'import-template'
-    || type === 'simulate-fill'
+    || type === 'simulate-fill-snapshot-request'
     || type === 'save-success'
     || type === 'save-error'
     || type === 'close';

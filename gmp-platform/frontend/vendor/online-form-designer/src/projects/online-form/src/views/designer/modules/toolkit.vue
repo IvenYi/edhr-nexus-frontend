@@ -86,6 +86,22 @@
       <span class="designer__toolkit-label">{{ $t('sys.pageDesigner.widget') }}</span>
     </button>
 
+    <button
+      v-if="hostedDesigner"
+      type="button"
+      class="designer__toolkit-item"
+      title="属性配置"
+      :class="{ active: isHostedSidePanelActive('properties') }"
+      @click="selectSidePanel('properties')"
+    >
+      <span class="designer__toolkit-properties-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="designer__toolkit-label">属性配置</span>
+    </button>
+
     <a-popover
       v-if="!hostedDesigner"
       :visible="widgetsPopoverVisible"
@@ -136,7 +152,7 @@
   import ToolkitContentFields from './toolkit/toolkit-content-fields';
 
   type ActivePopoverKey = 'fields' | 'widgets' | undefined;
-  type HostedSidePanelKey = 'pages' | 'fields' | 'widgets';
+  type HostedSidePanelKey = 'pages' | 'fields' | 'widgets' | 'properties';
 
   const props = withDefaults(
     defineProps<{
@@ -327,6 +343,47 @@
         display: block;
         border: 1.5px solid currentColor;
         border-radius: 2px;
+      }
+    }
+
+    &-properties-icon {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 19px;
+      height: 18px;
+      gap: 4px;
+
+      span {
+        position: relative;
+        display: block;
+        height: 1.5px;
+        border-radius: 2px;
+        background: currentColor;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: -2.5px;
+          width: 6px;
+          height: 6px;
+          border: 1.5px solid currentColor;
+          border-radius: 50%;
+          background: #fff;
+        }
+
+        &:nth-child(1)::after {
+          left: 2px;
+        }
+
+        &:nth-child(2)::after {
+          right: 3px;
+        }
+
+        &:nth-child(3)::after {
+          left: 7px;
+        }
       }
     }
   }

@@ -12,11 +12,13 @@
         'designer-side-panel__body--pages': activePanel === 'pages',
         'designer-side-panel__body--fields': activePanel === 'fields',
         'designer-side-panel__body--widgets': activePanel === 'widgets',
+        'designer-side-panel__body--properties': activePanel === 'properties',
       }"
     >
       <PageThumbnails v-if="activePanel === 'pages'" />
       <ToolkitContentFields v-else-if="activePanel === 'fields'" />
-      <ToolkitContentWidgets v-else />
+      <ToolkitContentWidgets v-else-if="activePanel === 'widgets'" />
+      <HostedPropertiesPanel v-else />
     </div>
   </aside>
 </template>
@@ -26,8 +28,9 @@
   import PageThumbnails from './page-thumbnails.vue';
   import ToolkitContentFields from './toolkit/toolkit-content-fields';
   import ToolkitContentWidgets from './toolkit/toolkit-content-widgets/toolkit-content-widgets.vue';
+  import HostedPropertiesPanel from './hosted-properties-panel.vue';
 
-  type HostedSidePanelKey = 'pages' | 'fields' | 'widgets';
+  type HostedSidePanelKey = 'pages' | 'fields' | 'widgets' | 'properties';
 
   const props = defineProps<{
     activePanel: HostedSidePanelKey;
@@ -37,6 +40,7 @@
   const panelTitle = computed(() => {
     if (props.activePanel === 'fields') return '字段管理';
     if (props.activePanel === 'widgets') return '组件管理';
+    if (props.activePanel === 'properties') return '属性配置';
     return '分页缩略图';
   });
 </script>
@@ -94,7 +98,8 @@
     }
 
     &__body--fields,
-    &__body--widgets {
+    &__body--widgets,
+    &__body--properties {
       overflow-y: auto;
     }
 
@@ -120,6 +125,12 @@
       :deep(.toolkit-content-widgets) {
         max-height: none;
         overflow-y: visible;
+      }
+    }
+
+    &__body--properties {
+      :deep(.online-form__designer-panel) {
+        height: 100%;
       }
     }
   }

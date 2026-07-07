@@ -278,6 +278,28 @@
       <a-checkbox v-model:checked="gridLineVisible">{{
         $t('sys.onlineForm.gridlines')
       }}</a-checkbox>
+      <a-checkbox :disabled="sheetReadonly" v-model:checked="paper.paperHeader">
+        {{ $t('sys.onlineForm.header') }}
+      </a-checkbox>
+      <a-checkbox :disabled="sheetReadonly" v-model:checked="paper.paperFooter">
+        {{ $t('sys.footer') }}
+      </a-checkbox>
+    </div>
+
+    <div v-if="!isTextOnlineForm" class="vertical-divider canvas-mode-divider"></div>
+
+    <div v-if="!isTextOnlineForm" class="canvas-mode-toggle" role="group" aria-label="设计模式">
+      <button
+        v-for="item in canvasModeOptions"
+        :key="item.value"
+        type="button"
+        class="canvas-mode-toggle__button"
+        :class="{ 'canvas-mode-toggle__button--active': activeCanvasMode === item.value }"
+        :disabled="sheetReadonly"
+        @click="handleCanvasModeChange(item.value)"
+      >
+        {{ item.label }}
+      </button>
     </div>
   </div>
 </template>
@@ -301,6 +323,7 @@
   import HistoryToolbar from './history-toolbar.vue';
   import TableIcon2d from '/@online-form/assets/table-2d.svg';
   import TableIconCheck from '/@online-form/assets/table-check.svg';
+  import { CanvasMode } from '../types';
 
   const route = useRoute();
   const hostedDesigner = computed(() => route.query.hosted === '1');
@@ -313,13 +336,28 @@
     setSubTable,
     setStyle,
     setBorder,
+    switchCanvasMode,
     gridLineVisible,
+    paper,
+    sheetReadonly,
     setTextWrap,
     setTextDecoration,
     isTextOnlineForm,
   } = useSpreadSheet();
 
   const { cellStyleState, cellStyleValue } = useState();
+  const canvasModeOptions = [
+    { label: '表格模式', value: CanvasMode.Sheet },
+    { label: '画布模式', value: CanvasMode.Paper },
+  ];
+  const activeCanvasMode = computed(() => paper.value.canvasMode ?? CanvasMode.Sheet);
+
+  const handleCanvasModeChange = (mode: CanvasMode) => {
+    if (sheetReadonly.value || activeCanvasMode.value === mode) {
+      return;
+    }
+    switchCanvasMode(mode);
+  };
 
   const presetColor = [
     '#DBDBDB',
@@ -540,16 +578,67 @@
     }
 
     .grid {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 10px;
       flex-shrink: 0;
       height: 24px;
       padding-left: 2px;
+      white-space: nowrap;
 
       & > label {
-        display: flex;
+        display: inline-flex;
         align-items: center;
+        flex: 0 0 auto;
+        margin-left: 0;
 
         :deep(.ant-checkbox) {
           top: 0;
+        }
+      }
+    }
+
+    .canvas-mode-divider {
+      margin-left: 14px;
+    }
+
+    .canvas-mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 4px;
+      height: 24px;
+
+      &__button {
+        height: 24px;
+        padding: 0 10px;
+        border: 1px solid #d8dde6;
+        border-radius: 4px;
+        background: #fff;
+        color: #4e5969;
+        font-size: 12px;
+        line-height: 22px;
+        cursor: pointer;
+
+        &:hover:not(:disabled) {
+          border-color: #1687e8;
+          color: #1687e8;
+        }
+
+        &--active {
+          border-color: #1687e8;
+          background: #1687e8;
+          color: #fff;
+
+          &:hover:not(:disabled) {
+            color: #fff;
+          }
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.55;
         }
       }
     }

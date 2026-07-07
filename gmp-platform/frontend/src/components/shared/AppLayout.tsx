@@ -44,7 +44,7 @@ import {
   TranslateRounded,
 } from '@mui/icons-material';
 import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
-import { inferPermissionCode, useManagedSidebarModules } from '@/utils/menuManagement';
+import { inferPermissionCode, isRetiredSidebarPath, useManagedSidebarModules } from '@/utils/menuManagement';
 import { useSystemBranding } from '@/hooks/useSystemBranding';
 import { renderManagedIcon } from '@/utils/iconAssets';
 import { getMe, logout } from '@/api/auth';
@@ -199,7 +199,6 @@ function getModuleIdByPath(pathname: string): string {
   if (isPathSegmentMatch(pathname, '/master-data')) return 'data';
   if (isPathSegmentMatch(pathname, '/workflow')) return 'production';
   if (isPathSegmentMatch(pathname, '/system')) return 'system';
-  if (isPathSegmentMatch(pathname, '/gct-edhr')) return 'gct-edhr';
   return 'home';
 }
 
@@ -477,6 +476,13 @@ export default function AppLayout() {
   }, [location.pathname, navigate]);
 
   useEffect(() => {
+    setOpenTabs((prev) => prev.filter((tab) => !isRetiredSidebarPath(tab.path)));
+    if (isRetiredSidebarPath(location.pathname)) {
+      navigate(HOME_TAB.path, { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+  useEffect(() => {
     if (visibleModules.some((module) => module.id === autoModuleId)) {
       setActiveModuleId(autoModuleId);
     }
@@ -525,6 +531,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     setOpenTabs((prev) => {
+      if (isRetiredSidebarPath(currentRouteTab.path)) return prev;
       if (prev.some((tab) => tab.path === currentRouteTab.path)) return prev;
       return [...prev, currentRouteTab];
     });

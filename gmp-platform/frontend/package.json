@@ -21,7 +21,7 @@
     "verify:system-menu-pruned": "node scripts/verify-system-menu-pruned.mjs",
     "verify:app-shell": "node scripts/verify-app-shell-topbar.mjs",
     "verify:personal-settings": "node scripts/verify-personal-settings-page.mjs",
-    "verify:gct-edhr": "node scripts/verify-gct-edhr-coverage.mjs",
+    "verify:gct-module-removed": "node scripts/verify-gct-module-removed.mjs",
     "verify:template-designer": "node scripts/verify-template-designer-pages.mjs",
     "designer:install": "cd vendor/online-form-designer && COREPACK_NPM_REGISTRY=https://registry.npmmirror.com COREPACK_ENABLE_DOWNLOAD_PROMPT=0 corepack pnpm@10.32.0 install --frozen-lockfile",
     "designer:dev": "cd vendor/online-form-designer && COREPACK_NPM_REGISTRY=https://registry.npmmirror.com COREPACK_ENABLE_DOWNLOAD_PROMPT=0 corepack pnpm@10.32.0 run dev:online-form",

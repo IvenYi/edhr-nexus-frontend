@@ -7,8 +7,6 @@ import NotFoundPage from '@/pages/NotFoundPage';
 
 const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage'));
 const PersonalSettingsPage = lazy(() => import('@/pages/account/PersonalSettingsPage'));
-const GenericEdhrPage = lazy(() => import('@/features/gct-edhr/pages/GenericEdhrPage'));
-
 const ReviewTemplateList = lazy(() => import('@/pages/workflow-center/ReviewTemplateList'));
 const ReviewTemplateEditor = lazy(() => import('@/pages/workflow-center/ReviewTemplateEditor'));
 const TxnTemplateList = lazy(() => import('@/pages/workflow-center/TxnTemplateList'));
@@ -21,6 +19,7 @@ const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const TemplateModelingPage = lazy(() => import('@/pages/master-data/TemplateModelingPage'));
+const TemplateMockFillPage = lazy(() => import('@/pages/master-data/template-designer/TemplateMockFillPage'));
 
 const OrganizationPage = lazy(() => import('@/pages/system/OrganizationPage'));
 const UserPage = lazy(() => import('@/pages/system/UserPage'));
@@ -52,6 +51,16 @@ const AppRouter = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/master-data/form-templates/mock-fill"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<Loading />}>
+              <TemplateMockFillPage />
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/"
         element={
@@ -104,7 +113,6 @@ const AppRouter = () => {
           <Route path="audit-logs" element={<Suspense fallback={<Loading />}><AuditLogPage /></Suspense>} />
           <Route path="signatures" element={<Suspense fallback={<Loading />}><SignatureLogPage /></Suspense>} />
         </Route>
-        <Route path="gct-edhr/*" element={<Suspense fallback={<Loading />}><GenericEdhrPage /></Suspense>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

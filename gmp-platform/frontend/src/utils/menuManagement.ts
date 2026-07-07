@@ -61,14 +61,51 @@ const REMOVED_SYSTEM_MENU_PATHS = new Set([
   '/system/numbering-rules',
 ]);
 
+const REMOVED_GCT_MODULE_IDS = new Set(['gct', 'gct-edhr']);
+const REMOVED_GCT_MODULE_LABELS = new Set(['gct']);
+const REMOVED_GCT_PATH_PREFIXES = ['/gct-edhr'];
+
 function normalizeText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function isRemovedGctPath(path: string): boolean {
+  return REMOVED_GCT_PATH_PREFIXES.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+}
+
+export function isRetiredSidebarPath(path: string): boolean {
+  return isRemovedGctPath(normalizeText(path));
+}
+
+function isRemovedGctModule(module: Partial<SidebarModule>): boolean {
+  const id = normalizeText(module.id).toLowerCase();
+  const label = normalizeText(module.label).toLowerCase();
+  return REMOVED_GCT_MODULE_IDS.has(id) || REMOVED_GCT_MODULE_LABELS.has(label);
+}
+
+function removeRetiredSidebarModules(modules: SidebarModule[]): SidebarModule[] {
+  return modules
+    .filter((module) => !isRemovedGctModule(module))
+    .map((module) => ({
+      ...module,
+      menus: module.menus
+        .map((menu) => {
+          if (menu.children) {
+            const children = menu.children.filter((child) => !isRemovedGctPath(child.path));
+            return children.length > 0 ? { ...menu, children } : null;
+          }
+          return menu.path && isRemovedGctPath(menu.path) ? null : menu;
+        })
+        .filter((menu): menu is SidebarMenu => menu !== null),
+    }))
+    .filter((module) => module.menus.length > 0);
 }
 
 export function normalizeSidebarSubMenu(item: Partial<SidebarSubMenu>): SidebarSubMenu | null {
   const label = normalizeText(item.label);
   const path = normalizeText(item.path);
   if (!label || !path) return null;
+  if (isRemovedGctPath(path)) return null;
   if (REMOVED_SYSTEM_MENU_PATHS.has(path)) return null;
   if (REMOVED_MASTER_DATA_MENU_PATHS.has(path)) return null;
   return { label, path };
@@ -86,6 +123,7 @@ function normalizeSidebarMenu(menu: Partial<SidebarMenu>): SidebarMenu | null {
   if (!label) return null;
   if (children.length > 0) return { label, icon, children };
   if (!path) return null;
+  if (isRemovedGctPath(path)) return null;
   if (!REMOVED_SYSTEM_MENU_PATHS.has(path)) return { label, icon, path };
   return null;
 }
@@ -93,6 +131,7 @@ function normalizeSidebarMenu(menu: Partial<SidebarMenu>): SidebarMenu | null {
 export function normalizeManagedSidebarModules(modules: SidebarModule[]): SidebarModule[] {
   const normalized = modules
     .map((module) => {
+      if (isRemovedGctModule(module)) return null;
       const id = normalizeText(module.id);
       const label = normalizeText(module.label);
       const icon = normalizeText(module.icon) || 'Settings';
@@ -108,7 +147,7 @@ export function normalizeManagedSidebarModules(modules: SidebarModule[]): Sideba
 }
 
 export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
-  const nextModules = cloneSidebarModules(modules);
+  const nextModules = cloneSidebarModules(removeRetiredSidebarModules(modules));
   ensureRequiredProcessModeling(nextModules);
   ensureRequiredSystemMenus(nextModules);
   return nextModules;

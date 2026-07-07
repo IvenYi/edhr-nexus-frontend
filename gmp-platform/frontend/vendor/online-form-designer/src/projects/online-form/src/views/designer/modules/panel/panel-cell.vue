@@ -74,7 +74,21 @@
   import PanelCellDrop from '/@online-form/views/designer/modules/base/drag/panel-cell-drop.vue';
   import { useState } from '../../hooks/useState';
 
-  const FieldConfig = defineAsyncComponent(() => import('../base/field-config.vue'));
+  const hostedDesignerOnlyBuild = import.meta.env.VITE_ONLINE_FORM_HOSTED_ONLY === 'true';
+
+  function loadHostedFieldConfig() {
+    return import('/src/projects/online-form/src/hosted-shims/hosted-field-config.vue');
+  }
+
+  function loadStandaloneFieldConfig() {
+    return import(
+      /* @vite-ignore */ '/src/projects/online-form/src/views/designer/modules/base/field-config.vue'
+    );
+  }
+
+  const FieldConfig = defineAsyncComponent(() =>
+    hostedDesignerOnlyBuild ? loadHostedFieldConfig() : loadStandaloneFieldConfig(),
+  );
 
   const CellType = {
     Widget: 'Widget',

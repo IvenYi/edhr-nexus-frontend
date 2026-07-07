@@ -3,8 +3,6 @@ import { LOCAL_FORM_DESIGNER_ID, saveLocalDesignerDocument } from '../hooks/loca
 import { usePrint } from '../hooks/usePrint';
 import { useSpreadSheet } from '../hooks/useSpreadSheet';
 import { uploaderFiles } from '/@/utils/file/download';
-import { openMockReportUrl } from '/@online-form/views/render/__logic__/preview.logic';
-import { PlatformEnum } from '@gct/nocode-base';
 import type {
   HostedDesignerSnapshot,
   TemplateDesignerTabKey,
@@ -65,6 +63,7 @@ export async function initializeHostedDesigner(options: HostedDesignerRuntimeOpt
     setCallback,
     sheetsHasChanged,
     save,
+    exportDesignSnapshot,
     doc,
     globalSubTables,
     validateImportFile,
@@ -74,6 +73,7 @@ export async function initializeHostedDesigner(options: HostedDesignerRuntimeOpt
   } = useSpreadSheet();
 
   let initialized = false;
+  let currentHostSnapshot: HostedDesignerSnapshot | null = null;
 
   const handleImportTemplate = async () => {
     const files = await uploaderFiles({
@@ -99,13 +99,17 @@ export async function initializeHostedDesigner(options: HostedDesignerRuntimeOpt
     postHostEvent({ type: 'dirty-change', dirty: sheetsHasChanged() });
   };
 
-  const handleSimulateFill = async () => {
-    await save();
-    await openMockReportUrl({
-      tid: String(doc.value.id || LOCAL_FORM_DESIGNER_ID),
-      mid: String(doc.value.modelKey || ''),
-      platformType: PlatformEnum.INTEGRATION_PAAS_SI,
-    });
+  const handleSimulateFillSnapshotRequest = async () => {
+    const saveData = await exportDesignSnapshot();
+    saveLocalDesignerDocument(saveData);
+    const snapshot: HostedDesignerSnapshot = {
+      templateId: currentHostSnapshot?.templateId ?? doc.value.id ?? LOCAL_FORM_DESIGNER_ID,
+      versionId: currentHostSnapshot?.versionId ?? doc.value.version ?? '',
+      templateName: currentHostSnapshot?.templateName ?? doc.value.name ?? '表单模板',
+      versionLabel: currentHostSnapshot?.versionLabel ?? doc.value.version ?? 'V1',
+      designerPayload: toHostSavePayload(saveData),
+    };
+    postHostEvent({ type: 'simulate-fill-snapshot', snapshot });
   };
 
   const handleMessage = async (event: MessageEvent) => {
@@ -145,13 +149,13 @@ export async function initializeHostedDesigner(options: HostedDesignerRuntimeOpt
       return;
     }
 
-    if (data.type === 'simulate-fill') {
+    if (data.type === 'simulate-fill-snapshot-request') {
       try {
-        await handleSimulateFill();
+        await handleSimulateFillSnapshotRequest();
       } catch (error) {
         postHostEvent({
           type: 'error',
-          message: error instanceof Error ? error.message : '模拟填报打开失败',
+          message: error instanceof Error ? error.message : '模拟填报快照生成失败',
         });
       }
       return;
@@ -174,6 +178,7 @@ export async function initializeHostedDesigner(options: HostedDesignerRuntimeOpt
 
     try {
       initialized = true;
+      currentHostSnapshot = data.design;
       primeLocalDesignerDocument(data.design);
       await initialize(LOCAL_FORM_DESIGNER_ID);
       setCallback({
