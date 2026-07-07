@@ -18,7 +18,7 @@
           >{{ item.title }}</a-breadcrumb-item
         >
       </a-breadcrumb>
-      <div v-else class="panel-title">{{ $t('sys.edhr.formAttr') }}</div>
+      <div v-else class="panel-title">{{ $t('sys.onlineForm.canvasProperties') }}</div>
     </div>
 
     <div class="flex-1 overflow-y-auto">

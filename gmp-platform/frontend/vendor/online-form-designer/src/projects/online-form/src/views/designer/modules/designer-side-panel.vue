@@ -40,7 +40,7 @@
   const panelTitle = computed(() => {
     if (props.activePanel === 'fields') return '字段管理';
     if (props.activePanel === 'widgets') return '组件管理';
-    if (props.activePanel === 'properties') return '属性配置';
+    if (props.activePanel === 'properties') return '画布属性';
     return '分页缩略图';
   });
 </script>

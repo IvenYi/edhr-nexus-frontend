@@ -90,16 +90,16 @@
       v-if="hostedDesigner"
       type="button"
       class="designer__toolkit-item"
-      title="属性配置"
+      :title="$t('sys.onlineForm.canvasProperties')"
       :class="{ active: isHostedSidePanelActive('properties') }"
       @click="selectSidePanel('properties')"
     >
-      <span class="designer__toolkit-properties-icon">
+      <span class="designer__toolkit-canvas-icon">
         <span></span>
         <span></span>
         <span></span>
       </span>
-      <span class="designer__toolkit-label">属性配置</span>
+      <span class="designer__toolkit-label">{{ $t('sys.onlineForm.canvasProperties') }}</span>
     </button>
 
     <a-popover
@@ -346,44 +346,45 @@
       }
     }
 
-    &-properties-icon {
+    &-canvas-icon {
       position: relative;
       display: inline-flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 19px;
+      width: 20px;
       height: 18px;
-      gap: 4px;
+      border: 1.5px solid currentColor;
+      border-radius: 3px;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 100%);
 
       span {
-        position: relative;
+        position: absolute;
         display: block;
-        height: 1.5px;
-        border-radius: 2px;
         background: currentColor;
+        border-radius: 999px;
+      }
 
-        &::after {
-          content: '';
-          position: absolute;
-          top: -2.5px;
-          width: 6px;
-          height: 6px;
-          border: 1.5px solid currentColor;
-          border-radius: 50%;
-          background: #fff;
-        }
+      span:nth-child(1) {
+        top: 3px;
+        left: 3px;
+        width: 5px;
+        height: 1.5px;
+        box-shadow: 9px 0 0 currentColor;
+      }
 
-        &:nth-child(1)::after {
-          left: 2px;
-        }
+      span:nth-child(2) {
+        width: 8px;
+        height: 8px;
+        border: 1.5px solid currentColor;
+        border-radius: 2px;
+        background: transparent;
+      }
 
-        &:nth-child(2)::after {
-          right: 3px;
-        }
-
-        &:nth-child(3)::after {
-          left: 7px;
-        }
+      span:nth-child(3) {
+        bottom: 3px;
+        left: 4px;
+        width: 12px;
+        height: 1.5px;
       }
     }
   }

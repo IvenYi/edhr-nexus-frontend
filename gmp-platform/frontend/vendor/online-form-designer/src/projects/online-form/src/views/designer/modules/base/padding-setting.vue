@@ -154,30 +154,43 @@
 
 <style lang="less" scoped>
   .padding-setting {
-    height: 120px;
+    --padding-input-width: 48px;
+    --padding-frame-inset-x: clamp(38px, 18%, 48px);
+    --padding-frame-inset-y: 18px;
+    --padding-inner-width: clamp(58px, 30%, 78px);
+    --padding-inner-height: 50px;
+    height: 126px;
     position: relative;
-    padding: 11px 24px;
+    padding: 13px 0;
+
     &::after {
       content: '';
       display: block;
-      height: 100%;
-      border-radius: 4px;
-      border: 1px solid #e8ebf0;
+      position: absolute;
+      inset: var(--padding-frame-inset-y) var(--padding-frame-inset-x);
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     }
 
     &__inner {
-      border: 1px dashed #e8ebf0;
-      padding: 15px 22px;
+      width: var(--padding-inner-width);
+      height: var(--padding-inner-height);
+      border: 1px dashed #d9e2ec;
       position: absolute;
       top: 50%;
       left: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transform: translate(-50%, -50%);
       z-index: 100;
       background-color: #fff;
-      border-radius: 4px;
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
 
       & > span {
-        width: 48px !important;
+        width: var(--padding-input-width) !important;
       }
     }
 
@@ -188,68 +201,35 @@
     .padding-value {
       position: absolute;
       z-index: 50;
-      --line-color: #c3c3c3;
-      &::after {
-        content: '';
-        position: absolute;
-        height: 2px;
-        width: 20px;
-        background: var(--line-color);
-      }
-
-      &:has(:focus) {
-        --line-color: var(--ant-primary-color);
-      }
 
       &__left {
         top: 50%;
-        left: 0;
+        left: max(14px, calc(var(--padding-frame-inset-x) - (var(--padding-input-width) / 2)));
         transform: translateY(-50%);
-        &::after {
-          top: 50%;
-          left: 100%;
-          transform: translateY(-50%);
-        }
       }
       &__right {
         top: 50%;
-        right: 0;
+        right: max(14px, calc(var(--padding-frame-inset-x) - (var(--padding-input-width) / 2)));
         transform: translateY(-50%);
-        &::after {
-          top: 50%;
-          right: 100%;
-          transform: translateY(-50%);
-        }
       }
       &__top {
         left: 50%;
         top: 0;
         transform: translateX(-50%);
-        &::after {
-          left: 50%;
-          top: 100%;
-          transform: translateX(-50%);
-          width: 2px;
-          height: 20px;
-        }
       }
       &__bottom {
         left: 50%;
         bottom: 0;
         transform: translateX(-50%);
-        &::after {
-          left: 50%;
-          bottom: 100%;
-          transform: translateX(-50%);
-          width: 2px;
-          height: 20px;
-        }
       }
     }
   }
 
   .ant-input-number {
-    width: 48px !important;
+    width: var(--padding-input-width) !important;
+    border-color: #d9e2ec;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
     &::before {
       content: 'mm';
       position: absolute;

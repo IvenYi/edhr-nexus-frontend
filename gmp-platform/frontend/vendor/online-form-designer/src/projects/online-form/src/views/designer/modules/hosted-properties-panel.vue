@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col online-form__designer-panel hosted-properties-panel">
-    <div class="flex-none">
-      <a-breadcrumb v-if="breadcrumbList.length > 0">
+    <div v-if="breadcrumbList.length > 0" class="flex-none">
+      <a-breadcrumb>
         <template #separator>
           <right-outlined
             :style="{
@@ -19,7 +19,6 @@
           {{ item.title }}
         </a-breadcrumb-item>
       </a-breadcrumb>
-      <div v-else class="panel-title">{{ $t('sys.edhr.formAttr') }}</div>
     </div>
 
     <div class="flex-1 overflow-y-auto">
@@ -137,16 +136,6 @@
         color: var(--ant-primary-color);
         cursor: pointer;
       }
-    }
-
-    .panel-title {
-      height: 42px;
-      display: flex;
-      align-items: center;
-      padding-left: 12px;
-      border-bottom: 1px solid #e0e3ea;
-      font-size: 12px;
-      font-weight: 500;
     }
 
     &__empty {

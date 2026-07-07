@@ -10,5 +10,12 @@ declare module 'vue' {
     AInput: typeof import('./autocomponent/AInput/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VanButton: typeof import('vant/es')['Button']
+    VanField: typeof import('vant/es')['Field']
+    VanList: typeof import('vant/es')['List']
+    VanPopover: typeof import('vant/es')['Popover']
+    VanPopup: typeof import('vant/es')['Popup']
+    VanRadio: typeof import('vant/es')['Radio']
+    VanTag: typeof import('vant/es')['Tag']
   }
 }

@@ -563,6 +563,8 @@ export default {
   addEnumGroup: '添加枚举分组',
   componentList: '组件列表',
   dragComponentToThisArea: '拖入组件至此区域',
+  canvasProperties: '画布属性',
+  canvasOrientation: '画布方向',
   paperProperties: '纸张属性',
   pageOrientation: '页面方向',
   marginSetting: '边距设置',

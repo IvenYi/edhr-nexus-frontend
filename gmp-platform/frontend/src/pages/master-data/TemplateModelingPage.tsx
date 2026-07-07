@@ -89,6 +89,7 @@ import {
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
 import TemplateDesignerDialog from './TemplateDesignerDialog';
+import TemplateDesignerReactDialog from './template-designer-react';
 import TemplateDesignerPreloadFrame from './template-designer/TemplateDesignerPreloadFrame';
 
 const TEMPLATE_CATEGORY_ALL = 'ALL';
@@ -613,6 +614,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({ open: false, message: '', severity: 'success' });
   const [designerState, setDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
+  const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
 
   const categoryQuery = useQuery({
     queryKey: [config.categoryQueryKey],
@@ -1237,6 +1239,18 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           <DesignServicesIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      <Tooltip title="React设计" arrow>
+        <IconButton
+          size="small"
+          aria-label="React设计"
+          onClick={(event) => {
+            event.stopPropagation();
+            setReactDesignerState({ open: true, row, version });
+          }}
+        >
+          <DesignServicesIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
       {canDeleteVersion ? (
         <Tooltip title="删除" arrow>
           <IconButton size="small" color="error" aria-label="删除" onClick={(event) => { event.stopPropagation(); setDeleteVersionTarget({ row, version }); }}>
@@ -1749,6 +1763,14 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         version={designerState.version}
         saving={saveDesignerMutation.isPending}
         onClose={() => setDesignerState({ open: false, row: null, version: null })}
+        onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
+      />
+      <TemplateDesignerReactDialog
+        open={reactDesignerState.open}
+        row={reactDesignerState.row}
+        version={reactDesignerState.version}
+        saving={saveDesignerMutation.isPending}
+        onClose={() => setReactDesignerState({ open: false, row: null, version: null })}
         onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
       />
       <TemplateDesignerPreloadFrame

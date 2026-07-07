@@ -49,6 +49,8 @@ const files = [
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/toolkit.vue',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/designer-side-panel.vue',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/hosted-properties-panel.vue',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/base/padding-setting.vue',
+  '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/panel/panel-paper.vue',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/panel/panel-cell.vue',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/page-thumbnails.vue',
   '../vendor/online-form-designer/src/projects/online-form/src/views/designer/modules/sheet.vue',
@@ -203,6 +205,54 @@ for (const relativePath of files) {
     mustInclude(content, 'Array(DEFAULT_PAPER_COL_COUNT)', 'shared default paper should build default columns from the shared count');
     mustInclude(content, 'width: DEFAULT_PAPER_COL_WIDTH', 'shared default paper should use the wider default paper column width');
     mustInclude(content, 'Array(DEFAULT_PAPER_COL_COUNT)', 'shared default paper cells should align with the visible column count');
+  }
+
+  if (relativePath.endsWith('views/designer/modules/toolkit.vue')) {
+    mustInclude(content, "title=\"$t('sys.onlineForm.canvasProperties')\"", 'hosted toolkit should rename the properties entry to canvas properties');
+    mustInclude(content, "<span class=\"designer__toolkit-label\">{{ $t('sys.onlineForm.canvasProperties') }}</span>", 'hosted toolkit should show the canvas properties label');
+    mustInclude(content, 'designer__toolkit-canvas-icon', 'hosted toolkit should use the new canvas-oriented icon');
+    mustNotInclude(content, '<span class="designer__toolkit-label">属性配置</span>', 'hosted toolkit should not keep the legacy properties label');
+  }
+
+  if (relativePath.endsWith('views/designer/modules/designer-side-panel.vue')) {
+    mustInclude(content, "if (props.activePanel === 'properties') return '画布属性';", 'hosted side panel header should rename the properties area to canvas properties');
+  }
+
+  if (relativePath.endsWith('views/designer/modules/panel/panel-paper.vue')) {
+    mustInclude(content, 'orientation-options', 'paper panel should render paired orientation cards');
+    mustInclude(content, "$t('sys.onlineForm.canvasOrientation')", 'paper panel should label direction as canvas direction');
+    mustInclude(content, "$t('sys.appDesigner.printDesign.form.landscape')", 'paper panel should expose the landscape option');
+    mustInclude(content, 'setOrientation(Orientation.Landscape)', 'paper panel should let the user switch to landscape');
+    mustInclude(content, 'setOrientation(Orientation.Portrait)', 'paper panel should let the user switch to portrait');
+    mustInclude(content, 'paper.value.orientation = orientation;', 'paper panel should update orientation through the paper ref');
+    mustInclude(content, 'class="important-mt-0"', 'paper panel should reduce the top margin above canvas direction');
+    mustNotInclude(content, "$t('sys.onlineForm.pageOrientation')", 'paper panel should no longer label direction as page direction');
+    mustNotInclude(content, "$t('sys.onlineForm.canvasProperties')", 'paper panel should not render a duplicate canvas properties section title');
+    mustNotInclude(content, 'watch(', 'paper panel should not pin the page orientation anymore');
+    mustNotInclude(content, 'paper.value.orientation = Orientation.Portrait;', 'paper panel should not force portrait orientation anymore');
+    mustNotInclude(content, "$t('sys.appDesigner.printDesign.form.name2')", 'paper panel should remove the form name block');
+    mustNotInclude(content, "$t('sys.dataSet.modelName')", 'paper panel should remove the model name block');
+    mustNotInclude(content, "$t('sys.onlineForm.paperProperties')", 'paper panel should remove the paper size summary block');
+    mustNotInclude(content, 'SubTableList', 'paper panel should remove the table-list configuration section');
+    mustNotInclude(content, 'removeThead', 'paper panel should remove the table header configuration section');
+  }
+
+  if (relativePath.endsWith('views/designer/modules/base/padding-setting.vue')) {
+    mustInclude(content, '--padding-frame-inset-x', 'margin setting control should use adaptive horizontal frame inset');
+    mustInclude(content, '--padding-inner-width', 'margin setting control should keep the center editor adaptive');
+    mustInclude(content, 'max(14px, calc(var(--padding-frame-inset-x) - (var(--padding-input-width) / 2)))', 'side margin inputs should stay within narrow panels');
+    mustNotInclude(content, '--padding-line-length', 'margin setting should no longer keep connector line sizing');
+    mustNotInclude(content, 'width: var(--padding-line-length)', 'margin setting input connector lines should be removed');
+  }
+
+  if (relativePath.endsWith('views/designer/hooks/useSpreadSheet.ts')) {
+    mustInclude(content, 'paper.value.orientation = orientation;', 'spreadsheet initialization should still honor the stored document direction');
+    mustNotInclude(content, 'paper.value.orientation = Orientation.Portrait;', 'spreadsheet initialization should not hard-code portrait orientation');
+  }
+
+  if (relativePath.endsWith('views/designer/styles/spread-sheet.less')) {
+    mustInclude(content, "linear-gradient(180deg, #f8fafc 0%, #eef3f8 100%)", 'designer canvas viewport should match the host page background theme');
+    mustInclude(content, 'box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);', 'designer paper should get the new softer page shadow');
   }
 
   if (relativePath === '../vendor/online-form-designer/README.md') {
@@ -553,7 +603,7 @@ for (const relativePath of files) {
     mustInclude(content, 'designer__toolkit-field-icon', 'hosted toolkit should render a semantic field icon instead of Aa text');
     mustInclude(content, 'designer__toolkit-widget-icon', 'hosted toolkit should render a compact component icon instead of large sliders');
     mustInclude(content, "selectSidePanel('properties')", 'hosted toolkit should expose a left rail entry for selected component or field properties');
-    mustInclude(content, 'designer__toolkit-properties-icon', 'hosted toolkit should render a semantic properties icon');
+    mustInclude(content, 'designer__toolkit-canvas-icon', 'hosted toolkit should render a semantic canvas icon');
     mustInclude(content, 'designer__toolkit--hosted', 'hosted toolkit should apply the icon-only side rail style');
     mustInclude(content, "hostedDesigner.value ? 'rightTop' : 'leftTop'", 'hosted toolkit popovers should open into the page after moving left');
     mustInclude(content, ':placement="toolkitPlacement"', 'hosted toolkit should use the computed popover placement');
@@ -563,7 +613,7 @@ for (const relativePath of files) {
     mustInclude(content, "type HostedSidePanelKey = 'pages' | 'fields' | 'widgets' | 'properties';", 'side panel should define the shared content key contract');
     mustInclude(content, '字段管理', 'side panel should title the field list as field management');
     mustInclude(content, '组件管理', 'side panel should title the component list as component management');
-    mustInclude(content, '属性配置', 'side panel should title the selected component or field properties panel');
+    mustInclude(content, '画布属性', 'side panel should title the selected component or field properties panel');
     mustInclude(content, '分页缩略图', 'side panel should title the thumbnail list as page thumbnails');
     mustInclude(content, 'ToolkitContentFields', 'side panel should embed field management content directly');
     mustInclude(content, 'ToolkitContentWidgets', 'side panel should embed component management content directly');
@@ -590,6 +640,7 @@ for (const relativePath of files) {
     mustNotInclude(content, '/@web-render', 'hosted properties panel should not compile web-render project chunks');
     mustNotInclude(content, '/@page-designer', 'hosted properties panel should not compile page-designer project chunks');
     mustNotInclude(content, '@mobile', 'hosted properties panel should not compile mobile project chunks');
+    mustNotInclude(content, '<div v-else class="panel-title"', 'hosted properties panel should not render a duplicate properties title above the paper panel');
   }
 
   if (relativePath.endsWith('modules/panel/panel-cell.vue')) {
