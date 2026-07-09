@@ -77,6 +77,40 @@ export interface TemplateModelingPayload {
   status?: string;
 }
 
+export interface TemplateImportedCellBorder {
+  top?: boolean;
+  right?: boolean;
+  bottom?: boolean;
+  left?: boolean;
+}
+
+export interface TemplateImportedCell {
+  value?: string;
+  style?: Record<string, unknown>;
+  border?: TemplateImportedCellBorder | null;
+}
+
+export interface TemplateImportedRange {
+  t: number;
+  l: number;
+  b: number;
+  r: number;
+}
+
+export interface TemplateImportedGridPayload {
+  rowHeights: number[];
+  columnWidths: number[];
+  cells: Record<string, TemplateImportedCell>;
+  mergedCells: TemplateImportedRange[];
+}
+
+export interface TemplateImportedPagePayload {
+  orientation: 'portrait' | 'landscape';
+  canvasMode: 'sheet' | 'paper';
+  paperMode: 'table' | 'free';
+  grid: TemplateImportedGridPayload;
+}
+
 const templateModelingBase = '/master-data/template-modeling';
 
 const templatePathByKey: Record<TemplateModelingPageKey, string> = {
@@ -121,6 +155,16 @@ export const deleteFormTemplateVersion = (id: string | number, versionId: string
 
 export const saveFormTemplateVersionDesign = (id: string | number, versionId: string | number, body: Pick<TemplateModelingPayload, 'modelDesignJson' | 'canvasDesignJson' | 'workflowDesignJson'>) =>
   client.put(`${templateModelingBase}/form-templates/${id}/versions/${versionId}/design`, body) as Promise<{ data: { data: TemplateVersionRecord } }>;
+
+export const importLegacyWordTemplate = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return client.post(`${templateModelingBase}/form-templates/import/legacy-word`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }) as Promise<{ data: { data: TemplateImportedPagePayload } }>;
+};
 
 export const getBatchRecordTemplates = (params?: TemplateModelingQuery) =>
   client.get(`${templateModelingBase}/batch-record-templates`, { params }) as Promise<{ data: { data: PageResult<TemplateModelingRecord> } }>;

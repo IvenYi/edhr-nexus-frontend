@@ -998,10 +998,12 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   const saveDesignerMutation = useMutation({
     mutationFn: async (payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
-      if (!designerState.row || !designerState.version) {
+      const targetRow = designerState.row || reactDesignerState.row;
+      const targetVersion = designerState.version || reactDesignerState.version;
+      if (!targetRow || !targetVersion) {
         throw new Error('设计器上下文缺失');
       }
-      return saveFormTemplateVersionDesign(designerState.row.id, designerState.version.id, payload);
+      return saveFormTemplateVersionDesign(targetRow.id, targetVersion.id, payload);
     },
     onSuccess: async () => {
       setSnackbar({ open: true, message: '设计已保存', severity: 'success' });

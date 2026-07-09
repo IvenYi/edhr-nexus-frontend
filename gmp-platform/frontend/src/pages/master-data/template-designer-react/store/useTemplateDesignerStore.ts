@@ -1,13 +1,161 @@
 import { create } from 'zustand';
-import type { CanvasNode, ModelField, TemplateDesignerDocument, TemplateDesignerTabKey } from '../types';
+import type {
+  CanvasMode,
+  CanvasNode,
+  CanvasPage,
+  CanvasSelectionRange,
+  CanvasSelectedCell,
+  CanvasSheetCell,
+  ModelField,
+  TemplateDesignerDocument,
+  TemplateDesignerTabKey,
+} from '../types';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
+
+type MoveDirection = 'up' | 'down';
+
+const DOCUMENT_HISTORY_LIMIT = 50;
 
 function createId(prefix: string) {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return `${prefix}-${crypto.randomUUID()}`;
   }
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function getCellKey(row: number, col: number) {
+  return `${row}:${col}`;
+}
+
+function createSingleCellRange(row = 1, col = 1): CanvasSelectionRange {
+  return { t: row, l: col, b: row, r: col };
+}
+
+function normalizeRange(range: CanvasSelectionRange): CanvasSelectionRange {
+  return {
+    t: Math.min(range.t, range.b),
+    l: Math.min(range.l, range.r),
+    b: Math.max(range.t, range.b),
+    r: Math.max(range.l, range.r),
+  };
+}
+
+function shiftCellsForInsertedColumns(
+  cells: Record<string, CanvasSheetCell>,
+  insertAt: number,
+  count: number,
+) {
+  const nextCells: Record<string, CanvasSheetCell> = {};
+
+  Object.entries(cells).forEach(([key, value]) => {
+    const [rowText, colText] = key.split(':');
+    const row = Number(rowText);
+    const col = Number(colText);
+    const nextCol = col >= insertAt ? col + count : col;
+    nextCells[getCellKey(row, nextCol)] = value;
+  });
+
+  return nextCells;
+}
+
+function shiftCellsForInsertedRows(
+  cells: Record<string, CanvasSheetCell>,
+  insertAt: number,
+  count: number,
+) {
+  const nextCells: Record<string, CanvasSheetCell> = {};
+
+  Object.entries(cells).forEach(([key, value]) => {
+    const [rowText, colText] = key.split(':');
+    const row = Number(rowText);
+    const col = Number(colText);
+    const nextRow = row >= insertAt ? row + count : row;
+    nextCells[getCellKey(nextRow, col)] = value;
+  });
+
+  return nextCells;
+}
+
+function shiftMergedRangesForInsertedColumns(
+  ranges: CanvasSelectionRange[],
+  insertAt: number,
+  count: number,
+) {
+  return ranges.map((range) => {
+    if (range.r < insertAt) {
+      return range;
+    }
+    if (range.l >= insertAt) {
+      return {
+        ...range,
+        l: range.l + count,
+        r: range.r + count,
+      };
+    }
+    return {
+      ...range,
+      r: range.r + count,
+    };
+  });
+}
+
+function shiftMergedRangesForInsertedRows(
+  ranges: CanvasSelectionRange[],
+  insertAt: number,
+  count: number,
+) {
+  return ranges.map((range) => {
+    if (range.b < insertAt) {
+      return range;
+    }
+    if (range.t >= insertAt) {
+      return {
+        ...range,
+        t: range.t + count,
+        b: range.b + count,
+      };
+    }
+    return {
+      ...range,
+      b: range.b + count,
+    };
+  });
+}
+
+function updateCanvasPage(
+  document: TemplateDesignerDocument,
+  updater: (page: CanvasPage) => CanvasPage,
+) {
+  return {
+    ...document,
+    canvas: {
+      ...document.canvas,
+      pages: document.canvas.pages.map((page) => (
+        page.id === document.canvas.currentPageId ? updater(page) : page
+      )),
+    },
+  };
+}
+
+function updatePageCellValue(
+  page: CanvasPage,
+  row: number,
+  col: number,
+  value: string,
+) {
+  const cellKey = getCellKey(row, col);
+
+  return {
+    ...page,
+    cells: {
+      ...page.cells,
+      [cellKey]: {
+        ...(page.cells[cellKey] ?? {}),
+        value,
+      },
+    },
+  };
 }
 
 function mapNodes(nodes: CanvasNode[], nodeId: string, updater: (node: CanvasNode) => CanvasNode): CanvasNode[] {
@@ -51,6 +199,63 @@ function insertNodeIntoTree(nodes: CanvasNode[], parentId: string | null, node: 
   });
 }
 
+function removeNodeFromTree(nodes: CanvasNode[], nodeId: string): CanvasNode[] {
+  return nodes
+    .filter((node) => node.id !== nodeId)
+    .map((node) => {
+      if (!node.children?.length) return node;
+      return {
+        ...node,
+        children: removeNodeFromTree(node.children, nodeId),
+      };
+    });
+}
+
+function moveNodeInTree(nodes: CanvasNode[], nodeId: string, direction: MoveDirection): CanvasNode[] {
+  const currentIndex = nodes.findIndex((node) => node.id === nodeId);
+  if (currentIndex >= 0) {
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= nodes.length) {
+      return nodes;
+    }
+
+    const nextNodes = [...nodes];
+    [nextNodes[currentIndex], nextNodes[targetIndex]] = [nextNodes[targetIndex], nextNodes[currentIndex]];
+    return nextNodes;
+  }
+
+  return nodes.map((node) => {
+    if (!node.children?.length) {
+      return node;
+    }
+
+    return {
+      ...node,
+      children: moveNodeInTree(node.children, nodeId, direction),
+    };
+  });
+}
+
+function clearRemovedFieldBindings(nodes: CanvasNode[], fieldId: string): CanvasNode[] {
+  return nodes.map((node) => {
+    const nextNode = node.bindings?.fieldId === fieldId
+      ? {
+          ...node,
+          bindings: { ...node.bindings, fieldId: undefined },
+        }
+      : node;
+
+    if (!nextNode.children?.length) {
+      return nextNode;
+    }
+
+    return {
+      ...nextNode,
+      children: clearRemovedFieldBindings(nextNode.children, fieldId),
+    };
+  });
+}
+
 function syncBoundNodesForField(nodes: CanvasNode[], fieldId: string, field: ModelField): CanvasNode[] {
   return nodes.map((node) => {
     const nextNode = node.bindings?.fieldId === fieldId
@@ -62,7 +267,7 @@ function syncBoundNodesForField(nodes: CanvasNode[], fieldId: string, field: Mod
             ...node.props,
             label: field.name || node.props.label || field.type,
             placeholder: field.placeholder || '',
-            required: field.required,
+            required: node.props.required ?? field.required,
             readonly: field.readonly,
             hidden: field.hidden,
           },
@@ -84,18 +289,50 @@ export interface TemplateDesignerStore {
   activeTab: TemplateDesignerTabKey;
   document: TemplateDesignerDocument | null;
   savedSnapshot: string;
+  undoStack: TemplateDesignerDocument[];
+  redoStack: TemplateDesignerDocument[];
+  pagePreviewCounts: Record<string, number>;
   selectedFieldId: string | null;
   selectedNodeId: string | null;
+  selectedCell: CanvasSelectedCell | null;
+  selectedRange: CanvasSelectionRange | null;
   setDocument: (document: TemplateDesignerDocument) => void;
   setActiveTab: (tab: TemplateDesignerTabKey) => void;
+  setCurrentPageId: (pageId: string) => void;
   setSelectedFieldId: (fieldId: string | null) => void;
   setSelectedNodeId: (nodeId: string | null) => void;
+  setSelectedCell: (cell: CanvasSelectedCell | null) => void;
+  setSelectedRange: (range: CanvasSelectionRange | null, activeCell?: CanvasSelectedCell | null) => void;
+  selectAllCells: () => void;
+  selectColumnRange: (colStart: number, colEnd?: number) => void;
+  selectRowRange: (rowStart: number, rowEnd?: number) => void;
   addField: (type: string) => ModelField;
   updateField: (fieldId: string, patch: Partial<ModelField>) => void;
+  removeField: (fieldId: string) => void;
   insertNode: (parentId: string | null, node: CanvasNode) => void;
   addNodeFromField: (fieldId: string, parentId?: string | null) => void;
   bindFieldToNode: (nodeId: string, fieldId: string) => void;
   updateNodeProps: (nodeId: string, patch: Record<string, unknown>) => void;
+  updateNodeStyle: (nodeId: string, patch: Record<string, unknown>) => void;
+  moveNode: (nodeId: string, direction: MoveDirection) => void;
+  removeNode: (nodeId: string) => void;
+  updateCurrentPage: (patch: Partial<TemplateDesignerDocument['canvas']['pages'][number]>) => void;
+  updateCurrentPageSheet: (patch: Partial<CanvasPage['sheet']>) => void;
+  replaceCurrentPageFromImport: (page: CanvasPage) => void;
+  setCanvasMode: (mode: CanvasMode) => void;
+  insertSheetColumns: (insertAt: number, count?: number) => void;
+  insertSheetRows: (insertAt: number, count?: number) => void;
+  setSheetColumnWidth: (colStart: number, colEnd: number, width: number) => void;
+  setSheetRowHeight: (rowStart: number, rowEnd: number, height: number) => void;
+  updateSheetCellValue: (row: number, col: number, value: string) => void;
+  updateSelectedCellValue: (value: string) => void;
+  updateSelectedCellStyle: (patch: Record<string, unknown>) => void;
+  undoCanvasChange: () => void;
+  redoCanvasChange: () => void;
+  canUndoCanvasChange: () => boolean;
+  canRedoCanvasChange: () => boolean;
+  setPagePreviewCount: (pageId: string, count: number) => void;
+  getSelectedCellState: () => CanvasSheetCell | null;
   getCurrentPage: () => TemplateDesignerDocument['canvas']['pages'][number] | null;
   getSelectedNode: () => CanvasNode | null;
   getFieldById: (fieldId: string) => ModelField | null;
@@ -106,16 +343,127 @@ export interface TemplateDesignerStore {
   isDirty: () => boolean;
 }
 
+function pushDocumentHistory(
+  state: TemplateDesignerStore,
+  nextState: Partial<TemplateDesignerStore> & { document?: TemplateDesignerDocument | null },
+) {
+  if (!state.document || !nextState.document || nextState.document === state.document) {
+    return nextState;
+  }
+
+  return {
+    ...nextState,
+    undoStack: [...state.undoStack, state.document].slice(-DOCUMENT_HISTORY_LIMIT),
+    redoStack: [],
+  };
+}
+
 export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get) => ({
-  activeTab: 'model',
+  activeTab: 'canvas',
   document: null,
   savedSnapshot: '',
+  undoStack: [],
+  redoStack: [],
+  pagePreviewCounts: {},
   selectedFieldId: null,
   selectedNodeId: null,
-  setDocument: (document) => set({ document }),
+  selectedCell: { row: 1, col: 1 },
+  selectedRange: createSingleCellRange(),
+  setDocument: (document) => set({
+    document,
+    activeTab: 'canvas',
+    undoStack: [],
+    redoStack: [],
+    pagePreviewCounts: {},
+    selectedCell: { row: 1, col: 1 },
+    selectedRange: createSingleCellRange(),
+  }),
   setActiveTab: (activeTab) => set({ activeTab }),
+  setCurrentPageId: (pageId) => set((state) => ({
+    document: state.document
+      ? {
+          ...state.document,
+          canvas: {
+            ...state.document.canvas,
+            currentPageId: pageId,
+          },
+        }
+      : state.document,
+    selectedCell: { row: 1, col: 1 },
+    selectedRange: createSingleCellRange(),
+    selectedNodeId: null,
+  })),
   setSelectedFieldId: (selectedFieldId) => set({ selectedFieldId }),
   setSelectedNodeId: (selectedNodeId) => set({ selectedNodeId }),
+  setSelectedCell: (selectedCell) => set({
+    selectedCell,
+    selectedRange: selectedCell ? createSingleCellRange(selectedCell.row, selectedCell.col) : null,
+    selectedNodeId: null,
+  }),
+  setSelectedRange: (selectedRange, activeCell = null) => set((state) => ({
+    selectedRange: selectedRange ? normalizeRange(selectedRange) : null,
+    selectedCell: activeCell ?? (selectedRange ? {
+      row: normalizeRange(selectedRange).t,
+      col: normalizeRange(selectedRange).l,
+    } : null),
+    selectedNodeId: null,
+  })),
+  selectAllCells: () => set((state) => {
+    const currentPage = state.document
+      ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
+      : null;
+    if (!currentPage) {
+      return { selectedRange: state.selectedRange };
+    }
+    return {
+      selectedRange: {
+        t: 1,
+        l: 1,
+        b: currentPage.sheet.rowCount,
+        r: currentPage.sheet.columnCount,
+      },
+      selectedCell: { row: 1, col: 1 },
+      selectedNodeId: null,
+    };
+  }),
+  selectColumnRange: (colStart, colEnd = colStart) => set((state) => {
+    const currentPage = state.document
+      ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
+      : null;
+    if (!currentPage) {
+      return { selectedRange: state.selectedRange };
+    }
+    const range = normalizeRange({
+      t: 1,
+      l: colStart,
+      b: currentPage.sheet.rowCount,
+      r: colEnd,
+    });
+    return {
+      selectedRange: range,
+      selectedCell: { row: 1, col: range.l },
+      selectedNodeId: null,
+    };
+  }),
+  selectRowRange: (rowStart, rowEnd = rowStart) => set((state) => {
+    const currentPage = state.document
+      ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
+      : null;
+    if (!currentPage) {
+      return { selectedRange: state.selectedRange };
+    }
+    const range = normalizeRange({
+      t: rowStart,
+      l: 1,
+      b: rowEnd,
+      r: currentPage.sheet.columnCount,
+    });
+    return {
+      selectedRange: range,
+      selectedCell: { row: range.t, col: 1 },
+      selectedNodeId: null,
+    };
+  }),
   addField: (type) => {
     const definition = getFieldTypeDefinition(type);
     const field = {
@@ -123,7 +471,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       id: createId('field'),
       code: `${type}_${Date.now()}`,
     };
-    set((state) => ({
+    set((state) => pushDocumentHistory(state, {
       document: state.document
         ? {
             ...state.document,
@@ -156,7 +504,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         }))
       : state.document.canvas.pages;
 
-    return {
+    return pushDocumentHistory(state, {
       document: {
         ...state.document,
         model: {
@@ -168,21 +516,33 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
           pages: nextPages,
         },
       },
-    };
+    });
   }),
-  insertNode: (parentId, node) => set((state) => ({
+  removeField: (fieldId) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? {
           ...state.document,
+          model: {
+            ...state.document.model,
+            fields: state.document.model.fields.filter((field) => field.id !== fieldId),
+          },
           canvas: {
             ...state.document.canvas,
-            pages: state.document.canvas.pages.map((page) => (
-              page.id === state.document?.canvas.currentPageId
-                ? { ...page, nodes: insertNodeIntoTree(page.nodes, parentId, node) }
-                : page
-            )),
+            pages: state.document.canvas.pages.map((page) => ({
+              ...page,
+              nodes: clearRemovedFieldBindings(page.nodes, fieldId),
+            })),
           },
         }
+      : state.document,
+    selectedFieldId: state.selectedFieldId === fieldId ? null : state.selectedFieldId,
+  })),
+  insertNode: (parentId, node) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          nodes: insertNodeIntoTree(page.nodes, parentId, node),
+        }))
       : state.document,
     selectedNodeId: node.id,
   })),
@@ -202,48 +562,276 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     node.bindings = { ...node.bindings, fieldId: field.id };
     get().insertNode(parentId, node);
   },
-  bindFieldToNode: (nodeId, fieldId) => set((state) => ({
+  bindFieldToNode: (nodeId, fieldId) => set((state) => pushDocumentHistory(state, {
     document: state.document
-      ? {
-          ...state.document,
-          canvas: {
-            ...state.document.canvas,
-            pages: state.document.canvas.pages.map((page) => (
-              page.id === state.document?.canvas.currentPageId
-                ? {
-                    ...page,
-                    nodes: mapNodes(page.nodes, nodeId, (node) => ({
-                      ...node,
-                      bindings: { ...node.bindings, fieldId: fieldId || undefined },
-                    })),
-                  }
-                : page
-            )),
-          },
-        }
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          nodes: mapNodes(page.nodes, nodeId, (node) => ({
+            ...node,
+            bindings: { ...node.bindings, fieldId: fieldId || undefined },
+          })),
+        }))
       : state.document,
   })),
-  updateNodeProps: (nodeId, patch) => set((state) => ({
+  updateNodeProps: (nodeId, patch) => set((state) => pushDocumentHistory(state, {
     document: state.document
-      ? {
-          ...state.document,
-          canvas: {
-            ...state.document.canvas,
-            pages: state.document.canvas.pages.map((page) => (
-              page.id === state.document?.canvas.currentPageId
-                ? {
-                    ...page,
-                    nodes: mapNodes(page.nodes, nodeId, (node) => ({
-                      ...node,
-                      props: { ...node.props, ...patch },
-                    })),
-                  }
-                : page
-            )),
-          },
-        }
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          nodes: mapNodes(page.nodes, nodeId, (node) => ({
+            ...node,
+            props: { ...node.props, ...patch },
+          })),
+        }))
       : state.document,
   })),
+  updateNodeStyle: (nodeId, patch) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          nodes: mapNodes(page.nodes, nodeId, (node) => ({
+            ...node,
+            style: { ...node.style, ...patch },
+          })),
+        }))
+      : state.document,
+  })),
+  moveNode: (nodeId, direction) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          nodes: moveNodeInTree(page.nodes, nodeId, direction),
+        }))
+      : state.document,
+  })),
+  removeNode: (nodeId) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          nodes: removeNodeFromTree(page.nodes, nodeId),
+        }))
+      : state.document,
+    selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
+  })),
+  updateCurrentPage: (patch) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({ ...page, ...patch }))
+      : state.document,
+  })),
+  updateCurrentPageSheet: (patch) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          sheet: { ...page.sheet, ...patch },
+        }))
+      : state.document,
+  })),
+  replaceCurrentPageFromImport: (importedPage) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          ...importedPage,
+          id: page.id,
+          name: page.name,
+        }))
+      : state.document,
+    selectedCell: importedPage.sheet.canvasMode === 'sheet' ? { row: 1, col: 1 } : null,
+    selectedRange: importedPage.sheet.canvasMode === 'sheet' ? createSingleCellRange(1, 1) : null,
+    selectedNodeId: null,
+  })),
+  setCanvasMode: (mode) => set((state) => pushDocumentHistory(state, {
+    document: state.document
+      ? updateCanvasPage(state.document, (page) => ({
+          ...page,
+          sheet: { ...page.sheet, canvasMode: mode },
+        }))
+      : state.document,
+  })),
+  insertSheetColumns: (insertAt, count = 1) => set((state) => {
+    if (!state.document || count <= 0) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        sheet: {
+          ...page.sheet,
+          columnCount: page.sheet.columnCount + count,
+          columnWidths: [
+            ...page.sheet.columnWidths.slice(0, insertAt - 1),
+            ...Array.from({ length: count }, () => page.sheet.defaultColumnWidth),
+            ...page.sheet.columnWidths.slice(insertAt - 1),
+          ],
+        },
+        cells: shiftCellsForInsertedColumns(page.cells, insertAt, count),
+        mergedCells: shiftMergedRangesForInsertedColumns(page.mergedCells, insertAt, count),
+      })),
+      selectedRange: state.selectedRange
+        ? normalizeRange({
+            t: state.selectedRange.t,
+            l: insertAt,
+            b: state.selectedRange.b,
+            r: insertAt + count - 1,
+          })
+        : state.selectedRange,
+      selectedCell: { row: 1, col: insertAt },
+    });
+  }),
+  insertSheetRows: (insertAt, count = 1) => set((state) => {
+    if (!state.document || count <= 0) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        sheet: {
+          ...page.sheet,
+          rowCount: page.sheet.rowCount + count,
+          rowHeights: [
+            ...page.sheet.rowHeights.slice(0, insertAt - 1),
+            ...Array.from({ length: count }, () => page.sheet.defaultRowHeight),
+            ...page.sheet.rowHeights.slice(insertAt - 1),
+          ],
+        },
+        cells: shiftCellsForInsertedRows(page.cells, insertAt, count),
+        mergedCells: shiftMergedRangesForInsertedRows(page.mergedCells, insertAt, count),
+      })),
+      selectedRange: state.selectedRange
+        ? normalizeRange({
+            t: insertAt,
+            l: state.selectedRange.l,
+            b: insertAt + count - 1,
+            r: state.selectedRange.r,
+          })
+        : state.selectedRange,
+      selectedCell: { row: insertAt, col: 1 },
+    });
+  }),
+  setSheetColumnWidth: (colStart, colEnd, width) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    const nextWidth = Math.max(36, Math.round(width));
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        sheet: {
+          ...page.sheet,
+          columnWidths: page.sheet.columnWidths.map((columnWidth, index) => {
+            const col = index + 1;
+            return col >= colStart && col <= colEnd ? nextWidth : columnWidth;
+          }),
+        },
+      })),
+    });
+  }),
+  setSheetRowHeight: (rowStart, rowEnd, height) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    const nextHeight = Math.max(24, Math.round(height));
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        sheet: {
+          ...page.sheet,
+          rowHeights: page.sheet.rowHeights.map((rowHeight, index) => {
+            const row = index + 1;
+            return row >= rowStart && row <= rowEnd ? nextHeight : rowHeight;
+          }),
+        },
+      })),
+    });
+  }),
+  updateSheetCellValue: (row, col, value) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => updatePageCellValue(page, row, col, value)),
+    });
+  }),
+  updateSelectedCellValue: (value) => set((state) => {
+    if (!state.document || !state.selectedCell) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(
+        state.document,
+        (page) => updatePageCellValue(page, state.selectedCell!.row, state.selectedCell!.col, value),
+      ),
+    });
+  }),
+  updateSelectedCellStyle: (patch) => set((state) => {
+    if (!state.document || !state.selectedCell) {
+      return { document: state.document };
+    }
+    const cellKey = getCellKey(state.selectedCell.row, state.selectedCell.col);
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        cells: {
+          ...page.cells,
+          [cellKey]: {
+            ...(page.cells[cellKey] ?? {}),
+            style: {
+              ...(page.cells[cellKey]?.style ?? {}),
+              ...patch,
+            },
+          },
+        },
+      })),
+    });
+  }),
+  undoCanvasChange: () => set((state) => {
+    if (!state.document || state.undoStack.length === 0) {
+      return {};
+    }
+
+    const previousDocument = state.undoStack[state.undoStack.length - 1];
+    return {
+      document: previousDocument,
+      undoStack: state.undoStack.slice(0, -1),
+      redoStack: [...state.redoStack, state.document].slice(-DOCUMENT_HISTORY_LIMIT),
+      selectedNodeId: null,
+    };
+  }),
+  redoCanvasChange: () => set((state) => {
+    if (!state.document || state.redoStack.length === 0) {
+      return {};
+    }
+
+    const nextDocument = state.redoStack[state.redoStack.length - 1];
+    return {
+      document: nextDocument,
+      undoStack: [...state.undoStack, state.document].slice(-DOCUMENT_HISTORY_LIMIT),
+      redoStack: state.redoStack.slice(0, -1),
+      selectedNodeId: null,
+    };
+  }),
+  canUndoCanvasChange: () => get().undoStack.length > 0,
+  canRedoCanvasChange: () => get().redoStack.length > 0,
+  setPagePreviewCount: (pageId, count) => set((state) => ({
+    pagePreviewCounts: state.pagePreviewCounts[pageId] === count
+      ? state.pagePreviewCounts
+      : {
+          ...state.pagePreviewCounts,
+          [pageId]: Math.max(1, count),
+        },
+  })),
+  getSelectedCellState: () => {
+    const page = get().getCurrentPage();
+    const selectedCell = get().selectedCell;
+    if (!page || !selectedCell) return null;
+    return page.cells[getCellKey(selectedCell.row, selectedCell.col)] ?? null;
+  },
   getCurrentPage: () => {
     const document = get().document;
     if (!document) return null;
@@ -260,7 +848,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     if (!document) return null;
     return document.model.fields.find((field) => field.id === fieldId) ?? null;
   },
-  addWorkflowNode: () => set((state) => ({
+  addWorkflowNode: () => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? {
           ...state.document,
@@ -283,7 +871,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         }
       : state.document,
   })),
-  setWorkflowNodes: (nodes) => set((state) => ({
+  setWorkflowNodes: (nodes) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? {
           ...state.document,
@@ -294,7 +882,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         }
       : state.document,
   })),
-  setWorkflowEdges: (edges) => set((state) => ({
+  setWorkflowEdges: (edges) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? {
           ...state.document,

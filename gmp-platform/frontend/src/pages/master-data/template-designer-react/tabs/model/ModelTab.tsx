@@ -9,6 +9,7 @@ export default function ModelTab() {
   const setSelectedFieldId = useTemplateDesignerStore((state) => state.setSelectedFieldId);
   const addField = useTemplateDesignerStore((state) => state.addField);
   const updateField = useTemplateDesignerStore((state) => state.updateField);
+  const removeField = useTemplateDesignerStore((state) => state.removeField);
 
   const fields = document?.model.fields ?? [];
   const selectedField = fields.find((field) => field.id === selectedFieldId) ?? fields[0] ?? null;
@@ -19,15 +20,28 @@ export default function ModelTab() {
       <Paper sx={{ width: { xs: '100%', md: 320 }, p: 2 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>字段模型</Typography>
-          <Button
-            variant="contained"
-            onClick={() => {
-              const field = addField('input');
-              setSelectedFieldId(field.id);
-            }}
-          >
-            新增字段
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                const field = addField('input');
+                setSelectedFieldId(field.id);
+              }}
+            >
+              新增字段
+            </Button>
+            {selectedField ? (
+              <Button
+                color="error"
+                variant="outlined"
+                onClick={() => {
+                  removeField(selectedField.id);
+                }}
+              >
+                删除字段
+              </Button>
+            ) : null}
+          </Stack>
         </Stack>
         <List dense disablePadding>
           {fields.map((field) => (

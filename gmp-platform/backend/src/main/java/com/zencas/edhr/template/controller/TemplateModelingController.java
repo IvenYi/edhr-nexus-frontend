@@ -13,6 +13,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.template.dto.TemplateModelingRequest;
+import com.zencas.edhr.template.dto.TemplateImportGridResponse;
 import com.zencas.edhr.template.entity.DhrTemplate;
 import com.zencas.edhr.template.entity.FormTemplate;
 import com.zencas.edhr.template.entity.FormTemplateVersion;
@@ -21,7 +22,9 @@ import com.zencas.edhr.template.repository.DhrTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.template.repository.TemplateCategoryRepository;
+import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +41,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -72,6 +77,7 @@ public class TemplateModelingController {
     private final TemplateCategoryRepository templateCategoryRepository;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
+    private final TemplateLegacyWordImportService templateLegacyWordImportService;
 
     @GetMapping("/form-templates")
     public ApiResponse<PageResult<FormTemplateResponse>> listFormTemplates(
@@ -91,6 +97,12 @@ public class TemplateModelingController {
                 .map(template -> toFormTemplateResponse(template, loadCurrentVersion(template), loadTemplateVersions(template.getId())))
                 .toList();
         return ApiResponse.success(PageResult.of(content, page, size, result.getTotalElements()));
+    }
+
+    @PostMapping(value = "/form-templates/import/legacy-word", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<TemplateImportGridResponse> importLegacyWordTemplate(
+            @RequestParam("file") MultipartFile file) throws IOException {
+        return ApiResponse.success(templateLegacyWordImportService.importDoc(file));
     }
 
     @PostMapping("/form-templates")

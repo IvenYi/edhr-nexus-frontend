@@ -1,4 +1,5 @@
 import { Button, Divider, Paper, Stack, Typography } from '@mui/material';
+import { getComponentDefinition } from '../registry/componentRegistry';
 import { componentRegistry } from '../registry/componentRegistry';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 
@@ -6,20 +7,27 @@ export default function DesignerSidebar() {
   const insertNode = useTemplateDesignerStore((state) => state.insertNode);
   const addNodeFromField = useTemplateDesignerStore((state) => state.addNodeFromField);
   const document = useTemplateDesignerStore((state) => state.document);
+  const selectedNode = useTemplateDesignerStore((state) => state.getSelectedNode());
 
   const fieldComponents = componentRegistry.filter((component) => component.category === 'field');
   const layoutComponents = componentRegistry.filter((component) => component.category !== 'field');
   const modelFields = document?.model.fields ?? [];
+  const selectedDefinition = selectedNode ? getComponentDefinition(selectedNode.type) : null;
+  const selectedParentId = selectedDefinition && selectedDefinition.category !== 'field' ? selectedNode?.id ?? null : null;
+  const insertTargetLabel = selectedParentId ? String(selectedNode?.props.title || selectedNode?.props.label || selectedNode?.type || '选中容器') : '根画布';
 
   return (
     <Paper sx={{ p: 2, overflow: 'auto' }}>
+      <Typography sx={{ mb: 1.5, fontSize: 12, color: '#909399' }}>
+        插入目标: {insertTargetLabel}
+      </Typography>
       <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>基础字段</Typography>
       <Stack spacing={1}>
         {fieldComponents.map((component) => (
           <Button
             key={component.type}
             variant="outlined"
-            onClick={() => insertNode(null, component.createDefaultNode())}
+            onClick={() => insertNode(selectedParentId, component.createDefaultNode())}
           >
             {component.label}
           </Button>
@@ -33,7 +41,7 @@ export default function DesignerSidebar() {
             key={field.id}
             variant="text"
             sx={{ justifyContent: 'space-between' }}
-            onClick={() => addNodeFromField(field.id)}
+            onClick={() => addNodeFromField(field.id, selectedParentId)}
           >
             {field.name || '未命名字段'}
           </Button>
@@ -48,7 +56,7 @@ export default function DesignerSidebar() {
           <Button
             key={component.type}
             variant="outlined"
-            onClick={() => insertNode(null, component.createDefaultNode())}
+            onClick={() => insertNode(selectedParentId, component.createDefaultNode())}
           >
             {component.label}
           </Button>

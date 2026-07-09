@@ -6,6 +6,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.template.dto.TemplateModelingRequest;
+import com.zencas.edhr.template.dto.TemplateImportGridResponse;
 import com.zencas.edhr.template.entity.DhrTemplate;
 import com.zencas.edhr.template.entity.FormTemplate;
 import com.zencas.edhr.template.entity.FormTemplateVersion;
@@ -14,6 +15,7 @@ import com.zencas.edhr.template.repository.DhrTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.template.repository.TemplateCategoryRepository;
+import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +27,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,6 +50,7 @@ class TemplateModelingControllerTest {
     @Mock private TemplateCategoryRepository templateCategoryRepository;
     @Mock private AuditEventRepository auditEventRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
+    @Mock private TemplateLegacyWordImportService templateLegacyWordImportService;
     @InjectMocks private TemplateModelingController controller;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -139,6 +144,23 @@ class TemplateModelingControllerTest {
         assertThat(objectMapper.readTree(event.getContentAfter()).get("templateCategory").asText()).isEqualTo("生产表单");
         assertThat(objectMapper.readTree(event.getContentAfter()).get("currentVersion").asText()).isEqualTo("V1.0");
         assertThat(objectMapper.readTree(event.getContentAfter()).get("effectiveFrom").asText()).isEqualTo("2026-07-01 08:00:00");
+    }
+
+    @Test
+    void importLegacyWordTemplateDelegatesToService() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "sample.doc", "application/msword", "doc".getBytes());
+        TemplateImportGridResponse expected = new TemplateImportGridResponse(
+                "portrait",
+                "paper",
+                "free",
+                new TemplateImportGridResponse.Grid(List.of(36), List.of(98), Map.of(), List.of())
+        );
+        when(templateLegacyWordImportService.importDoc(file)).thenReturn(expected);
+
+        var response = controller.importLegacyWordTemplate(file);
+
+        assertThat(response.getData()).isEqualTo(expected);
+        verify(templateLegacyWordImportService).importDoc(file);
     }
 
     @Test
