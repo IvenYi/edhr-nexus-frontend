@@ -1,0 +1,55 @@
+@include b(report-jump-style-config) {
+  height: 26px;
+
+  @include e(label) {
+    @include font-2;
+
+    margin-right: getCssVar(spacing, 4);
+  }
+
+  @include e(color) {
+    height: 24px;
+    margin-left: getCssVar(spacing, 2);
+  }
+
+  @include e(font-config) {
+    margin-top: getCssVar(spacing, 2);
+  }
+
+  @include e(color-mode) {
+    height: 24px;
+    margin-top: getCssVar(spacing, 4);
+    display: flex;
+    align-items: center;
+
+    .ant-radio-wrapper {
+      :last-child {
+        display: flex;
+        align-items: center;
+        @include font-2;
+      }
+    }
+  }
+}
+
+@include b(report-jump-style-config-font-box) {
+  width: 100%;
+  height: 26px;
+  display: inline-flex;
+  padding: getCssVar(padding, 1);
+  background-color: getCssVar(color, bg, 3);
+  gap: getCssVar(spacing, 1);
+
+  @include e(item) {
+    flex-grow: 1;
+    cursor: pointer;
+    border-radius: getCssVar(border-radius, xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include when(active) {
+      background-color: getCssVar(color, white);
+    }
+  }
+}

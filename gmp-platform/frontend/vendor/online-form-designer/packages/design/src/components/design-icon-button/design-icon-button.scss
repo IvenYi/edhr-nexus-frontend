@@ -1,0 +1,44 @@
+$design-icon-button: (
+  'size': 30px,
+  'color': getCssVar(color, text, 5),
+  'bg-color': transparent,
+  'hover-color': #{getCssVar(color, primary)},
+  'hover-bg-color': color-mix(in srgb, #{getCssVar(color, primary)} 8%, transparent),
+  'active-color': #{getCssVar(color, primary)},
+  'active-bg-color': color-mix(in srgb, #{getCssVar(color, primary)} 8%, transparent),
+  'disabled-color': #d1d2d3
+);
+
+@include b(design-icon-button) {
+  @include set-component-css-var('design-icon-button', $design-icon-button);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: getCssVar(design-icon-button, color);
+  background-color: getCssVar(design-icon-button, bg-color);
+  width: getCssVar(design-icon-button, size);
+  height: getCssVar(design-icon-button, size);
+  border-radius: getCssVar(border, radius, s);
+  cursor: pointer;
+
+  &:hover {
+    color: getCssVar(design-icon-button, hover-color) !important;
+    background-color: getCssVar(design-icon-button, hover-bg-color) !important;
+  }
+
+  @include when(active) {
+    color: getCssVar(design-icon-button, active-color);
+    background-color: getCssVar(design-icon-button, active-bg-color);
+  }
+
+  @include when(disabled) {
+    color: getCssVar(design-icon-button, disabled-color) !important;
+    background-color: transparent !important;
+    cursor: not-allowed;
+
+    .iconfont {
+      color: getCssVar(design-icon-button, disabled-color) !important;
+    }
+  }
+}

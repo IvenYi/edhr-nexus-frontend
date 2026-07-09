@@ -1,0 +1,67 @@
+.pure-tree {
+  // 变量
+  --pure-tree__indent-width: 16px;
+  --pure-tree__node-arrow-indent-width: 16px;
+  --pure-tree__text-color: #8f8f8f;
+  --pure-tree__selected-color: #026ac8;
+  --pure-tree__selected-bg-color: #f0f6fc;
+
+  user-select: none;
+
+  // wrapper 样式
+  .pure-tree__node-wrapper-content {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: var(--pure-tree__text-color);
+  }
+
+  .pure-tree__node-wrapper-children {
+    display: none;
+  }
+
+  // 节点缩进
+  .pure-tree__indent {
+    width: calc(var(--pure-tree__node-level) * var(--pure-tree__indent-width));
+  }
+
+  // 箭头样式
+  .pure-tree__node-arrow {
+    cursor: pointer;
+    flex-shrink: 0;
+    flex-grow: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pure-tree__node-arrow-indent {
+    width: var(--pure-tree__node-arrow-indent-width);
+  }
+
+  // 节点样式
+  .pure-tree__node {
+    display: flex;
+    width: 1px;
+    flex-shrink: 1;
+    flex-grow: 1;
+    align-items: center;
+  }
+
+  // 节点展开样式
+  .pure-tree__node-wrapper--expanded {
+    > .pure-tree__node-wrapper-children {
+      display: block;
+    }
+  }
+
+  // 节点选中的样式
+  .pure-tree__node-wrapper--selected {
+    > .pure-tree__node-wrapper-content {
+      background: var(--pure-tree__selected-bg-color);
+      color: var(--pure-tree__selected-color);
+    }
+  }
+}

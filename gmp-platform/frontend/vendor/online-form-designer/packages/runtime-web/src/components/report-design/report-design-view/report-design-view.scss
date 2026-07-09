@@ -1,0 +1,87 @@
+.is-hidden {
+  display: none;
+}
+
+@include b(report-design-view-confirm-dialog) {
+  .ant-modal-confirm {
+    position: fixed;
+    left: 17px;
+    top: 62px;
+
+    .ant-btn.continue-btn {
+      position: absolute;
+      left: 38px;
+      bottom: 16px;
+      padding: 0;
+      height: 24px;
+    }
+  }
+}
+
+@include b(report-design-view) {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: rgb(getCssVar(pr-gray-3));
+  --gct-color-primary: var(--ant-primary-color);
+  --gct-color-primary-hover: var(--ant-primary-color-hover);
+  --gct-color-primary-disabled: var(--ant-primary-color-disabled);
+  // --ant-primary-color: #{getCssVar(color-primary)};
+  // --ant-primary-color-disabled: #{getCssVar(color-primary, disabled)};
+  // --ant-primary-color-hover: #{getCssVar(color-primary, hover)};
+  // --ant-primary-color-active: #{getCssVar(color-primary, active)};
+
+  @include m(report-categorize) {
+    color: #5A5F6B;
+  }
+
+  @include e(header) {
+    height: 64px;
+    background-color: #fff;
+    color: #1A1D23;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 getCssVar(padding, 7);
+    border-bottom: 1px solid #E0E3EB;
+
+    @include m(icon) {
+      cursor: pointer;
+      color: #000;
+      margin-right: getCssVar(spacing, 7);
+    }
+  }
+
+  @include e(header-left) {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(header-right) {
+    .ant-btn.ant-btn-primary {
+      border: 0;
+      margin-left: 12px;
+    }
+    .ant-btn.ant-btn-primary[disabled] {
+      color: white;
+      background-color: var(--ant-primary-color-disabled);
+    }
+  }
+
+  @include e(body) {
+    height: calc(100vh - 54px);
+    display: flex;
+  }
+
+  @include e(body-left) {
+    flex-grow: 1;
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  @include e(body-right) {
+    flex-shrink: 0;
+    display: flex;
+  }
+}

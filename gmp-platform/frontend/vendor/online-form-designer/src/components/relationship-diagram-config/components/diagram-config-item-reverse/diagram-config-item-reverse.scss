@@ -1,0 +1,54 @@
+@include b(diagram-config-item-reverse) {
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.06);
+  border-radius: 4px 4px 4px 4px;
+  border: 1px solid #E8EBF0;
+
+  @include e(title) {
+    font-size: 14px;
+    color: #212528;
+    line-height: 22px;
+    height: 32px;
+    padding: 8px 12px;
+
+    .ant-select {
+      min-width: 100px;
+    }
+  }
+
+  @include e(select) {
+    height: 50px;
+    padding: 7px 12px;
+
+    .ant-select {
+      width: 152px;
+
+      .ant-select-selector {
+        background-color: #F7F8FA;
+
+        .ant-select-selection-placeholder {
+          color: #C3C3C3;
+        }
+      }
+    }
+
+    @include when(select) {
+      .ant-select-selector {
+        border-color: #3168EC !important;
+      }
+    }
+  }
+
+  @include e(model-select) {
+    background-color: #F7F8FA;
+    padding: 4.5px 8px;
+
+    .ant-select {
+      .ant-select-selector {
+        border: 0;
+        background-color: transparent;
+      }
+    }
+  }
+}

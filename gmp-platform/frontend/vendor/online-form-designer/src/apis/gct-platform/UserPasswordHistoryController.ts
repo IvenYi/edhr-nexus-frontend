@@ -1,0 +1,117 @@
+import { defHttp } from '@/utils/http/axios';
+import { UserPasswordHistoryRequest, ResponseEntitystring, ResponseEntityUserPasswordHistoryResponse, ResponseEntityListUserPasswordHistoryResponse, ResponseEntityPageBaseUserPasswordHistoryResponse } from './model/index';
+
+/**
+ * 保存
+ * import { postUserPasswordHistory } from "/@/apis/gct-platform/UserPasswordHistoryController"
+ */
+export async function postUserPasswordHistory(data: UserPasswordHistoryRequest, config = {}): Promise<ResponseEntitystring['data']> {
+  return defHttp.post(
+    {
+      url: `/gct-platform/api/user-password-history`,
+      data,
+    },
+    {
+      joinTenantIdToHeader: true,
+      ...config,
+    },
+  );
+}
+
+/**
+ * 删除
+ * import { deleteUserPasswordHistory } from "/@/apis/gct-platform/UserPasswordHistoryController"
+ */
+export interface deleteUserPasswordHistoryQueryInterface {
+  ids: string; // 删除的id，多个按','分割
+}
+export async function deleteUserPasswordHistory(params: deleteUserPasswordHistoryQueryInterface = {}, config = {}): Promise<ResponseEntitystring['data']> {
+  return defHttp.delete(
+    {
+      url: `/gct-platform/api/user-password-history`,
+      params,
+    },
+    {
+      joinTenantIdToHeader: true,
+      joinParamsToUrl: true,
+      ...config,
+    },
+  );
+}
+
+/**
+ * 详情
+ * import { getUserPasswordHistoryInfo } from "/@/apis/gct-platform/UserPasswordHistoryController"
+ */
+export interface getUserPasswordHistoryInfoQueryInterface {
+  id: string; // id
+}
+export async function getUserPasswordHistoryInfo(params: getUserPasswordHistoryInfoQueryInterface = {}, config = {}): Promise<ResponseEntityUserPasswordHistoryResponse['data']> {
+  return defHttp.get(
+    {
+      url: `/gct-platform/api/user-password-history/info`,
+      params,
+    },
+    {
+      joinTenantIdToHeader: true,
+      ...config,
+    },
+  );
+}
+
+/**
+ * 列表
+ * import { getUserPasswordHistoryList } from "/@/apis/gct-platform/UserPasswordHistoryController"
+ */
+export async function getUserPasswordHistoryList(config = {}): Promise<ResponseEntityListUserPasswordHistoryResponse['data']> {
+  return defHttp.get(
+    {
+      url: `/gct-platform/api/user-password-history/list`,
+    },
+    {
+      joinTenantIdToHeader: true,
+      ...config,
+    },
+  );
+}
+
+/**
+ * 分页列表
+ * import { getUserPasswordHistoryPageList } from "/@/apis/gct-platform/UserPasswordHistoryController"
+ */
+export interface getUserPasswordHistoryPageListQueryInterface {
+  pageNo?: number; // 页码
+  pageSize?: number; // 每页数据条数
+}
+export async function getUserPasswordHistoryPageList(params: getUserPasswordHistoryPageListQueryInterface = {}, config = {}): Promise<ResponseEntityPageBaseUserPasswordHistoryResponse['data']> {
+  return defHttp.get(
+    {
+      url: `/gct-platform/api/user-password-history/page/list`,
+      params,
+    },
+    {
+      joinTenantIdToHeader: true,
+      ...config,
+    },
+  );
+}
+
+/**
+ * 修改
+ * import { putUserPasswordHistoryById } from "/@/apis/gct-platform/UserPasswordHistoryController"
+ */
+export interface putUserPasswordHistoryByIdPathInterface {
+  id: string; // id
+}
+export async function putUserPasswordHistoryById(path: putUserPasswordHistoryByIdPathInterface, data: UserPasswordHistoryRequest, config = {}): Promise<ResponseEntitystring['data']> {
+  return defHttp.put(
+    {
+      url: `/gct-platform/api/user-password-history/${path?.id}`,
+      data,
+    },
+    {
+      joinTenantIdToHeader: true,
+      ...config,
+    },
+  );
+}

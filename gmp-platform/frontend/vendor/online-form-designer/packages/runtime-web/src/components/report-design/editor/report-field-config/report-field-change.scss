@@ -1,0 +1,28 @@
+@include b(report-fileld-change) {
+  // position: absolute;
+  // z-index: 100;
+  // top: 34px;
+  // left: 0;
+  padding-top: 8px;
+  background: #fff;
+  width: 100%;
+ 
+}
+@include e(item) {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: getCssVar(padding, 0) getCssVar(padding, 6);
+}
+
+@include e(item-icon) {
+  flex-shrink: 0;
+  color: getCssVar(color, primary);
+  margin-right: getCssVar(spacing, 2);
+}
+
+@include e(item-title) {
+  flex-grow: 1;
+  @include font-2;
+  @include utils-ellipsis;
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@gct/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=10240 pnpm vite build",
+    "dev:start": "vite --mode start.development",
+    "build:start": "vite build  --mode start.production",
+    "dev:edhr": "vite --mode edhr.development",
+    "build:edhr": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=16384 pnpm vite build  --mode edhr.production",
+    "dev:ipad": "vite --mode ipad.development",
+    "build:ipad": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=16384 pnpm vite build  --mode ipad.production",
+    "preview": "vite preview --outDir dist",
+    "apis": "node ./helper/gen-apis.js",
+    "apis:vm": "node ./helper/gen-apis.js vm"
+  },
+  "dependencies": {
+    "@gct-paas/core": "0.1.2",
+    "@gct-paas/scss": "0.1.5",
+    "@gct/runtime-mobile-render": "workspace:*",
+    "@gct/runtime-render": "workspace:*",
+    "overlayscrollbars": "^2.13.0",
+    "semver": "^7.6.0",
+    "sortablejs": "^1.15.6",
+    "vconsole": "^3.15.1"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.0",
+    "@types/node": "^18.17.0",
+    "@types/semver": "^7.5.8",
+    "@vitejs/plugin-legacy": "5.4.3",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue-jsx": "^3.0.1",
+    "@vue/tsconfig": "^0.4.0",
+    "chalk": "^4.1.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-px-to-viewport-8-plugin": "^1.2.2",
+    "rollup-plugin-visualizer": "^5.14.0",
+    "typescript": "~5.1.6",
+    "unplugin-auto-import": "^0.16.6",
+    "vite": "^5.4.11",
+    "vite-plugin-html": "3.2.0",
+    "vue-grid-layout": "3.0.0-beta1",
+    "vue-tsc": "^1.8.6"
+  }
+}

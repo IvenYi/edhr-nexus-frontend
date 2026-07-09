@@ -1,0 +1,3 @@
+ALTER TABLE user_account
+    ADD COLUMN IF NOT EXISTS gender VARCHAR(16),
+    ADD COLUMN IF NOT EXISTS biography VARCHAR(512);

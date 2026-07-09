@@ -1,0 +1,105 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./dsbridge.js"></script>
+    <script src="./native.js"></script>
+    <script src="./unpkg.com_vconsole@3.15.1_dist_vconsole.min.js"></script>
+    <script>
+      // VConsole will be exported to `window.VConsole` by default.
+      var vConsole = new window.VConsole();
+    </script>
+    <title>Index</title>
+  </head>
+  <body>
+    <!-- <svg>
+      <use xlink:href="http://127.0.0.1:5500/src/hybrid/a.svg#icon_asset_81c9ed35e1644f64878ed26a0de97981"/>
+    </svg> -->
+
+    <!-- <svg>
+      <use
+        xlink:href="http://127.0.0.1:5500/src/hybrid/c8fd0199a80a41abb2d1e7020db16a82__group__.svg#icon_asset_55390cf7c52946aba3354cd4abf3e0ab"
+      />
+    </svg>-->
+    <svg>
+      <use href="http://127.0.0.1:5500/src/hybrid/__group__.svg#icon-e81b0e737f494f1a9ff39f7308574fc2" />
+    </svg> 
+     
+    OK:
+    <input type="button" value="chooseImage" onclick="chooseImage()" />
+    <input type="button" value="chooseVideo" onclick="chooseVideo()" />
+    <input type="button" value="chooseFile" onclick="chooseFile()" />
+    <hr />
+    <input type="button" value="open" onclick="appOpen()" />
+    <input type="button" value="reload" onclick="appReload()" />
+    <input type="button" value="upload" onclick="appUpload()" />
+    <input type="button" value="download" onclick="appDownload()" />
+    <input type="button" value="readFile" onclick="readFile()" />
+    <input type="button" value="sqliteExecute" onclick="chooseImage()" />
+    <input type="button" value="scanCode" onclick="scanCode()" />
+    <input type="button" value="mqttSubscribe" onclick="chooseImage()" />
+    <input type="button" value="mqttUnsubscribe" onclick="chooseImage()" />
+    <input type="button" value="onMqttMessage" onclick="chooseImage()" />
+    <input type="button" value="updateNative" onclick="chooseImage()" />
+    <input type="button" value="updateApp" onclick="chooseImage()" />
+    <input type="button" value="getLang" onclick="chooseImage()" />
+    <input type="button" value="getLocation" onclick="chooseImage()" />
+    <input type="button" value="onNotifyClick" onclick="chooseImage()" />
+
+    <script>
+      // 未跳转到about.html
+      function openWin() {
+        GctNative.open({
+          path: 'http://10.10.10.92:5500/src/hybrid/about.html',
+        });
+      }
+
+      function reloadWin() {
+        GctNative.reload({
+          path: 'http://10.10.10.92:5500/src/hybrid/index.html',
+        });
+      }
+
+      function chooseImage() {
+        GctNative.chooseImage({
+          count: 3,
+          success(res) {
+            console.log(res);
+          },
+        });
+      }
+
+      function chooseFile() {
+        GctNative.chooseFile({
+          count: 3,
+          success(res) {
+            console.log(res);
+          },
+        });
+      }
+
+      function chooseVideo() {
+        GctNative.chooseVideo({
+          count: 6, //默认9
+          // extension: ['png'],
+          // sourceType: ['album'], //从相册选择
+          success: function (res) {
+            console.log(res.tempFilePaths);
+          },
+        });
+      }
+
+      function scanCode() {
+        GctNative.scanCode({
+          // count: 6, //默认9
+          // extension: ['png'],
+          // sourceType: ['album'], //从相册选择
+          success: function (res) {
+            console.log(1111111)
+            console.log(res);
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

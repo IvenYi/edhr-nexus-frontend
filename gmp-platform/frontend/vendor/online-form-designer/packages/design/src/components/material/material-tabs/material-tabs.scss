@@ -1,0 +1,44 @@
+@include b(material-tabs) {
+  display: flex;
+  height: 100%;
+
+  @include e(item) {
+    height: 74px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #5D6474;
+
+    @include when(active) {
+      background-color: #cdd1d6;
+      color: #000000;
+    }
+  }
+
+  @include e(item-icon) {
+    height: 28px;
+
+    .iconfont {
+      font-size: 22px;
+    }
+  }
+
+  @include e(item-label) {
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+@include b(material-tabs-left) {
+  flex-shrink: 0;
+  width: 48px;
+  border-radius: 0px 0px 0px 0px;
+  border: 2px solid #E0E3EA;
+  background-color: #E6E9EF;
+}
+
+@include b(material-tabs-right) {
+  flex-grow: 1;
+}

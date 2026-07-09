@@ -1,0 +1,29 @@
+@mixin fontVars($prefix){
+  font-size: getCssVar($prefix, 'font-size');
+  letter-spacing: getCssVar($prefix, 'letter-space');
+}
+
+@mixin override-ant($prefix) {
+
+  :deep(.ant-select){
+    @include fontVars($prefix);
+  }
+
+  :deep(.ant-input){
+    @include fontVars($prefix);
+  }
+
+  :deep(.ant-input-number-input){
+    @include fontVars($prefix);
+  }
+
+  :deep(.ant-picker-input){
+    >input{
+      @include fontVars($prefix);
+    }
+  }
+
+  :deep(.gct-select-ex-option__label){
+    @include fontVars($prefix);
+  }
+}

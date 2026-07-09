@@ -1,0 +1,13 @@
+@include b(gct-form-text) {
+  &.ant-input-affix-wrapper {
+    .ant-input-suffix {
+      display: none;
+    }
+  }
+
+  &.ant-input-affix-wrapper-focused {
+    .ant-input-suffix {
+      display: flex;
+    }
+  }
+}

@@ -1,0 +1,58 @@
+@include b(field-info-editor) {
+  @include e(field-info) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    line-height: 18px;
+    flex-wrap: wrap;
+  }
+
+  @include e(field-name) {
+    max-width: 100%;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+
+    span:last-child {
+      @include utils-ellipsis;
+    }
+  }
+
+  @include e(field-icon) {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 8px;
+    background-size: cover;
+    background-color: #e2eef9;
+    border-radius: getCssVar(border, radius, s);
+    @include flex-center;
+
+    .iconfont {
+      color: getCssVar(color, primary);
+      font-size: 11px;
+    }
+  }
+
+  @include e(field-key) {
+    color: getCssVar(color, text, 5);
+    @include utils-ellipsis;
+  }
+
+  @include e(field-paths) {
+    margin-top: 12px;
+    font-size: 12px;
+    color: getCssVar(color, text, 5);
+
+    & span:last-child {
+      margin-right: 0;
+      color: getCssVar(color, text, 1);
+    }
+  }
+
+  @include e(field-sep) {
+    width: 16px;
+    height: 16px;
+    @include flex-center;
+  }
+}

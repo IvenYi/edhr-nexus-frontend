@@ -1,0 +1,22 @@
+@include b(card-design-view) {
+
+  @include e(save-confirm) {
+    position: fixed;
+    top: 60px;
+    right: 24px;
+
+
+    .ant-modal-confirm-body {
+      display: flex;
+      align-items: center;
+
+      .ant-modal-confirm-content {
+        margin-top: 0;
+        margin-left: 8px;
+        color: #1A1D23;
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+  }
+}

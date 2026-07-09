@@ -1,0 +1,14 @@
+@include b(app-full-screen-container) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f4f7f9;
+  z-index: 1000;
+  overflow: hidden;
+
+  @include when(is-hidden) {
+    display: none;
+  }
+}

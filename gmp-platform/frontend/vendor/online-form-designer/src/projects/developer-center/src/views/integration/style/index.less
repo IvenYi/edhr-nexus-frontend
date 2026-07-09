@@ -1,0 +1,18 @@
+.status {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &::before {
+    content: '';
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background-color: var(--ant-primary-color);
+    margin-right: 6px;
+  }
+
+  &--offline::before {
+    background-color: @error-color;
+  }
+}

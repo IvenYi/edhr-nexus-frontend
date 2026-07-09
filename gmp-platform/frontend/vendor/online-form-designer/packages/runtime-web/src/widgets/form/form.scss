@@ -1,0 +1,14 @@
+@include b(app-form) {
+  padding: 16px 16px 0 16px;
+
+  .#{bem(grid-container)} {
+
+    >.ant-col:first-child {
+
+      .#{bem(app-form-item)} {
+        padding-left: 0;
+      }
+    }
+  }
+
+}

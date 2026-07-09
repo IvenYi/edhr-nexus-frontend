@@ -1,0 +1,64 @@
+@include b(subtotal-config) {
+  @include e(add) {
+    @include flex-center;
+
+    .iconfont {
+      margin-right: getCssVar(padding, 2);
+    }
+  }
+}
+
+@include b(subtotal-config-item) {
+  border-radius: 4px;
+  padding: getCssVar(padding, 2);
+  background-color: getCssVar(color-bg, 3);
+  margin-bottom: getCssVar(spacing, 2);
+
+  @include e(header) {
+    height: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: getCssVar(padding, 2);
+
+    @include font-2;
+  }
+
+  @include e(delete) {
+    cursor: pointer;
+
+    &:hover {
+      color: getCssVar(color-primary, hover);
+    }
+  }
+
+  @include e(body) {
+    border-radius: 4px;
+    padding: getCssVar(padding, 2);
+    background-color: getCssVar(color, white);
+  }
+
+  @include e(form) {
+
+    .ant-form .ant-form-item.gct-gct-form-item {
+      --gct-form-item-min-height: 26px;
+
+      &.include-null {
+        height: 24px;
+        margin-bottom: 0;
+      }
+    }
+
+    .gct-gct-form-item__label, .ant-form-item-label label {
+      --gct-form-item-label-font-size: 12px;
+    }
+
+    .ant-form .ant-form-item {
+      margin-bottom: getCssVar(padding, 4);
+    }
+
+    .gct-gct-form-item--label-top .gct-gct-form-item__label {
+      margin-bottom: 0;
+    }
+  }
+}

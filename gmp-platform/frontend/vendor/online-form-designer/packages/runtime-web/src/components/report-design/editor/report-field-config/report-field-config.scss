@@ -1,0 +1,31 @@
+@include b(report-field-config) {
+  border: 1px dashed getCssVar(color-bg-3);
+  border-radius: getCssVar(border-radius, s);
+  padding: getCssVar(spacing, 2);
+  background-color: getCssVar(color-bg-1);
+
+  > .gct-dnd-container {
+    max-height: 345px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  @include e(add) {
+    position: relative;
+
+    .ant-btn {
+      height: 26px;
+      background-color: transparent;
+    }
+  }
+
+  .ant-btn {
+    width: 100%;
+    border-style: none;
+    box-shadow: none;
+  }
+
+  .gct-dnd-item {
+    border-radius: 4px;
+  }
+}

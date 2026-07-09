@@ -1,0 +1,17 @@
+@include b(form-model-select) {
+  width: 100%;
+
+  .ant-select.ant-select-single.ant-select-show-arrow.gct-form-model-select__class {
+    width: 84px;
+  }
+
+  .ant-select.ant-select-single.ant-select-show-arrow.gct-form-model-select__model {
+    width: 208px;
+  }
+  .ant-select.gct-form-model-select__model {
+    width: 208px;
+    // height: 32px;
+    // border: 1px solid #E8EBF0;
+    // border-left: 0;
+  }
+}

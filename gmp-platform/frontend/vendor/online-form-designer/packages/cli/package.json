@@ -1,0 +1,37 @@
+{
+  "name": "@gct/cli",
+  "version": "0.0.1-alpha.0",
+  "description": "cli 终端",
+  "author": "chitanda",
+  "license": "MIT",
+  "bin": {
+    "gct": "dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {
+    "@qtd/cli-core": "0.0.1-alpha.3",
+    "@vue/compiler-sfc": "^3.2.47",
+    "commander": "^12.1.0",
+    "consola": "^3.2.3",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.0.0",
+    "rimraf": "5.x",
+    "ts-morph": "^24.0.0"
+  },
+  "devDependencies": {
+    "@qx-chitanda/rollup-plugin": "^0.0.5",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@types/fs-extra": "^11.0.1",
+    "rollup": "^4.24.0",
+    "rollup-plugin-esbuild": "^6.1.1"
+  }
+}

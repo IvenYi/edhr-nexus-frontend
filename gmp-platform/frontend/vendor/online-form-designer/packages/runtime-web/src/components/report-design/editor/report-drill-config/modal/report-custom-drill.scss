@@ -1,0 +1,32 @@
+@include b(report-custom-drill) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .gct-gct-edit-form {
+    width: 400px;
+    flex: 1;
+    padding: getCssVar(padding, 7);
+    overflow: auto;
+  }
+
+  .gct-gct-form-info {
+    @include font-3;
+  }
+
+  .gct-gct-form-info__icon {
+    color: getCssVar(color, primary);
+  }
+
+  @include e(footer) {
+    flex-shrink: 0;
+    padding: getCssVar(padding, 6) getCssVar(padding, 7);
+    border-top: 1px solid getCssVar(color, border);
+    text-align: right;
+
+    .ant-btn {
+      margin-left: getCssVar(spacing, 7);
+    }
+  }
+}

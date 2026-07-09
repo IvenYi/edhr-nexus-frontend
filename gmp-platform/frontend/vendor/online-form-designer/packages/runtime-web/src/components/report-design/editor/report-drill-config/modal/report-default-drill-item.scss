@@ -1,0 +1,109 @@
+@include b(report-default-drill-item) {
+  position: relative;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  padding: getCssVar(padding, 3);
+  border-radius: getCssVar(border-radius-s);
+  background-color: transparent;
+
+  @include e(select) {
+    flex-grow: 1;
+    width: 225px;
+
+    .ant-select {
+      width: 96%;
+      height: 26px;
+
+      .ant-select-selector {
+        height: 26px !important;
+
+        .ant-select-selection-placeholder {
+          line-height: 24px;
+        }
+      }
+
+      .ant-select-selection-search-input {
+        height: 26px !important;
+        line-height: 26px;
+      }
+
+      .ant-select-selection-item {
+        display: flex;
+        align-items: center;
+        line-height: 26px;
+      }
+    }
+  }
+
+  @include e(error-info) {
+    @include font-2;
+    color: getCssVar(color, danger);
+    position: absolute;
+    top: 33px;
+    z-index: 10;
+  }
+
+  @include when(error) {
+
+    @include e(select) {
+      .ant-select-selector {
+        border-color: getCssVar(color, danger);
+      }
+    }
+
+    @include e(error-info) {
+      display: block;
+    }
+  }
+
+  @include e(select-icon) {
+    color: getCssVar(color, primary);
+  }
+
+  @include e(select-title) {
+    margin-left: getCssVar(spacing, 2);
+    @include utils-ellipsis;
+  }
+
+  @include e(actions) {
+    flex-shrink: 0;
+    display: none;
+  }
+
+  &:hover {
+    background-color: getCssVar(color, bg, 3);
+
+    @include e(select) {
+      width: 186px;
+    }
+
+    @include e(actions) {
+      display: block;
+
+      @include when(hidden) {
+        display: none;
+      }
+    }
+  }
+
+  @include e(line) {
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    bottom: -4px;
+    border-left: 1px dashed getCssVar(color, border);
+  }
+
+  @include e(dot) {
+    z-index: 1;
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: getCssVar(color, primary);
+  }
+}

@@ -1,0 +1,16 @@
+$gct-form-tab-pane: (
+  width: auto,
+  height: auto,
+);
+
+@include b(form-tab-pane) {
+  @include set-component-css-var('form-tab-pane', $gct-form-tab-pane);
+
+  width: getCssVar(form-tab-pane, width);
+  height: 100%;
+  background-color: #fff;
+
+  @include when(hidden) {
+    display: none;
+  }
+}

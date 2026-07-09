@@ -1,0 +1,165 @@
+@include b(panel-content) {
+  height: 100%;
+  border-left: 1px solid #e0e3ea;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #FFF;
+
+  //* 面板压制表单项样式
+  #{getCssVarName(form-item, label-color)}: #242424;
+
+  .#{bem(gct-form-item)} {
+    .ant-form-item-label {
+      #{getCssVarName(form-item, label-align)}: left;
+    }
+  }
+
+  .#{bem(gct-form-item, left)} {
+    float: right;
+  }
+
+  .#{bem(gct-form-item, label)}, .ant-form-item-label, .ant-checkbox-group {
+    #{getCssVarName(form-item, label-font-size)}: 12px;
+    #{getCssVarName(form-item, checkbox-width)}: 5px;
+    #{getCssVarName(form-item, checkbox-height)}: 7px;
+  }
+
+  @include e(paths) {
+    height: 42px;
+  }
+
+  @include e(content) {
+    height: calc(100% - 42px);
+  }
+
+  // 该区域的折叠面板不需要左右和下边框
+  .#{bem(form-collapse)} {
+    border-left: none;
+    border-right: none;
+    // 第一个折叠面板的上边框不需要,跟tabs重复了
+    &:first-child {
+      border-top: none;
+    }
+    &.ant-collapse > .ant-collapse-item {
+      border-bottom-width: 0;
+    }
+  }
+
+  //* 面板压制ant组件样式 start
+  .ant-input,
+  .ant-select {
+    color: #666666;
+  }
+  .ant-input-show-count-suffix {
+    color: #c3c3c3;
+  }
+  .ant-input-affix-wrapper-sm {
+    padding: 2px 7px;
+  }
+  .ant-input-number-sm input {
+    height: 26px;
+  }
+  .ant-select-single.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector {
+    height: 28px;
+  }
+  .ant-select-multiple.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector {
+    min-height: 28px;
+  }
+  .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+    .ant-select-selector
+    .ant-select-selection-item,
+  .ant-select-single.ant-select-sm:not(.ant-select-customize-input)
+    .ant-select-selector
+    .ant-select-selection-placeholder,
+  .ant-select-single.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector:after {
+    line-height: 26px;
+  }
+  .ant-select-multiple.ant-select-sm .ant-select-selection-item {
+    height: 20px;
+    line-height: 17px;
+  }
+  .ant-select-selection-placeholder,
+  .ant-input::placeholder {
+    color: #c3c3c3;
+  }
+  .ant-form .ant-form-item {
+    margin-bottom: 8px;
+  }
+  // .ant-form .ant-form-item.is-hidden-error {
+  //   margin-bottom: 0;
+  // }
+
+  .in-row-no-bottom {
+    margin-bottom: 0 !important;
+  }
+
+  .ant-form-vertical .ant-form-item-label {
+    padding-bottom: 2px;
+  }
+
+  .ant-collapse-icon-position-right
+    > .ant-collapse-item
+    > .ant-collapse-header
+    .ant-collapse-arrow {
+    right: 12px;
+  }
+
+  .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
+    padding: 0;
+  }
+
+  .ant-collapse,
+  .ant-input,
+  .ant-collapse-header,
+  .ant-btn,
+  .ant-select,
+  .ant-form .ant-form-item,
+  .ant-breadcrumb {
+    font-size: 12px;
+  }
+
+  // .ant-radio {
+  //   top: 0.16em;
+  // }
+  span.ant-radio + * {
+    padding-right: 8px;
+    padding-left: 6px;
+  }
+
+  .ant-radio-inner {
+    width: 12px;
+    height: 12px;
+  }
+
+  .ant-input-number,
+  .ant-input-number-group-addon {
+    font-size: 12px;
+  }
+
+  //* 面板压制ant组件样式 end
+
+  //* 配置面板额外的增加的组件类名样式 start
+  .style-pane {
+    .ant-form-item {
+      min-height: 28px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .suffix-number-input {
+    .ant-input-number-group > .ant-input-number:first-child {
+      border-radius: 2px;
+    }
+
+    .ant-input-number-group-addon {
+      padding: 0 16px 0 8px;
+      border: 0;
+      background-color: transparent;
+    }
+  }
+
+  //* 面板压制表单项样式
+  #{getCssVarName(form-item, label-color)}: #242424;
+
+  //* 样式面板额外的组件样式 end
+}

@@ -1,0 +1,9 @@
+@include b(form-i18n) {
+
+  @include m(small) {
+    .ant-btn.ant-btn-sm.ant-btn-icon-only {
+      width: 26px;
+      height: 26px;
+    }
+  }
+}

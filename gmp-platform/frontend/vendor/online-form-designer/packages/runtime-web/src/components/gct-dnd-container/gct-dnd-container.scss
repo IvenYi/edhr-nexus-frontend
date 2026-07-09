@@ -1,0 +1,9 @@
+@include b(dnd-container) {
+  border: 1px dashed transparent;
+  border-radius: getCssVar(border-radius, s);
+
+  @include when(over) {
+    border-color: getCssVar(color-border, hover);
+    background-color: getCssVar(color-primary-light);
+  }
+}

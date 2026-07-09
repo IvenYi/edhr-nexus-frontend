@@ -1,0 +1,67 @@
+.so-node {
+
+  &__start {
+    --color: #0dcf8d;;
+  }
+
+  &__end {
+    --color: #ff4d4f;
+  }
+
+  &__start,
+  &__end {
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid var(--color);
+    background: var(--color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--empty{
+      background: transparent;
+
+      &::after{
+        content: '';
+        display: block;
+        height: 12px;
+        width: 12px;
+        background: var(--color);
+        border-radius: 4px;
+      }
+    }
+  }
+
+  
+
+  &__model-create,
+  &__model-submit {
+    border: 1px solid #14B8AA;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    background: #F0FFFE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.so-graph {
+
+  .x6-edge {
+    &:hover {
+      path:nth-child(2) {
+        stroke: #1890ff;
+      }
+    }
+
+    &.x6-edge-selected {
+      path:nth-child(2) {
+        stroke: #14B8AA !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+@include b(datav-field-tooltip) {
+  @include font-2;
+
+  @include e(item) {
+    height: 17px;
+    display: flex;
+  }
+
+  @include e(item-label) {
+    color: rgb(139,139,139);
+  }
+
+  @include e(item-info) {
+    color: rgb(71,71,71);
+    
+  }
+}

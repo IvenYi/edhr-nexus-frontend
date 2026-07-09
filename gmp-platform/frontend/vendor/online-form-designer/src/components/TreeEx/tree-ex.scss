@@ -1,0 +1,65 @@
+@include b(tree-ex) {
+  --tree-ex-line-height: 26px;
+  &.ant-tree .ant-tree-treenode{
+    padding-bottom: 0;
+    align-items: center;
+    .ant-tree-switcher, .ant-tree-node-content-wrapper{
+      line-height: var(--tree-ex-line-height);
+    }
+    .ant-tree-node-content-wrapper{
+      width: 1px;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+
+    .ant-tree-checkbox{
+      margin: 0 8px 0 0;
+    }
+  }
+
+  & > .ant-tree-list {
+    .ant-tree-list-scrollbar {
+      width: 4px !important;
+  
+      .ant-tree-list-scrollbar-thumb {
+        background-color: #888 !important;
+      }
+    }
+  }
+
+  // 背景色动画
+  .bgco-animation {
+    animation: bgcoFlash 600ms ease-in-out;
+  }
+
+  @keyframes bgcoFlash {
+    0% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: #FFF7E6;
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+}
+
+
+.show-tree-line {
+  .ant-tree-indent {
+    & > span {
+      height: 100%;
+      position: relative;
+      &::before {
+        content: ' ';
+        width: 1px;
+        height: 100%;
+        display: block;
+        background-color: #D9D9D9;
+        position: absolute;
+        left: 11px;
+      }
+    }
+  }
+}

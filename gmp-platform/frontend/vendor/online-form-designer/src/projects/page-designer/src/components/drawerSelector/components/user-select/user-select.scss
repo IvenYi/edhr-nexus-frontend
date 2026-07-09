@@ -1,0 +1,38 @@
+@include b(user-select) {
+  height: 100%;
+
+  @include e(user-item) {
+    height: 64px;
+    padding: 0 8px;
+    gap: 12px;
+    margin: 0 8px;
+
+    &:active {
+      background-color: getCssVar(color-bg-4);
+    }
+  }
+
+  @include e(info) {
+    width: calc(100% - 68px);
+  }
+
+  @include e(avatar) {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  @include e(name) {
+    font-size: 15px;
+    color: getCssVar(color-text-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @include e(description) {
+    font-size: 13px;
+    color: getCssVar(color-text-5);
+  }
+}

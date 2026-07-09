@@ -1,0 +1,66 @@
+@keyframes gct-icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@include b(v-table) {
+  --gct-color-primary: var(--van-primary-color);
+
+  @include e(table) {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  @include e(table-empty) {
+    @include flex-center;
+
+    position: absolute;
+    top: 48px;
+    left: 0;
+    flex-direction: column;
+    width: 100%;
+    height: 200px;
+    border: 1px solid #{getCssVar(color, border)};
+    border-top: 0;
+  }
+
+  @include e(table-empty-image) {
+    >img {
+      height: 120px
+    }
+  }
+
+  @include e(table-empty-text) {
+    color: #{getCssVar(color, text, 6)};
+    font-size: 18px
+  }
+
+  @include e(table-loading) {
+    @include flex-center;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255 255 255 / 70%);
+    font-size: 16px;
+
+    .gct-iconfont {
+      margin-right: 4px;
+      animation: gct-icon-spin 1s linear infinite;
+      color: #{getCssVar(color, primary)};
+      font-size: 24px;
+    }
+  }
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+}

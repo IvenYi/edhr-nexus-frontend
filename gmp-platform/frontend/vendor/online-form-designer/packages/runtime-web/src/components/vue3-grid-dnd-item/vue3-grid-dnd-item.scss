@@ -1,0 +1,60 @@
+@include b(vue3-grid-dnd-item) {
+  opacity: 0;
+  margin-left: -6px;
+}
+
+.vxe-table--render-default {
+  .vxe-body--row:hover {
+    @include b(vue3-grid-dnd-item) {
+      opacity: 1;
+    }
+  }
+
+  .vxe-body--row.row--current:hover {
+    @include b(vue3-grid-dnd-item) {
+      opacity: 0;
+    }
+  }
+
+  .vxe-body--row.is-dragging {
+    opacity: 0.3;
+  }
+
+  .vxe-body--row.is-over {
+    position: relative;
+  }
+
+  .vxe-body--row.is-over.is-before:first-child {
+    &::after {
+      top: 0;
+    }
+  }
+
+  .vxe-body--row.is-over.is-before {
+    &::after {
+      content: ' ';
+      position: absolute;
+      left: 0;
+      top: -1px;
+      width: 100%;
+      border-bottom: 2px solid var(--ant-primary-color);
+    }
+  }
+
+  .vxe-body--row.is-over.is-after {
+    &::after {
+      content: ' ';
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      border-bottom: 2px solid var(--ant-primary-color);
+    }
+  }
+
+  .vxe-body--row.is-over.is-after:last-child {
+    &::after {
+      bottom: 0;
+    }
+  }
+}

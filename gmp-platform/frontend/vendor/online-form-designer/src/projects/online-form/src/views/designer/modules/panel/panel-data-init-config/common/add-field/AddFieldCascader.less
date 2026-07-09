@@ -1,0 +1,71 @@
+.add-field-cascader {
+  // margin: 12px 12px;
+  cursor: pointer;
+  // width: 240px;
+
+  &:focus {
+    outline: none;
+  }
+
+  .bread {
+    color: #333;
+    display: inline-block;
+    line-height: 32px;
+    .field-cascader-title {
+      color: #666666;
+    }
+  }
+  .last-name {
+    color: #333;
+    margin-left: 4px;
+  }
+
+  .down-icon {
+    color: #bfbfbf;
+  }
+}
+
+.add-field-popup-cascader {
+  z-index: 3000;
+
+  > div {
+    max-width: 60vw;
+  }
+  .ant-cascader-menu-item {
+    padding: 0;
+    // max-width: 180px;
+    min-width: 160px;
+    .ant-cascader-menu-item-content {
+      display: flex;
+      align-items: center;
+    }
+    .field-ops {
+      padding-right: 0;
+      line-height: 32px;
+      padding-left: 16px;
+      flex: 1;
+
+      .field-ops-name {
+        .field-ops-desc {
+          color: rgba(0, 0, 0, 0.45);
+        }
+      }
+    }
+
+    .iconfont {
+      font-size: 12px;
+      padding-right: 8px;
+      flex-shrink: 0;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    .ant-cascader-menu-item-expand-icon {
+      display: none;
+    }
+
+    &.ant-cascader-menu-item-disabled {
+      cursor: default;
+      color: #c3c3c3;
+    }
+  }
+}

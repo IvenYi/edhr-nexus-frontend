@@ -1,0 +1,26 @@
+$view-header: (
+  'padding': 24px,
+  'desc-color': #797A7D,
+);
+
+@include b(view-header) {
+  @include set-component-css-var('view-header', $view-header);
+
+  padding: getCssVar(view-header, padding);
+
+  @include e(title) {
+    line-height: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-family: PingFang SC-Medium, PingFang SC;
+  }
+
+  @include e(desc) {
+    font-weight: 400;
+    font-size: 12px;
+    color: getCssVar(view-header, desc-color);
+    line-height: 18px;
+    font-family: PingFang SC-Regular, PingFang SC;
+  }
+}

@@ -1,0 +1,20 @@
+@include b(gct-form-select) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  @include e(before-text) {
+    flex-shrink: 0;
+    padding-right: getCssVar(padding, 4);
+  }
+
+  @include e(after-text) {
+    flex-shrink: 0;
+    padding-left: getCssVar(padding, 4);
+  }
+
+  @include e(content) {
+    flex-grow: 1;
+    width: 100%;
+  }
+}

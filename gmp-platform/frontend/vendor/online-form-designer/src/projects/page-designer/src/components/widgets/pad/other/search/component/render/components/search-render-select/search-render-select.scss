@@ -1,0 +1,124 @@
+@include b(search-render-select) {
+  cursor: pointer;
+
+  @include m(readonly) {
+    cursor: default;
+    min-height: var(--editor-height);
+    font-size: var(--editor-font-size);
+    color: var(--editor-font-color);
+    padding-top: 5px;
+    @include e(content) {
+      width: 100%;
+    }
+  }
+
+  @include e(readonly-value) {
+    @include when(single) {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  @include m(multiple) {
+    @include when(select) {
+      &.pad-search-editor {
+        height: auto;
+        padding: 0 var(--editor-padding) 4px 4px;
+        min-height: 36px;
+      }
+
+      @include e(icon) {
+        margin-top: 4px;
+      }
+    }
+  }
+
+  @include e(placeholder) {
+    display: inline-block;
+    color: var(--editor-placeholder-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--editor-font-size);
+  }
+
+  @include e(content) {
+    width: 0;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  @include e(single-select) {
+    display: flex;
+    justify-content: left;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  @include e(icon) {
+    height: 21px;
+    color: var(--editor-placeholder-color);
+
+    @include flex-center;
+  }
+
+  @include e(multi-select) {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  @include e(multi-select-item) {
+    display: inline-block;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 3px 5px;
+    margin-top: 4px;
+    margin-right: 4px;
+    line-height: 18px;
+    font-size: 14px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    // 当只显示一项且后面有徽章时，限制最大宽度避免挤出徽章
+    @include when(single-visible) {
+      flex: 1;
+      min-width: 0;
+      max-width: calc(100% - 40px); // 预留徽章空间（约 35px + 间距）
+    }
+  }
+
+  @include e(multi-select-badge) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 3px 5px;
+    margin-top: 4px;
+    margin-right: 4px;
+    line-height: 18px;
+    font-size: 14px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-width: 28px;
+  }
+
+  @include e(single-label) {
+    // width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+}
+

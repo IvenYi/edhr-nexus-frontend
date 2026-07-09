@@ -1,0 +1,12 @@
+@include b(render-design-editor-upload-image) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 8px;
+
+  @include e(item) {
+    width: 120px;
+    height: 68px;
+    border: 1px dashed #e8ebf0;
+    overflow: hidden;
+  }
+}

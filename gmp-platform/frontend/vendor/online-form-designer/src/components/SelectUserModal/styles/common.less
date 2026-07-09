@@ -1,0 +1,144 @@
+.select-user-modal__waiting-area {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  .waiting-area-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .ant-tree.waiting-area-custom-tree {
+    border-radius: 0;
+    color: #212528;
+
+    .ant-tree-treenode {
+      align-items: center;
+      margin-bottom: 0;
+      padding: 8px 0;
+      transition: all 0.3s;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: hsl(from var(--ant-primary-color) h s 98%);
+      
+        .tree-node {
+          color:var(--ant-primary-color);
+        }
+      }
+
+      .ant-tree-node-content-wrapper {
+        display: flex;
+        width: 100%;
+        padding: 0;
+        transition: none;
+
+        .ant-tree-icon__customize {
+          display: flex;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          width: auto;
+        }
+
+        &:hover {
+          background: transparent;
+        }
+      }
+
+      .ant-tree-indent {
+        .ant-tree-indent-unit {
+          width: 24px;
+        }
+      }
+
+      .ant-tree-title {
+        width: 100%;
+
+        .tree-node {
+          display: flex;
+          position: relative;
+          align-items: center;
+
+          &__title {
+            flex: 1;
+            width: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
+        .is-highlight {
+          color: var(--ant-primary-color);
+        }
+      }
+
+      .ant-tree-switcher {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        padding-right: 0;
+        line-height: 24px;
+
+        .ant-tree-switcher-icon {
+          color: #242424;
+          font-size: 12px;
+        }
+      }
+
+      .ant-tree-checkbox {
+        margin-top: 0;
+      }
+
+      &-selected {
+        .ant-tree-node-selected {
+          background-color: transparent;
+        
+
+        }
+      }
+    }
+  }
+
+  .waiting-area-content-item {
+    display: flex;
+    width: 100%;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: hsl(from var(--ant-primary-color) h s 98%);
+      color:var(--ant-primary-color);
+    }
+
+    .ant-checkbox-wrapper {
+      align-items: center;
+      width: 100%;
+      overflow: hidden;
+
+      .ant-checkbox {
+        top: 0;
+      }
+
+      & > span:last-child {
+        flex: 1;
+        padding: 5px 0;
+        overflow: hidden;
+
+        .content-item-title {
+          color: #212528;
+
+          .is-highlight {
+            color: var(--ant-primary-color);
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,136 @@
+@include b(render-mobile-card-field) {
+  height: auto;
+  overflow: hidden;
+  color: #646566;
+  // margin-bottom: 8px;
+  font-size: 14px;
+
+  @include m(horizontal) {
+    display: flex;
+    align-items: flex-start;
+    padding: 4px 0;
+  }
+
+  @include m(vertical) {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 0;
+  }
+
+  @include e(placeholder) {
+    color: #c8c9cc;
+    font-style: italic;
+  }
+
+  @include e(label) {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    color: #323233;
+    font-weight: 500;
+
+    > span {
+      display: inline-block;
+    }
+
+    @include m(name) {
+      max-width: calc(100% - 14px);
+
+      @include when(ellipsis) {
+        @include utils-ellipsis;
+      }
+    }
+  }
+
+  @include e(value) {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+    color: #646566;
+
+    .field-tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .field-tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: #f2f3f5;
+      color: #323233;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+  }
+
+  @include e(value-tag) {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    color: var(--van-primary-color, #1989fa);
+
+    &.radius {
+      border-radius: 4px;
+      background-color: var(--van-primary-color, #1989fa);
+      color: #ffffff;
+    }
+
+    &.linear_radius {
+      border: 1px solid var(--van-primary-color, #1989fa);
+      border-radius: 4px;
+      background-color: transparent;
+    }
+
+    &.big_radius {
+      border-radius: 8px;
+      background-color: var(--van-primary-color, #1989fa);
+      color: #ffffff;
+    }
+
+    &.linear_big_radius {
+      border: 1px solid var(--van-primary-color, #1989fa);
+      border-radius: 8px;
+      background-color: transparent;
+    }
+
+    &.dashed_radius {
+      border: 1px dashed var(--van-primary-color, #1989fa);
+      border-radius: 4px;
+      background-color: transparent;
+    }
+
+    &.status {
+      border-radius: 4px;
+      border-top-left-radius: 12px;
+      background-color: var(--van-primary-color, #1989fa);
+      color: #ffffff;
+    }
+  }
+
+  // 垂直布局时的样式调整
+  &.render-card-field--vertical {
+    .render-card-field__label {
+      margin-bottom: 4px;
+    }
+
+    .render-card-field__value {
+      word-break: break-all;
+    }
+  }
+
+  // 水平布局时的样式调整
+  &.render-card-field--horizontal {
+    .render-card-field__label {
+      margin-right: 12px;
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+  }
+}

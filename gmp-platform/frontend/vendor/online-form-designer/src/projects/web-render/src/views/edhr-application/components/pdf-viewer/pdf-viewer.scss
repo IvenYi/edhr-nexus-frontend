@@ -1,0 +1,114 @@
+@include b(pdf-viewer) {
+  height: 100%;
+  background-color: #f0f2f5;
+
+  .action-universal {
+    cursor: pointer;
+  }
+
+  .pdf-viewer-embed__page {
+    > canvas {
+      margin: auto;
+    }
+  }
+
+  .vue-pdf-embed__page {
+    margin-bottom: 4px;
+  }
+
+  @include e(pdf) {
+    width: 768px;
+  }
+
+  @include when(full) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    // background-color: #fff;
+    z-index: 10000;
+  }
+
+  @include e(header) {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 42px;
+    background-color: #ffffff;
+    font-size: 14px;
+    padding: 0 8px;
+  }
+
+  @include e(content) {
+    height: calc(100% - 36px);
+    overflow: auto !important;
+    margin-top: 2px;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@include b(pdf-viewer-page-turning) {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+
+  @include e(pre) {
+    @extend .action-universal;
+  }
+  @include e(next) {
+    @extend .action-universal;
+  }
+}
+
+@include b(pdf-viewer-zoom) {
+  display: flex;
+  float: right;
+
+  @include e(enlarge) {
+    @extend .action-universal;
+  }
+
+  @include e(reduce) {
+    @extend .action-universal;
+  }
+}
+
+@include b(pdf-viewer-rotate) {
+  display: flex;
+  float: right;
+  padding-bottom: 2px;
+
+  @include e(left) {
+    @extend .action-universal;
+    font-size: 16px;
+    margin-right: 8px;
+  }
+
+  @include e(right) {
+    @extend .action-universal;
+    font-size: 16px;
+    margin-right: 8px;
+  }
+}
+
+@include b(pdf-viewer-full) {
+  @extend .action-universal;
+  float: right;
+  margin-left: 16px;
+}
+
+@include b(pdf-viewer-close) {
+  @extend .action-universal;
+  float: right;
+  margin-left: 16px;
+  font-size: 16px;
+}

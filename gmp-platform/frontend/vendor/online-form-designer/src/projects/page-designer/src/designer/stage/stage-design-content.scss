@@ -1,0 +1,7 @@
+@include b(stage-design-content) {
+  height: 100%;
+  min-height: inherit;
+  overflow: auto;
+  // 设计界面内部变量
+  --vue3-dnd-drop-line-width: 4px;
+}

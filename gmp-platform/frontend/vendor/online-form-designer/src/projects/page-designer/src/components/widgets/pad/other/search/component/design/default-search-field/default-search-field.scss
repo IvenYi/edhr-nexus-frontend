@@ -1,0 +1,8 @@
+@include b(default-search-field) {
+  @include e(text) {
+    min-height: 32px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+  }
+}

@@ -1,0 +1,63 @@
+@include b(fields-config) {
+  @include e(header) {
+    margin-bottom: #{getCssVar(margin, 4)};
+    padding-bottom: #{getCssVar(padding, 4)};
+  }
+
+  @include e(add-formula) {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+
+    .gct-iconfont {
+      padding-right: 6px;
+    }
+  }
+
+  @include e(help-icon) {
+    display: flex;
+    align-items: center;
+    color: #{getCssVar(color, text-secondary)};
+    font-size: 16px;
+
+    &:hover {
+      color: #{getCssVar(color, primary)};
+    }
+  }
+
+  @include e(action-space) {
+    font-size: 14px;
+
+    .ant-btn.ant-btn-link {
+      padding: 0;
+      font-size: 14px;
+
+      &.ant-btn-dangerous {
+        color: #{getCssVar(color, danger)};
+      }
+    }
+  }
+
+  @include e(divider) {
+    margin: 0;
+  }
+
+  @include e(table) {
+    width: calc(100% - #{getCssVar(padding, 7)});
+    height: calc(100% - #{getCssVar(padding, 7)} - 40px);
+    overflow: hidden;
+
+    .ant-tag-orange {
+      border-color: #ffd591;
+      background-color: #FFF7E6;
+      color: #E17005;
+    }
+  }
+
+  width: calc(100% - 32px);
+  height: 100%;
+  margin: #{getCssVar(padding, 7)};
+  padding: #{getCssVar(padding, 7)};
+  border-radius: #{getCssVar(border-radius, l)};
+  background-color: #{getCssVar(color, white)};
+}

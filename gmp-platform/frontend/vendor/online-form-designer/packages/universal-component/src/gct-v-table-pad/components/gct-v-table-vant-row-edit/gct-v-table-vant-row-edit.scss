@@ -1,0 +1,10 @@
+@include b(v-table-vant-row-edit) {
+  @include e(form-container) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 2px);
+    margin: 0 1px;
+    box-shadow: 0 8px 32px 0 #00000026;
+  }
+}

@@ -1,0 +1,79 @@
+@include b(design-step-check) {
+  height: 40px;
+  border-radius: 20px;
+  background-color: rgba(232, 235, 240, 1);
+  display: flex;
+  align-items: center;
+  padding: 3px 2px;
+  position: relative;
+  overflow: hidden;
+
+  // 动画指示器
+  &::before {
+    content: '';
+    display: var(--indicator-display, block);
+    position: absolute;
+    top: 2px;
+    left: var(--indicator-left, 3px);
+    width: var(--indicator-width, 130px);
+    height: 36px;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 1);
+    // transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  @include e(item) {
+    position: relative;
+    height: 36px;
+    border-radius: 18px;
+    padding: 3px;
+    padding-right: 26px;
+    min-width: 131px;
+    max-width: max-content;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    // transition: all 0.3s ease;
+    background-color: transparent;
+    z-index: 2;
+    color: getCssVar(color, text, 1);
+
+    @include when(selected) {
+      @include e(item-number) {
+        background-color: getCssVar(color, primary);
+        color: #fff;
+      }
+
+      @include e(item-name) {
+        font-weight: bold;
+        color: rgba(33, 37, 40, 1);
+      }
+    }
+  }
+
+  @include e(item-number) {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5A5F6B;
+    font-weight: normal;
+    margin-right: 8px;
+    flex-shrink: 0;
+    // transition: all 0.3s ease;
+  }
+
+  @include e(item-name) {
+    font-size: 16px;
+    color: #5A5F6B;
+    line-height: 22px;
+    font-weight: normal;
+    flex: 1;
+    // transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+}

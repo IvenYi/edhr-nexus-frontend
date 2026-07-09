@@ -1,0 +1,38 @@
+@include b(popover) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: none;
+  width: max-content;
+  background-clip: padding-box;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 3px 6px -4px rgba(0,0,0,.12), 0 6px 16px 0 rgba(0,0,0,.08), 0 9px 28px 8px rgba(0,0,0,.05);
+  box-shadow: 0 0 8px rgba(0, 0, 0, .15) \9;
+
+  @include e(arrow) {
+    display: none;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    transform: rotate(45deg);
+  }
+
+  @include when(show) {
+    z-index: 1000;
+    display: block;
+
+    @include e(arrow) {
+      display: block;
+    }
+  }
+
+  @include e(overlay){
+    position: fixed;
+    inset: 0;
+    background-color: transparent;
+    z-index: 10000;
+  }
+}

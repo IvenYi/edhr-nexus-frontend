@@ -1,0 +1,165 @@
+@include b(report-drill-item-config) {
+  position: relative;
+  background-color: getCssVar(color, bg, 3);
+  border-radius: getCssVar(border, radius, s);
+  margin-bottom: getCssVar(spacing, 2);
+  padding: getCssVar(spacing, 2);
+
+  @include e(header) {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(icon) {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: getCssVar(spacing, 2);
+    color: getCssVar(color, primary);
+
+    .iconfont {
+      font-size: 16px;
+    }
+  }
+
+  @include e(title) {
+    flex-shrink: 0;
+    width: 60px;
+    @include utils-ellipsis;
+  }
+
+  @include e(select) {
+    flex-grow: 1;
+    margin-left: getCssVar(spacing, 4);
+  }
+
+  @include e(action) {
+    --gct-color-border-hover: var(--ant-primary-color);
+    flex-shrink: 0;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    margin-left: getCssVar(spacing, 4);
+    border: 1px solid getCssVar(color, border, hover);
+    border-radius: getCssVar(border, radius, xs);
+
+    @include when(active) {
+      background-color: getCssVar(color, border, hover);
+
+      .iconfont {
+        color: getCssVar(color, white);
+        font-size: 14px;
+      }
+    }
+  }
+
+  @include e(action-icon) {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+
+    .iconfont {
+      color: getCssVar(color, border, hover);
+      font-size: 14px;
+    }
+  }
+
+  @include e(report-body) {
+    background-color: rgb(#{getCssVar(gray, 1)});
+    padding: getCssVar(spacing, 2);
+  }
+
+  @include e(report-body-title) {
+    @include font-2;
+    color: getCssVar(color, text, 5);
+    margin-bottom: getCssVar(spacing, 2);
+  }
+
+  @include e(report-body-content) {
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: getCssVar(color, bg, 2);
+    padding: getCssVar(spacing, 2);
+  }
+
+  @include e(body) {
+    background-color: getCssVar(color, white);
+    border-radius: getCssVar(border, radius, s);
+    margin-top: getCssVar(spacing, 2);
+  }
+
+  @include e(field) {
+    position: relative;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding-left: 18px;
+  }
+
+  @include e(field-icon) {
+    color: getCssVar(color, primary);
+    margin-right: getCssVar(spacing, 2);
+  }
+
+  @include e(field-title) {
+    @include font-2;
+  }
+
+  @include e(line) {
+    position: absolute;
+    left: 7px;
+    top: -4px;
+    bottom: 0;
+    border-left: 1px dashed getCssVar(color, border);
+  }
+
+  @include e(half-line) {
+    height: 50%;
+    top: 60%;
+  }
+
+  @include e(dot) {
+    z-index: 1;
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: getCssVar(color, primary);
+  }
+
+  @include e(report-body-label) {
+    @include utils-ellipsis;
+    display: flex;
+    align-items: center;
+
+    @include m(icon) {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: getCssVar(spacing, 2);
+      color: getCssVar(color, primary);
+    }
+
+    @include m(label) {
+      flex-grow: 1;
+      @include utils-ellipsis;
+    }
+  }
+
+  @include e(report-body-actions) {
+    flex-shrink: 0;
+  }
+}

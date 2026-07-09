@@ -1,0 +1,75 @@
+.cmp-sub-table {
+  position: relative;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  min-width: 100%;
+  height: 100%;
+
+  .sub-table-wrapper {
+    width: 0;
+    table-layout: fixed;
+    user-select: none;
+    border-collapse: separate;
+    tr {
+      position: relative;
+    }
+    td {
+      position: relative;
+    }
+
+    .sub-table-delete-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #5378ff;
+      white-space: nowrap;
+      position: absolute;
+      border-radius: 2px;
+      margin-left: 2px;
+      z-index: 99;
+      bottom: 0;
+    }
+
+    .sub-table-add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #5378ff;
+      white-space: nowrap;
+      position: absolute;
+      border-radius: 2px;
+      left: 0;
+      bottom: -24px;
+      z-index: 99;
+      line-height: 24px;
+      color: #fff;
+    }
+
+    .sub-table-delete-btn,
+    .sub-table-add-btn {
+      .iconfont {
+        font-size: 16px;
+        line-height: 1;
+        padding: 0;
+        margin: 4px 4px;
+        border: 0;
+        color: #fff;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    .sub-table-action-bar {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      bottom: 1px;
+      z-index: 99;
+    }
+  }
+}

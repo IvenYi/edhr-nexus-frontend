@@ -1,0 +1,156 @@
+@include b(report-jump-modal) {
+  height: 100%;
+  padding: 24px 30px 0 30px;
+
+  @include e(form) {
+    width: 740px;
+    height: 52px;
+    background-color: getCssVar(color-bg, 2);
+    border-radius: getCssVar(border-radius, s);
+
+    .ant-form.gct-gct-form.is-info {
+      padding: getCssVar(padding, 4);
+    }
+
+    .gct-gct-form-info {
+      color: getCssVar(color, text, 1);
+    }
+
+    .gct-gct-form-item .ant-form-item-label label {
+      color: getCssVar(color, text, 4);
+    }
+
+    .gct-gct-form-info__icon {
+      color: getCssVar(color, primary);
+    }
+  }
+
+  @include e(config) {
+    margin-top: 24px;
+  }
+
+  @include e(config-header) {
+    @include font-4;
+    font-weight: 600;
+  }
+
+  @include e(config-body) {
+    margin-top: getCssVar(padding, 4);
+    width: 740px;
+    height: 360px;
+    border: 1px solid getCssVar(color-border);
+    border-radius: getCssVar(border-radius, s);
+    display: flex;
+  }
+
+  @include e(config-list) {
+    flex-shrink: 0;
+    height: 100%;
+    width: 234px;
+    border-right: 1px solid getCssVar(color-border);
+  }
+
+  @include e(config-form) {
+    flex-shrink: 0;
+    width: calc(100% - 234px);
+
+    .ant-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .ant-empty-image {
+      > img {
+        width: 120px;
+        height: 120px;
+      }
+    }
+
+    .ant-empty-description {
+      color: getCssVar(color, text, 6);
+    }
+  }
+
+  @include e(config-list-header) {
+    height: 42px;
+    border-bottom: 1px solid getCssVar(color-border);
+    padding: 0 getCssVar(padding, 6);
+    display: flex;
+    align-items: center;
+  }
+
+  @include e(config-list-body) {
+    height: calc(100% - 42px);
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .ant-form .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+
+  @include e(config-list-add) {
+    .ant-btn.ant-btn-link {
+      padding: 0;
+    }
+
+    .iconfont {
+      font-size: 14px;
+      margin-right: getCssVar(padding, 4);
+    }
+  }
+
+  @include e(config-list-item) {
+    position: relative;
+    display: flex;
+    padding: getCssVar(padding, 4);
+
+    @include when(active) {
+      background-color: getCssVar(color-primary-light-hover);
+    }
+
+    @include when(error) {
+      .ant-select-selector {
+        border-color: getCssVar(color-danger) !important;
+      }
+    }
+
+    .ant-select-selection-item {
+      .iconfont {
+        color: getCssVar(color, primary);
+        margin-right: getCssVar(padding, 2);
+      }
+    }
+  }
+
+  @include e(config-list-item-err) {
+    z-index: 10;
+    position: absolute;
+    top: 40px;
+    left: getCssVar(spacing, 4);
+    @include font-2;
+    color: getCssVar(color-danger);
+  }
+
+  @include e(config-list-item-field) {
+    flex-grow: 1;
+
+    .ant-select {
+      width: 100%;
+    }
+  }
+
+  @include e(config-list-item-delete) {
+    flex-shrink: 0;
+  }
+
+  @include e(config-list-item-field-option) {
+    .iconfont {
+      color: getCssVar(color, primary);
+      margin-right: getCssVar(padding, 2);
+    }
+  }
+}

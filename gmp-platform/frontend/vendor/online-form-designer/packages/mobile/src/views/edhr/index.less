@@ -1,0 +1,128 @@
+body {
+  --text-color: #212528;
+  --text-color-1: #737a87;
+  --text-color-active: #026ac8;
+  --border-color: #f3f6fb;
+  --bg-linear-gradient: linear-gradient(180deg, #0280f2 0%, #0056aa 95%);
+  color: var(--text-color);
+}
+
+.color--active {
+  color: var(--text-color-active);
+}
+
+.color--1 {
+  color: var(--text-color-1);
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis--2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bg--linear-gradient {
+  background: var(--bg-linear-gradient);
+}
+
+.tag--default {
+  display: inline-block;
+  padding: 0 6px;
+  height: 20px;
+  background: rgba(2, 106, 200, 0.1);
+  border-radius: 4px;
+  color: #026ac8;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+// vant的dialog垂直居中
+.van-dialog.van-popup--center {
+  top: 50%;
+}
+
+.hidden-scrollbar {
+  *::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// vxe-table 样式调整
+.vxe-table--render-default.vxe-editable .vxe-body--column {
+  height: 44px !important;
+}
+
+.vxe-table--body-wrapper.body--wrapper {
+  min-height: auto !important;
+}
+
+.vxe-header--column .vxe-resizable.is--line::before {
+  height: 16px !important;
+}
+
+.vxe-table--render-default .vxe-body--expanded-column {
+  border-bottom: 0;
+}
+
+.vxe-table {
+  --vxe-loading-color: var(--van-primary-color) !important;
+  --vxe-primary-color: var(--van-primary-color) !important;
+  --vxe-table-column-padding-default: 7px 0;
+}
+
+.vxe-table--fixed-right-wrapper .vxe-header--column .vxe-resizable {
+  right: -6px !important;
+  left: auto !important;
+}
+
+// 内置通用组件样式
+.edhr-tabs {
+  --van-tab-active-text-color: #026ac8;
+  --van-tab-text-color: #1a1d23;
+  --van-tab-font-size: 16px;
+  .van-tabs__wrap {
+    position: relative;
+    &::after {
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      content: '';
+      width: calc(100% - 32px);
+      height: 1px;
+      border-bottom: 1px solid #e0e3eb;
+    }
+  }
+}
+
+// vant 样式调整
+.van-radio--horizontal:last-child {
+  margin-right: 0;
+}
+
+// 文本右对齐的错误信息右对齐
+.van-field__value:has(.van-field__control--right) {
+  .van-field__error-message {
+    text-align: right;
+  }
+}
+
+// 开启箭头的箭头漂移,让错误信息右对齐的时候可以对齐
+.van-field:has(>.van-cell__right-icon){
+  .van-field__value .van-field__body {
+    padding-right: 20px;
+  }
+  .van-cell__right-icon {
+    position: absolute;
+    top: 20px;
+    right: 16px;
+  }
+}

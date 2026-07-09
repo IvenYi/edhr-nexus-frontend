@@ -1,0 +1,28 @@
+@include b(document-designer) {
+  height: 100%;
+  padding: 16px;
+}
+
+@include b(document-designer-header) {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .ant-btn {
+    padding: 4px 12px;
+
+    .iconfont {
+      padding-right: 8px;
+      font-size: 14px;
+    }
+  }
+  .text-btn {
+    color: var(--ant-primary-color);
+  }
+}
+
+@include b(document-designer-content) {
+  height: calc(100% - 66px);
+  background: #E6E9EF;
+}

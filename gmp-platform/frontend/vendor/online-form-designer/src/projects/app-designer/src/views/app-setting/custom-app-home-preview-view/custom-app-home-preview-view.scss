@@ -1,0 +1,58 @@
+@include b(custom-app-home-preview-view) {
+  width: 100vw;
+  height: 100vh;
+
+  @include e(iframe) {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    width: 375px;
+    height: 85vh;
+    overflow: hidden;
+  }
+}
+
+@include b(custom-app-home-preview-view-header) {
+  position: relative;
+  height: 54px;
+  background-color: #1A1D23;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  padding: 0 18px;
+
+  .ant-row {
+    width: 100%;
+  }
+
+  @include e(close) {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    > span:first-child {
+      margin-top: -2px;
+      margin-right: 3px;
+    }
+
+    span {
+      height: 22px;
+    }
+  }
+
+  @include e(title) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@include b(custom-app-home-preview-view-content) {
+  height: calc(100vh - 54px);
+
+  @include m(mobile) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

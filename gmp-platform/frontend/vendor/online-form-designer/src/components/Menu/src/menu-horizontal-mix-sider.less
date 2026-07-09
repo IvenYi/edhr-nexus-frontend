@@ -1,0 +1,84 @@
+@menu-prefix-cls: ~'menu-horizontal-mix-sider';
+
+.@{menu-prefix-cls} {
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+
+  .scrollbar__view {
+    padding-bottom: 48px;
+  }
+
+  ul,
+  li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__left {
+    background: var(--ant-primary-color);
+    border-right: 1px solid #fff;
+    height: 100%;
+    width: 56px;
+    flex: none;
+
+    li,
+    span {
+      padding: 6px 0;
+      transition: all 0.3s;
+      cursor: pointer;
+      .menu-name {
+        font-size: 12px;
+        padding: 0;
+      }
+
+      .menu-icon,
+      .menu-name {
+        color: #fff;
+      }
+
+      & > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+
+      &.selected {
+        background-color: #fff !important;
+
+        .menu-icon,
+        .menu-name {
+          color: var(--ant-primary-color);
+        }
+      }
+    }
+
+    li {
+      height: 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      &:hover {
+        background-color: var(--ant-primary-color-hover);
+      }
+    }
+
+    .search-item {
+      height: 56px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  &__right {
+    width: 0;
+    flex: 1;
+    padding: 0 8px 16px 8px;
+    background-color: #f2f5f8;
+  }
+}
+.primary-color {
+  color: var(--ant-primary-color);
+}

@@ -1,0 +1,36 @@
+
+
+.tree-item-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  &:hover {
+    .operation-container {
+      opacity: 1;
+    }
+    
+  }
+
+  .tree-title {
+    word-break: keep-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    width: 1px;
+  }
+
+  .operation-container {
+    opacity: 0;
+     white-space: nowrap;
+     color: #8c8c8c;
+     .iconfont {
+      color: #bfbfbf;
+      margin: 0 4px;
+      font-size: 12px;
+      &:hover {
+        color: #595959;
+      }
+     }
+  }
+}

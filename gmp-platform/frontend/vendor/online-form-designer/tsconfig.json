@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@vben/ts-config/vue-app.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "baseUrl": "src",
+    "types": [
+      "vite/client",
+      "unplugin-vue-define-options/macros-global",
+      "./types"
+    ],
+    "paths": {
+      "/@/*": [
+        "*"
+      ],
+      "/#/*": [
+        "types/*"
+      ],
+      "@/*": [
+        "*"
+      ],
+      "#/*": [
+        "types/*"
+      ],
+      "/@portal/*": [
+        "projects/portal/src/*"
+      ],
+      "/@developer-center/*": [
+        "projects/developer-center/src/*"
+      ],
+      "/@backend-management/*": [
+        "projects/backend-management/src/*"
+      ],
+      "/@tenant-center/*": [
+        "projects/tenant-center/src/*"
+      ],
+      "/@app-designer/*": [
+        "projects/app-designer/src/*"
+      ],
+      "/@page-designer/*": [
+        "projects/page-designer/src/*"
+      ],
+      "/@web-render/*": [
+        "projects/web-render/src/*"
+      ],
+      "/@online-form/*": [
+        "projects/online-form/src/*"
+      ],
+      "/@ipaas/*": [
+        "projects/ipaas/src/*"
+      ],
+      "@mobile/*": [
+        "../packages/mobile/*"
+      ],
+      "/@bi-designer/*": [
+        "projects/bi-designer/src/*"
+      ]
+    }
+  },
+  "include": [
+    "tests/**/*.ts",
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.tsx",
+    "**/*.vue",
+    "types/**/*.d.ts",
+    "types/**/*.ts",
+    "build/**/*.ts",
+    "build/**/*.d.ts",
+    "mock/**/*.ts",
+    "vite.config.ts",
+    "./components.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests/server/**/*.ts",
+    "dist",
+    "**/*.js"
+  ]
+}

@@ -1,0 +1,13 @@
+@include b(gct-form-icon-select) {
+  --box-size: 40px;
+  width: 100%;
+  height: 100%;
+
+  @include e(title) {
+    display: inline-block;
+    font-size: 14px;
+    color: #474747;
+    width: 56px;
+    text-align: center;
+  }
+}

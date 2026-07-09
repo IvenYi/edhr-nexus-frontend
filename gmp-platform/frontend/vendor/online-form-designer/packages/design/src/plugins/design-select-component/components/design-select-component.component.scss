@@ -1,0 +1,48 @@
+@include b(design-select-component) {
+  @include m(simple) {
+    height: 24px;
+    display: inline-block;
+    background-color: rgba(49, 104, 236, 0.08);
+    color: var(--ant-primary-color);
+    font-size: 14px;
+    padding: 0 6px;
+
+    .iconfont {
+      font-size: 12px;
+      margin-left: 6px;
+    }
+  }
+
+  @include m(standard) {
+    background-color: #FFFFFF;
+    border-radius: 8px 8px 8px 8px;
+    margin: 14px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+
+    @include e(icon) {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    @include e(label) {
+      flex-grow: 1;
+    }
+
+    @include e(action) {
+      color: #fff;
+      font-size: 14px;
+      color: var(--ant-primary-color);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .iconfont {
+      font-size: 12px;
+      margin-left: 6px;
+    }
+  }
+}

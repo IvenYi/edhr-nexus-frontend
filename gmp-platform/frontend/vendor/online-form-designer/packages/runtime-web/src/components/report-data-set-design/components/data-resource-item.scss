@@ -1,0 +1,22 @@
+@include b(data-resource-item) {
+  cursor: pointer;
+  height: 32px;
+  border-radius: getCssVar(border-radius, s);
+  padding: getCssVar(padding, 3) getCssVar(padding, 5);
+  display: flex;
+  align-items: center;
+
+  @include font-3;
+
+  &:hover {
+    background-color: getCssVar(color, bg, 3);
+  }
+
+  @include e(label) {
+    @include utils-ellipsis;
+  }
+
+  .ant-tag {
+    border-radius: 4px;
+  }
+}

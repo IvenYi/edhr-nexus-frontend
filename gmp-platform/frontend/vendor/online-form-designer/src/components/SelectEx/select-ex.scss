@@ -1,0 +1,106 @@
+$select-ex: (
+  font-size: 12px,
+  icon-size: 16px,
+  icon-label-space: 8px,
+  icon-color: var(--ant-primary-color),
+  icon-default-color: #d9d9d9,
+);
+
+@include b(select-ex) {
+  @include set-component-css-var(select-ex, $select-ex);
+
+  @include m(select) {
+    width: 100%;
+    text-align: left;
+  }
+
+  @include when(disabled) {
+    cursor: not-allowed;
+    //禁止子元素被操作
+    & * {
+      pointer-events: none;
+    }
+    .#{bem(select-ex-option,'','')} {
+      cursor: not-allowed;
+    }
+  }
+
+  @include m(buttons) {
+    background: #f0f0f0;
+    padding: 2px;
+    border-radius: 4px 4px 4px 4px;
+    display: flex;
+
+    .#{bem(select-ex-option, '', '')} {
+      line-height: 24px;
+      min-height: 24px;
+      color: #8f8f8f;
+      flex-grow: 1;
+      justify-content: center;
+      &.is-selected {
+        background: #ffffff;
+        border-radius: 2px 2px 2px 2px;
+        color: #474747;
+      }
+    }
+  }
+}
+
+.#{bem(select-ex, '', icon)},
+.#{bem(select-ex, '', icon-label)} {
+  display: inline-flex;
+  // flex-wrap: wrap;
+  align-items: center;
+  flex-wrap: var(--auto-line-break, no-wrap);
+}
+
+// 纵向
+.#{bem(select-ex, '', portrait)} {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+@include b(select-ex-option) {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 8px;
+
+  // @include m('before'){
+  //   flex-direction: row-reverse;
+  // }
+
+  @include e(label) {
+    font-size: getCssVar(select-ex, font-size);
+  }
+
+  @include e(icon) {
+    &:first-child {
+      margin-right: getCssVar(select-ex, icon-label-space);
+    }
+    &:last-child {
+      margin-left: getCssVar(select-ex, icon-label-space);
+    }
+    &:only-child {
+      margin: 0;
+    }
+    @include m(custom) {
+      font-size: getCssVar(select-ex, icon-size);
+      line-height: getCssVar(select-ex, icon-size);
+      width: getCssVar(select-ex, icon-size);
+      height: getCssVar(select-ex, icon-size);
+    }
+  }
+
+  @include when(selected) {
+    @include e(icon) {
+      color: getCssVar(select-ex, icon-color);
+
+      @include m(custom) {
+        color: getCssVar(select-ex, icon-color);
+      }
+    }
+  }
+}

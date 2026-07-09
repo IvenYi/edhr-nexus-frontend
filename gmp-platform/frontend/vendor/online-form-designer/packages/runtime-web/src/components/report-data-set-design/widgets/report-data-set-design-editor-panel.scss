@@ -1,0 +1,28 @@
+@include b(report-data-set-design-editor-panel) {
+  position: relative;
+  width: calc(100% - getCssVar(spacing, 7) * 2);
+  height: calc(100% - getCssVar(spacing, 7) * 2);
+  margin: getCssVar(spacing, 7);
+
+  @include m(mouse-in) {
+    @include when(dragging) {
+      background-color: rgba(49, 104, 236, 0.06);
+      border: 2px dashed #3168ec;
+    }
+  }
+}
+
+@include b(report-data-set-design-editor-panel-x6) {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  .x6-cell.x6-edge.x6-edge-selected {
+    background-color: getCssVar(color, primary);
+    border-color: getCssVar(color, primary);
+  }
+
+  .x6-highlight-stroke {
+    display: none;
+  }
+}

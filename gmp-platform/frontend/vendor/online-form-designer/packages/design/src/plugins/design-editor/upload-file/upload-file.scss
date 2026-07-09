@@ -1,0 +1,60 @@
+@include b(design-editor-upload-file) {
+  @include e(actions) {
+    display: inline-flex;
+    height: 32px;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #f3f5f9;
+    gap: 4px;
+  }
+
+  @include e(action-item) {
+    @include when(active) {
+      background-color: #fff;
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+  }
+
+  @include e(file-list) {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    margin-top: 12px;
+  }
+
+  @include e(file-item) {
+    @include m(icon) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      font-size: 24px;
+    }
+
+    @include m(name) {
+      font-size: 14px;
+    }
+
+    display: flex;
+    flex: 1;
+    align-items: center;
+  }
+
+  @include e(file-card) {
+    width: 116px;
+    height: 116px;
+    margin-top: 12px;
+    border: 1px solid #e8ebf0;
+    text-align: center;
+  }
+
+  width: 100%;
+}
