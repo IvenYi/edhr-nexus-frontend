@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type {
+  CanvasCellBorder,
   CanvasMode,
   CanvasNode,
   CanvasPage,
@@ -388,6 +389,74 @@ function clearPageCellsInRange(page: CanvasPage, range: CanvasSelectionRange) {
   };
 }
 
+function updatePageCellStyleInRange(
+  page: CanvasPage,
+  range: CanvasSelectionRange,
+  patch: Record<string, unknown>,
+) {
+  const normalizedRange = normalizeRange(range);
+  const nextCells = { ...page.cells };
+
+  for (let row = normalizedRange.t; row <= normalizedRange.b; row += 1) {
+    for (let col = normalizedRange.l; col <= normalizedRange.r; col += 1) {
+      const cellKey = getCellKey(row, col);
+      const cell = nextCells[cellKey] ?? {};
+      nextCells[cellKey] = {
+        ...cell,
+        style: {
+          ...(cell.style ?? {}),
+          ...patch,
+        },
+      };
+    }
+  }
+
+  return {
+    ...page,
+    cells: nextCells,
+  };
+}
+
+function updatePageCellBorderInRange(
+  page: CanvasPage,
+  range: CanvasSelectionRange,
+  border: CanvasCellBorder | null,
+) {
+  const normalizedRange = normalizeRange(range);
+  const nextCells = { ...page.cells };
+
+  for (let row = normalizedRange.t; row <= normalizedRange.b; row += 1) {
+    for (let col = normalizedRange.l; col <= normalizedRange.r; col += 1) {
+      const cellKey = getCellKey(row, col);
+      const cell = nextCells[cellKey] ?? {};
+
+      if (border) {
+        nextCells[cellKey] = {
+          ...cell,
+          border,
+        };
+        continue;
+      }
+
+      const nextCell: CanvasSheetCell = {
+        ...(cell.value ? { value: cell.value } : {}),
+        ...(cell.style ? { style: cell.style } : {}),
+      };
+
+      if (nextCell.value || nextCell.style) {
+        nextCells[cellKey] = nextCell;
+      } else {
+        delete nextCells[cellKey];
+      }
+    }
+  }
+
+  return {
+    ...page,
+    cells: nextCells,
+  };
+}
+
 function mapNodes(nodes: CanvasNode[], nodeId: string, updater: (node: CanvasNode) => CanvasNode): CanvasNode[] {
   return nodes.map((node) => {
     if (node.id === nodeId) return updater(node);
@@ -564,6 +633,7 @@ export interface TemplateDesignerStore {
   mergeSelectedCells: () => void;
   splitSelectedCells: () => void;
   updateSelectedCellStyle: (patch: Record<string, unknown>) => void;
+  updateSelectedCellBorder: (border: CanvasCellBorder | null) => void;
   undoCanvasChange: () => void;
   redoCanvasChange: () => void;
   canUndoCanvasChange: () => boolean;
@@ -1188,24 +1258,27 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     });
   }),
   updateSelectedCellStyle: (patch) => set((state) => {
-    if (!state.document || !state.selectedCell) {
+    const selectedRange = state.selectedRange ?? (state.selectedCell
+      ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
+      : null);
+    if (!state.document || !selectedRange) {
       return { document: state.document };
     }
-    const cellKey = getCellKey(state.selectedCell.row, state.selectedCell.col);
+
     return pushDocumentHistory(state, {
-      document: updateCanvasPage(state.document, (page) => ({
-        ...page,
-        cells: {
-          ...page.cells,
-          [cellKey]: {
-            ...(page.cells[cellKey] ?? {}),
-            style: {
-              ...(page.cells[cellKey]?.style ?? {}),
-              ...patch,
-            },
-          },
-        },
-      })),
+      document: updateCanvasPage(state.document, (page) => updatePageCellStyleInRange(page, selectedRange, patch)),
+    });
+  }),
+  updateSelectedCellBorder: (border) => set((state) => {
+    const selectedRange = state.selectedRange ?? (state.selectedCell
+      ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
+      : null);
+    if (!state.document || !selectedRange) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => updatePageCellBorderInRange(page, selectedRange, border)),
     });
   }),
   undoCanvasChange: () => set((state) => {

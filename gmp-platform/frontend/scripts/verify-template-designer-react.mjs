@@ -1,6 +1,15 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { build } from 'esbuild';
+import ExcelJS from 'exceljs';
+import * as XLSX from 'xlsx';
 
 const failures = [];
+const require = createRequire(import.meta.url);
 
 function read(relativePath) {
   const url = new URL(relativePath, import.meta.url);
@@ -11,7 +20,83 @@ function read(relativePath) {
   return readFileSync(url, 'utf8');
 }
 
+function assert(condition, message) {
+  if (!condition) failures.push(message);
+}
+
+async function loadExcelImporter() {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'verify-template-designer-react-'));
+  const outfile = path.join(tempDir, 'importExcel.cjs');
+  await build({
+    entryPoints: [fileURLToPath(new URL('../src/pages/master-data/template-designer-react/utils/importExcel.ts', import.meta.url))],
+    outfile,
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    logLevel: 'silent',
+  });
+
+  try {
+    return require(outfile);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
+async function verifyExcelImportStyleBehavior() {
+  const { importExcelToCanvasPage } = await loadExcelImporter();
+
+  const modernWorkbook = new ExcelJS.Workbook();
+  const modernSheet = modernWorkbook.addWorksheet('sheet');
+  modernSheet.mergeCells('B1:I1');
+  modernSheet.getCell('B1').value = '注射器类包装工序检验记录';
+  modernSheet.getCell('B1').font = { bold: true, size: 14 };
+  modernSheet.getCell('B1').alignment = { horizontal: 'center', vertical: 'middle' };
+  for (let row = 1; row <= 4; row += 1) {
+    for (let col = 2; col <= 9; col += 1) {
+      modernSheet.getCell(row, col).value = modernSheet.getCell(row, col).value ?? (row === 1 ? null : `${row}:${col}`);
+      modernSheet.getCell(row, col).border = {
+        top: { style: 'thin', color: { argb: 'FF000000' } },
+        right: { style: 'thin', color: { argb: 'FF000000' } },
+        bottom: { style: 'thin', color: { argb: 'FF000000' } },
+        left: { style: 'thin', color: { argb: 'FF000000' } },
+      };
+    }
+  }
+  const modernPage = await importExcelToCanvasPage(
+    new File([await modernWorkbook.xlsx.writeBuffer()], 'styled.xlsx'),
+    { pageId: 'page-modern', pageName: 'modern' },
+  );
+  const modernTitle = modernPage.cells['1:2'];
+  assert(modernTitle?.style?.fontWeight === 'bold', 'importExcel.ts: modern Excel merged title must preserve bold font');
+  assert(modernTitle?.style?.textAlign === 'center', 'importExcel.ts: modern Excel merged title must preserve center alignment');
+  assert(modernTitle?.style?.verticalAlign === 'middle', 'importExcel.ts: modern Excel merged title must preserve middle vertical alignment');
+  assert(Number(modernTitle?.style?.fontSize ?? 0) >= 18, 'importExcel.ts: modern Excel merged title must preserve source font size');
+  assert(modernTitle?.border?.top && modernTitle.border.right && modernTitle.border.bottom && modernTitle.border.left, 'importExcel.ts: modern Excel merged title must preserve black outer borders');
+  assert(modernTitle?.border?.color === '#000000', 'importExcel.ts: modern Excel imported borders must be black');
+
+  const legacyWorkbook = XLSX.utils.book_new();
+  const legacySheet = XLSX.utils.aoa_to_sheet([
+    [null, '注射器类包装工序检验记录', null, null, null, null, null, null, null],
+    [null, '工序名称', '纸塑小包装', '产品名称', '检验员巡检', '1次', '2次', '3次', '备注'],
+    [null, '班组', '注射器包装班', '型号规格', '', '', '', '', ''],
+  ]);
+  legacySheet['!merges'] = [{ s: { r: 0, c: 1 }, e: { r: 0, c: 8 } }];
+  XLSX.utils.book_append_sheet(legacyWorkbook, legacySheet, 'sheet');
+  const legacyPage = await importExcelToCanvasPage(
+    new File([XLSX.write(legacyWorkbook, { type: 'array', bookType: 'xls' })], 'legacy.xls'),
+    { pageId: 'page-legacy', pageName: 'legacy' },
+  );
+  const legacyTitle = legacyPage.cells['1:2'];
+  assert(legacyTitle?.style?.fontWeight === 'bold', 'importExcel.ts: legacy Excel title fallback must render as bold');
+  assert(legacyTitle?.style?.textAlign === 'center', 'importExcel.ts: legacy Excel title fallback must render centered');
+  assert(legacyTitle?.style?.verticalAlign === 'middle', 'importExcel.ts: legacy Excel title fallback must render vertically centered');
+  assert(legacyTitle?.border?.top && legacyTitle.border.right && legacyTitle.border.bottom && legacyTitle.border.left, 'importExcel.ts: legacy Excel table fallback must restore black borders');
+  assert(legacyTitle?.border?.color === '#000000', 'importExcel.ts: legacy Excel fallback borders must be black');
+}
+
 const packageJson = read('../package.json');
+const viteConfig = read('../vite.config.ts');
 const templateModelingPage = read('../src/pages/master-data/TemplateModelingPage.tsx');
 const saveDesignerMutationBlock = templateModelingPage.match(/const saveDesignerMutation = useMutation\(\{[\s\S]*?const renderTemplateCategoryPanel/)?.[0] ?? '';
 const dialog = read('../src/pages/master-data/template-designer-react/TemplateDesignerReactDialog.tsx');
@@ -48,16 +133,22 @@ const toolbarButtonUsages = [...canvasToolbar.matchAll(/<ToolbarIconButton\b([^>
 const toolbarLabels = [
   '撤销',
   '重做',
+  '字号',
+  '字体颜色',
   '加粗',
   '斜体',
   '下划线',
   '删除线',
+  '边框线',
+  '单元格背景颜色',
   '左对齐',
   '居中对齐',
   '右对齐',
   '顶部对齐',
   '垂直居中',
   '底部对齐',
+];
+const removedToolbarLabels = [
   '自动换行',
   '合并单元格',
   '拆分单元格',
@@ -71,8 +162,15 @@ if (!packageJson.includes('"exceljs"')) failures.push('package.json: missing exc
 if (!packageJson.includes('"xlsx"')) failures.push('package.json: missing xlsx dependency for template import');
 if (!templateModelingPage.includes('React设计')) failures.push('TemplateModelingPage.tsx: missing React设计 button label');
 if (!templateModelingPage.includes('TemplateDesignerReactDialog')) failures.push('TemplateModelingPage.tsx: missing React dialog mount');
+if (templateModelingPage.includes("import TemplateDesignerReactDialog from './template-designer-react'")) failures.push('TemplateModelingPage.tsx: React designer must be lazy-loaded instead of statically imported into the template modeling chunk');
+if (!templateModelingPage.includes("lazy(() => import('./template-designer-react'))")) failures.push('TemplateModelingPage.tsx: missing lazy import for React designer dialog');
+if (!templateModelingPage.includes('<Suspense')) failures.push('TemplateModelingPage.tsx: lazy React designer dialog must be wrapped in Suspense');
+if (!templateModelingPage.includes('isReservedTemplateCategory')) failures.push('TemplateModelingPage.tsx: template category options must filter reserved category names to avoid duplicate React keys');
 if (!saveDesignerMutationBlock.includes('reactDesignerState.row')) failures.push('TemplateModelingPage.tsx: React designer save mutation must use React designer row context');
 if (!saveDesignerMutationBlock.includes('reactDesignerState.version')) failures.push('TemplateModelingPage.tsx: React designer save mutation must use React designer version context');
+if (!viteConfig.includes('manualChunks')) failures.push('vite.config.ts: missing manualChunks split for large production chunks');
+if (!viteConfig.includes('vendor-template-import')) failures.push('vite.config.ts: template import dependencies must be split out of page chunks');
+if (!viteConfig.includes('chunkSizeWarningLimit: 1000')) failures.push('vite.config.ts: chunk size warning limit must account for the lazy-loaded Excel parser chunk');
 if (!dialog.includes('fullScreen')) failures.push('TemplateDesignerReactDialog.tsx: missing fullScreen dialog');
 if (!shell.includes('字段设计')) failures.push('TemplateDesignerReactShell.tsx: missing model tab');
 if (!shell.includes('表单设计')) failures.push('TemplateDesignerReactShell.tsx: missing canvas tab');
@@ -167,10 +265,24 @@ if (toolbarButtonUsages.some((props) => !/\blabel=/.test(props))) failures.push(
 for (const label of toolbarLabels) {
   if (!canvasToolbar.includes(`label="${label}"`)) failures.push(`CanvasDesignerToolbar.tsx: missing toolbar label "${label}"`);
 }
+for (const label of removedToolbarLabels) {
+  if (canvasToolbar.includes(`label="${label}"`)) failures.push(`CanvasDesignerToolbar.tsx: removed toolbar label "${label}" must not render`);
+}
 if (!canvasToolbar.includes('undoCanvasChange')) failures.push('CanvasDesignerToolbar.tsx: undo button must call store undoCanvasChange');
 if (!canvasToolbar.includes('redoCanvasChange')) failures.push('CanvasDesignerToolbar.tsx: redo button must call store redoCanvasChange');
 if (!canvasToolbar.includes('canUndoCanvasChange')) failures.push('CanvasDesignerToolbar.tsx: undo button must reflect store availability');
 if (!canvasToolbar.includes('canRedoCanvasChange')) failures.push('CanvasDesignerToolbar.tsx: redo button must reflect store availability');
+if (!canvasToolbar.includes('data-toolbar-font-size="true"')) failures.push('CanvasDesignerToolbar.tsx: missing compact font-size toolbar control');
+if (!canvasToolbar.includes('data-toolbar-font-color="true"')) failures.push('CanvasDesignerToolbar.tsx: missing font-color toolbar control');
+if (!canvasToolbar.includes('data-toolbar-border="true"')) failures.push('CanvasDesignerToolbar.tsx: missing border-line toolbar control');
+if (!canvasToolbar.includes('data-toolbar-background-color="true"')) failures.push('CanvasDesignerToolbar.tsx: missing cell-background toolbar control');
+if (!canvasToolbar.includes('updateSelectedCellStyle({ fontSize')) failures.push('CanvasDesignerToolbar.tsx: font-size toolbar control must update selected cell fontSize');
+if (!canvasToolbar.includes('updateSelectedCellStyle({ color')) failures.push('CanvasDesignerToolbar.tsx: font-color toolbar control must update selected cell color');
+if (!canvasToolbar.includes('updateSelectedCellBorder')) failures.push('CanvasDesignerToolbar.tsx: border-line toolbar control must update selected cell border');
+if (!canvasToolbar.includes('updateSelectedCellStyle({ backgroundColor')) failures.push('CanvasDesignerToolbar.tsx: cell-background toolbar control must update selected cell backgroundColor');
+if (!storeFile.includes('updateSelectedCellBorder: (border: CanvasCellBorder | null) => void')) failures.push('useTemplateDesignerStore.ts: missing selected cell border update action contract');
+if (!storeFile.includes('updatePageCellStyleInRange')) failures.push('useTemplateDesignerStore.ts: toolbar cell style updates must support the selected range');
+if (!storeFile.includes('updatePageCellBorderInRange')) failures.push('useTemplateDesignerStore.ts: toolbar border updates must support the selected range');
 if (!canvasTab.includes('CanvasSheetWorkspace')) failures.push('CanvasTab.tsx: missing sheet workspace mount');
 if (!canvasTab.includes('sidebarWidth')) failures.push('CanvasTab.tsx: missing resizable thumbnail sidebar width state');
 if (!canvasTab.includes('isSidebarVisible')) failures.push('CanvasTab.tsx: missing side panel visibility state');
@@ -190,9 +302,14 @@ if (!canvasWorkspace.includes('cellSelectionRange')) failures.push('CanvasSheetW
 if (canvasWorkspace.includes('setSelectedRange({ t: row, l: col, b: row, r: col }, { row, col })')) failures.push('CanvasSheetWorkspace.tsx: merged cell click must not select only the top-left logical cell');
 if (!canvasWorkspace.includes('hasMultilineCellValue')) failures.push('CanvasSheetWorkspace.tsx: rendered cells must detect multiline values');
 if (!canvasWorkspace.includes('hasSpecialWrapCellValue')) failures.push('CanvasSheetWorkspace.tsx: rendered merged cells must detect checkbox/special-symbol values that need wrapping');
+if (!canvasWorkspace.includes('hasPlainOverflowCellValue')) failures.push('CanvasSheetWorkspace.tsx: rendered plain long text cells must auto-wrap when text exceeds cell width');
 if (!canvasWorkspace.includes('mergedRange && hasSpecialWrapCellValue')) failures.push('CanvasSheetWorkspace.tsx: special-symbol wrapping must be scoped to merged cells');
 if (!canvasWorkspace.includes('shouldWrapCellText')) failures.push('CanvasSheetWorkspace.tsx: rendered merged checkbox/special-symbol cells must use the shared wrap decision');
+if (!canvasWorkspace.includes('plainOverflowWrap')) failures.push('CanvasSheetWorkspace.tsx: plain long-text wrapping must be part of the shared wrap decision');
 if (!canvasWorkspace.includes("hasMultilineValue ? 'pre-wrap'")) failures.push('CanvasSheetWorkspace.tsx: rendered multiline cells must preserve line breaks');
+if (!canvasWorkspace.includes('getSheetContentBottom')) failures.push('CanvasSheetWorkspace.tsx: page count must be based on actual sheet content bottom, not blank trailing rows');
+if (!canvasWorkspace.includes('paperPaginationBodyHeight')) failures.push('CanvasSheetWorkspace.tsx: page break markers must use actual content height for pagination');
+if (canvasWorkspace.includes('const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperBodyHeight + paperFooterHeight + paperInsetBottom')) failures.push('CanvasSheetWorkspace.tsx: page count must not use full sheetHeight including blank trailing rows');
 if (!canvasWorkspace.includes('sheetPaperWidth')) failures.push('CanvasSheetWorkspace.tsx: missing centered paper size calculations');
 if (!canvasWorkspace.includes('data-sheet-paper')) failures.push('CanvasSheetWorkspace.tsx: missing explicit paper container marker');
 if (!canvasWorkspace.includes('data-sheet-column-active')) failures.push('CanvasSheetWorkspace.tsx: missing column highlight marker');
@@ -298,6 +415,7 @@ if (!canvasWorkspace.includes('data-page-break-marker="true"')) failures.push('C
 if (!canvasWorkspace.includes('data-page-break-layer="workspace"')) failures.push('CanvasSheetWorkspace.tsx: page break layer must span the whole workspace, including gray margins');
 if (!canvasWorkspace.includes('data-page-break-badge="workspace-margin"')) failures.push('CanvasSheetWorkspace.tsx: page break badge must sit in the gray workspace margin');
 if (!canvasWorkspace.includes('PAGE_BREAK_MARKER_Z_INDEX')) failures.push('CanvasSheetWorkspace.tsx: page break marker must sit above grid/content layers');
+if (!canvasWorkspace.includes('const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight + paperInsetBottom;')) failures.push('CanvasSheetWorkspace.tsx: page marker count must use actual content height for pagination');
 if (!canvasWorkspace.includes('const pageMarkerCount = Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx));')) failures.push('CanvasSheetWorkspace.tsx: page marker count must be based on continuous paper height in every canvas mode');
 if (!canvasWorkspace.includes('const sheetPaperHeight = pageMarkerCount * a4PaperHeightPx;')) failures.push('CanvasSheetWorkspace.tsx: sheet paper height must extend as continuous A4 page multiples');
 if (!canvasWorkspace.includes('const top = paperViewportGapTop + boundaryIndex * a4PaperHeightPx;')) failures.push('CanvasSheetWorkspace.tsx: page break marker must align from the full workspace canvas, not the inner paper content');
@@ -449,6 +567,12 @@ if (!excelImportUtils.includes('sourceCell?.border?.left')) failures.push('impor
 if ((excelImportUtils.match(/mergeImportedCellBorders\(/g) ?? []).length < 3) failures.push('importExcel.ts: both modern and legacy Excel import paths must preserve merged-cell borders after layout adjustment');
 if (!canvasWorkspace.includes("cellBorder?.color ?? '#000000'")) failures.push('CanvasSheetWorkspace.tsx: imported cell borders must render as black unless a stored border color exists');
 if (!pageThumbnails.includes("cell.border?.color ?? '#000000'")) failures.push('CanvasPageThumbnails.tsx: thumbnail cell borders must render as black unless a stored border color exists');
+if (!canvasWorkspace.includes('shouldRenderCellBorderEdge')) failures.push('CanvasSheetWorkspace.tsx: imported cell borders must avoid drawing shared adjacent edges twice');
+if (!canvasWorkspace.includes('isAdjacentCellBorderCovered')) failures.push('CanvasSheetWorkspace.tsx: shared border de-duplication must check adjacent cells before rendering right/bottom edges');
+if (!canvasWorkspace.includes("shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'right')")) failures.push('CanvasSheetWorkspace.tsx: right imported borders must be de-duplicated against adjacent left borders');
+if (!canvasWorkspace.includes("shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'bottom')")) failures.push('CanvasSheetWorkspace.tsx: bottom imported borders must be de-duplicated against adjacent top borders');
+if (!pageThumbnails.includes('shouldRenderThumbnailCellBorderEdge')) failures.push('CanvasPageThumbnails.tsx: thumbnail imported cell borders must avoid drawing shared adjacent edges twice');
+if (!pageThumbnails.includes('isThumbnailAdjacentCellBorderCovered')) failures.push('CanvasPageThumbnails.tsx: thumbnail shared border de-duplication must check adjacent cells before rendering right/bottom edges');
 if (!excelImportUtils.includes('return importModernExcel(file, pageId, pageName).catch(() => importLegacyExcel(file, pageId, pageName));')) failures.push('importExcel.ts: modern Excel import failures must fall back to legacy cell import');
 if (!importGridUtils.includes('createImportedCanvasPage')) failures.push('importGrid.ts: missing continuous imported canvas page factory');
 if (!importGridUtils.includes('fitImportedColumnWidthsToPaper')) failures.push('importGrid.ts: imported column widths must be fitted to the A4 paper content width');
@@ -466,6 +590,8 @@ if (!workflowTab.includes('addEdge')) failures.push('WorkflowTab.tsx: missing ed
 if (!workflowTab.includes('新增节点')) failures.push('WorkflowTab.tsx: missing add node action');
 if (!workflowTab.includes('onNodeClick')) failures.push('WorkflowTab.tsx: missing workflow node selection');
 if (!workflowTab.includes('节点名称')) failures.push('WorkflowTab.tsx: missing workflow node inspector');
+
+await verifyExcelImportStyleBehavior();
 
 if (failures.length > 0) {
   console.error('verify-template-designer-react failed');

@@ -1,28 +1,31 @@
+import BorderAllOutlined from '@mui/icons-material/BorderAllOutlined';
 import FormatAlignCenterOutlined from '@mui/icons-material/FormatAlignCenterOutlined';
-import FormatAlignJustifyOutlined from '@mui/icons-material/FormatAlignJustifyOutlined';
 import FormatAlignLeftOutlined from '@mui/icons-material/FormatAlignLeftOutlined';
 import FormatAlignRightOutlined from '@mui/icons-material/FormatAlignRightOutlined';
 import FormatBoldOutlined from '@mui/icons-material/FormatBoldOutlined';
+import FormatColorFillOutlined from '@mui/icons-material/FormatColorFillOutlined';
+import FormatColorTextOutlined from '@mui/icons-material/FormatColorTextOutlined';
 import FormatItalicOutlined from '@mui/icons-material/FormatItalicOutlined';
 import FormatUnderlinedOutlined from '@mui/icons-material/FormatUnderlinedOutlined';
-import MergeOutlined from '@mui/icons-material/MergeOutlined';
 import RedoOutlined from '@mui/icons-material/RedoOutlined';
-import SplitscreenOutlined from '@mui/icons-material/SplitscreenOutlined';
 import StrikethroughSOutlined from '@mui/icons-material/StrikethroughSOutlined';
-import TableChartOutlined from '@mui/icons-material/TableChartOutlined';
 import UndoOutlined from '@mui/icons-material/UndoOutlined';
-import UnfoldMoreOutlined from '@mui/icons-material/UnfoldMoreOutlined';
 import VerticalAlignBottomOutlined from '@mui/icons-material/VerticalAlignBottomOutlined';
 import VerticalAlignCenterOutlined from '@mui/icons-material/VerticalAlignCenterOutlined';
 import VerticalAlignTopOutlined from '@mui/icons-material/VerticalAlignTopOutlined';
-import ViewWeekOutlined from '@mui/icons-material/ViewWeekOutlined';
 import { Box, Button, Divider, Tooltip } from '@mui/material';
-import type { ReactNode } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
+
+const FONT_SIZE_OPTIONS = [9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36];
+const DEFAULT_FONT_COLOR = '#303133';
+const DEFAULT_BACKGROUND_COLOR = '#ffffff';
+const DEFAULT_BORDER_COLOR = '#000000';
 
 function ToolbarIconButton({
   active,
   children,
+  'data-toolbar-border': borderMarker,
   disabled,
   label,
   onClick,
@@ -32,12 +35,14 @@ function ToolbarIconButton({
   disabled?: boolean;
   label: string;
   onClick: () => void;
+  'data-toolbar-border'?: string;
 }) {
   return (
     <Tooltip title={label} arrow>
       <span>
         <Button
           aria-label={label}
+          data-toolbar-border={borderMarker}
           disabled={disabled}
           onClick={onClick}
           sx={{
@@ -60,19 +65,148 @@ function ToolbarIconButton({
   );
 }
 
+function ToolbarFontSizeSelect({
+  label,
+  onChange,
+  value,
+}: {
+  label: string;
+  onChange: (size: number) => void;
+  value: number;
+  'data-toolbar-font-size'?: string;
+}) {
+  const options = FONT_SIZE_OPTIONS.includes(value)
+    ? FONT_SIZE_OPTIONS
+    : [...FONT_SIZE_OPTIONS, value].sort((first, second) => first - second);
+
+  return (
+    <Tooltip title={label} arrow>
+      <Box
+        aria-label={label}
+        component="select"
+        data-toolbar-font-size="true"
+        onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(Number(event.target.value))}
+        value={value}
+        sx={{
+          width: 58,
+          height: 30,
+          px: 0.75,
+          border: '1px solid transparent',
+          borderRadius: 1,
+          color: '#5f6570',
+          bgcolor: 'transparent',
+          fontSize: 12,
+          outline: 'none',
+          cursor: 'pointer',
+          '&:hover': {
+            bgcolor: '#e8ebf0',
+          },
+        }}
+      >
+        {options.map((size) => (
+          <option key={size} value={size}>
+            {size}
+          </option>
+        ))}
+      </Box>
+    </Tooltip>
+  );
+}
+
+function ToolbarColorButton({
+  children,
+  color,
+  label,
+  onChange,
+  'data-toolbar-background-color': backgroundColorMarker,
+  'data-toolbar-font-color': fontColorMarker,
+}: {
+  children: ReactNode;
+  color: string;
+  label: string;
+  onChange: (color: string) => void;
+  'data-toolbar-background-color'?: string;
+  'data-toolbar-font-color'?: string;
+}) {
+  return (
+    <Tooltip title={label} arrow>
+      <Button
+        aria-label={label}
+        component="label"
+        data-toolbar-background-color={backgroundColorMarker}
+        data-toolbar-font-color={fontColorMarker}
+        sx={{
+          minWidth: 34,
+          width: 34,
+          height: 30,
+          p: 0,
+          borderRadius: 1,
+          color: '#5f6570',
+          bgcolor: 'transparent',
+          position: 'relative',
+          overflow: 'hidden',
+          '&:hover': {
+            bgcolor: '#e8ebf0',
+          },
+        }}
+      >
+        {children}
+        <Box
+          sx={{
+            position: 'absolute',
+            left: 7,
+            right: 7,
+            bottom: 4,
+            height: 3,
+            borderRadius: 999,
+            bgcolor: color,
+            border: '1px solid rgba(0,0,0,.12)',
+          }}
+        />
+        <Box
+          component="input"
+          type="color"
+          value={color}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0,
+            cursor: 'pointer',
+          }}
+        />
+      </Button>
+    </Tooltip>
+  );
+}
+
 function toBooleanTextDecoration(value: unknown, token: string) {
   return typeof value === 'string' && value.includes(token);
+}
+
+function normalizeFontSize(value: unknown) {
+  const parsed = Number.parseInt(String(value ?? ''), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 14;
+}
+
+function normalizeHexColor(value: unknown, fallback: string) {
+  return typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
 }
 
 export default function CanvasDesignerToolbar() {
   const selectedCellState = useTemplateDesignerStore((state) => state.getSelectedCellState());
   const updateSelectedCellStyle = useTemplateDesignerStore((state) => state.updateSelectedCellStyle);
+  const updateSelectedCellBorder = useTemplateDesignerStore((state) => state.updateSelectedCellBorder);
   const undoCanvasChange = useTemplateDesignerStore((state) => state.undoCanvasChange);
   const redoCanvasChange = useTemplateDesignerStore((state) => state.redoCanvasChange);
   const canUndoCanvasChange = useTemplateDesignerStore((state) => state.canUndoCanvasChange());
   const canRedoCanvasChange = useTemplateDesignerStore((state) => state.canRedoCanvasChange());
 
   const cellStyle = selectedCellState?.style ?? {};
+  const cellBorder = selectedCellState?.border;
+  const fontColor = normalizeHexColor(cellStyle.color, DEFAULT_FONT_COLOR);
+  const backgroundColor = normalizeHexColor(cellStyle.backgroundColor, DEFAULT_BACKGROUND_COLOR);
+  const hasAllBorders = Boolean(cellBorder?.top && cellBorder.right && cellBorder.bottom && cellBorder.left);
   const dividerSx = { mx: 0.5, alignSelf: 'center', height: 20 };
 
   const setTextDecoration = (token: 'underline' | 'line-through') => {
@@ -106,6 +240,20 @@ export default function CanvasDesignerToolbar() {
         <RedoOutlined fontSize="small" />
       </ToolbarIconButton>
       <Divider orientation="vertical" flexItem sx={dividerSx} />
+      <ToolbarFontSizeSelect
+        data-toolbar-font-size="true"
+        label="字号"
+        value={normalizeFontSize(cellStyle.fontSize)}
+        onChange={(fontSize) => updateSelectedCellStyle({ fontSize })}
+      />
+      <ToolbarColorButton
+        data-toolbar-font-color="true"
+        color={fontColor}
+        label="字体颜色"
+        onChange={(color) => updateSelectedCellStyle({ color })}
+      >
+        <FormatColorTextOutlined fontSize="small" />
+      </ToolbarColorButton>
       <ToolbarIconButton active={cellStyle.fontWeight === 'bold'} label="加粗" onClick={() => updateSelectedCellStyle({ fontWeight: cellStyle.fontWeight === 'bold' ? undefined : 'bold' })}>
         <FormatBoldOutlined fontSize="small" />
       </ToolbarIconButton>
@@ -119,6 +267,28 @@ export default function CanvasDesignerToolbar() {
         <StrikethroughSOutlined fontSize="small" />
       </ToolbarIconButton>
       <Divider orientation="vertical" flexItem sx={dividerSx} />
+      <ToolbarIconButton
+        data-toolbar-border="true"
+        active={hasAllBorders}
+        label="边框线"
+        onClick={() => updateSelectedCellBorder(hasAllBorders ? null : {
+          top: true,
+          right: true,
+          bottom: true,
+          left: true,
+          color: DEFAULT_BORDER_COLOR,
+        })}
+      >
+        <BorderAllOutlined fontSize="small" />
+      </ToolbarIconButton>
+      <ToolbarColorButton
+        data-toolbar-background-color="true"
+        color={backgroundColor}
+        label="单元格背景颜色"
+        onChange={(backgroundColor) => updateSelectedCellStyle({ backgroundColor })}
+      >
+        <FormatColorFillOutlined fontSize="small" />
+      </ToolbarColorButton>
       <ToolbarIconButton active={cellStyle.textAlign === 'left'} label="左对齐" onClick={() => updateSelectedCellStyle({ textAlign: 'left' })}>
         <FormatAlignLeftOutlined fontSize="small" />
       </ToolbarIconButton>
@@ -136,25 +306,6 @@ export default function CanvasDesignerToolbar() {
       </ToolbarIconButton>
       <ToolbarIconButton active={cellStyle.verticalAlign === 'bottom'} label="底部对齐" onClick={() => updateSelectedCellStyle({ verticalAlign: 'bottom' })}>
         <VerticalAlignBottomOutlined fontSize="small" />
-      </ToolbarIconButton>
-      <ToolbarIconButton active={cellStyle.whiteSpace === 'normal'} label="自动换行" onClick={() => updateSelectedCellStyle({ whiteSpace: cellStyle.whiteSpace === 'normal' ? 'nowrap' : 'normal' })}>
-        <FormatAlignJustifyOutlined fontSize="small" />
-      </ToolbarIconButton>
-      <ToolbarIconButton label="合并单元格" onClick={() => undefined}>
-        <MergeOutlined fontSize="small" />
-      </ToolbarIconButton>
-      <ToolbarIconButton label="拆分单元格" onClick={() => undefined}>
-        <SplitscreenOutlined fontSize="small" />
-      </ToolbarIconButton>
-      <Divider orientation="vertical" flexItem sx={dividerSx} />
-      <ToolbarIconButton label="插入表格" onClick={() => undefined}>
-        <TableChartOutlined fontSize="small" />
-      </ToolbarIconButton>
-      <ToolbarIconButton label="调整列宽" onClick={() => undefined}>
-        <ViewWeekOutlined fontSize="small" />
-      </ToolbarIconButton>
-      <ToolbarIconButton label="调整行高" onClick={() => undefined}>
-        <UnfoldMoreOutlined fontSize="small" />
       </ToolbarIconButton>
     </Box>
   );

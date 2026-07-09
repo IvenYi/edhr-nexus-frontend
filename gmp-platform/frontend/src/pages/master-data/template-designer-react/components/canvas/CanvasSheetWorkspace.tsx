@@ -4,7 +4,7 @@ import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import { Box, Button, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
-import type { CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell } from '../../types';
+import type { CanvasCellBorder, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
@@ -58,6 +58,7 @@ interface DeleteMenuItemConfig {
 }
 
 type CanvasSettingsPanel = 'paper-mode' | 'paper-orientation' | 'paper-spacing';
+type CanvasCellBorderEdge = 'top' | 'right' | 'bottom' | 'left';
 
 interface CanvasSettingsPopoverState {
   key: CanvasSettingsPanel;
@@ -193,6 +194,47 @@ function buildMergedCellMaps(ranges: CanvasSelectionRange[]) {
   return { startMap, skipSet };
 }
 
+function findMergedRangeContaining(page: CanvasPage, row: number, col: number) {
+  return page.mergedCells.find((range) => row >= range.t && row <= range.b && col >= range.l && col <= range.r);
+}
+
+function getRenderedAdjacentCellBorder(page: CanvasPage, row: number, col: number, edge: 'top' | 'left'): CanvasCellBorder | undefined {
+  const mergedRange = findMergedRangeContaining(page, row, col);
+  if (mergedRange) {
+    if (edge === 'top' && mergedRange.t !== row) return undefined;
+    if (edge === 'left' && mergedRange.l !== col) return undefined;
+    return page.cells[getCellKey(mergedRange.t, mergedRange.l)]?.border;
+  }
+  return page.cells[getCellKey(row, col)]?.border;
+}
+
+function isAdjacentCellBorderCovered(page: CanvasPage, range: CanvasSelectionRange, edge: 'right' | 'bottom') {
+  if (edge === 'right') {
+    if (range.r >= page.sheet.columnCount) return false;
+    const adjacentCol = range.r + 1;
+    for (let row = range.t; row <= range.b; row += 1) {
+      const neighborBorder = getRenderedAdjacentCellBorder(page, row, adjacentCol, 'left');
+      if (!neighborBorder?.left) return false;
+    }
+    return true;
+  }
+
+  if (range.b >= page.sheet.rowCount) return false;
+  const adjacentRow = range.b + 1;
+  for (let col = range.l; col <= range.r; col += 1) {
+    const neighborBorder = getRenderedAdjacentCellBorder(page, adjacentRow, col, 'top');
+    if (!neighborBorder?.top) return false;
+  }
+  return true;
+}
+
+function shouldRenderCellBorderEdge(page: CanvasPage, range: CanvasSelectionRange, edge: CanvasCellBorderEdge) {
+  const cellBorder = page.cells[getCellKey(range.t, range.l)]?.border;
+  if (edge === 'right') return Boolean(cellBorder?.right && !isAdjacentCellBorderCovered(page, range, 'right'));
+  if (edge === 'bottom') return Boolean(cellBorder?.bottom && !isAdjacentCellBorderCovered(page, range, 'bottom'));
+  return Boolean(edge === 'top' ? cellBorder?.top : cellBorder?.left);
+}
+
 function resolveNumericStyle(value: unknown, fallback = 0) {
   if (typeof value === 'number' && Number.isFinite(value)) return value;
   if (typeof value === 'string') {
@@ -264,10 +306,49 @@ function getCellVerticalPadding(cell: CanvasSheetCell | undefined) {
   return paddingTop + paddingBottom;
 }
 
+function hasVisibleSheetCell(cell?: CanvasSheetCell) {
+  return Boolean(
+    String(cell?.value ?? '').trim()
+    || cell?.style?.backgroundColor
+    || cell?.border?.top
+    || cell?.border?.right
+    || cell?.border?.bottom
+    || cell?.border?.left
+  );
+}
+
 function findMergedRangeForCell(page: CanvasPage, row: number, col: number) {
   return page.mergedCells.find((range) => (
     row >= range.t && row <= range.b && col >= range.l && col <= range.r
   ));
+}
+
+function getSheetContentBottom(page: CanvasPage, rowOffsets: number[]) {
+  let bottom = 0;
+
+  Object.entries(page.cells).forEach(([cellKey, cell]) => {
+    if (!hasVisibleSheetCell(cell)) return;
+
+    const [rowText, colText] = cellKey.split(':');
+    const row = Number(rowText);
+    const col = Number(colText);
+    if (!Number.isFinite(row) || !Number.isFinite(col)) return;
+
+    const range = findMergedRangeForCell(page, row, col) ?? { t: row, l: col, b: row, r: col };
+    const rowOffsetIndex = Math.min(range.b, rowOffsets.length - 1);
+    bottom = Math.max(bottom, rowOffsets[rowOffsetIndex] ?? bottom);
+  });
+
+  page.images.forEach((image) => {
+    bottom = Math.max(bottom, image.layout.top + image.layout.height);
+  });
+
+  page.nodes.forEach((node) => {
+    if (node.style.position !== 'absolute') return;
+    bottom = Math.max(bottom, Number(node.style.compTop ?? 0) + Number(node.style.compHeight ?? 0));
+  });
+
+  return bottom;
 }
 
 function getAutoFitCell(page: CanvasPage, row: number, col: number) {
@@ -317,7 +398,7 @@ function autoFitSheetRowHeight(page: CanvasPage, row: number, columnWidths: numb
     const fontSize = resolveNumericStyle(cell?.style?.fontSize, DEFAULT_SHEET_FONT_SIZE);
     const lineHeightPx = resolveCellLineHeightPx(cell, fontSize);
     const contentWidth = sumSizes(columnWidths, range.l, range.r) - getCellHorizontalPadding(cell);
-    const shouldWrap = cell?.style?.whiteSpace === 'normal';
+    const shouldWrap = cell?.style?.whiteSpace === 'normal' || hasPlainOverflowCellValue(text, contentWidth, fontSize);
     const lineCount = estimateSheetTextLineCount(text, contentWidth, fontSize, shouldWrap);
     const spanRows = Math.max(1, range.b - range.t + 1);
     nextHeight = Math.max(
@@ -379,6 +460,14 @@ function hasMultilineCellValue(value: unknown) {
 
 function hasSpecialWrapCellValue(value: unknown) {
   return typeof value === 'string' && SPECIAL_WRAP_CELL_VALUE_PATTERN.test(value);
+}
+
+function hasPlainOverflowCellValue(value: unknown, contentWidth: number, fontSize: number) {
+  const text = String(value ?? '');
+  if (!text.trim() || hasMultilineCellValue(text) || hasSpecialWrapCellValue(text)) {
+    return false;
+  }
+  return estimateSheetTextPixelWidth(text, fontSize) > Math.max(1, contentWidth);
 }
 
 export default function CanvasSheetWorkspace() {
@@ -458,8 +547,9 @@ export default function CanvasSheetWorkspace() {
   const columnHeaderHeight = 36;
   const sheetPaperWidth = a4PaperWidthPx;
   const freeCanvasBodyHeight = Math.max(freeCanvasMeasuredHeight, 480);
-  const paperBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : sheetHeight;
-  const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperBodyHeight + paperFooterHeight + paperInsetBottom;
+  const sheetContentBottom = currentPage ? getSheetContentBottom(currentPage, rowOffsets) : 0;
+  const paperPaginationBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : Math.max(sheetContentBottom, 1);
+  const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight + paperInsetBottom;
   const pageMarkerCount = Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx));
   const sheetPaperHeight = pageMarkerCount * a4PaperHeightPx;
   const paperContentHeight = sheetPaperHeight - paperInsetTop - paperInsetBottom;
@@ -1407,7 +1497,10 @@ export default function CanvasSheetWorkspace() {
         const cellBorder = cell?.border;
         const spanCols = mergedRange ? (mergedRange.r - mergedRange.l + 1) : 1;
         const spanRows = mergedRange ? (mergedRange.b - mergedRange.t + 1) : 1;
-        const shouldWrapCellText = hasMultilineValue || cell?.style?.whiteSpace === 'normal' || Boolean(mergedRange && hasSpecialWrapCellValue(cell?.value));
+        const cellFontSize = resolveNumericStyle(cell?.style?.fontSize, DEFAULT_SHEET_FONT_SIZE);
+        const cellContentWidth = sumSizes(displayColumnWidths, col, col + spanCols - 1) - getCellHorizontalPadding(cell);
+        const plainOverflowWrap = hasPlainOverflowCellValue(cell?.value, cellContentWidth, cellFontSize);
+        const shouldWrapCellText = hasMultilineValue || cell?.style?.whiteSpace === 'normal' || plainOverflowWrap || Boolean(mergedRange && hasSpecialWrapCellValue(cell?.value));
         const borderColor = String(cellBorder?.color ?? '#000000');
         const gridColor = '#d9dee7';
 
@@ -1464,10 +1557,10 @@ export default function CanvasSheetWorkspace() {
               py: `${resolveNumericStyle(cell?.style?.paddingTop, 4)}px`,
               pr: `${resolveNumericStyle(cell?.style?.paddingRight, resolveNumericStyle(cell?.style?.paddingLeft, 8))}px`,
               pb: `${resolveNumericStyle(cell?.style?.paddingBottom, resolveNumericStyle(cell?.style?.paddingTop, 4))}px`,
-              borderLeft: cellBorder?.left ? `1px solid ${borderColor}` : colIndex === 0 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
-              borderTop: cellBorder?.top ? `1px solid ${borderColor}` : rowIndex === 0 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
-              borderRight: cellBorder?.right ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
-              borderBottom: cellBorder?.bottom ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
+              borderLeft: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'left') ? `1px solid ${borderColor}` : colIndex === 0 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
+              borderTop: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'top') ? `1px solid ${borderColor}` : rowIndex === 0 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
+              borderRight: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'right') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
+              borderBottom: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'bottom') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
               bgcolor: isSelected ? '#dbeafe' : isRangeActive ? '#eef5ff' : (cell?.style?.backgroundColor ? String(cell.style.backgroundColor) : '#fff'),
               boxShadow: isSelected ? 'inset 0 0 0 2px #1274dd' : 'none',
               overflow: 'hidden',
@@ -1480,6 +1573,7 @@ export default function CanvasSheetWorkspace() {
               whiteSpace: hasMultilineValue ? 'pre-wrap' : shouldWrapCellText ? 'normal' : 'nowrap',
               lineHeight: cell?.style?.lineHeight as string | number | undefined,
               fontFamily: cell?.style?.fontFamily as string | undefined,
+              overflowWrap: shouldWrapCellText ? 'anywhere' : 'normal',
               wordBreak: 'break-word',
               transition: 'background-color 120ms ease',
               '&:hover': {
@@ -1562,6 +1656,7 @@ export default function CanvasSheetWorkspace() {
                 sx={{
                   display: 'block',
                   width: '100%',
+                  minWidth: 0,
                   textAlign: textAlign === 'right' ? 'right' : textAlign === 'center' ? 'center' : 'left',
                 }}
               >

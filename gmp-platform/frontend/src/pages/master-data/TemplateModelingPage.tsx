@@ -54,10 +54,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Fragment,
+  Suspense,
   type DragEvent as ReactDragEvent,
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  lazy,
   useEffect,
   useMemo,
   useRef,
@@ -89,8 +91,9 @@ import {
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
 import TemplateDesignerDialog from './TemplateDesignerDialog';
-import TemplateDesignerReactDialog from './template-designer-react';
 import TemplateDesignerPreloadFrame from './template-designer/TemplateDesignerPreloadFrame';
+
+const TemplateDesignerReactDialog = lazy(() => import('./template-designer-react'));
 
 const TEMPLATE_CATEGORY_ALL = 'ALL';
 const TEMPLATE_CATEGORY_UNCATEGORIZED = 'UNCATEGORIZED';
@@ -428,6 +431,15 @@ function isConcreteCategory(categoryId: string) {
   return categoryId !== TEMPLATE_CATEGORY_ALL && categoryId !== TEMPLATE_CATEGORY_UNCATEGORIZED;
 }
 
+function isReservedTemplateCategory(category: Pick<TemplateCategoryRecord, 'id' | 'name'>) {
+  const id = String(category.id).trim();
+  const name = String(category.name).trim();
+  return id === TEMPLATE_CATEGORY_ALL
+    || id === TEMPLATE_CATEGORY_UNCATEGORIZED
+    || name === TEMPLATE_CATEGORY_ALL
+    || name === TEMPLATE_CATEGORY_UNCATEGORIZED;
+}
+
 function toDateTimeLocalValue(value?: string | null) {
   if (!value) return '';
   const date = new Date(value);
@@ -622,7 +634,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       const res = await getTemplateModelingCategories(pageKey);
       return res.data.data.map((category) => ({
         ...category,
-        system: category.id === TEMPLATE_CATEGORY_ALL || category.id === TEMPLATE_CATEGORY_UNCATEGORIZED,
+        system: isReservedTemplateCategory(category),
       }));
     },
   });
@@ -689,7 +701,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       .map((category) => [String(category.id), Number(category.count || 0)]));
     const concreteCategories = categories
       .filter((category) => category.name)
-      .filter((category) => category.id !== TEMPLATE_CATEGORY_ALL && category.id !== TEMPLATE_CATEGORY_UNCATEGORIZED)
+      .filter((category) => !isReservedTemplateCategory(category))
       .map((category) => ({
         ...category,
         value: category.name,
@@ -1767,14 +1779,18 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         onClose={() => setDesignerState({ open: false, row: null, version: null })}
         onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
       />
-      <TemplateDesignerReactDialog
-        open={reactDesignerState.open}
-        row={reactDesignerState.row}
-        version={reactDesignerState.version}
-        saving={saveDesignerMutation.isPending}
-        onClose={() => setReactDesignerState({ open: false, row: null, version: null })}
-        onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
-      />
+      {reactDesignerState.open ? (
+        <Suspense fallback={null}>
+          <TemplateDesignerReactDialog
+            open={reactDesignerState.open}
+            row={reactDesignerState.row}
+            version={reactDesignerState.version}
+            saving={saveDesignerMutation.isPending}
+            onClose={() => setReactDesignerState({ open: false, row: null, version: null })}
+            onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
+          />
+        </Suspense>
+      ) : null}
       <TemplateDesignerPreloadFrame
         row={designerPreloadTarget.row}
         version={designerPreloadTarget.version}

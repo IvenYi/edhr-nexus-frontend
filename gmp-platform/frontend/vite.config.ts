@@ -41,4 +41,24 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('/node_modules/')) return undefined;
+          if (id.includes('/node_modules/exceljs/')) return 'vendor-template-excel';
+          if (id.includes('/node_modules/xlsx/')) return 'vendor-template-xlsx';
+          if (id.includes('/node_modules/jszip/')) return 'vendor-template-import';
+          if (id.includes('/node_modules/@xyflow/react/')) return 'vendor-flow';
+          if (id.includes('/node_modules/@mui/icons-material/')) return 'vendor-mui-icons';
+          if (id.includes('/node_modules/@mui/') || id.includes('/node_modules/@emotion/')) return 'vendor-mui';
+          if (id.includes('/node_modules/@tanstack/react-query/')) return 'vendor-react-query';
+          if (id.includes('/node_modules/react-router-dom/') || id.includes('/node_modules/@remix-run/router/')) return 'vendor-router';
+          if (id.includes('/node_modules/react/') || id.includes('/node_modules/react-dom/')) return 'vendor-react';
+          return undefined;
+        },
+      },
+    },
+  },
 });

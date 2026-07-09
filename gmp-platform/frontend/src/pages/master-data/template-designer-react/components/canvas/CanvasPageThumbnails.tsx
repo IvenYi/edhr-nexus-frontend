@@ -2,11 +2,12 @@ import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
-import type { CanvasPage, CanvasSelectionRange, CanvasSheetCell } from '../../types';
+import type { CanvasCellBorder, CanvasPage, CanvasSelectionRange, CanvasSheetCell } from '../../types';
 
 const MM_TO_PX = 96 / 25.4;
 const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
+type CanvasCellBorderEdge = 'top' | 'right' | 'bottom' | 'left';
 
 function getCellKey(row: number, col: number) {
   return `${row}:${col}`;
@@ -48,6 +49,47 @@ function buildMergedCellMaps(ranges: CanvasSelectionRange[]) {
   });
 
   return { startMap, skipSet };
+}
+
+function findThumbnailMergedRangeContaining(page: CanvasPage, row: number, col: number) {
+  return page.mergedCells.find((range) => row >= range.t && row <= range.b && col >= range.l && col <= range.r);
+}
+
+function getRenderedThumbnailAdjacentCellBorder(page: CanvasPage, row: number, col: number, edge: 'top' | 'left'): CanvasCellBorder | undefined {
+  const mergedRange = findThumbnailMergedRangeContaining(page, row, col);
+  if (mergedRange) {
+    if (edge === 'top' && mergedRange.t !== row) return undefined;
+    if (edge === 'left' && mergedRange.l !== col) return undefined;
+    return page.cells[getCellKey(mergedRange.t, mergedRange.l)]?.border;
+  }
+  return page.cells[getCellKey(row, col)]?.border;
+}
+
+function isThumbnailAdjacentCellBorderCovered(page: CanvasPage, range: CanvasSelectionRange, edge: 'right' | 'bottom') {
+  if (edge === 'right') {
+    if (range.r >= page.sheet.columnCount) return false;
+    const adjacentCol = range.r + 1;
+    for (let row = range.t; row <= range.b; row += 1) {
+      const neighborBorder = getRenderedThumbnailAdjacentCellBorder(page, row, adjacentCol, 'left');
+      if (!neighborBorder?.left) return false;
+    }
+    return true;
+  }
+
+  if (range.b >= page.sheet.rowCount) return false;
+  const adjacentRow = range.b + 1;
+  for (let col = range.l; col <= range.r; col += 1) {
+    const neighborBorder = getRenderedThumbnailAdjacentCellBorder(page, adjacentRow, col, 'top');
+    if (!neighborBorder?.top) return false;
+  }
+  return true;
+}
+
+function shouldRenderThumbnailCellBorderEdge(page: CanvasPage, range: CanvasSelectionRange, edge: CanvasCellBorderEdge) {
+  const cellBorder = page.cells[getCellKey(range.t, range.l)]?.border;
+  if (edge === 'right') return Boolean(cellBorder?.right && !isThumbnailAdjacentCellBorderCovered(page, range, 'right'));
+  if (edge === 'bottom') return Boolean(cellBorder?.bottom && !isThumbnailAdjacentCellBorderCovered(page, range, 'bottom'));
+  return Boolean(edge === 'top' ? cellBorder?.top : cellBorder?.left);
 }
 
 function resolveNumericStyle(value: unknown, fallback = 0) {
@@ -182,10 +224,10 @@ function CanvasThumbnailPreview({ page, previewIndex }: { page: CanvasPage; prev
                 px: `${resolveNumericStyle(cell.style?.paddingLeft, 8)}px`,
                 py: `${resolveNumericStyle(cell.style?.paddingTop, 4)}px`,
                 bgcolor: cell.style?.backgroundColor ? String(cell.style.backgroundColor) : 'transparent',
-                borderTop: cell.border?.top ? `1px solid ${borderColor}` : 'none',
-                borderRight: cell.border?.right ? `1px solid ${borderColor}` : 'none',
-                borderBottom: cell.border?.bottom ? `1px solid ${borderColor}` : 'none',
-                borderLeft: cell.border?.left ? `1px solid ${borderColor}` : 'none',
+                borderTop: shouldRenderThumbnailCellBorderEdge(page, range, 'top') ? `1px solid ${borderColor}` : 'none',
+                borderRight: shouldRenderThumbnailCellBorderEdge(page, range, 'right') ? `1px solid ${borderColor}` : 'none',
+                borderBottom: shouldRenderThumbnailCellBorderEdge(page, range, 'bottom') ? `1px solid ${borderColor}` : 'none',
+                borderLeft: shouldRenderThumbnailCellBorderEdge(page, range, 'left') ? `1px solid ${borderColor}` : 'none',
                 color: String(cell.style?.color ?? '#303133'),
                 fontSize: resolveNumericStyle(cell.style?.fontSize, 12) || 12,
                 fontWeight: cell.style?.fontWeight as string | undefined,

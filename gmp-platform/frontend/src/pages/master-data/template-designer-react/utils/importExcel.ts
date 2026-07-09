@@ -65,13 +65,13 @@ function excelColumnWidthToPx(value?: number | null, fallback = DEFAULT_COLUMN_W
 }
 
 function normalizeCellValue(value: unknown, text?: string, fontName?: string | null) {
+  if (value == null) return '';
   if (typeof value === 'object' && Array.isArray((value as { richText?: Array<{ text?: string; font?: { name?: string } }> }).richText)) {
     return ((value as { richText: Array<{ text?: string; font?: { name?: string } }> }).richText ?? [])
       .map((item) => normalizeImportedCheckboxGlyphs(item.text ?? '', item.font?.name ?? fontName))
       .join('');
   }
   if (typeof text === 'string' && text.trim()) return normalizeImportedCheckboxGlyphs(text, fontName);
-  if (value == null) return '';
   if (value instanceof Date) return value.toISOString().slice(0, 19).replace('T', ' ');
   if (typeof value === 'object') {
     if ('text' in (value as Record<string, unknown>) && typeof (value as { text?: unknown }).text === 'string') {
@@ -187,19 +187,28 @@ function readExcelFontBold(font?: Partial<ExcelJS.Font>) {
   return font?.bold === true;
 }
 
+function buildExcelJsEffectiveAlignment(cell: ExcelJS.Cell) {
+  return {
+    ...(cell.worksheet.getColumn(cell.fullAddress.col).alignment ?? {}),
+    ...(cell.worksheet.getRow(cell.fullAddress.row).alignment ?? {}),
+    ...(cell.alignment ?? {}),
+  } as Partial<ExcelJS.Alignment>;
+}
+
 function buildExcelJsCellStyle(cell: ExcelJS.Cell, effectiveFont = buildExcelJsEffectiveFont(cell)) {
   const style: Record<string, unknown> = {};
+  const alignment = buildExcelJsEffectiveAlignment(cell);
   const fontSize = readExcelFontSize(effectiveFont);
   if (readExcelFontBold(effectiveFont)) style.fontWeight = 'bold';
   if (effectiveFont?.italic) style.fontStyle = 'italic';
   if (effectiveFont?.underline) style.textDecoration = 'underline';
   if (fontSize) style.fontSize = fontSize;
   if (effectiveFont?.color?.argb) style.color = normalizeExcelColor(effectiveFont.color.argb);
-  if (cell.alignment?.horizontal) style.textAlign = cell.alignment.horizontal === 'centerContinuous' ? 'center' : cell.alignment.horizontal;
-  if (cell.alignment?.vertical) {
-    style.verticalAlign = cell.alignment.vertical === 'middle' ? 'middle' : cell.alignment.vertical;
+  if (alignment.horizontal) style.textAlign = alignment.horizontal === 'centerContinuous' ? 'center' : alignment.horizontal;
+  if (alignment.vertical) {
+    style.verticalAlign = alignment.vertical === 'middle' ? 'middle' : alignment.vertical;
   }
-  if (cell.alignment?.wrapText) {
+  if (alignment.wrapText) {
     style.whiteSpace = 'normal';
     style.lineHeight = 1.5;
   }
@@ -208,18 +217,51 @@ function buildExcelJsCellStyle(cell: ExcelJS.Cell, effectiveFont = buildExcelJsE
   return style;
 }
 
-function buildExcelJsCellBorder(cell: ExcelJS.Cell): CanvasCellBorder | undefined {
-  const border = cell.border;
-  if (!border) return undefined;
-  const nextBorder: CanvasCellBorder = {
-    top: Boolean(border.top),
-    right: Boolean(border.right),
-    bottom: Boolean(border.bottom),
-    left: Boolean(border.left),
+function hasExcelBorderEdge(edge?: Partial<ExcelJS.Border>) {
+  return Boolean(edge && (edge.style || edge.color));
+}
+
+function pickExcelBorderEdge(
+  cellEdge?: Partial<ExcelJS.Border>,
+  rowEdge?: Partial<ExcelJS.Border>,
+  columnEdge?: Partial<ExcelJS.Border>,
+) {
+  return hasExcelBorderEdge(cellEdge) ? cellEdge : hasExcelBorderEdge(rowEdge) ? rowEdge : columnEdge;
+}
+
+function buildCanvasBorderFromExcelEdges(edges: {
+  top?: Partial<ExcelJS.Border>;
+  right?: Partial<ExcelJS.Border>;
+  bottom?: Partial<ExcelJS.Border>;
+  left?: Partial<ExcelJS.Border>;
+}): CanvasCellBorder | undefined {
+  const border: CanvasCellBorder = {
+    top: hasExcelBorderEdge(edges.top),
+    right: hasExcelBorderEdge(edges.right),
+    bottom: hasExcelBorderEdge(edges.bottom),
+    left: hasExcelBorderEdge(edges.left),
   };
-  return Object.values(nextBorder).some(Boolean)
-    ? { ...nextBorder, color: IMPORTED_EXCEL_BORDER_COLOR }
+  const color = normalizeExcelColor(edges.top?.color?.argb)
+    ?? normalizeExcelColor(edges.right?.color?.argb)
+    ?? normalizeExcelColor(edges.bottom?.color?.argb)
+    ?? normalizeExcelColor(edges.left?.color?.argb)
+    ?? IMPORTED_EXCEL_BORDER_COLOR;
+
+  return Object.values(border).some(Boolean)
+    ? { ...border, color }
     : undefined;
+}
+
+function buildExcelJsCellBorder(cell: ExcelJS.Cell): CanvasCellBorder | undefined {
+  const cellBorder = cell.border;
+  const rowBorder = cell.worksheet.getRow(cell.fullAddress.row).border;
+  const columnBorder = cell.worksheet.getColumn(cell.fullAddress.col).border;
+  return buildCanvasBorderFromExcelEdges({
+    top: pickExcelBorderEdge(cellBorder?.top, rowBorder?.top, columnBorder?.top),
+    right: pickExcelBorderEdge(cellBorder?.right, rowBorder?.right, columnBorder?.right),
+    bottom: pickExcelBorderEdge(cellBorder?.bottom, rowBorder?.bottom, columnBorder?.bottom),
+    left: pickExcelBorderEdge(cellBorder?.left, rowBorder?.left, columnBorder?.left),
+  });
 }
 
 function buildLegacyCellStyle(cell: XLSX.CellObject) {
@@ -266,6 +308,95 @@ function buildLegacyCellBorder(cell: XLSX.CellObject): CanvasCellBorder | undefi
   return Object.values(border).some(Boolean)
     ? { ...border, color: IMPORTED_EXCEL_BORDER_COLOR }
     : undefined;
+}
+
+function buildDefaultImportedBorder(): CanvasCellBorder {
+  return {
+    top: true,
+    right: true,
+    bottom: true,
+    left: true,
+    color: IMPORTED_EXCEL_BORDER_COLOR,
+  };
+}
+
+function getModernWorksheetBounds(worksheet: ExcelJS.Worksheet) {
+  const dimensionModel =
+    (worksheet as unknown as { dimensions?: { model?: { bottom?: number; right?: number } } }).dimensions?.model
+    ?? (worksheet as unknown as { model?: { dimensions?: { model?: { bottom?: number; right?: number } } } }).model?.dimensions?.model;
+  const rowCount = clampImportedRowCount(Math.max(
+    worksheet.actualRowCount || 0,
+    worksheet.rowCount || 0,
+    Number(dimensionModel?.bottom ?? 0),
+    1,
+  ));
+  const columnCount = clampImportedColumnCount(Math.max(
+    worksheet.actualColumnCount || 0,
+    worksheet.columnCount || 0,
+    Number(dimensionModel?.right ?? 0),
+    1,
+  ));
+  return { rowCount, columnCount };
+}
+
+function applyLegacyTableFallback(
+  cells: Record<string, CanvasSheetCell>,
+  usedRange: XLSX.Range,
+  rowCount: number,
+  columnCount: number,
+) {
+  const hasImportedBorders = Object.values(cells).some((cell) => Boolean(cell.border));
+  if (hasImportedBorders) return cells;
+
+  const nextCells = { ...cells };
+  const startRow = Math.max(1, usedRange.s.r + 1);
+  const endRow = Math.min(rowCount, usedRange.e.r + 1);
+  const startCol = Math.max(1, usedRange.s.c + 1);
+  const endCol = Math.min(columnCount, usedRange.e.c + 1);
+
+  for (let row = startRow; row <= endRow; row += 1) {
+    for (let col = startCol; col <= endCol; col += 1) {
+      const cellKey = getCellKey(row, col);
+      const cell = nextCells[cellKey] ?? {};
+      nextCells[cellKey] = {
+        ...cell,
+        value: cell.value ?? '',
+        style: cell.style ?? {},
+        border: cell.border ?? buildDefaultImportedBorder(),
+      };
+    }
+  }
+
+  return nextCells;
+}
+
+function applyLegacyTitleFallback(
+  cells: Record<string, CanvasSheetCell>,
+  mergedCells: CanvasSelectionRange[],
+  firstRow: number,
+) {
+  const nextCells = { ...cells };
+
+  mergedCells.forEach((range) => {
+    if (range.t !== firstRow || range.r <= range.l) return;
+    const cellKey = getCellKey(range.t, range.l);
+    const cell = nextCells[cellKey];
+    if (!String(cell?.value ?? '').trim()) return;
+
+    nextCells[cellKey] = {
+      ...cell,
+      style: {
+        ...(cell.style ?? {}),
+        fontWeight: cell.style?.fontWeight ?? 'bold',
+        fontSize: cell.style?.fontSize ?? 18,
+        textAlign: cell.style?.textAlign ?? 'center',
+        verticalAlign: cell.style?.verticalAlign ?? 'middle',
+      },
+      border: cell.border ?? buildDefaultImportedBorder(),
+    };
+  });
+
+  return nextCells;
 }
 
 function decodeMergedAddress(address: string): CanvasSelectionRange {
@@ -717,8 +848,7 @@ async function importModernExcel(file: File, pageId: string, pageName: string): 
     throw new Error('Excel 文件中未找到可导入工作表');
   }
 
-  const rowCount = clampImportedRowCount(worksheet.actualRowCount || worksheet.rowCount || 1);
-  const columnCount = clampImportedColumnCount(worksheet.actualColumnCount || worksheet.columnCount || 1);
+  const { rowCount, columnCount } = getModernWorksheetBounds(worksheet);
   const rowHeights = Array.from({ length: rowCount }, (_, index) => (
     pointsToPx(worksheet.getRow(index + 1).height, DEFAULT_ROW_HEIGHT)
   ));
@@ -789,8 +919,8 @@ async function importLegacyExcel(file: File, pageId: string, pageName: string): 
   }
 
   const range = worksheet['!ref'] ? XLSX.utils.decode_range(worksheet['!ref']) : { s: { r: 0, c: 0 }, e: { r: 0, c: 0 } };
-  const rowCount = clampImportedRowCount(range.e.r - range.s.r + 1);
-  const columnCount = clampImportedColumnCount(range.e.c - range.s.c + 1);
+  const rowCount = clampImportedRowCount(range.e.r + 1);
+  const columnCount = clampImportedColumnCount(range.e.c + 1);
   const rowHeights = Array.from({ length: rowCount }, (_, index) => {
     const row = worksheet['!rows']?.[index];
     return Math.max(
@@ -821,8 +951,8 @@ async function importLegacyExcel(file: File, pageId: string, pageName: string): 
   for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
     for (let colIndex = 0; colIndex < columnCount; colIndex += 1) {
       const address = XLSX.utils.encode_cell({
-        r: range.s.r + rowIndex,
-        c: range.s.c + colIndex,
+        r: rowIndex,
+        c: colIndex,
       });
       const cell = worksheet[address];
       if (!cell) continue;
@@ -838,12 +968,17 @@ async function importLegacyExcel(file: File, pageId: string, pageName: string): 
       };
     }
   }
+  const styledCells = applyLegacyTitleFallback(
+    applyLegacyTableFallback(cells, range, rowCount, columnCount),
+    mergedCells,
+    range.s.r + 1,
+  );
 
   const totalWidth = columnWidths.reduce((sum, width) => sum + width, 0);
   const initialTotalHeight = rowHeights.reduce((sum, height) => sum + height, 0);
   const orientation = normalizeImportedOrientation(undefined, totalWidth, initialTotalHeight);
   const fittedColumnWidths = fitImportedColumnWidthsToPaper(columnWidths, orientation);
-  const splitGrid = applyMergedWhitespaceSplits(cells, mergedCells, fittedColumnWidths);
+  const splitGrid = applyMergedWhitespaceSplits(styledCells, mergedCells, fittedColumnWidths);
   const overflowGrid = applyLongTextOverflowLayout({
     rowHeights,
     columnWidths: fittedColumnWidths,
