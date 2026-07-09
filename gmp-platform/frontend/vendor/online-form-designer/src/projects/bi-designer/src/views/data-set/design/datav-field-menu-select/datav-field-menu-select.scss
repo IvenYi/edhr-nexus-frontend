@@ -1,8 +1,0 @@
-@include b(datav-field-menu-select) {
-  @include e(select) {
-    @include when(active) {
-      color: var(--ant-primary-color);
-      background-color: unquote('rgba(from var(--ant-primary-color) r g b / 10%)') !important;
-    }
-  }
-}

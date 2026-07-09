@@ -97,6 +97,7 @@ async function verifyExcelImportStyleBehavior() {
 
 const packageJson = read('../package.json');
 const viteConfig = read('../vite.config.ts');
+const routerFile = read('../src/router/index.tsx');
 const templateModelingPage = read('../src/pages/master-data/TemplateModelingPage.tsx');
 const saveDesignerMutationBlock = templateModelingPage.match(/const saveDesignerMutation = useMutation\(\{[\s\S]*?const renderTemplateCategoryPanel/)?.[0] ?? '';
 const dialog = read('../src/pages/master-data/template-designer-react/TemplateDesignerReactDialog.tsx');
@@ -122,6 +123,7 @@ const templateImportUtils = read('../src/pages/master-data/template-designer-rea
 const importGridUtils = read('../src/pages/master-data/template-designer-react/utils/importGrid.ts');
 const excelImportUtils = read('../src/pages/master-data/template-designer-react/utils/importExcel.ts');
 const wordImportUtils = read('../src/pages/master-data/template-designer-react/utils/importWord.ts');
+const reactHostTypes = read('../src/pages/master-data/template-designer-react/types/host.ts');
 
 const commitEditingCellBlock = canvasWorkspace.match(/const commitEditingCell = \([\s\S]*?const cancelEditingCell/)?.[0] ?? '';
 const sheetCellEditorBlock = canvasWorkspace.match(/<TextField\s+data-sheet-cell-editor="true"[\s\S]*?\/>/)?.[0] ?? '';
@@ -158,10 +160,15 @@ const removedToolbarLabels = [
 ];
 
 if (!packageJson.includes('verify:template-designer-react')) failures.push('package.json: missing verify:template-designer-react script');
+if (packageJson.includes('verify:template-designer"')) failures.push('package.json: Vue designer verify script must be removed');
+if (packageJson.includes('designer:install') || packageJson.includes('designer:dev') || packageJson.includes('designer:build')) failures.push('package.json: Vue designer install/dev/build scripts must be removed');
 if (!packageJson.includes('"exceljs"')) failures.push('package.json: missing exceljs dependency for template import');
 if (!packageJson.includes('"xlsx"')) failures.push('package.json: missing xlsx dependency for template import');
 if (!templateModelingPage.includes('React设计')) failures.push('TemplateModelingPage.tsx: missing React设计 button label');
 if (!templateModelingPage.includes('TemplateDesignerReactDialog')) failures.push('TemplateModelingPage.tsx: missing React dialog mount');
+if (templateModelingPage.includes('import TemplateDesignerDialog') || templateModelingPage.includes('<TemplateDesignerDialog')) failures.push('TemplateModelingPage.tsx: Vue designer dialog references must be removed');
+if (templateModelingPage.includes('TemplateDesignerPreloadFrame')) failures.push('TemplateModelingPage.tsx: Vue designer preload frame must be removed');
+if (templateModelingPage.includes('const [designerState') || templateModelingPage.includes('setDesignerState')) failures.push('TemplateModelingPage.tsx: Vue designer state must be removed');
 if (templateModelingPage.includes("import TemplateDesignerReactDialog from './template-designer-react'")) failures.push('TemplateModelingPage.tsx: React designer must be lazy-loaded instead of statically imported into the template modeling chunk');
 if (!templateModelingPage.includes("lazy(() => import('./template-designer-react'))")) failures.push('TemplateModelingPage.tsx: missing lazy import for React designer dialog');
 if (!templateModelingPage.includes('<Suspense')) failures.push('TemplateModelingPage.tsx: lazy React designer dialog must be wrapped in Suspense');
@@ -171,6 +178,15 @@ if (!saveDesignerMutationBlock.includes('reactDesignerState.version')) failures.
 if (!viteConfig.includes('manualChunks')) failures.push('vite.config.ts: missing manualChunks split for large production chunks');
 if (!viteConfig.includes('vendor-template-import')) failures.push('vite.config.ts: template import dependencies must be split out of page chunks');
 if (!viteConfig.includes('chunkSizeWarningLimit: 1000')) failures.push('vite.config.ts: chunk size warning limit must account for the lazy-loaded Excel parser chunk');
+if (viteConfig.includes('templateDesignerDevTarget') || viteConfig.includes('/template-designer-runtime')) failures.push('vite.config.ts: Vue designer runtime proxy must be removed');
+if (routerFile.includes('template-designer/')) failures.push('router/index.tsx: routes must not import from the removed Vue designer directory');
+if (existsSync(new URL('../src/pages/master-data/template-designer', import.meta.url))) failures.push('src/pages/master-data/template-designer: Vue designer host directory must be removed');
+if (existsSync(new URL('../src/pages/master-data/TemplateDesignerDialog.tsx', import.meta.url))) failures.push('src/pages/master-data/TemplateDesignerDialog.tsx: Vue designer dialog re-export must be removed');
+if (existsSync(new URL('../vendor/online-form-designer', import.meta.url))) failures.push('vendor/online-form-designer: Vue designer vendor package must be removed');
+if (existsSync(new URL('../scripts/verify-template-designer-pages.mjs', import.meta.url))) failures.push('scripts/verify-template-designer-pages.mjs: Vue designer verifier must be removed');
+if (!reactHostTypes.includes('TemplateDesignerDialogProps')) failures.push('template-designer-react/types/host.ts: React designer dialog props must live under the React designer');
+if (!reactHostTypes.includes('TemplateDesignerSavePayload')) failures.push('template-designer-react/types/host.ts: React designer save payload must live under the React designer');
+if (dialog.includes('../template-designer') || shell.includes('../template-designer') || documentUtils.includes('/template-designer/')) failures.push('template-designer-react: React designer must not import from the removed Vue designer directory');
 if (!dialog.includes('fullScreen')) failures.push('TemplateDesignerReactDialog.tsx: missing fullScreen dialog');
 if (!shell.includes('字段设计')) failures.push('TemplateDesignerReactShell.tsx: missing model tab');
 if (!shell.includes('表单设计')) failures.push('TemplateDesignerReactShell.tsx: missing canvas tab');

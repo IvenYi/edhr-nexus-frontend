@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from '@mui/material';
-import type { TemplateDesignerDialogProps } from '../template-designer/templateDesignerTypes';
+import type { TemplateDesignerDialogProps } from './types';
 import TemplateDesignerReactShell from './TemplateDesignerReactShell';
 
 export default function TemplateDesignerReactDialog({

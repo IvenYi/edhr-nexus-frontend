@@ -1,10 +1,10 @@
 import type { TemplateModelingRecord, TemplateVersionRecord } from '@/api/template-modeling';
-import type { TemplateDesignerSavePayload } from '@/pages/master-data/template-designer/templateDesignerBridge';
 import type {
   CanvasPage,
   CanvasDesignState,
   ModelDesignState,
   ReactTemplateDesignerPersisted,
+  TemplateDesignerSavePayload,
   TemplateDesignerDocument,
   TemplateDesignerMeta,
   WorkflowDesignState,

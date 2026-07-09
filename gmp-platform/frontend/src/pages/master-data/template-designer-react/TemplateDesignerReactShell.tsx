@@ -2,7 +2,7 @@ import ArrowBackOutlined from '@mui/icons-material/ArrowBackOutlined';
 import SaveOutlined from '@mui/icons-material/SaveOutlined';
 import { useEffect, useRef, type ChangeEvent } from 'react';
 import { Box, Button, Divider, Stack, Typography } from '@mui/material';
-import type { TemplateDesignerDialogProps } from '../template-designer/templateDesignerTypes';
+import type { TemplateDesignerDialogProps } from './types';
 import { useTemplateDesignerStore } from './store/useTemplateDesignerStore';
 import CanvasTab from './tabs/canvas/CanvasTab';
 import ModelTab from './tabs/model/ModelTab';

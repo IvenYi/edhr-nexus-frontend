@@ -1,1 +1,0 @@
-import './country-list.less';

@@ -90,8 +90,6 @@ import {
 } from '@/api/template-modeling';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
-import TemplateDesignerDialog from './TemplateDesignerDialog';
-import TemplateDesignerPreloadFrame from './template-designer/TemplateDesignerPreloadFrame';
 
 const TemplateDesignerReactDialog = lazy(() => import('./template-designer-react'));
 
@@ -625,7 +623,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({ open: false, message: '', severity: 'success' });
-  const [designerState, setDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
   const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
 
   const categoryQuery = useQuery({
@@ -666,14 +663,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   });
 
   const rows = listQuery.data?.content ?? [];
-  const designerPreloadTarget = useMemo(() => {
-    const row = rows.find((item) => item.versions?.length || item.currentVersion);
-    if (!row) return { row: null, version: null };
-    return {
-      row,
-      version: row.versions?.[0] ?? row.currentVersion ?? null,
-    };
-  }, [rows]);
   const isTableEmptyState = listQuery.isLoading || listQuery.isError || rows.length === 0;
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(allColumns, columnSettings), [allColumns, columnSettings]);
   const visibleColumns = useMemo(() => getVisibleColumns(allColumns, columnSettings), [allColumns, columnSettings]);
@@ -985,11 +974,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setDrawerTab(0);
   };
 
-  const handleOpenTemplateVersionDesign = (event: MouseEvent<HTMLButtonElement>, row: TemplateModelingRecord, version: TemplateVersionRecord) => {
-    event.stopPropagation();
-    setDesignerState({ open: true, row, version });
-  };
-
   const expandTemplateGroup = (templateId: string | number) => {
     const groupKey = String(templateId);
     setExpandedTemplateGroups((current) => {
@@ -1010,8 +994,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   const saveDesignerMutation = useMutation({
     mutationFn: async (payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
-      const targetRow = designerState.row || reactDesignerState.row;
-      const targetVersion = designerState.version || reactDesignerState.version;
+      const targetRow = reactDesignerState.row;
+      const targetVersion = reactDesignerState.version;
       if (!targetRow || !targetVersion) {
         throw new Error('设计器上下文缺失');
       }
@@ -1019,7 +1003,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     },
     onSuccess: async () => {
       setSnackbar({ open: true, message: '设计已保存', severity: 'success' });
-      setDesignerState({ open: false, row: null, version: null });
+      setReactDesignerState({ open: false, row: null, version: null });
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
@@ -1248,11 +1232,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   const renderTemplateVersionActions = (row: TemplateModelingRecord, version: TemplateVersionRecord, canDeleteVersion: boolean) => (
     <Stack direction="row" spacing={0.5} justifyContent="center">
-      <Tooltip title="设计" arrow>
-        <IconButton size="small" aria-label="设计" onClick={(event) => handleOpenTemplateVersionDesign(event, row, version)}>
-          <DesignServicesIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
       <Tooltip title="React设计" arrow>
         <IconButton
           size="small"
@@ -1771,14 +1750,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogActions>
       </Dialog>
 
-      <TemplateDesignerDialog
-        open={designerState.open}
-        row={designerState.row}
-        version={designerState.version}
-        saving={saveDesignerMutation.isPending}
-        onClose={() => setDesignerState({ open: false, row: null, version: null })}
-        onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
-      />
       {reactDesignerState.open ? (
         <Suspense fallback={null}>
           <TemplateDesignerReactDialog
@@ -1791,11 +1762,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           />
         </Suspense>
       ) : null}
-      <TemplateDesignerPreloadFrame
-        row={designerPreloadTarget.row}
-        version={designerPreloadTarget.version}
-        disabled={designerState.open}
-      />
 
       <Drawer
         anchor="right"
