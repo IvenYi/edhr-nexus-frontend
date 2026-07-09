@@ -389,6 +389,163 @@ function clearPageCellsInRange(page: CanvasPage, range: CanvasSelectionRange) {
   };
 }
 
+function serializeClipboardCellValue(value: unknown) {
+  const text = String(value ?? '');
+  return /[\t\r\n"]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function serializePageCellsInRange(page: CanvasPage, range: CanvasSelectionRange) {
+  const normalizedRange = normalizeRange(range);
+  const rows: string[] = [];
+
+  for (let row = normalizedRange.t; row <= normalizedRange.b; row += 1) {
+    const values: string[] = [];
+    for (let col = normalizedRange.l; col <= normalizedRange.r; col += 1) {
+      values.push(serializeClipboardCellValue(page.cells[getCellKey(row, col)]?.value));
+    }
+    rows.push(values.join('\t'));
+  }
+
+  return rows.join('\n');
+}
+
+function parseClipboardTextToCells(text: string) {
+  const rows: string[][] = [[]];
+  let value = '';
+  let inQuotes = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+
+    if (inQuotes) {
+      if (char === '"' && text[index + 1] === '"') {
+        value += '"';
+        index += 1;
+      } else if (char === '"') {
+        inQuotes = false;
+      } else {
+        value += char;
+      }
+      continue;
+    }
+
+    if (char === '"' && value === '') {
+      inQuotes = true;
+    } else if (char === '\t') {
+      rows[rows.length - 1].push(value);
+      value = '';
+    } else if (char === '\r' || char === '\n') {
+      rows[rows.length - 1].push(value);
+      value = '';
+      if (char === '\r' && text[index + 1] === '\n') {
+        index += 1;
+      }
+      rows.push([]);
+    } else {
+      value += char;
+    }
+  }
+
+  rows[rows.length - 1].push(value);
+  if (rows.length > 1 && rows[rows.length - 1].length === 1 && rows[rows.length - 1][0] === '' && /(\r\n|\r|\n)$/.test(text)) {
+    rows.pop();
+  }
+
+  return rows;
+}
+
+function setPageCellValue(nextCells: Record<string, CanvasSheetCell>, row: number, col: number, value: string) {
+  const cellKey = getCellKey(row, col);
+  const cell = nextCells[cellKey] ?? {};
+
+  if (value.length > 0) {
+    nextCells[cellKey] = {
+      ...cell,
+      value,
+    };
+    return;
+  }
+
+  const nextCell: CanvasSheetCell = {
+    ...(cell.style ? { style: cell.style } : {}),
+    ...(cell.border ? { border: cell.border } : {}),
+  };
+
+  if (nextCell.style || nextCell.border) {
+    nextCells[cellKey] = nextCell;
+  } else {
+    delete nextCells[cellKey];
+  }
+}
+
+function pastePageCellsFromText(page: CanvasPage, startRow: number, startCol: number, text: string) {
+  const rows = parseClipboardTextToCells(text);
+  const nextCells = { ...page.cells };
+  let pastedBottom = startRow - 1;
+  let pastedRight = startCol - 1;
+
+  rows.forEach((values, rowOffset) => {
+    const row = startRow + rowOffset;
+    if (row > page.sheet.rowCount) return;
+
+    values.forEach((value, colOffset) => {
+      const col = startCol + colOffset;
+      if (col > page.sheet.columnCount) return;
+      setPageCellValue(nextCells, row, col, value);
+      pastedBottom = Math.max(pastedBottom, row);
+      pastedRight = Math.max(pastedRight, col);
+    });
+  });
+
+  if (pastedBottom < startRow || pastedRight < startCol) {
+    return { page, range: null };
+  }
+
+  const range: CanvasSelectionRange = {
+    t: startRow,
+    l: startCol,
+    b: pastedBottom,
+    r: pastedRight,
+  };
+
+  return {
+    page: {
+      ...page,
+      cells: nextCells,
+    },
+    range,
+  };
+}
+
+function getPastedCellsRange(page: CanvasPage, startRow: number, startCol: number, text: string): CanvasSelectionRange | null {
+  const rows = parseClipboardTextToCells(text);
+  let pastedBottom = startRow - 1;
+  let pastedRight = startCol - 1;
+
+  rows.forEach((values, rowOffset) => {
+    const row = startRow + rowOffset;
+    if (row > page.sheet.rowCount) return;
+
+    values.forEach((_, colOffset) => {
+      const col = startCol + colOffset;
+      if (col > page.sheet.columnCount) return;
+      pastedBottom = Math.max(pastedBottom, row);
+      pastedRight = Math.max(pastedRight, col);
+    });
+  });
+
+  if (pastedBottom < startRow || pastedRight < startCol) {
+    return null;
+  }
+
+  return {
+    t: startRow,
+    l: startCol,
+    b: pastedBottom,
+    r: pastedRight,
+  };
+}
+
 function updatePageCellStyleInRange(
   page: CanvasPage,
   range: CanvasSelectionRange,
@@ -630,6 +787,8 @@ export interface TemplateDesignerStore {
   updateSheetCellValue: (row: number, col: number, value: string) => void;
   updateSelectedCellValue: (value: string) => void;
   clearSelectedCells: () => void;
+  copySelectedCellsText: () => string;
+  pasteCellsFromText: (startRow: number, startCol: number, text: string) => void;
   mergeSelectedCells: () => void;
   splitSelectedCells: () => void;
   updateSelectedCellStyle: (patch: Record<string, unknown>) => void;
@@ -1199,6 +1358,41 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         ...clearPageCellsInRange(page, selectedRange),
         nodes: state.selectedNodeId ? removeNodeFromTree(page.nodes, state.selectedNodeId) : page.nodes,
       })),
+      selectedNodeId: null,
+    });
+  }),
+  copySelectedCellsText: () => {
+    const state = get();
+    const selectedRange = state.selectedRange ?? (state.selectedCell
+      ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
+      : null);
+    const currentPage = state.document?.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    if (!currentPage || !selectedRange) {
+      return '';
+    }
+
+    return serializePageCellsInRange(currentPage, selectedRange);
+  },
+  pasteCellsFromText: (startRow, startCol, text) => set((state) => {
+    if (!state.document || text.length === 0) {
+      return { document: state.document };
+    }
+
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    const pastedRange = currentPage ? getPastedCellsRange(currentPage, startRow, startCol, text) : null;
+    if (!pastedRange) {
+      return { document: state.document };
+    }
+
+    const nextDocument = updateCanvasPage(state.document, (page) => {
+      const pasted = pastePageCellsFromText(page, startRow, startCol, text);
+      return pasted.page;
+    });
+
+    return pushDocumentHistory(state, {
+      document: nextDocument,
+      selectedRange: pastedRange,
+      selectedCell: { row: pastedRange.t, col: pastedRange.l },
       selectedNodeId: null,
     });
   }),

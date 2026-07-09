@@ -487,6 +487,8 @@ export default function CanvasSheetWorkspace() {
   const setSheetRowHeight = useTemplateDesignerStore((state) => state.setSheetRowHeight);
   const updateSheetCellValue = useTemplateDesignerStore((state) => state.updateSheetCellValue);
   const clearSelectedCells = useTemplateDesignerStore((state) => state.clearSelectedCells);
+  const copySelectedCellsText = useTemplateDesignerStore((state) => state.copySelectedCellsText);
+  const pasteCellsFromText = useTemplateDesignerStore((state) => state.pasteCellsFromText);
   const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
   const splitSelectedCells = useTemplateDesignerStore((state) => state.splitSelectedCells);
   const setPagePreviewCount = useTemplateDesignerStore((state) => state.setPagePreviewCount);
@@ -630,9 +632,45 @@ export default function CanvasSheetWorkspace() {
     setEditingCell(null);
     sheetInteractionRef.current?.focus();
   };
+  const handleCopySelectedCells = async () => {
+    if (!selectedCell && !selectedRange) return;
+    const text = copySelectedCellsText();
+    if (!navigator.clipboard) return;
+    await navigator.clipboard.writeText(text);
+  };
+  const handleCutSelectedCells = async () => {
+    if (!selectedCell && !selectedRange) return;
+    const text = copySelectedCellsText();
+    if (!navigator.clipboard) return;
+    await navigator.clipboard.writeText(text);
+    clearSelectedCells();
+  };
+  const handlePasteSelectedCells = async () => {
+    const target = selectedRange ?? buildSingleCellRange(selectedCell);
+    if (!target || !navigator.clipboard) return;
+    const text = await navigator.clipboard.readText();
+    pasteCellsFromText(target.t, target.l, text);
+  };
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
       return;
+    }
+    if ((event.metaKey || event.ctrlKey) && !event.altKey) {
+      if (event.key.toLowerCase() === 'c') {
+        event.preventDefault();
+        void handleCopySelectedCells();
+        return;
+      }
+      if (event.key.toLowerCase() === 'x') {
+        event.preventDefault();
+        void handleCutSelectedCells();
+        return;
+      }
+      if (event.key.toLowerCase() === 'v') {
+        event.preventDefault();
+        void handlePasteSelectedCells();
+        return;
+      }
     }
     if (event.metaKey || event.ctrlKey || event.altKey) {
       return;
@@ -1230,32 +1268,28 @@ export default function CanvasSheetWorkspace() {
       mouseY: event.clientY - 6,
     });
   };
-  const openColumnContextMenu = (col: number, event: ReactMouseEvent) => {
-    const keepSelectedRange = Boolean(
-      normalizedRange
-      && currentPage
-      && normalizedRange.t === 1
-      && normalizedRange.b === currentPage.sheet.rowCount
-      && col >= normalizedRange.l
-      && col <= normalizedRange.r,
-    );
-    if (!keepSelectedRange) {
-      selectColumnRange(col);
+  const getColumnContextMenuRange = (col: number) => {
+    if (!normalizedRange || col < normalizedRange.l || col > normalizedRange.r) {
+      return { l: col, r: col };
     }
+
+    return { l: normalizedRange.l, r: normalizedRange.r };
+  };
+  const getRowContextMenuRange = (row: number) => {
+    if (!normalizedRange || row < normalizedRange.t || row > normalizedRange.b) {
+      return { t: row, b: row };
+    }
+
+    return { t: normalizedRange.t, b: normalizedRange.b };
+  };
+  const openColumnContextMenu = (col: number, event: ReactMouseEvent) => {
+    const columnMenuRange = getColumnContextMenuRange(col);
+    selectColumnRange(columnMenuRange.l, columnMenuRange.r);
     openContextMenu('column', event);
   };
   const openRowContextMenu = (row: number, event: ReactMouseEvent) => {
-    const keepSelectedRange = Boolean(
-      normalizedRange
-      && currentPage
-      && normalizedRange.l === 1
-      && normalizedRange.r === currentPage.sheet.columnCount
-      && row >= normalizedRange.t
-      && row <= normalizedRange.b,
-    );
-    if (!keepSelectedRange) {
-      selectRowRange(row);
-    }
+    const rowMenuRange = getRowContextMenuRange(row);
+    selectRowRange(rowMenuRange.t, rowMenuRange.b);
     openContextMenu('row', event);
   };
   const openCellContextMenu = (cellSelectionRange: CanvasSelectionRange, event: ReactMouseEvent) => {
@@ -1267,6 +1301,30 @@ export default function CanvasSheetWorkspace() {
       setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
     }
     openContextMenu('cell', event);
+  };
+  const getShiftColumnSelectionAnchor = () => {
+    if (!normalizedRange || !currentPage) return null;
+    return normalizedRange.t === 1 && normalizedRange.b === currentPage.sheet.rowCount
+      ? normalizedRange.l
+      : null;
+  };
+  const getShiftRowSelectionAnchor = () => {
+    if (!normalizedRange || !currentPage) return null;
+    return normalizedRange.l === 1 && normalizedRange.r === currentPage.sheet.columnCount
+      ? normalizedRange.t
+      : null;
+  };
+  const handleColumnHeaderMouseDown = (col: number, event: ReactMouseEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    const startCol = event.shiftKey ? (getShiftColumnSelectionAnchor() ?? col) : col;
+    selectColumnRange(startCol, col);
+    setDragState({ type: 'column', startCol });
+  };
+  const handleRowHeaderMouseDown = (row: number, event: ReactMouseEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    const startRow = event.shiftKey ? (getShiftRowSelectionAnchor() ?? row) : row;
+    selectRowRange(startRow, row);
+    setDragState({ type: 'row', startRow });
   };
 
   const closeContextMenu = () => {
@@ -1489,6 +1547,7 @@ export default function CanvasSheetWorkspace() {
         const mergedRange = mergedCellMaps.startMap.get(key);
         const cellSelectionRange = getMergedAwareCellRange(row, col, mergedRange);
         const isSelected = selectedCell?.row === row && selectedCell?.col === col;
+        const shouldShowSingleCellSelection = isSelected && !isMultiCellRange(normalizedRange);
         const isRangeActive = isInRange(normalizedRange, row, col);
         const isEditing = currentPage.sheet.canvasMode === 'sheet' && editingCell?.row === row && editingCell?.col === col;
         const verticalAlign = cell?.style?.verticalAlign;
@@ -1561,8 +1620,8 @@ export default function CanvasSheetWorkspace() {
               borderTop: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'top') ? `1px solid ${borderColor}` : rowIndex === 0 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
               borderRight: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'right') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
               borderBottom: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'bottom') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
-              bgcolor: isSelected ? '#dbeafe' : isRangeActive ? '#eef5ff' : (cell?.style?.backgroundColor ? String(cell.style.backgroundColor) : '#fff'),
-              boxShadow: isSelected ? 'inset 0 0 0 2px #1274dd' : 'none',
+              bgcolor: shouldShowSingleCellSelection ? '#dbeafe' : isRangeActive ? '#eef5ff' : (cell?.style?.backgroundColor ? String(cell.style.backgroundColor) : '#fff'),
+              boxShadow: shouldShowSingleCellSelection ? 'inset 0 0 0 2px #1274dd' : 'none',
               overflow: 'hidden',
               cursor: 'cell',
               color: String(cell?.style?.color ?? '#303133'),
@@ -1577,7 +1636,7 @@ export default function CanvasSheetWorkspace() {
               wordBreak: 'break-word',
               transition: 'background-color 120ms ease',
               '&:hover': {
-                bgcolor: isSelected ? '#dbeafe' : isRangeActive ? '#eef5ff' : '#f8fbff',
+                bgcolor: shouldShowSingleCellSelection ? '#dbeafe' : isRangeActive ? '#eef5ff' : '#f8fbff',
               },
             }}
           >
@@ -2221,9 +2280,7 @@ export default function CanvasSheetWorkspace() {
                         key={`header-col-${col}`}
                         data-sheet-column-active={isColumnActive ? 'true' : 'false'}
                         onMouseDown={(event) => {
-                          if (event.button !== 0) return;
-                          selectColumnRange(col);
-                          setDragState({ type: 'column', startCol: col });
+                          handleColumnHeaderMouseDown(col, event);
                         }}
                         onMouseEnter={() => {
                           if (dragState?.type !== 'column') return;
@@ -2302,9 +2359,7 @@ export default function CanvasSheetWorkspace() {
                       key={`header-row-${row}`}
                       data-sheet-row-active={isRowActive ? 'true' : 'false'}
                     onMouseDown={(event) => {
-                      if (event.button !== 0) return;
-                      selectRowRange(row);
-                      setDragState({ type: 'row', startRow: row });
+                      handleRowHeaderMouseDown(row, event);
                     }}
                     onMouseEnter={() => {
                       if (dragState?.type !== 'row') return;
