@@ -17,6 +17,7 @@ export const A4_PAPER_WIDTH_MM = 210;
 export const A4_PAPER_HEIGHT_MM = 297;
 export const MAX_IMPORT_ROWS = 300;
 export const MAX_IMPORT_COLS = 75;
+const MIN_IMPORTED_COLUMN_WIDTH = 36;
 
 export interface ImportedGridModel {
   rowHeights: number[];
@@ -53,6 +54,33 @@ export function normalizeImportedOrientation(
   return 'portrait';
 }
 
+export function getImportedPaperContentWidth(orientation: CanvasPaperOrientation) {
+  const paperWidthMm = orientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM;
+  return Math.round((paperWidthMm - DEFAULT_SIDE_MARGIN_MM * 2) * MM_TO_PX);
+}
+
+export function fitImportedColumnWidthsToPaper(widths: number[], orientation: CanvasPaperOrientation) {
+  const paperContentWidth = getImportedPaperContentWidth(orientation);
+  const totalWidth = widths.reduce((sum, width) => sum + width, 0);
+  if (!widths.length || totalWidth <= 0 || totalWidth >= paperContentWidth) {
+    return widths;
+  }
+
+  let remainingWidth = paperContentWidth;
+  return widths.map((width, index) => {
+    if (index === widths.length - 1) {
+      return Math.max(MIN_IMPORTED_COLUMN_WIDTH, remainingWidth);
+    }
+
+    const scaledWidth = Math.max(
+      MIN_IMPORTED_COLUMN_WIDTH,
+      Math.round((width / totalWidth) * paperContentWidth),
+    );
+    remainingWidth -= scaledWidth;
+    return scaledWidth;
+  });
+}
+
 export function createImportedCanvasPage(params: {
   pageId: string;
   pageName: string;
@@ -67,8 +95,9 @@ export function createImportedCanvasPage(params: {
     Math.max(24, Math.round(params.grid.rowHeights[index] ?? DEFAULT_ROW_HEIGHT))
   ));
   const columnWidths = Array.from({ length: columnCount }, (_, index) => (
-    Math.max(36, Math.round(params.grid.columnWidths[index] ?? DEFAULT_COLUMN_WIDTH))
+    Math.max(MIN_IMPORTED_COLUMN_WIDTH, Math.round(params.grid.columnWidths[index] ?? DEFAULT_COLUMN_WIDTH))
   ));
+  const fittedColumnWidths = fitImportedColumnWidthsToPaper(columnWidths, params.orientation);
 
   return {
     id: params.pageId,
@@ -80,7 +109,7 @@ export function createImportedCanvasPage(params: {
       defaultRowHeight: DEFAULT_ROW_HEIGHT,
       defaultColumnWidth: DEFAULT_COLUMN_WIDTH,
       rowHeights,
-      columnWidths,
+      columnWidths: fittedColumnWidths,
       showGridLines: true,
       showHeader: false,
       showFooter: false,

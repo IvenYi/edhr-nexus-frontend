@@ -51,6 +51,7 @@ export interface CanvasCellBorder {
   right?: boolean;
   bottom?: boolean;
   left?: boolean;
+  color?: string;
 }
 
 export interface CanvasSheetCell {

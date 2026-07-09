@@ -41,6 +41,75 @@ function normalizeRange(range: CanvasSelectionRange): CanvasSelectionRange {
   };
 }
 
+function isMultiCellRange(range: CanvasSelectionRange) {
+  return range.t !== range.b || range.l !== range.r;
+}
+
+function rangesIntersect(first: CanvasSelectionRange, second: CanvasSelectionRange) {
+  return first.l <= second.r
+    && first.r >= second.l
+    && first.t <= second.b
+    && first.b >= second.t;
+}
+
+function removeMergedRangesInSelection(
+  ranges: CanvasSelectionRange[],
+  selection: CanvasSelectionRange,
+) {
+  const normalizedSelection = normalizeRange(selection);
+  return ranges.filter((range) => !rangesIntersect(range, normalizedSelection));
+}
+
+function mergePageCellValuesInRange(page: CanvasPage, selection: CanvasSelectionRange) {
+  const normalizedSelection = normalizeRange(selection);
+  const nextCells = { ...page.cells };
+  const topLeftKey = getCellKey(normalizedSelection.t, normalizedSelection.l);
+  const mergedValues: string[] = [];
+
+  for (let row = normalizedSelection.t; row <= normalizedSelection.b; row += 1) {
+    for (let col = normalizedSelection.l; col <= normalizedSelection.r; col += 1) {
+      const cellKey = getCellKey(row, col);
+      const value = nextCells[cellKey]?.value;
+      if (typeof value === 'string' && value.trim()) {
+        mergedValues.push(value.trim());
+      }
+    }
+  }
+
+  for (let row = normalizedSelection.t; row <= normalizedSelection.b; row += 1) {
+    for (let col = normalizedSelection.l; col <= normalizedSelection.r; col += 1) {
+      if (row === normalizedSelection.t && col === normalizedSelection.l) continue;
+
+      const cellKey = getCellKey(row, col);
+      const cell = nextCells[cellKey];
+      if (!cell) continue;
+
+      const nextCell: CanvasSheetCell = {
+        ...(cell.style ? { style: cell.style } : {}),
+        ...(cell.border ? { border: cell.border } : {}),
+      };
+
+      if (nextCell.style || nextCell.border) {
+        nextCells[cellKey] = nextCell;
+      } else {
+        delete nextCells[cellKey];
+      }
+    }
+  }
+
+  if (mergedValues.length) {
+    nextCells[topLeftKey] = {
+      ...(nextCells[topLeftKey] ?? {}),
+      value: mergedValues.join('\n'),
+    };
+  }
+
+  return {
+    ...page,
+    cells: nextCells,
+  };
+}
+
 function shiftCellsForInsertedColumns(
   cells: Record<string, CanvasSheetCell>,
   insertAt: number,
@@ -71,6 +140,46 @@ function shiftCellsForInsertedRows(
     const row = Number(rowText);
     const col = Number(colText);
     const nextRow = row >= insertAt ? row + count : row;
+    nextCells[getCellKey(nextRow, col)] = value;
+  });
+
+  return nextCells;
+}
+
+function shiftCellsForDeletedColumns(
+  cells: Record<string, CanvasSheetCell>,
+  deleteStart: number,
+  count: number,
+) {
+  const deleteEnd = deleteStart + count - 1;
+  const nextCells: Record<string, CanvasSheetCell> = {};
+
+  Object.entries(cells).forEach(([key, value]) => {
+    const [rowText, colText] = key.split(':');
+    const row = Number(rowText);
+    const col = Number(colText);
+    if (col >= deleteStart && col <= deleteEnd) return;
+    const nextCol = col > deleteEnd ? col - count : col;
+    nextCells[getCellKey(row, nextCol)] = value;
+  });
+
+  return nextCells;
+}
+
+function shiftCellsForDeletedRows(
+  cells: Record<string, CanvasSheetCell>,
+  deleteStart: number,
+  count: number,
+) {
+  const deleteEnd = deleteStart + count - 1;
+  const nextCells: Record<string, CanvasSheetCell> = {};
+
+  Object.entries(cells).forEach(([key, value]) => {
+    const [rowText, colText] = key.split(':');
+    const row = Number(rowText);
+    const col = Number(colText);
+    if (row >= deleteStart && row <= deleteEnd) return;
+    const nextRow = row > deleteEnd ? row - count : row;
     nextCells[getCellKey(nextRow, col)] = value;
   });
 
@@ -123,6 +232,98 @@ function shiftMergedRangesForInsertedRows(
   });
 }
 
+function shiftMergedRangesForDeletedColumns(
+  ranges: CanvasSelectionRange[],
+  deleteStart: number,
+  count: number,
+) {
+  const deleteEnd = deleteStart + count - 1;
+
+  return ranges.flatMap((range) => {
+    if (range.r < deleteStart) {
+      return [range];
+    }
+    if (range.l > deleteEnd) {
+      return [{
+        ...range,
+        l: range.l - count,
+        r: range.r - count,
+      }];
+    }
+
+    const removedColumns = Math.min(range.r, deleteEnd) - Math.max(range.l, deleteStart) + 1;
+    const nextColumnCount = range.r - range.l + 1 - removedColumns;
+    if (nextColumnCount <= 0) {
+      return [];
+    }
+
+    const nextLeft = range.l >= deleteStart ? deleteStart : range.l;
+    return [{
+      ...range,
+      l: nextLeft,
+      r: nextLeft + nextColumnCount - 1,
+    }];
+  });
+}
+
+function shiftMergedRangesForDeletedRows(
+  ranges: CanvasSelectionRange[],
+  deleteStart: number,
+  count: number,
+) {
+  const deleteEnd = deleteStart + count - 1;
+
+  return ranges.flatMap((range) => {
+    if (range.b < deleteStart) {
+      return [range];
+    }
+    if (range.t > deleteEnd) {
+      return [{
+        ...range,
+        t: range.t - count,
+        b: range.b - count,
+      }];
+    }
+
+    const removedRows = Math.min(range.b, deleteEnd) - Math.max(range.t, deleteStart) + 1;
+    const nextRowCount = range.b - range.t + 1 - removedRows;
+    if (nextRowCount <= 0) {
+      return [];
+    }
+
+    const nextTop = range.t >= deleteStart ? deleteStart : range.t;
+    return [{
+      ...range,
+      t: nextTop,
+      b: nextTop + nextRowCount - 1,
+    }];
+  });
+}
+
+function getDeleteRange(start: number, end: number, total: number) {
+  if (total <= 1) return null;
+
+  const deleteStart = Math.max(1, Math.min(start, end));
+  const requestedEnd = Math.min(total, Math.max(start, end));
+  if (deleteStart > requestedEnd) return null;
+
+  const count = Math.min(requestedEnd - deleteStart + 1, total - 1);
+  return {
+    start: deleteStart,
+    end: deleteStart + count - 1,
+    count,
+  };
+}
+
+function deleteSizes(sizes: number[], deleteStart: number, deleteEnd: number, nextCount: number, fallback: number) {
+  const remainingSizes = sizes.filter((_, index) => {
+    const position = index + 1;
+    return position < deleteStart || position > deleteEnd;
+  });
+
+  return Array.from({ length: nextCount }, (_, index) => remainingSizes[index] ?? fallback);
+}
+
 function updateCanvasPage(
   document: TemplateDesignerDocument,
   updater: (page: CanvasPage) => CanvasPage,
@@ -155,6 +356,35 @@ function updatePageCellValue(
         value,
       },
     },
+  };
+}
+
+function clearPageCellsInRange(page: CanvasPage, range: CanvasSelectionRange) {
+  const normalizedRange = normalizeRange(range);
+  const nextCells = { ...page.cells };
+
+  for (let row = normalizedRange.t; row <= normalizedRange.b; row += 1) {
+    for (let col = normalizedRange.l; col <= normalizedRange.r; col += 1) {
+      const cellKey = getCellKey(row, col);
+      const cell = nextCells[cellKey];
+      if (!cell) continue;
+
+      const nextCell: CanvasSheetCell = {
+        ...(cell.style ? { style: cell.style } : {}),
+        ...(cell.border ? { border: cell.border } : {}),
+      };
+
+      if (nextCell.style || nextCell.border) {
+        nextCells[cellKey] = nextCell;
+      } else {
+        delete nextCells[cellKey];
+      }
+    }
+  }
+
+  return {
+    ...page,
+    cells: nextCells,
   };
 }
 
@@ -292,6 +522,8 @@ export interface TemplateDesignerStore {
   undoStack: TemplateDesignerDocument[];
   redoStack: TemplateDesignerDocument[];
   pagePreviewCounts: Record<string, number>;
+  activePagePreviewIndexes: Record<string, number>;
+  pagePreviewScrollTarget: { pageId: string; previewIndex: number; requestId: number } | null;
   selectedFieldId: string | null;
   selectedNodeId: string | null;
   selectedCell: CanvasSelectedCell | null;
@@ -322,16 +554,24 @@ export interface TemplateDesignerStore {
   setCanvasMode: (mode: CanvasMode) => void;
   insertSheetColumns: (insertAt: number, count?: number) => void;
   insertSheetRows: (insertAt: number, count?: number) => void;
+  deleteSheetColumns: (colStart: number, colEnd?: number) => void;
+  deleteSheetRows: (rowStart: number, rowEnd?: number) => void;
   setSheetColumnWidth: (colStart: number, colEnd: number, width: number) => void;
   setSheetRowHeight: (rowStart: number, rowEnd: number, height: number) => void;
   updateSheetCellValue: (row: number, col: number, value: string) => void;
   updateSelectedCellValue: (value: string) => void;
+  clearSelectedCells: () => void;
+  mergeSelectedCells: () => void;
+  splitSelectedCells: () => void;
   updateSelectedCellStyle: (patch: Record<string, unknown>) => void;
   undoCanvasChange: () => void;
   redoCanvasChange: () => void;
   canUndoCanvasChange: () => boolean;
   canRedoCanvasChange: () => boolean;
   setPagePreviewCount: (pageId: string, count: number) => void;
+  setActivePagePreviewIndex: (pageId: string, previewIndex: number) => void;
+  requestPagePreviewScroll: (pageId: string, previewIndex: number) => void;
+  clearPagePreviewScrollTarget: (requestId: number) => void;
   getSelectedCellState: () => CanvasSheetCell | null;
   getCurrentPage: () => TemplateDesignerDocument['canvas']['pages'][number] | null;
   getSelectedNode: () => CanvasNode | null;
@@ -365,18 +605,22 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
   undoStack: [],
   redoStack: [],
   pagePreviewCounts: {},
+  activePagePreviewIndexes: {},
+  pagePreviewScrollTarget: null,
   selectedFieldId: null,
   selectedNodeId: null,
-  selectedCell: { row: 1, col: 1 },
-  selectedRange: createSingleCellRange(),
+  selectedCell: null,
+  selectedRange: null,
   setDocument: (document) => set({
     document,
     activeTab: 'canvas',
     undoStack: [],
     redoStack: [],
     pagePreviewCounts: {},
-    selectedCell: { row: 1, col: 1 },
-    selectedRange: createSingleCellRange(),
+    activePagePreviewIndexes: {},
+    pagePreviewScrollTarget: null,
+    selectedCell: null,
+    selectedRange: null,
   }),
   setActiveTab: (activeTab) => set({ activeTab }),
   setCurrentPageId: (pageId) => set((state) => ({
@@ -389,8 +633,8 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
           },
         }
       : state.document,
-    selectedCell: { row: 1, col: 1 },
-    selectedRange: createSingleCellRange(),
+    selectedCell: null,
+    selectedRange: null,
     selectedNodeId: null,
   })),
   setSelectedFieldId: (selectedFieldId) => set({ selectedFieldId }),
@@ -625,19 +869,34 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         }))
       : state.document,
   })),
-  replaceCurrentPageFromImport: (importedPage) => set((state) => pushDocumentHistory(state, {
-    document: state.document
-      ? updateCanvasPage(state.document, (page) => ({
-          ...page,
-          ...importedPage,
-          id: page.id,
-          name: page.name,
-        }))
-      : state.document,
-    selectedCell: importedPage.sheet.canvasMode === 'sheet' ? { row: 1, col: 1 } : null,
-    selectedRange: importedPage.sheet.canvasMode === 'sheet' ? createSingleCellRange(1, 1) : null,
-    selectedNodeId: null,
-  })),
+  replaceCurrentPageFromImport: (importedPage) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: {
+        ...state.document,
+        canvas: {
+          ...state.document.canvas,
+          pages: state.document.canvas.pages.map((page) => (
+            page.id === state.document?.canvas.currentPageId
+              ? {
+                  ...page,
+                  ...importedPage,
+                  id: page.id,
+                  name: page.name,
+                }
+              : page
+          )),
+          currentPageId: state.document.canvas.currentPageId,
+        },
+      },
+      selectedCell: null,
+      selectedRange: null,
+      selectedNodeId: null,
+    });
+  }),
   setCanvasMode: (mode) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? updateCanvasPage(state.document, (page) => ({
@@ -708,6 +967,94 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedCell: { row: insertAt, col: 1 },
     });
   }),
+  deleteSheetColumns: (colStart, colEnd = colStart) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    if (!currentPage) {
+      return { document: state.document };
+    }
+
+    const deleteRange = getDeleteRange(colStart, colEnd, currentPage.sheet.columnCount);
+    if (!deleteRange) {
+      return { document: state.document };
+    }
+
+    const nextColumnCount = currentPage.sheet.columnCount - deleteRange.count;
+    const nextSelectedCol = Math.min(deleteRange.start, nextColumnCount);
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        sheet: {
+          ...page.sheet,
+          columnCount: nextColumnCount,
+          columnWidths: deleteSizes(
+            page.sheet.columnWidths,
+            deleteRange.start,
+            deleteRange.end,
+            nextColumnCount,
+            page.sheet.defaultColumnWidth,
+          ),
+        },
+        cells: shiftCellsForDeletedColumns(page.cells, deleteRange.start, deleteRange.count),
+        mergedCells: shiftMergedRangesForDeletedColumns(page.mergedCells, deleteRange.start, deleteRange.count),
+      })),
+      selectedRange: {
+        t: 1,
+        l: nextSelectedCol,
+        b: currentPage.sheet.rowCount,
+        r: nextSelectedCol,
+      },
+      selectedCell: { row: 1, col: nextSelectedCol },
+    });
+  }),
+  deleteSheetRows: (rowStart, rowEnd = rowStart) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    if (!currentPage) {
+      return { document: state.document };
+    }
+
+    const deleteRange = getDeleteRange(rowStart, rowEnd, currentPage.sheet.rowCount);
+    if (!deleteRange) {
+      return { document: state.document };
+    }
+
+    const nextRowCount = currentPage.sheet.rowCount - deleteRange.count;
+    const nextSelectedRow = Math.min(deleteRange.start, nextRowCount);
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        sheet: {
+          ...page.sheet,
+          rowCount: nextRowCount,
+          rowHeights: deleteSizes(
+            page.sheet.rowHeights,
+            deleteRange.start,
+            deleteRange.end,
+            nextRowCount,
+            page.sheet.defaultRowHeight,
+          ),
+        },
+        cells: shiftCellsForDeletedRows(page.cells, deleteRange.start, deleteRange.count),
+        mergedCells: shiftMergedRangesForDeletedRows(page.mergedCells, deleteRange.start, deleteRange.count),
+      })),
+      selectedRange: {
+        t: nextSelectedRow,
+        l: 1,
+        b: nextSelectedRow,
+        r: currentPage.sheet.columnCount,
+      },
+      selectedCell: { row: nextSelectedRow, col: 1 },
+    });
+  }),
   setSheetColumnWidth: (colStart, colEnd, width) => set((state) => {
     if (!state.document) {
       return { document: state.document };
@@ -769,6 +1116,77 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       ),
     });
   }),
+  clearSelectedCells: () => set((state) => {
+    const selectedRange = state.selectedRange ?? (state.selectedCell
+      ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
+      : null);
+    if (!state.document || !selectedRange) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...clearPageCellsInRange(page, selectedRange),
+        nodes: state.selectedNodeId ? removeNodeFromTree(page.nodes, state.selectedNodeId) : page.nodes,
+      })),
+      selectedNodeId: null,
+    });
+  }),
+  mergeSelectedCells: () => set((state) => {
+    const selectedRange = state.selectedRange ?? (state.selectedCell
+      ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
+      : null);
+    if (!state.document || !selectedRange) {
+      return { document: state.document };
+    }
+
+    const normalizedSelection = normalizeRange(selectedRange);
+    if (!isMultiCellRange(normalizedSelection)) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...mergePageCellValuesInRange(page, normalizedSelection),
+        mergedCells: [
+          ...removeMergedRangesInSelection(page.mergedCells, normalizedSelection),
+          normalizedSelection,
+        ],
+      })),
+      selectedRange: normalizedSelection,
+      selectedCell: { row: normalizedSelection.t, col: normalizedSelection.l },
+      selectedNodeId: null,
+    });
+  }),
+  splitSelectedCells: () => set((state) => {
+    const selectedRange = state.selectedRange ?? (state.selectedCell
+      ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
+      : null);
+    if (!state.document || !selectedRange) {
+      return { document: state.document };
+    }
+
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    if (!currentPage) {
+      return { document: state.document };
+    }
+
+    const normalizedSelection = normalizeRange(selectedRange);
+    const nextMergedCells = removeMergedRangesInSelection(currentPage.mergedCells, normalizedSelection);
+    if (nextMergedCells.length === currentPage.mergedCells.length) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        mergedCells: nextMergedCells,
+      })),
+      selectedRange: normalizedSelection,
+      selectedCell: { row: normalizedSelection.t, col: normalizedSelection.l },
+      selectedNodeId: null,
+    });
+  }),
   updateSelectedCellStyle: (patch) => set((state) => {
     if (!state.document || !state.selectedCell) {
       return { document: state.document };
@@ -825,6 +1243,42 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
           ...state.pagePreviewCounts,
           [pageId]: Math.max(1, count),
         },
+  })),
+  setActivePagePreviewIndex: (pageId, previewIndex) => set((state) => ({
+    activePagePreviewIndexes: state.activePagePreviewIndexes[pageId] === previewIndex
+      ? state.activePagePreviewIndexes
+      : {
+          ...state.activePagePreviewIndexes,
+          [pageId]: Math.max(0, previewIndex),
+        },
+  })),
+  requestPagePreviewScroll: (pageId, previewIndex) => set((state) => ({
+    document: state.document
+      ? {
+          ...state.document,
+          canvas: {
+            ...state.document.canvas,
+            currentPageId: pageId,
+          },
+        }
+      : state.document,
+    activePagePreviewIndexes: {
+      ...state.activePagePreviewIndexes,
+      [pageId]: Math.max(0, previewIndex),
+    },
+    pagePreviewScrollTarget: {
+      pageId,
+      previewIndex: Math.max(0, previewIndex),
+      requestId: Date.now(),
+    },
+    selectedCell: null,
+    selectedRange: null,
+    selectedNodeId: null,
+  })),
+  clearPagePreviewScrollTarget: (requestId) => set((state) => ({
+    pagePreviewScrollTarget: state.pagePreviewScrollTarget?.requestId === requestId
+      ? null
+      : state.pagePreviewScrollTarget,
   })),
   getSelectedCellState: () => {
     const page = get().getCurrentPage();

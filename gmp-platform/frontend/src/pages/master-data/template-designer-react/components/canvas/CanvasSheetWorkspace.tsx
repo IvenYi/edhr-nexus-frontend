@@ -4,7 +4,7 @@ import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import { Box, Button, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
-import type { CanvasSelectedCell, CanvasSelectionRange } from '../../types';
+import type { CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
@@ -12,21 +12,49 @@ const scrollbarWidth = 18;
 const MM_TO_PX = 96 / 25.4;
 const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
+const PAGE_BREAK_MARKER_Z_INDEX = 20;
+const DEFAULT_SHEET_FONT_SIZE = 14;
+const DEFAULT_SHEET_LINE_HEIGHT = 1.35;
+const AUTO_FIT_EXTRA_WIDTH = 18;
+const AUTO_FIT_EXTRA_HEIGHT = 4;
+const SPECIAL_WRAP_CELL_VALUE_PATTERN = /[□☐☑☒■▪●○◆◇★☆※√×]/;
 
 type DragState =
-  | { type: 'cell'; startRow: number; startCol: number }
+  | { type: 'cell'; startRow: number; startCol: number; startRange: CanvasSelectionRange }
   | { type: 'column'; startCol: number }
   | { type: 'row'; startRow: number }
   | { type: 'resize-column'; startCol: number; startWidth: number; startX: number }
   | { type: 'resize-row'; startRow: number; startHeight: number; startY: number }
   | null;
 
-type MenuAxis = 'column' | 'row';
+type MenuAxis = 'column' | 'row' | 'cell';
+type InsertMenuAction =
+  | 'insert-before'
+  | 'insert-after'
+  | 'insert-column-before'
+  | 'insert-column-after'
+  | 'insert-row-before'
+  | 'insert-row-after';
+type SheetMenuAction =
+  | InsertMenuAction
+  | 'delete'
+  | 'delete-column'
+  | 'delete-row'
+  | 'resize'
+  | 'auto-size'
+  | 'merge-cells'
+  | 'split-cells';
 
 interface SheetMenuState {
   axis: MenuAxis;
   mouseX: number;
   mouseY: number;
+}
+
+interface DeleteMenuItemConfig {
+  action: SheetMenuAction;
+  label: string;
+  disabled?: boolean;
 }
 
 type CanvasSettingsPanel = 'paper-mode' | 'paper-orientation' | 'paper-spacing';
@@ -73,6 +101,25 @@ function normalizeRange(range: CanvasSelectionRange): CanvasSelectionRange {
 function isInRange(range: CanvasSelectionRange | null, row: number, col: number) {
   if (!range) return false;
   return row >= range.t && row <= range.b && col >= range.l && col <= range.r;
+}
+
+function isMultiCellRange(range: CanvasSelectionRange | null) {
+  return Boolean(range && (range.t !== range.b || range.l !== range.r));
+}
+
+function rangesEqual(first: CanvasSelectionRange, second: CanvasSelectionRange) {
+  return first.t === second.t && first.l === second.l && first.b === second.b && first.r === second.r;
+}
+
+function rangesIntersect(first: CanvasSelectionRange, second: CanvasSelectionRange) {
+  return first.l <= second.r
+    && first.r >= second.l
+    && first.t <= second.b
+    && first.b >= second.t;
+}
+
+function rangeContainsRange(outer: CanvasSelectionRange, inner: CanvasSelectionRange) {
+  return outer.t <= inner.t && outer.l <= inner.l && outer.b >= inner.b && outer.r >= inner.r;
 }
 
 function buildOffsets(sizes: number[]) {
@@ -125,6 +172,10 @@ function buildSingleCellRange(cell: CanvasSelectedCell | null): CanvasSelectionR
   return { t: cell.row, l: cell.col, b: cell.row, r: cell.col };
 }
 
+function getMergedAwareCellRange(row: number, col: number, mergedRange?: CanvasSelectionRange): CanvasSelectionRange {
+  return mergedRange ?? { t: row, l: col, b: row, r: col };
+}
+
 function buildMergedCellMaps(ranges: CanvasSelectionRange[]) {
   const startMap = new Map<string, CanvasSelectionRange>();
   const skipSet = new Set<string>();
@@ -159,6 +210,153 @@ function parsePromptNumber(title: string, defaultValue: number) {
   return parsed;
 }
 
+function normalizeInsertMenuCountInput(value: string) {
+  const digitsOnly = value.replace(/[^\d]/g, '');
+  if (!digitsOnly) return '';
+  const withoutLeadingZeros = digitsOnly.replace(/^0+/, '');
+  return withoutLeadingZeros || '1';
+}
+
+function parseInsertMenuCount(value: string) {
+  const parsed = Number(normalizeInsertMenuCountInput(value));
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function sumSizes(sizes: number[], start: number, end: number) {
+  return sizes.slice(start - 1, end).reduce((sum, size) => sum + size, 0);
+}
+
+function estimateSheetTextPixelWidth(text: string, fontSize = DEFAULT_SHEET_FONT_SIZE) {
+  return text
+    .split(/\r?\n/)
+    .reduce((maxWidth, line) => {
+      const lineWidth = Array.from(line).reduce((total, char) => {
+        if (/\s/.test(char)) return total + fontSize * 0.33;
+        return total + (((char.codePointAt(0) ?? 0) > 0xff) ? fontSize : fontSize * 0.56);
+      }, 0);
+      return Math.max(maxWidth, lineWidth);
+    }, 0);
+}
+
+function resolveCellLineHeightPx(cell: CanvasSheetCell | undefined, fontSize: number) {
+  const rawLineHeight = cell?.style?.lineHeight;
+  if (typeof rawLineHeight === 'number' && Number.isFinite(rawLineHeight)) {
+    return rawLineHeight <= 4 ? fontSize * rawLineHeight : rawLineHeight;
+  }
+  if (typeof rawLineHeight === 'string') {
+    const parsed = Number.parseFloat(rawLineHeight);
+    if (Number.isFinite(parsed)) {
+      return rawLineHeight.includes('px') || parsed > 4 ? parsed : fontSize * parsed;
+    }
+  }
+  return fontSize * DEFAULT_SHEET_LINE_HEIGHT;
+}
+
+function getCellHorizontalPadding(cell: CanvasSheetCell | undefined) {
+  const paddingLeft = resolveNumericStyle(cell?.style?.paddingLeft, 8);
+  const paddingRight = resolveNumericStyle(cell?.style?.paddingRight, paddingLeft);
+  return paddingLeft + paddingRight;
+}
+
+function getCellVerticalPadding(cell: CanvasSheetCell | undefined) {
+  const paddingTop = resolveNumericStyle(cell?.style?.paddingTop, 4);
+  const paddingBottom = resolveNumericStyle(cell?.style?.paddingBottom, paddingTop);
+  return paddingTop + paddingBottom;
+}
+
+function findMergedRangeForCell(page: CanvasPage, row: number, col: number) {
+  return page.mergedCells.find((range) => (
+    row >= range.t && row <= range.b && col >= range.l && col <= range.r
+  ));
+}
+
+function getAutoFitCell(page: CanvasPage, row: number, col: number) {
+  const mergedRange = findMergedRangeForCell(page, row, col);
+  const range = mergedRange ?? { t: row, l: col, b: row, r: col };
+  const cell = page.cells[getCellKey(range.t, range.l)];
+  return { cell, range };
+}
+
+function estimateSheetTextLineCount(text: string, width: number, fontSize: number, shouldWrap: boolean) {
+  return text.split(/\r?\n/).reduce((lineCount, line) => {
+    if (!shouldWrap) return lineCount + 1;
+    const lineWidth = Math.max(1, estimateSheetTextPixelWidth(line, fontSize));
+    return lineCount + Math.max(1, Math.ceil(lineWidth / Math.max(1, width)));
+  }, 0);
+}
+
+function autoFitSheetColumnWidth(page: CanvasPage, col: number) {
+  let nextWidth = 36;
+  let hasText = false;
+
+  for (let row = 1; row <= page.sheet.rowCount; row += 1) {
+    const { cell, range } = getAutoFitCell(page, row, col);
+    const text = String(cell?.value ?? '');
+    if (!text.trim()) continue;
+
+    hasText = true;
+    const fontSize = resolveNumericStyle(cell?.style?.fontSize, DEFAULT_SHEET_FONT_SIZE);
+    const spanCols = Math.max(1, range.r - range.l + 1);
+    const textWidth = estimateSheetTextPixelWidth(text, fontSize);
+    nextWidth = Math.max(nextWidth, Math.ceil((textWidth + getCellHorizontalPadding(cell) + AUTO_FIT_EXTRA_WIDTH) / spanCols));
+  }
+
+  return hasText ? nextWidth : page.sheet.defaultColumnWidth;
+}
+
+function autoFitSheetRowHeight(page: CanvasPage, row: number, columnWidths: number[]) {
+  let nextHeight = 24;
+  let hasText = false;
+
+  for (let col = 1; col <= page.sheet.columnCount; col += 1) {
+    const { cell, range } = getAutoFitCell(page, row, col);
+    const text = String(cell?.value ?? '');
+    if (!text.trim()) continue;
+
+    hasText = true;
+    const fontSize = resolveNumericStyle(cell?.style?.fontSize, DEFAULT_SHEET_FONT_SIZE);
+    const lineHeightPx = resolveCellLineHeightPx(cell, fontSize);
+    const contentWidth = sumSizes(columnWidths, range.l, range.r) - getCellHorizontalPadding(cell);
+    const shouldWrap = cell?.style?.whiteSpace === 'normal';
+    const lineCount = estimateSheetTextLineCount(text, contentWidth, fontSize, shouldWrap);
+    const spanRows = Math.max(1, range.b - range.t + 1);
+    nextHeight = Math.max(
+      nextHeight,
+      Math.ceil((lineCount * lineHeightPx + getCellVerticalPadding(cell) + AUTO_FIT_EXTRA_HEIGHT) / spanRows),
+    );
+  }
+
+  return hasText ? nextHeight : page.sheet.defaultRowHeight;
+}
+
+function measureSheetRowHeightFromDom(page: CanvasPage, row: number, root: HTMLElement | null) {
+  let nextHeight = 24;
+  let hasText = false;
+
+  for (let col = 1; col <= page.sheet.columnCount; col += 1) {
+    const { cell, range } = getAutoFitCell(page, row, col);
+    const text = String(cell?.value ?? '');
+    if (!text.trim()) continue;
+
+    const contentElement = root?.querySelector<HTMLElement>(
+      `[data-sheet-cell-row="${range.t}"][data-sheet-cell-col="${range.l}"] [data-sheet-cell-content="true"]`,
+    );
+    const measuredContentHeight = contentElement
+      ? Math.max(contentElement.getBoundingClientRect().height, contentElement.scrollHeight)
+      : 0;
+    if (measuredContentHeight <= 0) continue;
+
+    hasText = true;
+    const spanRows = Math.max(1, range.b - range.t + 1);
+    nextHeight = Math.max(
+      nextHeight,
+      Math.ceil((measuredContentHeight + getCellVerticalPadding(cell) + AUTO_FIT_EXTRA_HEIGHT) / spanRows),
+    );
+  }
+
+  return hasText ? nextHeight : null;
+}
+
 function clampMarginMm(value: number) {
   return Math.min(40, Math.max(0, Math.round(value)));
 }
@@ -175,6 +373,14 @@ function isPrintableCellInput(key: string) {
   return key.length === 1 && !/[\r\n\t]/.test(key);
 }
 
+function hasMultilineCellValue(value: unknown) {
+  return typeof value === 'string' && /\r?\n/.test(value);
+}
+
+function hasSpecialWrapCellValue(value: unknown) {
+  return typeof value === 'string' && SPECIAL_WRAP_CELL_VALUE_PATTERN.test(value);
+}
+
 export default function CanvasSheetWorkspace() {
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
@@ -186,18 +392,28 @@ export default function CanvasSheetWorkspace() {
   const selectRowRange = useTemplateDesignerStore((state) => state.selectRowRange);
   const insertSheetColumns = useTemplateDesignerStore((state) => state.insertSheetColumns);
   const insertSheetRows = useTemplateDesignerStore((state) => state.insertSheetRows);
+  const deleteSheetColumns = useTemplateDesignerStore((state) => state.deleteSheetColumns);
+  const deleteSheetRows = useTemplateDesignerStore((state) => state.deleteSheetRows);
   const setSheetColumnWidth = useTemplateDesignerStore((state) => state.setSheetColumnWidth);
   const setSheetRowHeight = useTemplateDesignerStore((state) => state.setSheetRowHeight);
   const updateSheetCellValue = useTemplateDesignerStore((state) => state.updateSheetCellValue);
+  const clearSelectedCells = useTemplateDesignerStore((state) => state.clearSelectedCells);
+  const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
+  const splitSelectedCells = useTemplateDesignerStore((state) => state.splitSelectedCells);
   const setPagePreviewCount = useTemplateDesignerStore((state) => state.setPagePreviewCount);
+  const setActivePagePreviewIndex = useTemplateDesignerStore((state) => state.setActivePagePreviewIndex);
+  const pagePreviewScrollTarget = useTemplateDesignerStore((state) => state.pagePreviewScrollTarget);
+  const clearPagePreviewScrollTarget = useTemplateDesignerStore((state) => state.clearPagePreviewScrollTarget);
 
   const [dragState, setDragState] = useState<DragState>(null);
   const [menuState, setMenuState] = useState<SheetMenuState | null>(null);
   const [paperSettingsOpen, setPaperSettingsOpen] = useState(false);
   const [settingsPopover, setSettingsPopover] = useState<CanvasSettingsPopoverState | null>(null);
   const [editingCell, setEditingCell] = useState<EditingCellState | null>(null);
+  const [insertMenuCount, setInsertMenuCount] = useState('1');
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
+  const workspaceScrollRef = useRef<HTMLDivElement | null>(null);
   const sheetInteractionRef = useRef<HTMLDivElement | null>(null);
   const skipNextBlurCommitRef = useRef(false);
   const [freeCanvasMeasuredHeight, setFreeCanvasMeasuredHeight] = useState(480);
@@ -244,8 +460,8 @@ export default function CanvasSheetWorkspace() {
   const freeCanvasBodyHeight = Math.max(freeCanvasMeasuredHeight, 480);
   const paperBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : sheetHeight;
   const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperBodyHeight + paperFooterHeight + paperInsetBottom;
-  const pageMarkerCount = isFreeCanvas ? Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx)) : 1;
-  const sheetPaperHeight = isFreeCanvas ? pageMarkerCount * a4PaperHeightPx : Math.max(a4PaperHeightPx, rawPaperHeight);
+  const pageMarkerCount = Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx));
+  const sheetPaperHeight = pageMarkerCount * a4PaperHeightPx;
   const paperContentHeight = sheetPaperHeight - paperInsetTop - paperInsetBottom;
   const showPaperRuler = currentPage?.sheet.showRuler ?? true;
   const paperRowHeaderWidth = showPaperRuler ? rowHeaderWidth : 0;
@@ -325,10 +541,18 @@ export default function CanvasSheetWorkspace() {
     sheetInteractionRef.current?.focus();
   };
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
-    if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell || !selectedCell) {
+    if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
       return;
     }
     if (event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
+    if ((event.key === 'Backspace' || event.key === 'Delete') && (selectedCell || selectedRange)) {
+      event.preventDefault();
+      clearSelectedCells();
+      return;
+    }
+    if (!selectedCell) {
       return;
     }
     if (isPrintableCellInput(event.key)) {
@@ -336,15 +560,17 @@ export default function CanvasSheetWorkspace() {
       startEditingCell(selectedCell.row, selectedCell.col, event.key);
       return;
     }
-    if (event.key === 'Backspace' || event.key === 'Delete') {
-      event.preventDefault();
-      startEditingCell(selectedCell.row, selectedCell.col, '');
-      return;
-    }
     if (event.key === 'Enter' || event.key === 'F2') {
       event.preventDefault();
       startEditingCell(selectedCell.row, selectedCell.col);
     }
+  };
+  const handleWorkspaceScroll = () => {
+    if (!currentPage) return;
+    const scrollTop = workspaceScrollRef.current?.scrollTop ?? 0;
+    const rawPreviewIndex = Math.floor(Math.max(0, scrollTop - paperViewportGapTop) / a4PaperHeightPx);
+    const previewIndex = Math.min(pageMarkerCount - 1, Math.max(0, rawPreviewIndex));
+    setActivePagePreviewIndex(currentPage.id, previewIndex);
   };
   const paperSettingItems = [
     { key: 'paper-mode', label: '画布模式' },
@@ -854,7 +1080,31 @@ export default function CanvasSheetWorkspace() {
       return;
     }
     setPagePreviewCount(currentPage.id, pageMarkerCount);
+    handleWorkspaceScroll();
   }, [currentPage, pageMarkerCount, setPagePreviewCount]);
+
+  useEffect(() => {
+    if (!currentPage || pagePreviewScrollTarget?.pageId !== currentPage.id) {
+      return;
+    }
+
+    const requestId = pagePreviewScrollTarget.requestId;
+    const previewIndex = Math.min(pageMarkerCount - 1, Math.max(0, pagePreviewScrollTarget.previewIndex));
+    workspaceScrollRef.current?.scrollTo({
+      top: paperViewportGapTop + previewIndex * a4PaperHeightPx,
+      behavior: 'smooth',
+    });
+    setActivePagePreviewIndex(currentPage.id, previewIndex);
+    clearPagePreviewScrollTarget(requestId);
+  }, [
+    a4PaperHeightPx,
+    clearPagePreviewScrollTarget,
+    currentPage,
+    pageMarkerCount,
+    pagePreviewScrollTarget,
+    paperViewportGapTop,
+    setActivePagePreviewIndex,
+  ]);
 
   useEffect(() => {
     setEditingCell(null);
@@ -883,29 +1133,82 @@ export default function CanvasSheetWorkspace() {
 
   const openContextMenu = (axis: MenuAxis, event: ReactMouseEvent) => {
     event.preventDefault();
+    setInsertMenuCount('1');
     setMenuState({
       axis,
       mouseX: event.clientX + 2,
       mouseY: event.clientY - 6,
     });
   };
+  const openColumnContextMenu = (col: number, event: ReactMouseEvent) => {
+    const keepSelectedRange = Boolean(
+      normalizedRange
+      && currentPage
+      && normalizedRange.t === 1
+      && normalizedRange.b === currentPage.sheet.rowCount
+      && col >= normalizedRange.l
+      && col <= normalizedRange.r,
+    );
+    if (!keepSelectedRange) {
+      selectColumnRange(col);
+    }
+    openContextMenu('column', event);
+  };
+  const openRowContextMenu = (row: number, event: ReactMouseEvent) => {
+    const keepSelectedRange = Boolean(
+      normalizedRange
+      && currentPage
+      && normalizedRange.l === 1
+      && normalizedRange.r === currentPage.sheet.columnCount
+      && row >= normalizedRange.t
+      && row <= normalizedRange.b,
+    );
+    if (!keepSelectedRange) {
+      selectRowRange(row);
+    }
+    openContextMenu('row', event);
+  };
+  const openCellContextMenu = (cellSelectionRange: CanvasSelectionRange, event: ReactMouseEvent) => {
+    const keepSelectedRange = Boolean(
+      normalizedRange
+      && rangeContainsRange(normalizedRange, cellSelectionRange),
+    );
+    if (!keepSelectedRange) {
+      setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
+    }
+    openContextMenu('cell', event);
+  };
 
   const closeContextMenu = () => {
     setMenuState(null);
   };
 
-  const handleMenuAction = (action: 'insert-before' | 'insert-after' | 'resize') => {
+  const handleMenuAction = (action: SheetMenuAction) => {
     if (!menuState || !normalizedRange || !currentPage) {
       closeContextMenu();
       return;
     }
 
-    if (menuState.axis === 'column') {
+    const insertCount = parseInsertMenuCount(insertMenuCount);
+
+    if (menuState.axis === 'column' || menuState.axis === 'cell') {
       if (action === 'insert-before') {
-        insertSheetColumns(normalizedRange.l, 1);
+        insertSheetColumns(normalizedRange.l, insertCount);
       }
       if (action === 'insert-after') {
-        insertSheetColumns(normalizedRange.r + 1, 1);
+        insertSheetColumns(normalizedRange.r + 1, insertCount);
+      }
+      if (action === 'insert-column-before') {
+        insertSheetColumns(normalizedRange.l, insertCount);
+      }
+      if (action === 'insert-column-after') {
+        insertSheetColumns(normalizedRange.r + 1, insertCount);
+      }
+      if (action === 'delete') {
+        deleteSheetColumns(normalizedRange.l, normalizedRange.r);
+      }
+      if (action === 'delete-column') {
+        deleteSheetColumns(normalizedRange.l, normalizedRange.r);
       }
       if (action === 'resize') {
         const nextWidth = parsePromptNumber('设置列宽', rawColumnWidths[normalizedRange.l - 1] ?? currentPage.sheet.defaultColumnWidth);
@@ -913,14 +1216,35 @@ export default function CanvasSheetWorkspace() {
           setSheetColumnWidth(normalizedRange.l, normalizedRange.r, nextWidth);
         }
       }
+      if (action === 'auto-size') {
+        const nextColumnWidths = rawColumnWidths.map((width, index) => {
+          const col = index + 1;
+          return col >= normalizedRange.l && col <= normalizedRange.r
+            ? autoFitSheetColumnWidth(currentPage, col)
+            : width;
+        });
+        updateCurrentPageSheet({ columnWidths: nextColumnWidths });
+      }
     }
 
-    if (menuState.axis === 'row') {
+    if (menuState.axis === 'row' || menuState.axis === 'cell') {
       if (action === 'insert-before') {
-        insertSheetRows(normalizedRange.t, 1);
+        insertSheetRows(normalizedRange.t, insertCount);
       }
       if (action === 'insert-after') {
-        insertSheetRows(normalizedRange.b + 1, 1);
+        insertSheetRows(normalizedRange.b + 1, insertCount);
+      }
+      if (action === 'insert-row-before') {
+        insertSheetRows(normalizedRange.t, insertCount);
+      }
+      if (action === 'insert-row-after') {
+        insertSheetRows(normalizedRange.b + 1, insertCount);
+      }
+      if (action === 'delete') {
+        deleteSheetRows(normalizedRange.t, normalizedRange.b);
+      }
+      if (action === 'delete-row') {
+        deleteSheetRows(normalizedRange.t, normalizedRange.b);
       }
       if (action === 'resize') {
         const nextHeight = parsePromptNumber('设置行高', rowHeights[normalizedRange.t - 1] ?? currentPage.sheet.defaultRowHeight);
@@ -928,14 +1252,130 @@ export default function CanvasSheetWorkspace() {
           setSheetRowHeight(normalizedRange.t, normalizedRange.b, nextHeight);
         }
       }
+      if (action === 'auto-size') {
+        const nextRowHeights = rowHeights.map((height, index) => {
+          const row = index + 1;
+          return row >= normalizedRange.t && row <= normalizedRange.b
+            ? measureSheetRowHeightFromDom(currentPage, row, sheetInteractionRef.current) ?? autoFitSheetRowHeight(currentPage, row, rawColumnWidths)
+            : height;
+        });
+        updateCurrentPageSheet({ rowHeights: nextRowHeights });
+      }
+    }
+
+    if (menuState.axis === 'cell') {
+      if (action === 'merge-cells') {
+        mergeSelectedCells();
+      }
+      if (action === 'split-cells') {
+        splitSelectedCells();
+      }
     }
 
     closeContextMenu();
   };
 
+  const renderInsertCountInput = (action: InsertMenuAction) => (
+    <TextField
+      data-sheet-menu-insert-count="true"
+      data-sheet-menu-insert-action={action}
+      size="small"
+      variant="outlined"
+      value={insertMenuCount}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+      onKeyDown={(event) => {
+        event.stopPropagation();
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          handleMenuAction(action);
+        }
+      }}
+      onChange={(event) => {
+        setInsertMenuCount(normalizeInsertMenuCountInput(event.target.value));
+      }}
+      inputProps={{
+        inputMode: 'numeric',
+        pattern: '[0-9]*',
+      }}
+      sx={{
+        width: 48,
+        height: 32,
+        flexShrink: 0,
+        '& .MuiOutlinedInput-root': {
+          height: 30,
+          minHeight: 0,
+          borderRadius: '6px',
+        },
+        '& .MuiInputBase-input': {
+          height: 30,
+          p: 0,
+          textAlign: 'center',
+          fontSize: 12,
+          lineHeight: '30px',
+        },
+      }}
+    />
+  );
+
+  const renderDangerMenuItem = (item: DeleteMenuItemConfig, withDivider: boolean) => (
+    <MenuItem
+      key={item.action}
+      data-sheet-menu-delete-group={withDivider ? 'true' : undefined}
+      data-sheet-menu-action={item.action}
+      disabled={item.disabled}
+      onClick={() => handleMenuAction(item.action)}
+      sx={{
+        ...(withDivider ? {
+          mt: 0.5,
+          pt: 1,
+          borderTop: '1px solid #e5e7eb',
+        } : {}),
+        color: '#d32f2f',
+        '&.Mui-disabled': {
+          color: 'rgba(211, 47, 47, 0.42)',
+        },
+        '&:hover': {
+          bgcolor: '#fff5f5',
+        },
+      }}
+    >
+      {item.label}
+    </MenuItem>
+  );
+
+  const renderDeleteMenuGroup = (items: DeleteMenuItemConfig[]) => (
+    items.map((item, index) => renderDangerMenuItem(item, index === 0))
+  );
+
   if (!currentPage) {
     return null;
   }
+
+  const activeMenuAxis = menuState?.axis ?? null;
+  const canDeleteMenuColumns = currentPage.sheet.columnCount > 1;
+  const canDeleteMenuRows = currentPage.sheet.rowCount > 1;
+  const canDeleteMenuSelection = activeMenuAxis === 'column'
+    ? canDeleteMenuColumns
+    : canDeleteMenuRows;
+  const hasMergedCellsInSelection = Boolean(
+    normalizedRange
+    && currentPage.mergedCells.some((range) => rangesIntersect(range, normalizedRange)),
+  );
+  const isSingleMergedCellSelection = Boolean(
+    normalizedRange
+    && currentPage.mergedCells.some((range) => rangesEqual(range, normalizedRange)),
+  );
+  const canMergeMenuSelection = Boolean(
+    activeMenuAxis === 'cell'
+    && isMultiCellRange(normalizedRange)
+    && !isSingleMergedCellSelection,
+  );
+  const canSplitMenuSelection = Boolean(
+    activeMenuAxis === 'cell'
+    && hasMergedCellsInSelection,
+  );
 
   const renderImportedGrid = (mode: 'sheet' | 'paper') => (
     <Box
@@ -957,32 +1397,46 @@ export default function CanvasSheetWorkspace() {
 
         const cell = currentPage.cells[key];
         const mergedRange = mergedCellMaps.startMap.get(key);
+        const cellSelectionRange = getMergedAwareCellRange(row, col, mergedRange);
         const isSelected = selectedCell?.row === row && selectedCell?.col === col;
         const isRangeActive = isInRange(normalizedRange, row, col);
         const isEditing = currentPage.sheet.canvasMode === 'sheet' && editingCell?.row === row && editingCell?.col === col;
         const verticalAlign = cell?.style?.verticalAlign;
         const textAlign = cell?.style?.textAlign;
+        const hasMultilineValue = hasMultilineCellValue(cell?.value);
         const cellBorder = cell?.border;
         const spanCols = mergedRange ? (mergedRange.r - mergedRange.l + 1) : 1;
         const spanRows = mergedRange ? (mergedRange.b - mergedRange.t + 1) : 1;
-        const borderColor = '#9ea9ba';
+        const shouldWrapCellText = hasMultilineValue || cell?.style?.whiteSpace === 'normal' || Boolean(mergedRange && hasSpecialWrapCellValue(cell?.value));
+        const borderColor = String(cellBorder?.color ?? '#000000');
         const gridColor = '#d9dee7';
 
         return (
           <Box
             key={key}
             data-sheet-cell-focus="true"
+            data-sheet-cell-row={row}
+            data-sheet-cell-col={col}
             tabIndex={-1}
             onMouseDown={(event) => {
               if (event.button !== 0) return;
               event.currentTarget.focus();
-              setSelectedRange({ t: row, l: col, b: row, r: col }, { row, col });
-              setDragState({ type: 'cell', startRow: row, startCol: col });
+              setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
+              setDragState({
+                type: 'cell',
+                startRow: cellSelectionRange.t,
+                startCol: cellSelectionRange.l,
+                startRange: cellSelectionRange,
+              });
             }}
             onDoubleClick={(event) => {
               event.currentTarget.focus();
-              setSelectedRange({ t: row, l: col, b: row, r: col }, { row, col });
-              startEditingCell(row, col);
+              setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
+              startEditingCell(cellSelectionRange.t, cellSelectionRange.l);
+            }}
+            onContextMenu={(event) => {
+              event.currentTarget.focus();
+              openCellContextMenu(cellSelectionRange, event);
             }}
             onKeyDown={(event) => {
               event.stopPropagation();
@@ -992,10 +1446,10 @@ export default function CanvasSheetWorkspace() {
               if (dragState?.type !== 'cell') return;
               setSelectedRange(
                 {
-                  t: dragState.startRow,
-                  l: dragState.startCol,
-                  b: row,
-                  r: col,
+                  t: Math.min(dragState.startRange.t, cellSelectionRange.t),
+                  l: Math.min(dragState.startRange.l, cellSelectionRange.l),
+                  b: Math.max(dragState.startRange.b, cellSelectionRange.b),
+                  r: Math.max(dragState.startRange.r, cellSelectionRange.r),
                 },
                 { row: dragState.startRow, col: dragState.startCol },
               );
@@ -1023,7 +1477,7 @@ export default function CanvasSheetWorkspace() {
               fontWeight: cell?.style?.fontWeight as string | undefined,
               fontStyle: cell?.style?.fontStyle as string | undefined,
               textDecoration: cell?.style?.textDecoration as string | undefined,
-              whiteSpace: cell?.style?.whiteSpace === 'normal' ? 'normal' : 'nowrap',
+              whiteSpace: hasMultilineValue ? 'pre-wrap' : shouldWrapCellText ? 'normal' : 'nowrap',
               lineHeight: cell?.style?.lineHeight as string | number | undefined,
               fontFamily: cell?.style?.fontFamily as string | undefined,
               wordBreak: 'break-word',
@@ -1037,6 +1491,9 @@ export default function CanvasSheetWorkspace() {
               <TextField
                 data-sheet-cell-editor="true"
                 autoFocus
+                multiline
+                minRows={1}
+                maxRows={8}
                 variant="standard"
                 value={editingCell?.draft ?? ''}
                 onChange={(event) => {
@@ -1055,10 +1512,7 @@ export default function CanvasSheetWorkspace() {
                 }}
                 onKeyDown={(event) => {
                   event.stopPropagation();
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    commitEditingCell(editingCell);
-                  } else if (event.key === 'Escape') {
+                  if (event.key === 'Escape') {
                     event.preventDefault();
                     cancelEditingCell();
                   }
@@ -1071,11 +1525,19 @@ export default function CanvasSheetWorkspace() {
                 }}
                 sx={{
                   width: '100%',
+                  height: '100%',
                   '& .MuiInputBase-root': {
                     height: '100%',
                     font: 'inherit',
                     color: 'inherit',
                     alignItems: verticalAlign === 'top' ? 'flex-start' : verticalAlign === 'bottom' ? 'flex-end' : 'center',
+                  },
+                  '& .MuiInputBase-root.MuiInputBase-multiline': {
+                    height: '100%',
+                    maxHeight: '100%',
+                    p: 0,
+                    alignItems: 'flex-start',
+                    overflow: 'hidden',
                   },
                   '& .MuiInputBase-input': {
                     p: 0,
@@ -1083,10 +1545,28 @@ export default function CanvasSheetWorkspace() {
                     color: 'inherit',
                     textAlign: textAlign === 'right' ? 'right' : textAlign === 'center' ? 'center' : 'left',
                   },
+                  '& .MuiInputBase-inputMultiline': {
+                    height: '100% !important',
+                    maxHeight: '100%',
+                    boxSizing: 'border-box',
+                    whiteSpace: 'pre-wrap',
+                    overflowY: 'auto !important',
+                    resize: 'none',
+                  },
                 }}
               />
             ) : (
-              cell?.value ?? ''
+              <Box
+                component="span"
+                data-sheet-cell-content="true"
+                sx={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: textAlign === 'right' ? 'right' : textAlign === 'center' ? 'center' : 'left',
+                }}
+              >
+                {cell?.value ?? ''}
+              </Box>
             )}
           </Box>
         );
@@ -1130,9 +1610,74 @@ export default function CanvasSheetWorkspace() {
     </Box>
   );
 
+  const renderPageBreakMarkers = () => (pageMarkerCount > 1 ? (
+    <Box
+      data-page-break-layer="workspace"
+      sx={{
+        position: 'absolute',
+        inset: 0,
+        pointerEvents: 'none',
+        overflow: 'visible',
+        zIndex: PAGE_BREAK_MARKER_Z_INDEX,
+      }}
+    >
+      {Array.from({ length: pageMarkerCount - 1 }, (_, index) => {
+        const boundaryIndex = index + 1;
+        const pageNumber = boundaryIndex + 1;
+        const top = paperViewportGapTop + boundaryIndex * a4PaperHeightPx;
+        return (
+          <Box
+            key={`paper-page-break-${pageNumber}`}
+            data-page-break-marker="true"
+            sx={{
+              position: 'absolute',
+              top,
+              left: 0,
+              right: 0,
+              height: 0,
+            }}
+          >
+            <Box
+              data-page-break-line="workspace"
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                borderTop: '1.5px dashed rgba(71, 85, 105, 0.72)',
+              }}
+            />
+            <Box
+              data-page-break-badge="workspace-margin"
+              sx={{
+                position: 'absolute',
+                top: -12,
+                right: 24,
+                px: 1.5,
+                height: 24,
+                borderRadius: 999,
+                bgcolor: 'rgba(255,255,255,0.96)',
+                color: '#475569',
+                fontSize: 12,
+                fontWeight: 600,
+                lineHeight: '24px',
+                letterSpacing: '0.04em',
+                boxShadow: '0 0 0 1px rgba(148, 163, 184, 0.58), 0 6px 16px rgba(15, 23, 42, 0.12)',
+              }}
+            >
+              第{pageNumber}页
+            </Box>
+          </Box>
+        );
+      })}
+    </Box>
+  ) : null);
+
   if (currentPage.sheet.canvasMode === 'paper') {
     return (
       <Box
+        ref={workspaceScrollRef}
+        onScroll={handleWorkspaceScroll}
         sx={{
           flex: 1,
           minHeight: 0,
@@ -1353,9 +1898,11 @@ export default function CanvasSheetWorkspace() {
                   minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
                   display: 'flex',
                   justifyContent: 'center',
+                  position: 'relative',
                   background: 'linear-gradient(180deg, #eef3f9 0%, #f7f9fc 100%)',
                 }}
               >
+                {renderPageBreakMarkers()}
                 <Box
                   data-sheet-paper="true"
                   onMouseDown={(event) => {
@@ -1434,61 +1981,12 @@ export default function CanvasSheetWorkspace() {
                     />
                   ) : null}
                   <Box sx={{ position: 'relative', width: paperWorkingWidth, minHeight: paperWorkingHeight }}>
-                    {pageMarkerCount > 1 ? (
-                      <Box
-                        sx={{
-                          position: 'absolute',
-                          inset: 0,
-                          pointerEvents: 'none',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        {Array.from({ length: pageMarkerCount - 1 }, (_, index) => {
-                          const boundaryIndex = index + 1;
-                          const pageNumber = boundaryIndex + 1;
-                          const top = boundaryIndex * a4PaperHeightPx - paperInsetTop - paperHeaderHeight;
-                          return (
-                            <Box
-                              key={`paper-page-break-${pageNumber}`}
-                              sx={{
-                                position: 'absolute',
-                                top,
-                                left: 0,
-                                right: 0,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Box sx={{ flex: 1, borderTop: '1px dashed rgba(148, 163, 184, 0.58)' }} />
-                              <Box
-                                sx={{
-                                  px: 1.5,
-                                  mx: 1.25,
-                                  height: 24,
-                                  borderRadius: 999,
-                                  bgcolor: 'rgba(255,255,255,0.96)',
-                                  color: '#94a3b8',
-                                  fontSize: 12,
-                                  fontWeight: 600,
-                                  lineHeight: '24px',
-                                  letterSpacing: '0.04em',
-                                  boxShadow: '0 0 0 1px rgba(226, 232, 240, 0.92)',
-                                }}
-                              >
-                                第{pageNumber}页
-                              </Box>
-                              <Box sx={{ flex: 1, borderTop: '1px dashed rgba(148, 163, 184, 0.58)' }} />
-                            </Box>
-                          );
-                        })}
-                      </Box>
-                    ) : null}
                     <Box
                       sx={{
                         position: 'absolute',
                         inset: 0,
                         pointerEvents: 'none',
+                        zIndex: 1,
                         opacity: currentPage.sheet.showGridLines ? 1 : 0,
                         backgroundImage: `
                           linear-gradient(to right, rgba(203, 213, 225, 0.18) 1px, transparent 1px),
@@ -1502,6 +2000,7 @@ export default function CanvasSheetWorkspace() {
                       ref={freeCanvasBodyRef}
                       sx={{
                         position: 'relative',
+                        zIndex: 2,
                         minHeight: paperWorkingHeight,
                       }}
                     >
@@ -1532,7 +2031,11 @@ export default function CanvasSheetWorkspace() {
   }
 
   return (
-    <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', bgcolor: '#eef3f9', userSelect: 'none', position: 'relative' }}>
+    <Box
+      ref={workspaceScrollRef}
+      onScroll={handleWorkspaceScroll}
+      sx={{ flex: 1, minHeight: 0, overflow: 'auto', bgcolor: '#eef3f9', userSelect: 'none', position: 'relative' }}
+    >
       {canvasSettingsFloating}
       <Box
         ref={sheetInteractionRef}
@@ -1632,8 +2135,7 @@ export default function CanvasSheetWorkspace() {
                           selectColumnRange(dragState.startCol, col);
                         }}
                         onContextMenu={(event) => {
-                          selectColumnRange(col);
-                          openContextMenu('column', event);
+                          openColumnContextMenu(col, event);
                         }}
                         sx={{
                           position: 'relative',
@@ -1714,8 +2216,7 @@ export default function CanvasSheetWorkspace() {
                       selectRowRange(dragState.startRow, row);
                     }}
                     onContextMenu={(event) => {
-                      selectRowRange(row);
-                      openContextMenu('row', event);
+                      openRowContextMenu(row, event);
                     }}
                       sx={{
                         position: 'relative',
@@ -1769,9 +2270,11 @@ export default function CanvasSheetWorkspace() {
                 minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
                 display: 'flex',
                 justifyContent: 'center',
+                position: 'relative',
                 background: 'linear-gradient(180deg, #eef3f9 0%, #f7f9fc 100%)',
               }}
             >
+              {renderPageBreakMarkers()}
               <Box
                 data-sheet-paper="true"
                 onMouseDown={(event) => {
@@ -1808,7 +2311,8 @@ export default function CanvasSheetWorkspace() {
                 <Box
                   sx={{
                     position: 'relative',
-                    width: sheetWidth,
+                    width: paperContentWidth,
+                    minHeight: paperWorkingHeight,
                   }}
                 >
                   {renderImportedGrid('sheet')}
@@ -1837,9 +2341,150 @@ export default function CanvasSheetWorkspace() {
         anchorReference="anchorPosition"
         anchorPosition={menuState ? { top: menuState.mouseY, left: menuState.mouseX } : undefined}
       >
-        <MenuItem onClick={() => handleMenuAction('insert-before')}>{menuState?.axis === 'column' ? '左侧新增列' : '上方新增行'}</MenuItem>
-        <MenuItem onClick={() => handleMenuAction('insert-after')}>{menuState?.axis === 'column' ? '右侧新增列' : '下方新增行'}</MenuItem>
-        <MenuItem onClick={() => handleMenuAction('resize')}>{menuState?.axis === 'column' ? '设置列宽' : '设置行高'}</MenuItem>
+        {activeMenuAxis ? (
+          activeMenuAxis === 'cell' ? (
+            <>
+              <MenuItem
+                data-sheet-menu-action="insert-column-before"
+                onClick={() => handleMenuAction('insert-column-before')}
+                sx={{
+                  minWidth: 168,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                }}
+              >
+                <Box component="span" sx={{ flex: 1 }}>左侧新增列</Box>
+                {renderInsertCountInput('insert-column-before')}
+              </MenuItem>
+              <MenuItem
+                data-sheet-menu-action="insert-column-after"
+                onClick={() => handleMenuAction('insert-column-after')}
+                sx={{
+                  minWidth: 168,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                }}
+              >
+                <Box component="span" sx={{ flex: 1 }}>右侧新增列</Box>
+                {renderInsertCountInput('insert-column-after')}
+              </MenuItem>
+              <MenuItem
+                data-sheet-menu-action="insert-row-before"
+                onClick={() => handleMenuAction('insert-row-before')}
+                sx={{
+                  minWidth: 168,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                }}
+              >
+                <Box component="span" sx={{ flex: 1 }}>上方新增行</Box>
+                {renderInsertCountInput('insert-row-before')}
+              </MenuItem>
+              <MenuItem
+                data-sheet-menu-action="insert-row-after"
+                onClick={() => handleMenuAction('insert-row-after')}
+                sx={{
+                  minWidth: 168,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                }}
+              >
+                <Box component="span" sx={{ flex: 1 }}>下方新增行</Box>
+                {renderInsertCountInput('insert-row-after')}
+              </MenuItem>
+              {canMergeMenuSelection ? (
+                <MenuItem
+                  data-sheet-menu-action="merge-cells"
+                  onClick={() => handleMenuAction('merge-cells')}
+                >合并单元格</MenuItem>
+              ) : null}
+              {canSplitMenuSelection ? (
+                <MenuItem
+                  data-sheet-menu-action="split-cells"
+                  onClick={() => handleMenuAction('split-cells')}
+                >拆分单元格</MenuItem>
+              ) : null}
+              {renderDeleteMenuGroup([
+                { action: 'delete-row', label: '删除行', disabled: !canDeleteMenuRows },
+                { action: 'delete-column', label: '删除列', disabled: !canDeleteMenuColumns },
+              ])}
+            </>
+          ) : (
+            <>
+              <MenuItem
+                onClick={() => handleMenuAction('insert-before')}
+                sx={{
+                  minWidth: 168,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                }}
+              >
+                <Box component="span" sx={{ flex: 1 }}>{activeMenuAxis === 'column' ? '左侧新增列' : '上方新增行'}</Box>
+                {renderInsertCountInput('insert-before')}
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuAction('insert-after')}
+                sx={{
+                  minWidth: 168,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                }}
+              >
+                <Box component="span" sx={{ flex: 1 }}>{activeMenuAxis === 'column' ? '右侧新增列' : '下方新增行'}</Box>
+                {renderInsertCountInput('insert-after')}
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuAction('resize')}
+                sx={{
+                  minWidth: 168,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 1.5,
+                }}
+              >
+                <Box component="span" sx={{ flex: 1 }}>{activeMenuAxis === 'column' ? '设置列宽' : '设置行高'}</Box>
+                <Button
+                  data-sheet-menu-auto-size="true"
+                  size="small"
+                  variant="outlined"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handleMenuAction('auto-size');
+                  }}
+                  sx={{
+                    minWidth: 42,
+                    height: 24,
+                    px: 0.75,
+                    py: 0,
+                    fontSize: 12,
+                    lineHeight: '22px',
+                  }}
+                >Auto</Button>
+              </MenuItem>
+              {renderDeleteMenuGroup([
+                {
+                  action: 'delete',
+                  label: activeMenuAxis === 'column' ? '删除列' : '删除行',
+                  disabled: !canDeleteMenuSelection,
+                },
+              ])}
+            </>
+          )
+        ) : null}
       </Menu>
     </Box>
   );
