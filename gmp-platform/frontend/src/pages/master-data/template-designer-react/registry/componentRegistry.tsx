@@ -128,8 +128,23 @@ function createId(prefix: string) {
 }
 
 function parseFieldOptions(field?: ModelField | null) {
-  if (!field?.optionsText?.trim()) return [];
-  return field.optionsText
+  const fieldTypeConfig = field ? field.typeConfig : {};
+  const options = fieldTypeConfig.options;
+  if (Array.isArray(options)) {
+    return options
+      .filter((option) => option && typeof option === 'object')
+      .map((option, index) => {
+        const typedOption = option as { id?: string; label?: string; value?: string; status?: string };
+        return {
+          key: typedOption.id || `${field?.id ?? 'field'}:${index}`,
+          label: typedOption.label || `选项${index + 1}`,
+          value: typedOption.value || typedOption.label || `option_${index + 1}`,
+        };
+      });
+  }
+
+  if (typeof options !== 'string' || !options.trim()) return [];
+  return options
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean)
@@ -138,7 +153,7 @@ function parseFieldOptions(field?: ModelField | null) {
       const resolvedLabel = rawLabel?.trim() || `选项${index + 1}`;
       const resolvedValue = rawValue?.trim() || resolvedLabel;
       return {
-        key: `${field.id}:${index}`,
+        key: `${field?.id ?? 'field'}:${index}`,
         label: resolvedLabel,
         value: resolvedValue || `option_${index + 1}`,
       };
@@ -195,18 +210,28 @@ function BasicRenderer({ node, selected, onSelect }: DesignerRendererProps) {
   );
 }
 
-function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+function FieldPreviewRenderer({ node, selected, onSelect, renderMode = 'normal' }: DesignerRendererProps) {
   const field = useBoundField(node);
+  const isCellMode = renderMode === 'cell';
   const options = parseFieldOptions(field);
-  const label = String(field?.name || node.props.label || node.type);
-  const placeholder = String(field?.placeholder || node.props.placeholder || '');
-  const emptySymbol = String(node.props.emptySymbol || '');
-  const prefix = String(node.props.prefix || '');
-  const suffix = String(node.props.suffix || '');
-  const format = String(node.props.format || '');
-  const disabled = Boolean(node.props.disabled) || node.props.viewState === 'disabled';
-  const readonly = Boolean(node.props.readonly) || node.props.viewState === 'readonly';
-  const optionLayout = String(node.props.optionLayout || 'row');
+  const widgetConfig = node.bindings?.widgetConfig ?? {};
+  const readConfig = (key: string, fallback: unknown = '') => widgetConfig[key] ?? node.props[key] ?? fallback;
+  const label = String(node.bindings?.displayLabel || field?.name || node.props.label || node.type);
+  const placeholder = String(node.bindings?.placeholder || node.props.placeholder || '');
+  const format = String(readConfig('format'));
+  const controlLabel = isCellMode ? undefined : label;
+  const inputPlaceholder = isCellMode ? (placeholder || label) : placeholder;
+  const datePlaceholder = isCellMode
+    ? placeholder || (node.type === 'timepicker' ? '请选择时间' : node.type === 'datetimepicker' ? '请选择日期时间' : '请选择日期')
+    : format || placeholder;
+  const emptySymbol = String(readConfig('emptySymbol'));
+  const prefix = String(readConfig('prefix'));
+  const suffix = String(readConfig('suffix'));
+  const disabled = Boolean(node.bindings?.readonly) || Boolean(node.props.disabled) || node.props.viewState === 'disabled';
+  const readonly = Boolean(node.bindings?.readonly) || node.props.viewState === 'readonly';
+  const controlReadonly = isCellMode || readonly;
+  const hidden = Boolean(node.bindings?.hidden);
+  const optionLayout = String(readConfig('optionLayout', 'row'));
   const commonSx = {
     p: 1.5,
     borderRadius: 1,
@@ -217,19 +242,23 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
   };
 
   const renderControl = () => {
+    if (hidden) {
+      return <Typography sx={{ fontSize: 13, color: '#909399' }}>{label} 已隐藏</Typography>;
+    }
+
     switch (node.type) {
       case 'textarea':
         return (
           <TextField
             fullWidth
             size="small"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
             multiline
             minRows={Number(node.props.rows ?? 3)}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
-            inputProps={{ maxLength: Number(node.props.maxLength ?? 500) }}
+            InputProps={{ readOnly: controlReadonly }}
+            inputProps={{ maxLength: Number(readConfig('maxLength', 500)), tabIndex: isCellMode ? -1 : undefined }}
           />
         );
       case 'inputnumber':
@@ -238,14 +267,15 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
             fullWidth
             size="small"
             type="number"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
+            InputProps={{ readOnly: controlReadonly }}
             inputProps={{
-              min: Number(node.props.min ?? 0),
-              max: Number(node.props.max ?? 999999),
-              step: Number(node.props.step ?? 1),
+              min: Number(readConfig('min', 0)),
+              max: Number(readConfig('max', 999999)),
+              step: Number(readConfig('step', 1)),
+              tabIndex: isCellMode ? -1 : undefined,
             }}
           />
         );
@@ -255,14 +285,15 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
             fullWidth
             size="small"
             type="number"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
+            InputProps={{ readOnly: controlReadonly }}
             inputProps={{
-              min: Number(node.props.min ?? 0),
-              max: Number(node.props.max ?? 999999),
-              step: Number(node.props.step ?? 0.01),
+              min: Number(readConfig('min', 0)),
+              max: Number(readConfig('max', 999999)),
+              step: Number(readConfig('step', 0.01)),
+              tabIndex: isCellMode ? -1 : undefined,
             }}
           />
         );
@@ -273,15 +304,16 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
           <TextField
             fullWidth
             size="small"
-            label={label}
-            placeholder={format || placeholder}
+            label={controlLabel}
+            placeholder={datePlaceholder}
             disabled={disabled}
             InputProps={{ readOnly: true }}
+            inputProps={{ tabIndex: isCellMode ? -1 : undefined }}
           />
         );
       case 'select':
         return (
-          <TextField select fullWidth size="small" label={label} value="" disabled={disabled} InputProps={{ readOnly: readonly }}>
+          <TextField select fullWidth size="small" label={controlLabel} value="" disabled={disabled} InputProps={{ readOnly: controlReadonly }} inputProps={{ tabIndex: isCellMode ? -1 : undefined }}>
             {(options.length ? options : [{ key: 'empty', label: emptySymbol || '未配置选项', value: '' }]).map((option) => (
               <MenuItem key={option.key} value={option.value}>{option.label}</MenuItem>
             ))}
@@ -318,15 +350,49 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
           <TextField
             fullWidth
             size="small"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
-            inputProps={{ maxLength: Number(node.props.maxLength ?? 200) || undefined }}
+            InputProps={{ readOnly: controlReadonly }}
+            inputProps={{ maxLength: Number(readConfig('maxLength', 200)) || undefined, tabIndex: isCellMode ? -1 : undefined }}
           />
         );
     }
   };
+
+  if (isCellMode) {
+    return (
+      <Box
+        data-canvas-cell-field-component="true"
+        onMouseDown={(event) => {
+          event.stopPropagation();
+          onSelect();
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect();
+        }}
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'stretch',
+          cursor: 'pointer',
+          outline: selected ? '2px solid #1976d2' : 'none',
+          outlineOffset: -2,
+          borderRadius: 0.75,
+          '& .MuiFormControl-root': { height: '100%' },
+          '& .MuiInputBase-root': { height: '100%', bgcolor: '#fff', pointerEvents: 'none' },
+          '& .MuiInputBase-input': { py: 0.75, caretColor: 'transparent' },
+          '& .MuiFormControlLabel-root, & .MuiRadio-root, & .MuiCheckbox-root, & .MuiSwitch-root': {
+            pointerEvents: 'none',
+          },
+        }}
+      >
+        {renderControl()}
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -351,7 +417,12 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
       ) : null}
       {node.type === 'inputdouble' ? (
         <Typography sx={{ mt: 0.5, fontSize: 11, color: '#909399' }}>
-          精度: {String(node.props.precision ?? 2)}
+          精度: {String(readConfig('precision', 2))}
+        </Typography>
+      ) : null}
+      {node.bindings?.helpText ? (
+        <Typography sx={{ mt: 0.5, fontSize: 11, color: '#909399' }}>
+          {String(node.bindings.helpText)}
         </Typography>
       ) : null}
       {field ? (

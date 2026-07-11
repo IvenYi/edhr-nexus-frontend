@@ -992,6 +992,27 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setExpandedTemplateGroups(new Set());
   };
 
+  const saveDesignerPayload = (id: string | number, versionId: string | number, payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
+    return saveFormTemplateVersionDesign(id, versionId, payload);
+  };
+
+  const autoSaveDesignerMutation = useMutation({
+    mutationFn: async (payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
+      const targetRow = reactDesignerState.row;
+      const targetVersion = reactDesignerState.version;
+      if (!targetRow || !targetVersion) {
+        throw new Error('设计器上下文缺失');
+      }
+      return saveDesignerPayload(targetRow.id, targetVersion.id, payload);
+    },
+    onSuccess: async () => {
+      setSnackbar({ open: true, message: '字段已保存', severity: 'success' });
+      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
+      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
+    },
+    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '字段保存失败', severity: 'error' }),
+  });
+
   const saveDesignerMutation = useMutation({
     mutationFn: async (payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
       const targetRow = reactDesignerState.row;
@@ -999,11 +1020,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       if (!targetRow || !targetVersion) {
         throw new Error('设计器上下文缺失');
       }
-      return saveFormTemplateVersionDesign(targetRow.id, targetVersion.id, payload);
+      return saveDesignerPayload(targetRow.id, targetVersion.id, payload);
     },
     onSuccess: async () => {
       setSnackbar({ open: true, message: '设计已保存', severity: 'success' });
-      setReactDesignerState({ open: false, row: null, version: null });
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
@@ -1756,9 +1776,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
             open={reactDesignerState.open}
             row={reactDesignerState.row}
             version={reactDesignerState.version}
-            saving={saveDesignerMutation.isPending}
+            saving={saveDesignerMutation.isPending || autoSaveDesignerMutation.isPending}
             onClose={() => setReactDesignerState({ open: false, row: null, version: null })}
             onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
+            onAutoSave={(payload) => autoSaveDesignerMutation.mutateAsync(payload)}
           />
         </Suspense>
       ) : null}

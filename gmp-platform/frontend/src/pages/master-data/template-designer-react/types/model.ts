@@ -1,25 +1,40 @@
 import type { PropertySchemaItem } from './canvas';
 
+export type FieldType =
+  | 'text'
+  | 'number'
+  | 'datetime'
+  | 'signature'
+  | 'link'
+  | 'attachment'
+  | 'image'
+  | 'singleSelect'
+  | 'multiSelect'
+  | 'reference'
+  | 'subTable';
+
+export type FieldTypeIconKey = FieldType;
+
+export type ModelFieldStatus = 'enabled' | 'disabled';
+
 export interface ModelFieldOption {
   id: string;
   label: string;
   value: string;
+  sortOrder: number;
+  status: ModelFieldStatus;
 }
 
 export interface ModelField {
   id: string;
   code: string;
   name: string;
-  type: string;
+  type: FieldType;
   groupId?: string | null;
-  required?: boolean;
-  readonly?: boolean;
-  hidden?: boolean;
-  defaultValue?: unknown;
-  placeholder?: string;
-  optionsText?: string;
-  options?: ModelFieldOption[];
-  config: Record<string, unknown>;
+  sortOrder: number;
+  status: ModelFieldStatus;
+  description?: string;
+  typeConfig: Record<string, unknown>;
 }
 
 export interface ModelFieldGroup {
@@ -33,9 +48,11 @@ export interface ModelDesignState {
 }
 
 export interface FieldTypeDefinition {
-  type: string;
+  type: FieldType;
   label: string;
+  iconKey: FieldTypeIconKey;
   compatibleComponents: string[];
-  defaultField: () => ModelField;
-  configSchema: PropertySchemaItem[];
+  defaultComponentType: string;
+  defaultField: (name?: string, sortOrder?: number) => ModelField;
+  typeConfigSchema: PropertySchemaItem[];
 }

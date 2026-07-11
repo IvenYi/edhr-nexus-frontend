@@ -12,5 +12,6 @@ export interface TemplateDesignerDialogProps {
   version: TemplateVersionRecord | null;
   onClose: () => void;
   onSave: (payload: TemplateDesignerSavePayload) => Promise<unknown>;
+  onAutoSave?: (payload: TemplateDesignerSavePayload) => Promise<unknown>;
   saving: boolean;
 }

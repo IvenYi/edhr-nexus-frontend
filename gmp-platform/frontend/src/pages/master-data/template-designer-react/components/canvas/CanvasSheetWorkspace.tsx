@@ -1,4 +1,4 @@
-import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
+import type { DragEvent as ReactDragEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import { Box, Button, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
@@ -18,6 +18,7 @@ const DEFAULT_SHEET_LINE_HEIGHT = 1.35;
 const AUTO_FIT_EXTRA_WIDTH = 18;
 const AUTO_FIT_EXTRA_HEIGHT = 4;
 const SPECIAL_WRAP_CELL_VALUE_PATTERN = /[□☐☑☒■▪●○◆◇★☆※√×]/;
+const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
 
 type DragState =
   | { type: 'cell'; startRow: number; startCol: number; startRange: CanvasSelectionRange }
@@ -71,6 +72,12 @@ interface EditingCellState {
   row: number;
   col: number;
   draft: string;
+}
+
+interface FieldPointerDropDetail {
+  fieldId: string;
+  row: number;
+  col: number;
 }
 
 function getCellKey(row: number, col: number) {
@@ -491,6 +498,7 @@ export default function CanvasSheetWorkspace() {
   const pasteCellsFromText = useTemplateDesignerStore((state) => state.pasteCellsFromText);
   const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
   const splitSelectedCells = useTemplateDesignerStore((state) => state.splitSelectedCells);
+  const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
   const setPagePreviewCount = useTemplateDesignerStore((state) => state.setPagePreviewCount);
   const setActivePagePreviewIndex = useTemplateDesignerStore((state) => state.setActivePagePreviewIndex);
   const pagePreviewScrollTarget = useTemplateDesignerStore((state) => state.pagePreviewScrollTarget);
@@ -593,6 +601,22 @@ export default function CanvasSheetWorkspace() {
         height: rowOffsets[normalizedRange.b] - rowOffsets[normalizedRange.t - 1],
       }
     : null;
+  const renderSelectionOutline = (layer: 'grid' | 'overlay') => selectionOutline ? (
+    <Box
+      data-selection-outline={layer === 'overlay' ? 'selectionOverlay' : 'selectionOutline'}
+      sx={{
+        position: 'absolute',
+        top: selectionOutline.top,
+        left: selectionOutline.left,
+        width: selectionOutline.width,
+        height: selectionOutline.height,
+        border: '2px solid #1274dd',
+        pointerEvents: 'none',
+        boxSizing: 'border-box',
+        zIndex: layer === 'overlay' ? 20 : undefined,
+      }}
+    />
+  ) : null;
   const mergedCellMaps = useMemo(
     () => buildMergedCellMaps(currentPage?.mergedCells ?? []),
     [currentPage?.mergedCells],
@@ -651,6 +675,57 @@ export default function CanvasSheetWorkspace() {
     const text = await navigator.clipboard.readText();
     pasteCellsFromText(target.t, target.l, text);
   };
+  const getFieldDropCellLayout = (range: CanvasSelectionRange) => {
+    const normalizedSelection = normalizeRange(range);
+    const left = columnOffsets[normalizedSelection.l - 1] ?? 0;
+    const top = rowOffsets[normalizedSelection.t - 1] ?? 0;
+    return {
+      left,
+      top,
+      width: (columnOffsets[normalizedSelection.r] ?? left) - left,
+      height: (rowOffsets[normalizedSelection.b] ?? top) - top,
+      range: normalizedSelection,
+    };
+  };
+  const handleFieldDropOnCell = (event: ReactDragEvent<HTMLDivElement>, cellSelectionRange: CanvasSelectionRange) => {
+    const fieldId = event.dataTransfer.getData('application/x-template-designer-field');
+    if (!fieldId) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = 'copy';
+    setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
+    addNodeFromFieldToCell(fieldId, getFieldDropCellLayout(cellSelectionRange));
+  };
+  useEffect(() => {
+    if (!currentPage) return undefined;
+
+    const ownerDocument = sheetInteractionRef.current?.ownerDocument ?? document;
+    const handlePointerFieldDrop = (event: Event) => {
+      const detail = (event as CustomEvent<FieldPointerDropDetail>).detail;
+      const row = Number(detail?.row);
+      const col = Number(detail?.col);
+      if (!detail?.fieldId || !Number.isInteger(row) || !Number.isInteger(col)) return;
+      if (row < 1 || col < 1 || row > currentPage.sheet.rowCount || col > currentPage.sheet.columnCount) return;
+
+      const mergedRange = findMergedRangeForCell(currentPage, row, col);
+      const cellSelectionRange = getMergedAwareCellRange(row, col, mergedRange);
+      const normalizedSelection = normalizeRange(cellSelectionRange);
+      const left = columnOffsets[normalizedSelection.l - 1] ?? 0;
+      const top = rowOffsets[normalizedSelection.t - 1] ?? 0;
+
+      setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
+      addNodeFromFieldToCell(detail.fieldId, {
+        left,
+        top,
+        width: (columnOffsets[normalizedSelection.r] ?? left) - left,
+        height: (rowOffsets[normalizedSelection.b] ?? top) - top,
+        range: normalizedSelection,
+      });
+    };
+
+    ownerDocument.addEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
+    return () => ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
+  }, [addNodeFromFieldToCell, columnOffsets, currentPage, rowOffsets, setSelectedRange]);
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
       return;
@@ -1566,6 +1641,7 @@ export default function CanvasSheetWorkspace() {
         return (
           <Box
             key={key}
+            data-canvas-field-drop-cell="true"
             data-sheet-cell-focus="true"
             data-sheet-cell-row={row}
             data-sheet-cell-col={col}
@@ -1590,6 +1666,12 @@ export default function CanvasSheetWorkspace() {
               event.currentTarget.focus();
               openCellContextMenu(cellSelectionRange, event);
             }}
+            onDragOver={(event) => {
+              if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
+              event.preventDefault();
+              event.dataTransfer.dropEffect = 'copy';
+            }}
+            onDrop={(event) => handleFieldDropOnCell(event, cellSelectionRange)}
             onKeyDown={(event) => {
               event.stopPropagation();
               handleSheetKeyDown(event);
@@ -1746,21 +1828,7 @@ export default function CanvasSheetWorkspace() {
           />
         );
       })}
-      {selectionOutline ? (
-        <Box
-          data-selection-outline="selectionOutline"
-          sx={{
-            position: 'absolute',
-            top: selectionOutline.top,
-            left: selectionOutline.left,
-            width: selectionOutline.width,
-            height: selectionOutline.height,
-            border: '2px solid #1274dd',
-            pointerEvents: 'none',
-            boxSizing: 'border-box',
-          }}
-        />
-      ) : null}
+      {renderSelectionOutline('grid')}
     </Box>
   );
 
@@ -2161,6 +2229,7 @@ export default function CanvasSheetWorkspace() {
                       {hasSheetOverlayContent ? renderImportedGrid('paper') : null}
                       <CanvasDropZone parentId={null} />
                       <CanvasNodeRenderer nodes={currentPage.nodes} />
+                      {hasSheetOverlayContent ? renderSelectionOutline('overlay') : null}
                     </Box>
                   </Box>
                   {currentPage.sheet.showFooter ? (
@@ -2466,6 +2535,8 @@ export default function CanvasSheetWorkspace() {
                   }}
                 >
                   {renderImportedGrid('sheet')}
+                  <CanvasNodeRenderer nodes={currentPage.nodes} />
+                  {renderSelectionOutline('overlay')}
                 </Box>
                 {currentPage.sheet.showFooter ? (
                   <Box

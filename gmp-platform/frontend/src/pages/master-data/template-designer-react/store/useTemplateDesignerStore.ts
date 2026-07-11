@@ -7,7 +7,9 @@ import type {
   CanvasSelectionRange,
   CanvasSelectedCell,
   CanvasSheetCell,
+  FieldType,
   ModelField,
+  ModelFieldStatus,
   TemplateDesignerDocument,
   TemplateDesignerTabKey,
 } from '../types';
@@ -16,6 +18,14 @@ import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 
 type MoveDirection = 'up' | 'down';
 
+interface FieldCellLayout {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  range?: CanvasSelectionRange;
+}
+
 const DOCUMENT_HISTORY_LIMIT = 50;
 
 function createId(prefix: string) {
@@ -23,6 +33,27 @@ function createId(prefix: string) {
     return `${prefix}-${crypto.randomUUID()}`;
   }
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function normalizeFieldCodeBase(input: string, fallback: string) {
+  const normalized = input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  return normalized || fallback;
+}
+
+function createUniqueFieldCode(fields: ModelField[], name: string, type: FieldType) {
+  const base = normalizeFieldCodeBase(name, type);
+  const usedCodes = new Set(fields.map((field) => field.code));
+  if (!usedCodes.has(base)) return base;
+
+  let index = 2;
+  while (usedCodes.has(`${base}_${index}`)) {
+    index += 1;
+  }
+  return `${base}_${index}`;
 }
 
 function getCellKey(row: number, col: number) {
@@ -667,6 +698,36 @@ function removeNodeFromTree(nodes: CanvasNode[], nodeId: string): CanvasNode[] {
     });
 }
 
+function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
+  const value = node.style.cellRange;
+  if (!value || typeof value !== 'object') return null;
+
+  const range = value as Partial<CanvasSelectionRange>;
+  const { t, l, b, r } = range;
+  if (typeof t !== 'number' || typeof l !== 'number' || typeof b !== 'number' || typeof r !== 'number') {
+    return null;
+  }
+  return normalizeRange({ t, l, b, r });
+}
+
+function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSelectionRange): CanvasNode[] {
+  const normalizedTarget = normalizeRange(targetRange);
+
+  return nodes
+    .filter((node) => {
+      if (!node.bindings?.fieldId) return true;
+      const cellRange = readNodeCellRange(node);
+      return !cellRange || !rangesIntersect(cellRange, normalizedTarget);
+    })
+    .map((node) => {
+      if (!node.children?.length) return node;
+      return {
+        ...node,
+        children: removeCellFieldNodesFromTree(node.children, normalizedTarget),
+      };
+    });
+}
+
 function moveNodeInTree(nodes: CanvasNode[], nodeId: string, direction: MoveDirection): CanvasNode[] {
   const currentIndex = nodes.findIndex((node) => node.id === nodeId);
   if (currentIndex >= 0) {
@@ -692,43 +753,101 @@ function moveNodeInTree(nodes: CanvasNode[], nodeId: string, direction: MoveDire
   });
 }
 
-function clearRemovedFieldBindings(nodes: CanvasNode[], fieldId: string): CanvasNode[] {
-  return nodes.map((node) => {
-    const nextNode = node.bindings?.fieldId === fieldId
-      ? {
-          ...node,
-          bindings: { ...node.bindings, fieldId: undefined },
-        }
-      : node;
+function resolveDefaultComponentType(field: ModelField) {
+  const definition = getFieldTypeDefinition(field.type);
 
-    if (!nextNode.children?.length) {
-      return nextNode;
-    }
+  if (field.type === 'text' && field.typeConfig.textMode === 'long') {
+    return 'textarea';
+  }
+  if (field.type === 'number' && field.typeConfig.numberMode === 'decimal') {
+    return 'inputdouble';
+  }
+  if (field.type === 'datetime') {
+    if (field.typeConfig.mode === 'date') return 'datepicker';
+    if (field.typeConfig.mode === 'time') return 'timepicker';
+  }
+  if (field.type === 'reference' && field.typeConfig.sourceType === 'department') {
+    return 'department';
+  }
 
-    return {
-      ...nextNode,
-      children: clearRemovedFieldBindings(nextNode.children, fieldId),
+  return definition.defaultComponentType;
+}
+
+function createBoundNodeFromField(field: ModelField, layout?: FieldCellLayout) {
+  const component = getComponentDefinition(resolveDefaultComponentType(field));
+  const node = component.createDefaultNode();
+  node.props = {
+    ...node.props,
+    label: field.name || component.label,
+  };
+  node.bindings = {
+    ...node.bindings,
+    fieldId: field.id,
+    required: false,
+    readonly: false,
+    hidden: false,
+    widgetConfig: {},
+  };
+  if (layout) {
+    node.style = {
+      ...node.style,
+      position: 'absolute',
+      compLeft: layout.left,
+      compTop: layout.top,
+      compWidth: layout.width,
+      compHeight: layout.height,
+      cellRange: layout.range,
     };
+  }
+  return node;
+}
+
+function collectBoundFieldIds(nodes: CanvasNode[], target = new Set<string>()) {
+  nodes.forEach((node) => {
+    if (node.bindings?.fieldId) {
+      target.add(node.bindings.fieldId);
+    }
+    if (node.children?.length) {
+      collectBoundFieldIds(node.children, target);
+    }
+  });
+  return target;
+}
+
+function isFieldBoundToOtherNode(nodes: CanvasNode[], fieldId: string, nodeId: string): boolean {
+  return nodes.some((node) => {
+    if (node.id !== nodeId && node.bindings?.fieldId === fieldId) {
+      return true;
+    }
+    return node.children?.length ? isFieldBoundToOtherNode(node.children, fieldId, nodeId) : false;
   });
 }
 
 function syncBoundNodesForField(nodes: CanvasNode[], fieldId: string, field: ModelField): CanvasNode[] {
+  const definition = getFieldTypeDefinition(field.type);
   return nodes.map((node) => {
-    const nextNode = node.bindings?.fieldId === fieldId
-      ? {
-          ...node,
-          type: field.type,
-          props: {
-            ...getComponentDefinition(field.type).createDefaultNode().props,
-            ...node.props,
-            label: field.name || node.props.label || field.type,
-            placeholder: field.placeholder || '',
-            required: node.props.required ?? field.required,
-            readonly: field.readonly,
-            hidden: field.hidden,
-          },
-        }
-      : node;
+    let nextNode = node;
+    if (node.bindings?.fieldId === fieldId) {
+      const nextType = definition.compatibleComponents.includes(node.type)
+        ? node.type
+        : resolveDefaultComponentType(field);
+      const nextDefaults = getComponentDefinition(nextType).createDefaultNode();
+      nextNode = {
+        ...node,
+        type: nextType,
+        props: {
+          ...nextDefaults.props,
+          ...node.props,
+          label: field.name || node.props.label || definition.label,
+        },
+        bindings: {
+          ...node.bindings,
+          widgetConfig: definition.compatibleComponents.includes(node.type)
+            ? node.bindings.widgetConfig
+            : {},
+        },
+      };
+    }
 
     if (!nextNode.children?.length) {
       return nextNode;
@@ -764,12 +883,14 @@ export interface TemplateDesignerStore {
   selectAllCells: () => void;
   selectColumnRange: (colStart: number, colEnd?: number) => void;
   selectRowRange: (rowStart: number, rowEnd?: number) => void;
-  addField: (type: string) => ModelField;
+  addField: (type: FieldType, name?: string) => ModelField;
   updateField: (fieldId: string, patch: Partial<ModelField>) => void;
-  removeField: (fieldId: string) => void;
+  setFieldStatus: (fieldId: string, status: ModelFieldStatus) => void;
   insertNode: (parentId: string | null, node: CanvasNode) => void;
   addNodeFromField: (fieldId: string, parentId?: string | null) => void;
+  addNodeFromFieldToCell: (fieldId: string, layout: FieldCellLayout) => void;
   bindFieldToNode: (nodeId: string, fieldId: string) => void;
+  updateNodeBindings: (nodeId: string, patch: Record<string, unknown>) => void;
   updateNodeProps: (nodeId: string, patch: Record<string, unknown>) => void;
   updateNodeStyle: (nodeId: string, patch: Record<string, unknown>) => void;
   moveNode: (nodeId: string, direction: MoveDirection) => void;
@@ -805,6 +926,8 @@ export interface TemplateDesignerStore {
   getCurrentPage: () => TemplateDesignerDocument['canvas']['pages'][number] | null;
   getSelectedNode: () => CanvasNode | null;
   getFieldById: (fieldId: string) => ModelField | null;
+  getUsedFieldIdsForCurrentVersion: () => string[];
+  getAvailableFieldsForCurrentVersion: (nodeId?: string | null) => ModelField[];
   addWorkflowNode: () => void;
   setWorkflowNodes: (nodes: TemplateDesignerDocument['workflow']['nodes']) => void;
   setWorkflowEdges: (edges: TemplateDesignerDocument['workflow']['edges']) => void;
@@ -937,12 +1060,15 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedNodeId: null,
     };
   }),
-  addField: (type) => {
+  addField: (type, name) => {
     const definition = getFieldTypeDefinition(type);
+    const fields = get().document?.model.fields ?? [];
+    const sortOrder = fields.length + 1;
+    const fieldName = name?.trim() || definition.label;
     const field = {
-      ...definition.defaultField(),
+      ...definition.defaultField(fieldName, sortOrder),
       id: createId('field'),
-      code: `${type}_${Date.now()}`,
+      code: createUniqueFieldCode(fields, fieldName, definition.type),
     };
     set((state) => pushDocumentHistory(state, {
       document: state.document
@@ -966,7 +1092,17 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     let updatedField: ModelField | null = null;
     const nextFields = state.document.model.fields.map((field) => {
       if (field.id !== fieldId) return field;
-      updatedField = { ...field, ...patch };
+      const nextType = patch.type ?? field.type;
+      const typeChanged = nextType !== field.type;
+      const definition = getFieldTypeDefinition(nextType);
+      updatedField = {
+        ...field,
+        ...patch,
+        type: definition.type,
+        typeConfig: typeChanged && !patch.typeConfig
+          ? { ...definition.defaultField(field.name, field.sortOrder).typeConfig }
+          : { ...field.typeConfig, ...(patch.typeConfig ?? {}) },
+      };
       return updatedField;
     });
 
@@ -991,24 +1127,18 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       },
     });
   }),
-  removeField: (fieldId) => set((state) => pushDocumentHistory(state, {
+  setFieldStatus: (fieldId, status) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? {
           ...state.document,
           model: {
             ...state.document.model,
-            fields: state.document.model.fields.filter((field) => field.id !== fieldId),
-          },
-          canvas: {
-            ...state.document.canvas,
-            pages: state.document.canvas.pages.map((page) => ({
-              ...page,
-              nodes: clearRemovedFieldBindings(page.nodes, fieldId),
-            })),
+            fields: state.document.model.fields.map((field) => (
+              field.id === fieldId ? { ...field, status } : field
+            )),
           },
         }
       : state.document,
-    selectedFieldId: state.selectedFieldId === fieldId ? null : state.selectedFieldId,
   })),
   insertNode: (parentId, node) => set((state) => pushDocumentHistory(state, {
     document: state.document
@@ -1021,27 +1151,88 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
   })),
   addNodeFromField: (fieldId, parentId = null) => {
     const field = get().getFieldById(fieldId);
-    if (!field) return;
-    const component = getComponentDefinition(field.type);
-    const node = component.createDefaultNode();
-    node.props = {
-      ...node.props,
-      label: field.name || component.label,
-      placeholder: field.placeholder || '',
-      required: field.required,
-      readonly: field.readonly,
-      hidden: field.hidden,
-    };
-    node.bindings = { ...node.bindings, fieldId: field.id };
-    get().insertNode(parentId, node);
+    const availableFields = get().getAvailableFieldsForCurrentVersion();
+    const selectedRange = get().selectedRange;
+    if (!field || field.status !== 'enabled' || !availableFields.some((item) => item.id === field.id)) return;
+    if (field.type === 'subTable' && (!selectedRange || !isMultiCellRange(normalizeRange(selectedRange)))) return;
+    get().insertNode(parentId, createBoundNodeFromField(field));
   },
-  bindFieldToNode: (nodeId, fieldId) => set((state) => pushDocumentHistory(state, {
+  addNodeFromFieldToCell: (fieldId, layout) => {
+    const field = get().getFieldById(fieldId);
+    const availableFields = get().getAvailableFieldsForCurrentVersion();
+    const selectedRange = get().selectedRange;
+    if (!field || field.status !== 'enabled' || !availableFields.some((item) => item.id === field.id)) return;
+    if (field.type === 'subTable' && (!selectedRange || !isMultiCellRange(normalizeRange(selectedRange)))) return;
+    const node = createBoundNodeFromField(field, layout);
+    set((state) => pushDocumentHistory(state, {
+      document: state.document
+        ? updateCanvasPage(state.document, (page) => ({
+            ...page,
+            nodes: [
+              ...removeCellFieldNodesFromTree(page.nodes, layout.range ?? createSingleCellRange()),
+              node,
+            ],
+          }))
+        : state.document,
+      selectedNodeId: node.id,
+    }));
+  },
+  bindFieldToNode: (nodeId, fieldId) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    const field = fieldId ? state.document.model.fields.find((item) => item.id === fieldId) ?? null : null;
+    if (fieldId && (!currentPage || !field || field.status !== 'enabled' || isFieldBoundToOtherNode(currentPage.nodes, fieldId, nodeId))) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        nodes: mapNodes(page.nodes, nodeId, (node) => {
+          if (!field) {
+            return {
+              ...node,
+              bindings: { ...node.bindings, fieldId: undefined },
+            };
+          }
+
+          const definition = getFieldTypeDefinition(field.type);
+          const nextType = definition.compatibleComponents.includes(node.type)
+            ? node.type
+            : resolveDefaultComponentType(field);
+          const nextDefaults = getComponentDefinition(nextType).createDefaultNode();
+
+          return {
+            ...node,
+            type: nextType,
+            props: {
+              ...nextDefaults.props,
+              ...node.props,
+              label: field.name || node.props.label || definition.label,
+            },
+            bindings: {
+              ...node.bindings,
+              fieldId: field.id,
+              displayLabel: undefined,
+              widgetConfig: definition.compatibleComponents.includes(node.type)
+                ? node.bindings?.widgetConfig
+                : {},
+            },
+          };
+        }),
+      })),
+    });
+  }),
+  updateNodeBindings: (nodeId, patch) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? updateCanvasPage(state.document, (page) => ({
           ...page,
           nodes: mapNodes(page.nodes, nodeId, (node) => ({
             ...node,
-            bindings: { ...node.bindings, fieldId: fieldId || undefined },
+            bindings: { ...node.bindings, ...patch } as CanvasNode['bindings'],
           })),
         }))
       : state.document,
@@ -1568,6 +1759,24 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const document = get().document;
     if (!document) return null;
     return document.model.fields.find((field) => field.id === fieldId) ?? null;
+  },
+  getUsedFieldIdsForCurrentVersion: () => {
+    const page = get().getCurrentPage();
+    if (!page) return [];
+    return Array.from(collectBoundFieldIds(page.nodes));
+  },
+  getAvailableFieldsForCurrentVersion: (nodeId = null) => {
+    const document = get().document;
+    const page = get().getCurrentPage();
+    if (!document || !page) return [];
+    const selectedNode = nodeId ? findNode(page.nodes, nodeId) : null;
+    const currentFieldId = selectedNode?.bindings?.fieldId ?? null;
+    const usedFieldIds = collectBoundFieldIds(page.nodes);
+
+    return document.model.fields.filter((field) => {
+      if (field.status !== 'enabled') return false;
+      return field.id === currentFieldId || !usedFieldIds.has(field.id);
+    });
   },
   addWorkflowNode: () => set((state) => pushDocumentHistory(state, {
     document: state.document

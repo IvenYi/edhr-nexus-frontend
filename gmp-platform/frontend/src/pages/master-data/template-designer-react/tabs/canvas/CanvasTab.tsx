@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import CanvasDesignerToolbar from '../../components/canvas/CanvasDesignerToolbar';
 import CanvasPageThumbnails from '../../components/canvas/CanvasPageThumbnails';
 import CanvasSheetWorkspace from '../../components/canvas/CanvasSheetWorkspace';
+import DesignerSidebar from '../../components/DesignerSidebar';
 
 const sideRailItems = [
   { id: 'thumbnails', title: '分页缩略图', tooltip: '分页', icon: <ArticleOutlined fontSize="small" /> },
@@ -119,9 +120,11 @@ export default function CanvasTab() {
                     <CloseOutlined fontSize="small" />
                   </Button>
                 </Box>
-                <Stack sx={{ p: 2.5, color: '#98a2b3', fontSize: 13 }}>
-                  当前阶段先还原分页缩略图和表格画布，其它侧边面板继续按 Vue 设计器迁移。
-                </Stack>
+                {activeRail === 'fields' ? <DesignerSidebar /> : (
+                  <Stack sx={{ p: 2.5, color: '#98a2b3', fontSize: 13 }}>
+                    当前面板正在迁移中。
+                  </Stack>
+                )}
               </Box>
             )}
             <Box

@@ -15,7 +15,19 @@ export interface PropertySchemaItem {
   options?: PropertyOption[];
 }
 
-export interface CanvasNodeBindings {
+export interface FieldBinding {
+  fieldId: string;
+  displayLabel?: string;
+  required?: boolean;
+  readonly?: boolean;
+  hidden?: boolean;
+  defaultValue?: unknown;
+  placeholder?: string;
+  helpText?: string;
+  widgetConfig?: Record<string, unknown>;
+}
+
+export interface CanvasNodeBindings extends Partial<Omit<FieldBinding, 'fieldId'>> {
   fieldId?: string;
   fieldIds?: string[];
 }
@@ -118,6 +130,7 @@ export interface DesignerRendererProps {
   node: CanvasNode;
   selected: boolean;
   onSelect: () => void;
+  renderMode?: 'normal' | 'cell';
 }
 
 export interface DesignerComponentDefinition {

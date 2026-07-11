@@ -8,6 +8,7 @@ export default function TemplateDesignerReactDialog({
   version,
   onClose,
   onSave,
+  onAutoSave,
   saving,
 }: TemplateDesignerDialogProps) {
   return (
@@ -31,6 +32,7 @@ export default function TemplateDesignerReactDialog({
             version={version}
             onClose={onClose}
             onSave={onSave}
+            onAutoSave={onAutoSave}
             saving={saving}
           />
         ) : null}
