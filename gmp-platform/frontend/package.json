@@ -22,6 +22,7 @@
     "verify:app-shell": "node scripts/verify-app-shell-topbar.mjs",
     "verify:personal-settings": "node scripts/verify-personal-settings-page.mjs",
     "verify:gct-module-removed": "node scripts/verify-gct-module-removed.mjs",
+    "verify:template-modeling": "node scripts/verify-template-modeling-page.mjs",
     "verify:template-designer-react": "node scripts/verify-template-designer-react.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },

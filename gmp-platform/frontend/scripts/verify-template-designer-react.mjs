@@ -405,6 +405,17 @@ if (!modelTab.includes('data-field-report-column-settings="true"')) failures.pus
 if (!modelTab.includes('Tooltip title="字段设置"')) failures.push('ModelTab.tsx: field report settings trigger must be named 字段设置');
 if (!modelTab.includes('aria-label="字段设置"')) failures.push('ModelTab.tsx: field report settings trigger aria label must be 字段设置');
 if (modelTab.includes('字段数据报表字段设置')) failures.push('ModelTab.tsx: field report settings trigger must not use the verbose old label');
+if (!modelTypes.includes('fieldReportColumnWidths')) failures.push('model.ts: model design state must persist field report column widths');
+if (!documentUtils.includes('normalizeFieldReportColumnWidths')) failures.push('document.ts: persisted field report column widths must be normalized from modelDesignJson');
+if (!storeFile.includes('setModelFieldReportColumnWidth')) failures.push('useTemplateDesignerStore.ts: missing persisted field report column width update action');
+if (!modelTab.includes('REPORT_FIELD_COLUMN_MIN_WIDTH = 120')) failures.push('ModelTab.tsx: field report table must use the standard minimum column width');
+if (!modelTab.includes('reportColumnScopeKey')) failures.push('ModelTab.tsx: field report column widths must be scoped for main table and sub-table designs');
+if (!modelTab.includes('document?.model.fieldReportColumnWidths?.[reportColumnScopeKey]')) failures.push('ModelTab.tsx: field report column widths must read from persisted model design state');
+if (!modelTab.includes('beginReportColumnResize')) failures.push('ModelTab.tsx: field report table headers must support drag resizing');
+if (!modelTab.includes('data-field-report-column-resizer')) failures.push('ModelTab.tsx: field report table headers must expose resize handles');
+if (!modelTab.includes('setModelFieldReportColumnWidth(reportColumnScopeKey, column.key, nextWidth)')) failures.push('ModelTab.tsx: resized field report column widths must be persisted through the designer store');
+if (!modelTab.includes('<colgroup>')) failures.push('ModelTab.tsx: field report table must use colgroup widths for stable resizing');
+if (!modelTab.includes('minWidth: column.minWidth')) failures.push('ModelTab.tsx: field report table header cells must enforce column minimum widths');
 if (!modelTab.includes('fieldReportColumnSettingsAnchorEl')) failures.push('ModelTab.tsx: field report settings trigger must track its popover anchor');
 if (!modelTab.includes('setFieldReportColumnSettingsAnchorEl(event.currentTarget)')) failures.push('ModelTab.tsx: field report settings trigger must open a settings popover');
 if (!modelTab.includes('data-field-report-column-settings-panel')) failures.push('ModelTab.tsx: field report settings trigger must render a settings panel');
@@ -603,6 +614,8 @@ if (!canvasWorkspace.includes('onDrop={(event) => handleFieldDropOnCell(event, c
 if (!canvasWorkspace.includes('data-canvas-field-drop-cell="true"')) failures.push('CanvasSheetWorkspace.tsx: field drop target cells must expose a stable marker');
 if (!canvasWorkspace.includes('FIELD_POINTER_DROP_EVENT')) failures.push('CanvasSheetWorkspace.tsx: sheet cells must accept pointer-based field drops');
 if (!canvasWorkspace.includes('handlePointerFieldDrop')) failures.push('CanvasSheetWorkspace.tsx: pointer-based field drops must use the same cell layout path');
+if (!canvasWorkspace.includes('FIELD_POINTER_HOVER_EVENT')) failures.push('CanvasSheetWorkspace.tsx: pointer field drags must update a visual drop guide while hovering cells');
+if (!canvasWorkspace.includes('data-field-drop-guide="true"')) failures.push('CanvasSheetWorkspace.tsx: field drag hover must render a visible target-cell guide');
 if (!canvasWorkspace.includes('range: normalizedSelection')) failures.push('CanvasSheetWorkspace.tsx: dropped field components must keep the target cell range');
 if (!storeFile.includes('removeCellFieldNodesFromTree')) failures.push('useTemplateDesignerStore.ts: cell field drops must replace existing field nodes in the same cell range');
 if (!storeFile.includes('rangesIntersect')) failures.push('useTemplateDesignerStore.ts: cell field replacement must detect overlapping cell ranges');
@@ -721,6 +734,7 @@ if (!sidebar.includes('handleFieldPointerDown')) failures.push('DesignerSidebar.
 if (!sidebar.includes('data-canvas-field-drag-preview="true"')) failures.push('DesignerSidebar.tsx: pointer drag preview must render the full field Button');
 if (!sidebar.includes('ownerDocument.elementFromPoint')) failures.push('DesignerSidebar.tsx: pointer drag must resolve the drop cell under the cursor');
 if (!sidebar.includes('findFieldDropCellAtPoint')) failures.push('DesignerSidebar.tsx: pointer drag must find a cell by coordinates when an existing component covers the cell');
+if (!sidebar.includes('FIELD_POINTER_HOVER_EVENT')) failures.push('DesignerSidebar.tsx: pointer drag must dispatch hover updates for the canvas drop guide');
 if (!sidebar.includes('FIELD_POINTER_DROP_EVENT')) failures.push('DesignerSidebar.tsx: pointer drag must dispatch a canvas drop event');
 if (!sidebar.includes('setDraggingFieldId(fieldId)')) failures.push('DesignerSidebar.tsx: drag start must mark the active field');
 if (!sidebar.includes('handleFieldDragEnd')) failures.push('DesignerSidebar.tsx: drag end must use a shared cleanup handler');
@@ -748,6 +762,10 @@ if (!renderer.includes('top: absoluteTop + cellInset')) failures.push('CanvasNod
 if (!renderer.includes('width: Math.max(0, absoluteWidth - cellInset * 2)')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must not cover horizontal cell borders');
 if (!renderer.includes('height: Math.max(0, absoluteHeight - cellInset * 2)')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must not cover vertical cell borders');
 if (!renderer.includes('readNodeCellRange')) failures.push('CanvasNodeRenderer.tsx: absolute field components must read their stored cell range');
+if (!renderer.includes('resolveCellRangeLayout')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must resolve current cell layout after row or column resize');
+if (renderer.includes('Math.max(cellRangeLayout.width, persistedWidth)') || renderer.includes('Math.max(cellRangeLayout.height, persistedHeight)')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must stay inside the current cell range instead of expanding over neighboring cells');
+if (!renderer.includes('const absoluteWidth = cellRangeLayout ? cellRangeLayout.width : persistedWidth') || !renderer.includes('const absoluteHeight = cellRangeLayout ? cellRangeLayout.height : persistedHeight')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must render from the current cell range size when a cell range is available');
+if (!canvasWorkspace.includes('resolveCellRangeLayout={getFieldDropCellLayout}')) failures.push('CanvasSheetWorkspace.tsx: canvas field nodes must receive current row and column layout');
 if (!renderer.includes('setSelectedRange')) failures.push('CanvasNodeRenderer.tsx: clicking an absolute field component must update the selected cell range');
 if (!renderer.includes('setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l })')) failures.push('CanvasNodeRenderer.tsx: clicking a cell-target field component must select its target cell');
 if (!renderer.includes('DeleteOutline')) failures.push('CanvasNodeRenderer.tsx: missing node delete action');
@@ -787,7 +805,10 @@ if (!storeFile.includes('insertNode')) failures.push('useTemplateDesignerStore.t
 if (!storeFile.includes('addNodeFromField')) failures.push('useTemplateDesignerStore.ts: missing addNodeFromField action');
 if (!storeFile.includes('addNodeFromFieldToCell')) failures.push('useTemplateDesignerStore.ts: missing cell-target field insertion action');
 if (!storeFile.includes("position: 'absolute'")) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must create an absolute component');
-if (!storeFile.includes('compLeft: layout.left') || !storeFile.includes('compTop: layout.top') || !storeFile.includes('compWidth: layout.width') || !storeFile.includes('compHeight: layout.height')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must use the target cell layout');
+if (!storeFile.includes('compLeft: layout.left') || !storeFile.includes('compTop: layout.top')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must use the target cell position');
+if (!storeFile.includes('MIN_CELL_FIELD_WIDTH') || !storeFile.includes('MIN_CELL_FIELD_HEIGHT')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must initialize minimum component width and height');
+if (!storeFile.includes('MIN_CELL_FIELD_HEIGHT = 24 + CELL_FIELD_INSET * 2')) failures.push('useTemplateDesignerStore.ts: cell-target field visible minimum height must be 24px');
+if (!storeFile.includes('compWidth: Math.max(layout.width, MIN_CELL_FIELD_WIDTH)') || !storeFile.includes('compHeight: Math.max(layout.height, MIN_CELL_FIELD_HEIGHT)')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must use the larger value between target cell size and minimum component size');
 if (!storeFile.includes('cellRange: layout.range')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must persist the target cell range');
 if (!storeFile.includes("field.type === 'subTable' && (!selectedRange || !isMultiCellRange(normalizeRange(selectedRange)))")) failures.push('useTemplateDesignerStore.ts: sub-table fields must only be drawable from a multi-cell selection');
 if (!storeFile.includes('getFieldById')) failures.push('useTemplateDesignerStore.ts: missing getFieldById helper');

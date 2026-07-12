@@ -42,9 +42,12 @@ export interface ModelFieldGroup {
   name: string;
 }
 
+export type FieldReportColumnWidths = Record<string, Record<string, number>>;
+
 export interface ModelDesignState {
   groups: ModelFieldGroup[];
   fields: ModelField[];
+  fieldReportColumnWidths?: FieldReportColumnWidths;
 }
 
 export interface FieldTypeDefinition {

@@ -7,6 +7,7 @@ import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField } from '../types';
 
 const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
+const FIELD_POINTER_HOVER_EVENT = 'template-designer-field-pointer-hover';
 const POINTER_DRAG_THRESHOLD = 4;
 
 interface PointerDragState {
@@ -110,6 +111,23 @@ export default function DesignerSidebar() {
       }) ?? null;
   };
 
+  const dispatchFieldPointerHover = (ownerDocument: Document, clientX: number, clientY: number) => {
+    const dropCell = findFieldDropCellAtPoint(ownerDocument, clientX, clientY);
+    const row = Number(dropCell?.getAttribute('data-sheet-cell-row'));
+    const col = Number(dropCell?.getAttribute('data-sheet-cell-col'));
+    const EventCtor = ownerDocument.defaultView?.CustomEvent ?? CustomEvent;
+
+    ownerDocument.dispatchEvent(new EventCtor(FIELD_POINTER_HOVER_EVENT, {
+      detail: dropCell && Number.isFinite(row) && Number.isFinite(col) ? { row, col } : null,
+    }));
+  };
+
+  const clearFieldPointerHover = (ownerDocument: Document) => {
+    const EventCtor = ownerDocument.defaultView?.CustomEvent ?? CustomEvent;
+
+    ownerDocument.dispatchEvent(new EventCtor(FIELD_POINTER_HOVER_EVENT, { detail: null }));
+  };
+
   const handleFieldPointerDown = (event: ReactPointerEvent<HTMLButtonElement>, fieldId: string) => {
     if (event.button !== 0) return;
 
@@ -162,6 +180,7 @@ export default function DesignerSidebar() {
       }
       updatePointerDrag(null);
       setDraggingFieldId(null);
+      clearFieldPointerHover(ownerDocument);
     };
 
     function handlePointerMove(moveEvent: PointerEvent) {
@@ -180,6 +199,7 @@ export default function DesignerSidebar() {
       if (active) {
         moveEvent.preventDefault();
         setDraggingFieldId(currentDrag.fieldId);
+        dispatchFieldPointerHover(ownerDocument, moveEvent.clientX, moveEvent.clientY);
       }
       updatePointerDrag(nextDrag);
     }

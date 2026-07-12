@@ -19,6 +19,7 @@ const AUTO_FIT_EXTRA_WIDTH = 18;
 const AUTO_FIT_EXTRA_HEIGHT = 4;
 const SPECIAL_WRAP_CELL_VALUE_PATTERN = /[□☐☑☒■▪●○◆◇★☆※√×]/;
 const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
+const FIELD_POINTER_HOVER_EVENT = 'template-designer-field-pointer-hover';
 
 type DragState =
   | { type: 'cell'; startRow: number; startCol: number; startRange: CanvasSelectionRange }
@@ -76,6 +77,11 @@ interface EditingCellState {
 
 interface FieldPointerDropDetail {
   fieldId: string;
+  row: number;
+  col: number;
+}
+
+interface FieldPointerHoverDetail {
   row: number;
   col: number;
 }
@@ -509,6 +515,7 @@ export default function CanvasSheetWorkspace() {
   const [paperSettingsOpen, setPaperSettingsOpen] = useState(false);
   const [settingsPopover, setSettingsPopover] = useState<CanvasSettingsPopoverState | null>(null);
   const [editingCell, setEditingCell] = useState<EditingCellState | null>(null);
+  const [fieldDropGuideRange, setFieldDropGuideRange] = useState<CanvasSelectionRange | null>(null);
   const [insertMenuCount, setInsertMenuCount] = useState('1');
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
@@ -617,6 +624,33 @@ export default function CanvasSheetWorkspace() {
       }}
     />
   ) : null;
+  const normalizedFieldDropGuideRange = fieldDropGuideRange ? normalizeRange(fieldDropGuideRange) : null;
+  const fieldDropGuideOutline = normalizedFieldDropGuideRange
+    ? {
+        top: rowOffsets[normalizedFieldDropGuideRange.t - 1],
+        left: columnOffsets[normalizedFieldDropGuideRange.l - 1],
+        width: columnOffsets[normalizedFieldDropGuideRange.r] - columnOffsets[normalizedFieldDropGuideRange.l - 1],
+        height: rowOffsets[normalizedFieldDropGuideRange.b] - rowOffsets[normalizedFieldDropGuideRange.t - 1],
+      }
+    : null;
+  const renderFieldDropGuide = () => fieldDropGuideOutline ? (
+    <Box
+      data-field-drop-guide="true"
+      sx={{
+        position: 'absolute',
+        top: fieldDropGuideOutline.top,
+        left: fieldDropGuideOutline.left,
+        width: fieldDropGuideOutline.width,
+        height: fieldDropGuideOutline.height,
+        border: '2px dashed #2990ff',
+        bgcolor: 'rgba(41, 144, 255, 0.12)',
+        boxShadow: 'inset 0 0 0 1px rgba(41, 144, 255, 0.35)',
+        pointerEvents: 'none',
+        boxSizing: 'border-box',
+        zIndex: 24,
+      }}
+    />
+  ) : null;
   const mergedCellMaps = useMemo(
     () => buildMergedCellMaps(currentPage?.mergedCells ?? []),
     [currentPage?.mergedCells],
@@ -695,11 +729,19 @@ export default function CanvasSheetWorkspace() {
     event.dataTransfer.dropEffect = 'copy';
     setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
     addNodeFromFieldToCell(fieldId, getFieldDropCellLayout(cellSelectionRange));
+    setFieldDropGuideRange(null);
   };
   useEffect(() => {
     if (!currentPage) return undefined;
 
     const ownerDocument = sheetInteractionRef.current?.ownerDocument ?? document;
+    const resolveHoverRange = (row: number, col: number) => {
+      if (row < 1 || col < 1 || row > currentPage.sheet.rowCount || col > currentPage.sheet.columnCount) {
+        return null;
+      }
+      const mergedRange = findMergedRangeForCell(currentPage, row, col);
+      return getMergedAwareCellRange(row, col, mergedRange);
+    };
     const handlePointerFieldDrop = (event: Event) => {
       const detail = (event as CustomEvent<FieldPointerDropDetail>).detail;
       const row = Number(detail?.row);
@@ -714,6 +756,7 @@ export default function CanvasSheetWorkspace() {
       const top = rowOffsets[normalizedSelection.t - 1] ?? 0;
 
       setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
+      setFieldDropGuideRange(null);
       addNodeFromFieldToCell(detail.fieldId, {
         left,
         top,
@@ -722,9 +765,25 @@ export default function CanvasSheetWorkspace() {
         range: normalizedSelection,
       });
     };
+    const handlePointerFieldHover = (event: Event) => {
+      const detail = (event as CustomEvent<FieldPointerHoverDetail | null>).detail;
+      const row = Number(detail?.row);
+      const col = Number(detail?.col);
+
+      if (!detail || !Number.isInteger(row) || !Number.isInteger(col)) {
+        setFieldDropGuideRange(null);
+        return;
+      }
+
+      setFieldDropGuideRange(resolveHoverRange(row, col));
+    };
 
     ownerDocument.addEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
-    return () => ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
+    ownerDocument.addEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
+    return () => {
+      ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
+      ownerDocument.removeEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
+    };
   }, [addNodeFromFieldToCell, columnOffsets, currentPage, rowOffsets, setSelectedRange]);
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
@@ -1670,6 +1729,11 @@ export default function CanvasSheetWorkspace() {
               if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
               event.preventDefault();
               event.dataTransfer.dropEffect = 'copy';
+              setFieldDropGuideRange(cellSelectionRange);
+            }}
+            onDragLeave={(event) => {
+              if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+              setFieldDropGuideRange(null);
             }}
             onDrop={(event) => handleFieldDropOnCell(event, cellSelectionRange)}
             onKeyDown={(event) => {
@@ -1829,6 +1893,7 @@ export default function CanvasSheetWorkspace() {
         );
       })}
       {renderSelectionOutline('grid')}
+      {renderFieldDropGuide()}
     </Box>
   );
 
@@ -2228,8 +2293,9 @@ export default function CanvasSheetWorkspace() {
                     >
                       {hasSheetOverlayContent ? renderImportedGrid('paper') : null}
                       <CanvasDropZone parentId={null} />
-                      <CanvasNodeRenderer nodes={currentPage.nodes} />
+                      <CanvasNodeRenderer nodes={currentPage.nodes} resolveCellRangeLayout={getFieldDropCellLayout} />
                       {hasSheetOverlayContent ? renderSelectionOutline('overlay') : null}
+                      {renderFieldDropGuide()}
                     </Box>
                   </Box>
                   {currentPage.sheet.showFooter ? (
@@ -2535,8 +2601,9 @@ export default function CanvasSheetWorkspace() {
                   }}
                 >
                   {renderImportedGrid('sheet')}
-                  <CanvasNodeRenderer nodes={currentPage.nodes} />
+                  <CanvasNodeRenderer nodes={currentPage.nodes} resolveCellRangeLayout={getFieldDropCellLayout} />
                   {renderSelectionOutline('overlay')}
+                  {renderFieldDropGuide()}
                 </Box>
                 {currentPage.sheet.showFooter ? (
                   <Box

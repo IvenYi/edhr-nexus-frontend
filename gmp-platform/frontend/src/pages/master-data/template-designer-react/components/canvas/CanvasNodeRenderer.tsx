@@ -9,8 +9,25 @@ import type { CanvasNode, CanvasSelectionRange } from '../../types';
 
 const CELL_FIELD_INSET = 3;
 
+interface CellRangeLayout {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+interface CanvasNodeRendererProps {
+  nodes: CanvasNode[];
+  resolveCellRangeLayout?: (range: CanvasSelectionRange) => CellRangeLayout;
+}
+
 function isAbsoluteNode(node: CanvasNode) {
   return node.style.position === 'absolute';
+}
+
+function readNumber(value: unknown, fallback: number) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
 }
 
 function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
@@ -25,7 +42,7 @@ function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
   return { t, l, b, r };
 }
 
-export default function CanvasNodeRenderer({ nodes }: { nodes: CanvasNode[] }) {
+export default function CanvasNodeRenderer({ nodes, resolveCellRangeLayout }: CanvasNodeRendererProps) {
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
   const setSelectedRange = useTemplateDesignerStore((state) => state.setSelectedRange);
@@ -37,13 +54,30 @@ export default function CanvasNodeRenderer({ nodes }: { nodes: CanvasNode[] }) {
     const Renderer = definition.renderDesigner;
     const selected = node.id === selectedNodeId;
     const absolute = isAbsoluteNode(node);
+    const cellRange = readNodeCellRange(node);
+    const cellRangeLayout = absolute && node.bindings?.fieldId && cellRange
+      ? resolveCellRangeLayout?.(cellRange) ?? null
+      : null;
     const cellInset = absolute && node.bindings?.fieldId ? CELL_FIELD_INSET : 0;
-    const absoluteLeft = Number(node.style.compLeft ?? 0);
-    const absoluteTop = Number(node.style.compTop ?? 0);
-    const absoluteWidth = Number(node.style.compWidth ?? 240);
-    const absoluteHeight = Number(node.style.compHeight ?? 40);
+    const persistedWidth = readNumber(node.style.compWidth, 240);
+    const persistedHeight = readNumber(node.style.compHeight, 40);
+    const absoluteLeft = cellRangeLayout?.left ?? readNumber(node.style.compLeft, 0);
+    const absoluteTop = cellRangeLayout?.top ?? readNumber(node.style.compTop, 0);
+    const absoluteWidth = cellRangeLayout ? cellRangeLayout.width : persistedWidth;
+    const absoluteHeight = cellRangeLayout ? cellRangeLayout.height : persistedHeight;
+    const rendererNode = cellRangeLayout
+      ? {
+          ...node,
+          style: {
+            ...node.style,
+            compLeft: absoluteLeft,
+            compTop: absoluteTop,
+            compWidth: absoluteWidth,
+            compHeight: absoluteHeight,
+          },
+        }
+      : node;
     const handleSelect = () => {
-      const cellRange = readNodeCellRange(node);
       if (cellRange) {
         setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l });
       }
@@ -65,7 +99,7 @@ export default function CanvasNodeRenderer({ nodes }: { nodes: CanvasNode[] }) {
       >
         {absolute ? (
           <Renderer
-            node={node}
+            node={rendererNode}
             selected={selected}
             onSelect={handleSelect}
             renderMode="cell"
@@ -119,7 +153,7 @@ export default function CanvasNodeRenderer({ nodes }: { nodes: CanvasNode[] }) {
             {node.children?.map ? (
               <Box sx={{ mt: 1, ml: 2, pl: 2, borderLeft: '1px dashed #d0d7e2' }}>
                 <CanvasDropZone parentId={node.id} />
-                <CanvasNodeRenderer nodes={node.children} />
+                <CanvasNodeRenderer nodes={node.children} resolveCellRangeLayout={resolveCellRangeLayout} />
               </Box>
             ) : null}
           </>

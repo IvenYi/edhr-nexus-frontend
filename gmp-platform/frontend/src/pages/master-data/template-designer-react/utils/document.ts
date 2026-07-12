@@ -49,6 +49,27 @@ function normalizeSizedList(count: number, values: unknown, fallback: number) {
   });
 }
 
+function normalizeFieldReportColumnWidths(input: unknown): Record<string, Record<string, number>> {
+  if (!input || typeof input !== 'object') return {};
+
+  return Object.entries(input as Record<string, unknown>).reduce<Record<string, Record<string, number>>>((scopes, [scopeKey, scopeValue]) => {
+    if (!scopeKey || !scopeValue || typeof scopeValue !== 'object') return scopes;
+
+    const widths = Object.entries(scopeValue as Record<string, unknown>).reduce<Record<string, number>>((columns, [columnKey, columnWidth]) => {
+      const width = Number(columnWidth);
+      if (columnKey && Number.isFinite(width) && width > 0) {
+        columns[columnKey] = Math.round(width);
+      }
+      return columns;
+    }, {});
+
+    if (Object.keys(widths).length) {
+      scopes[scopeKey] = widths;
+    }
+    return scopes;
+  }, {});
+}
+
 const LEGACY_FIELD_TYPE_MAP: Record<string, FieldType> = {
   input: 'text',
   textarea: 'text',
@@ -138,6 +159,7 @@ function normalizeModelState(model: ModelDesignState | undefined): ModelDesignSt
       ? model.groups
       : [{ id: 'default-group', name: '默认分组' }],
     fields,
+    fieldReportColumnWidths: normalizeFieldReportColumnWidths(model.fieldReportColumnWidths),
   };
 }
 
@@ -150,6 +172,7 @@ export function createEmptyTemplateDesignerDocument(
     model: normalizeModelState(overrides?.model) ?? {
       groups: [{ id: 'default-group', name: '默认分组' }],
       fields: [],
+      fieldReportColumnWidths: {},
     },
     canvas: overrides?.canvas ?? {
       pages: [{

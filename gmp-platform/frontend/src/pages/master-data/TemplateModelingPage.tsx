@@ -202,10 +202,8 @@ const appContentDrawerPaperSx = {
 const formTemplateColumns: TemplateColumn[] = [
   { id: 'name', label: '表单名称', defaultWidth: 180, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'code', label: '表单编码', defaultWidth: 140, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'currentVersion', label: '当前版本', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'currentVersion', label: '版本数量', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'categoryName', label: '模板分类', defaultWidth: 140, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'effectiveFrom', label: '生效时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'effectiveTo', label: '失效时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'description', label: '模板描述', defaultWidth: 220, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'status', label: '状态', defaultWidth: 100, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -462,6 +460,11 @@ function validateEffectiveDateRange(effectiveFrom: string, effectiveTo: string) 
   const start = parseEffectiveDate(effectiveFrom);
   const end = parseEffectiveDate(effectiveTo);
   return !start || !end || end.getTime() >= start.getTime();
+}
+
+function getTemplateVersionCount(row: TemplateModelingRecord) {
+  const versions = row.versions ?? [];
+  return versions.length > 0 ? versions.length : row.currentVersion ? 1 : 0;
 }
 
 const fieldSx = {
@@ -756,15 +759,16 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     mutationFn: async () => {
       const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
       const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
+      const shouldSubmitVersionFields = pageKey === 'formTemplates' && !editingRow;
       const payload: TemplateModelingPayload = {
         code: form.code.trim(),
         name: form.name.trim(),
         categoryName: form.categoryName.trim() || null,
         description: form.description.trim() || null,
-        versionDescription: pageKey === 'formTemplates' ? form.versionDescription.trim() || null : undefined,
-        version: pageKey === 'formTemplates' ? form.version.trim() : undefined,
-        effectiveFrom: pageKey === 'formTemplates' ? effectiveFrom || null : undefined,
-        effectiveTo: pageKey === 'formTemplates' ? effectiveTo || null : undefined,
+        versionDescription: shouldSubmitVersionFields ? form.versionDescription.trim() || null : undefined,
+        version: shouldSubmitVersionFields ? form.version.trim() : undefined,
+        effectiveFrom: shouldSubmitVersionFields ? effectiveFrom || null : undefined,
+        effectiveTo: shouldSubmitVersionFields ? effectiveTo || null : undefined,
         status: form.status,
       };
       if (creatingVersionFrom) {
@@ -895,13 +899,14 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       setSnackbar({ open: true, message: '请输入模板编码', severity: 'error' });
       return;
     }
-    if (pageKey === 'formTemplates' && !form.version.trim()) {
+    const shouldSubmitVersionFields = pageKey === 'formTemplates' && !editingRow;
+    if (shouldSubmitVersionFields && !form.version.trim()) {
       setSnackbar({ open: true, message: '请输入模板版本', severity: 'error' });
       return;
     }
     const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
     const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
-    if (pageKey === 'formTemplates' && !validateEffectiveDateRange(effectiveFrom, effectiveTo)) {
+    if (shouldSubmitVersionFields && !validateEffectiveDateRange(effectiveFrom, effectiveTo)) {
       setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
       return;
     }
@@ -1278,7 +1283,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     const columnId = column.id;
     if (columnId === 'name') return row.name || '-';
     if (columnId === 'code') return row.code || '-';
-    if (columnId === 'currentVersion') return row.currentVersion?.version || '-';
+    if (columnId === 'currentVersion') return String(getTemplateVersionCount(row));
     if (columnId === 'categoryName') return row.categoryName || '-';
     if (columnId === 'effectiveFrom') return formatDateTime(row.currentVersion?.effectiveFrom);
     if (columnId === 'effectiveTo') return formatDateTime(row.currentVersion?.effectiveTo);
@@ -1438,7 +1443,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       return renderStatusBadge(row.status);
     }
     if (columnId === 'createdAt' || columnId === 'updatedAt') return formatDateTime(row[columnId]);
-    if (columnId === 'currentVersion') return row.currentVersion?.version || '-';
+    if (columnId === 'currentVersion') return String(getTemplateVersionCount(row));
     if (columnId === 'effectiveFrom') return formatDateTime(row.currentVersion?.effectiveFrom);
     if (columnId === 'effectiveTo') return formatDateTime(row.currentVersion?.effectiveTo);
     if (columnId === 'categoryName') return row.categoryName || '-';
@@ -1662,10 +1667,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   ] : [
     ['模板名称', drawerRow?.name],
     ['模板编码', drawerRow?.code],
-    ['当前版本', drawerRow?.currentVersion?.version],
+    ['版本数量', drawerRow ? getTemplateVersionCount(drawerRow) : '-'],
     ['模板分类', drawerRow?.categoryName],
-    ['生效时间', formatDateTime(drawerRow?.currentVersion?.effectiveFrom)],
-    ['失效时间', formatDateTime(drawerRow?.currentVersion?.effectiveTo)],
     ['状态', renderStatusBadge(drawerRow?.status)],
     ['模板描述', drawerRow?.description],
   ];
@@ -1684,6 +1687,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setDrawerRow(null);
     setDrawerVersionRow(null);
   };
+  const shouldRenderVersionSection = pageKey === 'formTemplates' && !editingRow;
 
   return (
     <Box sx={{ height: 'calc(100vh - 150px)', display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '260px minmax(0, 1fr)' }, gap: 1.5, minHeight: 0, overflow: 'hidden' }}>
@@ -1714,7 +1718,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                 </Box>
               </DetailSection>
             )}
-            {pageKey === 'formTemplates' ? (
+            {shouldRenderVersionSection ? (
               <DetailSection title="版本信息">
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
                   <TextField required fullWidth size="small" label="版本" value={form.version} onChange={(event) => setForm((current) => ({ ...current, version: event.target.value }))} sx={fieldSx} />

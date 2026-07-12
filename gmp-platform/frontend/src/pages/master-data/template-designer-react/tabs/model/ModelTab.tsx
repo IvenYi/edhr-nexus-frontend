@@ -1,4 +1,4 @@
-import { type DragEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type DragEvent, type MouseEvent as ReactMouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -52,19 +52,23 @@ interface FieldReportRow {
 interface FieldReportColumn {
   key: string;
   label: string;
-  width: number;
+  defaultWidth: number;
+  minWidth: number;
+  resizable?: boolean;
   getValue: (row: FieldReportRow) => string;
 }
 
 const reportRows: FieldReportRow[] = [];
 const REPORT_PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
+const REPORT_MAIN_COLUMN_SCOPE_KEY = 'main';
+const REPORT_FIELD_COLUMN_MIN_WIDTH = 120;
 const REPORT_TABLE_DATA_ROW_HEIGHT = 40;
 const REPORT_QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
 const reportAuditColumns: FieldReportColumn[] = [
-  { key: 'createdBy', label: '创建人', width: 140, getValue: (row) => row.createdBy },
-  { key: 'createdAt', label: '创建时间', width: 180, getValue: (row) => row.createdAt },
-  { key: 'updatedBy', label: '更新人', width: 140, getValue: (row) => row.updatedBy },
-  { key: 'updatedAt', label: '更新时间', width: 180, getValue: (row) => row.updatedAt },
+  { key: 'createdBy', label: '创建人', defaultWidth: 140, minWidth: REPORT_FIELD_COLUMN_MIN_WIDTH, resizable: true, getValue: (row) => row.createdBy },
+  { key: 'createdAt', label: '创建时间', defaultWidth: 180, minWidth: 150, resizable: true, getValue: (row) => row.createdAt },
+  { key: 'updatedBy', label: '更新人', defaultWidth: 140, minWidth: REPORT_FIELD_COLUMN_MIN_WIDTH, resizable: true, getValue: (row) => row.updatedBy },
+  { key: 'updatedAt', label: '更新时间', defaultWidth: 180, minWidth: 150, resizable: true, getValue: (row) => row.updatedAt },
 ];
 
 const compactTextFieldSx = {
@@ -292,6 +296,44 @@ function getSubTableFields(field: ModelField): ModelField[] {
       : [];
 }
 
+function getReportColumnScopeKey(subTableFieldId: string | null) {
+  return subTableFieldId ? `subTable:${subTableFieldId}` : REPORT_MAIN_COLUMN_SCOPE_KEY;
+}
+
+function resolveReportColumnWidths(
+  columns: FieldReportColumn[],
+  columnWidths: Record<string, number>,
+  tableContainerWidth: number,
+) {
+  const resolved = columns.reduce<Record<string, number>>((result, column) => {
+    const persistedWidth = column.resizable ? columnWidths[column.key] : undefined;
+    result[column.key] = Math.max(column.minWidth, persistedWidth ?? column.defaultWidth);
+    return result;
+  }, {});
+
+  const baseTotalWidth = columns.reduce((sum, column) => sum + resolved[column.key], 0);
+  const availableWidth = Math.floor(tableContainerWidth);
+  if (!Number.isFinite(availableWidth) || availableWidth <= baseTotalWidth) {
+    return resolved;
+  }
+
+  const flexibleColumns = columns.filter((column) => column.resizable);
+  const flexibleWeight = flexibleColumns.reduce((sum, column) => sum + column.defaultWidth, 0);
+  if (flexibleWeight <= 0) return resolved;
+
+  const spareWidth = availableWidth - baseTotalWidth;
+  let assignedSpareWidth = 0;
+  flexibleColumns.forEach((column, index) => {
+    const extraWidth = index === flexibleColumns.length - 1
+      ? spareWidth - assignedSpareWidth
+      : Math.floor((spareWidth * column.defaultWidth) / flexibleWeight);
+    assignedSpareWidth += extraWidth;
+    resolved[column.key] += extraWidth;
+  });
+
+  return resolved;
+}
+
 interface ModelTabProps {
   subTableDesignFieldId?: string | null;
   onSubTableDesignFieldIdChange?: (fieldId: string | null) => void;
@@ -306,6 +348,7 @@ export default function ModelTab({
   saving = false,
 }: ModelTabProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const reportTableContainerRef = useRef<HTMLDivElement | null>(null);
   const [keyword, setKeyword] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -325,6 +368,7 @@ export default function ModelTab({
   const [reportOperator, setReportOperator] = useState('');
   const [reportPage, setReportPage] = useState(1);
   const [reportRowsPerPage, setReportRowsPerPage] = useState<number>(20);
+  const [reportTableContainerWidth, setReportTableContainerWidth] = useState(0);
 
   const document = useTemplateDesignerStore((state) => state.document);
   const selectedFieldId = useTemplateDesignerStore((state) => state.selectedFieldId);
@@ -332,6 +376,7 @@ export default function ModelTab({
   const addField = useTemplateDesignerStore((state) => state.addField);
   const updateField = useTemplateDesignerStore((state) => state.updateField);
   const setFieldStatus = useTemplateDesignerStore((state) => state.setFieldStatus);
+  const setModelFieldReportColumnWidth = useTemplateDesignerStore((state) => state.setModelFieldReportColumnWidth);
   const getUsedFieldIdsForCurrentVersion = useTemplateDesignerStore((state) => state.getUsedFieldIdsForCurrentVersion);
 
   const fields = document?.model.fields ?? [];
@@ -344,13 +389,17 @@ export default function ModelTab({
     () => activeSubTableDesignField ? fieldRegistry.filter((fieldType) => fieldType.type !== 'subTable') : fieldRegistry,
     [activeSubTableDesignField],
   );
+  const reportColumnScopeKey = getReportColumnScopeKey(activeSubTableDesignField?.id ?? null);
+  const persistedReportColumnWidths = document?.model.fieldReportColumnWidths?.[reportColumnScopeKey] ?? {};
   const reportColumns = useMemo<FieldReportColumn[]>(() => {
     const modelColumns = currentFields.map((field) => field)
         .sort((first, second) => first.sortOrder - second.sortOrder)
         .map((field) => ({
           key: `field:${field.id}`,
           label: field.name || field.code || '未命名字段',
-          width: 180,
+          defaultWidth: 180,
+          minWidth: REPORT_FIELD_COLUMN_MIN_WIDTH,
+          resizable: true,
           getValue: (row: FieldReportRow) => row.fieldValues[field.id] ?? '',
         }));
 
@@ -367,7 +416,14 @@ export default function ModelTab({
     () => orderedReportColumns.filter((column) => !hiddenReportColumnKeys.includes(column.key)),
     [hiddenReportColumnKeys, orderedReportColumns],
   );
-  const reportTableMinWidth = Math.max(960, visibleReportColumns.reduce((total, column) => total + column.width, 0));
+  const resolvedReportColumnWidths = useMemo(
+    () => resolveReportColumnWidths(visibleReportColumns, persistedReportColumnWidths, reportTableContainerWidth),
+    [persistedReportColumnWidths, reportTableContainerWidth, visibleReportColumns],
+  );
+  const reportTableWidth = Math.max(
+    1,
+    visibleReportColumns.reduce((total, column) => total + resolvedReportColumnWidths[column.key], 0),
+  );
   const filteredFields = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
     return [...currentFields]
@@ -410,6 +466,27 @@ export default function ModelTab({
     setFieldReportColumnSettingsAnchorEl(null);
     setReportPage(1);
   }, [activeSubTableDesignField?.id]);
+
+  useEffect(() => {
+    const element = reportTableContainerRef.current;
+    if (!element) return undefined;
+
+    const updateWidth = () => setReportTableContainerWidth(Math.floor(element.clientWidth));
+    updateWidth();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateWidth);
+      return () => window.removeEventListener('resize', updateWidth);
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      setReportTableContainerWidth(Math.floor(entry?.contentRect.width ?? element.clientWidth));
+    });
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!isSidebarResizing) return undefined;
@@ -589,6 +666,39 @@ export default function ModelTab({
       if (reportColumns.length - current.length <= 1) return current;
       return [...current, columnId];
     });
+  };
+
+  const getReportColumnWidth = (column: FieldReportColumn) => resolvedReportColumnWidths[column.key] ?? column.defaultWidth;
+
+  const beginReportColumnResize = (event: ReactMouseEvent<HTMLDivElement>, columnId: string) => {
+    const column = visibleReportColumns.find((item) => item.key === columnId);
+    if (!column?.resizable) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const startX = event.clientX;
+    const startWidth = getReportColumnWidth(column);
+    const previousCursor = globalThis.document.body.style.cursor;
+    const previousUserSelect = globalThis.document.body.style.userSelect;
+
+    globalThis.document.body.style.cursor = 'col-resize';
+    globalThis.document.body.style.userSelect = 'none';
+
+    const resizeColumn = (moveEvent: globalThis.MouseEvent) => {
+      const nextWidth = Math.max(column.minWidth, startWidth + moveEvent.clientX - startX);
+      setModelFieldReportColumnWidth(reportColumnScopeKey, column.key, nextWidth);
+    };
+
+    const stopResize = () => {
+      globalThis.document.body.style.cursor = previousCursor;
+      globalThis.document.body.style.userSelect = previousUserSelect;
+      window.removeEventListener('mousemove', resizeColumn);
+      window.removeEventListener('mouseup', stopResize);
+    };
+
+    window.addEventListener('mousemove', resizeColumn);
+    window.addEventListener('mouseup', stopResize);
   };
 
   return (
@@ -923,13 +1033,59 @@ export default function ModelTab({
           </Popover>
 
           <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
-            <TableContainer sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
-              <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: '100%', minWidth: reportTableMinWidth, height: reportRows.length ? 'auto' : '100%' }}>
+            <TableContainer ref={reportTableContainerRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
+              <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: reportTableWidth, minWidth: reportTableWidth, height: reportRows.length ? 'auto' : '100%' }}>
+                <colgroup>
+                  {visibleReportColumns.map((column) => (
+                    <col key={column.key} style={{ width: getReportColumnWidth(column) }} />
+                  ))}
+                </colgroup>
                 <TableHead>
                   <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
                     {visibleReportColumns.map((column) => (
-                      <TableCell key={column.key} sx={{ width: column.width }}>
-                        {column.label}
+                      <TableCell
+                        key={column.key}
+                        sx={{
+                          width: getReportColumnWidth(column),
+                          minWidth: column.minWidth,
+                          position: 'sticky',
+                          top: 0,
+                          zIndex: 5,
+                          userSelect: 'none',
+                          ...(column.resizable ? { pr: 2 } : {}),
+                        }}
+                      >
+                        <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {column.label}
+                        </Box>
+                        {column.resizable ? (
+                          <Box
+                            data-field-report-column-resizer
+                            onMouseDown={(event) => beginReportColumnResize(event, column.key)}
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              right: 0,
+                              zIndex: 3,
+                              width: 8,
+                              height: '100%',
+                              cursor: 'col-resize',
+                              userSelect: 'none',
+                              '&::after': {
+                                content: '""',
+                                position: 'absolute',
+                                top: '50%',
+                                right: 0,
+                                transform: 'translateY(-50%)',
+                                width: '1px',
+                                height: 18,
+                                bgcolor: '#dcdfe6',
+                              },
+                              '&:hover': { bgcolor: '#d1e9ff' },
+                              '&:hover::after': { bgcolor: '#1890ff' },
+                            }}
+                          />
+                        ) : null}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -939,7 +1095,14 @@ export default function ModelTab({
                     pagedReportRows.map((row) => (
                       <TableRow hover key={row.id}>
                         {visibleReportColumns.map((column) => (
-                          <TableCell key={column.key} sx={tableBodyCellSx}>
+                          <TableCell
+                            key={column.key}
+                            sx={{
+                              ...tableBodyCellSx,
+                              width: getReportColumnWidth(column),
+                              minWidth: column.minWidth,
+                            }}
+                          >
                             {column.getValue(row)}
                           </TableCell>
                         ))}

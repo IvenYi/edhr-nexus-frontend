@@ -773,6 +773,10 @@ function resolveDefaultComponentType(field: ModelField) {
   return definition.defaultComponentType;
 }
 
+const CELL_FIELD_INSET = 3;
+const MIN_CELL_FIELD_WIDTH = 120 + CELL_FIELD_INSET * 2;
+const MIN_CELL_FIELD_HEIGHT = 24 + CELL_FIELD_INSET * 2;
+
 function createBoundNodeFromField(field: ModelField, layout?: FieldCellLayout) {
   const component = getComponentDefinition(resolveDefaultComponentType(field));
   const node = component.createDefaultNode();
@@ -794,8 +798,8 @@ function createBoundNodeFromField(field: ModelField, layout?: FieldCellLayout) {
       position: 'absolute',
       compLeft: layout.left,
       compTop: layout.top,
-      compWidth: layout.width,
-      compHeight: layout.height,
+      compWidth: Math.max(layout.width, MIN_CELL_FIELD_WIDTH),
+      compHeight: Math.max(layout.height, MIN_CELL_FIELD_HEIGHT),
       cellRange: layout.range,
     };
   }
@@ -886,6 +890,7 @@ export interface TemplateDesignerStore {
   addField: (type: FieldType, name?: string) => ModelField;
   updateField: (fieldId: string, patch: Partial<ModelField>) => void;
   setFieldStatus: (fieldId: string, status: ModelFieldStatus) => void;
+  setModelFieldReportColumnWidth: (scopeKey: string, columnKey: string, width: number) => void;
   insertNode: (parentId: string | null, node: CanvasNode) => void;
   addNodeFromField: (fieldId: string, parentId?: string | null) => void;
   addNodeFromFieldToCell: (fieldId: string, layout: FieldCellLayout) => void;
@@ -1140,6 +1145,31 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         }
       : state.document,
   })),
+  setModelFieldReportColumnWidth: (scopeKey, columnKey, width) => set((state) => {
+    if (!state.document || !scopeKey || !columnKey || !Number.isFinite(width)) {
+      return { document: state.document };
+    }
+
+    const nextWidth = Math.round(width);
+    const currentWidths = state.document.model.fieldReportColumnWidths ?? {};
+    const currentScopeWidths = currentWidths[scopeKey] ?? {};
+
+    return {
+      document: {
+        ...state.document,
+        model: {
+          ...state.document.model,
+          fieldReportColumnWidths: {
+            ...currentWidths,
+            [scopeKey]: {
+              ...currentScopeWidths,
+              [columnKey]: nextWidth,
+            },
+          },
+        },
+      },
+    };
+  }),
   insertNode: (parentId, node) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? updateCanvasPage(state.document, (page) => ({
