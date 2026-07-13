@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, MouseEvent as ReactMouseEvent } from 'react';
 
 export type PropertyEditorType = 'text' | 'textarea' | 'number' | 'switch' | 'select';
 
@@ -130,6 +130,8 @@ export interface DesignerRendererProps {
   node: CanvasNode;
   selected: boolean;
   onSelect: () => void;
+  onCellMouseDown?: (event: ReactMouseEvent<HTMLElement>) => void;
+  onCellContextMenu?: (event: ReactMouseEvent<HTMLElement>) => void;
   renderMode?: 'normal' | 'cell';
 }
 

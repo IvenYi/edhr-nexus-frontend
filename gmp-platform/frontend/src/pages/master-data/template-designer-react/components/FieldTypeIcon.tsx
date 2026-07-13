@@ -4,7 +4,6 @@ import CheckBoxOutlined from '@mui/icons-material/CheckBoxOutlined';
 import DrawOutlined from '@mui/icons-material/DrawOutlined';
 import HubOutlined from '@mui/icons-material/HubOutlined';
 import ImageOutlined from '@mui/icons-material/ImageOutlined';
-import LinkOutlined from '@mui/icons-material/LinkOutlined';
 import NumbersOutlined from '@mui/icons-material/NumbersOutlined';
 import RadioButtonCheckedOutlined from '@mui/icons-material/RadioButtonCheckedOutlined';
 import TableChartOutlined from '@mui/icons-material/TableChartOutlined';
@@ -17,7 +16,6 @@ const fieldTypeIconMap = {
   number: NumbersOutlined,
   datetime: CalendarMonthOutlined,
   signature: DrawOutlined,
-  link: LinkOutlined,
   attachment: AttachFileOutlined,
   image: ImageOutlined,
   singleSelect: RadioButtonCheckedOutlined,

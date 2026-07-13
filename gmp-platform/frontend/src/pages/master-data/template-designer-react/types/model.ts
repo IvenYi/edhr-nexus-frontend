@@ -5,7 +5,6 @@ export type FieldType =
   | 'number'
   | 'datetime'
   | 'signature'
-  | 'link'
   | 'attachment'
   | 'image'
   | 'singleSelect'

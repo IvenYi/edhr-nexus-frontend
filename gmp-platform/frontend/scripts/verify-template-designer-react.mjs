@@ -110,6 +110,7 @@ const storeFile = read('../src/pages/master-data/template-designer-react/store/u
 const documentUtils = read('../src/pages/master-data/template-designer-react/utils/document.ts');
 const modelTab = read('../src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx');
 const fieldManagementPanelOpening = modelTab.match(/<Paper[\s\S]*?data-field-management-panel="true"[\s\S]*?>/)?.[0] ?? '';
+const fieldCardGridStyleBlock = modelTab.match(/const fieldCardGridSx = \{[\s\S]*?\n\};/)?.[0] ?? '';
 const fieldCountFooterStyleBlock = modelTab.match(/const fieldCountFooterSx = \{[\s\S]*?\n\};/)?.[0] ?? '';
 const fieldCountFooterTextStyleBlock = modelTab.match(/const fieldCountFooterTextSx = \{[\s\S]*?\n\};/)?.[0] ?? '';
 const fieldReportTableHeadBlock = modelTab.match(/<TableHead>[\s\S]*?<\/TableHead>/)?.[0] ?? '';
@@ -172,7 +173,6 @@ const expectedDesignerFieldTypes = [
   ['number', '数字', 'NumbersOutlined'],
   ['datetime', '日期时间', 'CalendarMonthOutlined'],
   ['signature', '签名', 'DrawOutlined'],
-  ['link', '超链接', 'LinkOutlined'],
   ['attachment', '附件', 'AttachFileOutlined'],
   ['image', '图片', 'ImageOutlined'],
   ['singleSelect', '单选', 'RadioButtonCheckedOutlined'],
@@ -276,6 +276,10 @@ if (!storeFile.includes('deleteSheetColumns')) failures.push('useTemplateDesigne
 if (!storeFile.includes('deleteSheetRows')) failures.push('useTemplateDesignerStore.ts: missing deleteSheetRows action');
 if (!storeFile.includes('mergeSelectedCells')) failures.push('useTemplateDesignerStore.ts: missing selected-cell merge action');
 if (!storeFile.includes('splitSelectedCells')) failures.push('useTemplateDesignerStore.ts: missing selected-cell split action');
+if (!storeFile.includes('mergeCellFieldNodesForRange')) failures.push('useTemplateDesignerStore.ts: merging cells must reconcile field components in the merged range');
+if (!storeFile.includes('findFirstCellFieldNodeIdInRange')) failures.push('useTemplateDesignerStore.ts: merged field reconciliation must keep the first field by cell position');
+if (!storeFile.includes('collapseSplitCellFieldNodesToFirstCells')) failures.push('useTemplateDesignerStore.ts: splitting merged cells must move field components back to the first cell');
+if (!storeFile.includes('removedMergedRanges')) failures.push('useTemplateDesignerStore.ts: split-cell field reconciliation must use the ranges actually removed by the split action');
 if (!storeFile.includes('removeMergedRangesInSelection')) failures.push('useTemplateDesignerStore.ts: selected-cell split must remove merged ranges inside the current selection');
 if (!storeFile.includes('mergePageCellValuesInRange')) failures.push('useTemplateDesignerStore.ts: merging selected cells must preserve selected cell text as a multiline value');
 if (!storeFile.includes("mergedValues.join('\\n')")) failures.push('useTemplateDesignerStore.ts: merged selected-cell text must be joined with newlines');
@@ -322,6 +326,11 @@ for (const [type, label, icon] of expectedDesignerFieldTypes) {
   if (!fieldRegistry.includes(`iconKey: '${type}'`)) failures.push(`fieldRegistry.ts: missing icon key for field type "${type}"`);
   if (!fieldTypeIcon.includes(icon)) failures.push(`FieldTypeIcon.tsx: missing ${icon} icon for field type "${type}"`);
 }
+if (fieldRegistry.includes("type: 'link'") || fieldRegistry.includes("label: '超链接'")) failures.push('fieldRegistry.ts: 超链接 must be merged into text configuration, not remain an independent field type');
+if (fieldRegistry.includes('LINK_TYPE_CONFIG_SCHEMA') || fieldRegistry.includes("key: 'linkMode'")) failures.push('fieldRegistry.ts: link-specific field type config must not remain as a separate type schema');
+if (modelTypes.includes("| 'link'")) failures.push('model.ts: FieldType must not include independent link type');
+if (fieldTypeIcon.includes('LinkOutlined')) failures.push('FieldTypeIcon.tsx: link icon must not remain in field type icon map');
+if (!documentUtils.includes("link: 'text'")) failures.push('document.ts: legacy link fields must normalize to text fields');
 if (!modelTypes.includes("export type FieldType =")) failures.push('model.ts: missing canonical FieldType union');
 if (!modelTypes.includes('export type FieldTypeIconKey = FieldType')) failures.push('model.ts: field type icons must share the canonical field type key');
 if (!modelTypes.includes("export type ModelFieldStatus = 'enabled' | 'disabled'")) failures.push('model.ts: missing enabled/disabled field status union');
@@ -359,6 +368,10 @@ if (!modelTab.includes('gap: { xs: 1.5, md: 0 }')) failures.push('ModelTab.tsx: 
 if (!modelTab.includes('data-field-status-dot="true"')) failures.push('ModelTab.tsx: field cards must show a red/green status dot');
 if (!modelTab.includes('data-field-status-corner="true"')) failures.push('ModelTab.tsx: field status dot and text must render in the card top-right corner');
 if (!modelTab.includes("field.status === 'enabled' ? '#22c55e' : '#ef4444'")) failures.push('ModelTab.tsx: enabled fields must use a green dot and disabled fields a red dot');
+if (!modelTab.includes('data-field-version-usage-dot="true"')) failures.push('ModelTab.tsx: field names must show a current-version usage dot');
+if (!modelTab.includes("bgcolor: used ? '#2990ff' : '#c0c4cc'")) failures.push('ModelTab.tsx: current-version usage dot must be blue when used and gray when unused');
+if (!modelTab.includes("title={`该字段在当前表单版本中${used ? '已使用' : '未使用'}`}")) failures.push('ModelTab.tsx: current-version usage dot must explain used/unused state on hover');
+if (!modelTab.includes('data-field-name-with-usage="true"')) failures.push('ModelTab.tsx: field name row must expose a stable usage marker');
 if (!modelTab.includes('字段编码')) failures.push('ModelTab.tsx: field cards must label code as 字段编码');
 if (modelTab.includes('Key:')) failures.push('ModelTab.tsx: field cards must not label code as Key');
 if (!modelTab.includes('FieldTypeIcon')) failures.push('ModelTab.tsx: field cards and type selectors must render field type icons');
@@ -402,6 +415,8 @@ if (!modelTab.includes('data-field-management-panel="true"')) failures.push('Mod
 if (!fieldManagementPanelOpening.includes('elevation={0}')) failures.push('ModelTab.tsx: field management panel must remove the default Paper shadow');
 if (!fieldManagementPanelOpening.includes("border: '1px solid #e4e7ed'")) failures.push('ModelTab.tsx: field management panel must use the same border as the report panel');
 if (!fieldManagementPanelOpening.includes("boxShadow: 'none'")) failures.push('ModelTab.tsx: field management panel bottom shadow must match the report panel');
+if (!fieldCardGridStyleBlock.includes("width: 'calc(100% + 12px)'")) failures.push('ModelTab.tsx: field card list scrollbar must sit flush against the panel right edge');
+if (!fieldCardGridStyleBlock.includes("paddingRight: '12px'")) failures.push('ModelTab.tsx: field card list must keep content spacing away from the flush scrollbar');
 if (!fieldCountFooterStyleBlock.includes("borderTop: '1px solid #e4e7ed'")) failures.push('ModelTab.tsx: field count footer divider must match the report footer divider');
 if (!fieldCountFooterStyleBlock.includes('minHeight: 32')) failures.push('ModelTab.tsx: field count footer must use a compact bottom height');
 if (!fieldCountFooterStyleBlock.includes("alignItems: 'flex-end'")) failures.push('ModelTab.tsx: field count footer text must sit at the bottom');
@@ -412,7 +427,8 @@ if (modelTab.includes('Chip')) failures.push('ModelTab.tsx: field count must not
 if (!modelTab.includes('fieldEmptyStateSx')) failures.push('ModelTab.tsx: empty field list state must use a centered layout');
 if (!modelTab.includes('暂无字段</Typography>')) failures.push('ModelTab.tsx: empty field list text must read 暂无字段 without punctuation');
 if (modelTab.includes('暂无字段。')) failures.push('ModelTab.tsx: empty field list text must not end with punctuation');
-if (!modelTab.includes('当前版本已使用')) failures.push('ModelTab.tsx: field cards must show whether the current version uses the field');
+if (modelTab.includes('当前版本已使用') || modelTab.includes('当前版本未使用')) failures.push('ModelTab.tsx: field cards must not repeat current-version usage text after the field type');
+if (modelTab.includes('暂无说明')) failures.push('ModelTab.tsx: field cards must not render an empty description placeholder');
 if (!modelTab.includes('setCurrentFieldStatus(field.id')) failures.push('ModelTab.tsx: field hover actions must toggle enabled/disabled status for the current field collection');
 if (!modelTab.includes('data-field-report-query-panel="true"')) failures.push('ModelTab.tsx: field data report must use the standard query panel');
 if (!modelTab.includes('data-field-report-table-panel="true"')) failures.push('ModelTab.tsx: field data report must use the standard table panel');
@@ -763,6 +779,10 @@ if (!sidebar.includes('event.dataTransfer.setDragImage(dragPreview, dragOffsetX,
 if (!sidebar.includes("dragPreview.style.backgroundColor = '#fff'") || !sidebar.includes('dragPreview.style.boxShadow')) failures.push('DesignerSidebar.tsx: drag preview must look like the whole floating field Button');
 if (!sidebar.includes("field.type !== 'subTable'")) failures.push('DesignerSidebar.tsx: normal field mapping list must exclude sub-table fields');
 if (sidebar.includes('onClick={() => addNodeFromField(field.id)}')) failures.push('DesignerSidebar.tsx: field cards must be consumed by dropping onto a cell, not by clicking the sidebar');
+if (!sidebar.includes("sx={{ p: 1.5, overflow: 'auto', height: '100%' }}")) failures.push('DesignerSidebar.tsx: field management panel must let the empty state fill the sidebar height');
+if (!sidebar.includes('data-canvas-field-empty-state="true"')) failures.push('DesignerSidebar.tsx: empty field state must expose a stable marker');
+if (!sidebar.includes("flex: 1") || !sidebar.includes("justifyContent=\"center\"") || !sidebar.includes("alignItems=\"center\"")) failures.push('DesignerSidebar.tsx: empty field state must be centered in the available panel area');
+if (!sidebar.includes('暂无可添加字段</Typography>')) failures.push('DesignerSidebar.tsx: empty field state text must read 暂无可添加字段 without punctuation');
 if (sidebar.includes('基础字段') || sidebar.includes('字段映射') || sidebar.includes('布局组件') || sidebar.includes('插入目标')) failures.push('DesignerSidebar.tsx: field management panel must render only the field list without extra titles');
 if (!sidebar.includes('FieldTypeIcon')) failures.push('DesignerSidebar.tsx: field mapping list must show field type icons');
 if (!inspector.includes('属性配置')) failures.push('DesignerInspector.tsx: missing inspector title');
@@ -783,6 +803,19 @@ if (!renderer.includes('const absoluteWidth = cellRangeLayout ? cellRangeLayout.
 if (!canvasWorkspace.includes('resolveCellRangeLayout={getFieldDropCellLayout}')) failures.push('CanvasSheetWorkspace.tsx: canvas field nodes must receive current row and column layout');
 if (!renderer.includes('setSelectedRange')) failures.push('CanvasNodeRenderer.tsx: clicking an absolute field component must update the selected cell range');
 if (!renderer.includes('setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l })')) failures.push('CanvasNodeRenderer.tsx: clicking a cell-target field component must select its target cell');
+if (!canvasTypes.includes('onCellMouseDown?:')) failures.push('canvas.ts: cell-only designer renderers must expose a mouse-down bridge for range selection');
+if (!canvasTypes.includes('onCellContextMenu?:')) failures.push('canvas.ts: cell-only designer renderers must expose a context-menu bridge for cell menus');
+if (!renderer.includes('onCellFieldMouseDown')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must receive a mouse-down bridge from the sheet');
+if (!renderer.includes('onCellFieldContextMenu')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must receive a context-menu bridge from the sheet');
+if (!renderer.includes('onCellMouseDown={(event) => {')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must forward mouse-down events with their cell range');
+if (!renderer.includes('onCellContextMenu={(event) => {')) failures.push('CanvasNodeRenderer.tsx: cell-target field nodes must forward context-menu events with their cell range');
+if (!componentRegistry.includes('onCellMouseDown?.(event)')) failures.push('componentRegistry.tsx: cell-only field components must bridge mouse-down to sheet range selection');
+if (!componentRegistry.includes('onCellContextMenu?.(event)')) failures.push('componentRegistry.tsx: cell-only field components must bridge context menus to the sheet cell menu');
+if (!canvasWorkspace.includes('findCellRangeAtClientPoint')) failures.push('CanvasSheetWorkspace.tsx: sheet drag selection must resolve cells by pointer coordinates');
+if (!canvasWorkspace.includes('startCellRangeDrag')) failures.push('CanvasSheetWorkspace.tsx: sheet and component cells must share range-drag startup logic');
+if (!canvasWorkspace.includes('handleCellFieldMouseDown')) failures.push('CanvasSheetWorkspace.tsx: component-hosting cells must start range selection from component mouse-down');
+if (!canvasWorkspace.includes('handleCellFieldContextMenu')) failures.push('CanvasSheetWorkspace.tsx: component-hosting cells must open the cell context menu from component right-click');
+if (!canvasWorkspace.includes("dragState.type === 'cell'")) failures.push('CanvasSheetWorkspace.tsx: cell drag state must update range during global mousemove');
 if (!renderer.includes('DeleteOutline')) failures.push('CanvasNodeRenderer.tsx: missing node delete action');
 if (!componentRegistry.includes('propSchema')) failures.push('componentRegistry.tsx: missing propSchema support');
 if (!componentRegistry.includes('styleSchema')) failures.push('componentRegistry.tsx: missing styleSchema support');

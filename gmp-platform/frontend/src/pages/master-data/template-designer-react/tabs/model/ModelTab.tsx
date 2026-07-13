@@ -97,6 +97,8 @@ const compactTextFieldSx = {
 const fieldCardGridSx = {
   flex: 1,
   minHeight: 0,
+  width: 'calc(100% + 12px)',
+  paddingRight: '12px',
   overflow: 'auto',
   display: 'grid',
   gridTemplateColumns: '1fr',
@@ -801,9 +803,30 @@ export default function ModelTab({
                 >
                   <Stack spacing={0.75} sx={{ height: '100%' }}>
                     <Stack direction="row" justifyContent="space-between" spacing={1}>
-                      <Typography sx={{ fontSize: 15, lineHeight: 1.35, fontWeight: 700, color: '#20242a', minWidth: 0 }} noWrap>
-                        {field.name || '未命名字段'}
-                      </Typography>
+                      <Stack
+                        data-field-name-with-usage="true"
+                        direction="row"
+                        spacing={0.75}
+                        alignItems="center"
+                        sx={{ minWidth: 0, flex: '1 1 auto' }}
+                      >
+                        <Tooltip title={`该字段在当前表单版本中${used ? '已使用' : '未使用'}`} arrow>
+                          <Box
+                            component="span"
+                            data-field-version-usage-dot="true"
+                            sx={{
+                              width: 7,
+                              height: 7,
+                              borderRadius: '50%',
+                              bgcolor: used ? '#2990ff' : '#c0c4cc',
+                              flex: '0 0 auto',
+                            }}
+                          />
+                        </Tooltip>
+                        <Typography sx={{ fontSize: 15, lineHeight: 1.35, fontWeight: 700, color: '#20242a', minWidth: 0 }} noWrap>
+                          {field.name || '未命名字段'}
+                        </Typography>
+                      </Stack>
                       <Stack
                         data-field-status-corner="true"
                         direction="row"
@@ -873,12 +896,14 @@ export default function ModelTab({
                       <Stack data-field-type-badge="true" direction="row" spacing={0.5} alignItems="center">
                         <FieldTypeIcon iconKey={definition.iconKey} sx={{ fontSize: 15 }} />
                         <Typography sx={{ fontSize: 13, color: '#7b8491' }}>
-                          {definition.label} / {used ? '当前版本已使用' : '当前版本未使用'}
+                          {definition.label}
                         </Typography>
                       </Stack>
-                      <Typography sx={{ fontSize: 12, color: '#9aa3af' }} noWrap>
-                        {field.description || '暂无说明'}
-                      </Typography>
+                      {field.description?.trim() ? (
+                        <Typography sx={{ fontSize: 12, color: '#9aa3af' }} noWrap>
+                          {field.description.trim()}
+                        </Typography>
+                      ) : null}
                     </Stack>
                   </Stack>
                 </Paper>

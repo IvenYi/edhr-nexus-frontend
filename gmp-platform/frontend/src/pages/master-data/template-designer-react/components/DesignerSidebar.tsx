@@ -241,7 +241,7 @@ export default function DesignerSidebar() {
   };
 
   return (
-    <Stack spacing={0.75} sx={{ p: 1.5, overflow: 'auto' }}>
+    <Stack spacing={0.75} sx={{ p: 1.5, overflow: 'auto', height: '100%' }}>
       {modelFields.length ? (
         modelFields.map((field) => {
           const isDragging = field.id === draggingFieldId;
@@ -277,7 +277,14 @@ export default function DesignerSidebar() {
           );
         })
       ) : (
-        <Typography sx={{ px: 0.5, py: 1, fontSize: 12, color: '#909399' }}>暂无可添加字段</Typography>
+        <Stack
+          data-canvas-field-empty-state="true"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ flex: 1, minHeight: 0 }}
+        >
+          <Typography sx={{ fontSize: 12, color: '#909399' }}>暂无可添加字段</Typography>
+        </Stack>
       )}
       {pointerDrag?.active && pointerDragField ? (
         <Button

@@ -721,6 +721,47 @@ export default function CanvasSheetWorkspace() {
       range: normalizedSelection,
     };
   };
+  const findCellRangeAtClientPoint = (clientX: number, clientY: number) => {
+    if (!currentPage) return null;
+    const cells = Array.from(sheetInteractionRef.current?.querySelectorAll<HTMLElement>('[data-canvas-field-drop-cell="true"]') ?? []);
+    const targetCell = cells.find((element) => {
+      const rect = element.getBoundingClientRect();
+      return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+    });
+    if (!targetCell) return null;
+
+    const row = Number(targetCell.dataset.sheetCellRow);
+    const col = Number(targetCell.dataset.sheetCellCol);
+    if (!Number.isInteger(row) || !Number.isInteger(col)) return null;
+
+    const mergedRange = findMergedRangeForCell(currentPage, row, col);
+    return getMergedAwareCellRange(row, col, mergedRange);
+  };
+  const extendCellRangeDrag = (cellSelectionRange: CanvasSelectionRange, state: Exclude<DragState, null> & { type: 'cell' }) => {
+    setSelectedRange(
+      {
+        t: Math.min(state.startRange.t, cellSelectionRange.t),
+        l: Math.min(state.startRange.l, cellSelectionRange.l),
+        b: Math.max(state.startRange.b, cellSelectionRange.b),
+        r: Math.max(state.startRange.r, cellSelectionRange.r),
+      },
+      { row: state.startRow, col: state.startCol },
+    );
+  };
+  const startCellRangeDrag = (cellSelectionRange: CanvasSelectionRange) => {
+    setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
+    setDragState({
+      type: 'cell',
+      startRow: cellSelectionRange.t,
+      startCol: cellSelectionRange.l,
+      startRange: cellSelectionRange,
+    });
+  };
+  const handleCellFieldMouseDown = (cellSelectionRange: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => {
+    if (event.button !== 0) return;
+    sheetInteractionRef.current?.focus();
+    startCellRangeDrag(cellSelectionRange);
+  };
   const handleFieldDropOnCell = (event: ReactDragEvent<HTMLDivElement>, cellSelectionRange: CanvasSelectionRange) => {
     const fieldId = event.dataTransfer.getData('application/x-template-designer-field');
     if (!fieldId) return;
@@ -1286,6 +1327,13 @@ export default function CanvasSheetWorkspace() {
     };
 
     const handleMouseMove = (event: MouseEvent) => {
+      if (dragState.type === 'cell') {
+        const cellSelectionRange = findCellRangeAtClientPoint(event.clientX, event.clientY);
+        if (cellSelectionRange) {
+          extendCellRangeDrag(cellSelectionRange, dragState);
+        }
+      }
+
       if (dragState.type === 'resize-column') {
         const nextWidth = dragState.startWidth + event.clientX - dragState.startX;
         setSheetColumnWidth(dragState.startCol, dragState.startCol, nextWidth);
@@ -1299,7 +1347,7 @@ export default function CanvasSheetWorkspace() {
 
     window.addEventListener('mouseup', handleMouseUp);
 
-    if (dragState.type === 'resize-column' || dragState.type === 'resize-row') {
+    if (dragState.type === 'cell' || dragState.type === 'resize-column' || dragState.type === 'resize-row') {
       window.addEventListener('mousemove', handleMouseMove);
     }
 
@@ -1307,7 +1355,7 @@ export default function CanvasSheetWorkspace() {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [dragState, setSheetColumnWidth, setSheetRowHeight]);
+  }, [dragState, currentPage, setSelectedRange, setSheetColumnWidth, setSheetRowHeight]);
 
   useEffect(() => {
     if (!isFreeCanvas) {
@@ -1435,6 +1483,10 @@ export default function CanvasSheetWorkspace() {
       setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
     }
     openContextMenu('cell', event);
+  };
+  const handleCellFieldContextMenu = (cellSelectionRange: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => {
+    sheetInteractionRef.current?.focus();
+    openCellContextMenu(cellSelectionRange, event);
   };
   const getShiftColumnSelectionAnchor = () => {
     if (!normalizedRange || !currentPage) return null;
@@ -1708,13 +1760,7 @@ export default function CanvasSheetWorkspace() {
             onMouseDown={(event) => {
               if (event.button !== 0) return;
               event.currentTarget.focus();
-              setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
-              setDragState({
-                type: 'cell',
-                startRow: cellSelectionRange.t,
-                startCol: cellSelectionRange.l,
-                startRange: cellSelectionRange,
-              });
+              startCellRangeDrag(cellSelectionRange);
             }}
             onDoubleClick={(event) => {
               event.currentTarget.focus();
@@ -1742,15 +1788,7 @@ export default function CanvasSheetWorkspace() {
             }}
             onMouseEnter={() => {
               if (dragState?.type !== 'cell') return;
-              setSelectedRange(
-                {
-                  t: Math.min(dragState.startRange.t, cellSelectionRange.t),
-                  l: Math.min(dragState.startRange.l, cellSelectionRange.l),
-                  b: Math.max(dragState.startRange.b, cellSelectionRange.b),
-                  r: Math.max(dragState.startRange.r, cellSelectionRange.r),
-                },
-                { row: dragState.startRow, col: dragState.startCol },
-              );
+              extendCellRangeDrag(cellSelectionRange, dragState);
             }}
             sx={{
               gridColumn: `${colIndex + 1} / span ${spanCols}`,
@@ -2293,7 +2331,12 @@ export default function CanvasSheetWorkspace() {
                     >
                       {hasSheetOverlayContent ? renderImportedGrid('paper') : null}
                       <CanvasDropZone parentId={null} />
-                      <CanvasNodeRenderer nodes={currentPage.nodes} resolveCellRangeLayout={getFieldDropCellLayout} />
+                      <CanvasNodeRenderer
+                        nodes={currentPage.nodes}
+                        resolveCellRangeLayout={getFieldDropCellLayout}
+                        onCellFieldMouseDown={handleCellFieldMouseDown}
+                        onCellFieldContextMenu={handleCellFieldContextMenu}
+                      />
                       {hasSheetOverlayContent ? renderSelectionOutline('overlay') : null}
                       {renderFieldDropGuide()}
                     </Box>
@@ -2601,7 +2644,12 @@ export default function CanvasSheetWorkspace() {
                   }}
                 >
                   {renderImportedGrid('sheet')}
-                  <CanvasNodeRenderer nodes={currentPage.nodes} resolveCellRangeLayout={getFieldDropCellLayout} />
+                  <CanvasNodeRenderer
+                    nodes={currentPage.nodes}
+                    resolveCellRangeLayout={getFieldDropCellLayout}
+                    onCellFieldMouseDown={handleCellFieldMouseDown}
+                    onCellFieldContextMenu={handleCellFieldContextMenu}
+                  />
                   {renderSelectionOutline('overlay')}
                   {renderFieldDropGuide()}
                 </Box>

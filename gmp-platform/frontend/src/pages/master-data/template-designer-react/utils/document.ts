@@ -72,6 +72,7 @@ function normalizeFieldReportColumnWidths(input: unknown): Record<string, Record
 
 const LEGACY_FIELD_TYPE_MAP: Record<string, FieldType> = {
   input: 'text',
+  link: 'text',
   textarea: 'text',
   inputnumber: 'number',
   inputdouble: 'number',

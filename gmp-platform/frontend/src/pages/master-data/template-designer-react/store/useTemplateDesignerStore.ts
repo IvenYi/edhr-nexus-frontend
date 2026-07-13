@@ -729,6 +729,104 @@ function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSe
     });
 }
 
+function compareCellRangesByStart(first: CanvasSelectionRange, second: CanvasSelectionRange) {
+  const normalizedFirst = normalizeRange(first);
+  const normalizedSecond = normalizeRange(second);
+  return normalizedFirst.t - normalizedSecond.t
+    || normalizedFirst.l - normalizedSecond.l
+    || normalizedFirst.b - normalizedSecond.b
+    || normalizedFirst.r - normalizedSecond.r;
+}
+
+function findFirstCellFieldNodeIdInRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange) {
+  type CellFieldCandidate = { id: string; range: CanvasSelectionRange; order: number };
+  const normalizedTarget = normalizeRange(targetRange);
+  let firstField: CellFieldCandidate | null = null;
+  let order = 0;
+
+  const visit = (items: CanvasNode[]) => {
+    items.forEach((node) => {
+      const cellRange = readNodeCellRange(node);
+      if (node.bindings?.fieldId && cellRange && rangesIntersect(cellRange, normalizedTarget)) {
+        const current = { id: node.id, range: cellRange, order };
+        const rangeOrder = firstField ? compareCellRangesByStart(current.range, firstField.range) : -1;
+        if (!firstField || rangeOrder < 0 || (rangeOrder === 0 && current.order < firstField.order)) {
+          firstField = current;
+        }
+      }
+      order += 1;
+
+      if (node.children?.length) {
+        visit(node.children);
+      }
+    });
+  };
+
+  visit(nodes);
+  const selectedField = firstField as CellFieldCandidate | null;
+  return selectedField?.id ?? null;
+}
+
+function mergeCellFieldNodesForRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange): CanvasNode[] {
+  const normalizedTarget = normalizeRange(targetRange);
+  const keptFieldNodeId = findFirstCellFieldNodeIdInRange(nodes, normalizedTarget);
+  if (!keptFieldNodeId) return nodes;
+
+  const reconcile = (items: CanvasNode[]): CanvasNode[] => items.flatMap((node) => {
+    const cellRange = readNodeCellRange(node);
+    const isFieldInRange = Boolean(node.bindings?.fieldId && cellRange && rangesIntersect(cellRange, normalizedTarget));
+
+    if (isFieldInRange && node.id !== keptFieldNodeId) {
+      return [];
+    }
+
+    const nextNode = isFieldInRange
+      ? {
+          ...node,
+          style: {
+            ...node.style,
+            cellRange: normalizedTarget,
+          },
+        }
+      : node;
+
+    if (!nextNode.children?.length) return [nextNode];
+    return [{
+      ...nextNode,
+      children: reconcile(nextNode.children),
+    }];
+  });
+
+  return reconcile(nodes);
+}
+
+function collapseSplitCellFieldNodesToFirstCells(nodes: CanvasNode[], splitRanges: CanvasSelectionRange[]): CanvasNode[] {
+  const normalizedSplitRanges = splitRanges.map(normalizeRange).sort(compareCellRangesByStart);
+  if (!normalizedSplitRanges.length) return nodes;
+
+  return nodes.map((node) => {
+    const cellRange = readNodeCellRange(node);
+    const splitRange = node.bindings?.fieldId && cellRange
+      ? normalizedSplitRanges.find((range) => rangesIntersect(cellRange, range)) ?? null
+      : null;
+    const nextNode = splitRange
+      ? {
+          ...node,
+          style: {
+            ...node.style,
+            cellRange: createSingleCellRange(splitRange.t, splitRange.l),
+          },
+        }
+      : node;
+
+    if (!nextNode.children?.length) return nextNode;
+    return {
+      ...nextNode,
+      children: collapseSplitCellFieldNodesToFirstCells(nextNode.children, normalizedSplitRanges),
+    };
+  });
+}
+
 function moveNodeInTree(nodes: CanvasNode[], nodeId: string, direction: MoveDirection): CanvasNode[] {
   const currentIndex = nodes.findIndex((node) => node.id === nodeId);
   if (currentIndex >= 0) {
@@ -1659,6 +1757,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     return pushDocumentHistory(state, {
       document: updateCanvasPage(state.document, (page) => ({
         ...mergePageCellValuesInRange(page, normalizedSelection),
+        nodes: mergeCellFieldNodesForRange(page.nodes, normalizedSelection),
         mergedCells: [
           ...removeMergedRangesInSelection(page.mergedCells, normalizedSelection),
           normalizedSelection,
@@ -1683,6 +1782,9 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     }
 
     const normalizedSelection = normalizeRange(selectedRange);
+    const removedMergedRanges = currentPage.mergedCells
+      .filter((range) => rangesIntersect(range, normalizedSelection))
+      .map(normalizeRange);
     const nextMergedCells = removeMergedRangesInSelection(currentPage.mergedCells, normalizedSelection);
     if (nextMergedCells.length === currentPage.mergedCells.length) {
       return { document: state.document };
@@ -1691,6 +1793,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     return pushDocumentHistory(state, {
       document: updateCanvasPage(state.document, (page) => ({
         ...page,
+        nodes: collapseSplitCellFieldNodesToFirstCells(page.nodes, removedMergedRanges),
         mergedCells: nextMergedCells,
       })),
       selectedRange: normalizedSelection,

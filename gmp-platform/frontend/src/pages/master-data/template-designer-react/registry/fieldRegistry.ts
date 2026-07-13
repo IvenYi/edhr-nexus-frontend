@@ -69,20 +69,6 @@ const SIGNATURE_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
   },
 ];
 
-const LINK_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
-  {
-    key: 'linkMode',
-    label: '链接结构',
-    editor: 'select',
-    defaultValue: 'external',
-    options: [
-      { label: '外部链接', value: 'external' },
-      { label: '系统内链', value: 'internal' },
-      { label: '文档链接', value: 'document' },
-    ],
-  },
-];
-
 const ATTACHMENT_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
   { key: 'allowedFileTypes', label: '允许文件类型', editor: 'text', defaultValue: '' },
 ];
@@ -205,15 +191,6 @@ export const fieldRegistry: FieldTypeDefinition[] = [
     compatibleComponents: ['readonlycmp', 'userpicker'],
     typeConfig: { signatureMode: 'electronic' },
     typeConfigSchema: SIGNATURE_TYPE_CONFIG_SCHEMA,
-  }),
-  createFieldDefinition({
-    type: 'link',
-    label: '超链接',
-    iconKey: 'link',
-    defaultComponentType: 'input',
-    compatibleComponents: ['input', 'readonlycmp'],
-    typeConfig: { linkMode: 'external' },
-    typeConfigSchema: LINK_TYPE_CONFIG_SCHEMA,
   }),
   createFieldDefinition({
     type: 'attachment',

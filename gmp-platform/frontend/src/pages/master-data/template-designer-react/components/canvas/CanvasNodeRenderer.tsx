@@ -1,3 +1,4 @@
+import type { MouseEvent as ReactMouseEvent } from 'react';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
@@ -19,6 +20,8 @@ interface CellRangeLayout {
 interface CanvasNodeRendererProps {
   nodes: CanvasNode[];
   resolveCellRangeLayout?: (range: CanvasSelectionRange) => CellRangeLayout;
+  onCellFieldMouseDown?: (range: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => void;
+  onCellFieldContextMenu?: (range: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => void;
 }
 
 function isAbsoluteNode(node: CanvasNode) {
@@ -42,7 +45,12 @@ function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
   return { t, l, b, r };
 }
 
-export default function CanvasNodeRenderer({ nodes, resolveCellRangeLayout }: CanvasNodeRendererProps) {
+export default function CanvasNodeRenderer({
+  nodes,
+  resolveCellRangeLayout,
+  onCellFieldMouseDown,
+  onCellFieldContextMenu,
+}: CanvasNodeRendererProps) {
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
   const setSelectedRange = useTemplateDesignerStore((state) => state.setSelectedRange);
@@ -102,6 +110,16 @@ export default function CanvasNodeRenderer({ nodes, resolveCellRangeLayout }: Ca
             node={rendererNode}
             selected={selected}
             onSelect={handleSelect}
+            onCellMouseDown={(event) => {
+              if (cellRange) {
+                onCellFieldMouseDown?.(cellRange, event);
+              }
+            }}
+            onCellContextMenu={(event) => {
+              if (cellRange) {
+                onCellFieldContextMenu?.(cellRange, event);
+              }
+            }}
             renderMode="cell"
           />
         ) : (
@@ -153,7 +171,12 @@ export default function CanvasNodeRenderer({ nodes, resolveCellRangeLayout }: Ca
             {node.children?.map ? (
               <Box sx={{ mt: 1, ml: 2, pl: 2, borderLeft: '1px dashed #d0d7e2' }}>
                 <CanvasDropZone parentId={node.id} />
-                <CanvasNodeRenderer nodes={node.children} resolveCellRangeLayout={resolveCellRangeLayout} />
+                <CanvasNodeRenderer
+                  nodes={node.children}
+                  resolveCellRangeLayout={resolveCellRangeLayout}
+                  onCellFieldMouseDown={onCellFieldMouseDown}
+                  onCellFieldContextMenu={onCellFieldContextMenu}
+                />
               </Box>
             ) : null}
           </>

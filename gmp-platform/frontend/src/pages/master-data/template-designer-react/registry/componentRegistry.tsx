@@ -213,7 +213,14 @@ function BasicRenderer({ node, selected, onSelect }: DesignerRendererProps) {
   );
 }
 
-function FieldPreviewRenderer({ node, selected, onSelect, renderMode = 'normal' }: DesignerRendererProps) {
+function FieldPreviewRenderer({
+  node,
+  selected,
+  onSelect,
+  onCellMouseDown,
+  onCellContextMenu,
+  renderMode = 'normal',
+}: DesignerRendererProps) {
   const field = useBoundField(node);
   const isCellMode = renderMode === 'cell';
   const options = parseFieldOptions(field);
@@ -473,12 +480,18 @@ function FieldPreviewRenderer({ node, selected, onSelect, renderMode = 'normal' 
       <Box
         data-canvas-cell-field-component="true"
         onMouseDown={(event) => {
+          if (event.button !== 0) return;
           event.stopPropagation();
+          onCellMouseDown?.(event);
           onSelect();
         }}
         onClick={(event) => {
           event.stopPropagation();
           onSelect();
+        }}
+        onContextMenu={(event) => {
+          event.stopPropagation();
+          onCellContextMenu?.(event);
         }}
         sx={{
           width: '100%',
