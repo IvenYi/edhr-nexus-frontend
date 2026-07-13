@@ -708,6 +708,41 @@ function removeNodeFromTree(nodes: CanvasNode[], nodeId: string): CanvasNode[] {
     });
 }
 
+function collectDeletedSubTableFieldIds(
+  nodes: CanvasNode[],
+  shouldDeleteNode: (node: CanvasNode) => boolean,
+  target = new Set<string>(),
+) {
+  nodes.forEach((node) => {
+    if (shouldDeleteNode(node) && node.type === 'sub-table' && node.bindings?.fieldId) {
+      target.add(node.bindings.fieldId);
+    }
+    if (node.children?.length) {
+      collectDeletedSubTableFieldIds(node.children, shouldDeleteNode, target);
+    }
+  });
+  return target;
+}
+
+function removeSubTableChildFieldNodesFromTree(nodes: CanvasNode[], subTableFieldIds: Set<string>): CanvasNode[] {
+  if (!subTableFieldIds.size) return nodes;
+
+  return nodes
+    .filter((node) => !(node.bindings?.subTableId && subTableFieldIds.has(node.bindings.subTableId)))
+    .map((node) => {
+      if (!node.children?.length) return node;
+      return {
+        ...node,
+        children: removeSubTableChildFieldNodesFromTree(node.children, subTableFieldIds),
+      };
+    });
+}
+
+function removeNodeAndSubTableFieldsFromTree(nodes: CanvasNode[], nodeId: string): CanvasNode[] {
+  const deletedSubTableFieldIds = collectDeletedSubTableFieldIds(nodes, (node) => node.id === nodeId);
+  return removeSubTableChildFieldNodesFromTree(removeNodeFromTree(nodes, nodeId), deletedSubTableFieldIds);
+}
+
 function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
   const value = node.style.cellRange;
   if (!value || typeof value !== 'object') return null;
@@ -722,8 +757,13 @@ function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
 
 function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSelectionRange): CanvasNode[] {
   const normalizedTarget = normalizeRange(targetRange);
+  const deletedSubTableFieldIds = collectDeletedSubTableFieldIds(nodes, (node) => {
+    if (!node.bindings?.fieldId) return false;
+    const cellRange = readNodeCellRange(node);
+    return Boolean(cellRange && rangesIntersect(cellRange, normalizedTarget));
+  });
 
-  return nodes
+  const nextNodes = nodes
     .filter((node) => {
       if (!node.bindings?.fieldId) return true;
       const cellRange = readNodeCellRange(node);
@@ -736,6 +776,8 @@ function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSe
         children: removeCellFieldNodesFromTree(node.children, normalizedTarget),
       };
     });
+
+  return removeSubTableChildFieldNodesFromTree(nextNodes, deletedSubTableFieldIds);
 }
 
 function removeSubTableFieldNodesFromTree(
@@ -1585,7 +1627,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     document: state.document
       ? updateCanvasPage(state.document, (page) => ({
           ...page,
-          nodes: removeNodeFromTree(page.nodes, nodeId),
+          nodes: removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId),
         }))
       : state.document,
     selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
@@ -1861,7 +1903,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     return pushDocumentHistory(state, {
       document: updateCanvasPage(state.document, (page) => ({
         ...clearPageCellsInRange(page, selectedRange),
-        nodes: state.selectedNodeId ? removeNodeFromTree(page.nodes, state.selectedNodeId) : page.nodes,
+        nodes: state.selectedNodeId ? removeNodeAndSubTableFieldsFromTree(page.nodes, state.selectedNodeId) : page.nodes,
       })),
       selectedNodeId: null,
     });

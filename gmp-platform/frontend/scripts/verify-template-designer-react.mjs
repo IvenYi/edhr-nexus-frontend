@@ -695,7 +695,7 @@ if (!storeFile.includes('clearPageCellsInRange')) failures.push('useTemplateDesi
 if (!storeFile.includes('delete nextCells[cellKey]')) failures.push('useTemplateDesignerStore.ts: clearing cell values must remove empty value-only cells');
 if (!storeFile.includes('style: cell.style')) failures.push('useTemplateDesignerStore.ts: clearing cell values must preserve cell style');
 if (!storeFile.includes('border: cell.border')) failures.push('useTemplateDesignerStore.ts: clearing cell values must preserve cell border');
-if (!storeFile.includes('selectedNodeId ? removeNodeFromTree')) failures.push('useTemplateDesignerStore.ts: clearing selected cells must remove the selected component node and its field binding');
+if (!storeFile.includes('selectedNodeId ? removeNodeAndSubTableFieldsFromTree')) failures.push('useTemplateDesignerStore.ts: clearing selected cells must remove the selected component node and its field binding');
 if (!canvasWorkspace.includes('clearSelectedCells')) failures.push('CanvasSheetWorkspace.tsx: Delete/Backspace must clear the selected cell range');
 if (!canvasWorkspace.includes('handleCopySelectedCells')) failures.push('CanvasSheetWorkspace.tsx: missing Ctrl/Cmd+C selected-cell copy handler');
 if (!canvasWorkspace.includes('handleCutSelectedCells')) failures.push('CanvasSheetWorkspace.tsx: missing Ctrl/Cmd+X selected-cell cut handler');
@@ -948,6 +948,11 @@ if (!storeFile.includes('subTableFieldIdsUsedOnCanvas')) failures.push('useTempl
 if (!storeFile.includes('subTableField: field')) failures.push('useTemplateDesignerStore.ts: sub-table field nodes must keep a field snapshot for rendering');
 if (!storeFile.includes('removeSubTableFieldNodesFromTree')) failures.push('useTemplateDesignerStore.ts: sub-table field drops must replace only scoped sub-table child fields');
 if (!storeFile.includes('node.bindings?.subTableId !== subTableId')) failures.push('useTemplateDesignerStore.ts: sub-table field replacement must not remove the parent sub-table frame');
+if (!storeFile.includes('collectDeletedSubTableFieldIds')) failures.push('useTemplateDesignerStore.ts: deleting a sub-table node must collect the bound sub-table field id');
+if (!storeFile.includes('removeSubTableChildFieldNodesFromTree')) failures.push('useTemplateDesignerStore.ts: deleting a sub-table node must also remove its placed sub-table child fields');
+if (!storeFile.includes('removeNodeAndSubTableFieldsFromTree')) failures.push('useTemplateDesignerStore.ts: removeNode must cascade-delete placed child fields when removing a sub-table');
+if (!storeFile.includes('nodes: removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId)')) failures.push('useTemplateDesignerStore.ts: removeNode action must use cascading sub-table deletion');
+if (!storeFile.includes('removeNodeAndSubTableFieldsFromTree(page.nodes, state.selectedNodeId)')) failures.push('useTemplateDesignerStore.ts: Delete/Backspace clearing must cascade-delete sub-table child fields');
 if (!storeFile.includes('addNodeFromFieldToRange')) failures.push('useTemplateDesignerStore.ts: missing range-target field insertion action');
 if (!storeFile.includes('layoutRange = normalizeRange(range)')) failures.push('useTemplateDesignerStore.ts: range-target field insertion must normalize the selected range');
 if (!storeFile.includes('removeCellFieldNodesFromTree(page.nodes, layoutRange)')) failures.push('useTemplateDesignerStore.ts: range-target field insertion must replace field nodes in the selected range');
