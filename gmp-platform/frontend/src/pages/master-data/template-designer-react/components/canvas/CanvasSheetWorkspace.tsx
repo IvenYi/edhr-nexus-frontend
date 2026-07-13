@@ -4,7 +4,7 @@ import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import { Box, Button, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
-import type { CanvasCellBorder, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell } from '../../types';
+import type { CanvasCellBorder, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
@@ -77,8 +77,15 @@ interface EditingCellState {
 
 interface FieldPointerDropDetail {
   fieldId: string;
+  subTableId?: string;
+  subTableField?: ModelField;
   row: number;
   col: number;
+}
+
+interface SubTableFieldDragData {
+  subTableId: string;
+  field: ModelField;
 }
 
 interface FieldPointerHoverDetail {
@@ -134,6 +141,46 @@ function rangesIntersect(first: CanvasSelectionRange, second: CanvasSelectionRan
 
 function rangeContainsRange(outer: CanvasSelectionRange, inner: CanvasSelectionRange) {
   return outer.t <= inner.t && outer.l <= inner.l && outer.b >= inner.b && outer.r >= inner.r;
+}
+
+function readNodeCellRange(node: { style?: Record<string, unknown> }): CanvasSelectionRange | null {
+  const value = node.style?.cellRange;
+  if (!value || typeof value !== 'object') return null;
+
+  const range = value as Partial<CanvasSelectionRange>;
+  const { t, l, b, r } = range;
+  if (typeof t !== 'number' || typeof l !== 'number' || typeof b !== 'number' || typeof r !== 'number') {
+    return null;
+  }
+  return normalizeRange({ t, l, b, r });
+}
+
+function findSubTableNodeRange(page: CanvasPage, subTableId: string): CanvasSelectionRange | null {
+  const visit = (nodes: CanvasPage['nodes']): CanvasSelectionRange | null => {
+    for (const node of nodes) {
+      if (node.type === 'sub-table' && node.bindings?.fieldId === subTableId) {
+        return readNodeCellRange(node);
+      }
+      if (node.children?.length) {
+        const nested = visit(node.children);
+        if (nested) return nested;
+      }
+    }
+    return null;
+  };
+
+  return visit(page.nodes);
+}
+
+function parseSubTableFieldDragData(rawValue: string): SubTableFieldDragData | null {
+  if (!rawValue) return null;
+  try {
+    const parsed = JSON.parse(rawValue) as Partial<SubTableFieldDragData>;
+    if (!parsed.subTableId || !parsed.field?.id) return null;
+    return parsed as SubTableFieldDragData;
+  } catch {
+    return null;
+  }
 }
 
 function buildOffsets(sizes: number[]) {
@@ -505,6 +552,13 @@ export default function CanvasSheetWorkspace() {
   const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
   const splitSelectedCells = useTemplateDesignerStore((state) => state.splitSelectedCells);
   const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
+  const addNodeFromSubTableFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromSubTableFieldToCell);
+  const addNodeFromFieldToRange = useTemplateDesignerStore((state) => state.addNodeFromFieldToRange);
+  const availableSubTableFields = useTemplateDesignerStore((state) => (
+    state.getAvailableFieldsForCurrentVersion()
+      .filter((field) => field.type === 'subTable')
+      .sort((first, second) => first.sortOrder - second.sortOrder)
+  ));
   const setPagePreviewCount = useTemplateDesignerStore((state) => state.setPagePreviewCount);
   const setActivePagePreviewIndex = useTemplateDesignerStore((state) => state.setActivePagePreviewIndex);
   const pagePreviewScrollTarget = useTemplateDesignerStore((state) => state.pagePreviewScrollTarget);
@@ -517,6 +571,7 @@ export default function CanvasSheetWorkspace() {
   const [editingCell, setEditingCell] = useState<EditingCellState | null>(null);
   const [fieldDropGuideRange, setFieldDropGuideRange] = useState<CanvasSelectionRange | null>(null);
   const [insertMenuCount, setInsertMenuCount] = useState('1');
+  const [subTableMenuAnchorEl, setSubTableMenuAnchorEl] = useState<HTMLElement | null>(null);
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
   const workspaceScrollRef = useRef<HTMLDivElement | null>(null);
@@ -762,14 +817,32 @@ export default function CanvasSheetWorkspace() {
     sheetInteractionRef.current?.focus();
     startCellRangeDrag(cellSelectionRange);
   };
+  const addDroppedFieldToCell = (
+    fieldId: string,
+    cellSelectionRange: CanvasSelectionRange,
+    layout: ReturnType<typeof getFieldDropCellLayout>,
+    subTableFieldData?: SubTableFieldDragData | null,
+  ) => {
+    if (subTableFieldData && currentPage) {
+      const subTableRange = findSubTableNodeRange(currentPage, subTableFieldData.subTableId);
+      if (!subTableRange || !rangeContainsRange(subTableRange, normalizeRange(cellSelectionRange))) return;
+      addNodeFromSubTableFieldToCell(subTableFieldData.subTableId, subTableFieldData.field, layout);
+      return;
+    }
+
+    addNodeFromFieldToCell(fieldId, layout);
+  };
   const handleFieldDropOnCell = (event: ReactDragEvent<HTMLDivElement>, cellSelectionRange: CanvasSelectionRange) => {
     const fieldId = event.dataTransfer.getData('application/x-template-designer-field');
+    const subTableFieldData = parseSubTableFieldDragData(
+      event.dataTransfer.getData('application/x-template-designer-sub-table-field'),
+    );
     if (!fieldId) return;
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer.dropEffect = 'copy';
     setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
-    addNodeFromFieldToCell(fieldId, getFieldDropCellLayout(cellSelectionRange));
+    addDroppedFieldToCell(fieldId, cellSelectionRange, getFieldDropCellLayout(cellSelectionRange), subTableFieldData);
     setFieldDropGuideRange(null);
   };
   useEffect(() => {
@@ -798,13 +871,19 @@ export default function CanvasSheetWorkspace() {
 
       setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
       setFieldDropGuideRange(null);
-      addNodeFromFieldToCell(detail.fieldId, {
+      const subTableFieldData: SubTableFieldDragData | null = detail.subTableId && detail.subTableField
+        ? {
+            subTableId: detail.subTableId,
+            field: detail.subTableField,
+          }
+        : null;
+      addDroppedFieldToCell(detail.fieldId, cellSelectionRange, {
         left,
         top,
         width: (columnOffsets[normalizedSelection.r] ?? left) - left,
         height: (rowOffsets[normalizedSelection.b] ?? top) - top,
         range: normalizedSelection,
-      });
+      }, subTableFieldData);
     };
     const handlePointerFieldHover = (event: Event) => {
       const detail = (event as CustomEvent<FieldPointerHoverDetail | null>).detail;
@@ -1444,6 +1523,7 @@ export default function CanvasSheetWorkspace() {
   const openContextMenu = (axis: MenuAxis, event: ReactMouseEvent) => {
     event.preventDefault();
     setInsertMenuCount('1');
+    setSubTableMenuAnchorEl(null);
     setMenuState({
       axis,
       mouseX: event.clientX + 2,
@@ -1514,7 +1594,13 @@ export default function CanvasSheetWorkspace() {
   };
 
   const closeContextMenu = () => {
+    setSubTableMenuAnchorEl(null);
     setMenuState(null);
+  };
+  const handleSetSubTableField = (field: ModelField) => {
+    if (!normalizedRange) return;
+    addNodeFromFieldToRange(field.id, normalizedRange, getFieldDropCellLayout(normalizedRange));
+    closeContextMenu();
   };
 
   const handleMenuAction = (action: SheetMenuAction) => {
@@ -1682,6 +1768,40 @@ export default function CanvasSheetWorkspace() {
   const renderDeleteMenuGroup = (items: DeleteMenuItemConfig[]) => (
     items.map((item, index) => renderDangerMenuItem(item, index === 0))
   );
+  const renderSetSubTableMenu = () => {
+    if (!canSetSubTableMenuSelection) return null;
+
+    if (availableSubTableFields.length === 1) {
+      return (
+        <MenuItem
+          data-sheet-menu-action="set-sub-table"
+          onClick={() => handleSetSubTableField(availableSubTableFields[0])}
+        >设为子表</MenuItem>
+      );
+    }
+
+    return (
+      <MenuItem
+        data-sheet-menu-action="set-sub-table"
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          setSubTableMenuAnchorEl(event.currentTarget);
+        }}
+        onMouseEnter={(event) => setSubTableMenuAnchorEl(event.currentTarget)}
+        sx={{
+          minWidth: 168,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 1.5,
+        }}
+      >
+        <Box component="span" sx={{ flex: 1 }}>设为子表</Box>
+        <Box component="span" sx={{ color: '#8c96a6' }}>›</Box>
+      </MenuItem>
+    );
+  };
 
   if (!currentPage) {
     return null;
@@ -1709,6 +1829,11 @@ export default function CanvasSheetWorkspace() {
   const canSplitMenuSelection = Boolean(
     activeMenuAxis === 'cell'
     && hasMergedCellsInSelection,
+  );
+  const canSetSubTableMenuSelection = Boolean(
+    activeMenuAxis === 'cell'
+    && isMultiCellRange(normalizedRange)
+    && availableSubTableFields.length,
   );
 
   const renderImportedGrid = (mode: 'sheet' | 'paper') => (
@@ -2748,6 +2873,7 @@ export default function CanvasSheetWorkspace() {
                   onClick={() => handleMenuAction('split-cells')}
                 >拆分单元格</MenuItem>
               ) : null}
+              {renderSetSubTableMenu()}
               {renderDeleteMenuGroup([
                 { action: 'delete-row', label: '删除行', disabled: !canDeleteMenuRows },
                 { action: 'delete-column', label: '删除列', disabled: !canDeleteMenuColumns },
@@ -2821,6 +2947,55 @@ export default function CanvasSheetWorkspace() {
             </>
           )
         ) : null}
+      </Menu>
+      <Menu
+        data-sheet-sub-table-menu-root="true"
+        open={Boolean(subTableMenuAnchorEl)}
+        anchorEl={subTableMenuAnchorEl}
+        onClose={() => setSubTableMenuAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        MenuListProps={{
+          sx: { p: 0.5 },
+        }}
+        PaperProps={{
+          'data-sheet-menu-sub-table-list': 'true',
+          sx: {
+            ml: 0.75,
+            minWidth: 148,
+            border: '1px solid #e5e7eb',
+            borderRadius: '6px',
+            boxShadow: '0 12px 32px rgba(15, 23, 42, 0.16)',
+          },
+        }}
+      >
+        {availableSubTableFields.map((field) => (
+          <MenuItem
+            key={field.id}
+            data-sheet-menu-sub-table-field-id={field.id}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              handleSetSubTableField(field);
+            }}
+            sx={{
+              minHeight: 30,
+              minWidth: 132,
+              px: 1.25,
+              color: '#303133',
+              fontSize: 13,
+              lineHeight: 1.3,
+            }}
+          >
+            {field.name || '未命名子表'}
+          </MenuItem>
+        ))}
       </Menu>
     </Box>
   );

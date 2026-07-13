@@ -1,4 +1,5 @@
 import type { ComponentType, MouseEvent as ReactMouseEvent } from 'react';
+import type { ModelField } from './model';
 
 export type PropertyEditorType = 'text' | 'textarea' | 'number' | 'switch' | 'select';
 
@@ -30,6 +31,9 @@ export interface FieldBinding {
 export interface CanvasNodeBindings extends Partial<Omit<FieldBinding, 'fieldId'>> {
   fieldId?: string;
   fieldIds?: string[];
+  subTableId?: string;
+  subTableFieldId?: string;
+  subTableField?: ModelField;
 }
 
 export interface CanvasNode {
@@ -132,6 +136,7 @@ export interface DesignerRendererProps {
   onSelect: () => void;
   onCellMouseDown?: (event: ReactMouseEvent<HTMLElement>) => void;
   onCellContextMenu?: (event: ReactMouseEvent<HTMLElement>) => void;
+  onOpenConfig?: () => void;
   renderMode?: 'normal' | 'cell';
 }
 

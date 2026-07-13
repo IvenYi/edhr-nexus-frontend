@@ -165,6 +165,7 @@ function parseFieldOptions(field?: ModelField | null) {
 
 function useBoundField(node: CanvasNode) {
   const document = useTemplateDesignerStore((state) => state.document);
+  if (node.bindings?.subTableField) return node.bindings.subTableField;
   return document?.model.fields.find((field) => field.id === node.bindings?.fieldId) ?? null;
 }
 
@@ -558,7 +559,87 @@ function FieldPreviewRenderer({
   );
 }
 
-function ContainerRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+function ContainerRenderer({
+  node,
+  selected,
+  onSelect,
+  onCellMouseDown,
+  onCellContextMenu,
+  onOpenConfig,
+  renderMode,
+}: DesignerRendererProps) {
+  const field = useBoundField(node);
+
+  if (node.type === 'sub-table' && renderMode === 'cell') {
+    const subTableLabel = String(field?.name || field?.code || node.props.title || '子表');
+
+    return (
+      <Box
+        data-canvas-sub-table-frame="true"
+        onContextMenu={(event) => {
+          event.stopPropagation();
+          onCellContextMenu?.(event);
+        }}
+        sx={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          minHeight: 24,
+          border: selected ? '2px dashed #7c3aed' : '1px dashed #7c3aed',
+          bgcolor: 'transparent',
+          cursor: 'pointer',
+          boxSizing: 'border-box',
+          pointerEvents: 'none',
+        }}
+      >
+        <Box
+          data-canvas-sub-table-connector="true"
+          sx={{
+            position: 'absolute',
+            left: '100%',
+            top: '50%',
+            width: 18,
+            borderTop: '1px dashed #8b5cf6',
+            opacity: 1,
+            pointerEvents: 'none',
+            transform: 'translateY(-50%)',
+          }}
+        />
+        <Box
+          data-canvas-sub-table-hover-label="true"
+          onMouseDown={(event) => {
+            event.stopPropagation();
+          }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenConfig?.();
+          }}
+          sx={{
+            position: 'absolute',
+            left: 'calc(100% + 18px)',
+            top: '50%',
+            px: 0.75,
+            height: 22,
+            lineHeight: '22px',
+            borderRadius: 0.5,
+            bgcolor: '#8b5cf6',
+            color: '#fff',
+            fontSize: 12,
+            opacity: 1,
+            pointerEvents: 'auto',
+            transform: 'translateY(-50%)',
+            maxWidth: 120,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {subTableLabel}
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box
       onClick={(event) => {

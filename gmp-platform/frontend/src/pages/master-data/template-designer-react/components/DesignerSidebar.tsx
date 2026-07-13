@@ -12,6 +12,8 @@ const POINTER_DRAG_THRESHOLD = 4;
 
 interface PointerDragState {
   fieldId: string;
+  subTableId?: string;
+  subTableField?: ModelField;
   pointerId: number;
   startX: number;
   startY: number;
@@ -24,19 +26,80 @@ interface PointerDragState {
   active: boolean;
 }
 
+function normalizeSubTableField(input: unknown, index: number): ModelField | null {
+  if (typeof input === 'string') {
+    const name = input.trim();
+    if (!name) return null;
+    const field = getFieldTypeDefinition('text').defaultField(name, index + 1);
+    return {
+      ...field,
+      id: `sub-field-${index + 1}`,
+      code: `sub_field_${index + 1}`,
+    };
+  }
+  if (!input || typeof input !== 'object') return null;
+
+  const source = input as Partial<ModelField> & Record<string, unknown>;
+  const definition = getFieldTypeDefinition(typeof source.type === 'string' ? source.type : 'text');
+  const name = typeof source.name === 'string' && source.name.trim()
+    ? source.name.trim()
+    : typeof source.label === 'string' && source.label.trim()
+      ? source.label.trim()
+      : definition.label;
+  const fallbackField = definition.defaultField(name, index + 1);
+
+  return {
+    ...fallbackField,
+    id: typeof source.id === 'string' && source.id ? source.id : `sub-field-${index + 1}`,
+    code: typeof source.code === 'string' && source.code ? source.code : `sub_field_${index + 1}`,
+    name,
+    groupId: typeof source.groupId === 'string' ? source.groupId : 'default-group',
+    sortOrder: typeof source.sortOrder === 'number' ? source.sortOrder : index + 1,
+    status: source.status === 'disabled' ? 'disabled' : 'enabled',
+    description: typeof source.description === 'string' ? source.description : '',
+    typeConfig: typeof source.typeConfig === 'object' && source.typeConfig
+      ? { ...fallbackField.typeConfig, ...source.typeConfig }
+      : { ...fallbackField.typeConfig },
+  };
+}
+
+function getSubTableFields(field: ModelField): ModelField[] {
+  const columns = field.typeConfig.columns;
+  const fields = typeof columns === 'string'
+    ? columns.split(/[\n,，]/).map((column, index) => normalizeSubTableField(column, index))
+    : Array.isArray(columns)
+      ? columns.map((column, index) => normalizeSubTableField(column, index))
+      : [];
+
+  return fields
+    .filter((field): field is ModelField => Boolean(field))
+    .filter((field) => field.type !== 'subTable')
+    .sort((first, second) => first.sortOrder - second.sortOrder);
+}
+
 export default function DesignerSidebar() {
   const [draggingFieldId, setDraggingFieldId] = useState<string | null>(null);
   const [pointerDrag, setPointerDrag] = useState<PointerDragState | null>(null);
   const dragPreviewRef = useRef<HTMLElement | null>(null);
   const pointerDragRef = useRef<PointerDragState | null>(null);
   const pointerDragCleanupRef = useRef<(() => void) | null>(null);
+  const selectedSubTableField = useTemplateDesignerStore((state) => state.getSubTableFieldForSelectedRange());
   const modelFields = useTemplateDesignerStore((state) => (
     state.getAvailableFieldsForCurrentVersion()
       .filter((field) => field.type !== 'subTable')
       .sort((first, second) => first.sortOrder - second.sortOrder)
   ));
+  const subTableFieldIdsUsedOnCanvas = useTemplateDesignerStore((state) => (
+    selectedSubTableField ? state.subTableFieldIdsUsedOnCanvas(selectedSubTableField.id) : []
+  ));
+  const usedSubTableFieldIds = new Set(subTableFieldIdsUsedOnCanvas);
+  const subTableFields = selectedSubTableField
+    ? getSubTableFields(selectedSubTableField).filter((field) => !usedSubTableFieldIds.has(field.id))
+    : [];
+  const displayFields = selectedSubTableField ? subTableFields : modelFields;
+  const isSubTableFieldList = Boolean(selectedSubTableField);
   const pointerDragField = pointerDrag?.active
-    ? modelFields.find((field) => field.id === pointerDrag.fieldId) ?? null
+    ? displayFields.find((field) => field.id === pointerDrag.fieldId) ?? null
     : null;
 
   const cleanupDragPreview = () => {
@@ -61,8 +124,9 @@ export default function DesignerSidebar() {
     cleanupDragPreview();
   }, []);
 
-  const handleFieldDragStart = (event: DragEvent<HTMLButtonElement>, fieldId: string) => {
+  const handleFieldDragStart = (event: DragEvent<HTMLButtonElement>, field: ModelField) => {
     cleanupDragPreview();
+    const fieldId = field.id;
     const sourceRect = event.currentTarget.getBoundingClientRect();
     const dragOffsetX = Math.max(0, Math.min(sourceRect.width, event.clientX - sourceRect.left));
     const dragOffsetY = Math.max(0, Math.min(sourceRect.height, event.clientY - sourceRect.top));
@@ -90,6 +154,12 @@ export default function DesignerSidebar() {
     event.dataTransfer.effectAllowed = 'copy';
     event.dataTransfer.setData('application/x-template-designer-field', fieldId);
     event.dataTransfer.setData('text/plain', fieldId);
+    if (selectedSubTableField) {
+      event.dataTransfer.setData('application/x-template-designer-sub-table-field', JSON.stringify({
+        subTableId: selectedSubTableField.id,
+        field,
+      }));
+    }
     event.dataTransfer.setDragImage(dragPreview, dragOffsetX, dragOffsetY);
     setDraggingFieldId(fieldId);
   };
@@ -128,11 +198,12 @@ export default function DesignerSidebar() {
     ownerDocument.dispatchEvent(new EventCtor(FIELD_POINTER_HOVER_EVENT, { detail: null }));
   };
 
-  const handleFieldPointerDown = (event: ReactPointerEvent<HTMLButtonElement>, fieldId: string) => {
+  const handleFieldPointerDown = (event: ReactPointerEvent<HTMLButtonElement>, field: ModelField) => {
     if (event.button !== 0) return;
 
     event.preventDefault();
     cleanupPointerDrag();
+    const fieldId = field.id;
 
     const ownerDocument = event.currentTarget.ownerDocument;
     const sourceRect = event.currentTarget.getBoundingClientRect();
@@ -140,6 +211,8 @@ export default function DesignerSidebar() {
     const initialDrag: PointerDragState = {
       fieldId,
       pointerId,
+      subTableId: selectedSubTableField?.id,
+      subTableField: selectedSubTableField ? field : undefined,
       startX: event.clientX,
       startY: event.clientY,
       currentX: event.clientX,
@@ -170,7 +243,13 @@ export default function DesignerSidebar() {
         if (dropCell && Number.isFinite(row) && Number.isFinite(col)) {
           const EventCtor = ownerDocument.defaultView?.CustomEvent ?? CustomEvent;
           ownerDocument.dispatchEvent(new EventCtor(FIELD_POINTER_DROP_EVENT, {
-            detail: { fieldId: currentDrag.fieldId, row, col },
+            detail: {
+              fieldId: currentDrag.fieldId,
+              subTableId: currentDrag.subTableId,
+              subTableField: currentDrag.subTableField,
+              row,
+              col,
+            },
           }));
         }
       }
@@ -242,14 +321,16 @@ export default function DesignerSidebar() {
 
   return (
     <Stack spacing={0.75} sx={{ p: 1.5, overflow: 'auto', height: '100%' }}>
-      {modelFields.length ? (
-        modelFields.map((field) => {
+      {displayFields.length ? (
+        displayFields.map((field) => {
           const isDragging = field.id === draggingFieldId;
 
           return (
             <Button
               key={field.id}
               data-canvas-field-card="true"
+              data-canvas-sub-table-field-card={isSubTableFieldList ? 'true' : undefined}
+              data-canvas-field-sub-table-id={selectedSubTableField?.id}
               draggable
               variant="text"
               sx={{
@@ -268,9 +349,9 @@ export default function DesignerSidebar() {
                 '&:hover': { bgcolor: '#f5f7fb' },
                 '&:active': { cursor: 'grabbing' },
               }}
-              onDragStart={(event) => handleFieldDragStart(event, field.id)}
+              onDragStart={(event) => handleFieldDragStart(event, field)}
               onDragEnd={handleFieldDragEnd}
-              onPointerDown={(event) => handleFieldPointerDown(event, field.id)}
+              onPointerDown={(event) => handleFieldPointerDown(event, field)}
             >
               {renderFieldButtonContent(field)}
             </Button>

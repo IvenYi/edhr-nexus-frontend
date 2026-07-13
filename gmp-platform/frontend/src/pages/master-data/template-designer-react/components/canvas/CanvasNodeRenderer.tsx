@@ -67,7 +67,7 @@ export default function CanvasNodeRenderer({
     const cellRangeLayout = absolute && node.bindings?.fieldId && cellRange
       ? resolveCellRangeLayout?.(cellRange) ?? null
       : null;
-    const cellInset = absolute && node.bindings?.fieldId ? CELL_FIELD_INSET : 0;
+    const cellInset = absolute && node.bindings?.fieldId ? (node.type === 'sub-table' ? 0 : CELL_FIELD_INSET) : 0;
     const persistedWidth = readNumber(node.style.compWidth, 240);
     const persistedHeight = readNumber(node.style.compHeight, 40);
     const absoluteLeft = cellRangeLayout?.left ?? readNumber(node.style.compLeft, 0);
@@ -89,9 +89,21 @@ export default function CanvasNodeRenderer({
     const handleSelect = () => {
       if (cellRange) {
         setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l });
-        setActiveCanvasRail('config');
+        const activeRail = node.type === 'sub-table' ? 'fields' : 'config';
+        if (activeRail === 'config') {
+          setActiveCanvasRail('config');
+        } else {
+          setActiveCanvasRail(activeRail);
+        }
       }
       setSelectedNodeId(node.id);
+    };
+    const handleOpenConfig = () => {
+      if (cellRange) {
+        setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l });
+      }
+      setSelectedNodeId(node.id);
+      setActiveCanvasRail('config');
     };
 
     return (
@@ -104,7 +116,8 @@ export default function CanvasNodeRenderer({
           width: Math.max(0, absoluteWidth - cellInset * 2),
           height: Math.max(0, absoluteHeight - cellInset * 2),
           zIndex: selected ? 2 : 1,
-          overflow: 'hidden',
+          overflow: node.type === 'sub-table' ? 'visible' : 'hidden',
+          pointerEvents: node.type === 'sub-table' ? 'none' : 'auto',
         } : undefined}
       >
         {absolute ? (
@@ -112,6 +125,7 @@ export default function CanvasNodeRenderer({
             node={rendererNode}
             selected={selected}
             onSelect={handleSelect}
+            onOpenConfig={handleOpenConfig}
             onCellMouseDown={(event) => {
               if (cellRange) {
                 onCellFieldMouseDown?.(cellRange, event);
@@ -132,6 +146,7 @@ export default function CanvasNodeRenderer({
                   node={node}
                   selected={selected}
                   onSelect={handleSelect}
+                  onOpenConfig={handleOpenConfig}
                 />
               </Box>
               {selected ? (
@@ -199,7 +214,6 @@ export default function CanvasNodeRenderer({
             position: 'absolute',
             inset: 0,
             pointerEvents: 'none',
-            '& > *': { pointerEvents: 'auto' },
           }}
         >
           {absoluteNodes.map((node) => renderNode(node))}

@@ -85,6 +85,15 @@ function rangesIntersect(first: CanvasSelectionRange, second: CanvasSelectionRan
     && first.b >= second.t;
 }
 
+function rangesEqual(first: CanvasSelectionRange, second: CanvasSelectionRange) {
+  const normalizedFirst = normalizeRange(first);
+  const normalizedSecond = normalizeRange(second);
+  return normalizedFirst.t === normalizedSecond.t
+    && normalizedFirst.l === normalizedSecond.l
+    && normalizedFirst.b === normalizedSecond.b
+    && normalizedFirst.r === normalizedSecond.r;
+}
+
 function removeMergedRangesInSelection(
   ranges: CanvasSelectionRange[],
   selection: CanvasSelectionRange,
@@ -729,6 +738,28 @@ function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSe
     });
 }
 
+function removeSubTableFieldNodesFromTree(
+  nodes: CanvasNode[],
+  subTableId: string,
+  targetRange: CanvasSelectionRange,
+): CanvasNode[] {
+  const normalizedTarget = normalizeRange(targetRange);
+
+  return nodes
+    .filter((node) => {
+      if (node.bindings?.subTableId !== subTableId || !node.bindings.subTableFieldId) return true;
+      const cellRange = readNodeCellRange(node);
+      return !cellRange || !rangesIntersect(cellRange, normalizedTarget);
+    })
+    .map((node) => {
+      if (!node.children?.length) return node;
+      return {
+        ...node,
+        children: removeSubTableFieldNodesFromTree(node.children, subTableId, normalizedTarget),
+      };
+    });
+}
+
 function compareCellRangesByStart(first: CanvasSelectionRange, second: CanvasSelectionRange) {
   const normalizedFirst = normalizeRange(first);
   const normalizedSecond = normalizeRange(second);
@@ -738,8 +769,8 @@ function compareCellRangesByStart(first: CanvasSelectionRange, second: CanvasSel
     || normalizedFirst.r - normalizedSecond.r;
 }
 
-function findFirstCellFieldNodeIdInRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange) {
-  type CellFieldCandidate = { id: string; range: CanvasSelectionRange; order: number };
+function findFirstCellFieldNodeInRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange) {
+  type CellFieldCandidate = { node: CanvasNode; range: CanvasSelectionRange; order: number };
   const normalizedTarget = normalizeRange(targetRange);
   let firstField: CellFieldCandidate | null = null;
   let order = 0;
@@ -747,8 +778,13 @@ function findFirstCellFieldNodeIdInRange(nodes: CanvasNode[], targetRange: Canva
   const visit = (items: CanvasNode[]) => {
     items.forEach((node) => {
       const cellRange = readNodeCellRange(node);
-      if (node.bindings?.fieldId && cellRange && rangesIntersect(cellRange, normalizedTarget)) {
-        const current = { id: node.id, range: cellRange, order };
+      const isSelectableCellField = node.bindings?.fieldId
+        && cellRange
+        && (node.type === 'sub-table'
+          ? rangesEqual(cellRange, normalizedTarget)
+          : rangesIntersect(cellRange, normalizedTarget));
+      if (isSelectableCellField && cellRange) {
+        const current = { node, range: cellRange, order };
         const rangeOrder = firstField ? compareCellRangesByStart(current.range, firstField.range) : -1;
         if (!firstField || rangeOrder < 0 || (rangeOrder === 0 && current.order < firstField.order)) {
           firstField = current;
@@ -764,7 +800,44 @@ function findFirstCellFieldNodeIdInRange(nodes: CanvasNode[], targetRange: Canva
 
   visit(nodes);
   const selectedField = firstField as CellFieldCandidate | null;
-  return selectedField?.id ?? null;
+  return selectedField?.node ?? null;
+}
+
+function findFirstCellFieldNodeIdInRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange) {
+  return findFirstCellFieldNodeInRange(nodes, targetRange)?.id ?? null;
+}
+
+function findSubTableNodeInRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange) {
+  const normalizedTarget = normalizeRange(targetRange);
+
+  const visit = (items: CanvasNode[]): CanvasNode | null => {
+    for (const node of items) {
+      if (node.type === 'sub-table' && node.bindings?.fieldId) {
+        const cellRange = readNodeCellRange(node);
+        if (cellRange && rangesIntersect(cellRange, normalizedTarget)) {
+          return node;
+        }
+      }
+      if (node.children?.length) {
+        const nested = visit(node.children);
+        if (nested) return nested;
+      }
+    }
+
+    return null;
+  };
+
+  return visit(nodes);
+}
+
+function resolveSelectedCellRail(
+  selectedFieldNode: CanvasNode | null,
+  selectedRange: CanvasSelectionRange | null,
+) {
+  if (selectedFieldNode) {
+    return selectedFieldNode?.type === 'sub-table' ? 'fields' : 'config';
+  }
+  return selectedRange ? 'fields' : 'thumbnails';
 }
 
 function mergeCellFieldNodesForRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange): CanvasNode[] {
@@ -905,6 +978,17 @@ function createBoundNodeFromField(field: ModelField, layout?: FieldCellLayout) {
   return node;
 }
 
+function createBoundNodeFromSubTableField(subTableId: string, field: ModelField, layout: FieldCellLayout) {
+  const node = createBoundNodeFromField(field, layout);
+  node.bindings = {
+    ...node.bindings,
+    subTableId,
+    subTableFieldId: field.id,
+    subTableField: field,
+  };
+  return node;
+}
+
 function collectBoundFieldIds(nodes: CanvasNode[], target = new Set<string>()) {
   nodes.forEach((node) => {
     if (node.bindings?.fieldId) {
@@ -912,6 +996,18 @@ function collectBoundFieldIds(nodes: CanvasNode[], target = new Set<string>()) {
     }
     if (node.children?.length) {
       collectBoundFieldIds(node.children, target);
+    }
+  });
+  return target;
+}
+
+function collectBoundSubTableFieldIds(nodes: CanvasNode[], subTableId: string, target = new Set<string>()) {
+  nodes.forEach((node) => {
+    if (node.bindings?.subTableId === subTableId && node.bindings.subTableFieldId) {
+      target.add(node.bindings.subTableFieldId);
+    }
+    if (node.children?.length) {
+      collectBoundSubTableFieldIds(node.children, subTableId, target);
     }
   });
   return target;
@@ -997,6 +1093,8 @@ export interface TemplateDesignerStore {
   insertNode: (parentId: string | null, node: CanvasNode) => void;
   addNodeFromField: (fieldId: string, parentId?: string | null) => void;
   addNodeFromFieldToCell: (fieldId: string, layout: FieldCellLayout) => void;
+  addNodeFromSubTableFieldToCell: (subTableId: string, field: ModelField, layout: FieldCellLayout) => void;
+  addNodeFromFieldToRange: (fieldId: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => void;
   bindFieldToNode: (nodeId: string, fieldId: string) => void;
   updateNodeBindings: (nodeId: string, patch: Record<string, unknown>) => void;
   updateNodeProps: (nodeId: string, patch: Record<string, unknown>) => void;
@@ -1035,6 +1133,8 @@ export interface TemplateDesignerStore {
   getSelectedNode: () => CanvasNode | null;
   getFieldById: (fieldId: string) => ModelField | null;
   getUsedFieldIdsForCurrentVersion: () => string[];
+  getSubTableFieldForSelectedRange: () => ModelField | null;
+  subTableFieldIdsUsedOnCanvas: (subTableId: string) => string[];
   getAvailableFieldsForCurrentVersion: (nodeId?: string | null) => ModelField[];
   addWorkflowNode: () => void;
   setWorkflowNodes: (nodes: TemplateDesignerDocument['workflow']['nodes']) => void;
@@ -1112,14 +1212,15 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const currentPage = state.document
       ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
       : null;
-    const selectedFieldNodeId = selectedRange && currentPage
-      ? findFirstCellFieldNodeIdInRange(currentPage.nodes, selectedRange)
+    const selectedFieldNode = selectedRange && currentPage
+      ? findFirstCellFieldNodeInRange(currentPage.nodes, selectedRange)
       : null;
+    const selectedFieldNodeId = selectedFieldNode?.id ?? null;
     return {
       selectedCell,
       selectedRange,
       selectedNodeId: selectedFieldNodeId,
-      activeCanvasRail: selectedFieldNodeId ? 'config' : selectedCell ? 'fields' : 'thumbnails',
+      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange),
       isCanvasSidebarVisible: true,
     };
   }),
@@ -1128,9 +1229,10 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const currentPage = state.document
       ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
       : null;
-    const selectedFieldNodeId = normalizedSelection && currentPage
-      ? findFirstCellFieldNodeIdInRange(currentPage.nodes, normalizedSelection)
+    const selectedFieldNode = normalizedSelection && currentPage
+      ? findFirstCellFieldNodeInRange(currentPage.nodes, normalizedSelection)
       : null;
+    const selectedFieldNodeId = selectedFieldNode?.id ?? null;
     return {
       selectedRange: normalizedSelection,
       selectedCell: activeCell ?? (normalizedSelection ? {
@@ -1138,7 +1240,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         col: normalizedSelection.l,
       } : null),
       selectedNodeId: selectedFieldNodeId,
-      activeCanvasRail: selectedFieldNodeId ? 'config' : selectedRange ? 'fields' : 'thumbnails',
+      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, normalizedSelection),
       isCanvasSidebarVisible: true,
     };
   }),
@@ -1344,6 +1446,49 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
           }))
         : state.document,
       selectedNodeId: node.id,
+    }));
+  },
+  addNodeFromSubTableFieldToCell: (subTableId, field, layout) => {
+    if (!field || field.status !== 'enabled' || field.type === 'subTable') return;
+    const node = createBoundNodeFromSubTableField(subTableId, field, layout);
+    set((state) => pushDocumentHistory(state, {
+      document: state.document
+        ? updateCanvasPage(state.document, (page) => ({
+            ...page,
+            nodes: [
+              ...removeSubTableFieldNodesFromTree(page.nodes, subTableId, layout.range ?? createSingleCellRange()),
+              node,
+            ],
+          }))
+        : state.document,
+      selectedNodeId: node.id,
+    }));
+  },
+  addNodeFromFieldToRange: (fieldId, range, layout) => {
+    const field = get().getFieldById(fieldId);
+    const availableFields = get().getAvailableFieldsForCurrentVersion();
+    const layoutRange = normalizeRange(range);
+    if (!field || field.status !== 'enabled' || !availableFields.some((item) => item.id === field.id)) return;
+    if (field.type === 'subTable' && !isMultiCellRange(layoutRange)) return;
+    const node = createBoundNodeFromField(field, {
+      ...layout,
+      range: layoutRange,
+    });
+    set((state) => pushDocumentHistory(state, {
+      document: state.document
+        ? updateCanvasPage(state.document, (page) => ({
+            ...page,
+            nodes: [
+              ...removeCellFieldNodesFromTree(page.nodes, layoutRange),
+              node,
+            ],
+          }))
+        : state.document,
+      selectedNodeId: node.id,
+      selectedRange: layoutRange,
+      selectedCell: { row: layoutRange.t, col: layoutRange.l },
+      activeCanvasRail: 'config',
+      isCanvasSidebarVisible: true,
     }));
   },
   bindFieldToNode: (nodeId, fieldId) => set((state) => {
@@ -1938,6 +2083,20 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const page = get().getCurrentPage();
     if (!page) return [];
     return Array.from(collectBoundFieldIds(page.nodes));
+  },
+  getSubTableFieldForSelectedRange: () => {
+    const page = get().getCurrentPage();
+    const selectedRange = get().selectedRange;
+    if (!page || !selectedRange) return null;
+    const selectedSubTableNode = findSubTableNodeInRange(page.nodes, selectedRange);
+    const subTableFieldId = selectedSubTableNode?.bindings?.fieldId;
+    if (!subTableFieldId) return null;
+    return get().getFieldById(subTableFieldId);
+  },
+  subTableFieldIdsUsedOnCanvas: (subTableId) => {
+    const page = get().getCurrentPage();
+    if (!page) return [];
+    return Array.from(collectBoundSubTableFieldIds(page.nodes, subTableId));
   },
   getAvailableFieldsForCurrentVersion: (nodeId = null) => {
     const document = get().document;
