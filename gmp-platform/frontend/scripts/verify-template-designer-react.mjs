@@ -881,6 +881,7 @@ if (!componentRegistry.includes('field.typeConfig')) failures.push('componentReg
 if (inspector.includes('字段信息')) failures.push('DesignerInspector.tsx: field configuration panel must not show field information');
 if (inspector.includes('绑定关系')) failures.push('DesignerInspector.tsx: field configuration panel must not show binding relationship');
 if (inspector.includes('Paper')) failures.push('DesignerInspector.tsx: field configuration panel must not add an extra Paper container');
+if (inspector.includes("height: '100%'")) failures.push('DesignerInspector.tsx: field configuration content must not render a full-height empty container');
 if (!inspector.includes('填写规则')) failures.push('DesignerInspector.tsx: missing fill-rule binding section');
 if (!inspector.includes('展示规则')) failures.push('DesignerInspector.tsx: missing display-rule binding section');
 if (!inspector.includes('控件规则')) failures.push('DesignerInspector.tsx: missing widget-rule binding section');

@@ -31,7 +31,7 @@ export default function DesignerInspector() {
     .filter((item) => !WIDGET_CONFIG_EXCLUDED_KEYS.has(item.key));
 
   return (
-    <Stack spacing={2} sx={{ p: 2, overflow: 'auto', height: '100%' }}>
+    <Stack spacing={2} sx={{ p: 2, overflow: 'auto' }}>
       <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>属性配置</Typography>
       {selectedNode ? (
         <>
