@@ -9,6 +9,7 @@ import CanvasDesignerToolbar from '../../components/canvas/CanvasDesignerToolbar
 import CanvasPageThumbnails from '../../components/canvas/CanvasPageThumbnails';
 import CanvasSheetWorkspace from '../../components/canvas/CanvasSheetWorkspace';
 import DesignerSidebar from '../../components/DesignerSidebar';
+import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 
 const sideRailItems = [
   { id: 'thumbnails', title: '分页缩略图', tooltip: '分页', icon: <ArticleOutlined fontSize="small" /> },
@@ -18,9 +19,11 @@ const sideRailItems = [
 ] as const;
 
 export default function CanvasTab() {
-  const [activeRail, setActiveRail] = useState<(typeof sideRailItems)[number]['id']>('thumbnails');
+  const activeRail = useTemplateDesignerStore((state) => state.activeCanvasRail);
+  const setActiveRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
+  const isSidebarVisible = useTemplateDesignerStore((state) => state.isCanvasSidebarVisible);
+  const setIsSidebarVisible = useTemplateDesignerStore((state) => state.setCanvasSidebarVisible);
   const [sidebarWidth, setSidebarWidth] = useState(250);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [isResizingSidebar, setIsResizingSidebar] = useState(false);
   const activeRailItem = sideRailItems.find((item) => item.id === activeRail) ?? sideRailItems[0];
 

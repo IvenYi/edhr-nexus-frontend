@@ -10,6 +10,7 @@ import type {
   FieldType,
   ModelField,
   ModelFieldStatus,
+  TemplateDesignerCanvasRailKey,
   TemplateDesignerDocument,
   TemplateDesignerTabKey,
 } from '../types';
@@ -866,6 +867,8 @@ function syncBoundNodesForField(nodes: CanvasNode[], fieldId: string, field: Mod
 
 export interface TemplateDesignerStore {
   activeTab: TemplateDesignerTabKey;
+  activeCanvasRail: TemplateDesignerCanvasRailKey;
+  isCanvasSidebarVisible: boolean;
   document: TemplateDesignerDocument | null;
   savedSnapshot: string;
   undoStack: TemplateDesignerDocument[];
@@ -879,6 +882,8 @@ export interface TemplateDesignerStore {
   selectedRange: CanvasSelectionRange | null;
   setDocument: (document: TemplateDesignerDocument) => void;
   setActiveTab: (tab: TemplateDesignerTabKey) => void;
+  setActiveCanvasRail: (rail: TemplateDesignerCanvasRailKey) => void;
+  setCanvasSidebarVisible: (visible: boolean) => void;
   setCurrentPageId: (pageId: string) => void;
   setSelectedFieldId: (fieldId: string | null) => void;
   setSelectedNodeId: (nodeId: string | null) => void;
@@ -957,6 +962,8 @@ function pushDocumentHistory(
 
 export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get) => ({
   activeTab: 'canvas',
+  activeCanvasRail: 'thumbnails',
+  isCanvasSidebarVisible: true,
   document: null,
   savedSnapshot: '',
   undoStack: [],
@@ -973,6 +980,8 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     activeTab: 'canvas',
     undoStack: [],
     redoStack: [],
+    activeCanvasRail: 'thumbnails',
+    isCanvasSidebarVisible: true,
     pagePreviewCounts: {},
     activePagePreviewIndexes: {},
     pagePreviewScrollTarget: null,
@@ -980,6 +989,8 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     selectedRange: null,
   }),
   setActiveTab: (activeTab) => set({ activeTab }),
+  setActiveCanvasRail: (activeCanvasRail) => set({ activeCanvasRail, isCanvasSidebarVisible: true }),
+  setCanvasSidebarVisible: (isCanvasSidebarVisible) => set({ isCanvasSidebarVisible }),
   setCurrentPageId: (pageId) => set((state) => ({
     document: state.document
       ? {
@@ -993,6 +1004,8 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     selectedCell: null,
     selectedRange: null,
     selectedNodeId: null,
+    activeCanvasRail: 'thumbnails',
+    isCanvasSidebarVisible: true,
   })),
   setSelectedFieldId: (selectedFieldId) => set({ selectedFieldId }),
   setSelectedNodeId: (selectedNodeId) => set({ selectedNodeId }),
@@ -1000,15 +1013,22 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     selectedCell,
     selectedRange: selectedCell ? createSingleCellRange(selectedCell.row, selectedCell.col) : null,
     selectedNodeId: null,
+    activeCanvasRail: selectedCell ? 'fields' : 'thumbnails',
+    isCanvasSidebarVisible: true,
   }),
-  setSelectedRange: (selectedRange, activeCell = null) => set((state) => ({
-    selectedRange: selectedRange ? normalizeRange(selectedRange) : null,
-    selectedCell: activeCell ?? (selectedRange ? {
-      row: normalizeRange(selectedRange).t,
-      col: normalizeRange(selectedRange).l,
-    } : null),
-    selectedNodeId: null,
-  })),
+  setSelectedRange: (selectedRange, activeCell = null) => set((state) => {
+    const normalizedSelection = selectedRange ? normalizeRange(selectedRange) : null;
+    return {
+      selectedRange: normalizedSelection,
+      selectedCell: activeCell ?? (normalizedSelection ? {
+        row: normalizedSelection.t,
+        col: normalizedSelection.l,
+      } : null),
+      selectedNodeId: null,
+      activeCanvasRail: selectedRange ? 'fields' : 'thumbnails',
+      isCanvasSidebarVisible: true,
+    };
+  }),
   selectAllCells: () => set((state) => {
     const currentPage = state.document
       ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
@@ -1025,6 +1045,8 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       },
       selectedCell: { row: 1, col: 1 },
       selectedNodeId: null,
+      activeCanvasRail: 'thumbnails',
+      isCanvasSidebarVisible: true,
     };
   }),
   selectColumnRange: (colStart, colEnd = colStart) => set((state) => {
@@ -1044,6 +1066,8 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedRange: range,
       selectedCell: { row: 1, col: range.l },
       selectedNodeId: null,
+      activeCanvasRail: 'thumbnails',
+      isCanvasSidebarVisible: true,
     };
   }),
   selectRowRange: (rowStart, rowEnd = rowStart) => set((state) => {
@@ -1063,6 +1087,8 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedRange: range,
       selectedCell: { row: range.t, col: 1 },
       selectedNodeId: null,
+      activeCanvasRail: 'thumbnails',
+      isCanvasSidebarVisible: true,
     };
   }),
   addField: (type, name) => {

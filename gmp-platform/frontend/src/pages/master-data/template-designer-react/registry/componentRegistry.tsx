@@ -1,7 +1,10 @@
+import AddOutlined from '@mui/icons-material/AddOutlined';
+import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined';
 import {
   Box,
   Checkbox,
   FormControlLabel,
+  InputAdornment,
   MenuItem,
   Radio,
   RadioGroup,
@@ -240,10 +243,115 @@ function FieldPreviewRenderer({ node, selected, onSelect, renderMode = 'normal' 
     cursor: 'pointer',
     ...resolveNodeLayout(node),
   };
+  const emptyOption = { key: 'empty', label: emptySymbol || '未配置选项', value: '' };
+
+  const renderCellDateTimePicker = () => (
+    <TextField
+      data-canvas-cell-datetime-picker="true"
+      fullWidth
+      size="small"
+      placeholder={datePlaceholder}
+      disabled={disabled}
+      InputProps={{
+        readOnly: true,
+        endAdornment: (
+          <InputAdornment position="end">
+            <CalendarMonthOutlined sx={{ fontSize: 18, color: '#909399' }} />
+          </InputAdornment>
+        ),
+      }}
+      inputProps={{ tabIndex: -1 }}
+    />
+  );
+
+  const renderCellSignatureButton = () => (
+    <Box
+      component="button"
+      type="button"
+      data-canvas-cell-signature-button="true"
+      tabIndex={-1}
+      sx={{
+        width: '100%',
+        height: '100%',
+        minHeight: 24,
+        border: '1px dashed #a8abb2',
+        borderRadius: 0.75,
+        bgcolor: '#fff',
+        color: '#606266',
+        fontSize: 13,
+        fontFamily: 'inherit',
+        cursor: 'pointer',
+      }}
+    >
+      点击签名
+    </Box>
+  );
+
+  const renderCellUploadButton = () => (
+    <Box
+      component="button"
+      type="button"
+      data-canvas-cell-upload-button="true"
+      tabIndex={-1}
+      sx={{
+        width: '100%',
+        height: '100%',
+        minHeight: 24,
+        border: '1px solid #dcdfe6',
+        borderRadius: 0.75,
+        bgcolor: '#fff',
+        color: '#606266',
+        fontSize: 13,
+        fontFamily: 'inherit',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 0.5,
+        cursor: 'pointer',
+      }}
+    >
+      <AddOutlined sx={{ fontSize: 18 }} />
+      点击上传
+    </Box>
+  );
+
+  const renderCellSelect = () => (
+    <TextField
+      data-canvas-cell-select="true"
+      select
+      fullWidth
+      size="small"
+      value=""
+      disabled={disabled}
+      InputProps={{ readOnly: true }}
+      inputProps={{ tabIndex: -1 }}
+      SelectProps={{
+        displayEmpty: true,
+        renderValue: () => inputPlaceholder || '请选择',
+      }}
+    >
+      {[{ key: 'placeholder', label: inputPlaceholder || '请选择', value: '' }, ...(options.length ? options : [emptyOption])].map((option) => (
+        <MenuItem key={option.key} value={option.value}>{option.label}</MenuItem>
+      ))}
+    </TextField>
+  );
 
   const renderControl = () => {
     if (hidden) {
       return <Typography sx={{ fontSize: 13, color: '#909399' }}>{label} 已隐藏</Typography>;
+    }
+
+    if (isCellMode && field?.type === 'datetime') {
+      return renderCellDateTimePicker();
+    }
+    if (isCellMode && field?.type === 'signature') {
+      return renderCellSignatureButton();
+    }
+    if (isCellMode && (field?.type === 'attachment' || field?.type === 'image')) {
+      return renderCellUploadButton();
+    }
+    if (isCellMode && ['singleSelect', 'multiSelect', 'reference'].includes(field?.type ?? '')) {
+      return renderCellSelect();
     }
 
     switch (node.type) {
@@ -384,6 +492,9 @@ function FieldPreviewRenderer({ node, selected, onSelect, renderMode = 'normal' 
           '& .MuiFormControl-root': { height: '100%' },
           '& .MuiInputBase-root': { height: '100%', bgcolor: '#fff', pointerEvents: 'none' },
           '& .MuiInputBase-input': { py: 0.75, caretColor: 'transparent' },
+          '& [data-canvas-cell-signature-button="true"], & [data-canvas-cell-upload-button="true"]': {
+            pointerEvents: 'none',
+          },
           '& .MuiFormControlLabel-root, & .MuiRadio-root, & .MuiCheckbox-root, & .MuiSwitch-root': {
             pointerEvents: 'none',
           },
