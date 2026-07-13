@@ -54,6 +54,7 @@ export default function CanvasNodeRenderer({
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
   const setSelectedRange = useTemplateDesignerStore((state) => state.setSelectedRange);
+  const setActiveCanvasRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
   const moveNode = useTemplateDesignerStore((state) => state.moveNode);
   const removeNode = useTemplateDesignerStore((state) => state.removeNode);
 
@@ -88,6 +89,7 @@ export default function CanvasNodeRenderer({
     const handleSelect = () => {
       if (cellRange) {
         setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l });
+        setActiveCanvasRail('config');
       }
       setSelectedNodeId(node.id);
     };

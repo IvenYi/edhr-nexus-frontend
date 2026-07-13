@@ -1107,23 +1107,38 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
   })),
   setSelectedFieldId: (selectedFieldId) => set({ selectedFieldId }),
   setSelectedNodeId: (selectedNodeId) => set({ selectedNodeId }),
-  setSelectedCell: (selectedCell) => set({
-    selectedCell,
-    selectedRange: selectedCell ? createSingleCellRange(selectedCell.row, selectedCell.col) : null,
-    selectedNodeId: null,
-    activeCanvasRail: selectedCell ? 'fields' : 'thumbnails',
-    isCanvasSidebarVisible: true,
+  setSelectedCell: (selectedCell) => set((state) => {
+    const selectedRange = selectedCell ? createSingleCellRange(selectedCell.row, selectedCell.col) : null;
+    const currentPage = state.document
+      ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
+      : null;
+    const selectedFieldNodeId = selectedRange && currentPage
+      ? findFirstCellFieldNodeIdInRange(currentPage.nodes, selectedRange)
+      : null;
+    return {
+      selectedCell,
+      selectedRange,
+      selectedNodeId: selectedFieldNodeId,
+      activeCanvasRail: selectedFieldNodeId ? 'config' : selectedCell ? 'fields' : 'thumbnails',
+      isCanvasSidebarVisible: true,
+    };
   }),
   setSelectedRange: (selectedRange, activeCell = null) => set((state) => {
     const normalizedSelection = selectedRange ? normalizeRange(selectedRange) : null;
+    const currentPage = state.document
+      ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
+      : null;
+    const selectedFieldNodeId = normalizedSelection && currentPage
+      ? findFirstCellFieldNodeIdInRange(currentPage.nodes, normalizedSelection)
+      : null;
     return {
       selectedRange: normalizedSelection,
       selectedCell: activeCell ?? (normalizedSelection ? {
         row: normalizedSelection.t,
         col: normalizedSelection.l,
       } : null),
-      selectedNodeId: null,
-      activeCanvasRail: selectedRange ? 'fields' : 'thumbnails',
+      selectedNodeId: selectedFieldNodeId,
+      activeCanvasRail: selectedFieldNodeId ? 'config' : selectedRange ? 'fields' : 'thumbnails',
       isCanvasSidebarVisible: true,
     };
   }),

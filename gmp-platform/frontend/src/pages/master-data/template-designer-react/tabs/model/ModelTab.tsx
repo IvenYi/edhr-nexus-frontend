@@ -548,12 +548,13 @@ export default function ModelTab({
     setFieldStatus(fieldId, status);
   };
 
-  const handleSaveField = async () => {
+  const handleSaveField = async (options?: { continueAdding?: boolean }) => {
     const name = newFieldName.trim();
     if (!name) return;
 
     const effectiveFieldType: FieldType = activeSubTableDesignField && newFieldType === 'subTable' ? 'text' : newFieldType;
     const shouldPersistCreatedField = !editingFieldId && Boolean(onFieldConfirmPersist);
+    const shouldContinueAdding = !editingFieldId && Boolean(options?.continueAdding);
 
     if (editingFieldId) {
       if (activeSubTableDesignField) {
@@ -598,7 +599,9 @@ export default function ModelTab({
     setNewFieldName('');
     setNewFieldType('text');
     setNewFieldDescription('');
-    setCreateDialogOpen(false);
+    if (!shouldContinueAdding) {
+      setCreateDialogOpen(false);
+    }
 
     if (shouldPersistCreatedField && onFieldConfirmPersist) {
       try {
@@ -1216,8 +1219,13 @@ export default function ModelTab({
         <DialogActions sx={{ px: 3, pt: 0.5, pb: 1.5 }}>
           <Button size="small" onClick={() => setCreateDialogOpen(false)}>取消</Button>
           <Button size="small" variant="contained" disabled={!newFieldName.trim() || saving} onClick={() => void handleSaveField()}>
-            {editingFieldId ? '保存修改' : '确认新增'}
+            {editingFieldId ? '保存修改' : '确认'}
           </Button>
+          {!editingFieldId ? (
+            <Button size="small" variant="outlined" disabled={!newFieldName.trim() || saving} onClick={() => void handleSaveField({ continueAdding: true })}>
+              确认并继续
+            </Button>
+          ) : null}
         </DialogActions>
       </Dialog>
 

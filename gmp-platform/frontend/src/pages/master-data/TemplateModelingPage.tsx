@@ -1257,10 +1257,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   const renderTemplateVersionActions = (row: TemplateModelingRecord, version: TemplateVersionRecord, canDeleteVersion: boolean) => (
     <Stack direction="row" spacing={0.5} justifyContent="center">
-      <Tooltip title="React设计" arrow>
+      <Tooltip title="设计" arrow>
         <IconButton
           size="small"
-          aria-label="React设计"
+          aria-label="设计"
           onClick={(event) => {
             event.stopPropagation();
             setReactDesignerState({ open: true, row, version });
