@@ -238,6 +238,10 @@ function FieldPreviewRenderer({
   const emptySymbol = String(readConfig('emptySymbol'));
   const prefix = String(readConfig('prefix'));
   const suffix = String(readConfig('suffix'));
+  const defaultValue = String(node.bindings?.defaultValue ?? '');
+  const displayMode = String(node.bindings?.displayMode ?? 'text');
+  const isWrapDisplay = Boolean(node.bindings?.autoWrap);
+  const minLength = Number(readConfig('minLength', 0)) || undefined;
   const disabled = Boolean(node.bindings?.readonly) || Boolean(node.props.disabled) || node.props.viewState === 'disabled';
   const readonly = Boolean(node.bindings?.readonly) || node.props.viewState === 'readonly';
   const controlReadonly = isCellMode || readonly;
@@ -252,6 +256,44 @@ function FieldPreviewRenderer({
     ...resolveNodeLayout(node),
   };
   const emptyOption = { key: 'empty', label: emptySymbol || '未配置选项', value: '' };
+  const textInputProps = {
+    readOnly: true,
+    startAdornment: prefix ? <InputAdornment position="start">{prefix}</InputAdornment> : undefined,
+    endAdornment: suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined,
+  };
+  const wrapTextFieldProps = isWrapDisplay
+    ? {
+        multiline: true,
+        minRows: 1,
+        maxRows: isCellMode ? 2 : 4,
+        sx: {
+          '& .MuiInputBase-root.MuiInputBase-multiline': {
+            alignItems: isCellMode ? 'stretch' : 'flex-start',
+            ...(isCellMode
+              ? {
+                  minHeight: 0,
+                  p: '2px 6px',
+                  overflow: 'hidden',
+                }
+              : {}),
+          },
+          '& .MuiInputBase-inputMultiline': {
+            boxSizing: 'border-box',
+            lineHeight: isCellMode ? '16px' : '20px',
+            overflow: isCellMode ? 'hidden' : 'auto',
+            whiteSpace: 'pre-wrap',
+            ...(isCellMode
+              ? {
+                  height: '100% !important',
+                  minHeight: '0 !important',
+                  padding: '0 !important',
+                  resize: 'none',
+                }
+              : {}),
+          },
+        },
+      }
+    : {};
 
   const renderCellDateTimePicker = () => (
     <TextField
@@ -370,11 +412,12 @@ function FieldPreviewRenderer({
             size="small"
             label={controlLabel}
             placeholder={inputPlaceholder}
+            value={defaultValue}
             multiline
             minRows={Number(node.props.rows ?? 3)}
             disabled={disabled}
-            InputProps={{ readOnly: controlReadonly }}
-            inputProps={{ maxLength: Number(readConfig('maxLength', 500)), tabIndex: isCellMode ? -1 : undefined }}
+            InputProps={textInputProps}
+            inputProps={{ minLength, maxLength: Number(readConfig('maxLength', 500)), tabIndex: isCellMode ? -1 : undefined }}
           />
         );
       case 'inputnumber':
@@ -385,8 +428,9 @@ function FieldPreviewRenderer({
             type="number"
             label={controlLabel}
             placeholder={inputPlaceholder}
+            value={defaultValue}
             disabled={disabled}
-            InputProps={{ readOnly: controlReadonly }}
+            InputProps={textInputProps}
             inputProps={{
               min: Number(readConfig('min', 0)),
               max: Number(readConfig('max', 999999)),
@@ -403,8 +447,9 @@ function FieldPreviewRenderer({
             type="number"
             label={controlLabel}
             placeholder={inputPlaceholder}
+            value={defaultValue}
             disabled={disabled}
-            InputProps={{ readOnly: controlReadonly }}
+            InputProps={textInputProps}
             inputProps={{
               min: Number(readConfig('min', 0)),
               max: Number(readConfig('max', 999999)),
@@ -468,9 +513,11 @@ function FieldPreviewRenderer({
             size="small"
             label={controlLabel}
             placeholder={inputPlaceholder}
+            value={defaultValue}
             disabled={disabled}
-            InputProps={{ readOnly: controlReadonly }}
-            inputProps={{ maxLength: Number(readConfig('maxLength', 200)) || undefined, tabIndex: isCellMode ? -1 : undefined }}
+            InputProps={textInputProps}
+            inputProps={{ minLength, maxLength: Number(readConfig('maxLength', 200)) || undefined, tabIndex: isCellMode ? -1 : undefined }}
+            {...wrapTextFieldProps}
           />
         );
     }

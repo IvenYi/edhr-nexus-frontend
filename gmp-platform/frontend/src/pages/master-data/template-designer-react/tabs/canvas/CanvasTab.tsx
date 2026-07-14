@@ -19,6 +19,11 @@ const sideRailItems = [
   { id: 'config', title: '字段配置', tooltip: '配置', icon: <TuneRounded fontSize="small" /> },
 ] as const;
 
+const defaultPanelMinWidth = 250;
+const defaultPanelMaxWidth = 350;
+const configPanelMinWidth = defaultPanelMinWidth;
+const configPanelMaxWidth = 420;
+
 export default function CanvasTab() {
   const activeRail = useTemplateDesignerStore((state) => state.activeCanvasRail);
   const setActiveRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
@@ -33,6 +38,9 @@ export default function CanvasTab() {
     : sideRailItems.filter((item) => item.id !== 'config');
   const panelRail = activeRail === 'config' && !shouldShowConfigRail ? 'thumbnails' : activeRail;
   const activeRailItem = visibleSideRailItems.find((item) => item.id === panelRail) ?? visibleSideRailItems[0];
+  const activePanelMinWidth = panelRail === 'config' ? configPanelMinWidth : defaultPanelMinWidth;
+  const activePanelMaxWidth = panelRail === 'config' ? configPanelMaxWidth : defaultPanelMaxWidth;
+  const effectiveSidebarWidth = Math.max(activePanelMinWidth, Math.min(activePanelMaxWidth, sidebarWidth));
 
   useEffect(() => {
     if (!isResizingSidebar) {
@@ -40,7 +48,7 @@ export default function CanvasTab() {
     }
 
     const handleMouseMove = (event: MouseEvent) => {
-      const nextWidth = Math.max(250, Math.min(350, event.clientX - 50));
+      const nextWidth = Math.max(activePanelMinWidth, Math.min(activePanelMaxWidth, event.clientX - 50));
       setSidebarWidth(nextWidth);
     };
 
@@ -55,7 +63,7 @@ export default function CanvasTab() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizingSidebar]);
+  }, [activePanelMaxWidth, activePanelMinWidth, isResizingSidebar]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}>
@@ -100,9 +108,9 @@ export default function CanvasTab() {
             data-canvas-side-panel="true"
             sx={{
               position: 'relative',
-              width: sidebarWidth,
-              minWidth: 250,
-              maxWidth: 350,
+              width: effectiveSidebarWidth,
+              minWidth: activePanelMinWidth,
+              maxWidth: activePanelMaxWidth,
               borderRight: '1px solid #e7edf4',
               bgcolor: '#fff',
               flexShrink: 0,

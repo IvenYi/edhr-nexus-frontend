@@ -25,6 +25,12 @@ export interface FieldBinding {
   defaultValue?: unknown;
   placeholder?: string;
   helpText?: string;
+  validationType?: 'none' | 'phone' | 'email';
+  displayMode?: 'text' | 'link' | 'mask';
+  autoWrap?: boolean;
+  maskMode?: 'middle' | 'start' | 'end';
+  maskDigits?: number;
+  linkTarget?: 'blank' | 'self';
   widgetConfig?: Record<string, unknown>;
 }
 
