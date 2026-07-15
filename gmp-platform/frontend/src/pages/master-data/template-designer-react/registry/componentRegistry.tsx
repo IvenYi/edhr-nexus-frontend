@@ -163,6 +163,40 @@ function parseFieldOptions(field?: ModelField | null) {
     });
 }
 
+function parseConfiguredOptions(optionList: unknown, field?: ModelField | null) {
+  const text = typeof optionList === 'string' ? optionList : '';
+  if (!text.trim()) {
+    const fieldOptions = parseFieldOptions(field);
+    if (fieldOptions.length || !['singleSelect', 'multiSelect'].includes(field?.type ?? '')) return fieldOptions;
+    return [
+      { key: `${field?.id ?? 'configured'}:default-1`, label: '选项1', value: '选项1' },
+      { key: `${field?.id ?? 'configured'}:default-2`, label: '选项2', value: '选项2' },
+    ];
+  }
+
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line, index) => {
+      const [rawLabel, rawValue] = line.split(':');
+      const resolvedLabel = rawLabel?.trim() || `选项${index + 1}`;
+      const resolvedValue = rawValue?.trim() || resolvedLabel;
+      return {
+        key: `${field?.id ?? 'configured'}:${index}`,
+        label: resolvedLabel,
+        value: resolvedValue || `option_${index + 1}`,
+      };
+    });
+}
+
+function readDefaultValues(value: unknown) {
+  if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
+  const text = String(value ?? '').trim();
+  if (!text) return [];
+  return text.split('\n').map((item) => item.trim()).filter(Boolean);
+}
+
 function useBoundField(node: CanvasNode) {
   const document = useTemplateDesignerStore((state) => state.document);
   if (node.bindings?.subTableField) return node.bindings.subTableField;
@@ -224,9 +258,9 @@ function FieldPreviewRenderer({
 }: DesignerRendererProps) {
   const field = useBoundField(node);
   const isCellMode = renderMode === 'cell';
-  const options = parseFieldOptions(field);
   const widgetConfig = node.bindings?.widgetConfig ?? {};
   const readConfig = (key: string, fallback: unknown = '') => widgetConfig[key] ?? node.props[key] ?? fallback;
+  const options = parseConfiguredOptions(readConfig('optionList'), field);
   const label = String(node.bindings?.displayLabel || field?.name || node.props.label || node.type);
   const placeholder = String(node.bindings?.placeholder || node.props.placeholder || '');
   const format = String(readConfig('format'));
@@ -238,7 +272,8 @@ function FieldPreviewRenderer({
   const emptySymbol = String(readConfig('emptySymbol'));
   const prefix = String(readConfig('prefix'));
   const suffix = String(readConfig('suffix'));
-  const defaultValue = String(node.bindings?.defaultValue ?? '');
+  const defaultValues = readDefaultValues(node.bindings?.defaultValue);
+  const defaultValue = defaultValues[0] ?? '';
   const displayMode = String(node.bindings?.displayMode ?? 'text');
   const isWrapDisplay = Boolean(node.bindings?.autoWrap);
   const minLength = Number(readConfig('minLength', 0)) || undefined;
@@ -247,6 +282,8 @@ function FieldPreviewRenderer({
   const controlReadonly = isCellMode || readonly;
   const hidden = Boolean(node.bindings?.hidden);
   const optionLayout = String(readConfig('optionLayout', 'row'));
+  const isVerticalOptionLayout = ['vertical', 'column'].includes(optionLayout);
+  const optionShape = String(readConfig('optionShape', 'select'));
   const commonSx = {
     p: 1.5,
     borderRadius: 1,
@@ -386,6 +423,84 @@ function FieldPreviewRenderer({
     </TextField>
   );
 
+  const renderCellOptionGroup = (shape: 'radio' | 'checkbox') => {
+    const renderedOptions = options.length ? options : [emptyOption];
+    const isRadio = shape === 'radio';
+    const isMultiSelect = field?.type === 'multiSelect';
+    const optionControls = renderedOptions.map((option) => {
+      const isOptionChecked = isMultiSelect
+        ? defaultValues.includes(option.value) || defaultValues.includes(option.label)
+        : defaultValue === option.value || defaultValue === option.label;
+
+      return (
+        <FormControlLabel
+          key={option.key}
+          value={option.value}
+          control={
+            isRadio ? (
+              <Radio
+                size="small"
+                checked={isOptionChecked}
+                disabled={disabled}
+                sx={{ p: 0.25, '& .MuiSvgIcon-root': { fontSize: 17 } }}
+              />
+            ) : (
+              <Checkbox
+                size="small"
+                checked={isOptionChecked}
+                disabled={disabled}
+                sx={{ p: 0.25, '& .MuiSvgIcon-root': { fontSize: 17 } }}
+              />
+            )
+          }
+          label={option.label}
+        />
+      );
+    });
+    const optionGroupSx = {
+      width: '100%',
+      height: '100%',
+      minHeight: 24,
+      alignItems: isVerticalOptionLayout ? 'flex-start' : 'center',
+      justifyContent: isVerticalOptionLayout ? 'center' : 'flex-start',
+      overflow: 'hidden',
+      flexWrap: isVerticalOptionLayout ? 'nowrap' : 'wrap',
+      '& .MuiFormControlLabel-root': {
+        m: 0,
+        minWidth: 0,
+        mr: isVerticalOptionLayout ? 0 : 0.75,
+      },
+      '& .MuiFormControlLabel-label': {
+        minWidth: 0,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        fontSize: 12,
+        lineHeight: '18px',
+      },
+    };
+
+    return isRadio ? (
+      <Stack
+        data-canvas-cell-radio-group="true"
+        direction={isVerticalOptionLayout ? 'column' : 'row'}
+        spacing={0.25}
+        sx={optionGroupSx}
+      >
+        {optionControls}
+      </Stack>
+    ) : (
+      <Stack
+        data-canvas-cell-checkbox-group="true"
+        direction={isVerticalOptionLayout ? 'column' : 'row'}
+        spacing={0.25}
+        sx={optionGroupSx}
+      >
+        {optionControls}
+      </Stack>
+    );
+  };
+
   const renderControl = () => {
     if (hidden) {
       return <Typography sx={{ fontSize: 13, color: '#909399' }}>{label} 已隐藏</Typography>;
@@ -400,7 +515,13 @@ function FieldPreviewRenderer({
     if (isCellMode && (field?.type === 'attachment' || field?.type === 'image')) {
       return renderCellUploadButton();
     }
-    if (isCellMode && ['singleSelect', 'multiSelect', 'reference'].includes(field?.type ?? '')) {
+    if (isCellMode && ['singleSelect', 'multiSelect'].includes(field?.type ?? '') && optionShape === 'radio') {
+      return renderCellOptionGroup('radio');
+    }
+    if (isCellMode && ['singleSelect', 'multiSelect'].includes(field?.type ?? '') && optionShape === 'checkbox') {
+      return renderCellOptionGroup('checkbox');
+    }
+    if (isCellMode && ['singleSelect', 'multiSelect'].includes(field?.type ?? '')) {
       return renderCellSelect();
     }
 
@@ -484,7 +605,7 @@ function FieldPreviewRenderer({
         return (
           <Stack spacing={0.5}>
             <Typography sx={{ fontSize: 13, color: '#606266' }}>{label}</Typography>
-            <RadioGroup row={optionLayout !== 'column'}>
+            <RadioGroup row={!isVerticalOptionLayout}>
               {(options.length ? options : [{ key: 'empty', label: emptySymbol || '未配置选项', value: '' }]).map((option) => (
                 <FormControlLabel key={option.key} value={option.value} control={<Radio size="small" disabled={disabled} />} label={option.label} />
               ))}
@@ -495,7 +616,7 @@ function FieldPreviewRenderer({
         return (
           <Stack spacing={0.5}>
             <Typography sx={{ fontSize: 13, color: '#606266' }}>{label}</Typography>
-            <Stack direction={optionLayout === 'column' ? 'column' : 'row'} spacing={1}>
+            <Stack direction={isVerticalOptionLayout ? 'column' : 'row'} spacing={1}>
               {(options.length ? options : [{ key: 'empty', label: emptySymbol || '未配置选项', value: '' }]).map((option) => (
                 <FormControlLabel key={option.key} control={<Checkbox size="small" disabled={disabled} />} label={option.label} />
               ))}

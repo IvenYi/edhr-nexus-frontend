@@ -24,6 +24,12 @@ function assert(condition, message) {
   if (!condition) failures.push(message);
 }
 
+function assertIncludes(source, needles, messagePrefix) {
+  for (const needle of needles) {
+    if (!source.includes(needle)) failures.push(`${messagePrefix}: missing ${needle}`);
+  }
+}
+
 async function loadExcelImporter() {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), 'verify-template-designer-react-'));
   const outfile = path.join(tempDir, 'importExcel.cjs');
@@ -126,6 +132,8 @@ const shellFile = shell;
 const headerActionButtonStyleBlock = shell.match(/const headerActionButtonSx = \{[\s\S]*?\n\};/)?.[0] ?? '';
 const workflowTab = read('../src/pages/master-data/template-designer-react/tabs/workflow/WorkflowTab.tsx');
 const componentRegistry = read('../src/pages/master-data/template-designer-react/registry/componentRegistry.tsx');
+const parseConfiguredOptionsBlock = componentRegistry.match(/function parseConfiguredOptions[\s\S]*?return text/)?.[0] ?? '';
+const referenceFieldTypeConfigBlock = fieldRegistry.match(/const REFERENCE_TYPE_CONFIG_SCHEMA: PropertySchemaItem\[\] = \[[\s\S]*?\];/)?.[0] ?? '';
 const sidebar = read('../src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx');
 const inspector = read('../src/pages/master-data/template-designer-react/components/DesignerInspector.tsx');
 const displayModeOptionsBlock = inspector.match(/const DISPLAY_MODE_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
@@ -860,6 +868,285 @@ if (!inspector.includes("overflowY: 'auto'")) failures.push('DesignerInspector.t
 if (!inspector.includes("overflowX: 'hidden'")) failures.push('DesignerInspector.tsx: field configuration panel must avoid horizontal overflow scrollbars');
 if (!inspector.includes("userSelect: 'none'")) failures.push('DesignerInspector.tsx: field configuration panel must prevent accidental bulk text selection');
 if (!inspector.includes("userSelect: 'text'")) failures.push('DesignerInspector.tsx: field configuration inputs must still allow text selection while editing');
+if (!inspector.includes('state.getFieldById') || !inspector.includes('selectedNode.bindings?.fieldId')) failures.push('DesignerInspector.tsx: field configuration must resolve the bound model field from the selected node fieldId');
+if (!inspector.includes('boundField?.type')) failures.push('DesignerInspector.tsx: field configuration must branch by the bound field type');
+const numberConfigBlock = inspector.match(/const renderNumberSections = \(\) => \{[\s\S]*?const renderDateTimeSections/)?.[0] ?? '';
+assertIncludes(numberConfigBlock, [
+  '整数/小数',
+  'numberKind === \'decimal\'',
+  '最小值 / 最大值',
+  '公式自动赋值',
+  '公式配置',
+  '正负规则',
+  '区间校验',
+], 'DesignerInspector.tsx: number field configuration');
+if (!inspector.includes("const NUMBER_DISPLAY_MODE_OPTIONS") || !inspector.includes("label: '百分比'")) failures.push('DesignerInspector.tsx: number display mode options must include 百分比');
+if (numberConfigBlock.includes('label="千分位"')) failures.push('DesignerInspector.tsx: number basic information must not expose the 千分位 checkbox');
+if (numberConfigBlock.includes('renderConditionLimit')) failures.push('DesignerInspector.tsx: number fill limits must not expose 条件配置');
+if (numberConfigBlock.includes('crossFieldCompare') || numberConfigBlock.includes('跨字段对比')) failures.push('DesignerInspector.tsx: number validation must not expose 跨字段对比');
+if (numberConfigBlock.includes('uniqueValidation') || numberConfigBlock.includes('唯一校验')) failures.push('DesignerInspector.tsx: number validation must not expose 唯一校验');
+if (numberConfigBlock.includes('errorMessage') || numberConfigBlock.includes('错误提示')) failures.push('DesignerInspector.tsx: number validation must not expose 错误提示');
+if (numberConfigBlock.includes('viewPrecision') || numberConfigBlock.includes('查看小数位数')) failures.push('DesignerInspector.tsx: number display must not expose 查看小数位数');
+if (numberConfigBlock.includes('thresholdColor') || numberConfigBlock.includes('数值阈值标色')) failures.push('DesignerInspector.tsx: number display must not expose 数值阈值标色');
+if (numberConfigBlock.includes('longNumberDisplay') || numberConfigBlock.includes('超长数值')) failures.push('DesignerInspector.tsx: number display must not expose 超长数值 options');
+if (numberConfigBlock.includes('emptyText') || numberConfigBlock.includes('空值文案')) failures.push('DesignerInspector.tsx: number display must not expose 空值文案');
+const numberMinMaxRowBlock = numberConfigBlock.match(/label="最小值 \/ 最大值"[\s\S]*?<\/Stack>/)?.[0] ?? '';
+if (numberMinMaxRowBlock.indexOf('widgetConfig.minValue') < 0 || numberMinMaxRowBlock.indexOf('widgetConfig.maxValue') < 0 || numberMinMaxRowBlock.indexOf('widgetConfig.minValue') > numberMinMaxRowBlock.indexOf('widgetConfig.maxValue')) failures.push('DesignerInspector.tsx: number min/max row must render minValue on the left and maxValue on the right');
+const datetimeConfigBlock = inspector.match(/const renderDateTimeSections = \(\) => \([\s\S]*?const renderSignatureSections/)?.[0] ?? '';
+assertIncludes(datetimeConfigBlock, [
+  '日期类型',
+  '时间先后校验',
+  '日期格式',
+  '过期置灰',
+], 'DesignerInspector.tsx: datetime field configuration');
+if (!inspector.includes('DATE_DEFAULT_VALUE_OPTIONS') || !inspector.includes("label: '当前时间'")) failures.push('DesignerInspector.tsx: datetime default value options must include 当前时间');
+const datetimeDateFormatRowBlock = datetimeConfigBlock.match(/label="日期格式"[\s\S]*?<CompactSelect/)?.[0] ?? '';
+if (!datetimeDateFormatRowBlock.includes('layout="vertical"')) failures.push('DesignerInspector.tsx: datetime date format row must use vertical label/control layout');
+if (datetimeConfigBlock.includes('timeRangeLimit') || datetimeConfigBlock.includes('时间范围限制')) failures.push('DesignerInspector.tsx: datetime basic information must not expose 时间范围限制');
+if (datetimeConfigBlock.includes('label="前缀"') || datetimeConfigBlock.includes('label="后缀"')) failures.push('DesignerInspector.tsx: datetime basic information must not expose prefix or suffix rows');
+if (datetimeConfigBlock.includes('renderConditionLimit')) failures.push('DesignerInspector.tsx: datetime fill limits must not expose 条件配置');
+if (datetimeConfigBlock.includes('customMessage') || datetimeConfigBlock.includes('自定义提示')) failures.push('DesignerInspector.tsx: datetime validation must not expose 自定义提示');
+if (datetimeConfigBlock.includes('emptyText') || datetimeConfigBlock.includes('空值文案')) failures.push('DesignerInspector.tsx: datetime display must not expose 空值文案');
+if (datetimeConfigBlock.includes('copyable') || datetimeConfigBlock.includes('label="复制"')) failures.push('DesignerInspector.tsx: datetime display must not expose 复制');
+if (datetimeConfigBlock.includes('longDateHoverPreview') || datetimeConfigBlock.includes('超长时间 hover 预览')) failures.push('DesignerInspector.tsx: datetime display must not expose 超长时间 hover 预览');
+const signatureConfigBlock = inspector.match(/const renderSignatureSections = \(\) => \([\s\S]*?const renderAttachmentSections/)?.[0] ?? '';
+const signatureDisplayOptionsBlock = inspector.match(/const SIGNATURE_DISPLAY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+const attachmentDisplayOptionsBlock = inspector.match(/const ATTACHMENT_DISPLAY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+assertIncludes(signatureConfigBlock, [
+  '允许删除签名',
+  'currentUserValidation',
+  '只允许当前登录人签名',
+  "signatureDisplayMode, 'signatureOnly'",
+  '展示方式',
+], 'DesignerInspector.tsx: signature field configuration');
+assertIncludes(signatureDisplayOptionsBlock, [
+  '仅签名',
+  '签名 + 日期',
+  '签名 + 日期时间',
+], 'DesignerInspector.tsx: signature display options');
+if (signatureConfigBlock.includes('defaultValue') || signatureConfigBlock.includes('默认值')) failures.push('DesignerInspector.tsx: signature basic information must not expose 默认值');
+if (signatureConfigBlock.includes('strokeWidth') || signatureConfigBlock.includes('线条粗细')) failures.push('DesignerInspector.tsx: signature basic information must not expose 线条粗细');
+if (signatureConfigBlock.includes('strokeColor') || signatureConfigBlock.includes('线条颜色')) failures.push('DesignerInspector.tsx: signature basic information must not expose 线条颜色');
+if (signatureConfigBlock.includes('renderConditionLimit')) failures.push('DesignerInspector.tsx: signature fill limits must not expose 条件配置');
+if (signatureConfigBlock.includes('nonEmptyValidation') || signatureConfigBlock.includes('非空校验')) failures.push('DesignerInspector.tsx: signature validation must not expose 非空校验');
+if (signatureConfigBlock.includes('emptyText') || signatureConfigBlock.includes('空值文案')) failures.push('DesignerInspector.tsx: signature display must not expose 空值文案');
+if (signatureConfigBlock.includes('downloadable') || signatureConfigBlock.includes('label="下载"')) failures.push('DesignerInspector.tsx: signature display must not expose 下载');
+if (signatureConfigBlock.includes('imageOverflowPopover') || signatureConfigBlock.includes('图片超出单元格 hover')) failures.push('DesignerInspector.tsx: signature display must not expose image overflow hover preview');
+if (signatureDisplayOptionsBlock.includes('缩略图') || signatureDisplayOptionsBlock.includes('完整图')) failures.push('DesignerInspector.tsx: signature display options must not use thumbnail/full image wording');
+const attachmentConfigBlock = inspector.match(/const renderAttachmentSections = \(\) => \([\s\S]*?const renderImageSections/)?.[0] ?? '';
+const attachmentUploadModeOptionsBlock = inspector.match(/const ATTACHMENT_UPLOAD_MODE_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+const attachmentFormatLimitOptionsBlock = inspector.match(/const ATTACHMENT_FORMAT_LIMIT_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+assertIncludes(attachmentConfigBlock, [
+  '帮助提示',
+  '上传策略',
+  '大小限制',
+  '数量限制',
+  '格式限制',
+], 'DesignerInspector.tsx: attachment field configuration');
+assertIncludes(attachmentDisplayOptionsBlock, [
+  '列表',
+  '卡片',
+], 'DesignerInspector.tsx: attachment display options');
+assertIncludes(attachmentUploadModeOptionsBlock, [
+  '单文件',
+  '多文件',
+], 'DesignerInspector.tsx: attachment upload mode options');
+assertIncludes(attachmentFormatLimitOptionsBlock, [
+  '所有格式',
+  '文档格式',
+], 'DesignerInspector.tsx: attachment format limit options');
+const uploadModeIndex = attachmentConfigBlock.indexOf('上传策略');
+const fileSizeIndex = attachmentConfigBlock.indexOf('大小限制');
+if (uploadModeIndex === -1 || fileSizeIndex === -1 || uploadModeIndex > fileSizeIndex) failures.push('DesignerInspector.tsx: attachment basic information must list 上传策略 before 大小限制');
+if (attachmentConfigBlock.includes('上传方式') || attachmentConfigBlock.includes('文件大小限制') || attachmentConfigBlock.includes('label="数量"')) failures.push('DesignerInspector.tsx: attachment basic information must use renamed labels');
+if (!attachmentConfigBlock.includes('readNumber(widgetConfig.fileSize, 30)')) failures.push('DesignerInspector.tsx: attachment file size default must be 30M');
+if (attachmentConfigBlock.includes('defaultValue') || attachmentConfigBlock.includes('默认值')) failures.push('DesignerInspector.tsx: attachment basic information must not expose 默认值');
+if (attachmentConfigBlock.includes('提示文本')) failures.push('DesignerInspector.tsx: attachment basic information must not expose 提示文本');
+if (attachmentConfigBlock.includes('fileFormat') || attachmentConfigBlock.includes('文件格式')) failures.push('DesignerInspector.tsx: attachment basic information must not expose 文件格式');
+if (attachmentConfigBlock.includes('batchUpload')) failures.push('DesignerInspector.tsx: attachment basic information must not expose batchUpload');
+if (attachmentConfigBlock.includes('安全限制')) failures.push('DesignerInspector.tsx: attachment basic information must not expose 安全限制');
+if (attachmentConfigBlock.includes('renderConditionLimit')) failures.push('DesignerInspector.tsx: attachment fill limits must not expose 条件配置');
+if (attachmentConfigBlock.includes('fileCountValidation') || attachmentConfigBlock.includes('文件数量')) failures.push('DesignerInspector.tsx: attachment validation must not expose 文件数量');
+if (attachmentConfigBlock.includes('nonEmptyValidation') || attachmentConfigBlock.includes('非空校验')) failures.push('DesignerInspector.tsx: attachment validation must not expose 非空校验');
+if (attachmentConfigBlock.includes('fileNameHoverPreview') || attachmentConfigBlock.includes('文件名超长省略 + hover 预览')) failures.push('DesignerInspector.tsx: attachment display must not expose 文件名超长省略 + hover 预览');
+if (!attachmentConfigBlock.includes('previewable')) failures.push('DesignerInspector.tsx: attachment display must still support preview');
+if (!attachmentConfigBlock.includes("attachmentFormatLimit, 'all') === 'document'")) failures.push('DesignerInspector.tsx: attachment preview must only appear when attachment format limit is 文档格式');
+if (!attachmentConfigBlock.includes("readText(widgetConfig.uploadMode, 'single')")) failures.push('DesignerInspector.tsx: attachment upload mode must default to 单文件上传');
+const imageConfigBlock = inspector.match(/const renderImageSections = \(\) => \([\s\S]*?const renderSingleSelectSections/)?.[0] ?? '';
+const imageDisplayOptionsBlock = inspector.match(/const IMAGE_DISPLAY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+const imageUploadStrategyOptionsBlock = inspector.match(/const IMAGE_UPLOAD_STRATEGY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+assertIncludes(imageConfigBlock, [
+  '上传策略',
+  '大小限制',
+  '数量限制',
+  '放大预览',
+], 'DesignerInspector.tsx: image field configuration');
+assertIncludes(imageDisplayOptionsBlock, [
+  '缩略',
+  '大图',
+], 'DesignerInspector.tsx: image display options');
+assertIncludes(imageUploadStrategyOptionsBlock, [
+  '单图片',
+  '多图片',
+], 'DesignerInspector.tsx: image upload strategy options');
+if (imageConfigBlock.includes('defaultValue') || imageConfigBlock.includes('默认值')) failures.push('DesignerInspector.tsx: image basic information must not expose 默认值');
+if (imageConfigBlock.includes('提示文本')) failures.push('DesignerInspector.tsx: image basic information must not expose 提示文本');
+if (imageConfigBlock.includes('imageFormat') || imageConfigBlock.includes('图片格式')) failures.push('DesignerInspector.tsx: image basic information must not expose 图片格式');
+if (imageConfigBlock.includes('watermark') || imageConfigBlock.includes('水印')) failures.push('DesignerInspector.tsx: image basic information must not expose 水印');
+if (imageConfigBlock.includes('crop') || imageConfigBlock.includes('裁剪')) failures.push('DesignerInspector.tsx: image basic information must not expose 裁剪');
+if (imageConfigBlock.includes('label="图片大小限制"') || imageConfigBlock.includes('label="上传数量限制"')) failures.push('DesignerInspector.tsx: image basic information must use renamed labels');
+if (!imageConfigBlock.includes('readNumber(widgetConfig.imageSize, 20)')) failures.push('DesignerInspector.tsx: image size default must be 20M');
+if (imageConfigBlock.includes('marker="validation"') || imageConfigBlock.includes('验证规则')) failures.push('DesignerInspector.tsx: image validation section must be removed');
+if (imageConfigBlock.includes('imageCountValidation') || imageConfigBlock.includes('图片数量校验')) failures.push('DesignerInspector.tsx: image validation must not expose 图片数量校验');
+if (imageConfigBlock.includes('renderConditionLimit')) failures.push('DesignerInspector.tsx: image fill limits must not expose 条件配置');
+if (imageConfigBlock.includes('imageOverflowHoverPreview') || imageConfigBlock.includes('图片溢出 hover 查看原图')) failures.push('DesignerInspector.tsx: image display must not expose 图片溢出 hover 查看原图');
+if (!imageConfigBlock.includes("readText(widgetConfig.imageUploadStrategy, 'single')")) failures.push('DesignerInspector.tsx: image upload strategy must default to 单图片');
+const singleSelectConfigBlock = inspector.match(/const renderSingleSelectSections = \(\) => [\s\S]*?const renderReferenceSections/)?.[0] ?? '';
+const referenceConfigBlock = inspector.match(/const renderReferenceSections = \(\) => \{[\s\S]*?const renderMultiSelectSections/)?.[0] ?? '';
+const singleSelectShapeOptionsBlock = inspector.match(/const SINGLE_SELECT_SHAPE_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+const singleSelectDisplayOptionsBlock = inspector.match(/const SINGLE_SELECT_DISPLAY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+const referenceDisplayOptionsBlock = inspector.match(/const REFERENCE_DISPLAY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '';
+const optionListEditorStyleBlock = inspector.match(/const optionListEditorSx = \{[\s\S]*?\};/)?.[0] ?? '';
+const optionRowStyleBlock = inspector.match(/const optionRowSx = \{[\s\S]*?\};/)?.[0] ?? '';
+const optionChoiceStyleBlock = inspector.match(/const optionChoiceSx = \{[\s\S]*?\};/)?.[0] ?? '';
+const optionDragHandleStyleBlock = inspector.match(/const optionDragHandleSx = \{[\s\S]*?\};/)?.[0] ?? '';
+const optionInputStyleBlock = inspector.match(/const optionInputSx = \{[\s\S]*?\};/)?.[0] ?? '';
+assertIncludes(singleSelectConfigBlock, [
+  '选项来源',
+  '选项列表',
+  'renderOptionListEditor',
+  'data-option-list-header="true"',
+  'data-option-list-add="true"',
+  'data-option-row="true"',
+  'onPointerDown',
+  'onPointerEnter',
+  'onPointerUp',
+  'onMouseDown',
+  'onMouseEnter',
+  'onMouseMove',
+  'onMouseUp',
+  'data-option-row-index',
+  'moveOptionRow',
+  'data-option-drag-handle="true"',
+  'data-option-default-action="true"',
+  '设为默认值',
+  '展现形态',
+  '排序方式',
+  '显示样式',
+], 'DesignerInspector.tsx: single-select field configuration');
+assertIncludes(singleSelectShapeOptionsBlock, [
+  '下拉框',
+  '单选框',
+  '复选框',
+], 'DesignerInspector.tsx: single-select shape options');
+assertIncludes(singleSelectDisplayOptionsBlock, [
+  '同展现形态',
+  '纯文本',
+], 'DesignerInspector.tsx: single-select display options');
+if (singleSelectConfigBlock.includes('FieldConfigRow label="默认值"')) failures.push('DesignerInspector.tsx: single-select basic information must not expose a standalone 默认值 row');
+if (singleSelectShapeOptionsBlock.includes('平铺按钮')) failures.push('DesignerInspector.tsx: single-select shape options must not expose 平铺按钮');
+const singleSelectShapeIndex = singleSelectConfigBlock.indexOf('label="展现形态"');
+const singleSelectSourceIndex = singleSelectConfigBlock.indexOf('label="选项来源"');
+if (singleSelectShapeIndex < 0 || singleSelectSourceIndex < 0 || singleSelectShapeIndex > singleSelectSourceIndex) failures.push('DesignerInspector.tsx: single-select 展现形态 must appear above 选项来源');
+if (!singleSelectConfigBlock.includes("readText(widgetConfig.optionSource, 'manual') === 'manual'")) failures.push('DesignerInspector.tsx: single-select option list must only show for 手动输入 source');
+if (!singleSelectConfigBlock.includes("['radio', 'checkbox'].includes(singleSelectOptionShape)")) failures.push('DesignerInspector.tsx: single-select 排序方式 must only show for 单选框 or 复选框');
+if (!singleSelectConfigBlock.includes("readText(widgetConfig.optionLayout, 'horizontal')")) failures.push('DesignerInspector.tsx: single-select 排序方式 must default to 横向');
+if (singleSelectConfigBlock.includes('optionListToolbarSx')) failures.push('DesignerInspector.tsx: single-select option add action must align with the 选项列表 header instead of using an internal toolbar row');
+if (!singleSelectConfigBlock.includes('updateBinding({ defaultValue: optionLabel })')) failures.push('DesignerInspector.tsx: single-select option row must be able to set the selected option as default');
+if (!inspector.includes('&:hover [data-option-drag-handle="true"]')) failures.push('DesignerInspector.tsx: single-select option drag handle must appear on row hover');
+if (optionListEditorStyleBlock.includes('border:')) failures.push('DesignerInspector.tsx: single-select option list editor must not render an outer framed container');
+if (!singleSelectConfigBlock.includes('data-option-choice="true"')) failures.push('DesignerInspector.tsx: single-select option rows must render each option as a gray choice block');
+if (!optionChoiceStyleBlock.includes("bgcolor: '#f7f8fa'")) failures.push('DesignerInspector.tsx: single-select option choice block must use a gray background');
+if (!optionRowStyleBlock.includes("gridTemplateColumns: 'minmax(0, 1fr) 18px'")) failures.push('DesignerInspector.tsx: single-select option rows must align the gray choice block with the option-list label');
+if (!optionChoiceStyleBlock.includes("gridTemplateColumns: '12px minmax(0, 1fr) 10px'")) failures.push('DesignerInspector.tsx: single-select option choice block must keep drag and default markers inside the gray background');
+if (!optionDragHandleStyleBlock.includes('fontSize: 14')) failures.push('DesignerInspector.tsx: single-select option drag handle must use smaller compact sizing');
+if (inspector.includes('BoltOutlined')) failures.push('DesignerInspector.tsx: single-select default option action must not use a lightning icon');
+if (!singleSelectConfigBlock.includes('data-option-default-dot="true"')) failures.push('DesignerInspector.tsx: single-select default option action must be a compact dot button');
+if (!inspector.includes('optionDefaultDotSx')) failures.push('DesignerInspector.tsx: single-select default option dot must use a dedicated compact style');
+if (!inspector.includes('data-option-default-active-marker="true"')) failures.push('DesignerInspector.tsx: single-select selected default option must keep a compact blue active marker');
+if (singleSelectConfigBlock.includes('renderConditionLimit')) failures.push('DesignerInspector.tsx: single-select fill limits must not expose 条件配置');
+if (singleSelectConfigBlock.includes('selectedAssign') || singleSelectConfigBlock.includes('选中赋值')) failures.push('DesignerInspector.tsx: single-select fill limits must not expose 选中赋值');
+if (singleSelectConfigBlock.includes('marker="validation"') || singleSelectConfigBlock.includes('验证规则')) failures.push('DesignerInspector.tsx: single-select validation section must be removed');
+if (singleSelectConfigBlock.includes('optionValueValidation') || singleSelectConfigBlock.includes('可选值校验')) failures.push('DesignerInspector.tsx: single-select validation must not expose 可选值校验');
+if (singleSelectConfigBlock.includes('customMessage') || singleSelectConfigBlock.includes('自定义提示')) failures.push('DesignerInspector.tsx: single-select validation must not expose 自定义提示');
+if (singleSelectConfigBlock.includes('文本/标签样式')) failures.push('DesignerInspector.tsx: single-select display must rename 文本/标签样式 to 显示样式');
+if (singleSelectConfigBlock.includes('emptyText') || singleSelectConfigBlock.includes('空值文案')) failures.push('DesignerInspector.tsx: single-select display must not expose 空值文案');
+if (singleSelectConfigBlock.includes('copyable') || singleSelectConfigBlock.includes('label="复制"')) failures.push('DesignerInspector.tsx: single-select display must not expose 复制');
+if (singleSelectConfigBlock.includes('optionColor') || singleSelectConfigBlock.includes('选项颜色')) failures.push('DesignerInspector.tsx: single-select display must not expose 选项颜色');
+if (singleSelectConfigBlock.includes('longLabelHoverPreview') || singleSelectConfigBlock.includes('长标签 hover 预览')) failures.push('DesignerInspector.tsx: single-select display must not expose 长标签 hover 预览');
+if (singleSelectDisplayOptionsBlock.includes('文本/标签样式')) failures.push('DesignerInspector.tsx: single-select display options must not expose 文本/标签样式');
+assertIncludes(referenceConfigBlock, [
+  '需要引用的功能数据',
+  'referenceSourceType',
+  'referenceField',
+  '选择引用字段',
+  '查询条件',
+  '查找条件',
+  'referenceQueryConditions',
+  '引用表中的字段',
+  '当前表中的字段',
+  'REFERENCE_QUERY_OPERATOR_OPTIONS',
+  '显示样式',
+], 'DesignerInspector.tsx: reference field configuration');
+assertIncludes(referenceDisplayOptionsBlock, [
+  '链接文本',
+  '纯文本',
+], 'DesignerInspector.tsx: reference display options');
+if (referenceConfigBlock.includes('label="展现形态"')) failures.push('DesignerInspector.tsx: reference basic information must not expose 展现形态');
+if (referenceConfigBlock.includes('label="选项来源"')) failures.push('DesignerInspector.tsx: reference basic information must not expose 选项来源');
+if (referenceConfigBlock.includes('选项列表') || referenceConfigBlock.includes('renderOptionListEditor')) failures.push('DesignerInspector.tsx: reference basic information must not expose option-list editing');
+if (!inspector.includes('SelectProps={{ displayEmpty: true }}')) failures.push('DesignerInspector.tsx: compact selects must display empty reference/query placeholders');
+if (!referenceFieldTypeConfigBlock.includes('需要引用的功能数据')) failures.push('fieldRegistry.ts: reference field type config must use 需要引用的功能数据 wording');
+if (
+  referenceFieldTypeConfigBlock.includes("key: 'multiple'")
+  || referenceFieldTypeConfigBlock.includes("key: 'displayFields'")
+  || referenceFieldTypeConfigBlock.includes("key: 'valueFields'")
+  || fieldRegistry.includes('multiple: false')
+  || fieldRegistry.includes('displayFields')
+  || fieldRegistry.includes('valueFields')
+) {
+  failures.push('fieldRegistry.ts: reference field type config must remove old multiple/display/value fields');
+}
+const multiSelectConfigBlock = inspector.match(/const renderMultiSelectSections = \(\) => [\s\S]*?const renderFieldSections/)?.[0] ?? '';
+assertIncludes(multiSelectConfigBlock, [
+  '选项来源',
+  '选项列表',
+  '展现形态',
+  '排序方式',
+  'renderOptionListEditor',
+  'data-option-default-dot="true"',
+  'toggleMultiSelectDefaultOption',
+  '选择数量校验',
+  '最小选择数 / 最大选择数',
+  '显示样式',
+], 'DesignerInspector.tsx: multi-select field configuration');
+if (multiSelectConfigBlock.includes('FieldConfigRow label="默认值"')) failures.push('DesignerInspector.tsx: multi-select basic information must not expose a standalone 默认值 row');
+const multiSelectShapeIndex = multiSelectConfigBlock.indexOf('label="展现形态"');
+const multiSelectSourceIndex = multiSelectConfigBlock.indexOf('label="选项来源"');
+if (multiSelectShapeIndex < 0 || multiSelectSourceIndex < 0 || multiSelectShapeIndex > multiSelectSourceIndex) failures.push('DesignerInspector.tsx: multi-select 展现形态 must appear above 选项来源');
+if (!multiSelectConfigBlock.includes("readText(widgetConfig.optionSource, 'manual') === 'manual'")) failures.push('DesignerInspector.tsx: multi-select option list must only show for 手动输入 source');
+if (!multiSelectConfigBlock.includes("['radio', 'checkbox'].includes(multiSelectOptionShape)")) failures.push('DesignerInspector.tsx: multi-select 排序方式 must only show for 单选框 or 复选框');
+if (!multiSelectConfigBlock.includes("readText(widgetConfig.optionLayout, 'horizontal')")) failures.push('DesignerInspector.tsx: multi-select 排序方式 must default to 横向');
+if (!multiSelectConfigBlock.includes('Boolean(widgetConfig.selectCountValidation) ? (')) failures.push('DesignerInspector.tsx: multi-select min/max count controls must only show after enabling 选择数量校验');
+if (!multiSelectConfigBlock.includes('minSelectCount: 2')) failures.push('DesignerInspector.tsx: multi-select count validation must initialize 最小选择数 to 2 when enabled');
+if (!multiSelectConfigBlock.includes('maxSelectCount: optionRows.length')) failures.push('DesignerInspector.tsx: multi-select count validation must initialize 最大选择数 to the option count when enabled');
+if (!multiSelectConfigBlock.includes('readNumber(widgetConfig.minSelectCount, 2)')) failures.push('DesignerInspector.tsx: multi-select min select count display default must be 2');
+if (!multiSelectConfigBlock.includes('readNumber(widgetConfig.maxSelectCount, optionRows.length)')) failures.push('DesignerInspector.tsx: multi-select max select count display default must be the option count');
+if (multiSelectConfigBlock.includes('renderConditionLimit')) failures.push('DesignerInspector.tsx: multi-select fill limits must not expose 条件配置');
+if (multiSelectConfigBlock.includes('mutuallyExclusiveValidation') || multiSelectConfigBlock.includes('互斥校验')) failures.push('DesignerInspector.tsx: multi-select validation must not expose 互斥校验');
+if (multiSelectConfigBlock.includes('最大/最小选择数')) failures.push('DesignerInspector.tsx: multi-select basic information must not expose 最大/最小选择数');
+if (multiSelectConfigBlock.includes('FieldConfigRow label="形态"') || multiSelectConfigBlock.includes('FieldConfigRow label="排列"')) failures.push('DesignerInspector.tsx: multi-select must use 展现形态 and 排序方式 labels like single-select');
+if (multiSelectConfigBlock.includes('逗号文本/标签')) failures.push('DesignerInspector.tsx: multi-select display must not expose 逗号文本/标签 wording');
+if (multiSelectConfigBlock.includes('emptyText') || multiSelectConfigBlock.includes('空值文案')) failures.push('DesignerInspector.tsx: multi-select display must not expose 空值文案');
+if (multiSelectConfigBlock.includes('tagColor') || multiSelectConfigBlock.includes('标签颜色')) failures.push('DesignerInspector.tsx: multi-select display must not expose 标签颜色');
+if (multiSelectConfigBlock.includes('longLabelHoverPreview') || multiSelectConfigBlock.includes('超长标签 hover 预览')) failures.push('DesignerInspector.tsx: multi-select display must not expose 超长标签 hover 预览');
+if (!inspector.includes('function readMultiDefaultValues')) failures.push('DesignerInspector.tsx: multi-select default values must be read as a reusable array');
+if (!multiSelectConfigBlock.includes('defaultValues.includes(optionLabel)')) failures.push('DesignerInspector.tsx: multi-select option default dot must support selecting multiple options');
+if (multiSelectConfigBlock.includes('updateBinding({ defaultValue: optionLabel })')) failures.push('DesignerInspector.tsx: multi-select default option action must not replace all defaults like single-select');
+assertIncludes(inspector.match(/const MULTI_SELECT_DISPLAY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '', [
+  '同展现形态',
+  '文本选项 + 逗号分割',
+], 'DesignerInspector.tsx: multi-select display options');
 if (!renderer.includes('children?.map')) failures.push('CanvasNodeRenderer.tsx: missing recursive children render');
 if (!renderer.includes('CanvasDropZone')) failures.push('CanvasNodeRenderer.tsx: missing child insert zone');
 if (!renderer.includes('data-canvas-absolute-node-layer="true"')) failures.push('CanvasNodeRenderer.tsx: absolute field components must render in an overlay layer');
@@ -938,10 +1225,29 @@ if (!componentRegistry.includes('renderCellUploadButton')) failures.push('compon
 if (!componentRegistry.includes('data-canvas-cell-upload-button="true"')) failures.push('componentRegistry.tsx: cell upload button must expose a stable marker');
 if (!componentRegistry.includes('AddOutlined')) failures.push('componentRegistry.tsx: cell upload button must show a plus icon');
 if (!componentRegistry.includes('点击上传')) failures.push('componentRegistry.tsx: cell upload button text must read 点击上传');
-if (!componentRegistry.includes('renderCellSelect')) failures.push('componentRegistry.tsx: cell single-select, multi-select, and reference fields must render as dropdown controls');
+if (!componentRegistry.includes('renderCellSelect')) failures.push('componentRegistry.tsx: cell single-select and multi-select fields must render dropdown controls when configured as dropdowns');
 if (!componentRegistry.includes('data-canvas-cell-select="true"')) failures.push('componentRegistry.tsx: cell dropdown control must expose a stable marker');
 if (!componentRegistry.includes('displayEmpty: true')) failures.push('componentRegistry.tsx: cell dropdown control must show placeholder text when empty');
-if (!componentRegistry.includes("['singleSelect', 'multiSelect', 'reference'].includes(field?.type ?? '')")) failures.push('componentRegistry.tsx: cell option/reference fields must be forced to dropdown rendering by field type');
+if (!componentRegistry.includes('parseConfiguredOptions')) failures.push('componentRegistry.tsx: cell option fields must read optionList configured from the inspector before field typeConfig options');
+if (!parseConfiguredOptionsBlock.includes("['singleSelect', 'multiSelect'].includes(field?.type ?? '')") || !parseConfiguredOptionsBlock.includes("label: '选项1'") || !parseConfiguredOptionsBlock.includes("label: '选项2'")) failures.push('componentRegistry.tsx: single-select and multi-select fields without configured options must preview the same default options shown by the inspector');
+if (!componentRegistry.includes("const optionShape = String(readConfig('optionShape', 'select'))")) failures.push('componentRegistry.tsx: cell option fields must read the configured 展现形态');
+if (!componentRegistry.includes('renderCellOptionGroup')) failures.push('componentRegistry.tsx: cell single-select and multi-select radio/checkbox shapes must render as option groups');
+if (!componentRegistry.includes('data-canvas-cell-radio-group="true"')) failures.push('componentRegistry.tsx: cell radio shape must expose a stable marker');
+if (!componentRegistry.includes('data-canvas-cell-checkbox-group="true"')) failures.push('componentRegistry.tsx: cell checkbox shape must expose a stable marker');
+if (!componentRegistry.includes("['singleSelect', 'multiSelect'].includes(field?.type ?? '') && optionShape === 'radio'")) failures.push('componentRegistry.tsx: cell single-select and multi-select must switch to radio group when 展现形态 is 单选框');
+if (!componentRegistry.includes("['singleSelect', 'multiSelect'].includes(field?.type ?? '') && optionShape === 'checkbox'")) failures.push('componentRegistry.tsx: cell single-select and multi-select must switch to checkbox group when 展现形态 is 复选框');
+if (!componentRegistry.includes('const defaultValues = readDefaultValues')) failures.push('componentRegistry.tsx: option groups must parse default values as an array');
+if (!componentRegistry.includes("field?.type === 'multiSelect'")) failures.push('componentRegistry.tsx: option groups must distinguish multi-select default semantics');
+if (!componentRegistry.includes('const isOptionChecked = isMultiSelect')) failures.push('componentRegistry.tsx: multi-select radio and checkbox defaults must share array-based checked logic');
+if (!componentRegistry.includes('defaultValues.includes(option.value) || defaultValues.includes(option.label)')) failures.push('componentRegistry.tsx: multi-select checkbox defaults must allow multiple checked options');
+if (!componentRegistry.includes("fontSize: 12")) failures.push('componentRegistry.tsx: cell single-select radio/checkbox labels must use smaller compact text');
+if (!componentRegistry.includes("lineHeight: '18px'")) failures.push('componentRegistry.tsx: cell single-select radio/checkbox labels must use compact line height');
+if (!componentRegistry.includes("fontSize: 17")) failures.push('componentRegistry.tsx: cell single-select radio/checkbox controls must use smaller icons');
+if (!componentRegistry.includes("spacing={0.25}")) failures.push('componentRegistry.tsx: cell single-select radio/checkbox groups must use compact spacing');
+if (componentRegistry.includes('renderReferenceText') || componentRegistry.includes('data-canvas-reference-display="true"')) failures.push('componentRegistry.tsx: reference fields must use the same TextField rendering path as text and number fields on the canvas');
+if (componentRegistry.includes("field?.type === 'reference'")) failures.push('componentRegistry.tsx: reference fields must not branch into a dedicated canvas renderer');
+if (!componentRegistry.includes("['singleSelect', 'multiSelect'].includes(field?.type ?? '')")) failures.push('componentRegistry.tsx: cell single-select and multi-select dropdown rendering must share option shape handling');
+if (componentRegistry.includes("['singleSelect', 'multiSelect', 'reference'].includes(field?.type ?? '')")) failures.push('componentRegistry.tsx: cell single-select must not be forced to dropdown when 展现形态 is radio or checkbox');
 if (!componentRegistry.includes('emptySymbol')) failures.push('componentRegistry.tsx: missing widget config schema');
 if (!componentRegistry.includes('prefix')) failures.push('componentRegistry.tsx: missing prefix/suffix config support');
 if (!componentRegistry.includes('node.bindings?.defaultValue')) failures.push('componentRegistry.tsx: field renderer must preview configured default values');

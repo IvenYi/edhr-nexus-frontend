@@ -94,7 +94,7 @@ const OPTION_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
 const REFERENCE_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
   {
     key: 'sourceType',
-    label: '引用对象',
+    label: '需要引用的功能数据',
     editor: 'select',
     defaultValue: 'dictionary',
     options: [
@@ -107,9 +107,6 @@ const REFERENCE_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
       { label: '字典', value: 'dictionary' },
     ],
   },
-  { key: 'multiple', label: '允许多选', editor: 'switch', defaultValue: false },
-  { key: 'displayFields', label: '显示字段', editor: 'text', defaultValue: 'label' },
-  { key: 'valueFields', label: '保存字段', editor: 'text', defaultValue: 'id' },
 ];
 
 const SUB_TABLE_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
@@ -236,9 +233,6 @@ export const fieldRegistry: FieldTypeDefinition[] = [
     compatibleComponents: ['userpicker', 'department', 'select', 'readonlycmp'],
     typeConfig: {
       sourceType: 'dictionary',
-      multiple: false,
-      displayFields: 'label',
-      valueFields: 'id',
     },
     typeConfigSchema: REFERENCE_TYPE_CONFIG_SCHEMA,
   }),
