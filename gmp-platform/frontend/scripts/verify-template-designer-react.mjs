@@ -1329,6 +1329,10 @@ if (!subTableGroupConfigBlock.includes('renderSubTableGroupIdentitySummary')) fa
 if (!inspector.includes('typeCaption="类型"')) failures.push('DesignerInspector.tsx: group configuration identity label must be 类型');
 if (!inspector.includes('showName={false}')) failures.push('DesignerInspector.tsx: group configuration must not show 当前字段名称');
 if (!inspector.includes('`子表（${fieldDisplayName}） > 分组`')) failures.push('DesignerInspector.tsx: group configuration type value must read 子表（子表名称） > 分组');
+if (!inspector.includes('data-field-identity-single={showName ? undefined : \'true\'}')) failures.push('DesignerInspector.tsx: single-item group identity summary must expose a stable marker');
+if (!inspector.includes("gridTemplateColumns: showName ? fieldIdentitySummarySx.gridTemplateColumns : '1fr'")) failures.push('DesignerInspector.tsx: single-item group identity summary must use the full card width');
+if (!inspector.includes('noWrap={showName}')) failures.push('DesignerInspector.tsx: group identity type text must not be forced into ellipsis');
+if (!inspector.includes("wordBreak: showName ? 'normal' : 'break-word'")) failures.push('DesignerInspector.tsx: long group identity type text must wrap instead of overflowing');
 if (subTableGroupConfigBlock.includes('sub-table-group-display') || subTableGroupConfigBlock.includes('画布中橙色虚线') || subTableGroupConfigBlock.includes('title="查看效果"')) failures.push('DesignerInspector.tsx: group configuration must not render the 查看效果 section');
 if (!canvasTab.includes("selectedSubTableGroupNodeId ? '分组配置'")) failures.push('CanvasTab.tsx: side panel title must switch to 分组配置 for selected sub-table groups');
 if (!componentRegistry.includes('动态') || !componentRegistry.includes('固定')) failures.push('componentRegistry.tsx: sub-table frame must show fixed/dynamic state text');
@@ -1433,6 +1437,9 @@ const subTableRegionConfigBlock = inspector.match(/const renderSubTableRegionSec
 if (subTableRegionConfigBlock.includes('子表名称')) failures.push('DesignerInspector.tsx: sub-table basic section must not show 子表名称');
 if (subTableRegionConfigBlock.includes('帮助提示')) failures.push('DesignerInspector.tsx: sub-table basic section must not show 帮助提示');
 if (subTableRegionConfigBlock.includes('重复方式')) failures.push('DesignerInspector.tsx: sub-table config must not keep the old 重复方式 label');
+if (!subTableRegionConfigBlock.includes("region.repeat.type === 'fixed' ? (")) failures.push('DesignerInspector.tsx: sub-table structure settings must only render for fixed sub-tables');
+const dynamicSubTableConfigBlock = subTableRegionConfigBlock.match(/<FieldConfigSection title="动态设置"[\s\S]*?<\/FieldConfigSection>/)?.[0] ?? '';
+if (dynamicSubTableConfigBlock.includes('最小数量') || dynamicSubTableConfigBlock.includes('最大数量')) failures.push('DesignerInspector.tsx: dynamic sub-table settings must not expose min/max row limits');
 if (subTableRegionConfigBlock.includes('固定设置')) failures.push('DesignerInspector.tsx: sub-table fixed settings section must be removed');
 if (subTableRegionConfigBlock.includes('固定数量')) failures.push('DesignerInspector.tsx: sub-table fixed count setting must be removed');
 if (subTableRegionConfigBlock.includes('填写限制')) failures.push('DesignerInspector.tsx: sub-table fill settings section must be removed');

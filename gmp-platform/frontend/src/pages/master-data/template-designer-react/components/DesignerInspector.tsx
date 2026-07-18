@@ -534,12 +534,27 @@ function FieldIdentitySummary({
   showName?: boolean;
 }) {
   return (
-    <Box data-field-identity-summary="true" sx={fieldIdentitySummarySx}>
+    <Box
+      data-field-identity-summary="true"
+      data-field-identity-single={showName ? undefined : 'true'}
+      sx={{
+        ...fieldIdentitySummarySx,
+        gridTemplateColumns: showName ? fieldIdentitySummarySx.gridTemplateColumns : '1fr',
+      }}
+    >
       <Box data-field-identity-type="true" sx={{ minWidth: 0 }}>
         <Typography sx={fieldIdentityLabelSx}>{typeCaption}</Typography>
         <Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}>
           <FieldTypeIcon iconKey={iconKey} sx={{ fontSize: 16, color: '#1677ff', flex: '0 0 auto' }} />
-          <Typography noWrap title={typeLabel} sx={fieldIdentityValueSx}>
+          <Typography
+            noWrap={showName}
+            title={typeLabel}
+            sx={{
+              ...fieldIdentityValueSx,
+              whiteSpace: showName ? undefined : 'normal',
+              wordBreak: showName ? 'normal' : 'break-word',
+            }}
+          >
             {typeLabel}
           </Typography>
         </Stack>
@@ -2079,7 +2094,6 @@ export default function DesignerInspector() {
                     repeat: {
                       type: 'dynamic',
                       minCount: 0,
-                      maxCount: 50,
                       addPosition: 'bottom',
                       allowRemove: true,
                       removeConfirm: true,
@@ -2108,63 +2122,35 @@ export default function DesignerInspector() {
           />
         </FieldConfigSection>
 
-        <Divider />
+        {region.repeat.type === 'fixed' ? (
+          <>
+            <Divider />
 
-        <FieldConfigSection title="结构设置" marker="sub-table-structure">
-          <FieldConfigRow label="填报方向">
-            <CompactSelect
-              value={region.recordTemplate.direction}
-              options={SUB_TABLE_DIRECTION_OPTIONS}
-              onChange={(value) => {
-                const direction = value === 'column' ? 'column' : 'row';
-                updateRegion({
-                  recordTemplate: {
-                    ...region.recordTemplate,
-                    direction: repeatType === 'dynamic' ? 'row' : direction,
-                  },
-                });
-              }}
-            />
-          </FieldConfigRow>
-        </FieldConfigSection>
+            <FieldConfigSection title="结构设置" marker="sub-table-structure">
+              <FieldConfigRow label="填报方向">
+                <CompactSelect
+                  value={region.recordTemplate.direction}
+                  options={SUB_TABLE_DIRECTION_OPTIONS}
+                  onChange={(value) => {
+                    const direction = value === 'column' ? 'column' : 'row';
+                    updateRegion({
+                      recordTemplate: {
+                        ...region.recordTemplate,
+                        direction,
+                      },
+                    });
+                  }}
+                />
+              </FieldConfigRow>
+            </FieldConfigSection>
+          </>
+        ) : null}
 
         {region.repeat.type === 'dynamic' ? (
           <>
             <Divider />
 
             <FieldConfigSection title="动态设置" marker="sub-table-dynamic">
-              <FieldConfigRow label="最小数量">
-                <CompactNumberField
-                  value={region.repeat.minCount}
-                  min={0}
-                  onChange={(value) => updateRegion({
-                    repeat: {
-                      type: 'dynamic',
-                      minCount: Math.max(0, value),
-                      maxCount: region.repeat.type === 'dynamic' ? region.repeat.maxCount : 50,
-                      addPosition: 'bottom',
-                      allowRemove: region.repeat.type === 'dynamic' ? region.repeat.allowRemove : true,
-                      removeConfirm: true,
-                    },
-                  })}
-                />
-              </FieldConfigRow>
-              <FieldConfigRow label="最大数量">
-                <CompactNumberField
-                  value={region.repeat.maxCount ?? 50}
-                  min={1}
-                  onChange={(value) => updateRegion({
-                    repeat: {
-                      type: 'dynamic',
-                      minCount: region.repeat.type === 'dynamic' ? region.repeat.minCount : 0,
-                      maxCount: Math.max(1, value),
-                      addPosition: 'bottom',
-                      allowRemove: region.repeat.type === 'dynamic' ? region.repeat.allowRemove : true,
-                      removeConfirm: true,
-                    },
-                  })}
-                />
-              </FieldConfigRow>
               <FillLimitCheckbox
                 label="允许删除记录"
                 checked={region.repeat.allowRemove}
@@ -2172,7 +2158,6 @@ export default function DesignerInspector() {
                   repeat: {
                     type: 'dynamic',
                     minCount: region.repeat.type === 'dynamic' ? region.repeat.minCount : 0,
-                    maxCount: region.repeat.type === 'dynamic' ? region.repeat.maxCount : 50,
                     addPosition: 'bottom',
                     allowRemove: checked,
                     removeConfirm: true,
