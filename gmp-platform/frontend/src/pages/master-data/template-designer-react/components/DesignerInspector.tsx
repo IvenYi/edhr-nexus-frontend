@@ -1,4 +1,5 @@
 import AddOutlined from '@mui/icons-material/AddOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DragIndicatorOutlined from '@mui/icons-material/DragIndicatorOutlined';
 import RemoveOutlined from '@mui/icons-material/RemoveOutlined';
 import { Box, Checkbox, Divider, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
@@ -476,14 +477,25 @@ function FieldConfigSection({
   title,
   marker,
   children,
+  action,
 }: {
   title: string;
   marker: string;
   children: React.ReactNode;
+  action?: React.ReactNode;
 }) {
   return (
     <Stack data-inspector-section={marker} sx={sectionSx}>
-      <Typography sx={sectionTitleSx}>{title}</Typography>
+      <Stack
+        data-field-config-section-title-row="true"
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ minHeight: 24, gap: 1 }}
+      >
+        <Typography sx={sectionTitleSx}>{title}</Typography>
+        {action}
+      </Stack>
       {children}
     </Stack>
   );
@@ -512,15 +524,19 @@ function FieldIdentitySummary({
   name,
   typeLabel,
   iconKey,
+  typeCaption = '字段类型',
+  showName = true,
 }: {
   name: string;
   typeLabel: string;
   iconKey: FieldTypeIconKey;
+  typeCaption?: string;
+  showName?: boolean;
 }) {
   return (
     <Box data-field-identity-summary="true" sx={fieldIdentitySummarySx}>
       <Box data-field-identity-type="true" sx={{ minWidth: 0 }}>
-        <Typography sx={fieldIdentityLabelSx}>字段类型</Typography>
+        <Typography sx={fieldIdentityLabelSx}>{typeCaption}</Typography>
         <Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}>
           <FieldTypeIcon iconKey={iconKey} sx={{ fontSize: 16, color: '#1677ff', flex: '0 0 auto' }} />
           <Typography noWrap title={typeLabel} sx={fieldIdentityValueSx}>
@@ -528,12 +544,14 @@ function FieldIdentitySummary({
           </Typography>
         </Stack>
       </Box>
-      <Box data-field-identity-name="true" sx={{ minWidth: 0 }}>
-        <Typography sx={fieldIdentityLabelSx}>当前字段名称</Typography>
-        <Typography noWrap title={name} sx={fieldIdentityValueSx}>
-          {name}
-        </Typography>
-      </Box>
+      {showName ? (
+        <Box data-field-identity-name="true" sx={{ minWidth: 0 }}>
+          <Typography sx={fieldIdentityLabelSx}>当前字段名称</Typography>
+          <Typography noWrap title={name} sx={fieldIdentityValueSx}>
+            {name}
+          </Typography>
+        </Box>
+      ) : null}
     </Box>
   );
 }
@@ -696,6 +714,8 @@ export default function DesignerInspector() {
   const updateNodeBindings = useTemplateDesignerStore((state) => state.updateNodeBindings);
   const updateSelectedSubTableRegion = useTemplateDesignerStore((state) => state.updateSelectedSubTableRegion);
   const setSelectedSubTableHeaderVisible = useTemplateDesignerStore((state) => state.setSelectedSubTableHeaderVisible);
+  const removeNode = useTemplateDesignerStore((state) => state.removeNode);
+  const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
   const updateCurrentPage = useTemplateDesignerStore((state) => state.updateCurrentPage);
   const getFieldById = useTemplateDesignerStore((state) => state.getFieldById);
   const document = useTemplateDesignerStore((state) => state.document);
@@ -728,12 +748,25 @@ export default function DesignerInspector() {
   const fieldTypeDefinition = getFieldTypeDefinition(fieldType);
   const fieldDisplayName = boundField?.name || readText(selectedNode.props?.label, fieldTypeDefinition.label);
   const displayMode = readText(bindings.displayMode, 'text');
+  const isSubTableGroupSelected = selectedNode.type === 'sub-table'
+    && fieldType === 'subTable'
+    && selectedSubTableGroupNodeId === selectedNode.id;
 
   const renderFieldIdentitySummary = () => (
     <FieldIdentitySummary
       name={fieldDisplayName}
       typeLabel={fieldTypeDefinition.label}
       iconKey={fieldTypeDefinition.iconKey}
+    />
+  );
+
+  const renderSubTableGroupIdentitySummary = () => (
+    <FieldIdentitySummary
+      name=""
+      typeCaption="类型"
+      typeLabel={`子表（${fieldDisplayName}） > 分组`}
+      iconKey={fieldTypeDefinition.iconKey}
+      showName={false}
     />
   );
 
@@ -749,6 +782,42 @@ export default function DesignerInspector() {
       },
     });
   };
+
+  const handleDeleteConfigTarget = () => {
+    const region = bindings.subTableRegion;
+    if (isSubTableGroupSelected && region) {
+      const nextRecordTemplate = { ...region.recordTemplate };
+      delete nextRecordTemplate.groupRange;
+      updateSelectedSubTableRegion({ recordTemplate: nextRecordTemplate });
+      setSelectedNodeId(selectedNode.id);
+      return;
+    }
+
+    removeNode(selectedNode.id);
+  };
+
+  const renderDeleteConfigAction = () => (
+    <Tooltip title="删除">
+      <IconButton
+        aria-label="删除"
+        data-field-config-delete-action="true"
+        size="small"
+        onClick={handleDeleteConfigTarget}
+        sx={{
+          width: 22,
+          height: 22,
+          p: 0.25,
+          flexShrink: 0,
+          color: '#ef4444',
+          '&:hover': {
+            bgcolor: 'rgba(239, 68, 68, 0.08)',
+          },
+        }}
+      >
+        <DeleteIcon sx={{ fontSize: 16 }} />
+      </IconButton>
+    </Tooltip>
+  );
 
   const handleFillLimitChange = (key: FillLimitKey, checked: boolean) => {
     if (!checked) {
@@ -795,7 +864,7 @@ export default function DesignerInspector() {
 
   const renderTextSections = () => (
     <>
-      <FieldConfigSection title="基础信息" marker="basic">
+      <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
         {renderFieldIdentitySummary()}
         <FieldConfigRow label="默认值" layout="vertical">
           <CompactTextareaField
@@ -919,7 +988,7 @@ export default function DesignerInspector() {
 
     return (
       <>
-      <FieldConfigSection title="基础信息" marker="basic">
+      <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
         {renderFieldIdentitySummary()}
         <FieldConfigRow label="默认值" layout="vertical">
           <CompactTextareaField
@@ -1042,7 +1111,7 @@ export default function DesignerInspector() {
 
   const renderDateTimeSections = () => (
     <>
-      <FieldConfigSection title="基础信息" marker="basic">
+      <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
         {renderFieldIdentitySummary()}
         <FieldConfigRow label="默认值">
           <CompactSelect
@@ -1111,7 +1180,7 @@ export default function DesignerInspector() {
 
   const renderSignatureSections = () => (
     <>
-      <FieldConfigSection title="基础信息" marker="basic">
+      <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
         {renderFieldIdentitySummary()}
         <FieldConfigRow label="提示文本" layout="vertical">
           <CompactTextField
@@ -1166,7 +1235,7 @@ export default function DesignerInspector() {
 
   const renderAttachmentSections = () => (
     <>
-      <FieldConfigSection title="基础信息" marker="basic">
+      <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
         {renderFieldIdentitySummary()}
         <FieldConfigRow label="帮助提示" layout="vertical">
           <CompactTextareaField
@@ -1263,7 +1332,7 @@ export default function DesignerInspector() {
 
   const renderImageSections = () => (
     <>
-      <FieldConfigSection title="基础信息" marker="basic">
+      <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
         {renderFieldIdentitySummary()}
         <FieldConfigRow label="帮助提示" layout="vertical">
           <CompactTextareaField
@@ -1479,7 +1548,7 @@ export default function DesignerInspector() {
 
     return (
       <>
-        <FieldConfigSection title="基础信息" marker="basic">
+        <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
           {renderFieldIdentitySummary()}
           <FieldConfigRow label="提示文本" layout="vertical">
             <CompactTextField
@@ -1587,7 +1656,7 @@ export default function DesignerInspector() {
 
     return (
       <>
-        <FieldConfigSection title="基础信息" marker="basic">
+        <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
           {renderFieldIdentitySummary()}
           <FieldConfigRow label="提示文本" layout="vertical">
             <CompactTextField
@@ -1858,7 +1927,7 @@ export default function DesignerInspector() {
 
     return (
       <>
-        <FieldConfigSection title="基础信息" marker="basic">
+        <FieldConfigSection title="基础信息" marker="basic" action={renderDeleteConfigAction()}>
           {renderFieldIdentitySummary()}
           <FieldConfigRow label="提示文本" layout="vertical">
             <CompactTextField
@@ -1970,8 +2039,8 @@ export default function DesignerInspector() {
 
     return (
       <>
-        <FieldConfigSection title="分组配置" marker="sub-table-group">
-          {renderFieldIdentitySummary()}
+        <FieldConfigSection title="分组配置" marker="sub-table-group" action={renderDeleteConfigAction()}>
+          {renderSubTableGroupIdentitySummary()}
           <FieldConfigRow label="分组范围" layout="vertical">
             <CompactDisabledField value={`第 ${groupRange.t}-${groupRange.b} 行 / 第 ${groupRange.l}-${groupRange.r} 列`} />
           </FieldConfigRow>
@@ -1984,14 +2053,6 @@ export default function DesignerInspector() {
           <FieldConfigRow label="单组跨度">
             <CompactDisabledField value={`${groupSpan} ${region.recordTemplate.direction === 'column' ? '列' : '行'}`} />
           </FieldConfigRow>
-        </FieldConfigSection>
-
-        <Divider />
-
-        <FieldConfigSection title="查看效果" marker="sub-table-group-display">
-          <Typography sx={{ fontSize: 12, color: '#6b7280', lineHeight: '20px' }}>
-            画布中橙色虚线为当前分组，灰色区域为固定子表自动展开的后续分组。
-          </Typography>
         </FieldConfigSection>
       </>
     );
@@ -2006,7 +2067,7 @@ export default function DesignerInspector() {
 
     return (
       <>
-        <FieldConfigSection title="基础信息" marker="sub-table-basic">
+        <FieldConfigSection title="基础信息" marker="sub-table-basic" action={renderDeleteConfigAction()}>
           {renderFieldIdentitySummary()}
           <FieldConfigRow label="子表类型">
             <CompactSelect

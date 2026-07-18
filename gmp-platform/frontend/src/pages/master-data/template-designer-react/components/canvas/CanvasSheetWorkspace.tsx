@@ -7,6 +7,7 @@ import CanvasNodeRenderer from './CanvasNodeRenderer';
 import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import { buildSubTableGroupRepeatRanges } from '../../utils/subTableRegion';
+import { useSnackbar } from '@/components/SnackbarProvider';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
 const scrollbarWidth = 18;
@@ -174,6 +175,41 @@ function findSubTableNodeRange(page: CanvasPage, subTableId: string): CanvasSele
   };
 
   return visit(page.nodes);
+}
+
+function findSubTableNode(page: CanvasPage, subTableId: string): CanvasNode | null {
+  const visit = (nodes: CanvasPage['nodes']): CanvasNode | null => {
+    for (const node of nodes) {
+      if (node.type === 'sub-table' && node.bindings?.fieldId === subTableId) {
+        return node;
+      }
+      if (node.children?.length) {
+        const nested = visit(node.children);
+        if (nested) return nested;
+      }
+    }
+    return null;
+  };
+
+  return visit(page.nodes);
+}
+
+function resolveSubTableFieldDropMessage(page: CanvasPage, subTableId: string, targetRange: CanvasSelectionRange) {
+  const subTableNode = findSubTableNode(page, subTableId);
+  const region = subTableNode?.bindings?.subTableRegion;
+  if (!region || region.repeat.type !== 'fixed') return null;
+
+  const subTableRange = readNodeCellRange(subTableNode) ?? region.ranges[0]?.range ?? null;
+  const normalizedSelection = normalizeRange(targetRange);
+  if (!subTableRange || !rangeContainsRange(normalizeRange(subTableRange), normalizedSelection)) return null;
+
+  const groupRange = region.recordTemplate.groupRange
+    ? normalizeRange(region.recordTemplate.groupRange)
+    : null;
+  if (!groupRange) return '请先框选范围右键创建分组';
+  if (!rangeContainsRange(groupRange, normalizedSelection)) return '字段只能拖入分组中';
+
+  return null;
 }
 
 function getSubTableNodes(nodes: CanvasNode[]): CanvasNode[] {
@@ -604,6 +640,7 @@ function hasPlainOverflowCellValue(value: unknown, contentWidth: number, fontSiz
 }
 
 export default function CanvasSheetWorkspace() {
+  const { showMessage } = useSnackbar();
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
@@ -623,6 +660,8 @@ export default function CanvasSheetWorkspace() {
   const clearSelectedCells = useTemplateDesignerStore((state) => state.clearSelectedCells);
   const copySelectedCellsText = useTemplateDesignerStore((state) => state.copySelectedCellsText);
   const pasteCellsFromText = useTemplateDesignerStore((state) => state.pasteCellsFromText);
+  const cutSelectedFieldNode = useTemplateDesignerStore((state) => state.cutSelectedFieldNode);
+  const pasteFieldNodeToCell = useTemplateDesignerStore((state) => state.pasteFieldNodeToCell);
   const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
   const splitSelectedCells = useTemplateDesignerStore((state) => state.splitSelectedCells);
   const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
@@ -653,6 +692,7 @@ export default function CanvasSheetWorkspace() {
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
   const workspaceScrollRef = useRef<HTMLDivElement | null>(null);
   const sheetInteractionRef = useRef<HTMLDivElement | null>(null);
+  const fieldNodeClipboardRef = useRef<CanvasNode | null>(null);
   const skipNextBlurCommitRef = useRef(false);
   const [freeCanvasMeasuredHeight, setFreeCanvasMeasuredHeight] = useState(480);
   const columns = useMemo(
@@ -836,7 +876,21 @@ export default function CanvasSheetWorkspace() {
         return Boolean(subTableRange && rangeContainsRange(subTableRange, normalizedRange));
       }) ?? null
     : null;
+  const selectedSubTableRegion = selectedSubTableNode?.bindings?.subTableRegion ?? null;
   const isSubTableRangeSelection = Boolean(selectedSubTableNode);
+  const selectionCrossesSubTableBoundary = Boolean(
+    currentPage
+      && normalizedRange
+      && getSubTableNodes(currentPage.nodes).some((node) => {
+        if (!node.bindings?.fieldId) return false;
+        const subTableRange = findSubTableNodeRange(currentPage, node.bindings.fieldId);
+        return Boolean(
+          subTableRange
+            && rangesIntersect(subTableRange, normalizedRange)
+            && !rangeContainsRange(subTableRange, normalizedRange),
+        );
+      }),
+  );
   const startEditingCell = (row: number, col: number, initialValue?: string) => {
     skipNextBlurCommitRef.current = false;
     const currentValue = currentPage?.cells[getCellKey(row, col)]?.value ?? '';
@@ -870,6 +924,33 @@ export default function CanvasSheetWorkspace() {
     if (!navigator.clipboard) return;
     await navigator.clipboard.writeText(text);
     clearSelectedCells();
+  };
+  const handleCutSelectedFieldNode = () => {
+    const clippedNode = cutSelectedFieldNode();
+    if (!clippedNode) return false;
+    fieldNodeClipboardRef.current = clippedNode;
+    return true;
+  };
+  const handlePasteSelectedFieldNode = () => {
+    const clippedNode = fieldNodeClipboardRef.current;
+    const target = buildSingleCellRange(selectedCell) ?? (selectedRange
+      ? { t: selectedRange.t, l: selectedRange.l, b: selectedRange.t, r: selectedRange.l }
+      : null);
+    if (!clippedNode || !target) return false;
+
+    if (clippedNode.bindings?.subTableId && currentPage) {
+      const subTableRange = findSubTableNodeRange(currentPage, clippedNode.bindings.subTableId);
+      if (!subTableRange || !rangeContainsRange(subTableRange, target)) return false;
+      const dropMessage = resolveSubTableFieldDropMessage(currentPage, clippedNode.bindings.subTableId, target);
+      if (dropMessage) {
+        showMessage(dropMessage, 'error');
+        return false;
+      }
+    }
+
+    pasteFieldNodeToCell(clippedNode, getFieldDropCellLayout(target));
+    fieldNodeClipboardRef.current = null;
+    return true;
   };
   const handlePasteSelectedCells = async () => {
     const target = selectedRange ?? buildSingleCellRange(selectedCell);
@@ -1065,7 +1146,13 @@ export default function CanvasSheetWorkspace() {
   ) => {
     if (subTableFieldData && currentPage) {
       const subTableRange = findSubTableNodeRange(currentPage, subTableFieldData.subTableId);
-      if (!subTableRange || !rangeContainsRange(subTableRange, normalizeRange(cellSelectionRange))) return;
+      const normalizedSelection = normalizeRange(cellSelectionRange);
+      if (!subTableRange || !rangeContainsRange(subTableRange, normalizedSelection)) return;
+      const dropMessage = resolveSubTableFieldDropMessage(currentPage, subTableFieldData.subTableId, normalizedSelection);
+      if (dropMessage) {
+        showMessage(dropMessage, 'error');
+        return;
+      }
       addNodeFromSubTableFieldToCell(subTableFieldData.subTableId, subTableFieldData.field, layout);
       return;
     }
@@ -1144,7 +1231,7 @@ export default function CanvasSheetWorkspace() {
       ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
       ownerDocument.removeEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
     };
-  }, [addNodeFromFieldToCell, columnOffsets, currentPage, rowOffsets, setSelectedRange]);
+  }, [addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, rowOffsets, setSelectedRange, showMessage]);
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
       return;
@@ -1157,11 +1244,23 @@ export default function CanvasSheetWorkspace() {
       }
       if (event.key.toLowerCase() === 'x') {
         event.preventDefault();
+        if (selectedNodeId) {
+          if (handleCutSelectedFieldNode()) {
+            return;
+          }
+          return;
+        }
         void handleCutSelectedCells();
         return;
       }
       if (event.key.toLowerCase() === 'v') {
         event.preventDefault();
+        if (fieldNodeClipboardRef.current) {
+          if (handlePasteSelectedFieldNode()) {
+            return;
+          }
+          return;
+        }
         void handlePasteSelectedCells();
         return;
       }
@@ -2083,7 +2182,8 @@ export default function CanvasSheetWorkspace() {
   const canMergeMenuSelection = Boolean(
     activeMenuAxis === 'cell'
     && isMultiCellRange(normalizedRange)
-    && !isSingleMergedCellSelection,
+    && !isSingleMergedCellSelection
+    && !selectionCrossesSubTableBoundary
   );
   const canSplitMenuSelection = Boolean(
     activeMenuAxis === 'cell'
@@ -2097,7 +2197,8 @@ export default function CanvasSheetWorkspace() {
   );
   const canGroupSubTableSelection = Boolean(
     activeMenuAxis === 'cell'
-    && selectedSubTableNode
+    && selectedSubTableRegion?.repeat.type === 'fixed'
+    && !selectedSubTableRegion.recordTemplate.groupRange
     && isMultiCellRange(normalizedRange),
   );
 

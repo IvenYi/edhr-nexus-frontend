@@ -96,6 +96,15 @@ function rangesEqual(first: CanvasSelectionRange, second: CanvasSelectionRange) 
     && normalizedFirst.r === normalizedSecond.r;
 }
 
+function rangeContainsRange(outer: CanvasSelectionRange, inner: CanvasSelectionRange) {
+  const normalizedOuter = normalizeRange(outer);
+  const normalizedInner = normalizeRange(inner);
+  return normalizedOuter.t <= normalizedInner.t
+    && normalizedOuter.l <= normalizedInner.l
+    && normalizedOuter.b >= normalizedInner.b
+    && normalizedOuter.r >= normalizedInner.r;
+}
+
 function removeMergedRangesInSelection(
   ranges: CanvasSelectionRange[],
   selection: CanvasSelectionRange,
@@ -1038,6 +1047,39 @@ function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
   return normalizeRange({ t, l, b, r });
 }
 
+function isMergeableCellFieldNode(node: CanvasNode) {
+  return Boolean(node.bindings?.fieldId) && node.type !== 'sub-table';
+}
+
+function isCuttableCellFieldNode(node: CanvasNode) {
+  return Boolean(node.bindings?.fieldId && node.type !== 'sub-table' && readNodeCellRange(node));
+}
+
+function cloneCanvasNode(node: CanvasNode): CanvasNode {
+  return typeof structuredClone === 'function'
+    ? structuredClone(node)
+    : JSON.parse(JSON.stringify(node)) as CanvasNode;
+}
+
+function cloneFieldNodeForCellPaste(node: CanvasNode, layout: FieldCellLayout): CanvasNode {
+  const clonedNode = cloneCanvasNode(node);
+  const range = normalizeRange(layout.range ?? createSingleCellRange());
+  return {
+    ...clonedNode,
+    id: createId('node'),
+    parentId: null,
+    style: {
+      ...clonedNode.style,
+      position: 'absolute',
+      compLeft: layout.left,
+      compTop: layout.top,
+      compWidth: Math.max(layout.width, MIN_CELL_FIELD_WIDTH),
+      compHeight: Math.max(layout.height, MIN_CELL_FIELD_HEIGHT),
+      cellRange: range,
+    },
+  };
+}
+
 function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSelectionRange): CanvasNode[] {
   const normalizedTarget = normalizeRange(targetRange);
   const deletedSubTableFieldIds = collectDeletedSubTableFieldIds(nodes, (node) => {
@@ -1174,6 +1216,22 @@ function findSubTableNodeInRange(nodes: CanvasNode[], targetRange: CanvasSelecti
   return visit(nodes);
 }
 
+function selectionCrossesSubTableBoundary(nodes: CanvasNode[], targetRange: CanvasSelectionRange) {
+  const normalizedTarget = normalizeRange(targetRange);
+
+  const visit = (items: CanvasNode[]): boolean => items.some((node) => {
+    if (node.type === 'sub-table' && node.bindings?.fieldId) {
+      const cellRange = readNodeCellRange(node);
+      if (cellRange && rangesIntersect(cellRange, normalizedTarget) && !rangeContainsRange(cellRange, normalizedTarget)) {
+        return true;
+      }
+    }
+    return Boolean(node.children?.length && visit(node.children));
+  });
+
+  return visit(nodes);
+}
+
 function resolveSelectedCellRail(
   selectedFieldNode: CanvasNode | null,
   selectedRange: CanvasSelectionRange | null,
@@ -1184,14 +1242,46 @@ function resolveSelectedCellRail(
   return selectedRange ? 'fields' : 'thumbnails';
 }
 
+function findFirstMergeableCellFieldNodeIdInRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange) {
+  type CellFieldCandidate = { node: CanvasNode; range: CanvasSelectionRange; order: number };
+  const normalizedTarget = normalizeRange(targetRange);
+  let firstField: CellFieldCandidate | null = null;
+  let order = 0;
+
+  const visit = (items: CanvasNode[]) => {
+    items.forEach((node) => {
+      const cellRange = readNodeCellRange(node);
+      const isSelectableCellField = isMergeableCellFieldNode(node)
+        && cellRange
+        && rangesIntersect(cellRange, normalizedTarget);
+      if (isSelectableCellField && cellRange) {
+        const current = { node, range: cellRange, order };
+        const rangeOrder = firstField ? compareCellRangesByStart(current.range, firstField.range) : -1;
+        if (!firstField || rangeOrder < 0 || (rangeOrder === 0 && current.order < firstField.order)) {
+          firstField = current;
+        }
+      }
+      order += 1;
+
+      if (node.children?.length) {
+        visit(node.children);
+      }
+    });
+  };
+
+  visit(nodes);
+  const selectedField = firstField as CellFieldCandidate | null;
+  return selectedField?.node.id ?? null;
+}
+
 function mergeCellFieldNodesForRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange): CanvasNode[] {
   const normalizedTarget = normalizeRange(targetRange);
-  const keptFieldNodeId = findFirstCellFieldNodeIdInRange(nodes, normalizedTarget);
+  const keptFieldNodeId = findFirstMergeableCellFieldNodeIdInRange(nodes, normalizedTarget);
   if (!keptFieldNodeId) return nodes;
 
   const reconcile = (items: CanvasNode[]): CanvasNode[] => items.flatMap((node) => {
     const cellRange = readNodeCellRange(node);
-    const isFieldInRange = Boolean(node.bindings?.fieldId && cellRange && rangesIntersect(cellRange, normalizedTarget));
+    const isFieldInRange = Boolean(isMergeableCellFieldNode(node) && cellRange && rangesIntersect(cellRange, normalizedTarget));
 
     if (isFieldInRange && node.id !== keptFieldNodeId) {
       return [];
@@ -1223,7 +1313,7 @@ function collapseSplitCellFieldNodesToFirstCells(nodes: CanvasNode[], splitRange
 
   return nodes.map((node) => {
     const cellRange = readNodeCellRange(node);
-    const splitRange = node.bindings?.fieldId && cellRange
+    const splitRange = isMergeableCellFieldNode(node) && cellRange
       ? normalizedSplitRanges.find((range) => rangesIntersect(cellRange, range)) ?? null
       : null;
     const nextNode = splitRange
@@ -1509,6 +1599,8 @@ export interface TemplateDesignerStore {
   clearSelectedCells: () => void;
   copySelectedCellsText: () => string;
   pasteCellsFromText: (startRow: number, startCol: number, text: string) => void;
+  cutSelectedFieldNode: () => CanvasNode | null;
+  pasteFieldNodeToCell: (node: CanvasNode, layout: FieldCellLayout) => void;
   mergeSelectedCells: () => void;
   splitSelectedCells: () => void;
   updateSelectedCellStyle: (patch: Record<string, unknown>) => void;
@@ -2542,6 +2634,62 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedNodeId: null,
     });
   }),
+  cutSelectedFieldNode: () => {
+    const state = get();
+    const currentPage = state.document?.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    const selectedNode = state.selectedNodeId && currentPage ? findNode(currentPage.nodes, state.selectedNodeId) : null;
+    if (!state.document || !selectedNode || !isCuttableCellFieldNode(selectedNode)) {
+      return null;
+    }
+
+    const clippedNode = cloneCanvasNode(selectedNode);
+    set((currentState) => pushDocumentHistory(currentState, {
+      document: currentState.document
+        ? updateCanvasPage(currentState.document, (page) => ({
+            ...page,
+            nodes: reconcileSubTableRegionTemplates(removeNodeAndSubTableFieldsFromTree(page.nodes, selectedNode.id)),
+          }))
+        : currentState.document,
+      selectedNodeId: null,
+      selectedSubTableGroupNodeId: null,
+    }));
+
+    return clippedNode;
+  },
+  pasteFieldNodeToCell: (node, layout) => set((state) => {
+    if (!state.document || !isCuttableCellFieldNode(node)) {
+      return { document: state.document };
+    }
+
+    const targetRange = normalizeRange(layout.range ?? createSingleCellRange());
+    const pastedNode = cloneFieldNodeForCellPaste(node, {
+      ...layout,
+      range: targetRange,
+    });
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => {
+        const nodesWithoutSource = removeNodeAndSubTableFieldsFromTree(page.nodes, node.id);
+        const nodesWithoutTarget = node.bindings?.subTableId && node.bindings.subTableFieldId
+          ? removeSubTableFieldNodesFromTree(nodesWithoutSource, node.bindings.subTableId, targetRange)
+          : removeCellFieldNodesFromTree(nodesWithoutSource, targetRange);
+
+        return {
+          ...page,
+          nodes: reconcileSubTableRegionTemplates([
+            ...nodesWithoutTarget,
+            pastedNode,
+          ]),
+        };
+      }),
+      selectedRange: targetRange,
+      selectedCell: { row: targetRange.t, col: targetRange.l },
+      selectedNodeId: pastedNode.id,
+      selectedSubTableGroupNodeId: null,
+      activeCanvasRail: 'config',
+      isCanvasSidebarVisible: true,
+    });
+  }),
   mergeSelectedCells: () => set((state) => {
     const selectedRange = state.selectedRange ?? (state.selectedCell
       ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
@@ -2552,6 +2700,11 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
 
     const normalizedSelection = normalizeRange(selectedRange);
     if (!isMultiCellRange(normalizedSelection)) {
+      return { document: state.document };
+    }
+
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    if (!currentPage || selectionCrossesSubTableBoundary(currentPage.nodes, normalizedSelection)) {
       return { document: state.document };
     }
 
