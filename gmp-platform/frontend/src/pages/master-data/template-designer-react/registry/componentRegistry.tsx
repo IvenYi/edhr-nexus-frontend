@@ -740,10 +740,14 @@ function ContainerRenderer({
 
   if (node.type === 'sub-table' && renderMode === 'cell') {
     const subTableLabel = String(field?.name || field?.code || node.props.title || '子表');
+    const region = node.bindings?.subTableRegion;
+    const repeatLabel = region?.repeat.type === 'dynamic' ? '动态' : '固定';
+    const showHeader = Boolean(region?.presentation.showHeader);
 
     return (
       <Box
         data-canvas-sub-table-frame="true"
+        data-canvas-sub-table-repeat-type={region?.repeat.type ?? 'fixed'}
         onContextMenu={(event) => {
           event.stopPropagation();
           onCellContextMenu?.(event);
@@ -753,13 +757,62 @@ function ContainerRenderer({
           width: '100%',
           height: '100%',
           minHeight: 24,
-          border: selected ? '2px dashed #7c3aed' : '1px dashed #7c3aed',
+          border: 'none',
+          outline: selected ? '2px dashed #7c3aed' : '1px dashed #7c3aed',
+          outlineOffset: selected ? -2 : -1,
           bgcolor: 'transparent',
           cursor: 'pointer',
           boxSizing: 'border-box',
           pointerEvents: 'none',
         }}
       >
+        {showHeader ? (
+          <>
+            <Box
+              data-canvas-sub-table-header-connector="true"
+              sx={{
+                position: 'absolute',
+                left: '100%',
+                top: 11,
+                width: 18,
+                borderTop: '1px dashed #8b5cf6',
+                opacity: 1,
+                pointerEvents: 'none',
+              }}
+            />
+            <Box
+              data-canvas-sub-table-header="true"
+              data-canvas-sub-table-header-label="true"
+              onMouseDown={(event) => {
+                event.stopPropagation();
+              }}
+              onClick={(event) => {
+                event.stopPropagation();
+                onOpenConfig?.();
+              }}
+              sx={{
+                position: 'absolute',
+                left: 'calc(100% + 18px)',
+                top: 0,
+                px: 0.75,
+                height: 22,
+                lineHeight: '22px',
+                borderRadius: 0.5,
+                bgcolor: '#8b5cf6',
+                color: '#fff',
+                fontSize: 12,
+                opacity: 1,
+                pointerEvents: 'auto',
+                maxWidth: 120,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {subTableLabel} · 表头
+            </Box>
+          </>
+        ) : null}
         <Box
           data-canvas-sub-table-connector="true"
           sx={{
@@ -803,6 +856,7 @@ function ContainerRenderer({
           }}
         >
           {subTableLabel}
+          {region ? ` · ${repeatLabel}` : ''}
         </Box>
       </Box>
     );

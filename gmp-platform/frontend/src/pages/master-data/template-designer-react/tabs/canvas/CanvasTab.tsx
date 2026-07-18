@@ -30,6 +30,7 @@ export default function CanvasTab() {
   const isSidebarVisible = useTemplateDesignerStore((state) => state.isCanvasSidebarVisible);
   const setIsSidebarVisible = useTemplateDesignerStore((state) => state.setCanvasSidebarVisible);
   const selectedNode = useTemplateDesignerStore((state) => state.getSelectedNode());
+  const selectedSubTableGroupNodeId = useTemplateDesignerStore((state) => state.selectedSubTableGroupNodeId);
   const [sidebarWidth, setSidebarWidth] = useState(250);
   const [isResizingSidebar, setIsResizingSidebar] = useState(false);
   const shouldShowConfigRail = Boolean(selectedNode?.bindings?.fieldId);
@@ -38,6 +39,7 @@ export default function CanvasTab() {
     : sideRailItems.filter((item) => item.id !== 'config');
   const panelRail = activeRail === 'config' && !shouldShowConfigRail ? 'thumbnails' : activeRail;
   const activeRailItem = visibleSideRailItems.find((item) => item.id === panelRail) ?? visibleSideRailItems[0];
+  const activePanelTitle = panelRail === 'config' && selectedSubTableGroupNodeId ? '分组配置' : activeRailItem.title;
   const activePanelMinWidth = panelRail === 'config' ? configPanelMinWidth : defaultPanelMinWidth;
   const activePanelMaxWidth = panelRail === 'config' ? configPanelMaxWidth : defaultPanelMaxWidth;
   const effectiveSidebarWidth = Math.max(activePanelMinWidth, Math.min(activePanelMaxWidth, sidebarWidth));
@@ -129,7 +131,7 @@ export default function CanvasTab() {
                     borderBottom: '1px solid #e8edf4',
                   }}
                 >
-                  <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#303133' }}>{activeRailItem.title}</Typography>
+                  <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#303133' }}>{activePanelTitle}</Typography>
                   <Button
                     aria-label="关闭侧边栏"
                     onClick={() => setIsSidebarVisible(false)}

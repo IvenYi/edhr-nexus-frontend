@@ -49,6 +49,25 @@ async function loadExcelImporter() {
   }
 }
 
+async function loadSubTableRegionUtils() {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'verify-template-designer-react-'));
+  const outfile = path.join(tempDir, 'subTableRegion.cjs');
+  await build({
+    entryPoints: [fileURLToPath(new URL('../src/pages/master-data/template-designer-react/utils/subTableRegion.ts', import.meta.url))],
+    outfile,
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    logLevel: 'silent',
+  });
+
+  try {
+    return require(outfile);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
 async function verifyExcelImportStyleBehavior() {
   const { importExcelToCanvasPage } = await loadExcelImporter();
 
@@ -101,6 +120,38 @@ async function verifyExcelImportStyleBehavior() {
   assert(legacyTitle?.border?.color === '#000000', 'importExcel.ts: legacy Excel fallback borders must be black');
 }
 
+async function verifySubTableGroupRepeatBehavior() {
+  const { buildSubTableGroupRepeatRanges } = await loadSubTableRegionUtils();
+  assert(typeof buildSubTableGroupRepeatRanges === 'function', 'subTableRegion.ts: must export buildSubTableGroupRepeatRanges for data grouping fill behavior');
+  if (typeof buildSubTableGroupRepeatRanges !== 'function') return;
+
+  const rowRepeatRanges = buildSubTableGroupRepeatRanges(
+    { t: 1, l: 1, b: 6, r: 8 },
+    { t: 1, l: 1, b: 2, r: 2 },
+    'row',
+  );
+  assert(rowRepeatRanges.length === 11, 'subTableRegion.ts: row-direction grouping must fill complete groups across and then down within the region');
+  assert(JSON.stringify(rowRepeatRanges[0]) === JSON.stringify({ t: 1, l: 3, b: 2, r: 4 }), 'subTableRegion.ts: row-direction grouping first repeat must continue to the right');
+  assert(JSON.stringify(rowRepeatRanges[2]) === JSON.stringify({ t: 1, l: 7, b: 2, r: 8 }), 'subTableRegion.ts: row-direction grouping must finish the first row band before wrapping');
+  assert(JSON.stringify(rowRepeatRanges[3]) === JSON.stringify({ t: 3, l: 1, b: 4, r: 2 }), 'subTableRegion.ts: row-direction grouping must wrap to the next complete row band');
+  assert(JSON.stringify(rowRepeatRanges[10]) === JSON.stringify({ t: 5, l: 7, b: 6, r: 8 }), 'subTableRegion.ts: row-direction grouping must keep filling until the region no longer fits a full group');
+
+  const clippedRowRepeatRanges = buildSubTableGroupRepeatRanges(
+    { t: 1, l: 1, b: 5, r: 8 },
+    { t: 1, l: 1, b: 2, r: 2 },
+    'row',
+  );
+  assert(clippedRowRepeatRanges.length === 7, 'subTableRegion.ts: row-direction grouping must stop instead of drawing a partial group when the remaining rows are insufficient');
+
+  const columnRepeatRanges = buildSubTableGroupRepeatRanges(
+    { t: 1, l: 1, b: 6, r: 6 },
+    { t: 1, l: 1, b: 2, r: 2 },
+    'column',
+  );
+  assert(JSON.stringify(columnRepeatRanges[0]) === JSON.stringify({ t: 3, l: 1, b: 4, r: 2 }), 'subTableRegion.ts: column-direction grouping first repeat must continue downward');
+  assert(JSON.stringify(columnRepeatRanges[2]) === JSON.stringify({ t: 1, l: 3, b: 2, r: 4 }), 'subTableRegion.ts: column-direction grouping must wrap to the next complete column band');
+}
+
 const packageJson = read('../package.json');
 const viteConfig = read('../vite.config.ts');
 const routerFile = read('../src/router/index.tsx');
@@ -113,6 +164,7 @@ const documentTypes = read('../src/pages/master-data/template-designer-react/typ
 const modelTypes = read('../src/pages/master-data/template-designer-react/types/model.ts');
 const canvasTypes = read('../src/pages/master-data/template-designer-react/types/canvas.ts');
 const storeFile = read('../src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts');
+const subTableRegionUtils = read('../src/pages/master-data/template-designer-react/utils/subTableRegion.ts');
 const documentUtils = read('../src/pages/master-data/template-designer-react/utils/document.ts');
 const modelTab = read('../src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx');
 const fieldManagementPanelOpening = modelTab.match(/<Paper[\s\S]*?data-field-management-panel="true"[\s\S]*?>/)?.[0] ?? '';
@@ -246,6 +298,18 @@ if (!shellFile.includes('importTemplateToCanvasPage')) failures.push('TemplateDe
 if (!shellFile.includes('replaceCurrentPageFromImport')) failures.push('TemplateDesignerReactShell.tsx: missing store import replacement action');
 if (!documentTypes.includes("schema: 'edhr-template-designer-react'")) failures.push('document.ts: missing persisted schema marker');
 if (!documentTypes.includes('export interface TemplateDesignerDocument')) failures.push('document.ts: missing TemplateDesignerDocument interface');
+if (!canvasTypes.includes("export type SubTableRegionMode = 'record' | 'matrix'")) failures.push('canvas.ts: missing sub-table region mode type');
+if (!canvasTypes.includes("export type SubTableRecordDirection = 'row' | 'column'")) failures.push('canvas.ts: missing sub-table record direction type');
+if (!canvasTypes.includes('export interface SubTableRegionRange')) failures.push('canvas.ts: missing sub-table region range interface');
+if (!canvasTypes.includes('export interface SubTableRecordTemplate')) failures.push('canvas.ts: missing sub-table record template interface');
+if (!canvasTypes.includes('export interface SubTableRegion')) failures.push('canvas.ts: missing sub-table region interface');
+if (!canvasTypes.includes('subTableRegion?: SubTableRegion')) failures.push('canvas.ts: canvas node bindings must store sub-table region metadata');
+if (!subTableRegionUtils.includes('createDefaultSubTableRegion')) failures.push('subTableRegion.ts: missing createDefaultSubTableRegion helper');
+if (!subTableRegionUtils.includes('createLegacySubTableRegion')) failures.push('subTableRegion.ts: missing createLegacySubTableRegion helper');
+if (!subTableRegionUtils.includes('inferFixedRepeatCount')) failures.push('subTableRegion.ts: missing inferFixedRepeatCount helper');
+if (!subTableRegionUtils.includes('rebuildSubTableRecordTemplate')) failures.push('subTableRegion.ts: missing rebuildSubTableRecordTemplate helper');
+if (!subTableRegionUtils.includes('rangeContainsRange')) failures.push('subTableRegion.ts: missing rangeContainsRange helper');
+if (!subTableRegionUtils.includes('rangesIntersect')) failures.push('subTableRegion.ts: missing rangesIntersect helper');
 if (!storeFile.includes('create<TemplateDesignerStore>')) failures.push('useTemplateDesignerStore.ts: missing Zustand store creation');
 if (!storeFile.includes('setActiveTab')) failures.push('useTemplateDesignerStore.ts: missing setActiveTab action');
 if (!storeFile.includes('markSaved')) failures.push('useTemplateDesignerStore.ts: missing markSaved action');
@@ -456,6 +520,8 @@ if (!modelTab.includes('aria-label="字段设置"')) failures.push('ModelTab.tsx
 if (modelTab.includes('字段数据报表字段设置')) failures.push('ModelTab.tsx: field report settings trigger must not use the verbose old label');
 if (!modelTypes.includes('fieldReportColumnWidths')) failures.push('model.ts: model design state must persist field report column widths');
 if (!documentUtils.includes('normalizeFieldReportColumnWidths')) failures.push('document.ts: persisted field report column widths must be normalized from modelDesignJson');
+if (!documentUtils.includes('normalizeCanvasNodes')) failures.push('document.ts: persisted sub-table nodes must be normalized recursively');
+if (!documentUtils.includes('createLegacySubTableRegion')) failures.push('document.ts: legacy sub-table nodes must be upgraded to structured regions');
 if (!storeFile.includes('setModelFieldReportColumnWidth')) failures.push('useTemplateDesignerStore.ts: missing persisted field report column width update action');
 if (!modelTab.includes('REPORT_FIELD_COLUMN_MIN_WIDTH = 120')) failures.push('ModelTab.tsx: field report table must use the standard minimum column width');
 if (!modelTab.includes('reportColumnScopeKey')) failures.push('ModelTab.tsx: field report column widths must be scoped for main table and sub-table designs');
@@ -624,6 +690,11 @@ if (!canvasWorkspace.includes("field.type === 'subTable'")) failures.push('Canva
 if (!canvasWorkspace.includes('getAvailableFieldsForCurrentVersion()')) failures.push('CanvasSheetWorkspace.tsx: sub-table context action must exclude fields already consumed on the canvas');
 if (!canvasWorkspace.includes('canSetSubTableMenuSelection')) failures.push('CanvasSheetWorkspace.tsx: set-sub-table menu item must be conditional on a multi-cell selection');
 if (!canvasWorkspace.includes('data-sheet-menu-action="set-sub-table"')) failures.push('CanvasSheetWorkspace.tsx: multi-cell context menu must include set-sub-table action');
+if (!canvasWorkspace.includes('data-sheet-menu-action="sub-table-data-group"')) failures.push('CanvasSheetWorkspace.tsx: sub-table context menu must include data grouping action');
+if (!canvasWorkspace.includes('数据分组')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping action must read 数据分组');
+if (!canvasWorkspace.includes('handleSubTableDataGroup')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping action must call a dedicated handler');
+if (!canvasWorkspace.includes('isSubTableRangeSelection')) failures.push('CanvasSheetWorkspace.tsx: set-sub-table action must detect selections inside existing sub-table regions');
+if (!canvasWorkspace.includes('!isSubTableRangeSelection')) failures.push('CanvasSheetWorkspace.tsx: set-sub-table action must be hidden inside existing sub-table regions');
 if (!canvasWorkspace.includes('data-sheet-menu-sub-table-list="true"') && !canvasWorkspace.includes("'data-sheet-menu-sub-table-list': 'true'")) failures.push('CanvasSheetWorkspace.tsx: multiple sub-table fields must render a second-level button area');
 if (!canvasWorkspace.includes('anchorEl={subTableMenuAnchorEl}')) failures.push('CanvasSheetWorkspace.tsx: sub-table second-level actions must render in an independent menu anchored beside the parent item');
 if (!canvasWorkspace.includes('data-sheet-sub-table-menu-root="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table second-level menu must expose an independent menu root marker');
@@ -707,7 +778,10 @@ if (!storeFile.includes('clearPageCellsInRange')) failures.push('useTemplateDesi
 if (!storeFile.includes('delete nextCells[cellKey]')) failures.push('useTemplateDesignerStore.ts: clearing cell values must remove empty value-only cells');
 if (!storeFile.includes('style: cell.style')) failures.push('useTemplateDesignerStore.ts: clearing cell values must preserve cell style');
 if (!storeFile.includes('border: cell.border')) failures.push('useTemplateDesignerStore.ts: clearing cell values must preserve cell border');
-if (!storeFile.includes('selectedNodeId ? removeNodeAndSubTableFieldsFromTree')) failures.push('useTemplateDesignerStore.ts: clearing selected cells must remove the selected component node and its field binding');
+if (!storeFile.includes("selectedNode?.type === 'sub-table' ? page.nodes : reconcileSubTableRegionTemplates(removeCellNodesInRange(page.nodes, selectedRange))")) failures.push('useTemplateDesignerStore.ts: clearing selected cells must remove selected non-sub-table component nodes through the selected range');
+if (!storeFile.includes('selectedNode?.type === \'sub-table\' ? page.nodes')) failures.push('useTemplateDesignerStore.ts: clearing selected cells must keep selected sub-table nodes');
+if (!storeFile.includes('removeCellNodesInRange')) failures.push('useTemplateDesignerStore.ts: clearing a selected range must remove all cell-bound components inside the range');
+if (!storeFile.includes('removeCellNodesInRange(page.nodes, selectedRange)')) failures.push('useTemplateDesignerStore.ts: Delete/Backspace on a selected range must clear components in that selected range');
 if (!canvasWorkspace.includes('clearSelectedCells')) failures.push('CanvasSheetWorkspace.tsx: Delete/Backspace must clear the selected cell range');
 if (!canvasWorkspace.includes('handleCopySelectedCells')) failures.push('CanvasSheetWorkspace.tsx: missing Ctrl/Cmd+C selected-cell copy handler');
 if (!canvasWorkspace.includes('handleCutSelectedCells')) failures.push('CanvasSheetWorkspace.tsx: missing Ctrl/Cmd+X selected-cell cut handler');
@@ -759,7 +833,8 @@ if (!canvasWorkspace.includes('workspaceScrollRef')) failures.push('CanvasSheetW
 if (!canvasWorkspace.includes('handleWorkspaceScroll')) failures.push('CanvasSheetWorkspace.tsx: missing canvas-to-thumbnail scroll sync handler');
 if (!canvasWorkspace.includes('setActivePagePreviewIndex')) failures.push('CanvasSheetWorkspace.tsx: scrolling the canvas must update active thumbnail page');
 if (!canvasWorkspace.includes('pagePreviewScrollTarget')) failures.push('CanvasSheetWorkspace.tsx: canvas must listen for thumbnail scroll target requests');
-if (!canvasWorkspace.includes("behavior: 'smooth'")) failures.push('CanvasSheetWorkspace.tsx: thumbnail clicks must scroll the canvas smoothly');
+if (!canvasWorkspace.includes("behavior: 'auto'")) failures.push('CanvasSheetWorkspace.tsx: page thumbnail scroll must jump directly without smooth intermediate flashes');
+if (canvasWorkspace.includes("behavior: 'smooth'")) failures.push('CanvasSheetWorkspace.tsx: thumbnail clicks must not smooth-scroll through intermediate pages');
 if (!canvasWorkspace.includes('clearPagePreviewScrollTarget')) failures.push('CanvasSheetWorkspace.tsx: thumbnail scroll requests must be consumed after scrolling');
 if (!canvasWorkspace.includes('clearPagePreviewScrollTarget(requestId)')) failures.push('CanvasSheetWorkspace.tsx: thumbnail scroll requests must be cleared by request id after use');
 if (!canvasWorkspace.includes('data-paper-mode-ruler="top"')) failures.push('CanvasSheetWorkspace.tsx: missing paper-mode top ruler');
@@ -792,6 +867,7 @@ if (!pageThumbnails.includes('aria-label="关闭侧边栏"')) failures.push('Can
 if (!pageThumbnails.includes('onClick={onClose}')) failures.push('CanvasPageThumbnails.tsx: close button must trigger the side panel close callback');
 if (!pageThumbnails.includes('activePagePreviewIndexes')) failures.push('CanvasPageThumbnails.tsx: thumbnails must read active preview-page state');
 if (!pageThumbnails.includes('requestPagePreviewScroll')) failures.push('CanvasPageThumbnails.tsx: thumbnail clicks must request canvas anchor scrolling');
+if (!pageThumbnails.includes("behavior: 'auto'")) failures.push('CanvasPageThumbnails.tsx: active thumbnail must jump directly without smooth intermediate flashes');
 if (!pageThumbnails.includes('data-page-thumbnail-active')) failures.push('CanvasPageThumbnails.tsx: thumbnails must mark active preview pages');
 if (!pageThumbnails.includes('CanvasThumbnailPreview')) failures.push('CanvasPageThumbnails.tsx: thumbnails must render actual canvas preview content');
 if (!pageThumbnails.includes('page.cells')) failures.push('CanvasPageThumbnails.tsx: thumbnails must render imported cell content, not only a placeholder grid');
@@ -870,6 +946,13 @@ if (!inspector.includes("userSelect: 'none'")) failures.push('DesignerInspector.
 if (!inspector.includes("userSelect: 'text'")) failures.push('DesignerInspector.tsx: field configuration inputs must still allow text selection while editing');
 if (!inspector.includes('state.getFieldById') || !inspector.includes('selectedNode.bindings?.fieldId')) failures.push('DesignerInspector.tsx: field configuration must resolve the bound model field from the selected node fieldId');
 if (!inspector.includes('boundField?.type')) failures.push('DesignerInspector.tsx: field configuration must branch by the bound field type');
+if (!inspector.includes("import FieldTypeIcon from './FieldTypeIcon'")) failures.push('DesignerInspector.tsx: field configuration must use the standard field type icon component');
+if (!inspector.includes("import { getFieldTypeDefinition } from '../registry/fieldRegistry'")) failures.push('DesignerInspector.tsx: field configuration must resolve field type labels from the registry');
+if (!inspector.includes('data-field-identity-summary="true"')) failures.push('DesignerInspector.tsx: basic information must show the current field identity summary');
+if (!inspector.includes('data-field-identity-name="true"')) failures.push('DesignerInspector.tsx: field identity summary must show the current field name');
+if (!inspector.includes('data-field-identity-type="true"')) failures.push('DesignerInspector.tsx: field identity summary must show the current field type');
+if (!inspector.includes('<FieldTypeIcon')) failures.push('DesignerInspector.tsx: field identity summary must render the field type icon');
+if ((inspector.match(/renderFieldIdentitySummary\(\)/g) ?? []).length < 10) failures.push('DesignerInspector.tsx: every field basic information section must include the current field identity summary');
 const numberConfigBlock = inspector.match(/const renderNumberSections = \(\) => \{[\s\S]*?const renderDateTimeSections/)?.[0] ?? '';
 assertIncludes(numberConfigBlock, [
   '整数/小数',
@@ -1107,7 +1190,7 @@ if (
 ) {
   failures.push('fieldRegistry.ts: reference field type config must remove old multiple/display/value fields');
 }
-const multiSelectConfigBlock = inspector.match(/const renderMultiSelectSections = \(\) => [\s\S]*?const renderFieldSections/)?.[0] ?? '';
+const multiSelectConfigBlock = inspector.match(/const renderMultiSelectSections = \(\) => [\s\S]*?const renderSubTableRegionSections/)?.[0] ?? '';
 assertIncludes(multiSelectConfigBlock, [
   '选项来源',
   '选项列表',
@@ -1187,6 +1270,35 @@ if (!componentRegistry.includes('onCellMouseDown?.(event)')) failures.push('comp
 if (!componentRegistry.includes('onCellContextMenu?.(event)')) failures.push('componentRegistry.tsx: cell-only field components must bridge context menus to the sheet cell menu');
 if (!componentRegistry.includes("node.type === 'sub-table' && renderMode === 'cell'")) failures.push('componentRegistry.tsx: sub-table must have a cell-mode renderer distinct from generic containers');
 if (!componentRegistry.includes('data-canvas-sub-table-frame="true"')) failures.push('componentRegistry.tsx: sub-table cell renderer must expose a dashed frame marker');
+if (!componentRegistry.includes('node.bindings?.subTableRegion')) failures.push('componentRegistry.tsx: sub-table frame must read structured region metadata');
+if (!componentRegistry.includes('data-canvas-sub-table-repeat-type')) failures.push('componentRegistry.tsx: sub-table frame must expose fixed/dynamic repeat type');
+if (!canvasWorkspace.includes('data-canvas-sub-table-region-overlay="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table range overlay must render above table borders');
+if (!canvasWorkspace.includes('SUB_TABLE_OVERLAY_Z_INDEX')) failures.push('CanvasSheetWorkspace.tsx: sub-table range overlay must use a dedicated z-index above the grid');
+if (!canvasWorkspace.includes('data-canvas-sub-table-group-overlay="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping must render an orange dashed group overlay');
+if (!canvasWorkspace.includes('data-canvas-sub-table-group-label="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping must render a 分组 label');
+if (!canvasWorkspace.includes("{'分组'}")) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping corner label must show 分组 without a direction arrow');
+if (canvasWorkspace.includes('groupDirection')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping corner label must not append direction arrows');
+if (!canvasWorkspace.includes('#f59e0b')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping overlay must use orange styling');
+if (!canvasWorkspace.includes('buildSubTableGroupRepeatRanges')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping must calculate repeated fixed group ranges');
+if (!canvasWorkspace.includes('data-canvas-sub-table-group-repeat-overlay="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping must render gray repeated group overlays');
+if (!canvasWorkspace.includes('SUB_TABLE_GROUP_REPEAT_INSET = 10')) failures.push('CanvasSheetWorkspace.tsx: repeated sub-table group overlays must reserve visual spacing between filled areas');
+if (!canvasWorkspace.includes('data-canvas-sub-table-group-repeat-fill="true"')) failures.push('CanvasSheetWorkspace.tsx: repeated sub-table group overlays must render an inset fill layer');
+if (!canvasWorkspace.includes('data-canvas-sub-table-group-repeat-index="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table repeated group overlays must show group indexes');
+if (!canvasWorkspace.includes('rgba(148, 163, 184, 0.14)')) failures.push('CanvasSheetWorkspace.tsx: repeated sub-table group overlays must use gray shading');
+if (!storeFile.includes('selectedSubTableGroupNodeId')) failures.push('useTemplateDesignerStore.ts: store must track the selected sub-table group marker');
+if (!storeFile.includes('selectSubTableGroup')) failures.push('useTemplateDesignerStore.ts: store must expose a dedicated sub-table group selection action');
+if (!canvasWorkspace.includes('selectSubTableGroup')) failures.push('CanvasSheetWorkspace.tsx: clicking the group corner label must select the sub-table group');
+if (!canvasWorkspace.includes("pointerEvents: 'auto'")) failures.push('CanvasSheetWorkspace.tsx: sub-table group corner label must be clickable above the non-interactive overlay');
+if (!canvasWorkspace.includes('onClick={(event) => {')) failures.push('CanvasSheetWorkspace.tsx: sub-table group corner label must handle clicks');
+if (!inspector.includes('renderSubTableGroupSections')) failures.push('DesignerInspector.tsx: missing sub-table group configuration renderer');
+if (!inspector.includes('分组配置')) failures.push('DesignerInspector.tsx: sub-table group selection must show a 分组配置 panel');
+if (!canvasTab.includes("selectedSubTableGroupNodeId ? '分组配置'")) failures.push('CanvasTab.tsx: side panel title must switch to 分组配置 for selected sub-table groups');
+if (!componentRegistry.includes('动态') || !componentRegistry.includes('固定')) failures.push('componentRegistry.tsx: sub-table frame must show fixed/dynamic state text');
+if (!componentRegistry.includes('data-canvas-sub-table-header="true"')) failures.push('componentRegistry.tsx: sub-table frame must mark an enabled table header row');
+if (!componentRegistry.includes('data-canvas-sub-table-header-label="true"')) failures.push('componentRegistry.tsx: sub-table header marker must render as a right-side label');
+if (!componentRegistry.includes('data-canvas-sub-table-header-connector="true"')) failures.push('componentRegistry.tsx: sub-table header marker must use the same right-side dashed connector as the fixed label');
+if (!componentRegistry.includes('· 表头')) failures.push('componentRegistry.tsx: sub-table header marker must read 表名 · 表头');
+if (componentRegistry.includes("right: 0,\n              minHeight: 22")) failures.push('componentRegistry.tsx: sub-table header marker must not be a full-width in-frame strip');
 if (!componentRegistry.includes("pointerEvents: 'none'")) failures.push('componentRegistry.tsx: sub-table frame must not block clicking individual sheet cells');
 if (!componentRegistry.includes('data-canvas-sub-table-hover-label="true"')) failures.push('componentRegistry.tsx: sub-table frame must show the sub-table identifier');
 if (!componentRegistry.includes('opacity: 1')) failures.push('componentRegistry.tsx: sub-table connector and identifier must stay visible');
@@ -1269,6 +1381,25 @@ if (!componentRegistry.includes('optionLayout')) failures.push('componentRegistr
 if (!componentRegistry.includes('format')) failures.push('componentRegistry.tsx: missing date/time format config support');
 if (!fieldRegistry.includes('compatibleComponents')) failures.push('fieldRegistry.ts: missing compatibleComponents');
 if (!componentRegistry.includes('field.typeConfig')) failures.push('componentRegistry.tsx: field renderer must read option/config data from field.typeConfig');
+if (!inspector.includes('renderSubTableRegionSections')) failures.push('DesignerInspector.tsx: missing sub-table region configuration renderer');
+if (!inspector.includes('结构设置')) failures.push('DesignerInspector.tsx: sub-table configuration must expose structure settings');
+if (!inspector.includes('填报方向')) failures.push('DesignerInspector.tsx: sub-table configuration must expose record direction');
+if (!inspector.includes('子表类型')) failures.push('DesignerInspector.tsx: sub-table repeat mode must be labeled 子表类型');
+if (!inspector.includes('展示表头')) failures.push('DesignerInspector.tsx: sub-table basic section must expose 展示表头');
+if (inspector.includes('设置展示表头')) failures.push('DesignerInspector.tsx: sub-table header label must not keep 设置展示表头');
+if (!inspector.includes('setSelectedSubTableHeaderVisible')) failures.push('DesignerInspector.tsx: sub-table header toggle must call the dedicated header-row action');
+if (!inspector.includes('允许删除记录')) failures.push('DesignerInspector.tsx: sub-table configuration must expose dynamic remove option');
+if (!inspector.includes('新增入口')) failures.push('DesignerInspector.tsx: sub-table configuration must expose add-entry option');
+if (!inspector.includes("selectedNode.type === 'sub-table' && fieldType === 'subTable'")) failures.push('DesignerInspector.tsx: sub-table region panel must only render for selected sub-table nodes');
+const subTableRegionConfigBlock = inspector.match(/const renderSubTableRegionSections = \(\) => [\s\S]*?const renderFieldSections/)?.[0] ?? '';
+if (subTableRegionConfigBlock.includes('子表名称')) failures.push('DesignerInspector.tsx: sub-table basic section must not show 子表名称');
+if (subTableRegionConfigBlock.includes('帮助提示')) failures.push('DesignerInspector.tsx: sub-table basic section must not show 帮助提示');
+if (subTableRegionConfigBlock.includes('重复方式')) failures.push('DesignerInspector.tsx: sub-table config must not keep the old 重复方式 label');
+if (subTableRegionConfigBlock.includes('固定设置')) failures.push('DesignerInspector.tsx: sub-table fixed settings section must be removed');
+if (subTableRegionConfigBlock.includes('固定数量')) failures.push('DesignerInspector.tsx: sub-table fixed count setting must be removed');
+if (subTableRegionConfigBlock.includes('填写限制')) failures.push('DesignerInspector.tsx: sub-table fill settings section must be removed');
+if (subTableRegionConfigBlock.includes('marker="sub-table-display"') || subTableRegionConfigBlock.includes('title="查看效果"')) failures.push('DesignerInspector.tsx: sub-table region configuration must not show 查看效果');
+if (subTableRegionConfigBlock.includes('marker="sub-table-pagination"') || subTableRegionConfigBlock.includes('分页设置')) failures.push('DesignerInspector.tsx: sub-table region configuration must not show 分页设置');
 if (inspector.includes('字段信息')) failures.push('DesignerInspector.tsx: field configuration panel must not show field information');
 if (inspector.includes('绑定关系')) failures.push('DesignerInspector.tsx: field configuration panel must not show binding relationship');
 if (inspector.includes('Paper')) failures.push('DesignerInspector.tsx: field configuration panel must not add an extra Paper container');
@@ -1278,7 +1409,6 @@ if (inspector.includes('展示规则')) failures.push('DesignerInspector.tsx: fi
 if (inspector.includes('控件规则')) failures.push('DesignerInspector.tsx: field configuration should not expose generic widget-rule wording');
 if (inspector.includes('样式配置')) failures.push('DesignerInspector.tsx: field configuration should not expose generic style-rule wording');
 if (inspector.includes('字段编码')) failures.push('DesignerInspector.tsx: field configuration panel must not show field code metadata');
-if (inspector.includes('FieldTypeIcon')) failures.push('DesignerInspector.tsx: field configuration panel must not render field metadata icons');
 if (inspector.includes('切换绑定字段')) failures.push('DesignerInspector.tsx: field configuration panel must not show the binding switcher');
 if (inspector.includes('解绑字段')) failures.push('DesignerInspector.tsx: field configuration panel must not show unbind action');
 if (!storeFile.includes('bindFieldToNode')) failures.push('useTemplateDesignerStore.ts: missing bindFieldToNode action');
@@ -1293,12 +1423,36 @@ if (!storeFile.includes('node.bindings?.subTableId !== subTableId')) failures.pu
 if (!storeFile.includes('collectDeletedSubTableFieldIds')) failures.push('useTemplateDesignerStore.ts: deleting a sub-table node must collect the bound sub-table field id');
 if (!storeFile.includes('removeSubTableChildFieldNodesFromTree')) failures.push('useTemplateDesignerStore.ts: deleting a sub-table node must also remove its placed sub-table child fields');
 if (!storeFile.includes('removeNodeAndSubTableFieldsFromTree')) failures.push('useTemplateDesignerStore.ts: removeNode must cascade-delete placed child fields when removing a sub-table');
-if (!storeFile.includes('nodes: removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId)')) failures.push('useTemplateDesignerStore.ts: removeNode action must use cascading sub-table deletion');
-if (!storeFile.includes('removeNodeAndSubTableFieldsFromTree(page.nodes, state.selectedNodeId)')) failures.push('useTemplateDesignerStore.ts: Delete/Backspace clearing must cascade-delete sub-table child fields');
+if (!storeFile.includes('nodes: removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId)') && !storeFile.includes('nodes: reconcileSubTableRegionTemplates(removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId))')) failures.push('useTemplateDesignerStore.ts: removeNode action must use cascading sub-table deletion');
+if (!storeFile.includes('selectedNode?.type === \'sub-table\' ? page.nodes')) failures.push('useTemplateDesignerStore.ts: Delete/Backspace clearing must not directly delete selected sub-table nodes');
 if (!storeFile.includes('addNodeFromFieldToRange')) failures.push('useTemplateDesignerStore.ts: missing range-target field insertion action');
+if (!storeFile.includes('createDefaultSubTableRegion')) failures.push('useTemplateDesignerStore.ts: missing sub-table region default helper import or usage');
+if (!storeFile.includes('createBoundSubTableRegionNode')) failures.push('useTemplateDesignerStore.ts: missing sub-table region node creation helper');
+if (!storeFile.includes('addSubTableRegionFromFieldToRange')) failures.push('useTemplateDesignerStore.ts: missing sub-table region insertion action');
+if (!storeFile.includes('setSubTableRecordTemplateFromRange')) failures.push('useTemplateDesignerStore.ts: missing sub-table record-template grouping action');
+if (!storeFile.includes('reconcileSubTableRegionTemplates')) failures.push('useTemplateDesignerStore.ts: missing sub-table record template reconciliation');
+if (!storeFile.includes('rebuildSubTableRecordTemplate')) failures.push('useTemplateDesignerStore.ts: missing sub-table record template rebuild helper usage');
+if (!storeFile.includes('updateSelectedSubTableRegion')) failures.push('useTemplateDesignerStore.ts: missing selected sub-table region update action');
+if (!storeFile.includes('setSelectedSubTableHeaderVisible')) failures.push('useTemplateDesignerStore.ts: missing selected sub-table header toggle action');
+if (!storeFile.includes('shiftCanvasNodesForDeletedRows')) failures.push('useTemplateDesignerStore.ts: disabling sub-table header must delete the reserved header row and shift nodes back');
+if (!storeFile.includes('rowHeights: deleteSizes(')) failures.push('useTemplateDesignerStore.ts: disabling sub-table header must retract the inserted sheet row');
+if (!storeFile.includes('resolveFixedRepeatFromTemplateRange')) failures.push('useTemplateDesignerStore.ts: fixed sub-table data grouping must derive repeat stride/count from the grouped range');
+if (!storeFile.includes('selectedNodeId: subTableNodeId')) failures.push('useTemplateDesignerStore.ts: sub-table data grouping must select the sub-table so the result is visible in configuration');
+if (!canvasTypes.includes('groupRange?: CanvasSelectionRange')) failures.push('canvas.ts: sub-table record template must persist the current data grouping range');
+if (!storeFile.includes('groupRange: normalizedRange')) failures.push('useTemplateDesignerStore.ts: data grouping must persist the selected grouped range for canvas rendering');
+if (!storeFile.includes('shiftCanvasNodesForInsertedRows')) failures.push('useTemplateDesignerStore.ts: inserting rows must shift bound component cell ranges');
+if (!storeFile.includes('shiftCanvasNodesForInsertedRows(page.nodes, insertAt, count, rowOffset)')) failures.push('useTemplateDesignerStore.ts: insertSheetRows must shift bound component nodes when rows are inserted');
+if (!storeFile.includes('expandSelectedSubTableForHeaderRow')) failures.push('useTemplateDesignerStore.ts: enabling sub-table header must insert and reserve a table header row');
+if (!storeFile.includes("selectedNode?.type === 'sub-table'")) failures.push('useTemplateDesignerStore.ts: Backspace/Delete clearing must not directly delete selected sub-table nodes');
+if (!storeFile.includes('getSelectedSubTableRegionNode')) failures.push('useTemplateDesignerStore.ts: missing selected sub-table region selector');
 if (!storeFile.includes('layoutRange = normalizeRange(range)')) failures.push('useTemplateDesignerStore.ts: range-target field insertion must normalize the selected range');
 if (!storeFile.includes('removeCellFieldNodesFromTree(page.nodes, layoutRange)')) failures.push('useTemplateDesignerStore.ts: range-target field insertion must replace field nodes in the selected range');
 if (!storeFile.includes("position: 'absolute'")) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must create an absolute component');
+if (!canvasWorkspace.includes('SHEET_ROW_RENDER_OVERSCAN_PX')) failures.push('CanvasSheetWorkspace.tsx: sheet rendering must use row-window overscan for large canvases');
+if (!canvasWorkspace.includes('visibleRowRange')) failures.push('CanvasSheetWorkspace.tsx: sheet rendering must compute a visible row range');
+if (!canvasWorkspace.includes('gridRow: `${row} / span ${spanRows}`')) failures.push('CanvasSheetWorkspace.tsx: virtualized sheet cells must preserve absolute grid row placement');
+if (!canvasWorkspace.includes('getCanvasNodeContentBottom')) failures.push('CanvasSheetWorkspace.tsx: page break height must include canvas node content bottom');
+if (!canvasWorkspace.includes('Math.max(sheetContentBottom, sheetHeight, 1)')) failures.push('CanvasSheetWorkspace.tsx: page break height must include empty rows extending the sheet height');
 if (!storeFile.includes('compLeft: layout.left') || !storeFile.includes('compTop: layout.top')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must use the target cell position');
 if (!storeFile.includes('MIN_CELL_FIELD_WIDTH') || !storeFile.includes('MIN_CELL_FIELD_HEIGHT')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must initialize minimum component width and height');
 if (!storeFile.includes('MIN_CELL_FIELD_HEIGHT = 24 + CELL_FIELD_INSET * 2')) failures.push('useTemplateDesignerStore.ts: cell-target field visible minimum height must be 24px');
@@ -1408,6 +1562,7 @@ if (!workflowTab.includes('onNodeClick')) failures.push('WorkflowTab.tsx: missin
 if (!workflowTab.includes('节点名称')) failures.push('WorkflowTab.tsx: missing workflow node inspector');
 
 await verifyExcelImportStyleBehavior();
+await verifySubTableGroupRepeatBehavior();
 
 if (failures.length > 0) {
   console.error('verify-template-designer-react failed');

@@ -10,12 +10,14 @@ import type {
   FieldType,
   ModelField,
   ModelFieldStatus,
+  SubTableRegion,
   TemplateDesignerCanvasRailKey,
   TemplateDesignerDocument,
   TemplateDesignerTabKey,
 } from '../types';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
+import { createDefaultSubTableRegion, inferFixedRepeatCount, rebuildSubTableRecordTemplate } from '../utils/subTableRegion';
 
 type MoveDirection = 'up' | 'down';
 
@@ -271,6 +273,287 @@ function shiftMergedRangesForInsertedRows(
       ...range,
       b: range.b + count,
     };
+  });
+}
+
+function shiftRangeForInsertedRows(range: CanvasSelectionRange, insertAt: number, count: number): CanvasSelectionRange {
+  const normalizedRange = normalizeRange(range);
+  if (normalizedRange.b < insertAt) {
+    return normalizedRange;
+  }
+  if (normalizedRange.t >= insertAt) {
+    return {
+      ...normalizedRange,
+      t: normalizedRange.t + count,
+      b: normalizedRange.b + count,
+    };
+  }
+  return {
+    ...normalizedRange,
+    b: normalizedRange.b + count,
+  };
+}
+
+function shiftSubTableRegionForInsertedRows(region: SubTableRegion, insertAt: number, count: number): SubTableRegion {
+  return {
+    ...region,
+    ranges: region.ranges.map((fragment) => ({
+      ...fragment,
+      range: shiftRangeForInsertedRows(fragment.range, insertAt, count),
+    })),
+    recordTemplate: {
+      ...region.recordTemplate,
+      anchor: {
+        ...region.recordTemplate.anchor,
+        row: region.recordTemplate.anchor.row >= insertAt
+          ? region.recordTemplate.anchor.row + count
+          : region.recordTemplate.anchor.row,
+      },
+    },
+  };
+}
+
+function shiftRangeForDeletedRows(
+  range: CanvasSelectionRange,
+  deleteStart: number,
+  count: number,
+): CanvasSelectionRange | null {
+  const normalizedRange = normalizeRange(range);
+  const deleteEnd = deleteStart + count - 1;
+
+  if (normalizedRange.b < deleteStart) {
+    return normalizedRange;
+  }
+  if (normalizedRange.t > deleteEnd) {
+    return {
+      ...normalizedRange,
+      t: normalizedRange.t - count,
+      b: normalizedRange.b - count,
+    };
+  }
+
+  const removedRows = Math.min(normalizedRange.b, deleteEnd) - Math.max(normalizedRange.t, deleteStart) + 1;
+  const nextRowCount = normalizedRange.b - normalizedRange.t + 1 - removedRows;
+  if (nextRowCount <= 0) {
+    return null;
+  }
+
+  const nextTop = normalizedRange.t >= deleteStart ? deleteStart : normalizedRange.t;
+  return {
+    ...normalizedRange,
+    t: nextTop,
+    b: nextTop + nextRowCount - 1,
+  };
+}
+
+function shiftSubTableRegionForDeletedRows(
+  region: SubTableRegion,
+  deleteStart: number,
+  count: number,
+): SubTableRegion | null {
+  const nextRanges = region.ranges.flatMap((fragment) => {
+    const range = shiftRangeForDeletedRows(fragment.range, deleteStart, count);
+    return range ? [{ ...fragment, range }] : [];
+  });
+  if (!nextRanges.length) return null;
+
+  const deleteEnd = deleteStart + count - 1;
+  const nextAnchorRow = region.recordTemplate.anchor.row > deleteEnd
+    ? region.recordTemplate.anchor.row - count
+    : region.recordTemplate.anchor.row >= deleteStart
+      ? deleteStart
+      : region.recordTemplate.anchor.row;
+
+  return {
+    ...region,
+    ranges: nextRanges,
+    recordTemplate: {
+      ...region.recordTemplate,
+      anchor: {
+        ...region.recordTemplate.anchor,
+        row: nextAnchorRow,
+      },
+    },
+  };
+}
+
+function getSubTableRegionPrimaryRange(region: SubTableRegion): CanvasSelectionRange | null {
+  const primary = [...region.ranges].sort((first, second) => first.order - second.order)[0];
+  return primary ? normalizeRange(primary.range) : null;
+}
+
+function getRangeSpan(range: CanvasSelectionRange, direction: SubTableRegion['recordTemplate']['direction']) {
+  const normalizedRange = normalizeRange(range);
+  return direction === 'row'
+    ? normalizedRange.b - normalizedRange.t + 1
+    : normalizedRange.r - normalizedRange.l + 1;
+}
+
+function resolveFixedRepeatFromTemplateRange(
+  region: SubTableRegion,
+  templateRange: CanvasSelectionRange,
+  direction: SubTableRegion['recordTemplate']['direction'],
+) {
+  const normalizedTemplate = normalizeRange(templateRange);
+  const regionRange = getSubTableRegionPrimaryRange(region) ?? normalizedTemplate;
+  const stride = Math.max(1, getRangeSpan(normalizedTemplate, direction));
+  const fillRange = direction === 'row'
+    ? normalizeRange({
+        ...normalizedTemplate,
+        b: Math.max(normalizedTemplate.b, regionRange.b),
+      })
+    : normalizeRange({
+        ...normalizedTemplate,
+        r: Math.max(normalizedTemplate.r, regionRange.r),
+      });
+
+  return {
+    type: 'fixed' as const,
+    count: inferFixedRepeatCount(fillRange, direction, stride),
+    stride,
+  };
+}
+
+function readNumericStyle(value: unknown, fallback: number) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function expandSelectedSubTableForHeaderRow(
+  node: CanvasNode,
+  headerRow: number,
+  rowOffset: number,
+): CanvasNode {
+  const cellRange = readNodeCellRange(node);
+  const region = node.bindings?.subTableRegion;
+  if (!cellRange || !region) return node;
+
+  const primaryOrder = region.ranges.reduce((current, fragment) => Math.min(current, fragment.order), Infinity);
+  const expandedRange = normalizeRange({
+    ...cellRange,
+    t: headerRow,
+  });
+
+  return {
+    ...node,
+    style: {
+      ...node.style,
+      cellRange: expandedRange,
+      compTop: Math.max(0, readNumericStyle(node.style.compTop, 0) - rowOffset),
+      compHeight: readNumericStyle(node.style.compHeight, 0) + rowOffset,
+    },
+    bindings: {
+      ...node.bindings,
+      subTableRegion: {
+        ...region,
+        ranges: region.ranges.map((fragment) => (
+          fragment.order === primaryOrder
+            ? {
+                ...fragment,
+                range: {
+                  ...normalizeRange(fragment.range),
+                  t: headerRow,
+                },
+              }
+            : fragment
+        )),
+        presentation: {
+          ...region.presentation,
+          showHeader: true,
+        },
+      },
+    },
+  };
+}
+
+function shiftCanvasNodesForInsertedRows(
+  nodes: CanvasNode[],
+  insertAt: number,
+  count: number,
+  rowOffset: number,
+): CanvasNode[] {
+  return nodes.map((node) => {
+    const cellRange = readNodeCellRange(node);
+    const shiftedRange = cellRange ? shiftRangeForInsertedRows(cellRange, insertAt, count) : null;
+    const shouldShiftAbsoluteTop = Boolean(cellRange && cellRange.t >= insertAt);
+    const shouldExpandAbsoluteHeight = Boolean(cellRange && cellRange.t < insertAt && cellRange.b >= insertAt);
+    const subTableRegion = node.bindings?.subTableRegion
+      ? shiftSubTableRegionForInsertedRows(node.bindings.subTableRegion, insertAt, count)
+      : undefined;
+    const nextNode: CanvasNode = {
+      ...node,
+      style: {
+        ...node.style,
+        ...(shiftedRange ? { cellRange: shiftedRange } : {}),
+        ...(shouldShiftAbsoluteTop ? { compTop: Number(node.style.compTop ?? 0) + rowOffset } : {}),
+        ...(shouldExpandAbsoluteHeight ? { compHeight: Number(node.style.compHeight ?? 0) + rowOffset } : {}),
+      },
+      bindings: subTableRegion
+        ? {
+            ...node.bindings,
+            subTableRegion,
+          }
+        : node.bindings,
+    };
+
+    if (!nextNode.children?.length) return nextNode;
+    return {
+      ...nextNode,
+      children: shiftCanvasNodesForInsertedRows(nextNode.children, insertAt, count, rowOffset),
+    };
+  });
+}
+
+function shiftCanvasNodesForDeletedRows(
+  nodes: CanvasNode[],
+  deleteStart: number,
+  count: number,
+  rowOffset: number,
+): CanvasNode[] {
+  const deleteEnd = deleteStart + count - 1;
+
+  return nodes.flatMap((node) => {
+    const cellRange = readNodeCellRange(node);
+    const shiftedRange = cellRange ? shiftRangeForDeletedRows(cellRange, deleteStart, count) : null;
+    if (cellRange && !shiftedRange) {
+      return [];
+    }
+
+    const shouldShiftAbsoluteTop = Boolean(cellRange && cellRange.t > deleteEnd);
+    const shouldShrinkAbsoluteHeight = Boolean(cellRange && rangesIntersect(cellRange, {
+      t: deleteStart,
+      l: cellRange.l,
+      b: deleteEnd,
+      r: cellRange.r,
+    }));
+    const subTableRegion = node.bindings?.subTableRegion
+      ? shiftSubTableRegionForDeletedRows(node.bindings.subTableRegion, deleteStart, count)
+      : undefined;
+    if (node.bindings?.subTableRegion && !subTableRegion) {
+      return [];
+    }
+
+    const nextNode: CanvasNode = {
+      ...node,
+      style: {
+        ...node.style,
+        ...(shiftedRange ? { cellRange: shiftedRange } : {}),
+        ...(shouldShiftAbsoluteTop ? { compTop: Math.max(0, readNumericStyle(node.style.compTop, 0) - rowOffset) } : {}),
+        ...(shouldShrinkAbsoluteHeight ? { compHeight: Math.max(0, readNumericStyle(node.style.compHeight, 0) - rowOffset) } : {}),
+      },
+      bindings: subTableRegion
+        ? {
+            ...node.bindings,
+            subTableRegion,
+          }
+        : node.bindings,
+    };
+
+    if (!nextNode.children?.length) return [nextNode];
+    return [{
+      ...nextNode,
+      children: shiftCanvasNodesForDeletedRows(nextNode.children, deleteStart, count, rowOffset),
+    }];
   });
 }
 
@@ -780,6 +1063,25 @@ function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSe
   return removeSubTableChildFieldNodesFromTree(nextNodes, deletedSubTableFieldIds);
 }
 
+function removeCellNodesInRange(nodes: CanvasNode[], targetRange: CanvasSelectionRange): CanvasNode[] {
+  const normalizedTarget = normalizeRange(targetRange);
+
+  return nodes.flatMap((node) => {
+    const cellRange = readNodeCellRange(node);
+    const shouldRemoveNode = node.type !== 'sub-table'
+      && Boolean(cellRange && rangesIntersect(cellRange, normalizedTarget));
+    if (shouldRemoveNode) {
+      return [];
+    }
+
+    if (!node.children?.length) return [node];
+    return [{
+      ...node,
+      children: removeCellNodesInRange(node.children, normalizedTarget),
+    }];
+  });
+}
+
 function removeSubTableFieldNodesFromTree(
   nodes: CanvasNode[],
   subTableId: string,
@@ -1031,6 +1333,49 @@ function createBoundNodeFromSubTableField(subTableId: string, field: ModelField,
   return node;
 }
 
+function createBoundSubTableRegionNode(
+  field: ModelField,
+  pageId: string,
+  range: CanvasSelectionRange,
+  layout: Omit<FieldCellLayout, 'range'>,
+) {
+  const node = createBoundNodeFromField(field, {
+    ...layout,
+    range,
+  });
+  node.bindings = {
+    ...node.bindings,
+    fieldId: field.id,
+    subTableRegion: createDefaultSubTableRegion({
+      id: createId('sub-table-region'),
+      fieldId: field.id,
+      pageId,
+      range,
+    }),
+  };
+  return node;
+}
+
+function reconcileSubTableRegionTemplates(nodes: CanvasNode[]): CanvasNode[] {
+  return nodes.map((node) => {
+    const nextNode = node.type === 'sub-table' && node.bindings?.subTableRegion
+      ? {
+          ...node,
+          bindings: {
+            ...node.bindings,
+            subTableRegion: rebuildSubTableRecordTemplate(node.bindings.subTableRegion, nodes),
+          },
+        }
+      : node;
+
+    if (!nextNode.children?.length) return nextNode;
+    return {
+      ...nextNode,
+      children: reconcileSubTableRegionTemplates(nextNode.children),
+    };
+  });
+}
+
 function collectBoundFieldIds(nodes: CanvasNode[], target = new Set<string>()) {
   nodes.forEach((node) => {
     if (node.bindings?.fieldId) {
@@ -1114,6 +1459,7 @@ export interface TemplateDesignerStore {
   pagePreviewScrollTarget: { pageId: string; previewIndex: number; requestId: number } | null;
   selectedFieldId: string | null;
   selectedNodeId: string | null;
+  selectedSubTableGroupNodeId: string | null;
   selectedCell: CanvasSelectedCell | null;
   selectedRange: CanvasSelectionRange | null;
   setDocument: (document: TemplateDesignerDocument) => void;
@@ -1123,6 +1469,7 @@ export interface TemplateDesignerStore {
   setCurrentPageId: (pageId: string) => void;
   setSelectedFieldId: (fieldId: string | null) => void;
   setSelectedNodeId: (nodeId: string | null) => void;
+  selectSubTableGroup: (nodeId: string) => void;
   setSelectedCell: (cell: CanvasSelectedCell | null) => void;
   setSelectedRange: (range: CanvasSelectionRange | null, activeCell?: CanvasSelectedCell | null) => void;
   selectAllCells: () => void;
@@ -1137,8 +1484,12 @@ export interface TemplateDesignerStore {
   addNodeFromFieldToCell: (fieldId: string, layout: FieldCellLayout) => void;
   addNodeFromSubTableFieldToCell: (subTableId: string, field: ModelField, layout: FieldCellLayout) => void;
   addNodeFromFieldToRange: (fieldId: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => void;
+  addSubTableRegionFromFieldToRange: (fieldId: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => void;
+  setSubTableRecordTemplateFromRange: (subTableNodeId: string, range: CanvasSelectionRange) => void;
   bindFieldToNode: (nodeId: string, fieldId: string) => void;
   updateNodeBindings: (nodeId: string, patch: Record<string, unknown>) => void;
+  updateSelectedSubTableRegion: (patch: Partial<SubTableRegion>) => void;
+  setSelectedSubTableHeaderVisible: (visible: boolean) => void;
   updateNodeProps: (nodeId: string, patch: Record<string, unknown>) => void;
   updateNodeStyle: (nodeId: string, patch: Record<string, unknown>) => void;
   moveNode: (nodeId: string, direction: MoveDirection) => void;
@@ -1173,6 +1524,7 @@ export interface TemplateDesignerStore {
   getSelectedCellState: () => CanvasSheetCell | null;
   getCurrentPage: () => TemplateDesignerDocument['canvas']['pages'][number] | null;
   getSelectedNode: () => CanvasNode | null;
+  getSelectedSubTableRegionNode: () => CanvasNode | null;
   getFieldById: (fieldId: string) => ModelField | null;
   getUsedFieldIdsForCurrentVersion: () => string[];
   getSubTableFieldForSelectedRange: () => ModelField | null;
@@ -1213,6 +1565,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
   pagePreviewScrollTarget: null,
   selectedFieldId: null,
   selectedNodeId: null,
+  selectedSubTableGroupNodeId: null,
   selectedCell: null,
   selectedRange: null,
   setDocument: (document) => set({
@@ -1227,6 +1580,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     pagePreviewScrollTarget: null,
     selectedCell: null,
     selectedRange: null,
+    selectedSubTableGroupNodeId: null,
   }),
   setActiveTab: (activeTab) => set({ activeTab }),
   setActiveCanvasRail: (activeCanvasRail) => set({ activeCanvasRail, isCanvasSidebarVisible: true }),
@@ -1244,11 +1598,34 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     selectedCell: null,
     selectedRange: null,
     selectedNodeId: null,
+    selectedSubTableGroupNodeId: null,
     activeCanvasRail: 'thumbnails',
     isCanvasSidebarVisible: true,
   })),
   setSelectedFieldId: (selectedFieldId) => set({ selectedFieldId }),
-  setSelectedNodeId: (selectedNodeId) => set({ selectedNodeId }),
+  setSelectedNodeId: (selectedNodeId) => set({ selectedNodeId, selectedSubTableGroupNodeId: null }),
+  selectSubTableGroup: (selectedSubTableGroupNodeId) => set((state) => {
+    const currentPage = state.document
+      ? state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId)
+      : null;
+    const selectedNode = currentPage ? findNode(currentPage.nodes, selectedSubTableGroupNodeId) : null;
+    const groupRange = selectedNode?.type === 'sub-table'
+      ? selectedNode.bindings?.subTableRegion?.recordTemplate.groupRange
+      : null;
+    if (!selectedNode || selectedNode.type !== 'sub-table' || !groupRange) {
+      return {};
+    }
+
+    const normalizedGroupRange = normalizeRange(groupRange);
+    return {
+      selectedNodeId: selectedNode.id,
+      selectedSubTableGroupNodeId: selectedNode.id,
+      selectedRange: normalizedGroupRange,
+      selectedCell: { row: normalizedGroupRange.t, col: normalizedGroupRange.l },
+      activeCanvasRail: 'config',
+      isCanvasSidebarVisible: true,
+    };
+  }),
   setSelectedCell: (selectedCell) => set((state) => {
     const selectedRange = selectedCell ? createSingleCellRange(selectedCell.row, selectedCell.col) : null;
     const currentPage = state.document
@@ -1262,6 +1639,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedCell,
       selectedRange,
       selectedNodeId: selectedFieldNodeId,
+      selectedSubTableGroupNodeId: null,
       activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange),
       isCanvasSidebarVisible: true,
     };
@@ -1282,6 +1660,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         col: normalizedSelection.l,
       } : null),
       selectedNodeId: selectedFieldNodeId,
+      selectedSubTableGroupNodeId: null,
       activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, normalizedSelection),
       isCanvasSidebarVisible: true,
     };
@@ -1302,6 +1681,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       },
       selectedCell: { row: 1, col: 1 },
       selectedNodeId: null,
+      selectedSubTableGroupNodeId: null,
       activeCanvasRail: 'thumbnails',
       isCanvasSidebarVisible: true,
     };
@@ -1323,6 +1703,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedRange: range,
       selectedCell: { row: 1, col: range.l },
       selectedNodeId: null,
+      selectedSubTableGroupNodeId: null,
       activeCanvasRail: 'thumbnails',
       isCanvasSidebarVisible: true,
     };
@@ -1344,6 +1725,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedRange: range,
       selectedCell: { row: range.t, col: 1 },
       selectedNodeId: null,
+      selectedSubTableGroupNodeId: null,
       activeCanvasRail: 'thumbnails',
       isCanvasSidebarVisible: true,
     };
@@ -1497,10 +1879,10 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       document: state.document
         ? updateCanvasPage(state.document, (page) => ({
             ...page,
-            nodes: [
+            nodes: reconcileSubTableRegionTemplates([
               ...removeSubTableFieldNodesFromTree(page.nodes, subTableId, layout.range ?? createSingleCellRange()),
               node,
-            ],
+            ]),
           }))
         : state.document,
       selectedNodeId: node.id,
@@ -1511,7 +1893,10 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const availableFields = get().getAvailableFieldsForCurrentVersion();
     const layoutRange = normalizeRange(range);
     if (!field || field.status !== 'enabled' || !availableFields.some((item) => item.id === field.id)) return;
-    if (field.type === 'subTable' && !isMultiCellRange(layoutRange)) return;
+    if (field.type === 'subTable') {
+      get().addSubTableRegionFromFieldToRange(fieldId, layoutRange, layout);
+      return;
+    }
     const node = createBoundNodeFromField(field, {
       ...layout,
       range: layoutRange,
@@ -1533,6 +1918,76 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       isCanvasSidebarVisible: true,
     }));
   },
+  addSubTableRegionFromFieldToRange: (fieldId, range, layout) => {
+    const field = get().getFieldById(fieldId);
+    const availableFields = get().getAvailableFieldsForCurrentVersion();
+    const page = get().getCurrentPage();
+    const layoutRange = normalizeRange(range);
+    if (!field || field.type !== 'subTable' || field.status !== 'enabled' || !page) return;
+    if (!availableFields.some((item) => item.id === field.id) || !isMultiCellRange(layoutRange)) return;
+
+    const node = createBoundSubTableRegionNode(field, page.id, layoutRange, layout);
+    set((state) => pushDocumentHistory(state, {
+      document: state.document
+        ? updateCanvasPage(state.document, (page) => ({
+            ...page,
+            nodes: [
+              ...removeCellFieldNodesFromTree(page.nodes, layoutRange),
+              node,
+            ],
+          }))
+        : state.document,
+      selectedNodeId: node.id,
+      selectedRange: layoutRange,
+      selectedCell: { row: layoutRange.t, col: layoutRange.l },
+      activeCanvasRail: 'config',
+      isCanvasSidebarVisible: true,
+    }));
+  },
+  setSubTableRecordTemplateFromRange: (subTableNodeId, range) => set((state) => {
+    if (!state.document) {
+      return { document: state.document };
+    }
+
+    const normalizedRange = normalizeRange(range);
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        nodes: reconcileSubTableRegionTemplates(mapNodes(page.nodes, subTableNodeId, (node) => {
+          if (node.type !== 'sub-table' || !node.bindings?.subTableRegion) return node;
+          const currentRegion = node.bindings.subTableRegion;
+          const direction = currentRegion.repeat.type === 'dynamic'
+            ? 'row'
+            : currentRegion.recordTemplate.direction;
+          const repeat = currentRegion.repeat.type === 'fixed'
+            ? resolveFixedRepeatFromTemplateRange(currentRegion, normalizedRange, direction)
+            : currentRegion.repeat;
+          return {
+            ...node,
+            bindings: {
+              ...node.bindings,
+              subTableRegion: {
+                ...currentRegion,
+                repeat,
+                recordTemplate: {
+                  ...currentRegion.recordTemplate,
+                  direction,
+                  anchor: { row: normalizedRange.t, col: normalizedRange.l },
+                  groupRange: normalizedRange,
+                },
+              },
+            },
+          };
+        })),
+      })),
+      selectedRange: normalizedRange,
+      selectedCell: { row: normalizedRange.t, col: normalizedRange.l },
+      selectedNodeId: subTableNodeId,
+      activeCanvasRail: 'config',
+      isCanvasSidebarVisible: true,
+    });
+  }),
   bindFieldToNode: (nodeId, fieldId) => set((state) => {
     if (!state.document) {
       return { document: state.document };
@@ -1593,6 +2048,140 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         }))
       : state.document,
   })),
+  updateSelectedSubTableRegion: (patch) => set((state) => {
+    if (!state.document || !state.selectedNodeId) {
+      return { document: state.document };
+    }
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => ({
+        ...page,
+        nodes: mapNodes(page.nodes, state.selectedNodeId!, (node) => {
+          if (node.type !== 'sub-table' || !node.bindings?.subTableRegion) return node;
+          return {
+            ...node,
+            bindings: {
+              ...node.bindings,
+              subTableRegion: {
+                ...node.bindings.subTableRegion,
+                ...patch,
+              },
+            },
+          };
+        }),
+      })),
+    });
+  }),
+  setSelectedSubTableHeaderVisible: (visible) => set((state) => {
+    if (!state.document || !state.selectedNodeId) {
+      return { document: state.document };
+    }
+
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    const selectedNode = currentPage ? findNode(currentPage.nodes, state.selectedNodeId) : null;
+    if (selectedNode?.type !== 'sub-table' || !selectedNode.bindings?.subTableRegion) {
+      return { document: state.document };
+    }
+
+    const region = selectedNode.bindings.subTableRegion;
+    const primaryRange = getSubTableRegionPrimaryRange(region) ?? readNodeCellRange(selectedNode);
+    if (!primaryRange || region.presentation.showHeader === visible) {
+      return { document: state.document };
+    }
+
+    if (!visible) {
+      const deleteStart = primaryRange.t;
+      const deleteCount = 1;
+      const collapsedRange = normalizeRange({
+        ...primaryRange,
+        b: Math.max(primaryRange.t, primaryRange.b - deleteCount),
+      });
+
+      return pushDocumentHistory(state, {
+        document: updateCanvasPage(state.document, (page) => {
+          const rowOffset = page.sheet.rowHeights[deleteStart - 1] ?? page.sheet.defaultRowHeight;
+          const shiftedNodes = shiftCanvasNodesForDeletedRows(page.nodes, deleteStart, deleteCount, rowOffset);
+          const nodesWithoutHeader = mapNodes(shiftedNodes, state.selectedNodeId!, (node) => {
+            if (node.type !== 'sub-table' || !node.bindings?.subTableRegion) return node;
+            return {
+              ...node,
+              bindings: {
+                ...node.bindings,
+                subTableRegion: {
+                  ...node.bindings.subTableRegion,
+                  presentation: {
+                    ...node.bindings.subTableRegion.presentation,
+                    showHeader: false,
+                  },
+                },
+              },
+            };
+          });
+
+          return {
+            ...page,
+            sheet: {
+              ...page.sheet,
+              rowCount: Math.max(1, page.sheet.rowCount - deleteCount),
+              rowHeights: deleteSizes(
+                page.sheet.rowHeights,
+                deleteStart,
+                deleteStart,
+                Math.max(1, page.sheet.rowCount - deleteCount),
+                page.sheet.defaultRowHeight,
+              ),
+            },
+            cells: shiftCellsForDeletedRows(page.cells, deleteStart, deleteCount),
+            mergedCells: shiftMergedRangesForDeletedRows(page.mergedCells, deleteStart, deleteCount),
+            nodes: reconcileSubTableRegionTemplates(nodesWithoutHeader),
+          };
+        }),
+        selectedRange: collapsedRange,
+        selectedCell: { row: collapsedRange.t, col: collapsedRange.l },
+        selectedNodeId: state.selectedNodeId,
+        activeCanvasRail: 'config',
+        isCanvasSidebarVisible: true,
+      });
+    }
+
+    const insertAt = primaryRange.t;
+    const insertCount = 1;
+    const expandedRange = normalizeRange({
+      ...primaryRange,
+      b: primaryRange.b + insertCount,
+    });
+
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => {
+        const rowOffset = insertCount * page.sheet.defaultRowHeight;
+        const shiftedNodes = shiftCanvasNodesForInsertedRows(page.nodes, insertAt, insertCount, rowOffset);
+        const nodesWithHeader = mapNodes(shiftedNodes, state.selectedNodeId!, (node) => (
+          expandSelectedSubTableForHeaderRow(node, insertAt, rowOffset)
+        ));
+
+        return {
+          ...page,
+          sheet: {
+            ...page.sheet,
+            rowCount: page.sheet.rowCount + insertCount,
+            rowHeights: [
+              ...page.sheet.rowHeights.slice(0, insertAt - 1),
+              ...Array.from({ length: insertCount }, () => page.sheet.defaultRowHeight),
+              ...page.sheet.rowHeights.slice(insertAt - 1),
+            ],
+          },
+          cells: shiftCellsForInsertedRows(page.cells, insertAt, insertCount),
+          mergedCells: shiftMergedRangesForInsertedRows(page.mergedCells, insertAt, insertCount),
+          nodes: reconcileSubTableRegionTemplates(nodesWithHeader),
+        };
+      }),
+      selectedRange: expandedRange,
+      selectedCell: { row: expandedRange.t, col: expandedRange.l },
+      selectedNodeId: state.selectedNodeId,
+      activeCanvasRail: 'config',
+      isCanvasSidebarVisible: true,
+    });
+  }),
   updateNodeProps: (nodeId, patch) => set((state) => pushDocumentHistory(state, {
     document: state.document
       ? updateCanvasPage(state.document, (page) => ({
@@ -1627,7 +2216,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     document: state.document
       ? updateCanvasPage(state.document, (page) => ({
           ...page,
-          nodes: removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId),
+          nodes: reconcileSubTableRegionTemplates(removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId)),
         }))
       : state.document,
     selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
@@ -1718,20 +2307,25 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     }
 
     return pushDocumentHistory(state, {
-      document: updateCanvasPage(state.document, (page) => ({
-        ...page,
-        sheet: {
-          ...page.sheet,
-          rowCount: page.sheet.rowCount + count,
-          rowHeights: [
-            ...page.sheet.rowHeights.slice(0, insertAt - 1),
-            ...Array.from({ length: count }, () => page.sheet.defaultRowHeight),
-            ...page.sheet.rowHeights.slice(insertAt - 1),
-          ],
-        },
-        cells: shiftCellsForInsertedRows(page.cells, insertAt, count),
-        mergedCells: shiftMergedRangesForInsertedRows(page.mergedCells, insertAt, count),
-      })),
+      document: updateCanvasPage(state.document, (page) => {
+        const rowOffset = count * page.sheet.defaultRowHeight;
+
+        return {
+          ...page,
+          sheet: {
+            ...page.sheet,
+            rowCount: page.sheet.rowCount + count,
+            rowHeights: [
+              ...page.sheet.rowHeights.slice(0, insertAt - 1),
+              ...Array.from({ length: count }, () => page.sheet.defaultRowHeight),
+              ...page.sheet.rowHeights.slice(insertAt - 1),
+            ],
+          },
+          cells: shiftCellsForInsertedRows(page.cells, insertAt, count),
+          mergedCells: shiftMergedRangesForInsertedRows(page.mergedCells, insertAt, count),
+          nodes: reconcileSubTableRegionTemplates(shiftCanvasNodesForInsertedRows(page.nodes, insertAt, count, rowOffset)),
+        };
+      }),
       selectedRange: state.selectedRange
         ? normalizeRange({
             t: insertAt,
@@ -1900,12 +2494,17 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       return { document: state.document };
     }
 
+    const currentPage = state.document.canvas.pages.find((page) => page.id === state.document?.canvas.currentPageId);
+    const selectedNode = state.selectedNodeId && currentPage ? findNode(currentPage.nodes, state.selectedNodeId) : null;
+
     return pushDocumentHistory(state, {
       document: updateCanvasPage(state.document, (page) => ({
         ...clearPageCellsInRange(page, selectedRange),
-        nodes: state.selectedNodeId ? removeNodeAndSubTableFieldsFromTree(page.nodes, state.selectedNodeId) : page.nodes,
+        nodes: state.selectedNodeId
+          ? selectedNode?.type === 'sub-table' ? page.nodes : reconcileSubTableRegionTemplates(removeCellNodesInRange(page.nodes, selectedRange))
+          : reconcileSubTableRegionTemplates(removeCellNodesInRange(page.nodes, selectedRange)),
       })),
-      selectedNodeId: null,
+      selectedNodeId: selectedNode?.type === 'sub-table' ? state.selectedNodeId : null,
     });
   }),
   copySelectedCellsText: () => {
@@ -1959,7 +2558,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     return pushDocumentHistory(state, {
       document: updateCanvasPage(state.document, (page) => ({
         ...mergePageCellValuesInRange(page, normalizedSelection),
-        nodes: mergeCellFieldNodesForRange(page.nodes, normalizedSelection),
+        nodes: reconcileSubTableRegionTemplates(mergeCellFieldNodesForRange(page.nodes, normalizedSelection)),
         mergedCells: [
           ...removeMergedRangesInSelection(page.mergedCells, normalizedSelection),
           normalizedSelection,
@@ -1995,7 +2594,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     return pushDocumentHistory(state, {
       document: updateCanvasPage(state.document, (page) => ({
         ...page,
-        nodes: collapseSplitCellFieldNodesToFirstCells(page.nodes, removedMergedRanges),
+        nodes: reconcileSubTableRegionTemplates(collapseSplitCellFieldNodesToFirstCells(page.nodes, removedMergedRanges)),
         mergedCells: nextMergedCells,
       })),
       selectedRange: normalizedSelection,
@@ -2115,6 +2714,10 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const selectedNodeId = get().selectedNodeId;
     if (!page || !selectedNodeId) return null;
     return findNode(page.nodes, selectedNodeId);
+  },
+  getSelectedSubTableRegionNode: () => {
+    const selectedNode = get().getSelectedNode();
+    return selectedNode?.type === 'sub-table' && selectedNode.bindings?.subTableRegion ? selectedNode : null;
   },
   getFieldById: (fieldId) => {
     const document = get().document;

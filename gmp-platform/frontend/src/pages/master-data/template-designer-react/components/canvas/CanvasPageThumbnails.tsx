@@ -297,7 +297,7 @@ export default function CanvasPageThumbnails({ title = '分页缩略图', onClos
   const activePreviewKey = `${currentPageId}-${activePagePreviewIndexes[currentPageId] ?? 0}`;
 
   useEffect(() => {
-    activeThumbnailRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    activeThumbnailRef.current?.scrollIntoView({ block: 'nearest', behavior: 'auto' });
   }, [activePreviewKey]);
 
   return (

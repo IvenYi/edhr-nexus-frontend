@@ -3,8 +3,11 @@ import DragIndicatorOutlined from '@mui/icons-material/DragIndicatorOutlined';
 import RemoveOutlined from '@mui/icons-material/RemoveOutlined';
 import { Box, Checkbox, Divider, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
+import FieldTypeIcon from './FieldTypeIcon';
 import PropertyFormRenderer from './PropertyFormRenderer';
+import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
+import type { FieldTypeIconKey } from '../types';
 
 type FillLimitKey = 'required' | 'readonly' | 'hidden';
 
@@ -125,6 +128,22 @@ const REFERENCE_QUERY_OPERATOR_OPTIONS = [
 const REFERENCE_DISPLAY_OPTIONS = [
   { label: '链接文本', value: 'link' },
   { label: '纯文本', value: 'text' },
+];
+
+const SUB_TABLE_DIRECTION_OPTIONS = [
+  { label: '按行填报', value: 'row' },
+  { label: '按列填报', value: 'column' },
+];
+
+const SUB_TABLE_REPEAT_OPTIONS = [
+  { label: '固定', value: 'fixed' },
+  { label: '动态', value: 'dynamic' },
+];
+
+const SUB_TABLE_ADD_ENTRY_OPTIONS = [
+  { label: '底部按钮', value: 'bottom' },
+  { label: '右键菜单', value: 'contextMenu' },
+  { label: '两者', value: 'both' },
 ];
 
 const REFERENCE_QUERY_SOURCE_FIELDS: Record<string, Array<{ label: string; value: string }>> = {
@@ -377,6 +396,33 @@ const optionDefaultDotSx = {
   },
 };
 
+const fieldIdentitySummarySx = {
+  display: 'grid',
+  gridTemplateColumns: '92px minmax(0, 1fr)',
+  alignItems: 'center',
+  gap: 0.75,
+  minHeight: 42,
+  px: 1,
+  py: 0.75,
+  border: '1px solid #e5e6eb',
+  borderRadius: 1,
+  bgcolor: '#f7f8fa',
+};
+
+const fieldIdentityLabelSx = {
+  fontSize: 12,
+  lineHeight: '18px',
+  color: '#86909c',
+};
+
+const fieldIdentityValueSx = {
+  minWidth: 0,
+  fontSize: 13,
+  lineHeight: '20px',
+  color: '#1f2329',
+  fontWeight: 500,
+};
+
 function readText(value: unknown, fallback = '') {
   if (value === null || value === undefined) return fallback;
   return String(value);
@@ -458,6 +504,36 @@ function FieldConfigRow({
     <Box sx={isVertical ? verticalRowSx : rowSx}>
       <Typography sx={isVertical ? verticalLabelSx : labelSx}>{label}</Typography>
       <Box sx={isVertical ? { width: '100%', minWidth: 0 } : { flex: 1, minWidth: 0 }}>{children}</Box>
+    </Box>
+  );
+}
+
+function FieldIdentitySummary({
+  name,
+  typeLabel,
+  iconKey,
+}: {
+  name: string;
+  typeLabel: string;
+  iconKey: FieldTypeIconKey;
+}) {
+  return (
+    <Box data-field-identity-summary="true" sx={fieldIdentitySummarySx}>
+      <Box data-field-identity-type="true" sx={{ minWidth: 0 }}>
+        <Typography sx={fieldIdentityLabelSx}>字段类型</Typography>
+        <Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}>
+          <FieldTypeIcon iconKey={iconKey} sx={{ fontSize: 16, color: '#1677ff', flex: '0 0 auto' }} />
+          <Typography noWrap title={typeLabel} sx={fieldIdentityValueSx}>
+            {typeLabel}
+          </Typography>
+        </Stack>
+      </Box>
+      <Box data-field-identity-name="true" sx={{ minWidth: 0 }}>
+        <Typography sx={fieldIdentityLabelSx}>当前字段名称</Typography>
+        <Typography noWrap title={name} sx={fieldIdentityValueSx}>
+          {name}
+        </Typography>
+      </Box>
     </Box>
   );
 }
@@ -618,11 +694,14 @@ function FillLimitCheckbox({
 
 export default function DesignerInspector() {
   const updateNodeBindings = useTemplateDesignerStore((state) => state.updateNodeBindings);
+  const updateSelectedSubTableRegion = useTemplateDesignerStore((state) => state.updateSelectedSubTableRegion);
+  const setSelectedSubTableHeaderVisible = useTemplateDesignerStore((state) => state.setSelectedSubTableHeaderVisible);
   const updateCurrentPage = useTemplateDesignerStore((state) => state.updateCurrentPage);
   const getFieldById = useTemplateDesignerStore((state) => state.getFieldById);
   const document = useTemplateDesignerStore((state) => state.document);
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNode = useTemplateDesignerStore((state) => state.getSelectedNode());
+  const selectedSubTableGroupNodeId = useTemplateDesignerStore((state) => state.selectedSubTableGroupNodeId);
   const [draggingOptionIndex, setDraggingOptionIndex] = useState<number | null>(null);
   const draggingOptionIndexRef = useRef<number | null>(null);
 
@@ -644,9 +723,19 @@ export default function DesignerInspector() {
   const bindings = selectedNode.bindings ?? {};
   const widgetConfig = bindings.widgetConfig ?? {};
   const boundFieldId = selectedNode.bindings?.fieldId;
-  const boundField = boundFieldId ? getFieldById(boundFieldId) : null;
+  const boundField = boundFieldId ? getFieldById(boundFieldId) ?? bindings.subTableField ?? null : null;
   const fieldType = boundField?.type ?? 'text';
+  const fieldTypeDefinition = getFieldTypeDefinition(fieldType);
+  const fieldDisplayName = boundField?.name || readText(selectedNode.props?.label, fieldTypeDefinition.label);
   const displayMode = readText(bindings.displayMode, 'text');
+
+  const renderFieldIdentitySummary = () => (
+    <FieldIdentitySummary
+      name={fieldDisplayName}
+      typeLabel={fieldTypeDefinition.label}
+      iconKey={fieldTypeDefinition.iconKey}
+    />
+  );
 
   const updateBinding = (patch: Record<string, unknown>) => {
     updateNodeBindings(selectedNode.id, patch);
@@ -707,6 +796,7 @@ export default function DesignerInspector() {
   const renderTextSections = () => (
     <>
       <FieldConfigSection title="基础信息" marker="basic">
+        {renderFieldIdentitySummary()}
         <FieldConfigRow label="默认值" layout="vertical">
           <CompactTextareaField
             value={readText(bindings.defaultValue)}
@@ -830,6 +920,7 @@ export default function DesignerInspector() {
     return (
       <>
       <FieldConfigSection title="基础信息" marker="basic">
+        {renderFieldIdentitySummary()}
         <FieldConfigRow label="默认值" layout="vertical">
           <CompactTextareaField
             value={readText(bindings.defaultValue)}
@@ -952,6 +1043,7 @@ export default function DesignerInspector() {
   const renderDateTimeSections = () => (
     <>
       <FieldConfigSection title="基础信息" marker="basic">
+        {renderFieldIdentitySummary()}
         <FieldConfigRow label="默认值">
           <CompactSelect
             value={readText(widgetConfig.dateDefaultValue, 'empty')}
@@ -1020,6 +1112,7 @@ export default function DesignerInspector() {
   const renderSignatureSections = () => (
     <>
       <FieldConfigSection title="基础信息" marker="basic">
+        {renderFieldIdentitySummary()}
         <FieldConfigRow label="提示文本" layout="vertical">
           <CompactTextField
             value={readText(bindings.placeholder)}
@@ -1074,6 +1167,7 @@ export default function DesignerInspector() {
   const renderAttachmentSections = () => (
     <>
       <FieldConfigSection title="基础信息" marker="basic">
+        {renderFieldIdentitySummary()}
         <FieldConfigRow label="帮助提示" layout="vertical">
           <CompactTextareaField
             value={readText(bindings.helpText)}
@@ -1170,6 +1264,7 @@ export default function DesignerInspector() {
   const renderImageSections = () => (
     <>
       <FieldConfigSection title="基础信息" marker="basic">
+        {renderFieldIdentitySummary()}
         <FieldConfigRow label="帮助提示" layout="vertical">
           <CompactTextareaField
             value={readText(bindings.helpText)}
@@ -1385,6 +1480,7 @@ export default function DesignerInspector() {
     return (
       <>
         <FieldConfigSection title="基础信息" marker="basic">
+          {renderFieldIdentitySummary()}
           <FieldConfigRow label="提示文本" layout="vertical">
             <CompactTextField
               value={readText(bindings.placeholder)}
@@ -1492,6 +1588,7 @@ export default function DesignerInspector() {
     return (
       <>
         <FieldConfigSection title="基础信息" marker="basic">
+          {renderFieldIdentitySummary()}
           <FieldConfigRow label="提示文本" layout="vertical">
             <CompactTextField
               value={readText(bindings.placeholder)}
@@ -1762,6 +1859,7 @@ export default function DesignerInspector() {
     return (
       <>
         <FieldConfigSection title="基础信息" marker="basic">
+          {renderFieldIdentitySummary()}
           <FieldConfigRow label="提示文本" layout="vertical">
             <CompactTextField
               value={readText(bindings.placeholder)}
@@ -1857,7 +1955,199 @@ export default function DesignerInspector() {
     );
   };
 
+  const renderSubTableGroupSections = () => {
+    const region = bindings.subTableRegion;
+    const groupRange = region?.recordTemplate.groupRange;
+    if (!region || !groupRange) return null;
+
+    const groupDirectionLabel = region.recordTemplate.direction === 'column' ? '按列填报' : '按行填报';
+    const groupSpan = region.recordTemplate.direction === 'column'
+      ? groupRange.r - groupRange.l + 1
+      : groupRange.b - groupRange.t + 1;
+    const repeatSummary = region.repeat.type === 'fixed'
+      ? `${region.repeat.count} 组`
+      : '动态新增';
+
+    return (
+      <>
+        <FieldConfigSection title="分组配置" marker="sub-table-group">
+          {renderFieldIdentitySummary()}
+          <FieldConfigRow label="分组范围" layout="vertical">
+            <CompactDisabledField value={`第 ${groupRange.t}-${groupRange.b} 行 / 第 ${groupRange.l}-${groupRange.r} 列`} />
+          </FieldConfigRow>
+          <FieldConfigRow label="分组方向">
+            <CompactDisabledField value={groupDirectionLabel} />
+          </FieldConfigRow>
+          <FieldConfigRow label="重复数量">
+            <CompactDisabledField value={repeatSummary} />
+          </FieldConfigRow>
+          <FieldConfigRow label="单组跨度">
+            <CompactDisabledField value={`${groupSpan} ${region.recordTemplate.direction === 'column' ? '列' : '行'}`} />
+          </FieldConfigRow>
+        </FieldConfigSection>
+
+        <Divider />
+
+        <FieldConfigSection title="查看效果" marker="sub-table-group-display">
+          <Typography sx={{ fontSize: 12, color: '#6b7280', lineHeight: '20px' }}>
+            画布中橙色虚线为当前分组，灰色区域为固定子表自动展开的后续分组。
+          </Typography>
+        </FieldConfigSection>
+      </>
+    );
+  };
+
+  const renderSubTableRegionSections = () => {
+    const region = bindings.subTableRegion;
+    if (!region) return null;
+
+    const updateRegion = updateSelectedSubTableRegion;
+    const repeatType = region.repeat.type;
+
+    return (
+      <>
+        <FieldConfigSection title="基础信息" marker="sub-table-basic">
+          {renderFieldIdentitySummary()}
+          <FieldConfigRow label="子表类型">
+            <CompactSelect
+              value={repeatType}
+              options={SUB_TABLE_REPEAT_OPTIONS}
+              onChange={(value) => {
+                if (value === 'dynamic') {
+                  updateRegion({
+                    repeat: {
+                      type: 'dynamic',
+                      minCount: 0,
+                      maxCount: 50,
+                      addPosition: 'bottom',
+                      allowRemove: true,
+                      removeConfirm: true,
+                    },
+                    recordTemplate: {
+                      ...region.recordTemplate,
+                      direction: 'row',
+                    },
+                  });
+                  return;
+                }
+                updateRegion({
+                  repeat: {
+                    type: 'fixed',
+                    count: region.repeat.type === 'fixed' ? region.repeat.count : 1,
+                    stride: region.repeat.type === 'fixed' ? region.repeat.stride : 1,
+                  },
+                });
+              }}
+            />
+          </FieldConfigRow>
+          <FillLimitCheckbox
+            label="展示表头"
+            checked={region.presentation.showHeader}
+            onChange={(checked) => setSelectedSubTableHeaderVisible(checked)}
+          />
+        </FieldConfigSection>
+
+        <Divider />
+
+        <FieldConfigSection title="结构设置" marker="sub-table-structure">
+          <FieldConfigRow label="填报方向">
+            <CompactSelect
+              value={region.recordTemplate.direction}
+              options={SUB_TABLE_DIRECTION_OPTIONS}
+              onChange={(value) => {
+                const direction = value === 'column' ? 'column' : 'row';
+                updateRegion({
+                  recordTemplate: {
+                    ...region.recordTemplate,
+                    direction: repeatType === 'dynamic' ? 'row' : direction,
+                  },
+                });
+              }}
+            />
+          </FieldConfigRow>
+        </FieldConfigSection>
+
+        {region.repeat.type === 'dynamic' ? (
+          <>
+            <Divider />
+
+            <FieldConfigSection title="动态设置" marker="sub-table-dynamic">
+              <FieldConfigRow label="最小数量">
+                <CompactNumberField
+                  value={region.repeat.minCount}
+                  min={0}
+                  onChange={(value) => updateRegion({
+                    repeat: {
+                      type: 'dynamic',
+                      minCount: Math.max(0, value),
+                      maxCount: region.repeat.type === 'dynamic' ? region.repeat.maxCount : 50,
+                      addPosition: 'bottom',
+                      allowRemove: region.repeat.type === 'dynamic' ? region.repeat.allowRemove : true,
+                      removeConfirm: true,
+                    },
+                  })}
+                />
+              </FieldConfigRow>
+              <FieldConfigRow label="最大数量">
+                <CompactNumberField
+                  value={region.repeat.maxCount ?? 50}
+                  min={1}
+                  onChange={(value) => updateRegion({
+                    repeat: {
+                      type: 'dynamic',
+                      minCount: region.repeat.type === 'dynamic' ? region.repeat.minCount : 0,
+                      maxCount: Math.max(1, value),
+                      addPosition: 'bottom',
+                      allowRemove: region.repeat.type === 'dynamic' ? region.repeat.allowRemove : true,
+                      removeConfirm: true,
+                    },
+                  })}
+                />
+              </FieldConfigRow>
+              <FillLimitCheckbox
+                label="允许删除记录"
+                checked={region.repeat.allowRemove}
+                onChange={(checked) => updateRegion({
+                  repeat: {
+                    type: 'dynamic',
+                    minCount: region.repeat.type === 'dynamic' ? region.repeat.minCount : 0,
+                    maxCount: region.repeat.type === 'dynamic' ? region.repeat.maxCount : 50,
+                    addPosition: 'bottom',
+                    allowRemove: checked,
+                    removeConfirm: true,
+                  },
+                })}
+              />
+              <FieldConfigRow label="新增入口">
+                <CompactSelect
+                  value={region.presentation.addEntry}
+                  options={SUB_TABLE_ADD_ENTRY_OPTIONS}
+                  onChange={(value) => {
+                    const addEntry = value === 'contextMenu' || value === 'both' ? value : 'bottom';
+                    updateRegion({
+                      presentation: {
+                        ...region.presentation,
+                        addEntry,
+                      },
+                    });
+                  }}
+                />
+              </FieldConfigRow>
+            </FieldConfigSection>
+          </>
+        ) : null}
+      </>
+    );
+  };
+
   const renderFieldSections = () => {
+    if (selectedNode.type === 'sub-table' && fieldType === 'subTable') {
+      if (selectedSubTableGroupNodeId === selectedNode.id) {
+        return renderSubTableGroupSections();
+      }
+      return renderSubTableRegionSections();
+    }
+
     switch (fieldType) {
       case 'number':
         return renderNumberSections();

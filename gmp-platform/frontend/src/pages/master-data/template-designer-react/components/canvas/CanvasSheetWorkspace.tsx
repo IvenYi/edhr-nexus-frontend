@@ -4,8 +4,9 @@ import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import { Box, Button, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
-import type { CanvasCellBorder, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, ModelField } from '../../types';
+import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
+import { buildSubTableGroupRepeatRanges } from '../../utils/subTableRegion';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
 const scrollbarWidth = 18;
@@ -13,10 +14,13 @@ const MM_TO_PX = 96 / 25.4;
 const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
 const PAGE_BREAK_MARKER_Z_INDEX = 20;
+const SUB_TABLE_OVERLAY_Z_INDEX = 24;
+const SUB_TABLE_GROUP_REPEAT_INSET = 10;
 const DEFAULT_SHEET_FONT_SIZE = 14;
 const DEFAULT_SHEET_LINE_HEIGHT = 1.35;
 const AUTO_FIT_EXTRA_WIDTH = 18;
 const AUTO_FIT_EXTRA_HEIGHT = 4;
+const SHEET_ROW_RENDER_OVERSCAN_PX = 720;
 const SPECIAL_WRAP_CELL_VALUE_PATTERN = /[□☐☑☒■▪●○◆◇★☆※√×]/;
 const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
 const FIELD_POINTER_HOVER_EVENT = 'template-designer-field-pointer-hover';
@@ -172,6 +176,15 @@ function findSubTableNodeRange(page: CanvasPage, subTableId: string): CanvasSele
   return visit(page.nodes);
 }
 
+function getSubTableNodes(nodes: CanvasNode[]): CanvasNode[] {
+  return nodes.flatMap((node) => {
+    const nestedNodes = node.children?.length ? getSubTableNodes(node.children) : [];
+    return node.type === 'sub-table' && node.bindings?.subTableRegion
+      ? [node, ...nestedNodes]
+      : nestedNodes;
+  });
+}
+
 function parseSubTableFieldDragData(rawValue: string): SubTableFieldDragData | null {
   if (!rawValue) return null;
   try {
@@ -201,6 +214,57 @@ function buildRulerUnits(length: number, unit: number) {
 
 function buildRulerTicks(length: number, step: number) {
   return Array.from({ length: Math.floor(length / step) + 1 }, (_, index) => Math.min(length, index * step));
+}
+
+function findFirstRowEndingAfter(rowOffsets: number[], offset: number) {
+  let low = 1;
+  let high = Math.max(1, rowOffsets.length - 1);
+  let result = high;
+
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    if ((rowOffsets[middle] ?? 0) >= offset) {
+      result = middle;
+      high = middle - 1;
+    } else {
+      low = middle + 1;
+    }
+  }
+
+  return result;
+}
+
+function findLastRowStartingBefore(rowOffsets: number[], offset: number) {
+  let low = 1;
+  let high = Math.max(1, rowOffsets.length - 1);
+  let result = 1;
+
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    if ((rowOffsets[middle - 1] ?? 0) <= offset) {
+      result = middle;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+
+  return result;
+}
+
+function resolveVisibleRowRange(rowOffsets: number[], scrollTop: number, viewportHeight: number, contentOffsetTop: number) {
+  const rowCount = Math.max(1, rowOffsets.length - 1);
+  if (rowCount <= 80 || viewportHeight <= 0) {
+    return { start: 1, end: rowCount };
+  }
+
+  const visibleTop = Math.max(0, scrollTop - contentOffsetTop - SHEET_ROW_RENDER_OVERSCAN_PX);
+  const visibleBottom = visibleTop + viewportHeight + SHEET_ROW_RENDER_OVERSCAN_PX * 2;
+
+  return {
+    start: Math.max(1, findFirstRowEndingAfter(rowOffsets, visibleTop)),
+    end: Math.min(rowCount, findLastRowStartingBefore(rowOffsets, visibleBottom)),
+  };
 }
 
 function getRulerTickLevel(index: number) {
@@ -403,12 +467,21 @@ function getSheetContentBottom(page: CanvasPage, rowOffsets: number[]) {
     bottom = Math.max(bottom, image.layout.top + image.layout.height);
   });
 
-  page.nodes.forEach((node) => {
-    if (node.style.position !== 'absolute') return;
-    bottom = Math.max(bottom, Number(node.style.compTop ?? 0) + Number(node.style.compHeight ?? 0));
-  });
+  bottom = Math.max(bottom, getCanvasNodeContentBottom(page.nodes, rowOffsets));
 
   return bottom;
+}
+
+function getCanvasNodeContentBottom(nodes: CanvasPage['nodes'], rowOffsets: number[]): number {
+  return nodes.reduce((bottom, node) => {
+    const nodeRange = readNodeCellRange(node);
+    const rangeBottom = nodeRange ? rowOffsets[Math.min(nodeRange.b, rowOffsets.length - 1)] ?? 0 : 0;
+    const absoluteBottom = node.style.position === 'absolute'
+      ? Number(node.style.compTop ?? 0) + Number(node.style.compHeight ?? 0)
+      : 0;
+    const childBottom = node.children?.length ? getCanvasNodeContentBottom(node.children, rowOffsets) : 0;
+    return Math.max(bottom, rangeBottom, absoluteBottom, childBottom);
+  }, 0);
 }
 
 function getAutoFitCell(page: CanvasPage, row: number, col: number) {
@@ -532,6 +605,7 @@ function hasPlainOverflowCellValue(value: unknown, contentWidth: number, fontSiz
 
 export default function CanvasSheetWorkspace() {
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
+  const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
   const selectedRange = useTemplateDesignerStore((state) => state.selectedRange);
   const setSelectedRange = useTemplateDesignerStore((state) => state.setSelectedRange);
@@ -554,6 +628,8 @@ export default function CanvasSheetWorkspace() {
   const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
   const addNodeFromSubTableFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromSubTableFieldToCell);
   const addNodeFromFieldToRange = useTemplateDesignerStore((state) => state.addNodeFromFieldToRange);
+  const setSubTableRecordTemplateFromRange = useTemplateDesignerStore((state) => state.setSubTableRecordTemplateFromRange);
+  const selectSubTableGroup = useTemplateDesignerStore((state) => state.selectSubTableGroup);
   const availableSubTableFields = useTemplateDesignerStore((state) => (
     state.getAvailableFieldsForCurrentVersion()
       .filter((field) => field.type === 'subTable')
@@ -572,6 +648,7 @@ export default function CanvasSheetWorkspace() {
   const [fieldDropGuideRange, setFieldDropGuideRange] = useState<CanvasSelectionRange | null>(null);
   const [insertMenuCount, setInsertMenuCount] = useState('1');
   const [subTableMenuAnchorEl, setSubTableMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [workspaceViewport, setWorkspaceViewport] = useState({ scrollTop: 0, height: 0 });
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
   const workspaceScrollRef = useRef<HTMLDivElement | null>(null);
@@ -586,8 +663,14 @@ export default function CanvasSheetWorkspace() {
     () => Array.from({ length: currentPage?.sheet.rowCount ?? 0 }, (_, index) => index + 1),
     [currentPage?.sheet.rowCount],
   );
-  const rawColumnWidths = columns.map((_, index) => currentPage?.sheet.columnWidths[index] ?? currentPage?.sheet.defaultColumnWidth ?? 98);
-  const rowHeights = rows.map((_, index) => currentPage?.sheet.rowHeights[index] ?? currentPage?.sheet.defaultRowHeight ?? 36);
+  const rawColumnWidths = useMemo(
+    () => columns.map((_, index) => currentPage?.sheet.columnWidths[index] ?? currentPage?.sheet.defaultColumnWidth ?? 98),
+    [columns, currentPage?.sheet.columnWidths, currentPage?.sheet.defaultColumnWidth],
+  );
+  const rowHeights = useMemo(
+    () => rows.map((_, index) => currentPage?.sheet.rowHeights[index] ?? currentPage?.sheet.defaultRowHeight ?? 36),
+    [currentPage?.sheet.defaultRowHeight, currentPage?.sheet.rowHeights, rows],
+  );
   const paperOrientation = currentPage?.sheet.paperOrientation ?? 'portrait';
   const paperMode = currentPage?.sheet.canvasMode === 'paper' ? 'free' : 'table';
   const isFreeCanvas = currentPage?.sheet.canvasMode === 'paper';
@@ -620,7 +703,7 @@ export default function CanvasSheetWorkspace() {
   const sheetPaperWidth = a4PaperWidthPx;
   const freeCanvasBodyHeight = Math.max(freeCanvasMeasuredHeight, 480);
   const sheetContentBottom = currentPage ? getSheetContentBottom(currentPage, rowOffsets) : 0;
-  const paperPaginationBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : Math.max(sheetContentBottom, 1);
+  const paperPaginationBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : Math.max(sheetContentBottom, sheetHeight, 1);
   const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight + paperInsetBottom;
   const pageMarkerCount = Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx));
   const sheetPaperHeight = pageMarkerCount * a4PaperHeightPx;
@@ -633,6 +716,28 @@ export default function CanvasSheetWorkspace() {
   const paperRulerXTicks = useMemo(() => buildRulerTicks(paperContentWidth, paperRulerMinorStep), [paperContentWidth, paperRulerMinorStep]);
   const paperRulerYTicks = useMemo(() => buildRulerTicks(paperContentHeight, paperRulerMinorStep), [paperContentHeight, paperRulerMinorStep]);
   const rowHeaderOffsetTop = paperViewportGapTop + paperInsetTop + paperHeaderHeight;
+  const visibleRowRange = useMemo(() => resolveVisibleRowRange(
+    rowOffsets,
+    workspaceViewport.scrollTop,
+    workspaceViewport.height,
+    rowHeaderOffsetTop,
+  ), [rowHeaderOffsetTop, rowOffsets, workspaceViewport.height, workspaceViewport.scrollTop]);
+  const visibleRows = useMemo(() => {
+    if (!currentPage) return rows;
+
+    const rowSet = new Set<number>();
+    rows.forEach((row) => {
+      if (row >= visibleRowRange.start && row <= visibleRowRange.end) {
+        rowSet.add(row);
+      }
+    });
+    currentPage.mergedCells.forEach((range) => {
+      if (range.b >= visibleRowRange.start && range.t <= visibleRowRange.end) {
+        rowSet.add(range.t);
+      }
+    });
+    return rows.filter((row) => rowSet.has(row));
+  }, [currentPage, rows, visibleRowRange.end, visibleRowRange.start]);
   const columnTemplate = buildTemplate(displayColumnWidths);
   const rowTemplate = buildTemplate(rowHeights);
   const canvasStageMinWidth = rowHeaderWidth + sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight + scrollbarWidth;
@@ -724,6 +829,14 @@ export default function CanvasSheetWorkspace() {
   const clearSelection = () => {
     setSelectedRange(null, null);
   };
+  const selectedSubTableNode = currentPage && normalizedRange
+    ? currentPage.nodes.find((node) => {
+        if (node.type !== 'sub-table' || !node.bindings?.fieldId) return false;
+        const subTableRange = findSubTableNodeRange(currentPage, node.bindings.fieldId);
+        return Boolean(subTableRange && rangeContainsRange(subTableRange, normalizedRange));
+      }) ?? null
+    : null;
+  const isSubTableRangeSelection = Boolean(selectedSubTableNode);
   const startEditingCell = (row: number, col: number, initialValue?: string) => {
     skipNextBlurCommitRef.current = false;
     const currentValue = currentPage?.cells[getCellKey(row, col)]?.value ?? '';
@@ -775,6 +888,133 @@ export default function CanvasSheetWorkspace() {
       height: (rowOffsets[normalizedSelection.b] ?? top) - top,
       range: normalizedSelection,
     };
+  };
+  const renderSubTableOverlays = () => {
+    if (!currentPage) return null;
+
+    return getSubTableNodes(currentPage.nodes).map((node) => {
+      const region = node.bindings?.subTableRegion;
+      const nodeRange = readNodeCellRange(node);
+      const range = nodeRange ?? region?.ranges[0]?.range ?? null;
+      if (!region || !range) return null;
+
+      const normalizedRegionRange = normalizeRange(range);
+      const regionLayout = getFieldDropCellLayout(normalizedRegionRange);
+      const groupRange = region.recordTemplate.groupRange
+        ? normalizeRange(region.recordTemplate.groupRange)
+        : null;
+      const shouldRenderGroup = Boolean(groupRange && rangeContainsRange(normalizedRegionRange, groupRange!));
+      const groupLayout = shouldRenderGroup ? getFieldDropCellLayout(groupRange!) : null;
+      const repeatedGroupRanges = shouldRenderGroup && groupRange && region.repeat.type === 'fixed'
+        ? buildSubTableGroupRepeatRanges(normalizedRegionRange, groupRange, region.recordTemplate.direction)
+        : [];
+      const isSelected = selectedNodeId === node.id;
+
+      return (
+        <Box key={`sub-table-overlay-${node.id}`} sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: SUB_TABLE_OVERLAY_Z_INDEX }}>
+          <Box
+            data-canvas-sub-table-region-overlay="true"
+            sx={{
+              position: 'absolute',
+              top: regionLayout.top,
+              left: regionLayout.left,
+              width: regionLayout.width,
+              height: regionLayout.height,
+              border: `${isSelected ? 2 : 1}px dashed #7c3aed`,
+              boxShadow: '0 0 0 1px rgba(124, 58, 237, 0.22)',
+              boxSizing: 'border-box',
+            }}
+          />
+          {repeatedGroupRanges.map((repeatRange, index) => {
+            const repeatLayout = getFieldDropCellLayout(repeatRange);
+            return (
+              <Box
+                key={`sub-table-group-repeat-${node.id}-${index}`}
+                data-canvas-sub-table-group-repeat-overlay="true"
+                sx={{
+                  position: 'absolute',
+                  top: repeatLayout.top,
+                  left: repeatLayout.left,
+                  width: repeatLayout.width,
+                  height: repeatLayout.height,
+                  minHeight: 24,
+                  boxSizing: 'border-box',
+                }}
+              >
+                <Box
+                  data-canvas-sub-table-group-repeat-fill="true"
+                  sx={{
+                    position: 'absolute',
+                    inset: SUB_TABLE_GROUP_REPEAT_INSET,
+                    bgcolor: 'rgba(148, 163, 184, 0.14)',
+                    boxSizing: 'border-box',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Box
+                    data-canvas-sub-table-group-repeat-index="true"
+                    sx={{
+                      position: 'absolute',
+                      right: 8,
+                      bottom: 4,
+                      color: 'rgba(100, 116, 139, 0.24)',
+                      fontSize: 28,
+                      lineHeight: '32px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {index + 1}
+                  </Box>
+                </Box>
+              </Box>
+            );
+          })}
+          {groupLayout ? (
+            <Box
+              data-canvas-sub-table-group-overlay="true"
+              sx={{
+                position: 'absolute',
+                top: groupLayout.top,
+                left: groupLayout.left,
+                width: groupLayout.width,
+                height: groupLayout.height,
+                minHeight: 24,
+                border: '2px dashed #f59e0b',
+                bgcolor: 'rgba(245, 158, 11, 0.08)',
+                boxSizing: 'border-box',
+              }}
+            >
+              <Box
+                component="button"
+                type="button"
+                data-canvas-sub-table-group-label="true"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  selectSubTableGroup(node.id);
+                }}
+                sx={{
+                  position: 'absolute',
+                  top: -2,
+                  right: -2,
+                  height: 24,
+                  border: 0,
+                  px: 0.75,
+                  lineHeight: '24px',
+                  bgcolor: '#f59e0b',
+                  color: '#fff',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  pointerEvents: 'auto',
+                }}
+              >
+                {'分组'}
+              </Box>
+            </Box>
+          ) : null}
+        </Box>
+      );
+    });
   };
   const findCellRangeAtClientPoint = (clientX: number, clientY: number) => {
     if (!currentPage) return null;
@@ -949,10 +1189,17 @@ export default function CanvasSheetWorkspace() {
   };
   const handleWorkspaceScroll = () => {
     if (!currentPage) return;
-    const scrollTop = workspaceScrollRef.current?.scrollTop ?? 0;
+    const element = workspaceScrollRef.current;
+    const scrollTop = element?.scrollTop ?? 0;
+    const height = element?.clientHeight ?? 0;
     const rawPreviewIndex = Math.floor(Math.max(0, scrollTop - paperViewportGapTop) / a4PaperHeightPx);
     const previewIndex = Math.min(pageMarkerCount - 1, Math.max(0, rawPreviewIndex));
     setActivePagePreviewIndex(currentPage.id, previewIndex);
+    setWorkspaceViewport((current) => (
+      current.scrollTop === scrollTop && current.height === height
+        ? current
+        : { scrollTop, height }
+    ));
   };
   const paperSettingItems = [
     { key: 'paper-mode', label: '画布模式' },
@@ -1468,6 +1715,13 @@ export default function CanvasSheetWorkspace() {
     if (!currentPage) {
       return;
     }
+    const element = workspaceScrollRef.current;
+    if (element) {
+      setWorkspaceViewport((current) => {
+        const next = { scrollTop: element.scrollTop, height: element.clientHeight };
+        return current.scrollTop === next.scrollTop && current.height === next.height ? current : next;
+      });
+    }
     setPagePreviewCount(currentPage.id, pageMarkerCount);
     handleWorkspaceScroll();
   }, [currentPage, pageMarkerCount, setPagePreviewCount]);
@@ -1481,7 +1735,7 @@ export default function CanvasSheetWorkspace() {
     const previewIndex = Math.min(pageMarkerCount - 1, Math.max(0, pagePreviewScrollTarget.previewIndex));
     workspaceScrollRef.current?.scrollTo({
       top: paperViewportGapTop + previewIndex * a4PaperHeightPx,
-      behavior: 'smooth',
+      behavior: 'auto',
     });
     setActivePagePreviewIndex(currentPage.id, previewIndex);
     clearPagePreviewScrollTarget(requestId);
@@ -1600,6 +1854,11 @@ export default function CanvasSheetWorkspace() {
   const handleSetSubTableField = (field: ModelField) => {
     if (!normalizedRange) return;
     addNodeFromFieldToRange(field.id, normalizedRange, getFieldDropCellLayout(normalizedRange));
+    closeContextMenu();
+  };
+  const handleSubTableDataGroup = () => {
+    if (!selectedSubTableNode || !normalizedRange) return;
+    setSubTableRecordTemplateFromRange(selectedSubTableNode.id, normalizedRange);
     closeContextMenu();
   };
 
@@ -1833,7 +2092,13 @@ export default function CanvasSheetWorkspace() {
   const canSetSubTableMenuSelection = Boolean(
     activeMenuAxis === 'cell'
     && isMultiCellRange(normalizedRange)
+    && !isSubTableRangeSelection
     && availableSubTableFields.length,
+  );
+  const canGroupSubTableSelection = Boolean(
+    activeMenuAxis === 'cell'
+    && selectedSubTableNode
+    && isMultiCellRange(normalizedRange),
   );
 
   const renderImportedGrid = (mode: 'sheet' | 'paper') => (
@@ -1848,7 +2113,7 @@ export default function CanvasSheetWorkspace() {
         gridTemplateRows: rowTemplate,
       }}
     >
-      {rows.flatMap((row, rowIndex) => columns.map((col, colIndex) => {
+      {visibleRows.flatMap((row) => columns.map((col) => {
         const key = getCellKey(row, col);
         if (mergedCellMaps.skipSet.has(key)) {
           return null;
@@ -1916,8 +2181,8 @@ export default function CanvasSheetWorkspace() {
               extendCellRangeDrag(cellSelectionRange, dragState);
             }}
             sx={{
-              gridColumn: `${colIndex + 1} / span ${spanCols}`,
-              gridRow: `${rowIndex + 1} / span ${spanRows}`,
+              gridColumn: `${col} / span ${spanCols}`,
+              gridRow: `${row} / span ${spanRows}`,
               display: 'flex',
               alignItems: verticalAlign === 'top' ? 'flex-start' : verticalAlign === 'bottom' ? 'flex-end' : 'center',
               justifyContent: textAlign === 'right' ? 'flex-end' : textAlign === 'center' ? 'center' : textAlign === 'justify' ? 'flex-start' : 'flex-start',
@@ -1925,8 +2190,8 @@ export default function CanvasSheetWorkspace() {
               py: `${resolveNumericStyle(cell?.style?.paddingTop, 4)}px`,
               pr: `${resolveNumericStyle(cell?.style?.paddingRight, resolveNumericStyle(cell?.style?.paddingLeft, 8))}px`,
               pb: `${resolveNumericStyle(cell?.style?.paddingBottom, resolveNumericStyle(cell?.style?.paddingTop, 4))}px`,
-              borderLeft: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'left') ? `1px solid ${borderColor}` : colIndex === 0 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
-              borderTop: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'top') ? `1px solid ${borderColor}` : rowIndex === 0 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
+              borderLeft: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'left') ? `1px solid ${borderColor}` : col === 1 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
+              borderTop: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'top') ? `1px solid ${borderColor}` : row === 1 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
               borderRight: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'right') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
               borderBottom: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'bottom') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
               bgcolor: shouldShowSingleCellSelection ? '#dbeafe' : isRangeActive ? '#eef5ff' : (cell?.style?.backgroundColor ? String(cell.style.backgroundColor) : '#fff'),
@@ -2462,6 +2727,7 @@ export default function CanvasSheetWorkspace() {
                         onCellFieldMouseDown={handleCellFieldMouseDown}
                         onCellFieldContextMenu={handleCellFieldContextMenu}
                       />
+                      {renderSubTableOverlays()}
                       {hasSheetOverlayContent ? renderSelectionOutline('overlay') : null}
                       {renderFieldDropGuide()}
                     </Box>
@@ -2775,6 +3041,7 @@ export default function CanvasSheetWorkspace() {
                     onCellFieldMouseDown={handleCellFieldMouseDown}
                     onCellFieldContextMenu={handleCellFieldContextMenu}
                   />
+                  {renderSubTableOverlays()}
                   {renderSelectionOutline('overlay')}
                   {renderFieldDropGuide()}
                 </Box>
@@ -2874,6 +3141,14 @@ export default function CanvasSheetWorkspace() {
                 >拆分单元格</MenuItem>
               ) : null}
               {renderSetSubTableMenu()}
+              {canGroupSubTableSelection ? (
+                <MenuItem
+                  data-sheet-menu-action="sub-table-data-group"
+                  onClick={handleSubTableDataGroup}
+                >
+                  数据分组
+                </MenuItem>
+              ) : null}
               {renderDeleteMenuGroup([
                 { action: 'delete-row', label: '删除行', disabled: !canDeleteMenuRows },
                 { action: 'delete-column', label: '删除列', disabled: !canDeleteMenuColumns },

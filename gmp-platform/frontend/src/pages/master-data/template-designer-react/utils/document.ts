@@ -13,6 +13,7 @@ import type {
   WorkflowDesignState,
 } from '../types';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
+import { createLegacySubTableRegion, readNodeCellRange } from './subTableRegion';
 
 function safeParseJson(input?: string | null) {
   if (!input?.trim()) return null;
@@ -214,16 +215,46 @@ export function createEmptyTemplateDesignerDocument(
   };
 }
 
+function normalizeCanvasNodes(nodes: CanvasPage['nodes'], pageId: string): CanvasPage['nodes'] {
+  return nodes.map((node) => {
+    const cellRange = readNodeCellRange(node);
+    const nextNode = node.type === 'sub-table'
+      && node.bindings?.fieldId
+      && !node.bindings.subTableRegion
+      && cellRange
+      ? {
+          ...node,
+          bindings: {
+            ...node.bindings,
+            subTableRegion: createLegacySubTableRegion({
+              id: `sub-table-region-${node.id}`,
+              fieldId: node.bindings.fieldId,
+              pageId,
+              range: cellRange,
+            }),
+          },
+        }
+      : node;
+
+    if (!nextNode.children?.length) return nextNode;
+    return {
+      ...nextNode,
+      children: normalizeCanvasNodes(nextNode.children, pageId),
+    };
+  });
+}
+
 function normalizeCanvasPage(page: Partial<CanvasPage>, index: number): CanvasPage {
   const rowCount = page.sheet?.rowCount ?? 30;
   const columnCount = page.sheet?.columnCount ?? 9;
   const defaultRowHeight = page.sheet?.defaultRowHeight ?? 36;
   const defaultColumnWidth = page.sheet?.defaultColumnWidth ?? 98;
+  const pageId = page.id || `page-${index + 1}`;
 
   return {
-    id: page.id || `page-${index + 1}`,
+    id: pageId,
     name: page.name || `页面 ${index + 1}`,
-    nodes: page.nodes ?? [],
+    nodes: normalizeCanvasNodes(page.nodes ?? [], pageId),
     sheet: {
       rowCount,
       columnCount,
