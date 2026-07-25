@@ -11,7 +11,6 @@ import com.zencas.edhr.compliance.entity.Signature;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
 import com.zencas.edhr.compliance.repository.SignatureRepository;
-import com.zencas.edhr.compliance.service.IdCardOcrService;
 import com.zencas.edhr.identity.entity.LoginLog;
 import com.zencas.edhr.identity.entity.Department;
 import com.zencas.edhr.identity.entity.Permission;
@@ -113,7 +112,6 @@ public class AuthController {
     private final FileObjectRepository fileObjectRepository;
     private final SignatureRepository signatureRepository;
     private final AuditEventRepository auditEventRepository;
-    private final IdCardOcrService idCardOcrService;
     private final SystemSettingRepository systemSettingRepository;
     private final SnowflakeIdGenerator idGenerator;
 

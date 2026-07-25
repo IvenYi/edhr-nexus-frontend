@@ -5,6 +5,7 @@ import { Box, Button, Divider, Stack, Typography } from '@mui/material';
 import type { TemplateDesignerDialogProps } from './types';
 import { useTemplateDesignerStore } from './store/useTemplateDesignerStore';
 import CanvasTab from './tabs/canvas/CanvasTab';
+import MockFillDialog from './components/mock-fill/MockFillDialog';
 import ModelTab from './tabs/model/ModelTab';
 import WorkflowTab from './tabs/workflow/WorkflowTab';
 import { parseReactTemplateDesignerDocument, serializeTemplateDesignerDocument } from './utils/document';
@@ -58,6 +59,7 @@ export default function TemplateDesignerReactShell({
   const getCurrentPage = useTemplateDesignerStore((state) => state.getCurrentPage);
   const replaceCurrentPageFromImport = useTemplateDesignerStore((state) => state.replaceCurrentPageFromImport);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [mockFillOpen, setMockFillOpen] = useState(false);
   const [subTableDesignFieldId, setSubTableDesignFieldId] = useState<string | null>(null);
   const activeSubTableDesignField = useMemo(
     () => document?.model.fields.find((field) => field.id === subTableDesignFieldId && field.type === 'subTable') ?? null,
@@ -221,7 +223,7 @@ export default function TemplateDesignerReactShell({
             >
               模板导入
             </Button>
-            <Button variant="outlined" sx={headerOutlinedActionButtonSx}>
+            <Button variant="outlined" onClick={() => setMockFillOpen(true)} sx={headerOutlinedActionButtonSx}>
               模拟填报
             </Button>
             <Button
@@ -257,6 +259,13 @@ export default function TemplateDesignerReactShell({
           </Box>
         ) : null}
       </Box>
+      {document ? (
+        <MockFillDialog
+          open={mockFillOpen}
+          document={document}
+          onClose={() => setMockFillOpen(false)}
+        />
+      ) : null}
     </Box>
   );
 }

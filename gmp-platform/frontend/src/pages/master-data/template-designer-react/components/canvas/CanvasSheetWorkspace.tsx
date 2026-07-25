@@ -6,7 +6,7 @@ import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
 import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
-import { buildSubTableGroupRepeatRanges } from '../../utils/subTableRegion';
+import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
 import { useSnackbar } from '@/components/SnackbarProvider';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
@@ -16,7 +16,7 @@ const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
 const PAGE_BREAK_MARKER_Z_INDEX = 20;
 const SUB_TABLE_OVERLAY_Z_INDEX = 24;
-const SUB_TABLE_GROUP_REPEAT_INSET = 10;
+const SUB_TABLE_GROUP_REPEAT_INSET = 5;
 const DEFAULT_SHEET_FONT_SIZE = 14;
 const DEFAULT_SHEET_LINE_HEIGHT = 1.35;
 const AUTO_FIT_EXTRA_WIDTH = 18;
@@ -643,9 +643,12 @@ export default function CanvasSheetWorkspace() {
   const { showMessage } = useSnackbar();
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
+  const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
+  const setActiveCanvasRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
   const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
   const selectedRange = useTemplateDesignerStore((state) => state.selectedRange);
   const setSelectedRange = useTemplateDesignerStore((state) => state.setSelectedRange);
+  const getFieldById = useTemplateDesignerStore((state) => state.getFieldById);
   const updateCurrentPageSheet = useTemplateDesignerStore((state) => state.updateCurrentPageSheet);
   const selectAllCells = useTemplateDesignerStore((state) => state.selectAllCells);
   const selectColumnRange = useTemplateDesignerStore((state) => state.selectColumnRange);
@@ -685,6 +688,7 @@ export default function CanvasSheetWorkspace() {
   const [settingsPopover, setSettingsPopover] = useState<CanvasSettingsPopoverState | null>(null);
   const [editingCell, setEditingCell] = useState<EditingCellState | null>(null);
   const [fieldDropGuideRange, setFieldDropGuideRange] = useState<CanvasSelectionRange | null>(null);
+  const [hoveredSubTableNodeId, setHoveredSubTableNodeId] = useState<string | null>(null);
   const [insertMenuCount, setInsertMenuCount] = useState('1');
   const [subTableMenuAnchorEl, setSubTableMenuAnchorEl] = useState<HTMLElement | null>(null);
   const [workspaceViewport, setWorkspaceViewport] = useState({ scrollTop: 0, height: 0 });
@@ -736,6 +740,24 @@ export default function CanvasSheetWorkspace() {
   const displayColumnWidths = useMemo(() => fitColumnWidths(rawColumnWidths, paperContentWidth), [paperContentWidth, rawColumnWidths]);
   const columnOffsets = useMemo(() => buildOffsets(displayColumnWidths), [displayColumnWidths]);
   const rowOffsets = useMemo(() => buildOffsets(rowHeights), [rowHeights]);
+  const repeatedGroupSheetLayout = useMemo(() => (
+    currentPage
+      ? buildSubTableRepeatedGroupSheetLayout({
+          cells: currentPage.cells,
+          mergedCells: currentPage.mergedCells,
+          nodes: currentPage.nodes,
+        })
+      : null
+  ), [currentPage?.cells, currentPage?.mergedCells, currentPage?.nodes]);
+  const displayPage = useMemo(() => (
+    currentPage && repeatedGroupSheetLayout
+      ? {
+          ...currentPage,
+          cells: repeatedGroupSheetLayout.cells,
+          mergedCells: repeatedGroupSheetLayout.mergedCells,
+        }
+      : currentPage
+  ), [currentPage, repeatedGroupSheetLayout]);
   const sheetWidth = columnOffsets[columnOffsets.length - 1];
   const sheetHeight = rowOffsets[rowOffsets.length - 1];
   const rowHeaderWidth = 42;
@@ -763,7 +785,7 @@ export default function CanvasSheetWorkspace() {
     rowHeaderOffsetTop,
   ), [rowHeaderOffsetTop, rowOffsets, workspaceViewport.height, workspaceViewport.scrollTop]);
   const visibleRows = useMemo(() => {
-    if (!currentPage) return rows;
+    if (!displayPage) return rows;
 
     const rowSet = new Set<number>();
     rows.forEach((row) => {
@@ -771,13 +793,13 @@ export default function CanvasSheetWorkspace() {
         rowSet.add(row);
       }
     });
-    currentPage.mergedCells.forEach((range) => {
+    displayPage.mergedCells.forEach((range) => {
       if (range.b >= visibleRowRange.start && range.t <= visibleRowRange.end) {
         rowSet.add(range.t);
       }
     });
     return rows.filter((row) => rowSet.has(row));
-  }, [currentPage, rows, visibleRowRange.end, visibleRowRange.start]);
+  }, [displayPage, rows, visibleRowRange.end, visibleRowRange.start]);
   const columnTemplate = buildTemplate(displayColumnWidths);
   const rowTemplate = buildTemplate(rowHeights);
   const canvasStageMinWidth = rowHeaderWidth + sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight + scrollbarWidth;
@@ -852,18 +874,18 @@ export default function CanvasSheetWorkspace() {
     />
   ) : null;
   const mergedCellMaps = useMemo(
-    () => buildMergedCellMaps(currentPage?.mergedCells ?? []),
-    [currentPage?.mergedCells],
+    () => buildMergedCellMaps(displayPage?.mergedCells ?? []),
+    [displayPage?.mergedCells],
   );
   const mediaSrcMap = useMemo(
     () => new Map((currentPage?.medias ?? []).map((media) => [media.id, media.src])),
     [currentPage?.medias],
   );
   const hasSheetOverlayContent = Boolean(
-    currentPage && (
-      Object.keys(currentPage.cells).length
-      || currentPage.images.length
-      || currentPage.mergedCells.length
+    displayPage && (
+      Object.keys(displayPage.cells).length
+      || displayPage.images.length
+      || displayPage.mergedCells.length
     ),
   );
   const clearSelection = () => {
@@ -891,9 +913,29 @@ export default function CanvasSheetWorkspace() {
         );
       }),
   );
+  const subTableHoverTargets = useMemo(() => (
+    currentPage
+      ? getSubTableNodes(currentPage.nodes)
+          .map((node) => {
+            const range = readNodeCellRange(node) ?? node.bindings?.subTableRegion?.ranges[0]?.range ?? null;
+            return range ? { nodeId: node.id, range: normalizeRange(range) } : null;
+          })
+          .filter((item): item is { nodeId: string; range: CanvasSelectionRange } => Boolean(item))
+      : []
+  ), [currentPage]);
+  const updateHoveredSubTableFromRange = (range: CanvasSelectionRange | null) => {
+    if (!range) {
+      setHoveredSubTableNodeId(null);
+      return;
+    }
+    const normalizedSelection = normalizeRange(range);
+    const nextHoveredNodeId = subTableHoverTargets.find((item) => rangeContainsRange(item.range, normalizedSelection))?.nodeId ?? null;
+    setHoveredSubTableNodeId((current) => (current === nextHoveredNodeId ? current : nextHoveredNodeId));
+  };
   const startEditingCell = (row: number, col: number, initialValue?: string) => {
     skipNextBlurCommitRef.current = false;
-    const currentValue = currentPage?.cells[getCellKey(row, col)]?.value ?? '';
+    const renderPage = displayPage ?? currentPage;
+    const currentValue = renderPage?.cells[getCellKey(row, col)]?.value ?? '';
     setEditingCell({
       row,
       col,
@@ -975,6 +1017,8 @@ export default function CanvasSheetWorkspace() {
 
     return getSubTableNodes(currentPage.nodes).map((node) => {
       const region = node.bindings?.subTableRegion;
+      const boundField = node.bindings?.fieldId ? getFieldById(node.bindings.fieldId) : null;
+      const subTableLabel = String(boundField?.name || boundField?.code || node.props.title || node.props.label || '子表');
       const nodeRange = readNodeCellRange(node);
       const range = nodeRange ?? region?.ranges[0]?.range ?? null;
       if (!region || !range) return null;
@@ -990,6 +1034,7 @@ export default function CanvasSheetWorkspace() {
         ? buildSubTableGroupRepeatRanges(normalizedRegionRange, groupRange, region.recordTemplate.direction)
         : [];
       const isSelected = selectedNodeId === node.id;
+      const isHovered = hoveredSubTableNodeId === node.id;
 
       return (
         <Box key={`sub-table-overlay-${node.id}`} sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: SUB_TABLE_OVERLAY_Z_INDEX }}>
@@ -1006,6 +1051,35 @@ export default function CanvasSheetWorkspace() {
               boxSizing: 'border-box',
             }}
           />
+          <Box
+            data-canvas-sub-table-hover-label="true"
+            onClick={(event) => {
+              event.stopPropagation();
+              setSelectedNodeId(node.id);
+              setSelectedRange(normalizedRegionRange, { row: normalizedRegionRange.t, col: normalizedRegionRange.l });
+              setActiveCanvasRail('config');
+            }}
+            sx={{
+              position: 'absolute',
+              top: regionLayout.top + 6,
+              left: regionLayout.left + regionLayout.width - 8,
+              transform: 'translateX(-100%)',
+              px: 0.75,
+              height: 22,
+              lineHeight: '22px',
+              borderRadius: 0.5,
+              bgcolor: '#8b5cf6',
+              color: '#fff',
+              fontSize: 12,
+              fontWeight: 600,
+              opacity: isHovered ? 1 : 0,
+              pointerEvents: isHovered ? 'auto' : 'none',
+              transition: 'opacity 120ms ease',
+              boxShadow: '0 6px 16px rgba(139, 92, 246, 0.22)',
+            }}
+          >
+            {subTableLabel}
+          </Box>
           {repeatedGroupRanges.map((repeatRange, index) => {
             const repeatLayout = getFieldDropCellLayout(repeatRange);
             return (
@@ -1098,7 +1172,8 @@ export default function CanvasSheetWorkspace() {
     });
   };
   const findCellRangeAtClientPoint = (clientX: number, clientY: number) => {
-    if (!currentPage) return null;
+    const renderPage = displayPage ?? currentPage;
+    if (!renderPage) return null;
     const cells = Array.from(sheetInteractionRef.current?.querySelectorAll<HTMLElement>('[data-canvas-field-drop-cell="true"]') ?? []);
     const targetCell = cells.find((element) => {
       const rect = element.getBoundingClientRect();
@@ -1110,7 +1185,7 @@ export default function CanvasSheetWorkspace() {
     const col = Number(targetCell.dataset.sheetCellCol);
     if (!Number.isInteger(row) || !Number.isInteger(col)) return null;
 
-    const mergedRange = findMergedRangeForCell(currentPage, row, col);
+    const mergedRange = findMergedRangeForCell(renderPage, row, col);
     return getMergedAwareCellRange(row, col, mergedRange);
   };
   const extendCellRangeDrag = (cellSelectionRange: CanvasSelectionRange, state: Exclude<DragState, null> & { type: 'cell' }) => {
@@ -1175,12 +1250,13 @@ export default function CanvasSheetWorkspace() {
   useEffect(() => {
     if (!currentPage) return undefined;
 
+    const renderPage = displayPage ?? currentPage;
     const ownerDocument = sheetInteractionRef.current?.ownerDocument ?? document;
     const resolveHoverRange = (row: number, col: number) => {
-      if (row < 1 || col < 1 || row > currentPage.sheet.rowCount || col > currentPage.sheet.columnCount) {
+      if (row < 1 || col < 1 || row > renderPage.sheet.rowCount || col > renderPage.sheet.columnCount) {
         return null;
       }
-      const mergedRange = findMergedRangeForCell(currentPage, row, col);
+      const mergedRange = findMergedRangeForCell(renderPage, row, col);
       return getMergedAwareCellRange(row, col, mergedRange);
     };
     const handlePointerFieldDrop = (event: Event) => {
@@ -1188,9 +1264,9 @@ export default function CanvasSheetWorkspace() {
       const row = Number(detail?.row);
       const col = Number(detail?.col);
       if (!detail?.fieldId || !Number.isInteger(row) || !Number.isInteger(col)) return;
-      if (row < 1 || col < 1 || row > currentPage.sheet.rowCount || col > currentPage.sheet.columnCount) return;
+      if (row < 1 || col < 1 || row > renderPage.sheet.rowCount || col > renderPage.sheet.columnCount) return;
 
-      const mergedRange = findMergedRangeForCell(currentPage, row, col);
+      const mergedRange = findMergedRangeForCell(renderPage, row, col);
       const cellSelectionRange = getMergedAwareCellRange(row, col, mergedRange);
       const normalizedSelection = normalizeRange(cellSelectionRange);
       const left = columnOffsets[normalizedSelection.l - 1] ?? 0;
@@ -1231,7 +1307,10 @@ export default function CanvasSheetWorkspace() {
       ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
       ownerDocument.removeEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
     };
-  }, [addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, rowOffsets, setSelectedRange, showMessage]);
+  }, [addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
+  useEffect(() => {
+    setHoveredSubTableNodeId(null);
+  }, [currentPage?.id]);
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
       return;
@@ -2165,6 +2244,7 @@ export default function CanvasSheetWorkspace() {
     return null;
   }
 
+  const sheetRenderPage = displayPage ?? currentPage;
   const activeMenuAxis = menuState?.axis ?? null;
   const canDeleteMenuColumns = currentPage.sheet.columnCount > 1;
   const canDeleteMenuRows = currentPage.sheet.rowCount > 1;
@@ -2173,11 +2253,11 @@ export default function CanvasSheetWorkspace() {
     : canDeleteMenuRows;
   const hasMergedCellsInSelection = Boolean(
     normalizedRange
-    && currentPage.mergedCells.some((range) => rangesIntersect(range, normalizedRange)),
+    && displayPage?.mergedCells.some((range) => rangesIntersect(range, normalizedRange)),
   );
   const isSingleMergedCellSelection = Boolean(
     normalizedRange
-    && currentPage.mergedCells.some((range) => rangesEqual(range, normalizedRange)),
+    && displayPage?.mergedCells.some((range) => rangesEqual(range, normalizedRange)),
   );
   const canMergeMenuSelection = Boolean(
     activeMenuAxis === 'cell'
@@ -2220,7 +2300,7 @@ export default function CanvasSheetWorkspace() {
           return null;
         }
 
-        const cell = currentPage.cells[key];
+        const cell = sheetRenderPage.cells[key];
         const mergedRange = mergedCellMaps.startMap.get(key);
         const cellSelectionRange = getMergedAwareCellRange(row, col, mergedRange);
         const isSelected = selectedCell?.row === row && selectedCell?.col === col;
@@ -2278,6 +2358,7 @@ export default function CanvasSheetWorkspace() {
               handleSheetKeyDown(event);
             }}
             onMouseEnter={() => {
+              updateHoveredSubTableFromRange(cellSelectionRange);
               if (dragState?.type !== 'cell') return;
               extendCellRangeDrag(cellSelectionRange, dragState);
             }}
@@ -2291,10 +2372,10 @@ export default function CanvasSheetWorkspace() {
               py: `${resolveNumericStyle(cell?.style?.paddingTop, 4)}px`,
               pr: `${resolveNumericStyle(cell?.style?.paddingRight, resolveNumericStyle(cell?.style?.paddingLeft, 8))}px`,
               pb: `${resolveNumericStyle(cell?.style?.paddingBottom, resolveNumericStyle(cell?.style?.paddingTop, 4))}px`,
-              borderLeft: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'left') ? `1px solid ${borderColor}` : col === 1 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
-              borderTop: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'top') ? `1px solid ${borderColor}` : row === 1 && currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
-              borderRight: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'right') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
-              borderBottom: shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'bottom') ? `1px solid ${borderColor}` : currentPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
+              borderLeft: shouldRenderCellBorderEdge(sheetRenderPage, cellSelectionRange, 'left') ? `1px solid ${borderColor}` : col === 1 && sheetRenderPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
+              borderTop: shouldRenderCellBorderEdge(sheetRenderPage, cellSelectionRange, 'top') ? `1px solid ${borderColor}` : row === 1 && sheetRenderPage.sheet.showGridLines ? `1px solid ${gridColor}` : 'none',
+              borderRight: shouldRenderCellBorderEdge(sheetRenderPage, cellSelectionRange, 'right') ? `1px solid ${borderColor}` : sheetRenderPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
+              borderBottom: shouldRenderCellBorderEdge(sheetRenderPage, cellSelectionRange, 'bottom') ? `1px solid ${borderColor}` : sheetRenderPage.sheet.showGridLines ? `1px solid ${gridColor}` : '1px solid transparent',
               bgcolor: shouldShowSingleCellSelection ? '#dbeafe' : isRangeActive ? '#eef5ff' : (cell?.style?.backgroundColor ? String(cell.style.backgroundColor) : '#fff'),
               boxShadow: shouldShowSingleCellSelection ? 'inset 0 0 0 2px #1274dd' : 'none',
               overflow: 'hidden',
@@ -2400,7 +2481,7 @@ export default function CanvasSheetWorkspace() {
           </Box>
         );
       }))}
-      {currentPage.images.map((image) => {
+      {sheetRenderPage.images.map((image) => {
         const src = mediaSrcMap.get(image.mediaId);
         if (!src) return null;
         return (
@@ -2710,6 +2791,7 @@ export default function CanvasSheetWorkspace() {
                     clearSelection();
                   }
                 }}
+                onMouseLeave={() => setHoveredSubTableNodeId(null)}
                 sx={{
                   minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
                   display: 'flex',
@@ -3086,6 +3168,7 @@ export default function CanvasSheetWorkspace() {
                   clearSelection();
                 }
               }}
+              onMouseLeave={() => setHoveredSubTableNodeId(null)}
               sx={{
                 minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
                 display: 'flex',

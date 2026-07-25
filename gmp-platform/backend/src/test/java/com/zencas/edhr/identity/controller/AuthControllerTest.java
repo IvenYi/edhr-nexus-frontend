@@ -1,6 +1,8 @@
 package com.zencas.edhr.identity.controller;
 
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.entity.Signature;
@@ -63,7 +65,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
@@ -700,8 +703,7 @@ class AuthControllerTest {
         assertThat(response.getData().get("authorizationNoticeFileId")).isEqualTo("7002");
         verify(passwordEncoder).matches("correct-login-password", "hash");
         verify(passwordEncoder).encode("signature-password");
-        verify(idCardOcrService, never()).validateIdCardFront(any(FileObject.class));
-        verify(idCardOcrService, never()).validateIdCardBack(any(FileObject.class));
+        verifyNoInteractions(idCardOcrService);
     }
 
     @Test
@@ -734,7 +736,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void createPersonalSignatureSkipsIdCardOcrWhenCertificationEvidenceIsUploaded() {
+    void createPersonalSignatureDoesNotUseIdCardOcrValidation() {
         UserAccount user = UserAccount.builder()
                 .id(1L)
                 .username("admin")
@@ -748,18 +750,18 @@ class AuthControllerTest {
         attachValidSignatureEvidence(request);
         when(userAccountRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("correct-login-password", "hash")).thenReturn(true);
-        when(passwordEncoder.encode("signature-password")).thenReturn("encoded-signature-password");
         mockSignatureEvidenceFiles();
-        when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
-        when(idGenerator.nextId()).thenReturn(7001L, 7002L, 8001L);
-        when(signatureRepository.save(any(Signature.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        lenient().when(passwordEncoder.encode("signature-password")).thenReturn("encoded-signature-password");
+        lenient().when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
+        lenient().when(idGenerator.nextId()).thenReturn(7001L, 7002L, 8001L);
+        lenient().when(signatureRepository.save(any(Signature.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         var response = controller.createPersonalSignature("1", request, new MockHttpServletRequest());
 
         assertThat(response.getData().get("signatureId")).isEqualTo("7001");
-        verify(idCardOcrService, never()).validateIdCardFront(any(FileObject.class));
-        verify(idCardOcrService, never()).validateIdCardBack(any(FileObject.class));
+        verifyNoInteractions(idCardOcrService);
         verify(signatureRepository).save(any(Signature.class));
+        verify(fileObjectRepository).save(any(FileObject.class));
     }
 
     private void attachValidSignatureEvidence(AuthController.PersonalSignatureRequest request) {

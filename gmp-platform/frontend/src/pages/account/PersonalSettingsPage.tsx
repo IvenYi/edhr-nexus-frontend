@@ -2115,7 +2115,7 @@ export default function PersonalSettingsPage() {
             disabled={!canSubmitSignature || signatureMutation.isPending}
             sx={{ minWidth: 96, height: 32 }}
           >
-            {signatureMutation.isPending ? '本地识别中' : '认证'}
+            {signatureMutation.isPending ? '认证中' : '认证'}
           </Button>
         </DialogActions>
       </Dialog>

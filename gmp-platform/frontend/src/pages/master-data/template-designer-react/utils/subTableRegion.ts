@@ -1,6 +1,7 @@
 import type {
   CanvasNode,
   CanvasSelectionRange,
+  CanvasSheetCell,
   SubTableRecordDirection,
   SubTableRecordTemplateField,
   SubTableRegion,
@@ -66,6 +67,94 @@ export function buildSubTableGroupRepeatRanges(
   return ranges;
 }
 
+function getCellKey(row: number, col: number) {
+  return `${row}:${col}`;
+}
+
+function getRangeKey(range: CanvasSelectionRange) {
+  const normalizedRange = normalizeRange(range);
+  return `${normalizedRange.t}:${normalizedRange.l}:${normalizedRange.b}:${normalizedRange.r}`;
+}
+
+function cloneSheetCell(cell: CanvasSheetCell): CanvasSheetCell {
+  return {
+    ...(cell.value !== undefined ? { value: cell.value } : {}),
+    ...(cell.style ? { style: { ...cell.style } } : {}),
+    ...(cell.border ? { border: { ...cell.border } } : {}),
+  };
+}
+
+function getRegionPrimaryRange(region: SubTableRegion) {
+  return [...region.ranges].sort((first, second) => first.order - second.order)[0]?.range ?? null;
+}
+
+function normalizeMergedRanges(ranges: CanvasSelectionRange[]) {
+  const mergedRanges = new Map<string, CanvasSelectionRange>();
+  ranges.forEach((range) => {
+    const normalizedRange = normalizeRange(range);
+    mergedRanges.set(getRangeKey(normalizedRange), normalizedRange);
+  });
+  return Array.from(mergedRanges.values());
+}
+
+function getSubTableNodes(nodes: CanvasNode[]): CanvasNode[] {
+  return nodes.flatMap((node) => {
+    const nestedNodes = node.children?.length ? getSubTableNodes(node.children) : [];
+    return node.type === 'sub-table' && node.bindings?.subTableRegion
+      ? [node, ...nestedNodes]
+      : nestedNodes;
+  });
+}
+
+export function buildSubTableRepeatedGroupSheetLayout(input: {
+  cells: Record<string, CanvasSheetCell>;
+  mergedCells: CanvasSelectionRange[];
+  nodes: CanvasNode[];
+}) {
+  const nextCells: Record<string, CanvasSheetCell> = { ...input.cells };
+  const nextMergedCells = input.mergedCells.map(normalizeRange);
+
+  getSubTableNodes(input.nodes).forEach((node) => {
+    const region = node.bindings?.subTableRegion;
+    if (!region || region.repeat.type !== 'fixed') return;
+
+    const primaryRange = readNodeCellRange(node) ?? getRegionPrimaryRange(region);
+    const groupRange = region.recordTemplate.groupRange ? normalizeRange(region.recordTemplate.groupRange) : null;
+    if (!primaryRange || !groupRange || !rangeContainsRange(primaryRange, groupRange)) return;
+
+    const repeatedGroupRanges = buildSubTableGroupRepeatRanges(primaryRange, groupRange, region.recordTemplate.direction);
+    const groupMergedRanges = nextMergedCells.filter((range) => rangeContainsRange(groupRange, range));
+
+    repeatedGroupRanges.forEach((repeatRange) => {
+      nextMergedCells.splice(0, nextMergedCells.length, ...nextMergedCells.filter((range) => !rangeContainsRange(repeatRange, range)));
+      for (let row = groupRange.t; row <= groupRange.b; row += 1) {
+        for (let col = groupRange.l; col <= groupRange.r; col += 1) {
+          const sourceCell = nextCells[getCellKey(row, col)];
+          if (!sourceCell) continue;
+          const targetRow = repeatRange.t + (row - groupRange.t);
+          const targetCol = repeatRange.l + (col - groupRange.l);
+          nextCells[getCellKey(targetRow, targetCol)] = cloneSheetCell(sourceCell);
+        }
+      }
+
+      groupMergedRanges.forEach((sourceMergedRange) => {
+        const mappedRange = normalizeRange({
+          t: repeatRange.t + (sourceMergedRange.t - groupRange.t),
+          l: repeatRange.l + (sourceMergedRange.l - groupRange.l),
+          b: repeatRange.t + (sourceMergedRange.b - groupRange.t),
+          r: repeatRange.l + (sourceMergedRange.r - groupRange.l),
+        });
+        nextMergedCells.push(mappedRange);
+      });
+    });
+  });
+
+  return {
+    cells: nextCells,
+    mergedCells: normalizeMergedRanges(nextMergedCells),
+  };
+}
+
 export function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
   const value = node.style.cellRange;
   if (!value || typeof value !== 'object') return null;
@@ -128,10 +217,6 @@ export function createLegacySubTableRegion(input: {
   range: CanvasSelectionRange;
 }): SubTableRegion {
   return createDefaultSubTableRegion(input);
-}
-
-function getRegionPrimaryRange(region: SubTableRegion) {
-  return [...region.ranges].sort((first, second) => first.order - second.order)[0]?.range ?? null;
 }
 
 function toTemplateField(region: SubTableRegion, node: CanvasNode): SubTableRecordTemplateField | null {

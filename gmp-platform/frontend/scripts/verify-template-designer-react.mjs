@@ -121,8 +121,9 @@ async function verifyExcelImportStyleBehavior() {
 }
 
 async function verifySubTableGroupRepeatBehavior() {
-  const { buildSubTableGroupRepeatRanges } = await loadSubTableRegionUtils();
+  const { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } = await loadSubTableRegionUtils();
   assert(typeof buildSubTableGroupRepeatRanges === 'function', 'subTableRegion.ts: must export buildSubTableGroupRepeatRanges for data grouping fill behavior');
+  assert(typeof buildSubTableRepeatedGroupSheetLayout === 'function', 'subTableRegion.ts: must export buildSubTableRepeatedGroupSheetLayout for repeated group cell rendering');
   if (typeof buildSubTableGroupRepeatRanges !== 'function') return;
 
   const rowRepeatRanges = buildSubTableGroupRepeatRanges(
@@ -150,6 +151,50 @@ async function verifySubTableGroupRepeatBehavior() {
   );
   assert(JSON.stringify(columnRepeatRanges[0]) === JSON.stringify({ t: 3, l: 1, b: 4, r: 2 }), 'subTableRegion.ts: column-direction grouping first repeat must continue downward');
   assert(JSON.stringify(columnRepeatRanges[2]) === JSON.stringify({ t: 1, l: 3, b: 2, r: 4 }), 'subTableRegion.ts: column-direction grouping must wrap to the next complete column band');
+
+  if (typeof buildSubTableRepeatedGroupSheetLayout === 'function') {
+    const repeatedLayout = buildSubTableRepeatedGroupSheetLayout({
+      cells: {
+        '1:1': { value: 'AAA', style: { fontSize: 16 } },
+        '2:1': { value: '检验项目' },
+      },
+      mergedCells: [{ t: 1, l: 1, b: 1, r: 2 }],
+      nodes: [{
+        id: 'sub-table-1',
+        type: 'sub-table',
+        parentId: null,
+        children: [],
+        props: {},
+        style: { cellRange: { t: 1, l: 1, b: 4, r: 4 } },
+        bindings: {
+          fieldId: 'inspectionTable',
+          subTableRegion: {
+            id: 'region-1',
+            fieldId: 'inspectionTable',
+            mode: 'record',
+            ranges: [{ pageId: 'page-1', range: { t: 1, l: 1, b: 4, r: 4 }, order: 1 }],
+            repeat: { type: 'fixed', count: 4, stride: 1 },
+            recordTemplate: {
+              direction: 'row',
+              anchor: { row: 1, col: 1 },
+              groupRange: { t: 1, l: 1, b: 2, r: 2 },
+              fields: [],
+            },
+            presentation: {
+              showHeader: false,
+              showIndex: false,
+              emptyText: '暂无数据',
+              addEntry: 'bottom',
+            },
+          },
+        },
+      }],
+    });
+    assert(repeatedLayout.cells['1:3']?.value === 'AAA', 'subTableRegion.ts: row repeated groups must copy merged-cell text to the next group');
+    assert(repeatedLayout.cells['3:1']?.value === 'AAA', 'subTableRegion.ts: row repeated groups must copy merged-cell text after wrapping downward');
+    assert(repeatedLayout.mergedCells.some((range) => JSON.stringify(range) === JSON.stringify({ t: 1, l: 3, b: 1, r: 4 })), 'subTableRegion.ts: row repeated groups must copy merged-cell ranges to the next group');
+    assert(repeatedLayout.mergedCells.some((range) => JSON.stringify(range) === JSON.stringify({ t: 3, l: 1, b: 3, r: 2 })), 'subTableRegion.ts: row repeated groups must copy merged-cell ranges after wrapping downward');
+  }
 }
 
 const packageJson = read('../package.json');
@@ -180,6 +225,7 @@ const canvasTab = read('../src/pages/master-data/template-designer-react/tabs/ca
 const canvasToolbar = read('../src/pages/master-data/template-designer-react/components/canvas/CanvasDesignerToolbar.tsx');
 const canvasWorkspace = read('../src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx');
 const pageThumbnails = read('../src/pages/master-data/template-designer-react/components/canvas/CanvasPageThumbnails.tsx');
+const mockFillDialog = read('../src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx');
 const shellFile = shell;
 const headerActionButtonStyleBlock = shell.match(/const headerActionButtonSx = \{[\s\S]*?\n\};/)?.[0] ?? '';
 const workflowTab = read('../src/pages/master-data/template-designer-react/tabs/workflow/WorkflowTab.tsx');
@@ -291,6 +337,10 @@ if (!shellFile.includes('const headerPrimaryActionButtonSx =')) failures.push('T
 if (!shellFile.includes("bgcolor: '#2990ff'")) failures.push('TemplateDesignerReactShell.tsx: save action must be blue');
 if (!shellFile.includes('sx={headerPrimaryActionButtonSx}')) failures.push('TemplateDesignerReactShell.tsx: save button must use the blue primary style');
 if (!shellFile.includes('<Button variant="outlined" onClick={handleClose} sx={headerOutlinedActionButtonSx}>')) failures.push('TemplateDesignerReactShell.tsx: close button must match the mock-fill outlined style');
+if (!shellFile.includes("import MockFillDialog from './components/mock-fill/MockFillDialog'")) failures.push('TemplateDesignerReactShell.tsx: mock-fill dialog must be isolated under components/mock-fill');
+if (!shellFile.includes('const [mockFillOpen, setMockFillOpen] = useState(false)')) failures.push('TemplateDesignerReactShell.tsx: mock-fill open state must be local to the shell');
+if (!shellFile.includes('onClick={() => setMockFillOpen(true)}')) failures.push('TemplateDesignerReactShell.tsx: mock-fill button must open the local runtime preview');
+if (!shellFile.includes('<MockFillDialog') || !shellFile.includes('document={document}') || !shellFile.includes('open={mockFillOpen}')) failures.push('TemplateDesignerReactShell.tsx: mock-fill dialog must receive the current unsaved designer document');
 if (!shellFile.includes('返回上一页')) failures.push('TemplateDesignerReactShell.tsx: missing back action');
 if (!shellFile.includes('type="file"')) failures.push('TemplateDesignerReactShell.tsx: missing hidden file input for template import');
 if (!shellFile.includes('.xlsx,.xlsm,.xls,.docx,.doc')) failures.push('TemplateDesignerReactShell.tsx: missing template import accept types');
@@ -1313,7 +1363,7 @@ if (canvasWorkspace.includes('groupDirection')) failures.push('CanvasSheetWorksp
 if (!canvasWorkspace.includes('#f59e0b')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping overlay must use orange styling');
 if (!canvasWorkspace.includes('buildSubTableGroupRepeatRanges')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping must calculate repeated fixed group ranges');
 if (!canvasWorkspace.includes('data-canvas-sub-table-group-repeat-overlay="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table data grouping must render gray repeated group overlays');
-if (!canvasWorkspace.includes('SUB_TABLE_GROUP_REPEAT_INSET = 10')) failures.push('CanvasSheetWorkspace.tsx: repeated sub-table group overlays must reserve visual spacing between filled areas');
+if (!canvasWorkspace.includes('SUB_TABLE_GROUP_REPEAT_INSET = 5')) failures.push('CanvasSheetWorkspace.tsx: repeated sub-table group overlays must keep the gray fill spacing compact at 5px');
 if (!canvasWorkspace.includes('data-canvas-sub-table-group-repeat-fill="true"')) failures.push('CanvasSheetWorkspace.tsx: repeated sub-table group overlays must render an inset fill layer');
 if (!canvasWorkspace.includes('data-canvas-sub-table-group-repeat-index="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table repeated group overlays must show group indexes');
 if (!canvasWorkspace.includes('rgba(148, 163, 184, 0.14)')) failures.push('CanvasSheetWorkspace.tsx: repeated sub-table group overlays must use gray shading');
@@ -1343,7 +1393,10 @@ if (!componentRegistry.includes('· 表头')) failures.push('componentRegistry.t
 if (componentRegistry.includes("right: 0,\n              minHeight: 22")) failures.push('componentRegistry.tsx: sub-table header marker must not be a full-width in-frame strip');
 if (!componentRegistry.includes("pointerEvents: 'none'")) failures.push('componentRegistry.tsx: sub-table frame must not block clicking individual sheet cells');
 if (!componentRegistry.includes('data-canvas-sub-table-hover-label="true"')) failures.push('componentRegistry.tsx: sub-table frame must show the sub-table identifier');
-if (!componentRegistry.includes('opacity: 1')) failures.push('componentRegistry.tsx: sub-table connector and identifier must stay visible');
+if (!componentRegistry.includes('opacity: 0')) failures.push('componentRegistry.tsx: sub-table connector and identifier must stay hidden until hover');
+if (componentRegistry.includes("opacity: 1,\n            pointerEvents: 'auto'")) failures.push('componentRegistry.tsx: sub-table identifier must not be directly visible by default');
+if (!canvasWorkspace.includes('hoveredSubTableNodeId')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier visibility must be controlled by sheet-cell hover state');
+if (!canvasWorkspace.includes('data-canvas-sub-table-hover-label="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table hover identifier must render from the sheet overlay');
 if (!componentRegistry.includes('data-canvas-sub-table-connector="true"')) failures.push('componentRegistry.tsx: sub-table identifier must be connected by a dashed line');
 if (!componentRegistry.includes("left: '100%'") || !componentRegistry.includes("left: 'calc(100% + 18px)'")) failures.push('componentRegistry.tsx: sub-table identifier must render to the right of the frame');
 if (!componentRegistry.includes("top: '50%'") || !componentRegistry.includes("transform: 'translateY(-50%)'")) failures.push('componentRegistry.tsx: sub-table identifier connector and badge must be vertically centered');
@@ -1406,6 +1459,44 @@ if (!componentRegistry.includes('emptySymbol')) failures.push('componentRegistry
 if (!componentRegistry.includes('prefix')) failures.push('componentRegistry.tsx: missing prefix/suffix config support');
 if (!componentRegistry.includes('node.bindings?.defaultValue')) failures.push('componentRegistry.tsx: field renderer must preview configured default values');
 if (!componentRegistry.includes("readConfig('minLength'")) failures.push('componentRegistry.tsx: field renderer must pass configured minimum text length to inputs');
+if (!mockFillDialog.includes('data-mock-fill-dialog="true"')) failures.push('MockFillDialog.tsx: missing mock-fill dialog marker');
+if (!mockFillDialog.includes('data-mock-fill-title-divider="true"')) failures.push('MockFillDialog.tsx: mock-fill title and document name must be separated by a visible divider');
+if (!mockFillDialog.includes('data-mock-fill-page-paper="true"')) failures.push('MockFillDialog.tsx: mock-fill pages must render a paper shell around the sheet');
+if (!mockFillDialog.includes('getMockFillPagePaperMetrics')) failures.push('MockFillDialog.tsx: mock-fill pages must calculate paper size and page margins');
+if (!mockFillDialog.includes('gridHeight = sumTrackSizes(rowCount')) failures.push('MockFillDialog.tsx: mock-fill paper height must include the rendered sheet height');
+if (!mockFillDialog.includes('gridWidth + insetLeft + insetRight')) failures.push('MockFillDialog.tsx: mock-fill paper width must include left and right page margins');
+if (!mockFillDialog.includes("pl: `${paperMetrics.insetLeft}px`")) failures.push('MockFillDialog.tsx: mock-fill sheet must be inset from the left paper edge');
+if (!mockFillDialog.includes("pt: `${paperMetrics.insetTop}px`")) failures.push('MockFillDialog.tsx: mock-fill sheet must be inset from the top paper edge');
+if (!mockFillDialog.includes("boxShadow: '0 16px 40px rgba(30, 41, 59, 0.10)'")) failures.push('MockFillDialog.tsx: mock-fill page shadow must belong to the paper shell');
+if (mockFillDialog.includes('document.model.fields.slice')) failures.push('MockFillDialog.tsx: mock-fill bottom field icon preview area must not render');
+if (mockFillDialog.includes("import FieldTypeIcon from '../FieldTypeIcon'")) failures.push('MockFillDialog.tsx: mock-fill must not keep the bottom field icon preview dependency');
+if (!mockFillDialog.includes("overflow: 'auto', px: 3, pt: 3, pb: '20px'")) failures.push('MockFillDialog.tsx: mock-fill scroll body must reserve only a 20px bottom margin');
+if (mockFillDialog.includes("sx={{ overflowX: 'auto', pb: 1 }}")) failures.push('MockFillDialog.tsx: mock-fill page wrapper must not add bottom background padding');
+if (mockFillDialog.includes('还原填报模拟')) failures.push('MockFillDialog.tsx: page-level simulation label must be removed from the sheet area');
+if (mockFillDialog.includes('{page.name}</Typography>')) failures.push('MockFillDialog.tsx: page name must not render above the simulated sheet');
+if (mockFillDialog.includes('本地模拟')) failures.push('MockFillDialog.tsx: page simulation label must not read 本地模拟');
+if (!mockFillDialog.includes('createInitialMockFillValues')) failures.push('MockFillDialog.tsx: mock-fill runtime must initialize values from field defaults');
+if (!mockFillDialog.includes('renderMockFillControl')) failures.push('MockFillDialog.tsx: mock-fill runtime must render fillable controls from bound fields');
+if (!mockFillDialog.includes('Boolean(node.bindings?.hidden)')) failures.push('MockFillDialog.tsx: hidden fields must not render for line operators');
+if (!mockFillDialog.includes('Boolean(node.bindings?.readonly)')) failures.push('MockFillDialog.tsx: readonly fields must render without allowing edits');
+if (!mockFillDialog.includes('node.bindings?.autoWrap')) failures.push('MockFillDialog.tsx: auto-wrap text fields must stay multiline in mock fill');
+if (mockFillDialog.includes("height: autoWrap ? 'auto' : 28")) failures.push('MockFillDialog.tsx: mock-fill field controls must not be fixed to 28px height');
+if (!mockFillDialog.includes("alignItems: autoWrap ? 'stretch' : 'center'")) failures.push('MockFillDialog.tsx: mock-fill field controls must stretch to the cell height');
+if (!mockFillDialog.includes("'& .MuiInputBase-root.MuiInputBase-multiline'")) failures.push('MockFillDialog.tsx: mock-fill multiline text controls must have a dedicated full-height root style');
+if (!mockFillDialog.includes("height: '100% !important'")) failures.push('MockFillDialog.tsx: mock-fill multiline text input must fill the bound cell height');
+if (!mockFillDialog.includes("maxHeight: 'none'")) failures.push('MockFillDialog.tsx: mock-fill multiline text input must not cap height below the cell height');
+if (!mockFillDialog.includes('type="datetime-local"')) failures.push('MockFillDialog.tsx: date-time fields must use a fillable date-time input');
+if (!mockFillDialog.includes('data-mock-fill-date-control="true"')) failures.push('MockFillDialog.tsx: date-time fields must expose a stretched date control marker');
+if (!mockFillDialog.includes('dateTextFieldSx')) failures.push('MockFillDialog.tsx: date-time fields must use a dedicated full-height input style');
+if (!mockFillDialog.includes('shouldRenderMockFillCellBorderEdge')) failures.push('MockFillDialog.tsx: mock-fill imported table borders must use edge-aware rendering');
+if (!mockFillDialog.includes("cellBorder?.color ?? '#000000'")) failures.push('MockFillDialog.tsx: mock-fill imported table borders must default to black when a stored border lacks color');
+if (!mockFillDialog.includes("borderTop: shouldRenderMockFillCellBorderEdge(displayPage, range, 'top')")) failures.push('MockFillDialog.tsx: mock-fill must restore top borders from imported table cells');
+if (!mockFillDialog.includes("borderLeft: shouldRenderMockFillCellBorderEdge(displayPage, range, 'left')")) failures.push('MockFillDialog.tsx: mock-fill must restore left borders from imported table cells');
+if (!mockFillDialog.includes('data-mock-fill-sub-table-add-row="true"')) failures.push('MockFillDialog.tsx: dynamic sub-tables must expose an add-row action');
+if (!mockFillDialog.includes('data-mock-fill-sub-table-label="true"')) failures.push('MockFillDialog.tsx: sub-table frame label must expose a hover-only marker');
+if (!mockFillDialog.includes('&:hover [data-mock-fill-sub-table-label="true"]')) failures.push('MockFillDialog.tsx: sub-table frame label must only show on hover');
+if (!mockFillDialog.includes("window.confirm('确认删除当前记录吗？')")) failures.push('MockFillDialog.tsx: dynamic sub-table delete must require second confirmation');
+if (!mockFillDialog.includes('data-mock-fill-sub-table-remove-row="true"')) failures.push('MockFillDialog.tsx: dynamic sub-tables must expose a remove-row action');
 if (canvasTypes.includes("'wrap'")) failures.push('canvas.ts: displayMode must not include 自动换行 as a display mode value');
 if (!canvasTypes.includes('autoWrap?: boolean')) failures.push('canvas.ts: field bindings must store 自动换行 as an independent boolean option');
 if (componentRegistry.includes("displayMode === 'wrap'")) failures.push('componentRegistry.tsx: field renderer must not treat 自动换行 as a display mode');
@@ -1584,8 +1675,8 @@ if (!canvasWorkspace.includes("cellBorder?.color ?? '#000000'")) failures.push('
 if (!pageThumbnails.includes("cell.border?.color ?? '#000000'")) failures.push('CanvasPageThumbnails.tsx: thumbnail cell borders must render as black unless a stored border color exists');
 if (!canvasWorkspace.includes('shouldRenderCellBorderEdge')) failures.push('CanvasSheetWorkspace.tsx: imported cell borders must avoid drawing shared adjacent edges twice');
 if (!canvasWorkspace.includes('isAdjacentCellBorderCovered')) failures.push('CanvasSheetWorkspace.tsx: shared border de-duplication must check adjacent cells before rendering right/bottom edges');
-if (!canvasWorkspace.includes("shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'right')")) failures.push('CanvasSheetWorkspace.tsx: right imported borders must be de-duplicated against adjacent left borders');
-if (!canvasWorkspace.includes("shouldRenderCellBorderEdge(currentPage, cellSelectionRange, 'bottom')")) failures.push('CanvasSheetWorkspace.tsx: bottom imported borders must be de-duplicated against adjacent top borders');
+if (!canvasWorkspace.includes("shouldRenderCellBorderEdge(sheetRenderPage, cellSelectionRange, 'right')")) failures.push('CanvasSheetWorkspace.tsx: right imported borders must be de-duplicated against adjacent left borders');
+if (!canvasWorkspace.includes("shouldRenderCellBorderEdge(sheetRenderPage, cellSelectionRange, 'bottom')")) failures.push('CanvasSheetWorkspace.tsx: bottom imported borders must be de-duplicated against adjacent top borders');
 if (!pageThumbnails.includes('shouldRenderThumbnailCellBorderEdge')) failures.push('CanvasPageThumbnails.tsx: thumbnail imported cell borders must avoid drawing shared adjacent edges twice');
 if (!pageThumbnails.includes('isThumbnailAdjacentCellBorderCovered')) failures.push('CanvasPageThumbnails.tsx: thumbnail shared border de-duplication must check adjacent cells before rendering right/bottom edges');
 if (!excelImportUtils.includes('return importModernExcel(file, pageId, pageName).catch(() => importLegacyExcel(file, pageId, pageName));')) failures.push('importExcel.ts: modern Excel import failures must fall back to legacy cell import');
