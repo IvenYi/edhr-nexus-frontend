@@ -1035,6 +1035,8 @@ export default function CanvasSheetWorkspace() {
         : [];
       const isSelected = selectedNodeId === node.id;
       const isHovered = hoveredSubTableNodeId === node.id;
+      const isSubTableFocused = Boolean(isSelected && normalizedRange && rangesEqual(normalizedRange, normalizedRegionRange));
+      const shouldShowSubTableLabel = isHovered || isSubTableFocused;
 
       return (
         <Box key={`sub-table-overlay-${node.id}`} sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: SUB_TABLE_OVERLAY_Z_INDEX }}>
@@ -1055,8 +1057,8 @@ export default function CanvasSheetWorkspace() {
             data-canvas-sub-table-hover-label="true"
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedNodeId(node.id);
               setSelectedRange(normalizedRegionRange, { row: normalizedRegionRange.t, col: normalizedRegionRange.l });
+              setSelectedNodeId(node.id);
               setActiveCanvasRail('config');
             }}
             sx={{
@@ -1064,21 +1066,40 @@ export default function CanvasSheetWorkspace() {
               top: regionLayout.top + 6,
               left: regionLayout.left + regionLayout.width - 8,
               transform: 'translateX(-100%)',
-              px: 0.75,
-              height: 22,
-              lineHeight: '22px',
-              borderRadius: 0.5,
+              minWidth: 44,
+              maxWidth: 112,
+              height: 24,
+              px: 1,
+              py: 0,
+              borderRadius: 1,
               bgcolor: '#8b5cf6',
               color: '#fff',
               fontSize: 12,
               fontWeight: 600,
-              opacity: isHovered ? 1 : 0,
-              pointerEvents: isHovered ? 'auto' : 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+              opacity: shouldShowSubTableLabel ? 1 : 0,
+              pointerEvents: shouldShowSubTableLabel ? 'auto' : 'none',
               transition: 'opacity 120ms ease',
               boxShadow: '0 6px 16px rgba(139, 92, 246, 0.22)',
             }}
           >
-            {subTableLabel}
+            <Box
+              component="span"
+              data-canvas-sub-table-hover-label-text="true"
+              sx={{
+                display: 'block',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                lineHeight: '24px',
+              }}
+            >
+              {subTableLabel}
+            </Box>
           </Box>
           {repeatedGroupRanges.map((repeatRange, index) => {
             const repeatLayout = getFieldDropCellLayout(repeatRange);
@@ -2791,6 +2812,9 @@ export default function CanvasSheetWorkspace() {
                     clearSelection();
                   }
                 }}
+                onMouseMove={(event) => {
+                  updateHoveredSubTableFromRange(findCellRangeAtClientPoint(event.clientX, event.clientY));
+                }}
                 onMouseLeave={() => setHoveredSubTableNodeId(null)}
                 sx={{
                   minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
@@ -3167,6 +3191,9 @@ export default function CanvasSheetWorkspace() {
                 if (event.target === event.currentTarget) {
                   clearSelection();
                 }
+              }}
+              onMouseMove={(event) => {
+                updateHoveredSubTableFromRange(findCellRangeAtClientPoint(event.clientX, event.clientY));
               }}
               onMouseLeave={() => setHoveredSubTableNodeId(null)}
               sx={{

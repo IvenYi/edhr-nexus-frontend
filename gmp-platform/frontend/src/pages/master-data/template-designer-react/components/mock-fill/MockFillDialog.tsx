@@ -118,6 +118,16 @@ function formatNowForInput(inputType: 'date' | 'time' | 'datetime-local') {
   return `${now.getFullYear()}-${padDatePart(now.getMonth() + 1)}-${padDatePart(now.getDate())}T${padDatePart(now.getHours())}:${padDatePart(now.getMinutes())}`;
 }
 
+function openMockFillDatePicker(input: HTMLInputElement | null) {
+  if (!input || input.disabled || input.readOnly) return;
+  input.focus();
+  try {
+    input.showPicker?.();
+  } catch {
+    // showPicker requires a user gesture in some browsers; focus still keeps the field usable.
+  }
+}
+
 function flattenNodes(nodes: CanvasNode[]) {
   const result: CanvasNode[] = [];
   const visit = (items: CanvasNode[]) => {
@@ -148,6 +158,24 @@ function readDefaultValues(value: unknown) {
   const text = String(value ?? '').trim();
   if (!text) return [];
   return text.split('\n').map((item) => item.trim()).filter(Boolean);
+}
+
+function readImageFilesAsDataUrls(files: File[]) {
+  return Promise.all(files.map((file) => new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ''));
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  }))).then((urls) => urls.filter(Boolean));
+}
+
+function normalizeMockFillNumberInput(value: string) {
+  const numericText = value.replace(/[^\d.-]/g, '');
+  const isNegative = numericText.startsWith('-');
+  const unsignedText = numericText.replace(/-/g, '');
+  const [integerPart = '', ...decimalParts] = unsignedText.split('.');
+  const decimalText = decimalParts.join('');
+  return `${isNegative ? '-' : ''}${integerPart}${decimalParts.length ? `.${decimalText}` : ''}`;
 }
 
 function readValueAsText(value: MockFillValue | undefined) {
@@ -355,6 +383,27 @@ function sumTrackSizes(count: number, getSize: (index: number) => number) {
   return Array.from({ length: count }, (_, index) => Math.max(24, getSize(index + 1))).reduce((sum, value) => sum + value, 0);
 }
 
+function getMockFillRangeWidth(page: CanvasPage, range: CanvasSelectionRange) {
+  let width = 0;
+  for (let col = range.l; col <= range.r; col += 1) {
+    width += Math.max(24, getColumnWidth(page, col));
+  }
+  return width;
+}
+
+function estimateMockFillControlContentWidth(value: string) {
+  const textWidth = Array.from(value).reduce((sum, char) => {
+    if (/[\u4e00-\u9fff]/.test(char)) return sum + 14;
+    if (/[0-9.]/.test(char)) return sum + 8;
+    return sum + 9;
+  }, 0);
+  return textWidth + 34;
+}
+
+function canMockFillFieldExpandOnFocus(field?: ModelField | null) {
+  return !['signature', 'attachment', 'image', 'singleSelect', 'multiSelect', 'datetime'].includes(field?.type ?? '');
+}
+
 function getMockFillPagePaperMetrics(page: CanvasPage, gridWidth: number, gridHeight: number) {
   const paperOrientation = page.sheet.paperOrientation ?? 'portrait';
   const basePaperWidth = Math.round((paperOrientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM) * MM_TO_PX);
@@ -410,6 +459,7 @@ function renderMockFillControl({
   const helpText = readText(node.bindings?.helpText);
   const prefix = String(readConfig('prefix'));
   const suffix = String(readConfig('suffix'));
+  const isNumberField = field?.type === 'number';
   const value = values[valueKey] ?? createInitialNodeValue(node, field);
   const textValue = readValueAsText(value);
   const options = parseConfiguredOptions(node, field);
@@ -459,13 +509,34 @@ function renderMockFillControl({
       height: '100%',
       minHeight: 28,
       alignItems: 'center',
+      cursor: readonly ? 'default' : 'pointer',
     },
     '& .MuiOutlinedInput-input': {
       ...commonTextFieldSx['& .MuiOutlinedInput-input'],
       height: '100%',
       boxSizing: 'border-box',
       py: 0,
+      cursor: readonly ? 'default' : 'pointer',
     },
+    '& input::-webkit-calendar-picker-indicator': {
+      display: 'none',
+    },
+  };
+  const numberTextFieldSx = {
+    ...commonTextFieldSx,
+    '& .MuiOutlinedInput-input': {
+      ...commonTextFieldSx['& .MuiOutlinedInput-input'],
+      minWidth: 0,
+      px: 0.5,
+      fontVariantNumeric: 'tabular-nums',
+    },
+  };
+  const mockFillSelectOptionSx = {
+    minHeight: 40,
+    py: 0.75,
+    fontSize: 14,
+    '& .MuiCheckbox-root': { p: 0, mr: 1 },
+    '& .MuiSvgIcon-root': { fontSize: 18 },
   };
   const inputProps = {
     readOnly: readonly,
@@ -511,13 +582,95 @@ function renderMockFillControl({
       'single',
     );
     const multiple = uploadStrategy === 'multiple';
+    const imagePreviewUrls = isImage
+      ? readValueAsArray(value).filter((item) => /^data:image\/|^blob:|^https?:\/\//.test(item))
+      : [];
+    const imagePreviewSrc = imagePreviewUrls[0] ?? '';
+    if (isImage) {
+      return wrapWithHelp(
+        <Box
+          component="label"
+          data-mock-fill-image-thumbnail="true"
+          sx={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            minHeight: 28,
+            border: '1px solid #dcdfe6',
+            borderRadius: 1,
+            bgcolor: '#fff',
+            color: imagePreviewSrc ? '#1677d2' : '#606266',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+            cursor: readonly ? 'default' : 'pointer',
+          }}
+        >
+          {imagePreviewSrc ? (
+            <>
+              <Box
+                component="img"
+                src={imagePreviewSrc}
+                alt="图片缩略图"
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'block',
+                  objectFit: 'cover',
+                }}
+              />
+              {imagePreviewUrls.length > 1 ? (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    right: 4,
+                    bottom: 4,
+                    px: 0.75,
+                    height: 18,
+                    lineHeight: '18px',
+                    borderRadius: 1,
+                    bgcolor: 'rgba(15, 23, 42, 0.68)',
+                    color: '#fff',
+                    fontSize: 11,
+                  }}
+                >
+                  +{imagePreviewUrls.length - 1}
+                </Box>
+              ) : null}
+            </>
+          ) : (
+            <Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0, px: 1 }}>
+              <ImageOutlined sx={{ fontSize: 16 }} />
+              <Typography sx={{ fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                点击上传
+              </Typography>
+            </Stack>
+          )}
+          {readonly ? null : (
+            <input
+              hidden
+              type="file"
+              multiple={multiple}
+              accept="image/*"
+              onChange={async (event: ChangeEvent<HTMLInputElement>) => {
+                const files = Array.from(event.target.files ?? []);
+                const urls = await readImageFilesAsDataUrls(files);
+                onValueChange(valueKey, multiple ? urls : urls[0] ?? '');
+              }}
+            />
+          )}
+        </Box>,
+      );
+    }
+
     return wrapWithHelp(
       <Button
         fullWidth
         component="label"
         variant="outlined"
         disabled={readonly}
-        startIcon={isImage ? <ImageOutlined /> : <AttachFileOutlined />}
+        startIcon={<AttachFileOutlined />}
         sx={{
           height: '100%',
           minHeight: 28,
@@ -532,7 +685,6 @@ function renderMockFillControl({
           hidden
           type="file"
           multiple={multiple}
-          accept={isImage ? 'image/*' : undefined}
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
             const names = Array.from(event.target.files ?? []).map((file) => file.name);
             onValueChange(valueKey, names.length ? names.join(', ') : '');
@@ -558,6 +710,7 @@ function renderMockFillControl({
         value={textValue}
         required={required}
         disabled={readonly}
+        onClick={(event) => openMockFillDatePicker(event.currentTarget.querySelector<HTMLInputElement>('input'))}
         onChange={(event) => onValueChange(valueKey, event.target.value)}
         InputProps={{ endAdornment: adornment }}
         sx={dateTextFieldSx}
@@ -571,6 +724,7 @@ function renderMockFillControl({
         value={textValue}
         required={required}
         disabled={readonly}
+        onClick={(event) => openMockFillDatePicker(event.currentTarget.querySelector<HTMLInputElement>('input'))}
         onChange={(event) => onValueChange(valueKey, event.target.value)}
         InputProps={{ endAdornment: adornment }}
         sx={dateTextFieldSx}
@@ -642,21 +796,49 @@ function renderMockFillControl({
       );
     }
 
+    const isMultiSelectDropdown = field?.type === 'multiSelect';
+    const dropdownValue = isMultiSelectDropdown ? currentValues : textValue;
+    const renderDropdownValue = (selected: unknown) => {
+      const selectedValues = Array.isArray(selected)
+        ? selected.map((item) => String(item)).filter(Boolean)
+        : String(selected ?? '').trim()
+          ? [String(selected)]
+          : [];
+      if (!selectedValues.length) return placeholder || '请选择';
+      return selectedValues
+        .map((selectedValue) => renderedOptions.find((option) => option.value === selectedValue)?.label ?? selectedValue)
+        .join(', ');
+    };
+
     return wrapWithHelp(
       <TextField
         select
         fullWidth
         size="small"
-        value={textValue}
+        value={dropdownValue}
         required={required}
         disabled={readonly}
-        onChange={(event) => onValueChange(valueKey, event.target.value)}
-        SelectProps={{ displayEmpty: true }}
+        onChange={(event) => {
+          const nextValue = event.target.value;
+          if (isMultiSelectDropdown) {
+            const nextValues = Array.isArray(nextValue) ? nextValue : String(nextValue).split(',');
+            onValueChange(valueKey, nextValues.filter(Boolean));
+            return;
+          }
+          onValueChange(valueKey, String(nextValue));
+        }}
+        SelectProps={{
+          displayEmpty: true,
+          multiple: isMultiSelectDropdown,
+          renderValue: (selected) => renderDropdownValue(selected),
+        }}
         sx={commonTextFieldSx}
       >
-        <MenuItem value="">{placeholder || '请选择'}</MenuItem>
         {renderedOptions.map((option) => (
-          <MenuItem key={option.key} value={option.value}>{option.label}</MenuItem>
+          <MenuItem key={option.key} value={option.value} sx={mockFillSelectOptionSx}>
+            {isMultiSelectDropdown ? <Checkbox size="small" checked={currentValues.includes(option.value) || currentValues.includes(option.label)} /> : null}
+            {option.label}
+          </MenuItem>
         ))}
       </TextField>,
     );
@@ -666,21 +848,23 @@ function renderMockFillControl({
     <TextField
       fullWidth
       size="small"
-      type={field?.type === 'number' ? 'number' : 'text'}
+      type="text"
       value={textValue}
       required={required}
       placeholder={placeholder}
       multiline={autoWrap}
       minRows={autoWrap ? 1 : undefined}
       maxRows={autoWrap ? 4 : undefined}
-      onChange={(event) => onValueChange(valueKey, event.target.value)}
+      onChange={(event) => onValueChange(valueKey, isNumberField ? normalizeMockFillNumberInput(event.target.value) : event.target.value)}
       InputProps={inputProps}
       inputProps={{
+        'data-mock-fill-number-control': isNumberField ? 'true' : undefined,
+        inputMode: isNumberField ? 'decimal' : undefined,
         min: readConfig('minValue', undefined),
         max: readConfig('maxValue', undefined),
         maxLength: readNumber(readConfig('maxLength', 0), 0) || undefined,
       }}
-      sx={commonTextFieldSx}
+      sx={isNumberField ? numberTextFieldSx : commonTextFieldSx}
     />,
   );
 }
@@ -782,10 +966,17 @@ function MockFillPage({
       onValueChange,
     });
     if (!content) return null;
+    const currentText = readValueAsText(values[valueKey] ?? createInitialNodeValue(node, field));
+    const fieldContentWidth = estimateMockFillControlContentWidth(currentText);
+    const fieldCellWidth = getMockFillRangeWidth(page, range) - CELL_FIELD_INSET * 2;
+    const shouldExpandFieldOnFocus = canMockFillFieldExpandOnFocus(field) && fieldContentWidth > fieldCellWidth;
+    const focusedFieldWidth = Math.min(Math.max(fieldContentWidth, fieldCellWidth), 480);
     return (
       <Box
         key={valueKey}
         data-mock-fill-field-cell="true"
+        data-mock-fill-field-overflowing={shouldExpandFieldOnFocus ? 'true' : undefined}
+        style={shouldExpandFieldOnFocus ? ({ '--mock-fill-focus-width': `${focusedFieldWidth}px` } as CSSProperties) : undefined}
         sx={{
           gridColumn: `${range.l} / span ${range.r - range.l + 1}`,
           gridRow: `${range.t} / span ${range.b - range.t + 1}`,
@@ -794,6 +985,20 @@ function MockFillPage({
           minWidth: 0,
           minHeight: 0,
           overflow: 'hidden',
+          '&:not(:focus-within)': {
+            overflow: 'hidden',
+          },
+          '&[data-mock-fill-field-overflowing="true"]:focus-within': {
+            overflow: 'visible',
+            zIndex: 24,
+          },
+          '&[data-mock-fill-field-overflowing="true"]:focus-within [data-mock-fill-field-control="true"]': {
+            position: 'relative',
+            zIndex: 1,
+            width: 'var(--mock-fill-focus-width)',
+            minWidth: '100%',
+            maxWidth: 'min(480px, calc(100vw - 96px))',
+          },
         }}
       >
         {content}
