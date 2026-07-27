@@ -1037,6 +1037,8 @@ export default function CanvasSheetWorkspace() {
       const isHovered = hoveredSubTableNodeId === node.id;
       const isSubTableFocused = Boolean(isSelected && normalizedRange && rangesEqual(normalizedRange, normalizedRegionRange));
       const shouldShowSubTableLabel = isHovered || isSubTableFocused;
+      const subTableLabelHeight = Math.max(0, Math.min(24, regionLayout.height - 4));
+      const subTableLabelTopOffset = Math.min(6, Math.max(0, regionLayout.height - subTableLabelHeight));
 
       return (
         <Box key={`sub-table-overlay-${node.id}`} sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: SUB_TABLE_OVERLAY_Z_INDEX }}>
@@ -1063,12 +1065,12 @@ export default function CanvasSheetWorkspace() {
             }}
             sx={{
               position: 'absolute',
-              top: regionLayout.top + 6,
+              top: regionLayout.top + subTableLabelTopOffset,
               left: regionLayout.left + regionLayout.width - 8,
               transform: 'translateX(-100%)',
               minWidth: 44,
               maxWidth: 112,
-              height: 24,
+              height: subTableLabelHeight,
               px: 1,
               py: 0,
               borderRadius: 1,
@@ -1080,6 +1082,7 @@ export default function CanvasSheetWorkspace() {
               alignItems: 'center',
               justifyContent: 'center',
               overflow: 'hidden',
+              cursor: 'pointer',
               opacity: shouldShowSubTableLabel ? 1 : 0,
               pointerEvents: shouldShowSubTableLabel ? 'auto' : 'none',
               transition: 'opacity 120ms ease',
@@ -1095,7 +1098,7 @@ export default function CanvasSheetWorkspace() {
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                lineHeight: '24px',
+                lineHeight: `${subTableLabelHeight}px`,
               }}
             >
               {subTableLabel}

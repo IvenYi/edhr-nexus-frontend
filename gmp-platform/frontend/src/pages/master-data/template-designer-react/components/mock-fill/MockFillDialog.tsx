@@ -391,6 +391,22 @@ function getMockFillRangeWidth(page: CanvasPage, range: CanvasSelectionRange) {
   return width;
 }
 
+function getMockFillRangeHeight(page: CanvasPage, range: CanvasSelectionRange) {
+  let height = 0;
+  for (let row = range.t; row <= range.b; row += 1) {
+    height += Math.max(24, getRowHeight(page, row));
+  }
+  return height;
+}
+
+function getMockFillRowOffset(page: CanvasPage, fromRow: number, toRow: number) {
+  let offset = 0;
+  for (let row = fromRow; row < toRow; row += 1) {
+    offset += Math.max(24, getRowHeight(page, row));
+  }
+  return offset;
+}
+
 function estimateMockFillControlContentWidth(value: string) {
   const textWidth = Array.from(value).reduce((sum, char) => {
     if (/[\u4e00-\u9fff]/.test(char)) return sum + 14;
@@ -469,7 +485,7 @@ function renderMockFillControl({
   const commonTextFieldSx = {
     height: '100%',
     '& .MuiInputBase-root': {
-      minHeight: 28,
+      minHeight: 0,
       height: '100%',
       boxSizing: 'border-box',
       alignItems: autoWrap ? 'stretch' : 'center',
@@ -507,7 +523,7 @@ function renderMockFillControl({
     '& .MuiInputBase-root': {
       ...commonTextFieldSx['& .MuiInputBase-root'],
       height: '100%',
-      minHeight: 28,
+      minHeight: 0,
       alignItems: 'center',
       cursor: readonly ? 'default' : 'pointer',
     },
@@ -562,7 +578,7 @@ function renderMockFillControl({
         onClick={() => onValueChange(valueKey, textValue ? '' : '已签名')}
         sx={{
           height: '100%',
-          minHeight: 28,
+          minHeight: 0,
           borderStyle: 'dashed',
           borderColor: textValue ? '#2990ff' : '#c8d0dc',
           color: textValue ? '#1677d2' : '#606266',
@@ -595,7 +611,7 @@ function renderMockFillControl({
             position: 'relative',
             width: '100%',
             height: '100%',
-            minHeight: 28,
+            minHeight: 0,
             border: '1px solid #dcdfe6',
             borderRadius: 1,
             bgcolor: '#fff',
@@ -673,7 +689,7 @@ function renderMockFillControl({
         startIcon={<AttachFileOutlined />}
         sx={{
           height: '100%',
-          minHeight: 28,
+          minHeight: 0,
           borderColor: '#dcdfe6',
           color: textValue ? '#1677d2' : '#606266',
           bgcolor: '#fff',
@@ -745,7 +761,7 @@ function renderMockFillControl({
           spacing={0.25}
           sx={{
             height: '100%',
-            minHeight: 28,
+            minHeight: 0,
             alignItems: isVerticalOptionLayout ? 'flex-start' : 'center',
             overflow: 'hidden',
             flexWrap: isVerticalOptionLayout ? 'nowrap' : 'wrap',
@@ -941,13 +957,14 @@ function MockFillPage({
     mergedCells: page.mergedCells,
     nodes: page.nodes,
   }), [page.cells, page.mergedCells, page.nodes]);
+  const rowCount = getMockPageRowCount(page, subTableRecordCounts);
   const displayPage = useMemo(() => ({
     ...page,
+    sheet: { ...page.sheet, rowCount },
     cells: renderedPage.cells,
     mergedCells: renderedPage.mergedCells,
-  }), [page, renderedPage.cells, renderedPage.mergedCells]);
+  }), [page, renderedPage.cells, renderedPage.mergedCells, rowCount]);
   const mergedCellMaps = useMemo(() => createMergedCellMaps(displayPage.mergedCells), [displayPage.mergedCells]);
-  const rowCount = getMockPageRowCount(page, subTableRecordCounts);
   const columnCount = page.sheet.columnCount;
   const gridTemplateRows = buildTrackTemplate(rowCount, (row) => getRowHeight(page, row));
   const gridTemplateColumns = buildTrackTemplate(columnCount, (col) => getColumnWidth(page, col));
@@ -1135,6 +1152,9 @@ function MockFillPage({
             const childNodes = getSubTableChildNodes(allNodes, subTableField.id);
             const isDynamic = region.repeat.type === 'dynamic';
             const isLabelVisible = hoveredSubTableNodeId === subTableNode.id;
+            const lastRecordRange = recordRanges[recordRanges.length - 1] ?? frameRange;
+            const subTableActionCenterY = getMockFillRowOffset(page, frameRange.t, lastRecordRange.t)
+              + getMockFillRangeHeight(page, lastRecordRange) / 2;
             const subTableElements: ReactNode[] = [
               <Box
                 key={`${subTableNode.id}:frame`}
@@ -1142,8 +1162,10 @@ function MockFillPage({
                 sx={{
                   gridColumn: `${frameRange.l} / span ${frameRange.r - frameRange.l + 1}`,
                   gridRow: `${frameRange.t} / span ${frameRange.b - frameRange.t + 1}`,
-                  zIndex: 3,
+                  zIndex: 32,
                   position: 'relative',
+                  boxSizing: 'border-box',
+                  overflow: 'visible',
                   border: '1.5px dashed #8b5cf6',
                   pointerEvents: 'none',
                   bgcolor: 'rgba(139, 92, 246, 0.03)',
@@ -1183,19 +1205,43 @@ function MockFillPage({
                   >
                     {subTableField.name || '子表'}
                   </Box>
-                  {isDynamic ? (
-                    <>
-                      <Button
+                </Box>
+                {isDynamic ? (
+                  <Box
+                    data-mock-fill-sub-table-actions="true"
+                    sx={{
+                      position: 'absolute',
+                      left: 'calc(100% + 6px)',
+                      top: subTableActionCenterY,
+                      transform: 'translateY(-50%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                      pointerEvents: 'auto',
+                    }}
+                  >
+                    <Tooltip title="新增行" arrow>
+                      <IconButton
                         data-mock-fill-sub-table-add-row="true"
+                        aria-label="新增行"
                         size="small"
-                        variant="contained"
-                        startIcon={<AddOutlined />}
                         onClick={() => onAddSubTableRecord(subTableNode.id)}
-                        sx={{ height: 24, minWidth: 68, px: 1, fontSize: 12, boxShadow: 'none' }}
+                        sx={{
+                          width: 24,
+                          height: 24,
+                          p: 0,
+                          border: '1px solid #d8e4f2',
+                          bgcolor: '#fff',
+                          color: '#1677d2',
+                          boxShadow: '0 4px 10px rgba(30, 41, 59, 0.12)',
+                          '&:hover': { bgcolor: '#e8f3ff', borderColor: '#2990ff' },
+                        }}
                       >
-                        新增行
-                      </Button>
-                      {recordCount > 1 ? (
+                        <AddOutlined sx={{ fontSize: 16 }} />
+                      </IconButton>
+                    </Tooltip>
+                    {recordCount > 1 ? (
+                      <Tooltip title="删除行" arrow>
                         <IconButton
                           data-mock-fill-sub-table-remove-row="true"
                           size="small"
@@ -1205,10 +1251,10 @@ function MockFillPage({
                         >
                           <DeleteOutline sx={{ fontSize: 16 }} />
                         </IconButton>
-                      ) : null}
-                    </>
-                  ) : null}
-                </Box>
+                      </Tooltip>
+                    ) : null}
+                  </Box>
+                ) : null}
               </Box>,
             ];
 
@@ -1225,6 +1271,40 @@ function MockFillPage({
 
             return subTableElements;
           })}
+
+          {Array.from({ length: rowCount }, (_, rowIndex) => rowIndex + 1).flatMap((row) => (
+            Array.from({ length: columnCount }, (_, colIndex) => {
+              const col = colIndex + 1;
+              const key = getCellKey(row, col);
+              if (mergedCellMaps.skipSet.has(key)) return null;
+              const mergedRange = mergedCellMaps.startMap.get(key);
+              const range = mergedRange ?? { t: row, l: col, b: row, r: col };
+              const cell = renderedPage.cells[key];
+              const cellBorder = cell?.border;
+              const borderColor = String(cellBorder?.color ?? '#000000');
+              const gridColor = CELL_GRID_COLOR;
+
+              return (
+                <Box
+                  key={`${key}:border-overlay`}
+                  data-mock-fill-sheet-border-overlay="true"
+                  sx={{
+                    gridColumn: `${range.l} / span ${range.r - range.l + 1}`,
+                    gridRow: `${range.t} / span ${range.b - range.t + 1}`,
+                    zIndex: 30,
+                    minWidth: 0,
+                    minHeight: 0,
+                    pointerEvents: 'none',
+                    bgcolor: 'transparent',
+                    borderLeft: shouldRenderMockFillCellBorderEdge(displayPage, range, 'left') ? `1px solid ${borderColor}` : col === 1 ? `1px solid ${gridColor}` : 'none',
+                    borderTop: shouldRenderMockFillCellBorderEdge(displayPage, range, 'top') ? `1px solid ${borderColor}` : row === 1 ? `1px solid ${gridColor}` : 'none',
+                    borderRight: shouldRenderMockFillCellBorderEdge(displayPage, range, 'right') ? `1px solid ${borderColor}` : `1px solid ${gridColor}`,
+                    borderBottom: shouldRenderMockFillCellBorderEdge(displayPage, range, 'bottom') ? `1px solid ${borderColor}` : `1px solid ${gridColor}`,
+                  }}
+                />
+              );
+            })
+          ))}
         </Box>
       </Box>
     </Box>
