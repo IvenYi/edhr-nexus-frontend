@@ -318,6 +318,9 @@ function shiftSubTableRegionForInsertedRows(region: SubTableRegion, insertAt: nu
           ? region.recordTemplate.anchor.row + count
           : region.recordTemplate.anchor.row,
       },
+      groupRange: region.recordTemplate.groupRange
+        ? shiftRangeForInsertedRows(region.recordTemplate.groupRange, insertAt, count)
+        : region.recordTemplate.groupRange,
     },
   };
 }
@@ -372,6 +375,9 @@ function shiftSubTableRegionForDeletedRows(
     : region.recordTemplate.anchor.row >= deleteStart
       ? deleteStart
       : region.recordTemplate.anchor.row;
+  const nextGroupRange = region.recordTemplate.groupRange
+    ? shiftRangeForDeletedRows(region.recordTemplate.groupRange, deleteStart, count)
+    : null;
 
   return {
     ...region,
@@ -382,6 +388,75 @@ function shiftSubTableRegionForDeletedRows(
         ...region.recordTemplate.anchor,
         row: nextAnchorRow,
       },
+      groupRange: nextGroupRange ?? undefined,
+    },
+  };
+}
+
+function shiftRangeForDeletedColumns(
+  range: CanvasSelectionRange,
+  deleteStart: number,
+  count: number,
+): CanvasSelectionRange | null {
+  const normalizedRange = normalizeRange(range);
+  const deleteEnd = deleteStart + count - 1;
+
+  if (normalizedRange.r < deleteStart) {
+    return normalizedRange;
+  }
+  if (normalizedRange.l > deleteEnd) {
+    return {
+      ...normalizedRange,
+      l: normalizedRange.l - count,
+      r: normalizedRange.r - count,
+    };
+  }
+
+  const removedColumns = Math.min(normalizedRange.r, deleteEnd) - Math.max(normalizedRange.l, deleteStart) + 1;
+  const nextColumnCount = normalizedRange.r - normalizedRange.l + 1 - removedColumns;
+  if (nextColumnCount <= 0) {
+    return null;
+  }
+
+  const nextLeft = normalizedRange.l >= deleteStart ? deleteStart : normalizedRange.l;
+  return {
+    ...normalizedRange,
+    l: nextLeft,
+    r: nextLeft + nextColumnCount - 1,
+  };
+}
+
+function shiftSubTableRegionForDeletedColumns(
+  region: SubTableRegion,
+  deleteStart: number,
+  count: number,
+): SubTableRegion | null {
+  const nextRanges = region.ranges.flatMap((fragment) => {
+    const range = shiftRangeForDeletedColumns(fragment.range, deleteStart, count);
+    return range ? [{ ...fragment, range }] : [];
+  });
+  if (!nextRanges.length) return null;
+
+  const deleteEnd = deleteStart + count - 1;
+  const nextAnchorCol = region.recordTemplate.anchor.col > deleteEnd
+    ? region.recordTemplate.anchor.col - count
+    : region.recordTemplate.anchor.col >= deleteStart
+      ? deleteStart
+      : region.recordTemplate.anchor.col;
+  const nextGroupRange = region.recordTemplate.groupRange
+    ? shiftRangeForDeletedColumns(region.recordTemplate.groupRange, deleteStart, count)
+    : null;
+
+  return {
+    ...region,
+    ranges: nextRanges,
+    recordTemplate: {
+      ...region.recordTemplate,
+      anchor: {
+        ...region.recordTemplate.anchor,
+        col: nextAnchorCol,
+      },
+      groupRange: nextGroupRange ?? undefined,
     },
   };
 }
@@ -566,6 +641,59 @@ function shiftCanvasNodesForDeletedRows(
   });
 }
 
+function shiftCanvasNodesForDeletedColumns(
+  nodes: CanvasNode[],
+  deleteStart: number,
+  count: number,
+  columnOffset: number,
+): CanvasNode[] {
+  const deleteEnd = deleteStart + count - 1;
+
+  return nodes.flatMap((node) => {
+    const cellRange = readNodeCellRange(node);
+    const shiftedRange = cellRange ? shiftRangeForDeletedColumns(cellRange, deleteStart, count) : null;
+    if (cellRange && !shiftedRange) {
+      return [];
+    }
+
+    const shouldShiftAbsoluteLeft = Boolean(cellRange && cellRange.l > deleteEnd);
+    const shouldShrinkAbsoluteWidth = Boolean(cellRange && rangesIntersect(cellRange, {
+      t: cellRange.t,
+      l: deleteStart,
+      b: cellRange.b,
+      r: deleteEnd,
+    }));
+    const subTableRegion = node.bindings?.subTableRegion
+      ? shiftSubTableRegionForDeletedColumns(node.bindings.subTableRegion, deleteStart, count)
+      : undefined;
+    if (node.bindings?.subTableRegion && !subTableRegion) {
+      return [];
+    }
+
+    const nextNode: CanvasNode = {
+      ...node,
+      style: {
+        ...node.style,
+        ...(shiftedRange ? { cellRange: shiftedRange } : {}),
+        ...(shouldShiftAbsoluteLeft ? { compLeft: Math.max(0, readNumericStyle(node.style.compLeft, 0) - columnOffset) } : {}),
+        ...(shouldShrinkAbsoluteWidth ? { compWidth: Math.max(0, readNumericStyle(node.style.compWidth, 0) - columnOffset) } : {}),
+      },
+      bindings: subTableRegion
+        ? {
+            ...node.bindings,
+            subTableRegion,
+          }
+        : node.bindings,
+    };
+
+    if (!nextNode.children?.length) return [nextNode];
+    return [{
+      ...nextNode,
+      children: shiftCanvasNodesForDeletedColumns(nextNode.children, deleteStart, count, columnOffset),
+    }];
+  });
+}
+
 function shiftMergedRangesForDeletedColumns(
   ranges: CanvasSelectionRange[],
   deleteStart: number,
@@ -656,6 +784,14 @@ function deleteSizes(sizes: number[], deleteStart: number, deleteEnd: number, ne
   });
 
   return Array.from({ length: nextCount }, (_, index) => remainingSizes[index] ?? fallback);
+}
+
+function sumSizes(sizes: number[], start: number, end: number, fallback: number) {
+  let total = 0;
+  for (let position = start; position <= end; position += 1) {
+    total += sizes[position - 1] ?? fallback;
+  }
+  return total;
 }
 
 function updateCanvasPage(
@@ -2448,22 +2584,34 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const nextSelectedCol = Math.min(deleteRange.start, nextColumnCount);
 
     return pushDocumentHistory(state, {
-      document: updateCanvasPage(state.document, (page) => ({
-        ...page,
-        sheet: {
-          ...page.sheet,
-          columnCount: nextColumnCount,
-          columnWidths: deleteSizes(
-            page.sheet.columnWidths,
-            deleteRange.start,
-            deleteRange.end,
-            nextColumnCount,
-            page.sheet.defaultColumnWidth,
+      document: updateCanvasPage(state.document, (page) => {
+        const columnOffset = sumSizes(
+          page.sheet.columnWidths,
+          deleteRange.start,
+          deleteRange.end,
+          page.sheet.defaultColumnWidth,
+        );
+
+        return {
+          ...page,
+          sheet: {
+            ...page.sheet,
+            columnCount: nextColumnCount,
+            columnWidths: deleteSizes(
+              page.sheet.columnWidths,
+              deleteRange.start,
+              deleteRange.end,
+              nextColumnCount,
+              page.sheet.defaultColumnWidth,
+            ),
+          },
+          cells: shiftCellsForDeletedColumns(page.cells, deleteRange.start, deleteRange.count),
+          mergedCells: shiftMergedRangesForDeletedColumns(page.mergedCells, deleteRange.start, deleteRange.count),
+          nodes: reconcileSubTableRegionTemplates(
+            shiftCanvasNodesForDeletedColumns(page.nodes, deleteRange.start, deleteRange.count, columnOffset),
           ),
-        },
-        cells: shiftCellsForDeletedColumns(page.cells, deleteRange.start, deleteRange.count),
-        mergedCells: shiftMergedRangesForDeletedColumns(page.mergedCells, deleteRange.start, deleteRange.count),
-      })),
+        };
+      }),
       selectedRange: {
         t: 1,
         l: nextSelectedCol,
@@ -2492,22 +2640,34 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const nextSelectedRow = Math.min(deleteRange.start, nextRowCount);
 
     return pushDocumentHistory(state, {
-      document: updateCanvasPage(state.document, (page) => ({
-        ...page,
-        sheet: {
-          ...page.sheet,
-          rowCount: nextRowCount,
-          rowHeights: deleteSizes(
-            page.sheet.rowHeights,
-            deleteRange.start,
-            deleteRange.end,
-            nextRowCount,
-            page.sheet.defaultRowHeight,
+      document: updateCanvasPage(state.document, (page) => {
+        const rowOffset = sumSizes(
+          page.sheet.rowHeights,
+          deleteRange.start,
+          deleteRange.end,
+          page.sheet.defaultRowHeight,
+        );
+
+        return {
+          ...page,
+          sheet: {
+            ...page.sheet,
+            rowCount: nextRowCount,
+            rowHeights: deleteSizes(
+              page.sheet.rowHeights,
+              deleteRange.start,
+              deleteRange.end,
+              nextRowCount,
+              page.sheet.defaultRowHeight,
+            ),
+          },
+          cells: shiftCellsForDeletedRows(page.cells, deleteRange.start, deleteRange.count),
+          mergedCells: shiftMergedRangesForDeletedRows(page.mergedCells, deleteRange.start, deleteRange.count),
+          nodes: reconcileSubTableRegionTemplates(
+            shiftCanvasNodesForDeletedRows(page.nodes, deleteRange.start, deleteRange.count, rowOffset),
           ),
-        },
-        cells: shiftCellsForDeletedRows(page.cells, deleteRange.start, deleteRange.count),
-        mergedCells: shiftMergedRangesForDeletedRows(page.mergedCells, deleteRange.start, deleteRange.count),
-      })),
+        };
+      }),
       selectedRange: {
         t: nextSelectedRow,
         l: 1,

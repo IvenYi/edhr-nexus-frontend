@@ -1,7 +1,7 @@
 import type { DragEvent as ReactDragEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
-import { Box, Button, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
+import { Box, Button, Divider, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
 import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, ModelField } from '../../types';
@@ -51,7 +51,8 @@ type SheetMenuAction =
   | 'resize'
   | 'auto-size'
   | 'merge-cells'
-  | 'split-cells';
+  | 'split-cells'
+  | 'quick-convert-to-field';
 
 interface SheetMenuState {
   axis: MenuAxis;
@@ -138,6 +139,11 @@ function rangesEqual(first: CanvasSelectionRange, second: CanvasSelectionRange) 
   return first.t === second.t && first.l === second.l && first.b === second.b && first.r === second.r;
 }
 
+function rangeKey(range: CanvasSelectionRange) {
+  const normalized = normalizeRange(range);
+  return `${normalized.t}:${normalized.l}:${normalized.b}:${normalized.r}`;
+}
+
 function rangesIntersect(first: CanvasSelectionRange, second: CanvasSelectionRange) {
   return first.l <= second.r
     && first.r >= second.l
@@ -147,6 +153,27 @@ function rangesIntersect(first: CanvasSelectionRange, second: CanvasSelectionRan
 
 function rangeContainsRange(outer: CanvasSelectionRange, inner: CanvasSelectionRange) {
   return outer.t <= inner.t && outer.l <= inner.l && outer.b >= inner.b && outer.r >= inner.r;
+}
+
+function rangesFormContinuousRectangle(ranges: CanvasSelectionRange[]) {
+  if (ranges.length <= 1) return true;
+
+  const normalizedRanges = ranges.map(normalizeRange);
+  const boundary = normalizedRanges.reduce<CanvasSelectionRange>(
+    (current, range) => ({
+      t: Math.min(current.t, range.t),
+      l: Math.min(current.l, range.l),
+      b: Math.max(current.b, range.b),
+      r: Math.max(current.r, range.r),
+    }),
+    normalizedRanges[0],
+  );
+  const selectedCellCount = normalizedRanges.reduce((total, range) => (
+    total + (range.b - range.t + 1) * (range.r - range.l + 1)
+  ), 0);
+  const rectangleCellCount = (boundary.b - boundary.t + 1) * (boundary.r - boundary.l + 1);
+
+  return selectedCellCount === rectangleCellCount;
 }
 
 function readNodeCellRange(node: { style?: Record<string, unknown> }): CanvasSelectionRange | null {
@@ -668,6 +695,7 @@ export default function CanvasSheetWorkspace() {
   const pasteFieldNodeToCell = useTemplateDesignerStore((state) => state.pasteFieldNodeToCell);
   const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
   const splitSelectedCells = useTemplateDesignerStore((state) => state.splitSelectedCells);
+  const addField = useTemplateDesignerStore((state) => state.addField);
   const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
   const addNodeFromSubTableFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromSubTableFieldToCell);
   const addNodeFromFieldToRange = useTemplateDesignerStore((state) => state.addNodeFromFieldToRange);
@@ -684,6 +712,7 @@ export default function CanvasSheetWorkspace() {
   const clearPagePreviewScrollTarget = useTemplateDesignerStore((state) => state.clearPagePreviewScrollTarget);
 
   const [dragState, setDragState] = useState<DragState>(null);
+  const [multiSelectedRanges, setMultiSelectedRanges] = useState<CanvasSelectionRange[]>([]);
   const [menuState, setMenuState] = useState<SheetMenuState | null>(null);
   const [paperSettingsOpen, setPaperSettingsOpen] = useState(false);
   const [settingsPopover, setSettingsPopover] = useState<CanvasSettingsPopoverState | null>(null);
@@ -820,6 +849,17 @@ export default function CanvasSheetWorkspace() {
   const paperWorkingHeight = isFreeCanvas ? Math.max(freeCanvasBodyHeight, absoluteNodeBottom, sheetHeight) : Math.max(sheetHeight, 480);
   const effectiveRange = selectedRange ?? buildSingleCellRange(selectedCell);
   const normalizedRange = effectiveRange ? normalizeRange(effectiveRange) : null;
+  const normalizedMultiSelectedRanges = useMemo(() => {
+    const rangeMap = new Map<string, CanvasSelectionRange>();
+    multiSelectedRanges.forEach((range) => {
+      const normalized = normalizeRange(range);
+      rangeMap.set(rangeKey(normalized), normalized);
+    });
+    if (normalizedRange) {
+      rangeMap.set(rangeKey(normalizedRange), normalizedRange);
+    }
+    return Array.from(rangeMap.values());
+  }, [multiSelectedRanges, normalizedRange]);
   const isAllSelected = normalizedRange
     && currentPage
     && normalizedRange.t === 1
@@ -834,22 +874,52 @@ export default function CanvasSheetWorkspace() {
         height: rowOffsets[normalizedRange.b] - rowOffsets[normalizedRange.t - 1],
       }
     : null;
-  const renderSelectionOutline = (layer: 'grid' | 'overlay') => selectionOutline ? (
-    <Box
-      data-selection-outline={layer === 'overlay' ? 'selectionOverlay' : 'selectionOutline'}
-      sx={{
-        position: 'absolute',
-        top: selectionOutline.top,
-        left: selectionOutline.left,
-        width: selectionOutline.width,
-        height: selectionOutline.height,
-        border: '2px solid #1274dd',
-        pointerEvents: 'none',
-        boxSizing: 'border-box',
-        zIndex: layer === 'overlay' ? 20 : undefined,
-      }}
-    />
-  ) : null;
+  const multiSelectionOutlines = normalizedMultiSelectedRanges
+    .filter((range) => !normalizedRange || !rangesEqual(range, normalizedRange))
+    .map((range) => ({
+      key: rangeKey(range),
+      top: rowOffsets[range.t - 1],
+      left: columnOffsets[range.l - 1],
+      width: columnOffsets[range.r] - columnOffsets[range.l - 1],
+      height: rowOffsets[range.b] - rowOffsets[range.t - 1],
+    }));
+  const renderSelectionOutline = (layer: 'grid' | 'overlay') => (
+    <>
+      {multiSelectionOutlines.map((outline) => (
+        <Box
+          key={`${layer}-multi-selection-${outline.key}`}
+          data-sheet-multi-selection-outline="true"
+          sx={{
+            position: 'absolute',
+            top: outline.top,
+            left: outline.left,
+            width: outline.width,
+            height: outline.height,
+            border: '2px solid rgba(18, 116, 221, 0.72)',
+            pointerEvents: 'none',
+            boxSizing: 'border-box',
+            zIndex: layer === 'overlay' ? 19 : undefined,
+          }}
+        />
+      ))}
+      {selectionOutline ? (
+        <Box
+          data-selection-outline={layer === 'overlay' ? 'selectionOverlay' : 'selectionOutline'}
+          sx={{
+            position: 'absolute',
+            top: selectionOutline.top,
+            left: selectionOutline.left,
+            width: selectionOutline.width,
+            height: selectionOutline.height,
+            border: '2px solid #1274dd',
+            pointerEvents: 'none',
+            boxSizing: 'border-box',
+            zIndex: layer === 'overlay' ? 20 : undefined,
+          }}
+        />
+      ) : null}
+    </>
+  );
   const normalizedFieldDropGuideRange = fieldDropGuideRange ? normalizeRange(fieldDropGuideRange) : null;
   const fieldDropGuideOutline = normalizedFieldDropGuideRange
     ? {
@@ -893,6 +963,7 @@ export default function CanvasSheetWorkspace() {
     ),
   );
   const clearSelection = () => {
+    setMultiSelectedRanges([]);
     setSelectedRange(null, null);
   };
   const selectedSubTableNode = currentPage && normalizedRange
@@ -1227,7 +1298,34 @@ export default function CanvasSheetWorkspace() {
       { row: state.startRow, col: state.startCol },
     );
   };
+  const handleCommandCellSelection = (cellSelectionRange: CanvasSelectionRange) => {
+    const normalizedSelection = normalizeRange(cellSelectionRange);
+    const selectionKey = rangeKey(normalizedSelection);
+    const baseRanges = normalizedMultiSelectedRanges.length
+      ? normalizedMultiSelectedRanges
+      : normalizedRange
+        ? [normalizedRange]
+        : [];
+    const rangeMap = new Map<string, CanvasSelectionRange>();
+    baseRanges.forEach((range) => {
+      const normalized = normalizeRange(range);
+      rangeMap.set(rangeKey(normalized), normalized);
+    });
+
+    if (rangeMap.has(selectionKey)) {
+      rangeMap.delete(selectionKey);
+    } else {
+      rangeMap.set(selectionKey, normalizedSelection);
+    }
+
+    const nextRanges = Array.from(rangeMap.values());
+    const nextSelectedRange = nextRanges.length > 0 ? nextRanges[nextRanges.length - 1] : null;
+    setMultiSelectedRanges(nextRanges);
+    setSelectedRange(nextSelectedRange, nextSelectedRange ? { row: nextSelectedRange.t, col: nextSelectedRange.l } : null);
+    setDragState(null);
+  };
   const startCellRangeDrag = (cellSelectionRange: CanvasSelectionRange) => {
+    setMultiSelectedRanges([]);
     setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
     setDragState({
       type: 'cell',
@@ -1271,6 +1369,7 @@ export default function CanvasSheetWorkspace() {
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer.dropEffect = 'copy';
+    setMultiSelectedRanges([]);
     setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
     addDroppedFieldToCell(fieldId, cellSelectionRange, getFieldDropCellLayout(cellSelectionRange), subTableFieldData);
     setFieldDropGuideRange(null);
@@ -1338,6 +1437,7 @@ export default function CanvasSheetWorkspace() {
   }, [addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
   useEffect(() => {
     setHoveredSubTableNodeId(null);
+    setMultiSelectedRanges([]);
   }, [currentPage?.id]);
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
@@ -2022,7 +2122,11 @@ export default function CanvasSheetWorkspace() {
       normalizedRange
       && rangeContainsRange(normalizedRange, cellSelectionRange),
     );
+    const keepMultiSelectedRanges = normalizedMultiSelectedRanges.some((range) => rangeContainsRange(range, cellSelectionRange));
     if (!keepSelectedRange) {
+      if (!keepMultiSelectedRanges) {
+        setMultiSelectedRanges([]);
+      }
       setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
     }
     openContextMenu('cell', event);
@@ -2045,12 +2149,14 @@ export default function CanvasSheetWorkspace() {
   };
   const handleColumnHeaderMouseDown = (col: number, event: ReactMouseEvent<HTMLDivElement>) => {
     if (event.button !== 0) return;
+    setMultiSelectedRanges([]);
     const startCol = event.shiftKey ? (getShiftColumnSelectionAnchor() ?? col) : col;
     selectColumnRange(startCol, col);
     setDragState({ type: 'column', startCol });
   };
   const handleRowHeaderMouseDown = (row: number, event: ReactMouseEvent<HTMLDivElement>) => {
     if (event.button !== 0) return;
+    setMultiSelectedRanges([]);
     const startRow = event.shiftKey ? (getShiftRowSelectionAnchor() ?? row) : row;
     selectRowRange(startRow, row);
     setDragState({ type: 'row', startRow });
@@ -2070,6 +2176,63 @@ export default function CanvasSheetWorkspace() {
     setSubTableRecordTemplateFromRange(selectedSubTableNode.id, normalizedRange);
     closeContextMenu();
   };
+  const getQuickConvertRanges = () => {
+    const rangeMap = new Map<string, CanvasSelectionRange>();
+    (normalizedMultiSelectedRanges.length ? normalizedMultiSelectedRanges : normalizedRange ? [normalizedRange] : [])
+      .forEach((range) => {
+        const normalized = normalizeRange(range);
+        rangeMap.set(rangeKey(normalized), normalized);
+      });
+    return Array.from(rangeMap.values());
+  };
+  const getQuickConvertFieldName = (range: CanvasSelectionRange, index: number) => {
+    const cellValue = currentPage?.cells[getCellKey(range.t, range.l)]?.value;
+    const text = String(cellValue ?? '').trim().replace(/\s+/g, ' ');
+    if (text) {
+      return text.slice(0, 24);
+    }
+    const cellLabel = `${getColumnLabel(range.l)}${range.t}`;
+    return index === 0 ? `字段${cellLabel}` : `字段${cellLabel}_${index + 1}`;
+  };
+  const handleQuickConvertToField = () => {
+    if (!currentPage) {
+      closeContextMenu();
+      return;
+    }
+
+    const ranges = getQuickConvertRanges();
+    if (!ranges.length) {
+      closeContextMenu();
+      return;
+    }
+
+    ranges.forEach((range, index) => {
+      const normalized = normalizeRange(range);
+      const field = addField('text', getQuickConvertFieldName(normalized, index));
+      addNodeFromFieldToRange(field.id, normalized, getFieldDropCellLayout(normalized));
+    });
+    setActiveCanvasRail('fields');
+    showMessage(`已快速转换 ${ranges.length} 个字段`, 'success');
+    closeContextMenu();
+  };
+
+  const clearSelectionAfterSheetStructureChange = () => {
+    clearSelection();
+  };
+  const getCellStructureActionRange = () => {
+    const fallbackRange = normalizedRange ?? { t: 1, l: 1, b: 1, r: 1 };
+    const ranges = normalizedMultiSelectedRanges.length ? normalizedMultiSelectedRanges : [fallbackRange];
+    if (ranges.length > 1 && !rangesFormContinuousRectangle(ranges)) {
+      return fallbackRange;
+    }
+
+    return ranges.reduce<CanvasSelectionRange>((current, range) => ({
+      t: Math.min(current.t, range.t),
+      l: Math.min(current.l, range.l),
+      b: Math.max(current.b, range.b),
+      r: Math.max(current.r, range.r),
+    }), normalizeRange(ranges[0]));
+  };
 
   const handleMenuAction = (action: SheetMenuAction) => {
     if (!menuState || !normalizedRange || !currentPage) {
@@ -2078,25 +2241,38 @@ export default function CanvasSheetWorkspace() {
     }
 
     const insertCount = parseInsertMenuCount(insertMenuCount);
+    const cellStructureActionRange = getCellStructureActionRange();
+    let didChangeSheetStructure = false;
+
+    if (menuState.axis === 'cell' && action === 'quick-convert-to-field') {
+      handleQuickConvertToField();
+      return;
+    }
 
     if (menuState.axis === 'column' || menuState.axis === 'cell') {
       if (action === 'insert-before') {
         insertSheetColumns(normalizedRange.l, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'insert-after') {
         insertSheetColumns(normalizedRange.r + 1, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'insert-column-before') {
         insertSheetColumns(normalizedRange.l, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'insert-column-after') {
         insertSheetColumns(normalizedRange.r + 1, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'delete') {
         deleteSheetColumns(normalizedRange.l, normalizedRange.r);
+        didChangeSheetStructure = true;
       }
       if (action === 'delete-column') {
-        deleteSheetColumns(normalizedRange.l, normalizedRange.r);
+        deleteSheetColumns(cellStructureActionRange.l, cellStructureActionRange.r);
+        didChangeSheetStructure = true;
       }
       if (action === 'resize') {
         const nextWidth = parsePromptNumber('设置列宽', rawColumnWidths[normalizedRange.l - 1] ?? currentPage.sheet.defaultColumnWidth);
@@ -2118,21 +2294,27 @@ export default function CanvasSheetWorkspace() {
     if (menuState.axis === 'row' || menuState.axis === 'cell') {
       if (action === 'insert-before') {
         insertSheetRows(normalizedRange.t, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'insert-after') {
         insertSheetRows(normalizedRange.b + 1, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'insert-row-before') {
         insertSheetRows(normalizedRange.t, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'insert-row-after') {
         insertSheetRows(normalizedRange.b + 1, insertCount);
+        didChangeSheetStructure = true;
       }
       if (action === 'delete') {
         deleteSheetRows(normalizedRange.t, normalizedRange.b);
+        didChangeSheetStructure = true;
       }
       if (action === 'delete-row') {
-        deleteSheetRows(normalizedRange.t, normalizedRange.b);
+        deleteSheetRows(cellStructureActionRange.t, cellStructureActionRange.b);
+        didChangeSheetStructure = true;
       }
       if (action === 'resize') {
         const nextHeight = parsePromptNumber('设置行高', rowHeights[normalizedRange.t - 1] ?? currentPage.sheet.defaultRowHeight);
@@ -2158,6 +2340,10 @@ export default function CanvasSheetWorkspace() {
       if (action === 'split-cells') {
         splitSelectedCells();
       }
+    }
+
+    if (didChangeSheetStructure) {
+      clearSelectionAfterSheetStructureChange();
     }
 
     closeContextMenu();
@@ -2279,6 +2465,12 @@ export default function CanvasSheetWorkspace() {
   const activeMenuAxis = menuState?.axis ?? null;
   const canDeleteMenuColumns = currentPage.sheet.columnCount > 1;
   const canDeleteMenuRows = currentPage.sheet.rowCount > 1;
+  const isDiscontinuousCellMenuSelection = Boolean(
+    activeMenuAxis === 'cell'
+    && normalizedMultiSelectedRanges.length > 1
+    && !rangesFormContinuousRectangle(normalizedMultiSelectedRanges),
+  );
+  const canShowCellStructureMenu = activeMenuAxis !== 'cell' || !isDiscontinuousCellMenuSelection;
   const canDeleteMenuSelection = activeMenuAxis === 'column'
     ? canDeleteMenuColumns
     : canDeleteMenuRows;
@@ -2312,6 +2504,12 @@ export default function CanvasSheetWorkspace() {
     && !selectedSubTableRegion.recordTemplate.groupRange
     && isMultiCellRange(normalizedRange),
   );
+  const isColumnInSelectedRanges = (col: number) => (
+    normalizedMultiSelectedRanges.some((range) => col >= range.l && col <= range.r)
+  );
+  const isRowInSelectedRanges = (row: number) => (
+    normalizedMultiSelectedRanges.some((range) => row >= range.t && row <= range.b)
+  );
 
   const renderImportedGrid = (mode: 'sheet' | 'paper') => (
     <Box
@@ -2336,7 +2534,7 @@ export default function CanvasSheetWorkspace() {
         const cellSelectionRange = getMergedAwareCellRange(row, col, mergedRange);
         const isSelected = selectedCell?.row === row && selectedCell?.col === col;
         const shouldShowSingleCellSelection = isSelected && !isMultiCellRange(normalizedRange);
-        const isRangeActive = isInRange(normalizedRange, row, col);
+        const isRangeActive = isInRange(normalizedRange, row, col) || normalizedMultiSelectedRanges.some((range) => isInRange(range, row, col));
         const isEditing = currentPage.sheet.canvasMode === 'sheet' && editingCell?.row === row && editingCell?.col === col;
         const verticalAlign = cell?.style?.verticalAlign;
         const textAlign = cell?.style?.textAlign;
@@ -2362,10 +2560,16 @@ export default function CanvasSheetWorkspace() {
             onMouseDown={(event) => {
               if (event.button !== 0) return;
               event.currentTarget.focus();
+              if ((event.metaKey || event.ctrlKey) && !event.altKey) {
+                event.preventDefault();
+                handleCommandCellSelection(cellSelectionRange);
+                return;
+              }
               startCellRangeDrag(cellSelectionRange);
             }}
             onDoubleClick={(event) => {
               event.currentTarget.focus();
+              setMultiSelectedRanges([]);
               setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
               startEditingCell(cellSelectionRange.t, cellSelectionRange.l);
             }}
@@ -3064,7 +3268,7 @@ export default function CanvasSheetWorkspace() {
                       }}
                     >
                       {columns.map((col, index) => {
-                        const isColumnActive = normalizedRange ? col >= normalizedRange.l && col <= normalizedRange.r : false;
+                        const isColumnActive = isColumnInSelectedRanges(col);
                         return (
                           <Box
                             key={`header-col-${col}`}
@@ -3149,7 +3353,7 @@ export default function CanvasSheetWorkspace() {
               >
                 <Box sx={{ height: rowHeaderOffsetTop }} />
                 {rows.map((row, index) => {
-                  const isRowActive = normalizedRange ? row >= normalizedRange.t && row <= normalizedRange.b : false;
+                  const isRowActive = isRowInSelectedRanges(row);
                   return (
                     <Box
                       key={`header-row-${row}`}
@@ -3306,62 +3510,66 @@ export default function CanvasSheetWorkspace() {
         {activeMenuAxis ? (
           activeMenuAxis === 'cell' ? (
             <>
-              <MenuItem
-                data-sheet-menu-action="insert-column-before"
-                onClick={() => handleMenuAction('insert-column-before')}
-                sx={{
-                  minWidth: 168,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 1.5,
-                }}
-              >
-                <Box component="span" sx={{ flex: 1 }}>左侧新增列</Box>
-                {renderInsertCountInput('insert-column-before')}
-              </MenuItem>
-              <MenuItem
-                data-sheet-menu-action="insert-column-after"
-                onClick={() => handleMenuAction('insert-column-after')}
-                sx={{
-                  minWidth: 168,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 1.5,
-                }}
-              >
-                <Box component="span" sx={{ flex: 1 }}>右侧新增列</Box>
-                {renderInsertCountInput('insert-column-after')}
-              </MenuItem>
-              <MenuItem
-                data-sheet-menu-action="insert-row-before"
-                onClick={() => handleMenuAction('insert-row-before')}
-                sx={{
-                  minWidth: 168,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 1.5,
-                }}
-              >
-                <Box component="span" sx={{ flex: 1 }}>上方新增行</Box>
-                {renderInsertCountInput('insert-row-before')}
-              </MenuItem>
-              <MenuItem
-                data-sheet-menu-action="insert-row-after"
-                onClick={() => handleMenuAction('insert-row-after')}
-                sx={{
-                  minWidth: 168,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 1.5,
-                }}
-              >
-                <Box component="span" sx={{ flex: 1 }}>下方新增行</Box>
-                {renderInsertCountInput('insert-row-after')}
-              </MenuItem>
+              {canShowCellStructureMenu ? (
+                <>
+                  <MenuItem
+                    data-sheet-menu-action="insert-column-before"
+                    onClick={() => handleMenuAction('insert-column-before')}
+                    sx={{
+                      minWidth: 168,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1.5,
+                    }}
+                  >
+                    <Box component="span" sx={{ flex: 1 }}>左侧新增列</Box>
+                    {renderInsertCountInput('insert-column-before')}
+                  </MenuItem>
+                  <MenuItem
+                    data-sheet-menu-action="insert-column-after"
+                    onClick={() => handleMenuAction('insert-column-after')}
+                    sx={{
+                      minWidth: 168,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1.5,
+                    }}
+                  >
+                    <Box component="span" sx={{ flex: 1 }}>右侧新增列</Box>
+                    {renderInsertCountInput('insert-column-after')}
+                  </MenuItem>
+                  <MenuItem
+                    data-sheet-menu-action="insert-row-before"
+                    onClick={() => handleMenuAction('insert-row-before')}
+                    sx={{
+                      minWidth: 168,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1.5,
+                    }}
+                  >
+                    <Box component="span" sx={{ flex: 1 }}>上方新增行</Box>
+                    {renderInsertCountInput('insert-row-before')}
+                  </MenuItem>
+                  <MenuItem
+                    data-sheet-menu-action="insert-row-after"
+                    onClick={() => handleMenuAction('insert-row-after')}
+                    sx={{
+                      minWidth: 168,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1.5,
+                    }}
+                  >
+                    <Box component="span" sx={{ flex: 1 }}>下方新增行</Box>
+                    {renderInsertCountInput('insert-row-after')}
+                  </MenuItem>
+                </>
+              ) : null}
               {canMergeMenuSelection ? (
                 <MenuItem
                   data-sheet-menu-action="merge-cells"
@@ -3374,6 +3582,13 @@ export default function CanvasSheetWorkspace() {
                   onClick={() => handleMenuAction('split-cells')}
                 >拆分单元格</MenuItem>
               ) : null}
+              <Divider data-sheet-menu-divider="quick-convert" sx={{ my: 0.5 }} />
+              <MenuItem
+                data-sheet-menu-action="quick-convert-to-field"
+                onClick={() => handleMenuAction('quick-convert-to-field')}
+              >
+                快速转换为字段
+              </MenuItem>
               {renderSetSubTableMenu()}
               {canGroupSubTableSelection ? (
                 <MenuItem
@@ -3383,10 +3598,10 @@ export default function CanvasSheetWorkspace() {
                   数据分组
                 </MenuItem>
               ) : null}
-              {renderDeleteMenuGroup([
+              {canShowCellStructureMenu ? renderDeleteMenuGroup([
                 { action: 'delete-row', label: '删除行', disabled: !canDeleteMenuRows },
                 { action: 'delete-column', label: '删除列', disabled: !canDeleteMenuColumns },
-              ])}
+              ]) : null}
             </>
           ) : (
             <>
