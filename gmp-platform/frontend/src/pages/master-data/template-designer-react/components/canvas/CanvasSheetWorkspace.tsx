@@ -16,6 +16,7 @@ const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
 const PAGE_BREAK_MARKER_Z_INDEX = 20;
 const SUB_TABLE_OVERLAY_Z_INDEX = 24;
+const PAPER_RULER_Z_INDEX = 220;
 const SUB_TABLE_GROUP_REPEAT_INSET = 5;
 const DEFAULT_SHEET_FONT_SIZE = 14;
 const DEFAULT_SHEET_LINE_HEIGHT = 1.35;
@@ -773,6 +774,9 @@ export default function CanvasSheetWorkspace() {
   const showPaperRuler = currentPage?.sheet.showRuler ?? true;
   const paperRowHeaderWidth = showPaperRuler ? rowHeaderWidth : 0;
   const paperColumnHeaderHeight = showPaperRuler ? columnHeaderHeight : 0;
+  const showSheetRuler = currentPage?.sheet.showRuler ?? true;
+  const sheetRowHeaderWidth = showSheetRuler ? rowHeaderWidth : 0;
+  const sheetColumnHeaderHeight = showSheetRuler ? columnHeaderHeight : 0;
   const paperRulerColumns = useMemo(() => buildRulerUnits(paperContentWidth, paperRulerUnit), [paperContentWidth]);
   const paperRulerRows = useMemo(() => buildRulerUnits(paperContentHeight, paperRulerUnit), [paperContentHeight]);
   const paperRulerXTicks = useMemo(() => buildRulerTicks(paperContentWidth, paperRulerMinorStep), [paperContentWidth, paperRulerMinorStep]);
@@ -1518,6 +1522,9 @@ export default function CanvasSheetWorkspace() {
               {paperToggleItems.map((item) => (
                 <Button
                   key={item.key}
+                  type="button"
+                  data-paper-toggle-key={item.key}
+                  data-paper-toggle-active={item.active ? 'true' : 'false'}
                   onClick={() => updateCurrentPageSheet({ [item.key]: !item.active })}
                   sx={{
                     minWidth: 0,
@@ -2618,7 +2625,7 @@ export default function CanvasSheetWorkspace() {
                 alignItems: 'stretch',
                 position: 'sticky',
                 top: 0,
-                zIndex: 20,
+                zIndex: PAPER_RULER_Z_INDEX,
               }}
             >
               {showPaperRuler ? (
@@ -2635,7 +2642,7 @@ export default function CanvasSheetWorkspace() {
                       position: 'sticky',
                       top: 0,
                       left: 0,
-                      zIndex: 30,
+                      zIndex: PAPER_RULER_Z_INDEX + 1,
                       height: paperColumnHeaderHeight,
                       borderRight: '1px solid #d8e0eb',
                       borderBottom: '1px solid #d8e0eb',
@@ -2662,7 +2669,7 @@ export default function CanvasSheetWorkspace() {
                     sx={{
                       position: 'sticky',
                       top: 0,
-                      zIndex: 25,
+                      zIndex: PAPER_RULER_Z_INDEX,
                       height: paperColumnHeaderHeight,
                       borderBottom: '1px solid #d8e0eb',
                       background: 'linear-gradient(180deg, #fafbfc 0%, #f0f2f6 100%)',
@@ -2752,7 +2759,7 @@ export default function CanvasSheetWorkspace() {
                     background: 'linear-gradient(90deg, #fafbfc 0%, #f0f2f6 100%)',
                     position: 'sticky',
                     left: 0,
-                    zIndex: 15,
+                    zIndex: PAPER_RULER_Z_INDEX,
                   }}
                 >
                   <Box
@@ -2985,168 +2992,178 @@ export default function CanvasSheetWorkspace() {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: `${rowHeaderWidth}px minmax(${sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight}px, 1fr)`,
+              gridTemplateColumns: `${sheetRowHeaderWidth}px minmax(${sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight}px, 1fr)`,
               alignItems: 'stretch',
               position: 'sticky',
               top: 0,
-              zIndex: 20,
+              zIndex: PAPER_RULER_Z_INDEX + 2,
             }}
           >
-            <Box
-              onClick={() => {
-                if (isAllSelected) {
-                  clearSelection();
-                  return;
-                }
-                selectAllCells();
-              }}
-              sx={{
-                position: 'sticky',
-                top: 0,
-                left: 0,
-                zIndex: 30,
-                height: columnHeaderHeight,
-                borderRight: '1px solid #d8e0eb',
-                borderBottom: '1px solid #d8e0eb',
-                bgcolor: isAllSelected ? '#d7dde7' : '#f4f6fa',
-                overflow: 'hidden',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                '&::before': {
-                  content: '""',
-                  display: 'block',
-                  width: 0,
-                  height: 0,
-                  borderBottom: '5px solid #d9d9d9',
-                  borderRight: '5px solid #d9d9d9',
-                  borderTop: '5px solid transparent',
-                  borderLeft: '5px solid transparent',
-                },
-              }}
-            />
-            <Box
-              sx={{
-                position: 'sticky',
-                top: 0,
-                zIndex: 25,
-                height: columnHeaderHeight,
-                borderBottom: '1px solid #d8e0eb',
-                bgcolor: '#f6f8fc',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <Box
-                sx={{
-                  width: sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight,
-                        pl: `${paperViewportGapLeft + paperInsetLeft}px`,
-                  pr: `${paperViewportGapRight + paperInsetRight}px`,
-                }}
-              >
+            {showSheetRuler ? (
+              <>
                 <Box
+                  data-sheet-select-all-corner="true"
+                  onClick={() => {
+                    if (isAllSelected) {
+                      clearSelection();
+                      return;
+                    }
+                    selectAllCells();
+                  }}
                   sx={{
-                    width: sheetWidth,
-                    display: 'grid',
-                    gridTemplateColumns: columnTemplate,
+                    position: 'sticky',
+                    top: 0,
+                    left: 0,
+                    zIndex: PAPER_RULER_Z_INDEX + 3,
+                    height: sheetColumnHeaderHeight,
+                    borderRight: '1px solid #d8e0eb',
+                    borderBottom: '1px solid #d8e0eb',
+                    bgcolor: isAllSelected ? '#d7dde7' : '#f4f6fa',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '&::before': {
+                      content: '""',
+                      display: 'block',
+                      width: 0,
+                      height: 0,
+                      borderBottom: '5px solid #d9d9d9',
+                      borderRight: '5px solid #d9d9d9',
+                      borderTop: '5px solid transparent',
+                      borderLeft: '5px solid transparent',
+                    },
+                  }}
+                />
+                <Box
+                  data-sheet-column-ruler="true"
+                  sx={{
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: PAPER_RULER_Z_INDEX + 2,
+                    height: sheetColumnHeaderHeight,
+                    borderBottom: '1px solid #d8e0eb',
+                    bgcolor: '#f6f8fc',
+                    display: 'flex',
+                    justifyContent: 'center',
                   }}
                 >
-                  {columns.map((col, index) => {
-                    const isColumnActive = normalizedRange ? col >= normalizedRange.l && col <= normalizedRange.r : false;
-                    return (
-                      <Box
-                        key={`header-col-${col}`}
-                        data-sheet-column-active={isColumnActive ? 'true' : 'false'}
-                        onMouseDown={(event) => {
-                          handleColumnHeaderMouseDown(col, event);
-                        }}
-                        onMouseEnter={() => {
-                          if (dragState?.type !== 'column') return;
-                          selectColumnRange(dragState.startCol, col);
-                        }}
-                        onContextMenu={(event) => {
-                          openColumnContextMenu(col, event);
-                        }}
-                        sx={{
-                          position: 'relative',
-                          height: columnHeaderHeight,
-                          borderLeft: index === 0 ? '1px solid #d8e0eb' : 'none',
-                          borderRight: '1px solid #d8e0eb',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: isColumnActive ? '#4b5563' : '#7b8794',
-                          fontSize: 13,
-                          bgcolor: isColumnActive ? '#d7dde7' : 'transparent',
-                          transition: 'background-color 120ms ease',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {getColumnLabel(col)}
-                        <Box
-                          data-resize-handle="resize-column"
-                          onMouseDown={(event) => {
-                            event.stopPropagation();
-                            setDragState({
-                              type: 'resize-column',
-                              startCol: col,
-                              startWidth: rawColumnWidths[index],
-                              startX: event.clientX,
-                            });
-                          }}
-                          sx={{
-                            position: 'absolute',
-                            top: 0,
-                            right: -4,
-                            width: 8,
-                            height: '100%',
-                            cursor: 'col-resize',
-                            zIndex: 3,
-                          }}
-                        />
-                      </Box>
-                    );
-                  })}
+                  <Box
+                    sx={{
+                      width: sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight,
+                      pl: `${paperViewportGapLeft + paperInsetLeft}px`,
+                      pr: `${paperViewportGapRight + paperInsetRight}px`,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: sheetWidth,
+                        display: 'grid',
+                        gridTemplateColumns: columnTemplate,
+                      }}
+                    >
+                      {columns.map((col, index) => {
+                        const isColumnActive = normalizedRange ? col >= normalizedRange.l && col <= normalizedRange.r : false;
+                        return (
+                          <Box
+                            key={`header-col-${col}`}
+                            data-sheet-column-active={isColumnActive ? 'true' : 'false'}
+                            onMouseDown={(event) => {
+                              handleColumnHeaderMouseDown(col, event);
+                            }}
+                            onMouseEnter={() => {
+                              if (dragState?.type !== 'column') return;
+                              selectColumnRange(dragState.startCol, col);
+                            }}
+                            onContextMenu={(event) => {
+                              openColumnContextMenu(col, event);
+                            }}
+                            sx={{
+                              position: 'relative',
+                              height: columnHeaderHeight,
+                              borderLeft: index === 0 ? '1px solid #d8e0eb' : 'none',
+                              borderRight: '1px solid #d8e0eb',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: isColumnActive ? '#4b5563' : '#7b8794',
+                              fontSize: 13,
+                              bgcolor: isColumnActive ? '#d7dde7' : 'transparent',
+                              transition: 'background-color 120ms ease',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {getColumnLabel(col)}
+                            <Box
+                              data-resize-handle="resize-column"
+                              onMouseDown={(event) => {
+                                event.stopPropagation();
+                                setDragState({
+                                  type: 'resize-column',
+                                  startCol: col,
+                                  startWidth: rawColumnWidths[index],
+                                  startX: event.clientX,
+                                });
+                              }}
+                              sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: -4,
+                                width: 8,
+                                height: '100%',
+                                cursor: 'col-resize',
+                                zIndex: 3,
+                              }}
+                            />
+                          </Box>
+                        );
+                      })}
+                    </Box>
+                  </Box>
                 </Box>
-              </Box>
-            </Box>
+              </>
+            ) : (
+              <Box />
+            )}
           </Box>
 
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: `${rowHeaderWidth}px minmax(${sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight}px, 1fr)`,
+              gridTemplateColumns: `${sheetRowHeaderWidth}px minmax(${sheetPaperWidth + paperViewportGapLeft + paperViewportGapRight}px, 1fr)`,
               alignItems: 'start',
             }}
           >
-            <Box
-              sx={{
-                minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
-                borderRight: '1px solid #d8e0eb',
-                bgcolor: '#f6f8fc',
-                position: 'sticky',
-                left: 0,
-                zIndex: 15,
-              }}
-            >
-              <Box sx={{ height: rowHeaderOffsetTop }} />
-              {rows.map((row, index) => {
-                const isRowActive = normalizedRange ? row >= normalizedRange.t && row <= normalizedRange.b : false;
-                return (
-                  <Box
+            {showSheetRuler ? (
+              <Box
+                data-sheet-row-ruler="true"
+                sx={{
+                  minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
+                  borderRight: '1px solid #d8e0eb',
+                  bgcolor: '#f6f8fc',
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: PAPER_RULER_Z_INDEX,
+                }}
+              >
+                <Box sx={{ height: rowHeaderOffsetTop }} />
+                {rows.map((row, index) => {
+                  const isRowActive = normalizedRange ? row >= normalizedRange.t && row <= normalizedRange.b : false;
+                  return (
+                    <Box
                       key={`header-row-${row}`}
                       data-sheet-row-active={isRowActive ? 'true' : 'false'}
-                    onMouseDown={(event) => {
-                      handleRowHeaderMouseDown(row, event);
-                    }}
-                    onMouseEnter={() => {
-                      if (dragState?.type !== 'row') return;
-                      selectRowRange(dragState.startRow, row);
-                    }}
-                    onContextMenu={(event) => {
-                      openRowContextMenu(row, event);
-                    }}
+                      onMouseDown={(event) => {
+                        handleRowHeaderMouseDown(row, event);
+                      }}
+                      onMouseEnter={() => {
+                        if (dragState?.type !== 'row') return;
+                        selectRowRange(dragState.startRow, row);
+                      }}
+                      onContextMenu={(event) => {
+                        openRowContextMenu(row, event);
+                      }}
                       sx={{
                         position: 'relative',
                         height: rowHeights[index],
@@ -3154,40 +3171,43 @@ export default function CanvasSheetWorkspace() {
                         borderBottom: '1px solid #d8e0eb',
                         display: 'flex',
                         alignItems: 'center',
-                      justifyContent: 'center',
-                      color: isRowActive ? '#4b5563' : '#7b8794',
-                      fontSize: 13,
-                      bgcolor: isRowActive ? '#d7dde7' : 'transparent',
-                      transition: 'background-color 120ms ease',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {row}
-                    <Box
-                      data-resize-handle="resize-row"
-                      onMouseDown={(event) => {
-                        event.stopPropagation();
-                        setDragState({
-                          type: 'resize-row',
-                          startRow: row,
-                          startHeight: rowHeights[index],
-                          startY: event.clientY,
-                        });
+                        justifyContent: 'center',
+                        color: isRowActive ? '#4b5563' : '#7b8794',
+                        fontSize: 13,
+                        bgcolor: isRowActive ? '#d7dde7' : 'transparent',
+                        transition: 'background-color 120ms ease',
+                        cursor: 'pointer',
                       }}
-                      sx={{
-                        position: 'absolute',
-                        left: 0,
-                        bottom: -4,
-                        width: '100%',
-                        height: 8,
-                        cursor: 'row-resize',
-                        zIndex: 3,
-                      }}
-                    />
-                  </Box>
-                );
-              })}
-            </Box>
+                    >
+                      {row}
+                      <Box
+                        data-resize-handle="resize-row"
+                        onMouseDown={(event) => {
+                          event.stopPropagation();
+                          setDragState({
+                            type: 'resize-row',
+                            startRow: row,
+                            startHeight: rowHeights[index],
+                            startY: event.clientY,
+                          });
+                        }}
+                        sx={{
+                          position: 'absolute',
+                          left: 0,
+                          bottom: -4,
+                          width: '100%',
+                          height: 8,
+                          cursor: 'row-resize',
+                          zIndex: 3,
+                        }}
+                      />
+                    </Box>
+                  );
+                })}
+              </Box>
+            ) : (
+              <Box />
+            )}
 
             <Box
               onMouseDown={(event) => {
