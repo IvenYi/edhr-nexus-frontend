@@ -1507,7 +1507,9 @@ if (!mockFillDialog.includes('data-mock-fill-field-overflowing={shouldExpandFiel
 if (!mockFillDialog.includes('getMockFillRangeWidth')) failures.push('MockFillDialog.tsx: mock-fill field overflow detection must compare content against the actual cell width');
 if (!mockFillDialog.includes('estimateMockFillControlContentWidth')) failures.push('MockFillDialog.tsx: mock-fill field overflow detection must estimate current content width');
 if (!mockFillDialog.includes("'&[data-mock-fill-field-overflowing=\"true\"]:focus-within'")) failures.push('MockFillDialog.tsx: focused mock-fill field cells must temporarily allow overflow only when content exceeds the cell');
+if (!mockFillDialog.includes("'&[data-mock-fill-field-overflowing=\"true\"]:focus-within': {\n            overflow: 'visible',\n            zIndex: 120")) failures.push('MockFillDialog.tsx: focused overflowing mock-fill field cells must sit above sheet border overlays');
 if (!mockFillDialog.includes("'&[data-mock-fill-field-overflowing=\"true\"]:focus-within [data-mock-fill-field-control=\"true\"]'")) failures.push('MockFillDialog.tsx: focused mock-fill controls must expand beyond narrow cells only when content overflows');
+if (!mockFillDialog.includes("'&[data-mock-fill-field-overflowing=\"true\"]:focus-within [data-mock-fill-field-control=\"true\"]': {\n            position: 'relative',\n            zIndex: 121")) failures.push('MockFillDialog.tsx: focused overflowing mock-fill controls must be the top interactive layer');
 if (!mockFillDialog.includes("width: 'var(--mock-fill-focus-width)'")) failures.push('MockFillDialog.tsx: overflowing focused mock-fill controls must expand based on current content width');
 if (!mockFillDialog.includes('Boolean(node.bindings?.hidden)')) failures.push('MockFillDialog.tsx: hidden fields must not render for line operators');
 if (!mockFillDialog.includes('Boolean(node.bindings?.readonly)')) failures.push('MockFillDialog.tsx: readonly fields must render without allowing edits');
@@ -1520,10 +1522,11 @@ if (!mockFillDialog.includes("maxHeight: 'none'")) failures.push('MockFillDialog
 if (mockFillDialog.includes('minHeight: 28')) failures.push('MockFillDialog.tsx: mock-fill controls must not impose a 28px minimum height that covers short-row borders');
 if (!mockFillDialog.includes('minHeight: 0')) failures.push('MockFillDialog.tsx: mock-fill controls must allow short rows to keep table borders visible');
 if (!mockFillSheetBorderOverlayBlock) failures.push('MockFillDialog.tsx: mock-fill sheet borders must render in a top overlay above field controls');
-if (mockFillSheetBorderOverlayBlock && !mockFillSheetBorderOverlayBlock.includes("zIndex: 30")) failures.push('MockFillDialog.tsx: mock-fill sheet border overlay must sit above focused field controls');
+if (mockFillSheetBorderOverlayBlock && !mockFillSheetBorderOverlayBlock.includes("position: 'relative'")) failures.push('MockFillDialog.tsx: mock-fill sheet border overlay must be positioned so z-index wins over overflowing controls');
+if (mockFillSheetBorderOverlayBlock && !mockFillSheetBorderOverlayBlock.includes("zIndex: 80")) failures.push('MockFillDialog.tsx: mock-fill sheet border overlay must sit below focused overflowing field controls');
 if (mockFillSheetBorderOverlayBlock && !mockFillSheetBorderOverlayBlock.includes("pointerEvents: 'none'")) failures.push('MockFillDialog.tsx: mock-fill sheet border overlay must not block field editing');
 if (mockFillSheetBorderOverlayBlock && !mockFillSheetBorderOverlayBlock.includes("bgcolor: 'transparent'")) failures.push('MockFillDialog.tsx: mock-fill sheet border overlay must only draw lines');
-if (!mockFillSubTableFrameBlock.includes('zIndex: 32')) failures.push('MockFillDialog.tsx: sub-table dashed frame must render above the mock-fill sheet border overlay');
+if (!mockFillSubTableFrameBlock.includes('zIndex: 90')) failures.push('MockFillDialog.tsx: sub-table dashed frame must render above the mock-fill sheet border overlay');
 if (!identityApi.includes('verifyCurrentUserSignaturePassword')) failures.push('identity.ts: mock-fill signature must expose a current-user signature password verification API');
 if (!identityApi.includes("'/auth/me/signature/verify'")) failures.push('identity.ts: current-user signature verification must call /auth/me/signature/verify');
 if (!identityApi.includes('skipAuthRedirect: true')) failures.push('identity.ts: signature password business failures must not clear the current login session');

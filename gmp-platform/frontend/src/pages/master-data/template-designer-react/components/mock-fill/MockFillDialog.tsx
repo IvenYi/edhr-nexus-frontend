@@ -1079,11 +1079,11 @@ function MockFillPage({
           },
           '&[data-mock-fill-field-overflowing="true"]:focus-within': {
             overflow: 'visible',
-            zIndex: 24,
+            zIndex: 120,
           },
           '&[data-mock-fill-field-overflowing="true"]:focus-within [data-mock-fill-field-control="true"]': {
             position: 'relative',
-            zIndex: 1,
+            zIndex: 121,
             width: 'var(--mock-fill-focus-width)',
             minWidth: '100%',
             maxWidth: 'min(480px, calc(100vw - 96px))',
@@ -1234,7 +1234,7 @@ function MockFillPage({
                 sx={{
                   gridColumn: `${frameRange.l} / span ${frameRange.r - frameRange.l + 1}`,
                   gridRow: `${frameRange.t} / span ${frameRange.b - frameRange.t + 1}`,
-                  zIndex: 32,
+                  zIndex: 90,
                   position: 'relative',
                   boxSizing: 'border-box',
                   overflow: 'visible',
@@ -1363,7 +1363,8 @@ function MockFillPage({
                   sx={{
                     gridColumn: `${range.l} / span ${range.r - range.l + 1}`,
                     gridRow: `${range.t} / span ${range.b - range.t + 1}`,
-                    zIndex: 30,
+                    position: 'relative',
+                    zIndex: 80,
                     minWidth: 0,
                     minHeight: 0,
                     pointerEvents: 'none',
