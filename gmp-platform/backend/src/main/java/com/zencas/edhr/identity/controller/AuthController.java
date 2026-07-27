@@ -11,6 +11,8 @@ import com.zencas.edhr.compliance.entity.Signature;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
 import com.zencas.edhr.compliance.repository.SignatureRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.identity.entity.LoginLog;
 import com.zencas.edhr.identity.entity.Department;
 import com.zencas.edhr.identity.entity.Permission;
@@ -88,6 +90,7 @@ public class AuthController {
     private static final String SIGNATURE_NOTICE_TARGET_TYPE = "SIGNATURE_AUTHORIZATION_NOTICE";
     private static final DateTimeFormatter SIGNATURE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final SecureRandom SIGNATURE_KEY_RANDOM = new SecureRandom();
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final float PDF_MARGIN = 26F;
     private static final float PDF_TABLE_WIDTH = PDRectangle.A4.getWidth() - PDF_MARGIN * 2F;
     private static final float PDF_LABEL_COLUMN_WIDTH = 134F;
@@ -390,6 +393,42 @@ public class AuthController {
         response.put("authorizationNoticeFileId", idToString(saved.getAuthorizationNoticeFileId()));
         response.put("authMethod", saved.getAuthMethod());
         response.put("snapshotHash", saved.getSnapshotHash());
+        return ApiResponse.success(response);
+    }
+
+    @PostMapping("/me/signature/verify")
+    public ApiResponse<Map<String, Object>> verifyCurrentUserSignature(
+            @RequestAttribute(value = "userId", required = false) String userId,
+            @RequestBody SignatureVerifyRequest request) {
+        UserAccount user = findCurrentUser(userId);
+        if (request == null || !StringUtils.hasText(request.getSignaturePassword())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "请输入电子签名密码");
+        }
+        Signature signature = signatureRepository
+                .findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc(USER_PROFILE_TARGET_TYPE, String.valueOf(user.getId()))
+                .orElseThrow(() -> new BusinessException(ErrorCode.SIG_003, "请先在个人设置中完成电子签名认证"));
+        if (signature.getExpiresAt() != null && signature.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "电子签名已过期，请先在个人设置中重新认证");
+        }
+        if (!StringUtils.hasText(signature.getSignaturePasswordHash())
+                || !passwordEncoder.matches(request.getSignaturePassword(), signature.getSignaturePasswordHash())) {
+            throw new BusinessException(ErrorCode.SIG_001, "电子签名密码错误");
+        }
+        Long signatureImageFileId = extractSignatureImageFileId(signature);
+        if (signatureImageFileId == null) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "电子签名图片不存在，请先在个人设置中重新认证");
+        }
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("signatureId", idToString(signature.getId()));
+        response.put("signerId", signature.getSignerId());
+        response.put("signerName", signature.getSignerName());
+        response.put("signatureImageFileId", idToString(signatureImageFileId));
+        response.put("signatureImageUrl", filePreviewUrl(signatureImageFileId));
+        response.put("signedAt", LocalDateTime.now().withNano(0).toString());
+        response.put("certifiedAt", signature.getCertifiedAt() == null ? null : signature.getCertifiedAt().toString());
+        response.put("expiresAt", signature.getExpiresAt() == null ? null : signature.getExpiresAt().toString());
+        response.put("authMethod", signature.getAuthMethod());
         return ApiResponse.success(response);
     }
 
@@ -1021,6 +1060,29 @@ public class AuthController {
         return snapshot;
     }
 
+    private Long extractSignatureImageFileId(Signature signature) {
+        if (signature == null || !StringUtils.hasText(signature.getSnapshotData())) return null;
+        try {
+            JsonNode fileIdNode = JSON_MAPPER
+                    .readTree(signature.getSnapshotData())
+                    .path("signatureImage")
+                    .path("fileId");
+            if (fileIdNode.isMissingNode() || fileIdNode.isNull()) return null;
+            return parseLongId(fileIdNode.asText());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Long parseLongId(String value) {
+        if (!StringUtils.hasText(value)) return null;
+        try {
+            return Long.parseLong(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     private void writeSignatureAudit(UserAccount user, Signature signature, String snapshotData, HttpServletRequest request) {
         auditEventRepository.save(AuditEvent.builder()
                 .id(idGenerator.nextId())
@@ -1145,6 +1207,10 @@ public class AuthController {
         return fileId == null ? "" : "/api/v1/files/" + fileId + "/public-preview";
     }
 
+    private String filePreviewUrl(Long fileId) {
+        return fileId == null ? "" : "/api/v1/files/" + fileId + "/preview";
+    }
+
     private String idToString(Long id) {
         return id == null ? null : String.valueOf(id);
     }
@@ -1179,7 +1245,7 @@ public class AuthController {
 
     private String toJson(Map<String, Object> content) {
         try {
-            return new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(content);
+            return JSON_MAPPER.writeValueAsString(content);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.GENERAL_001, "电子签名内容序列化失败");
         }
@@ -1254,6 +1320,11 @@ public class AuthController {
         private String idCardFrontFileId;
         private String idCardBackFileId;
         private List<SignatureStatementRequest> statements;
+    }
+
+    @Data
+    public static class SignatureVerifyRequest {
+        private String signaturePassword;
     }
 
     @Data

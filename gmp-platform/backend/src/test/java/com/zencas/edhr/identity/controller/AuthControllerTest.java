@@ -764,6 +764,86 @@ class AuthControllerTest {
         verify(fileObjectRepository).save(any(FileObject.class));
     }
 
+    @Test
+    void verifyCurrentUserSignatureReturnsAuthorizedSignatureImageAfterPasswordAuth() {
+        UserAccount user = UserAccount.builder()
+                .id(1L)
+                .username("admin")
+                .displayName("系统管理员")
+                .build();
+        Signature signature = Signature.builder()
+                .id(7001L)
+                .targetType("USER_PROFILE")
+                .targetId("1")
+                .signerId("1")
+                .signerName("系统管理员")
+                .authMethod("PASSWORD")
+                .signaturePasswordHash("encoded-signature-password")
+                .snapshotData("{\"signatureImage\":{\"fileId\":\"901\",\"originalName\":\"handwritten-signature.png\",\"mimeType\":\"image/png\"}}")
+                .signedAt(LocalDateTime.of(2026, 7, 1, 9, 30))
+                .certifiedAt(LocalDateTime.of(2026, 7, 1, 9, 30))
+                .expiresAt(LocalDateTime.now().plusDays(1))
+                .build();
+        AuthController.SignatureVerifyRequest request = new AuthController.SignatureVerifyRequest();
+        request.setSignaturePassword("signature-password");
+        when(userAccountRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
+                .thenReturn(Optional.of(signature));
+        when(passwordEncoder.matches("signature-password", "encoded-signature-password")).thenReturn(true);
+
+        var response = controller.verifyCurrentUserSignature("1", request);
+
+        assertThat(response.getData().get("signatureId")).isEqualTo("7001");
+        assertThat(response.getData().get("signerName")).isEqualTo("系统管理员");
+        assertThat(response.getData().get("signatureImageFileId")).isEqualTo("901");
+        assertThat(response.getData().get("signatureImageUrl")).isEqualTo("/api/v1/files/901/preview");
+        assertThat(response.getData().get("certifiedAt")).isEqualTo(signature.getCertifiedAt().toString());
+        verify(passwordEncoder).matches("signature-password", "encoded-signature-password");
+    }
+
+    @Test
+    void verifyCurrentUserSignatureRejectsWrongPassword() {
+        UserAccount user = UserAccount.builder()
+                .id(1L)
+                .username("admin")
+                .displayName("系统管理员")
+                .build();
+        Signature signature = Signature.builder()
+                .id(7001L)
+                .targetType("USER_PROFILE")
+                .targetId("1")
+                .signaturePasswordHash("encoded-signature-password")
+                .snapshotData("{\"signatureImage\":{\"fileId\":\"901\"}}")
+                .expiresAt(LocalDateTime.now().plusDays(1))
+                .build();
+        AuthController.SignatureVerifyRequest request = new AuthController.SignatureVerifyRequest();
+        request.setSignaturePassword("bad-password");
+        when(userAccountRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
+                .thenReturn(Optional.of(signature));
+        when(passwordEncoder.matches("bad-password", "encoded-signature-password")).thenReturn(false);
+
+        assertThatThrownBy(() -> controller.verifyCurrentUserSignature("1", request))
+                .hasMessageContaining("电子签名密码错误");
+    }
+
+    @Test
+    void verifyCurrentUserSignatureRequiresPersonalSignatureCertification() {
+        UserAccount user = UserAccount.builder()
+                .id(1L)
+                .username("admin")
+                .displayName("系统管理员")
+                .build();
+        AuthController.SignatureVerifyRequest request = new AuthController.SignatureVerifyRequest();
+        request.setSignaturePassword("signature-password");
+        when(userAccountRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> controller.verifyCurrentUserSignature("1", request))
+                .hasMessageContaining("请先在个人设置中完成电子签名认证");
+    }
+
     private void attachValidSignatureEvidence(AuthController.PersonalSignatureRequest request) {
         request.setSignatureImageFileId("901");
         request.setIdCardFrontFileId("902");

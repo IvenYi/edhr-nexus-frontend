@@ -5,3 +5,5 @@ export const download = (params?: Record<string, unknown>) => client.get('/files
 export const preview = (params?: Record<string, unknown>) => client.get('/files', { params });
 export const deleteFile = (params?: Record<string, unknown>) => client.get('/files', { params });
 export const getFiles = (params?: Record<string, unknown>) => client.get('/files', { params });
+export const getFilePreviewBlob = (id: number | string) =>
+  client.get(`/files/${id}/preview`, { responseType: 'blob' });

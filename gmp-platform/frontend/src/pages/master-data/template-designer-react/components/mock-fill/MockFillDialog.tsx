@@ -11,6 +11,9 @@ import {
   Button,
   Checkbox,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   IconButton,
   InputAdornment,
@@ -21,7 +24,9 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useEffect, useMemo, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
+import { getFilePreviewBlob } from '@/api/files';
+import { verifyCurrentUserSignaturePassword } from '@/api/identity';
 import type {
   CanvasNode,
   CanvasPage,
@@ -39,7 +44,21 @@ import {
   readNodeCellRange,
 } from '../../utils/subTableRegion';
 
-type MockFillValue = string | string[] | boolean;
+interface MockSignatureValue {
+  type: 'signature';
+  signatureId?: string;
+  signerId?: string;
+  signerName?: string;
+  signatureImageFileId?: string;
+  signatureImageUrl: string;
+  signatureImageObjectUrl?: string;
+  signedAt?: string;
+  certifiedAt?: string;
+  expiresAt?: string;
+  authMethod?: string;
+}
+
+type MockFillValue = string | string[] | boolean | MockSignatureValue;
 type MockFillValues = Record<string, MockFillValue>;
 type SubTableRecordCounts = Record<string, number>;
 
@@ -62,6 +81,7 @@ interface RenderMockFillControlParams {
   valueKey: string;
   values: MockFillValues;
   onValueChange: (key: string, value: MockFillValue) => void;
+  onSignatureRequest: (key: string) => void;
 }
 
 interface MockFillPageProps {
@@ -70,6 +90,7 @@ interface MockFillPageProps {
   values: MockFillValues;
   subTableRecordCounts: SubTableRecordCounts;
   onValueChange: (key: string, value: MockFillValue) => void;
+  onSignatureRequest: (key: string) => void;
   onAddSubTableRecord: (nodeId: string) => void;
   onRemoveSubTableRecord: (nodeId: string) => void;
 }
@@ -178,7 +199,20 @@ function normalizeMockFillNumberInput(value: string) {
   return `${isNegative ? '-' : ''}${integerPart}${decimalParts.length ? `.${decimalText}` : ''}`;
 }
 
+function isMockSignatureValue(value: MockFillValue | undefined): value is MockSignatureValue {
+  return Boolean(
+    value
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && 'type' in value
+    && value.type === 'signature'
+    && 'signatureImageUrl' in value
+    && typeof value.signatureImageUrl === 'string',
+  );
+}
+
 function readValueAsText(value: MockFillValue | undefined) {
+  if (isMockSignatureValue(value)) return value.signerName || '';
   if (Array.isArray(value)) return value.join(', ');
   if (typeof value === 'boolean') return value ? 'true' : '';
   return String(value ?? '');
@@ -188,6 +222,26 @@ function readValueAsArray(value: MockFillValue | undefined) {
   if (Array.isArray(value)) return value;
   const text = String(value ?? '').trim();
   return text ? [text] : [];
+}
+
+function readApiErrorMessage(error: unknown, fallback: string) {
+  const responseMessage = (error as { response?: { data?: { message?: unknown } } })?.response?.data?.message;
+  if (typeof responseMessage === 'string' && responseMessage.trim()) return responseMessage;
+  if (error instanceof Error && error.message.trim() && error.message !== 'Request failed') return error.message;
+  return fallback;
+}
+
+async function createSignatureImageObjectUrl(signature: MockSignatureValue) {
+  if (!signature.signatureImageFileId) return '';
+  try {
+    const response = await getFilePreviewBlob(signature.signatureImageFileId);
+    const blob = response.data instanceof Blob
+      ? response.data
+      : new Blob([response.data], { type: 'image/png' });
+    return URL.createObjectURL(blob);
+  } catch {
+    throw new Error('电子签名图片加载失败，请重新签署或联系管理员检查个人签名图片');
+  }
 }
 
 function parseFieldOptions(field?: ModelField | null) {
@@ -462,6 +516,7 @@ function renderMockFillControl({
   valueKey,
   values,
   onValueChange,
+  onSignatureRequest,
 }: RenderMockFillControlParams) {
   if (Boolean(node.bindings?.hidden)) return null;
 
@@ -569,24 +624,39 @@ function renderMockFillControl({
   );
 
   if (field?.type === 'signature') {
+    const signatureValue = isMockSignatureValue(value) ? value : null;
     return wrapWithHelp(
       <Button
         fullWidth
         variant="outlined"
         disabled={readonly}
-        startIcon={<DrawOutlined />}
-        onClick={() => onValueChange(valueKey, textValue ? '' : '已签名')}
+        startIcon={signatureValue ? undefined : <DrawOutlined />}
+        onClick={() => onSignatureRequest(valueKey)}
         sx={{
           height: '100%',
           minHeight: 0,
           borderStyle: 'dashed',
-          borderColor: textValue ? '#2990ff' : '#c8d0dc',
-          color: textValue ? '#1677d2' : '#606266',
+          borderColor: signatureValue ? '#2990ff' : '#c8d0dc',
+          color: signatureValue ? '#1677d2' : '#606266',
           bgcolor: '#fff',
           fontSize: 12,
+          p: signatureValue ? 0.25 : 0.5,
         }}
       >
-        {textValue || '点击签名'}
+        {signatureValue ? (
+          <Box
+            component="img"
+            data-mock-fill-signature-image="true"
+            src={signatureValue.signatureImageObjectUrl || signatureValue.signatureImageUrl}
+            alt={signatureValue.signerName ? `${signatureValue.signerName}电子签名` : '电子签名'}
+            sx={{
+              display: 'block',
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+            }}
+          />
+        ) : '点击签名'}
       </Button>,
     );
   }
@@ -948,6 +1018,7 @@ function MockFillPage({
   values,
   subTableRecordCounts,
   onValueChange,
+  onSignatureRequest,
   onAddSubTableRecord,
   onRemoveSubTableRecord,
 }: MockFillPageProps) {
@@ -981,6 +1052,7 @@ function MockFillPage({
       valueKey,
       values,
       onValueChange,
+      onSignatureRequest,
     });
     if (!content) return null;
     const currentText = readValueAsText(values[valueKey] ?? createInitialNodeValue(node, field));
@@ -1314,12 +1386,42 @@ function MockFillPage({
 export default function MockFillDialog({ open, document, onClose }: MockFillDialogProps) {
   const [values, setValues] = useState<MockFillValues>(() => createInitialMockFillValues(document));
   const [subTableRecordCounts, setSubTableRecordCounts] = useState<SubTableRecordCounts>(() => createInitialSubTableRecordCounts(document));
+  const [signatureDialogKey, setSignatureDialogKey] = useState<string | null>(null);
+  const [signaturePassword, setSignaturePassword] = useState('');
+  const [signaturePasswordError, setSignaturePasswordError] = useState('');
+  const [signatureSubmitting, setSignatureSubmitting] = useState(false);
+  const signatureObjectUrlsRef = useRef<Set<string>>(new Set());
   const templateTitle = `${document.meta.templateName} : ${document.meta.versionLabel}`;
+
+  const releaseSignatureObjectUrl = (url?: string) => {
+    if (!url || !signatureObjectUrlsRef.current.has(url)) return;
+    URL.revokeObjectURL(url);
+    signatureObjectUrlsRef.current.delete(url);
+  };
+
+  const releaseAllSignatureObjectUrls = () => {
+    signatureObjectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    signatureObjectUrlsRef.current.clear();
+  };
+
+  useEffect(() => () => {
+    releaseAllSignatureObjectUrls();
+  }, []);
+
+  useEffect(() => {
+    if (open) return;
+    releaseAllSignatureObjectUrls();
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
+    releaseAllSignatureObjectUrls();
     setValues(createInitialMockFillValues(document));
     setSubTableRecordCounts(createInitialSubTableRecordCounts(document));
+    setSignatureDialogKey(null);
+    setSignaturePassword('');
+    setSignaturePasswordError('');
+    setSignatureSubmitting(false);
   }, [document, open]);
 
   const handleValueChange = (key: string, value: MockFillValue) => {
@@ -1330,8 +1432,70 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
   };
 
   const handleReset = () => {
+    releaseAllSignatureObjectUrls();
     setValues(createInitialMockFillValues(document));
     setSubTableRecordCounts(createInitialSubTableRecordCounts(document));
+    setSignatureDialogKey(null);
+    setSignaturePassword('');
+    setSignaturePasswordError('');
+    setSignatureSubmitting(false);
+  };
+
+  const handleOpenSignatureDialog = (key: string) => {
+    setSignatureDialogKey(key);
+    setSignaturePassword('');
+    setSignaturePasswordError('');
+    setSignatureSubmitting(false);
+  };
+
+  const handleCloseSignatureDialog = () => {
+    if (signatureSubmitting) return;
+    setSignatureDialogKey(null);
+    setSignaturePassword('');
+    setSignaturePasswordError('');
+  };
+
+  const handleConfirmSignature = async () => {
+    if (!signatureDialogKey) return;
+    const password = signaturePassword.trim();
+    if (!password) {
+      setSignaturePasswordError('请输入电子签名密码');
+      return;
+    }
+    setSignatureSubmitting(true);
+    try {
+      const response = await verifyCurrentUserSignaturePassword({ signaturePassword: password });
+      const signature = response.data.data as MockSignatureValue;
+      if (!signature?.signatureImageUrl) {
+        throw new Error('电子签名图片不存在，请先在个人设置中重新认证');
+      }
+      const signatureImageObjectUrl = await createSignatureImageObjectUrl(signature);
+      if (signatureImageObjectUrl) signatureObjectUrlsRef.current.add(signatureImageObjectUrl);
+      const previousValue = values[signatureDialogKey];
+      if (isMockSignatureValue(previousValue)) {
+        releaseSignatureObjectUrl(previousValue.signatureImageObjectUrl);
+      }
+      handleValueChange(signatureDialogKey, {
+        type: 'signature',
+        signatureId: signature.signatureId,
+        signerId: signature.signerId,
+        signerName: signature.signerName,
+        signatureImageFileId: signature.signatureImageFileId,
+        signatureImageUrl: signature.signatureImageUrl,
+        signatureImageObjectUrl,
+        signedAt: signature.signedAt,
+        certifiedAt: signature.certifiedAt,
+        expiresAt: signature.expiresAt,
+        authMethod: signature.authMethod,
+      });
+      setSignatureDialogKey(null);
+      setSignaturePassword('');
+      setSignaturePasswordError('');
+    } catch (error) {
+      setSignaturePasswordError(readApiErrorMessage(error, '电子签名鉴权失败，请重试'));
+    } finally {
+      setSignatureSubmitting(false);
+    }
   };
 
   const handleAddSubTableRecord = (nodeId: string) => {
@@ -1416,6 +1580,7 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
                 values={values}
                 subTableRecordCounts={subTableRecordCounts}
                 onValueChange={handleValueChange}
+                onSignatureRequest={handleOpenSignatureDialog}
                 onAddSubTableRecord={handleAddSubTableRecord}
                 onRemoveSubTableRecord={handleRemoveSubTableRecord}
               />
@@ -1428,6 +1593,50 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
           ) : null}
         </Stack>
       </Box>
+      <Dialog
+        open={Boolean(signatureDialogKey)}
+        onClose={handleCloseSignatureDialog}
+        data-mock-fill-signature-dialog="true"
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontSize: 16, fontWeight: 700 }}>签署电子签名</DialogTitle>
+        <DialogContent sx={{ pt: 1 }}>
+          <Typography sx={{ mb: 1.5, fontSize: 13, color: '#606266' }}>
+            请输入个人设置中认证的电子签名密码，系统将调用后端完成真实鉴权。
+          </Typography>
+          <TextField
+            data-mock-fill-signature-password="true"
+            autoFocus
+            fullWidth
+            type="password"
+            label="电子签名密码"
+            value={signaturePassword}
+            error={Boolean(signaturePasswordError)}
+            helperText={signaturePasswordError || ' '}
+            disabled={signatureSubmitting}
+            onChange={(event) => {
+              setSignaturePassword(event.target.value);
+              if (signaturePasswordError) setSignaturePasswordError('');
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') handleConfirmSignature();
+            }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleCloseSignatureDialog} disabled={signatureSubmitting}>取消</Button>
+          <Button
+            variant="contained"
+            onClick={handleConfirmSignature}
+            data-mock-fill-signature-confirm="true"
+            disabled={signatureSubmitting}
+            sx={{ minWidth: 88 }}
+          >
+            {signatureSubmitting ? '鉴权中...' : '确认签名'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   );
 }
