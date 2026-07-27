@@ -2504,6 +2504,10 @@ export default function CanvasSheetWorkspace() {
     && !selectedSubTableRegion.recordTemplate.groupRange
     && isMultiCellRange(normalizedRange),
   );
+  const shouldShowQuickConvertDivider = Boolean(
+    activeMenuAxis === 'cell'
+    && (canShowCellStructureMenu || canMergeMenuSelection || canSplitMenuSelection),
+  );
   const isColumnInSelectedRanges = (col: number) => (
     normalizedMultiSelectedRanges.some((range) => col >= range.l && col <= range.r)
   );
@@ -3582,7 +3586,9 @@ export default function CanvasSheetWorkspace() {
                   onClick={() => handleMenuAction('split-cells')}
                 >拆分单元格</MenuItem>
               ) : null}
-              <Divider data-sheet-menu-divider="quick-convert" sx={{ my: 0.5 }} />
+              {shouldShowQuickConvertDivider ? (
+                <Divider data-sheet-menu-divider="quick-convert" sx={{ my: 0.5 }} />
+              ) : null}
               <MenuItem
                 data-sheet-menu-action="quick-convert-to-field"
                 onClick={() => handleMenuAction('quick-convert-to-field')}

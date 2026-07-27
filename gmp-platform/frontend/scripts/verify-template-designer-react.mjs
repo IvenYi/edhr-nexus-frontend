@@ -781,6 +781,9 @@ if (!canvasWorkspace.includes('const canShowCellStructureMenu')) failures.push('
 if (!canvasWorkspace.includes('{canShowCellStructureMenu ? (')) failures.push('CanvasSheetWorkspace.tsx: insert row and column actions must not render for discontinuous selected cells');
 if (!canvasWorkspace.includes('{canShowCellStructureMenu ? renderDeleteMenuGroup')) failures.push('CanvasSheetWorkspace.tsx: delete row and column actions must not render for discontinuous selected cells');
 if (!canvasWorkspace.includes('data-sheet-menu-divider="quick-convert"')) failures.push('CanvasSheetWorkspace.tsx: quick field conversion must be separated from merge/split and delete actions');
+if (!canvasWorkspace.includes('const shouldShowQuickConvertDivider')) failures.push('CanvasSheetWorkspace.tsx: quick field conversion divider must be conditional');
+if (!canvasWorkspace.includes('{shouldShowQuickConvertDivider ? (')) failures.push('CanvasSheetWorkspace.tsx: quick field conversion divider must not render when it is the only menu action');
+if (/<Divider data-sheet-menu-divider="quick-convert" sx=\{\{ my: 0\.5 \}\} \/>\s*<MenuItem\s+data-sheet-menu-action="quick-convert-to-field"/.test(canvasWorkspace)) failures.push('CanvasSheetWorkspace.tsx: quick field conversion divider must not be rendered unconditionally');
 if (!canvasWorkspace.includes('data-sheet-menu-action="quick-convert-to-field"')) failures.push('CanvasSheetWorkspace.tsx: cell context menu must include quick field conversion');
 if (!canvasWorkspace.includes('快速转换为字段')) failures.push('CanvasSheetWorkspace.tsx: quick field conversion label must read 快速转换为字段');
 if (!canvasWorkspace.includes("'quick-convert-to-field'")) failures.push('CanvasSheetWorkspace.tsx: quick field conversion must have a typed menu action');
