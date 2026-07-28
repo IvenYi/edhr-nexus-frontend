@@ -29,6 +29,12 @@ interface FieldCellLayout {
   range?: CanvasSelectionRange;
 }
 
+interface CreateFieldInput {
+  name: string;
+  type: FieldType;
+  description?: string;
+}
+
 const DOCUMENT_HISTORY_LIMIT = 50;
 
 function createId(prefix: string) {
@@ -57,6 +63,65 @@ function createUniqueFieldCode(fields: ModelField[], name: string, type: FieldTy
     index += 1;
   }
   return `${base}_${index}`;
+}
+
+function normalizeModelFieldColumns(columns: unknown): ModelField[] {
+  if (typeof columns === 'string') {
+    return columns
+      .split(/[\n,，]/)
+      .map<ModelField | null>((column, index) => {
+        const name = column.trim();
+        if (!name) return null;
+        const definition = getFieldTypeDefinition('text');
+        return {
+          ...definition.defaultField(name, index + 1),
+          id: createId('sub-field'),
+          code: createUniqueFieldCode([], name, definition.type),
+        };
+      })
+      .filter((field): field is ModelField => Boolean(field));
+  }
+
+  if (!Array.isArray(columns)) return [];
+
+  return columns
+    .map<ModelField | null>((column, index) => {
+      if (!column || typeof column !== 'object') return null;
+      const source = column as Partial<ModelField> & Record<string, unknown>;
+      const type = typeof source.type === 'string' && source.type !== 'subTable' ? source.type as FieldType : 'text';
+      const definition = getFieldTypeDefinition(type);
+      const fallbackField = definition.defaultField(
+        typeof source.name === 'string' && source.name.trim() ? source.name.trim() : definition.label,
+        index + 1,
+      );
+      return {
+        ...fallbackField,
+        ...source,
+        type: definition.type,
+        id: typeof source.id === 'string' && source.id ? source.id : createId('sub-field'),
+        code: typeof source.code === 'string' && source.code ? source.code : createUniqueFieldCode([], fallbackField.name, definition.type),
+        name: typeof source.name === 'string' && source.name.trim() ? source.name.trim() : fallbackField.name,
+        sortOrder: typeof source.sortOrder === 'number' ? source.sortOrder : index + 1,
+        status: source.status === 'disabled' ? 'disabled' as const : 'enabled' as const,
+        description: typeof source.description === 'string' ? source.description : '',
+        typeConfig: typeof source.typeConfig === 'object' && source.typeConfig
+          ? { ...fallbackField.typeConfig, ...source.typeConfig }
+          : { ...fallbackField.typeConfig },
+      };
+    })
+    .filter((field): field is ModelField => Boolean(field));
+}
+
+function createModelFieldFromInput(input: CreateFieldInput, sortOrder: number, fields: ModelField[], idPrefix = 'field') {
+  const effectiveType = input.type === 'subTable' ? 'text' : input.type;
+  const definition = getFieldTypeDefinition(effectiveType);
+  const name = input.name.trim() || definition.label;
+  return {
+    ...definition.defaultField(name, sortOrder),
+    id: createId(idPrefix),
+    code: createUniqueFieldCode(fields, name, definition.type),
+    description: input.description?.trim() ?? '',
+  };
 }
 
 function getCellKey(row: number, col: number) {
@@ -1702,6 +1767,8 @@ export interface TemplateDesignerStore {
   selectColumnRange: (colStart: number, colEnd?: number) => void;
   selectRowRange: (rowStart: number, rowEnd?: number) => void;
   addField: (type: FieldType, name?: string) => ModelField;
+  addFields: (fields: CreateFieldInput[]) => ModelField[];
+  addSubTableFields: (subTableFieldId: string, fields: CreateFieldInput[]) => ModelField[];
   updateField: (fieldId: string, patch: Partial<ModelField>) => void;
   setFieldStatus: (fieldId: string, status: ModelFieldStatus) => void;
   setModelFieldReportColumnWidth: (scopeKey: string, columnKey: string, width: number) => void;
@@ -1981,6 +2048,80 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedFieldId: field.id,
     }));
     return field;
+  },
+  addFields: (fields) => {
+    const document = get().document;
+    if (!document) return [];
+
+    const validInputs = fields.filter((field) => field.name.trim());
+    if (!validInputs.length) return [];
+
+    const createdFields = validInputs.reduce<ModelField[]>((result, input, index) => {
+      const existingFields = [...document.model.fields, ...result];
+      const field = createModelFieldFromInput(input, document.model.fields.length + index + 1, existingFields, 'field');
+      return [...result, field];
+    }, []);
+
+    set((state) => pushDocumentHistory(state, {
+      document: state.document
+        ? {
+            ...state.document,
+            model: {
+              ...state.document.model,
+              fields: [...state.document.model.fields, ...createdFields],
+            },
+          }
+        : state.document,
+      selectedFieldId: createdFields[createdFields.length - 1]?.id ?? state.selectedFieldId,
+      activeCanvasRail: 'fields',
+      isCanvasSidebarVisible: true,
+    }));
+
+    return createdFields;
+  },
+  addSubTableFields: (subTableFieldId, fields) => {
+    const document = get().document;
+    if (!document) return [];
+
+    const subTableField = document.model.fields.find((field) => field.id === subTableFieldId && field.type === 'subTable');
+    if (!subTableField) return [];
+
+    const currentColumns = normalizeModelFieldColumns(subTableField.typeConfig.columns);
+    const validInputs = fields.filter((field) => field.name.trim());
+    if (!validInputs.length) return [];
+
+    const createdFields = validInputs.reduce<ModelField[]>((result, input, index) => {
+      const existingFields = [...currentColumns, ...result];
+      const field = createModelFieldFromInput(input, currentColumns.length + index + 1, existingFields, 'sub-field');
+      return [...result, field];
+    }, []);
+
+    set((state) => pushDocumentHistory(state, {
+      document: state.document
+        ? {
+            ...state.document,
+            model: {
+              ...state.document.model,
+              fields: state.document.model.fields.map((field) => (
+                field.id === subTableFieldId
+                  ? {
+                      ...field,
+                      typeConfig: {
+                        ...field.typeConfig,
+                        columns: [...currentColumns, ...createdFields],
+                      },
+                    }
+                  : field
+              )),
+            },
+          }
+        : state.document,
+      selectedFieldId: createdFields[createdFields.length - 1]?.id ?? state.selectedFieldId,
+      activeCanvasRail: 'fields',
+      isCanvasSidebarVisible: true,
+    }));
+
+    return createdFields;
   },
   updateField: (fieldId, patch) => set((state) => {
     if (!state.document) {

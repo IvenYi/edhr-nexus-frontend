@@ -1,11 +1,33 @@
 import type { DragEvent as ReactDragEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import CloseRounded from '@mui/icons-material/CloseRounded';
+import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
-import { Box, Button, Divider, InputAdornment, Menu, MenuItem, Stack, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+} from '@mui/material';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
-import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, ModelField } from '../../types';
+import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, FieldType, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
+import { fieldRegistry } from '../../registry/fieldRegistry';
 import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
 import { useSnackbar } from '@/components/SnackbarProvider';
 
@@ -26,6 +48,7 @@ const SHEET_ROW_RENDER_OVERSCAN_PX = 720;
 const SPECIAL_WRAP_CELL_VALUE_PATTERN = /[□☐☑☒■▪●○◆◇★☆※√×]/;
 const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
 const FIELD_POINTER_HOVER_EVENT = 'template-designer-field-pointer-hover';
+const quickAddFieldTypeOptions = fieldRegistry.filter((field) => field.type !== 'subTable');
 
 type DragState =
   | { type: 'cell'; startRow: number; startCol: number; startRange: CanvasSelectionRange }
@@ -52,7 +75,7 @@ type SheetMenuAction =
   | 'auto-size'
   | 'merge-cells'
   | 'split-cells'
-  | 'quick-convert-to-field';
+  | 'quick-add-fields';
 
 interface SheetMenuState {
   axis: MenuAxis;
@@ -95,6 +118,17 @@ interface SubTableFieldDragData {
   field: ModelField;
 }
 
+type QuickAddFieldTarget = 'main' | 'subTable';
+
+interface QuickAddFieldDraft {
+  id: string;
+  row: number;
+  col: number;
+  name: string;
+  type: FieldType;
+  description: string;
+}
+
 interface FieldPointerHoverDetail {
   row: number;
   col: number;
@@ -124,6 +158,10 @@ function normalizeRange(range: CanvasSelectionRange): CanvasSelectionRange {
     b: Math.max(range.t, range.b),
     r: Math.max(range.l, range.r),
   };
+}
+
+function createSingleCellRange(row: number, col: number): CanvasSelectionRange {
+  return { t: row, l: col, b: row, r: col };
 }
 
 function isInRange(range: CanvasSelectionRange | null, row: number, col: number) {
@@ -669,6 +707,7 @@ function hasPlainOverflowCellValue(value: unknown, contentWidth: number, fontSiz
 
 export default function CanvasSheetWorkspace() {
   const { showMessage } = useSnackbar();
+  const designerDocument = useTemplateDesignerStore((state) => state.document);
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
@@ -695,7 +734,8 @@ export default function CanvasSheetWorkspace() {
   const pasteFieldNodeToCell = useTemplateDesignerStore((state) => state.pasteFieldNodeToCell);
   const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
   const splitSelectedCells = useTemplateDesignerStore((state) => state.splitSelectedCells);
-  const addField = useTemplateDesignerStore((state) => state.addField);
+  const addFields = useTemplateDesignerStore((state) => state.addFields);
+  const addSubTableFields = useTemplateDesignerStore((state) => state.addSubTableFields);
   const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
   const addNodeFromSubTableFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromSubTableFieldToCell);
   const addNodeFromFieldToRange = useTemplateDesignerStore((state) => state.addNodeFromFieldToRange);
@@ -704,6 +744,11 @@ export default function CanvasSheetWorkspace() {
   const availableSubTableFields = useTemplateDesignerStore((state) => (
     state.getAvailableFieldsForCurrentVersion()
       .filter((field) => field.type === 'subTable')
+      .sort((first, second) => first.sortOrder - second.sortOrder)
+  ));
+  const quickAddSubTableTargetFields = useTemplateDesignerStore((state) => (
+    (state.document?.model.fields ?? [])
+      .filter((field) => field.status === 'enabled' && field.type === 'subTable')
       .sort((first, second) => first.sortOrder - second.sortOrder)
   ));
   const setPagePreviewCount = useTemplateDesignerStore((state) => state.setPagePreviewCount);
@@ -721,6 +766,10 @@ export default function CanvasSheetWorkspace() {
   const [hoveredSubTableNodeId, setHoveredSubTableNodeId] = useState<string | null>(null);
   const [insertMenuCount, setInsertMenuCount] = useState('1');
   const [subTableMenuAnchorEl, setSubTableMenuAnchorEl] = useState<HTMLElement | null>(null);
+  const [quickAddFieldDialogOpen, setQuickAddFieldDialogOpen] = useState(false);
+  const [quickAddFieldTarget, setQuickAddFieldTarget] = useState<QuickAddFieldTarget>('main');
+  const [quickAddFieldSubTableId, setQuickAddFieldSubTableId] = useState('');
+  const [quickAddFieldDrafts, setQuickAddFieldDrafts] = useState<QuickAddFieldDraft[]>([]);
   const [workspaceViewport, setWorkspaceViewport] = useState({ scrollTop: 0, height: 0 });
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
@@ -729,6 +778,16 @@ export default function CanvasSheetWorkspace() {
   const fieldNodeClipboardRef = useRef<CanvasNode | null>(null);
   const skipNextBlurCommitRef = useRef(false);
   const [freeCanvasMeasuredHeight, setFreeCanvasMeasuredHeight] = useState(480);
+  const quickAddMainTargetName = designerDocument?.meta.templateName?.trim() || '当前模板';
+  const quickAddMainTargetLabel = `主表-${quickAddMainTargetName}`;
+  const quickAddTargetValue = quickAddFieldTarget === 'subTable' ? `subTable:${quickAddFieldSubTableId}` : 'main';
+  const quickAddTargetOptions = [
+    { value: 'main', label: quickAddMainTargetLabel },
+    ...quickAddSubTableTargetFields.map((field) => ({
+      value: `subTable:${field.id}`,
+      label: `子表-${field.name || field.code || '未命名子表'}`,
+    })),
+  ];
   const columns = useMemo(
     () => Array.from({ length: currentPage?.sheet.columnCount ?? 0 }, (_, index) => index + 1),
     [currentPage?.sheet.columnCount],
@@ -2176,7 +2235,7 @@ export default function CanvasSheetWorkspace() {
     setSubTableRecordTemplateFromRange(selectedSubTableNode.id, normalizedRange);
     closeContextMenu();
   };
-  const getQuickConvertRanges = () => {
+  const getQuickAddFieldRanges = () => {
     const rangeMap = new Map<string, CanvasSelectionRange>();
     (normalizedMultiSelectedRanges.length ? normalizedMultiSelectedRanges : normalizedRange ? [normalizedRange] : [])
       .forEach((range) => {
@@ -2185,35 +2244,131 @@ export default function CanvasSheetWorkspace() {
       });
     return Array.from(rangeMap.values());
   };
-  const getQuickConvertFieldName = (range: CanvasSelectionRange, index: number) => {
-    const cellValue = currentPage?.cells[getCellKey(range.t, range.l)]?.value;
+  const inferQuickAddFieldType = (value: string): FieldType => {
+    const text = value.trim();
+    if (/^-?\d+(?:\.\d+)?$/.test(text)) return 'number';
+    if (/^\d{4}[-/年]\d{1,2}(?:[-/月]\d{1,2}日?)?(?:\s+\d{1,2}:\d{1,2}(?::\d{1,2})?)?$/.test(text)) return 'datetime';
+    if (/图片|照片|图像|image|photo/i.test(text)) return 'image';
+    if (/附件|文件|上传|attachment|file/i.test(text)) return 'attachment';
+    if (/签名|签字|signature/i.test(text)) return 'signature';
+    return 'text';
+  };
+  const getQuickAddFieldName = (row: number, col: number, index: number) => {
+    const cellValue = currentPage?.cells[getCellKey(row, col)]?.value;
     const text = String(cellValue ?? '').trim().replace(/\s+/g, ' ');
     if (text) {
       return text.slice(0, 24);
     }
-    const cellLabel = `${getColumnLabel(range.l)}${range.t}`;
+    const cellLabel = `${getColumnLabel(col)}${row}`;
     return index === 0 ? `字段${cellLabel}` : `字段${cellLabel}_${index + 1}`;
   };
-  const handleQuickConvertToField = () => {
+  const getQuickAddFieldCells = () => {
+    if (!currentPage) return [];
+
+    const ranges = getQuickAddFieldRanges();
+    const cellMap = new Map<string, { row: number; col: number }>();
+    ranges.forEach((range) => {
+      for (let row = range.t; row <= range.b; row += 1) {
+        for (let col = range.l; col <= range.r; col += 1) {
+          const mergedRange = findMergedRangeForCell(currentPage, row, col);
+          if (mergedRange && (mergedRange.t !== row || mergedRange.l !== col)) continue;
+          cellMap.set(getCellKey(row, col), { row, col });
+        }
+      }
+    });
+    return Array.from(cellMap.values())
+      .sort((first, second) => first.row - second.row || first.col - second.col);
+  };
+  const getQuickAddFieldDrafts = () => (
+    getQuickAddFieldCells()
+      .map((cell, index) => {
+        const name = getQuickAddFieldName(cell.row, cell.col, index);
+        return {
+          id: `${cell.row}:${cell.col}`,
+          row: cell.row,
+          col: cell.col,
+          name,
+          type: inferQuickAddFieldType(name),
+          description: '',
+        };
+      })
+  );
+  const getDefaultQuickAddTarget = (drafts: QuickAddFieldDraft[]): { target: QuickAddFieldTarget; subTableId: string } => {
+    if (!currentPage || !drafts.length) {
+      return { target: 'main', subTableId: quickAddSubTableTargetFields[0]?.id ?? '' };
+    }
+    const firstCellRange = createSingleCellRange(drafts[0].row, drafts[0].col);
+    const containingSubTable = quickAddSubTableTargetFields.find((field) => {
+      const subTableRange = findSubTableNodeRange(currentPage, field.id);
+      return Boolean(subTableRange && rangeContainsRange(subTableRange, firstCellRange));
+    });
+    return {
+      target: containingSubTable ? 'subTable' : 'main',
+      subTableId: containingSubTable?.id ?? quickAddSubTableTargetFields[0]?.id ?? '',
+    };
+  };
+  const handleOpenQuickAddFieldsDialog = () => {
     if (!currentPage) {
       closeContextMenu();
       return;
     }
 
-    const ranges = getQuickConvertRanges();
-    if (!ranges.length) {
+    const drafts = getQuickAddFieldDrafts();
+    if (!drafts.length) {
       closeContextMenu();
       return;
     }
 
-    ranges.forEach((range, index) => {
-      const normalized = normalizeRange(range);
-      const field = addField('text', getQuickConvertFieldName(normalized, index));
-      addNodeFromFieldToRange(field.id, normalized, getFieldDropCellLayout(normalized));
-    });
-    setActiveCanvasRail('fields');
-    showMessage(`已快速转换 ${ranges.length} 个字段`, 'success');
+    const defaultTarget = getDefaultQuickAddTarget(drafts);
+    setQuickAddFieldDrafts(drafts);
+    setQuickAddFieldTarget(defaultTarget.target);
+    setQuickAddFieldSubTableId(defaultTarget.subTableId);
+    setQuickAddFieldDialogOpen(true);
     closeContextMenu();
+  };
+  const closeQuickAddFieldDialog = () => {
+    setQuickAddFieldDialogOpen(false);
+    setQuickAddFieldDrafts([]);
+  };
+  const handleQuickAddTargetChange = (value: string) => {
+    if (value === 'main') {
+      setQuickAddFieldTarget('main');
+      return;
+    }
+    if (value.startsWith('subTable:')) {
+      setQuickAddFieldTarget('subTable');
+      setQuickAddFieldSubTableId(value.slice('subTable:'.length));
+    }
+  };
+  const updateQuickAddFieldDraft = (id: string, patch: Partial<QuickAddFieldDraft>) => {
+    setQuickAddFieldDrafts((drafts) => drafts.map((draft) => (
+      draft.id === id ? { ...draft, ...patch } : draft
+    )));
+  };
+  const removeQuickAddFieldDraft = (id: string) => {
+    setQuickAddFieldDrafts((drafts) => drafts.filter((draft) => draft.id !== id));
+  };
+  const handleConfirmQuickAddFields = () => {
+    const fields = quickAddFieldDrafts
+      .map((draft) => ({
+        name: draft.name.trim(),
+        type: draft.type,
+        description: draft.description.trim(),
+      }))
+      .filter((field) => field.name);
+    if (!fields.length) return;
+
+    const createdFields = quickAddFieldTarget === 'subTable'
+      ? addSubTableFields(quickAddFieldSubTableId, fields)
+      : addFields(fields);
+    if (!createdFields.length) {
+      showMessage(quickAddFieldTarget === 'subTable' ? '请选择可添加字段的子表' : '未添加字段', 'warning');
+      return;
+    }
+
+    setActiveCanvasRail('fields');
+    showMessage(`已快速添加 ${createdFields.length} 个字段`, 'success');
+    closeQuickAddFieldDialog();
   };
 
   const clearSelectionAfterSheetStructureChange = () => {
@@ -2244,8 +2399,8 @@ export default function CanvasSheetWorkspace() {
     const cellStructureActionRange = getCellStructureActionRange();
     let didChangeSheetStructure = false;
 
-    if (menuState.axis === 'cell' && action === 'quick-convert-to-field') {
-      handleQuickConvertToField();
+    if (menuState.axis === 'cell' && action === 'quick-add-fields') {
+      handleOpenQuickAddFieldsDialog();
       return;
     }
 
@@ -2504,7 +2659,7 @@ export default function CanvasSheetWorkspace() {
     && !selectedSubTableRegion.recordTemplate.groupRange
     && isMultiCellRange(normalizedRange),
   );
-  const shouldShowQuickConvertDivider = Boolean(
+  const shouldShowQuickAddFieldsDivider = Boolean(
     activeMenuAxis === 'cell'
     && (canShowCellStructureMenu || canMergeMenuSelection || canSplitMenuSelection),
   );
@@ -3586,14 +3741,14 @@ export default function CanvasSheetWorkspace() {
                   onClick={() => handleMenuAction('split-cells')}
                 >拆分单元格</MenuItem>
               ) : null}
-              {shouldShowQuickConvertDivider ? (
-                <Divider data-sheet-menu-divider="quick-convert" sx={{ my: 0.5 }} />
+              {shouldShowQuickAddFieldsDivider ? (
+                <Divider data-sheet-menu-divider="quick-add-fields" sx={{ my: 0.5 }} />
               ) : null}
               <MenuItem
-                data-sheet-menu-action="quick-convert-to-field"
-                onClick={() => handleMenuAction('quick-convert-to-field')}
+                data-sheet-menu-action="quick-add-fields"
+                onClick={() => handleMenuAction('quick-add-fields')}
               >
-                快速转换为字段
+                快速添加字段
               </MenuItem>
               {renderSetSubTableMenu()}
               {canGroupSubTableSelection ? (
@@ -3678,6 +3833,159 @@ export default function CanvasSheetWorkspace() {
           )
         ) : null}
       </Menu>
+      <Dialog
+        data-quick-add-field-dialog="true"
+        open={quickAddFieldDialogOpen}
+        onClose={closeQuickAddFieldDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: 16,
+            fontWeight: 700,
+            pb: 1.5,
+          }}
+        >
+          <Box component="span">快速添加字段</Box>
+          <IconButton
+            data-quick-add-field-close="true"
+            aria-label="关闭快速添加字段"
+            size="small"
+            onClick={closeQuickAddFieldDialog}
+          >
+            <CloseRounded fontSize="small" />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ pt: '8px !important' }}>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+              <TextField
+                data-quick-add-field-target="true"
+                select
+                size="small"
+                label="添加目标"
+                value={quickAddTargetValue}
+                onChange={(event) => handleQuickAddTargetChange(event.target.value)}
+                sx={{ width: 260 }}
+              >
+                {quickAddTargetOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                ))}
+              </TextField>
+            </Stack>
+            <Box
+              data-quick-add-field-table-frame="true"
+              sx={{
+                border: '1px solid #d8dee9',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                bgcolor: '#fff',
+              }}
+            >
+              <Table
+                size="small"
+                sx={{
+                  borderCollapse: 'collapse',
+                  tableLayout: 'fixed',
+                  width: '100%',
+                  '& .MuiTableCell-head': {
+                    bgcolor: '#f8fafc',
+                    color: '#475569',
+                    fontWeight: 700,
+                    fontSize: 13,
+                    height: 34,
+                    lineHeight: '18px',
+                    px: 1.5,
+                    py: 0.5,
+                    border: '1px solid #d8dee9',
+                  },
+                  '& .MuiTableCell-body': {
+                    px: 1.5,
+                    py: 0.75,
+                    border: '1px solid #e2e8f0',
+                    verticalAlign: 'middle',
+                  },
+                }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell width={64} align="center">序号</TableCell>
+                    <TableCell width="28%">字段名称</TableCell>
+                    <TableCell width="20%">字段类型</TableCell>
+                    <TableCell>字段说明</TableCell>
+                    <TableCell width={72} align="center">操作</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {quickAddFieldDrafts.map((draft, index) => (
+                    <TableRow key={draft.id} data-quick-add-field-row="true">
+                      <TableCell align="center" sx={{ color: '#64748b', fontWeight: 600 }}>{index + 1}</TableCell>
+                      <TableCell>
+                        <TextField
+                          size="small"
+                          value={draft.name}
+                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { name: event.target.value })}
+                          fullWidth
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          select
+                          size="small"
+                          value={draft.type}
+                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { type: event.target.value as FieldType })}
+                          fullWidth
+                        >
+                          {quickAddFieldTypeOptions.map((fieldType) => (
+                            <MenuItem key={fieldType.type} value={fieldType.type}>{fieldType.label}</MenuItem>
+                          ))}
+                        </TextField>
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          size="small"
+                          value={draft.description}
+                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { description: event.target.value })}
+                          placeholder="字段说明"
+                          fullWidth
+                        />
+                      </TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          data-quick-add-field-row-remove="true"
+                          size="small"
+                          aria-label="移除"
+                          onClick={() => removeQuickAddFieldDraft(draft.id)}
+                          sx={{ color: '#ef4444' }}
+                        >
+                          <DeleteOutlineRounded fontSize="small" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={closeQuickAddFieldDialog}>取消</Button>
+          <Button
+            variant="contained"
+            onClick={handleConfirmQuickAddFields}
+            disabled={
+              !quickAddFieldDrafts.some((draft) => draft.name.trim())
+              || (quickAddFieldTarget === 'subTable' && !quickAddFieldSubTableId)
+            }
+          >
+            确认添加
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Menu
         data-sheet-sub-table-menu-root="true"
         open={Boolean(subTableMenuAnchorEl)}

@@ -9,6 +9,7 @@ import type { ModelField } from '../types';
 const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
 const FIELD_POINTER_HOVER_EVENT = 'template-designer-field-pointer-hover';
 const POINTER_DRAG_THRESHOLD = 4;
+const canvasFieldCardHeight = 56;
 
 interface PointerDragState {
   fieldId: string;
@@ -305,13 +306,13 @@ export default function DesignerSidebar() {
     const definition = getFieldTypeDefinition(field.type);
 
     return (
-      <Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0 }}>
+      <Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0, width: '100%' }}>
         <FieldTypeIcon iconKey={definition.iconKey} sx={{ fontSize: 22, color: '#64748b', flex: '0 0 auto' }} />
-        <Stack alignItems="flex-start" sx={{ minWidth: 0 }}>
+        <Stack alignItems="flex-start" justifyContent="center" sx={{ minWidth: 0, flex: 1 }}>
           <Typography sx={{ fontSize: 15, color: '#303133', lineHeight: 1.25 }} noWrap>
             {field.name || '未命名字段'}
           </Typography>
-          <Typography sx={{ fontSize: 13, color: '#909399', lineHeight: 1.25 }}>
+          <Typography data-canvas-field-type-label="true" sx={{ fontSize: 13, color: '#909399', lineHeight: 1.25, maxWidth: '100%' }} noWrap>
             {definition.label}
           </Typography>
         </Stack>
@@ -338,8 +339,11 @@ export default function DesignerSidebar() {
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 width: '100%',
+                height: canvasFieldCardHeight,
+                minHeight: canvasFieldCardHeight,
+                flex: `0 0 ${canvasFieldCardHeight}px`,
                 px: 1.25,
-                py: 1,
+                py: 0,
                 borderRadius: 1,
                 cursor: 'grab',
                 opacity: isDragging ? 0 : 1,
