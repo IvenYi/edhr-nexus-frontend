@@ -115,7 +115,7 @@ Liquibase
 制程结构：ProcessVersion 使用关系表保存产品、路线、DHR、放行单、表单、SOP、权限和事务规则
 事务结构：TxnVersion 使用 JSONB/关系表保存节点、条件和表单节点，发布后不可变
 表单实例：FormInstance 使用关系表建模状态、来源对象、所有者、生命周期
-字段值：FormFieldValue 使用结构化字段值表，并保留必要 raw_value
+表单实例数据：由模板模块保存；eDHR 只保存不可变快照引用、hash 和业务主体上下文
 DHR 汇总：DhrSummaryVersion + DhrSummaryItem 保存目录、来源证据和汇总版本
 审计事件：AuditEvent 独立 append-only 表，后续按时间/租户/工厂分区
 签名记录：Signature 独立表，绑定签名对象、签名含义、对象快照/hash

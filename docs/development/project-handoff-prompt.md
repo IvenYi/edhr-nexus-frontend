@@ -50,7 +50,7 @@
   - 表单模板导入支持 PDF、Word、Excel、图片；PPT/PPTX 当前明确不纳入自研导入范围。
   - 设计器已开始支持“图层锚定 + 格式复刻”结构、画布层、解析候选、候选确认、字段/文本拖拽放置和保存。
   - 候选确认已要求显式处理全部候选；导入失败会回滚到导入前设计器状态；重新打开带 pending analysis draft 的版本会尝试恢复候选确认面板。
-  - OnlyOffice 已按 PoC 方式接入：后端提供 editor config/callback，前端提供原文编辑/预览入口，Docker Compose 增加 Document Server 服务；但仍不要用 OnlyOffice 替换 Zencas 自有结构化字段层。
+  - OnlyOffice 已按 PoC 方式接入：后端提供 editor config/callback，前端提供原文编辑/预览入口，Docker Compose 增加 Document Server 服务；模板模块负责其交互字段与运行数据契约，其他业务模块不得再实现第二套表单设计或填报能力。
 
 在建且需要特别注意：
 
@@ -90,7 +90,7 @@ gmp-platform/frontend
 ├── src/pages/account        # 个人设置
 ├── src/router               # 路由
 ├── src/utils                # 菜单、常量、图标等
-└── scripts                  # 前端结构化 verifier
+└── scripts                  # 前端验证脚本
 ```
 
 后端关键目录：
@@ -219,7 +219,7 @@ API 客户端：
 - PDF/图片需要考虑渲染背景、矫正和线条层。
 - Excel 需要尽量还原行高、列宽、边框、合并单元格、文字位置和图片。
 - Word 当前自研解析仍是基础结构解析，高保真原文编辑/预览走 OnlyOffice 或独立转换服务。
-- OnlyOffice PoC：用其负责文档渲染/编辑/协同，Zencas 自己存结构化字段覆盖层、填报数据、审计和发布状态。
+- OnlyOffice PoC：负责文档渲染/编辑/协同；模板模块维护交互覆盖层、填报数据、审计和发布状态，eDHR 事务与 DHR 模块只消费受控版本和实例事件。
 - OnlyOffice `document.url` 必须使用表单模板版本专用的 `/api/v1/master-data/template-modeling/form-templates/{id}/versions/{versionId}/onlyoffice/source?token=...` 签名地址，不能回退到平台鉴权的 `/api/v1/files/{id}/preview`；普通文件 preview 仍应要求平台 JWT。
 - OnlyOffice callback 已校验 JWT、document key、下载 host，并对缺 URL、失败状态、下载失败写安全审计；下载编辑后文件时已禁用自动跨域重定向、设置超时并限制最大 50MB。
 
@@ -444,7 +444,7 @@ frontend/src/pages/master-data/TemplateModelingPage.tsx
 - 不要直接替换现有设计器。
 - 新增一个 OnlyOffice 编辑/预览模式作为 PoC。
 - OnlyOffice 负责源文件高保真渲染、在线编辑、协同。
-- Zencas 自己保存结构化覆盖层 JSON：字段组件、坐标、绑定、校验、填报权限、审计。
+- 模板模块保存交互覆盖层和运行数据；eDHR 事务与 DHR 模块只消费受控版本、实例快照和生命周期事件。
 - 后端需要提供 OnlyOffice config 接口、callback 接口、文件访问 URL 和 JWT/签名校验。
 
 优先级 3：模板建模代码治理
