@@ -1,1 +1,0 @@
-import '@gct/runtime';

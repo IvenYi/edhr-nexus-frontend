@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from '@mui/material';
-import type { TemplateDesignerDialogProps } from '../template-designer/templateDesignerTypes';
+import type { TemplateDesignerDialogProps } from './types';
 import TemplateDesignerReactShell from './TemplateDesignerReactShell';
 
 export default function TemplateDesignerReactDialog({
@@ -8,6 +8,7 @@ export default function TemplateDesignerReactDialog({
   version,
   onClose,
   onSave,
+  onAutoSave,
   saving,
 }: TemplateDesignerDialogProps) {
   return (
@@ -31,6 +32,7 @@ export default function TemplateDesignerReactDialog({
             version={version}
             onClose={onClose}
             onSave={onSave}
+            onAutoSave={onAutoSave}
             saving={saving}
           />
         ) : null}

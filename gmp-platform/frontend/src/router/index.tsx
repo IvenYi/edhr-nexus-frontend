@@ -19,7 +19,6 @@ const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const TemplateModelingPage = lazy(() => import('@/pages/master-data/TemplateModelingPage'));
-const TemplateMockFillPage = lazy(() => import('@/pages/master-data/template-designer/TemplateMockFillPage'));
 
 const OrganizationPage = lazy(() => import('@/pages/system/OrganizationPage'));
 const UserPage = lazy(() => import('@/pages/system/UserPage'));
@@ -51,16 +50,6 @@ const AppRouter = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route
-        path="/master-data/form-templates/mock-fill"
-        element={
-          <ProtectedRoute>
-            <Suspense fallback={<Loading />}>
-              <TemplateMockFillPage />
-            </Suspense>
-          </ProtectedRoute>
-        }
-      />
       <Route
         path="/"
         element={

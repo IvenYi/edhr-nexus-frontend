@@ -1,14 +1,19 @@
 import type { TemplateModelingRecord, TemplateVersionRecord } from '@/api/template-modeling';
-import type { TemplateDesignerSavePayload } from '@/pages/master-data/template-designer/templateDesignerBridge';
 import type {
   CanvasPage,
+  FieldType,
+  ModelField,
+  ModelFieldOption,
   CanvasDesignState,
   ModelDesignState,
   ReactTemplateDesignerPersisted,
+  TemplateDesignerSavePayload,
   TemplateDesignerDocument,
   TemplateDesignerMeta,
   WorkflowDesignState,
 } from '../types';
+import { getFieldTypeDefinition } from '../registry/fieldRegistry';
+import { createLegacySubTableRegion, readNodeCellRange } from './subTableRegion';
 
 function safeParseJson(input?: string | null) {
   if (!input?.trim()) return null;
@@ -45,15 +50,131 @@ function normalizeSizedList(count: number, values: unknown, fallback: number) {
   });
 }
 
+function normalizeFieldReportColumnWidths(input: unknown): Record<string, Record<string, number>> {
+  if (!input || typeof input !== 'object') return {};
+
+  return Object.entries(input as Record<string, unknown>).reduce<Record<string, Record<string, number>>>((scopes, [scopeKey, scopeValue]) => {
+    if (!scopeKey || !scopeValue || typeof scopeValue !== 'object') return scopes;
+
+    const widths = Object.entries(scopeValue as Record<string, unknown>).reduce<Record<string, number>>((columns, [columnKey, columnWidth]) => {
+      const width = Number(columnWidth);
+      if (columnKey && Number.isFinite(width) && width > 0) {
+        columns[columnKey] = Math.round(width);
+      }
+      return columns;
+    }, {});
+
+    if (Object.keys(widths).length) {
+      scopes[scopeKey] = widths;
+    }
+    return scopes;
+  }, {});
+}
+
+const LEGACY_FIELD_TYPE_MAP: Record<string, FieldType> = {
+  input: 'text',
+  link: 'text',
+  textarea: 'text',
+  inputnumber: 'number',
+  inputdouble: 'number',
+  datepicker: 'datetime',
+  datetimepicker: 'datetime',
+  timepicker: 'datetime',
+  radio: 'singleSelect',
+  select: 'singleSelect',
+  switch: 'singleSelect',
+  checkbox: 'multiSelect',
+  userpicker: 'reference',
+  department: 'reference',
+  'sub-table': 'subTable',
+  readonlycmp: 'text',
+};
+
+function normalizeFieldType(type: unknown): FieldType {
+  if (typeof type !== 'string') return 'text';
+  if (getFieldTypeDefinition(type).type === type) {
+    return type as FieldType;
+  }
+  return LEGACY_FIELD_TYPE_MAP[type] ?? 'text';
+}
+
+function parseOptionsText(optionsText: unknown): ModelFieldOption[] {
+  if (typeof optionsText !== 'string' || !optionsText.trim()) return [];
+  return optionsText
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line, index) => {
+      const [rawLabel, rawValue] = line.split(':');
+      const label = rawLabel?.trim() || `选项${index + 1}`;
+      const value = rawValue?.trim() || label;
+      return {
+        id: `option-${index + 1}`,
+        label,
+        value,
+        sortOrder: index + 1,
+        status: 'enabled',
+      };
+    });
+}
+
+function normalizeModelField(input: unknown, index: number): ModelField | null {
+  if (!input || typeof input !== 'object') return null;
+
+  const source = input as Record<string, unknown>;
+  const type = normalizeFieldType(source.type);
+  const definition = getFieldTypeDefinition(type);
+  const name = typeof source.name === 'string' && source.name.trim()
+    ? source.name.trim()
+    : definition.label;
+  const fallbackField = definition.defaultField(name, index + 1);
+  const sourceConfig = typeof source.config === 'object' && source.config ? source.config : {};
+  const sourceTypeConfig = typeof source.typeConfig === 'object' && source.typeConfig ? source.typeConfig : {};
+  const options = Array.isArray(source.options) ? source.options : parseOptionsText(source.optionsText);
+
+  return {
+    ...fallbackField,
+    id: typeof source.id === 'string' && source.id ? source.id : `field-${index + 1}`,
+    code: typeof source.code === 'string' && source.code ? source.code : `field_${index + 1}`,
+    name,
+    groupId: typeof source.groupId === 'string' ? source.groupId : 'default-group',
+    sortOrder: typeof source.sortOrder === 'number' ? source.sortOrder : index + 1,
+    status: source.status === 'disabled' ? 'disabled' : 'enabled',
+    description: typeof source.description === 'string' ? source.description : '',
+    typeConfig: {
+      ...fallbackField.typeConfig,
+      ...sourceConfig,
+      ...sourceTypeConfig,
+      ...(options.length ? { options } : {}),
+    },
+  };
+}
+
+function normalizeModelState(model: ModelDesignState | undefined): ModelDesignState | undefined {
+  if (!model) return undefined;
+  const fields = Array.isArray(model.fields)
+    ? model.fields.map((field, index) => normalizeModelField(field, index)).filter((field): field is ModelField => Boolean(field))
+    : [];
+
+  return {
+    groups: Array.isArray(model.groups) && model.groups.length
+      ? model.groups
+      : [{ id: 'default-group', name: '默认分组' }],
+    fields,
+    fieldReportColumnWidths: normalizeFieldReportColumnWidths(model.fieldReportColumnWidths),
+  };
+}
+
 export function createEmptyTemplateDesignerDocument(
   meta: TemplateDesignerMeta,
   overrides?: Partial<Pick<TemplateDesignerDocument, 'model' | 'canvas' | 'workflow'>>,
 ): TemplateDesignerDocument {
   return {
     meta,
-    model: overrides?.model ?? {
+    model: normalizeModelState(overrides?.model) ?? {
       groups: [{ id: 'default-group', name: '默认分组' }],
       fields: [],
+      fieldReportColumnWidths: {},
     },
     canvas: overrides?.canvas ?? {
       pages: [{
@@ -94,16 +215,46 @@ export function createEmptyTemplateDesignerDocument(
   };
 }
 
+function normalizeCanvasNodes(nodes: CanvasPage['nodes'], pageId: string): CanvasPage['nodes'] {
+  return nodes.map((node) => {
+    const cellRange = readNodeCellRange(node);
+    const nextNode = node.type === 'sub-table'
+      && node.bindings?.fieldId
+      && !node.bindings.subTableRegion
+      && cellRange
+      ? {
+          ...node,
+          bindings: {
+            ...node.bindings,
+            subTableRegion: createLegacySubTableRegion({
+              id: `sub-table-region-${node.id}`,
+              fieldId: node.bindings.fieldId,
+              pageId,
+              range: cellRange,
+            }),
+          },
+        }
+      : node;
+
+    if (!nextNode.children?.length) return nextNode;
+    return {
+      ...nextNode,
+      children: normalizeCanvasNodes(nextNode.children, pageId),
+    };
+  });
+}
+
 function normalizeCanvasPage(page: Partial<CanvasPage>, index: number): CanvasPage {
   const rowCount = page.sheet?.rowCount ?? 30;
   const columnCount = page.sheet?.columnCount ?? 9;
   const defaultRowHeight = page.sheet?.defaultRowHeight ?? 36;
   const defaultColumnWidth = page.sheet?.defaultColumnWidth ?? 98;
+  const pageId = page.id || `page-${index + 1}`;
 
   return {
-    id: page.id || `page-${index + 1}`,
+    id: pageId,
     name: page.name || `页面 ${index + 1}`,
-    nodes: page.nodes ?? [],
+    nodes: normalizeCanvasNodes(page.nodes ?? [], pageId),
     sheet: {
       rowCount,
       columnCount,

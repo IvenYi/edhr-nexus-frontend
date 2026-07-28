@@ -31,6 +31,9 @@ client.interceptors.request.use(
 // Response interceptor: unwrap ApiResponse, handle 401
 client.interceptors.response.use(
   (response) => {
+    if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+      return response;
+    }
     const body = response.data as ApiResponse<unknown>;
     if (body.code !== 200) {
       return Promise.reject(new Error(body.message || 'Request failed'));

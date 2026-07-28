@@ -1,4 +1,5 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, MouseEvent as ReactMouseEvent } from 'react';
+import type { ModelField } from './model';
 
 export type PropertyEditorType = 'text' | 'textarea' | 'number' | 'switch' | 'select';
 
@@ -15,9 +16,31 @@ export interface PropertySchemaItem {
   options?: PropertyOption[];
 }
 
-export interface CanvasNodeBindings {
+export interface FieldBinding {
+  fieldId: string;
+  displayLabel?: string;
+  required?: boolean;
+  readonly?: boolean;
+  hidden?: boolean;
+  defaultValue?: unknown;
+  placeholder?: string;
+  helpText?: string;
+  validationType?: 'none' | 'phone' | 'email';
+  displayMode?: 'text' | 'link' | 'mask';
+  autoWrap?: boolean;
+  maskMode?: 'middle' | 'start' | 'end';
+  maskDigits?: number;
+  linkTarget?: 'blank' | 'self';
+  widgetConfig?: Record<string, unknown>;
+}
+
+export interface CanvasNodeBindings extends Partial<Omit<FieldBinding, 'fieldId'>> {
   fieldId?: string;
   fieldIds?: string[];
+  subTableId?: string;
+  subTableFieldId?: string;
+  subTableField?: ModelField;
+  subTableRegion?: SubTableRegion;
 }
 
 export interface CanvasNode {
@@ -44,6 +67,92 @@ export interface CanvasSelectionRange {
   l: number;
   b: number;
   r: number;
+}
+
+export type SubTableRegionMode = 'record' | 'matrix';
+export type SubTableRecordDirection = 'row' | 'column';
+
+export interface SubTableRegionRange {
+  pageId: string;
+  range: CanvasSelectionRange;
+  order: number;
+}
+
+export interface SubTableFixedRepeatConfig {
+  type: 'fixed';
+  count: number;
+  stride: number;
+}
+
+export interface SubTableDynamicRepeatConfig {
+  type: 'dynamic';
+  minCount: number;
+  maxCount?: number;
+  addPosition: 'bottom';
+  allowRemove: boolean;
+  removeConfirm: true;
+}
+
+export type SubTableRepeatConfig = SubTableFixedRepeatConfig | SubTableDynamicRepeatConfig;
+
+export interface SubTableRecordTemplateField {
+  fieldId: string;
+  rowOffset: number;
+  colOffset: number;
+  rowSpan?: number;
+  colSpan?: number;
+}
+
+export interface SubTableRecordTemplate {
+  direction: SubTableRecordDirection;
+  anchor: {
+    row: number;
+    col: number;
+  };
+  groupRange?: CanvasSelectionRange;
+  fields: SubTableRecordTemplateField[];
+}
+
+export interface SubTableMatrixDimension {
+  source: 'static' | 'reference' | 'dynamic';
+  labelFieldId?: string;
+  items?: Array<{
+    id: string;
+    label: string;
+    value: unknown;
+  }>;
+  allowAdd?: boolean;
+}
+
+export interface SubTableMatrixValueDefinition {
+  fields: Array<{
+    fieldId: string;
+    role: 'value' | 'remark' | 'attachment';
+  }>;
+}
+
+export interface SubTableMatrixDimensions {
+  row: SubTableMatrixDimension;
+  column: SubTableMatrixDimension;
+  value: SubTableMatrixValueDefinition;
+}
+
+export interface SubTablePresentationConfig {
+  showHeader: boolean;
+  showIndex: boolean;
+  emptyText: string;
+  addEntry: 'bottom' | 'contextMenu' | 'both';
+}
+
+export interface SubTableRegion {
+  id: string;
+  fieldId: string;
+  mode: SubTableRegionMode;
+  ranges: SubTableRegionRange[];
+  repeat: SubTableRepeatConfig;
+  recordTemplate: SubTableRecordTemplate;
+  dimensions?: SubTableMatrixDimensions;
+  presentation: SubTablePresentationConfig;
 }
 
 export interface CanvasCellBorder {
@@ -118,6 +227,10 @@ export interface DesignerRendererProps {
   node: CanvasNode;
   selected: boolean;
   onSelect: () => void;
+  onCellMouseDown?: (event: ReactMouseEvent<HTMLElement>) => void;
+  onCellContextMenu?: (event: ReactMouseEvent<HTMLElement>) => void;
+  onOpenConfig?: () => void;
+  renderMode?: 'normal' | 'cell';
 }
 
 export interface DesignerComponentDefinition {

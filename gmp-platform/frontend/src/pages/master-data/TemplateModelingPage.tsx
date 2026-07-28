@@ -90,8 +90,6 @@ import {
 } from '@/api/template-modeling';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
-import TemplateDesignerDialog from './TemplateDesignerDialog';
-import TemplateDesignerPreloadFrame from './template-designer/TemplateDesignerPreloadFrame';
 
 const TemplateDesignerReactDialog = lazy(() => import('./template-designer-react'));
 
@@ -204,10 +202,8 @@ const appContentDrawerPaperSx = {
 const formTemplateColumns: TemplateColumn[] = [
   { id: 'name', label: '表单名称', defaultWidth: 180, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'code', label: '表单编码', defaultWidth: 140, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'currentVersion', label: '当前版本', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'currentVersion', label: '版本数量', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'categoryName', label: '模板分类', defaultWidth: 140, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'effectiveFrom', label: '生效时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'effectiveTo', label: '失效时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'description', label: '模板描述', defaultWidth: 220, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'status', label: '状态', defaultWidth: 100, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -466,6 +462,11 @@ function validateEffectiveDateRange(effectiveFrom: string, effectiveTo: string) 
   return !start || !end || end.getTime() >= start.getTime();
 }
 
+function getTemplateVersionCount(row: TemplateModelingRecord) {
+  const versions = row.versions ?? [];
+  return versions.length > 0 ? versions.length : row.currentVersion ? 1 : 0;
+}
+
 const fieldSx = {
   '& .MuiInputBase-root': { height: 40 },
   '& .MuiInputBase-input': { boxSizing: 'border-box' },
@@ -625,7 +626,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({ open: false, message: '', severity: 'success' });
-  const [designerState, setDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
   const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
 
   const categoryQuery = useQuery({
@@ -666,14 +666,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   });
 
   const rows = listQuery.data?.content ?? [];
-  const designerPreloadTarget = useMemo(() => {
-    const row = rows.find((item) => item.versions?.length || item.currentVersion);
-    if (!row) return { row: null, version: null };
-    return {
-      row,
-      version: row.versions?.[0] ?? row.currentVersion ?? null,
-    };
-  }, [rows]);
   const isTableEmptyState = listQuery.isLoading || listQuery.isError || rows.length === 0;
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(allColumns, columnSettings), [allColumns, columnSettings]);
   const visibleColumns = useMemo(() => getVisibleColumns(allColumns, columnSettings), [allColumns, columnSettings]);
@@ -767,15 +759,16 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     mutationFn: async () => {
       const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
       const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
+      const shouldSubmitVersionFields = pageKey === 'formTemplates' && !editingRow;
       const payload: TemplateModelingPayload = {
         code: form.code.trim(),
         name: form.name.trim(),
         categoryName: form.categoryName.trim() || null,
         description: form.description.trim() || null,
-        versionDescription: pageKey === 'formTemplates' ? form.versionDescription.trim() || null : undefined,
-        version: pageKey === 'formTemplates' ? form.version.trim() : undefined,
-        effectiveFrom: pageKey === 'formTemplates' ? effectiveFrom || null : undefined,
-        effectiveTo: pageKey === 'formTemplates' ? effectiveTo || null : undefined,
+        versionDescription: shouldSubmitVersionFields ? form.versionDescription.trim() || null : undefined,
+        version: shouldSubmitVersionFields ? form.version.trim() : undefined,
+        effectiveFrom: shouldSubmitVersionFields ? effectiveFrom || null : undefined,
+        effectiveTo: shouldSubmitVersionFields ? effectiveTo || null : undefined,
         status: form.status,
       };
       if (creatingVersionFrom) {
@@ -906,13 +899,14 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       setSnackbar({ open: true, message: '请输入模板编码', severity: 'error' });
       return;
     }
-    if (pageKey === 'formTemplates' && !form.version.trim()) {
+    const shouldSubmitVersionFields = pageKey === 'formTemplates' && !editingRow;
+    if (shouldSubmitVersionFields && !form.version.trim()) {
       setSnackbar({ open: true, message: '请输入模板版本', severity: 'error' });
       return;
     }
     const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
     const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
-    if (pageKey === 'formTemplates' && !validateEffectiveDateRange(effectiveFrom, effectiveTo)) {
+    if (shouldSubmitVersionFields && !validateEffectiveDateRange(effectiveFrom, effectiveTo)) {
       setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
       return;
     }
@@ -985,11 +979,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setDrawerTab(0);
   };
 
-  const handleOpenTemplateVersionDesign = (event: MouseEvent<HTMLButtonElement>, row: TemplateModelingRecord, version: TemplateVersionRecord) => {
-    event.stopPropagation();
-    setDesignerState({ open: true, row, version });
-  };
-
   const expandTemplateGroup = (templateId: string | number) => {
     const groupKey = String(templateId);
     setExpandedTemplateGroups((current) => {
@@ -1008,18 +997,38 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setExpandedTemplateGroups(new Set());
   };
 
-  const saveDesignerMutation = useMutation({
+  const saveDesignerPayload = (id: string | number, versionId: string | number, payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
+    return saveFormTemplateVersionDesign(id, versionId, payload);
+  };
+
+  const autoSaveDesignerMutation = useMutation({
     mutationFn: async (payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
-      const targetRow = designerState.row || reactDesignerState.row;
-      const targetVersion = designerState.version || reactDesignerState.version;
+      const targetRow = reactDesignerState.row;
+      const targetVersion = reactDesignerState.version;
       if (!targetRow || !targetVersion) {
         throw new Error('设计器上下文缺失');
       }
-      return saveFormTemplateVersionDesign(targetRow.id, targetVersion.id, payload);
+      return saveDesignerPayload(targetRow.id, targetVersion.id, payload);
+    },
+    onSuccess: async () => {
+      setSnackbar({ open: true, message: '字段已保存', severity: 'success' });
+      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
+      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
+    },
+    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '字段保存失败', severity: 'error' }),
+  });
+
+  const saveDesignerMutation = useMutation({
+    mutationFn: async (payload: { modelDesignJson: string; canvasDesignJson: string; workflowDesignJson: string }) => {
+      const targetRow = reactDesignerState.row;
+      const targetVersion = reactDesignerState.version;
+      if (!targetRow || !targetVersion) {
+        throw new Error('设计器上下文缺失');
+      }
+      return saveDesignerPayload(targetRow.id, targetVersion.id, payload);
     },
     onSuccess: async () => {
       setSnackbar({ open: true, message: '设计已保存', severity: 'success' });
-      setDesignerState({ open: false, row: null, version: null });
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
@@ -1249,14 +1258,9 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const renderTemplateVersionActions = (row: TemplateModelingRecord, version: TemplateVersionRecord, canDeleteVersion: boolean) => (
     <Stack direction="row" spacing={0.5} justifyContent="center">
       <Tooltip title="设计" arrow>
-        <IconButton size="small" aria-label="设计" onClick={(event) => handleOpenTemplateVersionDesign(event, row, version)}>
-          <DesignServicesIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="React设计" arrow>
         <IconButton
           size="small"
-          aria-label="React设计"
+          aria-label="设计"
           onClick={(event) => {
             event.stopPropagation();
             setReactDesignerState({ open: true, row, version });
@@ -1279,7 +1283,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     const columnId = column.id;
     if (columnId === 'name') return row.name || '-';
     if (columnId === 'code') return row.code || '-';
-    if (columnId === 'currentVersion') return row.currentVersion?.version || '-';
+    if (columnId === 'currentVersion') return String(getTemplateVersionCount(row));
     if (columnId === 'categoryName') return row.categoryName || '-';
     if (columnId === 'effectiveFrom') return formatDateTime(row.currentVersion?.effectiveFrom);
     if (columnId === 'effectiveTo') return formatDateTime(row.currentVersion?.effectiveTo);
@@ -1439,7 +1443,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       return renderStatusBadge(row.status);
     }
     if (columnId === 'createdAt' || columnId === 'updatedAt') return formatDateTime(row[columnId]);
-    if (columnId === 'currentVersion') return row.currentVersion?.version || '-';
+    if (columnId === 'currentVersion') return String(getTemplateVersionCount(row));
     if (columnId === 'effectiveFrom') return formatDateTime(row.currentVersion?.effectiveFrom);
     if (columnId === 'effectiveTo') return formatDateTime(row.currentVersion?.effectiveTo);
     if (columnId === 'categoryName') return row.categoryName || '-';
@@ -1663,10 +1667,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   ] : [
     ['模板名称', drawerRow?.name],
     ['模板编码', drawerRow?.code],
-    ['当前版本', drawerRow?.currentVersion?.version],
+    ['版本数量', drawerRow ? getTemplateVersionCount(drawerRow) : '-'],
     ['模板分类', drawerRow?.categoryName],
-    ['生效时间', formatDateTime(drawerRow?.currentVersion?.effectiveFrom)],
-    ['失效时间', formatDateTime(drawerRow?.currentVersion?.effectiveTo)],
     ['状态', renderStatusBadge(drawerRow?.status)],
     ['模板描述', drawerRow?.description],
   ];
@@ -1685,6 +1687,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setDrawerRow(null);
     setDrawerVersionRow(null);
   };
+  const shouldRenderVersionSection = pageKey === 'formTemplates' && !editingRow;
 
   return (
     <Box sx={{ height: 'calc(100vh - 150px)', display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '260px minmax(0, 1fr)' }, gap: 1.5, minHeight: 0, overflow: 'hidden' }}>
@@ -1715,7 +1718,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                 </Box>
               </DetailSection>
             )}
-            {pageKey === 'formTemplates' ? (
+            {shouldRenderVersionSection ? (
               <DetailSection title="版本信息">
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
                   <TextField required fullWidth size="small" label="版本" value={form.version} onChange={(event) => setForm((current) => ({ ...current, version: event.target.value }))} sx={fieldSx} />
@@ -1771,31 +1774,19 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogActions>
       </Dialog>
 
-      <TemplateDesignerDialog
-        open={designerState.open}
-        row={designerState.row}
-        version={designerState.version}
-        saving={saveDesignerMutation.isPending}
-        onClose={() => setDesignerState({ open: false, row: null, version: null })}
-        onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
-      />
       {reactDesignerState.open ? (
         <Suspense fallback={null}>
           <TemplateDesignerReactDialog
             open={reactDesignerState.open}
             row={reactDesignerState.row}
             version={reactDesignerState.version}
-            saving={saveDesignerMutation.isPending}
+            saving={saveDesignerMutation.isPending || autoSaveDesignerMutation.isPending}
             onClose={() => setReactDesignerState({ open: false, row: null, version: null })}
             onSave={(payload) => saveDesignerMutation.mutateAsync(payload)}
+            onAutoSave={(payload) => autoSaveDesignerMutation.mutateAsync(payload)}
           />
         </Suspense>
       ) : null}
-      <TemplateDesignerPreloadFrame
-        row={designerPreloadTarget.row}
-        version={designerPreloadTarget.version}
-        disabled={designerState.open}
-      />
 
       <Drawer
         anchor="right"

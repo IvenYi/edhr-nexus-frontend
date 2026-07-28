@@ -28,6 +28,8 @@ export const changeCurrentUserPassword = (body: Record<string, unknown>) =>
   client.post('/auth/me/password', body);
 export const createPersonalSignature = (body: Record<string, unknown>) =>
   client.post('/auth/me/signature', body, { timeout: 60000 });
+export const verifyCurrentUserSignaturePassword = (body: Record<string, unknown>) =>
+  client.post('/auth/me/signature/verify', body, { skipAuthRedirect: true });
 
 // Users
 export const getUsers = (params?: Record<string, unknown>) =>

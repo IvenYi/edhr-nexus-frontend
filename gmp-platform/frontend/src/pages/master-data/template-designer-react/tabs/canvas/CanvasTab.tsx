@@ -1,27 +1,48 @@
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
-import CropLandscapeOutlined from '@mui/icons-material/CropLandscapeOutlined';
 import GridViewOutlined from '@mui/icons-material/GridViewOutlined';
+import TuneRounded from '@mui/icons-material/TuneRounded';
 import ViewListOutlined from '@mui/icons-material/ViewListOutlined';
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import CanvasDesignerToolbar from '../../components/canvas/CanvasDesignerToolbar';
 import CanvasPageThumbnails from '../../components/canvas/CanvasPageThumbnails';
 import CanvasSheetWorkspace from '../../components/canvas/CanvasSheetWorkspace';
+import DesignerInspector from '../../components/DesignerInspector';
+import DesignerSidebar from '../../components/DesignerSidebar';
+import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 
 const sideRailItems = [
   { id: 'thumbnails', title: '分页缩略图', tooltip: '分页', icon: <ArticleOutlined fontSize="small" /> },
   { id: 'fields', title: '字段管理', tooltip: '字段', icon: <ViewListOutlined fontSize="small" /> },
   { id: 'grid', title: '组件管理', tooltip: '组件', icon: <GridViewOutlined fontSize="small" /> },
-  { id: 'layout', title: '布局管理', tooltip: '布局', icon: <CropLandscapeOutlined fontSize="small" /> },
+  { id: 'config', title: '字段配置', tooltip: '配置', icon: <TuneRounded fontSize="small" /> },
 ] as const;
 
+const defaultPanelMinWidth = 250;
+const defaultPanelMaxWidth = 350;
+const configPanelMinWidth = defaultPanelMinWidth;
+const configPanelMaxWidth = 420;
+
 export default function CanvasTab() {
-  const [activeRail, setActiveRail] = useState<(typeof sideRailItems)[number]['id']>('thumbnails');
+  const activeRail = useTemplateDesignerStore((state) => state.activeCanvasRail);
+  const setActiveRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
+  const isSidebarVisible = useTemplateDesignerStore((state) => state.isCanvasSidebarVisible);
+  const setIsSidebarVisible = useTemplateDesignerStore((state) => state.setCanvasSidebarVisible);
+  const selectedNode = useTemplateDesignerStore((state) => state.getSelectedNode());
+  const selectedSubTableGroupNodeId = useTemplateDesignerStore((state) => state.selectedSubTableGroupNodeId);
   const [sidebarWidth, setSidebarWidth] = useState(250);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [isResizingSidebar, setIsResizingSidebar] = useState(false);
-  const activeRailItem = sideRailItems.find((item) => item.id === activeRail) ?? sideRailItems[0];
+  const shouldShowConfigRail = Boolean(selectedNode?.bindings?.fieldId);
+  const visibleSideRailItems = shouldShowConfigRail
+    ? sideRailItems
+    : sideRailItems.filter((item) => item.id !== 'config');
+  const panelRail = activeRail === 'config' && !shouldShowConfigRail ? 'thumbnails' : activeRail;
+  const activeRailItem = visibleSideRailItems.find((item) => item.id === panelRail) ?? visibleSideRailItems[0];
+  const activePanelTitle = panelRail === 'config' && selectedSubTableGroupNodeId ? '分组配置' : activeRailItem.title;
+  const activePanelMinWidth = panelRail === 'config' ? configPanelMinWidth : defaultPanelMinWidth;
+  const activePanelMaxWidth = panelRail === 'config' ? configPanelMaxWidth : defaultPanelMaxWidth;
+  const effectiveSidebarWidth = Math.max(activePanelMinWidth, Math.min(activePanelMaxWidth, sidebarWidth));
 
   useEffect(() => {
     if (!isResizingSidebar) {
@@ -29,7 +50,7 @@ export default function CanvasTab() {
     }
 
     const handleMouseMove = (event: MouseEvent) => {
-      const nextWidth = Math.max(250, Math.min(350, event.clientX - 50));
+      const nextWidth = Math.max(activePanelMinWidth, Math.min(activePanelMaxWidth, event.clientX - 50));
       setSidebarWidth(nextWidth);
     };
 
@@ -44,7 +65,7 @@ export default function CanvasTab() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizingSidebar]);
+  }, [activePanelMaxWidth, activePanelMinWidth, isResizingSidebar]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}>
@@ -62,7 +83,7 @@ export default function CanvasTab() {
             gap: 1,
           }}
         >
-          {sideRailItems.map((item) => (
+          {visibleSideRailItems.map((item) => (
             <Tooltip key={item.id} title={item.tooltip} placement="right">
               <Button
                 onClick={() => {
@@ -75,8 +96,8 @@ export default function CanvasTab() {
                   height: 28,
                   p: 0,
                   borderRadius: 1,
-                  color: activeRail === item.id ? '#2990ff' : '#7b8794',
-                  bgcolor: activeRail === item.id ? '#eaf5ff' : 'transparent',
+                  color: panelRail === item.id ? '#2990ff' : '#7b8794',
+                  bgcolor: panelRail === item.id ? '#eaf5ff' : 'transparent',
                 }}
               >
                 {item.icon}
@@ -89,16 +110,16 @@ export default function CanvasTab() {
             data-canvas-side-panel="true"
             sx={{
               position: 'relative',
-              width: sidebarWidth,
-              minWidth: 250,
-              maxWidth: 350,
+              width: effectiveSidebarWidth,
+              minWidth: activePanelMinWidth,
+              maxWidth: activePanelMaxWidth,
               borderRight: '1px solid #e7edf4',
               bgcolor: '#fff',
               flexShrink: 0,
               minHeight: 0,
             }}
           >
-            {activeRail === 'thumbnails' ? <CanvasPageThumbnails onClose={() => setIsSidebarVisible(false)} title={activeRailItem.title} /> : (
+            {panelRail === 'thumbnails' ? <CanvasPageThumbnails onClose={() => setIsSidebarVisible(false)} title={activeRailItem.title} /> : (
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <Box
                   sx={{
@@ -110,7 +131,7 @@ export default function CanvasTab() {
                     borderBottom: '1px solid #e8edf4',
                   }}
                 >
-                  <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#303133' }}>{activeRailItem.title}</Typography>
+                  <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#303133' }}>{activePanelTitle}</Typography>
                   <Button
                     aria-label="关闭侧边栏"
                     onClick={() => setIsSidebarVisible(false)}
@@ -119,9 +140,11 @@ export default function CanvasTab() {
                     <CloseOutlined fontSize="small" />
                   </Button>
                 </Box>
-                <Stack sx={{ p: 2.5, color: '#98a2b3', fontSize: 13 }}>
-                  当前阶段先还原分页缩略图和表格画布，其它侧边面板继续按 Vue 设计器迁移。
-                </Stack>
+                {panelRail === 'fields' ? <DesignerSidebar /> : panelRail === 'config' ? <DesignerInspector /> : (
+                  <Stack sx={{ p: 2.5, color: '#98a2b3', fontSize: 13 }}>
+                    当前面板正在迁移中。
+                  </Stack>
+                )}
               </Box>
             )}
             <Box

@@ -1,7 +1,10 @@
+import AddOutlined from '@mui/icons-material/AddOutlined';
+import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined';
 import {
   Box,
   Checkbox,
   FormControlLabel,
+  InputAdornment,
   MenuItem,
   Radio,
   RadioGroup,
@@ -128,8 +131,23 @@ function createId(prefix: string) {
 }
 
 function parseFieldOptions(field?: ModelField | null) {
-  if (!field?.optionsText?.trim()) return [];
-  return field.optionsText
+  const fieldTypeConfig = field ? field.typeConfig : {};
+  const options = fieldTypeConfig.options;
+  if (Array.isArray(options)) {
+    return options
+      .filter((option) => option && typeof option === 'object')
+      .map((option, index) => {
+        const typedOption = option as { id?: string; label?: string; value?: string; status?: string };
+        return {
+          key: typedOption.id || `${field?.id ?? 'field'}:${index}`,
+          label: typedOption.label || `选项${index + 1}`,
+          value: typedOption.value || typedOption.label || `option_${index + 1}`,
+        };
+      });
+  }
+
+  if (typeof options !== 'string' || !options.trim()) return [];
+  return options
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean)
@@ -138,15 +156,50 @@ function parseFieldOptions(field?: ModelField | null) {
       const resolvedLabel = rawLabel?.trim() || `选项${index + 1}`;
       const resolvedValue = rawValue?.trim() || resolvedLabel;
       return {
-        key: `${field.id}:${index}`,
+        key: `${field?.id ?? 'field'}:${index}`,
         label: resolvedLabel,
         value: resolvedValue || `option_${index + 1}`,
       };
     });
 }
 
+function parseConfiguredOptions(optionList: unknown, field?: ModelField | null) {
+  const text = typeof optionList === 'string' ? optionList : '';
+  if (!text.trim()) {
+    const fieldOptions = parseFieldOptions(field);
+    if (fieldOptions.length || !['singleSelect', 'multiSelect'].includes(field?.type ?? '')) return fieldOptions;
+    return [
+      { key: `${field?.id ?? 'configured'}:default-1`, label: '选项1', value: '选项1' },
+      { key: `${field?.id ?? 'configured'}:default-2`, label: '选项2', value: '选项2' },
+    ];
+  }
+
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line, index) => {
+      const [rawLabel, rawValue] = line.split(':');
+      const resolvedLabel = rawLabel?.trim() || `选项${index + 1}`;
+      const resolvedValue = rawValue?.trim() || resolvedLabel;
+      return {
+        key: `${field?.id ?? 'configured'}:${index}`,
+        label: resolvedLabel,
+        value: resolvedValue || `option_${index + 1}`,
+      };
+    });
+}
+
+function readDefaultValues(value: unknown) {
+  if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean);
+  const text = String(value ?? '').trim();
+  if (!text) return [];
+  return text.split('\n').map((item) => item.trim()).filter(Boolean);
+}
+
 function useBoundField(node: CanvasNode) {
   const document = useTemplateDesignerStore((state) => state.document);
+  if (node.bindings?.subTableField) return node.bindings.subTableField;
   return document?.model.fields.find((field) => field.id === node.bindings?.fieldId) ?? null;
 }
 
@@ -195,18 +248,42 @@ function BasicRenderer({ node, selected, onSelect }: DesignerRendererProps) {
   );
 }
 
-function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+function FieldPreviewRenderer({
+  node,
+  selected,
+  onSelect,
+  onCellMouseDown,
+  onCellContextMenu,
+  renderMode = 'normal',
+}: DesignerRendererProps) {
   const field = useBoundField(node);
-  const options = parseFieldOptions(field);
-  const label = String(field?.name || node.props.label || node.type);
-  const placeholder = String(field?.placeholder || node.props.placeholder || '');
-  const emptySymbol = String(node.props.emptySymbol || '');
-  const prefix = String(node.props.prefix || '');
-  const suffix = String(node.props.suffix || '');
-  const format = String(node.props.format || '');
-  const disabled = Boolean(node.props.disabled) || node.props.viewState === 'disabled';
-  const readonly = Boolean(node.props.readonly) || node.props.viewState === 'readonly';
-  const optionLayout = String(node.props.optionLayout || 'row');
+  const isCellMode = renderMode === 'cell';
+  const widgetConfig = node.bindings?.widgetConfig ?? {};
+  const readConfig = (key: string, fallback: unknown = '') => widgetConfig[key] ?? node.props[key] ?? fallback;
+  const options = parseConfiguredOptions(readConfig('optionList'), field);
+  const label = String(node.bindings?.displayLabel || field?.name || node.props.label || node.type);
+  const placeholder = String(node.bindings?.placeholder || node.props.placeholder || '');
+  const format = String(readConfig('format'));
+  const controlLabel = isCellMode ? undefined : label;
+  const inputPlaceholder = isCellMode ? (placeholder || label) : placeholder;
+  const datePlaceholder = isCellMode
+    ? placeholder || (node.type === 'timepicker' ? '请选择时间' : node.type === 'datetimepicker' ? '请选择日期时间' : '请选择日期')
+    : format || placeholder;
+  const emptySymbol = String(readConfig('emptySymbol'));
+  const prefix = String(readConfig('prefix'));
+  const suffix = String(readConfig('suffix'));
+  const defaultValues = readDefaultValues(node.bindings?.defaultValue);
+  const defaultValue = defaultValues[0] ?? '';
+  const displayMode = String(node.bindings?.displayMode ?? 'text');
+  const isWrapDisplay = Boolean(node.bindings?.autoWrap);
+  const minLength = Number(readConfig('minLength', 0)) || undefined;
+  const disabled = Boolean(node.bindings?.readonly) || Boolean(node.props.disabled) || node.props.viewState === 'disabled';
+  const readonly = Boolean(node.bindings?.readonly) || node.props.viewState === 'readonly';
+  const controlReadonly = isCellMode || readonly;
+  const hidden = Boolean(node.bindings?.hidden);
+  const optionLayout = String(readConfig('optionLayout', 'row'));
+  const isVerticalOptionLayout = ['vertical', 'column'].includes(optionLayout);
+  const optionShape = String(readConfig('optionShape', 'select'));
   const commonSx = {
     p: 1.5,
     borderRadius: 1,
@@ -215,21 +292,253 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
     cursor: 'pointer',
     ...resolveNodeLayout(node),
   };
+  const emptyOption = { key: 'empty', label: emptySymbol || '未配置选项', value: '' };
+  const textInputProps = {
+    readOnly: true,
+    startAdornment: prefix ? <InputAdornment position="start">{prefix}</InputAdornment> : undefined,
+    endAdornment: suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined,
+  };
+  const wrapTextFieldProps = isWrapDisplay
+    ? {
+        multiline: true,
+        minRows: 1,
+        maxRows: isCellMode ? 2 : 4,
+        sx: {
+          '& .MuiInputBase-root.MuiInputBase-multiline': {
+            alignItems: isCellMode ? 'stretch' : 'flex-start',
+            ...(isCellMode
+              ? {
+                  minHeight: 0,
+                  p: '2px 6px',
+                  overflow: 'hidden',
+                }
+              : {}),
+          },
+          '& .MuiInputBase-inputMultiline': {
+            boxSizing: 'border-box',
+            lineHeight: isCellMode ? '16px' : '20px',
+            overflow: isCellMode ? 'hidden' : 'auto',
+            whiteSpace: 'pre-wrap',
+            ...(isCellMode
+              ? {
+                  height: '100% !important',
+                  minHeight: '0 !important',
+                  padding: '0 !important',
+                  resize: 'none',
+                }
+              : {}),
+          },
+        },
+      }
+    : {};
+
+  const renderCellDateTimePicker = () => (
+    <TextField
+      data-canvas-cell-datetime-picker="true"
+      fullWidth
+      size="small"
+      placeholder={datePlaceholder}
+      disabled={disabled}
+      InputProps={{
+        readOnly: true,
+        endAdornment: (
+          <InputAdornment position="end">
+            <CalendarMonthOutlined sx={{ fontSize: 18, color: '#909399' }} />
+          </InputAdornment>
+        ),
+      }}
+      inputProps={{ tabIndex: -1 }}
+    />
+  );
+
+  const renderCellSignatureButton = () => (
+    <Box
+      component="button"
+      type="button"
+      data-canvas-cell-signature-button="true"
+      tabIndex={-1}
+      sx={{
+        width: '100%',
+        height: '100%',
+        minHeight: 24,
+        border: '1px dashed #a8abb2',
+        borderRadius: 0.75,
+        bgcolor: '#fff',
+        color: '#606266',
+        fontSize: 13,
+        fontFamily: 'inherit',
+        cursor: 'pointer',
+      }}
+    >
+      点击签名
+    </Box>
+  );
+
+  const renderCellUploadButton = () => (
+    <Box
+      component="button"
+      type="button"
+      data-canvas-cell-upload-button="true"
+      tabIndex={-1}
+      sx={{
+        width: '100%',
+        height: '100%',
+        minHeight: 24,
+        border: '1px solid #dcdfe6',
+        borderRadius: 0.75,
+        bgcolor: '#fff',
+        color: '#606266',
+        fontSize: 13,
+        fontFamily: 'inherit',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 0.5,
+        cursor: 'pointer',
+      }}
+    >
+      <AddOutlined sx={{ fontSize: 18 }} />
+      点击上传
+    </Box>
+  );
+
+  const renderCellSelect = () => (
+    <TextField
+      data-canvas-cell-select="true"
+      select
+      fullWidth
+      size="small"
+      value=""
+      disabled={disabled}
+      InputProps={{ readOnly: true }}
+      inputProps={{ tabIndex: -1 }}
+      SelectProps={{
+        displayEmpty: true,
+        renderValue: () => inputPlaceholder || '请选择',
+      }}
+    >
+      {[{ key: 'placeholder', label: inputPlaceholder || '请选择', value: '' }, ...(options.length ? options : [emptyOption])].map((option) => (
+        <MenuItem key={option.key} value={option.value}>{option.label}</MenuItem>
+      ))}
+    </TextField>
+  );
+
+  const renderCellOptionGroup = (shape: 'radio' | 'checkbox') => {
+    const renderedOptions = options.length ? options : [emptyOption];
+    const isRadio = shape === 'radio';
+    const isMultiSelect = field?.type === 'multiSelect';
+    const optionControls = renderedOptions.map((option) => {
+      const isOptionChecked = isMultiSelect
+        ? defaultValues.includes(option.value) || defaultValues.includes(option.label)
+        : defaultValue === option.value || defaultValue === option.label;
+
+      return (
+        <FormControlLabel
+          key={option.key}
+          value={option.value}
+          control={
+            isRadio ? (
+              <Radio
+                size="small"
+                checked={isOptionChecked}
+                disabled={disabled}
+                sx={{ p: 0.25, '& .MuiSvgIcon-root': { fontSize: 17 } }}
+              />
+            ) : (
+              <Checkbox
+                size="small"
+                checked={isOptionChecked}
+                disabled={disabled}
+                sx={{ p: 0.25, '& .MuiSvgIcon-root': { fontSize: 17 } }}
+              />
+            )
+          }
+          label={option.label}
+        />
+      );
+    });
+    const optionGroupSx = {
+      width: '100%',
+      height: '100%',
+      minHeight: 24,
+      alignItems: isVerticalOptionLayout ? 'flex-start' : 'center',
+      justifyContent: isVerticalOptionLayout ? 'center' : 'flex-start',
+      overflow: 'hidden',
+      flexWrap: isVerticalOptionLayout ? 'nowrap' : 'wrap',
+      '& .MuiFormControlLabel-root': {
+        m: 0,
+        minWidth: 0,
+        mr: isVerticalOptionLayout ? 0 : 0.75,
+      },
+      '& .MuiFormControlLabel-label': {
+        minWidth: 0,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        fontSize: 12,
+        lineHeight: '18px',
+      },
+    };
+
+    return isRadio ? (
+      <Stack
+        data-canvas-cell-radio-group="true"
+        direction={isVerticalOptionLayout ? 'column' : 'row'}
+        spacing={0.25}
+        sx={optionGroupSx}
+      >
+        {optionControls}
+      </Stack>
+    ) : (
+      <Stack
+        data-canvas-cell-checkbox-group="true"
+        direction={isVerticalOptionLayout ? 'column' : 'row'}
+        spacing={0.25}
+        sx={optionGroupSx}
+      >
+        {optionControls}
+      </Stack>
+    );
+  };
 
   const renderControl = () => {
+    if (hidden) {
+      return <Typography sx={{ fontSize: 13, color: '#909399' }}>{label} 已隐藏</Typography>;
+    }
+
+    if (isCellMode && field?.type === 'datetime') {
+      return renderCellDateTimePicker();
+    }
+    if (isCellMode && field?.type === 'signature') {
+      return renderCellSignatureButton();
+    }
+    if (isCellMode && (field?.type === 'attachment' || field?.type === 'image')) {
+      return renderCellUploadButton();
+    }
+    if (isCellMode && ['singleSelect', 'multiSelect'].includes(field?.type ?? '') && optionShape === 'radio') {
+      return renderCellOptionGroup('radio');
+    }
+    if (isCellMode && ['singleSelect', 'multiSelect'].includes(field?.type ?? '') && optionShape === 'checkbox') {
+      return renderCellOptionGroup('checkbox');
+    }
+    if (isCellMode && ['singleSelect', 'multiSelect'].includes(field?.type ?? '')) {
+      return renderCellSelect();
+    }
+
     switch (node.type) {
       case 'textarea':
         return (
           <TextField
             fullWidth
             size="small"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
+            value={defaultValue}
             multiline
             minRows={Number(node.props.rows ?? 3)}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
-            inputProps={{ maxLength: Number(node.props.maxLength ?? 500) }}
+            InputProps={textInputProps}
+            inputProps={{ minLength, maxLength: Number(readConfig('maxLength', 500)), tabIndex: isCellMode ? -1 : undefined }}
           />
         );
       case 'inputnumber':
@@ -238,14 +547,16 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
             fullWidth
             size="small"
             type="number"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
+            value={defaultValue}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
+            InputProps={textInputProps}
             inputProps={{
-              min: Number(node.props.min ?? 0),
-              max: Number(node.props.max ?? 999999),
-              step: Number(node.props.step ?? 1),
+              min: Number(readConfig('min', 0)),
+              max: Number(readConfig('max', 999999)),
+              step: Number(readConfig('step', 1)),
+              tabIndex: isCellMode ? -1 : undefined,
             }}
           />
         );
@@ -255,14 +566,16 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
             fullWidth
             size="small"
             type="number"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
+            value={defaultValue}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
+            InputProps={textInputProps}
             inputProps={{
-              min: Number(node.props.min ?? 0),
-              max: Number(node.props.max ?? 999999),
-              step: Number(node.props.step ?? 0.01),
+              min: Number(readConfig('min', 0)),
+              max: Number(readConfig('max', 999999)),
+              step: Number(readConfig('step', 0.01)),
+              tabIndex: isCellMode ? -1 : undefined,
             }}
           />
         );
@@ -273,15 +586,16 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
           <TextField
             fullWidth
             size="small"
-            label={label}
-            placeholder={format || placeholder}
+            label={controlLabel}
+            placeholder={datePlaceholder}
             disabled={disabled}
             InputProps={{ readOnly: true }}
+            inputProps={{ tabIndex: isCellMode ? -1 : undefined }}
           />
         );
       case 'select':
         return (
-          <TextField select fullWidth size="small" label={label} value="" disabled={disabled} InputProps={{ readOnly: readonly }}>
+          <TextField select fullWidth size="small" label={controlLabel} value="" disabled={disabled} InputProps={{ readOnly: controlReadonly }} inputProps={{ tabIndex: isCellMode ? -1 : undefined }}>
             {(options.length ? options : [{ key: 'empty', label: emptySymbol || '未配置选项', value: '' }]).map((option) => (
               <MenuItem key={option.key} value={option.value}>{option.label}</MenuItem>
             ))}
@@ -291,7 +605,7 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
         return (
           <Stack spacing={0.5}>
             <Typography sx={{ fontSize: 13, color: '#606266' }}>{label}</Typography>
-            <RadioGroup row={optionLayout !== 'column'}>
+            <RadioGroup row={!isVerticalOptionLayout}>
               {(options.length ? options : [{ key: 'empty', label: emptySymbol || '未配置选项', value: '' }]).map((option) => (
                 <FormControlLabel key={option.key} value={option.value} control={<Radio size="small" disabled={disabled} />} label={option.label} />
               ))}
@@ -302,7 +616,7 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
         return (
           <Stack spacing={0.5}>
             <Typography sx={{ fontSize: 13, color: '#606266' }}>{label}</Typography>
-            <Stack direction={optionLayout === 'column' ? 'column' : 'row'} spacing={1}>
+            <Stack direction={isVerticalOptionLayout ? 'column' : 'row'} spacing={1}>
               {(options.length ? options : [{ key: 'empty', label: emptySymbol || '未配置选项', value: '' }]).map((option) => (
                 <FormControlLabel key={option.key} control={<Checkbox size="small" disabled={disabled} />} label={option.label} />
               ))}
@@ -318,15 +632,60 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
           <TextField
             fullWidth
             size="small"
-            label={label}
-            placeholder={placeholder}
+            label={controlLabel}
+            placeholder={inputPlaceholder}
+            value={defaultValue}
             disabled={disabled}
-            InputProps={{ readOnly: readonly }}
-            inputProps={{ maxLength: Number(node.props.maxLength ?? 200) || undefined }}
+            InputProps={textInputProps}
+            inputProps={{ minLength, maxLength: Number(readConfig('maxLength', 200)) || undefined, tabIndex: isCellMode ? -1 : undefined }}
+            {...wrapTextFieldProps}
           />
         );
     }
   };
+
+  if (isCellMode) {
+    return (
+      <Box
+        data-canvas-cell-field-component="true"
+        onMouseDown={(event) => {
+          if (event.button !== 0) return;
+          event.stopPropagation();
+          onCellMouseDown?.(event);
+          onSelect();
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect();
+        }}
+        onContextMenu={(event) => {
+          event.stopPropagation();
+          onCellContextMenu?.(event);
+        }}
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'stretch',
+          cursor: 'pointer',
+          outline: selected ? '2px solid #1976d2' : 'none',
+          outlineOffset: -2,
+          borderRadius: 0.75,
+          '& .MuiFormControl-root': { height: '100%' },
+          '& .MuiInputBase-root': { height: '100%', bgcolor: '#fff', pointerEvents: 'none' },
+          '& .MuiInputBase-input': { py: 0.75, caretColor: 'transparent' },
+          '& [data-canvas-cell-signature-button="true"], & [data-canvas-cell-upload-button="true"]': {
+            pointerEvents: 'none',
+          },
+          '& .MuiFormControlLabel-root, & .MuiRadio-root, & .MuiCheckbox-root, & .MuiSwitch-root': {
+            pointerEvents: 'none',
+          },
+        }}
+      >
+        {renderControl()}
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -351,7 +710,12 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
       ) : null}
       {node.type === 'inputdouble' ? (
         <Typography sx={{ mt: 0.5, fontSize: 11, color: '#909399' }}>
-          精度: {String(node.props.precision ?? 2)}
+          精度: {String(readConfig('precision', 2))}
+        </Typography>
+      ) : null}
+      {node.bindings?.helpText ? (
+        <Typography sx={{ mt: 0.5, fontSize: 11, color: '#909399' }}>
+          {String(node.bindings.helpText)}
         </Typography>
       ) : null}
       {field ? (
@@ -363,7 +727,141 @@ function FieldPreviewRenderer({ node, selected, onSelect }: DesignerRendererProp
   );
 }
 
-function ContainerRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+function ContainerRenderer({
+  node,
+  selected,
+  onSelect,
+  onCellMouseDown,
+  onCellContextMenu,
+  onOpenConfig,
+  renderMode,
+}: DesignerRendererProps) {
+  const field = useBoundField(node);
+
+  if (node.type === 'sub-table' && renderMode === 'cell') {
+    const subTableLabel = String(field?.name || field?.code || node.props.title || '子表');
+    const region = node.bindings?.subTableRegion;
+    const repeatLabel = region?.repeat.type === 'dynamic' ? '动态' : '固定';
+    const showHeader = Boolean(region?.presentation.showHeader);
+
+    return (
+      <Box
+        data-canvas-sub-table-frame="true"
+        data-canvas-sub-table-repeat-type={region?.repeat.type ?? 'fixed'}
+        onContextMenu={(event) => {
+          event.stopPropagation();
+          onCellContextMenu?.(event);
+        }}
+        sx={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          minHeight: 24,
+          border: 'none',
+          outline: selected ? '2px dashed #7c3aed' : '1px dashed #7c3aed',
+          outlineOffset: selected ? -2 : -1,
+          bgcolor: 'transparent',
+          cursor: 'pointer',
+          boxSizing: 'border-box',
+          pointerEvents: 'none',
+        }}
+      >
+        {showHeader ? (
+          <>
+            <Box
+              data-canvas-sub-table-header-connector="true"
+              sx={{
+                position: 'absolute',
+                left: '100%',
+                top: 11,
+                width: 18,
+                borderTop: '1px dashed #8b5cf6',
+                opacity: 1,
+                pointerEvents: 'none',
+              }}
+            />
+            <Box
+              data-canvas-sub-table-header="true"
+              data-canvas-sub-table-header-label="true"
+              onMouseDown={(event) => {
+                event.stopPropagation();
+              }}
+              onClick={(event) => {
+                event.stopPropagation();
+                onOpenConfig?.();
+              }}
+              sx={{
+                position: 'absolute',
+                left: 'calc(100% + 18px)',
+                top: 0,
+                px: 0.75,
+                height: 22,
+                lineHeight: '22px',
+                borderRadius: 0.5,
+                bgcolor: '#8b5cf6',
+                color: '#fff',
+                fontSize: 12,
+                opacity: 1,
+                pointerEvents: 'auto',
+                maxWidth: 120,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {subTableLabel} · 表头
+            </Box>
+          </>
+        ) : null}
+        <Box
+          data-canvas-sub-table-connector="true"
+          sx={{
+            position: 'absolute',
+            left: '100%',
+            top: '50%',
+            width: 18,
+            borderTop: '1px dashed #8b5cf6',
+            opacity: 0,
+            pointerEvents: 'none',
+            transform: 'translateY(-50%)',
+          }}
+        />
+        <Box
+          data-canvas-sub-table-hover-label="true"
+          onMouseDown={(event) => {
+            event.stopPropagation();
+          }}
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenConfig?.();
+          }}
+          sx={{
+            position: 'absolute',
+            left: 'calc(100% + 18px)',
+            top: '50%',
+            px: 0.75,
+            height: 22,
+            lineHeight: '22px',
+            borderRadius: 0.5,
+            bgcolor: '#8b5cf6',
+            color: '#fff',
+            fontSize: 12,
+            opacity: 0,
+            pointerEvents: 'none',
+            transform: 'translateY(-50%)',
+            maxWidth: 120,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {subTableLabel}
+          {region ? ` · ${repeatLabel}` : ''}
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box
       onClick={(event) => {

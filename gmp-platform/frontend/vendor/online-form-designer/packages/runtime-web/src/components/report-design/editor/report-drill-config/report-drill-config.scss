@@ -1,6 +1,0 @@
-@include b(report-drill-config) {
-  @include e(info) {
-    color: getCssVar(color, text, 5);
-    margin: getCssVar(spacing, 2) 0;
-  }
-}
