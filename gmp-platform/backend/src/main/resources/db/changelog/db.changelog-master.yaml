@@ -71,3 +71,9 @@ databaseChangeLog:
       file: db/changelog/0033-template-modeling-management.sql
   - include:
       file: db/changelog/0034-template-version-source-file-id.sql
+  - include:
+      file: db/changelog/0035-dhr-template-workspace.sql
+  - include:
+      file: db/changelog/0036-dhr-workspace-audit-columns.sql
+  - include:
+      file: db/changelog/0037-dhr-template-current-version-constraint.sql

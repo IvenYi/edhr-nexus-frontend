@@ -1,5 +1,7 @@
 package com.zencas.edhr.template.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -7,7 +9,9 @@ import java.time.LocalDateTime;
 @Entity @Table(name = "dhr_template")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class DhrTemplate {
-    @Id private Long id;
+    @Id
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
     @Column(name = "tenant_id")
     @Builder.Default private String tenantId = "default";
     @Column(name = "code", nullable = false, length = 64)

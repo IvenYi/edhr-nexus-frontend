@@ -12,6 +12,8 @@ public class DhrTemplateItem {
     private Long directoryId;
     @Column(name = "form_template_id")
     private Long formTemplateId;
+    @Column(name = "form_template_version_id")
+    private Long formTemplateVersionId;
     @Column(name = "sort_order")
     @Builder.Default private Integer sortOrder = 0;
     @Column(name = "is_required")

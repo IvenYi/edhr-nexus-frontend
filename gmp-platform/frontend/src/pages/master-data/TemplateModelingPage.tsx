@@ -90,6 +90,7 @@ import {
 } from '@/api/template-modeling';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
+import DhrTemplateWorkspaceDialog from './DhrTemplateWorkspaceDialog';
 
 const TemplateDesignerReactDialog = lazy(() => import('./template-designer-react'));
 
@@ -627,6 +628,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({ open: false, message: '', severity: 'success' });
   const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
+  const [dhrWorkspaceRow, setDhrWorkspaceRow] = useState<TemplateModelingRecord | null>(null);
 
   const categoryQuery = useQuery({
     queryKey: [config.categoryQueryKey],
@@ -1452,6 +1454,11 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       return (
         <Stack direction="row" spacing={0.5} justifyContent="center" onClick={(event) => event.stopPropagation()}>
           {pageKey === 'formTemplates' ? renderAddTemplateVersionAction(row) : null}
+          {pageKey === 'batchRecordTemplates' ? (
+            <Tooltip title="设计" arrow>
+              <IconButton size="small" aria-label="设计" onClick={() => setDhrWorkspaceRow(row)}><DesignServicesIcon fontSize="small" /></IconButton>
+            </Tooltip>
+          ) : null}
           <Tooltip title="编辑" arrow>
             <IconButton size="small" aria-label="编辑" onClick={() => openEditDialog(row)}><EditIcon fontSize="small" /></IconButton>
           </Tooltip>
@@ -1787,6 +1794,12 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           />
         </Suspense>
       ) : null}
+
+      <DhrTemplateWorkspaceDialog
+        open={dhrWorkspaceRow !== null}
+        template={dhrWorkspaceRow}
+        onClose={() => setDhrWorkspaceRow(null)}
+      />
 
       <Drawer
         anchor="right"

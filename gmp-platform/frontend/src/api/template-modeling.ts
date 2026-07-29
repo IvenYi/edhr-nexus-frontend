@@ -111,6 +111,56 @@ export interface TemplateImportedPagePayload {
   grid: TemplateImportedGridPayload;
 }
 
+export interface DhrTemplateVersionRecord {
+  id: string;
+  version: string;
+  status: 'DRAFT' | 'ACTIVE' | 'DISABLED' | string;
+  isCurrent: boolean;
+  createdAt?: string | null;
+  directoryCount: number;
+  evidenceCount: number;
+}
+
+export interface DhrTemplateWorkspaceRecord {
+  templateId: string;
+  templateCode: string;
+  templateName: string;
+  versions: DhrTemplateVersionRecord[];
+}
+
+export interface DhrDirectoryRecord {
+  id: string;
+  parentId?: string | null;
+  name: string;
+  sortOrder: number;
+}
+
+export interface DhrEvidenceItemRecord {
+  id: string;
+  directoryId: string;
+  formTemplateId?: string | null;
+  formTemplateVersionId?: string | null;
+  formCode: string;
+  formName: string;
+  formVersion: string;
+  isRequired: boolean;
+  sortOrder: number;
+}
+
+export interface DhrTemplateCompositionRecord {
+  version: DhrTemplateVersionRecord;
+  directories: DhrDirectoryRecord[];
+  items: DhrEvidenceItemRecord[];
+}
+
+export interface DhrFormTemplateOption {
+  templateId: string;
+  versionId: string;
+  code: string;
+  name: string;
+  version: string;
+}
+
 const templateModelingBase = '/master-data/template-modeling';
 
 const templatePathByKey: Record<TemplateModelingPageKey, string> = {
@@ -177,3 +227,36 @@ export const updateBatchRecordTemplate = (id: string | number, body: TemplateMod
 
 export const deleteBatchRecordTemplate = (id: string | number) =>
   client.delete(`${templateModelingBase}/batch-record-templates/${id}`);
+
+export const getDhrTemplateWorkspace = (templateId: string | number) =>
+  client.get(`${templateModelingBase}/batch-record-templates/${templateId}/workspace`) as Promise<{ data: { data: DhrTemplateWorkspaceRecord } }>;
+
+export const getDhrTemplateComposition = (templateId: string | number, versionId: string | number) =>
+  client.get(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/composition`) as Promise<{ data: { data: DhrTemplateCompositionRecord } }>;
+
+export const getDhrFormTemplateOptions = (templateId: string | number) =>
+  client.get(`${templateModelingBase}/batch-record-templates/${templateId}/form-options`) as Promise<{ data: { data: DhrFormTemplateOption[] } }>;
+
+export const createDhrTemplateVersion = (templateId: string | number, sourceVersionId?: string | number | null) =>
+  client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions`, { sourceVersionId }) as Promise<{ data: { data: DhrTemplateVersionRecord } }>;
+
+export const createDhrDirectory = (templateId: string | number, versionId: string | number, body: { name: string; parentId?: string | number | null }) =>
+  client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/directories`, body) as Promise<{ data: { data: DhrDirectoryRecord } }>;
+
+export const updateDhrDirectory = (templateId: string | number, versionId: string | number, directoryId: string | number, body: { name: string; parentId?: string | number | null }) =>
+  client.put(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/directories/${directoryId}`, body) as Promise<{ data: { data: DhrDirectoryRecord } }>;
+
+export const deleteDhrDirectory = (templateId: string | number, versionId: string | number, directoryId: string | number) =>
+  client.delete(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/directories/${directoryId}`);
+
+export const createDhrEvidenceItem = (templateId: string | number, versionId: string | number, directoryId: string | number, body: { formTemplateVersionId: string | number; isRequired: boolean }) =>
+  client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/directories/${directoryId}/items`, body) as Promise<{ data: { data: DhrEvidenceItemRecord } }>;
+
+export const updateDhrEvidenceItem = (templateId: string | number, versionId: string | number, itemId: string | number, body: { isRequired: boolean }) =>
+  client.put(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/items/${itemId}`, body) as Promise<{ data: { data: DhrEvidenceItemRecord } }>;
+
+export const deleteDhrEvidenceItem = (templateId: string | number, versionId: string | number, itemId: string | number) =>
+  client.delete(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/items/${itemId}`);
+
+export const publishDhrTemplateVersion = (templateId: string | number, versionId: string | number) =>
+  client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/publish`) as Promise<{ data: { data: DhrTemplateVersionRecord } }>;

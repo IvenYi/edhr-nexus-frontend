@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { handleLegacyWordDevImport } from './scripts/legacy-word-dev-import.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const apiProxyTarget = process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:8081';
 
 export default defineConfig({
   plugins: [
@@ -30,7 +31,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8081',
+        target: apiProxyTarget,
         changeOrigin: true,
       },
     },

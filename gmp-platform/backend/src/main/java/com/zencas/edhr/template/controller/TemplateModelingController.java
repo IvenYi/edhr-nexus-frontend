@@ -15,10 +15,16 @@ import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.template.dto.TemplateModelingRequest;
 import com.zencas.edhr.template.dto.TemplateImportGridResponse;
 import com.zencas.edhr.template.entity.DhrTemplate;
+import com.zencas.edhr.template.entity.DhrTemplateVersion;
+import com.zencas.edhr.template.entity.DhrDirectory;
+import com.zencas.edhr.template.entity.DhrTemplateItem;
 import com.zencas.edhr.template.entity.FormTemplate;
 import com.zencas.edhr.template.entity.FormTemplateVersion;
 import com.zencas.edhr.template.entity.TemplateCategory;
 import com.zencas.edhr.template.repository.DhrTemplateRepository;
+import com.zencas.edhr.template.repository.DhrTemplateVersionRepository;
+import com.zencas.edhr.template.repository.DhrDirectoryRepository;
+import com.zencas.edhr.template.repository.DhrTemplateItemRepository;
 import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.template.repository.TemplateCategoryRepository;
@@ -74,6 +80,9 @@ public class TemplateModelingController {
     private final FormTemplateRepository formTemplateRepository;
     private final FormTemplateVersionRepository formTemplateVersionRepository;
     private final DhrTemplateRepository dhrTemplateRepository;
+    private final DhrTemplateVersionRepository dhrTemplateVersionRepository;
+    private final DhrDirectoryRepository dhrDirectoryRepository;
+    private final DhrTemplateItemRepository dhrTemplateItemRepository;
     private final TemplateCategoryRepository templateCategoryRepository;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
@@ -314,7 +323,20 @@ public class TemplateModelingController {
     public ApiResponse<Void> deleteBatchRecordTemplate(@PathVariable Long id) {
         DhrTemplate existing = dhrTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "批记录模板不存在"));
-        dhrTemplateRepository.deleteById(id);
+        List<DhrTemplateVersion> versions = dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(id);
+        if (versions.stream().anyMatch(version -> "ACTIVE".equals(version.getStatus()) || Boolean.TRUE.equals(version.getIsCurrent()))) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "已启用版本不可删除，请通过新建版本受控更新");
+        }
+        List<DhrDirectory> directories = versions.stream()
+                .flatMap(version -> dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(version.getId()).stream())
+                .toList();
+        List<DhrTemplateItem> items = directories.isEmpty()
+                ? List.of()
+                : dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(directories.stream().map(DhrDirectory::getId).toList());
+        if (!items.isEmpty()) dhrTemplateItemRepository.deleteAll(items);
+        if (!directories.isEmpty()) dhrDirectoryRepository.deleteAll(directories);
+        if (!versions.isEmpty()) dhrTemplateVersionRepository.deleteAll(versions);
+        dhrTemplateRepository.delete(existing);
         writeAudit("DHR_TEMPLATE", id, "DELETE", "批记录模板", "删除批记录模板", dhrTemplateSnapshot(existing), Map.of());
         return ApiResponse.success(null);
     }
