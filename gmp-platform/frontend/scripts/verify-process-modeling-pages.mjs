@@ -36,6 +36,7 @@ mustInclude(packageContent, '"verify:process-modeling": "node scripts/verify-pro
 mustInclude(standardContent, '数据模块下的工艺建模页面统一沿用系统模块后台工作台标准', 'UI standard should include the process modeling page standard');
 mustInclude(standardContent, 'Snackbar 内部提示沿用系统-用户管理样式：使用 MUI Alert 默认外观，不使用 filled 变体。', 'UI standard should document the user-management feedback style');
 mustInclude(standardContent, '工序通用描述放在新增和编辑弹窗字段的最后', 'UI standard should document operation general description placement');
+mustInclude(standardContent, '主子表列表的父行点击默认用于展开或收起子数据行；父行中承载详情入口的核心业务名称列必须使用蓝色可点击文字样式，点击后打开当前父行详情抽屉，并阻止事件冒泡，避免同时触发展开或收起。', 'UI standard should document parent-row expand and name-link drawer behavior for master-detail tables');
 
 mustInclude(constantsContent, "label: '工艺建模'", 'data module should expose the renamed process modeling group');
 mustAppearInOrder(constantsContent, [
@@ -213,7 +214,10 @@ mustInclude(pageContent, 'data-process-route-designer-panel', 'route designer sh
 mustInclude(pageContent, 'openRouteVersionDrawer', 'route version table rows should open a detail drawer');
 mustInclude(pageContent, 'onClick={() => openRouteVersionDrawer(route, versionRow)}', 'route version table row click should open the child-version drawer');
 mustInclude(pageContent, 'getRouteAuditTargets(route)', 'route main-row drawer should audit the route template and all child versions');
-mustInclude(pageContent, "onClick={() => openRouteGroupDrawer(route)}", 'route main table row click should use the route audit target helper');
+mustInclude(pageContent, 'data-process-route-name-link', 'route parent row name should expose a dedicated clickable drawer trigger');
+mustInclude(pageContent, "onClick={(event) => {\n        event.stopPropagation();\n        openRouteGroupDrawer(route);\n      }}", 'route parent row name click should open the route drawer without toggling the row');
+mustInclude(pageContent, '<TableRow key={route.id} hover onClick={() => expandRouteGroup(route.id)}', 'route parent row click should expand or collapse child rows');
+mustNotInclude(pageContent, '<TableRow key={route.id} hover onClick={() => openRouteGroupDrawer(route)}', 'route parent row click should not open the route drawer');
 mustInclude(pageContent, 'getRouteVersionAuditTargets(version)', 'route version drawer should audit the selected version only');
 mustInclude(pageContent, "entityType: 'ROUTE_VERSION'", 'route version audit target should include version metadata changes');
 mustInclude(pageContent, "entityType: 'ROUTE_GRAPH'", 'route version audit target should include route graph changes for that version');
@@ -674,6 +678,10 @@ mustInclude(pageContent, 'aria-label="全部收起"', 'material toolbar should e
 mustInclude(pageContent, 'selectedAuditEntityTargets', 'material grouped drawer audit should request all version audit records');
 mustInclude(pageContent, 'Promise.all(selectedAuditEntityTargets.map', 'material grouped drawer audit should merge audit logs for all selected version ids');
 mustInclude(pageContent, 'openMaterialGroupDrawer', 'material main rows should open a grouped material drawer');
+mustInclude(pageContent, 'data-process-material-name-link', 'material parent row name should expose a dedicated clickable drawer trigger');
+mustInclude(pageContent, "onClick={(event) => {\n        event.stopPropagation();\n        openMaterialGroupDrawer(row);\n      }}", 'material parent row name click should open the grouped material drawer without toggling the row');
+mustInclude(pageContent, '<TableRow key={row.id} hover onClick={() => expandMaterialGroup(row.groupKey)}', 'material parent row click should expand or collapse child rows');
+mustNotInclude(pageContent, '<TableRow key={row.id} hover onClick={() => openMaterialGroupDrawer(row)}', 'material parent row click should not open the grouped material drawer');
 mustInclude(pageContent, 'openMaterialVersionDrawer', 'material version rows should open a single-version drawer');
 mustInclude(pageContent, 'materialGroupRows', 'material management should group versions by material code');
 mustInclude(pageContent, 'expandMaterialGroup', 'material management should support expanding grouped versions');
