@@ -1294,6 +1294,34 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     return '-';
   };
 
+  const renderTemplateNameLink = (row: TemplateModelingRecord) => (
+    <Typography
+      component="button"
+      data-template-name-link
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        openTemplateDrawer(row);
+      }}
+      sx={{
+        p: 0,
+        border: 'none',
+        bgcolor: 'transparent',
+        color: '#1890ff',
+        cursor: 'pointer',
+        font: 'inherit',
+        lineHeight: 'inherit',
+        overflow: 'hidden',
+        textAlign: 'left',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        '&:hover': { color: '#096dd9', textDecoration: 'underline' },
+      }}
+    >
+      {row.name || '-'}
+    </Typography>
+  );
+
   const renderTemplateVersionTable = (row: TemplateModelingRecord) => {
     const versions = getTemplateVersionRows(row);
     return (
@@ -1384,7 +1412,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     const isExpanded = expandedTemplateGroups.has(String(row.id));
     return (
       <Fragment key={row.id}>
-        <TableRow key={row.id} hover onClick={() => openTemplateDrawer(row)} sx={{ cursor: 'pointer' }}>
+        <TableRow key={row.id} hover onClick={() => expandTemplateGroup(row.id)} sx={{ cursor: 'pointer' }}>
           {visibleColumns.map((column, index) => {
             const commonSx = {
               width: getColumnWidth(column),
@@ -1408,10 +1436,14 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                       >
                         {isExpanded ? <ExpandLess fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
                       </IconButton>
-                      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {renderTemplateGroupCell(row, column)}
-                      </Typography>
+                      {column.id === 'name' ? renderTemplateNameLink(row) : (
+                        <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {renderTemplateGroupCell(row, column)}
+                        </Typography>
+                      )}
                     </Box>
+                  ) : column.id === 'name' ? (
+                    renderTemplateNameLink(row)
                   ) : column.id === 'status' ? (
                     renderStatusBadge(row.status)
                   ) : (

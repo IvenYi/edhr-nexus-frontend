@@ -3865,6 +3865,34 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return getColumnDisplayValue(latest, column.id);
   };
 
+  const renderMaterialGroupNameLink = (row: MaterialGroupRow) => (
+    <Typography
+      component="button"
+      data-process-material-name-link
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        openMaterialGroupDrawer(row);
+      }}
+      sx={{
+        p: 0,
+        border: 'none',
+        bgcolor: 'transparent',
+        color: '#1890ff',
+        cursor: 'pointer',
+        font: 'inherit',
+        lineHeight: 'inherit',
+        overflow: 'hidden',
+        textAlign: 'left',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        '&:hover': { color: '#096dd9', textDecoration: 'underline' },
+      }}
+    >
+      {row.materialGroupDisplayName}
+    </Typography>
+  );
+
   const getRouteVersionCount = (route: RouteRecord) => route.versionCount ?? route.versions?.length ?? 0;
 
   const renderRouteGroupCell = (route: RouteRecord, column: ProcessColumn) => {
@@ -3872,6 +3900,34 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     if (column.id === 'version') return String(getRouteVersionCount(route));
     return getColumnDisplayValue(route, column.id);
   };
+
+  const renderRouteGroupNameLink = (route: RouteRecord) => (
+    <Typography
+      component="button"
+      data-process-route-name-link
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        openRouteGroupDrawer(route);
+      }}
+      sx={{
+        p: 0,
+        border: 'none',
+        bgcolor: 'transparent',
+        color: '#1890ff',
+        cursor: 'pointer',
+        font: 'inherit',
+        lineHeight: 'inherit',
+        overflow: 'hidden',
+        textAlign: 'left',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        '&:hover': { color: '#096dd9', textDecoration: 'underline' },
+      }}
+    >
+      {getDisplayName(route)}
+    </Typography>
+  );
 
   const renderMaterialVersionTable = (group: MaterialGroupRow) => {
     return (
@@ -4315,7 +4371,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       const isExpanded = expandedMaterialGroups.has(row.groupKey);
       return (
         <Fragment key={row.groupKey}>
-          <TableRow key={row.id} hover onClick={() => openMaterialGroupDrawer(row)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+          <TableRow key={row.id} hover onClick={() => expandMaterialGroup(row.groupKey)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
             {visibleColumns.map((column, index) => {
               const commonSx = {
                 width: getColumnWidth(column),
@@ -4341,10 +4397,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                       >
                         {isExpanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
                       </IconButton>
-                      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {renderMaterialGroupCell(row, column)}
-                      </Typography>
+                      {column.id === 'name' ? renderMaterialGroupNameLink(row) : (
+                        <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {renderMaterialGroupCell(row, column)}
+                        </Typography>
+                      )}
                     </Box>
+                  ) : column.id === 'name' ? (
+                    renderMaterialGroupNameLink(row)
                   ) : column.id === 'version' ? (
                     <Typography sx={{ color: '#606266' }}>{renderMaterialGroupCell(row, column)}</Typography>
                   ) : column.id === 'status' ? (
@@ -4368,7 +4428,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       const versions = route.versions ?? [];
       return (
         <Fragment key={route.id}>
-          <TableRow key={route.id} hover onClick={() => openRouteGroupDrawer(route)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+          <TableRow key={route.id} hover onClick={() => expandRouteGroup(route.id)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
             {visibleColumns.map((column, index) => {
               const commonSx = {
                 width: getColumnWidth(column),
@@ -4394,10 +4454,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                       >
                         {isExpanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
                       </IconButton>
-                      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {renderRouteGroupCell(route, column)}
-                      </Typography>
+                      {column.id === 'name' ? renderRouteGroupNameLink(route) : (
+                        <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {renderRouteGroupCell(route, column)}
+                        </Typography>
+                      )}
                     </Box>
+                  ) : column.id === 'name' ? (
+                    renderRouteGroupNameLink(route)
                   ) : column.id === 'version' ? (
                     <Typography sx={{ color: '#606266' }}>{renderRouteGroupCell(route, column)}</Typography>
                   ) : column.id === 'status' ? (
