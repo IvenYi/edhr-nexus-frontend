@@ -3,37 +3,40 @@ import {
   ArticleOutlined,
   ChevronRightRounded,
   CloseRounded,
-  ContentCopyRounded,
   DeleteOutlineRounded,
   DriveFileRenameOutlineRounded,
+  EditOutlined,
   ExpandMoreRounded,
   FolderOpenOutlined,
   FolderOutlined,
   NoteAddOutlined,
   PostAddRounded,
-  PublishRounded,
+  SearchRounded,
 } from '@mui/icons-material';
 import {
   Alert,
-  Autocomplete,
   Box,
   Button,
+  Checkbox,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
+  InputAdornment,
   MenuItem,
   Snackbar,
   Stack,
-  Switch,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Tab,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -43,23 +46,27 @@ import { useEffect, useMemo, useState, type MouseEvent, type ReactElement } from
 import {
   createDhrDirectory,
   createDhrEvidenceItem,
-  createDhrTemplateVersion,
   deleteDhrDirectory,
   deleteDhrEvidenceItem,
   getDhrFormTemplateOptions,
   getDhrTemplateComposition,
   getDhrTemplateWorkspace,
-  publishDhrTemplateVersion,
+  getFormTemplateVersion,
   updateDhrDirectory,
   updateDhrEvidenceItem,
   type DhrDirectoryRecord,
+  type DhrEvidenceItemRecord,
   type DhrFormTemplateOption,
-  type DhrTemplateVersionRecord,
+  type DhrTemplateCompositionRecord,
   type TemplateModelingRecord,
+  type TemplateVersionRecord,
 } from '@/api/template-modeling';
+import { parseReactTemplateDesignerDocument } from './template-designer-react/utils/document';
+import type { CanvasNode, CanvasPage, CanvasSelectionRange, TemplateDesignerDocument } from './template-designer-react/types';
 
 interface DirectoryNode extends DhrDirectoryRecord {
   children: DirectoryNode[];
+  items: DhrEvidenceItemRecord[];
 }
 
 interface DirectoryDialogState {
@@ -68,8 +75,22 @@ interface DirectoryDialogState {
   target?: DhrDirectoryRecord;
 }
 
-const headerCellSx = {
-  height: 44,
+interface SelectedTreeNode {
+  kind: 'directory' | 'form';
+  id: string;
+}
+
+interface SelectedFormReference {
+  templateId: string;
+  versionId: string;
+  code: string;
+  name: string;
+  version: string;
+  categoryName?: string | null;
+}
+
+const tableHeaderSx = {
+  height: 42,
   py: 0,
   bgcolor: '#f5f7fa',
   color: '#606266',
@@ -77,172 +98,363 @@ const headerCellSx = {
   borderBottom: '1px solid #e4e7ed',
 };
 
-const bodyCellSx = {
-  height: 40,
-  py: 0,
-  borderBottom: 'none',
-  boxShadow: 'inset 0 -1px 0 #ebeef5',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-};
-
-function versionStatusLabel(status?: string) {
-  if (status === 'ACTIVE') return '启用';
-  if (status === 'DISABLED') return '停用';
-  return '草稿';
+function formDisplayName(item: DhrEvidenceItemRecord) {
+  return item.displayName?.trim() || item.formName;
 }
 
-function versionStatusSx(status?: string) {
-  if (status === 'ACTIVE') return { color: '#1f8f4d', bgcolor: '#f0f9eb', borderColor: '#b7eb8f' };
-  if (status === 'DISABLED') return { color: '#909399', bgcolor: '#f5f7fa', borderColor: '#dcdfe6' };
-  return { color: '#b88230', bgcolor: '#fdf6ec', borderColor: '#f3d19e' };
+function cloneComposition(record: DhrTemplateCompositionRecord): DhrTemplateCompositionRecord {
+  return {
+    ...record,
+    directories: record.directories.map((directory) => ({ ...directory })),
+    items: record.items.map((item) => ({ ...item })),
+  };
 }
 
-function VersionStatus({ status }: { status?: string }) {
-  return (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', height: 22, px: 0.75, border: '1px solid', borderRadius: '4px', fontSize: 12, ...versionStatusSx(status) }}>
-      {versionStatusLabel(status)}
-    </Box>
-  );
+function createDraftId(prefix: string) {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return `${prefix}-${crypto.randomUUID()}`;
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function buildDirectoryTree(directories: DhrDirectoryRecord[]) {
+function directoryDepth(directory: DhrDirectoryRecord, directoryMap: Map<string, DhrDirectoryRecord>) {
+  const visited = new Set<string>();
+  let depth = 0;
+  let current = directory;
+  while (current.parentId && !visited.has(current.parentId)) {
+    visited.add(current.parentId);
+    const parent = directoryMap.get(current.parentId);
+    if (!parent) break;
+    depth += 1;
+    current = parent;
+  }
+  return depth;
+}
+
+function buildDirectoryTree(directories: DhrDirectoryRecord[], items: DhrEvidenceItemRecord[]) {
   const nodes = new Map<string, DirectoryNode>();
-  directories.forEach((directory) => nodes.set(directory.id, { ...directory, children: [] }));
+  directories.forEach((directory) => nodes.set(directory.id, { ...directory, children: [], items: [] }));
+  items.forEach((item) => nodes.get(item.directoryId)?.items.push(item));
   const roots: DirectoryNode[] = [];
   nodes.forEach((node) => {
     const parent = node.parentId ? nodes.get(node.parentId) : null;
     if (parent) parent.children.push(node);
     else roots.push(node);
   });
-  const sortNodes = (items: DirectoryNode[]) => {
-    items.sort((left, right) => left.sortOrder - right.sortOrder || left.name.localeCompare(right.name));
-    items.forEach((item) => sortNodes(item.children));
+  const sortNodes = (entries: DirectoryNode[]) => {
+    entries.sort((left, right) => left.sortOrder - right.sortOrder || left.name.localeCompare(right.name));
+    entries.forEach((entry) => {
+      entry.items.sort((left, right) => left.sortOrder - right.sortOrder || formDisplayName(left).localeCompare(formDisplayName(right)));
+      sortNodes(entry.children);
+    });
   };
   sortNodes(roots);
   return roots;
 }
 
-function DirectoryTree({
+function filterDirectoryTree(nodes: DirectoryNode[], value: string): DirectoryNode[] {
+  const keyword = value.trim().toLocaleLowerCase();
+  if (!keyword) return nodes;
+  return nodes.flatMap((node) => {
+    const directoryMatches = node.name.toLocaleLowerCase().includes(keyword);
+    const children = filterDirectoryTree(node.children, value);
+    const items = directoryMatches
+      ? node.items
+      : node.items.filter((item) => [formDisplayName(item), item.formCode, item.formVersion].some((entry) => entry?.toLocaleLowerCase().includes(keyword)));
+    if (!directoryMatches && children.length === 0 && items.length === 0) return [];
+    return [{
+      ...node,
+      children: directoryMatches ? node.children : children,
+      items,
+    }];
+  });
+}
+
+function DhrContentTree({
   nodes,
-  selectedId,
+  selectedNode,
   editable,
-  onSelect,
+  onSelectDirectory,
+  onSelectForm,
+  onAddForm,
   onAddChild,
   onRename,
-  onDelete,
+  onDeleteDirectory,
+  onDeleteForm,
+  onEditForm,
 }: {
   nodes: DirectoryNode[];
-  selectedId?: string | null;
+  selectedNode: SelectedTreeNode | null;
   editable: boolean;
-  onSelect: (directory: DhrDirectoryRecord) => void;
+  onSelectDirectory: (directory: DhrDirectoryRecord) => void;
+  onSelectForm: (item: DhrEvidenceItemRecord) => void;
+  onAddForm: (directory: DhrDirectoryRecord) => void;
   onAddChild: (directory: DhrDirectoryRecord) => void;
   onRename: (directory: DhrDirectoryRecord) => void;
-  onDelete: (directory: DhrDirectoryRecord) => void;
+  onDeleteDirectory: (directory: DhrDirectoryRecord) => void;
+  onDeleteForm: (item: DhrEvidenceItemRecord) => void;
+  onEditForm: (item: DhrEvidenceItemRecord) => void;
 }) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
-    setExpandedIds(new Set(nodes.filter((node) => node.children.length > 0).map((node) => node.id)));
+    const collectExpandableIds = (entries: DirectoryNode[]): string[] => entries.flatMap((entry) => [
+      ...(entry.children.length || entry.items.length ? [entry.id] : []),
+      ...collectExpandableIds(entry.children),
+    ]);
+    setExpandedIds(new Set(collectExpandableIds(nodes)));
   }, [nodes]);
 
-  const renderNode = (node: DirectoryNode, depth: number): ReactElement => {
-    const hasChildren = node.children.length > 0;
+  const toggle = (id: string) => (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setExpandedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const stopAnd = (callback: () => void) => (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    callback();
+  };
+
+  const renderForm = (item: DhrEvidenceItemRecord, depth: number): ReactElement => {
+    const selected = selectedNode?.kind === 'form' && selectedNode.id === item.id;
+    return (
+      <Box
+        key={item.id}
+        role="treeitem"
+        aria-selected={selected}
+        onClick={() => onSelectForm(item)}
+        sx={{ display: 'grid', gridTemplateColumns: '24px minmax(0, 1fr) auto', alignItems: 'center', minHeight: 36, pl: `${8 + depth * 20}px`, pr: 0.5, cursor: 'pointer', bgcolor: selected ? '#e8f4ff' : 'transparent', color: selected ? '#1890ff' : '#303133', '&:hover': { bgcolor: selected ? '#e8f4ff' : '#f5f7fa' }, '&:hover .dhr-form-actions': { opacity: 1 } }}
+      >
+        <Box />
+        <Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0 }}>
+          <ArticleOutlined sx={{ fontSize: 16, color: selected ? '#1890ff' : '#6c7a89' }} />
+          <Typography sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13 }}>{formDisplayName(item)}</Typography>
+          <Typography component="span" sx={{ flexShrink: 0, color: selected ? '#5ca8de' : '#909399', fontSize: 12 }}>{item.formVersion}</Typography>
+        </Stack>
+        {editable ? <Stack className="dhr-form-actions" direction="row" spacing={0} sx={{ opacity: 0, transition: 'opacity .12s' }}><Tooltip title="编辑表单" arrow><IconButton size="small" aria-label="编辑表单" onClick={stopAnd(() => onEditForm(item))} sx={{ width: 25, height: 25 }}><EditOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip><Tooltip title="移除引用" arrow><IconButton size="small" color="error" aria-label="移除引用表单" onClick={stopAnd(() => onDeleteForm(item))} sx={{ width: 25, height: 25 }}><DeleteOutlineRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip></Stack> : <Box />}
+      </Box>
+    );
+  };
+
+  const renderDirectory = (node: DirectoryNode, depth: number): ReactElement => {
+    const hasChildren = node.children.length > 0 || node.items.length > 0;
     const expanded = expandedIds.has(node.id);
-    const selected = selectedId === node.id;
-    const toggle = (event: MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-      setExpandedIds((current) => {
-        const next = new Set(current);
-        if (next.has(node.id)) next.delete(node.id);
-        else next.add(node.id);
-        return next;
-      });
-    };
-    const stopAnd = (callback: () => void) => (event: MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-      callback();
-    };
+    const selected = selectedNode?.kind === 'directory' && selectedNode.id === node.id;
     return (
       <Box key={node.id}>
         <Box
           role="treeitem"
           aria-selected={selected}
-          onClick={() => onSelect(node)}
+          onClick={() => onSelectDirectory(node)}
           sx={{ display: 'grid', gridTemplateColumns: '24px minmax(0, 1fr) auto', alignItems: 'center', minHeight: 36, pl: `${8 + depth * 20}px`, pr: 0.5, cursor: 'pointer', bgcolor: selected ? '#e8f4ff' : 'transparent', color: selected ? '#1890ff' : '#303133', '&:hover': { bgcolor: selected ? '#e8f4ff' : '#f5f7fa' }, '&:hover .dhr-directory-actions': { opacity: 1 } }}
         >
-          {hasChildren ? (
-            <IconButton size="small" aria-label={expanded ? '收起目录' : '展开目录'} onClick={toggle} sx={{ width: 24, height: 24, color: '#606266' }}>
-              {expanded ? <ExpandMoreRounded fontSize="small" /> : <ChevronRightRounded fontSize="small" />}
-            </IconButton>
-          ) : <Box />}
+          {hasChildren ? <IconButton size="small" aria-label={expanded ? '收起目录' : '展开目录'} onClick={toggle(node.id)} sx={{ width: 24, height: 24, color: '#606266' }}>{expanded ? <ExpandMoreRounded fontSize="small" /> : <ChevronRightRounded fontSize="small" />}</IconButton> : <Box />}
           <Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0 }}>
             {hasChildren && expanded ? <FolderOpenOutlined sx={{ fontSize: 17, color: '#d9a441' }} /> : <FolderOutlined sx={{ fontSize: 17, color: '#d9a441' }} />}
             <Typography sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13 }}>{node.name}</Typography>
           </Stack>
-          {editable ? (
-            <Stack className="dhr-directory-actions" direction="row" spacing={0} sx={{ opacity: 0, transition: 'opacity .12s' }}>
-              <Tooltip title="新增子目录" arrow><IconButton size="small" onClick={stopAnd(() => onAddChild(node))} sx={{ width: 25, height: 25 }}><PostAddRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>
-              <Tooltip title="重命名" arrow><IconButton size="small" onClick={stopAnd(() => onRename(node))} sx={{ width: 25, height: 25 }}><DriveFileRenameOutlineRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>
-              <Tooltip title="删除" arrow><IconButton size="small" color="error" onClick={stopAnd(() => onDelete(node))} sx={{ width: 25, height: 25 }}><DeleteOutlineRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>
-            </Stack>
-          ) : <Box />}
+          {editable ? <Stack className="dhr-directory-actions" direction="row" spacing={0} sx={{ opacity: 0, transition: 'opacity .12s' }}>
+            <Tooltip title="引用表单" arrow><IconButton size="small" aria-label="引用表单" onClick={stopAnd(() => onAddForm(node))} sx={{ width: 25, height: 25 }}><NoteAddOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip>
+            <Tooltip title="新增子目录" arrow><IconButton size="small" aria-label="新增子目录" onClick={stopAnd(() => onAddChild(node))} sx={{ width: 25, height: 25 }}><PostAddRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>
+            <Tooltip title="重命名" arrow><IconButton size="small" aria-label="重命名目录" onClick={stopAnd(() => onRename(node))} sx={{ width: 25, height: 25 }}><DriveFileRenameOutlineRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>
+            <Tooltip title="删除" arrow><IconButton size="small" color="error" aria-label="删除目录" onClick={stopAnd(() => onDeleteDirectory(node))} sx={{ width: 25, height: 25 }}><DeleteOutlineRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>
+          </Stack> : <Box />}
         </Box>
-        {hasChildren && expanded ? node.children.map((child) => renderNode(child, depth + 1)) : null}
+        {hasChildren && expanded ? <>{node.children.map((child) => renderDirectory(child, depth + 1))}{node.items.map((item) => renderForm(item, depth + 1))}</> : null}
       </Box>
     );
   };
 
-  return <Box role="tree" sx={{ py: 0.5 }}>{nodes.map((node) => renderNode(node, 0))}</Box>;
+  return <Box role="tree" sx={{ py: 0.5 }}>{nodes.map((node) => renderDirectory(node, 0))}</Box>;
+}
+
+function readNumber(value: unknown, fallback: number) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function versionStatusLabel(status?: string | null) {
+  if (status === 'ACTIVE') return '启用';
+  if (status === 'PENDING') return '待生效';
+  if (status === 'EXPIRED') return '已失效';
+  if (status === 'DISABLED') return '禁用';
+  if (status === 'DRAFT') return '草稿';
+  return status || '-';
+}
+
+function versionStatusSx(status?: string | null) {
+  if (status === 'ACTIVE') return { color: '#1f8f4d', bgcolor: '#f0f9eb', borderColor: '#b7eb8f' };
+  if (status === 'PENDING') return { color: '#b88230', bgcolor: '#fdf6ec', borderColor: '#f3d19e' };
+  if (status === 'EXPIRED' || status === 'DISABLED') return { color: '#c45656', bgcolor: '#fef0f0', borderColor: '#fab6b6' };
+  return { color: '#606266', bgcolor: '#f4f4f5', borderColor: '#dcdfe6' };
+}
+
+function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
+  const value = node.style.cellRange;
+  if (!value || typeof value !== 'object') return null;
+  const range = value as Partial<CanvasSelectionRange>;
+  if (typeof range.t !== 'number' || typeof range.l !== 'number' || typeof range.b !== 'number' || typeof range.r !== 'number') return null;
+  return { t: range.t, l: range.l, b: range.b, r: range.r };
+}
+
+function flattenCanvasNodes(nodes: CanvasNode[]): CanvasNode[] {
+  return nodes.flatMap((node) => [node, ...(node.children ? flattenCanvasNodes(node.children) : [])]);
+}
+
+function PreviewField({ node, document }: { node: CanvasNode; document: TemplateDesignerDocument }) {
+  const field = document.model.fields.find((entry) => entry.id === node.bindings?.fieldId);
+  const label = String(node.bindings?.displayLabel || field?.name || node.props.label || '字段');
+  const placeholder = String(node.bindings?.placeholder || node.props.placeholder || (field?.type === 'datetime' ? '请选择日期' : field?.type === 'singleSelect' || field?.type === 'reference' ? '请选择' : '请输入'));
+  const hidden = Boolean(node.bindings?.hidden);
+  if (hidden || node.type === 'sub-table') return null;
+  return <Box sx={{ height: '100%', minWidth: 0, display: 'flex', alignItems: 'center', px: 0.75, color: '#97a0ad', fontSize: 12, border: '1px solid #d8dee8', borderRadius: '3px', bgcolor: node.bindings?.readonly ? '#f7f8fa' : '#fff', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{placeholder || label}</Box>;
+}
+
+function SheetPreview({ page, document }: { page: CanvasPage; document: TemplateDesignerDocument }) {
+  const columns = page.sheet.columnWidths.slice(0, page.sheet.columnCount).map((width) => Math.max(36, Math.min(260, width)));
+  const rows = page.sheet.rowHeights.slice(0, page.sheet.rowCount).map((height) => Math.max(24, Math.min(180, height)));
+  const sheetWidth = columns.reduce((sum, width) => sum + width, 0);
+  const sheetHeight = rows.reduce((sum, height) => sum + height, 0);
+  const mergedStarts = new Map<string, CanvasSelectionRange>();
+  const mergedSkips = new Set<string>();
+  page.mergedCells.forEach((range) => {
+    mergedStarts.set(`${range.t}:${range.l}`, range);
+    for (let row = range.t; row <= range.b; row += 1) for (let col = range.l; col <= range.r; col += 1) if (row !== range.t || col !== range.l) mergedSkips.add(`${row}:${col}`);
+  });
+  const columnOffsets = columns.reduce<number[]>((offsets, width) => [...offsets, offsets[offsets.length - 1] + width], [0]);
+  const rowOffsets = rows.reduce<number[]>((offsets, height) => [...offsets, offsets[offsets.length - 1] + height], [0]);
+  const nodeLayers = flattenCanvasNodes(page.nodes).flatMap((node) => {
+    const range = readNodeCellRange(node);
+    if (!range || node.style.position !== 'absolute') return [];
+    const left = columnOffsets[range.l - 1] ?? 0;
+    const top = rowOffsets[range.t - 1] ?? 0;
+    const width = (columnOffsets[range.r] ?? left) - left;
+    const height = (rowOffsets[range.b] ?? top) - top;
+    return [{ node, left, top, width, height }];
+  });
+  const media = new Map(page.medias.map((item) => [item.id, item.src]));
+
+  return (
+    <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', bgcolor: '#eef3f8', p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', minWidth: 'fit-content' }}>
+        <Box sx={{ position: 'relative', width: sheetWidth, minHeight: sheetHeight, bgcolor: '#fff', border: '1px solid #dde3ea', boxShadow: '0 8px 24px rgba(31, 41, 55, 0.08)' }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: columns.map((width) => `${width}px`).join(' '), gridTemplateRows: rows.map((height) => `${height}px`).join(' ') }}>
+            {Array.from({ length: page.sheet.rowCount }, (_, rowIndex) => rowIndex + 1).flatMap((row) => Array.from({ length: page.sheet.columnCount }, (_, colIndex) => colIndex + 1).map((col) => {
+              const key = `${row}:${col}`;
+              if (mergedSkips.has(key)) return null;
+              const range = mergedStarts.get(key);
+              const cell = page.cells[key];
+              const spanRows = range ? range.b - range.t + 1 : 1;
+              const spanCols = range ? range.r - range.l + 1 : 1;
+              const borderColor = String(cell?.border?.color ?? '#4b5563');
+              const hasMultilineValue = String(cell?.value ?? '').includes('\n');
+              return <Box key={key} sx={{ gridColumn: `${col} / span ${spanCols}`, gridRow: `${row} / span ${spanRows}`, display: 'flex', alignItems: cell?.style?.verticalAlign === 'top' ? 'flex-start' : cell?.style?.verticalAlign === 'bottom' ? 'flex-end' : 'center', justifyContent: cell?.style?.textAlign === 'right' ? 'flex-end' : cell?.style?.textAlign === 'center' ? 'center' : 'flex-start', px: `${readNumber(cell?.style?.paddingLeft, 8)}px`, py: `${readNumber(cell?.style?.paddingTop, 4)}px`, borderLeft: cell?.border?.left ? `1px solid ${borderColor}` : col === 1 && page.sheet.showGridLines ? '1px solid #d9dee7' : 'none', borderTop: cell?.border?.top ? `1px solid ${borderColor}` : row === 1 && page.sheet.showGridLines ? '1px solid #d9dee7' : 'none', borderRight: cell?.border?.right ? `1px solid ${borderColor}` : page.sheet.showGridLines ? '1px solid #d9dee7' : '1px solid transparent', borderBottom: cell?.border?.bottom ? `1px solid ${borderColor}` : page.sheet.showGridLines ? '1px solid #d9dee7' : '1px solid transparent', bgcolor: cell?.style?.backgroundColor ? String(cell.style.backgroundColor) : '#fff', color: String(cell?.style?.color ?? '#303133'), fontSize: readNumber(cell?.style?.fontSize, 13), fontWeight: cell?.style?.fontWeight as string | number | undefined, fontStyle: cell?.style?.fontStyle as string | undefined, textDecoration: cell?.style?.textDecoration as string | undefined, fontFamily: cell?.style?.fontFamily as string | undefined, lineHeight: cell?.style?.lineHeight as string | number | undefined, whiteSpace: hasMultilineValue || cell?.style?.whiteSpace === 'normal' ? 'pre-wrap' : 'nowrap', overflow: 'hidden', overflowWrap: 'anywhere', wordBreak: 'break-word' }}><Box component="span" sx={{ display: 'block', width: '100%', minWidth: 0, textAlign: cell?.style?.textAlign === 'right' ? 'right' : cell?.style?.textAlign === 'center' ? 'center' : 'left' }}>{cell?.value ?? ''}</Box></Box>;
+            }))}
+          </Box>
+          {nodeLayers.map(({ node, left, top, width, height }) => <Box key={node.id} sx={{ position: 'absolute', left: left + 3, top: top + 3, width: Math.max(0, width - 6), height: Math.max(0, height - 6), pointerEvents: 'none', overflow: 'hidden' }}><PreviewField node={node} document={document} /></Box>)}
+          {page.images.map((image) => {
+            const src = media.get(image.mediaId);
+            return src ? <Box key={image.id} component="img" src={src} alt="" sx={{ position: 'absolute', left: image.layout.left, top: image.layout.top, width: image.layout.width, height: image.layout.height, objectFit: 'contain', pointerEvents: 'none' }} /> : null;
+          })}
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+function FieldListPreview({ document }: { document: TemplateDesignerDocument }) {
+  const groups = document.model.groups;
+  const fields = document.model.fields.filter((field) => field.status === 'enabled');
+  return <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: 3, bgcolor: '#f8fafc' }}><Box sx={{ maxWidth: 920, mx: 'auto', p: 3, bgcolor: '#fff', border: '1px solid #e4e7ed' }}>{groups.map((group) => {
+    const groupFields = fields.filter((field) => (field.groupId ?? 'default-group') === group.id);
+    if (!groupFields.length) return null;
+    return <Box key={group.id} sx={{ '& + &': { mt: 3 } }}><Typography sx={{ pb: 1, mb: 2, color: '#303133', fontSize: 15, fontWeight: 600, borderBottom: '1px solid #e4e7ed' }}>{group.name}</Typography><Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 2 }}>{groupFields.map((field) => <Box key={field.id}><Typography sx={{ mb: 0.75, color: '#606266', fontSize: 13 }}>{field.name}</Typography><Box sx={{ minHeight: 36, px: 1, display: 'flex', alignItems: 'center', border: '1px solid #dcdfe6', color: '#a8abb2', fontSize: 13 }}>{field.type === 'datetime' ? '请选择日期' : field.type === 'singleSelect' || field.type === 'reference' ? '请选择' : '请输入'}</Box></Box>)}</Box></Box>;
+  })}</Box></Box>;
+}
+
+function FormCanvasPreview({ document }: { document: TemplateDesignerDocument }) {
+  const [pageId, setPageId] = useState(document.canvas.currentPageId);
+  useEffect(() => setPageId(document.canvas.currentPageId), [document]);
+  const page = document.canvas.pages.find((entry) => entry.id === pageId) ?? document.canvas.pages[0];
+  const hasCanvasContent = Boolean(page && (Object.keys(page.cells).length || page.nodes.length || page.images.length));
+  return <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>{document.canvas.pages.length > 1 ? <Tabs value={page?.id ?? false} onChange={(_, value) => setPageId(value)} sx={{ minHeight: 40, px: 1.5, borderBottom: '1px solid #e4e7ed', '& .MuiTab-root': { minHeight: 40, minWidth: 88, textTransform: 'none', fontSize: 13 } }}>{document.canvas.pages.map((entry) => <Tab key={entry.id} value={entry.id} label={entry.name} />)}</Tabs> : null}{page && hasCanvasContent ? <SheetPreview page={page} document={document} /> : <FieldListPreview document={document} />}</Box>;
 }
 
 export default function DhrTemplateWorkspaceDialog({
   open,
   template,
+  initialVersionId,
   onClose,
 }: {
   open: boolean;
   template: TemplateModelingRecord | null;
+  initialVersionId?: string | number | null;
   onClose: () => void;
 }) {
   const queryClient = useQueryClient();
   const templateId = template?.id;
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [selectedDirectoryId, setSelectedDirectoryId] = useState<string | null>(null);
+  const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null);
   const [directoryDialog, setDirectoryDialog] = useState<DirectoryDialogState | null>(null);
   const [directoryName, setDirectoryName] = useState('');
   const [deleteDirectoryTarget, setDeleteDirectoryTarget] = useState<DhrDirectoryRecord | null>(null);
   const [addEvidenceOpen, setAddEvidenceOpen] = useState(false);
-  const [selectedFormOption, setSelectedFormOption] = useState<DhrFormTemplateOption | null>(null);
-  const [evidenceRequired, setEvidenceRequired] = useState(true);
+  const [selectedFormOptions, setSelectedFormOptions] = useState<Map<string, SelectedFormReference>>(() => new Map());
+  const [expandedFormTemplateIds, setExpandedFormTemplateIds] = useState<Set<string>>(() => new Set());
+  const [formCategory, setFormCategory] = useState('ALL');
+  const [formSearch, setFormSearch] = useState('');
+  const [directorySearch, setDirectorySearch] = useState('');
   const [deleteEvidenceId, setDeleteEvidenceId] = useState<string | null>(null);
-  const [publishConfirm, setPublishConfirm] = useState(false);
+  const [editEvidenceTarget, setEditEvidenceTarget] = useState<DhrEvidenceItemRecord | null>(null);
+  const [evidenceDisplayName, setEvidenceDisplayName] = useState('');
+  const [baseComposition, setBaseComposition] = useState<DhrTemplateCompositionRecord | null>(null);
+  const [compositionDraft, setCompositionDraft] = useState<DhrTemplateCompositionRecord | null>(null);
+  const [appliedCompositionRevision, setAppliedCompositionRevision] = useState('');
+  const [hasChanges, setHasChanges] = useState(false);
+  const [basicInfoExpanded, setBasicInfoExpanded] = useState(false);
+  const [discardConfirm, setDiscardConfirm] = useState(false);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
 
-  const workspaceQuery = useQuery({
-    queryKey: ['dhr-template-workspace', templateId],
-    enabled: open && Boolean(templateId),
-    queryFn: async () => (await getDhrTemplateWorkspace(templateId!)).data.data,
-  });
-  const formOptionsQuery = useQuery({
-    queryKey: ['dhr-template-form-options', templateId],
-    enabled: open && Boolean(templateId),
-    queryFn: async () => (await getDhrFormTemplateOptions(templateId!)).data.data,
-  });
-  const compositionQuery = useQuery({
-    queryKey: ['dhr-template-composition', templateId, selectedVersionId],
-    enabled: open && Boolean(templateId) && Boolean(selectedVersionId),
-    queryFn: async () => (await getDhrTemplateComposition(templateId!, selectedVersionId!)).data.data,
-  });
+  const workspaceQuery = useQuery({ queryKey: ['dhr-template-workspace', templateId], enabled: open && Boolean(templateId), queryFn: async () => (await getDhrTemplateWorkspace(templateId!)).data.data });
+  const formOptionsQuery = useQuery({ queryKey: ['dhr-template-form-options', templateId], enabled: open && Boolean(templateId), queryFn: async () => (await getDhrFormTemplateOptions(templateId!)).data.data });
+  const compositionQuery = useQuery({ queryKey: ['dhr-template-composition', templateId, selectedVersionId], enabled: open && Boolean(templateId) && Boolean(selectedVersionId), queryFn: async () => (await getDhrTemplateComposition(templateId!, selectedVersionId!)).data.data });
 
   const versions = workspaceQuery.data?.versions ?? [];
   const selectedVersion = versions.find((version) => version.id === selectedVersionId) ?? compositionQuery.data?.version ?? null;
-  const directories = compositionQuery.data?.directories ?? [];
+  const compositionRevision = compositionQuery.data ? `${compositionQuery.data.version.id}:${compositionQuery.dataUpdatedAt}` : '';
+  const directories = compositionDraft?.directories ?? [];
+  const items = compositionDraft?.items ?? [];
   const selectedDirectory = directories.find((directory) => directory.id === selectedDirectoryId) ?? null;
-  const selectedEvidence = selectedDirectory ? (compositionQuery.data?.items ?? []).filter((item) => item.directoryId === selectedDirectory.id) : [];
-  const directoryTree = useMemo(() => buildDirectoryTree(directories), [directories]);
+  const selectedEvidence = items.find((item) => item.id === selectedEvidenceId) ?? null;
+  const directoryTree = useMemo(() => buildDirectoryTree(directories, items), [directories, items]);
+  const visibleDirectoryTree = useMemo(() => filterDirectoryTree(directoryTree, directorySearch), [directorySearch, directoryTree]);
   const editable = selectedVersion?.status === 'DRAFT';
+  const selectedTreeNode = selectedEvidence ? { kind: 'form' as const, id: selectedEvidence.id } : selectedDirectory ? { kind: 'directory' as const, id: selectedDirectory.id } : null;
+  const formPreviewQuery = useQuery({
+    queryKey: ['dhr-referenced-form-version', selectedEvidence?.formTemplateId, selectedEvidence?.formTemplateVersionId],
+    enabled: open && Boolean(selectedEvidence?.formTemplateId) && Boolean(selectedEvidence?.formTemplateVersionId),
+    queryFn: async () => (await getFormTemplateVersion(selectedEvidence!.formTemplateId!, selectedEvidence!.formTemplateVersionId!)).data.data,
+  });
+  const formPreviewDocument = useMemo(() => {
+    if (!selectedEvidence || !formPreviewQuery.data) return null;
+    const row: TemplateModelingRecord = { id: selectedEvidence.formTemplateId ?? selectedEvidence.formTemplateVersionId ?? selectedEvidence.id, code: selectedEvidence.formCode, name: selectedEvidence.formName, type: 'FORM_TEMPLATE' };
+    return parseReactTemplateDesignerDocument(row, formPreviewQuery.data as TemplateVersionRecord);
+  }, [formPreviewQuery.data, selectedEvidence]);
+  const formCategories = useMemo(() => Array.from(new Set((formOptionsQuery.data ?? []).map((option) => option.categoryName?.trim() || '未分类'))).sort((left, right) => left.localeCompare(right)), [formOptionsQuery.data]);
+  const visibleFormOptions = useMemo(() => {
+    const keyword = formSearch.trim().toLocaleLowerCase();
+    return (formOptionsQuery.data ?? []).filter((option) => {
+      const categoryName = option.categoryName?.trim() || '未分类';
+      return (formCategory === 'ALL' || categoryName === formCategory)
+        && (!keyword || option.name.toLocaleLowerCase().includes(keyword));
+    });
+  }, [formCategory, formOptionsQuery.data, formSearch]);
+  const selectedFormReferences = useMemo(() => Array.from(selectedFormOptions.values()), [selectedFormOptions]);
+  const referencedFormIds = useMemo(() => new Set(items.filter((item) => item.directoryId === selectedDirectoryId).map((item) => item.formTemplateId)), [items, selectedDirectoryId]);
 
   const invalidateWorkspace = async () => {
     await queryClient.invalidateQueries({ queryKey: ['dhr-template-workspace', templateId] });
@@ -251,201 +463,455 @@ export default function DhrTemplateWorkspaceDialog({
   };
 
   useEffect(() => {
+    if (!open) {
+      setSelectedVersionId(null);
+      setSelectedDirectoryId(null);
+      setSelectedEvidenceId(null);
+      return;
+    }
+    setSelectedVersionId(initialVersionId == null ? null : String(initialVersionId));
+    setSelectedDirectoryId(null);
+    setSelectedEvidenceId(null);
+  }, [initialVersionId, open, templateId]);
+
+  useEffect(() => {
     if (!open) return;
+    if (versions.length === 0) return;
     if (!selectedVersionId || !versions.some((version) => version.id === selectedVersionId)) {
       setSelectedVersionId(versions[0]?.id ?? null);
     }
   }, [open, selectedVersionId, versions]);
 
   useEffect(() => {
-    if (!selectedDirectoryId || !directories.some((directory) => directory.id === selectedDirectoryId)) {
-      setSelectedDirectoryId(directories[0]?.id ?? null);
-    }
+    if (!selectedDirectoryId || !directories.some((directory) => directory.id === selectedDirectoryId)) setSelectedDirectoryId(directories[0]?.id ?? null);
   }, [directories, selectedDirectoryId]);
 
   useEffect(() => {
-    if (!open) {
-      setSelectedVersionId(null);
-      setSelectedDirectoryId(null);
-      setDirectoryDialog(null);
-      setAddEvidenceOpen(false);
-      setPublishConfirm(false);
-    }
+    if (selectedEvidenceId && !items.some((item) => item.id === selectedEvidenceId)) setSelectedEvidenceId(null);
+  }, [items, selectedEvidenceId]);
+
+  useEffect(() => {
+    if (!compositionQuery.data) return;
+    if (hasChanges || (appliedCompositionRevision === compositionRevision && compositionDraft)) return;
+    const nextComposition = cloneComposition(compositionQuery.data);
+    setBaseComposition(nextComposition);
+    setCompositionDraft(cloneComposition(nextComposition));
+    setAppliedCompositionRevision(compositionRevision);
+    setHasChanges(false);
+  }, [appliedCompositionRevision, compositionDraft, compositionQuery.data, compositionRevision, hasChanges]);
+
+  useEffect(() => {
+    if (open) return;
+    setDirectoryDialog(null);
+    setAddEvidenceOpen(false);
+    setEditEvidenceTarget(null);
+    setEvidenceDisplayName('');
+    setDiscardConfirm(false);
+    setBaseComposition(null);
+    setCompositionDraft(null);
+    setAppliedCompositionRevision('');
+    setHasChanges(false);
+    setBasicInfoExpanded(false);
+    setSelectedFormOptions(new Map());
+    setExpandedFormTemplateIds(new Set());
+    setFormCategory('ALL');
+    setFormSearch('');
+    setDirectorySearch('');
   }, [open]);
 
-  const reportError = (error: unknown, fallback: string) => {
-    setSnackbar({ open: true, message: error instanceof Error ? error.message : fallback, severity: 'error' });
+  useEffect(() => {
+    if (!addEvidenceOpen) return;
+    setExpandedFormTemplateIds(new Set((formOptionsQuery.data ?? []).map((option) => option.templateId)));
+  }, [addEvidenceOpen, formOptionsQuery.data]);
+
+  const reportError = (error: unknown, fallback: string) => setSnackbar({ open: true, message: error instanceof Error ? error.message : fallback, severity: 'error' });
+
+  const openCreateDirectory = (parentId?: string | null) => { setDirectoryName(''); setDirectoryDialog({ mode: 'create', parentId: parentId ?? null }); };
+  const openEditDirectory = (directory: DhrDirectoryRecord) => { setDirectoryName(directory.name); setDirectoryDialog({ mode: 'edit', target: directory }); };
+  const selectDirectory = (directory: DhrDirectoryRecord) => { setSelectedDirectoryId(directory.id); setSelectedEvidenceId(null); };
+  const selectForm = (item: DhrEvidenceItemRecord) => { setSelectedDirectoryId(item.directoryId); setSelectedEvidenceId(item.id); };
+  const openEditEvidence = (item: DhrEvidenceItemRecord) => {
+    selectForm(item);
+    setEvidenceDisplayName(formDisplayName(item));
+    setEditEvidenceTarget(item);
+  };
+  const openAddEvidence = (directory: DhrDirectoryRecord) => {
+    setSelectedDirectoryId(directory.id);
+    setSelectedEvidenceId(null);
+    setSelectedFormOptions(new Map());
+    setFormCategory('ALL');
+    setFormSearch('');
+    setAddEvidenceOpen(true);
+  };
+  const asSelectedFormReference = (templateOption: DhrFormTemplateOption, version: DhrFormTemplateOption['versions'][number]): SelectedFormReference => ({
+    templateId: templateOption.templateId,
+    versionId: version.versionId,
+    code: templateOption.code,
+    name: templateOption.name,
+    version: version.version,
+    categoryName: templateOption.categoryName,
+  });
+  const toggleFormTemplateExpanded = (templateOption: DhrFormTemplateOption) => {
+    setExpandedFormTemplateIds((current) => {
+      const next = new Set(current);
+      if (next.has(templateOption.templateId)) next.delete(templateOption.templateId);
+      else next.add(templateOption.templateId);
+      return next;
+    });
+  };
+  const toggleFormVersionSelection = (templateOption: DhrFormTemplateOption, version: DhrFormTemplateOption['versions'][number]) => {
+    if (!version.referenceable || referencedFormIds.has(templateOption.templateId)) return;
+    setSelectedFormOptions((current) => {
+      const next = new Map(current);
+      if (next.has(version.versionId)) {
+        next.delete(version.versionId);
+        return next;
+      }
+      Array.from(next.values())
+        .filter((selected) => selected.templateId === templateOption.templateId)
+        .forEach((selected) => next.delete(selected.versionId));
+      next.set(version.versionId, asSelectedFormReference(templateOption, version));
+      return next;
+    });
+  };
+  const toggleTemplateSelection = (templateOption: DhrFormTemplateOption) => {
+    if (referencedFormIds.has(templateOption.templateId)) return;
+    const referenceableVersions = templateOption.versions.filter((version) => version.referenceable);
+    if (referenceableVersions.length !== 1) {
+      setExpandedFormTemplateIds((current) => new Set(current).add(templateOption.templateId));
+      return;
+    }
+    setSelectedFormOptions((current) => {
+      const next = new Map(current);
+      const [version] = referenceableVersions;
+      if (next.has(version.versionId)) next.delete(version.versionId);
+      else next.set(version.versionId, asSelectedFormReference(templateOption, version));
+      return next;
+    });
   };
 
-  const createVersionMutation = useMutation({
-    mutationFn: () => createDhrTemplateVersion(templateId!, selectedVersionId),
-    onSuccess: async (response) => {
-      await invalidateWorkspace();
-      setSelectedVersionId(response.data.data.id);
-      setSelectedDirectoryId(null);
-      setSnackbar({ open: true, message: '已创建草稿版本', severity: 'success' });
+  const stageDirectory = () => {
+    if (!directoryDialog || !directoryName.trim()) return;
+    if (directoryDialog.mode === 'create') {
+      const id = createDraftId('directory');
+      setCompositionDraft((current) => current ? {
+        ...current,
+        directories: [...current.directories, {
+          id,
+          parentId: directoryDialog.parentId ?? null,
+          name: directoryName.trim(),
+          sortOrder: Math.max(0, ...current.directories.filter((directory) => directory.parentId === (directoryDialog.parentId ?? null)).map((directory) => directory.sortOrder)) + 10,
+        }],
+      } : current);
+      setSelectedDirectoryId(id);
+    } else {
+      setCompositionDraft((current) => current ? { ...current, directories: current.directories.map((directory) => directory.id === directoryDialog.target?.id ? { ...directory, name: directoryName.trim() } : directory) } : current);
+      setSelectedDirectoryId(directoryDialog.target?.id ?? null);
+    }
+    setSelectedEvidenceId(null);
+    setHasChanges(true);
+    setDirectoryDialog(null);
+  };
+
+  const requestDeleteDirectory = (directory: DhrDirectoryRecord) => {
+    if (directories.some((candidate) => candidate.parentId === directory.id) || items.some((item) => item.directoryId === directory.id)) {
+      setSnackbar({ open: true, message: '请先移除目录下的子目录和表单', severity: 'error' });
+      return;
+    }
+    setDeleteDirectoryTarget(directory);
+  };
+
+  const stageDeleteDirectory = () => {
+    if (!deleteDirectoryTarget) return;
+    setCompositionDraft((current) => current ? { ...current, directories: current.directories.filter((directory) => directory.id !== deleteDirectoryTarget.id) } : current);
+    if (selectedDirectoryId === deleteDirectoryTarget.id) setSelectedDirectoryId(null);
+    setDeleteDirectoryTarget(null);
+    setHasChanges(true);
+  };
+
+  const stageEvidence = () => {
+    if (!selectedDirectoryId || !selectedFormReferences.length) return;
+    const existingTemplateIds = new Set(items.filter((candidate) => candidate.directoryId === selectedDirectoryId).map((candidate) => candidate.formTemplateId));
+    const stagedTemplateIds = new Set<string>();
+    for (const reference of selectedFormReferences) {
+      if (existingTemplateIds.has(reference.templateId) || stagedTemplateIds.has(reference.templateId)) {
+        setSnackbar({ open: true, message: '同一目录不能重复引用同一表单', severity: 'error' });
+        return;
+      }
+      stagedTemplateIds.add(reference.templateId);
+    }
+    const firstItemId = createDraftId('form');
+    const firstSortOrder = Math.max(0, ...items.filter((candidate) => candidate.directoryId === selectedDirectoryId).map((candidate) => candidate.sortOrder)) + 10;
+    const stagedItems: DhrEvidenceItemRecord[] = selectedFormReferences.map((option, index) => ({
+      id: index === 0 ? firstItemId : createDraftId('form'),
+      directoryId: selectedDirectoryId,
+      formTemplateId: option.templateId,
+      formTemplateVersionId: option.versionId,
+      formCode: option.code,
+      formName: option.name,
+      formVersion: option.version,
+      isRequired: true,
+      sortOrder: firstSortOrder + index * 10,
+    }));
+    setCompositionDraft((current) => current ? { ...current, items: [...current.items, ...stagedItems] } : current);
+    setSelectedEvidenceId(firstItemId);
+    setSelectedFormOptions(new Map());
+    setFormSearch('');
+    setAddEvidenceOpen(false);
+    setHasChanges(true);
+  };
+
+  const stageDeleteEvidence = () => {
+    if (!deleteEvidenceId) return;
+    setCompositionDraft((current) => current ? { ...current, items: current.items.filter((item) => item.id !== deleteEvidenceId) } : current);
+    if (deleteEvidenceId === selectedEvidenceId) setSelectedEvidenceId(null);
+    setDeleteEvidenceId(null);
+    setHasChanges(true);
+  };
+
+  const stageEvidenceDisplayName = () => {
+    if (!editEvidenceTarget || !evidenceDisplayName.trim()) return;
+    const displayName = evidenceDisplayName.trim() === editEvidenceTarget.formName ? null : evidenceDisplayName.trim();
+    setCompositionDraft((current) => current ? {
+      ...current,
+      items: current.items.map((item) => item.id === editEvidenceTarget.id ? { ...item, displayName } : item),
+    } : current);
+    setHasChanges(true);
+    setEditEvidenceTarget(null);
+  };
+
+  const saveCompositionMutation = useMutation({
+    mutationFn: async () => {
+      if (!templateId || !selectedVersionId || !baseComposition || !compositionDraft) throw new Error('批记录设计上下文缺失');
+      const originalDirectoryIds = new Set(baseComposition.directories.map((directory) => directory.id));
+      const originalItemIds = new Set(baseComposition.items.map((item) => item.id));
+      const draftDirectoryIds = new Set(compositionDraft.directories.map((directory) => directory.id));
+      const draftItemIds = new Set(compositionDraft.items.map((item) => item.id));
+      const originalDirectoryMap = new Map(baseComposition.directories.map((directory) => [directory.id, directory]));
+      const draftDirectoryMap = new Map(compositionDraft.directories.map((directory) => [directory.id, directory]));
+      const originalItemMap = new Map(baseComposition.items.map((item) => [item.id, item]));
+
+      const duplicateReferences = new Set<string>();
+      for (const item of compositionDraft.items) {
+        if (!draftDirectoryMap.has(item.directoryId)) throw new Error('引用表单缺少所属目录');
+        const duplicateKey = `${item.directoryId}:${item.formTemplateId}`;
+        if (duplicateReferences.has(duplicateKey)) throw new Error('同一目录不能重复引用同一表单');
+        duplicateReferences.add(duplicateKey);
+      }
+
+      for (const item of baseComposition.items.filter((candidate) => !draftItemIds.has(candidate.id))) {
+        await deleteDhrEvidenceItem(templateId, selectedVersionId, item.id);
+      }
+
+      const deletedDirectories = baseComposition.directories
+        .filter((directory) => !draftDirectoryIds.has(directory.id))
+        .sort((left, right) => directoryDepth(right, originalDirectoryMap) - directoryDepth(left, originalDirectoryMap));
+      for (const directory of deletedDirectories) {
+        await deleteDhrDirectory(templateId, selectedVersionId, directory.id);
+      }
+
+      const directoryIdMap = new Map<string, string>();
+      baseComposition.directories.forEach((directory) => directoryIdMap.set(directory.id, directory.id));
+      const pendingDirectories = compositionDraft.directories.filter((directory) => !originalDirectoryIds.has(directory.id));
+      while (pendingDirectories.length) {
+        const nextIndex = pendingDirectories.findIndex((directory) => !directory.parentId || directoryIdMap.has(directory.parentId));
+        if (nextIndex === -1) throw new Error('目录层级存在无法保存的父子关系');
+        const [directory] = pendingDirectories.splice(nextIndex, 1);
+        const response = await createDhrDirectory(templateId, selectedVersionId, { name: directory.name, parentId: directory.parentId ? directoryIdMap.get(directory.parentId) ?? null : null });
+        directoryIdMap.set(directory.id, response.data.data.id);
+      }
+
+      for (const directory of compositionDraft.directories.filter((candidate) => originalDirectoryIds.has(candidate.id))) {
+        const original = originalDirectoryMap.get(directory.id);
+        if (!original || (original.name === directory.name && original.parentId === directory.parentId)) continue;
+        await updateDhrDirectory(templateId, selectedVersionId, directory.id, { name: directory.name, parentId: directory.parentId ? directoryIdMap.get(directory.parentId) ?? null : null });
+      }
+
+      for (const item of compositionDraft.items.filter((candidate) => originalItemIds.has(candidate.id))) {
+        const original = originalItemMap.get(item.id);
+        if (!original || original.displayName === item.displayName) continue;
+        await updateDhrEvidenceItem(templateId, selectedVersionId, item.id, { displayName: item.displayName ?? '' });
+      }
+
+      for (const item of compositionDraft.items.filter((candidate) => !originalItemIds.has(candidate.id))) {
+        const directoryId = directoryIdMap.get(item.directoryId);
+        if (!directoryId || !item.formTemplateVersionId) throw new Error('引用表单保存失败');
+        await createDhrEvidenceItem(templateId, selectedVersionId, directoryId, { formTemplateVersionId: item.formTemplateVersionId, displayName: item.displayName });
+      }
     },
-    onError: (error) => reportError(error, '创建版本失败'),
-  });
-  const saveDirectoryMutation = useMutation({
-    mutationFn: () => {
-      if (!templateId || !selectedVersionId || !directoryDialog) throw new Error('目录上下文缺失');
-      const body = { name: directoryName.trim(), parentId: directoryDialog.mode === 'create' ? directoryDialog.parentId ?? null : directoryDialog.target?.parentId ?? null };
-      return directoryDialog.mode === 'create'
-        ? createDhrDirectory(templateId, selectedVersionId, body)
-        : updateDhrDirectory(templateId, selectedVersionId, directoryDialog.target!.id, body);
-    },
-    onSuccess: async (response) => {
-      setSelectedDirectoryId(response.data.data.id);
-      setDirectoryDialog(null);
-      await invalidateWorkspace();
-      setSnackbar({ open: true, message: '目录已保存', severity: 'success' });
-    },
-    onError: (error) => reportError(error, '保存目录失败'),
-  });
-  const deleteDirectoryMutation = useMutation({
-    mutationFn: () => deleteDhrDirectory(templateId!, selectedVersionId!, deleteDirectoryTarget!.id),
     onSuccess: async () => {
-      setDeleteDirectoryTarget(null);
       await invalidateWorkspace();
-      setSnackbar({ open: true, message: '目录已删除', severity: 'success' });
+      setHasChanges(false);
+      setSnackbar({ open: true, message: '批记录目录和表单已保存', severity: 'success' });
     },
-    onError: (error) => reportError(error, '删除目录失败'),
-  });
-  const addEvidenceMutation = useMutation({
-    mutationFn: () => createDhrEvidenceItem(templateId!, selectedVersionId!, selectedDirectoryId!, { formTemplateVersionId: selectedFormOption!.versionId, isRequired: evidenceRequired }),
-    onSuccess: async () => {
-      setAddEvidenceOpen(false);
-      setSelectedFormOption(null);
-      setEvidenceRequired(true);
-      await invalidateWorkspace();
-      setSnackbar({ open: true, message: '表单证据已引用', severity: 'success' });
-    },
-    onError: (error) => reportError(error, '引用表单失败'),
-  });
-  const updateEvidenceMutation = useMutation({
-    mutationFn: (input: { itemId: string; isRequired: boolean }) => updateDhrEvidenceItem(templateId!, selectedVersionId!, input.itemId, { isRequired: input.isRequired }),
-    onSuccess: async () => {
-      await invalidateWorkspace();
-    },
-    onError: (error) => reportError(error, '更新证据要求失败'),
-  });
-  const deleteEvidenceMutation = useMutation({
-    mutationFn: () => deleteDhrEvidenceItem(templateId!, selectedVersionId!, deleteEvidenceId!),
-    onSuccess: async () => {
-      setDeleteEvidenceId(null);
-      await invalidateWorkspace();
-      setSnackbar({ open: true, message: '表单证据已移除', severity: 'success' });
-    },
-    onError: (error) => reportError(error, '移除表单证据失败'),
-  });
-  const publishMutation = useMutation({
-    mutationFn: () => publishDhrTemplateVersion(templateId!, selectedVersionId!),
-    onSuccess: async () => {
-      setPublishConfirm(false);
-      await invalidateWorkspace();
-      setSnackbar({ open: true, message: '版本已启用并冻结目录快照', severity: 'success' });
-    },
-    onError: (error) => reportError(error, '启用版本失败'),
+    onError: (error) => reportError(error, '保存批记录设计失败'),
   });
 
-  const openCreateDirectory = (parentId?: string | null) => {
-    setDirectoryName('');
-    setDirectoryDialog({ mode: 'create', parentId: parentId ?? null });
-  };
-  const openEditDirectory = (directory: DhrDirectoryRecord) => {
-    setDirectoryName(directory.name);
-    setDirectoryDialog({ mode: 'edit', target: directory });
+  const requestClose = () => {
+    if (saveCompositionMutation.isPending) return;
+    if (hasChanges) setDiscardConfirm(true);
+    else onClose();
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullScreen PaperProps={{ sx: { borderRadius: 0, bgcolor: '#f6f8f9' } }}>
+    <Dialog open={open} onClose={requestClose} fullScreen PaperProps={{ sx: { borderRadius: 0, bgcolor: '#f6f8f9' } }}>
       <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Box sx={{ minHeight: 56, px: 2, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Stack spacing={0.15} sx={{ minWidth: 220, mr: 'auto' }}>
-            <Typography sx={{ color: '#303133', fontSize: 16, fontWeight: 600 }}>批记录模板设计 · {template?.name ?? '-'}</Typography>
-            <Typography variant="caption" sx={{ color: '#909399' }}>{template?.code ?? '-'}</Typography>
+          <Typography sx={{ color: '#303133', fontSize: 16, fontWeight: 600, mr: 'auto' }}>批记录模板设计</Typography>
+          <Tooltip title="关闭" arrow><IconButton aria-label="关闭" onClick={requestClose} disabled={saveCompositionMutation.isPending} sx={{ width: 36, height: 36 }}><CloseRounded /></IconButton></Tooltip>
+        </Box>
+
+        <Box sx={{ bgcolor: '#fff', borderBottom: '1px solid #e4e7ed' }}>
+          <Stack direction="row" alignItems="center" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #eef0f3' }}>
+            <Button
+              color="inherit"
+              size="small"
+              aria-expanded={basicInfoExpanded}
+              aria-label={basicInfoExpanded ? '收起基本信息详情' : '展开基本信息详情'}
+              onClick={() => setBasicInfoExpanded((current) => !current)}
+              startIcon={<ExpandMoreRounded sx={{ transform: basicInfoExpanded ? 'rotate(0deg)' : 'rotate(-90deg)', transition: 'transform .16s' }} />}
+              sx={{ minWidth: 0, px: 0.5, color: '#303133', fontSize: 14, fontWeight: 600, textTransform: 'none' }}
+            >
+              基本信息
+            </Button>
+            <Stack direction="row" alignItems="center" spacing={0.75} sx={{ ml: 1.25, minWidth: 0 }}>
+              <Typography noWrap sx={{ color: '#606266', fontSize: 13 }}>当前版本 {selectedVersion?.version ?? '-'}</Typography>
+              <Box sx={{ flexShrink: 0, px: 0.75, py: 0.15, border: '1px solid', borderRadius: '3px', fontSize: 12, lineHeight: 1.45, ...versionStatusSx(selectedVersion?.status) }}>
+                {versionStatusLabel(selectedVersion?.status)}
+              </Box>
+            </Stack>
           </Stack>
-          {workspaceQuery.isLoading ? <CircularProgress size={18} /> : null}
-          {versions.length > 0 ? (
-            <TextField select size="small" label="模板版本" value={selectedVersionId ?? ''} onChange={(event) => { setSelectedVersionId(event.target.value); setSelectedDirectoryId(null); }} sx={{ width: 170, '& .MuiInputBase-root': { height: 36 } }}>
-              {versions.map((version) => <MenuItem key={version.id} value={version.id}>{version.version} · {versionStatusLabel(version.status)}</MenuItem>)}
-            </TextField>
-          ) : null}
-          {selectedVersion ? <VersionStatus status={selectedVersion.status} /> : null}
-          <Button size="small" variant="outlined" startIcon={<ContentCopyRounded />} onClick={() => createVersionMutation.mutate()} disabled={createVersionMutation.isPending}>新建版本</Button>
-          <Button size="small" variant="contained" startIcon={<PublishRounded />} onClick={() => setPublishConfirm(true)} disabled={!editable || publishMutation.isPending}>启用版本</Button>
-          <Tooltip title="关闭" arrow><IconButton aria-label="关闭" onClick={onClose} sx={{ width: 36, height: 36 }}><CloseRounded /></IconButton></Tooltip>
+          <Box sx={{ px: 2, py: 1.5, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', columnGap: 4, rowGap: 1.5 }}>
+            <Box><Typography variant="caption" sx={{ color: '#909399' }}>模板名称</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14, fontWeight: 600 }}>{template?.name ?? '-'}</Typography></Box>
+            <Box><Typography variant="caption" sx={{ color: '#909399' }}>版本编码</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.code || '-'}</Typography></Box>
+            <Box><Typography variant="caption" sx={{ color: '#909399' }}>所属分类</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{template?.categoryName || '未分类'}</Typography></Box>
+          </Box>
+          <Collapse in={basicInfoExpanded} timeout="auto">
+            <Box sx={{ px: 2, pb: 1.75, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', columnGap: 4, rowGap: 1.5 }}>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>版本状态</Typography><Box sx={{ mt: 0.25, width: 'fit-content', px: 0.85, py: 0.2, border: '1px solid', borderRadius: '3px', fontSize: 12, lineHeight: 1.45, ...versionStatusSx(selectedVersion?.status) }}>{versionStatusLabel(selectedVersion?.status)}</Box></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>生效时间</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.effectiveFrom || '未设置'}</Typography></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>失效时间</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.effectiveTo || '未设置'}</Typography></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>线下版本</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.offlineVersion || '未填写'}</Typography></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>版本说明</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.description || '未填写'}</Typography></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>目录数量</Typography><Typography sx={{ color: '#303133', fontSize: 14 }}>{directories.length}</Typography></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>引用表单</Typography><Typography sx={{ color: '#303133', fontSize: 14 }}>{items.length}</Typography></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>创建时间</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.createdAt || '未记录'}</Typography></Box>
+            </Box>
+          </Collapse>
         </Box>
 
         <Box sx={{ p: 1.5, flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: '300px minmax(0, 1fr)', gap: 1.5 }}>
           <Box sx={{ minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ minHeight: 48, px: 1.5, borderBottom: '1px solid #e4e7ed' }}>
-              <Typography sx={{ fontWeight: 600, color: '#303133' }}>DHR 目录</Typography>
-              <Tooltip title="新增根目录" arrow><span><IconButton size="small" aria-label="新增根目录" onClick={() => openCreateDirectory()} disabled={!editable}><AddRounded fontSize="small" /></IconButton></span></Tooltip>
+            <Stack spacing={1} sx={{ px: 1.5, py: 1, borderBottom: '1px solid #e4e7ed' }}>
+              <Stack direction="row" alignItems="center" justifyContent="space-between"><Typography sx={{ fontWeight: 600, color: '#303133' }}>DHR 目录</Typography><Tooltip title="新增根目录" arrow><span><IconButton size="small" aria-label="新增根目录" onClick={() => openCreateDirectory()} disabled={!editable}><AddRounded fontSize="small" /></IconButton></span></Tooltip></Stack>
+              <TextField
+                size="small"
+                value={directorySearch}
+                onChange={(event) => {
+                  setDirectorySearch(event.target.value);
+                  setSelectedDirectoryId(null);
+                  setSelectedEvidenceId(null);
+                }}
+                placeholder="搜索目录或表单"
+                inputProps={{ 'aria-label': '搜索目录或表单' }}
+                InputProps={{ startAdornment: <InputAdornment position="start"><SearchRounded sx={{ color: '#909399', fontSize: 18 }} /></InputAdornment> }}
+                sx={{ '& .MuiInputBase-root': { height: 32, fontSize: 13 } }}
+              />
             </Stack>
-            <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-              {compositionQuery.isLoading ? <Box sx={{ display: 'grid', placeItems: 'center', height: '100%' }}><CircularProgress size={24} /></Box> : directoryTree.length ? (
-                <DirectoryTree nodes={directoryTree} selectedId={selectedDirectoryId} editable={editable} onSelect={(directory) => setSelectedDirectoryId(directory.id)} onAddChild={(directory) => openCreateDirectory(directory.id)} onRename={openEditDirectory} onDelete={setDeleteDirectoryTarget} />
-              ) : <Box sx={{ p: 2, color: '#909399', fontSize: 13 }}>暂无目录</Box>}
-            </Box>
+            <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>{compositionQuery.isLoading || !compositionDraft ? <Box sx={{ display: 'grid', placeItems: 'center', height: '100%' }}><CircularProgress size={24} /></Box> : visibleDirectoryTree.length ? <DhrContentTree nodes={visibleDirectoryTree} selectedNode={selectedTreeNode} editable={editable && !saveCompositionMutation.isPending} onSelectDirectory={selectDirectory} onSelectForm={selectForm} onAddForm={openAddEvidence} onAddChild={(directory) => openCreateDirectory(directory.id)} onRename={openEditDirectory} onDeleteDirectory={requestDeleteDirectory} onDeleteForm={(item) => setDeleteEvidenceId(item.id)} onEditForm={openEditEvidence} /> : <Box sx={{ p: 2, color: '#909399', fontSize: 13 }}>{directorySearch.trim() ? '暂无匹配的目录或表单' : '暂无目录'}</Box>}</Box>
           </Box>
 
           <Box sx={{ minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ minHeight: 48, px: 2, borderBottom: '1px solid #e4e7ed' }}>
-              <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
-                <FolderOpenOutlined sx={{ color: '#d9a441', fontSize: 20 }} />
-                <Typography sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>{selectedDirectory?.name ?? '请选择目录'}</Typography>
-              </Stack>
-              <Button size="small" variant="contained" startIcon={<NoteAddOutlined />} disabled={!editable || !selectedDirectory} onClick={() => setAddEvidenceOpen(true)}>引用表单</Button>
+            {selectedEvidence ? <>
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ minHeight: 54, px: 2, borderBottom: '1px solid #e4e7ed' }}><ArticleOutlined sx={{ color: '#5b7188', fontSize: 20 }} /><Stack spacing={0.1} sx={{ minWidth: 0, mr: 'auto' }}><Typography noWrap sx={{ color: '#303133', fontSize: 14, fontWeight: 600 }}>{formDisplayName(selectedEvidence)}</Typography><Typography noWrap variant="caption" sx={{ color: '#909399' }}>{selectedEvidence.formCode} · {selectedEvidence.formVersion}</Typography></Stack></Stack>
+              {formPreviewQuery.isLoading ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><CircularProgress size={26} /></Box> : formPreviewQuery.isError ? <Box sx={{ p: 2 }}><Alert severity="error">无法加载该表单版本</Alert></Box> : formPreviewDocument ? <FormCanvasPreview document={formPreviewDocument} /> : null}
+            </> : selectedDirectory ? <>
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ minHeight: 54, px: 2, borderBottom: '1px solid #e4e7ed' }}><FolderOpenOutlined sx={{ color: '#d9a441', fontSize: 20 }} /><Typography noWrap sx={{ minWidth: 0, mr: 'auto', color: '#303133', fontSize: 14, fontWeight: 600 }}>{selectedDirectory.name}</Typography></Stack>
+              <Box sx={{ flex: 1, display: 'grid', placeItems: 'center', color: '#909399' }}><Stack alignItems="center" spacing={1}><FolderOpenOutlined sx={{ fontSize: 36, color: '#c9d3de' }} /><Typography sx={{ fontSize: 13 }}>请选择目录中的表单</Typography></Stack></Box>
+            </> : <Box sx={{ flex: 1, display: 'grid', placeItems: 'center', color: '#909399' }}><Typography sx={{ fontSize: 13 }}>请选择左侧目录</Typography></Box>}
+          </Box>
+        </Box>
+        <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ minHeight: 56, px: 2, py: 1, bgcolor: '#fff', borderTop: '1px solid #e4e7ed' }}>
+          <Button size="small" onClick={requestClose} disabled={saveCompositionMutation.isPending}>取消</Button>
+          <Button size="small" variant="contained" onClick={() => saveCompositionMutation.mutate()} disabled={!hasChanges || !editable || saveCompositionMutation.isPending}>{saveCompositionMutation.isPending ? '保存中' : '保存'}</Button>
+        </Stack>
+      </Box>
+
+      <Dialog open={Boolean(directoryDialog)} onClose={() => setDirectoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{directoryDialog?.mode === 'edit' ? '重命名目录' : '新增目录'}</DialogTitle><DialogContent dividers><TextField autoFocus fullWidth required size="small" label="目录名称" value={directoryName} onChange={(event) => setDirectoryName(event.target.value)} sx={{ mt: 0.5, '& .MuiInputBase-root': { height: 40 } }} /></DialogContent><DialogActions><Button onClick={() => setDirectoryDialog(null)}>取消</Button><Button variant="contained" disabled={!directoryName.trim()} onClick={stageDirectory}>确定</Button></DialogActions></Dialog>
+      <Dialog open={Boolean(deleteDirectoryTarget)} onClose={() => setDeleteDirectoryTarget(null)} fullWidth maxWidth="xs"><DialogTitle>删除目录</DialogTitle><DialogContent dividers><Typography>确认删除“{deleteDirectoryTarget?.name}”？</Typography></DialogContent><DialogActions><Button onClick={() => setDeleteDirectoryTarget(null)}>取消</Button><Button color="error" variant="contained" onClick={stageDeleteDirectory}>删除</Button></DialogActions></Dialog>
+
+      <Dialog open={addEvidenceOpen} onClose={() => setAddEvidenceOpen(false)} fullWidth maxWidth="xl" PaperProps={{ sx: { width: 'min(1280px, calc(100vw - 64px))', height: 'min(78vh, 760px)', maxHeight: 'calc(100vh - 64px)' } }}>
+        <DialogTitle sx={{ minHeight: 58, px: 2.5, py: 0, display: 'flex', alignItems: 'center', borderBottom: '1px solid #e4e7ed' }}>
+          <Typography sx={{ color: '#303133', fontSize: 17, fontWeight: 600 }}>批量引用表单</Typography>
+          <Tooltip title="关闭" arrow><IconButton aria-label="关闭引用表单" onClick={() => setAddEvidenceOpen(false)} sx={{ ml: 'auto' }}><CloseRounded /></IconButton></Tooltip>
+        </DialogTitle>
+        <DialogContent dividers sx={{ minHeight: 0, p: 0, display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 310px', overflow: 'hidden' }}>
+          <Box sx={{ minWidth: 0, minHeight: 0, p: 2.25, display: 'flex', flexDirection: 'column' }}>
+            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+              <TextField select size="small" label="分类" value={formCategory} onChange={(event) => setFormCategory(event.target.value)} sx={{ width: 250 }}>
+                <MenuItem value="ALL">全部分类</MenuItem>
+                {formCategories.map((category) => <MenuItem key={category} value={category}>{category}</MenuItem>)}
+              </TextField>
+              <TextField size="small" label="名称" placeholder="请输入表单名称" value={formSearch} onChange={(event) => setFormSearch(event.target.value)} sx={{ width: 320 }} />
             </Stack>
-            <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-              <Table stickyHeader size="small" sx={{ minWidth: 720, tableLayout: 'fixed' }}>
-                <colgroup><col style={{ width: '33%' }} /><col style={{ width: '22%' }} /><col style={{ width: 110 }} /><col style={{ width: 110 }} /><col style={{ width: 90 }} /></colgroup>
-                <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}><TableCell>表单名称</TableCell><TableCell>表单编码</TableCell><TableCell>表单版本</TableCell><TableCell align="center">必填证据</TableCell><TableCell align="center">操作</TableCell></TableRow></TableHead>
-                <TableBody>
-                  {!selectedDirectory ? <TableRow><TableCell colSpan={5} align="center" sx={{ py: 6, color: '#909399' }}>请选择左侧目录</TableCell></TableRow> : selectedEvidence.length === 0 ? <TableRow><TableCell colSpan={5} align="center" sx={{ py: 6, color: '#909399' }}>暂无表单证据</TableCell></TableRow> : selectedEvidence.map((item) => (
-                    <TableRow key={item.id} hover sx={{ '& .MuiTableCell-root': bodyCellSx }}>
-                      <TableCell title={item.formName}>{item.formName}</TableCell><TableCell title={item.formCode}>{item.formCode}</TableCell><TableCell>{item.formVersion}</TableCell>
-                      <TableCell align="center"><Switch size="small" checked={item.isRequired} disabled={!editable || updateEvidenceMutation.isPending} onChange={(_, checked) => updateEvidenceMutation.mutate({ itemId: item.id, isRequired: checked })} /></TableCell>
-                      <TableCell align="center"><Tooltip title="移除" arrow><span><IconButton size="small" color="error" aria-label="移除" disabled={!editable} onClick={() => setDeleteEvidenceId(item.id)}><DeleteOutlineRounded fontSize="small" /></IconButton></span></Tooltip></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
+            <TableContainer sx={{ flex: 1, minHeight: 0, border: '1px solid #e4e7ed' }}>
+              <Table stickyHeader size="small" sx={{ minWidth: 720 }}>
+                <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderSx }}><TableCell padding="checkbox" /><TableCell>表单名称</TableCell><TableCell>表单编码</TableCell><TableCell>表单分类</TableCell><TableCell>更新时间</TableCell></TableRow></TableHead>
+                <TableBody>{formOptionsQuery.isLoading ? <TableRow><TableCell colSpan={5} align="center" sx={{ py: 6 }}><CircularProgress size={22} /></TableCell></TableRow> : formOptionsQuery.isError ? <TableRow><TableCell colSpan={5} sx={{ p: 2 }}><Alert severity="error">表单列表加载失败</Alert></TableCell></TableRow> : visibleFormOptions.length ? visibleFormOptions.flatMap((option) => {
+                  const alreadyReferenced = referencedFormIds.has(option.templateId);
+                  const referenceableVersions = option.versions.filter((version) => version.referenceable);
+                  const selectedVersionCount = referenceableVersions.filter((version) => selectedFormOptions.has(version.versionId)).length;
+                  const selected = selectedVersionCount > 0;
+                  const expanded = expandedFormTemplateIds.has(option.templateId);
+                  const categoryName = option.categoryName?.trim() || '未分类';
+                  const parentCheckboxDisabled = alreadyReferenced || referenceableVersions.length !== 1;
+                  const parentCheckboxTooltip = alreadyReferenced ? '当前目录已引用该表单' : referenceableVersions.length === 0 ? '没有可引用的启用版本' : referenceableVersions.length === 1 ? '选择启用版本' : '请展开选择具体版本';
+                  const parentRow = <TableRow key={option.templateId} hover selected={selected} onClick={() => toggleFormTemplateExpanded(option)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': { height: 44, borderBottom: expanded ? 'none' : undefined } }}>
+                    <TableCell padding="checkbox" onClick={(event) => event.stopPropagation()}><Tooltip title={parentCheckboxTooltip} arrow><span><Checkbox size="small" checked={referenceableVersions.length === 1 && selectedVersionCount === 1} indeterminate={referenceableVersions.length > 1 && selectedVersionCount > 0} disabled={parentCheckboxDisabled} onChange={() => toggleTemplateSelection(option)} /></span></Tooltip></TableCell>
+                    <TableCell><Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}><IconButton size="small" aria-label={expanded ? `收起${option.name}版本` : `展开${option.name}版本`} onClick={(event) => { event.stopPropagation(); toggleFormTemplateExpanded(option); }} sx={{ width: 24, height: 24 }}>{expanded ? <ExpandMoreRounded fontSize="small" /> : <ChevronRightRounded fontSize="small" />}</IconButton><Typography noWrap sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', fontSize: 14, fontWeight: 600 }}>{option.name}</Typography>{alreadyReferenced ? <Typography component="span" sx={{ flexShrink: 0, color: '#909399', fontSize: 12 }}>已引用</Typography> : null}</Stack></TableCell>
+                    <TableCell>{option.code}</TableCell><TableCell>{categoryName}</TableCell><TableCell>{option.updatedAt || '-'}</TableCell>
+                  </TableRow>;
+                  const versionRows = expanded ? option.versions.map((version) => {
+                    const unavailable = alreadyReferenced || !version.referenceable;
+                    const selectedVersion = selectedFormOptions.has(version.versionId);
+                    const unavailableReason = alreadyReferenced ? '当前目录已引用该表单' : '仅可引用已启用版本';
+                    return <TableRow key={version.versionId} hover selected={selectedVersion} onClick={() => toggleFormVersionSelection(option, version)} sx={{ cursor: unavailable ? 'not-allowed' : 'pointer', opacity: unavailable && !selectedVersion ? 0.62 : 1, '& .MuiTableCell-root': { height: 40, bgcolor: selectedVersion ? '#e8f4ff' : '#fbfcfe' } }}>
+                      <TableCell padding="checkbox" onClick={(event) => event.stopPropagation()}><Tooltip title={unavailable ? unavailableReason : '选择版本'} arrow><span><Checkbox size="small" checked={selectedVersion} disabled={unavailable} onChange={() => toggleFormVersionSelection(option, version)} /></span></Tooltip></TableCell>
+                      <TableCell><Stack direction="row" spacing={0.75} alignItems="center" sx={{ pl: 4 }}><Typography sx={{ color: '#303133', fontSize: 13 }}>{version.version || '-'}</Typography>{!version.referenceable ? <Typography sx={{ color: '#909399', fontSize: 12 }}>{versionStatusLabel(version.status)}</Typography> : null}</Stack></TableCell>
+                      <TableCell>--</TableCell><TableCell>--</TableCell><TableCell>--</TableCell>
+                    </TableRow>;
+                  }) : [];
+                  return [parentRow, ...versionRows];
+                }) : <TableRow><TableCell colSpan={5} align="center" sx={{ py: 6, color: '#909399' }}>暂无匹配表单</TableCell></TableRow>}</TableBody>
               </Table>
             </TableContainer>
           </Box>
-        </Box>
-      </Box>
-
-      <Dialog open={Boolean(directoryDialog)} onClose={() => setDirectoryDialog(null)} fullWidth maxWidth="xs">
-        <DialogTitle>{directoryDialog?.mode === 'edit' ? '重命名目录' : '新增目录'}</DialogTitle>
-        <DialogContent dividers><TextField autoFocus fullWidth required size="small" label="目录名称" value={directoryName} onChange={(event) => setDirectoryName(event.target.value)} sx={{ mt: 0.5, '& .MuiInputBase-root': { height: 40 } }} /></DialogContent>
-        <DialogActions><Button onClick={() => setDirectoryDialog(null)}>取消</Button><Button variant="contained" disabled={!directoryName.trim() || saveDirectoryMutation.isPending} onClick={() => saveDirectoryMutation.mutate()}>保存</Button></DialogActions>
+          <Box sx={{ minWidth: 0, minHeight: 0, borderLeft: '1px solid #e4e7ed', display: 'flex', flexDirection: 'column', bgcolor: '#fafbfc' }}>
+            <Stack spacing={0.25} sx={{ px: 2, py: 2, borderBottom: '1px solid #e4e7ed', bgcolor: '#fff' }}><Typography sx={{ color: '#303133', fontSize: 15, fontWeight: 600 }}>已选表单</Typography><Typography sx={{ color: '#909399', fontSize: 12 }}>已选择 {selectedFormReferences.length} 个版本</Typography></Stack>
+            <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: 1.25 }}>{selectedFormReferences.length ? <Stack spacing={0.75}>{selectedFormReferences.map((option) => <Stack key={option.versionId} direction="row" spacing={0.75} alignItems="flex-start" sx={{ p: 1, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1 }}><Box sx={{ mt: 0.2, flexShrink: 0, px: 0.55, py: 0.15, color: '#247cc4', bgcolor: '#e8f4ff', borderRadius: '3px', fontSize: 12 }}>{option.categoryName?.trim() || '未分类'}</Box><Stack spacing={0.15} sx={{ minWidth: 0, flex: 1 }}><Typography noWrap sx={{ color: '#303133', fontSize: 13, fontWeight: 600 }}>{option.name}</Typography><Typography noWrap sx={{ color: '#909399', fontSize: 12 }}>{option.code} · {option.version}</Typography></Stack><Tooltip title="移除" arrow><IconButton size="small" aria-label={`移除${option.name}${option.version}`} onClick={() => setSelectedFormOptions((current) => { const next = new Map(current); next.delete(option.versionId); return next; })} sx={{ flexShrink: 0, width: 26, height: 26 }}><CloseRounded sx={{ fontSize: 17 }} /></IconButton></Tooltip></Stack>)}</Stack> : <Box sx={{ height: '100%', display: 'grid', placeItems: 'center', color: '#909399', fontSize: 13 }}>尚未选择表单</Box>}</Box>
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ minHeight: 62, px: 2.5, borderTop: '1px solid #e4e7ed' }}><Button onClick={() => setAddEvidenceOpen(false)}>取消</Button><Button variant="contained" disabled={!selectedFormReferences.length} onClick={stageEvidence}>确认引用{selectedFormReferences.length ? ` (${selectedFormReferences.length})` : ''}</Button></DialogActions>
       </Dialog>
 
-      <Dialog open={Boolean(deleteDirectoryTarget)} onClose={() => setDeleteDirectoryTarget(null)} fullWidth maxWidth="xs">
-        <DialogTitle>删除目录</DialogTitle><DialogContent dividers><Typography>确认删除“{deleteDirectoryTarget?.name}”？</Typography></DialogContent>
-        <DialogActions><Button onClick={() => setDeleteDirectoryTarget(null)}>取消</Button><Button color="error" variant="contained" disabled={deleteDirectoryMutation.isPending} onClick={() => deleteDirectoryMutation.mutate()}>删除</Button></DialogActions>
+      <Dialog open={Boolean(editEvidenceTarget)} onClose={() => setEditEvidenceTarget(null)} fullWidth maxWidth="sm">
+        <DialogTitle>编辑表单</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={2} sx={{ pt: 0.5 }}>
+            <Box sx={{ px: 2, py: 1.25, bgcolor: '#f7f9fb', border: '1px solid #e4e7ed', borderRadius: 1 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) repeat(2, minmax(0, 1fr))', gap: 2 }}>
+                <Box sx={{ minWidth: 0 }}><Typography variant="caption" sx={{ color: '#909399' }}>源表单模板</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14, lineHeight: 1.7, overflow: 'hidden', textOverflow: 'ellipsis' }}>{editEvidenceTarget?.formName ?? '-'}</Typography></Box>
+                <Box sx={{ minWidth: 0 }}><Typography variant="caption" sx={{ color: '#909399' }}>表单编码</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14, lineHeight: 1.7, overflow: 'hidden', textOverflow: 'ellipsis' }}>{editEvidenceTarget?.formCode ?? '-'}</Typography></Box>
+                <Box sx={{ minWidth: 0 }}><Typography variant="caption" sx={{ color: '#909399' }}>表单版本</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14, lineHeight: 1.7, overflow: 'hidden', textOverflow: 'ellipsis' }}>{editEvidenceTarget?.formVersion ?? '-'}</Typography></Box>
+              </Box>
+            </Box>
+            <TextField autoFocus required size="small" label="DHR 内表单名称" value={evidenceDisplayName} onChange={(event) => setEvidenceDisplayName(event.target.value)} inputProps={{ maxLength: 256 }} helperText={`${evidenceDisplayName.length} / 256`} />
+          </Stack>
+        </DialogContent>
+        <DialogActions><Button onClick={() => setEditEvidenceTarget(null)}>取消</Button><Button variant="contained" disabled={!evidenceDisplayName.trim()} onClick={stageEvidenceDisplayName}>确定</Button></DialogActions>
       </Dialog>
-
-      <Dialog open={addEvidenceOpen} onClose={() => setAddEvidenceOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>引用表单</DialogTitle>
-        <DialogContent dividers><Stack spacing={1.5} sx={{ pt: 0.5 }}><Autocomplete options={formOptionsQuery.data ?? []} value={selectedFormOption} onChange={(_, value) => setSelectedFormOption(value)} getOptionLabel={(option) => `${option.name} · ${option.version}`} renderOption={(props, option) => <Box component="li" {...props} key={option.versionId}><Stack spacing={0.25}><Typography>{option.name} · {option.version}</Typography><Typography variant="caption" sx={{ color: '#909399' }}>{option.code}</Typography></Stack></Box>} renderInput={(params) => <TextField {...params} size="small" label="表单模板" placeholder="请选择" />} />
-          <Stack direction="row" spacing={1} alignItems="center"><Switch checked={evidenceRequired} onChange={(_, checked) => setEvidenceRequired(checked)} /><Typography variant="body2">作为必填证据</Typography></Stack></Stack></DialogContent>
-        <DialogActions><Button onClick={() => setAddEvidenceOpen(false)}>取消</Button><Button variant="contained" disabled={!selectedFormOption || addEvidenceMutation.isPending} onClick={() => addEvidenceMutation.mutate()}>引用</Button></DialogActions>
-      </Dialog>
-
-      <Dialog open={Boolean(deleteEvidenceId)} onClose={() => setDeleteEvidenceId(null)} fullWidth maxWidth="xs">
-        <DialogTitle>移除表单证据</DialogTitle><DialogContent dividers><Typography>确认移除该表单证据？</Typography></DialogContent>
-        <DialogActions><Button onClick={() => setDeleteEvidenceId(null)}>取消</Button><Button color="error" variant="contained" disabled={deleteEvidenceMutation.isPending} onClick={() => deleteEvidenceMutation.mutate()}>移除</Button></DialogActions>
-      </Dialog>
-
-      <Dialog open={publishConfirm} onClose={() => setPublishConfirm(false)} fullWidth maxWidth="xs">
-        <DialogTitle>启用模板版本</DialogTitle><DialogContent dividers><Typography>启用后将冻结目录与表单证据快照，后续修改需要创建新版本。</Typography></DialogContent>
-        <DialogActions><Button onClick={() => setPublishConfirm(false)}>取消</Button><Button variant="contained" disabled={publishMutation.isPending} onClick={() => publishMutation.mutate()}>启用</Button></DialogActions>
-      </Dialog>
-
+      <Dialog open={Boolean(deleteEvidenceId)} onClose={() => setDeleteEvidenceId(null)} fullWidth maxWidth="xs"><DialogTitle>移除引用表单</DialogTitle><DialogContent dividers><Typography>确认移除该引用表单？</Typography></DialogContent><DialogActions><Button onClick={() => setDeleteEvidenceId(null)}>取消</Button><Button color="error" variant="contained" onClick={stageDeleteEvidence}>移除</Button></DialogActions></Dialog>
+      <Dialog open={discardConfirm} onClose={() => setDiscardConfirm(false)} fullWidth maxWidth="xs"><DialogTitle>放弃未保存的修改</DialogTitle><DialogContent dividers><Typography>目录和表单引用的修改尚未保存，确认放弃吗？</Typography></DialogContent><DialogActions><Button onClick={() => setDiscardConfirm(false)}>继续编辑</Button><Button color="error" variant="contained" onClick={onClose}>放弃修改</Button></DialogActions></Dialog>
       <Snackbar open={snackbar.open} autoHideDuration={3500} onClose={() => setSnackbar((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity={snackbar.severity} onClose={() => setSnackbar((current) => ({ ...current, open: false }))}>{snackbar.message}</Alert></Snackbar>
     </Dialog>
   );

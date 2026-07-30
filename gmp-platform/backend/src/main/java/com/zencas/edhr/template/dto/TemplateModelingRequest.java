@@ -16,6 +16,7 @@ public class TemplateModelingRequest {
     private String description;
     private String versionDescription;
     private String version;
+    private String offlineVersion;
     private String effectiveFrom;
     private String effectiveTo;
     private String sourceFileName;

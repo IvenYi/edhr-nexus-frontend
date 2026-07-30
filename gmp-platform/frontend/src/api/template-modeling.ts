@@ -6,7 +6,7 @@ export type TemplateModelingPageKey = 'formTemplates' | 'batchRecordTemplates';
 export interface TemplateModelingRecord {
   id: string | number;
   tenantId?: string;
-  code: string;
+  code?: string | null;
   name: string;
   type?: string;
   categoryName?: string | null;
@@ -25,6 +25,11 @@ export interface TemplateVersionRecord {
   id: string | number;
   templateId?: string | number | null;
   version: string;
+  code?: string | null;
+  offlineVersion?: string | null;
+  isCurrent?: boolean;
+  directoryCount?: number;
+  evidenceCount?: number;
   description?: string | null;
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
@@ -69,6 +74,7 @@ export interface TemplateModelingPayload {
   description?: string | null;
   versionDescription?: string | null;
   version?: string;
+  offlineVersion?: string | null;
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
   modelDesignJson?: string | null;
@@ -114,7 +120,12 @@ export interface TemplateImportedPagePayload {
 export interface DhrTemplateVersionRecord {
   id: string;
   version: string;
-  status: 'DRAFT' | 'ACTIVE' | 'DISABLED' | string;
+  code?: string | null;
+  offlineVersion?: string | null;
+  description?: string | null;
+  effectiveFrom?: string | null;
+  effectiveTo?: string | null;
+  status: 'DRAFT' | 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'DISABLED' | string;
   isCurrent: boolean;
   createdAt?: string | null;
   directoryCount: number;
@@ -123,7 +134,7 @@ export interface DhrTemplateVersionRecord {
 
 export interface DhrTemplateWorkspaceRecord {
   templateId: string;
-  templateCode: string;
+  templateCode?: string | null;
   templateName: string;
   versions: DhrTemplateVersionRecord[];
 }
@@ -143,6 +154,7 @@ export interface DhrEvidenceItemRecord {
   formCode: string;
   formName: string;
   formVersion: string;
+  displayName?: string | null;
   isRequired: boolean;
   sortOrder: number;
 }
@@ -155,10 +167,20 @@ export interface DhrTemplateCompositionRecord {
 
 export interface DhrFormTemplateOption {
   templateId: string;
-  versionId: string;
   code: string;
   name: string;
+  categoryName?: string | null;
+  status: string;
+  updatedBy?: string | null;
+  updatedAt?: string | null;
+  versions: DhrFormTemplateVersionOption[];
+}
+
+export interface DhrFormTemplateVersionOption {
+  versionId: string;
   version: string;
+  status: string;
+  referenceable: boolean;
 }
 
 const templateModelingBase = '/master-data/template-modeling';
@@ -200,6 +222,9 @@ export const deleteFormTemplate = (id: string | number) =>
 export const createFormTemplateVersion = (id: string | number, body: TemplateModelingPayload) =>
   client.post(`${templateModelingBase}/form-templates/${id}/versions`, body) as Promise<{ data: { data: TemplateVersionRecord } }>;
 
+export const getFormTemplateVersion = (id: string | number, versionId: string | number) =>
+  client.get(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`) as Promise<{ data: { data: TemplateVersionRecord } }>;
+
 export const deleteFormTemplateVersion = (id: string | number, versionId: string | number) =>
   client.delete(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`);
 
@@ -237,8 +262,14 @@ export const getDhrTemplateComposition = (templateId: string | number, versionId
 export const getDhrFormTemplateOptions = (templateId: string | number) =>
   client.get(`${templateModelingBase}/batch-record-templates/${templateId}/form-options`) as Promise<{ data: { data: DhrFormTemplateOption[] } }>;
 
-export const createDhrTemplateVersion = (templateId: string | number, sourceVersionId?: string | number | null) =>
-  client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions`, { sourceVersionId }) as Promise<{ data: { data: DhrTemplateVersionRecord } }>;
+export const createDhrTemplateVersion = (templateId: string | number, body?: { sourceVersionId?: string | number | null; version?: string | null; code?: string | null; offlineVersion?: string | null; description?: string | null; effectiveFrom?: string | null; effectiveTo?: string | null }) =>
+  client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions`, body) as Promise<{ data: { data: DhrTemplateVersionRecord } }>;
+
+export const updateDhrTemplateVersion = (templateId: string | number, versionId: string | number, body: { version: string; code?: string | null; offlineVersion?: string | null; description?: string | null; effectiveFrom?: string | null; effectiveTo?: string | null }) =>
+  client.put(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}`, body) as Promise<{ data: { data: DhrTemplateVersionRecord } }>;
+
+export const deleteDhrTemplateVersion = (templateId: string | number, versionId: string | number) =>
+  client.delete(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}`);
 
 export const createDhrDirectory = (templateId: string | number, versionId: string | number, body: { name: string; parentId?: string | number | null }) =>
   client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/directories`, body) as Promise<{ data: { data: DhrDirectoryRecord } }>;
@@ -249,10 +280,10 @@ export const updateDhrDirectory = (templateId: string | number, versionId: strin
 export const deleteDhrDirectory = (templateId: string | number, versionId: string | number, directoryId: string | number) =>
   client.delete(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/directories/${directoryId}`);
 
-export const createDhrEvidenceItem = (templateId: string | number, versionId: string | number, directoryId: string | number, body: { formTemplateVersionId: string | number; isRequired: boolean }) =>
+export const createDhrEvidenceItem = (templateId: string | number, versionId: string | number, directoryId: string | number, body: { formTemplateVersionId: string | number; displayName?: string | null }) =>
   client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/directories/${directoryId}/items`, body) as Promise<{ data: { data: DhrEvidenceItemRecord } }>;
 
-export const updateDhrEvidenceItem = (templateId: string | number, versionId: string | number, itemId: string | number, body: { isRequired: boolean }) =>
+export const updateDhrEvidenceItem = (templateId: string | number, versionId: string | number, itemId: string | number, body: { isRequired?: boolean; displayName?: string | null }) =>
   client.put(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/items/${itemId}`, body) as Promise<{ data: { data: DhrEvidenceItemRecord } }>;
 
 export const deleteDhrEvidenceItem = (templateId: string | number, versionId: string | number, itemId: string | number) =>

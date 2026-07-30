@@ -1,4 +1,6 @@
 import {
+  ContentCopy,
+  DataObjectOutlined,
   DragIndicator,
   ExpandLess,
   PlaylistAdd,
@@ -8,6 +10,7 @@ import {
   UnfoldLessRounded,
   UnfoldMoreRounded,
   ViewColumnRounded,
+  VisibilityOutlined,
 } from '@mui/icons-material';
 import {
   Accordion,
@@ -67,10 +70,12 @@ import {
 } from 'react';
 import {
   createBatchRecordTemplate,
+  createDhrTemplateVersion,
   createFormTemplate,
   createFormTemplateVersion,
   createTemplateModelingCategory,
   deleteBatchRecordTemplate,
+  deleteDhrTemplateVersion,
   deleteFormTemplate,
   deleteFormTemplateVersion,
   deleteTemplateModelingCategory,
@@ -85,6 +90,7 @@ import {
   type TemplateModelingRecord,
   type TemplateVersionRecord,
   updateBatchRecordTemplate,
+  updateDhrTemplateVersion,
   updateFormTemplate,
   updateTemplateModelingCategory,
 } from '@/api/template-modeling';
@@ -101,9 +107,17 @@ const TEMPLATE_STATUS_OPTIONS = [
   { value: 'ACTIVE', label: '启用' },
   { value: 'DISABLED', label: '禁用' },
 ] as const;
+const DHR_VERSION_STATUS_OPTIONS = [
+  { value: 'ALL', label: '全部' },
+  { value: 'DRAFT', label: '草稿' },
+  { value: 'PENDING', label: '待生效' },
+  { value: 'ACTIVE', label: '启用' },
+  { value: 'EXPIRED', label: '已失效' },
+  { value: 'DISABLED', label: '禁用' },
+] as const;
 const TEMPLATE_FORM_STATUS_OPTIONS = TEMPLATE_STATUS_OPTIONS.filter((option) => option.value !== 'ALL');
 
-type TemplateColumnId = 'name' | 'code' | 'currentVersion' | 'version' | 'categoryName' | 'effectiveFrom' | 'effectiveTo' | 'description' | 'status' | 'createdBy' | 'createdAt' | 'updatedBy' | 'updatedAt' | 'actions';
+type TemplateColumnId = 'name' | 'code' | 'offlineVersion' | 'currentVersion' | 'version' | 'evidenceCount' | 'categoryName' | 'effectiveFrom' | 'effectiveTo' | 'description' | 'status' | 'createdBy' | 'createdAt' | 'updatedBy' | 'updatedAt' | 'actions';
 type ConfigurableTemplateColumnId = Exclude<TemplateColumnId, 'actions'>;
 type TemplateColumnSettingsTarget = 'main' | 'version';
 type SnackbarSeverity = 'success' | 'error' | 'info';
@@ -128,6 +142,18 @@ interface TemplateDesignerState {
   open: boolean;
   row: TemplateModelingRecord | null;
   version: TemplateVersionRecord | null;
+}
+
+interface DhrWorkspaceState {
+  row: TemplateModelingRecord;
+  initialVersionId?: string | number | null;
+}
+
+interface DhrVersionDialogState {
+  row: TemplateModelingRecord;
+  mode: 'create' | 'copy' | 'edit';
+  sourceVersion: TemplateVersionRecord | null;
+  targetVersion: TemplateVersionRecord | null;
 }
 
 interface TemplatePageConfig {
@@ -179,9 +205,9 @@ const TEMPLATE_COLUMN_WIDTH_STORAGE_PREFIX = 'template-modeling-column-widths:';
 const TEMPLATE_COLUMN_SETTINGS_STORAGE_PREFIX = 'template-modeling-column-settings:';
 const TEMPLATE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX = 'template-modeling-version-column-widths:';
 const TEMPLATE_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX = 'template-modeling-version-column-settings:';
-const TEMPLATE_COLUMN_SETTINGS_VERSION = 1;
+const TEMPLATE_COLUMN_SETTINGS_VERSION = 2;
 const TEMPLATE_FIELD_COLUMN_MIN_WIDTH = 80;
-const TEMPLATE_ACTION_COLUMN_WIDTH = 100;
+const TEMPLATE_ACTION_COLUMN_WIDTH = 160;
 const TEMPLATE_VERSION_FIELD_IDS: Array<keyof TemplateModelingPayload> = ['version', 'versionDescription', 'effectiveFrom', 'effectiveTo', 'status'];
 const QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
 const appContentDrawerSx = {
@@ -216,10 +242,9 @@ const formTemplateColumns: TemplateColumn[] = [
 
 const batchTemplateColumns: TemplateColumn[] = [
   { id: 'name', label: '模板名称', defaultWidth: 180, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'code', label: '模板编码', defaultWidth: 140, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'currentVersion', label: '版本数量', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'categoryName', label: '模板分类', defaultWidth: 140, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'description', label: '模板描述', defaultWidth: 220, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'status', label: '状态', defaultWidth: 100, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'createdAt', label: '创建时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -240,8 +265,23 @@ const templateVersionColumns: TemplateColumn[] = [
   { id: 'actions', label: '操作', defaultWidth: TEMPLATE_ACTION_COLUMN_WIDTH, minWidth: TEMPLATE_ACTION_COLUMN_WIDTH, align: 'center' },
 ];
 
+const dhrTemplateVersionColumns: TemplateColumn[] = [
+  { id: 'version', label: '批记录模板版本号', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'code', label: '模板编码', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'offlineVersion', label: '线下版本', defaultWidth: 140, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'status', label: '版本状态', defaultWidth: 100, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'effectiveFrom', label: '生效时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'effectiveTo', label: '失效时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'description', label: '版本说明', defaultWidth: 220, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'currentVersion', label: '目录数', defaultWidth: 100, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true, align: 'center' },
+  { id: 'evidenceCount', label: '表单证据数', defaultWidth: 120, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true, align: 'center' },
+  { id: 'createdAt', label: '创建时间', defaultWidth: 160, minWidth: TEMPLATE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
+  { id: 'actions', label: '操作', defaultWidth: TEMPLATE_ACTION_COLUMN_WIDTH, minWidth: TEMPLATE_ACTION_COLUMN_WIDTH, align: 'center' },
+];
+
 const auditFieldLabelMap: Record<string, string> = {
   code: '模板编码',
+  offlineVersion: '线下版本',
   name: '模板名称',
   templateCode: '模板编码',
   templateName: '模板名称',
@@ -263,7 +303,33 @@ const auditFieldLabelMap: Record<string, string> = {
   createdAt: '创建时间',
   updatedBy: '更新人',
   updatedAt: '更新时间',
+  isCurrent: '当前生效版本',
+  evidenceCount: '表单证据数',
+  directoryCount: '目录数',
+  directoryId: '目录 ID',
+  directoryName: '目录名称',
+  parentId: '上级目录 ID',
+  formTemplateId: '表单模板 ID',
+  formTemplateVersionId: '表单版本 ID',
+  formCode: '表单编码',
+  formName: '表单名称',
+  formVersion: '表单版本',
+  displayName: 'DHR 内表单名称',
+  required: '必填证据',
+  directorySnapshot: '目录和表单快照',
+  modelingChange: '建模变更',
+  modelDesignJson: '表单模型快照',
+  canvasDesignJson: '表单画布快照',
+  workflowDesignJson: '表单流程快照',
 };
+
+const auditSnapshotFields = new Set([
+  'directorySnapshot',
+  'modelingChange',
+  'modelDesignJson',
+  'canvasDesignJson',
+  'workflowDesignJson',
+]);
 
 interface TemplateFormState {
   code: string;
@@ -272,6 +338,7 @@ interface TemplateFormState {
   description: string;
   versionDescription: string;
   version: string;
+  offlineVersion: string;
   effectiveFrom: string;
   effectiveTo: string;
   status: string;
@@ -293,12 +360,20 @@ interface TemplateAuditRecord {
 }
 
 interface AuditFieldRow {
+  field: string;
   label: string;
   value: string;
+  rawValue: unknown;
+  isSnapshot: boolean;
+}
+
+interface AuditSnapshotDialogState {
+  title: string;
+  value: unknown;
 }
 
 function emptyForm(categoryName = ''): TemplateFormState {
-  return { code: '', name: '', categoryName, description: '', versionDescription: '', version: 'V1.0', effectiveFrom: defaultEffectiveFromValue(), effectiveTo: '', status: 'ACTIVE' };
+  return { code: '', name: '', categoryName, description: '', versionDescription: '', version: 'V1.0', offlineVersion: '', effectiveFrom: defaultEffectiveFromValue(), effectiveTo: '', status: 'ACTIVE' };
 }
 
 function formatDateTime(value?: string | null) {
@@ -311,6 +386,8 @@ function formatDateTime(value?: string | null) {
 
 function getStatusLabel(value?: string | null) {
   if (value === 'ACTIVE') return '启用';
+  if (value === 'PENDING') return '待生效';
+  if (value === 'EXPIRED') return '已失效';
   if (value === 'DISABLED') return '禁用';
   if (value === 'DRAFT') return '草稿';
   return value || '-';
@@ -318,6 +395,8 @@ function getStatusLabel(value?: string | null) {
 
 function statusColor(value?: string | null) {
   if (value === 'ACTIVE') return { color: '#1f8f4d', bgcolor: '#f0f9eb', borderColor: '#b7eb8f' };
+  if (value === 'PENDING') return { color: '#b88230', bgcolor: '#fdf6ec', borderColor: '#f3d19e' };
+  if (value === 'EXPIRED') return { color: '#c45656', bgcolor: '#fef0f0', borderColor: '#fab6b6' };
   if (value === 'DISABLED') return { color: '#c45656', bgcolor: '#fef0f0', borderColor: '#fab6b6' };
   return { color: '#606266', bgcolor: '#f5f7fa', borderColor: '#dcdfe6' };
 }
@@ -354,9 +433,37 @@ function getAuditFieldLabel(field: string) {
   return auditFieldLabelMap[field] ?? field;
 }
 
+function toDisplayText(value: unknown) {
+  if (value === null || value === undefined || value === '') return '';
+  return String(value);
+}
+
+function formatModelingChangeValue(value: unknown): string {
+  const change = normalizeJson(value);
+  const type = toDisplayText(change.type) || '建模变更';
+  const details = normalizeJson(change.details);
+  const displayName = toDisplayText(details.displayName);
+  const formName = toDisplayText(details.formName);
+  const formVersion = toDisplayText(details.formVersion);
+  const formCode = toDisplayText(details.formCode);
+  const directoryName = toDisplayText(details.directoryName);
+  const sortOrder = toDisplayText(details.sortOrder);
+  const parts = [type];
+  if (directoryName) parts.push(`目录：${directoryName}`);
+  if (displayName || formName) parts.push(`表单：${displayName || formName}`);
+  if (formCode) parts.push(`表单编码：${formCode}`);
+  if (formVersion) parts.push(`表单版本：${formVersion}`);
+  if (sortOrder) parts.push(`排序：${sortOrder}`);
+  return parts.length > 1 ? parts.join('；') : '已记录';
+}
+
 function formatAuditValue(field: string, value: unknown): string {
   if (value === null || value === undefined || value === '') return '-';
+  if (field === 'modelingChange') return formatModelingChangeValue(value);
+  if (auditSnapshotFields.has(field)) return '已记录';
   if (field === 'status') return getStatusLabel(String(value));
+  if (field === 'isCurrent') return value === true || value === 'true' ? '是' : '否';
+  if (typeof value === 'boolean') return value ? '是' : '否';
   if (field === 'createdAt' || field === 'updatedAt' || field === 'effectiveFrom' || field === 'effectiveTo') return formatDateTime(String(value));
   if (Array.isArray(value)) return value.map((item) => formatAuditValue(field, item)).join('、');
   if (typeof value === 'object') return JSON.stringify(value, null, 2);
@@ -368,11 +475,24 @@ function toAuditRows(content?: unknown) {
     field,
     label: getAuditFieldLabel(field),
     value: formatAuditValue(field, value),
+    rawValue: value,
+    isSnapshot: auditSnapshotFields.has(field) && value !== null && value !== undefined && value !== '',
   }));
 }
 
 function toAuditFields(content?: unknown): AuditFieldRow[] {
-  return toAuditRows(content).map(({ label, value }) => ({ label, value }));
+  return toAuditRows(content);
+}
+
+function formatAuditSnapshot(value: unknown) {
+  if (typeof value === 'string') {
+    try {
+      return JSON.stringify(JSON.parse(value), null, 2);
+    } catch {
+      return value;
+    }
+  }
+  return JSON.stringify(value, null, 2) ?? String(value);
 }
 
 function getAuditRecords(events: AuditLogItem[] | undefined): TemplateAuditRecord[] {
@@ -406,7 +526,7 @@ function DetailField({ label, children }: { label: string; children: ReactNode }
   );
 }
 
-function AuditFieldBlock({ title, fields }: { title: string; fields: AuditFieldRow[] }) {
+function AuditFieldBlock({ title, fields, onViewSnapshot }: { title: string; fields: AuditFieldRow[]; onViewSnapshot: (field: AuditFieldRow) => void }) {
   return (
     <Box sx={{ border: '1px solid #e4e7ed', borderRadius: '4px', bgcolor: '#f8fafc', p: 1 }}>
       <Typography variant="caption" sx={{ display: 'block', mb: 0.75, color: '#606266', fontWeight: 600 }}>{title}</Typography>
@@ -414,9 +534,25 @@ function AuditFieldBlock({ title, fields }: { title: string; fields: AuditFieldR
         {fields.length === 0 ? (
           <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography>
         ) : fields.map((field) => (
-          <Box key={field.label} sx={{ display: 'grid', gridTemplateColumns: '72px minmax(0, 1fr)', gap: 1 }}>
-            <Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography>
-            <Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}</Typography>
+          <Box key={field.field} sx={{ display: 'grid', gridTemplateColumns: '96px minmax(0, 1fr)', gap: 1, alignItems: 'center' }}>
+            <Typography variant="caption" sx={{ minWidth: 0, color: '#606266', overflowWrap: 'anywhere' }}>{field.label}</Typography>
+            {field.isSnapshot ? (
+              <Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}>
+                <Typography variant="caption" sx={{ minWidth: 0, flex: 1, color: '#303133', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{field.value}</Typography>
+                <Tooltip title={`查看${field.label}详情`} arrow>
+                  <Button
+                    size="small"
+                    variant="text"
+                    aria-label={`查看${field.label}详情`}
+                    startIcon={field.field === 'modelingChange' ? <VisibilityOutlined sx={{ fontSize: 15 }} /> : <DataObjectOutlined sx={{ fontSize: 15 }} />}
+                    onClick={() => onViewSnapshot(field)}
+                    sx={{ minWidth: 58, height: 24, px: 0.5, fontSize: 12, color: '#409eff', '& .MuiButton-startIcon': { mr: 0.25 } }}
+                  >
+                    详情
+                  </Button>
+                </Tooltip>
+              </Stack>
+            ) : <Typography variant="caption" sx={{ minWidth: 0, color: '#303133', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{field.value}</Typography>}
           </Box>
         ))}
       </Stack>
@@ -590,6 +726,8 @@ function resolveColumnWidths(widths: TemplateColumnWidths, containerWidth: numbe
 export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateModelingPageKey }) {
   const config = TEMPLATE_MODELING_PAGE_CONFIGS[pageKey];
   const allColumns = pageKey === 'formTemplates' ? formTemplateColumns : batchTemplateColumns;
+  const versionColumns = pageKey === 'formTemplates' ? templateVersionColumns : dhrTemplateVersionColumns;
+  const versionAuditEntityType = pageKey === 'formTemplates' ? 'FORM_TEMPLATE_VERSION' : 'DHR_TEMPLATE_VERSION';
   const queryClient = useQueryClient();
   const [nameKeyword, setNameKeyword] = useState('');
   const [codeKeyword, setCodeKeyword] = useState('');
@@ -606,7 +744,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [columnWidths, setColumnWidths] = useState<TemplateColumnWidths>(() => loadColumnWidths(columnWidthStorageKey));
   const [columnSettings, setColumnSettings] = useState<TemplateColumnSettings>(() => loadColumnSettings(columnSettingsStorageKey, allColumns));
   const [templateVersionColumnWidths, setTemplateVersionColumnWidths] = useState<TemplateColumnWidths>(() => loadColumnWidths(templateVersionColumnWidthStorageKey));
-  const [templateVersionColumnSettings, setTemplateVersionColumnSettings] = useState<TemplateColumnSettings>(() => loadColumnSettings(templateVersionColumnSettingsStorageKey, templateVersionColumns));
+  const [templateVersionColumnSettings, setTemplateVersionColumnSettings] = useState<TemplateColumnSettings>(() => loadColumnSettings(templateVersionColumnSettingsStorageKey, versionColumns));
   const [columnSettingsAnchorEl, setColumnSettingsAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [columnSettingsTab, setColumnSettingsTab] = useState<TemplateColumnSettingsTarget>('main');
   const [draggingColumnId, setDraggingColumnId] = useState<ConfigurableTemplateColumnId | null>(null);
@@ -624,11 +762,19 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [drawerRow, setDrawerRow] = useState<TemplateModelingRecord | null>(null);
   const [drawerVersionRow, setDrawerVersionRow] = useState<TemplateVersionRecord | null>(null);
   const [drawerTab, setDrawerTab] = useState(0);
+  const [auditSnapshot, setAuditSnapshot] = useState<AuditSnapshotDialogState | null>(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({ open: false, message: '', severity: 'success' });
   const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
-  const [dhrWorkspaceRow, setDhrWorkspaceRow] = useState<TemplateModelingRecord | null>(null);
+  const [dhrWorkspaceRow, setDhrWorkspaceRow] = useState<DhrWorkspaceState | null>(null);
+  const [dhrVersionDialog, setDhrVersionDialog] = useState<DhrVersionDialogState | null>(null);
+  const [dhrVersionLabel, setDhrVersionLabel] = useState('');
+  const [dhrVersionCode, setDhrVersionCode] = useState('');
+  const [dhrVersionOfflineVersion, setDhrVersionOfflineVersion] = useState('');
+  const [dhrVersionDescription, setDhrVersionDescription] = useState('');
+  const [dhrVersionEffectiveFrom, setDhrVersionEffectiveFrom] = useState(defaultEffectiveFromValue());
+  const [dhrVersionEffectiveTo, setDhrVersionEffectiveTo] = useState('');
 
   const categoryQuery = useQuery({
     queryKey: [config.categoryQueryKey],
@@ -659,11 +805,29 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   });
 
   const auditQuery = useQuery({
-    queryKey: [config.auditQueryKey, drawerVersionRow ? 'FORM_TEMPLATE_VERSION' : config.entityType, drawerVersionRow?.id ?? drawerRow?.id],
+    queryKey: [config.auditQueryKey, drawerVersionRow ? versionAuditEntityType : config.entityType, drawerVersionRow?.id ?? drawerRow?.id],
     enabled: drawerRow !== null,
     queryFn: async () => {
-      const res = await getAuditLogs({ entityType: drawerVersionRow ? 'FORM_TEMPLATE_VERSION' : config.entityType, entityId: drawerVersionRow?.id ?? drawerRow?.id, page: 1, size: 50 });
-      return (res.data.data as PageResult<AuditLogItem>).content ?? [];
+      const shouldFallbackToParentCreateAudit = pageKey === 'batchRecordTemplates'
+        && drawerVersionRow?.version === 'V1.0'
+        && drawerRow !== null;
+      const versionAuditResponse = await getAuditLogs({
+        entityType: drawerVersionRow ? versionAuditEntityType : config.entityType,
+        entityId: drawerVersionRow?.id ?? drawerRow?.id,
+        page: 1,
+        size: 50,
+      });
+      const versionAuditEvents = (versionAuditResponse.data.data as PageResult<AuditLogItem>).content ?? [];
+      if (!shouldFallbackToParentCreateAudit || versionAuditEvents.length > 0) return versionAuditEvents;
+
+      const parentCreateAuditResponse = await getAuditLogs({
+        entityType: config.entityType,
+        entityId: drawerRow.id,
+        action: 'CREATE',
+        page: 1,
+        size: 50,
+      });
+      return (parentCreateAuditResponse.data.data as PageResult<AuditLogItem>).content ?? [];
     },
   });
 
@@ -674,8 +838,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const visibleConfigurableColumnCount = columnSettings.order.length - columnSettings.hidden.length;
   const resolvedColumnWidths = useMemo(() => resolveColumnWidths(columnWidths, tableContainerWidth, visibleColumns), [columnWidths, tableContainerWidth, visibleColumns]);
   const totalTableWidth = visibleColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0);
-  const templateVersionColumnSettingsItems = useMemo(() => getColumnSettingsItems(templateVersionColumns, templateVersionColumnSettings), [templateVersionColumnSettings]);
-  const visibleTemplateVersionColumns = useMemo(() => getVisibleColumns(templateVersionColumns, templateVersionColumnSettings), [templateVersionColumnSettings]);
+  const templateVersionColumnSettingsItems = useMemo(() => getColumnSettingsItems(versionColumns, templateVersionColumnSettings), [templateVersionColumnSettings, versionColumns]);
+  const visibleTemplateVersionColumns = useMemo(() => getVisibleColumns(versionColumns, templateVersionColumnSettings), [templateVersionColumnSettings, versionColumns]);
   const visibleTemplateVersionConfigurableColumnCount = templateVersionColumnSettings.order.length - templateVersionColumnSettings.hidden.length;
   const activeColumnSettings = columnSettingsTab === 'version' ? templateVersionColumnSettings : columnSettings;
   const activeColumnSettingsItems = columnSettingsTab === 'version' ? templateVersionColumnSettingsItems : columnSettingsItems;
@@ -683,7 +847,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const setActiveColumnSettings = columnSettingsTab === 'version' ? setTemplateVersionColumnSettings : setColumnSettings;
   const resolvedTemplateVersionColumnWidths = useMemo(() => resolveColumnWidths(templateVersionColumnWidths, totalTableWidth, visibleTemplateVersionColumns), [templateVersionColumnWidths, totalTableWidth, visibleTemplateVersionColumns]);
   const totalTemplateVersionTableWidth = visibleTemplateVersionColumns.reduce((sum, column) => sum + resolvedTemplateVersionColumnWidths[column.id], 0);
-  const effectiveMainTableWidth = Math.max(totalTableWidth, pageKey === 'formTemplates' ? totalTemplateVersionTableWidth : totalTableWidth);
+  const effectiveMainTableWidth = Math.max(totalTableWidth, totalTemplateVersionTableWidth);
   const mainTableSpacerWidth = Math.max(0, effectiveMainTableWidth - totalTableWidth);
   const hasMainTableSpacer = mainTableSpacerWidth > 0;
   const mainTableColSpan = visibleColumns.length + (hasMainTableSpacer ? 1 : 0);
@@ -719,8 +883,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setColumnWidths(loadColumnWidths(columnWidthStorageKey));
     setTemplateVersionColumnWidths(loadColumnWidths(templateVersionColumnWidthStorageKey));
     setColumnSettings(loadColumnSettings(columnSettingsStorageKey, allColumns));
-    setTemplateVersionColumnSettings(loadColumnSettings(templateVersionColumnSettingsStorageKey, templateVersionColumns));
-  }, [allColumns, columnSettingsStorageKey, columnWidthStorageKey, templateVersionColumnSettingsStorageKey, templateVersionColumnWidthStorageKey]);
+    setTemplateVersionColumnSettings(loadColumnSettings(templateVersionColumnSettingsStorageKey, versionColumns));
+  }, [allColumns, columnSettingsStorageKey, columnWidthStorageKey, templateVersionColumnSettingsStorageKey, templateVersionColumnWidthStorageKey, versionColumns]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -761,17 +925,19 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     mutationFn: async () => {
       const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
       const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
-      const shouldSubmitVersionFields = pageKey === 'formTemplates' && !editingRow;
+      const shouldSubmitInitialVersionFields = !editingRow && !creatingVersionFrom;
+      const shouldSubmitVersionFields = !editingRow;
       const payload: TemplateModelingPayload = {
         code: form.code.trim(),
         name: form.name.trim(),
         categoryName: form.categoryName.trim() || null,
         description: form.description.trim() || null,
-        versionDescription: shouldSubmitVersionFields ? form.versionDescription.trim() || null : undefined,
+        versionDescription: (shouldSubmitVersionFields || shouldSubmitInitialVersionFields) ? form.versionDescription.trim() || null : undefined,
         version: shouldSubmitVersionFields ? form.version.trim() : undefined,
-        effectiveFrom: shouldSubmitVersionFields ? effectiveFrom || null : undefined,
-        effectiveTo: shouldSubmitVersionFields ? effectiveTo || null : undefined,
-        status: form.status,
+        offlineVersion: pageKey === 'batchRecordTemplates' && shouldSubmitVersionFields ? form.offlineVersion.trim() || null : undefined,
+        effectiveFrom: (shouldSubmitVersionFields || shouldSubmitInitialVersionFields) ? effectiveFrom || null : undefined,
+        effectiveTo: (shouldSubmitVersionFields || shouldSubmitInitialVersionFields) ? effectiveTo || null : undefined,
+        status: pageKey === 'formTemplates' ? form.status : undefined,
       };
       if (creatingVersionFrom) {
         const versionResponse = await createFormTemplateVersion(creatingVersionFrom.id, pickTemplatePayload(payload, TEMPLATE_VERSION_FIELD_IDS));
@@ -804,7 +970,9 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   });
 
   const deleteVersionMutation = useMutation({
-    mutationFn: (target: { row: TemplateModelingRecord; version: TemplateVersionRecord }) => deleteFormTemplateVersion(target.row.id, target.version.id),
+    mutationFn: (target: { row: TemplateModelingRecord; version: TemplateVersionRecord }) => pageKey === 'batchRecordTemplates'
+      ? deleteDhrTemplateVersion(target.row.id, target.version.id)
+      : deleteFormTemplateVersion(target.row.id, target.version.id),
     onSuccess: async () => {
       setDeleteVersionTarget(null);
       setSnackbar({ open: true, message: '版本删除成功', severity: 'success' });
@@ -813,6 +981,35 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
     onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '版本删除失败', severity: 'error' }),
+  });
+
+  const saveDhrVersionMutation = useMutation({
+    mutationFn: (target: DhrVersionDialogState & { version: string; code: string; offlineVersion: string; description: string; effectiveFrom: string; effectiveTo: string }) => {
+      const body = {
+        version: target.version.trim(),
+        code: target.code.trim() || null,
+        offlineVersion: target.offlineVersion.trim() || null,
+        description: target.description.trim() || null,
+        effectiveFrom: target.effectiveFrom || null,
+        effectiveTo: target.effectiveTo || null,
+      };
+      return target.mode === 'edit' && target.targetVersion
+        ? updateDhrTemplateVersion(target.row.id, target.targetVersion.id, body)
+        : createDhrTemplateVersion(target.row.id, { ...body, sourceVersionId: target.sourceVersion?.id ?? null });
+    },
+    onSuccess: async (_, target) => {
+      setSnackbar({ open: true, message: target.mode === 'edit' ? '版本保存成功' : target.mode === 'copy' ? '版本复制成功' : '子版本新增成功', severity: 'success' });
+      setDhrVersionDialog(null);
+      setDhrVersionLabel('');
+      setDhrVersionCode('');
+      setDhrVersionOfflineVersion('');
+      setDhrVersionDescription('');
+      setDhrVersionEffectiveFrom(defaultEffectiveFromValue());
+      setDhrVersionEffectiveTo('');
+      await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
+      await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
+    },
+    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '保存版本失败', severity: 'error' }),
   });
 
   const saveCategoryMutation = useMutation({
@@ -862,12 +1059,13 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setEditingRow(row);
     setCreatingVersionFrom(null);
     setForm({
-      code: row.code ?? '',
+      code: pageKey === 'batchRecordTemplates' ? '' : row.code ?? '',
       name: row.name ?? '',
       categoryName: row.categoryName ?? '',
       description: row.description ?? '',
       versionDescription: row.currentVersion?.description ?? '',
       version: row.currentVersion?.version ?? 'V1.0',
+      offlineVersion: row.currentVersion?.offlineVersion ?? '',
       effectiveFrom: toDateTimeLocalValue(row.currentVersion?.effectiveFrom),
       effectiveTo: toDateTimeLocalValue(row.currentVersion?.effectiveTo),
       status: row.status ?? 'ACTIVE',
@@ -885,6 +1083,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       description: row.description ?? '',
       versionDescription: '',
       version: '',
+      offlineVersion: '',
       effectiveFrom: defaultEffectiveFromValue(),
       effectiveTo: '',
       status: 'ACTIVE',
@@ -897,18 +1096,27 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       setSnackbar({ open: true, message: '请输入模板名称', severity: 'error' });
       return;
     }
-    if (!creatingVersionFrom && !form.code.trim()) {
+    if (pageKey === 'formTemplates' && !creatingVersionFrom && !form.code.trim()) {
       setSnackbar({ open: true, message: '请输入模板编码', severity: 'error' });
       return;
     }
-    const shouldSubmitVersionFields = pageKey === 'formTemplates' && !editingRow;
+    const isCreatingDhrTemplate = pageKey === 'batchRecordTemplates' && !editingRow;
+    const shouldSubmitVersionFields = !editingRow;
     if (shouldSubmitVersionFields && !form.version.trim()) {
       setSnackbar({ open: true, message: '请输入模板版本', severity: 'error' });
       return;
     }
+    if (creatingVersionFrom && getTemplateVersionRows(creatingVersionFrom).some((version) => version.version.trim().toLowerCase() === form.version.trim().toLowerCase())) {
+      setSnackbar({ open: true, message: '模板版本已存在', severity: 'error' });
+      return;
+    }
     const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
     const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
-    if (shouldSubmitVersionFields && !validateEffectiveDateRange(effectiveFrom, effectiveTo)) {
+    if (isCreatingDhrTemplate && !effectiveFrom) {
+      setSnackbar({ open: true, message: '请选择生效时间', severity: 'error' });
+      return;
+    }
+    if ((shouldSubmitVersionFields || isCreatingDhrTemplate) && !validateEffectiveDateRange(effectiveFrom, effectiveTo)) {
       setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
       return;
     }
@@ -969,16 +1177,67 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   const getTemplateVersionRows = (row: TemplateModelingRecord) => (row.versions?.length ? row.versions : row.currentVersion ? [row.currentVersion] : []);
 
+  const getNextDhrVersionLabel = (row: TemplateModelingRecord) => {
+    const largestVersionNumber = getTemplateVersionRows(row).reduce((largest, version) => {
+      const versionNumber = Number(version.version.match(/^V(\d+)\.0$/i)?.[1] ?? 0);
+      return Math.max(largest, versionNumber);
+    }, 0);
+    return `V${largestVersionNumber + 1}.0`;
+  };
+
+  const openDhrVersionDialog = (row: TemplateModelingRecord, sourceVersion: TemplateVersionRecord | null, targetVersion: TemplateVersionRecord | null = null) => {
+    const mode = targetVersion ? 'edit' : sourceVersion ? 'copy' : 'create';
+    setDhrVersionLabel(targetVersion?.version ?? getNextDhrVersionLabel(row));
+    // A copied version must receive its own code when a code is used.
+    setDhrVersionCode(targetVersion?.code ?? '');
+    setDhrVersionOfflineVersion(targetVersion?.offlineVersion ?? sourceVersion?.offlineVersion ?? '');
+    setDhrVersionDescription(targetVersion?.description ?? sourceVersion?.description ?? '');
+    setDhrVersionEffectiveFrom(toDateTimeLocalValue(targetVersion?.effectiveFrom) || defaultEffectiveFromValue());
+    setDhrVersionEffectiveTo(toDateTimeLocalValue(targetVersion?.effectiveTo));
+    setDhrVersionDialog({ row, mode, sourceVersion, targetVersion });
+  };
+
+  const submitDhrVersionDialog = () => {
+    if (!dhrVersionDialog) return;
+    if (!dhrVersionLabel.trim()) {
+      setSnackbar({ open: true, message: '请输入版本号', severity: 'error' });
+      return;
+    }
+    if (getTemplateVersionRows(dhrVersionDialog.row).some((version) => version.id !== dhrVersionDialog.targetVersion?.id && version.version.trim().toLowerCase() === dhrVersionLabel.trim().toLowerCase())) {
+      setSnackbar({ open: true, message: '版本号已存在', severity: 'error' });
+      return;
+    }
+    if (!dhrVersionEffectiveFrom) {
+      setSnackbar({ open: true, message: '请选择生效时间', severity: 'error' });
+      return;
+    }
+    if (!validateEffectiveDateRange(dhrVersionEffectiveFrom, dhrVersionEffectiveTo)) {
+      setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
+      return;
+    }
+    saveDhrVersionMutation.mutate({
+      ...dhrVersionDialog,
+      version: dhrVersionLabel,
+      code: dhrVersionCode,
+      offlineVersion: dhrVersionOfflineVersion,
+      description: dhrVersionDescription,
+      effectiveFrom: dhrVersionEffectiveFrom,
+      effectiveTo: dhrVersionEffectiveTo,
+    });
+  };
+
   const openTemplateDrawer = (row: TemplateModelingRecord) => {
     setDrawerRow(row);
     setDrawerVersionRow(null);
     setDrawerTab(0);
+    setAuditSnapshot(null);
   };
 
   const openTemplateVersionDrawer = (row: TemplateModelingRecord, version: TemplateVersionRecord) => {
     setDrawerRow(row);
     setDrawerVersionRow(version);
     setDrawerTab(0);
+    setAuditSnapshot(null);
   };
 
   const expandTemplateGroup = (templateId: string | number) => {
@@ -1265,12 +1524,46 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           aria-label="设计"
           onClick={(event) => {
             event.stopPropagation();
-            setReactDesignerState({ open: true, row, version });
+            if (pageKey === 'batchRecordTemplates') {
+              setDhrWorkspaceRow({ row, initialVersionId: version.id });
+            } else {
+              setReactDesignerState({ open: true, row, version });
+            }
           }}
         >
           <DesignServicesIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      {pageKey === 'batchRecordTemplates' ? (
+        <>
+          <Tooltip title="编辑版本" arrow>
+            <IconButton
+              size="small"
+              aria-label="编辑版本"
+              disabled={saveDhrVersionMutation.isPending || version.status !== 'DRAFT'}
+              onClick={(event) => {
+                event.stopPropagation();
+                openDhrVersionDialog(row, null, version);
+              }}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="复制版本" arrow>
+            <IconButton
+              size="small"
+              aria-label="复制版本"
+              disabled={saveDhrVersionMutation.isPending}
+              onClick={(event) => {
+                event.stopPropagation();
+                openDhrVersionDialog(row, version);
+              }}
+            >
+              <ContentCopy fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </>
+      ) : null}
       {canDeleteVersion ? (
         <Tooltip title="删除" arrow>
           <IconButton size="small" color="error" aria-label="删除" onClick={(event) => { event.stopPropagation(); setDeleteVersionTarget({ row, version }); }}>
@@ -1324,13 +1617,41 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     </Typography>
   );
 
+  const renderTemplateVersionLink = (row: TemplateModelingRecord, version: TemplateVersionRecord) => (
+    <Tooltip title="查看版本详情及审计" arrow>
+      <Typography
+        component="button"
+        data-template-version-link
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          openTemplateVersionDrawer(row, version);
+        }}
+        sx={{
+          p: 0,
+          border: 'none',
+          bgcolor: 'transparent',
+          color: '#1890ff',
+          cursor: 'pointer',
+          font: 'inherit',
+          lineHeight: 'inherit',
+          textAlign: 'left',
+          whiteSpace: 'nowrap',
+          '&:hover': { color: '#096dd9', textDecoration: 'underline' },
+        }}
+      >
+        {version.version || '-'}
+      </Typography>
+    </Tooltip>
+  );
+
   const renderTemplateVersionTable = (row: TemplateModelingRecord) => {
     const versions = getTemplateVersionRows(row);
     return (
       <TableRow key={`${row.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
         <TableCell colSpan={mainTableColSpan} sx={{ p: 0, bgcolor: '#fafcff' }}>
           <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
-            <Table stickyHeader size="small" aria-label="表单模板版本列表" sx={{ tableLayout: 'fixed', width: totalTemplateVersionTableWidth, minWidth: totalTemplateVersionTableWidth }}>
+            <Table stickyHeader size="small" aria-label={pageKey === 'formTemplates' ? '表单模板版本列表' : '批记录模板版本列表'} sx={{ tableLayout: 'fixed', width: totalTemplateVersionTableWidth, minWidth: totalTemplateVersionTableWidth }}>
               <colgroup>
                 {visibleTemplateVersionColumns.map((column) => <col key={`${row.id}:${column.id}`} style={{ width: getTemplateVersionColumnWidth(column) }} />)}
               </colgroup>
@@ -1369,9 +1690,9 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                       const versionDescription = versionRow.description || '-';
                       return (
                         <TableCell key={column.id} align={column.align} sx={commonSx}>
-                          {column.id === 'version' ? versionRow.version || '-' : column.id === 'status' ? (
+                          {column.id === 'version' ? renderTemplateVersionLink(row, versionRow) : pageKey === 'batchRecordTemplates' && column.id === 'code' ? versionRow.code || '-' : pageKey === 'batchRecordTemplates' && column.id === 'offlineVersion' ? versionRow.offlineVersion || '-' : column.id === 'status' ? (
                             renderStatusBadge(versionRow.status)
-                          ) : column.id === 'effectiveFrom' ? formatDateTime(versionRow.effectiveFrom) : column.id === 'effectiveTo' ? formatDateTime(versionRow.effectiveTo) : column.id === 'description' ? versionDescription : column.id === 'createdBy' ? versionRow.createdBy || '-' : column.id === 'createdAt' ? formatDateTime(versionRow.createdAt) : column.id === 'updatedBy' ? versionRow.updatedBy || '-' : column.id === 'updatedAt' ? formatDateTime(versionRow.updatedAt) : column.id === 'actions' ? (
+                          ) : pageKey === 'batchRecordTemplates' && column.id === 'currentVersion' ? String(versionRow.directoryCount ?? 0) : pageKey === 'batchRecordTemplates' && column.id === 'evidenceCount' ? String(versionRow.evidenceCount ?? 0) : column.id === 'effectiveFrom' ? formatDateTime(versionRow.effectiveFrom) : column.id === 'effectiveTo' ? formatDateTime(versionRow.effectiveTo) : column.id === 'description' ? versionDescription : column.id === 'createdBy' ? versionRow.createdBy || '-' : column.id === 'createdAt' ? formatDateTime(versionRow.createdAt) : column.id === 'updatedBy' ? versionRow.updatedBy || '-' : column.id === 'updatedAt' ? formatDateTime(versionRow.updatedAt) : column.id === 'actions' ? (
                             renderTemplateVersionActions(row, versionRow, versions.length > 1)
                           ) : ''}
                         </TableCell>
@@ -1388,29 +1709,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   };
 
   const renderTemplateTableRow = (row: TemplateModelingRecord) => {
-    if (pageKey !== 'formTemplates') {
-      return (
-        <TableRow key={row.id} hover onClick={() => openTemplateDrawer(row)} sx={{ cursor: 'pointer' }}>
-          {visibleColumns.map((column) => {
-            const commonSx = {
-              width: getColumnWidth(column),
-              minWidth: column.minWidth,
-              ...tableBodyCellSx,
-              ...getStickyActionColumnSx(column, 'body'),
-            };
-            return (
-              <Fragment key={column.id}>
-                {column.id === 'actions' ? renderMainTableActionSpacerCell('body') : null}
-                <TableCell align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx}>
-                  {renderCell(row, column)}
-                </TableCell>
-              </Fragment>
-            );
-          })}
-        </TableRow>
-      );
-    }
-
     const isExpanded = expandedTemplateGroups.has(String(row.id));
     return (
       <Fragment key={row.id}>
@@ -1463,13 +1761,24 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   const renderAddTemplateVersionAction = (row: TemplateModelingRecord) => (
     <Tooltip title="新增子版本" arrow>
-      <IconButton size="small" aria-label="新增子版本" onClick={(event) => { event.stopPropagation(); openCreateTemplateVersionDialog(row); }}>
+      <IconButton size="small" aria-label="新增子版本" disabled={pageKey === 'batchRecordTemplates' && saveDhrVersionMutation.isPending} onClick={(event) => {
+        event.stopPropagation();
+        if (pageKey === 'batchRecordTemplates') {
+          openDhrVersionDialog(row, null);
+        } else {
+          openCreateTemplateVersionDialog(row);
+        }
+      }}>
         <PlaylistAdd fontSize="small" />
       </IconButton>
     </Tooltip>
   );
 
-  const canDeleteTemplateFromMainRow = (row: TemplateModelingRecord) => pageKey !== 'formTemplates' || getTemplateVersionRows(row).length <= 1;
+  const canDeleteTemplateFromMainRow = (row: TemplateModelingRecord) => {
+    const versions = getTemplateVersionRows(row);
+    if (pageKey === 'formTemplates') return versions.length <= 1;
+    return versions.length === 1 && versions[0]?.status === 'DRAFT';
+  };
 
   const renderCell = (row: TemplateModelingRecord, column: TemplateColumn): ReactNode => {
     const columnId = column.id;
@@ -1485,12 +1794,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     if (columnId === 'actions') {
       return (
         <Stack direction="row" spacing={0.5} justifyContent="center" onClick={(event) => event.stopPropagation()}>
-          {pageKey === 'formTemplates' ? renderAddTemplateVersionAction(row) : null}
-          {pageKey === 'batchRecordTemplates' ? (
-            <Tooltip title="设计" arrow>
-              <IconButton size="small" aria-label="设计" onClick={() => setDhrWorkspaceRow(row)}><DesignServicesIcon fontSize="small" /></IconButton>
-            </Tooltip>
-          ) : null}
+          {renderAddTemplateVersionAction(row)}
           <Tooltip title="编辑" arrow>
             <IconButton size="small" aria-label="编辑" onClick={() => openEditDialog(row)}><EditIcon fontSize="small" /></IconButton>
           </Tooltip>
@@ -1521,7 +1825,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           />
           <TextField
             size="small"
-            label={pageKey === 'formTemplates' ? '表单编码' : '模板编码'}
+            label={pageKey === 'formTemplates' ? '表单编码' : '版本编码'}
             placeholder="请输入"
             value={codeKeyword}
             onChange={(event) => setCodeKeyword(event.target.value)}
@@ -1530,12 +1834,12 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           <TextField
             size="small"
             select
-            label="状态"
+            label={pageKey === 'batchRecordTemplates' ? '版本状态' : '状态'}
             value={status}
             onChange={(event) => { setStatus(event.target.value); setPage(1); }}
             sx={fieldSx}
           >
-            {TEMPLATE_STATUS_OPTIONS.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
+            {(pageKey === 'batchRecordTemplates' ? DHR_VERSION_STATUS_OPTIONS : TEMPLATE_STATUS_OPTIONS).map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
           </TextField>
           <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: '1', md: '3' } }}>
             <Button size="small" sx={QUERY_BUTTON_SX} variant="outlined" startIcon={<RestartAlt />} onClick={() => { setNameKeyword(''); setCodeKeyword(''); setStatus('ALL'); setPage(1); }}>重置</Button>
@@ -1695,20 +1999,32 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const auditRecords = getAuditRecords(auditEvents);
   const drawerBaseDetailRows: Array<[string, ReactNode]> = drawerVersionRow ? [
     ['模板名称', drawerRow?.name],
-    ['模板编码', drawerRow?.code],
     ['版本号', drawerVersionRow.version],
+    ...(pageKey === 'batchRecordTemplates' ? [
+      ['模板编码', drawerVersionRow.code || '-'],
+      ['线下版本', drawerVersionRow.offlineVersion || '-'],
+    ] as Array<[string, ReactNode]> : [
+      ['模板编码', drawerRow?.code || '-'],
+    ] as Array<[string, ReactNode]>),
     ['版本状态', renderStatusBadge(drawerVersionRow.status)],
-    ['生效时间', formatDateTime(drawerVersionRow.effectiveFrom)],
-    ['失效时间', formatDateTime(drawerVersionRow.effectiveTo)],
-    ['源文件名称', drawerVersionRow.sourceFileName],
-    ['源文件类型', drawerVersionRow.sourceFileType],
-    ['导入状态', drawerVersionRow.importStatus],
+    ...(pageKey === 'batchRecordTemplates' ? [
+      ['生效时间', formatDateTime(drawerVersionRow.effectiveFrom)],
+      ['失效时间', formatDateTime(drawerVersionRow.effectiveTo)],
+      ['版本说明', drawerVersionRow.description || '-'],
+      ['目录数', drawerVersionRow.directoryCount ?? 0],
+      ['表单证据数', drawerVersionRow.evidenceCount ?? 0],
+    ] as Array<[string, ReactNode]> : [
+      ['生效时间', formatDateTime(drawerVersionRow.effectiveFrom)],
+      ['失效时间', formatDateTime(drawerVersionRow.effectiveTo)],
+      ['源文件名称', drawerVersionRow.sourceFileName],
+      ['源文件类型', drawerVersionRow.sourceFileType],
+      ['导入状态', drawerVersionRow.importStatus],
+    ] as Array<[string, ReactNode]>),
   ] : [
     ['模板名称', drawerRow?.name],
-    ['模板编码', drawerRow?.code],
     ['版本数量', drawerRow ? getTemplateVersionCount(drawerRow) : '-'],
     ['模板分类', drawerRow?.categoryName],
-    ['状态', renderStatusBadge(drawerRow?.status)],
+    ...(pageKey === 'formTemplates' ? [['状态', renderStatusBadge(drawerRow?.status)] as [string, ReactNode]] : []),
     ['模板描述', drawerRow?.description],
   ];
   const drawerSystemDetailRows: Array<[string, ReactNode]> = drawerVersionRow ? [
@@ -1725,8 +2041,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const closeDetailDrawer = () => {
     setDrawerRow(null);
     setDrawerVersionRow(null);
+    setAuditSnapshot(null);
   };
-  const shouldRenderVersionSection = pageKey === 'formTemplates' && !editingRow;
+  const isCreatingDhrTemplate = pageKey === 'batchRecordTemplates' && !editingRow;
+  const shouldRenderVersionSection = !editingRow;
 
   return (
     <Box sx={{ height: 'calc(100vh - 150px)', display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '260px minmax(0, 1fr)' }, gap: 1.5, minHeight: 0, overflow: 'hidden' }}>
@@ -1741,7 +2059,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
               <DetailSection title="基础信息">
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
                   <TextField required fullWidth size="small" label={pageKey === 'formTemplates' ? '表单名称' : '模板名称'} value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} sx={fieldSx} />
-                  <TextField required fullWidth size="small" label={pageKey === 'formTemplates' ? '表单编码' : '模板编码'} value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} sx={fieldSx} />
+                  {pageKey === 'formTemplates' ? <TextField required fullWidth size="small" label="表单编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} sx={fieldSx} /> : null}
                   <Autocomplete
                     freeSolo
                     options={categoryOptions}
@@ -1750,9 +2068,11 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                     onInputChange={(_, value) => setForm((current) => ({ ...current, categoryName: value }))}
                     renderInput={(params) => <TextField {...params} fullWidth size="small" label="模板分类" sx={fieldSx} />}
                   />
-                  <TextField fullWidth size="small" select label="状态" value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))} sx={fieldSx}>
-                    {TEMPLATE_FORM_STATUS_OPTIONS.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
-                  </TextField>
+                  {pageKey === 'formTemplates' ? (
+                    <TextField fullWidth size="small" select label="状态" value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))} sx={fieldSx}>
+                      {TEMPLATE_FORM_STATUS_OPTIONS.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
+                    </TextField>
+                  ) : null}
                   <TextField fullWidth size="small" label={pageKey === 'formTemplates' ? '表单描述' : '模板描述'} multiline minRows={3} value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
                 </Box>
               </DetailSection>
@@ -1761,7 +2081,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
               <DetailSection title="版本信息">
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
                   <TextField required fullWidth size="small" label="版本" value={form.version} onChange={(event) => setForm((current) => ({ ...current, version: event.target.value }))} sx={fieldSx} />
-                  <TextField fullWidth size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => setForm((current) => ({ ...current, effectiveFrom: event.target.value }))} inputRef={effectiveFromInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
+                  {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="模板编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} inputProps={{ maxLength: 64 }} helperText={`${form.code.length} / 64`} sx={fieldSx} /> : null}
+                  {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="线下版本" value={form.offlineVersion} onChange={(event) => setForm((current) => ({ ...current, offlineVersion: event.target.value }))} inputProps={{ maxLength: 20 }} helperText={`${form.offlineVersion.length} / 20`} sx={fieldSx} /> : null}
+                  {isCreatingDhrTemplate ? <TextField fullWidth size="small" label="版本状态" value="草稿" InputProps={{ readOnly: true }} sx={fieldSx} /> : null}
+                  <TextField required={isCreatingDhrTemplate} fullWidth size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => setForm((current) => ({ ...current, effectiveFrom: event.target.value }))} inputRef={effectiveFromInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
                   <TextField fullWidth size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => setForm((current) => ({ ...current, effectiveTo: event.target.value }))} inputRef={effectiveToInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
                   <TextField fullWidth size="small" label="版本说明" multiline minRows={3} value={form.versionDescription} onChange={(event) => setForm((current) => ({ ...current, versionDescription: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
                 </Box>
@@ -1772,6 +2095,33 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         <DialogActions>
           <Button onClick={() => { setDialogOpen(false); setCreatingVersionFrom(null); }}>取消</Button>
           <Button variant="contained" disabled={saveMutation.isPending} onClick={handleSubmit}>保存</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={dhrVersionDialog !== null} onClose={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }} fullWidth maxWidth="sm">
+        <DialogTitle>{dhrVersionDialog?.mode === 'edit' ? '编辑版本' : dhrVersionDialog?.mode === 'copy' ? '复制版本' : '新增子版本'}</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+            <TextField fullWidth size="small" label="批记录模板" value={dhrVersionDialog?.row.name ?? ''} InputProps={{ readOnly: true }} sx={fieldSx} />
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+              <TextField required fullWidth size="small" label="版本" value={dhrVersionLabel} onChange={(event) => setDhrVersionLabel(event.target.value)} inputProps={{ maxLength: 64 }} sx={fieldSx} />
+              <TextField fullWidth size="small" label="版本来源" value={dhrVersionDialog?.mode === 'edit' ? '当前版本' : dhrVersionDialog?.sourceVersion ? `${dhrVersionDialog.sourceVersion.version}（复制目录与表单证据）` : '空白版本'} InputProps={{ readOnly: true }} sx={fieldSx} />
+            </Box>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+              <TextField fullWidth size="small" label="模板编码" value={dhrVersionCode} onChange={(event) => setDhrVersionCode(event.target.value)} inputProps={{ maxLength: 64 }} helperText={`${dhrVersionCode.length} / 64`} sx={fieldSx} />
+              <TextField fullWidth size="small" label="线下版本" value={dhrVersionOfflineVersion} onChange={(event) => setDhrVersionOfflineVersion(event.target.value)} inputProps={{ maxLength: 20 }} helperText={`${dhrVersionOfflineVersion.length} / 20`} sx={fieldSx} />
+            </Box>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+              <TextField required fullWidth size="small" label="生效时间" type="datetime-local" value={dhrVersionEffectiveFrom} onChange={(event) => setDhrVersionEffectiveFrom(event.target.value)} InputLabelProps={{ shrink: true }} sx={fieldSx} />
+              <TextField fullWidth size="small" label="失效时间" type="datetime-local" value={dhrVersionEffectiveTo} onChange={(event) => setDhrVersionEffectiveTo(event.target.value)} InputLabelProps={{ shrink: true }} sx={fieldSx} />
+            </Box>
+            <TextField fullWidth size="small" label="版本状态" value="草稿" InputProps={{ readOnly: true }} sx={fieldSx} />
+            <TextField fullWidth autoFocus size="small" label="版本说明" multiline minRows={3} value={dhrVersionDescription} onChange={(event) => setDhrVersionDescription(event.target.value)} />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }}>取消</Button>
+          <Button variant="contained" disabled={!dhrVersionDialog || saveDhrVersionMutation.isPending} onClick={submitDhrVersionDialog}>确认</Button>
         </DialogActions>
       </Dialog>
 
@@ -1829,7 +2179,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
       <DhrTemplateWorkspaceDialog
         open={dhrWorkspaceRow !== null}
-        template={dhrWorkspaceRow}
+        template={dhrWorkspaceRow?.row ?? null}
+        initialVersionId={dhrWorkspaceRow?.initialVersionId}
         onClose={() => setDhrWorkspaceRow(null)}
       />
 
@@ -1899,8 +2250,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                           </AccordionSummary>
                           <AccordionDetails sx={{ px: 1.5, pt: 0, pb: 1.5 }}>
                             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
-                              <AuditFieldBlock title="变更前" fields={record.beforeFields} />
-                              <AuditFieldBlock title="变更后" fields={record.afterFields} />
+                              <AuditFieldBlock title="变更前" fields={record.beforeFields} onViewSnapshot={(field) => setAuditSnapshot({ title: field.label, value: field.rawValue })} />
+                              <AuditFieldBlock title="变更后" fields={record.afterFields} onViewSnapshot={(field) => setAuditSnapshot({ title: field.label, value: field.rawValue })} />
                             </Box>
                           </AccordionDetails>
                         </Accordion>
@@ -1913,6 +2264,16 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           )}
         </Box>
       </Drawer>
+
+      <Dialog open={auditSnapshot !== null} onClose={() => setAuditSnapshot(null)} fullWidth maxWidth="md" PaperProps={{ sx: { height: 'min(72vh, 760px)' } }}>
+        <DialogTitle>审计快照 · {auditSnapshot?.title}</DialogTitle>
+        <DialogContent dividers sx={{ minHeight: 0, overflow: 'auto', bgcolor: '#f8fafc' }}>
+          <Box component="pre" sx={{ m: 0, p: 1.5, minHeight: '100%', boxSizing: 'border-box', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap', color: '#303133', bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace', fontSize: 12, lineHeight: 1.6 }}>
+            {auditSnapshot ? formatAuditSnapshot(auditSnapshot.value) : ''}
+          </Box>
+        </DialogContent>
+        <DialogActions><Button onClick={() => setAuditSnapshot(null)}>关闭</Button></DialogActions>
+      </Dialog>
 
       <Snackbar
         open={snackbar.open}

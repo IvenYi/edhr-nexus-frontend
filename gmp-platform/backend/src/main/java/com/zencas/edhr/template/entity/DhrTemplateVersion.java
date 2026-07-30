@@ -14,6 +14,18 @@ public class DhrTemplateVersion {
     private Long dhrTemplateId;
     @Column(name = "version_number")
     @Builder.Default private Integer versionNumber = 1;
+    @Column(name = "version_label", length = 64)
+    private String versionLabel;
+    @Column(name = "code", length = 64)
+    private String code;
+    @Column(name = "offline_version", length = 20)
+    private String offlineVersion;
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+    @Column(name = "effective_from")
+    private LocalDateTime effectiveFrom;
+    @Column(name = "effective_to")
+    private LocalDateTime effectiveTo;
     @Column(name = "directory_snapshot", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private String directorySnapshot;

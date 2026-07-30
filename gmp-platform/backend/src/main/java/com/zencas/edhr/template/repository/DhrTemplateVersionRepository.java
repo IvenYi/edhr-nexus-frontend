@@ -13,4 +13,8 @@ public interface DhrTemplateVersionRepository extends JpaRepository<DhrTemplateV
     List<DhrTemplateVersion> findByDhrTemplateIdOrderByVersionNumberDesc(Long dhrTemplateId);
 
     Optional<DhrTemplateVersion> findByIdAndDhrTemplateId(Long id, Long dhrTemplateId);
+
+    List<DhrTemplateVersion> findByDhrTemplateIdAndVersionLabelIgnoreCase(Long dhrTemplateId, String versionLabel);
+
+    List<DhrTemplateVersion> findByCodeIgnoreCase(String code);
 }

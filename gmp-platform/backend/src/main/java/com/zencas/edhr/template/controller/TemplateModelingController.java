@@ -29,6 +29,7 @@ import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.template.repository.TemplateCategoryRepository;
 import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
+import com.zencas.edhr.template.support.DhrTemplateVersionStatusResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.data.domain.Page;
@@ -185,6 +186,7 @@ public class TemplateModelingController {
     public ApiResponse<TemplateVersionResponse> createFormTemplateVersion(@PathVariable Long id, @RequestBody TemplateModelingRequest request) {
         FormTemplate template = formTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
+        ensureFormTemplateVersionAvailable(template.getId(), requireVersion(request));
         validateEffectiveDateRange(request);
         FormTemplateVersion version = formTemplateVersionRepository.save(buildFormTemplateVersion(template.getId(), request, nextVersionNumber(template.getId()), false));
         writeAudit("FORM_TEMPLATE_VERSION", version.getId(), "CREATE", "表单模板", "版本创建", Map.of(), versionSnapshot(version));
@@ -260,8 +262,10 @@ public class TemplateModelingController {
     }
 
     @GetMapping("/batch-record-templates")
-    public ApiResponse<PageResult<DhrTemplate>> listBatchRecordTemplates(
+    public ApiResponse<PageResult<DhrTemplateResponse>> listBatchRecordTemplates(
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String code,
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "1") int page,
@@ -269,33 +273,63 @@ public class TemplateModelingController {
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order) {
         Page<DhrTemplate> result = dhrTemplateRepository.findAll(
-                dhrTemplateSpec(keyword, categoryName, status),
+                dhrTemplateSpec(keyword, name, code, categoryName, status),
                 pageable(page, size, sort, order));
-        return ApiResponse.success(PageResult.of(result.getContent(), page, size, result.getTotalElements()));
+        List<DhrTemplateResponse> content = result.getContent().stream()
+                .map(template -> toDhrTemplateResponse(template, loadDhrTemplateVersions(template.getId())))
+                .toList();
+        return ApiResponse.success(PageResult.of(content, page, size, result.getTotalElements()));
+    }
+
+    public ApiResponse<PageResult<DhrTemplateResponse>> listBatchRecordTemplates(
+            String keyword,
+            String categoryName,
+            String status,
+            int page,
+            int size,
+            String sort,
+            String order) {
+        return listBatchRecordTemplates(keyword, null, null, categoryName, status, page, size, sort, order);
     }
 
     @PostMapping("/batch-record-templates")
     @Transactional
-    public ApiResponse<DhrTemplate> createBatchRecordTemplate(@RequestBody TemplateModelingRequest request) {
-        String code = requireCode(request);
-        ensureDhrTemplateCodeAvailable(code, null);
+    public ApiResponse<DhrTemplateResponse> createBatchRecordTemplate(@RequestBody TemplateModelingRequest request) {
+        validateEffectiveDateRange(request);
         LocalDateTime now = LocalDateTime.now();
+        String versionLabel = resolveDhrVersionLabel(request == null ? null : request.getVersion(), 1);
+        String versionCode = normalizeDhrVersionCode(request == null ? null : request.getCode());
+        ensureDhrVersionCodeAvailable(versionCode, null);
         DhrTemplate entity = DhrTemplate.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
-                .code(code)
                 .name(requireName(request))
                 .categoryName(resolveTemplateCategory(DHR_TYPE, request))
                 .description(trimToNull(request.getDescription()))
-                .status(resolveStatus(request, "ACTIVE"))
+                .status("DRAFT")
                 .createdBy(currentOperatorName())
                 .createdAt(now)
                 .updatedBy(currentOperatorName())
                 .updatedAt(now)
                 .build();
         DhrTemplate saved = dhrTemplateRepository.save(entity);
+        DhrTemplateVersion version = dhrTemplateVersionRepository.save(DhrTemplateVersion.builder()
+                .id(idGenerator.nextId())
+                .dhrTemplateId(saved.getId())
+                .versionNumber(1)
+                .versionLabel(versionLabel)
+                .code(versionCode)
+                .offlineVersion(trimToNull(request == null ? null : request.getOfflineVersion()))
+                .description(trimToNull(request.getVersionDescription()))
+                .effectiveFrom(parseDateTime(request.getEffectiveFrom()))
+                .effectiveTo(parseDateTime(request.getEffectiveTo()))
+                .status("DRAFT")
+                .isCurrent(false)
+                .createdAt(now)
+                .build());
         writeAudit("DHR_TEMPLATE", saved.getId(), "CREATE", "批记录模板", "新增批记录模板", Map.of(), dhrTemplateSnapshot(saved));
-        return ApiResponse.success(saved);
+        writeAudit("DHR_TEMPLATE_VERSION", version.getId(), "CREATE", "批记录模板", "新建初始批记录模板版本", Map.of(), dhrTemplateVersionSnapshot(version));
+        return ApiResponse.success(toDhrTemplateResponse(saved, List.of(version)));
     }
 
     @PutMapping("/batch-record-templates/{id}")
@@ -303,14 +337,10 @@ public class TemplateModelingController {
     public ApiResponse<DhrTemplate> updateBatchRecordTemplate(@PathVariable Long id, @RequestBody TemplateModelingRequest request) {
         DhrTemplate existing = dhrTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "批记录模板不存在"));
-        String code = requireCode(request);
-        ensureDhrTemplateCodeAvailable(code, id);
         Map<String, Object> before = dhrTemplateSnapshot(existing);
-        existing.setCode(code);
         existing.setName(requireName(request));
         existing.setCategoryName(resolveTemplateCategory(DHR_TYPE, request));
         existing.setDescription(trimToNull(request.getDescription()));
-        existing.setStatus(resolveStatus(request, existing.getStatus()));
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
         DhrTemplate saved = dhrTemplateRepository.save(existing);
@@ -442,12 +472,20 @@ public class TemplateModelingController {
                 predicates.add(cb.like(cb.lower(root.get("code")), "%" + code.trim().toLowerCase() + "%"));
             }
             addCategoryPredicate(categoryName, root.get("categoryName"), predicates, cb);
-            addStatusPredicate(status, root.get("status"), predicates, cb);
+            if (StringUtils.hasText(status) && !"ALL".equals(status)) {
+                jakarta.persistence.criteria.Subquery<Long> versionSubquery = query.subquery(Long.class);
+                jakarta.persistence.criteria.Root<DhrTemplateVersion> versionRoot = versionSubquery.from(DhrTemplateVersion.class);
+                versionSubquery.select(versionRoot.get("dhrTemplateId"));
+                versionSubquery.where(
+                        cb.equal(versionRoot.get("dhrTemplateId"), root.get("id")),
+                        cb.equal(versionRoot.get("status"), status.trim()));
+                predicates.add(root.get("id").in(versionSubquery));
+            }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         };
     }
 
-    private Specification<DhrTemplate> dhrTemplateSpec(String keyword, String categoryName, String status) {
+    private Specification<DhrTemplate> dhrTemplateSpec(String keyword, String name, String code, String categoryName, String status) {
         return (root, query, cb) -> {
             List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("tenantId"), TENANT_ID));
@@ -455,12 +493,30 @@ public class TemplateModelingController {
                 String like = "%" + keyword.trim().toLowerCase() + "%";
                 predicates.add(cb.or(
                         cb.like(cb.lower(root.get("name")), like),
-                        cb.like(cb.lower(root.get("code")), like)));
+                        dhrVersionCodeMatches(root, query, cb, like)));
+            }
+            if (StringUtils.hasText(name)) {
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.trim().toLowerCase() + "%"));
+            }
+            if (StringUtils.hasText(code)) {
+                predicates.add(dhrVersionCodeMatches(root, query, cb, "%" + code.trim().toLowerCase() + "%"));
             }
             addCategoryPredicate(categoryName, root.get("categoryName"), predicates, cb);
-            addStatusPredicate(status, root.get("status"), predicates, cb);
+            addDhrVersionStatusPredicate(status, root, query, predicates, cb);
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         };
+    }
+
+    private jakarta.persistence.criteria.Predicate dhrVersionCodeMatches(
+            jakarta.persistence.criteria.Root<DhrTemplate> root,
+            jakarta.persistence.criteria.CriteriaQuery<?> query,
+            jakarta.persistence.criteria.CriteriaBuilder cb,
+            String like) {
+        jakarta.persistence.criteria.Subquery<Long> versionSubquery = query.subquery(Long.class);
+        jakarta.persistence.criteria.Root<DhrTemplateVersion> versionRoot = versionSubquery.from(DhrTemplateVersion.class);
+        versionSubquery.select(versionRoot.get("dhrTemplateId"));
+        versionSubquery.where(cb.like(cb.lower(versionRoot.get("code")), like));
+        return root.get("id").in(versionSubquery);
     }
 
     private void addCategoryPredicate(
@@ -484,6 +540,38 @@ public class TemplateModelingController {
         if (StringUtils.hasText(status) && !"ALL".equals(status)) {
             predicates.add(cb.equal(statusPath, status.trim()));
         }
+    }
+
+    private void addDhrVersionStatusPredicate(
+            String status,
+            jakarta.persistence.criteria.Root<DhrTemplate> root,
+            jakarta.persistence.criteria.CriteriaQuery<?> query,
+            List<jakarta.persistence.criteria.Predicate> predicates,
+            jakarta.persistence.criteria.CriteriaBuilder cb) {
+        if (!StringUtils.hasText(status) || "ALL".equals(status)) return;
+        String requestedStatus = status.trim();
+        LocalDateTime now = LocalDateTime.now();
+        jakarta.persistence.criteria.Subquery<Long> versionSubquery = query.subquery(Long.class);
+        jakarta.persistence.criteria.Root<DhrTemplateVersion> versionRoot = versionSubquery.from(DhrTemplateVersion.class);
+        List<jakarta.persistence.criteria.Predicate> versionPredicates = new ArrayList<>();
+        versionPredicates.add(cb.equal(versionRoot.get("dhrTemplateId"), root.get("id")));
+
+        if (DhrTemplateVersionStatusResolver.PENDING.equals(requestedStatus)) {
+            versionPredicates.add(cb.equal(versionRoot.get("status"), DhrTemplateVersionStatusResolver.ACTIVE));
+            versionPredicates.add(cb.greaterThan(versionRoot.get("effectiveFrom"), now));
+        } else if (DhrTemplateVersionStatusResolver.EXPIRED.equals(requestedStatus)) {
+            versionPredicates.add(cb.equal(versionRoot.get("status"), DhrTemplateVersionStatusResolver.ACTIVE));
+            versionPredicates.add(cb.lessThanOrEqualTo(versionRoot.get("effectiveTo"), now));
+        } else if (DhrTemplateVersionStatusResolver.ACTIVE.equals(requestedStatus)) {
+            versionPredicates.add(cb.equal(versionRoot.get("status"), DhrTemplateVersionStatusResolver.ACTIVE));
+            versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveFrom")), cb.lessThanOrEqualTo(versionRoot.get("effectiveFrom"), now)));
+            versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveTo")), cb.greaterThan(versionRoot.get("effectiveTo"), now)));
+        } else {
+            versionPredicates.add(cb.equal(versionRoot.get("status"), requestedStatus));
+        }
+        versionSubquery.select(versionRoot.get("dhrTemplateId"));
+        versionSubquery.where(cb.and(versionPredicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
+        predicates.add(root.get("id").in(versionSubquery));
     }
 
     private Pageable pageable(int page, int size, String sort, String order) {
@@ -563,10 +651,36 @@ public class TemplateModelingController {
         if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板编码已存在");
     }
 
-    private void ensureDhrTemplateCodeAvailable(String code, Long currentId) {
-        boolean exists = dhrTemplateRepository.findByTenantIdAndCodeIgnoreCase(TENANT_ID, code).stream()
-                .anyMatch(template -> !Objects.equals(template.getId(), currentId));
+    private void ensureDhrVersionCodeAvailable(String code, Long currentVersionId) {
+        if (!StringUtils.hasText(code)) return;
+        boolean exists = dhrTemplateVersionRepository.findByCodeIgnoreCase(code).stream()
+                .anyMatch(version -> !Objects.equals(version.getId(), currentVersionId));
         if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板编码已存在");
+    }
+
+    private String normalizeDhrVersionCode(String value) {
+        String code = trimToNull(value);
+        if (code != null && code.length() > 64) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "模板编码不能超过 64 个字符");
+        }
+        return code;
+    }
+
+    private String resolveDhrVersionLabel(String value, int fallbackVersionNumber) {
+        String versionLabel = trimToNull(value);
+        if (versionLabel == null) return "V" + fallbackVersionNumber + ".0";
+        if (versionLabel.length() > 64) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "版本号不能超过 64 个字符");
+        }
+        return versionLabel;
+    }
+
+    private void ensureFormTemplateVersionAvailable(Long templateId, String version) {
+        boolean exists = formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(templateId).stream()
+                .map(FormTemplateVersion::getVersion)
+                .filter(StringUtils::hasText)
+                .anyMatch(existingVersion -> existingVersion.trim().equalsIgnoreCase(version));
+        if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板版本已存在");
     }
 
     private FormTemplateVersion buildFormTemplateVersion(Long templateId, TemplateModelingRequest request, int versionNumber, boolean current) {
@@ -630,6 +744,11 @@ public class TemplateModelingController {
     private List<FormTemplateVersion> loadTemplateVersions(Long templateId) {
         if (templateId == null) return List.of();
         return formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(templateId);
+    }
+
+    private List<DhrTemplateVersion> loadDhrTemplateVersions(Long templateId) {
+        if (templateId == null) return List.of();
+        return dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(templateId);
     }
 
     private FormTemplateVersion findVersion(Long templateId, Long versionId) {
@@ -790,7 +909,6 @@ public class TemplateModelingController {
 
     private Map<String, Object> dhrTemplateSnapshot(DhrTemplate entity) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
-        snapshot.put("templateCode", entity.getCode());
         snapshot.put("templateName", entity.getName());
         snapshot.put("templateCategory", entity.getCategoryName());
         snapshot.put("description", entity.getDescription());
@@ -799,6 +917,22 @@ public class TemplateModelingController {
         snapshot.put("createdAt", entity.getCreatedAt());
         snapshot.put("updatedBy", entity.getUpdatedBy());
         snapshot.put("updatedAt", entity.getUpdatedAt());
+        return snapshot;
+    }
+
+    private Map<String, Object> dhrTemplateVersionSnapshot(DhrTemplateVersion version) {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("version", dhrVersionLabel(version));
+        snapshot.put("code", version.getCode());
+        snapshot.put("offlineVersion", version.getOfflineVersion());
+        snapshot.put("description", version.getDescription());
+        snapshot.put("effectiveFrom", formatDateTime(version.getEffectiveFrom()));
+        snapshot.put("effectiveTo", formatDateTime(version.getEffectiveTo()));
+        snapshot.put("status", version.getStatus());
+        snapshot.put("isCurrent", version.getIsCurrent());
+        snapshot.put("directoryCount", 0);
+        snapshot.put("evidenceCount", 0);
+        snapshot.put("createdAt", formatDateTime(version.getCreatedAt()));
         return snapshot;
     }
 
@@ -856,6 +990,62 @@ public class TemplateModelingController {
                 entity.getUpdatedBy(),
                 formatDateTime(entity.getUpdatedAt())
         );
+    }
+
+    private DhrTemplateResponse toDhrTemplateResponse(DhrTemplate entity, List<DhrTemplateVersion> versions) {
+        List<DhrTemplateVersionResponse> versionResponses = (versions == null ? List.<DhrTemplateVersion>of() : versions).stream()
+                .map(this::toDhrTemplateVersionResponse)
+                .toList();
+        DhrTemplateVersionResponse currentVersion = versionResponses.stream()
+                .filter(DhrTemplateVersionResponse::isCurrent)
+                .findFirst()
+                .orElse(versionResponses.stream().findFirst().orElse(null));
+        return new DhrTemplateResponse(
+                String.valueOf(entity.getId()),
+                entity.getTenantId(),
+                null,
+                entity.getName(),
+                DHR_TYPE,
+                entity.getCategoryName(),
+                entity.getDescription(),
+                currentVersion == null ? null : currentVersion.id(),
+                currentVersion,
+                versionResponses,
+                DhrTemplateVersionStatusResolver.resolveTemplateStatus(
+                        versionResponses.stream().map(DhrTemplateVersionResponse::status).toList()),
+                entity.getCreatedBy(),
+                formatDateTime(entity.getCreatedAt()),
+                entity.getUpdatedBy(),
+                formatDateTime(entity.getUpdatedAt())
+        );
+    }
+
+    private DhrTemplateVersionResponse toDhrTemplateVersionResponse(DhrTemplateVersion version) {
+        List<DhrDirectory> directories = dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(version.getId());
+        int evidenceCount = directories.isEmpty()
+                ? 0
+                : dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(
+                        directories.stream().map(DhrDirectory::getId).toList()).size();
+        return new DhrTemplateVersionResponse(
+                String.valueOf(version.getId()),
+                version.getDhrTemplateId() == null ? null : String.valueOf(version.getDhrTemplateId()),
+                dhrVersionLabel(version),
+                version.getCode(),
+                version.getOfflineVersion(),
+                version.getDescription(),
+                formatDateTime(version.getEffectiveFrom()),
+                formatDateTime(version.getEffectiveTo()),
+                DhrTemplateVersionStatusResolver.resolveVersionStatus(version),
+                Boolean.TRUE.equals(version.getIsCurrent()),
+                formatDateTime(version.getCreatedAt()),
+                directories.size(),
+                evidenceCount
+        );
+    }
+
+    private String dhrVersionLabel(DhrTemplateVersion version) {
+        String label = trimToNull(version.getVersionLabel());
+        return label == null ? "V" + (version.getVersionNumber() == null ? 1 : version.getVersionNumber()) + ".0" : label;
     }
 
     private TemplateVersionResponse toVersionResponse(FormTemplateVersion version) {
@@ -978,5 +1168,39 @@ public class TemplateModelingController {
             String createdAt,
             String updatedBy,
             String updatedAt) {
+    }
+
+    public record DhrTemplateResponse(
+            String id,
+            String tenantId,
+            String code,
+            String name,
+            String type,
+            String categoryName,
+            String description,
+            String currentVersionId,
+            DhrTemplateVersionResponse currentVersion,
+            List<DhrTemplateVersionResponse> versions,
+            String status,
+            String createdBy,
+            String createdAt,
+            String updatedBy,
+            String updatedAt) {
+    }
+
+    public record DhrTemplateVersionResponse(
+            String id,
+            String templateId,
+            String version,
+            String code,
+            String offlineVersion,
+            String description,
+            String effectiveFrom,
+            String effectiveTo,
+            String status,
+            boolean isCurrent,
+            String createdAt,
+            int directoryCount,
+            int evidenceCount) {
     }
 }

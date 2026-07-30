@@ -23,6 +23,7 @@ import com.zencas.edhr.template.repository.DhrTemplateRepository;
 import com.zencas.edhr.template.repository.DhrTemplateVersionRepository;
 import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
+import com.zencas.edhr.template.support.DhrTemplateVersionStatusResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -45,7 +47,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,9 +58,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/master-data/template-modeling/batch-record-templates")
 public class DhrTemplateWorkspaceController {
     private static final String TENANT_ID = "default";
-    private static final String DRAFT = "DRAFT";
-    private static final String ACTIVE = "ACTIVE";
-    private static final String DISABLED = "DISABLED";
+    private static final String DRAFT = DhrTemplateVersionStatusResolver.DRAFT;
+    private static final String ACTIVE = DhrTemplateVersionStatusResolver.ACTIVE;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
@@ -79,7 +79,7 @@ public class DhrTemplateWorkspaceController {
         DhrTemplate template = findTemplate(templateId);
         return ApiResponse.success(new DhrTemplateWorkspaceResponse(
                 String.valueOf(template.getId()),
-                template.getCode(),
+                null,
                 template.getName(),
                 versions(templateId).stream().map(this::toVersionResponse).toList()));
     }
@@ -100,9 +100,7 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<List<DhrFormTemplateOption>> listFormOptions(@PathVariable Long templateId) {
         findTemplate(templateId);
         List<DhrFormTemplateOption> options = orEmpty(formTemplateRepository.findAll()).stream()
-                .filter(template -> ACTIVE.equals(template.getStatus()))
                 .map(this::toFormOption)
-                .flatMap(Optional::stream)
                 .sorted(Comparator.comparing(DhrFormTemplateOption::name, String.CASE_INSENSITIVE_ORDER))
                 .toList();
         return ApiResponse.success(options);
@@ -112,17 +110,29 @@ public class DhrTemplateWorkspaceController {
     @Transactional
     public ApiResponse<DhrVersionResponse> createDhrTemplateVersion(@PathVariable Long templateId, @RequestBody(required = false) DhrVersionRequest request) {
         DhrTemplate template = findTemplate(templateId);
+        validateEffectiveDateRange(request);
         List<DhrTemplateVersion> existingVersions = versions(templateId);
-        DhrTemplateVersion source = resolveVersionSource(templateId, existingVersions, request == null ? null : request.sourceVersionId());
+        Long sourceVersionId = request == null ? null : request.sourceVersionId();
+        DhrTemplateVersion source = sourceVersionId == null ? null : resolveVersionSource(templateId, existingVersions, sourceVersionId);
         int versionNumber = existingVersions.stream()
                 .map(DhrTemplateVersion::getVersionNumber)
                 .filter(Objects::nonNull)
                 .max(Integer::compareTo)
                 .orElse(0) + 1;
+        String versionLabel = resolveVersionLabel(request == null ? null : request.version(), versionNumber);
+        ensureVersionLabelAvailable(templateId, versionLabel, null);
+        String code = normalizeVersionCode(request == null ? null : request.code());
+        ensureVersionCodeAvailable(code, null);
         DhrTemplateVersion version = dhrTemplateVersionRepository.save(DhrTemplateVersion.builder()
                 .id(idGenerator.nextId())
                 .dhrTemplateId(templateId)
                 .versionNumber(versionNumber)
+                .versionLabel(versionLabel)
+                .code(code)
+                .offlineVersion(normalizeOfflineVersion(request == null ? null : request.offlineVersion()))
+                .description(trimToNull(request == null ? null : request.description()))
+                .effectiveFrom(parseDateTime(request == null ? null : request.effectiveFrom()))
+                .effectiveTo(parseDateTime(request == null ? null : request.effectiveTo()))
                 .status(DRAFT)
                 .isCurrent(false)
                 .createdAt(LocalDateTime.now())
@@ -131,6 +141,49 @@ public class DhrTemplateWorkspaceController {
         touchTemplate(templateId);
         writeAudit("DHR_TEMPLATE_VERSION", version.getId(), "CREATE", "新建批记录模板版本", Map.of(), versionSnapshot(version));
         return ApiResponse.success(toVersionResponse(version));
+    }
+
+    @PutMapping("/{templateId}/versions/{versionId}")
+    @Transactional
+    public ApiResponse<DhrVersionResponse> updateDhrTemplateVersion(@PathVariable Long templateId, @PathVariable Long versionId, @RequestBody DhrVersionRequest request) {
+        findTemplate(templateId);
+        DhrTemplateVersion version = findVersion(templateId, versionId);
+        ensureEditable(version);
+        validateEffectiveDateRange(request);
+        String versionLabel = requireVersionLabel(request == null ? null : request.version());
+        ensureVersionLabelAvailable(templateId, versionLabel, versionId);
+        String code = normalizeVersionCode(request == null ? null : request.code());
+        ensureVersionCodeAvailable(code, versionId);
+        Map<String, Object> before = versionSnapshot(version);
+        version.setVersionLabel(versionLabel);
+        version.setCode(code);
+        version.setOfflineVersion(normalizeOfflineVersion(request == null ? null : request.offlineVersion()));
+        version.setDescription(trimToNull(request == null ? null : request.description()));
+        version.setEffectiveFrom(parseDateTime(request == null ? null : request.effectiveFrom()));
+        version.setEffectiveTo(parseDateTime(request == null ? null : request.effectiveTo()));
+        DhrTemplateVersion saved = dhrTemplateVersionRepository.save(version);
+        touchTemplate(templateId);
+        writeChangedAudit("DHR_TEMPLATE_VERSION", saved.getId(), "编辑批记录模板版本", before, versionSnapshot(saved));
+        return ApiResponse.success(toVersionResponse(saved));
+    }
+
+    @DeleteMapping("/{templateId}/versions/{versionId}")
+    @Transactional
+    public ApiResponse<Void> deleteDhrTemplateVersion(@PathVariable Long templateId, @PathVariable Long versionId) {
+        findTemplate(templateId);
+        List<DhrTemplateVersion> existingVersions = versions(templateId);
+        if (existingVersions.size() <= 1) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "批记录模板至少保留一个版本");
+        }
+        DhrTemplateVersion version = findVersion(templateId, versionId);
+        List<DhrDirectory> directories = directories(versionId);
+        List<DhrTemplateItem> items = itemsForDirectories(directories);
+        if (!items.isEmpty()) dhrTemplateItemRepository.deleteAll(items);
+        if (!directories.isEmpty()) dhrDirectoryRepository.deleteAll(directories);
+        dhrTemplateVersionRepository.delete(version);
+        touchTemplate(templateId);
+        writeAudit("DHR_TEMPLATE_VERSION", versionId, "DELETE", "删除批记录模板版本", versionSnapshot(version), Map.of());
+        return ApiResponse.success(null);
     }
 
     @PostMapping("/{templateId}/versions/{versionId}/directories")
@@ -150,7 +203,9 @@ public class DhrTemplateWorkspaceController {
                 .createdAt(LocalDateTime.now())
                 .build());
         touchTemplate(templateId);
-        writeAudit("DHR_DIRECTORY", directory.getId(), "CREATE", "新增批记录目录", Map.of(), directorySnapshot(directory));
+        Map<String, Object> after = directorySnapshot(directory);
+        writeAudit("DHR_DIRECTORY", directory.getId(), "CREATE", "新增批记录目录", Map.of(), after);
+        writeVersionActivityAudit(version, "CREATE", "新增批记录目录", "目录", Map.of(), after);
         return ApiResponse.success(toDirectoryResponse(directory));
     }
 
@@ -166,7 +221,10 @@ public class DhrTemplateWorkspaceController {
         directory.setParentId(validateParent(versionId, request == null ? null : request.parentId(), directoryId));
         DhrDirectory saved = dhrDirectoryRepository.save(directory);
         touchTemplate(templateId);
-        writeChangedAudit("DHR_DIRECTORY", saved.getId(), "编辑批记录目录", before, directorySnapshot(saved));
+        Map<String, Object> after = directorySnapshot(saved);
+        if (writeChangedAudit("DHR_DIRECTORY", saved.getId(), "编辑批记录目录", before, after)) {
+            writeVersionActivityAudit(version, "UPDATE", "编辑批记录目录", "目录", before, after);
+        }
         return ApiResponse.success(toDirectoryResponse(saved));
     }
 
@@ -184,7 +242,9 @@ public class DhrTemplateWorkspaceController {
         }
         dhrDirectoryRepository.delete(directory);
         touchTemplate(templateId);
-        writeAudit("DHR_DIRECTORY", directoryId, "DELETE", "删除批记录目录", directorySnapshot(directory), Map.of());
+        Map<String, Object> before = directorySnapshot(directory);
+        writeAudit("DHR_DIRECTORY", directoryId, "DELETE", "删除批记录目录", before, Map.of());
+        writeVersionActivityAudit(version, "DELETE", "删除批记录目录", "目录", before, Map.of());
         return ApiResponse.success(null);
     }
 
@@ -216,12 +276,15 @@ public class DhrTemplateWorkspaceController {
                 .directoryId(directoryId)
                 .formTemplateId(formTemplateId)
                 .formTemplateVersionId(formVersion.getId())
+                .displayName(trimToNull(request.displayName()))
                 .sortOrder(nextItemSortOrder(directoryId))
                 .isRequired(request.isRequired() == null || request.isRequired())
                 .createdAt(LocalDateTime.now())
                 .build());
         touchTemplate(templateId);
-        writeAudit("DHR_TEMPLATE_ITEM", item.getId(), "CREATE", "新增批记录表单证据", Map.of(), evidenceSnapshot(item));
+        Map<String, Object> after = evidenceSnapshot(item);
+        writeAudit("DHR_TEMPLATE_ITEM", item.getId(), "CREATE", "新增批记录表单证据", Map.of(), after);
+        writeVersionActivityAudit(version, "CREATE", "引用表单", "表单引用", Map.of(), after);
         return ApiResponse.success(toEvidenceResponse(item));
     }
 
@@ -234,9 +297,13 @@ public class DhrTemplateWorkspaceController {
         DhrTemplateItem item = findItem(versionId, itemId);
         Map<String, Object> before = evidenceSnapshot(item);
         if (request != null && request.isRequired() != null) item.setIsRequired(request.isRequired());
+        if (request != null && request.displayName() != null) item.setDisplayName(trimToNull(request.displayName()));
         DhrTemplateItem saved = dhrTemplateItemRepository.save(item);
         touchTemplate(templateId);
-        writeChangedAudit("DHR_TEMPLATE_ITEM", saved.getId(), "编辑批记录表单证据", before, evidenceSnapshot(saved));
+        Map<String, Object> after = evidenceSnapshot(saved);
+        if (writeChangedAudit("DHR_TEMPLATE_ITEM", saved.getId(), "编辑批记录表单证据", before, after)) {
+            writeVersionActivityAudit(version, "UPDATE", "编辑引用表单", "表单引用", before, after);
+        }
         return ApiResponse.success(toEvidenceResponse(saved));
     }
 
@@ -249,7 +316,9 @@ public class DhrTemplateWorkspaceController {
         DhrTemplateItem item = findItem(versionId, itemId);
         dhrTemplateItemRepository.delete(item);
         touchTemplate(templateId);
-        writeAudit("DHR_TEMPLATE_ITEM", itemId, "DELETE", "删除批记录表单证据", evidenceSnapshot(item), Map.of());
+        Map<String, Object> before = evidenceSnapshot(item);
+        writeAudit("DHR_TEMPLATE_ITEM", itemId, "DELETE", "删除批记录表单证据", before, Map.of());
+        writeVersionActivityAudit(version, "DELETE", "移除引用表单", "表单引用", before, Map.of());
         return ApiResponse.success(null);
     }
 
@@ -259,6 +328,7 @@ public class DhrTemplateWorkspaceController {
         DhrTemplate template = findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
         ensureEditable(version);
+        validateVersionCanBePublished(version);
         List<DhrDirectory> directories = directories(versionId);
         List<DhrTemplateItem> items = itemsForDirectories(directories);
         if (directories.isEmpty()) throw new BusinessException(ErrorCode.GENERAL_001, "请至少配置一个 DHR 目录");
@@ -270,18 +340,16 @@ public class DhrTemplateWorkspaceController {
                 .toList();
         previousCurrentVersions.forEach(previous -> {
             previous.setIsCurrent(false);
-            previous.setStatus(DISABLED);
         });
         if (!previousCurrentVersions.isEmpty()) dhrTemplateVersionRepository.saveAll(previousCurrentVersions);
         version.setDirectorySnapshot(toSnapshotJson(version, directories, items));
         version.setStatus(ACTIVE);
         version.setIsCurrent(true);
         DhrTemplateVersion saved = dhrTemplateVersionRepository.save(version);
-        template.setStatus(ACTIVE);
         template.setUpdatedBy(currentOperatorName());
         template.setUpdatedAt(LocalDateTime.now());
         dhrTemplateRepository.save(template);
-        writeChangedAudit("DHR_TEMPLATE_VERSION", saved.getId(), "启用批记录模板版本", before, versionSnapshot(saved));
+        writeChangedAudit("DHR_TEMPLATE_VERSION", saved.getId(), "发布批记录模板版本", before, versionSnapshot(saved));
         return ApiResponse.success(toVersionResponse(saved, directories, items));
     }
 
@@ -296,15 +364,46 @@ public class DhrTemplateWorkspaceController {
     }
 
     private DhrTemplateVersion resolveVersionSource(Long templateId, List<DhrTemplateVersion> existingVersions, Long requestedSourceId) {
-        if (requestedSourceId != null) {
-            return existingVersions.stream()
-                    .filter(version -> Objects.equals(version.getId(), requestedSourceId))
-                    .findFirst()
-                    .orElseGet(() -> findVersion(templateId, requestedSourceId));
-        }
-        return existingVersions.stream().filter(version -> Boolean.TRUE.equals(version.getIsCurrent())).findFirst()
-                .or(() -> existingVersions.stream().findFirst())
-                .orElse(null);
+        return existingVersions.stream()
+                .filter(version -> Objects.equals(version.getId(), requestedSourceId))
+                .findFirst()
+                .orElseGet(() -> findVersion(templateId, requestedSourceId));
+    }
+
+    private String resolveVersionLabel(String value, int fallbackVersionNumber) {
+        String versionLabel = trimToNull(value);
+        return versionLabel == null ? "V" + fallbackVersionNumber + ".0" : requireVersionLabel(versionLabel);
+    }
+
+    private String requireVersionLabel(String value) {
+        String versionLabel = requireName(value, "版本号不能为空");
+        if (versionLabel.length() > 64) throw new BusinessException(ErrorCode.GENERAL_001, "版本号不能超过 64 个字符");
+        return versionLabel;
+    }
+
+    private String normalizeVersionCode(String value) {
+        String code = trimToNull(value);
+        if (code != null && code.length() > 64) throw new BusinessException(ErrorCode.GENERAL_001, "模板编码不能超过 64 个字符");
+        return code;
+    }
+
+    private String normalizeOfflineVersion(String value) {
+        String offlineVersion = trimToNull(value);
+        if (offlineVersion != null && offlineVersion.length() > 20) throw new BusinessException(ErrorCode.GENERAL_001, "线下版本不能超过 20 个字符");
+        return offlineVersion;
+    }
+
+    private void ensureVersionLabelAvailable(Long templateId, String versionLabel, Long currentVersionId) {
+        boolean exists = dhrTemplateVersionRepository.findByDhrTemplateIdAndVersionLabelIgnoreCase(templateId, versionLabel).stream()
+                .anyMatch(version -> !Objects.equals(version.getId(), currentVersionId));
+        if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "版本号已存在");
+    }
+
+    private void ensureVersionCodeAvailable(String code, Long currentVersionId) {
+        if (!StringUtils.hasText(code)) return;
+        boolean exists = dhrTemplateVersionRepository.findByCodeIgnoreCase(code).stream()
+                .anyMatch(version -> !Objects.equals(version.getId(), currentVersionId));
+        if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板编码已存在");
     }
 
     private List<DhrTemplateVersion> versions(Long templateId) {
@@ -349,6 +448,7 @@ public class DhrTemplateWorkspaceController {
                 .directoryId(clonedDirectoryIds.get(source.getDirectoryId()))
                 .formTemplateId(source.getFormTemplateId())
                 .formTemplateVersionId(source.getFormTemplateVersionId())
+                .displayName(source.getDisplayName())
                 .sortOrder(source.getSortOrder())
                 .isRequired(source.getIsRequired())
                 .createdAt(LocalDateTime.now())
@@ -358,6 +458,22 @@ public class DhrTemplateWorkspaceController {
     private void ensureEditable(DhrTemplateVersion version) {
         if (!DRAFT.equals(version.getStatus())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "已启用版本不可编辑，请先新建版本");
+        }
+    }
+
+    private void validateEffectiveDateRange(DhrVersionRequest request) {
+        if (request == null) return;
+        LocalDateTime effectiveFrom = parseDateTime(request.effectiveFrom());
+        LocalDateTime effectiveTo = parseDateTime(request.effectiveTo());
+        if (effectiveFrom != null && effectiveTo != null && effectiveTo.isBefore(effectiveFrom)) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "失效时间不能早于生效时间");
+        }
+    }
+
+    private void validateVersionCanBePublished(DhrTemplateVersion version) {
+        LocalDateTime now = LocalDateTime.now();
+        if (version.getEffectiveTo() != null && !now.isBefore(version.getEffectiveTo())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "版本已失效，无法发布");
         }
     }
 
@@ -406,21 +522,24 @@ public class DhrTemplateWorkspaceController {
                 .orElse(0) + 10;
     }
 
-    private Optional<DhrFormTemplateOption> toFormOption(FormTemplate template) {
-        FormTemplateVersion version = null;
-        if (template.getCurrentVersionId() != null) {
-            version = formTemplateVersionRepository.findByIdAndTemplateId(template.getCurrentVersionId(), template.getId()).orElse(null);
-        }
-        if (version == null) {
-            version = orEmpty(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(template.getId())).stream().findFirst().orElse(null);
-        }
-        if (version == null || !ACTIVE.equals(version.getStatus())) return Optional.empty();
-        return Optional.of(new DhrFormTemplateOption(
+    private DhrFormTemplateOption toFormOption(FormTemplate template) {
+        List<FormTemplateVersion> versions = orEmpty(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(template.getId()));
+        return new DhrFormTemplateOption(
                 String.valueOf(template.getId()),
-                String.valueOf(version.getId()),
                 template.getCode(),
                 template.getName(),
-                version.getVersion()));
+                template.getCategoryName(),
+                template.getStatus(),
+                template.getUpdatedBy(),
+                formatDateTime(template.getUpdatedAt()),
+                versions.stream().map(version -> {
+                    boolean referenceable = ACTIVE.equals(template.getStatus()) && ACTIVE.equals(version.getStatus());
+                    return new DhrFormTemplateVersionOption(
+                            String.valueOf(version.getId()),
+                            version.getVersion(),
+                            version.getStatus(),
+                            referenceable);
+                }).toList());
     }
 
     private List<DhrEvidenceItemResponse> toEvidenceResponses(List<DhrTemplateItem> items) {
@@ -446,6 +565,7 @@ public class DhrTemplateWorkspaceController {
                 template == null ? "已删除表单" : template.getCode(),
                 template == null ? "已删除表单" : template.getName(),
                 version == null ? "-" : version.getVersion(),
+                item.getDisplayName(),
                 Boolean.TRUE.equals(item.getIsRequired()),
                 item.getSortOrder() == null ? 0 : item.getSortOrder());
     }
@@ -459,7 +579,12 @@ public class DhrTemplateWorkspaceController {
         return new DhrVersionResponse(
                 String.valueOf(version.getId()),
                 versionLabel(version),
-                version.getStatus(),
+                version.getCode(),
+                version.getOfflineVersion(),
+                version.getDescription(),
+                formatDateTime(version.getEffectiveFrom()),
+                formatDateTime(version.getEffectiveTo()),
+                DhrTemplateVersionStatusResolver.resolveVersionStatus(version),
                 Boolean.TRUE.equals(version.getIsCurrent()),
                 formatDateTime(version.getCreatedAt()),
                 directories.size(),
@@ -475,7 +600,8 @@ public class DhrTemplateWorkspaceController {
     }
 
     private String versionLabel(DhrTemplateVersion version) {
-        return "V" + (version.getVersionNumber() == null ? 1 : version.getVersionNumber()) + ".0";
+        String label = trimToNull(version.getVersionLabel());
+        return label == null ? "V" + (version.getVersionNumber() == null ? 1 : version.getVersionNumber()) + ".0" : label;
     }
 
     private void touchTemplate(Long templateId) {
@@ -517,6 +643,11 @@ public class DhrTemplateWorkspaceController {
     private Map<String, Object> versionSnapshot(DhrTemplateVersion version) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("version", versionLabel(version));
+        snapshot.put("code", version.getCode());
+        snapshot.put("offlineVersion", version.getOfflineVersion());
+        snapshot.put("description", version.getDescription());
+        snapshot.put("effectiveFrom", formatDateTime(version.getEffectiveFrom()));
+        snapshot.put("effectiveTo", formatDateTime(version.getEffectiveTo()));
         snapshot.put("status", version.getStatus());
         snapshot.put("isCurrent", version.getIsCurrent());
         snapshot.put("directorySnapshot", version.getDirectorySnapshot());
@@ -532,12 +663,25 @@ public class DhrTemplateWorkspaceController {
     }
 
     private Map<String, Object> evidenceSnapshot(DhrTemplateItem item) {
-        return evidenceSnapshot(item, Map.of(), Map.of());
+        FormTemplate formTemplate = item.getFormTemplateId() == null
+                ? null
+                : formTemplateRepository.findById(item.getFormTemplateId()).orElse(null);
+        FormTemplateVersion formVersion = item.getFormTemplateVersionId() == null
+                ? null
+                : formTemplateVersionRepository.findById(item.getFormTemplateVersionId()).orElse(null);
+        return evidenceSnapshot(
+                item,
+                formTemplate == null ? Map.of() : Map.of(formTemplate.getId(), formTemplate),
+                formVersion == null ? Map.of() : Map.of(formVersion.getId(), formVersion));
     }
 
     private Map<String, Object> evidenceSnapshot(DhrTemplateItem item, Map<Long, FormTemplate> formTemplates, Map<Long, FormTemplateVersion> formVersions) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("directoryId", item.getDirectoryId());
+        if (item.getDirectoryId() != null) {
+            dhrDirectoryRepository.findById(item.getDirectoryId())
+                    .ifPresent(directory -> snapshot.put("directoryName", directory.getName()));
+        }
         snapshot.put("formTemplateId", item.getFormTemplateId());
         snapshot.put("formTemplateVersionId", item.getFormTemplateVersionId());
         FormTemplate formTemplate = formTemplates.get(item.getFormTemplateId());
@@ -547,12 +691,13 @@ public class DhrTemplateWorkspaceController {
             snapshot.put("formName", formTemplate.getName());
         }
         if (formVersion != null) snapshot.put("formVersion", formVersion.getVersion());
+        snapshot.put("displayName", item.getDisplayName());
         snapshot.put("required", item.getIsRequired());
         snapshot.put("sortOrder", item.getSortOrder());
         return snapshot;
     }
 
-    private void writeChangedAudit(String entityType, Long entityId, String functionName, Map<String, Object> before, Map<String, Object> after) {
+    private boolean writeChangedAudit(String entityType, Long entityId, String functionName, Map<String, Object> before, Map<String, Object> after) {
         Map<String, Object> changedBefore = new LinkedHashMap<>();
         Map<String, Object> changedAfter = new LinkedHashMap<>();
         before.forEach((field, beforeValue) -> {
@@ -562,7 +707,39 @@ public class DhrTemplateWorkspaceController {
                 changedAfter.put(field, afterValue);
             }
         });
-        if (!changedBefore.isEmpty()) writeAudit(entityType, entityId, "UPDATE", functionName, changedBefore, changedAfter);
+        if (changedBefore.isEmpty()) return false;
+        writeAudit(entityType, entityId, "UPDATE", functionName, changedBefore, changedAfter);
+        return true;
+    }
+
+    private void writeVersionActivityAudit(
+            DhrTemplateVersion version,
+            String action,
+            String functionName,
+            String modelingType,
+            Map<String, Object> before,
+            Map<String, Object> after) {
+        writeAudit(
+                "DHR_TEMPLATE_VERSION",
+                version.getId(),
+                action,
+                functionName,
+                versionActivitySnapshot(version, modelingType, before),
+                versionActivitySnapshot(version, modelingType, after));
+    }
+
+    private Map<String, Object> versionActivitySnapshot(DhrTemplateVersion version, String modelingType, Map<String, Object> details) {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("version", versionLabel(version));
+        snapshot.put("code", version.getCode());
+        snapshot.put("offlineVersion", version.getOfflineVersion());
+        if (!details.isEmpty()) {
+            Map<String, Object> modelingChange = new LinkedHashMap<>();
+            modelingChange.put("type", modelingType);
+            modelingChange.put("details", details);
+            snapshot.put("modelingChange", modelingChange);
+        }
+        return snapshot;
     }
 
     private void writeAudit(String entityType, Long entityId, String action, String functionName, Map<String, Object> before, Map<String, Object> after) {
@@ -596,10 +773,32 @@ public class DhrTemplateWorkspaceController {
         return value == null ? null : value.format(DATE_TIME_FORMATTER);
     }
 
+    private LocalDateTime parseDateTime(String value) {
+        if (!StringUtils.hasText(value)) return null;
+        String trimmed = value.trim();
+        try {
+            return LocalDateTime.parse(trimmed);
+        } catch (DateTimeParseException ignored) {
+            try {
+                return LocalDateTime.parse(trimmed, DATE_TIME_FORMATTER);
+            } catch (DateTimeParseException ignoredAgain) {
+                try {
+                    return LocalDateTime.parse(trimmed, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                } catch (DateTimeParseException e) {
+                    throw new BusinessException(ErrorCode.GENERAL_001, "时间格式应为 yyyy-MM-dd HH:mm:ss");
+                }
+            }
+        }
+    }
+
     private String currentOperatorName() {
         if (StringUtils.hasText(AuditContext.getOperatorName())) return AuditContext.getOperatorName();
         if (StringUtils.hasText(AuditContext.getOperatorAccount())) return AuditContext.getOperatorAccount();
         return "系统管理员";
+    }
+
+    private String trimToNull(String value) {
+        return StringUtils.hasText(value) ? value.trim() : null;
     }
 
     private String toJson(Object value) {
@@ -614,16 +813,33 @@ public class DhrTemplateWorkspaceController {
         return values == null ? List.of() : values;
     }
 
-    public record DhrVersionRequest(Long sourceVersionId) {
+    public record DhrVersionRequest(Long sourceVersionId, String version, String code, String offlineVersion, String description, String effectiveFrom, String effectiveTo) {
+        public DhrVersionRequest(Long sourceVersionId) {
+            this(sourceVersionId, null, null, null, null, null, null);
+        }
+
+        public DhrVersionRequest(Long sourceVersionId, String description) {
+            this(sourceVersionId, null, null, null, description, null, null);
+        }
+
+        public DhrVersionRequest(Long sourceVersionId, String description, String effectiveFrom, String effectiveTo) {
+            this(sourceVersionId, null, null, null, description, effectiveFrom, effectiveTo);
+        }
     }
 
     public record DhrDirectoryRequest(String name, Long parentId) {
     }
 
-    public record DhrEvidenceItemRequest(Long formTemplateVersionId, Boolean isRequired) {
+    public record DhrEvidenceItemRequest(Long formTemplateVersionId, Boolean isRequired, String displayName) {
+        public DhrEvidenceItemRequest(Long formTemplateVersionId, Boolean isRequired) {
+            this(formTemplateVersionId, isRequired, null);
+        }
     }
 
-    public record DhrEvidenceItemUpdateRequest(Boolean isRequired) {
+    public record DhrEvidenceItemUpdateRequest(Boolean isRequired, String displayName) {
+        public DhrEvidenceItemUpdateRequest(Boolean isRequired) {
+            this(isRequired, null);
+        }
     }
 
     public record DhrTemplateWorkspaceResponse(String templateId, String templateCode, String templateName, List<DhrVersionResponse> versions) {
@@ -632,15 +848,30 @@ public class DhrTemplateWorkspaceController {
     public record DhrTemplateCompositionResponse(DhrVersionResponse version, List<DhrDirectoryResponse> directories, List<DhrEvidenceItemResponse> items) {
     }
 
-    public record DhrVersionResponse(String id, String version, String status, boolean isCurrent, String createdAt, int directoryCount, int evidenceCount) {
+    public record DhrVersionResponse(String id, String version, String code, String offlineVersion, String description, String effectiveFrom, String effectiveTo, String status, boolean isCurrent, String createdAt, int directoryCount, int evidenceCount) {
     }
 
     public record DhrDirectoryResponse(String id, String parentId, String name, int sortOrder) {
     }
 
-    public record DhrEvidenceItemResponse(String id, String directoryId, String formTemplateId, String formTemplateVersionId, String formCode, String formName, String formVersion, boolean isRequired, int sortOrder) {
+    public record DhrEvidenceItemResponse(String id, String directoryId, String formTemplateId, String formTemplateVersionId, String formCode, String formName, String formVersion, String displayName, boolean isRequired, int sortOrder) {
     }
 
-    public record DhrFormTemplateOption(String templateId, String versionId, String code, String name, String version) {
+    public record DhrFormTemplateOption(
+            String templateId,
+            String code,
+            String name,
+            String categoryName,
+            String status,
+            String updatedBy,
+            String updatedAt,
+            List<DhrFormTemplateVersionOption> versions) {
+    }
+
+    public record DhrFormTemplateVersionOption(
+            String versionId,
+            String version,
+            String status,
+            boolean referenceable) {
     }
 }

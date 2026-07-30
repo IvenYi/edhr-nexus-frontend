@@ -77,3 +77,15 @@ databaseChangeLog:
       file: db/changelog/0036-dhr-workspace-audit-columns.sql
   - include:
       file: db/changelog/0037-dhr-template-current-version-constraint.sql
+  - include:
+      file: db/changelog/0038-backfill-dhr-template-versions.sql
+  - include:
+      file: db/changelog/0039-dhr-template-version-description.sql
+  - include:
+      file: db/changelog/0040-dhr-template-item-directory-form-unique.sql
+  - include:
+      file: db/changelog/0041-template-version-uniqueness.sql
+  - include:
+      file: db/changelog/0042-dhr-template-item-display-name.sql
+  - include:
+      file: db/changelog/0043-dhr-template-version-metadata.sql
