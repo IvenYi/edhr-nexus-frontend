@@ -713,7 +713,9 @@ if (!canvasWorkspace.includes('plainOverflowWrap')) failures.push('CanvasSheetWo
 if (!canvasWorkspace.includes("hasMultilineValue ? 'pre-wrap'")) failures.push('CanvasSheetWorkspace.tsx: rendered multiline cells must preserve line breaks');
 if (!canvasWorkspace.includes('getSheetContentBottom')) failures.push('CanvasSheetWorkspace.tsx: page count must be based on actual sheet content bottom, not blank trailing rows');
 if (!canvasWorkspace.includes('paperPaginationBodyHeight')) failures.push('CanvasSheetWorkspace.tsx: page break markers must use actual content height for pagination');
+if (!canvasWorkspace.includes('const paperPaginationBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : Math.max(sheetContentBottom, 1);')) failures.push('CanvasSheetWorkspace.tsx: imported blank trailing rows must not create empty extra pages');
 if (canvasWorkspace.includes('const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperBodyHeight + paperFooterHeight + paperInsetBottom')) failures.push('CanvasSheetWorkspace.tsx: page count must not use full sheetHeight including blank trailing rows');
+if (canvasWorkspace.includes('Math.max(sheetContentBottom, sheetHeight, 1)')) failures.push('CanvasSheetWorkspace.tsx: sheet pagination must ignore blank trailing row height');
 if (!canvasWorkspace.includes('sheetPaperWidth')) failures.push('CanvasSheetWorkspace.tsx: missing centered paper size calculations');
 if (!canvasWorkspace.includes('data-sheet-paper')) failures.push('CanvasSheetWorkspace.tsx: missing explicit paper container marker');
 if (!canvasWorkspace.includes('data-sheet-column-active')) failures.push('CanvasSheetWorkspace.tsx: missing column highlight marker');
@@ -967,7 +969,8 @@ if (!canvasWorkspace.includes('data-page-break-marker="true"')) failures.push('C
 if (!canvasWorkspace.includes('data-page-break-layer="workspace"')) failures.push('CanvasSheetWorkspace.tsx: page break layer must span the whole workspace, including gray margins');
 if (!canvasWorkspace.includes('data-page-break-badge="workspace-margin"')) failures.push('CanvasSheetWorkspace.tsx: page break badge must sit in the gray workspace margin');
 if (!canvasWorkspace.includes('PAGE_BREAK_MARKER_Z_INDEX')) failures.push('CanvasSheetWorkspace.tsx: page break marker must sit above grid/content layers');
-if (!canvasWorkspace.includes('const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight + paperInsetBottom;')) failures.push('CanvasSheetWorkspace.tsx: page marker count must use actual content height for pagination');
+if (!canvasWorkspace.includes('const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight;')) failures.push('CanvasSheetWorkspace.tsx: page marker count must use physical paper overflow without adding the bottom margin twice');
+if (canvasWorkspace.includes('const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight + paperInsetBottom;')) failures.push('CanvasSheetWorkspace.tsx: bottom margin must not create an empty extra page when content is still inside the physical page');
 if (!canvasWorkspace.includes('const pageMarkerCount = Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx));')) failures.push('CanvasSheetWorkspace.tsx: page marker count must be based on continuous paper height in every canvas mode');
 if (!canvasWorkspace.includes('const sheetPaperHeight = pageMarkerCount * a4PaperHeightPx;')) failures.push('CanvasSheetWorkspace.tsx: sheet paper height must extend as continuous A4 page multiples');
 if (!canvasWorkspace.includes('const top = paperViewportGapTop + boundaryIndex * a4PaperHeightPx;')) failures.push('CanvasSheetWorkspace.tsx: page break marker must align from the full workspace canvas, not the inner paper content');
@@ -975,6 +978,12 @@ if ((canvasWorkspace.match(/renderPageBreakMarkers\(\)/g) ?? []).length < 2) fai
 if (!canvasWorkspace.includes('workspaceScrollRef')) failures.push('CanvasSheetWorkspace.tsx: missing scroll container ref for thumbnail anchor sync');
 if (!canvasWorkspace.includes('handleWorkspaceScroll')) failures.push('CanvasSheetWorkspace.tsx: missing canvas-to-thumbnail scroll sync handler');
 if (!canvasWorkspace.includes('setActivePagePreviewIndex')) failures.push('CanvasSheetWorkspace.tsx: scrolling the canvas must update active thumbnail page');
+if (!canvasWorkspace.includes('SHEET_ROW_RENDER_OVERSCAN_PX = 1440')) failures.push('CanvasSheetWorkspace.tsx: sheet virtualization must keep a larger row overscan buffer to avoid fast-scroll blanking');
+if (!canvasWorkspace.includes('workspaceScrollFrameRef')) failures.push('CanvasSheetWorkspace.tsx: scroll viewport updates must be coalesced per animation frame');
+if (!canvasWorkspace.includes('window.requestAnimationFrame')) failures.push('CanvasSheetWorkspace.tsx: scroll sync must use requestAnimationFrame instead of updating React state on every scroll event');
+if (!canvasWorkspace.includes('window.cancelAnimationFrame')) failures.push('CanvasSheetWorkspace.tsx: pending scroll animation frame must be cancelled on cleanup');
+if (!canvasWorkspace.includes('syncWorkspaceViewportFromScroll')) failures.push('CanvasSheetWorkspace.tsx: scroll state sync must be isolated so direct jumps and native scrolling share the same optimized path');
+if (!canvasWorkspace.includes('activePagePreviewIndexRef')) failures.push('CanvasSheetWorkspace.tsx: active thumbnail sync must avoid redundant store writes during scrolling');
 if (!canvasWorkspace.includes('pagePreviewScrollTarget')) failures.push('CanvasSheetWorkspace.tsx: canvas must listen for thumbnail scroll target requests');
 if (!canvasWorkspace.includes("behavior: 'auto'")) failures.push('CanvasSheetWorkspace.tsx: page thumbnail scroll must jump directly without smooth intermediate flashes');
 if (canvasWorkspace.includes("behavior: 'smooth'")) failures.push('CanvasSheetWorkspace.tsx: thumbnail clicks must not smooth-scroll through intermediate pages');
@@ -1013,6 +1022,7 @@ if (!pageThumbnails.includes('requestPagePreviewScroll')) failures.push('CanvasP
 if (!pageThumbnails.includes("behavior: 'auto'")) failures.push('CanvasPageThumbnails.tsx: active thumbnail must jump directly without smooth intermediate flashes');
 if (!pageThumbnails.includes('data-page-thumbnail-active')) failures.push('CanvasPageThumbnails.tsx: thumbnails must mark active preview pages');
 if (!pageThumbnails.includes('CanvasThumbnailPreview')) failures.push('CanvasPageThumbnails.tsx: thumbnails must render actual canvas preview content');
+if (!pageThumbnails.includes('memo(function CanvasThumbnailPreview')) failures.push('CanvasPageThumbnails.tsx: thumbnail previews must be memoized so canvas scrolling does not rerender every preview cell');
 if (!pageThumbnails.includes('page.cells')) failures.push('CanvasPageThumbnails.tsx: thumbnails must render imported cell content, not only a placeholder grid');
 if (!pageThumbnails.includes('page.mergedCells')) failures.push('CanvasPageThumbnails.tsx: thumbnails must reflect merged cells in preview content');
 if (!pageThumbnails.includes('page.images')) failures.push('CanvasPageThumbnails.tsx: thumbnails must reflect imported images in preview content');
@@ -1774,7 +1784,7 @@ if (!canvasWorkspace.includes('SHEET_ROW_RENDER_OVERSCAN_PX')) failures.push('Ca
 if (!canvasWorkspace.includes('visibleRowRange')) failures.push('CanvasSheetWorkspace.tsx: sheet rendering must compute a visible row range');
 if (!canvasWorkspace.includes('gridRow: `${row} / span ${spanRows}`')) failures.push('CanvasSheetWorkspace.tsx: virtualized sheet cells must preserve absolute grid row placement');
 if (!canvasWorkspace.includes('getCanvasNodeContentBottom')) failures.push('CanvasSheetWorkspace.tsx: page break height must include canvas node content bottom');
-if (!canvasWorkspace.includes('Math.max(sheetContentBottom, sheetHeight, 1)')) failures.push('CanvasSheetWorkspace.tsx: page break height must include empty rows extending the sheet height');
+if (!canvasWorkspace.includes('Math.max(sheetContentBottom, 1)')) failures.push('CanvasSheetWorkspace.tsx: sheet page break height must keep one page without counting blank trailing rows');
 if (!storeFile.includes('compLeft: layout.left') || !storeFile.includes('compTop: layout.top')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must use the target cell position');
 if (!storeFile.includes('MIN_CELL_FIELD_WIDTH') || !storeFile.includes('MIN_CELL_FIELD_HEIGHT')) failures.push('useTemplateDesignerStore.ts: cell-target field insertion must initialize minimum component width and height');
 if (!storeFile.includes('MIN_CELL_FIELD_HEIGHT = 24 + CELL_FIELD_INSET * 2')) failures.push('useTemplateDesignerStore.ts: cell-target field visible minimum height must be 24px');

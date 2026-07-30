@@ -1,6 +1,6 @@
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { Box, Button, Typography } from '@mui/material';
-import { useEffect, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import type { CanvasCellBorder, CanvasPage, CanvasSelectionRange, CanvasSheetCell } from '../../types';
 
@@ -112,7 +112,7 @@ function hasVisibleCell(cell?: CanvasSheetCell) {
   );
 }
 
-function CanvasThumbnailPreview({ page, previewIndex }: { page: CanvasPage; previewIndex: number }) {
+const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, previewIndex }: { page: CanvasPage; previewIndex: number }) {
   const paperWidth = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM) * MM_TO_PX);
   const paperHeight = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_WIDTH_MM : A4_PAPER_HEIGHT_MM) * MM_TO_PX);
   const thumbnailWidth = page.sheet.paperOrientation === 'landscape' ? 168 : 118;
@@ -285,7 +285,7 @@ function CanvasThumbnailPreview({ page, previewIndex }: { page: CanvasPage; prev
       </Box>
     </Box>
   );
-}
+});
 
 export default function CanvasPageThumbnails({ title = '分页缩略图', onClose }: { title?: string; onClose: () => void }) {
   const activeThumbnailRef = useRef<HTMLButtonElement | null>(null);

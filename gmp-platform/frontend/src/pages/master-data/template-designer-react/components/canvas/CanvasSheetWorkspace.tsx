@@ -1,5 +1,5 @@
 import type { DragEvent as ReactDragEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
@@ -44,7 +44,7 @@ const DEFAULT_SHEET_FONT_SIZE = 14;
 const DEFAULT_SHEET_LINE_HEIGHT = 1.35;
 const AUTO_FIT_EXTRA_WIDTH = 18;
 const AUTO_FIT_EXTRA_HEIGHT = 4;
-const SHEET_ROW_RENDER_OVERSCAN_PX = 720;
+const SHEET_ROW_RENDER_OVERSCAN_PX = 1440;
 const SPECIAL_WRAP_CELL_VALUE_PATTERN = /[□☐☑☒■▪●○◆◇★☆※√×]/;
 const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
 const FIELD_POINTER_HOVER_EVENT = 'template-designer-field-pointer-hover';
@@ -753,6 +753,7 @@ export default function CanvasSheetWorkspace() {
   ));
   const setPagePreviewCount = useTemplateDesignerStore((state) => state.setPagePreviewCount);
   const setActivePagePreviewIndex = useTemplateDesignerStore((state) => state.setActivePagePreviewIndex);
+  const activePagePreviewIndexes = useTemplateDesignerStore((state) => state.activePagePreviewIndexes);
   const pagePreviewScrollTarget = useTemplateDesignerStore((state) => state.pagePreviewScrollTarget);
   const clearPagePreviewScrollTarget = useTemplateDesignerStore((state) => state.clearPagePreviewScrollTarget);
 
@@ -774,6 +775,8 @@ export default function CanvasSheetWorkspace() {
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
   const workspaceScrollRef = useRef<HTMLDivElement | null>(null);
+  const workspaceScrollFrameRef = useRef<number | null>(null);
+  const activePagePreviewIndexRef = useRef(0);
   const sheetInteractionRef = useRef<HTMLDivElement | null>(null);
   const fieldNodeClipboardRef = useRef<CanvasNode | null>(null);
   const skipNextBlurCommitRef = useRef(false);
@@ -854,8 +857,8 @@ export default function CanvasSheetWorkspace() {
   const sheetPaperWidth = a4PaperWidthPx;
   const freeCanvasBodyHeight = Math.max(freeCanvasMeasuredHeight, 480);
   const sheetContentBottom = currentPage ? getSheetContentBottom(currentPage, rowOffsets) : 0;
-  const paperPaginationBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : Math.max(sheetContentBottom, sheetHeight, 1);
-  const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight + paperInsetBottom;
+  const paperPaginationBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : Math.max(sheetContentBottom, 1);
+  const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight;
   const pageMarkerCount = Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx));
   const sheetPaperHeight = pageMarkerCount * a4PaperHeightPx;
   const paperContentHeight = sheetPaperHeight - paperInsetTop - paperInsetBottom;
@@ -1552,19 +1555,34 @@ export default function CanvasSheetWorkspace() {
       startEditingCell(selectedCell.row, selectedCell.col);
     }
   };
-  const handleWorkspaceScroll = () => {
-    if (!currentPage) return;
+  const syncWorkspaceViewportFromScroll = useCallback(() => {
     const element = workspaceScrollRef.current;
     const scrollTop = element?.scrollTop ?? 0;
     const height = element?.clientHeight ?? 0;
-    const rawPreviewIndex = Math.floor(Math.max(0, scrollTop - paperViewportGapTop) / a4PaperHeightPx);
-    const previewIndex = Math.min(pageMarkerCount - 1, Math.max(0, rawPreviewIndex));
-    setActivePagePreviewIndex(currentPage.id, previewIndex);
+    const currentPageId = currentPage?.id;
+
+    if (currentPageId) {
+      const rawPreviewIndex = Math.floor(Math.max(0, scrollTop - paperViewportGapTop) / a4PaperHeightPx);
+      const previewIndex = Math.min(pageMarkerCount - 1, Math.max(0, rawPreviewIndex));
+      if (activePagePreviewIndexRef.current !== previewIndex) {
+        activePagePreviewIndexRef.current = previewIndex;
+        setActivePagePreviewIndex(currentPageId, previewIndex);
+      }
+    }
+
     setWorkspaceViewport((current) => (
       current.scrollTop === scrollTop && current.height === height
         ? current
         : { scrollTop, height }
     ));
+  }, [a4PaperHeightPx, currentPage?.id, pageMarkerCount, paperViewportGapTop, setActivePagePreviewIndex]);
+
+  const handleWorkspaceScroll = () => {
+    if (workspaceScrollFrameRef.current !== null) return;
+    workspaceScrollFrameRef.current = window.requestAnimationFrame(() => {
+      workspaceScrollFrameRef.current = null;
+      syncWorkspaceViewportFromScroll();
+    });
   };
   const paperSettingItems = [
     { key: 'paper-mode', label: '画布模式' },
@@ -2080,19 +2098,23 @@ export default function CanvasSheetWorkspace() {
   }, [currentPage?.id, currentPage?.nodes, isFreeCanvas]);
 
   useEffect(() => {
+    activePagePreviewIndexRef.current = currentPage ? activePagePreviewIndexes[currentPage.id] ?? 0 : 0;
+  }, [activePagePreviewIndexes, currentPage?.id]);
+
+  useEffect(() => () => {
+    if (workspaceScrollFrameRef.current !== null) {
+      window.cancelAnimationFrame(workspaceScrollFrameRef.current);
+      workspaceScrollFrameRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
     if (!currentPage) {
       return;
     }
-    const element = workspaceScrollRef.current;
-    if (element) {
-      setWorkspaceViewport((current) => {
-        const next = { scrollTop: element.scrollTop, height: element.clientHeight };
-        return current.scrollTop === next.scrollTop && current.height === next.height ? current : next;
-      });
-    }
     setPagePreviewCount(currentPage.id, pageMarkerCount);
-    handleWorkspaceScroll();
-  }, [currentPage, pageMarkerCount, setPagePreviewCount]);
+    syncWorkspaceViewportFromScroll();
+  }, [currentPage, pageMarkerCount, setPagePreviewCount, syncWorkspaceViewportFromScroll]);
 
   useEffect(() => {
     if (!currentPage || pagePreviewScrollTarget?.pageId !== currentPage.id) {
@@ -2105,7 +2127,9 @@ export default function CanvasSheetWorkspace() {
       top: paperViewportGapTop + previewIndex * a4PaperHeightPx,
       behavior: 'auto',
     });
+    activePagePreviewIndexRef.current = previewIndex;
     setActivePagePreviewIndex(currentPage.id, previewIndex);
+    syncWorkspaceViewportFromScroll();
     clearPagePreviewScrollTarget(requestId);
   }, [
     a4PaperHeightPx,
@@ -2115,6 +2139,7 @@ export default function CanvasSheetWorkspace() {
     pagePreviewScrollTarget,
     paperViewportGapTop,
     setActivePagePreviewIndex,
+    syncWorkspaceViewportFromScroll,
   ]);
 
   useEffect(() => {
