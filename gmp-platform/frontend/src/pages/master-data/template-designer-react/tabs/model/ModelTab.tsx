@@ -39,6 +39,7 @@ import FieldTypeIcon from '../../components/FieldTypeIcon';
 import type { FieldType, ModelField } from '../../types';
 import { fieldRegistry, getFieldTypeDefinition } from '../../registry/fieldRegistry';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
+import { useSnackbar } from '@/components/SnackbarProvider';
 
 interface FieldReportRow {
   id: string;
@@ -249,6 +250,12 @@ function createUniqueFieldCode(fields: ModelField[], name: string, type: FieldTy
   return `${base}_${index}`;
 }
 
+function hasDuplicateFieldName(fields: ModelField[], name: string, excludedFieldId: string | null) {
+  const targetName = name.trim();
+  if (!targetName) return false;
+  return fields.some((field) => field.id !== excludedFieldId && field.name.trim() === targetName);
+}
+
 function createSubTableField(type: FieldType, name: string, sortOrder: number, fields: ModelField[]): ModelField {
   const definition = getFieldTypeDefinition(type);
   return {
@@ -349,6 +356,7 @@ export default function ModelTab({
   onFieldConfirmPersist,
   saving = false,
 }: ModelTabProps) {
+  const { showMessage } = useSnackbar();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const reportTableContainerRef = useRef<HTMLDivElement | null>(null);
   const [keyword, setKeyword] = useState('');
@@ -390,6 +398,10 @@ export default function ModelTab({
   const currentFieldRegistry = useMemo(
     () => activeSubTableDesignField ? fieldRegistry.filter((fieldType) => fieldType.type !== 'subTable') : fieldRegistry,
     [activeSubTableDesignField],
+  );
+  const isFieldNameDuplicate = useMemo(
+    () => hasDuplicateFieldName(currentFields, newFieldName, editingFieldId),
+    [currentFields, editingFieldId, newFieldName],
   );
   const reportColumnScopeKey = getReportColumnScopeKey(activeSubTableDesignField?.id ?? null);
   const persistedReportColumnWidths = document?.model.fieldReportColumnWidths?.[reportColumnScopeKey] ?? {};
@@ -551,6 +563,10 @@ export default function ModelTab({
   const handleSaveField = async (options?: { continueAdding?: boolean }) => {
     const name = newFieldName.trim();
     if (!name) return;
+    if (isFieldNameDuplicate) {
+      showMessage('字段名称不允许重复', 'error');
+      return;
+    }
 
     const effectiveFieldType: FieldType = activeSubTableDesignField && newFieldType === 'subTable' ? 'text' : newFieldType;
     const shouldPersistCreatedField = !editingFieldId && Boolean(onFieldConfirmPersist);
@@ -1185,6 +1201,8 @@ export default function ModelTab({
               label="字段名称"
               value={newFieldName}
               onChange={(event) => setNewFieldName(event.target.value)}
+              error={isFieldNameDuplicate}
+              helperText={isFieldNameDuplicate ? '字段名称不允许重复' : undefined}
               sx={compactTextFieldSx}
               fullWidth
             />
@@ -1218,11 +1236,11 @@ export default function ModelTab({
         </DialogContent>
         <DialogActions sx={{ px: 3, pt: 0.5, pb: 1.5 }}>
           <Button size="small" onClick={() => setCreateDialogOpen(false)}>取消</Button>
-          <Button size="small" variant="contained" disabled={!newFieldName.trim() || saving} onClick={() => void handleSaveField()}>
+          <Button size="small" variant="contained" disabled={!newFieldName.trim() || isFieldNameDuplicate || saving} onClick={() => void handleSaveField()}>
             {editingFieldId ? '保存修改' : '确认'}
           </Button>
           {!editingFieldId ? (
-            <Button size="small" variant="outlined" disabled={!newFieldName.trim() || saving} onClick={() => void handleSaveField({ continueAdding: true })}>
+            <Button size="small" variant="outlined" disabled={!newFieldName.trim() || isFieldNameDuplicate || saving} onClick={() => void handleSaveField({ continueAdding: true })}>
               确认并继续
             </Button>
           ) : null}

@@ -31,13 +31,11 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
         open={open}
         autoHideDuration={3000}
         onClose={() => setOpen(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <Alert
           onClose={() => setOpen(false)}
           severity={severity}
-          variant="filled"
-          sx={{ minWidth: 300, borderRadius: 2 }}
         >
           {message}
         </Alert>

@@ -50,6 +50,65 @@ const FIELD_POINTER_DROP_EVENT = 'template-designer-field-pointer-drop';
 const FIELD_POINTER_HOVER_EVENT = 'template-designer-field-pointer-hover';
 const quickAddFieldTypeOptions = fieldRegistry.filter((field) => field.type !== 'subTable');
 
+function normalizeQuickAddSubTableFields(columns: unknown): ModelField[] {
+  if (typeof columns === 'string') {
+    return columns
+      .split(/[\n,，]/)
+      .map<ModelField | null>((name, index) => {
+        const trimmedName = name.trim();
+        if (!trimmedName) return null;
+        return {
+          id: `sub-field-${index + 1}`,
+          code: `sub_field_${index + 1}`,
+          name: trimmedName,
+          type: 'text',
+          sortOrder: index + 1,
+          status: 'enabled',
+          description: '',
+          typeConfig: {},
+        };
+      })
+      .filter((field): field is ModelField => Boolean(field));
+  }
+  if (!Array.isArray(columns)) return [];
+  return columns
+    .map<ModelField | null>((column, index) => {
+      if (!column || typeof column !== 'object') return null;
+      const source = column as Partial<ModelField>;
+      const name = typeof source.name === 'string' ? source.name.trim() : '';
+      if (!name) return null;
+      const fieldType: FieldType = source.type && source.type !== 'subTable' ? source.type : 'text';
+      return {
+        id: typeof source.id === 'string' && source.id ? source.id : `sub-field-${index + 1}`,
+        code: typeof source.code === 'string' && source.code ? source.code : `sub_field_${index + 1}`,
+        name,
+        type: fieldType,
+        sortOrder: typeof source.sortOrder === 'number' ? source.sortOrder : index + 1,
+        status: source.status === 'disabled' ? 'disabled' : 'enabled',
+        description: typeof source.description === 'string' ? source.description : '',
+        typeConfig: typeof source.typeConfig === 'object' && source.typeConfig ? source.typeConfig : {},
+      };
+    })
+    .filter((field): field is ModelField => Boolean(field))
+    .filter((field) => field.type !== 'subTable');
+}
+
+function resolveQuickAddUniqueFieldName(usedNames: Set<string>, preferredName: string) {
+  const baseName = preferredName.trim();
+  if (!usedNames.has(baseName)) {
+    usedNames.add(baseName);
+    return baseName;
+  }
+
+  let index = 1;
+  while (usedNames.has(`${baseName}_${index}`)) {
+    index += 1;
+  }
+  const uniqueName = `${baseName}_${index}`;
+  usedNames.add(uniqueName);
+  return uniqueName;
+}
+
 type DragState =
   | { type: 'cell'; startRow: number; startCol: number; startRange: CanvasSelectionRange }
   | { type: 'column'; startCol: number }
@@ -124,6 +183,7 @@ interface QuickAddFieldDraft {
   id: string;
   row: number;
   col: number;
+  sourceName: string;
   name: string;
   type: FieldType;
   description: string;
@@ -791,6 +851,22 @@ export default function CanvasSheetWorkspace() {
       label: `子表-${field.name || field.code || '未命名子表'}`,
     })),
   ];
+  const getQuickAddTargetFields = (target: QuickAddFieldTarget, subTableId: string) => {
+    if (target === 'main') return designerDocument?.model.fields ?? [];
+    const subTableField = designerDocument?.model.fields.find((field) => field.id === subTableId && field.type === 'subTable');
+    return normalizeQuickAddSubTableFields(subTableField?.typeConfig.columns);
+  };
+  const resolveQuickAddFieldDraftNames = (drafts: QuickAddFieldDraft[], target: QuickAddFieldTarget, subTableId: string) => {
+    const usedNames = new Set(getQuickAddTargetFields(target, subTableId).map((field) => field.name.trim()).filter(Boolean));
+    return drafts.map((draft) => {
+      const sourceName = draft.sourceName.trim() || draft.name.trim();
+      if (!sourceName) return draft;
+      return {
+        ...draft,
+        name: resolveQuickAddUniqueFieldName(usedNames, sourceName),
+      };
+    });
+  };
   const columns = useMemo(
     () => Array.from({ length: currentPage?.sheet.columnCount ?? 0 }, (_, index) => index + 1),
     [currentPage?.sheet.columnCount],
@@ -2312,6 +2388,7 @@ export default function CanvasSheetWorkspace() {
           id: `${cell.row}:${cell.col}`,
           row: cell.row,
           col: cell.col,
+          sourceName: name,
           name,
           type: inferQuickAddFieldType(name),
           description: '',
@@ -2345,7 +2422,7 @@ export default function CanvasSheetWorkspace() {
     }
 
     const defaultTarget = getDefaultQuickAddTarget(drafts);
-    setQuickAddFieldDrafts(drafts);
+    setQuickAddFieldDrafts(resolveQuickAddFieldDraftNames(drafts, defaultTarget.target, defaultTarget.subTableId));
     setQuickAddFieldTarget(defaultTarget.target);
     setQuickAddFieldSubTableId(defaultTarget.subTableId);
     setQuickAddFieldDialogOpen(true);
@@ -2358,16 +2435,19 @@ export default function CanvasSheetWorkspace() {
   const handleQuickAddTargetChange = (value: string) => {
     if (value === 'main') {
       setQuickAddFieldTarget('main');
+      setQuickAddFieldDrafts((drafts) => resolveQuickAddFieldDraftNames(drafts, 'main', quickAddFieldSubTableId));
       return;
     }
     if (value.startsWith('subTable:')) {
+      const subTableId = value.slice('subTable:'.length);
       setQuickAddFieldTarget('subTable');
-      setQuickAddFieldSubTableId(value.slice('subTable:'.length));
+      setQuickAddFieldSubTableId(subTableId);
+      setQuickAddFieldDrafts((drafts) => resolveQuickAddFieldDraftNames(drafts, 'subTable', subTableId));
     }
   };
   const updateQuickAddFieldDraft = (id: string, patch: Partial<QuickAddFieldDraft>) => {
     setQuickAddFieldDrafts((drafts) => drafts.map((draft) => (
-      draft.id === id ? { ...draft, ...patch } : draft
+      draft.id === id ? { ...draft, ...patch, sourceName: patch.name ?? draft.sourceName } : draft
     )));
   };
   const removeQuickAddFieldDraft = (id: string) => {

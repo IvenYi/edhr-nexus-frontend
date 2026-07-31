@@ -16,7 +16,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Alert,
   Autocomplete,
   Box,
   Button,
@@ -34,7 +33,6 @@ import {
   Pagination,
   Popover,
   Select,
-  Snackbar,
   Stack,
   Tab,
   Table,
@@ -95,6 +93,7 @@ import {
   updateTemplateModelingCategory,
 } from '@/api/template-modeling';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
+import { useSnackbar } from '@/components/SnackbarProvider';
 import type { PageResult } from '@/types/common';
 import DhrTemplateWorkspaceDialog from './DhrTemplateWorkspaceDialog';
 
@@ -120,7 +119,6 @@ const TEMPLATE_FORM_STATUS_OPTIONS = TEMPLATE_STATUS_OPTIONS.filter((option) => 
 type TemplateColumnId = 'name' | 'code' | 'offlineVersion' | 'currentVersion' | 'version' | 'evidenceCount' | 'categoryName' | 'effectiveFrom' | 'effectiveTo' | 'description' | 'status' | 'createdBy' | 'createdAt' | 'updatedBy' | 'updatedAt' | 'actions';
 type ConfigurableTemplateColumnId = Exclude<TemplateColumnId, 'actions'>;
 type TemplateColumnSettingsTarget = 'main' | 'version';
-type SnackbarSeverity = 'success' | 'error' | 'info';
 
 interface TemplateColumn {
   id: TemplateColumnId;
@@ -729,6 +727,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const versionColumns = pageKey === 'formTemplates' ? templateVersionColumns : dhrTemplateVersionColumns;
   const versionAuditEntityType = pageKey === 'formTemplates' ? 'FORM_TEMPLATE_VERSION' : 'DHR_TEMPLATE_VERSION';
   const queryClient = useQueryClient();
+  const { showMessage } = useSnackbar();
   const [nameKeyword, setNameKeyword] = useState('');
   const [codeKeyword, setCodeKeyword] = useState('');
   const [status, setStatus] = useState('ALL');
@@ -765,7 +764,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [auditSnapshot, setAuditSnapshot] = useState<AuditSnapshotDialogState | null>(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
   const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: SnackbarSeverity }>({ open: false, message: '', severity: 'success' });
   const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
   const [dhrWorkspaceRow, setDhrWorkspaceRow] = useState<DhrWorkspaceState | null>(null);
   const [dhrVersionDialog, setDhrVersionDialog] = useState<DhrVersionDialogState | null>(null);
@@ -947,7 +945,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       return { response, versionResponse: null };
     },
     onSuccess: async () => {
-      setSnackbar({ open: true, message: creatingVersionFrom ? '子版本新增成功' : editingRow ? '保存成功' : '新增成功', severity: 'success' });
+      showMessage(creatingVersionFrom ? '子版本新增成功' : editingRow ? '保存成功' : '新增成功', 'success');
       setDialogOpen(false);
       setEditingRow(null);
       setCreatingVersionFrom(null);
@@ -955,18 +953,18 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '保存失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '保存失败', 'error'),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (row: TemplateModelingRecord) => config.deleteAction(row.id),
     onSuccess: async () => {
       setDeleteRowTarget(null);
-      setSnackbar({ open: true, message: '删除成功', severity: 'success' });
+      showMessage('删除成功', 'success');
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '删除失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '删除失败', 'error'),
   });
 
   const deleteVersionMutation = useMutation({
@@ -975,12 +973,12 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       : deleteFormTemplateVersion(target.row.id, target.version.id),
     onSuccess: async () => {
       setDeleteVersionTarget(null);
-      setSnackbar({ open: true, message: '版本删除成功', severity: 'success' });
+      showMessage('版本删除成功', 'success');
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '版本删除失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '版本删除失败', 'error'),
   });
 
   const saveDhrVersionMutation = useMutation({
@@ -998,7 +996,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         : createDhrTemplateVersion(target.row.id, { ...body, sourceVersionId: target.sourceVersion?.id ?? null });
     },
     onSuccess: async (_, target) => {
-      setSnackbar({ open: true, message: target.mode === 'edit' ? '版本保存成功' : target.mode === 'copy' ? '版本复制成功' : '子版本新增成功', severity: 'success' });
+      showMessage(target.mode === 'edit' ? '版本保存成功' : target.mode === 'copy' ? '版本复制成功' : '子版本新增成功', 'success');
       setDhrVersionDialog(null);
       setDhrVersionLabel('');
       setDhrVersionCode('');
@@ -1009,7 +1007,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '保存版本失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '保存版本失败', 'error'),
   });
 
   const saveCategoryMutation = useMutation({
@@ -1020,22 +1018,22 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     },
     onSuccess: async () => {
       setCategoryDialog({ open: false, target: null, name: '' });
-      setSnackbar({ open: true, message: '分类保存成功', severity: 'success' });
+      showMessage('分类保存成功', 'success');
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '分类保存失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '分类保存失败', 'error'),
   });
 
   const deleteCategoryMutation = useMutation({
     mutationFn: (target: TemplateCategoryRecord) => deleteTemplateModelingCategory(pageKey, target.id),
     onSuccess: async () => {
       setDeleteCategoryTarget(null);
-      setSnackbar({ open: true, message: '分类删除成功', severity: 'success' });
+      showMessage('分类删除成功', 'success');
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '分类删除失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '分类删除失败', 'error'),
   });
 
   const reorderCategoryMutation = useMutation({
@@ -1043,7 +1041,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '分类排序失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '分类排序失败', 'error'),
   });
 
   const openCreateDialog = () => {
@@ -1093,31 +1091,31 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   const handleSubmit = () => {
     if (!creatingVersionFrom && !form.name.trim()) {
-      setSnackbar({ open: true, message: '请输入模板名称', severity: 'error' });
+      showMessage('请输入模板名称', 'error');
       return;
     }
     if (pageKey === 'formTemplates' && !creatingVersionFrom && !form.code.trim()) {
-      setSnackbar({ open: true, message: '请输入模板编码', severity: 'error' });
+      showMessage('请输入模板编码', 'error');
       return;
     }
     const isCreatingDhrTemplate = pageKey === 'batchRecordTemplates' && !editingRow;
     const shouldSubmitVersionFields = !editingRow;
     if (shouldSubmitVersionFields && !form.version.trim()) {
-      setSnackbar({ open: true, message: '请输入模板版本', severity: 'error' });
+      showMessage('请输入模板版本', 'error');
       return;
     }
     if (creatingVersionFrom && getTemplateVersionRows(creatingVersionFrom).some((version) => version.version.trim().toLowerCase() === form.version.trim().toLowerCase())) {
-      setSnackbar({ open: true, message: '模板版本已存在', severity: 'error' });
+      showMessage('模板版本已存在', 'error');
       return;
     }
     const effectiveFrom = form.effectiveFrom || effectiveFromInputRef.current?.value || '';
     const effectiveTo = form.effectiveTo || effectiveToInputRef.current?.value || '';
     if (isCreatingDhrTemplate && !effectiveFrom) {
-      setSnackbar({ open: true, message: '请选择生效时间', severity: 'error' });
+      showMessage('请选择生效时间', 'error');
       return;
     }
     if ((shouldSubmitVersionFields || isCreatingDhrTemplate) && !validateEffectiveDateRange(effectiveFrom, effectiveTo)) {
-      setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
+      showMessage('失效时间不能早于生效时间', 'error');
       return;
     }
     saveMutation.mutate();
@@ -1200,19 +1198,19 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const submitDhrVersionDialog = () => {
     if (!dhrVersionDialog) return;
     if (!dhrVersionLabel.trim()) {
-      setSnackbar({ open: true, message: '请输入版本号', severity: 'error' });
+      showMessage('请输入版本号', 'error');
       return;
     }
     if (getTemplateVersionRows(dhrVersionDialog.row).some((version) => version.id !== dhrVersionDialog.targetVersion?.id && version.version.trim().toLowerCase() === dhrVersionLabel.trim().toLowerCase())) {
-      setSnackbar({ open: true, message: '版本号已存在', severity: 'error' });
+      showMessage('版本号已存在', 'error');
       return;
     }
     if (!dhrVersionEffectiveFrom) {
-      setSnackbar({ open: true, message: '请选择生效时间', severity: 'error' });
+      showMessage('请选择生效时间', 'error');
       return;
     }
     if (!validateEffectiveDateRange(dhrVersionEffectiveFrom, dhrVersionEffectiveTo)) {
-      setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
+      showMessage('失效时间不能早于生效时间', 'error');
       return;
     }
     saveDhrVersionMutation.mutate({
@@ -1272,11 +1270,11 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       return saveDesignerPayload(targetRow.id, targetVersion.id, payload);
     },
     onSuccess: async () => {
-      setSnackbar({ open: true, message: '字段已保存', severity: 'success' });
+      showMessage('字段已保存', 'success');
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '字段保存失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '字段保存失败', 'error'),
   });
 
   const saveDesignerMutation = useMutation({
@@ -1289,11 +1287,11 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       return saveDesignerPayload(targetRow.id, targetVersion.id, payload);
     },
     onSuccess: async () => {
-      setSnackbar({ open: true, message: '设计已保存', severity: 'success' });
+      showMessage('设计已保存', 'success');
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },
-    onError: (error: unknown) => setSnackbar({ open: true, message: error instanceof Error ? error.message : '设计保存失败', severity: 'error' }),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '设计保存失败', 'error'),
   });
 
   const renderTemplateCategoryPanel = () => (
@@ -2264,7 +2262,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           )}
         </Box>
       </Drawer>
-
       <Dialog open={auditSnapshot !== null} onClose={() => setAuditSnapshot(null)} fullWidth maxWidth="md" PaperProps={{ sx: { height: 'min(72vh, 760px)' } }}>
         <DialogTitle>审计快照 · {auditSnapshot?.title}</DialogTitle>
         <DialogContent dividers sx={{ minHeight: 0, overflow: 'auto', bgcolor: '#f8fafc' }}>
@@ -2274,15 +2271,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogContent>
         <DialogActions><Button onClick={() => setAuditSnapshot(null)}>关闭</Button></DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        onClose={() => setSnackbar((current) => ({ ...current, open: false }))}
-      >
-        <Alert severity={snackbar.severity} onClose={() => setSnackbar((current) => ({ ...current, open: false }))}>{snackbar.message}</Alert>
-      </Snackbar>
     </Box>
   );
 }

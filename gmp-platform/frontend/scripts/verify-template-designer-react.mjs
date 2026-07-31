@@ -243,6 +243,7 @@ const importGridUtils = read('../src/pages/master-data/template-designer-react/u
 const excelImportUtils = read('../src/pages/master-data/template-designer-react/utils/importExcel.ts');
 const wordImportUtils = read('../src/pages/master-data/template-designer-react/utils/importWord.ts');
 const reactHostTypes = read('../src/pages/master-data/template-designer-react/types/host.ts');
+const snackbarProvider = read('../src/components/SnackbarProvider.tsx');
 
 const commitEditingCellBlock = canvasWorkspace.match(/const commitEditingCell = \([\s\S]*?const cancelEditingCell/)?.[0] ?? '';
 const sheetCellEditorBlock = canvasWorkspace.match(/<TextField\s+data-sheet-cell-editor="true"[\s\S]*?\/>/)?.[0] ?? '';
@@ -317,6 +318,8 @@ if (!templateModelingPage.includes('autoSaveDesignerMutation')) failures.push('T
 if (!autoSaveDesignerMutationBlock.includes('saveDesignerPayload')) failures.push('TemplateModelingPage.tsx: React designer auto-save must reuse the same persistence API payload path');
 if (autoSaveDesignerMutationBlock.includes('setReactDesignerState')) failures.push('TemplateModelingPage.tsx: React designer field auto-save must not close the designer');
 if (!templateModelingPage.includes('onAutoSave={(payload) => autoSaveDesignerMutation.mutateAsync(payload)}')) failures.push('TemplateModelingPage.tsx: React designer dialog must receive the field auto-save handler');
+if (!templateModelingPage.includes("import { useSnackbar } from '@/components/SnackbarProvider'")) failures.push('TemplateModelingPage.tsx: template modeling messages must reuse the global snackbar');
+if (templateModelingPage.includes('<Snackbar') || templateModelingPage.includes('setSnackbar')) failures.push('TemplateModelingPage.tsx: template modeling page must not keep a local snackbar implementation');
 if (!viteConfig.includes('manualChunks')) failures.push('vite.config.ts: missing manualChunks split for large production chunks');
 if (!viteConfig.includes('vendor-template-import')) failures.push('vite.config.ts: template import dependencies must be split out of page chunks');
 if (!viteConfig.includes('chunkSizeWarningLimit: 1000')) failures.push('vite.config.ts: chunk size warning limit must account for the lazy-loaded Excel parser chunk');
@@ -492,6 +495,9 @@ if (!modelTab.includes('确认并继续')) failures.push('ModelTab.tsx: add-fiel
 if (!modelTab.includes('continueAdding?: boolean')) failures.push('ModelTab.tsx: save field handler must support keeping the dialog open after adding');
 if (!modelTab.includes('options?.continueAdding')) failures.push('ModelTab.tsx: confirm-and-continue must be controlled by the save handler option');
 if (!modelTab.includes('handleSaveField({ continueAdding: true })')) failures.push('ModelTab.tsx: confirm-and-continue button must call save with continueAdding');
+if (!modelTab.includes('isFieldNameDuplicate')) failures.push('ModelTab.tsx: manual add/edit must detect duplicate field names');
+if (!modelTab.includes('字段名称不允许重复')) failures.push('ModelTab.tsx: duplicate field names must show an explicit validation message');
+if (!modelTab.includes('disabled={!newFieldName.trim() || isFieldNameDuplicate || saving}')) failures.push('ModelTab.tsx: duplicate manual field names must disable submit actions');
 if (!modelTab.includes('data-field-create-dialog="true"')) failures.push('ModelTab.tsx: add-field flow must use a dialog instead of inline form controls');
 if (!modelTab.includes('DialogTitle')) failures.push('ModelTab.tsx: add-field dialog must have a clear title');
 if (!modelTab.includes("'& .MuiOutlinedInput-input'")) failures.push('ModelTab.tsx: compact text fields must set balanced input padding');
@@ -739,6 +745,9 @@ if (!canvasWorkspace.includes('{showSheetRuler ? (')) failures.push('CanvasSheet
 if (!canvasWorkspace.includes('data-sheet-select-all-corner="true"')) failures.push('CanvasSheetWorkspace.tsx: sheet-mode select-all corner must expose a QA marker');
 if (!canvasWorkspace.includes('zIndex: PAPER_RULER_Z_INDEX + 2')) failures.push('CanvasSheetWorkspace.tsx: sheet-mode top ruler must sit above the scrolling row ruler');
 if (!canvasWorkspace.includes('zIndex: PAPER_RULER_Z_INDEX + 3')) failures.push('CanvasSheetWorkspace.tsx: sheet-mode select-all corner must sit above all ruler labels');
+if (!snackbarProvider.includes("anchorOrigin={{ vertical: 'top', horizontal: 'right' }}")) failures.push('SnackbarProvider.tsx: global messages must follow the UI standard top-right snackbar position');
+if (snackbarProvider.includes('variant="filled"')) failures.push('SnackbarProvider.tsx: global messages must use MUI Alert default appearance, not filled variant');
+if (snackbarProvider.includes('snackbarAccentColor') || snackbarProvider.includes("'&::before'") || snackbarProvider.includes('boxShadow')) failures.push('SnackbarProvider.tsx: global messages must not add custom decorative snackbar styling beyond the standard MUI Alert appearance');
 if (!canvasWorkspace.includes('onContextMenu')) failures.push('CanvasSheetWorkspace.tsx: missing context menu support');
 if (!canvasWorkspace.includes('openColumnContextMenu')) failures.push('CanvasSheetWorkspace.tsx: column header right-click must preserve existing multi-column selection');
 if (!canvasWorkspace.includes('openRowContextMenu')) failures.push('CanvasSheetWorkspace.tsx: row header right-click must preserve existing multi-row selection');
@@ -807,10 +816,17 @@ if (!canvasWorkspace.includes('mergedRange.t !== row || mergedRange.l !== col'))
 if (!canvasWorkspace.includes('borderCollapse: \'collapse\'')) failures.push('CanvasSheetWorkspace.tsx: quick field add table must render visible cell borders');
 if (!canvasWorkspace.includes('height: 34')) failures.push('CanvasSheetWorkspace.tsx: quick field add table header must use compact height');
 if (!canvasWorkspace.includes('quickAddMainTargetLabel') || !canvasWorkspace.includes('quickAddTargetOptions')) failures.push('CanvasSheetWorkspace.tsx: quick field add target must explain main table destination');
+if (!canvasWorkspace.includes('sourceName: name')) failures.push('CanvasSheetWorkspace.tsx: quick add dialog drafts must retain the source cell name for visible duplicate resolution');
+if (!canvasWorkspace.includes('resolveQuickAddFieldDraftNames(drafts, defaultTarget.target, defaultTarget.subTableId)')) failures.push('CanvasSheetWorkspace.tsx: quick add dialog must show de-duplicated names before confirmation');
+if (!canvasWorkspace.includes('resolveQuickAddUniqueFieldName(usedNames, sourceName)')) failures.push('CanvasSheetWorkspace.tsx: quick add dialog must apply 字段名称_索引 naming to visible draft names');
+if (!canvasWorkspace.includes('normalizeQuickAddSubTableFields(subTableField?.typeConfig.columns)')) failures.push('CanvasSheetWorkspace.tsx: quick add dialog must de-duplicate against existing sub-table fields for the selected target');
 if (!canvasWorkspace.includes('addFields(')) failures.push('CanvasSheetWorkspace.tsx: quick field add must batch add fields to field management');
 if (!canvasWorkspace.includes('addSubTableFields(')) failures.push('CanvasSheetWorkspace.tsx: quick field add must batch add fields to sub-tables');
 if (!storeFile.includes('addFields: (fields)')) failures.push('useTemplateDesignerStore.ts: store must support batch adding main fields');
 if (!storeFile.includes('addSubTableFields: (subTableFieldId, fields)')) failures.push('useTemplateDesignerStore.ts: store must support batch adding sub-table fields');
+if (!storeFile.includes('function createUniqueFieldName')) failures.push('useTemplateDesignerStore.ts: quick add must generate unique field names when labels already exist');
+if (!storeFile.includes('createUniqueFieldName(fields, preferredName)')) failures.push('useTemplateDesignerStore.ts: quick add model fields must de-duplicate against existing target fields');
+if (!storeFile.includes('`${baseName}_${index}`')) failures.push('useTemplateDesignerStore.ts: quick add duplicate field names must use 字段名称_索引 naming');
 if (!canvasWorkspace.includes('availableSubTableFields')) failures.push('CanvasSheetWorkspace.tsx: context menu must derive unused sub-table fields for selected ranges');
 if (!canvasWorkspace.includes("field.type === 'subTable'")) failures.push('CanvasSheetWorkspace.tsx: sub-table context action must only use subTable fields');
 if (!canvasWorkspace.includes('getAvailableFieldsForCurrentVersion()')) failures.push('CanvasSheetWorkspace.tsx: sub-table context action must exclude fields already consumed on the canvas');

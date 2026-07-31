@@ -65,6 +65,18 @@ function createUniqueFieldCode(fields: ModelField[], name: string, type: FieldTy
   return `${base}_${index}`;
 }
 
+function createUniqueFieldName(fields: ModelField[], preferredName: string) {
+  const baseName = preferredName.trim();
+  const usedNames = new Set(fields.map((field) => field.name.trim()).filter(Boolean));
+  if (!usedNames.has(baseName)) return baseName;
+
+  let index = 1;
+  while (usedNames.has(`${baseName}_${index}`)) {
+    index += 1;
+  }
+  return `${baseName}_${index}`;
+}
+
 function normalizeModelFieldColumns(columns: unknown): ModelField[] {
   if (typeof columns === 'string') {
     return columns
@@ -115,7 +127,8 @@ function normalizeModelFieldColumns(columns: unknown): ModelField[] {
 function createModelFieldFromInput(input: CreateFieldInput, sortOrder: number, fields: ModelField[], idPrefix = 'field') {
   const effectiveType = input.type === 'subTable' ? 'text' : input.type;
   const definition = getFieldTypeDefinition(effectiveType);
-  const name = input.name.trim() || definition.label;
+  const preferredName = input.name.trim() || definition.label;
+  const name = createUniqueFieldName(fields, preferredName);
   return {
     ...definition.defaultField(name, sortOrder),
     id: createId(idPrefix),
