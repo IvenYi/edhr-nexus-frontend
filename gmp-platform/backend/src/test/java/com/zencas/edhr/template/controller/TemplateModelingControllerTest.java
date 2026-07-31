@@ -507,6 +507,9 @@ class TemplateModelingControllerTest {
         assertThat(response.getData().versions()).hasSize(1);
         ArgumentCaptor<DhrTemplateVersion> versionCaptor = ArgumentCaptor.forClass(DhrTemplateVersion.class);
         verify(dhrTemplateVersionRepository).save(versionCaptor.capture());
+        ArgumentCaptor<DhrTemplate> templateCaptor = ArgumentCaptor.forClass(DhrTemplate.class);
+        verify(dhrTemplateRepository).save(templateCaptor.capture());
+        assertThat(templateCaptor.getValue().getCode()).isNull();
         assertThat(versionCaptor.getValue().getDhrTemplateId()).isEqualTo(301L);
         assertThat(versionCaptor.getValue().getVersionNumber()).isEqualTo(1);
         assertThat(versionCaptor.getValue().getVersionLabel()).isEqualTo("V1.0");

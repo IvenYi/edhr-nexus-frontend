@@ -22,6 +22,20 @@ class DatabaseChangelogTest {
         assertThat(normalizedMigration).contains("UPDATE signature SET created_at = signed_at WHERE created_at IS NULL");
     }
 
+    @Test
+    void dhrVersionMetadataMigrationMovesTheBusinessCodeFromParentToVersion() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0043-dhr-template-version-metadata.sql");
+        String normalizedMigration = migration.replaceAll("\\s+", " ");
+
+        assertThat(master).contains("0043-dhr-template-version-metadata.sql");
+        assertThat(normalizedMigration).contains("ADD COLUMN IF NOT EXISTS version_label VARCHAR(64)");
+        assertThat(normalizedMigration).contains("ADD COLUMN IF NOT EXISTS code VARCHAR(64)");
+        assertThat(normalizedMigration).contains("ALTER TABLE dhr_template ALTER COLUMN code DROP NOT NULL");
+        assertThat(migration).contains("DROP INDEX IF EXISTS uk_dhr_code");
+        assertThat(migration).contains("uk_dhr_template_version_code");
+    }
+
     private String readResource(String path) throws IOException {
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }

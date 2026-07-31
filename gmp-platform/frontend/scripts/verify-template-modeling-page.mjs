@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const pageContent = readFileSync(new URL('../src/pages/master-data/TemplateModelingPage.tsx', import.meta.url), 'utf8');
+const apiClientContent = readFileSync(new URL('../src/api/client.ts', import.meta.url), 'utf8');
 const packageContent = readFileSync(new URL('../package.json', import.meta.url), 'utf8');
 const standardContent = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
 const failures = [];
@@ -21,6 +22,8 @@ const formColumnsMatch = pageContent.match(/const formTemplateColumns: TemplateC
 const formColumns = formColumnsMatch?.[1] ?? '';
 
 mustInclude(packageContent, '"verify:template-modeling": "node scripts/verify-template-modeling-page.mjs"', 'template modeling verification should be runnable from npm scripts');
+mustInclude(apiClientContent, 'const apiMessage = (error.response?.data as Partial<ApiResponse<unknown>> | undefined)?.message;', 'API errors should retain the backend response message');
+mustInclude(apiClientContent, "new Error(apiMessage || error.message || '请求失败')", 'API errors should expose the backend response message to template dialogs');
 mustInclude(standardContent, '主子表列表的父行点击默认用于展开或收起子数据行；父行中承载详情入口的核心业务名称列必须使用蓝色可点击文字样式，点击后打开当前父行详情抽屉，并阻止事件冒泡，避免同时触发展开或收起。', 'UI standard should document parent-row expand and name-link drawer behavior for master-detail tables');
 mustInclude(formColumns, "{ id: 'currentVersion', label: '版本数量'", 'form-template parent table should label currentVersion as version count');
 mustNotInclude(formColumns, "id: 'effectiveFrom'", 'form-template parent table should not expose effective time');
@@ -54,6 +57,10 @@ mustInclude(pageContent, 'event.actionLabel || getAuditActionLabel(event.action)
 mustNotInclude(pageContent, 'event.functionName || event.actionLabel', 'audit row summaries should not require per-function action labels');
 mustInclude(pageContent, '查看${field.label}详情', 'structured audit rows should expose an explicit detail action');
 mustInclude(pageContent, 'const TEMPLATE_ACTION_COLUMN_WIDTH = 160;', 'the action column must fit all batch-record version operations');
+mustInclude(pageContent, 'data-template-column-settings-tabs', 'both parent and child column settings must be available for every template modeling page');
+mustNotInclude(pageContent, "{pageKey === 'formTemplates' ? (\n              <Tabs", 'batch-record templates must not hide the parent-child column settings tabs');
+mustNotInclude(pageContent, 'data-template-main-action-spacer', 'the parent template table must not render a blank spacer column before actions');
+mustNotInclude(pageContent, 'effectiveMainTableWidth', 'the parent template table must use its own column width instead of inheriting the version-table width');
 mustInclude(pageContent, 'data-template-version-link', 'child versions should provide an explicit detail and audit entry point');
 mustInclude(pageContent, '查看版本详情及审计', 'the child-version detail entry should name its audit behavior');
 

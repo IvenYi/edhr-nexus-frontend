@@ -84,7 +84,19 @@ createdb edhr_dev -O edhr
 psql -d edhr_dev -c "ALTER USER edhr WITH PASSWORD 'edhr_dev_pwd';"
 ```
 
-注意：`application-dev.yml` 中 `spring.liquibase.enabled=false`，本地 dev 启动不会自动跑 Liquibase。若数据库没有表结构，需要先导入 `gmp-platform/backend/src/main/resources/db/changelog` 下的初始化脚本，或临时开启 Liquibase。
+`application.yml` 和 `application-dev.yml` 均启用了 Liquibase。后端每次启动会按 `gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml` 的顺序执行尚未应用的迁移，并记录到 PostgreSQL 的 `databasechangelog` 表。
+
+因此，拉取包含后端和数据库变更的代码后，必须停止旧的后端进程并重新启动后端；只重启前端不会同步数据库结构。不要手工导入某一个初始化 SQL，也不要修改已经执行过的迁移文件。新增数据库变更应新建一个递增编号的 SQL 文件，并将其加入主 changelog。
+
+可用以下查询确认批记录模板的版本化迁移已经执行：
+
+```sql
+SELECT id, filename, dateexecuted
+FROM databasechangelog
+WHERE filename LIKE '%0043-dhr-template-version-metadata.sql%';
+```
+
+有返回记录时，`dhr_template.code` 已允许为空，批记录模板编码由 `dhr_template_version.code` 保存。
 
 ## 4. 本地开发启动
 

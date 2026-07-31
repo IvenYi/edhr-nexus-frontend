@@ -41,11 +41,12 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
+    const apiMessage = (error.response?.data as Partial<ApiResponse<unknown>> | undefined)?.message;
     if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {
       clearAuthStorage();
       window.location.href = '/login';
     }
-    return Promise.reject(error);
+    return Promise.reject(new Error(apiMessage || error.message || '请求失败'));
   },
 );
 

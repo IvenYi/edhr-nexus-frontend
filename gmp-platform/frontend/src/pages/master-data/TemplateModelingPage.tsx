@@ -845,10 +845,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const setActiveColumnSettings = columnSettingsTab === 'version' ? setTemplateVersionColumnSettings : setColumnSettings;
   const resolvedTemplateVersionColumnWidths = useMemo(() => resolveColumnWidths(templateVersionColumnWidths, totalTableWidth, visibleTemplateVersionColumns), [templateVersionColumnWidths, totalTableWidth, visibleTemplateVersionColumns]);
   const totalTemplateVersionTableWidth = visibleTemplateVersionColumns.reduce((sum, column) => sum + resolvedTemplateVersionColumnWidths[column.id], 0);
-  const effectiveMainTableWidth = Math.max(totalTableWidth, totalTemplateVersionTableWidth);
-  const mainTableSpacerWidth = Math.max(0, effectiveMainTableWidth - totalTableWidth);
-  const hasMainTableSpacer = mainTableSpacerWidth > 0;
-  const mainTableColSpan = visibleColumns.length + (hasMainTableSpacer ? 1 : 0);
+  const mainTableColSpan = visibleColumns.length;
   const pageCount = Math.max(1, listQuery.data?.totalPages ?? Math.ceil((listQuery.data?.totalElements ?? 0) / pageSize));
   const totalElements = listQuery.data?.totalElements ?? 0;
   const templateCategoryOptions = useMemo<TemplateCategoryOption[]>(() => {
@@ -1482,23 +1479,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     });
   };
 
-  const renderMainTableActionSpacerCell = (layer: 'head' | 'body') => (
-    hasMainTableSpacer ? (
-      <TableCell
-        data-template-main-action-spacer
-        aria-hidden="true"
-        sx={{
-          width: mainTableSpacerWidth,
-          minWidth: mainTableSpacerWidth,
-          maxWidth: mainTableSpacerWidth,
-          p: 0,
-          bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-          ...(layer === 'head' ? { position: 'sticky', top: 0, zIndex: 5 } : {}),
-        }}
-      />
-    ) : null
-  );
-
   function getStickyActionColumnSx(column: TemplateColumn, layer: 'head' | 'body') {
     if (column.id !== 'actions') return {};
     return {
@@ -1648,7 +1628,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     return (
       <TableRow key={`${row.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
         <TableCell colSpan={mainTableColSpan} sx={{ p: 0, bgcolor: '#fafcff' }}>
-          <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
+          <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflowX: 'auto' }}>
             <Table stickyHeader size="small" aria-label={pageKey === 'formTemplates' ? '表单模板版本列表' : '批记录模板版本列表'} sx={{ tableLayout: 'fixed', width: totalTemplateVersionTableWidth, minWidth: totalTemplateVersionTableWidth }}>
               <colgroup>
                 {visibleTemplateVersionColumns.map((column) => <col key={`${row.id}:${column.id}`} style={{ width: getTemplateVersionColumnWidth(column) }} />)}
@@ -1719,36 +1699,33 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
               ...getStickyActionColumnSx(column, 'body'),
             };
             return (
-              <Fragment key={column.id}>
-                {column.id === 'actions' ? renderMainTableActionSpacerCell('body') : null}
-                <TableCell align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx} title={column.id === 'actions' ? undefined : renderTemplateGroupCell(row, column)}>
-                  {column.id === 'actions' ? renderCell(row, column) : index === 0 ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
-                      <IconButton
-                        size="small"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          expandTemplateGroup(row.id);
-                        }}
-                        sx={{ width: 24, height: 24, color: '#606266' }}
-                      >
-                        {isExpanded ? <ExpandLess fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
-                      </IconButton>
-                      {column.id === 'name' ? renderTemplateNameLink(row) : (
-                        <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {renderTemplateGroupCell(row, column)}
-                        </Typography>
-                      )}
-                    </Box>
-                  ) : column.id === 'name' ? (
-                    renderTemplateNameLink(row)
-                  ) : column.id === 'status' ? (
-                    renderStatusBadge(row.status)
-                  ) : (
-                    renderTemplateGroupCell(row, column)
-                  )}
-                </TableCell>
-              </Fragment>
+              <TableCell key={column.id} align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx} title={column.id === 'actions' ? undefined : renderTemplateGroupCell(row, column)}>
+                {column.id === 'actions' ? renderCell(row, column) : index === 0 ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
+                    <IconButton
+                      size="small"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        expandTemplateGroup(row.id);
+                      }}
+                      sx={{ width: 24, height: 24, color: '#606266' }}
+                    >
+                      {isExpanded ? <ExpandLess fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+                    </IconButton>
+                    {column.id === 'name' ? renderTemplateNameLink(row) : (
+                      <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {renderTemplateGroupCell(row, column)}
+                      </Typography>
+                    )}
+                  </Box>
+                ) : column.id === 'name' ? (
+                  renderTemplateNameLink(row)
+                ) : column.id === 'status' ? (
+                  renderStatusBadge(row.status)
+                ) : (
+                  renderTemplateGroupCell(row, column)
+                )}
+              </TableCell>
             );
           })}
         </TableRow>
@@ -1890,12 +1867,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           PaperProps={{ sx: { mt: 1, width: 220, border: '1px solid #e4e7ed', borderRadius: 1, boxShadow: '0 8px 24px rgba(0,0,0,.12)' } }}
         >
           <Stack data-template-column-settings-panel spacing={0.5} sx={{ p: 1.5 }}>
-            {pageKey === 'formTemplates' ? (
-              <Tabs value={columnSettingsTab} onChange={(_, value: TemplateColumnSettingsTarget) => setColumnSettingsTab(value)} aria-label={`${config.title}字段设置切换`} sx={{ minHeight: 32, mb: 0.5, '& .MuiTab-root': { minHeight: 32, py: 0, fontSize: 13 } }}>
-                <Tab label="主表" value="main" />
-                <Tab label="子表" value="version" />
-              </Tabs>
-            ) : null}
+            <Tabs data-template-column-settings-tabs value={columnSettingsTab} onChange={(_, value: TemplateColumnSettingsTarget) => setColumnSettingsTab(value)} aria-label={`${config.title}字段设置切换`} sx={{ minHeight: 32, mb: 0.5, '& .MuiTab-root': { minHeight: 32, py: 0, fontSize: 13 } }}>
+              <Tab label="主表" value="main" />
+              <Tab label="子表" value="version" />
+            </Tabs>
             {activeColumnSettingsItems.map((column) => {
               const checked = !activeColumnSettings.hidden.includes(column.id);
               const disabled = checked && activeVisibleConfigurableColumnCount <= 1;
@@ -1931,33 +1906,23 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
         <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
           <TableContainer ref={tableContainerRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
-            <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: effectiveMainTableWidth, minWidth: effectiveMainTableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
+            <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
               <colgroup>
-                {visibleColumns.map((column) => (
-                  column.id === 'actions' ? (
-                    <Fragment key={column.id}>
-                      {hasMainTableSpacer ? <col data-template-main-action-spacer style={{ width: mainTableSpacerWidth }} /> : null}
-                      <col style={{ width: getColumnWidth(column) }} />
-                    </Fragment>
-                  ) : <col key={column.id} style={{ width: getColumnWidth(column) }} />
-                ))}
+                {visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}
               </colgroup>
               <TableHead>
                 <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
                   {visibleColumns.map((column) => (
-                    <Fragment key={column.id}>
-                      {column.id === 'actions' ? renderMainTableActionSpacerCell('head') : null}
-                      <TableCell align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={{ width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
-                        {column.label}
-                        {column.resizable ? (
-                          <Box
-                            data-template-column-resizer
-                            onMouseDown={(event) => beginColumnResize(event, column.id)}
-                            sx={{ position: 'absolute', top: 0, right: 0, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
-                          />
-                        ) : null}
-                      </TableCell>
-                    </Fragment>
+                    <TableCell key={column.id} align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={{ width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
+                      {column.label}
+                      {column.resizable ? (
+                        <Box
+                          data-template-column-resizer
+                          onMouseDown={(event) => beginColumnResize(event, column.id)}
+                          sx={{ position: 'absolute', top: 0, right: 0, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
+                        />
+                      ) : null}
+                    </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
