@@ -93,6 +93,10 @@ mustInclude(workspaceContent, '暂无匹配的目录或表单', 'workspace shoul
 mustInclude(workspaceContent, 'compositionQuery.dataUpdatedAt', 'saved composition refreshes must distinguish fresh server data from stale cache data');
 mustInclude(workspaceContent, 'appliedCompositionRevision', 'saved composition should only initialize from the latest query revision');
 mustInclude(workspaceContent, 'saveCompositionMutation', 'workspace changes should be staged and saved as one explicit action');
+mustInclude(apiContent, 'saveDhrTemplateComposition', 'frontend should expose the transactional composition save API');
+mustIncludeIn(workspaceContent, 'const saveCompositionMutation', 'const requestClose', 'await saveDhrTemplateComposition', 'workspace save should use one transactional composition request');
+mustNotIncludeIn(workspaceContent, 'const saveCompositionMutation', 'const requestClose', 'await deleteDhrDirectory', 'workspace save must not delete directories through separate requests');
+mustNotIncludeIn(workspaceContent, 'const saveCompositionMutation', 'const requestClose', 'await createDhrEvidenceItem', 'workspace save must not create form references through separate requests');
 mustInclude(workspaceContent, '放弃未保存的修改', 'closing a modified workspace should confirm discarding changes');
 mustInclude(workspaceContent, 'stageEvidence', 'form references should be staged inside their selected directory');
 mustInclude(apiContent, 'getFormTemplateVersion', 'DHR form preview should load the referenced form version');
@@ -108,7 +112,7 @@ mustNotInclude(workspaceContent, 'formActionMenu', 'form editing should not requ
 mustNotInclude(workspaceContent, 'MoreVertRounded', 'form editing should use the same direct action pattern as directories');
 mustInclude(workspaceContent, 'DHR 内表单名称', 'editing a referenced form should only change its name within the DHR');
 mustInclude(workspaceContent, 'formDisplayName', 'the DHR-specific form name should be used in the tree and preview');
-mustInclude(workspaceContent, 'updateDhrEvidenceItem', 'saving a DHR composition should persist edited form names');
+mustInclude(workspaceContent, 'displayName: item.displayName', 'composition save should persist edited form names');
 mustInclude(workspaceContent, '表单编码', 'referenced-form edit details should label the source form code separately');
 mustInclude(workspaceContent, 'editEvidenceTarget?.formCode ?? \'-\'', 'referenced-form edit details should render the source form code in its own field');
 mustNotInclude(workspaceContent, '`${editEvidenceTarget.formCode} · ${editEvidenceTarget.formVersion}`', 'referenced-form edit details should not combine form code and version under one label');

@@ -165,6 +165,22 @@ export interface DhrTemplateCompositionRecord {
   items: DhrEvidenceItemRecord[];
 }
 
+export interface DhrCompositionPayload {
+  directories: Array<{
+    clientId: string;
+    parentClientId?: string | null;
+    name: string;
+    sortOrder?: number | null;
+  }>;
+  items: Array<{
+    directoryClientId: string;
+    formTemplateVersionId: string | number;
+    displayName?: string | null;
+    isRequired?: boolean | null;
+    sortOrder?: number | null;
+  }>;
+}
+
 export interface DhrFormTemplateOption {
   templateId: string;
   code: string;
@@ -258,6 +274,9 @@ export const getDhrTemplateWorkspace = (templateId: string | number) =>
 
 export const getDhrTemplateComposition = (templateId: string | number, versionId: string | number) =>
   client.get(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/composition`) as Promise<{ data: { data: DhrTemplateCompositionRecord } }>;
+
+export const saveDhrTemplateComposition = (templateId: string | number, versionId: string | number, body: DhrCompositionPayload) =>
+  client.put(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/composition`, body) as Promise<{ data: { data: DhrTemplateCompositionRecord } }>;
 
 export const getDhrFormTemplateOptions = (templateId: string | number) =>
   client.get(`${templateModelingBase}/batch-record-templates/${templateId}/form-options`) as Promise<{ data: { data: DhrFormTemplateOption[] } }>;

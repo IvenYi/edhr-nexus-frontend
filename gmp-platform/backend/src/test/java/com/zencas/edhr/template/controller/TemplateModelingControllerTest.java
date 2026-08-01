@@ -574,9 +574,8 @@ class TemplateModelingControllerTest {
                 .build();
         when(dhrTemplateRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(template)));
-        when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(draft, active));
-        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(402L)).thenReturn(List.of());
-        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(401L)).thenReturn(List.of());
+        when(dhrTemplateVersionRepository.findByDhrTemplateIdInOrderByDhrTemplateIdAscVersionNumberDesc(List.of(301L))).thenReturn(List.of(draft, active));
+        when(dhrDirectoryRepository.findByVersionIdInOrderByVersionIdAscSortOrderAscIdAsc(List.of(402L, 401L))).thenReturn(List.of());
 
         var response = controller.listBatchRecordTemplates(null, null, null, 1, 20, "createdAt", "desc");
 
@@ -612,9 +611,8 @@ class TemplateModelingControllerTest {
                 .build();
         when(dhrTemplateRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(template)));
-        when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(pending, expired));
-        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(403L)).thenReturn(List.of());
-        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(402L)).thenReturn(List.of());
+        when(dhrTemplateVersionRepository.findByDhrTemplateIdInOrderByDhrTemplateIdAscVersionNumberDesc(List.of(301L))).thenReturn(List.of(pending, expired));
+        when(dhrDirectoryRepository.findByVersionIdInOrderByVersionIdAscSortOrderAscIdAsc(List.of(403L, 402L))).thenReturn(List.of());
 
         var response = controller.listBatchRecordTemplates(null, null, null, 1, 20, "createdAt", "desc");
 
@@ -828,7 +826,7 @@ class TemplateModelingControllerTest {
     }
 
     @Test
-    void deleteDhrTemplateVersionAllowsDeletingAnActiveVersionWhenAnotherVersionRemains() {
+    void deleteDhrTemplateVersionRejectsDeletingAnActiveVersion() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
         DhrTemplateVersion draft = DhrTemplateVersion.builder().id(402L).dhrTemplateId(301L).versionNumber(2).status("DRAFT").build();
         DhrTemplateVersion active = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").isCurrent(true).build();
@@ -837,16 +835,81 @@ class TemplateModelingControllerTest {
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(draft, active));
         when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(active));
-        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(401L)).thenReturn(List.of(directory));
-        when(dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(List.of(501L))).thenReturn(List.of(item));
-        when(idGenerator.nextId()).thenReturn(801L);
+        assertThatThrownBy(() -> workspaceController.deleteDhrTemplateVersion(301L, 401L))
+                .hasMessageContaining("已启用版本不可删除");
 
-        workspaceController.deleteDhrTemplateVersion(301L, 401L);
+        verify(dhrTemplateItemRepository, never()).deleteAll(List.of(item));
+        verify(dhrDirectoryRepository, never()).deleteAll(List.of(directory));
+        verify(dhrTemplateVersionRepository, never()).delete(active);
+    }
 
-        InOrder deletionOrder = inOrder(dhrTemplateItemRepository, dhrDirectoryRepository, dhrTemplateVersionRepository);
-        deletionOrder.verify(dhrTemplateItemRepository).deleteAll(List.of(item));
-        deletionOrder.verify(dhrDirectoryRepository).deleteAll(List.of(directory));
-        deletionOrder.verify(dhrTemplateVersionRepository).delete(active);
+    @Test
+    void saveDhrTemplateCompositionValidatesAllReferencesBeforeRemovingExistingRecords() {
+        DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").name("生产批记录").build();
+        DhrTemplateVersion draft = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("DRAFT").build();
+        FormTemplate formTemplate = FormTemplate.builder().id(701L).name("生产巡检表").status("ACTIVE").build();
+        FormTemplateVersion inactiveFormVersion = FormTemplateVersion.builder().id(702L).templateId(701L).version("V1.0").status("DRAFT").build();
+        when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
+        when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(draft));
+        when(formTemplateVersionRepository.findById(702L)).thenReturn(Optional.of(inactiveFormVersion));
+        when(formTemplateRepository.findById(701L)).thenReturn(Optional.of(formTemplate));
+
+        var request = new DhrTemplateWorkspaceController.DhrCompositionRequest(
+                List.of(new DhrTemplateWorkspaceController.DhrCompositionDirectoryRequest("directory-a", null, "生产记录", 10)),
+                List.of(new DhrTemplateWorkspaceController.DhrCompositionItemRequest("directory-a", 702L, null, true, 10)));
+
+        assertThatThrownBy(() -> workspaceController.saveDhrTemplateComposition(301L, 401L, request))
+                .hasMessageContaining("仅能引用已启用的表单模板版本");
+
+        verify(dhrTemplateItemRepository, never()).deleteAll(any());
+        verify(dhrDirectoryRepository, never()).deleteAll(any());
+    }
+
+    @Test
+    void updateCategoryRejectsCategoryFromAnotherTemplateType() {
+        TemplateCategory formCategory = TemplateCategory.builder()
+                .id(11L)
+                .tenantId("default")
+                .templateType("FORM")
+                .name("生产表单")
+                .build();
+        when(templateCategoryRepository.findByIdAndTenantIdAndTemplateType(11L, "default", "DHR")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> controller.updateCategory(
+                "batch-record-templates", 11L, new TemplateModelingController.TemplateCategoryRequest("生产批记录")))
+                .hasMessageContaining("模板分类不存在");
+
+        verify(templateCategoryRepository, never()).save(any(TemplateCategory.class));
+    }
+
+    @Test
+    void deleteCategoryRejectsCategoryFromAnotherTemplateType() {
+        TemplateCategory formCategory = TemplateCategory.builder()
+                .id(11L)
+                .tenantId("default")
+                .templateType("FORM")
+                .name("生产表单")
+                .build();
+        when(templateCategoryRepository.findByIdAndTenantIdAndTemplateType(11L, "default", "DHR")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> controller.deleteCategory("batch-record-templates", 11L))
+                .hasMessageContaining("模板分类不存在");
+
+        verify(templateCategoryRepository, never()).deleteById(11L);
+    }
+
+    @Test
+    void reorderCategoriesWritesAnAuditEventWhenOrderChanges() {
+        TemplateCategory first = TemplateCategory.builder().id(11L).tenantId("default").templateType("DHR").name("默认").sortOrder(10).build();
+        TemplateCategory second = TemplateCategory.builder().id(22L).tenantId("default").templateType("DHR").name("验证").sortOrder(20).build();
+        when(templateCategoryRepository.findByTenantIdAndTemplateTypeOrderBySortOrderAscNameAsc("default", "DHR")).thenReturn(List.of(first, second));
+        when(dhrTemplateRepository.findAll()).thenReturn(List.of());
+        when(templateCategoryRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        controller.reorderCategories("batch-record-templates",
+                new TemplateModelingController.TemplateCategoryOrderRequest(List.of("22", "11")));
+
+        verify(auditEventRepository, times(2)).save(any(AuditEvent.class));
     }
 
     @Test

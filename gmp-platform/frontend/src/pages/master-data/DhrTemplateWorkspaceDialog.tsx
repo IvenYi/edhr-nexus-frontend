@@ -44,16 +44,11 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState, type MouseEvent, type ReactElement } from 'react';
 import {
-  createDhrDirectory,
-  createDhrEvidenceItem,
-  deleteDhrDirectory,
-  deleteDhrEvidenceItem,
   getDhrFormTemplateOptions,
   getDhrTemplateComposition,
   getDhrTemplateWorkspace,
   getFormTemplateVersion,
-  updateDhrDirectory,
-  updateDhrEvidenceItem,
+  saveDhrTemplateComposition,
   type DhrDirectoryRecord,
   type DhrEvidenceItemRecord,
   type DhrFormTemplateOption,
@@ -113,20 +108,6 @@ function cloneComposition(record: DhrTemplateCompositionRecord): DhrTemplateComp
 function createDraftId(prefix: string) {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return `${prefix}-${crypto.randomUUID()}`;
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
-function directoryDepth(directory: DhrDirectoryRecord, directoryMap: Map<string, DhrDirectoryRecord>) {
-  const visited = new Set<string>();
-  let depth = 0;
-  let current = directory;
-  while (current.parentId && !visited.has(current.parentId)) {
-    visited.add(current.parentId);
-    const parent = directoryMap.get(current.parentId);
-    if (!parent) break;
-    depth += 1;
-    current = parent;
-  }
-  return depth;
 }
 
 function buildDirectoryTree(directories: DhrDirectoryRecord[], items: DhrEvidenceItemRecord[]) {
@@ -682,14 +663,8 @@ export default function DhrTemplateWorkspaceDialog({
 
   const saveCompositionMutation = useMutation({
     mutationFn: async () => {
-      if (!templateId || !selectedVersionId || !baseComposition || !compositionDraft) throw new Error('批记录设计上下文缺失');
-      const originalDirectoryIds = new Set(baseComposition.directories.map((directory) => directory.id));
-      const originalItemIds = new Set(baseComposition.items.map((item) => item.id));
-      const draftDirectoryIds = new Set(compositionDraft.directories.map((directory) => directory.id));
-      const draftItemIds = new Set(compositionDraft.items.map((item) => item.id));
-      const originalDirectoryMap = new Map(baseComposition.directories.map((directory) => [directory.id, directory]));
+      if (!templateId || !selectedVersionId || !compositionDraft) throw new Error('批记录设计上下文缺失');
       const draftDirectoryMap = new Map(compositionDraft.directories.map((directory) => [directory.id, directory]));
-      const originalItemMap = new Map(baseComposition.items.map((item) => [item.id, item]));
 
       const duplicateReferences = new Set<string>();
       for (const item of compositionDraft.items) {
@@ -699,45 +674,21 @@ export default function DhrTemplateWorkspaceDialog({
         duplicateReferences.add(duplicateKey);
       }
 
-      for (const item of baseComposition.items.filter((candidate) => !draftItemIds.has(candidate.id))) {
-        await deleteDhrEvidenceItem(templateId, selectedVersionId, item.id);
-      }
-
-      const deletedDirectories = baseComposition.directories
-        .filter((directory) => !draftDirectoryIds.has(directory.id))
-        .sort((left, right) => directoryDepth(right, originalDirectoryMap) - directoryDepth(left, originalDirectoryMap));
-      for (const directory of deletedDirectories) {
-        await deleteDhrDirectory(templateId, selectedVersionId, directory.id);
-      }
-
-      const directoryIdMap = new Map<string, string>();
-      baseComposition.directories.forEach((directory) => directoryIdMap.set(directory.id, directory.id));
-      const pendingDirectories = compositionDraft.directories.filter((directory) => !originalDirectoryIds.has(directory.id));
-      while (pendingDirectories.length) {
-        const nextIndex = pendingDirectories.findIndex((directory) => !directory.parentId || directoryIdMap.has(directory.parentId));
-        if (nextIndex === -1) throw new Error('目录层级存在无法保存的父子关系');
-        const [directory] = pendingDirectories.splice(nextIndex, 1);
-        const response = await createDhrDirectory(templateId, selectedVersionId, { name: directory.name, parentId: directory.parentId ? directoryIdMap.get(directory.parentId) ?? null : null });
-        directoryIdMap.set(directory.id, response.data.data.id);
-      }
-
-      for (const directory of compositionDraft.directories.filter((candidate) => originalDirectoryIds.has(candidate.id))) {
-        const original = originalDirectoryMap.get(directory.id);
-        if (!original || (original.name === directory.name && original.parentId === directory.parentId)) continue;
-        await updateDhrDirectory(templateId, selectedVersionId, directory.id, { name: directory.name, parentId: directory.parentId ? directoryIdMap.get(directory.parentId) ?? null : null });
-      }
-
-      for (const item of compositionDraft.items.filter((candidate) => originalItemIds.has(candidate.id))) {
-        const original = originalItemMap.get(item.id);
-        if (!original || original.displayName === item.displayName) continue;
-        await updateDhrEvidenceItem(templateId, selectedVersionId, item.id, { displayName: item.displayName ?? '' });
-      }
-
-      for (const item of compositionDraft.items.filter((candidate) => !originalItemIds.has(candidate.id))) {
-        const directoryId = directoryIdMap.get(item.directoryId);
-        if (!directoryId || !item.formTemplateVersionId) throw new Error('引用表单保存失败');
-        await createDhrEvidenceItem(templateId, selectedVersionId, directoryId, { formTemplateVersionId: item.formTemplateVersionId, displayName: item.displayName });
-      }
+      await saveDhrTemplateComposition(templateId, selectedVersionId, {
+        directories: compositionDraft.directories.map((directory) => ({
+          clientId: directory.id,
+          parentClientId: directory.parentId ?? null,
+          name: directory.name,
+          sortOrder: directory.sortOrder,
+        })),
+        items: compositionDraft.items.map((item) => ({
+          directoryClientId: item.directoryId,
+          formTemplateVersionId: item.formTemplateVersionId ?? '',
+          displayName: item.displayName,
+          isRequired: item.isRequired,
+          sortOrder: item.sortOrder,
+        })),
+      });
     },
     onSuccess: async () => {
       await invalidateWorkspace();

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /** JWT token provider for generating and validating JWT tokens. */
 @Slf4j
@@ -35,13 +37,23 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(String userId, String username, String displayName, int validityMinutes) {
+        return generateToken(userId, username, displayName, validityMinutes, List.of());
+    }
+
+    public String generateToken(String userId, String username, String displayName, int validityMinutes, Collection<String> permissions) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + Math.max(1, validityMinutes) * 60_000L);
+        List<String> authorityCodes = permissions == null ? List.of() : permissions.stream()
+                .filter(permission -> permission != null && !permission.isBlank())
+                .map(String::trim)
+                .distinct()
+                .toList();
 
         return Jwts.builder()
                 .subject(userId)
                 .claim("username", username)
                 .claim("displayName", displayName)
+                .claim("permissions", authorityCodes)
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)
@@ -59,6 +71,18 @@ public class JwtTokenProvider {
     public String getDisplayName(String token) {
         String displayName = parseClaims(token).get("displayName", String.class);
         return displayName == null ? getUsername(token) : displayName;
+    }
+
+    public List<String> getPermissions(String token) {
+        Object claim = parseClaims(token).get("permissions");
+        if (!(claim instanceof Collection<?> values)) return List.of();
+        return values.stream()
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
+                .filter(value -> !value.isBlank())
+                .map(String::trim)
+                .distinct()
+                .toList();
     }
 
     public boolean validateToken(String token) {

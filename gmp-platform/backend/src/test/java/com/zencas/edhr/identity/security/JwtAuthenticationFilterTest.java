@@ -11,6 +11,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +33,7 @@ class JwtAuthenticationFilterTest {
         when(jwtTokenProvider.getUserId("good-token")).thenReturn("1");
         when(jwtTokenProvider.getUsername("good-token")).thenReturn("admin");
         when(jwtTokenProvider.getDisplayName("good-token")).thenReturn("系统管理员");
+        when(jwtTokenProvider.getPermissions("good-token")).thenReturn(List.of("master-data.batch-record-templates"));
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtTokenProvider);
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/auth/me");
         request.addHeader("Authorization", "Bearer good-token");
@@ -42,6 +45,8 @@ class JwtAuthenticationFilterTest {
         filter.doFilter(request, new MockHttpServletResponse(), filterChain);
 
         assertThat(request.getAttribute("userId")).isEqualTo("1");
-        assertThat(SecurityContextHolder.getContext().getAuthentication().getAuthorities()).isEmpty();
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getAuthorities())
+                .extracting(authority -> authority.getAuthority())
+                .containsExactly("master-data.batch-record-templates");
     }
 }

@@ -32,6 +32,7 @@ import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
 import com.zencas.edhr.template.support.DhrTemplateVersionStatusResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -262,6 +263,7 @@ public class TemplateModelingController {
     }
 
     @GetMapping("/batch-record-templates")
+    @PreAuthorize("hasAuthority('master-data.batch-record-templates')")
     public ApiResponse<PageResult<DhrTemplateResponse>> listBatchRecordTemplates(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String name,
@@ -275,10 +277,21 @@ public class TemplateModelingController {
         Page<DhrTemplate> result = dhrTemplateRepository.findAll(
                 dhrTemplateSpec(keyword, name, code, categoryName, status),
                 pageable(page, size, sort, order));
-        List<DhrTemplateResponse> content = result.getContent().stream()
-                .map(template -> toDhrTemplateResponse(template, loadDhrTemplateVersions(template.getId())))
+        List<DhrTemplate> templates = result.getContent();
+        List<DhrTemplateVersion> versions = templates.isEmpty()
+                ? List.of()
+                : dhrTemplateVersionRepository.findByDhrTemplateIdInOrderByDhrTemplateIdAscVersionNumberDesc(
+                        templates.stream().map(DhrTemplate::getId).toList());
+        Map<Long, List<DhrTemplateVersion>> versionsByTemplateId = versions.stream()
+                .collect(Collectors.groupingBy(DhrTemplateVersion::getDhrTemplateId, LinkedHashMap::new, Collectors.toList()));
+        Map<Long, DhrVersionCompositionCount> compositionCounts = loadDhrVersionCompositionCounts(versions);
+        List<DhrTemplateResponse> content = templates.stream()
+                .map(template -> toDhrTemplateResponse(
+                        template,
+                        versionsByTemplateId.getOrDefault(template.getId(), List.of()),
+                        compositionCounts))
                 .toList();
-        return ApiResponse.success(PageResult.of(content, page, size, result.getTotalElements()));
+        return ApiResponse.success(PageResult.of(content, Math.max(page, 1), safePageSize(size), result.getTotalElements()));
     }
 
     public ApiResponse<PageResult<DhrTemplateResponse>> listBatchRecordTemplates(
@@ -293,6 +306,7 @@ public class TemplateModelingController {
     }
 
     @PostMapping("/batch-record-templates")
+    @PreAuthorize("hasAuthority('master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<DhrTemplateResponse> createBatchRecordTemplate(@RequestBody TemplateModelingRequest request) {
         validateEffectiveDateRange(request);
@@ -333,6 +347,7 @@ public class TemplateModelingController {
     }
 
     @PutMapping("/batch-record-templates/{id}")
+    @PreAuthorize("hasAuthority('master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<DhrTemplate> updateBatchRecordTemplate(@PathVariable Long id, @RequestBody TemplateModelingRequest request) {
         DhrTemplate existing = dhrTemplateRepository.findById(id)
@@ -349,6 +364,7 @@ public class TemplateModelingController {
     }
 
     @DeleteMapping("/batch-record-templates/{id}")
+    @PreAuthorize("hasAuthority('master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<Void> deleteBatchRecordTemplate(@PathVariable Long id) {
         DhrTemplate existing = dhrTemplateRepository.findById(id)
@@ -372,11 +388,13 @@ public class TemplateModelingController {
     }
 
     @GetMapping("/{templateType}/categories")
+    @PreAuthorize("hasAuthority(#templateType == 'form-templates' || #templateType == 'FORM' ? 'master-data.form-templates' : 'master-data.batch-record-templates')")
     public ApiResponse<List<TemplateCategoryResponse>> listCategories(@PathVariable String templateType) {
         return ApiResponse.success(toTemplateCategoryResponses(resolveTemplateType(templateType)));
     }
 
     @PostMapping("/{templateType}/categories")
+    @PreAuthorize("hasAuthority(#templateType == 'form-templates' || #templateType == 'FORM' ? 'master-data.form-templates' : 'master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<TemplateCategoryResponse> createCategory(@PathVariable String templateType, @RequestBody TemplateCategoryRequest request) {
         String type = resolveTemplateType(templateType);
@@ -400,10 +418,11 @@ public class TemplateModelingController {
     }
 
     @PutMapping("/{templateType}/categories/{id}")
+    @PreAuthorize("hasAuthority(#templateType == 'form-templates' || #templateType == 'FORM' ? 'master-data.form-templates' : 'master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<TemplateCategoryResponse> updateCategory(@PathVariable String templateType, @PathVariable Long id, @RequestBody TemplateCategoryRequest request) {
         String type = resolveTemplateType(templateType);
-        TemplateCategory existing = templateCategoryRepository.findById(id)
+        TemplateCategory existing = templateCategoryRepository.findByIdAndTenantIdAndTemplateType(id, TENANT_ID, type)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "模板分类不存在"));
         String name = requireCategoryName(request);
         templateCategoryRepository.findByTenantIdAndTemplateTypeAndNameIgnoreCase(TENANT_ID, type, name)
@@ -423,10 +442,11 @@ public class TemplateModelingController {
     }
 
     @DeleteMapping("/{templateType}/categories/{id}")
+    @PreAuthorize("hasAuthority(#templateType == 'form-templates' || #templateType == 'FORM' ? 'master-data.form-templates' : 'master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<Void> deleteCategory(@PathVariable String templateType, @PathVariable Long id) {
         String type = resolveTemplateType(templateType);
-        TemplateCategory existing = templateCategoryRepository.findById(id)
+        TemplateCategory existing = templateCategoryRepository.findByIdAndTenantIdAndTemplateType(id, TENANT_ID, type)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "模板分类不存在"));
         if (countByCategory(type, existing.getName()) > 0) {
             throw new BusinessException(ErrorCode.GENERAL_001, "分类下存在模板，不允许删除");
@@ -437,6 +457,7 @@ public class TemplateModelingController {
     }
 
     @PutMapping("/{templateType}/categories/order")
+    @PreAuthorize("hasAuthority(#templateType == 'form-templates' || #templateType == 'FORM' ? 'master-data.form-templates' : 'master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<List<TemplateCategoryResponse>> reorderCategories(@PathVariable String templateType, @RequestBody TemplateCategoryOrderRequest request) {
         String type = resolveTemplateType(templateType);
@@ -447,11 +468,23 @@ public class TemplateModelingController {
             if (id != null) orderById.put(id, (i + 1) * 10);
         }
         List<TemplateCategory> categories = templateCategoryRepository.findByTenantIdAndTemplateTypeOrderBySortOrderAscNameAsc(TENANT_ID, type);
+        Map<Long, Map<String, Object>> beforeByCategoryId = categories.stream()
+                .collect(Collectors.toMap(TemplateCategory::getId,
+                        category -> categorySnapshot(category, countByCategory(type, category.getName())),
+                        (left, right) -> left,
+                        LinkedHashMap::new));
         categories.forEach(category -> {
             Integer sortOrder = orderById.get(category.getId());
             if (sortOrder != null) category.setSortOrder(sortOrder);
         });
         templateCategoryRepository.saveAll(categories);
+        categories.forEach(category -> writeChangedAudit(
+                "TEMPLATE_CATEGORY",
+                category.getId(),
+                menuName(type),
+                "调整模板分类排序",
+                beforeByCategoryId.get(category.getId()),
+                categorySnapshot(category, countByCategory(type, category.getName()))));
         return ApiResponse.success(toTemplateCategoryResponses(type));
     }
 
@@ -576,9 +609,13 @@ public class TemplateModelingController {
 
     private Pageable pageable(int page, int size, String sort, String order) {
         int safePage = Math.max(page, 1) - 1;
-        int safeSize = Math.max(size, 1);
+        int safeSize = safePageSize(size);
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         return PageRequest.of(safePage, safeSize, Sort.by(direction, safeSort(sort)));
+    }
+
+    private int safePageSize(int size) {
+        return Math.min(Math.max(size, 1), 100);
     }
 
     private String safeSort(String sort) {
@@ -992,9 +1029,43 @@ public class TemplateModelingController {
         );
     }
 
+    private Map<Long, DhrVersionCompositionCount> loadDhrVersionCompositionCounts(List<DhrTemplateVersion> versions) {
+        if (versions.isEmpty()) return Map.of();
+        List<Long> versionIds = versions.stream().map(DhrTemplateVersion::getId).filter(Objects::nonNull).toList();
+        List<DhrDirectory> directories = versionIds.isEmpty()
+                ? List.of()
+                : dhrDirectoryRepository.findByVersionIdInOrderByVersionIdAscSortOrderAscIdAsc(versionIds);
+        Map<Long, Integer> directoryCounts = directories.stream()
+                .collect(Collectors.groupingBy(DhrDirectory::getVersionId, Collectors.summingInt(directory -> 1)));
+        Map<Long, Long> versionIdByDirectoryId = directories.stream()
+                .filter(directory -> directory.getId() != null)
+                .collect(Collectors.toMap(DhrDirectory::getId, DhrDirectory::getVersionId));
+        List<DhrTemplateItem> items = directories.isEmpty()
+                ? List.of()
+                : dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(
+                        directories.stream().map(DhrDirectory::getId).filter(Objects::nonNull).toList());
+        Map<Long, Integer> evidenceCounts = items.stream()
+                .map(item -> versionIdByDirectoryId.get(item.getDirectoryId()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(versionId -> versionId, Collectors.summingInt(versionId -> 1)));
+        Map<Long, DhrVersionCompositionCount> counts = new LinkedHashMap<>();
+        versionIds.forEach(versionId -> counts.put(versionId,
+                new DhrVersionCompositionCount(directoryCounts.getOrDefault(versionId, 0), evidenceCounts.getOrDefault(versionId, 0))));
+        return counts;
+    }
+
     private DhrTemplateResponse toDhrTemplateResponse(DhrTemplate entity, List<DhrTemplateVersion> versions) {
+        return toDhrTemplateResponse(entity, versions, loadDhrVersionCompositionCounts(versions));
+    }
+
+    private DhrTemplateResponse toDhrTemplateResponse(
+            DhrTemplate entity,
+            List<DhrTemplateVersion> versions,
+            Map<Long, DhrVersionCompositionCount> compositionCounts) {
         List<DhrTemplateVersionResponse> versionResponses = (versions == null ? List.<DhrTemplateVersion>of() : versions).stream()
-                .map(this::toDhrTemplateVersionResponse)
+                .map(version -> toDhrTemplateVersionResponse(
+                        version,
+                        compositionCounts.getOrDefault(version.getId(), DhrVersionCompositionCount.EMPTY)))
                 .toList();
         DhrTemplateVersionResponse currentVersion = versionResponses.stream()
                 .filter(DhrTemplateVersionResponse::isCurrent)
@@ -1020,12 +1091,9 @@ public class TemplateModelingController {
         );
     }
 
-    private DhrTemplateVersionResponse toDhrTemplateVersionResponse(DhrTemplateVersion version) {
-        List<DhrDirectory> directories = dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(version.getId());
-        int evidenceCount = directories.isEmpty()
-                ? 0
-                : dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(
-                        directories.stream().map(DhrDirectory::getId).toList()).size();
+    private DhrTemplateVersionResponse toDhrTemplateVersionResponse(
+            DhrTemplateVersion version,
+            DhrVersionCompositionCount compositionCount) {
         return new DhrTemplateVersionResponse(
                 String.valueOf(version.getId()),
                 version.getDhrTemplateId() == null ? null : String.valueOf(version.getDhrTemplateId()),
@@ -1038,8 +1106,8 @@ public class TemplateModelingController {
                 DhrTemplateVersionStatusResolver.resolveVersionStatus(version),
                 Boolean.TRUE.equals(version.getIsCurrent()),
                 formatDateTime(version.getCreatedAt()),
-                directories.size(),
-                evidenceCount
+                compositionCount.directoryCount(),
+                compositionCount.evidenceCount()
         );
     }
 
@@ -1202,5 +1270,9 @@ public class TemplateModelingController {
             String createdAt,
             int directoryCount,
             int evidenceCount) {
+    }
+
+    private record DhrVersionCompositionCount(int directoryCount, int evidenceCount) {
+        private static final DhrVersionCompositionCount EMPTY = new DhrVersionCompositionCount(0, 0);
     }
 }

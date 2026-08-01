@@ -13,5 +13,7 @@ public interface TemplateCategoryRepository extends JpaRepository<TemplateCatego
 
     Optional<TemplateCategory> findByTenantIdAndTemplateTypeAndNameIgnoreCase(String tenantId, String templateType, String name);
 
+    Optional<TemplateCategory> findByIdAndTenantIdAndTemplateType(Long id, String tenantId, String templateType);
+
     boolean existsByTenantIdAndTemplateTypeAndNameIgnoreCase(String tenantId, String templateType, String name);
 }

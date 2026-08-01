@@ -146,7 +146,7 @@ public class AuthController {
         List<String> roleNames = permissionSnapshot.roleNames();
 
         String token = jwtTokenProvider.generateToken(
-                user.getId().toString(), user.getUsername(), user.getDisplayName(), policy.tokenValidityMinutes());
+                user.getId().toString(), user.getUsername(), user.getDisplayName(), policy.tokenValidityMinutes(), permissions);
 
         // Update last login
         user.setLastLoginAt(java.time.LocalDateTime.now());
