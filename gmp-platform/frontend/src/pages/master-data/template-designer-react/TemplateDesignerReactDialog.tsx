@@ -1,4 +1,7 @@
-import { Dialog, DialogContent } from '@mui/material';
+import {
+  DialogContent,
+} from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import type { TemplateDesignerDialogProps } from './types';
 import TemplateDesignerReactShell from './TemplateDesignerReactShell';
 
@@ -12,9 +15,10 @@ export default function TemplateDesignerReactDialog({
   saving,
 }: TemplateDesignerDialogProps) {
   return (
-    <Dialog
+    <AppDialog
       open={open}
       onClose={onClose}
+      hideCloseButton
       fullScreen
       PaperProps={{
         sx: {
@@ -37,6 +41,6 @@ export default function TemplateDesignerReactDialog({
           />
         ) : null}
       </DialogContent>
-    </Dialog>
+    </AppDialog>
   );
 }

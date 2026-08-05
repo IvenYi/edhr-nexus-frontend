@@ -872,7 +872,7 @@ class ProcessModelingControllerTest {
                 .status("DRAFT")
                 .createdAt(LocalDateTime.of(2026, 6, 1, 9, 0))
                 .build();
-        Material pending = Material.builder()
+        Material future = Material.builder()
                 .id(202L)
                 .tenantId("default")
                 .code("MAT-PENDING")
@@ -892,7 +892,7 @@ class ProcessModelingControllerTest {
                 .status("ACTIVE")
                 .createdAt(LocalDateTime.of(2026, 6, 3, 9, 0))
                 .build();
-        when(materialRepository.findAll()).thenReturn(List.of(active, pending, expired));
+        when(materialRepository.findAll()).thenReturn(List.of(active, future, expired));
 
         var response = controller.listMaterials(null, null, null, null, "ACTIVE", 1, 20, "createdAt", "desc");
 
@@ -904,7 +904,7 @@ class ProcessModelingControllerTest {
 
         var all = controller.listMaterials(null, null, null, null, null, 1, 20, "createdAt", "desc");
         assertThat(all.getData().getContent()).extracting("status")
-                .containsExactly("DISABLED", "PENDING", "ACTIVE");
+                .containsExactly("EXPIRED", "EXPIRED", "ACTIVE");
     }
 
     @Test
@@ -962,7 +962,7 @@ class ProcessModelingControllerTest {
         assertThat(version.getRouteId()).isEqualTo(81001L);
         assertThat(version.getVersion()).isEqualTo("V1.0");
         assertThat(version.getDescription()).isEqualTo("首版路线说明");
-        assertThat(version.getVersionStatus()).isEqualTo("DRAFT");
+        assertThat(version.getVersionStatus()).isEqualTo("ACTIVE");
         assertThat(version.getCreatedBy()).isEqualTo("系统管理员");
     }
 
@@ -973,7 +973,6 @@ class ProcessModelingControllerTest {
                 .tenantId("default")
                 .code("RT-001")
                 .name("通用路线")
-                .latestVersionId(344346908514107393L)
                 .versions(List.of(RouteVersion.builder()
                         .id(344346908514107393L)
                         .routeId(344346908514107392L)
@@ -984,8 +983,8 @@ class ProcessModelingControllerTest {
         String json = objectMapper.writeValueAsString(route);
 
         assertThat(json).contains("\"id\":\"344346908514107392\"");
-        assertThat(json).contains("\"latestVersionId\":\"344346908514107393\"");
         assertThat(json).contains("\"routeId\":\"344346908514107392\"");
+        assertThat(objectMapper.readTree(json).get("versions").get(0).get("id").asText()).isEqualTo("344346908514107393");
     }
 
     @Test
@@ -1021,8 +1020,6 @@ class ProcessModelingControllerTest {
 
         Route row = response.getData().getContent().getFirst();
         assertThat(row.getVersionCount()).isEqualTo(2);
-        assertThat(row.getLatestVersionId()).isEqualTo(82012L);
-        assertThat(row.getLatestVersion()).isEqualTo("V2.0");
         assertThat(row.getVersions()).extracting(RouteVersion::getVersion).containsExactly("V2.0", "V1.0");
     }
 
@@ -1061,10 +1058,9 @@ class ProcessModelingControllerTest {
         var response = controller.listRoutes(null, null, 1, 20, "createdAt", "desc");
 
         Route row = response.getData().getContent().getFirst();
-        assertThat(row.getStatus()).isEqualTo("PENDING");
-        assertThat(row.getLatestVersionStatus()).isEqualTo("PENDING");
+        assertThat(row.getStatus()).isEqualTo("EXPIRED");
         assertThat(row.getVersions()).extracting(RouteVersion::getVersionStatus)
-                .containsExactly("PENDING", "EXPIRED");
+                .containsExactly("EXPIRED", "EXPIRED");
     }
 
     @Test

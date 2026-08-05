@@ -1,10 +1,26 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
-  Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Pagination,
+  Box,
+  Typography,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Pagination,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import PageHeader from '@/components/PageHeader';
 import ConfirmDialog from '@/components/ConfirmDialog';
@@ -136,7 +152,7 @@ export default function SopDocumentPage() {
         </Box>
       )}
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? '编辑' : '新增'}SOP 文档</DialogTitle>
         <DialogContent>
           <TextField label="编码" fullWidth margin="dense" value={form.code ?? ''}
@@ -154,7 +170,7 @@ export default function SopDocumentPage() {
             {createMutation.isPending || updateMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <ConfirmDialog
         open={deleteTarget !== null}

@@ -1,5 +1,15 @@
-import { type DragEvent as ReactDragEvent, type PointerEvent as ReactPointerEvent, type ReactNode, type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type DragEvent as ReactDragEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+  type SyntheticEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState } from 'react';
+import { useMutation,
+  useQuery,
+  useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
   Box,
@@ -7,7 +17,6 @@ import {
   Checkbox,
   Chip,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -21,6 +30,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import {
   Add,
   Delete,
@@ -723,7 +733,7 @@ export default function IconManagementPage() {
         </Stack>
       </Box>
 
-      <Dialog open={groupDialog.open} onClose={() => setGroupDialog((current) => ({ ...current, open: false }))} fullWidth maxWidth="xs">
+      <AppDialog open={groupDialog.open} onClose={() => setGroupDialog((current) => ({ ...current, open: false }))} fullWidth maxWidth="xs">
         <DialogTitle>{groupDialog.mode === 'edit' ? '重命名分组' : '新增分组'}</DialogTitle>
         <DialogContent dividers>
           <TextField
@@ -739,9 +749,9 @@ export default function IconManagementPage() {
           <Button onClick={() => setGroupDialog((current) => ({ ...current, open: false }))}>取消</Button>
           <Button variant="contained" onClick={() => groupSaveMutation.mutate()} disabled={groupSaveMutation.isPending}>保存</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} fullWidth maxWidth="sm">
+      <AppDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>上传图标说明</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1}>
@@ -754,9 +764,9 @@ export default function IconManagementPage() {
           <Button onClick={() => setUploadDialogOpen(false)}>取消</Button>
           <Button variant="contained" onClick={confirmUploadDialog}>选择文件</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteGroupConfirm.open} onClose={() => setDeleteGroupConfirm({ open: false })} fullWidth maxWidth="xs">
+      <AppDialog open={deleteGroupConfirm.open} onClose={() => setDeleteGroupConfirm({ open: false })} fullWidth maxWidth="xs">
         <DialogTitle>删除图标分组</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.25}>
@@ -772,7 +782,7 @@ export default function IconManagementPage() {
           <Button onClick={() => setDeleteGroupConfirm({ open: false })}>取消</Button>
           <Button color="error" variant="contained" onClick={confirmCascadeDeleteGroup} disabled={groupDeleteMutation.isPending}>确认删除</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <Alert severity={snackbar.severity} onClose={handleSnackbarClose} sx={{ width: '100%' }}>{snackbar.message}</Alert>

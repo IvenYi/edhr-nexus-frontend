@@ -12,7 +12,7 @@ import {
   NoteAddOutlined,
   PostAddRounded,
   SearchRounded,
-} from '@mui/icons-material';
+  } from '@mui/icons-material';
 import {
   Alert,
   Box,
@@ -20,7 +20,6 @@ import {
   Checkbox,
   CircularProgress,
   Collapse,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -41,6 +40,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
+import StatusBadge from '@/components/StatusBadge';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState, type MouseEvent, type ReactElement } from 'react';
 import {
@@ -58,6 +59,7 @@ import {
 } from '@/api/template-modeling';
 import { parseReactTemplateDesignerDocument } from './template-designer-react/utils/document';
 import type { CanvasNode, CanvasPage, CanvasSelectionRange, TemplateDesignerDocument } from './template-designer-react/types';
+import { getRdoVersionStatusMeta } from '@/utils/rdoVersionStatus';
 
 interface DirectoryNode extends DhrDirectoryRecord {
   children: DirectoryNode[];
@@ -257,22 +259,6 @@ function readNumber(value: unknown, fallback: number) {
   return Number.isFinite(number) ? number : fallback;
 }
 
-function versionStatusLabel(status?: string | null) {
-  if (status === 'ACTIVE') return '启用';
-  if (status === 'PENDING') return '待生效';
-  if (status === 'EXPIRED') return '已失效';
-  if (status === 'DISABLED') return '禁用';
-  if (status === 'DRAFT') return '草稿';
-  return status || '-';
-}
-
-function versionStatusSx(status?: string | null) {
-  if (status === 'ACTIVE') return { color: '#1f8f4d', bgcolor: '#f0f9eb', borderColor: '#b7eb8f' };
-  if (status === 'PENDING') return { color: '#b88230', bgcolor: '#fdf6ec', borderColor: '#f3d19e' };
-  if (status === 'EXPIRED' || status === 'DISABLED') return { color: '#c45656', bgcolor: '#fef0f0', borderColor: '#fab6b6' };
-  return { color: '#606266', bgcolor: '#f4f4f5', borderColor: '#dcdfe6' };
-}
-
 function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
   const value = node.style.cellRange;
   if (!value || typeof value !== 'object') return null;
@@ -413,7 +399,7 @@ export default function DhrTemplateWorkspaceDialog({
   const selectedEvidence = items.find((item) => item.id === selectedEvidenceId) ?? null;
   const directoryTree = useMemo(() => buildDirectoryTree(directories, items), [directories, items]);
   const visibleDirectoryTree = useMemo(() => filterDirectoryTree(directoryTree, directorySearch), [directorySearch, directoryTree]);
-  const editable = selectedVersion?.status === 'DRAFT';
+  const editable = Boolean(selectedVersion);
   const selectedTreeNode = selectedEvidence ? { kind: 'form' as const, id: selectedEvidence.id } : selectedDirectory ? { kind: 'directory' as const, id: selectedDirectory.id } : null;
   const formPreviewQuery = useQuery({
     queryKey: ['dhr-referenced-form-version', selectedEvidence?.formTemplateId, selectedEvidence?.formTemplateVersionId],
@@ -705,7 +691,7 @@ export default function DhrTemplateWorkspaceDialog({
   };
 
   return (
-    <Dialog open={open} onClose={requestClose} fullScreen PaperProps={{ sx: { borderRadius: 0, bgcolor: '#f6f8f9' } }}>
+    <AppDialog hideCloseButton open={open} onClose={requestClose} fullScreen PaperProps={{ sx: { borderRadius: 0, bgcolor: '#f6f8f9' } }}>
       <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Box sx={{ minHeight: 56, px: 2, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <Typography sx={{ color: '#303133', fontSize: 16, fontWeight: 600, mr: 'auto' }}>批记录模板设计</Typography>
@@ -726,10 +712,8 @@ export default function DhrTemplateWorkspaceDialog({
               基本信息
             </Button>
             <Stack direction="row" alignItems="center" spacing={0.75} sx={{ ml: 1.25, minWidth: 0 }}>
-              <Typography noWrap sx={{ color: '#606266', fontSize: 13 }}>当前版本 {selectedVersion?.version ?? '-'}</Typography>
-              <Box sx={{ flexShrink: 0, px: 0.75, py: 0.15, border: '1px solid', borderRadius: '3px', fontSize: 12, lineHeight: 1.45, ...versionStatusSx(selectedVersion?.status) }}>
-                {versionStatusLabel(selectedVersion?.status)}
-              </Box>
+              <Typography noWrap sx={{ color: '#606266', fontSize: 13 }}>设计版本 {selectedVersion?.version ?? '-'}</Typography>
+              <StatusBadge {...getRdoVersionStatusMeta(selectedVersion?.status)} />
             </Stack>
           </Stack>
           <Box sx={{ px: 2, py: 1.5, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', columnGap: 4, rowGap: 1.5 }}>
@@ -739,7 +723,7 @@ export default function DhrTemplateWorkspaceDialog({
           </Box>
           <Collapse in={basicInfoExpanded} timeout="auto">
             <Box sx={{ px: 2, pb: 1.75, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', columnGap: 4, rowGap: 1.5 }}>
-              <Box><Typography variant="caption" sx={{ color: '#909399' }}>版本状态</Typography><Box sx={{ mt: 0.25, width: 'fit-content', px: 0.85, py: 0.2, border: '1px solid', borderRadius: '3px', fontSize: 12, lineHeight: 1.45, ...versionStatusSx(selectedVersion?.status) }}>{versionStatusLabel(selectedVersion?.status)}</Box></Box>
+              <Box><Typography variant="caption" sx={{ color: '#909399' }}>版本状态</Typography><Box sx={{ mt: 0.25 }}><StatusBadge {...getRdoVersionStatusMeta(selectedVersion?.status)} /></Box></Box>
               <Box><Typography variant="caption" sx={{ color: '#909399' }}>生效时间</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.effectiveFrom || '未设置'}</Typography></Box>
               <Box><Typography variant="caption" sx={{ color: '#909399' }}>失效时间</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.effectiveTo || '未设置'}</Typography></Box>
               <Box><Typography variant="caption" sx={{ color: '#909399' }}>线下版本</Typography><Typography noWrap sx={{ color: '#303133', fontSize: 14 }}>{selectedVersion?.offlineVersion || '未填写'}</Typography></Box>
@@ -788,13 +772,12 @@ export default function DhrTemplateWorkspaceDialog({
         </Stack>
       </Box>
 
-      <Dialog open={Boolean(directoryDialog)} onClose={() => setDirectoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{directoryDialog?.mode === 'edit' ? '重命名目录' : '新增目录'}</DialogTitle><DialogContent dividers><TextField autoFocus fullWidth required size="small" label="目录名称" value={directoryName} onChange={(event) => setDirectoryName(event.target.value)} sx={{ mt: 0.5, '& .MuiInputBase-root': { height: 40 } }} /></DialogContent><DialogActions><Button onClick={() => setDirectoryDialog(null)}>取消</Button><Button variant="contained" disabled={!directoryName.trim()} onClick={stageDirectory}>确定</Button></DialogActions></Dialog>
-      <Dialog open={Boolean(deleteDirectoryTarget)} onClose={() => setDeleteDirectoryTarget(null)} fullWidth maxWidth="xs"><DialogTitle>删除目录</DialogTitle><DialogContent dividers><Typography>确认删除“{deleteDirectoryTarget?.name}”？</Typography></DialogContent><DialogActions><Button onClick={() => setDeleteDirectoryTarget(null)}>取消</Button><Button color="error" variant="contained" onClick={stageDeleteDirectory}>删除</Button></DialogActions></Dialog>
+      <AppDialog open={Boolean(directoryDialog)} onClose={() => setDirectoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{directoryDialog?.mode === 'edit' ? '重命名目录' : '新增目录'}</DialogTitle><DialogContent dividers><TextField autoFocus fullWidth required size="small" label="目录名称" value={directoryName} onChange={(event) => setDirectoryName(event.target.value)} sx={{ mt: 0.5, '& .MuiInputBase-root': { height: 40 } }} /></DialogContent><DialogActions><Button onClick={() => setDirectoryDialog(null)}>取消</Button><Button variant="contained" disabled={!directoryName.trim()} onClick={stageDirectory}>确定</Button></DialogActions></AppDialog>
+      <AppDialog open={Boolean(deleteDirectoryTarget)} onClose={() => setDeleteDirectoryTarget(null)} fullWidth maxWidth="xs"><DialogTitle>删除目录</DialogTitle><DialogContent dividers><Typography>确认删除“{deleteDirectoryTarget?.name}”？</Typography></DialogContent><DialogActions><Button onClick={() => setDeleteDirectoryTarget(null)}>取消</Button><Button color="error" variant="contained" onClick={stageDeleteDirectory}>删除</Button></DialogActions></AppDialog>
 
-      <Dialog open={addEvidenceOpen} onClose={() => setAddEvidenceOpen(false)} fullWidth maxWidth="xl" PaperProps={{ sx: { width: 'min(1280px, calc(100vw - 64px))', height: 'min(78vh, 760px)', maxHeight: 'calc(100vh - 64px)' } }}>
+      <AppDialog open={addEvidenceOpen} onClose={() => setAddEvidenceOpen(false)} fullWidth maxWidth="xl" PaperProps={{ sx: { width: 'min(1280px, calc(100vw - 64px))', height: 'min(78vh, 760px)', maxHeight: 'calc(100vh - 64px)' } }}>
         <DialogTitle sx={{ minHeight: 58, px: 2.5, py: 0, display: 'flex', alignItems: 'center', borderBottom: '1px solid #e4e7ed' }}>
           <Typography sx={{ color: '#303133', fontSize: 17, fontWeight: 600 }}>批量引用表单</Typography>
-          <Tooltip title="关闭" arrow><IconButton aria-label="关闭引用表单" onClick={() => setAddEvidenceOpen(false)} sx={{ ml: 'auto' }}><CloseRounded /></IconButton></Tooltip>
         </DialogTitle>
         <DialogContent dividers sx={{ minHeight: 0, p: 0, display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 310px', overflow: 'hidden' }}>
           <Box sx={{ minWidth: 0, minHeight: 0, p: 2.25, display: 'flex', flexDirection: 'column' }}>
@@ -816,7 +799,7 @@ export default function DhrTemplateWorkspaceDialog({
                   const expanded = expandedFormTemplateIds.has(option.templateId);
                   const categoryName = option.categoryName?.trim() || '未分类';
                   const parentCheckboxDisabled = alreadyReferenced || referenceableVersions.length !== 1;
-                  const parentCheckboxTooltip = alreadyReferenced ? '当前目录已引用该表单' : referenceableVersions.length === 0 ? '没有可引用的启用版本' : referenceableVersions.length === 1 ? '选择启用版本' : '请展开选择具体版本';
+                  const parentCheckboxTooltip = alreadyReferenced ? '当前目录已引用该表单' : referenceableVersions.length === 0 ? '没有可引用的生效版本' : referenceableVersions.length === 1 ? '选择生效版本' : '请展开选择具体版本';
                   const parentRow = <TableRow key={option.templateId} hover selected={selected} onClick={() => toggleFormTemplateExpanded(option)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': { height: 44, borderBottom: expanded ? 'none' : undefined } }}>
                     <TableCell padding="checkbox" onClick={(event) => event.stopPropagation()}><Tooltip title={parentCheckboxTooltip} arrow><span><Checkbox size="small" checked={referenceableVersions.length === 1 && selectedVersionCount === 1} indeterminate={referenceableVersions.length > 1 && selectedVersionCount > 0} disabled={parentCheckboxDisabled} onChange={() => toggleTemplateSelection(option)} /></span></Tooltip></TableCell>
                     <TableCell><Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}><IconButton size="small" aria-label={expanded ? `收起${option.name}版本` : `展开${option.name}版本`} onClick={(event) => { event.stopPropagation(); toggleFormTemplateExpanded(option); }} sx={{ width: 24, height: 24 }}>{expanded ? <ExpandMoreRounded fontSize="small" /> : <ChevronRightRounded fontSize="small" />}</IconButton><Typography noWrap sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', fontSize: 14, fontWeight: 600 }}>{option.name}</Typography>{alreadyReferenced ? <Typography component="span" sx={{ flexShrink: 0, color: '#909399', fontSize: 12 }}>已引用</Typography> : null}</Stack></TableCell>
@@ -825,10 +808,10 @@ export default function DhrTemplateWorkspaceDialog({
                   const versionRows = expanded ? option.versions.map((version) => {
                     const unavailable = alreadyReferenced || !version.referenceable;
                     const selectedVersion = selectedFormOptions.has(version.versionId);
-                    const unavailableReason = alreadyReferenced ? '当前目录已引用该表单' : '仅可引用已启用版本';
+                    const unavailableReason = alreadyReferenced ? '当前目录已引用该表单' : '仅可引用生效中的版本';
                     return <TableRow key={version.versionId} hover selected={selectedVersion} onClick={() => toggleFormVersionSelection(option, version)} sx={{ cursor: unavailable ? 'not-allowed' : 'pointer', opacity: unavailable && !selectedVersion ? 0.62 : 1, '& .MuiTableCell-root': { height: 40, bgcolor: selectedVersion ? '#e8f4ff' : '#fbfcfe' } }}>
                       <TableCell padding="checkbox" onClick={(event) => event.stopPropagation()}><Tooltip title={unavailable ? unavailableReason : '选择版本'} arrow><span><Checkbox size="small" checked={selectedVersion} disabled={unavailable} onChange={() => toggleFormVersionSelection(option, version)} /></span></Tooltip></TableCell>
-                      <TableCell><Stack direction="row" spacing={0.75} alignItems="center" sx={{ pl: 4 }}><Typography sx={{ color: '#303133', fontSize: 13 }}>{version.version || '-'}</Typography>{!version.referenceable ? <Typography sx={{ color: '#909399', fontSize: 12 }}>{versionStatusLabel(version.status)}</Typography> : null}</Stack></TableCell>
+                      <TableCell><Stack direction="row" spacing={0.75} alignItems="center" sx={{ pl: 4 }}><Typography sx={{ color: '#303133', fontSize: 13 }}>{version.version || '-'}</Typography>{!version.referenceable ? <Typography sx={{ color: '#909399', fontSize: 12 }}>{getRdoVersionStatusMeta(version.status).label}</Typography> : null}</Stack></TableCell>
                       <TableCell>--</TableCell><TableCell>--</TableCell><TableCell>--</TableCell>
                     </TableRow>;
                   }) : [];
@@ -843,9 +826,9 @@ export default function DhrTemplateWorkspaceDialog({
           </Box>
         </DialogContent>
         <DialogActions sx={{ minHeight: 62, px: 2.5, borderTop: '1px solid #e4e7ed' }}><Button onClick={() => setAddEvidenceOpen(false)}>取消</Button><Button variant="contained" disabled={!selectedFormReferences.length} onClick={stageEvidence}>确认引用{selectedFormReferences.length ? ` (${selectedFormReferences.length})` : ''}</Button></DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={Boolean(editEvidenceTarget)} onClose={() => setEditEvidenceTarget(null)} fullWidth maxWidth="sm">
+      <AppDialog open={Boolean(editEvidenceTarget)} onClose={() => setEditEvidenceTarget(null)} fullWidth maxWidth="sm">
         <DialogTitle>编辑表单</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={2} sx={{ pt: 0.5 }}>
@@ -860,10 +843,10 @@ export default function DhrTemplateWorkspaceDialog({
           </Stack>
         </DialogContent>
         <DialogActions><Button onClick={() => setEditEvidenceTarget(null)}>取消</Button><Button variant="contained" disabled={!evidenceDisplayName.trim()} onClick={stageEvidenceDisplayName}>确定</Button></DialogActions>
-      </Dialog>
-      <Dialog open={Boolean(deleteEvidenceId)} onClose={() => setDeleteEvidenceId(null)} fullWidth maxWidth="xs"><DialogTitle>移除引用表单</DialogTitle><DialogContent dividers><Typography>确认移除该引用表单？</Typography></DialogContent><DialogActions><Button onClick={() => setDeleteEvidenceId(null)}>取消</Button><Button color="error" variant="contained" onClick={stageDeleteEvidence}>移除</Button></DialogActions></Dialog>
-      <Dialog open={discardConfirm} onClose={() => setDiscardConfirm(false)} fullWidth maxWidth="xs"><DialogTitle>放弃未保存的修改</DialogTitle><DialogContent dividers><Typography>目录和表单引用的修改尚未保存，确认放弃吗？</Typography></DialogContent><DialogActions><Button onClick={() => setDiscardConfirm(false)}>继续编辑</Button><Button color="error" variant="contained" onClick={onClose}>放弃修改</Button></DialogActions></Dialog>
+      </AppDialog>
+      <AppDialog open={Boolean(deleteEvidenceId)} onClose={() => setDeleteEvidenceId(null)} fullWidth maxWidth="xs"><DialogTitle>移除引用表单</DialogTitle><DialogContent dividers><Typography>确认移除该引用表单？</Typography></DialogContent><DialogActions><Button onClick={() => setDeleteEvidenceId(null)}>取消</Button><Button color="error" variant="contained" onClick={stageDeleteEvidence}>移除</Button></DialogActions></AppDialog>
+      <AppDialog open={discardConfirm} onClose={() => setDiscardConfirm(false)} fullWidth maxWidth="xs"><DialogTitle>放弃未保存的修改</DialogTitle><DialogContent dividers><Typography>目录和表单引用的修改尚未保存，确认放弃吗？</Typography></DialogContent><DialogActions><Button onClick={() => setDiscardConfirm(false)}>继续编辑</Button><Button color="error" variant="contained" onClick={onClose}>放弃修改</Button></DialogActions></AppDialog>
       <Snackbar open={snackbar.open} autoHideDuration={3500} onClose={() => setSnackbar((current) => ({ ...current, open: false }))} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity={snackbar.severity} onClose={() => setSnackbar((current) => ({ ...current, open: false }))}>{snackbar.message}</Alert></Snackbar>
-    </Dialog>
+    </AppDialog>
   );
 }

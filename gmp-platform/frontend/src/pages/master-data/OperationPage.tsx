@@ -1,10 +1,29 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
-  Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Pagination, Snackbar, Alert, CircularProgress,
+  Box,
+  Typography,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Pagination,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { getOperations, createOperation, updateOperation, deleteOperation } from '@/api/master-data';
 import type { PageResult } from '@/types/common';
@@ -87,7 +106,7 @@ export default function OperationPage() {
         </Table>
       </TableContainer>
       {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑工序' : '新增工序'}</DialogTitle>
         <DialogContent>
           <TextField label="编码" fullWidth margin="normal" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
@@ -98,14 +117,14 @@ export default function OperationPage() {
           <Button onClick={() => setOpen(false)}>取消</Button>
           <Button variant="contained" onClick={() => saveMutation.mutate(form)} disabled={!form.code || !form.name || saveMutation.isPending}>保存</Button>
         </DialogActions>
-      </Dialog>
-      <Dialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
+      </AppDialog>
+      <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle><DialogContent>确定要删除该工序吗？</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirm(null)}>取消</Button>
           <Button color="error" variant="contained" onClick={() => { if (deleteConfirm) { deleteMutation.mutate(deleteConfirm); setDeleteConfirm(null); } }}>删除</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
         <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>{snackbar.message}</Alert>
       </Snackbar>

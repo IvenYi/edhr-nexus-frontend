@@ -10,6 +10,7 @@ import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.common.util.RdoVersionStatusResolver;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.template.dto.TemplateModelingRequest;
@@ -105,7 +106,7 @@ public class TemplateModelingController {
                 formTemplateSpec(keyword, name, code, categoryName, status),
                 pageable(page, size, sort, order));
         List<FormTemplateResponse> content = result.getContent().stream()
-                .map(template -> toFormTemplateResponse(template, loadCurrentVersion(template), loadTemplateVersions(template.getId())))
+                .map(template -> toFormTemplateResponse(template, loadTemplateVersions(template.getId())))
                 .toList();
         return ApiResponse.success(PageResult.of(content, page, size, result.getTotalElements()));
     }
@@ -131,18 +132,17 @@ public class TemplateModelingController {
                 .type(FORM_TYPE)
                 .categoryName(resolveTemplateCategory(FORM_TYPE, request))
                 .description(trimToNull(request.getDescription()))
-                .status(resolveStatus(request, "ACTIVE"))
+                .status("ACTIVE")
                 .createdBy(currentOperatorName())
                 .createdAt(now)
                 .updatedBy(currentOperatorName())
                 .updatedAt(now)
                 .build();
         FormTemplate saved = formTemplateRepository.save(entity);
-        FormTemplateVersion version = formTemplateVersionRepository.save(buildFormTemplateVersion(saved.getId(), request, 1, true));
-        saved.setCurrentVersionId(version.getId());
-        saved = formTemplateRepository.save(saved);
-        writeAudit("FORM_TEMPLATE", saved.getId(), "CREATE", "表单模板", "新增表单模板", Map.of(), formTemplateSnapshot(saved, version));
-        return ApiResponse.success(toFormTemplateResponse(saved, version));
+        FormTemplateVersion version = formTemplateVersionRepository.save(buildFormTemplateVersion(saved.getId(), request, 1));
+        writeAudit("FORM_TEMPLATE", saved.getId(), "CREATE", "表单模板", "新增表单模板", Map.of(), formTemplateSnapshot(saved));
+        writeAudit("FORM_TEMPLATE_VERSION", version.getId(), "CREATE", "表单模板", "新增初始表单模板版本", Map.of(), versionSnapshot(version));
+        return ApiResponse.success(toFormTemplateResponse(saved, List.of(version)));
     }
 
     @PutMapping("/form-templates/{id}")
@@ -152,20 +152,16 @@ public class TemplateModelingController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
         String code = requireCode(request);
         ensureFormTemplateCodeAvailable(code, id);
-        FormTemplateVersion version = loadCurrentVersion(existing);
-        validateEffectiveDateRange(request, version);
-        Map<String, Object> before = formTemplateSnapshot(existing, version);
+        Map<String, Object> before = formTemplateSnapshot(existing);
         existing.setCode(code);
         existing.setName(requireName(request));
         existing.setCategoryName(resolveTemplateCategory(FORM_TYPE, request));
         existing.setDescription(trimToNull(request.getDescription()));
-        existing.setStatus(resolveStatus(request, existing.getStatus()));
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
         FormTemplate saved = formTemplateRepository.save(existing);
-        FormTemplateVersion savedVersion = updateCurrentVersionBasics(saved, version, request);
-        writeChangedAudit("FORM_TEMPLATE", saved.getId(), "表单模板", "编辑表单模板", before, formTemplateSnapshot(saved, savedVersion));
-        return ApiResponse.success(toFormTemplateResponse(saved, savedVersion));
+        writeChangedAudit("FORM_TEMPLATE", saved.getId(), "表单模板", "编辑表单模板", before, formTemplateSnapshot(saved));
+        return ApiResponse.success(toFormTemplateResponse(saved, loadTemplateVersions(saved.getId())));
     }
 
     @DeleteMapping("/form-templates/{id}")
@@ -173,9 +169,8 @@ public class TemplateModelingController {
     public ApiResponse<Void> deleteFormTemplate(@PathVariable Long id) {
         FormTemplate existing = formTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
-        FormTemplateVersion currentVersion = loadCurrentVersion(existing);
         List<FormTemplateVersion> versions = loadTemplateVersions(id);
-        Map<String, Object> before = formTemplateSnapshot(existing, currentVersion);
+        Map<String, Object> before = formTemplateSnapshot(existing);
         formTemplateVersionRepository.deleteAll(versions);
         formTemplateRepository.delete(existing);
         writeAudit("FORM_TEMPLATE", id, "DELETE", "表单模板", "删除表单模板", before, Map.of());
@@ -189,7 +184,7 @@ public class TemplateModelingController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
         ensureFormTemplateVersionAvailable(template.getId(), requireVersion(request));
         validateEffectiveDateRange(request);
-        FormTemplateVersion version = formTemplateVersionRepository.save(buildFormTemplateVersion(template.getId(), request, nextVersionNumber(template.getId()), false));
+        FormTemplateVersion version = formTemplateVersionRepository.save(buildFormTemplateVersion(template.getId(), request, nextVersionNumber(template.getId())));
         writeAudit("FORM_TEMPLATE_VERSION", version.getId(), "CREATE", "表单模板", "版本创建", Map.of(), versionSnapshot(version));
         return ApiResponse.success(toVersionResponse(version));
     }
@@ -199,6 +194,30 @@ public class TemplateModelingController {
         formTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
         return ApiResponse.success(toVersionResponse(findVersion(id, versionId)));
+    }
+
+    @PutMapping("/form-templates/{id}/versions/{versionId}")
+    @Transactional
+    public ApiResponse<TemplateVersionResponse> updateFormTemplateVersion(
+            @PathVariable Long id,
+            @PathVariable Long versionId,
+            @RequestBody TemplateModelingRequest request) {
+        formTemplateRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
+        FormTemplateVersion version = findVersion(id, versionId);
+        String versionLabel = requireVersion(request);
+        ensureFormTemplateVersionAvailable(id, versionLabel, versionId);
+        validateEffectiveDateRange(request);
+        Map<String, Object> before = versionSnapshot(version);
+        version.setVersion(versionLabel);
+        version.setDescription(trimToNull(request.getVersionDescription()));
+        version.setEffectiveFrom(parseDateTime(request.getEffectiveFrom()));
+        version.setEffectiveTo(parseDateTime(request.getEffectiveTo()));
+        version.setUpdatedBy(currentOperatorName());
+        version.setUpdatedAt(LocalDateTime.now());
+        FormTemplateVersion saved = formTemplateVersionRepository.save(version);
+        writeChangedAudit("FORM_TEMPLATE_VERSION", saved.getId(), "表单模板", "编辑表单模板版本", before, versionSnapshot(saved));
+        return ApiResponse.success(toVersionResponse(saved));
     }
 
     @PutMapping("/form-templates/{id}/versions/{versionId}/design")
@@ -232,7 +251,7 @@ public class TemplateModelingController {
     @DeleteMapping("/form-templates/{id}/versions/{versionId}")
     @Transactional
     public ApiResponse<Void> deleteFormTemplateVersion(@PathVariable Long id, @PathVariable Long versionId) {
-        FormTemplate template = formTemplateRepository.findById(id)
+        formTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
         List<FormTemplateVersion> versions = loadTemplateVersions(id);
         if (versions.size() <= 1) {
@@ -244,20 +263,6 @@ public class TemplateModelingController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板版本不存在"));
         Map<String, Object> before = versionSnapshot(target);
         formTemplateVersionRepository.delete(target);
-        if (Objects.equals(template.getCurrentVersionId(), target.getId())) {
-            FormTemplateVersion replacement = versions.stream()
-                    .filter(version -> !Objects.equals(version.getId(), target.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板至少保留一个版本"));
-            replacement.setIsCurrent(true);
-            replacement.setUpdatedBy(currentOperatorName());
-            replacement.setUpdatedAt(LocalDateTime.now());
-            formTemplateVersionRepository.save(replacement);
-            template.setCurrentVersionId(replacement.getId());
-            template.setUpdatedBy(currentOperatorName());
-            template.setUpdatedAt(LocalDateTime.now());
-            formTemplateRepository.save(template);
-        }
         writeAudit("FORM_TEMPLATE_VERSION", target.getId(), "DELETE", "表单模板", "删除表单模板版本", before, Map.of());
         return ApiResponse.success(null);
     }
@@ -320,7 +325,7 @@ public class TemplateModelingController {
                 .name(requireName(request))
                 .categoryName(resolveTemplateCategory(DHR_TYPE, request))
                 .description(trimToNull(request.getDescription()))
-                .status("DRAFT")
+                .status("ACTIVE")
                 .createdBy(currentOperatorName())
                 .createdAt(now)
                 .updatedBy(currentOperatorName())
@@ -337,8 +342,6 @@ public class TemplateModelingController {
                 .description(trimToNull(request.getVersionDescription()))
                 .effectiveFrom(parseDateTime(request.getEffectiveFrom()))
                 .effectiveTo(parseDateTime(request.getEffectiveTo()))
-                .status("DRAFT")
-                .isCurrent(false)
                 .createdAt(now)
                 .build());
         writeAudit("DHR_TEMPLATE", saved.getId(), "CREATE", "批记录模板", "新增批记录模板", Map.of(), dhrTemplateSnapshot(saved));
@@ -370,9 +373,6 @@ public class TemplateModelingController {
         DhrTemplate existing = dhrTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "批记录模板不存在"));
         List<DhrTemplateVersion> versions = dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(id);
-        if (versions.stream().anyMatch(version -> "ACTIVE".equals(version.getStatus()) || Boolean.TRUE.equals(version.getIsCurrent()))) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "已启用版本不可删除，请通过新建版本受控更新");
-        }
         List<DhrDirectory> directories = versions.stream()
                 .flatMap(version -> dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(version.getId()).stream())
                 .toList();
@@ -507,11 +507,22 @@ public class TemplateModelingController {
             addCategoryPredicate(categoryName, root.get("categoryName"), predicates, cb);
             if (StringUtils.hasText(status) && !"ALL".equals(status)) {
                 jakarta.persistence.criteria.Subquery<Long> versionSubquery = query.subquery(Long.class);
-                jakarta.persistence.criteria.Root<DhrTemplateVersion> versionRoot = versionSubquery.from(DhrTemplateVersion.class);
-                versionSubquery.select(versionRoot.get("dhrTemplateId"));
-                versionSubquery.where(
-                        cb.equal(versionRoot.get("dhrTemplateId"), root.get("id")),
-                        cb.equal(versionRoot.get("status"), status.trim()));
+                jakarta.persistence.criteria.Root<FormTemplateVersion> versionRoot = versionSubquery.from(FormTemplateVersion.class);
+                LocalDateTime now = LocalDateTime.now();
+                List<jakarta.persistence.criteria.Predicate> versionPredicates = new ArrayList<>();
+                versionPredicates.add(cb.equal(versionRoot.get("templateId"), root.get("id")));
+                if (RdoVersionStatusResolver.ACTIVE.equals(status.trim())) {
+                    versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveFrom")), cb.lessThanOrEqualTo(versionRoot.get("effectiveFrom"), now)));
+                    versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveTo")), cb.greaterThan(versionRoot.get("effectiveTo"), now)));
+                } else if (RdoVersionStatusResolver.EXPIRED.equals(status.trim())) {
+                    versionPredicates.add(cb.or(
+                            cb.greaterThan(versionRoot.get("effectiveFrom"), now),
+                            cb.lessThanOrEqualTo(versionRoot.get("effectiveTo"), now)));
+                } else {
+                    return cb.disjunction();
+                }
+                versionSubquery.select(versionRoot.get("templateId"));
+                versionSubquery.where(cb.and(versionPredicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
                 predicates.add(root.get("id").in(versionSubquery));
             }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
@@ -565,16 +576,6 @@ public class TemplateModelingController {
         predicates.add(cb.equal(categoryPath, categoryName.trim()));
     }
 
-    private void addStatusPredicate(
-            String status,
-            jakarta.persistence.criteria.Path<String> statusPath,
-            List<jakarta.persistence.criteria.Predicate> predicates,
-            jakarta.persistence.criteria.CriteriaBuilder cb) {
-        if (StringUtils.hasText(status) && !"ALL".equals(status)) {
-            predicates.add(cb.equal(statusPath, status.trim()));
-        }
-    }
-
     private void addDhrVersionStatusPredicate(
             String status,
             jakarta.persistence.criteria.Root<DhrTemplate> root,
@@ -589,18 +590,16 @@ public class TemplateModelingController {
         List<jakarta.persistence.criteria.Predicate> versionPredicates = new ArrayList<>();
         versionPredicates.add(cb.equal(versionRoot.get("dhrTemplateId"), root.get("id")));
 
-        if (DhrTemplateVersionStatusResolver.PENDING.equals(requestedStatus)) {
-            versionPredicates.add(cb.equal(versionRoot.get("status"), DhrTemplateVersionStatusResolver.ACTIVE));
-            versionPredicates.add(cb.greaterThan(versionRoot.get("effectiveFrom"), now));
-        } else if (DhrTemplateVersionStatusResolver.EXPIRED.equals(requestedStatus)) {
-            versionPredicates.add(cb.equal(versionRoot.get("status"), DhrTemplateVersionStatusResolver.ACTIVE));
-            versionPredicates.add(cb.lessThanOrEqualTo(versionRoot.get("effectiveTo"), now));
-        } else if (DhrTemplateVersionStatusResolver.ACTIVE.equals(requestedStatus)) {
-            versionPredicates.add(cb.equal(versionRoot.get("status"), DhrTemplateVersionStatusResolver.ACTIVE));
+        if (RdoVersionStatusResolver.EXPIRED.equals(requestedStatus)) {
+            versionPredicates.add(cb.or(
+                    cb.greaterThan(versionRoot.get("effectiveFrom"), now),
+                    cb.lessThanOrEqualTo(versionRoot.get("effectiveTo"), now)));
+        } else if (RdoVersionStatusResolver.ACTIVE.equals(requestedStatus)) {
             versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveFrom")), cb.lessThanOrEqualTo(versionRoot.get("effectiveFrom"), now)));
             versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveTo")), cb.greaterThan(versionRoot.get("effectiveTo"), now)));
         } else {
-            versionPredicates.add(cb.equal(versionRoot.get("status"), requestedStatus));
+            predicates.add(cb.disjunction());
+            return;
         }
         versionSubquery.select(versionRoot.get("dhrTemplateId"));
         versionSubquery.where(cb.and(versionPredicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
@@ -659,11 +658,6 @@ public class TemplateModelingController {
         return request.getVersion().trim();
     }
 
-    private String resolveStatus(TemplateModelingRequest request, String fallback) {
-        if (request != null && StringUtils.hasText(request.getStatus())) return request.getStatus().trim();
-        return StringUtils.hasText(fallback) ? fallback : "ACTIVE";
-    }
-
     private String resolveTemplateCategory(String type, TemplateModelingRequest request) {
         String category = request == null ? null : trimToNull(request.getCategoryName());
         if (category == null) return null;
@@ -688,10 +682,10 @@ public class TemplateModelingController {
         if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板编码已存在");
     }
 
-    private void ensureDhrVersionCodeAvailable(String code, Long currentVersionId) {
+    private void ensureDhrVersionCodeAvailable(String code, Long excludedVersionId) {
         if (!StringUtils.hasText(code)) return;
         boolean exists = dhrTemplateVersionRepository.findByCodeIgnoreCase(code).stream()
-                .anyMatch(version -> !Objects.equals(version.getId(), currentVersionId));
+                .anyMatch(version -> !Objects.equals(version.getId(), excludedVersionId));
         if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板编码已存在");
     }
 
@@ -713,14 +707,19 @@ public class TemplateModelingController {
     }
 
     private void ensureFormTemplateVersionAvailable(Long templateId, String version) {
+        ensureFormTemplateVersionAvailable(templateId, version, null);
+    }
+
+    private void ensureFormTemplateVersionAvailable(Long templateId, String version, Long excludedVersionId) {
         boolean exists = formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(templateId).stream()
+                .filter(candidate -> !Objects.equals(candidate.getId(), excludedVersionId))
                 .map(FormTemplateVersion::getVersion)
                 .filter(StringUtils::hasText)
                 .anyMatch(existingVersion -> existingVersion.trim().equalsIgnoreCase(version));
         if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板版本已存在");
     }
 
-    private FormTemplateVersion buildFormTemplateVersion(Long templateId, TemplateModelingRequest request, int versionNumber, boolean current) {
+    private FormTemplateVersion buildFormTemplateVersion(Long templateId, TemplateModelingRequest request, int versionNumber) {
         LocalDateTime now = LocalDateTime.now();
         return FormTemplateVersion.builder()
                 .id(idGenerator.nextId())
@@ -731,8 +730,6 @@ public class TemplateModelingController {
                 .description(trimToNull(request.getVersionDescription()))
                 .effectiveFrom(parseDateTime(request.getEffectiveFrom()))
                 .effectiveTo(parseDateTime(request.getEffectiveTo()))
-                .status(resolveStatus(request, "DRAFT"))
-                .isCurrent(current)
                 .importStatus("未导入")
                 .modelDesignJson(defaultModelDesignJson())
                 .canvasDesignJson(defaultCanvasDesignJson())
@@ -744,38 +741,12 @@ public class TemplateModelingController {
                 .build();
     }
 
-    private FormTemplateVersion updateCurrentVersionBasics(FormTemplate template, FormTemplateVersion version, TemplateModelingRequest request) {
-        FormTemplateVersion current = version;
-        if (current == null && request != null && StringUtils.hasText(request.getVersion())) {
-            current = formTemplateVersionRepository.save(buildFormTemplateVersion(template.getId(), request, nextVersionNumber(template.getId()), true));
-            template.setCurrentVersionId(current.getId());
-            formTemplateRepository.save(template);
-            return current;
-        }
-        if (current == null) return null;
-        if (request != null && StringUtils.hasText(request.getVersion())) current.setVersion(request.getVersion().trim());
-        if (request != null && request.getEffectiveFrom() != null) current.setEffectiveFrom(parseDateTime(request.getEffectiveFrom()));
-        if (request != null && request.getEffectiveTo() != null) current.setEffectiveTo(parseDateTime(request.getEffectiveTo()));
-        if (request != null) current.setDescription(trimToNull(request.getVersionDescription()));
-        current.setUpdatedBy(currentOperatorName());
-        current.setUpdatedAt(LocalDateTime.now());
-        return formTemplateVersionRepository.save(current);
-    }
-
     private int nextVersionNumber(Long templateId) {
         return formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(templateId).stream()
                 .map(FormTemplateVersion::getVersionNumber)
                 .filter(Objects::nonNull)
                 .max(Integer::compareTo)
                 .orElse(0) + 1;
-    }
-
-    private FormTemplateVersion loadCurrentVersion(FormTemplate template) {
-        if (template == null) return null;
-        if (template.getCurrentVersionId() != null) {
-            return formTemplateVersionRepository.findByIdAndTemplateId(template.getCurrentVersionId(), template.getId()).orElse(null);
-        }
-        return formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(template.getId()).stream().findFirst().orElse(null);
     }
 
     private List<FormTemplateVersion> loadTemplateVersions(Long templateId) {
@@ -907,16 +878,12 @@ public class TemplateModelingController {
         }
     }
 
-    private Map<String, Object> formTemplateSnapshot(FormTemplate entity, FormTemplateVersion version) {
+    private Map<String, Object> formTemplateSnapshot(FormTemplate entity) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("templateCode", entity.getCode());
         snapshot.put("templateName", entity.getName());
         snapshot.put("templateCategory", entity.getCategoryName());
         snapshot.put("description", entity.getDescription());
-        snapshot.put("currentVersion", version == null ? null : version.getVersion());
-        snapshot.put("effectiveFrom", version == null ? null : formatDateTime(version.getEffectiveFrom()));
-        snapshot.put("effectiveTo", version == null ? null : formatDateTime(version.getEffectiveTo()));
-        snapshot.put("status", entity.getStatus());
         snapshot.put("createdBy", entity.getCreatedBy());
         snapshot.put("createdAt", entity.getCreatedAt());
         snapshot.put("updatedBy", entity.getUpdatedBy());
@@ -926,7 +893,7 @@ public class TemplateModelingController {
 
     private Map<String, Object> versionSnapshot(FormTemplateVersion entity) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
-        snapshot.put("currentVersion", entity.getVersion());
+        snapshot.put("version", entity.getVersion());
         snapshot.put("effectiveFrom", formatDateTime(entity.getEffectiveFrom()));
         snapshot.put("effectiveTo", formatDateTime(entity.getEffectiveTo()));
         snapshot.put("sourceFileName", entity.getSourceFileName());
@@ -936,7 +903,7 @@ public class TemplateModelingController {
         snapshot.put("modelDesignJson", entity.getModelDesignJson());
         snapshot.put("canvasDesignJson", entity.getCanvasDesignJson());
         snapshot.put("workflowDesignJson", entity.getWorkflowDesignJson());
-        snapshot.put("status", entity.getStatus());
+        snapshot.put("status", RdoVersionStatusResolver.resolve(entity.getEffectiveFrom(), entity.getEffectiveTo()));
         snapshot.put("createdBy", entity.getCreatedBy());
         snapshot.put("createdAt", entity.getCreatedAt());
         snapshot.put("updatedBy", entity.getUpdatedBy());
@@ -949,7 +916,6 @@ public class TemplateModelingController {
         snapshot.put("templateName", entity.getName());
         snapshot.put("templateCategory", entity.getCategoryName());
         snapshot.put("description", entity.getDescription());
-        snapshot.put("status", entity.getStatus());
         snapshot.put("createdBy", entity.getCreatedBy());
         snapshot.put("createdAt", entity.getCreatedAt());
         snapshot.put("updatedBy", entity.getUpdatedBy());
@@ -965,8 +931,7 @@ public class TemplateModelingController {
         snapshot.put("description", version.getDescription());
         snapshot.put("effectiveFrom", formatDateTime(version.getEffectiveFrom()));
         snapshot.put("effectiveTo", formatDateTime(version.getEffectiveTo()));
-        snapshot.put("status", version.getStatus());
-        snapshot.put("isCurrent", version.getIsCurrent());
+        snapshot.put("status", RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo()));
         snapshot.put("directoryCount", 0);
         snapshot.put("evidenceCount", 0);
         snapshot.put("createdAt", formatDateTime(version.getCreatedAt()));
@@ -1005,11 +970,10 @@ public class TemplateModelingController {
         return "updatedBy".equals(field) || "updatedAt".equals(field);
     }
 
-    private FormTemplateResponse toFormTemplateResponse(FormTemplate entity, FormTemplateVersion version) {
-        return toFormTemplateResponse(entity, version, version == null ? List.of() : List.of(version));
-    }
-
-    private FormTemplateResponse toFormTemplateResponse(FormTemplate entity, FormTemplateVersion version, List<FormTemplateVersion> versions) {
+    private FormTemplateResponse toFormTemplateResponse(FormTemplate entity, List<FormTemplateVersion> versions) {
+        List<TemplateVersionResponse> versionResponses = (versions == null ? List.<FormTemplateVersion>of() : versions).stream()
+                .map(this::toVersionResponse)
+                .toList();
         return new FormTemplateResponse(
                 String.valueOf(entity.getId()),
                 entity.getTenantId(),
@@ -1018,10 +982,8 @@ public class TemplateModelingController {
                 entity.getType(),
                 entity.getCategoryName(),
                 entity.getDescription(),
-                version == null ? (entity.getCurrentVersionId() == null ? null : String.valueOf(entity.getCurrentVersionId())) : String.valueOf(version.getId()),
-                toVersionResponse(version),
-                versions == null ? List.of() : versions.stream().map(this::toVersionResponse).toList(),
-                entity.getStatus(),
+                versionResponses,
+                RdoVersionStatusResolver.resolveAggregate(versionResponses.stream().map(TemplateVersionResponse::status).toList()),
                 entity.getCreatedBy(),
                 formatDateTime(entity.getCreatedAt()),
                 entity.getUpdatedBy(),
@@ -1067,10 +1029,6 @@ public class TemplateModelingController {
                         version,
                         compositionCounts.getOrDefault(version.getId(), DhrVersionCompositionCount.EMPTY)))
                 .toList();
-        DhrTemplateVersionResponse currentVersion = versionResponses.stream()
-                .filter(DhrTemplateVersionResponse::isCurrent)
-                .findFirst()
-                .orElse(versionResponses.stream().findFirst().orElse(null));
         return new DhrTemplateResponse(
                 String.valueOf(entity.getId()),
                 entity.getTenantId(),
@@ -1079,8 +1037,6 @@ public class TemplateModelingController {
                 DHR_TYPE,
                 entity.getCategoryName(),
                 entity.getDescription(),
-                currentVersion == null ? null : currentVersion.id(),
-                currentVersion,
                 versionResponses,
                 DhrTemplateVersionStatusResolver.resolveTemplateStatus(
                         versionResponses.stream().map(DhrTemplateVersionResponse::status).toList()),
@@ -1104,7 +1060,6 @@ public class TemplateModelingController {
                 formatDateTime(version.getEffectiveFrom()),
                 formatDateTime(version.getEffectiveTo()),
                 DhrTemplateVersionStatusResolver.resolveVersionStatus(version),
-                Boolean.TRUE.equals(version.getIsCurrent()),
                 formatDateTime(version.getCreatedAt()),
                 compositionCount.directoryCount(),
                 compositionCount.evidenceCount()
@@ -1132,7 +1087,7 @@ public class TemplateModelingController {
                 version.getModelDesignJson(),
                 version.getCanvasDesignJson(),
                 version.getWorkflowDesignJson(),
-                version.getStatus(),
+                RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo()),
                 version.getCreatedBy(),
                 formatDateTime(version.getCreatedAt()),
                 version.getUpdatedBy(),
@@ -1207,8 +1162,6 @@ public class TemplateModelingController {
             String type,
             String categoryName,
             String description,
-            String currentVersionId,
-            TemplateVersionResponse currentVersion,
             List<TemplateVersionResponse> versions,
             String status,
             String createdBy,
@@ -1246,8 +1199,6 @@ public class TemplateModelingController {
             String type,
             String categoryName,
             String description,
-            String currentVersionId,
-            DhrTemplateVersionResponse currentVersion,
             List<DhrTemplateVersionResponse> versions,
             String status,
             String createdBy,
@@ -1266,7 +1217,6 @@ public class TemplateModelingController {
             String effectiveFrom,
             String effectiveTo,
             String status,
-            boolean isCurrent,
             String createdAt,
             int directoryCount,
             int evidenceCount) {

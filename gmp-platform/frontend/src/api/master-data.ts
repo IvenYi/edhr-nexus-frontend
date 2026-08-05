@@ -72,9 +72,6 @@ export interface RouteRecord extends ProcessModelingBaseRecord {
   productFamilyId?: string | number | null;
   commonAsset?: boolean;
   versionCount?: number;
-  latestVersionId?: string | number | null;
-  latestVersion?: string;
-  latestVersionStatus?: string;
   versions?: RouteVersionRecord[];
 }
 

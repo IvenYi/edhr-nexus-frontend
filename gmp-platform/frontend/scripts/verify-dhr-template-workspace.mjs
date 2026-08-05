@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 const pageContent = readFileSync(new URL('../src/pages/master-data/TemplateModelingPage.tsx', import.meta.url), 'utf8');
 const workspaceContent = readFileSync(new URL('../src/pages/master-data/DhrTemplateWorkspaceDialog.tsx', import.meta.url), 'utf8');
+const designerDialogContent = readFileSync(new URL('../src/pages/master-data/template-designer-react/TemplateDesignerReactDialog.tsx', import.meta.url), 'utf8');
 const apiContent = readFileSync(new URL('../src/api/template-modeling.ts', import.meta.url), 'utf8');
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const failures = [];
@@ -35,8 +36,14 @@ function mustNotIncludeIn(content, startToken, endToken, token, reason) {
 
 mustInclude(pageContent, "DhrTemplateWorkspaceDialog", 'batch-record template page should provide an isolated DHR composition workspace');
 mustInclude(pageContent, "setDhrWorkspaceRow", 'design action should open the DHR workspace for the selected template');
-mustInclude(pageContent, "{ id: 'currentVersion', label: '版本数量'", 'batch-record template parent rows should show their version count');
+mustInclude(pageContent, "{ id: 'versionCount', label: '版本数量'", 'batch-record template parent rows should show their version count');
 mustInclude(pageContent, "const dhrTemplateVersionColumns", 'batch-record template versions should use DHR-specific child columns');
+mustInclude(pageContent, "const TEMPLATE_ACTION_COLUMN_WIDTH = 100", 'batch-record parent actions should match the shared RDO action column width');
+mustInclude(pageContent, "const DHR_VERSION_ACTION_COLUMN_WIDTH = 160", 'batch-record version actions should reserve space for four icon actions');
+mustInclude(pageContent, 'data-template-expand-all', 'batch-record templates should expose the shared expand-all toolbar action');
+mustInclude(pageContent, 'data-template-collapse-all', 'batch-record templates should expose the shared collapse-all toolbar action');
+mustInclude(pageContent, "const actionColumnWidth = column.defaultWidth", 'sticky action columns should use the width of their own table column');
+mustInclude(pageContent, "overflow: 'visible'", 'expanded version tables should not create an independent scrollbar');
 mustInclude(pageContent, 'openDhrVersionDialog(row, null)', 'main-row DHR version creation should open a version dialog for an empty composition');
 mustInclude(pageContent, 'openDhrVersionDialog(row, version)', 'DHR version rows should open a version copy dialog for the selected composition');
 mustInclude(pageContent, 'saveDhrVersionMutation', 'DHR version creation should save from the dialog without opening the designer');
@@ -44,7 +51,7 @@ mustInclude(pageContent, 'label="生效时间"', 'DHR version dialog should capt
 mustInclude(pageContent, 'label="失效时间"', 'DHR version dialog should capture its expiry time');
 mustInclude(pageContent, 'shouldSubmitInitialVersionFields', 'new batch-record templates should submit their initial version fields with the parent template');
 mustInclude(pageContent, 'title="版本信息"', 'new batch-record templates should expose version details in the create dialog');
-mustInclude(pageContent, 'label="版本状态" value="草稿"', 'the initial batch-record version status should be fixed as a draft');
+mustNotInclude(pageContent, 'label="版本状态" value="草稿"', 'batch-record version state must be derived from its effective window');
 mustInclude(pageContent, '<TextField required fullWidth size="small" label="版本" value={form.version}', 'the initial batch-record version should be visible and editable');
 mustNotInclude(pageContent, 'InputProps={isCreatingDhrTemplate ? { readOnly: true } : undefined}', 'the initial batch-record version must support user customization');
 mustInclude(pageContent, 'title="复制版本"', 'DHR version rows should expose a copy action');
@@ -63,6 +70,10 @@ mustInclude(workspaceContent, 'aria-label="引用表单"', 'referencing a form s
 mustInclude(workspaceContent, 'onAddForm={openAddEvidence}', 'the directory action should select its own directory before opening form reference');
 mustNotInclude(workspaceContent, '<Button size="small" variant="contained" startIcon={<NoteAddOutlined />}', 'form reference should not be duplicated as a right-pane text button');
 mustInclude(workspaceContent, '批量引用表单', 'form reference should support the bulk-reference workspace');
+mustInclude(workspaceContent, '<AppDialog open={addEvidenceOpen}', 'batch form reference should use the standard application close button');
+mustNotInclude(workspaceContent, 'hideCloseButton open={addEvidenceOpen}', 'batch form reference should not suppress the standard application close button');
+mustNotInclude(workspaceContent, 'aria-label="关闭引用表单"', 'batch form reference should not render a custom misaligned close button');
+mustInclude(designerDialogContent, 'hideCloseButton', 'form designer should suppress the duplicate standard close button because its shell provides a close command');
 mustInclude(workspaceContent, 'formCategory', 'form reference should filter by category');
 mustInclude(workspaceContent, 'expandedFormTemplateIds', 'form reference should show the parent-child RDO tree');
 mustInclude(workspaceContent, 'selectedFormReferences', 'form reference should summarize selected template versions in a dedicated panel');
@@ -75,7 +86,8 @@ mustInclude(workspaceContent, '同一目录不能重复引用同一表单', 'wor
 mustNotInclude(workspaceContent, 'version.isCurrent', 'form reference should not expose a current/default version concept');
 mustInclude(workspaceContent, 'basicInfoExpanded', 'workspace version metadata should support expanding more details');
 mustInclude(workspaceContent, '基本信息', 'workspace metadata should provide a visible basic-information toggle');
-mustIncludeIn(workspaceContent, '当前版本 {selectedVersion?.version ?? \'-\'}', '</Stack>', 'versionStatusLabel(selectedVersion?.status)', 'current version label should include a visible status tag');
+mustIncludeIn(workspaceContent, '设计版本 {selectedVersion?.version ?? \'-\'}', '</Stack>', 'getRdoVersionStatusMeta(selectedVersion?.status)', 'selected version label should use the shared RDO status tag');
+mustInclude(workspaceContent, "import StatusBadge from '@/components/StatusBadge';", 'workspace version status should use the standard status badge');
 mustIncludeIn(workspaceContent, '<Box sx={{ px: 2, py: 1.5', '<Collapse in={basicInfoExpanded}', '模板名称', 'collapsed metadata should prioritize template name');
 mustIncludeIn(workspaceContent, '<Box sx={{ px: 2, py: 1.5', '<Collapse in={basicInfoExpanded}', '版本编码', 'collapsed metadata should prioritize the selected version code');
 mustIncludeIn(workspaceContent, '<Box sx={{ px: 2, py: 1.5', '<Collapse in={basicInfoExpanded}', '所属分类', 'collapsed metadata should prioritize template category');
@@ -103,7 +115,7 @@ mustInclude(apiContent, 'getFormTemplateVersion', 'DHR form preview should load 
 mustInclude(apiContent, 'versions: DhrFormTemplateVersionOption[]', 'the reference API should expose form-template child versions');
 mustNotInclude(workspaceContent, '复制为新版本', 'version copy belongs on the batch-record template page, not the designer');
 mustNotInclude(workspaceContent, '发布版本', 'version publication belongs on the batch-record template page, not the designer');
-mustNotInclude(workspaceContent, '设计版本', 'a designer opens one specific version and should not switch versions in place');
+mustNotInclude(workspaceContent, '当前版本', 'a designer must not imply a current or default version');
 mustNotInclude(workspaceContent, 'evidenceRequired', 'referencing a form must not expose a required-evidence option');
 mustNotInclude(workspaceContent, '作为必填证据', 'referencing a form must not expose a required-evidence control');
 mustInclude(workspaceContent, '编辑表单', 'referenced form nodes should provide a DHR-specific edit action');
@@ -116,7 +128,7 @@ mustInclude(workspaceContent, 'displayName: item.displayName', 'composition save
 mustInclude(workspaceContent, '表单编码', 'referenced-form edit details should label the source form code separately');
 mustInclude(workspaceContent, 'editEvidenceTarget?.formCode ?? \'-\'', 'referenced-form edit details should render the source form code in its own field');
 mustNotInclude(workspaceContent, '`${editEvidenceTarget.formCode} · ${editEvidenceTarget.formVersion}`', 'referenced-form edit details should not combine form code and version under one label');
-mustInclude(workspaceContent, '<Dialog open={Boolean(editEvidenceTarget)} onClose={() => setEditEvidenceTarget(null)} fullWidth maxWidth="sm">', 'referenced-form edit dialog should provide enough horizontal room for the read-only metadata');
+mustInclude(workspaceContent, '<AppDialog open={Boolean(editEvidenceTarget)} onClose={() => setEditEvidenceTarget(null)} fullWidth maxWidth="sm">', 'referenced-form edit dialog should provide enough horizontal room and the standard close action');
 mustInclude(workspaceContent, "gridTemplateColumns: 'minmax(0, 1.4fr) repeat(2, minmax(0, 1fr))'", 'referenced-form metadata should be presented as a horizontal three-column summary');
 mustInclude(apiContent, 'displayName?: string | null', 'DHR evidence records should expose an optional local display name');
 

@@ -77,10 +77,6 @@ public class FormTemplateVersion {
     @Column(name = "structure_snapshot", columnDefinition = "jsonb", insertable = false, updatable = false)
     private String structureSnapshot;
 
-    @Column(name = "is_current")
-    @Builder.Default
-    private Boolean isCurrent = false;
-
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
 

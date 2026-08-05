@@ -1,10 +1,24 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
-  Box, Typography, Button, List, ListItem, ListItemText, Collapse,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-  IconButton, CircularProgress,
+  Box,
+  Typography,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Collapse,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  IconButton,
+  CircularProgress,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { Add, Edit, Delete, ExpandMore, ExpandLess } from '@mui/icons-material';
 import PageHeader from '@/components/PageHeader';
 import ConfirmDialog from '@/components/ConfirmDialog';
@@ -188,7 +202,7 @@ export default function SiteWorkshopPage() {
         </List>
       )}
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
           <TextField label="编码" fullWidth margin="dense" value={form.code}
@@ -202,7 +216,7 @@ export default function SiteWorkshopPage() {
             创建
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <ConfirmDialog
         open={deleteTarget !== null}

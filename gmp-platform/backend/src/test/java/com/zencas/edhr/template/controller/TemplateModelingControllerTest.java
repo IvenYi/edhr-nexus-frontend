@@ -143,21 +143,22 @@ class TemplateModelingControllerTest {
 
         assertThat(response.getData().id()).isEqualTo("101");
         assertThat(response.getData().description()).isEqualTo("巡检记录");
-        assertThat(response.getData().currentVersionId()).isEqualTo("102");
-        assertThat(response.getData().currentVersion().version()).isEqualTo("V1.0");
-        assertThat(response.getData().currentVersion().description()).isEqualTo("首版说明");
+        assertThat(response.getData().versions()).hasSize(1);
+        assertThat(response.getData().versions().getFirst().version()).isEqualTo("V1.0");
+        assertThat(response.getData().versions().getFirst().description()).isEqualTo("首版说明");
         ArgumentCaptor<FormTemplateVersion> versionCaptor = ArgumentCaptor.forClass(FormTemplateVersion.class);
         verify(formTemplateVersionRepository).save(versionCaptor.capture());
         assertThat(versionCaptor.getValue().getDescription()).isEqualTo("首版说明");
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
-        verify(auditEventRepository).save(auditCaptor.capture());
-        AuditEvent event = auditCaptor.getValue();
+        verify(auditEventRepository, times(2)).save(auditCaptor.capture());
+        AuditEvent event = auditCaptor.getAllValues().getFirst();
         assertThat(event.getEntityType()).isEqualTo("FORM_TEMPLATE");
         assertThat(event.getMenuName()).isEqualTo("模板建模 · 表单模板");
         assertThat(event.getFunctionName()).isEqualTo("新增表单模板");
         assertThat(objectMapper.readTree(event.getContentAfter()).get("templateCategory").asText()).isEqualTo("生产表单");
-        assertThat(objectMapper.readTree(event.getContentAfter()).get("currentVersion").asText()).isEqualTo("V1.0");
-        assertThat(objectMapper.readTree(event.getContentAfter()).get("effectiveFrom").asText()).isEqualTo("2026-07-01 08:00:00");
+        AuditEvent versionEvent = auditCaptor.getAllValues().get(1);
+        assertThat(objectMapper.readTree(versionEvent.getContentAfter()).get("version").asText()).isEqualTo("V1.0");
+        assertThat(objectMapper.readTree(versionEvent.getContentAfter()).get("effectiveFrom").asText()).isEqualTo("2026-07-01 08:00:00");
     }
 
     @Test
@@ -184,7 +185,6 @@ class TemplateModelingControllerTest {
                 .tenantId("default")
                 .code("FT-001")
                 .name("生产巡检表")
-                .currentVersionId(202L)
                 .status("ACTIVE")
                 .build();
         FormTemplateVersion current = FormTemplateVersion.builder()
@@ -203,35 +203,31 @@ class TemplateModelingControllerTest {
                 .build();
         when(formTemplateRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(template)));
-        when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(current));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(current, history));
 
         var response = controller.listFormTemplates(null, null, null, null, null, 1, 20, "createdAt", "desc");
 
         assertThat(response.getData().getContent()).hasSize(1);
         TemplateModelingController.FormTemplateResponse record = response.getData().getContent().getFirst();
-        assertThat(record.currentVersion().version()).isEqualTo("V2.0");
         assertThat(record.versions())
                 .extracting(TemplateModelingController.TemplateVersionResponse::version)
                 .containsExactly("V2.0", "V1.0");
     }
 
     @Test
-    void createFormTemplateVersionDoesNotReplaceCurrentTemplateVersion() {
+    void createFormTemplateVersionCreatesAnIndependentChildVersion() {
         AuditContext.setOperator("99", "系统管理员", "admin");
         FormTemplate template = FormTemplate.builder()
                 .id(101L)
                 .tenantId("default")
                 .code("FT-001")
                 .name("生产巡检表")
-                .currentVersionId(102L)
                 .build();
         FormTemplateVersion current = FormTemplateVersion.builder()
                 .id(102L)
                 .tenantId("default")
                 .templateId(101L)
                 .version("V1.0")
-                .isCurrent(true)
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(current));
@@ -248,11 +244,9 @@ class TemplateModelingControllerTest {
         assertThat(response.getData().id()).isEqualTo("201");
         assertThat(response.getData().version()).isEqualTo("V2.0");
         assertThat(response.getData().status()).isEqualTo("ACTIVE");
-        assertThat(template.getCurrentVersionId()).isEqualTo(102L);
-        assertThat(current.getIsCurrent()).isTrue();
         ArgumentCaptor<FormTemplateVersion> versionCaptor = ArgumentCaptor.forClass(FormTemplateVersion.class);
         verify(formTemplateVersionRepository).save(versionCaptor.capture());
-        assertThat(versionCaptor.getValue().getIsCurrent()).isFalse();
+        assertThat(versionCaptor.getValue().getVersion()).isEqualTo("V2.0");
         verify(formTemplateRepository, never()).save(any(FormTemplate.class));
     }
 
@@ -290,7 +284,6 @@ class TemplateModelingControllerTest {
                 .tenantId("default")
                 .code("FT-001")
                 .name("生产巡检表")
-                .currentVersionId(202L)
                 .build();
         FormTemplateVersion version = FormTemplateVersion.builder()
                 .id(202L)
@@ -300,7 +293,6 @@ class TemplateModelingControllerTest {
                 .modelDesignJson("{\"fields\":[]}")
                 .canvasDesignJson("{\"pages\":[]}")
                 .workflowDesignJson("{\"nodes\":[]}")
-                .isCurrent(true)
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
         when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(version));
@@ -326,7 +318,6 @@ class TemplateModelingControllerTest {
                 .tenantId("default")
                 .code("FT-001")
                 .name("生产巡检表")
-                .currentVersionId(102L)
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
 
@@ -348,21 +339,18 @@ class TemplateModelingControllerTest {
                 .tenantId("default")
                 .code("FT-001")
                 .name("生产巡检表")
-                .currentVersionId(102L)
                 .build();
         FormTemplateVersion current = FormTemplateVersion.builder()
                 .id(102L)
                 .tenantId("default")
                 .templateId(101L)
                 .version("V1.0")
-                .isCurrent(true)
                 .build();
         FormTemplateVersion child = FormTemplateVersion.builder()
                 .id(201L)
                 .tenantId("default")
                 .templateId(101L)
                 .version("V2.0")
-                .isCurrent(false)
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(child, current));
@@ -373,8 +361,6 @@ class TemplateModelingControllerTest {
         verify(formTemplateVersionRepository).delete(child);
         verify(formTemplateRepository, never()).deleteById(101L);
         verify(formTemplateRepository, never()).save(any(FormTemplate.class));
-        assertThat(template.getCurrentVersionId()).isEqualTo(102L);
-        assertThat(current.getIsCurrent()).isTrue();
     }
 
     @Test
@@ -382,14 +368,12 @@ class TemplateModelingControllerTest {
         FormTemplate template = FormTemplate.builder()
                 .id(101L)
                 .tenantId("default")
-                .currentVersionId(102L)
                 .build();
         FormTemplateVersion current = FormTemplateVersion.builder()
                 .id(102L)
                 .tenantId("default")
                 .templateId(101L)
                 .version("V1.0")
-                .isCurrent(true)
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(current));
@@ -407,7 +391,6 @@ class TemplateModelingControllerTest {
                 .code("FT-001")
                 .name("生产巡检表")
                 .categoryName("生产表单")
-                .currentVersionId(202L)
                 .status("ACTIVE")
                 .build();
         FormTemplateVersion current = FormTemplateVersion.builder()
@@ -415,17 +398,14 @@ class TemplateModelingControllerTest {
                 .tenantId("default")
                 .templateId(101L)
                 .version("V2.0")
-                .isCurrent(true)
                 .build();
         FormTemplateVersion history = FormTemplateVersion.builder()
                 .id(201L)
                 .tenantId("default")
                 .templateId(101L)
                 .version("V1.0")
-                .isCurrent(false)
                 .build();
         when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
-        when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(current));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(101L)).thenReturn(List.of(current, history));
         when(idGenerator.nextId()).thenReturn(301L);
 
@@ -441,7 +421,6 @@ class TemplateModelingControllerTest {
         assertThat(event.getEntityType()).isEqualTo("FORM_TEMPLATE");
         assertThat(event.getFunctionName()).isEqualTo("删除表单模板");
         assertThat(objectMapper.readTree(event.getContentBefore()).get("templateName").asText()).isEqualTo("生产巡检表");
-        assertThat(objectMapper.readTree(event.getContentBefore()).get("currentVersion").asText()).isEqualTo("V2.0");
         assertThat(objectMapper.readTree(event.getContentAfter()).isEmpty()).isTrue();
     }
 
@@ -480,7 +459,7 @@ class TemplateModelingControllerTest {
     }
 
     @Test
-    void createBatchRecordTemplateCreatesInitialDraftVersion() throws Exception {
+    void createBatchRecordTemplateCreatesInitialVersion() throws Exception {
         AuditContext.setOperator("99", "系统管理员", "admin");
         when(dhrTemplateRepository.save(any(DhrTemplate.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(dhrTemplateVersionRepository.save(any(DhrTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -497,14 +476,14 @@ class TemplateModelingControllerTest {
                 .status("ACTIVE")
                 .build());
 
-        assertThat(response.getData().currentVersion().version()).isEqualTo("V1.0");
-        assertThat(response.getData().currentVersion().status()).isEqualTo("DRAFT");
-        assertThat(response.getData().currentVersion().description()).isEqualTo("初始批记录版本");
-        assertThat(response.getData().currentVersion().code()).isEqualTo("DHR-001");
-        assertThat(response.getData().currentVersion().offlineVersion()).isEqualTo("DHR-REV-01");
-        assertThat(response.getData().currentVersion().effectiveFrom()).isEqualTo("2026-08-01 08:00:00");
-        assertThat(response.getData().currentVersion().effectiveTo()).isEqualTo("2026-12-31 23:59:00");
         assertThat(response.getData().versions()).hasSize(1);
+        var initialVersion = response.getData().versions().getFirst();
+        assertThat(initialVersion.version()).isEqualTo("V1.0");
+        assertThat(initialVersion.description()).isEqualTo("初始批记录版本");
+        assertThat(initialVersion.code()).isEqualTo("DHR-001");
+        assertThat(initialVersion.offlineVersion()).isEqualTo("DHR-REV-01");
+        assertThat(initialVersion.effectiveFrom()).isEqualTo("2026-08-01 08:00:00");
+        assertThat(initialVersion.effectiveTo()).isEqualTo("2026-12-31 23:59:00");
         ArgumentCaptor<DhrTemplateVersion> versionCaptor = ArgumentCaptor.forClass(DhrTemplateVersion.class);
         verify(dhrTemplateVersionRepository).save(versionCaptor.capture());
         ArgumentCaptor<DhrTemplate> templateCaptor = ArgumentCaptor.forClass(DhrTemplate.class);
@@ -518,7 +497,6 @@ class TemplateModelingControllerTest {
         assertThat(versionCaptor.getValue().getDescription()).isEqualTo("初始批记录版本");
         assertThat(versionCaptor.getValue().getEffectiveFrom()).isEqualTo(LocalDateTime.of(2026, 8, 1, 8, 0));
         assertThat(versionCaptor.getValue().getEffectiveTo()).isEqualTo(LocalDateTime.of(2026, 12, 31, 23, 59));
-        assertThat(versionCaptor.getValue().getIsCurrent()).isFalse();
 
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository, times(2)).save(auditCaptor.capture());
@@ -570,7 +548,6 @@ class TemplateModelingControllerTest {
                 .dhrTemplateId(301L)
                 .versionNumber(1)
                 .status("ACTIVE")
-                .isCurrent(true)
                 .build();
         when(dhrTemplateRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(template)));
@@ -581,7 +558,6 @@ class TemplateModelingControllerTest {
 
         assertThat(response.getData().getContent()).hasSize(1);
         var record = response.getData().getContent().getFirst();
-        assertThat(record.currentVersion().version()).isEqualTo("V1.0");
         assertThat(record.status()).isEqualTo("ACTIVE");
         assertThat(record.versions()).extracting(TemplateModelingController.DhrTemplateVersionResponse::version)
                 .containsExactly("V2.0", "V1.0");
@@ -617,17 +593,17 @@ class TemplateModelingControllerTest {
         var response = controller.listBatchRecordTemplates(null, null, null, 1, 20, "createdAt", "desc");
 
         var record = response.getData().getContent().getFirst();
-        assertThat(record.status()).isEqualTo("PENDING");
+        assertThat(record.status()).isEqualTo("EXPIRED");
         assertThat(record.versions())
                 .extracting(TemplateModelingController.DhrTemplateVersionResponse::status)
-                .containsExactly("PENDING", "EXPIRED");
+                .containsExactly("EXPIRED", "EXPIRED");
     }
 
     @Test
     void createDhrTemplateVersionClonesDirectoryTreeAndEvidenceReferences() {
         AuditContext.setOperator("99", "系统管理员", "admin");
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
-        DhrTemplateVersion source = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").isCurrent(true).build();
+        DhrTemplateVersion source = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").build();
         DhrDirectory root = DhrDirectory.builder().id(501L).versionId(401L).name("生产记录").sortOrder(10).build();
         DhrDirectory child = DhrDirectory.builder().id(502L).versionId(401L).name("检验记录").parentId(501L).sortOrder(20).build();
         DhrTemplateItem evidence = DhrTemplateItem.builder().id(601L).directoryId(502L).formTemplateId(701L).formTemplateVersionId(702L).displayName("DHR 工序巡检").sortOrder(10).isRequired(true).build();
@@ -643,7 +619,7 @@ class TemplateModelingControllerTest {
         var response = workspaceController.createDhrTemplateVersion(301L, new DhrTemplateWorkspaceController.DhrVersionRequest(401L, "基于已启用版本复制", "2026-07-29T08:00", "2026-12-31T23:59"));
 
         assertThat(response.getData().version()).isEqualTo("V2.0");
-        assertThat(response.getData().status()).isEqualTo("DRAFT");
+        assertThat(response.getData().status()).isEqualTo("ACTIVE");
         assertThat(response.getData().description()).isEqualTo("基于已启用版本复制");
         assertThat(response.getData().effectiveFrom()).isEqualTo("2026-07-29 08:00:00");
         ArgumentCaptor<DhrDirectory> directoryCaptor = ArgumentCaptor.forClass(DhrDirectory.class);
@@ -661,7 +637,7 @@ class TemplateModelingControllerTest {
     @Test
     void createDhrTemplateVersionWithoutSourceStartsWithAnEmptyComposition() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
-        DhrTemplateVersion existing = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").isCurrent(true).build();
+        DhrTemplateVersion existing = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(existing));
         when(dhrTemplateVersionRepository.save(any(DhrTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -753,7 +729,12 @@ class TemplateModelingControllerTest {
         FormTemplate disabledTemplate = FormTemplate.builder().id(711L).code("FORM-002").name("历史巡检表").categoryName("基础表单").status("DISABLED").build();
         FormTemplateVersion latestVersion = FormTemplateVersion.builder().id(702L).templateId(701L).version("V2.0").status("ACTIVE").build();
         FormTemplateVersion earlierActiveVersion = FormTemplateVersion.builder().id(7011L).templateId(701L).version("V1.0").status("ACTIVE").build();
-        FormTemplateVersion disabledParentVersion = FormTemplateVersion.builder().id(712L).templateId(711L).version("V1.0").status("ACTIVE").build();
+        FormTemplateVersion disabledParentVersion = FormTemplateVersion.builder()
+                .id(712L)
+                .templateId(711L)
+                .version("V1.0")
+                .effectiveTo(LocalDateTime.now().minusSeconds(1))
+                .build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(dhrTemplate));
         when(formTemplateRepository.findAll()).thenReturn(List.of(activeTemplate, disabledTemplate));
         when(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(701L)).thenReturn(List.of(latestVersion, earlierActiveVersion));
@@ -783,21 +764,20 @@ class TemplateModelingControllerTest {
     }
 
     @Test
-    void publishDhrTemplateVersionSchedulesFutureVersionWithoutDisablingCurrentVersion() {
+    void publishDhrTemplateVersionSnapshotsCompositionWithoutSelectingACurrentVersion() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
-        DhrTemplateVersion draft = DhrTemplateVersion.builder()
+        DhrTemplateVersion futureVersion = DhrTemplateVersion.builder()
                 .id(402L)
                 .dhrTemplateId(301L)
                 .versionNumber(2)
                 .status("DRAFT")
                 .effectiveFrom(LocalDateTime.now().plusDays(1))
                 .build();
-        DhrTemplateVersion current = DhrTemplateVersion.builder()
+        DhrTemplateVersion existingVersion = DhrTemplateVersion.builder()
                 .id(401L)
                 .dhrTemplateId(301L)
                 .versionNumber(1)
                 .status("ACTIVE")
-                .isCurrent(true)
                 .effectiveFrom(LocalDateTime.now().minusDays(1))
                 .build();
         DhrDirectory directory = DhrDirectory.builder().id(501L).versionId(402L).name("生产记录").sortOrder(10).build();
@@ -805,8 +785,7 @@ class TemplateModelingControllerTest {
         FormTemplate formTemplate = FormTemplate.builder().id(701L).code("FORM-001").name("生产巡检表").status("ACTIVE").build();
         FormTemplateVersion formVersion = FormTemplateVersion.builder().id(702L).templateId(701L).version("V1.0").status("ACTIVE").build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
-        when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(402L, 301L)).thenReturn(Optional.of(draft));
-        when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(draft, current));
+        when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(402L, 301L)).thenReturn(Optional.of(futureVersion));
         when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(402L)).thenReturn(List.of(directory));
         when(dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(List.of(501L))).thenReturn(List.of(evidence));
         when(formTemplateRepository.findAllById(any())).thenReturn(List.of(formTemplate));
@@ -817,38 +796,38 @@ class TemplateModelingControllerTest {
 
         var response = workspaceController.publishDhrTemplateVersion(301L, 402L);
 
-        assertThat(response.getData().status()).isEqualTo("PENDING");
-        assertThat(draft.getStatus()).isEqualTo("ACTIVE");
-        assertThat(draft.getIsCurrent()).isTrue();
-        assertThat(current.getStatus()).isEqualTo("ACTIVE");
-        assertThat(current.getIsCurrent()).isFalse();
-        verify(dhrTemplateVersionRepository).saveAll(List.of(current));
+        assertThat(response.getData().status()).isEqualTo("EXPIRED");
+        assertThat(futureVersion.getDirectorySnapshot()).isNotBlank();
+        assertThat(existingVersion.getDirectorySnapshot()).isNull();
+        verify(dhrTemplateVersionRepository, never()).saveAll(any());
     }
 
     @Test
-    void deleteDhrTemplateVersionRejectsDeletingAnActiveVersion() {
+    void deleteDhrTemplateVersionAllowsDeletingAnActiveVersion() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
         DhrTemplateVersion draft = DhrTemplateVersion.builder().id(402L).dhrTemplateId(301L).versionNumber(2).status("DRAFT").build();
-        DhrTemplateVersion active = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").isCurrent(true).build();
-        DhrDirectory directory = DhrDirectory.builder().id(501L).versionId(401L).name("生产记录").build();
-        DhrTemplateItem item = DhrTemplateItem.builder().id(601L).directoryId(501L).formTemplateId(701L).build();
+        DhrTemplateVersion active = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(draft, active));
         when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(active));
-        assertThatThrownBy(() -> workspaceController.deleteDhrTemplateVersion(301L, 401L))
-                .hasMessageContaining("已启用版本不可删除");
+        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(401L)).thenReturn(List.of());
 
-        verify(dhrTemplateItemRepository, never()).deleteAll(List.of(item));
-        verify(dhrDirectoryRepository, never()).deleteAll(List.of(directory));
-        verify(dhrTemplateVersionRepository, never()).delete(active);
+        workspaceController.deleteDhrTemplateVersion(301L, 401L);
+
+        verify(dhrTemplateVersionRepository).delete(active);
     }
 
     @Test
-    void saveDhrTemplateCompositionValidatesAllReferencesBeforeRemovingExistingRecords() {
+    void saveDhrTemplateCompositionRejectsNewInactiveReferencesBeforeRemovingExistingRecords() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").name("生产批记录").build();
         DhrTemplateVersion draft = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("DRAFT").build();
         FormTemplate formTemplate = FormTemplate.builder().id(701L).name("生产巡检表").status("ACTIVE").build();
-        FormTemplateVersion inactiveFormVersion = FormTemplateVersion.builder().id(702L).templateId(701L).version("V1.0").status("DRAFT").build();
+        FormTemplateVersion inactiveFormVersion = FormTemplateVersion.builder()
+                .id(702L)
+                .templateId(701L)
+                .version("V1.0")
+                .effectiveFrom(LocalDateTime.now().plusDays(1))
+                .build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(draft));
         when(formTemplateVersionRepository.findById(702L)).thenReturn(Optional.of(inactiveFormVersion));
@@ -859,10 +838,43 @@ class TemplateModelingControllerTest {
                 List.of(new DhrTemplateWorkspaceController.DhrCompositionItemRequest("directory-a", 702L, null, true, 10)));
 
         assertThatThrownBy(() -> workspaceController.saveDhrTemplateComposition(301L, 401L, request))
-                .hasMessageContaining("仅能引用已启用的表单模板版本");
+                .hasMessageContaining("仅能引用生效中的表单模板版本");
 
         verify(dhrTemplateItemRepository, never()).deleteAll(any());
         verify(dhrDirectoryRepository, never()).deleteAll(any());
+    }
+
+    @Test
+    void saveDhrTemplateCompositionKeepsAnExistingInactiveReferenceInItsOriginalDirectory() {
+        DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").name("生产批记录").build();
+        DhrTemplateVersion dhrVersion = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).build();
+        DhrDirectory directory = DhrDirectory.builder().id(501L).versionId(401L).name("生产记录").build();
+        DhrTemplateItem item = DhrTemplateItem.builder().id(601L).directoryId(501L).formTemplateId(701L).formTemplateVersionId(702L).build();
+        FormTemplate formTemplate = FormTemplate.builder().id(701L).name("生产巡检表").build();
+        FormTemplateVersion inactiveFormVersion = FormTemplateVersion.builder()
+                .id(702L)
+                .templateId(701L)
+                .version("V1.0")
+                .effectiveTo(LocalDateTime.now().minusSeconds(1))
+                .build();
+        when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
+        when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(dhrVersion));
+        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(401L)).thenReturn(List.of(directory));
+        when(dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(List.of(501L))).thenReturn(List.of(item));
+        when(formTemplateVersionRepository.findById(702L)).thenReturn(Optional.of(inactiveFormVersion));
+        when(formTemplateRepository.findById(701L)).thenReturn(Optional.of(formTemplate));
+        when(dhrDirectoryRepository.save(any(DhrDirectory.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(dhrTemplateItemRepository.save(any(DhrTemplateItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(idGenerator.nextId()).thenReturn(801L, 802L);
+
+        workspaceController.saveDhrTemplateComposition(301L, 401L,
+                new DhrTemplateWorkspaceController.DhrCompositionRequest(
+                        List.of(new DhrTemplateWorkspaceController.DhrCompositionDirectoryRequest("501", null, "生产记录", 10)),
+                        List.of(new DhrTemplateWorkspaceController.DhrCompositionItemRequest("501", 702L, null, true, 10))));
+
+        ArgumentCaptor<DhrTemplateItem> itemCaptor = ArgumentCaptor.forClass(DhrTemplateItem.class);
+        verify(dhrTemplateItemRepository).save(itemCaptor.capture());
+        assertThat(itemCaptor.getValue().getFormTemplateVersionId()).isEqualTo(702L);
     }
 
     @Test
@@ -937,23 +949,30 @@ class TemplateModelingControllerTest {
     }
 
     @Test
-    void addDhrDirectoryRejectsAnActiveVersion() {
+    void addDhrDirectoryAllowsEditingAnActiveVersion() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
-        DhrTemplateVersion version = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").isCurrent(true).build();
+        DhrTemplateVersion version = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(version));
+        when(dhrDirectoryRepository.save(any(DhrDirectory.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(idGenerator.nextId()).thenReturn(501L, 502L);
 
-        assertThatThrownBy(() -> workspaceController.createDhrDirectory(301L, 401L, new DhrTemplateWorkspaceController.DhrDirectoryRequest("生产记录", null)))
-                .hasMessageContaining("已启用版本不可编辑");
-        verify(dhrDirectoryRepository, never()).save(any(DhrDirectory.class));
+        workspaceController.createDhrDirectory(301L, 401L, new DhrTemplateWorkspaceController.DhrDirectoryRequest("生产记录", null));
+
+        verify(dhrDirectoryRepository).save(any(DhrDirectory.class));
     }
 
     @Test
-    void addDhrEvidenceRejectsDraftFormTemplateVersion() {
+    void addDhrEvidenceRejectsAnInactiveFormTemplateVersion() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
         DhrTemplateVersion dhrVersion = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("DRAFT").build();
         DhrDirectory directory = DhrDirectory.builder().id(501L).versionId(401L).name("生产记录").build();
-        FormTemplateVersion formVersion = FormTemplateVersion.builder().id(702L).templateId(701L).version("V1.0").status("DRAFT").build();
+        FormTemplateVersion formVersion = FormTemplateVersion.builder()
+                .id(702L)
+                .templateId(701L)
+                .version("V1.0")
+                .effectiveFrom(LocalDateTime.now().plusDays(1))
+                .build();
         FormTemplate formTemplate = FormTemplate.builder().id(701L).code("FORM-001").name("生产巡检表").status("ACTIVE").build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(dhrVersion));
@@ -963,7 +982,7 @@ class TemplateModelingControllerTest {
 
         assertThatThrownBy(() -> workspaceController.createDhrEvidenceItem(301L, 401L, 501L,
                 new DhrTemplateWorkspaceController.DhrEvidenceItemRequest(702L, true)))
-                .hasMessageContaining("仅能引用已启用的表单模板版本");
+                .hasMessageContaining("仅能引用生效中的表单模板版本");
 
         verify(dhrTemplateItemRepository, never()).save(any(DhrTemplateItem.class));
     }
@@ -1033,14 +1052,13 @@ class TemplateModelingControllerTest {
     void publishDhrTemplateVersionStoresEvidenceIdentityInFrozenSnapshot() throws Exception {
         AuditContext.setOperator("99", "系统管理员", "admin");
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
-        DhrTemplateVersion dhrVersion = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("DRAFT").isCurrent(false).build();
+        DhrTemplateVersion dhrVersion = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("DRAFT").build();
         DhrDirectory directory = DhrDirectory.builder().id(501L).versionId(401L).name("生产记录").sortOrder(10).build();
         DhrTemplateItem evidence = DhrTemplateItem.builder().id(601L).directoryId(501L).formTemplateId(701L).formTemplateVersionId(702L).displayName("DHR 成品巡检").sortOrder(10).isRequired(true).build();
         FormTemplate formTemplate = FormTemplate.builder().id(701L).code("FORM-001").name("生产巡检表").status("ACTIVE").build();
         FormTemplateVersion formVersion = FormTemplateVersion.builder().id(702L).templateId(701L).version("V2.0").status("ACTIVE").build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByIdAndDhrTemplateId(401L, 301L)).thenReturn(Optional.of(dhrVersion));
-        when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(dhrVersion));
         when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(401L)).thenReturn(List.of(directory));
         when(dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(List.of(501L))).thenReturn(List.of(evidence));
         when(formTemplateRepository.findAllById(any())).thenReturn(List.of(formTemplate));
@@ -1062,16 +1080,16 @@ class TemplateModelingControllerTest {
     }
 
     @Test
-    void deleteBatchRecordTemplateRejectsPublishedVersion() {
+    void deleteBatchRecordTemplateAllowsDeletingAnActiveVersion() {
         DhrTemplate template = DhrTemplate.builder().id(301L).tenantId("default").code("DHR-001").name("生产批记录").build();
-        DhrTemplateVersion activeVersion = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").isCurrent(true).build();
+        DhrTemplateVersion activeVersion = DhrTemplateVersion.builder().id(401L).dhrTemplateId(301L).versionNumber(1).status("ACTIVE").build();
         when(dhrTemplateRepository.findById(301L)).thenReturn(Optional.of(template));
         when(dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(301L)).thenReturn(List.of(activeVersion));
+        when(dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(401L)).thenReturn(List.of());
 
-        assertThatThrownBy(() -> controller.deleteBatchRecordTemplate(301L))
-                .hasMessageContaining("已启用版本不可删除");
+        controller.deleteBatchRecordTemplate(301L);
 
-        verify(dhrTemplateRepository, never()).delete(any(DhrTemplate.class));
+        verify(dhrTemplateRepository).delete(template);
     }
 
     @Test

@@ -18,7 +18,7 @@ class MultipartUploadConfigTest {
         Properties properties = factory.getObject();
 
         assertThat(properties).isNotNull();
-        assertThat(properties.getProperty("spring.servlet.multipart.max-file-size")).isEqualTo("50MB");
-        assertThat(properties.getProperty("spring.servlet.multipart.max-request-size")).isEqualTo("150MB");
+        assertThat(properties.getProperty("spring.servlet.multipart.max-file-size")).isEqualTo("150MB");
+        assertThat(properties.getProperty("spring.servlet.multipart.max-request-size")).isEqualTo("160MB");
     }
 }

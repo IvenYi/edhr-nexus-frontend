@@ -8,8 +8,10 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+  } from 'react';
+import { useMutation,
+  useQuery,
+  useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -18,7 +20,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -44,6 +45,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import {
   Add,
   Close,
@@ -1311,7 +1313,7 @@ export default function BusinessDictionaryPage() {
         </Box>
       </Drawer>
 
-      <Dialog open={dictionaryDialogOpen} onClose={() => setDictionaryDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={dictionaryDialogOpen} onClose={() => setDictionaryDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingDictionary ? '编辑业务字典' : '新增业务字典'}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5} sx={{ pt: 0.5 }}>
@@ -1328,9 +1330,9 @@ export default function BusinessDictionaryPage() {
           <Button onClick={() => setDictionaryDialogOpen(false)}>取消</Button>
           <Button variant="contained" onClick={submitDictionaryForm} disabled={dictionarySaveMutation.isPending}>{dictionarySaveMutation.isPending ? '保存中...' : '保存'}</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={itemDialogOpen} onClose={() => setItemDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={itemDialogOpen} onClose={() => setItemDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingItem ? '编辑字典项' : '新增字典项'}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5} sx={{ pt: 0.5 }}>
@@ -1347,25 +1349,25 @@ export default function BusinessDictionaryPage() {
           <Button onClick={() => setItemDialogOpen(false)}>取消</Button>
           <Button variant="contained" onClick={submitItemForm} disabled={itemSaveMutation.isPending}>{itemSaveMutation.isPending ? '保存中...' : '保存'}</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteDictionaryTarget !== null} onClose={() => setDeleteDictionaryTarget(null)} maxWidth="xs" fullWidth>
+      <AppDialog open={deleteDictionaryTarget !== null} onClose={() => setDeleteDictionaryTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>确认删除业务字典</DialogTitle>
         <DialogContent dividers><Alert severity="error">确定删除「{deleteDictionaryTarget?.name ?? ''}」吗？若字典下存在字典项，后端会拒绝本次删除。</Alert></DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteDictionaryTarget(null)}>取消</Button>
           <Button color="error" variant="contained" disabled={deleteDictionaryMutation.isPending} onClick={() => deleteDictionaryTarget && deleteDictionaryMutation.mutate(deleteDictionaryTarget)}>删除</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteItemTarget !== null} onClose={() => setDeleteItemTarget(null)} maxWidth="xs" fullWidth>
+      <AppDialog open={deleteItemTarget !== null} onClose={() => setDeleteItemTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>确认删除字典项</DialogTitle>
         <DialogContent dividers><Alert severity="error">确定删除「{deleteItemTarget?.label ?? ''}」吗？此操作不可撤销。</Alert></DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteItemTarget(null)}>取消</Button>
           <Button color="error" variant="contained" disabled={deleteItemMutation.isPending} onClick={() => deleteItemTarget && deleteItemMutation.mutate(deleteItemTarget)}>删除</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <Alert severity={snackbar.severity} variant="filled" onClose={handleSnackbarClose}>{snackbar.message}</Alert>

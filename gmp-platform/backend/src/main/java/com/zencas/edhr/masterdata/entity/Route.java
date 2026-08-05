@@ -36,11 +36,6 @@ public class Route {
     private String updatedBy;
     @Column(name = "updated_at") private LocalDateTime updatedAt;
     @Transient private Integer versionCount;
-    @Transient
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long latestVersionId;
-    @Transient private String latestVersion;
-    @Transient private String latestVersionStatus;
     @Transient private List<RouteVersion> versions;
     @PrePersist void prePersist() {
         if (createdAt == null) createdAt = LocalDateTime.now();

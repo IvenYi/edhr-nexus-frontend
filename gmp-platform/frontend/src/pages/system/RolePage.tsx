@@ -8,8 +8,10 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+  } from 'react';
+import { useMutation,
+  useQuery,
+  useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -20,7 +22,6 @@ import {
   Checkbox,
   Chip,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -47,6 +48,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import {
   Add,
   Close,
@@ -1923,7 +1925,7 @@ export default function RolePage() {
         </Box>
       </Drawer>
 
-      <Dialog open={roleDialogOpen} onClose={() => setRoleDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={roleDialogOpen} onClose={() => setRoleDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑岗位角色' : '新增岗位角色'}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5} sx={{ pt: 0.5 }}>
@@ -1952,9 +1954,9 @@ export default function RolePage() {
             保存
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={permissionDialogOpen} onClose={() => setPermissionDialogOpen(false)} maxWidth="lg" fullWidth>
+      <AppDialog hideCloseButton open={permissionDialogOpen} onClose={() => setPermissionDialogOpen(false)} maxWidth="lg" fullWidth>
         <DialogTitle>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Box>
@@ -2166,9 +2168,9 @@ export default function RolePage() {
             保存权限
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)} maxWidth="sm" fullWidth>
+      <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)} maxWidth="sm" fullWidth>
         <DialogTitle>确认删除岗位角色</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5}>
@@ -2223,7 +2225,7 @@ export default function RolePage() {
             确认删除
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <Snackbar
         open={snackbar.open}

@@ -9,6 +9,7 @@ import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.common.util.RdoVersionStatusResolver;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.template.entity.DhrDirectory;
@@ -60,8 +61,7 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasAuthority('master-data.batch-record-templates')")
 public class DhrTemplateWorkspaceController {
     private static final String TENANT_ID = "default";
-    private static final String DRAFT = DhrTemplateVersionStatusResolver.DRAFT;
-    private static final String ACTIVE = DhrTemplateVersionStatusResolver.ACTIVE;
+    private static final String ACTIVE = RdoVersionStatusResolver.ACTIVE;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
@@ -106,14 +106,15 @@ public class DhrTemplateWorkspaceController {
             @RequestBody DhrCompositionRequest request) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         List<DhrCompositionDirectoryRequest> requestedDirectories = request == null ? List.of() : orEmpty(request.directories());
         List<DhrCompositionItemRequest> requestedItems = request == null ? List.of() : orEmpty(request.items());
-        Map<String, DhrCompositionDirectoryRequest> directoryByClientId = validateCompositionDirectories(requestedDirectories);
-        Map<Long, FormTemplateReference> formReferences = validateCompositionItems(requestedItems, directoryByClientId);
-
         List<DhrDirectory> previousDirectories = directories(versionId);
         List<DhrTemplateItem> previousItems = itemsForDirectories(previousDirectories);
+        Map<String, DhrCompositionDirectoryRequest> directoryByClientId = validateCompositionDirectories(requestedDirectories);
+        Map<Long, FormTemplateReference> formReferences = validateCompositionItems(
+                requestedItems,
+                directoryByClientId,
+                previousItems);
         Map<String, Object> before = compositionSnapshot(previousDirectories, previousItems);
 
         if (!previousItems.isEmpty()) dhrTemplateItemRepository.deleteAll(previousItems);
@@ -173,8 +174,6 @@ public class DhrTemplateWorkspaceController {
                 .description(trimToNull(request == null ? null : request.description()))
                 .effectiveFrom(parseDateTime(request == null ? null : request.effectiveFrom()))
                 .effectiveTo(parseDateTime(request == null ? null : request.effectiveTo()))
-                .status(DRAFT)
-                .isCurrent(false)
                 .createdAt(LocalDateTime.now())
                 .build());
         if (source != null) cloneComposition(source.getId(), version.getId());
@@ -188,7 +187,6 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<DhrVersionResponse> updateDhrTemplateVersion(@PathVariable Long templateId, @PathVariable Long versionId, @RequestBody DhrVersionRequest request) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         validateEffectiveDateRange(request);
         String versionLabel = requireVersionLabel(request == null ? null : request.version());
         ensureVersionLabelAvailable(templateId, versionLabel, versionId);
@@ -216,9 +214,6 @@ public class DhrTemplateWorkspaceController {
             throw new BusinessException(ErrorCode.GENERAL_001, "批记录模板至少保留一个版本");
         }
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        if (!DRAFT.equals(version.getStatus()) || Boolean.TRUE.equals(version.getIsCurrent())) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "已启用版本不可删除，请先新建版本");
-        }
         List<DhrDirectory> directories = directories(versionId);
         List<DhrTemplateItem> items = itemsForDirectories(directories);
         if (!items.isEmpty()) dhrTemplateItemRepository.deleteAll(items);
@@ -234,7 +229,6 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<DhrDirectoryResponse> createDhrDirectory(@PathVariable Long templateId, @PathVariable Long versionId, @RequestBody DhrDirectoryRequest request) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         String name = requireName(request == null ? null : request.name(), "目录名称不能为空");
         Long parentId = validateParent(versionId, request == null ? null : request.parentId(), null);
         DhrDirectory directory = dhrDirectoryRepository.save(DhrDirectory.builder()
@@ -257,7 +251,6 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<DhrDirectoryResponse> updateDhrDirectory(@PathVariable Long templateId, @PathVariable Long versionId, @PathVariable Long directoryId, @RequestBody DhrDirectoryRequest request) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         DhrDirectory directory = findDirectory(versionId, directoryId);
         Map<String, Object> before = directorySnapshot(directory);
         directory.setName(requireName(request == null ? null : request.name(), "目录名称不能为空"));
@@ -276,7 +269,6 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<Void> deleteDhrDirectory(@PathVariable Long templateId, @PathVariable Long versionId, @PathVariable Long directoryId) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         DhrDirectory directory = findDirectory(versionId, directoryId);
         boolean hasChild = directories(versionId).stream().anyMatch(candidate -> Objects.equals(candidate.getParentId(), directoryId));
         if (hasChild) throw new BusinessException(ErrorCode.GENERAL_001, "请先删除子目录");
@@ -296,7 +288,6 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<DhrEvidenceItemResponse> createDhrEvidenceItem(@PathVariable Long templateId, @PathVariable Long versionId, @PathVariable Long directoryId, @RequestBody DhrEvidenceItemRequest request) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         findDirectory(versionId, directoryId);
         FormTemplateReference formReference = resolveActiveFormTemplateReference(request == null ? null : request.formTemplateVersionId());
         FormTemplateVersion formVersion = formReference.version();
@@ -326,7 +317,6 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<DhrEvidenceItemResponse> updateDhrEvidenceItem(@PathVariable Long templateId, @PathVariable Long versionId, @PathVariable Long itemId, @RequestBody DhrEvidenceItemUpdateRequest request) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         DhrTemplateItem item = findItem(versionId, itemId);
         Map<String, Object> before = evidenceSnapshot(item);
         if (request != null && request.isRequired() != null) item.setIsRequired(request.isRequired());
@@ -345,7 +335,6 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<Void> deleteDhrEvidenceItem(@PathVariable Long templateId, @PathVariable Long versionId, @PathVariable Long itemId) {
         findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         DhrTemplateItem item = findItem(versionId, itemId);
         dhrTemplateItemRepository.delete(item);
         touchTemplate(templateId);
@@ -360,24 +349,13 @@ public class DhrTemplateWorkspaceController {
     public ApiResponse<DhrVersionResponse> publishDhrTemplateVersion(@PathVariable Long templateId, @PathVariable Long versionId) {
         DhrTemplate template = findTemplate(templateId);
         DhrTemplateVersion version = findVersion(templateId, versionId);
-        ensureEditable(version);
         validateVersionCanBePublished(version);
         List<DhrDirectory> directories = directories(versionId);
         List<DhrTemplateItem> items = itemsForDirectories(directories);
         if (directories.isEmpty()) throw new BusinessException(ErrorCode.GENERAL_001, "请至少配置一个 DHR 目录");
         if (items.isEmpty()) throw new BusinessException(ErrorCode.GENERAL_001, "请至少配置一个表单证据");
         Map<String, Object> before = versionSnapshot(version);
-        List<DhrTemplateVersion> previousCurrentVersions = versions(templateId).stream()
-                .filter(candidate -> !Objects.equals(candidate.getId(), versionId))
-                .filter(candidate -> Boolean.TRUE.equals(candidate.getIsCurrent()))
-                .toList();
-        previousCurrentVersions.forEach(previous -> {
-            previous.setIsCurrent(false);
-        });
-        if (!previousCurrentVersions.isEmpty()) dhrTemplateVersionRepository.saveAll(previousCurrentVersions);
         version.setDirectorySnapshot(toSnapshotJson(version, directories, items));
-        version.setStatus(ACTIVE);
-        version.setIsCurrent(true);
         DhrTemplateVersion saved = dhrTemplateVersionRepository.save(version);
         template.setUpdatedBy(currentOperatorName());
         template.setUpdatedAt(LocalDateTime.now());
@@ -434,16 +412,22 @@ public class DhrTemplateWorkspaceController {
 
     private Map<Long, FormTemplateReference> validateCompositionItems(
             List<DhrCompositionItemRequest> requestedItems,
-            Map<String, DhrCompositionDirectoryRequest> directoryByClientId) {
+            Map<String, DhrCompositionDirectoryRequest> directoryByClientId,
+            List<DhrTemplateItem> previousItems) {
         Map<Long, FormTemplateReference> formReferences = new HashMap<>();
         Set<String> referencedForms = new java.util.HashSet<>();
+        Set<String> existingReferenceKeys = previousItems.stream()
+                .filter(item -> item.getDirectoryId() != null && item.getFormTemplateVersionId() != null)
+                .map(item -> item.getDirectoryId() + ":" + item.getFormTemplateVersionId())
+                .collect(Collectors.toSet());
         for (DhrCompositionItemRequest item : requestedItems) {
             if (item == null) throw new BusinessException(ErrorCode.GENERAL_001, "表单引用数据不能为空");
             String directoryClientId = requireName(item.directoryClientId(), "表单引用缺少所属目录");
             if (!directoryByClientId.containsKey(directoryClientId)) {
                 throw new BusinessException(ErrorCode.GENERAL_001, "表单引用缺少所属目录");
             }
-            FormTemplateReference reference = resolveActiveFormTemplateReference(item.formTemplateVersionId());
+            boolean isExistingReference = existingReferenceKeys.contains(directoryClientId + ":" + item.formTemplateVersionId());
+            FormTemplateReference reference = resolveFormTemplateReference(item.formTemplateVersionId(), isExistingReference);
             String duplicateKey = directoryClientId + ":" + reference.template().getId();
             if (!referencedForms.add(duplicateKey)) {
                 throw new BusinessException(ErrorCode.GENERAL_001, "同一目录不能重复引用同一表单");
@@ -510,14 +494,19 @@ public class DhrTemplateWorkspaceController {
     }
 
     private FormTemplateReference resolveActiveFormTemplateReference(Long formTemplateVersionId) {
+        return resolveFormTemplateReference(formTemplateVersionId, false);
+    }
+
+    private FormTemplateReference resolveFormTemplateReference(Long formTemplateVersionId, boolean allowExistingInactiveReference) {
         if (formTemplateVersionId == null) throw new BusinessException(ErrorCode.GENERAL_001, "请选择表单模板版本");
         FormTemplateVersion formVersion = formTemplateVersionRepository.findById(formTemplateVersionId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板版本不存在"));
         Long formTemplateId = formVersion.getTemplateId();
         FormTemplate formTemplate = formTemplateId == null ? null : formTemplateRepository.findById(formTemplateId).orElse(null);
         if (formTemplate == null) throw new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在");
-        if (!ACTIVE.equals(formTemplate.getStatus()) || !ACTIVE.equals(formVersion.getStatus())) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "仅能引用已启用的表单模板版本");
+        if (!allowExistingInactiveReference
+                && !RdoVersionStatusResolver.isReferenceable(formVersion.getEffectiveFrom(), formVersion.getEffectiveTo())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "仅能引用生效中的表单模板版本");
         }
         return new FormTemplateReference(formTemplate, formVersion);
     }
@@ -545,16 +534,16 @@ public class DhrTemplateWorkspaceController {
         return offlineVersion;
     }
 
-    private void ensureVersionLabelAvailable(Long templateId, String versionLabel, Long currentVersionId) {
+    private void ensureVersionLabelAvailable(Long templateId, String versionLabel, Long excludedVersionId) {
         boolean exists = dhrTemplateVersionRepository.findByDhrTemplateIdAndVersionLabelIgnoreCase(templateId, versionLabel).stream()
-                .anyMatch(version -> !Objects.equals(version.getId(), currentVersionId));
+                .anyMatch(version -> !Objects.equals(version.getId(), excludedVersionId));
         if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "版本号已存在");
     }
 
-    private void ensureVersionCodeAvailable(String code, Long currentVersionId) {
+    private void ensureVersionCodeAvailable(String code, Long excludedVersionId) {
         if (!StringUtils.hasText(code)) return;
         boolean exists = dhrTemplateVersionRepository.findByCodeIgnoreCase(code).stream()
-                .anyMatch(version -> !Objects.equals(version.getId(), currentVersionId));
+                .anyMatch(version -> !Objects.equals(version.getId(), excludedVersionId));
         if (exists) throw new BusinessException(ErrorCode.GENERAL_001, "模板编码已存在");
     }
 
@@ -605,12 +594,6 @@ public class DhrTemplateWorkspaceController {
                 .isRequired(source.getIsRequired())
                 .createdAt(LocalDateTime.now())
                 .build()));
-    }
-
-    private void ensureEditable(DhrTemplateVersion version) {
-        if (!DRAFT.equals(version.getStatus())) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "已启用版本不可编辑，请先新建版本");
-        }
     }
 
     private void validateEffectiveDateRange(DhrVersionRequest request) {
@@ -676,20 +659,24 @@ public class DhrTemplateWorkspaceController {
 
     private DhrFormTemplateOption toFormOption(FormTemplate template) {
         List<FormTemplateVersion> versions = orEmpty(formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(template.getId()));
+        List<String> versionStatuses = versions.stream()
+                .map(version -> RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo()))
+                .toList();
         return new DhrFormTemplateOption(
                 String.valueOf(template.getId()),
                 template.getCode(),
                 template.getName(),
                 template.getCategoryName(),
-                template.getStatus(),
+                RdoVersionStatusResolver.resolveAggregate(versionStatuses),
                 template.getUpdatedBy(),
                 formatDateTime(template.getUpdatedAt()),
                 versions.stream().map(version -> {
-                    boolean referenceable = ACTIVE.equals(template.getStatus()) && ACTIVE.equals(version.getStatus());
+                    String versionStatus = RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo());
+                    boolean referenceable = ACTIVE.equals(versionStatus);
                     return new DhrFormTemplateVersionOption(
                             String.valueOf(version.getId()),
                             version.getVersion(),
-                            version.getStatus(),
+                            versionStatus,
                             referenceable);
                 }).toList());
     }
@@ -737,7 +724,6 @@ public class DhrTemplateWorkspaceController {
                 formatDateTime(version.getEffectiveFrom()),
                 formatDateTime(version.getEffectiveTo()),
                 DhrTemplateVersionStatusResolver.resolveVersionStatus(version),
-                Boolean.TRUE.equals(version.getIsCurrent()),
                 formatDateTime(version.getCreatedAt()),
                 directories.size(),
                 items.size());
@@ -824,8 +810,7 @@ public class DhrTemplateWorkspaceController {
         snapshot.put("description", version.getDescription());
         snapshot.put("effectiveFrom", formatDateTime(version.getEffectiveFrom()));
         snapshot.put("effectiveTo", formatDateTime(version.getEffectiveTo()));
-        snapshot.put("status", version.getStatus());
-        snapshot.put("isCurrent", version.getIsCurrent());
+        snapshot.put("status", RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo()));
         snapshot.put("directorySnapshot", version.getDirectorySnapshot());
         return snapshot;
     }
@@ -1040,7 +1025,7 @@ public class DhrTemplateWorkspaceController {
     public record DhrTemplateCompositionResponse(DhrVersionResponse version, List<DhrDirectoryResponse> directories, List<DhrEvidenceItemResponse> items) {
     }
 
-    public record DhrVersionResponse(String id, String version, String code, String offlineVersion, String description, String effectiveFrom, String effectiveTo, String status, boolean isCurrent, String createdAt, int directoryCount, int evidenceCount) {
+    public record DhrVersionResponse(String id, String version, String code, String offlineVersion, String description, String effectiveFrom, String effectiveTo, String status, String createdAt, int directoryCount, int evidenceCount) {
     }
 
     public record DhrDirectoryResponse(String id, String parentId, String name, int sortOrder) {

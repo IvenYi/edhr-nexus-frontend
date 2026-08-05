@@ -36,6 +36,54 @@ class DatabaseChangelogTest {
         assertThat(migration).contains("uk_dhr_template_version_code");
     }
 
+    @Test
+    void productModelingMigrationIsIncludedAndKeepsProductDataAsTheSourceOfTruth() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0044-product-process-modeling.sql");
+
+        assertThat(master).contains("0044-product-process-modeling.sql");
+        assertThat(migration).contains("CREATE TABLE IF NOT EXISTS product_process");
+        assertThat(migration).contains("product_version_id BIGINT NOT NULL");
+        assertThat(migration).contains("CREATE TABLE IF NOT EXISTS product_process_version");
+        assertThat(migration).contains("product_process_operation_form_binding");
+        assertThat(migration).contains("product_process_operation_sop_binding");
+    }
+
+    @Test
+    void documentVersionMigrationPreservesExistingSopRecordsAndUsesVersionLevelBindings() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0045-document-management-versions.sql");
+
+        assertThat(master).contains("0045-document-management-versions.sql");
+        assertThat(migration).contains("ADD COLUMN IF NOT EXISTS document_type");
+        assertThat(migration).contains("CREATE TABLE IF NOT EXISTS document_version");
+        assertThat(migration).contains("INSERT INTO document_version");
+        assertThat(migration).contains("product_process_operation_document_binding");
+        assertThat(migration).contains("document_version_id BIGINT NOT NULL");
+    }
+
+    @Test
+    void productModelingDoesNotPersistUnsupportedReleaseForms() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0046-remove-product-process-release-form.sql");
+
+        assertThat(master).contains("0046-remove-product-process-release-form.sql");
+        assertThat(migration).contains("DROP COLUMN IF EXISTS release_form_template_id");
+    }
+
+    @Test
+    void documentCategoryMigrationSeedsProtectedCategoriesAndKeepsUncategorizedVirtual() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0048-document-categories.sql");
+
+        assertThat(master).contains("0048-document-categories.sql");
+        assertThat(migration).contains("CREATE TABLE IF NOT EXISTS document_category");
+        assertThat(migration).contains("LOWER(name)");
+        assertThat(migration).contains("'SOP', TRUE");
+        assertThat(migration).contains("'SIP', TRUE");
+        assertThat(migration).contains("SET category_id = NULL");
+    }
+
     private String readResource(String path) throws IOException {
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }

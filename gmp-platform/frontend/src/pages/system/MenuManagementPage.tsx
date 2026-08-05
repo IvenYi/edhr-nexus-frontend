@@ -1,4 +1,8 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import {
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Alert,
@@ -6,7 +10,6 @@ import {
   Button,
   CircularProgress,
   Divider,
-  Dialog,
   DialogContent,
   DialogTitle,
   IconButton,
@@ -19,6 +22,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { Add, Close, Delete, ImageOutlined, InfoOutlined, RestartAlt, Save, Search, SubdirectoryArrowRight } from '@mui/icons-material';
 import { getIconGroups, getIconPage, type IconAsset, type IconGroup } from '@/api/system';
 import type { SidebarMenu, SidebarModule, SidebarSubMenu } from '@/utils/constants';
@@ -132,7 +136,7 @@ function IconSelectorField({
         </Stack>
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="md">
+      <AppDialog hideCloseButton open={open} onClose={() => setOpen(false)} fullWidth maxWidth="md">
         <DialogTitle sx={{ p: 0 }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ minHeight: 52, px: 2 }}>
             <Typography sx={{ fontWeight: 600, color: '#303133' }}>图标选择</Typography>
@@ -269,7 +273,7 @@ function IconSelectorField({
             </Stack>
           </Stack>
         </DialogContent>
-      </Dialog>
+      </AppDialog>
     </>
   );
 }

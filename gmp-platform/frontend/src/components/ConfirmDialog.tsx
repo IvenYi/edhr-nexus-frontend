@@ -1,7 +1,11 @@
 import {
-  Dialog, DialogTitle, DialogContent, DialogContentText,
-  DialogActions, Button,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { WarningAmberOutlined } from '@mui/icons-material';
 
 interface ConfirmDialogProps {
@@ -32,7 +36,7 @@ export default function ConfirmDialog({
   destructive = false,
 }: ConfirmDialogProps) {
   return (
-    <Dialog open={open} onClose={loading ? undefined : onCancel} maxWidth="xs" fullWidth>
+    <AppDialog open={open} onClose={loading ? undefined : onCancel} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
         {destructive && <WarningAmberOutlined color="warning" />}
         {title}
@@ -56,6 +60,6 @@ export default function ConfirmDialog({
           {loading ? '处理中...' : confirmText}
         </Button>
       </DialogActions>
-    </Dialog>
+    </AppDialog>
   );
 }

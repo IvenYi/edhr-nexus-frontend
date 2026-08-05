@@ -11,8 +11,6 @@ export interface TemplateModelingRecord {
   type?: string;
   categoryName?: string | null;
   description?: string | null;
-  currentVersionId?: string | number | null;
-  currentVersion?: TemplateVersionRecord | null;
   versions?: TemplateVersionRecord[];
   status?: string;
   createdBy?: string;
@@ -27,7 +25,6 @@ export interface TemplateVersionRecord {
   version: string;
   code?: string | null;
   offlineVersion?: string | null;
-  isCurrent?: boolean;
   directoryCount?: number;
   evidenceCount?: number;
   description?: string | null;
@@ -125,8 +122,7 @@ export interface DhrTemplateVersionRecord {
   description?: string | null;
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
-  status: 'DRAFT' | 'PENDING' | 'ACTIVE' | 'EXPIRED' | 'DISABLED' | string;
-  isCurrent: boolean;
+  status: 'ACTIVE' | 'EXPIRED' | string;
   createdAt?: string | null;
   directoryCount: number;
   evidenceCount: number;
@@ -240,6 +236,9 @@ export const createFormTemplateVersion = (id: string | number, body: TemplateMod
 
 export const getFormTemplateVersion = (id: string | number, versionId: string | number) =>
   client.get(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`) as Promise<{ data: { data: TemplateVersionRecord } }>;
+
+export const updateFormTemplateVersion = (id: string | number, versionId: string | number, body: TemplateModelingPayload) =>
+  client.put(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`, body) as Promise<{ data: { data: TemplateVersionRecord } }>;
 
 export const deleteFormTemplateVersion = (id: string | number, versionId: string | number) =>
   client.delete(`${templateModelingBase}/form-templates/${id}/versions/${versionId}`);

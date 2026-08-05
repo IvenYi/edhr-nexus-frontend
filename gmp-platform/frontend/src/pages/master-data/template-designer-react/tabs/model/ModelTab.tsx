@@ -1,9 +1,14 @@
-import { type DragEvent, type MouseEvent as ReactMouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type DragEvent,
+  type MouseEvent as ReactMouseEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState } from 'react';
 import {
   Box,
   Button,
   Divider,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -26,6 +31,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import DesignServicesOutlined from '@mui/icons-material/DesignServicesOutlined';
 import DragIndicator from '@mui/icons-material/DragIndicator';
 import EditOutlined from '@mui/icons-material/EditOutlined';
@@ -1185,7 +1191,7 @@ export default function ModelTab({
         </Box>
       </Box>
 
-      <Dialog
+      <AppDialog
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
         maxWidth="xs"
@@ -1245,7 +1251,7 @@ export default function ModelTab({
             </Button>
           ) : null}
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
     </Box>
   );

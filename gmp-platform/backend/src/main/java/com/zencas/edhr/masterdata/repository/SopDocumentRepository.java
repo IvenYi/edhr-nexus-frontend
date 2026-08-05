@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SopDocumentRepository extends JpaRepository<SopDocument, Long>, JpaSpecificationExecutor<SopDocument> {
+    boolean existsByTenantIdAndCodeIgnoreCase(String tenantId, String code);
 }

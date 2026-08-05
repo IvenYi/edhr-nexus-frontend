@@ -46,10 +46,6 @@ public class FormTemplate {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "current_version_id")
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long currentVersionId;
-
     @Column(name = "status")
     @Builder.Default
     private String status = "ACTIVE";

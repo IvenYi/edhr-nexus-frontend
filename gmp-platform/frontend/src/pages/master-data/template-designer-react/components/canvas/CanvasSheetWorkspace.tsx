@@ -1,12 +1,16 @@
 import type { DragEvent as ReactDragEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState } from 'react';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import {
   Box,
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -23,6 +27,7 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
 import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, FieldType, ModelField } from '../../types';
@@ -3938,7 +3943,8 @@ export default function CanvasSheetWorkspace() {
           )
         ) : null}
       </Menu>
-      <Dialog
+      <AppDialog
+        hideCloseButton
         data-quick-add-field-dialog="true"
         open={quickAddFieldDialogOpen}
         onClose={closeQuickAddFieldDialog}
@@ -4090,7 +4096,7 @@ export default function CanvasSheetWorkspace() {
             确认添加
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
       <Menu
         data-sheet-sub-table-menu-root="true"
         open={Boolean(subTableMenuAnchorEl)}

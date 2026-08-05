@@ -8,6 +8,7 @@ import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.common.util.RdoVersionStatusResolver;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.dto.MaterialGroupRecord;
@@ -516,7 +517,7 @@ public class ProcessModelingController {
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order) {
         Page<Route> result = routeRepository.findAll(
-                keywordStatusSpec(keyword, status), pageable(page, size, sort, order));
+                routeSpec(keyword, status), pageable(page, size, sort, order));
         result.getContent().forEach(this::enrichRouteVersions);
         return ApiResponse.success(toResult(result, page, size));
     }
@@ -524,6 +525,7 @@ public class ProcessModelingController {
     @PostMapping("/routes")
     @Transactional
     public ApiResponse<Route> createRoute(@RequestBody ProcessModelingRequest request) {
+        validateRouteDateRange(request);
         LocalDateTime now = LocalDateTime.now();
         Route entity = Route.builder()
                 .id(idGenerator.nextId())
@@ -533,7 +535,7 @@ public class ProcessModelingController {
                 .description(trimToNull(request.getDescription()))
                 .productFamilyId(request.getProductFamilyId() == null ? null : String.valueOf(request.getProductFamilyId()))
                 .commonAsset(request == null || request.getCommonAsset() == null ? true : request.getCommonAsset())
-                .status(resolveStatus(request, "DRAFT"))
+                .status("ACTIVE")
                 .remark(trimToNull(request.getRemark()))
                 .createdBy(currentOperatorName())
                 .createdAt(now)
@@ -544,9 +546,7 @@ public class ProcessModelingController {
         RouteVersion version = createInitialRouteVersion(saved, request, now);
         saved.setVersions(List.of(version));
         saved.setVersionCount(1);
-        saved.setLatestVersionId(version.getId());
-        saved.setLatestVersion(version.getVersion());
-        saved.setLatestVersionStatus(version.getVersionStatus());
+        saved.setStatus(resolveRouteGroupRuntimeStatus(List.of(version)));
         writeAudit("ROUTE", saved.getId(), "CREATE", "工艺路线", "新增工艺路线", Map.of(), routeSnapshot(saved));
         return ApiResponse.success(saved);
     }
@@ -561,11 +561,11 @@ public class ProcessModelingController {
         existing.setDescription(trimToNull(request.getDescription()));
         existing.setProductFamilyId(request.getProductFamilyId() == null ? existing.getProductFamilyId() : String.valueOf(request.getProductFamilyId()));
         existing.setCommonAsset(request == null || request.getCommonAsset() == null ? existing.getCommonAsset() : request.getCommonAsset());
-        existing.setStatus(resolveStatus(request, existing.getStatus()));
         existing.setRemark(trimToNull(request.getRemark()));
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
         Route saved = routeRepository.save(existing);
+        enrichRouteVersions(saved);
         writeChangedAudit("ROUTE", saved.getId(), "工艺路线", "编辑工艺路线", before, routeSnapshot(saved));
         return ApiResponse.success(saved);
     }
@@ -585,7 +585,10 @@ public class ProcessModelingController {
     public ApiResponse<RouteVersion> createRouteVersion(@PathVariable Long routeId, @RequestBody ProcessModelingRequest request) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_008));
+        validateRouteDateRange(request);
+        ensureRouteVersionAvailable(routeId, resolveRouteVersion(request), null);
         RouteVersion version = createInitialRouteVersion(route, request, LocalDateTime.now());
+        version.setVersionStatus(resolveRouteVersionRuntimeStatus(version));
         writeAudit("ROUTE_VERSION", version.getId(), "CREATE", "工艺路线", "新增工艺路线版本", Map.of(), routeVersionSnapshot(version));
         return ApiResponse.success(version);
     }
@@ -601,15 +604,16 @@ public class ProcessModelingController {
             throw new BusinessException(ErrorCode.GENERAL_001, "版本不能为空");
         }
         RouteVersion existing = requireRouteVersion(routeId, versionId);
+        ensureRouteVersionAvailable(routeId, request.getVersion(), versionId);
         Map<String, Object> before = routeVersionSnapshot(existing);
         existing.setVersion(request.getVersion().trim());
-        if (StringUtils.hasText(request.getStatus())) existing.setVersionStatus(request.getStatus().trim());
         existing.setDescription(trimToNull(request == null ? null : request.getVersionDescription()));
         existing.setEffectiveDate(request == null ? null : request.getEffectiveDate());
         existing.setExpiryDate(request == null ? null : request.getExpiryDate());
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
         RouteVersion saved = routeVersionRepository.save(existing);
+        saved.setVersionStatus(resolveRouteVersionRuntimeStatus(saved));
         writeChangedAudit("ROUTE_VERSION", saved.getId(), "工艺路线", "编辑工艺路线版本", before, routeVersionSnapshot(saved));
         return ApiResponse.success(saved);
     }
@@ -840,12 +844,6 @@ public class ProcessModelingController {
         route.setVersions(versions);
         route.setVersionCount(versions.size());
         route.setStatus(resolveRouteGroupRuntimeStatus(versions));
-        if (!versions.isEmpty()) {
-            RouteVersion latest = versions.getFirst();
-            route.setLatestVersionId(latest.getId());
-            route.setLatestVersion(latest.getVersion());
-            route.setLatestVersionStatus(latest.getVersionStatus());
-        }
     }
 
     private RouteVersion createInitialRouteVersion(Route route, ProcessModelingRequest request, LocalDateTime now) {
@@ -854,7 +852,6 @@ public class ProcessModelingController {
                 .tenantId(TENANT_ID)
                 .routeId(route.getId())
                 .version(resolveRouteVersion(request))
-                .versionStatus(resolveRouteVersionStatus(request))
                 .description(trimToNull(request == null ? null : request.getVersionDescription()))
                 .effectiveDate(request == null ? null : request.getEffectiveDate())
                 .expiryDate(request == null ? null : request.getExpiryDate())
@@ -863,7 +860,9 @@ public class ProcessModelingController {
                 .updatedBy(currentOperatorName())
                 .updatedAt(now)
                 .build();
-        return routeVersionRepository.save(version);
+        RouteVersion saved = routeVersionRepository.save(version);
+        saved.setVersionStatus(resolveRouteVersionRuntimeStatus(saved));
+        return saved;
     }
 
     private RouteVersion requireRouteVersion(Long routeId, Long versionId) {
@@ -921,31 +920,19 @@ public class ProcessModelingController {
         return DEFAULT_MATERIAL_VERSION;
     }
 
-    private String resolveRouteVersionStatus(ProcessModelingRequest request) {
-        if (request != null && StringUtils.hasText(request.getStatus())) return request.getStatus().trim();
-        return "DRAFT";
-    }
-
     private String resolveRouteVersionRuntimeStatus(RouteVersion version) {
         if (version == null) return "ACTIVE";
         return resolveRouteVersionRuntimeStatus(version.getEffectiveDate(), version.getExpiryDate());
     }
 
     private String resolveRouteVersionRuntimeStatus(LocalDateTime effectiveDate, LocalDateTime expiryDate) {
-        LocalDateTime now = LocalDateTime.now();
-        if (effectiveDate != null && effectiveDate.isAfter(now)) return "PENDING";
-        if (expiryDate != null && !expiryDate.isAfter(now)) return "EXPIRED";
-        return "ACTIVE";
+        return RdoVersionStatusResolver.resolve(effectiveDate, expiryDate);
     }
 
     private String resolveRouteGroupRuntimeStatus(List<RouteVersion> versions) {
-        List<String> statuses = versions.stream()
+        return RdoVersionStatusResolver.resolveAggregate(versions.stream()
                 .map(this::resolveRouteVersionRuntimeStatus)
-                .toList();
-        if (statuses.contains("ACTIVE")) return "ACTIVE";
-        if (statuses.stream().allMatch("EXPIRED"::equals)) return "DISABLED";
-        if (statuses.contains("PENDING")) return "PENDING";
-        return "DISABLED";
+                .toList());
     }
 
     private BusinessException derivedProductMutationException() {
@@ -1032,20 +1019,13 @@ public class ProcessModelingController {
     }
 
     private String resolveMaterialRuntimeStatus(LocalDateTime effectiveDate, LocalDateTime expiryDate) {
-        LocalDateTime now = LocalDateTime.now();
-        if (effectiveDate != null && effectiveDate.isAfter(now)) return "PENDING";
-        if (expiryDate != null && !expiryDate.isAfter(now)) return "EXPIRED";
-        return "ACTIVE";
+        return RdoVersionStatusResolver.resolve(effectiveDate, expiryDate);
     }
 
     private String resolveMaterialGroupRuntimeStatus(List<Material> versions) {
-        List<String> statuses = versions.stream()
+        return RdoVersionStatusResolver.resolveAggregate(versions.stream()
                 .map(this::resolveMaterialRuntimeStatus)
-                .toList();
-        if (statuses.contains("ACTIVE")) return "ACTIVE";
-        if (statuses.stream().allMatch("EXPIRED"::equals)) return "DISABLED";
-        if (statuses.contains("PENDING")) return "PENDING";
-        return "DISABLED";
+                .toList());
     }
 
     private PageRequest pageable(int page, int size, String sort, String order) {
@@ -1070,6 +1050,37 @@ public class ProcessModelingController {
             }
             if (StringUtils.hasText(status) && !"ALL".equalsIgnoreCase(status)) {
                 predicates.add(cb.equal(root.get("status"), status.trim()));
+            }
+            return predicates.isEmpty() ? cb.conjunction() : cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+    }
+
+    private Specification<Route> routeSpec(String keyword, String status) {
+        return (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+            if (StringUtils.hasText(keyword)) {
+                String like = "%" + keyword.trim() + "%";
+                predicates.add(cb.or(cb.like(root.get("name"), like), cb.like(root.get("code"), like)));
+            }
+            if (StringUtils.hasText(status) && !"ALL".equalsIgnoreCase(status)) {
+                LocalDateTime now = LocalDateTime.now();
+                jakarta.persistence.criteria.Subquery<Long> versionSubquery = query.subquery(Long.class);
+                jakarta.persistence.criteria.Root<RouteVersion> versionRoot = versionSubquery.from(RouteVersion.class);
+                java.util.List<jakarta.persistence.criteria.Predicate> versionPredicates = new java.util.ArrayList<>();
+                versionPredicates.add(cb.equal(versionRoot.get("routeId"), root.get("id")));
+                if (RdoVersionStatusResolver.ACTIVE.equals(status.trim())) {
+                    versionPredicates.add(cb.or(cb.isNull(versionRoot.get("effectiveDate")), cb.lessThanOrEqualTo(versionRoot.get("effectiveDate"), now)));
+                    versionPredicates.add(cb.or(cb.isNull(versionRoot.get("expiryDate")), cb.greaterThan(versionRoot.get("expiryDate"), now)));
+                } else if (RdoVersionStatusResolver.EXPIRED.equals(status.trim())) {
+                    versionPredicates.add(cb.or(
+                            cb.greaterThan(versionRoot.get("effectiveDate"), now),
+                            cb.lessThanOrEqualTo(versionRoot.get("expiryDate"), now)));
+                } else {
+                    return cb.disjunction();
+                }
+                versionSubquery.select(versionRoot.get("routeId"));
+                versionSubquery.where(cb.and(versionPredicates.toArray(new jakarta.persistence.criteria.Predicate[0])));
+                predicates.add(root.get("id").in(versionSubquery));
             }
             return predicates.isEmpty() ? cb.conjunction() : cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         };
@@ -1175,6 +1186,16 @@ public class ProcessModelingController {
         if (request.getExpiryDate().isBefore(request.getEffectiveDate())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "失效时间不能早于生效时间");
         }
+    }
+
+    private void ensureRouteVersionAvailable(Long routeId, String version, Long excludedVersionId) {
+        if (!StringUtils.hasText(version)) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "版本不能为空");
+        }
+        boolean duplicated = routeVersionRepository.findByRouteIdOrderByCreatedAtDesc(routeId).stream()
+                .filter(candidate -> !Objects.equals(candidate.getId(), excludedVersionId))
+                .anyMatch(candidate -> sameText(candidate.getVersion(), version));
+        if (duplicated) throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线版本已存在");
     }
 
     private void validateMaterialCodeForCreate(String code, String name, String version) {
@@ -1470,8 +1491,6 @@ public class ProcessModelingController {
         snapshot.put("productFamilyId", entity.getProductFamilyId());
         snapshot.put("commonAsset", entity.getCommonAsset());
         snapshot.put("versionCount", entity.getVersionCount());
-        snapshot.put("latestVersion", entity.getLatestVersion());
-        snapshot.put("latestVersionStatus", entity.getLatestVersionStatus());
         snapshot.put("remark", entity.getRemark());
         return snapshot;
     }
@@ -1481,7 +1500,7 @@ public class ProcessModelingController {
         snapshot.put("id", entity.getId() == null ? null : String.valueOf(entity.getId()));
         snapshot.put("routeId", entity.getRouteId() == null ? null : String.valueOf(entity.getRouteId()));
         snapshot.put("version", entity.getVersion());
-        snapshot.put("versionStatus", entity.getVersionStatus());
+        snapshot.put("versionStatus", resolveRouteVersionRuntimeStatus(entity));
         snapshot.put("description", entity.getDescription());
         snapshot.put("effectiveDate", entity.getEffectiveDate() == null ? null : entity.getEffectiveDate().toString());
         snapshot.put("expiryDate", entity.getExpiryDate() == null ? null : entity.getExpiryDate().toString());

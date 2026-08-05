@@ -31,8 +31,6 @@ public class DhrTemplateVersion {
     private String directorySnapshot;
     @Column(name = "status", length = 32)
     @Builder.Default private String status = "DRAFT";
-    @Column(name = "is_current")
-    @Builder.Default private Boolean isCurrent = false;
     @Column(name = "created_at") private LocalDateTime createdAt;
     @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }
 }

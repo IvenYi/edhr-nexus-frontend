@@ -8,8 +8,10 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+  } from 'react';
+import { useMutation,
+  useQuery,
+  useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -19,7 +21,6 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -49,6 +50,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import {
   Add,
   Apartment,
@@ -2335,7 +2337,7 @@ export default function OrganizationPage() {
         </Box>
       </Drawer>
 
-      <Dialog open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
+      <AppDialog open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingUserId ? '编辑用户' : '新增用户'}</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
@@ -2472,9 +2474,9 @@ export default function OrganizationPage() {
             保存
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
+      <AppDialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
         <DialogTitle>重置密码</DialogTitle>
         <DialogContent>
           <Typography sx={{ mt: 1, mb: 1.5, color: '#606266' }}>
@@ -2498,9 +2500,9 @@ export default function OrganizationPage() {
             确认
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={removeUserConfirm !== null} onClose={() => setRemoveUserConfirm(null)}>
+      <AppDialog open={removeUserConfirm !== null} onClose={() => setRemoveUserConfirm(null)}>
         <DialogTitle>确认移出人员</DialogTitle>
         <DialogContent>
           确定要将用户 {removeUserConfirm?.username} 移出当前组织架构吗？用户信息、账号和角色会保留，所属组织将变为未分配。
@@ -2515,9 +2517,9 @@ export default function OrganizationPage() {
             移出
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
           {!editingId && (
@@ -2567,9 +2569,9 @@ export default function OrganizationPage() {
             </Button>
           </Stack>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
+      <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle>
         <DialogContent>确定要删除该组织节点吗？</DialogContent>
         <DialogActions>
@@ -2582,7 +2584,7 @@ export default function OrganizationPage() {
             删除
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <Snackbar
         open={snackbar.open}

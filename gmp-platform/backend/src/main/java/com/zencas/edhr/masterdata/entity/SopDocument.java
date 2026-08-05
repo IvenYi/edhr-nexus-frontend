@@ -14,6 +14,11 @@ public class SopDocument {
     private String code;
     @Column(name = "title")
     private String title;
+    /** Controlled document category. Kept on the master document and immutable after creation. */
+    @Column(name = "document_type", nullable = false, length = 32)
+    @Builder.Default private String documentType = "SOP";
+    @Column(name = "category_id")
+    private Long categoryId;
     @Column(name = "version")
     private String version;
     @Column(name = "file_reference")

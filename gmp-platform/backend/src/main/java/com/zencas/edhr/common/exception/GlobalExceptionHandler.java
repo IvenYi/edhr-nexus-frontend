@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
         log.warn("Upload file too large: path={}, message={}", request.getRequestURI(), ex.getMessage());
         return ResponseEntity
                 .badRequest()
-                .body(ApiResponse.error(400, "上传文件大小超出限制，请压缩后重试或上传不超过 50MB 的文件"));
+                .body(ApiResponse.error(400, "上传文件大小超出限制，请压缩后重试或上传不超过 150MB 的文件"));
     }
 
     @ExceptionHandler(Exception.class)

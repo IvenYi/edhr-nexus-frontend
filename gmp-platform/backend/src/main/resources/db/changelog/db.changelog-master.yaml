@@ -89,3 +89,13 @@ databaseChangeLog:
       file: db/changelog/0042-dhr-template-item-display-name.sql
   - include:
       file: db/changelog/0043-dhr-template-version-metadata.sql
+  - include:
+      file: db/changelog/0044-product-process-modeling.sql
+  - include:
+      file: db/changelog/0045-document-management-versions.sql
+  - include:
+      file: db/changelog/0046-remove-product-process-release-form.sql
+  - include:
+      file: db/changelog/0047-remove-rdo-current-version-fields.sql
+  - include:
+      file: db/changelog/0048-document-categories.sql

@@ -1,10 +1,26 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
-  Box, Typography, Button, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField, Pagination,
+  Box,
+  Typography,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Pagination,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { Add, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import client from '@/api/client';
@@ -103,7 +119,7 @@ export default function ReviewTemplateList() {
           <Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} />
         </Box>
       )}
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>创建审核流程模板</DialogTitle>
         <DialogContent>
           <TextField label="模板名称" fullWidth margin="normal"
@@ -115,7 +131,7 @@ export default function ReviewTemplateList() {
           <Button onClick={() => setOpen(false)}>取消</Button>
           <Button variant="contained" onClick={() => createMutation.mutate(form)}>创建</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
     </Box>
   );
 }

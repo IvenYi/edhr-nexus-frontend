@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,9 +34,8 @@ public class RouteVersion {
     private Long routeId;
     @Column(name = "version", nullable = false, length = 64)
     private String version;
-    @Column(name = "version_status", length = 32)
-    @Builder.Default
-    private String versionStatus = "DRAFT";
+    @Transient
+    private String versionStatus;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Column(name = "effective_date")

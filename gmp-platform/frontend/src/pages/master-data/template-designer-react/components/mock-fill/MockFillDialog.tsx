@@ -10,7 +10,6 @@ import {
   Box,
   Button,
   Checkbox,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -24,6 +23,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
 import { getFilePreviewBlob } from '@/api/files';
 import { verifyCurrentUserSignaturePassword } from '@/api/identity';
@@ -1515,7 +1515,8 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
   };
 
   return (
-    <Dialog
+    <AppDialog
+      hideCloseButton
       fullScreen
       open={open}
       onClose={onClose}
@@ -1594,7 +1595,7 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
           ) : null}
         </Stack>
       </Box>
-      <Dialog
+      <AppDialog
         open={Boolean(signatureDialogKey)}
         onClose={handleCloseSignatureDialog}
         data-mock-fill-signature-dialog="true"
@@ -1637,7 +1638,7 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
             {signatureSubmitting ? '鉴权中...' : '确认签名'}
           </Button>
         </DialogActions>
-      </Dialog>
-    </Dialog>
+      </AppDialog>
+    </AppDialog>
   );
 }

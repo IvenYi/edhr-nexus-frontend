@@ -24,7 +24,7 @@ class GlobalExceptionHandlerTest {
         assertThat(response.getStatusCode().value()).isEqualTo(400);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getCode()).isEqualTo(400);
-        assertThat(response.getBody().getMessage()).isEqualTo("上传文件大小超出限制，请压缩后重试或上传不超过 50MB 的文件");
+        assertThat(response.getBody().getMessage()).isEqualTo("上传文件大小超出限制，请压缩后重试或上传不超过 150MB 的文件");
     }
 
     @Test

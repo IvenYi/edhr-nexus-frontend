@@ -8,8 +8,10 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+  } from 'react';
+import { useMutation,
+  useQuery,
+  useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -19,7 +21,6 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -47,6 +48,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import { Add, Close, Delete, DragIndicator, Edit, ExpandMore, LockReset, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import {
   createUser,
@@ -2140,7 +2142,7 @@ export default function UserPage() {
         </Box>
       </Drawer>
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingId ? '编辑用户' : '新增用户'}</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
@@ -2260,9 +2262,9 @@ export default function UserPage() {
             保存
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
+      <AppDialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
         <DialogTitle>重置密码</DialogTitle>
         <DialogContent dividers>
           <TextField
@@ -2279,9 +2281,9 @@ export default function UserPage() {
           <Button onClick={() => setResetDialog(null)}>取消</Button>
           <Button variant="contained" onClick={() => resetMutation.mutate()} disabled={!newPassword || resetMutation.isPending}>确认</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)} maxWidth="xs" fullWidth>
+      <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)} maxWidth="xs" fullWidth>
         <DialogTitle>确认删除账号</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2">
@@ -2292,9 +2294,9 @@ export default function UserPage() {
           <Button onClick={() => setDeleteConfirm(null)}>取消</Button>
           <Button color="error" variant="contained" onClick={() => deleteMutation.mutate()} disabled={deleteMutation.isPending}>删除</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={batchDeleteConfirm} onClose={() => setBatchDeleteConfirm(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={batchDeleteConfirm} onClose={() => setBatchDeleteConfirm(false)} maxWidth="sm" fullWidth>
         <DialogTitle>确认批量删除账号</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5}>
@@ -2331,7 +2333,7 @@ export default function UserPage() {
             确认删除
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <Snackbar
         open={snackbar.open}

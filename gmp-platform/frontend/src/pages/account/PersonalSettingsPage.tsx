@@ -1,5 +1,17 @@
-import { type ChangeEvent, type KeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode, type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type ChangeEvent,
+  type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+  type SyntheticEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState } from 'react';
+import { useMutation,
+  useQuery,
+  useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
   Avatar,
@@ -8,7 +20,6 @@ import {
   Checkbox,
   CircularProgress,
   Divider,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -30,6 +41,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import {
   CloseOutlined,
   EmailOutlined,
@@ -1734,7 +1746,7 @@ export default function PersonalSettingsPage() {
         </Box>
       </Box>
 
-      <Dialog
+      <AppDialog
         data-avatar-crop-dialog
         open={avatarCropDialogOpen}
         onClose={() => setAvatarCropDialogOpen(false)}
@@ -1823,9 +1835,10 @@ export default function PersonalSettingsPage() {
             </Button>
           </Stack>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog
+      <AppDialog
+        hideCloseButton
         data-signature-authorization-preview-dialog
         open={Boolean(signatureNoticePreviewUrl)}
         onClose={handleCloseSignatureAuthorizationPreview}
@@ -1866,9 +1879,9 @@ export default function PersonalSettingsPage() {
             />
           ) : null}
         </DialogContent>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog
+      <AppDialog
         data-password-change-dialog
         open={passwordDialogOpen}
         onClose={handleClosePasswordDialog}
@@ -1918,9 +1931,9 @@ export default function PersonalSettingsPage() {
             修改密码
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog
+      <AppDialog
         data-signature-certification-dialog
         open={signatureDialogOpen}
         onClose={handleCloseSignatureDialog}
@@ -2118,7 +2131,7 @@ export default function PersonalSettingsPage() {
             {signatureMutation.isPending ? '认证中' : '认证'}
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <Alert severity={snackbar.severity} onClose={handleSnackbarClose} sx={{ width: '100%' }}>

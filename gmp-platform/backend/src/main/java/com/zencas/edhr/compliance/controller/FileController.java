@@ -68,11 +68,14 @@ public class FileController {
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "application/vnd.ms-excel",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "video/mp4", "video/webm", "video/quicktime",
             "text/plain", "text/csv",
             "application/zip"
     );
 
-    private static final long MAX_FILE_SIZE = 50L * 1024 * 1024; // 50 MB
+    private static final long MAX_FILE_SIZE = 150L * 1024 * 1024; // 150 MB
     private static final Set<String> PUBLIC_PREVIEW_TARGET_TYPES = Set.of("ICON_ASSET", "SYSTEM_LOGO", "SYSTEM_FAVICON", "USER_AVATAR");
 
     // ======================== Upload ========================
@@ -94,7 +97,7 @@ public class FileController {
         }
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new BusinessException(ErrorCode.FILE_002,
-                    "文件大小超出限制: " + (file.getSize() / 1024 / 1024) + "MB (最大 50MB)");
+                    "文件大小超出限制: " + (file.getSize() / 1024 / 1024) + "MB (最大 150MB)");
         }
         String contentType = file.getContentType();
         if (contentType == null || !ALLOWED_MIME_TYPES.contains(contentType)) {

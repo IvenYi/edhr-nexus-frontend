@@ -5,8 +5,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, Pagination,
+  DialogTitle, DialogContent, DialogActions, TextField, Pagination,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import client from '@/api/client';
 import { WORKFLOW_STATUS_MAP } from '@/utils/constants';
 import StatusBadge from '@/components/StatusBadge';
@@ -66,14 +67,14 @@ export default function TxnTemplateList() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>创建事务流程模板</DialogTitle>
         <DialogContent>
           <TextField label="模板名称" fullWidth margin="normal" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <TextField label="描述" fullWidth margin="normal" multiline rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
         </DialogContent>
         <DialogActions><Button onClick={() => setOpen(false)}>取消</Button><Button variant="contained" onClick={() => createMutation.mutate(form)}>创建</Button></DialogActions>
-      </Dialog>
+      </AppDialog>
     </Box>
   );
 }

@@ -9,8 +9,10 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+  } from 'react';
+import { useMutation,
+  useQuery,
+  useQueryClient } from '@tanstack/react-query';
 import {
   Background,
   Handle,
@@ -29,7 +31,7 @@ import {
   type OnReconnect,
   type OnNodeDrag,
   type ReactFlowInstance,
-} from '@xyflow/react';
+  } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import {
   Accordion,
@@ -41,7 +43,6 @@ import {
   Button,
   CircularProgress,
   Divider,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -68,6 +69,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import {
   Add,
   CallSplit,
@@ -91,6 +93,7 @@ import {
   ViewColumnRounded,
 } from '@mui/icons-material';
 import StatusBadge from '@/components/StatusBadge';
+import { getRdoVersionStatusMeta } from '@/utils/rdoVersionStatus';
 import {
   createMaterial,
   createProcessDocument,
@@ -591,6 +594,11 @@ const statusOptions = [
   { value: 'ACTIVE', label: '启用' },
   { value: 'DISABLED', label: '禁用' },
 ] as const;
+const rdoVersionStatusOptions = [
+  { value: 'ALL', label: '全部' },
+  { value: 'ACTIVE', label: '生效' },
+  { value: 'EXPIRED', label: '失效' },
+] as const;
 const PROCESS_OPERATION_STATUS_OPTIONS = [
   { value: 'ALL', label: '全部' },
   { value: 'ACTIVE', label: '启用' },
@@ -598,9 +606,8 @@ const PROCESS_OPERATION_STATUS_OPTIONS = [
 ] as const;
 const materialRuntimeStatusOptions = [
   { value: 'ALL', label: '全部' },
-  { value: 'ACTIVE', label: '启用' },
-  { value: 'PENDING', label: '待生效' },
-  { value: 'DISABLED', label: '禁用' },
+  { value: 'ACTIVE', label: '生效' },
+  { value: 'EXPIRED', label: '失效' },
 ] as const;
 
 const STANDARD_MATERIAL_TYPE_OPTIONS = ['原材料', '半成品', '产成品', '辅材', '包材'].map((name) => ({ id: name, name }));
@@ -683,8 +690,6 @@ const processAuditFieldLabels: Record<string, string> = {
   versionDescription: '版本说明',
   versionCount: '版本数量',
   commonAsset: '通用资产',
-  latestVersion: '当前版本',
-  latestVersionStatus: '版本状态',
   fileReference: '文件引用',
   operationCategory: '工序分类',
   generalDescription: '工序通用描述',
@@ -870,7 +875,7 @@ function getMaterialVersionRuntimeStatus(row: MaterialRecord) {
   const now = Date.now();
   const effectiveDate = row.effectiveDate ? Date.parse(row.effectiveDate) : Number.NaN;
   const expiryDate = row.expiryDate ? Date.parse(row.expiryDate) : Number.NaN;
-  if (!Number.isNaN(effectiveDate) && effectiveDate > now) return 'PENDING';
+  if (!Number.isNaN(effectiveDate) && effectiveDate > now) return 'EXPIRED';
   if (!Number.isNaN(expiryDate) && expiryDate <= now) return 'EXPIRED';
   return 'ACTIVE';
 }
@@ -878,9 +883,7 @@ function getMaterialVersionRuntimeStatus(row: MaterialRecord) {
 function getMaterialGroupRuntimeStatus(versions: MaterialRecord[]) {
   const statuses = versions.map(getMaterialVersionRuntimeStatus);
   if (statuses.includes('ACTIVE')) return 'ACTIVE';
-  if (statuses.every((status) => status === 'EXPIRED')) return 'DISABLED';
-  if (statuses.includes('PENDING')) return 'PENDING';
-  return 'DISABLED';
+  return 'EXPIRED';
 }
 
 function isExpiryBeforeEffective(effectiveDate?: string | null, expiryDate?: string | null) {
@@ -1763,7 +1766,8 @@ function safeJsonParse(value: string) {
 
 function formatAuditValue(field: string, value: unknown): string {
   if (value == null || value === '') return '-';
-  if (field === 'status' || field === 'latestVersionStatus') return getStatusLabel(String(value));
+  if (field === 'versionStatus') return getRdoVersionStatusMeta(String(value)).label;
+  if (field === 'status') return getStatusLabel(String(value));
   if (field === 'createdAt' || field === 'updatedAt' || field === 'effectiveDate' || field === 'expiryDate') return formatDateTime(String(value));
   if (typeof value === 'string') return value;
   if (typeof value === 'number' || typeof value === 'boolean') return String(value);
@@ -1986,7 +1990,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     ];
   }, [operationCategories, totalElements]);
   const operationCategorySelectOptions = useMemo(() => operationCategoryOptions.filter((category) => !category.system), [operationCategoryOptions]);
-  const availableStatusOptions = pageKey === 'operations' ? PROCESS_OPERATION_STATUS_OPTIONS : statusOptions;
+  const availableStatusOptions = pageKey === 'routes' || pageKey === 'materials'
+    ? rdoVersionStatusOptions
+    : pageKey === 'operations'
+      ? PROCESS_OPERATION_STATUS_OPTIONS
+      : statusOptions;
   const selectedRoute = useMemo(
     () => routeRecords.find((route) => String(route.id) === String(selectedRouteId)) ?? null,
     [routeRecords, selectedRouteId],
@@ -2227,7 +2235,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     onSuccess: async (response) => {
       if (pageKey === 'routes') {
         const saved = response.data.data as RouteRecord;
-        const versionId = saved.latestVersionId ?? saved.versions?.[0]?.id ?? null;
+        const versionId = saved.versions?.[0]?.id ?? null;
         if (versionId && (routeNodes.length > 0 || routeEdges.length > 0)) {
           try {
             await saveRouteGraphMutation.mutateAsync({ routeId: saved.id, versionId, silent: true });
@@ -3008,14 +3016,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
  const openEditRouteDialog = (route: RouteRecord, versionId?: string | number | null) => {
     if (isReadOnlyPage(config)) return;
-    const selectedVersion = route.versions?.find((version) => String(version.id) === String(versionId ?? route.latestVersionId)) ?? route.versions?.[0] ?? null;
+    const selectedVersion = versionId == null ? null : route.versions?.find((version) => String(version.id) === String(versionId)) ?? null;
     setEditingRow(route);
     setCreatingMaterialVersionFrom(null);
     setCreatingRouteVersionFrom(null);
     setEditingRouteVersionFrom(null);
     setMaterialDialogMode(null);
     setSelectedRouteId(route.id);
-    setSelectedRouteVersionId(versionId ?? route.latestVersionId ?? route.versions?.[0]?.id ?? null);
+    setSelectedRouteVersionId(versionId ?? null);
     setRouteOperationLibraryKeyword('');
     setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
     setRouteNodes([]);
@@ -3025,7 +3033,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       name: getDisplayName(route) === '-' ? '' : getDisplayName(route),
       description: route.description ?? '',
       status: route.status && route.status !== 'DRAFT' && route.status !== 'OBSOLETE' ? route.status : 'DISABLED',
-      version: selectedVersion?.version ?? route.latestVersion ?? '',
+      version: selectedVersion?.version ?? '',
       effectiveDate: formatDateTimeInput(selectedVersion?.effectiveDate ?? undefined),
       expiryDate: formatDateTimeInput(selectedVersion?.expiryDate ?? undefined),
       versionDescription: selectedVersion?.versionDescription ?? selectedVersion?.description ?? '',
@@ -3035,14 +3043,13 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   const openCreateRouteVersionDialog = (route: RouteRecord) => {
     if (isReadOnlyPage(config)) return;
-    const sourceVersion = route.versions?.find((version) => String(version.id) === String(route.latestVersionId)) ?? route.versions?.[0] ?? null;
     setEditingRow(null);
     setCreatingMaterialVersionFrom(null);
     setCreatingRouteVersionFrom(route);
     setEditingRouteVersionFrom(null);
     setMaterialDialogMode(null);
     setSelectedRouteId(route.id);
-    setSelectedRouteVersionId(sourceVersion?.id ?? route.latestVersionId ?? null);
+    setSelectedRouteVersionId(null);
     setRouteOperationLibraryKeyword('');
     setRouteOperationLibraryCategory(OPERATION_CATEGORY_ALL);
     setRouteNodes([]);
@@ -3189,7 +3196,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     code: route.code,
     name: getDisplayName(route),
     description: version.versionDescription ?? version.description ?? '',
-    status: version.versionStatus ?? route.latestVersionStatus ?? route.status,
+    status: version.versionStatus ?? route.status,
     version: version.version,
     effectiveDate: version.effectiveDate,
     expiryDate: version.expiryDate,
@@ -3759,7 +3766,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return (
       <TableCell key={column.id} align={column.align} sx={commonSx} title={getColumnDisplayValue(row, column.id)}>
         {column.id === 'status' ? (
-          <StatusBadge label={getStatusLabel(pageKey === 'materials' ? getMaterialVersionRuntimeStatus(row as MaterialRecord) : row.status)} color={getStatusColor(pageKey === 'materials' ? getMaterialVersionRuntimeStatus(row as MaterialRecord) : row.status)} />
+          <StatusBadge {...(pageKey === 'materials' ? getRdoVersionStatusMeta(getMaterialVersionRuntimeStatus(row as MaterialRecord)) : { label: getStatusLabel(row.status), color: getStatusColor(row.status) })} />
         ) : getColumnDisplayValue(row, column.id)}
       </TableCell>
     );
@@ -3969,7 +3976,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                       return (
                         <TableCell key={column.id} align={column.align} sx={commonSx} title={column.id === 'description' ? versionRow.description || '-' : undefined}>
                           {column.id === 'version' ? getMaterialVersion(versionRow) : column.id === 'status' ? (
-                            <StatusBadge label={getStatusLabel(getMaterialVersionRuntimeStatus(versionRow))} color={getStatusColor(getMaterialVersionRuntimeStatus(versionRow))} />
+                            <StatusBadge {...getRdoVersionStatusMeta(getMaterialVersionRuntimeStatus(versionRow))} />
                           ) : column.id === 'effectiveDate' ? formatDateTime(versionRow.effectiveDate) : column.id === 'expiryDate' ? formatDateTime(versionRow.expiryDate) : column.id === 'description' ? versionRow.description || '-' : column.id === 'createdBy' ? versionRow.createdBy || '-' : column.id === 'createdAt' ? formatDateTime(versionRow.createdAt) : column.id === 'updatedBy' ? versionRow.updatedBy || '-' : column.id === 'updatedAt' ? formatDateTime(versionRow.updatedAt) : column.id === 'actions' ? (
                             renderMaterialVersionActions(versionRow, group.versions.length > 1)
                           ) : ''}
@@ -4031,7 +4038,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                       return (
                         <TableCell key={column.id} align={column.align} sx={commonSx}>
                           {column.id === 'version' ? versionRow.version || '-' : column.id === 'status' ? (
-                            <StatusBadge label={getStatusLabel(versionRow.versionStatus)} color={getStatusColor(versionRow.versionStatus)} />
+                            <StatusBadge {...getRdoVersionStatusMeta(versionRow.versionStatus)} />
                           ) : column.id === 'effectiveDate' ? formatDateTime(versionRow.effectiveDate ?? undefined) : column.id === 'expiryDate' ? formatDateTime(versionRow.expiryDate ?? undefined) : column.id === 'description' ? versionRow.versionDescription || versionRow.description || '-' : column.id === 'createdBy' ? versionRow.createdBy || '-' : column.id === 'createdAt' ? formatDateTime(versionRow.createdAt) : column.id === 'updatedBy' ? versionRow.updatedBy || '-' : column.id === 'updatedAt' ? formatDateTime(versionRow.updatedAt) : column.id === 'actions' ? (
                             renderRouteVersionActions(route, versionRow, getRouteVersionCount(route) > 1)
                           ) : ''}
@@ -4408,7 +4415,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   ) : column.id === 'version' ? (
                     <Typography sx={{ color: '#606266' }}>{renderMaterialGroupCell(row, column)}</Typography>
                   ) : column.id === 'status' ? (
-                    <StatusBadge label={getStatusLabel(row.status)} color={getStatusColor(row.status)} />
+                    <StatusBadge {...getRdoVersionStatusMeta(row.status)} />
                   ) : (
                     renderMaterialGroupCell(row, column)
                   )}
@@ -4465,7 +4472,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   ) : column.id === 'version' ? (
                     <Typography sx={{ color: '#606266' }}>{renderRouteGroupCell(route, column)}</Typography>
                   ) : column.id === 'status' ? (
-                    <StatusBadge label={getStatusLabel(route.status)} color={getStatusColor(route.status)} />
+                    <StatusBadge {...getRdoVersionStatusMeta(route.status)} />
                   ) : (
                     renderRouteGroupCell(route, column)
                   )}
@@ -4493,7 +4500,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   function getColumnDisplayValue(row: ProcessModelingRecord, columnId: ProcessColumnId) {
     if (columnId === 'name') return getDisplayName(row);
-    if (columnId === 'status') return getStatusLabel(pageKey === 'materials' ? getMaterialVersionRuntimeStatus(row as MaterialRecord) : row.status);
+    if (columnId === 'status') return pageKey === 'materials'
+      ? getRdoVersionStatusMeta(getMaterialVersionRuntimeStatus(row as MaterialRecord)).label
+      : pageKey === 'routes'
+        ? getRdoVersionStatusMeta(row.status).label
+        : getStatusLabel(row.status);
     if (columnId === 'createdAt' || columnId === 'updatedAt') return formatDateTime(row[columnId]);
     if (columnId === 'effectiveDate' || columnId === 'expiryDate') return 'effectiveDate' in row || 'expiryDate' in row ? formatDateTime(row[columnId as 'effectiveDate' | 'expiryDate']) : '-';
     if (pageKey === 'routes' && columnId === 'version') return 'versionCount' in row && row.versionCount != null ? String(row.versionCount) : 'versions' in row && Array.isArray(row.versions) ? String(row.versions.length) : '0';
@@ -4553,7 +4564,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))}
         sx={fieldSx}
       >
-        {statusOptions.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
+        {availableStatusOptions.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
       </TextField>
       <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: '1', md: '3' } }}>
         <Button size="small" sx={QUERY_BUTTON_SX} variant="outlined" startIcon={<RestartAlt />} onClick={resetFilters}>重置</Button>
@@ -4773,12 +4784,15 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                           </>
                         ) : (
                           <>
-                            <DetailField label="当前版本">{'latestVersion' in selectedRow ? selectedRow.latestVersion || '-' : '-'}</DetailField>
                             <DetailField label="版本数量">{'versionCount' in selectedRow ? selectedRow.versionCount ?? '-' : '-'}</DetailField>
                           </>
                         )
                       ) : null}
-                      <DetailField label="状态">{getStatusLabel(selectedRow.status)}</DetailField>
+                      <DetailField label="状态">
+                        {pageKey === 'materials' || pageKey === 'routes'
+                          ? <StatusBadge {...getRdoVersionStatusMeta(pageKey === 'materials' ? getMaterialVersionRuntimeStatus(selectedRow as MaterialRecord) : selectedRow.status)} />
+                          : getStatusLabel(selectedRow.status)}
+                      </DetailField>
                       <DetailField label="描述">{selectedRow.description || '-'}</DetailField>
                     </Box>
                   </DetailSection>
@@ -4834,7 +4848,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </Box>
       </Drawer>
 
-      <Dialog
+      <AppDialog
+        hideCloseButton={isRouteFullScreenDialog}
         open={dialogOpen}
         onClose={() => resetDialogState()}
         maxWidth={isRouteFullScreenDialog ? 'xl' : 'sm'}
@@ -4868,9 +4883,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           <Button onClick={() => resetDialogState()}>取消</Button>
           <Button variant="contained" onClick={submitForm} disabled={createMutation.isPending || updateMutation.isPending || createRouteVersionMutation.isPending || updateRouteVersionMutation.isPending || saveRouteGraphMutation.isPending}>{createMutation.isPending || updateMutation.isPending || createRouteVersionMutation.isPending || updateRouteVersionMutation.isPending || saveRouteGraphMutation.isPending ? '保存中...' : '保存'}</Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={operationCategoryDialog.open} onClose={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })} maxWidth="xs" fullWidth>
+      <AppDialog open={operationCategoryDialog.open} onClose={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })} maxWidth="xs" fullWidth>
         <DialogTitle>{operationCategoryDialog.mode === 'edit' ? '编辑分类' : '新增分类'}</DialogTitle>
         <DialogContent dividers>
           <TextField
@@ -4890,9 +4905,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
             {saveOperationCategoryMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteOperationCategoryTarget !== null} onClose={() => setDeleteOperationCategoryTarget(null)} maxWidth="xs" fullWidth>
+      <AppDialog open={deleteOperationCategoryTarget !== null} onClose={() => setDeleteOperationCategoryTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>删除分类</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2">
@@ -4910,9 +4925,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
             删除
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
-      <Dialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+      <AppDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>{deleteDialogTitle}</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2">
@@ -4930,7 +4945,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
             删除
           </Button>
         </DialogActions>
-      </Dialog>
+      </AppDialog>
 
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <Alert severity={snackbar.severity} onClose={closeSnackbar}>{snackbar.message}</Alert>
