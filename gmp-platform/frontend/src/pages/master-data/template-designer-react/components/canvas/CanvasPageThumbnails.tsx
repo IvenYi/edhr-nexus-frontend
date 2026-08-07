@@ -1,12 +1,17 @@
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { Box, Button, Typography } from '@mui/material';
-import { memo, useEffect, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import type { CanvasCellBorder, CanvasPage, CanvasSelectionRange, CanvasSheetCell } from '../../types';
 
 const MM_TO_PX = 96 / 25.4;
 const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
+const THUMBNAIL_VIRTUAL_OVERSCAN = 2;
+const THUMBNAIL_CARD_GAP = 12;
+const THUMBNAIL_CARD_PADDING_Y = 10;
+const THUMBNAIL_LABEL_HEIGHT = 20;
+const THUMBNAIL_LABEL_MARGIN_TOP = 9;
 type CanvasCellBorderEdge = 'top' | 'right' | 'bottom' | 'left';
 
 function getCellKey(row: number, col: number) {
@@ -19,6 +24,50 @@ function buildOffsets(sizes: number[]) {
     offsets.push(offsets[offsets.length - 1] + size);
   });
   return offsets;
+}
+
+function findFirstItemEndingAfter(offsets: number[], offset: number) {
+  let low = 0;
+  let high = Math.max(0, offsets.length - 2);
+  let result = high;
+
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    if ((offsets[middle + 1] ?? 0) >= offset) {
+      result = middle;
+      high = middle - 1;
+    } else {
+      low = middle + 1;
+    }
+  }
+
+  return result;
+}
+
+function findLastItemStartingBefore(offsets: number[], offset: number) {
+  let low = 0;
+  let high = Math.max(0, offsets.length - 2);
+  let result = 0;
+
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    if ((offsets[middle] ?? 0) <= offset) {
+      result = middle;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+
+  return result;
+}
+
+function getThumbnailDimensions(page: CanvasPage) {
+  const paperWidth = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM) * MM_TO_PX);
+  const paperHeight = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_WIDTH_MM : A4_PAPER_HEIGHT_MM) * MM_TO_PX);
+  const width = page.sheet.paperOrientation === 'landscape' ? 168 : 118;
+  const height = Math.round(width * (paperHeight / paperWidth));
+  return { width, height };
 }
 
 function fitColumnWidths(widths: number[], maxWidth: number) {
@@ -115,8 +164,7 @@ function hasVisibleCell(cell?: CanvasSheetCell) {
 const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, previewIndex }: { page: CanvasPage; previewIndex: number }) {
   const paperWidth = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM) * MM_TO_PX);
   const paperHeight = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_WIDTH_MM : A4_PAPER_HEIGHT_MM) * MM_TO_PX);
-  const thumbnailWidth = page.sheet.paperOrientation === 'landscape' ? 168 : 118;
-  const thumbnailHeight = Math.round(thumbnailWidth * (paperHeight / paperWidth));
+  const { width: thumbnailWidth, height: thumbnailHeight } = getThumbnailDimensions(page);
   const thumbnailScale = thumbnailWidth / paperWidth;
   const paperInsetLeft = Math.round(page.sheet.paperMarginLeftMm * MM_TO_PX);
   const paperInsetRight = Math.round(page.sheet.paperMarginRightMm * MM_TO_PX);
@@ -288,17 +336,91 @@ const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, prev
 });
 
 export default function CanvasPageThumbnails({ title = '分页缩略图', onClose }: { title?: string; onClose: () => void }) {
-  const activeThumbnailRef = useRef<HTMLButtonElement | null>(null);
+  const thumbnailScrollerRef = useRef<HTMLDivElement | null>(null);
+  const thumbnailScrollFrameRef = useRef<number | null>(null);
+  const [thumbnailViewport, setThumbnailViewport] = useState({ scrollTop: 0, height: 0 });
   const pages = useTemplateDesignerStore((state) => state.document?.canvas.pages ?? []);
   const currentPageId = useTemplateDesignerStore((state) => state.document?.canvas.currentPageId ?? '');
   const pagePreviewCounts = useTemplateDesignerStore((state) => state.pagePreviewCounts);
   const activePagePreviewIndexes = useTemplateDesignerStore((state) => state.activePagePreviewIndexes);
   const requestPagePreviewScroll = useTemplateDesignerStore((state) => state.requestPagePreviewScroll);
   const activePreviewKey = `${currentPageId}-${activePagePreviewIndexes[currentPageId] ?? 0}`;
+  const thumbnailItems = useMemo(() => pages.flatMap((page) => {
+    const previewCount = Math.max(1, pagePreviewCounts[page.id] ?? 1);
+    const thumbnailHeight = getThumbnailDimensions(page).height;
+    const itemHeight = thumbnailHeight + THUMBNAIL_CARD_PADDING_Y * 2 + THUMBNAIL_LABEL_MARGIN_TOP + THUMBNAIL_LABEL_HEIGHT + THUMBNAIL_CARD_GAP;
+    return Array.from({ length: previewCount }, (_, previewIndex) => ({
+      key: `${page.id}-${previewIndex + 1}`,
+      page,
+      previewIndex,
+      itemHeight,
+      buttonHeight: itemHeight - THUMBNAIL_CARD_GAP,
+    }));
+  }), [pagePreviewCounts, pages]);
+  const thumbnailOffsets = useMemo(() => buildOffsets(thumbnailItems.map((item) => item.itemHeight)), [thumbnailItems]);
+  const activeThumbnailIndex = useMemo(() => (
+    thumbnailItems.findIndex((item) => item.page.id === currentPageId && item.previewIndex === (activePagePreviewIndexes[item.page.id] ?? 0))
+  ), [activePagePreviewIndexes, currentPageId, thumbnailItems]);
+  const visibleThumbnailRange = useMemo(() => {
+    if (!thumbnailItems.length || thumbnailViewport.height <= 0) {
+      return { start: 0, end: Math.min(thumbnailItems.length - 1, THUMBNAIL_VIRTUAL_OVERSCAN * 2) };
+    }
+
+    const visibleStart = findFirstItemEndingAfter(thumbnailOffsets, thumbnailViewport.scrollTop);
+    const visibleEnd = findLastItemStartingBefore(thumbnailOffsets, thumbnailViewport.scrollTop + thumbnailViewport.height);
+    return {
+      start: Math.max(0, visibleStart - THUMBNAIL_VIRTUAL_OVERSCAN),
+      end: Math.min(thumbnailItems.length - 1, visibleEnd + THUMBNAIL_VIRTUAL_OVERSCAN),
+    };
+  }, [thumbnailItems.length, thumbnailOffsets, thumbnailViewport.height, thumbnailViewport.scrollTop]);
+  const visibleThumbnailItems = useMemo(() => (
+    thumbnailItems
+      .slice(visibleThumbnailRange.start, visibleThumbnailRange.end + 1)
+      .map((item, offsetIndex) => ({
+        ...item,
+        index: visibleThumbnailRange.start + offsetIndex,
+        top: thumbnailOffsets[visibleThumbnailRange.start + offsetIndex] ?? 0,
+      }))
+  ), [thumbnailItems, thumbnailOffsets, visibleThumbnailRange.end, visibleThumbnailRange.start]);
+  const thumbnailContentHeight = thumbnailOffsets[thumbnailOffsets.length - 1] ?? 0;
+
+  const syncThumbnailViewport = () => {
+    const element = thumbnailScrollerRef.current;
+    const scrollTop = element?.scrollTop ?? 0;
+    const height = element?.clientHeight ?? 0;
+    setThumbnailViewport((current) => (
+      current.scrollTop === scrollTop && current.height === height
+        ? current
+        : { scrollTop, height }
+    ));
+  };
+  const handleThumbnailScroll = () => {
+    if (thumbnailScrollFrameRef.current !== null) return;
+    thumbnailScrollFrameRef.current = window.requestAnimationFrame(() => {
+      thumbnailScrollFrameRef.current = null;
+      syncThumbnailViewport();
+    });
+  };
 
   useEffect(() => {
-    activeThumbnailRef.current?.scrollIntoView({ block: 'nearest', behavior: 'auto' });
-  }, [activePreviewKey]);
+    const element = thumbnailScrollerRef.current;
+    if (!element || activeThumbnailIndex < 0) return;
+
+    const top = thumbnailOffsets[activeThumbnailIndex] ?? 0;
+    const bottom = thumbnailOffsets[activeThumbnailIndex + 1] ?? top;
+    if (top < element.scrollTop || bottom > element.scrollTop + element.clientHeight) {
+      element.scrollTo({ top: Math.max(0, top - THUMBNAIL_CARD_GAP), behavior: 'auto' });
+    }
+  }, [activePreviewKey, activeThumbnailIndex, thumbnailOffsets]);
+
+  useEffect(() => {
+    syncThumbnailViewport();
+    return () => {
+      if (thumbnailScrollFrameRef.current !== null) {
+        window.cancelAnimationFrame(thumbnailScrollFrameRef.current);
+      }
+    };
+  }, [thumbnailItems.length]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#fff' }}>
@@ -321,26 +443,33 @@ export default function CanvasPageThumbnails({ title = '分页缩略图', onClos
           <CloseOutlined fontSize="small" />
         </Button>
       </Box>
-      <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', px: 1.5, py: 1.5 }}>
-        {pages.map((page) => {
-          const previewCount = Math.max(1, pagePreviewCounts[page.id] ?? 1);
-          return Array.from({ length: previewCount }, (_, previewIndex) => {
-            const isActive = page.id === currentPageId && (activePagePreviewIndexes[page.id] ?? 0) === previewIndex;
+      <Box
+        ref={thumbnailScrollerRef}
+        onScroll={handleThumbnailScroll}
+        sx={{ flex: 1, minHeight: 0, overflowY: 'auto', px: 1.5, py: 1.5 }}
+      >
+        <Box sx={{ position: 'relative', height: thumbnailContentHeight || 'auto', minHeight: thumbnailItems.length ? undefined : 40 }}>
+          {visibleThumbnailItems.map((item) => {
+            const { page, previewIndex } = item;
+            const isActive = item.index === activeThumbnailIndex;
             return (
               <Button
-                key={`${page.id}-${previewIndex + 1}`}
-                ref={isActive ? activeThumbnailRef : undefined}
+                key={item.key}
                 data-page-thumbnail-active={isActive ? 'true' : 'false'}
                 onClick={() => requestPagePreviewScroll(page.id, previewIndex)}
                 sx={{
+                  position: 'absolute',
+                  top: item.top,
+                  left: 4,
+                  right: 4,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
                   width: 'calc(100% - 8px)',
+                  height: item.buttonHeight,
                   maxWidth: 'none',
                   mx: 'auto',
-                  mb: 1.5,
                   px: 1.25,
                   py: 1.25,
                   borderRadius: '4px',
@@ -352,6 +481,8 @@ export default function CanvasPageThumbnails({ title = '分页缩略图', onClos
                   '&:hover': {
                     bgcolor: isActive ? '#eaf5ff' : '#f0f4f8',
                   },
+                  contentVisibility: 'auto',
+                  containIntrinsicSize: `${item.buttonHeight}px`,
                 }}
               >
                 <CanvasThumbnailPreview page={page} previewIndex={previewIndex} />
@@ -360,11 +491,11 @@ export default function CanvasPageThumbnails({ title = '分页缩略图', onClos
                 </Typography>
               </Button>
             );
-          });
-        })}
-        {!pages.length ? (
-          <Typography sx={{ fontSize: 13, color: '#98a2b3' }}>第 1 页</Typography>
-        ) : null}
+          })}
+          {!pages.length ? (
+            <Typography sx={{ fontSize: 13, color: '#98a2b3' }}>第 1 页</Typography>
+          ) : null}
+        </Box>
       </Box>
     </Box>
   );

@@ -122,6 +122,12 @@ type DragState =
   | { type: 'resize-row'; startRow: number; startHeight: number; startY: number }
   | null;
 
+type CellDragState = Extract<NonNullable<DragState>, { type: 'cell' }>;
+type SheetResizeDragUpdate =
+  | { type: 'column'; col: number; width: number }
+  | { type: 'row'; row: number; height: number };
+type ResizeRowDragPreview = { row: number; height: number; top: number } | null;
+
 type MenuAxis = 'column' | 'row' | 'cell';
 type InsertMenuAction =
   | 'insert-before'
@@ -417,6 +423,30 @@ function findLastRowStartingBefore(rowOffsets: number[], offset: number) {
   }
 
   return result;
+}
+
+function findIndexByOffset(offsets: number[], offset: number) {
+  const count = offsets.length - 1;
+  if (count <= 0 || offset < 0 || offset > (offsets[count] ?? 0)) {
+    return null;
+  }
+
+  let low = 1;
+  let high = count;
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    const start = offsets[middle - 1] ?? 0;
+    const end = offsets[middle] ?? 0;
+
+    if (offset >= start && offset < end) return middle;
+    if (offset < start) {
+      high = middle - 1;
+    } else {
+      low = middle + 1;
+    }
+  }
+
+  return offset === offsets[count] ? count : null;
 }
 
 function resolveVisibleRowRange(rowOffsets: number[], scrollTop: number, viewportHeight: number, contentOffsetTop: number) {
@@ -837,11 +867,20 @@ export default function CanvasSheetWorkspace() {
   const [quickAddFieldSubTableId, setQuickAddFieldSubTableId] = useState('');
   const [quickAddFieldDrafts, setQuickAddFieldDrafts] = useState<QuickAddFieldDraft[]>([]);
   const [workspaceViewport, setWorkspaceViewport] = useState({ scrollTop: 0, height: 0 });
+  const [resizeRowDragPreview, setResizeRowDragPreview] = useState<ResizeRowDragPreview>(null);
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
   const freeCanvasBodyRef = useRef<HTMLDivElement | null>(null);
   const workspaceScrollRef = useRef<HTMLDivElement | null>(null);
   const workspaceScrollFrameRef = useRef<number | null>(null);
   const activePagePreviewIndexRef = useRef(0);
+  const cellDragFrameRef = useRef<number | null>(null);
+  const pendingCellDragRef = useRef<{ cellSelectionRange: CanvasSelectionRange; state: CellDragState } | null>(null);
+  const sheetResizeDragFrameRef = useRef<number | null>(null);
+  const pendingSheetResizeDragRef = useRef<SheetResizeDragUpdate | null>(null);
+  const rowResizeDragFrameRef = useRef<number | null>(null);
+  const pendingRowResizeDragRef = useRef<{ row: number; height: number } | null>(null);
+  const hoveredSubTableFrameRef = useRef<number | null>(null);
+  const pendingHoveredSubTableRangeRef = useRef<CanvasSelectionRange | null>(null);
   const sheetInteractionRef = useRef<HTMLDivElement | null>(null);
   const fieldNodeClipboardRef = useRef<CanvasNode | null>(null);
   const skipNextBlurCommitRef = useRef(false);
@@ -1416,21 +1455,22 @@ export default function CanvasSheetWorkspace() {
   const findCellRangeAtClientPoint = (clientX: number, clientY: number) => {
     const renderPage = displayPage ?? currentPage;
     if (!renderPage) return null;
-    const cells = Array.from(sheetInteractionRef.current?.querySelectorAll<HTMLElement>('[data-canvas-field-drop-cell="true"]') ?? []);
-    const targetCell = cells.find((element) => {
-      const rect = element.getBoundingClientRect();
-      return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
-    });
-    if (!targetCell) return null;
 
-    const row = Number(targetCell.dataset.sheetCellRow);
-    const col = Number(targetCell.dataset.sheetCellCol);
-    if (!Number.isInteger(row) || !Number.isInteger(col)) return null;
+    const paperElement = workspaceScrollRef.current?.querySelector<HTMLElement>('[data-sheet-paper="true"]');
+    const paperRect = paperElement?.getBoundingClientRect();
+    if (!paperRect) return null;
+
+    const x = clientX - paperRect.left - paperInsetLeft;
+    const y = clientY - paperRect.top - paperInsetTop - paperHeaderHeight;
+    const col = findIndexByOffset(columnOffsets, x);
+    const row = findIndexByOffset(rowOffsets, y);
+    if (!row || !col) return null;
 
     const mergedRange = findMergedRangeForCell(renderPage, row, col);
     return getMergedAwareCellRange(row, col, mergedRange);
   };
-  const extendCellRangeDrag = (cellSelectionRange: CanvasSelectionRange, state: Exclude<DragState, null> & { type: 'cell' }) => {
+
+  const applyCellRangeDrag = (cellSelectionRange: CanvasSelectionRange, state: CellDragState) => {
     setSelectedRange(
       {
         t: Math.min(state.startRange.t, cellSelectionRange.t),
@@ -1440,6 +1480,94 @@ export default function CanvasSheetWorkspace() {
       },
       { row: state.startRow, col: state.startCol },
     );
+  };
+  const commitPendingCellRangeDrag = () => {
+    const pending = pendingCellDragRef.current;
+    pendingCellDragRef.current = null;
+    if (!pending) return;
+    applyCellRangeDrag(pending.cellSelectionRange, pending.state);
+  };
+  const scheduleCellRangeDrag = (cellSelectionRange: CanvasSelectionRange, state: CellDragState) => {
+    pendingCellDragRef.current = { cellSelectionRange, state };
+    if (cellDragFrameRef.current !== null) return;
+    cellDragFrameRef.current = window.requestAnimationFrame(() => {
+      cellDragFrameRef.current = null;
+      commitPendingCellRangeDrag();
+    });
+  };
+  const extendCellRangeDrag = scheduleCellRangeDrag;
+
+  const commitPendingSheetResizeDrag = () => {
+    const pending = pendingSheetResizeDragRef.current;
+    pendingSheetResizeDragRef.current = null;
+    if (!pending) return;
+    if (pending.type === 'column') {
+      setSheetColumnWidth(pending.col, pending.col, pending.width);
+      return;
+    }
+    setSheetRowHeight(pending.row, pending.row, pending.height);
+  };
+  const scheduleSheetResizeDrag = (update: SheetResizeDragUpdate) => {
+    pendingSheetResizeDragRef.current = update;
+    if (sheetResizeDragFrameRef.current !== null) return;
+    sheetResizeDragFrameRef.current = window.requestAnimationFrame(() => {
+      sheetResizeDragFrameRef.current = null;
+      commitPendingSheetResizeDrag();
+    });
+  };
+
+  const getResizeRowDragPreview = (row: number, height: number): ResizeRowDragPreview => {
+    const nextHeight = Math.max(24, Math.round(height));
+    return {
+      row,
+      height: nextHeight,
+      top: rowHeaderOffsetTop + (rowOffsets[row - 1] ?? 0) + nextHeight,
+    };
+  };
+  const commitPendingRowResizeDrag = () => {
+    const pending = pendingRowResizeDragRef.current;
+    pendingRowResizeDragRef.current = null;
+    setResizeRowDragPreview(null);
+    if (!pending) return;
+    setSheetRowHeight(pending.row, pending.row, pending.height);
+  };
+  const scheduleRowResizeDragPreview = (row: number, height: number) => {
+    pendingRowResizeDragRef.current = { row, height };
+    if (rowResizeDragFrameRef.current !== null) return;
+    rowResizeDragFrameRef.current = window.requestAnimationFrame(() => {
+      rowResizeDragFrameRef.current = null;
+      const pending = pendingRowResizeDragRef.current;
+      if (!pending) return;
+      setResizeRowDragPreview(getResizeRowDragPreview(pending.row, pending.height));
+    });
+  };
+  const cancelPendingRowResizeDrag = () => {
+    if (rowResizeDragFrameRef.current !== null) {
+      window.cancelAnimationFrame(rowResizeDragFrameRef.current);
+      rowResizeDragFrameRef.current = null;
+    }
+    pendingRowResizeDragRef.current = null;
+    setResizeRowDragPreview(null);
+  };
+
+  const commitPendingHoveredSubTableUpdate = () => {
+    updateHoveredSubTableFromRange(pendingHoveredSubTableRangeRef.current);
+    pendingHoveredSubTableRangeRef.current = null;
+  };
+  const scheduleHoveredSubTableUpdate = (range: CanvasSelectionRange | null) => {
+    pendingHoveredSubTableRangeRef.current = range;
+    if (hoveredSubTableFrameRef.current !== null) return;
+    hoveredSubTableFrameRef.current = window.requestAnimationFrame(() => {
+      hoveredSubTableFrameRef.current = null;
+      commitPendingHoveredSubTableUpdate();
+    });
+  };
+  const cancelHoveredSubTableUpdate = () => {
+    if (hoveredSubTableFrameRef.current !== null) {
+      window.cancelAnimationFrame(hoveredSubTableFrameRef.current);
+      hoveredSubTableFrameRef.current = null;
+    }
+    pendingHoveredSubTableRangeRef.current = null;
   };
   const handleCommandCellSelection = (cellSelectionRange: CanvasSelectionRange) => {
     const normalizedSelection = normalizeRange(cellSelectionRange);
@@ -1579,6 +1707,7 @@ export default function CanvasSheetWorkspace() {
     };
   }, [addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
   useEffect(() => {
+    cancelHoveredSubTableUpdate();
     setHoveredSubTableNodeId(null);
     setMultiSelectedRanges([]);
   }, [currentPage?.id]);
@@ -2116,6 +2245,21 @@ export default function CanvasSheetWorkspace() {
     }
 
     const handleMouseUp = () => {
+      if (cellDragFrameRef.current !== null) {
+        window.cancelAnimationFrame(cellDragFrameRef.current);
+        cellDragFrameRef.current = null;
+      }
+      if (sheetResizeDragFrameRef.current !== null) {
+        window.cancelAnimationFrame(sheetResizeDragFrameRef.current);
+        sheetResizeDragFrameRef.current = null;
+      }
+      if (rowResizeDragFrameRef.current !== null) {
+        window.cancelAnimationFrame(rowResizeDragFrameRef.current);
+        rowResizeDragFrameRef.current = null;
+      }
+      commitPendingCellRangeDrag();
+      commitPendingSheetResizeDrag();
+      commitPendingRowResizeDrag();
       setDragState(null);
     };
 
@@ -2123,18 +2267,18 @@ export default function CanvasSheetWorkspace() {
       if (dragState.type === 'cell') {
         const cellSelectionRange = findCellRangeAtClientPoint(event.clientX, event.clientY);
         if (cellSelectionRange) {
-          extendCellRangeDrag(cellSelectionRange, dragState);
+          scheduleCellRangeDrag(cellSelectionRange, dragState);
         }
       }
 
       if (dragState.type === 'resize-column') {
         const nextWidth = dragState.startWidth + event.clientX - dragState.startX;
-        setSheetColumnWidth(dragState.startCol, dragState.startCol, nextWidth);
+        scheduleSheetResizeDrag({ type: 'column', col: dragState.startCol, width: nextWidth });
       }
 
       if (dragState.type === 'resize-row') {
         const nextHeight = dragState.startHeight + event.clientY - dragState.startY;
-        setSheetRowHeight(dragState.startRow, dragState.startRow, nextHeight);
+        scheduleRowResizeDragPreview(dragState.startRow, nextHeight);
       }
     };
 
@@ -2149,6 +2293,24 @@ export default function CanvasSheetWorkspace() {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [dragState, currentPage, setSelectedRange, setSheetColumnWidth, setSheetRowHeight]);
+
+  useEffect(() => () => {
+    if (workspaceScrollFrameRef.current !== null) {
+      window.cancelAnimationFrame(workspaceScrollFrameRef.current);
+    }
+    if (cellDragFrameRef.current !== null) {
+      window.cancelAnimationFrame(cellDragFrameRef.current);
+    }
+    if (sheetResizeDragFrameRef.current !== null) {
+      window.cancelAnimationFrame(sheetResizeDragFrameRef.current);
+    }
+    if (rowResizeDragFrameRef.current !== null) {
+      window.cancelAnimationFrame(rowResizeDragFrameRef.current);
+    }
+    if (hoveredSubTableFrameRef.current !== null) {
+      window.cancelAnimationFrame(hoveredSubTableFrameRef.current);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isFreeCanvas) {
@@ -2862,7 +3024,7 @@ export default function CanvasSheetWorkspace() {
               handleSheetKeyDown(event);
             }}
             onMouseEnter={() => {
-              updateHoveredSubTableFromRange(cellSelectionRange);
+              scheduleHoveredSubTableUpdate(cellSelectionRange);
               if (dragState?.type !== 'cell') return;
               extendCellRangeDrag(cellSelectionRange, dragState);
             }}
@@ -3072,6 +3234,22 @@ export default function CanvasSheetWorkspace() {
         );
       })}
     </Box>
+  ) : null);
+  const renderRowResizePreviewLine = () => (resizeRowDragPreview ? (
+    <Box
+      data-sheet-row-resize-preview-line="true"
+      sx={{
+        position: 'absolute',
+        top: resizeRowDragPreview.top,
+        left: 0,
+        right: 0,
+        height: 0,
+        borderTop: '2px solid #2990ff',
+        boxShadow: '0 0 0 1px rgba(41, 144, 255, 0.18)',
+        pointerEvents: 'none',
+        zIndex: PAPER_RULER_Z_INDEX + 5,
+      }}
+    />
   ) : null);
 
   if (currentPage.sheet.canvasMode === 'paper') {
@@ -3296,9 +3474,12 @@ export default function CanvasSheetWorkspace() {
                   }
                 }}
                 onMouseMove={(event) => {
-                  updateHoveredSubTableFromRange(findCellRangeAtClientPoint(event.clientX, event.clientY));
+                  scheduleHoveredSubTableUpdate(findCellRangeAtClientPoint(event.clientX, event.clientY));
                 }}
-                onMouseLeave={() => setHoveredSubTableNodeId(null)}
+                onMouseLeave={() => {
+                  cancelHoveredSubTableUpdate();
+                  setHoveredSubTableNodeId(null);
+                }}
                 sx={{
                   minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
                   display: 'flex',
@@ -3308,6 +3489,7 @@ export default function CanvasSheetWorkspace() {
                 }}
               >
                 {renderPageBreakMarkers()}
+                {renderRowResizePreviewLine()}
                 <Box
                   data-sheet-paper="true"
                   onMouseDown={(event) => {
@@ -3657,6 +3839,7 @@ export default function CanvasSheetWorkspace() {
                         data-resize-handle="resize-row"
                         onMouseDown={(event) => {
                           event.stopPropagation();
+                          setResizeRowDragPreview(getResizeRowDragPreview(row, rowHeights[index]));
                           setDragState({
                             type: 'resize-row',
                             startRow: row,
@@ -3689,9 +3872,12 @@ export default function CanvasSheetWorkspace() {
                 }
               }}
               onMouseMove={(event) => {
-                updateHoveredSubTableFromRange(findCellRangeAtClientPoint(event.clientX, event.clientY));
+                scheduleHoveredSubTableUpdate(findCellRangeAtClientPoint(event.clientX, event.clientY));
               }}
-              onMouseLeave={() => setHoveredSubTableNodeId(null)}
+              onMouseLeave={() => {
+                cancelHoveredSubTableUpdate();
+                setHoveredSubTableNodeId(null);
+              }}
               sx={{
                 minHeight: sheetPaperHeight + paperViewportGapTop + paperViewportGapBottom,
                 display: 'flex',
@@ -3701,6 +3887,7 @@ export default function CanvasSheetWorkspace() {
               }}
             >
               {renderPageBreakMarkers()}
+              {renderRowResizePreviewLine()}
               <Box
                 data-sheet-paper="true"
                 onMouseDown={(event) => {

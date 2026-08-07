@@ -996,6 +996,15 @@ if (!canvasWorkspace.includes('handleWorkspaceScroll')) failures.push('CanvasShe
 if (!canvasWorkspace.includes('setActivePagePreviewIndex')) failures.push('CanvasSheetWorkspace.tsx: scrolling the canvas must update active thumbnail page');
 if (!canvasWorkspace.includes('SHEET_ROW_RENDER_OVERSCAN_PX = 1440')) failures.push('CanvasSheetWorkspace.tsx: sheet virtualization must keep a larger row overscan buffer to avoid fast-scroll blanking');
 if (!canvasWorkspace.includes('workspaceScrollFrameRef')) failures.push('CanvasSheetWorkspace.tsx: scroll viewport updates must be coalesced per animation frame');
+if (!canvasWorkspace.includes('findIndexByOffset')) failures.push('CanvasSheetWorkspace.tsx: pointer hit-testing must derive row/column from cached offsets instead of scanning cell DOM');
+if (canvasWorkspace.includes("querySelectorAll<HTMLElement>('[data-canvas-field-drop-cell=\"true\"]')")) failures.push('CanvasSheetWorkspace.tsx: pointer hit-testing must not query and measure every rendered cell on pointer movement');
+if (!canvasWorkspace.includes('scheduleCellRangeDrag')) failures.push('CanvasSheetWorkspace.tsx: cell drag selection updates must be coalesced per animation frame');
+if (!canvasWorkspace.includes('scheduleSheetResizeDrag')) failures.push('CanvasSheetWorkspace.tsx: column resize updates must be coalesced per animation frame');
+if (!canvasWorkspace.includes('resizeRowDragPreview')) failures.push('CanvasSheetWorkspace.tsx: row-height drag must use a transient preview line instead of rerendering sheet rows on every mousemove');
+if (!canvasWorkspace.includes('data-sheet-row-resize-preview-line="true"')) failures.push('CanvasSheetWorkspace.tsx: row-height drag must render a visible preview line while dragging');
+if (!canvasWorkspace.includes('commitPendingRowResizeDrag')) failures.push('CanvasSheetWorkspace.tsx: row-height drag must commit the final height only on mouseup');
+if (canvasWorkspace.includes("scheduleSheetResizeDrag({ type: 'row'")) failures.push('CanvasSheetWorkspace.tsx: row-height drag must not write global sheet row height during mousemove');
+if (!canvasWorkspace.includes('scheduleHoveredSubTableUpdate')) failures.push('CanvasSheetWorkspace.tsx: sub-table hover updates must be coalesced per animation frame');
 if (!canvasWorkspace.includes('window.requestAnimationFrame')) failures.push('CanvasSheetWorkspace.tsx: scroll sync must use requestAnimationFrame instead of updating React state on every scroll event');
 if (!canvasWorkspace.includes('window.cancelAnimationFrame')) failures.push('CanvasSheetWorkspace.tsx: pending scroll animation frame must be cancelled on cleanup');
 if (!canvasWorkspace.includes('syncWorkspaceViewportFromScroll')) failures.push('CanvasSheetWorkspace.tsx: scroll state sync must be isolated so direct jumps and native scrolling share the same optimized path');
@@ -1039,6 +1048,9 @@ if (!pageThumbnails.includes("behavior: 'auto'")) failures.push('CanvasPageThumb
 if (!pageThumbnails.includes('data-page-thumbnail-active')) failures.push('CanvasPageThumbnails.tsx: thumbnails must mark active preview pages');
 if (!pageThumbnails.includes('CanvasThumbnailPreview')) failures.push('CanvasPageThumbnails.tsx: thumbnails must render actual canvas preview content');
 if (!pageThumbnails.includes('memo(function CanvasThumbnailPreview')) failures.push('CanvasPageThumbnails.tsx: thumbnail previews must be memoized so canvas scrolling does not rerender every preview cell');
+if (!pageThumbnails.includes('THUMBNAIL_VIRTUAL_OVERSCAN')) failures.push('CanvasPageThumbnails.tsx: thumbnail list must virtualize previews with overscan for large imported forms');
+if (!pageThumbnails.includes('visibleThumbnailItems')) failures.push('CanvasPageThumbnails.tsx: thumbnail list must render only visible preview cards');
+if (!pageThumbnails.includes("contentVisibility: 'auto'")) failures.push('CanvasPageThumbnails.tsx: thumbnail cards must allow the browser to skip offscreen paint work');
 if (!pageThumbnails.includes('page.cells')) failures.push('CanvasPageThumbnails.tsx: thumbnails must render imported cell content, not only a placeholder grid');
 if (!pageThumbnails.includes('page.mergedCells')) failures.push('CanvasPageThumbnails.tsx: thumbnails must reflect merged cells in preview content');
 if (!pageThumbnails.includes('page.images')) failures.push('CanvasPageThumbnails.tsx: thumbnails must reflect imported images in preview content');
@@ -1501,7 +1513,7 @@ if (!canvasWorkspace.includes('data-canvas-sub-table-hover-label="true"')) failu
 if (!canvasWorkspace.includes('const shouldShowSubTableLabel = isHovered || isSubTableFocused')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must only show while hovered or when the full sub-table is focused');
 if (!canvasWorkspace.includes('rangesEqual(normalizedRange, normalizedRegionRange)')) failures.push('CanvasSheetWorkspace.tsx: sub-table focus state must require the active range to equal the full sub-table region');
 if (subTableHoverLabelBlock.indexOf('setSelectedRange(normalizedRegionRange') > subTableHoverLabelBlock.indexOf('setSelectedNodeId(node.id)')) failures.push('CanvasSheetWorkspace.tsx: clicking the sub-table identifier must keep the sub-table selected after setting its range');
-if (!canvasWorkspace.includes('updateHoveredSubTableFromRange(findCellRangeAtClientPoint(event.clientX, event.clientY))')) failures.push('CanvasSheetWorkspace.tsx: sub-table hover state must clear when the pointer moves outside sub-table cells');
+if (!canvasWorkspace.includes('scheduleHoveredSubTableUpdate(findCellRangeAtClientPoint(event.clientX, event.clientY))')) failures.push('CanvasSheetWorkspace.tsx: sub-table hover state must clear when the pointer moves outside sub-table cells');
 if (!canvasWorkspace.includes('data-canvas-sub-table-hover-label-text="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier text must use a constrained text box');
 if (!subTableHoverLabelBlock.includes('minWidth: 44')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must render as a readable horizontal badge');
 if (!canvasWorkspace.includes('const subTableLabelHeight = Math.max(0, Math.min(24, regionLayout.height - 4))')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier height must be clamped by the current row height');
