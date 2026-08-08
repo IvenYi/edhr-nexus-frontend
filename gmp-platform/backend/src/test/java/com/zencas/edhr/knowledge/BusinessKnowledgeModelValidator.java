@@ -245,21 +245,32 @@ final class BusinessKnowledgeModelValidator {
                 .flatMap(type -> records.get(type).stream()).forEach(queue::add);
         while (!queue.isEmpty()) {
             RecordRef parent = queue.removeFirst();
+            Map<String, Object> parentDefinition = mapValue(structure.recordTypes(), parent.recordType(),
+                    "docs/knowledge/schema.yaml");
+            Map<String, Object> parentFieldTypes = mapValue(parentDefinition, "fieldTypes",
+                    "docs/knowledge/schema.yaml");
             for (String field : new TreeSet<>(parent.data().keySet())) {
                 Object value = parent.data().get(field);
-                if (value instanceof List<?> list && list.stream().anyMatch(item -> item instanceof Map<?, ?>)
-                        && !structure.nestedCollectionTypes().containsKey(field)) {
-                    throw invalid(idOf(parent.data()), field, "unknown nested record collection");
+                Object rawDescriptor = parentFieldTypes.get(field);
+                Matcher arrayMatcher = rawDescriptor instanceof String descriptor
+                        ? ARRAY_DESCRIPTOR.matcher(descriptor)
+                        : null;
+                boolean declaredCollection = arrayMatcher != null && arrayMatcher.matches();
+                String nestedRecordType = structure.nestedCollectionTypes().get(field);
+                boolean declaredNestedCollection = declaredCollection
+                        && nestedRecordType != null
+                        && nestedRecordType.equals(arrayMatcher.group(1));
+                if ((value instanceof List<?> && !declaredCollection)
+                        || (nestedRecordType != null && !declaredNestedCollection)) {
+                    throw invalid(idOf(parent.data()), field,
+                            "collection field is not declared by record type " + parent.recordType());
                 }
-            }
-            for (String field : new TreeSet<>(structure.nestedCollectionTypes().keySet())) {
-                if (!parent.data().containsKey(field)) {
+                if (!declaredNestedCollection) {
                     continue;
                 }
-                String recordType = structure.nestedCollectionTypes().get(field);
                 for (Map<String, Object> child : recordList(parent.data().get(field), idOf(parent.data()), field)) {
-                    RecordRef childRef = new RecordRef(recordType, child, parent.sourcePath());
-                    records.get(recordType).add(childRef);
+                    RecordRef childRef = new RecordRef(nestedRecordType, child, parent.sourcePath());
+                    records.get(nestedRecordType).add(childRef);
                     queue.add(childRef);
                 }
             }

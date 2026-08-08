@@ -155,7 +155,38 @@ class BusinessKnowledgeModelTest {
         Map<String, Object> decision = firstRecord(model, "decision");
         decision.put("unknownChildren", List.of(Map.of("id", "unknown.child")));
 
-        assertValidationFails(model, idOf(decision), "unknownChildren", "unknown nested record collection");
+        assertValidationFails(model, idOf(decision), "unknownChildren",
+                "collection field is not declared by record type decision");
+    }
+
+    @Test
+    void unknownEmptyCollectionsAreRejected() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> term = firstRecord(model, "term");
+        term.put("unknownEmpty", List.of());
+
+        assertValidationFails(model, idOf(term), "unknownEmpty",
+                "collection field is not declared by record type term");
+    }
+
+    @Test
+    void unknownScalarCollectionsAreRejected() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> term = firstRecord(model, "term");
+        term.put("unknownScalars", List.of("value"));
+
+        assertValidationFails(model, idOf(term), "unknownScalars",
+                "collection field is not declared by record type term");
+    }
+
+    @Test
+    void knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> term = firstRecord(model, "term");
+        term.put("acceptanceScenarios", List.of());
+
+        assertValidationFails(model, idOf(term), "acceptanceScenarios",
+                "collection field is not declared by record type term");
     }
 
     @Test
