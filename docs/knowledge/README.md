@@ -61,11 +61,19 @@
 2. 本体建模智能体读取当前基线、schema、相关实现和历史决策，只将 `confirmed` 写入权威资产。
 3. `unresolved` 非空时停止正式建模并返回 `blocked-by-question`；冲突通过新决策和 `supersedes` 解决，不静默覆盖。
 4. 状态推进必须补齐相应实现、测试和执行契约证据；缺少任一项不得标记 `verified`。
-5. 修改后执行 bootstrap 校验并进入独立质量验证；任务 3 将以 Maven/JUnit 提供正式、跨平台的知识模型校验入口。
+5. 修改后执行 Maven/JUnit 正式校验并进入独立质量验证；Ruby bootstrap 仅用于最小诊断。
 
-## Bootstrap 校验
+## 正式校验
 
-以下 Ruby 命令是当前的 bootstrap 校验，不是正式跨平台入口。在仓库根目录执行；它校验 YAML 解析、schema 枚举、必填字段、版本一致性、嵌套决策声明/验收场景 ID、引用、条件操作符、结果类型、所有 visibility/projection 约束和证据路径。
+Maven/JUnit 是跨平台知识模型校验的正式入口，也是质量门禁依据：
+
+```bash
+cd gmp-platform/backend && mvn -Dtest=BusinessKnowledgeModelTest test
+```
+
+## Bootstrap 诊断
+
+以下 Ruby 命令仅保留为最小 bootstrap/诊断手段，不是正式门禁入口。在仓库根目录执行；正式验证结果以 `BusinessKnowledgeModelTest` 为准。
 
 ```bash
 ruby - docs/knowledge <<'RUBY'
@@ -194,4 +202,4 @@ else
 fi
 ```
 
-任务 3 完成后，`BusinessKnowledgeModelTest` 将通过 Maven/JUnit 成为正式跨平台入口；在此之前，不应把 bootstrap 命令的通过误报为发布级验证。
+Ruby bootstrap 或负向探针通过不能替代 Maven/JUnit 正式校验，也不得作为发布级验证结果。
