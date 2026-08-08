@@ -21,6 +21,44 @@ enums:
   ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, require-explicit-process-version, freeze-execution-snapshot, persist-form-required-configuration, block, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation]
   discrepancyStatuses: [open, accepted, resolved]
   discrepancySeverities: [critical, high, medium, low]
+collectionTypes:
+  terms: term
+  concepts: concept
+  relations: relation
+  rules: rule
+  decisions: decision
+  evidence: evidence
+  questions: openQuestion
+  executionContracts: executionContract
+nestedCollectionTypes:
+  decisionStatements: decisionStatement
+  acceptanceScenarios: acceptanceScenario
+  implementationDiscrepancies: implementationDiscrepancy
+allowedFieldTypeDescriptors:
+  literals: [string, integer, condition-expression, rule-result]
+  parameterized:
+    enum:
+      syntax: enum:<enumKey>
+      referencedRegistry: enums
+      unknownReferences: forbidden
+    array:
+      syntax: array<string>|array<recordTypeName>
+      scalarItemTypes: [string]
+      referencedRegistry: recordTypes
+      unknownReferences: forbidden
+  unknownDescriptors: forbidden
+idPrefixes:
+  term: term.
+  concept: concept.
+  relation: relation.
+  rule: rule.
+  decision: DEC-
+  evidence: evidence.
+  openQuestion: question.
+  executionContract: execution.
+  decisionStatement: DEC-
+  acceptanceScenario: scenario.
+  implementationDiscrepancy: discrepancy.
 recordTypes:
   term:
     requiredFields: [id, name, definition, aliases, status, visibility]
@@ -72,11 +110,11 @@ recordTypes:
       status: enum:statuses
       visibility: enum:visibilities
       context: string
-      decisionStatements: array<decision-statement>
+      decisionStatements: array<decisionStatement>
       supersedes: array<string>
       evidenceIds: array<string>
-      acceptanceScenarios: array<acceptance-scenario>
-      implementationDiscrepancies: array<implementation-discrepancy>
+      acceptanceScenarios: array<acceptanceScenario>
+      implementationDiscrepancies: array<implementationDiscrepancy>
   decisionStatement:
     requiredFields: [id, statement, status, visibility]
     fieldTypes:
@@ -121,13 +159,33 @@ recordTypes:
       options: array<string>
       impact: string
       visibility: enum:visibilities
+  executionContract:
+    requiredFields: [id, name, status, visibility, actionType, handler, evidenceIds]
+    fieldTypes:
+      id: string
+      name: string
+      status: enum:statuses
+      visibility: enum:visibilities
+      actionType: string
+      handler: string
+      evidenceIds: array<string>
 conditionExpression:
+  additionalFields: forbidden
   groupKeys: [all, any, not]
+  groupNode:
+    exactlyOneOf: [all, any, not]
+    allowedFields: [all, any, not]
+    allValue: non-empty-array-of-condition-expressions
+    anyValue: non-empty-array-of-condition-expressions
+    notValue: one-condition-expression
+  clauseNode:
+    allowedFields: [fact, operator, value]
+    exactFieldsFrom: clauseRequiredFields
   clauseRequiredFields: [fact, operator, value]
   clauseFieldTypes:
     fact: string
     operator: enum:ruleOperators
-    value: scalar-or-collection
+  clauseValueTypes: [string, integer, boolean, "null", array]
   semantics:
     all: 每个子表达式必须成立。
     any: 至少一个子表达式必须成立。
@@ -137,6 +195,10 @@ ruleResult:
   fieldTypes:
     type: enum:ruleResultTypes
   additionalFields: allowed
+evidencePathPolicy:
+  relativeOnly: true
+  mustRemainWithinRepository: true
+  mustExistForTypes: [code, database, test, document]
 projectionRules:
   maturityInvariants:
     nonVerified:
@@ -163,3 +225,15 @@ projectionRules:
     acceptedVisibilities: [runtime, customer-and-runtime]
     requiredFields: [executionContractId, evidenceIds]
     nonEmptyFields: [executionContractId, evidenceIds]
+  executionContract:
+    requiredStatus: verified
+    acceptedVisibilities: [runtime, customer-and-runtime]
+    requiredFields: [evidenceIds]
+    nonEmptyFields: [evidenceIds]
+    referencedBy:
+      recordType: rule
+      field: executionContractId
+      targetCollection: executionContracts
+      targetRecordType: executionContract
+      requiredForStatuses: [verified]
+      mustResolve: true
