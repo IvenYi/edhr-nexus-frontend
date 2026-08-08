@@ -211,6 +211,7 @@ qualityResult:
   knowledgeBaselineVersion: 0.3.1
   checks:
     - id: check.contract-keywords
+      required: true
       category: documentation
       description: 检查强制状态和质量独立性规则
       method: command
@@ -236,8 +237,9 @@ qualityResult:
 
 列表项字段：
 
-- `checks[]`：`id`、`category`、`description`、`method`、`command`、`outcome`、`evidence`。
-- `findings[]`：`id`、`severity`、`scope`、`summary`、`reproductionSteps`、`expectedResult`、`actualResult`、`evidence`。
+- `checks[]`：`id`、`required`、`category`、`description`、`method`、`command`、`outcome`、`evidence`。
+- `findings[]`：`id`、`severity`、`scope`、`summary`、`reproductionSteps`、`expectedResult`、`actualResult`、`evidence`、`resolutionStatus`、`resolutionEvidence`。
+- `resolutionEvidence[]`：`type`、`reference`。
 - `residualRisks[]`：`id`、`description`、`impact`、`mitigation`。
 - `blockingConditions[]`：`id`、`condition`、`impact`、`requiredAction`、`owner`。
 
@@ -246,7 +248,7 @@ qualityResult:
 - `checks[].category` 只能是 `requirements | ontology | unit | integration | api | database | audit | security | e2e | visual | regression | documentation`。
 - `checks[].method` 只能是 `command | inspection | browser | query | automated-test`。
 - `checks[].outcome` 只能是 `passed | failed | blocked`。
-- 当 `qualityResult.result` 为 `passed` 时，所有必需的 `checks[].outcome` 必须为 `passed`，`findings` 中不得存在未解决的 `critical` 或 `high` 项，且 `blockingConditions` 必须为空。
+- `checks[].required` 必须是 YAML 布尔值 `true | false`。
 
 每个发现使用以下格式：
 
@@ -264,6 +266,10 @@ findings:
     actualResult: 页面和接口返回第一个制程版本
     evidence:
       - artifacts/QF-001-response.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+      - type: commit
+        reference: "2222222222222222222222222222222222222222"
 ```
 
 `finding.severity` 只能是：
@@ -272,6 +278,13 @@ findings:
 - `high`：主要业务流程错误、重要数据或权限错误，没有可接受规避方式，必须在交付前修复。
 - `medium`：局部行为或非核心流程不符合要求，存在可控规避方式，但仍需排期修复并明确交付影响。
 - `low`：轻微一致性、可用性或维护性问题，不阻断当前交付，但必须记录处置决定。
+
+`finding` 解决字段约束：
+
+- `findings[].resolutionStatus` 只能是 `open | resolved`。
+- `findings[].resolutionEvidence[].type` 只能是 `commit | command | screenshot | audit-record | document`。
+- `findings[].resolutionEvidence[].reference` 必须是非空的提交哈希、命令输出定位、截图路径、审计记录标识或文档路径。
+- `resolutionStatus` 为 `open` 时，`resolutionEvidence` 可以为空；为 `resolved` 时，必须提供足以定位修复和复核结果的证据。
 
 阻塞条件使用以下格式：
 
@@ -283,6 +296,12 @@ blockingConditions:
     requiredAction: 恢复测试数据库并重新运行检查
     owner: environment-maintainer
 ```
+
+## 质量结果不变量
+
+- 当 `qualityResult.result` 为 `passed` 时：`checks` 必须非空；至少一个 `checks[].required` 为 `true`；所有 `required: true` 的 `checks[].outcome` 都必须为 `passed`；`blockingConditions` 必须为空；`findings` 中不得存在 `resolutionStatus: open` 的 `critical` 或 `high` 项；已标记为 `resolved` 的 `critical` 或 `high` 项必须有非空 `resolutionEvidence`，并由未参与修复的全新质量验证实例复核相关 `checks[].outcome` 为 `passed`。
+- 当 `qualityResult.result` 为 `failed` 时，必须至少有一个 `checks[].outcome` 为 `failed`，或至少有一个 `findings[].resolutionStatus` 为 `open`。
+- 当 `qualityResult.result` 为 `blocked` 时，`blockingConditions` 必须非空，且至少有一个 `checks[].outcome` 为 `blocked`。
 
 结果语义：
 
