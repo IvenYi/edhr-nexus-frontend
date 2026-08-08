@@ -1,12 +1,16 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode } from 'react';
 import { useMutation,
   useQuery,
   useQueryClient } from '@tanstack/react-query';
+import { Background, MarkerType, ReactFlow, ReactFlowProvider, type Edge, type Node } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 import { useNavigate,
+  useLocation,
   useParams } from 'react-router-dom';
 import {
   Accordion,
@@ -75,7 +79,8 @@ import {
 } from '@/api/product-modeling';
 import type { AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
-import { getProcessRouteGraph, type RouteNodeRecord } from '@/api/master-data';
+import { getProcessRouteGraph, type RouteGraphResponse, type RouteNodeRecord } from '@/api/master-data';
+import { DhrDirectoryFormPicker, DocumentPreviewDialog, FormTemplatePreviewDialog, ReferenceBindingList, isPdfDocument, type RdoVersionChoice } from './components/ProductProcessVersionEditorDialog';
 
 type VersionDialogMode = 'create' | 'copy' | 'edit';
 
@@ -96,8 +101,8 @@ interface OperationDraft {
   operationName: string;
   operationCode?: string | null;
   sortOrder: number;
-  forms: Array<{ formTemplateVersionId: string; required: boolean; sortOrder: number }>;
-  documents: Array<{ documentVersionId: string; sortOrder: number }>;
+  forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; required: boolean; sortOrder: number }>;
+  documents: Array<{ documentVersionId: string; sortOrder: number; pageStart?: number | null; pageEnd?: number | null }>;
 }
 
 const PRODUCTION_MODE_OPTIONS = ['量产', '返工', '翻新'];
@@ -178,8 +183,8 @@ function toOperationDrafts(nodes: RouteNodeRecord[], configured: ProductProcessO
         operationName: node.operationName || node.nodeKey,
         operationCode: node.operationCode,
         sortOrder: current?.sortOrder ?? node.sortOrder ?? index + 1,
-        forms: (current?.forms ?? []).map((form) => ({ formTemplateVersionId: form.formTemplateVersionId, required: form.required, sortOrder: form.sortOrder ?? 0 })),
-        documents: (current?.documents ?? []).map((document) => ({ documentVersionId: document.documentVersionId, sortOrder: document.sortOrder ?? 0 })),
+        forms: (current?.forms ?? []).map((form) => ({ dhrTemplateItemId: form.dhrTemplateItemId, formTemplateVersionId: form.formTemplateVersionId, required: form.required, sortOrder: form.sortOrder ?? 0 })),
+        documents: (current?.documents ?? []).map((document) => ({ documentVersionId: document.documentVersionId, sortOrder: document.sortOrder ?? 0, pageStart: document.pageStart ?? null, pageEnd: document.pageEnd ?? null })),
       };
     });
 }
@@ -258,6 +263,7 @@ function AuditFieldBlock({ title, content }: { title: string; content: unknown }
 export default function ProductModelingWorkspacePage() {
   const { productVersionId = '' } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [versionDialog, setVersionDialog] = useState<{ mode: VersionDialogMode; target?: ProductProcessVersion } | null>(null);
@@ -266,6 +272,7 @@ export default function ProductModelingWorkspacePage() {
   const [operationTarget, setOperationTarget] = useState<ProductProcessVersion | null>(null);
   const [operationDrafts, setOperationDrafts] = useState<OperationDraft[]>([]);
   const [auditTarget, setAuditTarget] = useState<ProductProcessVersion | null>(null);
+  const handledRouteIntent = useRef<string | null>(null);
 
   const workspaceQuery = useQuery({
     queryKey: ['product-modeling-workspace', productVersionId],
@@ -273,9 +280,10 @@ export default function ProductModelingWorkspacePage() {
     queryFn: async () => (await getProductModelWorkspace(productVersionId)).data.data,
   });
   const optionsQuery = useQuery({
-    queryKey: ['product-modeling-options', productVersionId],
+    queryKey: ['product-modeling-options', productVersionId, operationTarget?.dhrTemplateVersionId || versionForm.dhrTemplateVersionId],
     enabled: Boolean(productVersionId),
-    queryFn: async () => (await getProductModelOptions(productVersionId)).data.data,
+    queryFn: async () => (await getProductModelOptions(productVersionId, operationTarget?.dhrTemplateVersionId || versionForm.dhrTemplateVersionId || undefined)).data.data,
+    placeholderData: (previous) => previous,
   });
   const versions = workspaceQuery.data?.model?.versions ?? [];
   const options = optionsQuery.data;
@@ -287,6 +295,12 @@ export default function ProductModelingWorkspacePage() {
     queryKey: ['product-modeling-route-nodes', selectedOperationRoute?.routeId, selectedOperationRoute?.id],
     enabled: Boolean(selectedOperationRoute),
     queryFn: async () => (await getProcessRouteGraph(selectedOperationRoute!.routeId, selectedOperationRoute!.id)).data.data,
+  });
+  const versionRoute = options?.routes.find((route) => route.id === versionForm.routeVersionId) ?? null;
+  const versionRouteGraphQuery = useQuery({
+    queryKey: ['product-modeling-version-route-graph', versionRoute?.routeId, versionRoute?.id],
+    enabled: Boolean(versionRoute),
+    queryFn: async () => (await getProcessRouteGraph(versionRoute!.routeId, versionRoute!.id)).data.data,
   });
   const versionAuditQuery = useQuery({
     queryKey: ['product-modeling-version-audit', auditTarget?.id],
@@ -351,6 +365,23 @@ export default function ProductModelingWorkspacePage() {
     }
     setVersionDialog({ mode, target });
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const intent = params.get('intent');
+    const versionId = params.get('versionId');
+    const key = `${intent || ''}:${versionId || ''}`;
+    if (!intent || handledRouteIntent.current === key || workspaceQuery.isLoading) return;
+    const target = versionId ? versions.find((item) => item.id === versionId) : undefined;
+    if (intent !== 'create' && !target) return;
+    handledRouteIntent.current = key;
+    if (intent === 'create') openVersionDialog('create');
+    if (intent === 'configure' && target) setOperationTarget(target);
+    if (intent === 'edit' && target) openVersionDialog('edit', target);
+    if (intent === 'copy' && target) openVersionDialog('copy', target);
+    if (intent === 'audit' && target) setAuditTarget(target);
+    if (intent === 'delete' && target) setDeleteTarget(target);
+  }, [location.search, versions, workspaceQuery.isLoading]);
 
   if (workspaceQuery.isLoading || optionsQuery.isLoading) {
     return <Box sx={{ minHeight: 320, display: 'grid', placeItems: 'center' }}><CircularProgress size={28} /></Box>;
@@ -421,6 +452,7 @@ export default function ProductModelingWorkspacePage() {
         mode={versionDialog?.mode ?? 'create'}
         form={versionForm}
         options={options}
+        graph={versionRouteGraphQuery.data}
         onChange={setVersionForm}
         onClose={() => setVersionDialog(null)}
         onSubmit={() => saveVersionMutation.mutate()}
@@ -433,6 +465,7 @@ export default function ProductModelingWorkspacePage() {
         drafts={operationDrafts}
         onChange={setOperationDrafts}
         loadingRoute={graphQuery.isLoading}
+        graph={graphQuery.data}
         onClose={() => setOperationTarget(null)}
         onSubmit={() => saveOperationsMutation.mutate()}
         saving={saveOperationsMutation.isPending}
@@ -459,11 +492,66 @@ export default function ProductModelingWorkspacePage() {
   );
 }
 
-function VersionDialog({ open, mode, form, options, onChange, onClose, onSubmit, saving }: {
+function RouteGraphPreview({ graph, selectedNodeKey, onSelectNode }: {
+  graph?: RouteGraphResponse;
+  selectedNodeKey?: string;
+  onSelectNode?: (nodeKey: string) => void;
+}) {
+  const nodes = useMemo<Node[]>(() => (graph?.nodes ?? []).map((node, index) => ({
+    id: node.nodeKey,
+    position: {
+      x: node.positionX ?? 56 + (index % 4) * 190,
+      y: node.positionY ?? 48 + Math.floor(index / 4) * 110,
+    },
+    data: { label: node.operationName || node.nodeKey },
+    style: {
+      width: 148,
+      minHeight: 44,
+      borderRadius: 4,
+      border: selectedNodeKey === node.nodeKey ? '2px solid #1677c8' : '1px solid #c9d1dc',
+      background: selectedNodeKey === node.nodeKey ? '#eef6ff' : '#fff',
+      color: '#303133',
+      fontSize: 13,
+      padding: 10,
+    },
+  })), [graph?.nodes, selectedNodeKey]);
+  const edges = useMemo<Edge[]>(() => (graph?.relations ?? []).map((relation, index) => ({
+    id: String(relation.id ?? `${relation.sourceNodeKey}-${relation.targetNodeKey}-${index}`),
+    source: relation.sourceNodeKey,
+    target: relation.targetNodeKey,
+    label: relation.label || undefined,
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#8a97a6' },
+    style: { stroke: '#8a97a6' },
+  })), [graph?.relations]);
+  if (!graph) return <Box sx={{ height: 260, display: 'grid', placeItems: 'center', border: '1px solid #e4e7ed', bgcolor: '#fafbfc', color: '#909399' }}><CircularProgress size={22} /></Box>;
+  if (nodes.length === 0) return <Box sx={{ height: 180, display: 'grid', placeItems: 'center', border: '1px solid #e4e7ed', bgcolor: '#fafbfc', color: '#909399' }}>当前路线暂无节点</Box>;
+  return <Box sx={{ height: 300, border: '1px solid #e4e7ed', bgcolor: '#fafbfc', overflow: 'hidden' }}>
+    <ReactFlowProvider>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        fitView
+        fitViewOptions={{ padding: 0.22 }}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={Boolean(onSelectNode)}
+        panOnDrag
+        zoomOnDoubleClick={false}
+        onNodeClick={(_, node) => onSelectNode?.(node.id)}
+        proOptions={{ hideAttribution: true }}
+      >
+        <Background color="#dfe4ea" gap={20} size={1} />
+      </ReactFlow>
+    </ReactFlowProvider>
+  </Box>;
+}
+
+function VersionDialog({ open, mode, form, options, graph, onChange, onClose, onSubmit, saving }: {
   open: boolean;
   mode: VersionDialogMode;
   form: VersionForm;
   options: ProductModelOptions;
+  graph?: RouteGraphResponse;
   onChange: (form: VersionForm) => void;
   onClose: () => void;
   onSubmit: () => void;
@@ -476,7 +564,7 @@ function VersionDialog({ open, mode, form, options, onChange, onClose, onSubmit,
   const dhrValue = options.dhrTemplates.find((option) => option.id === form.dhrTemplateVersionId) ?? null;
   const canSubmit = Boolean(form.version.trim() && form.productionMode.trim() && form.productionForm.trim() && form.routeVersionId && form.dhrTemplateVersionId);
   return (
-    <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md">
+    <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="lg">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent dividers>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 2, pt: 0.5 }}>
@@ -491,7 +579,7 @@ function VersionDialog({ open, mode, form, options, onChange, onClose, onSubmit,
             options={options.routes}
             value={routeValue}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => `${option.routeCode || '-'} / ${option.routeName} / ${option.version}`}
+            getOptionLabel={(option) => `${option.versionCode || '-'} / ${option.routeName} / ${option.version}`}
             onChange={(_, value) => set('routeVersionId', value?.id ?? '')}
             renderInput={(params) => <TextField {...params} required size="small" label="工艺路线版本" />}
           />
@@ -507,6 +595,7 @@ function VersionDialog({ open, mode, form, options, onChange, onClose, onSubmit,
           <TextField size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => set('effectiveTo', event.target.value)} InputLabelProps={{ shrink: true }} />
           <TextField sx={{ gridColumn: { sm: '1 / -1' } }} size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />
         </Box>
+        {form.routeVersionId && <Box sx={{ mt: 2 }}><Typography variant="subtitle2" sx={{ mb: 1, color: '#303133' }}>工艺路线</Typography><RouteGraphPreview graph={graph} /></Box>}
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 1.5 }}>
         <Button onClick={onClose} disabled={saving}>取消</Button>
@@ -589,10 +678,11 @@ function ProductModelAuditDialog({ open, version, events, loading, error, onClos
   );
 }
 
-function OperationDialog({ open, version, options, drafts, onChange, loadingRoute, onClose, onSubmit, saving }: {
+function OperationDialog({ open, version, options, graph, drafts, onChange, loadingRoute, onClose, onSubmit, saving }: {
   open: boolean;
   version: ProductProcessVersion | null;
   options: ProductModelOptions;
+  graph?: RouteGraphResponse;
   drafts: OperationDraft[];
   onChange: (drafts: OperationDraft[]) => void;
   loadingRoute: boolean;
@@ -603,19 +693,25 @@ function OperationDialog({ open, version, options, drafts, onChange, loadingRout
   const updateDraft = (nodeKey: string, update: (draft: OperationDraft) => OperationDraft) => {
     onChange(drafts.map((draft) => draft.routeNodeKey === nodeKey ? update(draft) : draft));
   };
-  const [documentPicker, setDocumentPicker] = useState<{ nodeKey: string; categoryName: string } | null>(null);
-  const formOptionMap = useMemo(() => new Map(options.formTemplates.map((option) => [option.id, option])), [options.formTemplates]);
+  const [selectedNodeKey, setSelectedNodeKey] = useState('');
+  const [previewForm, setPreviewForm] = useState<ProductModelTemplateOption | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<ProductModelDocumentOption | null>(null);
+  useEffect(() => {
+    if (open) setSelectedNodeKey(drafts[0]?.routeNodeKey ?? '');
+  }, [open, drafts.length]);
+  const formOptionMap = useMemo(() => new Map(options.formTemplates.map((option) => [option.dhrTemplateItemId || option.id, option])), [options.formTemplates]);
   const documentOptionMap = useMemo(() => new Map(options.documents.map((option) => [option.id, option])), [options.documents]);
-  const documentDraft = documentPicker ? drafts.find((draft) => draft.routeNodeKey === documentPicker.nodeKey) : undefined;
-  return (
+  return <>
     <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="lg">
       <DialogTitle>配置工序表单与文档 {version ? `- ${version.version}` : ''}</DialogTitle>
-      <DialogContent dividers sx={{ minHeight: 360 }}>
+      <DialogContent dividers sx={{ minHeight: 560 }}>
         {loadingRoute ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : drafts.length === 0 ? (
           <Typography sx={{ py: 8, textAlign: 'center', color: '#909399' }}>当前工艺路线没有可配置的工序节点</Typography>
-        ) : <Stack spacing={1}>
-          {drafts.map((draft) => {
-            const selectedForms = draft.forms.map((binding) => formOptionMap.get(binding.formTemplateVersionId)).filter((item): item is ProductModelTemplateOption => Boolean(item));
+        ) : <Stack spacing={1.5}>
+          <RouteGraphPreview graph={graph} selectedNodeKey={selectedNodeKey} onSelectNode={setSelectedNodeKey} />
+          <Typography variant="caption" sx={{ color: '#909399' }}>选择路线中的工序节点后配置表单与文档</Typography>
+          {drafts.filter((draft) => draft.routeNodeKey === selectedNodeKey).map((draft) => {
+            const selectedForms = draft.forms.map((binding) => formOptionMap.get(binding.dhrTemplateItemId || binding.formTemplateVersionId)).filter((item): item is ProductModelTemplateOption => Boolean(item));
             const selectedDocuments = draft.documents.map((binding) => documentOptionMap.get(binding.documentVersionId)).filter((item): item is ProductModelDocumentOption => Boolean(item));
             return <Accordion key={draft.routeNodeKey} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', '&:before': { display: 'none' } }}>
               <AccordionSummary expandIcon={<ExpandMore />} sx={{ minHeight: 46, '& .MuiAccordionSummary-content': { my: 1 } }}>
@@ -627,48 +723,74 @@ function OperationDialog({ open, version, options, drafts, onChange, loadingRout
               </AccordionSummary>
               <AccordionDetails sx={{ borderTop: '1px solid #ebeef5', pt: 2 }}>
                 <Stack spacing={2}>
-                  <Autocomplete
-                    multiple
+                  <ReferenceBindingList
+                    label="DHR 目录表单"
                     options={options.formTemplates}
                     value={selectedForms}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    getOptionLabel={(option) => `${option.code || '-'} / ${option.name} / ${option.version || '-'}`}
-                    onChange={(_, selected) => updateDraft(draft.routeNodeKey, (current) => ({
-                      ...current,
-                      forms: selected.map((option, index) => {
-                        const existing = current.forms.find((item) => item.formTemplateVersionId === option.id);
-                        return existing ?? { formTemplateVersionId: option.id, required: true, sortOrder: index + 1 };
-                      }),
-                    }))}
-                    renderInput={(params) => <TextField {...params} size="small" label="待填表单" />}
-                  />
-                  {draft.forms.length > 0 && <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {draft.forms.map((binding) => {
-                      const option = formOptionMap.get(binding.formTemplateVersionId);
-                      return <FormControlLabel
-                        key={binding.formTemplateVersionId}
-                        sx={{ mr: 1, '& .MuiFormControlLabel-label': { fontSize: 13, color: '#606266' } }}
-                        control={<Checkbox size="small" checked={binding.required} onChange={(event) => updateDraft(draft.routeNodeKey, (current) => ({ ...current, forms: current.forms.map((item) => item.formTemplateVersionId === binding.formTemplateVersionId ? { ...item, required: event.target.checked } : item) }))} />}
-                        label={`${option?.name || binding.formTemplateVersionId} 必填`}
-                      />;
-                    })}
-                  </Box>}
-                  <Divider />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ color: '#303133', mb: 1 }}>工序文档</Typography>
-                    <Stack spacing={1}>
-                      {Array.from(new Set([...options.documents.map((item) => item.documentCategoryName || '未分类'), ...selectedDocuments.map((item) => item.documentCategoryName || '未分类')])).map((categoryName) => {
-                        const categoryDocuments = selectedDocuments.filter((item) => (item.documentCategoryName || '未分类') === categoryName);
-                        return <Box key={categoryName} sx={{ display: 'grid', gridTemplateColumns: '172px minmax(0, 1fr) auto', gap: 1, alignItems: 'start' }}>
-                          <Typography variant="body2" sx={{ pt: 0.5, color: '#606266' }}>{categoryName}（{categoryDocuments.length}）</Typography>
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, minHeight: 30 }}>
-                            {categoryDocuments.map((item) => <Chip key={item.id} size="small" variant="outlined" label={`${item.code || '-'} / ${item.title || '-'} / ${item.version || '-'}`} onDelete={() => updateDraft(draft.routeNodeKey, (current) => ({ ...current, documents: current.documents.filter((binding) => binding.documentVersionId !== item.id) }))} />)}
-                          </Box>
-                          <Button size="small" startIcon={<Add fontSize="small" />} onClick={() => setDocumentPicker({ nodeKey: draft.routeNodeKey, categoryName })}>添加</Button>
-                        </Box>;
+                    getOptionId={(option) => option.dhrTemplateItemId || option.id}
+                    toChoice={(option): RdoVersionChoice => ({ id: option.dhrTemplateItemId || option.id, parentId: `${option.templateId}:${option.directoryName || ''}`, parentName: [option.directoryName, option.name].filter(Boolean).join(' / '), version: option.version, versionCode: option.versionCode, categoryName: option.categoryName })}
+                    getOptionLabel={(option) => [option.name, option.version].filter(Boolean).join(' / ')}
+                    emptyText="该批记录模板中暂无可引用表单"
+                    addControl={<DhrDirectoryFormPicker
+                      options={options.formTemplates}
+                    directories={options.dhrDirectories}
+                    selectedIds={selectedForms.map((option) => option.dhrTemplateItemId || option.id)}
+                      onConfirm={(selections) => updateDraft(draft.routeNodeKey, (current) => {
+                        const existing = new Set(current.forms.map((item) => item.formTemplateVersionId));
+                        const additions = selections.filter((selection) => !existing.has(selection.formTemplateVersionId));
+                        return { ...current, forms: [...current.forms, ...additions.map((selection) => ({ dhrTemplateItemId: selection.dhrTemplateItemId, formTemplateVersionId: selection.formTemplateVersionId, required: true, sortOrder: 0 }))] };
                       })}
-                    </Stack>
-                  </Box>
+                      emptyText="该批记录模板中暂无可引用表单"
+                      onPreview={setPreviewForm}
+                      previewOpen={Boolean(previewForm)}
+                    />}
+                    onAdd={() => undefined}
+                    onPreview={setPreviewForm}
+                    onRemove={(id) => updateDraft(draft.routeNodeKey, (current) => ({ ...current, forms: current.forms.filter((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) !== id) }))}
+                    onMove={(id, direction) => updateDraft(draft.routeNodeKey, (current) => {
+                      const index = current.forms.findIndex((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === id);
+                      const nextIndex = index + direction;
+                      if (index < 0 || nextIndex < 0 || nextIndex >= current.forms.length) return current;
+                      const forms = [...current.forms]; [forms[index], forms[nextIndex]] = [forms[nextIndex], forms[index]];
+                      return { ...current, forms };
+                    })}
+                    renderDetails={(option) => {
+                      const binding = draft.forms.find((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id));
+                      return <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+                        {option.code ? <Typography variant="caption" sx={{ color: '#909399' }}>表单编码：{option.code}</Typography> : null}
+                        {binding ? <Stack component="label" direction="row" spacing={0.25} alignItems="center" sx={{ cursor: 'pointer' }}><Checkbox size="small" checked={binding.required} onChange={(event) => updateDraft(draft.routeNodeKey, (current) => ({ ...current, forms: current.forms.map((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id) ? { ...item, required: event.target.checked } : item) }))} sx={{ p: 0.25 }} /><Typography variant="caption" sx={{ color: '#606266' }}>工序结束前完成</Typography></Stack> : null}
+                      </Stack>;
+                    }}
+                  />
+                  <Divider />
+                  <ReferenceBindingList
+                    label="文档"
+                    addLabel="添加文档"
+                    options={options.documents.map((option) => ({ ...option, pageStart: null, pageEnd: null }))}
+                    value={selectedDocuments.map((option) => ({ ...option, pageStart: draft.documents.find((item) => item.documentVersionId === option.id)?.pageStart ?? null, pageEnd: draft.documents.find((item) => item.documentVersionId === option.id)?.pageEnd ?? null }))}
+                    getOptionId={(option) => option.id}
+                    toChoice={(option): RdoVersionChoice => ({ id: option.id, parentId: option.documentId, parentName: option.title || '-', version: option.version, versionCode: option.code, categoryName: option.documentCategoryName })}
+                    getOptionLabel={(option) => [option.title, option.version].filter(Boolean).join(' / ')}
+                    emptyText="暂无可引用文档版本"
+                    onAdd={(ids) => updateDraft(draft.routeNodeKey, (current) => {
+                      const existing = new Set(current.documents.map((item) => item.documentVersionId));
+                      return { ...current, documents: [...current.documents, ...ids.filter((id) => !existing.has(id)).map((id) => ({ documentVersionId: id, sortOrder: 0, pageStart: null, pageEnd: null }))] };
+                    })}
+                    onPreview={setPreviewDocument}
+                    previewOpen={Boolean(previewDocument)}
+                    onRemove={(id) => updateDraft(draft.routeNodeKey, (current) => ({ ...current, documents: current.documents.filter((item) => item.documentVersionId !== id) }))}
+                    onMove={(id, direction) => updateDraft(draft.routeNodeKey, (current) => {
+                      const index = current.documents.findIndex((item) => item.documentVersionId === id);
+                      const nextIndex = index + direction;
+                      if (index < 0 || nextIndex < 0 || nextIndex >= current.documents.length) return current;
+                      const documents = [...current.documents]; [documents[index], documents[nextIndex]] = [documents[nextIndex], documents[index]];
+                      return { ...current, documents };
+                    })}
+                    renderDetails={(option) => isPdfDocument(option) ? <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mt: 1 }}>
+                      <TextField size="small" type="number" label="展示起始页" value={option.pageStart ?? ''} onChange={(event) => updateDraft(draft.routeNodeKey, (current) => ({ ...current, documents: current.documents.map((item) => item.documentVersionId === option.id ? { ...item, pageStart: event.target.value === '' ? null : Number(event.target.value) } : item) }))} inputProps={{ min: 1, step: 1 }} sx={{ width: { xs: '100%', sm: 150 } }} />
+                      <TextField size="small" type="number" label="展示结束页" value={option.pageEnd ?? ''} onChange={(event) => updateDraft(draft.routeNodeKey, (current) => ({ ...current, documents: current.documents.map((item) => item.documentVersionId === option.id ? { ...item, pageEnd: event.target.value === '' ? null : Number(event.target.value) } : item) }))} inputProps={{ min: 1, step: 1 }} sx={{ width: { xs: '100%', sm: 150 } }} />
+                    </Stack> : null}
+                  />
                 </Stack>
               </AccordionDetails>
             </Accordion>;
@@ -679,19 +801,10 @@ function OperationDialog({ open, version, options, drafts, onChange, loadingRout
         <Button onClick={onClose} disabled={saving}>取消</Button>
         <Button variant="contained" onClick={onSubmit} disabled={saving || loadingRoute}>{saving ? '保存中...' : '保存'}</Button>
       </DialogActions>
-      <DocumentReferenceDialog
-        open={Boolean(documentPicker)}
-        initialCategoryName={documentPicker?.categoryName ?? '未分类'}
-        options={options.documents}
-        selectedIds={documentDraft?.documents.map((binding) => binding.documentVersionId) ?? []}
-        onClose={() => setDocumentPicker(null)}
-        onConfirm={(selected) => {
-          if (documentPicker) updateDraft(documentPicker.nodeKey, (current) => ({ ...current, documents: selected.map((option, index) => ({ documentVersionId: option.id, sortOrder: index + 1 })) }));
-          setDocumentPicker(null);
-        }}
-      />
     </AppDialog>
-  );
+    <FormTemplatePreviewDialog option={previewForm} onClose={() => setPreviewForm(null)} />
+    <DocumentPreviewDialog option={previewDocument} onClose={() => setPreviewDocument(null)} />
+  </>;
 }
 
 function DocumentReferenceDialog({ open, initialCategoryName, options, selectedIds, onClose, onConfirm }: {

@@ -14,4 +14,5 @@ public interface DocumentVersionRepository extends JpaRepository<DocumentVersion
     List<DocumentVersion> findByDocumentIdInOrderByCreatedAtDesc(Collection<Long> documentIds);
     Optional<DocumentVersion> findByDocumentIdAndId(Long documentId, Long id);
     boolean existsByDocumentIdAndVersionIgnoreCase(Long documentId, String version);
+    boolean existsByTenantIdAndCodeIgnoreCase(String tenantId, String code);
 }

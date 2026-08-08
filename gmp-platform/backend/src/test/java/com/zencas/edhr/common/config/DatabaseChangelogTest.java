@@ -84,6 +84,20 @@ class DatabaseChangelogTest {
         assertThat(migration).contains("SET category_id = NULL");
     }
 
+    @Test
+    void documentVersionCodeMigrationMovesCodesOffTheDocumentMaster() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0051-document-version-code.sql");
+
+        assertThat(master).contains("0051-document-version-code.sql");
+        assertThat(migration).contains("ALTER TABLE document_version ADD COLUMN IF NOT EXISTS code");
+        assertThat(migration).contains("ROW_NUMBER() OVER");
+        assertThat(migration).contains("version.code || '-' || version.id");
+        assertThat(migration).contains("uk_document_version_code");
+        assertThat(migration).contains("ALTER TABLE sop_document ALTER COLUMN code DROP NOT NULL");
+        assertThat(migration).contains("UPDATE sop_document SET code = NULL");
+    }
+
     private String readResource(String path) throws IOException {
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }

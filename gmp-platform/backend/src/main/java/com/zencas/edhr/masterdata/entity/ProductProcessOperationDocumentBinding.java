@@ -26,6 +26,10 @@ public class ProductProcessOperationDocumentBinding {
     private Long documentVersionId;
     @Column(name = "sort_order", nullable = false)
     @Builder.Default private Integer sortOrder = 0;
+    @Column(name = "page_start")
+    private Integer pageStart;
+    @Column(name = "page_end")
+    private Integer pageEnd;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

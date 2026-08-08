@@ -34,6 +34,8 @@ public class RouteVersion {
     private Long routeId;
     @Column(name = "version", nullable = false, length = 64)
     private String version;
+    @Column(name = "code", nullable = false, length = 64)
+    private String code;
     @Transient
     private String versionStatus;
     @Column(name = "description", columnDefinition = "TEXT")

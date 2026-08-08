@@ -78,6 +78,7 @@ export interface RouteRecord extends ProcessModelingBaseRecord {
 export interface RouteVersionRecord {
   id: string | number;
   routeId: string | number;
+  code: string;
   version: string;
   versionStatus?: string;
   description?: string | null;

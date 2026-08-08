@@ -118,7 +118,6 @@ interface AuditField {
 }
 
 interface MasterForm {
-  code: string;
   title: string;
   categoryId: string;
   description: string;
@@ -127,6 +126,7 @@ interface MasterForm {
 
 interface VersionForm {
   version: string;
+  code: string;
   fileId: string;
   fileName: string;
   fileMimeType: string;
@@ -140,7 +140,7 @@ type FilePreviewTarget = Pick<ManagedDocumentVersion, 'fileId' | 'fileName' | 'f
 
 const DOCUMENT_CATEGORY_ALL = 'ALL';
 const DOCUMENT_CATEGORY_UNCATEGORIZED = 'UNCATEGORIZED';
-const DOCUMENT_COLUMN_SETTINGS_VERSION = 2;
+const DOCUMENT_COLUMN_SETTINGS_VERSION = 3;
 const DOCUMENT_COLUMN_WIDTH_STORAGE_PREFIX = 'document-management-column-widths:';
 const DOCUMENT_COLUMN_SETTINGS_STORAGE_PREFIX = 'document-management-column-settings:';
 const DOCUMENT_VERSION_COLUMN_WIDTH_STORAGE_PREFIX = 'document-management-version-column-widths:';
@@ -148,7 +148,6 @@ const DOCUMENT_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX = 'document-management-ver
 
 const documentColumns: DocumentColumn[] = [
   { id: 'title', label: '文档名称', defaultWidth: 220, minWidth: 160, resizable: true },
-  { id: 'code', label: '文档编码', defaultWidth: 150, minWidth: 120, resizable: true },
   { id: 'type', label: '分类', defaultWidth: 120, minWidth: 100, resizable: true },
   { id: 'versionCount', label: '版本数', defaultWidth: 90, minWidth: 80, resizable: true },
   { id: 'createdBy', label: '创建人', defaultWidth: 110, minWidth: 96, resizable: true },
@@ -159,6 +158,7 @@ const documentColumns: DocumentColumn[] = [
 ];
 const documentVersionColumns: DocumentColumn[] = [
   { id: 'version', label: '版本号', defaultWidth: 110, minWidth: 96, resizable: true },
+  { id: 'code', label: '编码', defaultWidth: 150, minWidth: 120, resizable: true },
   { id: 'status', label: '状态', defaultWidth: 100, minWidth: 90, resizable: true },
   { id: 'effectiveDate', label: '生效时间', defaultWidth: 165, minWidth: 148, resizable: true },
   { id: 'expiryDate', label: '失效时间', defaultWidth: 165, minWidth: 148, resizable: true },
@@ -168,9 +168,9 @@ const documentVersionColumns: DocumentColumn[] = [
   { id: 'actions', label: '操作', defaultWidth: 100, minWidth: 100 },
 ];
 
-const emptyMasterForm = (categoryId = ''): MasterForm => ({ code: '', title: '', categoryId, description: '', remark: '' });
+const emptyMasterForm = (categoryId = ''): MasterForm => ({ title: '', categoryId, description: '', remark: '' });
 const emptyVersionForm = (version = 'V1.0'): VersionForm => ({
-  version, fileId: '', fileName: '', fileMimeType: '', description: '', remark: '', effectiveDate: '', expiryDate: '',
+  version, code: '', fileId: '', fileName: '', fileMimeType: '', description: '', remark: '', effectiveDate: '', expiryDate: '',
 });
 
 const tableHeaderCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', py: 1.25 };
@@ -309,6 +309,7 @@ function nextVersionLabel(versions: ManagedDocumentVersion[]) {
 function toVersionPayload(form: VersionForm): DocumentVersionWritePayload {
   return {
     version: form.version.trim(),
+    code: form.code.trim(),
     fileId: form.fileId || null,
     description: form.description.trim() || null,
     remark: form.remark.trim() || null,
@@ -320,6 +321,7 @@ function toVersionPayload(form: VersionForm): DocumentVersionWritePayload {
 function toVersionForm(version: ManagedDocumentVersion): VersionForm {
   return {
     version: version.version,
+    code: version.code,
     fileId: version.fileId || '',
     fileName: version.fileName || '',
     fileMimeType: version.fileMimeType || '',
@@ -422,6 +424,7 @@ export default function DocumentManagementPage() {
       description: masterForm.description.trim() || null,
       remark: masterForm.remark.trim() || null,
       version: initialVersionForm.version.trim(),
+      code: initialVersionForm.code.trim(),
       fileId: initialVersionForm.fileId || null,
       versionDescription: initialVersionForm.description.trim() || null,
       versionRemark: initialVersionForm.remark.trim() || null,
@@ -485,7 +488,7 @@ export default function DocumentManagementPage() {
     setMasterDialog({ mode: 'create' });
   };
   const openEdit = (document: ManagedDocument) => {
-    setMasterForm({ code: document.code, title: document.title, categoryId: document.categoryId || '', description: document.description || '', remark: document.remark || '' });
+    setMasterForm({ title: document.title, categoryId: document.categoryId || '', description: document.description || '', remark: document.remark || '' });
     setMasterDialog({ mode: 'edit', document });
   };
   const openVersion = (document: ManagedDocument, version?: ManagedDocumentVersion) => {
@@ -497,7 +500,7 @@ export default function DocumentManagementPage() {
   });
   const expandAllDocuments = () => setExpanded(new Set(documents.map((document) => document.id)));
   const collapseAllDocuments = () => setExpanded(new Set());
-  const canSaveMaster = Boolean(masterForm.code.trim() && masterForm.title.trim() && (masterDialog?.mode === 'edit' || initialVersionForm.version.trim()));
+  const canSaveMaster = Boolean(masterForm.title.trim() && (masterDialog?.mode === 'edit' || (initialVersionForm.version.trim() && initialVersionForm.code.trim())));
   const activeColumnSettings = columnSettingsTarget === 'main' ? mainColumnSettings : versionColumnSettings;
   const activeColumnSettingsItems = columnSettingsTarget === 'main' ? documentColumns : documentVersionColumns;
   const activeVisibleColumnCount = activeColumnSettings.order.filter((id) => !activeColumnSettings.hidden.includes(id)).length;
@@ -744,7 +747,6 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
   const renderMainCell = (column: DocumentColumn) => {
     switch (column.id) {
       case 'title': return <TableCell key={column.id}><Stack direction="row" spacing={0.5} alignItems="center"><IconButton size="small" onClick={(event) => { event.stopPropagation(); onToggle(); }} aria-label={expanded ? '收起文档版本' : '展开文档版本'}>{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}</IconButton><Typography component="button" type="button" data-document-name-link onClick={(event) => { event.stopPropagation(); onOpenDetail(); }} sx={{ p: 0, border: 0, bgcolor: 'transparent', font: 'inherit', fontWeight: 500, color: '#1890ff', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left', '&:hover': { color: '#096dd9', textDecoration: 'underline' } }}>{document.title}</Typography></Stack></TableCell>;
-      case 'code': return <TableCell key={column.id}>{document.code}</TableCell>;
       case 'type': return <TableCell key={column.id}><Chip size="small" label={categoryName} variant="outlined" /></TableCell>;
       case 'versionCount': return <TableCell key={column.id}>{document.versions.length}</TableCell>;
       case 'createdBy': return <TableCell key={column.id}>{document.createdBy || '-'}</TableCell>;
@@ -763,6 +765,7 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
     const versionStatus = getRdoVersionStatusMeta(version.status);
     switch (column.id) {
       case 'version': return <TableCell key={column.id}>{version.version}</TableCell>;
+      case 'code': return <TableCell key={column.id}>{version.code}</TableCell>;
       case 'status': return <TableCell key={column.id}><StatusBadge {...versionStatus} /></TableCell>;
       case 'effectiveDate': return <TableCell key={column.id} sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(version.effectiveDate)}</TableCell>;
       case 'expiryDate': return <TableCell key={column.id} sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(version.expiryDate)}</TableCell>;
@@ -840,9 +843,8 @@ function DocumentDetailDrawer({ open, document, version, tab, onTabChange, audit
         {tab === 0 ? <Stack spacing={2} sx={{ mt: 2 }}>
           <DetailSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
             <DetailField label="文档名称">{document.title}</DetailField>
-            <DetailField label="文档编码">{document.code}</DetailField>
             <DetailField label="文档分类">{document.categoryName || '未分类'}</DetailField>
-            {version ? <><DetailField label="版本号">{version.version}</DetailField><DetailField label="版本状态">{versionStatus ? <StatusBadge label={versionStatus.label} color={versionStatus.color} /> : '-'}</DetailField><DetailField label="生效时间">{formatDateTime(version.effectiveDate)}</DetailField><DetailField label="失效时间">{formatDateTime(version.expiryDate)}</DetailField><DetailField label="版本文件">{version.fileName || '-'}</DetailField><DetailField label="版本说明">{version.description || '-'}</DetailField><DetailField label="备注">{version.remark || '-'}</DetailField></> : <><DetailField label="版本数量">{document.versions.length}</DetailField><DetailField label="文档描述">{document.description || '-'}</DetailField><DetailField label="备注">{document.remark || '-'}</DetailField></>}
+            {version ? <><DetailField label="版本号">{version.version}</DetailField><DetailField label="文档编码">{version.code}</DetailField><DetailField label="版本状态">{versionStatus ? <StatusBadge label={versionStatus.label} color={versionStatus.color} /> : '-'}</DetailField><DetailField label="生效时间">{formatDateTime(version.effectiveDate)}</DetailField><DetailField label="失效时间">{formatDateTime(version.expiryDate)}</DetailField><DetailField label="版本文件">{version.fileName || '-'}</DetailField><DetailField label="版本说明">{version.description || '-'}</DetailField><DetailField label="备注">{version.remark || '-'}</DetailField></> : <><DetailField label="版本数量">{document.versions.length}</DetailField><DetailField label="文档描述">{document.description || '-'}</DetailField><DetailField label="备注">{document.remark || '-'}</DetailField></>}
           </Box></DetailSection>
           <DetailSection title="系统信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
             <DetailField label="创建人">{version?.createdBy || document.createdBy || '-'}</DetailField><DetailField label="创建时间">{formatDateTime(version?.createdAt || document.createdAt)}</DetailField><DetailField label="更新人">{version?.updatedBy || version?.createdBy || document.updatedBy || document.createdBy || '-'}</DetailField><DetailField label="更新时间">{formatDateTime(version?.updatedAt || version?.createdAt || document.updatedAt || document.createdAt)}</DetailField>
@@ -872,7 +874,6 @@ function DocumentMasterDialog({ open, selectedCategory, categories, mode, form, 
   return <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{isCreate ? '新增文档' : '编辑文档'}</DialogTitle><DialogContent dividers>
     <Stack spacing={1.5} sx={{ pt: 0.5 }}>
     <DetailSection title="基础信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
-      <TextField required size="small" label="文档编码" value={form.code} onChange={(event) => set('code', event.target.value)} />
       {categoryLocked ? <Stack spacing={0.25} justifyContent="center" sx={{ minHeight: 40, px: 0.25 }}><Typography variant="caption" sx={{ color: '#909399', lineHeight: 1.2 }}>文档分类</Typography><Typography sx={{ color: '#303133', fontSize: 14, lineHeight: 1.35 }}>{categoryName}</Typography></Stack> : <TextField select size="small" label="文档分类" value={form.categoryId} onChange={(event) => set('categoryId', event.target.value)}><MenuItem value="">未分类</MenuItem>{categories.filter((category) => category.id !== DOCUMENT_CATEGORY_ALL && category.id !== DOCUMENT_CATEGORY_UNCATEGORIZED).map((category) => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}</TextField>}
       <TextField required size="small" label="文档名称" value={form.title} onChange={(event) => set('title', event.target.value)} sx={{ gridColumn: { sm: '1 / -1' } }} />
       <TextField size="small" label="文档描述" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={2} sx={{ gridColumn: { sm: '1 / -1' } }} />
@@ -886,7 +887,7 @@ function DocumentMasterDialog({ open, selectedCategory, categories, mode, form, 
 function DocumentVersionDialog({ open, document, editing, form, onChange, onPreview, onClose, onSubmit, saving }: {
   open: boolean; document: ManagedDocument | null; editing: ManagedDocumentVersion | null; form: VersionForm; onChange: (form: VersionForm) => void; onPreview: (file: FilePreviewTarget) => void; onClose: () => void; onSubmit: () => void; saving: boolean;
 }) {
-  return <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{editing ? '编辑文档版本' : '新增文档版本'}{document ? ` - ${document.title}` : ''}</DialogTitle><DialogContent dividers><DetailSection title="版本信息"><VersionFields form={form} onChange={onChange} onPreview={onPreview} /></DetailSection></DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={onClose} disabled={saving}>取消</Button><Button variant="contained" disabled={!form.version.trim() || saving} onClick={onSubmit}>{saving ? '保存中...' : '保存'}</Button></DialogActions></AppDialog>;
+  return <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{editing ? '编辑文档版本' : '新增文档版本'}{document ? ` - ${document.title}` : ''}</DialogTitle><DialogContent dividers><DetailSection title="版本信息"><VersionFields form={form} onChange={onChange} onPreview={onPreview} /></DetailSection></DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={onClose} disabled={saving}>取消</Button><Button variant="contained" disabled={!form.version.trim() || !form.code.trim() || saving} onClick={onSubmit}>{saving ? '保存中...' : '保存'}</Button></DialogActions></AppDialog>;
 }
 
 function VersionFields({ form, onChange, onPreview }: { form: VersionForm; onChange: (form: VersionForm) => void; onPreview: (file: FilePreviewTarget) => void }) {
@@ -906,6 +907,7 @@ function VersionFields({ form, onChange, onPreview }: { form: VersionForm; onCha
   };
   return <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
     <TextField required size="small" label="版本号" value={form.version} onChange={(event) => set('version', event.target.value)} />
+    <TextField required size="small" label="文档编码" value={form.code} onChange={(event) => set('code', event.target.value)} />
     <TextField size="small" label="版本文件" value={form.fileName} placeholder="未上传文件" fullWidth InputProps={{ readOnly: true, endAdornment: <InputAdornment position="end" sx={{ mr: -0.75 }}><Stack direction="row" spacing={0.25} alignItems="center"><Tooltip title="预览文件"><span><IconButton size="small" aria-label="预览版本文件" disabled={!form.fileId || uploading} onClick={() => onPreview({ fileId: form.fileId, fileName: form.fileName, fileMimeType: form.fileMimeType, version: form.version })}><PreviewOutlined fontSize="small" /></IconButton></span></Tooltip><Button component="label" size="small" startIcon={<UploadFileOutlined fontSize="small" />} disabled={uploading} sx={{ minWidth: 76, whiteSpace: 'nowrap' }}>{uploading ? '上传中' : form.fileName ? '替换' : '上传'}<input hidden type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.mp4,.webm,.mov,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onChange={(event) => { void selectFile(event.target.files?.[0], event.currentTarget); }} /></Button></Stack></InputAdornment> }} inputProps={{ title: form.fileName || '未上传文件' }} />
     <TextField size="small" label="生效时间" type="datetime-local" value={form.effectiveDate} onChange={(event) => set('effectiveDate', event.target.value)} InputLabelProps={{ shrink: true }} />
     <TextField size="small" label="失效时间" type="datetime-local" value={form.expiryDate} onChange={(event) => set('expiryDate', event.target.value)} InputLabelProps={{ shrink: true }} />

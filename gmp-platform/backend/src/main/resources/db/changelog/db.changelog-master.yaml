@@ -99,3 +99,11 @@ databaseChangeLog:
       file: db/changelog/0047-remove-rdo-current-version-fields.sql
   - include:
       file: db/changelog/0048-document-categories.sql
+  - include:
+      file: db/changelog/0049-product-process-dhr-item-binding.sql
+  - include:
+      file: db/changelog/0050-route-version-code.sql
+  - include:
+      file: db/changelog/0051-document-version-code.sql
+  - include:
+      file: db/changelog/0052-product-process-document-pages.sql

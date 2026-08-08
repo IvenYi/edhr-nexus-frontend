@@ -14,5 +14,7 @@ public interface RouteVersionRepository extends JpaRepository<RouteVersion, Long
 
     Optional<RouteVersion> findByRouteIdAndId(Long routeId, Long id);
 
+    List<RouteVersion> findByTenantIdAndCodeIgnoreCase(String tenantId, String code);
+
     long countByRouteId(Long routeId);
 }

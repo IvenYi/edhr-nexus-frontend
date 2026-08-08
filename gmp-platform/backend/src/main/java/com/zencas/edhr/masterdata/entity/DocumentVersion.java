@@ -32,6 +32,8 @@ public class DocumentVersion {
     private Long documentId;
     @Column(name = "version", nullable = false, length = 64)
     private String version;
+    @Column(name = "code", nullable = false, length = 64)
+    private String code;
     @Column(name = "file_id")
     @JsonSerialize(using = ToStringSerializer.class)
     private Long fileId;

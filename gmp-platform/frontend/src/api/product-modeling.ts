@@ -21,6 +21,7 @@ export interface ProductModelSource {
 
 export interface ProductProcessFormBinding {
   id?: string;
+  dhrTemplateItemId?: string | null;
   formTemplateVersionId: string;
   templateName?: string | null;
   templateCode?: string | null;
@@ -37,6 +38,8 @@ export interface ProductProcessDocumentBinding {
   documentCategoryName?: string | null;
   version?: string | null;
   sortOrder?: number | null;
+  pageStart?: number | null;
+  pageEnd?: number | null;
 }
 
 export interface ProductProcessOperation {
@@ -88,8 +91,8 @@ export interface ProductModelRouteOption {
   id: string;
   routeId: string;
   routeName: string;
-  routeCode?: string | null;
   version: string;
+  versionCode?: string | null;
   status: string;
 }
 
@@ -99,7 +102,19 @@ export interface ProductModelTemplateOption {
   code?: string | null;
   name: string;
   version?: string | null;
+  versionCode?: string | null;
   status: string;
+  categoryName?: string | null;
+  dhrTemplateItemId?: string | null;
+  directoryName?: string | null;
+  directoryId?: string | null;
+}
+
+export interface ProductModelDhrDirectoryOption {
+  id: string;
+  parentId?: string | null;
+  name: string;
+  sortOrder?: number | null;
 }
 
 export interface ProductModelDocumentOption {
@@ -110,6 +125,9 @@ export interface ProductModelDocumentOption {
   documentCategoryName: string;
   version?: string | null;
   status: string;
+  fileId?: string | null;
+  fileName?: string | null;
+  fileMimeType?: string | null;
 }
 
 export interface ProductModelOptions {
@@ -117,6 +135,7 @@ export interface ProductModelOptions {
   dhrTemplates: ProductModelTemplateOption[];
   formTemplates: ProductModelTemplateOption[];
   documents: ProductModelDocumentOption[];
+  dhrDirectories: ProductModelDhrDirectoryOption[];
 }
 
 export interface ProductProcessVersionPayload {
@@ -132,8 +151,8 @@ export interface ProductProcessVersionPayload {
   operationBindings?: Array<{
     routeNodeKey: string;
     sortOrder?: number | null;
-    forms: Array<{ formTemplateVersionId: string; required: boolean; sortOrder?: number | null }>;
-    documents: Array<{ documentVersionId: string; sortOrder?: number | null }>;
+    forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; required: boolean; sortOrder?: number | null }>;
+    documents: Array<{ documentVersionId: string; sortOrder?: number | null; pageStart?: number | null; pageEnd?: number | null }>;
   }>;
 }
 
@@ -145,8 +164,8 @@ export const getProductModelingProducts = (params: { page?: number; size?: numbe
 export const getProductModelWorkspace = (productVersionId: string) =>
   client.get(`${basePath}/products/${productVersionId}`) as Promise<{ data: { data: ProductModelWorkspace } }>;
 
-export const getProductModelOptions = (productVersionId: string) =>
-  client.get(`${basePath}/products/${productVersionId}/options`) as Promise<{ data: { data: ProductModelOptions } }>;
+export const getProductModelOptions = (productVersionId: string, dhrTemplateVersionId?: string) =>
+  client.get(`${basePath}/products/${productVersionId}/options`, { params: { dhrTemplateVersionId } }) as Promise<{ data: { data: ProductModelOptions } }>;
 
 export const createProductProcessVersion = (productVersionId: string, body: ProductProcessVersionPayload) =>
   client.post(`${basePath}/products/${productVersionId}/versions`, body) as Promise<{ data: { data: ProductProcessVersion } }>;

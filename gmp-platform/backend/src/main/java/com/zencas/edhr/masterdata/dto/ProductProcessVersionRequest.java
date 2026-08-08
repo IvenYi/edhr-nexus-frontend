@@ -40,9 +40,15 @@ public class ProductProcessVersionRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FormBindingRequest {
+        private Long dhrTemplateItemId;
         private Long formTemplateVersionId;
         private Boolean required;
         private Integer sortOrder;
+
+        public FormBindingRequest(Long formTemplateVersionId, Boolean required, Integer sortOrder) {
+            this(null, formTemplateVersionId, required, sortOrder);
+        }
+
     }
 
     @Data
@@ -52,5 +58,11 @@ public class ProductProcessVersionRequest {
     public static class DocumentBindingRequest {
         private Long documentVersionId;
         private Integer sortOrder;
+        private Integer pageStart;
+        private Integer pageEnd;
+
+        public DocumentBindingRequest(Long documentVersionId, Integer sortOrder) {
+            this(documentVersionId, sortOrder, null, null);
+        }
     }
 }

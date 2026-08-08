@@ -15,7 +15,7 @@ public class Route {
     private Long id;
     @Column(name = "tenant_id")
     @Builder.Default private String tenantId = "default";
-    @Column(name = "code", nullable = false, length = 64)
+    @Column(name = "code", length = 64)
     private String code;
     @Column(name = "name", nullable = false, length = 128)
     private String name;

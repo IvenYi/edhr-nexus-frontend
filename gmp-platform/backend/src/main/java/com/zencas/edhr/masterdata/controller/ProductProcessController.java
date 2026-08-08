@@ -12,7 +12,9 @@ import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.common.util.RdoVersionStatusResolver;
 import com.zencas.edhr.compliance.entity.AuditEvent;
+import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
+import com.zencas.edhr.compliance.repository.FileObjectRepository;
 import com.zencas.edhr.masterdata.dto.ProductProcessVersionRequest;
 import com.zencas.edhr.masterdata.entity.Material;
 import com.zencas.edhr.masterdata.entity.MaterialType;
@@ -44,10 +46,14 @@ import com.zencas.edhr.template.entity.DhrTemplate;
 import com.zencas.edhr.template.entity.DhrTemplateVersion;
 import com.zencas.edhr.template.entity.FormTemplate;
 import com.zencas.edhr.template.entity.FormTemplateVersion;
+import com.zencas.edhr.template.entity.DhrDirectory;
+import com.zencas.edhr.template.entity.DhrTemplateItem;
 import com.zencas.edhr.template.repository.DhrTemplateRepository;
 import com.zencas.edhr.template.repository.DhrTemplateVersionRepository;
 import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
+import com.zencas.edhr.template.repository.DhrDirectoryRepository;
+import com.zencas.edhr.template.repository.DhrTemplateItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -104,6 +110,9 @@ public class ProductProcessController {
     private final DhrTemplateVersionRepository dhrTemplateVersionRepository;
     private final FormTemplateRepository formTemplateRepository;
     private final FormTemplateVersionRepository formTemplateVersionRepository;
+    private final DhrDirectoryRepository dhrDirectoryRepository;
+    private final DhrTemplateItemRepository dhrTemplateItemRepository;
+    private final FileObjectRepository fileObjectRepository;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
 
@@ -155,20 +164,32 @@ public class ProductProcessController {
                 process == null ? null : toProcessResponse(process, versions)));
     }
 
-    @GetMapping("/products/{productVersionId}/options")
+    @GetMapping(value = "/products/{productVersionId}/options", params = "!dhrTemplateVersionId")
     public ApiResponse<ProductModelOptionsResponse> getProductModelOptions(@PathVariable Long productVersionId) {
+        return getProductModelOptions(productVersionId, null);
+    }
+
+    @GetMapping(value = "/products/{productVersionId}/options", params = "dhrTemplateVersionId")
+    public ApiResponse<ProductModelOptionsResponse> getProductModelOptions(@PathVariable Long productVersionId,
+            @RequestParam(required = false) Long dhrTemplateVersionId) {
         requireProductMaterial(productVersionId);
         List<RouteOption> routes = routeRepository.findAll().stream()
                 .flatMap(route -> routeVersionRepository.findByRouteIdOrderByCreatedAtDesc(route.getId()).stream()
-                        .map(version -> new RouteOption(id(version.getId()), id(route.getId()), route.getName(), route.getCode(), version.getVersion(), resolveRouteStatus(version))))
+                        .filter(version -> RdoVersionStatusResolver.isReferenceable(version.getEffectiveDate(), version.getExpiryDate()))
+                        .map(version -> new RouteOption(id(version.getId()), id(route.getId()), route.getName(), version.getVersion(), version.getCode(), resolveRouteStatus(version))))
                 .toList();
         List<TemplateOption> dhrTemplates = dhrTemplateRepository.findAll().stream()
                 .flatMap(template -> dhrTemplateVersionRepository.findByDhrTemplateIdOrderByVersionNumberDesc(template.getId()).stream()
-                        .map(version -> new TemplateOption(id(version.getId()), id(template.getId()), template.getCode(), template.getName(), version.getVersionLabel(), resolveRdoStatus(version.getEffectiveFrom(), version.getEffectiveTo()))))
+                        .filter(version -> RdoVersionStatusResolver.isReferenceable(version.getEffectiveFrom(), version.getEffectiveTo()))
+                        .map(version -> new TemplateOption(id(version.getId()), id(template.getId()), template.getCode(), template.getName(), version.getVersionLabel(), version.getCode(), resolveRdoStatus(version.getEffectiveFrom(), version.getEffectiveTo()), template.getCategoryName(), null, null, null)))
                 .toList();
-        List<TemplateOption> formTemplates = formTemplateRepository.findAll().stream()
+        List<TemplateOption> allFormTemplates = formTemplateRepository.findAll().stream()
                 .flatMap(template -> formTemplateVersionRepository.findByTemplateIdOrderByCreatedAtDesc(template.getId()).stream()
-                        .map(version -> new TemplateOption(id(version.getId()), id(template.getId()), template.getCode(), template.getName(), version.getVersion(), resolveRdoStatus(version.getEffectiveFrom(), version.getEffectiveTo()))))
+                        .map(version -> new TemplateOption(id(version.getId()), id(template.getId()), template.getCode(), template.getName(), version.getVersion(), null, resolveRdoStatus(version.getEffectiveFrom(), version.getEffectiveTo()), template.getCategoryName(), null, null, null)))
+                .toList();
+        List<TemplateOption> formTemplates = dhrTemplateVersionId == null ? allFormTemplates : dhrFormOptions(dhrTemplateVersionId, allFormTemplates);
+        List<DhrDirectoryOption> dhrDirectories = dhrTemplateVersionId == null ? List.of() : dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(dhrTemplateVersionId).stream()
+                .map(directory -> new DhrDirectoryOption(id(directory.getId()), idOrNull(directory.getParentId()), directory.getName(), directory.getSortOrder()))
                 .toList();
         Map<Long, SopDocument> documentsById = documentRepository.findAll().stream()
                 .collect(Collectors.toMap(SopDocument::getId, Function.identity()));
@@ -177,7 +198,21 @@ public class ProductProcessController {
                 .map(version -> toDocumentOption(documentsById.get(version.getDocumentId()), version, documentCategoriesById))
                 .filter(Objects::nonNull)
                 .toList();
-        return ApiResponse.success(new ProductModelOptionsResponse(routes, dhrTemplates, formTemplates, documents));
+        return ApiResponse.success(new ProductModelOptionsResponse(routes, dhrTemplates, formTemplates, documents, dhrDirectories));
+    }
+
+    private List<TemplateOption> dhrFormOptions(Long dhrVersionId, List<TemplateOption> allFormTemplates) {
+        List<DhrDirectory> directories = dhrDirectoryRepository.findByVersionIdOrderBySortOrderAscIdAsc(dhrVersionId);
+        List<Long> directoryIds = directories.stream().map(DhrDirectory::getId).toList();
+        if (directoryIds.isEmpty()) return List.of();
+        Map<Long, String> directoryNames = directories.stream().collect(Collectors.toMap(DhrDirectory::getId, DhrDirectory::getName));
+        Map<Long, TemplateOption> byVersionId = allFormTemplates.stream().collect(Collectors.toMap(option -> Long.valueOf(option.id()), Function.identity(), (left, right) -> left));
+        return dhrTemplateItemRepository.findByDirectoryIdInOrderBySortOrderAscIdAsc(directoryIds).stream().map(item -> {
+            TemplateOption option = byVersionId.get(item.getFormTemplateVersionId());
+            if (option == null) return null;
+            return new TemplateOption(option.id(), option.templateId(), option.code(),
+                    hasText(item.getDisplayName()) ? item.getDisplayName() : option.name(), option.version(), option.versionCode(), option.status(), option.categoryName(), id(item.getId()), directoryNames.get(item.getDirectoryId()), id(item.getDirectoryId()));
+        }).filter(Objects::nonNull).toList();
     }
 
     @PostMapping("/products/{productVersionId}/versions")
@@ -337,7 +372,7 @@ public class ProductProcessController {
             if (request == null || !hasText(request.getRouteNodeKey()) || !nodes.containsKey(request.getRouteNodeKey().trim())) {
                 throw new BusinessException(ErrorCode.GENERAL_001, "工序配置必须来自当前工艺路线");
             }
-            validateOperationReferences(request);
+            validateOperationReferences(version, request);
         }
         List<Map<String, Object>> before = recordAudit ? operationBindingsSnapshot(version) : List.of();
         deleteOperationBindings(version.getId());
@@ -363,6 +398,7 @@ public class ProductProcessController {
                     .map(form -> ProductProcessOperationFormBinding.builder()
                             .id(idGenerator.nextId())
                             .productProcessOperationBindingId(binding.getId())
+                            .dhrTemplateItemId(form.getDhrTemplateItemId())
                             .formTemplateVersionId(form.getFormTemplateVersionId())
                             .required(form.getRequired() == null || form.getRequired())
                             .sortOrder(form.getSortOrder() == null ? 0 : form.getSortOrder())
@@ -374,6 +410,8 @@ public class ProductProcessController {
                             .productProcessOperationBindingId(binding.getId())
                             .documentVersionId(document.getDocumentVersionId())
                             .sortOrder(document.getSortOrder() == null ? 0 : document.getSortOrder())
+                            .pageStart(document.getPageStart())
+                            .pageEnd(document.getPageEnd())
                             .createdAt(LocalDateTime.now())
                             .build()).toList());
         }
@@ -386,21 +424,43 @@ public class ProductProcessController {
         }
     }
 
-    private void validateOperationReferences(ProductProcessVersionRequest.OperationBindingRequest request) {
+    private void validateOperationReferences(ProductProcessVersion processVersion, ProductProcessVersionRequest.OperationBindingRequest request) {
         List<ProductProcessVersionRequest.FormBindingRequest> forms = request.getForms() == null ? List.of() : request.getForms();
         for (ProductProcessVersionRequest.FormBindingRequest form : forms) {
             if (form == null || form.getFormTemplateVersionId() == null) {
                 throw new BusinessException(ErrorCode.GENERAL_001, "工序引用的表单模板版本不存在");
             }
-            FormTemplateVersion version = formTemplateVersionRepository.findById(form.getFormTemplateVersionId())
+            DhrTemplateItem item = form.getDhrTemplateItemId() == null ? null : dhrTemplateItemRepository.findById(form.getDhrTemplateItemId()).orElse(null);
+            if (item == null || !isDhrItemInVersion(item, processVersion.getDhrTemplateVersionId()) || !Objects.equals(item.getFormTemplateVersionId(), form.getFormTemplateVersionId())) {
+                throw new BusinessException(ErrorCode.GENERAL_001, "工序引用的表单必须来自所选批记录模板版本目录");
+            }
+            FormTemplateVersion formVersion = formTemplateVersionRepository.findById(form.getFormTemplateVersionId())
                     .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "工序引用的表单模板版本不存在"));
-            if (!RdoVersionStatusResolver.isReferenceable(version.getEffectiveFrom(), version.getEffectiveTo())) {
+            if (!RdoVersionStatusResolver.isReferenceable(formVersion.getEffectiveFrom(), formVersion.getEffectiveTo())) {
                 throw new BusinessException(ErrorCode.GENERAL_001, "工序仅能引用生效中的表单模板版本");
             }
         }
+        if (forms.stream().map(ProductProcessVersionRequest.FormBindingRequest::getFormTemplateVersionId).distinct().count() != forms.size()) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "同一工序不能重复引用同一个表单模板版本");
+        }
         List<ProductProcessVersionRequest.DocumentBindingRequest> documents = request.getDocuments() == null ? List.of() : request.getDocuments();
-        if (documents.stream().anyMatch(document -> document == null || document.getDocumentVersionId() == null || !documentVersionRepository.existsById(document.getDocumentVersionId()))) {
-            throw new BusinessException(ErrorCode.MD_009, "工序引用的文档版本不存在");
+        if (documents.stream().map(document -> document == null ? null : document.getDocumentVersionId()).filter(Objects::nonNull).distinct().count() != documents.size()) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "同一工序不能重复引用同一个文档版本");
+        }
+        for (ProductProcessVersionRequest.DocumentBindingRequest document : documents) {
+            if (document == null || document.getDocumentVersionId() == null) {
+                throw new BusinessException(ErrorCode.MD_009, "工序引用的文档版本不存在");
+            }
+            DocumentVersion documentVersion = documentVersionRepository.findById(document.getDocumentVersionId())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.MD_009, "工序引用的文档版本不存在"));
+            boolean hasStart = document.getPageStart() != null;
+            boolean hasEnd = document.getPageEnd() != null;
+            if (!isPdfDocument(documentVersion) && (hasStart || hasEnd)) {
+                throw new BusinessException(ErrorCode.GENERAL_001, "仅 PDF 文档支持配置展示页码范围");
+            }
+            if (isPdfDocument(documentVersion) && (hasStart != hasEnd || (hasStart && (document.getPageStart() < 1 || document.getPageEnd() < document.getPageStart())))) {
+                throw new BusinessException(ErrorCode.GENERAL_001, "PDF 文档展示页码范围无效");
+            }
         }
     }
 
@@ -409,9 +469,13 @@ public class ProductProcessController {
         return data.bindings().stream()
                 .map(operation -> new ProductProcessVersionRequest.OperationBindingRequest(
                         operation.getRouteNodeKey(), operation.getSortOrder(),
-                        data.forms().getOrDefault(operation.getId(), List.of()).stream().map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder())).toList(),
-                        data.documents().getOrDefault(operation.getId(), List.of()).stream().map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder())).toList()))
+                        data.forms().getOrDefault(operation.getId(), List.of()).stream().map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getDhrTemplateItemId(), form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder())).toList(),
+                        data.documents().getOrDefault(operation.getId(), List.of()).stream().map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder(), document.getPageStart(), document.getPageEnd())).toList()))
                 .toList();
+    }
+
+    private boolean isDhrItemInVersion(DhrTemplateItem item, Long versionId) {
+        return dhrDirectoryRepository.findById(item.getDirectoryId()).map(directory -> Objects.equals(directory.getVersionId(), versionId)).orElse(false);
     }
 
     private OperationBindingData loadOperationBindingData(Long versionId) {
@@ -432,8 +496,14 @@ public class ProductProcessController {
         if (!bindingIds.isEmpty()) {
             operationFormBindingRepository.deleteByProductProcessOperationBindingIdIn(bindingIds);
             operationDocumentBindingRepository.deleteByProductProcessOperationBindingIdIn(bindingIds);
+            // The replacement can contain the same (operation, form/document) pairs.
+            // Execute child deletes before inserting the replacement bindings so their
+            // unique indexes do not reject a valid edit within the same transaction.
+            operationFormBindingRepository.flush();
+            operationDocumentBindingRepository.flush();
         }
         operationBindingRepository.deleteByProductProcessVersionId(versionId);
+        operationBindingRepository.flush();
     }
 
     private ProductProcess requireProcess(Long productVersionId) {
@@ -486,7 +556,7 @@ public class ProductProcessController {
                         bindingData.documents().getOrDefault(operation.getId(), List.of()).stream().map(binding -> toDocumentBindingResponse(binding, documentCategoriesById)).toList()))
                 .toList();
         return new ProductProcessVersionResponse(id(version.getId()), version.getVersionLabel(), version.getProductionMode(), version.getProductionForm(),
-                idOrNull(version.getRouteVersionId()), route == null ? null : route.getName(), route == null ? null : route.getCode(), routeVersion == null ? null : routeVersion.getVersion(),
+                idOrNull(version.getRouteVersionId()), route == null ? null : route.getName(), routeVersion == null ? null : routeVersion.getCode(), routeVersion == null ? null : routeVersion.getVersion(),
                 idOrNull(version.getDhrTemplateVersionId()), dhrTemplate == null ? null : dhrTemplate.getName(), dhrTemplate == null ? null : dhrTemplate.getCode(), dhrVersion == null ? null : dhrVersion.getVersionLabel(),
                 version.getDescription(), version.getEffectiveFrom(), version.getEffectiveTo(), resolveRuntimeStatus(version),
                 version.getCreatedBy(), version.getCreatedAt(), version.getUpdatedBy(), version.getUpdatedAt(), operations);
@@ -495,20 +565,30 @@ public class ProductProcessController {
     private FormBindingResponse toFormBindingResponse(ProductProcessOperationFormBinding form) {
         FormTemplateVersion version = formTemplateVersionRepository.findById(form.getFormTemplateVersionId()).orElse(null);
         FormTemplate template = version == null ? null : formTemplateRepository.findById(version.getTemplateId()).orElse(null);
-        return new FormBindingResponse(id(form.getId()), id(form.getFormTemplateVersionId()), template == null ? null : template.getName(), template == null ? null : template.getCode(), version == null ? null : version.getVersion(), form.getRequired(), form.getSortOrder());
+        return new FormBindingResponse(id(form.getId()), idOrNull(form.getDhrTemplateItemId()), id(form.getFormTemplateVersionId()), template == null ? null : template.getName(), template == null ? null : template.getCode(), version == null ? null : version.getVersion(), form.getRequired(), form.getSortOrder());
     }
 
     private DocumentBindingResponse toDocumentBindingResponse(ProductProcessOperationDocumentBinding binding, Map<Long, DocumentCategory> documentCategoriesById) {
         DocumentVersion version = documentVersionRepository.findById(binding.getDocumentVersionId()).orElse(null);
         SopDocument document = version == null ? null : documentRepository.findById(version.getDocumentId()).orElse(null);
-        return new DocumentBindingResponse(id(binding.getId()), id(binding.getDocumentVersionId()), document == null ? null : document.getTitle(), document == null ? null : document.getCode(),
-                document == null ? null : documentCategoryName(document, documentCategoriesById), version == null ? null : version.getVersion(), binding.getSortOrder());
+        return new DocumentBindingResponse(id(binding.getId()), id(binding.getDocumentVersionId()), document == null ? null : document.getTitle(), version == null ? null : version.getCode(),
+                document == null ? null : documentCategoryName(document, documentCategoriesById), version == null ? null : version.getVersion(), binding.getSortOrder(), binding.getPageStart(), binding.getPageEnd());
     }
 
     private DocumentOption toDocumentOption(SopDocument document, DocumentVersion version, Map<Long, DocumentCategory> documentCategoriesById) {
         if (document == null || version == null) return null;
-        return new DocumentOption(id(version.getId()), id(document.getId()), document.getCode(), document.getTitle(),
-                documentCategoryName(document, documentCategoriesById), version.getVersion(), resolveDocumentStatus(version));
+        FileObject file = version.getFileId() == null ? null : fileObjectRepository.findById(version.getFileId()).orElse(null);
+        return new DocumentOption(id(version.getId()), id(document.getId()), version.getCode(), document.getTitle(),
+                documentCategoryName(document, documentCategoriesById), version.getVersion(), resolveDocumentStatus(version),
+                idOrNull(version.getFileId()), file == null ? null : file.getOriginalName(), file == null ? null : file.getMimeType());
+    }
+
+    private boolean isPdfDocument(DocumentVersion version) {
+        if (version.getFileId() == null) return false;
+        return fileObjectRepository.findById(version.getFileId())
+                .map(file -> "application/pdf".equalsIgnoreCase(file.getMimeType())
+                        || (file.getOriginalName() != null && file.getOriginalName().toLowerCase().endsWith(".pdf")))
+                .orElse(false);
     }
 
     private Map<Long, DocumentCategory> documentCategoriesById() {
@@ -535,9 +615,17 @@ public class ProductProcessController {
         snapshot.put("description", version.getDescription());
         snapshot.put("effectiveFrom", formatDateTime(version.getEffectiveFrom()));
         snapshot.put("effectiveTo", formatDateTime(version.getEffectiveTo()));
-        snapshot.put("status", resolveRuntimeStatus(version));
+        snapshot.put("status", auditStatusLabel(resolveRuntimeStatus(version)));
         snapshot.put("operationBindings", operationBindingsSnapshot(response.operations()));
         return snapshot;
+    }
+
+    private String auditStatusLabel(String status) {
+        return switch (status) {
+            case "ACTIVE" -> "生效";
+            case "EXPIRED" -> "失效";
+            default -> status;
+        };
     }
 
     private Map<String, Object> withoutOperationBindings(Map<String, Object> snapshot) {
@@ -558,12 +646,17 @@ public class ProductProcessController {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("operation", joinReference(operation.operationCode(), operation.operationName()));
         snapshot.put("forms", operation.forms().stream()
-                .map(form -> joinReference(form.templateCode(), form.templateName(), form.version()) + (Boolean.TRUE.equals(form.required()) ? "（必填）" : ""))
+                .map(form -> joinReference(form.templateCode(), form.templateName(), form.version()) + (Boolean.TRUE.equals(form.required()) ? "（工序结束前完成）" : ""))
                 .toList());
         snapshot.put("documents", operation.documents().stream()
-                .map(document -> joinReference(document.documentCategoryName(), document.code(), document.title(), document.version()))
+                .map(document -> joinReference(document.documentCategoryName(), document.code(), document.title(), document.version())
+                        + formatPageRange(document.pageStart(), document.pageEnd()))
                 .toList());
         return snapshot;
+    }
+
+    private String formatPageRange(Integer pageStart, Integer pageEnd) {
+        return pageStart == null && pageEnd == null ? "" : "（展示第" + pageStart + "页至第" + pageEnd + "页）";
     }
 
     private String joinReference(String... parts) {
@@ -653,12 +746,13 @@ public class ProductProcessController {
     public record ProductProcessResponse(String id, List<ProductProcessVersionResponse> versions) {}
     public record ProductProcessVersionResponse(String id, String version, String productionMode, String productionForm, String routeVersionId, String routeName, String routeCode, String routeVersion, String dhrTemplateVersionId, String dhrTemplateName, String dhrTemplateCode, String dhrTemplateVersion, String description, LocalDateTime effectiveFrom, LocalDateTime effectiveTo, String status, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, List<ProductProcessOperationResponse> operations) {}
     public record ProductProcessOperationResponse(String id, String routeNodeKey, String operationId, String operationCode, String operationName, Integer sortOrder, List<FormBindingResponse> forms, List<DocumentBindingResponse> documents) {}
-    public record FormBindingResponse(String id, String formTemplateVersionId, String templateName, String templateCode, String version, Boolean required, Integer sortOrder) {}
-    public record DocumentBindingResponse(String id, String documentVersionId, String title, String code, String documentCategoryName, String version, Integer sortOrder) {}
-    public record ProductModelOptionsResponse(List<RouteOption> routes, List<TemplateOption> dhrTemplates, List<TemplateOption> formTemplates, List<DocumentOption> documents) {}
-    public record RouteOption(String id, String routeId, String routeName, String routeCode, String version, String status) {}
-    public record TemplateOption(String id, String templateId, String code, String name, String version, String status) {}
-    public record DocumentOption(String id, String documentId, String code, String title, String documentCategoryName, String version, String status) {}
+    public record FormBindingResponse(String id, String dhrTemplateItemId, String formTemplateVersionId, String templateName, String templateCode, String version, Boolean required, Integer sortOrder) {}
+    public record DocumentBindingResponse(String id, String documentVersionId, String title, String code, String documentCategoryName, String version, Integer sortOrder, Integer pageStart, Integer pageEnd) {}
+    public record ProductModelOptionsResponse(List<RouteOption> routes, List<TemplateOption> dhrTemplates, List<TemplateOption> formTemplates, List<DocumentOption> documents, List<DhrDirectoryOption> dhrDirectories) {}
+    public record RouteOption(String id, String routeId, String routeName, String version, String versionCode, String status) {}
+    public record TemplateOption(String id, String templateId, String code, String name, String version, String versionCode, String status, String categoryName, String dhrTemplateItemId, String directoryName, String directoryId) {}
+    public record DocumentOption(String id, String documentId, String code, String title, String documentCategoryName, String version, String status, String fileId, String fileName, String fileMimeType) {}
+    public record DhrDirectoryOption(String id, String parentId, String name, Integer sortOrder) {}
 
     private record OperationBindingData(
             List<ProductProcessOperationBinding> bindings,

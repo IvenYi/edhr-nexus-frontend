@@ -24,6 +24,8 @@ public class ProductProcessOperationFormBinding {
     private Long productProcessOperationBindingId;
     @Column(name = "form_template_version_id", nullable = false)
     private Long formTemplateVersionId;
+    @Column(name = "dhr_template_item_id", nullable = false)
+    private Long dhrTemplateItemId;
     @Column(name = "required", nullable = false)
     @Builder.Default private Boolean required = true;
     @Column(name = "sort_order", nullable = false)

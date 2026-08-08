@@ -13,6 +13,7 @@ export interface ManagedDocumentVersion {
   id: string;
   documentId: string;
   version: string;
+  code: string;
   fileId?: string | null;
   fileName?: string | null;
   fileMimeType?: string | null;
@@ -29,7 +30,6 @@ export interface ManagedDocumentVersion {
 
 export interface ManagedDocument {
   id: string;
-  code: string;
   title: string;
   categoryId?: string | null;
   categoryName?: string | null;
@@ -58,6 +58,7 @@ export interface DocumentWritePayload {
 
 export interface DocumentVersionWritePayload {
   version: string;
+  code: string;
   fileId?: string | null;
   description?: string | null;
   remark?: string | null;
@@ -88,7 +89,7 @@ export const reorderDocumentCategories = (ids: string[]) =>
 export const createDocument = (body: DocumentWritePayload) =>
   client.post(basePath, body) as Promise<{ data: { data: ManagedDocument } }>;
 
-export const updateDocument = (documentId: string, body: Pick<DocumentWritePayload, 'code' | 'title' | 'description' | 'remark'>) =>
+export const updateDocument = (documentId: string, body: Pick<DocumentWritePayload, 'title' | 'description' | 'remark'>) =>
   client.put(`${basePath}/${documentId}`, body) as Promise<{ data: { data: ManagedDocument } }>;
 
 export const deleteDocument = (documentId: string) => client.delete(`${basePath}/${documentId}`);

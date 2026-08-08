@@ -948,11 +948,13 @@ class ProcessModelingControllerTest {
                 .name("通用无菌灌装路线")
                 .description("模板级描述")
                 .version("V1.0")
+                .code("RT-V1-001")
                 .versionDescription("首版路线说明")
                 .status("DRAFT")
                 .build());
 
         assertThat(response.getData().getName()).isEqualTo("通用无菌灌装路线");
+        assertThat(response.getData().getCode()).isNull();
         assertThat(response.getData().getDescription()).isEqualTo("模板级描述");
         assertThat(response.getData().getCommonAsset()).isTrue();
 
@@ -960,6 +962,7 @@ class ProcessModelingControllerTest {
         verify(routeVersionRepository).save(versionCaptor.capture());
         RouteVersion version = versionCaptor.getValue();
         assertThat(version.getRouteId()).isEqualTo(81001L);
+        assertThat(version.getCode()).isEqualTo("RT-V1-001");
         assertThat(version.getVersion()).isEqualTo("V1.0");
         assertThat(version.getDescription()).isEqualTo("首版路线说明");
         assertThat(version.getVersionStatus()).isEqualTo("ACTIVE");
@@ -1101,6 +1104,7 @@ class ProcessModelingControllerTest {
                 .id(82611L)
                 .routeId(82601L)
                 .version("V1.0")
+                .code("RT-V1-001")
                 .versionStatus("DRAFT")
                 .description("原版本说明")
                 .effectiveDate(LocalDateTime.of(2026, 6, 20, 0, 0))
@@ -1111,12 +1115,14 @@ class ProcessModelingControllerTest {
 
         var response = controller.updateRouteVersion(82601L, 82611L, ProcessModelingRequest.builder()
                 .version("V1.1")
+                .code("RT-V1-002")
                 .versionDescription("新版说明")
                 .effectiveDate(LocalDateTime.of(2026, 6, 23, 0, 0))
                 .expiryDate(LocalDateTime.of(2026, 7, 23, 0, 0))
                 .build());
 
         assertThat(response.getData().getVersion()).isEqualTo("V1.1");
+        assertThat(response.getData().getCode()).isEqualTo("RT-V1-002");
         assertThat(response.getData().getDescription()).isEqualTo("新版说明");
         assertThat(response.getData().getEffectiveDate()).isEqualTo(LocalDateTime.of(2026, 6, 23, 0, 0));
         assertThat(response.getData().getExpiryDate()).isEqualTo(LocalDateTime.of(2026, 7, 23, 0, 0));

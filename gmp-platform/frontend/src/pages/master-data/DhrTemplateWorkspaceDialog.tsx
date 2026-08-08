@@ -342,7 +342,7 @@ function FieldListPreview({ document }: { document: TemplateDesignerDocument }) 
   })}</Box></Box>;
 }
 
-function FormCanvasPreview({ document }: { document: TemplateDesignerDocument }) {
+export function FormCanvasPreview({ document }: { document: TemplateDesignerDocument }) {
   const [pageId, setPageId] = useState(document.canvas.currentPageId);
   useEffect(() => setPageId(document.canvas.currentPageId), [document]);
   const page = document.canvas.pages.find((entry) => entry.id === pageId) ?? document.canvas.pages[0];

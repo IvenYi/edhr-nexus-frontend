@@ -198,6 +198,7 @@ type MaterialDialogMode = 'createMaterial' | 'editMaterial' | 'createVersion' | 
 
 interface ProcessColumnSettingsConfig {
   columns: ProcessColumn[];
+  settingsVersion?: number;
 }
 
 interface ProcessColumnSettings {
@@ -360,6 +361,7 @@ const ROUTE_VIRTUAL_NODE_LABELS = {
 const ROUTE_DESIGNER_ALIGNMENT_THRESHOLD = 8;
 const ROUTE_DESIGNER_OPERATION_NODE_WIDTH = 128;
 const ROUTE_DESIGNER_OPERATION_NODE_HEIGHT = 38;
+const ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP = 56;
 const ROUTE_DESIGNER_EDGE_MARKER_SIZE = 14;
 const ROUTE_DESIGNER_CONNECTED_COLOR = '#1890ff';
 const ROUTE_DESIGNER_REWORK_COLOR = '#f56c6c';
@@ -420,7 +422,7 @@ const ROUTE_DESIGNER_REWORK_EDGE_STYLE = {
 const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose'];
 const MATERIAL_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'description'];
 const ROUTE_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'description'];
-const ROUTE_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'versionDescription'];
+const ROUTE_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'code', 'effectiveDate', 'expiryDate', 'versionDescription'];
 const PROCESS_SYSTEM_COLUMNS: Record<'createdBy' | 'createdAt' | 'updatedBy' | 'updatedAt', ProcessColumn> = {
   createdBy: { id: 'createdBy', label: '创建人', defaultWidth: 140, minWidth: PROCESS_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   createdAt: { id: 'createdAt', label: '创建时间', defaultWidth: 160, minWidth: PROCESS_FIELD_COLUMN_MIN_WIDTH, resizable: true },
@@ -632,15 +634,15 @@ const MATERIAL_VERSION_COLUMNS: ProcessColumn[] = (['version', 'status', 'effect
   align: id === 'actions' ? 'center' : 'left',
 }));
 const materialVersionColumnSettingsConfig: ProcessColumnSettingsConfig = { columns: MATERIAL_VERSION_COLUMNS };
-const ROUTE_VERSION_COLUMNS: ProcessColumn[] = (['version', 'status', 'effectiveDate', 'expiryDate', 'description', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'actions'] as const).map((id) => ({
+const ROUTE_VERSION_COLUMNS: ProcessColumn[] = (['version', 'code', 'status', 'effectiveDate', 'expiryDate', 'description', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'actions'] as const).map((id) => ({
   id,
-  label: id === 'version' ? '工艺路线版本号' : id === 'status' ? '版本状态' : id === 'effectiveDate' ? '生效日期' : id === 'expiryDate' ? '失效日期' : id === 'description' ? '版本说明' : id === 'createdBy' ? '创建人' : id === 'createdAt' ? '创建时间' : id === 'updatedBy' ? '更新人' : id === 'updatedAt' ? '更新时间' : '操作',
+  label: id === 'version' ? '工艺路线版本号' : id === 'code' ? '编码' : id === 'status' ? '版本状态' : id === 'effectiveDate' ? '生效日期' : id === 'expiryDate' ? '失效日期' : id === 'description' ? '版本说明' : id === 'createdBy' ? '创建人' : id === 'createdAt' ? '创建时间' : id === 'updatedBy' ? '更新人' : id === 'updatedAt' ? '更新时间' : '操作',
   defaultWidth: id === 'actions' ? PROCESS_ACTION_COLUMN_WIDTH : defaultWidthForColumn(id),
   minWidth: id === 'actions' ? PROCESS_ACTION_COLUMN_WIDTH : PROCESS_FIELD_COLUMN_MIN_WIDTH,
   resizable: id !== 'actions',
   align: id === 'actions' ? 'center' : 'left',
 }));
-const routeVersionColumnSettingsConfig: ProcessColumnSettingsConfig = { columns: ROUTE_VERSION_COLUMNS };
+const routeVersionColumnSettingsConfig: ProcessColumnSettingsConfig = { columns: ROUTE_VERSION_COLUMNS, settingsVersion: 2 };
 
 const processColumnLabels: Record<ConfigurableProcessColumnId, string> = {
   name: '名称',
@@ -770,6 +772,7 @@ const PROCESS_MODELING_PAGE_CONFIGS: Record<ProcessModelingPageKey, ProcessModel
     formFields: [
       { id: 'name', label: '工艺路线模板名称', required: true },
       { id: 'version', label: '版本', required: true },
+      { id: 'code', label: '编码', required: true },
       { id: 'effectiveDate', label: '生效时间' },
       { id: 'expiryDate', label: '失效时间' },
       { id: 'description', label: '描述', multiline: true },
@@ -1354,6 +1357,27 @@ function createRouteFlowNode(operation: OperationRecord, position: { x: number; 
   };
 }
 
+function getRouteQuickAddPosition(nodes: RouteFlowNode[]) {
+  const selectableNodes = nodes.filter((node) => !node.data.virtual);
+  const selectedNode = selectableNodes.find((node) => node.selected);
+  const anchor = selectedNode ?? selectableNodes.reduce<RouteFlowNode | null>((latest, node) => (
+    latest === null || node.position.y > latest.position.y ? node : latest
+  ), null) ?? nodes.find((node) => getRouteBoundaryNodeType(node.id, node.data.nodeType) === 'START') ?? null;
+  const anchorSize = anchor ? getRouteNodeSize(anchor) : { width: ROUTE_DESIGNER_OPERATION_NODE_WIDTH, height: ROUTE_DESIGNER_OPERATION_NODE_HEIGHT };
+  const position = {
+    x: anchor?.position.x ?? 360,
+    y: (anchor?.position.y ?? 40) + anchorSize.height + ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP,
+  };
+  const occupiedNodes = nodes.filter((node) => !node.data.virtual);
+  while (occupiedNodes.some((node) => (
+    Math.abs(node.position.x - position.x) < ROUTE_DESIGNER_OPERATION_NODE_WIDTH
+      && Math.abs(node.position.y - position.y) < ROUTE_DESIGNER_OPERATION_NODE_HEIGHT + ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP
+  ))) {
+    position.y += ROUTE_DESIGNER_OPERATION_NODE_HEIGHT + ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP;
+  }
+  return position;
+}
+
 function getRouteBoundaryNodeType(nodeKey?: string | null, nodeType?: string | null): keyof typeof ROUTE_VIRTUAL_NODE_LABELS | null {
   const normalizedType = nodeType?.trim().toUpperCase();
   if (normalizedType === 'START' || nodeKey === ROUTE_START_NODE_KEY) return 'START';
@@ -1673,17 +1697,25 @@ function isReadOnlyPage(config: ProcessModelingPageConfig) {
 }
 
 function normalizeColumnSettings(config: ProcessColumnSettingsConfig, raw?: Partial<ProcessColumnSettings> | null): ProcessColumnSettings {
+  const settingsVersion = config.settingsVersion ?? PROCESS_MODELING_COLUMN_SETTINGS_VERSION;
   const defaults = config.columns.filter(isConfigurableColumn).map((column) => column.id);
-  if (!raw || raw.version !== PROCESS_MODELING_COLUMN_SETTINGS_VERSION) {
-    return { version: PROCESS_MODELING_COLUMN_SETTINGS_VERSION, order: defaults, hidden: [] };
+  if (!raw || raw.version !== settingsVersion) {
+    return { version: settingsVersion, order: defaults, hidden: [] };
   }
   const seen = new Set<ConfigurableProcessColumnId>();
   const order = [
     ...(raw.order ?? []).filter((id): id is ConfigurableProcessColumnId => defaults.includes(id) && !seen.has(id) && (seen.add(id), true)),
-    ...defaults.filter((id) => !seen.has(id)),
   ];
+  // New columns retain the nearest default relationship in existing user layouts.
+  defaults.forEach((id, index) => {
+    if (seen.has(id)) return;
+    const nextConfiguredId = defaults.slice(index + 1).find((candidate) => seen.has(candidate));
+    const insertAt = nextConfiguredId ? order.indexOf(nextConfiguredId) : order.length;
+    order.splice(insertAt, 0, id);
+    seen.add(id);
+  });
   const hidden = (raw.hidden ?? []).filter((id): id is ConfigurableProcessColumnId => defaults.includes(id) && order.includes(id));
-  return { version: PROCESS_MODELING_COLUMN_SETTINGS_VERSION, order, hidden: hidden.length >= order.length ? hidden.slice(1) : hidden };
+  return { version: settingsVersion, order, hidden: hidden.length >= order.length ? hidden.slice(1) : hidden };
 }
 
 function loadColumnSettings(storageKey: string, config: ProcessColumnSettingsConfig): ProcessColumnSettings {
@@ -2676,6 +2708,25 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setRouteCanvasDropPreview(null);
   };
 
+  const handleRouteOperationDoubleClick = (operation: OperationRecord) => {
+    setRouteNodes((current) => {
+      const position = getRouteQuickAddPosition(current);
+      const addedNode = { ...createRouteFlowNode(operation, position), selected: true };
+      return current.map((node) => {
+        if (node.id === ROUTE_END_NODE_KEY && Math.abs(node.position.x - position.x) < ROUTE_DESIGNER_OPERATION_NODE_WIDTH) {
+          return {
+            ...node,
+            position: {
+              ...node.position,
+              y: Math.max(node.position.y, position.y + ROUTE_DESIGNER_OPERATION_NODE_HEIGHT + ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP),
+            },
+          };
+        }
+        return { ...node, selected: false };
+      }).concat(addedNode);
+    });
+  };
+
   const getRouteCanvasDropPosition = (event: ReactDragEvent) => {
     if (!reactFlowInstance) return null;
     const position = reactFlowInstance.screenToFlowPosition({ x: event.clientX, y: event.clientY });
@@ -3034,6 +3085,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       description: route.description ?? '',
       status: route.status && route.status !== 'DRAFT' && route.status !== 'OBSOLETE' ? route.status : 'DISABLED',
       version: selectedVersion?.version ?? '',
+      code: selectedVersion?.code ?? '',
       effectiveDate: formatDateTimeInput(selectedVersion?.effectiveDate ?? undefined),
       expiryDate: formatDateTimeInput(selectedVersion?.expiryDate ?? undefined),
       versionDescription: selectedVersion?.versionDescription ?? selectedVersion?.description ?? '',
@@ -3085,6 +3137,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       name: getDisplayName(route) === '-' ? '' : getDisplayName(route),
       status: version.versionStatus || 'ACTIVE',
       version: version.version ?? '',
+      code: version.code ?? '',
       effectiveDate: formatDateTimeInput(version.effectiveDate ?? undefined),
       expiryDate: formatDateTimeInput(version.expiryDate ?? undefined),
       versionDescription: version.versionDescription ?? version.description ?? '',
@@ -3193,7 +3246,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     id: version.id,
     tenantId: route.tenantId,
     routeId: route.id,
-    code: route.code,
+    code: version.code,
     name: getDisplayName(route),
     description: version.versionDescription ?? version.description ?? '',
     status: version.versionStatus ?? route.status,
@@ -3275,6 +3328,10 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     }
     if (pageKey === 'routes' && (isCreatingRouteVersion || isEditingRouteVersion || !editingRow) && !form.version?.trim()) {
       setSnackbar({ open: true, message: isCreatingRouteVersion || isEditingRouteVersion ? '请填写版本' : '请填写初始版本', severity: 'error' });
+      return;
+    }
+    if (pageKey === 'routes' && (isCreatingRouteVersion || isEditingRouteVersion || !editingRow) && !form.code?.trim()) {
+      setSnackbar({ open: true, message: '请填写工艺路线版本编码', severity: 'error' });
       return;
     }
     if (pageKey === 'materials' && isExpiryBeforeEffective(form.effectiveDate, form.expiryDate)) {
@@ -4037,7 +4094,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                       };
                       return (
                         <TableCell key={column.id} align={column.align} sx={commonSx}>
-                          {column.id === 'version' ? versionRow.version || '-' : column.id === 'status' ? (
+                          {column.id === 'version' ? versionRow.version || '-' : column.id === 'code' ? versionRow.code || '-' : column.id === 'status' ? (
                             <StatusBadge {...getRdoVersionStatusMeta(versionRow.versionStatus)} />
                           ) : column.id === 'effectiveDate' ? formatDateTime(versionRow.effectiveDate ?? undefined) : column.id === 'expiryDate' ? formatDateTime(versionRow.expiryDate ?? undefined) : column.id === 'description' ? versionRow.versionDescription || versionRow.description || '-' : column.id === 'createdBy' ? versionRow.createdBy || '-' : column.id === 'createdAt' ? formatDateTime(versionRow.createdAt) : column.id === 'updatedBy' ? versionRow.updatedBy || '-' : column.id === 'updatedAt' ? formatDateTime(versionRow.updatedAt) : column.id === 'actions' ? (
                             renderRouteVersionActions(route, versionRow, getRouteVersionCount(route) > 1)
@@ -4264,6 +4321,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                 draggable
                 onDragStart={(event) => handleRouteOperationDragStart(event, operation)}
                 onDragEnd={handleRouteOperationDragEnd}
+                onDoubleClick={() => handleRouteOperationDoubleClick(operation)}
                 sx={{ p: 1, border: '1px solid #e4e7ed', borderRadius: 1, cursor: 'grab', bgcolor: '#fff', '&:hover': { borderColor: '#1890ff', bgcolor: '#f5fbff' } }}
               >
                 <Typography variant="body2" sx={{ fontWeight: 600, color: '#303133', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getDisplayName(operation)}</Typography>

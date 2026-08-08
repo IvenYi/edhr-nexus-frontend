@@ -526,11 +526,12 @@ public class ProcessModelingController {
     @Transactional
     public ApiResponse<Route> createRoute(@RequestBody ProcessModelingRequest request) {
         validateRouteDateRange(request);
+        ensureRouteVersionCodeAvailable(requireRouteVersionCode(request), null);
         LocalDateTime now = LocalDateTime.now();
         Route entity = Route.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
-                .code(generateCode("RT"))
+                .code(null)
                 .name(requireName(request))
                 .description(trimToNull(request.getDescription()))
                 .productFamilyId(request.getProductFamilyId() == null ? null : String.valueOf(request.getProductFamilyId()))
@@ -587,6 +588,7 @@ public class ProcessModelingController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_008));
         validateRouteDateRange(request);
         ensureRouteVersionAvailable(routeId, resolveRouteVersion(request), null);
+        ensureRouteVersionCodeAvailable(requireRouteVersionCode(request), null);
         RouteVersion version = createInitialRouteVersion(route, request, LocalDateTime.now());
         version.setVersionStatus(resolveRouteVersionRuntimeStatus(version));
         writeAudit("ROUTE_VERSION", version.getId(), "CREATE", "工艺路线", "新增工艺路线版本", Map.of(), routeVersionSnapshot(version));
@@ -605,8 +607,10 @@ public class ProcessModelingController {
         }
         RouteVersion existing = requireRouteVersion(routeId, versionId);
         ensureRouteVersionAvailable(routeId, request.getVersion(), versionId);
+        ensureRouteVersionCodeAvailable(requireRouteVersionCode(request), versionId);
         Map<String, Object> before = routeVersionSnapshot(existing);
         existing.setVersion(request.getVersion().trim());
+        existing.setCode(requireRouteVersionCode(request));
         existing.setDescription(trimToNull(request == null ? null : request.getVersionDescription()));
         existing.setEffectiveDate(request == null ? null : request.getEffectiveDate());
         existing.setExpiryDate(request == null ? null : request.getExpiryDate());
@@ -852,6 +856,7 @@ public class ProcessModelingController {
                 .tenantId(TENANT_ID)
                 .routeId(route.getId())
                 .version(resolveRouteVersion(request))
+                .code(requireRouteVersionCode(request))
                 .description(trimToNull(request == null ? null : request.getVersionDescription()))
                 .effectiveDate(request == null ? null : request.getEffectiveDate())
                 .expiryDate(request == null ? null : request.getExpiryDate())
@@ -1198,6 +1203,21 @@ public class ProcessModelingController {
         if (duplicated) throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线版本已存在");
     }
 
+    private String requireRouteVersionCode(ProcessModelingRequest request) {
+        if (request == null || !StringUtils.hasText(request.getCode())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线版本编码不能为空");
+        }
+        return request.getCode().trim();
+    }
+
+    private void ensureRouteVersionCodeAvailable(String code, Long excludedVersionId) {
+        boolean duplicated = routeVersionRepository.findByTenantIdAndCodeIgnoreCase(TENANT_ID, code).stream()
+                .anyMatch(candidate -> !Objects.equals(candidate.getId(), excludedVersionId));
+        if (duplicated) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "工艺路线版本编码已存在，请更换后重试");
+        }
+    }
+
     private void validateMaterialCodeForCreate(String code, String name, String version) {
         List<Material> sameCodeMaterials = findMaterialsByCode(code);
         if (sameCodeMaterials.isEmpty()) return;
@@ -1499,6 +1519,7 @@ public class ProcessModelingController {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("id", entity.getId() == null ? null : String.valueOf(entity.getId()));
         snapshot.put("routeId", entity.getRouteId() == null ? null : String.valueOf(entity.getRouteId()));
+        snapshot.put("code", entity.getCode());
         snapshot.put("version", entity.getVersion());
         snapshot.put("versionStatus", resolveRouteVersionRuntimeStatus(entity));
         snapshot.put("description", entity.getDescription());

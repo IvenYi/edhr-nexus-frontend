@@ -46,7 +46,7 @@ class DocumentManagementControllerTest {
     @Test
     void createsADocumentInTheSelectedCategoryWithAnInitialVersionAndAuditsBoth() {
         DocumentCategory category = DocumentCategory.builder().id(201L).tenantId("default").name("SIP").systemCategory(true).build();
-        when(documentRepository.existsByTenantIdAndCodeIgnoreCase("default", "SIP-001")).thenReturn(false);
+        when(documentVersionRepository.existsByTenantIdAndCodeIgnoreCase("default", "SIP-001")).thenReturn(false);
         when(documentCategoryRepository.findById(201L)).thenReturn(Optional.of(category));
         when(documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(anyLong(), anyString())).thenReturn(false);
         when(documentRepository.save(any(SopDocument.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -62,6 +62,7 @@ class DocumentManagementControllerTest {
         assertThat(response.getData().categoryName()).isEqualTo("SIP");
         assertThat(response.getData().versions()).singleElement().satisfies(version -> {
             assertThat(version.version()).isEqualTo("V1.0");
+            assertThat(version.code()).isEqualTo("SIP-001");
             assertThat(version.status()).isEqualTo("ACTIVE");
         });
         ArgumentCaptor<AuditEvent> audits = ArgumentCaptor.forClass(AuditEvent.class);
@@ -72,7 +73,7 @@ class DocumentManagementControllerTest {
 
     @Test
     void treatsAFutureDocumentVersionAsExpiredUntilItsEffectiveTime() {
-        when(documentRepository.existsByTenantIdAndCodeIgnoreCase("default", "SOP-002")).thenReturn(false);
+        when(documentVersionRepository.existsByTenantIdAndCodeIgnoreCase("default", "SOP-002")).thenReturn(false);
         when(documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(anyLong(), anyString())).thenReturn(false);
         when(documentRepository.save(any(SopDocument.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(documentVersionRepository.save(any(DocumentVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -157,20 +158,33 @@ class DocumentManagementControllerTest {
 
     @Test
     void rejectsDuplicateVersionLabelsForTheSameDocument() {
-        SopDocument document = SopDocument.builder().id(101L).code("SOP-001").title("装配作业指导书").documentType("SOP").build();
+        SopDocument document = SopDocument.builder().id(101L).title("装配作业指导书").documentType("SOP").build();
         when(documentRepository.findById(101L)).thenReturn(Optional.of(document));
         when(documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(101L, "V1.0")).thenReturn(true);
 
         assertThatThrownBy(() -> controller.createVersion(101L,
-                new DocumentManagementController.DocumentVersionWriteRequest("V1.0", null, null, null, null, null, null)))
+                new DocumentManagementController.DocumentVersionWriteRequest("V1.0", "SOP-001", null, null, null, null, null, null)))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("版本号已存在");
     }
 
     @Test
+    void rejectsDuplicateDocumentVersionCodesAcrossDocuments() {
+        SopDocument document = SopDocument.builder().id(101L).title("装配作业指导书").documentType("SOP").build();
+        when(documentRepository.findById(101L)).thenReturn(Optional.of(document));
+        when(documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(101L, "V2.0")).thenReturn(false);
+        when(documentVersionRepository.existsByTenantIdAndCodeIgnoreCase("default", "SOP-001")).thenReturn(true);
+
+        assertThatThrownBy(() -> controller.createVersion(101L,
+                new DocumentManagementController.DocumentVersionWriteRequest("V2.0", "SOP-001", null, null, null, null, null, null)))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("文档版本编码已存在");
+    }
+
+    @Test
     void doesNotDeleteADocumentVersionReferencedByProductProcessConfiguration() {
-        SopDocument document = SopDocument.builder().id(101L).code("SOP-001").title("装配作业指导书").documentType("SOP").build();
-        DocumentVersion version = DocumentVersion.builder().id(102L).documentId(101L).version("V1.0").build();
+        SopDocument document = SopDocument.builder().id(101L).title("装配作业指导书").documentType("SOP").build();
+        DocumentVersion version = DocumentVersion.builder().id(102L).documentId(101L).version("V1.0").code("SOP-001").build();
         when(documentRepository.findById(101L)).thenReturn(Optional.of(document));
         when(documentVersionRepository.findByDocumentIdAndId(101L, 102L)).thenReturn(Optional.of(version));
         when(operationDocumentBindingRepository.countByDocumentVersionId(102L)).thenReturn(1L);
@@ -182,12 +196,12 @@ class DocumentManagementControllerTest {
 
     @Test
     void rejectsAnInvalidEffectiveWindow() {
-        SopDocument document = SopDocument.builder().id(101L).code("SOP-001").title("装配作业指导书").documentType("SOP").build();
+        SopDocument document = SopDocument.builder().id(101L).title("装配作业指导书").documentType("SOP").build();
         when(documentRepository.findById(101L)).thenReturn(Optional.of(document));
         when(documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(101L, "V2.0")).thenReturn(false);
 
         assertThatThrownBy(() -> controller.createVersion(101L,
-                new DocumentManagementController.DocumentVersionWriteRequest("V2.0", null, null, null, null,
+                new DocumentManagementController.DocumentVersionWriteRequest("V2.0", "SOP-002", null, null, null, null,
                         LocalDateTime.of(2026, 9, 1, 0, 0), LocalDateTime.of(2026, 8, 1, 0, 0))))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("失效时间不能早于生效时间");
