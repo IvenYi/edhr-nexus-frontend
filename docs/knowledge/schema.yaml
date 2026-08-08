@@ -1,8 +1,13 @@
 knowledgeModelVersion: 0.3.0
 schemaVersion: 1.0.0
+dimensions:
+  status:
+    definition: 知识或规则的成熟度；它不直接决定可进入哪些发布投影。
+  visibility:
+    definition: 记录可进入的发布投影；它不替代 status、执行契约或证据要求。
 enums:
   statuses: [planned, specified, implemented, verified, deprecated]
-  visibilities: [internal, customer, runtime]
+  visibilities: [internal, customer, runtime, customer-and-runtime]
   conceptKinds: [business-fact, business-concept, business-configuration, configuration-fact, runtime-fact]
   cardinalities:
     - id: one-to-zero-or-one
@@ -58,6 +63,7 @@ recordTypes:
       result: rule-result
       explanation: string
       evidenceIds: array<string>
+      executionContractId: string
   decision:
     requiredFields: [id, title, status, visibility, context, decisionStatements, supersedes, evidenceIds, acceptanceScenarios]
     fieldTypes:
@@ -132,18 +138,28 @@ ruleResult:
     type: enum:ruleResultTypes
   additionalFields: allowed
 projectionRules:
+  maturityInvariants:
+    nonVerified:
+      statuses: [planned, specified, implemented]
+      requiredVisibility: internal
+    verified:
+      statuses: [verified]
+      requiredFields: [executionContractId, evidenceIds]
+      nonEmptyFields: [executionContractId, evidenceIds]
+    deprecated:
+      statuses: [deprecated]
+      forbiddenVisibilities: [runtime, customer-and-runtime]
   internal:
     allowedStatuses: [planned, specified, implemented, verified, deprecated]
-    requiredVisibility: internal
-    executionContractRequired: false
-    evidenceRequired: false
+    acceptedVisibilities: [internal, customer, runtime, customer-and-runtime]
+    executionContractRequiredForStatuses: [verified]
   customer:
     allowedStatuses: [verified]
-    prohibitedStatuses: [planned, specified, implemented]
-    executionContractRequired: true
-    evidenceRequired: true
+    acceptedVisibilities: [customer, customer-and-runtime]
+    requiredFields: [executionContractId, evidenceIds]
+    nonEmptyFields: [executionContractId, evidenceIds]
   runtime:
     allowedStatuses: [verified]
-    prohibitedStatuses: [planned, specified, implemented]
-    executionContractRequired: true
-    evidenceRequired: true
+    acceptedVisibilities: [runtime, customer-and-runtime]
+    requiredFields: [executionContractId, evidenceIds]
+    nonEmptyFields: [executionContractId, evidenceIds]

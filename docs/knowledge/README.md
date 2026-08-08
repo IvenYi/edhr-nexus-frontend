@@ -26,7 +26,17 @@
 - `verified`：实现、测试和执行契约证据完整且已验证。
 - `deprecated`：已废弃，仅为历史追溯保留。
 
-源知识资产统一标记 `visibility: internal`。内部投影可以读取全部状态；客户和运行时投影只允许 `verified` 规则，且必须同时具备有效 `executionContractId` 和非空 `evidenceIds`。`planned`、`specified` 和 `implemented` 绝不进入客户或运行时投影。
+`status` 与 `visibility` 是两个独立维度：`status` 表示成熟度，`visibility` 表示记录可进入的发布投影。`visibility` 只能是 `internal`、`customer`、`runtime` 或 `customer-and-runtime`；它不能替代成熟度、执行契约或证据。
+
+内部投影可读取所有状态，但不会豁免 `verified` 的契约要求。规则必须遵守以下不变量：
+
+- `planned`、`specified` 和 `implemented` 必须为 `visibility: internal`。
+- `verified` 无论 visibility 为何，均必须有非空 `executionContractId` 和非空 `evidenceIds`。
+- `deprecated` 不得使用 `runtime` 或 `customer-and-runtime`。
+- customer 投影只接受 `verified` 且 visibility 为 `customer` 或 `customer-and-runtime` 的规则。
+- runtime 投影只接受 `verified` 且 visibility 为 `runtime` 或 `customer-and-runtime` 的规则，并再次要求有效执行契约和证据。
+
+当前产品制程规则均为非 `verified` 且 `internal`，因此不新增或伪造执行契约。
 
 ## 基数词汇
 
@@ -79,9 +89,6 @@ records = {
 records["decisionStatement"] = records["decision"].flat_map { |record| Array(record["decisionStatements"]) }
 records["acceptanceScenario"] = records["decision"].flat_map { |record| Array(record["acceptanceScenarios"]) }
 records["implementationDiscrepancy"] = records["decision"].flat_map { |record| Array(record["implementationDiscrepancies"]) }
-%w[term concept relation rule decision evidence decisionStatement implementationDiscrepancy].each do |type|
-  Array(records[type]).each { |record| raise "#{type} source visibility" unless record.fetch("visibility") == "internal" }
-end
 all_ids = records.values.flatten.map { |record| record["id"] }.compact
 raise "duplicate ID" unless all_ids.uniq.length == all_ids.length
 schema.fetch("recordTypes").each do |type, definition|
@@ -134,15 +141,57 @@ records["rule"].each do |record|
   raise "result type" unless schema.fetch("enums").fetch("ruleResultTypes").include?(record.fetch("result").fetch("type"))
   status = record.fetch("status")
   visibility = record.fetch("visibility")
-  raise "non-verified projection" if status != "verified" && visibility != "internal"
-  if ["customer", "runtime"].include?(visibility)
-    raise "projected status" unless status == "verified"
-    raise "projected contract" unless record["executionContractId"].is_a?(String) && !record["executionContractId"].empty?
-    raise "projected evidence" if Array(record["evidenceIds"]).empty?
+  policy = schema.fetch("projectionRules")
+  internal = policy.fetch("internal")
+  non_verified = policy.fetch("maturityInvariants").fetch("nonVerified")
+  verified = policy.fetch("maturityInvariants").fetch("verified")
+  deprecated = policy.fetch("maturityInvariants").fetch("deprecated")
+  raise "internal status" unless internal.fetch("allowedStatuses").include?(status)
+  raise "internal visibility" unless internal.fetch("acceptedVisibilities").include?(visibility)
+  raise "non-verified visibility" if non_verified.fetch("statuses").include?(status) && visibility != non_verified.fetch("requiredVisibility")
+  if verified.fetch("statuses").include?(status)
+    verified.fetch("requiredFields").each { |field| raise "verified missing #{field}" unless record.key?(field) }
+    verified.fetch("nonEmptyFields").each do |field|
+      value = record[field]
+      raise "verified empty #{field}" if value.nil? || (value.respond_to?(:empty?) && value.empty?)
+    end
+  end
+  raise "deprecated runtime visibility" if deprecated.fetch("statuses").include?(status) && deprecated.fetch("forbiddenVisibilities").include?(visibility)
+  ["customer", "runtime"].each do |projection|
+    projection_policy = policy.fetch(projection)
+    next unless projection_policy.fetch("acceptedVisibilities").include?(visibility)
+    raise "#{projection} status" unless projection_policy.fetch("allowedStatuses").include?(status)
+    projection_policy.fetch("requiredFields").each { |field| raise "#{projection} missing #{field}" unless record.key?(field) }
+    projection_policy.fetch("nonEmptyFields").each do |field|
+      value = record[field]
+      raise "#{projection} empty #{field}" if value.nil? || (value.respond_to?(:empty?) && value.empty?)
+    end
   end
 end
 puts "Bootstrap knowledge validation: passed"
 RUBY
+```
+
+负向变异探针必须失败：以下命令在临时副本中把一个规则变为 `verified/internal` 并移除执行契约；若 bootstrap 没有失败，则知识模型校验存在缺口。
+
+```bash
+tmp_dir="$(mktemp -d)"
+cp -R docs/knowledge "$tmp_dir/knowledge"
+ruby - "$tmp_dir/knowledge/rules/product-process.yaml" <<'RUBY'
+require "yaml"
+path = ARGV.fetch(0)
+document = YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)
+rule = document.fetch("rules").first
+rule["status"] = "verified"
+rule["visibility"] = "internal"
+rule.delete("executionContractId")
+File.write(path, YAML.dump(document))
+RUBY
+if awk '/^ruby - docs\/knowledge <<'"'"'RUBY'"'"'$/{found=1; next} found && /^RUBY$/{exit} found {sub(/^  /, ""); print}' docs/knowledge/README.md | ruby - "$tmp_dir/knowledge"; then
+  echo "negative mutation unexpectedly passed" >&2; exit 1
+else
+  echo "negative mutation rejected as expected"
+fi
 ```
 
 任务 3 完成后，`BusinessKnowledgeModelTest` 将通过 Maven/JUnit 成为正式跨平台入口；在此之前，不应把 bootstrap 命令的通过误报为发布级验证。
