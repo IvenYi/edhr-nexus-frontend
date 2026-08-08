@@ -13,7 +13,7 @@
 5. `docs/knowledge/open-questions.yaml`
 6. 当前 `decisionPackage` 指向的知识、决策、证据、代码、数据库、接口和测试文件
 
-必须确认并在 `ontologyResult` 中报告实际读取的知识基线版本。若决策包基线与当前仓库基线不一致，应先判断能否基于新基线重放决策；无法确认时返回 `conflict` 或 `blocked-by-question`。
+必须确认并在 `ontologyResult` 中报告实际读取的知识基线版本。若决策包基线与当前仓库基线不一致，应先判断能否基于新基线重放决策；无法确认时将 `ontologyResult.result` 返回为 `conflict` 或 `blocked-by-question`。
 
 ## 文件所有权
 
@@ -51,7 +51,7 @@
 
 ## 返回结果
 
-结果只能是以下之一，并严格使用 `docs/agents/agent-handoff-contract.md` 中的 `ontologyResult` YAML 格式：
+`ontologyResult.result` 只能是以下之一，并严格使用 `docs/agents/agent-handoff-contract.md` 中的 `ontologyResult` YAML 格式：
 
 - `updated`：知识资产已更新，且适用校验通过。
 - `not-applicable`：本次变更不影响本体，并提供具体原因。
