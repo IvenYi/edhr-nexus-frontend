@@ -1,0 +1,264 @@
+knowledgeModelVersion: 0.3.0
+rules:
+  - id: rule.product.source-from-material
+    name: 产品来源于产品或半成品物料
+    status: implemented
+    visibility: internal
+    trigger: material.query-as-product
+    scope: product
+    condition:
+      all:
+        - fact: material.typeName
+          operator: in
+          value: [产成品, 半成品]
+    result:
+      type: include-as-product
+      source: material
+    explanation: 产品管理读取物料管理中类型为产成品或半成品的数据，不重复维护产品主数据。
+    evidenceIds: [evidence.product-process-controller, evidence.product-process-controller-test]
+  - id: rule.product-process.multiple-parallel-versions
+    name: 同一父产品允许存在多个并行制程版本
+    status: implemented
+    visibility: internal
+    trigger: product-process.version.create
+    scope: product
+    condition:
+      all:
+        - fact: productProcessVersion.versionLabel
+          operator: unique-within
+          value: product
+    result:
+      type: allow-parallel-versions
+      uniqueCurrentVersion: false
+    explanation: 父产品下可存在多个并行制程版本，不设置唯一当前版本。
+    evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
+  - id: rule.product-process.bind-route-and-dhr-versions
+    name: 制程版本绑定一个路线版本和一个 DHR 版本
+    status: implemented
+    visibility: internal
+    trigger: product-process.version.save
+    scope: product-process-version
+    condition:
+      all:
+        - fact: productProcessVersion.routeVersionId
+          operator: is-present
+          value: true
+        - fact: productProcessVersion.dhrTemplateVersionId
+          operator: is-present
+          value: true
+    result:
+      type: persist-version-references
+      routeVersionCount: 1
+      dhrTemplateVersionCount: 1
+    explanation: 每个产品制程版本必须绑定一个可引用的工艺路线版本和一个 DHR 模板版本。
+    evidenceIds: [evidence.product-process-version-entity, evidence.product-process-controller, evidence.product-process-request-dto]
+  - id: rule.product-process.operation-from-bound-route
+    name: 工序绑定必须来自已选路线版本
+    status: implemented
+    visibility: internal
+    trigger: product-process.operation-bindings.save
+    scope: product-process-version
+    condition:
+      all:
+        - fact: operationBinding.routeNodeKey
+          operator: exists-in
+          value: selectedRouteVersion.operationNodes
+    result:
+      type: persist-operation-binding
+      target: product-process-version
+    explanation: 工序绑定按路线节点标识归属制程版本，并且节点必须来自该版本绑定的工艺路线。
+    evidenceIds: [evidence.operation-binding-entity, evidence.product-process-controller, evidence.product-process-controller-test]
+  - id: rule.product-process.form-traceability
+    name: 工序表单追溯到 DHR 目录项和表单版本
+    status: implemented
+    visibility: internal
+    trigger: product-process.operation-form-binding.save
+    scope: operation-binding
+    condition:
+      all:
+        - fact: formBinding.dhrTemplateItemId
+          operator: belongs-to
+          value: selectedDhrTemplateVersion
+        - fact: formBinding.formTemplateVersionId
+          operator: equals
+          value: dhrDirectoryItem.formTemplateVersionId
+    result:
+      type: persist-form-reference-pair
+      fields: [dhrTemplateItemId, formTemplateVersionId]
+    explanation: 一个工序可绑定多个 DHR 目录表单，每项同时保留目录项和表单模板版本标识以支持追溯。
+    evidenceIds: [evidence.operation-form-binding-entity, evidence.migration-0049-dhr-item-binding, evidence.product-process-controller-test]
+  - id: rule.product-process.multiple-classified-documents
+    name: 工序可绑定多个任意分类的文档版本
+    status: implemented
+    visibility: internal
+    trigger: product-process.operation-document-binding.save
+    scope: operation-binding
+    condition:
+      all:
+        - fact: documentBinding.documentVersionId
+          operator: references-existing
+          value: document-version
+    result:
+      type: persist-multiple-document-version-references
+      categoryRestriction: none
+    explanation: 工序文档绑定面向受控文档版本，不限于 SOP 分类；同一工序可引用多个不同文档版本。
+    evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0045-document-versions, evidence.product-process-controller]
+  - id: rule.product-process.pdf-page-range
+    name: PDF 文档引用可配置页码范围
+    status: implemented
+    visibility: internal
+    trigger: product-process.operation-document-binding.save
+    scope: operation-binding
+    condition:
+      all:
+        - fact: documentVersion.mimeType
+          operator: equals
+          value: application/pdf
+        - fact: documentBinding.pageRange
+          operator: valid-when-present
+          value:
+            pageStartMinimum: 1
+            pageEndNotBeforePageStart: true
+            endpointsProvidedTogether: true
+    result:
+      type: persist-page-range
+      fields: [pageStart, pageEnd]
+    explanation: 仅 PDF 文档可选配展示起始页和结束页；两端必须同时提供且结束页不得早于起始页。
+    evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0052-document-pages, evidence.product-process-controller]
+  - id: rule.product-process.explicit-execution-selection
+    name: 生产执行显式选择产品制程版本
+    status: specified
+    visibility: internal
+    trigger: work-order.split-batch
+    scope: work-order-and-production-batch
+    condition:
+      all:
+        - fact: productionBatch.productProcessVersion
+          operator: explicitly-selected
+          value: true
+    result:
+      type: require-explicit-process-version
+      target: production-batch
+    explanation: 后续工单拆分批次等生产执行链路必须显式选择具体产品制程版本；该链路尚未实现。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.freeze-batch-execution-snapshot
+    name: 批次按选定制程版本冻结执行快照
+    status: specified
+    visibility: internal
+    trigger: production-batch.execution-start
+    scope: production-batch
+    condition:
+      all:
+        - fact: productionBatch.productProcessVersion
+          operator: is-present
+          value: true
+    result:
+      type: freeze-execution-snapshot
+      source: selected-product-process-version
+    explanation: 批次未来按显式选择的制程版本冻结路线、DHR、表单和文档引用；该运行链路尚未实现。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.form-complete-before-operation
+    name: 表单在工序完工前完成
+    status: planned
+    visibility: internal
+    trigger: operation.complete
+    scope: operation
+    condition:
+      all:
+        - fact: operation.formCompletionControl
+          operator: planned
+          value: true
+    result:
+      type: planned-completion-control
+    explanation: 表单完工前完成能力仅为内部规划，当前不得进入客户或运行时投影。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.form-sharing
+    name: 表单共享
+    status: planned
+    visibility: internal
+    trigger: operation.form-sharing.configure
+    scope: product-process-version
+    condition:
+      all:
+        - fact: operation.formSharing
+          operator: planned
+          value: true
+    result:
+      type: planned-form-sharing
+    explanation: 表单共享仅为内部规划，具体业务行为尚未进入实现或客户投影。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.form-button-field-permissions
+    name: 表单按钮和字段权限
+    status: planned
+    visibility: internal
+    trigger: operation.form-permissions.configure
+    scope: operation-binding
+    condition:
+      all:
+        - fact: operation.formPermissions
+          operator: planned
+          value: true
+    result:
+      type: planned-permission-control
+    explanation: 表单按钮和字段权限仅为内部规划，具体权限模型尚未进入实现或客户投影。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.transaction-trigger
+    name: 工序事务触发
+    status: planned
+    visibility: internal
+    trigger: operation.event
+    scope: operation
+    condition:
+      all:
+        - fact: operation.transactionTrigger
+          operator: planned
+          value: true
+    result:
+      type: planned-transaction-trigger
+    explanation: 工序事件触发事务仅为内部规划，当前不存在运行时执行契约。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.pre-operation-transaction-validation
+    name: 工序开始前事务校验
+    status: planned
+    visibility: internal
+    trigger: operation.start
+    scope: operation
+    condition:
+      all:
+        - fact: operation.preStartTransactionValidation
+          operator: planned
+          value: true
+    result:
+      type: planned-pre-start-validation
+    explanation: 工序开始前事务校验仅为内部规划，当前不存在运行时阻断行为。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.final-output
+    name: 最终产出
+    status: planned
+    visibility: internal
+    trigger: operation.output.configure
+    scope: product-process-version
+    condition:
+      all:
+        - fact: operation.finalOutput
+          operator: planned
+          value: true
+    result:
+      type: planned-final-output
+    explanation: 以工序配置最终产出的能力仅为内部规划，当前不得进入客户或运行时投影。
+    evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.material-readiness
+    name: 物料齐套校验
+    status: planned
+    visibility: internal
+    trigger: operation.start
+    scope: operation
+    condition:
+      all:
+        - fact: operation.materialReadiness
+          operator: planned
+          value: true
+    result:
+      type: planned-material-readiness-validation
+    explanation: 物料齐套校验仅为内部规划，当前不提供客户配置或运行时校验。
+    evidenceIds: [evidence.business-knowledge-model]

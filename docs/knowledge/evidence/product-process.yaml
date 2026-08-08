@@ -1,0 +1,94 @@
+knowledgeModelVersion: 0.3.0
+evidence:
+  - id: evidence.business-knowledge-model
+    type: document
+    path: docs/architecture/business-knowledge-model.md
+    description: 产品制程概念、关系、状态投影和规划能力的人类可读架构基线。
+  - id: evidence.material-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java
+    description: 物料主数据实体，产品建模直接引用其版本记录。
+  - id: evidence.product-process-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcess.java
+    description: 产品制程父记录通过 productVersionId 引用产品或半成品物料版本。
+  - id: evidence.product-process-version-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessVersion.java
+    description: 产品制程版本实体保存 routeVersionId 和 dhrTemplateVersionId。
+  - id: evidence.operation-binding-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationBinding.java
+    description: 工序绑定实体关联产品制程版本和路线节点标识。
+  - id: evidence.operation-form-binding-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationFormBinding.java
+    description: 工序表单绑定同时保存 dhrTemplateItemId 和 formTemplateVersionId。
+  - id: evidence.operation-document-binding-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationDocumentBinding.java
+    description: 工序文档绑定保存 documentVersionId、pageStart 和 pageEnd。
+  - id: evidence.product-process-request-dto
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/ProductProcessVersionRequest.java
+    description: 产品制程保存请求定义路线、DHR、工序表单和文档版本引用及 PDF 页码字段。
+  - id: evidence.product-process-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java
+    description: 产品来源筛选、制程版本 CRUD、引用校验、工序绑定和审计投影的控制器实现。
+  - id: evidence.route-version-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/RouteVersion.java
+    description: 工艺路线版本实体。
+  - id: evidence.route-node-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/RouteNode.java
+    description: 路线版本中的工序节点实体，包含 routeVersionId 和 nodeKey。
+  - id: evidence.dhr-template-version-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/DhrTemplateVersion.java
+    description: DHR 模板版本实体。
+  - id: evidence.dhr-template-item-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/DhrTemplateItem.java
+    description: DHR 目录项实体通过 formTemplateVersionId 指向受控表单版本。
+  - id: evidence.form-template-version-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java
+    description: 表单模板版本实体。
+  - id: evidence.document-version-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/DocumentVersion.java
+    description: 任意受控文档分类下的文档版本实体。
+  - id: evidence.migration-0044-product-process-modeling
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql
+    description: 建立产品制程、制程版本和三类初始工序绑定表及数量约束。
+  - id: evidence.migration-0045-document-versions
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0045-document-management-versions.sql
+    description: 建立受控文档版本及通用工序文档版本绑定，迁移旧 SOP 引用。
+  - id: evidence.migration-0049-dhr-item-binding
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0049-product-process-dhr-item-binding.sql
+    description: 为工序表单绑定增加 dhrTemplateItemId 追溯并调整唯一约束。
+  - id: evidence.migration-0052-document-pages
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0052-product-process-document-pages.sql
+    description: 为工序文档版本绑定增加 pageStart 和 pageEnd。
+  - id: evidence.product-modeling-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx
+    description: 产品建模列表页面及制程版本入口。
+  - id: evidence.product-modeling-workspace-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+    description: 产品制程版本、路线、DHR、工序表单和文档绑定工作台页面。
+  - id: evidence.product-process-version-editor
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+    description: 制程版本和工序资源绑定编辑器，包含文档页码范围校验。
+  - id: evidence.product-process-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java
+    description: 产品来源、并行版本、引用范围、DHR 表单追溯和产品建模控制器行为测试。

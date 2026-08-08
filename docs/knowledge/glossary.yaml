@@ -1,0 +1,62 @@
+knowledgeModelVersion: 0.3.0
+terms:
+  - id: term.material
+    name: 物料
+    definition: 物料管理维护的主数据；类型为产品（产成品）或半成品时可以派生为产品。
+    aliases: [物料主数据]
+    status: implemented
+  - id: term.product
+    name: 产品
+    definition: 从产品或半成品物料派生的生产对象，不独立维护重复的产品主数据。
+    aliases: [父产品, 产品物料]
+    status: implemented
+  - id: term.product-process-version
+    name: 产品制程版本
+    definition: 产品下可并行存在并在后续生产执行中被显式选择的具体制程配置。
+    aliases: [制程配置版本, 产品工艺版本]
+    status: implemented
+  - id: term.route-version
+    name: 工艺路线版本
+    definition: 受版本控制并包含工序节点的工艺路线定义。
+    aliases: [路线版本]
+    status: implemented
+  - id: term.operation
+    name: 工序
+    definition: 工艺路线版本中的执行节点，是表单和文档绑定的业务位置。
+    aliases: [工序节点, 路线节点]
+    status: implemented
+  - id: term.dhr-template-version
+    name: DHR 模板版本
+    definition: 受版本控制的 DHR 目录定义，由产品制程版本绑定。
+    aliases: [批记录模板版本, DHR 版本]
+    status: implemented
+  - id: term.dhr-directory-item
+    name: DHR 目录项
+    definition: DHR 模板版本目录中的表单项，指向一个具体表单模板版本。
+    aliases: [DHR 表单目录项, 批记录目录项]
+    status: implemented
+  - id: term.form-template-version
+    name: 表单模板版本
+    definition: DHR 目录项实际引用并由工序绑定追溯的受控表单版本。
+    aliases: [表单版本]
+    status: implemented
+  - id: term.document-version
+    name: 文档版本
+    definition: 可按任意受控文档分类绑定到工序的具体文档版本，不限于 SOP。
+    aliases: [受控文档版本, SOP 文档版本]
+    status: implemented
+  - id: term.operation-binding
+    name: 工序绑定
+    definition: 产品制程版本中将路线工序节点与 DHR 目录表单及文档版本关联的配置事实。
+    aliases: [工序配置, 工序资源绑定]
+    status: implemented
+  - id: term.production-batch
+    name: 生产批次
+    definition: 后续生产执行中显式选择一个产品制程版本的运行主体，可由工单拆分形成。
+    aliases: [批次, 工单批次]
+    status: specified
+  - id: term.execution-snapshot
+    name: 执行快照
+    definition: 生产批次未来按所选产品制程版本冻结的路线、DHR、表单和文档引用集合。
+    aliases: [制程执行快照, 批次执行快照]
+    status: specified
