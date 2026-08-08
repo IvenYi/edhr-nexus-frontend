@@ -33,24 +33,30 @@ rules:
     explanation: 父产品下可存在多个并行制程版本，不设置唯一当前版本。
     evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
   - id: rule.product-process.bind-route-and-dhr-versions
-    name: 制程版本绑定一个路线版本和一个 DHR 版本
+    name: 制程版本绑定一个可引用的路线版本和 DHR 版本
     status: implemented
     visibility: internal
     trigger: product-process.version.save
     scope: product-process-version
     condition:
       all:
-        - fact: productProcessVersion.routeVersionId
-          operator: is-present
+        - fact: routeVersion
+          operator: exists
           value: true
-        - fact: productProcessVersion.dhrTemplateVersionId
-          operator: is-present
+        - fact: RdoVersionStatusResolver.isReferenceable(routeVersion.effectiveDate, routeVersion.expiryDate)
+          operator: equals
+          value: true
+        - fact: dhrTemplateVersion
+          operator: exists
+          value: true
+        - fact: RdoVersionStatusResolver.isReferenceable(dhrTemplateVersion.effectiveFrom, dhrTemplateVersion.effectiveTo)
+          operator: equals
           value: true
     result:
       type: persist-version-references
       routeVersionCount: 1
       dhrTemplateVersionCount: 1
-    explanation: 每个产品制程版本必须绑定一个可引用的工艺路线版本和一个 DHR 模板版本。
+    explanation: 每个产品制程版本必须引用存在且被 RdoVersionStatusResolver.isReferenceable(...) 判定为可引用的工艺路线版本和 DHR 模板版本。
     evidenceIds: [evidence.product-process-version-entity, evidence.product-process-controller, evidence.product-process-request-dto]
   - id: rule.product-process.operation-from-bound-route
     name: 工序绑定必须来自已选路线版本
@@ -69,24 +75,36 @@ rules:
     explanation: 工序绑定按路线节点标识归属制程版本，并且节点必须来自该版本绑定的工艺路线。
     evidenceIds: [evidence.operation-binding-entity, evidence.product-process-controller, evidence.product-process-controller-test]
   - id: rule.product-process.form-traceability
-    name: 工序表单追溯到 DHR 目录项和表单版本
+    name: 工序表单追溯到可引用的 DHR 目录项和表单版本
     status: implemented
     visibility: internal
     trigger: product-process.operation-form-binding.save
     scope: operation-binding
     condition:
       all:
-        - fact: formBinding.dhrTemplateItemId
-          operator: belongs-to
-          value: selectedDhrTemplateVersion
-        - fact: formBinding.formTemplateVersionId
+        - fact: dhrTemplateItem
+          operator: exists
+          value: true
+        - fact: dhrTemplateItem.directory.versionId
           operator: equals
-          value: dhrDirectoryItem.formTemplateVersionId
+          value: productProcessVersion.dhrTemplateVersionId
+        - fact: dhrTemplateItem.formTemplateVersionId
+          operator: equals
+          value: formBinding.formTemplateVersionId
+        - fact: formTemplateVersion
+          operator: exists
+          value: true
+        - fact: RdoVersionStatusResolver.isReferenceable(formTemplateVersion.effectiveFrom, formTemplateVersion.effectiveTo)
+          operator: equals
+          value: true
+        - fact: operationBinding.formBindings.formTemplateVersionId
+          operator: unique-within
+          value: operation-binding
     result:
       type: persist-form-reference-pair
       fields: [dhrTemplateItemId, formTemplateVersionId]
-    explanation: 一个工序可绑定多个 DHR 目录表单，每项同时保留目录项和表单模板版本标识以支持追溯。
-    evidenceIds: [evidence.operation-form-binding-entity, evidence.migration-0049-dhr-item-binding, evidence.product-process-controller-test]
+    explanation: 一个工序可绑定零到多个 DHR 目录表单；每项必须属于所选 DHR 版本、匹配该目录项的表单版本、引用可引用的表单版本，且同一工序不能重复同一表单版本。
+    evidenceIds: [evidence.operation-form-binding-entity, evidence.migration-0049-dhr-item-binding, evidence.product-process-controller, evidence.product-process-controller-test]
   - id: rule.product-process.multiple-classified-documents
     name: 工序可绑定多个任意分类的文档版本
     status: implemented
@@ -95,13 +113,16 @@ rules:
     scope: operation-binding
     condition:
       all:
-        - fact: documentBinding.documentVersionId
-          operator: references-existing
-          value: document-version
+        - fact: documentVersion
+          operator: exists
+          value: true
+        - fact: operationBinding.documentBindings.documentVersionId
+          operator: unique-within
+          value: operation-binding
     result:
       type: persist-multiple-document-version-references
       categoryRestriction: none
-    explanation: 工序文档绑定面向受控文档版本，不限于 SOP 分类；同一工序可引用多个不同文档版本。
+    explanation: 工序文档绑定面向存在的受控文档版本，不限于 SOP 分类；同一工序可引用零到多个不同文档版本，但不可重复同一版本。
     evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0045-document-versions, evidence.product-process-controller]
   - id: rule.product-process.pdf-page-range
     name: PDF 文档引用可配置页码范围
@@ -110,21 +131,62 @@ rules:
     trigger: product-process.operation-document-binding.save
     scope: operation-binding
     condition:
-      all:
-        - fact: documentVersion.mimeType
-          operator: equals
-          value: application/pdf
-        - fact: documentBinding.pageRange
-          operator: valid-when-present
-          value:
-            pageStartMinimum: 1
-            pageEndNotBeforePageStart: true
-            endpointsProvidedTogether: true
+      any:
+        - all:
+            - fact: documentVersion
+              operator: exists
+              value: true
+            - any:
+                - fact: documentFile.mimeType
+                  operator: equals-ignore-case
+                  value: application/pdf
+                - fact: documentFile.originalName
+                  operator: ends-with-ignore-case
+                  value: .pdf
+            - any:
+                - all:
+                    - fact: documentBinding.pageStart
+                      operator: is-null
+                      value: true
+                    - fact: documentBinding.pageEnd
+                      operator: is-null
+                      value: true
+                - all:
+                    - fact: documentBinding.pageStart
+                      operator: is-present
+                      value: true
+                    - fact: documentBinding.pageEnd
+                      operator: is-present
+                      value: true
+                    - fact: documentBinding.pageStart
+                      operator: greater-than-or-equal
+                      value: 1
+                    - fact: documentBinding.pageEnd
+                      operator: greater-than-or-equal
+                      value: documentBinding.pageStart
+        - all:
+            - fact: documentVersion
+              operator: exists
+              value: true
+            - not:
+                any:
+                  - fact: documentFile.mimeType
+                    operator: equals-ignore-case
+                    value: application/pdf
+                  - fact: documentFile.originalName
+                    operator: ends-with-ignore-case
+                    value: .pdf
+            - fact: documentBinding.pageStart
+              operator: is-null
+              value: true
+            - fact: documentBinding.pageEnd
+              operator: is-null
+              value: true
     result:
       type: persist-page-range
       fields: [pageStart, pageEnd]
-    explanation: 仅 PDF 文档可选配展示起始页和结束页；两端必须同时提供且结束页不得早于起始页。
-    evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0052-document-pages, evidence.product-process-controller]
+    explanation: PDF 由 MIME 类型不区分大小写等于 application/pdf 或原始文件名不区分大小写以 .pdf 结尾判定。PDF 可不配置页码，配置时两端必须同时提供、起始页至少为 1 且结束页不早于起始页；非 PDF 不允许任何页码。
+    evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0052-document-pages, evidence.product-process-controller, evidence.product-process-version-editor]
   - id: rule.product-process.explicit-execution-selection
     name: 生产执行显式选择产品制程版本
     status: specified
@@ -157,21 +219,45 @@ rules:
       source: selected-product-process-version
     explanation: 批次未来按显式选择的制程版本冻结路线、DHR、表单和文档引用；该运行链路尚未实现。
     evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.form-required-configuration
+    name: 工序表单完工要求仅作为配置保存
+    status: implemented
+    visibility: internal
+    trigger: product-process.operation-form-binding.save
+    scope: operation-binding
+    condition:
+      all:
+        - fact: productModelEditor.formBinding.required
+          operator: configurable
+          value: checkbox
+        - fact: productProcessOperationFormBinding.required
+          operator: persisted
+          value: boolean
+    result:
+      type: persist-form-required-configuration
+      field: required
+      defaultWhenNull: true
+    explanation: 产品制程版本编辑器显示“工序结束前完成”复选框，后端将其保存到 ProductProcessOperationFormBinding.required；当前这是配置能力，不产生工序运行阻断。
+    evidenceIds: [evidence.product-process-version-editor, evidence.product-process-controller, evidence.operation-form-binding-entity]
   - id: rule.product-process.form-complete-before-operation
-    name: 表单在工序完工前完成
+    name: 必填表单未完成时阻断工序完工
     status: planned
     visibility: internal
     trigger: operation.complete
     scope: operation
     condition:
       all:
-        - fact: operation.formCompletionControl
-          operator: planned
+        - fact: formBinding.required
+          operator: equals
           value: true
+        - fact: formInstance.status
+          operator: not-equals
+          value: completed
     result:
-      type: planned-completion-control
-    explanation: 表单完工前完成能力仅为内部规划，当前不得进入客户或运行时投影。
-    evidenceIds: [evidence.business-knowledge-model]
+      type: block
+      reason: required-form-not-completed
+    explanation: 当 required 配置为 true 且表单实例状态不是 completed 时，未来应阻断工序完工；当前没有运行期执行契约或阻断实现。
+    evidenceIds: [evidence.business-knowledge-model, evidence.operation-form-binding-entity]
   - id: rule.product-process.form-sharing
     name: 表单共享
     status: planned

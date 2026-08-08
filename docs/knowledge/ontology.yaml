@@ -4,61 +4,73 @@ concepts:
     termId: term.material
     kind: business-fact
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.material-entity, evidence.product-process-controller]
   - id: concept.product
     termId: term.product
     kind: business-concept
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.product-process-entity, evidence.product-process-controller]
   - id: concept.product-process-version
     termId: term.product-process-version
     kind: business-configuration
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.product-process-version-entity, evidence.migration-0044-product-process-modeling]
   - id: concept.route-version
     termId: term.route-version
     kind: business-fact
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.route-version-entity, evidence.migration-0044-product-process-modeling]
   - id: concept.operation
     termId: term.operation
     kind: business-concept
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.route-node-entity, evidence.operation-binding-entity]
   - id: concept.dhr-template-version
     termId: term.dhr-template-version
     kind: business-fact
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.dhr-template-version-entity, evidence.product-process-version-entity]
   - id: concept.dhr-directory-item
     termId: term.dhr-directory-item
     kind: business-concept
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.dhr-template-item-entity, evidence.migration-0049-dhr-item-binding]
   - id: concept.form-template-version
     termId: term.form-template-version
     kind: business-fact
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.form-template-version-entity, evidence.operation-form-binding-entity]
   - id: concept.document-version
     termId: term.document-version
     kind: business-fact
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.document-version-entity, evidence.migration-0045-document-versions]
   - id: concept.operation-binding
     termId: term.operation-binding
     kind: configuration-fact
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.operation-binding-entity, evidence.operation-form-binding-entity, evidence.operation-document-binding-entity]
   - id: concept.production-batch
     termId: term.production-batch
     kind: runtime-fact
     status: specified
+    visibility: internal
     evidenceIds: [evidence.business-knowledge-model]
   - id: concept.execution-snapshot
     termId: term.execution-snapshot
     kind: runtime-fact
     status: specified
+    visibility: internal
     evidenceIds: [evidence.business-knowledge-model]
 relations:
   - id: relation.material-derives-product
@@ -66,70 +78,82 @@ relations:
     target: concept.product
     cardinality: one-to-zero-or-one
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.product-process-entity, evidence.product-process-controller]
   - id: relation.product-has-process-versions
     source: concept.product
     target: concept.product-process-version
-    cardinality: one-to-many
+    cardinality: one-to-zero-or-many
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
   - id: relation.process-version-binds-route-version
     source: concept.product-process-version
     target: concept.route-version
     cardinality: many-to-one
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.product-process-version-entity, evidence.product-process-request-dto]
   - id: relation.process-version-binds-dhr-version
     source: concept.product-process-version
     target: concept.dhr-template-version
     cardinality: many-to-one
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.product-process-version-entity, evidence.product-process-request-dto]
   - id: relation.route-version-contains-operations
     source: concept.route-version
     target: concept.operation
-    cardinality: one-to-many
+    cardinality: one-to-zero-or-many
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.route-node-entity, evidence.product-process-controller]
   - id: relation.operation-binding-belongs-process-version
     source: concept.operation-binding
     target: concept.product-process-version
     cardinality: many-to-one
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.operation-binding-entity, evidence.migration-0044-product-process-modeling]
   - id: relation.operation-binding-belongs-route-operation
     source: concept.operation-binding
     target: concept.operation
     cardinality: many-to-one
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.operation-binding-entity, evidence.product-process-controller]
   - id: relation.operation-binding-references-dhr-directory-forms
     source: concept.operation-binding
     target: concept.dhr-directory-item
-    cardinality: one-to-many
+    cardinality: one-to-zero-or-many
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.operation-form-binding-entity, evidence.migration-0049-dhr-item-binding, evidence.product-process-controller-test]
   - id: relation.dhr-directory-item-points-form-version
     source: concept.dhr-directory-item
     target: concept.form-template-version
     cardinality: many-to-one
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.dhr-template-item-entity, evidence.operation-form-binding-entity]
   - id: relation.operation-binding-references-document-versions
     source: concept.operation-binding
     target: concept.document-version
-    cardinality: one-to-many
+    cardinality: one-to-zero-or-many
     status: implemented
+    visibility: internal
     evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0045-document-versions, evidence.migration-0052-document-pages]
   - id: relation.process-version-selected-by-work-order-batch
     source: concept.product-process-version
     target: concept.production-batch
-    cardinality: one-to-many
+    cardinality: one-to-zero-or-many
     status: specified
+    visibility: internal
     evidenceIds: [evidence.business-knowledge-model]
   - id: relation.batch-freezes-execution-snapshot
     source: concept.production-batch
     target: concept.execution-snapshot
-    cardinality: one-to-one
+    cardinality: one-to-zero-or-one
     status: specified
+    visibility: internal
     evidenceIds: [evidence.business-knowledge-model]

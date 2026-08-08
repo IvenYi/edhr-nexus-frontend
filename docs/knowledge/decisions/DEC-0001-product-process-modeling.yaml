@@ -3,38 +3,49 @@ decisions:
   - id: DEC-0001
     title: 产品制程结构化建模基线
     status: specified
+    visibility: internal
     context: 产品制程配置需要复用既有物料主数据，明确并行版本、路线、DHR、工序资源引用及未来生产执行的知识边界，同时避免将尚未实现的规划能力投影给客户或运行时。
     decisionStatements:
       - id: DEC-0001-01
         statement: 产品数据来自物料管理中类型为产品（产成品）或半成品的数据，不重复维护产品主数据。
         status: implemented
+        visibility: internal
       - id: DEC-0001-02
         statement: 一个父产品下可存在多个并行制程版本，不设唯一当前版本。
         status: implemented
+        visibility: internal
       - id: DEC-0001-03
         statement: 后续生产执行显式选择具体产品制程版本；工单拆分批次等运行链路尚未实现，仅进入内部知识投影。
         status: specified
+        visibility: internal
       - id: DEC-0001-04
         statement: 一个产品制程版本绑定一个工艺路线版本和一个 DHR 模板版本。
         status: implemented
+        visibility: internal
       - id: DEC-0001-05
         statement: 工艺路线版本包含工序节点，工序绑定归属于产品制程版本和对应路线节点。
         status: implemented
+        visibility: internal
       - id: DEC-0001-06
         statement: 工序可绑定 DHR 目录中的多个表单，每项追溯到 dhrTemplateItemId 和 formTemplateVersionId。
         status: implemented
+        visibility: internal
       - id: DEC-0001-07
         statement: 工序可绑定多个任意分类的文档版本，不限于 SOP。
         status: implemented
+        visibility: internal
       - id: DEC-0001-08
         statement: PDF 文档引用可配置 pageStart 和 pageEnd。
         status: implemented
+        visibility: internal
       - id: DEC-0001-09
         statement: 批次未来按选定制程版本冻结执行快照；该运行链路尚未实现，仅进入内部知识投影。
         status: specified
+        visibility: internal
       - id: DEC-0001-10
         statement: 表单完工前完成、表单共享、按钮字段权限、事务触发、工序开始前事务校验、最终产出和物料齐套均为内部规划，不进入客户或运行时投影。
         status: planned
+        visibility: internal
     supersedes: []
     evidenceIds:
       - evidence.business-knowledge-model
@@ -50,50 +61,75 @@ decisions:
       - evidence.migration-0052-document-pages
       - evidence.product-modeling-page
       - evidence.product-modeling-workspace-page
+      - evidence.product-process-version-editor
       - evidence.product-process-controller-test
     acceptanceScenarios:
       - id: scenario.product-derived-from-material
         given: 物料管理中同时存在产成品、半成品和其他类型物料
         when: 产品管理查询可建模产品
         then: 仅产成品和半成品物料进入产品列表，且不创建重复产品主数据
+        evidenceIds: [evidence.product-process-controller, evidence.product-process-controller-test]
         evidenceRequirements: [控制器实现, 控制器测试]
       - id: scenario.parallel-process-versions
         given: 一个父产品已有一个制程版本
         when: 为同一父产品新增不同版本号的制程版本
         then: 两个版本并行保留且不存在唯一当前版本标识
+        evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
         evidenceRequirements: [数据库迁移, 控制器测试]
       - id: scenario.bind-route-and-dhr
         given: 存在可引用的工艺路线版本和 DHR 模板版本
         when: 保存产品制程版本
         then: 该制程版本各保存一个 routeVersionId 和 dhrTemplateVersionId
+        evidenceIds: [evidence.product-process-version-entity, evidence.product-process-request-dto, evidence.product-process-controller]
         evidenceRequirements: [实体定义, DTO, 控制器实现]
       - id: scenario.trace-operation-form
         given: DHR 模板版本目录中存在一个指向表单模板版本的目录项
         when: 路线工序绑定该表单
         then: 绑定同时保存 dhrTemplateItemId 和 formTemplateVersionId 并可追溯到所选 DHR 版本
+        evidenceIds: [evidence.operation-form-binding-entity, evidence.migration-0049-dhr-item-binding, evidence.product-process-controller-test]
         evidenceRequirements: [实体定义, 数据库迁移, 控制器测试]
       - id: scenario.bind-classified-documents
         given: 文档管理中存在多个不同分类的受控文档版本
         when: 工序选择这些文档版本
         then: 工序保存多个 documentVersionId 且不限制为 SOP 分类
+        evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0045-document-versions, evidence.product-process-controller]
         evidenceRequirements: [文档版本迁移, 绑定实体, 控制器实现]
       - id: scenario.pdf-page-range
         given: 工序引用一个 PDF 文档版本
         when: 同时配置合法的 pageStart 和 pageEnd
         then: 页码范围保存到工序与文档版本的绑定关系
+        evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0052-document-pages, evidence.product-process-request-dto, evidence.product-process-controller, evidence.product-process-version-editor]
         evidenceRequirements: [页码迁移, DTO, 前后端校验]
+      - id: scenario.form-required-configuration
+        given: 制程版本编辑器中某工序已引用 DHR 目录表单
+        when: 用户设置“工序结束前完成”复选框并保存制程版本
+        then: required 配置保存到 ProductProcessOperationFormBinding，但当前不触发运行期完工阻断
+        evidenceIds: [evidence.product-process-version-editor, evidence.product-process-controller, evidence.operation-form-binding-entity]
+        evidenceRequirements: [前端复选框, 控制器持久化, 绑定实体]
       - id: scenario.explicit-process-version-selection-internal
         given: 一个产品存在多个制程版本且生产执行链路尚未实现
         when: 查询客户知识投影或运行时投影
         then: 显式选择制程版本规则不进入该投影，仅在内部知识投影可见
+        evidenceIds: [evidence.business-knowledge-model]
         evidenceRequirements: [状态投影校验]
       - id: scenario.execution-snapshot-internal
         given: 批次执行快照尚未实现
         when: 查询客户知识投影或运行时投影
         then: 批次冻结执行快照规则不进入该投影，仅在内部知识投影可见
+        evidenceIds: [evidence.business-knowledge-model]
         evidenceRequirements: [状态投影校验]
       - id: scenario.planned-capabilities-internal
         given: 七类后续控制能力均处于 planned 状态
         when: 查询客户知识投影或运行时投影
         then: 这些规划规则均不可见且不可执行
+        evidenceIds: [evidence.business-knowledge-model]
         evidenceRequirements: [规则可见性校验]
+    implementationDiscrepancies:
+      - id: discrepancy.product-modeling-page-sop-document-label
+        status: open
+        severity: low
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx
+        lineHint: 166
+        summary: 产品建模页面仍将通用文档列标记为“SOP 文档”，而当前绑定模型支持任意文档分类。
+        evidenceIds: [evidence.product-modeling-page, evidence.product-process-controller, evidence.operation-document-binding-entity]

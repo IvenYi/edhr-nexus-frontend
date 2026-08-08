@@ -1,0 +1,149 @@
+knowledgeModelVersion: 0.3.0
+schemaVersion: 1.0.0
+enums:
+  statuses: [planned, specified, implemented, verified, deprecated]
+  visibilities: [internal, customer, runtime]
+  conceptKinds: [business-fact, business-concept, business-configuration, configuration-fact, runtime-fact]
+  cardinalities:
+    - id: one-to-zero-or-one
+      definition: 每个 source 可关联零或一个 target；该写法不对 target 端反向数量作额外断言。
+    - id: one-to-zero-or-many
+      definition: 每个 source 可关联零到多个 target；该写法不对 target 端反向数量作额外断言。
+    - id: many-to-one
+      definition: 每个 source 必须关联一个 target；一个 target 可被零到多个 source 关联。
+  evidenceTypes: [code, database, test, document]
+  ruleOperators: [in, unique-within, exists, is-referenceable, exists-in, belongs-to, equals, not-equals, equals-ignore-case, ends-with-ignore-case, is-null, is-present, greater-than-or-equal, explicitly-selected, configurable, persisted, planned]
+  ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, require-explicit-process-version, freeze-execution-snapshot, persist-form-required-configuration, block, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation]
+  discrepancyStatuses: [open, accepted, resolved]
+  discrepancySeverities: [critical, high, medium, low]
+recordTypes:
+  term:
+    requiredFields: [id, name, definition, aliases, status, visibility]
+    fieldTypes:
+      id: string
+      name: string
+      definition: string
+      aliases: array<string>
+      status: enum:statuses
+      visibility: enum:visibilities
+  concept:
+    requiredFields: [id, termId, kind, status, visibility, evidenceIds]
+    fieldTypes:
+      id: string
+      termId: string
+      kind: enum:conceptKinds
+      status: enum:statuses
+      visibility: enum:visibilities
+      evidenceIds: array<string>
+  relation:
+    requiredFields: [id, source, target, cardinality, status, visibility, evidenceIds]
+    fieldTypes:
+      id: string
+      source: string
+      target: string
+      cardinality: enum:cardinalities
+      status: enum:statuses
+      visibility: enum:visibilities
+      evidenceIds: array<string>
+  rule:
+    requiredFields: [id, name, status, visibility, trigger, scope, condition, result, explanation, evidenceIds]
+    fieldTypes:
+      id: string
+      name: string
+      status: enum:statuses
+      visibility: enum:visibilities
+      trigger: string
+      scope: string
+      condition: condition-expression
+      result: rule-result
+      explanation: string
+      evidenceIds: array<string>
+  decision:
+    requiredFields: [id, title, status, visibility, context, decisionStatements, supersedes, evidenceIds, acceptanceScenarios]
+    fieldTypes:
+      id: string
+      title: string
+      status: enum:statuses
+      visibility: enum:visibilities
+      context: string
+      decisionStatements: array<decision-statement>
+      supersedes: array<string>
+      evidenceIds: array<string>
+      acceptanceScenarios: array<acceptance-scenario>
+      implementationDiscrepancies: array<implementation-discrepancy>
+  decisionStatement:
+    requiredFields: [id, statement, status, visibility]
+    fieldTypes:
+      id: string
+      statement: string
+      status: enum:statuses
+      visibility: enum:visibilities
+  acceptanceScenario:
+    requiredFields: [id, given, when, then, evidenceIds]
+    fieldTypes:
+      id: string
+      given: string
+      when: string
+      then: string
+      evidenceIds: array<string>
+      evidenceRequirements: array<string>
+  implementationDiscrepancy:
+    requiredFields: [id, status, severity, visibility, path, lineHint, summary, evidenceIds]
+    fieldTypes:
+      id: string
+      status: enum:discrepancyStatuses
+      severity: enum:discrepancySeverities
+      visibility: enum:visibilities
+      path: string
+      lineHint: integer
+      summary: string
+      evidenceIds: array<string>
+  evidence:
+    requiredFields: [id, type, path, description, visibility]
+    fieldTypes:
+      id: string
+      type: enum:evidenceTypes
+      path: string
+      description: string
+      visibility: enum:visibilities
+  openQuestion:
+    requiredFields: [id, question, context, options, impact, visibility]
+    fieldTypes:
+      id: string
+      question: string
+      context: string
+      options: array<string>
+      impact: string
+      visibility: enum:visibilities
+conditionExpression:
+  groupKeys: [all, any, not]
+  clauseRequiredFields: [fact, operator, value]
+  clauseFieldTypes:
+    fact: string
+    operator: enum:ruleOperators
+    value: scalar-or-collection
+  semantics:
+    all: 每个子表达式必须成立。
+    any: 至少一个子表达式必须成立。
+    not: 其唯一子表达式不得成立。
+ruleResult:
+  requiredFields: [type]
+  fieldTypes:
+    type: enum:ruleResultTypes
+  additionalFields: allowed
+projectionRules:
+  internal:
+    allowedStatuses: [planned, specified, implemented, verified, deprecated]
+    requiredVisibility: internal
+    executionContractRequired: false
+    evidenceRequired: false
+  customer:
+    allowedStatuses: [verified]
+    prohibitedStatuses: [planned, specified, implemented]
+    executionContractRequired: true
+    evidenceRequired: true
+  runtime:
+    allowedStatuses: [verified]
+    prohibitedStatuses: [planned, specified, implemented]
+    executionContractRequired: true
+    evidenceRequired: true
