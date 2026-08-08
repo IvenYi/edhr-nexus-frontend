@@ -35,9 +35,15 @@ decisionPackage:
         name: 显式选择产品制程版本
         status: implemented
         trigger: production-order.configure
-        conditions:
-          - 产品存在至少一个可用制程版本
-        outcome: 生产任务保存被选择的产品制程版本标识
+        condition:
+          all:
+            - fact: product.availableProcessVersionCount
+              operator: greater-than-or-equal
+              value: 1
+        result:
+          type: persist-reference
+          target: productionOrder.productProcessVersionId
+          valueFrom: selectedProductProcessVersion.id
         sourceReferences:
           - docs/architecture/business-knowledge-model.md
     executionContracts:
@@ -49,19 +55,12 @@ decisionPackage:
         evidenceIds:
           - evidence.process-version-selection
   inferred:
-    - id: inference.process-version-default
-      statement: 首个制程版本可能被默认选择
-      rationale: 当前讨论未明确选择交互
+    - id: inference.process-version-api-impact
+      statement: 该规则可能影响生产任务配置接口
+      rationale: 规则结果需要持久化制程版本引用
       relatedIds:
-        - concept.product-process-version
-  unresolved:
-    - id: question.process-version-default
-      question: 存在多个制程版本时是否允许默认选择
-      context: 默认选择会影响生产任务配置行为
-      options:
-        - 必须由用户显式选择
-        - 允许按已批准规则默认选择
-      impact: 未确认前不得建立默认选择规则
+        - rule.process-version-explicit-selection
+  unresolved: []
   affectedFiles:
     - path: docs/knowledge/rules/product-process.yaml
       changeType: update
@@ -92,14 +91,32 @@ decisionPackage:
 
 - `concepts[]`：`id`、`name`、`definition`、`status`、`sourceReferences`。
 - `relationships[]`：`id`、`sourceId`、`targetId`、`cardinality`、`description`、`sourceReferences`。
-- `rules[]`：`id`、`name`、`status`、`trigger`、`conditions`、`outcome`、`sourceReferences`。
+- `rules[]`：`id`、`name`、`status`、`trigger`、`condition`、`result`、`sourceReferences`；`condition` 和 `result` 必须是结构化对象，不得使用自然语言字符串替代整个对象。
 - `executionContracts[]`：`id`、`ruleId`、`action`、`implementationReferences`、`evidenceIds`。
 - `inferred[]`：`id`、`statement`、`rationale`、`relatedIds`。
 - `unresolved[]`：`id`、`question`、`context`、`options`、`impact`。
 - `affectedFiles[]`：`path`、`changeType`、`reason`；`changeType` 只能是 `create`、`update`、`delete` 或 `read-only`。
 - `acceptanceScenarios[]`：`id`、`given`、`when`、`then`、`evidenceRequirements`。
 
-示例中的 `inferred` 和 `unresolved` 用于展示字段，不表示可以写入权威模型。`unresolved` 非空时，本体建模结果必须为 `blocked-by-question`。
+示例中的 `inferred` 不表示可以写入权威模型。主示例的 `unresolved` 为空，因此可以在没有其他冲突时对应后文的 `ontologyResult.result: updated`。
+
+### 独立阻断示例
+
+以下示例独立于主示例，仅展示 `unresolved` 非空时的强制结果。此时不得更新权威知识模型，`ontologyResult.result` 必须为 `blocked-by-question`。
+
+```yaml
+blockingExample:
+  unresolved:
+    - id: question.process-version-default
+      question: 存在多个制程版本时是否允许默认选择
+      context: 默认选择会影响生产任务配置行为
+      options:
+        - 必须由用户显式选择
+        - 允许按已批准规则默认选择
+      impact: 未确认前不得建立默认选择规则
+  requiredOntologyResult:
+    result: blocked-by-question
+```
 
 ## `ontologyResult`
 
@@ -143,6 +160,12 @@ ontologyResult:
 - `conflicts[]`：`id`、`incomingStatement`、`existingStatement`、`evidence`、`requiredResolution`。
 - `questions[]`：`id`、`question`、`context`、`options`、`impact`；字段含义与 `unresolved[]` 一致。
 - `validationEvidence[]`：`id`、`checkType`、`command`、`outcome`、`evidence`。
+
+`validationEvidence` 枚举与结果约束：
+
+- `validationEvidence[].checkType` 只能是 `schema | reference | status-transition | projection | evidence-path`。
+- `validationEvidence[].outcome` 只能是 `passed | failed | blocked`。
+- 当 `ontologyResult.result` 为 `updated` 时，`validationEvidence` 必须非空，且每个 `validationEvidence[].outcome` 都必须为 `passed`。
 
 `conflicts` 和 `questions` 的非空项格式如下：
 
@@ -188,7 +211,7 @@ qualityResult:
   knowledgeBaselineVersion: 0.3.1
   checks:
     - id: check.contract-keywords
-      category: contract
+      category: documentation
       description: 检查强制状态和质量独立性规则
       method: command
       command: rg -n "blocked-by-question|passed" AGENTS.md docs/agents
@@ -217,6 +240,13 @@ qualityResult:
 - `findings[]`：`id`、`severity`、`scope`、`summary`、`reproductionSteps`、`expectedResult`、`actualResult`、`evidence`。
 - `residualRisks[]`：`id`、`description`、`impact`、`mitigation`。
 - `blockingConditions[]`：`id`、`condition`、`impact`、`requiredAction`、`owner`。
+
+`checks` 枚举与结果约束：
+
+- `checks[].category` 只能是 `requirements | ontology | unit | integration | api | database | audit | security | e2e | visual | regression | documentation`。
+- `checks[].method` 只能是 `command | inspection | browser | query | automated-test`。
+- `checks[].outcome` 只能是 `passed | failed | blocked`。
+- 当 `qualityResult.result` 为 `passed` 时，所有必需的 `checks[].outcome` 必须为 `passed`，`findings` 中不得存在未解决的 `critical` 或 `high` 项，且 `blockingConditions` 必须为空。
 
 每个发现使用以下格式：
 
