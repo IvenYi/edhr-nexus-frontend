@@ -4,9 +4,11 @@
 
 **目标：** 建立主开发智能体、本体建模智能体和质量验证智能体的长期协作机制，并把当前产品制程配置知识迁移为可校验的结构化知识基线。
 
-**架构：** 角色连续性由仓库中的 `AGENTS.md`、角色契约和 Git 版本化知识资产保证，运行时按任务实例化专业子智能体。结构化知识使用 YAML 保存，后端 JUnit 测试通过 SnakeYAML 校验标识唯一性、引用完整性、状态投影和证据路径；业务代码仍由主智能体实现，专业子智能体分别承担知识沉淀和独立验证。
+**架构：** 采用“固定角色契约 + 子智能体驱动执行”。角色连续性由仓库中的 `AGENTS.md`、角色契约和 Git 版本化知识资产保证；运行时由主智能体逐任务实例化和派发专业子智能体，并审核、集成结果。结构化知识使用 YAML 保存，后端 JUnit 测试通过 SnakeYAML 校验标识唯一性、引用完整性、状态投影和证据路径；业务代码仍由主智能体实现，专业子智能体分别承担知识沉淀和独立验证。
 
 **技术栈：** Markdown、YAML、Java 21、Spring Boot 3.3、SnakeYAML、JUnit 5、Maven、Git、Codex multi-agent。
+
+**实施状态：** 已于 2026-08-09 完成首次实施和独立质量验收。正式证据见 `docs/agents/persistent-agent-collaboration-acceptance.md`，验收提交为 `8481b6a9`，知识基线为 `0.3.0`。
 
 ---
 
@@ -38,7 +40,7 @@
 - 创建：`docs/agents/quality-verifier.md`
 - 重命名：`docs/superpowers/specs/2026-08-08-persistent-agent-collaboration-design.md` -> `docs/superpowers/specs/edhr-persistent-agent-collaboration-design.md`
 
-- [ ] **步骤 1：验证角色契约尚不存在**
+- [x] **步骤 1：验证角色契约尚不存在**
 
 运行：
 
@@ -50,7 +52,7 @@ test ! -f docs/agents/quality-verifier.md
 
 预期：命令成功，证明后续新增的是项目正式契约，而不是覆盖未知规则。
 
-- [ ] **步骤 2：创建根目录调度规则**
+- [x] **步骤 2：创建根目录调度规则**
 
 `AGENTS.md` 必须包含以下可执行规则：
 
@@ -90,7 +92,7 @@ test ! -f docs/agents/quality-verifier.md
 当重复工作具有稳定职责、清晰所有权、可独立验收的产物、后续会反复出现，并且专业化能够明显提升质量或效率时，主智能体必须主动提出新增长期专业智能体。增加前必须取得用户确认。
 ```
 
-- [ ] **步骤 3：创建统一交接契约**
+- [x] **步骤 3：创建统一交接契约**
 
 `docs/agents/agent-handoff-contract.md` 定义以下决策包：
 
@@ -132,7 +134,7 @@ qualityResult:
 
 文档必须说明示例 ID 只演示格式，实际任务由主智能体自动生成，用户不填写。
 
-- [ ] **步骤 4：创建本体建模角色契约**
+- [x] **步骤 4：创建本体建模角色契约**
 
 `docs/agents/business-knowledge-modeler.md` 必须规定：
 
@@ -166,7 +168,7 @@ qualityResult:
 只返回 `updated`、`not-applicable`、`blocked-by-question` 或 `conflict`，并遵守统一交接契约。
 ```
 
-- [ ] **步骤 5：创建质量验证角色契约**
+- [x] **步骤 5：创建质量验证角色契约**
 
 `docs/agents/quality-verifier.md` 必须规定：
 
@@ -198,7 +200,7 @@ qualityResult:
 只返回 `passed`、`failed` 或 `blocked`。每个失败项必须包含复现步骤、期望结果、实际结果、证据和严重程度。
 ```
 
-- [ ] **步骤 6：验证角色契约关键门禁**
+- [x] **步骤 6：验证角色契约关键门禁**
 
 运行：
 
@@ -209,7 +211,7 @@ rg -n "不得修改业务运行代码|默认只报告问题" docs/agents
 
 预期：两条命令均找到对应规则。
 
-- [ ] **步骤 7：提交角色契约**
+- [x] **步骤 7：提交角色契约**
 
 ```bash
 git add AGENTS.md docs/agents docs/superpowers/specs/edhr-persistent-agent-collaboration-design.md
@@ -227,7 +229,7 @@ git commit -m "docs: establish persistent agent roles"
 - 创建：`docs/knowledge/evidence/product-process.yaml`
 - 创建：`docs/knowledge/open-questions.yaml`
 
-- [ ] **步骤 1：创建知识目录说明**
+- [x] **步骤 1：创建知识目录说明**
 
 `docs/knowledge/README.md` 必须说明：
 
@@ -245,7 +247,7 @@ git commit -m "docs: establish persistent agent roles"
 运行校验：`cd gmp-platform/backend && mvn -Dtest=BusinessKnowledgeModelTest test`。
 ```
 
-- [ ] **步骤 2：写入领域词典**
+- [x] **步骤 2：写入领域词典**
 
 `docs/knowledge/glossary.yaml` 使用 `knowledgeModelVersion: 0.3.0`，并为以下术语建立唯一 ID、中文名称、定义、别名和状态：
 
@@ -270,7 +272,7 @@ terms:
 
 同一文件还必须完整登记：工艺路线版本、工序、DHR 模板版本、DHR 目录项、表单模板版本、文档版本、工序绑定、生产批次和执行快照。
 
-- [ ] **步骤 3：写入概念与关系**
+- [x] **步骤 3：写入概念与关系**
 
 `docs/knowledge/ontology.yaml` 至少包含以下关系，并为每项记录 `id`、`source`、`target`、`cardinality`、`status` 和 `evidenceIds`：
 
@@ -304,7 +306,7 @@ relations:
 
 同时完整登记路线包含工序、工序引用 DHR 目录表单、DHR 目录项指向表单版本、工序引用多个文档、产品制程版本被工单或批次显式选择、批次冻结执行快照等关系。尚未接入生产执行的关系使用 `specified`，不得标记为 `verified`。
 
-- [ ] **步骤 4：写入产品制程规则**
+- [x] **步骤 4：写入产品制程规则**
 
 `docs/knowledge/rules/product-process.yaml` 对每条规则记录 `id`、`name`、`status`、`visibility`、`trigger`、`scope`、`condition`、`result`、`explanation` 和 `evidenceIds`。
 
@@ -340,7 +342,7 @@ rules:
 
 已确认但尚未接入运行的“工单拆分批次时显式选择制程版本”记录为 `specified/internal`。表单完工前完成、表单共享、字段权限、事务触发、最终产出和物料齐套记录为 `planned/internal`。
 
-- [ ] **步骤 5：写入决策、证据和未决问题**
+- [x] **步骤 5：写入决策、证据和未决问题**
 
 `DEC-0001-product-process-modeling.yaml` 记录以下已确认决策：
 
@@ -359,7 +361,7 @@ knowledgeModelVersion: 0.3.0
 questions: []
 ```
 
-- [ ] **步骤 6：提交知识基线**
+- [x] **步骤 6：提交知识基线**
 
 ```bash
 git add docs/knowledge
@@ -371,7 +373,7 @@ git commit -m "docs: add product process knowledge baseline"
 **文件：**
 - 创建：`gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelTest.java`
 
-- [ ] **步骤 1：先编写会因缺少校验辅助方法而失败的测试骨架**
+- [x] **步骤 1：先编写会因缺少校验辅助方法而失败的测试骨架**
 
 测试类先声明五个场景：
 
@@ -387,7 +389,7 @@ class BusinessKnowledgeModelTest {
 
 将第一个测试改为调用尚未实现的 `loadKnowledgeDocuments()`，使编译失败。
 
-- [ ] **步骤 2：运行测试并确认失败**
+- [x] **步骤 2：运行测试并确认失败**
 
 运行：
 
@@ -398,7 +400,7 @@ mvn -Dtest=BusinessKnowledgeModelTest test
 
 预期：编译失败并提示 `loadKnowledgeDocuments` 不存在。
 
-- [ ] **步骤 3：实现 YAML 加载和仓库根目录定位**
+- [x] **步骤 3：实现 YAML 加载和仓库根目录定位**
 
 使用 `org.yaml.snakeyaml.Yaml`，从 `System.getProperty("user.dir")` 向父目录查找同时包含 `docs/knowledge` 和 `gmp-platform` 的目录。递归读取 `docs/knowledge/**/*.yaml`，并断言每个文件解析为非空 `Map<String, Object>`。
 
@@ -412,7 +414,7 @@ private List<Map<String, Object>> mapList(Map<String, Object> document, String k
 private Set<String> collectIds(List<Map<String, Object>> records, String source)
 ```
 
-- [ ] **步骤 4：实现标识和引用完整性校验**
+- [x] **步骤 4：实现标识和引用完整性校验**
 
 测试收集术语、概念、关系、规则、决策和证据 ID，验证：
 
@@ -422,7 +424,7 @@ private Set<String> collectIds(List<Map<String, Object>> records, String source)
 - `evidenceIds` 指向已登记证据；
 - 状态只允许 `planned`、`specified`、`implemented`、`verified`、`deprecated`。
 
-- [ ] **步骤 5：实现投影和证据校验**
+- [x] **步骤 5：实现投影和证据校验**
 
 测试必须断言：
 
@@ -440,7 +442,7 @@ if ("verified".equals(status)) {
 
 证据类型为 `code`、`database`、`test` 或 `document` 时，将 `path` 解析到仓库根目录并断言文件真实存在。
 
-- [ ] **步骤 6：运行知识模型测试**
+- [x] **步骤 6：运行知识模型测试**
 
 运行：
 
@@ -451,7 +453,7 @@ mvn -Dtest=BusinessKnowledgeModelTest test
 
 预期：`BUILD SUCCESS`，五个测试全部通过。
 
-- [ ] **步骤 7：提交校验测试**
+- [x] **步骤 7：提交校验测试**
 
 ```bash
 git add gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelTest.java
@@ -464,7 +466,7 @@ git commit -m "test: validate business knowledge model"
 - 修改：`docs/architecture/business-knowledge-model.md`
 - 修改：`docs/architecture/technology-stack-and-ai-development.md`
 
-- [ ] **步骤 1：更新本体模型维护方式**
+- [x] **步骤 1：更新本体模型维护方式**
 
 在 `business-knowledge-model.md` 的“维护方式”后增加“智能体协作”章节，明确：
 
@@ -474,7 +476,7 @@ git commit -m "test: validate business knowledge model"
 - 结构化基线是权威来源，当前文档是人员阅读投影；
 - 业务变更必须取得本体结果和质量结果后才能完成。
 
-- [ ] **步骤 2：增加主动提出智能体分工规则**
+- [x] **步骤 2：增加主动提出智能体分工规则**
 
 在 `technology-stack-and-ai-development.md` 的 AI 开发质量门槛后增加：
 
@@ -486,7 +488,7 @@ git commit -m "test: validate business knowledge model"
 当重复工作同时具备稳定长期职责、清晰所有权、可独立验收、后续会反复出现，并且专业化能明显提升质量或效率时，主智能体必须主动向用户提出新增长期专业智能体。未经用户确认不得增加固定角色。
 ```
 
-- [ ] **步骤 3：验证文档互相引用**
+- [x] **步骤 3：验证文档互相引用**
 
 运行：
 
@@ -497,7 +499,7 @@ rg -n "主动向用户提出新增长期专业智能体" docs/architecture/techn
 
 预期：命中知识基线、两个固定角色和新增角色规则。
 
-- [ ] **步骤 4：提交架构文档更新**
+- [x] **步骤 4：提交架构文档更新**
 
 ```bash
 git add docs/architecture/business-knowledge-model.md docs/architecture/technology-stack-and-ai-development.md
@@ -506,11 +508,13 @@ git commit -m "docs: integrate agent gates into development guidance"
 
 ### 任务 5：执行本体建模智能体试运行
 
+**执行结果：** 已完成。产品制程知识在前序校正后与实现证据一致，正式复核返回 `not-applicable`，无需创建空提交；证据已固化到首次实施验收记录。
+
 **文件：**
 - 可能修改：`docs/knowledge/**`
 - 可能修改：`docs/architecture/business-knowledge-model.md`
 
-- [ ] **步骤 1：派发固定本体角色**
+- [x] **步骤 1：派发固定本体角色**
 
 使用 Codex 子智能体，要求它先读取 `docs/agents/business-knowledge-modeler.md`，然后审查 `DEC-0001`、产品制程知识基线及以下实现证据：
 
@@ -525,11 +529,11 @@ gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/Product
 
 要求返回符合统一契约的 `updated`、`not-applicable`、`blocked-by-question` 或 `conflict`。
 
-- [ ] **步骤 2：处理试运行结果**
+- [x] **步骤 2：处理试运行结果**
 
 若返回 `updated`，审查并保留其知识文件修正；若返回 `blocked-by-question` 或 `conflict`，主智能体核对是否来自已确认规则，无法从现有决策解决时再向用户提问。
 
-- [ ] **步骤 3：重新运行知识模型测试**
+- [x] **步骤 3：重新运行知识模型测试**
 
 ```bash
 cd gmp-platform/backend
@@ -538,7 +542,7 @@ mvn -Dtest=BusinessKnowledgeModelTest test
 
 预期：`BUILD SUCCESS`。
 
-- [ ] **步骤 4：提交试运行修正**
+- [x] **步骤 4：提交试运行修正**
 
 ```bash
 git add docs/knowledge docs/architecture/business-knowledge-model.md
@@ -547,10 +551,12 @@ git diff --cached --quiet || git commit -m "docs: reconcile product process onto
 
 ### 任务 6：执行质量验证智能体试运行
 
+**执行结果：** 已完成。初次审查发现的 schema 校验缺口已修复，规格复审通过，未参与修复的全新质量实例最终返回 `passed`。
+
 **文件：**
 - 默认不修改业务代码
 
-- [ ] **步骤 1：运行主智能体基础测试**
+- [x] **步骤 1：运行主智能体基础测试**
 
 ```bash
 cd gmp-platform/backend
@@ -562,7 +568,7 @@ npm run build
 
 预期：Maven `BUILD SUCCESS`，前端结构校验通过，Vite 构建成功。
 
-- [ ] **步骤 2：派发固定质量验证角色**
+- [x] **步骤 2：派发固定质量验证角色**
 
 要求子智能体先读取 `docs/agents/quality-verifier.md`，然后独立审查本轮提交，重点验证：
 
@@ -574,16 +580,18 @@ npm run build
 
 要求返回 `passed`、`failed` 或 `blocked`，失败必须可复现。
 
-- [ ] **步骤 3：修复并回归**
+- [x] **步骤 3：修复并回归**
 
 质量验证返回 `failed` 时，由主智能体修复问题并重新执行步骤 1 和步骤 2；质量智能体不得自行修改业务实现。只有结果为 `passed` 才能进入最终验收。
 
 ### 任务 7：最终验收
 
+**执行结果：** 已完成。知识模型与产品制程后端测试共 65 项通过，前端制程校验和生产构建通过，`edhr-dev` 已推送至 `8481b6a9`。
+
 **文件：**
 - 检查：本计划涉及的全部文件
 
-- [ ] **步骤 1：运行完整知识与产品制程验证**
+- [x] **步骤 1：运行完整知识与产品制程验证**
 
 ```bash
 cd gmp-platform/backend
@@ -595,7 +603,7 @@ npm run build
 
 预期：全部通过。
 
-- [ ] **步骤 2：检查正式文件和工作区范围**
+- [x] **步骤 2：检查正式文件和工作区范围**
 
 ```bash
 git diff --check
@@ -608,7 +616,7 @@ test -f docs/knowledge/ontology.yaml
 
 预期：不存在空白错误；正式文件全部存在；`.superpowers/` 临时目录仍不纳入提交。
 
-- [ ] **步骤 3：记录最终门禁结果**
+- [x] **步骤 3：记录最终门禁结果**
 
 最终答复明确报告：
 
