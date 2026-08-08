@@ -1,40 +1,40 @@
-# eDHR Persistent Agent Collaboration Design
+# eDHR 长期智能体协作设计
 
-## 1. Purpose
+## 1. 目标
 
-Establish a project-long agent collaboration model for eDHR development. The model preserves business context across tasks without relying on one indefinitely running conversation and introduces independent verification for a production-grade medical-device ToB system.
+为 eDHR 的持续开发建立贯穿整个项目的智能体协作机制。该机制不依赖某个永不结束的对话来保存上下文，而是通过项目资产保证业务知识连续性，同时为医疗器械 ToB 生产软件引入独立质量验证。
 
-The user does not manually maintain agent handoff forms or ontology files. The main agent extracts confirmed business knowledge from normal product discussions, creates structured handoffs, and asks the user only about genuine business ambiguities.
+用户不需要手工填写智能体交接表、本体记录或证据索引。主智能体负责从正常的产品讨论中提取已确认的业务知识、自动生成结构化交接内容，并且只在确实存在业务歧义时请求用户判断。
 
-## 2. Decisions
+## 2. 已确认方案
 
-The project uses three roles:
+项目采用三个角色：
 
-1. **Main development agent**: clarifies requirements, makes implementation decisions within confirmed scope, implements business functionality, and writes the implementation's unit and integration tests.
-2. **Business knowledge modeling agent**: maintains the structured ontology, business rules, decisions, evidence, execution contracts, and impact records.
-3. **Quality verification agent**: independently reviews code and verifies behavior, data, UI, audit, migration, and regression risks.
+1. **主开发智能体**：澄清需求，在已确认范围内制定实现方案，开发业务功能，并编写实现所需的单元测试和集成测试。
+2. **业务知识本体建模智能体**：维护结构化本体、业务规则、业务决策、证据、执行契约和影响记录。
+3. **质量验证智能体**：独立执行代码审查，并验证业务行为、数据、界面、审计、数据库迁移和回归风险。
 
-The two specialist roles are permanent project roles. Their individual runtime instances are task-scoped. Role continuity comes from versioned repository artifacts, fixed role contracts, and a mandatory bootstrap process rather than conversational memory.
+两个专业子智能体都是项目级长期固定角色，但每个实际运行实例按具体任务创建和结束。角色连续性来自 Git 版本化的项目资产、固定角色契约和强制启动流程，而不是依赖某段对话的临时记忆。
 
-## 3. Alternatives Considered
+## 3. 方案比较
 
-### 3.1 Repository-backed permanent roles
+### 3.1 仓库持久化固定角色
 
-Store role contracts and knowledge assets in the repository and instantiate the same role for each applicable task.
+将角色契约和知识资产保存在代码仓库中，每个适用的开发任务都按同一契约实例化对应角色。
 
-This is the selected approach because it is reviewable, versioned, portable across workstations, and resilient to context compaction or task replacement.
+这是最终采用的方案。它可审查、可版本化、可在不同开发电脑间共享，也不会因为上下文压缩、对话结束或智能体实例更换而丢失项目知识。
 
-### 3.2 One indefinitely running task per specialist
+### 3.2 每个专业角色维护一个永久对话
 
-This retains conversational context but drifts from the current branch, makes merges harder, and treats transient model memory as the source of truth. It is not selected.
+这种方式可以保留连续的对话上下文，但长期对话容易脱离当前代码分支，增加合并难度，并且错误地把智能体临时记忆当成项目事实来源。因此不采用。
 
-### 3.3 A resident agent service or CI bot
+### 3.3 常驻智能体服务或 CI 机器人
 
-This could automate ontology and quality gates but introduces infrastructure before the business model and rule schemas are stable. It is deferred until repository-backed workflows prove stable.
+这种方式未来可以自动执行本体和质量门禁，但当前业务模型和规则结构仍在逐步稳定，提前建设会引入不必要的基础设施成本。因此暂缓，待仓库协作机制稳定后再评估。
 
-## 4. Repository Artifacts
+## 4. 仓库资产布局
 
-Implementation will introduce the following project-owned structure:
+实施阶段将在项目中建立以下结构：
 
 ```text
 AGENTS.md
@@ -52,172 +52,174 @@ docs/architecture/
   business-knowledge-model.md
 ```
 
-`AGENTS.md` defines project-wide orchestration rules and completion gates. The role documents define mandatory reading, responsibilities, input and output contracts, prohibited actions, and acceptance criteria.
+`AGENTS.md` 定义项目级智能体调度规则和功能完成门禁。两份角色文档定义各自的必读资料、职责、输入输出契约、禁止事项和验收标准。
 
-`docs/knowledge/` is the machine-readable long-term knowledge baseline. The existing `docs/architecture/business-knowledge-model.md` remains the human-readable overview and must stay consistent with that baseline.
+`docs/knowledge/` 是机器可读的长期知识基线。现有的 `docs/architecture/business-knowledge-model.md` 继续作为方便人员阅读的总体架构说明，并且必须与结构化知识基线保持一致。
 
-The repository role contracts are authoritative. A workstation-specific global agent configuration may improve convenience but must not be required to understand or execute the workflow.
+仓库中的角色契约是权威来源。开发电脑上的 Codex 全局智能体配置可以作为操作便利手段，但不能成为理解或执行该协作流程的必要条件。
 
-## 5. Main Agent Responsibilities
+## 5. 主智能体职责
 
-During business discussion, the main agent automatically:
+在与用户讨论业务的过程中，主智能体自动完成以下工作：
 
-- extracts concepts, relationships, constraints, states, events, and actions;
-- distinguishes confirmed decisions, inferences, and unresolved questions;
-- records the decision background and rejected alternatives when they affect future interpretation;
-- creates a decision package for the business knowledge modeling agent;
-- sends only confirmed knowledge for authoritative modeling;
-- asks the user about unresolved business ambiguity instead of inventing a rule;
-- implements the business feature and its foundational tests;
-- attaches implementation evidence after the code is complete.
+- 提取业务概念、关系、约束、状态、事件和动作；
+- 区分已确认结论、合理推断和未决问题；
+- 当讨论背景和被否决方案会影响后续理解时，一并记录这些信息；
+- 为本体建模智能体生成标准业务决策包；
+- 只把已确认的知识交给本体建模智能体写入正式模型；
+- 遇到业务歧义时向用户提问，不自行补全规则；
+- 开发业务功能并完成基础测试；
+- 代码完成后补充实现证据。
 
-The user confirms business decisions but does not populate ontology records, evidence indexes, or handoff documents manually.
+用户负责确认业务决策，不负责手工填写本体记录、证据索引或智能体交接文件。
 
-## 6. Business Knowledge Modeling Agent
+## 6. 业务知识本体建模智能体
 
-### 6.1 Responsibilities
+### 6.1 职责
 
-The agent:
+本体建模智能体负责：
 
-- maintains the domain glossary;
-- maintains concepts, relationships, rules, statuses, and execution contracts;
-- links requirements, UI, database schema, APIs, code, tests, and audit evidence;
-- records change impact and knowledge-model version information;
-- detects contradictions, missing references, and unresolved semantics;
-- keeps internal, customer, and runtime projections separate;
-- verifies the final implementation against the confirmed knowledge model.
+- 维护领域词典；
+- 维护概念、关系、规则、状态和执行契约；
+- 关联需求、界面、数据库结构、接口、代码、测试和审计证据；
+- 记录变更影响范围和知识模型版本；
+- 发现规则冲突、引用缺失和语义不明确的问题；
+- 隔离内部知识投影、客户知识投影和运行时投影；
+- 在业务实现完成后，核对代码行为与已确认知识模型是否一致。
 
-### 6.2 Prohibited Actions
+### 6.2 禁止事项
 
-The agent must not:
+本体建模智能体不得：
 
-- invent or silently resolve an ambiguous business rule;
-- mark a rule `verified` without implementation and scenario evidence;
-- expose `planned`, `specified`, or `unverified` capabilities to customer Q&A or runtime execution;
-- directly alter business runtime behavior outside the main agent's implementation scope;
-- erase a superseded decision when a historical replacement relation is required.
+- 编造业务规则或静默处理有歧义的业务规则；
+- 在缺少实现证据和场景测试时将规则标记为 `verified`；
+- 把 `planned`、`specified` 或 `unverified` 能力暴露给客户问答或运行时执行；
+- 脱离主智能体确认的开发范围直接修改生产运行逻辑；
+- 直接删除已经被新决策替代但仍需要历史追溯的旧决策。
 
-### 6.3 Result Contract
+### 6.3 结果契约
 
-The agent returns exactly one primary result:
+本体建模智能体每次必须返回一个主要结果：
 
-- `updated`: knowledge artifacts were updated and validated;
-- `not-applicable`: no ontology impact, with a concrete reason;
-- `blocked-by-question`: a product decision is required;
-- `conflict`: confirmed input contradicts the current model and cannot be silently merged.
+- `updated`：知识资产已更新并通过校验；
+- `not-applicable`：本次变更不影响本体，并说明具体原因；
+- `blocked-by-question`：存在需要用户确认的产品问题；
+- `conflict`：已确认输入与当前模型冲突，不能静默合并。
 
-## 7. Quality Verification Agent
+## 7. 质量验证智能体
 
-### 7.1 Responsibilities
+### 7.1 职责
 
-The agent independently checks:
+质量验证智能体独立检查：
 
-- conformance to confirmed requirements and ontology rules;
-- CRUD, version, lifecycle status, permission, and audit behavior;
-- error paths, duplicate submissions, concurrency, and boundary data;
-- database migrations and initialization assets;
-- consistency with existing RDO table and interaction standards;
-- browser workflows, visual layout, and responsive behavior where applicable;
-- agreement among UI labels, API behavior, persisted data, audit records, and business meaning;
-- regression coverage appropriate to the change's risk.
+- 实现是否符合已确认需求和本体规则；
+- CRUD、父子版本、生命周期状态、权限和数据审计是否完整；
+- 异常路径、重复提交、并发和边界数据是否正确处理；
+- 数据库迁移和初始化资产是否齐全；
+- 页面是否符合现有 RDO 表格和交互规范；
+- 适用场景下的浏览器工作流、视觉布局和响应式行为；
+- 界面文案、接口行为、持久化数据、审计记录和业务含义是否一致；
+- 回归测试范围是否与变更风险相匹配。
 
-The main agent still owns implementation-level unit and integration tests. Independent verification supplements those tests and must not become a reason to defer testing until the end.
+主智能体仍然负责随业务代码编写实现级单元测试和集成测试。独立质量验证是对这些测试的补充，不能成为主智能体把测试全部推迟到开发末期的理由。
 
-### 7.2 Independence
+### 7.2 独立性
 
-The quality verification agent reports reproducible findings and does not directly change business implementation by default. The main agent fixes findings, after which the quality agent performs regression verification. A separately approved, tightly bounded test-only edit may be delegated when it does not compromise review independence.
+质量验证智能体默认只报告可复现问题，不直接修改业务实现。主智能体完成修复后，再由质量验证智能体执行回归验证。
 
-### 7.3 Result Contract
+只有在不损害审查独立性的前提下，经过单独确认且范围明确的纯测试文件修改，才可以交给质量验证智能体完成。
 
-The agent returns:
+### 7.3 结果契约
 
-- `passed`: required evidence is present and checks pass;
-- `failed`: reproducible findings require correction;
-- `blocked`: environment, data, or dependency conditions prevent a valid conclusion.
+质量验证智能体每次返回以下结果之一：
 
-## 8. Workflow
+- `passed`：所需证据完整且全部检查通过；
+- `failed`：发现需要修复的可复现问题；
+- `blocked`：环境、数据或依赖条件不足，无法得出有效结论。
+
+## 8. 标准工作流
 
 ```text
-Business discussion and confirmation
-  -> Main agent creates a decision package
-  -> Knowledge agent loads the current baseline
-  -> Knowledge agent updates and validates ontology assets
-  -> Main agent implements functionality and foundational tests
-  -> Quality agent performs independent review and verification
-  -> Main agent fixes findings
-  -> Knowledge agent reconciles model and implementation evidence
-  -> Quality agent runs final regression verification
+业务沟通与确认
+  -> 主智能体自动生成业务决策包
+  -> 本体建模智能体加载当前知识基线
+  -> 本体建模智能体更新并校验知识资产
+  -> 主智能体开发业务功能并完成基础测试
+  -> 质量验证智能体独立审查和测试
+  -> 主智能体修复发现的问题
+  -> 本体建模智能体核对模型和实现证据
+  -> 质量验证智能体执行最终回归验证
 ```
 
-Each new specialist instance first reads its role contract, the current knowledge-model version, open questions, relevant decisions, and domain artifacts. It must report a baseline version in its result so that stale-context work is detectable.
+每个新的专业子智能体实例在开始工作前，都必须读取自身角色契约、当前知识模型版本、未决问题、相关业务决策和对应领域资产。它必须在结果中报告读取的知识基线版本，以便识别基于过期上下文完成的工作。
 
-## 9. Trigger Rules
+## 9. 触发规则
 
-A business knowledge modeling review is mandatory when a change affects any of the following:
+当开发变更影响以下任意内容时，必须派发本体建模智能体：
 
-- business concepts or terminology;
-- relationships or cardinality;
-- lifecycle states or status derivation;
-- business rules, validations, or blocking conditions;
-- workflow events, outcomes, or execution actions;
-- audit meaning, evidence, or traceability;
-- customer-visible business explanations;
-- runtime execution contracts or snapshots.
+- 业务概念或术语；
+- 业务关系或关系数量约束；
+- 生命周期状态或状态计算方式；
+- 业务规则、校验或阻断条件；
+- 工作流事件、结果或执行动作；
+- 审计语义、证据或追溯关系；
+- 面向客户的业务解释；
+- 运行时执行契约或业务快照。
 
-If none apply, the main agent records `ontology: not-applicable` with a reason.
+如果全部不涉及，主智能体仍需记录 `ontology: not-applicable` 并说明原因。
 
-Independent quality verification is mandatory for changes to code, database schema, APIs, user interactions, or customer-visible behavior. Verification depth scales with risk, but the gate itself is not omitted.
+当变更涉及代码、数据库结构、接口、用户交互或客户可见行为时，必须执行独立质量验证。验证深度根据变更风险调整，但不能省略质量门禁本身。
 
-## 10. Validation and Failure Handling
+## 10. 校验与失败处理
 
-The knowledge workflow validates at least:
+知识建模流程至少校验：
 
-- YAML and schema validity;
-- referential integrity for concept, relation, rule, evidence, and decision identifiers;
-- legal knowledge status transitions;
-- exclusion of unreleased capabilities from customer and runtime projections;
-- implementation and scenario evidence for verified rules;
-- explicit supersession instead of silent historical deletion;
-- consistency between structured assets and the human-readable architecture overview.
+- YAML 和结构定义是否合法；
+- 概念、关系、规则、证据和决策标识是否存在悬空引用；
+- 知识状态迁移是否合法；
+- 未发布能力是否被排除在客户投影和运行时投影之外；
+- 标记为 `verified` 的规则是否具有实现和场景证据；
+- 业务决策变更是否通过明确的替代关系保留历史，而不是静默删除；
+- 结构化知识资产与人员可读的架构说明是否一致。
 
-If a specialist returns `blocked-by-question`, `conflict`, `failed`, or `blocked`, the main agent must not report the feature as complete. It either resolves the issue, narrows the explicitly accepted scope, or reports the real blocker to the user.
+如果专业子智能体返回 `blocked-by-question`、`conflict`、`failed` 或 `blocked`，主智能体不得宣称功能已经完成。主智能体必须解决问题、明确缩小并经用户接受交付范围，或者如实报告阻塞条件。
 
-## 11. Completion Gate
+## 11. 功能完成门禁
 
-A business feature is complete only when all applicable conditions hold:
+一项业务功能只有在所有适用条件均满足时才算完成：
 
 ```text
-Business implementation complete
-+ main-agent tests pass
-+ ontology = updated or not-applicable
+业务实现完成
++ 主智能体测试通过
++ ontology = updated 或 not-applicable
 + quality = passed
-+ no unresolved question affects the delivered scope
++ 没有影响当前交付范围的未决问题
 ```
 
-The final task summary includes the ontology result, quality result, relevant evidence, and any explicitly deferred scope.
+最终任务说明必须包含本体建模结果、质量验证结果、关键验证证据和明确暂缓的范围。
 
-## 12. Proposing Additional Specialist Roles
+## 12. 主动提出新增专业智能体
 
-The main agent must proactively propose a new specialist-agent division when recurring work has all of these properties:
+当某类重复工作同时具备以下条件时，主智能体必须主动向用户提出新增专业子智能体的分工方案：
 
-- a stable, long-term responsibility;
-- clear file or subsystem ownership;
-- an independently reviewable output;
-- repeated use across future development;
-- meaningful quality or throughput benefit from specialization.
+- 具有稳定的长期职责；
+- 具有清晰的文件或子系统所有权；
+- 产物可以被独立审查和验收；
+- 会在后续开发中重复出现；
+- 专业分工能够明显提升质量或开发效率。
 
-When these conditions do not hold, the main agent uses temporary task decomposition rather than creating another permanent role. New permanent roles require user confirmation before being added to the project contract.
+当任务不满足这些条件时，主智能体使用临时任务拆分，不新增长期固定角色，避免智能体角色无限增加。任何新的长期固定角色都必须经过用户确认后才能加入项目协作契约。
 
-## 13. Initial Implementation Scope
+## 13. 首次实施范围
 
-The first implementation establishes:
+首次实施包括：
 
-1. the root orchestration rules;
-2. both permanent role contracts;
-3. the initial machine-readable knowledge directory and schemas;
-4. migration of the currently confirmed product-process knowledge into the baseline;
-5. validation commands or tests for structural integrity;
-6. a documented decision-package and result format;
-7. a dry-run of both specialist roles against the existing product management implementation.
+1. 建立项目根目录的智能体调度规则；
+2. 建立两个长期固定专业角色的角色契约；
+3. 建立初始机器可读知识目录和结构定义；
+4. 将当前已确认的产品制程知识迁移到知识基线；
+5. 建立结构完整性校验命令或测试；
+6. 定义业务决策包和子智能体结果格式；
+7. 使用现有产品管理实现对两个专业角色执行一次试运行。
 
-A resident agent service, a customer ontology editor, a full customer Q&A page, and a production rule engine are outside this initial scope. Their future implementation will consume the stable knowledge structures created here.
+首次实施不包括常驻智能体服务、客户本体编辑器、完整客户问答页面和生产规则运行引擎。这些能力后续将直接使用本次建立并逐步稳定的知识结构。
