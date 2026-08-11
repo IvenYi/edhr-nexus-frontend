@@ -14,13 +14,13 @@ terms:
     visibility: internal
   - id: term.product-family
     name: 产品簇
-    definition: 可包含多个半成品或产成品产品的产品集合；一个产品最多属于一个产品簇。
+    definition: 可包含多个半成品或产成品产品的产品集合；成员关系已持久化，并在同一租户内约束一个产品最多属于一个产品簇。
     aliases: [产品族]
-    status: specified
+    status: implemented
     visibility: internal
   - id: term.product-process-version
     name: 产品制程版本
-    definition: 产品或产品簇下可并行存在并在后续生产执行中被显式选择的具体制程配置；产品和产品簇共用同一套制程根、版本及工序表单文档绑定模型。
+    definition: 产品或产品簇下可并行存在并在后续生产执行中被显式选择的具体制程配置；制程根以 owner_type 和 owner_id 标识产品或产品簇所有者，并共用同一套版本及工序表单文档绑定模型。
     aliases: [制程配置版本, 产品工艺版本, 产品簇制程版本]
     status: implemented
     visibility: internal

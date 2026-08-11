@@ -13,7 +13,22 @@ evidence:
   - id: evidence.product-process-entity
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcess.java
-    description: 产品制程父记录通过 productVersionId 引用产品或半成品物料版本。
+    description: 产品制程父记录以 ownerType 和 ownerId 表示 PRODUCT 或 PRODUCT_FAMILY 所有者，并保留 productVersionId 兼容历史产品所有者。
+    visibility: internal
+  - id: evidence.product-process-owner-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductProcessRepository.java
+    description: 产品制程仓储同时支持历史 productVersionId 查询和 ownerType、ownerId 所有者查询。
+    visibility: internal
+  - id: evidence.product-family-member-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductFamilyMember.java
+    description: 产品簇成员实体以 tenantId、productFamilyId 和 productId 表示成员关系，并声明产品在租户内唯一归属约束。
+    visibility: internal
+  - id: evidence.product-family-member-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java
+    description: 产品簇成员仓储提供按租户查询产品归属和产品簇成员列表的持久化访问。
     visibility: internal
   - id: evidence.product-process-version-entity
     type: code
@@ -95,6 +110,11 @@ evidence:
     path: gmp-platform/backend/src/main/resources/db/changelog/0052-product-process-document-pages.sql
     description: 为工序文档版本绑定增加 pageStart 和 pageEnd。
     visibility: internal
+  - id: evidence.migration-0053-product-family-process-owner
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0053-product-family-process-owner.sql
+    description: 建立产品簇成员表及租户内唯一归属约束；为 product_process 回填并约束 owner_type、owner_id，同时保留历史 product_version_id 兼容性。
+    visibility: internal
   - id: evidence.product-modeling-page
     type: code
     path: gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx
@@ -114,4 +134,9 @@ evidence:
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java
     description: 产品来源、并行版本、引用范围、DHR 表单追溯和产品建模控制器行为测试。
+    visibility: internal
+  - id: evidence.product-family-member-repository-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepositoryTest.java
+    description: 产品簇成员租户隔离、单产品唯一归属、产品与产品簇制程所有者查询和 0053 迁移定义约束测试。
     visibility: internal

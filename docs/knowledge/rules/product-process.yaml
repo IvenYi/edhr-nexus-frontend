@@ -34,9 +34,9 @@ rules:
     evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
   - id: rule.product-family.membership-cardinality
     name: 一个产品最多属于一个产品簇
-    status: specified
+    status: implemented
     visibility: internal
-    trigger: product-family.member.assign
+    trigger: product-family.member.persist
     scope: product-family-membership
     condition:
       all:
@@ -47,7 +47,7 @@ rules:
       type: block
       reason: product-belongs-to-at-most-one-product-family
     explanation: 产品簇可包含多个产品，但同一个产品最多关联一个产品簇。
-    evidenceIds: []
+    evidenceIds: [evidence.product-family-member-entity, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test]
   - id: rule.product-family.multiple-parallel-process-versions
     name: 产品簇允许存在多个并行制程版本
     status: specified
@@ -70,9 +70,9 @@ rules:
     evidenceIds: []
   - id: rule.product-process.shared-owner-model
     name: 产品与产品簇共用制程绑定模型
-    status: specified
+    status: implemented
     visibility: internal
-    trigger: product-process.version.save-or-migrate
+    trigger: product-process.save-or-migrate
     scope: product-process-root-and-version
     condition:
       all:
@@ -88,7 +88,7 @@ rules:
       ownerIdField: owner_id
       legacyProductVersionIdCompatible: true
     explanation: 产品和产品簇共用同一套制程根、版本、工序以及表单和文档绑定模型；实现上使用 owner_type(PRODUCT/PRODUCT_FAMILY) 与 owner_id，历史 product_version_id 保持兼容迁移。
-    evidenceIds: []
+    evidenceIds: [evidence.product-process-entity, evidence.product-process-owner-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test]
   - id: rule.product-process.bind-route-and-dhr-versions
     name: 制程版本绑定一个可引用的路线版本和 DHR 版本
     status: implemented

@@ -107,3 +107,5 @@ databaseChangeLog:
       file: db/changelog/0051-document-version-code.sql
   - include:
       file: db/changelog/0052-product-process-document-pages.sql
+  - include:
+      file: db/changelog/0053-product-family-process-owner.sql
