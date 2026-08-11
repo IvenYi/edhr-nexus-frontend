@@ -8,6 +8,8 @@ import type {
   CanvasSheetCell,
   CanvasSheetImage,
   CanvasSheetMedia,
+  CanvasWordDocument,
+  CanvasWordTableCell,
 } from '../types';
 import {
   buildDataUrl,
@@ -16,6 +18,7 @@ import {
   createImportedCanvasPage,
   DEFAULT_COLUMN_WIDTH,
   DEFAULT_ROW_HEIGHT,
+  getImportedPaperContentWidth,
 } from './importGrid';
 
 const DEFAULT_FONT_SIZE = 14;
@@ -396,73 +399,112 @@ function parseBlocks(doc: Document) {
     .filter(Boolean) as ParsedBlock[];
 }
 
-function blocksToGrid(blocks: ParsedBlock[]) {
-  const rowHeights: number[] = [];
-  const columnWidths: number[] = [];
-  const mergedCells: CanvasSelectionRange[] = [];
-  const cells: Record<string, CanvasSheetCell> = {};
+function sumNumbers(values: number[]) {
+  return values.reduce((total, value) => total + value, 0);
+}
 
-  let rowOffset = 0;
+function findMergedRangeForWordCell(ranges: CanvasSelectionRange[], row: number, col: number) {
+  return ranges.find((range) => row >= range.t && row <= range.b && col >= range.l && col <= range.r);
+}
+
+function buildWordTableCells(table: ParsedTable, tableIndex: number): CanvasWordTableCell[] {
+  const cells: CanvasWordTableCell[] = [];
+
+  table.rows.forEach((row, rowIndex) => {
+    row.cells.forEach((cell, colIndex) => {
+      const row = rowIndex + 1;
+      const col = colIndex + 1;
+      const mergedRange = findMergedRangeForWordCell(table.mergedCells, row, col);
+      if (mergedRange && (mergedRange.t !== row || mergedRange.l !== col)) return;
+
+      const colSpan = mergedRange ? mergedRange.r - mergedRange.l + 1 : 1;
+      const rowSpan = mergedRange ? mergedRange.b - mergedRange.t + 1 : 1;
+      cells.push({
+        id: `word-table-${tableIndex + 1}-cell-${row}-${col}`,
+        row,
+        col,
+        rowSpan,
+        colSpan,
+        text: String(cell?.value ?? ''),
+        style: cell?.style,
+        border: cell?.border,
+      });
+    });
+  });
+
+  return cells;
+}
+
+function blocksToWordDocument(
+  blocks: ParsedBlock[],
+  contentWidth: number,
+  images: CanvasSheetImage[],
+): CanvasWordDocument {
+  const wordBlocks: CanvasWordDocument['blocks'] = [];
+  let top = 0;
+  let paragraphIndex = 0;
+  let tableIndex = 0;
+
   blocks.forEach((block) => {
     if (block.type === 'paragraph') {
-      const width = Math.max(DEFAULT_COLUMN_WIDTH * 3, columnWidths[0] ?? 0);
       const fontSize = Number(block.style.fontSize ?? DEFAULT_FONT_SIZE);
-      rowHeights[rowOffset] = estimateTextHeight(block.text, width, fontSize);
-      columnWidths[0] = width;
-      cells[`${rowOffset + 1}:1`] = {
-        value: block.text,
+      const height = estimateTextHeight(block.text, contentWidth, fontSize);
+      wordBlocks.push({
+        id: `word-doc-paragraph-${paragraphIndex + 1}`,
+        type: 'paragraph',
+        text: block.text,
         style: block.style,
-      };
-      rowOffset += 1;
+        layout: {
+          top,
+          left: 0,
+          width: contentWidth,
+          height,
+        },
+      });
+      top += height;
+      paragraphIndex += 1;
       return;
     }
 
-    block.table.colWidths.forEach((width, index) => {
-      columnWidths[index] = Math.max(columnWidths[index] ?? 0, width);
+    const tableWidth = Math.min(contentWidth, Math.max(1, sumNumbers(block.table.colWidths)));
+    const tableHeight = Math.max(1, sumNumbers(block.table.rows.map((row) => row.height)));
+    wordBlocks.push({
+      id: `word-doc-table-${tableIndex + 1}`,
+      type: 'table',
+      layout: {
+        top,
+        left: 0,
+        width: tableWidth,
+        height: tableHeight,
+      },
+      columnWidths: block.table.colWidths,
+      rowHeights: block.table.rows.map((row) => row.height),
+      cells: buildWordTableCells(block.table, tableIndex),
     });
-
-    block.table.rows.forEach((row, rowIndex) => {
-      const targetRow = rowOffset + rowIndex;
-      rowHeights[targetRow] = row.height;
-      row.cells.forEach((cell, colIndex) => {
-        if (!cell || (!cell.value && !cell.style && !cell.border)) return;
-        cells[`${targetRow + 1}:${colIndex + 1}`] = cell;
-      });
-    });
-
-    block.table.mergedCells.forEach((range) => {
-      mergedCells.push({
-        t: range.t + rowOffset,
-        b: range.b + rowOffset,
-        l: range.l,
-        r: range.r,
-      });
-    });
-
-    rowOffset += block.table.rows.length;
+    top += tableHeight;
+    tableIndex += 1;
   });
 
-  const normalizedRowCount = clampImportedRowCount(rowHeights.length || 1);
-  const normalizedColumnCount = clampImportedColumnCount(columnWidths.length || 1);
-  const normalizedRowHeights = Array.from({ length: normalizedRowCount }, (_, index) => (
-    Math.max(24, Math.round(rowHeights[index] ?? DEFAULT_ROW_HEIGHT))
-  ));
-  const normalizedColumnWidths = Array.from({ length: normalizedColumnCount }, (_, index) => (
-    Math.max(36, Math.round(columnWidths[index] ?? DEFAULT_COLUMN_WIDTH))
-  ));
+  images.forEach((image, index) => {
+    wordBlocks.push({
+      id: `word-doc-image-${index + 1}`,
+      type: 'image',
+      mediaId: image.mediaId,
+      layout: {
+        left: image.layout.left,
+        top: image.layout.top,
+        width: image.layout.width,
+        height: image.layout.height,
+      },
+    });
+    top = Math.max(top, image.layout.top + image.layout.height);
+  });
 
   return {
-    rowHeights: normalizedRowHeights,
-    columnWidths: normalizedColumnWidths,
-    cells,
-    mergedCells: normalizeMergedCells(mergedCells)
-      .filter((range) => range.t <= normalizedRowCount && range.l <= normalizedColumnCount)
-      .map((range) => ({
-        t: range.t,
-        l: range.l,
-        b: Math.min(normalizedRowCount, range.b),
-        r: Math.min(normalizedColumnCount, range.r),
-      })),
+    source: 'docx',
+    contentWidth,
+    contentHeight: Math.max(top, DEFAULT_ROW_HEIGHT),
+    blocks: wordBlocks,
   };
 }
 
@@ -698,20 +740,25 @@ async function importDocxToCanvasPage(file: File, pageId: string, pageName: stri
   const doc = parseXml(new TextDecoder().decode(documentEntry.bytes));
   const rels = relsEntry ? parseRelationships(new TextDecoder().decode(relsEntry.bytes)) : new Map<string, string>();
   const orientation = resolveDocxOrientation(doc);
-  const grid = blocksToGrid(parseBlocks(doc));
+  const blocks = parseBlocks(doc);
   const { medias, images } = buildDocxImages(doc, rels, entries);
+  const contentWidth = getImportedPaperContentWidth(orientation);
+  const wordDocument = blocksToWordDocument(blocks, contentWidth, images);
 
-  // Word content is no longer downgraded into `static-text` / `static-image` nodes.
   return createImportedCanvasPage({
     pageId,
     pageName,
     orientation,
     canvasMode: 'paper',
     paperMode: 'free',
+    wordDocument,
     grid: {
-      ...grid,
+      rowHeights: [DEFAULT_ROW_HEIGHT],
+      columnWidths: [contentWidth],
+      cells: {},
+      mergedCells: [],
       medias,
-      images,
+      images: [],
     },
   });
 }

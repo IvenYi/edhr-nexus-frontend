@@ -1,4 +1,4 @@
-import type { DragEvent as ReactDragEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
+import type { DragEvent as ReactDragEvent, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent } from 'react';
 import {
   useCallback,
   useEffect,
@@ -27,10 +27,11 @@ import {
   TableRow,
   TextField,
 } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import AppDialog from '@/components/AppDialog';
 import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
-import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, FieldType, ModelField } from '../../types';
+import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, CanvasWordDocument, CanvasWordTableBlock, FieldType, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import { fieldRegistry } from '../../registry/fieldRegistry';
 import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
@@ -646,6 +647,7 @@ function findMergedRangeForCell(page: CanvasPage, row: number, col: number) {
 
 function getSheetContentBottom(page: CanvasPage, rowOffsets: number[]) {
   let bottom = 0;
+  const importedGridTop = page.sheet.canvasMode === 'paper' ? Number(page.sheet.importedGridTop ?? 0) || 0 : 0;
 
   Object.entries(page.cells).forEach(([cellKey, cell]) => {
     if (!hasVisibleSheetCell(cell)) return;
@@ -657,16 +659,25 @@ function getSheetContentBottom(page: CanvasPage, rowOffsets: number[]) {
 
     const range = findMergedRangeForCell(page, row, col) ?? { t: row, l: col, b: row, r: col };
     const rowOffsetIndex = Math.min(range.b, rowOffsets.length - 1);
-    bottom = Math.max(bottom, rowOffsets[rowOffsetIndex] ?? bottom);
+    bottom = Math.max(bottom, importedGridTop + (rowOffsets[rowOffsetIndex] ?? bottom));
   });
 
   page.images.forEach((image) => {
-    bottom = Math.max(bottom, image.layout.top + image.layout.height);
+    bottom = Math.max(bottom, importedGridTop + image.layout.top + image.layout.height);
   });
 
   bottom = Math.max(bottom, getCanvasNodeContentBottom(page.nodes, rowOffsets));
+  bottom = Math.max(bottom, getCanvasWordDocumentBottom(page.wordDocument));
 
   return bottom;
+}
+
+function getCanvasWordDocumentBottom(wordDocument?: CanvasWordDocument) {
+  if (!wordDocument) return 0;
+  return Math.max(
+    wordDocument.contentHeight,
+    ...wordDocument.blocks.map((block) => block.layout.top + block.layout.height),
+  );
 }
 
 function getCanvasNodeContentBottom(nodes: CanvasPage['nodes'], rowOffsets: number[]): number {
@@ -800,6 +811,31 @@ function hasPlainOverflowCellValue(value: unknown, contentWidth: number, fontSiz
   return estimateSheetTextPixelWidth(text, fontSize) > Math.max(1, contentWidth);
 }
 
+function resolveWordTextSx(style?: Record<string, unknown>) {
+  return {
+    color: String(style?.color ?? '#1f2937'),
+    fontSize: resolveNumericStyle(style?.fontSize, DEFAULT_SHEET_FONT_SIZE),
+    fontWeight: style?.fontWeight as string | number | undefined,
+    fontStyle: style?.fontStyle as string | undefined,
+    fontFamily: style?.fontFamily as string | undefined,
+    lineHeight: style?.lineHeight as string | number | undefined,
+    textAlign: (style?.textAlign as string | undefined) ?? 'left',
+    textDecoration: style?.textDecoration as string | undefined,
+    whiteSpace: style?.whiteSpace === 'nowrap' ? 'nowrap' : 'pre-wrap',
+    overflowWrap: 'break-word',
+    wordBreak: 'break-word',
+  };
+}
+
+function resolveWordTableBorder(edge: keyof CanvasCellBorder, border?: CanvasCellBorder) {
+  const color = String(border?.color ?? '#111827');
+  return border?.[edge] === false ? 'none' : `1px solid ${color}`;
+}
+
+function fitWordTableColumnWidths(table: CanvasWordTableBlock) {
+  return fitColumnWidths(table.columnWidths, table.layout.width);
+}
+
 export default function CanvasSheetWorkspace() {
   const { showMessage } = useSnackbar();
   const designerDocument = useTemplateDesignerStore((state) => state.document);
@@ -811,6 +847,7 @@ export default function CanvasSheetWorkspace() {
   const selectedRange = useTemplateDesignerStore((state) => state.selectedRange);
   const setSelectedRange = useTemplateDesignerStore((state) => state.setSelectedRange);
   const getFieldById = useTemplateDesignerStore((state) => state.getFieldById);
+  const updateCurrentPage = useTemplateDesignerStore((state) => state.updateCurrentPage);
   const updateCurrentPageSheet = useTemplateDesignerStore((state) => state.updateCurrentPageSheet);
   const selectAllCells = useTemplateDesignerStore((state) => state.selectAllCells);
   const selectColumnRange = useTemplateDesignerStore((state) => state.selectColumnRange);
@@ -977,11 +1014,14 @@ export default function CanvasSheetWorkspace() {
   const sheetPaperWidth = a4PaperWidthPx;
   const freeCanvasBodyHeight = Math.max(freeCanvasMeasuredHeight, 480);
   const sheetContentBottom = currentPage ? getSheetContentBottom(currentPage, rowOffsets) : 0;
+  const wordDocumentContentBottom = getCanvasWordDocumentBottom(currentPage?.wordDocument);
   const paperPaginationBodyHeight = isFreeCanvas ? freeCanvasBodyHeight : Math.max(sheetContentBottom, 1);
   const rawPaperHeight = paperInsetTop + paperHeaderHeight + paperPaginationBodyHeight + paperFooterHeight;
   const pageMarkerCount = Math.max(1, Math.ceil(rawPaperHeight / a4PaperHeightPx));
   const sheetPaperHeight = pageMarkerCount * a4PaperHeightPx;
   const paperContentHeight = sheetPaperHeight - paperInsetTop - paperInsetBottom;
+  const importedGridTop = Math.max(0, Number(currentPage?.sheet.importedGridTop ?? 0) || 0);
+  const gridOffsetTop = isFreeCanvas ? importedGridTop : 0;
   const showPaperRuler = currentPage?.sheet.showRuler ?? true;
   const paperRowHeaderWidth = showPaperRuler ? rowHeaderWidth : 0;
   const paperColumnHeaderHeight = showPaperRuler ? columnHeaderHeight : 0;
@@ -1028,7 +1068,7 @@ export default function CanvasSheetWorkspace() {
         : 0
     )),
   );
-  const paperWorkingHeight = isFreeCanvas ? Math.max(freeCanvasBodyHeight, absoluteNodeBottom, sheetHeight) : Math.max(sheetHeight, 480);
+  const paperWorkingHeight = isFreeCanvas ? Math.max(freeCanvasBodyHeight, absoluteNodeBottom, wordDocumentContentBottom, gridOffsetTop + sheetHeight) : Math.max(sheetHeight, 480);
   const effectiveRange = selectedRange ?? buildSingleCellRange(selectedCell);
   const normalizedRange = effectiveRange ? normalizeRange(effectiveRange) : null;
   const normalizedMultiSelectedRanges = useMemo(() => {
@@ -1073,7 +1113,7 @@ export default function CanvasSheetWorkspace() {
           data-sheet-multi-selection-outline="true"
           sx={{
             position: 'absolute',
-            top: outline.top,
+            top: (layer === 'overlay' ? gridOffsetTop : 0) + outline.top,
             left: outline.left,
             width: outline.width,
             height: outline.height,
@@ -1089,7 +1129,7 @@ export default function CanvasSheetWorkspace() {
           data-selection-outline={layer === 'overlay' ? 'selectionOverlay' : 'selectionOutline'}
           sx={{
             position: 'absolute',
-            top: selectionOutline.top,
+            top: (layer === 'overlay' ? gridOffsetTop : 0) + selectionOutline.top,
             left: selectionOutline.left,
             width: selectionOutline.width,
             height: selectionOutline.height,
@@ -1111,12 +1151,12 @@ export default function CanvasSheetWorkspace() {
         height: rowOffsets[normalizedFieldDropGuideRange.b] - rowOffsets[normalizedFieldDropGuideRange.t - 1],
       }
     : null;
-  const renderFieldDropGuide = () => fieldDropGuideOutline ? (
+  const renderFieldDropGuide = (layer: 'grid' | 'overlay' = 'overlay') => fieldDropGuideOutline ? (
     <Box
       data-field-drop-guide="true"
       sx={{
         position: 'absolute',
-        top: fieldDropGuideOutline.top,
+        top: (layer === 'overlay' ? gridOffsetTop : 0) + fieldDropGuideOutline.top,
         left: fieldDropGuideOutline.left,
         width: fieldDropGuideOutline.width,
         height: fieldDropGuideOutline.height,
@@ -1147,6 +1187,41 @@ export default function CanvasSheetWorkspace() {
   const clearSelection = () => {
     setMultiSelectedRanges([]);
     setSelectedRange(null, null);
+  };
+  const updateWordParagraphText = (blockId: string, text: string) => {
+    const wordDocument = currentPage?.wordDocument;
+    if (!wordDocument) return;
+
+    updateCurrentPage({
+      wordDocument: {
+        ...wordDocument,
+        blocks: wordDocument.blocks.map((block) => (
+          block.id === blockId && block.type === 'paragraph'
+            ? { ...block, text }
+            : block
+        )),
+      },
+    });
+  };
+  const updateWordTableCellText = (blockId: string, cellId: string, text: string) => {
+    const wordDocument = currentPage?.wordDocument;
+    if (!wordDocument) return;
+
+    updateCurrentPage({
+      wordDocument: {
+        ...wordDocument,
+        blocks: wordDocument.blocks.map((block) => (
+          block.id === blockId && block.type === 'table'
+            ? {
+                ...block,
+                cells: block.cells.map((cell) => (
+                  cell.id === cellId ? { ...cell, text } : cell
+                )),
+              }
+            : block
+        )),
+      },
+    });
   };
   const selectedSubTableNode = currentPage && normalizedRange
     ? currentPage.nodes.find((node) => {
@@ -1257,18 +1332,19 @@ export default function CanvasSheetWorkspace() {
     const text = await navigator.clipboard.readText();
     pasteCellsFromText(target.t, target.l, text);
   };
-  const getFieldDropCellLayout = (range: CanvasSelectionRange) => {
+  const getGridOffsetCellLayout = (range: CanvasSelectionRange) => {
     const normalizedSelection = normalizeRange(range);
     const left = columnOffsets[normalizedSelection.l - 1] ?? 0;
-    const top = rowOffsets[normalizedSelection.t - 1] ?? 0;
+    const rowTop = rowOffsets[normalizedSelection.t - 1] ?? 0;
     return {
       left,
-      top,
+      top: gridOffsetTop + rowTop,
       width: (columnOffsets[normalizedSelection.r] ?? left) - left,
-      height: (rowOffsets[normalizedSelection.b] ?? top) - top,
+      height: (rowOffsets[normalizedSelection.b] ?? rowTop) - rowTop,
       range: normalizedSelection,
     };
   };
+  const getFieldDropCellLayout = (range: CanvasSelectionRange) => getGridOffsetCellLayout(range);
   const renderSubTableOverlays = () => {
     if (!currentPage) return null;
 
@@ -1461,7 +1537,7 @@ export default function CanvasSheetWorkspace() {
     if (!paperRect) return null;
 
     const x = clientX - paperRect.left - paperInsetLeft;
-    const y = clientY - paperRect.top - paperInsetTop - paperHeaderHeight;
+    const y = clientY - paperRect.top - paperInsetTop - paperHeaderHeight - gridOffsetTop;
     const col = findIndexByOffset(columnOffsets, x);
     const row = findIndexByOffset(rowOffsets, y);
     if (!row || !col) return null;
@@ -1666,9 +1742,7 @@ export default function CanvasSheetWorkspace() {
 
       const mergedRange = findMergedRangeForCell(renderPage, row, col);
       const cellSelectionRange = getMergedAwareCellRange(row, col, mergedRange);
-      const normalizedSelection = normalizeRange(cellSelectionRange);
-      const left = columnOffsets[normalizedSelection.l - 1] ?? 0;
-      const top = rowOffsets[normalizedSelection.t - 1] ?? 0;
+      const cellLayout = getGridOffsetCellLayout(cellSelectionRange);
 
       setSelectedRange(cellSelectionRange, { row: cellSelectionRange.t, col: cellSelectionRange.l });
       setFieldDropGuideRange(null);
@@ -1678,13 +1752,7 @@ export default function CanvasSheetWorkspace() {
             field: detail.subTableField,
           }
         : null;
-      addDroppedFieldToCell(detail.fieldId, cellSelectionRange, {
-        left,
-        top,
-        width: (columnOffsets[normalizedSelection.r] ?? left) - left,
-        height: (rowOffsets[normalizedSelection.b] ?? top) - top,
-        range: normalizedSelection,
-      }, subTableFieldData);
+      addDroppedFieldToCell(detail.fieldId, cellSelectionRange, cellLayout, subTableFieldData);
     };
     const handlePointerFieldHover = (event: Event) => {
       const detail = (event as CustomEvent<FieldPointerHoverDetail | null>).detail;
@@ -2946,7 +3014,7 @@ export default function CanvasSheetWorkspace() {
     <Box
       sx={{
         position: mode === 'paper' ? 'absolute' : 'relative',
-        top: mode === 'paper' ? 0 : undefined,
+        top: mode === 'paper' ? gridOffsetTop : undefined,
         left: mode === 'paper' ? 0 : undefined,
         width: sheetWidth,
         display: 'grid',
@@ -3169,9 +3237,154 @@ export default function CanvasSheetWorkspace() {
         );
       })}
       {renderSelectionOutline('grid')}
-      {renderFieldDropGuide()}
+      {renderFieldDropGuide('grid')}
     </Box>
   );
+
+  const renderWordDocumentLayer = () => {
+    const wordDocument = currentPage?.wordDocument;
+    if (!wordDocument || !isFreeCanvas) return null;
+
+    return (
+      <Box
+        data-word-document-layer="true"
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 1,
+        }}
+      >
+        {wordDocument.blocks.map((block) => {
+          if (block.type === 'paragraph') {
+            return (
+              <Box
+                key={block.id}
+                data-word-block="paragraph"
+                contentEditable
+                suppressContentEditableWarning
+                onMouseDown={(event: ReactMouseEvent<HTMLDivElement>) => {
+                  event.stopPropagation();
+                  clearSelection();
+                }}
+                onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
+                  updateWordParagraphText(block.id, event.currentTarget.innerText);
+                }}
+                sx={{
+                  position: 'absolute',
+                  left: block.layout.left,
+                  top: block.layout.top,
+                  width: block.layout.width,
+                  minHeight: block.layout.height,
+                  outline: 'none',
+                  px: 0.5,
+                  py: 0.25,
+                  boxSizing: 'border-box',
+                  cursor: 'text',
+                  ...resolveWordTextSx(block.style),
+                  '&:focus': {
+                    boxShadow: 'inset 0 0 0 1px rgba(25, 118, 210, 0.55)',
+                    bgcolor: 'rgba(255, 255, 255, 0.72)',
+                  },
+                } as SxProps<Theme>}
+              >
+                {block.text}
+              </Box>
+            );
+          }
+
+          if (block.type === 'table') {
+            const tableColumnWidths = fitWordTableColumnWidths(block);
+            const tableWidth = tableColumnWidths.reduce((sum, width) => sum + width, 0);
+            const tableHeight = block.rowHeights.reduce((sum, height) => sum + height, 0);
+
+            return (
+              <Box
+                key={block.id}
+                data-word-block="table"
+                sx={{
+                  position: 'absolute',
+                  left: block.layout.left,
+                  top: block.layout.top,
+                  width: tableWidth,
+                  minHeight: tableHeight,
+                  display: 'grid',
+                  gridTemplateColumns: buildTemplate(tableColumnWidths),
+                  gridTemplateRows: buildTemplate(block.rowHeights),
+                  bgcolor: '#fff',
+                  boxSizing: 'border-box',
+                }}
+              >
+                {block.cells.map((cell) => (
+                  <Box
+                    key={cell.id}
+                    data-word-table-cell="true"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onMouseDown={(event: ReactMouseEvent<HTMLDivElement>) => {
+                      event.stopPropagation();
+                      clearSelection();
+                    }}
+                    onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
+                      updateWordTableCellText(block.id, cell.id, event.currentTarget.innerText);
+                    }}
+                    sx={{
+                      gridColumn: `${cell.col} / span ${cell.colSpan}`,
+                      gridRow: `${cell.row} / span ${cell.rowSpan}`,
+                      display: 'flex',
+                      alignItems: cell.style?.verticalAlign === 'top' ? 'flex-start' : cell.style?.verticalAlign === 'bottom' ? 'flex-end' : 'center',
+                      justifyContent: cell.style?.textAlign === 'right' ? 'flex-end' : cell.style?.textAlign === 'center' ? 'center' : 'flex-start',
+                      px: `${resolveNumericStyle(cell.style?.paddingLeft, 8)}px`,
+                      py: `${resolveNumericStyle(cell.style?.paddingTop, 4)}px`,
+                      pr: `${resolveNumericStyle(cell.style?.paddingRight, resolveNumericStyle(cell.style?.paddingLeft, 8))}px`,
+                      pb: `${resolveNumericStyle(cell.style?.paddingBottom, resolveNumericStyle(cell.style?.paddingTop, 4))}px`,
+                      borderTop: resolveWordTableBorder('top', cell.border),
+                      borderRight: resolveWordTableBorder('right', cell.border),
+                      borderBottom: resolveWordTableBorder('bottom', cell.border),
+                      borderLeft: resolveWordTableBorder('left', cell.border),
+                      bgcolor: String(cell.style?.backgroundColor ?? '#fff'),
+                      boxSizing: 'border-box',
+                      outline: 'none',
+                      cursor: 'text',
+                      overflow: 'hidden',
+                      ...resolveWordTextSx(cell.style),
+                      '&:focus': {
+                        boxShadow: 'inset 0 0 0 2px rgba(25, 118, 210, 0.62)',
+                        zIndex: 2,
+                      },
+                    } as SxProps<Theme>}
+                  >
+                    {cell.text}
+                  </Box>
+                ))}
+              </Box>
+            );
+          }
+
+          const src = mediaSrcMap.get(block.mediaId);
+          if (!src) return null;
+
+          return (
+            <Box
+              key={block.id}
+              component="img"
+              data-word-block="image"
+              src={src}
+              alt=""
+              sx={{
+                position: 'absolute',
+                left: block.layout.left,
+                top: block.layout.top,
+                width: block.layout.width,
+                height: block.layout.height,
+                objectFit: 'contain',
+                pointerEvents: 'none',
+              }}
+            />
+          );
+        })}
+      </Box>
+    );
+  };
 
   const renderPageBreakMarkers = () => (pageMarkerCount > 1 ? (
     <Box
@@ -3591,8 +3804,8 @@ export default function CanvasSheetWorkspace() {
                         minHeight: paperWorkingHeight,
                       }}
                     >
-                      {hasSheetOverlayContent ? renderImportedGrid('paper') : null}
-                      <CanvasDropZone parentId={null} />
+                      {renderWordDocumentLayer()}
+                      {hasSheetOverlayContent && !currentPage.wordDocument ? renderImportedGrid('paper') : null}
                       <CanvasNodeRenderer
                         nodes={currentPage.nodes}
                         resolveCellRangeLayout={getFieldDropCellLayout}
@@ -3601,7 +3814,7 @@ export default function CanvasSheetWorkspace() {
                       />
                       {renderSubTableOverlays()}
                       {hasSheetOverlayContent ? renderSelectionOutline('overlay') : null}
-                      {renderFieldDropGuide()}
+                      {renderFieldDropGuide('overlay')}
                     </Box>
                   </Box>
                   {currentPage.sheet.showFooter ? (
@@ -3937,7 +4150,7 @@ export default function CanvasSheetWorkspace() {
                   />
                   {renderSubTableOverlays()}
                   {renderSelectionOutline('overlay')}
-                  {renderFieldDropGuide()}
+                  {renderFieldDropGuide('overlay')}
                 </Box>
                 {currentPage.sheet.showFooter ? (
                   <Box

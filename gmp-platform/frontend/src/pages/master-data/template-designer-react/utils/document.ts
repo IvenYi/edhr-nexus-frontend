@@ -1,6 +1,8 @@
 import type { TemplateModelingRecord, TemplateVersionRecord } from '@/api/template-modeling';
 import type {
   CanvasPage,
+  CanvasWordBlock,
+  CanvasWordDocument,
   FieldType,
   ModelField,
   ModelFieldOption,
@@ -244,6 +246,27 @@ function normalizeCanvasNodes(nodes: CanvasPage['nodes'], pageId: string): Canva
   });
 }
 
+function normalizeWordDocument(input: unknown): CanvasWordDocument | undefined {
+  if (!input || typeof input !== 'object') return undefined;
+  const source = input as Partial<CanvasWordDocument>;
+  if (source.source !== 'docx') return undefined;
+
+  const contentWidth = Number(source.contentWidth);
+  const contentHeight = Number(source.contentHeight);
+  const blocks = Array.isArray(source.blocks)
+    ? source.blocks.filter((block): block is CanvasWordBlock => Boolean(block && typeof block === 'object' && 'type' in block))
+    : [];
+
+  if (!blocks.length) return undefined;
+
+  return {
+    source: 'docx',
+    contentWidth: Number.isFinite(contentWidth) && contentWidth > 0 ? contentWidth : 0,
+    contentHeight: Number.isFinite(contentHeight) && contentHeight > 0 ? contentHeight : 0,
+    blocks,
+  };
+}
+
 function normalizeCanvasPage(page: Partial<CanvasPage>, index: number): CanvasPage {
   const rowCount = page.sheet?.rowCount ?? 30;
   const columnCount = page.sheet?.columnCount ?? 9;
@@ -255,6 +278,7 @@ function normalizeCanvasPage(page: Partial<CanvasPage>, index: number): CanvasPa
     id: pageId,
     name: page.name || `页面 ${index + 1}`,
     nodes: normalizeCanvasNodes(page.nodes ?? [], pageId),
+    wordDocument: normalizeWordDocument(page.wordDocument),
     sheet: {
       rowCount,
       columnCount,
@@ -273,6 +297,7 @@ function normalizeCanvasPage(page: Partial<CanvasPage>, index: number): CanvasPa
       paperMarginRightMm: page.sheet?.paperMarginRightMm ?? 6,
       paperMarginBottomMm: page.sheet?.paperMarginBottomMm ?? 6,
       paperMarginLeftMm: page.sheet?.paperMarginLeftMm ?? 6,
+      importedGridTop: Number(page.sheet?.importedGridTop ?? 0) || 0,
     },
     cells: page.cells ?? {},
     mergedCells: Array.isArray(page.mergedCells) ? page.mergedCells : [],

@@ -218,6 +218,8 @@ function resolveStaticTextBoxStyle(node: CanvasNode): Record<string, string | nu
     fontSize: typeof node.style.fontSize === 'number' ? `${node.style.fontSize}px` : (node.style.fontSize as string | undefined),
     fontWeight: node.style.fontWeight as string | undefined,
     fontStyle: node.style.fontStyle as string | undefined,
+    fontFamily: node.style.fontFamily as string | undefined,
+    lineHeight: typeof node.style.lineHeight === 'number' ? node.style.lineHeight : (node.style.lineHeight as string | undefined),
     textDecoration: node.style.textDecoration as string | undefined,
     color: String(node.style.color ?? '#1f2937'),
     textAlign: (node.style.textAlign as string | undefined) ?? 'left',

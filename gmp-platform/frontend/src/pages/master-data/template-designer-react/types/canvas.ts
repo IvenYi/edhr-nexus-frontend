@@ -187,6 +187,57 @@ export interface CanvasSheetImage {
   layout: CanvasSheetImageLayout;
 }
 
+export interface CanvasWordBlockLayout {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
+export interface CanvasWordParagraphBlock {
+  id: string;
+  type: 'paragraph';
+  text: string;
+  style?: Record<string, unknown>;
+  layout: CanvasWordBlockLayout;
+}
+
+export interface CanvasWordTableCell {
+  id: string;
+  row: number;
+  col: number;
+  rowSpan: number;
+  colSpan: number;
+  text: string;
+  style?: Record<string, unknown>;
+  border?: CanvasCellBorder;
+}
+
+export interface CanvasWordTableBlock {
+  id: string;
+  type: 'table';
+  layout: CanvasWordBlockLayout;
+  columnWidths: number[];
+  rowHeights: number[];
+  cells: CanvasWordTableCell[];
+}
+
+export interface CanvasWordImageBlock {
+  id: string;
+  type: 'image';
+  mediaId: string;
+  layout: CanvasWordBlockLayout;
+}
+
+export type CanvasWordBlock = CanvasWordParagraphBlock | CanvasWordTableBlock | CanvasWordImageBlock;
+
+export interface CanvasWordDocument {
+  source: 'docx';
+  contentWidth: number;
+  contentHeight: number;
+  blocks: CanvasWordBlock[];
+}
+
 export interface CanvasSheetConfig {
   rowCount: number;
   columnCount: number;
@@ -205,12 +256,14 @@ export interface CanvasSheetConfig {
   paperMarginRightMm: number;
   paperMarginBottomMm: number;
   paperMarginLeftMm: number;
+  importedGridTop?: number;
 }
 
 export interface CanvasPage {
   id: string;
   name: string;
   nodes: CanvasNode[];
+  wordDocument?: CanvasWordDocument;
   sheet: CanvasSheetConfig;
   cells: Record<string, CanvasSheetCell>;
   mergedCells: CanvasSelectionRange[];
