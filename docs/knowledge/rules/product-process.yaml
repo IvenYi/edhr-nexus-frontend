@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.0
+knowledgeModelVersion: 0.3.1
 rules:
   - id: rule.product.source-from-material
     name: 产品来源于产品或半成品物料
@@ -32,6 +32,63 @@ rules:
       uniqueCurrentVersion: false
     explanation: 父产品下可存在多个并行制程版本，不设置唯一当前版本。
     evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
+  - id: rule.product-family.membership-cardinality
+    name: 一个产品最多属于一个产品簇
+    status: specified
+    visibility: internal
+    trigger: product-family.member.assign
+    scope: product-family-membership
+    condition:
+      all:
+        - fact: product.productFamilyCount
+          operator: greater-than-or-equal
+          value: 2
+    result:
+      type: block
+      reason: product-belongs-to-at-most-one-product-family
+    explanation: 产品簇可包含多个产品，但同一个产品最多关联一个产品簇。
+    evidenceIds: []
+  - id: rule.product-family.multiple-parallel-process-versions
+    name: 产品簇允许存在多个并行制程版本
+    status: specified
+    visibility: internal
+    trigger: product-process.version.create
+    scope: product-family-process-version
+    condition:
+      all:
+        - fact: productProcess.ownerType
+          operator: equals
+          value: PRODUCT_FAMILY
+        - fact: productProcessVersion.versionLabel
+          operator: unique-within
+          value: product-family
+    result:
+      type: allow-parallel-versions
+      ownerType: PRODUCT_FAMILY
+      uniqueCurrentVersion: false
+    explanation: 产品簇可以拥有多个并行制程版本，不设置唯一当前版本。
+    evidenceIds: []
+  - id: rule.product-process.shared-owner-model
+    name: 产品与产品簇共用制程绑定模型
+    status: specified
+    visibility: internal
+    trigger: product-process.version.save-or-migrate
+    scope: product-process-root-and-version
+    condition:
+      all:
+        - fact: productProcess.ownerType
+          operator: in
+          value: [PRODUCT, PRODUCT_FAMILY]
+        - fact: productProcess.ownerId
+          operator: is-present
+          value: true
+    result:
+      type: persist-version-references
+      ownerTypeField: owner_type
+      ownerIdField: owner_id
+      legacyProductVersionIdCompatible: true
+    explanation: 产品和产品簇共用同一套制程根、版本、工序以及表单和文档绑定模型；实现上使用 owner_type(PRODUCT/PRODUCT_FAMILY) 与 owner_id，历史 product_version_id 保持兼容迁移。
+    evidenceIds: []
   - id: rule.product-process.bind-route-and-dhr-versions
     name: 制程版本绑定一个可引用的路线版本和 DHR 版本
     status: implemented
@@ -188,7 +245,7 @@ rules:
     explanation: PDF 由 MIME 类型不区分大小写等于 application/pdf 或原始文件名不区分大小写以 .pdf 结尾判定。PDF 可不配置页码，配置时两端必须同时提供、起始页至少为 1 且结束页不早于起始页；非 PDF 不允许任何页码。
     evidenceIds: [evidence.operation-document-binding-entity, evidence.migration-0052-document-pages, evidence.product-process-controller, evidence.product-process-version-editor]
   - id: rule.product-process.explicit-execution-selection
-    name: 生产执行显式选择产品制程版本
+    name: 生产执行显式选择产品或产品簇制程版本
     status: specified
     visibility: internal
     trigger: work-order.split-batch
@@ -198,27 +255,161 @@ rules:
         - fact: productionBatch.productProcessVersion
           operator: explicitly-selected
           value: true
+        - fact: productionBatch.productProcessVersion.ownerType
+          operator: in
+          value: [PRODUCT, PRODUCT_FAMILY]
     result:
       type: require-explicit-process-version
       target: production-batch
-    explanation: 后续工单拆分批次等生产执行链路必须显式选择具体产品制程版本；该链路尚未实现。
+    explanation: 后续创建生产对象时必须显式选择产品或产品簇的具体制程版本；该生产链路尚未实现。
     evidenceIds: [evidence.business-knowledge-model]
+  - id: rule.product-process.available-version-window
+    name: 制程版本可用性严格沿用 RdoVersionStatusResolver
+    status: specified
+    visibility: internal
+    trigger: production-process.version.resolve
+    scope: product-process-version
+    condition:
+      all:
+        - fact: RdoVersionStatusResolver.isReferenceable(processVersion.effectiveFrom, processVersion.effectiveTo, queryTime)
+          operator: equals
+          value: true
+    result:
+      type: require-explicit-process-version
+      resolver: RdoVersionStatusResolver
+      unavailableWhen: [effectiveFrom-later-than-query-time, effectiveTo-less-than-or-equal-to-query-time]
+    explanation: 制程版本可用性严格沿用 RdoVersionStatusResolver；effectiveFrom 晚于查询时间，或 effectiveTo 小于等于查询时间，均不可用。
+    evidenceIds: []
+  - id: rule.product-process.product-version-takes-precedence
+    name: 产品有可用制程时不返回产品簇兜底
+    status: specified
+    visibility: internal
+    trigger: production-process.version.resolve
+    scope: production-process-selection
+    condition:
+      all:
+        - fact: product.availableProcessVersionCount
+          operator: greater-than-or-equal
+          value: 1
+        - fact: selectedProcessVersion.ownerType
+          operator: equals
+          value: PRODUCT
+        - fact: RdoVersionStatusResolver.isReferenceable(selectedProcessVersion.effectiveFrom, selectedProcessVersion.effectiveTo, queryTime)
+          operator: equals
+          value: true
+    result:
+      type: require-explicit-process-version
+      ownerType: PRODUCT
+      returnProductFamilyFallback: false
+    explanation: 产品存在可用制程版本时，生产侧只返回产品版本，不返回产品簇兜底版本。
+    evidenceIds: []
+  - id: rule.product-process.product-family-fallback
+    name: 产品无可用制程时返回产品簇兜底
+    status: specified
+    visibility: internal
+    trigger: production-process.version.resolve
+    scope: production-process-selection
+    condition:
+      all:
+        - fact: product.availableProcessVersionCount
+          operator: equals
+          value: 0
+        - fact: productFamily.availableProcessVersionCount
+          operator: greater-than-or-equal
+          value: 1
+        - fact: selectedProcessVersion.ownerType
+          operator: equals
+          value: PRODUCT_FAMILY
+        - fact: RdoVersionStatusResolver.isReferenceable(selectedProcessVersion.effectiveFrom, selectedProcessVersion.effectiveTo, queryTime)
+          operator: equals
+          value: true
+    result:
+      type: require-explicit-process-version
+      ownerType: PRODUCT_FAMILY
+      returnProductFamilyFallback: true
+      message: 当前产品未配置可用制程，以下为产品簇兜底制程
+    explanation: 产品没有可用制程版本且所属产品簇有可用版本时，生产侧返回产品簇版本并带“当前产品未配置可用制程，以下为产品簇兜底制程”提示。
+    evidenceIds: []
+  - id: rule.product-process.no-available-version-block
+    name: 产品和产品簇均无可用制程时阻断
+    status: specified
+    visibility: internal
+    trigger: production-process.version.resolve
+    scope: production-process-selection
+    condition:
+      all:
+        - fact: product.availableProcessVersionCount
+          operator: equals
+          value: 0
+        - fact: productFamily.availableProcessVersionCount
+          operator: equals
+          value: 0
+    result:
+      type: block
+      reason: no-available-process-version
+    explanation: 产品和所属产品簇都没有按 RdoVersionStatusResolver 判定为可用的制程版本时，生产侧阻断。
+    evidenceIds: []
+  - id: rule.product-family.member-transfer-future-only
+    name: 产品簇成员转移只影响未来生产对象
+    status: specified
+    visibility: internal
+    trigger: product-family.member.transfer
+    scope: product-family-membership-and-production
+    condition:
+      all:
+        - fact: product.currentProductFamily
+          operator: is-present
+          value: true
+        - fact: product.newProductFamily
+          operator: is-present
+          value: true
+    result:
+      type: persist-version-references
+      appliesTo: future-production-objects
+      existingProductionObjectsUnchanged: true
+    explanation: 转移产品簇只影响未来创建的生产对象，已存在的生产对象不因成员关系变化而重算产品簇或制程。
+    evidenceIds: []
+  - id: rule.product-family.member-transfer-audit
+    name: 产品簇成员转移需要事务确认和审计
+    status: specified
+    visibility: internal
+    trigger: product-family.member.transfer
+    scope: product-family-membership
+    condition:
+      all:
+        - fact: productFamilyTransfer.confirmation
+          operator: equals
+          value: second-confirmation
+        - fact: productFamilyTransfer.reason
+          operator: is-null
+          value: true
+    result:
+      type: persist-version-references
+      transactionRequired: true
+      reasonField: not-collected
+      auditSubjects: [product, old-product-family, new-product-family]
+    explanation: 产品成员转移必须在事务中执行并二次确认，不填写转移原因，同时记录产品、旧产品簇和新产品簇审计。
+    evidenceIds: []
   - id: rule.product-process.freeze-batch-execution-snapshot
-    name: 批次按选定制程版本冻结执行快照
+    name: 生产对象创建时保存产品簇和制程配置快照
     status: specified
     visibility: internal
     trigger: production-batch.execution-start
     scope: production-batch
     condition:
       all:
+        - fact: productionBatch.product
+          operator: is-present
+          value: true
         - fact: productionBatch.productProcessVersion
           operator: is-present
           value: true
     result:
       type: freeze-execution-snapshot
       source: selected-product-process-version
-    explanation: 批次未来按显式选择的制程版本冻结路线、DHR、表单和文档引用；该运行链路尚未实现。
-    evidenceIds: [evidence.business-knowledge-model]
+      fields: [productId, productFamilyId, selectedProductProcessVersionId, configurationSnapshot]
+    explanation: 未来创建的生产对象需要保存产品、产品簇、所选版本和配置快照；生产快照落库尚未实现。
+    evidenceIds: []
   - id: rule.product-process.form-required-configuration
     name: 工序表单完工要求仅作为配置保存
     status: implemented

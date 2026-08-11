@@ -54,14 +54,15 @@ class BusinessKnowledgeModelTest {
     @Test
     void nestedCollectionsAreDiscoveredFromSchemaMappings() throws Exception {
         BusinessKnowledgeModel model = mutableKnowledgeModel();
-        Map<String, Object> decision = firstRecord(model, "decision");
+        for (Map<String, Object> decision : records(model, "decision")) {
+            decision.put("statements", decision.remove("decisionStatements"));
+        }
         Map<String, Object> nestedTypes = mapValue(model.schema(), "nestedCollectionTypes");
         nestedTypes.put("statements", nestedTypes.remove("decisionStatements"));
         Map<String, Object> decisionDefinition = recordType(model, "decision");
         replaceString(listValue(decisionDefinition, "requiredFields"), "decisionStatements", "statements");
         Map<String, Object> decisionFieldTypes = mapValue(decisionDefinition, "fieldTypes");
         decisionFieldTypes.put("statements", decisionFieldTypes.remove("decisionStatements"));
-        decision.put("statements", decision.remove("decisionStatements"));
 
         assertThatCode(() -> BusinessKnowledgeModelValidator.validate(model)).doesNotThrowAnyException();
     }
