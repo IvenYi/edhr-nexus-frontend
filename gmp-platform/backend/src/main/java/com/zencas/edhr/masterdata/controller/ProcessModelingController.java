@@ -13,6 +13,7 @@ import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.dto.MaterialGroupRecord;
 import com.zencas.edhr.masterdata.dto.ProcessModelingRequest;
+import com.zencas.edhr.masterdata.dto.ProductFamilyMemberResponse;
 import com.zencas.edhr.masterdata.dto.RouteGraphRequest;
 import com.zencas.edhr.masterdata.dto.RouteGraphResponse;
 import com.zencas.edhr.masterdata.entity.Material;
@@ -21,6 +22,7 @@ import com.zencas.edhr.masterdata.entity.Operation;
 import com.zencas.edhr.masterdata.entity.OperationCategory;
 import com.zencas.edhr.masterdata.entity.Product;
 import com.zencas.edhr.masterdata.entity.ProductFamily;
+import com.zencas.edhr.masterdata.entity.ProductFamilyMember;
 import com.zencas.edhr.masterdata.entity.Route;
 import com.zencas.edhr.masterdata.entity.RouteNode;
 import com.zencas.edhr.masterdata.entity.RouteRelation;
@@ -37,6 +39,7 @@ import com.zencas.edhr.masterdata.repository.RouteRelationRepository;
 import com.zencas.edhr.masterdata.repository.RouteRepository;
 import com.zencas.edhr.masterdata.repository.RouteVersionRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
+import com.zencas.edhr.masterdata.service.ProductFamilyMembershipService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -93,6 +96,7 @@ public class ProcessModelingController {
     private final RouteNodeRepository routeNodeRepository;
     private final RouteRelationRepository routeRelationRepository;
     private final SopDocumentRepository sopDocumentRepository;
+    private final ProductFamilyMembershipService productFamilyMembershipService;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
 
@@ -321,8 +325,45 @@ public class ProcessModelingController {
     public ApiResponse<Void> deleteProductFamily(@PathVariable Long id) {
         ProductFamily existing = productFamilyRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_001));
+        if (productFamilyMembershipService.countMembers(id) > 0) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "产品簇仍包含产品成员，请先移除产品成员");
+        }
         productFamilyRepository.deleteById(id);
         writeAudit("PRODUCT_FAMILY", id, "DELETE", "产品簇", "删除产品簇", productFamilySnapshot(existing), Map.of());
+        return ApiResponse.success(null);
+    }
+
+    @GetMapping("/product-families/{id}/members")
+    public ApiResponse<List<ProductFamilyMemberResponse>> listProductFamilyMembers(@PathVariable Long id) {
+        return ApiResponse.success(productFamilyMembershipService.listMemberOptions(id));
+    }
+
+    @PostMapping("/product-families/{id}/members/batch-add")
+    @Transactional
+    public ApiResponse<List<ProductFamilyMember>> addProductFamilyMembers(
+            @PathVariable Long id,
+            @RequestBody List<Long> productIds) {
+        return ApiResponse.success(productFamilyMembershipService.addMembers(id, productIds));
+    }
+
+    @PostMapping("/product-families/{id}/members/{productId}/transfer")
+    @Transactional
+    public ApiResponse<ProductFamilyMember> transferProductFamilyMember(
+            @PathVariable Long id,
+            @PathVariable Long productId,
+            @RequestParam(defaultValue = "false") boolean confirmed) {
+        requireConfirmed(confirmed, "请确认将产品转移到当前产品簇");
+        return ApiResponse.success(productFamilyMembershipService.transferMember(id, productId));
+    }
+
+    @DeleteMapping("/product-families/{id}/members/{productId}")
+    @Transactional
+    public ApiResponse<Void> removeProductFamilyMember(
+            @PathVariable Long id,
+            @PathVariable Long productId,
+            @RequestParam(defaultValue = "false") boolean confirmed) {
+        requireConfirmed(confirmed, "请确认从当前产品簇移除产品");
+        productFamilyMembershipService.removeMember(id, productId);
         return ApiResponse.success(null);
     }
 
@@ -1377,6 +1418,10 @@ public class ProcessModelingController {
 
     private String trimToNull(String value) {
         return StringUtils.hasText(value) ? value.trim() : null;
+    }
+
+    private void requireConfirmed(boolean confirmed, String message) {
+        if (!confirmed) throw new BusinessException(ErrorCode.GENERAL_001, message);
     }
 
     private String generateCode(String prefix) {

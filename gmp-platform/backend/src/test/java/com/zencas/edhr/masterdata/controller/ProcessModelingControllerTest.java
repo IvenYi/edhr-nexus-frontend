@@ -2,10 +2,12 @@ package com.zencas.edhr.masterdata.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.audit.AuditContext;
+import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.dto.ProcessModelingRequest;
+import com.zencas.edhr.masterdata.dto.ProductFamilyMemberResponse;
 import com.zencas.edhr.masterdata.dto.RouteGraphRequest;
 import com.zencas.edhr.masterdata.entity.Route;
 import com.zencas.edhr.masterdata.entity.RouteNode;
@@ -15,6 +17,8 @@ import com.zencas.edhr.masterdata.entity.Material;
 import com.zencas.edhr.masterdata.entity.MaterialType;
 import com.zencas.edhr.masterdata.entity.Operation;
 import com.zencas.edhr.masterdata.entity.OperationCategory;
+import com.zencas.edhr.masterdata.entity.ProductFamily;
+import com.zencas.edhr.masterdata.entity.ProductFamilyMember;
 import com.zencas.edhr.masterdata.repository.MaterialRepository;
 import com.zencas.edhr.masterdata.repository.MaterialTypeRepository;
 import com.zencas.edhr.masterdata.repository.OperationCategoryRepository;
@@ -26,6 +30,7 @@ import com.zencas.edhr.masterdata.repository.RouteRelationRepository;
 import com.zencas.edhr.masterdata.repository.RouteRepository;
 import com.zencas.edhr.masterdata.repository.RouteVersionRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
+import com.zencas.edhr.masterdata.service.ProductFamilyMembershipService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +57,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class ProcessModelingControllerTest {
@@ -67,6 +73,7 @@ class ProcessModelingControllerTest {
     @Mock private RouteNodeRepository routeNodeRepository;
     @Mock private RouteRelationRepository routeRelationRepository;
     @Mock private SopDocumentRepository sopDocumentRepository;
+    @Mock private ProductFamilyMembershipService productFamilyMembershipService;
     @Mock private AuditEventRepository auditEventRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
     @InjectMocks private ProcessModelingController controller;
@@ -85,6 +92,53 @@ class ProcessModelingControllerTest {
                 .toList();
 
         assertThat(mappings).doesNotContain("/material-types", "/material-types/{id}");
+    }
+
+    @Test
+    void deleteProductFamilyRejectsFamiliesThatStillHaveMembers() {
+        ProductFamily family = ProductFamily.builder()
+                .id(11L)
+                .tenantId("default")
+                .code("PF-00011")
+                .name("注射器产品簇")
+                .build();
+        when(productFamilyRepository.findById(11L)).thenReturn(Optional.of(family));
+        when(productFamilyMembershipService.countMembers(11L)).thenReturn(1L);
+
+        assertThatThrownBy(() -> controller.deleteProductFamily(11L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("产品成员");
+
+        verify(productFamilyRepository, never()).deleteById(11L);
+    }
+
+    @Test
+    void transfersProductFamilyMemberOnlyAfterExplicitConfirmation() {
+        ProductFamilyMember transferred = ProductFamilyMember.builder()
+                .id(201L)
+                .tenantId("default")
+                .productFamilyId(11L)
+                .productId(101L)
+                .build();
+        when(productFamilyMembershipService.transferMember(11L, 101L)).thenReturn(transferred);
+
+        assertThatThrownBy(() -> controller.transferProductFamilyMember(11L, 101L, false))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("确认");
+        assertThat(controller.transferProductFamilyMember(11L, 101L, true).getData()).isEqualTo(transferred);
+
+        verify(productFamilyMembershipService).transferMember(11L, 101L);
+    }
+
+    @Test
+    void memberQueryReturnsEligibleProductOptionsWithMembershipState() {
+        ProductFamilyMemberResponse option = new ProductFamilyMemberResponse(
+                "201", "101", "MAT-101", "注射器半成品", "半成品", "11", "目标产品簇", true);
+        when(productFamilyMembershipService.listMemberOptions(11L)).thenReturn(List.of(option));
+
+        assertThat(controller.listProductFamilyMembers(11L).getData())
+                .extracting(ProductFamilyMemberResponse::productId)
+                .containsExactly("101");
     }
 
     @Test
