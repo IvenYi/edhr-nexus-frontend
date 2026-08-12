@@ -6,6 +6,7 @@ import type {
   CanvasSheetCell,
   CanvasSheetImage,
   CanvasSheetMedia,
+  CanvasWordDocument,
 } from '../types';
 
 export const MM_TO_PX = 96 / 25.4;
@@ -88,6 +89,9 @@ export function createImportedCanvasPage(params: {
   canvasMode: 'sheet' | 'paper';
   paperMode: CanvasPaperMode;
   grid: ImportedGridModel;
+  nodes?: CanvasPage['nodes'];
+  gridTop?: number;
+  wordDocument?: CanvasWordDocument;
 }) {
   const rowCount = clampImportedRowCount(params.grid.rowHeights.length || 1);
   const columnCount = clampImportedColumnCount(params.grid.columnWidths.length || 1);
@@ -102,7 +106,8 @@ export function createImportedCanvasPage(params: {
   return {
     id: params.pageId,
     name: params.pageName,
-    nodes: [],
+    nodes: params.nodes ?? [],
+    wordDocument: params.wordDocument,
     sheet: {
       rowCount,
       columnCount,
@@ -121,6 +126,7 @@ export function createImportedCanvasPage(params: {
       paperMarginRightMm: DEFAULT_SIDE_MARGIN_MM,
       paperMarginBottomMm: DEFAULT_SIDE_MARGIN_MM,
       paperMarginLeftMm: DEFAULT_SIDE_MARGIN_MM,
+      importedGridTop: params.gridTop ?? 0,
     },
     cells: params.grid.cells,
     mergedCells: (params.grid.mergedCells ?? []).filter((range) => (
