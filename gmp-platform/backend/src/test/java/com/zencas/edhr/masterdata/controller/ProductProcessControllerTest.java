@@ -7,6 +7,7 @@ import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
 import com.zencas.edhr.masterdata.dto.ProductProcessVersionRequest;
+import com.zencas.edhr.masterdata.dto.ProcessOwnerType;
 import com.zencas.edhr.masterdata.entity.DocumentCategory;
 import com.zencas.edhr.masterdata.entity.DocumentVersion;
 import com.zencas.edhr.masterdata.entity.Material;
@@ -30,6 +31,7 @@ import com.zencas.edhr.masterdata.repository.RouteNodeRepository;
 import com.zencas.edhr.masterdata.repository.RouteRepository;
 import com.zencas.edhr.masterdata.repository.RouteVersionRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
+import com.zencas.edhr.masterdata.service.ProductProcessOwnerService;
 import com.zencas.edhr.template.repository.DhrTemplateRepository;
 import com.zencas.edhr.template.repository.DhrTemplateVersionRepository;
 import com.zencas.edhr.template.repository.FormTemplateRepository;
@@ -84,6 +86,7 @@ class ProductProcessControllerTest {
     @Mock private FileObjectRepository fileObjectRepository;
     @Mock private AuditEventRepository auditEventRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
+    @Mock private ProductProcessOwnerService productProcessOwnerService;
     @InjectMocks private ProductProcessController controller;
 
     @Test
@@ -95,6 +98,22 @@ class ProductProcessControllerTest {
         assertThatThrownBy(() -> controller.getProductModel(101L))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("半成品或产成品");
+    }
+
+    @Test
+    void processOwnerWorkspaceUsesTheSharedServiceForAProductFamily() {
+        ProductProcess process = ProductProcess.builder().id(701L).ownerType("PRODUCT_FAMILY").ownerId(201L).build();
+        ProductProcessVersion version = ProductProcessVersion.builder().id(702L).productProcessId(701L).versionLabel("V1.0")
+                .productionMode("量产").productionForm("批次").routeVersionId(301L).dhrTemplateVersionId(401L).build();
+        when(productProcessOwnerService.workspace(ProcessOwnerType.PRODUCT_FAMILY, 201L))
+                .thenReturn(new ProductProcessOwnerService.ProcessOwnerWorkspace(
+                        new ProductProcessOwnerService.ProcessOwner(ProcessOwnerType.PRODUCT_FAMILY, 201L, "PF-001", "注射器产品簇"),
+                        process, List.of(version)));
+
+        var response = controller.getProcessOwnerWorkspace("PRODUCT_FAMILY", 201L);
+
+        assertThat(response.getData().owner().name()).isEqualTo("注射器产品簇");
+        assertThat(response.getData().model().versions()).extracting(item -> item.version()).containsExactly("V1.0");
     }
 
     @Test

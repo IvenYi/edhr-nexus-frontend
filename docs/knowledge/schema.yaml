@@ -18,7 +18,7 @@ enums:
       definition: 每个 source 必须关联一个 target；一个 target 可被零到多个 source 关联。
   evidenceTypes: [code, database, test, document]
   ruleOperators: [in, unique-within, exists, is-referenceable, exists-in, belongs-to, equals, not-equals, equals-ignore-case, ends-with-ignore-case, is-null, is-present, greater-than-or-equal, explicitly-selected, configurable, persisted, planned]
-  ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, require-explicit-process-version, freeze-execution-snapshot, persist-form-required-configuration, block, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation]
+  ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, persist-unique-code, require-explicit-process-version, compute-rdo-version-status, omit-projection, freeze-execution-snapshot, persist-form-required-configuration, block, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation]
   discrepancyStatuses: [open, accepted, resolved]
   discrepancySeverities: [critical, high, medium, low]
 collectionTypes:

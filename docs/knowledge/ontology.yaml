@@ -17,7 +17,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-family-member-entity, evidence.migration-0053-product-family-process-owner]
+    evidenceIds: [evidence.product-family-member-entity, evidence.migration-0053-product-family-process-owner, evidence.product-family-membership-service, evidence.product-process-owner-service, evidence.product-family-repository, evidence.migration-0054-product-family-code-case-insensitive, evidence.process-modeling-controller, evidence.product-family-modeling-page, evidence.product-family-membership-service-test, evidence.product-process-owner-service-test, evidence.process-modeling-controller-test]
   - id: concept.product-process-version
     termId: term.product-process-version
     kind: business-configuration
@@ -99,21 +99,21 @@ relations:
     cardinality: one-to-zero-or-one
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-family-member-entity, evidence.product-family-member-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test]
+    evidenceIds: [evidence.product-family-member-entity, evidence.product-family-member-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test, evidence.product-family-membership-service, evidence.product-family-membership-service-test]
   - id: relation.product-family-contains-products
     source: concept.product-family
     target: concept.product
     cardinality: one-to-zero-or-many
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-family-member-entity, evidence.product-family-member-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test]
+    evidenceIds: [evidence.product-family-member-entity, evidence.product-family-member-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test, evidence.product-family-membership-service, evidence.product-family-membership-service-test]
   - id: relation.product-family-has-process-versions
     source: concept.product-family
     target: concept.product-process-version
     cardinality: one-to-zero-or-many
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-process-entity, evidence.product-process-owner-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test]
+    evidenceIds: [evidence.product-process-entity, evidence.product-process-owner-repository, evidence.migration-0053-product-family-process-owner, evidence.product-process-owner-service, evidence.product-process-owner-service-test]
   - id: relation.process-version-binds-route-version
     source: concept.product-process-version
     target: concept.route-version

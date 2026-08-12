@@ -40,6 +40,8 @@ import com.zencas.edhr.masterdata.repository.RouteRepository;
 import com.zencas.edhr.masterdata.repository.RouteVersionRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
 import com.zencas.edhr.masterdata.service.ProductFamilyMembershipService;
+import com.zencas.edhr.masterdata.service.ProductProcessOwnerService;
+import com.zencas.edhr.masterdata.dto.ProcessOwnerType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -97,6 +99,7 @@ public class ProcessModelingController {
     private final RouteRelationRepository routeRelationRepository;
     private final SopDocumentRepository sopDocumentRepository;
     private final ProductFamilyMembershipService productFamilyMembershipService;
+    private final ProductProcessOwnerService productProcessOwnerService;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
 
@@ -270,28 +273,34 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/product-families")
-    public ApiResponse<PageResult<ProductFamily>> listProductFamilies(
+    public ApiResponse<PageResult<ProductFamilySummaryResponse>> listProductFamilies(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order) {
-        return ApiResponse.success(toResult(productFamilyRepository.findAll(
-                keywordStatusSpec(keyword, status), pageable(page, size, sort, order)), page, size));
+        Page<ProductFamily> result = productFamilyRepository.findAll(
+                keywordStatusSpec(keyword, null), pageable(page, size, sort, order));
+        List<ProductFamilySummaryResponse> content = result.getContent().stream()
+                .map(this::toProductFamilySummary)
+                .toList();
+        return ApiResponse.success(PageResult.of(content, page, size, result.getTotalElements()));
     }
 
     @PostMapping("/product-families")
     @Transactional
     public ApiResponse<ProductFamily> createProductFamily(@RequestBody ProcessModelingRequest request) {
         LocalDateTime now = LocalDateTime.now();
+        String code = requireProductFamilyCode(request);
+        ensureProductFamilyCodeAvailable(code, null);
         ProductFamily entity = ProductFamily.builder()
                 .id(idGenerator.nextId())
                 .tenantId(TENANT_ID)
-                .code(generateCode("PF"))
+                .code(code)
                 .name(requireName(request))
                 .description(trimToNull(request.getDescription()))
-                .status(resolveStatus(request, "ACTIVE"))
+                // Retained only for legacy persistence compatibility; the UI never exposes a parent status.
+                .status("ACTIVE")
                 .remark(trimToNull(request.getRemark()))
                 .createdBy(currentOperatorName())
                 .createdAt(now)
@@ -309,9 +318,11 @@ public class ProcessModelingController {
         ProductFamily existing = productFamilyRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_001));
         Map<String, Object> before = productFamilySnapshot(existing);
+        String code = requireProductFamilyCode(request);
+        ensureProductFamilyCodeAvailable(code, id);
+        existing.setCode(code);
         existing.setName(requireName(request));
         existing.setDescription(trimToNull(request.getDescription()));
-        existing.setStatus(resolveStatus(request, existing.getStatus()));
         existing.setRemark(trimToNull(request.getRemark()));
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
@@ -325,8 +336,9 @@ public class ProcessModelingController {
     public ApiResponse<Void> deleteProductFamily(@PathVariable Long id) {
         ProductFamily existing = productFamilyRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_001));
-        if (productFamilyMembershipService.countMembers(id) > 0) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "产品簇仍包含产品成员，请先移除产品成员");
+        if (productFamilyMembershipService.countMembers(id) > 0
+                || productProcessOwnerService.hasProcessVersions(ProcessOwnerType.PRODUCT_FAMILY, id)) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "产品簇仍关联产品成员或制程版本，请先处理产品簇成员和制程版本");
         }
         productFamilyRepository.deleteById(id);
         writeAudit("PRODUCT_FAMILY", id, "DELETE", "产品簇", "删除产品簇", productFamilySnapshot(existing), Map.of());
@@ -360,9 +372,7 @@ public class ProcessModelingController {
     @Transactional
     public ApiResponse<Void> removeProductFamilyMember(
             @PathVariable Long id,
-            @PathVariable Long productId,
-            @RequestParam(defaultValue = "false") boolean confirmed) {
-        requireConfirmed(confirmed, "请确认从当前产品簇移除产品");
+            @PathVariable Long productId) {
         productFamilyMembershipService.removeMember(id, productId);
         return ApiResponse.success(null);
     }
@@ -1337,6 +1347,23 @@ public class ProcessModelingController {
         return generateCode(prefix);
     }
 
+    private String requireProductFamilyCode(ProcessModelingRequest request) {
+        String code = request == null ? null : trimToNull(request.getCode());
+        if (code == null) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "产品簇编码不能为空");
+        }
+        return code;
+    }
+
+    private void ensureProductFamilyCodeAvailable(String code, Long excludedId) {
+        boolean duplicated = productFamilyRepository.findByTenantIdAndCodeIgnoreCase(TENANT_ID, code)
+                .filter(item -> !Objects.equals(item.getId(), excludedId))
+                .isPresent();
+        if (duplicated) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "产品簇编码已存在，请更换后重试");
+        }
+    }
+
     private String resolveMaterialVersion(ProcessModelingRequest request) {
         if (request != null && StringUtils.hasText(request.getVersion())) return request.getVersion().trim();
         return DEFAULT_MATERIAL_VERSION;
@@ -1522,11 +1549,27 @@ public class ProcessModelingController {
     }
 
     private Map<String, Object> productFamilySnapshot(ProductFamily entity) {
-        Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getName(), entity.getStatus(),
+        Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getName(), null,
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
+        snapshot.remove("status");
         snapshot.put("description", entity.getDescription());
         snapshot.put("remark", entity.getRemark());
         return snapshot;
+    }
+
+    private ProductFamilySummaryResponse toProductFamilySummary(ProductFamily entity) {
+        return new ProductFamilySummaryResponse(
+                String.valueOf(entity.getId()),
+                entity.getCode(),
+                entity.getName(),
+                entity.getDescription(),
+                entity.getRemark(),
+                entity.getCreatedBy(),
+                entity.getCreatedAt(),
+                entity.getUpdatedBy(),
+                entity.getUpdatedAt(),
+                productFamilyMembershipService.countMembers(entity.getId()),
+                productProcessOwnerService.processVersionCount(ProcessOwnerType.PRODUCT_FAMILY, entity.getId()));
     }
 
     private Map<String, Object> operationSnapshot(Operation entity) {
@@ -1616,5 +1659,19 @@ public class ProcessModelingController {
     }
 
     public record OperationCategoryResponse(String id, String name, Long count, Integer sortOrder) {
+    }
+
+    public record ProductFamilySummaryResponse(
+            String id,
+            String code,
+            String name,
+            String description,
+            String remark,
+            String createdBy,
+            LocalDateTime createdAt,
+            String updatedBy,
+            LocalDateTime updatedAt,
+            long memberCount,
+            int processVersionCount) {
     }
 }

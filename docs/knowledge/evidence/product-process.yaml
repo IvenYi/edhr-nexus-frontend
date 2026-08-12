@@ -30,6 +30,11 @@ evidence:
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepository.java
     description: 产品簇成员仓储提供按租户查询产品归属和产品簇成员列表的持久化访问。
     visibility: internal
+  - id: evidence.product-family-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/ProductFamilyRepository.java
+    description: 产品簇仓储提供按租户和不区分大小写编码查询，用于创建和编辑时的编码唯一性校验。
+    visibility: internal
   - id: evidence.product-process-version-entity
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessVersion.java
@@ -115,6 +120,11 @@ evidence:
     path: gmp-platform/backend/src/main/resources/db/changelog/0053-product-family-process-owner.sql
     description: 建立产品簇成员表及租户内唯一归属约束；为 product_process 回填并约束 owner_type、owner_id，同时保留历史 product_version_id 兼容性。
     visibility: internal
+  - id: evidence.migration-0054-product-family-code-case-insensitive
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0054-product-family-code-case-insensitive.sql
+    description: 建立产品簇编码在租户内按 LOWER(code) 不区分大小写唯一的数据库约束。
+    visibility: internal
   - id: evidence.product-modeling-page
     type: code
     path: gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx
@@ -128,15 +138,70 @@ evidence:
   - id: evidence.product-process-version-editor
     type: code
     path: gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
-    description: 制程版本和工序资源绑定编辑器，显示 required 复选框并校验 PDF 文档页码范围。
+    description: 共享的制程版本和工序资源绑定编辑器；支持由产品或产品簇加载选项，显示 required 复选框并校验 PDF 文档页码范围。
     visibility: internal
   - id: evidence.product-process-controller-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java
-    description: 产品来源、并行版本、引用范围、DHR 表单追溯和产品建模控制器行为测试。
+    description: 产品来源、产品簇制程所有者 API、并行版本、引用范围、DHR 表单追溯和产品建模控制器行为测试。
     visibility: internal
   - id: evidence.product-family-member-repository-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepositoryTest.java
     description: 产品簇成员租户隔离、单产品唯一归属、产品与产品簇制程所有者查询和 0053 迁移定义约束测试。
+    visibility: internal
+  - id: evidence.product-family-membership-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java
+    description: 产品簇成员服务实现合规产品校验、唯一归属、事务性转移及产品、原产品簇和目标产品簇审计；产品簇审计快照保存 memberProductId、memberProductCode 和 memberProductName 内部键。
+    visibility: internal
+  - id: evidence.process-modeling-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    description: 产品簇 CRUD 要求用户维护编码并校验租户内不区分大小写唯一；历史父状态不投影到列表、详情或审计快照。控制器还实现成员跨簇转移确认、数量投影和关联成员或制程版本删除保护。
+    visibility: internal
+  - id: evidence.product-family-membership-service-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipServiceTest.java
+    description: 产品簇成员服务覆盖不合规产品拒绝、跨簇普通添加拒绝和事务性转移的三方审计。
+    visibility: internal
+  - id: evidence.process-modeling-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+    description: 产品簇编码必填、租户内不区分大小写唯一、同记录编码更新、父状态审计投影排除、删除保护、成员转移确认及列表数量投影的控制器测试。
+    visibility: internal
+  - id: evidence.process-owner-type
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/ProcessOwnerType.java
+    description: 制程所有者枚举定义 PRODUCT 与 PRODUCT_FAMILY 两种共享制程归属类型。
+    visibility: internal
+  - id: evidence.product-process-owner-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
+    description: 统一产品和产品簇制程根、版本、工序表单和文档配置的读取、CRUD、版本号去重及引用校验；产品簇制程版本新增、编辑和删除同时写入产品簇审计，快照包含版本字段、按有效期计算的版本状态和工序表单、文档配置。
+    visibility: internal
+  - id: evidence.product-process-resolution-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java
+    description: 按查询时间解析可用制程版本，优先产品；产品无可用版本时回退产品簇并返回固定提示；两者均不可用时阻断。
+    visibility: internal
+  - id: evidence.product-process-owner-service-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java
+    description: 覆盖产品和产品簇独立制程根、同一所有者版本号不区分大小写去重，以及产品簇新增制程版本时写入对应的产品簇审计快照。
+    visibility: internal
+  - id: evidence.product-process-resolution-service-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionServiceTest.java
+    description: 覆盖产品制程优先、产品无可用版本时回退产品簇及双方均不可用时阻断。
+    visibility: internal
+  - id: evidence.product-family-modeling-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
+    description: 产品簇 RDO 父子版本管理、成员入口、详情审计及全屏共享制程版本编辑器的前端页面实现；审计投影隐藏 id 和 productProcessId，并将成员关系、制程版本和工序配置快照字段映射为中文业务标签。
+    visibility: internal
+  - id: evidence.product-family-modeling-api
+    type: code
+    path: gmp-platform/frontend/src/api/product-family-modeling.ts
+    description: 产品簇 CRUD、成员批量添加、转移和移除的前端 API 访问层。
     visibility: internal

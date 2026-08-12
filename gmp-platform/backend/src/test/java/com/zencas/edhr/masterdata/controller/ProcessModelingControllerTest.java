@@ -31,6 +31,8 @@ import com.zencas.edhr.masterdata.repository.RouteRepository;
 import com.zencas.edhr.masterdata.repository.RouteVersionRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
 import com.zencas.edhr.masterdata.service.ProductFamilyMembershipService;
+import com.zencas.edhr.masterdata.service.ProductProcessOwnerService;
+import com.zencas.edhr.masterdata.dto.ProcessOwnerType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +44,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -74,6 +78,7 @@ class ProcessModelingControllerTest {
     @Mock private RouteRelationRepository routeRelationRepository;
     @Mock private SopDocumentRepository sopDocumentRepository;
     @Mock private ProductFamilyMembershipService productFamilyMembershipService;
+    @Mock private ProductProcessOwnerService productProcessOwnerService;
     @Mock private AuditEventRepository auditEventRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
     @InjectMocks private ProcessModelingController controller;
@@ -113,6 +118,108 @@ class ProcessModelingControllerTest {
     }
 
     @Test
+    void deleteProductFamilyRejectsFamiliesThatStillHaveProcessVersions() {
+        ProductFamily family = ProductFamily.builder()
+                .id(11L)
+                .tenantId("default")
+                .code("PF-00011")
+                .name("注射器产品簇")
+                .build();
+        when(productFamilyRepository.findById(11L)).thenReturn(Optional.of(family));
+        when(productFamilyMembershipService.countMembers(11L)).thenReturn(0L);
+        when(productProcessOwnerService.hasProcessVersions(ProcessOwnerType.PRODUCT_FAMILY, 11L)).thenReturn(true);
+
+        assertThatThrownBy(() -> controller.deleteProductFamily(11L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("产品簇成员和制程版本");
+
+        verify(productFamilyRepository, never()).deleteById(11L);
+    }
+
+    @Test
+    void productFamilyListIncludesMemberAndProcessVersionCounts() {
+        ProductFamily family = ProductFamily.builder()
+                .id(11L)
+                .tenantId("default")
+                .code("PF-00011")
+                .name("注射器产品簇")
+                .build();
+        when(productFamilyRepository.findAll(
+                org.mockito.ArgumentMatchers.<org.springframework.data.jpa.domain.Specification<ProductFamily>>any(),
+                any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(family)));
+        when(productFamilyMembershipService.countMembers(11L)).thenReturn(2L);
+        when(productProcessOwnerService.processVersionCount(ProcessOwnerType.PRODUCT_FAMILY, 11L)).thenReturn(3);
+
+        var response = controller.listProductFamilies(null, 1, 20, "createdAt", "desc");
+
+        assertThat(response.getData().getContent()).singleElement().satisfies(item -> {
+            assertThat(item.memberCount()).isEqualTo(2L);
+            assertThat(item.processVersionCount()).isEqualTo(3);
+        });
+    }
+
+    @Test
+    void createsProductFamilyWithUserProvidedCodeAndWithoutParentStatusAuditField() throws Exception {
+        when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "PF-SYR-001"))
+                .thenReturn(Optional.empty());
+        when(productFamilyRepository.save(any(ProductFamily.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(idGenerator.nextId()).thenReturn(11001L);
+
+        var response = controller.createProductFamily(ProcessModelingRequest.builder()
+                .code(" PF-SYR-001 ")
+                .name("注射器产品簇")
+                .build());
+
+        assertThat(response.getData().getCode()).isEqualTo("PF-SYR-001");
+        ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(auditEventRepository).save(auditCaptor.capture());
+        assertThat(objectMapper.readTree(auditCaptor.getValue().getContentAfter()).has("status")).isFalse();
+    }
+
+    @Test
+    void rejectsBlankOrDuplicatedProductFamilyCode() {
+        assertThatThrownBy(() -> controller.createProductFamily(ProcessModelingRequest.builder()
+                .name("注射器产品簇")
+                .build()))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("产品簇编码不能为空");
+
+        when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "PF-SYR-001"))
+                .thenReturn(Optional.of(ProductFamily.builder().id(11L).code("pf-syr-001").build()));
+        assertThatThrownBy(() -> controller.createProductFamily(ProcessModelingRequest.builder()
+                .code("PF-SYR-001")
+                .name("注射器产品簇")
+                .build()))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("产品簇编码已存在");
+    }
+
+    @Test
+    void permitsProductFamilyToKeepItsOwnCodeButRejectsAnotherFamilyCodeOnUpdate() {
+        ProductFamily existing = ProductFamily.builder().id(11L).tenantId("default").code("PF-SYR-001").name("旧产品簇").build();
+        when(productFamilyRepository.findById(11L)).thenReturn(Optional.of(existing));
+        when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "pf-syr-001"))
+                .thenReturn(Optional.of(existing));
+        when(productFamilyRepository.save(existing)).thenReturn(existing);
+
+        assertThat(controller.updateProductFamily(11L, ProcessModelingRequest.builder()
+                .code("pf-syr-001")
+                .name("新产品簇")
+                .build()).getData().getCode()).isEqualTo("pf-syr-001");
+
+        ProductFamily another = ProductFamily.builder().id(12L).tenantId("default").code("PF-SYR-002").name("其他产品簇").build();
+        when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "PF-SYR-002"))
+                .thenReturn(Optional.of(another));
+        assertThatThrownBy(() -> controller.updateProductFamily(11L, ProcessModelingRequest.builder()
+                .code("PF-SYR-002")
+                .name("新产品簇")
+                .build()))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("产品簇编码已存在");
+    }
+
+    @Test
     void transfersProductFamilyMemberOnlyAfterExplicitConfirmation() {
         ProductFamilyMember transferred = ProductFamilyMember.builder()
                 .id(201L)
@@ -128,6 +235,13 @@ class ProcessModelingControllerTest {
         assertThat(controller.transferProductFamilyMember(11L, 101L, true).getData()).isEqualTo(transferred);
 
         verify(productFamilyMembershipService).transferMember(11L, 101L);
+    }
+
+    @Test
+    void removesProductFamilyMemberWithoutExplicitConfirmation() {
+        assertThat(controller.removeProductFamilyMember(11L, 101L).getData()).isNull();
+
+        verify(productFamilyMembershipService).removeMember(11L, 101L);
     }
 
     @Test

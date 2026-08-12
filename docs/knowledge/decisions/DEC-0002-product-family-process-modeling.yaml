@@ -4,43 +4,43 @@ decisions:
     title: 产品簇制程模型与生产版本解析
     status: specified
     visibility: internal
-    context: 产品簇需要复用产品现有的制程根、制程版本、工序表单和文档绑定模型，并明确产品版本优先、产品簇兜底、严格有效期、成员转移和未来生产对象快照规则；相关新运行链路和快照落库尚未实现。
+    context: 产品簇复用产品现有的制程根、制程版本、工序表单和文档绑定模型；制程解析服务已实现产品版本优先、产品簇兜底和严格有效期。工单/批次创建及快照落库尚未实现。
     decisionStatements:
       - id: DEC-0002-01
         statement: 产品簇可包含多个半成品或产成品产品。
-        status: specified
+        status: implemented
         visibility: internal
       - id: DEC-0002-02
         statement: 一个产品最多属于一个产品簇。
-        status: specified
+        status: implemented
         visibility: internal
       - id: DEC-0002-03
         statement: 产品簇可以拥有多个并行制程版本。
-        status: specified
+        status: implemented
         visibility: internal
       - id: DEC-0002-04
         statement: 产品和产品簇共用同一套制程根、版本、工序表单和文档绑定模型。
-        status: specified
+        status: implemented
         visibility: internal
       - id: DEC-0002-05
         statement: 共享制程模型的实现方案是在现有 product_process 增加 owner_type(PRODUCT/PRODUCT_FAMILY) 和 owner_id，并兼容迁移历史 product_version_id。
-        status: specified
+        status: implemented
         visibility: internal
       - id: DEC-0002-06
-        statement: 产品存在可用制程版本时，生产侧只返回产品版本，不返回产品簇兜底。
-        status: specified
+        statement: 制程解析服务在产品存在可用制程版本时只返回产品版本，不返回产品簇兜底。
+        status: implemented
         visibility: internal
       - id: DEC-0002-07
-        statement: 产品没有可用制程版本且所属产品簇有可用版本时，生产侧返回产品簇版本并提示“当前产品未配置可用制程，以下为产品簇兜底制程”。
-        status: specified
+        statement: 制程解析服务在产品没有可用制程版本且所属产品簇有可用版本时返回产品簇版本，并提示“当前产品未配置可用制程，以下为产品簇兜底制程”。
+        status: implemented
         visibility: internal
       - id: DEC-0002-08
-        statement: 产品和所属产品簇都没有可用制程版本时阻断生产侧解析。
-        status: specified
+        statement: 制程解析服务在产品和所属产品簇都没有可用制程版本时阻断解析。
+        status: implemented
         visibility: internal
       - id: DEC-0002-09
         statement: 制程版本可用状态严格沿用 RdoVersionStatusResolver；effectiveFrom 晚于查询时间，或 effectiveTo 小于等于查询时间，均不可用。
-        status: specified
+        status: implemented
         visibility: internal
       - id: DEC-0002-10
         statement: 产品簇成员转移只影响未来生产对象；未来创建的生产对象保存产品、产品簇、所选版本和配置快照。
@@ -48,50 +48,71 @@ decisions:
         visibility: internal
       - id: DEC-0002-11
         statement: 产品成员转移需要事务、二次确认、不填写转移原因，并记录产品、旧产品簇和新产品簇审计。
-        status: specified
+        status: implemented
         visibility: internal
       - id: DEC-0002-12
         statement: 产品簇页面使用产品管理同一套 RDO 交互和制程版本编辑器。
-        status: specified
+        status: implemented
+        visibility: internal
+      - id: DEC-0002-13
+        statement: 产品簇编码由用户在新增和编辑时维护，不能为空，并在同一租户内不区分大小写唯一。
+        status: implemented
+        visibility: internal
+      - id: DEC-0002-14
+        statement: 产品簇不具有独立的客户可操作状态；历史 status 持久字段仅为兼容保留，不投影到列表、详情或审计快照。
+        status: implemented
+        visibility: internal
+      - id: DEC-0002-15
+        statement: 产品簇的制程版本状态由 RdoVersionStatusResolver 根据各版本的生效时间和失效时间计算。
+        status: implemented
+        visibility: internal
+      - id: DEC-0002-16
+        statement: 产品簇详情的数据审计记录制程版本新增、编辑和删除，以及版本字段和工序表单、文档配置的变更前后快照；审计隐藏技术 id 和 productProcessId，成员关系与制程配置字段使用中文业务标签，嵌套制程版本状态保留为版本状态。
+        status: implemented
         visibility: internal
     supersedes: []
-    evidenceIds: []
+    evidenceIds: [evidence.product-family-member-entity, evidence.product-family-member-repository, evidence.product-process-entity, evidence.product-process-owner-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-membership-service, evidence.product-family-repository, evidence.migration-0054-product-family-code-case-insensitive, evidence.process-modeling-controller, evidence.product-process-owner-service, evidence.product-process-resolution-service, evidence.product-family-modeling-page, evidence.product-family-modeling-api, evidence.product-family-membership-service-test, evidence.process-modeling-controller-test, evidence.product-process-owner-service-test, evidence.product-process-resolution-service-test]
     acceptanceScenarios:
       - id: scenario.product-family-membership
         given: 存在多个半成品或产成品产品
         when: 将这些产品加入同一产品簇并尝试为一个产品再指定第二个产品簇
         then: 产品簇可以包含多个产品，单个产品不能同时属于两个产品簇
-        evidenceIds: []
+        evidenceIds: [evidence.product-family-member-entity, evidence.product-family-member-repository, evidence.migration-0053-product-family-process-owner, evidence.product-family-member-repository-test, evidence.product-family-membership-service, evidence.product-family-membership-service-test]
       - id: scenario.product-family-parallel-process-versions
         given: 一个产品簇已存在一个制程版本
         when: 为同一产品簇新增另一个版本号不同的制程版本
         then: 两个产品簇制程版本并行保留
-        evidenceIds: []
+        evidenceIds: [evidence.product-process-owner-service, evidence.product-process-owner-service-test]
+      - id: scenario.product-family-user-code-and-status-projection
+        given: 用户新增或编辑产品簇，且历史记录可能保留 status 列
+        when: 输入空编码、重复编码或唯一编码，并查看列表、详情和审计
+        then: 空编码或租户内不区分大小写重复编码被拒绝，唯一编码被持久化；父产品簇状态不展示，子制程版本仍按有效期显示版本状态
+        evidenceIds: [evidence.product-family-repository, evidence.migration-0054-product-family-code-case-insensitive, evidence.process-modeling-controller, evidence.process-modeling-controller-test, evidence.product-family-modeling-page]
       - id: scenario.product-process-owner-compatibility
         given: 现有 product_process 数据包含历史 product_version_id
         when: 迁移或保存产品与产品簇制程
         then: 共享模型通过 owner_type 和 owner_id 表达所有者，并兼容历史 product_version_id
-        evidenceIds: []
+        evidenceIds: [evidence.product-process-entity, evidence.product-process-owner-repository, evidence.migration-0053-product-family-process-owner, evidence.product-process-owner-service, evidence.product-process-owner-service-test]
       - id: scenario.product-process-resolution-priority
         given: 产品和所属产品簇均存在制程配置，但产品有至少一个可用版本
         when: 生产侧解析可用制程
         then: 只返回产品版本，不返回产品簇兜底
-        evidenceIds: []
+        evidenceIds: [evidence.product-process-resolution-service, evidence.product-process-resolution-service-test]
       - id: scenario.product-family-process-fallback
         given: 产品没有可用版本且所属产品簇有可用版本
         when: 生产侧解析可用制程
         then: 返回产品簇版本并显示已确认的产品簇兜底提示
-        evidenceIds: []
+        evidenceIds: [evidence.product-process-resolution-service, evidence.product-process-resolution-service-test]
       - id: scenario.no-available-process-version
         given: 产品和所属产品簇都没有可用版本
         when: 生产侧解析可用制程
         then: 生产侧阻断
-        evidenceIds: []
+        evidenceIds: [evidence.product-process-resolution-service, evidence.product-process-resolution-service-test]
       - id: scenario.product-family-transfer
         given: 产品已属于一个产品簇
         when: 在事务中二次确认并将其转移到另一个产品簇
         then: 不填写转移原因，记录产品、旧产品簇和新产品簇审计，且只影响未来生产对象
-        evidenceIds: []
+        evidenceIds: [evidence.product-family-membership-service, evidence.process-modeling-controller, evidence.product-family-membership-service-test, evidence.process-modeling-controller-test]
       - id: scenario.production-object-snapshot
         given: 产品簇成员关系和可选制程版本已确定
         when: 创建未来生产对象
@@ -101,4 +122,9 @@ decisions:
         given: 用户进入产品簇页面
         when: 查看或编辑制程版本
         then: 使用产品管理同一套 RDO 交互和制程版本编辑器
-        evidenceIds: []
+        evidenceIds: [evidence.product-family-modeling-page, evidence.product-family-modeling-api, evidence.product-process-version-editor]
+      - id: scenario.product-family-process-audit-traceability
+        given: 产品簇新增、编辑或删除制程版本，或修改版本字段和工序表单、文档配置
+        when: 用户打开产品簇详情的数据审计
+        then: 审计显示对应制程版本和工序配置的变更前后快照；技术 id 不展示，嵌套制程版本 status 作为版本状态保留
+        evidenceIds: [evidence.product-process-owner-service, evidence.product-process-owner-service-test, evidence.product-family-modeling-page]

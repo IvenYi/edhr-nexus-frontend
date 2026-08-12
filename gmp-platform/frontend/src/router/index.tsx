@@ -20,6 +20,7 @@ const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const ProductModelingPage = lazy(() => import('@/pages/master-data/ProductModelingPage'));
 const ProductModelingWorkspacePage = lazy(() => import('@/pages/master-data/ProductModelingWorkspacePage'));
+const ProductFamilyModelingPage = lazy(() => import('@/pages/master-data/ProductFamilyModelingPage'));
 const DocumentManagementPage = lazy(() => import('@/pages/master-data/DocumentManagementPage'));
 const TemplateModelingPage = lazy(() => import('@/pages/master-data/TemplateModelingPage'));
 
@@ -89,7 +90,7 @@ const AppRouter = () => {
           <Route path="routes" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="routes" /></Suspense>} />
           <Route path="products" element={<Suspense fallback={<Loading />}><ProductModelingPage /></Suspense>} />
           <Route path="products/:productVersionId/modeling" element={<Suspense fallback={<Loading />}><ProductModelingWorkspacePage /></Suspense>} />
-          <Route path="product-families" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="productFamilies" /></Suspense>} />
+          <Route path="product-families" element={<Suspense fallback={<Loading />}><ProductFamilyModelingPage /></Suspense>} />
           <Route path="documents" element={<Suspense fallback={<Loading />}><DocumentManagementPage /></Suspense>} />
           <Route path="form-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="formTemplates" /></Suspense>} />
           <Route path="batch-record-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="batchRecordTemplates" /></Suspense>} />

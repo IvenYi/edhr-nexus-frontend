@@ -71,6 +71,7 @@ export interface ProductProcessVersionEditorDialogProps {
   productId: string;
   productName: string;
   productCode: string;
+  loadOptions?: (dhrTemplateVersionId?: string) => Promise<ProductModelOptions>;
   mode: ProductProcessVersionDialogMode;
   target?: ProductProcessVersion;
   versions: ProductProcessVersion[];
@@ -803,6 +804,7 @@ export default function ProductProcessVersionEditorDialog({
   productId,
   productName,
   productCode,
+  loadOptions,
   mode,
   target,
   versions,
@@ -838,7 +840,9 @@ export default function ProductProcessVersionEditorDialog({
   const optionsQuery = useQuery({
     queryKey: ['product-modeling-options', productId, form.dhrTemplateVersionId],
     enabled: open && Boolean(productId),
-    queryFn: async () => (await getProductModelOptions(productId, form.dhrTemplateVersionId || undefined)).data.data,
+    queryFn: async () => loadOptions
+      ? loadOptions(form.dhrTemplateVersionId || undefined)
+      : (await getProductModelOptions(productId, form.dhrTemplateVersionId || undefined)).data.data,
     placeholderData: (previous) => previous,
   });
   const options = optionsQuery.data;

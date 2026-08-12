@@ -87,6 +87,20 @@ export interface ProductModelWorkspace {
   model: ProductProcessModel | null;
 }
 
+export type ProcessOwnerType = 'PRODUCT' | 'PRODUCT_FAMILY';
+
+export interface ProcessOwnerSource {
+  type: ProcessOwnerType;
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface ProcessOwnerWorkspace {
+  owner: ProcessOwnerSource;
+  model: ProductProcessModel | null;
+}
+
 export interface ProductModelRouteOption {
   id: string;
   routeId: string;
@@ -175,6 +189,21 @@ export const updateProductProcessVersion = (productVersionId: string, versionId:
 
 export const deleteProductProcessVersion = (productVersionId: string, versionId: string) =>
   client.delete(`${basePath}/products/${productVersionId}/versions/${versionId}`);
+
+export const getProcessOwnerWorkspace = (ownerType: ProcessOwnerType, ownerId: string) =>
+  client.get(`${basePath}/process-owners/${ownerType}/${ownerId}/workspace`) as Promise<{ data: { data: ProcessOwnerWorkspace } }>;
+
+export const getProcessOwnerOptions = (ownerType: ProcessOwnerType, ownerId: string, dhrTemplateVersionId?: string) =>
+  client.get(`${basePath}/process-owners/${ownerType}/${ownerId}/options`, { params: { dhrTemplateVersionId } }) as Promise<{ data: { data: ProductModelOptions } }>;
+
+export const createProcessOwnerVersion = (ownerType: ProcessOwnerType, ownerId: string, body: ProductProcessVersionPayload) =>
+  client.post(`${basePath}/process-owners/${ownerType}/${ownerId}/versions`, body) as Promise<{ data: { data: ProductProcessVersion } }>;
+
+export const updateProcessOwnerVersion = (ownerType: ProcessOwnerType, ownerId: string, versionId: string, body: ProductProcessVersionPayload) =>
+  client.put(`${basePath}/process-owners/${ownerType}/${ownerId}/versions/${versionId}`, body) as Promise<{ data: { data: ProductProcessVersion } }>;
+
+export const deleteProcessOwnerVersion = (ownerType: ProcessOwnerType, ownerId: string, versionId: string) =>
+  client.delete(`${basePath}/process-owners/${ownerType}/${ownerId}/versions/${versionId}`);
 
 export const getProductProcessVersionAuditLogs = (versionId: string) =>
   client.get('/audit/logs', {

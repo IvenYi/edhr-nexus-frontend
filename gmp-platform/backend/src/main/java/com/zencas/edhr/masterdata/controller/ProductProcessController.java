@@ -16,6 +16,7 @@ import com.zencas.edhr.compliance.entity.FileObject;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.compliance.repository.FileObjectRepository;
 import com.zencas.edhr.masterdata.dto.ProductProcessVersionRequest;
+import com.zencas.edhr.masterdata.dto.ProcessOwnerType;
 import com.zencas.edhr.masterdata.entity.Material;
 import com.zencas.edhr.masterdata.entity.MaterialType;
 import com.zencas.edhr.masterdata.entity.ProductProcess;
@@ -42,6 +43,7 @@ import com.zencas.edhr.masterdata.repository.RouteNodeRepository;
 import com.zencas.edhr.masterdata.repository.RouteRepository;
 import com.zencas.edhr.masterdata.repository.RouteVersionRepository;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
+import com.zencas.edhr.masterdata.service.ProductProcessOwnerService;
 import com.zencas.edhr.template.entity.DhrTemplate;
 import com.zencas.edhr.template.entity.DhrTemplateVersion;
 import com.zencas.edhr.template.entity.FormTemplate;
@@ -115,6 +117,7 @@ public class ProductProcessController {
     private final FileObjectRepository fileObjectRepository;
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
+    private final ProductProcessOwnerService productProcessOwnerService;
 
     @GetMapping("/products")
     public ApiResponse<PageResult<ProductSourceResponse>> listProducts(
@@ -164,6 +167,17 @@ public class ProductProcessController {
                 process == null ? null : toProcessResponse(process, versions)));
     }
 
+    @GetMapping("/process-owners/{ownerType}/{ownerId}/workspace")
+    public ApiResponse<ProcessOwnerWorkspaceResponse> getProcessOwnerWorkspace(
+            @PathVariable String ownerType,
+            @PathVariable Long ownerId) {
+        ProductProcessOwnerService.ProcessOwnerWorkspace workspace = productProcessOwnerService.workspace(parseOwnerType(ownerType), ownerId);
+        ProductProcessOwnerService.ProcessOwner owner = workspace.owner();
+        return ApiResponse.success(new ProcessOwnerWorkspaceResponse(
+                new ProcessOwnerResponse(owner.type().name(), id(owner.id()), owner.code(), owner.name()),
+                workspace.process() == null ? null : toProcessResponse(workspace.process(), workspace.versions())));
+    }
+
     @GetMapping(value = "/products/{productVersionId}/options", params = "!dhrTemplateVersionId")
     public ApiResponse<ProductModelOptionsResponse> getProductModelOptions(@PathVariable Long productVersionId) {
         return getProductModelOptions(productVersionId, null);
@@ -173,6 +187,26 @@ public class ProductProcessController {
     public ApiResponse<ProductModelOptionsResponse> getProductModelOptions(@PathVariable Long productVersionId,
             @RequestParam(required = false) Long dhrTemplateVersionId) {
         requireProductMaterial(productVersionId);
+        return ApiResponse.success(buildModelOptions(dhrTemplateVersionId));
+    }
+
+    @GetMapping(value = "/process-owners/{ownerType}/{ownerId}/options", params = "!dhrTemplateVersionId")
+    public ApiResponse<ProductModelOptionsResponse> getProcessOwnerOptions(
+            @PathVariable String ownerType,
+            @PathVariable Long ownerId) {
+        return getProcessOwnerOptions(ownerType, ownerId, null);
+    }
+
+    @GetMapping(value = "/process-owners/{ownerType}/{ownerId}/options", params = "dhrTemplateVersionId")
+    public ApiResponse<ProductModelOptionsResponse> getProcessOwnerOptions(
+            @PathVariable String ownerType,
+            @PathVariable Long ownerId,
+            @RequestParam(required = false) Long dhrTemplateVersionId) {
+        productProcessOwnerService.workspace(parseOwnerType(ownerType), ownerId);
+        return ApiResponse.success(buildModelOptions(dhrTemplateVersionId));
+    }
+
+    private ProductModelOptionsResponse buildModelOptions(Long dhrTemplateVersionId) {
         List<RouteOption> routes = routeRepository.findAll().stream()
                 .flatMap(route -> routeVersionRepository.findByRouteIdOrderByCreatedAtDesc(route.getId()).stream()
                         .filter(version -> RdoVersionStatusResolver.isReferenceable(version.getEffectiveDate(), version.getExpiryDate()))
@@ -198,7 +232,41 @@ public class ProductProcessController {
                 .map(version -> toDocumentOption(documentsById.get(version.getDocumentId()), version, documentCategoriesById))
                 .filter(Objects::nonNull)
                 .toList();
-        return ApiResponse.success(new ProductModelOptionsResponse(routes, dhrTemplates, formTemplates, documents, dhrDirectories));
+        return new ProductModelOptionsResponse(routes, dhrTemplates, formTemplates, documents, dhrDirectories);
+    }
+
+    @PostMapping("/process-owners/{ownerType}/{ownerId}/versions")
+    public ApiResponse<ProductProcessVersionResponse> createProcessOwnerVersion(
+            @PathVariable String ownerType,
+            @PathVariable Long ownerId,
+            @RequestBody ProductProcessVersionRequest request) {
+        return ApiResponse.success(toVersionResponse(productProcessOwnerService.createVersion(parseOwnerType(ownerType), ownerId, request)));
+    }
+
+    @GetMapping("/process-owners/{ownerType}/{ownerId}/versions/{versionId}")
+    public ApiResponse<ProductProcessVersionResponse> getProcessOwnerVersion(
+            @PathVariable String ownerType,
+            @PathVariable Long ownerId,
+            @PathVariable Long versionId) {
+        return ApiResponse.success(toVersionResponse(productProcessOwnerService.getVersion(parseOwnerType(ownerType), ownerId, versionId)));
+    }
+
+    @PutMapping("/process-owners/{ownerType}/{ownerId}/versions/{versionId}")
+    public ApiResponse<ProductProcessVersionResponse> updateProcessOwnerVersion(
+            @PathVariable String ownerType,
+            @PathVariable Long ownerId,
+            @PathVariable Long versionId,
+            @RequestBody ProductProcessVersionRequest request) {
+        return ApiResponse.success(toVersionResponse(productProcessOwnerService.updateVersion(parseOwnerType(ownerType), ownerId, versionId, request)));
+    }
+
+    @DeleteMapping("/process-owners/{ownerType}/{ownerId}/versions/{versionId}")
+    public ApiResponse<Void> deleteProcessOwnerVersion(
+            @PathVariable String ownerType,
+            @PathVariable Long ownerId,
+            @PathVariable Long versionId) {
+        productProcessOwnerService.deleteVersion(parseOwnerType(ownerType), ownerId, versionId);
+        return ApiResponse.success(null);
     }
 
     private List<TemplateOption> dhrFormOptions(Long dhrVersionId, List<TemplateOption> allFormTemplates) {
@@ -741,7 +809,17 @@ public class ProductProcessController {
     private String currentOperatorName() { return hasText(AuditContext.getOperatorName()) ? AuditContext.getOperatorName() : "系统管理员"; }
     private String formatDateTime(LocalDateTime value) { return value == null ? null : value.format(DATE_TIME.formatter); }
 
+    private ProcessOwnerType parseOwnerType(String ownerType) {
+        try {
+            return ProcessOwnerType.valueOf(ownerType == null ? "" : ownerType.trim().toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "不支持的制程配置归属类型");
+        }
+    }
+
     public record ProductModelWorkspaceResponse(ProductSourceResponse product, ProductProcessResponse model) {}
+    public record ProcessOwnerWorkspaceResponse(ProcessOwnerResponse owner, ProductProcessResponse model) {}
+    public record ProcessOwnerResponse(String type, String id, String code, String name) {}
     public record ProductSourceResponse(String id, String name, String code, String version, String specification, String materialTypeName, String unit, String status, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, int modelVersionCount, int activeModelVersionCount) {}
     public record ProductProcessResponse(String id, List<ProductProcessVersionResponse> versions) {}
     public record ProductProcessVersionResponse(String id, String version, String productionMode, String productionForm, String routeVersionId, String routeName, String routeCode, String routeVersion, String dhrTemplateVersionId, String dhrTemplateName, String dhrTemplateCode, String dhrTemplateVersion, String description, LocalDateTime effectiveFrom, LocalDateTime effectiveTo, String status, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, List<ProductProcessOperationResponse> operations) {}
