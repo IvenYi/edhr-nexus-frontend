@@ -15,6 +15,7 @@ import type {
   TemplateDesignerDocument,
   TemplateDesignerTabKey,
 } from '../types';
+import { createCommonDisplayNode, type CommonDisplayComponentId } from '../registry/commonComponentRegistry';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { createDefaultSubTableRegion, inferFixedRepeatCount, rebuildSubTableRecordTemplate } from '../utils/subTableRegion';
@@ -1786,6 +1787,7 @@ export interface TemplateDesignerStore {
   setFieldStatus: (fieldId: string, status: ModelFieldStatus) => void;
   setModelFieldReportColumnWidth: (scopeKey: string, columnKey: string, width: number) => void;
   insertNode: (parentId: string | null, node: CanvasNode) => void;
+  addFreeCanvasComponent: (componentId: CommonDisplayComponentId, position: { left: number; top: number }) => void;
   addNodeFromField: (fieldId: string, parentId?: string | null) => void;
   addNodeFromFieldToCell: (fieldId: string, layout: FieldCellLayout) => void;
   addNodeFromSubTableFieldToCell: (subTableId: string, field: ModelField, layout: FieldCellLayout) => void;
@@ -2226,6 +2228,11 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       : state.document,
     selectedNodeId: node.id,
   })),
+  addFreeCanvasComponent: (componentId, position) => {
+    const currentPage = get().getCurrentPage();
+    if (!currentPage || currentPage.sheet.canvasMode !== 'paper') return;
+    get().insertNode(null, createCommonDisplayNode(componentId, position));
+  },
   addNodeFromField: (fieldId, parentId = null) => {
     const field = get().getFieldById(fieldId);
     const availableFields = get().getAvailableFieldsForCurrentVersion();

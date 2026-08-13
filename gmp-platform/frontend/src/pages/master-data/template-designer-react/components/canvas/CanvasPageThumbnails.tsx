@@ -1,8 +1,9 @@
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { Box, Button, Typography } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material/styles';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
-import type { CanvasCellBorder, CanvasPage, CanvasSelectionRange, CanvasSheetCell } from '../../types';
+import type { CanvasCellBorder, CanvasPage, CanvasSelectionRange, CanvasSheetCell, CanvasWordTableBlock } from '../../types';
 
 const MM_TO_PX = 96 / 25.4;
 const A4_PAPER_WIDTH_MM = 210;
@@ -161,6 +162,102 @@ function hasVisibleCell(cell?: CanvasSheetCell) {
   );
 }
 
+function buildTemplate(sizes: number[]) {
+  return sizes.map((size) => `${Math.max(1, size)}px`).join(' ');
+}
+
+function getWordDocumentBottom(page: CanvasPage) {
+  const documentBottom = page.wordDocument
+    ? Math.max(
+      page.wordDocument.contentHeight,
+      ...page.wordDocument.blocks.map((block) => block.layout.top + block.layout.height),
+    )
+    : 0;
+  const nodeBottom = page.nodes.reduce((bottom, node) => {
+    if (node.style.position !== 'absolute') return bottom;
+    return Math.max(bottom, Number(node.style.compTop ?? 0) + Number(node.style.compHeight ?? 0));
+  }, 0);
+  const imageBottom = page.images.reduce((bottom, image) => Math.max(bottom, image.layout.top + image.layout.height), 0);
+
+  return Math.max(documentBottom, nodeBottom, imageBottom);
+}
+
+function resolvePreviewTextStyle(style?: Record<string, unknown>) {
+  return {
+    color: String(style?.color ?? '#1f2937'),
+    fontSize: resolveNumericStyle(style?.fontSize, 12),
+    fontWeight: style?.fontWeight as string | number | undefined,
+    fontStyle: style?.fontStyle as string | undefined,
+    fontFamily: style?.fontFamily as string | undefined,
+    lineHeight: style?.lineHeight as string | number | undefined,
+    textAlign: (style?.textAlign as 'left' | 'center' | 'right' | 'justify' | undefined) ?? 'left',
+    textDecoration: style?.textDecoration as string | undefined,
+    whiteSpace: style?.whiteSpace === 'nowrap' ? 'nowrap' : 'pre-wrap',
+    overflowWrap: 'break-word',
+    wordBreak: 'break-word',
+  };
+}
+
+function resolveWordTableBorder(edge: keyof CanvasCellBorder, border?: CanvasCellBorder) {
+  const color = String(border?.color ?? '#111827');
+  return border?.[edge] === false ? 'none' : `1px solid ${color}`;
+}
+
+function fitWordTableColumnWidths(table: CanvasWordTableBlock) {
+  return fitColumnWidths(table.columnWidths, table.layout.width);
+}
+
+function CanvasThumbnailWordTable({ table }: { table: CanvasWordTableBlock }) {
+  const columnWidths = fitWordTableColumnWidths(table);
+  const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
+  const tableHeight = table.rowHeights.reduce((sum, height) => sum + height, 0);
+
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        left: table.layout.left,
+        top: table.layout.top,
+        width: tableWidth,
+        minHeight: tableHeight,
+        display: 'grid',
+        gridTemplateColumns: buildTemplate(columnWidths),
+        gridTemplateRows: buildTemplate(table.rowHeights),
+        bgcolor: '#fff',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+      }}
+    >
+      {table.cells.map((cell) => (
+        <Box
+          key={cell.id}
+          sx={{
+            gridColumn: `${cell.col} / span ${cell.colSpan}`,
+            gridRow: `${cell.row} / span ${cell.rowSpan}`,
+            display: 'flex',
+            alignItems: cell.style?.verticalAlign === 'top' ? 'flex-start' : cell.style?.verticalAlign === 'bottom' ? 'flex-end' : 'center',
+            justifyContent: cell.style?.textAlign === 'right' ? 'flex-end' : cell.style?.textAlign === 'center' ? 'center' : 'flex-start',
+            px: `${resolveNumericStyle(cell.style?.paddingLeft, 8)}px`,
+            py: `${resolveNumericStyle(cell.style?.paddingTop, 4)}px`,
+            pr: `${resolveNumericStyle(cell.style?.paddingRight, resolveNumericStyle(cell.style?.paddingLeft, 8))}px`,
+            pb: `${resolveNumericStyle(cell.style?.paddingBottom, resolveNumericStyle(cell.style?.paddingTop, 4))}px`,
+            borderTop: resolveWordTableBorder('top', cell.border),
+            borderRight: resolveWordTableBorder('right', cell.border),
+            borderBottom: resolveWordTableBorder('bottom', cell.border),
+            borderLeft: resolveWordTableBorder('left', cell.border),
+            bgcolor: String(cell.style?.backgroundColor ?? '#fff'),
+            boxSizing: 'border-box',
+            overflow: 'hidden',
+            ...resolvePreviewTextStyle(cell.style),
+          } as SxProps<Theme>}
+        >
+          {cell.text}
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
 const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, previewIndex }: { page: CanvasPage; previewIndex: number }) {
   const paperWidth = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM) * MM_TO_PX);
   const paperHeight = Math.round((page.sheet.paperOrientation === 'landscape' ? A4_PAPER_WIDTH_MM : A4_PAPER_HEIGHT_MM) * MM_TO_PX);
@@ -173,6 +270,7 @@ const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, prev
   const paperHeaderHeight = page.sheet.showHeader ? 46 : 0;
   const paperFooterHeight = page.sheet.showFooter ? 46 : 0;
   const paperContentWidth = paperWidth - paperInsetLeft - paperInsetRight;
+  const isFreeCanvas = page.sheet.canvasMode === 'paper';
   const rowHeights = Array.from({ length: page.sheet.rowCount }, (_, index) => (
     page.sheet.rowHeights[index] ?? page.sheet.defaultRowHeight
   ));
@@ -188,9 +286,11 @@ const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, prev
   const mediaSrcMap = useMemo(() => new Map(page.medias.map((media) => [media.id, media.src])), [page.medias]);
   const contentTop = paperInsetTop + paperHeaderHeight;
   const pageOffsetTop = previewIndex * paperHeight;
+  const hasStaticTextNodes = page.nodes.some((node) => node.type === 'static-text' && node.style.position === 'absolute');
   const stageHeight = Math.max(
     (previewIndex + 1) * paperHeight,
     contentTop + rowOffsets[rowOffsets.length - 1] + paperFooterHeight + paperInsetBottom,
+    contentTop + getWordDocumentBottom(page) + paperFooterHeight + paperInsetBottom,
   );
 
   return (
@@ -319,17 +419,68 @@ const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, prev
                 top: contentTop + Number(node.style.compTop ?? 0),
                 width: Math.max(40, Number(node.style.compWidth ?? 160)),
                 minHeight: Math.max(24, Number(node.style.compHeight ?? 32)),
-                border: '1px solid #cbd5e1',
-                bgcolor: '#f8fafc',
+                border: node.type === 'static-text' ? 'none' : '1px solid #cbd5e1',
+                bgcolor: node.type === 'static-text' ? String(node.style.backgroundColor ?? node.props.backgroundColor ?? 'transparent') : '#f8fafc',
                 color: '#475569',
                 fontSize: 12,
                 overflow: 'hidden',
-                px: 1,
-              }}
+                px: node.type === 'static-text' ? 0 : 1,
+                py: node.type === 'static-text' ? 0 : undefined,
+                ...(node.type === 'static-text' ? resolvePreviewTextStyle(node.style) : {}),
+              } as SxProps<Theme>}
             >
-              {String(node.props.label ?? node.type)}
+              {String(node.type === 'static-text' ? node.props.text ?? '' : node.props.label ?? node.type)}
             </Box>
           ))}
+        {isFreeCanvas && page.wordDocument ? (
+          <Box sx={{ position: 'absolute', left: paperInsetLeft, top: contentTop, width: paperContentWidth }}>
+            {page.wordDocument.blocks.map((block) => {
+              if (block.type === 'paragraph') {
+                if (hasStaticTextNodes) return null;
+                return (
+                  <Box
+                    key={block.id}
+                    sx={{
+                      position: 'absolute',
+                      left: block.layout.left,
+                      top: block.layout.top,
+                      width: block.layout.width,
+                      minHeight: block.layout.height,
+                      boxSizing: 'border-box',
+                      overflow: 'hidden',
+                      ...resolvePreviewTextStyle(block.style),
+                    } as SxProps<Theme>}
+                  >
+                    {block.text}
+                  </Box>
+                );
+              }
+
+              if (block.type === 'table') {
+                return <CanvasThumbnailWordTable key={block.id} table={block} />;
+              }
+
+              const src = mediaSrcMap.get(block.mediaId);
+              if (!src) return null;
+              return (
+                <Box
+                  key={block.id}
+                  component="img"
+                  src={src}
+                  alt=""
+                  sx={{
+                    position: 'absolute',
+                    left: block.layout.left,
+                    top: block.layout.top,
+                    width: block.layout.width,
+                    height: block.layout.height,
+                    objectFit: 'contain',
+                  }}
+                />
+              );
+            })}
+          </Box>
+        ) : null}
       </Box>
     </Box>
   );

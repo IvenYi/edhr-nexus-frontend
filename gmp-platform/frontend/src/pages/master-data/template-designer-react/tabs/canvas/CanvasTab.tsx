@@ -10,6 +10,7 @@ import CanvasPageThumbnails from '../../components/canvas/CanvasPageThumbnails';
 import CanvasSheetWorkspace from '../../components/canvas/CanvasSheetWorkspace';
 import DesignerInspector from '../../components/DesignerInspector';
 import DesignerSidebar from '../../components/DesignerSidebar';
+import ComponentLibrary from '../../components/ComponentLibrary';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 
 const sideRailItems = [
@@ -140,7 +141,7 @@ export default function CanvasTab() {
                     <CloseOutlined fontSize="small" />
                   </Button>
                 </Box>
-                {panelRail === 'fields' ? <DesignerSidebar /> : panelRail === 'config' ? <DesignerInspector /> : (
+                {panelRail === 'fields' ? <DesignerSidebar /> : panelRail === 'config' ? <DesignerInspector /> : panelRail === 'grid' ? <ComponentLibrary /> : (
                   <Stack sx={{ p: 2.5, color: '#98a2b3', fontSize: 13 }}>
                     当前面板正在迁移中。
                   </Stack>

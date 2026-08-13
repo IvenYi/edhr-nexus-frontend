@@ -147,6 +147,15 @@ function estimateTextHeight(text: string, width: number, fontSize = DEFAULT_FONT
   return Math.max(DEFAULT_ROW_HEIGHT, Math.ceil(lineCount * fontSize * DEFAULT_LINE_HEIGHT + 8));
 }
 
+function readStyleNumber(style: Record<string, unknown>, key: string) {
+  const value = Number(style[key]);
+  return Number.isFinite(value) ? value : 0;
+}
+
+function estimateParagraphTextWidth(text: string, fontSize: number) {
+  return Math.ceil(estimateTextWidth(text) * Math.max(7, fontSize * 0.56) + 12);
+}
+
 function paragraphsText(node?: Element) {
   return childrenByLocalName(node, ['p']).map(paragraphText).join('\n');
 }
@@ -195,6 +204,13 @@ function parseParagraphStyle(paragraphNode: Element) {
   if (alignment) {
     style.textAlign = alignment === 'both' ? 'justify' : alignment;
   }
+  const indentation = firstChild(pPr, 'ind');
+  setDxaStyle(style, 'paragraphLeftIndent', getAttribute(indentation, 'left'));
+  setDxaStyle(style, 'paragraphRightIndent', getAttribute(indentation, 'right'));
+  setDxaStyle(style, 'paragraphFirstLineIndent', getAttribute(indentation, 'firstLine'));
+  const spacing = firstChild(pPr, 'spacing');
+  setDxaStyle(style, 'paragraphSpaceBefore', getAttribute(spacing, 'before'));
+  setDxaStyle(style, 'paragraphSpaceAfter', getAttribute(spacing, 'after'));
   applyRunStyle(style, firstRun);
   return style;
 }
@@ -403,6 +419,34 @@ function sumNumbers(values: number[]) {
   return values.reduce((total, value) => total + value, 0);
 }
 
+function resolveWordParagraphLayout(block: Extract<ParsedBlock, { type: 'paragraph' }>, contentWidth: number, top: number) {
+  const fontSize = Number(block.style.fontSize ?? DEFAULT_FONT_SIZE);
+  const leftIndent = Math.max(0, readStyleNumber(block.style, 'paragraphLeftIndent'));
+  const rightIndent = Math.max(0, readStyleNumber(block.style, 'paragraphRightIndent'));
+  const firstLineIndent = Math.max(0, readStyleNumber(block.style, 'paragraphFirstLineIndent'));
+  const spaceBefore = Math.max(0, readStyleNumber(block.style, 'paragraphSpaceBefore'));
+  const spaceAfter = Math.max(0, readStyleNumber(block.style, 'paragraphSpaceAfter'));
+  const availableWidth = Math.max(48, contentWidth - leftIndent - rightIndent);
+  const estimatedTextWidth = estimateParagraphTextWidth(block.text, fontSize);
+  const isShortText = !/[\r\n]/.test(block.text) && estimatedTextWidth < availableWidth * 0.72;
+  const width = isShortText ? Math.max(48, estimatedTextWidth) : availableWidth;
+  const textAlign = String(block.style.textAlign ?? 'left');
+  const left = textAlign === 'center'
+    ? leftIndent + Math.max(0, Math.round((availableWidth - width) / 2))
+    : textAlign === 'right'
+      ? Math.max(leftIndent, contentWidth - rightIndent - width)
+      : leftIndent + firstLineIndent;
+  const height = estimateTextHeight(block.text, width, fontSize);
+
+  return {
+    left: Math.max(0, left),
+    top: top + spaceBefore,
+    width: Math.min(contentWidth, width),
+    height,
+    nextTop: top + spaceBefore + height + spaceAfter,
+  };
+}
+
 function findMergedRangeForWordCell(ranges: CanvasSelectionRange[], row: number, col: number) {
   return ranges.find((range) => row >= range.t && row <= range.b && col >= range.l && col <= range.r);
 }
@@ -447,21 +491,20 @@ function blocksToWordDocument(
 
   blocks.forEach((block) => {
     if (block.type === 'paragraph') {
-      const fontSize = Number(block.style.fontSize ?? DEFAULT_FONT_SIZE);
-      const height = estimateTextHeight(block.text, contentWidth, fontSize);
+      const layout = resolveWordParagraphLayout(block, contentWidth, top);
       wordBlocks.push({
         id: `word-doc-paragraph-${paragraphIndex + 1}`,
         type: 'paragraph',
         text: block.text,
         style: block.style,
         layout: {
-          top,
-          left: 0,
-          width: contentWidth,
-          height,
+          top: layout.top,
+          left: layout.left,
+          width: layout.width,
+          height: layout.height,
         },
       });
-      top += height;
+      top = layout.nextTop;
       paragraphIndex += 1;
       return;
     }

@@ -195,19 +195,45 @@ function normalizeHexColor(value: unknown, fallback: string) {
 
 export default function CanvasDesignerToolbar() {
   const selectedCellState = useTemplateDesignerStore((state) => state.getSelectedCellState());
+  const selectedNode = useTemplateDesignerStore((state) => state.getSelectedNode());
   const updateSelectedCellStyle = useTemplateDesignerStore((state) => state.updateSelectedCellStyle);
   const updateSelectedCellBorder = useTemplateDesignerStore((state) => state.updateSelectedCellBorder);
+  const updateNodeProps = useTemplateDesignerStore((state) => state.updateNodeProps);
+  const updateNodeStyle = useTemplateDesignerStore((state) => state.updateNodeStyle);
   const undoCanvasChange = useTemplateDesignerStore((state) => state.undoCanvasChange);
   const redoCanvasChange = useTemplateDesignerStore((state) => state.redoCanvasChange);
   const canUndoCanvasChange = useTemplateDesignerStore((state) => state.canUndoCanvasChange());
   const canRedoCanvasChange = useTemplateDesignerStore((state) => state.canRedoCanvasChange());
 
-  const cellStyle = selectedCellState?.style ?? {};
+  const isTextComponent = selectedNode?.type === 'static-text';
+  const cellStyle = isTextComponent ? selectedNode.style : selectedCellState?.style ?? {};
   const cellBorder = selectedCellState?.border;
   const fontColor = normalizeHexColor(cellStyle.color, DEFAULT_FONT_COLOR);
   const backgroundColor = normalizeHexColor(cellStyle.backgroundColor, DEFAULT_BACKGROUND_COLOR);
-  const hasAllBorders = Boolean(cellBorder?.top && cellBorder.right && cellBorder.bottom && cellBorder.left);
+  const hasAllBorders = isTextComponent
+    ? Boolean(selectedNode?.props.hasBorder ?? selectedNode?.style.hasBorder)
+    : Boolean(cellBorder?.top && cellBorder.right && cellBorder.bottom && cellBorder.left);
   const dividerSx = { mx: 0.5, alignSelf: 'center', height: 20 };
+  const updateSelectedStyle = (patch: Record<string, unknown>) => {
+    if (isTextComponent && selectedNode) {
+      updateNodeStyle(selectedNode.id, patch);
+      return;
+    }
+    updateSelectedCellStyle(patch);
+  };
+  const updateSelectedBorder = (enabled: boolean) => {
+    if (isTextComponent && selectedNode) {
+      updateNodeProps(selectedNode.id, { hasBorder: enabled });
+      return;
+    }
+    updateSelectedCellBorder(enabled ? {
+      top: true,
+      right: true,
+      bottom: true,
+      left: true,
+      color: DEFAULT_BORDER_COLOR,
+    } : null);
+  };
 
   const setTextDecoration = (token: 'underline' | 'line-through') => {
     const current = String(cellStyle.textDecoration ?? '');
@@ -217,7 +243,7 @@ export default function CanvasDesignerToolbar() {
           .filter((item) => item && item !== token)
           .join(' ')
       : [current, token].filter(Boolean).join(' ');
-    updateSelectedCellStyle({ textDecoration: next || undefined });
+    updateSelectedStyle({ textDecoration: next || undefined });
   };
 
   return (
@@ -244,20 +270,20 @@ export default function CanvasDesignerToolbar() {
         data-toolbar-font-size="true"
         label="字号"
         value={normalizeFontSize(cellStyle.fontSize)}
-        onChange={(fontSize) => updateSelectedCellStyle({ fontSize })}
+        onChange={(fontSize) => updateSelectedStyle({ fontSize })}
       />
       <ToolbarColorButton
         data-toolbar-font-color="true"
         color={fontColor}
         label="字体颜色"
-        onChange={(color) => updateSelectedCellStyle({ color })}
+        onChange={(color) => updateSelectedStyle({ color })}
       >
         <FormatColorTextOutlined fontSize="small" />
       </ToolbarColorButton>
-      <ToolbarIconButton active={cellStyle.fontWeight === 'bold'} label="加粗" onClick={() => updateSelectedCellStyle({ fontWeight: cellStyle.fontWeight === 'bold' ? undefined : 'bold' })}>
+      <ToolbarIconButton active={cellStyle.fontWeight === 'bold'} label="加粗" onClick={() => updateSelectedStyle({ fontWeight: cellStyle.fontWeight === 'bold' ? undefined : 'bold' })}>
         <FormatBoldOutlined fontSize="small" />
       </ToolbarIconButton>
-      <ToolbarIconButton active={cellStyle.fontStyle === 'italic'} label="斜体" onClick={() => updateSelectedCellStyle({ fontStyle: cellStyle.fontStyle === 'italic' ? undefined : 'italic' })}>
+      <ToolbarIconButton active={cellStyle.fontStyle === 'italic'} label="斜体" onClick={() => updateSelectedStyle({ fontStyle: cellStyle.fontStyle === 'italic' ? undefined : 'italic' })}>
         <FormatItalicOutlined fontSize="small" />
       </ToolbarIconButton>
       <ToolbarIconButton active={toBooleanTextDecoration(cellStyle.textDecoration, 'underline')} label="下划线" onClick={() => setTextDecoration('underline')}>
@@ -271,13 +297,7 @@ export default function CanvasDesignerToolbar() {
         data-toolbar-border="true"
         active={hasAllBorders}
         label="边框线"
-        onClick={() => updateSelectedCellBorder(hasAllBorders ? null : {
-          top: true,
-          right: true,
-          bottom: true,
-          left: true,
-          color: DEFAULT_BORDER_COLOR,
-        })}
+        onClick={() => updateSelectedBorder(!hasAllBorders)}
       >
         <BorderAllOutlined fontSize="small" />
       </ToolbarIconButton>
@@ -285,26 +305,26 @@ export default function CanvasDesignerToolbar() {
         data-toolbar-background-color="true"
         color={backgroundColor}
         label="单元格背景颜色"
-        onChange={(backgroundColor) => updateSelectedCellStyle({ backgroundColor })}
+        onChange={(backgroundColor) => updateSelectedStyle({ backgroundColor })}
       >
         <FormatColorFillOutlined fontSize="small" />
       </ToolbarColorButton>
-      <ToolbarIconButton active={cellStyle.textAlign === 'left'} label="左对齐" onClick={() => updateSelectedCellStyle({ textAlign: 'left' })}>
+      <ToolbarIconButton active={cellStyle.textAlign === 'left'} label="左对齐" onClick={() => updateSelectedStyle({ textAlign: 'left' })}>
         <FormatAlignLeftOutlined fontSize="small" />
       </ToolbarIconButton>
-      <ToolbarIconButton active={cellStyle.textAlign === 'center'} label="居中对齐" onClick={() => updateSelectedCellStyle({ textAlign: 'center' })}>
+      <ToolbarIconButton active={cellStyle.textAlign === 'center'} label="居中对齐" onClick={() => updateSelectedStyle({ textAlign: 'center' })}>
         <FormatAlignCenterOutlined fontSize="small" />
       </ToolbarIconButton>
-      <ToolbarIconButton active={cellStyle.textAlign === 'right'} label="右对齐" onClick={() => updateSelectedCellStyle({ textAlign: 'right' })}>
+      <ToolbarIconButton active={cellStyle.textAlign === 'right'} label="右对齐" onClick={() => updateSelectedStyle({ textAlign: 'right' })}>
         <FormatAlignRightOutlined fontSize="small" />
       </ToolbarIconButton>
-      <ToolbarIconButton active={cellStyle.verticalAlign === 'top'} label="顶部对齐" onClick={() => updateSelectedCellStyle({ verticalAlign: 'top' })}>
+      <ToolbarIconButton active={cellStyle.verticalAlign === 'top'} label="顶部对齐" onClick={() => updateSelectedStyle({ verticalAlign: 'top' })}>
         <VerticalAlignTopOutlined fontSize="small" />
       </ToolbarIconButton>
-      <ToolbarIconButton active={cellStyle.verticalAlign === 'middle'} label="垂直居中" onClick={() => updateSelectedCellStyle({ verticalAlign: 'middle' })}>
+      <ToolbarIconButton active={cellStyle.verticalAlign === 'middle'} label="垂直居中" onClick={() => updateSelectedStyle({ verticalAlign: 'middle' })}>
         <VerticalAlignCenterOutlined fontSize="small" />
       </ToolbarIconButton>
-      <ToolbarIconButton active={cellStyle.verticalAlign === 'bottom'} label="底部对齐" onClick={() => updateSelectedCellStyle({ verticalAlign: 'bottom' })}>
+      <ToolbarIconButton active={cellStyle.verticalAlign === 'bottom'} label="底部对齐" onClick={() => updateSelectedStyle({ verticalAlign: 'bottom' })}>
         <VerticalAlignBottomOutlined fontSize="small" />
       </ToolbarIconButton>
     </Box>

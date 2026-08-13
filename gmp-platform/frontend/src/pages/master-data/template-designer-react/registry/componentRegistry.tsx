@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import type { MouseEvent } from 'react';
+import { useRef, useState } from 'react';
 import type {
   CanvasNode,
   DesignerComponentDefinition,
@@ -888,27 +889,53 @@ function ContainerRenderer({
 }
 
 function StaticTextRenderer({ node, selected, onSelect }: DesignerRendererProps) {
-  const hasBorder = Boolean(node.props.hasBorder);
-  const backgroundColor = String(node.props.backgroundColor ?? '');
+  const hasBorder = Boolean(node.props.hasBorder ?? node.style.hasBorder);
+  const backgroundColor = String(node.style.backgroundColor ?? node.props.backgroundColor ?? '');
+  const updateNodeProps = useTemplateDesignerStore((state) => state.updateNodeProps);
+  const [editing, setEditing] = useState(false);
+  const textRef = useRef<HTMLDivElement | null>(null);
+
+  const startEditing = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    onSelect();
+    setEditing(true);
+    requestAnimationFrame(() => {
+      textRef.current?.focus();
+    });
+  };
 
   return (
     <Box
+      ref={textRef}
+      contentEditable={editing}
+      suppressContentEditableWarning
+      tabIndex={editing ? 0 : -1}
       onClick={(event) => {
         event.stopPropagation();
         onSelect();
+      }}
+      onDoubleClick={startEditing}
+      onPointerDown={(event) => {
+        if (editing) event.stopPropagation();
+      }}
+      onBlur={(event) => {
+        if (!editing) return;
+        updateNodeProps(node.id, { text: event.currentTarget.innerText });
+        setEditing(false);
       }}
       sx={{
         width: '100%',
         height: '100%',
         p: 1,
-        borderRadius: 0.75,
+        boxSizing: 'border-box',
+        borderRadius: 0,
         border: selected
-          ? '2px solid #1976d2'
+          ? '1px solid #1677ff'
           : hasBorder
             ? '1px solid #d7dee8'
             : '1px solid transparent',
-        bgcolor: backgroundColor || '#fff',
-        cursor: 'pointer',
+        bgcolor: backgroundColor || 'transparent',
+        cursor: editing ? 'text' : 'move',
         overflow: 'hidden',
         whiteSpace: 'pre-wrap',
         wordBreak: 'break-word',
@@ -924,6 +951,7 @@ function StaticTextRenderer({ node, selected, onSelect }: DesignerRendererProps)
 }
 
 function StaticImageRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+  const src = String(node.props.src ?? '');
   return (
     <Box
       onClick={(event) => {
@@ -940,18 +968,53 @@ function StaticImageRenderer({ node, selected, onSelect }: DesignerRendererProps
         cursor: 'pointer',
       }}
     >
-      <Box
-        component="img"
-        src={String(node.props.src ?? '')}
-        alt={String(node.props.alt ?? '导入图片')}
-        sx={{
-          display: 'block',
-          width: '100%',
-          height: '100%',
-          objectFit: 'contain',
-          bgcolor: '#fff',
-        }}
-      />
+      {src ? (
+        <Box
+          component="img"
+          src={src}
+          alt={String(node.props.alt ?? '导入图片')}
+          sx={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain', bgcolor: '#fff' }}
+        />
+      ) : (
+        <Box sx={{ display: 'grid', placeItems: 'center', width: '100%', height: '100%', color: '#98a2b3', fontSize: 13 }}>
+          图片
+        </Box>
+      )}
+    </Box>
+  );
+}
+
+function DisplayLineRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+  return (
+    <Box onClick={(event) => { event.stopPropagation(); onSelect(); }} sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+      <Box sx={{ width: '100%', borderTop: selected ? '2px solid #1976d2' : '1px solid #344054' }} />
+    </Box>
+  );
+}
+
+function DisplayBarcodeRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+  const value = String(node.props.value ?? '1234567890');
+  return (
+    <Box onClick={(event) => { event.stopPropagation(); onSelect(); }} sx={{ width: '100%', height: '100%', p: 0.5, border: selected ? '2px solid #1976d2' : '1px solid transparent', cursor: 'pointer', bgcolor: '#fff' }}>
+      <Box sx={{ height: '70%', background: 'repeating-linear-gradient(90deg, #1f2937 0 2px, transparent 2px 4px, #1f2937 4px 5px, transparent 5px 8px)' }} />
+      <Box sx={{ mt: 0.25, textAlign: 'center', fontSize: 10, letterSpacing: 1, color: '#1f2937' }}>{value}</Box>
+    </Box>
+  );
+}
+
+function DisplayQrCodeRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+  return (
+    <Box onClick={(event) => { event.stopPropagation(); onSelect(); }} sx={{ width: '100%', height: '100%', p: 0.5, border: selected ? '2px solid #1976d2' : '1px solid #344054', cursor: 'pointer', bgcolor: '#fff', boxSizing: 'border-box' }}>
+      <Box sx={{ width: '100%', height: '100%', backgroundImage: 'linear-gradient(90deg, #1f2937 12%, transparent 12% 25%, #1f2937 25% 38%, transparent 38% 50%, #1f2937 50% 63%, transparent 63% 75%, #1f2937 75% 88%, transparent 88%), linear-gradient(#1f2937 12%, transparent 12% 25%, #1f2937 25% 38%, transparent 38% 50%, #1f2937 50% 63%, transparent 63% 75%, #1f2937 75% 88%, transparent 88%)', backgroundSize: '100% 100%', opacity: 0.86 }} />
+    </Box>
+  );
+}
+
+function DisplayHeaderColumnsRenderer({ node, selected, onSelect }: DesignerRendererProps) {
+  return (
+    <Box onClick={(event) => { event.stopPropagation(); onSelect(); }} sx={{ width: '100%', height: '100%', display: 'flex', borderBottom: selected ? '2px solid #1976d2' : '1px solid #d0d7e2', cursor: 'pointer', bgcolor: '#fff' }}>
+      <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', px: 0.75, fontSize: 13, color: '#344054' }}>{String(node.props.leftText ?? '左侧标题')}</Box>
+      <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', px: 0.75, fontSize: 13, color: '#344054', borderLeft: '1px solid #e4e7ec' }}>{String(node.props.rightText ?? '右侧标题')}</Box>
     </Box>
   );
 }
@@ -1175,6 +1238,26 @@ export const componentRegistry: DesignerComponentDefinition[] = [
       bindings: {},
     }),
     renderDesigner: StaticImageRenderer,
+  },
+  {
+    type: 'display-line', label: '线条', category: 'layout', propSchema: [], styleSchema: ABSOLUTE_NODE_STYLE_SCHEMA,
+    createDefaultNode: () => ({ id: createId('display-line'), type: 'display-line', parentId: null, children: [], props: {}, style: { position: 'absolute', compLeft: 0, compTop: 0, compWidth: 240, compHeight: 12 }, bindings: {} }),
+    renderDesigner: DisplayLineRenderer,
+  },
+  {
+    type: 'display-barcode', label: '条码', category: 'layout', propSchema: [{ key: 'value', label: '条码内容', editor: 'text', defaultValue: '1234567890' }], styleSchema: ABSOLUTE_NODE_STYLE_SCHEMA,
+    createDefaultNode: () => ({ id: createId('display-barcode'), type: 'display-barcode', parentId: null, children: [], props: { value: '1234567890' }, style: { position: 'absolute', compLeft: 0, compTop: 0, compWidth: 180, compHeight: 56 }, bindings: {} }),
+    renderDesigner: DisplayBarcodeRenderer,
+  },
+  {
+    type: 'display-qr-code', label: '二维码', category: 'layout', propSchema: [], styleSchema: ABSOLUTE_NODE_STYLE_SCHEMA,
+    createDefaultNode: () => ({ id: createId('display-qr-code'), type: 'display-qr-code', parentId: null, children: [], props: {}, style: { position: 'absolute', compLeft: 0, compTop: 0, compWidth: 92, compHeight: 92 }, bindings: {} }),
+    renderDesigner: DisplayQrCodeRenderer,
+  },
+  {
+    type: 'display-header-columns', label: '表头分栏', category: 'layout', propSchema: [{ key: 'leftText', label: '左侧文字', editor: 'text', defaultValue: '左侧标题' }, { key: 'rightText', label: '右侧文字', editor: 'text', defaultValue: '右侧标题' }], styleSchema: ABSOLUTE_NODE_STYLE_SCHEMA,
+    createDefaultNode: () => ({ id: createId('display-header-columns'), type: 'display-header-columns', parentId: null, children: [], props: { leftText: '左侧标题', rightText: '右侧标题' }, style: { position: 'absolute', compLeft: 0, compTop: 0, compWidth: 360, compHeight: 36 }, bindings: {} }),
+    renderDesigner: DisplayHeaderColumnsRenderer,
   },
 ];
 

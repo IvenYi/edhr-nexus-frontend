@@ -254,7 +254,8 @@ function normalizeWordDocument(input: unknown): CanvasWordDocument | undefined {
   const contentWidth = Number(source.contentWidth);
   const contentHeight = Number(source.contentHeight);
   const blocks = Array.isArray(source.blocks)
-    ? source.blocks.filter((block): block is CanvasWordBlock => Boolean(block && typeof block === 'object' && 'type' in block))
+    ? source.blocks
+      .filter((block): block is CanvasWordBlock => Boolean(block && typeof block === 'object' && 'type' in block))
     : [];
 
   if (!blocks.length) return undefined;
