@@ -690,7 +690,7 @@ export default function ProductFamilyModelingPage() {
             size="small"
             sx={{
               minWidth: parentTableWidth,
-              width: parentTableWidth,
+              width: "100%",
               tableLayout: "fixed",
               height:
                 listQuery.isLoading || listQuery.isError || rows.length === 0
