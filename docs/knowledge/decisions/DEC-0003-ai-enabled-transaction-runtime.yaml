@@ -1,0 +1,57 @@
+knowledgeModelVersion: 0.3.3
+decisions:
+  - id: DEC-0003
+    title: Codex 协作交付与自定义事务运行边界
+    status: specified
+    visibility: internal
+    context: eDHR 以标准化产品内核支持团队使用 Codex 进行项目二开和高度定制。Codex 是产品外部的开发与交付工具；团队通过仓库化协作契约、知识基线、业务决策、decisionPackage 和 Git 版本化资产保持多人理解与交付质量一致。产品内仍由业务知识本体、结构化规则、事务编排和受控动作处理器共同实现生产运行；当前仅记录架构与运行边界，尚无已验证运行引擎或执行契约。
+    decisionStatements:
+      - id: DEC-0003-01
+        statement: 业务规则运行引擎只读取已发布且具备执行契约的结构化规则，对业务事件和事实进行确定性判断并返回允许、阻断或触发结果。
+        status: specified
+        visibility: internal
+      - id: DEC-0003-02
+        statement: 事务编排根据已发布事务定义管理事务实例、节点状态、等待、条件分支和流程推进，并通过执行契约调用已注册动作处理器。
+        status: specified
+        visibility: internal
+      - id: DEC-0003-03
+        statement: 动作处理器以标准处理器或项目插件的形式，按受控执行契约完成创建表单、更新状态、写入审计和调用外部系统等确定性副作用。
+        status: specified
+        visibility: internal
+      - id: DEC-0003-04
+        statement: 产品外部的 Codex 协作交付流程将已确认项目需求转化为本体、规则、事务流程、扩展插件、迁移、测试和文档候选产物，并通过仓库协作契约和版本化知识资产保持多人对业务决策与质量标准的理解一致；候选产物必须经校验和人工确认后才能发布。
+        status: specified
+        visibility: internal
+      - id: DEC-0003-05
+        statement: Codex 或其他生成式 AI 不得在生产运行时直接决定业务结果；生产运行必须使用版本化规则、已发布事务定义和已注册动作处理器。Codex 生成的候选资产必须经过仓库契约规定的校验、人工确认和发布后才能被产品运行时读取。
+        status: specified
+        visibility: internal
+      - id: DEC-0003-06
+        statement: 生产对象开始执行事务后冻结所用事务版本引用，后续新版本只供新生产对象选择，不能改变原生产对象的历史执行依据。
+        status: specified
+        visibility: internal
+      - id: DEC-0003-07
+        statement: 为支撑 Codex 协作交付和项目定制，产品第一阶段即纳入最小可用的可视化自定义事务编排、事务运行时和动作扩展接口，但不在第一阶段复制冠骋全部复杂节点；该能力属于 eDHR 产品业务运行能力，不是产品内的 AI 交付工作台。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.crown-transaction-module-research]
+    acceptanceScenarios:
+      - id: scenario.ai-generated-transaction-requires-release
+        given: Codex 根据客户需求生成一份自定义事务草稿
+        when: 草稿尚未通过校验和人工确认发布
+        then: 生产运行时不得创建该事务的实例
+        evidenceIds: []
+        evidenceRequirements: [后续运行引擎集成测试]
+      - id: scenario.published-transaction-invokes-registered-handler
+        given: 已发布事务版本包含一个已注册动作节点
+        when: 事务实例推进到该节点
+        then: 编排器按执行契约调用对应处理器并记录节点与审计结果
+        evidenceIds: []
+        evidenceRequirements: [后续事务运行集成测试]
+      - id: scenario.production-keeps-transaction-version-snapshot
+        given: 生产对象已按已发布事务版本开始执行
+        when: 后续发布新的事务版本
+        then: 原生产对象继续使用已冻结版本，新生产对象才可使用新版本
+        evidenceIds: []
+        evidenceRequirements: [后续快照和版本兼容测试]

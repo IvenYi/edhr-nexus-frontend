@@ -1,0 +1,67 @@
+%% 冠骋 eDHR 生产与事务运行链路（基于探索资料与前后端代码复核）
+%% 实线 = 已由探索资料或代码确认；灰色虚线 = 已确认同域能力，但并非每次生产必经。
+flowchart LR
+    classDef config fill:#e8f0fe,stroke:#1967d2,color:#12335e,stroke-width:1px;
+    classDef execution fill:#e6f4ea,stroke:#2e7d32,color:#173f24,stroke-width:1px;
+    classDef transaction fill:#fce8e6,stroke:#b3261e,color:#5f1712,stroke-width:1px;
+    classDef evidence fill:#fff4e5,stroke:#b06000,color:#5c3300,stroke-width:1px;
+    classDef extension fill:#f1f3f4,stroke:#6b7280,color:#374151,stroke-dasharray: 5 4;
+
+    subgraph CFG[事务配置层]
+        direction TB
+        A["事务定义<br/>范围、模块、标签、业务流程"] --> B["适用规则<br/>全局或产品簇 / 产品 / 工序 / 生产类型"]
+        B --> C["例外规则<br/>在特定产品或工序排除全局事务"]
+        B --> D["个性化流程<br/>同一事务在特定范围覆盖流程"]
+        B --> E["工序触发配置<br/>开工前、完工后、部分完工后"]
+    end
+
+    subgraph EXEC[生产执行]
+        direction TB
+        F["受控产品制程版本<br/>路线、DHR、放行模板"] --> G["工单"] --> H["批次 / SN"]
+        H --> I["首次工序开工<br/>冻结制程运行快照并创建 DHR"]
+        I --> J["工序工作台<br/>SOP、工序表单、生产事务"]
+        J --> K["填写工序表单"] --> L["工序完工<br/>权限、必填表单、BOM 校验"]
+        L --> M{"是否最后工序"}
+        M -->|否| J
+        M -->|是| N["批次 / SN 完成"]
+    end
+
+    subgraph TXN[事务运行与编排层]
+        direction TB
+        O["事务分派器<br/>按产品、工序、类型筛选可用定义"] --> P["事务实例 + 当前节点状态<br/>关联批次/SN、工序、父事务、流程实例"]
+        P --> Q["事务流程节点<br/>表单、配置、子事务、条件分支、消息"]
+        Q --> R["事务表单完成<br/>更新节点状态并继续流程"]
+        R --> Q
+        Q --> S["事务结束<br/>关闭未完成节点与相关表单"]
+        T["配置动作<br/>返工、批次转 SN / 拆分"]
+        U["子事务<br/>同步等待或异步继续"]
+        Q -. "按节点类型" .-> T
+        Q -. "按节点类型" .-> U
+    end
+
+    subgraph EVIDENCE[事务主线、证据与追溯]
+        direction LR
+        Y["事务主线<br/>生产事件、事务创建、完成、结束"] --> Z["主体关系<br/>批次/SN/工单的有效期追溯边"]
+        Z --> AA["正向 / 反向追溯"]
+        AB["完成表单快照与投影"] --> AC["DHR 候选证据 / 完整性检查"]
+        AC --> AD["DHR 汇总、审核、放行、归档"]
+    end
+
+    E --> O
+    J -->|"人工触发工序事务"| O
+    I -->|"工序开工前事件"| O
+    L -->|"完工后或部分完工后事件"| O
+    I -->|"记录开工"| Y
+    L -->|"记录完工"| Y
+    P -->|"创建 / 执行 / 结束"| Y
+    S --> Y
+    K --> AB
+    R --> AB
+    S -->|"未关闭事务属于 DHR 完整性检查项"| AC
+    N --> AC
+
+    class A,B,C,D,E config;
+    class F,G,H,I,J,K,L,M,N execution;
+    class O,P,Q,R,S transaction;
+    class T,U extension;
+    class Y,Z,AA,AB,AC,AD evidence;

@@ -1,0 +1,43 @@
+<h2>产品管理：路线图内配置子制程版本</h2>
+<p class="subtitle">选择路线版本后，右侧展示该版本的只读工艺路线图。点击一个工序节点，将在右侧配置栏绑定该工序的表单模板版本与文档版本。</p>
+
+<div class="mockup" style="border:1px solid #dfe5ec;background:#fff;max-width:1180px;margin:auto">
+  <div class="mockup-header">新建制程配置版本 <span style="float:right;color:#909399;font-weight:400">产品 A / PRD-001</span></div>
+  <div class="mockup-body" style="padding:0;display:grid;grid-template-columns:330px minmax(0,1fr);min-height:570px">
+    <div style="padding:18px;border-right:1px solid #e4e7ed;overflow:auto">
+      <div style="font-size:13px;color:#606266;margin-bottom:5px">版本号 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:13px">V2.0</div>
+      <div style="font-size:13px;color:#606266;margin-bottom:5px">生产模式 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:13px">量产　⌄</div>
+      <div style="font-size:13px;color:#606266;margin-bottom:5px">生产方式 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:13px">批次　⌄</div>
+      <div style="font-size:13px;color:#606266;margin-bottom:5px">工艺路线版本 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:13px">装配路线 / ROUTE-002 / V1.0　⌄</div>
+      <div style="font-size:13px;color:#606266;margin-bottom:5px">批记录模板版本 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:13px">组装批记录 / DHR-002 / V1.0　⌄</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px"><div><div style="font-size:13px;color:#606266;margin-bottom:5px">生效时间</div><div class="mock-input">2026-08-01</div></div><div><div style="font-size:13px;color:#606266;margin-bottom:5px">失效时间</div><div class="mock-input">-</div></div></div>
+      <div style="font-size:13px;color:#606266;margin-bottom:5px">版本备注</div><div class="mock-input" style="height:60px;padding-top:10px">切换至新装配路线</div>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 265px;min-width:0;background:#fcfdff">
+      <div style="min-width:0;border-right:1px solid #e4e7ed;display:flex;flex-direction:column">
+        <div style="padding:15px 17px;border-bottom:1px solid #e4e7ed;display:flex;align-items:center;justify-content:space-between"><div><strong>装配路线 / V1.0</strong><span style="margin-left:8px;color:#909399;font-size:12px">点击工序节点配置</span></div><span style="font-size:13px;color:#909399">仅展示，不可编辑</span></div>
+        <div style="flex:1;min-height:0;position:relative;overflow:hidden;background:linear-gradient(#f8fafc 1px,transparent 1px),linear-gradient(90deg,#f8fafc 1px,transparent 1px);background-size:24px 24px">
+          <svg viewBox="0 0 600 390" style="position:absolute;width:100%;height:100%;left:0;top:0" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#91caff"/></marker></defs><path d="M130 90 L240 90" stroke="#91caff" stroke-width="2" marker-end="url(#arrow)"/><path d="M345 90 L430 145" stroke="#91caff" stroke-width="2" marker-end="url(#arrow)"/><path d="M345 90 L430 245" stroke="#91caff" stroke-width="2" marker-end="url(#arrow)"/><path d="M500 175 L500 195" stroke="#91caff" stroke-width="2"/><path d="M500 275 L500 300" stroke="#91caff" stroke-width="2" marker-end="url(#arrow)"/></svg>
+          <div style="position:absolute;left:36px;top:56px;width:86px;text-align:center;padding:10px 4px;border:1px solid #b7eb8f;background:#f6ffed;border-radius:4px;font-size:13px">开始</div>
+          <div style="position:absolute;left:240px;top:56px;width:105px;text-align:center;padding:10px 4px;border:1px solid #91caff;background:#e6f4ff;border-radius:4px;font-size:13px">来料检验</div>
+          <div style="position:absolute;left:430px;top:110px;width:105px;text-align:center;padding:10px 4px;border:2px solid #1677c8;background:#e6f4ff;border-radius:4px;font-size:13px;font-weight:600;box-shadow:0 0 0 3px rgba(22,119,200,.1)">装配</div>
+          <div style="position:absolute;left:430px;top:220px;width:105px;text-align:center;padding:10px 4px;border:1px solid #91caff;background:#e6f4ff;border-radius:4px;font-size:13px">外观检验</div>
+          <div style="position:absolute;left:450px;top:305px;width:100px;text-align:center;padding:10px 4px;border:1px solid #b7eb8f;background:#f6ffed;border-radius:4px;font-size:13px">结束</div>
+        </div>
+      </div>
+      <div style="padding:15px;background:#fff;overflow:auto">
+        <div style="font-size:12px;color:#909399;margin-bottom:4px">当前节点</div><div style="font-weight:600;margin-bottom:15px">装配 <span style="font-weight:400;color:#909399">/ OP-002</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong style="font-size:13px">表单模板</strong><span style="font-size:13px;color:#1677c8">+ 引用</span></div>
+        <div style="font-size:12px;line-height:1.6;border:1px solid #d9ecff;background:#f0f7ff;border-radius:4px;padding:8px;margin-bottom:8px">装配记录表<br><span style="color:#606266">FORM-002 / V2.0</span><span style="float:right;color:#909399">×</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px"><strong style="font-size:13px">工序文档</strong><span style="font-size:13px;color:#1677c8">+ 引用</span></div>
+        <div style="font-size:12px;line-height:1.6;border:1px solid #e4e7ed;background:#fafafa;border-radius:4px;padding:8px">装配 SOP<br><span style="color:#606266">SOP-012 / V1.0</span><span style="float:right;color:#909399">×</span></div>
+        <div style="margin-top:20px;font-size:12px;color:#909399;line-height:1.7">切换节点时自动保存当前节点的临时配置；点击保存后统一提交整个制程版本。</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:14px 18px;border-top:1px solid #e4e7ed;text-align:right"><button class="mock-button" style="background:#fff;color:#606266;border:1px solid #d9d9d9;margin-right:8px">取消</button><button class="mock-button">保存</button></div>
+</div>
+
+<div class="section" style="max-width:1180px;margin:22px auto 0">
+  <p class="subtitle">实现时复用工艺路线现有的 React Flow 节点和边数据，但产品配置弹窗仅提供查看、选择节点和引用配置，不提供路线编辑能力。</p>
+</div>

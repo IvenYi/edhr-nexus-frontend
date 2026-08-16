@@ -1,0 +1,45 @@
+%% eDHR 推荐生产与事务演进链路
+%% 绿色 = 建议 P0 首条可运行生产链；蓝色 = 建议 P1 受控事务闭环；灰色虚线 = 建议 P2 扩展。
+%% 所有 P0/P1/P2 均为内部研发建议，不是当前产品功能或客户承诺。
+flowchart TB
+    classDef p0 fill:#e6f4ea,stroke:#2e7d32,color:#173f24,stroke-width:1px;
+    classDef p1 fill:#e8f0fe,stroke:#1967d2,color:#12335e,stroke-width:1px;
+    classDef p2 fill:#f1f3f4,stroke:#6b7280,color:#374151,stroke-dasharray: 5 4;
+    classDef decision fill:#fff4e5,stroke:#b06000,color:#5c3300,stroke-width:1px;
+    classDef foundation fill:#f7f8fa,stroke:#6b7280,color:#374151,stroke-width:1px;
+
+    subgraph FOUNDATION[已具备的受控配置基础]
+        direction LR
+        A["产品 / 产品簇"] --> B["多个并行制程版本<br/>不设唯一当前版本"] --> C["路线版本 + DHR 模板版本"] --> D["工序资源<br/>DHR 目录表单、文档版本"]
+    end
+
+    subgraph P0[建议 P0：首条可运行生产链]
+        direction LR
+        E["手工创建工单"] --> F["显式选择制程版本"] --> G{"产品是否有可用制程？"}
+        G -->|有| H["选择产品制程版本"]
+        G -->|无| I["选择产品簇兜底制程版本"]
+        H --> J["拆分生产批次"]
+        I --> J
+        J --> K["冻结执行快照<br/>产品、制程、路线、DHR、工序资源"] --> L["工序执行工作台<br/>开工、表单填报或审核、完工"] --> M["记录统一业务事件<br/>主体、工序、快照、来源、幂等键"] --> N["完成态 DHR 与基础追溯入口"]
+    end
+
+    subgraph P1[建议 P1：最小事务闭环]
+        direction LR
+        O["事务定义与适用规则<br/>手工触发或事件触发"] --> P["事务实例与节点状态"] --> Q["表单节点 / 有限配置节点"] --> R["事务完成、关闭或受控中止"] --> S["事务主线、关系边与 DHR 完整性检查"]
+    end
+
+    subgraph P2[建议 P2：按业务启用的扩展]
+        direction LR
+        T["条件串行 / 并行、嵌套事务<br/>返工、报废、不良、拆分"] --> U["检验、放行、库存 / 投料、标签、通知<br/>设备、人员资质、ERP 集成"]
+    end
+
+    D --> E
+    L -->|"保留手工与事件触发入口"| O
+    M --> S
+    S --> T
+
+    class A,B,C,D foundation;
+    class E,F,H,I,J,K,L,M,N p0;
+    class G decision;
+    class O,P,Q,R,S p1;
+    class T,U p2;

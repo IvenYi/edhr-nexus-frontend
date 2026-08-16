@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.1
+knowledgeModelVersion: 0.3.3
 concepts:
   - id: concept.material
     termId: term.material
@@ -78,6 +78,42 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.business-knowledge-model]
+  - id: concept.business-rule-runtime
+    termId: term.business-rule-runtime
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-transaction-runtime-architecture]
+  - id: concept.transaction-orchestration
+    termId: term.transaction-orchestration
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.crown-transaction-module-research]
+  - id: concept.action-handler
+    termId: term.action-handler
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.crown-transaction-module-research]
+  - id: concept.ai-delivery-pipeline
+    termId: term.ai-delivery-pipeline
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-transaction-runtime-architecture]
+  - id: concept.requirement-impact-analysis
+    termId: term.requirement-impact-analysis
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ontology-impact-analysis-architecture]
+  - id: concept.implementation-evidence-link
+    termId: term.implementation-evidence-link
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ontology-impact-analysis-architecture]
 relations:
   - id: relation.material-derives-product
     source: concept.material
@@ -198,3 +234,38 @@ relations:
     status: specified
     visibility: internal
     evidenceIds: [evidence.business-knowledge-model]
+  - id: relation.rule-runtime-reads-execution-snapshot
+    source: concept.business-rule-runtime
+    target: concept.execution-snapshot
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-transaction-runtime-architecture]
+  - id: relation.transaction-orchestration-invokes-action-handler
+    source: concept.transaction-orchestration
+    target: concept.action-handler
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.crown-transaction-module-research]
+  - id: relation.ai-delivery-produces-controlled-assets
+    source: concept.ai-delivery-pipeline
+    target: concept.transaction-orchestration
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ai-transaction-runtime-architecture]
+  - id: relation.ai-delivery-performs-requirement-impact-analysis
+    source: concept.ai-delivery-pipeline
+    target: concept.requirement-impact-analysis
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ontology-impact-analysis-architecture]
+  - id: relation.requirement-impact-analysis-uses-implementation-evidence
+    source: concept.requirement-impact-analysis
+    target: concept.implementation-evidence-link
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.ontology-impact-analysis-architecture]

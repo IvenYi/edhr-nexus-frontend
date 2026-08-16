@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.3
+evidence:
+  - id: evidence.ai-transaction-runtime-architecture
+    type: document
+    path: docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md
+    description: 事务运行架构定义本体、规则引擎、事务编排、动作处理器、项目插件、发布门禁和生产快照的职责与边界；关于产品外部的 Codex 协作交付流程，以 DEC-0003 和本知识基线的修正定义为准，不将其解释为产品内 AI 交付工作台。
+    visibility: internal
+  - id: evidence.crown-transaction-module-research
+    type: document
+    path: docs/reference-assets/research/crown-transaction-module-research.md
+    description: 冠骋事务调研记录事务定义、事务实例、节点状态、流程推进、表单或子事务节点及配置动作的竞品实现证据，仅用于内部设计参考。
+    visibility: internal

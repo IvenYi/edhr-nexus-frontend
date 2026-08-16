@@ -1,0 +1,47 @@
+knowledgeModelVersion: 0.3.3
+decisions:
+  - id: DEC-0004
+    title: 本体驱动需求影响分析与实现证据边界
+    status: specified
+    visibility: internal
+    context: eDHR 团队使用 Codex 进行产品开发和项目二开时，需要让不同会话基于同一结构化业务知识理解产品、评估变更影响并选择可维护的扩展路径。本体能够提供业务语义地图，但不会天然包含完整且实时的代码依赖，因此必须通过实现证据和模块责任边界连接业务知识与实际系统，并对证据不足保持诚实。本决策仅定义内部研发治理和知识结构，不表示自动影响分析引擎已经实现，也不建立生产运行执行契约。
+    decisionStatements:
+      - id: DEC-0004-01
+        statement: 业务知识本体既是客户知识和受控业务规则运行的基础，也是 Codex 进行需求影响分析的结构化系统地图；客户与运行时投影仍受发布状态、可见性、执行契约和证据门禁约束。
+        status: specified
+        visibility: internal
+      - id: DEC-0004-02
+        statement: 可靠的需求影响分析必须通过实现证据链接核对业务概念、关系、规则、事件、动作和决策在领域模块、接口、持久化、页面、审计、测试、快照及下游投影中的实现归属。
+        status: specified
+        visibility: internal
+      - id: DEC-0004-03
+        statement: 影响报告必须区分直接影响、传递影响、潜在影响、不受影响及兼容迁移范围；实现证据不足时必须标记不确定性，并继续查证易漂移的源码、数据库、接口和测试。
+        status: specified
+        visibility: internal
+      - id: DEC-0004-04
+        statement: 本体不是自动完整的依赖图，Codex 不得仅依据旧知识或推断修改系统，也不得把尚未实现的自动代码依赖图和回归范围建议标记为 implemented 或 verified。
+        status: specified
+        visibility: internal
+      - id: DEC-0004-05
+        statement: 需求交付应按业务边界选择配置、事务编排、标准动作、项目插件或产品内核开发，并将必要代码集中在明确领域模块和稳定扩展点中。
+        status: specified
+        visibility: internal
+      - id: DEC-0004-06
+        statement: 需求影响分析按 L0、L1、L2 风险分级执行：L0 不生成正式 impactAnalysis，L1 只生成精简摘要，L2 才要求完整影响报告；不新增独立门禁或长期角色，同一功能切片只增量维护一次分析，本体同步与无依赖开发并行，质量验证仅在收尾阶段介入，不因连续微调重复启动完整门禁。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.ontology-impact-analysis-architecture, evidence.ai-transaction-runtime-architecture]
+    acceptanceScenarios:
+      - id: scenario.impact-analysis-traces-implementation-evidence
+        given: Codex 收到一项会改变业务规则或流程的需求
+        when: Codex 生成 decisionPackage 和需求影响报告
+        then: 报告沿结构化知识核对实现证据，列出直接、传递、潜在、不受影响及兼容迁移范围，并明确标识证据不足的结论
+        evidenceIds: [evidence.ontology-impact-analysis-architecture]
+        evidenceRequirements: [后续需求影响分析门禁或人工审查记录]
+      - id: scenario.impact-analysis-selects-maintainable-extension-path
+        given: 一项需求可以通过配置、编排、标准动作、项目插件或产品内核中的一种或多种方式交付
+        when: Codex 完成业务语义和实现影响核对
+        then: 方案说明所选扩展路径及依据，必要代码位于明确领域模块或稳定扩展点，并列出对应测试和审计影响
+        evidenceIds: [evidence.ontology-impact-analysis-architecture, evidence.ai-transaction-runtime-architecture]
+        evidenceRequirements: [后续实际功能决策包与代码审查记录]

@@ -1,0 +1,35 @@
+knowledgeModelVersion: 0.3.3
+rules:
+  - id: rule.transaction.published-version-only
+    name: 事务运行只读取已发布版本
+    status: specified
+    visibility: internal
+    trigger: transaction.instance.start
+    scope: transaction-runtime
+    condition:
+      all:
+        - fact: transactionDefinition.status
+          operator: equals
+          value: published
+    result:
+      type: planned-transaction-trigger
+      versionSource: published-transaction-definition
+      freezeReference: true
+    explanation: 事务运行只能基于已发布事务定义创建实例，并冻结所用版本引用；未发布草稿不得进入生产运行。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture]
+  - id: rule.ai.runtime-determinism
+    name: Codex/生成式 AI 不直接决定生产运行结果
+    status: specified
+    visibility: internal
+    trigger: production.runtime.execute
+    scope: production-runtime
+    condition:
+      all:
+        - fact: runtimeDecision.source
+          operator: equals
+          value: generative-ai
+    result:
+      type: block
+      reason: runtime-must-use-versioned-rules-and-handlers
+    explanation: Codex 或其他生成式 AI 只能在产品外部交付流程中生成候选知识、规则、事务流程、扩展插件、迁移、测试和文档；这些候选产物必须经过仓库契约规定的校验、人工确认和发布，生产运行结果不得由 Codex 或生成式 AI 直接决定，而必须由版本化规则、事务定义和已注册动作处理器确定性执行。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture]

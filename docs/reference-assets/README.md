@@ -64,6 +64,7 @@
 ## 事务、投影与 DHR 业务说明
 
 - `docs/architecture/transaction-traceability-dhr-business-rules.md`：独立于模板实现的事务、投影、追溯与 DHR 汇总业务边界。
+- `docs/reference-assets/research/crown-exploration-extracted.txt`：冠骋探索之旅的归档文本提取，供事务与生产流程调研复核。
 - 表单模板、设计器和填报运行时由模板模块负责；本仓库其余模块只依赖受控版本、实例快照和生命周期事件。
 
 ## 已失效资料

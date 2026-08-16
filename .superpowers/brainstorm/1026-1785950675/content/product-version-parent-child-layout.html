@@ -1,0 +1,55 @@
+<h2>产品管理：父产品与子制程版本</h2>
+<p class="subtitle">物料管理派生产品父项；制程版本作为其子项维护。后续工单拆批时明确选择一个版本配置，而不是由产品管理自动挑选。</p>
+
+<div class="section">
+  <div class="mockup" style="overflow:hidden;border:1px solid #dfe5ec;background:#fff">
+    <div class="mockup-header" style="display:flex;justify-content:space-between;align-items:center">产品管理 <span style="font-weight:400;color:#7b8794">由半成品、产成品物料自动派生</span></div>
+    <div class="mockup-body" style="padding:0">
+      <div style="display:grid;grid-template-columns:36px 1.2fr 1fr .8fr .9fr .8fr .8fr 180px;background:#f5f7fa;color:#606266;font-size:13px;font-weight:600;border-bottom:1px solid #e4e7ed">
+        <div style="padding:14px 10px"></div><div style="padding:14px 10px">产品名称</div><div style="padding:14px 10px">产品编码</div><div style="padding:14px 10px">物料类型</div><div style="padding:14px 10px">规格型号</div><div style="padding:14px 10px">配置版本数</div><div style="padding:14px 10px">更新人</div><div style="padding:14px 10px;text-align:center">操作</div>
+      </div>
+      <div style="display:grid;grid-template-columns:36px 1.2fr 1fr .8fr .9fr .8fr .8fr 180px;align-items:center;border-bottom:1px solid #e4e7ed;font-size:14px">
+        <div style="padding:14px 10px;color:#1677c8;font-size:18px">⌄</div><div style="padding:14px 10px;font-weight:600">产品 A</div><div style="padding:14px 10px">PRD-001</div><div style="padding:14px 10px">产成品</div><div style="padding:14px 10px">标准型号</div><div style="padding:14px 10px">2</div><div style="padding:14px 10px">系统管理员</div>
+        <div style="padding:10px;text-align:center"><span title="新建制程版本" style="display:inline-block;color:#1677c8;font-size:19px;padding:4px 8px">⊞</span><span title="查看父产品" style="display:inline-block;color:#606266;font-size:19px;padding:4px 8px">◉</span></div>
+      </div>
+      <div style="margin:0 18px 0 36px;border-left:2px solid #d9ecff;background:#fbfdff">
+        <div style="display:grid;grid-template-columns:1.2fr .9fr .9fr 1.5fr 1.45fr 1fr 1fr 1.55fr 180px;align-items:center;border-bottom:1px solid #e4e7ed;font-size:13px;color:#303133">
+          <div style="padding:12px 16px"><span style="color:#909399;margin-right:8px">└</span><strong>制程 V1.0</strong></div><div style="padding:12px 10px">量产</div><div style="padding:12px 10px">批次</div><div style="padding:12px 10px">路线-A / V1.0</div><div style="padding:12px 10px">批记录-A / V1.0</div><div style="padding:12px 10px"><span style="color:#389e0d;background:#f6ffed;padding:3px 7px">生效</span></div><div style="padding:12px 10px">2026-01-01</div><div style="padding:12px 10px">-</div><div style="padding:9px;text-align:center;color:#1677c8">☷　✎　⧉　◷　⌫</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.2fr .9fr .9fr 1.5fr 1.45fr 1fr 1fr 1.55fr 180px;align-items:center;font-size:13px;color:#303133">
+          <div style="padding:12px 16px"><span style="color:#909399;margin-right:8px">└</span><strong>制程 V2.0</strong></div><div style="padding:12px 10px">量产</div><div style="padding:12px 10px">批次</div><div style="padding:12px 10px">路线-B / V1.0</div><div style="padding:12px 10px">批记录-B / V1.0</div><div style="padding:12px 10px"><span style="color:#389e0d;background:#f6ffed;padding:3px 7px">生效</span></div><div style="padding:12px 10px">2026-08-01</div><div style="padding:12px 10px">-</div><div style="padding:9px;text-align:center;color:#1677c8">☷　✎　⧉　◷　⌫</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>新建/编辑子制程版本弹窗</h3>
+  <div class="mockup" style="border:1px solid #dfe5ec;background:#fff">
+    <div class="mockup-header">新建制程配置版本 <span style="float:right;color:#909399;font-weight:400">产品 A / PRD-001</span></div>
+    <div class="mockup-body" style="padding:0;display:grid;grid-template-columns:330px minmax(0,1fr);min-height:410px">
+      <div style="padding:18px;border-right:1px solid #e4e7ed">
+        <div style="font-size:13px;color:#606266;margin-bottom:5px">版本号 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:14px">V2.0</div>
+        <div style="font-size:13px;color:#606266;margin-bottom:5px">生产模式 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:14px">量产　⌄</div>
+        <div style="font-size:13px;color:#606266;margin-bottom:5px">生产方式 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:14px">批次　⌄</div>
+        <div style="font-size:13px;color:#606266;margin-bottom:5px">工艺路线版本 <span style="color:#d93025">*</span></div><div class="mock-input" style="margin-bottom:14px">路线-B / ROUTE-002 / V1.0　⌄</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><div style="font-size:13px;color:#606266;margin-bottom:5px">生效时间</div><div class="mock-input">2026-08-01</div></div><div><div style="font-size:13px;color:#606266;margin-bottom:5px">失效时间</div><div class="mock-input">-</div></div></div>
+      </div>
+      <div style="padding:18px;background:#fcfdff">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div><strong>路线工序配置</strong><span style="margin-left:8px;color:#909399;font-size:12px">随所选路线即时加载</span></div><span style="color:#1677c8;font-size:13px">批记录模板：批记录-B / V1.0</span></div>
+        <div style="border:1px solid #e4e7ed;border-radius:4px;background:#fff">
+          <div style="padding:13px 14px;border-bottom:1px solid #e4e7ed;display:flex;align-items:center;gap:10px"><span style="color:#1677c8">01</span><strong style="flex:1">来料检验</strong><span style="color:#1677c8;font-size:13px">+ 引用表单</span><span style="color:#1677c8;font-size:13px">+ 引用文档</span></div>
+          <div style="padding:10px 42px;border-bottom:1px solid #f0f2f5;font-size:13px"><span style="background:#e8f4ff;color:#1677c8;padding:4px 7px;margin-right:7px">表单　IQC 检验记录 / V1.0　×</span><span style="background:#f6f7f9;color:#606266;padding:4px 7px">文档　来料检验 SOP / V2.0　×</span></div>
+          <div style="padding:13px 14px;border-bottom:1px solid #e4e7ed;display:flex;align-items:center;gap:10px"><span style="color:#1677c8">02</span><strong style="flex:1">装配</strong><span style="color:#1677c8;font-size:13px">+ 引用表单</span><span style="color:#1677c8;font-size:13px">+ 引用文档</span></div>
+          <div style="padding:13px 14px;display:flex;align-items:center;gap:10px"><span style="color:#1677c8">03</span><strong style="flex:1">终检</strong><span style="color:#1677c8;font-size:13px">+ 引用表单</span><span style="color:#1677c8;font-size:13px">+ 引用文档</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 18px;border-top:1px solid #e4e7ed;text-align:right"><button class="mock-button" style="background:#fff;color:#606266;border:1px solid #d9d9d9;margin-right:8px">取消</button><button class="mock-button">保存</button></div>
+  </div>
+</div>
+
+<div class="section">
+  <p class="subtitle">保留“配置工序、编辑、复制、审计、删除”五个子版本图标；父产品仅提供“新建制程版本”和只读查看。每个子版本都是独立可执行的候选配置，可同时处于生效状态。</p>
+</div>

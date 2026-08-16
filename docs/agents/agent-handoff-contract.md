@@ -61,6 +61,35 @@ decisionPackage:
       relatedIds:
         - rule.process-version-explicit-selection
   unresolved: []
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: product-process
+        change: 生产任务配置需要保存显式选择的产品制程版本
+        evidenceReferences:
+          - docs/knowledge/rules/product-process.yaml
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: production-order
+        concern: 生产任务接口可能需要增加制程版本引用
+        evidenceReferences: []
+    unaffectedAreas: []
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: production-order
+        scenarios: [保存选择、重新读取、历史快照]
+        evidenceReferences: []
+    evidenceGaps:
+      - 生产任务模块尚未实现，后续开发时核对持久化和快照契约
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 显式保存制程版本属于可复用的标准生产能力，不应作为客户项目条件分支实现
+    ownershipBoundaries:
+      - owner: production-order
+        responsibility: 保存生产任务选择的制程版本并形成后续执行引用
   affectedFiles:
     - path: docs/knowledge/rules/product-process.yaml
       changeType: update
@@ -84,6 +113,8 @@ decisionPackage:
 - `confirmed`：可以进入权威知识模型的概念、关系、规则和执行契约。
 - `inferred`：便于分析的候选推断，不得直接写成正式规则。
 - `unresolved`：必须由用户确认的问题，不得由智能体自行补全。
+- `impactAnalysis`：按 L1 或 L2 深度记录直接、传递、潜在、不受影响、兼容迁移和证据缺口；它是当前证据下的影响判断，不代表自动完整依赖图。
+- `extensionStrategy`：记录配置、事务编排、标准动作、项目插件或产品内核等选定路径、依据和所有权边界。
 - `affectedFiles`：预计受影响的知识、代码、数据库、接口、界面和测试文件。
 - `acceptanceScenarios`：可独立验证的业务验收场景。
 
@@ -95,10 +126,32 @@ decisionPackage:
 - `executionContracts[]`：`id`、`ruleId`、`action`、`implementationReferences`、`evidenceIds`。
 - `inferred[]`：`id`、`statement`、`rationale`、`relatedIds`。
 - `unresolved[]`：`id`、`question`、`context`、`options`、`impact`。
+- `impactAnalysis.level`：只能是 `L1` 或 `L2`；L0 不生成正式决策包影响分析。
+- `impactAnalysis.directImpacts[]`：已确认直接受影响的领域、行为和证据。
+- `impactAnalysis.transitiveImpacts[]`：通过关系、事件、调用、快照或下游读取产生的传递影响。
+- `impactAnalysis.potentialImpacts[]`：证据不足但可能受影响的范围，不得伪装成已确认事实。
+- `impactAnalysis.unaffectedAreas[]`：经核对可以排除且对方案边界有价值的相邻范围。
+- `impactAnalysis.compatibilityAndMigration[]`：历史数据、存量实例、版本快照、迁移和回滚影响。
+- `impactAnalysis.snapshotImpacts[]`：生产对象、规则、事务和配置快照影响。
+- `impactAnalysis.auditImpacts[]`：审计事件、字段、追溯和证据链影响。
+- `impactAnalysis.permissionImpacts[]`：角色、权限、签名和数据访问影响。
+- `impactAnalysis.testImpacts[]`：需要新增或回归的单元、集成、API、E2E、视觉、迁移和审计场景。
+- `impactAnalysis.evidenceGaps[]`：仍缺少的实现证据及后续查证条件。
+- `extensionStrategy.selectedPaths[]`：只能使用 `configuration`、`transaction-orchestration`、`standard-action`、`project-plugin`、`product-core`。
+- `extensionStrategy.rationale`：选择当前扩展路径的业务和工程依据。
+- `extensionStrategy.ownershipBoundaries[]`：代码、配置、规则或插件的明确所有者和责任边界。
 - `affectedFiles[]`：`path`、`changeType`、`reason`；`changeType` 只能是 `create`、`update`、`delete` 或 `read-only`。
 - `acceptanceScenarios[]`：`id`、`given`、`when`、`then`、`evidenceRequirements`。
 
 示例中的 `inferred` 不表示可以写入权威模型。主示例的 `unresolved` 为空，因此可以在没有其他冲突时对应后文的 `ontologyResult.result: updated`。
+
+### 影响分析深度与效率约束
+
+- L1 只要求精简摘要：直接影响、主要相邻风险、证据缺口、测试影响和扩展路径。其余列表无实际内容时使用 `[]`，不得为了填满结构扩大分析范围。
+- L2 才要求完整覆盖直接、传递、潜在、不受影响、兼容迁移、快照、审计、权限和测试影响。
+- 同一功能切片连续调试时更新同一个 `decisionPackage`，不得为每次微调重新生成一份。
+- 影响分析不得成为无依赖编码的前置等待项；主智能体先完成足以决定边界和风险的最小分析，后续随实现证据增量收敛。
+- `affectedFiles` 是准备修改或核对的具体文件，`impactAnalysis` 是业务与系统影响判断，两者不能相互替代。
 
 ### 独立阻断示例
 
