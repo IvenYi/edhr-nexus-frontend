@@ -289,6 +289,8 @@ const snackbarProvider = read('../src/components/SnackbarProvider.tsx');
 const commitEditingCellBlock = canvasWorkspace.match(/const commitEditingCell = \([\s\S]*?const cancelEditingCell/)?.[0] ?? '';
 const sheetCellEditorBlock = canvasWorkspace.match(/<TextField\s+data-sheet-cell-editor="true"[\s\S]*?\/>/)?.[0] ?? '';
 const freeCanvasBodyBlock = canvasWorkspace.match(/ref=\{freeCanvasBodyRef\}[\s\S]*?<CanvasNodeRenderer/)?.[0] ?? '';
+const freeCanvasFocusInteractionBlock = canvasWorkspace.match(/<Box\s+ref=\{freeCanvasBodyRef\}[\s\S]*?onPointerDown=\{\(event\) => \{[\s\S]*?freeCanvasBodyRef\.current\?\.focus\(\{ preventScroll: true \}\)[\s\S]*?\}\}[\s\S]*?onMouseDown=/)?.[0] ?? '';
+const freeCanvasPointerFocusHandlerBlock = freeCanvasFocusInteractionBlock.match(/onPointerDown=\{\(event\) => \{[\s\S]*?\n\s*\}\}/)?.[0] ?? '';
 const gridOffsetCellLayoutBlock = canvasWorkspace.match(/const getGridOffsetCellLayout = \(range: CanvasSelectionRange\) => \{[\s\S]*?\n  \};/)?.[0] ?? '';
 const findCellRangeAtClientPointBlock = canvasWorkspace.match(/const findCellRangeAtClientPoint = \(clientX: number, clientY: number\) => \{[\s\S]*?return getMergedAwareCellRange/)?.[0] ?? '';
 const pointerFieldDropBlock = canvasWorkspace.match(/const handlePointerFieldDrop = \(event: Event\) => \{[\s\S]*?addDroppedFieldToCell/)?.[0] ?? '';
@@ -735,9 +737,18 @@ if (!canvasToolbar.includes('data-toolbar-font-color="true"')) failures.push('Ca
 if (!canvasToolbar.includes('data-toolbar-border="true"')) failures.push('CanvasDesignerToolbar.tsx: missing border-line toolbar control');
 if (!canvasToolbar.includes('data-toolbar-background-color="true"')) failures.push('CanvasDesignerToolbar.tsx: missing cell-background toolbar control');
 if (!canvasToolbar.includes('updateSelectedStyle({ fontSize')) failures.push('CanvasDesignerToolbar.tsx: font-size toolbar control must route updates to the active target');
-if (!canvasToolbar.includes('updateSelectedStyle({ color')) failures.push('CanvasDesignerToolbar.tsx: font-color toolbar control must route updates to the active target');
+if (!canvasToolbar.includes('COLOR_PICKER_COMMIT_DELAY_MS')) failures.push('CanvasDesignerToolbar.tsx: color picker changes must be deferred to avoid repainting the full canvas while dragging');
+if (!canvasToolbar.includes('draftColorRef')) failures.push('CanvasDesignerToolbar.tsx: color picker must keep a local draft color while the native picker is active');
+if (!canvasToolbar.includes('scheduleDraftColorCommit')) failures.push('CanvasDesignerToolbar.tsx: color picker must debounce commits to the selected cell or text component');
+if (!canvasToolbar.includes('onBlur={commitDraftColor}')) failures.push('CanvasDesignerToolbar.tsx: color picker must flush the draft color when focus leaves the picker');
+if (!canvasToolbar.includes('captureColorTarget')) failures.push('CanvasDesignerToolbar.tsx: color picker must capture the original formatting target before deferred commit');
+if (!canvasToolbar.includes('updateCellStyleInRange(target.range, patch)')) failures.push('CanvasDesignerToolbar.tsx: deferred color commits must update the original selected range');
+if (!storeFile.includes('updateCellStyleInRange: (range: CanvasSelectionRange, patch: Record<string, unknown>) => void')) failures.push('useTemplateDesignerStore.ts: missing explicit range style update action for deferred toolbar commits');
+if (!storeFile.includes('updateCellStyleInRange: (range, patch) => set((state) =>')) failures.push('useTemplateDesignerStore.ts: explicit range style update must write through document history');
+if (canvasToolbar.includes('onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}')) failures.push('CanvasDesignerToolbar.tsx: color picker must not write canvas state on every native color change event');
+if (!canvasToolbar.includes('updateColorStyle({ color }, target)')) failures.push('CanvasDesignerToolbar.tsx: font-color toolbar control must route updates to the captured active target');
 if (!canvasToolbar.includes('updateSelectedCellBorder')) failures.push('CanvasDesignerToolbar.tsx: border-line toolbar control must update selected cell border');
-if (!canvasToolbar.includes('updateSelectedStyle({ backgroundColor')) failures.push('CanvasDesignerToolbar.tsx: background toolbar control must route updates to the active target');
+if (!canvasToolbar.includes('updateColorStyle({ backgroundColor }, target)')) failures.push('CanvasDesignerToolbar.tsx: background toolbar control must route updates to the captured active target');
 if (!storeFile.includes('updateSelectedCellBorder: (border: CanvasCellBorder | null) => void')) failures.push('useTemplateDesignerStore.ts: missing selected cell border update action contract');
 if (!storeFile.includes('updatePageCellStyleInRange')) failures.push('useTemplateDesignerStore.ts: toolbar cell style updates must support the selected range');
 if (!storeFile.includes('updatePageCellBorderInRange')) failures.push('useTemplateDesignerStore.ts: toolbar border updates must support the selected range');
@@ -1092,6 +1103,14 @@ if (!canvasWorkspace.includes('data-word-table-cell="true"')) failures.push('Can
 if (!canvasWorkspace.includes('contentEditable')) failures.push('CanvasSheetWorkspace.tsx: Word layer must reserve direct editing behavior');
 if (!canvasWorkspace.includes('updateWordParagraphText')) failures.push('CanvasSheetWorkspace.tsx: Word paragraph edits must write back to wordDocument');
 if (!canvasWorkspace.includes('updateWordTableCellText')) failures.push('CanvasSheetWorkspace.tsx: Word table cell edits must write back to wordDocument');
+if (!canvasWorkspace.includes('minWidth: 0')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must allow grid columns to shrink before wrapping text');
+if (!canvasWorkspace.includes("overflowWrap: 'anywhere'")) failures.push('CanvasSheetWorkspace.tsx: Word table cells must wrap long text inside their own bounds');
+if (!canvasWorkspace.includes("whiteSpace: 'pre-wrap'")) failures.push('CanvasSheetWorkspace.tsx: Word table cells must preserve Enter line breaks');
+if (!canvasWorkspace.includes('serializeContentEditableLineBreaks')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must serialize only manual contentEditable line breaks');
+if (!canvasWorkspace.includes('insertContentEditableLineBreak')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must normalize Enter as a line-break node');
+if (canvasWorkspace.includes('updateWordTableCellText(block.id, cell.id, event.currentTarget.innerText)')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must not persist visual wrapping from innerText');
+if (!canvasWorkspace.includes('data-word-table-cell-content="true"')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must place editable text in its own normal-flow element');
+if (!canvasWorkspace.includes("maxWidth: '100%'")) failures.push('CanvasSheetWorkspace.tsx: Word table cell text flow must remain constrained to its cell');
 if (!canvasWorkspace.includes('!currentPage.wordDocument ? renderImportedGrid')) failures.push('CanvasSheetWorkspace.tsx: imported sheet grid must not render over DOCX wordDocument content');
 if (!canvasWorkspace.includes('importedGridTop')) failures.push('CanvasSheetWorkspace.tsx: free Word import must render table grid below restored absolute text nodes');
 if (!canvasWorkspace.includes('gridOffsetTop')) failures.push('CanvasSheetWorkspace.tsx: sheet selection overlays must account for imported grid top offset');
@@ -1989,11 +2008,9 @@ if (importGridUtils.includes('sliceImportedGridPage')) failures.push('importGrid
 if (importGridUtils.includes('createImportedCanvasPages')) failures.push('importGrid.ts: imported grid must not create multiple canvas pages');
 if (!wordImportUtils.includes('importWordToCanvasPage')) failures.push('importWord.ts: missing word import converter');
 if (!wordImportUtils.includes('blocksToWordDocument')) failures.push('importWord.ts: DOCX import must convert content into an independent Word document layer');
-if (!wordImportUtils.includes("type: 'paragraph'")) failures.push('importWord.ts: Word paragraphs must remain paragraph blocks, not sheet cells');
 if (!wordImportUtils.includes("type: 'table'")) failures.push('importWord.ts: Word tables must remain Word table blocks in free mode');
 if (!wordImportUtils.includes('wordDocument,')) failures.push('importWord.ts: imported DOCX page must carry wordDocument separately from the sheet grid');
 if (!wordImportUtils.includes('cells: {}')) failures.push('importWord.ts: DOCX free mode must not use sheet cells to render Word content');
-if (!wordImportUtils.includes("type: 'paragraph',")) failures.push('importWord.ts: DOCX paragraphs must stay in the independent Word document layer');
 if (wordImportUtils.includes('paragraphRows')) failures.push('importWord.ts: Word paragraphs must not be represented as merged sheet rows in free mode');
 if (!commonComponentRegistry.includes("'时间差'")) failures.push('commonComponentRegistry.ts: missing the approved time-difference component');
 if (!componentLibrary.includes('data-common-component-library="true"')) failures.push('ComponentLibrary.tsx: missing stable component-library marker');
@@ -2005,13 +2022,95 @@ if (!canvasTab.includes("panelRail === 'grid' ? <ComponentLibrary />")) failures
 if (!storeFile.includes('addFreeCanvasComponent: (componentId: CommonDisplayComponentId')) failures.push('useTemplateDesignerStore.ts: missing free-canvas component insertion action');
 if (!canvasWorkspace.includes('template-designer-common-component-insert')) failures.push('CanvasSheetWorkspace.tsx: free canvas must receive component click insertion');
 if (!canvasWorkspace.includes('application/x-template-designer-common-component')) failures.push('CanvasSheetWorkspace.tsx: free canvas must receive component drag insertion');
-if (wordImportUtils.includes('nodes: buildWordParagraphNodes')) failures.push('importWord.ts: DOCX paragraphs must not become common static-text canvas nodes');
-if (wordImportUtils.includes('buildWordParagraphNodes')) failures.push('importWord.ts: must not include Word paragraph component conversion helper');
+const wordDocumentBuilderStart = wordImportUtils.indexOf('function blocksToWordDocument(');
+const wordDocumentBuilderEnd = wordImportUtils.indexOf('\nfunction resolveDocxOrientation', wordDocumentBuilderStart);
+const wordDocumentBuilder = wordDocumentBuilderStart >= 0 && wordDocumentBuilderEnd >= 0
+  ? wordImportUtils.slice(wordDocumentBuilderStart, wordDocumentBuilderEnd)
+  : '';
+const wordParagraphNodeBuilderStart = wordImportUtils.indexOf('function buildWordParagraphNodes(');
+const wordParagraphNodeBuilderImageEnd = wordImportUtils.indexOf('\nfunction buildWordImageNodes', wordParagraphNodeBuilderStart);
+const wordParagraphNodeBuilderFallbackEnd = wordImportUtils.indexOf('\nfunction blocksToWordDocument', wordParagraphNodeBuilderStart);
+const wordParagraphNodeBuilderEnd = wordParagraphNodeBuilderImageEnd >= 0
+  ? wordParagraphNodeBuilderImageEnd
+  : wordParagraphNodeBuilderFallbackEnd;
+const wordParagraphNodeBuilder = wordParagraphNodeBuilderStart >= 0 && wordParagraphNodeBuilderEnd > wordParagraphNodeBuilderStart
+  ? wordImportUtils.slice(wordParagraphNodeBuilderStart, wordParagraphNodeBuilderEnd)
+  : '';
+const wordImageNodeBuilderStart = wordImportUtils.indexOf('function buildWordImageNodes(');
+const wordImageNodeBuilderEnd = wordImportUtils.indexOf('\nfunction blocksToWordDocument', wordImageNodeBuilderStart);
+const wordImageNodeBuilder = wordImageNodeBuilderStart >= 0 && wordImageNodeBuilderEnd >= 0
+  ? wordImportUtils.slice(wordImageNodeBuilderStart, wordImageNodeBuilderEnd)
+  : '';
+const docxPageImporterStart = wordImportUtils.indexOf('async function importDocxToCanvasPage(');
+const docxPageImporterEnd = wordImportUtils.indexOf('\nasync function importLegacyDocToCanvasPage', docxPageImporterStart);
+const docxPageImporter = docxPageImporterStart >= 0 && docxPageImporterEnd >= 0
+  ? wordImportUtils.slice(docxPageImporterStart, docxPageImporterEnd)
+  : '';
+const normalizeWordDocumentStart = documentUtils.indexOf('function normalizeWordDocument(');
+const normalizeWordDocumentEnd = documentUtils.indexOf('\nfunction normalizeCanvasPage', normalizeWordDocumentStart);
+const normalizeWordDocument = normalizeWordDocumentStart >= 0 && normalizeWordDocumentEnd >= 0
+  ? documentUtils.slice(normalizeWordDocumentStart, normalizeWordDocumentEnd)
+  : '';
+const legacyWordRendererStart = canvasWorkspace.indexOf('const renderWordDocumentLayer = () => {');
+const legacyWordRendererEnd = canvasWorkspace.indexOf('\n  const renderWordTableDragHandleLayer = () => {', legacyWordRendererStart);
+const legacyWordRenderer = legacyWordRendererStart >= 0 && legacyWordRendererEnd >= 0
+  ? canvasWorkspace.slice(legacyWordRendererStart, legacyWordRendererEnd)
+  : '';
+const freeCanvasDeleteHandlerBlock = canvasWorkspace.match(/const handleFreeCanvasDeleteKeyDown = \(event: KeyboardEvent\) => \{[\s\S]*?\n    \};/)?.[0] ?? '';
+const toolbarColorButtonBlock = canvasToolbar.match(/function ToolbarColorButton\([\s\S]*?\n}\n\nfunction toBooleanTextDecoration/)?.[0] ?? '';
+const staticImageThumbnailBranch = pageThumbnails.match(/\{\s*node\.type === 'static-image'\s*\?\s*\([\s\S]*?\)\s*:\s*String\(node\.type === 'static-text'/)?.[0] ?? '';
+if (!/const nodes\s*=\s*\[\s*\.\.\.buildWordParagraphNodes\(blocks, contentWidth\),\s*\.\.\.buildWordImageNodes\(images, medias\),?\s*\]/.test(docxPageImporter)) failures.push('importWord.ts: DOCX paragraph and image components must be combined into the persisted canvas node array');
+const docxWordDocumentAssignment = /const wordDocument\s*=\s*blocksToWordDocument\(blocks, contentWidth\);/.test(docxPageImporter);
+const docxCanvasPageStart = docxPageImporter.indexOf('return createImportedCanvasPage({');
+const docxGridStart = docxPageImporter.indexOf('grid:', docxCanvasPageStart);
+const docxWordDocumentProperty = docxPageImporter.indexOf('wordDocument,', docxCanvasPageStart);
+if (!docxWordDocumentAssignment || (docxPageImporter.match(/blocksToWordDocument\(/g) ?? []).length !== 1 || docxWordDocumentProperty < docxCanvasPageStart || docxWordDocumentProperty > docxGridStart) {
+  failures.push('importWord.ts: importDocxToCanvasPage must persist only the blocksToWordDocument(blocks, contentWidth) result as wordDocument');
+}
+if (!docxPageImporter.includes('    nodes,')) failures.push('importWord.ts: DOCX paragraph components must be persisted on the imported canvas page');
+if (wordParagraphNodeBuilderStart < 0 || wordParagraphNodeBuilderEnd <= wordParagraphNodeBuilderStart || !wordParagraphNodeBuilder.trim()) {
+  failures.push('importWord.ts: missing a bounded buildWordParagraphNodes helper');
+} else {
+  if (!wordParagraphNodeBuilder.includes('splitWordParagraphComponents(block.text, fontSize)')) failures.push('importWord.ts: buildWordParagraphNodes must derive static-text content from block.text');
+  if (!/nodes\.push\(\{[\s\S]*?type:\s*'static-text'[\s\S]*?props:\s*\{[\s\S]*?text:\s*segment\.text/.test(wordParagraphNodeBuilder)) failures.push('importWord.ts: buildWordParagraphNodes must persist each paragraph segment as static-text props');
+  if (!/style:\s*\{[\s\S]*?compLeft:[\s\S]*?layout\.left[\s\S]*?compTop:\s*layout\.top[\s\S]*?compWidth:[\s\S]*?compHeight:\s*layout\.height[\s\S]*?\.\.\.block\.style/.test(wordParagraphNodeBuilder)) failures.push('importWord.ts: buildWordParagraphNodes must persist block layout and style on static-text nodes');
+}
+if (wordImageNodeBuilderStart < 0 || wordImageNodeBuilderEnd <= wordImageNodeBuilderStart || !wordImageNodeBuilder.trim()) {
+  failures.push('importWord.ts: missing a bounded buildWordImageNodes helper before blocksToWordDocument');
+} else {
+  if (!wordImageNodeBuilder.includes("type: 'static-image'")) failures.push('importWord.ts: DOCX images must use the standard static-image type');
+  if (!wordImageNodeBuilder.includes('new Map(medias.map((media) => [media.id, media.src]))')) failures.push('importWord.ts: DOCX image components must map mediaId to the imported media src');
+  if (!wordImageNodeBuilder.includes('const src = mediaSrcById.get(image.mediaId)')) failures.push('importWord.ts: DOCX image components must resolve their source from mediaId');
+  if (!/props:\s*\{[\s\S]*?\bsrc\s*,/.test(wordImageNodeBuilder)) failures.push('importWord.ts: DOCX image components must persist the resolved src in static-image props');
+  if (!/compLeft:\s*image\.layout\.left/.test(wordImageNodeBuilder)) failures.push('importWord.ts: DOCX image components must map image left to compLeft');
+  if (!/compTop:\s*image\.layout\.top/.test(wordImageNodeBuilder)) failures.push('importWord.ts: DOCX image components must map image top to compTop');
+  if (!/compWidth:\s*image\.layout\.width/.test(wordImageNodeBuilder)) failures.push('importWord.ts: DOCX image components must map image width to compWidth');
+  if (!/compHeight:\s*image\.layout\.height/.test(wordImageNodeBuilder)) failures.push('importWord.ts: DOCX image components must map image height to compHeight');
+}
+if (wordDocumentBuilderStart < 0 || wordDocumentBuilderEnd <= wordDocumentBuilderStart || !wordDocumentBuilder.trim()) {
+  failures.push('importWord.ts: unable to locate a non-empty blocksToWordDocument helper');
+} else {
+  if (!/blocks\.forEach\(\(block\) => \{/.test(wordDocumentBuilder)) failures.push('importWord.ts: blocksToWordDocument must iterate the parsed DOCX blocks');
+  if (!/if \(block\.type === 'paragraph'\) \{[\s\S]*?return;[\s\S]*?\}/.test(wordDocumentBuilder)) failures.push('importWord.ts: blocksToWordDocument must skip paragraph blocks after preserving their layout flow');
+  if (!wordDocumentBuilder.includes('block.table.colWidths')) failures.push('importWord.ts: blocksToWordDocument must preserve each input table column width');
+  if (!wordDocumentBuilder.includes('block.table.rows.map((row) => row.height)')) failures.push('importWord.ts: blocksToWordDocument must preserve each input table row height');
+  if (!wordDocumentBuilder.includes('buildWordTableCells(block.table, tableIndex)')) failures.push('importWord.ts: blocksToWordDocument must convert each input table with buildWordTableCells');
+  if (!/wordBlocks\.push\(\{[\s\S]*?type:\s*'table'[\s\S]*?\}\);/.test(wordDocumentBuilder)) failures.push('importWord.ts: blocksToWordDocument must construct and push Word table blocks');
+  if (!/return\s*\{[\s\S]*?blocks:\s*wordBlocks/.test(wordDocumentBuilder)) failures.push('importWord.ts: blocksToWordDocument must return its constructed Word table blocks');
+  if (/type:\s*'(?:paragraph|image)'/.test(wordDocumentBuilder)) failures.push('importWord.ts: blocksToWordDocument must retain only Word table blocks for newly imported DOCX files');
+}
 if (!wordImportUtils.includes('resolveWordParagraphLayout')) failures.push('importWord.ts: Word paragraph components must use document-aware layout calculation');
 if (!wordImportUtils.includes('paragraphLeftIndent') || !wordImportUtils.includes('paragraphSpaceBefore')) failures.push('importWord.ts: Word paragraph components must retain indentation and spacing');
+if (!wordImportUtils.includes('splitWordParagraphComponents')) failures.push('importWord.ts: Word paragraphs with tab stops must be split into independent text components');
+if (!wordImportUtils.includes('WORD_PARAGRAPH_COMPONENT_SEPARATOR')) failures.push('importWord.ts: Word paragraph component splitting must preserve tab and wide-space separators');
+if (!wordImportUtils.includes('segment.offset')) failures.push('importWord.ts: split Word paragraph components must retain their horizontal offsets');
 if (wordImportUtils.includes('compLeft: 0,\n          compTop: top,\n          compWidth: contentWidth')) failures.push('importWord.ts: Word paragraph components must not force every paragraph to the whole-page frame');
 if (documentUtils.includes('migrateWordParagraphBlocks')) failures.push('document.ts: saved Word paragraph blocks must remain in wordDocument.blocks');
 if (documentUtils.includes('estimateMigratedParagraphFrame')) failures.push('document.ts: saved Word paragraphs must not be converted into text component frames');
+if (!normalizeWordDocument.includes('blocks,')) failures.push('document.ts: saved wordDocument blocks must remain available to the legacy renderer');
+if (!legacyWordRenderer.includes('wordDocument.blocks.map((block) => {')) failures.push('CanvasSheetWorkspace.tsx: saved wordDocument blocks must continue through the legacy rendering layer');
+if (!legacyWordRenderer.includes("if (block.type === 'paragraph')") || !legacyWordRenderer.includes('data-word-block="paragraph"')) failures.push('CanvasSheetWorkspace.tsx: saved Word paragraph blocks must continue through legacy rendering');
+if (!legacyWordRenderer.includes('const src = mediaSrcMap.get(block.mediaId);') || !legacyWordRenderer.includes('data-word-block="image"')) failures.push('CanvasSheetWorkspace.tsx: saved Word image blocks must continue through legacy rendering');
 if (!renderer.includes('data-canvas-node-resize-handle')) failures.push('CanvasNodeRenderer.tsx: absolute components must expose resize handles');
 if (!renderer.includes('updateNodeStyle(node.id')) failures.push('CanvasNodeRenderer.tsx: component drag and resize must persist through updateNodeStyle');
 if (renderer.includes('data-canvas-node-drag-handle="true"')) failures.push('CanvasNodeRenderer.tsx: text components must not render the obsolete top-left drag handle');
@@ -2019,8 +2118,58 @@ if (!componentRegistry.includes('contentEditable')) failures.push('componentRegi
 if (!componentRegistry.includes("border: selected\n          ? '1px solid #1677ff'")) failures.push('componentRegistry.tsx: selected text components must use the unified blue outline');
 if (!componentRegistry.includes("bgcolor: backgroundColor || 'transparent'")) failures.push('componentRegistry.tsx: static text components must use a transparent background by default');
 if (!freeCanvasBodyBlock.includes('clearSelection()')) failures.push('CanvasSheetWorkspace.tsx: free canvas blank area must clear component selection');
+if (!freeCanvasFocusInteractionBlock.includes('tabIndex={0}')) failures.push('CanvasSheetWorkspace.tsx: free canvas interaction container must be keyboard focusable');
+if (!freeCanvasPointerFocusHandlerBlock.trim()) {
+  failures.push('CanvasSheetWorkspace.tsx: unable to locate the free-canvas pointer focus handler');
+} else {
+  const pointerTargetIndex = freeCanvasPointerFocusHandlerBlock.indexOf('const target = event.target instanceof Element ? event.target : null;');
+  const pointerEditingGuard = "if (!target || target.closest('[contenteditable=\"true\"], input, textarea, select')) return;";
+  const pointerEditingGuardIndex = freeCanvasPointerFocusHandlerBlock.indexOf(pointerEditingGuard);
+  const pointerFocusIndex = freeCanvasPointerFocusHandlerBlock.indexOf('freeCanvasBodyRef.current?.focus({ preventScroll: true })');
+  if (pointerTargetIndex < 0 || pointerEditingGuardIndex < 0 || pointerFocusIndex < 0 || pointerTargetIndex >= pointerEditingGuardIndex || pointerEditingGuardIndex >= pointerFocusIndex) {
+    failures.push('CanvasSheetWorkspace.tsx: free canvas pointer focus must return for non-elements and editing controls before focusing its keyboard delete boundary');
+  }
+}
+if (!renderer.includes('onNodeSelect?: () => void')) failures.push('CanvasNodeRenderer.tsx: canvas node selection must support a cross-component selection callback');
+if (!renderer.includes('onNodeSelect?.();')) failures.push('CanvasNodeRenderer.tsx: selecting a canvas node must notify the workspace before changing selection');
+if (!canvasWorkspace.includes('onNodeSelect={() => setSelectedWordTableBlockId(null)}')) failures.push('CanvasSheetWorkspace.tsx: selecting another canvas component must clear the selected Word table');
+if (!freeCanvasDeleteHandlerBlock.trim()) {
+  failures.push('CanvasSheetWorkspace.tsx: unable to locate the free-canvas keyboard delete handler');
+} else {
+  const targetIndex = freeCanvasDeleteHandlerBlock.indexOf('const target = event.target instanceof Element ? event.target : null;');
+  const boundaryIndex = freeCanvasDeleteHandlerBlock.indexOf('if (!target || !freeCanvasBodyRef.current?.contains(target)) return;');
+  const textEditorGuard = "if (target?.closest('[contenteditable=\"true\"], input, textarea, select')) return;";
+  const textEditorGuardIndex = freeCanvasDeleteHandlerBlock.indexOf(textEditorGuard);
+  const wordTableDeleteIndex = freeCanvasDeleteHandlerBlock.indexOf('deleteSelectedWordTable();');
+  const nodeDeleteIndex = freeCanvasDeleteHandlerBlock.indexOf('removeNode(selectedNodeId);');
+  const firstDeleteIndex = Math.min(
+    wordTableDeleteIndex < 0 ? Number.POSITIVE_INFINITY : wordTableDeleteIndex,
+    nodeDeleteIndex < 0 ? Number.POSITIVE_INFINITY : nodeDeleteIndex,
+  );
+  if (!freeCanvasDeleteHandlerBlock.includes("event.key !== 'Backspace' && event.key !== 'Delete'")) failures.push('CanvasSheetWorkspace.tsx: free-canvas keyboard delete must handle Backspace and Delete');
+  if (targetIndex < 0 || boundaryIndex < 0 || boundaryIndex <= targetIndex || boundaryIndex >= firstDeleteIndex) failures.push('CanvasSheetWorkspace.tsx: free-canvas keyboard delete must check its body boundary before deleting a selected component');
+  if (textEditorGuardIndex < 0 || textEditorGuardIndex <= boundaryIndex || textEditorGuardIndex >= firstDeleteIndex) failures.push('CanvasSheetWorkspace.tsx: free-canvas keyboard delete must return from text and form-field editing before deleting');
+  if (wordTableDeleteIndex < 0) failures.push('CanvasSheetWorkspace.tsx: keyboard delete must remove the selected Word table component');
+  if (nodeDeleteIndex < 0) failures.push('CanvasSheetWorkspace.tsx: keyboard delete must remove the selected free-canvas component');
+}
 if (!canvasToolbar.includes('isTextComponent')) failures.push('CanvasDesignerToolbar.tsx: toolbar must detect selected text components');
 if (!canvasToolbar.includes('updateNodeStyle(selectedNode.id, patch)')) failures.push('CanvasDesignerToolbar.tsx: toolbar must apply text formatting to selected text components');
+if (!toolbarColorButtonBlock.trim()) {
+  failures.push('CanvasDesignerToolbar.tsx: unable to locate the color-picker component');
+} else {
+  if (!toolbarColorButtonBlock.includes('const commitDraftColorRef = useRef')) failures.push('CanvasDesignerToolbar.tsx: color picker must retain its latest commit callback in a stable ref');
+  if (!toolbarColorButtonBlock.includes('commitDraftColorRef.current = commitDraftColor;')) failures.push('CanvasDesignerToolbar.tsx: color picker must refresh the stable commit ref after each render');
+  if (!toolbarColorButtonBlock.includes('useEffect(() => () => commitDraftColorRef.current(), [])')) failures.push('CanvasDesignerToolbar.tsx: color picker must flush its latest draft only from the unmount cleanup');
+  if ((toolbarColorButtonBlock.match(/commitDraftColorRef\.current\(\)/g) ?? []).length !== 1) failures.push('CanvasDesignerToolbar.tsx: color picker must not add another ref-based draft commit outside its empty-dependency unmount cleanup');
+  const directCommitDraftColorCleanupPatterns = [
+    /useEffect\s*\(\s*\(\s*\)\s*=>\s*\(\s*\)\s*=>\s*commitDraftColor\s*\(\s*\)\s*,\s*\[[^\]]*\]\s*\)/,
+    /useEffect\s*\(\s*\(\s*\)\s*=>\s*\{\s*return\s*\(\s*\)\s*=>\s*(?:\{\s*)?commitDraftColor\s*\(\s*\)\s*;?\s*\}?\s*;?\s*\}\s*,\s*\[[^\]]*\]\s*\)/,
+    /useEffect\s*\(\s*\(\s*\)\s*=>\s*\{\s*return\s+commitDraftColor\s*;?\s*\}\s*,\s*\[[^\]]*\]\s*\)/,
+    /useEffect\s*\(\s*\(\s*\)\s*=>\s*commitDraftColor\s*,\s*\[[^\]]*\]\s*\)/,
+  ];
+  if (directCommitDraftColorCleanupPatterns.some((pattern) => pattern.test(toolbarColorButtonBlock))) failures.push('CanvasDesignerToolbar.tsx: color picker cleanup must not directly use commitDraftColor because rerenders would commit drafts early');
+}
+if (!staticImageThumbnailBranch || !(staticImageThumbnailBranch.includes('component="img"') || /<img\b/.test(staticImageThumbnailBranch)) || !/src=\{(?:String\()?node\.props\.src(?: \?\? '')?\)?\}/.test(staticImageThumbnailBranch)) failures.push('CanvasPageThumbnails.tsx: thumbnail static-image branch must render node.props.src as an image');
 if (!canvasWorkspace.includes('beginWordTableDrag')) failures.push('CanvasSheetWorkspace.tsx: imported Word tables must have a dedicated drag handler');
 if (!canvasWorkspace.includes('data-word-table-draggable="true"')) failures.push('CanvasSheetWorkspace.tsx: imported Word tables must expose a draggable component marker');
 if (!canvasWorkspace.includes('data-word-table-drag-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: imported Word tables must provide a drag handle outside editable cells');

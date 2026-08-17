@@ -45,12 +45,7 @@ export default function ComponentLibrary() {
 
   return (
     <Box data-common-component-library="true" sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
-      <Box sx={{ px: 2, py: 1.25, bgcolor: '#d8dee8', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#30343b' }}>常用组件</Typography>
-        <Typography sx={{ fontSize: 28, lineHeight: 0.8, color: '#30343b' }}>»</Typography>
-      </Box>
       <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', p: 1.5 }}>
-        <Typography sx={{ mb: 1.5, fontSize: 14, fontWeight: 700, color: '#30343b' }}>显示组件</Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 1 }}>
           {commonDisplayComponents.map((component) => (
             <Tooltip key={component.id} title={isFreeCanvas ? `拖拽或点击插入${component.label}` : '请先切换至画布模式'} placement="right">

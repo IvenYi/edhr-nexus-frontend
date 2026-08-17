@@ -35,6 +35,7 @@ interface CanvasNodeRendererProps {
   resolveCellRangeLayout?: (range: CanvasSelectionRange) => CellRangeLayout;
   onCellFieldMouseDown?: (range: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => void;
   onCellFieldContextMenu?: (range: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => void;
+  onNodeSelect?: () => void;
 }
 
 function isAbsoluteNode(node: CanvasNode) {
@@ -63,6 +64,7 @@ export default function CanvasNodeRenderer({
   resolveCellRangeLayout,
   onCellFieldMouseDown,
   onCellFieldContextMenu,
+  onNodeSelect,
 }: CanvasNodeRendererProps) {
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
@@ -212,6 +214,7 @@ export default function CanvasNodeRenderer({
         }
       : node;
     const handleSelect = () => {
+      onNodeSelect?.();
       if (cellRange) {
         setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l });
         const activeRail = node.type === 'sub-table' ? 'fields' : 'config';
@@ -355,6 +358,7 @@ export default function CanvasNodeRenderer({
                   resolveCellRangeLayout={resolveCellRangeLayout}
                   onCellFieldMouseDown={onCellFieldMouseDown}
                   onCellFieldContextMenu={onCellFieldContextMenu}
+                  onNodeSelect={onNodeSelect}
                 />
               </Box>
             ) : null}

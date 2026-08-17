@@ -846,6 +846,50 @@ function resolveWordTextSx(style?: Record<string, unknown>) {
   };
 }
 
+function serializeContentEditableLineBreaks(root: HTMLElement) {
+  const chunks: string[] = [];
+  const appendLineBreak = () => {
+    if (chunks[chunks.length - 1] !== '\n') {
+      chunks.push('\n');
+    }
+  };
+  const visit = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      chunks.push(node.textContent ?? '');
+      return;
+    }
+    if (!(node instanceof HTMLElement)) return;
+    if (node.tagName === 'BR') {
+      appendLineBreak();
+      return;
+    }
+
+    const isBlock = node !== root && ['DIV', 'P', 'LI'].includes(node.tagName);
+    if (isBlock && chunks.length > 0) appendLineBreak();
+    node.childNodes.forEach(visit);
+    if (isBlock && node.nextSibling) appendLineBreak();
+  };
+
+  root.childNodes.forEach(visit);
+  return chunks.join('');
+}
+
+function insertContentEditableLineBreak(root: HTMLElement) {
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+  if (!root.contains(range.commonAncestorContainer)) return;
+
+  range.deleteContents();
+  const lineBreak = document.createElement('br');
+  range.insertNode(lineBreak);
+  range.setStartAfter(lineBreak);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
 function resolveWordTableBorder(edge: keyof CanvasCellBorder, border?: CanvasCellBorder) {
   const color = String(border?.color ?? '#111827');
   return border?.[edge] === false ? 'none' : `1px solid ${color}`;
@@ -866,6 +910,7 @@ export default function CanvasSheetWorkspace() {
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
+  const removeNode = useTemplateDesignerStore((state) => state.removeNode);
   const addFreeCanvasComponent = useTemplateDesignerStore((state) => state.addFreeCanvasComponent);
   const setActiveCanvasRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
   const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
@@ -1221,6 +1266,44 @@ export default function CanvasSheetWorkspace() {
     setSelectedNodeId(null);
     setSelectedWordTableBlockId(null);
   };
+  const deleteSelectedWordTable = useCallback(() => {
+    const wordDocument = currentPage?.wordDocument;
+    if (!wordDocument || !selectedWordTableBlockId) return;
+
+    updateCurrentPage({
+      wordDocument: {
+        ...wordDocument,
+        blocks: wordDocument.blocks.filter((block) => block.id !== selectedWordTableBlockId),
+      },
+    });
+    setSelectedWordTableBlockId(null);
+  }, [currentPage?.wordDocument, selectedWordTableBlockId, updateCurrentPage]);
+  useEffect(() => {
+    if (!isFreeCanvas) return undefined;
+
+    const handleFreeCanvasDeleteKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Backspace' && event.key !== 'Delete') return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target || !freeCanvasBodyRef.current?.contains(target)) return;
+      if (target?.closest('[contenteditable="true"], input, textarea, select')) return;
+
+      if (selectedWordTableBlockId) {
+        event.preventDefault();
+        deleteSelectedWordTable();
+        return;
+      }
+      if (selectedNodeId) {
+        event.preventDefault();
+        removeNode(selectedNodeId);
+      }
+    };
+
+    const ownerDocument = freeCanvasBodyRef.current?.ownerDocument ?? document;
+    ownerDocument.addEventListener('keydown', handleFreeCanvasDeleteKeyDown);
+    return () => ownerDocument.removeEventListener('keydown', handleFreeCanvasDeleteKeyDown);
+  }, [deleteSelectedWordTable, isFreeCanvas, removeNode, selectedNodeId, selectedWordTableBlockId]);
   const insertCommonComponentAtClientPoint = useCallback((componentId: CommonDisplayComponentId, clientX?: number, clientY?: number) => {
     if (!isFreeCanvas) return;
     const canvasRect = freeCanvasBodyRef.current?.getBoundingClientRect();
@@ -3689,14 +3772,9 @@ export default function CanvasSheetWorkspace() {
                   <Box
                     key={cell.id}
                     data-word-table-cell="true"
-                    contentEditable
-                    suppressContentEditableWarning
                     onMouseDown={(event: ReactMouseEvent<HTMLDivElement>) => {
                       event.stopPropagation();
                       selectWordTable(block.id);
-                    }}
-                    onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
-                      updateWordTableCellText(block.id, cell.id, event.currentTarget.innerText);
                     }}
                     sx={{
                       gridColumn: `${cell.col} / span ${cell.colSpan}`,
@@ -3714,17 +3792,41 @@ export default function CanvasSheetWorkspace() {
                       borderLeft: resolveWordTableCellBorder('left', cell),
                       bgcolor: String(cell.style?.backgroundColor ?? '#fff'),
                       boxSizing: 'border-box',
+                      minWidth: 0,
+                      minHeight: 0,
                       outline: 'none',
                       cursor: 'text',
                       overflow: 'hidden',
-                      ...resolveWordTextSx(cell.style),
-                      '&:focus': {
-                        boxShadow: 'inset 0 0 0 2px rgba(25, 118, 210, 0.62)',
-                        zIndex: 2,
-                      },
                     } as SxProps<Theme>}
                   >
-                  {cell.text}
+                    <Box
+                      data-word-table-cell-content="true"
+                      contentEditable
+                      suppressContentEditableWarning
+                      onKeyDown={(event: ReactKeyboardEvent<HTMLDivElement>) => {
+                        if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+                        event.preventDefault();
+                        insertContentEditableLineBreak(event.currentTarget);
+                      }}
+                      onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
+                        updateWordTableCellText(block.id, cell.id, serializeContentEditableLineBreaks(event.currentTarget));
+                      }}
+                      sx={{
+                        width: '100%',
+                        maxWidth: '100%',
+                        minWidth: 0,
+                        minHeight: '1em',
+                        outline: 'none',
+                        ...resolveWordTextSx(cell.style),
+                        whiteSpace: 'pre-wrap',
+                        overflowWrap: 'anywhere',
+                        '&:focus': {
+                          boxShadow: 'inset 0 0 0 2px rgba(25, 118, 210, 0.62)',
+                        },
+                      } as SxProps<Theme>}
+                    >
+                      {cell.text}
+                    </Box>
                   </Box>
                 ))}
                 <Box
@@ -4226,6 +4328,12 @@ export default function CanvasSheetWorkspace() {
                     />
                     <Box
                       ref={freeCanvasBodyRef}
+                      tabIndex={0}
+                      onPointerDown={(event) => {
+                        const target = event.target instanceof Element ? event.target : null;
+                        if (!target || target.closest('[contenteditable="true"], input, textarea, select')) return;
+                        freeCanvasBodyRef.current?.focus({ preventScroll: true });
+                      }}
                       onMouseDown={(event) => {
                         const target = event.target as HTMLElement;
                         if (!target.closest('[data-canvas-node="true"], [data-word-block], [data-word-table-cell], [data-word-table-drag-handle]')) {
@@ -4258,6 +4366,7 @@ export default function CanvasSheetWorkspace() {
                         resolveCellRangeLayout={getFieldDropCellLayout}
                         onCellFieldMouseDown={handleCellFieldMouseDown}
                         onCellFieldContextMenu={handleCellFieldContextMenu}
+                        onNodeSelect={() => setSelectedWordTableBlockId(null)}
                       />
                       {renderWordTableDragHandleLayer()}
                       {renderSubTableOverlays()}

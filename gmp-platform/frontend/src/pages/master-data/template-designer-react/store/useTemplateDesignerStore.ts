@@ -1821,6 +1821,7 @@ export interface TemplateDesignerStore {
   pasteFieldNodeToCell: (node: CanvasNode, layout: FieldCellLayout) => void;
   mergeSelectedCells: () => void;
   splitSelectedCells: () => void;
+  updateCellStyleInRange: (range: CanvasSelectionRange, patch: Record<string, unknown>) => void;
   updateSelectedCellStyle: (patch: Record<string, unknown>) => void;
   updateSelectedCellBorder: (border: CanvasCellBorder | null) => void;
   undoCanvasChange: () => void;
@@ -3076,18 +3077,23 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedNodeId: null,
     });
   }),
-  updateSelectedCellStyle: (patch) => set((state) => {
-    const selectedRange = state.selectedRange ?? (state.selectedCell
-      ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)
-      : null);
-    if (!state.document || !selectedRange) {
+  updateCellStyleInRange: (range, patch) => set((state) => {
+    if (!state.document) {
       return { document: state.document };
     }
 
     return pushDocumentHistory(state, {
-      document: updateCanvasPage(state.document, (page) => updatePageCellStyleInRange(page, selectedRange, patch)),
+      document: updateCanvasPage(state.document, (page) => updatePageCellStyleInRange(page, range, patch)),
     });
   }),
+  updateSelectedCellStyle: (patch) => {
+    const { selectedCell, selectedRange: currentSelectedRange } = get();
+    const selectedRange = currentSelectedRange ?? (selectedCell
+      ? createSingleCellRange(selectedCell.row, selectedCell.col)
+      : null);
+    if (!selectedRange) return;
+    get().updateCellStyleInRange(selectedRange, patch);
+  },
   updateSelectedCellBorder: (border) => set((state) => {
     const selectedRange = state.selectedRange ?? (state.selectedCell
       ? createSingleCellRange(state.selectedCell.row, state.selectedCell.col)

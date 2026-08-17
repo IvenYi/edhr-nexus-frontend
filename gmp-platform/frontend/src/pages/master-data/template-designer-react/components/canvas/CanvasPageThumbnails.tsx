@@ -429,7 +429,14 @@ const CanvasThumbnailPreview = memo(function CanvasThumbnailPreview({ page, prev
                 ...(node.type === 'static-text' ? resolvePreviewTextStyle(node.style) : {}),
               } as SxProps<Theme>}
             >
-              {String(node.type === 'static-text' ? node.props.text ?? '' : node.props.label ?? node.type)}
+              {node.type === 'static-image' ? (
+                <Box
+                  component="img"
+                  src={String(node.props.src ?? '')}
+                  alt=""
+                  sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              ) : String(node.type === 'static-text' ? node.props.text ?? '' : node.props.label ?? node.type)}
             </Box>
           ))}
         {isFreeCanvas && page.wordDocument ? (
