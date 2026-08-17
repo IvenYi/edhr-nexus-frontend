@@ -1,4 +1,4 @@
-import type { CanvasNode } from '../types';
+import type { CanvasNode, CanvasWordTableBlock } from '../types';
 
 export type CommonDisplayComponentId =
   | 'text'
@@ -12,6 +12,8 @@ export type CommonDisplayComponentId =
   | 'serial-number'
   | 'time-difference';
 
+export type CommonCanvasComponentId = CommonDisplayComponentId | 'table';
+
 type CommonDisplayComponentDefinition = {
   id: CommonDisplayComponentId;
   label: string;
@@ -19,6 +21,11 @@ type CommonDisplayComponentDefinition = {
   nodeType: string;
   props: Record<string, unknown>;
   style: Record<string, unknown>;
+};
+
+type CommonCanvasComponentDefinition = Omit<CommonDisplayComponentDefinition, 'id' | 'icon'> & {
+  id: CommonCanvasComponentId;
+  icon: CommonDisplayComponentDefinition['icon'] | 'table';
 };
 
 export const commonDisplayComponents: CommonDisplayComponentDefinition[] = [
@@ -32,6 +39,11 @@ export const commonDisplayComponents: CommonDisplayComponentDefinition[] = [
   { id: 'line', label: '线条', icon: 'line', nodeType: 'display-line', props: {}, style: { compWidth: 240, compHeight: 12 } },
   { id: 'serial-number', label: '序号', icon: 'serial', nodeType: 'static-text', props: { text: '1.' }, style: { compWidth: 48, compHeight: 32, textAlign: 'center' } },
   { id: 'time-difference', label: '时间差', icon: 'time', nodeType: 'static-text', props: { text: '时间差' }, style: { compWidth: 96, compHeight: 32 } },
+];
+
+export const commonCanvasComponents: CommonCanvasComponentDefinition[] = [
+  ...commonDisplayComponents,
+  { id: 'table', label: '表格', icon: 'table', nodeType: 'word-table', props: {}, style: {} },
 ];
 
 function createId(prefix: string) {
@@ -60,5 +72,34 @@ export function createCommonDisplayNode(
       ...definition.style,
     },
     bindings: {},
+  };
+}
+
+export function createCommonWordTableBlock(position: { left: number; top: number }): CanvasWordTableBlock {
+  const columnWidths = [140, 140, 140];
+  const rowHeights = [40, 40, 40];
+  const border = { top: true, right: true, bottom: true, left: true, color: '#111827' };
+
+  return {
+    id: createId('common-table'),
+    type: 'table',
+    borderEncodingVersion: 2,
+    layout: {
+      left: Math.max(0, Math.round(position.left)),
+      top: Math.max(0, Math.round(position.top)),
+      width: columnWidths.reduce((sum, width) => sum + width, 0),
+      height: rowHeights.reduce((sum, height) => sum + height, 0),
+    },
+    columnWidths,
+    rowHeights,
+    cells: rowHeights.flatMap((_, rowIndex) => columnWidths.map((_, columnIndex) => ({
+      id: createId(`common-table-cell-${rowIndex + 1}-${columnIndex + 1}`),
+      row: rowIndex + 1,
+      col: columnIndex + 1,
+      rowSpan: 1,
+      colSpan: 1,
+      text: '',
+      border: { ...border },
+    }))),
   };
 }

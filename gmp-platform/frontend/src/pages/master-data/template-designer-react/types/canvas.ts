@@ -211,11 +211,15 @@ export interface CanvasWordTableCell {
   text: string;
   style?: Record<string, unknown>;
   border?: CanvasCellBorder;
+  diagonalTopLeftToBottomRight?: boolean;
+  diagonalTopRightToBottomLeft?: boolean;
 }
 
 export interface CanvasWordTableBlock {
   id: string;
   type: 'table';
+  /** Version 2 distinguishes an omitted cell edge from an explicit no-border edge. */
+  borderEncodingVersion?: 2;
   layout: CanvasWordBlockLayout;
   columnWidths: number[];
   rowHeights: number[];
@@ -233,6 +237,8 @@ export type CanvasWordBlock = CanvasWordParagraphBlock | CanvasWordTableBlock | 
 
 export interface CanvasWordDocument {
   source: 'docx';
+  /** Version 2 distinguishes an omitted cell edge from an explicit no-border edge. */
+  borderEncodingVersion?: 2;
   contentWidth: number;
   contentHeight: number;
   blocks: CanvasWordBlock[];

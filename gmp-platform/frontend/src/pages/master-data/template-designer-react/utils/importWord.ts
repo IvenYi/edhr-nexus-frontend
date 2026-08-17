@@ -37,9 +37,14 @@ const LEGACY_WORD_CONTROL_REGEXP = new RegExp(
 );
 
 type ParsedTable = {
-  rows: Array<{ height: number; cells: CanvasSheetCell[] }>;
+  rows: Array<{ height: number; cells: ParsedWordTableCell[] }>;
   colWidths: number[];
   mergedCells: CanvasSelectionRange[];
+};
+
+type ParsedWordTableCell = CanvasSheetCell & {
+  diagonalTopLeftToBottomRight?: boolean;
+  diagonalTopRightToBottomLeft?: boolean;
 };
 
 type ParsedBlock =
@@ -289,15 +294,28 @@ function hasWordBorder(border?: Element) {
   return value !== 'nil' && value !== 'none';
 }
 
+function parseWordCellBorderEdge(borders: Element | undefined, edge: 'top' | 'bottom' | 'left' | 'right') {
+  const border = firstChild(borders, edge);
+  return border ? hasWordBorder(border) : undefined;
+}
+
 function parseCellBorder(tcNode: Element): CanvasCellBorder | undefined {
   const borders = firstDescendant(tcNode, 'tcBorders');
   const border: CanvasCellBorder = {
-    top: hasWordBorder(firstChild(borders, 'top')),
-    bottom: hasWordBorder(firstChild(borders, 'bottom')),
-    left: hasWordBorder(firstChild(borders, 'left')),
-    right: hasWordBorder(firstChild(borders, 'right')),
+    top: parseWordCellBorderEdge(borders, 'top'),
+    bottom: parseWordCellBorderEdge(borders, 'bottom'),
+    left: parseWordCellBorderEdge(borders, 'left'),
+    right: parseWordCellBorderEdge(borders, 'right'),
   };
-  return Object.values(border).some(Boolean) ? border : undefined;
+  return Object.values(border).some((value) => value !== undefined) ? border : undefined;
+}
+
+function parseCellDiagonalBorders(tcNode: Element) {
+  const borders = firstDescendant(tcNode, 'tcBorders');
+  return {
+    diagonalTopLeftToBottomRight: hasWordBorder(firstChild(borders, 'tl2br')),
+    diagonalTopRightToBottomLeft: hasWordBorder(firstChild(borders, 'tr2bl')),
+  };
 }
 
 function parseGridSpan(tcNode: Element) {
@@ -358,7 +376,7 @@ function parseTable(tableNode: Element): ParsedTable {
   const verticalMergeMap = new Map<number, CanvasSelectionRange>();
 
   childrenByLocalName(tableNode, ['tr']).forEach((trNode, rowIndex) => {
-    const rowCells: CanvasSheetCell[] = [];
+    const rowCells: ParsedWordTableCell[] = [];
     let rowHeight = parseRowHeight(trNode);
     let colIndex = 0;
 
@@ -370,12 +388,13 @@ function parseTable(tableNode: Element): ParsedTable {
       const text = paragraphsText(tcNode);
       const style = parseCellStyle(tcNode);
       const border = parseCellBorder(tcNode);
+      const diagonalBorders = parseCellDiagonalBorders(tcNode);
       const fontSize = Number(style.fontSize ?? DEFAULT_FONT_SIZE);
       const widthPerCol = Math.max(24, Math.round((cellWidth || gridWidths[colIndex] || DEFAULT_COLUMN_WIDTH) / gridSpan));
       const cellHeight = estimateTextHeight(text || ' ', Math.max(24, widthPerCol * gridSpan), fontSize);
       rowHeight = Math.max(rowHeight, cellHeight);
 
-      const cell: CanvasSheetCell = { value: text, style, border };
+      const cell: ParsedWordTableCell = { value: text, style, border, ...diagonalBorders };
       rowCells[colIndex] = cell;
       for (let offset = 1; offset < gridSpan; offset += 1) {
         rowCells[colIndex + offset] = { style, border };
@@ -511,6 +530,8 @@ function buildWordTableCells(table: ParsedTable, tableIndex: number): CanvasWord
         text: String(cell?.value ?? ''),
         style: cell?.style,
         border: cell?.border,
+        diagonalTopLeftToBottomRight: cell?.diagonalTopLeftToBottomRight,
+        diagonalTopRightToBottomLeft: cell?.diagonalTopRightToBottomLeft,
       });
     });
   });
@@ -631,6 +652,7 @@ function blocksToWordDocument(
 
   return {
     source: 'docx',
+    borderEncodingVersion: 2,
     contentWidth,
     contentHeight: Math.max(top, DEFAULT_ROW_HEIGHT),
     blocks: wordBlocks,
