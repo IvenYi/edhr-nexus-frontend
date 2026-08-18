@@ -36,7 +36,7 @@ import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, Canv
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import { fieldRegistry } from '../../registry/fieldRegistry';
 import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
-import type { CommonDisplayComponentId } from '../../registry/commonComponentRegistry';
+import { createCommonWordTableBlock, type CommonCanvasComponentId } from '../../registry/commonComponentRegistry';
 import { useSnackbar } from '@/components/SnackbarProvider';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
@@ -73,6 +73,27 @@ interface WordTableSizePreview {
   columnWidths: number[];
   rowHeights: number[];
 }
+
+interface WordTableCellRange {
+  blockId: string;
+  anchor: { row: number; col: number };
+  focus: { row: number; col: number };
+}
+
+function isWordTableCellInRange(cell: CanvasWordTableBlock['cells'][number], range: WordTableCellRange | null) {
+  if (!range) return false;
+  const firstRow = Math.min(range.anchor.row, range.focus.row);
+  const lastRow = Math.max(range.anchor.row, range.focus.row);
+  const firstColumn = Math.min(range.anchor.col, range.focus.col);
+  const lastColumn = Math.max(range.anchor.col, range.focus.col);
+  const cellLastRow = cell.row + cell.rowSpan - 1;
+  const cellLastColumn = cell.col + cell.colSpan - 1;
+  return cell.row <= lastRow
+    && cellLastRow >= firstRow
+    && cell.col <= lastColumn
+    && cellLastColumn >= firstColumn;
+}
+
 const quickAddFieldTypeOptions = fieldRegistry.filter((field) => field.type !== 'subTable');
 
 function normalizeQuickAddSubTableFields(columns: unknown): ModelField[] {
@@ -846,14 +867,239 @@ function resolveWordTextSx(style?: Record<string, unknown>) {
   };
 }
 
-function resolveWordTableBorder(edge: keyof CanvasCellBorder, border?: CanvasCellBorder) {
-  const color = String(border?.color ?? '#111827');
-  return border?.[edge] === false ? 'none' : `1px solid ${color}`;
+function serializeContentEditableLineBreaks(root: HTMLElement) {
+  const chunks: string[] = [];
+  const appendLineBreak = () => {
+    if (chunks[chunks.length - 1] !== '\n') {
+      chunks.push('\n');
+    }
+  };
+  const visit = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      chunks.push(node.textContent ?? '');
+      return;
+    }
+    if (!(node instanceof HTMLElement)) return;
+    if (node.tagName === 'BR') {
+      appendLineBreak();
+      return;
+    }
+
+    const isBlock = node !== root && ['DIV', 'P', 'LI'].includes(node.tagName);
+    if (isBlock && chunks.length > 0) appendLineBreak();
+    node.childNodes.forEach(visit);
+    if (isBlock && node.nextSibling) appendLineBreak();
+  };
+
+  root.childNodes.forEach(visit);
+  return chunks.join('');
 }
 
-function resolveWordTableCellBorder(edge: keyof CanvasCellBorder, cell: CanvasWordTableBlock['cells'][number]) {
-  if (edge === 'top' || edge === 'left') return resolveWordTableBorder(edge, cell.border);
-  return 'none';
+function isPointerOnWordTableText(target: EventTarget | null, clientX: number, clientY: number) {
+  const element = target instanceof Element ? target : null;
+  const editable = element?.closest<HTMLElement>('[data-word-table-cell-content="true"]');
+  if (!editable) return false;
+
+  const walker = document.createTreeWalker(editable, NodeFilter.SHOW_TEXT);
+  let textNode = walker.nextNode();
+  while (textNode) {
+    if (textNode.textContent?.trim()) {
+      const range = document.createRange();
+      range.selectNodeContents(textNode);
+      const isWithinTextBounds = Array.from(range.getClientRects()).some((rect) => (
+        clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom
+      ));
+      range.detach?.();
+      if (isWithinTextBounds) return true;
+    }
+    textNode = walker.nextNode();
+  }
+
+  return false;
+}
+
+function insertContentEditableLineBreak(root: HTMLElement) {
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+  if (!root.contains(range.commonAncestorContainer)) return;
+
+  range.deleteContents();
+  const lineBreak = document.createElement('br');
+  range.insertNode(lineBreak);
+  range.setStartAfter(lineBreak);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+function resolveWordTableBorder(
+  edge: keyof CanvasCellBorder,
+  border: CanvasCellBorder | undefined,
+  usesLegacyWordTableBorders: boolean,
+) {
+  const color = String(border?.color ?? '#111827');
+  return !usesLegacyWordTableBorders && border?.[edge] === false ? 'none' : `1px solid ${color}`;
+}
+
+function shouldRenderWordTableOuterBorder(
+  edge: 'right' | 'bottom',
+  cell: CanvasWordTableBlock['cells'][number],
+  usesLegacyWordTableBorders: boolean,
+) {
+  return usesLegacyWordTableBorders || cell.border?.[edge] !== false;
+}
+
+function getWordTableSpanSize(sizes: number[], start: number, span: number) {
+  return sizes.slice(start - 1, start - 1 + span).reduce((sum, size) => sum + size, 0);
+}
+
+function isWordTableIntervalCovered(intervals: Array<[number, number]>, start: number, end: number) {
+  let cursor = start;
+  intervals
+    .sort((first, second) => first[0] - second[0])
+    .forEach(([intervalStart, intervalEnd]) => {
+      if (intervalEnd < cursor || intervalStart > cursor) return;
+      cursor = Math.max(cursor, intervalEnd + 1);
+    });
+  return cursor > end;
+}
+
+function isWordTableCellEdgeCovered(
+  table: CanvasWordTableBlock,
+  cell: CanvasWordTableBlock['cells'][number],
+  edge: 'right' | 'bottom',
+  usesLegacyWordTableBorders: boolean,
+) {
+  const rowEnd = cell.row + cell.rowSpan - 1;
+  const colEnd = cell.col + cell.colSpan - 1;
+  if (edge === 'right') {
+    const adjacentColumn = colEnd + 1;
+    return isWordTableIntervalCovered(
+      table.cells
+        .filter((candidate) => (
+          candidate.col === adjacentColumn
+          && (usesLegacyWordTableBorders || candidate.border?.left !== false)
+          && candidate.row <= rowEnd
+          && candidate.row + candidate.rowSpan - 1 >= cell.row
+        ))
+        .map((candidate) => [candidate.row, candidate.row + candidate.rowSpan - 1]),
+      cell.row,
+      rowEnd,
+    );
+  }
+
+  const adjacentRow = rowEnd + 1;
+  return isWordTableIntervalCovered(
+    table.cells
+      .filter((candidate) => (
+        candidate.row === adjacentRow
+        && (usesLegacyWordTableBorders || candidate.border?.top !== false)
+        && candidate.col <= colEnd
+        && candidate.col + candidate.colSpan - 1 >= cell.col
+      ))
+      .map((candidate) => [candidate.col, candidate.col + candidate.colSpan - 1]),
+    cell.col,
+    colEnd,
+  );
+}
+
+function shouldRenderWordTableCellBorder(
+  table: CanvasWordTableBlock,
+  edge: keyof CanvasCellBorder,
+  cell: CanvasWordTableBlock['cells'][number],
+  usesLegacyWordTableBorders: boolean,
+) {
+  if (!usesLegacyWordTableBorders && cell.border?.[edge] === false) return false;
+  if (edge === 'top' || edge === 'left') return true;
+  if (edge === 'right') {
+    if (cell.col + cell.colSpan - 1 >= table.columnWidths.length) return false;
+    return !isWordTableCellEdgeCovered(table, cell, edge, usesLegacyWordTableBorders);
+  }
+  if (edge === 'bottom') {
+    if (cell.row + cell.rowSpan - 1 >= table.rowHeights.length) return false;
+    return !isWordTableCellEdgeCovered(table, cell, edge, usesLegacyWordTableBorders);
+  }
+  return false;
+}
+
+function mergeWordTableBoundarySegments(segments: Array<[number, number]>) {
+  return [...segments]
+    .sort((first, second) => first[0] - second[0])
+    .reduce<Array<[number, number]>>((merged, [start, end]) => {
+      const previous = merged[merged.length - 1];
+      if (!previous || start > previous[1] + 1) {
+        merged.push([start, end]);
+        return merged;
+      }
+      previous[1] = Math.max(previous[1], end);
+      return merged;
+    }, []);
+}
+
+function getWordTableColumnResizeSegments(
+  table: CanvasWordTableBlock,
+  boundaryIndex: number,
+  usesLegacyWordTableBorders: boolean,
+) {
+  return mergeWordTableBoundarySegments(
+    table.cells.flatMap((cell) => {
+      const hasVisibleBoundary = (
+        (cell.col + cell.colSpan - 1 === boundaryIndex
+          && shouldRenderWordTableCellBorder(table, 'right', cell, usesLegacyWordTableBorders))
+        || (cell.col === boundaryIndex + 1
+          && shouldRenderWordTableCellBorder(table, 'left', cell, usesLegacyWordTableBorders))
+      );
+      return hasVisibleBoundary
+        ? [[cell.row, cell.row + cell.rowSpan - 1] as [number, number]]
+        : [];
+    }),
+  );
+}
+
+function getWordTableRowResizeSegments(
+  table: CanvasWordTableBlock,
+  boundaryIndex: number,
+  usesLegacyWordTableBorders: boolean,
+) {
+  return mergeWordTableBoundarySegments(
+    table.cells.flatMap((cell) => {
+      const hasVisibleBoundary = (
+        (cell.row + cell.rowSpan - 1 === boundaryIndex
+          && shouldRenderWordTableCellBorder(table, 'bottom', cell, usesLegacyWordTableBorders))
+        || (cell.row === boundaryIndex + 1
+          && shouldRenderWordTableCellBorder(table, 'top', cell, usesLegacyWordTableBorders))
+      );
+      return hasVisibleBoundary
+        ? [[cell.col, cell.col + cell.colSpan - 1] as [number, number]]
+        : [];
+    }),
+  );
+}
+
+function resolveWordTableCellBorder(
+  table: CanvasWordTableBlock,
+  edge: keyof CanvasCellBorder,
+  cell: CanvasWordTableBlock['cells'][number],
+  usesLegacyWordTableBorders: boolean,
+) {
+  return shouldRenderWordTableCellBorder(table, edge, cell, usesLegacyWordTableBorders)
+    ? resolveWordTableBorder(edge, cell.border, usesLegacyWordTableBorders)
+    : 'none';
+}
+
+function resolveWordTableCellDiagonalBackground(cell: CanvasWordTableBlock['cells'][number]) {
+  const color = String(cell.border?.color ?? '#111827');
+  const lines = [
+    cell.diagonalTopLeftToBottomRight
+      ? `linear-gradient(to bottom left, transparent calc(50% - 0.5px), ${color} 50%, transparent calc(50% + 0.5px))`
+      : null,
+    cell.diagonalTopRightToBottomLeft
+      ? `linear-gradient(to bottom right, transparent calc(50% - 0.5px), ${color} 50%, transparent calc(50% + 0.5px))`
+      : null,
+  ].filter(Boolean);
+  return lines.join(', ');
 }
 
 function fitWordTableColumnWidths(table: CanvasWordTableBlock) {
@@ -866,6 +1112,7 @@ export default function CanvasSheetWorkspace() {
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
+  const removeNode = useTemplateDesignerStore((state) => state.removeNode);
   const addFreeCanvasComponent = useTemplateDesignerStore((state) => state.addFreeCanvasComponent);
   const setActiveCanvasRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
   const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
@@ -931,6 +1178,7 @@ export default function CanvasSheetWorkspace() {
   const [workspaceViewport, setWorkspaceViewport] = useState({ scrollTop: 0, height: 0 });
   const [resizeRowDragPreview, setResizeRowDragPreview] = useState<ResizeRowDragPreview>(null);
   const [selectedWordTableBlockId, setSelectedWordTableBlockId] = useState<string | null>(null);
+  const [wordTableCellRange, setWordTableCellRange] = useState<WordTableCellRange | null>(null);
   const [wordTableLayoutPreview, setWordTableLayoutPreview] = useState<WordTableLayoutPreview | null>(null);
   const [wordTableSizePreview, setWordTableSizePreview] = useState<WordTableSizePreview | null>(null);
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
@@ -945,6 +1193,7 @@ export default function CanvasSheetWorkspace() {
   const rowResizeDragFrameRef = useRef<number | null>(null);
   const pendingRowResizeDragRef = useRef<{ row: number; height: number } | null>(null);
   const wordTablePointerCleanupRef = useRef<(() => void) | null>(null);
+  const wordTableCellSelectionCleanupRef = useRef<(() => void) | null>(null);
   const wordTableLayoutPreviewRef = useRef<WordTableLayoutPreview | null>(null);
   const wordTableSizePreviewRef = useRef<WordTableSizePreview | null>(null);
   const hoveredSubTableFrameRef = useRef<number | null>(null);
@@ -1220,15 +1469,78 @@ export default function CanvasSheetWorkspace() {
     setSelectedRange(null, null);
     setSelectedNodeId(null);
     setSelectedWordTableBlockId(null);
+    setWordTableCellRange(null);
   };
-  const insertCommonComponentAtClientPoint = useCallback((componentId: CommonDisplayComponentId, clientX?: number, clientY?: number) => {
+  const deleteSelectedWordTable = useCallback(() => {
+    const wordDocument = currentPage?.wordDocument;
+    if (!wordDocument || !selectedWordTableBlockId) return;
+
+    updateCurrentPage({
+      wordDocument: {
+        ...wordDocument,
+        blocks: wordDocument.blocks.filter((block) => block.id !== selectedWordTableBlockId),
+      },
+    });
+    setSelectedWordTableBlockId(null);
+    setWordTableCellRange(null);
+  }, [currentPage?.wordDocument, selectedWordTableBlockId, updateCurrentPage]);
+  useEffect(() => {
+    if (!isFreeCanvas) return undefined;
+
+    const handleFreeCanvasDeleteKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Backspace' && event.key !== 'Delete') return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target || !freeCanvasBodyRef.current?.contains(target)) return;
+      if (target?.closest('[contenteditable="true"], input, textarea, select')) return;
+
+      if (selectedWordTableBlockId) {
+        event.preventDefault();
+        deleteSelectedWordTable();
+        return;
+      }
+      if (selectedNodeId) {
+        event.preventDefault();
+        removeNode(selectedNodeId);
+      }
+    };
+
+    const ownerDocument = freeCanvasBodyRef.current?.ownerDocument ?? document;
+    ownerDocument.addEventListener('keydown', handleFreeCanvasDeleteKeyDown);
+    return () => ownerDocument.removeEventListener('keydown', handleFreeCanvasDeleteKeyDown);
+  }, [deleteSelectedWordTable, isFreeCanvas, removeNode, selectedNodeId, selectedWordTableBlockId]);
+  const insertCommonComponentAtClientPoint = useCallback((componentId: CommonCanvasComponentId, clientX?: number, clientY?: number) => {
     if (!isFreeCanvas) return;
     const canvasRect = freeCanvasBodyRef.current?.getBoundingClientRect();
     const fallbackOffset = 36 + (currentPage?.nodes.length ?? 0) * 12;
     const left = canvasRect && typeof clientX === 'number' ? clientX - canvasRect.left : fallbackOffset;
     const top = canvasRect && typeof clientY === 'number' ? clientY - canvasRect.top : fallbackOffset;
+
+    if (componentId === 'table') {
+      const table = createCommonWordTableBlock({ left, top });
+      const wordDocument = currentPage?.wordDocument;
+      updateCurrentPage({
+        wordDocument: wordDocument
+          ? { ...wordDocument, blocks: [...wordDocument.blocks, table] }
+          : {
+              source: 'docx',
+              borderEncodingVersion: 2,
+              contentWidth: paperContentWidth,
+              contentHeight: paperWorkingHeight,
+              blocks: [table],
+            },
+      });
+      setMultiSelectedRanges([]);
+      setSelectedRange(null, null);
+      setSelectedNodeId(null);
+      setSelectedWordTableBlockId(table.id);
+      setWordTableCellRange(null);
+      return;
+    }
+
     addFreeCanvasComponent(componentId, { left, top });
-  }, [addFreeCanvasComponent, currentPage?.nodes.length, isFreeCanvas]);
+  }, [addFreeCanvasComponent, currentPage?.nodes.length, currentPage?.wordDocument, isFreeCanvas, paperContentWidth, paperWorkingHeight, setSelectedNodeId, setSelectedRange, updateCurrentPage]);
   const updateWordParagraphText = (blockId: string, text: string) => {
     const wordDocument = currentPage?.wordDocument;
     if (!wordDocument) return;
@@ -1299,17 +1611,163 @@ export default function CanvasSheetWorkspace() {
       },
     });
   };
-  const selectWordTable = (blockId: string) => {
+  const selectWordTable = (blockId: string, preserveCellRange = false) => {
     setMultiSelectedRanges([]);
     setSelectedRange(null, null);
     setSelectedNodeId(null);
     setSelectedWordTableBlockId(blockId);
+    if (!preserveCellRange) {
+      setWordTableCellRange(null);
+    }
+  };
+  const beginWordTableCellSelection = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    block: CanvasWordTableBlock,
+    cell: CanvasWordTableBlock['cells'][number],
+  ) => {
+    if (event.button !== 0) return;
+
+    const currentRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
+    const anchor = event.shiftKey && currentRange
+      ? currentRange.anchor
+      : { row: cell.row, col: cell.col };
+    if (event.shiftKey) {
+      event.preventDefault();
+    }
+    selectWordTable(block.id, true);
+    setWordTableCellRange({
+      blockId: block.id,
+      anchor,
+      focus: { row: cell.row, col: cell.col },
+    });
+    wordTableCellSelectionCleanupRef.current?.();
+
+    const selectionTarget = event.currentTarget;
+    const ownerDocument = selectionTarget.ownerDocument;
+    const pointerId = event.pointerId;
+    const startX = event.clientX;
+    const startY = event.clientY;
+    let isRangeDragging = false;
+    let suppressNativeSelection = event.shiftKey;
+
+    const getCellAtPointer = (pointerEvent: PointerEvent) => {
+      const target = ownerDocument.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY);
+      const cellElement = target?.closest<HTMLElement>('[data-word-table-cell-id]');
+      if (!cellElement || cellElement.dataset.wordTableBlockId !== block.id) return null;
+      return block.cells.find((candidate) => candidate.id === cellElement.dataset.wordTableCellId) ?? null;
+    };
+    const handlePointerMove = (pointerEvent: PointerEvent) => {
+      const nextCell = getCellAtPointer(pointerEvent);
+      if (!nextCell) return;
+      if (!isRangeDragging && Math.hypot(pointerEvent.clientX - startX, pointerEvent.clientY - startY) < WORD_TABLE_DRAG_THRESHOLD) return;
+      isRangeDragging = true;
+      suppressNativeSelection = true;
+      ownerDocument.getSelection()?.removeAllRanges();
+      setWordTableCellRange((current) => (
+        current?.blockId === block.id
+          ? { ...current, focus: { row: nextCell.row, col: nextCell.col } }
+          : current
+      ));
+    };
+    const handleSelectStart = (selectionEvent: Event) => {
+      if (suppressNativeSelection) {
+        selectionEvent.preventDefault();
+      }
+    };
+    const finish = () => {
+      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      ownerDocument.removeEventListener('pointerup', finish, true);
+      ownerDocument.removeEventListener('pointercancel', finish, true);
+      ownerDocument.removeEventListener('selectstart', handleSelectStart, true);
+      if (selectionTarget.hasPointerCapture(pointerId)) {
+        selectionTarget.releasePointerCapture(pointerId);
+      }
+      wordTableCellSelectionCleanupRef.current = null;
+    };
+
+    selectionTarget.setPointerCapture(pointerId);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    ownerDocument.addEventListener('pointerup', finish, true);
+    ownerDocument.addEventListener('pointercancel', finish, true);
+    ownerDocument.addEventListener('selectstart', handleSelectStart, true);
+    wordTableCellSelectionCleanupRef.current = finish;
+  };
+  const beginWordTableTextOrCellSelection = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    block: CanvasWordTableBlock,
+    cell: CanvasWordTableBlock['cells'][number],
+  ) => {
+    if (event.button !== 0) return;
+
+    // Keep native character selection until the gesture crosses into another cell.
+    selectWordTable(block.id);
+    wordTableCellSelectionCleanupRef.current?.();
+
+    const selectionTarget = event.currentTarget;
+    const ownerDocument = selectionTarget.ownerDocument;
+    const pointerId = event.pointerId;
+    let hasCrossedCellBoundary = false;
+    let suppressNativeSelection = false;
+
+    const getCellAtPointer = (pointerEvent: PointerEvent) => {
+      const target = ownerDocument.elementFromPoint(pointerEvent.clientX, pointerEvent.clientY);
+      const cellElement = target?.closest<HTMLElement>('[data-word-table-cell-id]');
+      if (!cellElement || cellElement.dataset.wordTableBlockId !== block.id) return null;
+      return block.cells.find((candidate) => candidate.id === cellElement.dataset.wordTableCellId) ?? null;
+    };
+    const handlePointerMove = (pointerEvent: PointerEvent) => {
+      const nextCell = getCellAtPointer(pointerEvent);
+      if (!nextCell) return;
+
+      if (!hasCrossedCellBoundary && nextCell.id === cell.id) return;
+      if (!hasCrossedCellBoundary) {
+        hasCrossedCellBoundary = true;
+        suppressNativeSelection = true;
+        ownerDocument.getSelection()?.removeAllRanges();
+        selectWordTable(block.id, true);
+        setWordTableCellRange({
+          blockId: block.id,
+          anchor: { row: cell.row, col: cell.col },
+          focus: { row: nextCell.row, col: nextCell.col },
+        });
+        return;
+      }
+
+      setWordTableCellRange((current) => (
+        current?.blockId === block.id
+          ? { ...current, focus: { row: nextCell.row, col: nextCell.col } }
+          : current
+      ));
+    };
+    const handleSelectStart = (selectionEvent: Event) => {
+      if (suppressNativeSelection) {
+        selectionEvent.preventDefault();
+      }
+    };
+    const finish = () => {
+      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      ownerDocument.removeEventListener('pointerup', finish, true);
+      ownerDocument.removeEventListener('pointercancel', finish, true);
+      ownerDocument.removeEventListener('selectstart', handleSelectStart, true);
+      if (selectionTarget.hasPointerCapture(pointerId)) {
+        selectionTarget.releasePointerCapture(pointerId);
+      }
+      wordTableCellSelectionCleanupRef.current = null;
+    };
+
+    selectionTarget.setPointerCapture(pointerId);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    ownerDocument.addEventListener('pointerup', finish, true);
+    ownerDocument.addEventListener('pointercancel', finish, true);
+    ownerDocument.addEventListener('selectstart', handleSelectStart, true);
+    wordTableCellSelectionCleanupRef.current = finish;
   };
   const beginWordTableDrag = (event: ReactPointerEvent<HTMLElement>, block: CanvasWordTableBlock) => {
     if (event.button !== 0) return;
 
     selectWordTable(block.id);
     wordTablePointerCleanupRef.current?.();
+    wordTableCellSelectionCleanupRef.current?.();
 
     const ownerDocument = event.currentTarget.ownerDocument;
     const startX = event.clientX;
@@ -1366,8 +1824,12 @@ export default function CanvasSheetWorkspace() {
     event.stopPropagation();
     selectWordTable(block.id);
     wordTablePointerCleanupRef.current?.();
+    wordTableCellSelectionCleanupRef.current?.();
 
     const ownerDocument = event.currentTarget.ownerDocument;
+    const resizeTarget = event.currentTarget;
+    const pointerId = event.pointerId;
+    resizeTarget.setPointerCapture(pointerId);
     const startPosition = axis === 'column' ? event.clientX : event.clientY;
     const startColumnWidths = [...currentColumnWidths];
     const startRowHeights = [...currentRowHeights];
@@ -1378,9 +1840,10 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
     };
     const finish = (shouldCommit: boolean) => {
-      ownerDocument.removeEventListener('pointermove', handlePointerMove);
-      ownerDocument.removeEventListener('pointerup', handlePointerEnd);
-      ownerDocument.removeEventListener('pointercancel', handlePointerEnd);
+      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
+      ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
+      if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
       wordTablePointerCleanupRef.current = null;
       const preview = wordTableSizePreviewRef.current;
       clearPreview();
@@ -1406,9 +1869,9 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview(preview);
     };
     const handlePointerEnd = () => finish(true);
-    ownerDocument.addEventListener('pointermove', handlePointerMove);
-    ownerDocument.addEventListener('pointerup', handlePointerEnd);
-    ownerDocument.addEventListener('pointercancel', handlePointerEnd);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
+    ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
     wordTablePointerCleanupRef.current = () => finish(false);
   };
   const beginWordTableOuterColumnResize = (
@@ -1423,8 +1886,12 @@ export default function CanvasSheetWorkspace() {
     event.stopPropagation();
     selectWordTable(block.id);
     wordTablePointerCleanupRef.current?.();
+    wordTableCellSelectionCleanupRef.current?.();
 
     const ownerDocument = event.currentTarget.ownerDocument;
+    const resizeTarget = event.currentTarget;
+    const pointerId = event.pointerId;
+    resizeTarget.setPointerCapture(pointerId);
     const startX = event.clientX;
     const startColumnWidths = [...currentColumnWidths];
     const lastColumnIndex = startColumnWidths.length - 1;
@@ -1435,9 +1902,10 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
     };
     const finish = (shouldCommit: boolean) => {
-      ownerDocument.removeEventListener('pointermove', handlePointerMove);
-      ownerDocument.removeEventListener('pointerup', handlePointerEnd);
-      ownerDocument.removeEventListener('pointercancel', handlePointerEnd);
+      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
+      ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
+      if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
       wordTablePointerCleanupRef.current = null;
       const preview = wordTableSizePreviewRef.current;
       clearPreview();
@@ -1461,9 +1929,69 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview(preview);
     };
     const handlePointerEnd = () => finish(true);
-    ownerDocument.addEventListener('pointermove', handlePointerMove);
-    ownerDocument.addEventListener('pointerup', handlePointerEnd);
-    ownerDocument.addEventListener('pointercancel', handlePointerEnd);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
+    ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
+    wordTablePointerCleanupRef.current = () => finish(false);
+  };
+  const beginWordTableOuterRowResize = (
+    event: ReactPointerEvent<HTMLElement>,
+    block: CanvasWordTableBlock,
+    currentColumnWidths: number[],
+    currentRowHeights: number[],
+  ) => {
+    if (event.button !== 0 || currentRowHeights.length === 0) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    selectWordTable(block.id);
+    wordTablePointerCleanupRef.current?.();
+    wordTableCellSelectionCleanupRef.current?.();
+
+    const ownerDocument = event.currentTarget.ownerDocument;
+    const resizeTarget = event.currentTarget;
+    const pointerId = event.pointerId;
+    resizeTarget.setPointerCapture(pointerId);
+    const startY = event.clientY;
+    const startRowHeights = [...currentRowHeights];
+    const lastRowIndex = startRowHeights.length - 1;
+    const startLastRowHeight = startRowHeights[lastRowIndex];
+
+    const clearPreview = () => {
+      wordTableSizePreviewRef.current = null;
+      setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
+    };
+    const finish = (shouldCommit: boolean) => {
+      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
+      ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
+      if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
+      wordTablePointerCleanupRef.current = null;
+      const preview = wordTableSizePreviewRef.current;
+      clearPreview();
+      if (shouldCommit && preview?.blockId === block.id) {
+        updateWordTableSize(block.id, preview.columnWidths, preview.rowHeights);
+      }
+    };
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      const deltaY = moveEvent.clientY - startY;
+      const nextRowHeights = [...startRowHeights];
+      nextRowHeights[lastRowIndex] = Math.max(
+        WORD_TABLE_MIN_ROW_HEIGHT,
+        Math.round(startLastRowHeight + deltaY),
+      );
+      const preview = {
+        blockId: block.id,
+        columnWidths: currentColumnWidths,
+        rowHeights: nextRowHeights,
+      };
+      wordTableSizePreviewRef.current = preview;
+      setWordTableSizePreview(preview);
+    };
+    const handlePointerEnd = () => finish(true);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
+    ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
     wordTablePointerCleanupRef.current = () => finish(false);
   };
   const selectedSubTableNode = currentPage && normalizedRange
@@ -2607,6 +3135,7 @@ export default function CanvasSheetWorkspace() {
 
   useEffect(() => () => {
     wordTablePointerCleanupRef.current?.();
+    wordTableCellSelectionCleanupRef.current?.();
     if (workspaceScrollFrameRef.current !== null) {
       window.cancelAnimationFrame(workspaceScrollFrameRef.current);
     }
@@ -2654,7 +3183,7 @@ export default function CanvasSheetWorkspace() {
 
   useEffect(() => {
     const handleCommonComponentInsert = (event: Event) => {
-      const componentId = (event as CustomEvent<{ componentId?: CommonDisplayComponentId }>).detail?.componentId;
+      const componentId = (event as CustomEvent<{ componentId?: CommonCanvasComponentId }>).detail?.componentId;
       if (componentId) insertCommonComponentAtClientPoint(componentId);
     };
 
@@ -3547,6 +4076,7 @@ export default function CanvasSheetWorkspace() {
           }
 
           if (block.type === 'table') {
+            const usesLegacyWordTableBorders = (block.borderEncodingVersion ?? wordDocument.borderEncodingVersion) !== 2;
             const defaultColumnWidths = fitWordTableColumnWidths(block);
             const sizePreview = wordTableSizePreview?.blockId === block.id ? wordTableSizePreview : null;
             const tableColumnWidths = sizePreview?.columnWidths ?? defaultColumnWidths;
@@ -3559,6 +4089,15 @@ export default function CanvasSheetWorkspace() {
             const tableLeft = layoutPreview?.left ?? block.layout.left;
             const tableTop = layoutPreview?.top ?? block.layout.top;
             const selected = selectedWordTableBlockId === block.id;
+            const selectedCellRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
+            const outerRightBorderCells = block.cells.filter((cell) => (
+              cell.col + cell.colSpan - 1 >= tableColumnWidths.length
+              && shouldRenderWordTableOuterBorder('right', cell, usesLegacyWordTableBorders)
+            ));
+            const outerBottomBorderCells = block.cells.filter((cell) => (
+              cell.row + cell.rowSpan - 1 >= tableRowHeights.length
+              && shouldRenderWordTableOuterBorder('bottom', cell, usesLegacyWordTableBorders)
+            ));
 
             return (
               <Box
@@ -3576,18 +4115,17 @@ export default function CanvasSheetWorkspace() {
                   gridTemplateRows: buildTemplate(tableRowHeights),
                   bgcolor: '#fff',
                   boxSizing: 'border-box',
-                  borderBottom: '1px solid #111827',
                   cursor: 'text',
                   zIndex: selected ? 10 : undefined,
                   outline: selected ? '1px solid #1677ff' : 'none',
                   outlineOffset: 2,
                 }}
               >
-                {selected ? tableColumnWidths.slice(0, -1).map((_, index) => {
+                {selected ? tableColumnWidths.slice(0, -1).flatMap((_, index) => {
                   const boundaryIndex = index + 1;
-                  return (
+                  return getWordTableColumnResizeSegments(block, boundaryIndex, usesLegacyWordTableBorders).map(([startRow, endRow]) => (
                     <Box
-                      key={`column-resize-${boundaryIndex}`}
+                      key={`column-resize-${boundaryIndex}-${startRow}-${endRow}`}
                       data-word-table-column-resize-handle="true"
                       onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => beginWordTableResize(
                         event,
@@ -3599,10 +4137,10 @@ export default function CanvasSheetWorkspace() {
                       )}
                       sx={{
                         position: 'absolute',
-                        top: 0,
-                        bottom: 0,
-                        left: columnOffsets[boundaryIndex] - 5,
-                        width: 10,
+                        top: rowOffsets[startRow - 1],
+                        height: getWordTableSpanSize(tableRowHeights, startRow, endRow - startRow + 1),
+                        left: columnOffsets[boundaryIndex] - 1,
+                        width: 2,
                         cursor: 'col-resize',
                         zIndex: 3,
                         '&::after': {
@@ -3610,17 +4148,18 @@ export default function CanvasSheetWorkspace() {
                           position: 'absolute',
                           top: 0,
                           bottom: 0,
-                          left: 4,
+                          left: 0,
                           width: '1px',
                           bgcolor: 'transparent',
                         },
-                        '&:hover::after': { bgcolor: '#1677ff' },
+                        '&:active::after': { bgcolor: '#1677ff' },
                       }}
                     />
-                  );
+                  ));
                 }) : null}
-                {selected ? (
+                {selected ? outerRightBorderCells.map((cell) => (
                   <Box
+                    key={`outer-column-resize-${cell.id}`}
                     data-word-table-outer-column-resize-handle="true"
                     onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => beginWordTableOuterColumnResize(
                       event,
@@ -3630,10 +4169,10 @@ export default function CanvasSheetWorkspace() {
                     )}
                     sx={{
                       position: 'absolute',
-                      top: 0,
-                      bottom: 0,
-                      right: -5,
-                      width: 10,
+                      top: rowOffsets[cell.row - 1],
+                      height: getWordTableSpanSize(tableRowHeights, cell.row, cell.rowSpan),
+                      right: -1,
+                      width: 2,
                       cursor: 'col-resize',
                       zIndex: 5,
                       '&::after': {
@@ -3641,19 +4180,19 @@ export default function CanvasSheetWorkspace() {
                         position: 'absolute',
                         top: 0,
                         bottom: 0,
-                        left: 4,
+                        left: 0,
                         width: '1px',
                         bgcolor: 'transparent',
                       },
-                      '&:hover::after': { bgcolor: '#1677ff' },
+                      '&:active::after': { bgcolor: '#1677ff' },
                     }}
                   />
-                ) : null}
-                {selected ? tableRowHeights.slice(0, -1).map((_, index) => {
+                )) : null}
+                {selected ? tableRowHeights.slice(0, -1).flatMap((_, index) => {
                   const boundaryIndex = index + 1;
-                  return (
+                  return getWordTableRowResizeSegments(block, boundaryIndex, usesLegacyWordTableBorders).map(([startColumn, endColumn]) => (
                     <Box
-                      key={`row-resize-${boundaryIndex}`}
+                      key={`row-resize-${boundaryIndex}-${startColumn}-${endColumn}`}
                       data-word-table-row-resize-handle="true"
                       onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => beginWordTableResize(
                         event,
@@ -3665,10 +4204,10 @@ export default function CanvasSheetWorkspace() {
                       )}
                       sx={{
                         position: 'absolute',
-                        left: 0,
-                        right: 0,
-                        top: rowOffsets[boundaryIndex] - 5,
-                        height: 10,
+                        left: columnOffsets[startColumn - 1],
+                        width: getWordTableSpanSize(tableColumnWidths, startColumn, endColumn - startColumn + 1),
+                        top: rowOffsets[boundaryIndex] - 1,
+                        height: 2,
                         cursor: 'row-resize',
                         zIndex: 3,
                         '&::after': {
@@ -3676,71 +4215,168 @@ export default function CanvasSheetWorkspace() {
                           position: 'absolute',
                           left: 0,
                           right: 0,
-                          top: 4,
+                          top: 0,
                           height: '1px',
                           bgcolor: 'transparent',
                         },
-                        '&:hover::after': { bgcolor: '#1677ff' },
+                        '&:active::after': { bgcolor: '#1677ff' },
                       }}
                     />
-                  );
+                  ));
                 }) : null}
-                {block.cells.map((cell) => (
+                {selected ? outerBottomBorderCells.map((cell) => (
                   <Box
-                    key={cell.id}
-                    data-word-table-cell="true"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onMouseDown={(event: ReactMouseEvent<HTMLDivElement>) => {
-                      event.stopPropagation();
-                      selectWordTable(block.id);
-                    }}
-                    onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
-                      updateWordTableCellText(block.id, cell.id, event.currentTarget.innerText);
-                    }}
+                    key={`outer-row-resize-${cell.id}`}
+                    data-word-table-outer-row-resize-handle="true"
+                    onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => beginWordTableOuterRowResize(
+                      event,
+                      block,
+                      tableColumnWidths,
+                      tableRowHeights,
+                    )}
                     sx={{
-                      gridColumn: `${cell.col} / span ${cell.colSpan}`,
-                      gridRow: `${cell.row} / span ${cell.rowSpan}`,
-                      display: 'flex',
-                      alignItems: cell.style?.verticalAlign === 'top' ? 'flex-start' : cell.style?.verticalAlign === 'bottom' ? 'flex-end' : 'center',
-                      justifyContent: cell.style?.textAlign === 'right' ? 'flex-end' : cell.style?.textAlign === 'center' ? 'center' : 'flex-start',
-                      px: `${resolveNumericStyle(cell.style?.paddingLeft, 8)}px`,
-                      py: `${resolveNumericStyle(cell.style?.paddingTop, 4)}px`,
-                      pr: `${resolveNumericStyle(cell.style?.paddingRight, resolveNumericStyle(cell.style?.paddingLeft, 8))}px`,
-                      pb: `${resolveNumericStyle(cell.style?.paddingBottom, resolveNumericStyle(cell.style?.paddingTop, 4))}px`,
-                      borderTop: resolveWordTableCellBorder('top', cell),
-                      borderRight: resolveWordTableCellBorder('right', cell),
-                      borderBottom: resolveWordTableCellBorder('bottom', cell),
-                      borderLeft: resolveWordTableCellBorder('left', cell),
-                      bgcolor: String(cell.style?.backgroundColor ?? '#fff'),
-                      boxSizing: 'border-box',
-                      outline: 'none',
-                      cursor: 'text',
-                      overflow: 'hidden',
-                      ...resolveWordTextSx(cell.style),
-                      '&:focus': {
-                        boxShadow: 'inset 0 0 0 2px rgba(25, 118, 210, 0.62)',
-                        zIndex: 2,
+                      position: 'absolute',
+                      left: columnOffsets[cell.col - 1],
+                      width: getWordTableSpanSize(tableColumnWidths, cell.col, cell.colSpan),
+                      bottom: -1,
+                      height: 2,
+                      cursor: 'row-resize',
+                      zIndex: 5,
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        height: '1px',
+                        bgcolor: 'transparent',
                       },
-                    } as SxProps<Theme>}
-                  >
-                  {cell.text}
-                  </Box>
+                      '&:active::after': { bgcolor: '#1677ff' },
+                    }}
+                  />
+                )) : null}
+                {block.cells.map((cell) => {
+                  const isRangeSelected = isWordTableCellInRange(cell, selectedCellRange);
+                  return (
+                    <Box
+                      key={cell.id}
+                      data-word-table-cell="true"
+                      data-word-table-cell-id={cell.id}
+                      data-word-table-block-id={block.id}
+                      data-word-table-diagonal={cell.diagonalTopLeftToBottomRight || cell.diagonalTopRightToBottomLeft ? 'true' : undefined}
+                      onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => {
+                        const startedFromText = isPointerOnWordTableText(event.target, event.clientX, event.clientY);
+
+                        if (startedFromText && !event.shiftKey) {
+                          beginWordTableTextOrCellSelection(event, block, cell);
+                          return;
+                        }
+
+                        event.stopPropagation();
+                        beginWordTableCellSelection(event, block, cell);
+                      }}
+                      onMouseDown={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
+                      sx={{
+                        gridColumn: `${cell.col} / span ${cell.colSpan}`,
+                        gridRow: `${cell.row} / span ${cell.rowSpan}`,
+                        display: 'flex',
+                        alignItems: cell.style?.verticalAlign === 'top' ? 'flex-start' : cell.style?.verticalAlign === 'bottom' ? 'flex-end' : 'center',
+                        justifyContent: cell.style?.textAlign === 'right' ? 'flex-end' : cell.style?.textAlign === 'center' ? 'center' : 'flex-start',
+                        px: `${resolveNumericStyle(cell.style?.paddingLeft, 8)}px`,
+                        py: `${resolveNumericStyle(cell.style?.paddingTop, 4)}px`,
+                        pr: `${resolveNumericStyle(cell.style?.paddingRight, resolveNumericStyle(cell.style?.paddingLeft, 8))}px`,
+                        pb: `${resolveNumericStyle(cell.style?.paddingBottom, resolveNumericStyle(cell.style?.paddingTop, 4))}px`,
+                        borderTop: resolveWordTableCellBorder(block, 'top', cell, usesLegacyWordTableBorders),
+                        borderRight: resolveWordTableCellBorder(block, 'right', cell, usesLegacyWordTableBorders),
+                        borderBottom: resolveWordTableCellBorder(block, 'bottom', cell, usesLegacyWordTableBorders),
+                        borderLeft: resolveWordTableCellBorder(block, 'left', cell, usesLegacyWordTableBorders),
+                        bgcolor: isRangeSelected ? 'rgba(22, 119, 255, 0.14)' : String(cell.style?.backgroundColor ?? '#fff'),
+                        transition: 'background-color 80ms ease',
+                        boxSizing: 'border-box',
+                        minWidth: 0,
+                        minHeight: 0,
+                        position: 'relative',
+                        outline: 'none',
+                        cursor: 'text',
+                        overflow: 'hidden',
+                        ...((cell.diagonalTopLeftToBottomRight || cell.diagonalTopRightToBottomLeft) ? {
+                          '&::after': {
+                            content: '""',
+                            position: 'absolute',
+                            inset: 0,
+                            pointerEvents: 'none',
+                            backgroundImage: resolveWordTableCellDiagonalBackground(cell),
+                            zIndex: 2,
+                          },
+                        } : {}),
+                      } as SxProps<Theme>}
+                    >
+                      <Box
+                        data-word-table-cell-content="true"
+                        contentEditable
+                        suppressContentEditableWarning
+                        onFocus={() => {
+                          // Focusing a new editable cell must retire any previous cell-range highlight.
+                          selectWordTable(block.id);
+                        }}
+                        onKeyDown={(event: ReactKeyboardEvent<HTMLDivElement>) => {
+                          if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+                          event.preventDefault();
+                          insertContentEditableLineBreak(event.currentTarget);
+                        }}
+                        onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
+                          updateWordTableCellText(block.id, cell.id, serializeContentEditableLineBreaks(event.currentTarget));
+                        }}
+                        sx={{
+                          width: '100%',
+                          maxWidth: '100%',
+                          minWidth: 0,
+                          minHeight: '1em',
+                          outline: 'none',
+                          ...resolveWordTextSx(cell.style),
+                          whiteSpace: 'pre-wrap',
+                          overflowWrap: 'anywhere',
+                        } as SxProps<Theme>}
+                      >
+                        {cell.text}
+                      </Box>
+                    </Box>
+                  );
+                })}
+                {outerRightBorderCells.map((cell) => (
+                  <Box
+                    key={`outer-right-${cell.id}`}
+                    data-word-table-outer-right-border="true"
+                    aria-hidden="true"
+                    sx={{
+                      position: 'absolute',
+                      top: rowOffsets[cell.row - 1],
+                      right: 0,
+                      height: getWordTableSpanSize(tableRowHeights, cell.row, cell.rowSpan),
+                      width: '1px',
+                      bgcolor: String(cell.border?.color ?? '#111827'),
+                      pointerEvents: 'none',
+                      zIndex: 4,
+                    }}
+                  />
                 ))}
-                <Box
-                  data-word-table-outer-right-border="true"
-                  aria-hidden="true"
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: '1px',
-                    bgcolor: '#111827',
-                    pointerEvents: 'none',
-                    zIndex: 4,
-                  }}
-                />
+                {outerBottomBorderCells.map((cell) => (
+                  <Box
+                    key={`outer-bottom-${cell.id}`}
+                    data-word-table-outer-bottom-border="true"
+                    aria-hidden="true"
+                    sx={{
+                      position: 'absolute',
+                      left: columnOffsets[cell.col - 1],
+                      bottom: 0,
+                      width: getWordTableSpanSize(tableColumnWidths, cell.col, cell.colSpan),
+                      height: '1px',
+                      bgcolor: String(cell.border?.color ?? '#111827'),
+                      pointerEvents: 'none',
+                      zIndex: 4,
+                    }}
+                  />
+                ))}
               </Box>
             );
           }
@@ -4226,6 +4862,12 @@ export default function CanvasSheetWorkspace() {
                     />
                     <Box
                       ref={freeCanvasBodyRef}
+                      tabIndex={0}
+                      onPointerDown={(event) => {
+                        const target = event.target instanceof Element ? event.target : null;
+                        if (!target || target.closest('[contenteditable="true"], input, textarea, select')) return;
+                        freeCanvasBodyRef.current?.focus({ preventScroll: true });
+                      }}
                       onMouseDown={(event) => {
                         const target = event.target as HTMLElement;
                         if (!target.closest('[data-canvas-node="true"], [data-word-block], [data-word-table-cell], [data-word-table-drag-handle]')) {
@@ -4239,7 +4881,7 @@ export default function CanvasSheetWorkspace() {
                         }
                       }}
                       onDrop={(event) => {
-                        const componentId = event.dataTransfer.getData(COMMON_COMPONENT_MIME) as CommonDisplayComponentId;
+                        const componentId = event.dataTransfer.getData(COMMON_COMPONENT_MIME) as CommonCanvasComponentId;
                         if (!componentId) return;
                         event.preventDefault();
                         event.stopPropagation();
@@ -4258,6 +4900,10 @@ export default function CanvasSheetWorkspace() {
                         resolveCellRangeLayout={getFieldDropCellLayout}
                         onCellFieldMouseDown={handleCellFieldMouseDown}
                         onCellFieldContextMenu={handleCellFieldContextMenu}
+                        onNodeSelect={() => {
+                          setSelectedWordTableBlockId(null);
+                          setWordTableCellRange(null);
+                        }}
                       />
                       {renderWordTableDragHandleLayer()}
                       {renderSubTableOverlays()}

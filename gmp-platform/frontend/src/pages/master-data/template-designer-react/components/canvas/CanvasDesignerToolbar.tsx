@@ -14,13 +14,20 @@ import VerticalAlignBottomOutlined from '@mui/icons-material/VerticalAlignBottom
 import VerticalAlignCenterOutlined from '@mui/icons-material/VerticalAlignCenterOutlined';
 import VerticalAlignTopOutlined from '@mui/icons-material/VerticalAlignTopOutlined';
 import { Box, Button, Divider, Tooltip } from '@mui/material';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
+import type { CanvasSelectionRange } from '../../types';
 
 const FONT_SIZE_OPTIONS = [9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36];
 const DEFAULT_FONT_COLOR = '#303133';
 const DEFAULT_BACKGROUND_COLOR = '#ffffff';
 const DEFAULT_BORDER_COLOR = '#000000';
+const COLOR_PICKER_COMMIT_DELAY_MS = 120;
+
+type ColorCommitTarget =
+  | { type: 'node'; nodeId: string }
+  | { type: 'cell'; range: CanvasSelectionRange };
 
 function ToolbarIconButton({
   active,
@@ -116,6 +123,7 @@ function ToolbarFontSizeSelect({
 function ToolbarColorButton({
   children,
   color,
+  captureTarget,
   label,
   onChange,
   'data-toolbar-background-color': backgroundColorMarker,
@@ -123,11 +131,68 @@ function ToolbarColorButton({
 }: {
   children: ReactNode;
   color: string;
+  captureTarget: () => ColorCommitTarget | null;
   label: string;
-  onChange: (color: string) => void;
+  onChange: (color: string, target: ColorCommitTarget | null) => void;
   'data-toolbar-background-color'?: string;
   'data-toolbar-font-color'?: string;
 }) {
+  const [draftColor, setDraftColor] = useState(color);
+  const draftColorRef = useRef(color);
+  const committedColorRef = useRef(color);
+  const commitTimerRef = useRef<number | null>(null);
+  const commitTargetRef = useRef<ColorCommitTarget | null>(null);
+  const isColorEditingRef = useRef(false);
+  const commitDraftColorRef = useRef<() => void>(() => {});
+
+  const ensureColorTarget = useCallback(() => {
+    if (!commitTargetRef.current) {
+      commitTargetRef.current = captureTarget();
+    }
+    return commitTargetRef.current;
+  }, [captureTarget]);
+
+  const clearDraftColorCommit = useCallback(() => {
+    if (commitTimerRef.current == null) return;
+    window.clearTimeout(commitTimerRef.current);
+    commitTimerRef.current = null;
+  }, []);
+
+  const commitDraftColor = useCallback(() => {
+    clearDraftColorCommit();
+    const nextColor = draftColorRef.current;
+    const target = ensureColorTarget();
+    isColorEditingRef.current = false;
+    commitTargetRef.current = null;
+    if (nextColor === committedColorRef.current) return;
+    committedColorRef.current = nextColor;
+    onChange(nextColor, target);
+  }, [clearDraftColorCommit, ensureColorTarget, onChange]);
+  commitDraftColorRef.current = commitDraftColor;
+
+  const scheduleDraftColorCommit = useCallback(() => {
+    clearDraftColorCommit();
+    commitTimerRef.current = window.setTimeout(commitDraftColor, COLOR_PICKER_COMMIT_DELAY_MS);
+  }, [clearDraftColorCommit, commitDraftColor]);
+
+  useEffect(() => {
+    if (isColorEditingRef.current) return;
+    setDraftColor(color);
+    draftColorRef.current = color;
+    committedColorRef.current = color;
+  }, [color]);
+
+  useEffect(() => () => commitDraftColorRef.current(), []);
+
+  const handleDraftColorChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextColor = event.target.value;
+    isColorEditingRef.current = true;
+    ensureColorTarget();
+    draftColorRef.current = nextColor;
+    setDraftColor(nextColor);
+    scheduleDraftColorCommit();
+  };
+
   return (
     <Tooltip title={label} arrow>
       <Button
@@ -159,15 +224,24 @@ function ToolbarColorButton({
             bottom: 4,
             height: 3,
             borderRadius: 999,
-            bgcolor: color,
+            bgcolor: draftColor,
             border: '1px solid rgba(0,0,0,.12)',
           }}
         />
         <Box
           component="input"
           type="color"
-          value={color}
-          onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
+          value={draftColor}
+          onBlur={commitDraftColor}
+          onChange={handleDraftColorChange}
+          onFocus={() => {
+            isColorEditingRef.current = true;
+            commitTargetRef.current = captureTarget();
+          }}
+          onMouseDown={() => {
+            isColorEditingRef.current = true;
+            commitTargetRef.current = captureTarget();
+          }}
           sx={{
             position: 'absolute',
             inset: 0,
@@ -195,8 +269,11 @@ function normalizeHexColor(value: unknown, fallback: string) {
 
 export default function CanvasDesignerToolbar() {
   const selectedCellState = useTemplateDesignerStore((state) => state.getSelectedCellState());
+  const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
+  const selectedRange = useTemplateDesignerStore((state) => state.selectedRange);
   const selectedNode = useTemplateDesignerStore((state) => state.getSelectedNode());
   const updateSelectedCellStyle = useTemplateDesignerStore((state) => state.updateSelectedCellStyle);
+  const updateCellStyleInRange = useTemplateDesignerStore((state) => state.updateCellStyleInRange);
   const updateSelectedCellBorder = useTemplateDesignerStore((state) => state.updateSelectedCellBorder);
   const updateNodeProps = useTemplateDesignerStore((state) => state.updateNodeProps);
   const updateNodeStyle = useTemplateDesignerStore((state) => state.updateNodeStyle);
@@ -214,6 +291,37 @@ export default function CanvasDesignerToolbar() {
     ? Boolean(selectedNode?.props.hasBorder ?? selectedNode?.style.hasBorder)
     : Boolean(cellBorder?.top && cellBorder.right && cellBorder.bottom && cellBorder.left);
   const dividerSx = { mx: 0.5, alignSelf: 'center', height: 20 };
+  const captureColorTarget = (): ColorCommitTarget | null => {
+    if (isTextComponent && selectedNode) {
+      return { type: 'node', nodeId: selectedNode.id };
+    }
+    if (selectedRange) {
+      return { type: 'cell', range: { ...selectedRange } };
+    }
+    if (selectedCell) {
+      return {
+        type: 'cell',
+        range: {
+          t: selectedCell.row,
+          l: selectedCell.col,
+          b: selectedCell.row,
+          r: selectedCell.col,
+        },
+      };
+    }
+    return null;
+  };
+  const updateColorStyle = (patch: Record<string, unknown>, target: ColorCommitTarget | null) => {
+    if (target?.type === 'node') {
+      updateNodeStyle(target.nodeId, patch);
+      return;
+    }
+    if (target?.type === 'cell') {
+      updateCellStyleInRange(target.range, patch);
+      return;
+    }
+    updateSelectedStyle(patch);
+  };
   const updateSelectedStyle = (patch: Record<string, unknown>) => {
     if (isTextComponent && selectedNode) {
       updateNodeStyle(selectedNode.id, patch);
@@ -275,8 +383,9 @@ export default function CanvasDesignerToolbar() {
       <ToolbarColorButton
         data-toolbar-font-color="true"
         color={fontColor}
+        captureTarget={captureColorTarget}
         label="字体颜色"
-        onChange={(color) => updateSelectedStyle({ color })}
+        onChange={(color, target) => updateColorStyle({ color }, target)}
       >
         <FormatColorTextOutlined fontSize="small" />
       </ToolbarColorButton>
@@ -304,8 +413,9 @@ export default function CanvasDesignerToolbar() {
       <ToolbarColorButton
         data-toolbar-background-color="true"
         color={backgroundColor}
+        captureTarget={captureColorTarget}
         label="单元格背景颜色"
-        onChange={(backgroundColor) => updateSelectedStyle({ backgroundColor })}
+        onChange={(backgroundColor, target) => updateColorStyle({ backgroundColor }, target)}
       >
         <FormatColorFillOutlined fontSize="small" />
       </ToolbarColorButton>

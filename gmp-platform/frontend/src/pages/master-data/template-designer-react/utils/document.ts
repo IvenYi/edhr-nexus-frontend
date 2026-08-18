@@ -3,6 +3,7 @@ import type {
   CanvasPage,
   CanvasWordBlock,
   CanvasWordDocument,
+  CanvasWordTableBlock,
   FieldType,
   ModelField,
   ModelFieldOption,
@@ -246,6 +247,13 @@ function normalizeCanvasNodes(nodes: CanvasPage['nodes'], pageId: string): Canva
   });
 }
 
+function normalizeWordTableBlock(block: CanvasWordTableBlock): CanvasWordTableBlock {
+  return {
+    ...block,
+    borderEncodingVersion: block.borderEncodingVersion === 2 ? 2 : undefined,
+  };
+}
+
 function normalizeWordDocument(input: unknown): CanvasWordDocument | undefined {
   if (!input || typeof input !== 'object') return undefined;
   const source = input as Partial<CanvasWordDocument>;
@@ -256,12 +264,14 @@ function normalizeWordDocument(input: unknown): CanvasWordDocument | undefined {
   const blocks = Array.isArray(source.blocks)
     ? source.blocks
       .filter((block): block is CanvasWordBlock => Boolean(block && typeof block === 'object' && 'type' in block))
+      .map((block) => block.type === 'table' ? normalizeWordTableBlock(block) : block)
     : [];
 
   if (!blocks.length) return undefined;
 
   return {
     source: 'docx',
+    borderEncodingVersion: source.borderEncodingVersion === 2 ? 2 : undefined,
     contentWidth: Number.isFinite(contentWidth) && contentWidth > 0 ? contentWidth : 0,
     contentHeight: Number.isFinite(contentHeight) && contentHeight > 0 ? contentHeight : 0,
     blocks,

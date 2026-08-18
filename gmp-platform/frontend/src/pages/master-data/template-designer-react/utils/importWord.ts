@@ -3,6 +3,7 @@ import { CFB } from 'xlsx';
 import { importLegacyWordTemplate } from '@/api/template-modeling';
 import type {
   CanvasCellBorder,
+  CanvasNode,
   CanvasPage,
   CanvasSelectionRange,
   CanvasSheetCell,
@@ -27,6 +28,8 @@ const WORD_NAMESPACE_PREFIX_REGEXP = /^[a-z]+:/i;
 const TWIP_PER_PX = 15;
 const DXA_PER_PX = 15;
 const EMU_PER_PX = 9525;
+const WORD_DEFAULT_TAB_STOP_WIDTH = 48;
+const WORD_PARAGRAPH_COMPONENT_SEPARATOR = /(\t+| {3,})/g;
 const LEGACY_WORD_CELL_MARK_REGEXP = new RegExp(String.fromCharCode(7), 'g');
 const LEGACY_WORD_CONTROL_REGEXP = new RegExp(
   `[${String.fromCharCode(0)}-${String.fromCharCode(6)}${String.fromCharCode(8)}${String.fromCharCode(11)}${String.fromCharCode(12)}${String.fromCharCode(14)}-${String.fromCharCode(31)}]+`,
@@ -34,9 +37,14 @@ const LEGACY_WORD_CONTROL_REGEXP = new RegExp(
 );
 
 type ParsedTable = {
-  rows: Array<{ height: number; cells: CanvasSheetCell[] }>;
+  rows: Array<{ height: number; cells: ParsedWordTableCell[] }>;
   colWidths: number[];
   mergedCells: CanvasSelectionRange[];
+};
+
+type ParsedWordTableCell = CanvasSheetCell & {
+  diagonalTopLeftToBottomRight?: boolean;
+  diagonalTopRightToBottomLeft?: boolean;
 };
 
 type ParsedBlock =
@@ -156,6 +164,42 @@ function estimateParagraphTextWidth(text: string, fontSize: number) {
   return Math.ceil(estimateTextWidth(text) * Math.max(7, fontSize * 0.56) + 12);
 }
 
+function estimateWordParagraphTextContentWidth(text: string, fontSize: number) {
+  return Math.max(0, estimateParagraphTextWidth(text, fontSize) - 12);
+}
+
+function splitWordParagraphComponents(text: string, fontSize: number) {
+  const segments: Array<{ text: string; offset: number }> = [];
+  let cursor = 0;
+  let offset = 0;
+  let separatorMatch: RegExpExecArray | null;
+
+  const appendSegment = (value: string) => {
+    const segmentText = value.trim();
+    if (segmentText) {
+      segments.push({ text: segmentText, offset });
+    }
+    offset += estimateWordParagraphTextContentWidth(value, fontSize);
+  };
+
+  while ((separatorMatch = WORD_PARAGRAPH_COMPONENT_SEPARATOR.exec(text))) {
+    appendSegment(text.slice(cursor, separatorMatch.index));
+    const separator = separatorMatch[0];
+    if (separator.includes('\t')) {
+      const tabCount = separator.split('\t').length - 1;
+      offset = Math.ceil((offset + 1) / WORD_DEFAULT_TAB_STOP_WIDTH) * WORD_DEFAULT_TAB_STOP_WIDTH
+        + Math.max(0, tabCount - 1) * WORD_DEFAULT_TAB_STOP_WIDTH;
+    } else {
+      offset += estimateWordParagraphTextContentWidth(separator, fontSize);
+    }
+    cursor = separatorMatch.index + separator.length;
+  }
+
+  appendSegment(text.slice(cursor));
+  WORD_PARAGRAPH_COMPONENT_SEPARATOR.lastIndex = 0;
+  return segments.length > 1 ? segments : [{ text, offset: 0 }];
+}
+
 function paragraphsText(node?: Element) {
   return childrenByLocalName(node, ['p']).map(paragraphText).join('\n');
 }
@@ -250,15 +294,28 @@ function hasWordBorder(border?: Element) {
   return value !== 'nil' && value !== 'none';
 }
 
+function parseWordCellBorderEdge(borders: Element | undefined, edge: 'top' | 'bottom' | 'left' | 'right') {
+  const border = firstChild(borders, edge);
+  return border ? hasWordBorder(border) : undefined;
+}
+
 function parseCellBorder(tcNode: Element): CanvasCellBorder | undefined {
   const borders = firstDescendant(tcNode, 'tcBorders');
   const border: CanvasCellBorder = {
-    top: hasWordBorder(firstChild(borders, 'top')),
-    bottom: hasWordBorder(firstChild(borders, 'bottom')),
-    left: hasWordBorder(firstChild(borders, 'left')),
-    right: hasWordBorder(firstChild(borders, 'right')),
+    top: parseWordCellBorderEdge(borders, 'top'),
+    bottom: parseWordCellBorderEdge(borders, 'bottom'),
+    left: parseWordCellBorderEdge(borders, 'left'),
+    right: parseWordCellBorderEdge(borders, 'right'),
   };
-  return Object.values(border).some(Boolean) ? border : undefined;
+  return Object.values(border).some((value) => value !== undefined) ? border : undefined;
+}
+
+function parseCellDiagonalBorders(tcNode: Element) {
+  const borders = firstDescendant(tcNode, 'tcBorders');
+  return {
+    diagonalTopLeftToBottomRight: hasWordBorder(firstChild(borders, 'tl2br')),
+    diagonalTopRightToBottomLeft: hasWordBorder(firstChild(borders, 'tr2bl')),
+  };
 }
 
 function parseGridSpan(tcNode: Element) {
@@ -319,7 +376,7 @@ function parseTable(tableNode: Element): ParsedTable {
   const verticalMergeMap = new Map<number, CanvasSelectionRange>();
 
   childrenByLocalName(tableNode, ['tr']).forEach((trNode, rowIndex) => {
-    const rowCells: CanvasSheetCell[] = [];
+    const rowCells: ParsedWordTableCell[] = [];
     let rowHeight = parseRowHeight(trNode);
     let colIndex = 0;
 
@@ -331,12 +388,13 @@ function parseTable(tableNode: Element): ParsedTable {
       const text = paragraphsText(tcNode);
       const style = parseCellStyle(tcNode);
       const border = parseCellBorder(tcNode);
+      const diagonalBorders = parseCellDiagonalBorders(tcNode);
       const fontSize = Number(style.fontSize ?? DEFAULT_FONT_SIZE);
       const widthPerCol = Math.max(24, Math.round((cellWidth || gridWidths[colIndex] || DEFAULT_COLUMN_WIDTH) / gridSpan));
       const cellHeight = estimateTextHeight(text || ' ', Math.max(24, widthPerCol * gridSpan), fontSize);
       rowHeight = Math.max(rowHeight, cellHeight);
 
-      const cell: CanvasSheetCell = { value: text, style, border };
+      const cell: ParsedWordTableCell = { value: text, style, border, ...diagonalBorders };
       rowCells[colIndex] = cell;
       for (let offset = 1; offset < gridSpan; offset += 1) {
         rowCells[colIndex + offset] = { style, border };
@@ -472,6 +530,8 @@ function buildWordTableCells(table: ParsedTable, tableIndex: number): CanvasWord
         text: String(cell?.value ?? ''),
         style: cell?.style,
         border: cell?.border,
+        diagonalTopLeftToBottomRight: cell?.diagonalTopLeftToBottomRight,
+        diagonalTopRightToBottomLeft: cell?.diagonalTopRightToBottomLeft,
       });
     });
   });
@@ -479,33 +539,95 @@ function buildWordTableCells(table: ParsedTable, tableIndex: number): CanvasWord
   return cells;
 }
 
+function buildWordParagraphNodes(blocks: ParsedBlock[], contentWidth: number): CanvasNode[] {
+  const nodes: CanvasNode[] = [];
+  let top = 0;
+  let paragraphIndex = 0;
+
+  blocks.forEach((block) => {
+    if (block.type === 'paragraph') {
+      const layout = resolveWordParagraphLayout(block, contentWidth, top);
+      const fontSize = Number(block.style.fontSize ?? DEFAULT_FONT_SIZE);
+      const components = splitWordParagraphComponents(block.text, fontSize);
+
+      components.forEach((segment, segmentIndex) => {
+        const width = Math.min(
+          contentWidth,
+          Math.max(48, estimateParagraphTextWidth(segment.text, fontSize)),
+        );
+        nodes.push({
+          id: `word-paragraph-${paragraphIndex + 1}-${segmentIndex + 1}`,
+          type: 'static-text',
+          parentId: null,
+          children: [],
+          props: {
+            text: segment.text,
+            hasBorder: false,
+            backgroundColor: '',
+          },
+          style: {
+            position: 'absolute',
+            compLeft: Math.min(Math.max(0, contentWidth - width), layout.left + segment.offset),
+            compTop: layout.top,
+            compWidth: width,
+            compHeight: layout.height,
+            ...block.style,
+          },
+          bindings: {},
+        });
+      });
+
+      top = layout.nextTop;
+      paragraphIndex += 1;
+      return;
+    }
+
+    top += Math.max(1, sumNumbers(block.table.rows.map((row) => row.height)));
+  });
+
+  return nodes;
+}
+
+function buildWordImageNodes(images: CanvasSheetImage[], medias: CanvasSheetMedia[]): CanvasNode[] {
+  const mediaSrcById = new Map(medias.map((media) => [media.id, media.src]));
+
+  return images.flatMap((image) => {
+    const src = mediaSrcById.get(image.mediaId);
+    if (!src) return [];
+
+    return [{
+      id: `word-image-${image.id}`,
+      type: 'static-image',
+      parentId: null,
+      children: [],
+      props: {
+        src,
+        alt: '导入图片',
+      },
+      style: {
+        position: 'absolute',
+        compLeft: image.layout.left,
+        compTop: image.layout.top,
+        compWidth: image.layout.width,
+        compHeight: image.layout.height,
+      },
+      bindings: {},
+    } satisfies CanvasNode];
+  });
+}
+
 function blocksToWordDocument(
   blocks: ParsedBlock[],
   contentWidth: number,
-  images: CanvasSheetImage[],
 ): CanvasWordDocument {
   const wordBlocks: CanvasWordDocument['blocks'] = [];
   let top = 0;
-  let paragraphIndex = 0;
   let tableIndex = 0;
 
   blocks.forEach((block) => {
     if (block.type === 'paragraph') {
       const layout = resolveWordParagraphLayout(block, contentWidth, top);
-      wordBlocks.push({
-        id: `word-doc-paragraph-${paragraphIndex + 1}`,
-        type: 'paragraph',
-        text: block.text,
-        style: block.style,
-        layout: {
-          top: layout.top,
-          left: layout.left,
-          width: layout.width,
-          height: layout.height,
-        },
-      });
       top = layout.nextTop;
-      paragraphIndex += 1;
       return;
     }
 
@@ -528,23 +650,9 @@ function blocksToWordDocument(
     tableIndex += 1;
   });
 
-  images.forEach((image, index) => {
-    wordBlocks.push({
-      id: `word-doc-image-${index + 1}`,
-      type: 'image',
-      mediaId: image.mediaId,
-      layout: {
-        left: image.layout.left,
-        top: image.layout.top,
-        width: image.layout.width,
-        height: image.layout.height,
-      },
-    });
-    top = Math.max(top, image.layout.top + image.layout.height);
-  });
-
   return {
     source: 'docx',
+    borderEncodingVersion: 2,
     contentWidth,
     contentHeight: Math.max(top, DEFAULT_ROW_HEIGHT),
     blocks: wordBlocks,
@@ -786,7 +894,11 @@ async function importDocxToCanvasPage(file: File, pageId: string, pageName: stri
   const blocks = parseBlocks(doc);
   const { medias, images } = buildDocxImages(doc, rels, entries);
   const contentWidth = getImportedPaperContentWidth(orientation);
-  const wordDocument = blocksToWordDocument(blocks, contentWidth, images);
+  const nodes = [
+    ...buildWordParagraphNodes(blocks, contentWidth),
+    ...buildWordImageNodes(images, medias),
+  ];
+  const wordDocument = blocksToWordDocument(blocks, contentWidth);
 
   return createImportedCanvasPage({
     pageId,
@@ -795,6 +907,7 @@ async function importDocxToCanvasPage(file: File, pageId: string, pageName: stri
     canvasMode: 'paper',
     paperMode: 'free',
     wordDocument,
+    nodes,
     grid: {
       rowHeights: [DEFAULT_ROW_HEIGHT],
       columnWidths: [contentWidth],
