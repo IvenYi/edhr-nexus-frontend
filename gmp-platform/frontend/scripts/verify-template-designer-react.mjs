@@ -114,6 +114,7 @@ async function verifyWordTableContextMenuOperations() {
     splitWordTableCell,
     deleteWordTableColumns,
     deleteWordTableRows,
+    updateWordTableCellStyle,
   } = await loadWordTableOperations();
   const border = { top: true, right: true, bottom: true, left: true, color: '#111827' };
   const table = {
@@ -151,6 +152,10 @@ async function verifyWordTableContextMenuOperations() {
   assert(withoutColumn.columnWidths.length === 2 && withoutColumn.cells.length === 6, 'wordTableOperations.ts: deleting selected columns must remove tracks and reflow cells');
   const withoutRow = deleteWordTableRows(table, 2, 1);
   assert(withoutRow.rowHeights.length === 2 && withoutRow.cells.length === 6, 'wordTableOperations.ts: deleting selected rows must remove tracks and reflow cells');
+
+  const styled = updateWordTableCellStyle(table, { top: 1, left: 1, bottom: 2, right: 2 }, { fontWeight: 'bold', textAlign: 'center' });
+  assert(styled.cells.filter((cell) => cell.row <= 2 && cell.col <= 2).every((cell) => cell.style?.fontWeight === 'bold' && cell.style?.textAlign === 'center'), 'wordTableOperations.ts: selected Word table cells must receive toolbar text styles');
+  assert(styled.cells.filter((cell) => cell.row > 2 || cell.col > 2).every((cell) => !cell.style?.fontWeight && !cell.style?.textAlign), 'wordTableOperations.ts: Word table text styling must not mutate cells outside the selected range');
 }
 
 async function verifyCommonComponentBehavior() {
@@ -2217,6 +2222,8 @@ if (!legacyWordRenderer.includes('const src = mediaSrcMap.get(block.mediaId);') 
 if (!renderer.includes('data-canvas-node-resize-handle')) failures.push('CanvasNodeRenderer.tsx: absolute components must expose resize handles');
 if (!renderer.includes('updateNodeStyle(node.id')) failures.push('CanvasNodeRenderer.tsx: component drag and resize must persist through updateNodeStyle');
 if (renderer.includes('data-canvas-node-drag-handle="true"')) failures.push('CanvasNodeRenderer.tsx: text components must not render the obsolete top-left drag handle');
+if (!renderer.includes('tabIndex={absolute ? -1 : undefined}')) failures.push('CanvasNodeRenderer.tsx: absolute components must be programmatically focusable for keyboard deletion');
+if (!renderer.includes('event.currentTarget.focus({ preventScroll: true });')) failures.push('CanvasNodeRenderer.tsx: selecting an absolute component must focus its keyboard delete boundary');
 if (!componentRegistry.includes('contentEditable')) failures.push('componentRegistry.tsx: static text components must support direct content editing');
 if (!componentRegistry.includes("border: selected\n          ? '1px solid #1677ff'")) failures.push('componentRegistry.tsx: selected text components must use the unified blue outline');
 if (!componentRegistry.includes("bgcolor: backgroundColor || 'transparent'")) failures.push('componentRegistry.tsx: static text components must use a transparent background by default');
@@ -2300,6 +2307,13 @@ if (!canvasWorkspace.includes('WordTableCellRange')) failures.push('CanvasSheetW
 if (!canvasWorkspace.includes('beginWordTableCellSelection')) failures.push('CanvasSheetWorkspace.tsx: Word tables must support pointer-driven multi-cell selection');
 if (!canvasWorkspace.includes('data-word-table-cell-id=')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must expose stable selection targets');
 if (!canvasWorkspace.includes('isWordTableCellInRange')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must render rectangular multi-cell selections');
+if (!canvasToolbar.includes('useWordTableCellStyle')) failures.push('CanvasDesignerToolbar.tsx: toolbar must read the active Word table cell style target');
+if (!canvasToolbar.includes('updateWordTableCellStyle(patch)')) failures.push('CanvasDesignerToolbar.tsx: toolbar must apply typography changes to the active Word table cell range');
+if (!canvasToolbar.includes("| { type: 'word-table'; target: WordTableCellStyleTarget };")) failures.push('CanvasDesignerToolbar.tsx: delayed color commits must snapshot the active Word table cell range');
+if (!canvasToolbar.includes("return { type: 'word-table', target: wordTableCellStyleTarget };")) failures.push('CanvasDesignerToolbar.tsx: Word table color commits must capture the current cell-range target');
+if (!canvasToolbar.includes('updateWordTableCellStyleAtTarget(target.target, patch)')) failures.push('CanvasDesignerToolbar.tsx: delayed Word table color commits must use the captured target instead of the current selection');
+if (!canvasWorkspace.includes('setWordTableCellStyleTarget')) failures.push('CanvasSheetWorkspace.tsx: Word table cell selection must publish its active range to the toolbar');
+if (!canvasWorkspace.includes('Focusing a new editable cell must replace any previous cell-range highlight.')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the active toolbar style target');
 if (!canvasWorkspace.includes('if (event.shiftKey) {\n      event.preventDefault();')) failures.push('CanvasSheetWorkspace.tsx: Shift-click cell selection must suppress native text expansion');
 if (!canvasWorkspace.includes("addEventListener('selectstart', handleSelectStart, true)")) failures.push('CanvasSheetWorkspace.tsx: pointer range selection must suppress native text selection only while active');
 if (!canvasWorkspace.includes('function isPointerOnWordTableText(')) failures.push('CanvasSheetWorkspace.tsx: editable Word table cells must distinguish actual text from blank cell space');
@@ -2343,7 +2357,7 @@ const wordTableCellContentEnd = canvasWorkspace.indexOf('</Box>', wordTableCellC
 const wordTableCellContent = wordTableCellContentStart >= 0 && wordTableCellContentEnd > wordTableCellContentStart
   ? canvasWorkspace.slice(wordTableCellContentStart, wordTableCellContentEnd)
   : '';
-if (!canvasWorkspace.includes('onFocus={() => {\n                          // Focusing a new editable cell must retire any previous cell-range highlight.\n                          selectWordTable(block.id);')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must clear the previous cell-range highlight');
+if (!canvasWorkspace.includes('onFocus={() => {\n                          // Focusing a new editable cell must replace any previous cell-range highlight.\n                          selectWordTable(block.id, true);\n                          setWordTableCellRange({')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the previous cell-range highlight');
 if (wordTableCellContent.includes("'&:focus'")) failures.push('CanvasSheetWorkspace.tsx: focused Word table cells must not render an inner focus frame');
 if (!canvasWorkspace.includes('data-word-table-outer-row-resize-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: Word tables must expose a bottom outer resize handle');
 if (!canvasWorkspace.includes('getWordTableColumnResizeSegments')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize handles must be segmented by visible borders');

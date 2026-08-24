@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import CanvasDesignerToolbar from '../../components/canvas/CanvasDesignerToolbar';
 import CanvasPageThumbnails from '../../components/canvas/CanvasPageThumbnails';
 import CanvasSheetWorkspace from '../../components/canvas/CanvasSheetWorkspace';
+import { WordTableCellStyleProvider } from '../../components/canvas/WordTableCellStyleContext';
 import DesignerInspector from '../../components/DesignerInspector';
 import DesignerSidebar from '../../components/DesignerSidebar';
 import ComponentLibrary from '../../components/ComponentLibrary';
@@ -69,7 +70,8 @@ export default function CanvasTab() {
   }, [activePanelMaxWidth, activePanelMinWidth, isResizingSidebar]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}>
+    <WordTableCellStyleProvider>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}>
       <CanvasDesignerToolbar />
       <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
         <Box
@@ -165,6 +167,7 @@ export default function CanvasTab() {
         ) : null}
         <CanvasSheetWorkspace />
       </Box>
-    </Box>
+      </Box>
+    </WordTableCellStyleProvider>
   );
 }

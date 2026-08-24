@@ -238,6 +238,7 @@ export default function CanvasNodeRenderer({
       <Box
         key={node.id}
         data-canvas-node="true"
+        tabIndex={absolute ? -1 : undefined}
         onPointerDown={(event) => {
           if (
             !absolute
@@ -245,6 +246,9 @@ export default function CanvasNodeRenderer({
             || event.detail > 1
             || (event.target as HTMLElement).closest('[contenteditable="true"]')
           ) return;
+          // The canvas delete handler is scoped to the focused paper surface.
+          // Images have no editable DOM target, so focus the selected node explicitly.
+          event.currentTarget.focus({ preventScroll: true });
           handleSelect();
           beginNodePointerOperation(event, node, 'move');
         }}

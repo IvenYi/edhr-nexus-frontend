@@ -49,6 +49,7 @@ import {
   type WordTableRange,
 } from '../../utils/wordTableOperations';
 import { useSnackbar } from '@/components/SnackbarProvider';
+import { useWordTableCellStyle } from './WordTableCellStyleContext';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
 const scrollbarWidth = 18;
@@ -1168,6 +1169,7 @@ function fitWordTableColumnWidths(table: CanvasWordTableBlock) {
 
 export default function CanvasSheetWorkspace() {
   const { showMessage } = useSnackbar();
+  const { setWordTableCellStyleTarget } = useWordTableCellStyle();
   const designerDocument = useTemplateDesignerStore((state) => state.document);
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
@@ -1241,6 +1243,12 @@ export default function CanvasSheetWorkspace() {
   const [wordTableCellRange, setWordTableCellRange] = useState<WordTableCellRange | null>(null);
   const [wordTableContextMenu, setWordTableContextMenu] = useState<WordTableContextMenu | null>(null);
   const [wordTableInsertCount, setWordTableInsertCount] = useState('1');
+
+  useEffect(() => {
+    if (!selectedWordTableBlockId || !wordTableCellRange || wordTableCellRange.blockId !== selectedWordTableBlockId) {
+      setWordTableCellStyleTarget(null);
+    }
+  }, [selectedWordTableBlockId, setWordTableCellStyleTarget, wordTableCellRange]);
   const [wordTableLayoutPreview, setWordTableLayoutPreview] = useState<WordTableLayoutPreview | null>(null);
   const [wordTableSizePreview, setWordTableSizePreview] = useState<WordTableSizePreview | null>(null);
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
@@ -1881,6 +1889,7 @@ export default function CanvasSheetWorkspace() {
     setSelectedWordTableBlockId(blockId);
     if (!preserveCellRange) {
       setWordTableCellRange(null);
+      setWordTableCellStyleTarget(null);
     }
   };
   const beginWordTableCellSelection = (
@@ -1902,6 +1911,15 @@ export default function CanvasSheetWorkspace() {
       blockId: block.id,
       anchor,
       focus: { row: cell.row, col: cell.col },
+    });
+    setWordTableCellStyleTarget({
+      blockId: block.id,
+      range: {
+        top: Math.min(anchor.row, cell.row),
+        left: Math.min(anchor.col, cell.col),
+        bottom: Math.max(anchor.row, cell.row),
+        right: Math.max(anchor.col, cell.col),
+      },
     });
     wordTableCellSelectionCleanupRef.current?.();
 
@@ -1931,6 +1949,15 @@ export default function CanvasSheetWorkspace() {
           ? { ...current, focus: { row: nextCell.row, col: nextCell.col } }
           : current
       ));
+      setWordTableCellStyleTarget({
+        blockId: block.id,
+        range: {
+          top: Math.min(anchor.row, nextCell.row),
+          left: Math.min(anchor.col, nextCell.col),
+          bottom: Math.max(anchor.row, nextCell.row),
+          right: Math.max(anchor.col, nextCell.col),
+        },
+      });
     };
     const handleSelectStart = (selectionEvent: Event) => {
       if (suppressNativeSelection) {
@@ -1993,6 +2020,15 @@ export default function CanvasSheetWorkspace() {
           anchor: { row: cell.row, col: cell.col },
           focus: { row: nextCell.row, col: nextCell.col },
         });
+        setWordTableCellStyleTarget({
+          blockId: block.id,
+          range: {
+            top: Math.min(cell.row, nextCell.row),
+            left: Math.min(cell.col, nextCell.col),
+            bottom: Math.max(cell.row, nextCell.row),
+            right: Math.max(cell.col, nextCell.col),
+          },
+        });
         return;
       }
 
@@ -2001,6 +2037,15 @@ export default function CanvasSheetWorkspace() {
           ? { ...current, focus: { row: nextCell.row, col: nextCell.col } }
           : current
       ));
+      setWordTableCellStyleTarget({
+        blockId: block.id,
+        range: {
+          top: Math.min(cell.row, nextCell.row),
+          left: Math.min(cell.col, nextCell.col),
+          bottom: Math.max(cell.row, nextCell.row),
+          right: Math.max(cell.col, nextCell.col),
+        },
+      });
     };
     const handleSelectStart = (selectionEvent: Event) => {
       if (suppressNativeSelection) {
@@ -4607,8 +4652,17 @@ export default function CanvasSheetWorkspace() {
                         contentEditable
                         suppressContentEditableWarning
                         onFocus={() => {
-                          // Focusing a new editable cell must retire any previous cell-range highlight.
-                          selectWordTable(block.id);
+                          // Focusing a new editable cell must replace any previous cell-range highlight.
+                          selectWordTable(block.id, true);
+                          setWordTableCellRange({
+                            blockId: block.id,
+                            anchor: { row: cell.row, col: cell.col },
+                            focus: { row: cell.row, col: cell.col },
+                          });
+                          setWordTableCellStyleTarget({
+                            blockId: block.id,
+                            range: { top: cell.row, left: cell.col, bottom: cell.row, right: cell.col },
+                          });
                         }}
                         onKeyDown={(event: ReactKeyboardEvent<HTMLDivElement>) => {
                           if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;

@@ -30,6 +30,13 @@ function findCellAt(table: CanvasWordTableBlock, row: number, col: number) {
   return table.cells.find((cell) => isCellCovering(cell, row, col));
 }
 
+function doesCellIntersectRange(cell: CanvasWordTableCell, range: WordTableRange) {
+  return cell.row <= range.bottom
+    && cell.row + cell.rowSpan - 1 >= range.top
+    && cell.col <= range.right
+    && cell.col + cell.colSpan - 1 >= range.left;
+}
+
 function getLayout(table: CanvasWordTableBlock, columnWidths: number[], rowHeights: number[]) {
   return {
     ...table.layout,
@@ -92,6 +99,21 @@ export function isMergeableWordTableRange(table: CanvasWordTableBlock, range: Wo
       && cell.col >= range.left
       && cellRight <= range.right;
   });
+}
+
+export function updateWordTableCellStyle(
+  table: CanvasWordTableBlock,
+  range: WordTableRange,
+  patch: Record<string, unknown>,
+) {
+  return {
+    ...table,
+    cells: table.cells.map((cell) => (
+      doesCellIntersectRange(cell, range)
+        ? { ...cell, style: { ...cell.style, ...patch } }
+        : cell
+    )),
+  };
 }
 
 export function insertWordTableColumns(table: CanvasWordTableBlock, insertAt: number, count: number) {
