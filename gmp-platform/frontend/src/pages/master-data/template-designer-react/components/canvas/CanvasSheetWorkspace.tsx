@@ -5,6 +5,7 @@ import {
   useMemo,
   useRef,
   useState } from 'react';
+import { flushSync } from 'react-dom';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import DragIndicatorRounded from '@mui/icons-material/DragIndicatorRounded';
@@ -37,7 +38,18 @@ import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import { fieldRegistry } from '../../registry/fieldRegistry';
 import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
 import { createCommonWordTableBlock, type CommonCanvasComponentId } from '../../registry/commonComponentRegistry';
+import {
+  deleteWordTableColumns,
+  deleteWordTableRows,
+  insertWordTableColumns,
+  insertWordTableRows,
+  isMergeableWordTableRange,
+  mergeWordTableCells,
+  splitWordTableCell,
+  type WordTableRange,
+} from '../../utils/wordTableOperations';
 import { useSnackbar } from '@/components/SnackbarProvider';
+import { useWordTableCellStyle } from './WordTableCellStyleContext';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
 const scrollbarWidth = 18;
@@ -78,6 +90,24 @@ interface WordTableCellRange {
   blockId: string;
   anchor: { row: number; col: number };
   focus: { row: number; col: number };
+}
+
+interface WordTableContextMenu {
+  blockId: string;
+  cellId: string;
+  table: CanvasWordTableBlock;
+  cell: CanvasWordTableBlock['cells'][number];
+  mouseX: number;
+  mouseY: number;
+}
+
+function getWordTableRangeBounds(range: WordTableCellRange): WordTableRange {
+  return {
+    top: Math.min(range.anchor.row, range.focus.row),
+    left: Math.min(range.anchor.col, range.focus.col),
+    bottom: Math.max(range.anchor.row, range.focus.row),
+    right: Math.max(range.anchor.col, range.focus.col),
+  };
 }
 
 function isWordTableCellInRange(cell: CanvasWordTableBlock['cells'][number], range: WordTableCellRange | null) {
@@ -528,6 +558,37 @@ function fitColumnWidths(widths: number[], maxWidth: number) {
     remainingWidth -= scaledWidth;
     return scaledWidth;
   });
+}
+
+function redistributeWordTableColumnWidths(columnWidths: number[], boundaryIndex: number, delta: number) {
+  const leftIndex = boundaryIndex - 1;
+  if (leftIndex < 0 || boundaryIndex >= columnWidths.length) return [...columnWidths];
+
+  const nextWidths = [...columnWidths];
+  const minimumDelta = WORD_TABLE_MIN_COLUMN_WIDTH - nextWidths[leftIndex];
+  const maximumDelta = nextWidths
+    .slice(boundaryIndex)
+    .reduce((sum, width) => sum + Math.max(0, width - WORD_TABLE_MIN_COLUMN_WIDTH), 0);
+  const boundedDelta = Math.max(minimumDelta, Math.min(Math.round(delta), maximumDelta));
+
+  if (boundedDelta === 0) return nextWidths;
+
+  nextWidths[leftIndex] += boundedDelta;
+
+  if (boundedDelta < 0) {
+    nextWidths[boundaryIndex] -= boundedDelta;
+    return nextWidths;
+  }
+
+  let remainingDelta = boundedDelta;
+  for (let index = boundaryIndex; index < nextWidths.length && remainingDelta > 0; index += 1) {
+    const availableWidth = Math.max(0, nextWidths[index] - WORD_TABLE_MIN_COLUMN_WIDTH);
+    const consumedWidth = Math.min(availableWidth, remainingDelta);
+    nextWidths[index] -= consumedWidth;
+    remainingDelta -= consumedWidth;
+  }
+
+  return nextWidths;
 }
 
 function buildSingleCellRange(cell: CanvasSelectedCell | null): CanvasSelectionRange | null {
@@ -1108,6 +1169,7 @@ function fitWordTableColumnWidths(table: CanvasWordTableBlock) {
 
 export default function CanvasSheetWorkspace() {
   const { showMessage } = useSnackbar();
+  const { setWordTableCellStyleTarget } = useWordTableCellStyle();
   const designerDocument = useTemplateDesignerStore((state) => state.document);
   const currentPage = useTemplateDesignerStore((state) => state.getCurrentPage());
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
@@ -1179,6 +1241,14 @@ export default function CanvasSheetWorkspace() {
   const [resizeRowDragPreview, setResizeRowDragPreview] = useState<ResizeRowDragPreview>(null);
   const [selectedWordTableBlockId, setSelectedWordTableBlockId] = useState<string | null>(null);
   const [wordTableCellRange, setWordTableCellRange] = useState<WordTableCellRange | null>(null);
+  const [wordTableContextMenu, setWordTableContextMenu] = useState<WordTableContextMenu | null>(null);
+  const [wordTableInsertCount, setWordTableInsertCount] = useState('1');
+
+  useEffect(() => {
+    if (!selectedWordTableBlockId || !wordTableCellRange || wordTableCellRange.blockId !== selectedWordTableBlockId) {
+      setWordTableCellStyleTarget(null);
+    }
+  }, [selectedWordTableBlockId, setWordTableCellStyleTarget, wordTableCellRange]);
   const [wordTableLayoutPreview, setWordTableLayoutPreview] = useState<WordTableLayoutPreview | null>(null);
   const [wordTableSizePreview, setWordTableSizePreview] = useState<WordTableSizePreview | null>(null);
   const canvasSettingsRef = useRef<HTMLDivElement | null>(null);
@@ -1196,6 +1266,7 @@ export default function CanvasSheetWorkspace() {
   const wordTableCellSelectionCleanupRef = useRef<(() => void) | null>(null);
   const wordTableLayoutPreviewRef = useRef<WordTableLayoutPreview | null>(null);
   const wordTableSizePreviewRef = useRef<WordTableSizePreview | null>(null);
+  const wordTableContextMenuRef = useRef<HTMLDivElement | null>(null);
   const hoveredSubTableFrameRef = useRef<number | null>(null);
   const pendingHoveredSubTableRangeRef = useRef<CanvasSelectionRange | null>(null);
   const sheetInteractionRef = useRef<HTMLDivElement | null>(null);
@@ -1470,6 +1541,7 @@ export default function CanvasSheetWorkspace() {
     setSelectedNodeId(null);
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableContextMenu(null);
   };
   const deleteSelectedWordTable = useCallback(() => {
     const wordDocument = currentPage?.wordDocument;
@@ -1483,6 +1555,7 @@ export default function CanvasSheetWorkspace() {
     });
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableContextMenu(null);
   }, [currentPage?.wordDocument, selectedWordTableBlockId, updateCurrentPage]);
   useEffect(() => {
     if (!isFreeCanvas) return undefined;
@@ -1611,6 +1684,204 @@ export default function CanvasSheetWorkspace() {
       },
     });
   };
+  const updateWordTableStructure = (table: CanvasWordTableBlock) => {
+    const wordDocument = currentPage?.wordDocument;
+    if (!wordDocument) return;
+
+    updateCurrentPage({
+      wordDocument: {
+        ...wordDocument,
+        blocks: wordDocument.blocks.map((block) => (
+          block.id === table.id && block.type === 'table' ? table : block
+        )),
+      },
+    });
+  };
+  const getWordTableContext = () => {
+    const wordDocument = currentPage?.wordDocument;
+    if (!wordTableContextMenu) return null;
+
+    const table = wordDocument?.blocks.find((block): block is CanvasWordTableBlock => (
+      block.id === wordTableContextMenu.blockId && block.type === 'table'
+    )) ?? wordTableContextMenu.table;
+    const cell = table.cells.find((candidate) => candidate.id === wordTableContextMenu.cellId)
+      ?? wordTableContextMenu.cell;
+
+    const activeRange = wordTableCellRange?.blockId === table.id
+      ? getWordTableRangeBounds(wordTableCellRange)
+      : null;
+    return {
+      table,
+      cell,
+      range: activeRange ?? {
+        top: cell.row,
+        left: cell.col,
+        bottom: cell.row + cell.rowSpan - 1,
+        right: cell.col + cell.colSpan - 1,
+      },
+    };
+  };
+  const closeWordTableContextMenu = () => setWordTableContextMenu(null);
+  const getWordTableInsertCount = () => Math.max(1, Math.min(100, Number.parseInt(wordTableInsertCount, 10) || 1));
+  const handleWordTableContextMenu = (
+    event: ReactMouseEvent<HTMLDivElement> | ReactPointerEvent<HTMLDivElement> | MouseEvent,
+    block: CanvasWordTableBlock,
+    cell: CanvasWordTableBlock['cells'][number],
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
+    const activeRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
+    const rangeContainsCell = activeRange && isWordTableCellInRange(cell, activeRange);
+
+    selectWordTable(block.id, true);
+    if (!rangeContainsCell) {
+      setWordTableCellRange({
+        blockId: block.id,
+        anchor: { row: cell.row, col: cell.col },
+        focus: { row: cell.row + cell.rowSpan - 1, col: cell.col + cell.colSpan - 1 },
+      });
+    }
+
+    flushSync(() => {
+      setWordTableContextMenu({
+        blockId: block.id,
+        cellId: cell.id,
+        table: block,
+        cell,
+        mouseX,
+        mouseY,
+      });
+    });
+  };
+  useEffect(() => {
+    const handleDocumentWordTableContextMenu = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const cellElement = target.closest<HTMLElement>('[data-word-table-cell="true"]');
+      if (!cellElement) return;
+
+      const blockId = cellElement.dataset.wordTableBlockId;
+      const cellId = cellElement.dataset.wordTableCellId;
+      const table = currentPage?.wordDocument?.blocks.find((block): block is CanvasWordTableBlock => (
+        block.id === blockId && block.type === 'table'
+      ));
+      const cell = table?.cells.find((candidate) => candidate.id === cellId);
+      if (!table || !cell) return;
+
+      // Native capture is required because contentEditable may consume the React
+      // cell handler before it can cancel the browser context menu.
+      handleWordTableContextMenu(event, table, cell);
+    };
+
+    document.addEventListener('contextmenu', handleDocumentWordTableContextMenu, true);
+    return () => document.removeEventListener('contextmenu', handleDocumentWordTableContextMenu, true);
+  }, [currentPage?.wordDocument, handleWordTableContextMenu]);
+  useEffect(() => {
+    if (!wordTableContextMenu) return undefined;
+
+    wordTableContextMenuRef.current?.focus({ preventScroll: true });
+
+    const closeWordTableContextMenuOnOutsidePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest('[data-word-table-context-menu="true"]')) return;
+      setWordTableContextMenu(null);
+    };
+    const handleWordTableContextMenuKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopPropagation();
+      setWordTableContextMenu(null);
+    };
+
+    document.addEventListener('pointerdown', closeWordTableContextMenuOnOutsidePointerDown, true);
+    document.addEventListener('keydown', handleWordTableContextMenuKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', closeWordTableContextMenuOnOutsidePointerDown, true);
+      document.removeEventListener('keydown', handleWordTableContextMenuKeyDown);
+    };
+  }, [wordTableContextMenu]);
+  const insertWordTableTracks = (axis: 'column' | 'row', position: 'before' | 'after') => {
+    const context = getWordTableContext();
+    if (!context) return;
+
+    const count = getWordTableInsertCount();
+    const insertAt = axis === 'column'
+      ? position === 'before' ? context.range.left : context.range.right + 1
+      : position === 'before' ? context.range.top : context.range.bottom + 1;
+    const nextTable = axis === 'column'
+      ? insertWordTableColumns(context.table, insertAt, count)
+      : insertWordTableRows(context.table, insertAt, count);
+
+    updateWordTableStructure(nextTable);
+    setWordTableCellRange({
+      blockId: context.table.id,
+      anchor: axis === 'column'
+        ? { row: context.range.top, col: insertAt }
+        : { row: insertAt, col: context.range.left },
+      focus: axis === 'column'
+        ? { row: context.range.bottom, col: insertAt + count - 1 }
+        : { row: insertAt + count - 1, col: context.range.right },
+    });
+    closeWordTableContextMenu();
+  };
+  const mergeSelectedWordTableCells = () => {
+    const context = getWordTableContext();
+    if (!context || !isMergeableWordTableRange(context.table, context.range)) return;
+    updateWordTableStructure(mergeWordTableCells(context.table, context.range));
+    setWordTableCellRange({
+      blockId: context.table.id,
+      anchor: { row: context.range.top, col: context.range.left },
+      focus: { row: context.range.bottom, col: context.range.right },
+    });
+    closeWordTableContextMenu();
+  };
+  const splitSelectedWordTableCell = () => {
+    const context = getWordTableContext();
+    if (!context || (context.cell.rowSpan === 1 && context.cell.colSpan === 1)) return;
+    updateWordTableStructure(splitWordTableCell(context.table, context.cell.row, context.cell.col));
+    setWordTableCellRange({
+      blockId: context.table.id,
+      anchor: { row: context.cell.row, col: context.cell.col },
+      focus: { row: context.cell.row, col: context.cell.col },
+    });
+    closeWordTableContextMenu();
+  };
+  const deleteSelectedWordTableTracks = (axis: 'column' | 'row') => {
+    const context = getWordTableContext();
+    if (!context) return;
+
+    const start = axis === 'column' ? context.range.left : context.range.top;
+    const count = axis === 'column'
+      ? context.range.right - context.range.left + 1
+      : context.range.bottom - context.range.top + 1;
+    const sizes = axis === 'column' ? context.table.columnWidths : context.table.rowHeights;
+    if (sizes.length <= 1) return;
+
+    const nextTable = axis === 'column'
+      ? deleteWordTableColumns(context.table, start, count)
+      : deleteWordTableRows(context.table, start, count);
+    updateWordTableStructure(nextTable);
+    setWordTableCellRange(null);
+    closeWordTableContextMenu();
+  };
+  const deleteWordTableFromContextMenu = () => {
+    const context = getWordTableContext();
+    const wordDocument = currentPage?.wordDocument;
+    if (!context || !wordDocument) return;
+
+    updateCurrentPage({
+      wordDocument: {
+        ...wordDocument,
+        blocks: wordDocument.blocks.filter((block) => block.id !== context.table.id),
+      },
+    });
+    setSelectedWordTableBlockId(null);
+    setWordTableCellRange(null);
+    closeWordTableContextMenu();
+  };
   const selectWordTable = (blockId: string, preserveCellRange = false) => {
     setMultiSelectedRanges([]);
     setSelectedRange(null, null);
@@ -1618,6 +1889,7 @@ export default function CanvasSheetWorkspace() {
     setSelectedWordTableBlockId(blockId);
     if (!preserveCellRange) {
       setWordTableCellRange(null);
+      setWordTableCellStyleTarget(null);
     }
   };
   const beginWordTableCellSelection = (
@@ -1639,6 +1911,15 @@ export default function CanvasSheetWorkspace() {
       blockId: block.id,
       anchor,
       focus: { row: cell.row, col: cell.col },
+    });
+    setWordTableCellStyleTarget({
+      blockId: block.id,
+      range: {
+        top: Math.min(anchor.row, cell.row),
+        left: Math.min(anchor.col, cell.col),
+        bottom: Math.max(anchor.row, cell.row),
+        right: Math.max(anchor.col, cell.col),
+      },
     });
     wordTableCellSelectionCleanupRef.current?.();
 
@@ -1668,6 +1949,15 @@ export default function CanvasSheetWorkspace() {
           ? { ...current, focus: { row: nextCell.row, col: nextCell.col } }
           : current
       ));
+      setWordTableCellStyleTarget({
+        blockId: block.id,
+        range: {
+          top: Math.min(anchor.row, nextCell.row),
+          left: Math.min(anchor.col, nextCell.col),
+          bottom: Math.max(anchor.row, nextCell.row),
+          right: Math.max(anchor.col, nextCell.col),
+        },
+      });
     };
     const handleSelectStart = (selectionEvent: Event) => {
       if (suppressNativeSelection) {
@@ -1730,6 +2020,15 @@ export default function CanvasSheetWorkspace() {
           anchor: { row: cell.row, col: cell.col },
           focus: { row: nextCell.row, col: nextCell.col },
         });
+        setWordTableCellStyleTarget({
+          blockId: block.id,
+          range: {
+            top: Math.min(cell.row, nextCell.row),
+            left: Math.min(cell.col, nextCell.col),
+            bottom: Math.max(cell.row, nextCell.row),
+            right: Math.max(cell.col, nextCell.col),
+          },
+        });
         return;
       }
 
@@ -1738,6 +2037,15 @@ export default function CanvasSheetWorkspace() {
           ? { ...current, focus: { row: nextCell.row, col: nextCell.col } }
           : current
       ));
+      setWordTableCellStyleTarget({
+        blockId: block.id,
+        range: {
+          top: Math.min(cell.row, nextCell.row),
+          left: Math.min(cell.col, nextCell.col),
+          bottom: Math.max(cell.row, nextCell.row),
+          right: Math.max(cell.col, nextCell.col),
+        },
+      });
     };
     const handleSelectStart = (selectionEvent: Event) => {
       if (suppressNativeSelection) {
@@ -1840,7 +2148,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
     };
     const finish = (shouldCommit: boolean) => {
-      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      resizeTarget.removeEventListener('pointermove', handlePointerMove);
       ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
       ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
       if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
@@ -1852,14 +2160,20 @@ export default function CanvasSheetWorkspace() {
       }
     };
     const handlePointerMove = (moveEvent: PointerEvent) => {
+      if (moveEvent.pointerId !== pointerId) return;
       const delta = (axis === 'column' ? moveEvent.clientX : moveEvent.clientY) - startPosition;
       const sizes = axis === 'column' ? startColumnWidths : startRowHeights;
-      const previousSize = sizes[boundaryIndex - 1] ?? minimumSize;
-      const nextSize = sizes[boundaryIndex] ?? minimumSize;
-      const boundedDelta = Math.max(minimumSize - previousSize, Math.min(delta, nextSize - minimumSize));
-      const nextSizes = [...sizes];
-      nextSizes[boundaryIndex - 1] = Math.round(previousSize + boundedDelta);
-      nextSizes[boundaryIndex] = Math.round(nextSize - boundedDelta);
+      const nextSizes = axis === 'column'
+        ? redistributeWordTableColumnWidths(startColumnWidths, boundaryIndex, delta)
+        : (() => {
+          const previousSize = sizes[boundaryIndex - 1] ?? minimumSize;
+          const nextSize = sizes[boundaryIndex] ?? minimumSize;
+          const boundedDelta = Math.max(minimumSize - previousSize, Math.min(delta, nextSize - minimumSize));
+          const nextRowSizes = [...sizes];
+          nextRowSizes[boundaryIndex - 1] = Math.round(previousSize + boundedDelta);
+          nextRowSizes[boundaryIndex] = Math.round(nextSize - boundedDelta);
+          return nextRowSizes;
+        })();
       const preview = {
         blockId: block.id,
         columnWidths: axis === 'column' ? nextSizes : startColumnWidths,
@@ -1869,7 +2183,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview(preview);
     };
     const handlePointerEnd = () => finish(true);
-    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    resizeTarget.addEventListener('pointermove', handlePointerMove);
     ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
     ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
     wordTablePointerCleanupRef.current = () => finish(false);
@@ -1902,7 +2216,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
     };
     const finish = (shouldCommit: boolean) => {
-      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      resizeTarget.removeEventListener('pointermove', handlePointerMove);
       ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
       ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
       if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
@@ -1914,6 +2228,7 @@ export default function CanvasSheetWorkspace() {
       }
     };
     const handlePointerMove = (moveEvent: PointerEvent) => {
+      if (moveEvent.pointerId !== pointerId) return;
       const deltaX = moveEvent.clientX - startX;
       const nextColumnWidths = [...startColumnWidths];
       nextColumnWidths[lastColumnIndex] = Math.max(
@@ -1929,7 +2244,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview(preview);
     };
     const handlePointerEnd = () => finish(true);
-    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    resizeTarget.addEventListener('pointermove', handlePointerMove);
     ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
     ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
     wordTablePointerCleanupRef.current = () => finish(false);
@@ -1962,7 +2277,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
     };
     const finish = (shouldCommit: boolean) => {
-      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
+      resizeTarget.removeEventListener('pointermove', handlePointerMove);
       ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
       ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
       if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
@@ -1974,6 +2289,7 @@ export default function CanvasSheetWorkspace() {
       }
     };
     const handlePointerMove = (moveEvent: PointerEvent) => {
+      if (moveEvent.pointerId !== pointerId) return;
       const deltaY = moveEvent.clientY - startY;
       const nextRowHeights = [...startRowHeights];
       nextRowHeights[lastRowIndex] = Math.max(
@@ -1989,7 +2305,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview(preview);
     };
     const handlePointerEnd = () => finish(true);
-    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
+    resizeTarget.addEventListener('pointermove', handlePointerMove);
     ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
     ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
     wordTablePointerCleanupRef.current = () => finish(false);
@@ -4264,7 +4580,24 @@ export default function CanvasSheetWorkspace() {
                       data-word-table-cell-id={cell.id}
                       data-word-table-block-id={block.id}
                       data-word-table-diagonal={cell.diagonalTopLeftToBottomRight || cell.diagonalTopRightToBottomLeft ? 'true' : undefined}
+                      onPointerDownCapture={(event: ReactPointerEvent<HTMLDivElement>) => {
+                        // ContentEditable may consume a secondary pointer event before the bubbling
+                        // handler runs. Capture it at the cell boundary so the custom menu is reliable.
+                        if (event.button === 2) {
+                          handleWordTableContextMenu(event, block, cell);
+                        }
+                      }}
+                      onContextMenuCapture={(event: ReactMouseEvent<HTMLDivElement>) => {
+                        handleWordTableContextMenu(event, block, cell);
+                      }}
                       onPointerDown={(event: ReactPointerEvent<HTMLDivElement>) => {
+                        // Open the custom menu on the secondary press itself. Some browser/contenteditable
+                        // combinations do not reliably dispatch the later contextmenu event.
+                        if (event.button === 2) {
+                          handleWordTableContextMenu(event, block, cell);
+                          return;
+                        }
+
                         const startedFromText = isPointerOnWordTableText(event.target, event.clientX, event.clientY);
 
                         if (startedFromText && !event.shiftKey) {
@@ -4274,6 +4607,9 @@ export default function CanvasSheetWorkspace() {
 
                         event.stopPropagation();
                         beginWordTableCellSelection(event, block, cell);
+                      }}
+                      onContextMenu={(event: ReactMouseEvent<HTMLDivElement>) => {
+                        handleWordTableContextMenu(event, block, cell);
                       }}
                       onMouseDown={(event: ReactMouseEvent<HTMLDivElement>) => event.stopPropagation()}
                       sx={{
@@ -4316,8 +4652,17 @@ export default function CanvasSheetWorkspace() {
                         contentEditable
                         suppressContentEditableWarning
                         onFocus={() => {
-                          // Focusing a new editable cell must retire any previous cell-range highlight.
-                          selectWordTable(block.id);
+                          // Focusing a new editable cell must replace any previous cell-range highlight.
+                          selectWordTable(block.id, true);
+                          setWordTableCellRange({
+                            blockId: block.id,
+                            anchor: { row: cell.row, col: cell.col },
+                            focus: { row: cell.row, col: cell.col },
+                          });
+                          setWordTableCellStyleTarget({
+                            blockId: block.id,
+                            range: { top: cell.row, left: cell.col, bottom: cell.row, right: cell.col },
+                          });
                         }}
                         onKeyDown={(event: ReactKeyboardEvent<HTMLDivElement>) => {
                           if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
@@ -4446,6 +4791,122 @@ export default function CanvasSheetWorkspace() {
         >
           <DragIndicatorRounded sx={{ fontSize: 16 }} />
         </IconButton>
+      </Box>
+    );
+  };
+
+  const renderWordTableContextMenu = () => {
+    const context = getWordTableContext();
+    if (!wordTableContextMenu || !context) return null;
+
+    const canMerge = isMergeableWordTableRange(context.table, context.range);
+    const canSplit = context.cell.rowSpan > 1 || context.cell.colSpan > 1;
+    const canDeleteColumns = context.table.columnWidths.length > 1;
+    const canDeleteRows = context.table.rowHeights.length > 1;
+    const stopMenuInputPropagation = (event: ReactMouseEvent<HTMLElement>) => event.stopPropagation();
+    const renderInsertItem = (
+      action: 'insert-left' | 'insert-right' | 'insert-above' | 'insert-below',
+      label: string,
+      suffix: string,
+      onInsert: () => void,
+    ) => (
+      <MenuItem
+        key={action}
+        data-word-table-context-action={action}
+        onClick={(event) => {
+          event.stopPropagation();
+          onInsert();
+        }}
+        sx={{ minHeight: 34, px: 1.25, gap: 0.75, fontSize: 13, color: '#334155' }}
+      >
+        <Box component="span" sx={{ whiteSpace: 'nowrap' }}>{label}</Box>
+        <TextField
+          size="small"
+          value={wordTableInsertCount}
+          inputProps={{ inputMode: 'numeric', 'aria-label': `${label}数量` }}
+          onMouseDown={stopMenuInputPropagation}
+          onClick={stopMenuInputPropagation}
+          onChange={(event) => setWordTableInsertCount(event.target.value.replace(/[^0-9]/g, '').slice(0, 3))}
+          sx={{
+            width: 42,
+            '& .MuiOutlinedInput-root': { height: 24, fontSize: 12 },
+            '& .MuiOutlinedInput-input': { px: 0.6, py: 0.25, textAlign: 'center' },
+          }}
+        />
+        <Box component="span" sx={{ whiteSpace: 'nowrap' }}>{suffix}</Box>
+      </MenuItem>
+    );
+
+    return (
+      <Box
+        ref={wordTableContextMenuRef}
+        data-word-table-context-menu="true"
+        role="menu"
+        aria-label="表格操作"
+        tabIndex={-1}
+        onMouseDown={(event) => event.stopPropagation()}
+        onContextMenu={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+        sx={{
+          position: 'fixed',
+          top: wordTableContextMenu.mouseY,
+          left: wordTableContextMenu.mouseX,
+          zIndex: 1600,
+          minWidth: 196,
+          py: 0.5,
+          bgcolor: '#fff',
+          border: '1px solid #e2e8f0',
+          borderRadius: 1.25,
+          boxShadow: '0 12px 28px rgba(15, 23, 42, 0.18)',
+        }}
+      >
+        {renderInsertItem('insert-left', '在左侧插入', '列', () => insertWordTableTracks('column', 'before'))}
+        {renderInsertItem('insert-right', '在右侧插入', '列', () => insertWordTableTracks('column', 'after'))}
+        {renderInsertItem('insert-above', '在上方插入', '行', () => insertWordTableTracks('row', 'before'))}
+        {renderInsertItem('insert-below', '在下方插入', '行', () => insertWordTableTracks('row', 'after'))}
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem
+          data-word-table-context-action="merge-cells"
+          disabled={!canMerge}
+          onClick={mergeSelectedWordTableCells}
+          sx={{ minHeight: 32, px: 1.25, fontSize: 13 }}
+        >
+          合并单元格
+        </MenuItem>
+        <MenuItem
+          data-word-table-context-action="split-cell"
+          disabled={!canSplit}
+          onClick={splitSelectedWordTableCell}
+          sx={{ minHeight: 32, px: 1.25, fontSize: 13 }}
+        >
+          拆分单元格
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem
+          data-word-table-context-action="delete-columns"
+          disabled={!canDeleteColumns}
+          onClick={() => deleteSelectedWordTableTracks('column')}
+          sx={{ minHeight: 32, px: 1.25, fontSize: 13, color: '#b42318' }}
+        >
+          删除所选列
+        </MenuItem>
+        <MenuItem
+          data-word-table-context-action="delete-rows"
+          disabled={!canDeleteRows}
+          onClick={() => deleteSelectedWordTableTracks('row')}
+          sx={{ minHeight: 32, px: 1.25, fontSize: 13, color: '#b42318' }}
+        >
+          删除所选行
+        </MenuItem>
+        <MenuItem
+          data-word-table-context-action="delete-table"
+          onClick={deleteWordTableFromContextMenu}
+          sx={{ minHeight: 32, px: 1.25, fontSize: 13, color: '#b42318' }}
+        >
+          删除表格
+        </MenuItem>
       </Box>
     );
   };
@@ -4928,6 +5389,7 @@ export default function CanvasSheetWorkspace() {
             </Box>
           </Box>
         </Box>
+        {renderWordTableContextMenu()}
       </Box>
     );
   }
@@ -5591,6 +6053,7 @@ export default function CanvasSheetWorkspace() {
           </Button>
         </DialogActions>
       </AppDialog>
+      {renderWordTableContextMenu()}
       <Menu
         data-sheet-sub-table-menu-root="true"
         open={Boolean(subTableMenuAnchorEl)}

@@ -87,6 +87,77 @@ async function loadCommonComponentRegistry() {
   }
 }
 
+async function loadWordTableOperations() {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'verify-template-designer-react-'));
+  const outfile = path.join(tempDir, 'wordTableOperations.cjs');
+  await build({
+    entryPoints: [fileURLToPath(new URL('../src/pages/master-data/template-designer-react/utils/wordTableOperations.ts', import.meta.url))],
+    outfile,
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    logLevel: 'silent',
+  });
+
+  try {
+    return require(outfile);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
+async function verifyWordTableContextMenuOperations() {
+  const {
+    insertWordTableColumns,
+    insertWordTableRows,
+    mergeWordTableCells,
+    splitWordTableCell,
+    deleteWordTableColumns,
+    deleteWordTableRows,
+    updateWordTableCellStyle,
+  } = await loadWordTableOperations();
+  const border = { top: true, right: true, bottom: true, left: true, color: '#111827' };
+  const table = {
+    id: 'word-table',
+    type: 'table',
+    layout: { left: 0, top: 0, width: 180, height: 90 },
+    columnWidths: [60, 60, 60],
+    rowHeights: [30, 30, 30],
+    cells: Array.from({ length: 3 }, (_, rowIndex) => Array.from({ length: 3 }, (_, columnIndex) => ({
+      id: `cell-${rowIndex + 1}-${columnIndex + 1}`,
+      row: rowIndex + 1,
+      col: columnIndex + 1,
+      rowSpan: 1,
+      colSpan: 1,
+      text: `${rowIndex + 1}:${columnIndex + 1}`,
+      border,
+    }))).flat(),
+  };
+
+  const withColumn = insertWordTableColumns(table, 2, 2);
+  assert(withColumn.columnWidths.length === 5 && withColumn.cells.length === 15, 'wordTableOperations.ts: inserting columns must create editable cells for each inserted track');
+  assert(withColumn.cells.some((cell) => cell.row === 1 && cell.col === 2 && cell.text === ''), 'wordTableOperations.ts: inserted columns must contain blank cells at the insertion point');
+  assert(withColumn.cells.some((cell) => cell.id === 'cell-1-2' && cell.col === 4), 'wordTableOperations.ts: inserting columns must shift existing cell coordinates');
+
+  const withRow = insertWordTableRows(table, 2, 1);
+  assert(withRow.rowHeights.length === 4 && withRow.cells.length === 12, 'wordTableOperations.ts: inserting rows must create editable cells for each inserted track');
+  assert(withRow.cells.some((cell) => cell.row === 2 && cell.col === 1 && cell.text === ''), 'wordTableOperations.ts: inserted rows must contain blank cells at the insertion point');
+
+  const merged = mergeWordTableCells(table, { top: 1, left: 1, bottom: 2, right: 2 });
+  assert(merged.cells.length === 6 && merged.cells.some((cell) => cell.id === 'cell-1-1' && cell.rowSpan === 2 && cell.colSpan === 2), 'wordTableOperations.ts: merging a selected rectangular range must create one spanning anchor cell');
+  const split = splitWordTableCell(merged, 1, 1);
+  assert(split.cells.length === 9 && split.cells.every((cell) => cell.rowSpan === 1 && cell.colSpan === 1), 'wordTableOperations.ts: splitting a merged cell must restore individual editable cells');
+
+  const withoutColumn = deleteWordTableColumns(table, 2, 1);
+  assert(withoutColumn.columnWidths.length === 2 && withoutColumn.cells.length === 6, 'wordTableOperations.ts: deleting selected columns must remove tracks and reflow cells');
+  const withoutRow = deleteWordTableRows(table, 2, 1);
+  assert(withoutRow.rowHeights.length === 2 && withoutRow.cells.length === 6, 'wordTableOperations.ts: deleting selected rows must remove tracks and reflow cells');
+
+  const styled = updateWordTableCellStyle(table, { top: 1, left: 1, bottom: 2, right: 2 }, { fontWeight: 'bold', textAlign: 'center' });
+  assert(styled.cells.filter((cell) => cell.row <= 2 && cell.col <= 2).every((cell) => cell.style?.fontWeight === 'bold' && cell.style?.textAlign === 'center'), 'wordTableOperations.ts: selected Word table cells must receive toolbar text styles');
+  assert(styled.cells.filter((cell) => cell.row > 2 || cell.col > 2).every((cell) => !cell.style?.fontWeight && !cell.style?.textAlign), 'wordTableOperations.ts: Word table text styling must not mutate cells outside the selected range');
+}
+
 async function verifyCommonComponentBehavior() {
   const {
     commonCanvasComponents,
@@ -2151,6 +2222,8 @@ if (!legacyWordRenderer.includes('const src = mediaSrcMap.get(block.mediaId);') 
 if (!renderer.includes('data-canvas-node-resize-handle')) failures.push('CanvasNodeRenderer.tsx: absolute components must expose resize handles');
 if (!renderer.includes('updateNodeStyle(node.id')) failures.push('CanvasNodeRenderer.tsx: component drag and resize must persist through updateNodeStyle');
 if (renderer.includes('data-canvas-node-drag-handle="true"')) failures.push('CanvasNodeRenderer.tsx: text components must not render the obsolete top-left drag handle');
+if (!renderer.includes('tabIndex={absolute ? -1 : undefined}')) failures.push('CanvasNodeRenderer.tsx: absolute components must be programmatically focusable for keyboard deletion');
+if (!renderer.includes('event.currentTarget.focus({ preventScroll: true });')) failures.push('CanvasNodeRenderer.tsx: selecting an absolute component must focus its keyboard delete boundary');
 if (!componentRegistry.includes('contentEditable')) failures.push('componentRegistry.tsx: static text components must support direct content editing');
 if (!componentRegistry.includes("border: selected\n          ? '1px solid #1677ff'")) failures.push('componentRegistry.tsx: selected text components must use the unified blue outline');
 if (!componentRegistry.includes("bgcolor: backgroundColor || 'transparent'")) failures.push('componentRegistry.tsx: static text components must use a transparent background by default');
@@ -2234,6 +2307,13 @@ if (!canvasWorkspace.includes('WordTableCellRange')) failures.push('CanvasSheetW
 if (!canvasWorkspace.includes('beginWordTableCellSelection')) failures.push('CanvasSheetWorkspace.tsx: Word tables must support pointer-driven multi-cell selection');
 if (!canvasWorkspace.includes('data-word-table-cell-id=')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must expose stable selection targets');
 if (!canvasWorkspace.includes('isWordTableCellInRange')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must render rectangular multi-cell selections');
+if (!canvasToolbar.includes('useWordTableCellStyle')) failures.push('CanvasDesignerToolbar.tsx: toolbar must read the active Word table cell style target');
+if (!canvasToolbar.includes('updateWordTableCellStyle(patch)')) failures.push('CanvasDesignerToolbar.tsx: toolbar must apply typography changes to the active Word table cell range');
+if (!canvasToolbar.includes("| { type: 'word-table'; target: WordTableCellStyleTarget };")) failures.push('CanvasDesignerToolbar.tsx: delayed color commits must snapshot the active Word table cell range');
+if (!canvasToolbar.includes("return { type: 'word-table', target: wordTableCellStyleTarget };")) failures.push('CanvasDesignerToolbar.tsx: Word table color commits must capture the current cell-range target');
+if (!canvasToolbar.includes('updateWordTableCellStyleAtTarget(target.target, patch)')) failures.push('CanvasDesignerToolbar.tsx: delayed Word table color commits must use the captured target instead of the current selection');
+if (!canvasWorkspace.includes('setWordTableCellStyleTarget')) failures.push('CanvasSheetWorkspace.tsx: Word table cell selection must publish its active range to the toolbar');
+if (!canvasWorkspace.includes('Focusing a new editable cell must replace any previous cell-range highlight.')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the active toolbar style target');
 if (!canvasWorkspace.includes('if (event.shiftKey) {\n      event.preventDefault();')) failures.push('CanvasSheetWorkspace.tsx: Shift-click cell selection must suppress native text expansion');
 if (!canvasWorkspace.includes("addEventListener('selectstart', handleSelectStart, true)")) failures.push('CanvasSheetWorkspace.tsx: pointer range selection must suppress native text selection only while active');
 if (!canvasWorkspace.includes('function isPointerOnWordTableText(')) failures.push('CanvasSheetWorkspace.tsx: editable Word table cells must distinguish actual text from blank cell space');
@@ -2243,12 +2323,41 @@ if (!canvasWorkspace.includes('const beginWordTableTextOrCellSelection = (')) fa
 if (!canvasWorkspace.includes('if (!hasCrossedCellBoundary && nextCell.id === cell.id) return;')) failures.push('CanvasSheetWorkspace.tsx: text-originated drags must remain native while they stay inside the starting cell');
 if (!canvasWorkspace.includes('ownerDocument.getSelection()?.removeAllRanges();\n        selectWordTable(block.id, true);\n        setWordTableCellRange({')) failures.push('CanvasSheetWorkspace.tsx: text-originated cross-cell drags must clear characters before selecting cells');
 if (!canvasWorkspace.includes('beginWordTableTextOrCellSelection(event, block, cell);')) failures.push('CanvasSheetWorkspace.tsx: text-originated drags must switch to the hybrid text-or-cell selection controller');
+if (!canvasWorkspace.includes('data-word-table-context-menu="true"')) failures.push('CanvasSheetWorkspace.tsx: Word table right-click actions must expose a stable context-menu marker');
+const paperCanvasReturn = canvasWorkspace.match(/if \(currentPage\.sheet\.canvasMode === 'paper'\) \{[\s\S]*?\n  \}\n\n  return \(/)?.[0] ?? '';
+if (!paperCanvasReturn.includes('{renderWordTableContextMenu()}')) failures.push('CanvasSheetWorkspace.tsx: paper canvas mode must render the Word table right-click menu');
+if (!canvasWorkspace.includes('const closeWordTableContextMenuOnOutsidePointerDown = (event: PointerEvent) =>')) failures.push('CanvasSheetWorkspace.tsx: Word table right-click menu must handle outside primary pointer presses');
+if (!canvasWorkspace.includes("target.closest('[data-word-table-context-menu=\"true\"]')")) failures.push('CanvasSheetWorkspace.tsx: Word table right-click menu must retain clicks inside its own surface');
+const wordTableContextMenuLifecycle = canvasWorkspace.match(/useEffect\(\(\) => \{\n    if \(!wordTableContextMenu\) return undefined;[\s\S]*?\n  \}, \[wordTableContextMenu\]\);/)?.[0] ?? '';
+if (!canvasWorkspace.includes('const wordTableContextMenuRef = useRef<HTMLDivElement | null>(null);')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must retain a stable focus ref');
+if (!wordTableContextMenuLifecycle.includes('wordTableContextMenuRef.current?.focus({ preventScroll: true });')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must receive focus after opening');
+if (!/const handleWordTableContextMenuKeyDown = \(event: KeyboardEvent\) => \{\n      if \(event\.key !== 'Escape'\) return;\n      event\.preventDefault\(\);\n      event\.stopPropagation\(\);\n      setWordTableContextMenu\(null\);/.test(wordTableContextMenuLifecycle)) failures.push('CanvasSheetWorkspace.tsx: Word table context menu Escape handler must prevent propagation and close the menu');
+if (!wordTableContextMenuLifecycle.includes("document.addEventListener('keydown', handleWordTableContextMenuKeyDown)")) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must register an Escape listener while open');
+if (!wordTableContextMenuLifecycle.includes("document.removeEventListener('keydown', handleWordTableContextMenuKeyDown)")) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must clean up its Escape listener');
+const wordTableContextMenuOutsidePointerHandler = wordTableContextMenuLifecycle.match(/const closeWordTableContextMenuOnOutsidePointerDown = \(event: PointerEvent\) => \{[\s\S]*?\n    \};/)?.[0] ?? '';
+if (wordTableContextMenuOutsidePointerHandler.includes('event.button')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu outside close must not be limited to the primary pointer button');
+if (!/if \(target instanceof Element && target\.closest\('\[data-word-table-context-menu="true"\]'\)\) return;\n      setWordTableContextMenu\(null\);/.test(wordTableContextMenuOutsidePointerHandler)) failures.push('CanvasSheetWorkspace.tsx: Word table context menu outside pointer handler must close every non-menu target');
+if (!canvasWorkspace.includes("position: 'fixed'")) failures.push('CanvasSheetWorkspace.tsx: Word table right-click menu must use a fixed canvas overlay instead of a click-away modal');
+const wordTableContextMenuRenderer = canvasWorkspace.match(/const renderWordTableContextMenu = \(\) => \{[\s\S]*?\n  \};\n\n  const renderPageBreakMarkers/)?.[0] ?? '';
+if (wordTableContextMenuRenderer.includes('anchorReference="anchorPosition"')) failures.push('CanvasSheetWorkspace.tsx: Word table right-click menu must not depend on MUI anchor-position modal behavior');
+if (!wordTableContextMenuRenderer.includes('ref={wordTableContextMenuRef}')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu surface must bind its focus ref');
+if (!wordTableContextMenuRenderer.includes('tabIndex={-1}')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu surface must be programmatically focusable');
+if (!canvasWorkspace.includes('onContextMenu={(event: ReactMouseEvent<HTMLDivElement>) =>')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must open a dedicated right-click menu');
+if (!canvasWorkspace.includes('if (event.button === 2) {\n                          handleWordTableContextMenu(event, block, cell);')) failures.push('CanvasSheetWorkspace.tsx: Word table secondary pointer press must open the custom menu before native contextmenu dispatch');
+if (!canvasWorkspace.includes('在左侧插入')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must support inserting columns on the left');
+if (!canvasWorkspace.includes('在右侧插入')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must support inserting columns on the right');
+if (!canvasWorkspace.includes('在上方插入')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must support inserting rows above');
+if (!canvasWorkspace.includes('在下方插入')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must support inserting rows below');
+if (!canvasWorkspace.includes('合并单元格') || !canvasWorkspace.includes('拆分单元格')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must support merge and split actions');
+if (!canvasWorkspace.includes('删除所选列') || !canvasWorkspace.includes('删除所选行') || !canvasWorkspace.includes('删除表格')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must support delete actions');
+if (!canvasWorkspace.includes('wordTableContextMenu')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must retain the click target and position');
+if (!canvasWorkspace.includes('wordTableInsertCount')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu must retain an insert count');
 const wordTableCellContentStart = canvasWorkspace.indexOf('data-word-table-cell-content="true"');
 const wordTableCellContentEnd = canvasWorkspace.indexOf('</Box>', wordTableCellContentStart);
 const wordTableCellContent = wordTableCellContentStart >= 0 && wordTableCellContentEnd > wordTableCellContentStart
   ? canvasWorkspace.slice(wordTableCellContentStart, wordTableCellContentEnd)
   : '';
-if (!canvasWorkspace.includes('onFocus={() => {\n                          // Focusing a new editable cell must retire any previous cell-range highlight.\n                          selectWordTable(block.id);')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must clear the previous cell-range highlight');
+if (!canvasWorkspace.includes('onFocus={() => {\n                          // Focusing a new editable cell must replace any previous cell-range highlight.\n                          selectWordTable(block.id, true);\n                          setWordTableCellRange({')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the previous cell-range highlight');
 if (wordTableCellContent.includes("'&:focus'")) failures.push('CanvasSheetWorkspace.tsx: focused Word table cells must not render an inner focus frame');
 if (!canvasWorkspace.includes('data-word-table-outer-row-resize-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: Word tables must expose a bottom outer resize handle');
 if (!canvasWorkspace.includes('getWordTableColumnResizeSegments')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize handles must be segmented by visible borders');
@@ -2261,7 +2370,12 @@ const wordTableResizeControllers = wordTableResizeControllersStart >= 0 && wordT
   ? canvasWorkspace.slice(wordTableResizeControllersStart, wordTableResizeControllersEnd)
   : '';
 if ((wordTableResizeControllers.match(/resizeTarget\.setPointerCapture\(pointerId\)/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must capture the active pointer');
-if ((wordTableResizeControllers.match(/addEventListener\('pointermove', handlePointerMove, true\)/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must observe pointer movement before editable cells can intercept it');
+if ((wordTableResizeControllers.match(/resizeTarget\.addEventListener\('pointermove', handlePointerMove\)/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must receive captured pointer movement directly from the resize handle');
+if ((wordTableResizeControllers.match(/resizeTarget\.removeEventListener\('pointermove', handlePointerMove\)/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must clear their direct pointer movement listener');
+if ((wordTableResizeControllers.match(/moveEvent\.pointerId !== pointerId/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must ignore movement from pointers other than the captured resize pointer');
+if (!canvasWorkspace.includes('function redistributeWordTableColumnWidths(')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize must redistribute width across the right-side grid tracks');
+if (!canvasWorkspace.includes('Math.max(0, nextWidths[index] - WORD_TABLE_MIN_COLUMN_WIDTH)')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize must consume all available width after the active boundary');
+if (!wordTableResizeControllers.includes("axis === 'column'\n        ? redistributeWordTableColumnWidths(startColumnWidths, boundaryIndex, delta)")) failures.push('CanvasSheetWorkspace.tsx: Word table column resize must not be limited by only the immediately adjacent grid track');
 const wordTableResizeHandlesStart = canvasWorkspace.indexOf('data-word-table-column-resize-handle="true"');
 const wordTableResizeHandlesEnd = canvasWorkspace.indexOf('{block.cells.map((cell) =>', wordTableResizeHandlesStart);
 const wordTableResizeHandles = wordTableResizeHandlesStart >= 0 && wordTableResizeHandlesEnd > wordTableResizeHandlesStart
@@ -2289,6 +2403,7 @@ if (!workflowTab.includes('节点名称')) failures.push('WorkflowTab.tsx: missi
 await verifyExcelImportStyleBehavior();
 await verifySubTableGroupRepeatBehavior();
 await verifyCommonComponentBehavior();
+await verifyWordTableContextMenuOperations();
 
 if (failures.length > 0) {
   console.error('verify-template-designer-react failed');

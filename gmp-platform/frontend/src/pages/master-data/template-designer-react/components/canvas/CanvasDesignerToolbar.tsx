@@ -18,6 +18,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, ReactNode } from 'react';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import type { CanvasSelectionRange } from '../../types';
+import { useWordTableCellStyle, type WordTableCellStyleTarget } from './WordTableCellStyleContext';
 
 const FONT_SIZE_OPTIONS = [9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36];
 const DEFAULT_FONT_COLOR = '#303133';
@@ -27,7 +28,8 @@ const COLOR_PICKER_COMMIT_DELAY_MS = 120;
 
 type ColorCommitTarget =
   | { type: 'node'; nodeId: string }
-  | { type: 'cell'; range: CanvasSelectionRange };
+  | { type: 'cell'; range: CanvasSelectionRange }
+  | { type: 'word-table'; target: WordTableCellStyleTarget };
 
 function ToolbarIconButton({
   active,
@@ -281,9 +283,16 @@ export default function CanvasDesignerToolbar() {
   const redoCanvasChange = useTemplateDesignerStore((state) => state.redoCanvasChange);
   const canUndoCanvasChange = useTemplateDesignerStore((state) => state.canUndoCanvasChange());
   const canRedoCanvasChange = useTemplateDesignerStore((state) => state.canRedoCanvasChange());
+  const {
+    selectedStyle: selectedWordTableCellStyle,
+    target: wordTableCellStyleTarget,
+    updateWordTableCellStyle,
+    updateWordTableCellStyleAtTarget,
+  } = useWordTableCellStyle();
 
   const isTextComponent = selectedNode?.type === 'static-text';
-  const cellStyle = isTextComponent ? selectedNode.style : selectedCellState?.style ?? {};
+  const isWordTableCellSelected = Boolean(selectedWordTableCellStyle);
+  const cellStyle = isTextComponent ? selectedNode.style : selectedWordTableCellStyle ?? selectedCellState?.style ?? {};
   const cellBorder = selectedCellState?.border;
   const fontColor = normalizeHexColor(cellStyle.color, DEFAULT_FONT_COLOR);
   const backgroundColor = normalizeHexColor(cellStyle.backgroundColor, DEFAULT_BACKGROUND_COLOR);
@@ -294,6 +303,9 @@ export default function CanvasDesignerToolbar() {
   const captureColorTarget = (): ColorCommitTarget | null => {
     if (isTextComponent && selectedNode) {
       return { type: 'node', nodeId: selectedNode.id };
+    }
+    if (wordTableCellStyleTarget) {
+      return { type: 'word-table', target: wordTableCellStyleTarget };
     }
     if (selectedRange) {
       return { type: 'cell', range: { ...selectedRange } };
@@ -320,11 +332,19 @@ export default function CanvasDesignerToolbar() {
       updateCellStyleInRange(target.range, patch);
       return;
     }
+    if (target?.type === 'word-table') {
+      updateWordTableCellStyleAtTarget(target.target, patch);
+      return;
+    }
     updateSelectedStyle(patch);
   };
   const updateSelectedStyle = (patch: Record<string, unknown>) => {
     if (isTextComponent && selectedNode) {
       updateNodeStyle(selectedNode.id, patch);
+      return;
+    }
+    if (isWordTableCellSelected) {
+      updateWordTableCellStyle(patch);
       return;
     }
     updateSelectedCellStyle(patch);
