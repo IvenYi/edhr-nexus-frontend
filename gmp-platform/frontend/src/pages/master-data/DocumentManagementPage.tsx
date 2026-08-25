@@ -53,6 +53,7 @@ import {
   OpenInNewOutlined,
   PreviewOutlined,
   PlaylistAdd,
+  RestartAlt,
   Search,
   TuneRounded,
   UnfoldLessRounded,
@@ -173,7 +174,7 @@ const emptyVersionForm = (version = 'V1.0'): VersionForm => ({
   version, code: '', fileId: '', fileName: '', fileMimeType: '', description: '', remark: '', effectiveDate: '', expiryDate: '',
 });
 
-const tableHeaderCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', py: 1.25 };
+const tableHeaderCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', height: 48, py: 0, borderBottom: '1px solid #e4e7ed' };
 const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
 function getOperationColumnSx(width: number, layer: 'head' | 'body') {
   return {
@@ -640,16 +641,13 @@ export default function DocumentManagementPage() {
       {renderDocumentCategoryPanel()}
       <Box sx={{ minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1.5, overflow: 'hidden' }}>
         <Box sx={{ flex: '0 0 auto', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff' }}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ p: 2 }} alignItems={{ md: 'flex-end' }}>
-          <Box sx={{ width: { xs: '100%', md: 340 } }}>
-            <Typography variant="caption" sx={{ display: 'block', mb: 0.5, color: '#606266' }}>名称/编码</Typography>
-            <TextField fullWidth size="small" placeholder="请输入" value={keyword} onChange={(event) => setKeyword(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') { setPage(1); setSubmittedKeyword(keyword.trim()); } }} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} />
-          </Box>
-          <Stack direction="row" spacing={1} sx={{ ml: { md: 'auto' } }}>
-            <Button variant="outlined" onClick={() => { setKeyword(''); setSubmittedKeyword(''); setPage(1); }}>重置</Button>
-            <Button variant="contained" startIcon={<Search />} onClick={() => { setPage(1); setSubmittedKeyword(keyword.trim()); }}>查询</Button>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center', p: 2 }}>
+          <TextField fullWidth size="small" label="名称/编码" placeholder="请输入" value={keyword} onChange={(event) => setKeyword(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') { setPage(1); setSubmittedKeyword(keyword.trim()); } }} sx={{ '& .MuiInputBase-root': { height: 40 }, '& .MuiInputBase-input': { boxSizing: 'border-box' } }} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} />
+          <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: '1', md: '3' } }}>
+            <Button size="small" sx={{ height: 40, width: 80, minWidth: 80 }} variant="outlined" startIcon={<RestartAlt />} onClick={() => { setKeyword(''); setSubmittedKeyword(''); setPage(1); }}>重置</Button>
+            <Button size="small" sx={{ height: 40, width: 80, minWidth: 80 }} variant="contained" startIcon={<Search />} onClick={() => { setPage(1); setSubmittedKeyword(keyword.trim()); }}>查询</Button>
           </Stack>
-        </Stack>
+        </Box>
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
@@ -695,7 +693,7 @@ export default function DocumentManagementPage() {
         </Popover>
         <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth, height: query.isLoading || query.isError || documents.length === 0 ? '100%' : 'auto' }}>
             <colgroup>{visibleMainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <col data-document-main-action-spacer style={{ width: mainTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'main') }} /></Fragment>)}</colgroup>
-            <TableHead><TableRow>{visibleMainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell sx={{ width: getColumnWidth(column, 'main'), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: column.id === 'actions' ? 4 : 2, ...(column.id === 'actions' ? getOperationColumnSx(getColumnWidth(column, 'main'), 'head') : tableHeaderCellSx), ...(column.resizable ? { pr: 2, userSelect: 'none' } : {}) }}>
+            <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleMainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell sx={{ width: getColumnWidth(column, 'main'), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: column.id === 'actions' ? 4 : 2, ...(column.id === 'actions' ? getOperationColumnSx(getColumnWidth(column, 'main'), 'head') : tableHeaderCellSx), ...(column.resizable ? { pr: 2, userSelect: 'none' } : {}) }}>
               {column.label}{column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => startColumnResize(event, column, 'main')} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 1 }} />}
             </TableCell></Fragment>)}</TableRow></TableHead>
             <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>加载中...</TableCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '文档加载失败'}</TableCell></TableRow> : documents.length === 0 ? <TableRow sx={{ height: '100%' }}><TableCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>暂无数据</TableCell></TableRow> : documents.map((document) => {
@@ -781,7 +779,7 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
     {expanded ? <TableRow sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={mainTableColumnCount} sx={{ p: 0, bgcolor: '#fafcff' }}>
         <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}><Table stickyHeader size="small" aria-label="文档版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}>
           <colgroup>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <col data-document-version-action-spacer style={{ width: versionTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'version') }} /></Fragment>)}</colgroup>
-          <TableHead><TableRow>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0, ...tableHeaderCellSx, py: 0.75 }} /> : null}
+          <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0, ...tableHeaderCellSx, py: 0.75 }} /> : null}
             <TableCell
               sx={{
                 width: getColumnWidth(column, 'version'), minWidth: column.minWidth, position: 'sticky', top: 0,

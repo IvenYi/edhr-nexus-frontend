@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.3
+knowledgeModelVersion: 0.3.7
 decisions:
   - id: DEC-0002
     title: 产品簇制程模型与生产版本解析
@@ -51,7 +51,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0002-12
-        statement: 产品簇页面使用产品管理同一套 RDO 交互和制程版本编辑器。
+        statement: 产品簇页面使用产品管理同一套建模页面交互和制程版本编辑器。
         status: implemented
         visibility: internal
       - id: DEC-0002-13
@@ -121,7 +121,7 @@ decisions:
       - id: scenario.product-family-process-editor
         given: 用户进入产品簇页面
         when: 查看或编辑制程版本
-        then: 使用产品管理同一套 RDO 交互和制程版本编辑器
+        then: 使用产品管理同一套建模页面交互和制程版本编辑器
         evidenceIds: [evidence.product-family-modeling-page, evidence.product-family-modeling-api, evidence.product-process-version-editor]
       - id: scenario.product-family-process-audit-traceability
         given: 产品簇新增、编辑或删除制程版本，或修改版本字段和工序表单、文档配置

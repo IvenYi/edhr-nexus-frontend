@@ -98,6 +98,65 @@ class DatabaseChangelogTest {
         assertThat(migration).contains("UPDATE sop_document SET code = NULL");
     }
 
+    @Test
+    void productionWorkMigrationRenamesTheCustomerVisibleWorkflowPermission() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0055-rename-transaction-template-to-work.sql");
+
+        assertThat(master).contains("0055-rename-transaction-template-to-work.sql");
+        assertThat(migration).contains("workflow.work-templates");
+        assertThat(migration).contains("作业模板");
+        assertThat(migration).contains("workflow.txn-templates");
+    }
+
+    @Test
+    void productionWorkTypeMigrationRemovesTheLegacyTransactionType() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0056-workflow-definition-work-type.sql");
+
+        assertThat(master).contains("0056-workflow-definition-work-type.sql");
+        assertThat(migration).contains("SET type = 'WORK'");
+        assertThat(migration).contains("WHERE type = 'TRANSACTION'");
+    }
+
+    @Test
+    void workApplicabilityPriorityMigrationNormalizesExistingProductionWorkRules() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0058-work-applicability-priority.sql");
+
+        assertThat(master).contains("0058-work-applicability-priority.sql");
+        assertThat(migration).contains("WHEN 'EXCEPTION' THEN 30");
+        assertThat(migration).contains("WHEN 'SCOPED' THEN 20");
+        assertThat(migration).contains("WHEN 'GLOBAL' THEN 10");
+        assertThat(migration).contains("WHERE business_type = 'WORK'");
+    }
+
+    @Test
+    void workAuditBaselineMigrationPreservesLegacyHistoryWithoutFakingUserCreation() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0059-work-template-audit-baseline.sql");
+
+        assertThat(master).contains("0059-work-template-audit-baseline.sql");
+        assertThat(migration).contains("SET is_active = TRUE");
+        assertThat(migration).contains("'PRODUCTION_WORK_TEMPLATE'");
+        assertThat(migration).contains("'BASELINE'");
+        assertThat(migration).contains("'SYSTEM'");
+        assertThat(migration).contains("历史审计基线");
+        assertThat(migration).contains("NOT EXISTS");
+    }
+
+    @Test
+    void workTemplateVersionIntegrityMigrationPreventsOrphansAndMultipleDrafts() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0060-work-template-version-integrity.sql");
+
+        assertThat(master).contains("0060-work-template-version-integrity.sql");
+        assertThat(migration).contains("uk_workflow_definition_version_one_draft");
+        assertThat(migration).contains("WHERE status = 'DRAFT'");
+        assertThat(migration).contains("FOREIGN KEY (definition_id)");
+        assertThat(migration).contains("ON DELETE RESTRICT");
+    }
+
     private String readResource(String path) throws IOException {
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }

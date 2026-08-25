@@ -1,0 +1,88 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0007
+    title: 生产作业适用规则准入、模板删除与未来执行快照
+    status: specified
+    visibility: internal
+    context: 当前生产执行、作业实例运行和快照落库尚未实现。产品已确认作业模板删除只受适用规则引用阻断，适用规则配置必须以当前已发布流程为准；未来生产执行不在产品或工序配置中手工引用作业，而由适用规则自动匹配，并在作业实例创建时冻结完整执行依据。条件节点的配置层已另由 DEC-0008 确认结构化 AST 和第一版字段目录，但不改变本决策关于运行时自动匹配、实例创建和快照闭环仍未实现的边界。本决策替代 DEC-0006 中“存在已发布流程即禁止删除模板”以及仅冻结作业流程版本的旧语义；DEC-0006 其余配置、版本生命周期、审计和页面语义作为历史背景继续保留。
+    decisionStatements:
+      - id: DEC-0007-01
+        statement: 当前生产执行尚未实现。作业模板没有任何作业适用规则时，无论是否存在草稿、历史流程或当前已发布流程，都允许在同一事务中删除作业模板及其全部流程配置；存在一条或多条作业适用规则时禁止删除。
+        status: specified
+        visibility: internal
+      - id: DEC-0007-02
+        statement: 作业适用规则只能配置有当前已发布作业流程版本的作业模板；无当前已发布流程的作业仍在选择器中展示但不可选，并提示“该作业尚未发布作业流程版本”。草稿和历史流程不能满足该准入条件。
+        status: specified
+        visibility: internal
+      - id: DEC-0007-03
+        statement: 未来生产执行根据生产上下文和作业适用规则自动匹配作业，不在产品配置或工序配置中手工引用作业模板或作业流程版本。
+        status: specified
+        visibility: internal
+      - id: DEC-0007-04
+        statement: 创建作业实例时必须冻结作业模板引用、创建时的当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照；后续模板、规则或流程发布不得改变既有实例的执行依据。
+        status: specified
+        visibility: internal
+      - id: DEC-0007-05
+        statement: 当前仅确认未来执行契约和快照边界，不得将作业自动匹配、作业实例创建、快照落库、节点推进或运行审计标记为已实现、已验证或对客户发布。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0006]
+    evidenceIds: [evidence.production-work-applicability-and-runtime-decision, evidence.ai-transaction-runtime-architecture, evidence.production-work-template-configuration-controller, evidence.production-work-applicability-dialog-ui, evidence.production-work-template-configuration-test]
+    acceptanceScenarios:
+      - id: scenario.production-work-template-delete-without-applicability-rule
+        given: 一个作业模板没有任何作业适用规则，但存在草稿、历史流程或当前已发布流程
+        when: 用户删除该作业模板
+        then: 系统允许在同一事务中删除作业模板及其全部流程配置，不因流程版本状态阻断
+        evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+        evidenceRequirements: [作业模板删除 API 测试, 级联流程配置删除集成测试, 审计测试]
+      - id: scenario.production-work-template-delete-blocked-by-applicability-rule
+        given: 一个作业模板至少存在一条作业适用规则
+        when: 用户删除该作业模板
+        then: 系统禁止删除并返回存在作业适用规则的稳定业务原因
+        evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+        evidenceRequirements: [作业模板删除 API 测试]
+      - id: scenario.production-work-applicability-selector-requires-published-flow
+        given: 作业选择器同时包含有当前已发布流程和没有当前已发布流程的作业模板
+        when: 用户新增作业适用规则
+        then: 两类作业均展示；无当前已发布流程的作业不可选并提示“该作业尚未发布作业流程版本”，服务端也拒绝为其保存规则
+        evidenceIds: [evidence.production-work-applicability-dialog-ui, evidence.production-work-template-configuration-controller]
+        evidenceRequirements: [适用规则 UI E2E, 适用规则 API 测试]
+      - id: scenario.production-work-instance-auto-match-and-freeze
+        given: 未来生产对象上下文命中一条指向有当前已发布流程作业模板的适用规则
+        when: 系统创建作业实例
+        then: 系统不读取产品或工序上的手工作业引用，而是按适用规则自动选择作业，并冻结作业模板、已发布流程版本、命中规则快照和流程配置快照
+        evidenceIds: []
+        evidenceRequirements: [未来作业运行时集成测试, 快照持久化测试, 版本兼容测试, 审计追溯测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-work-template-delete-still-blocks-published-flow
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+        lineHint: 115
+        summary: 当前控制器按适用规则存在性阻断删除；无规则时遍历删除草稿、历史和当前已发布流程配置后再删除模板，并由控制器测试覆盖有已发布流程历史无规则时允许删除、有规则时阻断删除的两条路径。本知识任务不修改业务代码。
+        evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+      - id: discrepancy.production-work-runtime-and-snapshot-unimplemented
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md
+        lineHint: 151
+        summary: 自动匹配、作业实例创建、适用规则快照和作业流程配置快照属于已确认未来执行契约；当前没有运行时、持久化或测试证据，因此结构化契约目标只保存在 specified 规则中，不进入仅接受 verified/runtime 契约的正式注册表。
+        evidenceIds: [evidence.ai-transaction-runtime-architecture]
+      - id: discrepancy.production-work-unpublished-selector-message
+        status: open
+        severity: medium
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/workflow-center/WorkApplicabilityRulesTab.tsx
+        lineHint: 269
+        summary: 选择器已展示并禁用无当前已发布流程的作业，但现有 title 为“该作业尚未发布作业流程版本，无法配置适用规则”，行内标签为“未发布流程”；尚未独立验证确认文案“该作业尚未发布作业流程版本”的精确提示投影。本知识任务不修改前端。
+        evidenceIds: [evidence.production-work-applicability-dialog-ui]
+      - id: discrepancy.production-work-template-delete-fallback-message
+        status: open
+        severity: medium
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx
+        lineHint: 309
+        summary: 删除作业模板失败时的前端兜底文案仍提示“没有已发布流程或其他配置记录”，与当前仅按是否存在作业适用规则阻断的业务规则不一致；后端返回稳定业务错误时会优先显示后端消息。本知识任务不修改前端。
+        evidenceIds: [evidence.production-work-template-configuration-ui]

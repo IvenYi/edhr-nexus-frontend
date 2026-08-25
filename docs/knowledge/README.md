@@ -1,6 +1,6 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.3`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.7`。
 
 本目录是 eDHR 业务概念、关系、规则、决策、证据和未决问题的机器可读权威来源。人员阅读架构文档、业务运行代码和界面都可以提供证据，但不能替代这里的结构化知识基线。
 
@@ -44,6 +44,8 @@
 `schema.yaml` 的 `collectionTypes` 将各顶层集合名映射到 `recordTypes`，`nestedCollectionTypes` 将决策内嵌集合映射到对应记录类型。校验器必须通过这两张映射发现记录，不得另行硬编码文件与记录类型对应关系；映射目标必须是已定义的 `recordTypes`，未知集合必须被拒绝。
 
 `allowedFieldTypeDescriptors` 是 `fieldTypes` 的封闭语法。只允许 `string`、`integer`、`condition-expression`、`rule-result`、指向现有枚举的 `enum:<enumKey>`、`array<string>`，以及指向现有记录类型的 `array<recordTypeName>`。未知描述符、缺失枚举和缺失记录类型引用均为校验错误。正式 JUnit 校验器会消费这些结构约束，包括 ID 前缀、条件表达式形状、证据路径策略和执行契约引用完整性。
+
+`schema.yaml.conditionBranchConfiguration` 定义条件节点配置的业务形状：`conditionBranches` 是有序、非空的分支数组，每个分支独立保存 `conditionRule`、字段目录版本和字段显示快照；`conditionDefaultBranch` 是唯一的“否则”默认分支，不携带条件 AST。输入契约只接受 `conditionBranches[].conditionRule` 与 `conditionDefaultBranch`，不兼容 `config.conditionRule`、分支 `rule` 或固定 `condition-true`/`condition-false` 出口；旧结构不属于当前输入和兼容契约。该结构描述配置和发布校验契约，不表示运行时字段来源、求值、实例快照或节点推进已经实现。
 
 ## 基数词汇
 
@@ -93,7 +95,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.3" && schema.fetch("schemaVersion") == "1.0.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.7" && schema.fetch("schemaVersion") == "1.0.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

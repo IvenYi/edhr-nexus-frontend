@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.3
+knowledgeModelVersion: 0.3.7
 evidence:
   - id: evidence.business-knowledge-model
     type: document
@@ -88,7 +88,7 @@ evidence:
   - id: evidence.form-template-version-entity
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java
-    description: 表单模板版本实体。
+    description: 表单模板版本实体；持久化 status 默认 DRAFT，但该字段不定义用户可见的 RDO 生效状态。
     visibility: internal
   - id: evidence.document-version-entity
     type: code
@@ -178,7 +178,7 @@ evidence:
   - id: evidence.product-process-owner-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
-    description: 统一产品和产品簇制程根、版本、工序表单和文档配置的读取、CRUD、版本号去重及引用校验；产品簇制程版本新增、编辑和删除同时写入产品簇审计，快照包含版本字段、按有效期计算的版本状态和工序表单、文档配置。
+    description: 统一产品和产品簇制程根、版本、工序表单和文档配置的读取、CRUD、版本号去重及引用校验；工序引用的表单模板版本只按 RdoVersionStatusResolver 的 effectiveFrom/effectiveTo 生效时间窗判断，产品簇制程版本状态和审计快照也按有效期计算。
     visibility: internal
   - id: evidence.product-process-resolution-service
     type: code
@@ -198,7 +198,7 @@ evidence:
   - id: evidence.product-family-modeling-page
     type: code
     path: gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
-    description: 产品簇 RDO 父子版本管理、成员入口、详情审计及全屏共享制程版本编辑器的前端页面实现；审计投影隐藏 id 和 productProcessId，并将成员关系、制程版本和工序配置快照字段映射为中文业务标签。
+    description: 产品簇建模页面的父子版本管理、成员入口、详情审计及全屏共享制程版本编辑器实现；审计投影隐藏 id 和 productProcessId，并将成员关系、制程版本和工序配置快照字段映射为中文业务标签。
     visibility: internal
   - id: evidence.product-family-modeling-api
     type: code

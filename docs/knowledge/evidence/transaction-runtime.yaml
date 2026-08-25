@@ -1,12 +1,107 @@
-knowledgeModelVersion: 0.3.3
+knowledgeModelVersion: 0.3.7
 evidence:
+  - id: evidence.production-work-applicability-and-runtime-decision
+    type: document
+    path: docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+    description: 已确认的生产作业决策，规定无适用规则时可删除模板及全部流程配置、有规则时阻断；适用规则只准入有当前已发布流程的作业；未来按适用规则自动匹配，并在作业实例创建时冻结作业模板、已发布流程版本、命中规则和流程配置快照。该决策是业务权威来源，不是当前运行时实现证据。
+    visibility: internal
   - id: evidence.ai-transaction-runtime-architecture
     type: document
     path: docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md
-    description: 事务运行架构定义本体、规则引擎、事务编排、动作处理器、项目插件、发布门禁和生产快照的职责与边界；关于产品外部的 Codex 协作交付流程，以 DEC-0003 和本知识基线的修正定义为准，不将其解释为产品内 AI 交付工作台。
+    description: 生产作业运行架构定义本体、规则引擎、作业编排、动作处理器、项目插件、发布门禁和生产快照的目标职责与边界；它是架构和规划证据，不能作为作业运行时、执行契约、实例推进、快照或审计已经完成的实现证据。关于产品外部的 Codex 协作交付流程，以 DEC-0005 和本知识基线的修正定义为准，不将其解释为产品内 AI 交付工作台。
     visibility: internal
   - id: evidence.crown-transaction-module-research
     type: document
     path: docs/reference-assets/research/crown-transaction-module-research.md
-    description: 冠骋事务调研记录事务定义、事务实例、节点状态、流程推进、表单或子事务节点及配置动作的竞品实现证据，仅用于内部设计参考。
+    description: 冠骋事务调研记录其事务定义、事务实例、节点状态、流程推进、表单或子事务节点及配置动作的竞品实现证据；eDHR 以生产作业作为对应业务术语，仅用于内部设计参考。该外部证据保留原始的事务或 Txn 术语及其源路径、类名，不纳入 eDHR 的 WORK 术语迁移。
+    visibility: internal
+  - id: evidence.production-work-template-configuration-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+    description: 作业模板、流程版本和适用规则配置接口实现。创建模板只保存作业本体；首次进入流程配置时前端显示临时 V1 草稿，保存或发布时才创建版本记录；仅允许一个编辑中草稿；草稿图可保存，发布会冻结当前草稿并创建继承配置的下一草稿；DELETE 流程版本接口统一拒绝草稿、当前发布和历史版本的单独删除。作业模板删除只检查是否存在作业适用规则：有规则时阻断，无规则时在同一事务删除模板及其草稿、历史和当前已发布流程配置，并记录各对象审计快照；适用规则按 ruleType 重算优先级。WORK 规则保存时由服务端强制为有效，规则查询摘要不再返回 isActive；也不表示生产运行时解析、作业实例或快照已实现。
+    visibility: internal
+  - id: evidence.production-work-template-configuration-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx
+    description: 作业定义与作业适用规则的并列页签，以及作业定义列表中的规则数量和绑定规则范围 hover 展示。该页面不展示优先级。
+    visibility: internal
+  - id: evidence.production-work-template-detail-and-audit-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx
+    description: 作业定义整行打开 RDO 一致的详情抽屉，名称不是跳转链接；抽屉提供数据信息和数据审计页签，流程配置、编辑和删除均由操作栏承载。
+    visibility: internal
+  - id: evidence.production-work-applicability-dialog-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/WorkApplicabilityRulesTab.tsx
+    description: 作业适用规则页面按作业名称或编码、适用方式、产品簇、产品和工序查询并在未限定范围时显示“不限”；列表不显示状态，弹窗不提供启用开关，投影所选作业当前已发布流程并生成不暴露优先级的实时规则摘要。没有当前已发布流程的作业仍在选择器展示但不可选；当前 title 文案为“该作业尚未发布作业流程版本，无法配置适用规则”，行内标签为“未发布流程”，与确认的精确提示文案仍有待前端跟进和验证。
+    visibility: internal
+  - id: evidence.production-work-flow-preview-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/components/WorkFlowPreviewDialog.tsx
+    description: 已发布作业流程的只读图形预览弹窗；该路径不允许编辑节点或连线。
+    visibility: internal
+  - id: evidence.production-work-flow-editor-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+    description: 作业流程全屏版本工作区。左侧按当前已发布、编辑中草稿和历史版本分组；草稿底部提供保存草稿和发布，没有流程版本单独删除入口；已发布版本只读；已发布版本可经二次确认复制到草稿。首次进入新作业流程配置时仅显示不入库的临时 V1 草稿，保存或发布后才落库。当前前端仅加载有序 conditionBranches 和唯一 conditionDefaultBranch；旧条件节点结构不属于当前配置契约，不会被归一化、回写或兼容读取。条件节点按分支生成动态 source handle，每个分支出口按 handle 限制一条连线，普通节点仍限制单出口。右侧面板仍通过条件规则构建器编辑单个分支 AST，并保存该分支的目录版本和字段快照。发布校验在前端维护临时节点错误状态并要求所有条件分支有规则，后端同步校验畸形分支结构、唯一分支出口、条件规则、表单节点生效版本引用和全图连通性；草稿保存不执行这些发布级校验。预览关闭不会关闭外层表单选择器。版本画布从版本数据读取 nodesJson 和 edgesJson；WorkFlowNode 始终渲染呈现连接线所需的 source/target Handle，并以 isConnectable 绑定 editable，所以已发布只读版本能显示已保存连接线但不能通过端点创建连接。该证据不表示运行时执行、消息发送、人工任务、条件求值、条件推进或实例快照已实现。
+    visibility: internal
+  - id: evidence.production-work-form-node-business-document-config
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+    description: 作业流程表单填写节点配置面板将引用字段展示为“业务单据”，提示和选择器文案同步使用业务单据称谓；节点内部仍保存 formTemplateVersionId。当前 WorkTemplateEditor.tsx 的节点配置模型和 normalizeFlowGraph 不包含 completionCondition 清理逻辑，因此该字段不属于当前配置契约，代码不读取、不迁移、不清理历史字段，也不在后续保存投影中写入该字段。本证据只证明当前配置代码边界，不证明历史数据已被迁移或清理；本次不新增数据库迁移，且不改变表单模板技术术语或生产运行时能力。
+    visibility: internal
+  - id: evidence.production-work-condition-rule-builder
+    type: code
+    path: gmp-platform/frontend/src/components/condition-builder/ConditionRuleBuilder.tsx
+    description: 公用条件规则构建器以递归 all、any、not 分组和 clause 叶子节点编辑单个条件分支的结构化 AST，支持嵌套分组、条件增删、类型校验、摘要和只读展示；它通过作业适配器获得字段和运算符，不承担条件分支容器排序、生产运行时求值或出口推进。
+    visibility: internal
+  - id: evidence.production-work-condition-rule-adapter
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/workConditionAdapter.tsx
+    description: 作业条件适配器登记字段目录 work-runtime-fields-v1，开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段及 equals、not-equals、contains、starts-with、in、is-present、is-null 七个第一版运算符；in 使用数组值。该文件只证明配置适配器目录，不证明运行时真实来源或求值。
+    visibility: internal
+  - id: evidence.production-work-condition-rule-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+    description: 当前后端作业流程发布前逐一读取 conditionBranches 中的 conditionRule，校验 work-runtime-fields-v1 目录版本、五个字段白名单、字段快照、分支对象形状、分支标识与派生出口句柄唯一性、否则默认分支和后端运算符白名单；不归一化旧 config.conditionRule 或旧分支 rule 字段，旧结构不属于当前输入和兼容契约。该源码不实现条件求值、生产上下文装配、作业实例或执行快照。
+    visibility: internal
+  - id: evidence.production-work-condition-rule-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    description: 作业模板控制器测试覆盖有序 conditionBranches 多分支、唯一否则默认分支、每分支目录快照、动态出口完整性、畸形分支结构和分支出口句柄碰撞；旧字段与固定 condition-true/condition-false 出口仅作为非规范输入回归样例，不表示支持旧兼容语义。不覆盖条件求值、节点推进、作业实例创建或生产执行快照。
+    visibility: internal
+  - id: evidence.production-work-condition-branch-model
+    type: document
+    path: docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml
+    description: "provenance: user-confirmed；用户确认的条件分支业务模型证据：条件节点包含多个有序条件分支和唯一否则默认分支；每个条件分支独立保存结构化条件 AST、字段目录版本和字段显示快照；按数组顺序命中第一个满足分支，否则使用默认分支；画布以纵向主流程展示，条件节点使用统一入口，条件分支和否则分支出口只能作为连接源并最多输出一条线，支持从出口附近快捷添加后续节点；普通节点和开始节点最多一条出口且不支持并行节点。该证据是用户业务确认的知识投影，不是冠骋页面或源码的 original-evidence，也不证明运行时真实字段来源、求值、实例快照或执行推进已实现。"
+    visibility: internal
+  - id: evidence.production-work-template-configuration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    description: 作业模板控制器测试覆盖适用规则仅面向 WORK 定义及其 ruleType 优先级派生，并覆盖创建模板不落流程版本、首次创建空连线 V1 草稿、单草稿限制、发布后继承草稿、历史版本覆盖草稿、发布版本和草稿版本均拒绝单独删除、无适用规则时删除含已发布流程历史或未发布草稿的模板、有适用规则时阻断删除、删除时记录模板和流程版本 DELETE 审计、草稿图保存、无当前已发布流程时拒绝创建或更新适用规则、普通节点双出口保存阻断。固定 condition-true/condition-false 仅用于非规范输入回归样例，不代表该模型继续被支持；不覆盖 conditionBranches 多分支持久化、动态出口发布校验、生产运行时解析、作业实例创建或快照冻结。
+    visibility: internal
+  - id: evidence.production-work-flow-version-draft-persistence
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    description: 当前控制器测试覆盖编辑中 DRAFT 流程图保存后写回节点、连线并调用版本仓储保存，同时记录流程版本 UPDATE 审计；边界校验失败时不调用版本保存。该测试尚未覆盖“草稿保存跳过表单必填和全图连通性校验”的目标场景，也不覆盖真实数据库重新读取、保存异常回滚的集成测试，更不证明生产运行时或实例快照已实现。
+    visibility: internal
+  - id: evidence.production-work-template-configuration-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql
+    description: Liquibase 0059 迁移将既有 WORK 适用规则恢复为有效，并为缺少 PRODUCTION_WORK_TEMPLATE 审计事件的既有 WORK 模板写入 SYSTEM/BASELINE 历史审计基线。迁移通过 NOT EXISTS 避免重复写入，且不伪称为用户 CREATE。
+    visibility: internal
+  - id: evidence.rdo-version-status-resolver
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/util/RdoVersionStatusResolver.java
+    description: 统一 RDO 版本状态解析器；effectiveFrom 晚于查询时间或 effectiveTo 已到时返回 EXPIRED，否则返回 ACTIVE，isReferenceable 复用该时间窗判断，持久化生命周期标志不参与用户可见状态和引用判断。
+    visibility: internal
+  - id: evidence.template-modeling-rdo-status-projection
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
+    description: 表单模板建模接口将表单版本对外 status 投影为 RdoVersionStatusResolver 根据 effectiveFrom/effectiveTo 计算的状态，不读取 FormTemplateVersion.status。
+    visibility: internal
+  - id: evidence.form-template-version-persisted-status-default
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java
+    description: 表单模板版本实体将持久化 status 默认设为 DRAFT；该默认值与用户可见 RDO 生效状态及引用资格分离。
     visibility: internal

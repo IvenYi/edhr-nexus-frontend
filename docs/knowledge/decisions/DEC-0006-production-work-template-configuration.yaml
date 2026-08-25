@@ -1,0 +1,234 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0006
+    title: 生产作业模板、流程版本与适用规则配置
+    status: deprecated
+    visibility: internal
+    context: 生产模块需要维护可复用的作业模板及其适用范围，但不能将尚未开始的生产执行、作业实例和运行规则伪装为已实现能力。作业模板属于生产配置；产品管理、产品簇和工艺路线继续属于数据主数据菜单。
+    decisionStatements:
+      - id: DEC-0006-01
+        statement: 作业模板是可复用的生产作业定义，包含名称、编码、描述、流程配置和适用规则；作业模板本体不以父子业务版本方式管理。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-02
+        statement: 作业流程版本是作业模板的流程配置版本，可处于草稿、已发布或历史状态；当前已发布流程版本是该作业模板对外可用的流程。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-03
+        statement: 一个作业模板可以有零到多个作业流程版本，也可以有零到多个作业适用规则。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-04
+        statement: 作业适用规则将作业模板应用于全局、指定生产范围或例外排除范围；适用规则解析当前已发布流程版本，而不让用户手工指定草稿或历史流程版本。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-05
+        statement: 后续生产对象创建后冻结实际使用的已发布作业流程版本；本次配置功能不实现生产执行、作业实例或运行时解析。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-06
+        statement: 作业模板、作业流程版本和作业适用规则的新增、编辑和删除需要保留审计事件及变更前后快照。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-07
+        statement: 作业模板位于“生产 / 生产配置 / 作业模板”；产品管理、产品簇和工艺路线仍位于数据菜单。流程中心保留审核流程模板和流程实例。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-08
+        statement: 作业适用规则的优先级固定由 ruleType 派生，且顺序为 EXCEPTION 例外排除高于 SCOPED 指定范围，高于 GLOBAL 全局适用；用户不能输入、修改或选择优先级，客户页面不展示优先级。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-09
+        statement: 作业定义列表必须显示每个作业模板绑定的适用规则数量，并在 hover 中展示每条绑定规则的适用方式和范围。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-10
+        statement: 作业定义与作业适用规则是生产配置中的并列页签；流程配置不承载作业适用规则。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-11
+        statement: 作业定义采用与其他 RDO 一致的列表投影：用户点击整行打开作业模板详情弹窗，详情弹窗提供详情与数据审计页签；配置流程、编辑和删除仅由操作栏图标触发。作业名称在列表中不作为跳转链接。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-12
+        statement: 新增或编辑作业适用规则时，用户先选择作业模板；弹窗仅展示该模板当前已发布流程的名称、发布状态和流程预览入口，不展示或选择草稿、历史流程。流程预览为只读，不改变规则正在编辑的选择和范围。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-13
+        statement: 作业适用规则弹窗必须根据已选作业、适用方式和范围实时生成规则摘要，说明该作业在何处适用或排除；摘要可以解释例外排除、指定范围和全局适用的固定处理顺序，但不得暴露可编辑或数值化的优先级字段。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-14
+        statement: 作业适用规则不存在用户可控的启用或停用状态；所有已保存的 WORK 规则均为有效规则，保存、编辑和既有数据恢复均不得允许用户把规则设为无效。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-15
+        statement: 作业适用规则列表仅投影作业名称或编码、适用方式、产品簇、产品和工序查询条件，以及对应规则内容；状态列和启用停用筛选不属于该查询投影。未限定的产品簇、产品或工序显示为“不限”。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-16
+        statement: 对不存在审计事件的既有作业模板，迁移必须写入来源为 SYSTEM、操作者显示为“系统”、动作为 BASELINE 的历史基线事件；该事件声明导入时的历史基线，不得伪称为原始用户创建事件。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-17
+        statement: 新建作业模板后，进入流程配置时前端生成不入库的临时 V1 草稿和开始/结束节点；用户首次保存草稿或发布时才创建流程版本记录。已持久化的作业模板同一时刻最多存在一个编辑中草稿。
+        status: specified
+        visibility: internal
+      - id: DEC-0006-18
+        statement: 用户保存和发布的对象是选中的流程草稿，而不是整个全屏弹窗。发布草稿后，已发布版本只读并成为当前对外流程；系统自动创建继承节点、连线和节点配置的下一草稿，但界面保持查看刚发布的版本，不自动切换。
+        status: implemented
+        visibility: internal
+      - id: DEC-0006-19
+        statement: 已发布流程可在二次确认后复制到当前草稿，覆盖草稿的节点、连线和节点配置但不改变草稿版本号；若当前不存在草稿，则复制操作创建下一号草稿并继承来源配置。复制不改变已发布历史；覆盖、发布和自动创建草稿都必须记录审计快照。任何作业流程版本（包括草稿、当前发布版本和历史版本）都不可单独删除；当作业模板不存在适用规则时，允许删除整个作业模板，由系统在同一事务中统一清理其全部流程版本并记录删除审计。存在适用规则的作业模板仍然禁止删除。
+        status: implemented
+        visibility: internal
+      - id: DEC-0006-20
+        statement: 作业流程画布自动提供不可删除的开始和结束边界节点；历史配置中的表单填写、消息通知、人工确认和条件分支节点及连线可以被画布读取和配置，右侧面板保存节点定义。表单节点引用既有表单建模数据。节点执行、通知发送、人工任务和条件推进不在本期配置功能范围。
+        status: deprecated
+        visibility: internal
+      - id: DEC-0006-21
+        statement: 作业流程画布首版的新增入口只提供表单填写和条件分支两类节点；历史上的满足/否则固定结构及兼容出口已由 DEC-0011 的有序 conditionBranches 与唯一 conditionDefaultBranch 模型取代。草稿用户可通过节点方向快捷入口选择节点，系统自动创建节点并连接到来源节点；也可拖动节点、从连接点手动连线。节点移动支持网格吸附和拖动时对齐辅助线；一键整理只改变草稿节点位置并标记为待保存，不改变节点、连线或节点配置等业务关系。已发布版本只读；运行期条件求值仍未实现。
+        status: deprecated
+        visibility: internal
+      - id: DEC-0006-22
+        statement: 第一版流程不支持普通节点并行出口或并行执行。开始节点和普通作业节点最多一个 outgoing edge，第二条普通出口不合法。条件节点的分支数量和出口模型已由 DEC-0011 确认；当前规范只使用有序 conditionBranches 与唯一 conditionDefaultBranch，不保留满足/否则固定出口兼容语义。该普通节点配置保存约束须由前后端同步实施；生产运行时条件求值仍不可用。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.crown-transaction-module-research, evidence.business-knowledge-model, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-ui, evidence.production-work-template-detail-and-audit-ui, evidence.production-work-applicability-dialog-ui, evidence.production-work-flow-preview-ui, evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-test, evidence.production-work-template-configuration-migration]
+    acceptanceScenarios:
+      - id: scenario.production-work-template-crud
+        given: 用户进入生产下的生产配置
+        when: 新增、读取、编辑或删除一个作业模板
+        then: 模板保存名称、编码和描述，并不创建父子业务版本记录
+        evidenceIds: []
+        evidenceRequirements: [作业模板数据库迁移, 作业模板 API 测试, 作业模板 UI E2E]
+      - id: scenario.production-work-flow-version-release
+        given: 一个作业模板存在草稿流程版本
+        when: 发布该流程版本并随后创建新的草稿版本
+        then: 已发布版本成为当前对外可用流程且不可编辑，系统自动创建继承配置的下一草稿但界面保持当前已发布版本；草稿和历史版本不成为适用规则的选择目标
+        evidenceIds: []
+        evidenceRequirements: [流程版本 API 测试, 流程编辑器 UI E2E, 发布与历史版本测试]
+      - id: scenario.production-work-flow-version-initialization-and-copy
+        given: 用户新建作业模板或查看其历史已发布流程
+        when: 新模板保存，或用户将一个已发布流程复制到当前草稿，或在没有草稿时复制该流程
+        then: 新模板进入流程配置时只在前端显示临时空的 V1 草稿；保存或发布时才创建版本记录；每个模板仅有一个持久化草稿；复制经二次确认后覆盖当前草稿的流程配置，或在没有草稿时创建下一号草稿，并保留来源、目标与前后快照审计
+        evidenceIds: []
+        evidenceRequirements: [流程版本 API 测试, 流程编辑器 UI E2E, 审计测试]
+      - id: scenario.production-work-flow-canvas-configuration
+        given: 用户正在编辑一个作业流程草稿
+        when: 用户添加表单填写或条件分支节点并配置节点定义
+        then: 开始和结束节点保留为不可删除的流程边界；节点、连线和配置被保存到该草稿，发布后只读；系统不在本期执行通知、人工任务或条件推进
+        evidenceIds: [evidence.production-work-flow-editor-ui]
+        evidenceRequirements: [流程画布 UI E2E, 流程版本 API 测试]
+      - id: scenario.production-work-flow-canvas-interaction
+        given: 用户正在编辑一个作业流程草稿
+        when: 用户使用方向快捷入口、手动连接、节点拖动或一键整理布局
+        then: 快捷入口自动创建所选表单填写或条件分支节点并生成连线；条件分支保留满足和不满足两个出口；手动连接建立连线；拖动按网格吸附并在对齐时显示辅助线；一键整理只调整节点位置并将草稿标记为待保存
+        evidenceIds: [evidence.production-work-flow-editor-ui]
+        evidenceRequirements: [流程画布视觉验证, 快捷创建交互验证, 未保存行为验证]
+      - id: scenario.production-work-flow-edge-cardinality
+        given: 用户正在编辑第一版作业流程草稿
+        when: 用户保存包含开始节点或普通作业节点多条出口的流程图
+        then: 开始节点和普通作业节点多于一条出口被拒绝；条件节点使用 DEC-0011 确认的有序分支和唯一默认分支模型；第一版不提供普通节点并行出口或并行执行
+        evidenceIds: []
+        evidenceRequirements: [前端连线约束测试, 后端流程图保存约束测试]
+      - id: scenario.production-work-applicability-rule-crud
+        given: 存在一个作业模板及其已发布流程版本
+        when: 新增、编辑或删除全局适用、指定范围或例外排除规则
+        then: 规则引用作业模板，并在后续解析时使用该模板当前已发布流程版本
+        evidenceIds: []
+        evidenceRequirements: [适用规则数据库迁移, 适用规则 API 测试, 适用规则 UI E2E]
+      - id: scenario.production-work-applicability-rule-priority
+        given: 同一生产范围同时命中 EXCEPTION、SCOPED 和 GLOBAL 三类作业适用规则
+        when: 配置保存或未来运行时需要判定适用规则
+        then: 规则按 EXCEPTION、SCOPED、GLOBAL 的固定顺序处理，优先级只能由 ruleType 派生，用户输入和客户页面均不承载优先级
+        evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+        evidenceRequirements: [适用规则 API 测试, 未来运行时解析集成测试, 客户页面 E2E]
+      - id: scenario.production-work-template-rule-count-and-scope
+        given: 一个作业模板绑定一条或多条适用规则
+        when: 用户查看作业定义列表
+        then: 列表显示规则数量，hover 显示绑定规则的适用方式和范围，且作业定义与作业适用规则以并列页签呈现
+        evidenceIds: [evidence.production-work-template-configuration-ui]
+        evidenceRequirements: [作业模板 UI E2E]
+      - id: scenario.production-work-template-detail-and-audit
+        given: 用户在作业定义列表中查看一个作业模板
+        when: 点击该条列表记录
+        then: 系统打开与其他 RDO 一致的详情弹窗，并提供详情与数据审计页签；配置流程、编辑和删除仍由操作栏的独立图标执行
+        evidenceIds: [evidence.production-work-template-detail-and-audit-ui]
+        evidenceRequirements: [作业模板详情 UI E2E, 作业模板审计 UI E2E, RDO 列表视觉回归]
+      - id: scenario.production-work-applicability-published-flow-preview
+        given: 用户新增或编辑作业适用规则并选择一个作业模板
+        when: 该模板存在当前已发布流程
+        then: 弹窗显示当前已发布流程与只读预览入口，不暴露草稿或历史流程选择；用户打开预览后仍保留正在编辑的作业和范围选择
+        evidenceIds: [evidence.production-work-applicability-dialog-ui, evidence.production-work-flow-preview-ui]
+        evidenceRequirements: [适用规则弹窗 UI E2E, 已发布流程预览 UI E2E]
+      - id: scenario.production-work-applicability-summary
+        given: 用户在适用规则弹窗中选择作业、适用方式或范围
+        when: 任一选择发生变化
+        then: 系统实时显示可读的规则摘要，准确说明适用或排除范围及固定规则处理顺序，且不显示可编辑优先级
+        evidenceIds: [evidence.production-work-applicability-dialog-ui]
+        evidenceRequirements: [规则摘要单元测试, 适用规则弹窗 UI E2E]
+      - id: scenario.production-work-configuration-audit
+        given: 用户修改作业模板、流程版本或适用规则
+        when: 打开对应对象的数据审计
+        then: 审计显示操作、操作者、时间和变更前后快照
+        evidenceIds: []
+        evidenceRequirements: [审计集成测试, 审计 UI E2E]
+      - id: scenario.production-work-flow-version-snapshot
+        given: 作业适用规则命中一个具有已发布流程的作业模板
+        when: 后续生产对象创建并使用该作业
+        then: 生产对象冻结当时已发布的作业流程版本，后续发布不改变该快照
+        evidenceIds: []
+        evidenceRequirements: [后续生产执行快照集成测试]
+      - id: scenario.production-work-applicability-always-effective
+        given: 用户新增或编辑作业适用规则
+        when: 保存规则
+        then: 前端不提供启用开关或状态列，服务端将 WORK 规则作为有效规则保存
+        evidenceIds: []
+        evidenceRequirements: [适用规则 API 测试, 适用规则 UI 验证]
+      - id: scenario.production-work-applicability-query-projection
+        given: 适用规则列表存在多条配置
+        when: 用户按作业名称或编码、适用方式、产品簇、产品或工序查询
+        then: 列表仅投影符合条件的规则，不显示状态；未限定的范围显示为“不限”
+        evidenceIds: []
+        evidenceRequirements: [适用规则查询 API 测试, 适用规则 UI 验证]
+      - id: scenario.production-work-audit-baseline
+        given: 既有作业模板没有审计事件
+        when: 历史基线迁移执行后查看该模板的数据审计
+        then: 审计显示来源为系统的 BASELINE 历史基线导入事件，而不伪称为原始用户新增
+        evidenceIds: []
+        evidenceRequirements: [迁移测试, 审计读取 API 测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-work-template-rdo-detail-interaction
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx
+        lineHint: 194
+        summary: 已改为整行打开作业模板详情抽屉，详情提供数据信息和数据审计页签；名称使用普通文本，流程配置、编辑和删除保留在操作栏。
+        evidenceIds: [evidence.production-work-template-detail-and-audit-ui]
+      - id: discrepancy.production-work-applicability-dialog-projection
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/workflow-center/WorkApplicabilityRulesTab.tsx
+        lineHint: 1
+        summary: 已投影所选作业当前已发布流程、只读预览入口和实时规则摘要。当前测试环境没有已发布流程数据，因此预览可见分支仅具备代码与编译证据，仍需在具备已发布流程的环境中补充 E2E 覆盖。
+        evidenceIds: [evidence.production-work-applicability-dialog-ui, evidence.production-work-flow-preview-ui]
+      - id: discrepancy.production-work-applicability-effective-state
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+        lineHint: 189
+        summary: WORK 规则创建和编辑时由服务端强制保存为有效，规则查询摘要不再投影 isActive；0059 迁移同时将既有 WORK 规则恢复为有效，审核流程绑定规则继续保留共享字段行为。
+        evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+      - id: discrepancy.production-work-historical-audit-baseline
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql
+        lineHint: 6
+        summary: 0059 迁移已为缺少审计事件的既有 WORK 作业模板写入 SYSTEM/BASELINE 历史基线事件，并通过 NOT EXISTS 保证不将基线事件伪称为用户 CREATE 或重复写入。
+        evidenceIds: [evidence.production-work-template-configuration-migration, evidence.production-work-template-configuration-controller]

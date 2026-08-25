@@ -9,8 +9,8 @@ const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage'));
 const PersonalSettingsPage = lazy(() => import('@/pages/account/PersonalSettingsPage'));
 const ReviewTemplateList = lazy(() => import('@/pages/workflow-center/ReviewTemplateList'));
 const ReviewTemplateEditor = lazy(() => import('@/pages/workflow-center/ReviewTemplateEditor'));
-const TxnTemplateList = lazy(() => import('@/pages/workflow-center/TxnTemplateList'));
-const TxnTemplateEditor = lazy(() => import('@/pages/workflow-center/TxnTemplateEditor'));
+const WorkTemplateList = lazy(() => import('@/pages/workflow-center/WorkTemplateList'));
+const WorkTemplateEditor = lazy(() => import('@/pages/workflow-center/WorkTemplateEditor'));
 const BindingRuleList = lazy(() => import('@/pages/workflow-center/BindingRuleList'));
 const InstanceList = lazy(() => import('@/pages/workflow-center/InstanceList'));
 const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail'));
@@ -76,13 +76,15 @@ const AppRouter = () => {
         <Route path="workflow">
           <Route path="review-templates" element={<Suspense fallback={<Loading />}><ReviewTemplateList /></Suspense>} />
           <Route path="review-templates/:id" element={<Suspense fallback={<Loading />}><ReviewTemplateEditor /></Suspense>} />
-          <Route path="txn-templates" element={<Suspense fallback={<Loading />}><TxnTemplateList /></Suspense>} />
-          <Route path="txn-templates/:id" element={<Suspense fallback={<Loading />}><TxnTemplateEditor /></Suspense>} />
           <Route path="binding-rules" element={<Suspense fallback={<Loading />}><BindingRuleList /></Suspense>} />
           <Route path="instances" element={<Suspense fallback={<Loading />}><InstanceList /></Suspense>} />
           <Route path="instances/:id" element={<Suspense fallback={<Loading />}><InstanceDetail /></Suspense>} />
           <Route path="instances/:id/logs" element={<Suspense fallback={<Loading />}><InstanceLogs /></Suspense>} />
           <Route path="tasks/:id" element={<Suspense fallback={<Loading />}><TaskDetail /></Suspense>} />
+        </Route>
+        <Route path="production">
+          <Route path="work-templates" element={<Suspense fallback={<Loading />}><WorkTemplateList /></Suspense>} />
+          <Route path="work-templates/:id" element={<Suspense fallback={<Loading />}><WorkTemplateEditor /></Suspense>} />
         </Route>
         <Route path="master-data">
           <Route path="materials" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="materials" /></Suspense>} />

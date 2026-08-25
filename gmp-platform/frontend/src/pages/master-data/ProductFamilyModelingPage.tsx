@@ -113,7 +113,8 @@ const tableHeaderCellSx = {
   fontWeight: 600,
   whiteSpace: "nowrap",
   height: 48,
-  py: 0.75,
+  py: 0,
+  borderBottom: "1px solid #e4e7ed",
 };
 const tableRowSx = {
   "& > .MuiTableCell-root": {
@@ -545,53 +546,25 @@ export default function ProductFamilyModelingPage() {
           p: 2,
         }}
       >
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={1.5}
-          alignItems={{ md: "flex-end" }}
-        >
-          <Box sx={{ width: { xs: "100%", md: 340 } }}>
-            <Typography
-              variant="caption"
-              sx={{ display: "block", mb: 0.5, color: "#606266" }}
-            >
-              产品簇名称/编码
-            </Typography>
-            <TextField
-              fullWidth
-              size="small"
-              placeholder="请输入"
-              value={keyword}
-              onChange={(event) => setKeyword(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") submitSearch();
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search fontSize="small" />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Box>
-          <Stack direction="row" spacing={1} sx={{ ml: { md: "auto" } }}>
-            <Button
-              variant="outlined"
-              startIcon={<RestartAlt />}
-              onClick={resetSearch}
-            >
-              重置
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<Search />}
-              onClick={submitSearch}
-            >
-              查询
-            </Button>
+        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, minmax(0, 1fr))" }, gap: 1.5, alignItems: "center" }}>
+          <TextField
+            fullWidth
+            size="small"
+            label="产品簇名称/编码"
+            placeholder="请输入"
+            value={keyword}
+            onChange={(event) => setKeyword(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") submitSearch();
+            }}
+            sx={{ "& .MuiInputBase-root": { height: 40 }, "& .MuiInputBase-input": { boxSizing: "border-box" } }}
+            InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }}
+          />
+          <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: "1", md: "3" } }}>
+            <Button size="small" sx={{ height: 40, width: 80, minWidth: 80 }} variant="outlined" startIcon={<RestartAlt />} onClick={resetSearch}>重置</Button>
+            <Button size="small" sx={{ height: 40, width: 80, minWidth: 80 }} variant="contained" startIcon={<Search />} onClick={submitSearch}>查询</Button>
           </Stack>
-        </Stack>
+        </Box>
       </Box>
 
       <Box
@@ -699,7 +672,7 @@ export default function ProductFamilyModelingPage() {
             }}
           >
             <TableHead>
-              <TableRow>
+              <TableRow sx={{ "& .MuiTableCell-root": tableHeaderCellSx }}>
                 {visibleColumns.map((column) => (
                   <TableCell
                     key={column.id}
@@ -1111,7 +1084,7 @@ function ProductFamilyTreeRows({
                   sx={{ minWidth: 1120, tableLayout: "fixed" }}
                 >
                   <TableHead>
-                    <TableRow>
+                    <TableRow sx={{ "& .MuiTableCell-root": tableHeaderCellSx }}>
                       <TableCell sx={{ ...tableHeaderCellSx, width: 132 }}>
                         制程版本号
                       </TableCell>
@@ -1743,7 +1716,7 @@ function ProductFamilyMemberDialog({
                 >
                   <Table stickyHeader size="small">
                     <TableHead>
-                      <TableRow>
+                      <TableRow sx={{ "& .MuiTableCell-root": tableHeaderCellSx }}>
                         <TableCell sx={tableHeaderCellSx} padding="checkbox" />
                         <TableCell sx={tableHeaderCellSx}>产品名称</TableCell>
                         <TableCell sx={tableHeaderCellSx}>产品编码</TableCell>

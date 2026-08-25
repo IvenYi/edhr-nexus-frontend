@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.3
+knowledgeModelVersion: 0.3.7
 terms:
   - id: term.material
     name: 物料
@@ -50,8 +50,14 @@ terms:
     visibility: internal
   - id: term.form-template-version
     name: 表单模板版本
-    definition: DHR 目录项实际引用并由工序绑定追溯的受控表单版本。
+    definition: DHR 目录项实际引用并由工序绑定追溯的受控表单版本；用户可见的生效状态由 effectiveFrom/effectiveTo 时间窗计算，持久化 status 不替代该状态。
     aliases: [表单版本]
+    status: implemented
+    visibility: internal
+  - id: term.rdo-effective-status
+    name: RDO 版本当前生效状态
+    definition: 版本化业务对象在查询时由 effectiveFrom/effectiveTo 时间窗计算出的用户可见状态；生效时间为空或已到且未超过失效时间时为 ACTIVE，未来生效或已失效时为 EXPIRED，持久化生命周期 status 不参与该投影或引用判断。
+    aliases: [版本生效状态, 当前生效状态]
     status: implemented
     visibility: internal
   - id: term.document-version
@@ -74,8 +80,8 @@ terms:
     visibility: internal
   - id: term.execution-snapshot
     name: 执行快照
-    definition: 未来生产对象创建时保存的产品、产品簇、所选制程版本及其配置快照，用于冻结当时的制程关系和解释依据。
-    aliases: [制程执行快照, 批次执行快照]
+    definition: 未来生产对象或作业实例创建时保存的版本化执行依据。制程执行快照冻结产品、产品簇、所选制程版本及其配置；作业执行快照冻结作业模板、已发布作业流程版本、命中的作业适用规则快照和作业流程配置快照，用于保证后续配置变更不改写历史执行语义。
+    aliases: [制程执行快照, 批次执行快照, 作业执行快照]
     status: specified
     visibility: internal
   - id: term.business-rule-runtime
@@ -86,8 +92,80 @@ terms:
     visibility: internal
   - id: term.transaction-orchestration
     name: 事务编排
-    definition: 根据已发布事务定义管理事务实例、节点状态、等待、条件分支和流程推进，并调用已注册动作处理器的运行能力。
+    definition: 已废弃的生产业务术语；其原有关于定义、实例、节点、流程推进和动作处理器的业务语义由生产作业及其编排继承。它不指代数据库或框架 transaction。
     aliases: [自定义事务编排, 事务流程编排]
+    status: deprecated
+    visibility: internal
+  - id: term.production-work
+    name: 生产作业
+    definition: 可被触发并按作业步骤执行的受控生产业务单元，例如清场作业、上料作业；由作业模板、流程版本、实例、步骤与受控动作组成，可被编排、审计和冻结。它是 eDHR 的生产业务术语，不是数据库或框架 transaction；当前仅确认作业骨架和定义身份，不能据此声称作业运行时已经完成。
+    aliases: [作业]
+    status: specified
+    visibility: internal
+  - id: term.production-work-definition
+    name: 生产作业定义
+    definition: 生产作业的可配置模板载体，持久化为 workflow_definition 中 type 为 WORK 的定义，包含名称、编码、描述、流程配置和适用规则。作业模板不以父子业务版本管理；其流程配置单独形成流程版本。删除模板时只以是否存在作业适用规则作为业务阻断条件：有规则禁止删除，无规则则连同草稿、历史和当前已发布流程配置一起删除。不复用旧 TRANSACTION 类型作为对外兼容层；仅本机开发数据库通过新的 Liquibase 迁移归一旧值。
+    aliases: [作业模板, WORK 作业定义]
+    status: specified
+    visibility: internal
+  - id: term.production-work-flow-version
+    name: 作业流程版本
+    definition: 属于一个作业模板的流程配置版本，保存作业节点和连线，可处于草稿、已发布或历史状态。草稿可以编辑和保存，但草稿与已发布流程版本均不可单独删除；删除作业模板时才由系统按适用规则删除门禁统一清理其流程版本。新建作业模板首次进入流程配置时前端临时显示含开始和结束边界节点的 V1 草稿，保存或发布后才落库；临时或首次持久化草稿默认不在开始和结束节点之间创建连线。每个作业模板同一时刻最多保留一个可编辑草稿。首版草稿入口支持表单填写和条件分支节点及其定义；条件节点使用有序 conditionBranches 和唯一 conditionDefaultBranch 配置，每个条件分支独立保存 all/any/not/clause AST、字段目录版本和字段显示快照。条件节点允许多个出口，但每个条件分支和否则分支最多一条线；普通节点和开始节点仍最多一条出口，不支持并行节点。发布后该版本成为当前已发布流程且不可编辑，系统自动创建继承其配置的下一草稿。历史已发布版本可覆盖当前草稿；若不存在草稿，则复制操作创建继承该历史版本配置的下一号草稿。复制不改变已发布历史；当前已发布流程版本是该作业模板对外可用的流程。保存失败不得改变上一次成功保存的版本状态或流程图。已有消息通知和人工确认节点可被画布兼容读取和配置，但不是首版新增入口。节点运行、消息发送、人工任务、条件求值和条件推进不属于当前配置能力。
+    aliases: [作业流程版本, 流程版本]
+    status: specified
+    visibility: internal
+  - id: term.production-work-flow-node
+    name: 作业流程节点
+    definition: 作业流程版本中的图节点配置，表示开始、结束、表单填写或条件节点等流程位置；节点之间的连线属于流程配置关系，不代表生产运行时节点实例或执行状态已经实现。
+    aliases: [流程节点, 作业节点]
+    status: specified
+    visibility: internal
+  - id: term.production-work-form-node-business-document-reference
+    name: 作业流程业务单据节点引用
+    definition: 作业流程表单填写节点面向配置用户展示的业务单据引用；节点内部仍通过 formTemplateVersionId 引用既有表单模板版本，业务单据称谓仅作用于该节点配置界面，不替代表单主数据模块的技术术语。
+    aliases: [业务单据引用, 表单填写节点业务单据]
+    status: implemented
+    visibility: internal
+  - id: term.production-work-condition-rule
+    name: 作业条件规则
+    definition: 条件分支通过公用条件规则构建器配置的结构化条件表达式，使用 all、any、not 分组和 clause 条件节点表达且、或、非及嵌套条件。第一版作业适配器开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 运行上下文字段，目录版本为 work-runtime-fields-v1，支持 equals、not-equals、contains、starts-with、in、is-present、is-null；in 的值为数组。每个条件分支独立保存 conditionRule、字段目录版本和字段显示快照，条件节点另有唯一 conditionDefaultBranch。当前仅有配置层 AST 和分支模型校验证据，运行时真实来源、求值、节点推进和实例快照绑定仍未实现。
+    aliases: [条件规则, 条件规则 AST, 作业条件 AST]
+    status: implemented
+    visibility: internal
+  - id: term.production-work-condition-node
+    name: 作业条件节点
+    definition: 作业流程中根据有序条件分支选择后续出口的节点配置；包含一个或多个条件分支以及唯一的否则默认分支。画布配置以纵向主流程展开，条件节点通过统一入口接收入边，分支出口只允许向后续流程节点出边。它描述流程配置语义，不代表运行时求值或节点推进已实现。
+    aliases: [条件节点, 条件分支节点]
+    status: specified
+    visibility: internal
+  - id: term.production-work-condition-branch
+    name: 作业条件分支
+    definition: 条件节点中按数组顺序排列的单个条件分支；每个分支独立保存结构化条件 AST、字段目录版本和字段显示快照，按纵向主流程展示，并拥有最多一条只能向后续流程节点输出的动态出口。出口支持画布快捷添加后续节点并自动连线；运行时应按顺序命中第一个满足分支，当前求值尚未实现。纵向间距和避免节点覆盖属于配置交互层推断。
+    aliases: [条件分支]
+    status: specified
+    visibility: internal
+  - id: term.production-work-condition-default-branch
+    name: 作业条件默认分支
+    definition: 条件节点唯一的否则分支；它不属于条件规则组、不保存条件 AST，在所有条件分支均未满足时作为后续出口。它与条件分支一样只能向后续流程节点输出，支持画布快捷添加；当前运行时回退和节点推进尚未实现。
+    aliases: [否则分支, 默认出口]
+    status: specified
+    visibility: internal
+  - id: term.production-work-applicability-rule
+    name: 作业适用规则
+    definition: 将一个作业模板应用于全局、指定生产范围或例外排除范围的配置规则。规则只能配置存在当前已发布作业流程版本的模板；无当前已发布流程的模板仍展示但不可选。优先级固定由 ruleType 派生，顺序为 EXCEPTION 例外排除、SCOPED 指定范围、GLOBAL 全局适用；优先级不是用户可输入、修改或选择的字段，客户页面不展示。未来运行期按该顺序自动匹配作业，不在产品或工序配置中手工引用；当前不表示生产运行时已经完成。
+    aliases: [作业适用范围, 作业绑定规则, 作业适用规则类型]
+    status: specified
+    visibility: internal
+  - id: term.production-work-instance
+    name: 作业实例
+    definition: 未来生产执行根据生产上下文和作业适用规则自动匹配后创建的运行对象。实例创建时冻结作业模板、已发布作业流程版本、命中的适用规则快照和作业流程配置快照，并基于冻结内容推进；当前尚未实现。
+    aliases: [生产作业实例, 作业运行实例]
+    status: specified
+    visibility: internal
+  - id: term.production-work-execution-snapshot
+    name: 作业执行快照
+    definition: 作业实例创建时形成的不可变执行依据，包含作业模板引用、创建时当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照；后续模板、规则和流程变更不回写既有快照。
+    aliases: [作业快照, 作业实例快照]
     status: specified
     visibility: internal
   - id: term.action-handler

@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.3
+knowledgeModelVersion: 0.3.7
 schemaVersion: 1.0.0
 dimensions:
   status:
@@ -17,8 +17,8 @@ enums:
     - id: many-to-one
       definition: 每个 source 必须关联一个 target；一个 target 可被零到多个 source 关联。
   evidenceTypes: [code, database, test, document]
-  ruleOperators: [in, unique-within, exists, is-referenceable, exists-in, belongs-to, equals, not-equals, equals-ignore-case, ends-with-ignore-case, is-null, is-present, greater-than-or-equal, explicitly-selected, configurable, persisted, planned]
-  ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, persist-unique-code, require-explicit-process-version, compute-rdo-version-status, omit-projection, freeze-execution-snapshot, persist-form-required-configuration, block, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation]
+  ruleOperators: [in, unique-within, exists, is-referenceable, exists-in, belongs-to, equals, not-equals, equals-ignore-case, contains, starts-with, ends-with-ignore-case, is-null, is-present, greater-than-or-equal, explicitly-selected, configurable, persisted, planned]
+  ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, persist-unique-code, require-explicit-process-version, compute-rdo-version-status, omit-projection, freeze-execution-snapshot, persist-form-required-configuration, persist-flow-configuration, evaluate-condition-branches, remove-configuration, block, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-production-work-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation, resolve-published-production-work-flow, manage-production-work-flow-draft, write-audit-record]
   discrepancyStatuses: [open, accepted, resolved]
   discrepancySeverities: [critical, high, medium, low]
 collectionTypes:
@@ -190,6 +190,42 @@ conditionExpression:
     all: 每个子表达式必须成立。
     any: 至少一个子表达式必须成立。
     not: 其唯一子表达式不得成立。
+conditionBranchConfiguration:
+  nodeConfiguration:
+    requiredFields: [conditionBranches, conditionDefaultBranch]
+    conditionBranches:
+      type: non-empty-array-of-condition-branches
+      orderedBy: array-order-is-business-semantic
+      itemRequiredFields: [id, name, conditionRule, fieldCatalogVersion, fieldSnapshot]
+      itemFieldSemantics:
+        id: 分支稳定标识；不得因排序调整而改变。
+        name: 分支显示名称；由条件分支配置显式提供。
+        conditionRule: condition-expression
+        fieldCatalogVersion: 条件分支使用的字段目录版本。
+        fieldSnapshot: 该分支配置时的字段显示快照。
+    conditionDefaultBranch:
+      requiredFields: [id, name]
+      exactName: 否则
+      conditionRule: forbidden
+      fieldCatalogVersion: forbidden
+      fieldSnapshot: forbidden
+      cardinality: exactly-one-per-condition-node
+    inputContract:
+      acceptedFields: ['conditionBranches[].conditionRule', conditionDefaultBranch]
+      forbiddenFields: ['config.conditionRule', 'conditionBranches[].rule', condition-true, condition-false]
+      historicalDevelopmentData: may-be-cleared
+    outgoingEdges:
+      conditionNode: multiple-branches-allowed
+      conditionBranch: maximum-one-edge
+      conditionDefaultBranch: maximum-one-edge
+      ordinaryNode: maximum-one-edge
+      startNode: maximum-one-edge
+      parallelExecution: forbidden
+    evaluation:
+      branchOrder: array-order
+      selection: first-satisfied-condition-branch
+      fallback: conditionDefaultBranch
+      runtimeStatus: unresolved
 ruleResult:
   requiredFields: [type]
   fieldTypes:

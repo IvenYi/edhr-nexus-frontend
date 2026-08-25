@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * Core workflow engine.
  * Handles instance creation, node progression, parallel gateway aggregation,
- * task creation, and conditional branching for both review and transaction workflows.
+ * task creation, and conditional branching for both review and production-work workflows.
  */
 @Slf4j
 @Service

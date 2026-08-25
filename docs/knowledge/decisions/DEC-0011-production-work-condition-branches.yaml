@@ -1,0 +1,83 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0011
+    title: 生产作业条件节点有序分支与动态出口模型
+    status: specified
+    visibility: internal
+    context: 用户确认条件节点由多个有序条件分支和唯一否则默认分支组成。每个条件分支独立保存结构化条件 AST、字段目录版本和字段显示快照；条件分支顺序属于业务语义。用户进一步确认流程画布以纵向配置为主，条件分支也应纵向展开；条件分支出口只能出不能进，并应支持从画布出口附近快捷添加后续节点。配置和发布校验边界已明确，但运行时字段来源、条件求值、实例快照和执行推进仍未闭环。纵向间距、吸附和避免节点覆盖属于实现层布局推断，不改变运行时语义。
+    decisionStatements:
+      - id: DEC-0011-01
+        statement: 条件节点支持一个或多个有序条件分支，分支数组顺序是业务语义；每个条件分支有独立的结构化条件 AST、字段目录版本和字段显示快照。
+        status: implemented
+        visibility: internal
+      - id: DEC-0011-02
+        statement: 条件节点具有唯一的 conditionDefaultBranch（否则默认分支）。否则分支不属于条件规则组，不保存条件 AST、字段目录版本或字段显示快照。
+        status: specified
+        visibility: internal
+      - id: DEC-0011-03
+        statement: 条件节点按 conditionBranches 数组顺序求值，命中第一个满足的条件分支；没有条件分支满足时选择唯一否则默认分支。该语义已确认，但运行时求值器尚未实现。
+        status: specified
+        visibility: internal
+      - id: DEC-0011-04
+        statement: 条件节点允许多个出口；每个条件分支出口和否则默认分支出口最多连接一条线。普通节点和开始节点仍最多一条出口，流程不支持并行节点。
+        status: specified
+        visibility: internal
+      - id: DEC-0011-05
+        statement: 发布时校验所有 conditionBranches[].conditionRule 的 AST、字段目录快照和动态出口配置，并校验唯一 conditionDefaultBranch；config.conditionRule、分支 rule 以及固定 condition-true/condition-false 出口均拒绝，不执行归一化，旧结构不属于当前输入和兼容契约。该配置层规则不代表运行时字段来源、条件求值、实例快照或节点推进已闭环。
+        status: implemented
+        visibility: internal
+      - id: DEC-0011-06
+        statement: 条件分支的运行时真实字段来源、取值时点、条件求值异常语义、作业实例快照绑定、命中结果审计和执行推进仍 unresolved，不得标记为 verified 或投影到 runtime。
+        status: specified
+        visibility: internal
+      - id: DEC-0011-07
+        statement: 条件节点在流程画布中按纵向主流程展开其有序条件分支；分支的纵向展示和后续节点延伸是配置交互投影，不改变 conditionBranches 的数组顺序和运行时首个命中语义。
+        status: specified
+        visibility: internal
+      - id: DEC-0011-08
+        statement: 条件分支和否则默认分支的出口只能作为连接源，不能作为连接目标；条件节点使用统一的入口接收进入连线，其他节点不得连入条件分支出口。每个分支出口仍最多连接一条线。
+        status: specified
+        visibility: internal
+      - id: DEC-0011-09
+        statement: 条件分支出口支持与表单填写节点一致的画布快捷添加交互，点击出口附近的快捷入口即可选择后续节点并自动创建连接；条件节点配置面板不承担新增表单节点或新增条件节点，节点新增统一通过画布交互完成。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0008]
+    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-flow-editor-ui, evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-adapter, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
+    acceptanceScenarios:
+      - id: scenario.production-work-condition-branches-ordered
+        given: 条件节点配置两个或多个条件分支及唯一否则分支
+        when: 用户保存流程配置
+        then: 系统保留 conditionBranches 数组顺序；每个条件分支分别保存 AST、字段目录版本和字段显示快照，并保存唯一否则分支
+        evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-flow-editor-ui]
+        evidenceRequirements: [条件分支配置 API 测试, 条件分支重读测试, 字段快照回归测试]
+      - id: scenario.production-work-condition-canonical-configuration
+        given: 条件节点配置包含一个或多个有序 conditionBranches 及唯一 conditionDefaultBranch
+        when: 用户保存或发布流程配置
+        then: 系统只读取和保存每个 conditionBranches[].conditionRule 及唯一 conditionDefaultBranch；旧字段和固定出口被拒绝，不保留该旧结构兼容路径
+        evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-condition-rule-controller]
+        evidenceRequirements: [规范字段保存测试, 旧字段拒绝测试, 保存投影测试]
+      - id: scenario.production-work-condition-dynamic-edges
+        given: 条件节点包含多个有序条件分支和否则分支
+        when: 用户配置流程出口
+        then: 条件节点可有多个出口，但每个分支出口最多一条线；普通节点和开始节点第二条出口被阻断；并行节点不被引入
+        evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-template-configuration-test]
+        evidenceRequirements: [动态出口 API 测试, 分支出口 UI 测试, 普通节点单出口回归测试]
+      - id: scenario.production-work-condition-branches-vertical-interaction
+        given: 用户正在编辑包含多个 conditionBranches 和唯一否则分支的作业流程草稿
+        when: 用户查看或从条件分支出口附近添加后续节点
+        then: 分支按纵向主流程展示；快捷添加按出口方向创建后续节点并自动连线，且不要求用户在配置面板中新增节点
+        evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-flow-editor-ui]
+        evidenceRequirements: [流程画布布局验证, 条件分支快捷添加交互验证, 节点不重叠验证]
+      - id: scenario.production-work-condition-branch-source-only
+        given: 用户正在编辑包含条件节点的作业流程草稿
+        when: 用户尝试从其他节点连接到条件分支出口，或从条件节点统一入口接收进入连线
+        then: 条件分支出口作为目标时连接被阻断；统一入口可以接收条件节点的进入连线；每个条件分支和否则出口最多保留一条出线
+        evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-flow-editor-ui]
+        evidenceRequirements: [连接方向 UI 验证, 前后端 target handle 校验测试, 分支单出口回归测试]
+      - id: scenario.production-work-condition-runtime-first-match
+        given: 未来作业实例读取已发布条件节点
+        when: 多个条件分支依次求值
+        then: 运行时选择第一个满足分支，否则选择唯一否则分支并推进对应出口；当前版本不声称该场景已实现
+        evidenceIds: []
+        evidenceRequirements: [真实字段来源集成测试, 首个命中求值测试, 默认分支回退测试, 实例快照和推进测试, 执行审计测试]

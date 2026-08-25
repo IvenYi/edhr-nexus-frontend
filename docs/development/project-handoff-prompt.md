@@ -223,7 +223,7 @@ API 客户端：
 - PDF/图片需要考虑渲染背景、矫正和线条层。
 - Excel 需要尽量还原行高、列宽、边框、合并单元格、文字位置和图片。
 - Word 当前自研解析仍是基础结构解析，高保真原文编辑/预览走 OnlyOffice 或独立转换服务。
-- OnlyOffice PoC：负责文档渲染/编辑/协同；模板模块维护交互覆盖层、填报数据、审计和发布状态，eDHR 事务与 DHR 模块只消费受控版本和实例事件。
+- OnlyOffice PoC：负责文档渲染/编辑/协同；模板模块维护交互覆盖层、填报数据、审计和发布状态，eDHR 作业与 DHR 模块只消费受控版本和实例事件。
 - OnlyOffice `document.url` 必须使用表单模板版本专用的 `/api/v1/master-data/template-modeling/form-templates/{id}/versions/{versionId}/onlyoffice/source?token=...` 签名地址，不能回退到平台鉴权的 `/api/v1/files/{id}/preview`；普通文件 preview 仍应要求平台 JWT。
 - OnlyOffice callback 已校验 JWT、document key、下载 host，并对缺 URL、失败状态、下载失败写安全审计；下载编辑后文件时已禁用自动跨域重定向、设置超时并限制最大 50MB。
 
@@ -448,7 +448,7 @@ frontend/src/pages/master-data/TemplateModelingPage.tsx
 - 不要直接替换现有设计器。
 - 新增一个 OnlyOffice 编辑/预览模式作为 PoC。
 - OnlyOffice 负责源文件高保真渲染、在线编辑、协同。
-- 模板模块保存交互覆盖层和运行数据；eDHR 事务与 DHR 模块只消费受控版本、实例快照和生命周期事件。
+- 模板模块保存交互覆盖层和运行数据；eDHR 作业与 DHR 模块只消费受控版本、实例快照和生命周期事件。
 - 后端需要提供 OnlyOffice config 接口、callback 接口、文件访问 URL 和 JWT/签名校验。
 
 优先级 3：模板建模代码治理

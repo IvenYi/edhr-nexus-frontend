@@ -15,13 +15,14 @@ CROWN_BACKEND_ROOT   # 冠骋 eDHR 后端工程根目录
 - 冠骋资料用于理解业务模型、页面交互、状态流转和实现证据，不是本产品的最终需求。用户已确认的产品决策、仓库内 PRD、知识模型和实现代码优先。
 - 不直接照搬冠骋的低代码平台、通用框架、代码生成器及客户特有实现。
 - 阅读和调研时需要标明资料来源：`crown-front`、`crown-back`、`crown-exploration`、`edhr-design`、`edhr-implementation` 或 `user-confirmed`。
+- 本清单及其他冠骋调研记录只能作为检索索引和二手参考。对需要求证的结论，必须回到可获得的冠骋原始前端、后端、数据库、接口、页面或原始录屏重新核对；未完成原始复核的内容必须标记为 `secondary-reference` 或 `inference`，不得直接写成已确认事实。原始资料不可获得时，应记录证据缺口，不得依据调研记录自行补全。
 
 ## 建议阅读顺序
 
 1. 阅读 [AGENTS.md](../../AGENTS.md) 和 [edhr-develop-need-read.md](../../edhr-develop-need-read.md)，了解项目协作、开发原则及已确认的产品方向。
 2. 阅读 PRD、架构文档和当前功能设计规格，先建立 eDHR 自身的需求边界。
 3. 阅读 `docs/knowledge/` 中的结构化知识资产，确认当前已知概念、规则、决策、证据和未决问题。
-4. 对需要求证的生产、事务、DHR、表单、追溯或版本问题，再查阅冠骋探索资料和前后端代码。
+4. 对需要求证的生产、作业、DHR、表单、追溯或版本问题，先根据调研记录定位范围，再从冠骋原始探索资料和前后端代码重新核对；调研记录本身不能替代原始证据。
 5. 最后回到 eDHR 当前页面、后端接口、数据库实体与测试，确定实际已实现范围。
 
 ## eDHR 产品需求与设计资料
@@ -44,12 +45,14 @@ CROWN_BACKEND_ROOT   # 冠骋 eDHR 后端工程根目录
 - [持久化智能体协作设计](../superpowers/specs/edhr-persistent-agent-collaboration-design.md)
 - [持久化智能体协作实施计划](../superpowers/plans/2026-08-08-persistent-agent-collaboration.md)
 
-### 生产、事务、追溯与版本架构
+### 生产、作业、追溯与版本架构
+
+eDHR 业务术语统一使用“作业”；冠骋资料、源码路径和类名中保留其原始“事务 / transaction / Txn”用语，阅读时按同一受控业务单元映射，不修改原始证据。
 
 - [业务知识模型架构](../architecture/business-knowledge-model.md)：本体、规则、证据、决策和执行契约的分层。
 - [本体驱动的影响分析与扩展开发](../architecture/ontology-driven-impact-analysis-and-extension-development.md)：基于知识模型进行需求影响分析和可维护扩展。
-- [AI 赋能交付与事务运行时架构](../architecture/ai-enabled-custom-delivery-and-transaction-runtime.md)：事务编排、动作处理器、插件化扩展与 AI/Codex 协作边界。
-- [事务、追溯与 DHR 业务规则](../architecture/transaction-traceability-dhr-business-rules.md)：事务、投影、追溯和 DHR 汇总的边界。
+- [AI 赋能交付与作业运行时架构](../architecture/ai-enabled-custom-delivery-and-transaction-runtime.md)：作业编排、动作处理器、插件化扩展与 AI/Codex 协作边界。
+- [作业、追溯与 DHR 业务规则](../architecture/transaction-traceability-dhr-business-rules.md)：作业、投影、追溯和 DHR 汇总的边界。
 - [RDO 版本治理](../architecture/rdo-version-governance.md)：父子 RDO、版本、生效失效、审计和快照约束。
 - [技术栈与 AI 开发说明](../architecture/technology-stack-and-ai-development.md)
 
@@ -70,13 +73,13 @@ CROWN_BACKEND_ROOT   # 冠骋 eDHR 后端工程根目录
 - [本体](../knowledge/ontology.yaml)：业务概念与关系。
 - [术语表](../knowledge/glossary.yaml)：领域术语、别名和客户可见性。
 - [产品制程规则](../knowledge/rules/product-process.yaml)
-- [事务运行时规则](../knowledge/rules/transaction-runtime.yaml)
+- [作业运行时规则](../knowledge/rules/transaction-runtime.yaml)
 - [产品制程决策](../knowledge/decisions/DEC-0001-product-process-modeling.yaml)
 - [产品簇制程决策](../knowledge/decisions/DEC-0002-product-family-process-modeling.yaml)
-- [事务运行时决策](../knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml)
+- [作业运行时决策](../knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml)
 - [本体驱动影响分析决策](../knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml)
 - [产品制程实现证据](../knowledge/evidence/product-process.yaml)
-- [事务运行时证据](../knowledge/evidence/transaction-runtime.yaml)
+- [作业运行时证据](../knowledge/evidence/transaction-runtime.yaml)
 - [执行契约注册表](../knowledge/execution-contracts.yaml)
 - [未决问题](../knowledge/open-questions.yaml)
 - [知识模型 Schema](../knowledge/schema.yaml)
@@ -97,7 +100,7 @@ CROWN_BACKEND_ROOT   # 冠骋 eDHR 后端工程根目录
 - 物料、产品、产品簇、工序、工艺路线、制程配置；
 - DHR 模板、表单模板、目录引用、文档引用、PDF 页码配置；
 - 工单、批次、SN、生产工作台、工序开工/完工、表单填报；
-- 事务定义、流程节点、条件分支、子事务、事务实例和事务追溯；
+- 作业定义、流程节点、条件分支、子作业、作业实例和作业追溯；
 - DHR 汇总、审核、正向追溯与逆向追溯。
 
 ## 冠骋前端代码参考
@@ -108,13 +111,13 @@ CROWN_BACKEND_ROOT   # 冠骋 eDHR 后端工程根目录
 CROWN_FRONTEND_ROOT
 ```
 
-前端调研以菜单结构、RDO 页面交互和业务表达为主。优先查找以下能力对应的页面、组件、接口调用和枚举：
+前端调研以菜单结构、建模页面交互和业务表达为主。优先查找以下能力对应的页面、组件、接口调用和枚举：
 
-- RDO 列表页：父子版本展开、列设置、操作栏图标、详情、审计；
+- 带版本建模列表：父子版本展开、列设置、操作栏图标、详情、审计；
 - 主数据：物料、产品、产品簇、工序、工艺路线、制程配置；
 - 模板：DHR/批记录模板、表单、SOP/文档、目录与引用关系；
 - 生产：工单、批次、SN、生产工作台、报工和表单实例；
-- 事务：事务列表、事务配置、流程编排、节点、条件、子事务与追溯。
+- 冠骋事务：事务列表、配置、流程编排、节点、条件、子事务与追溯；eDHR 对应为作业。
 
 工程中已有的调研辅助文档：
 
@@ -168,7 +171,7 @@ CROWN_BACKEND_ROOT
 CROWN_BACKEND_ROOT/src/main/java/com/gct/apaas/edhr
 ```
 
-### 生产、工单与事务
+### 生产、工单与作业
 
 重点包：
 
@@ -203,7 +206,7 @@ transaction/entity/TxnNodeStatusEntity.java
 transaction/entity/TxnUsageRuleEntity.java
 ```
 
-调研时重点理解：工单创建、批次/SN 拆分、开工/完工、事务实例、事务主线、事务引用关系以及表单实例创建的时机。
+调研时重点理解：工单创建、批次/SN 拆分、开工/完工、作业实例、作业主线、作业引用关系以及表单实例创建的时机。
 
 ### 表单、DHR、追溯和审核
 
@@ -312,7 +315,7 @@ gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductPro
 ## 调研与开发边界
 
 1. 冠骋页面或代码只能作为证据与灵感。eDHR 的最终规则以用户确认、仓库内知识模型、设计文档和当前实现为准。
-2. 对版本、状态、生效失效、审计、追溯、DHR 快照、生产阻断和事务执行等关键问题，需要同时查看设计、知识库、实现和测试，不能仅根据截图判断。
+2. 对版本、状态、生效失效、审计、追溯、DHR 快照、生产阻断和作业执行等关键问题，需要同时查看设计、知识库、实现和测试，不能仅根据截图判断。
 3. `planned`、`specified` 或未验证能力不得写成 `implemented`、`verified`，也不能直接进入客户问答或生产运行时。
 4. 本体知识库用于结构化沉淀概念、规则、证据、决策和影响关系；它不自动替代对页面、API、数据库、审计和测试的核对。
 5. 需要实现需求变更时，先基于该清单定位相关资料，再遵循 [AGENTS.md](../../AGENTS.md) 的决策包、影响分析、本体门禁和质量门禁要求。
@@ -343,4 +346,3 @@ gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductPro
 
 - 文件路径、关键类/组件/接口或截图来源：
 ```
-

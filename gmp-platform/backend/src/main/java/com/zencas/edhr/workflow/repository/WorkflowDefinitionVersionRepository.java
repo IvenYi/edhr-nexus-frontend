@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface WorkflowDefinitionVersionRepository extends JpaRepository<WorkflowDefinitionVersion, Long> {
     List<WorkflowDefinitionVersion> findByDefinitionIdOrderByVersionNumberDesc(Long definitionId);
     Optional<WorkflowDefinitionVersion> findByDefinitionIdAndIsCurrentTrue(Long definitionId);
+    Optional<WorkflowDefinitionVersion> findByDefinitionIdAndStatus(Long definitionId, String status);
     Optional<WorkflowDefinitionVersion> findByDefinitionIdAndVersionNumber(Long definitionId, Integer versionNumber);
 }

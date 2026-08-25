@@ -1,8 +1,8 @@
-knowledgeModelVersion: 0.3.3
+knowledgeModelVersion: 0.3.7
 rules:
   - id: rule.transaction.published-version-only
     name: 事务运行只读取已发布版本
-    status: specified
+    status: deprecated
     visibility: internal
     trigger: transaction.instance.start
     scope: transaction-runtime
@@ -17,6 +17,558 @@ rules:
       freezeReference: true
     explanation: 事务运行只能基于已发布事务定义创建实例，并冻结所用版本引用；未发布草稿不得进入生产运行。
     evidenceIds: [evidence.ai-transaction-runtime-architecture]
+  - id: rule.production-work.published-version-only
+    name: 作业运行只读取已发布版本
+    status: specified
+    visibility: internal
+    trigger: production-work.instance.start
+    scope: production-work-runtime
+    condition:
+      all:
+        - fact: productionWorkDefinition.type
+          operator: equals
+          value: WORK
+        - fact: productionWorkFlowVersion.status
+          operator: equals
+          value: published
+    result:
+      type: planned-production-work-trigger
+      versionSource: published-production-work-flow-version
+      freezeReference: true
+    explanation: 未来作业运行只能基于 type 为 WORK 的作业模板所拥有的已发布作业流程版本创建实例，并冻结所用流程版本引用；未发布草稿不得进入生产运行。该 specified 规则是运行时实现的目标约束，不表示当前作业运行时、实例推进、审计或执行契约已经完成。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture]
+  - id: rule.production-work.applicability-resolves-published-flow
+    name: 作业适用规则解析当前已发布流程
+    status: specified
+    visibility: internal
+    trigger: production-work.applicability.resolve
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkApplicabilityRule.isApplicable
+          operator: equals
+          value: true
+        - fact: productionWorkDefinition.hasPublishedFlowVersion
+          operator: equals
+          value: true
+    result:
+      type: resolve-published-production-work-flow
+      definitionSource: productionWorkApplicabilityRule.definitionId
+      flowVersionSource: productionWorkDefinition.currentPublishedFlowVersionId
+      freezeReferenceForFutureProductionObject: true
+      applicabilityRulePrioritySource: productionWorkApplicabilityRule.ruleType
+      applicabilityRulePriorityOrder: [EXCEPTION, SCOPED, GLOBAL]
+      userMayProvidePriority: false
+      customerMaySeePriority: false
+    explanation: 作业适用规则应用于作业模板，而不由用户手工选择流程版本；后续生产对象创建时，适用规则先按 ruleType 派生的固定优先级 EXCEPTION、SCOPED、GLOBAL 判定，再解析该作业模板当前已发布的流程版本并冻结该版本引用。草稿和历史流程版本不作为适用规则的可选目标。优先级不是用户可输入、修改或选择的字段，也不在客户页面展示。该 specified 规则定义配置和未来运行解析语义，不表示当前生产执行、运行时解析或快照落库已经完成。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.business-knowledge-model, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.template-delete-when-no-applicability-rule
+    name: 无适用规则时允许删除作业模板
+    status: implemented
+    visibility: internal
+    trigger: production-work.template.delete
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkApplicabilityRule.count
+          operator: greater-than-or-equal
+          value: 1
+    result:
+      type: block
+      reason: production-work-template-has-applicability-rule
+      allowedWhen: productionWorkApplicabilityRule.count == 0
+      versionsDoNotAffectDecision: true
+    explanation: 当前生产执行尚未实现。删除作业模板时只检查该模板是否存在任何作业适用规则；存在一条或多条规则即禁止删除，无论模板是否存在草稿、历史流程或当前已发布流程。没有任何作业适用规则时，允许在同一事务中删除作业模板及其全部流程配置。该规则替代仅因存在已发布流程而禁止删除父作业模板的历史语义。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.applicability-requires-current-published-flow
+    name: 作业适用规则只允许配置当前已发布流程作业
+    status: specified
+    visibility: internal
+    trigger: production-work.applicability-rule.save
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkDefinition.selected
+          operator: equals
+          value: true
+        - fact: productionWorkDefinition.hasPublishedFlowVersion
+          operator: equals
+          value: false
+    result:
+      type: block
+      reason: production-work-definition-has-no-current-published-flow
+      customerMessage: 该作业尚未发布作业流程版本
+      selectorVisibility: visible-but-disabled
+      selectorCanBeSubmitted: false
+    explanation: 作业适用规则只能保存到存在当前已发布作业流程版本的作业模板。没有当前已发布流程的作业仍在选择器中展示，但不可选，并提示“该作业尚未发布作业流程版本”；草稿和历史流程不能满足该准入条件。
+    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-applicability-dialog-ui, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.instance-auto-matches-applicability
+    name: 生产作业实例按适用规则自动匹配
+    status: specified
+    visibility: internal
+    trigger: production-work.instance.create
+    scope: production-work-runtime
+    condition:
+      all:
+        - fact: productionWorkApplicabilityRule.matchContext
+          operator: is-present
+          value: true
+        - fact: productionWorkDefinition.hasPublishedFlowVersion
+          operator: equals
+          value: true
+    result:
+      type: planned-production-work-trigger
+      selectionSource: production-work-applicability-rule
+      ruleTypeOrder: [EXCEPTION, SCOPED, GLOBAL]
+      manualProductOperationReference: forbidden
+      flowVersionSource: productionWorkDefinition.currentPublishedFlowVersionId
+      contractTarget: production-work-runtime.applicability-match.v1
+      contractInputs: [productionObject, productId, productFamilyId, operationId, effectiveApplicabilityRules]
+      contractOutputs: [matchedApplicabilityRule, selectedProductionWorkDefinition, currentPublishedFlowVersion]
+      deterministic: true
+    explanation: 未来生产执行创建作业实例时，系统根据生产对象、产品、产品簇、工序等运行上下文自动匹配作业适用规则，并按 EXCEPTION、SCOPED、GLOBAL 的固定顺序解析；产品配置或工序配置不手工引用作业模板或流程版本。只有命中的规则所指向作业模板当前已发布流程版本才可进入实例创建。当前生产执行和运行时解析尚未实现。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.business-knowledge-model]
+  - id: rule.production-work.instance-freezes-work-and-rule-snapshot
+    name: 创建作业实例时冻结作业与适用规则执行快照
+    status: specified
+    visibility: internal
+    trigger: production-work.instance.create
+    scope: production-work-runtime
+    condition:
+      all:
+        - fact: productionWorkMatch.matched
+          operator: equals
+          value: true
+        - fact: productionWorkDefinition.hasPublishedFlowVersion
+          operator: equals
+          value: true
+    result:
+      type: freeze-execution-snapshot
+      contractTarget: production-work-runtime.instance-create-and-freeze.v1
+      contractInputs: [productionObject, matchedApplicabilityRule, selectedProductionWorkDefinition, currentPublishedFlowVersion]
+      contractOutputs: [productionWorkInstance, immutableProductionWorkExecutionSnapshot]
+      freezeAt: production-work-instance.create
+      fields: [productionWorkDefinitionId, publishedProductionWorkFlowVersionId, applicabilityRuleSnapshot, productionWorkFlowConfigurationSnapshot]
+      templateReference: productionWorkMatch.definitionId
+      flowVersionReference: productionWorkDefinition.currentPublishedFlowVersionId
+      applicabilityRuleSnapshotSource: matched-production-work-applicability-rule
+      flowConfigurationSnapshotSource: current-published-production-work-flow-version
+      immutableAfterCreate: true
+    explanation: 创建作业实例时必须同时冻结作业模板引用、创建时的当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照。后续修改或发布作业模板、适用规则或流程版本不得改变既有作业实例的执行依据。当前生产作业实例、快照落库和运行时推进尚未实现。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.business-knowledge-model]
+  - id: rule.production-work.template-configuration-audited
+    name: 作业模板配置变更需要审计
+    status: implemented
+    visibility: internal
+    trigger: production-work.template-configuration.change
+    scope: production-work-template-configuration
+    condition:
+      any:
+        - fact: productionWorkChange.subject
+          operator: in
+          value: [definition, flow-version, applicability-rule]
+    result:
+      type: write-audit-record
+      auditSubjects: [production-work-definition, production-work-flow-version, production-work-applicability-rule]
+      includeBeforeAfter: true
+    explanation: 新增、编辑或删除作业模板、作业流程版本或作业适用规则时，配置接口记录可追溯的审计事件及变更前后快照。发布时同时记录已发布版本、原当前版本（如有）及自动创建的继承草稿；历史版本复制到草稿时记录来源版本、目标草稿和覆盖前后快照。既有无审计作业的历史基线导入由独立规则约束；该 implemented 规则不表示生产运行时审计、作业实例审计或历史基线迁移已经完成。
+    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.flow-version-lifecycle
+    name: 作业流程版本草稿生命周期
+    status: implemented
+    visibility: internal
+    trigger: production-work.flow-version.change
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkDefinition.persisted
+          operator: equals
+          value: true
+    result:
+      type: manage-production-work-flow-draft
+      initialDraftVersionNumber: 1
+      maximumEditableDrafts: 1
+      publishCreatesInheritedDraft: true
+      publishedVersionEditable: false
+      draftVersionEditable: true
+      draftVersionSavable: true
+      draftVersionDeletable: false
+      publishedVersionDeletable: false
+      historicalVersionCopyTarget: current-draft-or-next-draft
+      copyWithoutDraftCreatesNextDraft: true
+    explanation: 新建作业模板进入流程配置时，前端临时生成空的 V1 草稿；该临时草稿只显示开始和结束节点，两个边界节点之间默认不创建连线。用户保存或发布时才创建流程版本记录。每个作业模板同一时刻只能存在一个可编辑草稿，草稿可以继续编辑和保存，但不能单独删除；已发布流程版本不可编辑且不能单独删除。发布后该版本成为当前已发布流程，同时系统创建继承其节点、连线和节点配置的下一草稿。历史已发布流程在存在草稿时复制到当前草稿并覆盖其配置但不改变草稿版本号；若不存在草稿，复制操作创建继承来源配置的下一号草稿。复制不改变已发布历史。作业模板删除由独立的适用规则删除门禁决定：存在任何适用规则时禁止删除；没有适用规则时，无论草稿、历史或当前已发布流程是否存在，都允许在同一事务中删除模板及其流程配置。当前代码和控制器测试已覆盖生命周期主路径；保存异常回滚和重新读取恢复仍缺少独立集成测试，不据此扩展为运行时能力。
+    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-test, evidence.production-work-flow-version-draft-persistence]
+  - id: rule.production-work.flow-version-single-delete-forbidden
+    name: 作业流程版本不可单独删除
+    status: implemented
+    visibility: internal
+    trigger: production-work.flow-version.delete
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowVersion.deleteRequested
+          operator: equals
+          value: true
+    result:
+      type: block
+      reason: production-work-flow-version-single-delete-forbidden
+      forbiddenStatuses: [DRAFT, PUBLISHED, HISTORICAL]
+      allowedCleanupPath: production-work.template.delete
+      cleanupRequiresNoApplicabilityRule: true
+    explanation: 草稿、当前已发布版本和历史流程版本均不能通过流程版本接口单独删除。需要清理流程版本时，只能在作业模板删除已通过“无任何适用规则”门禁后，由系统在同一事务中级联清理；这不等价于开放流程版本删除。当前控制器统一阻断版本删除，测试覆盖已发布版本和草稿版本两条阻断路径。
+    evidenceIds: [evidence.production-work-flow-version-draft-persistence, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.flow-version-draft-save-persistence
+    name: 作业流程草稿保存必须持久化
+    status: implemented
+    visibility: internal
+    trigger: production-work.flow-version.draft-save
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowVersion.status
+          operator: equals
+          value: DRAFT
+        - fact: productionWorkFlowVersion.saveRequested
+          operator: equals
+          value: true
+    result:
+      type: persist-flow-configuration
+      persists: [nodes, edges, node-configuration]
+      target: productionWorkFlowVersion
+      preserveLastSavedStateOnFailure: true
+      savedStateChangesOnlyOnSuccessfulCommit: true
+    explanation: 可编辑草稿保存成功后将节点、连线和节点配置写入该草稿；首次进入新作业流程配置的临时 V1 草稿在首次保存或发布时才创建版本记录。当前控制器测试覆盖成功保存、边界校验失败不保存以及 UPDATE 审计；前端保存失败时保留待保存状态。真实数据库重新读取和保存异常回滚仍缺少独立集成测试；该规则不表示运行时执行或生产实例快照已实现。
+    evidenceIds: [evidence.production-work-flow-version-draft-persistence, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.flow-version.draft-save-defers-publish-validation
+    name: 作业流程草稿保存不执行发布完整性门禁
+    status: specified
+    visibility: internal
+    trigger: production-work.flow-version.draft-save
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowVersion.status
+          operator: equals
+          value: DRAFT
+        - fact: productionWorkFlowVersion.saveRequested
+          operator: equals
+          value: true
+    result:
+      type: persist-flow-configuration
+      allowedIncompleteDraft: true
+      skips: [required-form-version, graph-connectivity]
+      retainsBasicDataIntegrityChecks: true
+      validationFeedbackPersistence: transient-only
+    explanation: 草稿保存是配置过程中的中间持久化动作，允许表单填写节点暂未选择生效表单版本，也允许节点尚未从开始节点连通到结束节点；保存仍可执行节点、连线和数据格式等基础完整性检查。表单必填配置和全图连通性属于发布门禁，不得在每次草稿保存时阻断用户继续配置。当前前端保存入口仍需移除发布校验调用，后端现有保存路径仅覆盖基础边界和普通节点出口校验，因此本规则保持 specified。
+    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-flow-version-draft-persistence]
+  - id: rule.production-work.flow-version.publish-integrity-validation
+    name: 作业流程版本发布完整性校验
+    status: specified
+    visibility: internal
+    trigger: production-work.flow-version.publish
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowVersion.status
+          operator: equals
+          value: DRAFT
+        - fact: productionWorkFlowVersion.publishRequested
+          operator: equals
+          value: true
+    result:
+      type: block
+      validations:
+        formNodes:
+          requiredReference: formTemplateVersionId
+          effectiveWindow:
+            operator: is-referenceable
+            value: true
+          resolver: RdoVersionStatusResolver
+          statusSource: [effectiveFrom, effectiveTo]
+          persistedStatusParticipates: false
+        graph:
+          exactlyOneBoundaryNode: [START, END]
+          edgeNodeReferencesMustExist: true
+          selfEdgesForbidden: true
+          duplicateOutgoingEdgesForbidden: true
+          ordinaryNodeMaximumOutgoingEdges: 1
+          everyNonStartNodeRequiresIncomingEdge: true
+          everyNonEndNodeRequiresOutgoingEdge: true
+          everyNodeMustBeReachableFromStart: true
+          everyNodeMustReachEnd: true
+        conditionBranchCompleteness: pending-condition-runtime-contract
+      failureFeedback:
+        invalidNodeBorder: red
+        nodeMessage: true
+        persistence: transient-only
+      onSuccess: publish-current-draft-as-read-only
+    explanation: 发布是把流程草稿变成对外可用且只读的配置边界。发布前必须校验所有表单填写节点引用当前生效时间窗内的表单版本，并校验节点引用、边界节点、自连线、重复出口、普通节点单出口及从开始到结束的全图连通性；孤立节点、缺少必填引用、不存在或未处于生效时间窗的表单版本都会阻断发布。表单版本的用户可见生效状态由统一 RDO 生效时间窗计算，持久化 status 不参与该引用判断。校验失败时将对应节点以红色边框和提示反馈给用户，但反馈状态不写入节点配置、流程语义 AST 或流程图业务快照。条件节点的分支数量和每个分支是否必须连出仍由条件运行时契约决定，本规则不擅自固化该未决语义。当前前后端实现已覆盖本决策定义的发布门禁，真实生产运行时仍不在本次范围内。
+    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test, evidence.rdo-version-status-resolver, evidence.template-modeling-rdo-status-projection, evidence.form-template-version-persisted-status-default, evidence.product-process-owner-service]
+  - id: rule.rdo.version-effective-status
+    name: RDO 版本状态与引用资格按有效时间窗计算
+    status: implemented
+    visibility: internal
+    trigger: rdo.version.read-or-reference
+    scope: rdo-version-governance
+    condition:
+      all:
+        - fact: rdoVersion.effectiveWindow
+          operator: is-referenceable
+          value: true
+    result:
+      type: compute-rdo-version-status
+      resolver: RdoVersionStatusResolver
+      fields: [effectiveFrom, effectiveTo]
+      referenceableStatus: ACTIVE
+      persistedStatusParticipates: false
+    explanation: 版本化 RDO 的用户可见状态和可被其他配置引用的资格统一由 effectiveFrom/effectiveTo 时间窗计算；持久化 status 可保留为生命周期或兼容字段，但不得改变状态投影或引用判断。
+    evidenceIds: [evidence.rdo-version-status-resolver, evidence.template-modeling-rdo-status-projection, evidence.form-template-version-persisted-status-default, evidence.product-process-owner-service]
+  - id: rule.production-work.flow-canvas-configuration
+    name: 作业流程画布配置边界
+    status: specified
+    visibility: internal
+    trigger: production-work.flow-version.draft-edit
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowVersion.status
+          operator: equals
+          value: DRAFT
+    result:
+      type: persist-flow-configuration
+      boundaryNodes: [START, END]
+      configurableNodeTypes: [FORM, CONDITION]
+      legacyReadableNodeTypes: [NOTIFICATION, CONFIRMATION]
+      formReferenceSource: form-template-modeling
+      conditionBranchHandles: dynamic-condition-branches-and-default
+      conditionBranchStructure: ordered-condition-branches-with-default
+      conditionRuleBuilder:
+        status: implemented
+        astShape: semantic-condition-expression
+        groupOperators: [all, any, not]
+        recursiveGroups: true
+        supports: [condition-group-editing, add-remove-condition, type-validation, summary, read-only-display]
+        fieldCatalog: work-runtime-fields-v1
+        fields: [workType, triggerType, sourceType, sourceNumber, executionStatus]
+        fieldTypes: [string, string, string, string, string]
+        operators: [equals, not-equals, contains, starts-with, in, is-present, is-null]
+        multiValueOperator: in
+        multiValueValueType: array
+        fieldSnapshotPersisted: true
+        businessValidation: publish-time
+        conditionEvaluation: unavailable
+      runtimeExecution:
+        status: unavailable
+        freeTextIsSoleFact: forbidden
+      draftInteractions:
+        directionQuickAdd: true
+        quickAddNodeTypes: [FORM, CONDITION]
+        quickAddCreatesEdge: true
+        manualConnection: true
+        conditionNodeInput: unified-entry-only
+        conditionBranchHandles: source-only
+        conditionDefaultBranchHandle: source-only
+        conditionBranchAsConnectionTarget: forbidden
+        conditionBranchMaximumOutgoingEdges: 1
+        conditionDefaultBranchMaximumOutgoingEdges: 1
+        conditionNodePanelCreatesNodes: false
+        primaryLayoutDirection: vertical
+        conditionBranchLayoutDirection: vertical
+        layoutSpacingAndOverlapAvoidance: implementation-inferred
+        gridSnap: true
+        alignmentGuides: true
+        autoLayout: true
+        autoLayoutChanges: [node-position]
+        autoLayoutMarksDraftDirty: true
+      runtimeExecutionIncluded: false
+    explanation: 作业流程草稿画布自动提供不可删除的开始和结束边界节点；新建的临时或首次持久化草稿默认不在两个边界节点之间创建连线，用户需通过快捷添加或手动连接建立流程关系。首版新增入口支持表单填写和条件分支节点，并在右侧面板编辑节点定义；条件节点由有序 conditionBranches 和唯一 conditionDefaultBranch 组成，每个条件分支及否则分支各自拥有最多一条出口。条件节点只通过统一入口接收入边，条件分支和否则分支出口只能作为连接源，不能作为连接目标；节点配置面板不负责新增节点，节点新增统一通过画布快捷交互完成。作业流程及条件分支以纵向配置为主，具体间距和避免覆盖属于实现层推断。表单节点引用现有表单建模数据。条件规则构建器已完成递归条件组交互和 all/any/not/clause 语义 AST，支持条件增删、类型校验、摘要和只读展示；作业适配器第一版开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段，目录版本为 work-runtime-fields-v1，支持 equals、not-equals、contains、starts-with、in、is-present、is-null，in 使用数组值。条件节点确认后保存 AST、字段目录版本和字段快照；后端已实现配置层发布前校验 AST 结构、字段白名单、目录版本、字段快照、条件分支完整性和动态出口。该配置证据不表示运行时真实来源、条件求值、节点推进、生产执行或实例快照已实现；现有自由文本 conditionExpression 不得作为唯一事实来源。方向快捷入口会自动创建节点和连线，用户也可以从连接点手动连线；节点移动支持网格吸附并在拖动时显示对齐辅助线；一键整理只改变草稿节点位置并标记为待保存，不改变流程业务关系。草稿节点、连线和节点配置的保存请求及发布门禁已由控制器测试覆盖；真实数据库重新读取和保存异常回滚仍缺少独立集成测试，不能据此扩大为生产执行能力。已有消息通知和人工确认节点仅保留兼容读取和配置能力。消息发送、人工确认任务派发、条件求值和流程推进不属于当前配置实现，不得视为已具备生产执行能力。
+    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test, evidence.production-work-flow-version-draft-persistence]
+  - id: rule.production-work.form-node-business-document-configuration
+    name: 作业流程表单填写节点使用业务单据称谓且不支持完成条件配置
+    status: implemented
+    visibility: internal
+    trigger: production-work.flow-node.configure
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowNode.kind
+          operator: equals
+          value: FORM
+    result:
+      type: omit-projection
+      unsupportedField: completionCondition
+      readHistoricalField: forbidden
+      migrateHistoricalField: forbidden
+      cleanHistoricalField: forbidden
+      persistField: forbidden
+      displayLabel: 业务单据
+      referenceField: formTemplateVersionId
+      databaseMigration: none
+    explanation: 表单填写节点在作业流程配置面板中将客户可见引用称谓统一为“业务单据”，但内部引用契约仍使用 formTemplateVersionId 并继续指向既有表单模板版本。完成条件配置不再属于当前节点配置契约；前期研发阶段不考虑历史数据兼容，系统不读取、不迁移、不清理历史 completionCondition 字段，后续草稿保存也不写入该字段。本规则只约束作业模板配置契约，不改变表单主数据模块的“表单模板”技术术语或生产运行时能力，本次不新增数据库迁移。
+    evidenceIds: [evidence.production-work-form-node-business-document-config, evidence.production-work-flow-editor-ui, evidence.production-work-flow-version-draft-persistence]
+  - id: rule.production-work.condition-rule-publish-validation
+    name: 作业条件规则发布前校验
+    status: specified
+    visibility: internal
+    trigger: production-work.flow-version.publish
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowVersion.status
+          operator: equals
+          value: DRAFT
+        - fact: productionWorkFlowVersion.containsConditionRule
+          operator: equals
+          value: true
+    result:
+      type: persist-flow-configuration
+      conditionNodeConfiguration: conditionBranches-and-conditionDefaultBranch
+      conditionBranchOrder: array-order-is-business-semantic
+      conditionBranchRuleRequired: every-condition-branch
+      conditionDefaultBranch: exactly-one-otherwise-branch
+      acceptedConditionFields: ['conditionBranches[].conditionRule', conditionDefaultBranch]
+      rejectedLegacyFields: ['config.conditionRule', 'conditionBranches[].rule', condition-true, condition-false]
+      conditionRuleShape: all-any-not-clause
+      fieldCatalogVersion: work-runtime-fields-v1
+      allowedFields: [workType, triggerType, sourceType, sourceNumber, executionStatus]
+      fieldTypes: [string, string, string, string, string]
+      allowedOperators: [equals, not-equals, contains, starts-with, in, is-present, is-null]
+      multiValueOperator: in
+      multiValueValueType: array
+      requiredNodeConfiguration: [conditionBranches, conditionDefaultBranch]
+      requiredConditionBranchConfiguration: [conditionRule, fieldCatalogVersion, fieldSnapshot]
+      dynamicOutgoingEdges: condition-node-branches-and-default
+      maximumOutgoingEdgesPerBranch: 1
+      rejects: [empty-branches, missing-default-branch, malformed-ast, unknown-field, unknown-operator, unregistered-catalog, missing-field-snapshot, multiple-edges-per-branch, legacy-config-conditionRule, legacy-branch-rule, legacy-condition-true-exit, legacy-condition-false-exit]
+    explanation: 用户已确认条件节点使用多个有序 conditionBranches 和唯一 conditionDefaultBranch。配置层只接受每个条件分支的 conditionRule、字段目录版本、字段快照和动态出口，并拒绝旧字段及固定出口；旧结构不属于当前输入和兼容契约。该规则仍不证明运行时真实来源、条件求值、节点推进、作业实例或生产快照已实现。
+    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
+  - id: rule.production-work.condition-branches-first-match
+    name: 作业条件分支按顺序命中首个满足分支
+    status: specified
+    visibility: internal
+    trigger: production-work.condition-node.evaluate
+    scope: production-work-runtime
+    condition:
+      all:
+        - fact: productionWorkConditionNode.published
+          operator: equals
+          value: true
+        - fact: productionWorkConditionNode.conditionBranches
+          operator: is-present
+          value: true
+    result:
+      type: evaluate-condition-branches
+      branchOrder: array-order
+      selection: first-satisfied-condition-branch
+      fallback: conditionDefaultBranch
+      executionStatus: unresolved
+    explanation: 运行时应按已发布条件分支数组顺序求值并选择第一个满足分支；全部不满足时选择唯一否则分支。字段真实来源、求值器、异常处理、实例快照和节点推进尚未闭环，因此不得进入 verified/runtime。
+    evidenceIds: [evidence.production-work-condition-branch-model]
+  - id: rule.production-work.ordinary-node-single-outgoing-edge
+    name: 作业流程首版普通节点单一出口约束
+    status: specified
+    visibility: internal
+    trigger: production-work.flow-version.draft-save
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkFlowVersion.status
+          operator: equals
+          value: DRAFT
+        - fact: productionWorkFlowGraph.isFirstReleaseFlow
+          operator: equals
+          value: true
+    result:
+      type: persist-flow-configuration
+      parallelExecution: unavailable
+      outgoingEdgeRules:
+        appliesTo: [START, ordinary-work-node]
+        excludes: [CONDITION]
+        maximumOutgoingEdges: 1
+        duplicateOrAdditionalEdge: forbidden
+      conditionNodeBranchModel: conditionBranches-with-default-branch
+      conditionBranchOutgoingEdgeLimit: 1
+      conditionDefaultOutgoingEdgeLimit: 1
+      runtimeConditionEvaluation: unavailable
+      runtimeParallelExecution: unavailable
+    explanation: 第一版流程不支持普通节点并行出口或并行执行；开始节点和普通作业节点最多只能有一条 outgoing edge，第二条普通出口不合法。条件节点允许多个动态分支出口，但每个条件分支和否则分支最多一条线。配置层统一使用新模型，旧字段和固定出口不属于当前契约；生产运行时条件求值与并行执行能力仍不可用。
+    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.applicability-always-effective
+    name: 作业适用规则保存即有效
+    status: implemented
+    visibility: internal
+    trigger: production-work.applicability-rule.save
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkApplicabilityRule.persisted
+          operator: equals
+          value: true
+    result:
+      type: omit-projection
+      projection: production-work-applicability-active-status
+      persistedIsActive: true
+      userMayToggleActive: false
+      excludes: [active-status, active-toggle]
+    explanation: 所有已保存的 WORK 作业适用规则均为有效规则。共享实体保留 isActive 字段以避免影响审核流程绑定规则，但 WORK 配置不得接受用户启用或停用选择，既有 WORK 规则恢复后也必须为有效；未来运行时据此将保存规则视为可参与适用性判定的规则。
+    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+  - id: rule.production-work.applicability-query-projection
+    name: 作业适用规则查询投影
+    status: implemented
+    visibility: internal
+    trigger: production-work.applicability-rule.list
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkApplicabilityRule.listRequested
+          operator: equals
+          value: true
+    result:
+      type: omit-projection
+      projection: production-work-applicability-list-query
+      includes: [definition-name-or-code, rule-type, product-family, product, operation]
+      excludes: [active-status]
+      unrestrictedScopeDisplay: 不限
+    explanation: 作业适用规则列表按作业名称或编码、适用方式、产品簇、产品和工序投影与筛选；状态不属于该查询投影。规则未限定产品簇、产品或工序时，客户页面显示“不限”，不以缺失值或状态字段替代其业务含义。
+    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-applicability-dialog-ui]
+  - id: rule.production-work.audit-baseline
+    name: 历史作业模板审计基线
+    status: implemented
+    visibility: internal
+    trigger: production-work.audit.baseline-migration
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkDefinition.auditEventCount
+          operator: equals
+          value: 0
+    result:
+      type: write-audit-record
+      action: BASELINE
+      source: SYSTEM
+      operator: 系统
+      preservesOriginalCreationClaim: false
+    explanation: 对不存在审计事件的既有 WORK 作业模板，数据迁移写入来源为 SYSTEM、操作者为“系统”、动作为 BASELINE 的历史基线事件。该事件只说明系统在迁移时建立了可追溯起点，不得伪称为原始用户创建事件；新增、更新和删除继续记录其各自的变更前后快照。
+    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-migration]
+  - id: rule.production-work.applicability-summary-projection
+    name: 作业适用规则摘要投影
+    status: specified
+    visibility: internal
+    trigger: production-work.applicability-rule.compose
+    scope: production-work-template-configuration
+    condition:
+      all:
+        - fact: productionWorkApplicabilityRule.definitionId
+          operator: is-present
+          value: true
+    result:
+      type: omit-projection
+      projection: applicability-rule-summary
+      includes: [definition-name, rule-type, product-family-scope, product-scope, operation-scope, fixed-rule-order]
+      excludes: [editable-priority, numeric-priority, draft-flow-option, historical-flow-option]
+      publishedFlowPreviewSource: productionWorkDefinition.currentPublishedFlowVersionId
+    explanation: 新增或编辑适用规则时，客户页面根据已选作业、规则类型与范围实时组成可读摘要，并展示该作业当前已发布流程的只读预览入口。摘要可解释例外排除、指定范围、全局适用的固定处理顺序，但不暴露优先级字段；草稿和历史流程不属于适用规则选择或预览的目标。
+    evidenceIds: [evidence.business-knowledge-model, evidence.production-work-applicability-dialog-ui, evidence.production-work-flow-preview-ui]
   - id: rule.ai.runtime-determinism
     name: Codex/生成式 AI 不直接决定生产运行结果
     status: specified
@@ -31,5 +583,5 @@ rules:
     result:
       type: block
       reason: runtime-must-use-versioned-rules-and-handlers
-    explanation: Codex 或其他生成式 AI 只能在产品外部交付流程中生成候选知识、规则、事务流程、扩展插件、迁移、测试和文档；这些候选产物必须经过仓库契约规定的校验、人工确认和发布，生产运行结果不得由 Codex 或生成式 AI 直接决定，而必须由版本化规则、事务定义和已注册动作处理器确定性执行。
+    explanation: Codex 或其他生成式 AI 只能在产品外部交付流程中生成候选知识、规则、作业定义、扩展插件、迁移、测试和文档；这些候选产物必须经过仓库契约规定的校验、人工确认和发布，生产运行结果不得由 Codex 或生成式 AI 直接决定，而必须由版本化规则、作业定义和已注册动作处理器确定性执行。
     evidenceIds: [evidence.ai-transaction-runtime-architecture]

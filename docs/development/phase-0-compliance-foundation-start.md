@@ -6,7 +6,7 @@
 
 当前产品范围、业务闭环、MVP PRD、正式商用版 PRD 和 P0 功能矩阵已经重新对齐。第一阶段不需要等待某一个行业客户的完整生产业务调研，可以先开发不强依赖具体品类、不强依赖客户工艺细节、但后续所有业务模块都会复用的产品内核、流程底座和批次生产闭环模型。
 
-本阶段目标不是做完整 MES、完整检验、完整记录本或完整仓储，也不是实现表单设计器，而是先把 eDHR 的可信底盘、流程运行、受控表单模板接入、制程配置、事务配置、DHR 汇总和放行模型搭起来。
+本阶段目标不是做完整 MES、完整检验、完整记录本或完整仓储，也不是实现表单设计器，而是先把 eDHR 的可信底盘、流程运行、受控表单模板接入、制程配置、作业配置、DHR 汇总和放行模型搭起来。
 
 ## 2. 必读文档
 
@@ -74,10 +74,10 @@ Phase 0 的目标是实现 eDHR 的产品内核、流程底座和首条批次生
 -> 建立权限与身份基础
 -> 建立审计追踪
 -> 建立电子签名模型
--> 建立审核流程、表单流程、事务流程
+-> 建立审核流程、表单流程、作业流程
 -> 对接受控表单模板版本、DHR 模板和放行单模板版本
 -> 建立基础建模、工艺路线和制程配置
--> 建立事务定义、事务流程和事务实例
+-> 建立作业定义、作业流程和作业实例
 -> 建立工单、批次、工序执行和表单实例
 -> 建立 DHR 实例、DHR 汇总和放行单
 -> 建立最小完整性检查、放行阻断和追溯框架
@@ -105,8 +105,8 @@ signature     电子签名
 workflow      状态机/任务流转
 master-data   工厂、车间、产线、产品、设备、SOP、工序、原因
 templates     表单模板、DHR 模板、放行单模板、模板版本
-process       工艺路线、制程配置、工序绑定、事务显隐规则
-transactions  事务定义、事务版本、事务流程、事务实例
+process       工艺路线、制程配置、工序绑定、作业显隐规则
+work  作业定义、作业版本、作业流程、作业实例
 production    工单、批次、SN 基础模型和查询、工序执行、生产过站
 records       表单实例、字段值、表单审核
 dhr           DHR 实例、DHR 汇总、完整性检查
@@ -162,10 +162,10 @@ RouteVersion
 ProcessVersion
 ProcessOperationBinding
 ProcessFormBinding
-ProcessTransactionRule
+ProcessWorkRule
 
 TxnDefinition
-TxnVersion
+WorkVersion
 TxnNode
 TxnEdge
 TxnScopeRule
@@ -194,7 +194,7 @@ DRAFT -> VOIDED
 IN_REVIEW -> RETURNED -> DRAFT
 ```
 
-事务实例状态：
+作业实例状态：
 
 ```text
 CREATED -> RUNNING -> WAITING_TASK -> COMPLETED
@@ -254,7 +254,7 @@ APPROVED/CONDITIONAL_APPROVED -> ARCHIVED
 - 过度漂亮的 UI 动效。
 - 微服务拆分。
 
-本阶段也不要把产品做成通用低代码表单平台。所有能力都必须服务于 DHR 证据、生产执行、表单审核、事务处理、DHR 汇总、审核放行、追溯或受控电子记录数据完整性。
+本阶段也不要把产品做成通用低代码表单平台。所有能力都必须服务于 DHR 证据、生产执行、表单审核、作业处理、DHR 汇总、审核放行、追溯或受控电子记录数据完整性。
 
 ## 7. 第一轮可实现的纵向内核
 
@@ -266,19 +266,19 @@ APPROVED/CONDITIONAL_APPROVED -> ARCHIVED
 -> 创建表单模板、DHR 模板、放行单模板
 -> 发布模板版本
 -> 创建工艺路线和制程配置
--> 创建事务定义和事务流程
+-> 创建作业定义和作业流程
 -> 创建工单和批次
 -> 按制程生成 DHR 实例、工序执行和表单实例
 -> 填写表单字段并自动生成审计事件
 -> 对表单实例执行电子签名
--> 触发一个事务并生成事务表单
--> 按 DHR 模板汇总表单和事务证据
+-> 触发一个作业并生成作业表单
+-> 按 DHR 模板汇总表单和作业证据
 -> 执行 DHR 完整性检查
 -> 生成放行单并完成放行签名
 -> 归档冻结并可追溯
 ```
 
-这不是大而全产品演示，而是验证 eDHR 内核、流程运行、制程配置、事务驱动和 DHR 汇总是否成立。
+这不是大而全产品演示，而是验证 eDHR 内核、流程运行、制程配置、作业驱动和 DHR 汇总是否成立。
 
 ## 8. 审计追踪设计原则
 
@@ -300,7 +300,7 @@ APPROVED/CONDITIONAL_APPROVED -> ARCHIVED
 - 用户/角色/权限变更。
 - 模板创建、修改、发布、作废。
 - 流程定义、发布、绑定和运行干预。
-- 制程配置、事务定义、事务实例处理。
+- 制程配置、作业定义、作业实例处理。
 - DHR 创建和状态流转。
 - 表单字段修改。
 - 表单提交、退回、复核。
@@ -338,7 +338,7 @@ APPROVED/CONDITIONAL_APPROVED -> ARCHIVED
 模板结构：FormTemplateVersion.schema_json，JSONB，版本化，不可变
 流程结构：WorkflowVersion.definition_json，JSONB，发布后不可变
 制程结构：ProcessVersion，关系表 + 必要 JSONB，发布后不可变
-事务结构：TxnVersion.definition_json，JSONB，发布后不可变
+作业结构：WorkVersion.definition_json，JSONB，发布后不可变
 表单实例：FormInstance，关系表
 表单实例数据：由模板模块管理；eDHR 保存不可变快照引用、hash 和业务主体上下文
 DHR 汇总：DhrSummaryVersion + DhrSummaryItem，保留来源对象和汇总版本
@@ -397,18 +397,18 @@ Phase 0 完成时，至少应满足：
 1. 项目可以一键本地启动。
 2. 数据库迁移可重复执行。
 3. 可以创建组织、用户、角色、权限。
-4. 可以创建审核流程、表单流程、事务流程并发布版本。
+4. 可以创建审核流程、表单流程、作业流程并发布版本。
 5. 可以创建表单模板、DHR 模板、放行单模板，且生效版本不可被静默修改。
 6. 可以创建基础主数据、工艺路线和制程配置。
-7. 可以创建事务定义和事务版本。
+7. 可以创建作业定义和作业版本。
 8. 可以创建工单、批次、DHR 实例、工序执行和表单实例。
 9. 修改表单字段会产生审计追踪。
 10. 表单实例可以签名，签名后关键内容不能被普通修改。
-11. 可以触发一个事务实例并生成事务表单。
+11. 可以触发一个作业实例并生成作业表单。
 12. 可以按 DHR 模板生成 DHR 汇总版本。
 13. 可以执行最小 DHR 完整性检查。
 14. 可以生成放行单、完成放行签名并冻结 DHR。
-15. 可以从 DHR 追溯到表单、事务、工序、签名、审计和流程日志。
+15. 可以从 DHR 追溯到表单、作业、工序、签名、审计和流程日志。
 16. 关键逻辑有自动化测试。
 
 ## 13. 推荐第一批开发任务
@@ -424,7 +424,7 @@ Phase 0 完成时，至少应满足：
 7. 实现 master-data 模块。
 8. 实现 templates 模块的表单/DHR/放行单模板和版本。
 9. 实现 process 模块的工艺路线和制程配置。
-10. 实现 transactions 模块的事务定义、事务版本和事务实例。
+10. 实现 work 模块的作业定义、作业版本和作业实例。
 11. 实现 production 模块的工单、批次和工序执行。
 12. 实现 records 模块的 FormInstance 和 FormFieldValue。
 13. 实现 dhr 模块的 DHR 实例、汇总版本和完整性检查。
@@ -475,10 +475,10 @@ docs/architecture/data-retention-and-archive.md
 - 部署：Docker Compose 起步，后续预留 Kubernetes/Helm
 
 架构采用模块化单体，不要做微服务。优先模块：
-identity、audit、signature、workflow、master-data、templates、process、transactions、production、records、dhr、release、change、files、common。
+identity、audit、signature、workflow、master-data、templates、process、work、production、records、dhr、release、change、files、common。
 
 第一轮目标不是做完整业务页面，而是跑通：
-创建基础主数据 -> 创建表单/DHR/放行单模板 -> 创建工艺路线和制程配置 -> 创建事务定义 -> 创建工单/批次 -> 生成 DHR/工序/表单实例 -> 修改字段留审计 -> 电子签名 -> 触发事务 -> DHR 汇总 -> 完整性检查 -> 放行单签名 -> 归档冻结与追溯。
+创建基础主数据 -> 创建表单/DHR/放行单模板 -> 创建工艺路线和制程配置 -> 创建作业定义 -> 创建工单/批次 -> 生成 DHR/工序/表单实例 -> 修改字段留审计 -> 电子签名 -> 触发作业 -> DHR 汇总 -> 完整性检查 -> 放行单签名 -> 归档冻结与追溯。
 
 请先给出实施计划，然后开始落代码。
 ```
@@ -486,7 +486,7 @@ identity、audit、signature、workflow、master-data、templates、process、tr
 ## 16. 注意事项
 
 - 不要把审计追踪和电子签名后补，它们是底座。
-- 不要一开始做完整检验、记录本、仓储、设备和深度集成，但 P0 必须建好流程、制程、事务和 DHR 汇总模型。
+- 不要一开始做完整检验、记录本、仓储、设备和深度集成，但 P0 必须建好流程、制程、作业和 DHR 汇总模型。
 - 不要把系统做成泛表单工具。
 - 不要承诺系统自动保证客户整体质量体系或法规合规。
 - 要明确软件自身必须围绕 eDHR 预期用途进行受控设计和可验证交付。

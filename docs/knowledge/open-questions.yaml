@@ -1,2 +1,29 @@
-knowledgeModelVersion: 0.3.3
-questions: []
+knowledgeModelVersion: 0.3.7
+questions:
+  - id: question.production-work-condition-runtime-source-snapshot-contract
+    question: 已确认作业条件第一版字段目录和字段类型，但运行时真实来源、取值快照方式以及目录版本与生产实例快照的绑定契约何时闭环？
+    context: 当前配置层已开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段，目录版本为 work-runtime-fields-v1，并在每个条件分支配置中保存该分支字段快照。当前实现尚未提供生产上下文真实来源、运行时取值装配或生产实例快照落库，因此这些字段契约只完成配置层闭环。
+    options:
+      - 由生产作业运行上下文提供五个字段，并在作业实例创建时绑定来源值快照
+      - 由生产对象或工序上下文提供五个字段，并在作业实例创建时绑定来源值快照
+      - 待确认各字段的真实来源、取值时点、快照存储位置和历史数据迁移策略
+    impact: 在来源、取值时点和快照绑定契约闭环前，不能声称字段可被生产运行时可靠读取或进入作业实例执行快照；该问题影响字段目录兼容、历史解释和审计追溯。
+    visibility: internal
+  - id: question.production-work-condition-runtime-evaluation-contract
+    question: 结构化条件 AST 的求值、执行结果、异常处理和条件节点推进契约应如何落地？
+    context: 当前配置实现已能表达单个条件分支的 AST、字段白名单、目录版本和字段快照，但没有运行时求值器、按数组顺序的首个命中结果事件、否则回退、节点推进或执行审计实现。条件分支规则仍不得进入 verified 或 runtime 投影。
+    options:
+      - 由产品内核规则引擎按目录版本解释 AST，并返回满足/否则确定性结果
+      - 由作业运行时编排器解释 AST，并将结果转换为条件节点出口事件
+      - 待确认求值器所有权、异常语义、类型比较规则和执行审计要求
+    impact: 该问题影响条件节点运行、出口推进、失败处理、执行契约注册、作业实例快照解释和发布级验收。
+    visibility: internal
+  - id: question.production-work-condition-branch-model
+    question: 条件分支配置闭环后，动态出口与运行时分支结果如何绑定到实际节点和连线事件？
+    context: 条件节点的配置语义已经确认：conditionBranches 是有序条件分支数组，conditionDefaultBranch 是唯一否则分支；每个分支出口最多一条线。仍需明确运行时如何把第一个满足分支或否则结果绑定到实例中的具体节点推进事件。
+    options:
+      - 由已发布条件分支数组动态决定出口集合，并将每个出口映射为单条实例推进事件
+      - 由运行时编排器统一转换命中分支和否则分支结果，再推进对应目标节点
+      - 待确认分支结果事件、目标节点绑定、异常处理和执行审计字段
+    impact: 配置层分支数量和出口基数已确认，但在运行时事件、目标节点绑定和异常审计闭环前，不得把条件分支求值或节点推进标记为 verified/runtime。
+    visibility: internal

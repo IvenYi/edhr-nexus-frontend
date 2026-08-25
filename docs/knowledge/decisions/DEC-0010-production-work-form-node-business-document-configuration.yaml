@@ -1,0 +1,35 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0010
+    title: 作业流程表单填写节点业务单据称谓与完成条件配置移除
+    status: implemented
+    visibility: internal
+    context: 作业流程表单填写节点的配置界面需要使用面向 B 端用户更准确的“业务单据”称谓，完成条件配置不再存在。该调整只作用于作业模板节点配置，不改变表单模板主数据术语、formTemplateVersionId 引用契约或生产运行时能力；前期研发阶段不考虑历史数据兼容，不迁移、不读取、不清理历史 completionCondition 字段，本次不新增数据库迁移。
+    decisionStatements:
+      - id: DEC-0010-01
+        statement: 作业流程表单填写节点的引用字段、选择器提示和相关错误反馈使用“业务单据”称谓；内部节点配置仍通过 formTemplateVersionId 引用既有表单模板版本。
+        status: implemented
+        visibility: internal
+      - id: DEC-0010-02
+        statement: 完成条件配置不再属于作业流程表单填写节点配置。系统不读取、不迁移、不清理历史 completionCondition 字段，后续节点配置也不写入该字段。
+        status: implemented
+        visibility: internal
+      - id: DEC-0010-03
+        statement: 本决策不改变表单模板版本 API、表单主数据术语、formTemplateVersionId 引用契约、已发布流程图边关系、数据库结构、审计语义或生产运行时执行能力；本次不新增数据库迁移。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-work-form-node-business-document-config, evidence.production-work-flow-editor-ui, evidence.production-work-flow-version-draft-persistence]
+    acceptanceScenarios:
+      - id: scenario.form-node-business-document-label
+        given: 用户选中作业流程中的表单填写节点
+        when: 用户查看节点设置
+        then: 引用字段显示为“业务单据”，完成条件配置不显示
+        evidenceIds: [evidence.production-work-form-node-business-document-config]
+        evidenceRequirements: [前端构建, 代码检查, 用户视觉确认]
+      - id: scenario.completion-condition-not-supported
+        given: 作业流程表单填写节点配置
+        when: 系统读取、迁移、清理或保存节点配置
+        then: completionCondition 不属于当前配置契约；系统不读取、不迁移、不清理该字段，也不写入该字段
+        evidenceIds: [evidence.production-work-form-node-business-document-config, evidence.production-work-flow-version-draft-persistence]
+        evidenceRequirements: [节点配置源码检查, 草稿保存回归, 数据库迁移清单检查]

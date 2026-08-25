@@ -43,8 +43,33 @@ const REQUIRED_TEMPLATE_MODELING_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU: SidebarMenu = {
+  label: '流程中心',
+  icon: 'AccountTree',
+  children: [
+    { label: '审核流程模板', path: '/workflow/review-templates' },
+    { label: '流程实例', path: '/workflow/instances' },
+  ],
+};
+
+const REQUIRED_PRODUCTION_CONFIGURATION_MENU: SidebarMenu = {
+  label: '生产配置',
+  icon: 'Tune',
+  children: [
+    { label: '作业模板', path: '/production/work-templates' },
+  ],
+};
+
 const PROCESS_MODELING_PATHS = new Set(REQUIRED_PROCESS_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const TEMPLATE_MODELING_PATHS = new Set(REQUIRED_TEMPLATE_MODELING_MENU.children?.map((child) => child.path) ?? []);
+const PRODUCTION_MANAGED_PATHS = new Set([
+  '/workflow/review-templates',
+  '/workflow/instances',
+  '/workflow/txn-templates',
+  '/workflow/work-templates',
+  '/workflow/binding-rules',
+  '/production/work-templates',
+]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
   '/master-data/units',
@@ -149,6 +174,7 @@ export function normalizeManagedSidebarModules(modules: SidebarModule[]): Sideba
 export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
   const nextModules = cloneSidebarModules(removeRetiredSidebarModules(modules));
   ensureRequiredProcessModeling(nextModules);
+  ensureRequiredProductionMenus(nextModules);
   ensureRequiredSystemMenus(nextModules);
   return nextModules;
 }
@@ -215,6 +241,47 @@ function ensureRequiredProcessModeling(modules: SidebarModule[]) {
     })
     .filter((menu): menu is SidebarMenu => menu !== null);
   dataModule.menus.unshift(...cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU, REQUIRED_TEMPLATE_MODELING_MENU] }])[0].menus);
+}
+
+function ensureRequiredProductionMenus(modules: SidebarModule[]) {
+  let productionModule = modules.find((module) => module.id === 'production');
+
+  if (!productionModule) {
+    productionModule = {
+      id: 'production',
+      label: '生产',
+      icon: 'PrecisionManufacturing',
+      menus: [],
+    };
+    modules.push(productionModule);
+  }
+
+  productionModule.label = '生产';
+  productionModule.icon = productionModule.icon || 'PrecisionManufacturing';
+
+  for (const module of modules) {
+    module.menus = module.menus
+      .map((menu) => {
+        if (menu.children) {
+          const children = menu.children.filter((child) => !PRODUCTION_MANAGED_PATHS.has(child.path));
+          return children.length > 0 ? { ...menu, children } : null;
+        }
+        return menu.path && PRODUCTION_MANAGED_PATHS.has(menu.path) ? null : menu;
+      })
+      .filter((menu): menu is SidebarMenu => menu !== null);
+  }
+
+  productionModule.menus = productionModule.menus.filter(
+    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置',
+  );
+  productionModule.menus.unshift(
+    ...cloneSidebarModules([{
+      id: 'production',
+      label: '生产',
+      icon: 'PrecisionManufacturing',
+      menus: [REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
+    }])[0].menus,
+  );
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
@@ -296,6 +363,7 @@ export function useManagedSidebarModules(): SidebarModule[] {
 
 export function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
+  if (path === '/production/work-templates') return 'workflow.work-templates';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

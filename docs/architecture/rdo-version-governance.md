@@ -16,7 +16,7 @@ MVP 和 1.0 有意保持精简的运行模型。后续版本可以增加受控�
 | `order/method/ImportCheckMethod.java` | 工单导入时缺少 `source_process_id__ri_` 会报“制程必须指定版本”。 | 不允许仅引用制程父级；必须传入子版本。 |
 | `order/biz/MfgOrderSplitContainerBs.java`、`MfgOrderSplitSNBs.java` | 拆分批次/SN 时写入 `sourceProcessId = baseId:versionId`，并带出路线、DHR 和放行模板引用。 | 批次/SN 继承工单选定的具体制程版本。 |
 | `transaction/biz/ContainerWorkStartBs.java`、`SNWorkStartBs.java` | 开工时以 `sourceProcessId` 读取制程，并调用 `getOrCopyProductProcess` 创建运行使用的制程快照。 | 开工时冻结制程及其工艺路线、表单、文档等配置，保留可重建的执行证据。 |
-| `product/method/GetProductProcessHistoryOfProduct.java` | 将路线、DHR、放行模板等 RDO 兑换为具体版本，并复制工序表单/文档/事务配置至 `PRODUCT_PROCESS_HISTORY`。 | 生产快照必须保存所有关键引用的具体版本与配置内容。 |
+| `product/method/GetProductProcessHistoryOfProduct.java` | 将路线、DHR、放行模板等 RDO 兑换为具体版本，并复制工序表单/文档/作业配置至 `PRODUCT_PROCESS_HISTORY`。 | 生产快照必须保存所有关键引用的具体版本与配置内容。 |
 
 冠骋的 `EdhrAppService`、同步接口中仍有未传版本时查询 `default` 的兼容分支。eDHR 不采用该部分：本产品没有当前/默认版本，未来生产入口必须要求用户显式选择具体生效版本。
 

@@ -269,6 +269,7 @@ public class AuditController {
 
     private static final Map<String, String> ACTION_LABELS = Map.ofEntries(
             Map.entry("CREATE", "新增"),
+            Map.entry("BASELINE", "历史基线导入"),
             Map.entry("UPDATE", "编辑"),
             Map.entry("DELETE", "删除"),
             Map.entry("ENABLE", "启用"),

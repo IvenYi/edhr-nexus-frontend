@@ -47,14 +47,14 @@ export default function ReviewTemplateList() {
   const { data, isLoading } = useQuery({
     queryKey: ['review-templates', page],
     queryFn: async () => {
-      const res = await client.get('/workflow/templates', { params: { page, size: 10, type: 'REVIEW' } });
+      const res = await client.get('/workflow/review-templates', { params: { page, size: 10 } });
       return res.data.data as PageResult<WfTemplate>;
     },
   });
 
   const createMutation = useMutation({
     mutationFn: (body: { name: string; description: string }) =>
-      client.post('/workflow/templates', { ...body, type: 'REVIEW' }),
+      client.post('/workflow/review-templates', body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['review-templates'] });
       setOpen(false);
@@ -63,7 +63,7 @@ export default function ReviewTemplateList() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => client.delete(`/workflow/templates/${id}`),
+    mutationFn: (id: number) => client.delete(`/workflow/review-templates/${id}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['review-templates'] }),
   });
 

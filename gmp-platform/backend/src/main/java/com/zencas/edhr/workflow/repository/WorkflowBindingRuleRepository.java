@@ -10,5 +10,8 @@ import java.util.List;
 @Repository
 public interface WorkflowBindingRuleRepository extends JpaRepository<WorkflowBindingRule, Long>, JpaSpecificationExecutor<WorkflowBindingRule> {
     List<WorkflowBindingRule> findByBusinessTypeAndIsActiveTrue(String businessType);
+    List<WorkflowBindingRule> findByBusinessTypeOrderByPriorityDescCreatedAtDesc(String businessType);
     List<WorkflowBindingRule> findByDefinitionId(Long definitionId);
+    List<WorkflowBindingRule> findByDefinitionIdOrderByPriorityDescCreatedAtDesc(Long definitionId);
+    void deleteByDefinitionId(Long definitionId);
 }

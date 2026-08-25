@@ -111,3 +111,15 @@ databaseChangeLog:
       file: db/changelog/0053-product-family-process-owner.sql
   - include:
       file: db/changelog/0054-product-family-code-case-insensitive.sql
+  - include:
+      file: db/changelog/0055-rename-transaction-template-to-work.sql
+  - include:
+      file: db/changelog/0056-workflow-definition-work-type.sql
+  - include:
+      file: db/changelog/0057-production-work-template-configuration.sql
+  - include:
+      file: db/changelog/0058-work-applicability-priority.sql
+  - include:
+      file: db/changelog/0059-work-template-audit-baseline.sql
+  - include:
+      file: db/changelog/0060-work-template-version-integrity.sql

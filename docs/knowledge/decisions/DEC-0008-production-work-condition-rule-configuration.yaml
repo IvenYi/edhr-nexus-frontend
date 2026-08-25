@@ -1,0 +1,70 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0008
+    title: 生产作业条件规则构建器与第一版运行时字段目录
+    status: deprecated
+    visibility: internal
+    context: 条件节点曾通过公用条件规则弹窗配置单个结构化 AST。该历史配置能力已由 DEC-0011 的有序多分支模型取代；config.conditionRule、分支 rule 和固定 condition-true/condition-false 出口均不再是输入或兼容契约。字段运行时真实来源、条件求值、生产实例快照和执行解析仍未闭环，因此本决策只记录被取代的历史配置层能力。
+    decisionStatements:
+      - id: DEC-0008-01
+        statement: 条件节点通过公用条件规则弹窗配置结构化 all、any、not、clause AST，支持且、或、非、嵌套分组、多条条件增删、类型校验、摘要和只读展示；前端右侧只显示摘要和配置条件规则、编辑条件规则或查看条件规则入口。
+        status: implemented
+        visibility: internal
+      - id: DEC-0008-02
+        statement: 作业适配器第一版目录版本为 work-runtime-fields-v1，开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个运行上下文字段，五者均为 string。
+        status: implemented
+        visibility: internal
+      - id: DEC-0008-03
+        statement: 第一版条件运算符为 equals、not-equals、contains、starts-with、in、is-present、is-null；in 的多值条件使用数组值。
+        status: implemented
+        visibility: internal
+      - id: DEC-0008-04
+        statement: 条件节点确认规则后保存 AST、字段目录版本和字段快照；后端发布前校验 AST 结构、字段白名单、字段目录版本、字段快照和运算符白名单。
+        status: implemented
+        visibility: internal
+      - id: DEC-0008-05
+        statement: 历史单规则模型中的“否则”是条件节点默认出口语义，不属于条件规则组；该模型已由 DEC-0011 完全取代，当前配置只接受 conditionBranches[].conditionRule 与唯一 conditionDefaultBranch。
+        status: deprecated
+        visibility: internal
+      - id: DEC-0008-06
+        statement: 当前字段目录只完成配置层契约；运行时真实字段来源、取值时点、生产实例快照绑定、AST 求值、异常处理、节点推进和执行审计契约仍未实现，不得将相关规则标记为 verified 或投影到 runtime。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0006]
+    evidenceIds: [evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-adapter, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test, evidence.production-work-flow-editor-ui]
+    acceptanceScenarios:
+      - id: scenario.production-work-condition-rule-configure-ast
+        given: 用户正在编辑可修改的作业流程草稿并选中条件节点
+        when: 用户在公用条件规则弹窗中配置嵌套且/或/非条件并确认
+        then: 条件节点保存结构化 AST、摘要、work-runtime-fields-v1 目录版本和字段快照；只读查看不提供编辑入口
+        evidenceIds: [evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-adapter, evidence.production-work-flow-editor-ui]
+        evidenceRequirements: [条件规则构建器单元测试, 条件节点 UI E2E, 流程草稿保存测试]
+      - id: scenario.production-work-condition-rule-publish-validation
+        given: 草稿包含条件节点和结构化条件规则
+        when: 用户发布流程
+        then: 服务端校验 AST、字段目录版本、五个字段白名单、字段快照和七个运算符；不合法配置被阻断
+        evidenceIds: [evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
+        evidenceRequirements: [发布前条件规则 API 测试, AST 结构回归测试]
+      - id: scenario.production-work-condition-runtime-closure
+        given: 未来生产执行创建作业实例
+        when: 运行时读取条件节点
+        then: 必须使用已确认的字段真实来源、取值快照、AST 求值、条件出口推进和执行审计契约；当前版本不声称该场景已实现
+        evidenceIds: []
+        evidenceRequirements: [运行时字段来源集成测试, 条件求值测试, 作业实例快照测试, 条件节点推进测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-work-condition-backend-operator-superset
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+        lineHint: 51
+        summary: 主智能体已将 CONDITION_OPERATORS 收敛为第一版七个运算符，并新增 equals-ignore-case 注入回归测试；后端发布校验现在与前端字段目录及第一版业务契约一致。
+        evidenceIds: [evidence.production-work-condition-rule-adapter, evidence.production-work-condition-rule-controller]
+      - id: discrepancy.production-work-condition-runtime-closure
+        status: accepted
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+        lineHint: 473
+        summary: 当前实现只做条件规则配置持久化和发布前校验，没有生产上下文真实来源、条件求值、节点推进、作业实例或生产执行快照证据；相关能力继续保持 specified。
+        evidenceIds: [evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]

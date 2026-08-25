@@ -1,5 +1,5 @@
-%% Codex 协作交付与 eDHR 本体规则事务运行架构
-%% Codex 属于产品外部的开发和交付工具；本体、规则、事务编排和动作处理器属于产品运行能力。
+%% Codex 协作交付与 eDHR 本体规则作业运行架构
+%% Codex 属于产品外部的开发和交付工具；本体、规则、作业编排和动作处理器属于产品运行能力。
 flowchart TB
     classDef actor fill:#fff7e6,stroke:#ad6800,color:#5c3b00,stroke-width:1px;
     classDef codex fill:#e6f4ff,stroke:#1677ff,color:#102a43,stroke-width:1px;
@@ -20,12 +20,12 @@ flowchart TB
             direction TB
             K["AGENTS.md + 角色契约<br/>统一工作流程与分工"]:::asset
             D["decisionPackage + 知识基线<br/>概念、关系、规则、证据"]:::asset
-            I["业务代码、数据库、事务定义<br/>配置、插件和测试候选"]:::asset
+            I["业务代码、数据库、作业定义<br/>配置、插件和测试候选"]:::asset
             S["本体子智能体 + 质量子智能体<br/>知识沉淀、独立验证"]:::asset
         end
 
         V["验证与人工确认<br/>结构校验、测试、审计和交付审查"]:::release
-        PKG["版本化交付资产<br/>Git 提交、迁移、规则、事务定义和插件"]:::release
+        PKG["版本化交付资产<br/>Git 提交、迁移、规则、作业定义和插件"]:::release
 
         U --> C
         C --> K
@@ -43,14 +43,14 @@ flowchart TB
 
     subgraph PRODUCT[ eDHR 产品内受控配置与运行平面 ]
         direction TB
-        CONFIG["产品内受控配置<br/>RDO、规则、事务定义与可视化编排"]:::runtime
+        CONFIG["产品内受控配置<br/>RDO、规则、作业定义与可视化编排"]:::runtime
 
         subgraph EXECUTION[确定性生产运行]
             direction LR
             E["统一业务事件入口<br/>主体、工序、来源、幂等键"]:::runtime
-            CTX["执行上下文与快照<br/>产品、制程、规则、事务版本"]:::runtime
+            CTX["执行上下文与快照<br/>产品、制程、规则、作业版本"]:::runtime
             RE["业务规则运行引擎<br/>allow / block / select / trigger"]:::runtime
-            TO["事务编排运行时<br/>实例、节点状态、等待、分支"]:::runtime
+            TO["作业编排运行时<br/>实例、节点状态、等待、分支"]:::runtime
             AR["动作处理器注册表<br/>契约、权限、幂等、异常语义"]:::action
 
             subgraph SERVICES[确定性领域服务]
@@ -61,10 +61,10 @@ flowchart TB
                 S4["项目插件与外部连接器"]:::domain
             end
 
-            AUDIT["证据与运行治理<br/>事务主线、审计、节点日志、指标"]:::evidence
+            AUDIT["证据与运行治理<br/>作业主线、审计、节点日志、指标"]:::evidence
 
             E --> CTX --> RE
-            RE -->|"触发已发布事务"| TO
+            RE -->|"触发已发布作业"| TO
             RE -->|"直接允许或阻断"| S1
             TO --> AR
             AR --> S1
@@ -83,7 +83,7 @@ flowchart TB
     end
 
     BOUNDARY --> CONFIG
-    BOUNDARY -. "加载已发布本体、规则、事务和插件" .-> CTX
+    BOUNDARY -. "加载已发布本体、规则、作业和插件" .-> CTX
 
     NOAI["Codex / 生成式 AI 不属于生产运行时<br/>不直接决定生产结果或写入受控记录"]:::boundary
     C -. "外部开发和交付工具" .-> NOAI

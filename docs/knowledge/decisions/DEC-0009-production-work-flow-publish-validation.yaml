@@ -1,0 +1,87 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0009
+    title: 生产作业流程草稿保存与发布完整性校验
+    status: specified
+    visibility: internal
+    context: 作业流程编辑需要允许用户逐步完成复杂配置，草稿保存与对外发布承担不同的业务责任。草稿是可继续编辑的中间状态，发布才建立可供适用规则和未来生产执行读取的只读流程版本。本决策补充 DEC-0006、DEC-0007 和 DEC-0008 的流程版本生命周期与条件规则边界，并已同步到当前作业流程编辑器和发布接口。
+    decisionStatements:
+      - id: DEC-0009-01
+        statement: 作业流程草稿允许保存不完整配置；草稿保存不执行表单填写节点的生效表单版本必填校验，也不要求所有业务节点已经从开始节点连通到结束节点，但仍可执行节点数据格式、节点引用和普通节点出口等基础完整性检查。
+        status: specified
+        visibility: internal
+      - id: DEC-0009-02
+        statement: 发布作业流程版本前，所有表单填写节点必须引用当前生效时间窗内的表单版本；不存在、未生效或已失效的表单版本不能满足发布要求。表单版本的用户可见生效状态由统一 RDO 生效时间窗计算，持久化 status 不参与该引用判断。
+        status: specified
+        visibility: internal
+      - id: DEC-0009-03
+        statement: 发布作业流程版本前，流程图必须满足第一版连线完整性：开始节点和结束节点各唯一，连线引用的节点存在，不允许自连线和重复出口，开始节点及普通作业节点最多一条出口，非开始节点有入边，非结束节点有出边，所有节点从开始节点可达且最终可到达结束节点。条件节点只按 DEC-0011 的动态分支出口模型校验全部 conditionBranches 与唯一 conditionDefaultBranch 的连线；config.conditionRule、分支 rule 和固定 condition-true/condition-false 出口不属于发布输入。
+        status: specified
+        visibility: internal
+      - id: DEC-0009-04
+        statement: 发布校验失败时，界面应将缺少必填配置或连线问题对应的节点以红色边框标识并给出提示；该校验反馈是临时界面状态，不得持久化到流程语义 AST、节点业务配置或流程版本快照。
+        status: specified
+        visibility: internal
+      - id: DEC-0009-05
+        statement: 已发布流程版本保持只读；只有通过发布完整性校验的草稿可以成为当前对外流程，草稿保存不会改变当前对外流程。
+        status: specified
+        visibility: internal
+      - id: DEC-0009-06
+        statement: 已发布流程版本再次打开时，必须基于该版本冻结的 nodesJson 和 edgesJson 完整渲染只读图形投影，包含呈现其已保存连接线所需的图形端点；不得因为只读状态隐藏连接线投影、回退草稿数据或重新推导连接关系，编辑能力仍仅对可编辑草稿开放。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-test, evidence.production-work-flow-version-draft-persistence, evidence.rdo-version-status-resolver, evidence.template-modeling-rdo-status-projection, evidence.form-template-version-persisted-status-default, evidence.product-process-owner-service]
+    acceptanceScenarios:
+      - id: scenario.production-work-flow-draft-save-allows-incomplete
+        given: 用户正在编辑尚未完成表单引用或尚未连通到结束节点的作业流程草稿
+        when: 用户点击保存草稿
+        then: 草稿可以保存，且不因为发布级别的表单必填或全图连通性校验被阻断
+        evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller]
+        evidenceRequirements: [草稿保存 API 测试, 草稿重新读取测试]
+      - id: scenario.production-work-flow-publish-requires-effective-forms
+        given: 草稿包含未选择生效表单版本的表单填写节点
+        when: 用户发布流程版本
+        then: 发布被阻断，对应节点显示红色边框并提示缺少生效表单版本
+        evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.rdo-version-status-resolver]
+        evidenceRequirements: [发布校验 API 测试, 发布失败节点反馈 UI 测试]
+      - id: scenario.production-work-flow-publish-allows-effective-form-with-draft-persisted-status
+        given: 草稿包含一个持久化 status 为 DRAFT、但 effectiveFrom/effectiveTo 当前生效的表单模板版本
+        when: 用户发布流程版本
+        then: 发布校验接受该表单版本；引用资格只由 RdoVersionStatusResolver 的有效时间窗判断，不因持久化 status 为 DRAFT 而阻断
+        evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test, evidence.rdo-version-status-resolver, evidence.form-template-version-persisted-status-default]
+        evidenceRequirements: [发布校验 API 测试, RDO 状态解析源码核对]
+      - id: scenario.production-work-flow-publish-requires-connected-graph
+        given: 草稿包含孤立节点、缺少入边或出边的节点，或不能从开始到达结束的节点
+        when: 用户发布流程版本
+        then: 发布被阻断，对应连线或节点显示可定位的错误反馈；校验反馈不写入流程业务配置
+        evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller]
+        evidenceRequirements: [流程连通性单元测试, 发布校验 API 测试, 发布失败 UI 测试]
+      - id: scenario.production-work-flow-published-read-only
+        given: 流程草稿已通过发布完整性校验并成为当前对外流程
+        when: 用户再次打开已发布版本
+        then: 版本只读，后续编辑必须发生在草稿版本中
+        evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller]
+        evidenceRequirements: [已发布版本只读 UI 测试, 版本生命周期 API 测试]
+      - id: scenario.production-work-flow-published-graph-preserves-edges
+        given: 已发布流程版本的 nodesJson 和 edgesJson 已保存节点及连接关系
+        when: 用户再次打开该已发布版本
+        then: 页面从同一已发布版本投影全部节点和连接线，节点保留不可连接的 source/target 图形端点，且不开放拖拽、快捷新增、手动连线或删除编辑能力
+        evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-flow-version-draft-persistence]
+        evidenceRequirements: [已发布版本只读图形投影 UI 测试, 前端构建和静态检查, 版本图数据重新读取核对]
+    implementationStatus:
+      status: implemented
+      evidence:
+        - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+          summary: 发布接口已校验条件规则、表单生效版本和全图连通性；草稿保存仅保留基础数据完整性检查。
+        - path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+          summary: 草稿保存不调用发布校验；发布失败维护临时节点错误状态并显示红色边框与提示；预览关闭会恢复外层表单选择器。
+    implementationDiscrepancies:
+      - id: discrepancy.production-work-published-flow-edge-projection
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+        lineHint: 482
+        summary: 已修复已发布只读版本的连接线投影：WorkFlowNode 始终渲染必要的 source/target Handle，并以 isConnectable 绑定可编辑状态；已发布版本保留图形端点用于绘制连接线，但仍不开放拖拽、连线、快捷新增或删除编辑能力。
+        evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-flow-version-draft-persistence]

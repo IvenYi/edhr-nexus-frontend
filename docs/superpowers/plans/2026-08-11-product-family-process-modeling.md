@@ -4,7 +4,7 @@
 
 **Goal:** 在产品簇页面建立半成品/产成品成员关系，并让产品和产品簇共用同一套可审计的制程版本配置与生产兜底查询。
 
-**Architecture:** 在现有 `product_process` 上增加 `owner_type + owner_id`，保留并迁移旧 `product_version_id`；所有版本、工序、表单和文档绑定表继续复用。新增产品簇成员关系表和 owner-aware 制程服务，产品旧接口保留兼容入口。前端将产品簇路由从通用主数据表切换为复用产品管理 RDO 父子表格、详情审计抽屉、成员维护弹窗和制程版本编辑器。
+**Architecture:** 在现有 `product_process` 上增加 `owner_type + owner_id`，保留并迁移旧 `product_version_id`；所有版本、工序、表单和文档绑定表继续复用。新增产品簇成员关系表和 owner-aware 制程服务，产品旧接口保留兼容入口。前端将产品簇路由从通用主数据表切换为复用产品管理的父子表格、详情审计抽屉、成员维护弹窗和制程版本编辑器。
 
 **Tech Stack:** Spring Boot/JPA, PostgreSQL/Liquibase, JUnit 5/Mockito, React/TypeScript, MUI, TanStack Query, existing Playwright/browser verification scripts.
 
@@ -226,7 +226,7 @@ git add gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/Pr
 git commit -m "feat: share process configuration owners"
 ```
 
-## Task 5: Build the product-family RDO page and shared member/version interactions
+## Task 5: Build the product-family modeling page and shared member/version interactions
 
 **Files:**
 - Create: `gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx`
@@ -250,7 +250,7 @@ cd gmp-platform/frontend
 npm test -- ProductFamilyModelingPage.test.tsx
 ```
 
-- [ ] **Step 3: Implement the RDO parent/child table**
+- [ ] **Step 3: Implement the parent/child table**
 
 Use dimensions, sticky operation column, column settings, status badge, blue parent-name link, empty/loading/error states, and icon ordering from `ProductModelingPage.tsx`. Do not add a “view parent product” icon or an audit icon. Parent operations are members, add version, edit, delete; child operations match product management.
 

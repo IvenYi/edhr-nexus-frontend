@@ -14,7 +14,7 @@ import java.util.Set;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StateMachineDef {
 
-    /** Business entity type (e.g., "TEMPLATE", "FORM_INSTANCE", "TXN_INSTANCE"). */
+    /** Business entity type (e.g., "TEMPLATE", "FORM_INSTANCE", "WORK_INSTANCE"). */
     String entityType();
 
     /** Comma-separated list of transitions in format "FROM->TO". */

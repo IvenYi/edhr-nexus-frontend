@@ -29,9 +29,11 @@ import java.util.Map;
  * Workflow template (definition) controller with full lifecycle management.
  */
 @RestController
-@RequestMapping("/api/v1/workflow/templates")
+@RequestMapping("/api/v1/workflow/review-templates")
 @RequiredArgsConstructor
 public class WorkflowTemplateController {
+
+    private static final String REVIEW_WORKFLOW_TYPE = "REVIEW";
 
     private final WorkflowDefinitionRepository workflowDefinitionRepository;
     private final WorkflowDefinitionVersionRepository versionRepository;
@@ -49,16 +51,14 @@ public class WorkflowTemplateController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<WorkflowDefinition> result = workflowDefinitionRepository.findAll(pageable);
+        Page<WorkflowDefinition> result = workflowDefinitionRepository.findByType(REVIEW_WORKFLOW_TYPE, pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<WorkflowDefinition> getById(@PathVariable Long id) {
-        return workflowDefinitionRepository.findById(id)
-                .map(ApiResponse::success)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
+        return ApiResponse.success(findReviewDefinition(id));
     }
 
     @PostMapping
@@ -66,17 +66,21 @@ public class WorkflowTemplateController {
         if (entity.getId() == null) {
             entity.setId(idGenerator.nextId());
         }
+        entity.setType(REVIEW_WORKFLOW_TYPE);
         return ApiResponse.success(workflowDefinitionRepository.save(entity));
     }
 
     @PutMapping("/{id}")
     public ApiResponse<WorkflowDefinition> update(@PathVariable Long id, @RequestBody WorkflowDefinition entity) {
+        findReviewDefinition(id);
         entity.setId(id);
+        entity.setType(REVIEW_WORKFLOW_TYPE);
         return ApiResponse.success(workflowDefinitionRepository.save(entity));
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable Long id) {
+        findReviewDefinition(id);
         workflowDefinitionRepository.deleteById(id);
         return ApiResponse.success(null);
     }
@@ -88,9 +92,7 @@ public class WorkflowTemplateController {
      */
     @GetMapping("/{id}/versions")
     public ApiResponse<List<WorkflowDefinitionVersion>> listVersions(@PathVariable Long id) {
-        // Verify template exists
-        workflowDefinitionRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
+        findReviewDefinition(id);
         List<WorkflowDefinitionVersion> versions = versionRepository
                 .findByDefinitionIdOrderByVersionNumberDesc(id);
         return ApiResponse.success(versions);
@@ -102,9 +104,9 @@ public class WorkflowTemplateController {
     @GetMapping("/{id}/versions/{versionId}")
     public ApiResponse<WorkflowDefinitionVersion> getVersion(
             @PathVariable Long id, @PathVariable Long versionId) {
-        workflowDefinitionRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
+        findReviewDefinition(id);
         return versionRepository.findById(versionId)
+                .filter(version -> id.equals(version.getDefinitionId()))
                 .map(ApiResponse::success)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_010));
     }
@@ -115,8 +117,7 @@ public class WorkflowTemplateController {
     @PostMapping("/{id}/versions")
     @Transactional
     public ApiResponse<WorkflowDefinitionVersion> createDraftVersion(@PathVariable Long id) {
-        workflowDefinitionRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
+        findReviewDefinition(id);
 
         // Find the latest version to copy from
         List<WorkflowDefinitionVersion> existingVersions = versionRepository
@@ -189,10 +190,10 @@ public class WorkflowTemplateController {
     @Transactional
     public ApiResponse<WorkflowDefinitionVersion> publishVersion(
             @PathVariable Long id, @PathVariable Long versionId) {
-        workflowDefinitionRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
+        findReviewDefinition(id);
 
         WorkflowDefinitionVersion version = versionRepository.findById(versionId)
+                .filter(candidate -> id.equals(candidate.getDefinitionId()))
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_010));
 
         if (!"DRAFT".equals(version.getStatus())) {
@@ -226,10 +227,10 @@ public class WorkflowTemplateController {
     @Transactional
     public ApiResponse<WorkflowDefinitionVersion> revokeVersion(
             @PathVariable Long id, @PathVariable Long versionId) {
-        workflowDefinitionRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
+        findReviewDefinition(id);
 
         WorkflowDefinitionVersion version = versionRepository.findById(versionId)
+                .filter(candidate -> id.equals(candidate.getDefinitionId()))
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_010));
 
         if (!"PUBLISHED".equals(version.getStatus())) {
@@ -255,5 +256,11 @@ public class WorkflowTemplateController {
         }
 
         return ApiResponse.success(version);
+    }
+
+    private WorkflowDefinition findReviewDefinition(Long id) {
+        return workflowDefinitionRepository.findById(id)
+                .filter(definition -> REVIEW_WORKFLOW_TYPE.equals(definition.getType()))
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
     }
 }
