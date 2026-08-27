@@ -123,3 +123,5 @@ databaseChangeLog:
       file: db/changelog/0059-work-template-audit-baseline.sql
   - include:
       file: db/changelog/0060-work-template-version-integrity.sql
+  - include:
+      file: db/changelog/0061-production-work-order.sql
