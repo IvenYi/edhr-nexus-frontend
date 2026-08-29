@@ -75,9 +75,9 @@ concepts:
   - id: concept.production-batch
     termId: term.production-batch
     kind: runtime-fact
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.business-knowledge-model]
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.production-service-test, evidence.migration-0066-production-object-planned-window]
   - id: concept.execution-snapshot
     termId: term.execution-snapshot
     kind: runtime-fact
@@ -192,6 +192,78 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.ontology-impact-analysis-architecture]
+  - id: concept.work-order
+    termId: term.work-order
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-controller, evidence.migration-0061-work-order, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.migration-0063-production-work-order-permission, evidence.production-frontend-menu-permission, evidence.production-frontend-layout-permission-filter, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test]
+  - id: concept.production-object
+    termId: term.production-object
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.production-service-test, evidence.production-object-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test]
+  - id: concept.production-mode
+    termId: term.production-mode
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-service, evidence.production-service-test]
+  - id: concept.production-form
+    termId: term.production-form
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-object-entity, evidence.production-service, evidence.production-service-test]
+  - id: concept.batch
+    termId: term.batch
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-service-test]
+  - id: concept.serial-number
+    termId: term.serial-number
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-service-test]
+  - id: concept.data-audit-action-category
+    termId: term.data-audit-action-category
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-aspect]
+  - id: concept.production-object-pending-list
+    termId: term.production-object-pending-list
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.work-orders-api]
+  - id: concept.production-object-batch-submission
+    termId: term.production-object-batch-submission
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-batch-controller, evidence.production-service-batch-split, evidence.production-work-order-page-pending-list, evidence.work-orders-api]
+  - id: concept.production-batch-import-template
+    termId: term.production-batch-import-template
+    kind: business-configuration
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-page-pending-list]
+  - id: concept.process-version-read-only-preview
+    termId: term.process-version-read-only-preview
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service, evidence.product-process-resolution-for-production]
+  - id: concept.audit-change-snapshot
+    termId: term.audit-change-snapshot
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test]
 relations:
   - id: relation.material-derives-product
     source: concept.material
@@ -288,9 +360,9 @@ relations:
     source: concept.product-process-version
     target: concept.production-batch
     cardinality: one-to-zero-or-many
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.business-knowledge-model]
+    evidenceIds: [evidence.production-service, evidence.production-object-controller, evidence.production-service-test]
   - id: relation.production-batch-records-product
     source: concept.production-batch
     target: concept.product
@@ -515,3 +587,94 @@ relations:
     status: specified
     visibility: internal
     evidenceIds: [evidence.ontology-impact-analysis-architecture]
+  - id: relation.work-order-has-production-objects
+    source: concept.work-order
+    target: concept.production-object
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-object-entity, evidence.production-service, evidence.production-service-test]
+  - id: relation.work-order-locks-process-version
+    source: concept.work-order
+    target: concept.product-process-version
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-service, evidence.product-process-resolution-for-production, evidence.production-service-test]
+  - id: relation.production-object-belongs-to-work-order
+    source: concept.production-object
+    target: concept.work-order
+    cardinality: many-to-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-service]
+  - id: relation.production-object-uses-process-version
+    source: concept.production-object
+    target: concept.product-process-version
+    cardinality: many-to-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.product-process-resolution-for-production]
+  - id: relation.work-order-inherits-production-mode
+    source: concept.work-order
+    target: concept.production-mode
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-service]
+  - id: relation.work-order-uses-production-form
+    source: concept.work-order
+    target: concept.production-form
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-service]
+  - id: relation.production-object-has-production-form
+    source: concept.production-object
+    target: concept.production-form
+    cardinality: many-to-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-service]
+  - id: relation.production-object-represents-serial-number
+    source: concept.production-object
+    target: concept.serial-number
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-service]
+  - id: relation.pending-list-contains-production-object-candidates
+    source: concept.production-object-pending-list
+    target: concept.production-object
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-page-pending-list]
+  - id: relation.batch-submission-creates-production-objects
+    source: concept.production-object-batch-submission
+    target: concept.production-object
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-object-batch-controller, evidence.production-service-batch-split]
+  - id: relation.pending-list-uses-production-batch-import-template
+    source: concept.production-batch-import-template
+    target: concept.production-object-pending-list
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-page-pending-list]
+  - id: relation.work-order-split-previews-locked-process-version
+    source: concept.work-order
+    target: concept.process-version-read-only-preview
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service]
+  - id: relation.audit-event-retains-change-snapshot
+    source: concept.data-audit-action-category
+    target: concept.audit-change-snapshot
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect]

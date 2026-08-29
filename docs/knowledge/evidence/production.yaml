@@ -1,0 +1,197 @@
+knowledgeModelVersion: 0.3.7
+evidence:
+  - id: evidence.production-work-order-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/WorkOrder.java
+    description: 工单持久化实体，保存工单编号、订单编号、产品、可空制程版本、生产模式、生产形态、计划数量、计划起止时间、备注和工单状态；初始状态为 CREATED。
+    visibility: internal
+  - id: evidence.production-object-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/ProductionObject.java
+    description: 生产对象持久化实体，保存工单、对象编号、BATCH/SN 形态、锁定制程版本、目标数量、计划起止时间、备注、良品、NG、报废数量和对象状态；生产批次复用其中的 BATCH 形态。
+    visibility: internal
+  - id: evidence.production-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+    description: 生产服务实现工单拆分、批量拆分、制程解析与首次锁定、BATCH/SN 生产形态及数量校验、生产对象编号全局唯一校验、对象计划时间校验、对象开工/完成/取消和工单关闭；SN 生产对象目标数量固定为 1，同一工单不得混用 BATCH/SN；工单创建后可直接拆分，不存在独立发布步骤；已锁定制程通过 findVersionForProduct 继续解析，不重新应用有效期筛选。
+    visibility: internal
+  - id: evidence.production-object-status-machine
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/ProductionObjectStatusMachine.java
+    description: 生产对象状态机配置，定义 CREATED、IN_PROGRESS、COMPLETED、CANCELLED 的合法转移。
+    visibility: internal
+  - id: evidence.work-order-status-machine
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/WorkOrderStatusMachine.java
+    description: 工单状态机配置，定义 CREATED->IN_PROCESS、CREATED->COMPLETED、IN_PROCESS->COMPLETED、COMPLETED->CLOSED 和 CREATED->CANCELLED 的合法转移；不包含 RELEASED 状态。
+    visibility: internal
+  - id: evidence.work-order-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+    description: 工单列表、创建、编辑、取消和关闭接口；创建、编辑、取消和关闭方法带有 WORK_ORDER 审计注解，创建后无需发布即可拆分生产对象。
+    visibility: internal
+  - id: evidence.production-object-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+    description: 生产对象列表、制程选项、单条拆分、批量拆分、开工、完成和取消接口；批量拆分以单次请求接收待提交对象列表，并在事务边界内复用生产服务校验；拆分及生命周期方法带有 PRODUCTION_OBJECT 审计注解。
+    visibility: internal
+  - id: evidence.product-process-resolution-for-production
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java
+    description: 制程解析按产品制程优先、产品无可用版本时回退产品簇，并为工单拆分提供可选制程。
+    visibility: internal
+  - id: evidence.migration-0061-work-order
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql
+    description: 建立工单表及其产品、计划数量和状态等持久化字段。
+    visibility: internal
+  - id: evidence.migration-0062-production-object-and-work-order-lifecycle
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql
+    description: 增加可空工单制程草稿字段、生产对象表、对象数量结果字段和生命周期数据约束，并将历史 PLANNED 规范化为 CREATED。
+    visibility: internal
+  - id: evidence.migration-0063-production-work-order-permission
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0063-production-work-order-permission.sql
+    description: 建立 production 与 production.work-orders 页面权限，并为 ADMIN 角色授予工单管理权限。
+    visibility: internal
+  - id: evidence.migration-0064-production-work-order-fields
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0064-production-work-order-fields.sql
+    description: 为工单表增加订单编号、计划开始时间和计划结束时间字段，支持工单创建和编辑字段契约。
+    visibility: internal
+  - id: evidence.production-frontend-menu-permission
+    type: code
+    path: gmp-platform/frontend/src/utils/menuManagement.ts
+    description: 前端生产准备菜单注册工单管理路径，并将 /production/work-orders 映射到 production.work-orders 权限码；布局按权限快照过滤菜单。
+    visibility: internal
+  - id: evidence.production-audit-annotations
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+    description: 工单控制器上的 @Auditable 注解定义 WORK_ORDER 的实体类型、动作、生产准备菜单和功能名称，覆盖创建、编辑、取消和关闭；生命周期动作统一使用 UPDATE 投影。
+    visibility: internal
+  - id: evidence.production-object-audit-annotations
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+    description: 生产对象控制器上的 @Auditable 注解定义 PRODUCTION_OBJECT 的实体类型、动作、生产准备菜单和功能名称，覆盖拆分、开工、完成和取消。
+    visibility: internal
+  - id: evidence.audit-aspect
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java
+    description: "@Auditable AOP 切面从注解和审计上下文构建并持久化审计事件。"
+    visibility: internal
+  - id: evidence.audit-aspect-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java
+    description: 审计切面测试验证注解元数据、实体标识解析及审计事件持久化行为。
+    visibility: internal
+  - id: evidence.production-service-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java
+    description: 生产服务聚焦测试覆盖制程锁定、产品/产品簇解析、BATCH/SN 数量约束、对象生命周期和工单状态联动；批量拆分事务与导入列名解析尚未有独立自动化测试。
+    visibility: internal
+  - id: evidence.guancheng-sn-split-source
+    type: document
+    path: docs/knowledge/evidence/guancheng-sn-split-source.md
+    description: 冠骋原始源码核对记录：MfgOrderSplitSNBs 从 fileList[].entries 展开 SN 条目，检查 SN 是否已存在/被占用，按条目数校验工单剩余数量并创建或复用 SN；运行页面当前不可访问，证据仅用于外部行为边界参考，不直接证明本项目实现。
+    visibility: internal
+  - id: evidence.work-order-page
+    type: code
+    path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    description: 工单管理页面，展示工单状态、制程选择和生产对象拆分；生产对象弹窗支持手动添加、按数量批量添加和 CSV/XLS/XLSX 导入，三种方式统一进入待提交清单后一次提交。生产对象生命周期操作入口不在拆分弹窗内，后续由批次列表承接。
+    visibility: internal
+  - id: evidence.production-frontend-layout-permission-filter
+    type: code
+    path: gmp-platform/frontend/src/components/shared/AppLayout.tsx
+    description: 应用布局根据用户权限快照过滤生产菜单及其子菜单。
+    visibility: internal
+  - id: evidence.work-orders-api
+    type: code
+    path: gmp-platform/frontend/src/api/work-orders.ts
+    description: 前端工单、订单编号、计划起止时间、制程选项和生产对象 API 类型与请求封装；批量拆分请求一次提交多个对象候选记录并携带对象计划起止时间和备注。
+    visibility: internal
+  - id: evidence.work-order-create-contract
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+    description: 当前创建/编辑请求契约接收必填工单编号、产品和计划数量，以及可选订单编号、制程版本、计划开始时间、计划结束时间和备注；服务端校验工单编号、产品、正数计划数量、编号唯一性及计划结束时间不得早于开始时间。
+    visibility: internal
+  - id: evidence.work-order-schema-field-boundary
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql
+    description: 初始 work_order 表持久化工单编号、产品、可空制程版本、生产模式、生产形态、计划数量、状态、备注和审计时间字段；订单编号及计划起止时间由 0064 迁移追加。
+    visibility: internal
+  - id: evidence.work-order-page-row-detail-boundary
+    type: code
+    path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    description: 工单列表 TableRow 支持点击或键盘 Enter/Space 打开信息查看抽屉，操作列继续提供生产对象、编辑、取消和关闭动作并阻止事件冒泡。
+    visibility: internal
+  - id: evidence.work-order-close-confirmation
+    type: code
+    path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    description: 已完成工单的关闭操作先设置 closeTarget，再由 ConfirmDialog 展示二次确认；用户确认后才调用 closeWorkOrder，取消则不发起关闭请求。
+    visibility: internal
+  - id: evidence.audit-controller-action-projection
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java
+    description: 数据审计接口将生产工单及生产对象审计动作统一投影为 CREATE/UPDATE 两类，并提供“新增/修改”中文标签；CANCEL、STATUS_CHANGE 不作为客户动作类别返回。
+    visibility: internal
+  - id: evidence.audit-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditControllerTest.java
+    description: 数据审计控制器测试覆盖动作标签、生产工单及生产对象动作归一化和审计列表投影边界。
+    visibility: internal
+  - id: evidence.production-audit-snapshot-gap
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java
+    description: AuditAspect 当前在 @Auditable 方法成功后仅根据注解和审计上下文写入元数据，未填充 contentBefore/contentAfter；工单控制器也未显式传入真实变更前后快照，导致工单审计快照缺失。
+    visibility: internal
+  - id: evidence.production-audit-snapshot-test-gap
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/common/audit/AuditAspectTest.java
+    description: 现有测试明确验证 AuditAspect 不把方法参数伪装为变更内容，但尚未覆盖工单创建空对象快照及编辑、取消、关闭真实前后快照。
+    visibility: internal
+  - id: evidence.work-order-audit-snapshot-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+    description: 工单控制器显式构造业务字段快照并写入审计事件；创建使用真实保存后工单作为 contentAfter 且 contentBefore 为空对象，编辑仅记录真实持久化对象发生变化的字段，取消和关闭分别记录状态变更前后的真实工单快照。通用 AuditAspect 仅负责注解元数据，不被误称为自动快照来源。
+    visibility: internal
+  - id: evidence.work-order-audit-snapshot-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java
+    description: 工单控制器测试验证创建审计事件的 CREATE 动作、空对象 contentBefore 及真实业务字段 contentAfter；并保留 AuditAspect 测试对方法参数不得伪装为快照的约束。编辑、取消和关闭快照仍需通过集成测试补充验证。
+    visibility: internal
+  - id: evidence.production-process-selector-clearable
+    type: code
+    path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    description: 工单创建/编辑弹窗的产品和制程版本下拉框在有值时显示清除控件，点击后恢复空值；无值时不显示额外“暂不选择”选项，保持空白。
+    visibility: internal
+  - id: evidence.migration-0066-production-object-planned-window
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0066-production-object-planned-window.sql
+    description: 为 production_object 增加 planned_start_at 和 planned_end_at 字段，支持生产批次计划起止时间持久化。
+    visibility: internal
+  - id: evidence.production-service-batch-split
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+    description: ProductionService.splitBatch 接收多个 SplitRequest 并在同一事务方法中逐条调用 split；任一条校验或保存抛错时事务回滚，批量提交不保留部分成功对象。
+    visibility: internal
+  - id: evidence.production-object-batch-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+    description: POST /work-orders/{workOrderId}/objects/batch 接收待提交生产对象列表并调用 splitBatch，一次请求完成批量持久化，接口带 PRODUCTION_OBJECT CREATE 审计注解。
+    visibility: internal
+  - id: evidence.production-work-order-page-pending-list
+    type: code
+    path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    description: 生产对象弹窗以 pendingObjects 保存手动添加、按拆分数量批量生成和 CSV/XLS/XLSX 导入的待提交清单，提交按钮才调用 splitProductionObjectsBatch；BATCH 导入模板字段为批次号和数量（必填）、计划开始时间、计划结束时间和备注（可选），SN 导入模板只包含 SN 编号、计划开始时间和计划结束时间，SN 数量由形态隐含为 1；量产 BATCH 批量添加支持按批次数平均分配（最后一批承接余数）及按每批数量生成（最后一批承接不足一整批的余数），SN 形态按每个对象 1 个单位生成。已拆分批次表仅展示编号、制程、数量、结果和状态，不承载操作列，后续操作归批次列表。
+    visibility: internal
+  - id: evidence.production-work-order-process-lock-preview-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    description: 已关联工单制程版本在生产对象拆分弹窗中以只读卡片展示，不提供修改控件；用户可打开只读预览查看版本元数据、工艺路线、批记录模板和工序配置。
+    visibility: internal
+  - id: evidence.production-work-order-batch-import-template-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    description: 生产对象导入区域在标题旁提供“选择文件”按钮，Info hover 承载导入说明；BATCH 下载模板包含批次号、数量、计划开始时间、计划结束时间和备注五列，SN 下载模板只包含 SN 编号、计划开始时间和计划结束时间三列；文件选择器接受 CSV、XLS、XLSX。
+    visibility: internal

@@ -1,6 +1,7 @@
 package com.zencas.edhr.common.audit;
 
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -69,4 +70,22 @@ class AuditAspectTest {
         assertThat(event.getFunctionName()).isEqualTo("编辑用户");
         assertThat(event.getDataSummary()).isEqualTo("账号 admin");
     }
+
+    @Test
+    void auditResolvesEntityIdFromApiResponseData() throws Throwable {
+        AuditAspect aspect = new AuditAspect(auditEventRepository, idGenerator);
+        when(joinPoint.proceed()).thenReturn(ApiResponse.success(new AuditedResult(42L)));
+        when(auditable.entityType()).thenReturn("PRODUCTION_OBJECT");
+        when(auditable.entityIdExpr()).thenReturn("#result.data.id");
+        when(auditable.action()).thenReturn("CREATE");
+        when(idGenerator.nextId()).thenReturn(3L);
+
+        aspect.audit(joinPoint, auditable);
+
+        ArgumentCaptor<AuditEvent> captor = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(auditEventRepository).save(captor.capture());
+        assertThat(captor.getValue().getEntityId()).isEqualTo("42");
+    }
+
+    private record AuditedResult(Long id) {}
 }

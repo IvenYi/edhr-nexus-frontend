@@ -74,9 +74,9 @@ terms:
     visibility: internal
   - id: term.production-batch
     name: 生产批次
-    definition: 后续生产执行中保存产品、产品簇、所选制程版本和配置快照的生产对象，可由工单拆分形成并以批次或 SN 体现。
+    definition: 工单拆分形成的生产对象在 BATCH 生产形态下的业务称谓；对象保存工单、产品制程版本、对象编号、目标数量、计划起止时间、备注及独立的良品、NG 和报废数量，并复用 CREATED、IN_PROGRESS、COMPLETED、CANCELLED 生命周期。完整制程执行快照仍属于后续能力。
     aliases: [生产对象, 批次, SN, 工单批次]
-    status: specified
+    status: implemented
     visibility: internal
   - id: term.execution-snapshot
     name: 执行快照
@@ -191,4 +191,76 @@ terms:
     definition: 将业务概念、关系、规则、事件、动作或决策连接到领域模块、接口、持久化、页面、审计、测试、快照及下游投影等实现资产的可校验引用。
     aliases: [实现链接, 业务到代码证据链]
     status: specified
+    visibility: internal
+  - id: term.work-order
+    name: 工单
+    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，可直接拆分多个生产对象，不存在 RELEASED 发布状态。
+    aliases: [生产工单, 工单计划]
+    status: implemented
+    visibility: internal
+  - id: term.production-object
+    name: 生产对象
+    definition: 工单拆分后实际管理的批次或 SN 对象，保存对象编号、生产形态、锁定制程版本、目标数量、计划起止时间、备注、良品、NG、报废数量和对象生命周期状态。
+    aliases: [批次对象, SN 对象, 工单对象]
+    status: implemented
+    visibility: internal
+  - id: term.production-mode
+    name: 生产模式
+    definition: 当前首版工单与生产对象支持的生产模式，仅允许量产；其值从所选产品制程版本继承。
+    aliases: [量产模式]
+    status: implemented
+    visibility: internal
+  - id: term.production-form
+    name: 生产形态
+    definition: 产品制程版本定义的对象识别形态，当前只支持 BATCH 和 SN；同一工单的全部生产对象必须使用同一种形态。
+    aliases: [批次形态, SN 形态, object type]
+    status: implemented
+    visibility: internal
+  - id: term.batch
+    name: 批次
+    definition: 生产形态为 BATCH 的生产对象；其目标数量为大于零的数量值，可在工单计划数量范围内拆分。
+    aliases: [生产批次]
+    status: implemented
+    visibility: internal
+  - id: term.serial-number
+    name: SN
+    definition: 生产形态为 SN 的单件生产对象；首版要求每个 SN 对象的目标数量必须为 1。
+    aliases: [序列号, 序号对象]
+    status: implemented
+    visibility: internal
+  - id: term.data-audit-action-category
+    name: 数据审计动作类别
+    definition: 数据审计在客户页面展示的统一动作分类；生产工单及生产对象只投影“新增”和“修改”，生命周期动作不形成额外客户动作类别。
+    aliases: [审计操作类别, 审计动作]
+    status: implemented
+    visibility: internal
+  - id: term.production-object-pending-list
+    name: 生产对象待提交清单
+    definition: 生产对象手动添加、按数量批量添加或 CSV/XLS/XLSX 导入后，在真正持久化前暂存的候选记录集合；BATCH 导入候选需包含批次号和数量，SN 导入候选需包含 SN 编号，数量由生产形态隐含为 1，计划起止时间及备注可选，清单通过一次批量提交进入生产对象持久化。
+    aliases: [批次待提交清单, SN待提交清单, 待添加生产对象]
+    status: implemented
+    visibility: internal
+  - id: term.production-object-batch-submission
+    name: 生产对象批量提交
+    definition: 将待提交清单中的多个生产对象候选记录一次性提交到服务端事务边界内的标准动作；任一记录校验或持久化失败时整批不应留下部分成功结果。
+    aliases: [批次批量添加, 批量拆分生产对象]
+    status: implemented
+    visibility: internal
+  - id: term.production-batch-import-template
+    name: 生产对象导入模板（批次/SN）
+    definition: 生产对象导入使用的固定列集合；BATCH 形态要求批次号和数量，SN 形态只要求 SN 编号，SN 数量由生产形态隐含为 1，计划开始时间、计划结束时间和备注均为可选字段，支持 CSV、XLS、XLSX 文件。
+    aliases: [批次导入模板, SN导入模板, 生产对象导入模板]
+    status: implemented
+    visibility: internal
+  - id: term.process-version-read-only-preview
+    name: 制程版本只读预览
+    definition: 已关联工单制程版本在拆分阶段的只读引用与详情查看能力；不可改写版本选择，可查看版本元数据、工艺路线、批记录模板和工序配置。
+    aliases: [制程版本预览, 锁定制程预览]
+    status: implemented
+    visibility: internal
+  - id: term.audit-change-snapshot
+    name: 审计变更快照
+    definition: 数据审计事件中用于追溯业务变化的变更前和变更后业务字段快照；创建事件的变更前快照为空对象，更新、取消和关闭事件均应保存真实持久化对象变化前后的字段，不得使用方法参数伪造快照。
+    aliases: [变更前后快照, 审计字段快照]
+    status: implemented
     visibility: internal

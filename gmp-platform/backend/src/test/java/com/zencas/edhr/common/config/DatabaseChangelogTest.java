@@ -157,6 +157,23 @@ class DatabaseChangelogTest {
         assertThat(migration).contains("ON DELETE RESTRICT");
     }
 
+    @Test
+    void productionWorkOrderMigrationAllowsProcessSelectionToBeDeferredUntilFirstSplit() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String initialMigration = readResource("db/changelog/0061-production-work-order.sql");
+        String lifecycleMigration = readResource("db/changelog/0062-production-object-and-work-order-lifecycle.sql");
+
+        assertThat(master).contains("0061-production-work-order.sql");
+        assertThat(master).contains("0062-production-object-and-work-order-lifecycle.sql");
+        assertThat(master).contains("0063-production-work-order-permission.sql");
+        assertThat(initialMigration).contains("process_version_id BIGINT,");
+        assertThat(initialMigration).contains("production_mode VARCHAR(32) DEFAULT '量产',");
+        assertThat(initialMigration).contains("production_form VARCHAR(32),");
+        assertThat(lifecycleMigration).contains("ALTER TABLE work_order ALTER COLUMN process_version_id DROP NOT NULL");
+        assertThat(lifecycleMigration).contains("ALTER TABLE work_order ALTER COLUMN production_mode DROP NOT NULL");
+        assertThat(lifecycleMigration).contains("ALTER TABLE work_order ALTER COLUMN production_form DROP NOT NULL");
+    }
+
     private String readResource(String path) throws IOException {
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }

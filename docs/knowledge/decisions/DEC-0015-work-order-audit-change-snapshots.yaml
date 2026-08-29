@@ -1,0 +1,62 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0015
+    title: 工单审计保留真实变更前后快照
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；工单数据审计继续将客户动作投影为新增/修改，每条创建、编辑、取消和关闭事件保留可追溯的业务字段变更前后快照。创建事件的变更前快照为空对象；编辑、取消和关闭事件的快照来自真实持久化对象状态，不得把方法参数或请求对象伪装为快照。WorkOrderController 已显式写入快照，AuditAspect 继续负责通用元数据。"
+    decisionStatements:
+      - id: DEC-0015-01
+        statement: "provenance: user-confirmed；工单 CREATE/UPDATE/CANCEL/CLOSE 客户动作统一投影为新增或修改，同时保留 contentBefore/contentAfter 业务字段快照。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0015-02
+        statement: "provenance: user-confirmed；创建工单的 contentBefore 必须为空对象，contentAfter 为创建后真实工单字段；编辑、取消和关闭均需记录真实持久化对象变化前后的字段。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0015-03
+        statement: "provenance: user-confirmed；方法参数、请求 DTO 或注解元数据不得直接作为工单审计快照，必须使用持久化对象的业务字段状态。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0015-04
+        statement: "provenance: original-evidence；历史实现中 AuditAspect 仅写审计元数据、工单快照缺失；该缺口现已由 WorkOrderController 显式构造真实 contentBefore/contentAfter 修复。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0015-05
+        statement: "provenance: user-confirmed；工单制程选择下拉框无值时保持空白，有值时提供清除控件恢复空值，不增加‘暂不选择’选项。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.audit-controller-action-projection, evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-audit-annotations, evidence.audit-aspect-test, evidence.production-process-selector-clearable]
+    acceptanceScenarios:
+      - id: scenario.work-order-create-audit-snapshot
+        given: 用户创建字段有效的工单
+        when: 创建请求成功并生成审计事件
+        then: 审计动作显示新增，contentBefore 为空对象，contentAfter 包含真实工单业务字段
+        evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-audit-annotations]
+        evidenceRequirements: [工单创建审计快照集成测试]
+      - id: scenario.work-order-update-audit-snapshot
+        given: 已存在工单
+        when: 用户编辑、取消或关闭工单
+        then: 审计动作显示修改，contentBefore/contentAfter 分别反映真实持久化对象前后字段
+        evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-audit-annotations]
+        evidenceRequirements: [编辑取消关闭审计快照集成测试]
+      - id: scenario.work-order-audit-no-synthetic-arguments
+        given: 审计方法接收请求参数
+        when: 审计事件持久化
+        then: 方法参数不作为 contentBefore/contentAfter 快照
+        evidenceIds: [evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect-test]
+      - id: scenario.work-order-process-selector-clear
+        given: 工单产品或制程版本下拉框已选择值
+        when: 用户点击清除控件
+        then: 选择恢复空值；无值时下拉框保持空白且不显示额外占位选项
+        evidenceIds: [evidence.production-process-selector-clearable]
+    implementationDiscrepancies:
+      - id: discrepancy.work-order-audit-snapshot-missing
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java
+        lineHint: 37
+        summary: 原工单审计快照缺口已由 WorkOrderController 显式构造真实业务字段前后快照修复；AuditAspect 继续仅负责通用元数据审计。
+        evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect]

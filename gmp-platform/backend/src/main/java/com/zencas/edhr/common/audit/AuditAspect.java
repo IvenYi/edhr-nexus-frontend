@@ -5,6 +5,8 @@ import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -36,7 +38,7 @@ public class AuditAspect {
                     .id(idGenerator.nextId())
                     .tenantId("default")
                     .entityType(auditable.entityType())
-                    .entityId(resolveEntityId(joinPoint, auditable))
+                    .entityId(resolveEntityId(joinPoint, auditable, result))
                     .action(auditable.action())
                     .operatorId(AuditContext.getOperatorId())
                     .operatorName(AuditContext.getOperatorName())
@@ -58,7 +60,11 @@ public class AuditAspect {
         return result;
     }
 
-    private String resolveEntityId(ProceedingJoinPoint joinPoint, Auditable auditable) {
+    private String resolveEntityId(ProceedingJoinPoint joinPoint, Auditable auditable, Object result) {
+        if (auditable.entityIdExpr().startsWith("#result.")) {
+            Object value = readResultProperty(result, auditable.entityIdExpr().substring("#result.".length()));
+            if (value != null) return String.valueOf(value);
+        }
         if (!auditable.entityIdExpr().isEmpty()) {
             // Simple resolution: use the first argument's id field
             for (Object arg : joinPoint.getArgs()) {
@@ -77,5 +83,14 @@ public class AuditAspect {
             }
         }
         return "-";
+    }
+
+    private Object readResultProperty(Object result, String propertyPath) {
+        try {
+            BeanWrapper wrapper = new BeanWrapperImpl(result);
+            return wrapper.getPropertyValue(propertyPath);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 }

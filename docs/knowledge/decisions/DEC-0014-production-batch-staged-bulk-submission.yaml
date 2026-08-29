@@ -1,0 +1,114 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0014
+    title: 生产批次待提交清单与批量事务提交
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；本决策补充工单生产对象弹窗的批次录入方式。生产批次继续复用 ProductionObject 的 BATCH 形态，不新增独立批次状态或持久化实体。手动添加、按数量批量添加及 CSV/XLS/XLSX 导入先进入待提交清单，用户确认后通过一次批量接口提交；服务端在单一事务边界内处理整批，任一条失败时整批回滚。导入模板约定批次号、数量为必填，计划起止时间和备注为可选。"
+    decisionStatements:
+      - id: DEC-0014-01
+        statement: "provenance: user-confirmed；生产批次复用 ProductionObject 的 BATCH 形态，批次状态仅为 CREATED、IN_PROGRESS、COMPLETED、CANCELLED，不引入导入中、待提交或已发布等持久化状态。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-02
+        statement: "provenance: user-confirmed；批次录入支持手动添加、按数量批量添加和 CSV/XLS/XLSX 导入；三种方式都先进入待提交清单，最后由用户一次提交。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-03
+        statement: "provenance: user-confirmed；批次候选记录保存批次号（后端对象编号）、数量（后端目标数量）、计划开始时间、计划结束时间和备注；导入时批次号、数量必填，计划起止时间和备注可选，结束时间不得早于开始时间且总量不得超过剩余计划数量。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-04
+        statement: "provenance: user-confirmed；批量提交必须是单一事务，任一候选记录校验或持久化失败时整批回滚，不保留部分成功对象。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-05
+        statement: "provenance: user-confirmed；导入模板标准列名为‘批次号/数量/计划开始时间/计划结束时间/备注’，兼容中文别名‘批次编号/对象编号/目标数量’及英文别名；支持 CSV、XLS 和 XLSX，模板下载由页面提供。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-06
+        statement: "provenance: user-confirmed；已关联工单的制程版本在拆分阶段只读锁定，不允许改写；用户可打开只读预览查看版本元数据、工艺路线、批记录模板和工序配置。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-07
+        statement: "provenance: user-confirmed；批量添加按批次前缀生成三位序号批次号（如 PREFIX-001、PREFIX-002），候选仍先进入待提交清单。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-08
+        statement: "provenance: user-confirmed；批次列表独立审计本轮不实现，保留为后续 TODO。"
+        status: specified
+        visibility: internal
+      - id: DEC-0014-09
+        statement: "provenance: user-confirmed；拆分弹窗中的数量与批量添加数量标记为必填；导入区使用标题旁‘选择文件’按钮，说明收纳至 Info hover。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-10
+        statement: "provenance: user-confirmed；已拆分批次表移除操作列，批次操作后续统一归属于独立批次列表。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-11
+        statement: "provenance: user-confirmed；量产且 BATCH 生产形态的批量添加输入改称‘拆分数量’，表示要生成的批次数；当前可分配数量按批次平均分配，不能整除时最后一批承接余数；SN 生产形态继续按每批 1 个单位生成。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0014-12
+        statement: "provenance: user-confirmed；量产且 BATCH 生产形态的批量添加支持‘按批次数’和‘按每批数量’两种模式：前者将剩余数量均分并由最后一批承接余数，后者按用户输入的每批数量生成批次并由最后一批承接不足一整批的余数。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-service-batch-split, evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-process-lock-preview-ui, evidence.work-orders-api, evidence.migration-0066-production-object-planned-window, evidence.production-service-test]
+    acceptanceScenarios:
+      - id: scenario.production-batch-reuses-batch-object
+        given: 用户为 CREATED 工单准备生产批次
+        when: 选择批次生产形态并准备对象
+        then: 系统使用 ProductionObject 的 BATCH 形态及 CREATED/IN_PROGRESS/COMPLETED/CANCELLED 状态，不创建独立批次状态
+        evidenceIds: [evidence.production-object-entity, evidence.production-object-status-machine, evidence.production-service]
+      - id: scenario.production-batch-staged-inputs
+        given: 用户打开生产对象弹窗
+        when: 通过手动添加、按数量批量添加或 CSV/XLS/XLSX 导入录入批次
+        then: 候选记录进入待提交清单，未点击最终提交前不调用批量持久化接口
+        evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.work-orders-api]
+      - id: scenario.production-batch-fields-and-time-order
+        given: 用户录入一条批次候选记录
+        when: 输入批次号、数量及可选计划起止时间和备注
+        then: 字段进入候选记录并随批量请求传输；结束时间早于开始时间或总量超界时被阻断
+        evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0066-production-object-planned-window, evidence.production-work-order-page-pending-list]
+      - id: scenario.production-batch-atomic-submit
+        given: 待提交清单包含多个批次候选记录
+        when: 用户点击一次提交且任一记录校验或保存失败
+        then: 服务端批量接口在单一事务中回滚整批，不留下部分成功对象
+        evidenceIds: [evidence.production-object-batch-controller, evidence.production-service-batch-split]
+        evidenceRequirements: [批量提交事务回滚集成测试]
+      - id: scenario.production-batch-locked-process-preview
+        given: 工单已关联制程版本并进入生产对象拆分
+        when: 用户打开拆分弹窗并查看制程版本
+        then: 制程版本以只读方式展示且不可修改；只读预览显示版本元数据、工艺路线、批记录模板和工序配置
+        evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service]
+      - id: scenario.production-batch-prefix-generation
+        given: 用户在批量添加中输入批次前缀和数量
+        when: 用户点击批量加入
+        then: 系统按 PREFIX-001、PREFIX-002 等格式生成候选批次号并进入待提交清单
+        evidenceIds: [evidence.production-work-order-page-pending-list]
+      - id: scenario.production-batch-count-based-quantity-distribution
+        given: 用户在量产且 BATCH 生产形态的工单中输入拆分数量 N
+        when: 用户点击批量加入
+        then: 系统生成 N 个候选批次，按当前可分配数量平均分配，不能整除时最后一批承接余数；SN 形态每批数量固定为 1
+        evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
+      - id: scenario.production-batch-fixed-quantity-distribution
+        given: 用户在量产且 BATCH 生产形态的工单中选择“按每批数量”并输入每批数量 Q
+        when: 用户点击批量加入
+        then: 系统按 Q 生成候选批次，最后一批承接不足 Q 的余数，候选总量不超过当前可分配数量
+        evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
+      - id: scenario.production-batch-split-dialog-action-boundary
+        given: 用户在工单拆分弹窗查看已拆分批次
+        when: 批次表格渲染
+        then: 数量输入为必填，导入区标题旁显示“选择文件”并通过 Info hover 查看说明，已拆分批次表不显示操作列
+        evidenceIds: [evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-page-pending-list]
+    implementationDiscrepancies:
+      - id: discrepancy.production-batch-independent-audit
+        status: open
+        severity: medium
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+        lineHint: 545
+        summary: 批次列表独立审计本轮按用户确认保留为 TODO，当前不新增独立批次审计列表。
+        evidenceIds: [evidence.production-work-order-page-pending-list]

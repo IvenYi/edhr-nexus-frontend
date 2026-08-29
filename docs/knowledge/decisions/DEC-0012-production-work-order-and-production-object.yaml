@@ -1,0 +1,112 @@
+knowledgeModelVersion: 0.3.7
+decisions:
+  - id: DEC-0012
+    title: 工单与生产对象最小管理闭环
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；本决策确认 eDHR 生产准备阶段工单与生产对象（批次/SN）的最小管理闭环。工单创建时制程可选，首次拆分生产对象时必须从产品制程或产品簇兜底制程中选择并写回锁定；同一工单的对象继承同一制程和生产形态。首版仅覆盖量产、对象拆分及基础生命周期，不扩展到报工执行、表单流程或批次转 SN。实现结论由 original-evidence 代码、迁移和测试证据核对；已锁定制程过期后仍可继续拆分属于 implementation inference，并非新的客户承诺。"
+    decisionStatements:
+      - id: DEC-0012-01
+        statement: "provenance: user-confirmed；工单可拆分多个生产对象；一个工单只允许一种生产形态，生产形态来自制程且首版只支持 BATCH 与 SN。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0012-02
+        statement: "provenance: user-confirmed；工单创建和编辑使用 CREATED；发布后进入 RELEASED 并可进行生产对象拆分；首次对象开工进入 IN_PROCESS；对象完成或取消后全部对象终态时工单进入 COMPLETED；已完成工单可 CLOSED；尚未开工且无对象工单可 CANCELLED。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0012-03
+        statement: "provenance: user-confirmed；SN 对象目标数量必须为 1；生产对象目标数量合计不得超过工单计划数量；良品、NG 和报废数量独立记录且不减少目标数量。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0012-04
+        statement: "provenance: user-confirmed；产品制程优先于产品簇制程作为拆分选项来源；首次拆分锁定制程后，后续对象只能继承该版本。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0012-05
+        statement: "provenance: user-confirmed；已有生产对象的工单不得通过删除对象数据来回退；允许有偏差结束，首版不增加复杂审批、补产或多工单合批。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0012-06
+        statement: "provenance: inference；当前实现通过不重新应用有效期筛选的锁定制程读取策略，使过期锁定制程仍可用于历史工单继续拆分；该策略需由主开发智能体与业务确认长期保留边界。"
+        status: specified
+        visibility: internal
+      - id: DEC-0012-07
+        statement: "provenance: user-confirmed；批次转 SN、多工单合批、补产概念、报工执行台、表单流程、字段权限和审批节点不属于本次交付。未来生产对象良品/NG/报废填报接入标准作业或表单字段映射，完整执行快照另行决策。"
+        status: specified
+        visibility: internal
+      - id: DEC-0012-08
+        statement: "provenance: user-confirmed；关闭工单前需要二次确认；确认后调用关闭动作，服务端仍只允许已完成工单进入 CLOSED。"
+        status: implemented
+        visibility: internal
+    supersedes: [DEC-0001, DEC-0002]
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-object-entity, evidence.production-service, evidence.production-object-status-machine, evidence.work-order-status-machine, evidence.work-order-controller, evidence.production-object-controller, evidence.product-process-resolution-for-production, evidence.migration-0061-work-order, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.migration-0063-production-work-order-permission, evidence.migration-0064-production-work-order-fields, evidence.production-service-test, evidence.work-order-page, evidence.work-orders-api, evidence.production-frontend-menu-permission, evidence.production-frontend-layout-permission-filter, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test]
+    acceptanceScenarios:
+      - id: scenario.production-work-order-create-without-process
+        given: 用户为产品创建工单且计划数量有效
+        when: 用户不选择制程并保存工单
+        then: 工单以 CREATED 保存，制程字段保持可空
+        evidenceIds: [evidence.production-work-order-entity, evidence.work-order-controller, evidence.production-service-test]
+        evidenceRequirements: [工单创建 API 测试, 数据库读取验证]
+      - id: scenario.production-first-split-locks-process
+        given: CREATED 工单尚无生产对象，产品存在可用制程
+        when: 用户首次拆分生产对象并选择制程
+        then: 工单和生产对象保存同一制程版本，后续对象不得更换版本
+        evidenceIds: [evidence.production-service, evidence.production-service-test]
+        evidenceRequirements: [首次拆分集成测试, 后续更换制程阻断测试]
+      - id: scenario.production-process-fallback
+        given: 产品没有可用制程但其产品簇存在可用制程
+        when: 用户查看制程选项或首次拆分对象
+        then: 系统使用产品簇制程并保留制程版本引用
+        evidenceIds: [evidence.product-process-resolution-for-production, evidence.production-service-test]
+        evidenceRequirements: [产品簇兜底解析测试]
+      - id: scenario.production-form-and-quantity-constraints
+        given: 工单计划数量为 N
+        when: 用户拆分 BATCH 或 SN 生产对象
+        then: SN 目标数量必须为 1，所有对象目标数量合计不得超过 N，且工单不得混用 BATCH 与 SN
+        evidenceIds: [evidence.production-service, evidence.production-service-test]
+        evidenceRequirements: [BATCH/SN 校验测试, 数量边界测试]
+      - id: scenario.production-object-lifecycle
+        given: 生产对象处于 CREATED 或 IN_PROGRESS
+        when: 用户执行开工、完成或取消
+        then: 只允许 CREATED->IN_PROGRESS、IN_PROGRESS->COMPLETED、CREATED->CANCELLED，并写入对象生命周期状态
+        evidenceIds: [evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-object-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-service-test]
+        evidenceRequirements: [状态机转移测试, API 生命周期测试]
+      - id: scenario.production-work-order-terminal-link
+        given: 工单已存在对象且所有对象均为 COMPLETED 或 CANCELLED
+        when: 最后一个对象进入终态
+        then: 工单进入 COMPLETED，之后可关闭为 CLOSED
+        evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-service-test]
+        evidenceRequirements: [对象终态联动测试, 工单关闭测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-order-cancelled-objects-do-not-complete-created-order
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+        lineHint: 151
+        summary: "provenance: original-evidence；ProductionService 已允许 CREATED 或 IN_PROCESS 工单在全部生产对象进入 COMPLETED 或 CANCELLED 后转为 COMPLETED；ProductionServiceTest 覆盖 CREATED 工单唯一对象取消后的联动。"
+        evidenceIds: [evidence.production-service, evidence.production-service-test]
+      - id: discrepancy.production-work-order-create-fields-not-supported
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+        lineHint: 152
+        summary: "provenance: original-evidence；当前 WorkOrderRequest、WorkOrder 实体、0061/0064 迁移和前端表单已支持确认范围内的工单编号、订单编号、计划起止时间及备注字段，并在服务端执行必填和时间顺序校验；未增加未确认的工单批或独立描述字段。"
+        evidenceIds: [evidence.work-order-create-contract, evidence.production-work-order-entity, evidence.migration-0061-work-order, evidence.migration-0064-production-work-order-fields, evidence.work-order-page, evidence.work-orders-api]
+      - id: discrepancy.production-work-order-row-detail-not-supported
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+        lineHint: 315
+        summary: "provenance: original-evidence；工单列表 TableRow 已绑定点击及键盘 Enter/Space 详情行为，打开信息查看抽屉；操作列按钮阻止冒泡并保留独立动作。"
+        evidenceIds: [evidence.work-order-page-row-detail-boundary, evidence.work-order-page, evidence.work-orders-api]
+      - id: discrepancy.production-work-order-released-lifecycle-not-implemented
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/WorkOrderStatusMachine.java
+        lineHint: 8
+        summary: "provenance: original-evidence；工单状态机已定义 RELEASED 及 CREATED->RELEASED、RELEASED->IN_PROCESS/COMPLETED 转移，ProductionService.releaseOrder 和控制器发布接口已落地，拆分服务仅允许 RELEASED 工单；聚焦测试覆盖该生命周期定义。"
+        evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-service-test, evidence.production-audit-annotations]

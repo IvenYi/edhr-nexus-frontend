@@ -9,6 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface ProductProcessVersionRepository extends JpaRepository<ProductProcessVersion, Long> {
+    Optional<ProductProcessVersion> findByTenantIdAndId(String tenantId, Long id);
+    List<ProductProcessVersion> findByTenantIdAndProductProcessIdOrderByCreatedAtDesc(String tenantId, Long productProcessId);
     List<ProductProcessVersion> findByProductProcessIdOrderByCreatedAtDesc(Long productProcessId);
     Optional<ProductProcessVersion> findByProductProcessIdAndId(Long productProcessId, Long id);
     List<ProductProcessVersion> findByProductProcessIdAndVersionLabelIgnoreCase(Long productProcessId, String versionLabel);

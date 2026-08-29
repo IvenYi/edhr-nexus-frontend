@@ -154,6 +154,23 @@ class AuditControllerTest {
     }
 
     @Test
+    void projectsProductionAuditActionsToCreateOrUpdate() {
+        PageRequest queryAll = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<AuditEvent> events = List.of(
+                AuditEvent.builder().id(30L).entityType("WORK_ORDER").entityId("10").action("CREATE").source("UI").build(),
+                AuditEvent.builder().id(31L).entityType("WORK_ORDER").entityId("10").action("CANCEL").source("UI").build(),
+                AuditEvent.builder().id(32L).entityType("PRODUCTION_OBJECT").entityId("20").action("STATUS_CHANGE").source("UI").build());
+        when(auditEventRepository.search("WORK_ORDER", "10", "", "", "", "", "", "", queryAll))
+                .thenReturn(new PageImpl<>(events.subList(0, 2), queryAll, 2));
+
+        ApiResponse<PageResult<AuditLogItem>> response = controller.list(
+                1, 20, "createdAt", "desc", "WORK_ORDER", "10", null, null, null, null, null, null);
+
+        assertThat(response.getData().getContent()).extracting(AuditLogItem::getAction, AuditLogItem::getActionLabel)
+                .containsExactly(org.assertj.core.groups.Tuple.tuple("CREATE", "新增"), org.assertj.core.groups.Tuple.tuple("UPDATE", "修改"));
+    }
+
+    @Test
     void listFiltersAgainstResolvedDisplayFieldsForLegacyAuditRows() {
         PageRequest queryAll = PageRequest.of(0, Integer.MAX_VALUE, Sort.by(Sort.Direction.DESC, "createdAt"));
         AuditEvent legacyEvent = AuditEvent.builder()

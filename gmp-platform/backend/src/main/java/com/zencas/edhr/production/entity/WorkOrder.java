@@ -12,11 +12,14 @@ public class WorkOrder {
     @Id private Long id;
     @Column(name = "tenant_id", nullable = false) @Builder.Default private String tenantId = "default";
     @Column(name = "order_no", nullable = false, length = 64) private String orderNo;
+    @Column(name = "order_number", length = 64) private String orderNumber;
     @Column(name = "product_id", nullable = false) private Long productId;
-    @Column(name = "process_version_id", nullable = false) private Long processVersionId;
-    @Column(name = "production_mode", nullable = false) @Builder.Default private String productionMode = "量产";
-    @Column(name = "production_form", nullable = false) private String productionForm;
+    @Column(name = "process_version_id") private Long processVersionId;
+    @Column(name = "production_mode") @Builder.Default private String productionMode = "量产";
+    @Column(name = "production_form") private String productionForm;
     @Column(name = "planned_quantity", nullable = false, precision = 15, scale = 4) private BigDecimal plannedQuantity;
+    @Column(name = "planned_start_at") private LocalDateTime plannedStartAt;
+    @Column(name = "planned_end_at") private LocalDateTime plannedEndAt;
     @Column(name = "status", nullable = false) @Builder.Default private String status = "CREATED";
     @Column(name = "remark", columnDefinition = "TEXT") private String remark;
     @Column(name = "created_by") private String createdBy;

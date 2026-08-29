@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductProcessRepository extends JpaRepository<ProductProcess, Long> {
+    Optional<ProductProcess> findByTenantIdAndId(String tenantId, Long id);
     Optional<ProductProcess> findByTenantIdAndProductVersionId(String tenantId, Long productVersionId);
 
     Optional<ProductProcess> findByTenantIdAndOwnerTypeAndOwnerId(String tenantId, String ownerType, Long ownerId);

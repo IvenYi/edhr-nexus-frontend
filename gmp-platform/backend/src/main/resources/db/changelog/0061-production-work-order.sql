@@ -1,11 +1,15 @@
+--liquibase formatted sql
+--changeset edhr:0061-production-work-order
+--validCheckSum: 9:d0a5ad45f8ed2bbfe1078e15fcbc914c
+
 CREATE TABLE IF NOT EXISTS work_order (
     id BIGINT PRIMARY KEY,
     tenant_id VARCHAR(64) NOT NULL DEFAULT 'default',
     order_no VARCHAR(64) NOT NULL,
     product_id BIGINT NOT NULL,
-    process_version_id BIGINT NOT NULL,
-    production_mode VARCHAR(32) NOT NULL DEFAULT '量产',
-    production_form VARCHAR(32) NOT NULL,
+    process_version_id BIGINT,
+    production_mode VARCHAR(32) DEFAULT '量产',
+    production_form VARCHAR(32),
     planned_quantity DECIMAL(15, 4) NOT NULL,
     status VARCHAR(32) NOT NULL DEFAULT 'CREATED',
     remark TEXT,

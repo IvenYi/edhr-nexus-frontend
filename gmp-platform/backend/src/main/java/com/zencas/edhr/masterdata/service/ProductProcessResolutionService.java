@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,13 +49,38 @@ public class ProductProcessResolutionService {
         throw new BusinessException(ErrorCode.GENERAL_001, "当前产品及所属产品簇均未配置可用制程版本");
     }
 
+    /**
+     * Resolves a process version by product ownership without applying effective dates.
+     * A work order may continue using the version it froze even after that version expires.
+     */
+    public Optional<ProductProcessVersion> findVersionForProduct(Long productId, Long versionId) {
+        if (productId == null || versionId == null) return Optional.empty();
+        ProductProcessVersion version = productProcessVersionRepository
+                .findByTenantIdAndId(TENANT_ID, versionId).orElse(null);
+        if (version == null) return Optional.empty();
+        ProductProcess process = productProcessRepository.findByTenantIdAndId(
+                TENANT_ID, version.getProductProcessId()).orElse(null);
+        if (process == null) return Optional.empty();
+        if ("PRODUCT".equals(process.getOwnerType()) && productId.equals(process.getOwnerId())) {
+            return Optional.of(version);
+        }
+        if ("PRODUCT_FAMILY".equals(process.getOwnerType())) {
+            boolean belongsToFamily = productFamilyMemberRepository.findByTenantIdAndProductId(TENANT_ID, productId)
+                    .map(member -> process.getOwnerId().equals(member.getProductFamilyId()))
+                    .orElse(false);
+            if (belongsToFamily) return Optional.of(version);
+        }
+        return Optional.empty();
+    }
+
     private List<ProductProcessVersion> availableVersions(String ownerType, Long ownerId, LocalDateTime atTime) {
         if (ownerId == null) return List.of();
         ProductProcess process = productProcessRepository
                 .findByTenantIdAndOwnerTypeAndOwnerId(TENANT_ID, ownerType, ownerId)
                 .orElse(null);
         if (process == null) return List.of();
-        return productProcessVersionRepository.findByProductProcessIdOrderByCreatedAtDesc(process.getId()).stream()
+        return productProcessVersionRepository
+                .findByTenantIdAndProductProcessIdOrderByCreatedAtDesc(TENANT_ID, process.getId()).stream()
                 .filter(version -> RdoVersionStatusResolver.ACTIVE.equals(
                         RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo(), atTime)))
                 .toList();

@@ -119,7 +119,7 @@ class AuthControllerTest {
         when(permissionRepository.findAllById(List.of(60L))).thenReturn(List.of(
                 Permission.builder().id(60L).code("system").name("系统管理").build()));
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
-        when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 480)).thenReturn("compact-token");
+        when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 480, List.of("system"))).thenReturn("compact-token");
 
         var response = controller.login(request, new MockHttpServletRequest());
         @SuppressWarnings("unchecked")
@@ -130,7 +130,7 @@ class AuthControllerTest {
         assertThat(data.get("token")).isEqualTo("compact-token");
         assertThat(userPayload.get("permissions")).isEqualTo(List.of("system"));
         assertThat(userPayload.get("roleNames")).isEqualTo(List.of("系统管理员"));
-        verify(jwtTokenProvider).generateToken("1", "admin", "系统管理员", 480);
+        verify(jwtTokenProvider).generateToken("1", "admin", "系统管理员", 480, List.of("system"));
     }
 
     @Test
@@ -162,7 +162,7 @@ class AuthControllerTest {
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of());
         when(signatureRepository.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1"))
                 .thenReturn(Optional.empty());
-        when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 120)).thenReturn("compact-token");
+        when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 120, List.of())).thenReturn("compact-token");
 
         var response = controller.login(request, new MockHttpServletRequest());
         @SuppressWarnings("unchecked")
@@ -171,7 +171,7 @@ class AuthControllerTest {
         assertThat(data.get("tokenValidityMinutes")).isEqualTo(120);
         assertThat(data.get("forcePasswordChange")).isEqualTo(true);
         assertThat(data.get("forceSignatureVerification")).isEqualTo(true);
-        verify(jwtTokenProvider).generateToken("1", "admin", "系统管理员", 120);
+        verify(jwtTokenProvider).generateToken("1", "admin", "系统管理员", 120, List.of());
     }
 
     @Test
@@ -246,7 +246,7 @@ class AuthControllerTest {
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of());
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
-        when(jwtTokenProvider.generateToken("1", "qa.admin", "质量管理员", 480)).thenReturn("compact-token");
+        when(jwtTokenProvider.generateToken("1", "qa.admin", "质量管理员", 480, List.of())).thenReturn("compact-token");
         when(idGenerator.nextId()).thenReturn(9001L);
 
         controller.login(request, servletRequest);
@@ -987,7 +987,7 @@ class AuthControllerTest {
         when(roleRepository.findAllById(List.of(341646126926241792L))).thenReturn(List.of());
         when(rolePermissionRepository.findByRoleIdIn(List.of(341646126926241792L))).thenReturn(List.of());
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
-        when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 480)).thenReturn("compact-token");
+        when(jwtTokenProvider.generateToken("1", "admin", "系统管理员", 480, List.of())).thenReturn("compact-token");
 
         var response = controller.login(request, new MockHttpServletRequest());
         @SuppressWarnings("unchecked")
