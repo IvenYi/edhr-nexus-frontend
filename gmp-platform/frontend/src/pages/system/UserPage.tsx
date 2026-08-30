@@ -314,7 +314,7 @@ const appContentDrawerPaperSx = {
 };
 
 const userManagementWorkspaceHeight = { xs: 'auto', lg: 'calc(100vh - 150px)' };
-const USER_ACTION_COLUMN_WIDTH = 150;
+const USER_ACTION_COLUMN_WIDTH = 128;
 
 const userColumns: UserColumn[] = [
   { id: 'select', label: '', defaultWidth: 50, minWidth: 50, resizable: false, align: 'center' },
@@ -1534,7 +1534,7 @@ export default function UserPage() {
 
     return (
       <TableCell key={column.id} sx={cellSx}>
-        <Stack direction="row" spacing={0.5} onClick={(event) => event.stopPropagation()}>
+        <Stack direction="row" spacing={0} onClick={(event) => event.stopPropagation()}>
           <Tooltip title="编辑" arrow>
             <IconButton size="small" aria-label="编辑" onClick={() => openEditDialog(row)}>
               <Edit fontSize="small" />

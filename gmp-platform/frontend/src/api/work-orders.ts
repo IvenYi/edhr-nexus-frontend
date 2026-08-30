@@ -15,7 +15,7 @@ export interface ProductionObject {
   id: string; objectNo: string; objectType: 'BATCH' | 'SN'; workOrderId: string;
   productName: string; productCode: string; processVersionId: string; processVersion: string;
   targetQuantity: number; goodQuantity: number; ngQuantity: number; scrapQuantity: number;
-  status: string; remark?: string | null; plannedStartAt?: string | null; plannedEndAt?: string | null; createdAt?: string | null; updatedAt?: string | null;
+  status: string; remark?: string | null; terminationReason?: string | null; terminationAt?: string | null; plannedStartAt?: string | null; plannedEndAt?: string | null; createdAt?: string | null; updatedAt?: string | null;
 }
 export interface ProcessOption {
   id: string;
@@ -39,3 +39,13 @@ export const splitProductionObjectsBatch = (workOrderId: string, items: SplitPro
 export const startProductionObject = (id: string) => client.post(`/production/objects/${id}/start`) as Promise<{ data: { data: ProductionObject } }>;
 export const completeProductionObject = (id: string) => client.post(`/production/objects/${id}/complete`) as Promise<{ data: { data: ProductionObject } }>;
 export const cancelProductionObject = (id: string) => client.post(`/production/objects/${id}/cancel`) as Promise<{ data: { data: ProductionObject } }>;
+export const endProductionObject = (id: string, reason: string) => client.post(`/production/objects/${id}/end`, { reason }) as Promise<{ data: { data: ProductionObject } }>;
+
+export interface BatchRecord extends ProductionObject {
+  workOrderNo: string;
+  orderNumber?: string | null;
+  productId: string;
+}
+
+export const listBatches = (params: { page?: number; size?: number; keyword?: string; status?: string }) =>
+  client.get('/production/batches', { params }) as Promise<{ data: { data: PageResult<BatchRecord> } }>;

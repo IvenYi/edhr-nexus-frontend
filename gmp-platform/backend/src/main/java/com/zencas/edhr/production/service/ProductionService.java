@@ -149,6 +149,20 @@ public class ProductionService {
     }
 
     @Transactional
+    public ProductionObject endObject(Long id, String reason) {
+        ProductionObject object = requireObjectForUpdate(id);
+        if (!"IN_PROGRESS".equals(object.getStatus())) throw error("只有生产中的对象可以提前结束");
+        if (!StringUtils.hasText(reason)) throw error("提前结束必须填写结束原因");
+        stateMachineService.transit("PRODUCTION_OBJECT", object.getId(), object.getStatus(), "EARLY_TERMINATED");
+        object.setStatus("EARLY_TERMINATED");
+        object.setTerminationReason(reason.trim());
+        object.setTerminationAt(LocalDateTime.now());
+        ProductionObject saved = productionObjectRepository.save(object);
+        updateOrderWhenObjectsTerminal(requireOrderForUpdate(object.getWorkOrderId()));
+        return saved;
+    }
+
+    @Transactional
     public WorkOrder closeOrder(Long id) {
         WorkOrder order = requireOrderForUpdate(id);
         if (!"COMPLETED".equals(order.getStatus())) throw error("只有已完成的工单可以关闭");
@@ -171,10 +185,19 @@ public class ProductionService {
     private void updateOrderWhenObjectsTerminal(WorkOrder order) {
         List<ProductionObject> current = objects(order.getId());
         boolean terminal = !current.isEmpty() && current.stream()
-                .allMatch(item -> List.of("COMPLETED", "CANCELLED").contains(item.getStatus()));
+                .allMatch(item -> List.of("COMPLETED", "EARLY_TERMINATED", "CANCELLED").contains(item.getStatus()));
+        boolean hasEarlyTermination = current.stream().anyMatch(item -> "EARLY_TERMINATED".equals(item.getStatus()));
+        boolean allCompleted = current.stream().allMatch(item -> "COMPLETED".equals(item.getStatus()));
         if (terminal && ("CREATED".equals(order.getStatus()) || "IN_PROCESS".equals(order.getStatus()))) {
-            stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "COMPLETED");
-            order.setStatus("COMPLETED");
+            if (hasEarlyTermination && "IN_PROCESS".equals(order.getStatus())) {
+                stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "EARLY_TERMINATED");
+                order.setStatus("EARLY_TERMINATED");
+            } else if (allCompleted) {
+                stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "COMPLETED");
+                order.setStatus("COMPLETED");
+            } else {
+                return;
+            }
             workOrderRepository.save(order);
         }
     }

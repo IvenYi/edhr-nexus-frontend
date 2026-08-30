@@ -65,7 +65,7 @@ import ProductProcessVersionEditorDialog, { type ProductProcessVersionDialogMode
 
 const PAGE_SIZE = 20;
 const COLUMN_STORAGE_KEY = 'product-modeling-parent-columns:v1';
-const ACTION_COLUMN_WIDTH = 100;
+const ACTION_COLUMN_WIDTH = 128;
 
 type ParentColumnId = 'name' | 'code' | 'materialType' | 'specification' | 'versionCount' | 'updatedBy' | 'actions';
 

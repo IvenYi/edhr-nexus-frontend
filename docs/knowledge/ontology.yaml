@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.7
+knowledgeModelVersion: 0.3.10
 concepts:
   - id: concept.material
     termId: term.material
@@ -195,7 +195,7 @@ concepts:
   - id: concept.work-order
     termId: term.work-order
     kind: business-fact
-    status: implemented
+    status: specified
     visibility: internal
     evidenceIds: [evidence.production-work-order-entity, evidence.work-order-controller, evidence.migration-0061-work-order, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.migration-0063-production-work-order-permission, evidence.production-frontend-menu-permission, evidence.production-frontend-layout-permission-filter, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test]
   - id: concept.production-object
@@ -203,7 +203,43 @@ concepts:
     kind: runtime-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.production-service-test, evidence.production-object-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test]
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.production-service-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
+  - id: concept.production-object-early-termination
+    termId: term.production-object-early-termination
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-object-early-termination-gap, evidence.guancheng-batch-close-source]
+  - id: concept.work-order-early-termination
+    termId: term.work-order-early-termination
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap]
+  - id: concept.production-object-lineage
+    termId: term.production-object-lineage
+    kind: business-concept
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.guancheng-batch-split-source, evidence.guancheng-batch-lifecycle-source]
+  - id: concept.production-batch-management-resplit
+    termId: term.production-batch-management-resplit
+    kind: business-concept
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.guancheng-batch-lifecycle-source, evidence.guancheng-batch-split-source, evidence.production-service]
+  - id: concept.work-order-production-object-split-dialog
+    termId: term.work-order-production-object-split-dialog
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-object-batch-controller, evidence.production-service-batch-split]
+  - id: concept.production-batch-resplit-dialog
+    termId: term.production-batch-resplit-dialog
+    kind: business-concept
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.guancheng-batch-lifecycle-source, evidence.production-service]
   - id: concept.production-mode
     termId: term.production-mode
     kind: business-fact
@@ -222,6 +258,24 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-service-test]
+  - id: concept.production-batch-management
+    termId: term.production-batch-management
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-batch-management-api, evidence.migration-0067-production-batch-management-permission, evidence.production-batch-management-authorization-test]
+  - id: concept.production-object-execution-detail
+    termId: term.production-object-execution-detail
+    kind: runtime-fact
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-start-source]
+  - id: concept.production-object-dhr-view
+    termId: term.production-object-dhr-view
+    kind: runtime-fact
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-close-source]
   - id: concept.serial-number
     termId: term.serial-number
     kind: runtime-fact
@@ -233,7 +287,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-aspect]
+    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
   - id: concept.production-object-pending-list
     termId: term.production-object-pending-list
     kind: runtime-fact
@@ -263,7 +317,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test]
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline]
 relations:
   - id: relation.material-derives-product
     source: concept.material
@@ -607,7 +661,42 @@ relations:
     cardinality: many-to-one
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-service]
+    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+  - id: relation.work-order-early-terminates-active-production
+    source: concept.work-order-early-termination
+    target: concept.production-object
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap, evidence.production-service]
+  - id: relation.production-object-has-lineage-parent
+    source: concept.production-object
+    target: concept.production-object
+    cardinality: one-to-zero-or-one
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.production-object-entity, evidence.guancheng-batch-split-source, evidence.guancheng-batch-lifecycle-source]
+  - id: relation.production-batch-resplit-uses-lineage
+    source: concept.production-batch-management-resplit
+    target: concept.production-object-lineage
+    cardinality: one-to-zero-or-many
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.guancheng-batch-lifecycle-source, evidence.guancheng-batch-split-source]
+  - id: relation.work-order-split-dialog-creates-production-objects
+    source: concept.work-order-production-object-split-dialog
+    target: concept.production-object
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-object-batch-controller, evidence.production-service-batch-split]
+  - id: relation.batch-resplit-dialog-manages-lineage
+    source: concept.production-batch-resplit-dialog
+    target: concept.production-object-lineage
+    cardinality: one-to-zero-or-many
+    status: planned
+    visibility: internal
+    evidenceIds: [evidence.guancheng-batch-lifecycle-source, evidence.production-service]
   - id: relation.production-object-uses-process-version
     source: concept.production-object
     target: concept.product-process-version
@@ -636,6 +725,27 @@ relations:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-object-entity, evidence.production-service]
+  - id: relation.production-batch-management-lists-batch-objects
+    source: concept.production-batch-management
+    target: concept.production-batch
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-batch-management-api]
+  - id: relation.production-batch-management-opens-object-detail
+    source: concept.production-batch-management
+    target: concept.production-object
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-batch-management-page]
+  - id: relation.production-batch-management-opens-row-audit
+    source: concept.production-batch-management
+    target: concept.data-audit-action-category
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
   - id: relation.production-object-represents-serial-number
     source: concept.production-object
     target: concept.serial-number
@@ -677,4 +787,4 @@ relations:
     cardinality: one-to-zero-or-one
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect]
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.production-audit-localized-formatter]

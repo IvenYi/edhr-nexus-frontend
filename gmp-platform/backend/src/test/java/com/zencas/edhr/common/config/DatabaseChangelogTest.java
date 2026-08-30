@@ -174,6 +174,26 @@ class DatabaseChangelogTest {
         assertThat(lifecycleMigration).contains("ALTER TABLE work_order ALTER COLUMN production_form DROP NOT NULL");
     }
 
+    @Test
+    void productionBatchManagementPermissionMigrationIsIncludedAndAssignedToAdmin() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0067-production-batch-management-permission.sql");
+
+        assertThat(master).contains("0067-production-batch-management-permission.sql");
+        assertThat(migration).contains("'production.batches'");
+        assertThat(migration).contains("'批次管理'");
+        assertThat(migration).contains("WHERE r.code = 'ADMIN'");
+    }
+
+    @Test
+    void productionObjectEarlyTerminationMigrationIsIncluded() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0068-production-object-early-termination.sql");
+
+        assertThat(master).contains("0068-production-object-early-termination.sql");
+        assertThat(migration).contains("termination_reason", "termination_at");
+    }
+
     private String readResource(String path) throws IOException {
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }

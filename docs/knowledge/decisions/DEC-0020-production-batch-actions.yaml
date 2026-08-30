@@ -1,0 +1,63 @@
+knowledgeModelVersion: 0.3.10
+decisions:
+  - id: DEC-0020
+    title: 批次管理操作栏与生产对象动作边界
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；批次管理操作栏不能只显示数据审计，应承载已确认的批次业务动作；数据审计继续遵循统一行点击详情及详情页签规范。provenance: original-evidence；当前 eDHR 仅实现生产对象基础状态和取消接口，冠骋源码显示批次删除、提前结束、开工和 DHR 存在明确生命周期联动，但外部行为不直接证明本项目已实现。"
+    decisionStatements:
+      - id: DEC-0020-01
+        statement: "provenance: user-confirmed；批次管理列表操作栏提供取消、结束、DHR 查看、执行详情等独立业务动作入口；不提供重复的查看按钮，整行点击打开详情。"
+        status: specified
+        visibility: internal
+      - id: DEC-0020-02
+        statement: "provenance: user-confirmed；未开工批次允许取消，取消使用生产对象的 CANCELLED 状态并保留对象与审计；进行中批次的‘结束’定义为提前结束，必须填写结束原因并使用 EARLY_TERMINATED，不得调用正常完成。"
+        status: specified
+        visibility: internal
+      - id: DEC-0020-03
+        statement: "provenance: user-confirmed + original-evidence；DHR 查看和执行详情只有在生产对象首次开工后才有业务意义；当前相关后端页面/接口尚未实现，页面可以保留入口但必须明确待开放，不得伪造数据。"
+        status: specified
+        visibility: internal
+      - id: DEC-0020-04
+        statement: "provenance: user-confirmed；数据审计不是独立批次业务动作；沿统一行点击进入生产对象详情，在详情的数据审计页签中查看，并继续投影为新增/修改两类动作。"
+        status: specified
+        visibility: internal
+      - id: DEC-0020-05
+        statement: "provenance: user-confirmed；批次管理 MVP 暂不提供既有 BATCH 再拆分；操作栏不得因此调用工单初始拆分接口。"
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0019]
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-object-controller, evidence.production-object-status-machine, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-lifecycle-source, evidence.guancheng-batch-close-source, evidence.guancheng-batch-start-source, evidence.audit-controller-action-projection]
+    acceptanceScenarios:
+      - id: scenario.production-batch-actions-by-status
+        given: 批次管理列表存在 CREATED、IN_PROGRESS、COMPLETED 或 CANCELLED 的 BATCH 生产对象
+        when: 用户查看某行的操作栏
+        then: CREATED 显示可用取消；IN_PROGRESS 显示提前结束入口并要求原因；已完成或已取消对象不显示可用取消/提前结束；不显示重复查看按钮
+        evidenceIds: [evidence.production-batch-management-page, evidence.production-object-status-machine, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap]
+      - id: scenario.production-batch-row-detail-audit
+        given: 用户看到一条批次列表记录
+        when: 用户点击整行
+        then: 打开生产对象详情并可在详情数据审计页签查看该对象审计，动作继续按新增/修改投影
+        evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test]
+      - id: scenario.production-batch-dhr-and-execution-placeholders
+        given: 用户查看已开工或已完成批次
+        when: 用户点击 DHR 查看或执行详情
+        then: 已实现模块则进入对应数据；模块尚未实现时显示明确待开放提示，不返回虚假 DHR、工序或事务数据
+        evidenceIds: [evidence.production-object-start-side-effects-current, evidence.guancheng-batch-start-source, evidence.production-object-entity]
+    implementationDiscrepancies:
+      - id: discrepancy.production-batch-early-termination-not-implemented
+        status: open
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/ProductionObjectStatusMachine.java
+        lineHint: 20
+        summary: "provenance: original-evidence + implementation-check；当前已补齐 IN_PROGRESS->EARLY_TERMINATED、结束原因和批次接口，但尚未实现活动生产事务关闭、DHR 作废/冻结及完整工单级联语义。"
+        evidenceIds: [evidence.production-object-early-termination-gap]
+      - id: discrepancy.production-batch-dhr-execution-entry-not-implemented
+        status: open
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+        lineHint: 70
+        summary: "provenance: original-evidence；当前没有 DHR 实例查看或生产执行详情查询接口；页面入口必须保持占位并明确能力边界。"
+        evidenceIds: [evidence.production-object-start-side-effects-current, evidence.production-object-controller]

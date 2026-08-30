@@ -100,7 +100,7 @@ interface WorkTemplateColumn { id: WorkTemplateColumnId; label: string; width: n
 
 const PAGE_SIZE = 20;
 const COLUMN_STORAGE_KEY = 'work-template-list-columns:v2';
-const ACTION_COLUMN_WIDTH = 116;
+const ACTION_COLUMN_WIDTH = 128;
 const WORK_TEMPLATE_COLUMNS: WorkTemplateColumn[] = [
   { id: 'name', label: '作业名称', width: 260, configurable: true },
   { id: 'code', label: '编码', width: 180, configurable: true },
@@ -333,7 +333,7 @@ export default function WorkTemplateList() {
       }
       case 'description': return <TableCell key={column.id} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={row.description || '-'}>{row.description || '-'}</TableCell>;
       case 'updatedAt': return <TableCell key={column.id}>{formatDateTime(row.updatedAt)}</TableCell>;
-      case 'actions': return <TableCell key={column.id} align="center" onClick={(event) => event.stopPropagation()} sx={operationColumnSx('body')}><Box sx={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'center', alignItems: 'center', gap: 0.25 }}><Tooltip title="配置流程" arrow><IconButton size="small" aria-label="配置流程" onClick={() => navigate(`/production/work-templates/${row.id}`)}><AccountTreeOutlined fontSize="small" /></IconButton></Tooltip><Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(row)}><Edit fontSize="small" /></IconButton></Tooltip><Tooltip title="删除" arrow><IconButton size="small" aria-label="删除" color="error" onClick={() => setConfirmDelete(row)}><Delete fontSize="small" /></IconButton></Tooltip></Box></TableCell>;
+      case 'actions': return <TableCell key={column.id} align="center" onClick={(event) => event.stopPropagation()} sx={operationColumnSx('body')}><Box sx={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'center', alignItems: 'center', gap: 0 }}><Tooltip title="配置流程" arrow><IconButton size="small" aria-label="配置流程" onClick={() => navigate(`/production/work-templates/${row.id}`)}><AccountTreeOutlined fontSize="small" /></IconButton></Tooltip><Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(row)}><Edit fontSize="small" /></IconButton></Tooltip><Tooltip title="删除" arrow><IconButton size="small" aria-label="删除" color="error" onClick={() => setConfirmDelete(row)}><Delete fontSize="small" /></IconButton></Tooltip></Box></TableCell>;
       default: return null;
     }
   };

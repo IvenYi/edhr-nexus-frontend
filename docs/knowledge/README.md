@@ -1,6 +1,6 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.7`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.10`。
 
 本目录是 eDHR 业务概念、关系、规则、决策、证据和未决问题的机器可读权威来源。人员阅读架构文档、业务运行代码和界面都可以提供证据，但不能替代这里的结构化知识基线。
 
@@ -9,7 +9,7 @@
 ## 目录结构
 
 - `schema.yaml`：版本化词汇、枚举、记录结构、条件/结果语法与投影契约。
-- `execution-contracts.yaml`：已验证运行规则所引用的执行契约注册表；当前无已验证规则，因此集合为空。
+- `execution-contracts.yaml`：规则引用的已验证执行契约注册表；当前包含生产对象审计快照写入契约。生产审计中文字段属于展示投影，不新增或改写后端执行契约。
 - `glossary.yaml`：稳定术语、定义、别名、知识状态和可见性。
 - `ontology.yaml`：概念和概念间关系。
 - `rules/*.yaml`：按业务域维护的结构化规则。
@@ -37,7 +37,7 @@
 - customer 投影只接受 `verified` 且 visibility 为 `customer` 或 `customer-and-runtime` 的规则。
 - runtime 投影只接受 `verified` 且 visibility 为 `runtime` 或 `customer-and-runtime` 的规则，并再次要求有效执行契约和证据。
 
-`executionContractId` 不是自由文本。任何 `verified` 规则都必须引用 `execution-contracts.yaml` 中真实存在的记录；被引用执行契约必须为 `verified`，visibility 必须为 `runtime` 或 `customer-and-runtime`，并具有非空证据。当前产品制程规则均为非 `verified` 且 `internal`，因此注册表保持为空，不新增或伪造执行契约。
+`executionContractId` 不是自由文本。任何 `verified` 规则都必须引用 `execution-contracts.yaml` 中真实存在的记录；被引用执行契约必须为 `verified`，visibility 必须为 `runtime` 或 `customer-and-runtime`，并具有非空证据。生产对象审计快照处理已具备控制器实现、聚焦测试和已验证执行契约，但规则本身按当前决策保持 `implemented/internal`，不提前进入客户或运行时投影；生产域审计展示在前端通过共享格式化器把已知内部字段和枚举转换为中文业务字段行，原始 `contentBefore`/`contentAfter` 不被改写。后续只有完成发布级验证后才可推进规则成熟度。其余未满足证据闭环的规则同样不得新增或伪造执行契约。
 
 ## Schema 驱动结构
 
@@ -95,7 +95,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.7" && schema.fetch("schemaVersion") == "1.0.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.10" && schema.fetch("schemaVersion") == "1.0.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

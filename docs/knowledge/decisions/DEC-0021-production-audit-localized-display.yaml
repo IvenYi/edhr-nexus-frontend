@@ -1,0 +1,38 @@
+knowledgeModelVersion: 0.3.10
+decisions:
+  - id: DEC-0021
+    title: 生产审计快照使用统一中文业务展示
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；工单和批次详情中的数据审计属于同一生产域客户展示能力，客户不应直接看到 contentBefore/contentAfter 中的原始英文 key JSON。provenance: original-evidence；后端审计快照使用稳定内部字段保存真实证据，前端共享格式化器负责中文字段、顺序、枚举、时间及空值展示，展示转换不改写原始快照。"
+    decisionStatements:
+      - id: DEC-0021-01
+        statement: "provenance: user-confirmed；工单及 PRODUCTION_OBJECT 审计快照在客户界面统一显示中文业务字段行，不直接展示原始 JSON 或内部英文字段 key。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0021-02
+        statement: "provenance: user-confirmed + original-evidence；工单和批次复用同一生产审计格式化器，统一字段标签、字段顺序、状态、生产形态、时间和空值展示；批次仅对 objectNo 使用‘批次号’上下文标签。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0021-03
+        statement: "provenance: user-confirmed；中文展示只作用于客户投影，不修改后端 contentBefore/contentAfter 的原始内部字段、字段值、哈希或历史证据；未知字段不得被静默丢弃。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0021-04
+        statement: "provenance: user-confirmed；空快照显示‘无’，快照中的空字段值显示‘-’；历史已有非空快照同样适用中文展示，历史本身为空的快照不伪造回填。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-audit-localized-formatter, evidence.work-order-page, evidence.production-batch-management-page, evidence.production-audit-localized-display-guideline, evidence.work-order-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller]
+    acceptanceScenarios:
+      - id: scenario.production-audit-localized-fields
+        given: 工单或批次审计包含已知内部英文字段、状态、生产形态和时间值
+        when: 用户展开详情抽屉中的变更前或变更后快照
+        then: 页面按稳定顺序显示中文业务字段和值且不出现原始 JSON；后端原始快照保持不变
+        evidenceIds: [evidence.production-audit-localized-formatter, evidence.work-order-page, evidence.production-batch-management-page, evidence.production-audit-localized-display-guideline]
+        evidenceRequirements: [前端构建, 工单与批次浏览器 DOM 和视觉验证]
+      - id: scenario.production-audit-empty-snapshot-display
+        given: 审计事件的快照为空对象或某个字段值为空
+        when: 用户查看变更前后内容
+        then: 空快照显示“无”，空字段值显示“-”，不为历史空快照伪造业务字段
+        evidenceIds: [evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline]

@@ -135,3 +135,7 @@ databaseChangeLog:
       file: db/changelog/0065-remove-work-order-released-status.sql
   - include:
       file: db/changelog/0066-production-object-planned-window.sql
+  - include:
+      file: db/changelog/0067-production-batch-management-permission.sql
+  - include:
+      file: db/changelog/0068-production-object-early-termination.sql

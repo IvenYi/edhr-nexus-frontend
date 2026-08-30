@@ -14,6 +14,7 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Tooltip,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -84,7 +85,7 @@ export default function ReviewTemplateList() {
               <TableCell>描述</TableCell>
               <TableCell>状态</TableCell>
               <TableCell>创建时间</TableCell>
-              <TableCell>操作</TableCell>
+              <TableCell align="center" sx={{ width: 64, minWidth: 64 }}>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -103,10 +104,10 @@ export default function ReviewTemplateList() {
                     />
                   </TableCell>
                   <TableCell>{t.createdAt}</TableCell>
-                  <TableCell>
-                    <IconButton size="small" onClick={() => navigate(`/workflow/review-templates/${t.id}`)}>
-                      <Edit />
-                    </IconButton>
+                  <TableCell align="center" sx={{ width: 64, minWidth: 64 }}>
+                    <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => navigate(`/workflow/review-templates/${t.id}`)}>
+                      <Edit fontSize="small" />
+                    </IconButton></Tooltip>
                   </TableCell>
                 </TableRow>
               ))

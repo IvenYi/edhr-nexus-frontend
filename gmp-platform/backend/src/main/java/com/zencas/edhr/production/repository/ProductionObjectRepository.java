@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface ProductionObjectRepository extends JpaRepository<ProductionObject, Long> {
     List<ProductionObject> findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc(String tenantId, Long workOrderId);
+    List<ProductionObject> findByTenantIdAndObjectTypeOrderByCreatedAtDesc(String tenantId, String objectType);
     Optional<ProductionObject> findByTenantIdAndId(String tenantId, Long id);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select productionObject from ProductionObject productionObject where productionObject.tenantId = :tenantId and productionObject.id = :id")

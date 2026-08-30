@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.7
+knowledgeModelVersion: 0.3.10
 terms:
   - id: term.material
     name: 物料
@@ -74,9 +74,9 @@ terms:
     visibility: internal
   - id: term.production-batch
     name: 生产批次
-    definition: 工单拆分形成的生产对象在 BATCH 生产形态下的业务称谓；对象保存工单、产品制程版本、对象编号、目标数量、计划起止时间、备注及独立的良品、NG 和报废数量，并复用 CREATED、IN_PROGRESS、COMPLETED、CANCELLED 生命周期。完整制程执行快照仍属于后续能力。
+    definition: 工单拆分形成的生产对象在 BATCH 生产形态下的业务称谓；对象保存工单、产品制程版本、对象编号、目标数量、计划起止时间、备注及独立的良品、NG 和报废数量，并规划复用 CREATED、IN_PROGRESS、COMPLETED、EARLY_TERMINATED、CANCELLED 生命周期。完整制程执行快照仍属于后续能力。
     aliases: [生产对象, 批次, SN, 工单批次]
-    status: implemented
+    status: specified
     visibility: internal
   - id: term.execution-snapshot
     name: 执行快照
@@ -124,7 +124,7 @@ terms:
     name: 作业流程业务单据节点引用
     definition: 作业流程表单填写节点面向配置用户展示的业务单据引用；节点内部仍通过 formTemplateVersionId 引用既有表单模板版本，业务单据称谓仅作用于该节点配置界面，不替代表单主数据模块的技术术语。
     aliases: [业务单据引用, 表单填写节点业务单据]
-    status: implemented
+    status: specified
     visibility: internal
   - id: term.production-work-condition-rule
     name: 作业条件规则
@@ -194,15 +194,51 @@ terms:
     visibility: internal
   - id: term.work-order
     name: 工单
-    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，可直接拆分多个生产对象，不存在 RELEASED 发布状态。
+    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，可直接拆分多个生产对象，不存在 RELEASED 发布状态；生产执行中可主动提前结束并进入 EARLY_TERMINATED，区别于正常完成和行政关闭。
     aliases: [生产工单, 工单计划]
-    status: implemented
+    status: specified
     visibility: internal
   - id: term.production-object
     name: 生产对象
     definition: 工单拆分后实际管理的批次或 SN 对象，保存对象编号、生产形态、锁定制程版本、目标数量、计划起止时间、备注、良品、NG、报废数量和对象生命周期状态。
     aliases: [批次对象, SN 对象, 工单对象]
     status: implemented
+    visibility: internal
+  - id: term.production-object-early-termination
+    name: 生产对象提前结束
+    definition: 生产对象处于进行中时由用户主动结束生产，不代表按完整制程正常完工；业务状态统一使用 EARLY_TERMINATED，并保留结束原因及其对活动执行事务、DHR 和工单状态计算的影响。当前 eDHR 已实现状态转移、结束原因和接口，但执行事务、DHR 和完整工单联动仍待补齐。
+    aliases: [批次提前结束, 提前结束, early termination]
+    status: specified
+    visibility: internal
+  - id: term.work-order-early-termination
+    name: 工单提前结束
+    definition: 工单处于生产中时由用户主动终止剩余生产，不代表全部对象按完整制程正常完成；业务状态统一使用 EARLY_TERMINATED，工单状态机转移及生产对象全部终态后的自动汇总已经实现。用户主动发起的工单级提前结束接口、结束原因，以及对未完成生产对象、活动执行事务和 DHR 的主动级联仍待实现。
+    aliases: [生产工单提前结束, 工单强制结束, work order early termination]
+    status: specified
+    visibility: internal
+  - id: term.production-object-lineage
+    name: 生产对象父子追溯关系
+    definition: 生产对象因批次再拆分、批次转 SN 或返工而形成的来源关系；子对象记录父对象和分配数量，保留制程执行依据、DHR、事务及审计追溯，使历史对象可以解释其来源和数量流向。
+    aliases: [父子批次关系, 批次来源关系, 对象谱系]
+    status: planned
+    visibility: internal
+  - id: term.production-batch-management-resplit
+    name: 批次管理再拆分
+    definition: 在批次管理页面对既有生产批次再次拆分的独立业务能力，与工单创建阶段的初始生产对象拆分分属不同弹窗和生命周期阶段；该能力不纳入当前 MVP，但数据模型需为后续 BATCH 转 BATCH、BATCH 转 SN 和返工子批次扩展保留父子追溯空间。
+    aliases: [既有批次再拆分, 批次运营拆分, batch resplit]
+    status: planned
+    visibility: internal
+  - id: term.work-order-production-object-split-dialog
+    name: 工单生产对象拆分弹窗
+    definition: 工单管理页面用于把工单计划数量首次准备为多个 BATCH 或 SN 生产对象的弹窗；候选对象先进入待提交清单，提交后写入生产对象，不负责既有批次的再次拆分。
+    aliases: [工单拆分弹窗, 初始拆分弹窗]
+    status: implemented
+    visibility: internal
+  - id: term.production-batch-resplit-dialog
+    name: 批次管理再拆分弹窗
+    definition: 批次管理页面用于对既有生产批次执行再次拆分的后续弹窗；它独立于工单生产对象拆分弹窗，需依据父批次状态、剩余可用数量和执行上下文创建子对象并展示父子追溯关系。当前仅保留产品边界和扩展规划，尚未实现。
+    aliases: [批次再拆分弹窗, 批次管理拆分弹窗]
+    status: planned
     visibility: internal
   - id: term.production-mode
     name: 生产模式
@@ -221,6 +257,24 @@ terms:
     definition: 生产形态为 BATCH 的生产对象；其目标数量为大于零的数量值，可在工单计划数量范围内拆分。
     aliases: [生产批次]
     status: implemented
+    visibility: internal
+  - id: term.production-batch-management
+    name: 批次管理页面
+    definition: 生产准备阶段面向既有 BATCH 生产对象的列表页面；页面复用 ProductionObject 列表投影，支持整行打开详情以及在详情中查看该生产对象的数据审计，并由操作栏承载状态受限的业务动作。操作栏不提供重复的查看动作；未开工对象可取消，进行中对象可填写原因后提前结束，DHR、执行详情和流转单打印仅在对应生产执行能力可用时提供入口，不得伪造已实现数据。批次管理 MVP 不提供既有 BATCH 再拆分。
+    aliases: [批次列表, 生产批次管理]
+    status: implemented
+    visibility: internal
+  - id: term.production-object-execution-detail
+    name: 生产对象执行详情
+    definition: 从批次管理进入的生产对象执行上下文入口，用于查看生产执行阶段的工序、事务和执行记录；当前生产执行模块尚未实现，批次页面只能保留明确的待开放入口，不得伪造执行数据。
+    aliases: [批次执行详情, 执行记录]
+    status: planned
+    visibility: internal
+  - id: term.production-object-dhr-view
+    name: 生产对象 DHR 查看
+    definition: 从批次管理进入的生产对象 DHR 实例查看入口；DHR 实例应在生产对象首次开工时创建或激活，未开工、取消对象没有可查看的有效 DHR。当前 DHR 运行页面尚未实现。
+    aliases: [批次 DHR, 批记录查看]
+    status: planned
     visibility: internal
   - id: term.serial-number
     name: SN
@@ -260,7 +314,7 @@ terms:
     visibility: internal
   - id: term.audit-change-snapshot
     name: 审计变更快照
-    definition: 数据审计事件中用于追溯业务变化的变更前和变更后业务字段快照；创建事件的变更前快照为空对象，更新、取消和关闭事件均应保存真实持久化对象变化前后的字段，不得使用方法参数伪造快照。
+    definition: 数据审计事件中用于追溯业务变化的变更前和变更后业务字段快照；创建事件的变更前快照为空对象，更新、取消和关闭事件均应保存真实持久化对象变化前后的字段，不得使用方法参数伪造快照。快照持久化继续使用稳定内部字段和值，客户界面通过共享生产审计映射将已知字段、状态、生产形态和时间转换为中文业务展示；该转换不得改写原始快照或其证据完整性。
     aliases: [变更前后快照, 审计字段快照]
     status: implemented
     visibility: internal

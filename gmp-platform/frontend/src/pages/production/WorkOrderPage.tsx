@@ -74,6 +74,7 @@ import {
   type WorkOrder,
 } from '@/api/work-orders';
 import type { PageResult } from '@/types/common';
+import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
 
 const PAGE_SIZE = 20;
 const statusLabels: Record<string, string> = {
@@ -103,9 +104,13 @@ const tableHeaderCellSx = {
   borderBottom: '1px solid #e4e7ed',
 };
 const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
+const statusColumnSx = {
+  position: 'sticky' as const, right: 128, zIndex: 2, width: 104, minWidth: 104, maxWidth: 104,
+  bgcolor: '#fff', backgroundClip: 'padding-box', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)', whiteSpace: 'nowrap',
+};
 const operationColumnSx = {
   position: 'sticky' as const, right: 0, zIndex: 2, width: 128, minWidth: 128, maxWidth: 128,
-  bgcolor: '#fff', backgroundClip: 'padding-box', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)', whiteSpace: 'nowrap',
+  bgcolor: '#fff', backgroundClip: 'padding-box', whiteSpace: 'nowrap',
 };
 const clearableSelectSx = {
   '& .MuiSelect-icon': { transition: 'opacity 120ms ease' },
@@ -137,21 +142,14 @@ interface WorkOrderForm {
   remark: string;
 }
 
-interface AuditField { label: string; value: string }
 interface AuditRecord {
   id: string;
   operatorName: string;
   actionLabel: string;
   operatedAt?: string;
-  beforeFields: AuditField[];
-  afterFields: AuditField[];
+  beforeFields: ProductionAuditField[];
+  afterFields: ProductionAuditField[];
 }
-
-const auditFieldLabels: Record<string, string> = {
-  orderNo: '工单编号', orderNumber: '订单编号', productId: '产品ID', productName: '产品名称', productCode: '产品编码',
-  processVersionId: '制程版本ID', processVersion: '制程版本', productionMode: '生产模式', productionForm: '生产形态',
-  plannedQuantity: '计划数量', plannedStartAt: '计划开始时间', plannedEndAt: '计划结束时间', status: '状态', remark: '备注',
-};
 
 const emptyForm = (): WorkOrderForm => ({ orderNo: '', orderNumber: '', productId: '', processVersionId: '', plannedQuantity: '', plannedStartAt: '', plannedEndAt: '', remark: '' });
 
@@ -162,23 +160,6 @@ function formatDateTime(value?: string | null) {
 }
 
 function toInputDateTime(value?: string | null) { return value ? value.replace(' ', 'T').slice(0, 16) : ''; }
-
-function safeJsonParse(value: unknown) {
-  if (typeof value !== 'string') return value;
-  try { return JSON.parse(value); } catch { return value; }
-}
-
-function formatAuditValue(value: unknown): string {
-  if (value == null || value === '') return '-';
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return JSON.stringify(value, null, 2);
-}
-
-function toAuditFields(value: unknown): AuditField[] {
-  const parsed = safeJsonParse(value);
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return [];
-  return Object.entries(parsed as Record<string, unknown>).map(([label, fieldValue]) => ({ label: auditFieldLabels[label] || label, value: formatAuditValue(fieldValue) }));
-}
 
 function toAuditRecords(events: AuditLogItem[] | undefined): AuditRecord[] {
   const labels: Record<string, string> = { CREATE: '新增', UPDATE: '修改', CANCEL: '修改', STATUS_CHANGE: '修改' };
@@ -191,8 +172,8 @@ function toAuditRecords(events: AuditLogItem[] | undefined): AuditRecord[] {
     operatorName: event.operatorDisplayName || event.operatorAccount || '-',
     actionLabel: actionLabelFor(event),
     operatedAt: event.operationTime || event.createdAt,
-    beforeFields: toAuditFields(event.contentBefore),
-    afterFields: toAuditFields(event.contentAfter),
+    beforeFields: toProductionAuditFields(event.contentBefore),
+    afterFields: toProductionAuditFields(event.contentAfter),
   }));
 }
 
@@ -221,10 +202,10 @@ function DetailField({ label, children }: { label: string; children: ReactNode }
   return <Box sx={{ minWidth: 0 }}><Typography variant="caption" sx={{ color: '#909399', display: 'block', mb: 0.5 }}>{label}</Typography><Typography variant="body2" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{children || '-'}</Typography></Box>;
 }
 
-function AuditFieldBlock({ title, fields }: { title: string; fields: AuditField[] }) {
+function AuditFieldBlock({ title, fields }: { title: string; fields: ProductionAuditField[] }) {
   return <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#f8fafc', p: 1 }}>
     <Typography variant="caption" sx={{ display: 'block', mb: 0.75, color: '#606266', fontWeight: 600 }}>{title}</Typography>
-    <Stack spacing={0.75}>{fields.length === 0 ? <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography> : fields.map((field) => <Box key={field.label} sx={{ display: 'grid', gridTemplateColumns: '84px minmax(0, 1fr)', gap: 1 }}><Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography><Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}</Typography></Box>)}</Stack>
+    <Stack spacing={0.75}>{fields.length === 0 ? <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography> : fields.map((field) => <Box key={field.key} sx={{ display: 'grid', gridTemplateColumns: '84px minmax(0, 1fr)', gap: 1 }}><Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography><Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}</Typography></Box>)}</Stack>
   </Box>;
 }
 
@@ -555,11 +536,15 @@ export default function WorkOrderPage() {
     <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
       <Box sx={{ flex: '0 0 auto', px: 2, py: 0.75, minHeight: 48, borderBottom: '1px solid #ebeef5', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}><Button variant="contained" size="small" startIcon={<Add />} onClick={openCreate}>新建工单</Button></Box>
       <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: 1200 }}>
-        <colgroup><col style={{ width: 180 }} /><col style={{ width: 190 }} /><col style={{ width: 120 }} /><col style={{ width: 104 }} /><col style={{ width: 104 }} /><col style={{ width: 110 }} /><col style={{ width: 104 }} /><col style={{ width: 164 }} /><col style={{ width: 128 }} /></colgroup>
-        <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{['工单号', '产品', '制程版本', '生产模式', '生产形态', '计划数量', '状态', '创建时间', '操作'].map((label, index) => <TableCell key={label} align={index === 8 ? 'center' : undefined} sx={index === 8 ? { ...tableHeaderCellSx, ...operationColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : tableHeaderCellSx}>{label}</TableCell>)}</TableRow></TableHead>
+        <colgroup><col style={{ width: 180 }} /><col style={{ width: 190 }} /><col style={{ width: 120 }} /><col style={{ width: 104 }} /><col style={{ width: 104 }} /><col style={{ width: 110 }} /><col style={{ width: 164 }} /><col style={{ width: 104 }} /><col style={{ width: 128 }} /></colgroup>
+        <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{['工单号', '产品', '制程版本', '生产模式', '生产形态', '计划数量', '创建时间', '状态', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { ...tableHeaderCellSx, ...operationColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : label === '状态' ? { ...tableHeaderCellSx, ...statusColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : tableHeaderCellSx}>{label}</TableCell>)}</TableRow></TableHead>
         <TableBody>{orders.isLoading ? <TableRow><TableCell colSpan={9} align="center" sx={{ height: 240, color: '#909399' }}><CircularProgress size={24} /></TableCell></TableRow> : orders.isError ? <TableRow><TableCell colSpan={9} align="center" sx={{ height: 240, color: '#c62828' }}>工单数据加载失败</TableCell></TableRow> : (orders.data?.content ?? []).length === 0 ? <TableRow><TableCell colSpan={9} align="center" sx={{ height: 240, color: '#909399' }}>暂无数据</TableCell></TableRow> : orders.data!.content.map((item) => <TableRow key={item.id} hover tabIndex={0} onClick={() => openDetail(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') openDetail(item); }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
-          <TableCell sx={{ whiteSpace: 'nowrap' }} title={item.orderNo}>{item.orderNo}</TableCell><TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${item.productName}（${item.productCode}）`}><Typography variant="body2" noWrap>{item.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{item.productCode}</Typography></TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.processVersion || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.productionMode || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formLabels[item.productionForm || ''] || item.productionForm || '-'}</TableCell><TableCell>{item.plannedQuantity}</TableCell><TableCell>{statusBadge(item.status, statusLabels)}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(item.createdAt)}</TableCell>
-          <TableCell align="center" sx={operationColumnSx} onClick={(event) => event.stopPropagation()}><Tooltip title="生产对象" arrow><IconButton size="small" aria-label="生产对象" onClick={() => openObjects(item)}><ViewList fontSize="small" /></IconButton></Tooltip>{item.status === 'CREATED' && <><Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip><Tooltip title="取消" arrow><IconButton size="small" aria-label="取消" color="error" onClick={() => setCancelTarget(item)}><Cancel fontSize="small" /></IconButton></Tooltip></>}{item.status === 'COMPLETED' && <Tooltip title="关闭" arrow><IconButton size="small" aria-label="关闭" onClick={() => setCloseTarget(item)}><Close fontSize="small" /></IconButton></Tooltip>}</TableCell>
+          <TableCell sx={{ whiteSpace: 'nowrap' }} title={item.orderNo}>{item.orderNo}</TableCell><TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${item.productName}（${item.productCode}）`}><Typography variant="body2" noWrap>{item.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{item.productCode}</Typography></TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.processVersion || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.productionMode || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formLabels[item.productionForm || ''] || item.productionForm || '-'}</TableCell><TableCell>{item.plannedQuantity}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(item.createdAt)}</TableCell><TableCell sx={statusColumnSx}>{statusBadge(item.status, statusLabels)}</TableCell>
+          <TableCell align="center" sx={operationColumnSx} onClick={(event) => event.stopPropagation()}>
+            <Tooltip title="生产对象" arrow><IconButton size="small" aria-label="生产对象" onClick={() => openObjects(item)}><ViewList fontSize="small" /></IconButton></Tooltip>
+            {item.status === 'CREATED' ? <Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip> : <Tooltip title="编辑（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="编辑暂不可用"><Edit fontSize="small" /></IconButton></span></Tooltip>}
+            {item.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消" color="error" onClick={() => setCancelTarget(item)}><Cancel fontSize="small" /></IconButton></Tooltip> : item.status === 'COMPLETED' ? <Tooltip title="关闭" arrow><IconButton size="small" aria-label="关闭" onClick={() => setCloseTarget(item)}><Close fontSize="small" /></IconButton></Tooltip> : <Tooltip title="取消（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="取消暂不可用"><Cancel fontSize="small" /></IconButton></span></Tooltip>}
+          </TableCell>
         </TableRow>)}</TableBody>
       </Table></TableContainer>
       <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography variant="body2" sx={{ color: '#606266' }}>共 {orders.data?.totalElements ?? 0} 条数据</Typography>{(orders.data?.totalPages ?? 0) > 1 && <Pagination size="small" count={orders.data?.totalPages} page={page} onChange={(_, value) => setPage(value)} />}</Box>

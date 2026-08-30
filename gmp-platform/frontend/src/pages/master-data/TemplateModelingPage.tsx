@@ -199,7 +199,7 @@ const TEMPLATE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX = 'template-modeling-version-
 const TEMPLATE_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX = 'template-modeling-version-column-settings:';
 const TEMPLATE_COLUMN_SETTINGS_VERSION = 3;
 const TEMPLATE_FIELD_COLUMN_MIN_WIDTH = 80;
-const TEMPLATE_ACTION_COLUMN_WIDTH = 100;
+const TEMPLATE_ACTION_COLUMN_WIDTH = 128;
 const DHR_VERSION_ACTION_COLUMN_WIDTH = 160;
 const TEMPLATE_VERSION_FIELD_IDS: Array<keyof TemplateModelingPayload> = ['version', 'versionDescription', 'effectiveFrom', 'effectiveTo'];
 const QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
@@ -1497,7 +1497,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   }
 
   const renderTemplateVersionActions = (row: TemplateModelingRecord, version: TemplateVersionRecord, canDeleteVersion: boolean) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       <Tooltip title="设计" arrow>
         <IconButton
           size="small"
@@ -1792,7 +1792,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     if (columnId === 'description') return row.description || '-';
     if (columnId === 'actions') {
       return (
-        <Stack direction="row" spacing={0.5} justifyContent="center" onClick={(event) => event.stopPropagation()}>
+        <Stack direction="row" spacing={0} justifyContent="center" onClick={(event) => event.stopPropagation()}>
           {renderAddTemplateVersionAction(row)}
           <Tooltip title="编辑" arrow>
             <IconButton size="small" aria-label="编辑" onClick={() => openEditDialog(row)}><EditIcon fontSize="small" /></IconButton>

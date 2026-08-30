@@ -65,6 +65,7 @@ const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
   icon: 'Assignment',
   children: [
     { label: '工单管理', path: '/production/work-orders' },
+    { label: '批次管理', path: '/production/batches' },
   ],
 };
 
@@ -78,6 +79,7 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/workflow/binding-rules',
   '/production/work-templates',
   '/production/work-orders',
+  '/production/batches',
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -374,6 +376,7 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
   if (path === '/production/work-templates') return 'workflow.work-templates';
   if (path === '/production/work-orders') return 'production.work-orders';
+  if (path === '/production/batches') return 'production.batches';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

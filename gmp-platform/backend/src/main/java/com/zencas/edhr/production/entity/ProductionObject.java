@@ -23,6 +23,8 @@ public class ProductionObject {
     @Column(name = "ng_quantity", nullable = false, precision = 15, scale = 4) @Builder.Default private BigDecimal ngQuantity = BigDecimal.ZERO;
     @Column(name = "scrap_quantity", nullable = false, precision = 15, scale = 4) @Builder.Default private BigDecimal scrapQuantity = BigDecimal.ZERO;
     @Column(name = "status", nullable = false, length = 32) @Builder.Default private String status = "CREATED";
+    @Column(name = "termination_reason", columnDefinition = "TEXT") private String terminationReason;
+    @Column(name = "termination_at") private LocalDateTime terminationAt;
     @Column(name = "remark", columnDefinition = "TEXT") private String remark;
     @Column(name = "created_by") private String createdBy;
     @Column(name = "created_at") private LocalDateTime createdAt;

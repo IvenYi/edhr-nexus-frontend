@@ -57,11 +57,11 @@ class ProductionServiceTest {
         StateMachineDef definition = WorkOrderStatusMachine.class.getAnnotation(StateMachineDef.class);
         assertThat(definition.transitions()).containsExactlyInAnyOrder(
                 "CREATED->IN_PROCESS", "CREATED->COMPLETED", "IN_PROCESS->COMPLETED",
-                "COMPLETED->CLOSED", "CREATED->CANCELLED");
+                "IN_PROCESS->EARLY_TERMINATED", "COMPLETED->CLOSED", "CREATED->CANCELLED");
     }
 
     @Test
-    void completesCreatedOrderWhenItsOnlyObjectIsCancelled() {
+    void keepsCreatedOrderAvailableWhenItsOnlyObjectIsCancelled() {
         WorkOrder order = WorkOrder.builder().id(10L).status("CREATED").build();
         ProductionObject object = ProductionObject.builder()
                 .id(20L).workOrderId(order.getId()).status("CREATED")
@@ -73,13 +73,32 @@ class ProductionServiceTest {
                 .thenReturn(Optional.of(order));
         when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId()))
                 .thenReturn(List.of(object));
-        when(workOrderRepository.save(any(WorkOrder.class))).thenReturn(order);
 
         productionService.cancelObject(object.getId());
 
         assertThat(object.getStatus()).isEqualTo("CANCELLED");
-        assertThat(order.getStatus()).isEqualTo("COMPLETED");
-        verify(stateMachineService).transit("WORK_ORDER", order.getId(), "CREATED", "COMPLETED");
+        assertThat(order.getStatus()).isEqualTo("CREATED");
+        org.mockito.Mockito.verify(stateMachineService, org.mockito.Mockito.never()).transit(eq("WORK_ORDER"), eq(order.getId()), eq("CREATED"), eq("COMPLETED"));
+    }
+
+    @Test
+    void endsInProgressObjectWithRequiredReason() {
+        WorkOrder order = WorkOrder.builder().id(10L).status("IN_PROCESS").build();
+        ProductionObject object = ProductionObject.builder().id(20L).workOrderId(order.getId()).status("IN_PROGRESS").targetQuantity(BigDecimal.ONE).build();
+        when(productionObjectRepository.findByTenantIdAndIdForUpdate("default", object.getId())).thenReturn(Optional.of(object));
+        when(productionObjectRepository.save(object)).thenReturn(object);
+        when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
+        when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId())).thenReturn(List.of(object));
+        when(workOrderRepository.save(any(WorkOrder.class))).thenReturn(order);
+
+        productionService.endObject(object.getId(), "设备故障");
+
+        assertThat(object.getStatus()).isEqualTo("EARLY_TERMINATED");
+        assertThat(object.getTerminationReason()).isEqualTo("设备故障");
+        assertThat(object.getTerminationAt()).isNotNull();
+        assertThat(order.getStatus()).isEqualTo("EARLY_TERMINATED");
+        verify(stateMachineService).transit("PRODUCTION_OBJECT", object.getId(), "IN_PROGRESS", "EARLY_TERMINATED");
+        verify(stateMachineService).transit("WORK_ORDER", order.getId(), "IN_PROCESS", "EARLY_TERMINATED");
     }
 
     @Test

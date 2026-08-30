@@ -23,10 +23,25 @@ class ProductionControllerAuthorizationTest {
 
     @Test
     void everyProductionObjectApiMethodRequiresProductionPermission() {
-        assertProductionApiMethodsAreProtected(ProductionObjectController.class);
+        assertProductionApiMethodsAreProtected(ProductionObjectController.class, "hasAuthority('production.work-orders')", "hasAnyAuthority('production.work-orders', 'production.batches')", "hasAuthority('production.batches')");
     }
 
-    private void assertProductionApiMethodsAreProtected(Class<?> controllerType) {
+    @Test
+    void batchManagementApiRequiresBatchPermission() {
+        Method[] apiMethods = java.util.Arrays.stream(ProductionBatchController.class.getDeclaredMethods())
+                .filter(this::isApiMethod)
+                .toArray(Method[]::new);
+
+        assertThat(apiMethods).as("production batch API methods").isNotEmpty();
+        for (Method method : apiMethods) {
+            PreAuthorize authorization = method.getAnnotation(PreAuthorize.class);
+            assertThat(authorization).as("authorization on ProductionBatchController.%s", method.getName()).isNotNull();
+            assertThat(authorization.value()).isEqualTo("hasAuthority('production.batches')");
+        }
+    }
+
+    private void assertProductionApiMethodsAreProtected(Class<?> controllerType, String... acceptedAuthorities) {
+        if (acceptedAuthorities.length == 0) acceptedAuthorities = new String[]{REQUIRED_AUTHORITY};
         Method[] apiMethods = java.util.Arrays.stream(controllerType.getDeclaredMethods())
                 .filter(this::isApiMethod)
                 .toArray(Method[]::new);
@@ -37,7 +52,7 @@ class ProductionControllerAuthorizationTest {
             assertThat(authorization)
                     .as("authorization on %s.%s", controllerType.getSimpleName(), method.getName())
                     .isNotNull();
-            assertThat(authorization.value()).isEqualTo(REQUIRED_AUTHORITY);
+            assertThat(java.util.Arrays.asList(acceptedAuthorities)).contains(authorization.value());
         }
     }
 

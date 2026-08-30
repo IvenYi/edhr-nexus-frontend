@@ -5,6 +5,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @StateMachineDef(entityType = "PRODUCTION_OBJECT", transitions = {
-        "CREATED->IN_PROGRESS", "IN_PROGRESS->COMPLETED", "CREATED->CANCELLED"
+        "CREATED->IN_PROGRESS", "IN_PROGRESS->COMPLETED", "IN_PROGRESS->EARLY_TERMINATED", "CREATED->CANCELLED"
 })
 public class ProductionObjectStatusMachine {}
