@@ -1,6 +1,7 @@
 --liquibase formatted sql
 --changeset edhr:0061-production-work-order
 --validCheckSum: 9:d0a5ad45f8ed2bbfe1078e15fcbc914c
+--validCheckSum: 9:bbd3eb646e53db103d3d4f5c50fc053d
 
 CREATE TABLE IF NOT EXISTS work_order (
     id BIGINT PRIMARY KEY,

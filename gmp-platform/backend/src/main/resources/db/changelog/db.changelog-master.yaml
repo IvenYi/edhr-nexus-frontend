@@ -124,6 +124,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/0060-work-template-version-integrity.sql
   - include:
+      file: db/changelog/0060a-work-order-legacy-table-preparation.sql
+  - include:
       file: db/changelog/0061-production-work-order.sql
   - include:
       file: db/changelog/0062-production-object-and-work-order-lifecycle.sql
@@ -139,3 +141,5 @@ databaseChangeLog:
       file: db/changelog/0067-production-batch-management-permission.sql
   - include:
       file: db/changelog/0068-production-object-early-termination.sql
+  - include:
+      file: db/changelog/0069-work-order-legacy-column-constraints.sql

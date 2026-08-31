@@ -175,6 +175,34 @@ class DatabaseChangelogTest {
     }
 
     @Test
+    void productionWorkOrderLegacyTablePreparationRunsBeforeTheImmutableInitialMigration() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String preparationMigration = readResource("db/changelog/0060a-work-order-legacy-table-preparation.sql");
+        String initialMigration = readResource("db/changelog/0061-production-work-order.sql");
+
+        assertThat(master).contains("0060a-work-order-legacy-table-preparation.sql");
+        assertThat(master.indexOf("0060a-work-order-legacy-table-preparation.sql"))
+                .isLessThan(master.indexOf("0061-production-work-order.sql"));
+        assertThat(preparationMigration).contains("--preconditions onFail:MARK_RAN");
+        assertThat(preparationMigration).contains("ALTER TABLE work_order ADD COLUMN IF NOT EXISTS order_no VARCHAR(64)");
+        assertThat(preparationMigration).contains("UPDATE work_order SET order_no = code");
+        assertThat(preparationMigration).contains("ALTER TABLE work_order ADD COLUMN IF NOT EXISTS planned_quantity DECIMAL(15, 4)");
+        assertThat(initialMigration).doesNotContain("splitStatements:false");
+        assertThat(initialMigration).doesNotContain("ALTER TABLE work_order ADD COLUMN IF NOT EXISTS order_no VARCHAR(64)");
+        assertThat(initialMigration).contains("--validCheckSum: 9:bbd3eb646e53db103d3d4f5c50fc053d");
+    }
+
+    @Test
+    void productionWorkOrderLegacyConstraintMigrationAllowsCurrentEntityInserts() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0069-work-order-legacy-column-constraints.sql");
+
+        assertThat(master).contains("0069-work-order-legacy-column-constraints.sql");
+        assertThat(migration).contains("splitStatements:false");
+        assertThat(migration).contains("ALTER TABLE work_order ALTER COLUMN code DROP NOT NULL");
+    }
+
+    @Test
     void productionBatchManagementPermissionMigrationIsIncludedAndAssignedToAdmin() throws IOException {
         String master = readResource("db/changelog/db.changelog-master.yaml");
         String migration = readResource("db/changelog/0067-production-batch-management-permission.sql");
