@@ -106,6 +106,99 @@ async function loadWordTableOperations() {
   }
 }
 
+async function loadWordTableLayout() {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'verify-template-designer-react-'));
+  const outfile = path.join(tempDir, 'wordTableLayout.cjs');
+  await build({
+    entryPoints: [fileURLToPath(new URL('../src/pages/master-data/template-designer-react/utils/wordTableLayout.ts', import.meta.url))],
+    outfile,
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    logLevel: 'silent',
+  });
+
+  try {
+    return require(outfile);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
+async function verifyWordTableLayoutBehavior() {
+  const { constrainWordTableLayout, constrainWordTableToCanvas, getWordTableEffectiveLayout, fitWordTableColumnWidthsToCanvas, snapWordTableLayout } = await loadWordTableLayout();
+
+  const constrained = constrainWordTableLayout({ left: 720, top: 24, width: 320, height: 180 }, 900);
+  assert(constrained.left === 580 && constrained.width === 320, 'wordTableLayout.ts: tables must stay inside the right canvas edge when dragged');
+
+  const oversize = constrainWordTableLayout({ left: 80, top: 24, width: 1200, height: 180 }, 900);
+  assert(oversize.left === 0 && oversize.width === 900, 'wordTableLayout.ts: tables wider than the canvas must be reduced to the canvas width');
+
+  const manyColumns = fitWordTableColumnWidthsToCanvas(Array.from({ length: 57 }, () => 100), 900);
+  assert(manyColumns.reduce((sum, width) => sum + width, 0) === 900, 'wordTableLayout.ts: column fitting must never let many-column tables exceed the canvas width');
+
+  const constrainedStructure = constrainWordTableToCanvas({
+    id: 'wide-table',
+    type: 'table',
+    layout: { left: 80, top: 24, width: 5700, height: 40 },
+    columnWidths: Array.from({ length: 57 }, () => 100),
+    rowHeights: [40],
+    cells: [],
+  }, 900);
+  assert(
+    constrainedStructure.layout.left + constrainedStructure.columnWidths.reduce((sum, width) => sum + width, 0) <= 900,
+    'wordTableLayout.ts: structural table updates must persist constrained width and position',
+  );
+
+  const importedNarrowTableLayout = getWordTableEffectiveLayout({
+    id: 'imported-narrow-table',
+    type: 'table',
+    layout: { left: 0, top: 0, width: 900, height: 80 },
+    columnWidths: [340, 340],
+    rowHeights: [80],
+    cells: [],
+  }, 900);
+  assert(importedNarrowTableLayout.width === 680, 'wordTableLayout.ts: imported table alignment must use its rendered column width rather than stale layout width');
+  assert(
+    snapWordTableLayout({ ...importedNarrowTableLayout, left: 210 }, 900, []).left === 210,
+    'wordTableLayout.ts: imported narrow tables must retain right-drag space inside the canvas',
+  );
+
+  const tableWithUnusedTrailingColumn = {
+    id: 'table-with-unused-trailing-column',
+    type: 'table',
+    layout: { left: 0, top: 0, width: 900, height: 80 },
+    columnWidths: [340, 340, 220],
+    rowHeights: [80],
+    cells: [
+      { id: 'left', row: 1, col: 1, rowSpan: 1, colSpan: 1, text: '' },
+      { id: 'right', row: 1, col: 2, rowSpan: 1, colSpan: 1, text: '' },
+    ],
+  };
+  assert(
+    getWordTableEffectiveLayout(tableWithUnusedTrailingColumn, 900).width === 680,
+    'wordTableLayout.ts: invisible trailing grid columns must not extend the draggable table width',
+  );
+  assert(
+    constrainWordTableToCanvas(tableWithUnusedTrailingColumn, 900).columnWidths.length === 2,
+    'wordTableLayout.ts: invisible trailing grid columns must be removed before rendering resize handles',
+  );
+
+  const snapped = snapWordTableLayout(
+    { left: 294, top: 360, width: 240, height: 160 },
+    900,
+    [{ id: 'upper', left: 300, top: 80, width: 240, height: 160 }],
+  );
+  assert(snapped.left === 300, 'wordTableLayout.ts: dragging near another table left edge must snap into alignment');
+
+  const rightSnapped = snapWordTableLayout(
+    { left: 505, top: 360, width: 240, height: 160 },
+    900,
+    [{ id: 'upper', left: 300, top: 80, width: 450, height: 160 }],
+  );
+  assert(rightSnapped.left === 510, 'wordTableLayout.ts: dragging near another table right edge must snap into alignment');
+}
+
 async function verifyWordTableContextMenuOperations() {
   const {
     insertWordTableColumns,
@@ -1138,6 +1231,7 @@ if (!canvasWorkspace.includes('isSelected && !isMultiCellRange(normalizedRange)'
 if (!canvasWorkspace.includes("boxShadow: shouldShowSingleCellSelection ? 'inset 0 0 0 2px #1274dd' : 'none'")) failures.push('CanvasSheetWorkspace.tsx: first cell in a selected range must not render the single-cell inset outline');
 if (!canvasWorkspace.includes('A4_PAPER_WIDTH_MM')) failures.push('CanvasSheetWorkspace.tsx: missing A4 paper width standard');
 if (!canvasWorkspace.includes('A4_PAPER_HEIGHT_MM')) failures.push('CanvasSheetWorkspace.tsx: missing A4 paper height standard');
+if (!canvasWorkspace.includes('const paperContentWidth = a4PaperWidthPx - paperInsetLeft - paperInsetRight - PAPER_BORDER_WIDTH * 2')) failures.push('CanvasSheetWorkspace.tsx: paper content width must reserve both paper border pixels so table borders remain inside the dashed canvas boundary');
 if (!canvasWorkspace.includes("paperOrientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM")) failures.push('CanvasSheetWorkspace.tsx: canvas width must use landscape/portrait A4 dimensions');
 if (!canvasWorkspace.includes("paperOrientation === 'landscape' ? A4_PAPER_WIDTH_MM : A4_PAPER_HEIGHT_MM")) failures.push('CanvasSheetWorkspace.tsx: pagination height must use landscape/portrait A4 dimensions');
 if (!canvasWorkspace.includes('data-page-break-marker="true"')) failures.push('CanvasSheetWorkspace.tsx: page break marker must be explicitly tagged');
@@ -2295,6 +2389,13 @@ if (!canvasWorkspace.includes('beginWordTableResize')) failures.push('CanvasShee
 if (!canvasWorkspace.includes('data-word-table-column-resize-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: Word table column boundaries must expose resize handles');
 if (!canvasWorkspace.includes('data-word-table-outer-column-resize-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: Word tables must expose a right outer-column resize handle');
 if (!canvasWorkspace.includes('beginWordTableOuterColumnResize')) failures.push('CanvasSheetWorkspace.tsx: Word tables must resize the final column and total width from the right edge');
+const outerColumnResizeStart = canvasWorkspace.indexOf('const beginWordTableOuterColumnResize = (');
+const outerColumnResizeEnd = canvasWorkspace.indexOf('\n  const beginWordTableOuterRowResize = (', outerColumnResizeStart);
+const outerColumnResize = outerColumnResizeStart >= 0 && outerColumnResizeEnd > outerColumnResizeStart
+  ? canvasWorkspace.slice(outerColumnResizeStart, outerColumnResizeEnd)
+  : '';
+if (!outerColumnResize.includes("ownerDocument.addEventListener('pointermove', handlePointerMove, true);")) failures.push('CanvasSheetWorkspace.tsx: right outer-column resizing must keep receiving pointer moves after the pointer leaves the 2px handle');
+if (!outerColumnResize.includes('getWordTableEffectiveLayout(block, paperWorkingWidth)')) failures.push('CanvasSheetWorkspace.tsx: right outer-column resizing must constrain against the rendered table position');
 if (!canvasWorkspace.includes('data-word-table-row-resize-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: Word table row boundaries must expose resize handles');
 if (!canvasWorkspace.includes('resolveWordTableCellBorder')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must consolidate shared grid borders');
 if (!canvasWorkspace.includes('data-word-table-outer-right-border="true"')) failures.push('CanvasSheetWorkspace.tsx: Word tables must render a dedicated right outer border above editable cells');
@@ -2370,8 +2471,10 @@ const wordTableResizeControllers = wordTableResizeControllersStart >= 0 && wordT
   ? canvasWorkspace.slice(wordTableResizeControllersStart, wordTableResizeControllersEnd)
   : '';
 if ((wordTableResizeControllers.match(/resizeTarget\.setPointerCapture\(pointerId\)/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must capture the active pointer');
-if ((wordTableResizeControllers.match(/resizeTarget\.addEventListener\('pointermove', handlePointerMove\)/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must receive captured pointer movement directly from the resize handle');
-if ((wordTableResizeControllers.match(/resizeTarget\.removeEventListener\('pointermove', handlePointerMove\)/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must clear their direct pointer movement listener');
+if ((wordTableResizeControllers.match(/resizeTarget\.addEventListener\('pointermove', handlePointerMove\)/g) ?? []).length !== 2) failures.push('CanvasSheetWorkspace.tsx: internal and bottom table resize controllers must receive captured pointer movement directly from the resize handle');
+if ((wordTableResizeControllers.match(/resizeTarget\.removeEventListener\('pointermove', handlePointerMove\)/g) ?? []).length !== 2) failures.push('CanvasSheetWorkspace.tsx: internal and bottom table resize controllers must clear their direct pointer movement listener');
+if ((wordTableResizeControllers.match(/ownerDocument\.addEventListener\('pointermove', handlePointerMove, true\)/g) ?? []).length !== 1) failures.push('CanvasSheetWorkspace.tsx: the right outer resize controller must keep receiving pointer movement after leaving its 2px handle');
+if ((wordTableResizeControllers.match(/ownerDocument\.removeEventListener\('pointermove', handlePointerMove, true\)/g) ?? []).length !== 1) failures.push('CanvasSheetWorkspace.tsx: the right outer resize controller must clear its document pointer listener');
 if ((wordTableResizeControllers.match(/moveEvent\.pointerId !== pointerId/g) ?? []).length !== 3) failures.push('CanvasSheetWorkspace.tsx: Word table resize controllers must ignore movement from pointers other than the captured resize pointer');
 if (!canvasWorkspace.includes('function redistributeWordTableColumnWidths(')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize must redistribute width across the right-side grid tracks');
 if (!canvasWorkspace.includes('Math.max(0, nextWidths[index] - WORD_TABLE_MIN_COLUMN_WIDTH)')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize must consume all available width after the active boundary');
@@ -2385,8 +2488,10 @@ if (wordTableResizeHandles.includes('&:hover::after')) failures.push('CanvasShee
 if ((wordTableResizeHandles.match(/&:active::after/g) ?? []).length !== 4) failures.push('CanvasSheetWorkspace.tsx: Word table resize guides must appear only while a resize handle is pressed');
 if (wordTableResizeHandles.includes('width: 10') || wordTableResizeHandles.includes('height: 10')) failures.push('CanvasSheetWorkspace.tsx: Word table resize hit areas must not cover adjacent cells');
 if ((wordTableResizeHandles.match(/width: 2/g) ?? []).length !== 2 || (wordTableResizeHandles.match(/height: 2/g) ?? []).length !== 2) failures.push('CanvasSheetWorkspace.tsx: Word table resize hit areas must use a precise 2px border target');
+if (!canvasWorkspace.includes('getWordTableEffectiveLayout(block, paperWorkingWidth)')) failures.push('CanvasSheetWorkspace.tsx: Word table dragging must use the rendered column width instead of stale imported layout width');
+if (!canvasWorkspace.includes('getWordTableEffectiveLayout(candidate, paperWorkingWidth)')) failures.push('CanvasSheetWorkspace.tsx: Word table alignment targets must use rendered column widths');
 const wordDiagonalBackgroundStart = canvasWorkspace.indexOf('function resolveWordTableCellDiagonalBackground(');
-const wordDiagonalBackgroundEnd = canvasWorkspace.indexOf('\nfunction fitWordTableColumnWidths', wordDiagonalBackgroundStart);
+const wordDiagonalBackgroundEnd = canvasWorkspace.indexOf('\nexport default function CanvasSheetWorkspace', wordDiagonalBackgroundStart);
 const wordDiagonalBackground = wordDiagonalBackgroundStart >= 0 && wordDiagonalBackgroundEnd > wordDiagonalBackgroundStart
   ? canvasWorkspace.slice(wordDiagonalBackgroundStart, wordDiagonalBackgroundEnd)
   : '';
@@ -2404,6 +2509,7 @@ await verifyExcelImportStyleBehavior();
 await verifySubTableGroupRepeatBehavior();
 await verifyCommonComponentBehavior();
 await verifyWordTableContextMenuOperations();
+await verifyWordTableLayoutBehavior();
 
 if (failures.length > 0) {
   console.error('verify-template-designer-react failed');

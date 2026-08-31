@@ -48,6 +48,7 @@ import {
   splitWordTableCell,
   type WordTableRange,
 } from '../../utils/wordTableOperations';
+import { constrainWordTableToCanvas, getWordTableEffectiveLayout, snapWordTableLayout } from '../../utils/wordTableLayout';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { useWordTableCellStyle } from './WordTableCellStyleContext';
 
@@ -56,6 +57,7 @@ const scrollbarWidth = 18;
 const MM_TO_PX = 96 / 25.4;
 const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
+const PAPER_BORDER_WIDTH = 1;
 const PAGE_BREAK_MARKER_Z_INDEX = 20;
 const SUB_TABLE_OVERLAY_Z_INDEX = 24;
 const PAPER_RULER_Z_INDEX = 220;
@@ -1163,10 +1165,6 @@ function resolveWordTableCellDiagonalBackground(cell: CanvasWordTableBlock['cell
   return lines.join(', ');
 }
 
-function fitWordTableColumnWidths(table: CanvasWordTableBlock) {
-  return fitColumnWidths(table.columnWidths, table.layout.width);
-}
-
 export default function CanvasSheetWorkspace() {
   const { showMessage } = useSnackbar();
   const { setWordTableCellStyleTarget } = useWordTableCellStyle();
@@ -1334,7 +1332,7 @@ export default function CanvasSheetWorkspace() {
   const paperInsetBottom = Math.round(paperMarginBottomMm * MM_TO_PX);
   const paperHeaderHeight = currentPage?.sheet.showHeader ? 46 : 0;
   const paperFooterHeight = currentPage?.sheet.showFooter ? 46 : 0;
-  const paperContentWidth = a4PaperWidthPx - paperInsetLeft - paperInsetRight;
+  const paperContentWidth = a4PaperWidthPx - paperInsetLeft - paperInsetRight - PAPER_BORDER_WIDTH * 2;
   const paperRulerUnit = 40;
   const paperRulerMinorStep = paperRulerUnit / 4;
   const displayColumnWidths = useMemo(() => fitColumnWidths(rawColumnWidths, paperContentWidth), [paperContentWidth, rawColumnWidths]);
@@ -1653,12 +1651,26 @@ export default function CanvasSheetWorkspace() {
     const wordDocument = currentPage?.wordDocument;
     if (!wordDocument) return;
 
+    const table = wordDocument.blocks.find((block): block is CanvasWordTableBlock => block.id === blockId && block.type === 'table');
+    if (!table) return;
+    const constrainedTable = constrainWordTableToCanvas(table, paperWorkingWidth);
+
+    const nextLayout = snapWordTableLayout(
+      { ...constrainedTable.layout, left, top },
+      paperWorkingWidth,
+      wordDocument.blocks.flatMap((block) => (
+        block.type === 'table' && block.id !== blockId
+          ? [{ id: block.id, ...getWordTableEffectiveLayout(block, paperWorkingWidth) }]
+          : []
+      )),
+    );
+
     updateCurrentPage({
       wordDocument: {
         ...wordDocument,
         blocks: wordDocument.blocks.map((block) => (
           block.id === blockId && block.type === 'table'
-            ? { ...block, layout: { ...block.layout, left, top } }
+            ? { ...block, columnWidths: constrainedTable.columnWidths, layout: nextLayout }
             : block
         )),
       },
@@ -1668,6 +1680,16 @@ export default function CanvasSheetWorkspace() {
     const wordDocument = currentPage?.wordDocument;
     if (!wordDocument) return;
 
+    const table = wordDocument.blocks.find((block): block is CanvasWordTableBlock => block.id === blockId && block.type === 'table');
+    if (!table) return;
+
+    const nextTable = constrainWordTableToCanvas({
+      ...table,
+      layout: { ...table.layout, height: rowHeights.reduce((sum, height) => sum + height, 0) },
+      columnWidths,
+      rowHeights,
+    }, paperWorkingWidth);
+
     updateCurrentPage({
       wordDocument: {
         ...wordDocument,
@@ -1675,9 +1697,7 @@ export default function CanvasSheetWorkspace() {
           block.id === blockId && block.type === 'table'
             ? {
                 ...block,
-                layout: { ...block.layout, width: columnWidths.reduce((sum, width) => sum + width, 0), height: rowHeights.reduce((sum, height) => sum + height, 0) },
-                columnWidths,
-                rowHeights,
+                ...nextTable,
               }
             : block
         )),
@@ -1687,12 +1707,13 @@ export default function CanvasSheetWorkspace() {
   const updateWordTableStructure = (table: CanvasWordTableBlock) => {
     const wordDocument = currentPage?.wordDocument;
     if (!wordDocument) return;
+    const nextTable = constrainWordTableToCanvas(table, paperWorkingWidth);
 
     updateCurrentPage({
       wordDocument: {
         ...wordDocument,
         blocks: wordDocument.blocks.map((block) => (
-          block.id === table.id && block.type === 'table' ? table : block
+          block.id === table.id && block.type === 'table' ? nextTable : block
         )),
       },
     });
@@ -2080,8 +2101,9 @@ export default function CanvasSheetWorkspace() {
     const ownerDocument = event.currentTarget.ownerDocument;
     const startX = event.clientX;
     const startY = event.clientY;
-    const startLeft = block.layout.left;
-    const startTop = block.layout.top;
+    const effectiveLayout = getWordTableEffectiveLayout(block, paperWorkingWidth);
+    const startLeft = effectiveLayout.left;
+    const startTop = effectiveLayout.top;
     let didDrag = false;
 
     const clearPreview = () => {
@@ -2104,10 +2126,19 @@ export default function CanvasSheetWorkspace() {
       const deltaY = moveEvent.clientY - startY;
       if (!didDrag && Math.hypot(deltaX, deltaY) < WORD_TABLE_DRAG_THRESHOLD) return;
       didDrag = true;
+      const layout = snapWordTableLayout(
+        { ...effectiveLayout, left: startLeft + deltaX, top: startTop + deltaY },
+        paperWorkingWidth,
+        (currentPage?.wordDocument?.blocks ?? []).flatMap((candidate) => (
+          candidate.type === 'table' && candidate.id !== block.id
+            ? [{ id: candidate.id, ...getWordTableEffectiveLayout(candidate, paperWorkingWidth) }]
+            : []
+        )),
+      );
       const preview = {
         blockId: block.id,
-        left: Math.max(0, Math.round(startLeft + deltaX)),
-        top: Math.max(0, Math.round(startTop + deltaY)),
+        left: layout.left,
+        top: layout.top,
       };
       wordTableLayoutPreviewRef.current = preview;
       setWordTableLayoutPreview(preview);
@@ -2210,13 +2241,14 @@ export default function CanvasSheetWorkspace() {
     const startColumnWidths = [...currentColumnWidths];
     const lastColumnIndex = startColumnWidths.length - 1;
     const startLastColumnWidth = startColumnWidths[lastColumnIndex];
+    const effectiveLayout = getWordTableEffectiveLayout(block, paperWorkingWidth);
 
     const clearPreview = () => {
       wordTableSizePreviewRef.current = null;
       setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
     };
     const finish = (shouldCommit: boolean) => {
-      resizeTarget.removeEventListener('pointermove', handlePointerMove);
+      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
       ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
       ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
       if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
@@ -2231,9 +2263,13 @@ export default function CanvasSheetWorkspace() {
       if (moveEvent.pointerId !== pointerId) return;
       const deltaX = moveEvent.clientX - startX;
       const nextColumnWidths = [...startColumnWidths];
+      const maximumLastColumnWidth = Math.max(
+        1,
+        paperWorkingWidth - effectiveLayout.left - startColumnWidths.slice(0, -1).reduce((sum, width) => sum + width, 0),
+      );
       nextColumnWidths[lastColumnIndex] = Math.max(
-        WORD_TABLE_MIN_COLUMN_WIDTH,
-        Math.round(startLastColumnWidth + deltaX),
+        1,
+        Math.min(maximumLastColumnWidth, Math.round(startLastColumnWidth + deltaX)),
       );
       const preview = {
         blockId: block.id,
@@ -2244,7 +2280,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview(preview);
     };
     const handlePointerEnd = () => finish(true);
-    resizeTarget.addEventListener('pointermove', handlePointerMove);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
     ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
     ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
     wordTablePointerCleanupRef.current = () => finish(false);
@@ -4393,7 +4429,9 @@ export default function CanvasSheetWorkspace() {
 
           if (block.type === 'table') {
             const usesLegacyWordTableBorders = (block.borderEncodingVersion ?? wordDocument.borderEncodingVersion) !== 2;
-            const defaultColumnWidths = fitWordTableColumnWidths(block);
+            const constrainedTable = constrainWordTableToCanvas(block, paperWorkingWidth);
+            const constrainedLayout = constrainedTable.layout;
+            const defaultColumnWidths = constrainedTable.columnWidths;
             const sizePreview = wordTableSizePreview?.blockId === block.id ? wordTableSizePreview : null;
             const tableColumnWidths = sizePreview?.columnWidths ?? defaultColumnWidths;
             const tableRowHeights = sizePreview?.rowHeights ?? block.rowHeights;
@@ -4402,8 +4440,8 @@ export default function CanvasSheetWorkspace() {
             const columnOffsets = buildOffsets(tableColumnWidths);
             const rowOffsets = buildOffsets(tableRowHeights);
             const layoutPreview = wordTableLayoutPreview?.blockId === block.id ? wordTableLayoutPreview : null;
-            const tableLeft = layoutPreview?.left ?? block.layout.left;
-            const tableTop = layoutPreview?.top ?? block.layout.top;
+            const tableLeft = layoutPreview?.left ?? constrainedLayout.left;
+            const tableTop = layoutPreview?.top ?? constrainedLayout.top;
             const selected = selectedWordTableBlockId === block.id;
             const selectedCellRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
             const outerRightBorderCells = block.cells.filter((cell) => (
@@ -5246,7 +5284,7 @@ export default function CanvasSheetWorkspace() {
                     pt: `${paperInsetTop}px`,
                     pb: `${paperInsetBottom}px`,
                     bgcolor: '#fff',
-                    border: '1px solid #e7edf5',
+                    border: `${PAPER_BORDER_WIDTH}px solid #e7edf5`,
                     boxShadow: '0 16px 40px rgba(30, 41, 59, 0.10)',
                   }}
                 >
