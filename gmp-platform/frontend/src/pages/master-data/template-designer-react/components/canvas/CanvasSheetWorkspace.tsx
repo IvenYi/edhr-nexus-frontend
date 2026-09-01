@@ -1,12 +1,13 @@
 import type { DragEvent as ReactDragEvent, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import {
-  Fragment,
+  memo,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState } from 'react';
 import { flushSync } from 'react-dom';
+import AddRounded from '@mui/icons-material/AddRounded';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import DragIndicatorRounded from '@mui/icons-material/DragIndicatorRounded';
@@ -88,6 +89,55 @@ interface WordTableLayoutPreview {
   left: number;
   top: number;
 }
+
+interface WordTableCellInlineContentProps {
+  text: string;
+  fieldNodes: CanvasNode[];
+  onFieldSelect: (nodeId: string) => void;
+}
+
+const WordTableCellInlineContent = memo(({
+  text,
+  fieldNodes,
+  onFieldSelect,
+}: WordTableCellInlineContentProps) => {
+  const cellInlineContent = decodeWordTableCellContent(text, fieldNodes.map((node) => node.id));
+  const placedFieldNodeIds = new Set(cellInlineContent.flatMap((segment) => (
+    segment.type === 'field' ? [segment.nodeId] : []
+  )));
+
+  const renderField = (node: CanvasNode, key: string) => {
+    const Renderer = getComponentDefinition(node.type).renderDesigner;
+    return (
+      <Renderer
+        key={key}
+        node={node}
+        selected={false}
+        onSelect={() => onFieldSelect(node.id)}
+        renderMode="word-table-cell"
+      />
+    );
+  };
+
+  return (
+    <>
+      {cellInlineContent.map((segment, index) => {
+        if (segment.type === 'text') {
+          return <span key={`text-${index}`} data-word-table-text-segment="true">{segment.text}</span>;
+        }
+        const node = fieldNodes.find((candidate) => candidate.id === segment.nodeId);
+        return node ? renderField(node, `${node.id}-${index}`) : null;
+      })}
+      {fieldNodes
+        .filter((node) => !placedFieldNodeIds.has(node.id))
+        .map((node) => renderField(node, node.id))}
+    </>
+  );
+}, (previous, next) => (
+  previous.text === next.text
+  && previous.fieldNodes.length === next.fieldNodes.length
+  && previous.fieldNodes.every((node, index) => node === next.fieldNodes[index])
+));
 
 interface WordTableSizePreview {
   blockId: string;
@@ -4032,6 +4082,17 @@ export default function CanvasSheetWorkspace() {
       draft.id === id ? { ...draft, ...patch, sourceName: patch.name ?? draft.sourceName } : draft
     )));
   };
+  const addQuickAddFieldDraft = () => {
+    setQuickAddFieldDrafts((drafts) => [...drafts, {
+      id: `manual:${Date.now()}:${drafts.length}`,
+      row: 0,
+      col: 0,
+      sourceName: '',
+      name: '',
+      type: 'text',
+      description: '',
+    }]);
+  };
   const removeQuickAddFieldDraft = (id: string) => {
     setQuickAddFieldDrafts((drafts) => drafts.filter((draft) => draft.id !== id));
   };
@@ -4830,10 +4891,6 @@ export default function CanvasSheetWorkspace() {
                   const isRangeSelected = isWordTableCellInRange(cell, selectedCellRange)
                     || additionalWordTableCellRanges.some((range) => isWordTableCellInRange(cell, range));
                   const cellFieldNodes = getWordTableCellFieldNodes(cell.id);
-                  const cellInlineContent = decodeWordTableCellContent(cell.text, cellFieldNodes.map((node) => node.id));
-                  const placedFieldNodeIds = new Set(cellInlineContent.flatMap((segment) => (
-                    segment.type === 'field' ? [segment.nodeId] : []
-                  )));
                   return (
                     <Box
                       key={cell.id}
@@ -4918,11 +4975,13 @@ export default function CanvasSheetWorkspace() {
                       } as SxProps<Theme>}
                     >
                       <Box
+                        key={cell.text}
                         data-word-table-cell-field-flow="true"
                         data-word-table-cell-content="true"
                         contentEditable
                         suppressContentEditableWarning
-                        onFocus={() => {
+                        onFocus={(event) => {
+                          if (event.target !== event.currentTarget) return;
                           // Focusing a new editable cell must replace any previous cell-range highlight.
                           selectWordTable(block.id, true);
                           setWordTableAdditionalCellRanges([]);
@@ -4955,41 +5014,25 @@ export default function CanvasSheetWorkspace() {
                           overflowWrap: 'anywhere',
                         } as SxProps<Theme>}
                       >
-                        {cellInlineContent.map((segment, index) => {
-                          if (segment.type === 'text') return <Fragment key={`text-${index}`}>{segment.text}</Fragment>;
-                          const node = cellFieldNodes.find((candidate) => candidate.id === segment.nodeId);
-                          if (!node) return null;
-                          const Renderer = getComponentDefinition(node.type).renderDesigner;
-                          return (
-                            <Renderer
-                              key={`${node.id}-${index}`}
-                              node={node}
-                              selected={node.id === selectedNodeId}
-                              onSelect={() => {
-                                selectWordTable(block.id, true);
-                                setSelectedNodeId(node.id);
-                                setActiveCanvasRail('config');
-                              }}
-                              renderMode="word-table-cell"
-                            />
-                          );
-                        })}
-                        {cellFieldNodes.filter((node) => !placedFieldNodeIds.has(node.id)).map((node) => {
-                          const Renderer = getComponentDefinition(node.type).renderDesigner;
-                          return (
-                            <Renderer
-                              key={node.id}
-                              node={node}
-                              selected={node.id === selectedNodeId}
-                              onSelect={() => {
-                                selectWordTable(block.id, true);
-                                setSelectedNodeId(node.id);
-                                setActiveCanvasRail('config');
-                              }}
-                              renderMode="word-table-cell"
-                            />
-                          );
-                        })}
+                        <WordTableCellInlineContent
+                          text={cell.text}
+                          fieldNodes={cellFieldNodes}
+                          onFieldSelect={(nodeId) => {
+                            selectWordTable(block.id, true);
+                            setWordTableAdditionalCellRanges([]);
+                            setWordTableCellRange({
+                              blockId: block.id,
+                              anchor: { row: cell.row, col: cell.col },
+                              focus: { row: cell.row, col: cell.col },
+                            });
+                            setWordTableCellStyleTarget({
+                              blockId: block.id,
+                              range: { top: cell.row, left: cell.col, bottom: cell.row, right: cell.col },
+                            });
+                            setSelectedNodeId(nodeId);
+                            setActiveCanvasRail('config');
+                          }}
+                        />
                       </Box>
                     </Box>
                   );
@@ -5261,7 +5304,7 @@ export default function CanvasSheetWorkspace() {
       </DialogTitle>
       <DialogContent sx={{ pt: '8px !important' }}>
         <Stack spacing={2}>
-          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
             <TextField
               data-quick-add-field-target="true"
               select
@@ -5275,6 +5318,15 @@ export default function CanvasSheetWorkspace() {
                 <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
               ))}
             </TextField>
+            <Button
+              data-quick-add-field-row-add="true"
+              variant="outlined"
+              size="small"
+              startIcon={<AddRounded fontSize="small" />}
+              onClick={addQuickAddFieldDraft}
+            >
+              新增字段行
+            </Button>
           </Stack>
           <Box
             data-quick-add-field-table-frame="true"

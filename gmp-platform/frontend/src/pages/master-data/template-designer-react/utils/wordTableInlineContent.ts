@@ -1,6 +1,5 @@
 const FIELD_MARKER_PREFIX = '\uE000field:';
 const FIELD_MARKER_SUFFIX = '\uE001';
-const FIELD_INSERTION_MARKER_ID = '__new_field__';
 
 export type WordTableInlineContent =
   | { type: 'text'; text: string }
@@ -36,23 +35,20 @@ export function decodeWordTableCellContent(text: string, fieldNodeIds: Iterable<
   return segments;
 }
 
+function serializeWordTableCellNode(node: Node): string {
+  if (node.nodeType === node.TEXT_NODE) return node.textContent ?? '';
+  if (node.nodeType !== node.ELEMENT_NODE) return '';
+
+  const element = node as HTMLElement;
+  if (element.dataset.wordTableFieldNodeId) {
+    return encodeWordTableFieldMarker(element.dataset.wordTableFieldNodeId);
+  }
+  if (element.tagName === 'BR') return '\n';
+  return Array.from(element.childNodes).map(serializeWordTableCellNode).join('');
+}
+
 export function serializeWordTableCellContent(container: HTMLElement) {
-  const serializeNode = (node: Node): string => {
-    if (node.nodeType === node.TEXT_NODE) return node.textContent ?? '';
-    if (node.nodeType !== node.ELEMENT_NODE) return '';
-
-    const element = node as HTMLElement;
-    if (element.dataset.wordTableFieldNodeId) {
-      return encodeWordTableFieldMarker(element.dataset.wordTableFieldNodeId);
-    }
-    if (element.dataset.wordTableFieldInsertionMarker === 'true') {
-      return encodeWordTableFieldMarker(FIELD_INSERTION_MARKER_ID);
-    }
-    if (element.tagName === 'BR') return '\n';
-    return Array.from(element.childNodes).map(serializeNode).join('');
-  };
-
-  return Array.from(container.childNodes).map(serializeNode).join('');
+  return Array.from(container.childNodes).map(serializeWordTableCellNode).join('');
 }
 
 function getCaretRangeAtPoint(container: HTMLElement, clientX: number, clientY: number) {
@@ -94,19 +90,35 @@ function getCaretRangeAtPoint(container: HTMLElement, clientX: number, clientY: 
   return range;
 }
 
+function getSerializedWordTableCaretOffset(container: HTMLElement, range: Range) {
+  let offset = 0;
+  let resolved = false;
+
+  const visit = (node: Node) => {
+    if (resolved) return;
+    if (node === range.startContainer) {
+      if (node.nodeType === node.TEXT_NODE) {
+        offset += (node.textContent ?? '').slice(0, range.startOffset).length;
+      } else {
+        Array.from(node.childNodes).slice(0, range.startOffset).forEach((child) => {
+          offset += serializeWordTableCellNode(child).length;
+        });
+      }
+      resolved = true;
+      return;
+    }
+    offset += serializeWordTableCellNode(node).length;
+  };
+
+  Array.from(container.childNodes).forEach(visit);
+  return resolved ? offset : serializeWordTableCellContent(container).length;
+}
+
 export function insertWordTableFieldAtDropPosition(container: HTMLElement, clientX: number, clientY: number) {
   const range = getCaretRangeAtPoint(container, clientX, clientY);
-  const marker = container.ownerDocument.createElement('span');
-  marker.dataset.wordTableFieldInsertionMarker = 'true';
-  range.insertNode(marker);
-
-  const textWithMarker = serializeWordTableCellContent(container);
-  marker.remove();
-  const insertionMarker = encodeWordTableFieldMarker(FIELD_INSERTION_MARKER_ID);
-  const offset = textWithMarker.indexOf(insertionMarker);
 
   return {
-    text: textWithMarker.replace(insertionMarker, ''),
-    offset: offset < 0 ? textWithMarker.length : offset,
+    text: serializeWordTableCellContent(container),
+    offset: getSerializedWordTableCaretOffset(container, range),
   };
 }

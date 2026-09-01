@@ -1053,6 +1053,9 @@ if (!canvasWorkspace.includes('快速添加字段')) failures.push('CanvasSheetW
 if (!canvasWorkspace.includes("'quick-add-fields'")) failures.push('CanvasSheetWorkspace.tsx: quick field add must have a typed menu action');
 if (!canvasWorkspace.includes('data-quick-add-field-dialog="true"')) failures.push('CanvasSheetWorkspace.tsx: quick field add must open an editable dialog');
 if (!canvasWorkspace.includes('添加目标')) failures.push('CanvasSheetWorkspace.tsx: quick field add dialog must include target selection');
+if (!canvasWorkspace.includes('data-quick-add-field-row-add="true"')) failures.push('CanvasSheetWorkspace.tsx: quick field add dialog must include an add-row action');
+if (!canvasWorkspace.includes('const addQuickAddFieldDraft = () => {')) failures.push('CanvasSheetWorkspace.tsx: quick field add dialog must append a blank draft row');
+if (!canvasWorkspace.includes("id: `manual:${Date.now()}:${drafts.length}`") || !canvasWorkspace.includes("sourceName: '',\n      name: '',\n      type: 'text'")) failures.push('CanvasSheetWorkspace.tsx: manually added quick field rows must have a stable blank-text draft');
 if (!canvasWorkspace.includes('序号') || !canvasWorkspace.includes('字段名称') || !canvasWorkspace.includes('字段类型') || !canvasWorkspace.includes('字段说明') || !canvasWorkspace.includes('操作')) failures.push('CanvasSheetWorkspace.tsx: quick field add dialog must include serial number and editable field table columns');
 if (!canvasWorkspace.includes('CloseRounded')) failures.push('CanvasSheetWorkspace.tsx: quick field add dialog must include a title-aligned close icon');
 if (!canvasWorkspace.includes('data-quick-add-field-table-frame="true"')) failures.push('CanvasSheetWorkspace.tsx: quick field add table must render a full outside border frame');
@@ -2509,7 +2512,7 @@ const wordTableCellContentEnd = canvasWorkspace.indexOf('</Box>', wordTableCellC
 const wordTableCellContent = wordTableCellContentStart >= 0 && wordTableCellContentEnd > wordTableCellContentStart
   ? canvasWorkspace.slice(wordTableCellContentStart, wordTableCellContentEnd)
   : '';
-if (!canvasWorkspace.includes('onFocus={() => {\n                          // Focusing a new editable cell must replace any previous cell-range highlight.\n                          selectWordTable(block.id, true);\n                          setWordTableAdditionalCellRanges([]);\n                          setWordTableCellRange({')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the previous cell-range highlight');
+if (!canvasWorkspace.includes('onFocus={(event) => {\n                          if (event.target !== event.currentTarget) return;\n                          // Focusing a new editable cell must replace any previous cell-range highlight.\n                          selectWordTable(block.id, true);\n                          setWordTableAdditionalCellRanges([]);\n                          setWordTableCellRange({')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the previous cell-range highlight');
 if (wordTableCellContent.includes("'&:focus'")) failures.push('CanvasSheetWorkspace.tsx: focused Word table cells must not render an inner focus frame');
 if (!canvasWorkspace.includes('data-word-table-outer-row-resize-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: Word tables must expose a bottom outer resize handle');
 if (!storeFile.includes('encodeWordTableFieldMarker')) failures.push('useTemplateDesignerStore.ts: Word table fields must persist as inline cell-content markers');
@@ -2517,6 +2520,36 @@ if (!canvasWorkspace.includes('decodeWordTableCellContent')) failures.push('Canv
 if (!canvasWorkspace.includes('insertWordTableFieldAtDropPosition')) failures.push('CanvasSheetWorkspace.tsx: Word table field drops must insert at the text caret position');
 if (!canvasWorkspace.includes('serializeWordTableCellContent')) failures.push('CanvasSheetWorkspace.tsx: Word table cell edits must retain inline field markers on blur');
 if (!canvasWorkspace.includes('if (event.currentTarget.contains(event.relatedTarget)) return;')) failures.push('CanvasSheetWorkspace.tsx: moving focus to an inline Word-table field must not resave the cell content');
+if (!canvasWorkspace.includes('key={cell.text}\n                        data-word-table-cell-field-flow="true"')) failures.push('CanvasSheetWorkspace.tsx: committing native inline edits must remount the editable cell before React reconciles its mutated children');
+if (canvasWorkspace.includes('<Fragment key={`text-${index}`}>{segment.text}</Fragment>')) failures.push('CanvasSheetWorkspace.tsx: Word-table text segments must not use React fragments inside contentEditable');
+if (!canvasWorkspace.includes('data-word-table-text-segment="true"')) failures.push('CanvasSheetWorkspace.tsx: Word-table text segments need stable DOM nodes for React reconciliation');
+if (!canvasWorkspace.includes('if (event.target !== event.currentTarget) return;')) failures.push('CanvasSheetWorkspace.tsx: nested Word-table field focus must not reset the parent cell selection');
+if (!canvasWorkspace.includes('const WordTableCellInlineContent = memo(')) failures.push('CanvasSheetWorkspace.tsx: Word-table editable content must be isolated from selection-only rerenders');
+const wordTableInlineContent = read('../src/pages/master-data/template-designer-react/utils/wordTableInlineContent.ts');
+if (wordTableInlineContent.includes('range.insertNode(') || wordTableInlineContent.includes('marker.remove()')) failures.push('wordTableInlineContent.ts: caret offsets must not mutate React-managed Word-table DOM nodes');
+const wordTableComponentRegistry = read('../src/pages/master-data/template-designer-react/registry/componentRegistry.tsx');
+const wordTableFieldRenderer = wordTableComponentRegistry.slice(
+  wordTableComponentRegistry.indexOf("if (isWordTableCellMode)"),
+  wordTableComponentRegistry.indexOf('function ContainerPreviewRenderer'),
+);
+const wordTableFieldMouseDownStart = wordTableFieldRenderer.indexOf('onMouseDown={(event) =>');
+const wordTableFieldMouseUpStart = wordTableFieldRenderer.indexOf('onMouseUp={(event) =>');
+const wordTableFieldMouseDownEnd = wordTableFieldMouseUpStart >= 0
+  ? wordTableFieldMouseUpStart
+  : wordTableFieldRenderer.indexOf('onClick={(event) =>');
+const wordTableFieldMouseDown = wordTableFieldRenderer.slice(wordTableFieldMouseDownStart, wordTableFieldMouseDownEnd);
+if (wordTableFieldMouseDown.includes('onSelect();')) failures.push('componentRegistry.tsx: Word-table field selection must not update React state during mousedown');
+if (!wordTableFieldRenderer.includes("onMouseUp={(event) => {\n          if (event.button !== 0) return;\n          event.stopPropagation();\n          onSelect();\n        }}")) failures.push('componentRegistry.tsx: Word-table fields must select only after the native editable focus sequence completes');
+const cellModeRenderer = wordTableFieldRenderer.slice(
+  wordTableFieldRenderer.indexOf('if (isCellMode)'),
+  wordTableFieldRenderer.indexOf('\n  return (', wordTableFieldRenderer.indexOf('if (isCellMode)') + 1),
+);
+const cellModeMouseDown = cellModeRenderer.slice(
+  cellModeRenderer.indexOf('onMouseDown={(event) =>'),
+  cellModeRenderer.indexOf('onMouseUp={(event) =>'),
+);
+if (cellModeMouseDown.includes('onSelect();')) failures.push('componentRegistry.tsx: Cell fields must not update React state during mousedown');
+if (!cellModeRenderer.includes('onMouseUp={(event) =>')) failures.push('componentRegistry.tsx: Cell fields must select only after the native input focus sequence completes');
 if (!canvasWorkspace.includes('getWordTableColumnResizeSegments')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize handles must be segmented by visible borders');
 if (!canvasWorkspace.includes('getWordTableRowResizeSegments')) failures.push('CanvasSheetWorkspace.tsx: Word table row resize handles must be segmented by visible borders');
 if (!canvasWorkspace.includes('cell.col + cell.colSpan - 1 === boundaryIndex')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize segments must exclude merged-cell interiors');

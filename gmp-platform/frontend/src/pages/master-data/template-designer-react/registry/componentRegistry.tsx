@@ -677,11 +677,14 @@ function FieldPreviewRenderer({
           if (event.button !== 0) return;
           event.stopPropagation();
           onCellMouseDown?.(event);
+        }}
+        onMouseUp={(event) => {
+          if (event.button !== 0) return;
+          event.stopPropagation();
           onSelect();
         }}
         onClick={(event) => {
           event.stopPropagation();
-          onSelect();
         }}
         onContextMenu={(event) => {
           event.stopPropagation();
@@ -716,11 +719,14 @@ function FieldPreviewRenderer({
           if (event.button !== 0) return;
           event.stopPropagation();
           onCellMouseDown?.(event);
+        }}
+        onMouseUp={(event) => {
+          if (event.button !== 0) return;
+          event.stopPropagation();
           onSelect();
         }}
         onClick={(event) => {
           event.stopPropagation();
-          onSelect();
         }}
         onContextMenu={(event) => {
           event.stopPropagation();
