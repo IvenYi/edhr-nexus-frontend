@@ -80,8 +80,12 @@ export interface ProductProcessVersionEditorDialogProps {
   onSubmit: (payload: ProductProcessVersionPayload) => void;
 }
 
-const PRODUCTION_MODE_OPTIONS = ['量产', '返工', '翻新'];
-const PRODUCTION_FORM_OPTIONS = ['批次', 'SN', '批次转SN'];
+const DEFAULT_PRODUCTION_MODE = '量产';
+const PRODUCTION_FORM_OPTIONS = ['批次', 'SN'];
+
+function normalizeProductionForm(value: string) {
+  return PRODUCTION_FORM_OPTIONS.includes(value) ? value : '';
+}
 
 function toInputDateTime(value?: string | null) {
   return value ? value.replace(' ', 'T').slice(0, 16) : '';
@@ -108,8 +112,8 @@ function toVersionForm(mode: ProductProcessVersionDialogMode, target: ProductPro
   if (target) {
     return {
       version: mode === 'copy' ? nextVersionLabel(versions) : target.version,
-      productionMode: target.productionMode,
-      productionForm: target.productionForm,
+      productionMode: mode === 'copy' ? DEFAULT_PRODUCTION_MODE : target.productionMode,
+      productionForm: normalizeProductionForm(target.productionForm),
       routeVersionId: target.routeVersionId,
       dhrTemplateVersionId: target.dhrTemplateVersionId,
       description: target.description || '',
@@ -119,7 +123,7 @@ function toVersionForm(mode: ProductProcessVersionDialogMode, target: ProductPro
   }
   return {
     version: versions.length === 0 ? 'V1.0' : nextVersionLabel(versions),
-    productionMode: '',
+    productionMode: DEFAULT_PRODUCTION_MODE,
     productionForm: '',
     routeVersionId: '',
     dhrTemplateVersionId: '',
@@ -976,9 +980,6 @@ export default function ProductProcessVersionEditorDialog({
       {optionsQuery.isLoading && !options ? <Box sx={{ flex: 1, minHeight: 420, display: 'grid', placeItems: 'center' }}><CircularProgress size={28} /></Box> : !options ? <Box sx={{ flex: 1, minHeight: 280, display: 'grid', placeItems: 'center', color: '#c62828' }}>制程配置选项加载失败</Box> : <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '330px minmax(0, 1fr)' }, flex: { xs: '0 0 auto', lg: 1 }, minHeight: { xs: 'auto', lg: 0 } }}>
         <Stack spacing={1.5} sx={{ p: 2, borderRight: { lg: '1px solid #e4e7ed' }, borderBottom: { xs: '1px solid #e4e7ed', lg: 0 }, bgcolor: '#fff' }}>
           <TextField required size="small" label="制程版本" value={form.version} onChange={(event) => set('version', event.target.value)} />
-          <TextField select required size="small" label="生产模式" value={form.productionMode} onChange={(event) => set('productionMode', event.target.value)}>
-            {PRODUCTION_MODE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
-          </TextField>
           <TextField select required size="small" label="生产方式" value={form.productionForm} onChange={(event) => set('productionForm', event.target.value)}>
             {PRODUCTION_FORM_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
           </TextField>

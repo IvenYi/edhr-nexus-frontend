@@ -25,6 +25,7 @@
     "verify:template-modeling": "node scripts/verify-template-modeling-page.mjs",
     "verify:dhr-template-workspace": "node scripts/verify-dhr-template-workspace.mjs",
     "verify:template-designer-react": "node scripts/verify-template-designer-react.mjs",
+    "verify:workshop-management": "node scripts/verify-workshop-management.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {

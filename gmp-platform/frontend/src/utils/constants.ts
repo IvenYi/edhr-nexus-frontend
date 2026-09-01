@@ -145,6 +145,13 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
           { label: '批记录模板', path: '/master-data/batch-record-templates' },
         ],
       },
+      {
+        label: '工厂建模',
+        icon: 'Factory',
+        children: [
+          { label: '车间管理', path: '/master-data/workshops' },
+        ],
+      },
     ],
   },
   {

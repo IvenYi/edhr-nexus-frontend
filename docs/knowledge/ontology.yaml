@@ -1,5 +1,17 @@
-knowledgeModelVersion: 0.3.7
+knowledgeModelVersion: 0.3.10
 concepts:
+  - id: concept.workshop
+    termId: term.workshop
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-master-data-architecture, evidence.workshop-entity, evidence.migration-0061-workshop-management, evidence.workshop-controller, evidence.workshop-controller-test]
+  - id: concept.production-line
+    termId: term.production-line
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-legacy-schema, evidence.production-line-entity]
   - id: concept.material
     termId: term.material
     kind: business-fact
@@ -193,6 +205,13 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.ontology-impact-analysis-architecture]
 relations:
+  - id: relation.production-line-references-workshop
+    source: concept.production-line
+    target: concept.workshop
+    cardinality: many-to-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-legacy-schema, evidence.production-line-entity]
   - id: relation.material-derives-product
     source: concept.material
     target: concept.product

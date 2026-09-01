@@ -157,6 +157,27 @@ class DatabaseChangelogTest {
         assertThat(migration).contains("ON DELETE RESTRICT");
     }
 
+    @Test
+    void workshopManagementMigrationCreatesTenantScopedMasterDataAndPermission() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0061-workshop-management.sql");
+
+        assertThat(master).contains("0061-workshop-management.sql");
+        assertThat(migration).contains("ADD COLUMN IF NOT EXISTS tenant_id BIGINT");
+        assertThat(migration).contains("ADD COLUMN IF NOT EXISTS description VARCHAR(512)");
+        assertThat(migration).contains("ADD COLUMN IF NOT EXISTS status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE'");
+        assertThat(migration).contains("0061-workshop-code-validation splitStatements:false");
+        assertThat(migration).contains("0061-production-line-orphan-validation splitStatements:false");
+        assertThat(migration).contains("uk_workshop_tenant_code");
+        assertThat(migration).contains("LOWER(BTRIM(code))");
+        assertThat(migration).contains("UPDATE workshop SET code = BTRIM(code)");
+        assertThat(migration).contains("LOWER(code)");
+        assertThat(migration).contains("DROP COLUMN IF EXISTS site_id");
+        assertThat(migration).contains("fk_production_line_workshop");
+        assertThat(migration).contains("ON DELETE RESTRICT");
+        assertThat(migration).contains("master-data.workshops");
+    }
+
     private String readResource(String path) throws IOException {
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }

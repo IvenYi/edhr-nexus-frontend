@@ -1,0 +1,82 @@
+knowledgeModelVersion: 0.3.10
+evidence:
+  - id: evidence.workshop-master-data-decision
+    type: document
+    path: docs/knowledge/decisions/DEC-0013-workshop-master-data.yaml
+    description: 记录用户确认的租户级四字段无版本车间主数据、状态、编码、引用保护、审计、菜单和权限决策。
+    visibility: internal
+  - id: evidence.workshop-master-data-architecture
+    type: document
+    path: docs/architecture/business-knowledge-model.md
+    description: 车间主数据、产线引用与状态及删除保护的人类可读知识投影。
+    visibility: internal
+  - id: evidence.workshop-legacy-schema
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql
+    description: 初始数据库结构证明旧 workshop.site_id 强制归属、按工厂的编码唯一索引，以及 production_line.workshop_id 对车间的非空引用。
+    visibility: internal
+  - id: evidence.workshop-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/Workshop.java
+    description: 车间实体保存 tenantId、code、name、description 和 ACTIVE/INACTIVE 状态，且新建持久化前默认租户和 ACTIVE 状态。
+    visibility: internal
+  - id: evidence.workshop-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/WorkshopRepository.java
+    description: 车间仓储提供租户内不区分大小写的编码唯一性查询和按租户读取。
+    visibility: internal
+  - id: evidence.production-line-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/ProductionLine.java
+    description: 产线实体通过非空 workshopId 引用车间，该关系是车间编码锁定与删除阻断的直接实现证据。
+    visibility: internal
+  - id: evidence.production-line-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/ProductionLineRepository.java
+    description: 产线仓储提供按 workshopId 判断车间是否已被引用的查询。
+    visibility: internal
+  - id: evidence.migration-0061-workshop-management
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0061-workshop-management.sql
+    description: 将旧车间按 site 归属和唯一的结构迁移为租户级车间，回填 tenant_id，增加 description 和 ACTIVE/INACTIVE status，建立租户内 LOWER(code) 唯一索引，删除 site_id，并新增车间页面权限与管理员授权。
+    visibility: internal
+  - id: evidence.workshop-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java
+    description: 车间四字段 CRUD、租户隔离查询、状态默认与校验、编码唯一性、产线引用后编码锁定和删除阻断，以及新增、修改、删除审计快照的后端实现。
+    visibility: internal
+  - id: evidence.workshop-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/WorkshopControllerTest.java
+    description: 覆盖新增默认启用、租户内编码去重、引用后编码锁定及删除阻断、其他字段修改，以及未引用删除和审计快照的控制器测试。
+    visibility: internal
+  - id: evidence.workshop-frontend-api
+    type: code
+    path: gmp-platform/frontend/src/api/workshops.ts
+    description: 车间列表、新增、修改和删除的前端 API 类型与访问层。
+    visibility: internal
+  - id: evidence.workshop-management-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx
+    description: 车间四字段无版本列表、筛选、分页、新增、编辑、删除、引用状态保护、详情和数据审计界面。
+    visibility: internal
+  - id: evidence.workshop-router
+    type: code
+    path: gmp-platform/frontend/src/router/index.tsx
+    description: 车间管理页面的 /master-data/workshops 懒加载路由入口。
+    visibility: internal
+  - id: evidence.workshop-navigation
+    type: code
+    path: gmp-platform/frontend/src/utils/constants.ts
+    description: 数据模块菜单依次定义工艺建模、模板建模和工厂建模，并在工厂建模下定义车间管理路由。
+    visibility: internal
+  - id: evidence.workshop-managed-menu
+    type: code
+    path: gmp-platform/frontend/src/utils/menuManagement.ts
+    description: 已保存的自定义菜单也会被规范化为包含工厂建模和车间管理的必需菜单。
+    visibility: internal
+  - id: evidence.workshop-page-verification
+    type: test
+    path: gmp-platform/frontend/scripts/verify-workshop-management.mjs
+    description: 前端聚焦验证脚本检查菜单顺序、路由、四字段界面、启停状态、引用锁定、专用 API、后端引用保护、审计、权限和租户内编码索引。
+    visibility: internal

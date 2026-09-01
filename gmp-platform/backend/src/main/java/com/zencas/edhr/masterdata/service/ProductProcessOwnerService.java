@@ -65,7 +65,7 @@ public class ProductProcessOwnerService {
 
     private static final String TENANT_ID = "default";
     private static final Set<String> PRODUCTION_MODES = Set.of("量产", "返工", "翻新");
-    private static final Set<String> PRODUCTION_FORMS = Set.of("SN", "批次", "批次转SN");
+    private static final Set<String> PRODUCTION_FORMS = Set.of("SN", "批次");
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -510,8 +510,8 @@ public class ProductProcessOwnerService {
     }
 
     private String requireProductionForm(String value) {
-        String form = requireText(value, "生产形态不能为空");
-        if (!PRODUCTION_FORMS.contains(form)) throw new BusinessException(ErrorCode.GENERAL_001, "生产形态仅支持SN、批次或批次转SN");
+        String form = requireText(value, "生产方式不能为空");
+        if (!PRODUCTION_FORMS.contains(form)) throw new BusinessException(ErrorCode.GENERAL_001, "生产方式仅支持SN或批次");
         return form;
     }
 

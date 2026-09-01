@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.7
+knowledgeModelVersion: 0.3.10
 evidence:
   - id: evidence.business-knowledge-model
     type: document
@@ -38,7 +38,7 @@ evidence:
   - id: evidence.product-process-version-entity
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessVersion.java
-    description: 产品制程版本实体保存 routeVersionId 和 dhrTemplateVersionId。
+    description: 产品制程版本实体保存非空 productionMode、productionForm、routeVersionId 和 dhrTemplateVersionId。
     visibility: internal
   - id: evidence.operation-binding-entity
     type: code
@@ -58,12 +58,12 @@ evidence:
   - id: evidence.product-process-request-dto
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/ProductProcessVersionRequest.java
-    description: 产品制程保存请求定义路线、DHR、工序表单和文档版本引用及 PDF 页码字段。
+    description: 产品制程保存请求保留 productionMode 和 productionForm，并定义路线、DHR、工序表单和文档版本引用及 PDF 页码字段。
     visibility: internal
   - id: evidence.product-process-controller
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java
-    description: 产品来源筛选、制程版本 CRUD、引用校验、required 配置持久化、PDF 页码校验和审计投影的控制器实现。
+    description: 产品来源筛选、制程版本 CRUD、productionMode 校验与审计快照、productionForm 仅允许批次或 SN 的保存校验、引用校验、required 配置持久化和 PDF 页码校验的控制器实现。
     visibility: internal
   - id: evidence.route-version-entity
     type: code
@@ -98,7 +98,7 @@ evidence:
   - id: evidence.migration-0044-product-process-modeling
     type: database
     path: gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql
-    description: 建立产品制程、制程版本和三类初始工序绑定表及数量约束。
+    description: 建立产品制程、制程版本和三类初始工序绑定表及数量约束；production_form 继续是非空字符串列，未使用数据库枚举或 CHECK 收窄取值。
     visibility: internal
   - id: evidence.migration-0045-document-versions
     type: database
@@ -133,17 +133,22 @@ evidence:
   - id: evidence.product-modeling-workspace-page
     type: code
     path: gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
-    description: 产品制程版本、路线、DHR、工序表单和文档绑定工作台页面。
+    description: 产品制程版本、路线、DHR、工序表单和文档绑定兼容工作台页面；生产模式选择已隐藏，新建和复制固定提交量产，编辑保留已存储值，生产方式选项只包含批次和 SN。
     visibility: internal
   - id: evidence.product-process-version-editor
     type: code
     path: gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
-    description: 共享的制程版本和工序资源绑定编辑器；支持由产品或产品簇加载选项，显示 required 复选框并校验 PDF 文档页码范围。
+    description: 产品和产品簇共享的制程版本与工序资源绑定编辑器；隐藏生产模式选择，新建和复制固定提交量产，编辑保留已存储值，生产方式选项只包含批次和 SN，同时支持 required 复选框和 PDF 文档页码校验。
+    visibility: internal
+  - id: evidence.process-modeling-page-verification
+    type: test
+    path: gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs
+    description: 前端制程建模聚焦验证脚本，检查生产模式选择不再渲染，新建和复制默认量产，编辑保留已存储值且提交负载仍包含 productionMode；同时检查共享编辑器和兼容工作台的生产方式选项只包含批次和 SN。
     visibility: internal
   - id: evidence.product-process-controller-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java
-    description: 产品来源、产品簇制程所有者 API、并行版本、引用范围、DHR 表单追溯和产品建模控制器行为测试。
+    description: 产品来源、产品簇制程所有者 API、并行版本、引用范围、DHR 表单追溯和产品建模控制器行为测试，包括兼容 Controller 拒绝“批次转SN”生产方式。
     visibility: internal
   - id: evidence.product-family-member-repository-test
     type: test
@@ -178,7 +183,7 @@ evidence:
   - id: evidence.product-process-owner-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
-    description: 统一产品和产品簇制程根、版本、工序表单和文档配置的读取、CRUD、版本号去重及引用校验；工序引用的表单模板版本只按 RdoVersionStatusResolver 的 effectiveFrom/effectiveTo 生效时间窗判断，产品簇制程版本状态和审计快照也按有效期计算。
+    description: 统一产品和产品簇制程根、版本、工序表单和文档配置的读取与 CRUD，保留 productionMode 校验、持久化和审计快照字段，并将 productionForm 保存值限定为批次或 SN；同时实现版本号去重及引用校验，工序引用的表单模板版本只按 RdoVersionStatusResolver 的 effectiveFrom/effectiveTo 生效时间窗判断，产品簇制程版本状态和审计快照也按有效期计算。
     visibility: internal
   - id: evidence.product-process-resolution-service
     type: code
@@ -188,7 +193,7 @@ evidence:
   - id: evidence.product-process-owner-service-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java
-    description: 覆盖产品和产品簇独立制程根、同一所有者版本号不区分大小写去重，以及产品簇新增制程版本时写入对应的产品簇审计快照。
+    description: 覆盖产品和产品簇独立制程根、同一所有者版本号不区分大小写去重、产品簇新增制程版本时写入对应的产品簇审计快照，以及共享 OwnerService 拒绝“批次转SN”生产方式。
     visibility: internal
   - id: evidence.product-process-resolution-service-test
     type: test

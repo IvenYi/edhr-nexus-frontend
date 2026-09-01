@@ -23,6 +23,7 @@ const ProductModelingWorkspacePage = lazy(() => import('@/pages/master-data/Prod
 const ProductFamilyModelingPage = lazy(() => import('@/pages/master-data/ProductFamilyModelingPage'));
 const DocumentManagementPage = lazy(() => import('@/pages/master-data/DocumentManagementPage'));
 const TemplateModelingPage = lazy(() => import('@/pages/master-data/TemplateModelingPage'));
+const WorkshopManagementPage = lazy(() => import('@/pages/master-data/WorkshopManagementPage'));
 
 const OrganizationPage = lazy(() => import('@/pages/system/OrganizationPage'));
 const UserPage = lazy(() => import('@/pages/system/UserPage'));
@@ -96,6 +97,7 @@ const AppRouter = () => {
           <Route path="documents" element={<Suspense fallback={<Loading />}><DocumentManagementPage /></Suspense>} />
           <Route path="form-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="formTemplates" /></Suspense>} />
           <Route path="batch-record-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="batchRecordTemplates" /></Suspense>} />
+          <Route path="workshops" element={<Suspense fallback={<Loading />}><WorkshopManagementPage /></Suspense>} />
         </Route>
         <Route path="system">
           <Route path="organization" element={<Suspense fallback={<Loading />}><OrganizationPage /></Suspense>} />

@@ -156,6 +156,21 @@ class ProductProcessControllerTest {
     }
 
     @Test
+    void productModelingRejectsBatchToSnProductionForm() {
+        ProductProcess process = ProductProcess.builder().id(701L).tenantId("default").productVersionId(101L).build();
+        Material product = Material.builder().id(101L).materialTypeId(10L).name("产品 A").code("P-001").version("V1.0").build();
+        when(materialRepository.findById(101L)).thenReturn(Optional.of(product));
+        when(materialTypeRepository.findAll()).thenReturn(List.of(MaterialType.builder().id(10L).name("产成品").build()));
+        when(productProcessRepository.findByTenantIdAndProductVersionId("default", 101L)).thenReturn(Optional.of(process));
+        ProductProcessVersionRequest request = versionRequest("V2.0", null, null);
+        request.setProductionForm("批次转SN");
+
+        assertThatThrownBy(() -> controller.createVersion(101L, request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("生产方式仅支持SN或批次");
+    }
+
+    @Test
     void productModelingAllowsAFutureVersionWhoseWindowStartsWhenThePriorVersionEnds() {
         ProductProcess process = ProductProcess.builder().id(701L).tenantId("default").productVersionId(101L).build();
         ProductProcessVersion current = ProductProcessVersion.builder()

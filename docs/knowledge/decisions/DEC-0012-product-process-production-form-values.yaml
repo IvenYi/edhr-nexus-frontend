@@ -1,0 +1,36 @@
+knowledgeModelVersion: 0.3.10
+decisions:
+  - id: DEC-0012
+    title: 产品制程生产方式只支持批次和 SN
+    status: implemented
+    visibility: internal
+    context: 产品和产品簇共用制程版本保存模型，前端共享编辑器与产品兼容工作台也同时维护 productionForm。为避免不同入口出现不一致取值，受支持值由共享业务保存路径和兼容保存路径统一收窄。
+    decisionStatements:
+      - id: DEC-0012-01
+        statement: 产品制程生产方式只支持“批次”和“SN”，“批次转SN”不再属于前端可选或后端可保存值。
+        status: implemented
+        visibility: internal
+      - id: DEC-0012-02
+        statement: 产品与产品簇共享编辑器、产品兼容工作台、兼容 Controller 和共享 OwnerService 执行同一生产方式取值约束。
+        status: implemented
+        visibility: internal
+      - id: DEC-0012-03
+        statement: productionForm 后端字段、接口负载、持久化列和审计快照继续保留，本次不改变数据库结构。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.business-knowledge-model, evidence.product-process-version-entity, evidence.product-process-request-dto, evidence.migration-0044-product-process-modeling, evidence.product-process-controller, evidence.product-process-owner-service, evidence.product-modeling-workspace-page, evidence.product-process-version-editor, evidence.process-modeling-page-verification, evidence.product-process-controller-test, evidence.product-process-owner-service-test]
+    acceptanceScenarios:
+      - id: scenario.product-process-supported-production-forms
+        given: 用户新建或编辑产品或产品簇制程版本
+        when: 选择并提交生产方式
+        then: 共享编辑器和产品兼容工作台只提供批次和 SN，后端两条保存路径也只接受批次和 SN
+        evidenceIds: [evidence.product-process-version-editor, evidence.product-modeling-workspace-page, evidence.process-modeling-page-verification, evidence.product-process-controller, evidence.product-process-owner-service]
+        evidenceRequirements: [前端聚焦验证, 后端 Controller 和 Service 测试]
+      - id: scenario.product-process-rejects-batch-to-sn
+        given: 客户端直接提交生产方式“批次转SN”
+        when: 后端兼容 Controller 或共享 OwnerService 处理新增或编辑请求
+        then: 请求被业务校验拒绝且不持久化
+        evidenceIds: [evidence.product-process-controller, evidence.product-process-owner-service, evidence.product-process-controller-test, evidence.product-process-owner-service-test]
+        evidenceRequirements: [后端 Controller 和 Service 聚焦测试]
+    implementationDiscrepancies: []

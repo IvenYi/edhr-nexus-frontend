@@ -89,7 +89,7 @@ public class ProductProcessController {
     private static final String PRODUCT_TYPE_FINISHED = "产成品";
     private static final String PRODUCT_TYPE_SEMI_FINISHED = "半成品";
     private static final Set<String> PRODUCTION_MODES = Set.of("量产", "返工", "翻新");
-    private static final Set<String> PRODUCTION_MODALITIES = Set.of("SN", "批次", "批次转SN");
+    private static final Set<String> PRODUCTION_MODALITIES = Set.of("SN", "批次");
     private static final DateTimeFormatterHolder DATE_TIME = new DateTimeFormatterHolder();
     private static final ObjectMapper AUDIT_OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
@@ -799,7 +799,7 @@ public class ProductProcessController {
     }
     private String requireProductionModality(String value) {
         String modality = requireText(value, "生产方式不能为空");
-        if (!PRODUCTION_MODALITIES.contains(modality)) throw new BusinessException(ErrorCode.GENERAL_001, "生产方式仅支持SN、批次或批次转SN");
+        if (!PRODUCTION_MODALITIES.contains(modality)) throw new BusinessException(ErrorCode.GENERAL_001, "生产方式仅支持SN或批次");
         return modality;
     }
     private Long requireId(Long value, String message) { if (value == null) throw new BusinessException(ErrorCode.GENERAL_001, message); return value; }

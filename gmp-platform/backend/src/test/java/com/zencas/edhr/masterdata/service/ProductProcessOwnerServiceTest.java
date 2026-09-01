@@ -134,6 +134,21 @@ class ProductProcessOwnerServiceTest {
     }
 
     @Test
+    void sharedOwnerServiceRejectsBatchToSnProductionForm() {
+        ProductProcess process = process(1001L, "PRODUCT_FAMILY", 201L);
+        when(productFamilyRepository.findById(201L))
+                .thenReturn(Optional.of(ProductFamily.builder().id(201L).name("注射器产品簇").code("PF-001").build()));
+        when(productProcessRepository.findByTenantIdAndOwnerTypeAndOwnerId("default", "PRODUCT_FAMILY", 201L))
+                .thenReturn(Optional.of(process));
+        ProductProcessVersionRequest request = request("V1.0");
+        request.setProductionForm("批次转SN");
+
+        assertThatThrownBy(() -> service.createVersion(ProcessOwnerType.PRODUCT_FAMILY, 201L, request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("生产方式仅支持SN或批次");
+    }
+
+    @Test
     void recordsProductFamilyUpdateAndDeleteAuditsWithOperationConfigurationSnapshots() {
         ProductProcess process = process(1001L, "PRODUCT_FAMILY", 201L);
         LocalDateTime now = LocalDateTime.now().withNano(0);

@@ -1,0 +1,86 @@
+knowledgeModelVersion: 0.3.10
+rules:
+  - id: rule.workshop-code-tenant-unique
+    name: 车间编码租户内唯一
+    status: implemented
+    visibility: internal
+    trigger: workshop.save
+    scope: workshop
+    condition:
+      all:
+        - fact: workshop.codeDuplicateWithinTenant
+          operator: equals
+          value: true
+    result:
+      type: block
+      reason: workshop-code-duplicate
+    explanation: 新增或编辑车间时，若车间编码已被同一租户内其他车间使用，则阻断保存；编码比较忽略大小写，同一租户内大小写不同但文本相同的编码也视为重复。
+    evidenceIds: [evidence.workshop-master-data-decision, evidence.workshop-repository, evidence.migration-0061-workshop-management, evidence.workshop-controller, evidence.workshop-controller-test]
+  - id: rule.workshop-default-active
+    name: 新建车间默认启用
+    status: implemented
+    visibility: internal
+    trigger: workshop.create
+    scope: workshop
+    condition:
+      all:
+        - fact: workshop.statusProvided
+          operator: equals
+          value: false
+    result:
+      type: persist-default-status
+      target: workshop.status
+      value: ACTIVE
+    explanation: 新建车间未显式提供状态时，系统将状态保存为启用。
+    evidenceIds: [evidence.workshop-master-data-decision, evidence.workshop-entity, evidence.migration-0061-workshop-management, evidence.workshop-controller, evidence.workshop-controller-test]
+  - id: rule.workshop-disabled-selection
+    name: 停用车间不可用于新业务引用
+    status: specified
+    visibility: internal
+    trigger: business-reference.create
+    scope: workshop-reference
+    condition:
+      all:
+        - fact: workshop.status
+          operator: equals
+          value: INACTIVE
+    result:
+      type: block
+      reason: workshop-inactive
+    explanation: 车间停用后不得被新建业务数据选择；已有历史引用仍保留并可展示。当前尚无创建新业务引用车间的正式接口，本规则作为后续消费者契约。
+    evidenceIds: [evidence.workshop-master-data-decision]
+  - id: rule.workshop-reference-lock
+    name: 被引用车间锁定编码并禁止删除
+    status: implemented
+    visibility: internal
+    trigger: workshop.update-or-delete
+    scope: workshop
+    condition:
+      all:
+        - fact: workshop.referenceCount
+          operator: greater-than-or-equal
+          value: 1
+    result:
+      type: block-fields-and-delete
+      fields: [code]
+      reason: workshop-referenced
+    explanation: 车间已被产线或其他业务引用时，禁止修改车间编码并禁止删除，但仍允许修改名称、描述和状态；未被引用的车间可删除。
+    evidenceIds: [evidence.workshop-master-data-decision, evidence.production-line-entity, evidence.production-line-repository, evidence.workshop-controller, evidence.workshop-controller-test]
+  - id: rule.workshop-change-audit
+    name: 车间变更审计
+    status: implemented
+    visibility: internal
+    trigger: workshop.create-update-or-delete
+    scope: workshop
+    condition:
+      all:
+        - fact: workshop.changePersisted
+          operator: equals
+          value: true
+    result:
+      type: write-audit-record
+      entityType: WORKSHOP
+      snapshots: [before, after]
+      actions: [CREATE, UPDATE, DELETE]
+    explanation: 车间新增、修改和删除均必须记录变更前后快照；启用或停用属于修改审计。
+    evidenceIds: [evidence.workshop-master-data-decision, evidence.workshop-controller, evidence.workshop-controller-test]

@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.7
+knowledgeModelVersion: 0.3.10
 rules:
   - id: rule.product.source-from-material
     name: 产品来源于产品或半成品物料
@@ -32,6 +32,41 @@ rules:
       uniqueCurrentVersion: false
     explanation: 父产品下可存在多个并行制程版本，不设置唯一当前版本。
     evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
+  - id: rule.product-process.production-mode-default
+    name: 新制程版本生产模式固定为量产
+    status: implemented
+    visibility: internal
+    trigger: product-process.version.create-or-copy
+    scope: product-process-version
+    condition:
+      all:
+        - fact: productProcessVersion.isNewRecord
+          operator: equals
+          value: true
+    result:
+      type: persist-version-references
+      productionMode: 量产
+      userSelectable: false
+    explanation: 前端不展示生产模式选择控件；新建或复制产生的新制程版本固定携带并保存 productionMode=量产。编辑既有版本时保留其已存储字段值；后端字段、接口、持久化和审计快照继续保留。
+    evidenceIds: [evidence.product-process-version-entity, evidence.product-process-request-dto, evidence.product-process-controller, evidence.product-process-owner-service, evidence.product-modeling-workspace-page, evidence.product-process-version-editor, evidence.process-modeling-page-verification]
+  - id: rule.product-process.production-form-supported-values
+    name: 产品制程生产方式受支持值
+    status: implemented
+    visibility: internal
+    trigger: productProcessVersion.save
+    scope: product-process-version
+    condition:
+      all:
+        - fact: productProcessVersion.productionForm
+          operator: in
+          value: [批次, SN]
+    result:
+      type: persist-version-references
+      target: productProcessVersion.productionForm
+      valueFrom: request.productionForm
+      allowedValues: [批次, SN]
+    explanation: 新建或编辑产品及产品簇制程版本时，前端只提供“批次”和“SN”两种生产方式，后端兼容 Controller 与共享 OwnerService 也只接受这两个值；“批次转SN”不再属于可保存的生产方式。
+    evidenceIds: [evidence.product-process-version-entity, evidence.product-process-request-dto, evidence.product-process-controller, evidence.product-process-owner-service, evidence.product-modeling-workspace-page, evidence.product-process-version-editor, evidence.process-modeling-page-verification, evidence.product-process-controller-test, evidence.product-process-owner-service-test]
   - id: rule.product-family.membership-cardinality
     name: 一个产品最多属于一个产品簇
     status: implemented

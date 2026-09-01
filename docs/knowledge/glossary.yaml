@@ -1,5 +1,17 @@
-knowledgeModelVersion: 0.3.7
+knowledgeModelVersion: 0.3.10
 terms:
+  - id: term.workshop
+    name: 车间
+    definition: 在同一租户内独立维护、不采用业务版本管理的工厂建模主数据；字段为车间编码、车间名称、描述和启用或停用状态，供产线及后续生产业务引用。
+    aliases: [车间主数据, Workshop]
+    status: implemented
+    visibility: internal
+  - id: term.production-line
+    name: 产线
+    definition: 隶属于一个车间的生产组织单元；现有持久化关系通过 workshop_id 引用车间。
+    aliases: [生产线, Production Line]
+    status: implemented
+    visibility: internal
   - id: term.material
     name: 物料
     definition: 物料管理维护的主数据；类型为产品（产成品）或半成品时可以派生为产品。

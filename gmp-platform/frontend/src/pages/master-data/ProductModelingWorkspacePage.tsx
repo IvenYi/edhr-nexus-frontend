@@ -105,13 +105,17 @@ interface OperationDraft {
   documents: Array<{ documentVersionId: string; sortOrder: number; pageStart?: number | null; pageEnd?: number | null }>;
 }
 
-const PRODUCTION_MODE_OPTIONS = ['量产', '返工', '翻新'];
-const PRODUCTION_MODALITY_OPTIONS = ['批次', 'SN', '批次转SN'];
+const DEFAULT_PRODUCTION_MODE = '量产';
+const PRODUCTION_MODALITY_OPTIONS = ['批次', 'SN'];
+
+function normalizeProductionForm(value: string) {
+  return PRODUCTION_MODALITY_OPTIONS.includes(value) ? value : '';
+}
 
 const emptyVersionForm: VersionForm = {
   version: 'V1.0',
   sourceVersionId: null,
-  productionMode: '',
+  productionMode: DEFAULT_PRODUCTION_MODE,
   productionForm: '',
   routeVersionId: '',
   dhrTemplateVersionId: '',
@@ -162,7 +166,7 @@ function toVersionForm(version: ProductProcessVersion, sourceVersionId: string |
     version: version.version,
     sourceVersionId,
     productionMode: version.productionMode,
-    productionForm: version.productionForm,
+    productionForm: normalizeProductionForm(version.productionForm),
     routeVersionId: version.routeVersionId,
     dhrTemplateVersionId: version.dhrTemplateVersionId,
     description: version.description || '',
@@ -359,7 +363,7 @@ export default function ProductModelingWorkspacePage() {
     if (mode === 'edit' && target) {
       setVersionForm(toVersionForm(target));
     } else if (mode === 'copy' && target) {
-      setVersionForm({ ...toVersionForm(target, target.id), version: nextVersionLabel(versions), effectiveFrom: '', effectiveTo: '' });
+      setVersionForm({ ...toVersionForm(target, target.id), version: nextVersionLabel(versions), productionMode: DEFAULT_PRODUCTION_MODE, effectiveFrom: '', effectiveTo: '' });
     } else {
       setVersionForm({ ...emptyVersionForm, version: versions.length === 0 ? 'V1.0' : nextVersionLabel(versions) });
     }
@@ -569,9 +573,6 @@ function VersionDialog({ open, mode, form, options, graph, onChange, onClose, on
       <DialogContent dividers>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 2, pt: 0.5 }}>
           <TextField required size="small" label="版本号" value={form.version} onChange={(event) => set('version', event.target.value)} />
-          <TextField select required size="small" label="生产模式" value={form.productionMode} onChange={(event) => set('productionMode', event.target.value)}>
-            {PRODUCTION_MODE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
-          </TextField>
           <TextField select required size="small" label="生产方式" value={form.productionForm} onChange={(event) => set('productionForm', event.target.value)}>
             {PRODUCTION_MODALITY_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
           </TextField>

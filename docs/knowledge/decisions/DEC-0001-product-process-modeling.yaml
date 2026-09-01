@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.7
+knowledgeModelVersion: 0.3.10
 decisions:
   - id: DEC-0001
     title: 产品制程结构化建模基线
@@ -46,10 +46,15 @@ decisions:
         statement: 表单完工前完成、表单共享、按钮字段权限、事务触发、工序开始前事务校验、最终产出和物料齐套均为内部规划，不进入客户或运行时投影。
         status: planned
         visibility: internal
+      - id: DEC-0001-11
+        statement: 前端不再允许选择生产模式；所有新建或复制产生的新制程版本固定保存为量产，编辑既有版本保留其已存储值；productionMode 后端字段、持久化、接口和审计快照继续保留。当前已确认不存在非量产制程，无需历史数据迁移。
+        status: implemented
+        visibility: internal
     supersedes: []
     evidenceIds:
       - evidence.business-knowledge-model
       - evidence.product-process-controller
+      - evidence.product-process-owner-service
       - evidence.product-process-version-entity
       - evidence.operation-binding-entity
       - evidence.operation-form-binding-entity
@@ -62,6 +67,7 @@ decisions:
       - evidence.product-modeling-page
       - evidence.product-modeling-workspace-page
       - evidence.product-process-version-editor
+      - evidence.process-modeling-page-verification
       - evidence.product-process-controller-test
     acceptanceScenarios:
       - id: scenario.product-derived-from-material
@@ -76,6 +82,18 @@ decisions:
         then: 两个版本并行保留且不存在唯一当前版本标识
         evidenceIds: [evidence.migration-0044-product-process-modeling, evidence.product-process-controller-test]
         evidenceRequirements: [数据库迁移, 控制器测试]
+      - id: scenario.product-process-production-mode-default
+        given: 用户新建或复制一个制程配置版本
+        when: 打开前端编辑器并提交
+        then: 页面不展示生产模式选择控件，请求仍携带 productionMode=量产
+        evidenceIds: [evidence.product-modeling-workspace-page, evidence.product-process-version-editor, evidence.process-modeling-page-verification, evidence.product-process-request-dto, evidence.product-process-controller, evidence.product-process-owner-service]
+        evidenceRequirements: [前端实现, 聚焦验证脚本, 后端请求和持久化字段]
+      - id: scenario.product-process-production-mode-edit-compatibility
+        given: 用户编辑一个已有制程配置版本
+        when: 生产模式选择控件未显示并保存
+        then: 请求保留已有 productionMode 字段值，后端持久化和审计快照不丢失该字段
+        evidenceIds: [evidence.product-process-version-editor, evidence.product-modeling-workspace-page, evidence.process-modeling-page-verification, evidence.product-process-version-entity, evidence.product-process-controller, evidence.product-process-owner-service]
+        evidenceRequirements: [前端负载实现, 后端字段, 审计快照实现]
       - id: scenario.bind-route-and-dhr
         given: 存在可引用的工艺路线版本和 DHR 模板版本
         when: 保存产品制程版本
