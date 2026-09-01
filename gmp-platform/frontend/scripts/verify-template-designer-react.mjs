@@ -2408,6 +2408,20 @@ if (!canvasWorkspace.includes('WordTableCellRange')) failures.push('CanvasSheetW
 if (!canvasWorkspace.includes('beginWordTableCellSelection')) failures.push('CanvasSheetWorkspace.tsx: Word tables must support pointer-driven multi-cell selection');
 if (!canvasWorkspace.includes('data-word-table-cell-id=')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must expose stable selection targets');
 if (!canvasWorkspace.includes('isWordTableCellInRange')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must render rectangular multi-cell selections');
+if (!canvasWorkspace.includes('wordTableAdditionalCellRanges')) failures.push('CanvasSheetWorkspace.tsx: Word tables must retain Command-added discrete cell selections');
+if (!canvasWorkspace.includes('const isAdditiveSelection = (event.metaKey || event.ctrlKey) && !event.altKey;')) failures.push('CanvasSheetWorkspace.tsx: Command or Ctrl clicking a Word-table cell must start additive selection');
+if (!canvasWorkspace.includes('data-word-table-context-action="quick-add-fields"')) failures.push('CanvasSheetWorkspace.tsx: Word-table right-click menus must expose quick field creation');
+if (!canvasWorkspace.includes('handleOpenWordTableQuickAddFields')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must use the selected table cells');
+if (!canvasWorkspace.includes('handleOpenWordTableQuickAddFields(context)')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must retain the clicked menu context');
+if (!canvasWorkspace.includes("document.addEventListener('pointerdown', closeWordTableContextMenuOnOutsidePointerDown, true);")) failures.push('CanvasSheetWorkspace.tsx: Word-table menu outside closing must observe canvas pointer events before they are handled');
+if (!canvasWorkspace.includes("document.removeEventListener('pointerdown', closeWordTableContextMenuOnOutsidePointerDown, true);")) failures.push('CanvasSheetWorkspace.tsx: Word-table menu outside listener must be removed with its original event phase');
+if (!canvasWorkspace.includes('onPointerDown={(event) => event.stopPropagation()}')) failures.push('CanvasSheetWorkspace.tsx: Word-table menu must retain pointer events inside the menu');
+if (!canvasWorkspace.includes('onClick={(event) => {\n            event.preventDefault();\n            event.stopPropagation();\n            handleOpenWordTableQuickAddFields(context);')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field action must support keyboard and click activation without triggering the dialog backdrop');
+if (!canvasWorkspace.includes('window.setTimeout(() => setQuickAddFieldDialogOpen(true), 0);')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field dialog must open after the menu click completes');
+if (!canvasWorkspace.includes('selectedCells.length ? selectedCells : [context.cell]')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must fall back to the right-clicked cell');
+if (!canvasWorkspace.includes('const renderQuickAddFieldDialog = () => (')) failures.push('CanvasSheetWorkspace.tsx: quick field creation must use one shared dialog renderer');
+if ((canvasWorkspace.match(/renderQuickAddFieldDialog\(\)/g) ?? []).length < 2) failures.push('CanvasSheetWorkspace.tsx: paper and table canvas modes must both render the shared quick field dialog');
+if (canvasWorkspace.includes('data-paper-word-table-quick-add-dialog="true"')) failures.push('CanvasSheetWorkspace.tsx: paper-mode Word tables must not render a simplified quick field dialog');
 if (!canvasToolbar.includes('useWordTableCellStyle')) failures.push('CanvasDesignerToolbar.tsx: toolbar must read the active Word table cell style target');
 if (!canvasToolbar.includes('updateWordTableCellStyle(patch)')) failures.push('CanvasDesignerToolbar.tsx: toolbar must apply typography changes to the active Word table cell range');
 if (!canvasToolbar.includes("| { type: 'word-table'; target: WordTableCellStyleTarget };")) failures.push('CanvasDesignerToolbar.tsx: delayed color commits must snapshot the active Word table cell range');
@@ -2439,7 +2453,7 @@ const wordTableContextMenuOutsidePointerHandler = wordTableContextMenuLifecycle.
 if (wordTableContextMenuOutsidePointerHandler.includes('event.button')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu outside close must not be limited to the primary pointer button');
 if (!/if \(target instanceof Element && target\.closest\('\[data-word-table-context-menu="true"\]'\)\) return;\n      setWordTableContextMenu\(null\);/.test(wordTableContextMenuOutsidePointerHandler)) failures.push('CanvasSheetWorkspace.tsx: Word table context menu outside pointer handler must close every non-menu target');
 if (!canvasWorkspace.includes("position: 'fixed'")) failures.push('CanvasSheetWorkspace.tsx: Word table right-click menu must use a fixed canvas overlay instead of a click-away modal');
-const wordTableContextMenuRenderer = canvasWorkspace.match(/const renderWordTableContextMenu = \(\) => \{[\s\S]*?\n  \};\n\n  const renderPageBreakMarkers/)?.[0] ?? '';
+const wordTableContextMenuRenderer = canvasWorkspace.match(/const renderWordTableContextMenu = \(\) => \{[\s\S]*?\n  \};\n\n  const renderQuickAddFieldDialog/)?.[0] ?? '';
 if (wordTableContextMenuRenderer.includes('anchorReference="anchorPosition"')) failures.push('CanvasSheetWorkspace.tsx: Word table right-click menu must not depend on MUI anchor-position modal behavior');
 if (!wordTableContextMenuRenderer.includes('ref={wordTableContextMenuRef}')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu surface must bind its focus ref');
 if (!wordTableContextMenuRenderer.includes('tabIndex={-1}')) failures.push('CanvasSheetWorkspace.tsx: Word table context menu surface must be programmatically focusable');
@@ -2458,7 +2472,7 @@ const wordTableCellContentEnd = canvasWorkspace.indexOf('</Box>', wordTableCellC
 const wordTableCellContent = wordTableCellContentStart >= 0 && wordTableCellContentEnd > wordTableCellContentStart
   ? canvasWorkspace.slice(wordTableCellContentStart, wordTableCellContentEnd)
   : '';
-if (!canvasWorkspace.includes('onFocus={() => {\n                          // Focusing a new editable cell must replace any previous cell-range highlight.\n                          selectWordTable(block.id, true);\n                          setWordTableCellRange({')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the previous cell-range highlight');
+if (!canvasWorkspace.includes('onFocus={() => {\n                          // Focusing a new editable cell must replace any previous cell-range highlight.\n                          selectWordTable(block.id, true);\n                          setWordTableAdditionalCellRanges([]);\n                          setWordTableCellRange({')) failures.push('CanvasSheetWorkspace.tsx: focusing a Word table cell must replace the previous cell-range highlight');
 if (wordTableCellContent.includes("'&:focus'")) failures.push('CanvasSheetWorkspace.tsx: focused Word table cells must not render an inner focus frame');
 if (!canvasWorkspace.includes('data-word-table-outer-row-resize-handle="true"')) failures.push('CanvasSheetWorkspace.tsx: Word tables must expose a bottom outer resize handle');
 if (!canvasWorkspace.includes('getWordTableColumnResizeSegments')) failures.push('CanvasSheetWorkspace.tsx: Word table column resize handles must be segmented by visible borders');

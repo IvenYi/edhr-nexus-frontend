@@ -103,6 +103,12 @@ interface WordTableContextMenu {
   mouseY: number;
 }
 
+interface WordTableContext {
+  table: CanvasWordTableBlock;
+  cell: CanvasWordTableBlock['cells'][number];
+  range: WordTableRange;
+}
+
 function getWordTableRangeBounds(range: WordTableCellRange): WordTableRange {
   return {
     top: Math.min(range.anchor.row, range.focus.row),
@@ -124,6 +130,14 @@ function isWordTableCellInRange(cell: CanvasWordTableBlock['cells'][number], ran
     && cellLastRow >= firstRow
     && cell.col <= lastColumn
     && cellLastColumn >= firstColumn;
+}
+
+function isSameWordTableCellRange(first: WordTableCellRange, second: WordTableCellRange) {
+  return first.blockId === second.blockId
+    && first.anchor.row === second.anchor.row
+    && first.anchor.col === second.anchor.col
+    && first.focus.row === second.focus.row
+    && first.focus.col === second.focus.col;
 }
 
 const quickAddFieldTypeOptions = fieldRegistry.filter((field) => field.type !== 'subTable');
@@ -1239,6 +1253,7 @@ export default function CanvasSheetWorkspace() {
   const [resizeRowDragPreview, setResizeRowDragPreview] = useState<ResizeRowDragPreview>(null);
   const [selectedWordTableBlockId, setSelectedWordTableBlockId] = useState<string | null>(null);
   const [wordTableCellRange, setWordTableCellRange] = useState<WordTableCellRange | null>(null);
+  const [wordTableAdditionalCellRanges, setWordTableAdditionalCellRanges] = useState<WordTableCellRange[]>([]);
   const [wordTableContextMenu, setWordTableContextMenu] = useState<WordTableContextMenu | null>(null);
   const [wordTableInsertCount, setWordTableInsertCount] = useState('1');
 
@@ -1539,6 +1554,7 @@ export default function CanvasSheetWorkspace() {
     setSelectedNodeId(null);
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     setWordTableContextMenu(null);
   };
   const deleteSelectedWordTable = useCallback(() => {
@@ -1553,6 +1569,7 @@ export default function CanvasSheetWorkspace() {
     });
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     setWordTableContextMenu(null);
   }, [currentPage?.wordDocument, selectedWordTableBlockId, updateCurrentPage]);
   useEffect(() => {
@@ -1607,6 +1624,7 @@ export default function CanvasSheetWorkspace() {
       setSelectedNodeId(null);
       setSelectedWordTableBlockId(table.id);
       setWordTableCellRange(null);
+      setWordTableAdditionalCellRanges([]);
       return;
     }
 
@@ -1718,7 +1736,7 @@ export default function CanvasSheetWorkspace() {
       },
     });
   };
-  const getWordTableContext = () => {
+  const getWordTableContext = (): WordTableContext | null => {
     const wordDocument = currentPage?.wordDocument;
     if (!wordTableContextMenu) return null;
 
@@ -1754,10 +1772,15 @@ export default function CanvasSheetWorkspace() {
     const mouseX = event.clientX;
     const mouseY = event.clientY;
     const activeRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
-    const rangeContainsCell = activeRange && isWordTableCellInRange(cell, activeRange);
+    const selectedRanges = [
+      ...(activeRange ? [activeRange] : []),
+      ...wordTableAdditionalCellRanges.filter((range) => range.blockId === block.id),
+    ];
+    const rangeContainsCell = selectedRanges.some((range) => isWordTableCellInRange(cell, range));
 
     selectWordTable(block.id, true);
     if (!rangeContainsCell) {
+      setWordTableAdditionalCellRanges([]);
       setWordTableCellRange({
         blockId: block.id,
         anchor: { row: cell.row, col: cell.col },
@@ -1886,6 +1909,7 @@ export default function CanvasSheetWorkspace() {
       : deleteWordTableRows(context.table, start, count);
     updateWordTableStructure(nextTable);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     closeWordTableContextMenu();
   };
   const deleteWordTableFromContextMenu = () => {
@@ -1901,6 +1925,7 @@ export default function CanvasSheetWorkspace() {
     });
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     closeWordTableContextMenu();
   };
   const selectWordTable = (blockId: string, preserveCellRange = false) => {
@@ -1910,6 +1935,7 @@ export default function CanvasSheetWorkspace() {
     setSelectedWordTableBlockId(blockId);
     if (!preserveCellRange) {
       setWordTableCellRange(null);
+      setWordTableAdditionalCellRanges([]);
       setWordTableCellStyleTarget(null);
     }
   };
@@ -1921,6 +1947,31 @@ export default function CanvasSheetWorkspace() {
     if (event.button !== 0) return;
 
     const currentRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
+    const isAdditiveSelection = (event.metaKey || event.ctrlKey) && !event.altKey;
+    const nextSingleCellRange: WordTableCellRange = {
+      blockId: block.id,
+      anchor: { row: cell.row, col: cell.col },
+      focus: { row: cell.row, col: cell.col },
+    };
+    if (isAdditiveSelection) {
+      event.preventDefault();
+      event.stopPropagation();
+      selectWordTable(block.id, true);
+      setWordTableAdditionalCellRanges((ranges) => {
+        const withPreviousActiveRange = currentRange && !isSameWordTableCellRange(currentRange, nextSingleCellRange)
+          ? [...ranges, currentRange]
+          : ranges;
+        return withPreviousActiveRange.filter((range) => !isSameWordTableCellRange(range, nextSingleCellRange));
+      });
+      setWordTableCellRange(nextSingleCellRange);
+      setWordTableCellStyleTarget({
+        blockId: block.id,
+        range: { top: cell.row, left: cell.col, bottom: cell.row, right: cell.col },
+      });
+      return;
+    }
+
+    setWordTableAdditionalCellRanges([]);
     const anchor = event.shiftKey && currentRange
       ? currentRange.anchor
       : { row: cell.row, col: cell.col };
@@ -3798,6 +3849,34 @@ export default function CanvasSheetWorkspace() {
     setQuickAddFieldDialogOpen(true);
     closeContextMenu();
   };
+  const handleOpenWordTableQuickAddFields = (context: WordTableContext) => {
+    const selectedRanges = [
+      ...(wordTableCellRange?.blockId === context.table.id ? [wordTableCellRange] : []),
+      ...wordTableAdditionalCellRanges.filter((range) => range.blockId === context.table.id),
+    ];
+    const selectedCells = context.table.cells.filter((cell) => (
+      selectedRanges.some((range) => isWordTableCellInRange(cell, range))
+    ));
+    const drafts = (selectedCells.length ? selectedCells : [context.cell]).map((cell) => {
+      const sourceName = cell.text.trim().replace(/\s+/g, ' ').slice(0, 24) || `字段R${cell.row}C${cell.col}`;
+      return {
+        id: `${context.table.id}:${cell.id}`,
+        row: cell.row,
+        col: cell.col,
+        sourceName,
+        name: sourceName,
+        type: inferQuickAddFieldType(sourceName),
+        description: '',
+      };
+    });
+    if (!drafts.length) return;
+
+    setQuickAddFieldDrafts(resolveQuickAddFieldDraftNames(drafts, 'main', ''));
+    setQuickAddFieldTarget('main');
+    setQuickAddFieldSubTableId('');
+    closeWordTableContextMenu();
+    window.setTimeout(() => setQuickAddFieldDialogOpen(true), 0);
+  };
   const closeQuickAddFieldDialog = () => {
     setQuickAddFieldDialogOpen(false);
     setQuickAddFieldDrafts([]);
@@ -4444,6 +4523,7 @@ export default function CanvasSheetWorkspace() {
             const tableTop = layoutPreview?.top ?? constrainedLayout.top;
             const selected = selectedWordTableBlockId === block.id;
             const selectedCellRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
+            const additionalWordTableCellRanges = wordTableAdditionalCellRanges.filter((range) => range.blockId === block.id);
             const outerRightBorderCells = block.cells.filter((cell) => (
               cell.col + cell.colSpan - 1 >= tableColumnWidths.length
               && shouldRenderWordTableOuterBorder('right', cell, usesLegacyWordTableBorders)
@@ -4610,7 +4690,8 @@ export default function CanvasSheetWorkspace() {
                   />
                 )) : null}
                 {block.cells.map((cell) => {
-                  const isRangeSelected = isWordTableCellInRange(cell, selectedCellRange);
+                  const isRangeSelected = isWordTableCellInRange(cell, selectedCellRange)
+                    || additionalWordTableCellRanges.some((range) => isWordTableCellInRange(cell, range));
                   return (
                     <Box
                       key={cell.id}
@@ -4638,7 +4719,8 @@ export default function CanvasSheetWorkspace() {
 
                         const startedFromText = isPointerOnWordTableText(event.target, event.clientX, event.clientY);
 
-                        if (startedFromText && !event.shiftKey) {
+                        const isAdditiveSelection = (event.metaKey || event.ctrlKey) && !event.altKey;
+                        if (startedFromText && !event.shiftKey && !isAdditiveSelection) {
                           beginWordTableTextOrCellSelection(event, block, cell);
                           return;
                         }
@@ -4692,6 +4774,7 @@ export default function CanvasSheetWorkspace() {
                         onFocus={() => {
                           // Focusing a new editable cell must replace any previous cell-range highlight.
                           selectWordTable(block.id, true);
+                          setWordTableAdditionalCellRanges([]);
                           setWordTableCellRange({
                             blockId: block.id,
                             anchor: { row: cell.row, col: cell.col },
@@ -4882,6 +4965,7 @@ export default function CanvasSheetWorkspace() {
         role="menu"
         aria-label="表格操作"
         tabIndex={-1}
+        onPointerDown={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
         onContextMenu={(event) => {
           event.preventDefault();
@@ -4923,6 +5007,18 @@ export default function CanvasSheetWorkspace() {
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem
+          data-word-table-context-action="quick-add-fields"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            handleOpenWordTableQuickAddFields(context);
+          }}
+          sx={{ minHeight: 32, px: 1.25, fontSize: 13 }}
+        >
+          快速添加字段
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem
           data-word-table-context-action="delete-columns"
           disabled={!canDeleteColumns}
           onClick={() => deleteSelectedWordTableTracks('column')}
@@ -4948,6 +5044,163 @@ export default function CanvasSheetWorkspace() {
       </Box>
     );
   };
+
+  const renderQuickAddFieldDialog = () => (
+    <AppDialog
+      hideCloseButton
+      data-quick-add-field-dialog="true"
+      open={quickAddFieldDialogOpen}
+      onClose={closeQuickAddFieldDialog}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: 16,
+          fontWeight: 700,
+          pb: 1.5,
+        }}
+      >
+        <Box component="span">快速添加字段</Box>
+        <IconButton
+          data-quick-add-field-close="true"
+          aria-label="关闭快速添加字段"
+          size="small"
+          onClick={closeQuickAddFieldDialog}
+        >
+          <CloseRounded fontSize="small" />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent sx={{ pt: '8px !important' }}>
+        <Stack spacing={2}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+            <TextField
+              data-quick-add-field-target="true"
+              select
+              size="small"
+              label="添加目标"
+              value={quickAddTargetValue}
+              onChange={(event) => handleQuickAddTargetChange(event.target.value)}
+              sx={{ width: 260 }}
+            >
+              {quickAddTargetOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+              ))}
+            </TextField>
+          </Stack>
+          <Box
+            data-quick-add-field-table-frame="true"
+            sx={{
+              border: '1px solid #d8dee9',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              bgcolor: '#fff',
+            }}
+          >
+            <Table
+              size="small"
+              sx={{
+                borderCollapse: 'collapse',
+                tableLayout: 'fixed',
+                width: '100%',
+                '& .MuiTableCell-head': {
+                  bgcolor: '#f8fafc',
+                  color: '#475569',
+                  fontWeight: 700,
+                  fontSize: 13,
+                  height: 34,
+                  lineHeight: '18px',
+                  px: 1.5,
+                  py: 0.5,
+                  border: '1px solid #d8dee9',
+                },
+                '& .MuiTableCell-body': {
+                  px: 1.5,
+                  py: 0.75,
+                  border: '1px solid #e2e8f0',
+                  verticalAlign: 'middle',
+                },
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell width={64} align="center">序号</TableCell>
+                  <TableCell width="28%">字段名称</TableCell>
+                  <TableCell width="20%">字段类型</TableCell>
+                  <TableCell>字段说明</TableCell>
+                  <TableCell width={72} align="center">操作</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {quickAddFieldDrafts.map((draft, index) => (
+                  <TableRow key={draft.id} data-quick-add-field-row="true">
+                    <TableCell align="center" sx={{ color: '#64748b', fontWeight: 600 }}>{index + 1}</TableCell>
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        value={draft.name}
+                        onChange={(event) => updateQuickAddFieldDraft(draft.id, { name: event.target.value })}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        select
+                        size="small"
+                        value={draft.type}
+                        onChange={(event) => updateQuickAddFieldDraft(draft.id, { type: event.target.value as FieldType })}
+                        fullWidth
+                      >
+                        {quickAddFieldTypeOptions.map((fieldType) => (
+                          <MenuItem key={fieldType.type} value={fieldType.type}>{fieldType.label}</MenuItem>
+                        ))}
+                      </TextField>
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        value={draft.description}
+                        onChange={(event) => updateQuickAddFieldDraft(draft.id, { description: event.target.value })}
+                        placeholder="字段说明"
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        data-quick-add-field-row-remove="true"
+                        size="small"
+                        aria-label="移除"
+                        onClick={() => removeQuickAddFieldDraft(draft.id)}
+                        sx={{ color: '#ef4444' }}
+                      >
+                        <DeleteOutlineRounded fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ px: 3, pb: 2 }}>
+        <Button onClick={closeQuickAddFieldDialog}>取消</Button>
+        <Button
+          variant="contained"
+          onClick={handleConfirmQuickAddFields}
+          disabled={
+            !quickAddFieldDrafts.some((draft) => draft.name.trim())
+            || (quickAddFieldTarget === 'subTable' && !quickAddFieldSubTableId)
+          }
+        >
+          确认添加
+        </Button>
+      </DialogActions>
+    </AppDialog>
+  );
 
   const renderPageBreakMarkers = () => (pageMarkerCount > 1 ? (
     <Box
@@ -5402,6 +5655,7 @@ export default function CanvasSheetWorkspace() {
                         onNodeSelect={() => {
                           setSelectedWordTableBlockId(null);
                           setWordTableCellRange(null);
+                          setWordTableAdditionalCellRanges([]);
                         }}
                       />
                       {renderWordTableDragHandleLayer()}
@@ -5428,6 +5682,7 @@ export default function CanvasSheetWorkspace() {
           </Box>
         </Box>
         {renderWordTableContextMenu()}
+        {renderQuickAddFieldDialog()}
       </Box>
     );
   }
@@ -5937,160 +6192,7 @@ export default function CanvasSheetWorkspace() {
           )
         ) : null}
       </Menu>
-      <AppDialog
-        hideCloseButton
-        data-quick-add-field-dialog="true"
-        open={quickAddFieldDialogOpen}
-        onClose={closeQuickAddFieldDialog}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: 16,
-            fontWeight: 700,
-            pb: 1.5,
-          }}
-        >
-          <Box component="span">快速添加字段</Box>
-          <IconButton
-            data-quick-add-field-close="true"
-            aria-label="关闭快速添加字段"
-            size="small"
-            onClick={closeQuickAddFieldDialog}
-          >
-            <CloseRounded fontSize="small" />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ pt: '8px !important' }}>
-          <Stack spacing={2}>
-            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-              <TextField
-                data-quick-add-field-target="true"
-                select
-                size="small"
-                label="添加目标"
-                value={quickAddTargetValue}
-                onChange={(event) => handleQuickAddTargetChange(event.target.value)}
-                sx={{ width: 260 }}
-              >
-                {quickAddTargetOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </TextField>
-            </Stack>
-            <Box
-              data-quick-add-field-table-frame="true"
-              sx={{
-                border: '1px solid #d8dee9',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                bgcolor: '#fff',
-              }}
-            >
-              <Table
-                size="small"
-                sx={{
-                  borderCollapse: 'collapse',
-                  tableLayout: 'fixed',
-                  width: '100%',
-                  '& .MuiTableCell-head': {
-                    bgcolor: '#f8fafc',
-                    color: '#475569',
-                    fontWeight: 700,
-                    fontSize: 13,
-                    height: 34,
-                    lineHeight: '18px',
-                    px: 1.5,
-                    py: 0.5,
-                    border: '1px solid #d8dee9',
-                  },
-                  '& .MuiTableCell-body': {
-                    px: 1.5,
-                    py: 0.75,
-                    border: '1px solid #e2e8f0',
-                    verticalAlign: 'middle',
-                  },
-                }}
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell width={64} align="center">序号</TableCell>
-                    <TableCell width="28%">字段名称</TableCell>
-                    <TableCell width="20%">字段类型</TableCell>
-                    <TableCell>字段说明</TableCell>
-                    <TableCell width={72} align="center">操作</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {quickAddFieldDrafts.map((draft, index) => (
-                    <TableRow key={draft.id} data-quick-add-field-row="true">
-                      <TableCell align="center" sx={{ color: '#64748b', fontWeight: 600 }}>{index + 1}</TableCell>
-                      <TableCell>
-                        <TextField
-                          size="small"
-                          value={draft.name}
-                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { name: event.target.value })}
-                          fullWidth
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          select
-                          size="small"
-                          value={draft.type}
-                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { type: event.target.value as FieldType })}
-                          fullWidth
-                        >
-                          {quickAddFieldTypeOptions.map((fieldType) => (
-                            <MenuItem key={fieldType.type} value={fieldType.type}>{fieldType.label}</MenuItem>
-                          ))}
-                        </TextField>
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          size="small"
-                          value={draft.description}
-                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { description: event.target.value })}
-                          placeholder="字段说明"
-                          fullWidth
-                        />
-                      </TableCell>
-                      <TableCell align="center">
-                        <IconButton
-                          data-quick-add-field-row-remove="true"
-                          size="small"
-                          aria-label="移除"
-                          onClick={() => removeQuickAddFieldDraft(draft.id)}
-                          sx={{ color: '#ef4444' }}
-                        >
-                          <DeleteOutlineRounded fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={closeQuickAddFieldDialog}>取消</Button>
-          <Button
-            variant="contained"
-            onClick={handleConfirmQuickAddFields}
-            disabled={
-              !quickAddFieldDrafts.some((draft) => draft.name.trim())
-              || (quickAddFieldTarget === 'subTable' && !quickAddFieldSubTableId)
-            }
-          >
-            确认添加
-          </Button>
-        </DialogActions>
-      </AppDialog>
+      {renderQuickAddFieldDialog()}
       {renderWordTableContextMenu()}
       <Menu
         data-sheet-sub-table-menu-root="true"
