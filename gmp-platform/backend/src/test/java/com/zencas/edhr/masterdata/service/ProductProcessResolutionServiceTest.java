@@ -39,7 +39,7 @@ class ProductProcessResolutionServiceTest {
         ProductProcess familyProcess = process(12L, "PRODUCT_FAMILY", 201L);
         when(productProcessRepository.findByTenantIdAndOwnerTypeAndOwnerId("default", "PRODUCT", 101L))
                 .thenReturn(Optional.of(productProcess));
-        when(productProcessVersionRepository.findByProductProcessIdOrderByCreatedAtDesc(11L))
+        when(productProcessVersionRepository.findByTenantIdAndProductProcessIdOrderByCreatedAtDesc("default", 11L))
                 .thenReturn(List.of(version(111L, "V1.0", QUERY_TIME.minusDays(1), null)));
 
         var resolution = service.resolve(101L, QUERY_TIME);
@@ -57,7 +57,7 @@ class ProductProcessResolutionServiceTest {
         ProductProcess familyProcess = process(12L, "PRODUCT_FAMILY", 201L);
         when(productProcessRepository.findByTenantIdAndOwnerTypeAndOwnerId("default", "PRODUCT", 101L))
                 .thenReturn(Optional.of(productProcess));
-        when(productProcessVersionRepository.findByProductProcessIdOrderByCreatedAtDesc(11L))
+        when(productProcessVersionRepository.findByTenantIdAndProductProcessIdOrderByCreatedAtDesc("default", 11L))
                 .thenReturn(List.of(
                         version(111L, "V1.0", QUERY_TIME.minusDays(2), QUERY_TIME),
                         version(112L, "V2.0", QUERY_TIME.plusDays(1), null)));
@@ -65,7 +65,7 @@ class ProductProcessResolutionServiceTest {
                 .thenReturn(Optional.of(ProductFamilyMember.builder().productFamilyId(201L).productId(101L).build()));
         when(productProcessRepository.findByTenantIdAndOwnerTypeAndOwnerId("default", "PRODUCT_FAMILY", 201L))
                 .thenReturn(Optional.of(familyProcess));
-        when(productProcessVersionRepository.findByProductProcessIdOrderByCreatedAtDesc(12L))
+        when(productProcessVersionRepository.findByTenantIdAndProductProcessIdOrderByCreatedAtDesc("default", 12L))
                 .thenReturn(List.of(version(121L, "V3.0", null, QUERY_TIME.plusDays(1))));
 
         var resolution = service.resolve(101L, QUERY_TIME);

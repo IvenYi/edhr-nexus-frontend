@@ -289,7 +289,7 @@ export interface DesignerRendererProps {
   onCellMouseDown?: (event: ReactMouseEvent<HTMLElement>) => void;
   onCellContextMenu?: (event: ReactMouseEvent<HTMLElement>) => void;
   onOpenConfig?: () => void;
-  renderMode?: 'normal' | 'cell';
+  renderMode?: 'normal' | 'cell' | 'word-table-cell';
 }
 
 export interface DesignerComponentDefinition {

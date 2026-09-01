@@ -155,7 +155,7 @@ const documentColumns: DocumentColumn[] = [
   { id: 'createdAt', label: '创建时间', defaultWidth: 165, minWidth: 148, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 110, minWidth: 96, resizable: true },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 165, minWidth: 148, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: 100, minWidth: 100 },
+  { id: 'actions', label: '操作', defaultWidth: 128, minWidth: 128 },
 ];
 const documentVersionColumns: DocumentColumn[] = [
   { id: 'version', label: '版本号', defaultWidth: 110, minWidth: 96, resizable: true },
@@ -166,7 +166,7 @@ const documentVersionColumns: DocumentColumn[] = [
   { id: 'file', label: '文件', defaultWidth: 220, minWidth: 150, resizable: true },
   { id: 'description', label: '版本说明', defaultWidth: 220, minWidth: 140, resizable: true },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 165, minWidth: 148, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: 100, minWidth: 100 },
+  { id: 'actions', label: '操作', defaultWidth: 128, minWidth: 128 },
 ];
 
 const emptyMasterForm = (categoryId = ''): MasterForm => ({ title: '', categoryId, description: '', remark: '' });
@@ -507,7 +507,12 @@ export default function DocumentManagementPage() {
   const activeVisibleColumnCount = activeColumnSettings.order.filter((id) => !activeColumnSettings.hidden.includes(id)).length;
   const visibleMainColumns = useMemo(() => getVisibleColumns(documentColumns, mainColumnSettings), [mainColumnSettings]);
   const visibleVersionColumns = useMemo(() => getVisibleColumns(documentVersionColumns, versionColumnSettings), [versionColumnSettings]);
-  const getColumnWidth = (column: DocumentColumn, target: DocumentColumnSettingsTarget) => Math.max(column.minWidth, (target === 'main' ? mainColumnWidths : versionColumnWidths)[column.id] ?? column.defaultWidth);
+  // Action cells are deliberately non-resizable. Ignore historic persisted action widths
+  // while retaining each user's layout and widths for business data columns.
+  const getColumnWidth = (column: DocumentColumn, target: DocumentColumnSettingsTarget) => Math.max(
+    column.minWidth,
+    column.id === 'actions' ? column.defaultWidth : (target === 'main' ? mainColumnWidths : versionColumnWidths)[column.id] ?? column.defaultWidth,
+  );
   const mainTableWidth = visibleMainColumns.reduce((total, column) => total + getColumnWidth(column, 'main'), 0);
   const versionTableWidth = visibleVersionColumns.reduce((total, column) => total + getColumnWidth(column, 'version'), 0);
   const sharedTableWidth = Math.max(mainTableWidth, versionTableWidth);

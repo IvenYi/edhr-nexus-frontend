@@ -11,6 +11,8 @@ const ReviewTemplateList = lazy(() => import('@/pages/workflow-center/ReviewTemp
 const ReviewTemplateEditor = lazy(() => import('@/pages/workflow-center/ReviewTemplateEditor'));
 const WorkTemplateList = lazy(() => import('@/pages/workflow-center/WorkTemplateList'));
 const WorkTemplateEditor = lazy(() => import('@/pages/workflow-center/WorkTemplateEditor'));
+const WorkOrderPage = lazy(() => import('@/pages/production/WorkOrderPage'));
+const BatchManagementPage = lazy(() => import('@/pages/production/BatchManagementPage'));
 const BindingRuleList = lazy(() => import('@/pages/workflow-center/BindingRuleList'));
 const InstanceList = lazy(() => import('@/pages/workflow-center/InstanceList'));
 const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail'));
@@ -84,6 +86,8 @@ const AppRouter = () => {
           <Route path="tasks/:id" element={<Suspense fallback={<Loading />}><TaskDetail /></Suspense>} />
         </Route>
         <Route path="production">
+          <Route path="work-orders" element={<Suspense fallback={<Loading />}><WorkOrderPage /></Suspense>} />
+          <Route path="batches" element={<Suspense fallback={<Loading />}><BatchManagementPage /></Suspense>} />
           <Route path="work-templates" element={<Suspense fallback={<Loading />}><WorkTemplateList /></Suspense>} />
           <Route path="work-templates/:id" element={<Suspense fallback={<Loading />}><WorkTemplateEditor /></Suspense>} />
         </Route>

@@ -260,7 +260,9 @@ function FieldPreviewRenderer({
   renderMode = 'normal',
 }: DesignerRendererProps) {
   const field = useBoundField(node);
-  const isCellMode = renderMode === 'cell';
+  const removeNode = useTemplateDesignerStore((state) => state.removeNode);
+  const isWordTableCellMode = renderMode === 'word-table-cell';
+  const isCellMode = renderMode === 'cell' || isWordTableCellMode;
   const widgetConfig = node.bindings?.widgetConfig ?? {};
   const readConfig = (key: string, fallback: unknown = '') => widgetConfig[key] ?? node.props[key] ?? fallback;
   const options = parseConfiguredOptions(readConfig('optionList'), field);
@@ -646,6 +648,65 @@ function FieldPreviewRenderer({
         );
     }
   };
+
+  if (isWordTableCellMode) {
+    const wordTablePlaceholder = hidden ? `${label} 已隐藏` : placeholder || label;
+
+    return (
+      <Typography
+        component="span"
+        data-canvas-word-table-field-placeholder="true"
+        data-word-table-field-node-id={node.id}
+        contentEditable={false}
+        tabIndex={0}
+        role="textbox"
+        aria-label={wordTablePlaceholder}
+        onPointerDown={(event) => event.stopPropagation()}
+        onKeyDown={(event) => {
+          if (['Backspace', 'Delete'].includes(event.key)) {
+            event.preventDefault();
+            event.stopPropagation();
+            removeNode(node.id);
+            return;
+          }
+          if (event.key.length === 1 || event.key === 'Enter') {
+            event.preventDefault();
+          }
+        }}
+        onMouseDown={(event) => {
+          if (event.button !== 0) return;
+          event.stopPropagation();
+          onCellMouseDown?.(event);
+          onSelect();
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect();
+        }}
+        onContextMenu={(event) => {
+          event.stopPropagation();
+          onCellContextMenu?.(event);
+        }}
+        sx={{
+          display: 'inline',
+          maxWidth: '100%',
+          minWidth: 0,
+          boxSizing: 'border-box',
+          cursor: 'text',
+          outline: 'none',
+          overflow: 'hidden',
+          whiteSpace: 'pre-wrap',
+          textOverflow: 'ellipsis',
+          color: '#a8abb2',
+          fontSize: 'inherit',
+          lineHeight: 'inherit',
+          '&:focus': { outline: 'none' },
+        }}
+      >
+        {wordTablePlaceholder}
+      </Typography>
+    );
+  }
 
   if (isCellMode) {
     return (

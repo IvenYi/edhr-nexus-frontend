@@ -1,0 +1,66 @@
+knowledgeModelVersion: 0.3.10
+decisions:
+  - id: DEC-0019
+    title: 批次管理页面复用生产对象列表并提供行级审计入口
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；批次管理页面放在生产 -> 生产准备，复用 ProductionObject 的 BATCH 列表；用户可整行打开详情，并通过行级入口查看该生产对象的数据审计。本决策不新增独立批次实体、状态、拆分动作或生命周期规则。DEC-0014-08 所称‘批次列表独立审计’按本决策修订为不提供独立批次审计列表，但允许行级复用既有 PRODUCTION_OBJECT 审计查询。生产对象控制器现已显式写入创建及生命周期修改的业务快照；该修复只影响新产生的审计事件，不回填历史空快照。"
+    decisionStatements:
+      - id: DEC-0019-01
+        statement: "provenance: user-confirmed；批次管理页面归属生产 -> 生产准备，列表数据仅来自 ProductionObject 的 BATCH 生产对象。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0019-02
+        statement: "provenance: user-confirmed；批次管理列表支持整行点击打开生产对象详情，并提供行级数据审计入口；审计沿用 PRODUCTION_OBJECT 实体和既有新增/修改动作投影。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0019-03
+        statement: "provenance: user-confirmed；本轮不新增独立批次实体、批次状态、批次拆分动作或批次生命周期规则。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0019-04
+        statement: "provenance: user-confirmed, original-evidence；生产对象 CREATE 审计的 contentBefore 为空对象、contentAfter 保存来源工单及创建后的完整业务字段；生命周期 UPDATE 审计只保存真实变化字段的前后值。单条拆分为对象写一条 CREATE，批量拆分为每个对象分别写一条 CREATE，不新增批量汇总动作。"
+        status: implemented
+        visibility: internal
+    supersedes: [DEC-0014]
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-batch-management-api, evidence.migration-0067-production-batch-management-permission, evidence.production-batch-management-authorization-test, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
+    acceptanceScenarios:
+      - id: scenario.production-batch-management-menu-placement
+        given: 用户拥有生产准备相关权限
+        when: 打开生产菜单
+        then: 可在生产 -> 生产准备进入批次管理页面
+        evidenceIds: [evidence.production-batch-management-page, evidence.migration-0067-production-batch-management-permission]
+      - id: scenario.production-batch-management-reuses-batch-list
+        given: 系统存在 BATCH 和 SN 两种生产对象
+        when: 用户打开批次管理列表
+        then: 仅展示 objectType=BATCH 的既有 ProductionObject，不创建独立批次实体或状态
+        evidenceIds: [evidence.production-batch-management-controller, evidence.production-batch-management-page, evidence.production-object-entity]
+      - id: scenario.production-batch-management-row-detail
+        given: 用户看到一条批次列表记录
+        when: 点击该行
+        then: 打开该 ProductionObject 的批次详情
+        evidenceIds: [evidence.production-batch-management-page]
+      - id: scenario.production-batch-management-row-audit
+        given: 用户看到一条批次列表记录
+        when: 点击行级数据审计入口
+        then: 查询该 ProductionObject 的审计记录并按新增/修改动作展示；新产生的记录包含业务字段快照，且不打开独立批次审计列表
+        evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+      - id: scenario.production-object-create-audit-snapshot
+        given: 工单拆分出一个或多个生产对象
+        when: 拆分事务成功
+        then: 每个对象各有一条 CREATE 审计，contentBefore 为空对象，contentAfter 包含来源工单及创建后的完整业务字段；不生成批量汇总审计
+        evidenceIds: [evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+      - id: scenario.production-object-update-audit-diff
+        given: 生产对象状态发生合法变化
+        when: 生命周期事务成功
+        then: 该对象产生一条 UPDATE 审计，contentBefore 和 contentAfter 仅保存实际变化字段
+        evidenceIds: [evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+    implementationDiscrepancies:
+      - id: discrepancy.production-batch-management-audit-snapshot-gap
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+        lineHint: 45
+        summary: "provenance: original-evidence；生产对象控制器已显式写入 CREATE 完整创建后快照及生命周期 UPDATE 变化字段快照，批量拆分逐对象写入独立 CREATE 审计；AuditAspect 继续只负责通用元数据。历史空快照不回填。"
+        evidenceIds: [evidence.production-audit-snapshot-gap, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]

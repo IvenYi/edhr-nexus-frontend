@@ -199,7 +199,7 @@ const ROLE_COLUMN_WIDTH_STORAGE_PREFIX = 'role-management-column-widths:';
 const ROLE_COLUMN_SETTINGS_STORAGE_PREFIX = 'role-management-column-settings:';
 const ROLE_COLUMN_SETTINGS_VERSION = 3;
 const ROLE_FIELD_COLUMN_MIN_WIDTH = 80;
-const ROLE_ACTION_COLUMN_WIDTH = 150;
+const ROLE_ACTION_COLUMN_WIDTH = 128;
 const TABLE_DATA_ROW_HEIGHT = 40;
 const ROLE_QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
 const ROLE_DATA_SCOPE_STORAGE_PREFIX = 'role-management-data-scope:';
@@ -1396,7 +1396,7 @@ export default function RolePage() {
     if (column.id === 'actions') {
       return (
         <TableCell key={column.id} align="center" sx={cellSx}>
-          <Stack direction="row" spacing={0.5} justifyContent="center" onClick={(event) => event.stopPropagation()}>
+          <Stack direction="row" spacing={0} justifyContent="center" onClick={(event) => event.stopPropagation()}>
             <Tooltip title="编辑" arrow>
               <IconButton size="small" aria-label="编辑" onClick={() => openEditDialog(row)}>
                 <Edit fontSize="small" />

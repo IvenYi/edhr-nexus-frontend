@@ -293,7 +293,7 @@ const appContentDrawerPaperSx = {
 
 const organizationWorkspaceHeight = { xs: 'auto', lg: 'calc(100vh - 150px)' };
 const PERSONNEL_FIELD_COLUMN_MIN_WIDTH = 60;
-const PERSONNEL_ACTION_COLUMN_WIDTH = 150;
+const PERSONNEL_ACTION_COLUMN_WIDTH = 128;
 
 const dateFieldSx = {
   userSelect: 'none',

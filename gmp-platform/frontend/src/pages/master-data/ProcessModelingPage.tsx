@@ -345,7 +345,7 @@ const PROCESS_MODELING_ROUTE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX = 'process-mode
 const PROCESS_MODELING_ROUTE_VERSION_COLUMN_SETTINGS_STORAGE_PREFIX = 'process-modeling-route-version-column-settings:';
 const PROCESS_MODELING_COLUMN_SETTINGS_VERSION = 1;
 const PROCESS_FIELD_COLUMN_MIN_WIDTH = 80;
-const PROCESS_ACTION_COLUMN_WIDTH = 100;
+const PROCESS_ACTION_COLUMN_WIDTH = 128;
 const OPERATION_CATEGORY_ALL = 'ALL';
 const OPERATION_CATEGORY_UNCATEGORIZED = 'UNCATEGORIZED';
 const QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
@@ -3862,14 +3862,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   );
 
   const renderRowActions = (row: ProcessModelingRecord) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       {renderEditAction(row)}
       {renderDeleteAction(row)}
     </Stack>
   );
 
   const renderSingleVersionMaterialGroupActions = (group: MaterialGroupRow) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       {renderAddMaterialVersionAction(group)}
       {renderEditAction(group.latestVersion, '编辑', 'editMaterial')}
       {renderDeleteAction(group.latestVersion, 'material')}
@@ -3877,14 +3877,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   );
 
   const renderMultiVersionMaterialGroupActions = (group: MaterialGroupRow) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       {renderAddMaterialVersionAction(group)}
       {renderEditAction(group.latestVersion, '编辑', 'editMaterial')}
     </Stack>
   );
 
   const renderMaterialVersionActions = (row: MaterialRecord, canDelete: boolean) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       <Tooltip title="编辑" arrow>
         <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openEditDialog(row, 'editVersion'); }}>
           <Edit fontSize="small" />
@@ -3895,7 +3895,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   );
 
   const renderSingleVersionRouteActions = (route: RouteRecord) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       {renderAddRouteVersionAction(route)}
       {renderEditAction(route)}
       {renderDeleteAction(route)}
@@ -3903,14 +3903,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   );
 
   const renderMultiVersionRouteActions = (route: RouteRecord) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       {renderAddRouteVersionAction(route)}
       {renderEditAction(route)}
     </Stack>
   );
 
   const renderRouteVersionActions = (route: RouteRecord, version: RouteVersionRecord, canDelete: boolean) => (
-    <Stack direction="row" spacing={0.5} justifyContent="center">
+    <Stack direction="row" spacing={0} justifyContent="center">
       <Tooltip title="编辑" arrow>
         <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openEditRouteVersionDialog(route, version); }}>
           <Edit fontSize="small" />

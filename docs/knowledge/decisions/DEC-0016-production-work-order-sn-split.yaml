@@ -1,0 +1,61 @@
+knowledgeModelVersion: 0.3.10
+decisions:
+  - id: DEC-0016
+    title: 工单按 SN 生产形态拆分
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed（支持 SN 工单拆分范围）；provenance: original-evidence（当前 eDHR 实现约束及冠骋源码观察）。工单制程为 SN 生产形态时，生产对象按单个序列号管理，每个对象目标数量固定为 1，编号以 ProductionObject.objectNo 承载并在租户内唯一；同一工单不得混用 BATCH 与 SN。冠骋 MfgOrderSplitSNBs.java 仅作为外部原始源码参考，运行页面当前不可得，具体编号生成规则不在本决策中确认。"
+    decisionStatements:
+      - id: DEC-0016-01
+        statement: "provenance: original-evidence；SN 形态工单可拆分多个生产对象，每个对象代表一个序列号且 targetQuantity 固定为 1。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0016-02
+        statement: "provenance: original-evidence；SN 对象编号使用 ProductionObject.objectNo 承载，创建前必须校验租户内唯一；重复编号阻断保存。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0016-03
+        statement: "provenance: original-evidence；同一工单的生产对象不得混用 BATCH 与 SN 生产形态。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0016-04
+        statement: "provenance: user-confirmed（截图字段约定）；SN 导入模板只包含 SN 编号、计划开始时间和计划结束时间，数量不作为导入列而由 SN 生产形态隐含为 1；编号唯一性由服务端校验。冠骋外部导入路径不直接视为本项目标准。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-service-test, evidence.production-work-order-page-pending-list, evidence.guancheng-sn-split-source]
+    acceptanceScenarios:
+      - id: scenario.sn-object-quantity-one
+        given: 工单制程生产形态为 SN
+        when: 用户拆分一个生产对象
+        then: 对象目标数量固定为 1，保存为 SN 形态
+        evidenceIds: [evidence.production-service, evidence.production-service-test]
+      - id: scenario.sn-object-number-unique
+        given: SN 对象编号已被租户内其他生产对象使用
+        when: 用户再次提交相同编号
+        then: 服务端阻断创建并返回编号已存在错误
+        evidenceIds: [evidence.production-service, evidence.production-object-entity]
+      - id: scenario.sn-work-order-form-consistency
+        given: 工单已有 BATCH 或 SN 生产对象
+        when: 用户尝试使用另一生产形态拆分
+        then: 服务端阻断混用生产形态
+        evidenceIds: [evidence.production-service, evidence.production-service-test]
+      - id: scenario.sn-import-staged
+        given: 用户在 SN 工单拆分弹窗导入 CSV/XLS/XLSX
+        when: 文件解析成功
+        then: 每条记录必须包含唯一 SN 编号，数量列不出现且系统按 SN 形态隐含为 1；记录先进入待提交清单，最终提交时由服务端按 SN 数量规则校验
+        evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui]
+      - id: scenario.sn-bulk-staged
+        given: 工单制程生产形态为 SN 且仍有可分配计划数量
+        when: 用户在批量添加中输入拆分数量 N
+        then: 生成 N 个数量为 1 的 SN 候选对象并进入待提交清单，不按 BATCH 的均分余数规则分配
+        evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
+    implementationDiscrepancies:
+      - id: discrepancy.guancheng-sn-runtime-unavailable
+        status: accepted
+        severity: low
+        visibility: internal
+        path: docs/knowledge/evidence/guancheng-sn-split-source.md
+        lineHint: 15
+        summary: 冠骋运行页面登录态不可得，编号生成与完整导入交互仅以原始源码线索记录，未作为本项目已确认规则。
+        evidenceIds: [evidence.guancheng-sn-split-source]

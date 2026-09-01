@@ -51,7 +51,7 @@ type WorkRuleColumnId = 'definitionName' | 'definitionCode' | 'ruleType' | 'scop
 interface WorkRuleColumn { id: WorkRuleColumnId; label: string; width: number; configurable?: boolean; }
 
 const headerCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', height: 48, py: 0.75 };
-const ACTION_COLUMN_WIDTH = 92;
+const ACTION_COLUMN_WIDTH = 96;
 const RULE_COLUMN_STORAGE_KEY = 'work-applicability-rule-list-columns:v1';
 const RULE_COLUMNS: WorkRuleColumn[] = [
   { id: 'definitionName', label: '作业名称', width: 220 },
@@ -220,7 +220,7 @@ export default function WorkApplicabilityRulesTab() {
       case 'ruleType': return <TableCell key={column.id}>{typeLabel[rule.ruleType]}</TableCell>;
       case 'scope': return <TableCell key={column.id} sx={{ maxWidth: column.width, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={scopeLabel(rule)}>{scopeLabel(rule)}</TableCell>;
       case 'updatedAt': return <TableCell key={column.id}>{formatDateTime(rule.updatedAt)}</TableCell>;
-      case 'actions': return <TableCell key={column.id} align="center" sx={operationColumnSx('body')}><Box sx={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'center', alignItems: 'center', gap: 0.25 }}><Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(rule)}><EditOutlined fontSize="small" /></IconButton></Tooltip><Tooltip title="删除" arrow><IconButton size="small" aria-label="删除" color="error" onClick={() => setDeleting(rule)}><DeleteOutline fontSize="small" /></IconButton></Tooltip></Box></TableCell>;
+      case 'actions': return <TableCell key={column.id} align="center" sx={operationColumnSx('body')}><Box sx={{ display: 'flex', flexWrap: 'nowrap', justifyContent: 'center', alignItems: 'center', gap: 0 }}><Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(rule)}><EditOutlined fontSize="small" /></IconButton></Tooltip><Tooltip title="删除" arrow><IconButton size="small" aria-label="删除" color="error" onClick={() => setDeleting(rule)}><DeleteOutline fontSize="small" /></IconButton></Tooltip></Box></TableCell>;
       default: return null;
     }
   };

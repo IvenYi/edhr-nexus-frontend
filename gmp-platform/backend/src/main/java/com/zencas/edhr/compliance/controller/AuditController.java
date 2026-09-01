@@ -112,14 +112,15 @@ public class AuditController {
 
     private AuditLogItem toAuditLogItem(AuditEvent event) {
         String triggerMethod = StringUtils.hasText(event.getSource()) ? event.getSource() : "UI";
-        String actionLabel = resolveActionLabel(event.getAction());
+        String action = resolveProjectedAction(event);
+        String actionLabel = resolveActionLabel(action, event.getEntityType());
         String entityType = event.getEntityType();
         String entityId = event.getEntityId();
         return AuditLogItem.builder()
                 .id(event.getId())
                 .entityType(entityType)
                 .entityId(entityId)
-                .action(event.getAction())
+                .action(action)
                 .actionLabel(actionLabel)
                 .operatorId(event.getOperatorId())
                 .operatorDisplayName(resolveOperatorDisplayName(event))
@@ -160,9 +161,22 @@ public class AuditController {
         return StringUtils.hasText(event.getOperatorId()) ? event.getOperatorId() : "-";
     }
 
-    private String resolveActionLabel(String action) {
+    private String resolveActionLabel(String action, String entityType) {
         if (!StringUtils.hasText(action)) return "-";
+        if (isProductionEntity(entityType)) {
+            return "CREATE".equalsIgnoreCase(action.trim()) ? "新增" : "修改";
+        }
         return ACTION_LABELS.getOrDefault(action.trim().toUpperCase(Locale.ROOT), action);
+    }
+
+    private String resolveProjectedAction(AuditEvent event) {
+        if (!isProductionEntity(event.getEntityType())) return event.getAction();
+        return "CREATE".equalsIgnoreCase(StringUtils.trimWhitespace(event.getAction())) ? "CREATE" : "UPDATE";
+    }
+
+    private boolean isProductionEntity(String entityType) {
+        String normalized = normalizeEntityType(entityType);
+        return "WORK_ORDER".equals(normalized) || "PRODUCTION_OBJECT".equals(normalized);
     }
 
     private String resolveTriggerMethodLabel(String source) {

@@ -124,4 +124,24 @@ databaseChangeLog:
   - include:
       file: db/changelog/0060-work-template-version-integrity.sql
   - include:
-      file: db/changelog/0061-workshop-management.sql
+      file: db/changelog/0060a-work-order-legacy-table-preparation.sql
+  - include:
+      file: db/changelog/0061-production-work-order.sql
+  - include:
+      file: db/changelog/0062-production-object-and-work-order-lifecycle.sql
+  - include:
+      file: db/changelog/0063-production-work-order-permission.sql
+  - include:
+      file: db/changelog/0064-production-work-order-fields.sql
+  - include:
+      file: db/changelog/0065-remove-work-order-released-status.sql
+  - include:
+      file: db/changelog/0066-production-object-planned-window.sql
+  - include:
+      file: db/changelog/0067-production-batch-management-permission.sql
+  - include:
+      file: db/changelog/0068-production-object-early-termination.sql
+  - include:
+      file: db/changelog/0069-work-order-legacy-column-constraints.sql
+  - include:
+      file: db/changelog/0070-workshop-management.sql

@@ -1,5 +1,6 @@
 import type { DragEvent as ReactDragEvent, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import {
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -35,6 +36,7 @@ import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
 import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, CanvasWordDocument, CanvasWordTableBlock, FieldType, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
+import { getComponentDefinition } from '../../registry/componentRegistry';
 import { fieldRegistry } from '../../registry/fieldRegistry';
 import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
 import { createCommonWordTableBlock, type CommonCanvasComponentId } from '../../registry/commonComponentRegistry';
@@ -48,6 +50,12 @@ import {
   splitWordTableCell,
   type WordTableRange,
 } from '../../utils/wordTableOperations';
+import { constrainWordTableToCanvas, getWordTableEffectiveLayout, snapWordTableLayout } from '../../utils/wordTableLayout';
+import {
+  decodeWordTableCellContent,
+  insertWordTableFieldAtDropPosition,
+  serializeWordTableCellContent,
+} from '../../utils/wordTableInlineContent';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { useWordTableCellStyle } from './WordTableCellStyleContext';
 
@@ -56,6 +64,7 @@ const scrollbarWidth = 18;
 const MM_TO_PX = 96 / 25.4;
 const A4_PAPER_WIDTH_MM = 210;
 const A4_PAPER_HEIGHT_MM = 297;
+const PAPER_BORDER_WIDTH = 1;
 const PAGE_BREAK_MARKER_Z_INDEX = 20;
 const SUB_TABLE_OVERLAY_Z_INDEX = 24;
 const PAPER_RULER_Z_INDEX = 220;
@@ -101,6 +110,12 @@ interface WordTableContextMenu {
   mouseY: number;
 }
 
+interface WordTableContext {
+  table: CanvasWordTableBlock;
+  cell: CanvasWordTableBlock['cells'][number];
+  range: WordTableRange;
+}
+
 function getWordTableRangeBounds(range: WordTableCellRange): WordTableRange {
   return {
     top: Math.min(range.anchor.row, range.focus.row),
@@ -122,6 +137,52 @@ function isWordTableCellInRange(cell: CanvasWordTableBlock['cells'][number], ran
     && cellLastRow >= firstRow
     && cell.col <= lastColumn
     && cellLastColumn >= firstColumn;
+}
+
+function isSameWordTableCellRange(first: WordTableCellRange, second: WordTableCellRange) {
+  return first.blockId === second.blockId
+    && first.anchor.row === second.anchor.row
+    && first.anchor.col === second.anchor.col
+    && first.focus.row === second.focus.row
+    && first.focus.col === second.focus.col;
+}
+
+function getCompleteWordTableSelectionRange(
+  table: CanvasWordTableBlock,
+  ranges: WordTableCellRange[],
+): WordTableRange | null {
+  const selectedCells = table.cells.filter((cell) => ranges.some((range) => isWordTableCellInRange(cell, range)));
+  if (!selectedCells.length) return null;
+
+  const range = selectedCells.reduce<WordTableRange>((bounds, cell) => ({
+    top: Math.min(bounds.top, cell.row),
+    left: Math.min(bounds.left, cell.col),
+    bottom: Math.max(bounds.bottom, cell.row + cell.rowSpan - 1),
+    right: Math.max(bounds.right, cell.col + cell.colSpan - 1),
+  }), {
+    top: selectedCells[0].row,
+    left: selectedCells[0].col,
+    bottom: selectedCells[0].row + selectedCells[0].rowSpan - 1,
+    right: selectedCells[0].col + selectedCells[0].colSpan - 1,
+  });
+  const selectedCellIds = new Set(selectedCells.map((cell) => cell.id));
+
+  const coversEveryCell = table.cells.every((cell) => {
+    const cellBottom = cell.row + cell.rowSpan - 1;
+    const cellRight = cell.col + cell.colSpan - 1;
+    const intersects = cell.row <= range.bottom
+      && cellBottom >= range.top
+      && cell.col <= range.right
+      && cellRight >= range.left;
+    if (!intersects) return true;
+    return selectedCellIds.has(cell.id)
+      && cell.row >= range.top
+      && cellBottom <= range.bottom
+      && cell.col >= range.left
+      && cellRight <= range.right;
+  });
+
+  return coversEveryCell ? range : null;
 }
 
 const quickAddFieldTypeOptions = fieldRegistry.filter((field) => field.type !== 'subTable');
@@ -250,8 +311,10 @@ interface FieldPointerDropDetail {
   fieldId: string;
   subTableId?: string;
   subTableField?: ModelField;
-  row: number;
-  col: number;
+  row?: number;
+  col?: number;
+  wordTableBlockId?: string | null;
+  wordTableCellId?: string | null;
 }
 
 interface SubTableFieldDragData {
@@ -1163,10 +1226,6 @@ function resolveWordTableCellDiagonalBackground(cell: CanvasWordTableBlock['cell
   return lines.join(', ');
 }
 
-function fitWordTableColumnWidths(table: CanvasWordTableBlock) {
-  return fitColumnWidths(table.columnWidths, table.layout.width);
-}
-
 export default function CanvasSheetWorkspace() {
   const { showMessage } = useSnackbar();
   const { setWordTableCellStyleTarget } = useWordTableCellStyle();
@@ -1203,6 +1262,7 @@ export default function CanvasSheetWorkspace() {
   const addFields = useTemplateDesignerStore((state) => state.addFields);
   const addSubTableFields = useTemplateDesignerStore((state) => state.addSubTableFields);
   const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
+  const addNodeFromFieldToWordTableCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToWordTableCell);
   const addNodeFromSubTableFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromSubTableFieldToCell);
   const addNodeFromFieldToRange = useTemplateDesignerStore((state) => state.addNodeFromFieldToRange);
   const setSubTableRecordTemplateFromRange = useTemplateDesignerStore((state) => state.setSubTableRecordTemplateFromRange);
@@ -1241,6 +1301,7 @@ export default function CanvasSheetWorkspace() {
   const [resizeRowDragPreview, setResizeRowDragPreview] = useState<ResizeRowDragPreview>(null);
   const [selectedWordTableBlockId, setSelectedWordTableBlockId] = useState<string | null>(null);
   const [wordTableCellRange, setWordTableCellRange] = useState<WordTableCellRange | null>(null);
+  const [wordTableAdditionalCellRanges, setWordTableAdditionalCellRanges] = useState<WordTableCellRange[]>([]);
   const [wordTableContextMenu, setWordTableContextMenu] = useState<WordTableContextMenu | null>(null);
   const [wordTableInsertCount, setWordTableInsertCount] = useState('1');
 
@@ -1334,7 +1395,7 @@ export default function CanvasSheetWorkspace() {
   const paperInsetBottom = Math.round(paperMarginBottomMm * MM_TO_PX);
   const paperHeaderHeight = currentPage?.sheet.showHeader ? 46 : 0;
   const paperFooterHeight = currentPage?.sheet.showFooter ? 46 : 0;
-  const paperContentWidth = a4PaperWidthPx - paperInsetLeft - paperInsetRight;
+  const paperContentWidth = a4PaperWidthPx - paperInsetLeft - paperInsetRight - PAPER_BORDER_WIDTH * 2;
   const paperRulerUnit = 40;
   const paperRulerMinorStep = paperRulerUnit / 4;
   const displayColumnWidths = useMemo(() => fitColumnWidths(rawColumnWidths, paperContentWidth), [paperContentWidth, rawColumnWidths]);
@@ -1541,6 +1602,7 @@ export default function CanvasSheetWorkspace() {
     setSelectedNodeId(null);
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     setWordTableContextMenu(null);
   };
   const deleteSelectedWordTable = useCallback(() => {
@@ -1555,6 +1617,7 @@ export default function CanvasSheetWorkspace() {
     });
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     setWordTableContextMenu(null);
   }, [currentPage?.wordDocument, selectedWordTableBlockId, updateCurrentPage]);
   useEffect(() => {
@@ -1609,6 +1672,7 @@ export default function CanvasSheetWorkspace() {
       setSelectedNodeId(null);
       setSelectedWordTableBlockId(table.id);
       setWordTableCellRange(null);
+      setWordTableAdditionalCellRanges([]);
       return;
     }
 
@@ -1653,12 +1717,26 @@ export default function CanvasSheetWorkspace() {
     const wordDocument = currentPage?.wordDocument;
     if (!wordDocument) return;
 
+    const table = wordDocument.blocks.find((block): block is CanvasWordTableBlock => block.id === blockId && block.type === 'table');
+    if (!table) return;
+    const constrainedTable = constrainWordTableToCanvas(table, paperWorkingWidth);
+
+    const nextLayout = snapWordTableLayout(
+      { ...constrainedTable.layout, left, top },
+      paperWorkingWidth,
+      wordDocument.blocks.flatMap((block) => (
+        block.type === 'table' && block.id !== blockId
+          ? [{ id: block.id, ...getWordTableEffectiveLayout(block, paperWorkingWidth) }]
+          : []
+      )),
+    );
+
     updateCurrentPage({
       wordDocument: {
         ...wordDocument,
         blocks: wordDocument.blocks.map((block) => (
           block.id === blockId && block.type === 'table'
-            ? { ...block, layout: { ...block.layout, left, top } }
+            ? { ...block, columnWidths: constrainedTable.columnWidths, layout: nextLayout }
             : block
         )),
       },
@@ -1668,6 +1746,16 @@ export default function CanvasSheetWorkspace() {
     const wordDocument = currentPage?.wordDocument;
     if (!wordDocument) return;
 
+    const table = wordDocument.blocks.find((block): block is CanvasWordTableBlock => block.id === blockId && block.type === 'table');
+    if (!table) return;
+
+    const nextTable = constrainWordTableToCanvas({
+      ...table,
+      layout: { ...table.layout, height: rowHeights.reduce((sum, height) => sum + height, 0) },
+      columnWidths,
+      rowHeights,
+    }, paperWorkingWidth);
+
     updateCurrentPage({
       wordDocument: {
         ...wordDocument,
@@ -1675,9 +1763,7 @@ export default function CanvasSheetWorkspace() {
           block.id === blockId && block.type === 'table'
             ? {
                 ...block,
-                layout: { ...block.layout, width: columnWidths.reduce((sum, width) => sum + width, 0), height: rowHeights.reduce((sum, height) => sum + height, 0) },
-                columnWidths,
-                rowHeights,
+                ...nextTable,
               }
             : block
         )),
@@ -1687,17 +1773,18 @@ export default function CanvasSheetWorkspace() {
   const updateWordTableStructure = (table: CanvasWordTableBlock) => {
     const wordDocument = currentPage?.wordDocument;
     if (!wordDocument) return;
+    const nextTable = constrainWordTableToCanvas(table, paperWorkingWidth);
 
     updateCurrentPage({
       wordDocument: {
         ...wordDocument,
         blocks: wordDocument.blocks.map((block) => (
-          block.id === table.id && block.type === 'table' ? table : block
+          block.id === table.id && block.type === 'table' ? nextTable : block
         )),
       },
     });
   };
-  const getWordTableContext = () => {
+  const getWordTableContext = (): WordTableContext | null => {
     const wordDocument = currentPage?.wordDocument;
     if (!wordTableContextMenu) return null;
 
@@ -1707,13 +1794,17 @@ export default function CanvasSheetWorkspace() {
     const cell = table.cells.find((candidate) => candidate.id === wordTableContextMenu.cellId)
       ?? wordTableContextMenu.cell;
 
-    const activeRange = wordTableCellRange?.blockId === table.id
-      ? getWordTableRangeBounds(wordTableCellRange)
-      : null;
+    const activeCellRange = wordTableCellRange?.blockId === table.id ? wordTableCellRange : null;
+    const selectedRanges = [
+      ...(activeCellRange ? [activeCellRange] : []),
+      ...wordTableAdditionalCellRanges.filter((range) => range.blockId === table.id),
+    ];
+    const activeRange = activeCellRange ? getWordTableRangeBounds(activeCellRange) : null;
+    const completeSelectionRange = getCompleteWordTableSelectionRange(table, selectedRanges);
     return {
       table,
       cell,
-      range: activeRange ?? {
+      range: completeSelectionRange ?? activeRange ?? {
         top: cell.row,
         left: cell.col,
         bottom: cell.row + cell.rowSpan - 1,
@@ -1733,10 +1824,15 @@ export default function CanvasSheetWorkspace() {
     const mouseX = event.clientX;
     const mouseY = event.clientY;
     const activeRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
-    const rangeContainsCell = activeRange && isWordTableCellInRange(cell, activeRange);
+    const selectedRanges = [
+      ...(activeRange ? [activeRange] : []),
+      ...wordTableAdditionalCellRanges.filter((range) => range.blockId === block.id),
+    ];
+    const rangeContainsCell = selectedRanges.some((range) => isWordTableCellInRange(cell, range));
 
     selectWordTable(block.id, true);
     if (!rangeContainsCell) {
+      setWordTableAdditionalCellRanges([]);
       setWordTableCellRange({
         blockId: block.id,
         anchor: { row: cell.row, col: cell.col },
@@ -1865,6 +1961,7 @@ export default function CanvasSheetWorkspace() {
       : deleteWordTableRows(context.table, start, count);
     updateWordTableStructure(nextTable);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     closeWordTableContextMenu();
   };
   const deleteWordTableFromContextMenu = () => {
@@ -1880,6 +1977,7 @@ export default function CanvasSheetWorkspace() {
     });
     setSelectedWordTableBlockId(null);
     setWordTableCellRange(null);
+    setWordTableAdditionalCellRanges([]);
     closeWordTableContextMenu();
   };
   const selectWordTable = (blockId: string, preserveCellRange = false) => {
@@ -1889,6 +1987,7 @@ export default function CanvasSheetWorkspace() {
     setSelectedWordTableBlockId(blockId);
     if (!preserveCellRange) {
       setWordTableCellRange(null);
+      setWordTableAdditionalCellRanges([]);
       setWordTableCellStyleTarget(null);
     }
   };
@@ -1900,6 +1999,50 @@ export default function CanvasSheetWorkspace() {
     if (event.button !== 0) return;
 
     const currentRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
+    const isAdditiveSelection = (event.metaKey || event.ctrlKey) && !event.altKey;
+    const nextSingleCellRange: WordTableCellRange = {
+      blockId: block.id,
+      anchor: { row: cell.row, col: cell.col },
+      focus: { row: cell.row, col: cell.col },
+    };
+    if (isAdditiveSelection) {
+      event.preventDefault();
+      event.stopPropagation();
+      selectWordTable(block.id, true);
+      const selectedRanges = [
+        ...wordTableAdditionalCellRanges.filter((range) => range.blockId === block.id),
+        ...(currentRange ? [currentRange] : []),
+      ];
+      const isAlreadySelected = selectedRanges.some((range) => isSameWordTableCellRange(range, nextSingleCellRange));
+      if (isAlreadySelected) {
+        const remainingRanges = selectedRanges.filter((range) => !isSameWordTableCellRange(range, nextSingleCellRange));
+        const nextActiveRange = remainingRanges.pop() ?? null;
+        setWordTableAdditionalCellRanges(remainingRanges);
+        setWordTableCellRange(nextActiveRange);
+        setWordTableCellStyleTarget(nextActiveRange
+          ? {
+              blockId: block.id,
+              range: {
+                top: Math.min(nextActiveRange.anchor.row, nextActiveRange.focus.row),
+                left: Math.min(nextActiveRange.anchor.col, nextActiveRange.focus.col),
+                bottom: Math.max(nextActiveRange.anchor.row, nextActiveRange.focus.row),
+                right: Math.max(nextActiveRange.anchor.col, nextActiveRange.focus.col),
+              },
+            }
+          : null);
+        return;
+      }
+
+      setWordTableAdditionalCellRanges(selectedRanges);
+      setWordTableCellRange(nextSingleCellRange);
+      setWordTableCellStyleTarget({
+        blockId: block.id,
+        range: { top: cell.row, left: cell.col, bottom: cell.row, right: cell.col },
+      });
+      return;
+    }
+
+    setWordTableAdditionalCellRanges([]);
     const anchor = event.shiftKey && currentRange
       ? currentRange.anchor
       : { row: cell.row, col: cell.col };
@@ -2080,8 +2223,9 @@ export default function CanvasSheetWorkspace() {
     const ownerDocument = event.currentTarget.ownerDocument;
     const startX = event.clientX;
     const startY = event.clientY;
-    const startLeft = block.layout.left;
-    const startTop = block.layout.top;
+    const effectiveLayout = getWordTableEffectiveLayout(block, paperWorkingWidth);
+    const startLeft = effectiveLayout.left;
+    const startTop = effectiveLayout.top;
     let didDrag = false;
 
     const clearPreview = () => {
@@ -2104,10 +2248,19 @@ export default function CanvasSheetWorkspace() {
       const deltaY = moveEvent.clientY - startY;
       if (!didDrag && Math.hypot(deltaX, deltaY) < WORD_TABLE_DRAG_THRESHOLD) return;
       didDrag = true;
+      const layout = snapWordTableLayout(
+        { ...effectiveLayout, left: startLeft + deltaX, top: startTop + deltaY },
+        paperWorkingWidth,
+        (currentPage?.wordDocument?.blocks ?? []).flatMap((candidate) => (
+          candidate.type === 'table' && candidate.id !== block.id
+            ? [{ id: candidate.id, ...getWordTableEffectiveLayout(candidate, paperWorkingWidth) }]
+            : []
+        )),
+      );
       const preview = {
         blockId: block.id,
-        left: Math.max(0, Math.round(startLeft + deltaX)),
-        top: Math.max(0, Math.round(startTop + deltaY)),
+        left: layout.left,
+        top: layout.top,
       };
       wordTableLayoutPreviewRef.current = preview;
       setWordTableLayoutPreview(preview);
@@ -2210,13 +2363,14 @@ export default function CanvasSheetWorkspace() {
     const startColumnWidths = [...currentColumnWidths];
     const lastColumnIndex = startColumnWidths.length - 1;
     const startLastColumnWidth = startColumnWidths[lastColumnIndex];
+    const effectiveLayout = getWordTableEffectiveLayout(block, paperWorkingWidth);
 
     const clearPreview = () => {
       wordTableSizePreviewRef.current = null;
       setWordTableSizePreview((current) => current?.blockId === block.id ? null : current);
     };
     const finish = (shouldCommit: boolean) => {
-      resizeTarget.removeEventListener('pointermove', handlePointerMove);
+      ownerDocument.removeEventListener('pointermove', handlePointerMove, true);
       ownerDocument.removeEventListener('pointerup', handlePointerEnd, true);
       ownerDocument.removeEventListener('pointercancel', handlePointerEnd, true);
       if (resizeTarget.hasPointerCapture(pointerId)) resizeTarget.releasePointerCapture(pointerId);
@@ -2231,9 +2385,13 @@ export default function CanvasSheetWorkspace() {
       if (moveEvent.pointerId !== pointerId) return;
       const deltaX = moveEvent.clientX - startX;
       const nextColumnWidths = [...startColumnWidths];
+      const maximumLastColumnWidth = Math.max(
+        1,
+        paperWorkingWidth - effectiveLayout.left - startColumnWidths.slice(0, -1).reduce((sum, width) => sum + width, 0),
+      );
       nextColumnWidths[lastColumnIndex] = Math.max(
-        WORD_TABLE_MIN_COLUMN_WIDTH,
-        Math.round(startLastColumnWidth + deltaX),
+        1,
+        Math.min(maximumLastColumnWidth, Math.round(startLastColumnWidth + deltaX)),
       );
       const preview = {
         blockId: block.id,
@@ -2244,7 +2402,7 @@ export default function CanvasSheetWorkspace() {
       setWordTableSizePreview(preview);
     };
     const handlePointerEnd = () => finish(true);
-    resizeTarget.addEventListener('pointermove', handlePointerMove);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, true);
     ownerDocument.addEventListener('pointerup', handlePointerEnd, true);
     ownerDocument.addEventListener('pointercancel', handlePointerEnd, true);
     wordTablePointerCleanupRef.current = () => finish(false);
@@ -2432,6 +2590,63 @@ export default function CanvasSheetWorkspace() {
     };
   };
   const getFieldDropCellLayout = (range: CanvasSelectionRange) => getGridOffsetCellLayout(range);
+  const getWordTableFieldCellLayout = (blockId: string, cellId: string) => {
+    const table = currentPage?.wordDocument?.blocks.find((block): block is CanvasWordTableBlock => (
+      block.id === blockId && block.type === 'table'
+    ));
+    const cell = table?.cells.find((candidate) => candidate.id === cellId);
+    if (!table || !cell) return null;
+
+    const constrainedTable = constrainWordTableToCanvas(table, paperWorkingWidth);
+    const columnOffsets = buildOffsets(constrainedTable.columnWidths);
+    const rowOffsets = buildOffsets(constrainedTable.rowHeights);
+    return {
+      left: constrainedTable.layout.left + (columnOffsets[cell.col - 1] ?? 0),
+      top: constrainedTable.layout.top + (rowOffsets[cell.row - 1] ?? 0),
+      width: getWordTableSpanSize(constrainedTable.columnWidths, cell.col, cell.colSpan),
+      height: getWordTableSpanSize(constrainedTable.rowHeights, cell.row, cell.rowSpan),
+      textAlign: String(cell.style?.textAlign ?? 'left'),
+      verticalAlign: String(cell.style?.verticalAlign ?? 'middle'),
+      paddingLeft: resolveNumericStyle(cell.style?.paddingLeft, 8),
+      paddingRight: resolveNumericStyle(cell.style?.paddingRight, resolveNumericStyle(cell.style?.paddingLeft, 8)),
+      paddingTop: resolveNumericStyle(cell.style?.paddingTop, 4),
+      paddingBottom: resolveNumericStyle(cell.style?.paddingBottom, resolveNumericStyle(cell.style?.paddingTop, 4)),
+      wordTableCell: { blockId, cellId },
+    };
+  };
+  const addDroppedFieldToWordTableCell = (
+    fieldId: string,
+    blockId: string,
+    cellId: string,
+    inlineContent?: { text: string; offset: number },
+  ) => {
+    const field = getFieldById(fieldId);
+    const layout = getWordTableFieldCellLayout(blockId, cellId);
+    if (!layout || field?.type === 'subTable') {
+      if (field?.type === 'subTable') showMessage('子表字段不能放入自由表格单元格', 'error');
+      return;
+    }
+    addNodeFromFieldToWordTableCell(fieldId, {
+      ...layout,
+      cellText: inlineContent?.text,
+      inlineOffset: inlineContent?.offset,
+    });
+  };
+  const handleFieldDropOnWordTableCell = (
+    event: ReactDragEvent<HTMLElement>,
+    target: { blockId: string; cellId: string },
+  ) => {
+    const fieldId = event.dataTransfer.getData('application/x-template-designer-field');
+    if (!fieldId) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = 'copy';
+    const content = event.currentTarget.querySelector<HTMLElement>('[data-word-table-cell-content="true"]');
+    const inlineContent = content
+      ? insertWordTableFieldAtDropPosition(content, event.clientX, event.clientY)
+      : undefined;
+    addDroppedFieldToWordTableCell(fieldId, target.blockId, target.cellId, inlineContent);
+  };
   const renderSubTableOverlays = () => {
     if (!currentPage) return null;
 
@@ -2822,6 +3037,11 @@ export default function CanvasSheetWorkspace() {
     };
     const handlePointerFieldDrop = (event: Event) => {
       const detail = (event as CustomEvent<FieldPointerDropDetail>).detail;
+      if (detail?.fieldId && detail.wordTableBlockId && detail.wordTableCellId) {
+        setFieldDropGuideRange(null);
+        addDroppedFieldToWordTableCell(detail.fieldId, detail.wordTableBlockId, detail.wordTableCellId);
+        return;
+      }
       const row = Number(detail?.row);
       const col = Number(detail?.col);
       if (!detail?.fieldId || !Number.isInteger(row) || !Number.isInteger(col)) return;
@@ -2860,7 +3080,7 @@ export default function CanvasSheetWorkspace() {
       ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
       ownerDocument.removeEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
     };
-  }, [addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
+  }, [addDroppedFieldToWordTableCell, addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
   useEffect(() => {
     cancelHoveredSubTableUpdate();
     setHoveredSubTableNodeId(null);
@@ -3762,6 +3982,34 @@ export default function CanvasSheetWorkspace() {
     setQuickAddFieldDialogOpen(true);
     closeContextMenu();
   };
+  const handleOpenWordTableQuickAddFields = (context: WordTableContext) => {
+    const selectedRanges = [
+      ...(wordTableCellRange?.blockId === context.table.id ? [wordTableCellRange] : []),
+      ...wordTableAdditionalCellRanges.filter((range) => range.blockId === context.table.id),
+    ];
+    const selectedCells = context.table.cells.filter((cell) => (
+      selectedRanges.some((range) => isWordTableCellInRange(cell, range))
+    ));
+    const drafts = (selectedCells.length ? selectedCells : [context.cell]).map((cell) => {
+      const sourceName = cell.text.trim().replace(/\s+/g, ' ').slice(0, 24) || `字段R${cell.row}C${cell.col}`;
+      return {
+        id: `${context.table.id}:${cell.id}`,
+        row: cell.row,
+        col: cell.col,
+        sourceName,
+        name: sourceName,
+        type: inferQuickAddFieldType(sourceName),
+        description: '',
+      };
+    });
+    if (!drafts.length) return;
+
+    setQuickAddFieldDrafts(resolveQuickAddFieldDraftNames(drafts, 'main', ''));
+    setQuickAddFieldTarget('main');
+    setQuickAddFieldSubTableId('');
+    closeWordTableContextMenu();
+    window.setTimeout(() => setQuickAddFieldDialogOpen(true), 0);
+  };
   const closeQuickAddFieldDialog = () => {
     setQuickAddFieldDialogOpen(false);
     setQuickAddFieldDrafts([]);
@@ -4393,7 +4641,9 @@ export default function CanvasSheetWorkspace() {
 
           if (block.type === 'table') {
             const usesLegacyWordTableBorders = (block.borderEncodingVersion ?? wordDocument.borderEncodingVersion) !== 2;
-            const defaultColumnWidths = fitWordTableColumnWidths(block);
+            const constrainedTable = constrainWordTableToCanvas(block, paperWorkingWidth);
+            const constrainedLayout = constrainedTable.layout;
+            const defaultColumnWidths = constrainedTable.columnWidths;
             const sizePreview = wordTableSizePreview?.blockId === block.id ? wordTableSizePreview : null;
             const tableColumnWidths = sizePreview?.columnWidths ?? defaultColumnWidths;
             const tableRowHeights = sizePreview?.rowHeights ?? block.rowHeights;
@@ -4402,10 +4652,15 @@ export default function CanvasSheetWorkspace() {
             const columnOffsets = buildOffsets(tableColumnWidths);
             const rowOffsets = buildOffsets(tableRowHeights);
             const layoutPreview = wordTableLayoutPreview?.blockId === block.id ? wordTableLayoutPreview : null;
-            const tableLeft = layoutPreview?.left ?? block.layout.left;
-            const tableTop = layoutPreview?.top ?? block.layout.top;
+            const tableLeft = layoutPreview?.left ?? constrainedLayout.left;
+            const tableTop = layoutPreview?.top ?? constrainedLayout.top;
             const selected = selectedWordTableBlockId === block.id;
             const selectedCellRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
+            const additionalWordTableCellRanges = wordTableAdditionalCellRanges.filter((range) => range.blockId === block.id);
+            const getWordTableCellFieldNodes = (cellId: string) => currentPage.nodes.filter((node) => {
+              const target = node.style.wordTableCell as { blockId?: unknown; cellId?: unknown } | undefined;
+              return node.bindings?.fieldId && target?.blockId === block.id && target.cellId === cellId;
+            });
             const outerRightBorderCells = block.cells.filter((cell) => (
               cell.col + cell.colSpan - 1 >= tableColumnWidths.length
               && shouldRenderWordTableOuterBorder('right', cell, usesLegacyWordTableBorders)
@@ -4572,14 +4827,28 @@ export default function CanvasSheetWorkspace() {
                   />
                 )) : null}
                 {block.cells.map((cell) => {
-                  const isRangeSelected = isWordTableCellInRange(cell, selectedCellRange);
+                  const isRangeSelected = isWordTableCellInRange(cell, selectedCellRange)
+                    || additionalWordTableCellRanges.some((range) => isWordTableCellInRange(cell, range));
+                  const cellFieldNodes = getWordTableCellFieldNodes(cell.id);
+                  const cellInlineContent = decodeWordTableCellContent(cell.text, cellFieldNodes.map((node) => node.id));
+                  const placedFieldNodeIds = new Set(cellInlineContent.flatMap((segment) => (
+                    segment.type === 'field' ? [segment.nodeId] : []
+                  )));
                   return (
                     <Box
                       key={cell.id}
+                      data-canvas-field-drop-cell="true"
+                      data-word-table-field-drop-cell="true"
                       data-word-table-cell="true"
                       data-word-table-cell-id={cell.id}
                       data-word-table-block-id={block.id}
                       data-word-table-diagonal={cell.diagonalTopLeftToBottomRight || cell.diagonalTopRightToBottomLeft ? 'true' : undefined}
+                      onDragOver={(event) => {
+                        if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'copy';
+                      }}
+                      onDrop={(event) => handleFieldDropOnWordTableCell(event, { blockId: block.id, cellId: cell.id })}
                       onPointerDownCapture={(event: ReactPointerEvent<HTMLDivElement>) => {
                         // ContentEditable may consume a secondary pointer event before the bubbling
                         // handler runs. Capture it at the cell boundary so the custom menu is reliable.
@@ -4600,7 +4869,8 @@ export default function CanvasSheetWorkspace() {
 
                         const startedFromText = isPointerOnWordTableText(event.target, event.clientX, event.clientY);
 
-                        if (startedFromText && !event.shiftKey) {
+                        const isAdditiveSelection = (event.metaKey || event.ctrlKey) && !event.altKey;
+                        if (startedFromText && !event.shiftKey && !isAdditiveSelection) {
                           beginWordTableTextOrCellSelection(event, block, cell);
                           return;
                         }
@@ -4648,12 +4918,14 @@ export default function CanvasSheetWorkspace() {
                       } as SxProps<Theme>}
                     >
                       <Box
+                        data-word-table-cell-field-flow="true"
                         data-word-table-cell-content="true"
                         contentEditable
                         suppressContentEditableWarning
                         onFocus={() => {
                           // Focusing a new editable cell must replace any previous cell-range highlight.
                           selectWordTable(block.id, true);
+                          setWordTableAdditionalCellRanges([]);
                           setWordTableCellRange({
                             blockId: block.id,
                             anchor: { row: cell.row, col: cell.col },
@@ -4670,11 +4942,11 @@ export default function CanvasSheetWorkspace() {
                           insertContentEditableLineBreak(event.currentTarget);
                         }}
                         onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
-                          updateWordTableCellText(block.id, cell.id, serializeContentEditableLineBreaks(event.currentTarget));
+                          if (event.currentTarget.contains(event.relatedTarget)) return;
+                          updateWordTableCellText(block.id, cell.id, serializeWordTableCellContent(event.currentTarget));
                         }}
                         sx={{
                           width: '100%',
-                          maxWidth: '100%',
                           minWidth: 0,
                           minHeight: '1em',
                           outline: 'none',
@@ -4683,7 +4955,41 @@ export default function CanvasSheetWorkspace() {
                           overflowWrap: 'anywhere',
                         } as SxProps<Theme>}
                       >
-                        {cell.text}
+                        {cellInlineContent.map((segment, index) => {
+                          if (segment.type === 'text') return <Fragment key={`text-${index}`}>{segment.text}</Fragment>;
+                          const node = cellFieldNodes.find((candidate) => candidate.id === segment.nodeId);
+                          if (!node) return null;
+                          const Renderer = getComponentDefinition(node.type).renderDesigner;
+                          return (
+                            <Renderer
+                              key={`${node.id}-${index}`}
+                              node={node}
+                              selected={node.id === selectedNodeId}
+                              onSelect={() => {
+                                selectWordTable(block.id, true);
+                                setSelectedNodeId(node.id);
+                                setActiveCanvasRail('config');
+                              }}
+                              renderMode="word-table-cell"
+                            />
+                          );
+                        })}
+                        {cellFieldNodes.filter((node) => !placedFieldNodeIds.has(node.id)).map((node) => {
+                          const Renderer = getComponentDefinition(node.type).renderDesigner;
+                          return (
+                            <Renderer
+                              key={node.id}
+                              node={node}
+                              selected={node.id === selectedNodeId}
+                              onSelect={() => {
+                                selectWordTable(block.id, true);
+                                setSelectedNodeId(node.id);
+                                setActiveCanvasRail('config');
+                              }}
+                              renderMode="word-table-cell"
+                            />
+                          );
+                        })}
                       </Box>
                     </Box>
                   );
@@ -4844,6 +5150,7 @@ export default function CanvasSheetWorkspace() {
         role="menu"
         aria-label="表格操作"
         tabIndex={-1}
+        onPointerDown={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
         onContextMenu={(event) => {
           event.preventDefault();
@@ -4885,6 +5192,18 @@ export default function CanvasSheetWorkspace() {
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem
+          data-word-table-context-action="quick-add-fields"
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            handleOpenWordTableQuickAddFields(context);
+          }}
+          sx={{ minHeight: 32, px: 1.25, fontSize: 13 }}
+        >
+          快速添加字段
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem
           data-word-table-context-action="delete-columns"
           disabled={!canDeleteColumns}
           onClick={() => deleteSelectedWordTableTracks('column')}
@@ -4910,6 +5229,163 @@ export default function CanvasSheetWorkspace() {
       </Box>
     );
   };
+
+  const renderQuickAddFieldDialog = () => (
+    <AppDialog
+      hideCloseButton
+      data-quick-add-field-dialog="true"
+      open={quickAddFieldDialogOpen}
+      onClose={closeQuickAddFieldDialog}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: 16,
+          fontWeight: 700,
+          pb: 1.5,
+        }}
+      >
+        <Box component="span">快速添加字段</Box>
+        <IconButton
+          data-quick-add-field-close="true"
+          aria-label="关闭快速添加字段"
+          size="small"
+          onClick={closeQuickAddFieldDialog}
+        >
+          <CloseRounded fontSize="small" />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent sx={{ pt: '8px !important' }}>
+        <Stack spacing={2}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+            <TextField
+              data-quick-add-field-target="true"
+              select
+              size="small"
+              label="添加目标"
+              value={quickAddTargetValue}
+              onChange={(event) => handleQuickAddTargetChange(event.target.value)}
+              sx={{ width: 260 }}
+            >
+              {quickAddTargetOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+              ))}
+            </TextField>
+          </Stack>
+          <Box
+            data-quick-add-field-table-frame="true"
+            sx={{
+              border: '1px solid #d8dee9',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              bgcolor: '#fff',
+            }}
+          >
+            <Table
+              size="small"
+              sx={{
+                borderCollapse: 'collapse',
+                tableLayout: 'fixed',
+                width: '100%',
+                '& .MuiTableCell-head': {
+                  bgcolor: '#f8fafc',
+                  color: '#475569',
+                  fontWeight: 700,
+                  fontSize: 13,
+                  height: 34,
+                  lineHeight: '18px',
+                  px: 1.5,
+                  py: 0.5,
+                  border: '1px solid #d8dee9',
+                },
+                '& .MuiTableCell-body': {
+                  px: 1.5,
+                  py: 0.75,
+                  border: '1px solid #e2e8f0',
+                  verticalAlign: 'middle',
+                },
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell width={64} align="center">序号</TableCell>
+                  <TableCell width="28%">字段名称</TableCell>
+                  <TableCell width="20%">字段类型</TableCell>
+                  <TableCell>字段说明</TableCell>
+                  <TableCell width={72} align="center">操作</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {quickAddFieldDrafts.map((draft, index) => (
+                  <TableRow key={draft.id} data-quick-add-field-row="true">
+                    <TableCell align="center" sx={{ color: '#64748b', fontWeight: 600 }}>{index + 1}</TableCell>
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        value={draft.name}
+                        onChange={(event) => updateQuickAddFieldDraft(draft.id, { name: event.target.value })}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        select
+                        size="small"
+                        value={draft.type}
+                        onChange={(event) => updateQuickAddFieldDraft(draft.id, { type: event.target.value as FieldType })}
+                        fullWidth
+                      >
+                        {quickAddFieldTypeOptions.map((fieldType) => (
+                          <MenuItem key={fieldType.type} value={fieldType.type}>{fieldType.label}</MenuItem>
+                        ))}
+                      </TextField>
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        value={draft.description}
+                        onChange={(event) => updateQuickAddFieldDraft(draft.id, { description: event.target.value })}
+                        placeholder="字段说明"
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        data-quick-add-field-row-remove="true"
+                        size="small"
+                        aria-label="移除"
+                        onClick={() => removeQuickAddFieldDraft(draft.id)}
+                        sx={{ color: '#ef4444' }}
+                      >
+                        <DeleteOutlineRounded fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ px: 3, pb: 2 }}>
+        <Button onClick={closeQuickAddFieldDialog}>取消</Button>
+        <Button
+          variant="contained"
+          onClick={handleConfirmQuickAddFields}
+          disabled={
+            !quickAddFieldDrafts.some((draft) => draft.name.trim())
+            || (quickAddFieldTarget === 'subTable' && !quickAddFieldSubTableId)
+          }
+        >
+          确认添加
+        </Button>
+      </DialogActions>
+    </AppDialog>
+  );
 
   const renderPageBreakMarkers = () => (pageMarkerCount > 1 ? (
     <Box
@@ -5246,7 +5722,7 @@ export default function CanvasSheetWorkspace() {
                     pt: `${paperInsetTop}px`,
                     pb: `${paperInsetBottom}px`,
                     bgcolor: '#fff',
-                    border: '1px solid #e7edf5',
+                    border: `${PAPER_BORDER_WIDTH}px solid #e7edf5`,
                     boxShadow: '0 16px 40px rgba(30, 41, 59, 0.10)',
                   }}
                 >
@@ -5359,11 +5835,14 @@ export default function CanvasSheetWorkspace() {
                       <CanvasNodeRenderer
                         nodes={currentPage.nodes}
                         resolveCellRangeLayout={getFieldDropCellLayout}
+                        resolveWordTableCellLayout={(target) => getWordTableFieldCellLayout(target.blockId, target.cellId)}
                         onCellFieldMouseDown={handleCellFieldMouseDown}
                         onCellFieldContextMenu={handleCellFieldContextMenu}
+                        onWordTableFieldDrop={(target, event) => handleFieldDropOnWordTableCell(event, target)}
                         onNodeSelect={() => {
                           setSelectedWordTableBlockId(null);
                           setWordTableCellRange(null);
+                          setWordTableAdditionalCellRanges([]);
                         }}
                       />
                       {renderWordTableDragHandleLayer()}
@@ -5390,6 +5869,7 @@ export default function CanvasSheetWorkspace() {
           </Box>
         </Box>
         {renderWordTableContextMenu()}
+        {renderQuickAddFieldDialog()}
       </Box>
     );
   }
@@ -5899,160 +6379,7 @@ export default function CanvasSheetWorkspace() {
           )
         ) : null}
       </Menu>
-      <AppDialog
-        hideCloseButton
-        data-quick-add-field-dialog="true"
-        open={quickAddFieldDialogOpen}
-        onClose={closeQuickAddFieldDialog}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: 16,
-            fontWeight: 700,
-            pb: 1.5,
-          }}
-        >
-          <Box component="span">快速添加字段</Box>
-          <IconButton
-            data-quick-add-field-close="true"
-            aria-label="关闭快速添加字段"
-            size="small"
-            onClick={closeQuickAddFieldDialog}
-          >
-            <CloseRounded fontSize="small" />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ pt: '8px !important' }}>
-          <Stack spacing={2}>
-            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-              <TextField
-                data-quick-add-field-target="true"
-                select
-                size="small"
-                label="添加目标"
-                value={quickAddTargetValue}
-                onChange={(event) => handleQuickAddTargetChange(event.target.value)}
-                sx={{ width: 260 }}
-              >
-                {quickAddTargetOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </TextField>
-            </Stack>
-            <Box
-              data-quick-add-field-table-frame="true"
-              sx={{
-                border: '1px solid #d8dee9',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                bgcolor: '#fff',
-              }}
-            >
-              <Table
-                size="small"
-                sx={{
-                  borderCollapse: 'collapse',
-                  tableLayout: 'fixed',
-                  width: '100%',
-                  '& .MuiTableCell-head': {
-                    bgcolor: '#f8fafc',
-                    color: '#475569',
-                    fontWeight: 700,
-                    fontSize: 13,
-                    height: 34,
-                    lineHeight: '18px',
-                    px: 1.5,
-                    py: 0.5,
-                    border: '1px solid #d8dee9',
-                  },
-                  '& .MuiTableCell-body': {
-                    px: 1.5,
-                    py: 0.75,
-                    border: '1px solid #e2e8f0',
-                    verticalAlign: 'middle',
-                  },
-                }}
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell width={64} align="center">序号</TableCell>
-                    <TableCell width="28%">字段名称</TableCell>
-                    <TableCell width="20%">字段类型</TableCell>
-                    <TableCell>字段说明</TableCell>
-                    <TableCell width={72} align="center">操作</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {quickAddFieldDrafts.map((draft, index) => (
-                    <TableRow key={draft.id} data-quick-add-field-row="true">
-                      <TableCell align="center" sx={{ color: '#64748b', fontWeight: 600 }}>{index + 1}</TableCell>
-                      <TableCell>
-                        <TextField
-                          size="small"
-                          value={draft.name}
-                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { name: event.target.value })}
-                          fullWidth
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          select
-                          size="small"
-                          value={draft.type}
-                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { type: event.target.value as FieldType })}
-                          fullWidth
-                        >
-                          {quickAddFieldTypeOptions.map((fieldType) => (
-                            <MenuItem key={fieldType.type} value={fieldType.type}>{fieldType.label}</MenuItem>
-                          ))}
-                        </TextField>
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          size="small"
-                          value={draft.description}
-                          onChange={(event) => updateQuickAddFieldDraft(draft.id, { description: event.target.value })}
-                          placeholder="字段说明"
-                          fullWidth
-                        />
-                      </TableCell>
-                      <TableCell align="center">
-                        <IconButton
-                          data-quick-add-field-row-remove="true"
-                          size="small"
-                          aria-label="移除"
-                          onClick={() => removeQuickAddFieldDraft(draft.id)}
-                          sx={{ color: '#ef4444' }}
-                        >
-                          <DeleteOutlineRounded fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={closeQuickAddFieldDialog}>取消</Button>
-          <Button
-            variant="contained"
-            onClick={handleConfirmQuickAddFields}
-            disabled={
-              !quickAddFieldDrafts.some((draft) => draft.name.trim())
-              || (quickAddFieldTarget === 'subTable' && !quickAddFieldSubTableId)
-            }
-          >
-            确认添加
-          </Button>
-        </DialogActions>
-      </AppDialog>
+      {renderQuickAddFieldDialog()}
       {renderWordTableContextMenu()}
       <Menu
         data-sheet-sub-table-menu-root="true"

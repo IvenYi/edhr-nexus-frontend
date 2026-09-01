@@ -1,0 +1,52 @@
+knowledgeModelVersion: 0.3.10
+decisions:
+  - id: DEC-0013
+    title: 工单创建即生产准备与审计动作统一投影
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；本决策修订工单创建与发布分离的历史设计。工单创建后保持 CREATED 并可直接拆分生产对象，不再存在 RELEASED 状态或发布动作；对象开工、全部对象终态和工单关闭沿既定生产准备生命周期推进。生产工单及生产对象的数据审计在客户页面统一只展示新增和修改，取消、开工、完成、关闭等生命周期动作归入修改。实现已由后端聚焦测试和前端构建核对。"
+    decisionStatements:
+      - id: DEC-0013-01
+        statement: "provenance: user-confirmed；工单创建和编辑使用 CREATED；创建后即可拆分生产对象，不需要单独发布动作；RELEASED 不是本版本工单生命周期状态。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0013-02
+        statement: "provenance: user-confirmed；首次生产对象开工时，CREATED 工单转为 IN_PROCESS；生产对象全部为 COMPLETED 或 CANCELLED 时，CREATED 或 IN_PROCESS 工单转为 COMPLETED；已完成工单可关闭为 CLOSED；无对象且未开工的 CREATED 工单可取消为 CANCELLED。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0013-03
+        statement: "provenance: user-confirmed；工单和生产对象数据审计的客户动作类别只允许新增和修改；内部 CANCEL、STATUS_CHANGE 或其他生命周期动作不得作为额外动作类别投影，生命周期变更统一归入修改。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0013-04
+        statement: "provenance: user-confirmed；工单详情和数据审计仍保持原有行点击展开及记录追溯交互；制程版本未选时表示空值，选择后可清除，不引入‘暂不选择’业务选项。"
+        status: implemented
+        visibility: internal
+    supersedes: [DEC-0012]
+    evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-service-test, evidence.work-order-page]
+    acceptanceScenarios:
+      - id: scenario.production-work-order-create-direct-split
+        given: 用户创建一个字段有效且状态为 CREATED 的工单
+        when: 用户直接执行生产对象拆分
+        then: 系统允许拆分，不要求发布动作，工单保持 CREATED 直到对象开工或全部对象终态联动
+        evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-service-test, evidence.work-order-page]
+        evidenceRequirements: [创建后直接拆分 API 测试, 页面不显示发布动作]
+      - id: scenario.production-work-order-start-and-terminal-link
+        given: CREATED 工单已存在生产对象
+        when: 首个对象开工，或最后一个对象完成/取消
+        then: 首个对象开工使工单进入 IN_PROCESS；全部对象终态时工单进入 COMPLETED
+        evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-service-test]
+        evidenceRequirements: [状态机转移测试, 对象终态联动测试]
+      - id: scenario.production-audit-action-projection
+        given: 工单或生产对象产生新增、编辑或生命周期审计事件
+        when: 用户打开数据审计列表或详情
+        then: 动作类别只显示“新增”或“修改”；CANCEL、STATUS_CHANGE 不单独显示
+        evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-aspect]
+        evidenceRequirements: [审计动作映射测试, 工单详情审计 UI 验证]
+      - id: scenario.production-process-selection-clear
+        given: 工单或生产对象制程选择器未选择制程
+        when: 用户打开或清除选择器
+        then: 未选择时保持空白，不显示“暂不选择”选项；已有选择可通过清除控件恢复空值
+        evidenceIds: [evidence.work-order-page, evidence.work-orders-api]
+        evidenceRequirements: [制程选择器桌面与窄屏视觉验证, 清除交互验证]
+    implementationDiscrepancies: []

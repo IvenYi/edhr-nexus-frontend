@@ -144,7 +144,7 @@ const PAGE_SIZE = 20;
 const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const TABLE_DATA_ROW_HEIGHT = 40;
 const FIELD_COLUMN_MIN_WIDTH = 80;
-const ACTION_COLUMN_WIDTH = 104;
+const ACTION_COLUMN_WIDTH = 96;
 const BUSINESS_DICTIONARY_COLUMN_WIDTH_STORAGE_PREFIX = 'business-dictionary-column-widths:';
 const BUSINESS_DICTIONARY_COLUMN_SETTINGS_STORAGE_PREFIX = 'business-dictionary-column-settings:';
 const BUSINESS_DICTIONARY_ITEM_COLUMN_WIDTH_STORAGE_PREFIX = 'business-dictionary-item-column-widths:';
@@ -351,7 +351,7 @@ function resolveColumnWidths<T extends string>(widths: Partial<Record<T, number>
   const result = {} as Record<T, number>;
   let total = 0;
   visibleColumns.forEach((column) => {
-    const width = Math.max(column.minWidth, widths[column.id] ?? column.defaultWidth);
+    const width = Math.max(column.minWidth, column.id === 'actions' ? column.defaultWidth : widths[column.id] ?? column.defaultWidth);
     result[column.id] = width;
     total += width;
   });
@@ -962,7 +962,7 @@ export default function BusinessDictionaryPage() {
     if (column.id === 'actions') {
       return (
         <TableCell key={column.id} align="center" sx={sx}>
-          <Stack direction="row" spacing={0.5} justifyContent="center">
+          <Stack direction="row" spacing={0} justifyContent="center">
             <Tooltip title="编辑" arrow>
               <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openDictionaryDialog(dictionary); }}>
                 <Edit fontSize="small" />
@@ -998,7 +998,7 @@ export default function BusinessDictionaryPage() {
     if (column.id === 'actions') {
       return (
         <TableCell key={column.id} align="center" sx={sx}>
-          <Stack direction="row" spacing={0.5} justifyContent="center">
+          <Stack direction="row" spacing={0} justifyContent="center">
             <Tooltip title="编辑" arrow>
               <IconButton size="small" aria-label="编辑" onClick={(event) => { event.stopPropagation(); openItemDialog(item); }}>
                 <Edit fontSize="small" />

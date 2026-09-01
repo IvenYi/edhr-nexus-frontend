@@ -160,9 +160,9 @@ class DatabaseChangelogTest {
     @Test
     void workshopManagementMigrationCreatesTenantScopedMasterDataAndPermission() throws IOException {
         String master = readResource("db/changelog/db.changelog-master.yaml");
-        String migration = readResource("db/changelog/0061-workshop-management.sql");
+        String migration = readResource("db/changelog/0070-workshop-management.sql");
 
-        assertThat(master).contains("0061-workshop-management.sql");
+        assertThat(master).contains("0070-workshop-management.sql");
         assertThat(migration).contains("ADD COLUMN IF NOT EXISTS tenant_id BIGINT");
         assertThat(migration).contains("ADD COLUMN IF NOT EXISTS description VARCHAR(512)");
         assertThat(migration).contains("ADD COLUMN IF NOT EXISTS status VARCHAR(32) NOT NULL DEFAULT 'ACTIVE'");
@@ -176,6 +176,71 @@ class DatabaseChangelogTest {
         assertThat(migration).contains("fk_production_line_workshop");
         assertThat(migration).contains("ON DELETE RESTRICT");
         assertThat(migration).contains("master-data.workshops");
+    }
+
+    @Test
+    void productionWorkOrderMigrationAllowsProcessSelectionToBeDeferredUntilFirstSplit() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String initialMigration = readResource("db/changelog/0061-production-work-order.sql");
+        String lifecycleMigration = readResource("db/changelog/0062-production-object-and-work-order-lifecycle.sql");
+
+        assertThat(master).contains("0061-production-work-order.sql");
+        assertThat(master).contains("0062-production-object-and-work-order-lifecycle.sql");
+        assertThat(master).contains("0063-production-work-order-permission.sql");
+        assertThat(initialMigration).contains("process_version_id BIGINT,");
+        assertThat(initialMigration).contains("production_mode VARCHAR(32) DEFAULT '量产',");
+        assertThat(initialMigration).contains("production_form VARCHAR(32),");
+        assertThat(lifecycleMigration).contains("ALTER TABLE work_order ALTER COLUMN process_version_id DROP NOT NULL");
+        assertThat(lifecycleMigration).contains("ALTER TABLE work_order ALTER COLUMN production_mode DROP NOT NULL");
+        assertThat(lifecycleMigration).contains("ALTER TABLE work_order ALTER COLUMN production_form DROP NOT NULL");
+    }
+
+    @Test
+    void productionWorkOrderLegacyTablePreparationRunsBeforeTheImmutableInitialMigration() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String preparationMigration = readResource("db/changelog/0060a-work-order-legacy-table-preparation.sql");
+        String initialMigration = readResource("db/changelog/0061-production-work-order.sql");
+
+        assertThat(master).contains("0060a-work-order-legacy-table-preparation.sql");
+        assertThat(master.indexOf("0060a-work-order-legacy-table-preparation.sql"))
+                .isLessThan(master.indexOf("0061-production-work-order.sql"));
+        assertThat(preparationMigration).contains("--preconditions onFail:MARK_RAN");
+        assertThat(preparationMigration).contains("ALTER TABLE work_order ADD COLUMN IF NOT EXISTS order_no VARCHAR(64)");
+        assertThat(preparationMigration).contains("UPDATE work_order SET order_no = code");
+        assertThat(preparationMigration).contains("ALTER TABLE work_order ADD COLUMN IF NOT EXISTS planned_quantity DECIMAL(15, 4)");
+        assertThat(initialMigration).doesNotContain("splitStatements:false");
+        assertThat(initialMigration).doesNotContain("ALTER TABLE work_order ADD COLUMN IF NOT EXISTS order_no VARCHAR(64)");
+        assertThat(initialMigration).contains("--validCheckSum: 9:bbd3eb646e53db103d3d4f5c50fc053d");
+    }
+
+    @Test
+    void productionWorkOrderLegacyConstraintMigrationAllowsCurrentEntityInserts() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0069-work-order-legacy-column-constraints.sql");
+
+        assertThat(master).contains("0069-work-order-legacy-column-constraints.sql");
+        assertThat(migration).contains("splitStatements:false");
+        assertThat(migration).contains("ALTER TABLE work_order ALTER COLUMN code DROP NOT NULL");
+    }
+
+    @Test
+    void productionBatchManagementPermissionMigrationIsIncludedAndAssignedToAdmin() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0067-production-batch-management-permission.sql");
+
+        assertThat(master).contains("0067-production-batch-management-permission.sql");
+        assertThat(migration).contains("'production.batches'");
+        assertThat(migration).contains("'批次管理'");
+        assertThat(migration).contains("WHERE r.code = 'ADMIN'");
+    }
+
+    @Test
+    void productionObjectEarlyTerminationMigrationIsIncluded() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0068-production-object-early-termination.sql");
+
+        assertThat(master).contains("0068-production-object-early-termination.sql");
+        assertThat(migration).contains("termination_reason", "termination_at");
     }
 
     private String readResource(String path) throws IOException {

@@ -68,6 +68,15 @@ const REQUIRED_PRODUCTION_CONFIGURATION_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
+  label: '生产准备',
+  icon: 'Assignment',
+  children: [
+    { label: '工单管理', path: '/production/work-orders' },
+    { label: '批次管理', path: '/production/batches' },
+  ],
+};
+
 const PROCESS_MODELING_PATHS = new Set(REQUIRED_PROCESS_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const TEMPLATE_MODELING_PATHS = new Set(REQUIRED_TEMPLATE_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const FACTORY_MODELING_PATHS = new Set(REQUIRED_FACTORY_MODELING_MENU.children?.map((child) => child.path) ?? []);
@@ -78,6 +87,8 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/workflow/work-templates',
   '/workflow/binding-rules',
   '/production/work-templates',
+  '/production/work-orders',
+  '/production/batches',
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -281,14 +292,14 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
   }
 
   productionModule.menus = productionModule.menus.filter(
-    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置',
+    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置' && menu.label !== '生产准备',
   );
   productionModule.menus.unshift(
     ...cloneSidebarModules([{
       id: 'production',
       label: '生产',
       icon: 'PrecisionManufacturing',
-      menus: [REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
+      menus: [REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
     }])[0].menus,
   );
 }
@@ -373,6 +384,8 @@ export function useManagedSidebarModules(): SidebarModule[] {
 export function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
   if (path === '/production/work-templates') return 'workflow.work-templates';
+  if (path === '/production/work-orders') return 'production.work-orders';
+  if (path === '/production/batches') return 'production.batches';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

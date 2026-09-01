@@ -1739,7 +1739,24 @@ const FlowWorkspace = forwardRef<FlowWorkspaceHandle, {
         <Box><Typography variant="caption" color="text.secondary">节点类型</Typography><Typography variant="body2" sx={{ mt: 0.5 }}>{nodeAppearance[selectedKind ?? 'FORM'].label}</Typography></Box>
         {selectedKind !== 'START' && selectedKind !== 'END' ? <TextField size="small" label="节点名称" value={selectedNode.data.label || ''} onChange={(event) => updateSelectedNode({ label: event.target.value })} disabled={!editable} fullWidth /> : null}
         {selectedKind === 'FORM' ? <>
-          <Box ref={formPickerAnchorRef} sx={{ position: 'relative' }}>
+          <Box
+            ref={formPickerAnchorRef}
+            className={selectedFormOption ? 'has-value' : undefined}
+            sx={{
+              position: 'relative',
+              '& .form-picker-end-adornment': {
+                position: 'absolute', right: 4, top: '50%', transform: 'translateY(-50%)', margin: 0,
+                zIndex: 2, pointerEvents: 'none',
+              },
+              '& .form-picker-clear-button': {
+                opacity: 0, pointerEvents: 'none', color: '#909399', transition: 'opacity 120ms ease',
+              },
+              '& .form-picker-expand-icon': { transition: 'opacity 120ms ease' },
+              '&.has-value:hover .form-picker-expand-icon, &.has-value:focus-within .form-picker-expand-icon': { opacity: 0 },
+              '&.has-value:hover .form-picker-clear-button, &.has-value:focus-within .form-picker-clear-button': { opacity: 0.55, pointerEvents: 'auto' },
+              '& .form-picker-clear-button:hover': { opacity: 0.85 },
+            }}
+          >
             <TextField
               size="small"
               required
@@ -1754,9 +1771,9 @@ const FlowWorkspace = forwardRef<FlowWorkspaceHandle, {
               onChange={(event) => { setFormPickerSearch(event.target.value); setFormPickerOpen(true); }}
               InputProps={{
                 readOnly: Boolean(selectedFormOption),
-                endAdornment: <InputAdornment position="end">
-                  {selectedFormOption ? <Tooltip title="清除引用" arrow><IconButton size="small" aria-label="清除引用业务单据" onMouseDown={(event) => event.stopPropagation()} onClick={() => { setValidationError(null); updateSelectedNode({ config: { formTemplateVersionId: '', formTemplateName: '' } }); setFormPickerSearch(''); setFormPickerOpen(true); }}><Close fontSize="small" /></IconButton></Tooltip> : null}
-                  <ExpandMore sx={{ transform: formPickerOpen ? 'rotate(180deg)' : 'none', transition: 'transform .15s' }} />
+                endAdornment: <InputAdornment position="end" className="form-picker-end-adornment">
+                  {selectedFormOption ? <Tooltip title="清除引用" arrow><IconButton className="form-picker-clear-button" size="small" aria-label="清除引用业务单据" onMouseDown={(event) => event.stopPropagation()} onClick={() => { setValidationError(null); updateSelectedNode({ config: { formTemplateVersionId: '', formTemplateName: '' } }); setFormPickerSearch(''); setFormPickerOpen(true); }}><Close fontSize="small" /></IconButton></Tooltip> : null}
+                  <ExpandMore className="form-picker-expand-icon" sx={{ transform: formPickerOpen ? 'rotate(180deg)' : 'none' }} />
                 </InputAdornment>,
               }}
             />

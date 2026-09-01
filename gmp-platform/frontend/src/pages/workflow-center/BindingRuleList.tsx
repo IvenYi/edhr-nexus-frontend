@@ -14,6 +14,7 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Tooltip,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -93,7 +94,7 @@ export default function BindingRuleList() {
       </Box>
       <TableContainer>
         <Table>
-          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>名称</TableCell><TableCell>业务类型</TableCell><TableCell>流程模板</TableCell><TableCell>优先级</TableCell><TableCell>描述</TableCell><TableCell>操作</TableCell></TableRow></TableHead>
+          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>名称</TableCell><TableCell>业务类型</TableCell><TableCell>流程模板</TableCell><TableCell>优先级</TableCell><TableCell>描述</TableCell><TableCell align="center" sx={{ width: 96, minWidth: 96 }}>操作</TableCell></TableRow></TableHead>
           <TableBody>
             {isLoading ? <TableRow><TableCell colSpan={7} align="center"><CircularProgress size={24} /></TableCell></TableRow>
             : isError ? <TableRow><TableCell colSpan={7} align="center">加载失败</TableCell></TableRow>
@@ -102,9 +103,9 @@ export default function BindingRuleList() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.name}</TableCell><TableCell>{item.businessType}</TableCell>
                 <TableCell>{item.templateName}</TableCell><TableCell>{item.priority}</TableCell><TableCell>{item.description}</TableCell>
-                <TableCell>
-                  <IconButton size="small" onClick={() => handleEdit(item)}><Edit /></IconButton>
-                  <IconButton size="small" color="error" onClick={() => setDeleteConfirm(item.id)}><Delete /></IconButton>
+                <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>
+                  <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => handleEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip>
+                  <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteConfirm(item.id)}><Delete fontSize="small" /></IconButton></Tooltip>
                 </TableCell>
               </TableRow>
             ))}

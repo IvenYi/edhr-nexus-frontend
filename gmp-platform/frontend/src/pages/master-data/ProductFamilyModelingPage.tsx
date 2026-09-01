@@ -80,7 +80,7 @@ import ProductProcessVersionEditorDialog, {
 
 const PAGE_SIZE = 20;
 const COLUMN_STORAGE_KEY = "product-family-modeling-parent-columns:v1";
-const ACTION_COLUMN_WIDTH = 176;
+const ACTION_COLUMN_WIDTH = 160;
 
 type ProductFamilyColumnId =
   | "name"
@@ -116,6 +116,21 @@ const tableHeaderCellSx = {
   py: 0,
   borderBottom: "1px solid #e4e7ed",
 };
+
+function operationColumnSx(width: number, layer: "head" | "body") {
+  return {
+    position: "sticky" as const,
+    right: 0,
+    zIndex: layer === "head" ? 10 : 6,
+    width,
+    minWidth: width,
+    maxWidth: width,
+    bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
+    backgroundClip: "padding-box",
+    boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+    whiteSpace: "nowrap",
+  };
+}
 const tableRowSx = {
   "& > .MuiTableCell-root": {
     height: 40,
@@ -681,6 +696,7 @@ export default function ProductFamilyModelingPage() {
                       ...tableHeaderCellSx,
                       width: column.width,
                       minWidth: column.width,
+                      ...(column.id === "actions" ? operationColumnSx(ACTION_COLUMN_WIDTH, "head") : {}),
                     }}
                   >
                     {column.label}
@@ -999,7 +1015,7 @@ function ProductFamilyTreeRows({
             key={column.id}
             align="center"
             onClick={(event) => event.stopPropagation()}
-            sx={{ whiteSpace: "nowrap" }}
+            sx={operationColumnSx(ACTION_COLUMN_WIDTH, "body")}
           >
             <Box
               sx={{
@@ -1007,7 +1023,7 @@ function ProductFamilyTreeRows({
                 flexWrap: "nowrap",
                 justifyContent: "center",
                 alignItems: "center",
-                gap: 0.25,
+                gap: 0,
               }}
             >
               <Tooltip title="产品成员" arrow>
@@ -1114,7 +1130,7 @@ function ProductFamilyTreeRows({
                       </TableCell>
                       <TableCell
                         align="center"
-                        sx={{ ...tableHeaderCellSx, width: 116 }}
+                        sx={{ ...tableHeaderCellSx, ...operationColumnSx(128, "head") }}
                       >
                         操作
                       </TableCell>
@@ -1162,6 +1178,7 @@ function ProductFamilyTreeRows({
                         <TableCell
                           align="center"
                           onClick={(event) => event.stopPropagation()}
+                          sx={operationColumnSx(128, "body")}
                         >
                           <Tooltip title="编辑" arrow>
                             <IconButton

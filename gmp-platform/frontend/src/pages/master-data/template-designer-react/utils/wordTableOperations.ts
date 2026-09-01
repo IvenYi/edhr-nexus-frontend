@@ -156,6 +156,17 @@ export function mergeWordTableCells(table: CanvasWordTableBlock, range: WordTabl
   if (!isMergeableWordTableRange(table, range)) return table;
   const anchor = findCellAt(table, range.top, range.left);
   if (!anchor) return table;
+  const mergedText = table.cells
+    .filter((cell) => (
+      cell.row >= range.top
+      && cell.row + cell.rowSpan - 1 <= range.bottom
+      && cell.col >= range.left
+      && cell.col + cell.colSpan - 1 <= range.right
+    ))
+    .sort((first, second) => first.row - second.row || first.col - second.col)
+    .map((cell) => cell.text.trim())
+    .filter(Boolean)
+    .join('\n');
   const cells = table.cells
     .filter((cell) => (
       cell.row < range.top
@@ -165,6 +176,7 @@ export function mergeWordTableCells(table: CanvasWordTableBlock, range: WordTabl
     ))
     .concat({
       ...anchor,
+      text: mergedText,
       row: range.top,
       col: range.left,
       rowSpan: range.bottom - range.top + 1,
