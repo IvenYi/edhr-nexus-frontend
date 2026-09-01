@@ -140,6 +140,44 @@ function isSameWordTableCellRange(first: WordTableCellRange, second: WordTableCe
     && first.focus.col === second.focus.col;
 }
 
+function getCompleteWordTableSelectionRange(
+  table: CanvasWordTableBlock,
+  ranges: WordTableCellRange[],
+): WordTableRange | null {
+  const selectedCells = table.cells.filter((cell) => ranges.some((range) => isWordTableCellInRange(cell, range)));
+  if (!selectedCells.length) return null;
+
+  const range = selectedCells.reduce<WordTableRange>((bounds, cell) => ({
+    top: Math.min(bounds.top, cell.row),
+    left: Math.min(bounds.left, cell.col),
+    bottom: Math.max(bounds.bottom, cell.row + cell.rowSpan - 1),
+    right: Math.max(bounds.right, cell.col + cell.colSpan - 1),
+  }), {
+    top: selectedCells[0].row,
+    left: selectedCells[0].col,
+    bottom: selectedCells[0].row + selectedCells[0].rowSpan - 1,
+    right: selectedCells[0].col + selectedCells[0].colSpan - 1,
+  });
+  const selectedCellIds = new Set(selectedCells.map((cell) => cell.id));
+
+  const coversEveryCell = table.cells.every((cell) => {
+    const cellBottom = cell.row + cell.rowSpan - 1;
+    const cellRight = cell.col + cell.colSpan - 1;
+    const intersects = cell.row <= range.bottom
+      && cellBottom >= range.top
+      && cell.col <= range.right
+      && cellRight >= range.left;
+    if (!intersects) return true;
+    return selectedCellIds.has(cell.id)
+      && cell.row >= range.top
+      && cellBottom <= range.bottom
+      && cell.col >= range.left
+      && cellRight <= range.right;
+  });
+
+  return coversEveryCell ? range : null;
+}
+
 const quickAddFieldTypeOptions = fieldRegistry.filter((field) => field.type !== 'subTable');
 
 function normalizeQuickAddSubTableFields(columns: unknown): ModelField[] {
@@ -1746,13 +1784,17 @@ export default function CanvasSheetWorkspace() {
     const cell = table.cells.find((candidate) => candidate.id === wordTableContextMenu.cellId)
       ?? wordTableContextMenu.cell;
 
-    const activeRange = wordTableCellRange?.blockId === table.id
-      ? getWordTableRangeBounds(wordTableCellRange)
-      : null;
+    const activeCellRange = wordTableCellRange?.blockId === table.id ? wordTableCellRange : null;
+    const selectedRanges = [
+      ...(activeCellRange ? [activeCellRange] : []),
+      ...wordTableAdditionalCellRanges.filter((range) => range.blockId === table.id),
+    ];
+    const activeRange = activeCellRange ? getWordTableRangeBounds(activeCellRange) : null;
+    const completeSelectionRange = getCompleteWordTableSelectionRange(table, selectedRanges);
     return {
       table,
       cell,
-      range: activeRange ?? {
+      range: completeSelectionRange ?? activeRange ?? {
         top: cell.row,
         left: cell.col,
         bottom: cell.row + cell.rowSpan - 1,

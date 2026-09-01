@@ -238,6 +238,7 @@ async function verifyWordTableContextMenuOperations() {
 
   const merged = mergeWordTableCells(table, { top: 1, left: 1, bottom: 2, right: 2 });
   assert(merged.cells.length === 6 && merged.cells.some((cell) => cell.id === 'cell-1-1' && cell.rowSpan === 2 && cell.colSpan === 2), 'wordTableOperations.ts: merging a selected rectangular range must create one spanning anchor cell');
+  assert(merged.cells.find((cell) => cell.id === 'cell-1-1')?.text === '1:1\n1:2\n2:1\n2:2', 'wordTableOperations.ts: merging cells must retain non-empty content in row-column order');
   const split = splitWordTableCell(merged, 1, 1);
   assert(split.cells.length === 9 && split.cells.every((cell) => cell.rowSpan === 1 && cell.colSpan === 1), 'wordTableOperations.ts: splitting a merged cell must restore individual editable cells');
 
@@ -2410,6 +2411,8 @@ if (!canvasWorkspace.includes('data-word-table-cell-id=')) failures.push('Canvas
 if (!canvasWorkspace.includes('isWordTableCellInRange')) failures.push('CanvasSheetWorkspace.tsx: Word table cells must render rectangular multi-cell selections');
 if (!canvasWorkspace.includes('wordTableAdditionalCellRanges')) failures.push('CanvasSheetWorkspace.tsx: Word tables must retain Command-added discrete cell selections');
 if (!canvasWorkspace.includes('const isAdditiveSelection = (event.metaKey || event.ctrlKey) && !event.altKey;')) failures.push('CanvasSheetWorkspace.tsx: Command or Ctrl clicking a Word-table cell must start additive selection');
+if (!canvasWorkspace.includes('function getCompleteWordTableSelectionRange(')) failures.push('CanvasSheetWorkspace.tsx: Word-table merge must derive a complete range from Command-added cells');
+if (!canvasWorkspace.includes('getCompleteWordTableSelectionRange(table, selectedRanges)')) failures.push('CanvasSheetWorkspace.tsx: Word-table context actions must use a complete multi-cell selection range');
 if (!canvasWorkspace.includes('data-word-table-context-action="quick-add-fields"')) failures.push('CanvasSheetWorkspace.tsx: Word-table right-click menus must expose quick field creation');
 if (!canvasWorkspace.includes('handleOpenWordTableQuickAddFields')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must use the selected table cells');
 if (!canvasWorkspace.includes('handleOpenWordTableQuickAddFields(context)')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must retain the clicked menu context');
