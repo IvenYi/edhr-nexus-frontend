@@ -19,6 +19,7 @@ import { createCommonDisplayNode, type CommonDisplayComponentId } from '../regis
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { createDefaultSubTableRegion, inferFixedRepeatCount, rebuildSubTableRecordTemplate } from '../utils/subTableRegion';
+import { encodeWordTableFieldMarker, removeWordTableFieldMarker } from '../utils/wordTableInlineContent';
 
 type MoveDirection = 'up' | 'down';
 
@@ -28,6 +29,15 @@ interface FieldCellLayout {
   width: number;
   height: number;
   range?: CanvasSelectionRange;
+}
+
+interface WordTableFieldCellLayout extends FieldCellLayout {
+  wordTableCell: {
+    blockId: string;
+    cellId: string;
+  };
+  cellText?: string;
+  inlineOffset?: number;
 }
 
 interface CreateFieldInput {
@@ -1790,6 +1800,7 @@ export interface TemplateDesignerStore {
   addFreeCanvasComponent: (componentId: CommonDisplayComponentId, position: { left: number; top: number }) => void;
   addNodeFromField: (fieldId: string, parentId?: string | null) => void;
   addNodeFromFieldToCell: (fieldId: string, layout: FieldCellLayout) => void;
+  addNodeFromFieldToWordTableCell: (fieldId: string, layout: WordTableFieldCellLayout) => void;
   addNodeFromSubTableFieldToCell: (subTableId: string, field: ModelField, layout: FieldCellLayout) => void;
   addNodeFromFieldToRange: (fieldId: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => void;
   addSubTableRegionFromFieldToRange: (fieldId: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => void;
@@ -2262,6 +2273,52 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedNodeId: node.id,
     }));
   },
+  addNodeFromFieldToWordTableCell: (fieldId, layout) => {
+    const field = get().getFieldById(fieldId);
+    const availableFields = get().getAvailableFieldsForCurrentVersion();
+    if (!field || field.status !== 'enabled' || field.type === 'subTable' || !availableFields.some((item) => item.id === field.id)) return;
+    const node = createBoundNodeFromField(field, layout);
+    node.style = {
+      ...node.style,
+      cellRange: undefined,
+      wordTableCell: layout.wordTableCell,
+    };
+    set((state) => pushDocumentHistory(state, {
+      document: state.document
+        ? updateCanvasPage(state.document, (page) => {
+            const text = layout.cellText;
+            const inlineOffset = Math.max(0, Math.min(layout.inlineOffset ?? text?.length ?? 0, text?.length ?? 0));
+            const wordDocument = text === undefined || !page.wordDocument
+              ? page.wordDocument
+              : {
+                  ...page.wordDocument,
+                  blocks: page.wordDocument.blocks.map((block) => (
+                    block.id === layout.wordTableCell.blockId && block.type === 'table'
+                      ? {
+                          ...block,
+                          cells: block.cells.map((cell) => (
+                            cell.id === layout.wordTableCell.cellId
+                              ? {
+                                  ...cell,
+                                  text: `${text.slice(0, inlineOffset)}${encodeWordTableFieldMarker(node.id)}${text.slice(inlineOffset)}`,
+                                }
+                              : cell
+                          )),
+                        }
+                      : block
+                  )),
+                };
+            return {
+              ...page,
+              wordDocument,
+              // Word-table cells may intentionally contain multiple independent fields.
+              nodes: [...page.nodes, node],
+            };
+          })
+        : state.document,
+      selectedNodeId: node.id,
+    }));
+  },
   addNodeFromSubTableFieldToCell: (subTableId, field, layout) => {
     if (!field || field.status !== 'enabled' || field.type === 'subTable') return;
     const node = createBoundNodeFromSubTableField(subTableId, field, layout);
@@ -2606,6 +2663,22 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     document: state.document
       ? updateCanvasPage(state.document, (page) => ({
           ...page,
+          wordDocument: page.wordDocument
+            ? {
+                ...page.wordDocument,
+                blocks: page.wordDocument.blocks.map((block) => (
+                  block.type === 'table'
+                    ? {
+                        ...block,
+                        cells: block.cells.map((cell) => ({
+                          ...cell,
+                          text: removeWordTableFieldMarker(cell.text, nodeId),
+                        })),
+                      }
+                    : block
+                )),
+              }
+            : undefined,
           nodes: reconcileSubTableRegionTemplates(removeNodeAndSubTableFieldsFromTree(page.nodes, nodeId)),
         }))
       : state.document,

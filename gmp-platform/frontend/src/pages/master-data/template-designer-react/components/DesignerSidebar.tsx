@@ -240,8 +240,13 @@ export default function DesignerSidebar() {
         const dropCell = findFieldDropCellAtPoint(ownerDocument, clientX, clientY);
         const row = Number(dropCell?.getAttribute('data-sheet-cell-row'));
         const col = Number(dropCell?.getAttribute('data-sheet-cell-col'));
+        const wordTableBlockId = dropCell?.getAttribute('data-word-table-block-id');
+        const wordTableCellId = dropCell?.getAttribute('data-word-table-cell-id');
 
-        if (dropCell && Number.isFinite(row) && Number.isFinite(col)) {
+        if (dropCell && (
+          (Number.isFinite(row) && Number.isFinite(col))
+          || (wordTableBlockId && wordTableCellId)
+        )) {
           const EventCtor = ownerDocument.defaultView?.CustomEvent ?? CustomEvent;
           ownerDocument.dispatchEvent(new EventCtor(FIELD_POINTER_DROP_EVENT, {
             detail: {
@@ -250,6 +255,8 @@ export default function DesignerSidebar() {
               subTableField: currentDrag.subTableField,
               row,
               col,
+              wordTableBlockId,
+              wordTableCellId,
             },
           }));
         }

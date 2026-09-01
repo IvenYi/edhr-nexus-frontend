@@ -1,5 +1,6 @@
 import type { DragEvent as ReactDragEvent, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import {
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
@@ -35,6 +36,7 @@ import CanvasDropZone from './CanvasDropZone';
 import CanvasNodeRenderer from './CanvasNodeRenderer';
 import type { CanvasCellBorder, CanvasNode, CanvasPage, CanvasSelectedCell, CanvasSelectionRange, CanvasSheetCell, CanvasWordDocument, CanvasWordTableBlock, FieldType, ModelField } from '../../types';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
+import { getComponentDefinition } from '../../registry/componentRegistry';
 import { fieldRegistry } from '../../registry/fieldRegistry';
 import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
 import { createCommonWordTableBlock, type CommonCanvasComponentId } from '../../registry/commonComponentRegistry';
@@ -49,6 +51,11 @@ import {
   type WordTableRange,
 } from '../../utils/wordTableOperations';
 import { constrainWordTableToCanvas, getWordTableEffectiveLayout, snapWordTableLayout } from '../../utils/wordTableLayout';
+import {
+  decodeWordTableCellContent,
+  insertWordTableFieldAtDropPosition,
+  serializeWordTableCellContent,
+} from '../../utils/wordTableInlineContent';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { useWordTableCellStyle } from './WordTableCellStyleContext';
 
@@ -304,8 +311,10 @@ interface FieldPointerDropDetail {
   fieldId: string;
   subTableId?: string;
   subTableField?: ModelField;
-  row: number;
-  col: number;
+  row?: number;
+  col?: number;
+  wordTableBlockId?: string | null;
+  wordTableCellId?: string | null;
 }
 
 interface SubTableFieldDragData {
@@ -1253,6 +1262,7 @@ export default function CanvasSheetWorkspace() {
   const addFields = useTemplateDesignerStore((state) => state.addFields);
   const addSubTableFields = useTemplateDesignerStore((state) => state.addSubTableFields);
   const addNodeFromFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToCell);
+  const addNodeFromFieldToWordTableCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToWordTableCell);
   const addNodeFromSubTableFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromSubTableFieldToCell);
   const addNodeFromFieldToRange = useTemplateDesignerStore((state) => state.addNodeFromFieldToRange);
   const setSubTableRecordTemplateFromRange = useTemplateDesignerStore((state) => state.setSubTableRecordTemplateFromRange);
@@ -1999,12 +2009,31 @@ export default function CanvasSheetWorkspace() {
       event.preventDefault();
       event.stopPropagation();
       selectWordTable(block.id, true);
-      setWordTableAdditionalCellRanges((ranges) => {
-        const withPreviousActiveRange = currentRange && !isSameWordTableCellRange(currentRange, nextSingleCellRange)
-          ? [...ranges, currentRange]
-          : ranges;
-        return withPreviousActiveRange.filter((range) => !isSameWordTableCellRange(range, nextSingleCellRange));
-      });
+      const selectedRanges = [
+        ...wordTableAdditionalCellRanges.filter((range) => range.blockId === block.id),
+        ...(currentRange ? [currentRange] : []),
+      ];
+      const isAlreadySelected = selectedRanges.some((range) => isSameWordTableCellRange(range, nextSingleCellRange));
+      if (isAlreadySelected) {
+        const remainingRanges = selectedRanges.filter((range) => !isSameWordTableCellRange(range, nextSingleCellRange));
+        const nextActiveRange = remainingRanges.pop() ?? null;
+        setWordTableAdditionalCellRanges(remainingRanges);
+        setWordTableCellRange(nextActiveRange);
+        setWordTableCellStyleTarget(nextActiveRange
+          ? {
+              blockId: block.id,
+              range: {
+                top: Math.min(nextActiveRange.anchor.row, nextActiveRange.focus.row),
+                left: Math.min(nextActiveRange.anchor.col, nextActiveRange.focus.col),
+                bottom: Math.max(nextActiveRange.anchor.row, nextActiveRange.focus.row),
+                right: Math.max(nextActiveRange.anchor.col, nextActiveRange.focus.col),
+              },
+            }
+          : null);
+        return;
+      }
+
+      setWordTableAdditionalCellRanges(selectedRanges);
       setWordTableCellRange(nextSingleCellRange);
       setWordTableCellStyleTarget({
         blockId: block.id,
@@ -2561,6 +2590,63 @@ export default function CanvasSheetWorkspace() {
     };
   };
   const getFieldDropCellLayout = (range: CanvasSelectionRange) => getGridOffsetCellLayout(range);
+  const getWordTableFieldCellLayout = (blockId: string, cellId: string) => {
+    const table = currentPage?.wordDocument?.blocks.find((block): block is CanvasWordTableBlock => (
+      block.id === blockId && block.type === 'table'
+    ));
+    const cell = table?.cells.find((candidate) => candidate.id === cellId);
+    if (!table || !cell) return null;
+
+    const constrainedTable = constrainWordTableToCanvas(table, paperWorkingWidth);
+    const columnOffsets = buildOffsets(constrainedTable.columnWidths);
+    const rowOffsets = buildOffsets(constrainedTable.rowHeights);
+    return {
+      left: constrainedTable.layout.left + (columnOffsets[cell.col - 1] ?? 0),
+      top: constrainedTable.layout.top + (rowOffsets[cell.row - 1] ?? 0),
+      width: getWordTableSpanSize(constrainedTable.columnWidths, cell.col, cell.colSpan),
+      height: getWordTableSpanSize(constrainedTable.rowHeights, cell.row, cell.rowSpan),
+      textAlign: String(cell.style?.textAlign ?? 'left'),
+      verticalAlign: String(cell.style?.verticalAlign ?? 'middle'),
+      paddingLeft: resolveNumericStyle(cell.style?.paddingLeft, 8),
+      paddingRight: resolveNumericStyle(cell.style?.paddingRight, resolveNumericStyle(cell.style?.paddingLeft, 8)),
+      paddingTop: resolveNumericStyle(cell.style?.paddingTop, 4),
+      paddingBottom: resolveNumericStyle(cell.style?.paddingBottom, resolveNumericStyle(cell.style?.paddingTop, 4)),
+      wordTableCell: { blockId, cellId },
+    };
+  };
+  const addDroppedFieldToWordTableCell = (
+    fieldId: string,
+    blockId: string,
+    cellId: string,
+    inlineContent?: { text: string; offset: number },
+  ) => {
+    const field = getFieldById(fieldId);
+    const layout = getWordTableFieldCellLayout(blockId, cellId);
+    if (!layout || field?.type === 'subTable') {
+      if (field?.type === 'subTable') showMessage('子表字段不能放入自由表格单元格', 'error');
+      return;
+    }
+    addNodeFromFieldToWordTableCell(fieldId, {
+      ...layout,
+      cellText: inlineContent?.text,
+      inlineOffset: inlineContent?.offset,
+    });
+  };
+  const handleFieldDropOnWordTableCell = (
+    event: ReactDragEvent<HTMLElement>,
+    target: { blockId: string; cellId: string },
+  ) => {
+    const fieldId = event.dataTransfer.getData('application/x-template-designer-field');
+    if (!fieldId) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = 'copy';
+    const content = event.currentTarget.querySelector<HTMLElement>('[data-word-table-cell-content="true"]');
+    const inlineContent = content
+      ? insertWordTableFieldAtDropPosition(content, event.clientX, event.clientY)
+      : undefined;
+    addDroppedFieldToWordTableCell(fieldId, target.blockId, target.cellId, inlineContent);
+  };
   const renderSubTableOverlays = () => {
     if (!currentPage) return null;
 
@@ -2951,6 +3037,11 @@ export default function CanvasSheetWorkspace() {
     };
     const handlePointerFieldDrop = (event: Event) => {
       const detail = (event as CustomEvent<FieldPointerDropDetail>).detail;
+      if (detail?.fieldId && detail.wordTableBlockId && detail.wordTableCellId) {
+        setFieldDropGuideRange(null);
+        addDroppedFieldToWordTableCell(detail.fieldId, detail.wordTableBlockId, detail.wordTableCellId);
+        return;
+      }
       const row = Number(detail?.row);
       const col = Number(detail?.col);
       if (!detail?.fieldId || !Number.isInteger(row) || !Number.isInteger(col)) return;
@@ -2989,7 +3080,7 @@ export default function CanvasSheetWorkspace() {
       ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
       ownerDocument.removeEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
     };
-  }, [addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
+  }, [addDroppedFieldToWordTableCell, addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
   useEffect(() => {
     cancelHoveredSubTableUpdate();
     setHoveredSubTableNodeId(null);
@@ -4566,6 +4657,10 @@ export default function CanvasSheetWorkspace() {
             const selected = selectedWordTableBlockId === block.id;
             const selectedCellRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
             const additionalWordTableCellRanges = wordTableAdditionalCellRanges.filter((range) => range.blockId === block.id);
+            const getWordTableCellFieldNodes = (cellId: string) => currentPage.nodes.filter((node) => {
+              const target = node.style.wordTableCell as { blockId?: unknown; cellId?: unknown } | undefined;
+              return node.bindings?.fieldId && target?.blockId === block.id && target.cellId === cellId;
+            });
             const outerRightBorderCells = block.cells.filter((cell) => (
               cell.col + cell.colSpan - 1 >= tableColumnWidths.length
               && shouldRenderWordTableOuterBorder('right', cell, usesLegacyWordTableBorders)
@@ -4734,13 +4829,26 @@ export default function CanvasSheetWorkspace() {
                 {block.cells.map((cell) => {
                   const isRangeSelected = isWordTableCellInRange(cell, selectedCellRange)
                     || additionalWordTableCellRanges.some((range) => isWordTableCellInRange(cell, range));
+                  const cellFieldNodes = getWordTableCellFieldNodes(cell.id);
+                  const cellInlineContent = decodeWordTableCellContent(cell.text, cellFieldNodes.map((node) => node.id));
+                  const placedFieldNodeIds = new Set(cellInlineContent.flatMap((segment) => (
+                    segment.type === 'field' ? [segment.nodeId] : []
+                  )));
                   return (
                     <Box
                       key={cell.id}
+                      data-canvas-field-drop-cell="true"
+                      data-word-table-field-drop-cell="true"
                       data-word-table-cell="true"
                       data-word-table-cell-id={cell.id}
                       data-word-table-block-id={block.id}
                       data-word-table-diagonal={cell.diagonalTopLeftToBottomRight || cell.diagonalTopRightToBottomLeft ? 'true' : undefined}
+                      onDragOver={(event) => {
+                        if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = 'copy';
+                      }}
+                      onDrop={(event) => handleFieldDropOnWordTableCell(event, { blockId: block.id, cellId: cell.id })}
                       onPointerDownCapture={(event: ReactPointerEvent<HTMLDivElement>) => {
                         // ContentEditable may consume a secondary pointer event before the bubbling
                         // handler runs. Capture it at the cell boundary so the custom menu is reliable.
@@ -4810,6 +4918,7 @@ export default function CanvasSheetWorkspace() {
                       } as SxProps<Theme>}
                     >
                       <Box
+                        data-word-table-cell-field-flow="true"
                         data-word-table-cell-content="true"
                         contentEditable
                         suppressContentEditableWarning
@@ -4833,11 +4942,11 @@ export default function CanvasSheetWorkspace() {
                           insertContentEditableLineBreak(event.currentTarget);
                         }}
                         onBlur={(event: ReactFocusEvent<HTMLDivElement>) => {
-                          updateWordTableCellText(block.id, cell.id, serializeContentEditableLineBreaks(event.currentTarget));
+                          if (event.currentTarget.contains(event.relatedTarget)) return;
+                          updateWordTableCellText(block.id, cell.id, serializeWordTableCellContent(event.currentTarget));
                         }}
                         sx={{
                           width: '100%',
-                          maxWidth: '100%',
                           minWidth: 0,
                           minHeight: '1em',
                           outline: 'none',
@@ -4846,7 +4955,41 @@ export default function CanvasSheetWorkspace() {
                           overflowWrap: 'anywhere',
                         } as SxProps<Theme>}
                       >
-                        {cell.text}
+                        {cellInlineContent.map((segment, index) => {
+                          if (segment.type === 'text') return <Fragment key={`text-${index}`}>{segment.text}</Fragment>;
+                          const node = cellFieldNodes.find((candidate) => candidate.id === segment.nodeId);
+                          if (!node) return null;
+                          const Renderer = getComponentDefinition(node.type).renderDesigner;
+                          return (
+                            <Renderer
+                              key={`${node.id}-${index}`}
+                              node={node}
+                              selected={node.id === selectedNodeId}
+                              onSelect={() => {
+                                selectWordTable(block.id, true);
+                                setSelectedNodeId(node.id);
+                                setActiveCanvasRail('config');
+                              }}
+                              renderMode="word-table-cell"
+                            />
+                          );
+                        })}
+                        {cellFieldNodes.filter((node) => !placedFieldNodeIds.has(node.id)).map((node) => {
+                          const Renderer = getComponentDefinition(node.type).renderDesigner;
+                          return (
+                            <Renderer
+                              key={node.id}
+                              node={node}
+                              selected={node.id === selectedNodeId}
+                              onSelect={() => {
+                                selectWordTable(block.id, true);
+                                setSelectedNodeId(node.id);
+                                setActiveCanvasRail('config');
+                              }}
+                              renderMode="word-table-cell"
+                            />
+                          );
+                        })}
                       </Box>
                     </Box>
                   );
@@ -5692,8 +5835,10 @@ export default function CanvasSheetWorkspace() {
                       <CanvasNodeRenderer
                         nodes={currentPage.nodes}
                         resolveCellRangeLayout={getFieldDropCellLayout}
+                        resolveWordTableCellLayout={(target) => getWordTableFieldCellLayout(target.blockId, target.cellId)}
                         onCellFieldMouseDown={handleCellFieldMouseDown}
                         onCellFieldContextMenu={handleCellFieldContextMenu}
+                        onWordTableFieldDrop={(target, event) => handleFieldDropOnWordTableCell(event, target)}
                         onNodeSelect={() => {
                           setSelectedWordTableBlockId(null);
                           setWordTableCellRange(null);

@@ -1,4 +1,4 @@
-import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
+import type { DragEvent as ReactDragEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
@@ -21,6 +21,17 @@ interface CellRangeLayout {
   top: number;
   width: number;
   height: number;
+  textAlign?: string;
+  verticalAlign?: string;
+  paddingLeft?: number;
+  paddingRight?: number;
+  paddingTop?: number;
+  paddingBottom?: number;
+}
+
+interface WordTableCellTarget {
+  blockId: string;
+  cellId: string;
 }
 
 interface NodeLayoutPreview {
@@ -33,8 +44,10 @@ interface NodeLayoutPreview {
 interface CanvasNodeRendererProps {
   nodes: CanvasNode[];
   resolveCellRangeLayout?: (range: CanvasSelectionRange) => CellRangeLayout;
+  resolveWordTableCellLayout?: (target: WordTableCellTarget) => CellRangeLayout | null;
   onCellFieldMouseDown?: (range: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => void;
   onCellFieldContextMenu?: (range: CanvasSelectionRange, event: ReactMouseEvent<HTMLElement>) => void;
+  onWordTableFieldDrop?: (target: WordTableCellTarget, event: ReactDragEvent<HTMLElement>) => void;
   onNodeSelect?: () => void;
 }
 
@@ -59,11 +72,22 @@ function readNodeCellRange(node: CanvasNode): CanvasSelectionRange | null {
   return { t, l, b, r };
 }
 
+function readNodeWordTableCellTarget(node: CanvasNode): WordTableCellTarget | null {
+  const value = node.style.wordTableCell;
+  if (!value || typeof value !== 'object') return null;
+
+  const target = value as Partial<WordTableCellTarget>;
+  if (typeof target.blockId !== 'string' || typeof target.cellId !== 'string') return null;
+  return { blockId: target.blockId, cellId: target.cellId };
+}
+
 export default function CanvasNodeRenderer({
   nodes,
   resolveCellRangeLayout,
+  resolveWordTableCellLayout,
   onCellFieldMouseDown,
   onCellFieldContextMenu,
+  onWordTableFieldDrop,
   onNodeSelect,
 }: CanvasNodeRendererProps) {
   const selectedNodeId = useTemplateDesignerStore((state) => state.selectedNodeId);
@@ -188,20 +212,42 @@ export default function CanvasNodeRenderer({
     const hovered = node.id === hoveredNodeId;
     const absolute = isAbsoluteNode(node);
     const cellRange = readNodeCellRange(node);
+    const wordTableCellTarget = readNodeWordTableCellTarget(node);
+    if (wordTableCellTarget && node.bindings?.fieldId) return null;
     const cellRangeLayout = absolute && node.bindings?.fieldId && cellRange
       ? resolveCellRangeLayout?.(cellRange) ?? null
       : null;
+    const wordTableCellLayout = absolute && node.bindings?.fieldId && wordTableCellTarget
+      ? resolveWordTableCellLayout?.(wordTableCellTarget) ?? null
+      : null;
+    const wordTableCellSiblingNodes = wordTableCellTarget
+      ? nodes.filter((candidate) => {
+          const candidateTarget = readNodeWordTableCellTarget(candidate);
+          return candidateTarget?.blockId === wordTableCellTarget.blockId && candidateTarget.cellId === wordTableCellTarget.cellId;
+        })
+      : [];
+    const wordTableCellSiblingIndex = wordTableCellSiblingNodes.findIndex((candidate) => candidate.id === node.id);
+    const wordTableFieldGap = 2;
+    const wordTableFieldHeight = wordTableCellLayout
+      ? Math.max(
+          MIN_COMPONENT_HEIGHT,
+          Math.floor((wordTableCellLayout.height - CELL_FIELD_INSET * 2 - wordTableFieldGap * (wordTableCellSiblingNodes.length - 1)) / wordTableCellSiblingNodes.length),
+        )
+      : 0;
+    const resolvedCellLayout = wordTableCellLayout ?? cellRangeLayout;
     const cellInset = absolute && node.bindings?.fieldId ? (node.type === 'sub-table' ? 0 : CELL_FIELD_INSET) : 0;
     const persistedWidth = readNumber(node.style.compWidth, 240);
     const persistedHeight = readNumber(node.style.compHeight, 40);
     const layoutPreview = nodeLayoutPreviews[node.id];
-    const absoluteLeft = cellRangeLayout ? cellRangeLayout.left : layoutPreview?.left ?? readNumber(node.style.compLeft, 0);
-    const absoluteTop = cellRangeLayout ? cellRangeLayout.top : layoutPreview?.top ?? readNumber(node.style.compTop, 0);
-    const absoluteWidth = cellRangeLayout ? cellRangeLayout.width : persistedWidth;
-    const absoluteHeight = cellRangeLayout ? cellRangeLayout.height : persistedHeight;
-    const renderedWidth = cellRangeLayout ? absoluteWidth : layoutPreview?.width ?? absoluteWidth;
-    const renderedHeight = cellRangeLayout ? absoluteHeight : layoutPreview?.height ?? absoluteHeight;
-    const rendererNode = cellRangeLayout
+    const absoluteLeft = resolvedCellLayout ? resolvedCellLayout.left : layoutPreview?.left ?? readNumber(node.style.compLeft, 0);
+    const absoluteTop = wordTableCellLayout
+      ? wordTableCellLayout.top + Math.max(0, wordTableCellSiblingIndex) * (wordTableFieldHeight + wordTableFieldGap)
+      : resolvedCellLayout ? resolvedCellLayout.top : layoutPreview?.top ?? readNumber(node.style.compTop, 0);
+    const absoluteWidth = resolvedCellLayout ? resolvedCellLayout.width : persistedWidth;
+    const absoluteHeight = wordTableCellLayout ? wordTableFieldHeight : resolvedCellLayout ? resolvedCellLayout.height : persistedHeight;
+    const renderedWidth = resolvedCellLayout ? absoluteWidth : layoutPreview?.width ?? absoluteWidth;
+    const renderedHeight = resolvedCellLayout ? absoluteHeight : layoutPreview?.height ?? absoluteHeight;
+    const rendererNode = resolvedCellLayout
       ? {
           ...node,
           style: {
@@ -210,6 +256,13 @@ export default function CanvasNodeRenderer({
             compTop: absoluteTop,
             compWidth: renderedWidth,
             compHeight: renderedHeight,
+            wordTableCellTextAlign: wordTableCellLayout?.textAlign,
+            wordTableCellVerticalAlign: wordTableCellLayout?.verticalAlign,
+            wordTableCellPaddingLeft: wordTableCellLayout?.paddingLeft,
+            wordTableCellPaddingRight: wordTableCellLayout?.paddingRight,
+            wordTableCellPaddingTop: wordTableCellLayout?.paddingTop,
+            wordTableCellPaddingBottom: wordTableCellLayout?.paddingBottom,
+            wordTableCellInset: wordTableCellLayout ? cellInset : undefined,
           },
         }
       : node;
@@ -243,6 +296,7 @@ export default function CanvasNodeRenderer({
           if (
             !absolute
             || cellRange
+            || wordTableCellTarget
             || event.detail > 1
             || (event.target as HTMLElement).closest('[contenteditable="true"]')
           ) return;
@@ -258,7 +312,7 @@ export default function CanvasNodeRenderer({
           position: 'absolute',
           left: absoluteLeft + cellInset,
           top: absoluteTop + cellInset,
-          ...(cellRangeLayout ? {
+          ...(resolvedCellLayout ? {
             width: Math.max(0, absoluteWidth - cellInset * 2),
             height: Math.max(0, absoluteHeight - cellInset * 2),
           } : {
@@ -269,6 +323,15 @@ export default function CanvasNodeRenderer({
           overflow: selected ? 'visible' : (node.type === 'sub-table' ? 'visible' : 'hidden'),
           pointerEvents: node.type === 'sub-table' ? 'none' : 'auto',
         } : undefined}
+        onDragOver={(event) => {
+          if (!wordTableCellTarget || !event.dataTransfer.types.includes('application/x-template-designer-field')) return;
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'copy';
+        }}
+        onDrop={(event) => {
+          if (!wordTableCellTarget) return;
+          onWordTableFieldDrop?.(wordTableCellTarget, event);
+        }}
       >
         {absolute ? (
           <>
@@ -287,9 +350,9 @@ export default function CanvasNodeRenderer({
                   onCellFieldContextMenu?.(cellRange, event);
                 }
               }}
-              renderMode="cell"
+              renderMode={wordTableCellTarget ? 'word-table-cell' : 'cell'}
             />
-            {!cellRange && selected ? (
+            {!cellRange && !wordTableCellTarget && selected ? (
               <>
               {RESIZE_DIRECTIONS.map((direction) => (
                 <Box
@@ -360,8 +423,10 @@ export default function CanvasNodeRenderer({
                 <CanvasNodeRenderer
                   nodes={node.children}
                   resolveCellRangeLayout={resolveCellRangeLayout}
+                  resolveWordTableCellLayout={resolveWordTableCellLayout}
                   onCellFieldMouseDown={onCellFieldMouseDown}
                   onCellFieldContextMenu={onCellFieldContextMenu}
+                  onWordTableFieldDrop={onWordTableFieldDrop}
                   onNodeSelect={onNodeSelect}
                 />
               </Box>
@@ -383,6 +448,7 @@ export default function CanvasNodeRenderer({
           sx={{
             position: 'absolute',
             inset: 0,
+            zIndex: 2,
             pointerEvents: 'none',
           }}
         >
