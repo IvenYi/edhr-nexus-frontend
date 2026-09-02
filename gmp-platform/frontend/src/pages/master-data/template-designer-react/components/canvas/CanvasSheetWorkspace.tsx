@@ -55,6 +55,8 @@ import { constrainWordTableToCanvas, getWordTableEffectiveLayout, snapWordTableL
 import {
   decodeWordTableCellContent,
   insertWordTableFieldAtDropPosition,
+  moveWordTableFieldMarker,
+  removeWordTableFieldMarker,
   serializeWordTableCellContent,
 } from '../../utils/wordTableInlineContent';
 import { useSnackbar } from '@/components/SnackbarProvider';
@@ -83,6 +85,7 @@ const COMMON_COMPONENT_INSERT_EVENT = 'template-designer-common-component-insert
 const WORD_TABLE_DRAG_THRESHOLD = 3;
 const WORD_TABLE_MIN_COLUMN_WIDTH = 32;
 const WORD_TABLE_MIN_ROW_HEIGHT = 20;
+const WORD_TABLE_FIELD_DRAG_PREFIX = 'template-designer-word-table-field:';
 
 interface WordTableLayoutPreview {
   blockId: string;
@@ -358,7 +361,8 @@ interface EditingCellState {
 }
 
 interface FieldPointerDropDetail {
-  fieldId: string;
+  fieldId?: string;
+  wordTableFieldNodeId?: string;
   subTableId?: string;
   subTableField?: ModelField;
   row?: number;
@@ -2686,15 +2690,128 @@ export default function CanvasSheetWorkspace() {
       inlineOffset: inlineContent?.offset,
     });
   };
+  const moveWordTableFieldToDropPosition = (
+    nodeId: string,
+    blockId: string,
+    cellId: string,
+    inlineContent?: { text: string; offset: number },
+  ) => {
+    const latestPage = useTemplateDesignerStore.getState().getCurrentPage();
+    const wordDocument = latestPage?.wordDocument;
+    const node = latestPage?.nodes.find((candidate) => candidate.id === nodeId);
+    const targetBlock = wordDocument?.blocks.find((block): block is CanvasWordTableBlock => block.id === blockId && block.type === 'table');
+    const targetCell = targetBlock?.cells.find((cell) => cell.id === cellId);
+    if (!wordDocument || !node?.bindings?.fieldId || !targetCell) return;
+
+    const text = inlineContent?.text ?? targetCell.text;
+    const nextText = moveWordTableFieldMarker(text, nodeId, inlineContent?.offset ?? text.length);
+    updateCurrentPage({
+      wordDocument: {
+        ...wordDocument,
+        blocks: wordDocument.blocks.map((block) => (
+          block.type === 'table'
+            ? {
+                ...block,
+                cells: block.cells.map((cell) => {
+                  const textWithoutMarker = removeWordTableFieldMarker(cell.text, nodeId);
+                  return block.id === blockId && cell.id === cellId
+                    ? { ...cell, text: nextText }
+                    : textWithoutMarker === cell.text ? cell : { ...cell, text: textWithoutMarker };
+                }),
+              }
+            : block
+        )),
+      },
+      nodes: latestPage.nodes.map((candidate) => (
+        candidate.id === nodeId
+          ? {
+              ...candidate,
+              style: {
+                ...candidate.style,
+                wordTableCell: { blockId, cellId },
+              },
+            }
+          : candidate
+      )),
+    });
+  };
+  const beginWordTableInlineFieldMove = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    nodeId: string,
+    sourceBlockId: string,
+    sourceRow: number,
+    sourceCol: number,
+  ) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const ownerDocument = event.currentTarget.ownerDocument;
+    const pointerId = event.pointerId;
+    const startX = event.clientX;
+    const startY = event.clientY;
+    let active = false;
+    const removeListeners = () => {
+      ownerDocument.removeEventListener('pointermove', handlePointerMove);
+      ownerDocument.removeEventListener('pointerup', handlePointerUp);
+      ownerDocument.removeEventListener('pointercancel', handlePointerCancel);
+    };
+    const finish = (eventTarget: EventTarget | null, clientX: number, clientY: number, selectField: boolean) => {
+      removeListeners();
+      if (active) {
+        const targetCell = ownerDocument.elementFromPoint(clientX, clientY)?.closest<HTMLElement>('[data-word-table-cell="true"]');
+        const blockId = targetCell?.dataset.wordTableBlockId;
+        const cellId = targetCell?.dataset.wordTableCellId;
+        const content = targetCell?.querySelector<HTMLElement>('[data-word-table-cell-content="true"]') ?? null;
+        if (blockId && cellId && content) {
+          const inlineContent = insertWordTableFieldAtDropPosition(content, clientX, clientY);
+          moveWordTableFieldToDropPosition(nodeId, blockId, cellId, inlineContent);
+        }
+      } else if (selectField) {
+        selectWordTable(sourceBlockId, true);
+        setWordTableAdditionalCellRanges([]);
+        setWordTableCellRange({
+          blockId: sourceBlockId,
+          anchor: { row: sourceRow, col: sourceCol },
+          focus: { row: sourceRow, col: sourceCol },
+        });
+        setWordTableCellStyleTarget({
+          blockId: sourceBlockId,
+          range: { top: sourceRow, left: sourceCol, bottom: sourceRow, right: sourceCol },
+        });
+        setSelectedNodeId(nodeId);
+        setActiveCanvasRail('config');
+      }
+      if (eventTarget instanceof HTMLElement) eventTarget.releasePointerCapture?.(pointerId);
+    };
+    function handlePointerMove(moveEvent: PointerEvent) {
+      if (moveEvent.pointerId !== pointerId) return;
+      if (Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) >= 4) active = true;
+    }
+    function handlePointerUp(upEvent: PointerEvent) {
+      if (upEvent.pointerId !== pointerId) return;
+      finish(upEvent.target, upEvent.clientX, upEvent.clientY, true);
+    }
+    function handlePointerCancel(cancelEvent: PointerEvent) {
+      if (cancelEvent.pointerId !== pointerId) return;
+      finish(cancelEvent.target, cancelEvent.clientX, cancelEvent.clientY, false);
+    }
+    event.currentTarget.setPointerCapture?.(pointerId);
+    ownerDocument.addEventListener('pointermove', handlePointerMove, { passive: false });
+    ownerDocument.addEventListener('pointerup', handlePointerUp);
+    ownerDocument.addEventListener('pointercancel', handlePointerCancel);
+  };
   const handleFieldDropOnWordTableCell = (
     event: ReactDragEvent<HTMLElement>,
     target: { blockId: string; cellId: string },
   ) => {
     const fieldId = event.dataTransfer.getData('application/x-template-designer-field');
-    if (!fieldId) return;
+    const plainText = event.dataTransfer.getData('text/plain');
+    const wordTableFieldNodeId = event.dataTransfer.getData('application/x-template-designer-word-table-field')
+      || (plainText.startsWith(WORD_TABLE_FIELD_DRAG_PREFIX) ? plainText.slice(WORD_TABLE_FIELD_DRAG_PREFIX.length) : '');
+    if (!fieldId && !wordTableFieldNodeId) return;
     event.preventDefault();
     event.stopPropagation();
-    event.dataTransfer.dropEffect = 'copy';
+    event.dataTransfer.dropEffect = wordTableFieldNodeId ? 'move' : 'copy';
     const dropPoint = wordTableFieldDragPointRef.current;
     wordTableFieldDragPointRef.current = null;
     const content = event.currentTarget.querySelector<HTMLElement>('[data-word-table-cell-content="true"]');
@@ -2707,15 +2824,22 @@ export default function CanvasSheetWorkspace() {
     const inlineContent = content
       ? insertWordTableFieldAtDropPosition(content, clientX, clientY)
       : undefined;
+    if (wordTableFieldNodeId) {
+      moveWordTableFieldToDropPosition(wordTableFieldNodeId, target.blockId, target.cellId, inlineContent);
+      return;
+    }
     addDroppedFieldToWordTableCell(fieldId, target.blockId, target.cellId, inlineContent);
   };
   const handleFieldDragOverWordTableCell = (
     event: ReactDragEvent<HTMLElement>,
     target: { blockId: string; cellId: string },
   ) => {
-    if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
+    const isNewField = event.dataTransfer.types.includes('application/x-template-designer-field');
+    const isExistingWordTableField = event.dataTransfer.types.includes('application/x-template-designer-word-table-field')
+      || event.dataTransfer.types.includes('text/plain');
+    if (!isNewField && !isExistingWordTableField) return;
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
+    event.dataTransfer.dropEffect = isExistingWordTableField ? 'move' : 'copy';
     wordTableFieldDragPointRef.current = { ...target, clientX: event.clientX, clientY: event.clientY };
   };
   const renderSubTableOverlays = () => {
@@ -3108,6 +3232,24 @@ export default function CanvasSheetWorkspace() {
     };
     const handlePointerFieldDrop = (event: Event) => {
       const detail = (event as CustomEvent<FieldPointerDropDetail>).detail;
+      if (detail?.wordTableFieldNodeId) {
+        const dragPoint = wordTableFieldDragPointRef.current;
+        const blockId = dragPoint?.blockId ?? detail.wordTableBlockId;
+        const cellId = dragPoint?.cellId ?? detail.wordTableCellId;
+        if (!blockId || !cellId) return;
+        wordTableFieldDragPointRef.current = null;
+        const wordTableCellElement = detail.wordTableCellElement?.dataset.wordTableBlockId === blockId
+          && detail.wordTableCellElement.dataset.wordTableCellId === cellId
+          ? detail.wordTableCellElement
+          : Array.from(ownerDocument.querySelectorAll<HTMLElement>('[data-word-table-cell="true"]'))
+            .find((element) => element.dataset.wordTableBlockId === blockId && element.dataset.wordTableCellId === cellId);
+        const content = wordTableCellElement?.querySelector<HTMLElement>('[data-word-table-cell-content="true"]') ?? null;
+        const inlineContent = content
+          ? insertWordTableFieldAtDropPosition(content, dragPoint?.clientX ?? Number(detail.clientX), dragPoint?.clientY ?? Number(detail.clientY))
+          : undefined;
+        moveWordTableFieldToDropPosition(detail.wordTableFieldNodeId, blockId, cellId, inlineContent);
+        return;
+      }
       if (detail?.fieldId && detail.wordTableBlockId && detail.wordTableCellId) {
         setFieldDropGuideRange(null);
         const clientX = Number(detail.clientX);
@@ -3158,14 +3300,13 @@ export default function CanvasSheetWorkspace() {
 
       setFieldDropGuideRange(resolveHoverRange(row, col));
     };
-
     ownerDocument.addEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
     ownerDocument.addEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
     return () => {
       ownerDocument.removeEventListener(FIELD_POINTER_DROP_EVENT, handlePointerFieldDrop as EventListener);
       ownerDocument.removeEventListener(FIELD_POINTER_HOVER_EVENT, handlePointerFieldHover as EventListener);
     };
-  }, [addDroppedFieldToWordTableCell, addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, rowOffsets, setSelectedRange, showMessage]);
+  }, [addDroppedFieldToWordTableCell, addNodeFromFieldToCell, addNodeFromSubTableFieldToCell, columnOffsets, currentPage, displayPage, moveWordTableFieldToDropPosition, rowOffsets, setSelectedRange, showMessage]);
   useEffect(() => {
     cancelHoveredSubTableUpdate();
     setHoveredSubTableNodeId(null);
@@ -4938,6 +5079,14 @@ export default function CanvasSheetWorkspace() {
                       onDragOver={(event) => handleFieldDragOverWordTableCell(event, { blockId: block.id, cellId: cell.id })}
                       onDrop={(event) => handleFieldDropOnWordTableCell(event, { blockId: block.id, cellId: cell.id })}
                       onPointerDownCapture={(event: ReactPointerEvent<HTMLDivElement>) => {
+                        const fieldNode = event.target instanceof Element
+                          ? event.target.closest<HTMLElement>('[data-word-table-field-node-id]')
+                          : null;
+                        const nodeId = fieldNode?.dataset.wordTableFieldNodeId;
+                        if (nodeId && event.button === 0) {
+                          beginWordTableInlineFieldMove(event, nodeId, block.id, cell.row, cell.col);
+                          return;
+                        }
                         // ContentEditable may consume a secondary pointer event before the bubbling
                         // handler runs. Capture it at the cell boundary so the custom menu is reliable.
                         if (event.button === 2) {

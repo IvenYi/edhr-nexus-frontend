@@ -125,6 +125,34 @@ async function loadWordTableLayout() {
   }
 }
 
+async function loadWordTableInlineContent() {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'verify-template-designer-react-'));
+  const outfile = path.join(tempDir, 'wordTableInlineContent.cjs');
+  await build({
+    entryPoints: [fileURLToPath(new URL('../src/pages/master-data/template-designer-react/utils/wordTableInlineContent.ts', import.meta.url))],
+    outfile,
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    logLevel: 'silent',
+  });
+
+  try {
+    return require(outfile);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
+async function verifyWordTableInlineFieldMoveBehavior() {
+  const { encodeWordTableFieldMarker, moveWordTableFieldMarker } = await loadWordTableInlineContent();
+  const marker = encodeWordTableFieldMarker('temperature');
+  assert(
+    moveWordTableFieldMarker(`温度： ℃${marker}`, 'temperature', 3) === `温度：${marker} ℃`,
+    'wordTableInlineContent.ts: moving an existing inline field must place its marker at the requested text offset',
+  );
+}
+
 async function verifyWordTableLayoutBehavior() {
   const { constrainWordTableLayout, constrainWordTableToCanvas, getWordTableEffectiveLayout, fitWordTableColumnWidthsToCanvas, snapWordTableLayout } = await loadWordTableLayout();
 
@@ -2617,6 +2645,7 @@ await verifySubTableGroupRepeatBehavior();
 await verifyCommonComponentBehavior();
 await verifyWordTableContextMenuOperations();
 await verifyWordTableLayoutBehavior();
+await verifyWordTableInlineFieldMoveBehavior();
 
 if (failures.length > 0) {
   console.error('verify-template-designer-react failed');

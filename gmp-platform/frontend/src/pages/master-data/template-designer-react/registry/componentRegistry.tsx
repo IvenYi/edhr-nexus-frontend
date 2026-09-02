@@ -654,14 +654,14 @@ function FieldPreviewRenderer({
 
     return (
       <Typography
-        component="span"
+        component="button"
+        type="button"
         data-canvas-word-table-field-placeholder="true"
         data-word-table-field-node-id={node.id}
         contentEditable={false}
+        draggable={false}
         tabIndex={0}
-        role="textbox"
         aria-label={wordTablePlaceholder}
-        onPointerDown={(event) => event.stopPropagation()}
         onKeyDown={(event) => {
           if (['Backspace', 'Delete'].includes(event.key)) {
             event.preventDefault();
@@ -672,11 +672,6 @@ function FieldPreviewRenderer({
           if (event.key.length === 1 || event.key === 'Enter') {
             event.preventDefault();
           }
-        }}
-        onMouseDown={(event) => {
-          if (event.button !== 0) return;
-          event.stopPropagation();
-          onCellMouseDown?.(event);
         }}
         onMouseUp={(event) => {
           if (event.button !== 0) return;
@@ -692,17 +687,23 @@ function FieldPreviewRenderer({
         }}
         sx={{
           display: 'inline',
+          p: 0,
+          m: 0,
+          border: 0,
+          bgcolor: 'transparent',
+          font: 'inherit',
+          lineHeight: 'inherit',
+          textAlign: 'inherit',
           maxWidth: '100%',
           minWidth: 0,
           boxSizing: 'border-box',
-          cursor: 'text',
+          cursor: 'grab',
           outline: 'none',
           overflow: 'hidden',
           whiteSpace: 'pre-wrap',
           textOverflow: 'ellipsis',
           color: '#a8abb2',
           fontSize: 'inherit',
-          lineHeight: 'inherit',
           '&:focus': { outline: 'none' },
         }}
       >

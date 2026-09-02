@@ -13,6 +13,21 @@ export function removeWordTableFieldMarker(text: string, nodeId: string) {
   return text.split(encodeWordTableFieldMarker(nodeId)).join('');
 }
 
+export function moveWordTableFieldMarker(text: string, nodeId: string, offset: number) {
+  const marker = encodeWordTableFieldMarker(nodeId);
+  const markerIndex = text.indexOf(marker);
+  const textWithoutMarker = removeWordTableFieldMarker(text, nodeId);
+  const normalizedOffset = Math.max(
+    0,
+    Math.min(
+      offset - (markerIndex >= 0 && markerIndex < offset ? marker.length : 0),
+      textWithoutMarker.length,
+    ),
+  );
+
+  return `${textWithoutMarker.slice(0, normalizedOffset)}${marker}${textWithoutMarker.slice(normalizedOffset)}`;
+}
+
 export function decodeWordTableCellContent(text: string, fieldNodeIds: Iterable<string>) {
   const knownFieldNodeIds = new Set(fieldNodeIds);
   const segments: WordTableInlineContent[] = [];
@@ -132,27 +147,17 @@ function getCaretRangeAtPoint(container: HTMLElement, clientX: number, clientY: 
 }
 
 function getSerializedWordTableCaretOffset(container: HTMLElement, range: Range) {
-  let offset = 0;
-  let resolved = false;
+  const prefix = container.ownerDocument.createRange();
+  prefix.selectNodeContents(container);
+  try {
+    prefix.setEnd(range.startContainer, range.startOffset);
+  } catch {
+    return serializeWordTableCellContent(container).length;
+  }
 
-  const visit = (node: Node) => {
-    if (resolved) return;
-    if (node === range.startContainer) {
-      if (node.nodeType === node.TEXT_NODE) {
-        offset += (node.textContent ?? '').slice(0, range.startOffset).length;
-      } else {
-        Array.from(node.childNodes).slice(0, range.startOffset).forEach((child) => {
-          offset += serializeWordTableCellNode(child).length;
-        });
-      }
-      resolved = true;
-      return;
-    }
-    offset += serializeWordTableCellNode(node).length;
-  };
-
-  Array.from(container.childNodes).forEach(visit);
-  return resolved ? offset : serializeWordTableCellContent(container).length;
+  return Array.from(prefix.cloneContents().childNodes)
+    .map(serializeWordTableCellNode)
+    .join('').length;
 }
 
 export function insertWordTableFieldAtDropPosition(container: HTMLElement, clientX: number, clientY: number) {
