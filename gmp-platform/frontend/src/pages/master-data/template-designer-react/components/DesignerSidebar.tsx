@@ -126,6 +126,10 @@ export default function DesignerSidebar() {
   }, []);
 
   const handleFieldDragStart = (event: DragEvent<HTMLButtonElement>, field: ModelField) => {
+    if (pointerDragRef.current?.fieldId === field.id) {
+      event.preventDefault();
+      return;
+    }
     cleanupDragPreview();
     const fieldId = field.id;
     const sourceRect = event.currentTarget.getBoundingClientRect();
@@ -257,6 +261,9 @@ export default function DesignerSidebar() {
               col,
               wordTableBlockId,
               wordTableCellId,
+              clientX,
+              clientY,
+              wordTableCellElement: dropCell,
             },
           }));
         }
@@ -339,7 +346,7 @@ export default function DesignerSidebar() {
               data-canvas-field-card="true"
               data-canvas-sub-table-field-card={isSubTableFieldList ? 'true' : undefined}
               data-canvas-field-sub-table-id={selectedSubTableField?.id}
-              draggable
+              draggable={false}
               variant="text"
               sx={{
                 display: 'flex',
@@ -360,8 +367,6 @@ export default function DesignerSidebar() {
                 '&:hover': { bgcolor: '#f5f7fb' },
                 '&:active': { cursor: 'grabbing' },
               }}
-              onDragStart={(event) => handleFieldDragStart(event, field)}
-              onDragEnd={handleFieldDragEnd}
               onPointerDown={(event) => handleFieldPointerDown(event, field)}
             >
               {renderFieldButtonContent(field)}

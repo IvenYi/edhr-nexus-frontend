@@ -365,6 +365,9 @@ interface FieldPointerDropDetail {
   col?: number;
   wordTableBlockId?: string | null;
   wordTableCellId?: string | null;
+  clientX?: number;
+  clientY?: number;
+  wordTableCellElement?: HTMLElement | null;
 }
 
 interface SubTableFieldDragData {
@@ -1375,6 +1378,7 @@ export default function CanvasSheetWorkspace() {
   const pendingRowResizeDragRef = useRef<{ row: number; height: number } | null>(null);
   const wordTablePointerCleanupRef = useRef<(() => void) | null>(null);
   const wordTableCellSelectionCleanupRef = useRef<(() => void) | null>(null);
+  const wordTableFieldDragPointRef = useRef<{ blockId: string; cellId: string; clientX: number; clientY: number } | null>(null);
   const wordTableLayoutPreviewRef = useRef<WordTableLayoutPreview | null>(null);
   const wordTableSizePreviewRef = useRef<WordTableSizePreview | null>(null);
   const wordTableContextMenuRef = useRef<HTMLDivElement | null>(null);
@@ -2691,11 +2695,28 @@ export default function CanvasSheetWorkspace() {
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer.dropEffect = 'copy';
+    const dropPoint = wordTableFieldDragPointRef.current;
+    wordTableFieldDragPointRef.current = null;
     const content = event.currentTarget.querySelector<HTMLElement>('[data-word-table-cell-content="true"]');
+    const clientX = dropPoint?.blockId === target.blockId && dropPoint.cellId === target.cellId
+      ? dropPoint.clientX
+      : event.clientX;
+    const clientY = dropPoint?.blockId === target.blockId && dropPoint.cellId === target.cellId
+      ? dropPoint.clientY
+      : event.clientY;
     const inlineContent = content
-      ? insertWordTableFieldAtDropPosition(content, event.clientX, event.clientY)
+      ? insertWordTableFieldAtDropPosition(content, clientX, clientY)
       : undefined;
     addDroppedFieldToWordTableCell(fieldId, target.blockId, target.cellId, inlineContent);
+  };
+  const handleFieldDragOverWordTableCell = (
+    event: ReactDragEvent<HTMLElement>,
+    target: { blockId: string; cellId: string },
+  ) => {
+    if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    wordTableFieldDragPointRef.current = { ...target, clientX: event.clientX, clientY: event.clientY };
   };
   const renderSubTableOverlays = () => {
     if (!currentPage) return null;
@@ -3089,7 +3110,21 @@ export default function CanvasSheetWorkspace() {
       const detail = (event as CustomEvent<FieldPointerDropDetail>).detail;
       if (detail?.fieldId && detail.wordTableBlockId && detail.wordTableCellId) {
         setFieldDropGuideRange(null);
-        addDroppedFieldToWordTableCell(detail.fieldId, detail.wordTableBlockId, detail.wordTableCellId);
+        const clientX = Number(detail.clientX);
+        const clientY = Number(detail.clientY);
+        const wordTableCellElement = detail.wordTableCellElement?.dataset.wordTableBlockId === detail.wordTableBlockId
+          && detail.wordTableCellElement.dataset.wordTableCellId === detail.wordTableCellId
+          ? detail.wordTableCellElement
+          : Array.from(ownerDocument.querySelectorAll<HTMLElement>('[data-word-table-cell="true"]'))
+            .find((element) => (
+              element.dataset.wordTableBlockId === detail.wordTableBlockId
+              && element.dataset.wordTableCellId === detail.wordTableCellId
+            ));
+        const content = wordTableCellElement?.querySelector<HTMLElement>('[data-word-table-cell-content="true"]') ?? null;
+        const inlineContent = content
+          ? insertWordTableFieldAtDropPosition(content, clientX, clientY)
+          : undefined;
+        addDroppedFieldToWordTableCell(detail.fieldId, detail.wordTableBlockId, detail.wordTableCellId, inlineContent);
         return;
       }
       const row = Number(detail?.row);
@@ -4900,11 +4935,7 @@ export default function CanvasSheetWorkspace() {
                       data-word-table-cell-id={cell.id}
                       data-word-table-block-id={block.id}
                       data-word-table-diagonal={cell.diagonalTopLeftToBottomRight || cell.diagonalTopRightToBottomLeft ? 'true' : undefined}
-                      onDragOver={(event) => {
-                        if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
-                        event.preventDefault();
-                        event.dataTransfer.dropEffect = 'copy';
-                      }}
+                      onDragOver={(event) => handleFieldDragOverWordTableCell(event, { blockId: block.id, cellId: cell.id })}
                       onDrop={(event) => handleFieldDropOnWordTableCell(event, { blockId: block.id, cellId: cell.id })}
                       onPointerDownCapture={(event: ReactPointerEvent<HTMLDivElement>) => {
                         // ContentEditable may consume a secondary pointer event before the bubbling

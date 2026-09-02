@@ -51,6 +51,43 @@ export function serializeWordTableCellContent(container: HTMLElement) {
   return Array.from(container.childNodes).map(serializeWordTableCellNode).join('');
 }
 
+function getClosestCaretRangeAtPoint(container: HTMLElement, clientX: number, clientY: number) {
+  const walker = container.ownerDocument.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  let closestRange: Range | null = null;
+  let closestDistance = Number.POSITIVE_INFINITY;
+  let node = walker.nextNode();
+
+  while (node) {
+    const text = node.textContent ?? '';
+    for (let offset = 0; offset <= text.length; offset += 1) {
+      if (!text.length) continue;
+      const candidate = container.ownerDocument.createRange();
+      if (offset === text.length) {
+        candidate.setStart(node, offset - 1);
+        candidate.setEnd(node, offset);
+      } else {
+        candidate.setStart(node, offset);
+        candidate.setEnd(node, Math.min(offset + 1, text.length));
+      }
+      const rect = candidate.getBoundingClientRect();
+      if (!rect.width && !rect.height) continue;
+
+      const caretX = offset === text.length ? rect.right : rect.left;
+      const distance = Math.hypot(clientX - caretX, clientY - (rect.top + rect.height / 2));
+      if (distance < closestDistance) {
+        const caret = container.ownerDocument.createRange();
+        caret.setStart(node, offset);
+        caret.collapse(true);
+        closestRange = caret;
+        closestDistance = distance;
+      }
+    }
+    node = walker.nextNode();
+  }
+
+  return closestRange;
+}
+
 function getCaretRangeAtPoint(container: HTMLElement, clientX: number, clientY: number) {
   const documentWithCaret = container.ownerDocument as Document & {
     caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null;
@@ -65,6 +102,10 @@ function getCaretRangeAtPoint(container: HTMLElement, clientX: number, clientY: 
       range.setStart(position.offsetNode, position.offset);
       range.collapse(true);
     }
+  }
+
+  if (!range || !container.contains(range.startContainer)) {
+    range = getClosestCaretRangeAtPoint(container, clientX, clientY);
   }
 
   if (!range || !container.contains(range.startContainer)) {

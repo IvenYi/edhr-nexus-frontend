@@ -2453,6 +2453,20 @@ if (!canvasWorkspace.includes('getCompleteWordTableSelectionRange(table, selecte
 if (!canvasWorkspace.includes('data-word-table-context-action="quick-add-fields"')) failures.push('CanvasSheetWorkspace.tsx: Word-table right-click menus must expose quick field creation');
 if (!canvasWorkspace.includes('handleOpenWordTableQuickAddFields')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must use the selected table cells');
 if (!canvasWorkspace.includes('handleOpenWordTableQuickAddFields(context)')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must retain the clicked menu context');
+const designerSidebar = read('../src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx');
+if (!designerSidebar.includes('clientX,\n              clientY,')) failures.push('DesignerSidebar.tsx: pointer field drops must include their viewport drop coordinates');
+if (!designerSidebar.includes('wordTableCellElement: dropCell,')) failures.push('DesignerSidebar.tsx: pointer field drops must retain the actual visible Word-table cell element');
+if (!designerSidebar.includes("if (pointerDragRef.current?.fieldId === field.id) {\n      event.preventDefault();\n      return;\n    }")) failures.push('DesignerSidebar.tsx: native field dragging must not race the pointer drag that preserves Word-table text placement');
+if (!designerSidebar.includes('draggable={false}')) failures.push('DesignerSidebar.tsx: field cards must disable native dragging so pointer drops control Word-table text placement');
+if (designerSidebar.includes('onDragStart=')) failures.push('DesignerSidebar.tsx: field cards must not attach a competing native drag-start handler');
+if (designerSidebar.includes('onDragEnd=')) failures.push('DesignerSidebar.tsx: field cards must not attach a competing native drag-end handler');
+if (!canvasWorkspace.includes('clientX?: number;\n  clientY?: number;\n  wordTableCellElement?: HTMLElement | null;')) failures.push('CanvasSheetWorkspace.tsx: pointer field drop details must retain the actual Word-table cell element');
+if (!canvasWorkspace.includes("ownerDocument.querySelectorAll<HTMLElement>('[data-word-table-cell=\"true\"]')")) failures.push('CanvasSheetWorkspace.tsx: Word-table pointer drops must fall back to resolving inline content from the selected Word-table cell');
+if (!canvasWorkspace.includes('detail.wordTableCellElement?.dataset.wordTableBlockId === detail.wordTableBlockId')) failures.push('CanvasSheetWorkspace.tsx: Word-table pointer drops must prefer the actual visible Word-table cell element');
+if (!canvasWorkspace.includes('const wordTableFieldDragPointRef = useRef<')) failures.push('CanvasSheetWorkspace.tsx: Word-table field drops must retain the final drag-over point');
+if (!canvasWorkspace.includes('wordTableFieldDragPointRef.current = { ...target, clientX: event.clientX, clientY: event.clientY };')) failures.push('CanvasSheetWorkspace.tsx: Word-table drag-over must capture the actual pointer coordinates');
+if (!canvasWorkspace.includes('const dropPoint = wordTableFieldDragPointRef.current')) failures.push('CanvasSheetWorkspace.tsx: Word-table drops must reuse their final drag-over point');
+if (!canvasWorkspace.includes('insertWordTableFieldAtDropPosition(content, clientX, clientY)')) failures.push('CanvasSheetWorkspace.tsx: Word-table pointer drops must insert a field marker at the actual cursor position');
 if (!canvasWorkspace.includes("document.addEventListener('pointerdown', closeWordTableContextMenuOnOutsidePointerDown, true);")) failures.push('CanvasSheetWorkspace.tsx: Word-table menu outside closing must observe canvas pointer events before they are handled');
 if (!canvasWorkspace.includes("document.removeEventListener('pointerdown', closeWordTableContextMenuOnOutsidePointerDown, true);")) failures.push('CanvasSheetWorkspace.tsx: Word-table menu outside listener must be removed with its original event phase');
 if (!canvasWorkspace.includes('onPointerDown={(event) => event.stopPropagation()}')) failures.push('CanvasSheetWorkspace.tsx: Word-table menu must retain pointer events inside the menu');
@@ -2527,6 +2541,10 @@ if (!canvasWorkspace.includes('if (event.target !== event.currentTarget) return;
 if (!canvasWorkspace.includes('const WordTableCellInlineContent = memo(')) failures.push('CanvasSheetWorkspace.tsx: Word-table editable content must be isolated from selection-only rerenders');
 const wordTableInlineContent = read('../src/pages/master-data/template-designer-react/utils/wordTableInlineContent.ts');
 if (wordTableInlineContent.includes('range.insertNode(') || wordTableInlineContent.includes('marker.remove()')) failures.push('wordTableInlineContent.ts: caret offsets must not mutate React-managed Word-table DOM nodes');
+if (!wordTableInlineContent.includes('function getClosestCaretRangeAtPoint(')) failures.push('wordTableInlineContent.ts: Word-table drops must fall back to the closest text caret when browser caret APIs are unavailable');
+if (!wordTableInlineContent.includes('container.ownerDocument.createTreeWalker(container, NodeFilter.SHOW_TEXT)')) failures.push('wordTableInlineContent.ts: Word-table caret fallback must inspect rendered text-node boundaries');
+if (!wordTableInlineContent.includes('candidate.setEnd(node, Math.min(offset + 1, text.length));')) failures.push('wordTableInlineContent.ts: Word-table caret fallback must measure a non-collapsed character range when collapsed ranges have no geometry');
+if (!wordTableInlineContent.includes('range = getClosestCaretRangeAtPoint(container, clientX, clientY);')) failures.push('wordTableInlineContent.ts: Word-table drops must use the text-caret fallback before appending fields');
 const wordTableComponentRegistry = read('../src/pages/master-data/template-designer-react/registry/componentRegistry.tsx');
 const wordTableFieldRenderer = wordTableComponentRegistry.slice(
   wordTableComponentRegistry.indexOf("if (isWordTableCellMode)"),
