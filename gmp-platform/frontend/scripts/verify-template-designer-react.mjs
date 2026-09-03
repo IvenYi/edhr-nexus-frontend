@@ -144,12 +144,93 @@ async function loadWordTableInlineContent() {
   }
 }
 
+async function loadTemplateDesignerStore() {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'verify-template-designer-react-'));
+  const outfile = path.join(tempDir, 'useTemplateDesignerStore.cjs');
+  await build({
+    entryPoints: [fileURLToPath(new URL('../src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts', import.meta.url))],
+    outfile,
+    bundle: true,
+    format: 'cjs',
+    platform: 'node',
+    logLevel: 'silent',
+  });
+
+  try {
+    return require(outfile);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
 async function verifyWordTableInlineFieldMoveBehavior() {
   const { encodeWordTableFieldMarker, moveWordTableFieldMarker } = await loadWordTableInlineContent();
   const marker = encodeWordTableFieldMarker('temperature');
   assert(
     moveWordTableFieldMarker(`温度： ℃${marker}`, 'temperature', 3) === `温度：${marker} ℃`,
     'wordTableInlineContent.ts: moving an existing inline field must place its marker at the requested text offset',
+  );
+}
+
+async function verifyWordTableFieldAvailabilityBehavior() {
+  const { useTemplateDesignerStore } = await loadTemplateDesignerStore();
+  const field = {
+    id: 'sample-count',
+    code: 'sample_count',
+    name: '抽样数量',
+    type: 'number',
+    sortOrder: 1,
+    status: 'enabled',
+    typeConfig: {},
+  };
+  const createDocument = (node, blocks = []) => ({
+    meta: { schema: 'edhr-template-designer-react', version: 1, templateId: 'test', versionId: 'test', templateName: 'test', versionLabel: 'V1' },
+    model: { groups: [], fields: [field] },
+    canvas: {
+      currentPageId: 'page-1',
+      pages: [{
+        id: 'page-1',
+        name: '第 1 页',
+        nodes: [node],
+        wordDocument: { contentWidth: 100, contentHeight: 100, blocks },
+        sheet: {},
+        cells: {},
+        mergedCells: [],
+        medias: [],
+        images: [],
+      }],
+    },
+    workflow: { nodes: [], edges: [], config: {} },
+  });
+  const orphanedNode = {
+    id: 'orphaned-sample-node',
+    type: 'input-number',
+    props: {},
+    style: { wordTableCell: { blockId: 'removed-table', cellId: 'removed-cell' } },
+    bindings: { fieldId: field.id },
+  };
+  useTemplateDesignerStore.getState().setDocument(createDocument(orphanedNode));
+  assert(
+    useTemplateDesignerStore.getState().getAvailableFieldsForCurrentVersion().some((candidate) => candidate.id === field.id),
+    'useTemplateDesignerStore.ts: an orphaned Word-table field node must not keep its field unavailable',
+  );
+
+  const activeNode = {
+    ...orphanedNode,
+    id: 'active-sample-node',
+    style: { wordTableCell: { blockId: 'table-1', cellId: 'cell-1' } },
+  };
+  useTemplateDesignerStore.getState().setDocument(createDocument(activeNode, [{
+    id: 'table-1',
+    type: 'table',
+    layout: { left: 0, top: 0, width: 100, height: 40 },
+    columnWidths: [100],
+    rowHeights: [40],
+    cells: [{ id: 'cell-1', row: 1, col: 1, rowSpan: 1, colSpan: 1, text: '' }],
+  }]));
+  assert(
+    !useTemplateDesignerStore.getState().getAvailableFieldsForCurrentVersion().some((candidate) => candidate.id === field.id),
+    'useTemplateDesignerStore.ts: a rendered Word-table field node must keep its field unavailable',
   );
 }
 
@@ -2567,6 +2648,9 @@ if (canvasWorkspace.includes('<Fragment key={`text-${index}`}>{segment.text}</Fr
 if (!canvasWorkspace.includes('data-word-table-text-segment="true"')) failures.push('CanvasSheetWorkspace.tsx: Word-table text segments need stable DOM nodes for React reconciliation');
 if (!canvasWorkspace.includes('if (event.target !== event.currentTarget) return;')) failures.push('CanvasSheetWorkspace.tsx: nested Word-table field focus must not reset the parent cell selection');
 if (!canvasWorkspace.includes('const WordTableCellInlineContent = memo(')) failures.push('CanvasSheetWorkspace.tsx: Word-table editable content must be isolated from selection-only rerenders');
+if (!canvasWorkspace.includes('selectedNodeId: string | null;')) failures.push('CanvasSheetWorkspace.tsx: Word-table inline content must receive the selected field identity');
+if (!canvasWorkspace.includes('selected={node.id === selectedNodeId}')) failures.push('CanvasSheetWorkspace.tsx: clicking a Word-table field must pass its selected state to the inline renderer');
+if (!canvasWorkspace.includes('selectedNodeId={selectedNodeId}')) failures.push('CanvasSheetWorkspace.tsx: Word-table cells must provide the current selected field identity to inline content');
 const wordTableInlineContent = read('../src/pages/master-data/template-designer-react/utils/wordTableInlineContent.ts');
 if (wordTableInlineContent.includes('range.insertNode(') || wordTableInlineContent.includes('marker.remove()')) failures.push('wordTableInlineContent.ts: caret offsets must not mutate React-managed Word-table DOM nodes');
 if (!wordTableInlineContent.includes('function getClosestCaretRangeAtPoint(')) failures.push('wordTableInlineContent.ts: Word-table drops must fall back to the closest text caret when browser caret APIs are unavailable');
@@ -2585,7 +2669,10 @@ const wordTableFieldMouseDownEnd = wordTableFieldMouseUpStart >= 0
   : wordTableFieldRenderer.indexOf('onClick={(event) =>');
 const wordTableFieldMouseDown = wordTableFieldRenderer.slice(wordTableFieldMouseDownStart, wordTableFieldMouseDownEnd);
 if (wordTableFieldMouseDown.includes('onSelect();')) failures.push('componentRegistry.tsx: Word-table field selection must not update React state during mousedown');
-if (!wordTableFieldRenderer.includes("onMouseUp={(event) => {\n          if (event.button !== 0) return;\n          event.stopPropagation();\n          onSelect();\n        }}")) failures.push('componentRegistry.tsx: Word-table fields must select only after the native editable focus sequence completes');
+if (!wordTableFieldRenderer.includes("onMouseUp={(event) => {\n          if (event.button !== 0) return;\n          event.stopPropagation();\n          event.currentTarget.focus({ preventScroll: true });\n          onSelect();\n        }}")) failures.push('componentRegistry.tsx: clicking a Word-table field must focus it before selecting it');
+if (!wordTableFieldRenderer.includes("color: selected ? '#1976d2' : '#a8abb2'")) failures.push('componentRegistry.tsx: selected Word-table fields must turn their text blue');
+if (wordTableFieldRenderer.includes("outline: selected ? '1px solid #1976d2' : 'none'") || wordTableFieldRenderer.includes("'&:focus-visible': { outline: '1px solid #1976d2' }") || wordTableFieldRenderer.includes("bgcolor: selected ? '#e8f1fb' : 'transparent'")) failures.push('componentRegistry.tsx: selected Word-table fields must not show a blue outline or focus background');
+if (!wordTableFieldRenderer.includes("if (['Backspace', 'Delete'].includes(event.key))")) failures.push('componentRegistry.tsx: focused Word-table fields must handle direct Backspace and Delete removal');
 const cellModeRenderer = wordTableFieldRenderer.slice(
   wordTableFieldRenderer.indexOf('if (isCellMode)'),
   wordTableFieldRenderer.indexOf('\n  return (', wordTableFieldRenderer.indexOf('if (isCellMode)') + 1),
@@ -2646,6 +2733,7 @@ await verifyCommonComponentBehavior();
 await verifyWordTableContextMenuOperations();
 await verifyWordTableLayoutBehavior();
 await verifyWordTableInlineFieldMoveBehavior();
+await verifyWordTableFieldAvailabilityBehavior();
 
 if (failures.length > 0) {
   console.error('verify-template-designer-react failed');

@@ -676,6 +676,7 @@ function FieldPreviewRenderer({
         onMouseUp={(event) => {
           if (event.button !== 0) return;
           event.stopPropagation();
+          event.currentTarget.focus({ preventScroll: true });
           onSelect();
         }}
         onClick={(event) => {
@@ -690,7 +691,6 @@ function FieldPreviewRenderer({
           p: 0,
           m: 0,
           border: 0,
-          bgcolor: 'transparent',
           font: 'inherit',
           lineHeight: 'inherit',
           textAlign: 'inherit',
@@ -699,12 +699,12 @@ function FieldPreviewRenderer({
           boxSizing: 'border-box',
           cursor: 'grab',
           outline: 'none',
+          bgcolor: 'transparent',
           overflow: 'hidden',
           whiteSpace: 'pre-wrap',
           textOverflow: 'ellipsis',
-          color: '#a8abb2',
+          color: selected ? '#1976d2' : '#a8abb2',
           fontSize: 'inherit',
-          '&:focus': { outline: 'none' },
         }}
       >
         {wordTablePlaceholder}

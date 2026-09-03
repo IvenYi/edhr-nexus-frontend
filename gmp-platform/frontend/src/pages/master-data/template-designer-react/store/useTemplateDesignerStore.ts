@@ -7,6 +7,7 @@ import type {
   CanvasSelectionRange,
   CanvasSelectedCell,
   CanvasSheetCell,
+  CanvasWordTableBlock,
   FieldType,
   ModelField,
   ModelFieldStatus,
@@ -1691,13 +1692,28 @@ function reconcileSubTableRegionTemplates(nodes: CanvasNode[]): CanvasNode[] {
   });
 }
 
-function collectBoundFieldIds(nodes: CanvasNode[], target = new Set<string>()) {
+function isAttachedWordTableFieldNode(node: CanvasNode, wordDocument: CanvasPage['wordDocument']) {
+  const cellTarget = node.style.wordTableCell as { blockId?: unknown; cellId?: unknown } | undefined;
+  if (typeof cellTarget?.blockId !== 'string' || typeof cellTarget.cellId !== 'string') return true;
+
+  const table = wordDocument?.blocks.find((block): block is CanvasWordTableBlock => (
+    block.id === cellTarget.blockId && block.type === 'table'
+  ));
+  const cell = table?.cells.find((candidate) => candidate.id === cellTarget.cellId);
+  return Boolean(cell);
+}
+
+function collectBoundFieldIds(
+  nodes: CanvasNode[],
+  wordDocument: CanvasPage['wordDocument'],
+  target = new Set<string>(),
+) {
   nodes.forEach((node) => {
-    if (node.bindings?.fieldId) {
+    if (node.bindings?.fieldId && isAttachedWordTableFieldNode(node, wordDocument)) {
       target.add(node.bindings.fieldId);
     }
     if (node.children?.length) {
-      collectBoundFieldIds(node.children, target);
+      collectBoundFieldIds(node.children, wordDocument, target);
     }
   });
   return target;
@@ -3280,7 +3296,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
   getUsedFieldIdsForCurrentVersion: () => {
     const page = get().getCurrentPage();
     if (!page) return [];
-    return Array.from(collectBoundFieldIds(page.nodes));
+    return Array.from(collectBoundFieldIds(page.nodes, page.wordDocument));
   },
   getSubTableFieldForSelectedRange: () => {
     const page = get().getCurrentPage();
@@ -3302,7 +3318,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     if (!document || !page) return [];
     const selectedNode = nodeId ? findNode(page.nodes, nodeId) : null;
     const currentFieldId = selectedNode?.bindings?.fieldId ?? null;
-    const usedFieldIds = collectBoundFieldIds(page.nodes);
+    const usedFieldIds = collectBoundFieldIds(page.nodes, page.wordDocument);
 
     return document.model.fields.filter((field) => {
       if (field.status !== 'enabled') return false;

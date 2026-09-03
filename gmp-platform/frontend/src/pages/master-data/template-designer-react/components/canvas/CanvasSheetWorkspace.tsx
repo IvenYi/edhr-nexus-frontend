@@ -96,12 +96,14 @@ interface WordTableLayoutPreview {
 interface WordTableCellInlineContentProps {
   text: string;
   fieldNodes: CanvasNode[];
+  selectedNodeId: string | null;
   onFieldSelect: (nodeId: string) => void;
 }
 
 const WordTableCellInlineContent = memo(({
   text,
   fieldNodes,
+  selectedNodeId,
   onFieldSelect,
 }: WordTableCellInlineContentProps) => {
   const cellInlineContent = decodeWordTableCellContent(text, fieldNodes.map((node) => node.id));
@@ -115,7 +117,7 @@ const WordTableCellInlineContent = memo(({
       <Renderer
         key={key}
         node={node}
-        selected={false}
+        selected={node.id === selectedNodeId}
         onSelect={() => onFieldSelect(node.id)}
         renderMode="word-table-cell"
       />
@@ -138,6 +140,7 @@ const WordTableCellInlineContent = memo(({
   );
 }, (previous, next) => (
   previous.text === next.text
+  && previous.selectedNodeId === next.selectedNodeId
   && previous.fieldNodes.length === next.fieldNodes.length
   && previous.fieldNodes.every((node, index) => node === next.fieldNodes[index])
 ));
@@ -5197,6 +5200,7 @@ export default function CanvasSheetWorkspace() {
                         <WordTableCellInlineContent
                           text={cell.text}
                           fieldNodes={cellFieldNodes}
+                          selectedNodeId={selectedNodeId}
                           onFieldSelect={(nodeId) => {
                             selectWordTable(block.id, true);
                             setWordTableAdditionalCellRanges([]);
