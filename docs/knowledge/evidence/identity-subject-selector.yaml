@@ -1,0 +1,92 @@
+knowledgeModelVersion: 0.3.12
+evidence:
+  - id: evidence.identity-user-account
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/UserAccount.java
+    description: 用户账户实体，保存租户、用户名、显示名和状态，可作为流程主体的直接用户维度。
+    visibility: internal
+  - id: evidence.identity-department
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/Department.java
+    description: 部门实体通过 parentId 形成树形组织关系，保存租户、编码和名称。
+    visibility: internal
+  - id: evidence.identity-role
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/entity/Role.java
+    description: 角色实体保存租户、编码和名称；当前产品页面将其展示为岗位角色，未发现独立岗位实体。
+    visibility: internal
+  - id: evidence.identity-user-memberships
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/DepartmentController.java
+    description: 部门树接口读取用户-部门和用户-角色关系，并将成员及其角色返回到部门节点，证明组织成员解析具备基础数据来源。
+    visibility: internal
+  - id: evidence.identity-subject-selector-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-form-process-user-confirmed-v2.md
+    description: 用户确认表单流程节点配置主体；本次补充确认主体选择器支持用户、部门和角色，部门默认包含下级且可切换为仅本部门，角色和部门按最新成员解析。
+    visibility: internal
+  - id: evidence.identity-form-process-empty-subject-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-form-process-user-confirmed-v3.md
+    description: 用户确认表单流程主体可以不配置；空主体的开放操作语义由表单流程调用方解释，公共主体解析器不展开全量用户。
+    visibility: internal
+  - id: evidence.identity-subject-resolver-contract
+    type: document
+    path: docs/knowledge/decisions/DEC-0030-identity-runtime-subject-resolution.yaml
+    description: 公共主体解析器的业务契约：按调用时最新身份关系展开用户、部门和角色主体，部门支持本部门或含下级范围，最终用户按稳定用户 ID 去重并保留全部命中来源。
+    visibility: internal
+  - id: evidence.identity-user-department-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserDepartmentRepository.java
+    description: 用户-部门关系仓储，提供按用户查询和批量查询能力，是部门主体运行时展开的关系数据来源。
+    visibility: internal
+  - id: evidence.identity-user-role-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserRoleRepository.java
+    description: 用户-角色关系仓储，提供按用户或角色查询能力，是角色主体运行时展开的关系数据来源。
+    visibility: internal
+  - id: evidence.identity-department-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/DepartmentRepository.java
+    description: 部门仓储，提供部门实体查询；部门 parentId 树的遍历由解析器负责，不应由调用方重复实现。
+    visibility: internal
+  - id: evidence.identity-workflow-task-single-assignee
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java
+    description: 工作流任务仍保留单个 assigneeId 作为历史兼容字段；候选主体通过 workflow_task.candidate_snapshot 快照保存，不把多个用户 ID 写入该字段。
+    visibility: internal
+  - id: evidence.identity-subject-resolver-implementation
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java
+    description: 身份域公共主体解析器，按调用时最新关系展开用户、部门和角色，递归部门范围并按用户 ID 去重，同时保留全部主体来源。
+    visibility: internal
+  - id: evidence.identity-subject-resolver-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/identity/service/SubjectResolverTest.java
+    description: 主体解析器单元测试覆盖父子部门重叠去重、仅本部门范围、角色与直接用户合并及非 ACTIVE 用户过滤。
+    visibility: internal
+  - id: evidence.workflow-task-multi-candidate-runtime-implementation
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    description: 工作流运行时在节点进入时解析主体并创建一个逻辑任务及去重后的候选快照；完成、转办和终止按逻辑任务状态处理，并保留解析来源快照。
+    visibility: internal
+  - id: evidence.workflow-task-candidate-persistence
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java
+    description: 工作流任务实体保存候选快照、实际处理人、状态、主体命中来源和完成时间；一个节点只对应一条逻辑任务。
+    visibility: internal
+  - id: evidence.workflow-task-candidate-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql
+    description: 数据库变更为 workflow_task 增加 candidate_snapshot JSONB 字段及候选用户查询索引。
+    visibility: internal
+  - id: evidence.workflow-task-candidate-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java
+    description: 任务仓储提供按候选快照查询待办、按实际处理人查询已办及按任务加锁读取能力。
+    visibility: internal
+  - id: evidence.workflow-task-candidate-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java
+    description: 工作流任务待办和已办接口按认证主体查询候选快照和实际处理记录，不信任请求中的 assigneeId。
+    visibility: internal

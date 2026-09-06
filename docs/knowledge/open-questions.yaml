@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.10
+knowledgeModelVersion: 0.3.12
 questions:
   - id: question.production-work-condition-runtime-source-snapshot-contract
     question: 已确认作业条件第一版字段目录和字段类型，但运行时真实来源、取值快照方式以及目录版本与生产实例快照的绑定契约何时闭环？
@@ -26,4 +26,12 @@ questions:
       - 由运行时编排器统一转换命中分支和否则分支结果，再推进对应目标节点
       - 待确认分支结果事件、目标节点绑定、异常处理和执行审计字段
     impact: 配置层分支数量和出口基数已确认，但在运行时事件、目标节点绑定和异常审计闭环前，不得把条件分支求值或节点推进标记为 verified/runtime。
+    visibility: internal
+  - id: question.multi-tenant-workflow-isolation
+    question: 启用多租户时，工作流数据和运行时操作的租户隔离契约如何统一落地？
+    context: 当前 eDHR 按一个默认租户运行，本次 MVP 不实现租户隔离。未来多租户不能只在某个查询接口增加 tenant_id 条件，必须统一处理认证租户上下文、工作流定义与绑定、流程实例、任务、候选快照、主体解析、仓储查询、控制器授权和引擎按 ID 操作。
+    options:
+      - 启用多租户时为全部工作流实体补充租户归属，并由认证上下文强制约束所有查询和运行时操作
+      - 待确认租户上下文来源、历史数据迁移、跨租户管理员边界和审计字段后统一设计
+    impact: 这是非 MVP TODO，不阻塞当前默认单租户工作流交付；在契约闭环前不得宣称工作流已具备多租户隔离或直接进入多租户生产发布。
     visibility: internal

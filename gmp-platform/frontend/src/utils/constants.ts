@@ -164,6 +164,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         icon: 'AccountTree',
         children: [
           { label: '审核流程模板', path: '/workflow/review-templates' },
+          { label: '表单流程', path: '/workflow/form-processes' },
           { label: '流程实例', path: '/workflow/instances' },
         ],
       },

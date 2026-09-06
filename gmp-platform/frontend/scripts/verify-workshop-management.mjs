@@ -32,7 +32,7 @@ const routerContent = read('src/router/index.tsx');
 const pageContent = read('src/pages/master-data/WorkshopManagementPage.tsx');
 const apiContent = read('src/api/workshops.ts');
 const controllerContent = read('../backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java');
-const migrationContent = read('../backend/src/main/resources/db/changelog/0061-workshop-management.sql');
+const migrationContent = read('../backend/src/main/resources/db/changelog/0070-workshop-management.sql');
 
 mustInclude(packageContent, '"verify:workshop-management": "node scripts/verify-workshop-management.mjs"', 'workshop verification should be runnable');
 mustAppearInOrder(constantsContent, ["label: '工艺建模'", "label: '模板建模'", "label: '工厂建模'"], 'factory modeling should be below template modeling');

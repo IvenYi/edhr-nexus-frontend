@@ -1,0 +1,74 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0025
+    title: 表单流程内置事件与作业节点字段绑定
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；本决策替代 DEC-0024 中将处理标识作为事件配置项的旧方案，确定第一版只提供填充签名字段内置事件，并将具体字段绑定放在作业流程表单填写节点。流程声明保持可复用，运行时执行契约尚未实现。"
+    decisionStatements:
+      - id: DEC-0025-01
+        statement: "provenance: user-confirmed；表单流程模板和已发布版本继续支持复用到多个表单，节点按钮事件声明保存在可复用表单流程版本中。"
+        status: specified
+        visibility: internal
+      - id: DEC-0025-02
+        statement: "provenance: user-confirmed；第一版节点内置事件仅支持 FILL_SIGN_FIELD（填充签名字段），事件配置保存执行前或执行后时机及关联按钮动作。"
+        status: specified
+        visibility: internal
+      - id: DEC-0025-03
+        statement: "provenance: user-confirmed；处理标识、处理器标识等技术字段不向用户展示，也不作为第一版事件配置持久化字段。"
+        status: specified
+        visibility: internal
+      - id: DEC-0025-04
+        statement: "provenance: user-confirmed；作业流程表单填写节点在选定具体表单模板版本后，才能将 FILL_SIGN_FIELD 事件绑定到该表单真实存在的稳定 fieldId；绑定只属于作业节点，不回写表单流程版本。"
+        status: specified
+        visibility: internal
+      - id: DEC-0025-05
+        statement: "provenance: implementation-constraint；保存或发布绑定时，事件标识必须来自所引用的已发布表单流程版本，字段标识必须来自所选表单模板版本；切换任一版本后失效绑定必须清理或阻止保存。"
+        status: specified
+        visibility: internal
+      - id: DEC-0025-06
+        statement: "provenance: implementation-constraint；已发布表单流程版本的按钮和事件声明不可直接修改，变更必须创建新版本；作业节点字段绑定随作业流程配置快照固定。"
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0024]
+    evidenceIds: [evidence.production-form-process-buttons-events-v2, evidence.production-form-process-guancheng-research]
+    acceptanceScenarios:
+      - id: scenario.production-form-process-builtin-event-whitelist
+        given: 用户正在配置表单流程节点事件
+        when: 用户选择内置事件
+        then: 只能选择“填充签名字段”（FILL_SIGN_FIELD），不展示处理标识或处理器标识
+        evidenceIds: [evidence.production-form-process-buttons-events-v2]
+        evidenceRequirements: [事件类型白名单保存重读测试]
+      - id: scenario.production-form-process-event-declaration-reusable
+        given: 一个表单流程版本被多个作业节点复用
+        when: 用户保存节点的填充签名字段事件
+        then: 流程版本保存事件时机和关联动作，事件声明不绑定任何具体表单字段
+        evidenceIds: [evidence.production-form-process-buttons-events-v2]
+        evidenceRequirements: [流程版本事件声明保存测试, 多表单复用验证]
+      - id: scenario.production-work-form-entry-binds-event-field
+        given: 作业流程表单填写节点已选择一个已发布表单流程版本和一个表单模板版本
+        when: 用户为填充签名字段事件选择目标字段
+        then: 只能选择所选表单版本真实存在的稳定 fieldId，绑定保存在作业节点
+        evidenceIds: [evidence.production-form-process-buttons-events-v2]
+        evidenceRequirements: [字段绑定保存重读测试, 绑定隔离测试]
+      - id: scenario.production-work-form-entry-binding-version-validation
+        given: 作业节点的表单流程版本或表单模板版本发生切换
+        when: 用户保存或发布节点配置
+        then: 不属于新版本的事件或 fieldId 绑定被清理或阻止保存
+        evidenceIds: [evidence.production-form-process-buttons-events-v2]
+        evidenceRequirements: [版本切换失效绑定校验测试]
+      - id: scenario.production-form-process-published-builtin-event-fixed
+        given: 作业节点引用一个已发布表单流程版本
+        when: 用户修改流程按钮或内置事件声明
+        then: 原发布版本不被改写，必须创建新的流程版本
+        evidenceIds: [evidence.production-form-process-buttons-events-v2]
+        evidenceRequirements: [发布版本只读验证]
+    implementationDiscrepancies:
+      - id: discrepancy.production-form-process-builtin-event-runtime-unimplemented
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/rules/transaction-runtime.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；当前 eDHR 尚未实现表单流程实例、按钮动作执行、FILL_SIGN_FIELD 事件触发、签名字段写入或对应运行时审计；本决策仅描述配置和发布校验层。"
+        evidenceIds: [evidence.production-form-process-buttons-events-v2, evidence.ai-transaction-runtime-architecture]

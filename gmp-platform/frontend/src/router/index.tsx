@@ -9,6 +9,8 @@ const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage'));
 const PersonalSettingsPage = lazy(() => import('@/pages/account/PersonalSettingsPage'));
 const ReviewTemplateList = lazy(() => import('@/pages/workflow-center/ReviewTemplateList'));
 const ReviewTemplateEditor = lazy(() => import('@/pages/workflow-center/ReviewTemplateEditor'));
+const FormProcessList = lazy(() => import('@/pages/workflow-center/FormProcessList'));
+const FormProcessEditor = lazy(() => import('@/pages/workflow-center/FormProcessEditor'));
 const WorkTemplateList = lazy(() => import('@/pages/workflow-center/WorkTemplateList'));
 const WorkTemplateEditor = lazy(() => import('@/pages/workflow-center/WorkTemplateEditor'));
 const WorkOrderPage = lazy(() => import('@/pages/production/WorkOrderPage'));
@@ -79,6 +81,8 @@ const AppRouter = () => {
         <Route path="workflow">
           <Route path="review-templates" element={<Suspense fallback={<Loading />}><ReviewTemplateList /></Suspense>} />
           <Route path="review-templates/:id" element={<Suspense fallback={<Loading />}><ReviewTemplateEditor /></Suspense>} />
+          <Route path="form-processes" element={<Suspense fallback={<Loading />}><FormProcessList /></Suspense>} />
+          <Route path="form-processes/:id" element={<Suspense fallback={<Loading />}><FormProcessEditor /></Suspense>} />
           <Route path="binding-rules" element={<Suspense fallback={<Loading />}><BindingRuleList /></Suspense>} />
           <Route path="instances" element={<Suspense fallback={<Loading />}><InstanceList /></Suspense>} />
           <Route path="instances/:id" element={<Suspense fallback={<Loading />}><InstanceDetail /></Suspense>} />

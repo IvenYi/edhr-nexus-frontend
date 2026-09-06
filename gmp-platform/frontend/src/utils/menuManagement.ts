@@ -56,6 +56,7 @@ const REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU: SidebarMenu = {
   icon: 'AccountTree',
   children: [
     { label: '审核流程模板', path: '/workflow/review-templates' },
+    { label: '表单流程', path: '/workflow/form-processes' },
     { label: '流程实例', path: '/workflow/instances' },
   ],
 };
@@ -82,6 +83,7 @@ const TEMPLATE_MODELING_PATHS = new Set(REQUIRED_TEMPLATE_MODELING_MENU.children
 const FACTORY_MODELING_PATHS = new Set(REQUIRED_FACTORY_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const PRODUCTION_MANAGED_PATHS = new Set([
   '/workflow/review-templates',
+  '/workflow/form-processes',
   '/workflow/instances',
   '/workflow/txn-templates',
   '/workflow/work-templates',
@@ -384,6 +386,7 @@ export function useManagedSidebarModules(): SidebarModule[] {
 export function inferPermissionCode(path: string): string | undefined {
   if (path === '/') return 'dashboard';
   if (path === '/production/work-templates') return 'workflow.work-templates';
+  if (path === '/workflow/form-processes') return 'workflow.form-processes';
   if (path === '/production/work-orders') return 'production.work-orders';
   if (path === '/production/batches') return 'production.batches';
   if (path === '/system/menu-management') return 'system.edit';

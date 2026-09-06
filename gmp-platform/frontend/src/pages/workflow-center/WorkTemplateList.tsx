@@ -44,6 +44,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import {
@@ -317,7 +318,7 @@ export default function WorkTemplateList() {
     switch (column.id) {
       case 'name': return <TableCell key={column.id}><Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: '#303133' }}>{row.name}</Typography></TableCell>;
       case 'code': return <TableCell key={column.id}>{row.code || '-'}</TableCell>;
-      case 'publishedFlow': return <TableCell key={column.id} sx={{ color: row.currentFlowVersionNumber ? '#303133' : '#909399' }}>{row.currentFlowVersionNumber ? `流程 V${row.currentFlowVersionNumber}` : '暂未发布'}</TableCell>;
+      case 'publishedFlow': return <TableCell key={column.id}>{row.currentFlowVersionNumber ? <StatusBadge label={`流程 V${row.currentFlowVersionNumber}`} color="success" showDot={false} /> : <Typography sx={{ color: '#909399' }}>暂未发布</Typography>}</TableCell>;
       case 'applicabilityRules': {
         const rules = rulesByDefinitionId.get(String(row.id)) ?? [];
         if (rules.length === 0) return <TableCell key={column.id} sx={{ color: '#909399' }}>0 条</TableCell>;

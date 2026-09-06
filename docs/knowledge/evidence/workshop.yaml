@@ -1,8 +1,8 @@
-knowledgeModelVersion: 0.3.10
+knowledgeModelVersion: 0.3.12
 evidence:
   - id: evidence.workshop-master-data-decision
     type: document
-    path: docs/knowledge/decisions/DEC-0013-workshop-master-data.yaml
+    path: docs/knowledge/decisions/DEC-0027-workshop-master-data.yaml
     description: 记录用户确认的租户级四字段无版本车间主数据、状态、编码、引用保护、审计、菜单和权限决策。
     visibility: internal
   - id: evidence.workshop-master-data-architecture
@@ -37,7 +37,7 @@ evidence:
     visibility: internal
   - id: evidence.migration-0061-workshop-management
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0061-workshop-management.sql
+    path: gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql
     description: 将旧车间按 site 归属和唯一的结构迁移为租户级车间，回填 tenant_id，增加 description 和 ACTIVE/INACTIVE status，建立租户内 LOWER(code) 唯一索引，删除 site_id，并新增车间页面权限与管理员授权。
     visibility: internal
   - id: evidence.workshop-controller

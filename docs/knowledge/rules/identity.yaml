@@ -1,0 +1,101 @@
+knowledgeModelVersion: 0.3.12
+rules:
+  - id: rule.identity.runtime-subject-resolution
+    name: 运行时主体解析为当前有效用户
+    status: implemented
+    visibility: internal
+    trigger: subject.resolve
+    scope: identity-runtime
+    condition:
+      all:
+        - fact: subject.references
+          operator: is-present
+          value: true
+    result:
+      type: resolve-subject-users
+      supportedSubjectTypes: [USER, DEPARTMENT, ROLE]
+      departmentScopes: [SELF, SELF_AND_DESCENDANTS]
+      membershipSource: latest-at-call-time
+      inactiveUsersExcluded: true
+      deduplicateBy: userId
+      retainMatchProvenance: true
+      invalidReferenceBehavior: ignore-and-report
+    explanation: 身份域公共解析器接收标准主体引用，在调用时读取最新用户、部门、角色及其关系，将部门按主体范围展开，将角色按当前用户-角色关系展开，并排除无效或非 ACTIVE 用户。最终用户集合按稳定 userId 去重；每个用户命中的全部主体来源、部门范围和角色引用保留在解析结果中。解析器只负责身份解析，不决定任务落库、审批策略、字段权限合并或通知投递。
+    evidenceIds: [evidence.identity-user-account, evidence.identity-department, evidence.identity-role, evidence.identity-user-department-repository, evidence.identity-user-role-repository, evidence.identity-department-repository, evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+  - id: rule.identity.empty-subjects-do-not-expand-users
+    name: 空主体由业务调用方解释且不展开全量用户
+    status: specified
+    visibility: internal
+    trigger: subject.resolve
+    scope: identity-runtime
+    condition:
+      all:
+        - fact: subject.references
+          operator: is-present
+          value: false
+    result:
+      type: planned-permission-control
+      expandAllUsers: false
+      callerOwnsAuthorization: true
+    explanation: 公共主体解析器收到空主体时不把“所有人”转换成全量用户列表。需要开放操作范围的表单流程调用方负责结合认证用户、流程实例和任务状态授权；需要具体收件人集合的其他调用方不得把空主体误认为全量收件人。
+    evidenceIds: [evidence.identity-form-process-empty-subject-user-confirmed, evidence.identity-subject-resolver-contract]
+  - id: rule.identity.runtime-department-overlap-deduplication
+    name: 重叠部门解析避免重复用户
+    status: implemented
+    visibility: internal
+    trigger: subject.resolve
+    scope: identity-runtime
+    condition:
+      all:
+        - fact: subject.references
+          operator: is-present
+          value: true
+        - fact: subject.departmentScopes
+          operator: in
+          value: [SELF, SELF_AND_DESCENDANTS]
+    result:
+      type: resolve-subject-users
+      deduplicateBy: userId
+      retainMatchProvenance: true
+      expansionMemoization: per-resolution-request
+    explanation: 同一解析请求中父部门含下级和子部门主体可能展开相同成员；解析器对部门树和最终用户使用请求级去重，避免重复查询或遍历导致的性能浪费，同时不合并或丢弃不同主体命中来源。
+    evidenceIds: [evidence.identity-department-repository, evidence.identity-user-department-repository, evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+  - id: rule.workflow.task-creation-freezes-candidate-resolution
+    name: 工作流任务创建冻结候选解析快照
+    status: implemented
+    visibility: internal
+    trigger: workflow-task.create
+    scope: workflow-runtime
+    condition:
+      all:
+        - fact: subject.resolution.completed
+          operator: equals
+          value: true
+    result:
+      type: create-logical-workflow-task
+      logicalTaskCount: 1
+      candidateSnapshotUserCount: resolved-user-count
+      persistResolutionSnapshot: true
+      persistMatchProvenance: true
+      candidateMembershipFrozenAfterCreate: true
+    explanation: 审批节点到达时使用主体解析结果创建一个逻辑工作流任务，并在候选快照中记录去重后的候选用户，同时保存解析结果及主体命中来源快照。任务创建后不因组织或角色关系变化重算既有候选集合。
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration]
+  - id: rule.workflow.task-any-candidate-completes-and-closes-siblings
+    name: 任一候选完成逻辑任务
+    status: implemented
+    visibility: internal
+    trigger: workflow-task.complete
+    scope: workflow-runtime
+    condition:
+      all:
+        - fact: task.candidateMembership
+          operator: contains-actor
+          value: true
+        - fact: workflowTask.status
+          operator: equals
+          value: open
+    result:
+      type: complete-logical-task
+      nonCandidateBehavior: block
+    explanation: 仅任务创建时快照中的候选用户可以执行完成动作。任一候选完成后，单条逻辑任务进入终态，其他候选因任务终态自然失去处理权；非候选人不得完成。
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.production-form-process-user-confirmed-v2, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence]

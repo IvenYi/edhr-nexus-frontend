@@ -1,0 +1,36 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0032
+    title: 单租户 MVP 边界与后续多租户工作流隔离
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；当前 eDHR 产品按一个默认租户运行。工作流多候选任务改造不实现运行时多租户数据隔离；多租户属于非 MVP 待办，未来启用时必须与工作流隔离一并设计和开发。"
+    decisionStatements:
+      - id: DEC-0032-01
+        statement: "provenance: user-confirmed；MVP 默认使用单一租户，不新增租户选择、租户上下文或跨租户隔离行为。"
+        status: specified
+        visibility: internal
+      - id: DEC-0032-02
+        statement: "provenance: user-confirmed；当前工作流运行时按现有默认租户范围执行，工作流定义、实例、任务、候选快照和主体解析不因本次改造增加租户过滤。"
+        status: specified
+        visibility: internal
+      - id: DEC-0032-03
+        statement: "provenance: user-confirmed；未来启用多租户时，必须将认证租户上下文、工作流定义与绑定、实例、任务、候选快照、仓储查询、控制器授权和引擎按 ID 操作作为同一项能力整体实现，并补充迁移、审计和跨租户回归验证。"
+        status: planned
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.workflow-single-tenant-mvp-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.workflow-single-tenant-mvp-boundary
+        given: 当前产品尚未启用多租户，且工作流运行时使用默认租户
+        when: 验收本次多候选工作流任务改造
+        then: 不要求新增租户隔离逻辑，既有单租户工作流功能按本次决策验证
+        evidenceIds: [evidence.workflow-single-tenant-mvp-user-confirmed]
+        evidenceRequirements: [单租户聚焦测试, 后端编译]
+      - id: scenario.workflow-future-multitenancy-bundled-delivery
+        given: 产品后续启动多租户开发
+        when: 设计工作流多租户支持
+        then: 租户上下文、工作流数据隔离、运行时授权、迁移、审计和跨租户回归必须作为同一交付范围完成
+        evidenceIds: [evidence.workflow-single-tenant-mvp-user-confirmed]
+        evidenceRequirements: [多租户数据库集成测试, 跨租户 HTTP 授权测试, 运行时并发与审计回归]
+    implementationDiscrepancies: []

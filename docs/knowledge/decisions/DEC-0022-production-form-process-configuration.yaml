@@ -1,0 +1,98 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0022
+    title: 生产表单流程模板、绑定版本与阶段权限配置
+    status: deprecated
+    visibility: internal
+    context: "provenance: user-confirmed；历史方案曾以流程字段、字段映射和权限组表达表单流程配置，现由 DEC-0023 的主体默认权限与绑定级真实字段例外方案替代。本决策保留用于历史追溯。"
+    decisionStatements:
+      - id: DEC-0022-01
+        statement: "provenance: user-confirmed；表单流程模板与具体表单模板版本解耦。流程模板可复用于多个兼容表单，表单填报节点必须通过绑定版本将一个流程模板版本映射到一个具体表单模板版本；同一节点只固定一个绑定版本。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-02
+        statement: "provenance: user-confirmed；流程模板中的字段权限规则引用稳定的字段槽位，不直接保存具体表单字段 ID；绑定配置将字段槽位映射到表单模板版本中的实际字段，并在发布时校验映射完整性和兼容性。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-03
+        statement: "provenance: user-confirmed；填报阶段支持多个填报权限组。权限组可按岗位、角色或用户组授予字段编辑或只读权限，并独立配置保存、提交等操作权限；没有特殊字段规则时默认可编辑，提供批量切换为全部编辑或全部只读的配置能力。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-04
+        statement: "provenance: user-confirmed；审批阶段以审批节点解析出的参与者作为权限主体，审批人来源支持固定用户、部门负责人、角色或用户组、业务责任人等；节点字段权限第一版只有编辑和只读。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-05
+        statement: "provenance: user-confirmed；同一人员命中多个权限策略时采用只读优先：只要任一匹配策略为只读，最终字段权限为只读；仅当所有匹配策略均为编辑时最终为编辑。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-06
+        statement: "provenance: user-confirmed；审批节点为候选审批人任一处理即可完成的处理策略；需要按顺序逐个审批时配置多个审批节点，不在单个节点内隐含顺序会签。第一版不提供拒绝动作，退回固定回到填报阶段。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-07
+        statement: "provenance: user-confirmed；表单流程与外层作业流程为同步等待关系。表单流程终止时，外层作业流程同步终止；本切片仅保存该结果契约，不实现运行时实例推进。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-08
+        statement: "provenance: inference；表单模板新版本不自动改写已发布绑定版本；需要新表单版本时应新建或复制绑定配置并重新确认字段槽位映射。"
+        status: specified
+        visibility: internal
+      - id: DEC-0022-09
+        statement: "provenance: user-confirmed；字段权限配置采用默认权限加例外字段：填报权限组和审批节点参与者分别设置默认编辑或只读，再针对流程字段设置例外；作业流程表单填报节点绑定具体表单时只维护流程字段到实际表单字段的映射，不重新配置审批权限。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research, evidence.production-work-form-node-business-document-config, evidence.production-work-flow-editor-ui]
+    acceptanceScenarios:
+      - id: scenario.production-form-process-template-reuse
+        given: 一个流程模板版本包含字段槽位和阶段权限规则
+        when: 两个兼容表单模板版本分别在作业流程节点中完成绑定
+        then: 两个绑定版本独立保存，流程模板无需复制，且每个表单填报节点只引用一个绑定版本
+        evidenceIds: [evidence.production-form-process-user-confirmed]
+        evidenceRequirements: [绑定版本 API 测试, 字段槽位映射 UI 验证]
+      - id: scenario.production-form-process-entry-permission-default-edit
+        given: 表单字段没有命中特殊填报权限规则
+        when: 用户配置填报阶段权限
+        then: 字段默认为编辑，并可一键切换全部字段为编辑或只读
+        evidenceIds: [evidence.production-form-process-user-confirmed]
+        evidenceRequirements: [权限配置保存重读测试, 字段权限 UI 验证]
+      - id: scenario.production-form-process-entry-permission-conflict
+        given: 一个填报人员命中多个权限组且其中一个组将字段设为只读
+        when: 系统解析该字段权限
+        then: 最终字段权限为只读
+        evidenceIds: [evidence.production-form-process-user-confirmed]
+        evidenceRequirements: [权限合并单元测试]
+      - id: scenario.production-form-process-permission-default-exception
+        given: 一个填报权限组或审批节点参与者已设置默认字段权限
+        when: 用户将个别流程字段设置为相反的例外权限，并在作业流程节点绑定具体表单
+        then: 页面保存默认权限和例外字段规则，绑定配置只保存流程字段到实际表单字段的映射
+        evidenceIds: [evidence.production-form-process-permission-default-exception-design]
+        evidenceRequirements: [权限配置保存重读测试, 字段映射 UI 验证]
+      - id: scenario.production-form-process-approval-any-candidate
+        given: 审批节点解析出多个候选审批人
+        when: 任一候选人完成审批
+        then: 审批节点完成，不要求其他候选人依次处理
+        evidenceIds: [evidence.production-form-process-user-confirmed]
+        evidenceRequirements: [审批策略配置测试]
+      - id: scenario.production-form-process-return-to-entry
+        given: 审批人选择退回
+        when: 表单流程处理退回动作
+        then: 表单流程返回填报阶段，第一版不支持任意历史节点选择
+        evidenceIds: [evidence.production-form-process-user-confirmed]
+        evidenceRequirements: [退回目标配置测试, 后续运行时集成测试]
+      - id: scenario.production-form-process-termination-cascade
+        given: 表单流程被终止
+        when: 外层作业流程收到表单流程结果
+        then: 外层作业流程同步终止；本切片只保存该契约，不实现运行时推进
+        evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
+        evidenceRequirements: [配置契约测试, 后续运行时集成测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-form-process-runtime-unimplemented
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/rules/transaction-runtime.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；当前 eDHR 尚未实现表单流程实例、审批任务、权限运行时解析、退回处理或外层作业同步推进，因此本决策及相关规则保持 specified/internal。"
+        evidenceIds: [evidence.production-form-process-guancheng-research, evidence.ai-transaction-runtime-architecture]

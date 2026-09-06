@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.10
+knowledgeModelVersion: 0.3.12
 rules:
   - id: rule.transaction.published-version-only
     name: 事务运行只读取已发布版本
@@ -569,6 +569,496 @@ rules:
       publishedFlowPreviewSource: productionWorkDefinition.currentPublishedFlowVersionId
     explanation: 新增或编辑适用规则时，客户页面根据已选作业、规则类型与范围实时组成可读摘要，并展示该作业当前已发布流程的只读预览入口。摘要可解释例外排除、指定范围、全局适用的固定处理顺序，但不暴露优先级字段；草稿和历史流程不属于适用规则选择或预览的目标。
     evidenceIds: [evidence.business-knowledge-model, evidence.production-work-applicability-dialog-ui, evidence.production-work-flow-preview-ui]
+  - id: rule.form-process.binding-requires-form-and-flow
+    name: 表单流程绑定必须同时引用流程和表单版本
+    status: specified
+    visibility: internal
+    trigger: form-process.binding.publish
+    scope: form-process-configuration
+    condition:
+      any:
+        - fact: formProcessBinding.formTemplateVersionId
+          operator: is-null
+          value: true
+        - fact: formProcessBinding.formProcessTemplateVersionId
+          operator: is-null
+          value: true
+    result:
+      type: block
+      reason: form-process-binding-reference-required
+    explanation: 表单填报节点的绑定版本必须同时引用一个表单模板版本和一个表单流程模板版本；绑定版本是作业节点固定引用的唯一配置单元。当前规则属于配置发布校验，尚未实现运行时实例创建。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-buttons-events-v2]
+  - id: rule.form-process.binding-mapping-required
+    name: 表单流程绑定发布前校验字段槽位映射
+    status: deprecated
+    visibility: internal
+    trigger: form-process.binding.publish
+    scope: form-process-configuration
+    condition:
+      any:
+        - fact: formProcessBinding.requiredFieldSlotMappingComplete
+          operator: equals
+          value: false
+        - fact: formProcessBinding.fieldMappingCompatible
+          operator: equals
+          value: false
+    result:
+      type: block
+      reason: form-process-field-slot-mapping-invalid
+    explanation: 历史版本曾要求绑定配置完成流程字段槽位映射。当前方案不再使用流程字段、业务字段分类或字段映射；旧 fieldSlots/fieldMappings 仅兼容读取，不参与新版本发布阻断。
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: rule.form-process.entry-permission-default-edit
+    name: 填报字段默认可编辑
+    status: deprecated
+    visibility: internal
+    trigger: form-process.entry-permission.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessEntry.fieldPermissionRuleMatched
+          operator: equals
+          value: false
+    result:
+      type: persist-flow-configuration
+      permission: EDIT
+      bulkToggleValues: [EDIT, READ_ONLY]
+    explanation: 历史规则把默认编辑描述为字段级配置。当前方案改由表单流程节点为每个主体保存统一默认权限，见 rule.form-process.subject-default-permission。
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: rule.form-process.permission-default-exception
+    name: 表单流程字段权限采用默认权限与例外字段
+    status: deprecated
+    visibility: internal
+    trigger: form-process.permission.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: permission.subjectMatched
+          operator: equals
+          value: true
+    result:
+      type: persist-flow-configuration
+      model: default-with-exceptions
+      permissionStates: [EDIT, READ_ONLY]
+      exceptionTarget: form-process-field-slot
+      appliesTo: [entry-permission-group, approval-participant]
+      bindingStage: field-mapping-only
+      conflictPolicy: READ_ONLY_FIRST
+    explanation: 历史规则使用流程字段表达例外权限，已由真实表单字段例外方案替代；当前规则不再作为新配置入口。
+    evidenceIds: [evidence.production-form-process-permission-default-exception-design]
+  - id: rule.form-process.field-permission-readonly-wins
+    name: 表单字段权限冲突时只读优先
+    status: deprecated
+    visibility: internal
+    trigger: form-process.permission.resolve
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessPermission.matchedReadonlyPolicy
+          operator: equals
+          value: true
+    result:
+      type: planned-permission-control
+      permission: READ_ONLY
+      precedence: READ_ONLY_OVER_EDIT
+    explanation: 历史规则针对多个流程字段权限策略的冲突合并，已由主体默认权限与绑定级真实字段例外取值替代；运行时权限解析仍未实现。
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: rule.form-process.subject-default-permission
+    name: 表单流程主体配置统一默认权限
+    status: specified
+    visibility: internal
+    trigger: form-process.subject.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessSubject.sourceConfigured
+          operator: equals
+          value: true
+        - fact: formProcessSubject.defaultPermission
+          operator: in
+          value: [EDIT, READ_ONLY]
+    result:
+      type: persist-flow-configuration
+      target: formProcessSubject.defaultPermission
+      allowedValues: [EDIT, READ_ONLY]
+      fieldLevelConfiguration: forbidden
+    explanation: 表单流程的填报或审批节点只配置主体来源和该主体的统一默认权限。默认权限只能选择“全部可编辑”或“全部只读”，流程设计页不配置具体表单字段、业务字段分类、字段权限组或权限模板。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: rule.form-process.subject-selector-supported-dimensions
+    name: 表单流程主体选择器支持的身份维度
+    status: specified
+    visibility: internal
+    trigger: form-process.subject.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: subjectSelector.opened
+          operator: equals
+          value: true
+    result:
+      type: persist-flow-configuration
+      subjectTypes: [USER, DEPARTMENT, ROLE]
+      multiSelect: true
+      forbiddenSubjectTypes: [USER_GROUP, DEPARTMENT_OWNER, BUSINESS_OWNER]
+      stableReferenceRequired: true
+    explanation: 审批主体和填报权限主体共用公共主体选择器。第一版只展示用户、部门和角色三类真实存在且有基础关系数据的维度，允许多选并保存稳定 ID；用户组、部门负责人和业务责任人尚无对应主数据或解析器，不进入配置入口。
+    evidenceIds: [evidence.identity-user-account, evidence.identity-department, evidence.identity-role, evidence.identity-subject-selector-user-confirmed]
+  - id: rule.form-process.department-subject-scope-default
+    name: 部门主体默认范围
+    status: specified
+    visibility: internal
+    trigger: form-process.department-subject.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: subject.type
+          operator: equals
+          value: DEPARTMENT
+    result:
+      type: persist-flow-configuration
+      scopeOptions: [DEPARTMENT_AND_DESCENDANTS, DEPARTMENT_ONLY]
+      defaultScope: DEPARTMENT_AND_DESCENDANTS
+      scopeLabelRequired: true
+    explanation: 选择部门作为流程主体时，默认覆盖本部门及下级部门，也可切换为仅本部门；配置结果需要保留范围标识，避免用户只看到部门名称而误解实际人员范围。
+    evidenceIds: [evidence.identity-department, evidence.identity-subject-selector-user-confirmed]
+  - id: rule.form-process.subject-members-resolve-latest-relations
+    name: 流程主体按最新关系解析成员
+    status: specified
+    visibility: internal
+    trigger: form-process.subject.resolve
+    scope: form-process-runtime
+    condition:
+      any:
+        - fact: subject.type
+          operator: equals
+          value: DEPARTMENT
+        - fact: subject.type
+          operator: equals
+          value: ROLE
+    result:
+      type: persist-flow-configuration
+      membershipSource: latest-user-organization-and-role-relations
+      resolveAt: node-arrival
+      entryPermissionCheckAt: user-access
+      publishedSnapshot: false
+    explanation: 部门和角色主体不在流程发布或业务启动时固定成员快照。审批节点到达时按最新关系解析候选人，填报权限在用户访问时按最新关系判断；当前实现尚未完成运行时解析。
+    evidenceIds: [evidence.identity-user-memberships, evidence.identity-subject-selector-user-confirmed]
+  - id: rule.form-process.entry-subject-optional-open-scope
+    name: 未配置填报主体时所有已认证用户可填报
+    status: specified
+    visibility: internal
+    trigger: form-process.entry-permission.authorize
+    scope: form-process-runtime
+    condition:
+      all:
+        - fact: formProcessEntry.subjectConfigurationPresent
+          operator: equals
+          value: false
+        - fact: authenticatedUser.present
+          operator: equals
+          value: true
+    result:
+      type: planned-permission-control
+      scope: all-authenticated-users-in-default-tenant
+      expandAllUsers: false
+      requires: [workflow-instance-active, entry-node-active]
+    explanation: 填报主体和权限组不是必填项；未配置时不限制为特定主体，当前单租户内所有已认证用户均可填报。授权时按当前用户和流程状态判断，不为了表示所有人而查询或展开全量用户。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v3]
+  - id: rule.form-process.approval-subject-optional-open-scope
+    name: 未配置审批主体时所有已认证用户可审批
+    status: specified
+    visibility: internal
+    trigger: form-process.approval-task.authorize
+    scope: form-process-runtime
+    condition:
+      all:
+        - fact: formProcessApproval.subjectConfigurationPresent
+          operator: equals
+          value: false
+        - fact: authenticatedUser.present
+          operator: equals
+          value: true
+    result:
+      type: planned-permission-control
+      scope: all-authenticated-users-in-default-tenant
+      expandAllUsers: false
+      logicalTaskCount: 1
+      requires: [workflow-instance-active, approval-node-active, workflow-task-open]
+    explanation: 审批主体不是必填项；未配置时当前单租户内所有已认证用户均可审批。运行时只保留一个逻辑任务，不生成按用户数量增长的候选任务，也不构造全量候选快照。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v3, evidence.workflow-task-empty-subject-user-confirmed]
+  - id: rule.form-process.binding-field-exception
+    name: 作业流程绑定后按真实表单字段配置例外权限
+    status: specified
+    visibility: internal
+    trigger: production-work.form-entry-node.bind-form-process
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessBinding.formTemplateVersionId
+          operator: is-present
+          value: true
+        - fact: formProcessBinding.formProcessTemplateVersionId
+          operator: is-present
+          value: true
+        - fact: formProcessBinding.formProcessTemplateVersion.status
+          operator: equals
+          value: PUBLISHED
+    result:
+      type: persist-form-required-configuration
+      target: formProcessBinding.fieldPermissionExceptions
+      fieldReference: formTemplateField.fieldId
+      allowedValues: [EDIT, READ_ONLY]
+      processFieldSlots: forbidden
+      processFieldMappings: forbidden
+      bindingScoped: true
+    explanation: 作业流程表单填写节点先绑定一个具体表单模板版本和一个已发布表单流程版本，再针对该表单真实存在的稳定 fieldId 配置少量例外权限。例外权限只对当前绑定生效，不改变可复用的表单流程版本。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: rule.form-process.binding-field-permission-inheritance
+    name: 未配置字段例外时继承主体默认权限
+    status: specified
+    visibility: internal
+    trigger: form-process.permission.resolve
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessBinding.fieldPermissionException.exists
+          operator: equals
+          value: false
+    result:
+      type: planned-permission-control
+      permissionSource: formProcessSubject.defaultPermission
+      exceptionOverride: none
+    explanation: 绑定中没有为某个真实表单字段配置例外时，该字段直接继承其对应表单流程主体的默认权限；因此用户无需逐字段重复配置。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: rule.form-process.entry-bulk-default-permission-persists
+    name: 填报节点批量默认权限必须落到真实主体配置
+    status: specified
+    visibility: internal
+    trigger: form-process.entry-permission.bulk-configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessEntry.bulkPermissionRequested
+          operator: in
+          value: [EDIT, READ_ONLY]
+    result:
+      type: persist-flow-configuration
+      target: formProcessSubject.defaultPermission
+      permission: formProcessEntry.bulkPermissionRequested
+      materializeMissingSubjectConfiguration: true
+      forbiddenOutcome: display-only-change
+    explanation: 填报节点的“全部可编辑/全部只读”是主体默认权限的批量设置，必须保存到实际配置并在重新打开时可读取。没有已配置主体时，系统仍需创建或更新可持久化的默认主体配置，不能只改变临时展示行的状态。
+    evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
+  - id: rule.form-process.binding-switch-cleans-invalid-field-exceptions
+    name: 切换绑定版本清理失效字段例外
+    status: specified
+    visibility: internal
+    trigger: production-work.form-entry-node.binding.change
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessBinding.versionChanged
+          operator: equals
+          value: true
+    result:
+      type: persist-form-required-configuration
+      target: formProcessBinding.fieldPermissionExceptions
+      retainWhen:
+        all:
+          - fact: exception.fieldId.existsInSelectedFormTemplateVersion
+            operator: equals
+            value: true
+          - fact: exception.subject.existsInSelectedFormProcessVersion
+            operator: equals
+            value: true
+      removeWhen:
+        any:
+          - fact: exception.fieldId.existsInSelectedFormTemplateVersion
+            operator: equals
+            value: false
+          - fact: exception.subject.existsInSelectedFormProcessVersion
+            operator: equals
+            value: false
+      invalidExceptionAction: remove-before-save
+    explanation: 表单或表单流程版本切换后，原绑定中的字段例外不一定仍然有效。保存新绑定前必须按新表单的真实 fieldId 和新流程主体重新筛选，清理失效例外，避免旧字段权限泄漏到新绑定；仍有效的例外继续保留。
+    evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
+  - id: rule.form-process.published-version-reference-fixed
+    name: 表单流程发布版本引用固定
+    status: specified
+    visibility: internal
+    trigger: production-work.form-entry-node.bind-form-process
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessBinding.formProcessTemplateVersion.status
+          operator: equals
+          value: PUBLISHED
+    result:
+      type: persist-form-reference-pair
+      references: [formProcessTemplateVersionId, formTemplateVersionId]
+      immutableAfterPublish: true
+      eachBindingOwnsExceptions: true
+    explanation: 每个作业流程表单填写节点固定保存一个已发布表单流程版本和一个具体表单模板版本；同一表单流程可以复用到多个表单，但每个绑定独立保存字段例外权限。已发布版本内容不可在原版本上修改。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: rule.form-process.approval-any-candidate
+    name: 审批候选人任一处理完成节点
+    status: specified
+    visibility: internal
+    trigger: form-process.approval-task.complete
+    scope: form-process-runtime
+    condition:
+      all:
+        - fact: formProcessApproval.candidateCount
+          operator: greater-than-or-equal
+          value: 1
+    result:
+      type: planned-production-work-trigger
+      completionStrategy: first-completed-candidate
+      sequentialApproval: false
+    explanation: 审批节点解析出多个候选人时，任一候选人完成即可完成该审批节点；需要按顺序逐个审批时，应配置多个审批节点，不在单个节点内隐含顺序会签。当前审批任务运行时尚未实现。
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
+  - id: rule.form-process.approval-return-to-entry
+    name: 审批退回固定回到填报阶段
+    status: specified
+    visibility: internal
+    trigger: form-process.approval.return
+    scope: form-process-runtime
+    condition:
+      all:
+        - fact: formProcessApproval.returnRequested
+          operator: equals
+          value: true
+    result:
+      type: planned-production-work-trigger
+      targetStage: ENTRY
+      arbitraryHistoricalTarget: false
+    explanation: 第一版审批退回不提供任意历史节点选择，统一返回填报阶段供现场人员修正并重新提交；当前仅保存配置和未来运行契约。
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: rule.form-process.termination-cascades-to-outer-work
+    name: 表单流程终止同步终止外层作业流程
+    status: specified
+    visibility: internal
+    trigger: form-process.terminate
+    scope: form-process-runtime
+    condition:
+      all:
+        - fact: formProcess.status
+          operator: equals
+          value: TERMINATED
+    result:
+      type: planned-production-work-trigger
+      outerProcessResult: TERMINATED
+      synchronous: true
+    explanation: 表单流程与外层作业流程是同步等待关系；表单流程终止后必须向外层返回终止结果并同步终止外层作业流程。当前生产作业运行时尚未实现，规则不得标记为 verified 或 runtime。
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
+  - id: rule.form-process.node-button-configuration-v1
+    name: 表单流程节点按钮配置白名单
+    status: specified
+    visibility: internal
+    trigger: form-process.node-button.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessNode.type
+          operator: in
+          value: [START, APPROVAL]
+        - fact: formProcessNode.button.action
+          operator: in
+          value: [SAVE, SUBMIT, APPROVE, RETURN]
+    result:
+      type: persist-flow-configuration
+      target: formProcessNode.buttons
+      persists: [visible, label, action, parameters]
+      electronicSignatureActions: [SAVE, SUBMIT, APPROVE, RETURN]
+      signatureEvent: {builtin: FILL_SIGN_FIELD, event: BEFORE, signatureMethod: ACCOUNT_PASSWORD}
+      forbiddenActions: [TRANSFER, ADD_SIGN, REJECT, DENY, DISAPPROVE, TERMINATE, WITHDRAW]
+      approvalOpinionRequiredConfigurable: true
+      publishedVersionEditable: false
+    explanation: 第一版允许开始节点和审批节点保存按钮的显示状态、显示名称和标准动作；电子签名通过独立签署事件关联保存、提交、审批或退回，事件固定为执行前账户密码签署，并可选择是否填充签名字段。产品层不提供启用勾选，不需要事件时直接删除。该规则只约束配置层持久化，不表示运行时动作处理器或电子签名已经实现。
+    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+  - id: rule.form-process.node-button-event-configuration-v1
+    name: 表单流程节点按钮事件配置
+    status: deprecated
+    visibility: internal
+    trigger: form-process.node-button-event.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessNode.buttonEvent.timing
+          operator: equals
+          value: BEFORE
+        - fact: formProcessNode.buttonEvent.action
+          operator: in
+          value: [SAVE, SUBMIT, APPROVE, RETURN]
+    result:
+      type: persist-flow-configuration
+      target: formProcessNode.buttonEvents
+      persists: [timing, action, handlerId]
+      handlerIdOptional: true
+      runtimeExecution: unavailable
+      publishedVersionEditable: false
+    explanation: 历史规则曾允许事件保存可选处理器标识，已由 rule.form-process.node-button-builtin-event-configuration-v2 替代；旧字段仅用于历史配置读取，不参与新版本发布。
+    evidenceIds: [evidence.production-form-process-buttons-events-v1]
+  - id: rule.form-process.node-button-builtin-event-configuration-v2
+    name: 表单流程节点内置事件配置
+    status: specified
+    visibility: internal
+    trigger: form-process.node-button-event.configure
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessNode.buttonEvent.timing
+          operator: in
+          value: [BEFORE, AFTER]
+        - fact: formProcessNode.buttonEvent.action
+          operator: in
+          value: [SAVE, SUBMIT, APPROVE, RETURN]
+        - fact: formProcessNode.buttonEvent.builtin
+          operator: in
+          value: [FILL_SIGN_FIELD]
+    result:
+      type: persist-flow-configuration
+      target: formProcessNode.buttonEvents
+      persists: [timing, action, builtin, signatureMethod]
+      builtinEventWhitelist: [FILL_SIGN_FIELD]
+      forbiddenFields: [handlerId, processorId, processingMarker]
+      runtimeExecution: unavailable
+      publishedVersionEditable: false
+    explanation: 当前第一版签署事件固定保存执行前时机、关联标准动作、账户密码签名方式和受控内置事件类型；不提供单独的启用勾选，不需要事件时直接删除事件配置。内置事件仅支持 FILL_SIGN_FIELD（填充签名字段）或不填充。处理标识、处理器标识等技术字段不属于用户配置项，当前不得宣称已有运行时事件触发、签名字段写入或审计副作用。
+    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+  - id: rule.production-work.form-entry-event-field-binding
+    name: 作业流程表单填写节点绑定内置事件字段
+    status: specified
+    visibility: internal
+    trigger: production-work.form-entry-node.bind-form-process-event
+    scope: form-process-configuration
+    condition:
+      all:
+        - fact: formProcessBinding.formTemplateVersionId
+          operator: is-present
+          value: true
+        - fact: formProcessBinding.formProcessTemplateVersionId
+          operator: is-present
+          value: true
+        - fact: formProcessBinding.formProcessTemplateVersion.status
+          operator: equals
+          value: PUBLISHED
+        - fact: formProcessBinding.eventBinding.eventId
+          operator: exists-in
+          value: formProcessBinding.formProcessTemplateVersion.buttonEvents
+        - fact: formProcessBinding.eventBinding.fieldId
+          operator: exists-in
+          value: formProcessBinding.formTemplateVersion.fields
+    result:
+      type: persist-form-required-configuration
+      target: productionWorkFormEntryNode.eventBindings
+      references: [eventId, fieldId]
+      eventWhitelist: [FILL_SIGN_FIELD]
+      fieldReference: formTemplateField.fieldId
+      bindingScoped: true
+      processVersionWriteBack: false
+      invalidBindingAction: block
+    explanation: 作业流程表单填写节点必须先绑定一个已发布表单流程版本和具体表单模板版本，再把流程版本中声明的 FILL_SIGN_FIELD 事件绑定到所选表单真实存在的稳定 fieldId。字段绑定属于当前作业节点，不回写可复用表单流程版本；当前仅定义配置与校验，不代表运行时签名写入已实现。
+    evidenceIds: [evidence.production-form-process-buttons-events-v2]
   - id: rule.ai.runtime-determinism
     name: Codex/生成式 AI 不直接决定生产运行结果
     status: specified

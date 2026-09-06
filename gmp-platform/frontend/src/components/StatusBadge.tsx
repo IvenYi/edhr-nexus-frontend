@@ -22,9 +22,10 @@ interface StatusBadgeProps {
   label: string;
   color?: ChipProps['color'];
   size?: ChipProps['size'];
+  showDot?: boolean;
 }
 
-export default function StatusBadge({ label, color = 'default', size = 'small' }: StatusBadgeProps) {
+export default function StatusBadge({ label, color = 'default', size = 'small', showDot = true }: StatusBadgeProps) {
   const tone = color as StatusTone;
   const style = STATUS_STYLE[tone] ?? STATUS_STYLE.default;
 
@@ -33,7 +34,7 @@ export default function StatusBadge({ label, color = 'default', size = 'small' }
       size={size}
       label={
         <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span
+          {showDot ? <span
             style={{
               width: 6,
               height: 6,
@@ -41,7 +42,7 @@ export default function StatusBadge({ label, color = 'default', size = 'small' }
               backgroundColor: style.dot,
               flexShrink: 0,
             }}
-          />
+          /> : null}
           {label}
         </span>
       }

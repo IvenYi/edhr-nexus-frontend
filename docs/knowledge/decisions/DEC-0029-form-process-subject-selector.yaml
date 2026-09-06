@@ -1,0 +1,54 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0029
+    title: 表单流程公共主体选择器与组织范围
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；为审批主体和填报权限主体提供可复用的公共主体选择器。本决策只定义主体引用与解析配置，不声称当前流程运行时已经完成人员解析。"
+    decisionStatements:
+      - id: DEC-0029-01
+        statement: "provenance: user-confirmed；公共主体选择器第一版支持用户、部门和角色三类主体，并允许多选；用户组、部门负责人、业务责任人暂不作为可配置主体。"
+        status: specified
+        visibility: internal
+      - id: DEC-0029-02
+        statement: "provenance: user-confirmed；部门主体默认解析本部门及下级部门成员，同时允许切换为仅本部门；选择结果必须显示所选范围。"
+        status: specified
+        visibility: internal
+      - id: DEC-0029-03
+        statement: "provenance: user-confirmed；角色和部门主体按流程节点到达时的最新用户关系解析，不在流程发布或业务启动时固定成员快照。"
+        status: specified
+        visibility: internal
+      - id: DEC-0029-04
+        statement: "provenance: original-evidence；当前系统真实存在 UserAccount、Department、Role 及用户-部门、用户-角色关系；不存在独立用户组、岗位实体、部门负责人字段或通用主体解析器。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.identity-user-account, evidence.identity-department, evidence.identity-role, evidence.identity-user-memberships, evidence.identity-subject-selector-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.subject-selector-dimensions
+        given: 用户在审批主体或填报主体配置中打开公共主体选择器
+        when: 用户选择主体类型
+        then: 可选择用户、部门或角色，并可保存多个主体引用；不显示无法解析的用户组、部门负责人或业务责任人选项
+        evidenceIds: [evidence.identity-user-account, evidence.identity-department, evidence.identity-role]
+        evidenceRequirements: [主体选择器组件验证, 配置保存重读测试]
+      - id: scenario.subject-selector-department-scope
+        given: 用户选择一个部门主体
+        when: 用户确认部门范围
+        then: 默认范围为本部门及下级，也可切换为仅本部门，保存结果包含范围标识
+        evidenceIds: [evidence.identity-department, evidence.identity-subject-selector-user-confirmed]
+        evidenceRequirements: [部门范围交互验证, 配置保存重读测试]
+      - id: scenario.subject-selector-latest-members
+        given: 流程节点需要解析部门或角色主体
+        when: 节点到达并解析候选人
+        then: 系统读取当时最新的用户-部门或用户-角色关系
+        evidenceIds: [evidence.identity-user-memberships, evidence.identity-subject-selector-user-confirmed]
+        evidenceRequirements: [运行时解析集成测试]
+    implementationDiscrepancies:
+      - id: discrepancy.subject-selector-runtime-unimplemented
+        status: accepted
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow
+        lineHint: 1
+        summary: "provenance: original-evidence；当前流程运行时仅识别旧的 assigneeId/assigneeRole，自定义主体引用、部门范围和最新成员解析尚未闭环。"
+        evidenceIds: [evidence.identity-user-memberships]

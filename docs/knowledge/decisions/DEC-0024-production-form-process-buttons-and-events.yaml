@@ -1,0 +1,68 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0024
+    title: 表单流程节点按钮与按钮事件配置第一版
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；本决策补充 DEC-0023 的流程节点配置入口，仅定义按钮和按钮事件的配置持久化范围，不改变表单复用、主体默认权限或绑定级真实字段例外模型，也不声称运行时已经具备动作执行能力。"
+    decisionStatements:
+      - id: DEC-0024-01
+        statement: "provenance: user-confirmed；可复用的表单流程版本在开始节点和审批节点保存节点级按钮配置；开始节点默认提供保存、提交，审批节点默认提供审批、退回。"
+        status: specified
+        visibility: internal
+      - id: DEC-0024-02
+        statement: "provenance: historical-user-confirmed；历史方案曾描述按钮可见和启用两个状态；当前产品实现按最新简化方案只保留可见/不可见，审批按钮仍可配置处理意见是否必填。"
+        status: specified
+        visibility: internal
+      - id: DEC-0024-03
+        statement: "provenance: user-confirmed；第一版标准动作仅支持保存（SAVE）、提交（SUBMIT）、审批（APPROVE）和退回（RETURN）；不开放转交、加签、拒绝、终止、撤回。"
+        status: specified
+        visibility: internal
+      - id: DEC-0024-04
+        statement: "provenance: historical-user-confirmed；历史方案曾允许事件保存可选处理器标识；该配置已由 DEC-0025 替代，当前只持久化动作执行前/后时机、关联动作和受控内置事件，不代表运行时执行。"
+        status: specified
+        visibility: internal
+      - id: DEC-0024-05
+        statement: "provenance: implementation-constraint；已发布表单流程版本的按钮和事件配置与节点、连线及主体权限一样不可直接修改，变更必须创建新版本。"
+        status: specified
+        visibility: internal
+      - id: DEC-0024-06
+        statement: "provenance: user-confirmed；例外字段仍只在作业流程表单填写节点绑定具体表单模板版本后，针对真实稳定 fieldId 配置，不在可复用表单流程版本中配置。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-user-confirmed-v2]
+    acceptanceScenarios:
+      - id: scenario.production-form-process-button-defaults
+        given: 一个包含开始节点和审批节点的表单流程草稿
+        when: 用户打开节点按钮配置
+        then: 开始节点展示保存和提交，审批节点展示审批和退回，且可继续调整显示状态
+        evidenceIds: [evidence.production-form-process-buttons-events-v1]
+        evidenceRequirements: [节点按钮配置保存重读测试]
+      - id: scenario.production-form-process-button-action-whitelist
+        given: 用户正在配置节点按钮动作
+        when: 用户尝试选择标准动作
+        then: 仅能选择 SAVE、SUBMIT、APPROVE、RETURN，转交、加签、拒绝、终止和撤回不可选
+        evidenceIds: [evidence.production-form-process-buttons-events-v1]
+        evidenceRequirements: [动作白名单校验测试]
+      - id: scenario.production-form-process-button-event-persistence
+        given: 节点存在一个标准按钮动作
+        when: 用户配置 BEFORE 或 AFTER 事件并保存
+        then: 系统保存事件时机、关联动作和可选处理器标识，但不执行运行时副作用
+        evidenceIds: [evidence.production-form-process-buttons-events-v1]
+        evidenceRequirements: [事件配置保存重读测试, 运行时未实现边界检查]
+      - id: scenario.production-form-process-binding-exception-remains-local
+        given: 同一表单流程版本被多个作业节点复用
+        when: 某个作业节点绑定表单后修改真实字段例外
+        then: 例外仅改变当前绑定，不写回流程按钮、事件或主体默认权限
+        evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+        evidenceRequirements: [多绑定隔离测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-form-process-button-event-runtime-unimplemented
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/rules/transaction-runtime.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；当前 eDHR 尚未实现表单流程实例、按钮动作处理器、按钮事件触发、处理器调用或对应运行时审计；本决策仅描述配置层。"
+        evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.ai-transaction-runtime-architecture]

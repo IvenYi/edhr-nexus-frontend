@@ -1,0 +1,7 @@
+knowledgeModelVersion: 0.3.12
+evidence:
+  - id: evidence.workflow-single-tenant-mvp-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/workflow-single-tenant-mvp-user-confirmed.md
+    description: 用户确认当前 eDHR 默认按单一租户运行，本次不实现多租户隔离；未来启用多租户时将租户上下文、工作流数据隔离和运行时授权作为整体交付。
+    visibility: internal

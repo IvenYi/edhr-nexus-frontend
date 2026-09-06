@@ -1,32 +1,32 @@
-knowledgeModelVersion: 0.3.10
+knowledgeModelVersion: 0.3.12
 decisions:
-  - id: DEC-0013
+  - id: DEC-0027
     title: 无版本的租户级车间主数据
     status: specified
     visibility: internal
     context: 车间需从旧的“工厂→车间→产线”展示页中分离，作为数据模块工厂建模分组下独立维护的四字段主数据。用户确认当前不保留对工厂的强制归属，编码唯一性改为租户范围，产线对车间的引用继续作为更新和删除保护依据。
     decisionStatements:
-      - id: DEC-0013-01
+      - id: DEC-0027-01
         statement: 车间是租户级独立主数据，字段只包含车间编码、车间名称、描述和状态，不引入版本、发布或复制版本能力。
         status: implemented
         visibility: internal
-      - id: DEC-0013-02
+      - id: DEC-0027-02
         statement: 车间当前不强制归属工厂，车间编码在同一租户内唯一；旧 site_id 强制归属不再是当前业务契约。
         status: implemented
         visibility: internal
-      - id: DEC-0013-03
+      - id: DEC-0027-03
         statement: 新建车间默认启用；停用车间不能被新业务选择，已有历史引用仍保留并可展示。
         status: specified
         visibility: internal
-      - id: DEC-0013-04
+      - id: DEC-0027-04
         statement: 车间被产线或其他业务引用后锁定编码并禁止删除，但允许修改名称、描述和状态；未被引用时可修改编码或删除。
         status: implemented
         visibility: internal
-      - id: DEC-0013-05
+      - id: DEC-0027-05
         statement: 车间新增、修改、删除都记录变更前后快照，启用或停用按修改审计。
         status: implemented
         visibility: internal
-      - id: DEC-0013-06
+      - id: DEC-0027-06
         statement: 车间管理位于数据模块的工厂建模分组，工厂建模与工艺建模、模板建模平级并排在模板建模下方；页面权限为 master-data.workshops。
         status: implemented
         visibility: internal

@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.12
+evidence:
+  - id: evidence.workflow-task-multi-candidate-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md
+    description: 用户确认的多候选工作流任务语义：每个节点一个逻辑任务，通过候选快照关联多人；任一候选完成后逻辑任务进入终态，并固定创建时解析快照和来源。
+    visibility: internal
+  - id: evidence.workflow-task-empty-subject-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-form-process-user-confirmed-v3.md
+    description: 用户确认未配置审批主体时所有已认证用户均可审批；运行时保持一个逻辑任务，不为开放范围展开全量候选用户。
+    visibility: internal

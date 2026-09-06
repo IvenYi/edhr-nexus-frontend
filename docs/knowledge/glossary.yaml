@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.10
+knowledgeModelVersion: 0.3.12
 terms:
   - id: term.workshop
     name: 车间
@@ -65,6 +65,168 @@ terms:
     definition: DHR 目录项实际引用并由工序绑定追溯的受控表单版本；用户可见的生效状态由 effectiveFrom/effectiveTo 时间窗计算，持久化 status 不替代该状态。
     aliases: [表单版本]
     status: implemented
+    visibility: internal
+  - id: term.form-process-template
+    name: 表单流程模板
+    definition: 可复用的表单流程结构定义，不绑定具体表单；包含填报阶段、审批节点、结束流转、可选的主体来源规则及主体的默认字段权限。未配置填报或审批主体时，操作范围默认为当前单租户内所有已认证用户。流程模板不定义具体表单字段。
+    aliases: [表单流程定义, 表单审批流程模板]
+    status: specified
+    visibility: internal
+  - id: term.form-process-template-version
+    name: 表单流程模板版本
+    definition: 表单流程模板的受控配置版本，保存流程节点、连线、可选的填报或审批主体来源规则及每个主体的默认权限；未发布版本不得作为作业节点绑定目标，发布后版本内容固定。主体未配置时不展开全量用户，按开放操作范围处理。
+    aliases: [表单流程版本]
+    status: specified
+    visibility: internal
+  - id: term.form-process-binding-version
+    name: 表单流程绑定版本
+    definition: 作业流程表单填写节点将一个已发布表单流程版本绑定到一个表单模板版本形成的配置快照；绑定可保存针对真实表单字段的例外权限，并由节点固定引用。
+    aliases: [表单流程绑定, 表单流程配置版本]
+    status: specified
+    visibility: internal
+  - id: term.form-process-field-slot
+    name: 表单流程字段槽位
+    definition: 历史方案中表单流程模板内代表稳定业务含义的字段契约；当前方案不再创建或配置该对象，仅保留用于读取历史配置和追溯旧决策。
+    aliases: [字段槽位, 流程字段契约]
+    status: deprecated
+    visibility: internal
+  - id: term.form-process-field-mapping
+    name: 表单流程字段映射
+    definition: 在绑定版本中将流程字段槽位映射到所选表单模板版本实际字段的配置记录；发布前需校验映射的存在性和兼容性。
+    aliases: [字段槽位映射, 表单字段映射]
+    status: deprecated
+    visibility: internal
+  - id: term.form-entry-permission-group
+    name: 表单填报权限组
+    definition: 填报阶段按岗位、角色或用户组授予字段编辑或只读及保存、提交等操作权限的主体；同一表单可配置多个权限组。
+    aliases: [填报权限组, 表单录入权限组]
+    status: deprecated
+    visibility: internal
+  - id: term.form-process-participant-rule
+    name: 表单流程参与者规则
+    definition: 表单流程审批节点解析处理人的规则，支持固定用户、部门负责人、角色或用户组、业务责任人等来源。
+    aliases: [审批人规则, 审批参与者规则]
+    status: specified
+    visibility: internal
+  - id: term.form-process-subject
+    name: 表单流程主体
+    definition: 表单流程节点上可选配置的填报人或审批参与者来源及其解析结果的权限主体；同一流程可配置多个填报主体，审批主体支持当前选择器提供的主体来源。未配置主体不代表无人可操作，而代表在当前单租户内对已认证用户开放对应操作。
+    aliases: [填报主体, 审批主体, 表单流程参与主体]
+    status: specified
+    visibility: internal
+  - id: term.identity-user-subject
+    name: 用户主体
+    definition: 由 UserAccount 稳定标识的流程主体，可直接作为审批主体或填报权限主体；主体引用保存用户 ID，不以显示名称作为唯一身份。
+    aliases: [用户, 固定用户]
+    status: implemented
+    visibility: internal
+  - id: term.identity-department-subject
+    name: 部门主体
+    definition: 由 Department 稳定标识的流程主体；部门范围默认为本部门及下级，也可选择仅本部门，具体成员按最新组织关系解析。
+    aliases: [组织主体, 部门人员范围]
+    status: implemented
+    visibility: internal
+  - id: term.identity-role-subject
+    name: 角色主体
+    definition: 由 Role 稳定标识的流程主体；当前产品页面将 Role 展示为岗位角色，具体成员按最新用户-角色关系解析，不另建独立岗位维度。
+    aliases: [岗位角色, 角色]
+    status: implemented
+    visibility: internal
+  - id: term.identity-runtime-subject-resolution
+    name: 运行时主体解析
+    definition: 在流程节点或其他业务调用时，使用当前有效的用户、部门和角色关系，将标准主体引用展开为最终用户集合；同一用户只保留一个解析结果，同时保留其命中的全部主体来源供权限合并、通知或审计使用。
+    aliases: [主体解析器, 人员解析, 运行时人员解析]
+    status: specified
+    visibility: internal
+  - id: term.identity-subject-resolution-match
+    name: 主体解析命中
+    definition: 运行时主体解析中某个最终用户与一个主体引用的匹配记录，包含主体类型、主体标识、部门范围（如适用）及用户标识；多个命中记录不得被去重逻辑丢弃。
+    aliases: [解析来源, 主体命中来源]
+    status: specified
+    visibility: internal
+  - id: term.workflow-task
+    name: 逻辑工作流任务
+    definition: 一个流程节点在运行时创建的单个逻辑待办任务；配置主体时多候选用户通过候选快照关联到同一任务，任一候选完成后任务完成；未配置审批主体时仍只创建一条逻辑任务，并由开放操作范围决定已认证用户的处理资格。
+    aliases: [工作流任务, workflow_task]
+    status: specified
+    visibility: internal
+  - id: term.workflow-task-resolution-snapshot
+    name: 工作流任务主体解析快照
+    definition: 工作流任务创建时保存的候选用户集合及主体命中来源快照，用于审计并冻结既有任务的候选范围，不随后续组织关系变化重算。
+    aliases: [任务候选快照, 主体解析快照]
+    status: specified
+    visibility: internal
+  - id: term.form-process-subject-selector
+    name: 表单流程公共主体选择器
+    definition: 在审批主体和填报权限主体等配置场景复用的主体选择组件；第一版支持用户、部门和角色，并保存稳定主体引用及部门范围。
+    aliases: [主体选择器, 人员选择器]
+    status: specified
+    visibility: internal
+  - id: term.form-process-subject-default-permission
+    name: 主体默认字段权限
+    definition: 表单流程节点为一个主体设置的统一字段权限，第一版只有全部可编辑和全部只读两种选择；未配置字段例外时直接作为该主体的字段权限。
+    aliases: [默认权限, 主体默认权限]
+    status: specified
+    visibility: internal
+  - id: term.form-template-field
+    name: 表单真实字段
+    definition: 某个表单模板版本中实际存在并具有稳定 fieldId 的字段；字段例外权限只能引用该字段，不跨表单共享字段身份。
+    aliases: [表单字段, 真实表单字段]
+    status: specified
+    visibility: internal
+  - id: term.form-binding-field-permission-exception
+    name: 表单绑定字段例外权限
+    definition: 在作业流程表单填写节点绑定具体表单模板版本后，针对该表单真实字段将主体默认权限改为编辑或只读的配置；每个绑定独立保存，未配置例外时继承主体默认权限。
+    aliases: [字段例外权限, 表单字段权限例外]
+    status: specified
+    visibility: internal
+  - id: term.form-process-field-permission-policy
+    name: 表单流程字段权限策略
+    definition: 针对填报权限组或审批节点参与者设置字段权限的规则；每个主体先设置默认权限，再按流程字段配置少量例外，第一版权限只有编辑和只读，多个策略冲突时只读优先。
+    aliases: [字段权限规则, 表单字段权限]
+    status: deprecated
+    visibility: internal
+  - id: term.form-process-operation-permission-policy
+    name: 表单流程操作权限策略
+    definition: 针对表单流程主体授予保存、提交、审批、退回、终止等流程动作的配置策略；它不承载具体字段权限，字段默认权限和例外权限由主体及绑定配置分别决定。
+    aliases: [操作权限规则, 表单操作权限]
+    status: specified
+    visibility: internal
+  - id: term.form-process-node-button-config
+    name: 表单流程节点按钮配置
+    definition: 表单流程版本中针对开始或审批节点保存的按钮显示状态、显示名称和标准动作；电子签名通过独立签署事件关联按钮，不单独配置启用状态，已发布版本只读。
+    aliases: [节点按钮配置, 流程按钮]
+    status: specified
+    visibility: internal
+  - id: term.form-process-button-electronic-signature
+    name: 表单流程按钮签署事件
+    definition: 关联保存、提交、审批或退回按钮的账户密码签署事件；事件存在即表示动作执行前需要签名，是否填充签名字段由事件单独选择，当前仅定义配置层。
+    aliases: [按钮签名要求, 电子签名配置]
+    status: specified
+    visibility: internal
+  - id: term.form-process-standard-action
+    name: 表单流程标准动作
+    definition: 表单流程节点按钮可引用的受控动作标识；第一版仅支持保存、提交、审批和退回，转交、加签、拒绝、终止、撤回不在开放范围内。
+    aliases: [标准动作, 流程动作]
+    status: specified
+    visibility: internal
+  - id: term.form-process-node-event-config
+    name: 表单流程节点事件配置
+    definition: 表单流程节点在标准动作执行前或执行后保存的事件声明，包含事件时机、关联动作和受控内置事件类型；第一版只持久化配置，不代表运行时事件执行已实现。
+    aliases: [节点事件, 按钮事件配置]
+    status: specified
+    visibility: internal
+  - id: term.form-process-builtin-event
+    name: 表单流程内置事件
+    definition: 表单流程节点事件可选择的产品内置标准事件；第一版仅支持“填充签名字段”（FILL_SIGN_FIELD），事件声明保存在可复用表单流程版本中，不包含处理标识等技术字段。
+    aliases: [内置事件, 填充签名字段事件]
+    status: specified
+    visibility: internal
+  - id: term.production-work-form-event-field-binding
+    name: 作业节点事件字段绑定
+    definition: 作业流程表单填写节点选定表单模板版本后，将表单流程内置事件绑定到该表单真实稳定 fieldId 的配置；绑定只属于当前作业节点，不回写可复用表单流程版本。
+    aliases: [事件字段绑定, 签名字段绑定]
+    status: specified
     visibility: internal
   - id: term.rdo-effective-status
     name: RDO 版本当前生效状态

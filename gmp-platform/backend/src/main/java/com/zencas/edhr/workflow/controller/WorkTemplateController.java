@@ -218,6 +218,7 @@ public class WorkTemplateController {
         validateOrdinaryNodeOutgoingEdges(version.getNodesJson(), version.getEdgesJson());
         validatePublishableConditionRules(version.getNodesJson());
         validatePublishableFormReferences(version.getNodesJson());
+        validatePublishableFormProcessReferences(version.getNodesJson());
         validatePublishableGraphConnectivity(version.getNodesJson(), version.getEdgesJson());
         Map<String, Object> before = versionSnapshot(version);
         versionRepository.findByDefinitionIdOrderByVersionNumberDesc(id).forEach(candidate -> {
@@ -634,6 +635,242 @@ public class WorkTemplateController {
             throw new com.zencas.edhr.common.exception.BusinessException(
                     com.zencas.edhr.common.exception.ErrorCode.WF_002, "流程节点数据格式不正确");
         }
+    }
+
+    private void validatePublishableFormProcessReferences(String nodesJson) {
+        try {
+            JsonNode nodes = FLOW_GRAPH_OBJECT_MAPPER.readTree(nodesJson);
+            for (JsonNode node : nodes) {
+                if (!"FORM".equals(node.path("data").path("kind").asText())) continue;
+                String processVersionId = node.path("data").path("config").path("formProcessVersionId").asText("").trim();
+                if (processVersionId.isBlank()) {
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                            "表单填写节点尚未选择表单流程版本，当前不能发布");
+                }
+                WorkflowDefinitionVersion processVersion;
+                try {
+                    processVersion = versionRepository.findById(Long.valueOf(processVersionId))
+                            .orElseThrow(() -> new com.zencas.edhr.common.exception.BusinessException(
+                                    com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                                    "表单填写节点引用的表单流程版本不存在，当前不能发布"));
+                } catch (NumberFormatException exception) {
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                            "表单填写节点引用的表单流程版本不存在，当前不能发布");
+                }
+                WorkflowDefinition definition = workflowDefinitionRepository.findById(processVersion.getDefinitionId())
+                        .orElseThrow(() -> new com.zencas.edhr.common.exception.BusinessException(
+                                com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                                "表单流程定义不存在，当前不能发布"));
+                if (!"FORM_PROCESS".equals(definition.getType()) || !"PUBLISHED".equals(processVersion.getStatus())) {
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                            "表单填写节点只能引用已发布的表单流程版本，当前不能发布");
+                }
+                validateFormProcessFieldPermissions(node, processVersion.getNodesJson());
+            }
+        } catch (JsonProcessingException exception) {
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                    com.zencas.edhr.common.exception.ErrorCode.WF_002, "流程节点数据格式不正确");
+        }
+    }
+
+    /**
+     * Binding-level exceptions are optional. When present, every referenced
+     * field must belong to the concrete form version selected on this node.
+     * Legacy fieldSlots/fieldMappings are intentionally ignored for publishing
+     * so historical work templates remain publishable.
+     */
+    private void validateFormProcessFieldPermissions(JsonNode formNode, String processNodesJson) {
+        JsonNode permissions = formNode.path("data").path("config").path("fieldPermissions");
+        Set<String> fieldIds = resolveReferencedFormFieldIds(formNode.path("data").path("config").path("formTemplateVersionId").asText());
+        validateFormProcessEventBindings(formNode.path("data").path("config").path("eventBindings"), processNodesJson, fieldIds);
+            if (permissions.isMissingNode() || permissions.isNull()) return;
+            if (!permissions.isObject()) {
+                throw new com.zencas.edhr.common.exception.BusinessException(
+                        com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                        "表单填写节点字段权限配置格式不正确");
+            }
+            Set<String> subjectIds = resolveFormProcessSubjectIds(processNodesJson);
+            permissions.fields().forEachRemaining(subject -> {
+                if (!subjectIds.isEmpty() && !subjectIds.contains(subject.getKey())) {
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                            "表单填写节点字段权限引用不存在的权限主体：" + subject.getKey());
+                }
+                JsonNode rule = subject.getValue();
+                if (rule == null || !rule.isObject()) {
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                            "表单填写节点字段权限配置格式不正确");
+                }
+                Set<String> editable = collectPermissionFieldIds(rule.path("editableFieldIds"));
+                Set<String> readOnly = collectPermissionFieldIds(rule.path("readOnlyFieldIds"));
+                String defaultPermission = rule.path("defaultPermission").asText("").trim();
+                if (!defaultPermission.isBlank() && !"EDIT".equals(defaultPermission) && !"READ_ONLY".equals(defaultPermission)) {
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                            "表单填写节点默认权限只能是全部可编辑或全部只读");
+                }
+                Set<String> overlap = new HashSet<>(editable);
+                overlap.retainAll(readOnly);
+                if (!overlap.isEmpty()) {
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                            "同一字段不能同时配置为可编辑和只读：" + overlap.iterator().next());
+                }
+                for (String fieldId : union(editable, readOnly)) {
+                    if (!fieldIds.contains(fieldId)) {
+                        throw new com.zencas.edhr.common.exception.BusinessException(
+                                com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                                "表单填写节点字段权限引用不存在的字段：" + fieldId);
+                    }
+                }
+            });
+    }
+
+    private void validateFormProcessEventBindings(JsonNode bindings, String processNodesJson, Set<String> fieldIds) {
+        if (bindings == null || bindings.isMissingNode() || bindings.isNull()) return;
+        if (!bindings.isObject()) {
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                    com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                    "表单填写节点内置事件配置格式不正确");
+        }
+        Set<String> eventKeys = resolveFormProcessBuiltinEventKeys(processNodesJson);
+        bindings.fields().forEachRemaining(entry -> {
+            if (!eventKeys.contains(entry.getKey())) {
+                throw new com.zencas.edhr.common.exception.BusinessException(
+                        com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                        "表单填写节点引用了不存在的内置事件");
+            }
+            JsonNode binding = entry.getValue();
+            JsonNode fieldId = binding == null ? null : binding.get("fieldId");
+            if (binding == null || !binding.isObject() || fieldId == null || !fieldId.isTextual()
+                    || fieldId.asText().trim().isBlank() || !fieldIds.contains(fieldId.asText().trim())) {
+                throw new com.zencas.edhr.common.exception.BusinessException(
+                        com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                        "表单填写节点内置事件目标字段不存在");
+            }
+        });
+        for (String eventKey : eventKeys) {
+            JsonNode binding = bindings.get(eventKey);
+            if (binding == null || !binding.isObject()
+                    || !binding.path("fieldId").isTextual()
+                    || binding.path("fieldId").asText().trim().isBlank()) {
+                throw new com.zencas.edhr.common.exception.BusinessException(
+                        com.zencas.edhr.common.exception.ErrorCode.WF_002,
+                        "每个电子签名事件都必须绑定目标签名字段");
+            }
+        }
+    }
+
+    private Set<String> resolveFormProcessBuiltinEventKeys(String nodesJson) {
+        Set<String> eventKeys = new HashSet<>();
+        try {
+            JsonNode nodes = FLOW_GRAPH_OBJECT_MAPPER.readTree(nodesJson == null ? "[]" : nodesJson);
+            if (!nodes.isArray()) return eventKeys;
+            for (JsonNode node : nodes) {
+                String nodeId = node.path("id").asText("").trim();
+                JsonNode events = node.path("data").path("config").path("buttonEvents");
+                if (nodeId.isBlank() || !events.isArray()) continue;
+                for (JsonNode event : events) {
+                    String builtin = event.path("builtin").asText("").trim();
+                    String signatureMethod = event.path("signatureMethod").asText("").trim();
+                    String action = event.path("action").asText("").trim();
+                    String phase = event.path("event").asText("").trim();
+                    // Older published versions predate the builtin field. Keep
+                    // their read compatibility aligned with the frontend and
+                    // form-process controller validation.
+                    boolean signatureEvent = (builtin.isBlank() || "FILL_SIGN_FIELD".equals(builtin))
+                            && ("ACCOUNT_PASSWORD".equals(signatureMethod) || signatureMethod.isBlank());
+                    boolean fillsField = builtin.isBlank() || "FILL_SIGN_FIELD".equals(builtin);
+                    if (event.path("enabled").asBoolean(true)
+                            && signatureEvent
+                            && fillsField
+                            && "BEFORE".equals(phase)
+                            && ("SAVE".equals(action) || "SUBMIT".equals(action) || "APPROVE".equals(action) || "RETURN".equals(action))) {
+                        String eventId = event.path("id").asText("").trim();
+                        if (!eventId.isBlank()) eventKeys.add(nodeId + ":" + eventId);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            // The referenced form process graph is structurally validated before this method.
+        }
+        return eventKeys;
+    }
+
+    private Set<String> resolveFormProcessSubjectIds(String nodesJson) {
+        Set<String> subjectIds = new HashSet<>();
+        try {
+            JsonNode nodes = FLOW_GRAPH_OBJECT_MAPPER.readTree(nodesJson == null ? "[]" : nodesJson);
+            if (!nodes.isArray()) return subjectIds;
+            for (JsonNode node : nodes) {
+                String kind = node.path("data").path("kind").asText("");
+                JsonNode config = node.path("data").path("config");
+                if ("START".equals(kind)) {
+                    JsonNode rules = config.path("permissionGroupRules");
+                    if (rules.isArray()) {
+                        for (int index = 0; index < rules.size(); index++) {
+                            String label = rules.get(index).path("group").asText("").trim();
+                            if (!label.isBlank()) subjectIds.add("start:" + index + ":" + label);
+                        }
+                    }
+                } else if ("APPROVAL".equals(kind)) {
+                    String label = config.path("approvers").asText("").trim();
+                    if (!label.isBlank()) subjectIds.add("approval:" + node.path("id").asText("") + ":" + label);
+                }
+            }
+        } catch (Exception ignored) {
+            // The referenced process version is structurally validated before this method.
+        }
+        return subjectIds;
+    }
+
+    private Set<String> collectPermissionFieldIds(JsonNode value) {
+        Set<String> ids = new HashSet<>();
+        if (value == null || value.isMissingNode() || value.isNull()) return ids;
+        if (value.isArray()) {
+            for (JsonNode item : value) {
+                String id = item.asText("").trim();
+                if (!id.isBlank()) ids.add(id);
+            }
+            return ids;
+        }
+        for (String token : value.asText("").split("[,，\\n]")) {
+            String id = token.trim();
+            if (!id.isBlank() && !"*".equals(id)) ids.add(id);
+        }
+        return ids;
+    }
+
+    private Set<String> union(Set<String> left, Set<String> right) {
+        Set<String> values = new HashSet<>(left);
+        values.addAll(right);
+        return values;
+    }
+
+    private Set<String> resolveReferencedFormFieldIds(String formVersionId) {
+        Set<String> fieldIds = new java.util.HashSet<>();
+        if (formVersionId == null || formVersionId.isBlank()) return fieldIds;
+        try {
+            FormTemplateVersion version = formTemplateVersionRepository.findById(Long.valueOf(formVersionId)).orElse(null);
+            if (version == null || version.getModelDesignJson() == null) return fieldIds;
+            JsonNode model = FLOW_GRAPH_OBJECT_MAPPER.readTree(version.getModelDesignJson());
+            JsonNode fields = model.path("payload").path("fields");
+            if (!fields.isArray()) fields = model.path("fields");
+            if (fields.isArray()) for (JsonNode field : fields) {
+                String id = field.path("id").asText("").trim();
+                String code = field.path("code").asText("").trim();
+                if (!id.isBlank()) fieldIds.add(id);
+                if (!code.isBlank()) fieldIds.add(code);
+            }
+        } catch (Exception ignored) {
+            // The referenced form version is validated separately; an unreadable
+            // field catalog will be reported as an unmapped slot when required.
+        }
+        return fieldIds;
     }
 
     private void validatePublishableGraphConnectivity(String nodesJson, String edgesJson) {

@@ -1,0 +1,47 @@
+knowledgeModelVersion: 0.3.12
+evidence:
+  - id: evidence.production-form-process-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-form-process-user-confirmed.md
+    description: 历史方案证据：曾采用流程字段槽位、字段映射和填报权限组；已被当前方案替代，仅用于历史追溯。
+    visibility: internal
+  - id: evidence.production-form-process-user-confirmed-v2
+    type: document
+    path: docs/knowledge/evidence/production-form-process-user-confirmed-v2.md
+    description: 当前用户确认的生产表单流程配置边界：流程可复用于多个表单；流程节点仅配置主体及全部编辑或全部只读的默认权限；作业流程表单填写节点绑定具体表单版本后，按真实稳定 fieldId 保存绑定级例外权限，未配置例外时继承主体默认权限；已发布流程版本固定。
+    visibility: internal
+  - id: evidence.production-form-process-user-confirmed-v3
+    type: document
+    path: docs/knowledge/evidence/production-form-process-user-confirmed-v3.md
+    description: 2026-09-05 用户确认主体配置可选：空填报主体或权限组表示所有人可填报，空审批主体表示所有人可审批；空配置不展开全量用户，仍受认证、节点和任务状态约束。
+    visibility: internal
+  - id: evidence.production-form-process-guancheng-research
+    type: document
+    path: docs/reference-assets/research/crown-transaction-module-research.md
+    description: 冠骋事务与表单节点调研记录，说明表单节点、流程节点状态、表单完成后推进外层流程以及同步子事务语义；仅作为竞品和设计参考，不证明 eDHR 当前运行时已实现。
+    visibility: internal
+  - id: evidence.production-form-process-permission-default-exception-design
+    type: document
+    path: docs/knowledge/evidence/production-form-process-permission-default-exception-design.md
+    description: 历史设计证据：曾将例外权限挂在流程字段并在绑定阶段维护字段映射；已被当前真实表单字段例外方案替代，仅用于历史追溯。
+    visibility: internal
+  - id: evidence.production-form-process-permission-default-exception-design-v2
+    type: document
+    path: docs/knowledge/evidence/production-form-process-permission-default-exception-design-v2.md
+    description: 当前方案的主体默认权限与绑定级真实表单字段例外设计；流程不保存字段槽位，例外只在作业流程绑定具体表单后按稳定 fieldId 保存。
+    visibility: internal
+  - id: evidence.production-form-process-buttons-events-v1
+    type: document
+    path: docs/knowledge/evidence/production-form-process-buttons-events-v1.md
+    description: 用户确认的表单流程节点按钮与节点事件第一版配置范围；按钮仅保存可见状态、标准动作及参数，签署事件仅保存动作前账户密码签名及受控内置事件，不证明 eDHR 运行时已实现动作或事件执行。
+    visibility: internal
+  - id: evidence.production-form-process-buttons-events-v2
+    type: document
+    path: docs/knowledge/evidence/production-form-process-buttons-events-v2.md
+    description: 当前用户确认的表单流程内置事件配置范围；第一版仅支持填充签名字段，去掉处理标识，流程版本只声明事件，作业流程表单填写节点绑定所选表单版本的真实稳定 fieldId，不证明 eDHR 运行时已实现事件执行。
+    visibility: internal
+  - id: evidence.production-form-process-buttons-events-v3
+    type: document
+    path: docs/knowledge/evidence/production-form-process-buttons-events-v3.md
+    description: 用户确认的按钮签署事件配置与事件简化范围：按钮不再提供启用勾选；签署事件关联保存、提交、审批或退回并使用账户密码；签名字段在作业节点绑定真实字段。
+    visibility: internal

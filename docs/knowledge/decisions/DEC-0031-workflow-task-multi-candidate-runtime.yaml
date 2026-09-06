@@ -1,0 +1,60 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0031
+    title: 运行时多候选工作流任务模型
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；审批节点到达时按公共主体解析器得到候选用户；本决策确定解析结果如何形成工作流任务及其完成、审计和权限边界。"
+    decisionStatements:
+      - id: DEC-0031-01
+        statement: "provenance: user-confirmed；每个流程节点只创建一个逻辑 workflow_task，多候选人通过任务上的候选快照关联，不为每个候选人创建独立逻辑任务，也不创建候选人关系行。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0031-02
+        statement: "provenance: user-confirmed；审批策略为任一候选人处理即可完成任务；任一候选完成后，逻辑任务进入终态，其他候选人因逻辑任务终态自然失去处理权。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0031-03
+        statement: "provenance: user-confirmed；只有任务创建时解析出的候选人可以完成任务，非候选人不得执行完成动作。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0031-04
+        statement: "provenance: user-confirmed；创建任务时在 workflow_task.candidate_snapshot 保存候选解析结果、每个候选人的主体来源及未解析主体，作为任务审计依据；任务创建后组织或角色关系变化不重算、不改写该任务候选集合。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract, evidence.identity-workflow-task-single-assignee, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration, evidence.workflow-task-candidate-repository, evidence.workflow-task-candidate-controller]
+    acceptanceScenarios:
+      - id: scenario.workflow-task-one-logical-task
+        given: 一个审批节点解析出多个候选用户
+        when: 节点进入运行时处理
+        then: 创建一个逻辑 workflow_task，并在候选快照中记录全部候选用户及主体来源
+        evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed]
+        evidenceRequirements: [任务创建集成测试]
+      - id: scenario.workflow-task-any-candidate-completes
+        given: 逻辑任务候选快照中存在多个候选用户且任务仍可处理
+        when: 任一候选人完成审批
+        then: 逻辑任务完成，其他候选人不再拥有该逻辑任务处理权
+        evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.production-form-process-user-confirmed-v2]
+        evidenceRequirements: [并发完成事务测试, 逻辑任务终态测试]
+      - id: scenario.workflow-task-non-candidate-blocked
+        given: 用户不在任务创建时的候选快照集合中
+        when: 该用户尝试完成任务
+        then: 完成动作被拒绝且任务状态不变
+        evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed]
+        evidenceRequirements: [任务权限集成测试]
+      - id: scenario.workflow-task-resolution-snapshot-frozen
+        given: 任务创建时已保存候选解析快照和主体来源
+        when: 创建后组织或角色成员关系发生变化
+        then: 既有任务候选快照和审计来源保持不变
+        evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract]
+        evidenceRequirements: [快照持久化测试, 关系变化回归测试]
+    implementationDiscrepancies:
+      - id: discrepancy.workflow-task-multi-candidate-runtime-unimplemented
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+        lineHint: 110
+        summary: "provenance: original-evidence；单逻辑任务候选快照、任务完成授权、创建时解析来源保存、未解析主体记录及非候选人阻断已实现；仍需发布级数据库并发和迁移验证。"
+        evidenceIds: [evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration]

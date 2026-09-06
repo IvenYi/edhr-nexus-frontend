@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.10
+knowledgeModelVersion: 0.3.12
 concepts:
   - id: concept.workshop
     termId: term.workshop
@@ -66,6 +66,168 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-template-version-entity, evidence.operation-form-binding-entity, evidence.form-template-version-persisted-status-default, evidence.template-modeling-rdo-status-projection]
+  - id: concept.form-process-template
+    termId: term.form-process-template
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
+  - id: concept.form-process-template-version
+    termId: term.form-process-template-version
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-process-binding-version
+    termId: term.form-process-binding-version
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-process-field-slot
+    termId: term.form-process-field-slot
+    kind: business-configuration
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-process-field-mapping
+    termId: term.form-process-field-mapping
+    kind: business-configuration
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-entry-permission-group
+    termId: term.form-entry-permission-group
+    kind: business-configuration
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-process-participant-rule
+    termId: term.form-process-participant-rule
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-process-field-permission-policy
+    termId: term.form-process-field-permission-policy
+    kind: business-configuration
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-process-operation-permission-policy
+    termId: term.form-process-operation-permission-policy
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: concept.form-process-subject
+    termId: term.form-process-subject
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: concept.identity-user-subject
+    termId: term.identity-user-subject
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-user-account]
+  - id: concept.identity-department-subject
+    termId: term.identity-department-subject
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-department, evidence.identity-user-memberships]
+  - id: concept.identity-role-subject
+    termId: term.identity-role-subject
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-role, evidence.identity-user-memberships]
+  - id: concept.identity-runtime-subject-resolution
+    termId: term.identity-runtime-subject-resolution
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-user-account, evidence.identity-department, evidence.identity-role, evidence.identity-user-memberships, evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+  - id: concept.identity-subject-resolution-match
+    termId: term.identity-subject-resolution-match
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+  - id: concept.workflow-task
+    termId: term.workflow-task
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-workflow-task-single-assignee, evidence.workflow-task-multi-candidate-runtime-implementation]
+  - id: concept.workflow-task-resolution-snapshot
+    termId: term.workflow-task-resolution-snapshot
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration]
+  - id: concept.form-process-subject-selector
+    termId: term.form-process-subject-selector
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-selector-user-confirmed, evidence.identity-user-account, evidence.identity-department, evidence.identity-role]
+  - id: concept.form-process-subject-default-permission
+    termId: term.form-process-subject-default-permission
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: concept.form-template-field
+    termId: term.form-template-field
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: concept.form-binding-field-permission-exception
+    termId: term.form-binding-field-permission-exception
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: concept.form-process-node-button-config
+    termId: term.form-process-node-button-config
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.production-form-process-buttons-events-v3]
+  - id: concept.form-process-button-electronic-signature
+    termId: term.form-process-button-electronic-signature
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+  - id: concept.form-process-standard-action
+    termId: term.form-process-standard-action
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+  - id: concept.form-process-node-event-config
+    termId: term.form-process-node-event-config
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+  - id: concept.form-process-builtin-event
+    termId: term.form-process-builtin-event
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v2]
+  - id: concept.production-work-form-event-field-binding
+    termId: term.production-work-form-event-field-binding
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v2]
   - id: concept.rdo-effective-status
     termId: term.rdo-effective-status
     kind: business-fact
@@ -422,6 +584,265 @@ relations:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-template-item-entity, evidence.operation-form-binding-entity]
+  - id: relation.form-process-template-has-flow-versions
+    source: concept.form-process-template
+    target: concept.form-process-template-version
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-flow-version-belongs-template
+    source: concept.form-process-template-version
+    target: concept.form-process-template
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-flow-version-has-subjects
+    source: concept.form-process-template-version
+    target: concept.form-process-subject
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: relation.form-process-subject-has-default-permission
+    source: concept.form-process-subject
+    target: concept.form-process-subject-default-permission
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: relation.form-process-subject-selector-supports-user
+    source: concept.form-process-subject-selector
+    target: concept.identity-user-subject
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-selector-user-confirmed]
+  - id: relation.form-process-subject-selector-supports-department
+    source: concept.form-process-subject-selector
+    target: concept.identity-department-subject
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-selector-user-confirmed]
+  - id: relation.form-process-subject-selector-supports-role
+    source: concept.form-process-subject-selector
+    target: concept.identity-role-subject
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-selector-user-confirmed]
+  - id: relation.identity-runtime-resolution-produces-users
+    source: concept.identity-runtime-subject-resolution
+    target: concept.identity-user-subject
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+  - id: relation.identity-runtime-resolution-retains-matches
+    source: concept.identity-runtime-subject-resolution
+    target: concept.identity-subject-resolution-match
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+  - id: relation.identity-resolution-match-targets-user
+    source: concept.identity-subject-resolution-match
+    target: concept.identity-user-subject
+    cardinality: many-to-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+  - id: relation.workflow-task-has-resolution-snapshot
+    source: concept.workflow-task
+    target: concept.workflow-task-resolution-snapshot
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.workflow-task-multi-candidate-runtime-implementation]
+  - id: relation.form-process-flow-version-has-node-buttons
+    source: concept.form-process-template-version
+    target: concept.form-process-node-button-config
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+  - id: relation.form-process-node-button-uses-standard-action
+    source: concept.form-process-node-button-config
+    target: concept.form-process-standard-action
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+  - id: relation.form-process-node-button-has-electronic-signature-requirement
+    source: concept.form-process-node-button-config
+    target: concept.form-process-button-electronic-signature
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+  - id: relation.form-process-flow-version-has-node-events
+    source: concept.form-process-template-version
+    target: concept.form-process-node-event-config
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+  - id: relation.form-process-node-event-uses-builtin-event
+    source: concept.form-process-node-event-config
+    target: concept.form-process-builtin-event
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v2]
+  - id: relation.form-process-binding-targets-form-fields
+    source: concept.form-process-binding-version
+    target: concept.form-template-field
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: relation.form-process-binding-has-field-permission-exceptions
+    source: concept.form-process-binding-version
+    target: concept.form-binding-field-permission-exception
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: relation.form-binding-field-exception-targets-real-field
+    source: concept.form-binding-field-permission-exception
+    target: concept.form-template-field
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: relation.form-binding-field-exception-overrides-subject-default
+    source: concept.form-binding-field-permission-exception
+    target: concept.form-process-subject-default-permission
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: relation.form-process-flow-version-defines-field-slots
+    source: concept.form-process-template-version
+    target: concept.form-process-field-slot
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-binding-binds-flow-version
+    source: concept.form-process-binding-version
+    target: concept.form-process-template-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-binding-binds-form-version
+    source: concept.form-process-binding-version
+    target: concept.form-template-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-binding-contains-field-mappings
+    source: concept.form-process-binding-version
+    target: concept.form-process-field-mapping
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-field-mapping-resolves-field-slot
+    source: concept.form-process-field-mapping
+    target: concept.form-process-field-slot
+    cardinality: many-to-one
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-field-mapping-resolves-form-version
+    source: concept.form-process-field-mapping
+    target: concept.form-template-version
+    cardinality: many-to-one
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-flow-version-has-entry-permission-groups
+    source: concept.form-process-template-version
+    target: concept.form-entry-permission-group
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-flow-version-has-participant-rules
+    source: concept.form-process-template-version
+    target: concept.form-process-participant-rule
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-participant-rule-has-field-permission-policies
+    source: concept.form-process-participant-rule
+    target: concept.form-process-field-permission-policy
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-entry-permission-group-has-field-permission-policies
+    source: concept.form-entry-permission-group
+    target: concept.form-process-field-permission-policy
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-field-permission-policy-targets-field-slots
+    source: concept.form-process-field-permission-policy
+    target: concept.form-process-field-slot
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-permission-default-exception-design]
+  - id: relation.form-entry-permission-group-has-operation-permission-policies
+    source: concept.form-entry-permission-group
+    target: concept.form-process-operation-permission-policy
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-participant-rule-has-operation-permission-policies
+    source: concept.form-process-participant-rule
+    target: concept.form-process-operation-permission-policy
+    cardinality: one-to-zero-or-many
+    status: deprecated
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed]
+  - id: relation.form-process-subject-has-operation-permission-policies
+    source: concept.form-process-subject
+    target: concept.form-process-operation-permission-policy
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+  - id: relation.production-work-form-node-uses-form-process-binding
+    source: concept.production-work-form-node-business-document-reference
+    target: concept.form-process-binding-version
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-work-form-node-business-document-config]
+  - id: relation.production-work-form-event-binding-targets-form-field
+    source: concept.production-work-form-event-field-binding
+    target: concept.form-template-field
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v2]
+  - id: relation.production-work-form-node-has-event-field-bindings
+    source: concept.production-work-form-node-business-document-reference
+    target: concept.production-work-form-event-field-binding
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-buttons-events-v2]
   - id: relation.operation-binding-references-document-versions
     source: concept.operation-binding
     target: concept.document-version

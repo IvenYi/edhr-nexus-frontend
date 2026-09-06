@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Map;
@@ -53,17 +55,20 @@ public class WorkflowTaskController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowTask> create(@RequestBody WorkflowTask entity) {
         return ApiResponse.success(workflowTaskRepository.save(entity));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowTask> update(@PathVariable Long id, @RequestBody WorkflowTask entity) {
         entity.setId(id);
         return ApiResponse.success(workflowTaskRepository.save(entity));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
         workflowTaskRepository.deleteById(id);
         return ApiResponse.success(null);
@@ -76,13 +81,13 @@ public class WorkflowTaskController {
      */
     @GetMapping("/todo")
     public ApiResponse<List<WorkflowTask>> todo(
-            @RequestParam String assigneeId,
+            @RequestParam(required = false) String assigneeId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "50") int size) {
-        List<WorkflowTask> tasks = workflowTaskRepository
-                .findByAssigneeIdAndStatusIn(assigneeId, List.of("PENDING", "PROCESSING"));
-
-        // Simple in-memory pagination for the filtered result
+        // The queue belongs to the authenticated operator.  Keep the legacy
+        // parameter optional for client compatibility, but never trust it.
+        assigneeId = currentOperatorId();
+        List<WorkflowTask> tasks = workflowTaskRepository.findTodoForUser(assigneeId, "[\"" + assigneeId + "\"]");
         int start = (page - 1) * size;
         int end = Math.min(start + size, tasks.size());
         if (start >= tasks.size()) {
@@ -96,15 +101,11 @@ public class WorkflowTaskController {
      */
     @GetMapping("/done")
     public ApiResponse<List<WorkflowTask>> done(
-            @RequestParam String assigneeId,
+            @RequestParam(required = false) String assigneeId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "50") int size) {
-        List<WorkflowTask> allTasks = workflowTaskRepository.findByAssigneeId(assigneeId);
-        List<WorkflowTask> doneTasks = allTasks.stream()
-                .filter(t -> "COMPLETED".equals(t.getStatus())
-                        || "REJECTED".equals(t.getStatus())
-                        || "TRANSFERRED".equals(t.getStatus()))
-                .toList();
+        assigneeId = currentOperatorId();
+        List<WorkflowTask> doneTasks = workflowTaskRepository.findDoneForUser(assigneeId);
 
         int start = (page - 1) * size;
         int end = Math.min(start + size, doneTasks.size());
@@ -124,7 +125,7 @@ public class WorkflowTaskController {
             @PathVariable Long id,
             @RequestBody TaskActionRequest request) {
         workflowEngine.completeTask(id, "APPROVE", request.getOpinion(),
-                request.getOperatorId(), request.getSignatureId());
+                currentOperatorId(), request.getSignatureId());
         return ApiResponse.success(Map.of("taskId", id, "action", "APPROVE", "result", "ok"));
     }
 
@@ -136,7 +137,7 @@ public class WorkflowTaskController {
             @PathVariable Long id,
             @RequestBody TaskActionRequest request) {
         workflowEngine.completeTask(id, "REJECT", request.getOpinion(),
-                request.getOperatorId(), request.getSignatureId());
+                currentOperatorId(), request.getSignatureId());
         return ApiResponse.success(Map.of("taskId", id, "action", "REJECT", "result", "ok"));
     }
 
@@ -150,7 +151,7 @@ public class WorkflowTaskController {
         if (request.getNewAssigneeId() == null || request.getNewAssigneeId().isBlank()) {
             throw new BusinessException(ErrorCode.GENERAL_001, "转办目标人不能为空");
         }
-        workflowEngine.transferTask(id, request.getNewAssigneeId(), request.getOperatorId());
+        workflowEngine.transferTask(id, request.getNewAssigneeId(), currentOperatorId());
         return ApiResponse.success(Map.of(
                 "taskId", id, "action", "TRANSFER",
                 "newAssigneeId", request.getNewAssigneeId(), "result", "ok"));
@@ -164,11 +165,19 @@ public class WorkflowTaskController {
             @PathVariable Long id,
             @RequestBody TaskActionRequest request) {
         workflowEngine.completeTask(id, "SUBMIT", request.getOpinion(),
-                request.getOperatorId(), request.getSignatureId());
+                currentOperatorId(), request.getSignatureId());
         return ApiResponse.success(Map.of("taskId", id, "action", "SUBMIT", "result", "ok"));
     }
 
     // ======================== Request DTOs ========================
+
+    private String currentOperatorId() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new BusinessException(ErrorCode.AUTH_004);
+        }
+        return String.valueOf(authentication.getPrincipal());
+    }
 
     /**
      * Request body for approve / reject / submit actions.

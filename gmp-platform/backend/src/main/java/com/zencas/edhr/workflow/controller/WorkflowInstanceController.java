@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Map;
@@ -122,11 +124,12 @@ public class WorkflowInstanceController {
      * Terminate a running workflow instance.
      */
     @PostMapping("/{id}/terminate")
+    @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Map<String, Object>> terminate(
             @PathVariable Long id,
             @RequestBody TerminateRequest request) {
         workflowEngine.terminateInstance(id, request.getReason(),
-                request.getOperatorId(), request.getSignatureId());
+                currentOperatorId(), request.getSignatureId());
         return ApiResponse.success(Map.of(
                 "instanceId", id, "action", "TERMINATE",
                 "result", "ok", "reason", request.getReason() != null ? request.getReason() : ""));
@@ -204,5 +207,14 @@ public class WorkflowInstanceController {
         private String reason;
         private String operatorId;
         private Long signatureId;
+    }
+
+    private String currentOperatorId() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new BusinessException(ErrorCode.AUTH_004);
+        }
+        return String.valueOf(authentication.getPrincipal());
     }
 }

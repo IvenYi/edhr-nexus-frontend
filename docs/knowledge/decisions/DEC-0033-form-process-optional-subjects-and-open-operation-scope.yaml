@@ -1,0 +1,54 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0033
+    title: 表单流程主体可选与未配置时的开放操作范围
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；补充 DEC-0023 的主体配置边界，并限定 DEC-0031 的候选人处理规则仅适用于已配置主体的有界候选任务。填报和审批主体都服务于缩小操作范围，而不是必填的授权前提。"
+    decisionStatements:
+      - id: DEC-0033-01
+        statement: "provenance: user-confirmed；开始/填报节点未配置填报主体或权限组时，当前单租户边界内所有已认证用户均可填报；仍受流程实例、节点状态和任务状态约束。"
+        status: specified
+        visibility: internal
+      - id: DEC-0033-02
+        statement: "provenance: user-confirmed；审批节点未配置审批主体时，当前单租户边界内所有已认证用户均可审批；仍受流程实例、节点状态和任务状态约束。"
+        status: specified
+        visibility: internal
+      - id: DEC-0033-03
+        statement: "provenance: user-confirmed；主体未配置时不得为计算‘所有人’而展开全量用户，也不得创建按用户数量增长的任务；审批节点保持一个逻辑工作流任务。"
+        status: specified
+        visibility: internal
+      - id: DEC-0033-04
+        statement: "provenance: user-confirmed；主体已配置时继续使用公共主体解析器按最新关系得到有界候选人，并遵循 DEC-0031 的任一候选处理、候选快照和任务终态规则；空主体不生成全量候选快照。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-form-process-user-confirmed-v3, evidence.identity-subject-resolver-contract, evidence.workflow-task-multi-candidate-user-confirmed, evidence.workflow-task-empty-subject-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.form-process-entry-empty-subject-open
+        given: 开始/填报节点未配置填报主体或权限组
+        when: 已认证用户访问当前流程实例的填报任务
+        then: 用户可以填报，且系统不需要先展开全量用户
+        evidenceIds: [evidence.production-form-process-user-confirmed-v3]
+        evidenceRequirements: [填报权限运行时测试]
+      - id: scenario.form-process-approval-empty-subject-open
+        given: 审批节点未配置审批主体
+        when: 已认证用户访问处于可审批状态的逻辑任务
+        then: 用户可以审批，且系统只保留一条逻辑任务，不生成全量候选任务
+        evidenceIds: [evidence.production-form-process-user-confirmed-v3, evidence.workflow-task-empty-subject-user-confirmed]
+        evidenceRequirements: [审批授权集成测试, 单逻辑任务测试]
+      - id: scenario.form-process-configured-subject-bounded
+        given: 审批或填报节点配置了用户、部门或角色主体
+        when: 流程运行时解析主体
+        then: 只按最新关系解析配置主体覆盖的用户，并继续应用多候选任务规则
+        evidenceIds: [evidence.identity-subject-resolver-contract, evidence.workflow-task-multi-candidate-user-confirmed]
+        evidenceRequirements: [主体解析测试, 候选快照测试]
+    implementationDiscrepancies:
+      - id: discrepancy.form-process-empty-subject-runtime-unimplemented
+        status: resolved
+        severity: low
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+        lineHint: 313
+        summary: "provenance: original-evidence；引擎已使用 unrestricted 标记表达空主体的开放填报/审批授权语义，任务查询与完成校验均保持单逻辑任务且不展开全量用户；前端已同步展示开放范围。"
+        evidenceIds: [evidence.production-form-process-user-confirmed-v3, evidence.workflow-task-empty-subject-user-confirmed]

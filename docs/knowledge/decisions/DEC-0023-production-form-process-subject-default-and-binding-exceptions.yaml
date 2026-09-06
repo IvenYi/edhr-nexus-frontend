@@ -1,0 +1,88 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0023
+    title: 表单流程主体默认权限与绑定级真实字段例外
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；用户确认表单流程必须复用到多个表单，但不接受流程字段、业务字段分类、字段权限组或权限模板作为配置入口。流程节点只配置主体及统一默认权限；具体例外权限延后到作业流程绑定具体表单后按真实字段配置。本决策只定义配置和版本契约，不声称生产运行时权限解析已实现。"
+    decisionStatements:
+      - id: DEC-0023-01
+        statement: "provenance: user-confirmed；表单流程模板不绑定具体表单，可复用于多个表单；流程版本保存节点、连线、填报或审批主体来源及主体默认权限。"
+        status: specified
+        visibility: internal
+      - id: DEC-0023-02
+        statement: "provenance: user-confirmed；表单流程节点只配置主体和默认权限，默认权限只有‘全部可编辑’或‘全部只读’；流程设计页不配置具体字段、流程字段、业务字段分类、字段权限组或权限模板。"
+        status: specified
+        visibility: internal
+      - id: DEC-0023-03
+        statement: "provenance: user-confirmed；作业流程表单填写节点固定绑定一个已发布表单流程版本和一个表单模板版本；绑定后直接读取该表单版本的真实稳定 fieldId，并可为主体配置编辑或只读的字段例外。"
+        status: specified
+        visibility: internal
+      - id: DEC-0023-04
+        statement: "provenance: user-confirmed；未配置例外的真实表单字段继承对应主体默认权限；字段例外属于当前绑定，多个表单绑定之间相互独立，不回写可复用的表单流程版本。"
+        status: specified
+        visibility: internal
+      - id: DEC-0023-05
+        statement: "provenance: user-confirmed；已发布表单流程版本内容固定，需要变更时创建新的流程版本；作业流程配置时固定引用所选发布版本。"
+        status: specified
+        visibility: internal
+      - id: DEC-0023-06
+        statement: "provenance: user-confirmed；审批候选人任一人处理即可完成节点，顺序审批通过配置多个审批节点实现；第一版不设置拒绝动作，退回固定回到填报阶段，表单流程终止时同步终止外层作业流程。"
+        status: specified
+        visibility: internal
+      - id: DEC-0023-07
+        statement: "provenance: implementation-constraint；填报节点执行‘全部可编辑’或‘全部只读’时，必须把选择持久化到实际主体配置；没有已配置主体时，界面不能只改变临时展示状态而不产生真实配置。"
+        status: specified
+        visibility: internal
+      - id: DEC-0023-08
+        statement: "provenance: implementation-constraint；作业流程表单填写节点切换表单模板版本或表单流程版本后，只保留仍存在于新表单版本且仍对应新流程主体的 fieldId 例外，失效例外必须清理或阻止保存，不能继续影响新绑定。"
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0022]
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-permission-default-exception-design-v2]
+    acceptanceScenarios:
+      - id: scenario.production-form-process-reusable-template
+        given: 一个已发布表单流程版本和两个不同表单模板版本
+        when: 两个作业流程表单填写节点分别绑定它们
+        then: 两个节点均可复用该流程版本，且各自保存独立的字段例外权限
+        evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+        evidenceRequirements: [绑定配置保存重读测试, 多表单复用验证]
+      - id: scenario.production-form-process-subject-default
+        given: 流程节点已配置一个填报或审批主体
+        when: 用户设置主体默认权限
+        then: 只能选择全部可编辑或全部只读，流程设计页不要求逐字段配置
+        evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+        evidenceRequirements: [主体权限配置 UI 验证, 配置保存测试]
+      - id: scenario.production-form-process-binding-field-exception
+        given: 作业流程节点已绑定具体表单模板版本和已发布表单流程版本
+        when: 用户将某个真实 fieldId 设置为例外权限
+        then: 例外只保存在该绑定；其他未配置字段继承主体默认权限
+        evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
+        evidenceRequirements: [字段例外保存重读测试, 绑定隔离测试]
+      - id: scenario.production-form-process-published-version-fixed
+        given: 作业流程节点已引用已发布表单流程版本
+        when: 用户修改流程定义
+        then: 原发布版本不被改写，必须创建新的流程版本
+        evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+        evidenceRequirements: [版本发布和固定引用测试]
+      - id: scenario.production-form-process-empty-entry-bulk-permission
+        given: 填报节点尚未配置权限主体
+        when: 用户执行全部可编辑或全部只读
+        then: 选择必须写入可读取的主体默认权限配置，不能只改变临时界面状态
+        evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
+        evidenceRequirements: [空主体批量权限保存测试]
+      - id: scenario.production-form-process-binding-switch-cleans-exceptions
+        given: 作业流程表单填写节点已保存字段例外
+        when: 用户切换表单模板版本或表单流程版本
+        then: 不存在于新表单或不再对应新主体的 fieldId 例外被清理，剩余有效例外继续保留
+        evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
+        evidenceRequirements: [绑定切换字段例外清理测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-form-process-runtime-unimplemented-v2
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/rules/transaction-runtime.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；公共主体解析和通用工作流多候选任务已实现，但尚未闭环表单流程实例、字段权限运行时解析、退回至填报阶段及外层作业同步推进；本决策仍保持 specified/internal。"
+        evidenceIds: [evidence.production-form-process-guancheng-research, evidence.ai-transaction-runtime-architecture, evidence.workflow-task-multi-candidate-runtime-implementation]

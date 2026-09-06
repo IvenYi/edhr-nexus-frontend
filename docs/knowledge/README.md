@@ -1,6 +1,12 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.10`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.12`。
+
+表单流程公共主体选择器第一版统一支持用户、部门和角色三类稳定主体引用。部门默认覆盖本部门及下级，也可切换为仅本部门；审批节点到达时按最新组织或角色关系解析候选人，填报权限在用户访问时按最新关系判断。用户组、部门负责人和业务责任人尚无完整主数据与解析契约，不进入当前配置入口。详见 `DEC-0029`。
+
+表单流程配置当前采用“主体默认权限 + 绑定级真实字段例外”模型：表单流程模板可复用于多个表单，节点可选保存填报或审批主体及“全部可编辑/全部只读”默认权限；未配置填报主体/权限组表示当前单租户内所有已认证用户可填报，未配置审批主体表示所有已认证用户可审批。作业流程的表单填写节点绑定具体表单模板版本后，才可按该版本真实字段的稳定 `fieldId` 配置例外权限，未配置例外时继承主体默认权限。开放范围不通过展开全量用户实现，仍受认证、流程实例、节点和任务状态约束。流程字段、字段槽位、业务字段分类、字段权限组和权限模板仅作为历史兼容概念，不属于当前新配置入口。详见 `DEC-0023` 与 `DEC-0033`。
+
+表单流程节点按钮与按钮事件属于独立的配置层：第一版动作仅支持保存、提交、审批和退回，签署事件仅支持动作前的账户密码签名，并可选择是否填充签名字段，不暴露处理标识。流程版本只声明事件；具体字段绑定发生在作业流程表单填写节点并保存所选表单版本的稳定 `fieldId`。这些配置不代表运行时动作或事件执行已经实现。详见 `DEC-0025`；`DEC-0024` 仅作为历史方案保留。
 
 本目录是 eDHR 业务概念、关系、规则、决策、证据和未决问题的机器可读权威来源。人员阅读架构文档、业务运行代码和界面都可以提供证据，但不能替代这里的结构化知识基线。
 
@@ -13,6 +19,7 @@
 - `glossary.yaml`：稳定术语、定义、别名、知识状态和可见性。
 - `ontology.yaml`：概念和概念间关系。
 - `rules/*.yaml`：按业务域维护的结构化规则。
+- `rules/identity.yaml`：身份域主体在运行时展开、去重和来源保留规则。
 - `decisions/*.yaml`：已确认决策、背景、替代关系、验收场景和实现差异。
 - `evidence/*.yaml`：代码、数据库、测试和文档证据索引。
 - `open-questions.yaml`：尚需用户判断的真实业务问题。
@@ -95,7 +102,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.10" && schema.fetch("schemaVersion") == "1.0.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.12" && schema.fetch("schemaVersion") == "1.0.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

@@ -1,0 +1,68 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0030
+    title: 公共主体运行时解析契约
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed；主体选择器只保存稳定的用户、部门和角色引用；流程、待办、通知及其他业务调用方通过身份域公共解析器取得当前有效的最终用户。"
+    decisionStatements:
+      - id: DEC-0030-01
+        statement: "provenance: user-confirmed；解析发生在调用时，部门和角色使用当时最新的用户关系，不在流程发布或业务启动时冻结成员快照。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0030-02
+        statement: "provenance: user-confirmed；部门主体默认展开本部门及所有下级部门，也可按主体引用指定仅本部门；父部门含下级与子部门同时命中时，最终用户按稳定用户 ID 只保留一份。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0030-03
+        statement: "provenance: user-confirmed；解析结果必须同时保留每个最终用户命中的全部主体来源，供权限冲突合并、通知去重和审计追溯使用；去重只作用于最终用户集合，不删除来源命中。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0030-04
+        statement: "provenance: original-evidence；第一版可解析主体为用户、部门和角色；用户组、部门负责人和业务责任人没有当前可用的主数据与解析关系，不进入解析器白名单。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0030-05
+        statement: "provenance: inference；解析器返回候选用户及来源，不负责决定审批会签、任务创建、权限冲突优先级或通知投递；这些由具体调用方按自身契约处理。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.identity-user-account, evidence.identity-department, evidence.identity-role, evidence.identity-user-department-repository, evidence.identity-user-role-repository, evidence.identity-department-repository, evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests, evidence.identity-workflow-task-single-assignee]
+    acceptanceScenarios:
+      - id: scenario.identity-runtime-direct-user
+        given: 主体引用包含一个有效用户
+        when: 调用公共主体解析器
+        then: 返回该用户一次，并保留直接用户主体命中来源
+        evidenceIds: [evidence.identity-user-account]
+        evidenceRequirements: [解析器单元测试]
+      - id: scenario.identity-runtime-department-local
+        given: 主体引用为部门且范围为仅本部门
+        when: 调用公共主体解析器
+        then: 只返回当前属于该部门的有效用户，不包含下级部门成员
+        evidenceIds: [evidence.identity-department, evidence.identity-user-department-repository]
+        evidenceRequirements: [部门范围单元测试]
+      - id: scenario.identity-runtime-department-descendants
+        given: 主体引用为部门且范围为含下级
+        when: 调用公共主体解析器
+        then: 返回本部门及所有下级部门的当前有效用户
+        evidenceIds: [evidence.identity-department, evidence.identity-department-repository]
+        evidenceRequirements: [组织树展开集成测试]
+      - id: scenario.identity-runtime-parent-child-overlap
+        given: 同时选择父部门含下级和其子部门
+        when: 调用公共主体解析器
+        then: 相同用户在最终用户集合中只出现一次，但保留父部门和子部门两个命中来源
+        evidenceIds: [evidence.identity-subject-resolver-contract]
+        evidenceRequirements: [重叠主体去重单元测试]
+      - id: scenario.identity-runtime-cross-subject-overlap
+        given: 同一用户同时属于直接用户、部门或角色主体
+        when: 调用公共主体解析器
+        then: 最终用户只出现一次并携带全部主体来源
+        evidenceIds: [evidence.identity-user-role-repository, evidence.identity-user-department-repository]
+        evidenceRequirements: [跨主体去重单元测试]
+      - id: scenario.identity-runtime-invalid-subject
+        given: 主体引用指向不存在或已停用的用户、部门或角色
+        when: 调用公共主体解析器
+        then: 忽略无效引用并返回可解析用户，同时记录可观测的无效来源结果
+        evidenceIds: [evidence.identity-user-account, evidence.identity-department, evidence.identity-role]
+        evidenceRequirements: [失效主体单元测试]
+    implementationDiscrepancies: []

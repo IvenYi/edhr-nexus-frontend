@@ -20,6 +20,9 @@ public class WorkflowTask {
     private String assigneeId;
     @Column(name = "original_assignee_id")
     private String originalAssigneeId;
+    /** Immutable runtime resolution snapshot for a multi-subject logical task. */
+    @Column(name = "candidate_snapshot", columnDefinition = "jsonb")
+    private String candidateSnapshot;
     @Column(name = "action")
     private String action;
     @Column(name = "opinion", columnDefinition = "TEXT")

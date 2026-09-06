@@ -1,0 +1,48 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0028
+    title: 表单流程按钮电子签名与事件简化配置
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；本决策补充 DEC-0025 的按钮认证要求，并明确移除事件启用勾选；仅定义配置层，不声称运行时电子签名或事件执行已经实现。"
+    decisionStatements:
+      - id: DEC-0028-01
+        statement: "provenance: user-confirmed；按钮配置只保留显示/不可见，不再提供单独的启用配置；不需要的按钮事件直接删除事件配置。"
+        status: specified
+        visibility: internal
+      - id: DEC-0028-02
+        statement: "provenance: user-confirmed；电子签名不是按钮属性，而是绑定到保存（SAVE）、提交（SUBMIT）、审批（APPROVE）或退回（RETURN）的签署事件。"
+        status: specified
+        visibility: internal
+      - id: DEC-0028-03
+        statement: "provenance: user-confirmed；签署事件固定使用账户密码并在动作执行前处理；是否填充签名字段由事件单独选择，选择填充时才在作业流程节点绑定字段。"
+        status: specified
+        visibility: internal
+      - id: DEC-0028-04
+        statement: "provenance: user-confirmed；电子签名要求保存在可复用表单流程版本的按钮配置中，签名字段绑定仍只保存在作业流程表单填写节点，不回写表单流程版本。"
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0024, DEC-0025]
+    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+    acceptanceScenarios:
+      - id: scenario.production-form-process-button-signature-options
+        given: 用户正在配置开始或审批节点按钮
+        when: 用户添加电子签名
+        then: 用户选择关联按钮、账户密码签名及是否填充字段；审批节点可关联审批或退回；不显示启用勾选
+        evidenceIds: [evidence.production-form-process-buttons-events-v3]
+        evidenceRequirements: [按钮配置保存重读测试]
+      - id: scenario.production-form-process-signature-event-binding
+        given: 提交、审批或退回按钮配置为需要电子签名，且选择了填充签名字段
+        when: 作业流程表单填写节点绑定目标字段
+        then: 绑定仍引用所选表单真实存在的稳定 fieldId，流程版本不保存具体字段
+        evidenceIds: [evidence.production-form-process-buttons-events-v3]
+        evidenceRequirements: [事件字段绑定保存重读测试]
+    implementationDiscrepancies:
+      - id: discrepancy.production-form-process-electronic-signature-runtime-unimplemented
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/rules/transaction-runtime.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；当前 eDHR 尚未实现电子签名采集、按钮动作签名阻断、签名对象快照或填充签名字段运行时写入。"
+        evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.ai-transaction-runtime-architecture]
