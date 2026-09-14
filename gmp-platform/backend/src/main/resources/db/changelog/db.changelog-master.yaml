@@ -153,3 +153,13 @@ databaseChangeLog:
       file: db/changelog/0072-work-form-process-references.sql
   - include:
       file: db/changelog/0072-global-menu-configuration.sql
+  - include:
+      file: db/changelog/0073-equipment-modeling.sql
+  - include:
+      file: db/changelog/0074-equipment-system-fields.sql
+  - include:
+      file: db/changelog/0075-equipment-brand-purchase-date.sql
+  - include:
+      file: db/changelog/0076-production-execution.sql
+  - include:
+      file: db/changelog/0077-work-order-legacy-product-reference.sql

@@ -4,6 +4,7 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  type DialogProps,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
 import { WarningAmberOutlined } from '@mui/icons-material';
@@ -18,6 +19,8 @@ interface ConfirmDialogProps {
   onCancel: () => void;
   loading?: boolean;
   destructive?: boolean;
+  initialFocus?: 'confirm' | 'cancel';
+  container?: DialogProps['container'];
 }
 
 /**
@@ -34,9 +37,11 @@ export default function ConfirmDialog({
   onCancel,
   loading = false,
   destructive = false,
+  initialFocus = 'confirm',
+  container,
 }: ConfirmDialogProps) {
   return (
-    <AppDialog open={open} onClose={loading ? undefined : onCancel} maxWidth="xs" fullWidth>
+    <AppDialog open={open} onClose={loading ? undefined : onCancel} container={container} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
         {destructive && <WarningAmberOutlined color="warning" />}
         {title}
@@ -47,7 +52,7 @@ export default function ConfirmDialog({
         </DialogContentText>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button onClick={onCancel} disabled={loading}>
+        <Button onClick={onCancel} disabled={loading} autoFocus={initialFocus === 'cancel'}>
           {cancelText}
         </Button>
         <Button
@@ -55,7 +60,7 @@ export default function ConfirmDialog({
           variant="contained"
           color={destructive ? 'error' : 'primary'}
           disabled={loading}
-          autoFocus
+          autoFocus={initialFocus === 'confirm'}
         >
           {loading ? '处理中...' : confirmText}
         </Button>

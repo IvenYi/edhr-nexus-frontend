@@ -152,6 +152,14 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
           { label: '车间管理', path: '/master-data/workshops' },
         ],
       },
+      {
+        label: '设备建模',
+        icon: 'PrecisionManufacturing',
+        children: [
+          { label: '设备类型', path: '/master-data/equipment-types' },
+          { label: '设备列表', path: '/master-data/equipment' },
+        ],
+      },
     ],
   },
   {
@@ -159,6 +167,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
     label: '生产',
     icon: 'PrecisionManufacturing',
     menus: [
+      { label: '生产执行', icon: 'PrecisionManufacturing', path: '/production/execution' },
       {
         label: '流程中心',
         icon: 'AccountTree',

@@ -185,6 +185,24 @@ public class FileController {
         return buildInlinePreviewResponse(fileObject);
     }
 
+    /** Render PDF pages for browsers without an embedded PDF viewer. */
+    @GetMapping("/{id}/page-preview")
+    public ResponseEntity<?> pagePreview(@PathVariable Long id, @RequestParam(defaultValue = "1") int page) throws IOException {
+        FileObject file = fileObjectRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.FILE_001));
+        if (!"application/pdf".equals(file.getMimeType())) return buildInlinePreviewResponse(file);
+        Path path = Path.of(file.getStoredPath());
+        if (!Files.exists(path)) throw new BusinessException(ErrorCode.FILE_001);
+        try (var document = org.apache.pdfbox.Loader.loadPDF(path.toFile())) {
+            if (page < 1 || page > document.getNumberOfPages()) throw new BusinessException(ErrorCode.GENERAL_001, "文件页码超出范围");
+            var rendered = new org.apache.pdfbox.rendering.PDFRenderer(document).renderImageWithDPI(page - 1, 110);
+            var bytes = new java.io.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(rendered, "png", bytes);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG)
+                .header(HttpHeaders.CACHE_CONTROL, "private, max-age=300")
+                .header("X-Page-Count", String.valueOf(document.getNumberOfPages())).body(bytes.toByteArray());
+        }
+    }
+
     /**
      * Public inline preview for UI assets that must render inside browser image tags.
      */
@@ -239,6 +257,8 @@ public class FileController {
     public ApiResponse<Void> delete(@PathVariable Long id) {
         FileObject fileObject = fileObjectRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.FILE_001));
+        if ("PRODUCTION_EXECUTION".equals(fileObject.getTargetType()))
+            throw new BusinessException(ErrorCode.GENERAL_003, "生产执行附件作为追溯证据保留，不能删除");
 
         // Delete physical file
         try {

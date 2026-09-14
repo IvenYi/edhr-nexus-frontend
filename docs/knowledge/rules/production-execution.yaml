@@ -1,0 +1,50 @@
+knowledgeModelVersion: 0.3.12
+rules:
+  - id: rule.operation-output-field-purpose
+    name: 当前工序产出字段显式映射
+    status: implemented
+    visibility: internal
+    trigger: production-execution.query
+    scope: production-execution
+    condition:
+      fact: operation.hasQuantityPurposeFields
+      operator: equals
+      value: true
+    result:
+      type: return-query-projection
+      fields: [goodQuantity, ngQuantity, scrapQuantity, outputQuantity]
+      source: current-operation-production-form-fields
+      outputComponents: [goodQuantity, ngQuantity, scrapQuantity]
+    explanation: user-confirmed；当前工序产出包括良品、不良品和报废数量，由当前工序生产表单中的字段汇总；字段通过内置业务用途标识明确映射，不按名称猜测。本规则定义工序数量来源，不将数量汇总解释为工序完工条件、批次最终产出或工单完成率；数字类型限制、缺值显示、保存时点和目标分母等实施策略由实现证据另行说明，不提升为用户确认的通用规则。
+    evidenceIds: [evidence.operation-output-user-decision, evidence.operation-output-field-purpose-source, evidence.operation-output-model-editor-source, evidence.operation-output-summary-source, evidence.operation-output-summary-tests, evidence.operation-output-persistence-tests, evidence.production-execution-snapshot-builder-source, evidence.production-execution-service-source]
+  - id: rule.production-execution-context
+    name: 批次和SN执行上下文
+    status: implemented
+    visibility: internal
+    trigger: production-object.scan
+    scope: production-execution
+    condition:
+      fact: productionObject.exists
+      operator: equals
+      value: true
+    result:
+      type: return-query-projection
+      fields: [productionObject, workOrder, product, productProcessVersion, routeVersion, dhrTemplateVersion, executionStatus, operations]
+    explanation: 扫描批次或SN条码后，同屏展示当前对象关联的工单、产品、产品配置、工艺路线和eDHR，并明确是否已开工、当前执行工序及工序可执行状态；具体接口字段与条码识别算法由实现证据说明，不构成新业务默认规则。
+    evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-product-configuration-contract, evidence.production-execution-snapshot-builder-source, evidence.production-execution-service-source, evidence.production-execution-page-source, evidence.production-execution-integration-tests]
+  - id: rule.production-execution-completion-check
+    name: 工序完工条件校验
+    status: implemented
+    visibility: internal
+    trigger: operation.complete
+    scope: production-execution
+    condition:
+      fact: operation.completionConditionsSatisfied
+      operator: equals
+      value: true
+    result:
+      type: allow-with-governance
+      action: operation.complete
+      requiredCheck: current-operation-completion-conditions
+    explanation: 当前工序申请完工时必须校验完工条件，并向操作者说明检查结果；仅当条件满足才允许完工。本切片已有服务端必填表单实际完成记录、适用作业完成与字段值复校验；不能把缺少来源当成满足。通知投递、原始路线连线条件、返工入口与不支持节点继续明确阻断，implemented只描述该受限运行链，不表示全部配置可运行。既有必填表单业务语义仍复用 rule.product-process.form-complete-before-operation，不据此全局推进旧规则成熟度。
+    evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-product-configuration-contract, evidence.production-execution-engine-source, evidence.production-execution-service-source, evidence.production-execution-access-source, evidence.production-execution-engine-tests, evidence.production-execution-integration-tests]

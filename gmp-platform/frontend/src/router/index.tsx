@@ -15,6 +15,7 @@ const WorkTemplateList = lazy(() => import('@/pages/workflow-center/WorkTemplate
 const WorkTemplateEditor = lazy(() => import('@/pages/workflow-center/WorkTemplateEditor'));
 const WorkOrderPage = lazy(() => import('@/pages/production/WorkOrderPage'));
 const BatchManagementPage = lazy(() => import('@/pages/production/BatchManagementPage'));
+const ProductionExecutionPage = lazy(() => import('@/pages/production/ProductionExecutionPage'));
 const BindingRuleList = lazy(() => import('@/pages/workflow-center/BindingRuleList'));
 const InstanceList = lazy(() => import('@/pages/workflow-center/InstanceList'));
 const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail'));
@@ -28,6 +29,7 @@ const ProductFamilyModelingPage = lazy(() => import('@/pages/master-data/Product
 const DocumentManagementPage = lazy(() => import('@/pages/master-data/DocumentManagementPage'));
 const TemplateModelingPage = lazy(() => import('@/pages/master-data/TemplateModelingPage'));
 const WorkshopManagementPage = lazy(() => import('@/pages/master-data/WorkshopManagementPage'));
+const EquipmentPage = lazy(() => import('@/pages/master-data/EquipmentPage'));
 
 const OrganizationPage = lazy(() => import('@/pages/system/OrganizationPage'));
 const UserPage = lazy(() => import('@/pages/system/UserPage'));
@@ -90,6 +92,7 @@ const AppRouter = () => {
           <Route path="tasks/:id" element={<Suspense fallback={<Loading />}><TaskDetail /></Suspense>} />
         </Route>
         <Route path="production">
+          <Route path="execution" element={<Suspense fallback={<Loading />}><ProductionExecutionPage /></Suspense>} />
           <Route path="work-orders" element={<Suspense fallback={<Loading />}><WorkOrderPage /></Suspense>} />
           <Route path="batches" element={<Suspense fallback={<Loading />}><BatchManagementPage /></Suspense>} />
           <Route path="work-templates" element={<Suspense fallback={<Loading />}><WorkTemplateList /></Suspense>} />
@@ -106,6 +109,8 @@ const AppRouter = () => {
           <Route path="form-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="formTemplates" /></Suspense>} />
           <Route path="batch-record-templates" element={<Suspense fallback={<Loading />}><TemplateModelingPage pageKey="batchRecordTemplates" /></Suspense>} />
           <Route path="workshops" element={<Suspense fallback={<Loading />}><WorkshopManagementPage /></Suspense>} />
+          <Route path="equipment-types" element={<Suspense fallback={<Loading />}><EquipmentPage key="types" pageKey="types" /></Suspense>} />
+          <Route path="equipment" element={<Suspense fallback={<Loading />}><EquipmentPage key="equipment" pageKey="equipment" /></Suspense>} />
         </Route>
         <Route path="system">
           <Route path="organization" element={<Suspense fallback={<Loading />}><OrganizationPage /></Suspense>} />

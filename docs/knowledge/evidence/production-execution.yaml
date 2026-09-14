@@ -1,0 +1,122 @@
+knowledgeModelVersion: 0.3.12
+evidence:
+  - id: evidence.operation-output-summary-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionOutputSummaryTest.java
+    description: original-evidence；聚焦测试源覆盖显式用途和十进制精度、普通同名字段不计入、缺映射与缺值和显式零的区别、非法值和不匹配类型、别名表单排除、多表单与子表行汇总、空子表及历史无用途字段。测试源码不单独证明命令执行通过。
+    visibility: internal
+  - id: evidence.operation-output-persistence-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters 覆盖批次和SN开工后保存数量、读取汇总与再次保存刷新、其他工序不混入、修改模板后执行快照用途保持、保存值落库以及批次良品数据库字段未被查询投影改写。受控集成测试与生产运行库证据分开报告，不宣称现有开发服务已加载新后端代码。
+    visibility: internal
+  - id: evidence.operation-output-field-purpose-source
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/fieldBusinessPurpose.ts
+    description: original-evidence；当前实现以 typeConfig.businessPurpose 保存 PRODUCTION_GOOD、PRODUCTION_NG、PRODUCTION_SCRAP，用于良品、不良品、报废；普通字段不参与。仅数字类型保留已知标识，其他类型清除标识。这些枚举键与类型处理是实现策略，不新增可由任意字符串触发的业务动作。
+    visibility: internal
+  - id: evidence.operation-output-model-editor-source
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx
+    description: original-evidence；表单模型编辑器加载并编辑字段业务用途，使用现有 typeConfig 保存链路。实现范围与序列化需由聚焦测试核对，源码不是浏览器或运行服务已更新的证据。
+    visibility: internal
+  - id: evidence.operation-output-summary-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
+    description: original-evidence；查询投影读取当前工序冻结表单字段与已保存 values，按三类显式用途以 BigDecimal 求和，支持子表数字列，跳过 disabled 字段和 fulfilledBy 别名表单。三类映射齐全且所有来源为有效非负数量才返回 READY 和字符串总数，否则返回缺配置、待填或非法状态及空数量。完整映射、保存时点、去重和数值限制均为本切片实现策略，不提高为用户确认的通用业务规则；不写回批次产量或改变工序完成条件。
+    visibility: internal
+  - id: evidence.operation-output-user-decision
+    type: document
+    path: docs/superpowers/plans/2026-09-10-production-execution.md
+    description: user-confirmed；DEC-PACKAGE-20260914-EXECUTION-OUTPUT 记录用户明确当前工序产出包含良品、不良品、报废，来源为当前工序生产表单字段，并要求修改表单字段以设置内置业务用途标识、明确映射。该包 inferred 中的完整三类映射、非负数字、已保存值及对象目标分母属于实现策略，不是额外用户业务规则；计划与验收要求本身不是运行通过证据。
+    visibility: internal
+  - id: evidence.production-execution-user-decision
+    type: document
+    path: docs/superpowers/plans/2026-09-10-production-execution.md
+    description: user-confirmed；用户要求生产模块新增菜单及页面路由，支持批次和SN扫码，在一屏明确关联工单、产品、工艺路线、产品配置和eDHR，展示开工与工序状态、可执行工序及条件、表单、SOP、作业动作与完工校验；用户确认本功能启用门禁。布局和技术实现方案不自动提升为额外业务规则，源文档中的计划和验收要求不表示已运行通过。
+    visibility: internal
+  - id: evidence.production-execution-product-configuration-contract
+    type: document
+    path: docs/knowledge/rules/product-process.yaml
+    description: original-evidence；现有权威规则已定义制程配置、工序表单/SOP引用、生产执行快照与必填表单阻断目标。复用既有规则与成熟度，不因工作台需求重新定义同义规则或提前声明运行期能力已验证。
+    visibility: internal
+  - id: evidence.production-execution-work-snapshot-contract
+    type: document
+    path: docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+    description: original-evidence；既有决策要求按适用规则自动匹配作业，创建实例时冻结模板、当前已发布流程版本、命中规则和流程配置快照，后续发布不得改变既有实例执行依据；本证据为既有业务契约，不能替代运行实现与测试。
+    visibility: internal
+  - id: evidence.production-execution-form-permission-contract
+    type: document
+    path: docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml
+    description: original-evidence；既有表单权限契约按表单模板版本和稳定fieldId输出EDIT或READ_ONLY，由统一表单渲染器呈现；流程页面不另建控件渲染器，运行时服务复校验表单版本、字段存在性和当前用户权限。
+    visibility: internal
+  - id: evidence.production-execution-runtime-condition-gaps
+    type: document
+    path: docs/knowledge/open-questions.yaml
+    description: original-evidence；泛领域条件字段来源、快照、AST求值和分支推进问题继续保留。本切片已有OPERATION_START来源和结构化AST的局部实现证据，见evidence.production-execution-engine-source；该实现选择不提升为用户确认的通用契约，不关闭这些问题，也不代表所有来源、目录和路线条件可运行。
+    visibility: internal
+  - id: evidence.production-execution-storage-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/ProductionExecution.java
+    description: original-evidence；本次工作树实体以objectId关联生产对象，声明snapshotJson、stateJson、revision、startedAt和updatedAt。只证明源代码中的持久化设计，不证明服务调用、数据库落库、并发或审计已经通过验证。
+    visibility: internal
+  - id: evidence.production-execution-migration-source
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0076-production-execution.sql
+    description: original-evidence；本次工作树迁移声明production_execution表、production.execution页面权限和管理员权限关联。只证明迁移源文件存在，不证明运行数据库已经执行迁移，也不将权限默认分配方式提升为用户确认规则。
+    visibility: internal
+  - id: evidence.production-execution-snapshot-builder-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    description: original-evidence；按对象与工单装配产品、制程版本、路线节点与连线、eDHR版本、表单模型/画布及SOP文档版本和页段；根据产品、产品簇和工序匹配WORK规则，命中EXCEPTION排除，冻结命中规则和当前已发布作业流程及表单流程配置。缺少或不唯一的配置拒绝构建。相同版本的作业表单可关联对应eDHR项的完成判断，这是本切片实现选择，不定义泛领域表单共享规则。
+    visibility: internal
+  - id: evidence.production-execution-engine-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    description: original-evidence；服务端计算顺序和并行工序前置及完工缺项，只有实际COMPLETED表单记录才满足必填eDHR项，条件分支跳过的作业表单不能代替已完成记录；所有适用作业须完成。作业执行支持FORM、CONFIRMATION及结构化CONDITION，按有序分支首个满足或默认出口推进。当前work-runtime-fields-v1取workType=WORK、triggerType=OPERATION_START、executionStatus=RUNNING，sourceType/sourceNumber取冻结对象上下文，节点求值时记录conditionFacts；这些常量和取值时点是本切片实现选择。缺来源、未知目录或操作符抛错，即使位于not下也不放行。不通过动态代码执行求值。无投递服务的NOTIFICATION、原始路线rule_expression条件、返工入口和不支持节点均明确阻断，不表示任意作业配置均可执行；处理历史图的能力不改变既有普通作业节点配置出口约束。
+    visibility: internal
+  - id: evidence.production-execution-service-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    description: original-evidence；扫码和查询只读；首次合法START生成并持久化对象执行快照，后续沿用快照与运行记录，revision防止过期提交。执行事务按工单后对象获取锁并在锁后重新判断终态，历史已开工但无记录不能补造状态；全部普通工序完成后更新对象完成。执行状态、对象状态及PRODUCTION_EXECUTION前后快照审计在同一事务保存。该局部运行链不代表全系统所有生产操作已具备同等验证。
+    visibility: internal
+  - id: evidence.production-execution-access-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    description: original-evidence；使用真实SubjectResolver解析用户/部门/角色；审批节点到达时冻结候选名单，已配置但解析为空不扩大为所有人。按权限组及稳定fieldId处理默认和例外，签名字段由服务写入；签署认证当前操作者账号、状态、锁定期限及PasswordEncoder密码结果，保存签署对象、动作、值快照与SHA-256，不保存凭据。引用字段按配置白名单查询并回查ID与名称，缺来源拒绝；附件验证真实文件归属当前对象。BCrypt与真实主体/持久化联动由集成测试源覆盖。
+    visibility: internal
+  - id: evidence.production-execution-signature-protection-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java
+    description: original-evidence；通用签名CRUD禁止创建、改写或删除PRODUCTION_EXECUTION签署记录，避免绕过执行认证与证据链。
+    visibility: internal
+  - id: evidence.production-execution-file-preview-protection-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+    description: original-evidence；通用文件删除拒绝PRODUCTION_EXECUTION附件，保留执行证据。受认证的page-preview对PDF使用PDFBox逐页渲染PNG，检查页码并返回X-Page-Count，以支持不具备内嵌PDF查看器的浏览器同屏SOP阅读；非PDF沿用原预览。源码不能替代所有浏览器的兼容性验收。
+    visibility: internal
+  - id: evidence.production-execution-page-source
+    type: code
+    path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+    description: original-evidence；生产执行页面提供批次/SN统一扫描、上下文、工序导航、条件、操作和SOP同屏区域；复用FormCanvasPreview运行接口接收字段值与权限，保护未保存内容，并调用真实执行API。运行控件实现位于共享表单渲染组件，生产页面未另建第二套表单控件。页面源码不是浏览器验证结果。
+    visibility: internal
+  - id: evidence.production-execution-engine-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java
+    description: original-evidence；测试源覆盖顺序/并行前置、重复与乱序动作、草稿不满足必填表单、只读和未知字段、数值精度/日期、人工确认阻断、缺来源在not中不放行、路线回路与通知阻断、条件分支跳过表单不能满足必填eDHR、结构化条件及审批/签名调用约束。测试源码不单独证明测试通过。
+    visibility: internal
+  - id: evidence.production-execution-access-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+    description: original-evidence；测试源覆盖真实BCrypt密码校验与签名快照不含凭据、审批名单仅捕获一次、受限空候选不开放、字段只读冲突、通用CRUD不能伪造改删执行签名或删除附件、引用搜索回查超过100条同名记录，以及PDF页预览生成PNG并拒绝越界页码。
+    visibility: internal
+  - id: evidence.production-execution-integration-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；使用真实ExecutionAccess、SubjectResolver、BCrypt和JPA持久化的聚焦集成测试，覆盖批次/SN只读扫描、冻结快照、草稿回读、完整工序完成、权限、陈旧修订、并发唯一开工、等待锁后并发终态、审计失败原子回滚、作业与eDHR及确认动作、审批身份和密码签署落库；浏览器夹具测试默认跳过，不能计作自动业务验收通过。该测试的受控上下文不等于全应用生产环境。
+    visibility: internal
+  - id: evidence.production-execution-migration-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionMigrationTest.java
+    description: original-evidence；0076迁移测试源覆盖执行表及权限初始化、重复执行、唯一和外键约束等场景；H2测试与临时PostgreSQL验证范围需分别报告，不据此声称已迁移用户运行库。
+    visibility: internal

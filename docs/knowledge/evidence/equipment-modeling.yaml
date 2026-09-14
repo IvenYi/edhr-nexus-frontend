@@ -1,0 +1,72 @@
+knowledgeModelVersion: 0.3.12
+evidence:
+  - id: evidence.equipment-modeling-user-decision
+    type: document
+    path: docs/superpowers/plans/2026-09-09-equipment-modeling.md
+    description: user-confirmed；设备建模决策包记录用户明确要求的目录、分类、类型、单台设备、两页布局、两个页面的创建人、创建时间、更新人、更新时间，以及单台设备新增设备品牌和采购时间、品牌位于型号前；随后明确采购时间不得晚于今天。删除保护、人员解析、历史回填、新字段可空、日期粒度及今天的时区取值等实现假设不据此新增权威业务规则。
+    visibility: internal
+  - id: evidence.equipment-type-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentType.java
+    description: original-evidence；EquipmentType 实体以独立标识、编码和名称保存某一种类设备，通过 categoryId 关联设备分类，并持久化 createdBy、createdAt、updatedBy 和 updatedAt 系统信息。
+    visibility: internal
+  - id: evidence.equipment-instance-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Equipment.java
+    description: original-evidence；Equipment 实体通过 equipmentTypeId 引用设备类型，保存单台设备的编码、名称、设备品牌、型号、序列号和采购日期，并持久化 createdBy、createdAt、updatedBy 和 updatedAt 系统信息。brand 为可空字符串，purchaseDate 为可空 LocalDate；可空和日期粒度属于实现推断。
+    visibility: internal
+  - id: evidence.equipment-legacy-schema
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql
+    description: original-evidence；初始结构包含 equipment_type 和 equipment，equipment.equipment_type_id 表达设备实例对类型的引用；该文件不证明新分类关系或新页面已经实现。
+    visibility: internal
+  - id: evidence.equipment-category-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentCategory.java
+    description: original-evidence；设备分类实体保存名称、内置标记及排序，不将设备分类混同于设备类型或单台设备。
+    visibility: internal
+  - id: evidence.equipment-modeling-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0073-equipment-modeling.sql
+    description: original-evidence；新增分类表并初始化生产设备、检验设备和计量器具，为类型添加可空分类引用并保留历史类型，增强新设备写入的类型引用完整性；该源码证据不等同于迁移已在运行数据库执行。
+    visibility: internal
+  - id: evidence.equipment-modeling-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java
+    description: original-evidence；同一设备主数据控制器分别提供分类、类型、单台设备 CRUD，并在类型及设备响应中提供四个系统字段。创建时按 AuditContext 姓名优先账号记录创建人和更新人，无来源留空；编辑保留创建信息并更新更新信息，客户端不能指定人员字段。单台设备的 brand 经去除首尾空白及128字符校验，purchaseDate 按 ISO 有效日期解析，晚于 LocalDate.now() 则拒绝保存，两者可清空并进入响应与审计前后快照。未来日期阻断为用户确认；服务器本地自然日、人员解析、删除保护、必填上级、新字段可空及其他输入校验为实现选择，不提升为额外用户确认规则。
+    visibility: internal
+  - id: evidence.equipment-modeling-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx
+    description: original-evidence；设备类型模式提供左分类右类型布局和分类新增入口，设备列表模式维护具体单台设备并选择设备类型；单台设备表单及默认列表在型号前提供设备品牌、序列号后提供采购时间，日期直接以 YYYY-MM-DD 传输和回显。采购日期选择器以上限 max 限制未来日期，手动输入未来日期时提示并阻断保存；浏览器本地自然日为实现选择。两页系统字段及设备新字段纳入显隐、排序和列宽记忆，旧偏好按默认相邻字段位置插入缺少的新列并保留既有顺序、显隐与宽度。缺失值显示短横线，源码核对不等同于实际浏览器验收。
+    visibility: internal
+  - id: evidence.equipment-system-fields-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0074-equipment-system-fields.sql
+    description: original-evidence；为 equipment_type 和 equipment 增加可空 created_by、updated_by。按相同实体类型、实体标识和租户匹配既有审计，从最早 CREATE 与最新 CREATE 或 UPDATE 取姓名优先账号回填；equipment 沿用当前默认租户，无依据保持空，不改写既有时间或审计。该回填方式属于实现推断，源码不证明迁移已在运行库执行或历史审计完整。
+    visibility: internal
+  - id: evidence.equipment-modeling-integration-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/EquipmentControllerIntegrationTest.java
+    description: original-evidence；聚焦集成测试覆盖类型与单台设备真实操作者、创建信息保留、客户端伪造人员字段不被采用，以及系统字段历史回填。单台设备场景覆盖品牌首尾空白、采购日期持久化回读、非法日期和超长品牌拒绝、编辑清空与审计前后快照，并包含0075历史行保留、新字段为空、重复执行与回滚；采购日期上限场景验证今天、过去和空值可保存，新增和编辑未来日期均拒绝且设备数据与成功审计不增加或改变。测试源码不等同于测试已通过。
+    visibility: internal
+  - id: evidence.equipment-modeling-frontend-tests
+    type: test
+    path: gmp-platform/frontend/scripts/test-equipment-modeling.mjs
+    description: original-evidence；聚焦前端测试包含旧字段偏好补齐四个系统字段且保留顺序、显隐与列宽，以及系统时间格式和历史空值展示；新增单台设备品牌与采购日期编辑回显和历史空值、无时区转换、旧偏好将品牌插入型号前与采购日期插入状态前且归一化可重复执行的场景；日期上限测试覆盖今天、过去、未来和空值，以及跨月、跨年边界。测试源码不等同于测试已通过。
+    visibility: internal
+  - id: evidence.equipment-brand-purchase-date-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0075-equipment-brand-purchase-date.sql
+    description: original-evidence；仅为 equipment 增加可空 brand VARCHAR(128) 和 purchase_date DATE，历史记录不回填，设备类型结构不变；回滚仅移除这两个新增列。可空和日期粒度属于实现推断，源码不证明迁移已在运行数据库执行。
+    visibility: internal
+  - id: evidence.equipment-modeling-menu
+    type: code
+    path: gmp-platform/frontend/src/utils/menuManagement.ts
+    description: original-evidence；已保存菜单归一化加入设备建模、设备类型和设备列表，并将类型路径映射至现有设备权限。
+    visibility: internal
+  - id: evidence.equipment-modeling-routes
+    type: code
+    path: gmp-platform/frontend/src/router/index.tsx
+    description: original-evidence；/master-data/equipment-types 与 /master-data/equipment 分别打开类型模式与单台设备模式，保留既有设备 URL。
+    visibility: internal

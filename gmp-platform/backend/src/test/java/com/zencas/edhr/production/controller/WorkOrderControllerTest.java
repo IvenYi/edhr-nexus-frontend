@@ -21,9 +21,11 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class WorkOrderControllerTest {
@@ -58,6 +60,18 @@ class WorkOrderControllerTest {
         assertThat(event.getContentAfter()).contains("\"orderNo\":\"WO-001\"")
                 .contains("\"productName\":\"产品 A\"")
                 .contains("\"plannedQuantity\":10");
+    }
+
+    @Test
+    void createRejectsMissingMaterialWithoutSavingOrderOrAudit() {
+        when(workOrderRepository.findByTenantIdAndOrderNo("default", "WO-MISSING")).thenReturn(Optional.empty());
+        when(materialRepository.findByTenantIdAndId("default", 999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> controller.create(new WorkOrderController.WorkOrderRequest(
+                "WO-MISSING", null, 999L, null, BigDecimal.TEN, null, null, null)))
+                .hasMessage("产品不存在");
+        verify(workOrderRepository, never()).save(any());
+        verify(auditEventRepository, never()).save(any());
     }
 
     @Test

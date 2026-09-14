@@ -78,6 +78,7 @@ import type { PageResult } from '@/types/common';
 import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
 
 const PAGE_SIZE = 20;
+const QUICK_ADD_PROCESS_VERSION = '__quick_add_process_version__';
 const statusLabels: Record<string, string> = {
   CREATED: '已创建',
   IN_PROCESS: '生产中',
@@ -335,7 +336,7 @@ export default function WorkOrderPage() {
       return editing ? updateWorkOrder(editing.id, body) : createWorkOrder(body);
     },
     onSuccess: () => { void client.invalidateQueries({ queryKey: ['work-orders'] }); setDialogOpen(false); showMessage(editing ? '工单更新成功' : '工单创建成功'); },
-    onError: (error: any) => showMessage(error?.response?.data?.message || '工单保存失败', 'error'),
+    onError: (error: Error) => showMessage(error.message || '工单保存失败', 'error'),
   });
   const cancel = useMutation({
     mutationFn: cancelWorkOrder,
@@ -359,6 +360,8 @@ export default function WorkOrderPage() {
   });
 
   const versions: ProductProcessVersion[] = process.data?.model?.versions ?? [];
+  const activeVersions = versions.filter((version) => version.status === 'ACTIVE');
+  const showOrderTableState = orders.isLoading || orders.isError || !orders.data?.content.length;
   const selectedProduct = (products.data?.content ?? []).find((product) => String(product.id) === form.productId);
   const objectRows = objects.data ?? [];
   const allocated = objectRows.reduce((sum, item) => sum + Number(item.targetQuantity), 0);
@@ -536,10 +539,10 @@ export default function WorkOrderPage() {
     </Box></Box>
     <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
       <Box sx={{ flex: '0 0 auto', px: 2, py: 0.75, minHeight: 48, borderBottom: '1px solid #ebeef5', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}><Button variant="contained" size="small" startIcon={<Add />} onClick={openCreate}>新建工单</Button></Box>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: 1200 }}>
+      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: 1200, height: showOrderTableState ? '100%' : 'auto' }}>
         <colgroup><col style={{ width: 180 }} /><col style={{ width: 190 }} /><col style={{ width: 120 }} /><col style={{ width: 104 }} /><col style={{ width: 104 }} /><col style={{ width: 110 }} /><col style={{ width: 164 }} /><col style={{ width: 104 }} /><col style={{ width: 128 }} /></colgroup>
-        <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{['工单号', '产品', '制程版本', '生产模式', '生产形态', '计划数量', '创建时间', '状态', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { ...tableHeaderCellSx, ...operationColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : label === '状态' ? { ...tableHeaderCellSx, ...statusColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : tableHeaderCellSx}>{label}</TableCell>)}</TableRow></TableHead>
-        <TableBody>{orders.isLoading ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ height: 240, color: '#909399' }}><CircularProgress size={24} /></TableStateCell></TableRow> : orders.isError ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ height: 240, color: '#c62828' }}>工单数据加载失败</TableStateCell></TableRow> : (orders.data?.content ?? []).length === 0 ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ height: 240, color: '#909399' }}>暂无数据</TableStateCell></TableRow> : orders.data!.content.map((item) => <TableRow key={item.id} hover tabIndex={0} onClick={() => openDetail(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') openDetail(item); }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
+        <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{['工单号', '产品', '制程版本', '生产模式', '生产形态', '计划数量', '创建时间', '状态', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { ...tableHeaderCellSx, ...operationColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : label === '状态' ? { ...tableHeaderCellSx, ...statusColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : tableHeaderCellSx}>{label}</TableCell>)}</TableRow></TableHead>
+        <TableBody>{orders.isLoading ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ color: '#909399' }}><CircularProgress size={24} /></TableStateCell></TableRow> : orders.isError ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ color: '#c62828' }}>工单数据加载失败</TableStateCell></TableRow> : (orders.data?.content ?? []).length === 0 ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ color: '#909399' }}>暂无数据</TableStateCell></TableRow> : orders.data!.content.map((item) => <TableRow key={item.id} hover tabIndex={0} onClick={() => openDetail(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') openDetail(item); }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
           <TableCell sx={{ whiteSpace: 'nowrap' }} title={item.orderNo}>{item.orderNo}</TableCell><TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${item.productName}（${item.productCode}）`}><Typography variant="body2" noWrap>{item.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{item.productCode}</Typography></TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.processVersion || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.productionMode || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formLabels[item.productionForm || ''] || item.productionForm || '-'}</TableCell><TableCell>{item.plannedQuantity}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(item.createdAt)}</TableCell><TableCell sx={statusColumnSx}>{statusBadge(item.status, statusLabels)}</TableCell>
           <TableCell align="center" sx={operationColumnSx} onClick={(event) => event.stopPropagation()}>
             <Tooltip title="生产对象" arrow><IconButton size="small" aria-label="生产对象" onClick={() => openObjects(item)}><ViewList fontSize="small" /></IconButton></Tooltip>
@@ -562,8 +565,16 @@ export default function WorkOrderPage() {
               <TextField select required fullWidth size="small" label="产品" value={form.productId} onChange={(event) => selectProduct(event.target.value)} SelectProps={{ renderValue: () => selectedProduct ? `${selectedProduct.name}（${selectedProduct.code}）` : '' }} className={form.productId ? 'has-value' : undefined} sx={clearableSelectSx} InputProps={{ endAdornment: form.productId ? <InputAdornment position="end" className="select-clear-adornment"><Tooltip title="清除产品" arrow><IconButton className="select-clear-button" size="small" aria-label="清除产品" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); selectProduct(''); }}><Clear fontSize="small" /></IconButton></Tooltip></InputAdornment> : undefined }}>
                 {(products.data?.content ?? []).map((product) => <MenuItem key={product.id} value={String(product.id)}>{product.name}（{product.code}）</MenuItem>)}
               </TextField>
-              <TextField select fullWidth size="small" label="制程版本" value={form.processVersionId} disabled={!form.productId || process.isLoading} onChange={(event) => setForm({ ...form, processVersionId: event.target.value })} SelectProps={{ renderValue: (selected) => <ProcessVersionValue version={versions.find((version) => version.id === String(selected))} /> }} className={form.processVersionId ? 'has-value' : undefined} sx={clearableSelectSx} InputProps={{ endAdornment: form.processVersionId ? <InputAdornment position="end" className="select-clear-adornment"><Tooltip title="清除制程版本" arrow><IconButton className="select-clear-button" size="small" aria-label="清除制程版本" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); setForm((current) => ({ ...current, processVersionId: '' })); }}><Clear fontSize="small" /></IconButton></Tooltip></InputAdornment> : undefined }}>
-                {versions.filter((version) => version.status === 'ACTIVE').map((version) => <MenuItem key={version.id} value={version.id}><ProcessVersionOption version={version} /></MenuItem>)}
+              <TextField select fullWidth size="small" label="制程版本" value={form.processVersionId} disabled={!form.productId || process.isLoading} onChange={(event) => {
+                if (event.target.value === QUICK_ADD_PROCESS_VERSION) {
+                  window.open(`/master-data/products/${encodeURIComponent(form.productId)}/modeling?intent=create`, '_blank', 'noopener,noreferrer');
+                  return;
+                }
+                setForm({ ...form, processVersionId: event.target.value });
+              }} SelectProps={{ onOpen: () => { void process.refetch(); }, renderValue: (selected) => <ProcessVersionValue version={versions.find((version) => version.id === String(selected))} /> }} className={form.processVersionId ? 'has-value' : undefined} sx={clearableSelectSx} InputProps={{ endAdornment: form.processVersionId ? <InputAdornment position="end" className="select-clear-adornment"><Tooltip title="清除制程版本" arrow><IconButton className="select-clear-button" size="small" aria-label="清除制程版本" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); setForm((current) => ({ ...current, processVersionId: '' })); }}><Clear fontSize="small" /></IconButton></Tooltip></InputAdornment> : undefined }}>
+                {activeVersions.length === 0 && <MenuItem disabled value="" sx={{ justifyContent: 'center', py: 2, color: '#909399', '&.Mui-disabled': { opacity: 1 } }}>{process.isError ? '制程版本加载失败' : '暂无数据'}</MenuItem>}
+                {activeVersions.map((version) => <MenuItem key={version.id} value={version.id}><ProcessVersionOption version={version} /></MenuItem>)}
+                <MenuItem value={QUICK_ADD_PROCESS_VERSION} sx={{ borderTop: '1px solid #ebeef5', color: 'primary.main', gap: 0.75 }}><Add fontSize="small" />快速添加</MenuItem>
               </TextField>
             </Box>
           </FormSection>

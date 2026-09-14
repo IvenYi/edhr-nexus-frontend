@@ -29,7 +29,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { Cancel, Close, DescriptionOutlined, ExpandMore, PlayCircleOutline, RestartAlt, Search, StopCircleOutlined } from '@mui/icons-material';
+import { Cancel, Close, ContentCopyOutlined, DescriptionOutlined, ExpandMore, PlayCircleOutline, RestartAlt, Search, StopCircleOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { useSnackbar } from '@/components/SnackbarProvider';
@@ -278,7 +278,22 @@ export default function BatchManagementPage() {
               {!batches.isLoading && !batches.isError && rows.length === 0 && <TableRow><TableStateCell colSpan={12} align="center" sx={{ height: 240, color: '#909399' }}>暂无批次数据</TableStateCell></TableRow>}
               {!batches.isLoading && !batches.isError && rows.map((row) => (
                 <TableRow key={row.id} hover tabIndex={0} onClick={() => { setDetail(row); setDetailTab(0); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { setDetail(row); setDetailTab(0); } }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
-                  <TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }} title={row.objectNo}>{row.objectNo}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}>
+                      <Typography variant="body2" noWrap title={row.objectNo} sx={{ flex: 1, minWidth: 0, fontWeight: 600 }}>{row.objectNo}</Typography>
+                      <Tooltip title="复制批次号" arrow>
+                        <IconButton size="small" aria-label="复制批次号" sx={{ flexShrink: 0 }} onKeyDown={(event) => event.stopPropagation()} onClick={async (event) => {
+                          event.stopPropagation();
+                          try {
+                            await navigator.clipboard.writeText(row.objectNo);
+                            showMessage('批次号已复制');
+                          } catch {
+                            showMessage('复制失败，请重试', 'error');
+                          }
+                        }}><ContentCopyOutlined sx={{ fontSize: 16 }} /></IconButton>
+                      </Tooltip>
+                    </Box>
+                  </TableCell>
                   <TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={row.workOrderNo}>{row.workOrderNo}</TableCell>
                   <TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${row.productName}（${row.productCode}）`}><Typography variant="body2" noWrap>{row.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{row.productCode}</Typography></TableCell>
                   <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.processVersion || '-'}</TableCell>

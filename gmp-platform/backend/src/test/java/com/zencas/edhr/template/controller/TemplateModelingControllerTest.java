@@ -299,12 +299,13 @@ class TemplateModelingControllerTest {
         when(formTemplateVersionRepository.save(any(FormTemplateVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         var response = controller.saveFormTemplateVersionDesign(101L, 202L, TemplateModelingRequest.builder()
-                .modelDesignJson("{\"fields\":[{\"id\":\"f1\"}]}")
+                .modelDesignJson("{\"fields\":[{\"id\":\"f1\",\"type\":\"number\",\"typeConfig\":{\"businessPurpose\":\"PRODUCTION_GOOD\"}}]}")
                 .canvasDesignJson("{\"pages\":[{\"id\":\"p1\"}]}")
                 .workflowDesignJson("{\"nodes\":[{\"id\":\"n1\"}]}")
                 .build());
 
         assertThat(response.getData().modelDesignJson()).contains("\"f1\"");
+        assertThat(version.getModelDesignJson()).contains("\"businessPurpose\":\"PRODUCTION_GOOD\"");
         assertThat(response.getData().canvasDesignJson()).contains("\"p1\"");
         assertThat(response.getData().workflowDesignJson()).contains("\"n1\"");
         verify(formTemplateVersionRepository).save(version);

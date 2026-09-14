@@ -116,6 +116,41 @@ test('normalization preserves configured module and required-menu icons on repea
   assert.deepEqual(clone(api.normalizeManagedSidebarModules(normalized)), clone(normalized));
 });
 
+test('equipment modeling restores saved menus and removes legacy duplicate equipment entries', () => {
+  const { api } = context(menuCode);
+  const input = modules();
+  input[0].menus.push(
+    { label: '旧设备', path: '/master-data/equipment' },
+    { label: '旧目录', children: [{ label: '旧类型', path: '/master-data/equipment-types' }] },
+    { label: '自定义', children: [{ label: '保留页面', path: '/custom/page' }] },
+  );
+  const result = api.normalizeManagedSidebarModules(input);
+  const menus = result.find((module) => module.id === 'data').menus;
+  const equipment = menus.find((menu) => menu.label === '设备建模');
+  assert.deepEqual(clone(equipment.children), [
+    { label: '设备类型', path: '/master-data/equipment-types' },
+    { label: '设备列表', path: '/master-data/equipment' },
+  ]);
+  const paths = menus.flatMap((menu) => menu.children?.map((child) => child.path) ?? [menu.path]);
+  assert.equal(paths.filter((path) => path === '/master-data/equipment').length, 1);
+  assert.equal(paths.filter((path) => path === '/master-data/equipment-types').length, 1);
+  assert.ok(paths.includes('/custom/page'));
+  assert.deepEqual(clone(api.normalizeManagedSidebarModules(result)), clone(result));
+  assert.equal(api.inferPermissionCode('/master-data/equipment-types'), 'master-data.equipment');
+  assert.equal(api.inferPermissionCode('/master-data/equipment'), 'master-data.equipment');
+});
+
+test('equipment modeling exists in default menus and survives save and server reload', async () => {
+  let saved;
+  const { api } = context(menuCode, { api: {
+    put: async (value) => { saved = clone(value); return { configured: true, modules: value }; },
+    get: async () => ({ configured: true, modules: saved }),
+  } });
+  await api.resetManagedSidebarModules();
+  const reloaded = await api.refreshManagedSidebarModules();
+  assert.ok(reloaded.find((module) => module.id === 'data').menus.find((menu) => menu.label === '设备建模'));
+});
+
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 for (const state of ['loading', 'error', 'retrying', 'ready']) {

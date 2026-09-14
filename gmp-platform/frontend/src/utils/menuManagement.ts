@@ -52,6 +52,15 @@ const REQUIRED_FACTORY_MODELING_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_EQUIPMENT_MODELING_MENU: SidebarMenu = {
+  label: '设备建模',
+  icon: 'PrecisionManufacturing',
+  children: [
+    { label: '设备类型', path: '/master-data/equipment-types' },
+    { label: '设备列表', path: '/master-data/equipment' },
+  ],
+};
+
 const REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU: SidebarMenu = {
   label: '流程中心',
   icon: 'AccountTree',
@@ -82,6 +91,7 @@ const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
 const PROCESS_MODELING_PATHS = new Set(REQUIRED_PROCESS_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const TEMPLATE_MODELING_PATHS = new Set(REQUIRED_TEMPLATE_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const FACTORY_MODELING_PATHS = new Set(REQUIRED_FACTORY_MODELING_MENU.children?.map((child) => child.path) ?? []);
+const EQUIPMENT_MODELING_PATHS = new Set(REQUIRED_EQUIPMENT_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const PRODUCTION_MANAGED_PATHS = new Set([
   '/workflow/review-templates',
   '/workflow/form-processes',
@@ -92,11 +102,11 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/production/work-templates',
   '/production/work-orders',
   '/production/batches',
+  '/production/execution',
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
   '/master-data/units',
-  '/master-data/equipment',
   '/master-data/sop-documents',
   '/master-data/sites',
 ]);
@@ -265,14 +275,15 @@ function ensureRequiredProcessModeling(modules: SidebarModule[]) {
   dataModule.menus = dataModule.menus
     .map((menu) => {
       if (menu.children) {
-        menu.children = menu.children.filter((child) => !PROCESS_MODELING_PATHS.has(child.path) && !TEMPLATE_MODELING_PATHS.has(child.path) && !FACTORY_MODELING_PATHS.has(child.path) && !REMOVED_MASTER_DATA_MENU_PATHS.has(child.path));
+        menu.children = menu.children.filter((child) => !PROCESS_MODELING_PATHS.has(child.path) && !TEMPLATE_MODELING_PATHS.has(child.path) && !FACTORY_MODELING_PATHS.has(child.path) && !EQUIPMENT_MODELING_PATHS.has(child.path) && !REMOVED_MASTER_DATA_MENU_PATHS.has(child.path));
       }
-      if (menu.path && (PROCESS_MODELING_PATHS.has(menu.path) || TEMPLATE_MODELING_PATHS.has(menu.path) || FACTORY_MODELING_PATHS.has(menu.path) || REMOVED_MASTER_DATA_MENU_PATHS.has(menu.path))) return null;
-      if (menu.label === '基础主数据' || menu.label === '工艺建模' || menu.label === '模板建模' || menu.label === '工厂建模') return null;
+      if (menu.path && (PROCESS_MODELING_PATHS.has(menu.path) || TEMPLATE_MODELING_PATHS.has(menu.path) || FACTORY_MODELING_PATHS.has(menu.path) || EQUIPMENT_MODELING_PATHS.has(menu.path) || REMOVED_MASTER_DATA_MENU_PATHS.has(menu.path))) return null;
+      if (menu.label === '基础主数据' || menu.label === '工艺建模' || menu.label === '模板建模' || menu.label === '工厂建模' || menu.label === '设备建模') return null;
+      if (menu.children && menu.children.length === 0) return null;
       return menu;
     })
     .filter((menu): menu is SidebarMenu => menu !== null);
-  dataModule.menus.unshift(...cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU, REQUIRED_TEMPLATE_MODELING_MENU, REQUIRED_FACTORY_MODELING_MENU] }])[0].menus);
+  dataModule.menus.unshift(...cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU, REQUIRED_TEMPLATE_MODELING_MENU, REQUIRED_FACTORY_MODELING_MENU, REQUIRED_EQUIPMENT_MODELING_MENU] }])[0].menus);
 }
 
 function ensureRequiredProductionMenus(modules: SidebarModule[]) {
@@ -311,7 +322,7 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
       id: 'production',
       label: '生产',
       icon: 'PrecisionManufacturing',
-      menus: [REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
+      menus: [{ label: '生产执行', icon: 'PrecisionManufacturing', path: '/production/execution' }, REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
     }])[0].menus,
   );
 }
@@ -422,11 +433,13 @@ export function useManagedSidebarModules(): SidebarModule[] {
 }
 
 export function inferPermissionCode(path: string): string | undefined {
+  if (path === '/master-data/equipment-types') return 'master-data.equipment';
   if (path === '/') return 'dashboard';
   if (path === '/production/work-templates') return 'workflow.work-templates';
   if (path === '/workflow/form-processes') return 'workflow.form-processes';
   if (path === '/production/work-orders') return 'production.work-orders';
   if (path === '/production/batches') return 'production.batches';
+  if (path === '/production/execution') return 'production.execution';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

@@ -314,6 +314,8 @@ const auditFieldLabelMap: Record<string, string> = {
   displayName: '显示名称',
   name: '名称',
   code: '编码',
+  brand: '设备品牌',
+  purchaseDate: '采购时间',
   username: '账号',
   display_name: '姓名',
   realName: '姓名',

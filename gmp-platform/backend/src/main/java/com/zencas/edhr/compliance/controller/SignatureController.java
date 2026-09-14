@@ -42,18 +42,29 @@ public class SignatureController {
 
     @PostMapping
     public ApiResponse<Signature> create(@RequestBody Signature entity) {
+        protectExecutionSignature(entity);
+        if (entity.getId() != null) signatureRepository.findById(entity.getId()).ifPresent(this::protectExecutionSignature);
         return ApiResponse.success(signatureRepository.save(entity));
     }
 
     @PutMapping("/{id}")
     public ApiResponse<Signature> update(@PathVariable Long id, @RequestBody Signature entity) {
+        protectExecutionSignature(entity);
+        signatureRepository.findById(id).ifPresent(this::protectExecutionSignature);
         entity.setId(id);
         return ApiResponse.success(signatureRepository.save(entity));
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable Long id) {
+        signatureRepository.findById(id).ifPresent(this::protectExecutionSignature);
         signatureRepository.deleteById(id);
         return ApiResponse.success(null);
+    }
+
+    private void protectExecutionSignature(Signature signature) {
+        if ("PRODUCTION_EXECUTION".equals(signature.getTargetType()))
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "生产执行签名只能由执行动作生成，且不可修改或删除");
     }
 }

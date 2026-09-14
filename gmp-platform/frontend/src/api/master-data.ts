@@ -267,14 +267,76 @@ export const updateUnit = (id: number, body: Record<string, unknown>) =>
 export const deleteUnit = (id: number) =>
   client.delete(`/master-data/units/${id}`);
 
-// Equipment Types
+export interface EquipmentCategoryRecord {
+  id: string;
+  name: string;
+  system: boolean;
+  count: number;
+}
+
+export interface EquipmentTypeRecord {
+  id: string;
+  code: string;
+  name: string;
+  categoryId?: string | null;
+  categoryName?: string | null;
+  createdBy?: string | null;
+  createdAt?: string;
+  updatedBy?: string | null;
+  updatedAt?: string;
+}
+
+export interface EquipmentRecord {
+  id: string;
+  code: string;
+  name: string;
+  equipmentTypeId: string;
+  equipmentTypeName?: string | null;
+  categoryName?: string | null;
+  brand?: string | null;
+  model?: string | null;
+  serialNumber?: string | null;
+  purchaseDate?: string | null;
+  status: string;
+  siteId?: string | null;
+  createdBy?: string | null;
+  createdAt?: string;
+  updatedBy?: string | null;
+  updatedAt?: string;
+}
+
+export const getEquipmentCategories = () => client.get('/master-data/equipment/categories');
+export const createEquipmentCategory = (body: { name: string }) => client.post('/master-data/equipment/categories', body);
+export const updateEquipmentCategory = (id: string, body: { name: string }) => client.put(`/master-data/equipment/categories/${id}`, body);
+export const deleteEquipmentCategory = (id: string) => client.delete(`/master-data/equipment/categories/${id}`);
+
 export const getEquipmentTypes = (params?: Record<string, unknown>) =>
-  client.get('/master-data/equipment', { params });
+  client.get('/master-data/equipment/types', { params });
 export const createEquipmentType = (body: Record<string, unknown>) =>
-  client.post('/master-data/equipment', body);
-export const updateEquipmentType = (id: number, body: Record<string, unknown>) =>
-  client.put(`/master-data/equipment/${id}`, body);
-export const deleteEquipmentType = (id: number) =>
+  client.post('/master-data/equipment/types', body);
+export const updateEquipmentType = (id: string, body: Record<string, unknown>) =>
+  client.put(`/master-data/equipment/types/${id}`, body);
+export const deleteEquipmentType = (id: string) =>
+  client.delete(`/master-data/equipment/types/${id}`);
+
+export async function getAllEquipmentTypes(): Promise<EquipmentTypeRecord[]> {
+  const records: EquipmentTypeRecord[] = [];
+  let page = 1;
+  let totalPages = 1;
+  do {
+    const response = await getEquipmentTypes({ page, size: 200 });
+    const result = response.data.data as PageResult<EquipmentTypeRecord>;
+    records.push(...result.content);
+    totalPages = result.totalPages;
+    page += 1;
+  } while (page <= totalPages);
+  return records;
+}
+
+export const getEquipment = (params?: Record<string, unknown>) => client.get('/master-data/equipment', { params });
+export const createEquipment = (body: Record<string, unknown>) => client.post('/master-data/equipment', body);
+export const updateEquipment = (id: string, body: Record<string, unknown>) => client.put(`/master-data/equipment/${id}`, body);
+export const deleteEquipment = (id: string) =>
   client.delete(`/master-data/equipment/${id}`);
 
 // Operations

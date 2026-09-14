@@ -110,9 +110,9 @@ public class ProductionService {
 
     @Transactional
     public ProductionObject startObject(Long id) {
+        WorkOrder order = requireOrderForObjectForUpdate(id);
         ProductionObject object = requireObjectForUpdate(id);
         if (!"CREATED".equals(object.getStatus())) throw error("只有已创建的生产对象可以开工");
-        WorkOrder order = requireOrderForUpdate(object.getWorkOrderId());
         if (!List.of("CREATED", "IN_PROCESS").contains(order.getStatus())) {
             throw error("当前工单不允许生产对象开工");
         }
@@ -128,28 +128,31 @@ public class ProductionService {
 
     @Transactional
     public ProductionObject completeObject(Long id) {
+        WorkOrder order = requireOrderForObjectForUpdate(id);
         ProductionObject object = requireObjectForUpdate(id);
         if (!"IN_PROGRESS".equals(object.getStatus())) throw error("只有生产中的对象可以完成");
         stateMachineService.transit("PRODUCTION_OBJECT", object.getId(), object.getStatus(), "COMPLETED");
         object.setStatus("COMPLETED");
         ProductionObject saved = productionObjectRepository.save(object);
-        updateOrderWhenObjectsTerminal(requireOrderForUpdate(object.getWorkOrderId()));
+        updateOrderWhenObjectsTerminal(order);
         return saved;
     }
 
     @Transactional
     public ProductionObject cancelObject(Long id) {
+        WorkOrder order = requireOrderForObjectForUpdate(id);
         ProductionObject object = requireObjectForUpdate(id);
         if (!"CREATED".equals(object.getStatus())) throw error("只有未开工的生产对象可以取消");
         stateMachineService.transit("PRODUCTION_OBJECT", object.getId(), object.getStatus(), "CANCELLED");
         object.setStatus("CANCELLED");
         ProductionObject saved = productionObjectRepository.save(object);
-        updateOrderWhenObjectsTerminal(requireOrderForUpdate(object.getWorkOrderId()));
+        updateOrderWhenObjectsTerminal(order);
         return saved;
     }
 
     @Transactional
     public ProductionObject endObject(Long id, String reason) {
+        WorkOrder order = requireOrderForObjectForUpdate(id);
         ProductionObject object = requireObjectForUpdate(id);
         if (!"IN_PROGRESS".equals(object.getStatus())) throw error("只有生产中的对象可以提前结束");
         if (!StringUtils.hasText(reason)) throw error("提前结束必须填写结束原因");
@@ -158,7 +161,7 @@ public class ProductionService {
         object.setTerminationReason(reason.trim());
         object.setTerminationAt(LocalDateTime.now());
         ProductionObject saved = productionObjectRepository.save(object);
-        updateOrderWhenObjectsTerminal(requireOrderForUpdate(object.getWorkOrderId()));
+        updateOrderWhenObjectsTerminal(order);
         return saved;
     }
 
@@ -205,6 +208,11 @@ public class ProductionService {
     public WorkOrder requireOrder(Long id) {
         return workOrderRepository.findByTenantIdAndId(TENANT_ID, id)
                 .orElseThrow(() -> error("工单不存在"));
+    }
+
+    private WorkOrder requireOrderForObjectForUpdate(Long id) {
+        Long orderId = productionObjectRepository.findWorkOrderId(TENANT_ID, id).orElseThrow(() -> error("生产对象不存在"));
+        return requireOrderForUpdate(orderId);
     }
 
     private WorkOrder requireOrderForUpdate(Long id) {

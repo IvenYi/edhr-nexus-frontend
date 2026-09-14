@@ -1,0 +1,75 @@
+knowledgeModelVersion: 0.3.12
+decisions:
+  - id: DEC-0037
+    title: 设备分类、设备类型与单台设备分层维护
+    status: implemented
+    visibility: internal
+    context: 用户要求在数据模块新增设备建模目录，下挂设备类型与设备列表；明确类型页面参照工序管理，左侧分类、右侧类型，而设备列表维护具体某一台设备。用户随后明确要求两个页面按规范补齐创建人、创建时间、更新人和更新时间，并要求单台设备增加设备品牌、采购时间，品牌放在型号前面；进一步确认采购时间不得晚于今天。内置分类的修改删除限制、必填上级、引用保护、系统字段的人员解析和历史回填方式，以及品牌与采购时间可空、采购时间按日期记录、今天的时区取值、其他输入校验与旧偏好补列方式属于实现推断，不在本决策中提升为用户确认的业务规则。
+    decisionStatements:
+      - id: DEC-0037-01
+        statement: 数据模块下设设备建模目录，其下包含设备类型和设备列表两个页面。
+        status: implemented
+        visibility: internal
+      - id: DEC-0037-02
+        statement: 设备类型页面参照工序管理；左侧维护设备分类，内置生产设备、检验设备和计量器具，并允许用户自行新增分类。
+        status: implemented
+        visibility: internal
+      - id: DEC-0037-03
+        statement: 设备类型页面右侧维护所选设备分类下的设备类型名称，设备类型具体到注塑机、模温机等某一种类设备。
+        status: implemented
+        visibility: internal
+      - id: DEC-0037-04
+        statement: 设备列表维护具体某一台设备，通过设备类型形成设备分类、设备类型、单台设备的三级关系。
+        status: implemented
+        visibility: internal
+      - id: DEC-0037-05
+        statement: 设备类型与设备列表两个页面均按页面规范展示创建人、创建时间、更新人和更新时间。
+        status: implemented
+        visibility: internal
+      - id: DEC-0037-06
+        statement: 单台设备维护设备品牌和采购时间，设备品牌位于型号之前。
+        status: implemented
+        visibility: internal
+      - id: DEC-0037-07
+        statement: 单台设备的采购时间不得晚于今天。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-type-entity, evidence.equipment-instance-entity, evidence.equipment-modeling-migration, evidence.equipment-system-fields-migration, evidence.equipment-brand-purchase-date-migration, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-menu, evidence.equipment-modeling-routes, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]
+    acceptanceScenarios:
+      - id: scenario.equipment-modeling-menu
+        given: 用户打开数据模块
+        when: 查看设备建模目录
+        then: 目录下包含设备类型和设备列表
+        evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-modeling-menu, evidence.equipment-modeling-routes]
+        evidenceRequirements: [菜单测试, 页面检查]
+      - id: scenario.equipment-modeling-category-types
+        given: 设备类型页面左侧显示生产设备、检验设备和计量器具
+        when: 用户新增自定义分类并在该分类下维护设备类型
+        then: 分类可选择且右侧按分类显示注塑机、模温机等类型名称
+        evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-modeling-migration, evidence.equipment-modeling-controller, evidence.equipment-modeling-page]
+        evidenceRequirements: [接口测试, 持久化验证, 页面检查]
+      - id: scenario.equipment-modeling-single-instance
+        given: 存在注塑机设备类型
+        when: 用户在设备列表登记注塑机001并关联该设备类型
+        then: 列表显示具体单台设备，并保留其类型关联
+        evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-modeling-controller, evidence.equipment-modeling-page]
+        evidenceRequirements: [接口测试, 持久化验证, 页面检查]
+      - id: scenario.equipment-modeling-system-fields
+        given: 设备类型或设备列表存在记录
+        when: 用户查看列表及字段设置
+        then: 两个页面均提供创建人、创建时间、更新人和更新时间，展示对应记录的系统信息
+        evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-type-entity, evidence.equipment-instance-entity, evidence.equipment-system-fields-migration, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]
+        evidenceRequirements: [接口测试, 持久化验证, 历史数据迁移验证, 字段设置及页面检查]
+      - id: scenario.equipment-modeling-brand-purchase-time
+        given: 用户维护具体单台设备
+        when: 输入设备品牌和采购时间后保存并重新打开
+        then: 两项信息保存在该设备并可回显，设备品牌位于型号之前
+        evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-brand-purchase-date-migration, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]
+        evidenceRequirements: [接口测试, 持久化验证, 历史数据迁移验证, 字段设置及页面检查]
+      - id: scenario.equipment-modeling-purchase-date-limit
+        given: 用户新增或编辑具体单台设备
+        when: 采购时间选择今天或过去日期，或输入未来日期后尝试保存
+        then: 今天和过去日期不因日期上限被阻断，未来日期无法保存
+        evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]
+        evidenceRequirements: [日期边界测试, 接口无写入及审计回归, 页面检查]

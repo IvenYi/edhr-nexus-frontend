@@ -1,5 +1,35 @@
 knowledgeModelVersion: 0.3.12
 concepts:
+  - id: concept.form-field-business-purpose
+    termId: term.form-field-business-purpose
+    kind: business-configuration
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.operation-output-user-decision, evidence.operation-output-field-purpose-source, evidence.operation-output-model-editor-source]
+  - id: concept.production-execution-workspace
+    termId: term.production-execution-workspace
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-execution-user-decision]
+  - id: concept.equipment-category
+    termId: term.equipment-category
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-category-entity, evidence.equipment-modeling-migration, evidence.equipment-modeling-controller]
+  - id: concept.equipment-type
+    termId: term.equipment-type
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-type-entity, evidence.equipment-modeling-controller]
+  - id: concept.equipment
+    termId: term.equipment
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
   - id: concept.workshop
     termId: term.workshop
     kind: business-fact
@@ -511,6 +541,20 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline]
 relations:
+  - id: relation.equipment-category-types
+    source: concept.equipment-category
+    target: concept.equipment-type
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-type-entity, evidence.equipment-modeling-migration, evidence.equipment-modeling-controller]
+  - id: relation.equipment-type-instances
+    source: concept.equipment-type
+    target: concept.equipment
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
   - id: relation.production-line-references-workshop
     source: concept.production-line
     target: concept.workshop
