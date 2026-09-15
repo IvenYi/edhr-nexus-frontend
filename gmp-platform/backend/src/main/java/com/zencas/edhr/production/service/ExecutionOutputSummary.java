@@ -29,7 +29,10 @@ final class ExecutionOutputSummary {
         ExecutionOutputSummary summary = new ExecutionOutputSummary();
         for (JsonNode form : operation.path("forms")) {
             if (!form.path("fulfilledBy").asText("").isBlank()) continue;
-            summary.collect(form.path("fields"), state.path("forms").path(form.path("id").asText()).path("values"), form.path("name").asText());
+            var instances = ExecutionFormCopies.ids(state, form.path("id").asText());
+            if (instances.isEmpty()) summary.collect(form.path("fields"), MissingNode.getInstance(), form.path("name").asText());
+            for (int index = 0; index < instances.size(); index++)
+                summary.collect(form.path("fields"), state.path("forms").path(instances.get(index)).path("values"), form.path("name").asText() + " · 第 " + (index + 1) + " 份");
         }
         ObjectNode result = mapper.createObjectNode();
         for (Purpose purpose : Purpose.values()) result.putNull(purpose.key);

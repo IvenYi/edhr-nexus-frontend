@@ -1,0 +1,151 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260915-FORM-COPIES
+  scope: production-execution-form-copies
+  knowledgeBaselineVersion: 0.3.12
+  summary: 操作员按需新增独立表单份，显式结束填报，区分必填阻断和非必填提示，并跨份累加产出。
+  confirmed:
+    concepts:
+      - id: concept.production-form-copy
+        name: 生产表单份实例
+        definition: 同一生产工序表单下由操作员按需新增、独立保存提交的具体一份填报。
+        status: specified
+        sourceReferences: [docs/plans/2026-09-15-production-form-copies-design.md]
+    relationships: []
+    rules:
+      - id: rule.production-form-copy-addition
+        name: 按需新增表单份
+        status: specified
+        trigger: production-form.add-copy
+        sourceReferences: [docs/plans/2026-09-15-production-form-copies-design.md]
+        condition: {all: [{fact: form.reportingOpen, operator: equals, value: true}]}
+        result: {type: create-instance, target: productionFormCopy}
+      - id: rule.production-form-copy-required-completion
+        name: 必填表单所有已创建份完成
+        status: specified
+        trigger: production-operation.complete
+        sourceReferences: [docs/plans/2026-09-15-production-form-copies-design.md]
+        condition: {all: [{fact: form.required, operator: equals, value: true}, {fact: form.hasIncompleteCopies, operator: equals, value: true}]}
+        result: {type: block, target: productionOperationCompletion}
+      - id: rule.production-form-copy-optional-incomplete
+        name: 非必填未完成份提示并保留进行中
+        status: specified
+        trigger: production-operation.complete
+        sourceReferences: [docs/plans/2026-09-15-production-form-copies-design.md]
+        condition: {all: [{fact: form.required, operator: equals, value: false}, {fact: form.hasIncompleteCopies, operator: equals, value: true}]}
+        result: {type: warn-and-preserve, target: productionFormCopy, status: IN_PROGRESS}
+      - id: rule.production-form-copy-explicit-finish
+        name: 提交本份与结束本表单分开
+        status: specified
+        trigger: production-form.finish-reporting
+        sourceReferences: [docs/plans/2026-09-15-production-form-copies-design.md]
+        condition: {all: [{fact: form.reportingRequirementsMet, operator: equals, value: true}]}
+        result: {type: finish-reporting-stage, target: outerWorkFormNode}
+      - id: rule.production-form-copy-output-sum
+        name: 各份增量产出累加
+        status: specified
+        trigger: production-execution.query
+        sourceReferences: [docs/plans/2026-09-15-production-form-copies-design.md]
+        condition: {all: [{fact: form.hasOutputPurposeFields, operator: equals, value: true}]}
+        result: {type: sum, target: operationOutput, valueFrom: formCopies.savedOutputPurposeValues}
+    executionContracts: []
+  inferred:
+    - id: inference.production-form-copy-identity
+      statement: 使用独立份标识及稳定序列，在现有状态 JSON 中保存份集合，不新增关系表。
+      rationale: 现有执行记录已具备事务锁、revision 与前后审计快照。
+      relatedIds: [concept.production-form-copy]
+    - id: inference.production-form-copy-late-entry
+      statement: 补填入口与关闭冻结对象的补填权限本阶段不开放，仅保留未完成数据和状态。
+      rationale: 用户将补填入口定位为后期能力，现有服务禁止结束对象写入。
+      relatedIds: [rule.production-form-copy-optional-incomplete]
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-execution
+        change: 新增份、份序列选择、独立份动作、结束表单填报、完工提示与阻断。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
+    transitiveImpacts:
+      - area: work-and-output
+        change: 作业表单节点仅显式结束时推进，产出按各份已保存值累加且不重复计算 fulfilledBy 表单。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java]
+    potentialImpacts:
+      - area: later-reporting-and-dhr
+        concern: 后续补填和 DHR 冻结规则尚需独立定义，不在本次解除权限限制。
+        evidenceReferences: [docs/architecture/transaction-traceability-dhr-business-rules.md]
+    unaffectedAreas:
+      - area: route-and-sop
+        reason: 不改变前置工序、路线分支、SOP 内容及扫码匹配。
+    compatibilityAndMigration:
+      - area: existing-execution
+        change: 旧单份继续以原标识读取，保留 values、流程、签名与历史；在途份下一有效动作纳入份组并显式结束，已完成旧份不重开，不撤回已经推进的作业节点。
+    snapshotImpacts:
+      - area: form-version
+        change: 新份复用当前执行快照中的表单版本和字段用途；新快照冻结模板分类，旧快照缺字段时展示当前分类并说明来源，禁止替换执行定义。
+    auditImpacts:
+      - area: copy-actions
+        change: 新增、结束及每份保存提交审批记录定位表单份，保留前后快照及非必填告知。
+    permissionImpacts:
+      - area: form-access
+        change: 新份和结束填报沿用填报主体权限，各份审批和字段编辑仍由原流程控制；完工后禁止本阶段写入。
+    testImpacts:
+      - scope: production-execution
+        scenarios: [份数据隔离, 必填全部完成, 非必填告知, 作业推进, 份累加产出, 并发revision, 历史单份, 审批签名, 浏览器选择与草稿保护]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps:
+      - 聚焦单元、H2 API、隔离浏览器及独立质量复验已通过；原 8081 开发服务未替换，不作为真实数据库部署验收，知识状态仍为 specified。
+      - 新实例创建达到调度上限；改由未参与本轮开发、首次失败审查或修复的独立质量上下文重新复验，未复用旧结论。形式调度限制详见设计验收记录。
+  extensionStrategy:
+    selectedPaths: [product-core, standard-action]
+    rationale: 多份表单属于标准生产能力，使用执行内核与显式动作，不以页面临时数据模拟。
+    ownershipBoundaries:
+      - owner: production-execution
+        responsibility: 份生命周期、完工规则、运行状态、产出投影和追溯。
+      - owner: template
+        responsibility: 继续提供既有受控模板版本，不改变模板设计器业务模型。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionFormCopies.java
+      changeType: create
+      reason: 份标识、组结束事实、聚合状态和历史单份兼容。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      changeType: update
+      reason: 新执行快照冻结表单模板分类。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      changeType: update
+      reason: 表单份和结束填报规则。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      changeType: update
+      reason: 实例命令、可用动作与告知确认。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
+      changeType: update
+      reason: 各份产出累加。
+    - path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      changeType: update
+      reason: 份选择、操作和提示。
+    - path: gmp-platform/frontend/src/api/production-execution.ts
+      changeType: update
+      reason: 表单份命令、动作可用性、分类和作业节点类型契约。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionFormCopiesTest.java
+      changeType: create
+      reason: 多份独立、累加、阻断、告知、旧在途兼容回归。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java
+      changeType: update
+      reason: 显式结束与条件分支未命中边界。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      changeType: update
+      reason: API、审计、持久化、并发修订、快照分类及隔离浏览器夹具。
+  acceptanceScenarios:
+    - id: scenario.form-copies-required
+      given: 必填表单新增三份，其中一份未完成
+      when: 申请结束填报或工序完工
+      then: 被阻断并定位未完成份
+      evidenceRequirements: [引擎测试, API持久化验证]
+    - id: scenario.form-copies-optional
+      given: 非必填表单有未完成份且其他作业条件满足
+      when: 确认告知后工序完工
+      then: 工序完工，未完成表单继续进行中并保留原值
+      evidenceRequirements: [API告知与持久化, 页面提示]
+    - id: scenario.form-copies-output
+      given: 两份良品分别填写10和12
+      when: 保存后查询当前工序产出
+      then: 良品为22且不混入其他工序或重复绑定
+      evidenceRequirements: [汇总测试, API重读]

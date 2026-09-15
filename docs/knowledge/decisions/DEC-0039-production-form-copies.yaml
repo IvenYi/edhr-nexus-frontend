@@ -1,0 +1,55 @@
+knowledgeModelVersion: 0.3.13
+decisions:
+  - id: DEC-0039
+    title: 生产表单按需多份填报与显式结束
+    status: specified
+    visibility: internal
+    context: user-confirmed；用户明确表单份数和当前序列为同一表单的实例数与当前份序号，操作员按需新增；必填全部已创建份完成，非必填告知未完成份后可完工且表单保持进行中。用户采用提交本份与结束填报分开的流程，并确认两份良品10和12累加为22。本决策在多份范围内细化 DEC-0038 的表单完成及数量来源，保留其余扫码、条件、权限与版本契约；新增规则仍 specified/internal，不声明运行实现、质量门禁或发布验证完成。
+    decisionStatements:
+      - id: DEC-0039-01
+        statement: 同一工序表单由操作员填报时按需新增份，各份独立保存和提交；份数表示该表单已创建份数，当前序列表示正在查看的份序号。
+        status: specified
+        visibility: internal
+      - id: DEC-0039-02
+        statement: 必填表单所有已创建份均须最终完成，未完成份阻断结束本表单填报和工序完工；沿用原表单流程完成定义，不将保存或待审批算作完成。
+        status: specified
+        visibility: internal
+      - id: DEC-0039-03
+        statement: 非必填表单存在未完成份时，告知后允许结束填报或在其他条件满足时工序完工；未完成份及表单聚合状态保持进行中，已完成单份保留已完成事实。后续补填入口本阶段不开放。
+        status: specified
+        visibility: internal
+      - id: DEC-0039-04
+        statement: 提交本份与结束本表单填报为独立动作；仅显式结束填报且满足必填检查或非必填告知后，才推进外层作业的对应表单节点，不隐式完成后续作业。
+        status: specified
+        visibility: internal
+      - id: DEC-0039-05
+        statement: 各份填写本份新增产出数量，按当前工序已保存的显式良品、不良和报废用途字段跨份相加，10加12等于22；不取最新累计份，不重复统计同一来源的别名绑定。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0038]
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-copies-design, evidence.production-execution-product-configuration-contract, evidence.operation-output-user-decision]
+    acceptanceScenarios:
+      - id: scenario.form-copies-required
+        given: 必填表单已创建三份，其中一份未最终完成
+        when: 申请结束本表单填报或工序完工
+        then: 阻断并定位未完成份，不能以确认非必填提示绕过
+        evidenceIds: [evidence.production-form-copies-user-decision]
+        evidenceRequirements: [引擎必填阻断测试, API重读与持久化]
+      - id: scenario.form-copies-optional
+        given: 非必填表单有未完成份，其他工序条件已满足
+        when: 告知后结束填报并申请工序完工
+        then: 工序可完工，未完成表单仍进行中且原值保留，已完成份不降级
+        evidenceIds: [evidence.production-form-copies-user-decision]
+        evidenceRequirements: [API告知与持久化, 页面提示, 状态重读]
+      - id: scenario.form-copies-explicit-finish
+        given: 作业表单的某份已提交完成但尚未结束本表单填报
+        when: 操作员新增另一份并按规则显式结束填报
+        then: 提交本份不提前推进外层作业，仅显式结束推进对应表单节点
+        evidenceIds: [evidence.production-form-copies-user-decision]
+        evidenceRequirements: [作业节点推进测试, 份独立保存提交, 旧单份兼容]
+      - id: scenario.form-copies-output
+        given: 同一当前工序表单两份良品分别保存10和12
+        when: 查询当前工序产出
+        then: 良品数量为22，不混入其他工序或重复绑定
+        evidenceIds: [evidence.production-form-copies-user-decision]
+        evidenceRequirements: [跨份汇总测试, API重读]

@@ -1,5 +1,23 @@
-knowledgeModelVersion: 0.3.12
+knowledgeModelVersion: 0.3.13
 terms:
+  - id: term.execution-custom-form
+    name: 执行自定义表单
+    definition: 操作员选择已发布表单模板版本并明确是否必填后，挂载到当前生产对象当前工序的填报表单；不表示现场修改模板结构。
+    aliases: [自定义填报表单]
+    status: specified
+    visibility: internal
+  - id: term.execution-active-editor
+    name: 表单正在填写人员
+    definition: 当前生产对象和工序内实际填写某一表单的用户；同一用户在该表单不同份或多个窗口填写时去重，纯查看人员不计入。
+    aliases: [在线协同人数统计对象]
+    status: specified
+    visibility: internal
+  - id: term.production-form-copy
+    name: 生产表单份实例
+    definition: 同一生产工序表单下由操作员按需新增、独立保存和提交的具体一份填报；份数为该表单已创建实例数，当前序列表示正在查看的份序号。
+    aliases: [表单份, 填报份实例]
+    status: specified
+    visibility: internal
   - id: term.form-field-business-purpose
     name: 表单字段业务用途
     definition: 表单真实字段显式声明的业务用途标识；当前用于明确映射当前工序的良品、不良品或报废数量，不通过字段名称猜测数量含义。

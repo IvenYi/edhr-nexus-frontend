@@ -101,8 +101,8 @@ class ProductionExecutionIntegrationTest {
             "product_process_operation_document_binding(id BIGINT PRIMARY KEY,product_process_operation_binding_id BIGINT,document_version_id BIGINT,page_start INT,page_end INT,sort_order INT)",
             "sop_document(id BIGINT PRIMARY KEY,title VARCHAR(128))",
             "document_version(id BIGINT PRIMARY KEY,document_id BIGINT,code VARCHAR(64),version VARCHAR(64),file_id BIGINT)",
-            "form_template(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64))",
-            "form_template_version(id BIGINT PRIMARY KEY,template_id BIGINT,version_label VARCHAR(64),model_design_json TEXT,canvas_design_json TEXT)",
+            "form_template(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64),category_name VARCHAR(128),tenant_id VARCHAR(64) DEFAULT 'default',status VARCHAR(32) DEFAULT 'ACTIVE')",
+            "form_template_version(id BIGINT PRIMARY KEY,template_id BIGINT,version_label VARCHAR(64),model_design_json TEXT,canvas_design_json TEXT,tenant_id VARCHAR(64) DEFAULT 'default',status VARCHAR(32) DEFAULT 'PUBLISHED')",
             "workflow_definition(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),type VARCHAR(32),name VARCHAR(128))",
             "workflow_definition_version(id BIGINT PRIMARY KEY,definition_id BIGINT,version_number INT,status VARCHAR(32),is_current BOOLEAN,nodes_json TEXT,edges_json TEXT)",
             "workflow_binding_rule(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),definition_id BIGINT,rule_type VARCHAR(32),is_active BOOLEAN,product_id BIGINT,product_family_id BIGINT,operation_id BIGINT)",
@@ -120,8 +120,8 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO route_node VALUES(11,3,'a',11,'O01','装配','OPERATION','{}',1),(12,3,'b',12,'O02','检验','OPERATION','{}',2)");
         jdbc.update("INSERT INTO route_relation VALUES(1,3,'a','b','SEQUENTIAL',NULL,1)");
         jdbc.update("INSERT INTO product_process_operation_binding VALUES(11,2,'a'),(12,2,'b')");
-        jdbc.update("INSERT INTO form_template VALUES(5,'装配记录','F01')");
-        jdbc.update("INSERT INTO form_template_version VALUES(5,5,'V1',?,?)",
+        jdbc.update("INSERT INTO form_template(id,name,code,category_name) VALUES(5,'装配记录','F01','生产记录')");
+        jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json,canvas_design_json) VALUES(5,5,'V1',?,?)",
             "{\"fields\":[{\"id\":\"temperature\",\"name\":\"温度\",\"type\":\"number\",\"status\":\"enabled\"}]}",
             "{\"bindings\":{\"fieldId\":\"temperature\",\"required\":true}}");
         jdbc.update("INSERT INTO product_process_operation_form_binding VALUES(51,11,5,50,true,1)");
@@ -181,14 +181,15 @@ class ProductionExecutionIntegrationTest {
             mvc.perform(auth(get("/api/v1/production/execution/" + object))).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.values.temperature").value(22));
             action(object, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
-            action(object, "COMPLETE", 3, "a", Map.of()).andExpect(status().isOk());
-            action(object, "START", 4, "b", Map.of()).andExpect(status().isOk());
-            action(object, "COMPLETE", 5, "b", Map.of()).andExpect(status().isOk())
+            action(object, "END_FORM", 3, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+            action(object, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
+            action(object, "START", 5, "b", Map.of()).andExpect(status().isOk());
+            action(object, "COMPLETE", 6, "b", Map.of()).andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.objectStatus").value("COMPLETED"));
         }
         assertThat(jdbc.queryForObject("SELECT status FROM work_order WHERE id=100", String.class)).isEqualTo("COMPLETED");
         assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).contains("导管装配").doesNotContain("新的配置名称");
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='PRODUCTION_EXECUTION'", Integer.class)).isEqualTo(12);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='PRODUCTION_EXECUTION'", Integer.class)).isEqualTo(14);
     }
 
     @Test void staleRevisionAndTerminatedObjectsCannotAdvance() throws Exception {
@@ -261,8 +262,10 @@ class ProductionExecutionIntegrationTest {
             .andExpect(jsonPath("$.data.state.operations.a.forms.work-7-f.status").value("ACTIVE"));
         action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk());
         action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isBadRequest());
-        action(101, "CONFIRM", 2, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isOk());
-        action(101, "COMPLETE", 3, "a", Map.of()).andExpect(status().isOk());
+        action(101, "CONFIRM", 2, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isBadRequest());
+        action(101, "END_FORM", 2, "a", Map.of("formId", "work-7-f")).andExpect(status().isOk());
+        action(101, "CONFIRM", 3, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isOk());
+        action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
     }
 
     @Test void realApprovalIdentityAndPasswordSignaturePersistAtomically() throws Exception {
@@ -278,7 +281,8 @@ class ProductionExecutionIntegrationTest {
         action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk());
         assertThat(jdbc.queryForObject("SELECT signer_id FROM signature", String.class)).isEqualTo("1");
         assertThat(jdbc.queryForObject("SELECT snapshot_data FROM signature", String.class)).contains("temperature").doesNotContain("test-secret", "password");
-        action(101, "COMPLETE", 3, "a", Map.of()).andExpect(status().isOk());
+        action(101, "END_FORM", 3, "a", Map.of("formId", "work-7-f")).andExpect(status().isOk());
+        action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
     }
 
     @Test void legacyTextSubtableColumnsUseTheSameStableIdsAsTheUnifiedRenderer() throws Exception {
@@ -289,7 +293,107 @@ class ProductionExecutionIntegrationTest {
             .andExpect(jsonPath("$.data.snapshot.operations[0].forms[0].fields[0].typeConfig.columns[0].id").value("sub-field-1"));
         action(101, "SUBMIT", 1, "a", Map.of("formId", "form-51", "values", Map.of("rows", List.of(Map.of("sub-field-1", "外观", "sub-field-2", "合格")))))
             .andExpect(status().isOk());
-        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isOk());
+        action(101, "END_FORM", 2, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+        action(101, "COMPLETE", 3, "a", Map.of()).andExpect(status().isOk());
+    }
+
+    @Test void copiesPersistSeparateValuesSumOutputAndRejectStaleOrForeignWrites() throws Exception {
+        jdbc.update("UPDATE form_template_version SET model_design_json=? WHERE id=5", """
+            {"fields":[{"id":"good","name":"良品","type":"number","typeConfig":{"businessPurpose":"PRODUCTION_GOOD"}},
+            {"id":"ng","name":"不良","type":"number","typeConfig":{"businessPurpose":"PRODUCTION_NG"}},
+            {"id":"scrap","name":"报废","type":"number","typeConfig":{"businessPurpose":"PRODUCTION_SCRAP"}}]}
+            """);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        jdbc.update("UPDATE form_template SET category_name='修改后的分类'");
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("good", 10, "ng", 0, "scrap", 0))).andExpect(status().isOk());
+        action(101, "ADD_FORM_COPY", 2, "a", Map.of("formId", "form-51")).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.instanceIds.length()").value(2));
+        action(101, "ADD_FORM_COPY", 2, "a", Map.of("formId", "form-51")).andExpect(status().isBadRequest());
+        action(101, "SAVE", 3, "a", Map.of("formId", "form-51", "instanceId", "other-copy", "values", Map.of())).andExpect(status().isBadRequest());
+        action(101, "SAVE", 3, "a", Map.of("formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of("good", 12, "ng", 0, "scrap", 0))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.operationOutputs.a.goodQuantity").value("22"));
+        action(101, "END_FORM", 4, "a", Map.of("formId", "form-51", "acknowledgeIncomplete", true)).andExpect(status().isBadRequest());
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[0].forms[0].categoryName").value("生产记录"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.good").value(10))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51:copy:2'].values.good").value(12))
+            .andExpect(jsonPath("$.data.operationOutputs.a.goodQuantity").value("22"));
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).contains("form-51:copy:2", "新增表单份", "第 2 份");
+    }
+
+    @Test void optionalCopyCompletionRequiresAcknowledgementAndPersistsUnfinishedState() throws Exception {
+        jdbc.update("UPDATE product_process_operation_form_binding SET required=false WHERE id=51");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "ADD_FORM_COPY", 1, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isBadRequest());
+        action(101, "END_FORM", 2, "a", Map.of("formId", "form-51")).andExpect(status().isBadRequest());
+        action(101, "END_FORM", 2, "a", Map.of("formId", "form-51", "acknowledgeIncomplete", true)).andExpect(status().isOk());
+        action(101, "COMPLETE", 3, "a", Map.of("acknowledgeIncomplete", true)).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.status").value("COMPLETED"))
+            .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.status").value("IN_PROGRESS"))
+            .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.canAdd").value(false))
+            .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.instances['form-51:copy:2'].canAct").value(false));
+        action(101, "SUBMIT", 4, "a", Map.of("formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of("temperature", 30))).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).contains("第 2 份未完成", "已告知", "保持进行中");
+    }
+
+    @Test void customFormsFreezePublishedVersionAndRequireExplicitRequiredChoice() throws Exception {
+        mvc.perform(auth(get("/api/v1/production/execution/form-templates"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data[0].versionId").value("5"));
+        action(101, "ATTACH_FORM", 0, "a", Map.of("templateVersionId", "5", "required", true)).andExpect(status().isBadRequest());
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5")).andExpect(status().isBadRequest());
+        action(101, "ATTACH_FORM", 1, "b", Map.of("templateVersionId", "5", "required", true)).andExpect(status().isBadRequest());
+        String response = action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "required", true)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String formId = mapper.readTree(response).path("data").path("attachedFormId").asText();
+        assertThat(formId).startsWith("custom-");
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).contains(formId, "CUSTOM", "attachedBy", "temperature");
+        assertThat(jdbc.queryForObject("SELECT content_after FROM audit_event WHERE function_name='ATTACH_FORM'", String.class)).contains("snapshot", formId, "required");
+        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isBadRequest());
+        jdbc.update("UPDATE form_template_version SET status='DRAFT',model_design_json='{}' WHERE id=5");
+        mvc.perform(auth(get("/api/v1/production/execution/form-templates"))).andExpect(jsonPath("$.data.length()").value(0));
+        action(101, "ATTACH_FORM", 2, "a", Map.of("templateVersionId", "5", "required", false)).andExpect(status().isBadRequest());
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(jsonPath("$.data.snapshot.operations[0].forms[1].fields[0].id").value("temperature"));
+        action(101, "SUBMIT", 2, "a", Map.of("formId", formId, "values", Map.of("temperature", 30))).andExpect(status().isOk());
+        action(101, "END_FORM", 3, "a", Map.of("formId", formId)).andExpect(status().isOk());
+    }
+
+    @Test void presenceCountsEditorsAcrossCopiesAndRejectsReadOnlyInstances() throws Exception {
+        jdbc.update("UPDATE user_account SET avatar_file_id=123 WHERE id=1");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "ADD_FORM_COPY", 1, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+        for (String session : List.of("window1", "window2")) {
+            mvc.perform(auth(post("/api/v1/production/execution/101/presence?operationId=a").contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("sessionId", session, "formId", "form-51", "instanceId", session.equals("window1") ? "form-51" : "form-51:copy:2", "editing", true)))))
+                .andExpect(status().isOk());
+        }
+        mvc.perform(auth(get("/api/v1/production/execution/101/presence?operationId=a")))
+            .andExpect(jsonPath("$.data.form-51.length()").value(1)).andExpect(jsonPath("$.data.form-51['1'].sequences.length()").value(2))
+            .andExpect(jsonPath("$.data.form-51['1'].avatarUrl").value("/api/v1/files/123/public-preview"));
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'editor2','另一操作员',?,'ACTIVE')", passwords.encode("test-secret"));
+        String secondUser = tokens.generateToken("2", "editor2", "另一操作员", 5, List.of("production.execution"));
+        mvc.perform(post("/api/v1/production/execution/101/presence?operationId=a").header("Authorization", "Bearer " + secondUser).contentType("application/json")
+            .content("{\"sessionId\":\"window1\",\"formId\":\"form-51\",\"instanceId\":\"form-51\",\"editing\":true}"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.form-51.length()").value(2))
+            .andExpect(jsonPath("$.data.form-51['2'].avatarUrl").doesNotExist());
+        mvc.perform(auth(post("/api/v1/production/execution/101/presence?operationId=a").contentType("application/json")
+            .content("{\"sessionId\":\"window2\",\"editing\":false}"))).andExpect(status().isOk());
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "instanceId", "form-51", "values", Map.of("temperature", 30))).andExpect(status().isOk());
+        mvc.perform(auth(get("/api/v1/production/execution/101/presence?operationId=a"))).andExpect(jsonPath("$.data.length()").value(0));
+        mvc.perform(auth(post("/api/v1/production/execution/101/presence?operationId=a").contentType("application/json")
+            .content("{\"sessionId\":\"readonly\",\"formId\":\"form-51\",\"instanceId\":\"form-51\",\"editing\":true}"))).andExpect(status().isBadRequest());
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(jsonPath("$.data.revision").value(3));
+    }
+
+    @Test void anOperationWithoutConfiguredFormsCanAttachItsFirstOptionalForm() throws Exception {
+        jdbc.update("DELETE FROM product_process_operation_form_binding");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk()).andExpect(jsonPath("$.data.availability.a.canAttachForm").value(true));
+        String response = action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "required", false)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String formId = mapper.readTree(response).path("data").path("attachedFormId").asText();
+        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isBadRequest());
+        action(101, "COMPLETE", 2, "a", Map.of("acknowledgeIncomplete", true)).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.availability.a.formCopies['" + formId + "'].status").value("IN_PROGRESS"));
+        action(101, "ATTACH_FORM", 3, "a", Map.of("templateVersionId", "5", "required", true)).andExpect(status().isBadRequest());
     }
 
     private void seedSignedWork() {
@@ -310,6 +414,7 @@ class ProductionExecutionIntegrationTest {
     @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "execution.browser", matches = "true")
     void browserEvidenceFixture() throws Exception {
         seedSignedWork();
+        if (Boolean.getBoolean("execution.optional")) jdbc.update("UPDATE product_process_operation_form_binding SET required=false");
         if (Boolean.getBoolean("execution.output")) {
             var model = mapper.createObjectNode(); var fields = model.putArray("fields");
             String[][] purposes = {{"temperature", "良品数量", "PRODUCTION_GOOD"}, {"ng", "不良品数量", "PRODUCTION_NG"}, {"scrap", "报废数量", "PRODUCTION_SCRAP"}};
@@ -353,7 +458,7 @@ class ProductionExecutionIntegrationTest {
 
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
-    @Import({ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class,
+    @Import({ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
         ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class})
     static class Config {
         @Bean EntityManager em(EntityManagerFactory factory) { return SharedEntityManagerCreator.createSharedEntityManager(factory); }

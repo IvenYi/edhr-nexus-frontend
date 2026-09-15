@@ -14,6 +14,21 @@ import org.springframework.web.bind.annotation.*;
 public class ProductionExecutionController {
     private final ProductionExecutionService service;
 
+    @GetMapping("/form-templates")
+    public ApiResponse<com.fasterxml.jackson.databind.node.ArrayNode> templates(@RequestParam(defaultValue = "") String keyword) {
+        return ApiResponse.success(service.publishedForms(keyword));
+    }
+
+    @GetMapping("/{id}/presence")
+    public ApiResponse<ObjectNode> editors(@PathVariable Long id, @RequestParam String operationId) {
+        return ApiResponse.success(service.editors(id, operationId, null));
+    }
+
+    @PostMapping("/{id}/presence")
+    public ApiResponse<ObjectNode> heartbeat(@PathVariable Long id, @RequestParam String operationId, @RequestBody ProductionExecutionService.PresenceCommand command) {
+        return ApiResponse.success(service.editors(id, operationId, command));
+    }
+
     @GetMapping("/scan")
     public ApiResponse<ObjectNode> scan(@RequestParam String barcode) { return ApiResponse.success(service.scan(barcode)); }
 

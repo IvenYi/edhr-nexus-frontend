@@ -1,5 +1,23 @@
-knowledgeModelVersion: 0.3.12
+knowledgeModelVersion: 0.3.13
 concepts:
+  - id: concept.execution-custom-form
+    termId: term.execution-custom-form
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.execution-form-selector-user-decision]
+  - id: concept.execution-active-editor
+    termId: term.execution-active-editor
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.execution-form-selector-user-decision]
+  - id: concept.production-form-copy
+    termId: term.production-form-copy
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-copies-user-decision]
   - id: concept.form-field-business-purpose
     termId: term.form-field-business-purpose
     kind: business-configuration
@@ -541,6 +559,13 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline]
 relations:
+  - id: relation.operation-runtime-custom-forms
+    source: concept.production-object
+    target: concept.execution-custom-form
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.execution-form-selector-user-decision]
   - id: relation.equipment-category-types
     source: concept.equipment-category
     target: concept.equipment-type

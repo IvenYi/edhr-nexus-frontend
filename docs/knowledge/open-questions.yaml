@@ -1,5 +1,13 @@
-knowledgeModelVersion: 0.3.12
+knowledgeModelVersion: 0.3.13
 questions:
+  - id: question.custom-form-version-eligibility
+    question: 自定义挂载所说的已发布模板，是指现有当前有效版本，还是严格PUBLISHED并另建发布流程？
+    context: 用户确认了业务措辞但未确认数据库状态映射。原始源码RdoVersionStatusResolver按effectiveFrom/effectiveTo计算ACTIVE或EXPIRED，并明确持久化生命周期标志不得参与；TemplateModelingController创建和展示表单版本沿用有效时间，未提供表单模板版本发布动作，FormTemplateVersion持久化status默认DRAFT。此前把已发布直接映射成status=PUBLISHED是本切片误推断，已从权威规则条件移除。
+    options:
+      - 使用现有按有效时间计算的当前有效版本作为候选与挂载准入
+      - 严格要求PUBLISHED，并另行设计和实现受控发布流程
+    impact: 影响候选查询、服务端挂载校验、界面文案和验收数据；未答复前自定义挂载不能宣称已完成或在主服务可用。三类来源、用户明确必填以及正在填写人员去重等已确认语义不受影响。
+    visibility: internal
   - id: question.production-work-condition-runtime-source-snapshot-contract
     question: 已确认作业条件第一版字段目录和字段类型，但运行时真实来源、取值快照方式以及目录版本与生产实例快照的绑定契约何时闭环？
     context: 当前配置层已开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段，目录版本为 work-runtime-fields-v1，并在每个条件分支配置中保存该分支字段快照。当前实现尚未提供生产上下文真实来源、运行时取值装配或生产实例快照落库，因此这些字段契约只完成配置层闭环。

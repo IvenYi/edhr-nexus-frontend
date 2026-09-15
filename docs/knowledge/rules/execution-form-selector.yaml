@@ -1,0 +1,47 @@
+knowledgeModelVersion: 0.3.13
+rules:
+  - id: rule.execution-form-source-classification
+    name: 当前工序三类填报表单
+    status: specified
+    visibility: internal
+    trigger: production-execution.form-selector
+    scope: production-execution-form-selector
+    condition: {fact: execution.operationSelected, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: operation.reportingForms
+      sourceTypes: [operation-configured, custom-attached, work-mounted]
+      fields: [name, code, version, required, totalCopies, status, activeEditorCount]
+    explanation: user-confirmed；填报入口区分工序配置表单、自定义表单和当前工序作业发起后实际挂载的表单。作业实际到达 FORM 填报节点才进入已挂载表单集合，流程中尚未到达的未来表单不作为已经挂载的填报记录；自定义表单以自身挂载标识区别于模板版本，不因同模板而合并独立绑定。列表显示名称、编码、版本、是否必填、总份数、表单聚合状态及正在填写人数；未填报灰色、进行中蓝色、已完成绿色。聚合状态沿用多份契约，不因单份完成或工序完工而将未完成份算作完成。
+    evidenceIds: [evidence.execution-form-selector-user-decision, evidence.production-form-copies-user-decision]
+  - id: rule.execution-custom-form-requiredness
+    name: 自定义挂载显式决定是否必填
+    status: specified
+    visibility: internal
+    trigger: execution.attach-form
+    scope: production-execution-form-selector
+    condition: {fact: attachment.requiredness, operator: explicitly-selected, value: true}
+    result:
+      type: freeze-execution-snapshot
+      target: currentObject.currentOperation.customForms
+      source: selectedTemplateVersion
+      preserveExistingSnapshot: true
+      requirednessSource: operatorExplicitSelection
+    explanation: user-confirmed；用户表达从已发布模板选择自定义表单并挂到当前生产对象当前工序，是否必填由用户自己决定。本规则仅确定必填选择、快照追溯和多份规则复用，不定义模板版本准入谓词；已发布一词与现有按有效时间计算的ACTIVE或持久化PUBLISHED标志的映射尚待question.custom-form-version-eligibility确认，不能将任一技术映射视为已确认规则。挂载保留模板版本与必填选择的追溯；必填所有已创建份完成，非必填未完成经告知后保留进行中。具体事务锁、工序可挂载状态以及存储结构属于当前实现策略，不新增权威业务前提。
+    evidenceIds: [evidence.execution-form-selector-user-decision, evidence.execution-form-version-eligibility-source, evidence.production-form-copies-user-decision]
+  - id: rule.execution-active-editor-count
+    name: 同一表单正在填写人员去重
+    status: specified
+    visibility: internal
+    trigger: execution.edit-presence
+    scope: production-execution-form-selector
+    condition: {fact: user.activelyEditing, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: form.activeEditorCount
+      aggregation: distinct-user
+      groupBy: [productionObject, operation, form]
+      across: [formCopies, browserWindows]
+      exclude: [readOnlyViewers]
+    explanation: user-confirmed；只统计正在填写的人，以同一生产对象当前工序同一表单为范围按稳定用户身份去重，同一人填写多份或打开多个窗口仍算一人；其他对象、工序或同模板的另一张挂载表单不混入。离开填写或失联后不能无限保留人数。心跳周期、失效时长、无活动阈值及单服务内存注册属于工程推断，不作为用户确认的业务常量；在线人数不表示提供实时文档合并编辑。
+    evidenceIds: [evidence.execution-form-selector-user-decision]

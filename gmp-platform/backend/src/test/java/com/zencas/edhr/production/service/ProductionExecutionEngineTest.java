@@ -45,7 +45,7 @@ class ProductionExecutionEngineTest {
         var snapshot = withForm(); var state = engine.initialState(snapshot);
         engine.start(snapshot, state, "a", "1");
         engine.formAction(snapshot, state, "a", "f", "SAVE", tree("{}"), null, null, null, "1");
-        assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("尚未提交");
+        assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("第 1 份未完成");
         assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{}"), null, null, null, "1")).hasMessageContaining("温度");
         when(access.permissions(any(), any(), any(), any())).thenReturn(mapper.createObjectNode().put("temperature", "READ_ONLY"));
         assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "SAVE", tree("{\"temperature\": 5}"), null, null, null, "1")).hasMessageContaining("只读");
@@ -56,6 +56,8 @@ class ProductionExecutionEngineTest {
         engine.start(snapshot, state, "a", "1");
         engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\": 25}"), null, null, null, "1");
         assertThat(state.path("operations").path("a").path("forms").path("f").path("values").path("temperature").asInt()).isEqualTo(25);
+        assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("尚未结束填报");
+        engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");
         assertThat(state.path("operations").path("a").path("status").asText()).isEqualTo("COMPLETED");
     }
@@ -116,12 +118,23 @@ class ProductionExecutionEngineTest {
     @Test void skippedWorkFormNeverSatisfiesRequiredEdhrItem() throws Exception {
         var op = mapper.readTree("""
             {"id":"a","forms":[{"id":"direct","name":"必填记录","versionId":"5","required":true,"fulfilledBy":"work-form"},
-             {"id":"work-form","versionId":"5","workId":"w","fields":[]}],"works":[{"id":"w","name":"条件作业"}]}
+             {"id":"work-form","name":"必填记录","versionId":"5","workId":"w","fields":[]}],"works":[{"id":"w","name":"条件作业"}]}
             """);
         var state = tree("{\"status\":\"IN_PROGRESS\",\"forms\":{},\"works\":{\"w\":{\"status\":\"COMPLETED\"}}}");
         assertThat(engine.completionIssues(op, state)).singleElement().asString().contains("必填记录");
         state.withObject("/forms").putObject("work-form").put("status", "COMPLETED");
         assertThat(engine.completionIssues(op, state)).isEmpty();
+    }
+
+    @Test void skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork() throws Exception {
+        var op = mapper.readTree("""
+            {"id":"a","forms":[{"id":"work-form","name":"分支表单","workId":"w","fields":[]}],
+             "works":[{"id":"w","name":"条件作业"}]}
+            """);
+        var state = tree("{\"status\":\"IN_PROGRESS\",\"forms\":{},\"works\":{\"w\":{\"status\":\"COMPLETED\"}}}");
+        assertThat(engine.completionIssues(op, state)).isEmpty();
+        state.withObject("/forms").putObject("work-form").put("status", "ACTIVE");
+        assertThat(engine.completionIssues(op, state)).singleElement().asString().contains("第 1 份未完成");
     }
 
     @Test void enforcesNumericStructurePrecisionAndDateFormat() throws Exception {
@@ -147,6 +160,7 @@ class ProductionExecutionEngineTest {
         when(access.permissions(any(), any(), any(), any())).thenReturn(mapper.createObjectNode().put("temperature", "READ_ONLY").put("reviewNote", "EDIT"));
         assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, null, null, "1")).hasMessageContaining("复核结果");
         engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{\"reviewNote\":\"合格\"}"), null, null, null, "1");
+        engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");
     }
 
@@ -168,11 +182,12 @@ class ProductionExecutionEngineTest {
             """));
         var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
         engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
-        assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("尚未提交");
+        assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("第 1 份未完成");
         when(access.sign(anyString(), anyString(), anyString(), any(), any(), any())).thenThrow(ExecutionSnapshotBuilder.invalid("签署账户或密码不正确"));
         assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, "u", "bad", "1")).hasMessageContaining("密码不正确");
         doReturn("signature-1").when(access).sign(anyString(), anyString(), anyString(), any(), any(), any());
         engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, "u", "valid", "1");
+        engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");
     }
 

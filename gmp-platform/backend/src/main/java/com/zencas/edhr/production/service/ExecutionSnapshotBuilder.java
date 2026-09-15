@@ -139,10 +139,31 @@ public class ExecutionSnapshotBuilder {
         return root;
     }
 
+    public ArrayNode publishedForms(String keyword) {
+        String search = "%" + keyword.strip().replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
+        return rows("""
+            SELECT v.id AS "versionId", t.name, t.code, t.category_name AS "categoryName", v.version_label AS version
+            FROM form_template_version v JOIN form_template t ON t.id=v.template_id
+            WHERE v.tenant_id='default' AND t.tenant_id='default' AND v.status='PUBLISHED' AND t.status='ACTIVE'
+              AND (LOWER(t.name) LIKE LOWER(?) ESCAPE '!' OR LOWER(t.code) LIKE LOWER(?) ESCAPE '!')
+            ORDER BY t.name, v.id DESC LIMIT 100
+            """, search, search);
+    }
+
+    public ObjectNode customForm(String versionId, boolean required, String id, String operator) {
+        if (versionId == null || !versionId.matches("[0-9]+")) throw invalid("请选择已发布的表单模板版本");
+        one("""
+            SELECT v.id FROM form_template_version v JOIN form_template t ON t.id=v.template_id
+            WHERE v.id=? AND v.tenant_id='default' AND t.tenant_id='default' AND v.status='PUBLISHED' AND t.status='ACTIVE'
+            """, Long.valueOf(versionId));
+        return form(versionId).put("id", id).put("sourceType", "CUSTOM").put("required", required)
+                .put("attachedBy", operator).put("attachedAt", java.time.LocalDateTime.now().toString());
+    }
+
     private ObjectNode form(String versionId) {
         if (versionId.isBlank()) throw invalid("作业表单未绑定模板版本");
         ObjectNode form = one("""
-            SELECT v.id AS "versionId", t.name, t.code, v.version_label AS version,
+            SELECT v.id AS "versionId", t.name, t.code, t.category_name AS "categoryName", v.version_label AS version,
                    v.model_design_json AS model, v.canvas_design_json AS canvas
             FROM form_template_version v JOIN form_template t ON t.id = v.template_id WHERE v.id = ?
             """, Long.valueOf(versionId));

@@ -76,7 +76,11 @@ export default function ExecutionQuickPanel({ active, onChange, panels, context,
     <Portal container={railContainer} disablePortal={!railContainer}><Box component="nav" ref={railRef} aria-label="工作区快捷切换" className="execution-quick-rail">
       <Button aria-label="返回填报" aria-pressed={!selectedSection} onClick={() => { onSectionChange?.(null); close(); }}><EditNoteRounded /><span>填报</span></Button>
       {panels.map((panel) => <Button key={panel.id} aria-label={`查看${panel.label}`} aria-pressed={selectedSection === panel.id} aria-expanded={active === panel.id} aria-controls={`${id}-panel`}
-        onClick={() => active === panel.id ? close() : open(panel.id)}>
+        onClick={() => {
+          if (onSectionChange) { onSectionChange(panel.id); close(); }
+          else if (active === panel.id) close();
+          else open(panel.id);
+        }}>
         {panel.icon}<span>{panel.label}</span>
       </Button>)}
       {navigationContent}

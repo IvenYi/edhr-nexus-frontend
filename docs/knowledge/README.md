@@ -1,6 +1,12 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.12`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.13`。
+
+生产执行填报来源与自定义挂载见 `DEC-0040`：工序配置、自定义、作业实际挂载三类；自定义选择已发布模板并由操作员明确必填属性；正在填写人数在同一对象工序表单内按用户跨份去重，纯查看不计入。该增量为当前未发布基线中的 `specified/internal`；工程心跳参数和运行中挂载前提保留为决策包推断，不声明实现或发布验证完成。
+
+自定义挂载的版本准入口径仍待 `question.custom-form-version-eligibility`：用户的已发布措辞不能直接等同数据库 `PUBLISHED`，现有版本状态按有效时间计算。此前误推断已撤回；该问题阻断本切片的自定义挂载完成声明，不改变其他已确认语义。
+
+生产表单多份填报见 `DEC-0039`：操作员按需新增独立份；必填全部已创建份完成，非必填告知后保留未完成状态；提交本份与显式结束填报分开；当前工序产出按各份增量累加。本切片仅为 `specified/internal`，后期补填入口不在当前开放范围，尚不具备发布级实现、测试和执行契约闭环。
 
 表单流程公共主体选择器第一版统一支持用户、部门和角色三类稳定主体引用。部门默认覆盖本部门及下级，也可切换为仅本部门；审批节点到达时按最新组织或角色关系解析候选人，填报权限在用户访问时按最新关系判断。用户组、部门负责人和业务责任人尚无完整主数据与解析契约，不进入当前配置入口。详见 `DEC-0029`。
 
@@ -102,7 +108,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.12" && schema.fetch("schemaVersion") == "1.0.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.13" && schema.fetch("schemaVersion") == "1.0.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

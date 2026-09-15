@@ -71,6 +71,7 @@ function fixture(sidebarRail = false, stickySection = false) {
     get home() { return flatten(tree).find(node => node.props?.['aria-label'] === '返回填报').props; },
     advance(ms) { for (const [id, timer] of timers) if (timer.delay <= ms) { timers.delete(id); timer.callback(); } },
     open(id) { button(id).onClick(); render(); },
+    openItem(id) { active = id; render(); },
     closeExternally() { active = null; render(); },
     unmount() { effects.forEach(effect => effect.cleanup?.()); },
   };
@@ -96,10 +97,27 @@ test('sidebar shortcuts keep their portal target, outside-click exemption and ke
 test('closing the reader retains the sidebar category until the user selects filling', () => {
   const f = fixture(true, true); f.open('sop');
   assert.equal(f.button('sop')['aria-pressed'], true);
+  f.openItem('sop'); assert.equal(f.active, 'sop');
   f.closeExternally();
   assert.equal(f.active, null); assert.equal(f.button('sop')['aria-pressed'], true);
   assert.equal(f.home['aria-pressed'], false);
   f.home.onClick(); f.render(); assert.equal(f.home['aria-pressed'], true);
+  f.unmount();
+});
+
+test('sidebar categories only select their list and close any existing reader', () => {
+  const f = fixture(true, true);
+  for (const id of ['sop', 'works', 'history']) {
+    f.open(id);
+    assert.equal(f.active, null);
+    assert.equal(f.button(id)['aria-pressed'], true);
+    assert.equal(f.button(id)['aria-expanded'], false);
+    f.open(id); assert.equal(f.active, null);
+    f.openItem(id); assert.equal(f.active, id);
+  }
+  f.home.onClick(); f.render();
+  assert.equal(f.active, null); assert.equal(f.home['aria-pressed'], true);
+  assert.equal(f.form.draft, '37');
   f.unmount();
 });
 
