@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.18
+evidence:
+  - id: evidence.execution-form-selector-user-decision
+    type: document
+    path: docs/plans/2026-09-15-execution-form-selector.yaml
+    description: user-confirmed；DEC-PACKAGE-20260915-FORM-SELECTOR 与连续用户确认沉淀当前工序三类填报、业务措辞已发布模板挂载且显式决定必填、正在填写人员按同一表单用户跨份去重。已发布不代表用户已确认status=PUBLISHED；与现有有效时间版本契约的映射已记录为question.custom-form-version-eligibility。执行中的挂载范围、单服务内存、15秒续期/45秒过期/60秒活动窗口仅为主代理工程推断，不提升为权威业务常量。本证据不证明发布、接口运行或质量门禁通过。
+    visibility: internal
+  - id: evidence.execution-form-version-eligibility-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/util/RdoVersionStatusResolver.java
+    description: original-evidence；resolve按effectiveFrom/effectiveTo计算ACTIVE或EXPIRED，isReferenceable使用ACTIVE，注释明确持久化生命周期标志不得参与。与用户已发布业务措辞的映射尚未确认，不据此自动决定自定义挂载允许范围。
+    visibility: internal
+  - id: evidence.execution-form-version-creation-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
+    description: original-evidence；buildFormTemplateVersion记录有效时间，响应通过RdoVersionStatusResolver投影状态；当前控制器没有表单模板版本发布动作。该证据揭示严格PUBLISHED候选过滤缺少用户确认及发布操作来源，不能单靠测试手工写入PUBLISHED证明真实路径可用。
+    visibility: internal

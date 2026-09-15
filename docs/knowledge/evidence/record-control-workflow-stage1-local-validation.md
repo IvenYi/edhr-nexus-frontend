@@ -15,12 +15,12 @@ knowledgeModelVersion: `0.3.18`
 实际查询使用本地受控凭据；证据不记录明文密码。等价脱敏命令：
 
 ```bash
-PGPASSWORD=*** psql -h 127.0.0.1 -U edhr -d edhr_dev -Atc "select id from databasechangelog where id like '0076-%' order by id; select column_name from information_schema.columns where table_name='workflow_instance' and column_name in ('idempotency_key','audit_correlation_id','workflow_snapshot_hash') order by column_name; select code from permission where code like 'record-control%' order by code; select count(*) from role_permission rp join role r on r.id=rp.role_id join permission p on p.id=rp.permission_id where r.code='ADMIN' and p.code like 'record-control%'; select indexname from pg_indexes where schemaname='public' and tablename='workflow_instance' and indexname='uk_wf_instance_idempotency_key';"
+PGPASSWORD=*** psql -h 127.0.0.1 -U edhr -d edhr_dev -Atc "select id from databasechangelog where id like '0080-%' order by id; select column_name from information_schema.columns where table_name='workflow_instance' and column_name in ('idempotency_key','audit_correlation_id','workflow_snapshot_hash') order by column_name; select code from permission where code like 'record-control%' order by code; select count(*) from role_permission rp join role r on r.id=rp.role_id join permission p on p.id=rp.permission_id where r.code='ADMIN' and p.code like 'record-control%'; select indexname from pg_indexes where schemaname='public' and tablename='workflow_instance' and indexname='uk_wf_instance_idempotency_key';"
 ```
 
 结果：
 
-- `databasechangelog` 包含 `0076-record-control-permission-contract` 和 `0076-record-control-workflow-instance-contract`。
+- `databasechangelog` 包含 `0080-record-control-permission-contract` 和 `0080-record-control-workflow-instance-contract`。
 - `workflow_instance` 包含 `audit_correlation_id`、`idempotency_key`、`workflow_snapshot_hash`。
 - 存在唯一索引 `uk_wf_instance_idempotency_key`。
 - 存在 6 个 `record-control%` 权限码，ADMIN 与这 6 项权限的关联计数为 6。

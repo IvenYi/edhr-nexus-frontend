@@ -190,7 +190,7 @@ implementationAnchors:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
     apiReferences: ['GET /api/v1/workflow/record-control/candidates']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql]
     uiReferences: []
     testReferences:
       - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
@@ -210,7 +210,7 @@ implementationAnchors:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
     apiReferences: ['GET /api/v1/workflow/record-control/candidates']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql]
     uiReferences: []
     testReferences:
       - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java

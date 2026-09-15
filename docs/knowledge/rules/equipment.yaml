@@ -1,0 +1,19 @@
+knowledgeModelVersion: 0.3.18
+rules:
+  - id: rule.equipment-purchase-date-not-future
+    name: 采购时间不得晚于今天
+    status: implemented
+    visibility: internal
+    trigger: equipment.save
+    scope: equipment
+    condition:
+      all:
+        - fact: equipment.purchaseDateIsFuture
+          operator: equals
+          value: true
+    result:
+      type: block
+      reason: equipment-purchase-date-in-future
+      message: 采购时间不能晚于今天
+    explanation: 单台设备新增或编辑时，采购时间晚于今天则阻断保存；今天及过去日期不因本规则被阻断。purchaseDateIsFuture 表示采购日期晚于今天的比较结果，不是新增持久化字段。时区取值和空值处理见实现证据，不提升为额外用户确认规则。
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]

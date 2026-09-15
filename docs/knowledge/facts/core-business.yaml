@@ -2768,3 +2768,195 @@ facts:
     sourceLocator: "已确认结论/标准中文产品术语"
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
+  - id: fact.catalog.equipment-purchasedateisfuture
+    name: "规则事实 equipment.purchaseDateIsFuture"
+    conceptId: concept.equipment
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java"
+    aliases: ["equipment.purchaseDateIsFuture"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.equipment-modeling-controller, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-page]
+    sourceRevision: working-tree
+    sourceLocator: "purchaseDate(LocalDate)"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.execution-operationselected
+    name: "规则事实 execution.operationSelected"
+    conceptId: concept.operation
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx"
+    aliases: ["execution.operationSelected"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.execution-form-selector-user-decision]
+    sourceRevision: working-tree
+    sourceLocator: "ExecutionFormSelector"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.attachment-requiredness
+    name: "规则事实 attachment.requiredness"
+    conceptId: concept.execution-custom-form
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx"
+    aliases: ["attachment.requiredness"]
+    availability: configuration
+    allowedOperators: [explicitly-selected, equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.execution-form-selector-user-decision]
+    sourceRevision: working-tree
+    sourceLocator: "ExecutionFormSelector.customForm.required"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.user-activelyediting
+    name: "规则事实 user.activelyEditing"
+    conceptId: concept.execution-active-editor
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/frontend/src/pages/production/useExecutionPresence.ts"
+    aliases: ["user.activelyEditing"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.execution-form-selector-user-decision]
+    sourceRevision: working-tree
+    sourceLocator: "useExecutionPresence"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.form-reportingopen
+    name: "规则事实 form.reportingOpen"
+    conceptId: concept.production-form-copy
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx"
+    aliases: ["form.reportingOpen"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-copies-user-decision]
+    sourceRevision: working-tree
+    sourceLocator: "ExecutionFormSelector.reportingOpen"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.form-hasincompletecopies
+    name: "规则事实 form.hasIncompleteCopies"
+    conceptId: concept.production-form-copy
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+    aliases: ["form.hasIncompleteCopies"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-execution-product-configuration-contract]
+    sourceRevision: working-tree
+    sourceLocator: "form.hasIncompleteCopies"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.form-required
+    name: "规则事实 form.required"
+    conceptId: concept.production-form-copy
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx"
+    aliases: ["form.required"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-copies-user-decision]
+    sourceRevision: working-tree
+    sourceLocator: "ExecutionFormSelector.form.required"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.form-reportingrequirementsmet
+    name: "规则事实 form.reportingRequirementsMet"
+    conceptId: concept.production-form-copy
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+    aliases: ["form.reportingRequirementsMet"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-copies-user-decision]
+    sourceRevision: working-tree
+    sourceLocator: "form.reportingRequirementsMet"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.form-hasoutputpurposefields
+    name: "规则事实 form.hasOutputPurposeFields"
+    conceptId: concept.form-field-business-purpose
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx"
+    aliases: ["form.hasOutputPurposeFields"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.operation-output-user-decision, evidence.operation-output-model-editor-source]
+    sourceRevision: working-tree
+    sourceLocator: "fieldBusinessPurpose"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.operation-hasquantitypurposefields
+    name: "规则事实 operation.hasQuantityPurposeFields"
+    conceptId: concept.operation
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java"
+    aliases: ["operation.hasQuantityPurposeFields"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.operation-output-user-decision, evidence.operation-output-summary-source, evidence.production-execution-snapshot-builder-source]
+    sourceRevision: working-tree
+    sourceLocator: "operation.hasQuantityPurposeFields"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionobject-exists
+    name: "规则事实 productionObject.exists"
+    conceptId: concept.production-object
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+    aliases: ["productionObject.exists"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-service-source, evidence.production-execution-integration-tests]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.exists"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.operation-completionconditionssatisfied
+    name: "规则事实 operation.completionConditionsSatisfied"
+    conceptId: concept.operation
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+    aliases: ["operation.completionConditionsSatisfied"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-service-source, evidence.production-execution-engine-tests, evidence.production-execution-integration-tests]
+    sourceRevision: working-tree
+    sourceLocator: "operation.completionConditionsSatisfied"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

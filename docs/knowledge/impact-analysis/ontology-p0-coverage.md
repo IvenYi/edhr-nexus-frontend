@@ -6,9 +6,9 @@ reviewedAt: `2026-09-15`
 
 ## 结论
 
-本次审查确认 P0 的**事实目录覆盖目标**继续满足：当前工作树全部 188 个唯一非 `deprecated` 规则条件事实均可通过 fact ID 或 alias 解析到唯一事实目录记录，并按目录中的 `allowedOperators` 约束操作符。`factCatalogProfile` 仅是分组信息，不能绕过全量解析校验。废弃规则仍保留为历史表达，不计入当前覆盖率。`DEC-0038` 中的 180/180 是 P0 首次发布时的历史基线统计；后续工作树已持续增加业务规则和对应事实，本报告按当前资产重新计算，不把全部统计变化归因于某一个功能切片。
+本次审查确认 P0 的**事实目录覆盖目标**继续满足：当前工作树全部 201 个唯一非 `deprecated` 规则条件事实均可通过 fact ID 或 alias 解析到唯一事实目录记录，并按目录中的 `allowedOperators` 约束操作符。`factCatalogProfile` 仅是分组信息，不能绕过全量解析校验。废弃规则仍保留为历史表达，不计入当前覆盖率。`DEC-0038` 中的 180/180 是 P0 首次发布时的历史基线统计；后续工作树已持续增加业务规则和对应事实，本报告按当前资产重新计算，不把全部统计变化归因于某一个功能切片。
 
-这不等于 188 个事实都已实现为运行时读取字段。事实目录中已有真实实现证据的记录保留 `implemented`；仅有规则定义、设计约束或未来运行时语义的记录保持 `specified / not-available / unreviewed`。规则 `implemented` 不能单独证明其条件事实已经实现。
+这不等于 201 个事实都已实现为运行时读取字段。事实目录中已有真实实现证据的记录保留 `implemented`；仅有规则定义、设计约束或未来运行时语义的记录保持 `specified / not-available / unreviewed`。规则 `implemented` 不能单独证明其条件事实已经实现。
 
 ## 分域核对
 
@@ -23,9 +23,9 @@ reviewedAt: `2026-09-15`
 
 ## 机械校验结果
 
-- `core-business.yaml`：173 条事实；`form-process-binding.yaml`：15 条事实；事实目录合计 188 条，无重复 ID、无重复 alias、无悬空 `conceptId` 或 `evidenceIds`。
+- `core-business.yaml`：186 条事实；`form-process-binding.yaml`：15 条事实；事实目录合计 201 条，无重复 ID、无重复 alias、无悬空 `conceptId` 或 `evidenceIds`。
 - `implementation-anchors/core-business.yaml`：11 个核心域锚点；代码、迁移、UI 和测试路径均存在。
-- 规则事实覆盖：188/188 个唯一非废弃规则事实，覆盖率 100%；事实目录按文件分为 `core-business` 173 条、`form-process-binding` 15 条。
+- 规则事实覆盖：201/201 个唯一非废弃规则事实，覆盖率 100%；事实目录按文件分为 `core-business` 186 条、`form-process-binding` 15 条。
 - 事实操作符：均来自对应事实的 `allowedOperators`；正式校验器负责拒绝非法操作符。
 - 版本：知识模型 `0.3.18`、schema `1.1.0` 与当前资产头一致。
 

@@ -1,0 +1,41 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0047
+    title: 三类填报表单、运行时自定义挂载与正在填写人数
+    status: specified
+    visibility: internal
+    context: user-confirmed；用户确认重新设计生产执行的切换表单抽屉，工序配置、自定义、作业发起三类表单分别展示；自定义从已发布模板选择并由用户决定必填规则；在线人数只统计正在填写的人并按同一表单的用户去重。已发布业务措辞的技术映射尚未确认，现有版本按有效时间投影ACTIVE而非持久化PUBLISHED，具体缺口见question.custom-form-version-eligibility；此前错误的PUBLISHED权威条件已移除，不能据此宣称自定义挂载闭环。本决策增补 DEC-0045 的表单来源与展示范围，复用 DEC-0046 多份规则，不替代既有权限、签名、显式结束、产出汇总或历史快照契约。知识仅 specified/internal，不代表代码、测试或发布门禁已完成。
+    decisionStatements:
+      - id: DEC-0047-01
+        statement: 填报表单区分工序配置、自定义挂载和当前工序作业发起后实际挂载三种来源；显示表单名称、编码、版本、是否必填、总份数、聚合状态和正在填写人数。
+        status: specified
+        visibility: internal
+      - id: DEC-0047-02
+        statement: 自定义表单选择已发布模板版本挂到当前生产对象当前工序，由操作员明确选择是否必填；复用已有多份填报、显式结束和必填完工检查，未完成非必填仍保持进行中。
+        status: specified
+        visibility: internal
+      - id: DEC-0047-03
+        statement: 只统计实际填写该表单的用户，同一用户跨份、跨窗口去重；纯查看不计入，不将此人数功能解释为文档实时合并编辑。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.execution-form-selector-user-decision, evidence.execution-form-version-eligibility-source, evidence.execution-form-version-creation-source, evidence.production-form-copies-user-decision]
+    acceptanceScenarios:
+      - id: scenario.execution-custom-form-attachment
+        given: 操作员在当前生产对象工序选择已发布表单模板版本
+        when: 明确必填属性并完成挂载
+        then: 当前工序出现自定义表单及独立份，刷新仍保留该版本和必填选择，挂载审计可追溯且既有完工检查生效
+        evidenceIds: [evidence.execution-form-selector-user-decision]
+        evidenceRequirements: [挂载API持久化与审计, 必填和非必填检查, 旧执行快照兼容]
+      - id: scenario.execution-form-source-selection
+        given: 当前工序有配置表单、自定义表单及实际到达的作业表单
+        when: 打开切换表单抽屉并切换来源或表单
+        then: 三类来源清楚可辨，未来未挂载作业表单不冒充实际填报，显示完整元数据并保留脏数据保护
+        evidenceIds: [evidence.execution-form-selector-user-decision]
+        evidenceRequirements: [分类与选择测试, 页面紧凑布局检查, 未保存内容保护]
+      - id: scenario.execution-active-editor-deduplication
+        given: 两名用户填写同一表单不同份且其中一人打开多个窗口，另有只读查看者
+        when: 查询在线填写人数
+        then: 计为两人且不计只读者，离开或过期的会话被排除，人数不跨对象工序表单混算
+        evidenceIds: [evidence.execution-form-selector-user-decision]
+        evidenceRequirements: [用户身份去重, 跨份窗口与隔离测试, 只读排除, 离开和过期测试]

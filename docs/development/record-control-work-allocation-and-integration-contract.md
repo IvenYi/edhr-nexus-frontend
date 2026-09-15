@@ -643,7 +643,7 @@ workflowInstanceId
 - 同步结果消费边界：`RecordControlWorkflowResultHandler`（仅冻结签名，触发和消费属于阶段 4）；
 - 业务详情投影边界：`RecordControlBusinessProjectionPort`（由继伟在记录控制域实现）；
 - 显式版本启动执行：`WorkflowEngine.createRecordControlInstance`；
-- 实例幂等键、审计关联、快照摘要及权限种子：`0076-record-control-workflow-contract.sql`；
+- 实例幂等键、审计关联、快照摘要及权限种子：`0080-record-control-workflow-contract.sql`；
 - 继伟侧申请页面调用：`frontend/src/api/record-control-workflow.ts`。
 
 这里的“仅冻结签名”是明确的未实现边界，不允许用空实现、固定成功返回或前端直连引擎伪装闭环。

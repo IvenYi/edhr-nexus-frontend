@@ -27,7 +27,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0042-06
-        statement: "provenance: original-evidence；流程实例迁移已增加幂等键、审计关联和流程快照摘要，非空幂等键受唯一索引约束；记录控制权限编码已进入迁移。2026-09-15 本地重建已验证 0076 changeset、三列、唯一索引、6 个权限码及 ADMIN 六项关联。显式启动沿用 WorkflowActionLog 写入实例开始日志，阶段一没有创建 WorkflowEventLog 第二套运行日志表。非管理员权限矩阵、并发幂等争用和不可变合规审计关联仍需发布级验证。"
+        statement: "provenance: original-evidence；流程实例迁移已增加幂等键、审计关联和流程快照摘要，非空幂等键受唯一索引约束；记录控制权限编码已进入迁移。2026-09-15 本地重建已验证 0080 changeset、三列、唯一索引、6 个权限码及 ADMIN 六项关联。显式启动沿用 WorkflowActionLog 写入实例开始日志，阶段一没有创建 WorkflowEventLog 第二套运行日志表。非管理员权限矩阵、并发幂等争用和不可变合规审计关联仍需发布级验证。"
         status: implemented
         visibility: internal
     supersedes: []
@@ -66,7 +66,7 @@ decisions:
         status: accepted
         severity: medium
         visibility: internal
-        path: gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql
+        path: gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql
         lineHint: 1
         summary: "provenance: original-evidence-and-evidence-gap；本地真实迁移、三列、唯一索引、6 个权限码、ADMIN 六项关联及认证候选空列表已验证；尚未执行唯一索引并发争用和非管理员组合账号 CHANGE/OBSOLETE 权限矩阵。"
         evidenceIds: [evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-local-validation]

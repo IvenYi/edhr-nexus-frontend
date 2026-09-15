@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.18
+evidence:
+  - id: evidence.production-form-copies-user-decision
+    type: document
+    path: docs/plans/2026-09-15-production-form-copies-decision.yaml
+    description: user-confirmed；DEC-PACKAGE-20260915-FORM-COPIES 汇总按需新增、必填全部完成阻断、非必填提示并保留进行中、提交本份与显式结束分开，以及各份增量数量累加。用户确认10+12显示22，设计草案早期未决描述已被此确认取代。决策与验收场景不是实现或测试通过证据；JSON集合存储等 inferred 不升级为权威业务规则。后期补填不在本次开放范围。
+    visibility: internal
+  - id: evidence.production-form-copies-design
+    type: document
+    path: docs/plans/2026-09-15-production-form-copies-design.md
+    description: secondary-reference；交互、份标识、revision、冻结版本、历史单份与审计关联的实现设计和证据缺口。仅 user-confirmed 部分可作为已确认语义，其余建议不自动提升为正式规则；实现与测试仍须独立验收。
+    visibility: internal

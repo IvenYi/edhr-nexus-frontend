@@ -82,20 +82,14 @@ public class ProductionObjectController {
     @PreAuthorize("hasAuthority('production.work-orders')")
     @Transactional
     public ApiResponse<ProductionObjectResponse> start(@PathVariable Long id) {
-        Map<String, Object> before = productionObjectSnapshot(id);
-        ProductionObjectResponse response = responseFor(id, productionService.startObject(id));
-        writeChangedAudit(id, "生产准备 · 工单管理", "生产对象开工", before, productionObjectSnapshot(response, productionService.requireOrder(Long.valueOf(response.workOrderId()))));
-        return ApiResponse.success(response);
+        throw new BusinessException(ErrorCode.GENERAL_001, "请在生产执行工作台选择工序并校验开工条件");
     }
 
     @PostMapping("/objects/{id}/complete")
     @PreAuthorize("hasAuthority('production.work-orders')")
     @Transactional
     public ApiResponse<ProductionObjectResponse> complete(@PathVariable Long id) {
-        Map<String, Object> before = productionObjectSnapshot(id);
-        ProductionObjectResponse response = responseFor(id, productionService.completeObject(id));
-        writeChangedAudit(id, "生产准备 · 工单管理", "生产对象完成", before, productionObjectSnapshot(response, productionService.requireOrder(Long.valueOf(response.workOrderId()))));
-        return ApiResponse.success(response);
+        throw new BusinessException(ErrorCode.GENERAL_001, "请在生产执行工作台完成工序校验，不能直接完成生产对象");
     }
 
     @PostMapping("/objects/{id}/cancel")

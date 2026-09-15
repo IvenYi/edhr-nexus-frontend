@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset codex:0076-record-control-workflow-instance-contract
+--changeset codex:0080-record-control-workflow-instance-contract
 ALTER TABLE workflow_instance
     ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(128),
     ADD COLUMN IF NOT EXISTS audit_correlation_id VARCHAR(128),
@@ -10,7 +10,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uk_wf_instance_idempotency_key
     ON workflow_instance(idempotency_key)
     WHERE idempotency_key IS NOT NULL;
 
---changeset codex:0076-record-control-permission-contract
+--changeset codex:0080-record-control-permission-contract
 INSERT INTO permission (id, code, name, type, parent_code, sort_order)
 SELECT nextval('hibernate_sequence'), 'record-control', '表单记录控制', 'PAGE', NULL, 6
 WHERE NOT EXISTS (SELECT 1 FROM permission WHERE code = 'record-control');

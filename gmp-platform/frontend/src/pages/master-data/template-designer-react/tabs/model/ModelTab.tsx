@@ -1,3 +1,4 @@
+import TableStateCell from '@/components/TableStateCell';
 import {
   type DragEvent,
   type MouseEvent as ReactMouseEvent,
@@ -46,6 +47,7 @@ import type { FieldType, ModelField } from '../../types';
 import { fieldRegistry, getFieldTypeDefinition } from '../../registry/fieldRegistry';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import { useSnackbar } from '@/components/SnackbarProvider';
+import { fieldBusinessPurposeOptions, withFieldBusinessPurpose } from '../../utils/fieldBusinessPurpose';
 
 interface FieldReportRow {
   id: string;
@@ -375,6 +377,7 @@ export default function ModelTab({
   const [newFieldName, setNewFieldName] = useState('');
   const [newFieldType, setNewFieldType] = useState<FieldType>('text');
   const [newFieldDescription, setNewFieldDescription] = useState('');
+  const [newFieldBusinessPurpose, setNewFieldBusinessPurpose] = useState('');
   const [fieldReportColumnSettingsAnchorEl, setFieldReportColumnSettingsAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [hiddenReportColumnKeys, setHiddenReportColumnKeys] = useState<string[]>([]);
   const [reportColumnOrder, setReportColumnOrder] = useState<string[]>([]);
@@ -537,6 +540,7 @@ export default function ModelTab({
     setNewFieldName('');
     setNewFieldType('text');
     setNewFieldDescription('');
+    setNewFieldBusinessPurpose('');
     setCreateDialogOpen(true);
   };
 
@@ -545,6 +549,7 @@ export default function ModelTab({
     setNewFieldName(field.name);
     setNewFieldType(activeSubTableDesignField && field.type === 'subTable' ? 'text' : field.type);
     setNewFieldDescription(field.description ?? '');
+    setNewFieldBusinessPurpose(String(field.typeConfig.businessPurpose ?? ''));
     setCreateDialogOpen(true);
   };
 
@@ -589,14 +594,16 @@ export default function ModelTab({
             name,
             type: definition.type,
             description: newFieldDescription,
-            typeConfig: typeChanged ? { ...definition.defaultField(name, field.sortOrder).typeConfig } : field.typeConfig,
+            typeConfig: withFieldBusinessPurpose(effectiveFieldType, typeChanged ? definition.defaultField(name, field.sortOrder).typeConfig : field.typeConfig, newFieldBusinessPurpose),
           };
         }));
       } else {
+        const field = currentFields.find(item => item.id === editingFieldId)!;
         updateField(editingFieldId, {
           name,
           type: effectiveFieldType,
           description: newFieldDescription,
+          typeConfig: withFieldBusinessPurpose(effectiveFieldType, effectiveFieldType === field.type ? field.typeConfig : getFieldTypeDefinition(effectiveFieldType).defaultField(name, field.sortOrder).typeConfig, newFieldBusinessPurpose),
         });
       }
       setSelectedFieldId(editingFieldId);
@@ -606,13 +613,12 @@ export default function ModelTab({
           ...createSubTableField(effectiveFieldType, name, currentFields.length + 1, currentFields),
           description: newFieldDescription.trim(),
         };
+        field.typeConfig = withFieldBusinessPurpose(effectiveFieldType, field.typeConfig, newFieldBusinessPurpose);
         updateSubTableFields([...currentFields, field]);
         setSelectedFieldId(field.id);
       } else {
         const field = addField(effectiveFieldType, name);
-        if (newFieldDescription.trim()) {
-          updateField(field.id, { description: newFieldDescription.trim() });
-        }
+        updateField(field.id, { description: newFieldDescription.trim(), typeConfig: withFieldBusinessPurpose(effectiveFieldType, field.typeConfig, newFieldBusinessPurpose) });
         setSelectedFieldId(field.id);
       }
     }
@@ -621,6 +627,7 @@ export default function ModelTab({
     setNewFieldName('');
     setNewFieldType('text');
     setNewFieldDescription('');
+    setNewFieldBusinessPurpose('');
     if (!shouldContinueAdding) {
       setCreateDialogOpen(false);
     }
@@ -1160,9 +1167,9 @@ export default function ModelTab({
                     ))
                   ) : (
                     <TableRow sx={emptyTableRowSx}>
-                      <TableCell colSpan={visibleReportColumns.length} align="center" sx={emptyTableBodyCellSx}>
+                      <TableStateCell colSpan={visibleReportColumns.length} align="center" sx={emptyTableBodyCellSx}>
                         暂无数据
-                      </TableCell>
+                      </TableStateCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -1230,6 +1237,12 @@ export default function ModelTab({
                 </MenuItem>
               ))}
             </TextField>
+            {newFieldType === 'number' && <TextField select size="small" label="业务用途" value={newFieldBusinessPurpose}
+              SelectProps={{ displayEmpty: true }} InputLabelProps={{ shrink: true }}
+              onChange={(event) => setNewFieldBusinessPurpose(event.target.value)} fullWidth sx={compactTextFieldSx}
+              helperText="用于当前工序产出汇总；请勿同时标记同一数量的明细和小计。">
+              {fieldBusinessPurposeOptions.map(option => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
+            </TextField>}
             <TextField
               size="small"
               label="字段说明"

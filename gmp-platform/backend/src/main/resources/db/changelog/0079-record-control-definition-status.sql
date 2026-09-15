@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset codex:0075-record-control-definition-status
+--changeset codex:0079-record-control-definition-status
 UPDATE workflow_definition definition
 SET status = 'PUBLISHED'
 WHERE definition.type = 'RECORD_CONTROL'

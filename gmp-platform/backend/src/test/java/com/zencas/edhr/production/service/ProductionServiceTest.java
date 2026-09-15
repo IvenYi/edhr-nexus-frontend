@@ -66,6 +66,7 @@ class ProductionServiceTest {
         ProductionObject object = ProductionObject.builder()
                 .id(20L).workOrderId(order.getId()).status("CREATED")
                 .targetQuantity(BigDecimal.ONE).build();
+        when(productionObjectRepository.findWorkOrderId("default", object.getId())).thenReturn(Optional.of(order.getId()));
         when(productionObjectRepository.findByTenantIdAndIdForUpdate("default", object.getId()))
                 .thenReturn(Optional.of(object));
         when(productionObjectRepository.save(object)).thenReturn(object);
@@ -85,6 +86,7 @@ class ProductionServiceTest {
     void endsInProgressObjectWithRequiredReason() {
         WorkOrder order = WorkOrder.builder().id(10L).status("IN_PROCESS").build();
         ProductionObject object = ProductionObject.builder().id(20L).workOrderId(order.getId()).status("IN_PROGRESS").targetQuantity(BigDecimal.ONE).build();
+        when(productionObjectRepository.findWorkOrderId("default", object.getId())).thenReturn(Optional.of(order.getId()));
         when(productionObjectRepository.findByTenantIdAndIdForUpdate("default", object.getId())).thenReturn(Optional.of(object));
         when(productionObjectRepository.save(object)).thenReturn(object);
         when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
@@ -207,6 +209,7 @@ class ProductionServiceTest {
     @Test
     void blocksObjectStartWhenItsWorkOrderIsAlreadyTerminal() {
         ProductionObject object = ProductionObject.builder().id(20L).workOrderId(10L).status("CREATED").build();
+        when(productionObjectRepository.findWorkOrderId("default", object.getId())).thenReturn(Optional.of(10L));
         WorkOrder order = WorkOrder.builder().id(10L).status("CANCELLED").build();
         when(productionObjectRepository.findByTenantIdAndIdForUpdate("default", object.getId()))
                 .thenReturn(Optional.of(object));

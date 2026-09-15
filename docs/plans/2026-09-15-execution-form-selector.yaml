@@ -1,0 +1,116 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260915-FORM-SELECTOR
+  scope: production-execution-form-selector
+  knowledgeBaselineVersion: 0.3.13
+  summary: 三类填报表单、运行时自定义挂载与正在填写人数
+  confirmed:
+    concepts:
+      - id: concept.execution-custom-form
+        name: 执行自定义表单
+        definition: 操作员选择已发布模板版本并挂载到当前生产对象当前工序的表单
+        status: planned
+        sourceReferences: [user-confirmed-20260915]
+    relationships:
+      - id: relation.operation-runtime-custom-forms
+        sourceId: concept.production-execution
+        targetId: concept.execution-custom-form
+        cardinality: one-to-many
+        description: 自定义表单仅属于挂载时的生产对象和工序
+        sourceReferences: [user-confirmed-20260915]
+    rules:
+      - id: rule.execution-custom-form-requiredness
+        name: 挂载时显式决定是否必填
+        status: planned
+        trigger: execution.attach-form
+        condition: {all: [{fact: requiredChoice.explicit, operator: equals, value: true}]}
+        result: {type: persist-snapshot, target: operation.forms, valueFrom: selectedVersionAndRequiredness}
+        sourceReferences: [user-confirmed-20260915]
+      - id: rule.execution-active-editor-count
+        name: 正在填写人数按同一表单的用户去重
+        status: planned
+        trigger: execution.edit-presence
+        condition: {all: [{fact: user.activelyEditing, operator: equals, value: true}]}
+        result: {type: project, target: form.onlineCount, valueFrom: distinctActiveUsersAcrossCopies}
+        sourceReferences: [user-confirmed-20260915]
+    executionContracts:
+      - id: execution.attach-custom-form
+        ruleId: rule.execution-custom-form-requiredness
+        action: 选择已发布模板并明确必填属性，冻结快照，初始化首份，遵循现有多份结束和完工检查规则
+        implementationReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+        evidenceIds: []
+      - id: execution.active-editor-presence
+        ruleId: rule.execution-active-editor-count
+        action: 统计同一对象工序表单下正在填写的去重用户，纯查看不计入
+        implementationReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionPresenceRegistry.java]
+        evidenceIds: []
+  inferred:
+    - id: inference.presence-heartbeat
+      statement: 使用单服务内存心跳，15秒续期、45秒失联过期；用户60秒无编辑活动停止续期
+      rationale: 在线填写是临时状态，不参与生产修订和业务审计；适配当前单服务运行环境
+      relatedIds: [rule.execution-active-editor-count]
+    - id: inference.attach-active-operation
+      statement: 仅执行中的工序允许挂载，沿用生产执行权限、修订号和事务锁
+      rationale: 防止未开工补造执行状态或完工后新增必填义务
+      relatedIds: [rule.execution-custom-form-requiredness]
+  unresolved:
+    - id: question.custom-form-version-eligibility
+      question: 已发布模板是指现有当前有效版本，还是严格PUBLISHED并另建发布流程
+      context: RdoVersionStatusResolver按有效时间管理版本，模板界面没有发布动作，新版本status默认DRAFT；此前用户确认了业务措辞但未确认该数据库映射
+      options: [现有当前有效版本, 严格PUBLISHED并另建发布流程]
+      impact: 待答复后统一候选查询、挂载校验、文案与知识规则，不宣称此路径在主服务可用
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: editor-avatar-display
+        change: L1展示增量，复用账号头像URL并以24px重叠头像呈现，最多4人加省略号；悬浮提示去重人数，0人隐藏，无头像用姓名首字
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+      - area: production-execution
+        change: 三分类紧凑抽屉、挂载标准动作、在线填写列表
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx]
+    transitiveImpacts:
+      - area: operation-completion
+        change: 新挂载表单复用已有必填、多份结束检查及产出汇总
+        evidenceReferences: [docs/knowledge/decisions/DEC-0046-production-form-copies.yaml]
+    potentialImpacts: []
+    unaffectedAreas: [模板设计器不修改, 工艺配置不修改, 不提供文档实时合并编辑]
+    compatibilityAndMigration: [新增字段存于既有执行JSON，历史表单无来源字段按绑定推导，无数据库迁移]
+    snapshotImpacts: [自定义表单追加冻结的版本内容及来源，不覆盖既有配置快照]
+    auditImpacts: [挂载动作记录操作者、模板版本、必填选择和快照变化，人数心跳不写业务审计]
+    permissionImpacts: [沿用production.execution权限，心跳再次校验实际份的编辑权限，身份来自服务端登录上下文]
+    testImpacts:
+      - scope: production-execution
+        scenarios: [已发布筛选, 挂载持久化审计, 必填阻断, 可选未完成提示, 旧数据兼容, 用户跨份去重, 只读排除, 心跳过期, 抽屉切换]
+        evidenceReferences: []
+    evidenceGaps: [本机8081未重启，构建与隔离测试不等同于主服务运行验证]
+  extensionStrategy:
+    selectedPaths: [standard-action, product-core, transaction-orchestration]
+    rationale: 运行时挂载是通用生产执行能力，复用既有多份状态机和事务审计
+    ownershipBoundaries:
+      - owner: production-execution
+        responsibility: 快照挂载、编辑授权、在线状态投影和抽屉交互
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      changeType: update
+      reason: 标准挂载动作与在线状态接口
+    - path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      changeType: update
+      reason: 抽屉与编辑状态接入
+    - path: docs/knowledge/rules/production-execution.yaml
+      changeType: update
+      reason: 已确认规则投影
+  acceptanceScenarios:
+    - id: scenario.custom-attachment
+      given: 当前工序执行中且有已发布表单版本
+      when: 用户选择版本并明确必填属性
+      then: 当前工序出现自定义表单首份，刷新后保留，审计可追溯，必填完工规则生效
+      evidenceRequirements: [集成测试, API, 持久化及审计断言]
+    - id: scenario.editor-count
+      given: 两个用户编辑同一表单的不同份，其中一人打开多个窗口
+      when: 请求在线人员
+      then: 返回两人以及各自所在份；只读、离开和超时人员排除
+      evidenceRequirements: [服务测试, 前端交互检查]
+implementationPlan:
+  - 后端挂载和心跳服务及聚焦测试
+  - 三类紧凑抽屉、已发布模板选择、编辑心跳接入
+  - 前端构建与聚焦交互验证
+  - 本体门禁和独立质量门禁

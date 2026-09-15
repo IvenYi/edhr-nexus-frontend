@@ -1,0 +1,80 @@
+knowledgeModelVersion: 0.3.18
+rules:
+  - id: rule.production-form-copy-addition
+    name: 按需新增表单份
+    status: specified
+    visibility: internal
+    trigger: production-form.add-copy
+    scope: production-execution-form-copies
+    condition: {fact: form.reportingOpen, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: production-form.add-copy
+      target: productionFormCopy
+      effect: create-independent-copy
+    explanation: user-confirmed；操作员在填报阶段按需新增同一表单的份数，不采用预先配置固定份数；每份独立保存、提交。提交本份不表示结束整个表单填报阶段。稳定标识和序号的具体存储属于实现设计，不据此新增默认份数或复制上一份业务值的规则。
+    evidenceIds: [evidence.production-form-copies-user-decision]
+  - id: rule.production-form-copy-required-completion
+    name: 必填表单所有已创建份完成
+    status: specified
+    visibility: internal
+    trigger: production-form.finish-reporting-or-operation.complete
+    scope: production-execution-form-copies
+    condition:
+      all:
+        - {fact: form.required, operator: equals, value: true}
+        - {fact: form.hasIncompleteCopies, operator: equals, value: true}
+    result:
+      type: block
+      actions: [production-form.finish-reporting, production-operation.complete]
+      reason: required-form-copies-incomplete
+    explanation: user-confirmed；必填表单所有已创建份均需完成，存在未完成份时不能结束本表单填报或工序完工，并须列出未完成份。完成沿用既有表单流程的最终完成语义，保存不算完成，待审批不等于已完成。本规则细化既有必填表单阻断规则，不跳过其他作业和前置条件。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-execution-product-configuration-contract]
+  - id: rule.production-form-copy-optional-incomplete
+    name: 非必填未完成份提示并保留进行中
+    status: specified
+    visibility: internal
+    trigger: production-form.finish-reporting-or-operation.complete
+    scope: production-execution-form-copies
+    condition:
+      all:
+        - {fact: form.required, operator: equals, value: false}
+        - {fact: form.hasIncompleteCopies, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      actions: [production-form.finish-reporting, production-operation.complete]
+      requiredNotice: incomplete-optional-form-copies
+      retainedFormStatus: IN_PROGRESS
+      preserveIncompleteCopies: true
+      retainOtherCompletionChecks: true
+    explanation: user-confirmed；非必填存在未完成份时，结束填报及工序完工须告知未完成表单，其他条件满足时允许继续。工序可已完工而该表单仍进行中，不能随工序完工把未完成份改为已完成，也不能回写已完成单份为进行中。补填入口定位为后期能力，本次保留数据和状态，不开放完工后写入或解除已有权限限制。
+    evidenceIds: [evidence.production-form-copies-user-decision]
+  - id: rule.production-form-copy-explicit-finish
+    name: 提交本份与结束本表单分开
+    status: specified
+    visibility: internal
+    trigger: production-form.finish-reporting
+    scope: production-execution-form-copies
+    condition: {fact: form.reportingRequirementsMet, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: production-form.finish-reporting
+      target: outerWorkFormNode
+      effect: finish-reporting-stage-and-advance-form-node
+    explanation: user-confirmed；提交本份仅推进该份自身流程，仍可新增份。操作员显式结束本表单填报时，必填检查所有份完成，非必填告知并保留未完成状态，随后才让外层作业的对应表单节点继续。结束阶段和表单数据完成是两个事实，不顺带完成后续人工确认或其他作业节点；历史已推进节点的兼容不应自动撤回。
+    evidenceIds: [evidence.production-form-copies-user-decision]
+  - id: rule.production-form-copy-output-sum
+    name: 各份增量产出累加
+    status: specified
+    visibility: internal
+    trigger: production-execution.query
+    scope: production-execution-form-copies
+    condition: {fact: form.hasOutputPurposeFields, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: operationOutput
+      aggregation: sum
+      source: formCopies.savedOutputPurposeValues
+      fields: [goodQuantity, ngQuantity, scrapQuantity, outputQuantity]
+    explanation: user-confirmed；每份数量是本份新增数量，按当前工序各份已保存的显式用途字段累加，例如两份良品为10和12时显示22，不取最新一份累计值。沿用良品、不良、报废显式用途映射以及当前工序边界，不能把同一来源的 fulfilledBy 别名重复计入；本规则不改写批次最终产出或定义新的工序完工数量阈值。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.operation-output-user-decision]

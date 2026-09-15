@@ -10,7 +10,7 @@
 - `original-evidence`：公共流程新增 `RecordControlWorkflowPort` 及共享 DTO；候选查询只返回类型匹配的当前已发布版本，REST 入口按 CHANGE/OBSOLETE 分别要求对应发起权限。
 - `original-evidence`：`WorkflowEngine.createRecordControlInstance` 按显式定义和版本启动，绕过绑定规则；它按幂等键复用完全匹配请求或拒绝冲突，并保存定义、版本、申请业务 ID、申请人签名引用、审计关联、上下文快照和流程快照摘要。
 - `original-evidence`：记录控制开始节点不创建任务；引擎自动进入首审批节点，冻结候选快照并排除申请人。
-- `original-evidence`：`0076-record-control-workflow-contract.sql` 增加实例幂等键、审计关联、流程快照摘要、幂等唯一索引和阶段一记录控制权限。
+- `original-evidence`：`0080-record-control-workflow-contract.sql` 增加实例幂等键、审计关联、流程快照摘要、幂等唯一索引和阶段一记录控制权限。
 
 ## 传递影响与所有权
 
@@ -21,7 +21,7 @@
 ## 兼容、快照、审计与权限
 
 - 原有绑定规则 `createInstance` 入口保持不变；新增显式入口只服务 RECORD_CONTROL 的 CHANGE/OBSOLETE。
-- 流程实例新增字段对既有非记录控制实例可空；2026-09-15 本地重建已验证 Liquibase 88/88、0076 两个 changeset、三列、唯一索引、6 个权限码和 ADMIN 六项关联。生产环境迁移兼容仍由发布门禁负责。
+- 流程实例新增字段对既有非记录控制实例可空；2026-09-15 本地重建已验证 Liquibase 88/88、0080 两个 changeset、三列、唯一索引、6 个权限码和 ADMIN 六项关联。生产环境迁移兼容仍由发布门禁负责。
 - 实例固定保存 `definitionId`、`versionId`、`contextSnapshot` 和 `workflowSnapshotHash`，后续发布新版本不改变实例引用；当前摘要只覆盖版本的 `nodesJson` 与 `edgesJson`。
 - `auditCorrelationId` 已进入实例与共享事件载荷；显式启动写入既有 `WorkflowActionLog`，阶段一不创建 `WorkflowEventLog` 第二套运行日志表。不可变合规审计及跨域关联仍缺发布级证据。
 - 候选接口按类型要求 `record-control.corrections.create` 或 `record-control.voids.create`；候选结果不是确认授权凭证。模板级使用 ACL 当前不存在，这是实现边界，不提升为通用业务规则。

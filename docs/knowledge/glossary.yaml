@@ -618,3 +618,51 @@ terms:
     aliases: [审核流程日志, WorkflowEventLog]
     status: specified
     visibility: internal
+  - id: term.execution-custom-form
+    name: 执行自定义表单
+    definition: 操作员选择已发布表单模板版本并明确是否必填后，挂载到当前生产对象当前工序的填报表单；不表示现场修改模板结构。
+    aliases: [自定义填报表单]
+    status: specified
+    visibility: internal
+  - id: term.execution-active-editor
+    name: 表单正在填写人员
+    definition: 当前生产对象和工序内实际填写某一表单的用户；同一用户在该表单不同份或多个窗口填写时去重，纯查看人员不计入。
+    aliases: [在线协同人数统计对象]
+    status: specified
+    visibility: internal
+  - id: term.production-form-copy
+    name: 生产表单份实例
+    definition: 同一生产工序表单下由操作员按需新增、独立保存和提交的具体一份填报；份数为该表单已创建实例数，当前序列表示正在查看的份序号。
+    aliases: [表单份, 填报份实例]
+    status: specified
+    visibility: internal
+  - id: term.form-field-business-purpose
+    name: 表单字段业务用途
+    definition: 表单真实字段显式声明的业务用途标识；当前用于明确映射当前工序的良品、不良品或报废数量，不通过字段名称猜测数量含义。
+    aliases: [字段业务用途标识]
+    status: implemented
+    visibility: internal
+  - id: term.production-execution-workspace
+    name: 生产执行工作台
+    definition: 在一个页面识别批次或SN生产对象，并查看工单、产品配置、工艺路线、eDHR及当前工序的条件、表单、SOP和执行动作的高频生产操作入口。
+    aliases: [生产执行]
+    status: specified
+    visibility: internal
+  - id: term.equipment-category
+    name: 设备分类
+    definition: 对设备类型进行分组的主数据；内置生产设备、检验设备和计量器具，并支持用户自行新增分类。
+    aliases: [Equipment Category]
+    status: implemented
+    visibility: internal
+  - id: term.equipment-type
+    name: 设备类型
+    definition: 注塑机、模温机等某一种类设备，按设备分类组织，与具体单台设备区分维护。
+    aliases: [Equipment Type]
+    status: implemented
+    visibility: internal
+  - id: term.equipment
+    name: 设备
+    definition: 归于某一设备类型的具体单台设备，例如注塑机类型下的注塑机001。
+    aliases: [单台设备, Equipment]
+    status: implemented
+    visibility: internal

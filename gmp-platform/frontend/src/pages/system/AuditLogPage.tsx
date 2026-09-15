@@ -1,3 +1,4 @@
+import TableStateCell from '@/components/TableStateCell';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -313,6 +314,8 @@ const auditFieldLabelMap: Record<string, string> = {
   displayName: '显示名称',
   name: '名称',
   code: '编码',
+  brand: '设备品牌',
+  purchaseDate: '采购时间',
   username: '账号',
   display_name: '姓名',
   realName: '姓名',
@@ -1003,15 +1006,15 @@ export default function AuditLogPage() {
                 <TableBody sx={{ height: isAuditTableEmptyState ? '100%' : 'auto' }}>
                   {isLoading ? (
                     <TableRow sx={emptyTableRowSx}>
-                      <TableCell colSpan={visibleAuditColumns.length} align="center" sx={emptyTableBodyCellSx}><CircularProgress size={24} /></TableCell>
+                      <TableStateCell colSpan={visibleAuditColumns.length} align="center" sx={emptyTableBodyCellSx}><CircularProgress size={24} /></TableStateCell>
                     </TableRow>
                   ) : isError ? (
                     <TableRow sx={emptyTableRowSx}>
-                      <TableCell colSpan={visibleAuditColumns.length} align="center" sx={emptyTableBodyCellSx}>加载失败</TableCell>
+                      <TableStateCell colSpan={visibleAuditColumns.length} align="center" sx={emptyTableBodyCellSx}>加载失败</TableStateCell>
                     </TableRow>
                   ) : rows.length === 0 ? (
                     <TableRow sx={emptyTableRowSx}>
-                      <TableCell colSpan={visibleAuditColumns.length} align="center" sx={emptyTableBodyCellSx}>暂无审计记录</TableCell>
+                      <TableStateCell colSpan={visibleAuditColumns.length} align="center" sx={emptyTableBodyCellSx}>暂无审计记录</TableStateCell>
                     </TableRow>
                   ) : rows.map((row) => (
                     <TableRow key={row.id} hover onClick={() => openAuditDetailDrawer(row)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>

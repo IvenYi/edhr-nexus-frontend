@@ -1,0 +1,73 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0045
+    title: 批次和SN扫码单屏生产执行工作台
+    status: implemented
+    visibility: internal
+    context: user-confirmed；用户要求在生产模块实现日常高频使用的生产执行，确认新增菜单和页面路由并启用本体及质量门禁。本决策只沉淀明确目标并复用已有产品配置、快照、表单权限和签名契约。当前工作树已具有受限生产执行实现及聚焦测试源，因此局部规则和决策推进为implemented/internal；不声明verified或质量通过。OPERATION_START条件来源、取值时点和求值器属于本切片实现选择，不提升为用户确认的通用规则，不关闭泛领域条件问题。通知无投递服务、原始路线条件、返工入口和缺少可靠来源等情况仍阻断执行，不能解释为所有配置均支持运行。
+    decisionStatements:
+      - id: DEC-0045-01
+        statement: 生产模块提供生产执行菜单与对应页面路由，统一支持扫描批次或SN条码进入生产操作。
+        status: specified
+        visibility: internal
+      - id: DEC-0045-02
+        statement: 工作台在一屏展示当前批次或SN对应的工单，并明确生产的产品、使用的工艺路线、产品配置和所配置的eDHR。
+        status: specified
+        visibility: internal
+      - id: DEC-0045-03
+        statement: 工作台按当前执行状态明确是否已经开工、执行到哪个工序、哪些工序可执行和可选择，以及工序开工条件和前置条件是否满足。
+        status: specified
+        visibility: internal
+      - id: DEC-0045-04
+        statement: 用户在当前工序查看需要填写的表单、对应SOP和可执行的作业动作，并可校验该工序是否达到完工条件。
+        status: specified
+        visibility: internal
+      - id: DEC-0045-05
+        statement: 生产执行延续现有产品风格并采用适合每日高频操作的独立工作台设计，减少在对象信息、工序条件、填报和操作之间的页面切换。
+        status: specified
+        visibility: internal
+      - id: DEC-0045-06
+        statement: 既有权威契约继续适用：作业按适用规则自动匹配并冻结实例执行依据；表单沿用稳定fieldId、主体默认权限和绑定例外、可选表单流程、签署事件、固定版本引用及统一渲染器契约。本决策不增加绕过签名、审批或前置条件的通道。
+        status: specified
+        visibility: internal
+      - id: DEC-0045-07
+        statement: 当前工序展示产出数量与目标数量；用户确认产出包括良品、不良品和报废数量，来源为当前工序生产表单字段汇总。
+        status: implemented
+        visibility: internal
+      - id: DEC-0045-08
+        statement: 表单字段提供内置的业务用途标识，明确映射良品、不良品或报废数量，不通过字段名称猜测用途。本次不恢复已废弃的表单流程字段槽位或权限映射模型。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-product-configuration-contract, evidence.production-execution-work-snapshot-contract, evidence.production-execution-form-permission-contract, evidence.production-execution-runtime-condition-gaps, evidence.production-execution-storage-source, evidence.production-execution-migration-source, evidence.production-execution-snapshot-builder-source, evidence.production-execution-engine-source, evidence.production-execution-service-source, evidence.production-execution-access-source, evidence.production-execution-page-source, evidence.production-execution-integration-tests, evidence.production-execution-engine-tests, evidence.production-execution-access-tests, evidence.production-execution-migration-tests, evidence.production-execution-signature-protection-source, evidence.production-execution-file-preview-protection-source]
+    acceptanceScenarios:
+      - id: scenario.operation-output-from-saved-fields
+        given: 当前工序生产表单中的良品、不良品、报废数量字段已显式标识用途
+        when: 用户查看当前工序产出
+        then: 按当前工序对应的三类数量字段汇总展示产出，不混入其他工序或依靠字段名称推断
+        evidenceIds: [evidence.operation-output-user-decision, evidence.operation-output-summary-tests, evidence.operation-output-persistence-tests]
+        evidenceRequirements: [字段用途保存和重读检查, 当前工序汇总测试, 快照和API持久化检查]
+      - id: scenario.production-execution-scan-context
+        given: 批次或SN生产对象关联工单和产品配置
+        when: 用户在生产执行工作台扫描该对象条码
+        then: 同屏展示正确对象及工单、产品、配置、工艺路线和eDHR信息
+        evidenceIds: [evidence.production-execution-user-decision]
+        evidenceRequirements: [批次与SN接口集成测试, 页面交互验证]
+      - id: scenario.production-execution-operation-readiness
+        given: 当前对象具有工序路线和实际执行状态
+        when: 用户查看或选择工序
+        then: 工作台明确开工及执行进度、工序可执行性、开工与前置条件满足情况
+        evidenceIds: [evidence.production-execution-user-decision]
+        evidenceRequirements: [工序状态与条件集成测试, 受阻原因页面检查]
+      - id: scenario.production-execution-operation-content
+        given: 当前工序绑定表单和SOP且存在适用作业
+        when: 用户进入该工序执行区
+        then: 工作台展示对应表单、SOP和可执行动作，并保持既有版本、权限和作业快照契约
+        evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-work-snapshot-contract, evidence.production-execution-form-permission-contract]
+        evidenceRequirements: [表单持久化及权限测试, 作业匹配与快照测试, SOP页面检查]
+      - id: scenario.production-execution-operation-completion
+        given: 当前工序存在需校验的完工条件
+        when: 用户申请完工
+        then: 系统说明具体检查结果，条件满足才允许完工，未满足条件不能仅通过客户端操作绕过
+        evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-product-configuration-contract]
+        evidenceRequirements: [服务端完工阻断测试, 完工成功及持久化测试, 审计验证]

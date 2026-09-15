@@ -37,7 +37,7 @@ evidence:
     visibility: internal
   - id: evidence.record-control-workflow-stage1-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql
+    path: gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql
     description: 流程实例增加幂等键、审计关联和流程快照摘要，并为非空幂等键创建唯一索引；同时登记记录控制页面、发起和查看全部申请权限并授予 ADMIN。2026-09-15 本地重建已验证迁移实际应用、三列、唯一索引、6 个权限码及 ADMIN 六项关联；非管理员权限矩阵和并发幂等争用仍未验证。
     visibility: internal
   - id: evidence.record-control-workflow-stage1-engine-tests
@@ -63,5 +63,5 @@ evidence:
   - id: evidence.record-control-workflow-stage1-local-validation
     type: document
     path: docs/knowledge/evidence/record-control-workflow-stage1-local-validation.md
-    description: 2026-09-15 本地原始验证记录；包含重建前备份、应用与 Liquibase 88/88 启动结果、0076 changeset、实例三列、幂等唯一索引、6 个权限码、ADMIN 关联计数及认证候选空列表，并明确并发幂等与非管理员权限矩阵缺口。
+    description: 2026-09-15 本地原始验证记录；包含重建前备份、应用与 Liquibase 88/88 启动结果、0080 changeset、实例三列、幂等唯一索引、6 个权限码、ADMIN 关联计数及认证候选空列表，并明确并发幂等与非管理员权限矩阵缺口。
     visibility: internal

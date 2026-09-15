@@ -40,11 +40,14 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import TableStateCell from '@/components/TableStateCell';
 import AppDialog from "@/components/AppDialog";
+import { FormRuntimeContext, FormRuntimeField, type FormRuntime } from '@/components/form-renderer/FormRuntimeField';
 import StatusBadge from "@/components/StatusBadge";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   useEffect,
+  useContext,
   useMemo,
   useState,
   type MouseEvent,
@@ -64,6 +67,7 @@ import {
   type TemplateVersionRecord,
 } from "@/api/template-modeling";
 import { parseReactTemplateDesignerDocument } from "./template-designer-react/utils/document";
+import WordCanvasPreview from "./template-designer-react/components/canvas/WordCanvasPreview";
 import type {
   CanvasNode,
   CanvasPage,
@@ -570,6 +574,7 @@ function PreviewField({
   fieldPermissions?: PreviewFieldPermission;
   interaction?: PreviewFieldInteraction;
 }) {
+  const runtime = useContext(FormRuntimeContext);
   const field = document.model.fields.find(
     (entry) => entry.id === node.bindings?.fieldId,
   );
@@ -586,7 +591,7 @@ function PreviewField({
           : "请输入"),
   );
   const hidden = Boolean(node.bindings?.hidden);
-  if (hidden || node.type === "sub-table") return null;
+  if (hidden || (node.type === "sub-table" && !runtime)) return null;
   const fieldId = String(field?.id ?? node.bindings?.fieldId ?? "");
   const readOnly =
     fieldPermissions?.[fieldId] === "READ_ONLY" ||
@@ -624,7 +629,7 @@ function PreviewField({
         "&:hover .preview-field-actions": { opacity: 1 },
       }}
     >
-      {placeholder || label}
+      {runtime && field ? <FormRuntimeField field={field} readOnly={readOnly} /> : placeholder || label}
       <PreviewFieldActionBar fieldId={fieldId} actions={actions} />
     </Box>
   );
@@ -641,6 +646,7 @@ function SheetPreview({
   fieldPermissions?: PreviewFieldPermission;
   interaction?: PreviewFieldInteraction;
 }) {
+  const runtime = useContext(FormRuntimeContext);
   const columns = page.sheet.columnWidths
     .slice(0, page.sheet.columnCount)
     .map((width) => Math.max(36, Math.min(260, width)));
@@ -824,7 +830,7 @@ function SheetPreview({
                 top: top + 3,
                 width: Math.max(0, width - 6),
                 height: Math.max(0, height - 6),
-                pointerEvents: interaction ? "auto" : "none",
+                pointerEvents: interaction || runtime ? "auto" : "none",
                 overflow: "hidden",
               }}
             >
@@ -871,19 +877,20 @@ function FieldListPreview({
   fieldPermissions?: PreviewFieldPermission;
   interaction?: PreviewFieldInteraction;
 }) {
-  const groups = document.model.groups;
+  const runtime = useContext(FormRuntimeContext);
+  const groups = document.model.groups.length ? document.model.groups : [{ id: 'default-group', name: '表单内容' }];
   const fields = document.model.fields.filter(
     (field) => field.status === "enabled",
   );
   return (
     <Box
-      sx={{ flex: 1, minHeight: 0, overflow: "auto", p: 3, bgcolor: "#f8fafc" }}
+      sx={{ flex: 1, minHeight: 0, overflow: "auto", p: runtime ? 1.5 : 3, bgcolor: "#f8fafc" }}
     >
       <Box
         sx={{
           maxWidth: 920,
           mx: "auto",
-          p: 3,
+          p: runtime ? 1.5 : 3,
           bgcolor: "#fff",
           border: "1px solid #e4e7ed",
         }}
@@ -915,7 +922,7 @@ function FieldListPreview({
                 }}
               >
                 {groupFields.map((field) => {
-                  const readOnly = fieldPermissions?.[field.id] === "READ_ONLY";
+                  const readOnly = Boolean(runtime?.disabled) || fieldPermissions?.[field.id] === "READ_ONLY";
                   const highlighted =
                     interaction?.highlightFieldId === field.id;
                   const actions =
@@ -934,6 +941,7 @@ function FieldListPreview({
                       >
                         <Typography sx={{ color: "#606266", fontSize: 13 }}>
                           {field.name}
+                          {runtime && (field.typeConfig.required || (field as typeof field & { required?: boolean }).required) ? <Box component="span" sx={{ color: 'error.main', ml: 0.5 }}>*</Box> : null}
                         </Typography>
                         {fieldPermissions ? (
                           <Typography
@@ -972,7 +980,7 @@ function FieldListPreview({
                           "&:hover .preview-field-actions": { opacity: 1 },
                         }}
                       >
-                        {field.type === "datetime"
+                        {runtime ? <FormRuntimeField field={field} readOnly={readOnly} /> : field.type === "datetime"
                           ? "请选择日期"
                           : field.type === "singleSelect" ||
                               field.type === "reference"
@@ -999,10 +1007,14 @@ export function FormCanvasPreview({
   document,
   fieldPermissions,
   interaction,
+  runtime,
+  layout = 'canvas',
 }: {
   document: TemplateDesignerDocument;
   fieldPermissions?: PreviewFieldPermission;
   interaction?: PreviewFieldInteraction;
+  runtime?: FormRuntime;
+  layout?: 'canvas' | 'fields';
 }) {
   const [pageId, setPageId] = useState(document.canvas.currentPageId);
   useEffect(() => setPageId(document.canvas.currentPageId), [document]);
@@ -1014,7 +1026,7 @@ export function FormCanvasPreview({
     (Object.keys(page.cells).length || page.nodes.length || page.images.length),
   );
   return (
-    <Box
+    <FormRuntimeContext.Provider value={runtime}><Box
       sx={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}
     >
       {document.canvas.pages.length > 1 ? (
@@ -1038,7 +1050,14 @@ export function FormCanvasPreview({
           ))}
         </Tabs>
       ) : null}
-      {page && hasCanvasContent ? (
+      {page?.wordDocument && layout === 'canvas' ? (
+        <WordCanvasPreview
+          page={page}
+          renderField={(node) => (
+            <PreviewField node={node} document={document} fieldPermissions={fieldPermissions} interaction={interaction} />
+          )}
+        />
+      ) : page && hasCanvasContent && layout === 'canvas' ? (
         <SheetPreview
           page={page}
           document={document}
@@ -1052,7 +1071,7 @@ export function FormCanvasPreview({
           interaction={interaction}
         />
       )}
-    </Box>
+    </Box></FormRuntimeContext.Provider>
   );
 }
 
@@ -2259,15 +2278,15 @@ export default function DhrTemplateWorkspaceDialog({
                 <TableBody>
                   {formOptionsQuery.isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={5} align="center" sx={{ py: 6 }}>
+                      <TableStateCell colSpan={5} align="center" sx={{ py: 6 }}>
                         <CircularProgress size={22} />
-                      </TableCell>
+                      </TableStateCell>
                     </TableRow>
                   ) : formOptionsQuery.isError ? (
                     <TableRow>
-                      <TableCell colSpan={5} sx={{ p: 2 }}>
+                      <TableStateCell colSpan={5} sx={{ p: 2 }}>
                         <Alert severity="error">表单列表加载失败</Alert>
-                      </TableCell>
+                      </TableStateCell>
                     </TableRow>
                   ) : visibleFormOptions.length ? (
                     visibleFormOptions.flatMap((option) => {
@@ -2485,13 +2504,13 @@ export default function DhrTemplateWorkspaceDialog({
                     })
                   ) : (
                     <TableRow>
-                      <TableCell
+                      <TableStateCell
                         colSpan={5}
                         align="center"
                         sx={{ py: 6, color: "#909399" }}
                       >
                         暂无匹配表单
-                      </TableCell>
+                      </TableStateCell>
                     </TableRow>
                   )}
                 </TableBody>

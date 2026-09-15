@@ -14,7 +14,10 @@ public class EquipmentType {
     private String code;
     @Column(name = "name", nullable = false, length = 128)
     private String name;
+    @Column(name = "category_id") private Long categoryId;
+    @Column(name = "created_by", length = 128) private String createdBy;
     @Column(name = "created_at") private LocalDateTime createdAt;
+    @Column(name = "updated_by", length = 128) private String updatedBy;
     @Column(name = "updated_at") private LocalDateTime updatedAt;
     @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }
 }

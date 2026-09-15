@@ -14,6 +14,9 @@ public interface ProductionObjectRepository extends JpaRepository<ProductionObje
     List<ProductionObject> findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc(String tenantId, Long workOrderId);
     List<ProductionObject> findByTenantIdAndObjectTypeOrderByCreatedAtDesc(String tenantId, String objectType);
     Optional<ProductionObject> findByTenantIdAndId(String tenantId, Long id);
+    Optional<ProductionObject> findByTenantIdAndObjectNo(String tenantId, String objectNo);
+    @Query("select productionObject.workOrderId from ProductionObject productionObject where productionObject.tenantId = :tenantId and productionObject.id = :id")
+    Optional<Long> findWorkOrderId(@Param("tenantId") String tenantId, @Param("id") Long id);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select productionObject from ProductionObject productionObject where productionObject.tenantId = :tenantId and productionObject.id = :id")
     Optional<ProductionObject> findByTenantIdAndIdForUpdate(@Param("tenantId") String tenantId, @Param("id") Long id);
