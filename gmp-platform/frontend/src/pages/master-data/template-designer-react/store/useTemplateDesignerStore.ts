@@ -1821,6 +1821,7 @@ export interface TemplateDesignerStore {
   addNodeFromSubTableFieldToCell: (subTableId: string, field: ModelField, layout: FieldCellLayout) => void;
   addNodeFromFieldToRange: (fieldId: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => void;
   addSubTableRegionFromFieldToRange: (fieldId: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => void;
+  createSubTableFromRange: (name: string, range: CanvasSelectionRange, layout: Omit<FieldCellLayout, 'range'>) => ModelField | null;
   setSubTableRecordTemplateFromRange: (subTableNodeId: string, range: CanvasSelectionRange) => void;
   bindFieldToNode: (nodeId: string, fieldId: string) => void;
   updateNodeBindings: (nodeId: string, patch: Record<string, unknown>) => void;
@@ -2409,6 +2410,45 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       activeCanvasRail: 'config',
       isCanvasSidebarVisible: true,
     }));
+  },
+  createSubTableFromRange: (name, range, layout) => {
+    const state = get();
+    const document = state.document;
+    const page = state.getCurrentPage();
+    const fieldName = name.trim();
+    const layoutRange = normalizeRange(range);
+    if (!document || !page || !fieldName || !isMultiCellRange(layoutRange)) return null;
+    if (document.model.fields.some((field) => field.name.trim() === fieldName)) return null;
+    const overlapsSubTable = (nodes: CanvasNode[]): boolean => nodes.some((node) => {
+      const nodeRange = readNodeCellRange(node);
+      return (node.type === 'sub-table' && Boolean(nodeRange && rangesIntersect(nodeRange, layoutRange)))
+        || Boolean(node.children?.length && overlapsSubTable(node.children));
+    });
+    if (overlapsSubTable(page.nodes)) return null;
+
+    const definition = getFieldTypeDefinition('subTable');
+    const field = {
+      ...definition.defaultField(fieldName, document.model.fields.length + 1),
+      id: createId('field'),
+      code: createUniqueFieldCode(document.model.fields, fieldName, 'subTable'),
+    };
+    const node = createBoundSubTableRegionNode(field, page.id, layoutRange, layout);
+    set(pushDocumentHistory(state, {
+      document: updateCanvasPage({
+        ...document,
+        model: { ...document.model, fields: [...document.model.fields, field] },
+      }, (currentPage) => ({
+        ...currentPage,
+        nodes: [...removeCellFieldNodesFromTree(currentPage.nodes, layoutRange), node],
+      })),
+      selectedFieldId: field.id,
+      selectedNodeId: node.id,
+      selectedRange: layoutRange,
+      selectedCell: { row: layoutRange.t, col: layoutRange.l },
+      activeCanvasRail: 'config',
+      isCanvasSidebarVisible: true,
+    }));
+    return field;
   },
   setSubTableRecordTemplateFromRange: (subTableNodeId, range) => set((state) => {
     if (!state.document) {

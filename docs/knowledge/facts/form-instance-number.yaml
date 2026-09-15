@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.18
+facts:
+  - id: fact.form-instance.saved
+    name: 表单实例已持久化保存
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    aliases: [form.saved]
+    availability: runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-instance-number-user-decision, evidence.form-instance-number-source-boundary]
+    sourceRevision: working-tree
+    sourceLocator: act 中 formAction 后的生产执行持久化；实例索引与首次保存判断仍由本次实现及测试闭环
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

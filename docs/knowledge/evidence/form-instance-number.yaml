@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.18
+evidence:
+  - id: evidence.form-instance-number-user-decision
+    type: document
+    path: docs/knowledge/evidence/form-instance-number-user-confirmed.md
+    description: user-confirmed；用户批准表单实例号名称及完整设计后授权实现，涵盖首次保存生成、同份稳定、新份新号、子表归属、固定系统列及冻结版本详情。实现来源与历史补充边界单独标为推断或待验证，不作为发布证据。
+    visibility: internal
+  - id: evidence.form-instance-number-source-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    description: original-evidence；2026-09-15 working-tree 核对 act 内 SAVE/SUBMIT/APPROVE/RETURN 调用 engine.formAction 并持久化 snapshotJson/stateJson 和审计；该来源定位不证明实例编号、索引或查询授权已经实现。
+    visibility: internal
+  - id: evidence.form-instance-number-list-boundary
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx
+    description: original-evidence；2026-09-15 实现前核对 reportRows 为固定空数组，系统记录首列、查询及冻结详情需要新增真实数据关联；此证据只记录原缺口，不声称当前工作树尚未修改或已经通过运行验证。
+    visibility: internal

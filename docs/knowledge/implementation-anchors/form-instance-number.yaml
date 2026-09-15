@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.18
+implementationAnchors:
+  - id: anchor.form-instance-number
+    targetId: concept.form-instance-number
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    apiReferences: []
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx]
+    testReferences: []
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-instance-number-user-decision, evidence.form-instance-number-source-boundary, evidence.form-instance-number-list-boundary]
+    sourceRevision: working-tree
+    sourceLocator: ProductionExecutionService.act 与 ModelTab 记录列表；登记受影响入口，编号和索引具体实现由主线程完成后另行核验
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

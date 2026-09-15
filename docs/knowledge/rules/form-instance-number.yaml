@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.18
+rules:
+  - id: rule.form-instance-stable-number
+    name: 表单实例号唯一且保持稳定
+    status: specified
+    visibility: internal
+    trigger: form.first-save-or-update
+    scope: form-instance-records
+    condition: {fact: fact.form-instance.saved, operator: equals, value: true}
+    result:
+      type: persist-unique-code
+      target: form.instanceNo
+      source: server-number-generator
+      preserveExisting: true
+      uniquenessScope: tenant-across-templates
+    explanation: 首次保存一份实际填报记录时生成不可修改实例号；同份保存、提交、审批及退回修改保持原号，新建另一份生成新号，编号不重复使用。子表各明细行归属同一实例号，模板升级不重编历史号。当前默认单租户实现不能据此宣称已具备全系统多租户隔离。
+    evidenceIds: [evidence.form-instance-number-user-decision]

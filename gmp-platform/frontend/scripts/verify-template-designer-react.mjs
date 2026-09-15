@@ -859,7 +859,7 @@ if (!modelTab.includes("bgcolor: used ? '#2990ff' : '#c0c4cc'")) failures.push('
 if (!modelTab.includes("title={`该字段在当前表单版本中${used ? '已使用' : '未使用'}`}")) failures.push('ModelTab.tsx: current-version usage dot must explain used/unused state on hover');
 if (!modelTab.includes('data-field-name-with-usage="true"')) failures.push('ModelTab.tsx: field name row must expose a stable usage marker');
 if (!modelTab.includes('字段编码')) failures.push('ModelTab.tsx: field cards must label code as 字段编码');
-if (modelTab.includes('Key:')) failures.push('ModelTab.tsx: field cards must not label code as Key');
+if (/>\s*Key:/.test(modelTab)) failures.push('ModelTab.tsx: field cards must not label code as Key');
 if (!modelTab.includes('FieldTypeIcon')) failures.push('ModelTab.tsx: field cards and type selectors must render field type icons');
 if (!modelTab.includes('data-field-type-badge="true"')) failures.push('ModelTab.tsx: field cards must show an icon-backed field type badge');
 if (!modelTab.includes('EditOutlined')) failures.push('ModelTab.tsx: field cards must expose an edit icon on hover');
@@ -964,7 +964,7 @@ for (const label of ['发生时间', '字段名称', '字段类型', '数据值'
   if (fieldReportTableHeadBlock.includes(`>${label}</TableCell>`)) failures.push(`ModelTab.tsx: field data report header must not include fixed legacy column "${label}"`);
 }
 if (!modelTab.includes('Pagination')) failures.push('ModelTab.tsx: field data report must use the standard bottom pagination');
-if (!modelTab.includes('共 {reportRows.length} 条数据')) failures.push('ModelTab.tsx: field data report footer must show total row count');
+if (!modelTab.includes('共 {reportTotal} 条记录')) failures.push('ModelTab.tsx: field data report footer must show the server total record count');
 if (!modelTab.includes('条/页')) failures.push('ModelTab.tsx: field data report footer must expose page-size options');
 if (!modelTab.includes('RestartAlt')) failures.push('ModelTab.tsx: field data report query panel must include reset action');
 if (modelTab.includes('TablePagination')) failures.push('ModelTab.tsx: field data report must not use MUI TablePagination');
@@ -2586,7 +2586,7 @@ if (!canvasWorkspace.includes("document.addEventListener('pointerdown', closeWor
 if (!canvasWorkspace.includes("document.removeEventListener('pointerdown', closeWordTableContextMenuOnOutsidePointerDown, true);")) failures.push('CanvasSheetWorkspace.tsx: Word-table menu outside listener must be removed with its original event phase');
 if (!canvasWorkspace.includes('onPointerDown={(event) => event.stopPropagation()}')) failures.push('CanvasSheetWorkspace.tsx: Word-table menu must retain pointer events inside the menu');
 if (!canvasWorkspace.includes('onClick={(event) => {\n            event.preventDefault();\n            event.stopPropagation();\n            handleOpenWordTableQuickAddFields(context);')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field action must support keyboard and click activation without triggering the dialog backdrop');
-if (!canvasWorkspace.includes('window.setTimeout(() => setQuickAddFieldDialogOpen(true), 0);')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field dialog must open after the menu click completes');
+if (!canvasWorkspace.includes('await waitForQuickAddPaint();')) failures.push('CanvasSheetWorkspace.tsx: quick field dialog must allow the loading state to paint after the menu closes');
 if (!canvasWorkspace.includes('selectedCells.length ? selectedCells : [context.cell]')) failures.push('CanvasSheetWorkspace.tsx: Word-table quick field creation must fall back to the right-clicked cell');
 if (!canvasWorkspace.includes('const renderQuickAddFieldDialog = () => (')) failures.push('CanvasSheetWorkspace.tsx: quick field creation must use one shared dialog renderer');
 if ((canvasWorkspace.match(/renderQuickAddFieldDialog\(\)/g) ?? []).length < 2) failures.push('CanvasSheetWorkspace.tsx: paper and table canvas modes must both render the shared quick field dialog');

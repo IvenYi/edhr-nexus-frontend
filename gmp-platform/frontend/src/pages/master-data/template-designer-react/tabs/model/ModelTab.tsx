@@ -1,4 +1,8 @@
 import TableStateCell from '@/components/TableStateCell';
+import { useQuery } from '@tanstack/react-query';
+import ContentCopyRounded from '@mui/icons-material/ContentCopyRounded';
+import { listFormInstanceRecords, type FormInstanceRecord } from '@/api/form-instance-records';
+import FormInstanceDetailDrawer from './FormInstanceDetailDrawer';
 import {
   type DragEvent,
   type MouseEvent as ReactMouseEvent,
@@ -7,6 +11,7 @@ import {
   useRef,
   useState } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Divider,
@@ -49,14 +54,7 @@ import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { fieldBusinessPurposeOptions, withFieldBusinessPurpose } from '../../utils/fieldBusinessPurpose';
 
-interface FieldReportRow {
-  id: string;
-  fieldValues: Record<string, string>;
-  createdBy: string;
-  createdAt: string;
-  updatedBy: string;
-  updatedAt: string;
-}
+type FieldReportRow = FormInstanceRecord;
 
 interface FieldReportColumn {
   key: string;
@@ -64,10 +62,15 @@ interface FieldReportColumn {
   defaultWidth: number;
   minWidth: number;
   resizable?: boolean;
-  getValue: (row: FieldReportRow) => string;
+  getValue: (row: FieldReportRow) => string | null;
 }
 
-const reportRows: FieldReportRow[] = [];
+function reportValue(value: unknown): string {
+  if (value == null) return '';
+  if (Array.isArray(value)) return value.map(reportValue).join('、');
+  if (typeof value === 'object') return Object.values(value).map(reportValue).join(' / ');
+  return String(value);
+}
 const REPORT_PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const REPORT_MAIN_COLUMN_SCOPE_KEY = 'main';
 const REPORT_FIELD_COLUMN_MIN_WIDTH = 120;
@@ -383,6 +386,10 @@ export default function ModelTab({
   const [reportColumnOrder, setReportColumnOrder] = useState<string[]>([]);
   const [draggingReportColumnKey, setDraggingReportColumnKey] = useState<string | null>(null);
   const [reportKeyword, setReportKeyword] = useState('');
+  const [reportInstanceNo, setReportInstanceNo] = useState('');
+  const [reportFilters, setReportFilters] = useState({ instanceNo: '', keyword: '', occurredAt: '', operator: '' });
+  const [reportQueryRevision, setReportQueryRevision] = useState(0);
+  const [detailRecordId, setDetailRecordId] = useState<string | null>(null);
   const [reportOccurredAt, setReportOccurredAt] = useState('');
   const [reportOperator, setReportOperator] = useState('');
   const [reportPage, setReportPage] = useState(1);
@@ -390,6 +397,14 @@ export default function ModelTab({
   const [reportTableContainerWidth, setReportTableContainerWidth] = useState(0);
 
   const document = useTemplateDesignerStore((state) => state.document);
+  const reportQuery = useQuery({
+    queryKey: ['form-instance-records', document?.meta.templateId, reportFilters, reportPage, reportRowsPerPage, reportQueryRevision],
+    queryFn: () => listFormInstanceRecords({ templateId: String(document!.meta.templateId), ...reportFilters, page: reportPage - 1, size: reportRowsPerPage }),
+    enabled: Boolean(document?.meta.templateId && /^\d+$/.test(String(document.meta.templateId))),
+    retry: false,
+  });
+  const reportRows = reportQuery.data?.content ?? [];
+  const reportTotal = reportQuery.data?.totalElements ?? 0;
   const selectedFieldId = useTemplateDesignerStore((state) => state.selectedFieldId);
   const setSelectedFieldId = useTemplateDesignerStore((state) => state.setSelectedFieldId);
   const addField = useTemplateDesignerStore((state) => state.addField);
@@ -423,20 +438,20 @@ export default function ModelTab({
           defaultWidth: 180,
           minWidth: REPORT_FIELD_COLUMN_MIN_WIDTH,
           resizable: true,
-          getValue: (row: FieldReportRow) => row.fieldValues[field.id] ?? '',
+          getValue: (row: FieldReportRow) => reportValue(row.fieldValues[field.id]),
         }));
 
-    return [...modelColumns, ...reportAuditColumns];
+    return [{ key: 'instanceNo', label: '表单实例号', defaultWidth: 220, minWidth: 200, resizable: true, getValue: (row: FieldReportRow) => row.instanceNo }, ...modelColumns, ...reportAuditColumns];
   }, [currentFields]);
   const orderedReportColumns = useMemo(() => {
     const columnMap = new Map(reportColumns.map((column) => [column.key, column]));
-    const orderedKeys = reportColumnOrder.filter((columnKey) => columnMap.has(columnKey));
+    const orderedKeys = ['instanceNo', ...reportColumnOrder.filter((columnKey) => columnKey !== 'instanceNo' && columnMap.has(columnKey))];
     const orderedKeySet = new Set(orderedKeys);
     const remainingColumns = reportColumns.filter((column) => !orderedKeySet.has(column.key));
     return [...orderedKeys.map((columnKey) => columnMap.get(columnKey) as FieldReportColumn), ...remainingColumns];
   }, [reportColumnOrder, reportColumns]);
   const visibleReportColumns = useMemo(
-    () => orderedReportColumns.filter((column) => !hiddenReportColumnKeys.includes(column.key)),
+    () => orderedReportColumns.filter((column) => column.key === 'instanceNo' || !hiddenReportColumnKeys.includes(column.key)),
     [hiddenReportColumnKeys, orderedReportColumns],
   );
   const resolvedReportColumnWidths = useMemo(
@@ -462,8 +477,11 @@ export default function ModelTab({
   }, [currentFields, keyword, statusFilter, typeFilter]);
 
   const selectedField = currentFields.find((field) => field.id === selectedFieldId) ?? filteredFields[0] ?? null;
-  const reportPageCount = Math.max(1, Math.ceil(reportRows.length / reportRowsPerPage));
-  const pagedReportRows = reportRows.slice((reportPage - 1) * reportRowsPerPage, reportPage * reportRowsPerPage);
+  const reportPageCount = Math.max(1, Math.ceil(reportTotal / reportRowsPerPage));
+  const pagedReportRows = activeSubTableDesignField ? reportRows.flatMap((row) => {
+    const values = row.fieldValues[activeSubTableDesignField.id];
+    return Array.isArray(values) ? values.map((value) => ({ ...row, fieldValues: value as Record<string, unknown> })) : [];
+  }) : reportRows;
 
   useEffect(() => {
     const availableColumnKeys = new Set(reportColumns.map((column) => column.key));
@@ -974,11 +992,12 @@ export default function ModelTab({
           sx={{ flex: '0 0 auto', bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, p: 2, maxWidth: '100%', minWidth: 0 }}
         >
           {activeSubTableDesignField ? <Box data-sub-table-design-view="true" sx={{ display: 'none' }} /> : null}
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center' }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(4, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center' }}>
+            <TextField size="small" label="表单实例号" placeholder="输入完整或部分实例号" value={reportInstanceNo} onChange={(event) => setReportInstanceNo(event.target.value)} sx={reportFieldSx} />
             <TextField
               size="small"
-              label="字段名称"
-              placeholder="请输入"
+              label="填报内容"
+              placeholder="输入填报内容关键词"
               value={reportKeyword}
               onChange={(event) => setReportKeyword(event.target.value)}
               sx={reportFieldSx}
@@ -987,7 +1006,7 @@ export default function ModelTab({
             <TextField
               size="small"
               label="发生时间"
-              placeholder="请输入"
+              placeholder="YYYY-MM-DD"
               value={reportOccurredAt}
               onChange={(event) => setReportOccurredAt(event.target.value)}
               sx={reportFieldSx}
@@ -1000,7 +1019,7 @@ export default function ModelTab({
               onChange={(event) => setReportOperator(event.target.value)}
               sx={reportFieldSx}
             />
-            <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: '1', md: '3' } }}>
+            <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: { xs: '1', md: '4' } }}>
               <Button
                 size="small"
                 sx={REPORT_QUERY_BUTTON_SX}
@@ -1008,14 +1027,21 @@ export default function ModelTab({
                 startIcon={<RestartAlt />}
                 onClick={() => {
                   setReportKeyword('');
+                  setReportInstanceNo('');
                   setReportOccurredAt('');
                   setReportOperator('');
                   setReportPage(1);
+                  setReportFilters({ instanceNo: '', keyword: '', occurredAt: '', operator: '' });
+                  setReportQueryRevision((current) => current + 1);
                 }}
               >
                 重置
               </Button>
-              <Button size="small" sx={REPORT_QUERY_BUTTON_SX} variant="contained" startIcon={<Search />} onClick={() => setReportPage(1)}>
+              <Button size="small" sx={REPORT_QUERY_BUTTON_SX} variant="contained" startIcon={<Search />} onClick={() => {
+                setReportPage(1);
+                setReportFilters({ instanceNo: reportInstanceNo.trim(), keyword: reportKeyword.trim(), occurredAt: reportOccurredAt.trim(), operator: reportOperator.trim() });
+                setReportQueryRevision((current) => current + 1);
+              }}>
                 查询
               </Button>
             </Stack>
@@ -1055,7 +1081,8 @@ export default function ModelTab({
             PaperProps={{ sx: { mt: 1, width: 220, border: '1px solid #e4e7ed', borderRadius: 1, boxShadow: '0 8px 24px rgba(0,0,0,.12)' } }}
           >
             <Stack data-field-report-column-settings-panel spacing={0.5} sx={{ p: 1.5 }}>
-              {orderedReportColumns.map((column) => {
+              <Typography variant="caption" color="text.secondary">表单实例号为固定列</Typography>
+              {orderedReportColumns.filter((column) => column.key !== 'instanceNo').map((column) => {
                 const checked = !hiddenReportColumnKeys.includes(column.key);
                 const disabled = checked && visibleReportColumns.length <= 1;
                 return (
@@ -1089,6 +1116,7 @@ export default function ModelTab({
             </Stack>
           </Popover>
 
+          {reportQuery.isError ? <Alert severity="error">填报记录加载失败，请检查访问权限或稍后重试。</Alert> : null}
           <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
             <TableContainer ref={reportTableContainerRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
               <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: reportTableWidth, minWidth: reportTableWidth, height: reportRows.length ? 'auto' : '100%' }}>
@@ -1108,6 +1136,7 @@ export default function ModelTab({
                           position: 'sticky',
                           top: 0,
                           zIndex: 5,
+                          ...(column.key === 'instanceNo' ? { left: 0, zIndex: 6, bgcolor: '#f5f7fa' } : {}),
                           userSelect: 'none',
                           ...(column.resizable ? { pr: 2 } : {}),
                         }}
@@ -1149,8 +1178,8 @@ export default function ModelTab({
                 </TableHead>
                 <TableBody sx={{ height: reportRows.length ? 'auto' : '100%' }}>
                   {pagedReportRows.length ? (
-                    pagedReportRows.map((row) => (
-                      <TableRow hover key={row.id}>
+                    pagedReportRows.map((row, rowIndex) => (
+                      <TableRow hover key={`${row.id}:${rowIndex}`}>
                         {visibleReportColumns.map((column) => (
                           <TableCell
                             key={column.key}
@@ -1158,9 +1187,16 @@ export default function ModelTab({
                               ...tableBodyCellSx,
                               width: getReportColumnWidth(column),
                               minWidth: column.minWidth,
+                              ...(column.key === 'instanceNo' ? { position: 'sticky', left: 0, zIndex: 2, bgcolor: '#fff', '& .instance-copy': { opacity: 0 }, '&:hover .instance-copy, &:focus-within .instance-copy': { opacity: 1 } } : {}),
                             }}
                           >
-                            {column.getValue(row)}
+                            {column.key === 'instanceNo' ? <Stack direction="row" alignItems="center" spacing={0.5}>
+                              <Button variant="text" size="small" onClick={() => setDetailRecordId(row.id)} sx={{ p: 0, minWidth: 0, textTransform: 'none', whiteSpace: 'nowrap' }}>{row.instanceNo}</Button>
+                              <IconButton className="instance-copy" size="small" aria-label={`复制表单实例号 ${row.instanceNo}`} onClick={async () => {
+                                try { await navigator.clipboard.writeText(row.instanceNo); showMessage('表单实例号已复制', 'success'); }
+                                catch { showMessage('复制失败，请手动复制实例号', 'error'); }
+                              }}><ContentCopyRounded sx={{ fontSize: 15 }} /></IconButton>
+                            </Stack> : (column.getValue(row) || '—')}
                           </TableCell>
                         ))}
                       </TableRow>
@@ -1168,7 +1204,7 @@ export default function ModelTab({
                   ) : (
                     <TableRow sx={emptyTableRowSx}>
                       <TableStateCell colSpan={visibleReportColumns.length} align="center" sx={emptyTableBodyCellSx}>
-                        暂无数据
+                        {reportQuery.isFetching ? '正在加载填报记录…' : reportQuery.isError ? '填报记录加载失败，请检查访问权限或稍后重试' : '暂无数据'}
                       </TableStateCell>
                     </TableRow>
                   )}
@@ -1178,7 +1214,7 @@ export default function ModelTab({
           </Box>
 
           <Box sx={{ minHeight: 56, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-            <Typography sx={{ color: '#909399' }}>共 {reportRows.length} 条数据</Typography>
+            <Typography sx={{ color: '#909399' }}>共 {reportTotal} 条记录</Typography>
             <Stack direction="row" spacing={2} alignItems="center">
               <Pagination page={reportPage} count={reportPageCount} color="primary" size="small" onChange={(_, value) => setReportPage(value)} />
               <FormControl size="small" sx={{ minWidth: 116 }}>
@@ -1265,7 +1301,7 @@ export default function ModelTab({
           ) : null}
         </DialogActions>
       </AppDialog>
-
+      <FormInstanceDetailDrawer templateId={String(document?.meta.templateId ?? '')} recordId={detailRecordId} onClose={() => setDetailRecordId(null)} />
     </Box>
   );
 }

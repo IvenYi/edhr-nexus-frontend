@@ -72,6 +72,12 @@ terms:
     aliases: [生产表单实例, FormInstance]
     status: specified
     visibility: internal
+  - id: term.form-instance-number
+    name: 表单实例号
+    definition: 由系统为一份具体填报记录生成的不可修改编号；同份记录后续保存、提交、审批和退回修改保持编号不变，新建另一份生成新编号，区别于模板编号、版本号和子表明细行号。
+    aliases: [表单记录号]
+    status: specified
+    visibility: internal
   - id: term.form-process-template
     name: 表单流程模板
     definition: 可复用的表单流程结构定义，不绑定具体表单；包含填报阶段、审批节点、结束流转、可选的主体来源规则及主体的默认字段权限。未配置填报或审批主体时，操作范围默认为当前单租户内所有已认证用户。流程模板不定义具体表单字段。

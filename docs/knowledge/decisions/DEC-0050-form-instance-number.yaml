@@ -1,0 +1,31 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0050
+    title: 表单实例号与填报记录定位
+    status: specified
+    visibility: internal
+    context: user-confirmed；用户批准表单实例号列及查询详情设计并要求实现。DEC-PACKAGE-20260915-FORM-INSTANCE-NUMBER 在现有表单实例和多份填报规则基础上补充可读身份，不替代 DEC-0046 的按需新增、独立保存和完成规则。实现、迁移、权限与运行验证进行中，保持内部已定义状态。
+    decisionStatements:
+      - id: DEC-0050-01
+        statement: 系统在首次保存一份实际填报记录时生成表单实例号，同租户跨模板唯一、不可修改且不复用；保存提交审批退回保持原号，新份新号，子表明细归属主实例。
+        status: specified
+        visibility: internal
+      - id: DEC-0050-02
+        statement: 实例号是记录列表固定首列，支持查询、复制和点击详情，不属于可编辑业务字段；详情关联实际使用的冻结模板内容、名称和版本，模板后续发布不改变历史实例身份。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.form-instance-number-user-decision, evidence.form-instance-number-source-boundary, evidence.form-instance-number-list-boundary]
+    acceptanceScenarios:
+      - id: scenario.form-instance-number
+        given: 同一模板下已保存多份独立表单记录
+        when: 查询记录并对其中一份执行保存提交审批或退回修改
+        then: 每份拥有唯一实例号且后续操作不改变编号，点击详情展示该份实际使用的冻结模板版本
+        evidenceIds: [evidence.form-instance-number-user-decision]
+        evidenceRequirements: [并发唯一及保存稳定测试, 查询和详情权限测试, API重读, 冻结版本页面验证]
+      - id: scenario.form-instance-number-legacy
+        given: 原生产执行已有表单数据但尚无可读实例号
+        when: 实施历史记录编号补充
+        then: 保留原执行数据和快照，缺少来源时不编造原创建人时间，新增基线可追溯且重复执行不重编实例号
+        evidenceIds: [evidence.form-instance-number-user-decision]
+        evidenceRequirements: [历史补充幂等测试, 数据与审计前后比对]

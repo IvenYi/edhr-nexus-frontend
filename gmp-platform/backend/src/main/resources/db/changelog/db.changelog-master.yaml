@@ -173,3 +173,5 @@ databaseChangeLog:
       file: db/changelog/0078-material-brand.sql
   - include:
       file: db/changelog/0081-material-brand-name.sql
+  - include:
+      file: db/changelog/0082-form-instance-records.sql

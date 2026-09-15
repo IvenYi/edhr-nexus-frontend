@@ -15,6 +15,7 @@ import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import {
   Box,
   Button,
+  CircularProgress,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -87,6 +88,10 @@ const WORD_TABLE_DRAG_THRESHOLD = 3;
 const WORD_TABLE_MIN_COLUMN_WIDTH = 32;
 const WORD_TABLE_MIN_ROW_HEIGHT = 20;
 const WORD_TABLE_FIELD_DRAG_PREFIX = 'template-designer-word-table-field:';
+
+const waitForQuickAddPaint = () => new Promise<void>((resolve) => {
+  window.requestAnimationFrame(() => window.requestAnimationFrame(() => resolve()));
+});
 
 interface WordTableLayoutPreview {
   blockId: string;
@@ -1328,6 +1333,7 @@ export default function CanvasSheetWorkspace() {
   const addNodeFromFieldToWordTableCell = useTemplateDesignerStore((state) => state.addNodeFromFieldToWordTableCell);
   const addNodeFromSubTableFieldToCell = useTemplateDesignerStore((state) => state.addNodeFromSubTableFieldToCell);
   const addNodeFromFieldToRange = useTemplateDesignerStore((state) => state.addNodeFromFieldToRange);
+  const createSubTableFromRange = useTemplateDesignerStore((state) => state.createSubTableFromRange);
   const setSubTableRecordTemplateFromRange = useTemplateDesignerStore((state) => state.setSubTableRecordTemplateFromRange);
   const selectSubTableGroup = useTemplateDesignerStore((state) => state.selectSubTableGroup);
   const availableSubTableFields = useTemplateDesignerStore((state) => (
@@ -1358,6 +1364,12 @@ export default function CanvasSheetWorkspace() {
   const [insertMenuCount, setInsertMenuCount] = useState('1');
   const [subTableMenuAnchorEl, setSubTableMenuAnchorEl] = useState<HTMLElement | null>(null);
   const [quickAddFieldDialogOpen, setQuickAddFieldDialogOpen] = useState(false);
+  const [quickSubTableSelection, setQuickSubTableSelection] = useState<{ pageId: string; range: CanvasSelectionRange } | null>(null);
+  const [quickSubTableName, setQuickSubTableName] = useState('');
+  const [quickSubTableError, setQuickSubTableError] = useState('');
+  const [quickAddFieldsLoading, setQuickAddFieldsLoading] = useState(false);
+  const quickAddPreparationRef = useRef(false);
+  useEffect(() => () => { quickAddPreparationRef.current = false; }, []);
   const [quickAddFieldTarget, setQuickAddFieldTarget] = useState<QuickAddFieldTarget>('main');
   const [quickAddFieldSubTableId, setQuickAddFieldSubTableId] = useState('');
   const [quickAddFieldDrafts, setQuickAddFieldDrafts] = useState<QuickAddFieldDraft[]>([]);
@@ -4259,6 +4271,38 @@ export default function CanvasSheetWorkspace() {
     setSubTableRecordTemplateFromRange(selectedSubTableNode.id, normalizedRange);
     closeContextMenu();
   };
+  const handleOpenQuickSubTable = () => {
+    if (!currentPage || !canQuickSetSubTableSelection) return;
+    setQuickSubTableName('');
+    setQuickSubTableError('');
+    setQuickSubTableSelection({ pageId: currentPage.id, range: getCellStructureActionRange() });
+    closeContextMenu();
+  };
+  const handleCreateQuickSubTable = () => {
+    if (!quickSubTableSelection) return;
+    const name = quickSubTableName.trim();
+    if (!name) {
+      setQuickSubTableError('请输入子表名称');
+      return;
+    }
+    if (designerDocument?.model.fields.some((field) => field.name.trim() === name)) {
+      setQuickSubTableError('该名称已存在，请使用其他名称');
+      return;
+    }
+    if (currentPage?.id !== quickSubTableSelection.pageId) {
+      setQuickSubTableError('当前页面已变化，请重新选择单元格');
+      return;
+    }
+    const range = quickSubTableSelection.range;
+    const field = createSubTableFromRange(name, range, getFieldDropCellLayout(range));
+    if (!field) {
+      setQuickSubTableError('所选区域无法设为子表，请重新选择');
+      return;
+    }
+    setMultiSelectedRanges([]);
+    setQuickSubTableSelection(null);
+    showMessage(`已创建子表“${field.name}”`, 'success');
+  };
   const getQuickAddFieldRanges = () => {
     const rangeMap = new Map<string, CanvasSelectionRange>();
     (normalizedMultiSelectedRanges.length ? normalizedMultiSelectedRanges : normalizedRange ? [normalizedRange] : [])
@@ -4332,52 +4376,74 @@ export default function CanvasSheetWorkspace() {
       subTableId: containingSubTable?.id ?? quickAddSubTableTargetFields[0]?.id ?? '',
     };
   };
+  const prepareQuickAddFields = async (prepare: () => void) => {
+    if (quickAddPreparationRef.current) return;
+    quickAddPreparationRef.current = true;
+    flushSync(() => {
+      closeContextMenu();
+      closeWordTableContextMenu();
+      setQuickAddFieldsLoading(true);
+    });
+    try {
+      // Give the browser a paint before both draft generation and the expensive dialog render.
+      await waitForQuickAddPaint();
+      if (!quickAddPreparationRef.current) return;
+      flushSync(prepare);
+      await waitForQuickAddPaint();
+    } catch (error) {
+      showMessage(error instanceof Error ? error.message : '准备字段失败，请重试。', 'error');
+    } finally {
+      if (quickAddPreparationRef.current) {
+        quickAddPreparationRef.current = false;
+        setQuickAddFieldsLoading(false);
+      }
+    }
+  };
   const handleOpenQuickAddFieldsDialog = () => {
     if (!currentPage) {
       closeContextMenu();
       return;
     }
 
-    const drafts = getQuickAddFieldDrafts();
-    if (!drafts.length) {
-      closeContextMenu();
-      return;
-    }
+    void prepareQuickAddFields(() => {
+      const drafts = getQuickAddFieldDrafts();
+      if (!drafts.length) return;
 
-    const defaultTarget = getDefaultQuickAddTarget(drafts);
-    setQuickAddFieldDrafts(resolveQuickAddFieldDraftNames(drafts, defaultTarget.target, defaultTarget.subTableId));
-    setQuickAddFieldTarget(defaultTarget.target);
-    setQuickAddFieldSubTableId(defaultTarget.subTableId);
-    setQuickAddFieldDialogOpen(true);
-    closeContextMenu();
+      const defaultTarget = getDefaultQuickAddTarget(drafts);
+      setQuickAddFieldDrafts(resolveQuickAddFieldDraftNames(drafts, defaultTarget.target, defaultTarget.subTableId));
+      setQuickAddFieldTarget(defaultTarget.target);
+      setQuickAddFieldSubTableId(defaultTarget.subTableId);
+      setQuickAddFieldDialogOpen(true);
+    });
   };
   const handleOpenWordTableQuickAddFields = (context: WordTableContext) => {
-    const selectedRanges = [
-      ...(wordTableCellRange?.blockId === context.table.id ? [wordTableCellRange] : []),
-      ...wordTableAdditionalCellRanges.filter((range) => range.blockId === context.table.id),
-    ];
-    const selectedCells = context.table.cells.filter((cell) => (
-      selectedRanges.some((range) => isWordTableCellInRange(cell, range))
-    ));
-    const drafts = (selectedCells.length ? selectedCells : [context.cell]).map((cell) => {
-      const sourceName = cell.text.trim().replace(/\s+/g, ' ').slice(0, 24) || `字段R${cell.row}C${cell.col}`;
-      return {
-        id: `${context.table.id}:${cell.id}`,
-        row: cell.row,
-        col: cell.col,
-        sourceName,
-        name: sourceName,
-        type: inferQuickAddFieldType(sourceName),
-        description: '',
-      };
-    });
-    if (!drafts.length) return;
+    void prepareQuickAddFields(() => {
+      const selectedRanges = [
+        ...(wordTableCellRange?.blockId === context.table.id ? [wordTableCellRange] : []),
+        ...wordTableAdditionalCellRanges.filter((range) => range.blockId === context.table.id),
+      ];
+      const selectedCells = context.table.cells.filter((cell) => (
+        selectedRanges.some((range) => isWordTableCellInRange(cell, range))
+      ));
+      const drafts = (selectedCells.length ? selectedCells : [context.cell]).map((cell) => {
+        const sourceName = cell.text.trim().replace(/\s+/g, ' ').slice(0, 24) || `字段R${cell.row}C${cell.col}`;
+        return {
+          id: `${context.table.id}:${cell.id}`,
+          row: cell.row,
+          col: cell.col,
+          sourceName,
+          name: sourceName,
+          type: inferQuickAddFieldType(sourceName),
+          description: '',
+        };
+      });
+      if (!drafts.length) return;
 
-    setQuickAddFieldDrafts(resolveQuickAddFieldDraftNames(drafts, 'main', ''));
-    setQuickAddFieldTarget('main');
-    setQuickAddFieldSubTableId('');
-    closeWordTableContextMenu();
-    window.setTimeout(() => setQuickAddFieldDialogOpen(true), 0);
+      setQuickAddFieldDrafts(resolveQuickAddFieldDraftNames(drafts, 'main', ''));
+      setQuickAddFieldTarget('main');
+      setQuickAddFieldSubTableId('');
+      setQuickAddFieldDialogOpen(true);
+    });
   };
   const closeQuickAddFieldDialog = () => {
     setQuickAddFieldDialogOpen(false);
@@ -4719,6 +4785,13 @@ export default function CanvasSheetWorkspace() {
     && isMultiCellRange(normalizedRange)
     && !isSubTableRangeSelection
     && availableSubTableFields.length,
+  );
+  const canQuickSetSubTableSelection = Boolean(
+    activeMenuAxis === 'cell'
+    && normalizedRange
+    && !isDiscontinuousCellMenuSelection
+    && isMultiCellRange(getCellStructureActionRange())
+    && !subTableHoverTargets.some(({ range }) => rangesIntersect(range, getCellStructureActionRange())),
   );
   const canGroupSubTableSelection = Boolean(
     activeMenuAxis === 'cell'
@@ -5602,6 +5675,8 @@ export default function CanvasSheetWorkspace() {
       hideCloseButton
       data-quick-add-field-dialog="true"
       open={quickAddFieldDialogOpen}
+      disableAutoFocus={quickAddFieldsLoading}
+      disableEnforceFocus={quickAddFieldsLoading}
       onClose={closeQuickAddFieldDialog}
       maxWidth="md"
       fullWidth
@@ -5760,6 +5835,94 @@ export default function CanvasSheetWorkspace() {
           确认添加
         </Button>
       </DialogActions>
+    </AppDialog>
+  );
+  const renderQuickSubTableDialog = () => (
+    <AppDialog
+      open={Boolean(quickSubTableSelection)}
+      onClose={() => setQuickSubTableSelection(null)}
+      maxWidth="xs"
+      fullWidth
+      aria-labelledby="quick-sub-table-title"
+    >
+      <Box component="form" onSubmit={(event) => { event.preventDefault(); handleCreateQuickSubTable(); }}>
+        <DialogTitle id="quick-sub-table-title">快速设为子表</DialogTitle>
+        <DialogContent>
+          <Box sx={{ color: 'text.secondary', fontSize: 13, mb: 2 }}>将所选单元格设为子表，创建后可继续添加子表字段。</Box>
+          <TextField
+            autoFocus
+            fullWidth
+            label="子表名称"
+            placeholder="例如：过程检验明细"
+            value={quickSubTableName}
+            onChange={(event) => { setQuickSubTableName(event.target.value); setQuickSubTableError(''); }}
+            error={Boolean(quickSubTableError)}
+            helperText={quickSubTableError}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setQuickSubTableSelection(null)}>取消</Button>
+          <Button type="submit" variant="contained">创建子表</Button>
+        </DialogActions>
+      </Box>
+    </AppDialog>
+  );
+  const renderQuickAddFieldsLoading = () => (
+    <AppDialog
+      hideCloseButton
+      open={quickAddFieldsLoading}
+      disableEscapeKeyDown
+      transitionDuration={0}
+      maxWidth="xs"
+      aria-labelledby="quick-add-loading-label"
+      aria-describedby="quick-add-loading-description"
+      BackdropProps={{ sx: { backgroundColor: 'rgba(15, 23, 42, 0.28)' } }}
+      PaperProps={{
+        sx: {
+          width: 400,
+          m: 2,
+          borderRadius: '16px',
+          border: '1px solid rgba(255, 255, 255, 0.8)',
+          boxShadow: '0 20px 64px rgba(15, 23, 42, 0.18)',
+        },
+      }}
+      sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
+    >
+      <DialogContent sx={{ p: 3.5 }}>
+        <Stack
+          data-quick-add-fields-loading="true"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+          direction="row"
+          spacing={2.5}
+          sx={{ alignItems: 'center' }}
+        >
+          <Box sx={{ position: 'relative', display: 'grid', placeItems: 'center', width: 64, height: 64, flexShrink: 0, borderRadius: '18px', bgcolor: '#eff6ff' }}>
+            <CircularProgress variant="determinate" value={100} size={40} thickness={4.5} aria-hidden="true" sx={{ color: '#dbeafe' }} />
+            <CircularProgress
+              disableShrink
+              size={40}
+              thickness={4.5}
+              aria-label="正在整理所选单元格"
+              sx={{
+                position: 'absolute',
+                color: '#2563eb',
+                '& .MuiCircularProgress-circle': { strokeLinecap: 'round' },
+                '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+              }}
+            />
+          </Box>
+          <Box sx={{ minWidth: 0 }}>
+            <Box id="quick-add-loading-label" sx={{ color: '#1e293b', fontSize: 17, fontWeight: 600, lineHeight: 1.5 }}>
+              正在整理所选单元格
+            </Box>
+            <Box id="quick-add-loading-description" sx={{ mt: 0.75, color: '#64748b', fontSize: 13, lineHeight: 1.7 }}>
+              完成后可统一设置字段名称与类型
+            </Box>
+          </Box>
+        </Stack>
+      </DialogContent>
     </AppDialog>
   );
 
@@ -6246,6 +6409,7 @@ export default function CanvasSheetWorkspace() {
         </Box>
         {renderWordTableContextMenu()}
         {renderQuickAddFieldDialog()}
+        {renderQuickAddFieldsLoading()}
       </Box>
     );
   }
@@ -6675,6 +6839,11 @@ export default function CanvasSheetWorkspace() {
               >
                 快速添加字段
               </MenuItem>
+              {canQuickSetSubTableSelection ? (
+                <MenuItem data-sheet-menu-action="quick-set-sub-table" onClick={handleOpenQuickSubTable}>
+                  快速设为子表
+                </MenuItem>
+              ) : null}
               {renderSetSubTableMenu()}
               {canGroupSubTableSelection ? (
                 <MenuItem
@@ -6759,7 +6928,9 @@ export default function CanvasSheetWorkspace() {
         ) : null}
       </Menu>
       {renderQuickAddFieldDialog()}
+      {renderQuickAddFieldsLoading()}
       {renderWordTableContextMenu()}
+      {renderQuickSubTableDialog()}
       <Menu
         data-sheet-sub-table-menu-root="true"
         open={Boolean(subTableMenuAnchorEl)}

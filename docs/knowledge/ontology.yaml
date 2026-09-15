@@ -72,6 +72,12 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.record-correction-void-design, evidence.production-form-process-user-confirmed-v5]
+  - id: concept.form-instance-number
+    termId: term.form-instance-number
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-instance-number-user-decision]
   - id: concept.form-process-template
     termId: term.form-process-template
     kind: business-configuration
@@ -637,6 +643,20 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.form-instance-number-identifies-instance
+    source: concept.form-instance-number
+    target: concept.form-instance
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-instance-number-user-decision]
+  - id: relation.form-instance-template-version
+    source: concept.form-instance
+    target: concept.form-template-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-instance-number-user-decision]
   - id: relation.production-line-references-workshop
     source: concept.production-line
     target: concept.workshop

@@ -86,7 +86,13 @@ class ProductionExecutionIntegrationTest {
     @MockBean com.zencas.edhr.system.repository.SystemSettingRepository settings;
     @SpyBean AuditEventRepository audits;
 
-    @BeforeEach void setup() {
+    @BeforeEach void setup() throws Exception {
+        jdbc.execute("DROP TABLE IF EXISTS form_instance_record");
+        jdbc.execute("DROP SEQUENCE IF EXISTS form_instance_number_seq");
+        var migration = new String(getClass().getResourceAsStream("/db/changelog/0082-form-instance-records.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : migration.split("--changeset codex:0082-form-instance-history")[0].split(";")) {
+            if (sql.contains("CREATE")) jdbc.execute(sql);
+        }
         for (String ddl : List.of(
             "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16))",
             "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT)",
@@ -190,6 +196,63 @@ class ProductionExecutionIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT status FROM work_order WHERE id=100", String.class)).isEqualTo("COMPLETED");
         assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).contains("导管装配").doesNotContain("新的配置名称");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='PRODUCTION_EXECUTION'", Integer.class)).isEqualTo(14);
+    }
+
+    @Test void formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        String number = jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class);
+        assertThat(number).matches("FR-\\d{8}-\\d{6,}");
+        action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 23))).andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class)).isEqualTo(number);
+        jdbc.update("UPDATE form_template SET name='修改后的模板'");
+        String readToken = tokens.generateToken("1", "operator", "操作员", 5, List.of("production.execution", "master-data.form-templates"));
+        var list = mvc.perform(get("/api/v1/form-instance-records").header("Authorization", "Bearer " + readToken).param("templateId", "5").param("instanceNo", number))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+                .andExpect(jsonPath("$.data.content[0].fieldValues.temperature").value(23)).andReturn();
+        String id = mapper.readTree(list.getResponse().getContentAsString()).path("data").path("content").get(0).path("id").asText();
+        mvc.perform(get("/api/v1/form-instance-records/" + id).param("templateId", "5").header("Authorization", "Bearer " + readToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.snapshot.name").value("装配记录"));
+        mvc.perform(get("/api/v1/form-instance-records/" + id).param("templateId", "999").header("Authorization", "Bearer " + readToken)).andExpect(status().isBadRequest());
+        mvc.perform(auth(get("/api/v1/form-instance-records").param("templateId", "5"))).andExpect(status().isForbidden());
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 23))).andExpect(status().isOk());
+        action(101, "ADD_FORM_COPY", 4, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+        action(101, "SAVE", 5, "a", Map.of("formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of("temperature", 24))).andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT count(DISTINCT instance_no) FROM form_instance_record", Integer.class)).isEqualTo(2);
+    }
+
+    @Test void concurrentFirstSavesAllocateDifferentNumbers() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(102, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            var saves = List.of(101L, 102L).stream().map(id -> pool.submit(() -> {
+                action(id, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+                return true;
+            })).toList();
+            for (var save : saves) assertThat(save.get(10, TimeUnit.SECONDS)).isTrue();
+        }
+        assertThat(jdbc.queryForObject("SELECT count(DISTINCT instance_no) FROM form_instance_record", Integer.class)).isEqualTo(2);
+    }
+
+    @Test void returnAndApprovalKeepTheOriginalFormNumber() throws Exception {
+        seedSignedWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk());
+        String number = jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class);
+        action(101, "RETURN", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "opinion", "请复核温度")).andExpect(status().isOk());
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 26))).andExpect(status().isOk());
+        action(101, "APPROVE", 4, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class)).isEqualTo(number);
+        assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record", String.class)).isEqualTo("COMPLETED");
+    }
+
+    @Test void failedAuditRollsBackFormInstanceAllocation() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        doThrow(new IllegalStateException("audit unavailable")).when(audits).save(any(AuditEvent.class));
+        try {
+            action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().is5xxServerError());
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM form_instance_record", Integer.class)).isZero();
+        } finally { reset(audits); }
     }
 
     @Test void staleRevisionAndTerminatedObjectsCannotAdvance() throws Exception {
@@ -448,6 +511,22 @@ class ProductionExecutionIntegrationTest {
         } finally { java.nio.file.Files.deleteIfExists(ready); java.nio.file.Files.deleteIfExists(sop); }
     }
 
+    @Test
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "form.records.browser", matches = "true")
+    void formRecordsBrowserFixture() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        var ready = java.nio.file.Path.of("/tmp/form-records-browser.json");
+        var done = java.nio.file.Path.of("/tmp/form-records-browser.done");
+        java.nio.file.Files.deleteIfExists(done);
+        String token = tokens.generateToken("1", "operator", "测试操作员", 30, List.of("production.execution", "master-data.form-templates"));
+        java.nio.file.Files.writeString(ready, mapper.writeValueAsString(Map.of("token", token)));
+        try {
+            long until = System.nanoTime() + TimeUnit.MINUTES.toNanos(15);
+            while (!java.nio.file.Files.exists(done) && System.nanoTime() < until) Thread.sleep(500);
+        } finally { java.nio.file.Files.deleteIfExists(ready); }
+    }
+
     private MockHttpServletRequestBuilder auth(MockHttpServletRequestBuilder request) {
         return request.header("Authorization", "Bearer " + tokens.generateToken("1", "operator", "操作员", 5, List.of("production.execution")));
     }
@@ -458,9 +537,22 @@ class ProductionExecutionIntegrationTest {
 
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
-    @Import({ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
+    @Import({FormInstanceRecordController.class, FormInstanceRecordService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
         ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class})
     static class Config {
+        @Bean
+        @org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "form.records.browser", havingValue = "true")
+        org.springframework.boot.web.servlet.FilterRegistrationBean<org.springframework.web.filter.CorsFilter> browserCors() {
+            var config = new org.springframework.web.cors.CorsConfiguration();
+            config.setAllowedOrigins(List.of("http://localhost:3000"));
+            config.setAllowedMethods(List.of("GET", "OPTIONS"));
+            config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+            var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/api/v1/form-instance-records/**", config);
+            var bean = new org.springframework.boot.web.servlet.FilterRegistrationBean<>(new org.springframework.web.filter.CorsFilter(source));
+            bean.setOrder(org.springframework.core.Ordered.HIGHEST_PRECEDENCE);
+            return bean;
+        }
         @Bean EntityManager em(EntityManagerFactory factory) { return SharedEntityManagerCreator.createSharedEntityManager(factory); }
         @Bean PersistenceManagedTypes types() { return PersistenceManagedTypes.of(ProductionObject.class.getName(), WorkOrder.class.getName(), ProductionExecution.class.getName(), AuditEvent.class.getName(), UserAccount.class.getName(), Signature.class.getName(), FileObject.class.getName()); }
         @Bean PasswordEncoder passwords() { return new BCryptPasswordEncoder(4); }

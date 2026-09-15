@@ -38,6 +38,7 @@ public class ProductionExecutionService {
     private final ExecutionAccess access;
     private final ExecutionPresenceRegistry presence;
     private final UserAccountRepository userAccounts;
+    private final FormInstanceRecordService formRecords;
 
     @Transactional(readOnly = true)
     public com.fasterxml.jackson.databind.node.ArrayNode publishedForms(String keyword) { return snapshots.publishedForms(keyword); }
@@ -166,6 +167,9 @@ public class ProductionExecutionService {
             case "SAVE", "SUBMIT", "APPROVE", "RETURN" -> engine.formAction(snapshot, state, command.operationId(), command.formId(), command.instanceId(), command.action(),
                     command.values(), command.opinion(), command.account(), command.password(), operator);
             default -> throw invalid("不支持的执行动作");
+        }
+        if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN").contains(command.action())) {
+            formRecords.saved(id, object.getTenantId(), snapshot, state, command.operationId(), command.formId(), command.instanceId());
         }
         if (created) production.startObject(id);
         if (engine.allComplete(snapshot, state)) production.completeObject(id);
