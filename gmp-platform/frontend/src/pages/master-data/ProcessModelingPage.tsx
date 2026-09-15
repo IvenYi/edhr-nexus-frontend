@@ -1,6 +1,7 @@
 import TableStateCell from '@/components/TableStateCell';
 import {
   Fragment,
+  type ChangeEvent,
   type DragEvent as ReactDragEvent,
   type MouseEvent,
   type PointerEvent as ReactPointerEvent,
@@ -97,6 +98,9 @@ import StatusBadge from '@/components/StatusBadge';
 import { getRdoVersionStatusMeta } from '@/utils/rdoVersionStatus';
 import {
   createMaterial,
+  downloadMaterialImportTemplate,
+  importMaterials,
+  type MaterialImportResult,
   createProcessDocument,
   createProcessOperationCategory,
   createProcessOperation,
@@ -420,7 +424,7 @@ const ROUTE_DESIGNER_REWORK_EDGE_STYLE = {
   strokeWidth: 2,
   strokeDasharray: '6 4',
 } as const;
-const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose', 'brand'];
+const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose', 'brandName'];
 const MATERIAL_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'description'];
 const ROUTE_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'description'];
 const ROUTE_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'code', 'effectiveDate', 'expiryDate', 'versionDescription'];
@@ -675,6 +679,7 @@ const processColumnLabels: Record<ConfigurableProcessColumnId, string> = {
 };
 
 const processAuditFieldLabels: Record<string, string> = {
+  brandName: '品牌',
   brand: '品牌',
   id: 'ID',
   code: '编码',
@@ -732,7 +737,7 @@ const PROCESS_MODELING_PAGE_CONFIGS: Record<ProcessModelingPageKey, ProcessModel
       { id: 'specification', label: '规格型号' },
       { id: 'materialTypeId', label: '物料类型', required: true },
       { id: 'unit', label: '单位' },
-      { id: 'brand', label: '品牌' },
+      { id: 'brandName', label: '品牌' },
       { id: 'version', label: '版本', required: true },
       { id: 'materialPurpose', label: '物料用途' },
       { id: 'effectiveDate', label: '生效日期' },
@@ -1901,6 +1906,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [draggingColumnId, setDraggingColumnId] = useState<ConfigurableProcessColumnId | null>(null);
   const [draggingOperationCategoryId, setDraggingOperationCategoryId] = useState<string>('');
   const columnSettingDragSourceRef = useRef<ConfigurableProcessColumnId | null>(null);
+  const materialImportFileInputRef = useRef<HTMLInputElement>(null);
+  const [materialImportResult, setMaterialImportResult] = useState<MaterialImportResult | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string | number | null>(null);
   const [selectedRouteVersionId, setSelectedRouteVersionId] = useState<string | number | null>(null);
   const [routeOperationLibraryKeyword, setRouteOperationLibraryKeyword] = useState('');
@@ -1998,7 +2005,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const displayRows = pageKey === 'materials' ? materialGroupRows : pageKey === 'routes' ? routeRecords : rows;
   const pageCount = Math.max(1, data?.totalPages ?? 1);
   const totalElements = data?.totalElements ?? 0;
-  const displayTotalElements = pageKey === 'materials' ? materialGroupRows.length : totalElements;
+  const displayTotalElements = totalElements;
   const operationCategories = operationCategoriesQuery.data ?? [];
   const operationCategoryOptions = useMemo(() => {
     const virtualCounts = new Map(operationCategories
@@ -2309,6 +2316,26 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       showSnackbar(`${config.title}保存成功`, 'success');
     },
     onError: (error) => showSnackbar(getApiErrorMessage(error, `${config.title}保存失败`), 'error'),
+  });
+
+  const materialImportMutation = useMutation({
+    mutationFn: (file: File) => importMaterials(file),
+    onSuccess: async (response) => {
+      const imported = response.data.data;
+      const result = {
+        ...imported,
+        successCount: imported.successCount ?? 0,
+        skippedCount: imported.skippedCount ?? imported.skippedRows.length,
+        failedCount: imported.failedCount ?? imported.failedRows.length,
+      };
+      setMaterialImportResult(result);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: [config.listQueryKey] }),
+        queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] }),
+      ]);
+      showSnackbar(`导入完成：成功 ${result.successCount} 条，跳过 ${result.skippedCount} 条，失败 ${result.failedCount} 条`, 'success');
+    },
+    onError: (error) => showSnackbar(getApiErrorMessage(error, '物料导入失败'), 'error'),
   });
 
   const deleteMutation = useMutation({
@@ -3182,7 +3209,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       name: getDisplayName(row) === '-' ? '' : getDisplayName(row),
       code: row.code ?? '',
       specification: row.specification ?? '',
-      brand: row.brand ?? '',
+      brandName: row.brandName ?? '',
       materialTypeId: materialTypeValue,
       materialTypeName: row.materialTypeName ?? (materialTypeMapValue(materialTypeValue) || ''),
       unit: row.unit ?? '',
@@ -3212,7 +3239,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       description: row.description ?? '',
       status: row.status ?? 'ACTIVE',
       specification: 'specification' in row ? row.specification ?? '' : '',
-      brand: 'brand' in row ? row.brand ?? '' : '',
+      brandName: 'brandName' in row ? row.brandName ?? '' : '',
       materialTypeId: materialTypeValue,
       materialTypeName: 'materialTypeName' in row ? row.materialTypeName ?? (materialTypeMapValue(materialTypeValue) || '') : (materialTypeMapValue(materialTypeValue) || ''),
       productFamilyId: 'productFamilyId' in row ? row.productFamilyId ?? '' : 'familyId' in row ? row.familyId ?? '' : '',
@@ -3371,7 +3398,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     description: input.description?.trim() || undefined,
     status: pageKey === 'materials' ? undefined : input.status || undefined,
     specification: input.specification?.trim() || undefined,
-    brand: input.brand?.trim(),
+    brandName: input.brandName?.trim(),
     unit: input.unit?.trim() || undefined,
     version: input.version?.trim() || undefined,
     versionDescription: input.versionDescription?.trim() || undefined,
@@ -3771,7 +3798,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           setForm((current) => ({ ...current, [field.id]: value }));
         }}
         type={field.type ?? 'text'}
-        inputProps={field.id === 'brand' ? { maxLength: 255 } : undefined}
+        inputProps={field.id === 'brandName' ? { maxLength: 255 } : undefined}
         size="small"
         fullWidth
         required={field.required}
@@ -3838,6 +3865,31 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         ) : getColumnDisplayValue(row, column.id)}
       </TableCell>
     );
+  };
+
+  const downloadMaterialTemplate = async () => {
+    try {
+      const response = await downloadMaterialImportTemplate();
+      const url = URL.createObjectURL(response.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = '物料导入模板.xlsx';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      showSnackbar(getApiErrorMessage(error, '下载物料导入模板失败'), 'error');
+    }
+  };
+
+  const handleMaterialImportFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.xlsx')) {
+      showSnackbar('仅支持上传 .xlsx 文件', 'error');
+      return;
+    }
+    materialImportMutation.mutate(file);
   };
 
   const renderEditAction = (row: ProcessModelingRecord, label = '编辑', materialMode?: Extract<MaterialDialogMode, 'editMaterial' | 'editVersion'>) => (
@@ -4686,7 +4738,18 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           {isReadOnlyPage(config) ? (
             <Typography variant="body2" sx={{ color: '#606266' }}>{config.derivedFrom}</Typography>
           ) : (
-            <Button size="small" variant="contained" startIcon={<Add />} onClick={openCreateDialog}>新增</Button>
+            <Stack direction="row" spacing={1} alignItems="center">
+              {pageKey === 'materials' ? (
+                <>
+                  <Button size="small" variant="outlined" onClick={() => void downloadMaterialTemplate()}>下载模板</Button>
+                  <Button size="small" variant="outlined" onClick={() => materialImportFileInputRef.current?.click()} disabled={materialImportMutation.isPending}>
+                    {materialImportMutation.isPending ? '导入中...' : '导入物料'}
+                  </Button>
+                  <input ref={materialImportFileInputRef} type="file" accept=".xlsx" hidden onChange={handleMaterialImportFileChange} />
+                </>
+              ) : null}
+              <Button size="small" variant="contained" startIcon={<Add />} onClick={openCreateDialog}>新增</Button>
+            </Stack>
           )}
         </Stack>
 
@@ -4828,7 +4891,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                         <>
                           <DetailField label="规格型号">{'specification' in selectedRow ? selectedRow.specification || '-' : '-'}</DetailField>
                           <DetailField label="物料类型">{'materialTypeName' in selectedRow ? selectedRow.materialTypeName || materialTypeMapValue(selectedRow.materialTypeId) || '-' : '-'}</DetailField>
-                          <DetailField label="品牌">{'brand' in selectedRow ? selectedRow.brand || '-' : '-'}</DetailField>
+                          <DetailField label="品牌">{'brandName' in selectedRow ? selectedRow.brandName || '-' : '-'}</DetailField>
                           <DetailField label="单位">{'unit' in selectedRow ? selectedRow.unit || '-' : '-'}</DetailField>
                           <DetailField label="版本">{'version' in selectedRow ? selectedRow.version || '-' : '-'}</DetailField>
                           <DetailField label="物料用途">{'materialPurpose' in selectedRow ? selectedRow.materialPurpose || '-' : '-'}</DetailField>
@@ -5014,6 +5077,59 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           >
             删除
           </Button>
+        </DialogActions>
+      </AppDialog>
+
+      <AppDialog open={materialImportResult !== null} onClose={() => setMaterialImportResult(null)} maxWidth="md" fullWidth>
+        <DialogTitle>物料导入结果</DialogTitle>
+        <DialogContent dividers>
+          {materialImportResult ? (
+            <Stack spacing={1.5}>
+              <Typography variant="body2" sx={{ color: '#303133' }}>
+                成功导入 {materialImportResult.successCount} 条，跳过 {materialImportResult.skippedCount} 条，失败 {materialImportResult.failedCount} 条。
+              </Typography>
+              {materialImportResult.skippedRows.length + materialImportResult.failedRows.length === 0 ? (
+                <Typography variant="body2" sx={{ color: '#909399' }}>所有数据均已成功导入。</Typography>
+              ) : (
+                <TableContainer sx={{ border: '1px solid #e4e7ed', borderRadius: 1 }}>
+                  <Table size="small" sx={{ tableLayout: 'fixed' }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={tableHeaderCellSx}>行号</TableCell>
+                        <TableCell sx={tableHeaderCellSx}>物料料号</TableCell>
+                        <TableCell sx={tableHeaderCellSx}>物料版本</TableCell>
+                        <TableCell sx={tableHeaderCellSx}>结果</TableCell>
+                        <TableCell sx={tableHeaderCellSx}>原因</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {materialImportResult.skippedRows.map((row) => (
+                        <TableRow key={`skipped-${row.rowNumber}-${row.code}-${row.version}`}>
+                          <TableCell sx={tableBodyCellSx}>{row.rowNumber}</TableCell>
+                          <TableCell sx={tableBodyCellSx}>{row.code || '-'}</TableCell>
+                          <TableCell sx={tableBodyCellSx}>{row.version || '-'}</TableCell>
+                          <TableCell sx={tableBodyCellSx}>跳过</TableCell>
+                          <TableCell sx={tableBodyCellSx}>{row.reason}</TableCell>
+                        </TableRow>
+                      ))}
+                      {materialImportResult.failedRows.map((row) => (
+                        <TableRow key={`failed-${row.rowNumber}-${row.code}-${row.version}`}>
+                          <TableCell sx={tableBodyCellSx}>{row.rowNumber}</TableCell>
+                          <TableCell sx={tableBodyCellSx}>{row.code || '-'}</TableCell>
+                          <TableCell sx={tableBodyCellSx}>{row.version || '-'}</TableCell>
+                          <TableCell sx={tableBodyCellSx}>失败</TableCell>
+                          <TableCell sx={tableBodyCellSx}>{row.reason}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </Stack>
+          ) : null}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setMaterialImportResult(null)}>关闭</Button>
         </DialogActions>
       </AppDialog>
 

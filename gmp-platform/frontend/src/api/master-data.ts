@@ -26,7 +26,7 @@ export interface ProcessModelingBaseRecord {
 
 export interface MaterialRecord extends ProcessModelingBaseRecord {
   specification?: string;
-  brand?: string | null;
+  brandName?: string | null;
   version?: string;
   materialPurpose?: string;
   effectiveDate?: string;
@@ -166,7 +166,7 @@ export interface ProcessModelingPayload {
   status?: string;
   remark?: string;
   specification?: string;
-  brand?: string;
+  brandName?: string;
   unit?: string;
   materialTypeId?: string | number | null;
   materialTypeName?: string | null;
@@ -201,6 +201,30 @@ const deleteProcessModelingRecord = (path: string, id: string | number) =>
 
 export const getMaterials = (params?: ProcessModelingQuery) => getProcessModelingList<MaterialGroupRecord>('materials', params);
 export const createMaterial = (body: ProcessModelingPayload) => createProcessModelingRecord<MaterialRecord>('materials', body);
+export interface MaterialImportRowResult {
+  rowNumber: number;
+  code: string;
+  version: string;
+  reason: string;
+}
+
+export interface MaterialImportResult {
+  successCount: number;
+  skippedCount: number;
+  failedCount: number;
+  skippedRows: MaterialImportRowResult[];
+  failedRows: MaterialImportRowResult[];
+}
+
+export const downloadMaterialImportTemplate = () =>
+  client.get(`${processModelingBase}/materials/import-template`, { responseType: 'blob' });
+export const importMaterials = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return client.post(`${processModelingBase}/materials/import`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }) as Promise<{ data: { data: MaterialImportResult } }>;
+};
 export const updateMaterial = (id: string | number, body: ProcessModelingPayload) => updateProcessModelingRecord<MaterialRecord>('materials', id, body);
 export const deleteMaterial = (id: string | number) => deleteProcessModelingRecord('materials', id);
 

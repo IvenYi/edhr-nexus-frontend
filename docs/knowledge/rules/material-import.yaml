@@ -1,0 +1,20 @@
+knowledgeModelVersion: 0.3.18
+rules:
+  - id: rule.material-import.row-outcomes
+    name: 物料导入逐行结果
+    status: implemented
+    visibility: internal
+    trigger: material.import
+    scope: material-master-data
+    condition:
+      fact: fact.material-import.workbook-accepted
+      operator: equals
+      value: true
+    result:
+      type: allow-with-governance
+      action: material.import
+      validRows: persist-new-materials
+      duplicateRows: skip-code-and-version
+      invalidRows: return-row-number-and-reason
+    explanation: 使用标准 xlsx 模板且不超过 1000 数据行后，逐行校验并保存合法新物料；料号和版本重复的合法行跳过，无效行返回行号及原因，汇总成功、跳过和失败结果。物料类型仍必填、品牌仍选填。输入校验的部分成功不承诺数据库或审计异常下部分提交，事务异常沿用整体回滚边界。
+    evidenceIds: [evidence.material-import-confirmed, evidence.material-import-service, evidence.material-import-controller, evidence.material-import-tests]

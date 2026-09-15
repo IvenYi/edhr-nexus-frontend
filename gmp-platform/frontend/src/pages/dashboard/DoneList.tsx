@@ -4,6 +4,7 @@ import {
   TableContainer, TableHead, TableRow,
 } from '@mui/material';
 import client from '@/api/client';
+import { useAuthStore } from '@/stores/authStore';
 import { TASK_STATUS_MAP } from '@/utils/constants';
 import StatusBadge from '@/components/StatusBadge';
 
@@ -17,15 +18,17 @@ interface DoneTask {
 }
 
 export default function DoneList() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['tasks', 'done'],
+  const assigneeId = useAuthStore((state) => state.user?.id);
+  const { data, isLoading, isError } = useQuery<DoneTask[]>({
+    queryKey: ['tasks', 'done', assigneeId],
+    enabled: !!assigneeId,
     queryFn: async () => {
       const res = await client.get('/workflow/tasks/done', { params: { page: 1, size: 5 } });
       return res.data.data;
     },
   });
 
-  const tasks: DoneTask[] = data?.content || [];
+  const tasks = data || [];
 
   return (
     <Card>
@@ -33,6 +36,8 @@ export default function DoneList() {
         <Typography variant="h6" sx={{ mb: 2 }}>我的已办</Typography>
         {isLoading ? (
           <Typography color="text.secondary">加载中...</Typography>
+        ) : isError ? (
+          <Typography color="error">已办加载失败，请刷新重试</Typography>
         ) : tasks.length === 0 ? (
           <Typography color="text.secondary">暂无已办记录</Typography>
         ) : (

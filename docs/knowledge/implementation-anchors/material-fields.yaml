@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.18
+implementationAnchors:
+  - id: anchor.material.required-type
+    targetId: rule.material.required-type
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+    apiReferences: []
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.material-fields-controller, evidence.material-fields-page, evidence.material-fields-controller-tests]
+    sourceRevision: working-tree
+    sourceLocator: resolveMaterialTypeId
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: anchor.material.optional-brand
+    targetId: rule.material.optional-brand
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.material-fields-controller, evidence.material-fields-brand-migration, evidence.material-fields-page, evidence.material-fields-controller-tests]
+    sourceRevision: working-tree
+    sourceLocator: resolveMaterialBrandName / materialSnapshot
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

@@ -21,6 +21,7 @@ import { getComponentDefinition } from '../registry/componentRegistry';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { createDefaultSubTableRegion, inferFixedRepeatCount, rebuildSubTableRecordTemplate } from '../utils/subTableRegion';
 import { encodeWordTableFieldMarker, removeWordTableFieldMarker } from '../utils/wordTableInlineContent';
+import { applySheetCells, captureSheetCells, getSheetFillRange, type SheetCellSnapshot } from '../utils/sheetCellTransfer';
 
 type MoveDirection = 'up' | 'down';
 
@@ -1843,6 +1844,8 @@ export interface TemplateDesignerStore {
   updateSelectedCellValue: (value: string) => void;
   clearSelectedCells: () => void;
   copySelectedCellsText: () => string;
+  pasteSheetCells: (snapshot: SheetCellSnapshot, startRow: number, startCol: number) => void;
+  fillSheetCellStyles: (source: CanvasSelectionRange, bottom: number) => void;
   pasteCellsFromText: (startRow: number, startCol: number, text: string) => void;
   cutSelectedFieldNode: () => CanvasNode | null;
   pasteFieldNodeToCell: (node: CanvasNode, layout: FieldCellLayout) => void;
@@ -3022,6 +3025,29 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
 
     return serializePageCellsInRange(currentPage, selectedRange);
   },
+  pasteSheetCells: (snapshot, startRow, startCol) => set((state) => {
+    if (!state.document) return {};
+    const range = { t: startRow, l: startCol, b: startRow + snapshot.rows - 1, r: startCol + snapshot.columns - 1 };
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (page) => applySheetCells(page, snapshot, range)),
+      selectedRange: range,
+      selectedCell: { row: range.t, col: range.l },
+      selectedNodeId: null,
+    });
+  }),
+  fillSheetCellStyles: (source, bottom) => set((state) => {
+    const page = state.document?.canvas.pages.find((candidate) => candidate.id === state.document?.canvas.currentPageId);
+    if (!state.document || !page) return {};
+    const range = getSheetFillRange(source, bottom, page.sheet.rowCount);
+    if (!range) return {};
+    const snapshot = captureSheetCells(page, source);
+    return pushDocumentHistory(state, {
+      document: updateCanvasPage(state.document, (current) => applySheetCells(current, snapshot, range, true)),
+      selectedRange: { ...source, b: range.b },
+      selectedCell: { row: source.t, col: source.l },
+      selectedNodeId: null,
+    });
+  }),
   pasteCellsFromText: (startRow, startCol, text) => set((state) => {
     if (!state.document || text.length === 0) {
       return { document: state.document };

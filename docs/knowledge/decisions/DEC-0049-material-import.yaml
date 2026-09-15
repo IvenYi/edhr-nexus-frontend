@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0049
+    title: 物料模板与逐行导入及品牌字段统一命名
+    status: implemented
+    visibility: internal
+    context: 用户批准 F04a、F04b 和品牌 brandName 命名。复用物料概念与 DEC-0048 的类型必填、品牌选填语义，不产生第二个品牌概念，不改变生产、库存、BOM 规则或历史快照。来源代码是导入行为证据；请求别名兼容、历史列更名与基础信息冲突保护记录为实现选择，不能扩展成额外业务规则。O01 和 O02 是现有查询契约的呈现修复，不另建业务规则。源码已落地，尚无发布级验证或已验证执行契约，保持 implemented/internal。
+    decisionStatements:
+      - id: DEC-0049-01
+        statement: 物料支持标准 xlsx 模板和最多 1000 数据行的导入，合法新物料保存、重复料号和版本跳过、无效行给出行号与原因并汇总结果。
+        status: implemented
+        visibility: internal
+      - id: DEC-0049-02
+        statement: 品牌字段统一命名为 brandName，仍为选填；物料类型必填规则同样适用于导入。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.material-import-confirmed, evidence.material-import-service, evidence.material-import-controller, evidence.material-import-tests, evidence.material-import-brand-rename]
+    acceptanceScenarios:
+      - id: scenario.material-import.mixed-rows
+        given: 标准工作簿包含合法新物料、重复料号和版本及缺少类型的行
+        when: 用户执行导入
+        then: 保存合法新物料并审计，跳过重复合法行，对无效行返回行号与原因，三类计数准确且品牌留空不单独导致失败
+        evidenceIds: [evidence.material-import-service, evidence.material-import-controller, evidence.material-import-tests]
+        evidenceRequirements: [聚焦导入和结果序列化测试, 隔离接口和持久化检查, 导入成功审计检查]
+      - id: scenario.material-import.brand-name-compatibility
+        given: 历史物料品牌含有值和空值
+        when: 品牌列更名后读取物料
+        then: brandName 对应原有品牌值和空值，不新增另一份品牌数据，不重写历史快照
+        evidenceIds: [evidence.material-import-confirmed, evidence.material-import-brand-rename, evidence.material-import-controller]
+        evidenceRequirements: [品牌迁移保留值测试, 新旧请求字段和响应契约验证]
+    implementationDiscrepancies: []

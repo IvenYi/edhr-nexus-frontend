@@ -1,4 +1,4 @@
-import type { DragEvent as ReactDragEvent, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
+import type { ClipboardEvent as ReactClipboardEvent, DragEvent as ReactDragEvent, FocusEvent as ReactFocusEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from 'react';
 import {
   memo,
   useCallback,
@@ -61,6 +61,7 @@ import {
 } from '../../utils/wordTableInlineContent';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { useWordTableCellStyle } from './WordTableCellStyleContext';
+import { captureSheetCells, getSheetFillRange, type SheetCellSnapshot } from '../../utils/sheetCellTransfer';
 
 const columnLabels = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
 const scrollbarWidth = 18;
@@ -1315,6 +1316,8 @@ export default function CanvasSheetWorkspace() {
   const clearSelectedCells = useTemplateDesignerStore((state) => state.clearSelectedCells);
   const copySelectedCellsText = useTemplateDesignerStore((state) => state.copySelectedCellsText);
   const pasteCellsFromText = useTemplateDesignerStore((state) => state.pasteCellsFromText);
+  const pasteSheetCells = useTemplateDesignerStore((state) => state.pasteSheetCells);
+  const fillSheetCellStyles = useTemplateDesignerStore((state) => state.fillSheetCellStyles);
   const cutSelectedFieldNode = useTemplateDesignerStore((state) => state.cutSelectedFieldNode);
   const pasteFieldNodeToCell = useTemplateDesignerStore((state) => state.pasteFieldNodeToCell);
   const mergeSelectedCells = useTemplateDesignerStore((state) => state.mergeSelectedCells);
@@ -1344,6 +1347,7 @@ export default function CanvasSheetWorkspace() {
   const clearPagePreviewScrollTarget = useTemplateDesignerStore((state) => state.clearPagePreviewScrollTarget);
 
   const [dragState, setDragState] = useState<DragState>(null);
+  const [fillPreview, setFillPreview] = useState<CanvasSelectionRange | null>(null);
   const [multiSelectedRanges, setMultiSelectedRanges] = useState<CanvasSelectionRange[]>([]);
   const [menuState, setMenuState] = useState<SheetMenuState | null>(null);
   const [paperSettingsOpen, setPaperSettingsOpen] = useState(false);
@@ -1393,6 +1397,8 @@ export default function CanvasSheetWorkspace() {
   const pendingHoveredSubTableRangeRef = useRef<CanvasSelectionRange | null>(null);
   const sheetInteractionRef = useRef<HTMLDivElement | null>(null);
   const fieldNodeClipboardRef = useRef<CanvasNode | null>(null);
+  const sheetClipboardRef = useRef<{ id: string; snapshot: SheetCellSnapshot } | null>(null);
+  const fillCleanupRef = useRef<(() => void) | null>(null);
   const skipNextBlurCommitRef = useRef(false);
   const [freeCanvasMeasuredHeight, setFreeCanvasMeasuredHeight] = useState(480);
   const quickAddMainTargetName = designerDocument?.meta.templateName?.trim() || '当前模板';
@@ -1610,6 +1616,36 @@ export default function CanvasSheetWorkspace() {
             pointerEvents: 'none',
             boxSizing: 'border-box',
             zIndex: layer === 'overlay' ? 20 : undefined,
+          }}
+        />
+      ) : null}
+      {layer === 'overlay' && selectionOutline && !editingCell && !isFreeCanvas && normalizedMultiSelectedRanges.length === 1 ? (
+        <Box
+          data-sheet-fill-handle="true"
+          title="向下拖拽应用样式和合并结构（保留目标内容）"
+          aria-label="向下拖拽应用单元格样式"
+          onPointerDown={startStyleFillDrag}
+          onMouseDown={(event) => event.stopPropagation()}
+          sx={{
+            position: 'absolute',
+            top: gridOffsetTop + selectionOutline.top + selectionOutline.height - 6,
+            left: selectionOutline.left + selectionOutline.width - 6,
+            width: 12, height: 12, zIndex: SUB_TABLE_OVERLAY_Z_INDEX + 1,
+            cursor: 'crosshair', touchAction: 'none',
+            '&::after': { content: '""', position: 'absolute', inset: 2, bgcolor: '#1274dd', border: '1px solid #fff' },
+          }}
+        />
+      ) : null}
+      {layer === 'overlay' && fillPreview ? (
+        <Box
+          data-sheet-fill-preview="true"
+          sx={{
+            position: 'absolute', top: gridOffsetTop + rowOffsets[fillPreview.t - 1],
+            left: columnOffsets[fillPreview.l - 1],
+            width: columnOffsets[fillPreview.r] - columnOffsets[fillPreview.l - 1],
+            height: rowOffsets[fillPreview.b] - rowOffsets[fillPreview.t - 1],
+            border: '2px dashed #1274dd', bgcolor: 'rgba(18, 116, 221, 0.08)',
+            boxSizing: 'border-box', pointerEvents: 'none', zIndex: SUB_TABLE_OVERLAY_Z_INDEX,
           }}
         />
       ) : null}
@@ -2592,18 +2628,29 @@ export default function CanvasSheetWorkspace() {
     setEditingCell(null);
     sheetInteractionRef.current?.focus();
   };
-  const handleCopySelectedCells = async () => {
-    if (!selectedCell && !selectedRange) return;
-    const text = copySelectedCellsText();
-    if (!navigator.clipboard) return;
-    await navigator.clipboard.writeText(text);
+  const handleCopySelectedCells = (event: ReactClipboardEvent<HTMLDivElement>) => {
+    if (!currentPage || !normalizedRange || editingCell || (event.target as HTMLElement).closest('input, textarea, [contenteditable="true"]')) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      const snapshot = captureSheetCells(currentPage, normalizedRange);
+      const text = copySelectedCellsText();
+      const id = crypto.randomUUID();
+      const html = document.createElement('span');
+      html.setAttribute('data-zencas-sheet-copy', id);
+      html.textContent = text;
+      event.clipboardData.setData('text/plain', text);
+      event.clipboardData.setData('text/html', html.outerHTML);
+      sheetClipboardRef.current = { id, snapshot };
+      fieldNodeClipboardRef.current = null;
+      return true;
+    } catch (error) {
+      showMessage(error instanceof Error ? error.message : '复制失败，请重试。', 'error');
+      return false;
+    }
   };
-  const handleCutSelectedCells = async () => {
-    if (!selectedCell && !selectedRange) return;
-    const text = copySelectedCellsText();
-    if (!navigator.clipboard) return;
-    await navigator.clipboard.writeText(text);
-    clearSelectedCells();
+  const handleCutSelectedCells = (event: ReactClipboardEvent<HTMLDivElement>) => {
+    if (handleCopySelectedCells(event)) clearSelectedCells();
   };
   const handleCutSelectedFieldNode = () => {
     const clippedNode = cutSelectedFieldNode();
@@ -2632,11 +2679,22 @@ export default function CanvasSheetWorkspace() {
     fieldNodeClipboardRef.current = null;
     return true;
   };
-  const handlePasteSelectedCells = async () => {
+  const handlePasteSelectedCells = (event: ReactClipboardEvent<HTMLDivElement>) => {
     const target = selectedRange ?? buildSingleCellRange(selectedCell);
-    if (!target || !navigator.clipboard) return;
-    const text = await navigator.clipboard.readText();
-    pasteCellsFromText(target.t, target.l, text);
+    if (!target || editingCell || (event.target as HTMLElement).closest('input, textarea, [contenteditable="true"]')) return;
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      const html = event.clipboardData.getData('text/html');
+      const copiedId = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-zencas-sheet-copy]')?.getAttribute('data-zencas-sheet-copy');
+      if (sheetClipboardRef.current && copiedId === sheetClipboardRef.current.id) {
+        pasteSheetCells(sheetClipboardRef.current.snapshot, target.t, target.l);
+        return;
+      }
+      pasteCellsFromText(target.t, target.l, event.clipboardData.getData('text/plain'));
+    } catch (error) {
+      showMessage(error instanceof Error ? error.message : '粘贴失败，请重试。', 'error');
+    }
   };
   const getGridOffsetCellLayout = (range: CanvasSelectionRange) => {
     const normalizedSelection = normalizeRange(range);
@@ -3046,6 +3104,85 @@ export default function CanvasSheetWorkspace() {
     return getMergedAwareCellRange(row, col, mergedRange);
   };
 
+  function startStyleFillDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.button !== 0 || !normalizedRange || !currentPage) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const source = { ...normalizedRange };
+    const page = currentPage;
+    const ownerDocument = event.currentTarget.ownerDocument;
+    const viewport = workspaceScrollRef.current;
+    const pointerId = event.pointerId;
+    let clientY = event.clientY;
+    let preview: CanvasSelectionRange | null = null;
+    let frame = 0;
+    const previousCursor = ownerDocument.body.style.cursor;
+    fillCleanupRef.current?.();
+    ownerDocument.body.style.cursor = 'crosshair';
+    const updatePreview = () => {
+      const paper = viewport?.querySelector<HTMLElement>('[data-sheet-paper="true"]');
+      if (!paper) return;
+      const y = clientY - paper.getBoundingClientRect().top - paperInsetTop - paperHeaderHeight - gridOffsetTop;
+      const row = findIndexByOffset(rowOffsets, Math.max(0, Math.min(y, sheetHeight - 1)));
+      const next = getSheetFillRange(source, row ?? source.b, page.sheet.rowCount);
+      if (next?.b !== preview?.b) {
+        preview = next;
+        setFillPreview(next);
+      }
+    };
+    const finish = (commit: boolean) => {
+      window.cancelAnimationFrame(frame);
+      ownerDocument.removeEventListener('pointermove', move, true);
+      ownerDocument.removeEventListener('pointerup', up, true);
+      ownerDocument.removeEventListener('pointercancel', cancel, true);
+      ownerDocument.removeEventListener('keydown', keydown, true);
+      window.removeEventListener('blur', cancel);
+      ownerDocument.body.style.cursor = previousCursor;
+      fillCleanupRef.current = null;
+      setFillPreview(null);
+      if (commit && preview) {
+        try {
+          fillSheetCellStyles(source, preview.b);
+        } catch (error) {
+          showMessage(error instanceof Error ? error.message : '应用样式失败。', 'error');
+        }
+      }
+    };
+    const move = (pointer: PointerEvent) => {
+      if (pointer.pointerId !== pointerId) return;
+      pointer.preventDefault();
+      clientY = pointer.clientY;
+      updatePreview();
+    };
+    const up = (pointer: PointerEvent) => {
+      if (pointer.pointerId !== pointerId) return;
+      clientY = pointer.clientY;
+      updatePreview();
+      finish(true);
+    };
+    const cancel = () => finish(false);
+    const keydown = (key: KeyboardEvent) => {
+      if (key.key === 'Escape') { key.preventDefault(); key.stopPropagation(); cancel(); }
+    };
+    const scroll = () => {
+      if (viewport) {
+        const bounds = viewport.getBoundingClientRect();
+        const delta = clientY > bounds.bottom - 32 ? 12 : clientY < bounds.top + 32 ? -12 : 0;
+        if (delta) { viewport.scrollTop += delta; updatePreview(); }
+      }
+      frame = window.requestAnimationFrame(scroll);
+    };
+    ownerDocument.addEventListener('pointermove', move, true);
+    ownerDocument.addEventListener('pointerup', up, true);
+    ownerDocument.addEventListener('pointercancel', cancel, true);
+    ownerDocument.addEventListener('keydown', keydown, true);
+    window.addEventListener('blur', cancel);
+    fillCleanupRef.current = cancel;
+    frame = window.requestAnimationFrame(scroll);
+  }
+
+  useEffect(() => () => { fillCleanupRef.current?.(); }, [currentPage?.id]);
+
   const applyCellRangeDrag = (cellSelectionRange: CanvasSelectionRange, state: CellDragState) => {
     setSelectedRange(
       {
@@ -3316,35 +3453,32 @@ export default function CanvasSheetWorkspace() {
     setMultiSelectedRanges([]);
   }, [currentPage?.id]);
   const handleSheetKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.defaultPrevented) return;
     if (currentPage?.sheet.canvasMode !== 'sheet' || editingCell) {
       return;
     }
     if ((event.metaKey || event.ctrlKey) && !event.altKey) {
       if (event.key.toLowerCase() === 'c') {
-        event.preventDefault();
-        void handleCopySelectedCells();
         return;
       }
       if (event.key.toLowerCase() === 'x') {
-        event.preventDefault();
         if (selectedNodeId) {
+          event.preventDefault();
           if (handleCutSelectedFieldNode()) {
             return;
           }
           return;
         }
-        void handleCutSelectedCells();
         return;
       }
       if (event.key.toLowerCase() === 'v') {
-        event.preventDefault();
         if (fieldNodeClipboardRef.current) {
+          event.preventDefault();
           if (handlePasteSelectedFieldNode()) {
             return;
           }
           return;
         }
-        void handlePasteSelectedCells();
         return;
       }
     }
@@ -3868,6 +4002,10 @@ export default function CanvasSheetWorkspace() {
     };
 
     const handleMouseMove = (event: MouseEvent) => {
+      if ((event.buttons & 1) === 0) {
+        handleMouseUp();
+        return;
+      }
       if (dragState.type === 'cell') {
         const cellSelectionRange = findCellRangeAtClientPoint(event.clientX, event.clientY);
         if (cellSelectionRange) {
@@ -3886,14 +4024,16 @@ export default function CanvasSheetWorkspace() {
       }
     };
 
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mouseup', handleMouseUp, true);
+    window.addEventListener('blur', handleMouseUp);
 
     if (dragState.type === 'cell' || dragState.type === 'resize-column' || dragState.type === 'resize-row') {
       window.addEventListener('mousemove', handleMouseMove);
     }
 
     return () => {
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', handleMouseUp, true);
+      window.removeEventListener('blur', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, [dragState, currentPage, setSelectedRange, setSheetColumnWidth, setSheetRowHeight]);
@@ -4678,9 +4818,9 @@ export default function CanvasSheetWorkspace() {
               event.stopPropagation();
               handleSheetKeyDown(event);
             }}
-            onMouseEnter={() => {
+            onMouseEnter={(event) => {
               scheduleHoveredSubTableUpdate(cellSelectionRange);
-              if (dragState?.type !== 'cell') return;
+              if (dragState?.type !== 'cell' || (event.buttons & 1) === 0) return;
               extendCellRangeDrag(cellSelectionRange, dragState);
             }}
             sx={{
@@ -6119,6 +6259,9 @@ export default function CanvasSheetWorkspace() {
       {canvasSettingsFloating}
       <Box
         ref={sheetInteractionRef}
+        onCopy={handleCopySelectedCells}
+        onCut={handleCutSelectedCells}
+        onPaste={handlePasteSelectedCells}
         tabIndex={0}
         onKeyDown={handleSheetKeyDown}
         sx={{
@@ -6212,8 +6355,8 @@ export default function CanvasSheetWorkspace() {
                             onMouseDown={(event) => {
                               handleColumnHeaderMouseDown(col, event);
                             }}
-                            onMouseEnter={() => {
-                              if (dragState?.type !== 'column') return;
+                            onMouseEnter={(event) => {
+                              if (dragState?.type !== 'column' || (event.buttons & 1) === 0) return;
                               selectColumnRange(dragState.startCol, col);
                             }}
                             onContextMenu={(event) => {
@@ -6297,8 +6440,8 @@ export default function CanvasSheetWorkspace() {
                       onMouseDown={(event) => {
                         handleRowHeaderMouseDown(row, event);
                       }}
-                      onMouseEnter={() => {
-                        if (dragState?.type !== 'row') return;
+                      onMouseEnter={(event) => {
+                        if (dragState?.type !== 'row' || (event.buttons & 1) === 0) return;
                         selectRowRange(dragState.startRow, row);
                       }}
                       onContextMenu={(event) => {

@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.18
+facts:
+  - id: fact.material-import.workbook-accepted
+    name: 物料导入工作簿通过入口校验
+    conceptId: concept.material
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/MaterialImportService.java
+    aliases: [materialImport.workbookAccepted]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.material-import-service]
+    sourceRevision: working-tree
+    sourceLocator: importWorkbook / validateFile / validateHeaders / MAX_IMPORT_ROWS；由入口校验全部通过推导，不是新增持久化字段
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

@@ -1,0 +1,34 @@
+knowledgeModelVersion: 0.3.18
+facts:
+  - id: fact.material.material-type-id
+    name: 物料类型关联
+    conceptId: concept.material
+    valueType: integer
+    sourceType: configuration
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    aliases: [material.materialTypeId]
+    availability: configuration
+    allowedOperators: [is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.material-fields-controller]
+    sourceRevision: working-tree
+    sourceLocator: resolveMaterialTypeId / Material.materialTypeId
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.material.brand
+    name: 物料品牌
+    conceptId: concept.material
+    valueType: string
+    sourceType: configuration
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    aliases: [material.brand, material.brandName]
+    availability: configuration
+    allowedOperators: [is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.material-fields-controller, evidence.material-fields-brand-migration]
+    sourceRevision: working-tree
+    sourceLocator: resolveMaterialBrandName / Material.brandName
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

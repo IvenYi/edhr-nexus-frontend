@@ -1308,8 +1308,8 @@ if (!canvasWorkspace.includes('handleCutSelectedFieldNode')) failures.push('Canv
 if (!canvasWorkspace.includes('handlePasteSelectedFieldNode')) failures.push('CanvasSheetWorkspace.tsx: Ctrl/Cmd+V must paste an internal field-node clipboard before falling back to cell text');
 if (!canvasWorkspace.includes('if (handleCutSelectedFieldNode())')) failures.push('CanvasSheetWorkspace.tsx: field cut must take priority over selected-cell cut');
 if (!canvasWorkspace.includes('if (handlePasteSelectedFieldNode())')) failures.push('CanvasSheetWorkspace.tsx: field paste must take priority over selected-cell paste');
-if (!canvasWorkspace.includes('navigator.clipboard.writeText')) failures.push('CanvasSheetWorkspace.tsx: copy/cut must write selected cells to the system clipboard');
-if (!canvasWorkspace.includes('navigator.clipboard.readText')) failures.push('CanvasSheetWorkspace.tsx: paste must read selected cells from the system clipboard');
+if (!canvasWorkspace.includes("event.clipboardData.setData('text/html'")) failures.push('CanvasSheetWorkspace.tsx: copy/cut must write rich selected cells to the system clipboard');
+if (!canvasWorkspace.includes("event.clipboardData.getData('text/html'")) failures.push('CanvasSheetWorkspace.tsx: paste must read rich selected cells from the system clipboard');
 if (!canvasWorkspace.includes("event.key.toLowerCase() === 'c'")) failures.push('CanvasSheetWorkspace.tsx: Ctrl/Cmd+C must be handled from the sheet keyboard target');
 if (!canvasWorkspace.includes("event.key.toLowerCase() === 'x'")) failures.push('CanvasSheetWorkspace.tsx: Ctrl/Cmd+X must be handled from the sheet keyboard target');
 if (!canvasWorkspace.includes("event.key.toLowerCase() === 'v'")) failures.push('CanvasSheetWorkspace.tsx: Ctrl/Cmd+V must be handled from the sheet keyboard target');
@@ -1954,6 +1954,12 @@ if (!canvasWorkspace.includes('startCellRangeDrag')) failures.push('CanvasSheetW
 if (!canvasWorkspace.includes('handleCellFieldMouseDown')) failures.push('CanvasSheetWorkspace.tsx: component-hosting cells must start range selection from component mouse-down');
 if (!canvasWorkspace.includes('handleCellFieldContextMenu')) failures.push('CanvasSheetWorkspace.tsx: component-hosting cells must open the cell context menu from component right-click');
 if (!canvasWorkspace.includes("dragState.type === 'cell'")) failures.push('CanvasSheetWorkspace.tsx: cell drag state must update range during global mousemove');
+if (!canvasWorkspace.includes("window.addEventListener('mouseup', handleMouseUp, true)")) failures.push('CanvasSheetWorkspace.tsx: capture mouseup before field components stop propagation');
+if (!canvasWorkspace.includes("window.removeEventListener('mouseup', handleMouseUp, true)")) failures.push('CanvasSheetWorkspace.tsx: remove the capturing mouseup listener on cleanup');
+if (!canvasWorkspace.includes("window.addEventListener('blur', handleMouseUp)")) failures.push('CanvasSheetWorkspace.tsx: window blur must end sheet dragging');
+for (const dragType of ['cell', 'column', 'row']) {
+  if (!canvasWorkspace.includes(`dragState?.type !== '${dragType}' || (event.buttons & 1) === 0`)) failures.push(`CanvasSheetWorkspace.tsx: ${dragType} hover must require a held primary mouse button`);
+}
 if (!renderer.includes('DeleteOutline')) failures.push('CanvasNodeRenderer.tsx: missing node delete action');
 if (!componentRegistry.includes('propSchema')) failures.push('componentRegistry.tsx: missing propSchema support');
 if (!componentRegistry.includes('styleSchema')) failures.push('componentRegistry.tsx: missing styleSchema support');

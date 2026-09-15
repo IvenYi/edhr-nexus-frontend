@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.18
+evidence:
+  - id: evidence.material-import-confirmed
+    type: document
+    path: docs/knowledge/evidence/material-import-confirmed.md
+    description: user-confirmed 与 original-evidence 分开记录用户移植授权、来源导入语义和目标已有必填类型及选填品牌约束；兼容与一致性处理标明为实现解释。
+    visibility: internal
+  - id: evidence.material-import-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/MaterialImportService.java
+    description: original-evidence；模板从物料类型字典生成选项，工作簿限制、逐行校验、重复跳过与合法行保存的原始实现；不等同于运行验收。
+    visibility: internal
+  - id: evidence.material-import-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    description: original-evidence；下载模板与 multipart 导入入口，导入物料逐条 CREATE 审计与保存共用事务，品牌响应与新审计使用 brandName。
+    visibility: internal
+  - id: evidence.material-import-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/MaterialImportServiceTest.java
+    description: original-evidence；模板、部分成功、去重、类型必填、品牌选填及日期等聚焦回归入口；测试源存在不表示运行通过。
+    visibility: internal
+  - id: evidence.material-import-brand-rename
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0081-material-brand-name.sql
+    description: original-evidence；追加品牌列重命名迁移，不修改已执行的 0078 迁移，历史值和空值保留须结合迁移验证。
+    visibility: internal

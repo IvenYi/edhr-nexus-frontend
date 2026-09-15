@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.18
+implementationAnchors:
+  - id: anchor.material-import.row-outcomes
+    targetId: rule.material-import.row-outcomes
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/MaterialImportService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/MaterialImportResult.java]
+    apiReferences: [gmp-platform/frontend/src/api/master-data.ts]
+    databaseReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java]
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/MaterialImportServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/dto/MaterialImportResultTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.material-import-service, evidence.material-import-controller, evidence.material-import-tests]
+    sourceRevision: working-tree
+    sourceLocator: createTemplate / importWorkbook / parseRow / MaterialImportResult；ProcessModelingController.importMaterials
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

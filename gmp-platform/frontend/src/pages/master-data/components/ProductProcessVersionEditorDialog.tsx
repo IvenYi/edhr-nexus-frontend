@@ -24,7 +24,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Add, ArrowDownward, ArrowUpward, ChevronRight, Close, DeleteOutline, ExpandMore, FolderOutlined, Search, VisibilityOutlined } from '@mui/icons-material';
+import { Add, ArrowDownward, ArrowDropDown, ArrowUpward, ChevronRight, Close, DeleteOutline, ExpandMore, FolderOutlined, Search, VisibilityOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import {
@@ -294,7 +294,7 @@ function RdoVersionTreeSelect({
       onFocus={(event) => { if (!anchorEl) openPicker(event.currentTarget); }}
       InputProps={{
         readOnly: true,
-        endAdornment: <InputAdornment position="end"><ExpandMore fontSize="small" sx={{ color: '#606266' }} /></InputAdornment>,
+        endAdornment: <InputAdornment position="end" sx={{ mr: '-7px' }}><ArrowDropDown sx={{ color: 'action.active', transform: anchorEl ? 'rotate(180deg)' : undefined }} /></InputAdornment>,
       }}
       sx={{ '& .MuiInputBase-input': { cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis' } }}
     />
@@ -306,7 +306,7 @@ function RdoVersionTreeSelect({
       style={{ zIndex: 1500 }}
     >
       <ClickAwayListener mouseEvent="onMouseDown" onClickAway={closePicker}>
-        <Paper sx={{ width: 460, maxWidth: 'calc(100vw - 32px)', maxHeight: 480, overflow: 'hidden', border: '1px solid #dfe5ed', boxShadow: '0 8px 24px rgba(32, 56, 85, .16)' }}>
+        <Paper sx={{ width: anchorEl?.getBoundingClientRect().width, maxWidth: 'calc(100vw - 32px)', maxHeight: 480, overflow: 'hidden', border: '1px solid #dfe5ed', boxShadow: '0 8px 24px rgba(32, 56, 85, .16)' }}>
       <Box sx={{ p: 1, borderBottom: '1px solid #e8ecf1' }}>
         <TextField
           autoFocus

@@ -5,6 +5,7 @@ import {
   TableContainer, TableHead, TableRow, Button, Box,
 } from '@mui/material';
 import client from '@/api/client';
+import { useAuthStore } from '@/stores/authStore';
 import { TASK_STATUS_MAP } from '@/utils/constants';
 import StatusBadge from '@/components/StatusBadge';
 
@@ -19,8 +20,10 @@ interface Task {
 
 export default function TodoList() {
   const navigate = useNavigate();
-  const { data, isLoading } = useQuery({
-    queryKey: ['tasks', 'todo'],
+  const assigneeId = useAuthStore((state) => state.user?.id);
+  const { data, isLoading, isError } = useQuery<Task[]>({
+    queryKey: ['tasks', 'todo', assigneeId],
+    enabled: !!assigneeId,
     queryFn: async () => {
       const res = await client.get('/workflow/tasks/todo', { params: { page: 1, size: 5 } });
       return res.data.data;
@@ -28,7 +31,7 @@ export default function TodoList() {
     refetchInterval: 30000,
   });
 
-  const tasks: Task[] = data?.content || [];
+  const tasks = data || [];
 
   return (
     <Card>
@@ -41,6 +44,8 @@ export default function TodoList() {
         </Box>
         {isLoading ? (
           <Typography color="text.secondary">加载中...</Typography>
+        ) : isError ? (
+          <Typography color="error">待办加载失败，请刷新重试</Typography>
         ) : tasks.length === 0 ? (
           <Typography color="text.secondary">暂无待办任务</Typography>
         ) : (

@@ -42,6 +42,15 @@ import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
 import com.zencas.edhr.masterdata.service.ProductFamilyMembershipService;
 import com.zencas.edhr.masterdata.service.ProductProcessOwnerService;
 import com.zencas.edhr.masterdata.dto.ProcessOwnerType;
+import com.zencas.edhr.masterdata.dto.MaterialImportResult;
+import com.zencas.edhr.masterdata.service.MaterialImportService;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -89,6 +98,7 @@ public class ProcessModelingController {
 
     private final MaterialTypeRepository materialTypeRepository;
     private final MaterialRepository materialRepository;
+    private final MaterialImportService materialImportService;
     private final ProductRepository productRepository;
     private final ProductFamilyRepository productFamilyRepository;
     private final OperationCategoryRepository operationCategoryRepository;
@@ -140,7 +150,7 @@ public class ProcessModelingController {
                 .code(code)
                 .name(name)
                 .specification(trimToNull(request.getSpecification()))
-                .brand(resolveMaterialBrand(request.getBrand()))
+                .brandName(resolveMaterialBrandName(request.getBrandName()))
                 .version(version)
                 .materialPurpose(resolveMaterialPurpose(request))
                 .effectiveDate(request == null ? null : request.getEffectiveDate())
@@ -160,6 +170,28 @@ public class ProcessModelingController {
         return ApiResponse.success(saved);
     }
 
+    @GetMapping(value = "/materials/import-template", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<byte[]> downloadMaterialImportTemplate() throws IOException {
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+                        .filename("物料导入模板.xlsx", StandardCharsets.UTF_8)
+                        .build().toString())
+                .body(materialImportService.createTemplate());
+    }
+
+    @PostMapping(value = "/materials/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Transactional
+    public ApiResponse<MaterialImportResult> importMaterials(@RequestParam("file") MultipartFile file) throws IOException {
+        MaterialImportResult result = materialImportService.importWorkbook(file);
+        Map<Long, String> materialTypeNames = materialTypeNameMap();
+        result.importedMaterials().forEach(material -> {
+            enrichMaterialTypeName(material, materialTypeNames);
+            writeAudit("MATERIAL", material.getId(), "CREATE", "物料管理", "导入物料", Map.of(), materialSnapshot(material));
+        });
+        return ApiResponse.success(result);
+    }
+
     @PutMapping("/materials/{id}")
     @Transactional
     public ApiResponse<Material> updateMaterial(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
@@ -173,7 +205,7 @@ public class ProcessModelingController {
         Map<String, Object> before = materialSnapshot(existing);
         Long materialTypeId = resolveMaterialTypeId(request.getMaterialTypeId() != null || request.getMaterialTypeName() != null
                 ? request : ProcessModelingRequest.builder().materialTypeId(existing.getMaterialTypeId()).build());
-        String brand = request.getBrand() == null ? existing.getBrand() : resolveMaterialBrand(request.getBrand());
+        String brandName = request.getBrandName() == null ? existing.getBrandName() : resolveMaterialBrandName(request.getBrandName());
         if (request != null && (StringUtils.hasText(request.getCode()) || versionUpdate)) {
             validateMaterialCodeForUpdate(existing,
                     StringUtils.hasText(request.getCode()) ? request.getCode().trim() : existing.getCode(),
@@ -182,7 +214,7 @@ public class ProcessModelingController {
         if (request != null && StringUtils.hasText(request.getName())) existing.setName(request.getName().trim());
         if (request != null && StringUtils.hasText(request.getCode())) existing.setCode(request.getCode().trim());
         if (request != null && request.getSpecification() != null) existing.setSpecification(trimToNull(request.getSpecification()));
-        existing.setBrand(brand);
+        existing.setBrandName(brandName);
         if (versionUpdate) existing.setVersion(resolveMaterialVersion(request));
         if (request != null && request.getMaterialPurpose() != null) existing.setMaterialPurpose(resolveMaterialPurpose(request));
         if (versionUpdate) existing.setEffectiveDate(request.getEffectiveDate());
@@ -205,7 +237,7 @@ public class ProcessModelingController {
         }
         List<Material> versions = findMaterialGroupVersions(existing);
         Long materialTypeId = resolveMaterialTypeId(request);
-        String brand = request == null || request.getBrand() == null ? null : resolveMaterialBrand(request.getBrand());
+        String brandName = request == null || request.getBrandName() == null ? null : resolveMaterialBrandName(request.getBrandName());
         Map<Long, Map<String, Object>> beforeSnapshots = versions.stream()
                 .filter(material -> material.getId() != null)
                 .collect(Collectors.toMap(
@@ -216,7 +248,7 @@ public class ProcessModelingController {
         versions.forEach(material -> {
             applyMaterialBaseFields(material, request);
             material.setMaterialTypeId(materialTypeId);
-            if (request.getBrand() != null) material.setBrand(brand);
+            if (request.getBrandName() != null) material.setBrandName(brandName);
         });
         List<Material> savedVersions = versions.stream()
                 .map(materialRepository::save)
@@ -844,7 +876,7 @@ public class ProcessModelingController {
                 .code(latest.getCode())
                 .name(latest.getName())
                 .specification(latest.getSpecification())
-                .brand(latest.getBrand())
+                .brandName(latest.getBrandName())
                 .version(latest.getVersion())
                 .versionCount(sortedVersions.size())
                 .effectiveVersionCount((int) sortedVersions.stream().filter(this::isEffectiveMaterialVersion).count())
@@ -905,8 +937,8 @@ public class ProcessModelingController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "物料类型不存在，请重新选择"));
     }
 
-    private String resolveMaterialBrand(String brand) {
-        String value = trimToNull(brand);
+    private String resolveMaterialBrandName(String brandName) {
+        String value = trimToNull(brandName);
         if (value != null && value.length() > 255) {
             throw new BusinessException(ErrorCode.GENERAL_001, "品牌不能超过255个字符");
         }
@@ -1549,7 +1581,7 @@ public class ProcessModelingController {
         Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getName(), resolveMaterialRuntimeStatus(entity),
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
         snapshot.put("specification", entity.getSpecification());
-        snapshot.put("brand", entity.getBrand());
+        snapshot.put("brandName", entity.getBrandName());
         snapshot.put("version", entity.getVersion());
         snapshot.put("materialPurpose", entity.getMaterialPurpose());
         snapshot.put("effectiveDate", entity.getEffectiveDate() == null ? null : entity.getEffectiveDate().toString());

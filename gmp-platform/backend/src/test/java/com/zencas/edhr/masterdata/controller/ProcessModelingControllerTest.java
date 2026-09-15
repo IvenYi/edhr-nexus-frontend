@@ -68,6 +68,7 @@ class ProcessModelingControllerTest {
 
     @Mock private MaterialTypeRepository materialTypeRepository;
     @Mock private MaterialRepository materialRepository;
+    @Mock private com.zencas.edhr.masterdata.service.MaterialImportService materialImportService;
     @Mock private ProductRepository productRepository;
     @Mock private ProductFamilyRepository productFamilyRepository;
     @Mock private OperationCategoryRepository operationCategoryRepository;
@@ -505,16 +506,16 @@ class ProcessModelingControllerTest {
         when(materialRepository.save(any(Material.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(idGenerator.nextId()).thenReturn(21L);
         Material saved = controller.createMaterial(ProcessModelingRequest.builder()
-                .name("物料").code("MAT-BRAND").materialTypeId(3L).brand("  示例品牌  ").build()).getData();
-        assertThat(saved.getBrand()).isEqualTo("示例品牌");
+                .name("物料").code("MAT-BRAND").materialTypeId(3L).brandName("  示例品牌  ").build()).getData();
+        assertThat(saved.getBrandName()).isEqualTo("示例品牌");
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository).save(auditCaptor.capture());
-        assertThat(objectMapper.readTree(auditCaptor.getValue().getContentAfter()).get("brand").asText()).isEqualTo("示例品牌");
+        assertThat(objectMapper.readTree(auditCaptor.getValue().getContentAfter()).get("brandName").asText()).isEqualTo("示例品牌");
         when(materialRepository.findAll()).thenReturn(List.of(saved));
         assertThat(controller.listMaterials(null, null, null, null, null, 1, 20, "createdAt", "desc")
                 .getData().getContent()).singleElement().satisfies(group -> {
-                    assertThat(group.getBrand()).isEqualTo("示例品牌");
-                    assertThat(group.getVersions()).extracting(Material::getBrand).containsExactly("示例品牌");
+                    assertThat(group.getBrandName()).isEqualTo("示例品牌");
+                    assertThat(group.getVersions()).extracting(Material::getBrandName).containsExactly("示例品牌");
                 });
     }
 
@@ -522,24 +523,24 @@ class ProcessModelingControllerTest {
     void allowsEmptyBrandButRejectsOverlongBrand() {
         when(materialTypeRepository.findAll()).thenReturn(List.of(MaterialType.builder().id(3L).build()));
         when(materialRepository.save(any(Material.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        for (String brand : new String[]{null, "   "}) {
+        for (String brandName : new String[]{null, "   "}) {
             assertThat(controller.createMaterial(ProcessModelingRequest.builder()
-                    .name("物料").code("MAT-BRAND").materialTypeId(3L).brand(brand).build()).getData().getBrand()).isNull();
+                    .name("物料").code("MAT-BRAND").materialTypeId(3L).brandName(brandName).build()).getData().getBrandName()).isNull();
         }
         assertThatThrownBy(() -> controller.createMaterial(ProcessModelingRequest.builder()
-                .name("物料").code("MAT-BRAND").materialTypeId(3L).brand("a".repeat(256)).build()))
+                .name("物料").code("MAT-BRAND").materialTypeId(3L).brandName("a".repeat(256)).build()))
                 .hasMessageContaining("品牌不能超过255个字符");
     }
 
     @Test
     void baseEditRequiresTypeAndKeepsExistingDataOnInvalidInput() {
-        Material existing = Material.builder().id(22L).code("MAT-TYPE").name("物料").materialTypeId(3L).brand("原品牌").build();
+        Material existing = Material.builder().id(22L).code("MAT-TYPE").name("物料").materialTypeId(3L).brandName("原品牌").build();
         when(materialRepository.findById(22L)).thenReturn(Optional.of(existing));
-        assertThatThrownBy(() -> controller.updateMaterial(22L, ProcessModelingRequest.builder().brand("新品牌").build()))
+        assertThatThrownBy(() -> controller.updateMaterial(22L, ProcessModelingRequest.builder().brandName("新品牌").build()))
                 .hasMessageContaining("请选择物料类型");
-        assertThatThrownBy(() -> controller.updateMaterial(22L, ProcessModelingRequest.builder().materialTypeId(999L).brand("新品牌").build()))
+        assertThatThrownBy(() -> controller.updateMaterial(22L, ProcessModelingRequest.builder().materialTypeId(999L).brandName("新品牌").build()))
                 .hasMessageContaining("物料类型不存在");
-        assertThat(existing.getBrand()).isEqualTo("原品牌");
+        assertThat(existing.getBrandName()).isEqualTo("原品牌");
         assertThat(existing.getMaterialTypeId()).isEqualTo(3L);
         verify(materialRepository, never()).save(any());
         verifyNoInteractions(auditEventRepository);
@@ -547,36 +548,36 @@ class ProcessModelingControllerTest {
 
     @Test
     void baseEditSynchronizesBrandAndSupportsOmittedAndBlankValues() throws Exception {
-        Material v1 = Material.builder().id(23L).code("MAT-BRAND").name("物料").materialTypeId(3L).brand("旧品牌").version("V1.0").build();
-        Material v2 = Material.builder().id(24L).code("MAT-BRAND").name("物料").materialTypeId(3L).brand("旧品牌").version("V2.0").build();
+        Material v1 = Material.builder().id(23L).code("MAT-BRAND").name("物料").materialTypeId(3L).brandName("旧品牌").version("V1.0").build();
+        Material v2 = Material.builder().id(24L).code("MAT-BRAND").name("物料").materialTypeId(3L).brandName("旧品牌").version("V2.0").build();
         when(materialRepository.findById(24L)).thenReturn(Optional.of(v2));
         when(materialRepository.findByTenantIdAndCodeIgnoreCase("default", "MAT-BRAND")).thenReturn(List.of(v1, v2));
         when(materialTypeRepository.findAll()).thenReturn(List.of(MaterialType.builder().id(3L).build()));
         when(materialRepository.save(any(Material.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        controller.updateMaterial(24L, ProcessModelingRequest.builder().materialTypeId(3L).brand(" 新品牌 ").build());
-        assertThat(List.of(v1, v2)).extracting(Material::getBrand).containsExactly("新品牌", "新品牌");
+        controller.updateMaterial(24L, ProcessModelingRequest.builder().materialTypeId(3L).brandName(" 新品牌 ").build());
+        assertThat(List.of(v1, v2)).extracting(Material::getBrandName).containsExactly("新品牌", "新品牌");
         ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository, org.mockito.Mockito.times(2)).save(auditCaptor.capture());
         for (AuditEvent event : auditCaptor.getAllValues()) {
-            assertThat(objectMapper.readTree(event.getContentBefore()).get("brand").asText()).isEqualTo("旧品牌");
-            assertThat(objectMapper.readTree(event.getContentAfter()).get("brand").asText()).isEqualTo("新品牌");
+            assertThat(objectMapper.readTree(event.getContentBefore()).get("brandName").asText()).isEqualTo("旧品牌");
+            assertThat(objectMapper.readTree(event.getContentAfter()).get("brandName").asText()).isEqualTo("新品牌");
         }
         controller.updateMaterial(24L, ProcessModelingRequest.builder().materialTypeId(3L).build());
-        assertThat(List.of(v1, v2)).extracting(Material::getBrand).containsExactly("新品牌", "新品牌");
-        controller.updateMaterial(24L, ProcessModelingRequest.builder().materialTypeId(3L).brand("  ").build());
-        assertThat(List.of(v1, v2)).allSatisfy(material -> assertThat(material.getBrand()).isNull());
+        assertThat(List.of(v1, v2)).extracting(Material::getBrandName).containsExactly("新品牌", "新品牌");
+        controller.updateMaterial(24L, ProcessModelingRequest.builder().materialTypeId(3L).brandName("  ").build());
+        assertThat(List.of(v1, v2)).allSatisfy(material -> assertThat(material.getBrandName()).isNull());
         assertThat(v1.getVersion()).isEqualTo("V1.0");
         assertThat(v2.getVersion()).isEqualTo("V2.0");
     }
 
     @Test
     void versionOnlyEditPreservesBrandAndValidatesExistingType() {
-        Material existing = Material.builder().id(25L).code("MAT-VERSION").name("物料").materialTypeId(3L).brand("原品牌").build();
+        Material existing = Material.builder().id(25L).code("MAT-VERSION").name("物料").materialTypeId(3L).brandName("原品牌").build();
         when(materialRepository.findById(25L)).thenReturn(Optional.of(existing));
         when(materialTypeRepository.findAll()).thenReturn(List.of(MaterialType.builder().id(3L).build()));
         when(materialRepository.save(any(Material.class))).thenAnswer(invocation -> invocation.getArgument(0));
         Material saved = controller.updateMaterial(25L, ProcessModelingRequest.builder().version("V2.0").description("新版本说明").build()).getData();
-        assertThat(saved.getBrand()).isEqualTo("原品牌");
+        assertThat(saved.getBrandName()).isEqualTo("原品牌");
         assertThat(saved.getMaterialTypeId()).isEqualTo(3L);
         assertThat(saved.getVersion()).isEqualTo("V2.0");
         assertThat(saved.getDescription()).isEqualTo("新版本说明");
@@ -584,7 +585,7 @@ class ProcessModelingControllerTest {
 
     @Test
     void versionOnlyEditRejectsHistoricalMissingOrDeletedTypesWithoutWriting() {
-        Material existing = Material.builder().id(26L).code("MAT-LEGACY").name("物料").brand("原品牌").build();
+        Material existing = Material.builder().id(26L).code("MAT-LEGACY").name("物料").brandName("原品牌").build();
         when(materialRepository.findById(26L)).thenReturn(Optional.of(existing));
         assertThatThrownBy(() -> controller.updateMaterial(26L, ProcessModelingRequest.builder().version("V2.0").build()))
                 .hasMessageContaining("请选择物料类型");
@@ -592,7 +593,7 @@ class ProcessModelingControllerTest {
         assertThatThrownBy(() -> controller.updateMaterial(26L, ProcessModelingRequest.builder().version("V2.0").build()))
                 .hasMessageContaining("物料类型不存在");
         assertThat(existing.getVersion()).isEqualTo("V1.0");
-        assertThat(existing.getBrand()).isEqualTo("原品牌");
+        assertThat(existing.getBrandName()).isEqualTo("原品牌");
         verify(materialRepository, never()).save(any());
         verifyNoInteractions(auditEventRepository);
     }
