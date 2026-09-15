@@ -33,6 +33,8 @@ public class Material {
     private String name;
     @Column(name = "specification")
     private String specification;
+    @Column(name = "brand")
+    private String brand;
     @Column(name = "version", length = 64)
     @Builder.Default
     private String version = "V1.0";

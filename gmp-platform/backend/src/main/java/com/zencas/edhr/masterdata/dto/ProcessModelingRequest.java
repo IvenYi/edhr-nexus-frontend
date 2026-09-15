@@ -20,6 +20,7 @@ public class ProcessModelingRequest {
     private String status;
     private String remark;
     private String specification;
+    private String brand;
     private String unit;
     private String materialTypeName;
     private Long materialTypeId;

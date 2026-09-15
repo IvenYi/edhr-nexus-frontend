@@ -1,0 +1,34 @@
+knowledgeModelVersion: 0.3.13
+rules:
+  - id: rule.material.required-type
+    name: 物料类型必填
+    status: specified
+    visibility: internal
+    trigger: material.save
+    scope: material-base-information
+    condition:
+      fact: material.materialTypeId
+      operator: is-null
+      value: true
+    result:
+      type: block
+      reason: material-type-required
+      message: 请选择物料类型
+    explanation: 新增物料或编辑基础信息时必须选择物料类型；解析后的物料类型关联为空时不得保存。此规则不要求自动回填历史记录，也不改变产品派生物料范围。
+    evidenceIds: [evidence.material-fields-user-confirmed, evidence.material-fields-controller, evidence.material-fields-page, evidence.material-fields-controller-tests]
+  - id: rule.material.optional-brand
+    name: 物料品牌选填
+    status: specified
+    visibility: internal
+    trigger: material.save
+    scope: material-base-information
+    condition:
+      fact: material.brand
+      operator: is-null
+      value: true
+    result:
+      type: allow-with-governance
+      action: material.save
+      optionalField: material.brand
+    explanation: 物料增加品牌字段，允许填写或留空；不得仅因品牌为空阻止保存，其他适用保存校验仍执行。多版本同步、空白归一化和历史兼容属于当前实现选择，不由本规则扩展为通用业务要求。
+    evidenceIds: [evidence.material-fields-user-confirmed, evidence.material-fields-controller, evidence.material-fields-brand-migration, evidence.material-fields-page, evidence.material-fields-controller-tests]

@@ -420,7 +420,7 @@ const ROUTE_DESIGNER_REWORK_EDGE_STYLE = {
   strokeWidth: 2,
   strokeDasharray: '6 4',
 } as const;
-const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose'];
+const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose', 'brand'];
 const MATERIAL_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'description'];
 const ROUTE_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'description'];
 const ROUTE_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'code', 'effectiveDate', 'expiryDate', 'versionDescription'];
@@ -675,6 +675,7 @@ const processColumnLabels: Record<ConfigurableProcessColumnId, string> = {
 };
 
 const processAuditFieldLabels: Record<string, string> = {
+  brand: '品牌',
   id: 'ID',
   code: '编码',
   name: '名称',
@@ -729,8 +730,9 @@ const PROCESS_MODELING_PAGE_CONFIGS: Record<ProcessModelingPageKey, ProcessModel
       { id: 'name', label: '物料名称', required: true },
       { id: 'code', label: '物料料号', required: true },
       { id: 'specification', label: '规格型号' },
-      { id: 'materialTypeId', label: '物料类型' },
+      { id: 'materialTypeId', label: '物料类型', required: true },
       { id: 'unit', label: '单位' },
+      { id: 'brand', label: '品牌' },
       { id: 'version', label: '版本', required: true },
       { id: 'materialPurpose', label: '物料用途' },
       { id: 'effectiveDate', label: '生效日期' },
@@ -3180,6 +3182,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       name: getDisplayName(row) === '-' ? '' : getDisplayName(row),
       code: row.code ?? '',
       specification: row.specification ?? '',
+      brand: row.brand ?? '',
       materialTypeId: materialTypeValue,
       materialTypeName: row.materialTypeName ?? (materialTypeMapValue(materialTypeValue) || ''),
       unit: row.unit ?? '',
@@ -3209,6 +3212,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       description: row.description ?? '',
       status: row.status ?? 'ACTIVE',
       specification: 'specification' in row ? row.specification ?? '' : '',
+      brand: 'brand' in row ? row.brand ?? '' : '',
       materialTypeId: materialTypeValue,
       materialTypeName: 'materialTypeName' in row ? row.materialTypeName ?? (materialTypeMapValue(materialTypeValue) || '') : (materialTypeMapValue(materialTypeValue) || ''),
       productFamilyId: 'productFamilyId' in row ? row.productFamilyId ?? '' : 'familyId' in row ? row.familyId ?? '' : '',
@@ -3319,6 +3323,10 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       setSnackbar({ open: true, message: '请填写物料料号', severity: 'error' });
       return;
     }
+    if (pageKey === 'materials' && !form.materialTypeName?.trim() && !form.materialTypeId) {
+      setSnackbar({ open: true, message: materialDialogMode === 'editVersion' || materialDialogMode === 'createVersion' ? '请先编辑物料，补齐物料类型' : '请选择物料类型', severity: 'error' });
+      return;
+    }
     if (pageKey === 'operations' && !form.code?.trim()) {
       setSnackbar({ open: true, message: '请填写工序编码', severity: 'error' });
       return;
@@ -3363,6 +3371,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     description: input.description?.trim() || undefined,
     status: pageKey === 'materials' ? undefined : input.status || undefined,
     specification: input.specification?.trim() || undefined,
+    brand: input.brand?.trim(),
     unit: input.unit?.trim() || undefined,
     version: input.version?.trim() || undefined,
     versionDescription: input.versionDescription?.trim() || undefined,
@@ -3762,6 +3771,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           setForm((current) => ({ ...current, [field.id]: value }));
         }}
         type={field.type ?? 'text'}
+        inputProps={field.id === 'brand' ? { maxLength: 255 } : undefined}
         size="small"
         fullWidth
         required={field.required}
@@ -4818,6 +4828,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                         <>
                           <DetailField label="规格型号">{'specification' in selectedRow ? selectedRow.specification || '-' : '-'}</DetailField>
                           <DetailField label="物料类型">{'materialTypeName' in selectedRow ? selectedRow.materialTypeName || materialTypeMapValue(selectedRow.materialTypeId) || '-' : '-'}</DetailField>
+                          <DetailField label="品牌">{'brand' in selectedRow ? selectedRow.brand || '-' : '-'}</DetailField>
                           <DetailField label="单位">{'unit' in selectedRow ? selectedRow.unit || '-' : '-'}</DetailField>
                           <DetailField label="版本">{'version' in selectedRow ? selectedRow.version || '-' : '-'}</DetailField>
                           <DetailField label="物料用途">{'materialPurpose' in selectedRow ? selectedRow.materialPurpose || '-' : '-'}</DetailField>

@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.13
+evidence:
+  - id: evidence.material-fields-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/material-fields-user-confirmed.md
+    description: user-confirmed；物料类型必填，增加选填品牌；仅记录这两项已确认语义，多版本同步、历史兼容和输入归一化仍为实现解释。
+    visibility: internal
+  - id: evidence.material-fields-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    description: original-evidence；物料创建和基础编辑解析类型，缺失或无法解析的类型拒绝保存；品牌进入物料、分组返回和审计快照。基础信息多版本同步及版本编辑保留值沿用现有机制，是本切片实现选择；源码不等同于运行验证通过。
+    visibility: internal
+  - id: evidence.material-fields-brand-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql
+    description: original-evidence；品牌迁移为物料增加可空列，历史空值不自动回填。该兼容策略不定义额外业务规则，迁移源码不能证明运行数据库已升级。
+    visibility: internal
+  - id: evidence.material-fields-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+    description: original-evidence；物料基础字段的新增、编辑与展示页面，也是类型必填提示和品牌输入回显的实现核对入口；文件存在不代表浏览器验收通过。
+    visibility: internal
+  - id: evidence.material-fields-controller-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+    description: original-evidence；物料控制器聚焦回归入口，用于验证类型校验和品牌读写及审计；测试源或路径存在不代表测试已通过。
+    visibility: internal

@@ -140,6 +140,7 @@ public class ProcessModelingController {
                 .code(code)
                 .name(name)
                 .specification(trimToNull(request.getSpecification()))
+                .brand(resolveMaterialBrand(request.getBrand()))
                 .version(version)
                 .materialPurpose(resolveMaterialPurpose(request))
                 .effectiveDate(request == null ? null : request.getEffectiveDate())
@@ -170,6 +171,9 @@ public class ProcessModelingController {
             return updateMaterialBaseInformation(existing, request);
         }
         Map<String, Object> before = materialSnapshot(existing);
+        Long materialTypeId = resolveMaterialTypeId(request.getMaterialTypeId() != null || request.getMaterialTypeName() != null
+                ? request : ProcessModelingRequest.builder().materialTypeId(existing.getMaterialTypeId()).build());
+        String brand = request.getBrand() == null ? existing.getBrand() : resolveMaterialBrand(request.getBrand());
         if (request != null && (StringUtils.hasText(request.getCode()) || versionUpdate)) {
             validateMaterialCodeForUpdate(existing,
                     StringUtils.hasText(request.getCode()) ? request.getCode().trim() : existing.getCode(),
@@ -178,11 +182,12 @@ public class ProcessModelingController {
         if (request != null && StringUtils.hasText(request.getName())) existing.setName(request.getName().trim());
         if (request != null && StringUtils.hasText(request.getCode())) existing.setCode(request.getCode().trim());
         if (request != null && request.getSpecification() != null) existing.setSpecification(trimToNull(request.getSpecification()));
+        existing.setBrand(brand);
         if (versionUpdate) existing.setVersion(resolveMaterialVersion(request));
         if (request != null && request.getMaterialPurpose() != null) existing.setMaterialPurpose(resolveMaterialPurpose(request));
         if (versionUpdate) existing.setEffectiveDate(request.getEffectiveDate());
         if (versionUpdate) existing.setExpiryDate(request.getExpiryDate());
-        if (request != null && (request.getMaterialTypeId() != null || StringUtils.hasText(request.getMaterialTypeName()))) existing.setMaterialTypeId(resolveMaterialTypeId(request));
+        existing.setMaterialTypeId(materialTypeId);
         if (request != null && request.getUnit() != null) existing.setUnit(trimToNull(request.getUnit()));
         if (versionUpdate || (request != null && request.getDescription() != null)) existing.setDescription(trimToNull(request == null ? null : request.getDescription()));
         existing.setStatus(resolveMaterialRuntimeStatus(existing.getEffectiveDate(), existing.getExpiryDate()));
@@ -199,6 +204,8 @@ public class ProcessModelingController {
             validateMaterialBaseCodeForUpdate(existing, request.getCode().trim());
         }
         List<Material> versions = findMaterialGroupVersions(existing);
+        Long materialTypeId = resolveMaterialTypeId(request);
+        String brand = request == null || request.getBrand() == null ? null : resolveMaterialBrand(request.getBrand());
         Map<Long, Map<String, Object>> beforeSnapshots = versions.stream()
                 .filter(material -> material.getId() != null)
                 .collect(Collectors.toMap(
@@ -206,7 +213,11 @@ public class ProcessModelingController {
                         this::materialSnapshot,
                         (left, right) -> left,
                         LinkedHashMap::new));
-        versions.forEach(material -> applyMaterialBaseFields(material, request));
+        versions.forEach(material -> {
+            applyMaterialBaseFields(material, request);
+            material.setMaterialTypeId(materialTypeId);
+            if (request.getBrand() != null) material.setBrand(brand);
+        });
         List<Material> savedVersions = versions.stream()
                 .map(materialRepository::save)
                 .toList();
@@ -833,6 +844,7 @@ public class ProcessModelingController {
                 .code(latest.getCode())
                 .name(latest.getName())
                 .specification(latest.getSpecification())
+                .brand(latest.getBrand())
                 .version(latest.getVersion())
                 .versionCount(sortedVersions.size())
                 .effectiveVersionCount((int) sortedVersions.stream().filter(this::isEffectiveMaterialVersion).count())
@@ -881,14 +893,24 @@ public class ProcessModelingController {
     }
 
     private Long resolveMaterialTypeId(ProcessModelingRequest request) {
-        if (request == null) return null;
-        if (request.getMaterialTypeId() != null) return request.getMaterialTypeId();
-        if (!StringUtils.hasText(request.getMaterialTypeName())) return null;
+        if (request == null || (request.getMaterialTypeId() == null && !StringUtils.hasText(request.getMaterialTypeName()))) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "请选择物料类型");
+        }
         return materialTypeRepository.findAll().stream()
-                .filter(type -> type != null && request.getMaterialTypeName().trim().equals(type.getName()))
+                .filter(type -> type != null && (request.getMaterialTypeId() != null
+                        ? request.getMaterialTypeId().equals(type.getId())
+                        : request.getMaterialTypeName().trim().equals(type.getName())))
                 .map(MaterialType::getId)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "物料类型不存在，请重新选择"));
+    }
+
+    private String resolveMaterialBrand(String brand) {
+        String value = trimToNull(brand);
+        if (value != null && value.length() > 255) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "品牌不能超过255个字符");
+        }
+        return value;
     }
 
     private void enrichRouteVersions(Route route) {
@@ -1314,7 +1336,6 @@ public class ProcessModelingController {
         if (StringUtils.hasText(request.getCode())) material.setCode(request.getCode().trim());
         if (request.getSpecification() != null) material.setSpecification(trimToNull(request.getSpecification()));
         if (request.getMaterialPurpose() != null) material.setMaterialPurpose(resolveMaterialPurpose(request));
-        if (request.getMaterialTypeId() != null || StringUtils.hasText(request.getMaterialTypeName())) material.setMaterialTypeId(resolveMaterialTypeId(request));
         if (request.getUnit() != null) material.setUnit(trimToNull(request.getUnit()));
         material.setStatus(resolveMaterialRuntimeStatus(material.getEffectiveDate(), material.getExpiryDate()));
         material.setUpdatedBy(currentOperatorName());
@@ -1528,6 +1549,7 @@ public class ProcessModelingController {
         Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getName(), resolveMaterialRuntimeStatus(entity),
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
         snapshot.put("specification", entity.getSpecification());
+        snapshot.put("brand", entity.getBrand());
         snapshot.put("version", entity.getVersion());
         snapshot.put("materialPurpose", entity.getMaterialPurpose());
         snapshot.put("effectiveDate", entity.getEffectiveDate() == null ? null : entity.getEffectiveDate().toString());

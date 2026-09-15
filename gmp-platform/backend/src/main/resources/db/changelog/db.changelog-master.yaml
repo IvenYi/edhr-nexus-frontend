@@ -169,3 +169,5 @@ databaseChangeLog:
       file: db/changelog/0079-record-control-definition-status.sql
   - include:
       file: db/changelog/0080-record-control-workflow-contract.sql
+  - include:
+      file: db/changelog/0078-material-brand.sql

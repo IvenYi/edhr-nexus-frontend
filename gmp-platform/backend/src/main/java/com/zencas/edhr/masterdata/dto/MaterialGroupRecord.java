@@ -17,6 +17,7 @@ public class MaterialGroupRecord {
     private String code;
     private String name;
     private String specification;
+    private String brand;
     private String version;
     private Integer versionCount;
     private Integer effectiveVersionCount;

@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.13
+decisions:
+  - id: DEC-0041
+    title: 物料类型必填与品牌选填
+    status: specified
+    visibility: internal
+    context: user-confirmed；用户明确要求物料类型必填并增加非必填品牌。本决策只确认两项字段语义；品牌沿既有基础信息同步到同物料多版本、版本编辑保留基础字段、迁移不回填历史空类型或品牌均为实现解释，不提升为新的通用规则。当前能力保持 specified/internal，待实现和适用验收完成，不新增运行时执行契约，也不改动生产执行及其未决问题。
+    decisionStatements:
+      - id: DEC-0041-01
+        statement: 新增物料或编辑物料基础信息时，物料类型必须填写。
+        status: specified
+        visibility: internal
+      - id: DEC-0041-02
+        statement: 物料增加品牌字段，品牌为选填，可填写或留空。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.material-fields-user-confirmed, evidence.material-fields-controller, evidence.material-fields-brand-migration, evidence.material-fields-page, evidence.material-fields-controller-tests]
+    acceptanceScenarios:
+      - id: scenario.material-required-type
+        given: 用户新增物料或编辑物料基础信息
+        when: 未选择物料类型而保存
+        then: 前后端阻止保存并提示需要选择物料类型
+        evidenceIds: [evidence.material-fields-user-confirmed, evidence.material-fields-controller, evidence.material-fields-page, evidence.material-fields-controller-tests]
+        evidenceRequirements: [页面必填验证, 控制器拒绝测试, 无保存和成功审计写入]
+      - id: scenario.material-brand
+        given: 物料满足类型等适用保存条件
+        when: 品牌填写或留空后保存并重新打开
+        then: 品牌均可保存并准确回显，品牌为空不单独阻断保存
+        evidenceIds: [evidence.material-fields-user-confirmed, evidence.material-fields-controller, evidence.material-fields-brand-migration, evidence.material-fields-page, evidence.material-fields-controller-tests]
+        evidenceRequirements: [品牌持久化回读, 空品牌与清空验证, 审计字段, 页面回显]
+    implementationDiscrepancies: []

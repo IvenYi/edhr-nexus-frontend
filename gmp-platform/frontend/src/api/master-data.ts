@@ -26,6 +26,7 @@ export interface ProcessModelingBaseRecord {
 
 export interface MaterialRecord extends ProcessModelingBaseRecord {
   specification?: string;
+  brand?: string | null;
   version?: string;
   materialPurpose?: string;
   effectiveDate?: string;
@@ -165,6 +166,7 @@ export interface ProcessModelingPayload {
   status?: string;
   remark?: string;
   specification?: string;
+  brand?: string;
   unit?: string;
   materialTypeId?: string | number | null;
   materialTypeName?: string | null;
