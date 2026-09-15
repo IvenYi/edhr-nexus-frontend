@@ -213,7 +213,9 @@ export function parseSubjectRefs(value?: string | null): SubjectRef[] {
       item && ['USER', 'DEPARTMENT', 'ROLE', 'LEGACY'].includes(item.type) && item.id,
     );
   } catch {
-    return [{ type: 'LEGACY', id: `legacy:${value.trim()}`, nameSnapshot: value.trim() }];
+    const legacyValue = value.trim();
+    if (legacyValue.startsWith('[') || legacyValue.startsWith('{')) return [];
+    return [{ type: 'LEGACY', id: `legacy:${legacyValue}`, nameSnapshot: legacyValue }];
   }
 }
 

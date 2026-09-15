@@ -4,6 +4,7 @@
 
 export const WORKFLOW_STATUS_MAP = {
   DRAFT: { label: '草稿', color: 'default' as const },
+  PUBLISHED: { label: '已发布', color: 'success' as const },
   IN_REVIEW: { label: '审核中', color: 'warning' as const },
   EFFECTIVE: { label: '已生效', color: 'success' as const },
   OBSOLETE: { label: '已作废', color: 'error' as const },

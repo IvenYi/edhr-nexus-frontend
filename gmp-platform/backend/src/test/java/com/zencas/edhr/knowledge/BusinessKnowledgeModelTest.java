@@ -41,6 +41,75 @@ class BusinessKnowledgeModelTest {
     }
 
     @Test
+    void currentKnowledgeBaselineIsTheReleasedP0Schema() throws Exception {
+        BusinessKnowledgeModel model = BusinessKnowledgeModelLoader.load();
+
+        assertThat(model.schema()).containsEntry("knowledgeModelVersion", "0.3.18")
+                .containsEntry("schemaVersion", "1.1.0");
+    }
+
+    @Test
+    void factCatalogRejectsUnknownSemanticAlias() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> rule = records(model, "rule").stream()
+                .filter(candidate -> "rule.form-process.binding-requires-form-and-flow".equals(idOf(candidate)))
+                .findFirst()
+                .orElseThrow();
+        Map<String, Object> clause = firstConditionClause(asMap(rule.get("condition")));
+        clause.put("fact", "missing.form-process.fact");
+
+        assertValidationFails(model, "rule.form-process.binding-requires-form-and-flow",
+                "condition.fact", "does not resolve in the fact catalog");
+    }
+
+    @Test
+    void factCatalogCannotBeBypassedByOmittingProfile() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> rule = records(model, "rule").stream()
+                .filter(candidate -> "rule.identity.runtime-subject-resolution".equals(idOf(candidate)))
+                .findFirst()
+                .orElseThrow();
+        rule.remove("factCatalogProfile");
+        firstConditionClause(asMap(rule.get("condition")))
+                .put("fact", "missing.unprofiled.fact");
+
+        assertValidationFails(model, "rule.identity.runtime-subject-resolution",
+                "condition.fact", "does not resolve in the fact catalog");
+    }
+
+    @Test
+    void factCatalogRejectsOperatorNotAllowedByFact() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> rule = records(model, "rule").stream()
+                .filter(candidate -> "rule.form-process.binding-requires-form-and-flow".equals(idOf(candidate)))
+                .findFirst()
+                .orElseThrow();
+        Map<String, Object> clause = firstConditionClause(asMap(rule.get("condition")));
+        clause.put("operator", "greater-than-or-equal");
+
+        assertValidationFails(model, "rule.form-process.binding-requires-form-and-flow",
+                "condition.operator", "is not allowed for fact");
+    }
+
+    @Test
+    void factsRequireProvenanceFields() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> fact = firstRecord(model, "fact");
+        fact.remove("sourceLocator");
+
+        assertValidationFails(model, idOf(fact), "sourceLocator", "must be a string");
+    }
+
+    @Test
+    void implementationAnchorsRejectUnknownProvenanceReviewStatus() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> anchor = firstRecord(model, "implementationAnchor");
+        anchor.put("reviewStatus", "unverified");
+
+        assertValidationFails(model, idOf(anchor), "reviewStatus", "must be one of");
+    }
+
+    @Test
     void topLevelCollectionsAreDiscoveredFromSchemaMappings() throws Exception {
         BusinessKnowledgeModel model = mutableKnowledgeModel();
         Map<String, Object> collectionTypes = mapValue(model.schema(), "collectionTypes");
@@ -139,7 +208,7 @@ class BusinessKnowledgeModelTest {
 
         assertValidationFailsExactly(model,
                 "Record docs/knowledge/glossary.yaml field 'zeta': unknown top-level collection; allowed collections "
-                        + "[concepts, decisions, evidence, executionContracts, questions, relations, rules, terms]");
+                        + "[concepts, decisions, evidence, executionContracts, facts, implementationAnchors, questions, relations, rules, terms]");
     }
 
     @Test
@@ -337,7 +406,7 @@ class BusinessKnowledgeModelTest {
         Map<String, Object> rule = firstRecord(model, "rule");
         firstConditionClause(mapValue(rule, "condition")).put("operator", "matches");
 
-        assertValidationFails(model, idOf(rule), "operator", "must be one of");
+        assertValidationFails(model, idOf(rule), "condition.operator", "is not allowed for fact");
     }
 
     @Test

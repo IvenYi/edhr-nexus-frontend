@@ -3,6 +3,8 @@ package com.zencas.edhr.workflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity @Table(name = "workflow_edge")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
@@ -17,6 +19,7 @@ public class WorkflowEdge {
     @Column(name = "label")
     private String label;
     @Column(name = "condition_expression", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String conditionExpression;
     @Column(name = "created_at") private LocalDateTime createdAt;
     @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }

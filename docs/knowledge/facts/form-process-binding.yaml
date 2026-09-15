@@ -1,0 +1,242 @@
+knowledgeModelVersion: 0.3.18
+facts:
+  - id: fact.form-process-binding.form-template-version-id
+    name: 表单绑定的表单模板版本引用
+    conceptId: concept.form-process-binding-version
+    valueType: reference
+    sourceType: configuration
+    sourcePath: WorkFormProcessReference.formTemplateVersionId
+    aliases: [formProcessBinding.formTemplateVersionId]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, exists, is-present, is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-reference-entity, evidence.form-process-version-reference-implementation]
+    sourceRevision: working-tree
+    sourceLocator: WorkFormProcessReference.formTemplateVersionId
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.form-process-binding.form-process-template-version-id
+    name: 表单绑定的表单流程版本引用
+    conceptId: concept.form-process-binding-version
+    valueType: reference
+    sourceType: configuration
+    sourcePath: WorkFormProcessReference.formProcessVersionId
+    aliases: [formProcessBinding.formProcessTemplateVersionId]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, exists, is-present, is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-reference-entity, evidence.form-process-version-reference-implementation]
+    sourceRevision: working-tree
+    sourceLocator: WorkFormProcessReference.formProcessVersionId
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.form-process-binding.form-process-template-version-status
+    name: 表单绑定的表单流程版本状态
+    conceptId: concept.form-process-template-version
+    valueType: enum
+    sourceType: database
+    sourcePath: FormProcessVersion.status
+    aliases: [formProcessBinding.formProcessTemplateVersion.status]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-upgrade-controller]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessVersion.status
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.production-work-form-entry.form-template-version-id
+    name: 作业流程表单填写节点的表单模板版本引用
+    conceptId: concept.production-work-form-node-business-document-reference
+    valueType: reference
+    sourceType: configuration
+    sourcePath: WorkTemplateFlowNode.config.formTemplateVersionId
+    aliases: [productionWorkFormEntryNode.formTemplateVersionId]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, exists, is-present, is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-optional-binding-controller, evidence.form-process-version-reference-implementation]
+    sourceRevision: working-tree
+    sourceLocator: WorkTemplateFlowNode.config.formTemplateVersionId
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.production-work-form-entry.form-process-version-id
+    name: 作业流程表单填写节点的表单流程版本引用
+    conceptId: concept.production-work-form-node-business-document-reference
+    valueType: reference
+    sourceType: configuration
+    sourcePath: WorkTemplateFlowNode.config.formProcessVersionId
+    aliases: [productionWorkFormEntryNode.formProcessVersionId]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, exists, is-present, is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-optional-binding-controller, evidence.form-process-version-reference-implementation]
+    sourceRevision: working-tree
+    sourceLocator: WorkTemplateFlowNode.config.formProcessVersionId
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.form-process-version-usage.definition-id
+    name: 表单流程版本使用投影的流程定义引用
+    conceptId: concept.form-process-version-usage-projection
+    valueType: reference
+    sourceType: database
+    sourcePath: WorkFormProcessReference.formProcessDefinitionId
+    aliases: [formProcessVersionUsageProjection.formProcessDefinitionId]
+    availability: configuration
+    allowedOperators: [equals, exists, is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-usage-controller, evidence.form-process-version-reference-entity]
+    sourceRevision: working-tree
+    sourceLocator: WorkFormProcessReference.formProcessDefinitionId
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.production-work-flow-version.status
+    name: 作业流程版本状态
+    conceptId: concept.production-work-flow-version
+    valueType: enum
+    sourceType: database
+    sourcePath: ProductionWorkFlowVersion.status
+    aliases: [productionWorkFlowVersion.status]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: ProductionWorkFlowVersion.status
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.form-process-version-reference.referenced-version-is-current
+    name: 作业流程引用的表单流程版本是否为当前版本
+    conceptId: concept.form-process-version-reference
+    valueType: boolean
+    sourceType: derived
+    sourcePath: FormProcessReferenceService.referencedVersionIsCurrent
+    aliases: [formProcessVersionReference.referencedVersionIsCurrent]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessReferenceService.referencedVersionIsCurrent
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.form-process-definition.has-current-published-version
+    name: 表单流程定义是否存在当前发布版本
+    conceptId: concept.form-process-template
+    valueType: boolean
+    sourceType: derived
+    sourcePath: FormProcessController.hasCurrentPublishedVersion
+    aliases: [formProcessDefinition.hasCurrentPublishedVersion]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-optional-binding-controller]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessController.hasCurrentPublishedVersion
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.target-form-process-version.status
+    name: 目标表单流程版本状态
+    conceptId: concept.form-process-template-version
+    valueType: enum
+    sourceType: database
+    sourcePath: TargetFormProcessVersion.status
+    aliases: [targetFormProcessVersion.status]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-reference-implementation]
+    sourceRevision: working-tree
+    sourceLocator: TargetFormProcessVersion.status
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.target-form-process-version.is-current
+    name: 目标表单流程版本是否为当前版本
+    conceptId: concept.form-process-template-version
+    valueType: boolean
+    sourceType: derived
+    sourcePath: FormProcessController.currentPublishedVersionId
+    aliases: [targetFormProcessVersion.isCurrent]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessController.currentPublishedVersionId
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.form-process-binding.compatibility-with-target-version
+    name: 表单流程绑定配置与目标版本是否兼容
+    conceptId: concept.form-process-binding-version
+    valueType: boolean
+    sourceType: derived
+    sourcePath: WorkTemplateController.validateFormProcessVersionCompatibility
+    aliases: [formProcessBinding.compatibilityWithTargetVersion]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
+    sourceRevision: working-tree
+    sourceLocator: WorkTemplateController.validateFormProcessVersionCompatibility
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.referenced-form-process-version.status
+    name: 被引用表单流程版本状态
+    conceptId: concept.form-process-version-reference
+    valueType: enum
+    sourceType: database
+    sourcePath: ReferencedFormProcessVersion.status
+    aliases: [referencedFormProcessVersion.status]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-usage-controller]
+    sourceRevision: working-tree
+    sourceLocator: ReferencedFormProcessVersion.status
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.referenced-form-process-version.is-current
+    name: 被引用表单流程版本是否为当前版本
+    conceptId: concept.form-process-version-reference
+    valueType: boolean
+    sourceType: derived
+    sourcePath: FormProcessReferenceService.isCurrent
+    aliases: [referencedFormProcessVersion.isCurrent]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-upgrade-tests]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessReferenceService.isCurrent
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.form-process-version-usage.reference-count
+    name: 表单流程版本引用数量
+    conceptId: concept.form-process-version-usage-projection
+    valueType: integer
+    sourceType: database
+    sourcePath: WorkFormProcessReference.countByFormProcessVersionId
+    aliases: [formProcessVersionUsageProjection.referenceCount]
+    availability: configuration
+    allowedOperators: [greater-than-or-equal, equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-delete-reference-guard, evidence.form-process-delete-reference-guard-test]
+    sourceRevision: working-tree
+    sourceLocator: WorkFormProcessReference.countByFormProcessVersionId
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed

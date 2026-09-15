@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.12
+knowledgeModelVersion: 0.3.18
 concepts:
   - id: concept.workshop
     termId: term.workshop
@@ -66,12 +66,48 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-template-version-entity, evidence.operation-form-binding-entity, evidence.form-template-version-persisted-status-default, evidence.template-modeling-rdo-status-projection]
+  - id: concept.form-instance
+    termId: term.form-instance
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design, evidence.production-form-process-user-confirmed-v5]
   - id: concept.form-process-template
     termId: term.form-process-template
     kind: business-configuration
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
+  - id: concept.record-control-review-template
+    termId: term.record-control-review-template
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-correction-void-design, evidence.record-control-review-template-editor]
+  - id: concept.record-control-application
+    termId: term.record-control-application
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-integration-contract, evidence.record-control-terminology-user-confirmed]
+  - id: concept.workflow-definition-version
+    termId: term.workflow-definition-version
+    kind: business-configuration
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests]
+  - id: concept.record-control-workflow-integration
+    termId: term.record-control-workflow-integration
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-contract-types, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-explicit-start-engine]
+  - id: concept.record-control-transfer-button
+    termId: term.record-control-transfer-button
+    kind: configuration-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-editor, evidence.record-control-review-template-required-approvers, evidence.record-control-terminology-user-confirmed]
   - id: concept.form-process-template-version
     termId: term.form-process-template-version
     kind: business-configuration
@@ -510,6 +546,48 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline]
+  - id: concept.record-correction-request
+    termId: term.record-correction-request
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-terminology-user-confirmed]
+  - id: concept.record-void-request
+    termId: term.record-void-request
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-terminology-user-confirmed]
+  - id: concept.correction-revision
+    termId: term.correction-revision
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: concept.record-impact-assessment
+    termId: term.record-impact-assessment
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: concept.change-review-task
+    termId: term.change-review-task
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: concept.record-control-parallel-review-group
+    termId: term.record-control-parallel-review-group
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: concept.workflow-event-log
+    termId: term.workflow-event-log
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-integration-contract]
 relations:
   - id: relation.production-line-references-workshop
     source: concept.production-line
@@ -1295,3 +1373,66 @@ relations:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.production-audit-localized-formatter]
+  - id: relation.record-correction-request-produces-revision
+    source: concept.record-correction-request
+    target: concept.correction-revision
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: relation.record-control-application-starts-explicit-workflow-version
+    source: concept.record-control-application
+    target: concept.workflow-definition-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine]
+  - id: relation.record-void-request-targets-revision
+    source: concept.record-void-request
+    target: concept.correction-revision
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: relation.record-request-uses-impact-assessment
+    source: concept.record-correction-request
+    target: concept.record-impact-assessment
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: relation.change-review-task-emits-workflow-event-log
+    source: concept.change-review-task
+    target: concept.workflow-event-log
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: relation.record-control-review-template-has-parallel-review-group
+    source: concept.record-control-review-template
+    target: concept.record-control-parallel-review-group
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: relation.review-template-approval-node-has-transfer-button
+    source: concept.record-control-review-template
+    target: concept.record-control-transfer-button
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-editor, evidence.record-control-review-template-required-approvers]
+  - id: relation.record-request-retains-audit-snapshot
+    source: concept.record-correction-request
+    target: concept.audit-change-snapshot
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-correction-void-design]
+  - id: relation.form-instance-uses-optional-form-process
+    source: concept.form-instance
+    target: concept.form-process-template-version
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.record-correction-void-design]

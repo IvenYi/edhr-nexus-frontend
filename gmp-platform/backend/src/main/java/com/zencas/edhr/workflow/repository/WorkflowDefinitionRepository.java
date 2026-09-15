@@ -16,6 +16,21 @@ import org.springframework.data.jpa.repository.Lock;
 public interface WorkflowDefinitionRepository extends JpaRepository<WorkflowDefinition, Long>, JpaSpecificationExecutor<WorkflowDefinition> {
     List<WorkflowDefinition> findByType(String type);
     Page<WorkflowDefinition> findByType(String type, Pageable pageable);
+    List<WorkflowDefinition> findByTypeAndBusinessTypeAndStatusOrderByNameAsc(
+            String type, String businessType, String status);
+
+    @Query("""
+            select definition from WorkflowDefinition definition
+            where definition.type = :type
+              and (:businessType is null or definition.businessType = :businessType)
+              and (:keyword is null or :keyword = ''
+                or lower(definition.name) like lower(concat('%', :keyword, '%'))
+                or lower(coalesce(definition.code, '')) like lower(concat('%', :keyword, '%')))
+            """)
+    Page<WorkflowDefinition> findReviewTemplates(@Param("type") String type,
+                                                  @Param("businessType") String businessType,
+                                                  @Param("keyword") String keyword,
+                                                  Pageable pageable);
 
     @Query("""
             select definition from WorkflowDefinition definition

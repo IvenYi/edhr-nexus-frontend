@@ -133,13 +133,16 @@ import {
 } from "@/api/form-processes";
 import {
   FlowVersionPicker,
+  FlowInteractionModeControls,
   FlowMiniMap,
   FullScreenFlowDesigner,
   FlowQuickTooltip,
   StandardFlowNode,
+  STANDARD_FLOW_FIT_VIEW_OPTIONS,
   findNearbyFlowNode,
   oppositeFlowDirection,
   type FlowDirection,
+  type FlowInteractionMode,
 } from "@/components/flow-designer/FlowDesigner";
 
 type Version = {
@@ -607,7 +610,7 @@ function boundaryNode(kind: "START" | "END"): FlowNode {
   return {
     id: kind === "START" ? "start" : "end",
     type: "workNode",
-    selectable: false,
+    selectable: true,
     position: centeredPosition(
       FLOW_CENTER_X,
       kind === "START" ? FLOW_START_CENTER_Y : FLOW_EMPTY_END_CENTER_Y,
@@ -630,6 +633,20 @@ function transientDraft(templateId: WorkflowId): Version {
     virtual: true,
     nodesJson: JSON.stringify(graph.nodes),
     edgesJson: JSON.stringify(graph.edges),
+  };
+}
+
+function persistentFlowGraph(graph: FlowGraph): FlowGraph {
+  return {
+    nodes: graph.nodes.map((node) => {
+      const {
+        selected: _selected,
+        dragging: _dragging,
+        ...persistentNode
+      } = node;
+      return persistentNode;
+    }),
+    edges: graph.edges,
   };
 }
 
@@ -935,7 +952,7 @@ function normalizeFlowGraph(version: Version): FlowGraph {
     })
     .map((node) => ({
       ...node,
-      selectable: false,
+      selectable: true,
       type:
         node.type === "input" ||
         node.type === "output" ||
@@ -2604,6 +2621,8 @@ const FlowWorkspace = forwardRef<
     );
     const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
     const [showMiniMap, setShowMiniMap] = useState(false);
+    const [interactionMode, setInteractionMode] =
+      useState<FlowInteractionMode>("pan");
     const [previewForm, setPreviewForm] = useState<WorkFormOption | null>(null);
     const [permissionConfigOpen, setPermissionConfigOpen] = useState(false);
     const [conditionRuleDialogOpen, setConditionRuleDialogOpen] =
@@ -3204,9 +3223,7 @@ const FlowWorkspace = forwardRef<
       setNodes(next);
       requestAnimationFrame(() =>
         flowInstanceRef.current?.fitView({
-          padding: 0.32,
-          minZoom: 0.52,
-          maxZoom: 0.82,
+          ...STANDARD_FLOW_FIT_VIEW_OPTIONS,
           duration: 240,
         }),
       );
@@ -3240,7 +3257,7 @@ const FlowWorkspace = forwardRef<
       const newNode: FlowNode = {
         id,
         type: "workNode",
-        selectable: false,
+        selectable: true,
         position: targetPosition,
         data: {
           label: nodeAppearance[kind].label,
@@ -3333,7 +3350,7 @@ const FlowWorkspace = forwardRef<
       const newNode: FlowNode = {
         id,
         type: "workNode",
-        selectable: false,
+        selectable: true,
         position,
         data: {
           label: nodeAppearance[kind].label,
@@ -3741,28 +3758,46 @@ const FlowWorkspace = forwardRef<
     const addNode = (kind: Exclude<WorkNodeKind, "START" | "END">) => {
       if (!editable) return;
       const before = currentGraph();
+      const source =
+        before.nodes.find((node) => node.id === (selectedNodeId ?? "start")) ??
+        before.nodes.find((node) => node.id === "start");
+      if (!source || source.data.kind === "END" || source.data.kind === "CONDITION")
+        return;
       const id = `${kind.toLowerCase()}-${Date.now()}`;
       const label = nodeAppearance[kind].label;
-      setNodes((current) => [
-        ...current,
-        {
-          id,
-          type: "workNode",
-          selectable: false,
-          position: findAvailablePosition(
-            {
-              x: 140 + current.length * 70,
-              y: 120 + (current.length % 3) * 110,
-            },
-            kind,
-          ),
-          data: {
-            label,
-            kind,
-            config: kind === "CONDITION" ? normalizedConditionConfig({}) : {},
-          },
-        },
-      ]);
+      const config = kind === "CONDITION" ? normalizedConditionConfig({}) : {};
+      const newNode: FlowNode = {
+        id,
+        type: "workNode",
+        selectable: true,
+        position: findAvailablePosition(
+          positionForDirection(source, kind, "bottom"),
+          kind,
+        ),
+        data: { label, kind, config },
+      };
+      const outgoing = before.edges.find((edge) => edge.source === source.id);
+      const nextEdges = before.edges.filter((edge) => edge.id !== outgoing?.id);
+      nextEdges.push(
+        withFlowMarker({
+          id: `${source.id}-${id}`,
+          source: source.id,
+          sourceHandle: "source-bottom",
+          target: id,
+          targetHandle: kind === "CONDITION" ? "condition-input" : "target-top",
+        }),
+      );
+      if (outgoing)
+        nextEdges.push(
+          withFlowMarker({
+            ...outgoing,
+            id: `${id}-${outgoing.target}`,
+            source: id,
+            sourceHandle: "source-bottom",
+          }),
+        );
+      setNodes([...before.nodes, newNode]);
+      setEdges(nextEdges);
       setSelectedNodeId(id);
       setSelectedEdgeId(null);
       markDirty();
@@ -4210,6 +4245,7 @@ const FlowWorkspace = forwardRef<
         size="small"
         startIcon={icon}
         onClick={() => addNode(kind)}
+        disabled={selectedKind === "END" || selectedKind === "CONDITION"}
       >
         {nodeAppearance[kind].label}
       </Button>
@@ -4329,9 +4365,8 @@ const FlowWorkspace = forwardRef<
               "& .react-flow__pane, & .react-flow__viewport, & .react-flow__node, & .react-flow__node *":
                 { userSelect: "none", WebkitUserSelect: "none" },
               "& .react-flow__selection": {
-                display: "none !important",
-                visibility: "hidden !important",
-                pointerEvents: "none !important",
+                border: "1px solid #1677c8",
+                background: "rgba(22, 119, 200, 0.08)",
               },
             }}
           >
@@ -4502,21 +4537,26 @@ const FlowWorkspace = forwardRef<
                 }
                 snapToGrid
                 snapGrid={[2, 2]}
-                selectionOnDrag={false}
-                selectionKeyCode="__flow_selection_disabled__"
-                multiSelectionKeyCode="__flow_multi_selection_disabled__"
-                selectNodesOnDrag={false}
+                panOnDrag={interactionMode === "pan"}
+                selectionOnDrag={editable && interactionMode === "select"}
+                selectNodesOnDrag={interactionMode === "pan"}
                 nodesConnectable={editable}
                 nodesDraggable={editable}
                 elementsSelectable
                 deleteKeyCode={null}
                 defaultEdgeOptions={FLOW_EDGE_DEFAULTS}
                 fitView
-                fitViewOptions={{ padding: 0.32, minZoom: 0.52, maxZoom: 0.82 }}
+                fitViewOptions={STANDARD_FLOW_FIT_VIEW_OPTIONS}
                 proOptions={{ hideAttribution: true }}
               >
                 <Background color="#dfe4ea" gap={20} size={1} />
                 <Controls position="bottom-left">
+                  {editable ? (
+                    <FlowInteractionModeControls
+                      mode={interactionMode}
+                      onChange={setInteractionMode}
+                    />
+                  ) : null}
                   {editable ? (
                     <>
                       <Tooltip
@@ -4524,37 +4564,43 @@ const FlowWorkspace = forwardRef<
                         placement="right"
                         arrow
                       >
-                        <ControlButton
-                          aria-label="撤销"
-                          onClick={undo}
-                          disabled={historyState.undo === 0}
-                        >
-                          <UndoOutlined fontSize="small" />
-                        </ControlButton>
+                        <span>
+                          <ControlButton
+                            aria-label="撤销"
+                            onClick={undo}
+                            disabled={historyState.undo === 0}
+                          >
+                            <UndoOutlined fontSize="small" />
+                          </ControlButton>
+                        </span>
                       </Tooltip>
                       <Tooltip
                         title="重做（Ctrl/Cmd+Shift+Z）"
                         placement="right"
                         arrow
                       >
-                        <ControlButton
-                          aria-label="重做"
-                          onClick={redo}
-                          disabled={historyState.redo === 0}
-                        >
-                          <RedoOutlined fontSize="small" />
-                        </ControlButton>
+                        <span>
+                          <ControlButton
+                            aria-label="重做"
+                            onClick={redo}
+                            disabled={historyState.redo === 0}
+                          >
+                            <RedoOutlined fontSize="small" />
+                          </ControlButton>
+                        </span>
                       </Tooltip>
                     </>
                   ) : null}
                   {editable ? (
                     <Tooltip title="一键整理布局" placement="right" arrow>
-                      <ControlButton
-                        aria-label="一键整理布局"
-                        onClick={alignNodes}
-                      >
-                        <AutoFixHighOutlined fontSize="small" />
-                      </ControlButton>
+                      <span>
+                        <ControlButton
+                          aria-label="一键整理布局"
+                          onClick={alignNodes}
+                        >
+                          <AutoFixHighOutlined fontSize="small" />
+                        </ControlButton>
+                      </span>
                     </Tooltip>
                   ) : null}
                   <Tooltip
@@ -4562,12 +4608,14 @@ const FlowWorkspace = forwardRef<
                     placement="right"
                     arrow
                   >
-                    <ControlButton
-                      aria-label={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
-                      onClick={() => setShowMiniMap((value) => !value)}
-                    >
-                      <MapOutlined fontSize="small" />
-                    </ControlButton>
+                    <span>
+                      <ControlButton
+                        aria-label={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
+                        onClick={() => setShowMiniMap((value) => !value)}
+                      >
+                        <MapOutlined fontSize="small" />
+                      </ControlButton>
+                    </span>
                   </Tooltip>
                 </Controls>
                 {showMiniMap ? <FlowMiniMap /> : null}
@@ -5689,7 +5737,12 @@ export default function WorkTemplateEditor() {
     }: {
       versionId: WorkflowId;
       graph: FlowGraph;
-    }) => saveWorkTemplateVersionGraph(templateId, versionId, graph),
+    }) =>
+      saveWorkTemplateVersionGraph(
+        templateId,
+        versionId,
+        persistentFlowGraph(graph),
+      ),
     onSuccess: (response) => {
       const savedGraphVersion = (response as { data: { data: Version } }).data
         .data;

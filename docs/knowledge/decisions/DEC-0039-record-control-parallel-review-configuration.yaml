@@ -1,0 +1,82 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0039
+    title: 记录控制审核并行分支配置边界
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；记录控制审核流程配置需要支持可扩展的并行审批分支。本决策补充 DEC-0037 的并行审核语义，只描述配置边界，不声称运行时审核引擎已经实现。"
+    decisionStatements:
+      - id: DEC-0039-01
+        statement: "provenance: user-confirmed；审核流程画布的并行审批组默认创建两条审批分支，但两条不是固定上限，配置用户可以继续增加并行审批分支。"
+        status: specified
+        visibility: internal
+      - id: DEC-0039-02
+        statement: "provenance: implementation-constraint；并行审批组必须由一个拆分、两个或更多审批分支和一个汇聚组成；不允许嵌套并行组或交叉汇聚，分支全部批准后才可汇聚，任一分支退回则本轮退回。"
+        status: specified
+        visibility: internal
+      - id: DEC-0039-03
+        statement: "provenance: user-confirmed；该并行审批结构只属于表单变更和表单作废审核流程；作业流程首版仍不支持并行节点或并行执行。"
+        status: specified
+        visibility: internal
+      - id: DEC-0039-04
+        statement: "provenance: user-confirmed；记录控制审核流程的发起节点允许通过向下快捷入口直接创建并行审批组；并行审批快捷入口不要求先添加普通审批节点。"
+        status: specified
+        visibility: internal
+      - id: DEC-0039-05
+        statement: "provenance: implementation-constraint；并行拆分节点只接受来自上方的单一输入，所有并行分支从拆分节点下方发出并分别连接到聚合节点上方；拆分节点与聚合节点之间的组内连线由并行组结构管理，用户不得通过通用连接器任意改写拆分拓扑。"
+        status: specified
+        visibility: internal
+      - id: DEC-0039-06
+        statement: "provenance: implementation-constraint；并行拆分节点的视觉和交互可参考作业流程条件节点的分支容器，但不得引入条件求值、否则分支或改变作业流程首版禁止并行节点的既有规则。"
+        status: specified
+        visibility: internal
+      - id: DEC-0039-07
+        statement: "provenance: user-confirmed；全部并行分支在并行聚合节点汇聚后，聚合节点可有零或一个仅向下的主流程后继。聚合尚无后继时，画布提供向下快捷入口以添加普通审批或新的并行审批；普通审批和新并行审批均属于原并行组之后的线性主流程，后者不是组内嵌套。已有后继时隐藏该入口，不提供左右出口。"
+        status: specified
+        visibility: internal
+      - id: DEC-0039-08
+        statement: "provenance: implementation-constraint；聚合后的标准出口可以进入线性主流程，但通用连接器不得改写同一并行组的拆分、分支和聚合拓扑；该配置能力不证明运行时审核引擎已能推进聚合后的后继节点。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-correction-void-design]
+    acceptanceScenarios:
+      - id: scenario.record-control-parallel-review-default-and-expand
+        given: 用户在记录控制审核流程画布中从连线快捷入口添加并行审批
+        when: 系统创建并行审批组
+        then: 默认显示两条审批分支，并提供继续增加分支的配置入口；保存后分支数量与画布结构一致
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [并行组默认两分支验证, 三条及以上分支保存与读取验证]
+      - id: scenario.record-control-parallel-review-structure-constraints
+        given: 用户编辑记录控制审核流程并行审批组
+        when: 用户尝试嵌套并行或交叉连接汇聚
+        then: 配置被阻断并保留拆分、分支和汇聚结构约束
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [并行结构校验测试]
+      - id: scenario.record-control-parallel-review-start-shortcut
+        given: 用户在记录控制审核流程中选中发起节点并打开向下快捷入口
+        when: 用户选择并行审批
+        then: 系统直接创建一个包含拆分、至少两条审批分支和聚合的并行组，不要求先创建普通审批节点
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [发起节点并行快捷添加验证]
+      - id: scenario.record-control-parallel-review-managed-connectors
+        given: 用户编辑记录控制审核流程中的并行审批组
+        when: 用户查看或尝试编辑并行组连线
+        then: 拆分仅显示上方输入，分支从拆分下方发出并连接聚合上方；通用连接器不能新增拆分侧向出口、绕过聚合或交叉连接
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [并行组连线方向视觉验证, 拆分拓扑编辑限制测试]
+      - id: scenario.record-control-parallel-review-join-continues-main-flow
+        given: 记录控制审核流程存在一个尚无后继的并行聚合节点
+        when: 用户从聚合节点的向下快捷入口选择普通审批或并行审批
+        then: 系统从聚合节点唯一向下出口创建后继结构；聚合已有后继时入口隐藏，且不出现左右出口或开放通用连接器改写组内拓扑
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [聚合向下快捷添加审批验证, 聚合向下快捷添加并行审批验证, 聚合已有后继时入口隐藏验证, 组内拓扑限制测试]
+    implementationDiscrepancies:
+      - id: discrepancy.record-control-parallel-config-runtime-pending
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；并行分支配置与审核引擎运行时执行尚未形成发布级实现证据，不能标记为 implemented、verified 或 runtime。"
+        evidenceIds: [evidence.record-correction-void-design]

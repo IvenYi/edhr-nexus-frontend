@@ -218,12 +218,18 @@ CREATE TABLE IF NOT EXISTS workflow_definition (
     id BIGINT PRIMARY KEY,
     tenant_id VARCHAR(64) DEFAULT 'default',
     name VARCHAR(256) NOT NULL,
-    type VARCHAR(32) NOT NULL DEFAULT 'REVIEW',
+    type VARCHAR(32) NOT NULL DEFAULT 'RECORD_CONTROL',
+    business_type VARCHAR(32),
     status VARCHAR(32) NOT NULL DEFAULT 'DRAFT',
     description TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
+ALTER TABLE workflow_definition
+    ADD CONSTRAINT ck_workflow_definition_record_control_category
+    CHECK (type <> 'RECORD_CONTROL' OR business_type IN ('CHANGE', 'OBSOLETE'));
+CREATE INDEX IF NOT EXISTS idx_workflow_definition_business_type
+    ON workflow_definition (type, business_type);
 
 CREATE TABLE IF NOT EXISTS workflow_definition_version (
     id BIGINT PRIMARY KEY,
@@ -278,12 +284,17 @@ CREATE TABLE IF NOT EXISTS workflow_instance (
     status VARCHAR(32) NOT NULL DEFAULT 'RUNNING',
     current_node_ids VARCHAR(1024),
     context_snapshot JSONB,
+    idempotency_key VARCHAR(128),
+    audit_correlation_id VARCHAR(128),
+    workflow_snapshot_hash VARCHAR(64),
     initiator_id VARCHAR(64),
     started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_wf_instance_biz ON workflow_instance(business_type, business_id);
 CREATE INDEX IF NOT EXISTS idx_wf_instance_status ON workflow_instance(status);
+CREATE UNIQUE INDEX IF NOT EXISTS uk_wf_instance_idempotency_key
+    ON workflow_instance(idempotency_key) WHERE idempotency_key IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS workflow_task (
     id BIGINT PRIMARY KEY,

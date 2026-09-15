@@ -143,6 +143,32 @@ decisionPackage:
 - `affectedFiles[]`：`path`、`changeType`、`reason`；`changeType` 只能是 `create`、`update`、`delete` 或 `read-only`。
 - `acceptanceScenarios[]`：`id`、`given`、`when`、`then`、`evidenceRequirements`。
 
+### 本体升级阶段字段
+
+涉及知识模型基础设施、本体能力或影响分析机制的 `decisionPackage` 必须额外包含：
+
+```yaml
+ontologyRoadmap:
+  currentStage: P0
+  targetOutcome: 让规则事实和实现证据可解析、可追溯并支持可复核影响分析
+  entryCriteria:
+    - 当前阶段开始依据
+  exitCriteria:
+    - 当前阶段完成条件
+  explicitNonGoals:
+    - 本阶段不引入 OWL/RDF 推理器
+  nextStage: P1
+```
+
+阶段含义固定如下：
+
+- `P0`：事实目录、实现锚点、最小 provenance、正式校验和一个稳定领域试点。
+- `P1`：关系 domain/range、反向关系、查询投影、结构化影响路径和冲突检查。
+- `P2`：知识发布 manifest、时间版本、历史解释和审计回放。
+- `P3`：JSON-LD/RDF/OWL/SHACL 映射、标准互操作和受控推理。
+
+P1 只能在 P0 退出条件已经有验证证据后进入实现；P2 由真实的历史解释、审计回放或跨版本运行需求触发；P3 由真实的外部互操作或复杂推理需求触发。阶段目标是防止本体建设漂移，不代表所有阶段必须在同一功能切片内完成。
+
 示例中的 `inferred` 不表示可以写入权威模型。主示例的 `unresolved` 为空，因此可以在没有其他冲突时对应后文的 `ontologyResult.result: updated`。
 
 ### 影响分析深度与效率约束
@@ -195,6 +221,11 @@ ontologyResult:
       outcome: passed
       evidence:
         - 命令退出码为 0
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
 ```
 
 顶层字段：
@@ -206,6 +237,7 @@ ontologyResult:
 - `conflicts`：与现有知识或已确认决策的冲突；仅记录，不得静默覆盖。
 - `questions`：需要用户判断的问题，必须可直接回答。
 - `validationEvidence`：结构校验、引用校验、状态投影校验及实现核对证据。
+- `roadmapProgress`：本次本体任务对应的阶段进度；包含 `stage`、`status`、`exitCriteriaEvidence` 和暂缓阶段。没有退出证据时不得把阶段标记为 `verified`。
 
 列表项字段：
 
@@ -218,7 +250,10 @@ ontologyResult:
 
 - `validationEvidence[].checkType` 只能是 `schema | reference | status-transition | projection | evidence-path`。
 - `validationEvidence[].outcome` 只能是 `passed | failed | blocked`。
+- `roadmapProgress.stage` 只能是 `P0 | P1 | P2 | P3`。
+- `roadmapProgress.status` 只能是 `planned | in-progress | verified | blocked`。
 - 当 `ontologyResult.result` 为 `updated` 时，`validationEvidence` 必须非空，且每个 `validationEvidence[].outcome` 都必须为 `passed`。
+- 当 `roadmapProgress.status` 为 `verified` 时，`exitCriteriaEvidence` 必须非空，并且必须逐项对应当前阶段的退出条件；没有这些证据时只能使用 `in-progress` 或 `blocked`。
 
 `conflicts` 和 `questions` 的非空项格式如下：
 

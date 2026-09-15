@@ -1,0 +1,119 @@
+knowledgeModelVersion: 0.3.18
+implementationAnchors:
+  - id: anchor.form-process-binding-reference-service
+    targetId: concept.form-process-version-reference
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormProcessReferenceService.java
+    apiReferences: []
+    databaseReferences:
+      - gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql
+    uiReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormProcessReferenceServiceTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-reference-tests]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessReferenceService.java
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.form-process-binding-controller
+    targetId: fact.form-process-binding.form-process-template-version-status
+    targetType: fact
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+    apiReferences:
+      - POST /api/work-templates/{id}/flow/draft
+      - POST /api/work-templates/{id}/flow/publish
+    databaseReferences: []
+    uiReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
+    sourceRevision: working-tree
+    sourceLocator: WorkTemplateController.java
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.form-process-binding-optional-form-process
+    targetId: rule.production-work.form-entry-form-process-optional
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+    apiReferences:
+      - POST /api/work-templates/{id}/flow/publish
+    databaseReferences: []
+    uiReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-optional-binding-controller]
+    sourceRevision: working-tree
+    sourceLocator: WorkTemplateController.java
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.form-process-binding-usage-projection
+    targetId: rule.form-process.version-usage-analysis
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormProcessReferenceService.java
+    apiReferences:
+      - GET /api/form-processes/{id}/usage
+    databaseReferences:
+      - gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql
+    uiReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessList.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/FormProcessControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-usage-controller, evidence.form-process-version-usage-ui, evidence.form-process-version-reference-tests]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessController.java
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.form-process-binding-controlled-upgrade
+    targetId: rule.production-work.form-process-reference-controlled-upgrade
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+    apiReferences:
+      - GET /api/work-templates/{id}/flow/form-process-reference-status
+    databaseReferences: []
+    uiReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-ui, evidence.form-process-version-upgrade-tests]
+    sourceRevision: working-tree
+    sourceLocator: WorkTemplateController.java
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.form-process-binding-delete-guard
+    targetId: rule.form-process.delete-referenced-forbidden
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java
+    apiReferences:
+      - DELETE /api/form-processes/{id}
+    databaseReferences: []
+    uiReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessList.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/FormProcessControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-process-delete-reference-guard, evidence.form-process-delete-reference-guard-test]
+    sourceRevision: working-tree
+    sourceLocator: FormProcessController.java
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed

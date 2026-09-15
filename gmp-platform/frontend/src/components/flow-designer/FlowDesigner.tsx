@@ -11,11 +11,14 @@ import {
   ArrowUpwardOutlined,
   Close,
   ContentCopyOutlined,
+  PanToolAltOutlined,
+  SelectAllOutlined,
 } from "@mui/icons-material";
 import {
   Box,
   Button,
   Chip,
+  ClickAwayListener,
   DialogContent,
   DialogTitle,
   IconButton,
@@ -24,10 +27,55 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Handle, MiniMap, Position, type Node } from "@xyflow/react";
+import {
+  ControlButton,
+  Handle,
+  MiniMap,
+  Position,
+  type Node,
+} from "@xyflow/react";
 import AppDialog from "@/components/AppDialog";
 
 export type FlowDirection = "top" | "right" | "bottom" | "left";
+export type FlowInteractionMode = "pan" | "select";
+
+export function FlowInteractionModeControls({
+  mode,
+  onChange,
+}: {
+  mode: FlowInteractionMode;
+  onChange: (mode: FlowInteractionMode) => void;
+}) {
+  const control = (
+    value: FlowInteractionMode,
+    label: string,
+    icon: ReactElement,
+  ) => (
+    <Tooltip key={value} title={label} placement="right" arrow>
+      <span style={{ display: "flex" }}>
+        <ControlButton
+          aria-label={label}
+          aria-pressed={mode === value}
+          onClick={() => onChange(value)}
+          style={
+            mode === value
+              ? { color: "#1677c8", background: "#e6f4ff" }
+              : undefined
+          }
+        >
+          {icon}
+        </ControlButton>
+      </span>
+    </Tooltip>
+  );
+
+  return (
+    <>
+      {control("pan", "手形工具", <PanToolAltOutlined fontSize="small" />)}
+      {control("select", "框选工具", <SelectAllOutlined fontSize="small" />)}
+    </>
+  );
+}
 
 export const flowDirectionPosition: Record<FlowDirection, Position> = {
   top: Position.Top,
@@ -49,6 +97,12 @@ export const STANDARD_FLOW_DIRECTIONS: FlowDirection[] = [
   "bottom",
   "left",
 ];
+
+export const STANDARD_FLOW_FIT_VIEW_OPTIONS = {
+  padding: 0.32,
+  minZoom: 0.52,
+  maxZoom: 0.82,
+} as const;
 
 const FLOW_MINIMAP_NODE_COLORS: Record<string, string> = {
   START: "#91caff",
@@ -174,6 +228,7 @@ export type FlowQuickAction = {
   id: string;
   label: string;
   icon?: ReactNode;
+  directions?: FlowDirection[];
 };
 
 export type FlowVersionSummary = {
@@ -475,6 +530,9 @@ export function StandardFlowNode({
   canUseQuickAction,
   onOpenQuickMenu,
   onQuickAdd,
+  targetDirections = STANDARD_FLOW_DIRECTIONS,
+  sourceDirections = STANDARD_FLOW_DIRECTIONS,
+  handlesConnectable = true,
 }: {
   id: string;
   label: string;
@@ -496,6 +554,9 @@ export function StandardFlowNode({
   canUseQuickAction: boolean;
   onOpenQuickMenu: (direction: FlowDirection) => void;
   onQuickAdd: (direction: FlowDirection, actionId: string) => void;
+  targetDirections?: FlowDirection[];
+  sourceDirections?: FlowDirection[];
+  handlesConnectable?: boolean;
 }) {
   const [bodyHovered, setBodyHovered] = useState(false);
   const [hoveredDirection, setHoveredDirection] =
@@ -522,6 +583,10 @@ export function StandardFlowNode({
           : selected
             ? "#1677c8"
             : `${appearance.color}55`,
+        [".react-flow__node.selected &"]: {
+          borderColor: "#1677c8",
+          boxShadow: "0 0 0 3px rgba(22,119,200,.14)",
+        },
         borderRadius: boundary ? 4 : 1,
         bgcolor: appearance.background,
         boxShadow: validationMessage
@@ -539,13 +604,13 @@ export function StandardFlowNode({
       }}
     >
       {!start
-        ? STANDARD_FLOW_DIRECTIONS.map((direction) => (
+        ? targetDirections.map((direction) => (
             <Handle
               key={`target-${direction}`}
               id={`target-${direction}`}
               type="target"
               position={flowDirectionPosition[direction]}
-              isConnectable={editable}
+              isConnectable={editable && handlesConnectable}
               style={nodeHandleStyle(direction)}
             />
           ))
@@ -614,13 +679,13 @@ export function StandardFlowNode({
         </Typography>
       ) : null}
       {!end
-        ? quickDirections.map((direction) => (
+        ? sourceDirections.map((direction) => (
             <Handle
               key={`source-${direction}`}
               id={`source-${direction}`}
               type="source"
               position={flowDirectionPosition[direction]}
-              isConnectable={editable}
+              isConnectable={editable && handlesConnectable}
               style={nodeHandleStyle(direction)}
             />
           ))
@@ -676,7 +741,7 @@ export function StandardFlowNode({
           spacing={0.5}
           sx={quickMenuStyle(quickMenuDirection)}
         >
-          {quickActions.map((action) => (
+          {quickActions.filter((action) => !action.directions || action.directions.includes(quickMenuDirection)).map((action) => (
             <Button
               key={action.id}
               className="nodrag nopan"
@@ -795,6 +860,7 @@ export function FlowVersionPicker<T extends FlowVersionSummary>({
     onSelect(versionId);
   };
   return (
+    <ClickAwayListener onClickAway={() => setExpanded(false)}>
     <Paper
       elevation={0}
       sx={{
@@ -913,5 +979,6 @@ export function FlowVersionPicker<T extends FlowVersionSummary>({
         </Stack>
       ) : null}
     </Paper>
+    </ClickAwayListener>
   );
 }

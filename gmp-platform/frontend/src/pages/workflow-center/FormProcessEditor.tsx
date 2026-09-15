@@ -68,12 +68,15 @@ import {
 } from "@/api/form-processes";
 import {
   FlowVersionPicker,
+  FlowInteractionModeControls,
   FlowMiniMap,
   FullScreenFlowDesigner,
   StandardFlowNode,
+  STANDARD_FLOW_FIT_VIEW_OPTIONS,
   findNearbyFlowNode,
   oppositeFlowDirection,
   type FlowDirection,
+  type FlowInteractionMode,
 } from "@/components/flow-designer/FlowDesigner";
 import {
   WorkflowActionConfig,
@@ -215,8 +218,13 @@ function defaultPermissionPatch(
 /** Keep old field-level settings readable, but never persist them again. */
 function serializeNodesForSave(currentNodes: FlowNode[]) {
   return currentNodes.map((node) => {
+    const {
+      selected: _selected,
+      dragging: _dragging,
+      ...persistentNode
+    } = node;
     if (node.data.kind !== "START" && node.data.kind !== "APPROVAL") {
-      return node;
+      return persistentNode;
     }
     const {
       editableFields: _editableFields,
@@ -238,7 +246,7 @@ function serializeNodesForSave(currentNodes: FlowNode[]) {
       };
     });
     return {
-      ...node,
+      ...persistentNode,
       data: {
         ...node.data,
         config: {
@@ -472,6 +480,8 @@ export default function FormProcessEditor() {
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const [selectedPanelTab, setSelectedPanelTab] = useState<"property" | "buttons">("property");
   const [showMiniMap, setShowMiniMap] = useState(false);
+  const [interactionMode, setInteractionMode] =
+    useState<FlowInteractionMode>("pan");
   const [dirty, setDirty] = useState(false);
   const [confirmation, setConfirmation] = useState<
     "close" | "switch" | "publish" | null
@@ -639,6 +649,7 @@ export default function FormProcessEditor() {
   const addApproval = (
     sourceId?: string,
     direction: FlowDirection = "bottom",
+    insertAfterSource = false,
   ) => {
     if (!editable) return;
     const before = graph();
@@ -675,7 +686,26 @@ export default function FormProcessEditor() {
       nodes: [...before.nodes, node],
       edges: [...before.edges],
     };
-    if (source)
+    const outgoing =
+      source && direction === "bottom" && insertAfterSource
+        ? next.edges.find((edge) => edge.source === source.id)
+        : undefined;
+    const outgoingTarget = outgoing
+      ? before.nodes.find((candidate) => candidate.id === outgoing.target)
+      : undefined;
+    if (outgoingTarget) {
+      next.nodes = next.nodes.map((candidate) =>
+        candidate.id !== id && candidate.position.y >= outgoingTarget.position.y
+          ? {
+              ...candidate,
+              position: { ...candidate.position, y: candidate.position.y + 130 },
+            }
+          : candidate,
+      );
+    }
+    if (outgoing)
+      next.edges = next.edges.filter((edge) => edge.id !== outgoing.id);
+    if (source) {
       next.edges = addEdge(
         {
           id:
@@ -693,9 +723,38 @@ export default function FormProcessEditor() {
         },
         next.edges,
       );
+      if (outgoing)
+        next.edges = addEdge(
+          {
+            id: `${id}-${outgoing.target}`,
+            source: id,
+            sourceHandle: "source-bottom",
+            target: outgoing.target,
+            targetHandle: outgoing.targetHandle ?? "target-top",
+            type: "smoothstep",
+            markerEnd: { type: MarkerType.ArrowClosed, color: "#8a97a6" },
+          },
+          next.edges,
+        );
+    }
     apply(next, before);
     setSelectedNodeId(id);
     setMenu(null);
+  };
+  const selectedToolbarSource =
+    nodes.find((node) => node.id === (selectedNodeId ?? "start")) ??
+    nodes.find((node) => node.id === "start");
+  const canAddApprovalFromToolbar =
+    editable &&
+    Boolean(selectedToolbarSource) &&
+    selectedToolbarSource?.data.kind !== "END";
+  const addApprovalFromToolbar = () => {
+    const source = selectedToolbarSource;
+    if (!source || source.data.kind === "END") {
+      showMessage("请先选择可继续向下配置的节点", "warning");
+      return;
+    }
+    addApproval(source.id, "bottom", true);
   };
   const connectNearby = (sourceId: string, direction: FlowDirection) => {
     const before = graph();
@@ -1005,28 +1064,38 @@ export default function FormProcessEditor() {
           ? []
           : ["bottom"]
         : node.data.kind === "APPROVAL"
-          ? [
-              ...(hasIncoming ? [] : (["top"] as FlowDirection[])),
-              ...(hasOutgoing
-                ? []
-                : (["right", "bottom", "left"] as FlowDirection[])),
-            ]
+          ? (["top", "right", "bottom", "left"] as FlowDirection[])
           : [];
     return {
       ...node,
       data: {
         ...node.data,
         editable,
-        selected: node.id === selectedNodeId,
+        selected: Boolean(node.selected || node.id === selectedNodeId),
         quickMenuDirection: menu?.nodeId === node.id ? menu.direction : null,
         quickDirections,
         canUseQuickAction: editable && quickDirections.length > 0,
-        onOpenQuickMenu: (direction: FlowDirection) => {
+      onOpenQuickMenu: (direction: FlowDirection) => {
           if (!connectNearby(node.id, direction))
             setMenu({ nodeId: node.id, direction });
         },
-        onQuickAdd: (direction: FlowDirection) =>
-          addApproval(node.id, direction),
+        onQuickAdd: (direction: FlowDirection) => {
+          const occupied =
+            direction === "top"
+              ? hasIncoming
+              : hasOutgoing;
+          if (occupied) {
+            showMessage(
+              direction === "top"
+                ? "该节点已有进入连线，不能重复连接"
+                : "普通节点只能有一条出去连线，当前节点已有出去连线",
+              "warning",
+            );
+            setMenu(null);
+            return;
+          }
+          addApproval(node.id, direction);
+        },
       },
     };
   }) as FlowNode[];
@@ -1166,8 +1235,8 @@ export default function FormProcessEditor() {
                   size="small"
                   variant="outlined"
                   startIcon={<Add />}
-                  onClick={() => addApproval()}
-                  disabled={!editable}
+                  onClick={addApprovalFromToolbar}
+                  disabled={!canAddApprovalFromToolbar}
                 >
                   审批节点
                 </Button>
@@ -1215,17 +1284,27 @@ export default function FormProcessEditor() {
                 }}
                 nodesConnectable={editable}
                 nodesDraggable={editable}
+                elementsSelectable={editable}
+                panOnDrag={interactionMode === "pan"}
+                selectionOnDrag={editable && interactionMode === "select"}
+                selectNodesOnDrag={interactionMode === "pan"}
                 deleteKeyCode={null}
                 defaultEdgeOptions={{
                   type: "smoothstep",
                   markerEnd: { type: MarkerType.ArrowClosed, color: "#8a97a6" },
                 }}
                 fitView
-                fitViewOptions={{ padding: 0.35 }}
+                fitViewOptions={STANDARD_FLOW_FIT_VIEW_OPTIONS}
                 proOptions={{ hideAttribution: true }}
               >
                 <Background color="#dfe4ea" gap={20} size={1} />
                 <Controls position="bottom-left">
+                  {editable ? (
+                    <FlowInteractionModeControls
+                      mode={interactionMode}
+                      onChange={setInteractionMode}
+                    />
+                  ) : null}
                   <ControlButton
                     aria-label="撤销"
                     onClick={undo}
@@ -1253,12 +1332,14 @@ export default function FormProcessEditor() {
                     placement="right"
                     arrow
                   >
-                    <ControlButton
-                      aria-label={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
-                      onClick={() => setShowMiniMap((value) => !value)}
-                    >
-                      <MapOutlined fontSize="small" />
-                    </ControlButton>
+                    <span>
+                      <ControlButton
+                        aria-label={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
+                        onClick={() => setShowMiniMap((value) => !value)}
+                      >
+                        <MapOutlined fontSize="small" />
+                      </ControlButton>
+                    </span>
                   </Tooltip>
                 </Controls>
                 {showMiniMap ? <FlowMiniMap /> : null}

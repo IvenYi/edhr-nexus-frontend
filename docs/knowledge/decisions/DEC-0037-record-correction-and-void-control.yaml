@@ -1,0 +1,94 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0037
+    title: 表单变更与作废受控申请及审核边界
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；表单变更与作废采用独立申请对象和独立落地语义，共用审核引擎但不共用业务状态；本决策只描述 P0 设计和内部知识投影，不声称生产代码、数据库迁移或运行时审核引擎已实现。"
+    decisionStatements:
+      - id: DEC-0037-01
+        statement: "provenance: user-confirmed；表单变更和表单作废分别创建独立申请，已完成记录不可直接编辑；变更产生新修订，作废只使当前有效修订失效且不修改字段值。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-02
+        statement: "provenance: user-confirmed；变更通过后新修订成为唯一当前有效修订，旧修订保留完整快照、签名和哈希并只读；作废通过后当前修订为 VOIDED，历史修订、投影、DHR 成员、签名和审计不物理删除。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-03
+        statement: "provenance: user-confirmed；P0 申请确认时申请人必须显式选择有权限、动作类型匹配且状态为已发布的审核流程版本；无候选时阻断确认，确认成功后冻结 workflowDefinitionId 和 workflowVersionId。申请确认即启动审核的事务和开始节点无按钮边界由 DEC-0041 补充。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-04
+        statement: "provenance: user-confirmed；审核中来源记录保持原业务主状态，只增加变更审核中或作废审核中标记并锁定冲突申请；退回或受限撤回不落地业务结果。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-05
+        statement: "provenance: user-confirmed；P0 支持顺序及并行审核，全部并行分支批准后汇合，任一退回则本轮退回且其余待办失效；不提供流程终止、强制跳转、跳过节点、加签或管理员直接批准。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-06
+        statement: "provenance: user-confirmed；申请人只可在当前审核轮次尚无批准或退回决定时撤回；当前任务处理人可在授权范围内转办，具备专门权限的管理人员可重新分配，二者均不改变流程节点、路径或业务结果且必须记录原因和审计身份。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-07
+        statement: "provenance: user-confirmed；P0 变更提供字段级前后对比和字段标红，使用稳定 fieldId、明细行 ID、字段路径和修订 ID 定位，不按显示名称匹配；该记录控制规划不能被解释为旧表单按钮配置已实现。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-08
+        statement: "provenance: user-confirmed；表单变更与作废的审核运行日志和不可变合规审计分层保存，提交、审核、退回、撤回、转办、重新分配及落地均需可追溯。"
+        status: specified
+        visibility: internal
+      - id: DEC-0037-09
+        statement: "provenance: user-confirmed；表单流程绑定是可选的。未绑定表单流程的表单提交校验通过后直接进入 COMPLETED/已完成，不创建表单流程实例或审核任务；绑定表单流程的表单在流程完成后进入同一 COMPLETED/已完成终态，并通过完成方式和流程审计记录区分是否经过审核。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-correction-void-design]
+    acceptanceScenarios:
+      - id: scenario.form-instance-completes-without-form-process
+        given: 表单填报节点未绑定表单流程且提交校验通过
+        when: 用户提交表单
+        then: 表单实例直接进入 COMPLETED/已完成，不创建表单流程实例或审核任务，并生成有效初始修订和提交审计事件
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [无流程提交状态测试, 不创建流程任务验证, 初始修订和审计验证]
+      - id: scenario.record-correction-creates-new-revision
+        given: 一条已完成且存在当前有效修订的记录
+        when: 申请人提交表单变更
+        then: 系统生成新修订并保留来源修订只读，未批准前不改写来源记录
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [修订状态和哈希持久化测试, 来源记录不变验证]
+      - id: scenario.record-control-explicit-workflow-freeze
+        given: 申请人拥有多条不同类型的已发布审核流程版本
+        when: 申请人在变更或作废入口完成签名并点击确认
+        then: 只能显式选择动作类型匹配的版本，确认成功后启动审核并冻结定义和版本引用
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-start-entry-user-confirmed]
+        evidenceRequirements: [候选过滤接口测试, 冻结引用持久化测试]
+      - id: scenario.record-control-parallel-review-and-marked-fields
+        given: 变更申请配置了并行审核分支且存在字段差异
+        when: 审核人查看申请并完成审核
+        then: 详情显示字段前后对比和标红，全部分支批准后才允许落地，任一退回则本轮退回
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [并行汇合测试, 字段差异渲染验证]
+      - id: scenario.record-control-intervention-audit
+        given: 当前审核任务需要转办或重新分配
+        when: 具备相应权限的人员执行并填写原因
+        then: 只更新任务处理人，不改变流程路径，并同时写入流程日志和不可变审计事件
+        evidenceIds: [evidence.record-correction-void-design]
+        evidenceRequirements: [权限边界测试, 流程日志和审计记录验证]
+    implementationDiscrepancies:
+      - id: discrepancy.record-control-p0-runtime-not-implemented
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
+        lineHint: 1
+        summary: "provenance: original-evidence；本决策为设计收敛，记录申请、修订、并行审核、字段标红、DHR 重汇总、投影冲销和审计落地尚无本次实现证据；不得标记为 implemented、verified 或 runtime。"
+        evidenceIds: [evidence.record-correction-void-design]
+      - id: discrepancy.record-control-no-database-migration
+        status: accepted
+        severity: medium
+        visibility: internal
+        path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
+        lineHint: 1
+        summary: "provenance: user-confirmed；本次本体门禁不创建数据库迁移；后续实现必须单独定义历史记录、快照、DHR 投影和回滚兼容策略。"
+        evidenceIds: [evidence.record-correction-void-design]

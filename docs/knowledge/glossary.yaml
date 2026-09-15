@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.12
+knowledgeModelVersion: 0.3.18
 terms:
   - id: term.workshop
     name: 车间
@@ -66,10 +66,76 @@ terms:
     aliases: [表单版本]
     status: implemented
     visibility: internal
+  - id: term.form-instance
+    name: 表单实例
+    definition: 基于表单模板版本创建的生产填报记录；表单流程绑定是可选的，未绑定流程时提交校验通过即进入已完成，绑定流程时在流程完成后进入同一已完成终态。
+    aliases: [生产表单实例, FormInstance]
+    status: specified
+    visibility: internal
   - id: term.form-process-template
     name: 表单流程模板
     definition: 可复用的表单流程结构定义，不绑定具体表单；包含填报阶段、审批节点、结束流转、可选的主体来源规则及主体的默认字段权限。未配置填报或审批主体时，操作范围默认为当前单租户内所有已认证用户。流程模板不定义具体表单字段。
     aliases: [表单流程定义, 表单审批流程模板]
+    status: specified
+    visibility: internal
+  - id: term.record-control-review-template
+    name: 记录控制审核流程模板
+    definition: 面向表单变更或表单作废申请确认后的可复用审核路径模板；首切片分类仅支持 CHANGE（表单变更）和 OBSOLETE（表单作废），模板不绑定具体表单记录。开始节点仅表示流程边界，不是用户任务且不配置按钮；审批节点固定提供审批、退回和转办，动作语义及显隐由系统固定，不能增删、替换、重复或隐藏。审批按钮的显示名称、样式和电子签名要求可配置，审批和退回可配置意见必填，转办不提供意见必填配置；模板不提供发起填报权限、表单校验或具体签名字段绑定。申请人在外部申请入口完成内容、申请人电子签名和已发布流程选择后点击确认，即构成审核发起并应直接进入首个审批节点。
+    aliases: [表单变更作废审核模板, 记录控制流程模板]
+    status: specified
+    visibility: internal
+  - id: term.record-control-application
+    name: 记录控制申请
+    definition: 表单变更或表单作废申请的公共上位概念；申请域负责申请内容、来源资格、申请人签名、业务锁和批准后业务落地。当前变更申请和作废申请仍保留独立对象与生命周期，不因该公共概念而合并状态。
+    aliases: [记录控制申请单, RecordControlApplication]
+    status: specified
+    visibility: internal
+  - id: term.record-change-action
+    name: 表单变更
+    definition: 对已完成表单通过独立受控申请产生新修订并替代当前有效修订的记录控制动作；上下文明确时可简称“变更”。中文产品文案不得再将该动作称为“更正”。
+    aliases: [变更, CHANGE]
+    status: specified
+    visibility: internal
+  - id: term.record-void-action
+    name: 表单作废
+    definition: 对表单整体无效发起独立受控申请，批准后使当前有效修订失效但不修改字段值的记录控制动作；上下文明确时可简称“作废”。
+    aliases: [作废, OBSOLETE]
+    status: specified
+    visibility: internal
+  - id: term.workflow-transfer-action
+    name: 转办
+    definition: 当前审核任务处理人在授权候选范围内变更该任务处理人的标准动作；不改变当前节点、流程路径或业务结果。中文产品文案不得使用“普通转办”作为并列正式名称。
+    aliases: [TRANSFER]
+    status: specified
+    visibility: internal
+  - id: term.workflow-reassignment-action
+    name: 重新分配
+    definition: 具备专门权限的管理人员变更当前审核任务处理人的标准干预动作；不改变当前节点、流程路径或业务结果。中文产品文案不得使用“管理重新分配”作为并列正式名称。
+    aliases: [REASSIGN]
+    status: specified
+    visibility: internal
+  - id: term.workflow-return-action
+    name: 退回
+    definition: 审核人对当前审核任务作出不通过并将本轮申请退回申请阶段的标准动作；它不是独立的“拒绝”动作。
+    aliases: [RETURN]
+    status: specified
+    visibility: internal
+  - id: term.workflow-definition-version
+    name: 工作流定义版本
+    definition: 工作流定义下受版本控制的流程图配置；记录控制申请只可显式选择与申请类型匹配的当前已发布版本，实例创建后固定保存定义和版本引用，并记录流程图快照摘要。
+    aliases: [流程定义版本, WorkflowDefinitionVersion]
+    status: implemented
+    visibility: internal
+  - id: term.record-control-workflow-integration
+    name: 记录控制流程集成边界
+    definition: 记录控制申请域与公共流程域之间的稳定协作边界；记录控制域拥有申请、来源资格、签名和业务落地，公共流程域拥有候选查询、显式版本启动、路由、任务和流程运行日志。阶段一已实现候选查询与显式启动，其他共享类型仍是后续运行时边界。
+    aliases: [记录控制审核集成边界, RecordControlWorkflowPort]
+    status: implemented
+    visibility: internal
+  - id: term.record-control-transfer-button
+    name: 记录控制审核转办按钮
+    definition: 记录控制审核模板审批节点中用于声明转办动作呈现属性的固定按钮配置项；动作语义和显隐由系统固定，显示名称和按钮样式可配置，不提供审批意见必填配置。运行时转办的权限、原因、任务状态和审计由记录控制审核任务动作规则负责。
+    aliases: [审核转办按钮, 记录控制转办按钮]
     status: specified
     visibility: internal
   - id: term.form-process-template-version
@@ -509,4 +575,46 @@ terms:
     definition: 数据审计事件中用于追溯业务变化的变更前和变更后业务字段快照；创建事件的变更前快照为空对象，更新、取消和关闭事件均应保存真实持久化对象变化前后的字段，不得使用方法参数伪造快照。快照持久化继续使用稳定内部字段和值，客户界面通过共享生产审计映射将已知字段、状态、生产形态和时间转换为中文业务展示；该转换不得改写原始快照或其证据完整性。
     aliases: [变更前后快照, 审计字段快照]
     status: implemented
+    visibility: internal
+  - id: term.record-correction-request
+    name: 表单变更申请
+    definition: 针对已完成记录发起的独立受控申请；申请提交新修订，经匹配的已发布审核流程批准后替代当前有效修订。
+    aliases: [变更申请, 变更申请单, RecordCorrectionRequest]
+    status: specified
+    visibility: internal
+  - id: term.record-void-request
+    name: 表单作废申请
+    definition: 针对记录整体无效发起的独立受控申请；批准后作废当前有效修订但不修改字段值。
+    aliases: [作废申请单, RecordVoidRequest]
+    status: specified
+    visibility: internal
+  - id: term.correction-revision
+    name: 变更修订
+    definition: 表单变更产生的完整数据修订，保留基于修订、哈希、生效区间和申请引用；历史修订只读且不可覆盖。
+    aliases: [记录修订, CorrectionRevision]
+    status: specified
+    visibility: internal
+  - id: term.record-impact-assessment
+    name: 记录影响评估
+    definition: 表单变更或作废申请对 DHR、放行、审核完整性和替代记录影响的结构化评估摘要。
+    aliases: [影响评估, ImpactAssessment]
+    status: specified
+    visibility: internal
+  - id: term.change-review-task
+    name: 记录控制审核任务
+    definition: 变更或作废申请在所选审核流程中的当前或历史节点任务；处理结果与签名引用属于任务运行数据。
+    aliases: [变更作废审核任务, ChangeReviewTask]
+    status: specified
+    visibility: internal
+  - id: term.record-control-parallel-review-group
+    name: 记录控制并行审核组
+    definition: 表单变更或作废审核流程中的并行审批结构，由一个并行拆分、两个或更多审批分支及一个并行汇聚组成；首版创建时默认生成两条分支，但分支数量没有固定上限。一个并行组必须在全部分支批准后汇聚，任一分支退回则本轮退回；不允许嵌套并行组或交叉汇聚。
+    aliases: [并行审核组, 并行审批组]
+    status: specified
+    visibility: internal
+  - id: term.workflow-event-log
+    name: 流程事件日志
+    definition: 用于展示和排查记录控制审核时间线的业务运行日志概念；阶段一继续由现有 WorkflowActionLog/workflow_action_log 承载，不新建 WorkflowEventLog 第二套表。合规证据另由不可变审计事件保存。
+    aliases: [审核流程日志, WorkflowEventLog]
+    status: specified
     visibility: internal

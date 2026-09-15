@@ -151,3 +151,9 @@ databaseChangeLog:
       file: db/changelog/0071-workflow-task-candidates.sql
   - include:
       file: db/changelog/0072-work-form-process-references.sql
+  - include:
+      file: db/changelog/0074-workflow-node-edge-created-at.sql
+  - include:
+      file: db/changelog/0075-record-control-definition-status.sql
+  - include:
+      file: db/changelog/0076-record-control-workflow-contract.sql

@@ -1,0 +1,72 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0042
+    title: 记录控制公共流程阶段一契约与实现边界
+    status: implemented
+    visibility: internal
+    context: "provenance: user-confirmed-and-original-evidence；本决策补充 DEC-0037 与 DEC-0041，冻结记录控制申请域和公共流程域的阶段一共享边界，并按当前源码、迁移和聚焦测试区分已实现的公共流程能力与尚未实现的申请确认、任务动作和结果落地能力。"
+    decisionStatements:
+      - id: DEC-0042-01
+        statement: "provenance: user-confirmed；记录控制域拥有申请、来源资格、申请人签名和批准后业务落地；公共流程域拥有候选流程、显式版本启动、路由、任务和流程运行日志。记录控制域不得复制公共流程引擎或任务模型，公共流程域不得直接读取或修改记录控制来源数据。"
+        status: specified
+        visibility: internal
+      - id: DEC-0042-02
+        statement: "provenance: original-evidence；公共流程阶段一已经实现 CHANGE/OBSOLETE 当前已发布候选查询和显式定义/版本启动：候选 REST 接口按业务类型要求对应发起权限，启动端口重新校验 RECORD_CONTROL 定义、业务类型及当前 PUBLISHED 版本，并绕过通用绑定规则。来源记录资格、数据范围和确认时授权仍由记录控制申请入口负责，候选结果不能作为确认授权凭证。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0042-03
+        statement: "provenance: original-evidence；公共流程显式启动按幂等键复用完全匹配的冻结请求，复用键对应定义、版本、业务类型、申请、申请人、签名引用或审计关联不一致时拒绝；实例保存定义与版本引用、申请业务 ID、申请人签名引用、审计关联、上下文快照和流程快照摘要，自动越过开始节点并创建排除申请人的首审批任务。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0042-04
+        statement: "provenance: original-evidence；阶段一共享类型和独立撤回端口已声明 APPROVE、RETURN、TRANSFER、撤回、重新分配、WorkflowResultEvent、结果处理器和业务详情投影边界，但当前运行时只闭环候选查询和显式启动。审批、退回、转办、撤回、重新分配、结果事件触发与消费，以及申请确认事务仍不得投影为 implemented、verified 或 runtime。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0042-05
+        statement: "provenance: original-evidence-and-inference-boundary；当前源码只声明 RecordControlWorkflowResultHandler 接口，尚无处理器实现、流程完成调用或结果消费幂等测试。接口注释描述的同步 P0 边界及单体事务传输选择在运行时闭环前不作为本阶段已确认或已实现的业务规则。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0042-06
+        statement: "provenance: original-evidence；流程实例迁移已增加幂等键、审计关联和流程快照摘要，非空幂等键受唯一索引约束；记录控制权限编码已进入迁移。2026-09-15 本地重建已验证 0076 changeset、三列、唯一索引、6 个权限码及 ADMIN 六项关联。显式启动沿用 WorkflowActionLog 写入实例开始日志，阶段一没有创建 WorkflowEventLog 第二套运行日志表。非管理员权限矩阵、并发幂等争用和不可变合规审计关联仍需发布级验证。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-control-workflow-stage1-contract-types, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-result-handler-boundary, evidence.record-control-workflow-stage1-withdrawal-port, evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-integration-contract, evidence.record-control-workflow-stage1-local-validation]
+    acceptanceScenarios:
+      - id: scenario.record-control-stage1-candidate-query
+        given: 用户具有对应变更或作废发起权限且存在类型匹配的当前已发布审核版本
+        when: 用户按 CHANGE 或 OBSOLETE 查询候选
+        then: 公共流程只返回类型匹配的当前已发布版本及稳定定义和版本标识，不返回草稿或历史非当前版本
+        evidenceIds: [evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-local-validation]
+        evidenceRequirements: [聚焦服务测试, 接口权限声明测试, 后续真实非管理员权限矩阵]
+      - id: scenario.record-control-stage1-explicit-start
+        given: 记录控制申请域传入申请 ID、申请人、申请人签名引用、显式定义与版本、幂等键和审计关联
+        when: 调用 RecordControlWorkflowPort.start
+        then: 公共流程校验并冻结所选当前已发布版本，越过开始节点创建排除申请人的首审批任务；完全相同的幂等请求不重复创建，冲突复用被拒绝
+        evidenceIds: [evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests]
+        evidenceRequirements: [引擎聚焦测试, 服务聚焦测试, 本地迁移与唯一索引验证, 后续唯一索引并发验证]
+    implementationDiscrepancies:
+      - id: discrepancy.record-control-stage1-application-integration-pending
+        status: accepted
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowPort.java
+        lineHint: 1
+        summary: "provenance: original-evidence；公共流程 Java 端口与显式启动已实现，但记录控制申请实体、申请确认事务、来源资格与签名真实性复验、申请侧流程引用回写和端到端审计尚未实现。"
+        evidenceIds: [evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-integration-contract]
+      - id: discrepancy.record-control-stage1-result-delivery-pending
+        status: accepted
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowResultHandler.java
+        lineHint: 1
+        summary: "provenance: original-evidence；WorkflowResultEvent 与同步处理器接口已声明，但流程完成/退回/撤回尚未触发处理器，记录控制侧没有处理实现和 eventId 幂等消费测试。"
+        evidenceIds: [evidence.record-control-workflow-stage1-contract-types, evidence.record-control-workflow-stage1-result-handler-boundary]
+      - id: discrepancy.record-control-stage1-permission-and-concurrency-verification-pending
+        status: accepted
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql
+        lineHint: 1
+        summary: "provenance: original-evidence-and-evidence-gap；本地真实迁移、三列、唯一索引、6 个权限码、ADMIN 六项关联及认证候选空列表已验证；尚未执行唯一索引并发争用和非管理员组合账号 CHANGE/OBSOLETE 权限矩阵。"
+        evidenceIds: [evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-local-validation]

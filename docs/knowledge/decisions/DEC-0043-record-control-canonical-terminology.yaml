@@ -1,0 +1,39 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0043
+    title: 记录控制中文产品动作术语统一
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；记录控制设计文档曾混用更正、变更、普通转办和管理重新分配，增加产品、研发和验收沟通成本。本决策统一现行中文产品动作名，同时明确中文显示术语调整不得破坏稳定技术标识。"
+    decisionStatements:
+      - id: DEC-0043-01
+        statement: "provenance: user-confirmed；记录控制域现行中文产品动作名统一为表单变更、表单作废、转办、重新分配和退回；上下文明确时表单变更与表单作废可简称变更与作废。"
+        status: specified
+        visibility: internal
+      - id: DEC-0043-02
+        statement: "provenance: user-confirmed；更正、普通转办和管理重新分配不得作为并列的现行中文产品动作名继续用于新文档、页面文案、接口说明或验收用例；历史中文旧称只可在说明其已废弃时出现。"
+        status: specified
+        visibility: internal
+      - id: DEC-0043-03
+        statement: "provenance: implementation-compatibility；correction、CHANGE、OBSOLETE、TRANSFER、RETURN 及既有 Java 类名、数据库字段、接口字段和权限码是稳定技术标识。本次只调整中文产品投影，不授权破坏性重命名、历史审计改写或数据迁移。"
+        status: specified
+        visibility: internal
+      - id: DEC-0043-04
+        statement: "provenance: scope-boundary；CAPA 的纠正措施和普通语义中的请求拒绝不属于记录控制动作术语，不得因本决策被机械替换。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-control-terminology-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.record-control-canonical-terms
+        given: 产品、研发或验收人员阅读当前记录控制产品内容
+        when: 查看表单变更、表单作废及审核任务动作名称
+        then: 中文动作统一显示为表单变更、表单作废、转办、重新分配和退回，旧称不作为现行产品动作名
+        evidenceIds: [evidence.record-control-terminology-user-confirmed]
+        evidenceRequirements: [权威产品文档术语扫描, 知识模型校验]
+      - id: scenario.record-control-technical-identifiers-remain-stable
+        given: 中文产品动作术语已经统一
+        when: 检查代码、接口、数据库、权限和历史审计标识
+        then: 稳定技术标识和历史值不因中文术语治理被破坏性重命名或改写
+        evidenceIds: [evidence.record-control-terminology-user-confirmed]
+        evidenceRequirements: [源码差异检查, 数据迁移差异检查]

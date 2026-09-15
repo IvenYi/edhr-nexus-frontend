@@ -1,12 +1,16 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.12`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.18`，schema 版本：`1.1.0`。
 
 表单流程公共主体选择器第一版统一支持用户、部门和角色三类稳定主体引用。部门默认覆盖本部门及下级，也可切换为仅本部门；审批节点到达时按最新组织或角色关系解析候选人，填报权限在用户访问时按最新关系判断。用户组、部门负责人和业务责任人尚无完整主数据与解析契约，不进入当前配置入口。详见 `DEC-0029`。
 
 表单流程配置当前采用“主体默认权限 + 绑定级真实字段例外”模型：表单流程模板可复用于多个表单，节点可选保存填报或审批主体及“全部可编辑/全部只读”默认权限；未配置填报主体/权限组表示当前单租户内所有已认证用户可填报，未配置审批主体表示所有已认证用户可审批。作业流程的表单填写节点绑定具体表单模板版本后，才可按该版本真实字段的稳定 `fieldId` 配置例外权限，未配置例外时继承主体默认权限。开放范围不通过展开全量用户实现，仍受认证、流程实例、节点和任务状态约束。流程字段、字段槽位、业务字段分类、字段权限组和权限模板仅作为历史兼容概念，不属于当前新配置入口。详见 `DEC-0023` 与 `DEC-0033`。
 
 表单流程节点按钮与按钮事件属于独立的配置层：第一版动作仅支持保存、提交、审批和退回，签署事件仅支持动作前的账户密码签名，并可选择是否填充签名字段，不暴露处理标识。流程版本只声明事件；具体字段绑定发生在作业流程表单填写节点并保存所选表单版本的稳定 `fieldId`。这些配置不代表运行时动作或事件执行已经实现。详见 `DEC-0025`；`DEC-0024` 仅作为历史方案保留。
+
+记录控制审核流程模板与表单流程模板分开：审核模板只配置表单变更或作废申请确认后的审批路径、并行结构、审批主体，以及审批节点固定动作的按钮显示名称、样式、意见要求和电子签名，不配置发起填报权限、表单校验或具体签名字段绑定。开始节点只表示流程边界，不是用户任务且不配置按钮；申请内容、申请人电子签名和已发布流程选择在记录控制申请入口完成，点击确认即构成审核发起并应直接进入首个审批节点。审批节点固定提供审批、退回和转办，动作语义及显隐由系统固定，不能删除、替换、重复或隐藏；审批和退回可配置意见必填，转办不提供意见必填配置。转办的权限、原因、任务状态和审计沿用审核任务动作规则。每个审批节点发布前必须配置审批主体。公共流程阶段一已实现按 CHANGE/OBSOLETE 和对应发起权限查询当前已发布候选，以及通过 Java 端口按显式定义/版本幂等创建实例、保存审计关联和流程快照摘要、越过开始节点并创建排除申请人的首审批任务。记录控制申请入口、签名真实性验证、来源资格与业务锁、申请与流程原子事务、审批/退回/转办/撤回/重新分配、结果投递和业务落地仍待后续实现验证；结果处理器当前只有接口声明，不得解释为同步投递已经闭环。详见 `DEC-0037`、`DEC-0039`、历史决策 `DEC-0040`、替代决策 `DEC-0041` 与阶段一实现边界 `DEC-0042`。
+
+记录控制域的现行中文产品动作名统一为“表单变更、表单作废、转办、重新分配、退回”。上下文明确时“表单变更/表单作废”可简称“变更/作废”；“更正、普通转办、管理重新分配”不得作为并列现行产品动作名继续用于新文档、页面、接口说明或验收用例。`correction`、`CHANGE`、`OBSOLETE`、`TRANSFER`、`RETURN` 以及现有 Java、数据库和权限标识属于稳定技术契约，本次不做破坏性重命名。CAPA 的“纠正措施”和普通语义中的“请求被拒绝”不属于记录控制动作术语治理范围。详见 `DEC-0043`。
 
 本目录是 eDHR 业务概念、关系、规则、决策、证据和未决问题的机器可读权威来源。人员阅读架构文档、业务运行代码和界面都可以提供证据，但不能替代这里的结构化知识基线。
 
@@ -18,6 +22,8 @@
 - `execution-contracts.yaml`：规则引用的已验证执行契约注册表；当前包含生产对象审计快照写入契约。生产审计中文字段属于展示投影，不新增或改写后端执行契约。
 - `glossary.yaml`：稳定术语、定义、别名、知识状态和可见性。
 - `ontology.yaml`：概念和概念间关系。
+- `facts/*.yaml`：会被规则、状态、流程、权限、审计或执行契约引用的受控业务事实目录；每个事实同时声明稳定 ID、实现来源 `sourcePath`、规则语义别名 `aliases` 和最小 provenance。
+- `implementation-anchors/*.yaml`：将概念、事实、规则和执行契约连接到代码、接口、数据库、页面和测试的实现锚点；锚点必须记录来源修订、定位、采集日期和复核状态。
 - `rules/*.yaml`：按业务域维护的结构化规则。
 - `rules/identity.yaml`：身份域主体在运行时展开、去重和来源保留规则。
 - `decisions/*.yaml`：已确认决策、背景、替代关系、验收场景和实现差异。
@@ -50,6 +56,8 @@
 
 `schema.yaml` 的 `collectionTypes` 将各顶层集合名映射到 `recordTypes`，`nestedCollectionTypes` 将决策内嵌集合映射到对应记录类型。校验器必须通过这两张映射发现记录，不得另行硬编码文件与记录类型对应关系；映射目标必须是已定义的 `recordTypes`，未知集合必须被拒绝。
 
+`0.3.16 / schema 1.1.0` 是 P0 基线发布：事实目录、实现锚点、最小 provenance、正式 JUnit 校验、CI 门禁和表单流程版本引用首个试点已经纳入版本化知识资产。当前已扩展到全部非废弃规则事实，详见 `docs/knowledge/impact-analysis/ontology-p0-coverage.md`。目录覆盖不等于每个事实都已实现；事实状态必须服从逐条证据，规则 `implemented` 不能单独证明事实实现。P0 仍保留独立质量门禁和逐事实符号级定位缺口，详见 `DEC-0038`；前者关闭前不得把整个 P0 标记为 `verified`，后者暂缓到 P1。
+
 `allowedFieldTypeDescriptors` 是 `fieldTypes` 的封闭语法。只允许 `string`、`integer`、`condition-expression`、`rule-result`、指向现有枚举的 `enum:<enumKey>`、`array<string>`，以及指向现有记录类型的 `array<recordTypeName>`。未知描述符、缺失枚举和缺失记录类型引用均为校验错误。正式 JUnit 校验器会消费这些结构约束，包括 ID 前缀、条件表达式形状、证据路径策略和执行契约引用完整性。
 
 `schema.yaml.conditionBranchConfiguration` 定义条件节点配置的业务形状：`conditionBranches` 是有序、非空的分支数组，每个分支独立保存 `conditionRule`、字段目录版本和字段显示快照；`conditionDefaultBranch` 是唯一的“否则”默认分支，不携带条件 AST。输入契约只接受 `conditionBranches[].conditionRule` 与 `conditionDefaultBranch`，不兼容 `config.conditionRule`、分支 `rule` 或固定 `condition-true`/`condition-false` 出口；旧结构不属于当前输入和兼容契约。该结构描述配置和发布校验契约，不表示运行时字段来源、求值、实例快照或节点推进已经实现。
@@ -70,13 +78,17 @@
 - 决策和决策声明使用 `DEC-` 前缀，验收场景使用 `scenario.`，实现差异使用 `discrepancy.`；业务变化通过新决策的 `supersedes` 显式关联旧决策。
 - 标识一经引用不得复用或改变语义；嵌套的决策声明、验收场景和实现差异同样必须全局唯一。
 - 所有 `termId`、关系端点、`evidenceIds`、枚举值、必填字段和知识模型版本必须通过 `schema.yaml` 校验。
+- 所有非废弃规则条件中的 `fact` 必须通过事实 ID 或事实 `aliases` 解析到事实目录，且使用的操作符必须在该事实的 `allowedOperators` 中；`factCatalogProfile` 只表示领域目录分组，不能用于绕过事实校验。废弃规则保留历史表达，不进入当前事实目录强制覆盖。
+- 事实的 `sourcePath` 是实现来源定位，不等同于规则中的业务语义路径；规则兼容路径写入 `aliases`，新规则优先引用稳定事实 ID。
+- 实现锚点必须指向已存在的概念、事实、规则或执行契约，并至少包含一类代码、接口、数据库、页面或测试引用。
+- P0 事实和实现锚点的最小 provenance 包括 `sourceRevision`、`sourceLocator`、`capturedAt` 和 `reviewStatus`；`working-tree` 表示当前未提交工作树，不能被解释为已发布 Git 版本。
 
 ## 维护流程
 
-1. 主智能体从已确认讨论生成 `decisionPackage`，区分 `confirmed`、`inferred` 和 `unresolved`。
-2. 本体建模智能体读取当前基线、schema、相关实现和历史决策，只将 `confirmed` 写入权威资产。
+1. 主智能体从已确认讨论生成 `decisionPackage`，区分 `confirmed`、`inferred` 和 `unresolved`，并声明本体升级阶段和退出条件。
+2. 本体建模智能体读取当前基线、schema、相关实现和历史决策，只将 `confirmed` 写入权威资产；P0 任务优先登记规则实际引用的事实和关键实现锚点。
 3. `unresolved` 非空时停止正式建模并返回 `blocked-by-question`；冲突通过新决策和 `supersedes` 解决，不静默覆盖。
-4. 状态推进必须补齐相应实现、测试和执行契约证据；缺少任一项不得标记 `verified`。
+4. 状态推进必须补齐相应实现、测试和执行契约证据；缺少任一项不得标记 `verified`。P0/P1/P2/P3 阶段没有退出证据不得标记阶段完成。
 5. 修改后执行 Maven/JUnit 正式校验并进入独立质量验证；Ruby bootstrap 仅用于最小诊断。
 
 ## 正式校验
@@ -102,7 +114,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.12" && schema.fetch("schemaVersion") == "1.0.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.18" && schema.fetch("schemaVersion") == "1.1.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

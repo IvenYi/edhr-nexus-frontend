@@ -1,0 +1,244 @@
+knowledgeModelVersion: 0.3.18
+implementationAnchors:
+  - id: anchor.core.identity-subject-resolution
+    targetId: concept.identity-runtime-subject-resolution
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java]
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/identity/service/SubjectResolverTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
+    sourceRevision: working-tree
+    sourceLocator: SubjectResolver
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.core.product-process-resolution
+    targetId: concept.product-process-version
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java]
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionServiceTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service, evidence.product-process-resolution-service-test]
+    sourceRevision: working-tree
+    sourceLocator: ProductProcessResolutionService
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.core.production-work-order
+    targetId: concept.work-order
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java]
+    apiReferences: [POST /api/v1/production/work-orders]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.work-order-controller, evidence.work-order-audit-snapshot-controller-test]
+    sourceRevision: working-tree
+    sourceLocator: WorkOrderController
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.core.production-object-runtime
+    targetId: concept.production-object
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java]
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service, evidence.production-service-test]
+    sourceRevision: working-tree
+    sourceLocator: ProductionService
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.core.production-work-configuration
+    targetId: concept.production-work
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java]
+    apiReferences: ['POST /api/v1/workflow/work-templates/{id}/versions/{versionId}/publish']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+    sourceRevision: working-tree
+    sourceLocator: WorkTemplateController
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.core.workshop-management
+    targetId: concept.workshop
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java]
+    apiReferences: [GET /api/v1/master-data/workshops]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/WorkshopControllerTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-controller, evidence.workshop-controller-test]
+    sourceRevision: working-tree
+    sourceLocator: WorkshopController
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: anchor.core.record-control-review-template
+    targetId: concept.record-control-review-template
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java]
+    apiReferences: ['POST /api/v1/workflow/review-templates/{id}/versions/{versionId}/publish']
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTemplateControllerTest.java]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+    sourceRevision: working-tree
+    sourceLocator: 'WorkflowTemplateController.validatePublishableApprovalSubjects / validateButtonConfiguration'
+    capturedAt: '2026-09-15'
+    reviewStatus: unreviewed
+  - id: anchor.core.record-control-review-template-required-approvers
+    targetId: rule.record-control.review-template-required-approver-subjects
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java]
+    apiReferences: ['POST /api/v1/workflow/review-templates/{id}/versions/{versionId}/publish']
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTemplateControllerTest.java]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
+    sourceRevision: working-tree
+    sourceLocator: validatePublishableApprovalSubjects
+    capturedAt: '2026-09-14'
+    reviewStatus: unreviewed
+  - id: anchor.core.record-control-transfer-button
+    targetId: concept.record-control-transfer-button
+    targetType: concept
+    codeReferences:
+      - gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java
+    apiReferences:
+      - 'PUT /api/v1/workflow/review-templates/{id}/versions/{versionId}/graph'
+      - 'POST /api/v1/workflow/review-templates/{id}/versions/{versionId}/publish'
+    databaseReferences: []
+    uiReferences:
+      - gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTemplateControllerTest.java
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+    sourceRevision: working-tree
+    sourceLocator: 'WorkflowActionConfig.availableActions / validateButtonConfiguration'
+    capturedAt: '2026-09-15'
+    reviewStatus: unreviewed
+  - id: anchor.core.record-control-transfer-button-rule
+    targetId: rule.record-control.review-template-transfer-button-present
+    targetType: rule
+    codeReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java
+    apiReferences:
+      - 'POST /api/v1/workflow/review-templates/{id}/versions/{versionId}/publish'
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTemplateControllerTest.java]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+    sourceRevision: working-tree
+    sourceLocator: 'validateButtonConfiguration'
+    capturedAt: '2026-09-15'
+    reviewStatus: unreviewed
+  - id: anchor.core.record-control-review-template-start-no-buttons
+    targetId: rule.record-control.review-template-start-has-no-buttons
+    targetType: rule
+    codeReferences:
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java
+    apiReferences:
+      - 'PUT /api/v1/workflow/review-templates/{id}/versions/{versionId}/graph'
+      - 'POST /api/v1/workflow/review-templates/{id}/versions/{versionId}/publish'
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTemplateControllerTest.java]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+    sourceRevision: working-tree
+    sourceLocator: 'ReviewTemplateEditor start panel / WorkflowTemplateController.validateButtonConfiguration'
+    capturedAt: '2026-09-15'
+    reviewStatus: unreviewed
+  - id: anchor.core.record-control-workflow-integration
+    targetId: concept.record-control-workflow-integration
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowContracts.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowPort.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowWithdrawalPort.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    apiReferences: ['GET /api/v1/workflow/record-control/candidates']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql]
+    uiReferences: []
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-contract-types, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-withdrawal-port, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-local-validation]
+    sourceRevision: working-tree
+    sourceLocator: 'RecordControlWorkflowPort / RecordControlWorkflowService / WorkflowEngine.createRecordControlInstance'
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: anchor.core.record-control-explicit-published-workflow-selection
+    targetId: rule.record-control.explicit-published-workflow-selection
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    apiReferences: ['GET /api/v1/workflow/record-control/candidates']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql]
+    uiReferences: []
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests]
+    sourceRevision: working-tree
+    sourceLocator: 'RecordControlWorkflowService.listPublishedCandidates/start / WorkflowEngine.createRecordControlInstance'
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: anchor.core.workflow-definition-version-record-control-start
+    targetId: concept.workflow-definition-version
+    targetType: concept
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    apiReferences: ['GET /api/v1/workflow/record-control/candidates']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql]
+    uiReferences: []
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests]
+    sourceRevision: working-tree
+    sourceLocator: 'WorkflowDefinitionVersion / WorkflowEngine.createRecordControlInstance'
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed

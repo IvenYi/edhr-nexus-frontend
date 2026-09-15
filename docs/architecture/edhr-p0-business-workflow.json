@@ -1,0 +1,108 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "eDHR P0 业务闭环",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": { "label": "现场与工作台" },
+        "backend": { "label": "配置与填报" },
+        "security": { "label": "审核与放行" },
+        "messagebus": { "label": "作业触发" },
+        "database": { "label": "记录修订" }
+      }
+    },
+    "views": [
+      {
+        "id": "configure-to-execute",
+        "label": "配置到生产",
+        "focus": ["config", "workorder", "execute", "txn", "form"],
+        "note": "先绑定模板和制程，再按批次过站填表；作业只作为生产旁路进入同一张记录。"
+      },
+      {
+        "id": "dhr-to-release",
+        "label": "汇总到放行",
+        "focus": ["form", "summary", "release"],
+        "note": "已完成记录进入 DHR 汇总和完整性检查，审核通过后放行并冻结。"
+      },
+      {
+        "id": "record-control",
+        "label": "表单变更/作废",
+        "focus": ["form", "correction", "summary", "postRelease"],
+        "note": "已完成记录不能直接改。放行前走变更/作废；放行后内容变更属于 P1。"
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "modeling", "label": "配置建模" },
+    { "id": "shopfloor", "label": "生产现场" },
+    { "id": "records", "label": "表单与作业" },
+    { "id": "quality", "label": "DHR 与放行" },
+    { "id": "control", "label": "记录控制", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "setup", "label": "配置", "fromCol": 0, "toCol": 1 },
+    { "id": "produce", "label": "生产", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "closeout", "label": "放行", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "shop_work", "label": "批次执行", "lane": "shopfloor", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
+    { "id": "control_path", "label": "受控申请", "lane": "control", "fromCol": 3, "toCol": 5, "variant": "security" }
+  ],
+  "mainPath": ["config", "workorder", "execute", "form", "summary", "release"],
+  "nodes": [
+    { "id": "config", "lane": "modeling", "col": 0, "type": "backend", "label": "配置建模", "sublabel": "主数据 / 模板 / 制程", "width": 132 },
+    { "id": "workorder", "lane": "shopfloor", "col": 1, "type": "frontend", "label": "工单批次", "sublabel": "创建 / 导入 / 拆分", "width": 132 },
+    { "id": "execute", "lane": "shopfloor", "col": 2, "type": "frontend", "label": "生产执行", "sublabel": "工序过站", "width": 132 },
+    { "id": "txn", "lane": "records", "col": 2, "type": "messagebus", "label": "作业处理", "sublabel": "全局 / 按需", "width": 132 },
+    { "id": "form", "lane": "records", "col": 3, "type": "backend", "label": "表单填报审核", "sublabel": "完成后只读", "width": 140 },
+    { "id": "correction", "lane": "control", "col": 3, "type": "database", "label": "表单变更 / 表单作废", "sublabel": "新修订，不覆盖", "tag": "P0", "width": 148 },
+    { "id": "summary", "lane": "quality", "col": 4, "type": "security", "label": "DHR 汇总审核", "sublabel": "完整性检查", "width": 140 },
+    { "id": "release", "lane": "quality", "col": 5, "type": "security", "label": "放行归档", "sublabel": "冻结证据", "width": 132 },
+    { "id": "postRelease", "lane": "control", "col": 5, "type": "security", "label": "放行后变更", "sublabel": "解冻 / 重放行", "tag": "P1", "width": 140 }
+  ],
+  "edges": [
+    { "from": "config", "to": "workorder", "label": "按制程开工" },
+    { "from": "workorder", "to": "execute" },
+    { "from": "execute", "to": "form", "label": "待填表单", "variant": "emphasis" },
+    { "from": "execute", "to": "txn", "label": "触发作业", "role": "branch" },
+    { "from": "txn", "to": "form", "label": "作业表单" },
+    { "from": "form", "to": "summary", "label": "已完成证据" },
+    { "from": "summary", "to": "release", "label": "审核通过", "variant": "emphasis" },
+    { "from": "form", "to": "correction", "label": "已完成不可改", "variant": "security", "role": "branch" },
+    { "from": "correction", "to": "summary", "label": "通过后重汇总", "variant": "dashed", "role": "return" },
+    { "from": "release", "to": "postRelease", "label": "P0 阻断", "variant": "security", "role": "error" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "一条主路径",
+      "items": [
+        "配置先于生产，制程决定表单、作业、DHR 和放行单",
+        "过站填表和作业都汇入同一套已完成记录",
+        "DHR 审核通过后才能放行并冻结"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "记录控制",
+      "items": [
+        "已完成记录不能直接编辑",
+        "变更生成新修订，旧修订只读保留；作废不改字段",
+        "放行前是 P0，放行后内容变更是 P1"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "菜单取舍",
+      "items": [
+        "记录管理下只放记录控制，不叫变更管理",
+        "不按表单 / DHR / 记录本复制三套入口",
+        "系统管理不再放表单变更入口"
+      ]
+    }
+  ]
+}

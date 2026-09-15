@@ -1,0 +1,67 @@
+knowledgeModelVersion: 0.3.18
+evidence:
+  - id: evidence.record-control-workflow-stage1-contract-types
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowContracts.java
+    description: 公共流程域与记录控制域的阶段一共享边界类型；声明 CHANGE/OBSOLETE、候选版本、显式启动命令与结果、标准任务动作、撤回、重新分配、流程结果事件和业务详情投影。类型声明本身不证明审批、退回、转办、撤回、重新分配或结果投递运行时已经实现。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-port
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowPort.java
+    description: 记录控制申请域调用公共流程域的 Java 端口，当前实现能力为按业务类型查询当前已发布候选和按显式流程定义/版本启动实例。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-candidate-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
+    description: 候选查询按 RECORD_CONTROL、CHANGE/OBSOLETE、定义 PUBLISHED 和当前版本 PUBLISHED 过滤；启动命令要求申请、申请人签名引用、幂等键和审计关联非空，并委托显式版本引擎入口。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-candidate-api
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java
+    description: 已发布候选 REST 入口及类型对应发起权限边界；CHANGE 要求 record-control.corrections.create，OBSOLETE 要求 record-control.voids.create。该权限检查不替代记录控制申请入口对来源记录资格、数据范围和确认时授权的复验。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-explicit-start-engine
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    description: 显式记录控制版本启动实现；绕过绑定规则，校验 RECORD_CONTROL 定义、CHANGE/OBSOLETE 类型和当前 PUBLISHED 版本，按幂等键复用完全匹配请求或拒绝冲突，保存流程定义/版本、申请业务 ID、申请人签名引用、审计关联、上下文快照和 SHA-256 流程快照摘要，并自动越过开始节点创建首审批任务且排除申请人。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-result-handler-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowResultHandler.java
+    description: P0 同步结果处理器的 Java 接口边界；当前仅声明 WorkflowResultEvent 消费端口，尚无记录控制处理器实现、流程完成触发调用或结果消费幂等测试，因此不能作为已实现结果投递契约。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-withdrawal-port
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowWithdrawalPort.java
+    description: 记录控制申请域调用公共流程域的受限撤回 Java 端口声明；当前没有实现类、资格校验、待办原子失效或聚焦测试，因此只证明阶段一共享边界已冻结，不证明撤回运行时已实现。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0076-record-control-workflow-contract.sql
+    description: 流程实例增加幂等键、审计关联和流程快照摘要，并为非空幂等键创建唯一索引；同时登记记录控制页面、发起和查看全部申请权限并授予 ADMIN。2026-09-15 本地重建已验证迁移实际应用、三列、唯一索引、6 个权限码及 ADMIN 六项关联；非管理员权限矩阵和并发幂等争用仍未验证。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-engine-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java
+    description: 聚焦覆盖显式当前已发布版本启动、绕过绑定规则、开始节点无任务、首审批候选排除申请人、快照与审计关联、同请求幂等复用、冲突复用拒绝及草稿/错配版本拒绝。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-service-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
+    description: 聚焦覆盖当前已发布候选过滤、显式版本启动端口返回冻结引用及不完整启动命令阻断。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-api-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java
+    description: 聚焦覆盖候选接口类型对应发起权限声明、OBSOLETE 候选映射和不支持业务类型拒绝；不等同于真实认证账号权限矩阵或浏览器验收。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-integration-contract
+    type: document
+    path: docs/development/record-control-work-allocation-and-integration-contract.md
+    description: 记录控制执行域与公共流程域的职责、共享 DTO、显式启动、候选查询、权限、日志和结果端口协作说明；本次以源码、迁移和测试重新核对其中已实现部分，其余内容仅作为 secondary-reference、候选推断或后续范围。
+    visibility: internal
+  - id: evidence.record-control-workflow-stage1-local-validation
+    type: document
+    path: docs/knowledge/evidence/record-control-workflow-stage1-local-validation.md
+    description: 2026-09-15 本地原始验证记录；包含重建前备份、应用与 Liquibase 88/88 启动结果、0076 changeset、实例三列、幂等唯一索引、6 个权限码、ADMIN 关联计数及认证候选空列表，并明确并发幂等与非管理员权限矩阵缺口。
+    visibility: internal

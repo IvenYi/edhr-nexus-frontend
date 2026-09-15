@@ -1,5 +1,5 @@
-knowledgeModelVersion: 0.3.12
-schemaVersion: 1.0.0
+knowledgeModelVersion: 0.3.18
+schemaVersion: 1.1.0
 dimensions:
   status:
     definition: 知识或规则的成熟度；它不直接决定可进入哪些发布投影。
@@ -18,7 +18,12 @@ enums:
       definition: 每个 source 必须关联一个 target；一个 target 可被零到多个 source 关联。
   evidenceTypes: [code, database, test, document]
   ruleOperators: [in, unique-within, exists, is-referenceable, exists-in, belongs-to, equals, not-equals, equals-ignore-case, contains, contains-actor, starts-with, ends-with-ignore-case, is-null, is-present, greater-than-or-equal, explicitly-selected, configurable, persisted, planned]
-  ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, persist-unique-code, persist-default-status, require-explicit-process-version, compute-rdo-version-status, omit-projection, freeze-execution-snapshot, persist-form-required-configuration, persist-flow-configuration, evaluate-condition-branches, remove-configuration, block, block-fields-and-delete, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-production-work-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation, resolve-published-production-work-flow, manage-production-work-flow-draft, write-audit-record, resolve-subject-users, create-logical-workflow-task, complete-logical-task, rebuild-query-projection, return-query-projection, notify, update-reference, allow-with-governance]
+  ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, persist-unique-code, persist-default-status, require-explicit-process-version, compute-rdo-version-status, omit-projection, freeze-execution-snapshot, persist-form-required-configuration, persist-flow-configuration, evaluate-condition-branches, remove-configuration, block, block-fields-and-delete, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-production-work-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation, resolve-published-production-work-flow, manage-production-work-flow-draft, write-audit-record, resolve-subject-users, create-logical-workflow-task, complete-logical-task, complete-form-instance, rebuild-query-projection, return-query-projection, notify, update-reference, allow-with-governance]
+  factCatalogProfiles: [form-process-binding, core-business]
+  factSourceTypes: [configuration, database, runtime-context, derived]
+  factAvailabilities: [configuration, runtime, configuration-and-runtime, not-available]
+  anchorTargetTypes: [concept, fact, rule, executionContract]
+  provenanceReviewStatuses: [unreviewed, reviewed, stale]
   discrepancyStatuses: [open, accepted, resolved]
   discrepancySeverities: [critical, high, medium, low]
 collectionTypes:
@@ -26,6 +31,8 @@ collectionTypes:
   concepts: concept
   relations: relation
   rules: rule
+  facts: fact
+  implementationAnchors: implementationAnchor
   decisions: decision
   evidence: evidence
   questions: openQuestion
@@ -56,6 +63,8 @@ idPrefixes:
   evidence: evidence.
   openQuestion: question.
   executionContract: execution.
+  fact: fact.
+  implementationAnchor: anchor.
   decisionStatement: DEC-
   acceptanceScenario: scenario.
   implementationDiscrepancy: discrepancy.
@@ -102,6 +111,44 @@ recordTypes:
       explanation: string
       evidenceIds: array<string>
       executionContractId: string
+      factCatalogProfile: enum:factCatalogProfiles
+  fact:
+    requiredFields: [id, name, conceptId, valueType, sourceType, sourcePath, aliases, availability, allowedOperators, status, visibility, evidenceIds]
+    fieldTypes:
+      id: string
+      name: string
+      conceptId: string
+      valueType: string
+      sourceType: enum:factSourceTypes
+      sourcePath: string
+      aliases: array<string>
+      availability: enum:factAvailabilities
+      allowedOperators: array<string>
+      status: enum:statuses
+      visibility: enum:visibilities
+      evidenceIds: array<string>
+      sourceRevision: string
+      sourceLocator: string
+      capturedAt: string
+      reviewStatus: enum:provenanceReviewStatuses
+  implementationAnchor:
+    requiredFields: [id, targetId, targetType, codeReferences, apiReferences, databaseReferences, uiReferences, testReferences, status, visibility, evidenceIds]
+    fieldTypes:
+      id: string
+      targetId: string
+      targetType: enum:anchorTargetTypes
+      codeReferences: array<string>
+      apiReferences: array<string>
+      databaseReferences: array<string>
+      uiReferences: array<string>
+      testReferences: array<string>
+      status: enum:statuses
+      visibility: enum:visibilities
+      evidenceIds: array<string>
+      sourceRevision: string
+      sourceLocator: string
+      capturedAt: string
+      reviewStatus: enum:provenanceReviewStatuses
   decision:
     requiredFields: [id, title, status, visibility, context, decisionStatements, supersedes, evidenceIds, acceptanceScenarios]
     fieldTypes:

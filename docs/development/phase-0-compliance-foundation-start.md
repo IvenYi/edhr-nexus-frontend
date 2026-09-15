@@ -111,7 +111,7 @@ production    工单、批次、SN 基础模型和查询、工序执行、生产
 records       表单实例、字段值、表单审核
 dhr           DHR 实例、DHR 汇总、完整性检查
 release       放行单、放行审核、冻结
-change        表单/DHR 变更、作废、受控更正
+record-control 表单变更、表单作废、受控修订
 files         附件、归档包、文件元数据
 common        通用异常、ID、时间、审计上下文
 ```
@@ -205,11 +205,14 @@ RUNNING/WAITING_TASK -> CONTROLLED_CLOSED
 表单实例状态：
 
 ```text
-OPEN -> SUBMITTED -> REVIEWED
+OPEN -> COMPLETED（未绑定表单流程，提交校验通过后直接完成）
+OPEN -> SUBMITTED -> IN_REVIEW -> COMPLETED（已绑定表单流程，流程完成后完成）
 SUBMITTED -> RETURNED -> OPEN
-REVIEWED -> CORRECTION_PENDING -> CORRECTED -> REVIEWED
-OPEN/SUBMITTED -> VOIDED
+OPEN/COMPLETED -> VOIDED（仅作废申请审核通过后；有活动表单流程的 SUBMITTED 记录暂不允许作废）
 ```
+
+变更和作废审核使用独立申请对象及流程状态。审核中只锁定来源表单并显示申请标记，不把表单主状态改成审核中、修订中或作废审核中；变更通过后由新修订成为当前有效版本，旧修订只读保留。
+P0 不为活动表单审批中的记录发起作废，因为当前流程底座未定义受控取消和原审核任务失效语义。
 
 DHR 状态：
 
@@ -217,7 +220,7 @@ DHR 状态：
 CREATED -> IN_EXECUTION -> SUMMARIZING -> IN_REVIEW -> RELEASE_PENDING -> RELEASED -> ARCHIVED
 IN_REVIEW -> RETURNED -> SUMMARIZING
 RELEASE_PENDING -> RETURNED -> IN_REVIEW
-RELEASED -> CORRECTION_PENDING -> CORRECTION_APPROVED -> RELEASED
+放行后变更属于 P1 独立受控流程，P0 不改变已放行/已归档 DHR 的主状态
 ```
 
 DHR 汇总状态：
@@ -307,7 +310,7 @@ APPROVED/CONDITIONAL_APPROVED -> ARCHIVED
 - DHR 汇总、退回和审核。
 - 电子签名。
 - 放行单和放行决定。
-- 变更/作废。
+- 表单变更/作废。
 - 导出归档包。
 
 ## 9. 电子签名设计原则
@@ -409,7 +412,8 @@ Phase 0 完成时，至少应满足：
 13. 可以执行最小 DHR 完整性检查。
 14. 可以生成放行单、完成放行签名并冻结 DHR。
 15. 可以从 DHR 追溯到表单、作业、工序、签名、审计和流程日志。
-16. 关键逻辑有自动化测试。
+16. 记录控制可创建变更/作废申请并显式选择已发布审核版本，验证新修订、并行汇合、标红对比、受限撤回、转办/重新分配及日志审计；活动表单作废边界见详细设计。
+17. 关键逻辑有自动化测试。
 
 ## 13. 推荐第一批开发任务
 
@@ -429,8 +433,9 @@ Phase 0 完成时，至少应满足：
 12. 实现 records 模块的 FormInstance 和 FormFieldValue。
 13. 实现 dhr 模块的 DHR 实例、汇总版本和完整性检查。
 14. 实现 release 模块的放行单和冻结。
-15. 补充架构文档。
-16. 补充测试。
+15. 实现 record-control 的变更/作废申请、修订落地；与 workflow 对接并行审核、日志和干预，与表单模块对接差异标红，与 DHR 对接影响评估和重汇总。
+16. 补充架构文档。
+17. 补充测试。
 
 ## 14. 推荐新增文档
 

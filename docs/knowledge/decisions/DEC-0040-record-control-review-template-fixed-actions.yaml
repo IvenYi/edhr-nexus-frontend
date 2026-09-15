@@ -1,0 +1,52 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0040
+    title: 记录控制审核流程模板固定动作与审批主体
+    status: deprecated
+    visibility: internal
+    context: "provenance: user-confirmed；记录控制审核流程模板与表单流程模板分开配置。本决策补充 DEC-0037，只描述审核模板节点按钮配置边界：审批主体必填；发起节点固定提供保存、提交，审批节点固定提供审批、退回、转办；动作语义和显隐由系统固定，按钮显示名称、样式、意见要求和电子签名可配置。"
+    decisionStatements:
+      - id: DEC-0040-01
+        statement: "provenance: user-confirmed；审核流程模板每个审批节点发布前必须配置审批主体；未配置审批主体不得发布，也不能解释为当前租户全员可审。"
+        status: deprecated
+        visibility: internal
+      - id: DEC-0040-02
+        statement: "provenance: user-confirmed；记录控制审核流程发起节点固定提供保存（SAVE）和提交（SUBMIT），审批节点固定提供审批（APPROVE）、退回（RETURN）和转办（TRANSFER）；用户不能删除、替换、重复或隐藏这些动作。按钮显示名称、按钮样式和电子签名要求可配置，审批和退回可配置审批意见必填，转办不提供审批意见必填配置。界面不展示置灰的显隐或动作输入，而以只读语义标识说明动作由系统固定。"
+        status: deprecated
+        visibility: internal
+      - id: DEC-0040-03
+        statement: "provenance: user-confirmed；审核流程模板发起节点只表示申请入口，不配置填报权限组、字段权限或表单校验；保存和提交的显示名称、按钮样式、意见要求与电子签名在节点按钮页配置。审批节点的审批、退回和转办同样在节点按钮页配置，其中转办只配置显示名称和按钮样式，不配置意见必填。记录控制审核模板不绑定具体表单字段，因此不提供填充签名字段或签名字段绑定配置。"
+        status: deprecated
+        visibility: internal
+      - id: DEC-0040-04
+        statement: "provenance: user-confirmed；转办按钮的配置只声明审核节点上的动作呈现属性；转办的授权候选范围、转办原因、当前任务处理人变化、流程路径保持和审计记录沿用记录控制审核任务的 P0 动作规则，不因按钮出现在模板配置页而视为运行时转办已实现。"
+        status: deprecated
+        visibility: internal
+      - id: DEC-0040-05
+        statement: "provenance: user-confirmed；电子签名继续通过独立的执行前账户密码签署事件关联具体审核按钮；本决策只确认配置投影，签名采集、动作阻断、签名对象快照和运行时审计仍需后续执行切片验证。"
+        status: deprecated
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+    acceptanceScenarios:
+      - id: scenario.record-control-review-template-requires-approver-subjects
+        given: 记录控制审核流程草稿包含审批节点但未配置审批主体
+        when: 用户发布该版本
+        then: 系统阻断发布并提示必须配置审批主体
+        evidenceIds: [evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
+        evidenceRequirements: [审批主体缺失阻断发布测试]
+      - id: scenario.record-control-review-template-fixed-actions
+        given: 用户打开记录控制审核流程设计器
+        when: 用户查看发起节点或审批节点配置
+        then: 不出现发起填报权限、表单校验或签名字段绑定配置；发起节点显示保存和提交，审批节点显示审批、退回和转办；节点按钮页以只读语义标识显示系统固定动作，可编辑按钮显示名称、样式和电子签名，审批和退回可设置意见必填，转办不出现意见必填配置，不能删除、替换、重复或隐藏动作
+        evidenceIds: [evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+        evidenceRequirements: [审核模板固定动作按钮配置验证]
+    implementationDiscrepancies:
+      - id: discrepancy.record-control-review-template-runtime-pending
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；审核模板配置边界已落地到设计器和发布校验，但运行时审核引擎、申请提交和任务动作执行尚未形成发布级实现证据。"
+        evidenceIds: [evidence.record-correction-void-design]

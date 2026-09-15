@@ -1,0 +1,64 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0038
+    title: 本体 P0 事实目录与实现证据基线发布
+    status: implemented
+    visibility: internal
+    context: "provenance: original-evidence；本次升级将事实目录、实现锚点、最小 provenance、正式校验、CI 门禁和表单流程版本引用首个稳定领域试点纳入知识模型 0.3.16。它是研发影响分析基础，不是自动完整代码依赖图，也不表示运行时已经直接加载知识目录。"
+    decisionStatements:
+      - id: DEC-0038-01
+        statement: "provenance: implementation-constraint；知识模型 0.3.16 的 schema 1.1.0 正式支持 facts、implementationAnchors 及其 sourceRevision、sourceLocator、capturedAt、reviewStatus provenance 字段。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0038-02
+        statement: "provenance: original-evidence；表单流程版本引用与作业流程表单填写节点绑定作为 P0 首个稳定领域试点，事实、规则、实现锚点和源码/接口/数据库/UI/测试证据已形成可复核追踪路径；本次扩展已覆盖全部非废弃规则事实，但核心事实的逐条运行时语义仍按证据成熟度区分，不由规则 status 倒推。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0038-03
+        statement: "provenance: implementation-constraint；所有非废弃规则必须通过稳定 fact ID 或 alias 解析事实，并使用事实允许的操作符；factCatalogProfile 只表示领域目录分组，不能作为绕过校验的开关，废弃规则保留历史表达。当前全量覆盖为 180 个唯一非废弃规则事实，其中 core-business 165 条、form-process-binding 15 条，详见 P0 覆盖报告。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0038-04
+        statement: "provenance: implementation-constraint；P0 不引入 OWL/RDF/SHACL、图数据库、自动完整代码依赖图或生产运行时直接加载研发知识目录；这些能力保留到后续阶段并由真实需求触发。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0038-05
+        statement: "provenance: implementation-constraint；core-business 目录中的事实按源码证据保守分级：已有可复核实现证据的事实可标记 implemented/reviewed；仅由规则或设计语义提出、尚无运行时读取证据的事实必须保持 specified/not-available/unreviewed。领域级实现锚点证明核心域存在实现入口，不证明目录中的每个语义别名都是运行时字段。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds:
+      - evidence.ontology-p0-knowledge-validator
+      - evidence.ontology-p0-validation-workflow
+      - evidence.ontology-impact-analysis-form-process-binding
+      - evidence.ontology-p0-coverage-review
+    acceptanceScenarios:
+      - id: scenario.ontology-p0-version-consistency
+        given: 仓库中存在知识模型 schema 和多个知识资产
+        when: 任一知识资产或校验器变更进入 CI
+        then: 所有 YAML 资产必须与 schema 声明的当前 knowledgeModelVersion 一致，且正式知识模型测试通过；0.3.16 只保留为 P0 首次发布的历史基线
+        evidenceIds: [evidence.ontology-p0-knowledge-validator, evidence.ontology-p0-validation-workflow]
+        evidenceRequirements: [独立质量验证实例复核 CI 与版本一致性]
+      - id: scenario.ontology-p0-impact-trace
+        given: 需求影响表单流程版本引用治理
+        when: 研发人员从事实目录开始查询
+        then: 可以追踪到规则、实现锚点、代码、接口、数据库、页面和测试，并区分证据缺口
+        evidenceIds: [evidence.ontology-impact-analysis-form-process-binding]
+        evidenceRequirements: [后续第二个真实领域影响分析场景]
+    implementationDiscrepancies:
+      - id: discrepancy.ontology-p0-independent-quality-gate
+        status: resolved
+        severity: medium
+        visibility: internal
+        path: docs/agents/agent-handoff-contract.md
+        lineHint: 285
+        summary: 独立质量子智能体已完成最终复验，覆盖统计、引用、provenance、实现锚点路径、正式 Maven 测试、diff 检查和 CI 门禁均通过。
+        evidenceIds: [evidence.ontology-p0-knowledge-validator]
+      - id: discrepancy.ontology-p0-coarse-fact-locators
+        status: open
+        severity: medium
+        visibility: internal
+        path: docs/knowledge/facts/core-business.yaml
+        lineHint: 1
+        summary: 核心事实的 sourceLocator 当前以领域级实现类或语义定位为主，尚未建立逐事实符号级索引；不得将目录覆盖或父规则 implemented 解释为每个事实均已运行时实现。该缺口保留到 P1。
+        evidenceIds: [evidence.ontology-p0-knowledge-validator]

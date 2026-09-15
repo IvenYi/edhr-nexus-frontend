@@ -3,6 +3,8 @@ package com.zencas.edhr.workflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity @Table(name = "workflow_task")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
@@ -22,6 +24,7 @@ public class WorkflowTask {
     private String originalAssigneeId;
     /** Immutable runtime resolution snapshot for a multi-subject logical task. */
     @Column(name = "candidate_snapshot", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String candidateSnapshot;
     @Column(name = "action")
     private String action;

@@ -1,7 +1,12 @@
-knowledgeModelVersion: 0.3.12
+knowledgeModelVersion: 0.3.18
 evidence:
   - id: evidence.ontology-impact-analysis-architecture
     type: document
     path: docs/architecture/ontology-driven-impact-analysis-and-extension-development.md
     description: 定义本体作为 Codex 结构化系统地图的用途、实现证据链接要求、需求影响分析流程、五类扩展路径、避免散落业务逻辑的工程边界以及当前并非自动完整依赖图的限制。
+    visibility: internal
+  - id: evidence.ontology-impact-analysis-form-process-binding
+    type: document
+    path: docs/knowledge/impact-analysis/form-process-binding-version-reference.md
+    description: P0 首个稳定领域试点的可复核影响追踪示例，连接表单流程版本引用事实、规则、实现锚点及代码、接口、数据库、页面和测试证据，并列出生产快照、审计和运行时范围的证据缺口。
     visibility: internal

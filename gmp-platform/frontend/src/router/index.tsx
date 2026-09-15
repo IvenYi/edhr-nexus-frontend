@@ -80,6 +80,7 @@ const AppRouter = () => {
         </Route>
         <Route path="workflow">
           <Route path="review-templates" element={<Suspense fallback={<Loading />}><ReviewTemplateList /></Suspense>} />
+          <Route path="review-templates/:id/configure" element={<Suspense fallback={<Loading />}><ReviewTemplateEditor /></Suspense>} />
           <Route path="review-templates/:id" element={<Suspense fallback={<Loading />}><ReviewTemplateEditor /></Suspense>} />
           <Route path="form-processes" element={<Suspense fallback={<Loading />}><FormProcessList /></Suspense>} />
           <Route path="form-processes/:id" element={<Suspense fallback={<Loading />}><FormProcessEditor /></Suspense>} />

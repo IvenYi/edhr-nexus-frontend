@@ -141,7 +141,7 @@ DHR 汇总：DhrSummaryVersion + DhrSummaryItem 保存目录、来源证据和�
 identity      组织、工厂、用户、角色、权限、认证
 audit         审计追踪、审计查询、审计导出
 signature     电子签名、二次认证、签名对象快照
-workflow      状态机、任务流转、审批/退回/更正规则
+workflow      状态机、任务流转、审批/退回/变更规则
 master-data   工厂、车间、产线、产品、设备、SOP、工序、原因
 templates     表单模板、DHR 模板、放行单模板、模板版本
 process       工艺路线、制程配置、工序绑定、作业显隐规则
@@ -150,7 +150,7 @@ production    工单、批次、SN 基础模型和查询、工序执行、生产
 records       表单实例、字段值、表单审核
 dhr           DHR 实例、DHR 汇总、完整性检查、追溯聚合
 release       放行单、放行审核、证据冻结
-change        表单/DHR 变更、作废、受控更正
+record-control 表单变更、表单作废、受控修订
 files         附件、图片、报告、归档包、对象存储
 integration   导入、外部系统引用、OpenAPI/Webhook
 common        通用异常、时间、ID、租户上下文、审计上下文
@@ -170,7 +170,7 @@ production    工单、批次、SN 基础查询、批次执行、返工执行、
 records       表单填报、表单审核、表单列表、DHR 填报
 dhr           DHR 列表、DHR 汇总、DHR 审核、DHR 详情
 release       放行执行、放行列表、放行签名、归档
-change        表单变更、DHR 变更、变更审核、作废审核
+record-control 表单变更、表单作废、变更与作废审核
 traceability  DHR 追溯、表单追溯、生产追溯
 audit         审计追踪查询、流程日志查询
 settings      字典、编号规则、系统配置、导入导出

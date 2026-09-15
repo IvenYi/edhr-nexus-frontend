@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 
-export type WorkflowButtonAction = "SAVE" | "SUBMIT" | "APPROVE" | "RETURN";
+export type WorkflowButtonAction = "SAVE" | "SUBMIT" | "APPROVE" | "RETURN" | "TRANSFER";
 export type WorkflowBuiltinEvent = "NONE" | "FILL_SIGN_FIELD";
 export type WorkflowButtonConfig = {
   id: string;
@@ -39,6 +39,7 @@ const actionLabels: Record<WorkflowButtonAction, string> = {
   SUBMIT: "提交",
   APPROVE: "审批",
   RETURN: "退回",
+  TRANSFER: "转办",
 };
 
 const buttonStyleLabels: Record<NonNullable<WorkflowButtonConfig["style"]>, string> = {
@@ -48,6 +49,7 @@ const buttonStyleLabels: Record<NonNullable<WorkflowButtonConfig["style"]>, stri
 };
 export const defaultWorkflowButtons = (
   kind: "START" | "APPROVAL",
+  options?: { includeTransfer?: boolean },
 ): WorkflowButtonConfig[] =>
   kind === "START"
     ? [
@@ -57,6 +59,7 @@ export const defaultWorkflowButtons = (
     : [
         { id: "approve", label: "审批", action: "APPROVE", visible: true, style: "PRIMARY" },
         { id: "return", label: "退回", action: "RETURN", visible: true, style: "DANGER" },
+        ...(options?.includeTransfer ? [{ id: "transfer", label: "转办", action: "TRANSFER" as WorkflowButtonAction, visible: true, style: "DEFAULT" as const }] : []),
       ];
 
 export function WorkflowActionConfig({
@@ -65,6 +68,7 @@ export function WorkflowActionConfig({
   events,
   guardMode,
   editable,
+  profile = "FORM_PROCESS",
   onChange,
 }: {
   kind: "START" | "APPROVAL";
@@ -72,21 +76,27 @@ export function WorkflowActionConfig({
   events?: WorkflowButtonEvent[];
   guardMode?: "NONE" | "BLOCK_ON_INVALID" | "WARN_ON_INVALID";
   editable: boolean;
+  profile?: "FORM_PROCESS" | "RECORD_CONTROL";
   onChange: (patch: {
     buttons: WorkflowButtonConfig[];
     buttonEvents: WorkflowButtonEvent[];
-    guardMode: "NONE" | "BLOCK_ON_INVALID" | "WARN_ON_INVALID";
+    guardMode?: "NONE" | "BLOCK_ON_INVALID" | "WARN_ON_INVALID";
   }) => void;
 }) {
+  const recordControl = profile === "RECORD_CONTROL";
   const availableActions: WorkflowButtonAction[] =
-    kind === "START" ? ["SAVE", "SUBMIT"] : ["APPROVE", "RETURN"];
-  const currentButtons = buttons?.length ? buttons : defaultWorkflowButtons(kind);
+    kind === "START" ? ["SAVE", "SUBMIT"] : recordControl ? ["APPROVE", "RETURN", "TRANSFER"] : ["APPROVE", "RETURN"];
+  const currentButtons = buttons?.length ? buttons : defaultWorkflowButtons(kind, { includeTransfer: recordControl });
   const currentEvents = events ?? [];
   const update = (
     nextButtons: WorkflowButtonConfig[],
     nextEvents = currentEvents,
     nextGuard = guardMode ?? "BLOCK_ON_INVALID",
-  ) => onChange({ buttons: nextButtons, buttonEvents: nextEvents, guardMode: nextGuard });
+  ) => onChange({
+    buttons: nextButtons,
+    buttonEvents: nextEvents,
+    ...(recordControl ? {} : { guardMode: nextGuard }),
+  });
   const visibleButtons = currentButtons.filter((button) => button.visible !== false);
   const updateButton = (index: number, patch: Partial<WorkflowButtonConfig>) =>
     update(currentButtons.map((item, i) => i === index ? { ...item, ...patch } : item));
@@ -94,10 +104,14 @@ export function WorkflowActionConfig({
     <Box sx={{ bgcolor: "#fff" }}>
       <Stack spacing={0.5} sx={{ px: 0.25, pb: 1.5 }}>
         <Typography variant="subtitle2" fontWeight={700}>节点按钮</Typography>
-        <Typography variant="caption" color="text.secondary">设置用户在此节点可以看到和执行的操作。</Typography>
+        <Typography variant="caption" color="text.secondary">
+          {recordControl
+            ? "审批动作及显隐由系统固定；可配置显示名称、按钮样式和电子签名，审批与退回可设置意见必填。"
+            : "设置用户在此节点可以看到和执行的操作。"}
+        </Typography>
       </Stack>
 
-      <Box sx={{ px: 1.25, py: 1.25, bgcolor: "#f7f9fc", borderRadius: 1.25 }}>
+      <Box sx={{ px: 1.25, py: 1.25, bgcolor: "#f7f9fc", borderRadius: 1 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.9 }}>
           <Typography variant="caption" color="text.secondary">用户操作预览</Typography>
           <Typography variant="caption" color="text.secondary">节点上实际显示</Typography>
@@ -112,40 +126,48 @@ export function WorkflowActionConfig({
 
       <Box sx={{ pt: 2 }}>
         <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>按钮列表</Typography>
-        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap", display: "block", overflow: "hidden", textOverflow: "ellipsis" }}>只控制按钮是否显示，隐藏后仍可恢复。</Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap", display: "block", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {recordControl ? "动作及可见性由系统固定；转办不配置意见必填。" : "只控制按钮是否显示，隐藏后仍可恢复。"}
+        </Typography>
         <Stack sx={{ mt: 0.75, gap: 0.75 }}>
           {currentButtons.map((button, index) => {
             const visible = button.visible !== false;
-            return <Box key={button.id || index} sx={{ p: 1, bgcolor: "#fff", border: "1px solid #e4e7ed", borderRadius: 1 }}>
-              <Box sx={{ display: "grid", gridTemplateColumns: "34px minmax(0, 1fr) minmax(0, 1fr)", gap: 0.75, alignItems: "center" }}>
-                <Stack direction="row" spacing={0.25} alignItems="center" sx={{ minWidth: 0, whiteSpace: "nowrap" }}>
+            const showOpinion = kind === "APPROVAL" && button.action !== "SAVE" && button.action !== "TRANSFER";
+            return <Box key={button.id || index} sx={{ p: 1.25, bgcolor: "#fff", border: "1px solid #e4e7ed", borderRadius: 1 }}>
+              {recordControl ? <Stack direction="row" spacing={0.85} alignItems="center" sx={{ mb: 1, px: 0.25, pb: 0.75, borderBottom: "1px solid #eef1f5" }}>
+                <Box aria-hidden="true" sx={{ width: 3, height: 17, borderRadius: 0.5, bgcolor: "#91caff", flexShrink: 0 }} />
+                <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>系统动作</Typography>
+                <Typography variant="body2" fontWeight={700} sx={{ color: "#344054", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{actionLabels[button.action]}</Typography>
+              </Stack> : null}
+              <Box sx={{ display: "grid", gridTemplateColumns: recordControl ? "1fr" : "34px minmax(0, 1fr) minmax(0, 1fr)", gap: 0.75, alignItems: "center" }}>
+                {!recordControl ? <Stack direction="row" spacing={0.25} alignItems="center" sx={{ minWidth: 0, whiteSpace: "nowrap" }}>
                   <IconButton size="small" aria-label={visible ? "隐藏按钮" : "显示按钮"} disabled={!editable} onClick={() => updateButton(index, { visible: !visible })} sx={{ color: visible ? "#1677c8" : "#9aa4b2" }}>
                     {visible ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
                   </IconButton>
-                </Stack>
-                <TextField size="small" variant="outlined" label="按钮名称" value={button.label} placeholder="例如：提交" disabled={!editable} onChange={(event) => updateButton(index, { label: event.target.value })} sx={{ minWidth: 0 }} />
-                <FormControl size="small" variant="outlined" fullWidth>
+                </Stack> : null}
+                <TextField size="small" variant="outlined" label="显示名称" value={button.label} placeholder="例如：同意" disabled={!editable} onChange={(event) => updateButton(index, { label: event.target.value })} sx={{ minWidth: 0 }} />
+                {!recordControl ? <FormControl size="small" variant="outlined" fullWidth>
                   <InputLabel id={`button-action-${button.id}`}>动作</InputLabel>
                   <Select labelId={`button-action-${button.id}`} label="动作" value={button.action} disabled={!editable} onChange={(event) => updateButton(index, { action: event.target.value as WorkflowButtonAction })}>
                     {availableActions.map((action) => <MenuItem key={action} value={action}>{actionLabels[action]}</MenuItem>)}
                   </Select>
-                </FormControl>
+                </FormControl> : null}
               </Box>
-              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: kind === "APPROVAL" ? "minmax(0, 1fr) minmax(140px, 0.8fr)" : "1fr" }, gap: 0.75, alignItems: "center", mt: 0.75 }}>
+              <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: showOpinion ? "minmax(0, 1fr) minmax(140px, 0.8fr)" : "1fr" }, gap: 0.75, alignItems: "center", mt: 0.75 }}>
                 <FormControl size="small" variant="outlined" fullWidth>
                   <InputLabel id={`button-style-${button.id}`}>按钮样式</InputLabel>
                   <Select labelId={`button-style-${button.id}`} label="按钮样式" value={button.style ?? (button.action === "RETURN" ? "DANGER" : "DEFAULT")} disabled={!editable} onChange={(event) => updateButton(index, { style: event.target.value as WorkflowButtonConfig["style"] })}>
                     {Object.entries(buttonStyleLabels).map(([value, label]) => <MenuItem key={value} value={value}>{label}</MenuItem>)}
                   </Select>
                 </FormControl>
-                {kind === "APPROVAL" && button.action !== "SAVE" ? <FormControlLabel control={<Checkbox size="small" checked={button.requireOpinion === true} disabled={!editable} onChange={(event) => updateButton(index, { requireOpinion: event.target.checked })} />} label="意见必填" sx={{ ml: 0, mr: 0, '& .MuiFormControlLabel-label': { fontSize: 12, whiteSpace: "nowrap" } }} /> : null}
+                {showOpinion ? <FormControlLabel control={<Checkbox size="small" checked={button.requireOpinion === true} disabled={!editable} onChange={(event) => updateButton(index, { requireOpinion: event.target.checked })} />} label="意见必填" sx={{ ml: 0, mr: 0, '& .MuiFormControlLabel-label': { fontSize: 12, whiteSpace: "nowrap" } }} /> : null}
               </Box>
             </Box>;
           })}
         </Stack>
       </Box>
 
-      <Divider sx={{ mt: 1.25 }} />
+      {!recordControl ? <><Divider sx={{ mt: 1.25 }} />
       <Box sx={{ pt: 1.75 }}>
         <Typography variant="body2" fontWeight={700}>表单校验</Typography>
         <Typography variant="caption" color="text.secondary">点击提交或审批前，如何处理未通过校验的表单。</Typography>
@@ -156,14 +178,14 @@ export function WorkflowActionConfig({
             <MenuItem value="NONE">不进行表单校验</MenuItem>
           </Select>
         </FormControl>
-      </Box>
+      </Box></> : null}
 
       <Divider sx={{ mt: 1.75 }} />
       <Box sx={{ pt: 1.75, pb: 1 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Box>
             <Typography variant="body2" fontWeight={700}>电子签名</Typography>
-            <Typography variant="caption" color="text.secondary" noWrap sx={{ display: "block", overflow: "hidden", textOverflow: "ellipsis" }}>为按钮添加账户密码签署，可选填充签名字段。</Typography>
+            <Typography variant="caption" color="text.secondary" noWrap sx={{ display: "block", overflow: "hidden", textOverflow: "ellipsis" }}>{recordControl ? "为指定审批动作添加账户密码签署。" : "为按钮添加账户密码签署，可选填充签名字段。"}</Typography>
           </Box>
           <Button size="small" variant="text" startIcon={<Add />} disabled={!editable} onClick={() => update(currentButtons, [...currentEvents, { id: `event-${Date.now()}`, event: "BEFORE", action: availableActions[0], builtin: "NONE", signatureMethod: "ACCOUNT_PASSWORD" }])}>添加签署</Button>
         </Stack>
@@ -181,14 +203,14 @@ export function WorkflowActionConfig({
                 <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-action-${item.id}`}>关联按钮</InputLabel><Select labelId={`event-action-${item.id}`} label="关联按钮" value={item.action} disabled={!editable} onChange={(event) => updateEvent({ action: event.target.value as WorkflowButtonAction })}>{availableActions.map((action) => <MenuItem key={action} value={action}>{actionLabels[action]}</MenuItem>)}</Select></FormControl>
                 <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-signature-${item.id}`}>签名方式</InputLabel><Select labelId={`event-signature-${item.id}`} label="签名方式" value={item.signatureMethod ?? "ACCOUNT_PASSWORD"} disabled={!editable} onChange={(event) => updateEvent({ signatureMethod: event.target.value as "ACCOUNT_PASSWORD" })}><MenuItem value="ACCOUNT_PASSWORD">账户密码</MenuItem></Select></FormControl>
               </Box>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ mt: 0.5, minWidth: 0 }}>
+              {!recordControl ? <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ mt: 0.5, minWidth: 0 }}>
                 <FormControlLabel
                   control={<Checkbox size="small" checked={item.builtin === "FILL_SIGN_FIELD"} disabled={!editable} onChange={(event) => updateEvent({ builtin: event.target.checked ? "FILL_SIGN_FIELD" : "NONE" })} />}
                   label="填充签名字段"
                   sx={{ ml: 0, mr: 0, minWidth: 0, '& .MuiFormControlLabel-label': { fontSize: 13, whiteSpace: "nowrap" } }}
                 />
                 {item.builtin === "FILL_SIGN_FIELD" ? <Typography variant="caption" color="text.secondary" noWrap sx={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", textAlign: "right" }}>字段在作业流程的表单节点绑定</Typography> : null}
-              </Stack>
+              </Stack> : null}
             </Box>;
           })}
         </Stack>

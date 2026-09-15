@@ -42,6 +42,8 @@ final class BusinessKnowledgeModelValidator {
         validateIdPrefixes(schema, structure, records);
         validateUniqueIds(records);
         validateReferences(schema, structure, records);
+        validateFactCatalog(schema, structure, records);
+        validateProvenance(schema, records);
         validateEvidencePaths(model.repositoryRoot(), schema, records.records("evidence"));
         validateRules(schema, records.records("rule"));
         validateRuleProjections(schema, records.records("rule"));
@@ -484,6 +486,135 @@ final class BusinessKnowledgeModelValidator {
         }
     }
 
+    private static void validateFactCatalog(
+            Map<String, Object> schema,
+            SchemaStructure structure,
+            RecordIndex records
+    ) {
+        String schemaId = "docs/knowledge/schema.yaml";
+        Set<String> conceptIds = ids(records.records("concept"));
+        Set<String> factIds = ids(records.records("fact"));
+        Set<String> ruleIds = ids(records.records("rule"));
+        Set<String> executionContractIds = ids(records.records("executionContract"));
+        Set<String> allowedSourceTypes = enumValues(schema, "factSourceTypes");
+        Set<String> allowedOperators = enumValues(schema, "ruleOperators");
+        Set<String> allowedTargetTypes = enumValues(schema, "anchorTargetTypes");
+        Map<String, Map<String, Object>> factsByReference = new LinkedHashMap<>();
+
+        for (Map<String, Object> fact : records.records("fact")) {
+            String id = idOf(fact);
+            requireReference(fact, "conceptId", conceptIds);
+            String sourceType = requiredString(fact, "sourceType", id);
+            if (!allowedSourceTypes.contains(sourceType)) {
+                throw invalid(id, "sourceType", "must be one of " + allowedSourceTypes);
+            }
+            if (requiredString(fact, "sourcePath", id).isBlank()) {
+                throw invalid(id, "sourcePath", "must be non-empty");
+            }
+            List<String> aliases = stringList(fact.get("aliases"), id, "aliases");
+            if (aliases.isEmpty()) {
+                throw invalid(id, "aliases", "must be non-empty");
+            }
+            List<String> factOperators = stringList(fact.get("allowedOperators"), id, "allowedOperators");
+            if (factOperators.isEmpty()) {
+                throw invalid(id, "allowedOperators", "must be non-empty");
+            }
+            for (String operator : factOperators) {
+                if (!allowedOperators.contains(operator)) {
+                    throw invalid(id, "allowedOperators", "unknown operator " + operator);
+                }
+            }
+            factsByReference.put(id, fact);
+            for (String alias : aliases) {
+                Map<String, Object> previous = factsByReference.put(alias, fact);
+                if (previous != null && !id.equals(idOf(previous))) {
+                    throw invalid(id, "aliases", "duplicates fact " + idOf(previous));
+                }
+            }
+        }
+
+        for (Map<String, Object> anchor : records.records("implementationAnchor")) {
+            String id = idOf(anchor);
+            String targetType = requiredString(anchor, "targetType", id);
+            if (!allowedTargetTypes.contains(targetType)) {
+                throw invalid(id, "targetType", "must be one of " + allowedTargetTypes);
+            }
+            Set<String> targetIds = switch (targetType) {
+                case "concept" -> conceptIds;
+                case "fact" -> factIds;
+                case "rule" -> ruleIds;
+                case "executionContract" -> executionContractIds;
+                default -> Set.of();
+            };
+            requireReference(anchor, "targetId", targetIds);
+            boolean hasReference = false;
+            for (String field : List.of("codeReferences", "apiReferences", "databaseReferences",
+                    "uiReferences", "testReferences")) {
+                List<String> references = stringList(anchor.get(field), id, field);
+                hasReference |= !references.isEmpty();
+            }
+            if (!hasReference) {
+                throw invalid(id, "implementationReferences", "must contain at least one implementation reference");
+            }
+        }
+
+        Set<String> profiles = enumValues(schema, "factCatalogProfiles");
+        for (Map<String, Object> rule : records.records("rule")) {
+            if ("deprecated".equals(rule.get("status"))) {
+                continue;
+            }
+            if (rule.containsKey("factCatalogProfile")) {
+                String profile = requiredString(rule, "factCatalogProfile", idOf(rule));
+                if (!profiles.contains(profile)) {
+                    throw invalid(idOf(rule), "factCatalogProfile", "must be one of " + profiles);
+                }
+            }
+            Map<String, Set<String>> factOperators = new LinkedHashMap<>();
+            collectConditionFacts(rule.get("condition"), factOperators, idOf(rule), "condition");
+            for (Map.Entry<String, Set<String>> entry : factOperators.entrySet()) {
+                Map<String, Object> fact = factsByReference.get(entry.getKey());
+                if (fact == null && factIds.contains(entry.getKey())) {
+                    fact = records.refs("fact").stream()
+                            .map(RecordRef::data)
+                            .filter(candidate -> entry.getKey().equals(idOf(candidate)))
+                            .findFirst()
+                            .orElse(null);
+                }
+                if (fact == null) {
+                    throw invalid(idOf(rule), "condition.fact", "reference " + entry.getKey()
+                            + " does not resolve in the fact catalog");
+                }
+                List<String> factAllowedOperators = stringList(fact.get("allowedOperators"), idOf(fact),
+                        "allowedOperators");
+                for (String operator : entry.getValue()) {
+                    if (!factAllowedOperators.contains(operator)) {
+                        throw invalid(idOf(rule), "condition.operator",
+                                "operator " + operator + " is not allowed for fact " + entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private static void collectConditionFacts(
+            Object value,
+            Map<String, Set<String>> facts,
+            String recordId,
+            String field
+    ) {
+        if (value instanceof Map<?, ?> rawMap) {
+            Map<String, Object> map = stringKeyedMap(rawMap, recordId, field);
+            if (map.containsKey("fact")) {
+                String fact = requiredString(map, "fact", recordId);
+                String operator = requiredString(map, "operator", recordId);
+                facts.computeIfAbsent(fact, ignored -> new HashSet<>()).add(operator);
+            }
+            map.values().forEach(child -> collectConditionFacts(child, facts, recordId, field));
+        } else if (value instanceof List<?> list) {
+            list.forEach(child -> collectConditionFacts(child, facts, recordId, field));
+        }
+    }
+
     private static void validateEvidencePaths(
             Path repositoryRoot,
             Map<String, Object> schema,
@@ -533,6 +664,28 @@ final class BusinessKnowledgeModelValidator {
                 Path realPath = realPath(normalizedPath, id, "path");
                 if (!realPath.startsWith(realRoot)) {
                     throw invalid(id, "path", "real path escapes repository: " + configuredPath);
+                }
+            }
+        }
+    }
+
+    private static void validateProvenance(
+            Map<String, Object> schema,
+            RecordIndex records
+    ) {
+        String schemaId = "docs/knowledge/schema.yaml";
+        Set<String> reviewStatuses = enumValues(schema, "provenanceReviewStatuses");
+        for (String recordType : List.of("fact", "implementationAnchor")) {
+            for (Map<String, Object> record : records.records(recordType)) {
+                String id = idOf(record);
+                for (String field : List.of("sourceRevision", "sourceLocator", "capturedAt")) {
+                    if (requiredString(record, field, id).isBlank()) {
+                        throw invalid(id, field, "must be non-empty for provenance");
+                    }
+                }
+                String reviewStatus = requiredString(record, "reviewStatus", id);
+                if (!reviewStatuses.contains(reviewStatus)) {
+                    throw invalid(id, "reviewStatus", "must be one of " + reviewStatuses);
                 }
             }
         }

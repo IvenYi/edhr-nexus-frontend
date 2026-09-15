@@ -1,0 +1,84 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0041
+    title: 记录控制申请确认即启动审核与开始节点无按钮
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；本决策完整替代 DEC-0040：修正记录控制审核模板开始节点固定提供保存和提交按钮的旧假设，同时完整承接审批主体必填、审批节点固定动作、转办运行时边界和审批按钮电子签名边界。记录控制审核模板只配置申请确认后的审核路径；申请入口负责申请内容、申请人电子签名和流程选择，确认成功即启动审核。"
+    decisionStatements:
+      - id: DEC-0041-01
+        statement: "provenance: user-confirmed；记录控制审核模板的开始节点只表示流程边界，不是用户任务，不产生待办，也不配置保存（SAVE）或提交（SUBMIT）按钮；开始节点配置中不显示节点按钮页。"
+        status: specified
+        visibility: internal
+      - id: DEC-0041-02
+        statement: "provenance: user-confirmed；申请人在表单变更或表单作废入口准备申请内容、完成申请人电子签名、显式选择匹配且已发布的审核流程并点击确认时，业务语义上申请已经发起；确认成功后应创建流程实例、冻结所选流程定义和版本引用，并直接进入首个审批节点，不等待开始节点的保存或提交动作。"
+        status: specified
+        visibility: internal
+      - id: DEC-0041-03
+        statement: "provenance: user-confirmed；审批节点继续固定提供审批（APPROVE）、退回（RETURN）和转办（TRANSFER）；动作语义及显隐由系统固定，显示名称、按钮样式和动作前账户密码电子签名可配置，审批和退回可配置意见必填，转办不配置意见必填。"
+        status: specified
+        visibility: internal
+      - id: DEC-0041-04
+        statement: "provenance: implementation-boundary；本次模板配置切片只修正开始节点和发布契约。申请入口、申请人签名校验、实例创建、版本快照及首审批节点推进仍属于后续运行时实现，不得投影为 implemented、verified 或 runtime。"
+        status: specified
+        visibility: internal
+      - id: DEC-0041-05
+        statement: "provenance: user-confirmed；记录控制审核模板发布前必须至少包含一个审批节点，且每个审批节点都必须配置审批主体；缺少审批主体时不得发布，也不能解释为当前租户全员可审。"
+        status: specified
+        visibility: internal
+      - id: DEC-0041-06
+        statement: "provenance: user-confirmed；记录控制审核模板不配置发起填报权限组、字段权限、表单校验、填充签名字段或具体签名字段绑定。开始节点仅显示边界节点属性；审批节点按钮页只配置固定审批动作的呈现、意见要求和电子签名。"
+        status: specified
+        visibility: internal
+      - id: DEC-0041-07
+        statement: "provenance: user-confirmed；转办按钮只声明审批节点上的标准动作呈现属性。转办运行时仍须校验当前任务权限、授权候选范围和转办原因，只改变当前任务处理人，不改变当前节点、流程路径或业务结果，并写入流程日志和不可变审计；按钮配置不表示运行时转办已经实现。"
+        status: specified
+        visibility: internal
+      - id: DEC-0041-08
+        statement: "provenance: user-confirmed；审批节点电子签名通过独立的执行前账户密码签署事件关联具体审批按钮；模板只保存配置声明，签名采集、动作阻断、签名对象快照和运行时审计仍须由后续执行切片实现和验证。"
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0040]
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-correction-void-design, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+    acceptanceScenarios:
+      - id: scenario.record-control-review-template-approver-subjects-required-v2
+        given: 记录控制审核流程草稿不包含审批节点，或任一审批节点未配置审批主体
+        when: 用户发布该版本
+        then: 系统阻断发布并提示必须配置审批节点及审批主体，不能按当前租户全员可审处理
+        evidenceIds: [evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
+        evidenceRequirements: [无审批节点阻断测试, 审批主体缺失阻断测试]
+      - id: scenario.record-control-start-node-has-no-button-config
+        given: 用户在记录控制审核模板设计器中选中开始节点
+        when: 查看右侧配置并保存或发布模板
+        then: 不显示节点按钮页，流程图不保存开始节点按钮配置，发布不要求 SAVE 或 SUBMIT 且拒绝非空开始节点按钮配置
+        evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+        evidenceRequirements: [前端构建, 开始节点配置界面核对, 控制器发布校验测试]
+      - id: scenario.record-control-confirmation-starts-review
+        given: 申请人已准备变更内容或作废原因、完成申请人电子签名并选择匹配的已发布审核流程
+        when: 申请人点击确认且事务成功
+        then: 创建审核流程实例并冻结所选流程版本，直接流转至首个审批节点，不产生开始节点待办或二次保存提交动作
+        evidenceIds: [evidence.record-control-start-entry-user-confirmed]
+        evidenceRequirements: [后续申请入口集成测试, 签名阻断测试, 流程实例和首节点推进测试, 审计及版本快照验证]
+      - id: scenario.record-control-review-template-approval-actions-v2
+        given: 用户配置记录控制审核模板中的审批节点
+        when: 查看并保存节点按钮配置
+        then: 审批节点固定包含审批、退回和转办且不能增删、替换、重复或隐藏；显示名称和样式可配置，审批和退回可配置意见必填，转办不显示意见必填，审批按钮可关联执行前账户密码电子签名且不出现表单字段绑定
+        evidenceIds: [evidence.record-control-review-template-editor, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
+        evidenceRequirements: [审批节点按钮配置界面核对, 固定动作发布校验测试, 转办意见配置阻断测试, 电子签名配置保存测试]
+    implementationDiscrepancies:
+      - id: discrepancy.record-control-review-template-runtime-pending-v2
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
+        lineHint: 1
+        summary: "provenance: original-evidence；审核模板的开始节点、审批主体和审批按钮配置及发布校验已有当前工作树实现证据，但运行时审批、退回、转办和审批电子签名执行尚未形成发布级实现证据。"
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
+      - id: discrepancy.record-control-application-confirmation-runtime-pending
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/evidence/record-control-start-entry-user-confirmed.md
+        lineHint: 19
+        summary: "provenance: user-confirmed-and-original-evidence-gap；申请确认即启动审核的业务语义已经确认，公共流程侧显式版本启动、版本快照、开始节点自动越过和首审批任务已有阶段一实现；但记录控制申请入口、签名真实性校验、来源资格与业务锁、申请与流程原子提交、申请侧流程引用回写及端到端审计仍无实现证据。"
+        evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests]

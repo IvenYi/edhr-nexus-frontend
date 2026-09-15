@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.12
+knowledgeModelVersion: 0.3.18
 rules:
   - id: rule.transaction.published-version-only
     name: 事务运行只读取已发布版本
@@ -570,6 +570,7 @@ rules:
     explanation: 新增或编辑适用规则时，客户页面根据已选作业、规则类型与范围实时组成可读摘要，并展示该作业当前已发布流程的只读预览入口。摘要可解释例外排除、指定范围、全局适用的固定处理顺序，但不暴露优先级字段；草稿和历史流程不属于适用规则选择或预览的目标。
     evidenceIds: [evidence.business-knowledge-model, evidence.production-work-applicability-dialog-ui, evidence.production-work-flow-preview-ui]
   - id: rule.form-process.binding-requires-form-and-flow
+    factCatalogProfile: form-process-binding
     name: 表单流程绑定必须同时引用流程和表单版本
     status: specified
     visibility: internal
@@ -904,6 +905,7 @@ rules:
     explanation: 表单或表单流程版本切换后，原绑定中的字段例外不一定仍然有效。保存新绑定前必须按新表单的真实 fieldId 和新流程主体重新筛选，清理失效例外，避免旧字段权限泄漏到新绑定；仍有效的例外继续保留。
     evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
   - id: rule.form-process.published-version-reference-fixed
+    factCatalogProfile: form-process-binding
     name: 表单流程发布版本引用固定
     status: specified
     visibility: internal
@@ -1122,6 +1124,7 @@ rules:
     explanation: 作业流程图中的表单填报节点配置仍是表单流程版本引用的事实来源。系统保存作业流程图、创建继承草稿、发布或复制已发布版本时，在同一事务内重建该作业版本的引用使用投影，用于后续影响分析；投影不得由用户手工维护，也不能反向改写流程图配置。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-version-reference-implementation, evidence.form-process-version-reference-migration, evidence.form-process-version-reference-tests]
   - id: rule.form-process.version-usage-analysis
+    factCatalogProfile: form-process-binding
     name: 表单流程版本使用情况分析
     status: implemented
     visibility: internal
@@ -1140,6 +1143,7 @@ rules:
     explanation: 表单流程侧必须能够查看每个流程版本被哪些作业模板、作业流程版本和表单填报节点引用，并区分草稿、当前发布和历史发布的作业流程版本。使用情况用于影响分析和受控升级，不代表运行时实例已经消费该引用。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-version-usage-controller, evidence.form-process-version-usage-ui]
   - id: rule.production-work.form-process-reference-outdated-notification
+    factCatalogProfile: form-process-binding
     name: 作业草稿引用旧版表单流程时必须提醒
     status: implemented
     visibility: internal
@@ -1165,6 +1169,7 @@ rules:
     explanation: 作业流程草稿引用的表单流程版本不再是当前发布版时，界面必须明确提示新版存在，并在发布确认中继续提示。系统不得静默替换草稿引用；用户需要显式确认升级。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-ui]
   - id: rule.production-work.form-process-reference-controlled-upgrade
+    factCatalogProfile: form-process-binding
     name: 作业草稿表单流程引用必须受控升级
     status: implemented
     visibility: internal
@@ -1195,6 +1200,7 @@ rules:
     explanation: 用户确认升级时，系统必须校验当前作业节点保存的字段权限例外、按钮事件和签名字段绑定是否仍能在目标当前发布版本中解析。任一引用失效时拒绝静默升级并返回具体原因；兼容时只更新当前画布中的草稿引用，不代替用户保存草稿。用户显式保存草稿后才持久化该引用并重建使用投影，发布校验继续作为最终兜底。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
   - id: rule.production-work.form-process-historical-published-reference-admin-exception
+    factCatalogProfile: form-process-binding
     name: 历史已发布表单流程版本保留管理员维护口子
     status: specified
     visibility: internal
@@ -1216,6 +1222,7 @@ rules:
     explanation: 普通配置入口只展示当前发布版本，但后端暂不把所有历史已发布版本一刀切阻断，为后续管理员级版本维护保留能力。该规则不表示当前已经提供管理员历史版本维护界面；未来开放时必须补充专用权限、明确提示和审计记录。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-version-upgrade-controller]
   - id: rule.production-work.form-entry-form-process-optional
+    factCatalogProfile: form-process-binding
     name: 表单填报节点的表单流程可选
     status: implemented
     visibility: internal
@@ -1236,7 +1243,39 @@ rules:
       requiredReference: form-template-version
     explanation: 表单填报节点必须绑定当前生效的表单模板版本，但不需要审批流程时可以不配置表单流程并发布。只有实际绑定表单流程后，系统才校验流程版本、字段权限、按钮事件和签名字段绑定；清除表单流程时应同步清理绑定级配置，避免隐藏配置继续影响发布。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-optional-binding-controller]
+  - id: rule.form-instance.completion-path-by-form-process-binding
+    name: 表单实例按表单流程绑定状态完成
+    status: specified
+    visibility: internal
+    trigger: form-instance.submit
+    scope: form-instance-runtime
+    condition:
+      any:
+        - all:
+            - fact: formInstance.formProcessVersionId
+              operator: is-null
+              value: true
+            - fact: formInstance.submissionValidation.passed
+              operator: equals
+              value: true
+        - all:
+            - fact: formInstance.formProcessVersionId
+              operator: is-present
+              value: true
+            - fact: formProcessInstance.status
+              operator: equals
+              value: completed
+    result:
+      type: complete-form-instance
+      status: COMPLETED
+      completionModes: [WITHOUT_WORKFLOW, WORKFLOW_COMPLETED]
+      createWorkflowInstanceWhen: formInstance.formProcessVersionId is present
+      createReviewTaskWhen: formInstance.formProcessVersionId is present
+      createEffectiveRevision: true
+    explanation: 表单流程绑定是可选的。未绑定表单流程时，提交校验通过即可将表单实例从 OPEN 直接置为 COMPLETED，不创建表单流程实例或审核任务；绑定表单流程时，提交先进入流程，只有流程完成后才将表单实例置为同一 COMPLETED 终态。完成方式和流程事件用于区分是否经过审核，不能用“已复核”作为无流程表单的状态名称。
+    evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.record-correction-void-design]
   - id: rule.form-process.delete-referenced-forbidden
+    factCatalogProfile: form-process-binding
     name: 已被作业流程引用的表单流程禁止删除
     status: implemented
     visibility: internal

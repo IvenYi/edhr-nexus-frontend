@@ -1,0 +1,36 @@
+name: Knowledge model validation
+
+on:
+  pull_request:
+    paths:
+      - 'docs/knowledge/**'
+      - 'docs/architecture/**'
+      - 'docs/agents/**'
+      - 'gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/**'
+      - 'gmp-platform/backend/pom.xml'
+      - '.github/workflows/knowledge-model.yml'
+  push:
+    branches: [main, master, edhr-dev]
+    paths:
+      - 'docs/knowledge/**'
+      - 'docs/architecture/**'
+      - 'docs/agents/**'
+      - 'gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/**'
+      - 'gmp-platform/backend/pom.xml'
+      - '.github/workflows/knowledge-model.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gmp-platform/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Validate structured knowledge model
+        run: mvn -Dtest=BusinessKnowledgeModelTest test

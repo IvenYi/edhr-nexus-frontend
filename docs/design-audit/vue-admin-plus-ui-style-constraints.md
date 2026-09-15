@@ -75,6 +75,7 @@ Available primary theme variants:
   - top nav: `60px`
   - tabs bar: `50px`
 - Main content starts below the header and uses `padding: 20px`.
+- The `20px` main-content padding is owned by the application shell and must be applied only once. Page components must not add a second page-level padding layer; sibling panels align to the shell content edge with a `12px` gap.
 - Header and side navigation use subtle shadow: `0 1px 4px rgba(0, 21, 41, 0.08)`.
 - Main app container must not use decorative section cards; only individual content panels should be card-like.
 - Footer is white, `55px` high, centered, with text color `rgba(0,0,0,.45)`.

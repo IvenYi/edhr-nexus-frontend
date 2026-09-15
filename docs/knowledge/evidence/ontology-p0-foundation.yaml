@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.18
+evidence:
+  - id: evidence.ontology-p0-knowledge-validator
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelTest.java
+    description: 知识模型正式 JUnit 校验及 P0 事实目录、操作符和 provenance 回归测试。
+    visibility: internal
+  - id: evidence.ontology-p0-validation-workflow
+    type: document
+    path: .github/workflows/knowledge-model.yml
+    description: 在知识资产、知识契约或校验器变化时执行 BusinessKnowledgeModelTest 的 CI 门禁。
+    visibility: internal
+  - id: evidence.ontology-p0-coverage-review
+    type: document
+    path: docs/knowledge/impact-analysis/ontology-p0-coverage.md
+    description: P0 全量事实目录覆盖、核心域实现锚点、状态分级、引用完整性和证据边界的独立核对报告；明确目录覆盖不等于逐事实运行时实现，并记录 P1 的精确符号级定位缺口。
+    visibility: internal

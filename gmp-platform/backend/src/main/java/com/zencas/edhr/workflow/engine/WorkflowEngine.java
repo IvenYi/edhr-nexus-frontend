@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -106,6 +108,92 @@ public class WorkflowEngine {
     }
 
     /**
+     * Start a record-control workflow from an explicitly selected published version.
+     * This boundary never consults workflow binding rules and never creates a START task.
+     */
+    @Transactional
+    public WorkflowInstance createRecordControlInstance(
+            Long definitionId,
+            Long versionId,
+            String businessType,
+            String businessId,
+            String initiatorId,
+            Long applicantSignatureId,
+            String idempotencyKey,
+            String auditCorrelationId
+    ) {
+        if (definitionId == null || versionId == null || businessId == null || businessId.isBlank()
+                || initiatorId == null || initiatorId.isBlank() || applicantSignatureId == null
+                || idempotencyKey == null || idempotencyKey.isBlank()
+                || auditCorrelationId == null || auditCorrelationId.isBlank()) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "记录控制流程发起参数不完整");
+        }
+        Optional<WorkflowInstance> existing = instanceRepository.findByIdempotencyKey(idempotencyKey);
+        if (existing.isPresent()) {
+            return requireMatchingIdempotentStart(existing.get(), definitionId, versionId, businessType,
+                    businessId, initiatorId, applicantSignatureId, auditCorrelationId);
+        }
+
+        if (!"CHANGE".equals(businessType) && !"OBSOLETE".equals(businessType)) {
+            throw new BusinessException(ErrorCode.WF_013);
+        }
+        WorkflowDefinition definition = definitionRepository.findByIdForUpdate(definitionId)
+                .filter(candidate -> "RECORD_CONTROL".equals(candidate.getType()))
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_001));
+        existing = instanceRepository.findByIdempotencyKey(idempotencyKey);
+        if (existing.isPresent()) {
+            return requireMatchingIdempotentStart(existing.get(), definitionId, versionId, businessType,
+                    businessId, initiatorId, applicantSignatureId, auditCorrelationId);
+        }
+        if (!businessType.equals(definition.getBusinessType()) || !"PUBLISHED".equals(definition.getStatus())) {
+            throw new BusinessException(ErrorCode.WF_014);
+        }
+        WorkflowDefinitionVersion version = versionRepository.findById(versionId)
+                .filter(candidate -> definitionId.equals(candidate.getDefinitionId()))
+                .filter(candidate -> "PUBLISHED".equals(candidate.getStatus()))
+                .filter(candidate -> Boolean.TRUE.equals(candidate.getIsCurrent()))
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_014));
+        List<WorkflowNode> startNodes = nodeRepository.findByVersionIdAndNodeType(versionId, "START");
+        if (startNodes.size() != 1) {
+            throw new BusinessException(ErrorCode.WF_011, "审核流程必须且只能包含一个开始节点");
+        }
+
+        String snapshotHash = workflowSnapshotHash(version);
+        Map<String, Object> context = new LinkedHashMap<>();
+        context.put("workflowDefinitionId", definitionId.toString());
+        context.put("workflowVersionId", versionId.toString());
+        context.put("businessType", businessType);
+        context.put("businessId", businessId);
+        context.put("applicantSignatureId", applicantSignatureId == null ? null : applicantSignatureId.toString());
+        context.put("idempotencyKey", idempotencyKey);
+        context.put("auditCorrelationId", auditCorrelationId);
+        context.put("workflowSnapshotHash", snapshotHash);
+
+        WorkflowNode startNode = startNodes.get(0);
+        WorkflowInstance instance = WorkflowInstance.builder()
+                .id(idGenerator.nextId())
+                .definitionId(definitionId)
+                .versionId(versionId)
+                .businessType(businessType)
+                .businessId(businessId)
+                .status("RUNNING")
+                .currentNodeIds(startNode.getId().toString())
+                .contextSnapshot(writeJson(context))
+                .idempotencyKey(idempotencyKey)
+                .auditCorrelationId(auditCorrelationId)
+                .workflowSnapshotHash(snapshotHash)
+                .initiatorId(initiatorId)
+                .startedAt(LocalDateTime.now())
+                .build();
+        instance = instanceRepository.saveAndFlush(instance);
+
+        logAction(instance.getId(), null, startNode.getId().toString(),
+                "INSTANCE_START", initiatorId, "记录控制审核实例创建");
+        progressFromNode(instance, startNode, initiatorId, null);
+        return instance;
+    }
+
+    /**
      * Process task completion and advance the workflow.
      */
     @Transactional
@@ -180,20 +268,9 @@ public class WorkflowEngine {
         }
         currentActiveNodes.remove(currentNode.getId().toString());
 
-        // For PARALLEL_GATEWAY nodes, check aggregation
-        // Check if we're waiting for other parallel branches
-        if (isPartOfParallelBranch(currentNode, versionNodes, outgoingEdges)) {
-            // Check if all siblings are complete
-            if (!currentActiveNodes.isEmpty()) {
-                // Still waiting for siblings
-                instance.setCurrentNodeIds(String.join(",", currentActiveNodes));
-                instanceRepository.save(instance);
-                return;
-            }
-        }
-
-        // Process outgoing edges - for each edge, create tasks on target nodes
-        List<Long> nextNodeIds = new ArrayList<>();
+        // Process outgoing edges. Structural parallel nodes are automatic and never create tasks.
+        Set<Long> nextNodeIds = new LinkedHashSet<>();
+        currentActiveNodes.stream().filter(value -> !value.isBlank()).map(Long::valueOf).forEach(nextNodeIds::add);
         Set<Long> createdNodeIds = new HashSet<>();
         for (WorkflowEdge edge : outgoingEdges) {
             WorkflowNode targetNode = versionNodes.stream()
@@ -209,11 +286,6 @@ public class WorkflowEngine {
                 }
             }
 
-            if (!createdNodeIds.add(targetNode.getId())) {
-                continue;
-            }
-            nextNodeIds.add(targetNode.getId());
-
             if ("END".equals(targetNode.getNodeType())) {
                 logAction(instance.getId(), null, targetNode.getId().toString(),
                         "NODE_ENTER", operatorId, "到达结束节点");
@@ -221,12 +293,52 @@ public class WorkflowEngine {
                 return;
             }
 
+            if ("PARALLEL_SPLIT".equals(targetNode.getNodeType())) {
+                activateStructuralNode(instance, targetNode, versionNodes, nextNodeIds, createdNodeIds, operatorId, context);
+                continue;
+            }
+            if ("PARALLEL_JOIN".equals(targetNode.getNodeType())) {
+                if (parallelJoinReady(instance, targetNode)) {
+                    activateStructuralNode(instance, targetNode, versionNodes, nextNodeIds, createdNodeIds, operatorId, context);
+                }
+                continue;
+            }
+
             // Create task on target node
+            if (!createdNodeIds.add(targetNode.getId())) continue;
+            nextNodeIds.add(targetNode.getId());
             createTaskForNode(instance, targetNode, operatorId);
         }
 
-        instance.setCurrentNodeIds(nextNodeIds.isEmpty() ? null : joinIds(nextNodeIds));
+        instance.setCurrentNodeIds(nextNodeIds.isEmpty() ? null : joinIds(new ArrayList<>(nextNodeIds)));
         instanceRepository.save(instance);
+    }
+
+    private void activateStructuralNode(WorkflowInstance instance, WorkflowNode node, List<WorkflowNode> versionNodes,
+                                        Set<Long> activeNodeIds, Set<Long> visitedStructuralNodes,
+                                        String operatorId, Map<String, Object> context) {
+        if (!visitedStructuralNodes.add(node.getId())) return;
+        for (WorkflowEdge edge : edgeRepository.findBySourceNodeId(node.getId())) {
+            WorkflowNode target = versionNodes.stream().filter(candidate -> candidate.getId().equals(edge.getTargetNodeId())).findFirst().orElse(null);
+            if (target == null) continue;
+            if ("END".equals(target.getNodeType())) { completeInstance(instance, operatorId); return; }
+            if ("PARALLEL_SPLIT".equals(target.getNodeType())) {
+                activateStructuralNode(instance, target, versionNodes, activeNodeIds, visitedStructuralNodes, operatorId, context);
+            } else if ("PARALLEL_JOIN".equals(target.getNodeType())) {
+                if (parallelJoinReady(instance, target)) activateStructuralNode(instance, target, versionNodes, activeNodeIds, visitedStructuralNodes, operatorId, context);
+            } else if (activeNodeIds.add(target.getId())) {
+                createTaskForNode(instance, target, operatorId);
+            }
+        }
+    }
+
+    private boolean parallelJoinReady(WorkflowInstance instance, WorkflowNode joinNode) {
+        Set<Long> completedNodes = new HashSet<>();
+        taskRepository.findByInstanceId(instance.getId()).stream()
+                .filter(task -> "COMPLETED".equals(task.getStatus()))
+                .map(WorkflowTask::getNodeId).forEach(completedNodes::add);
+        return edgeRepository.findByTargetNodeId(joinNode.getId()).stream()
+                .allMatch(edge -> completedNodes.contains(edge.getSourceNodeId()));
     }
 
     private void createTaskForNode(WorkflowInstance instance, WorkflowNode node, String operatorId) {
@@ -264,12 +376,25 @@ public class WorkflowEngine {
     }
 
     private void handleRejection(WorkflowInstance instance, WorkflowTask task, String operatorId) {
+        taskRepository.findByInstanceId(instance.getId()).forEach(other -> {
+            if (!other.getId().equals(task.getId())
+                    && ("PENDING".equals(other.getStatus()) || "PROCESSING".equals(other.getStatus()))) {
+                other.setStatus("TERMINATED");
+                other.setCompletedAt(LocalDateTime.now());
+                taskRepository.save(other);
+            }
+        });
+        if (hasParallelSplitAncestor(task.getNodeId())) {
+            terminateInstance(instance);
+            return;
+        }
         // P0: reject to previous node. Find incoming edges to current node.
         List<WorkflowEdge> incomingEdges = edgeRepository.findByTargetNodeId(task.getNodeId());
         if (!incomingEdges.isEmpty()) {
             WorkflowNode previousNode = nodeRepository.findById(incomingEdges.get(0).getSourceNodeId())
                     .orElse(null);
-            if (previousNode != null && !"START".equals(previousNode.getNodeType())) {
+            if (previousNode != null && !"START".equals(previousNode.getNodeType())
+                    && !"PARALLEL_SPLIT".equals(previousNode.getNodeType())) {
                 createTaskForNode(instance, previousNode, operatorId);
                 instance.setCurrentNodeIds(previousNode.getId().toString());
                 instanceRepository.save(instance);
@@ -277,15 +402,31 @@ public class WorkflowEngine {
             }
         }
         // Fallback: terminate
-        instance.setStatus("TERMINATED");
-        instance.setCompletedAt(LocalDateTime.now());
-        instanceRepository.save(instance);
+        terminateInstance(instance);
     }
 
-    private boolean isPartOfParallelBranch(WorkflowNode node, List<WorkflowNode> versionNodes,
-                                            List<WorkflowEdge> outgoingEdges) {
-        // Check if there's a PARALLEL_GATEWAY node in the same version that feeds into this path
-        return versionNodes.stream().anyMatch(n -> "PARALLEL_GATEWAY".equals(n.getNodeType()));
+    private boolean hasParallelSplitAncestor(Long nodeId) {
+        ArrayDeque<Long> pending = new ArrayDeque<>();
+        Set<Long> visited = new HashSet<>();
+        pending.add(nodeId);
+        while (!pending.isEmpty()) {
+            Long current = pending.remove();
+            if (!visited.add(current)) continue;
+            for (WorkflowEdge incoming : edgeRepository.findByTargetNodeId(current)) {
+                WorkflowNode source = nodeRepository.findById(incoming.getSourceNodeId()).orElse(null);
+                if (source == null) continue;
+                if ("PARALLEL_SPLIT".equals(source.getNodeType())) return true;
+                if (!"START".equals(source.getNodeType())) pending.add(source.getId());
+            }
+        }
+        return false;
+    }
+
+    private void terminateInstance(WorkflowInstance instance) {
+        instance.setStatus("TERMINATED");
+        instance.setCompletedAt(LocalDateTime.now());
+        instance.setCurrentNodeIds(null);
+        instanceRepository.save(instance);
     }
 
     private boolean evaluateCondition(String conditionExprStr, Map<String, Object> context) {
@@ -321,13 +462,16 @@ public class WorkflowEngine {
             for (var user : resolution.users()) {
                 sources.put(user.userId().toString(), user.sources());
             }
+            if (isRecordControlInstance(instance)) {
+                sources.remove(instance.getInitiatorId());
+            }
             String legacy = props.has("assigneeId") ? props.get("assigneeId").asText(null)
                     : props.has("assigneeRole") ? "role:" + props.get("assigneeRole").asText() : null;
             Map<String, Object> snapshot = new LinkedHashMap<>();
             snapshot.put("userIds", sources.keySet());
             snapshot.put("sources", sources);
             snapshot.put("unresolvedSubjects", resolution.unresolvedSubjects());
-            if (refs.isEmpty() && isFormProcessInstance(instance)) snapshot.put("unrestricted", true);
+            if (refs.isEmpty()) snapshot.put("unrestricted", true);
             return new ResolvedAssignees(sources.keySet(), sources, legacy, !refs.isEmpty(), objectMapper.writeValueAsString(snapshot));
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.WF_007, "节点处理人配置无法解析: " + node.getName());
@@ -369,6 +513,11 @@ public class WorkflowEngine {
         return definitionRepository.findById(instance.getDefinitionId())
                 .map(this::isFormProcessDefinition)
                 .orElse(false);
+    }
+
+    private boolean isRecordControlInstance(WorkflowInstance instance) {
+        return instance != null && ("CHANGE".equals(instance.getBusinessType())
+                || "OBSOLETE".equals(instance.getBusinessType()));
     }
 
     private boolean isUnrestrictedSnapshot(String snapshot) {
@@ -537,6 +686,59 @@ public class WorkflowEngine {
             return objectMapper.writeValueAsString(snapshot);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.WF_007, "无法创建转办任务快照");
+        }
+    }
+
+    private String workflowSnapshotHash(WorkflowDefinitionVersion version) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            String source = Objects.toString(version.getNodesJson(), "") + "\n"
+                    + Objects.toString(version.getEdgesJson(), "");
+            return HexFormat.of().formatHex(digest.digest(source.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception exception) {
+            throw new BusinessException(ErrorCode.GENERAL_002, "无法生成流程版本快照摘要");
+        }
+    }
+
+    private WorkflowInstance requireMatchingIdempotentStart(
+            WorkflowInstance instance,
+            Long definitionId,
+            Long versionId,
+            String businessType,
+            String businessId,
+            String initiatorId,
+            Long applicantSignatureId,
+            String auditCorrelationId
+    ) {
+        if (Objects.equals(instance.getDefinitionId(), definitionId)
+                && Objects.equals(instance.getVersionId(), versionId)
+                && Objects.equals(instance.getBusinessType(), businessType)
+                && Objects.equals(instance.getBusinessId(), businessId)
+                && Objects.equals(instance.getInitiatorId(), initiatorId)
+                && Objects.equals(instance.getAuditCorrelationId(), auditCorrelationId)
+                && contextValueMatches(instance.getContextSnapshot(), "applicantSignatureId", applicantSignatureId)) {
+            return instance;
+        }
+        throw new BusinessException(ErrorCode.WF_015);
+    }
+
+    private boolean contextValueMatches(String contextSnapshot, String field, Object expected) {
+        if (contextSnapshot == null || contextSnapshot.isBlank()) {
+            return expected == null;
+        }
+        try {
+            JsonNode value = objectMapper.readTree(contextSnapshot).path(field);
+            return expected == null ? value.isNull() || value.isMissingNode() : expected.toString().equals(value.asText());
+        } catch (Exception exception) {
+            return false;
+        }
+    }
+
+    private String writeJson(Object value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception exception) {
+            throw new BusinessException(ErrorCode.GENERAL_002, "无法保存流程上下文快照");
         }
     }
 }

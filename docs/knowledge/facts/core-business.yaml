@@ -1,0 +1,2770 @@
+knowledgeModelVersion: 0.3.18
+facts:
+  - id: fact.catalog.rdoversionstatusresolver-isreferenceable-dhrtemplateversion-effectivefrom-dhrtemplateversion-effecti
+    name: "规则事实 RdoVersionStatusResolver.isReferenceable(dhrTemplateVersion.effectiveFrom, dhrTemplateVersion.effectiveTo)"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["RdoVersionStatusResolver.isReferenceable(dhrTemplateVersion.effectiveFrom, dhrTemplateVersion.effectiveTo)"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "RdoVersionStatusResolver.isReferenceable(dhrTemplateVersion.effectiveFrom, dhrTemplateVersion.effectiveTo)"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.rdoversionstatusresolver-isreferenceable-formtemplateversion-effectivefrom-formtemplateversion-effec
+    name: "规则事实 RdoVersionStatusResolver.isReferenceable(formTemplateVersion.effectiveFrom, formTemplateVersion.effectiveTo)"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["RdoVersionStatusResolver.isReferenceable(formTemplateVersion.effectiveFrom, formTemplateVersion.effectiveTo)"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "RdoVersionStatusResolver.isReferenceable(formTemplateVersion.effectiveFrom, formTemplateVersion.effectiveTo)"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.rdoversionstatusresolver-isreferenceable-routeversion-effectivedate-routeversion-expirydate
+    name: "规则事实 RdoVersionStatusResolver.isReferenceable(routeVersion.effectiveDate, routeVersion.expiryDate)"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["RdoVersionStatusResolver.isReferenceable(routeVersion.effectiveDate, routeVersion.expiryDate)"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "RdoVersionStatusResolver.isReferenceable(routeVersion.effectiveDate, routeVersion.expiryDate)"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.rdoversionstatusresolver-isreferenceable-selectedprocessversion-effectivefrom-selectedprocessversion
+    name: "规则事实 RdoVersionStatusResolver.isReferenceable(selectedProcessVersion.effectiveFrom, selectedProcessVersion.effectiveTo, queryTime)"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["RdoVersionStatusResolver.isReferenceable(selectedProcessVersion.effectiveFrom, selectedProcessVersion.effectiveTo, queryTime)"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "RdoVersionStatusResolver.isReferenceable(selectedProcessVersion.effectiveFrom, selectedProcessVersion.effectiveTo, queryTime)"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.rdoversionstatusresolver-resolve-processversion-effectivefrom-processversion-effectiveto-querytime
+    name: "规则事实 RdoVersionStatusResolver.resolve(processVersion.effectiveFrom, processVersion.effectiveTo, queryTime)"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["RdoVersionStatusResolver.resolve(processVersion.effectiveFrom, processVersion.effectiveTo, queryTime)"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "RdoVersionStatusResolver.resolve(processVersion.effectiveFrom, processVersion.effectiveTo, queryTime)"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.audit-action
+    name: "规则事实 audit.action"
+    conceptId: concept.audit-change-snapshot
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["audit.action"]
+    availability: configuration-and-runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "audit.action"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.audit-entitytype
+    name: "规则事实 audit.entityType"
+    conceptId: concept.audit-change-snapshot
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["audit.entityType"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "audit.entityType"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.authenticateduser-present
+    name: "规则事实 authenticatedUser.present"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["authenticatedUser.present"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "authenticatedUser.present"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.batch-generatecount
+    name: "规则事实 batch.generateCount"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["batch.generateCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "batch.generateCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.batch-itemspresent
+    name: "规则事实 batch.itemsPresent"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["batch.itemsPresent"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "batch.itemsPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.capability-phase
+    name: "规则事实 capability.phase"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["capability.phase"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "capability.phase"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.currentrevision-exists
+    name: "规则事实 currentRevision.exists"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["currentRevision.exists"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "currentRevision.exists"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.dhrtemplateitem
+    name: "规则事实 dhrTemplateItem"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["dhrTemplateItem"]
+    availability: configuration-and-runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "dhrTemplateItem"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.dhrtemplateitem-directory-versionid
+    name: "规则事实 dhrTemplateItem.directory.versionId"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["dhrTemplateItem.directory.versionId"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "dhrTemplateItem.directory.versionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.dhrtemplateitem-formtemplateversionid
+    name: "规则事实 dhrTemplateItem.formTemplateVersionId"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["dhrTemplateItem.formTemplateVersionId"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "dhrTemplateItem.formTemplateVersionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.dhrtemplateversion
+    name: "规则事实 dhrTemplateVersion"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["dhrTemplateVersion"]
+    availability: configuration-and-runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "dhrTemplateVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.documentbinding-pageend
+    name: "规则事实 documentBinding.pageEnd"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["documentBinding.pageEnd"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-null, is-present, greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "documentBinding.pageEnd"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.documentbinding-pagestart
+    name: "规则事实 documentBinding.pageStart"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["documentBinding.pageStart"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-null, is-present, greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "documentBinding.pageStart"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.documentfile-mimetype
+    name: "规则事实 documentFile.mimeType"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["documentFile.mimeType"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals-ignore-case]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "documentFile.mimeType"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.documentfile-originalname
+    name: "规则事实 documentFile.originalName"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["documentFile.originalName"]
+    availability: configuration-and-runtime
+    allowedOperators: [ends-with-ignore-case]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "documentFile.originalName"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.documentversion
+    name: "规则事实 documentVersion"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["documentVersion"]
+    availability: configuration-and-runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "documentVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.earlytermination-reasonpresent
+    name: "规则事实 earlyTermination.reasonPresent"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["earlyTermination.reasonPresent"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "earlyTermination.reasonPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formbinding-required
+    name: "规则事实 formBinding.required"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["formBinding.required"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "formBinding.required"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.forminstance-formprocessversionid
+    name: "规则事实 formInstance.formProcessVersionId"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formInstance.formProcessVersionId"]
+    availability: not-available
+    allowedOperators: [is-null, is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formInstance.formProcessVersionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.forminstance-status
+    name: "规则事实 formInstance.status"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["formInstance.status"]
+    availability: not-available
+    allowedOperators: [not-equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "formInstance.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.forminstance-submissionvalidation-passed
+    name: "规则事实 formInstance.submissionValidation.passed"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formInstance.submissionValidation.passed"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formInstance.submissionValidation.passed"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocess-status
+    name: "规则事实 formProcess.status"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcess.status"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcess.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessapproval-candidatecount
+    name: "规则事实 formProcessApproval.candidateCount"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessApproval.candidateCount"]
+    availability: not-available
+    allowedOperators: [greater-than-or-equal]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessApproval.candidateCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessapproval-returnrequested
+    name: "规则事实 formProcessApproval.returnRequested"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessApproval.returnRequested"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessApproval.returnRequested"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessapproval-subjectconfigurationpresent
+    name: "规则事实 formProcessApproval.subjectConfigurationPresent"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessApproval.subjectConfigurationPresent"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessApproval.subjectConfigurationPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessbinding-eventbinding-eventid
+    name: "规则事实 formProcessBinding.eventBinding.eventId"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessBinding.eventBinding.eventId"]
+    availability: not-available
+    allowedOperators: [exists-in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessBinding.eventBinding.eventId"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessbinding-eventbinding-field-type
+    name: "规则事实 formProcessBinding.eventBinding.field.type"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessBinding.eventBinding.field.type"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessBinding.eventBinding.field.type"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessbinding-eventbinding-fieldid
+    name: "规则事实 formProcessBinding.eventBinding.fieldId"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessBinding.eventBinding.fieldId"]
+    availability: not-available
+    allowedOperators: [exists-in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessBinding.eventBinding.fieldId"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessbinding-fieldpermissionexception-exists
+    name: "规则事实 formProcessBinding.fieldPermissionException.exists"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessBinding.fieldPermissionException.exists"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessBinding.fieldPermissionException.exists"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessbinding-versionchanged
+    name: "规则事实 formProcessBinding.versionChanged"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessBinding.versionChanged"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessBinding.versionChanged"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessbuttonconfigurationrequested
+    name: "规则事实 formProcessButtonConfigurationRequested"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["formProcessButtonConfigurationRequested"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessButtonConfigurationRequested"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessentry-subjectconfigurationpresent
+    name: "规则事实 formProcessEntry.subjectConfigurationPresent"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessEntry.subjectConfigurationPresent"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessEntry.subjectConfigurationPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessinstance-status
+    name: "规则事实 formProcessInstance.status"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessInstance.status"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessInstance.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessnode-button-action
+    name: "规则事实 formProcessNode.button.action"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessNode.button.action"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessNode.button.action"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessnode-buttonevent-action
+    name: "规则事实 formProcessNode.buttonEvent.action"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessNode.buttonEvent.action"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessNode.buttonEvent.action"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessnode-buttonevent-builtin
+    name: "规则事实 formProcessNode.buttonEvent.builtin"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessNode.buttonEvent.builtin"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessNode.buttonEvent.builtin"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessnode-buttonevent-exists
+    name: "规则事实 formProcessNode.buttonEvent.exists"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessNode.buttonEvent.exists"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessNode.buttonEvent.exists"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessnode-buttonevent-timing
+    name: "规则事实 formProcessNode.buttonEvent.timing"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessNode.buttonEvent.timing"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessNode.buttonEvent.timing"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocessnode-type
+    name: "规则事实 formProcessNode.type"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessNode.type"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessNode.type"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocesspermissiongroup-defaultpermission
+    name: "规则事实 formProcessPermissionGroup.defaultPermission"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessPermissionGroup.defaultPermission"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessPermissionGroup.defaultPermission"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formprocesspermissiongroup-subjectconfigurationpresent
+    name: "规则事实 formProcessPermissionGroup.subjectConfigurationPresent"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["formProcessPermissionGroup.subjectConfigurationPresent"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "formProcessPermissionGroup.subjectConfigurationPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.formtemplateversion
+    name: "规则事实 formTemplateVersion"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["formTemplateVersion"]
+    availability: configuration-and-runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "formTemplateVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.importedbatch-batchnopresent
+    name: "规则事实 importedBatch.batchNoPresent"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["importedBatch.batchNoPresent"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "importedBatch.batchNoPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.importedbatch-quantitypositive
+    name: "规则事实 importedBatch.quantityPositive"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["importedBatch.quantityPositive"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "importedBatch.quantityPositive"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.importedsn-snnumberpresent
+    name: "规则事实 importedSn.snNumberPresent"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["importedSn.snNumberPresent"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "importedSn.snNumberPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.intervention-type
+    name: "规则事实 intervention.type"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["intervention.type"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "intervention.type"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.material-typename
+    name: "规则事实 material.typeName"
+    conceptId: concept.material
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["material.typeName"]
+    availability: configuration-and-runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "material.typeName"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.operation-finaloutput
+    name: "规则事实 operation.finalOutput"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operation.finalOutput"]
+    availability: not-available
+    allowedOperators: [planned]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operation.finalOutput"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.operation-formpermissions
+    name: "规则事实 operation.formPermissions"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operation.formPermissions"]
+    availability: not-available
+    allowedOperators: [planned]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operation.formPermissions"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.operation-formsharing
+    name: "规则事实 operation.formSharing"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operation.formSharing"]
+    availability: not-available
+    allowedOperators: [planned]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operation.formSharing"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.operation-materialreadiness
+    name: "规则事实 operation.materialReadiness"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operation.materialReadiness"]
+    availability: not-available
+    allowedOperators: [planned]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operation.materialReadiness"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.operation-prestarttransactionvalidation
+    name: "规则事实 operation.preStartTransactionValidation"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operation.preStartTransactionValidation"]
+    availability: not-available
+    allowedOperators: [planned]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operation.preStartTransactionValidation"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.operation-transactiontrigger
+    name: "规则事实 operation.transactionTrigger"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operation.transactionTrigger"]
+    availability: not-available
+    allowedOperators: [planned]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operation.transactionTrigger"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.operationbinding-documentbindings-documentversionid
+    name: "规则事实 operationBinding.documentBindings.documentVersionId"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operationBinding.documentBindings.documentVersionId"]
+    availability: configuration-and-runtime
+    allowedOperators: [unique-within]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operationBinding.documentBindings.documentVersionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.operationbinding-formbindings-formtemplateversionid
+    name: "规则事实 operationBinding.formBindings.formTemplateVersionId"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operationBinding.formBindings.formTemplateVersionId"]
+    availability: configuration-and-runtime
+    allowedOperators: [unique-within]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operationBinding.formBindings.formTemplateVersionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.operationbinding-routenodekey
+    name: "规则事实 operationBinding.routeNodeKey"
+    conceptId: concept.operation
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["operationBinding.routeNodeKey"]
+    availability: configuration-and-runtime
+    allowedOperators: [exists-in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "operationBinding.routeNodeKey"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.process-productionform
+    name: "规则事实 process.productionForm"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["process.productionForm"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "process.productionForm"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.process-productionmode
+    name: "规则事实 process.productionMode"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["process.productionMode"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "process.productionMode"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.processversion-effectivestatus
+    name: "规则事实 processVersion.effectiveStatus"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["processVersion.effectiveStatus"]
+    availability: configuration-and-runtime
+    allowedOperators: [not-equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "processVersion.effectiveStatus"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.processversion-productionform
+    name: "规则事实 processVersion.productionForm"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["processVersion.productionForm"]
+    availability: configuration-and-runtime
+    allowedOperators: [not-equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "processVersion.productionForm"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.processversion-productionmode
+    name: "规则事实 processVersion.productionMode"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["processVersion.productionMode"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-present, not-equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "processVersion.productionMode"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.product-availableprocessversioncount
+    name: "规则事实 product.availableProcessVersionCount"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["product.availableProcessVersionCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal, equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "product.availableProcessVersionCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.product-currentproductfamily
+    name: "规则事实 product.currentProductFamily"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["product.currentProductFamily"]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "product.currentProductFamily"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.product-hasavailableprocessversion
+    name: "规则事实 product.hasAvailableProcessVersion"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["product.hasAvailableProcessVersion"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "product.hasAvailableProcessVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.product-newproductfamily
+    name: "规则事实 product.newProductFamily"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["product.newProductFamily"]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "product.newProductFamily"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.product-productfamilycount
+    name: "规则事实 product.productFamilyCount"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["product.productFamilyCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "product.productFamilyCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamily-availableprocessversioncount
+    name: "规则事实 productFamily.availableProcessVersionCount"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productFamily.availableProcessVersionCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal, equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamily.availableProcessVersionCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamily-code
+    name: "规则事实 productFamily.code"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productFamily.code"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamily.code"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamily-hasavailableprocessversion
+    name: "规则事实 productFamily.hasAvailableProcessVersion"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productFamily.hasAvailableProcessVersion"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamily.hasAvailableProcessVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamily-legacystatus
+    name: "规则事实 productFamily.legacyStatus"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productFamily.legacyStatus"]
+    availability: configuration-and-runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamily.legacyStatus"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamily-membercount
+    name: "规则事实 productFamily.memberCount"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productFamily.memberCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamily.memberCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamily-processversioncount
+    name: "规则事实 productFamily.processVersionCount"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productFamily.processVersionCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamily.processVersionCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamilytransfer-confirmation
+    name: "规则事实 productFamilyTransfer.confirmation"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productFamilyTransfer.confirmation"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamilyTransfer.confirmation"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productfamilytransfer-reason
+    name: "规则事实 productFamilyTransfer.reason"
+    conceptId: concept.product-family
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productFamilyTransfer.reason"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productFamilyTransfer.reason"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productmodeleditor-formbinding-required
+    name: "规则事实 productModelEditor.formBinding.required"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productModelEditor.formBinding.required"]
+    availability: configuration-and-runtime
+    allowedOperators: [configurable]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productModelEditor.formBinding.required"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productprocess-ownerid
+    name: "规则事实 productProcess.ownerId"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productProcess.ownerId"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productProcess.ownerId"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productprocess-ownertype
+    name: "规则事实 productProcess.ownerType"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productProcess.ownerType"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productProcess.ownerType"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productprocessoperationformbinding-required
+    name: "规则事实 productProcessOperationFormBinding.required"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productProcessOperationFormBinding.required"]
+    availability: configuration-and-runtime
+    allowedOperators: [persisted]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productProcessOperationFormBinding.required"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productprocessversion-isnewrecord
+    name: "规则事实 productProcessVersion.isNewRecord"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productProcessVersion.isNewRecord"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productProcessVersion.isNewRecord"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productprocessversion-productionform
+    name: "规则事实 productProcessVersion.productionForm"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productProcessVersion.productionForm"]
+    availability: configuration-and-runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productProcessVersion.productionForm"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productprocessversion-versionlabel
+    name: "规则事实 productProcessVersion.versionLabel"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productProcessVersion.versionLabel"]
+    availability: configuration-and-runtime
+    allowedOperators: [unique-within]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productProcessVersion.versionLabel"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionbatch-listcontext
+    name: "规则事实 productionBatch.listContext"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionBatch.listContext"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionBatch.listContext"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionbatch-product
+    name: "规则事实 productionBatch.product"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productionBatch.product"]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionBatch.product"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionbatch-productprocessversion
+    name: "规则事实 productionBatch.productProcessVersion"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productionBatch.productProcessVersion"]
+    availability: not-available
+    allowedOperators: [explicitly-selected, is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionBatch.productProcessVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionbatch-productprocessversion-ownertype
+    name: "规则事实 productionBatch.productProcessVersion.ownerType"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["productionBatch.productProcessVersion.ownerType"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionBatch.productProcessVersion.ownerType"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionform
+    name: "规则事实 productionForm"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionForm"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionForm"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionobject-allassociatedobjectsterminal
+    name: "规则事实 productionObject.allAssociatedObjectsTerminal"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.allAssociatedObjectsTerminal"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.allAssociatedObjectsTerminal"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionobject-hasparentorchildren
+    name: "规则事实 productionObject.hasParentOrChildren"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.hasParentOrChildren"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.hasParentOrChildren"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionobject-inputmode
+    name: "规则事实 productionObject.inputMode"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.inputMode"]
+    availability: configuration-and-runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.inputMode"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionobject-objectnoalreadyused
+    name: "规则事实 productionObject.objectNoAlreadyUsed"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.objectNoAlreadyUsed"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.objectNoAlreadyUsed"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionobject-objecttype
+    name: "规则事实 productionObject.objectType"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.objectType"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.objectType"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionobject-plannedtimerangevalid
+    name: "规则事实 productionObject.plannedTimeRangeValid"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.plannedTimeRangeValid"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.plannedTimeRangeValid"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionobject-routehasnocurrentoperation
+    name: "规则事实 productionObject.routeHasNoCurrentOperation"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.routeHasNoCurrentOperation"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.routeHasNoCurrentOperation"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionobject-status
+    name: "规则事实 productionObject.status"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.status"]
+    availability: not-available
+    allowedOperators: [in, equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionobject-statustransition
+    name: "规则事实 productionObject.statusTransition"
+    conceptId: concept.production-object
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["productionObject.statusTransition"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "productionObject.statusTransition"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkapplicabilityrule-count
+    name: "规则事实 productionWorkApplicabilityRule.count"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkApplicabilityRule.count"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkApplicabilityRule.count"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkapplicabilityrule-definitionid
+    name: "规则事实 productionWorkApplicabilityRule.definitionId"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkApplicabilityRule.definitionId"]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkApplicabilityRule.definitionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkapplicabilityrule-isapplicable
+    name: "规则事实 productionWorkApplicabilityRule.isApplicable"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkApplicabilityRule.isApplicable"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkApplicabilityRule.isApplicable"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkapplicabilityrule-listrequested
+    name: "规则事实 productionWorkApplicabilityRule.listRequested"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkApplicabilityRule.listRequested"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkApplicabilityRule.listRequested"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkapplicabilityrule-matchcontext
+    name: "规则事实 productionWorkApplicabilityRule.matchContext"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkApplicabilityRule.matchContext"]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkApplicabilityRule.matchContext"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkapplicabilityrule-persisted
+    name: "规则事实 productionWorkApplicabilityRule.persisted"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkApplicabilityRule.persisted"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkApplicabilityRule.persisted"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkchange-subject
+    name: "规则事实 productionWorkChange.subject"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkChange.subject"]
+    availability: configuration-and-runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkChange.subject"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkconditionnode-conditionbranches
+    name: "规则事实 productionWorkConditionNode.conditionBranches"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkConditionNode.conditionBranches"]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkConditionNode.conditionBranches"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkconditionnode-published
+    name: "规则事实 productionWorkConditionNode.published"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkConditionNode.published"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkConditionNode.published"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkdefinition-auditeventcount
+    name: "规则事实 productionWorkDefinition.auditEventCount"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkDefinition.auditEventCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkDefinition.auditEventCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkdefinition-haspublishedflowversion
+    name: "规则事实 productionWorkDefinition.hasPublishedFlowVersion"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkDefinition.hasPublishedFlowVersion"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkDefinition.hasPublishedFlowVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkdefinition-persisted
+    name: "规则事实 productionWorkDefinition.persisted"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkDefinition.persisted"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkDefinition.persisted"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkdefinition-selected
+    name: "规则事实 productionWorkDefinition.selected"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkDefinition.selected"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkDefinition.selected"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkdefinition-type
+    name: "规则事实 productionWorkDefinition.type"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkDefinition.type"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkDefinition.type"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkflowgraph-isfirstreleaseflow
+    name: "规则事实 productionWorkFlowGraph.isFirstReleaseFlow"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkFlowGraph.isFirstReleaseFlow"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkFlowGraph.isFirstReleaseFlow"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkflownode-kind
+    name: "规则事实 productionWorkFlowNode.kind"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkFlowNode.kind"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkFlowNode.kind"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkflowversion-containsconditionrule
+    name: "规则事实 productionWorkFlowVersion.containsConditionRule"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkFlowVersion.containsConditionRule"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkFlowVersion.containsConditionRule"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkflowversion-deleterequested
+    name: "规则事实 productionWorkFlowVersion.deleteRequested"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkFlowVersion.deleteRequested"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkFlowVersion.deleteRequested"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkflowversion-nodes
+    name: "规则事实 productionWorkFlowVersion.nodes"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkFlowVersion.nodes"]
+    availability: configuration-and-runtime
+    allowedOperators: [contains]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkFlowVersion.nodes"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.productionworkflowversion-publishrequested
+    name: "规则事实 productionWorkFlowVersion.publishRequested"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkFlowVersion.publishRequested"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkFlowVersion.publishRequested"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkflowversion-saverequested
+    name: "规则事实 productionWorkFlowVersion.saveRequested"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkFlowVersion.saveRequested"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkFlowVersion.saveRequested"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionworkmatch-matched
+    name: "规则事实 productionWorkMatch.matched"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["productionWorkMatch.matched"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "productionWorkMatch.matched"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.rdoversion-effectivewindow
+    name: "规则事实 rdoVersion.effectiveWindow"
+    conceptId: concept.production-work
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["rdoVersion.effectiveWindow"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-referenceable]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "rdoVersion.effectiveWindow"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.request-status
+    name: "规则事实 request.status"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["request.status"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "request.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.requestedaction
+    name: "规则事实 requestedAction"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["requestedAction"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "requestedAction"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.routeversion
+    name: "规则事实 routeVersion"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["routeVersion"]
+    availability: configuration-and-runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "routeVersion"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.runtimedecision-source
+    name: "规则事实 runtimeDecision.source"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["runtimeDecision.source"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "runtimeDecision.source"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.selectedprocessversion-ownertype
+    name: "规则事实 selectedProcessVersion.ownerType"
+    conceptId: concept.product-process-version
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    aliases: ["selectedProcessVersion.ownerType"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.product-process-resolution-service]
+    sourceRevision: working-tree
+    sourceLocator: "selectedProcessVersion.ownerType"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.selectedworkflow-actiontypematchesrequest
+    name: "规则事实 selectedWorkflow.actionTypeMatchesRequest"
+    conceptId: concept.business-rule-runtime
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java"
+    aliases: ["selectedWorkflow.actionTypeMatchesRequest"]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests]
+    sourceRevision: working-tree
+    sourceLocator: "WorkflowEngine.createRecordControlInstance definition.businessType validation"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.selectedworkflow-explicitlyselected
+    name: "规则事实 selectedWorkflow.explicitlySelected"
+    conceptId: concept.business-rule-runtime
+    valueType: boolean
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java"
+    aliases: ["selectedWorkflow.explicitlySelected"]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-service-tests]
+    sourceRevision: working-tree
+    sourceLocator: "RecordControlWorkflowService.start required workflowDefinitionId/workflowVersionId"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.selectedworkflow-versionstatus
+    name: "规则事实 selectedWorkflow.versionStatus"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java"
+    aliases: ["selectedWorkflow.versionStatus"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests]
+    sourceRevision: working-tree
+    sourceLocator: "RecordControlWorkflowService.listPublishedCandidates / WorkflowEngine.createRecordControlInstance"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
+  - id: fact.catalog.recordcontrolrequest-contentprepared
+    name: "规则事实 request.contentPrepared"
+    conceptId: concept.business-rule-runtime
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md"
+    aliases: ["request.contentPrepared"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: "已确认结论/申请内容"
+    capturedAt: '2026-09-15'
+    reviewStatus: unreviewed
+  - id: fact.catalog.recordcontrolrequest-applicantsignatureverified
+    name: "规则事实 request.applicantSignatureVerified"
+    conceptId: concept.business-rule-runtime
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md"
+    aliases: ["request.applicantSignatureVerified"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: "已确认结论/申请人电子签名"
+    capturedAt: '2026-09-15'
+    reviewStatus: unreviewed
+  - id: fact.catalog.sourcerecord-completed
+    name: "规则事实 sourceRecord.completed"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["sourceRecord.completed"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "sourceRecord.completed"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.sourcerecord-currentrevisionexists
+    name: "规则事实 sourceRecord.currentRevisionExists"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["sourceRecord.currentRevisionExists"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "sourceRecord.currentRevisionExists"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.split-batchcount
+    name: "规则事实 split.batchCount"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["split.batchCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "split.batchCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.split-processversionresolved
+    name: "规则事实 split.processVersionResolved"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["split.processVersionResolved"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "split.processVersionResolved"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.split-quantityperbatch
+    name: "规则事实 split.quantityPerBatch"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["split.quantityPerBatch"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "split.quantityPerBatch"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.split-requestedprocessversionid
+    name: "规则事实 split.requestedProcessVersionId"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["split.requestedProcessVersionId"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "split.requestedProcessVersionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.split-targetquantity
+    name: "规则事实 split.targetQuantity"
+    conceptId: concept.production-batch
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["split.targetQuantity"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal, not-equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "split.targetQuantity"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.subject-departmentscopes
+    name: "规则事实 subject.departmentScopes"
+    conceptId: concept.identity-runtime-subject-resolution
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    aliases: ["subject.departmentScopes"]
+    availability: configuration-and-runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-implementation]
+    sourceRevision: working-tree
+    sourceLocator: "subject.departmentScopes"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.subject-references
+    name: "规则事实 subject.references"
+    conceptId: concept.identity-runtime-subject-resolution
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    aliases: ["subject.references"]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-implementation]
+    sourceRevision: working-tree
+    sourceLocator: "subject.references"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.subject-resolution-completed
+    name: "规则事实 subject.resolution.completed"
+    conceptId: concept.identity-runtime-subject-resolution
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    aliases: ["subject.resolution.completed"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-implementation]
+    sourceRevision: working-tree
+    sourceLocator: "subject.resolution.completed"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.subject-type
+    name: "规则事实 subject.type"
+    conceptId: concept.identity-runtime-subject-resolution
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["subject.type"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "subject.type"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.subjectselector-opened
+    name: "规则事实 subjectSelector.opened"
+    conceptId: concept.identity-runtime-subject-resolution
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    aliases: ["subjectSelector.opened"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-work-template-configuration-controller]
+    sourceRevision: working-tree
+    sourceLocator: "subjectSelector.opened"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.task-candidatemembership
+    name: "规则事实 task.candidateMembership"
+    conceptId: concept.identity-runtime-subject-resolution
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    aliases: ["task.candidateMembership"]
+    availability: configuration-and-runtime
+    allowedOperators: [contains-actor]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-implementation]
+    sourceRevision: working-tree
+    sourceLocator: "task.candidateMembership"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.voidrequest-approved
+    name: "规则事实 voidRequest.approved"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["voidRequest.approved"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "voidRequest.approved"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.workorder-existingobjectformsmatchrequestedform
+    name: "规则事实 workOrder.existingObjectFormsMatchRequestedForm"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.existingObjectFormsMatchRequestedForm"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.existingObjectFormsMatchRequestedForm"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-objecttargetquantitywithinplannedquantity
+    name: "规则事实 workOrder.objectTargetQuantityWithinPlannedQuantity"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.objectTargetQuantityWithinPlannedQuantity"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.objectTargetQuantityWithinPlannedQuantity"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-ordernopresent
+    name: "规则事实 workOrder.orderNoPresent"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.orderNoPresent"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.orderNoPresent"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-plannedquantitypositive
+    name: "规则事实 workOrder.plannedQuantityPositive"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.plannedQuantityPositive"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.plannedQuantityPositive"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-plannedtimerangevalid
+    name: "规则事实 workOrder.plannedTimeRangeValid"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.plannedTimeRangeValid"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.plannedTimeRangeValid"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-processversionid
+    name: "规则事实 workOrder.processVersionId"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.processVersionId"]
+    availability: configuration-and-runtime
+    allowedOperators: [is-present, is-null]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.processVersionId"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-processversionlocked
+    name: "规则事实 workOrder.processVersionLocked"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.processVersionLocked"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.processVersionLocked"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-productselected
+    name: "规则事实 workOrder.productSelected"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.productSelected"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.productSelected"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-productionobjectcount
+    name: "规则事实 workOrder.productionObjectCount"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.productionObjectCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.productionObjectCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workorder-status
+    name: "规则事实 workOrder.status"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.status"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.workorder-statustransition
+    name: "规则事实 workOrder.statusTransition"
+    conceptId: concept.work-order
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workOrder.statusTransition"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workOrder.statusTransition"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.workflow-allbranchesapproved
+    name: "规则事实 workflow.allBranchesApproved"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workflow.allBranchesApproved"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workflow.allBranchesApproved"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.workflow-parallelbranchesexist
+    name: "规则事实 workflow.parallelBranchesExist"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workflow.parallelBranchesExist"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workflow.parallelBranchesExist"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.workflowtask-status
+    name: "规则事实 workflowTask.status"
+    conceptId: concept.identity-runtime-subject-resolution
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    aliases: ["workflowTask.status"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.identity-subject-resolver-implementation]
+    sourceRevision: working-tree
+    sourceLocator: "workflowTask.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workflowtemplate-category
+    name: "规则事实 workflowTemplate.category"
+    conceptId: concept.business-rule-runtime
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    aliases: ["workflowTemplate.category"]
+    availability: not-available
+    allowedOperators: [in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: "workflowTemplate.category"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.reviewtemplate-approvalnode-approversubjectsconfigured
+    name: "规则事实 reviewTemplate.approvalNode.approverSubjectsConfigured"
+    conceptId: concept.record-control-review-template
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java"
+    aliases: ["reviewTemplate.approvalNode.approverSubjectsConfigured"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-required-approvers]
+    sourceRevision: working-tree
+    sourceLocator: "validatePublishableApprovalSubjects"
+    capturedAt: '2026-09-14'
+    reviewStatus: unreviewed
+  - id: fact.catalog.reviewtemplate-approvalnodepresent
+    name: "规则事实 reviewTemplate.approvalNodePresent"
+    conceptId: concept.record-control-review-template
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java"
+    aliases: ["reviewTemplate.approvalNodePresent"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-required-approvers]
+    sourceRevision: working-tree
+    sourceLocator: "validatePublishableApprovalSubjects"
+    capturedAt: '2026-09-14'
+    reviewStatus: unreviewed
+  - id: fact.catalog.reviewtemplate-fixedactionmutated
+    name: "规则事实 reviewTemplate.fixedActionMutated"
+    conceptId: concept.record-control-review-template
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java"
+    aliases: ["reviewTemplate.fixedActionMutated"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
+    sourceRevision: working-tree
+    sourceLocator: "validateButtonConfiguration"
+    capturedAt: '2026-09-14'
+    reviewStatus: unreviewed
+  - id: fact.catalog.reviewtemplate-configurablefillpermissionrequested
+    name: "规则事实 reviewTemplate.configurableFillPermissionRequested"
+    conceptId: concept.record-control-review-template
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx"
+    aliases: ["reviewTemplate.configurableFillPermissionRequested"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-review-template-required-approvers]
+    sourceRevision: working-tree
+    sourceLocator: "ReviewTemplateEditor"
+    capturedAt: '2026-09-14'
+    reviewStatus: unreviewed
+  - id: fact.catalog.reviewtemplate-startnode-buttonconfigurationpresent
+    name: "规则事实 reviewTemplate.startNode.buttonConfigurationPresent"
+    conceptId: concept.record-control-review-template
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java"
+    aliases: ["reviewTemplate.startNode.buttonConfigurationPresent"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
+    sourceRevision: working-tree
+    sourceLocator: "validateButtonConfiguration"
+    capturedAt: '2026-09-15'
+    reviewStatus: unreviewed
+  - id: fact.catalog.workshop-changepersisted
+    name: "规则事实 workshop.changePersisted"
+    conceptId: concept.workshop
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java"
+    aliases: ["workshop.changePersisted"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-controller]
+    sourceRevision: working-tree
+    sourceLocator: "workshop.changePersisted"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workshop-codeduplicatewithintenant
+    name: "规则事实 workshop.codeDuplicateWithinTenant"
+    conceptId: concept.workshop
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java"
+    aliases: ["workshop.codeDuplicateWithinTenant"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-controller]
+    sourceRevision: working-tree
+    sourceLocator: "workshop.codeDuplicateWithinTenant"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workshop-referencecount
+    name: "规则事实 workshop.referenceCount"
+    conceptId: concept.workshop
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java"
+    aliases: ["workshop.referenceCount"]
+    availability: configuration-and-runtime
+    allowedOperators: [greater-than-or-equal]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-controller]
+    sourceRevision: working-tree
+    sourceLocator: "workshop.referenceCount"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.workshop-status
+    name: "规则事实 workshop.status"
+    conceptId: concept.workshop
+    valueType: string
+    sourceType: configuration
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java"
+    aliases: ["workshop.status"]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.workshop-controller]
+    sourceRevision: working-tree
+    sourceLocator: "workshop.status"
+    capturedAt: '2026-09-13'
+    reviewStatus: unreviewed
+  - id: fact.catalog.workshop-statusprovided
+    name: "规则事实 workshop.statusProvided"
+    conceptId: concept.workshop
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java"
+    aliases: ["workshop.statusProvided"]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.workshop-controller]
+    sourceRevision: working-tree
+    sourceLocator: "workshop.statusProvided"
+    capturedAt: '2026-09-13'
+    reviewStatus: reviewed
+  - id: fact.catalog.recordcontrol-productterminologycontext
+    name: "规则事实 recordControl.productTerminologyContext"
+    conceptId: concept.record-control-application
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: "docs/knowledge/evidence/record-control-terminology-user-confirmed.md"
+    aliases: ["recordControl.productTerminologyContext"]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-terminology-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: "已确认结论/标准中文产品术语"
+    capturedAt: '2026-09-15'
+    reviewStatus: reviewed
