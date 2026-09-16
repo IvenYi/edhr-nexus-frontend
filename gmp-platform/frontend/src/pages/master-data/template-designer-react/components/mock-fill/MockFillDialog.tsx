@@ -430,17 +430,17 @@ function getColumnWidth(page: CanvasPage, col: number) {
 }
 
 function buildTrackTemplate(count: number, getSize: (index: number) => number) {
-  return Array.from({ length: count }, (_, index) => `${Math.max(24, getSize(index + 1))}px`).join(' ');
+  return Array.from({ length: count }, (_, index) => `${Math.max(1, getSize(index + 1))}px`).join(' ');
 }
 
 function sumTrackSizes(count: number, getSize: (index: number) => number) {
-  return Array.from({ length: count }, (_, index) => Math.max(24, getSize(index + 1))).reduce((sum, value) => sum + value, 0);
+  return Array.from({ length: count }, (_, index) => Math.max(1, getSize(index + 1))).reduce((sum, value) => sum + value, 0);
 }
 
 function getMockFillRangeWidth(page: CanvasPage, range: CanvasSelectionRange) {
   let width = 0;
   for (let col = range.l; col <= range.r; col += 1) {
-    width += Math.max(24, getColumnWidth(page, col));
+    width += Math.max(1, getColumnWidth(page, col));
   }
   return width;
 }
@@ -448,7 +448,7 @@ function getMockFillRangeWidth(page: CanvasPage, range: CanvasSelectionRange) {
 function getMockFillRangeHeight(page: CanvasPage, range: CanvasSelectionRange) {
   let height = 0;
   for (let row = range.t; row <= range.b; row += 1) {
-    height += Math.max(24, getRowHeight(page, row));
+    height += Math.max(1, getRowHeight(page, row));
   }
   return height;
 }
@@ -456,7 +456,7 @@ function getMockFillRangeHeight(page: CanvasPage, range: CanvasSelectionRange) {
 function getMockFillRowOffset(page: CanvasPage, fromRow: number, toRow: number) {
   let offset = 0;
   for (let row = fromRow; row < toRow; row += 1) {
-    offset += Math.max(24, getRowHeight(page, row));
+    offset += Math.max(1, getRowHeight(page, row));
   }
   return offset;
 }
@@ -539,22 +539,36 @@ function renderMockFillControl({
   const isVerticalOptionLayout = ['vertical', 'column'].includes(optionLayout);
   const commonTextFieldSx = {
     height: '100%',
+    minHeight: 0,
+    minWidth: 0,
     '& .MuiInputBase-root': {
       minHeight: 0,
+      minWidth: 0,
       height: '100%',
       boxSizing: 'border-box',
       alignItems: autoWrap ? 'stretch' : 'center',
-      fontSize: 12,
+      fontSize: 'min(12px, max(8px, calc(var(--mock-fill-control-height, 24px) - 2px)))',
       bgcolor: readonly ? '#f8fafc' : '#fff',
     },
+    '&& .MuiOutlinedInput-root:not(.MuiInputBase-multiline)': { minHeight: 0 },
+    '&& .MuiOutlinedInput-root:not(.MuiInputBase-multiline) .MuiOutlinedInput-input': { py: 0, fontSize: 'inherit', lineHeight: 1.2 },
     '& .MuiOutlinedInput-input': {
       height: '100%',
+      minHeight: 0,
+      minWidth: 0,
       boxSizing: 'border-box',
       py: 0,
       px: 0.75,
       lineHeight: '18px',
     },
+    '& input.MuiInputBase-input': {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      '&::placeholder': { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+    },
     '& .MuiSelect-select': {
+      height: '100% !important',
       display: 'flex',
       alignItems: 'center',
     },
@@ -565,7 +579,10 @@ function renderMockFillControl({
     '& .MuiInputBase-inputMultiline': {
       height: '100% !important',
       boxSizing: 'border-box',
-      py: '4px !important',
+      fontSize: 'inherit',
+      lineHeight: 1.2,
+      minHeight: '0 !important',
+      py: '0 !important',
       px: '6px !important',
       maxHeight: 'none',
       overflowY: 'auto !important',
@@ -617,7 +634,7 @@ function renderMockFillControl({
 
   const wrapWithHelp = (content: ReactNode) => (
     <Tooltip title={helpText} disableHoverListener={!helpText} arrow>
-      <Box data-mock-fill-field-control="true" sx={{ width: '100%', height: '100%', minWidth: 0 }}>
+      <Box data-mock-fill-field-control="true" sx={{ width: '100%', height: '100%', minWidth: 0, minHeight: 0 }}>
         {content}
       </Box>
     </Tooltip>
@@ -916,7 +933,11 @@ function renderMockFillControl({
         SelectProps={{
           displayEmpty: true,
           multiple: isMultiSelectDropdown,
-          renderValue: (selected) => renderDropdownValue(selected),
+          renderValue: (selected) => (
+            <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {renderDropdownValue(selected)}
+            </Box>
+          ),
         }}
         sx={commonTextFieldSx}
       >
@@ -1065,7 +1086,10 @@ function MockFillPage({
         key={valueKey}
         data-mock-fill-field-cell="true"
         data-mock-fill-field-overflowing={shouldExpandFieldOnFocus ? 'true' : undefined}
-        style={shouldExpandFieldOnFocus ? ({ '--mock-fill-focus-width': `${focusedFieldWidth}px` } as CSSProperties) : undefined}
+        style={{
+          '--mock-fill-control-height': `${Math.max(0, getMockFillRangeHeight(page, range) - CELL_FIELD_INSET * 2)}px`,
+          ...(shouldExpandFieldOnFocus ? { '--mock-fill-focus-width': `${focusedFieldWidth}px` } : {}),
+        } as CSSProperties}
         sx={{
           gridColumn: `${range.l} / span ${range.r - range.l + 1}`,
           gridRow: `${range.t} / span ${range.b - range.t + 1}`,
@@ -1252,7 +1276,7 @@ function MockFillPage({
                   sx={{
                     position: 'absolute',
                     right: 4,
-                    top: 4,
+                    top: -34,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 0.5,
@@ -1261,13 +1285,20 @@ function MockFillPage({
                 >
                   <Box
                     data-mock-fill-sub-table-label="true"
+                    title={subTableField.name || '子表'}
                     sx={{
-                      px: 0.75,
-                      height: 22,
-                      lineHeight: '22px',
-                      borderRadius: 0.5,
-                      bgcolor: '#8b5cf6',
-                      color: '#fff',
+                      px: 1,
+                      maxWidth: 160,
+                      height: 28,
+                      lineHeight: '26px',
+                      border: '1px solid #e2d9f3',
+                      borderRadius: '8px',
+                      bgcolor: '#f3edff',
+                      color: '#6d28d9',
+                      boxShadow: '0 3px 10px rgba(30, 41, 59, 0.10)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
                       fontSize: 12,
                       fontWeight: 600,
                       opacity: isLabelVisible ? 1 : 0,

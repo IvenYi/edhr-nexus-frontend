@@ -419,7 +419,11 @@ function FieldPreviewRenderer({
       inputProps={{ tabIndex: -1 }}
       SelectProps={{
         displayEmpty: true,
-        renderValue: () => inputPlaceholder || '请选择',
+        renderValue: () => (
+          <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {inputPlaceholder || '请选择'}
+          </Box>
+        ),
       }}
     >
       {[{ key: 'placeholder', label: inputPlaceholder || '请选择', value: '' }, ...(options.length ? options : [emptyOption])].map((option) => (
@@ -551,7 +555,7 @@ function FieldPreviewRenderer({
           <TextField
             fullWidth
             size="small"
-            type="number"
+            type={isCellMode ? 'text' : 'number'}
             label={controlLabel}
             placeholder={inputPlaceholder}
             value={defaultValue}
@@ -570,7 +574,7 @@ function FieldPreviewRenderer({
           <TextField
             fullWidth
             size="small"
-            type="number"
+            type={isCellMode ? 'text' : 'number'}
             label={controlLabel}
             placeholder={inputPlaceholder}
             value={defaultValue}
@@ -745,8 +749,8 @@ function FieldPreviewRenderer({
           minHeight: 0,
           minWidth: 0,
           overflow: 'hidden',
-          '& .MuiFormControl-root': { height: '100%', minHeight: 0 },
-          '& .MuiInputBase-root': { height: '100%', minHeight: 0, bgcolor: '#fff', pointerEvents: 'none' },
+          '& .MuiFormControl-root': { height: '100%', minHeight: 0, minWidth: 0 },
+          '& .MuiInputBase-root': { height: '100%', minHeight: 0, minWidth: 0, bgcolor: '#fff', pointerEvents: 'none' },
           // Override the app theme's 32px minimum and single-line input padding inside cells.
           '&& .MuiOutlinedInput-root:not(.MuiInputBase-multiline)': { minHeight: 0 },
           '&& .MuiOutlinedInput-root:not(.MuiInputBase-multiline) .MuiOutlinedInput-input': { py: 0 },
@@ -756,6 +760,13 @@ function FieldPreviewRenderer({
             minHeight: '0 !important',
             py: 0,
             caretColor: 'transparent',
+          },
+          '& input.MuiInputBase-input': {
+            minWidth: 0,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            '&::placeholder': { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
           },
           '& .MuiSelect-select': { height: '100% !important', display: 'flex', alignItems: 'center' },
           '& .MuiInputBase-root.MuiInputBase-multiline': { p: '2px 6px', alignItems: 'stretch' },
