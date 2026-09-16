@@ -6,6 +6,8 @@ import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import { Box, IconButton, Stack } from '@mui/material';
 import CanvasDropZone from './CanvasDropZone';
 import { getComponentDefinition } from '../../registry/componentRegistry';
+import { isCellDisplayNode } from '../../registry/commonComponentRegistry';
+import CellDisplayContent from '../CellDisplayContent';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import type { CanvasNode, CanvasSelectionRange } from '../../types';
 
@@ -214,7 +216,7 @@ export default function CanvasNodeRenderer({
     const cellRange = readNodeCellRange(node);
     const wordTableCellTarget = readNodeWordTableCellTarget(node);
     if (wordTableCellTarget && node.bindings?.fieldId) return null;
-    const cellRangeLayout = absolute && node.bindings?.fieldId && cellRange
+    const cellRangeLayout = absolute && (node.bindings?.fieldId || isCellDisplayNode(node)) && cellRange
       ? resolveCellRangeLayout?.(cellRange) ?? null
       : null;
     const wordTableCellLayout = absolute && node.bindings?.fieldId && wordTableCellTarget
@@ -235,7 +237,7 @@ export default function CanvasNodeRenderer({
         )
       : 0;
     const resolvedCellLayout = wordTableCellLayout ?? cellRangeLayout;
-    const cellInset = absolute && node.bindings?.fieldId ? (node.type === 'sub-table' ? 0 : CELL_FIELD_INSET) : 0;
+    const cellInset = absolute && (node.bindings?.fieldId || isCellDisplayNode(node)) ? (node.type === 'sub-table' ? 0 : CELL_FIELD_INSET) : 0;
     const persistedWidth = readNumber(node.style.compWidth, 240);
     const persistedHeight = readNumber(node.style.compHeight, 40);
     const layoutPreview = nodeLayoutPreviews[node.id];
@@ -335,7 +337,11 @@ export default function CanvasNodeRenderer({
       >
         {absolute ? (
           <>
-            <Renderer
+            {cellRange && isCellDisplayNode(node) ? <Box
+              onClick={(event) => { event.stopPropagation(); handleSelect(); }}
+              onContextMenu={(event) => { event.stopPropagation(); onCellFieldContextMenu?.(cellRange, event); }}
+              sx={{ width: '100%', height: '100%', outline: selected ? '2px solid #1976d2' : 'none', outlineOffset: -2 }}
+            ><CellDisplayContent node={rendererNode} /></Box> : <Renderer
               node={rendererNode}
               selected={selected}
               onSelect={handleSelect}
@@ -351,7 +357,7 @@ export default function CanvasNodeRenderer({
                 }
               }}
               renderMode={wordTableCellTarget ? 'word-table-cell' : 'cell'}
-            />
+            />}
             {!cellRange && !wordTableCellTarget && selected ? (
               <>
               {RESIZE_DIRECTIONS.map((direction) => (

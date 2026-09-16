@@ -46,6 +46,23 @@ export const commonCanvasComponents: CommonCanvasComponentDefinition[] = [
   { id: 'table', label: '表格', icon: 'table', nodeType: 'word-table', props: {}, style: {} },
 ];
 
+// Cell-safe display components; these do not create business fields.
+export const cellDisplayComponentIds: CommonDisplayComponentId[] = ['text', 'image', 'header-columns', 'superscript', 'line', 'serial-number'];
+
+export function isCellDisplayComponent(id: string): id is CommonDisplayComponentId {
+  return cellDisplayComponentIds.includes(id as CommonDisplayComponentId);
+}
+
+export function isCellDisplayNode(node: CanvasNode) {
+  return Boolean(node.style.cellRange) && isCellDisplayComponent(String(node.props.commonComponentId ?? ''));
+}
+
+export function getComponentSheetHint(id: CommonCanvasComponentId) {
+  if (id === 'page-number') return '页码属于页面级组件，请在自由画布中使用';
+  if (id === 'table') return '表格用于自由画布，单元格内暂不支持嵌套表格';
+  return '该组件目前仅有占位展示，暂不支持表格填报';
+}
+
 function createId(prefix: string) {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return `${prefix}-${crypto.randomUUID()}`;
@@ -64,7 +81,7 @@ export function createCommonDisplayNode(
     type: definition.nodeType,
     parentId: null,
     children: [],
-    props: { ...definition.props },
+    props: { ...definition.props, commonComponentId: componentId },
     style: {
       position: 'absolute',
       compLeft: Math.max(0, Math.round(position.left)),

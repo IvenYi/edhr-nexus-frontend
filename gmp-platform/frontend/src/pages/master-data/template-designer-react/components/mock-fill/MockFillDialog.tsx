@@ -25,6 +25,8 @@ import {
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
+import CellDisplayContent from '../CellDisplayContent';
+import { isCellDisplayNode } from '../../registry/commonComponentRegistry';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
 import { getFilePreviewBlob } from '@/api/files';
 import { verifyCurrentUserSignaturePassword } from '@/api/identity';
@@ -974,7 +976,7 @@ function getSubTableChildNodes(allNodes: CanvasNode[], subTableFieldId?: string)
   if (!subTableFieldId) return [];
   return allNodes.filter((node) => (
     node.bindings?.subTableId === subTableFieldId
-    && Boolean(node.bindings?.subTableFieldId)
+    && (Boolean(node.bindings?.subTableFieldId) || isCellDisplayNode(node))
     && Boolean(readNodeCellRange(node))
   ));
 }
@@ -1059,9 +1061,9 @@ function MockFillPage({
   const paperMetrics = getMockFillPagePaperMetrics(page, gridWidth, gridHeight);
   const [hoveredSubTableNodeId, setHoveredSubTableNodeId] = useState<string | null>(null);
 
-  const renderFieldNode = (node: CanvasNode, range: CanvasSelectionRange, valueKey: string) => {
+  const renderFieldNode = (node: CanvasNode, range: CanvasSelectionRange, valueKey: string, recordIndex = 0) => {
     const field = resolveBoundField(document, node);
-    const content = renderMockFillControl({
+    const content = isCellDisplayNode(node) ? <CellDisplayContent node={node} recordIndex={recordIndex} /> : renderMockFillControl({
       node,
       field,
       valueKey,
@@ -1116,7 +1118,7 @@ function MockFillPage({
   const subTableNodes = allNodes.filter((node) => node.type === 'sub-table' && node.bindings?.fieldId && node.bindings?.subTableRegion);
   const subTableFieldNodes = new Set(allNodes.filter((node) => Boolean(node.bindings?.subTableId)).map((node) => node.id));
   const mainFieldNodes = allNodes.filter((node) => (
-    node.bindings?.fieldId
+    (node.bindings?.fieldId || isCellDisplayNode(node))
     && node.type !== 'sub-table'
     && !subTableFieldNodes.has(node.id)
     && Boolean(readNodeCellRange(node))
@@ -1361,7 +1363,7 @@ function MockFillPage({
                 if (!childRange || !rangeContainsRange(templateRange, childRange)) return;
                 const targetRange = mapChildRangeToRecord(childRange, templateRange, recordRange);
                 const valueKey = createMockValueKey(page.id, childNode, `${subTableNode.id}:record-${recordIndex}`);
-                const rendered = renderFieldNode(childNode, targetRange, valueKey);
+                const rendered = renderFieldNode(childNode, targetRange, valueKey, recordIndex);
                 if (rendered) subTableElements.push(rendered);
               });
             });

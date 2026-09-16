@@ -1,7 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Alert, Autocomplete, Box, Button, IconButton, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { AddRounded, DeleteOutlineRounded, UploadFileRounded } from '@mui/icons-material';
-import type { ModelField } from '@/pages/master-data/template-designer-react/types';
+import type { CanvasNode, ModelField } from '@/pages/master-data/template-designer-react/types';
+import CellDisplayContent from '@/pages/master-data/template-designer-react/components/CellDisplayContent';
+import { isCellDisplayNode } from '@/pages/master-data/template-designer-react/registry/commonComponentRegistry';
+import { readNodeCellRange } from '@/pages/master-data/template-designer-react/utils/subTableRegion';
 import SignatureDisplay from './SignatureDisplay';
 import { readSignaturePresentation } from './signaturePresentation';
 
@@ -14,6 +17,7 @@ export interface FormRuntime {
 }
 export const FormRuntimeContext = createContext<FormRuntime | undefined>(undefined);
 export const SignatureDisplayModeContext = createContext<Record<string, unknown>>({});
+export const SubTableDisplayNodesContext = createContext<CanvasNode[]>([]);
 
 export function FormRuntimeField({ field, readOnly = false, signatureDisplayMode }: { field: ModelField; readOnly?: boolean; signatureDisplayMode?: unknown }) {
   const runtime = useContext(FormRuntimeContext);
@@ -47,13 +51,21 @@ export function FormRuntimeField({ field, readOnly = false, signatureDisplayMode
 }
 
 function RuntimeSubTable({ field, disabled, runtime }: { field: ModelField; disabled: boolean; runtime: FormRuntime }) {
+  const templateNodes = useContext(SubTableDisplayNodesContext).filter((node) => node.bindings?.subTableId === field.id);
   const raw = field.typeConfig.columns;
   const columns = (Array.isArray(raw) ? raw : String(raw ?? '').split(/[\n,，]/).filter(Boolean)).map((item, index) =>
     typeof item === 'string' ? { id: `sub-field-${index + 1}`, name: item, type: 'text', typeConfig: {}, status: 'enabled' } as ModelField : item as ModelField).filter((item) => item.status !== 'disabled');
   const rows = Array.isArray(runtime.values[field.id]) ? runtime.values[field.id] as Record<string, unknown>[] : [];
-  if (!columns.length) return <Alert severity="warning">子表尚未配置字段，无法填报。</Alert>;
-  return <Box sx={{ width: '100%', overflowX: 'auto' }}><Table size="small"><TableHead><TableRow>{columns.map((column) => <TableCell key={column.id}>{column.name}</TableCell>)}<TableCell /></TableRow></TableHead><TableBody>
-    {rows.map((row, index) => <TableRow key={index}>{columns.map((column) => <TableCell key={column.id} sx={{ minWidth: 140 }}><FormRuntimeContext.Provider value={{ ...runtime, values: row, disabled, onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled} /></FormRuntimeContext.Provider></TableCell>)}
+  const displayNodes = templateNodes.filter(isCellDisplayNode);
+  const positionOf = (node?: CanvasNode) => node ? readNodeCellRange(node)?.l ?? Infinity : Infinity;
+  const entries = [
+    ...columns.map((column) => ({ id: column.id, label: column.name, column, node: undefined as CanvasNode | undefined, position: positionOf(templateNodes.find((node) => node.bindings?.subTableFieldId === column.id)) })),
+    ...displayNodes.map((node) => ({ id: node.id, label: node.props.commonComponentId === 'serial-number' ? '序号' : String(node.props.text ?? node.props.alt ?? ''), column: undefined as ModelField | undefined, node, position: readNodeCellRange(node)?.l ?? Infinity })),
+  ];
+  if (displayNodes.length) entries.sort((a, b) => a.position - b.position);
+  if (!entries.length) return <Alert severity="warning">子表尚未配置字段，无法填报。</Alert>;
+  return <Box sx={{ width: '100%', overflowX: 'auto' }}><Table size="small"><TableHead><TableRow>{entries.map((entry) => <TableCell key={entry.id}>{entry.label}</TableCell>)}<TableCell /></TableRow></TableHead><TableBody>
+    {rows.map((row, index) => <TableRow key={index}>{entries.map(({ id, node, column }) => <TableCell key={id} sx={{ minWidth: node ? 40 : 140 }}>{node ? <Box sx={{ height: 32 }}><CellDisplayContent node={node} recordIndex={index} /></Box> : column ? <FormRuntimeContext.Provider value={{ ...runtime, values: row, disabled, onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled} /></FormRuntimeContext.Provider> : null}</TableCell>)}
       <TableCell><IconButton size="small" aria-label={`删除第 ${index + 1} 行`} disabled={disabled} onClick={() => runtime.onChange(field.id, rows.filter((_, i) => i !== index))}><DeleteOutlineRounded /></IconButton></TableCell></TableRow>)}
   </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, {}])}>添加记录</Button></Box>;
 }

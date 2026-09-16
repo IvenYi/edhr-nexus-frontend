@@ -7,6 +7,8 @@ import { useRef, useState } from 'react';
 import FieldTypeIcon from './FieldTypeIcon';
 import PropertyFormRenderer from './PropertyFormRenderer';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
+import { getComponentDefinition } from '../registry/componentRegistry';
+import { isCellDisplayNode } from '../registry/commonComponentRegistry';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { FieldTypeIconKey } from '../types';
 
@@ -726,6 +728,7 @@ function FillLimitCheckbox({
 }
 
 export default function DesignerInspector() {
+  const updateNodeProps = useTemplateDesignerStore((state) => state.updateNodeProps);
   const updateNodeBindings = useTemplateDesignerStore((state) => state.updateNodeBindings);
   const updateSelectedSubTableRegion = useTemplateDesignerStore((state) => state.updateSelectedSubTableRegion);
   const setSelectedSubTableHeaderVisible = useTemplateDesignerStore((state) => state.setSelectedSubTableHeaderVisible);
@@ -753,6 +756,19 @@ export default function DesignerInspector() {
         />
       </Stack>
     );
+  }
+
+  if (selectedNode.style.cellRange && isCellDisplayNode(selectedNode)) {
+    const definition = getComponentDefinition(selectedNode.type);
+    const serial = selectedNode.props.commonComponentId === 'serial-number';
+    return <Stack spacing={2} sx={{ p: 2, overflow: 'auto' }}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography fontWeight={600}>{serial ? '序号' : definition.label}</Typography>
+        <IconButton aria-label="删除组件" size="small" onClick={() => removeNode(selectedNode.id)}><DeleteIcon fontSize="small" /></IconButton>
+      </Stack>
+      {serial ? <Typography variant="body2" color="text.secondary">按子表记录顺序从 1 开始显示，新增或删除记录后自动更新。</Typography>
+        : <PropertyFormRenderer title="组件内容" schema={definition.propSchema} value={selectedNode.props} onChange={(patch) => updateNodeProps(selectedNode.id, patch)} />}
+    </Stack>;
   }
 
   const bindings = selectedNode.bindings ?? {};

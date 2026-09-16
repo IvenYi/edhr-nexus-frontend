@@ -7,6 +7,7 @@ import type {
   SubTableRegion,
   SubTableRepeatConfig,
 } from '../types';
+import { isCellDisplayNode } from '../registry/commonComponentRegistry';
 
 export function normalizeRange(range: CanvasSelectionRange): CanvasSelectionRange {
   return {
@@ -116,7 +117,7 @@ export function buildSubTableRepeatedGroupSheetLayout(input: {
   // Older designs can still contain imported text underneath field components.
   const clearBoundCellText = (nodes: CanvasNode[]) => nodes.forEach((node) => {
     const range = readNodeCellRange(node);
-    if (range && node.type !== 'sub-table' && (node.bindings?.fieldId || node.bindings?.subTableFieldId)) {
+    if (range && node.type !== 'sub-table' && (node.bindings?.fieldId || node.bindings?.subTableFieldId || isCellDisplayNode(node))) {
       for (let row = range.t; row <= range.b; row += 1) {
         for (let col = range.l; col <= range.r; col += 1) {
           const key = getCellKey(row, col);

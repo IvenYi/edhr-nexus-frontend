@@ -42,7 +42,9 @@ import {
 } from "@mui/material";
 import TableStateCell from '@/components/TableStateCell';
 import AppDialog from "@/components/AppDialog";
-import { FormRuntimeContext, FormRuntimeField, SignatureDisplayModeContext, type FormRuntime } from '@/components/form-renderer/FormRuntimeField';
+import { FormRuntimeContext, FormRuntimeField, SignatureDisplayModeContext, SubTableDisplayNodesContext, type FormRuntime } from '@/components/form-renderer/FormRuntimeField';
+import CellDisplayContent from './template-designer-react/components/CellDisplayContent';
+import { isCellDisplayNode } from './template-designer-react/registry/commonComponentRegistry';
 import StatusBadge from "@/components/StatusBadge";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -592,6 +594,7 @@ function PreviewField({
   );
   const hidden = Boolean(node.bindings?.hidden);
   if (hidden || (node.type === "sub-table" && !runtime)) return null;
+  if (isCellDisplayNode(node)) return <CellDisplayContent node={node} />;
   const fieldId = String(field?.id ?? node.bindings?.fieldId ?? "");
   const readOnly =
     fieldPermissions?.[fieldId] === "READ_ONLY" ||
@@ -673,6 +676,7 @@ function SheetPreview({
     [0],
   );
   const nodeLayers = flattenCanvasNodes(page.nodes).flatMap((node) => {
+    if (runtime && isCellDisplayNode(node) && node.bindings?.subTableId) return [];
     const range = readNodeCellRange(node);
     if (!range || node.style.position !== "absolute") return [];
     const left = columnOffsets[range.l - 1] ?? 0;
@@ -1017,6 +1021,7 @@ export function FormCanvasPreview({
   layout?: 'canvas' | 'fields';
 }) {
   const [pageId, setPageId] = useState(document.canvas.currentPageId);
+  const subTableDisplayNodes = useMemo(() => document.canvas.pages.flatMap((entry) => flattenCanvasNodes(entry.nodes)), [document.canvas.pages]);
   const signatureDisplayModes = useMemo(() => Object.fromEntries(
     document.canvas.pages.flatMap((entry) => flattenCanvasNodes(entry.nodes)).flatMap((node) => {
       const fieldId = node.bindings?.subTableFieldId ?? node.bindings?.fieldId;
@@ -1033,7 +1038,7 @@ export function FormCanvasPreview({
     (Object.keys(page.cells).length || page.nodes.length || page.images.length),
   );
   return (
-    <SignatureDisplayModeContext.Provider value={signatureDisplayModes}><FormRuntimeContext.Provider value={runtime}><Box
+    <SubTableDisplayNodesContext.Provider value={subTableDisplayNodes}><SignatureDisplayModeContext.Provider value={signatureDisplayModes}><FormRuntimeContext.Provider value={runtime}><Box
       sx={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}
     >
       {document.canvas.pages.length > 1 ? (
@@ -1078,7 +1083,7 @@ export function FormCanvasPreview({
           interaction={interaction}
         />
       )}
-    </Box></FormRuntimeContext.Provider></SignatureDisplayModeContext.Provider>
+    </Box></FormRuntimeContext.Provider></SignatureDisplayModeContext.Provider></SubTableDisplayNodesContext.Provider>
   );
 }
 

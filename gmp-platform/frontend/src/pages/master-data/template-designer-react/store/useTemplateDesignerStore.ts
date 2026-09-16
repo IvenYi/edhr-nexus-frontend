@@ -16,7 +16,7 @@ import type {
   TemplateDesignerDocument,
   TemplateDesignerTabKey,
 } from '../types';
-import { createCommonDisplayNode, type CommonDisplayComponentId } from '../registry/commonComponentRegistry';
+import { createCommonDisplayNode, isCellDisplayComponent, isCellDisplayNode, type CommonDisplayComponentId } from '../registry/commonComponentRegistry';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { createDefaultSubTableRegion, inferFixedRepeatCount, rebuildSubTableRecordTemplate } from '../utils/subTableRegion';
@@ -1317,7 +1317,7 @@ function removeCellFieldNodesFromTree(nodes: CanvasNode[], targetRange: CanvasSe
 
   const nextNodes = nodes
     .filter((node) => {
-      if (!node.bindings?.fieldId) return true;
+      if (!node.bindings?.fieldId && !isCellDisplayNode(node)) return true;
       const cellRange = readNodeCellRange(node);
       return !cellRange || !rangesIntersect(cellRange, normalizedTarget);
     })
@@ -1360,7 +1360,7 @@ function removeSubTableFieldNodesFromTree(
 
   return nodes
     .filter((node) => {
-      if (node.bindings?.subTableId !== subTableId || !node.bindings.subTableFieldId) return true;
+      if (node.bindings?.subTableId !== subTableId || (!node.bindings.subTableFieldId && !isCellDisplayNode(node))) return true;
       const cellRange = readNodeCellRange(node);
       return !cellRange || !rangesIntersect(cellRange, normalizedTarget);
     })
@@ -1391,7 +1391,7 @@ function findFirstCellFieldNodeInRange(nodes: CanvasNode[], targetRange: CanvasS
   const visit = (items: CanvasNode[]) => {
     items.forEach((node) => {
       const cellRange = readNodeCellRange(node);
-      const isSelectableCellField = node.bindings?.fieldId
+      const isSelectableCellField = (node.bindings?.fieldId || isCellDisplayNode(node))
         && cellRange
         && (node.type === 'sub-table'
           ? rangesEqual(cellRange, normalizedTarget)
@@ -1815,6 +1815,7 @@ export interface TemplateDesignerStore {
   setModelFieldReportColumnWidth: (scopeKey: string, columnKey: string, width: number) => void;
   insertNode: (parentId: string | null, node: CanvasNode) => void;
   addFreeCanvasComponent: (componentId: CommonDisplayComponentId, position: { left: number; top: number }) => void;
+  addCommonComponentToCell: (componentId: CommonDisplayComponentId, layout: FieldCellLayout) => void;
   addNodeFromField: (fieldId: string, parentId?: string | null) => void;
   addNodeFromFieldToCell: (fieldId: string, layout: FieldCellLayout) => void;
   addNodeFromFieldToWordTableCell: (fieldId: string, layout: WordTableFieldCellLayout) => void;
@@ -2264,6 +2265,33 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const currentPage = get().getCurrentPage();
     if (!currentPage || currentPage.sheet.canvasMode !== 'paper') return;
     get().insertNode(null, createCommonDisplayNode(componentId, position));
+  },
+  addCommonComponentToCell: (componentId, layout) => {
+    const page = get().getCurrentPage();
+    if (!page || !layout.range || !isCellDisplayComponent(componentId)) return;
+    const range = normalizeRange(layout.range);
+    const regions = page.nodes.filter((node) => node.type === 'sub-table' && node.bindings?.subTableRegion);
+    const overlapping = regions.filter((node) => {
+      const regionRange = readNodeCellRange(node);
+      return regionRange && rangesIntersect(regionRange, range);
+    });
+    const subTable = overlapping[0];
+    if (overlapping.length > 1 || (subTable && !rangeContainsRange(readNodeCellRange(subTable)!, range))) {
+      throw new Error('组件不能跨越子表边界，请选择子表内的单元格。');
+    }
+    const groupRange = subTable?.bindings?.subTableRegion?.recordTemplate.groupRange;
+    if (groupRange && !rangeContainsRange(groupRange, range)) throw new Error('请将组件放入子表的记录模板区域。');
+    const node = createCommonDisplayNode(componentId, { left: layout.left, top: layout.top });
+    node.style = { ...node.style, compWidth: layout.width, compHeight: layout.height, cellRange: range };
+    if (componentId === 'serial-number') node.props.text = '1';
+    if (subTable) node.bindings = { subTableId: subTable.bindings?.fieldId };
+    set((state) => pushDocumentHistory(state, {
+      document: state.document ? updateCanvasPage(state.document, (current) => ({
+        ...clearPageCellsInRange(current, range),
+        nodes: reconcileSubTableRegionTemplates([...removeCellNodesInRange(current.nodes, range), node]),
+      })) : state.document,
+      selectedNodeId: node.id,
+    }));
   },
   addNodeFromField: (fieldId, parentId = null) => {
     const field = get().getFieldById(fieldId);
