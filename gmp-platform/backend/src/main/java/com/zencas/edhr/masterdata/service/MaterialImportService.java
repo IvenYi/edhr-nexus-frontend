@@ -48,6 +48,7 @@ public class MaterialImportService {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss").withResolverStyle(java.time.format.ResolverStyle.STRICT);
     private static final List<String> HEADERS = List.of(
             "物料名称", "物料料号", "品牌名称", "规格型号", "物料类型", "单位", "物料用途", "物料版本", "生效日期", "失效日期", "版本说明");
+    private static final Set<Integer> REQUIRED_COLUMNS = Set.of(0, 1, 4, 7);
     private static final Set<String> MATERIAL_PURPOSES = Set.of("试验物料", "生产物料");
     private static final List<String> MATERIAL_PURPOSE_OPTIONS = List.of("试验物料", "生产物料");
 
@@ -67,11 +68,13 @@ public class MaterialImportService {
             headerFont.setColor((short) 9);
 
             Row header = sheet.createRow(0);
+            header.setHeightInPoints(26);
+            int[] widths = {24, 22, 20, 24, 18, 12, 18, 16, 24, 24, 32};
             for (int column = 0; column < HEADERS.size(); column++) {
                 Cell cell = header.createCell(column);
-                cell.setCellValue(HEADERS.get(column));
+                cell.setCellValue(templateHeader(column));
                 cell.setCellStyle(headerStyle);
-                sheet.setColumnWidth(column, column == 0 || column == 1 ? 18 * 256 : 15 * 256);
+                sheet.setColumnWidth(column, widths[column] * 256);
             }
             List<String> typeOptions = materialTypes().values().stream().map(MaterialType::getName).toList();
             Row example = sheet.createRow(1);
@@ -81,6 +84,34 @@ public class MaterialImportService {
             addDropdown(sheet, 6, MATERIAL_PURPOSE_OPTIONS);
             sheet.createFreezePane(0, 1);
             sheet.setAutoFilter(new org.apache.poi.ss.util.CellRangeAddress(0, 1, 0, HEADERS.size() - 1));
+            var instructions = workbook.createSheet("填写说明");
+            String[][] notes = {
+                    {"填写项目", "填写要求"},
+                    {"必填标记", "带 * 的列为必填：物料名称、物料料号、物料类型、物料版本。"},
+                    {"填写范围", "从第 2 行开始填写，单次最多 1000 条；导入前删除示例行，保留表头及列顺序。"},
+                    {"物料类型 *", "在 E 列下拉选择；选项已随模板内置，无需联网。系统类型更新后请重新下载模板。"},
+                    {"物料用途", "在 G 列选择“试验物料”或“生产物料”；可留空，导入时默认“生产物料”。"},
+                    {"物料名称 / 料号", "物料名称最多 128 字，物料料号最多 64 字；料号与版本共同确定一条物料版本。"},
+                    {"品牌 / 规格 / 单位", "均为选填；品牌最多 255 字，规格型号最多 128 字，单位最多 32 字。"},
+                    {"物料版本 *", "如 V1.0，最多 64 字。同一料号的不同版本须保持名称、品牌、规格、类型、单位和用途一致。"},
+                    {"生效 / 失效日期", "选填，格式 yyyy-MM-dd HH:mm:ss，如 2026-01-01 00:00:00；生效日期不能晚于失效日期。"},
+                    {"导入结果", "合法新版本导入，重复料号和版本跳过，无效行返回行号及原因；数据库或审计异常时整体回滚。"}
+            };
+            CellStyle noteStyle = workbook.createCellStyle();
+            noteStyle.setWrapText(true);
+            noteStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
+            for (int index = 0; index < notes.length; index++) {
+                Row row = instructions.createRow(index);
+                row.setHeightInPoints(index == 0 ? 26 : 42);
+                for (int column = 0; column < 2; column++) {
+                    Cell cell = row.createCell(column);
+                    cell.setCellValue(notes[index][column]);
+                    cell.setCellStyle(index == 0 ? headerStyle : noteStyle);
+                }
+            }
+            instructions.setColumnWidth(0, 24 * 256);
+            instructions.setColumnWidth(1, 90 * 256);
+            instructions.createFreezePane(0, 1);
             workbook.write(output);
             return output.toByteArray();
         }
@@ -99,7 +130,12 @@ public class MaterialImportService {
         DataValidationConstraint constraint = validationHelper.createFormulaListConstraint(range.getNameName());
         DataValidation validation = validationHelper.createValidation(constraint, new CellRangeAddressList(1, MAX_IMPORT_ROWS, column, column));
         validation.setSuppressDropDownArrow(true);
+        validation.setEmptyCellAllowed(!REQUIRED_COLUMNS.contains(column));
+        validation.setErrorStyle(DataValidation.ErrorStyle.STOP);
+        validation.createErrorBox("请选择有效选项", "请从下拉列表中选择" + HEADERS.get(column) + "，不要输入列表外的内容。");
         validation.setShowErrorBox(true);
+        validation.createPromptBox(HEADERS.get(column), REQUIRED_COLUMNS.contains(column) ? "必填，请从下拉列表选择。" : "选填，请从下拉列表选择；留空默认生产物料。");
+        validation.setShowPromptBox(true);
         sheet.addValidationData(validation);
     }
 
@@ -241,10 +277,15 @@ public class MaterialImportService {
 
     private void validateHeaders(Row header) {
         for (int index = 0; index < HEADERS.size(); index++) {
-            if (!HEADERS.get(index).equals(text(header, index))) {
+            String value = text(header, index);
+            if (!HEADERS.get(index).equals(value) && !templateHeader(index).equals(value)) {
                 throw new BusinessException(ErrorCode.GENERAL_001, "导入模板表头不正确，请下载标准模板后重试");
             }
         }
+    }
+
+    private String templateHeader(int column) {
+        return HEADERS.get(column) + (REQUIRED_COLUMNS.contains(column) ? " *" : "");
     }
 
     private LocalDateTime parseDate(String value, int rowNumber, String code, String version, String label, List<MaterialImportResult.RowResult> failedRows) {

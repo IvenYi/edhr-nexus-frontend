@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.21
+facts:
+  - id: fact.operation-import.workbook-accepted
+    name: 工序导入工作簿通过入口校验
+    conceptId: concept.operation
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/OperationImportService.java
+    aliases: [operation.importWorkbookAccepted]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.operation-import-service]
+    sourceRevision: working-tree
+    sourceLocator: importWorkbook 内文件后缀、非空、首表表头与 MAX_IMPORT_ROWS 校验；入口校验通过后推导，不新增持久化字段
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed

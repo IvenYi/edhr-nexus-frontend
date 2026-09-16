@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.21
+implementationAnchors:
+  - id: anchor.operation-import.row-outcomes
+    targetId: rule.operation-import.row-outcomes
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/OperationImportService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/OperationImportResult.java]
+    apiReferences: [gmp-platform/frontend/src/api/master-data.ts]
+    databaseReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Operation.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/OperationCategory.java]
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx, gmp-platform/frontend/src/pages/master-data/components/OperationImportActions.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/OperationImportServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/OperationImportIntegrationTest.java, gmp-platform/frontend/scripts/test-operation-import.mjs]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.operation-import-service, evidence.operation-import-controller, evidence.operation-import-tests, evidence.operation-import-integration-tests, evidence.operation-import-ui, evidence.operation-import-ui-tests]
+    sourceRevision: working-tree
+    sourceLocator: createTemplate / importWorkbook / validationError / resolveCategory / OperationImportResult；ProcessModelingController.importOperations 事务和 CREATE 审计；工序页面下载和上传入口
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed

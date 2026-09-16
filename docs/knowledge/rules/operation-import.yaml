@@ -1,0 +1,20 @@
+knowledgeModelVersion: 0.3.21
+rules:
+  - id: rule.operation-import.row-outcomes
+    name: 工序导入逐行结果
+    status: implemented
+    visibility: internal
+    trigger: operation.import
+    scope: operation-master-data
+    condition:
+      fact: fact.operation-import.workbook-accepted
+      operator: equals
+      value: true
+    result:
+      type: allow-with-governance
+      action: operation.import
+      validRows: persist-new-operations
+      duplicateRows: skip-code
+      invalidRows: return-row-number-and-reason
+    explanation: 使用标准 xlsx 工作簿且不超过 1000 数据行时，合法新工序新增、重复编码跳过、无效行返回行号与原因，汇总成功、跳过、失败数量。模板承载既有必填标记、示例、填写说明及分类和工序类型选项。每条新增工序记录 CREATE 审计，数据库或审计异常沿用整批回滚边界；逐行输入校验失败不承诺基础设施异常下部分提交。导入不更新既有工序或改写生产快照。
+    evidenceIds: [evidence.operation-import-confirmed, evidence.operation-import-service, evidence.operation-import-controller, evidence.operation-import-tests]

@@ -44,7 +44,8 @@ class MaterialImportServiceTest {
             assertThat(IntStream.range(0, 11)
                     .mapToObj(index -> workbook.getSheetAt(0).getRow(0).getCell(index).getStringCellValue())
                     .toList())
-                    .containsExactly("物料名称", "物料料号", "品牌名称", "规格型号", "物料类型", "单位", "物料用途", "物料版本", "生效日期", "失效日期", "版本说明");
+                    .containsExactly("物料名称 *", "物料料号 *", "品牌名称", "规格型号", "物料类型 *", "单位", "物料用途", "物料版本 *", "生效日期", "失效日期", "版本说明");
+            assertThat(workbook.getSheet("填写说明").getRow(1).getCell(1).getStringCellValue()).contains("物料类型", "物料版本");
         }
     }
 
@@ -60,10 +61,47 @@ class MaterialImportServiceTest {
             assertThat(workbook.getSheet("选项4").getRow(0).getCell(0).getStringCellValue()).isEqualTo("自定义类型");
             assertThat(workbook.getSheet("选项4").getRow(1).getCell(0).getStringCellValue()).isEqualTo("原材料");
             assertThat(workbook.getSheet("选项6").getRow(0).getCell(0).getStringCellValue()).isEqualTo("试验物料");
+            assertThat(workbook.getSheet("选项6").getRow(1).getCell(0).getStringCellValue()).isEqualTo("生产物料");
+            assertThat(workbook.isSheetHidden(workbook.getSheetIndex("选项4"))).isTrue();
+            assertThat(workbook.getName("Options4").getRefersToFormula()).isEqualTo("'选项4'!$A$1:$A$2");
+            assertThat(workbook.getSheetAt(0).getCTWorksheet().getDataValidations().getDataValidationArray())
+                    .allSatisfy(validation -> assertThat(validation.getShowDropDown()).isFalse());
+            assertThat(validations).allSatisfy(validation -> {
+                assertThat(validation.getShowErrorBox()).isTrue();
+                assertThat(validation.getShowPromptBox()).isTrue();
+                assertThat(validation.getErrorStyle()).isEqualTo(org.apache.poi.ss.usermodel.DataValidation.ErrorStyle.STOP);
+            });
+            assertThat(validations.get(0).getEmptyCellAllowed()).isFalse();
+            assertThat(validations.get(1).getEmptyCellAllowed()).isTrue();
             assertThat(validations.get(0).getRegions().getCellRangeAddresses()[0].getFirstRow()).isEqualTo(1);
             assertThat(validations.get(0).getRegions().getCellRangeAddresses()[0].getLastRow()).isEqualTo(1000);
             assertThat(validations.get(0).getRegions().getCellRangeAddresses()[0].getFirstColumn()).isEqualTo(4);
             assertThat(validations.get(1).getRegions().getCellRangeAddresses()[0].getFirstColumn()).isEqualTo(6);
+        }
+    }
+
+    @Test
+    void generatedTemplateImportsWithRequiredMarkersAndOptionalPurpose() throws Exception {
+        when(materialTypeRepository.findAll()).thenReturn(List.of(type("原材料", 1L)));
+        var service = service();
+        try (var workbook = new XSSFWorkbook(new ByteArrayInputStream(service.createTemplate())); var output = new ByteArrayOutputStream()) {
+            var row = workbook.getSheetAt(0).getRow(1);
+            row.getCell(6).setCellValue("");
+            workbook.write(output);
+            var result = service.importWorkbook(new MockMultipartFile("file", "template.xlsx", "", output.toByteArray()));
+            assertThat(result.successCount()).isEqualTo(1);
+            assertThat(result.failedCount()).isZero();
+            verify(materialRepository).save(argThat(material -> "生产物料".equals(material.getMaterialPurpose()) && material.getMaterialTypeId().equals(1L)));
+        }
+    }
+
+    @Test
+    void templateEmbedsAllOptionsEvenWhenListExceedsInlineExcelLimit() throws Exception {
+        var types = IntStream.range(0, 80).mapToObj(i -> type("自定义物料类型" + i, (long) i + 1)).toList();
+        when(materialTypeRepository.findAll()).thenReturn(types);
+        try (var workbook = new XSSFWorkbook(new ByteArrayInputStream(service().createTemplate()))) {
+            assertThat(workbook.getSheet("选项4").getPhysicalNumberOfRows()).isEqualTo(80);
+            assertThat(workbook.getName("Options4").getRefersToFormula()).isEqualTo("'选项4'!$A$1:$A$80");
         }
     }
 

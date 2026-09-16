@@ -229,6 +229,30 @@ export const updateMaterial = (id: string | number, body: ProcessModelingPayload
 export const deleteMaterial = (id: string | number) => deleteProcessModelingRecord('materials', id);
 
 export const getProcessOperations = (params?: ProcessModelingQuery) => getProcessModelingList<OperationRecord>('operations', params);
+export interface OperationImportRowResult {
+  rowNumber: number;
+  code: string;
+  name: string;
+  reason: string;
+}
+
+export interface OperationImportResult {
+  successCount: number;
+  skippedCount: number;
+  failedCount: number;
+  skippedRows: OperationImportRowResult[];
+  failedRows: OperationImportRowResult[];
+}
+
+export const downloadOperationImportTemplate = () =>
+  client.get(`${processModelingBase}/operations/import-template`, { responseType: 'blob' });
+export const importOperations = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return client.post(`${processModelingBase}/operations/import`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }) as Promise<{ data: { data: OperationImportResult } }>;
+};
 export const getProcessOperationCategories = () =>
   client.get(`${processModelingBase}/operations/categories`) as Promise<{ data: { data: OperationCategoryRecord[] } }>;
 export const createProcessOperationCategory = (body: { name: string }) =>

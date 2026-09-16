@@ -73,6 +73,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import OperationImportActions from './components/OperationImportActions';
 import {
   Add,
   CallSplit,
@@ -4768,6 +4769,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   <input ref={materialImportFileInputRef} type="file" accept=".xlsx" hidden onChange={handleMaterialImportFileChange} />
                 </>
               ) : null}
+              {pageKey === 'operations' ? <OperationImportActions notify={showSnackbar} /> : null}
               <Button size="small" variant="contained" startIcon={<Add />} onClick={openCreateDialog}>新增</Button>
             </Stack>
           )}

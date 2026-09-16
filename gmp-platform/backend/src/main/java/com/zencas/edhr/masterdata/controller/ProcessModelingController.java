@@ -44,6 +44,8 @@ import com.zencas.edhr.masterdata.service.ProductProcessOwnerService;
 import com.zencas.edhr.masterdata.dto.ProcessOwnerType;
 import com.zencas.edhr.masterdata.dto.MaterialImportResult;
 import com.zencas.edhr.masterdata.service.MaterialImportService;
+import com.zencas.edhr.masterdata.service.OperationImportService;
+import com.zencas.edhr.masterdata.dto.OperationImportResult;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -99,6 +101,7 @@ public class ProcessModelingController {
     private final MaterialTypeRepository materialTypeRepository;
     private final MaterialRepository materialRepository;
     private final MaterialImportService materialImportService;
+    private final OperationImportService operationImportService;
     private final ProductRepository productRepository;
     private final ProductFamilyRepository productFamilyRepository;
     private final OperationCategoryRepository operationCategoryRepository;
@@ -537,6 +540,24 @@ public class ProcessModelingController {
         }
         operationCategoryRepository.saveAll(new java.util.ArrayList<>(categoryById.values()));
         return ApiResponse.success(toOperationCategoryResponses());
+    }
+
+    @GetMapping(value = "/operations/import-template", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<byte[]> downloadOperationImportTemplate() throws IOException {
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+                        .filename("工序导入模板.xlsx", StandardCharsets.UTF_8).build().toString())
+                .body(operationImportService.createTemplate());
+    }
+
+    @PostMapping(value = "/operations/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Transactional(rollbackOn = Exception.class)
+    public ApiResponse<OperationImportResult> importOperations(@RequestParam("file") MultipartFile file) throws IOException {
+        OperationImportResult result = operationImportService.importWorkbook(file);
+        result.importedOperations().forEach(operation -> writeAudit("OPERATION", operation.getId(), "CREATE",
+                "工序管理", "导入工序", Map.of(), operationSnapshot(operation)));
+        return ApiResponse.success(result);
     }
 
     @PostMapping("/operations")
