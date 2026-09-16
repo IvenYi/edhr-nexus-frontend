@@ -24,8 +24,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Drawer,
   IconButton,
   InputAdornment,
+  Link,
   MenuItem,
   Snackbar,
   Stack,
@@ -1126,7 +1128,9 @@ function FormPreviewLoading() {
   );
 }
 
-function ReferencedFormPreview({ evidence, version }: { evidence: DhrEvidenceItemRecord; version: TemplateVersionRecord }) {
+type FormPreviewEvidence = Pick<DhrEvidenceItemRecord, 'id' | 'formTemplateId' | 'formTemplateVersionId' | 'formCode' | 'formName'>;
+
+function ReferencedFormPreview({ evidence, version }: { evidence: FormPreviewEvidence; version: TemplateVersionRecord }) {
   const document = useMemo(() => parseReactTemplateDesignerDocument({
     id: evidence.formTemplateId ?? evidence.formTemplateVersionId ?? evidence.id,
     code: evidence.formCode,
@@ -1136,7 +1140,7 @@ function ReferencedFormPreview({ evidence, version }: { evidence: DhrEvidenceIte
   return <FormCanvasPreview document={document} fullPage />;
 }
 
-export function DeferredFormPreview({ evidence, version }: { evidence: DhrEvidenceItemRecord; version: TemplateVersionRecord }) {
+export function DeferredFormPreview({ evidence, version }: { evidence: FormPreviewEvidence; version: TemplateVersionRecord }) {
   const [preparedVersion, setPreparedVersion] = useState<TemplateVersionRecord | null>(null);
   useEffect(() => {
     let renderFrame = 0;
@@ -1156,6 +1160,47 @@ export function DeferredFormPreview({ evidence, version }: { evidence: DhrEviden
     <Box data-dhr-form-preview="true" aria-busy={loading} sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
       {loading ? <FormPreviewLoading /> : <ReferencedFormPreview evidence={evidence} version={version} />}
     </Box>
+  );
+}
+
+function FormReferencePreviewDrawer({ reference, onClose }: { reference: SelectedFormReference | null; onClose: () => void }) {
+  const previewQuery = useQuery({
+    queryKey: ['dhr-referenced-form-version', reference?.templateId, reference?.versionId],
+    enabled: Boolean(reference),
+    queryFn: async () => (await getFormTemplateVersion(reference!.templateId, reference!.versionId)).data.data,
+  });
+  const evidence = useMemo<FormPreviewEvidence | null>(() => reference ? {
+    id: reference.versionId,
+    formTemplateId: reference.templateId,
+    formTemplateVersionId: reference.versionId,
+    formCode: reference.code,
+    formName: reference.name,
+  } : null, [reference]);
+
+  return (
+    <Drawer anchor="right" open={Boolean(reference)} onClose={onClose}
+      sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
+      PaperProps={{ role: 'dialog', 'aria-modal': true, 'aria-labelledby': 'dhr-form-quick-preview-title',
+        sx: { width: 'min(1100px, 94vw)', maxWidth: '100vw', overflow: 'hidden' } }}>
+      <Stack direction="row" alignItems="center" spacing={2}
+        sx={{ px: 2.5, py: 2, flexShrink: 0, borderBottom: '1px solid #e4e7ed' }}>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Typography id="dhr-form-quick-preview-title" sx={{ fontSize: 17, fontWeight: 600 }}>表单快速预览</Typography>
+          <Typography sx={{ mt: 0.5, overflowWrap: 'anywhere' }}>{reference?.name}</Typography>
+          <Typography variant="body2" color="text.secondary">{reference?.code} · {reference?.version}</Typography>
+        </Box>
+        <IconButton aria-label="关闭表单预览" onClick={onClose}><CloseRounded /></IconButton>
+      </Stack>
+      <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        {previewQuery.isError ? (
+          <Alert severity="error" sx={{ m: 2 }} action={<Button onClick={() => previewQuery.refetch()}>重试</Button>}>
+            表单预览加载失败
+          </Alert>
+        ) : previewQuery.data && evidence ? (
+          <DeferredFormPreview key={`${reference?.templateId}:${reference?.versionId}`} evidence={evidence} version={previewQuery.data} />
+        ) : <FormPreviewLoading />}
+      </Box>
+    </Drawer>
   );
 }
 
@@ -1187,6 +1232,10 @@ export default function DhrTemplateWorkspaceDialog({
   const [deleteDirectoryTarget, setDeleteDirectoryTarget] =
     useState<DhrDirectoryRecord | null>(null);
   const [addEvidenceOpen, setAddEvidenceOpen] = useState(false);
+  const [previewFormReference, setPreviewFormReference] = useState<SelectedFormReference | null>(null);
+  useEffect(() => {
+    if (!open || !addEvidenceOpen) setPreviewFormReference(null);
+  }, [open, addEvidenceOpen]);
   const [selectedFormOptions, setSelectedFormOptions] = useState<
     Map<string, SelectedFormReference>
   >(() => new Map());
@@ -2300,6 +2349,7 @@ export default function DhrTemplateWorkspaceDialog({
             p: 0,
             display: "grid",
             gridTemplateColumns: "minmax(0, 1fr) 310px",
+            gridTemplateRows: "minmax(0, 1fr)",
             overflow: "hidden",
           }}
         >
@@ -2312,7 +2362,7 @@ export default function DhrTemplateWorkspaceDialog({
               flexDirection: "column",
             }}
           >
-            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+            <Stack direction="row" spacing={2} sx={{ mb: 2, flexShrink: 0 }}>
               <TextField
                 select
                 size="small"
@@ -2338,7 +2388,7 @@ export default function DhrTemplateWorkspaceDialog({
               />
             </Stack>
             <TableContainer
-              sx={{ flex: 1, minHeight: 0, border: "1px solid #e4e7ed" }}
+              sx={{ flex: 1, minHeight: 0, overflowY: "auto", scrollbarGutter: "stable", border: "1px solid #e4e7ed" }}
             >
               <Table stickyHeader size="small" sx={{ minWidth: 720 }}>
                 <TableHead>
@@ -2550,11 +2600,16 @@ export default function DhrTemplateWorkspaceDialog({
                                     alignItems="center"
                                     sx={{ pl: 4 }}
                                   >
-                                    <Typography
-                                      sx={{ color: "#303133", fontSize: 13 }}
+                                    <Link component="button" type="button" underline="hover"
+                                      aria-label={`预览${option.name} ${version.version}`}
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        setPreviewFormReference(asSelectedFormReference(option, version));
+                                      }}
+                                      sx={{ fontSize: 13 }}
                                     >
                                       {version.version || "-"}
-                                    </Typography>
+                                    </Link>
                                     {!version.referenceable ? (
                                       <Typography
                                         sx={{ color: "#909399", fontSize: 12 }}
@@ -2719,6 +2774,11 @@ export default function DhrTemplateWorkspaceDialog({
           </Button>
         </DialogActions>
       </AppDialog>
+
+      <FormReferencePreviewDrawer
+        reference={open && addEvidenceOpen ? previewFormReference : null}
+        onClose={() => setPreviewFormReference(null)}
+      />
 
       <AppDialog
         open={Boolean(editEvidenceTarget)}
