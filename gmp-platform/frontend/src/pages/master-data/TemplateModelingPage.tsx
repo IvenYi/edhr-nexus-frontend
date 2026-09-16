@@ -1,3 +1,4 @@
+import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import {
   ContentCopy,
@@ -699,8 +700,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const versionAuditEntityType = pageKey === 'formTemplates' ? 'FORM_TEMPLATE_VERSION' : 'DHR_TEMPLATE_VERSION';
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
-  const [nameKeyword, setNameKeyword] = useState('');
-  const [codeKeyword, setCodeKeyword] = useState('');
+  const [nameKeyword, setNameKeyword] = useState(() => readRecordLocation().name);
+  const [codeKeyword, setCodeKeyword] = useState(() => readRecordLocation().name ? '' : readRecordLocation().keyword);
   const [status, setStatus] = useState('ALL');
   const [categoryId, setCategoryId] = useState(TEMPLATE_CATEGORY_ALL);
   const [page, setPage] = useState(1);
@@ -735,7 +736,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [drawerTab, setDrawerTab] = useState(0);
   const [auditSnapshot, setAuditSnapshot] = useState<AuditSnapshotDialogState | null>(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
-  const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set());
+  const [expandedTemplateGroups, setExpandedTemplateGroups] = useState<Set<string>>(() => new Set([readRecordLocation().id].filter(Boolean)));
   const [reactDesignerState, setReactDesignerState] = useState<TemplateDesignerState>({ open: false, row: null, version: null });
   const [dhrWorkspaceRow, setDhrWorkspaceRow] = useState<DhrWorkspaceState | null>(null);
   const [dhrVersionDialog, setDhrVersionDialog] = useState<DhrVersionDialogState | null>(null);
@@ -802,6 +803,13 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   });
 
   const rows = listQuery.data?.content ?? [];
+  useRecordLocationAction((location) => {
+    if (pageKey !== 'batchRecordTemplates' || !['dhr_directory', 'dhr_template_item'].includes(location.type)) return false;
+    const row = rows.find((item) => String(item.id) === location.id);
+    if (!row || !location.version) return false;
+    setDhrWorkspaceRow({ row, initialVersionId: location.version });
+    return true;
+  });
   const isTableEmptyState = listQuery.isLoading || listQuery.isError || rows.length === 0;
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(allColumns, columnSettings), [allColumns, columnSettings]);
   const visibleColumns = useMemo(() => getVisibleColumns(allColumns, columnSettings), [allColumns, columnSettings]);
@@ -878,7 +886,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
 
   useEffect(() => {
     setColumnSettingsTab('main');
-    setExpandedTemplateGroups(new Set());
+    setExpandedTemplateGroups(new Set([readRecordLocation().id].filter(Boolean)));
   }, [pageKey]);
 
   useEffect(() => {
@@ -1662,7 +1670,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                     <TableStateCell colSpan={visibleTemplateVersionColumns.length} align="center" sx={{ color: '#909399' }}>暂无版本</TableStateCell>
                   </TableRow>
                 ) : versions.map((versionRow) => (
-                  <TableRow key={`${row.id}:${versionRow.id}`} hover onClick={() => openTemplateVersionDrawer(row, versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+                  <TableRow data-record-id={versionRow.id} key={`${row.id}:${versionRow.id}`} hover onClick={() => openTemplateVersionDrawer(row, versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
                     {visibleTemplateVersionColumns.map((column) => {
                       const commonSx = {
                         width: getTemplateVersionColumnWidth(column),
@@ -1714,7 +1722,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     const isExpanded = expandedTemplateGroups.has(String(row.id));
     return (
       <Fragment key={row.id}>
-        <TableRow key={row.id} hover onClick={() => expandTemplateGroup(row.id)} sx={{ cursor: 'pointer' }}>
+        <TableRow data-record-id={row.id} key={row.id} hover onClick={() => expandTemplateGroup(row.id)} sx={{ cursor: 'pointer' }}>
           {visibleColumns.map((column, index) => {
             const commonSx = {
               width: getColumnWidth(column),
@@ -2123,7 +2131,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={deleteCategoryTarget !== null} onClose={() => setDeleteCategoryTarget(null)} fullWidth maxWidth="xs">
+      <AppDialog deletionTarget={deleteCategoryTarget && { type: 'template_category', id: deleteCategoryTarget.id }} open={deleteCategoryTarget !== null} onClose={() => setDeleteCategoryTarget(null)} fullWidth maxWidth="xs">
         <DialogTitle>删除分类</DialogTitle>
         <DialogContent>确认删除分类“{deleteCategoryTarget?.name}”吗？</DialogContent>
         <DialogActions>
@@ -2132,7 +2140,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={deleteRowTarget !== null} onClose={() => setDeleteRowTarget(null)} fullWidth maxWidth="xs">
+      <AppDialog deletionTarget={deleteRowTarget && { type: pageKey === 'formTemplates' ? 'form_template' : 'dhr_template', id: deleteRowTarget.id }} open={deleteRowTarget !== null} onClose={() => setDeleteRowTarget(null)} fullWidth maxWidth="xs">
         <DialogTitle>删除模板</DialogTitle>
         <DialogContent>确认删除模板“{deleteRowTarget?.name}”吗？</DialogContent>
         <DialogActions>
@@ -2141,7 +2149,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={deleteVersionTarget !== null} onClose={() => setDeleteVersionTarget(null)} fullWidth maxWidth="xs">
+      <AppDialog deletionTarget={deleteVersionTarget && { type: pageKey === 'formTemplates' ? 'form_template_version' : 'dhr_template_version', id: deleteVersionTarget.version.id }} open={deleteVersionTarget !== null} onClose={() => setDeleteVersionTarget(null)} fullWidth maxWidth="xs">
         <DialogTitle>删除版本</DialogTitle>
         <DialogContent>确认删除版本“{deleteVersionTarget?.version.version}”吗？</DialogContent>
         <DialogActions>

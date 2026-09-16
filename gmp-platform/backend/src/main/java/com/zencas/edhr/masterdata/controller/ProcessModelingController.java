@@ -269,6 +269,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/materials/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "material", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteMaterial(@PathVariable Long id) {
         Material existing = materialRepository.findById(id)
@@ -375,6 +376,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/product-families/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "product_family", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteProductFamily(@PathVariable Long id) {
         ProductFamily existing = productFamilyRepository.findById(id)
@@ -494,6 +496,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/operations/categories/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "operation_category", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteOperationCategory(@PathVariable Long id) {
         OperationCategory existing = operationCategoryRepository.findById(id)
@@ -593,6 +596,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/operations/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "operation", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteOperation(@PathVariable Long id) {
         Operation existing = operationRepository.findById(id)
@@ -666,6 +670,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/routes/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "route", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteRoute(@PathVariable Long id) {
         Route existing = routeRepository.findById(id)
@@ -717,6 +722,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/routes/{routeId}/versions/{versionId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "route_version", idArgument = 1)
     @Transactional
     public ApiResponse<Void> deleteRouteVersion(@PathVariable Long routeId, @PathVariable Long versionId) {
         RouteVersion existing = requireRouteVersion(routeId, versionId);
@@ -832,6 +838,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/documents/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "sop_document", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteDocument(@PathVariable Long id) {
         SopDocument existing = sopDocumentRepository.findById(id)

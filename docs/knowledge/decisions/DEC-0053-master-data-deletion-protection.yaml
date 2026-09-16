@@ -1,0 +1,86 @@
+knowledgeModelVersion: 0.3.21
+decisions:
+  - id: DEC-0053
+    title: 主数据删除关联保护与关联处理指引
+    status: specified
+    visibility: internal
+    context: user-confirmed；用户要求防止删除数据破坏下游，删除时显示具体约束关系、相关记录和对应模块入口，并明确覆盖所有主数据模块、分模块推进。规则未改变原权限、生命周期、版本所有权及生产历史保留边界；实际覆盖、并发保护、旧孤立数据兼容和展示权限以实现证据核对，不将本决策当作已上线证明。
+    decisionStatements:
+      - id: DEC-0053-01
+        statement: 存在阻断关联的主数据禁止删除；处理后仍需满足其他既有删除条件。
+        status: specified
+        visibility: internal
+      - id: DEC-0053-02
+        statement: 删除弹框列出对应关联记录、所属模块和处理位置，帮助用户定位并先处理可解除的下层关联。
+        status: specified
+        visibility: internal
+      - id: DEC-0053-03
+        statement: 覆盖所有主数据模块，按模块推进接入与验证；不得以单一模块实现声称全量覆盖，也不自动承诺未来新增模块的覆盖。
+        status: specified
+        visibility: internal
+      - id: DEC-0053-04
+        statement: 点击删除后先检查关联；有关联直接展示暂不能删除及关联清单，无关联才展示删除确认。预检查未完成或失败不允许继续；取消不删除，正式删除仍复核实时约束。
+        status: specified
+        visibility: internal
+      - id: DEC-0053-05
+        statement: 删除关联清单展示完整模块及菜单路径、逐条业务名称和所属位置；有权限且有现行页面的关联可直接跳转定位实际记录，无现行入口的历史记录如实说明。
+        status: specified
+        visibility: internal
+      - id: DEC-0053-06
+        statement: 处理后可在弹窗内刷新关联，无需刷新整页；刷新只重新检查同一目标，不自动删除，失败不能视为关联已解除，仍保留删除确认及最终事务复核。
+        status: specified
+        visibility: internal
+      - id: DEC-0053-07
+        statement: 关联弹窗去掉顶部重复的删除目标名称、编号和当前菜单，保留关联所属模块的菜单路径；逐条位置使用业务名称及层级，不重复业务编号。
+        status: specified
+        visibility: internal
+      - id: DEC-0053-08
+        statement: 默认呈现业务关联，实例及历史生产记录和执行快照引用另列为保留记录，业务所属链缺失另列为异常遗留。不得将无法定位的失联配置冒称法规追溯数据，也不得因分类展示而忽略实际引用、放宽删除、自动清理旧数据或扩大权限；纯审计记录不新增为待处理关联。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-existing-retention]
+    acceptanceScenarios:
+      - id: scenario.master-data-delete-with-references
+        given: 主数据或其版本存在下游阻断引用
+        when: 用户点击删除并完成关联预检查
+        then: 不展示删除确认，直接展示暂不能删除及关联记录与模块处理位置，不删除被保护对象或下游记录
+        evidenceIds: [evidence.master-data-deletion-user-confirmed]
+        evidenceRequirements: [有关联不先显示确认, 预检查不写业务或删除审计, 直接删除接口阻断, 关联列表完整性, 跨模块弹框与入口]
+      - id: scenario.master-data-delete-after-resolution
+        given: 用户已处理可解除的下层关联，且满足原权限和生命周期约束
+        when: 再次点击删除
+        then: 预检查成功且无关联才显示删除确认，用户确认后按当时真实引用状态再次复核，通过后沿用原删除及审计流程
+        evidenceIds: [evidence.master-data-deletion-user-confirmed]
+        evidenceRequirements: [预检后新增引用仍阻断, 无引用正常删除, 原状态与权限回归]
+      - id: scenario.master-data-delete-precheck-failure-or-cancel
+        given: 用户点击删除，预检查未完成或失败，或无关联后用户取消确认
+        when: 页面处理检查结果或关闭确认
+        then: 未知关联状态不允许继续删除；检查失败可重试，取消不触发删除
+        evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-precheck-dialog]
+        evidenceRequirements: [加载时无删除确认内容, 检查失败无删除动作, 取消不发送 DELETE, 重试重新检查]
+      - id: scenario.master-data-delete-reference-location
+        given: 删除关联清单包含多个模块的有权限可见业务记录，以及无现行页面的历史记录
+        when: 用户查看逐条关联及其定位入口
+        then: 可读到完整菜单路径、业务名称和所属位置；现行入口定位到对应实际记录，历史记录明确说明无直接页面，权限不足不泄露明细或入口
+        evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-reference-location, evidence.master-data-deletion-reference-dialog]
+        evidenceRequirements: [各目标模块真实记录定位, 子版本所属位置, 完整菜单路径, 无现行页面说明, 权限回归]
+      - id: scenario.master-data-delete-reference-refresh
+        given: 用户已在对应模块处理部分或全部关联，删除保护弹窗仍打开
+        when: 点击刷新关联，或刷新请求失败
+        then: 在原弹窗重新查询同一目标并更新关联，不刷新整页或自动删除；失败显示错误且不宣称关联已解除，全部解除后仍需重新发起删除及确认
+        evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-reference-dialog]
+        evidenceRequirements: [刷新目标标识正确, 原位更新关联数量与记录, 刷新失败保留阻断语义, 无 DELETE 和无整页刷新, 关闭后迟到响应不重开弹窗]
+      - id: scenario.master-data-delete-retain-history
+        given: 主数据关联必须保留的生产对象或历史记录
+        when: 查看删除约束与处理建议
+        then: 保留关联对象及追溯证据，不提供为删除主数据而强删生产历史的路径
+        evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-existing-retention]
+        evidenceRequirements: [生产历史引用阻断, 无强删入口, 历史数据兼容验证]
+      - id: scenario.master-data-delete-reference-classification
+        given: 同一目标存在有效业务配置、所属业务数据缺失的旧配置以及生产执行快照引用
+        when: 用户查看删除关联弹窗并切换数据类型
+        then: 默认业务列表不混入快照或异常遗留，保留记录与异常遗留独立展示且解释准确；任何分类中的真实引用仍阻断删除，不自动清理或改写原数据
+        evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-reference-location, evidence.master-data-deletion-reference-dialog]
+        evidenceRequirements: [同源表分组与数量正确, 工单和生产对象属于业务关联, 快照独立展示仍阻断, 失联配置不冒称追溯, 分类权限不泄露, 无业务数据变更]
+    implementationDiscrepancies: []

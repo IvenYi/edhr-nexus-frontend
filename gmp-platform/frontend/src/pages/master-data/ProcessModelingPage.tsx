@@ -1,3 +1,4 @@
+import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import {
   Fragment,
@@ -440,7 +441,7 @@ const fieldSx = {
   '& .MuiInputBase-input': { boxSizing: 'border-box' },
 };
 
-function RouteDesignerNode({ data, selected, isConnectable }: NodeProps<RouteFlowNode>) {
+function RouteDesignerNode({ id, data, selected, isConnectable }: NodeProps<RouteFlowNode>) {
   const isStartNode = data.nodeType === 'START';
   const isEndNode = data.nodeType === 'END';
   const isVirtualNode = isStartNode || isEndNode || data.virtual;
@@ -464,6 +465,7 @@ function RouteDesignerNode({ data, selected, isConnectable }: NodeProps<RouteFlo
   return (
     <Box
       data-process-route-node
+      data-record-id={id}
       data-process-route-node-type={data.nodeType ?? 'OPERATION'}
       sx={{
         position: 'relative',
@@ -1869,7 +1871,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(PAGE_SIZE);
-  const [filters, setFilters] = useState<ProcessFilters>(emptyFilters);
+  const [filters, setFilters] = useState<ProcessFilters>(() => ({ ...emptyFilters, keyword: readRecordLocation().keyword, materialCode: readRecordLocation().keyword }));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRow, setEditingRow] = useState<ProcessModelingRecord | null>(null);
   const [creatingMaterialVersionFrom, setCreatingMaterialVersionFrom] = useState<MaterialRecord | null>(null);
@@ -1886,7 +1888,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [deleteOperationCategoryTarget, setDeleteOperationCategoryTarget] = useState<OperationCategoryRecord | null>(null);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
   const [expandedMaterialGroups, setExpandedMaterialGroups] = useState<Set<string>>(() => new Set());
-  const [expandedRouteGroups, setExpandedRouteGroups] = useState<Set<string>>(() => new Set());
+  const [expandedRouteGroups, setExpandedRouteGroups] = useState<Set<string>>(() => new Set([readRecordLocation().id].filter(Boolean)));
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const columnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
@@ -2001,6 +2003,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const auditRecords = useMemo(() => getAuditRecords(auditData), [auditData]);
   const rows = data?.content ?? [];
   const materialGroupRows = useMemo(() => (pageKey === 'materials' ? getMaterialGroupRows(rows) : []), [pageKey, rows]);
+  const locatedMaterialGroup = useRef(false);
+  useEffect(() => {
+    if (locatedMaterialGroup.current) return;
+    const group = materialGroupRows.find((item) => item.versions.some((version) => String(version.id) === readRecordLocation().id));
+    if (!group) return;
+    locatedMaterialGroup.current = true;
+    setExpandedMaterialGroups((current) => new Set([...current, group.groupKey]));
+  }, [materialGroupRows]);
   const routeRecords = useMemo(() => (pageKey === 'routes' ? rows as RouteRecord[] : []), [pageKey, rows]);
   const displayRows = pageKey === 'materials' ? materialGroupRows : pageKey === 'routes' ? routeRecords : rows;
   const pageCount = Math.max(1, data?.totalPages ?? 1);
@@ -2208,7 +2218,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     }
     if (!routeGraphQuery.data) return;
     const graph = fromRouteGraphResponse(routeGraphQuery.data);
-    setRouteNodes(graph.nodes);
+    setRouteNodes(graph.nodes.map((node) => ({ ...node, selected: node.id === readRecordLocation().node })));
     setRouteEdges(graph.edges);
   }, [creatingRouteVersionFrom, dialogOpen, editingRouteVersionFrom, editingRow, pageKey, routeGraphQuery.data, selectedRouteVersionId, setRouteEdges, setRouteNodes]);
 
@@ -3175,6 +3185,15 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setDialogOpen(true);
   };
 
+  useRecordLocationAction((location) => {
+    if (pageKey !== 'routes' || !['route_node', 'route_relation', 'route_operation'].includes(location.type)) return false;
+    const route = routeRecords.find((item) => String(item.id) === location.id);
+    const version = route?.versions?.find((item) => String(item.id) === location.version);
+    if (!route || !version) return false;
+    openEditRouteVersionDialog(route, version);
+    return true;
+  });
+
   const openEditRouteBaseDialog = (route: RouteRecord) => {
     if (isReadOnlyPage(config)) return;
     setEditingRow(route);
@@ -4083,7 +4102,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               </TableHead>
               <TableBody>
                 {group.versions.map((versionRow) => (
-                  <TableRow key={`${group.groupKey}:${getMaterialVersion(versionRow)}`} hover onClick={() => openMaterialVersionDrawer(versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+                  <TableRow data-record-id={versionRow.id} key={`${group.groupKey}:${getMaterialVersion(versionRow)}`} hover onClick={() => openMaterialVersionDrawer(versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
                     {visibleMaterialVersionColumns.map((column) => {
                       const commonSx = {
                         width: getMaterialVersionColumnWidth(column),
@@ -4145,7 +4164,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                     <TableStateCell colSpan={visibleRouteVersionColumns.length} align="center" sx={{ color: '#909399' }}>暂无版本</TableStateCell>
                   </TableRow>
                 ) : versions.map((versionRow) => (
-                  <TableRow key={`${route.id}:${versionRow.id}`} hover onClick={() => openRouteVersionDrawer(route, versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+                  <TableRow data-record-id={versionRow.id} key={`${route.id}:${versionRow.id}`} hover onClick={() => openRouteVersionDrawer(route, versionRow)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
                     {visibleRouteVersionColumns.map((column) => {
                       const commonSx = {
                         width: getRouteVersionColumnWidth(column),
@@ -4499,7 +4518,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       const isExpanded = expandedMaterialGroups.has(row.groupKey);
       return (
         <Fragment key={row.groupKey}>
-          <TableRow key={row.id} hover onClick={() => expandMaterialGroup(row.groupKey)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+          <TableRow data-record-id={row.id} key={row.id} hover onClick={() => expandMaterialGroup(row.groupKey)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
             {visibleColumns.map((column, index) => {
               const commonSx = {
                 width: getColumnWidth(column),
@@ -4556,7 +4575,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       const versions = route.versions ?? [];
       return (
         <Fragment key={route.id}>
-          <TableRow key={route.id} hover onClick={() => expandRouteGroup(route.id)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
+          <TableRow data-record-id={route.id} key={route.id} hover onClick={() => expandRouteGroup(route.id)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}>
             {visibleColumns.map((column, index) => {
               const commonSx = {
                 width: getColumnWidth(column),
@@ -4610,6 +4629,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return (
       <TableRow
         key={getRecordId(row)}
+        data-record-id={getRecordId(row)}
         hover
         onClick={() => openDetailDrawer(row)}
         sx={{ cursor: 'pointer', '& .MuiTableCell-root': tableBodyCellSx }}
@@ -5040,7 +5060,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={deleteOperationCategoryTarget !== null} onClose={() => setDeleteOperationCategoryTarget(null)} maxWidth="xs" fullWidth>
+      <AppDialog deletionTarget={deleteOperationCategoryTarget && { type: 'operation_category', id: deleteOperationCategoryTarget.id }} open={deleteOperationCategoryTarget !== null} onClose={() => setDeleteOperationCategoryTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>删除分类</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2">
@@ -5060,7 +5080,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
+      <AppDialog deletionTarget={deleteTarget && { type: deleteTarget.scope === 'routeVersion' ? 'route_version' : ({ materials: 'material', operations: 'operation', routes: 'route', products: 'material', productFamilies: 'product_family', documents: 'sop_document' }[pageKey]), id: deleteTarget.row.id }} open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>{deleteDialogTitle}</DialogTitle>
         <DialogContent dividers>
           <Typography variant="body2">

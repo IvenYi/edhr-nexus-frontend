@@ -1,0 +1,64 @@
+knowledgeModelVersion: 0.3.21
+rules:
+  - id: rule.master-data-deletion-actionable-references
+    name: 关联业务位置与逐条定位刷新
+    status: specified
+    visibility: internal
+    trigger: master-data.deletion-blocked
+    scope: master-data-and-version
+    condition:
+      fact: fact.master-data-deletion.blocking-reference-count
+      operator: greater-than-or-equal
+      value: 1
+    result:
+      type: return-query-projection
+      projection: deletion-reference-location
+    explanation: 删除保护弹窗按关联所属模块显示完整菜单路径、逐条关联业务名称和所属配置位置；不重复显示顶部删除目标名称、编号及当前菜单，位置以业务名称和层级表达、不重复业务编号。对用户有权限且存在现行页面的关联提供定位到实际记录的入口，而非仅打开模块首页。无现行定位页面的记录如实说明，不伪造链接或新增管理页面。用户处理关联后可在弹窗刷新关联，重新检查同一删除目标而不刷新整页；刷新失败不得当成已解除，解除后也不自动删除，仍需重新发起删除并按既有流程确认和事务复核。导航及刷新不扩大权限、不改变生产历史、删除事务或审计语义。
+    evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-reference-location, evidence.master-data-deletion-reference-dialog]
+  - id: rule.master-data-deletion-reference-classification
+    name: 业务关联与保留记录及异常遗留分开解释
+    status: specified
+    visibility: internal
+    trigger: master-data.deletion-blocked
+    scope: master-data-and-version
+    condition:
+      fact: fact.master-data-deletion.blocking-reference-count
+      operator: greater-than-or-equal
+      value: 1
+    result:
+      type: return-query-projection
+      projection: deletion-reference-data-type
+    explanation: 删除关联投影区分业务关联、保留记录和异常遗留。业务关联包含实际工单、生产对象及有完整业务所属关系的配置引用；保留记录包含实例、历史生产记录和执行快照引用，不混入待解绑业务清单；业务配置所有者链缺失属于异常遗留，不能仅因无法定位就宣称为法规追溯数据。同源表可按记录实际归属拆组，默认展示业务关联，其余分类独立查看。分类仅解释记录性质和处理方向，不改变已有引用阻断、权限或保留契约；业务关联不意味着允许删除生产对象，异常遗留不自动修复或删除，保留记录不因移出业务页签而放行删除。纯审计记录不新增为待处理关联。
+    evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-reference-location, evidence.master-data-deletion-reference-dialog, evidence.master-data-deletion-existing-retention]
+  - id: rule.master-data-deletion-precheck-order
+    name: 删除确认前预检查关联
+    status: specified
+    visibility: internal
+    trigger: master-data.delete-intent
+    scope: master-data-and-version
+    condition:
+      fact: fact.master-data-deletion.blocking-reference-count
+      operator: greater-than-or-equal
+      value: 1
+    result:
+      type: block
+      reason: referenced-before-delete-confirmation
+      message: 暂不能删除
+    explanation: 用户点击删除后先检查关联；有关联直接展示暂不能删除及关联清单，不先展示删除确认。仅在预检查成功且无阻断关联时展示原删除确认；检查未完成或失败时不得继续删除。预检查不删除业务记录或写入删除审计，取消确认也不执行删除。预检查结果只代表当次查询，实际 DELETE 仍在原删除事务内复核实时引用及其他原有约束。
+    evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-precheck-controller, evidence.master-data-deletion-precheck-dialog, evidence.master-data-deletion-precheck-tests]
+  - id: rule.master-data-deletion-dependencies
+    name: 主数据删除关联保护
+    status: specified
+    visibility: internal
+    trigger: master-data.delete
+    scope: master-data-and-version
+    condition:
+      fact: fact.master-data-deletion.blocking-reference-count
+      operator: greater-than-or-equal
+      value: 1
+    result:
+      type: block
+      reason: master-data-referenced
+      message: 存在关联数据，请先查看对应模块中的约束关系
+    explanation: 所有主数据模块分模块接入删除保护；存在阻断关联时不得删除，并显示关联记录及所属模块和处理位置。原删除权限、生命周期和版本所有权约束继续适用；无引用仅表示本项检查通过。生产对象、历史快照和审计沿用现有保留契约，不提供强删或清空历史的处理路径。当前记录不宣称代码已覆盖全部模块或未来新增关联。
+    evidenceIds: [evidence.master-data-deletion-user-confirmed, evidence.master-data-deletion-existing-retention]

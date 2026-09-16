@@ -131,6 +131,7 @@ public class WorkshopController {
     }
 
     @DeleteMapping("/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "workshop", idArgument = 0)
     @Transactional
     public ApiResponse<Void> delete(@PathVariable Long id) {
         Workshop workshop = requireWorkshop(id);

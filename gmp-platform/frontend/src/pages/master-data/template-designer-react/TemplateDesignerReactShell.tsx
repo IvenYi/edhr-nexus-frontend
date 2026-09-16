@@ -1,7 +1,9 @@
 import ArrowBackOutlined from '@mui/icons-material/ArrowBackOutlined';
 import SaveOutlined from '@mui/icons-material/SaveOutlined';
+import WarningAmberRounded from '@mui/icons-material/WarningAmberRounded';
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
-import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent, DialogTitle, Divider, Stack, Typography } from '@mui/material';
+import AppDialog from '@/components/AppDialog';
 import type { TemplateDesignerDialogProps } from './types';
 import { useTemplateDesignerStore } from './store/useTemplateDesignerStore';
 import CanvasTab from './tabs/canvas/CanvasTab';
@@ -60,6 +62,7 @@ export default function TemplateDesignerReactShell({
   const replaceCurrentPageFromImport = useTemplateDesignerStore((state) => state.replaceCurrentPageFromImport);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mockFillOpen, setMockFillOpen] = useState(false);
+  const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
   const [subTableDesignFieldId, setSubTableDesignFieldId] = useState<string | null>(null);
   const activeSubTableDesignField = useMemo(
     () => document?.model.fields.find((field) => field.id === subTableDesignFieldId && field.type === 'subTable') ?? null,
@@ -100,7 +103,8 @@ export default function TemplateDesignerReactShell({
   };
 
   const handleClose = () => {
-    if (isDirty() && !window.confirm('当前 React 设计有未保存修改，确认关闭吗？')) {
+    if (isDirty()) {
+      setCloseConfirmOpen(true);
       return;
     }
     onClose();
@@ -259,6 +263,64 @@ export default function TemplateDesignerReactShell({
           </Box>
         ) : null}
       </Box>
+      <AppDialog
+        open={closeConfirmOpen}
+        onClose={() => setCloseConfirmOpen(false)}
+        closeAriaLabel="关闭提示"
+        maxWidth="xs"
+        fullWidth
+        aria-labelledby="designer-unsaved-title"
+        aria-describedby="designer-unsaved-description"
+        PaperProps={{
+          sx: {
+            width: 380,
+            maxWidth: 'calc(100% - 32px)',
+            m: 2,
+            borderRadius: 2,
+            boxShadow: '0 12px 40px rgba(15, 23, 42, 0.18)',
+            overflow: 'hidden',
+          },
+        }}
+        BackdropProps={{ sx: { bgcolor: 'rgba(15, 23, 42, 0.36)' } }}
+      >
+        <DialogTitle id="designer-unsaved-title" sx={{ px: 2, pt: 2, pb: 1 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <WarningAmberRounded sx={{ fontSize: 18, flexShrink: 0, color: '#d48806' }} />
+            <Typography component="span" sx={{ fontSize: 14, lineHeight: '22px', fontWeight: 600, color: '#1e293b' }}>
+              当前修改尚未保存
+            </Typography>
+          </Stack>
+        </DialogTitle>
+        <DialogContent sx={{ pl: '42px', pr: 2, pb: 1 }}>
+          <Typography id="designer-unsaved-description" sx={{ fontSize: 13, lineHeight: '20px', color: '#64748b' }}>
+            关闭后，未保存的修改将丢失。
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 2, pt: 0.5, pb: 2, gap: 1, flexWrap: 'wrap', rowGap: 1 }}>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => {
+              setCloseConfirmOpen(false);
+              onClose();
+            }}
+            size="small"
+            sx={{ height: 28, px: 1.5, borderRadius: 1, fontSize: 13 }}
+          >
+            放弃并关闭
+          </Button>
+          <Button
+            variant="contained"
+            autoFocus
+            disableElevation
+            onClick={() => setCloseConfirmOpen(false)}
+            size="small"
+            sx={{ height: 28, px: 1.5, borderRadius: 1, fontSize: 13 }}
+          >
+            继续编辑
+          </Button>
+        </DialogActions>
+      </AppDialog>
       {document ? (
         <MockFillDialog
           open={mockFillOpen}

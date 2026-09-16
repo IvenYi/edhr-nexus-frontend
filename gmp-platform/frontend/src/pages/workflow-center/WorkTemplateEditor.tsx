@@ -13,6 +13,7 @@ import {
   type ReactNode,
 } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { readRecordLocation } from '@/utils/recordLocation';
 import { useNavigate, useParams } from "react-router-dom";
 import {
   AccountTreeOutlined,
@@ -3435,6 +3436,9 @@ const FlowWorkspace = forwardRef<
           return;
       }
       const graph = normalizeFlowGraph(version);
+      const location = readRecordLocation();
+      const locatedNode = graph.nodes.find((node) => node.id === location.node
+        || (location.reference && String(node.data.config?.formTemplateVersionId) === location.reference));
       const invalidConditionTargets = invalidConditionTargetNodeIds(graph);
       setNodes(graph.nodes);
       setEdges(graph.edges);
@@ -3443,7 +3447,7 @@ const FlowWorkspace = forwardRef<
       setSelectedNodeId((current) =>
         current && graph.nodes.some((node) => node.id === current)
           ? current
-          : "start",
+          : locatedNode?.id ?? "start",
       );
       setSelectedConditionBranchId(null);
       setSelectedEdgeId(null);
@@ -5919,7 +5923,7 @@ export default function WorkTemplateEditor() {
   }, [selectedSummary, selectedVersionId, versionList]);
 
   useEffect(() => {
-    setSelectedVersionId(null);
+    setSelectedVersionId(readRecordLocation().version || null);
     setDirty(false);
   }, [templateId]);
 

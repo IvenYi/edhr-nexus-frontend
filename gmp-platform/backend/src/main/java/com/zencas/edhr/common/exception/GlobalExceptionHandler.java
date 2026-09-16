@@ -20,6 +20,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(com.zencas.edhr.masterdata.deletion.DeletionBlockedException.class)
+    public ResponseEntity<ApiResponse<com.zencas.edhr.masterdata.deletion.DeletionImpact>> handleDeletionBlocked(
+            com.zencas.edhr.masterdata.deletion.DeletionBlockedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(409, ex.getMessage(), ex.getImpact()));
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(
             BusinessException ex, HttpServletRequest request) {

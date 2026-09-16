@@ -58,6 +58,7 @@ public class OperationController {
     }
 
     @DeleteMapping("/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "operation", idArgument = 0)
     public ApiResponse<Void> delete(@PathVariable Long id) {
         operationRepository.deleteById(id);
         return ApiResponse.success(null);

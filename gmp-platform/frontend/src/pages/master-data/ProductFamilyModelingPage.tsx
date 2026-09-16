@@ -1,3 +1,4 @@
+import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -318,9 +319,9 @@ export default function ProductFamilyModelingPage() {
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
-  const [keyword, setKeyword] = useState("");
-  const [submittedKeyword, setSubmittedKeyword] = useState("");
-  const [expandedIds, setExpandedIds] = useState<string[]>([]);
+  const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
+  const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
+  const [expandedIds, setExpandedIds] = useState<string[]>(() => [readRecordLocation().id].filter(Boolean));
   const [detailTarget, setDetailTarget] = useState<DetailTarget | null>(null);
   const [detailTab, setDetailTab] = useState(0);
   const [editorTarget, setEditorTarget] = useState<EditorTarget | null>(null);
@@ -367,6 +368,13 @@ export default function ProductFamilyModelingPage() {
       ).data.data,
   });
   const rows = listQuery.data?.content ?? [];
+  useRecordLocationAction((location) => {
+    if (location.type !== 'product_family_member') return false;
+    const family = rows.find((item) => String(item.id) === location.id);
+    if (!family) return false;
+    setMemberFamily(family);
+    return true;
+  });
   const visibleColumns = useMemo(
     () =>
       PRODUCT_FAMILY_COLUMNS.filter(
@@ -384,6 +392,7 @@ export default function ProductFamilyModelingPage() {
   }, [hiddenColumns]);
 
   useEffect(() => {
+    if (!listQuery.data) return;
     const current = new Set(rows.map((item) => item.id));
     setExpandedIds((ids) => ids.filter((id) => current.has(id)));
   }, [rows]);
@@ -866,6 +875,7 @@ export default function ProductFamilyModelingPage() {
         />
       ) : null}
       <ConfirmDialog
+        deletionTarget={deleteFamilyTarget && { type: 'product_family', id: deleteFamilyTarget.id }}
         open={Boolean(deleteFamilyTarget)}
         title="删除产品簇"
         message={`确定删除产品簇「${deleteFamilyTarget?.name || ""}（${deleteFamilyTarget?.code || ""}）」吗？删除前需先移除产品成员和制程版本。`}
@@ -879,6 +889,7 @@ export default function ProductFamilyModelingPage() {
         }}
       />
       <ConfirmDialog
+        deletionTarget={deleteVersionTarget && { type: 'product_process_version', id: deleteVersionTarget.version.id }}
         open={Boolean(deleteVersionTarget)}
         title="删除制程配置版本"
         message={`确定删除产品簇「${deleteVersionTarget?.family.name || ""}（${deleteVersionTarget?.family.code || ""}）」的制程版本「${deleteVersionTarget?.version.version || ""}」吗？删除后不可恢复。`}
@@ -957,6 +968,13 @@ function ProductFamilyTreeRows({
       (await getProcessOwnerWorkspace("PRODUCT_FAMILY", family.id)).data.data,
   });
   const versions = workspaceQuery.data?.model?.versions ?? [];
+  useRecordLocationAction((location) => {
+    if (!location.type.startsWith('product_process_operation_')) return false;
+    const version = versions.find((item) => String(item.id) === location.version);
+    if (!version) return false;
+    onEditVersion(version, 'edit', versions);
+    return true;
+  });
   const renderParentCell = (column: ProductFamilyColumn) => {
     switch (column.id) {
       case "name":
@@ -1056,7 +1074,7 @@ function ProductFamilyTreeRows({
   };
   return (
     <Fragment>
-      <TableRow hover onClick={onToggle} sx={{ ...tableRowSx, cursor: "pointer" }}>
+      <TableRow data-record-id={family.id} hover onClick={onToggle} sx={{ ...tableRowSx, cursor: "pointer" }}>
         {visibleColumns.map(renderParentCell)}
       </TableRow>
       {expanded ? (
@@ -1141,6 +1159,7 @@ function ProductFamilyTreeRows({
                     {versions.map((version) => (
                       <TableRow
                         key={version.id}
+                        data-record-id={version.id}
                         hover
                         sx={tableRowSx}
                         onClick={() => onViewVersion(version)}
@@ -1750,7 +1769,7 @@ function ProductFamilyMemberDialog({
                         const owned = Boolean(item.productFamilyId);
                         const checked = selectedIds.includes(item.productId);
                         return (
-                          <TableRow key={item.productId} hover sx={tableRowSx}>
+                          <TableRow data-record-id={item.productId} key={item.productId} hover sx={tableRowSx}>
                             <TableCell padding="checkbox">
                               <Checkbox
                                 size="small"

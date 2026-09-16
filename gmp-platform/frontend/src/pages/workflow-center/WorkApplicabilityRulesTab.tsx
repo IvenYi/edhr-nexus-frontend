@@ -119,8 +119,8 @@ export default function WorkApplicabilityRulesTab() {
   const [draft, setDraft] = useState<RuleDraft>(emptyDraft());
   const [deleting, setDeleting] = useState<WorkRule | null>(null);
   const [previewingVersion, setPreviewingVersion] = useState<WorkFlowPreviewVersion | null>(null);
-  const [filterDraft, setFilterDraft] = useState<RuleFilters>(emptyFilters());
-  const [submittedFilters, setSubmittedFilters] = useState<RuleFilters>(emptyFilters());
+  const [filterDraft, setFilterDraft] = useState<RuleFilters>(() => ({ ...emptyFilters(), keyword: readRecordLocation().keyword }));
+  const [submittedFilters, setSubmittedFilters] = useState<RuleFilters>(() => ({ ...emptyFilters(), keyword: readRecordLocation().keyword }));
   const rules = useQuery({ queryKey: ['work-applicability-rules'], queryFn: async () => (await listWorkApplicabilityRules()).data.data as WorkRule[] });
   const templates = useQuery({ queryKey: ['work-templates', 'rule-options'], queryFn: async () => (await listWorkTemplates({ page: 1, size: 200 })).data.data as PageResult<WorkTemplate> });
   const families = useQuery({ queryKey: ['work-rule-product-families'], queryFn: async () => (await getProcessProductFamilies({ page: 1, size: 500 })).data.data as PageResult<ProductFamilyRecord> });
@@ -249,7 +249,7 @@ export default function WorkApplicabilityRulesTab() {
           {rules.isLoading ? <TableRow><TableStateCell colSpan={visibleColumns.length} align="center" sx={{ py: 8, color: '#909399' }}>加载中...</TableStateCell></TableRow> : null}
           {rules.isError ? <TableRow><TableStateCell colSpan={visibleColumns.length} align="center" sx={{ py: 8, color: '#c62828' }}>作业适用规则加载失败</TableStateCell></TableRow> : null}
           {!rules.isLoading && !rules.isError && rows.length === 0 ? <TableRow><TableStateCell colSpan={visibleColumns.length} align="center" sx={{ py: 8, color: '#909399' }}>暂无适用规则</TableStateCell></TableRow> : null}
-          {!rules.isLoading && !rules.isError ? rows.map((rule) => <TableRow key={rule.id} hover sx={{ '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } }}>
+          {!rules.isLoading && !rules.isError ? rows.map((rule) => <TableRow data-record-id={rule.id} key={rule.id} hover sx={{ '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } }}>
             {visibleColumns.map((column) => renderCell(rule, column))}
           </TableRow>) : null}
         </TableBody>
@@ -304,3 +304,4 @@ export default function WorkApplicabilityRulesTab() {
     <ConfirmDialog open={Boolean(deleting)} title="删除作业适用规则" message={deleting ? `确认删除作业“${deleting.definitionName}”的适用规则吗？` : ''} destructive loading={remove.isPending} onCancel={() => setDeleting(null)} onConfirm={() => deleting && remove.mutate(deleting)} />
   </Box>;
 }
+import { readRecordLocation } from '@/utils/recordLocation';

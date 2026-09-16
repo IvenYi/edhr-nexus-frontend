@@ -59,6 +59,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "product_family", idArgument = 0)
     public ApiResponse<Void> delete(@PathVariable Long id) {
         productFamilyRepository.deleteById(id);
         return ApiResponse.success(null);

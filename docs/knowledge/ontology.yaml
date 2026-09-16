@@ -1,5 +1,11 @@
-knowledgeModelVersion: 0.3.20
+knowledgeModelVersion: 0.3.21
 concepts:
+  - id: concept.master-data-deletion-impact
+    termId: term.master-data-deletion-impact
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.master-data-deletion-user-confirmed]
   - id: concept.workshop
     termId: term.workshop
     kind: business-fact

@@ -1,3 +1,4 @@
+import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -210,9 +211,9 @@ export default function ProductModelingPage() {
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
-  const [keyword, setKeyword] = useState('');
-  const [submittedKeyword, setSubmittedKeyword] = useState('');
-  const [expandedProductIds, setExpandedProductIds] = useState<string[]>([]);
+  const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
+  const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
+  const [expandedProductIds, setExpandedProductIds] = useState<string[]>(() => [readRecordLocation().id].filter(Boolean));
   const [detailTarget, setDetailTarget] = useState<DetailTarget | null>(null);
   const [detailTab, setDetailTab] = useState(0);
   const [editorTarget, setEditorTarget] = useState<EditorTarget | null>(null);
@@ -243,6 +244,7 @@ export default function ProductModelingPage() {
   const isTableEmptyState = query.isLoading || query.isError || rows.length === 0;
 
   useEffect(() => {
+    if (!query.data) return;
     const currentIds = new Set(rows.map((row) => row.id));
     setExpandedProductIds((current) => current.filter((id) => currentIds.has(id)));
   }, [rows]);
@@ -371,7 +373,7 @@ export default function ProductModelingPage() {
 
     <ProductDetailDrawer target={detailTarget} tab={detailTab} onTabChange={setDetailTab} events={detailAuditEvents} loading={detailTarget?.version ? versionAuditQuery.isLoading || operationAuditQuery.isLoading : parentAuditQuery.isLoading} error={detailTarget?.version ? versionAuditQuery.isError || operationAuditQuery.isError : parentAuditQuery.isError} onClose={() => setDetailTarget(null)} />
     {editorTarget ? <ProductProcessVersionEditorDialog open productId={editorTarget.product.id} productName={editorTarget.product.name} productCode={editorTarget.product.code} mode={editorTarget.mode} target={editorTarget.target} versions={editorTarget.versions} saving={saveVersionMutation.isPending} onClose={() => setEditorTarget(null)} onSubmit={(payload) => saveVersionMutation.mutate({ target: editorTarget, payload })} /> : null}
-    <ConfirmDialog open={Boolean(deleteTarget)} title="删除制程配置版本" message={`确定删除产品「${deleteTarget?.product.name || ''}」的制程版本「${deleteTarget?.version.version || ''}」吗？删除后不可恢复。`} confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => { if (deleteTarget) deleteMutation.mutate(deleteTarget); }} />
+    <ConfirmDialog deletionTarget={deleteTarget && { type: 'product_process_version', id: deleteTarget.version.id }} open={Boolean(deleteTarget)} title="删除制程配置版本" message={`确定删除产品「${deleteTarget?.product.name || ''}」的制程版本「${deleteTarget?.version.version || ''}」吗？删除后不可恢复。`} confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => { if (deleteTarget) deleteMutation.mutate(deleteTarget); }} />
   </Box>;
 }
 
@@ -412,6 +414,13 @@ function ProductTreeRows({
     queryFn: async () => (await getProductModelWorkspace(product.id)).data.data,
   });
   const versions = workspaceQuery.data?.model?.versions ?? [];
+  useRecordLocationAction((location) => {
+    if (!location.type.startsWith('product_process_operation_')) return false;
+    const version = versions.find((item) => String(item.id) === location.version);
+    if (!version) return false;
+    onEditVersion(version, 'edit', versions);
+    return true;
+  });
   const renderParentCell = (column: ParentColumn) => {
     switch (column.id) {
       case 'name': return <TableCell key={column.id}><Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}><Tooltip title={expanded ? '收起制程版本' : '展开制程版本'} arrow><IconButton size="small" aria-label={expanded ? '收起制程版本' : '展开制程版本'} onClick={(event) => { event.stopPropagation(); onToggle(); }}>{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}</IconButton></Tooltip><Typography component="button" type="button" onClick={(event) => { event.stopPropagation(); onViewProduct(); }} sx={{ p: 0, minWidth: 0, border: 0, bgcolor: 'transparent', font: 'inherit', color: '#1890ff', fontWeight: 500, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left', '&:hover': { color: '#096dd9', textDecoration: 'underline' } }}>{product.name}</Typography></Stack></TableCell>;
@@ -425,7 +434,7 @@ function ProductTreeRows({
     }
   };
   return <>
-    <TableRow hover onClick={onToggle} sx={{ ...tableRowSx, cursor: 'pointer' }}>
+    <TableRow data-record-id={product.id} hover onClick={onToggle} sx={{ ...tableRowSx, cursor: 'pointer' }}>
       {visibleColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <TableCell data-product-parent-action-spacer aria-hidden="true" sx={{ width: parentActionSpacerWidth, minWidth: parentActionSpacerWidth, maxWidth: parentActionSpacerWidth, p: 0 }} /> : null}{renderParentCell(column)}</Fragment>)}
     </TableRow>
     {expanded ? <TableRow sx={{ '& > .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={parentTableColumnCount} sx={{ p: 0, bgcolor: '#fbfdff' }}>
@@ -465,7 +474,7 @@ function ProductVersionTableRow({ version, versionActionSpacerWidth, onOpen, onE
       default: return null;
     }
   };
-  return <TableRow hover onClick={onOpen} sx={{ ...tableRowSx, cursor: 'pointer' }}>{VERSION_COLUMNS.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <TableCell data-product-version-action-spacer aria-hidden="true" sx={{ width: versionActionSpacerWidth, minWidth: versionActionSpacerWidth, maxWidth: versionActionSpacerWidth, p: 0 }} /> : null}{renderCell(column)}</Fragment>)}</TableRow>;
+  return <TableRow data-record-id={version.id} hover onClick={onOpen} sx={{ ...tableRowSx, cursor: 'pointer' }}>{VERSION_COLUMNS.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <TableCell data-product-version-action-spacer aria-hidden="true" sx={{ width: versionActionSpacerWidth, minWidth: versionActionSpacerWidth, maxWidth: versionActionSpacerWidth, p: 0 }} /> : null}{renderCell(column)}</Fragment>)}</TableRow>;
 }
 
 function ProductDetailDrawer({ target, tab, onTabChange, events, loading, error, onClose }: {

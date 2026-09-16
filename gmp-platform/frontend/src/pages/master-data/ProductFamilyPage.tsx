@@ -171,6 +171,7 @@ export default function Page() {
 
       {/* Delete Confirmation */}
       <ConfirmDialog
+        deletionTarget={deleteTarget && { type: 'product_family', id: deleteTarget.id }}
         open={deleteTarget !== null}
         message={`确定删除「${deleteTarget?.name}」吗？此操作不可撤销。`}
         confirmText="删除"

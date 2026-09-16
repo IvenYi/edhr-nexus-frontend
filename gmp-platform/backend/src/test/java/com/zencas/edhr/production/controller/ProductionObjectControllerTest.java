@@ -42,6 +42,20 @@ class ProductionObjectControllerTest {
     @InjectMocks private ProductionObjectController controller;
 
     @Test
+    void listPreservesObjectsWhenProductHasBeenDeleted() {
+        WorkOrder order = order();
+        when(productionService.requireOrder(10L)).thenReturn(order);
+        when(productionService.objects(10L)).thenReturn(List.of(object(101L, "BATCH-001", BigDecimal.TEN)));
+        assertThat(controller.list(10L).getData()).singleElement().satisfies(row -> {
+            assertThat(row.objectNo()).isEqualTo("BATCH-001");
+            assertThat(row.productName()).isEqualTo("产品已不存在");
+            assertThat(row.productCode()).isEqualTo(String.valueOf(order.getProductId()));
+        });
+        org.mockito.Mockito.verify(productionService, org.mockito.Mockito.never()).requireProduct(any());
+        org.mockito.Mockito.verifyNoInteractions(auditEventRepository);
+    }
+
+    @Test
     void splitWritesCompleteCreateSnapshotWithWorkOrderOrigin() {
         WorkOrder order = order();
         ProductionObject object = object(101L, "BATCH-001", BigDecimal.TEN);

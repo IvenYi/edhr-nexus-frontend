@@ -27,6 +27,8 @@ import AppDialog from '@/components/AppDialog';
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
 import CellDisplayContent from '../CellDisplayContent';
 import { isCellDisplayNode } from '../../registry/commonComponentRegistry';
+import { getFormPagePaperMetrics as getMockFillPagePaperMetrics } from '../../utils/formPagePaper';
+import { shouldRenderSheetCellBorderEdge as shouldRenderMockFillCellBorderEdge } from '../../utils/sheetCellBorders';
 import { buildDynamicSubTablePage } from '../../utils/dynamicSubTableLayout';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
 import { getFilePreviewBlob } from '@/api/files';
@@ -34,7 +36,6 @@ import { verifyCurrentUserSignaturePassword } from '@/api/identity';
 import type {
   CanvasNode,
   CanvasPage,
-  CanvasCellBorder,
   CanvasSelectionRange,
   CanvasSheetCell,
   ModelField,
@@ -77,9 +78,8 @@ interface MergedCellMaps {
   startMap: Map<string, CanvasSelectionRange>;
 }
 
-type MockFillCellBorderEdge = 'top' | 'right' | 'bottom' | 'left';
-
 interface RenderMockFillControlParams {
+  previewOnly?: boolean;
   node: CanvasNode;
   field: ModelField | null;
   valueKey: string;
@@ -89,6 +89,7 @@ interface RenderMockFillControlParams {
 }
 
 interface MockFillPageProps {
+  previewOnly?: boolean;
   page: CanvasPage;
   document: TemplateDesignerDocument;
   values: MockFillValues;
@@ -101,10 +102,6 @@ interface MockFillPageProps {
 
 const CELL_GRID_COLOR = '#d9dee7';
 const CELL_FIELD_INSET = 3;
-const MM_TO_PX = 96 / 25.4;
-const A4_PAPER_WIDTH_MM = 210;
-const A4_PAPER_HEIGHT_MM = 297;
-const PAGE_MIN_PADDING = 24;
 
 function getCellKey(row: number, col: number) {
   return `${row}:${col}`;
@@ -377,54 +374,6 @@ function createMergedCellMaps(mergedCells: CanvasSelectionRange[]): MergedCellMa
   return { skipSet, startMap };
 }
 
-function findMockFillMergedRangeContaining(page: CanvasPage, row: number, col: number) {
-  return page.mergedCells
-    .map((range) => normalizeRange(range))
-    .find((range) => row >= range.t && row <= range.b && col >= range.l && col <= range.r);
-}
-
-function getRenderedMockFillAdjacentCellBorder(
-  page: CanvasPage,
-  row: number,
-  col: number,
-  edge: 'top' | 'left',
-): CanvasCellBorder | undefined {
-  const mergedRange = findMockFillMergedRangeContaining(page, row, col);
-  if (mergedRange) {
-    if (edge === 'top' && mergedRange.t !== row) return undefined;
-    if (edge === 'left' && mergedRange.l !== col) return undefined;
-    return page.cells[getCellKey(mergedRange.t, mergedRange.l)]?.border;
-  }
-  return page.cells[getCellKey(row, col)]?.border;
-}
-
-function isAdjacentMockFillCellBorderCovered(page: CanvasPage, range: CanvasSelectionRange, edge: 'right' | 'bottom') {
-  if (edge === 'right') {
-    if (range.r >= page.sheet.columnCount) return false;
-    const adjacentCol = range.r + 1;
-    for (let row = range.t; row <= range.b; row += 1) {
-      const neighborBorder = getRenderedMockFillAdjacentCellBorder(page, row, adjacentCol, 'left');
-      if (!neighborBorder?.left) return false;
-    }
-    return true;
-  }
-
-  if (range.b >= page.sheet.rowCount) return false;
-  const adjacentRow = range.b + 1;
-  for (let col = range.l; col <= range.r; col += 1) {
-    const neighborBorder = getRenderedMockFillAdjacentCellBorder(page, adjacentRow, col, 'top');
-    if (!neighborBorder?.top) return false;
-  }
-  return true;
-}
-
-function shouldRenderMockFillCellBorderEdge(page: CanvasPage, range: CanvasSelectionRange, edge: MockFillCellBorderEdge) {
-  const cellBorder = page.cells[getCellKey(range.t, range.l)]?.border;
-  if (edge === 'right') return Boolean(cellBorder?.right && !isAdjacentMockFillCellBorderCovered(page, range, 'right'));
-  if (edge === 'bottom') return Boolean(cellBorder?.bottom && !isAdjacentMockFillCellBorderCovered(page, range, 'bottom'));
-  return Boolean(edge === 'top' ? cellBorder?.top : cellBorder?.left);
-}
-
 function getRowHeight(page: CanvasPage, row: number) {
   return page.sheet.rowHeights[row - 1] ?? page.sheet.defaultRowHeight;
 }
@@ -478,25 +427,6 @@ function canMockFillFieldExpandOnFocus(field?: ModelField | null) {
   return !['signature', 'attachment', 'image', 'singleSelect', 'multiSelect', 'datetime'].includes(field?.type ?? '');
 }
 
-function getMockFillPagePaperMetrics(page: CanvasPage, gridWidth: number, gridHeight: number) {
-  const paperOrientation = page.sheet.paperOrientation ?? 'portrait';
-  const basePaperWidth = Math.round((paperOrientation === 'landscape' ? A4_PAPER_HEIGHT_MM : A4_PAPER_WIDTH_MM) * MM_TO_PX);
-  const basePaperHeight = Math.round((paperOrientation === 'landscape' ? A4_PAPER_WIDTH_MM : A4_PAPER_HEIGHT_MM) * MM_TO_PX);
-  const insetTop = Math.max(PAGE_MIN_PADDING, Math.round(readNumber(page.sheet.paperMarginTopMm, 5) * MM_TO_PX));
-  const insetRight = Math.max(PAGE_MIN_PADDING, Math.round(readNumber(page.sheet.paperMarginRightMm, 6) * MM_TO_PX));
-  const insetBottom = Math.max(PAGE_MIN_PADDING, Math.round(readNumber(page.sheet.paperMarginBottomMm, 6) * MM_TO_PX));
-  const insetLeft = Math.max(PAGE_MIN_PADDING, Math.round(readNumber(page.sheet.paperMarginLeftMm, 6) * MM_TO_PX));
-
-  return {
-    paperWidth: Math.max(basePaperWidth, gridWidth + insetLeft + insetRight),
-    paperHeight: Math.max(basePaperHeight, gridHeight + insetTop + insetBottom),
-    insetTop,
-    insetRight,
-    insetBottom,
-    insetLeft,
-  };
-}
-
 function resolveTextAlign(value: unknown): CSSProperties['textAlign'] {
   return value === 'right' || value === 'center' || value === 'justify' ? value : 'left';
 }
@@ -515,6 +445,7 @@ function resolveCellTextSx(cell?: CanvasSheetCell | null): CSSProperties {
 }
 
 function renderMockFillControl({
+  previewOnly = false,
   node,
   field,
   valueKey,
@@ -631,7 +562,7 @@ function renderMockFillControl({
     '& .MuiSvgIcon-root': { fontSize: 18 },
   };
   const inputProps = {
-    readOnly: readonly,
+    readOnly: readonly || previewOnly,
     startAdornment: prefix ? <InputAdornment position="start">{prefix}</InputAdornment> : undefined,
     endAdornment: suffix ? <InputAdornment position="end">{suffix}</InputAdornment> : undefined,
   };
@@ -652,7 +583,8 @@ function renderMockFillControl({
         variant="outlined"
         disabled={readonly}
         startIcon={signatureValue ? undefined : <DrawOutlined />}
-        onClick={() => onSignatureRequest(valueKey)}
+        aria-disabled={previewOnly || undefined}
+        onClick={previewOnly ? undefined : () => onSignatureRequest(valueKey)}
         sx={{
           height: '100%',
           minHeight: 0,
@@ -747,7 +679,7 @@ function renderMockFillControl({
               </Typography>
             </Stack>
           )}
-          {readonly ? null : (
+          {readonly || previewOnly ? null : (
             <input
               hidden
               type="file"
@@ -770,6 +702,7 @@ function renderMockFillControl({
         component="label"
         variant="outlined"
         disabled={readonly}
+        aria-disabled={previewOnly || undefined}
         startIcon={<AttachFileOutlined />}
         sx={{
           height: '100%',
@@ -781,7 +714,7 @@ function renderMockFillControl({
         }}
       >
         {textValue || '点击上传'}
-        <input
+        {previewOnly ? null : <input
           hidden
           type="file"
           multiple={multiple}
@@ -789,7 +722,7 @@ function renderMockFillControl({
             const names = Array.from(event.target.files ?? []).map((file) => file.name);
             onValueChange(valueKey, names.length ? names.join(', ') : '');
           }}
-        />
+        />}
       </Button>,
     );
   }
@@ -810,9 +743,9 @@ function renderMockFillControl({
         value={textValue}
         required={required}
         disabled={readonly}
-        onClick={(event) => openMockFillDatePicker(event.currentTarget.querySelector<HTMLInputElement>('input'))}
+        onClick={previewOnly ? undefined : (event) => openMockFillDatePicker(event.currentTarget.querySelector<HTMLInputElement>('input'))}
         onChange={(event) => onValueChange(valueKey, event.target.value)}
-        InputProps={{ endAdornment: adornment }}
+        InputProps={{ endAdornment: adornment, readOnly: previewOnly }}
         sx={dateTextFieldSx}
       />
     ) : (
@@ -824,9 +757,9 @@ function renderMockFillControl({
         value={textValue}
         required={required}
         disabled={readonly}
-        onClick={(event) => openMockFillDatePicker(event.currentTarget.querySelector<HTMLInputElement>('input'))}
+        onClick={previewOnly ? undefined : (event) => openMockFillDatePicker(event.currentTarget.querySelector<HTMLInputElement>('input'))}
         onChange={(event) => onValueChange(valueKey, event.target.value)}
-        InputProps={{ endAdornment: adornment }}
+        InputProps={{ endAdornment: adornment, readOnly: previewOnly }}
         sx={dateTextFieldSx}
       />
     );
@@ -864,7 +797,9 @@ function renderMockFillControl({
               <Button
                 key={option.key}
                 disabled={readonly}
+                aria-disabled={previewOnly || undefined}
                 onClick={() => {
+                  if (previewOnly) return;
                   if (isMultiSelect) {
                     const nextValues = checked
                       ? currentValues.filter((item) => item !== option.value && item !== option.label)
@@ -929,6 +864,7 @@ function renderMockFillControl({
         }}
         SelectProps={{
           displayEmpty: true,
+          readOnly: previewOnly,
           multiple: isMultiSelectDropdown,
           renderValue: (selected) => (
             <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -1021,6 +957,7 @@ function mapChildRangeToRecord(childRange: CanvasSelectionRange, templateRange: 
 }
 
 function MockFillPage({
+  previewOnly = false,
   page: templatePage,
   document,
   values,
@@ -1056,6 +993,7 @@ function MockFillPage({
   const renderFieldNode = (node: CanvasNode, range: CanvasSelectionRange, valueKey: string, recordIndex = 0) => {
     const field = resolveBoundField(document, node);
     const content = isCellDisplayNode(node) ? <CellDisplayContent node={node} recordIndex={recordIndex} /> : renderMockFillControl({
+      previewOnly,
       node,
       field,
       valueKey,
@@ -1120,6 +1058,7 @@ function MockFillPage({
     <Box sx={{ minWidth: paperMetrics.paperWidth, display: 'flex', justifyContent: 'center' }}>
       <Box
         data-mock-fill-page-paper="true"
+        data-form-preview-paper={previewOnly ? page.id : undefined}
         sx={{
           position: 'relative',
           width: paperMetrics.paperWidth,
@@ -1161,6 +1100,7 @@ function MockFillPage({
                 <Box
                   key={key}
                   data-mock-fill-sheet-cell="true"
+                  data-form-preview-cell={previewOnly ? key : undefined}
                   sx={{
                     gridColumn: `${range.l} / span ${range.r - range.l + 1}`,
                     gridRow: `${range.t} / span ${range.b - range.t + 1}`,
@@ -1297,7 +1237,7 @@ function MockFillPage({
                     {subTableField.name || '子表'}
                   </Box>
                 </Box>
-                {isDynamic ? (
+                {isDynamic && !previewOnly ? (
                   <Box
                     data-mock-fill-sub-table-actions="true"
                     sx={{
@@ -1400,6 +1340,26 @@ function MockFillPage({
         </Box>
       </Box>
     </Box>
+  );
+}
+
+const ignorePreviewChange = () => {};
+
+export function MockFillPreviewPage({ page, document }: { page: CanvasPage; document: TemplateDesignerDocument }) {
+  const values = useMemo(() => createInitialMockFillValues(document), [document]);
+  const subTableRecordCounts = useMemo(() => createInitialSubTableRecordCounts(document), [document]);
+  return (
+    <MockFillPage
+      previewOnly
+      page={page}
+      document={document}
+      values={values}
+      subTableRecordCounts={subTableRecordCounts}
+      onValueChange={ignorePreviewChange}
+      onSignatureRequest={ignorePreviewChange}
+      onAddSubTableRecord={ignorePreviewChange}
+      onRemoveSubTableRecord={ignorePreviewChange}
+    />
   );
 }
 

@@ -1,0 +1,37 @@
+knowledgeModelVersion: 0.3.21
+evidence:
+  - id: evidence.master-data-deletion-reference-location
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionService.java
+    description: original-evidence；关联投影按业务所属关系补充名称、位置、完整菜单路径和逐条定位参数，以 dataType 区分 BUSINESS、RETAINED 和 ORPHAN 并拆分同源关联组；位置不重复编号，缺失业务所有者不冒称追溯。只核对当前源码，分类、阻断和目标列表实际定位仍需聚焦测试及浏览器验证。
+    visibility: internal
+  - id: evidence.master-data-deletion-reference-dialog
+    type: code
+    path: gmp-platform/frontend/src/components/DeletionProtectionDialog.tsx
+    description: original-evidence；关联弹窗展示逐条位置与定位入口或无页面说明，默认业务关联并分开保留记录和异常遗留；去除顶部重复目标信息。用 targetType/targetId 原位重新预检查，失败提示错误，无关联只提示解除且不自动删除。源码不等于浏览器及权限验收。
+    visibility: internal
+  - id: evidence.master-data-deletion-precheck-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionCheckController.java
+    description: original-evidence；GET 预检查复用目标白名单、保护服务和权限，返回 allowed/impact，不执行删除；查询含事务锁不代表无关联后正式删除可跳过复核。
+    visibility: internal
+  - id: evidence.master-data-deletion-precheck-dialog
+    type: code
+    path: gmp-platform/frontend/src/components/AppDialog.tsx
+    description: original-evidence；deletionTarget 先触发查询，加载或失败时隐藏原确认内容；有关联直接展示保护弹框，无关联才展示原确认，关闭中止在途查询。源码不等于浏览器验收。
+    visibility: internal
+  - id: evidence.master-data-deletion-precheck-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionIntegrationTest.java
+    description: original-evidence；预检查无业务删除和删除审计、预检后新增引用正式删除仍拒绝、无权限与未知类型拒绝的测试入口；本体核对不声称这些业务测试已运行通过。
+    visibility: internal
+  - id: evidence.master-data-deletion-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/master-data-deletion-user-confirmed.md
+    description: user-confirmed；所有主数据模块分模块接入删除保护，阻断时列出关联记录、所属模块和处理位置；不宣称各模块已实现。
+    visibility: internal
+  - id: evidence.master-data-deletion-existing-retention
+    type: document
+    path: docs/knowledge/rules/production.yaml
+    description: original-evidence；既有 object-lifecycle 与 object-cancel-before-start 规则保留生产对象及审计，不因主数据删除保护引入强删生产历史的路径。
+    visibility: internal

@@ -261,6 +261,7 @@ public class ProductProcessController {
     }
 
     @DeleteMapping("/process-owners/{ownerType}/{ownerId}/versions/{versionId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "product_process_version", idArgument = 2)
     public ApiResponse<Void> deleteProcessOwnerVersion(
             @PathVariable String ownerType,
             @PathVariable Long ownerId,
@@ -346,6 +347,7 @@ public class ProductProcessController {
     }
 
     @DeleteMapping("/products/{productVersionId}/versions/{versionId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "product_process_version", idArgument = 1)
     @Transactional
     public ApiResponse<Void> deleteVersion(
             @PathVariable Long productVersionId,

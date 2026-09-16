@@ -1,3 +1,4 @@
+import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import {
   Fragment,
@@ -354,11 +355,11 @@ export default function DocumentManagementPage() {
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [selectedCategory, setSelectedCategory] = useState(DOCUMENT_CATEGORY_ALL);
-  const [keyword, setKeyword] = useState('');
-  const [submittedKeyword, setSubmittedKeyword] = useState('');
+  const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
+  const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set([readRecordLocation().id].filter(Boolean)));
   const mainColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(DOCUMENT_COLUMN_WIDTH_STORAGE_PREFIX), []);
   const mainColumnSettingsStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(DOCUMENT_COLUMN_SETTINGS_STORAGE_PREFIX), []);
   const versionColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(DOCUMENT_VERSION_COLUMN_WIDTH_STORAGE_PREFIX), []);
@@ -721,9 +722,9 @@ export default function DocumentManagementPage() {
       <DocumentVersionDialog open={Boolean(versionDialog)} document={versionDialog?.document ?? null} editing={versionDialog?.version ?? null} form={versionForm} onChange={setVersionForm} onPreview={preview} onClose={() => setVersionDialog(null)} onSubmit={() => saveVersionMutation.mutate()} saving={saveVersionMutation.isPending} />
       <DocumentPreviewDialog version={previewVersion} onClose={() => setPreviewVersion(null)} />
       <DocumentDetailDrawer open={drawerDocument !== null} document={drawerDocument} version={drawerVersion} tab={drawerTab} onTabChange={setDrawerTab} auditRecords={auditRecords} auditLoading={auditQuery.isLoading} auditError={auditQuery.isError} onClose={closeDetailDrawer} />
-      <ConfirmDialog open={Boolean(deleteTarget)} title={deleteTarget?.version ? '删除文档版本' : '删除文档'} message={deleteTarget?.version ? `确定删除版本「${deleteTarget.version.version}」吗？` : `确定删除文档「${deleteTarget?.document.title || ''}」及其未被引用版本吗？`} confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
+      <ConfirmDialog deletionTarget={deleteTarget && { type: deleteTarget.version ? 'document_version' : 'sop_document', id: deleteTarget.version?.id || deleteTarget.document.id }} open={Boolean(deleteTarget)} title={deleteTarget?.version ? '删除文档版本' : '删除文档'} message={deleteTarget?.version ? `确定删除版本「${deleteTarget.version.version}」吗？` : `确定删除文档「${deleteTarget?.document.title || ''}」及其未被引用版本吗？`} confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
       <AppDialog open={Boolean(categoryDialog)} onClose={saveCategoryMutation.isPending ? undefined : () => setCategoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{categoryDialog?.mode === 'edit' ? '编辑文档分类' : '新增文档分类'}</DialogTitle><DialogContent dividers><TextField autoFocus required fullWidth size="small" label="文档分类名称" value={categoryName} onChange={(event) => setCategoryName(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && categoryName.trim()) saveCategoryMutation.mutate(); }} /></DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryName.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>{saveCategoryMutation.isPending ? '保存中...' : '保存'}</Button></DialogActions></AppDialog>
-      <ConfirmDialog open={Boolean(deleteCategoryTarget)} title="删除文档分类" message={`确定删除分类「${deleteCategoryTarget?.name || ''}」吗？该分类下的文档将自动转为未分类。`} confirmText="删除" destructive loading={deleteCategoryMutation.isPending} onCancel={() => setDeleteCategoryTarget(null)} onConfirm={() => deleteCategoryMutation.mutate()} />
+      <ConfirmDialog deletionTarget={deleteCategoryTarget && { type: 'document_category', id: deleteCategoryTarget.id }} open={Boolean(deleteCategoryTarget)} title="删除文档分类" message={`确定删除分类「${deleteCategoryTarget?.name || ''}」吗？该分类下的文档将自动转为未分类。`} confirmText="删除" destructive loading={deleteCategoryMutation.isPending} onCancel={() => setDeleteCategoryTarget(null)} onConfirm={() => deleteCategoryMutation.mutate()} />
     </Box>
   );
 }
@@ -781,7 +782,7 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
     }
   };
   return <>
-    <TableRow hover sx={{ ...tableRowSx, cursor: 'pointer' }} onClick={onToggle}>{mainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0 }} /> : null}{renderMainCell(column)}</Fragment>)}</TableRow>
+    <TableRow data-record-id={document.id} hover sx={{ ...tableRowSx, cursor: 'pointer' }} onClick={onToggle}>{mainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0 }} /> : null}{renderMainCell(column)}</Fragment>)}</TableRow>
     {expanded ? <TableRow sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={mainTableColumnCount} sx={{ p: 0, bgcolor: '#fafcff' }}>
         <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}><Table stickyHeader size="small" aria-label="文档版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}>
           <colgroup>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <col data-document-version-action-spacer style={{ width: versionTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'version') }} /></Fragment>)}</colgroup>
@@ -798,7 +799,7 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
               {column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => onResizeColumn(event, column, 'version')} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 1 }} />}
             </TableCell>
           </Fragment>)}</TableRow></TableHead>
-          <TableBody>{document.versions.map((version) => <TableRow key={version.id} hover onClick={() => onOpenDetail(version)} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0 }} /> : null}{renderVersionCell(version, column)}</Fragment>)}</TableRow>)}</TableBody>
+          <TableBody>{document.versions.map((version) => <TableRow data-record-id={version.id} key={version.id} hover onClick={() => onOpenDetail(version)} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0 }} /> : null}{renderVersionCell(version, column)}</Fragment>)}</TableRow>)}</TableBody>
         </Table></TableContainer>
     </TableCell></TableRow> : null}
   </>;

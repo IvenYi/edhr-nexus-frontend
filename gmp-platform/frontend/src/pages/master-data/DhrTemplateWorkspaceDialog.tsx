@@ -1,3 +1,4 @@
+import { useRecordLocationAction } from '@/utils/recordLocation';
 import {
   AddRounded,
   ArticleOutlined,
@@ -48,6 +49,7 @@ import { isCellDisplayNode } from './template-designer-react/registry/commonComp
 import StatusBadge from "@/components/StatusBadge";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  startTransition,
   useEffect,
   useContext,
   useMemo,
@@ -69,6 +71,8 @@ import {
   type TemplateVersionRecord,
 } from "@/api/template-modeling";
 import { parseReactTemplateDesignerDocument } from "./template-designer-react/utils/document";
+import { MockFillPreviewPage } from './template-designer-react/components/mock-fill/MockFillDialog';
+import { shouldRenderSheetCellBorderEdge } from './template-designer-react/utils/sheetCellBorders';
 import WordCanvasPreview from "./template-designer-react/components/canvas/WordCanvasPreview";
 import type {
   CanvasNode,
@@ -254,6 +258,7 @@ function DhrContentTree({
     return (
       <Box
         key={item.id}
+        data-record-id={item.id}
         role="treeitem"
         aria-selected={selected}
         onClick={() => onSelectForm(item)}
@@ -351,6 +356,7 @@ function DhrContentTree({
       <Box key={node.id}>
         <Box
           role="treeitem"
+          data-record-id={node.id}
           aria-selected={selected}
           onClick={() => onSelectDirectory(node)}
           sx={{
@@ -727,17 +733,18 @@ function SheetPreview({
               ).map((col) => {
                 const key = `${row}:${col}`;
                 if (mergedSkips.has(key)) return null;
-                const range = mergedStarts.get(key);
+                const range = mergedStarts.get(key) ?? { t: row, l: col, b: row, r: col };
                 const cell = page.cells[key];
                 const spanRows = range ? range.b - range.t + 1 : 1;
                 const spanCols = range ? range.r - range.l + 1 : 1;
-                const borderColor = String(cell?.border?.color ?? "#4b5563");
+                const borderColor = String(cell?.border?.color ?? "#000000");
                 const hasMultilineValue = String(cell?.value ?? "").includes(
                   "\n",
                 );
                 return (
                   <Box
                     key={key}
+                    data-form-preview-cell={key}
                     sx={{
                       gridColumn: `${col} / span ${spanCols}`,
                       gridRow: `${row} / span ${spanRows}`,
@@ -756,22 +763,22 @@ function SheetPreview({
                             : "flex-start",
                       px: `${readNumber(cell?.style?.paddingLeft, 8)}px`,
                       py: `${readNumber(cell?.style?.paddingTop, 4)}px`,
-                      borderLeft: cell?.border?.left
+                      borderLeft: shouldRenderSheetCellBorderEdge(page, range, "left")
                         ? `1px solid ${borderColor}`
                         : col === 1 && page.sheet.showGridLines
                           ? "1px solid #d9dee7"
                           : "none",
-                      borderTop: cell?.border?.top
+                      borderTop: shouldRenderSheetCellBorderEdge(page, range, "top")
                         ? `1px solid ${borderColor}`
                         : row === 1 && page.sheet.showGridLines
                           ? "1px solid #d9dee7"
                           : "none",
-                      borderRight: cell?.border?.right
+                      borderRight: shouldRenderSheetCellBorderEdge(page, range, "right")
                         ? `1px solid ${borderColor}`
                         : page.sheet.showGridLines
                           ? "1px solid #d9dee7"
                           : "1px solid transparent",
-                      borderBottom: cell?.border?.bottom
+                      borderBottom: shouldRenderSheetCellBorderEdge(page, range, "bottom")
                         ? `1px solid ${borderColor}`
                         : page.sheet.showGridLines
                           ? "1px solid #d9dee7"
@@ -1013,12 +1020,14 @@ export function FormCanvasPreview({
   interaction,
   runtime,
   layout = 'canvas',
+  fullPage = false,
 }: {
   document: TemplateDesignerDocument;
   fieldPermissions?: PreviewFieldPermission;
   interaction?: PreviewFieldInteraction;
   runtime?: FormRuntime;
   layout?: 'canvas' | 'fields';
+  fullPage?: boolean;
 }) {
   const [pageId, setPageId] = useState(document.canvas.currentPageId);
   const subTableDisplayNodes = useMemo(() => document.canvas.pages.flatMap((entry) => flattenCanvasNodes(entry.nodes)), [document.canvas.pages]);
@@ -1037,6 +1046,26 @@ export function FormCanvasPreview({
     page &&
     (Object.keys(page.cells).length || page.nodes.length || page.images.length),
   );
+  if (fullPage && layout === 'canvas' && !runtime && !fieldPermissions && !interaction) {
+    return (
+      <Box data-form-document-preview="true" sx={{ flex: 1, minHeight: 0, overflow: 'auto', bgcolor: '#eef3f8', p: 3 }}>
+        <Stack {...{ inert: '' }} spacing={3} sx={{ minWidth: 'fit-content' }}>
+          {document.canvas.pages.map((entry) => (
+            entry.wordDocument ? (
+              <WordCanvasPreview key={entry.id} page={entry} embedded renderField={(node) => (
+                <PreviewField node={node} document={document} />
+              )} />
+            ) : Object.keys(entry.cells).length || entry.nodes.length || entry.images.length ? (
+              <MockFillPreviewPage key={entry.id} page={entry} document={document} />
+            ) : (
+              <FieldListPreview key={entry.id} document={document} />
+            )
+          ))}
+          {!document.canvas.pages.length ? <FieldListPreview document={document} /> : null}
+        </Stack>
+      </Box>
+    );
+  }
   return (
     <SubTableDisplayNodesContext.Provider value={subTableDisplayNodes}><SignatureDisplayModeContext.Provider value={signatureDisplayModes}><FormRuntimeContext.Provider value={runtime}><Box
       sx={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}
@@ -1084,6 +1113,49 @@ export function FormCanvasPreview({
         />
       )}
     </Box></FormRuntimeContext.Provider></SignatureDisplayModeContext.Provider></SubTableDisplayNodesContext.Provider>
+  );
+}
+
+function FormPreviewLoading() {
+  return (
+    <Stack role="status" aria-live="polite" aria-busy="true" spacing={1.5}
+      sx={{ flex: 1, minHeight: 0, alignItems: 'center', justifyContent: 'center', bgcolor: '#eef3f8' }}>
+      <CircularProgress size={28} />
+      <Typography variant="body2" sx={{ color: '#909399' }}>正在加载表单…</Typography>
+    </Stack>
+  );
+}
+
+function ReferencedFormPreview({ evidence, version }: { evidence: DhrEvidenceItemRecord; version: TemplateVersionRecord }) {
+  const document = useMemo(() => parseReactTemplateDesignerDocument({
+    id: evidence.formTemplateId ?? evidence.formTemplateVersionId ?? evidence.id,
+    code: evidence.formCode,
+    name: evidence.formName,
+    type: 'FORM_TEMPLATE',
+  }, version), [evidence, version]);
+  return <FormCanvasPreview document={document} fullPage />;
+}
+
+export function DeferredFormPreview({ evidence, version }: { evidence: DhrEvidenceItemRecord; version: TemplateVersionRecord }) {
+  const [preparedVersion, setPreparedVersion] = useState<TemplateVersionRecord | null>(null);
+  useEffect(() => {
+    let renderFrame = 0;
+    // Let the loading state paint before parsing and mounting a cached, complex form.
+    const paintFrame = requestAnimationFrame(() => {
+      renderFrame = requestAnimationFrame(() => {
+        startTransition(() => setPreparedVersion(version));
+      });
+    });
+    return () => {
+      cancelAnimationFrame(paintFrame);
+      cancelAnimationFrame(renderFrame);
+    };
+  }, [version]);
+  const loading = preparedVersion !== version;
+  return (
+    <Box data-dhr-form-preview="true" aria-busy={loading} sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+      {loading ? <FormPreviewLoading /> : <ReferencedFormPreview evidence={evidence} version={version} />}
+    </Box>
   );
 }
 
@@ -1209,22 +1281,6 @@ export default function DhrTemplateWorkspaceDialog({
         )
       ).data.data,
   });
-  const formPreviewDocument = useMemo(() => {
-    if (!selectedEvidence || !formPreviewQuery.data) return null;
-    const row: TemplateModelingRecord = {
-      id:
-        selectedEvidence.formTemplateId ??
-        selectedEvidence.formTemplateVersionId ??
-        selectedEvidence.id,
-      code: selectedEvidence.formCode,
-      name: selectedEvidence.formName,
-      type: "FORM_TEMPLATE",
-    };
-    return parseReactTemplateDesignerDocument(
-      row,
-      formPreviewQuery.data as TemplateVersionRecord,
-    );
-  }, [formPreviewQuery.data, selectedEvidence]);
   const formCategories = useMemo(
     () =>
       Array.from(
@@ -1312,6 +1368,15 @@ export default function DhrTemplateWorkspaceDialog({
     )
       setSelectedEvidenceId(null);
   }, [items, selectedEvidenceId]);
+
+  useRecordLocationAction((location) => {
+    if (!open || location.version !== selectedVersionId) return false;
+    const item = items.find((entry) => entry.id === location.child);
+    if (item) { setSelectedDirectoryId(item.directoryId); setSelectedEvidenceId(item.id); return true; }
+    const directory = directories.find((entry) => entry.id === location.child);
+    if (directory) { setSelectedDirectoryId(directory.id); return true; }
+    return false;
+  });
 
   useEffect(() => {
     if (!compositionQuery.data) return;
@@ -2048,15 +2113,13 @@ export default function DhrTemplateWorkspaceDialog({
                   </Stack>
                 </Stack>
                 {formPreviewQuery.isLoading ? (
-                  <Box sx={{ flex: 1, display: "grid", placeItems: "center" }}>
-                    <CircularProgress size={26} />
-                  </Box>
+                  <FormPreviewLoading />
                 ) : formPreviewQuery.isError ? (
                   <Box sx={{ p: 2 }}>
                     <Alert severity="error">无法加载该表单版本</Alert>
                   </Box>
-                ) : formPreviewDocument ? (
-                  <FormCanvasPreview document={formPreviewDocument} />
+                ) : formPreviewQuery.data ? (
+                  <DeferredFormPreview key={selectedEvidence.id} evidence={selectedEvidence} version={formPreviewQuery.data} />
                 ) : null}
               </>
             ) : selectedDirectory ? (

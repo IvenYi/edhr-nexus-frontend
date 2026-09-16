@@ -1,5 +1,11 @@
-knowledgeModelVersion: 0.3.20
+knowledgeModelVersion: 0.3.21
 terms:
+  - id: term.master-data-deletion-impact
+    name: 主数据删除关联清单
+    definition: 删除主数据或版本前查询并展示的阻断关联及处理位置；由已有业务引用派生，不是另一套业务关联事实库。
+    aliases: [删除影响, 删除约束关系]
+    status: specified
+    visibility: internal
   - id: term.workshop
     name: 车间
     definition: 在同一租户内独立维护、不采用业务版本管理的工厂建模主数据；字段为车间编码、车间名称、描述和启用或停用状态，供产线及后续生产业务引用。

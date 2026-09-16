@@ -1,3 +1,4 @@
+import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import { type MouseEvent, type ReactNode, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -178,8 +179,8 @@ export default function WorkshopManagementPage() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const [filters, setFilters] = useState<WorkshopFilters>(emptyFilters);
-  const [appliedFilters, setAppliedFilters] = useState<WorkshopFilters>(emptyFilters);
+  const [filters, setFilters] = useState<WorkshopFilters>(() => ({ ...emptyFilters, keyword: readRecordLocation().keyword }));
+  const [appliedFilters, setAppliedFilters] = useState<WorkshopFilters>(() => ({ ...emptyFilters, keyword: readRecordLocation().keyword }));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingWorkshop, setEditingWorkshop] = useState<WorkshopRecord | null>(null);
   const [form, setForm] = useState<WorkshopForm>(emptyForm);
@@ -331,7 +332,7 @@ export default function WorkshopManagementPage() {
             ) : rows.length === 0 ? (
               <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={5} align="center" sx={{ borderBottom: 'none', color: '#909399' }}>暂无车间数据</TableStateCell></TableRow>
             ) : rows.map((workshop) => (
-              <TableRow key={workshop.id} hover onClick={() => openDetail(workshop)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': bodyCellSx }}>
+              <TableRow data-record-id={workshop.id} key={workshop.id} hover onClick={() => openDetail(workshop)} sx={{ cursor: 'pointer', '& .MuiTableCell-root': bodyCellSx }}>
                 <TableCell>{workshop.code}</TableCell>
                 <TableCell><Typography component="span" sx={{ color: '#1890ff', fontSize: 14 }}>{workshop.name}</Typography></TableCell>
                 <TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{workshop.description || '-'}</TableCell>
@@ -463,6 +464,7 @@ export default function WorkshopManagementPage() {
       </AppDialog>
 
       <ConfirmDialog
+        deletionTarget={deleteTarget && { type: 'workshop', id: deleteTarget.id }}
         open={Boolean(deleteTarget)}
         title="确认删除车间"
         message={`确定删除车间「${deleteTarget?.name || ''}」吗？删除后无法恢复。`}

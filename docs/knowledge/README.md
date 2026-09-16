@@ -1,6 +1,8 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.20`，schema 版本：`1.1.0`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.21`，schema 版本：`1.1.0`。
+
+`0.3.21` 增量记录所有主数据模块分模块推进的删除保护（`DEC-0053`）：存在阻断关联时拒绝删除，并展示关联记录、所属模块与处理位置；原权限、生命周期、版本所有权及生产历史保留契约继续适用。新规则保持 `specified/internal`，不表示全部模块已实现或已发布。实际引用覆盖、并发、权限和旧孤立数据兼容须逐模块验证，不新增强删或清空追溯记录的入口。
 
 `0.3.20` 增量记录个人表单查询（`DEC-0052`）：三个填报视图和两个审核视图按源当前资格、主动创建身份或本人结构化成功动作历史查询；仅保存不算已填，退回保留历史。权限为生产来源权限加对应个人入口权限，不依赖全局查看；历史详情只读，写动作继续由源引擎校验。复用原执行状态、history及审计，不新增任务表或日志表。旧自由文本历史不推测，新接口仅覆盖生产来源；页面、独立新建、转发、变更作废和DHR不在本切片中。知识保持 `implemented/internal`，不表示已发布。
 
@@ -118,7 +120,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.20" && schema.fetch("schemaVersion") == "1.1.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.21" && schema.fetch("schemaVersion") == "1.1.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

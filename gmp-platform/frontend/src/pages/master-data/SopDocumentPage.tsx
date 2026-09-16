@@ -174,6 +174,7 @@ export default function SopDocumentPage() {
       </AppDialog>
 
       <ConfirmDialog
+        deletionTarget={deleteTarget && { type: 'sop_document', id: deleteTarget.id }}
         open={deleteTarget !== null}
         message={`确定删除 SOP 文档「${deleteTarget?.title || deleteTarget?.code}」吗？此操作不可撤销。`}
         confirmText="删除"

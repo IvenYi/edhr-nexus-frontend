@@ -55,6 +55,7 @@ public class SopDocumentController {
     }
 
     @DeleteMapping("/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "sop_document", idArgument = 0)
     public ApiResponse<Void> delete(@PathVariable Long id) {
         sopDocumentRepository.deleteById(id);
         return ApiResponse.success(null);

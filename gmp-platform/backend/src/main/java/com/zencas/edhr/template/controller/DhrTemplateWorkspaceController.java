@@ -206,6 +206,7 @@ public class DhrTemplateWorkspaceController {
     }
 
     @DeleteMapping("/{templateId}/versions/{versionId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "dhr_template_version", idArgument = 1)
     @Transactional
     public ApiResponse<Void> deleteDhrTemplateVersion(@PathVariable Long templateId, @PathVariable Long versionId) {
         findTemplate(templateId);
@@ -265,6 +266,7 @@ public class DhrTemplateWorkspaceController {
     }
 
     @DeleteMapping("/{templateId}/versions/{versionId}/directories/{directoryId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "dhr_directory", idArgument = 2)
     @Transactional
     public ApiResponse<Void> deleteDhrDirectory(@PathVariable Long templateId, @PathVariable Long versionId, @PathVariable Long directoryId) {
         findTemplate(templateId);
@@ -331,6 +333,7 @@ public class DhrTemplateWorkspaceController {
     }
 
     @DeleteMapping("/{templateId}/versions/{versionId}/items/{itemId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "dhr_template_item", idArgument = 2)
     @Transactional
     public ApiResponse<Void> deleteDhrEvidenceItem(@PathVariable Long templateId, @PathVariable Long versionId, @PathVariable Long itemId) {
         findTemplate(templateId);

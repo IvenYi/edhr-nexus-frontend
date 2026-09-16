@@ -826,7 +826,7 @@ if (!documentUtils.includes('rowHeights')) failures.push('document utils: missin
 if (!documentUtils.includes("paperMode: 'table'")) failures.push('document utils: missing default paper mode');
 if (!documentUtils.includes("paperOrientation: 'portrait'")) failures.push('document utils: missing default paper orientation');
 if (!documentUtils.includes('paperMarginTopMm')) failures.push('document utils: missing paper margin normalization');
-if (!shell.includes('window.confirm')) failures.push('TemplateDesignerReactShell.tsx: missing dirty close confirmation');
+if (shell.includes('window.confirm') || !shell.includes('open={closeConfirmOpen}') || !shell.includes('if (isDirty())')) failures.push('TemplateDesignerReactShell.tsx: unsaved changes must use an in-app close confirmation');
 if (!shell.includes('markSaved')) failures.push('TemplateDesignerReactShell.tsx: missing markSaved usage after save');
 if (!shell.includes("setActiveTab('canvas')")) failures.push('TemplateDesignerReactShell.tsx: missing reset to canvas tab on entry');
 if (!shell.includes('height: 28')) failures.push('TemplateDesignerReactShell.tsx: missing back-area divider');
@@ -2055,7 +2055,7 @@ if (!mockFillDialog.includes('data-mock-fill-title-divider="true"')) failures.pu
 if (!mockFillDialog.includes('data-mock-fill-page-paper="true"')) failures.push('MockFillDialog.tsx: mock-fill pages must render a paper shell around the sheet');
 if (!mockFillDialog.includes('getMockFillPagePaperMetrics')) failures.push('MockFillDialog.tsx: mock-fill pages must calculate paper size and page margins');
 if (!mockFillDialog.includes('gridHeight = sumTrackSizes(rowCount')) failures.push('MockFillDialog.tsx: mock-fill paper height must include the rendered sheet height');
-if (!mockFillDialog.includes('gridWidth + insetLeft + insetRight')) failures.push('MockFillDialog.tsx: mock-fill paper width must include left and right page margins');
+if (!read('../src/pages/master-data/template-designer-react/utils/formPagePaper.ts').includes('gridWidth + insetLeft + insetRight')) failures.push('formPagePaper.ts: preview paper width must include left and right page margins');
 if (!mockFillDialog.includes("pl: `${paperMetrics.insetLeft}px`")) failures.push('MockFillDialog.tsx: mock-fill sheet must be inset from the left paper edge');
 if (!mockFillDialog.includes("pt: `${paperMetrics.insetTop}px`")) failures.push('MockFillDialog.tsx: mock-fill sheet must be inset from the top paper edge');
 if (!mockFillDialog.includes("boxShadow: '0 16px 40px rgba(30, 41, 59, 0.10)'")) failures.push('MockFillDialog.tsx: mock-fill page shadow must belong to the paper shell');

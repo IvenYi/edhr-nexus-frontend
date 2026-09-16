@@ -58,6 +58,7 @@ public class UnitController {
     }
 
     @DeleteMapping("/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "unit_of_measure", idArgument = 0)
     public ApiResponse<Void> delete(@PathVariable Long id) {
         unitOfMeasureRepository.deleteById(id);
         return ApiResponse.success(null);

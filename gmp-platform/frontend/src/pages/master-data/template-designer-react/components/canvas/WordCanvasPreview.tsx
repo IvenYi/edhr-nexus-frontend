@@ -78,7 +78,8 @@ function WordTablePreview({ table, nodes, legacyBorders, renderField }: {
   );
 }
 
-export default function WordCanvasPreview({ page, renderField }: {
+export default function WordCanvasPreview({ page, renderField, embedded = false }: {
+  embedded?: boolean;
   page: CanvasPage;
   renderField: (node: CanvasNode) => ReactNode;
 }) {
@@ -99,7 +100,7 @@ export default function WordCanvasPreview({ page, renderField }: {
   const height = Math.max(paperHeight, Math.ceil((top + contentHeight + bottom) / paperHeight) * paperHeight);
 
   return (
-    <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', bgcolor: '#eef3f8', p: 3 }}>
+    <Box sx={{ flex: embedded ? undefined : 1, minHeight: 0, overflow: embedded ? undefined : 'auto', bgcolor: '#eef3f8', p: embedded ? 0 : 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'center', minWidth: 'fit-content' }}>
         <Box data-word-preview-page={page.id} sx={{ position: 'relative', width: paperWidth, height, flexShrink: 0,
           bgcolor: '#fff', border: '1px solid #dde3ea', boxShadow: '0 8px 24px rgba(31, 41, 55, 0.08)' }}>
