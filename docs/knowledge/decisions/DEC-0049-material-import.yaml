@@ -14,9 +14,19 @@ decisions:
         statement: 品牌字段统一命名为 brandName，仍为选填；物料类型必填规则同样适用于导入。
         status: implemented
         visibility: internal
+      - id: DEC-0049-03
+        statement: 下载模板以 * 标注既有必填字段，并内置物料类型和物料用途的下拉选项及填写说明；旧无星号表头继续兼容，不改变导入校验、权限、逐行结果或审计事务边界。
+        status: implemented
+        visibility: internal
     supersedes: []
-    evidenceIds: [evidence.material-import-confirmed, evidence.material-import-service, evidence.material-import-controller, evidence.material-import-tests, evidence.material-import-brand-rename]
+    evidenceIds: [evidence.material-import-confirmed, evidence.material-import-service, evidence.material-import-controller, evidence.material-import-tests, evidence.material-import-brand-rename, evidence.material-import-type-seed-repair]
     acceptanceScenarios:
+      - id: scenario.material-import.template-guidance
+        given: 用户从物料管理下载 xlsx 模板
+        when: 打开模板并填写物料
+        then: 名称、料号、类型和版本表头有 *；类型和用途可从文件内置选项下拉选择，填写说明与既有导入规则一致；新旧表头均可解析
+        evidenceIds: [evidence.material-import-confirmed, evidence.material-import-service, evidence.material-import-tests]
+        evidenceRequirements: [生成文件的数据验证与选项结构检查, 新旧表头导入回归, 真实下载文件核验]
       - id: scenario.material-import.mixed-rows
         given: 标准工作簿包含合法新物料、重复料号和版本及缺少类型的行
         when: 用户执行导入

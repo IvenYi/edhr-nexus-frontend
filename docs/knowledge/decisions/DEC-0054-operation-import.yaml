@@ -1,0 +1,42 @@
+knowledgeModelVersion: 0.3.21
+decisions:
+  - id: DEC-0054
+    title: 工序模板下载与逐行数据导入
+    status: implemented
+    visibility: internal
+    context: 用户要求按照物料管理导入的标准在工序管理新增下载模板和导入数据，并明确恢复项目门禁继续实现。沿用 DEC-0049 的模板指引、逐行结果和异常事务边界，复用现有工序概念；不修改物料规则、既有工序、工艺路线或生产快照。七项字段映射、分类沿用新增逻辑建立、默认值及工时表达是主智能体依据现有工序表单作出的实现选择，不作为用户另行确认的通用业务规则。知识保持 implemented/internal，不表示发布级验收或运行时知识投影已完成。
+    decisionStatements:
+      - id: DEC-0054-01
+        statement: 工序支持标准 xlsx 模板下载，模板包含既有必填字段标记、示例、填写说明及分类和工序类型的内置下拉选项。
+        status: implemented
+        visibility: internal
+      - id: DEC-0054-02
+        statement: 单次最多导入 1000 条工序数据，校验必填字段、长度和字段取值；合法新工序保存，重复工序编码跳过，无效行返回行号与原因，并汇总成功、跳过和失败数量。
+        status: implemented
+        visibility: internal
+      - id: DEC-0054-03
+        statement: 成功新增的工序记录 CREATE 审计；数据库或审计异常使本批工序及伴随创建的分类整体回滚。导入完成后刷新工序列表及分类统计，逐行输入失败不等于基础设施异常下部分提交。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.operation-import-confirmed, evidence.operation-import-service, evidence.operation-import-controller, evidence.operation-import-tests, evidence.operation-import-integration-tests, evidence.operation-import-ui]
+    acceptanceScenarios:
+      - id: scenario.operation-import.template-guidance
+        given: 用户在工序管理下载标准模板
+        when: 打开文件并填写数据
+        then: 既有必填字段具有星号标记，分类和工序类型有内置下拉，示例和填写说明与导入校验一致
+        evidenceIds: [evidence.operation-import-service, evidence.operation-import-tests, evidence.operation-import-ui]
+        evidenceRequirements: [模板工作簿结构检查, 下载接口检查, 真实浏览器下载]
+      - id: scenario.operation-import.mixed-rows
+        given: 工作簿同时包含合法新工序、重复编码和非法行
+        when: 用户执行导入并重新读取列表
+        then: 只保存合法新工序并审计，准确汇总三类结果及失败行号原因；重复导入不重复新增，分类统计随列表刷新
+        evidenceIds: [evidence.operation-import-service, evidence.operation-import-controller, evidence.operation-import-tests, evidence.operation-import-ui]
+        evidenceRequirements: [聚焦解析测试, 接口及持久化检查, 审计检查, 真实浏览器导入结果]
+      - id: scenario.operation-import.transaction-rollback
+        given: 本批导入在持久化或审计阶段发生异常
+        when: 导入请求失败
+        then: 本批新工序、新分类和审计均不部分提交
+        evidenceIds: [evidence.operation-import-controller, evidence.operation-import-integration-tests]
+        evidenceRequirements: [数据库异常事务集成测试, 审计异常事务集成测试]
+    implementationDiscrepancies: []

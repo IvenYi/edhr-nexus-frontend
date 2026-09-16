@@ -183,3 +183,5 @@ databaseChangeLog:
       file: db/changelog/0085-record-form-management-menu.sql
   - include:
       file: db/changelog/0086-master-data-deletion-protection.sql
+  - include:
+      file: db/changelog/0087-restore-standard-material-types.sql

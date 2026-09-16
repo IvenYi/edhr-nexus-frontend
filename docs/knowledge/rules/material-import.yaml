@@ -16,5 +16,5 @@ rules:
       validRows: persist-new-materials
       duplicateRows: skip-code-and-version
       invalidRows: return-row-number-and-reason
-    explanation: 使用标准 xlsx 模板且不超过 1000 数据行后，逐行校验并保存合法新物料；料号和版本重复的合法行跳过，无效行返回行号及原因，汇总成功、跳过和失败结果。物料类型仍必填、品牌仍选填。输入校验的部分成功不承诺数据库或审计异常下部分提交，事务异常沿用整体回滚边界。
+    explanation: 使用标准 xlsx 模板且不超过 1000 数据行后，逐行校验并保存合法新物料；料号和版本重复的合法行跳过，无效行返回行号及原因，汇总成功、跳过和失败结果。物料类型仍必填、品牌仍选填。下载模板以 * 标注物料名称、物料料号、物料类型和物料版本四项既有必填字段，并内置物料类型与物料用途的下拉选项及填写说明；类型选项来自下载时的当前字典，旧无星号表头仍可导入。用途沿用选填且空值默认生产物料的实现，不因增加下拉而改为必填。输入校验的部分成功不承诺数据库或审计异常下部分提交，事务异常沿用整体回滚边界。
     evidenceIds: [evidence.material-import-confirmed, evidence.material-import-service, evidence.material-import-controller, evidence.material-import-tests]

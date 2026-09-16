@@ -1,0 +1,37 @@
+knowledgeModelVersion: 0.3.21
+evidence:
+  - id: evidence.operation-import-confirmed
+    type: document
+    path: docs/knowledge/evidence/operation-import-confirmed.md
+    description: user-confirmed 记录用户按物料标准新增工序模板和导入的要求及恢复门禁授权；字段映射、默认值和分类建立保持 inference，实现与验证证据分开说明。
+    visibility: internal
+  - id: evidence.operation-import-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/OperationImportService.java
+    description: original-evidence；工序工作簿生成、内置选项、文件及表头校验、1000 行上限、逐行校验、重复编码跳过和合法数据解析；源码存在不代表桌面 Excel 交互或发布验收。
+    visibility: internal
+  - id: evidence.operation-import-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    description: original-evidence；operations/import-template 与 operations/import 入口；新增工序及相关分类沿用现有新增逻辑，工序 CREATE 审计与保存共用事务。
+    visibility: internal
+  - id: evidence.operation-import-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/OperationImportServiceTest.java
+    description: original-evidence；工序模板及解析的聚焦回归入口；测试文件存在不等于执行通过，接口、持久化和异常事务证据需以相应集成检查为准。
+    visibility: internal
+  - id: evidence.operation-import-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/components/OperationImportActions.tsx
+    description: original-evidence；ProcessModelingPage 工序页接入此组件提供模板下载、文件上传、逐行结果反馈与列表及分类刷新；静态实现不作为浏览器已验证证据。
+    visibility: internal
+  - id: evidence.operation-import-integration-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/OperationImportIntegrationTest.java
+    description: original-evidence；隔离 MockMvc 与 H2 持久化测试覆盖模板、合法和非法混合行、重复跳过、分类、CREATE 审计、未认证拒绝及数据库和审计异常回滚；测试源码不代表运行通过，H2 不替代部署数据库或浏览器验收。
+    visibility: internal
+  - id: evidence.operation-import-ui-tests
+    type: test
+    path: gmp-platform/frontend/scripts/test-operation-import.mjs
+    description: original-evidence；隔离组件测试覆盖后缀校验、重复选择同一文件、提交状态、逐行结果排序与关闭、列表及分类查询刷新、下载文件名和错误反馈。React hooks、查询客户端及下载 DOM 使用替身，不能作为真实浏览器上传下载或页面视觉验收证据。
+    visibility: internal

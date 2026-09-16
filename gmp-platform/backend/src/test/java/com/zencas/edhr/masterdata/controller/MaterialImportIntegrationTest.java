@@ -62,6 +62,7 @@ class MaterialImportIntegrationTest {
     @Autowired JdbcTemplate jdbc;
     @SpyBean AuditEventRepository audits;
     @MockBean ProductRepository products;
+    @MockBean OperationImportService operationImport;
     @MockBean ProductFamilyRepository families;
     @MockBean OperationCategoryRepository categories;
     @MockBean OperationRepository operations;

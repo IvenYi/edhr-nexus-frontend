@@ -8,7 +8,7 @@ evidence:
   - id: evidence.material-import-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/MaterialImportService.java
-    description: original-evidence；模板从物料类型字典生成选项，工作簿限制、逐行校验、重复跳过与合法行保存的原始实现；不等同于运行验收。
+    description: original-evidence；createTemplate 从当前物料类型字典生成内置选项，既有四项必填表头加 *，类型与用途列具有可见下拉、错误提示及填写说明；validateHeaders 兼容旧表头。工作簿限制、逐行校验、用途选填默认值、重复跳过与合法行保存沿用原实现；不等同于运行验收或 Excel 桌面交互证明。
     visibility: internal
   - id: evidence.material-import-controller
     type: code
@@ -18,10 +18,15 @@ evidence:
   - id: evidence.material-import-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/MaterialImportServiceTest.java
-    description: original-evidence；模板、部分成功、去重、类型必填、品牌选填及日期等聚焦回归入口；测试源存在不表示运行通过。
+    description: original-evidence；模板必填表头、内置下拉数据验证、新旧表头兼容、部分成功、去重、类型必填、品牌选填及日期等聚焦回归入口；测试源存在不表示运行通过。
     visibility: internal
   - id: evidence.material-import-brand-rename
     type: database
     path: gmp-platform/backend/src/main/resources/db/changelog/0081-material-brand-name.sql
     description: original-evidence；追加品牌列重命名迁移，不修改已执行的 0078 迁移，历史值和空值保留须结合迁移验证。
+    visibility: internal
+  - id: evidence.material-import-type-seed-repair
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0087-restore-standard-material-types.sql
+    description: original-evidence；追加迁移按默认租户内名称或编码是否已存在补缺 0015 已定义的五项标准类型，任一匹配即保留，不覆盖已修改配置。精确 validCheckSum 兼容本轮本地已执行的旧版本。恢复缺失初始化数据属于实现修复选择，不表示用户新确认了不可扩展的固定类型清单，也不自动创建任意导入值；实际幂等与数据保留须以隔离迁移验证为准。
     visibility: internal
