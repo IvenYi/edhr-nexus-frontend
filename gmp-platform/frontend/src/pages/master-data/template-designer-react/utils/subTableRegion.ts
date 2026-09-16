@@ -78,7 +78,6 @@ function getRangeKey(range: CanvasSelectionRange) {
 
 function cloneSheetCell(cell: CanvasSheetCell): CanvasSheetCell {
   return {
-    ...(cell.value !== undefined ? { value: cell.value } : {}),
     ...(cell.style ? { style: { ...cell.style } } : {}),
     ...(cell.border ? { border: { ...cell.border } } : {}),
   };
@@ -114,6 +113,21 @@ export function buildSubTableRepeatedGroupSheetLayout(input: {
   const nextCells: Record<string, CanvasSheetCell> = { ...input.cells };
   const nextMergedCells = input.mergedCells.map(normalizeRange);
 
+  // Older designs can still contain imported text underneath field components.
+  const clearBoundCellText = (nodes: CanvasNode[]) => nodes.forEach((node) => {
+    const range = readNodeCellRange(node);
+    if (range && node.type !== 'sub-table' && (node.bindings?.fieldId || node.bindings?.subTableFieldId)) {
+      for (let row = range.t; row <= range.b; row += 1) {
+        for (let col = range.l; col <= range.r; col += 1) {
+          const key = getCellKey(row, col);
+          if (nextCells[key]) nextCells[key] = cloneSheetCell(nextCells[key]);
+        }
+      }
+    }
+    if (node.children?.length) clearBoundCellText(node.children);
+  });
+  clearBoundCellText(input.nodes);
+
   getSubTableNodes(input.nodes).forEach((node) => {
     const region = node.bindings?.subTableRegion;
     if (!region || region.repeat.type !== 'fixed') return;
@@ -130,10 +144,10 @@ export function buildSubTableRepeatedGroupSheetLayout(input: {
       for (let row = groupRange.t; row <= groupRange.b; row += 1) {
         for (let col = groupRange.l; col <= groupRange.r; col += 1) {
           const sourceCell = nextCells[getCellKey(row, col)];
-          if (!sourceCell) continue;
           const targetRow = repeatRange.t + (row - groupRange.t);
           const targetCol = repeatRange.l + (col - groupRange.l);
-          nextCells[getCellKey(targetRow, targetCol)] = cloneSheetCell(sourceCell);
+          const targetKey = getCellKey(targetRow, targetCol);
+          nextCells[targetKey] = cloneSheetCell(sourceCell ?? nextCells[targetKey] ?? {});
         }
       }
 

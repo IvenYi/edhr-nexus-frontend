@@ -2283,7 +2283,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     set((state) => pushDocumentHistory(state, {
       document: state.document
         ? updateCanvasPage(state.document, (page) => ({
-            ...page,
+            ...clearPageCellsInRange(page, layout.range ?? createSingleCellRange()),
             nodes: [
               ...removeCellFieldNodesFromTree(page.nodes, layout.range ?? createSingleCellRange()),
               node,
@@ -2345,7 +2345,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     set((state) => pushDocumentHistory(state, {
       document: state.document
         ? updateCanvasPage(state.document, (page) => ({
-            ...page,
+            ...clearPageCellsInRange(page, layout.range ?? createSingleCellRange()),
             nodes: reconcileSubTableRegionTemplates([
               ...removeSubTableFieldNodesFromTree(page.nodes, subTableId, layout.range ?? createSingleCellRange()),
               node,
@@ -2371,7 +2371,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     set((state) => pushDocumentHistory(state, {
       document: state.document
         ? updateCanvasPage(state.document, (page) => ({
-            ...page,
+            ...clearPageCellsInRange(page, layoutRange),
             nodes: [
               ...removeCellFieldNodesFromTree(page.nodes, layoutRange),
               node,
@@ -2397,7 +2397,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     set((state) => pushDocumentHistory(state, {
       document: state.document
         ? updateCanvasPage(state.document, (page) => ({
-            ...page,
+            ...clearPageCellsInRange(page, layoutRange),
             nodes: [
               ...removeCellFieldNodesFromTree(page.nodes, layoutRange),
               node,
@@ -2438,7 +2438,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         ...document,
         model: { ...document.model, fields: [...document.model.fields, field] },
       }, (currentPage) => ({
-        ...currentPage,
+        ...clearPageCellsInRange(currentPage, layoutRange),
         nodes: [...removeCellFieldNodesFromTree(currentPage.nodes, layoutRange), node],
       })),
       selectedFieldId: field.id,
@@ -3152,7 +3152,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
           : removeCellFieldNodesFromTree(nodesWithoutSource, targetRange);
 
         return {
-          ...page,
+          ...clearPageCellsInRange(page, targetRange),
           nodes: reconcileSubTableRegionTemplates([
             ...nodesWithoutTarget,
             pastedNode,

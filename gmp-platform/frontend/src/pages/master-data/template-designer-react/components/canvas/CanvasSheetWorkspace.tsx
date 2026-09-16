@@ -2940,8 +2940,6 @@ export default function CanvasSheetWorkspace() {
       const isHovered = hoveredSubTableNodeId === node.id;
       const isSubTableFocused = Boolean(isSelected && normalizedRange && rangesEqual(normalizedRange, normalizedRegionRange));
       const shouldShowSubTableLabel = isHovered || isSubTableFocused;
-      const subTableLabelHeight = Math.max(0, Math.min(24, regionLayout.height - 4));
-      const subTableLabelTopOffset = Math.min(6, Math.max(0, regionLayout.height - subTableLabelHeight));
 
       return (
         <Box key={`sub-table-overlay-${node.id}`} sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: SUB_TABLE_OVERLAY_Z_INDEX }}>
@@ -2959,56 +2957,110 @@ export default function CanvasSheetWorkspace() {
             }}
           />
           <Box
-            data-canvas-sub-table-hover-label="true"
-            onClick={(event) => {
-              event.stopPropagation();
-              setSelectedRange(normalizedRegionRange, { row: normalizedRegionRange.t, col: normalizedRegionRange.l });
-              setSelectedNodeId(node.id);
-              setActiveCanvasRail('config');
-            }}
+            data-canvas-sub-table-label-bar="true"
+            onMouseMove={(event) => event.stopPropagation()}
             sx={{
               position: 'absolute',
-              top: regionLayout.top + subTableLabelTopOffset,
-              left: regionLayout.left + regionLayout.width - 8,
+              top: Math.max(0, regionLayout.top - 34),
+              left: regionLayout.left + regionLayout.width,
               transform: 'translateX(-100%)',
-              minWidth: 44,
-              maxWidth: 112,
-              height: subTableLabelHeight,
-              px: 1,
-              py: 0,
-              borderRadius: 1,
-              bgcolor: '#8b5cf6',
-              color: '#fff',
-              fontSize: 12,
-              fontWeight: 600,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              overflow: 'hidden',
-              cursor: 'pointer',
+              gap: '4px',
+              p: '3px',
+              maxWidth: regionLayout.width,
+              boxSizing: 'border-box',
+              border: '1px solid #e2d9f3',
+              borderRadius: '8px',
+              bgcolor: '#fff',
+              boxShadow: '0 3px 10px rgba(30, 41, 59, 0.10)',
               opacity: shouldShowSubTableLabel ? 1 : 0,
               pointerEvents: shouldShowSubTableLabel ? 'auto' : 'none',
               transition: 'opacity 120ms ease',
-              boxShadow: '0 6px 16px rgba(139, 92, 246, 0.22)',
+              '&:focus-within': { opacity: 1, pointerEvents: 'auto' },
             }}
           >
             <Box
-              component="span"
-              data-canvas-sub-table-hover-label-text="true"
+              component="button"
+              type="button"
+              title={subTableLabel}
+              data-canvas-sub-table-hover-label="true"
+              onClick={(event) => {
+                event.stopPropagation();
+                setSelectedRange(normalizedRegionRange, { row: normalizedRegionRange.t, col: normalizedRegionRange.l });
+                setSelectedNodeId(node.id);
+                setActiveCanvasRail('config');
+              }}
               sx={{
-                display: 'block',
-                maxWidth: '100%',
+                minWidth: 0,
+                maxWidth: 112,
+                height: 24,
+                border: 0,
+                px: 1,
+                py: 0,
+                borderRadius: 1,
+                bgcolor: '#f3edff',
+                color: '#6d28d9',
+                fontSize: 12,
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                lineHeight: `${subTableLabelHeight}px`,
+                cursor: 'pointer',
+                '&:hover': { bgcolor: '#e9ddff' },
               }}
             >
-              {subTableLabel}
+              <Box
+                component="span"
+                data-canvas-sub-table-hover-label-text="true"
+                sx={{
+                  display: 'block',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  lineHeight: '24px',
+                }}
+              >
+                {subTableLabel}
+              </Box>
             </Box>
+            {groupLayout ? (
+              <Box
+                component="button"
+                type="button"
+                data-canvas-sub-table-group-label="true"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  selectSubTableGroup(node.id);
+                }}
+                sx={{
+                  flexShrink: 0,
+                  height: 24,
+                  border: 0,
+                  borderRadius: 1,
+                  px: 1,
+                  lineHeight: '24px',
+                  bgcolor: '#fff7e6',
+                  color: '#a65b00',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: '#ffedc2' },
+                }}
+              >
+                {'分组'}
+              </Box>
+            ) : null}
           </Box>
           {repeatedGroupRanges.map((repeatRange, index) => {
             const repeatLayout = getFieldDropCellLayout(repeatRange);
+            const repeatInset = Math.min(SUB_TABLE_GROUP_REPEAT_INSET, repeatLayout.height / 8, repeatLayout.width / 8);
+            const repeatIndexFontSize = Math.max(1, Math.min(20,
+              (repeatLayout.height - repeatInset * 2) / 1.2,
+              (repeatLayout.width - repeatInset * 2 - 8) / String(index + 1).length,
+            ));
             return (
               <Box
                 key={`sub-table-group-repeat-${node.id}-${index}`}
@@ -3019,7 +3071,6 @@ export default function CanvasSheetWorkspace() {
                   left: repeatLayout.left,
                   width: repeatLayout.width,
                   height: repeatLayout.height,
-                  minHeight: 24,
                   boxSizing: 'border-box',
                 }}
               >
@@ -3027,7 +3078,7 @@ export default function CanvasSheetWorkspace() {
                   data-canvas-sub-table-group-repeat-fill="true"
                   sx={{
                     position: 'absolute',
-                    inset: SUB_TABLE_GROUP_REPEAT_INSET,
+                    inset: repeatInset,
                     bgcolor: 'rgba(148, 163, 184, 0.14)',
                     boxSizing: 'border-box',
                     overflow: 'hidden',
@@ -3037,12 +3088,14 @@ export default function CanvasSheetWorkspace() {
                     data-canvas-sub-table-group-repeat-index="true"
                     sx={{
                       position: 'absolute',
-                      right: 8,
-                      bottom: 4,
-                      color: 'rgba(100, 116, 139, 0.24)',
-                      fontSize: 28,
-                      lineHeight: '32px',
-                      fontWeight: 700,
+                      right: 4,
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      color: 'rgba(100, 116, 139, 0.5)',
+                      fontSize: repeatIndexFontSize,
+                      lineHeight: 1.2,
+                      fontWeight: 600,
+                      fontVariantNumeric: 'tabular-nums',
                     }}
                   >
                     {index + 1}
@@ -3060,39 +3113,11 @@ export default function CanvasSheetWorkspace() {
                 left: groupLayout.left,
                 width: groupLayout.width,
                 height: groupLayout.height,
-                minHeight: 24,
                 border: '2px dashed #f59e0b',
                 bgcolor: 'rgba(245, 158, 11, 0.08)',
                 boxSizing: 'border-box',
               }}
-            >
-              <Box
-                component="button"
-                type="button"
-                data-canvas-sub-table-group-label="true"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  selectSubTableGroup(node.id);
-                }}
-                sx={{
-                  position: 'absolute',
-                  top: -2,
-                  right: -2,
-                  height: 24,
-                  border: 0,
-                  px: 0.75,
-                  lineHeight: '24px',
-                  bgcolor: '#f59e0b',
-                  color: '#fff',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  pointerEvents: 'auto',
-                }}
-              >
-                {'分组'}
-              </Box>
-            </Box>
+            />
           ) : null}
         </Box>
       );

@@ -15,3 +15,13 @@ evidence:
     path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx
     description: original-evidence；2026-09-15 实现前核对 reportRows 为固定空数组，系统记录首列、查询及冻结详情需要新增真实数据关联；此证据只记录原缺口，不声称当前工作树尚未修改或已经通过运行验证。
     visibility: internal
+  - id: evidence.form-instance-number-unified-scenarios
+    type: document
+    path: docs/knowledge/evidence/form-instance-number-user-confirmed.md
+    description: user-confirmed；DEC-PACKAGE-20260915-INSTANCE-SCENARIOS 补充不预选模板的全局授权实例目录及模板名称编码版本、创建人时间等元数据，按工单批次等业务条件关联检索并选择具体实例发起变更，以及覆盖生产、设备点检、清场和独立发起等所有来源的统一管理。只确认业务场景，不确认具体 DTO/API、来源枚举或修订沿号方案，尚未作为实现或发布证据。
+    visibility: internal
+  - id: evidence.form-instance-number-query-context-gap
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    description: original-evidence；2026-09-15 working-tree 核对 list/detail 强制 templateId，saved 只从生产执行快照建立索引，row 未返回生产来源标识或模板名称编码版本标签。ExecutionSnapshotBuilder.build 保留工单与批次或 SN 的 context，form 保留模板名称编码版本；ProductionObject.workOrderId 记录生产对象所属工单。上述源码提供来源线索，不证明全局目录、关联检索或非生产接入已经实现。
+    visibility: internal

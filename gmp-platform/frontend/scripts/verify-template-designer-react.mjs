@@ -485,6 +485,7 @@ async function verifySubTableGroupRepeatBehavior() {
       cells: {
         '1:1': { value: 'AAA', style: { fontSize: 16 } },
         '2:1': { value: '检验项目' },
+        '4:4': { value: '旧的检验结果', border: { bottom: true } },
       },
       mergedCells: [{ t: 1, l: 1, b: 1, r: 2 }],
       nodes: [{
@@ -518,11 +519,57 @@ async function verifySubTableGroupRepeatBehavior() {
         },
       }],
     });
-    assert(repeatedLayout.cells['1:3']?.value === 'AAA', 'subTableRegion.ts: row repeated groups must copy merged-cell text to the next group');
-    assert(repeatedLayout.cells['3:1']?.value === 'AAA', 'subTableRegion.ts: row repeated groups must copy merged-cell text after wrapping downward');
+    assert(!repeatedLayout.cells['1:3']?.value && !repeatedLayout.cells['3:1']?.value, 'subTableRegion.ts: repeated placeholders must not copy template text');
+    assert(!repeatedLayout.cells['4:4']?.value, 'subTableRegion.ts: empty source cells must also clear old repeated placeholder text');
+    assert(repeatedLayout.cells['1:1']?.value === 'AAA' && repeatedLayout.cells['1:3']?.style?.fontSize === 16, 'subTableRegion.ts: preserve template text and repeat formatting');
     assert(repeatedLayout.mergedCells.some((range) => JSON.stringify(range) === JSON.stringify({ t: 1, l: 3, b: 1, r: 4 })), 'subTableRegion.ts: row repeated groups must copy merged-cell ranges to the next group');
     assert(repeatedLayout.mergedCells.some((range) => JSON.stringify(range) === JSON.stringify({ t: 3, l: 1, b: 3, r: 2 })), 'subTableRegion.ts: row repeated groups must copy merged-cell ranges after wrapping downward');
   }
+}
+
+async function verifyCellFieldTextReplacement() {
+  const { useTemplateDesignerStore: store } = await loadTemplateDesignerStore();
+  const field = { id: 'result', code: 'result', name: '结果', type: 'text', sortOrder: 1, status: 'enabled', typeConfig: {} };
+  const range = { t: 2, l: 1, b: 3, r: 2 };
+  const layout = { left: 0, top: 24, width: 160, height: 48, range };
+  const createDocument = () => ({
+    meta: { schema: 'edhr-template-designer-react', version: 1, templateId: 'test', versionId: 'test' },
+    model: { groups: [], fields: [field, { ...field, id: 'table', code: 'table', name: '检验记录', type: 'subTable' }] },
+    canvas: { currentPageId: 'page-1', pages: [{
+      id: 'page-1', name: '第 1 页', nodes: [], sheet: {},
+      cells: { '1:1': { value: '表头' }, '2:1': { value: '旧文字', style: { color: '#123456' }, border: { bottom: true } }, '3:2': { value: '旧结果' } },
+      mergedCells: [{ t: 2, l: 1, b: 2, r: 2 }], medias: [], images: [],
+    }] },
+    workflow: { nodes: [], edges: [], config: {} },
+  });
+  const actions = [
+    () => store.getState().addNodeFromFieldToCell('result', layout),
+    () => store.getState().addNodeFromFieldToRange('result', range, layout),
+    () => store.getState().addNodeFromSubTableFieldToCell('table', field, layout),
+    () => store.getState().addSubTableRegionFromFieldToRange('table', range, layout),
+    () => store.getState().createSubTableFromRange('新子表', range, layout),
+    () => store.getState().pasteFieldNodeToCell({ id: 'pasted-field', type: 'input', style: { cellRange: range }, props: {}, bindings: { fieldId: field.id } }, layout),
+  ];
+  for (const action of actions) {
+    store.getState().setDocument(createDocument());
+    action();
+    const page = store.getState().getCurrentPage();
+    assert(!page.cells['2:1']?.value && !page.cells['3:2']?.value, 'store: inserting fields or fixed sub-tables must clear text throughout the target range');
+    assert(page.cells['1:1'].value === '表头' && page.cells['2:1'].style.color === '#123456' && page.cells['2:1'].border.bottom, 'store: field replacement must preserve outside text and target formatting');
+    assert(page.mergedCells.length === 1 && page.nodes.length === 1, 'store: replacement must retain merges and add the field');
+    store.getState().undoCanvasChange();
+    assert(store.getState().getCurrentPage().cells['2:1'].value === '旧文字' && store.getState().getCurrentPage().nodes.length === 0, 'store: one undo must restore text and remove the inserted node');
+    store.getState().redoCanvasChange();
+    assert(!store.getState().getCurrentPage().cells['2:1']?.value && store.getState().getCurrentPage().nodes.length === 1, 'store: redo must reapply replacement atomically');
+  }
+  const { buildSubTableRepeatedGroupSheetLayout } = await loadSubTableRegionUtils();
+  const original = createDocument().canvas.pages[0];
+  const loaded = JSON.parse(JSON.stringify({ ...original, nodes: [{
+    id: 'existing-field', type: 'input', style: { cellRange: range }, props: {}, bindings: { fieldId: field.id },
+  }] }));
+  const rendered = buildSubTableRepeatedGroupSheetLayout(loaded);
+  assert(!rendered.cells['2:1']?.value && rendered.cells['1:1'].value === '表头', 'layout: existing saved field bindings must also suppress underlying text');
+  assert(loaded.cells['2:1'].value === '旧文字', 'layout: displaying old documents must not mutate persisted source cells');
 }
 
 const packageJson = read('../package.json');
@@ -1930,16 +1977,9 @@ if (!canvasWorkspace.includes('rangesEqual(normalizedRange, normalizedRegionRang
 if (subTableHoverLabelBlock.indexOf('setSelectedRange(normalizedRegionRange') > subTableHoverLabelBlock.indexOf('setSelectedNodeId(node.id)')) failures.push('CanvasSheetWorkspace.tsx: clicking the sub-table identifier must keep the sub-table selected after setting its range');
 if (!canvasWorkspace.includes('scheduleHoveredSubTableUpdate(findCellRangeAtClientPoint(event.clientX, event.clientY))')) failures.push('CanvasSheetWorkspace.tsx: sub-table hover state must clear when the pointer moves outside sub-table cells');
 if (!canvasWorkspace.includes('data-canvas-sub-table-hover-label-text="true"')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier text must use a constrained text box');
-if (!subTableHoverLabelBlock.includes('minWidth: 44')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must render as a readable horizontal badge');
-if (!canvasWorkspace.includes('const subTableLabelHeight = Math.max(0, Math.min(24, regionLayout.height - 4))')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier height must be clamped by the current row height');
-if (!canvasWorkspace.includes('const subTableLabelTopOffset = Math.min(6, Math.max(0, regionLayout.height - subTableLabelHeight))')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must stay anchored at the table top-right without overflowing short rows');
-if (canvasWorkspace.includes('Math.round((regionLayout.height - subTableLabelHeight) / 2)')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must not be vertically centered on the table edge');
-if (!subTableHoverLabelBlock.includes('height: subTableLabelHeight')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must use the clamped row-safe height');
-if (!subTableHoverLabelBlock.includes('top: regionLayout.top + subTableLabelTopOffset')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must use the top-right offset');
 if (!subTableHoverLabelBlock.includes("cursor: 'pointer'")) failures.push('CanvasSheetWorkspace.tsx: clickable sub-table identifier must show a pointer cursor on hover');
 if (!subTableHoverLabelBlock.includes('maxWidth: 112')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must constrain long horizontal labels');
 if (!subTableHoverLabelBlock.includes("whiteSpace: 'nowrap'")) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier text must stay horizontal');
-if (!subTableHoverLabelBlock.includes('lineHeight: `${subTableLabelHeight}px`')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier line-height must follow the clamped row-safe height');
 if (!subTableHoverLabelBlock.includes("textOverflow: 'ellipsis'")) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier text must truncate instead of overflowing the badge background');
 if (subTableHoverLabelBlock.includes('subTableLabelChars')) failures.push('CanvasSheetWorkspace.tsx: sub-table identifier must not split the table name into vertical characters');
 if (!componentRegistry.includes('data-canvas-sub-table-connector="true"')) failures.push('componentRegistry.tsx: sub-table identifier must be connected by a dashed line');
@@ -2735,6 +2775,7 @@ if (!workflowTab.includes('节点名称')) failures.push('WorkflowTab.tsx: missi
 
 await verifyExcelImportStyleBehavior();
 await verifySubTableGroupRepeatBehavior();
+await verifyCellFieldTextReplacement();
 await verifyCommonComponentBehavior();
 await verifyWordTableContextMenuOperations();
 await verifyWordTableLayoutBehavior();

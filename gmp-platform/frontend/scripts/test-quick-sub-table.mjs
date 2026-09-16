@@ -46,7 +46,7 @@ test('creates a named sub-table and binds the selected region in one undoable op
   assert.equal(page.nodes[0].bindings.fieldId, field.id);
   assert.deepEqual(page.nodes[0].style.cellRange, range);
   assert.deepEqual(page.nodes[0].bindings.subTableRegion.ranges[0].range, range);
-  assert.deepEqual(page.cells, before.canvas.pages[0].cells);
+  assert.deepEqual(page.cells, { '2:2': { style: { fontWeight: 'bold' } } });
   assert.deepEqual(page.mergedCells, before.canvas.pages[0].mergedCells);
   assert.equal(store.getState().undoStack.length, 1);
   store.getState().undoCanvasChange();

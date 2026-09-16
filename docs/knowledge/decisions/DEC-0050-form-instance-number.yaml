@@ -14,8 +14,20 @@ decisions:
         statement: 实例号是记录列表固定首列，支持查询、复制和点击详情，不属于可编辑业务字段；详情关联实际使用的冻结模板内容、名称和版本，模板后续发布不改变历史实例身份。
         status: specified
         visibility: internal
+      - id: DEC-0050-03
+        statement: user-confirmed；统一表单实例列表支持不先选择模板而跨模板查询当前用户有权访问的全部实例，并提供实例号、模板名称、模板编码、实际使用的模板版本、创建人和创建时间等列表所需元数据；不能要求列表调用方逐个模板拼接查询结果。
+        status: specified
+        visibility: internal
+      - id: DEC-0050-04
+        statement: user-confirmed；表单变更管理支持按工单、批次及其他已支持的业务查询条件检索具有关联关系且当前用户有权访问的实例，再选择具体实例发起表单变更；关联定位不依赖从实例号推算内部 ID，变更资格、申请、修订和审核继续遵守 DEC-0037。
+        status: specified
+        visibility: internal
+      - id: DEC-0050-05
+        statement: user-confirmed；表单实例采用覆盖所有来源的统一管理，范围包含生产、设备点检、清场及独立发起等来源，不得将统一实例目录限定为生产执行表单；具体来源接入尚待实现，来源枚举、接口字段和技术适配方案另行设计。
+        status: specified
+        visibility: internal
     supersedes: []
-    evidenceIds: [evidence.form-instance-number-user-decision, evidence.form-instance-number-source-boundary, evidence.form-instance-number-list-boundary]
+    evidenceIds: [evidence.form-instance-number-user-decision, evidence.form-instance-number-source-boundary, evidence.form-instance-number-list-boundary, evidence.form-instance-number-unified-scenarios, evidence.form-instance-number-query-context-gap]
     acceptanceScenarios:
       - id: scenario.form-instance-number
         given: 同一模板下已保存多份独立表单记录
@@ -29,3 +41,15 @@ decisions:
         then: 保留原执行数据和快照，缺少来源时不编造原创建人时间，新增基线可追溯且重复执行不重编实例号
         evidenceIds: [evidence.form-instance-number-user-decision]
         evidenceRequirements: [历史补充幂等测试, 数据与审计前后比对]
+      - id: scenario.form-instance-global-directory
+        given: 不同模板和不同来源存在已保存实例，用户只拥有其中一部分实例的访问权限
+        when: 用户打开统一表单实例列表且未选择模板
+        then: 能分页查询有权范围内各来源和各模板的实例，并展示实例号、模板名称编码版本、创建人和创建时间；未授权实例不暴露
+        evidenceIds: [evidence.form-instance-number-unified-scenarios]
+        evidenceRequirements: [跨模板跨来源目录测试, 元数据与冻结模板核对, 查询权限隔离测试]
+      - id: scenario.form-instance-business-context-selection
+        given: 一个工单或批次关联多份表单实例
+        when: 用户通过工单或批次条件检索并选择一份实例发起变更
+        then: 返回真实关联且有权访问的实例，并将所选具体实例交给变更域按 DEC-0037 校验和处理，不按实例号推算来源 ID
+        evidenceIds: [evidence.form-instance-number-unified-scenarios]
+        evidenceRequirements: [关联检索测试, 多实例精确选择测试, 来源授权与变更资格测试]
