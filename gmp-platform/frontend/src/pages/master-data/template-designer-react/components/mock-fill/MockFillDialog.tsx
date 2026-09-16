@@ -24,6 +24,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
 import { getFilePreviewBlob } from '@/api/files';
 import { verifyCurrentUserSignaturePassword } from '@/api/identity';
@@ -661,17 +662,10 @@ function renderMockFillControl({
         }}
       >
         {signatureValue ? (
-          <Box
-            component="img"
-            data-mock-fill-signature-image="true"
-            src={signatureValue.signatureImageObjectUrl || signatureValue.signatureImageUrl}
-            alt={signatureValue.signerName ? `${signatureValue.signerName}电子签名` : '电子签名'}
-            sx={{
-              display: 'block',
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-            }}
+          <SignatureDisplay
+            value={signatureValue}
+            displayMode={readConfig('signatureDisplayMode', 'signatureOnly')}
+            imageMarker="data-mock-fill-signature-image"
           />
         ) : '点击签名'}
       </Button>,

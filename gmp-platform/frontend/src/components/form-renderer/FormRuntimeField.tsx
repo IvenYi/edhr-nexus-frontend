@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Alert, Autocomplete, Box, Button, IconButton, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { AddRounded, DeleteOutlineRounded, UploadFileRounded } from '@mui/icons-material';
 import type { ModelField } from '@/pages/master-data/template-designer-react/types';
+import SignatureDisplay from './SignatureDisplay';
+import { readSignaturePresentation } from './signaturePresentation';
 
 export interface FormRuntime {
   values: Record<string, unknown>;
@@ -11,9 +13,11 @@ export interface FormRuntime {
   references?: (fieldId: string, keyword: string) => Promise<Array<{ id: string; name: string }>>;
 }
 export const FormRuntimeContext = createContext<FormRuntime | undefined>(undefined);
+export const SignatureDisplayModeContext = createContext<Record<string, unknown>>({});
 
-export function FormRuntimeField({ field, readOnly = false }: { field: ModelField; readOnly?: boolean }) {
+export function FormRuntimeField({ field, readOnly = false, signatureDisplayMode }: { field: ModelField; readOnly?: boolean; signatureDisplayMode?: unknown }) {
   const runtime = useContext(FormRuntimeContext);
+  const signatureDisplayModes = useContext(SignatureDisplayModeContext);
   if (!runtime) return null;
   const value = runtime.values[field.id] ?? '';
   const config = field.typeConfig ?? {};
@@ -31,7 +35,9 @@ export function FormRuntimeField({ field, readOnly = false }: { field: ModelFiel
       {options.map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
     </TextField>;
   }
-  if (field.type === 'signature') return <Typography variant="body2" color="text.secondary">{String(value || '执行签署动作后自动记录')}</Typography>;
+  if (field.type === 'signature') return readSignaturePresentation(value)
+    ? <SignatureDisplay value={value} displayMode={signatureDisplayMode ?? signatureDisplayModes[field.id] ?? config.signatureDisplayMode} />
+    : <Typography variant="body2" color="text.secondary">执行签署动作后自动记录</Typography>;
   if (field.type === 'subTable') return <RuntimeSubTable field={field} disabled={Boolean(disabled)} runtime={runtime} />;
   if (field.type === 'reference') return <RuntimeReference field={field} disabled={Boolean(disabled)} runtime={runtime} />;
   if (field.type === 'attachment' || field.type === 'image') return <RuntimeFiles field={field} disabled={Boolean(disabled)} runtime={runtime} />;

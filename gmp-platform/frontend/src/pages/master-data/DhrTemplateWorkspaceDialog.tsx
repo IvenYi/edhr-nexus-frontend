@@ -42,7 +42,7 @@ import {
 } from "@mui/material";
 import TableStateCell from '@/components/TableStateCell';
 import AppDialog from "@/components/AppDialog";
-import { FormRuntimeContext, FormRuntimeField, type FormRuntime } from '@/components/form-renderer/FormRuntimeField';
+import { FormRuntimeContext, FormRuntimeField, SignatureDisplayModeContext, type FormRuntime } from '@/components/form-renderer/FormRuntimeField';
 import StatusBadge from "@/components/StatusBadge";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -629,7 +629,7 @@ function PreviewField({
         "&:hover .preview-field-actions": { opacity: 1 },
       }}
     >
-      {runtime && field ? <FormRuntimeField field={field} readOnly={readOnly} /> : placeholder || label}
+      {runtime && field ? <FormRuntimeField field={field} readOnly={readOnly} signatureDisplayMode={node.bindings?.widgetConfig?.signatureDisplayMode} /> : placeholder || label}
       <PreviewFieldActionBar fieldId={fieldId} actions={actions} />
     </Box>
   );
@@ -1017,6 +1017,13 @@ export function FormCanvasPreview({
   layout?: 'canvas' | 'fields';
 }) {
   const [pageId, setPageId] = useState(document.canvas.currentPageId);
+  const signatureDisplayModes = useMemo(() => Object.fromEntries(
+    document.canvas.pages.flatMap((entry) => flattenCanvasNodes(entry.nodes)).flatMap((node) => {
+      const fieldId = node.bindings?.subTableFieldId ?? node.bindings?.fieldId;
+      const mode = node.bindings?.widgetConfig?.signatureDisplayMode;
+      return fieldId && mode ? [[fieldId, mode]] : [];
+    }),
+  ), [document.canvas.pages]);
   useEffect(() => setPageId(document.canvas.currentPageId), [document]);
   const page =
     document.canvas.pages.find((entry) => entry.id === pageId) ??
@@ -1026,7 +1033,7 @@ export function FormCanvasPreview({
     (Object.keys(page.cells).length || page.nodes.length || page.images.length),
   );
   return (
-    <FormRuntimeContext.Provider value={runtime}><Box
+    <SignatureDisplayModeContext.Provider value={signatureDisplayModes}><FormRuntimeContext.Provider value={runtime}><Box
       sx={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}
     >
       {document.canvas.pages.length > 1 ? (
@@ -1071,7 +1078,7 @@ export function FormCanvasPreview({
           interaction={interaction}
         />
       )}
-    </Box></FormRuntimeContext.Provider>
+    </Box></FormRuntimeContext.Provider></SignatureDisplayModeContext.Provider>
   );
 }
 

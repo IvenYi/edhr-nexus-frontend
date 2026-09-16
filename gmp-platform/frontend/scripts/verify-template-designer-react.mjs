@@ -2104,7 +2104,7 @@ if (mockFillDialog.includes("'已签名'") || mockFillDialog.includes('>已签�
 if (!mockFillDialog.includes('data-mock-fill-signature-dialog="true"')) failures.push('MockFillDialog.tsx: mock-fill signature confirmation dialog must expose a stable marker');
 if (!mockFillDialog.includes('data-mock-fill-signature-password="true"')) failures.push('MockFillDialog.tsx: mock-fill signature dialog must require an electronic signature password input');
 if (!mockFillDialog.includes('await verifyCurrentUserSignaturePassword')) failures.push('MockFillDialog.tsx: mock-fill signature dialog must verify against the backend before writing a signature value');
-if (!mockFillDialog.includes('data-mock-fill-signature-image="true"')) failures.push('MockFillDialog.tsx: verified mock-fill signatures must render the authorized signature image');
+if (!mockFillDialog.includes('imageMarker="data-mock-fill-signature-image"')) failures.push('MockFillDialog.tsx: verified mock-fill signatures must render the authorized signature image');
 if (!mockFillDialog.includes('signatureImageUrl')) failures.push('MockFillDialog.tsx: verified mock-fill signature values must carry the backend signature image URL');
 if (!mockFillDialog.includes("import { getFilePreviewBlob } from '@/api/files'")) failures.push('MockFillDialog.tsx: verified signature images must be loaded through the authenticated file preview API');
 if (!mockFillDialog.includes('URL.createObjectURL')) failures.push('MockFillDialog.tsx: verified signature image blobs must be converted to object URLs before rendering');
@@ -2112,7 +2112,7 @@ if (!mockFillDialog.includes('signatureImageObjectUrl')) failures.push('MockFill
 if (!mockFillDialog.includes('URL.revokeObjectURL')) failures.push('MockFillDialog.tsx: verified signature image object URLs must be released when reset or closed');
 if (!apiClient.includes("response.config.responseType === 'blob'")) failures.push('client.ts: blob responses must bypass ApiResponse JSON code checks');
 if (!mockFillDialog.includes("'Request failed'")) failures.push('MockFillDialog.tsx: generic request failures must be replaced with readable signature error text');
-if (!mockFillSignatureControlBlock.includes("objectFit: 'contain'")) failures.push('MockFillDialog.tsx: verified signature images must fit inside the signature cell');
+if (!mockFillSignatureControlBlock.includes('<SignatureDisplay') || !read('../src/components/form-renderer/SignatureDisplay.tsx').includes("objectFit: 'contain'")) failures.push('SignatureDisplay.tsx: verified signature images must fit inside the signature cell');
 if (!mockFillDialog.includes('type="datetime-local"')) failures.push('MockFillDialog.tsx: date-time fields must use a fillable date-time input');
 if (!mockFillDialog.includes('data-mock-fill-date-control="true"')) failures.push('MockFillDialog.tsx: date-time fields must expose a stretched date control marker');
 if (!mockFillDialog.includes('dateTextFieldSx')) failures.push('MockFillDialog.tsx: date-time fields must use a dedicated full-height input style');
