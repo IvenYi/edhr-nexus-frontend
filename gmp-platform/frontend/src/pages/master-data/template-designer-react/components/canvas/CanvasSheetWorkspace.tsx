@@ -9,6 +9,7 @@ import {
 import { flushSync } from 'react-dom';
 import AddRounded from '@mui/icons-material/AddRounded';
 import CloseRounded from '@mui/icons-material/CloseRounded';
+import ContentCopyRounded from '@mui/icons-material/ContentCopyRounded';
 import DeleteOutlineRounded from '@mui/icons-material/DeleteOutlineRounded';
 import DragIndicatorRounded from '@mui/icons-material/DragIndicatorRounded';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
@@ -28,6 +29,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  Tooltip,
   TableHead,
   TableRow,
   TextField,
@@ -1741,6 +1743,29 @@ export default function CanvasSheetWorkspace() {
       if (!target || !freeCanvasBodyRef.current?.contains(target)) return;
       if (target?.closest('[contenteditable="true"], input, textarea, select')) return;
 
+      if (wordTableCellRange?.blockId === selectedWordTableBlockId) {
+        const page = useTemplateDesignerStore.getState().getCurrentPage();
+        const wordDocument = page?.wordDocument;
+        const table = wordDocument?.blocks.find((block) => block.id === selectedWordTableBlockId && block.type === 'table');
+        if (!page || !wordDocument || table?.type !== 'table') return;
+        event.preventDefault();
+        const ranges = [wordTableCellRange, ...wordTableAdditionalCellRanges.filter((range) => range.blockId === table.id)];
+        const cellIds = new Set(table.cells.filter((cell) => ranges.some((range) => isWordTableCellInRange(cell, range))).map((cell) => cell.id));
+        updateCurrentPage({
+          wordDocument: {
+            ...wordDocument,
+            blocks: wordDocument.blocks.map((block) => block.id === table.id
+              ? { ...table, cells: table.cells.map((cell) => cellIds.has(cell.id) ? { ...cell, text: '' } : cell) }
+              : block),
+          },
+          nodes: page.nodes.filter((node) => {
+            const cell = node.style.wordTableCell as { blockId?: string; cellId?: string } | undefined;
+            return cell?.blockId !== table.id || !cell.cellId || !cellIds.has(cell.cellId);
+          }),
+        });
+        setSelectedNodeId(null);
+        return;
+      }
       if (selectedWordTableBlockId) {
         event.preventDefault();
         deleteSelectedWordTable();
@@ -1755,7 +1780,7 @@ export default function CanvasSheetWorkspace() {
     const ownerDocument = freeCanvasBodyRef.current?.ownerDocument ?? document;
     ownerDocument.addEventListener('keydown', handleFreeCanvasDeleteKeyDown);
     return () => ownerDocument.removeEventListener('keydown', handleFreeCanvasDeleteKeyDown);
-  }, [deleteSelectedWordTable, isFreeCanvas, removeNode, selectedNodeId, selectedWordTableBlockId]);
+  }, [deleteSelectedWordTable, isFreeCanvas, removeNode, selectedNodeId, selectedWordTableBlockId, setSelectedNodeId, updateCurrentPage, wordTableAdditionalCellRanges, wordTableCellRange]);
   const insertCommonComponentAtClientPoint = useCallback((componentId: CommonCanvasComponentId, clientX?: number, clientY?: number) => {
     if (!isFreeCanvas) return;
     const canvasRect = freeCanvasBodyRef.current?.getBoundingClientRect();
@@ -2107,6 +2132,8 @@ export default function CanvasSheetWorkspace() {
     cell: CanvasWordTableBlock['cells'][number],
   ) => {
     if (event.button !== 0) return;
+    event.preventDefault();
+    freeCanvasBodyRef.current?.focus({ preventScroll: true });
 
     const currentRange = wordTableCellRange?.blockId === block.id ? wordTableCellRange : null;
     const isAdditiveSelection = (event.metaKey || event.ctrlKey) && !event.altKey;
@@ -2266,6 +2293,7 @@ export default function CanvasSheetWorkspace() {
       if (!hasCrossedCellBoundary) {
         hasCrossedCellBoundary = true;
         suppressNativeSelection = true;
+        freeCanvasBodyRef.current?.focus({ preventScroll: true });
         ownerDocument.getSelection()?.removeAllRanges();
         selectWordTable(block.id, true);
         setWordTableCellRange({
@@ -4532,6 +4560,22 @@ export default function CanvasSheetWorkspace() {
   const removeQuickAddFieldDraft = (id: string) => {
     setQuickAddFieldDrafts((drafts) => drafts.filter((draft) => draft.id !== id));
   };
+  const copyQuickAddFieldDraft = (id: string) => {
+    setQuickAddFieldDrafts((drafts) => {
+      const index = drafts.findIndex((draft) => draft.id === id);
+      const source = drafts[index];
+      if (!source?.name.trim()) return drafts;
+      const baseName = source.name.trim().replace(/_\d+$/, '');
+      const usedNames = new Set([
+        baseName,
+        ...drafts.map((draft) => draft.name.trim()),
+        ...getQuickAddTargetFields(quickAddFieldTarget, quickAddFieldSubTableId).map((field) => field.name.trim()),
+      ]);
+      const name = resolveQuickAddUniqueFieldName(usedNames, baseName);
+      const copy = { ...source, id: `copy:${crypto.randomUUID()}`, name, sourceName: name };
+      return [...drafts.slice(0, index + 1), copy, ...drafts.slice(index + 1)];
+    });
+  };
   const handleConfirmQuickAddFields = () => {
     const fields = quickAddFieldDrafts
       .map((draft) => ({
@@ -5818,7 +5862,7 @@ export default function CanvasSheetWorkspace() {
                   <TableCell width="28%">字段名称</TableCell>
                   <TableCell width="20%">字段类型</TableCell>
                   <TableCell>字段说明</TableCell>
-                  <TableCell width={72} align="center">操作</TableCell>
+                  <TableCell width={100} align="center">操作</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -5856,15 +5900,31 @@ export default function CanvasSheetWorkspace() {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        data-quick-add-field-row-remove="true"
-                        size="small"
-                        aria-label="移除"
-                        onClick={() => removeQuickAddFieldDraft(draft.id)}
-                        sx={{ color: '#ef4444' }}
-                      >
-                        <DeleteOutlineRounded fontSize="small" />
-                      </IconButton>
+                      <Stack direction="row" spacing={0.5} justifyContent="center">
+                        <Tooltip title="复制字段">
+                          <span>
+                            <IconButton
+                              data-quick-add-field-row-copy="true"
+                              size="small"
+                              aria-label="复制字段"
+                              disabled={!draft.name.trim()}
+                              onClick={() => copyQuickAddFieldDraft(draft.id)}
+                              sx={{ color: '#1890ff' }}
+                            >
+                              <ContentCopyRounded fontSize="small" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <IconButton
+                          data-quick-add-field-row-remove="true"
+                          size="small"
+                          aria-label="移除"
+                          onClick={() => removeQuickAddFieldDraft(draft.id)}
+                          sx={{ color: '#ef4444' }}
+                        >
+                          <DeleteOutlineRounded fontSize="small" />
+                        </IconButton>
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 ))}

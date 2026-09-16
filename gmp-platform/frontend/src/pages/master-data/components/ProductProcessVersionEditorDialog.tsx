@@ -753,7 +753,7 @@ export function FormTemplatePreviewDialog({ option, onClose }: { option: Product
       {option?.code ? <Typography variant="caption" sx={{ color: '#909399' }}>表单编码：{option.code}</Typography> : null}
     </DialogTitle>
     <DialogContent dividers sx={{ height: 'min(72vh, 760px)', minHeight: 420, p: 0, display: 'flex', flexDirection: 'column', bgcolor: '#eef3f8' }}>
-      {previewQuery.isLoading ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><CircularProgress size={28} /></Box> : previewQuery.isError ? <Typography variant="body2" sx={{ p: 3, color: '#c62828' }}>无法加载该表单版本</Typography> : previewDocument ? <FormCanvasPreview document={previewDocument} /> : <Typography variant="body2" sx={{ p: 3, color: '#909399' }}>该表单暂无可预览的设计内容</Typography>}
+      {previewQuery.isLoading ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><CircularProgress size={28} /></Box> : previewQuery.isError ? <Typography variant="body2" sx={{ p: 3, color: '#c62828' }}>无法加载该表单版本</Typography> : previewDocument ? <FormCanvasPreview document={previewDocument} fullPage /> : <Typography variant="body2" sx={{ p: 3, color: '#909399' }}>该表单暂无可预览的设计内容</Typography>}
     </DialogContent>
     <DialogActions sx={{ px: 3, py: 1.25 }}><Button onClick={onClose}>关闭</Button></DialogActions>
   </AppDialog>;
