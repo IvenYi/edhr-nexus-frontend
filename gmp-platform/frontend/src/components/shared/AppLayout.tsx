@@ -198,8 +198,9 @@ function getModuleIdByPath(pathname: string): string {
   if (isPathSegmentMatch(pathname, PERSONAL_SETTINGS_ROUTE)) return 'home';
   if (isPathSegmentMatch(pathname, '/master-data')) return 'data';
   if (isPathSegmentMatch(pathname, '/production')) return 'production';
-  if (isPathSegmentMatch(pathname, '/workflow')) return 'production';
+  if (isPathSegmentMatch(pathname, '/form-management')) return 'records';
   if (isPathSegmentMatch(pathname, '/records')) return 'records';
+  if (isPathSegmentMatch(pathname, '/workflow')) return 'production';
   if (isPathSegmentMatch(pathname, '/system')) return 'system';
   return 'home';
 }
@@ -224,10 +225,16 @@ function getLayoutPermissionCode(path: string): string | undefined {
   return inferPermissionCode(path);
 }
 
+function getLayoutPermissionCodes(path: string): string[] {
+  const code = getLayoutPermissionCode(path);
+  if (!code) return [];
+  if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];
+  return [code];
+}
+
 function canAccessPath(path: string, permissionSet: Set<string>): boolean {
-  if (path.startsWith('/records/')) return true;
-  const permissionCode = getLayoutPermissionCode(path);
-  return Boolean(permissionCode && permissionSet.has(permissionCode));
+  const permissionCodes = getLayoutPermissionCodes(path);
+  return permissionCodes.length > 0 && permissionCodes.every((permissionCode) => permissionSet.has(permissionCode));
 }
 
 function isRoleIdText(value: string): boolean {

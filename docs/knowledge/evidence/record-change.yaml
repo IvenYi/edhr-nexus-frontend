@@ -1,5 +1,10 @@
-knowledgeModelVersion: 0.3.18
+knowledgeModelVersion: 0.3.21
 evidence:
+  - id: evidence.record-change-form-management-coexistence-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/record-change-form-management-coexistence-user-confirmed.md
+    description: user-confirmed；用户确认表单管理页面已有实际代码，记录模块应同时保留表单管理和变更管理两组菜单；两组菜单均仅对拥有对应菜单权限的用户可见，不授予或绕过现有权限校验。
+    visibility: internal
   - id: evidence.record-change-search-scope-user-confirmed
     type: document
     path: docs/knowledge/evidence/record-change-search-scope-user-confirmed.md

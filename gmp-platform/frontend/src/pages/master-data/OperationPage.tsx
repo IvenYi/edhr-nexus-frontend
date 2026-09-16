@@ -120,7 +120,7 @@ export default function OperationPage() {
           <Button variant="contained" onClick={() => saveMutation.mutate(form)} disabled={!form.code || !form.name || saveMutation.isPending}>保存</Button>
         </DialogActions>
       </AppDialog>
-      <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
+      <AppDialog deletionTarget={deleteConfirm !== null ? { type: 'operation', id: deleteConfirm } : null} open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle><DialogContent>确定要删除该工序吗？</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirm(null)}>取消</Button>

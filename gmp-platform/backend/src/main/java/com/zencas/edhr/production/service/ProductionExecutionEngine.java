@@ -227,6 +227,7 @@ public class ProductionExecutionEngine {
         ObjectNode merged = previous.deepCopy(); merged.setAll((ObjectNode) values);
         String nodeId = controls.path("nodeId").asText();
         JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), nodeId) : defaultFormNode();
+        JsonNode activeBefore = formState.path("active").deepCopy();
         if (button.path("requiresSignature").asBoolean()) {
             String signature = access.sign(snapshot.path("context").path("objectId").asText(), operationId + "/" + target, action, merged, account, password);
             formState.put("lastSignatureId", signature);
@@ -262,7 +263,11 @@ public class ProductionExecutionEngine {
             } else formState.put("status", "COMPLETED");
             if ("COMPLETED".equals(formState.path("status").asText())) requireEmpty(validateValues(form, merged));
         }
-        history(state, op, switch (action) { case "SAVE" -> "保存表单"; case "SUBMIT" -> "提交表单"; case "APPROVE" -> "审批表单"; case "RETURN" -> "退回表单"; default -> action; }, operator, form.path("name").asText() + " · 第 " + (ExecutionFormCopies.ids(current, formId).indexOf(target) + 1) + " 份 · " + target + (opinion == null || opinion.isBlank() ? "" : " · " + opinion));
+        for (JsonNode activeId : formState.path("active")) if (!contains(activeBefore, activeId.asText()))
+            formState.withObject("/nodeArrivedAt").put(activeId.asText(), LocalDateTime.now().toString());
+        history(state, op, switch (action) { case "SAVE" -> "保存表单"; case "SUBMIT" -> "提交表单"; case "APPROVE" -> "审批表单"; case "RETURN" -> "退回表单"; default -> action; }, operator, form.path("name").asText() + " · 第 " + (ExecutionFormCopies.ids(current, formId).indexOf(target) + 1) + " 份 · " + target + (opinion == null || opinion.isBlank() ? "" : " · " + opinion))
+            .put("actionCode", action).put("formId", formId).put("copyId", target).put("nodeId", nodeId)
+            .put("nodeKind", kind(node)).put("nodeName", node.path("data").path("label").asText("现场填报"));
     }
 
     public List<String> completionWarnings(JsonNode op, JsonNode current) {
@@ -291,6 +296,7 @@ public class ProductionExecutionEngine {
         ObjectNode current = requireInProgress(state, operationId);
         ((ArrayNode) op.path("forms")).add(form);
         initializeBindingForm(form, current);
+        ((ObjectNode) current.path("forms").path(form.path("id").asText())).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString());
         history(state, op, "挂载自定义表单", operator, form.path("name").asText() + " · " + form.path("versionId").asText()
                 + " · " + (form.path("required").asBoolean() ? "必填" : "选填") + " · " + form.path("id").asText());
     }
@@ -304,6 +310,7 @@ public class ProductionExecutionEngine {
         int sequence = group.path("instanceIds").size() + 1;
         String instanceId = formId + ":copy:" + sequence;
         initializeForm(form, current.withObject("/forms").putObject(instanceId));
+        ((ObjectNode) current.path("forms").path(instanceId)).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString());
         ((ArrayNode) group.path("instanceIds")).add(instanceId);
         history(state, op, "新增表单份", operator, form.path("name").asText() + " · 第 " + sequence + " 份 · " + instanceId);
     }
@@ -411,6 +418,8 @@ public class ProductionExecutionEngine {
         state.put("status", "ACTIVE");
         if (form.has("flow")) { initializeGraph(form.path("flow"), state); state.put("status", "ACTIVE"); settleForm(form, state); }
         else { state.putArray("active").add("entry"); state.putArray("done"); }
+        ObjectNode arrivals = state.putObject("nodeArrivedAt");
+        for (JsonNode id : state.path("active")) arrivals.put(id.asText(), LocalDateTime.now().toString());
     }
     private void settleForm(JsonNode form, ObjectNode state) {
         for (JsonNode id : state.path("active").deepCopy()) {
@@ -569,8 +578,8 @@ public class ProductionExecutionEngine {
     private String kind(JsonNode node) { return node.path("data").path("kind").asText(); }
     private boolean contains(JsonNode entries, String value) { for (JsonNode entry : entries) if (value.equals(entry.asText())) return true; return false; }
     private void requireEmpty(List<String> issues) { if (!issues.isEmpty()) throw invalid(String.join("；", issues)); }
-    private void history(ObjectNode state, JsonNode op, String action, String operator, String detail) {
-        ((ArrayNode) state.get("history")).addObject().put("operationId", op.path("id").asText()).put("operationName", op.path("name").asText())
+    private ObjectNode history(ObjectNode state, JsonNode op, String action, String operator, String detail) {
+        return ((ArrayNode) state.get("history")).addObject().put("operationId", op.path("id").asText()).put("operationName", op.path("name").asText())
                 .put("action", action).put("operator", operator).put("at", LocalDateTime.now().toString()).put("detail", detail);
     }
     private JsonNode defaultFormNode() {

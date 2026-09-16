@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset codex:0083-record-control-revisions
+--changeset codex:0087-record-control-revisions
 CREATE TABLE form_instance_revision (
     id BIGINT PRIMARY KEY,
     tenant_id VARCHAR(64) NOT NULL,
@@ -20,7 +20,7 @@ ALTER TABLE form_instance_record ADD COLUMN obsolete_request_id BIGINT;
 ALTER TABLE form_instance_record ADD COLUMN obsoleted_at TIMESTAMP;
 CREATE INDEX idx_form_instance_revision_record ON form_instance_revision(tenant_id, record_id, revision_no DESC);
 
---changeset codex:0083-record-control-baseline dbms:postgresql
+--changeset codex:0087-record-control-baseline dbms:postgresql
 -- Preserve the saved value and known provenance. Unknown historical creator/time stay NULL.
 INSERT INTO form_instance_revision (id, tenant_id, record_id, revision_no, status, values_json, content_hash, created_by, created_at)
 SELECT nextval('hibernate_sequence'), tenant_id, id, 1, 'EFFECTIVE', values_json,
@@ -30,7 +30,7 @@ UPDATE form_instance_record record SET current_revision_id=revision.id
 FROM form_instance_revision revision
 WHERE revision.record_id=record.id AND revision.tenant_id=record.tenant_id AND revision.revision_no=1;
 
---changeset codex:0083-record-control-requests
+--changeset codex:0087-record-control-requests
 CREATE SEQUENCE record_control_request_number_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE record_control_request (
     id BIGINT PRIMARY KEY,
@@ -70,6 +70,6 @@ CREATE TABLE record_control_result_event (
     occurred_at TIMESTAMP NOT NULL
 );
 
---changeset codex:0083-record-control-active-index dbms:postgresql
+--changeset codex:0087-record-control-active-index dbms:postgresql
 CREATE UNIQUE INDEX uk_record_control_active ON record_control_request(tenant_id, record_id) WHERE status='IN_REVIEW';
 CREATE UNIQUE INDEX uk_form_instance_current_effective ON form_instance_revision(tenant_id, record_id) WHERE status='EFFECTIVE';

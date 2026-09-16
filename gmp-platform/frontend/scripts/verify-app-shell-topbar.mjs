@@ -85,7 +85,9 @@ mustInclude("if (event.key === 'user') refreshStoredUser();", 'app shell should 
 mustInclude('const hasPermissionSnapshot = Array.isArray(user.permissions);', 'app shell should distinguish missing permission snapshots from explicit empty permissions');
 mustInclude('filterModulesByPermissions(sidebarModules, permissionSet)', 'app shell should filter menus whenever current user has an explicit permission list');
 mustInclude('if (!permissionSet) return modules;', 'app shell should only show all menus when no permission snapshot exists');
-mustInclude('return Boolean(permissionCode && permissionSet.has(permissionCode));', 'unmapped or unauthorized routes should not remain visible under permission filtering');
+mustInclude('function getLayoutPermissionCodes(path: string): string[]', 'route permission checks should support more than one permission requirement');
+mustInclude("if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];", 'form management routes should require both the records permission and production execution source permission');
+mustInclude('permissionCodes.every((permissionCode) => permissionSet.has(permissionCode))', 'unmapped or unauthorized routes should not remain visible under permission filtering');
 mustNotInclude('if (permissionSet.size === 0) return modules;', 'empty permission lists should not show every menu');
 mustInclude('const initialTabs: AppTab[] = [HOME_TAB];', 'tabs should default to only the home tab');
 mustInclude('const [openTabs, setOpenTabs] = useState<AppTab[]>(initialTabs);', 'tabs should be stateful and route-driven');
@@ -193,7 +195,7 @@ mustInclude('data-app-function-menu', 'function menu should expose a QA selector
 mustInclude('height: MODULE_ITEM_HEIGHT', 'module entries should clamp height to 64px');
 mustInclude('minHeight: MODULE_ITEM_HEIGHT', 'module entries should clamp minimum height to 64px');
 mustMatch(
-  /width:\s*54,\n\s*height:\s*MODULE_ITEM_HEIGHT,\n\s*minHeight:\s*MODULE_ITEM_HEIGHT,\n\s*flex:\s*'0 0 auto'/,
+  /width:\s*54,\r?\n\s*height:\s*MODULE_ITEM_HEIGHT,\r?\n\s*minHeight:\s*MODULE_ITEM_HEIGHT,\r?\n\s*flex:\s*'0 0 auto'/,
   'module entry style should clamp height and disable flex growth in the same block',
 );
 mustInclude('height: \'100vh\'', 'left navigation columns should fill the viewport height');

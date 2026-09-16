@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
 import { WarningAmberOutlined } from '@mui/icons-material';
+import type { DeletionTarget } from '@/api/deletionCheck';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -21,6 +22,7 @@ interface ConfirmDialogProps {
   destructive?: boolean;
   initialFocus?: 'confirm' | 'cancel';
   container?: DialogProps['container'];
+  deletionTarget?: DeletionTarget | null;
 }
 
 /**
@@ -39,9 +41,10 @@ export default function ConfirmDialog({
   destructive = false,
   initialFocus = 'confirm',
   container,
+  deletionTarget,
 }: ConfirmDialogProps) {
   return (
-    <AppDialog open={open} onClose={loading ? undefined : onCancel} container={container} maxWidth="xs" fullWidth>
+    <AppDialog open={open} onClose={loading ? undefined : onCancel} container={container} maxWidth="xs" fullWidth deletionTarget={deletionTarget} onDeletionBlocked={onCancel}>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
         {destructive && <WarningAmberOutlined color="warning" />}
         {title}

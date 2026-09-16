@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "visual-check",
+  "evidenceKind": "automated-browser",
+  "status": "fail",
+  "visualReview": "pending",
+  "artifact": {
+    "path": "/Users/ivenwang/Documents/edhr-nexus/docs/architecture/edhr-p0-business-workflow.html",
+    "sha256": "13d4a9d5b2259c89e6ab5c58ea7111038ca3651ef3834be77cb60e8a17252f33",
+    "bytes": 718054
+  },
+  "state": {
+    "detail": "read",
+    "motion": "still"
+  },
+  "chrome": {
+    "status": "available",
+    "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+  },
+  "diagnostics": [
+    {
+      "code": "viewer/visual-check-runtime",
+      "severity": "error",
+      "message": "visual-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "/Users/ivenwang/Documents/edhr-nexus/docs/architecture/edhr-p0-business-workflow.html"
+      },
+      "evidence": {
+        "reason": "Runtime.evaluate: timed out after 15000ms"
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun visual-check"
+      ]
+    }
+  ],
+  "containment": {
+    "status": "fail",
+    "viewports": []
+  },
+  "readability": {
+    "status": "fail",
+    "minimumProjectedNodeTextPx": 6,
+    "viewports": []
+  },
+  "viewerChrome": {
+    "status": "fail",
+    "viewports": []
+  },
+  "captures": {
+    "status": "fail",
+    "screenshots": [],
+    "contactSheet": null
+  },
+  "sidecars": {
+    "receipt": "edhr-p0-business-workflow.visual-check.json",
+    "contactSheet": "edhr-p0-business-workflow.visual-check.html"
+  },
+  "error": "Runtime.evaluate: timed out after 15000ms"
+}

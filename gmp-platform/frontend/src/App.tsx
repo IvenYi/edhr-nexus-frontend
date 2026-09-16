@@ -4,6 +4,8 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { SnackbarProvider } from './components/SnackbarProvider';
 import AppRouter from './router';
+import DeletionProtectionDialog from './components/DeletionProtectionDialog';
+import RecordLocationHighlight from './components/RecordLocationHighlight';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -267,6 +269,8 @@ function App() {
         <SnackbarProvider>
           <BrowserRouter>
             <AppRouter />
+            <DeletionProtectionDialog />
+            <RecordLocationHighlight />
           </BrowserRouter>
         </SnackbarProvider>
       </ThemeProvider>

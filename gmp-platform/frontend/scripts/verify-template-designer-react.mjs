@@ -826,7 +826,7 @@ if (!documentUtils.includes('rowHeights')) failures.push('document utils: missin
 if (!documentUtils.includes("paperMode: 'table'")) failures.push('document utils: missing default paper mode');
 if (!documentUtils.includes("paperOrientation: 'portrait'")) failures.push('document utils: missing default paper orientation');
 if (!documentUtils.includes('paperMarginTopMm')) failures.push('document utils: missing paper margin normalization');
-if (!shell.includes('window.confirm')) failures.push('TemplateDesignerReactShell.tsx: missing dirty close confirmation');
+if (shell.includes('window.confirm') || !shell.includes('open={closeConfirmOpen}') || !shell.includes('if (isDirty())')) failures.push('TemplateDesignerReactShell.tsx: unsaved changes must use an in-app close confirmation');
 if (!shell.includes('markSaved')) failures.push('TemplateDesignerReactShell.tsx: missing markSaved usage after save');
 if (!shell.includes("setActiveTab('canvas')")) failures.push('TemplateDesignerReactShell.tsx: missing reset to canvas tab on entry');
 if (!shell.includes('height: 28')) failures.push('TemplateDesignerReactShell.tsx: missing back-area divider');
@@ -2055,7 +2055,7 @@ if (!mockFillDialog.includes('data-mock-fill-title-divider="true"')) failures.pu
 if (!mockFillDialog.includes('data-mock-fill-page-paper="true"')) failures.push('MockFillDialog.tsx: mock-fill pages must render a paper shell around the sheet');
 if (!mockFillDialog.includes('getMockFillPagePaperMetrics')) failures.push('MockFillDialog.tsx: mock-fill pages must calculate paper size and page margins');
 if (!mockFillDialog.includes('gridHeight = sumTrackSizes(rowCount')) failures.push('MockFillDialog.tsx: mock-fill paper height must include the rendered sheet height');
-if (!mockFillDialog.includes('gridWidth + insetLeft + insetRight')) failures.push('MockFillDialog.tsx: mock-fill paper width must include left and right page margins');
+if (!read('../src/pages/master-data/template-designer-react/utils/formPagePaper.ts').includes('gridWidth + insetLeft + insetRight')) failures.push('formPagePaper.ts: preview paper width must include left and right page margins');
 if (!mockFillDialog.includes("pl: `${paperMetrics.insetLeft}px`")) failures.push('MockFillDialog.tsx: mock-fill sheet must be inset from the left paper edge');
 if (!mockFillDialog.includes("pt: `${paperMetrics.insetTop}px`")) failures.push('MockFillDialog.tsx: mock-fill sheet must be inset from the top paper edge');
 if (!mockFillDialog.includes("boxShadow: '0 16px 40px rgba(30, 41, 59, 0.10)'")) failures.push('MockFillDialog.tsx: mock-fill page shadow must belong to the paper shell');
@@ -2104,7 +2104,7 @@ if (mockFillDialog.includes("'已签名'") || mockFillDialog.includes('>已签�
 if (!mockFillDialog.includes('data-mock-fill-signature-dialog="true"')) failures.push('MockFillDialog.tsx: mock-fill signature confirmation dialog must expose a stable marker');
 if (!mockFillDialog.includes('data-mock-fill-signature-password="true"')) failures.push('MockFillDialog.tsx: mock-fill signature dialog must require an electronic signature password input');
 if (!mockFillDialog.includes('await verifyCurrentUserSignaturePassword')) failures.push('MockFillDialog.tsx: mock-fill signature dialog must verify against the backend before writing a signature value');
-if (!mockFillDialog.includes('data-mock-fill-signature-image="true"')) failures.push('MockFillDialog.tsx: verified mock-fill signatures must render the authorized signature image');
+if (!mockFillDialog.includes('imageMarker="data-mock-fill-signature-image"')) failures.push('MockFillDialog.tsx: verified mock-fill signatures must render the authorized signature image');
 if (!mockFillDialog.includes('signatureImageUrl')) failures.push('MockFillDialog.tsx: verified mock-fill signature values must carry the backend signature image URL');
 if (!mockFillDialog.includes("import { getFilePreviewBlob } from '@/api/files'")) failures.push('MockFillDialog.tsx: verified signature images must be loaded through the authenticated file preview API');
 if (!mockFillDialog.includes('URL.createObjectURL')) failures.push('MockFillDialog.tsx: verified signature image blobs must be converted to object URLs before rendering');
@@ -2112,7 +2112,7 @@ if (!mockFillDialog.includes('signatureImageObjectUrl')) failures.push('MockFill
 if (!mockFillDialog.includes('URL.revokeObjectURL')) failures.push('MockFillDialog.tsx: verified signature image object URLs must be released when reset or closed');
 if (!apiClient.includes("response.config.responseType === 'blob'")) failures.push('client.ts: blob responses must bypass ApiResponse JSON code checks');
 if (!mockFillDialog.includes("'Request failed'")) failures.push('MockFillDialog.tsx: generic request failures must be replaced with readable signature error text');
-if (!mockFillSignatureControlBlock.includes("objectFit: 'contain'")) failures.push('MockFillDialog.tsx: verified signature images must fit inside the signature cell');
+if (!mockFillSignatureControlBlock.includes('<SignatureDisplay') || !read('../src/components/form-renderer/SignatureDisplay.tsx').includes("objectFit: 'contain'")) failures.push('SignatureDisplay.tsx: verified signature images must fit inside the signature cell');
 if (!mockFillDialog.includes('type="datetime-local"')) failures.push('MockFillDialog.tsx: date-time fields must use a fillable date-time input');
 if (!mockFillDialog.includes('data-mock-fill-date-control="true"')) failures.push('MockFillDialog.tsx: date-time fields must expose a stretched date control marker');
 if (!mockFillDialog.includes('dateTextFieldSx')) failures.push('MockFillDialog.tsx: date-time fields must use a dedicated full-height input style');

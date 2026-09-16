@@ -82,6 +82,7 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/categories/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "equipment_category", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteCategory(@PathVariable Long id) {
         var category = requireCategory(id);
@@ -142,6 +143,7 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/types/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "equipment_type", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteType(@PathVariable Long id) {
         var type = requireType(id);
@@ -200,6 +202,7 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "equipment", idArgument = 0)
     @Transactional
     public ApiResponse<Void> delete(@PathVariable Long id) {
         var equipment = equipmentRepository.lockById(id).orElseThrow(() -> invalid("设备不存在"));

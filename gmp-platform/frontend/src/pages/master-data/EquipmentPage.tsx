@@ -1,3 +1,4 @@
+import { readRecordLocation } from '@/utils/recordLocation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -107,8 +108,8 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(20);
-  const [keyword, setKeyword] = useState('');
-  const [search, setSearch] = useState('');
+  const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
+  const [search, setSearch] = useState(() => readRecordLocation().keyword);
   const [categoryId, setCategoryId] = useState('');
   const [equipmentTypeId, setEquipmentTypeId] = useState('');
   const [open, setOpen] = useState(false);
@@ -298,7 +299,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
                   {listQuery.isLoading ? <TableRow><TableStateCell colSpan={columns.length} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>
                     : listQuery.isError ? <TableRow><TableStateCell colSpan={columns.length} align="center">加载失败 <Button onClick={() => listQuery.refetch()}>重试</Button></TableStateCell></TableRow>
                       : !data?.content.length ? <TableRow><TableStateCell colSpan={columns.length} align="center">暂无数据</TableStateCell></TableRow>
-                        : data.content.map((row) => <TableRow key={row.id} hover sx={{ '& .MuiTableCell-root': { height: 40, py: 0, lineHeight: '20px', borderBottom: '1px solid #ebeef5' }, '&:hover .MuiTableCell-root': { bgcolor: '#f5f7fa' } }}>{columns.map((column) => <TableCell key={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', ...(column.id === 'actions' ? { position: 'sticky', right: 0, bgcolor: '#fff', zIndex: 1, boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : {}) }}>
+                        : data.content.map((row) => <TableRow data-record-id={row.id} key={row.id} hover sx={{ '& .MuiTableCell-root': { height: 40, py: 0, lineHeight: '20px', borderBottom: '1px solid #ebeef5' }, '&:hover .MuiTableCell-root': { bgcolor: '#f5f7fa' } }}>{columns.map((column) => <TableCell key={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', ...(column.id === 'actions' ? { position: 'sticky', right: 0, bgcolor: '#fff', zIndex: 1, boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : {}) }}>
                           {column.id === 'actions' ? <>
                             <Tooltip title="编辑"><IconButton size="small" aria-label={`编辑 ${row.name}`} onClick={() => openEditor(row)}><Edit fontSize="small" /></IconButton></Tooltip>
                             <Tooltip title="删除"><IconButton size="small" color="error" aria-label={`删除 ${row.name}`} onClick={() => setDeleteTarget({ id: row.id, name: row.name, category: false })}><Delete fontSize="small" /></IconButton></Tooltip>
@@ -349,7 +350,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
         <DialogContent dividers sx={{ px: 3, py: 2 }}><Stack spacing={1.5}><Typography fontWeight={600}>基本信息</Typography><TextField size="small" autoFocus required fullWidth label="设备分类名称" value={categoryDialog?.name ?? ''} onChange={(event) => setCategoryDialog((current) => current ? { ...current, name: event.target.value } : null)} /></Stack></DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryDialog?.name.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>保存</Button></DialogActions>
       </AppDialog>
-      <ConfirmDialog open={deleteTarget !== null} title="确认删除" message={`确定要删除${deleteTarget?.category ? '分类' : recordLabel}“${deleteTarget?.name ?? ''}”吗？`} destructive confirmText="删除" loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
+      <ConfirmDialog deletionTarget={deleteTarget && { type: deleteTarget.category ? 'equipment_category' : isTypes ? 'equipment_type' : 'equipment', id: deleteTarget.id }} open={deleteTarget !== null} title="确认删除" message={`确定要删除${deleteTarget?.category ? '分类' : recordLabel}“${deleteTarget?.name ?? ''}”吗？`} destructive confirmText="删除" loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
       <Snackbar open={snackbar !== null} autoHideDuration={4000} onClose={() => setSnackbar(null)} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity={snackbar?.severity ?? 'success'} onClose={() => setSnackbar(null)}>{snackbar?.message}</Alert></Snackbar>
     </>
   );

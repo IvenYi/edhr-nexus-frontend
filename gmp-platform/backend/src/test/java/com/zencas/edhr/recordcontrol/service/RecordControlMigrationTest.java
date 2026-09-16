@@ -21,7 +21,7 @@ class RecordControlMigrationTest {
             statement.execute("CREATE TABLE signature (id BIGINT PRIMARY KEY)");
             statement.execute("INSERT INTO form_instance_record VALUES (1,'default','COMPLETED','{}',NULL,NULL)");
             statement.execute("INSERT INTO signature VALUES (10)");
-            try (var migration = new Liquibase("db/changelog/0083-record-control.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(connection))) {
+            try (var migration = new Liquibase("db/changelog/0087-record-control.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(connection))) {
                 migration.update(new Contexts(), new LabelExpression());
                 migration.update(new Contexts(), new LabelExpression());
                 connection.commit(); connection.setAutoCommit(true);

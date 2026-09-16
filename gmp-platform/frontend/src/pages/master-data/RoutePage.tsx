@@ -120,7 +120,7 @@ export default function RoutePage() {
           <Button variant="contained" onClick={() => saveMutation.mutate(form)} disabled={!form.code || !form.name || saveMutation.isPending}>保存</Button>
         </DialogActions>
       </AppDialog>
-      <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
+      <AppDialog deletionTarget={deleteConfirm !== null ? { type: 'route', id: deleteConfirm } : null} open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle><DialogContent>确定要删除该工艺路线吗？</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirm(null)}>取消</Button>

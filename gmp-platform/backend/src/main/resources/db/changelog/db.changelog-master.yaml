@@ -176,4 +176,14 @@ databaseChangeLog:
   - include:
       file: db/changelog/0082-form-instance-records.sql
   - include:
-      file: db/changelog/0083-record-control.sql
+      file: db/changelog/0083-form-instance-query.sql
+  - include:
+      file: db/changelog/0084-form-worklist-permissions.sql
+  - include:
+      file: db/changelog/0085-record-form-management-menu.sql
+  - include:
+      file: db/changelog/0086-master-data-deletion-protection.sql
+  - include:
+      file: db/changelog/0087-record-control.sql
+  - include:
+      file: db/changelog/0088-record-change-menu-permissions.sql

@@ -46,7 +46,8 @@ public class ProductionObjectController {
     @PreAuthorize("hasAuthority('production.work-orders')")
     public ApiResponse<List<ProductionObjectResponse>> list(@PathVariable Long workOrderId) {
         WorkOrder order = productionService.requireOrder(workOrderId);
-        return ApiResponse.success(productionService.objects(order.getId()).stream().map(item -> toResponse(item, order)).toList());
+        Material product = productionService.findProduct(order.getProductId());
+        return ApiResponse.success(productionService.objects(order.getId()).stream().map(item -> toResponse(item, order, product)).toList());
     }
 
     @GetMapping("/work-orders/{workOrderId}/process-options")
@@ -119,8 +120,12 @@ public class ProductionObjectController {
 
     private ProductionObjectResponse toResponse(ProductionObject object, WorkOrder order) {
         Material product = productionService.requireProduct(order.getProductId());
+        return toResponse(object, order, product);
+    }
+
+    private ProductionObjectResponse toResponse(ProductionObject object, WorkOrder order, Material product) {
         ProductProcessVersion version = productionService.findProcessVersion(object.getProcessVersionId());
-        return new ProductionObjectResponse(String.valueOf(object.getId()), object.getObjectNo(), object.getObjectType(), String.valueOf(object.getWorkOrderId()), product.getName(), product.getCode(), String.valueOf(object.getProcessVersionId()), version == null ? "-" : version.getVersionLabel(), object.getTargetQuantity(), object.getGoodQuantity(), object.getNgQuantity(), object.getScrapQuantity(), object.getStatus(), object.getRemark(), object.getTerminationReason(), object.getTerminationAt(), object.getPlannedStartAt(), object.getPlannedEndAt(), object.getCreatedAt(), object.getUpdatedAt());
+        return new ProductionObjectResponse(String.valueOf(object.getId()), object.getObjectNo(), object.getObjectType(), String.valueOf(object.getWorkOrderId()), product == null ? "产品已不存在" : product.getName(), product == null ? String.valueOf(order.getProductId()) : product.getCode(), String.valueOf(object.getProcessVersionId()), version == null ? "-" : version.getVersionLabel(), object.getTargetQuantity(), object.getGoodQuantity(), object.getNgQuantity(), object.getScrapQuantity(), object.getStatus(), object.getRemark(), object.getTerminationReason(), object.getTerminationAt(), object.getPlannedStartAt(), object.getPlannedEndAt(), object.getCreatedAt(), object.getUpdatedAt());
     }
 
     private Map<String, Object> productionObjectSnapshot(Long id) {

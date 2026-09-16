@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.21
+facts:
+  - id: fact.master-data-deletion.blocking-reference-count
+    name: 主数据删除阻断关联数量
+    conceptId: concept.master-data-deletion-impact
+    valueType: integer
+    sourceType: derived
+    sourcePath: docs/knowledge/evidence/master-data-deletion-user-confirmed.md
+    aliases: [deletion.blockingReferenceCount]
+    availability: not-available
+    allowedOperators: [greater-than-or-equal]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.master-data-deletion-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: 用户确认删除前检查引用关系；实现引用目录和返回字段待核对
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed

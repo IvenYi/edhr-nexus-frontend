@@ -1,0 +1,130 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260916-FORM-INSTANCE-QUERY
+  scope: production-owned-global-form-instance-query
+  knowledgeBaselineVersion: 0.3.18
+  summary: 在既有表单实例索引旁增加跨模板的生产来源查询，保留旧接口，不新增实例库或执行引擎。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.form-instance-global-query-source-permission
+        name: 全局表单实例查询按来源授权
+        status: specified
+        trigger: form-instance.query
+        condition:
+          all:
+            - fact: formInstanceQuery.hasDedicatedViewPermission
+              operator: equals
+              value: true
+            - fact: formInstanceQuery.hasSourceViewPermission
+              operator: equals
+              value: true
+        result:
+          type: return-query-projection
+          target: formInstanceQuery.visibleRecords
+          value: default-tenant-saved-production-records
+        sourceReferences:
+          - docs/development/form-instance-query-api.md
+      - id: rule.form-instance-global-query-read-not-write
+        name: 全局查询权限不授予填报动作权限
+        status: specified
+        trigger: form-instance.continue-fill
+        condition:
+          all:
+            - fact: formInstanceQuery.hasDedicatedViewPermission
+              operator: equals
+              value: true
+        result:
+          type: allow-with-governance
+          target: production-execution.source-action-authorization
+          value: existing-source-validation
+        sourceReferences:
+          - docs/development/form-instance-query-api.md
+    executionContracts: []
+  inferred:
+    - id: inference.form-management-before-dhr
+      statement: 本接口可支撑表单管理先行，后续 DHR 复用身份和来源查询。
+      rationale: 当前查询不依赖 DHR 汇总和审核实现；任务资格与参与历史仍需另接来源逻辑。
+      relatedIds: []
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: form-instance-query
+        change: 新只读 API 支持跨模板分页、摘要、详情、精确实例号、生产来源定位。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java]
+    transitiveImpacts:
+      - area: production-execution
+        change: 保存实例时补充冻结搜索元数据及可验证的登录主体 ID，同一事务内完成。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java]
+    potentialImpacts:
+      - area: future-form-management
+        concern: 我的填报、我的已填需要资格及参与历史，不可用创建人更新人筛选代替。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: runtime-and-dhr
+        reason: 不修改执行引擎、状态机、签名、审批、DHR 汇总、附录、记录本。
+    compatibilityAndMigration:
+      - area: instance-index
+        change: 0083 增加可空投影字段与索引，从原始冻结 JSON 回填；旧编号、主键、值、状态和旧 API 不变。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql]
+      - area: query-contract
+        change: 附件 v2 是目标而非已实现合同。当前时间保留无时区本地 TIMESTAMP 语义；矛盾 AND 条件返回零条，不读取未授权主数据做校验；未支持参数返回400。
+        evidenceReferences: [docs/development/form-instance-query-api.md]
+    snapshotImpacts:
+      - area: source-snapshot
+        change: 仅派生搜索列，不改生产快照、冻结模板或表单值；不以最新模板替换历史信息。
+    auditImpacts:
+      - area: audit
+        change: 只读查询不新增业务审计动作，保存沿用原事务和审计；不从历史显示名推测用户ID。
+    permissionImpacts:
+      - area: global-query
+        change: 用户明确确认专门查看权限加来源权限，可查看默认租户内该来源全部已保存记录，无本人或部门限制；旧模板查询权限不变；新权限仅初始化给ADMIN。
+    testImpacts:
+      - scope: global-query
+        scenarios: [认证及两项权限矩阵, 默认租户隔离, 跨模板筛选, 精确与模糊实例号, SQL通配符转义, 分页稳定, 时间区间, 旧接口兼容, 来源动作不越权, 迁移及历史空值]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps:
+      - 旧 TIMESTAMP 未存时区，不能可靠还原绝对时刻；本次明确使用来源本地时间，不伪造 UTC。
+      - 历史创建更新主体可能仅保存显示名，ID 保持空，不以姓名匹配主数据。
+      - 本工作树不是发布版本；非生产来源和记录控制修订资格没有当前闭环证据，不纳入接口。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用生产模块已有实例索引和写入事务，通过独立只读查询入口服务表单管理，不新建泛化来源框架。
+    ownershipBoundaries:
+      - owner: production
+        responsibility: 实例身份、持久化、冻结搜索投影和原填报动作权限。
+      - owner: form-management
+        responsibility: 后续工作入口消费查询，不接管源执行生命周期。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceQueryController.java
+      changeType: create
+      reason: 新查询入口，旧控制器保持兼容。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java
+      changeType: create
+      reason: 参数白名单和服务端分页、详情及来源控制投影。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+      changeType: update
+      reason: 首次保存记录搜索元数据，后续保存只更新更新人ID。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql
+      changeType: create
+      reason: 兼容性增量投影、历史回填、查询权限。
+    - path: gmp-platform/frontend/src/api/form-instance-records.ts
+      changeType: update
+      reason: 同一实例客户端模块添加新接口类型和函数。
+  acceptanceScenarios:
+    - id: scenario.global-instance-permissions
+      given: 默认租户存在多个模板与多个创建人的已保存记录。
+      when: 用户同时拥有实例查看和生产执行来源权限。
+      then: 可跨模板查看全部生产记录；任缺一项权限返回403；无认证401；其他租户记录不可见。
+      evidenceRequirements: [API集成测试]
+    - id: scenario.global-instance-filter-and-detail
+      given: 生产对象有多个工序、多份已保存表单。
+      when: 组合过滤和分页，再按ID或实例号读取详情。
+      then: 数量与列表过滤相同；多份不合并；详情保留原始冻结表单；列表不返回字段值。
+      evidenceRequirements: [集成测试, 迁移测试]
+    - id: scenario.global-instance-no-write-escalation
+      given: 用户有全局查询权限但源节点不可操作。
+      when: 读取FILL上下文或尝试执行原动作。
+      then: 返回源不可操作控制，原动作仍拒绝，不由查询权限放宽。
+      evidenceRequirements: [来源权限回归测试]

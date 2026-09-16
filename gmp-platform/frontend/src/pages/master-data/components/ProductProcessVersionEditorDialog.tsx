@@ -1,3 +1,4 @@
+import { readRecordLocation } from '@/utils/recordLocation';
 import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Background, MarkerType, ReactFlow, ReactFlowProvider, type Edge, type Node } from '@xyflow/react';
@@ -720,7 +721,7 @@ export function ReferenceBindingList<T extends { id: string }>({
         if (option) onPreview(option);
       } : undefined} />}
     </Stack>
-    {value.length === 0 ? <Box sx={{ border: '1px dashed #cfd8e3', borderRadius: 1, px: 1.25, py: 2, textAlign: 'center', bgcolor: '#fbfcfe' }}><Typography variant="caption" sx={{ color: '#909399' }}>{emptySelectionText ?? emptyText}</Typography></Box> : value.map((option, index) => <Box key={getOptionId(option)} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, px: 1.25, py: 1, bgcolor: '#fff' }}>
+    {value.length === 0 ? <Box sx={{ border: '1px dashed #cfd8e3', borderRadius: 1, px: 1.25, py: 2, textAlign: 'center', bgcolor: '#fbfcfe' }}><Typography variant="caption" sx={{ color: '#909399' }}>{emptySelectionText ?? emptyText}</Typography></Box> : value.map((option, index) => <Box data-record-id={getOptionId(option)} key={getOptionId(option)} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, px: 1.25, py: 1, bgcolor: '#fff' }}>
       <Stack direction="row" spacing={1} alignItems="flex-start">
         <Typography variant="caption" sx={{ width: 24, pt: 0.5, color: '#909399' }}>{String(index + 1).padStart(2, '0')}</Typography>
         <Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap title={getOptionLabel(option)} sx={{ color: '#303133', fontWeight: 500 }}>{getOptionLabel(option)}</Typography>{renderDetails?.(option, index)}</Box>
@@ -881,7 +882,9 @@ export default function ProductProcessVersionEditorDialog({
     const sourceOperations = target?.routeVersionId === form.routeVersionId ? target.operations : [];
     const nextDrafts = toOperationDrafts(graph.nodes, sourceOperations);
     setDrafts(nextDrafts);
-    setSelectedNodeKey(nextDrafts[0]?.routeNodeKey ?? '');
+    const location = readRecordLocation();
+    setSelectedNodeKey(nextDrafts.find((draft) => draft.routeNodeKey === location.node)?.routeNodeKey ?? nextDrafts[0]?.routeNodeKey ?? '');
+    if (location.type === 'product_process_operation_document_binding') setActiveReferenceTab('documents');
     initializedRoute.current = form.routeVersionId;
   }, [open, form.routeVersionId, routeGraphQuery.data, target]);
 

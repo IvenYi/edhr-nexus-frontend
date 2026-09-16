@@ -41,7 +41,7 @@ import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
 import { getComponentDefinition } from '../../registry/componentRegistry';
 import { fieldRegistry } from '../../registry/fieldRegistry';
 import { buildSubTableGroupRepeatRanges, buildSubTableRepeatedGroupSheetLayout } from '../../utils/subTableRegion';
-import { createCommonWordTableBlock, type CommonCanvasComponentId } from '../../registry/commonComponentRegistry';
+import { createCommonWordTableBlock, isCellDisplayComponent, type CommonCanvasComponentId } from '../../registry/commonComponentRegistry';
 import {
   deleteWordTableColumns,
   deleteWordTableRows,
@@ -1301,6 +1301,7 @@ export default function CanvasSheetWorkspace() {
   const setSelectedNodeId = useTemplateDesignerStore((state) => state.setSelectedNodeId);
   const removeNode = useTemplateDesignerStore((state) => state.removeNode);
   const addFreeCanvasComponent = useTemplateDesignerStore((state) => state.addFreeCanvasComponent);
+  const addCommonComponentToCell = useTemplateDesignerStore((state) => state.addCommonComponentToCell);
   const setActiveCanvasRail = useTemplateDesignerStore((state) => state.setActiveCanvasRail);
   const selectedCell = useTemplateDesignerStore((state) => state.selectedCell);
   const selectedRange = useTemplateDesignerStore((state) => state.selectedRange);
@@ -2721,6 +2722,17 @@ export default function CanvasSheetWorkspace() {
     };
   };
   const getFieldDropCellLayout = (range: CanvasSelectionRange) => getGridOffsetCellLayout(range);
+  const insertCommonComponentInCell = (componentId: string, range: CanvasSelectionRange) => {
+    if (!isCellDisplayComponent(componentId)) return;
+    try {
+      addCommonComponentToCell(componentId, getFieldDropCellLayout(range));
+      setMultiSelectedRanges([]);
+      setSelectedRange(range, { row: range.t, col: range.l });
+      setFieldDropGuideRange(null);
+    } catch (error) {
+      showMessage(error instanceof Error ? error.message : '插入组件失败', 'error');
+    }
+  };
   const getWordTableFieldCellLayout = (blockId: string, cellId: string) => {
     const table = currentPage?.wordDocument?.blocks.find((block): block is CanvasWordTableBlock => (
       block.id === blockId && block.type === 'table'
@@ -3382,6 +3394,13 @@ export default function CanvasSheetWorkspace() {
     addNodeFromFieldToCell(fieldId, layout);
   };
   const handleFieldDropOnCell = (event: ReactDragEvent<HTMLDivElement>, cellSelectionRange: CanvasSelectionRange) => {
+    const componentId = event.dataTransfer.getData(COMMON_COMPONENT_MIME);
+    if (isCellDisplayComponent(componentId)) {
+      event.preventDefault();
+      event.stopPropagation();
+      insertCommonComponentInCell(componentId, cellSelectionRange);
+      return;
+    }
     const fieldId = event.dataTransfer.getData('application/x-template-designer-field');
     const subTableFieldData = parseSubTableFieldDragData(
       event.dataTransfer.getData('application/x-template-designer-sub-table-field'),
@@ -4125,13 +4144,20 @@ export default function CanvasSheetWorkspace() {
 
   useEffect(() => {
     const handleCommonComponentInsert = (event: Event) => {
-      const componentId = (event as CustomEvent<{ componentId?: CommonCanvasComponentId }>).detail?.componentId;
-      if (componentId) insertCommonComponentAtClientPoint(componentId);
+      const { componentId, clientX, clientY } = (event as CustomEvent<{ componentId?: CommonCanvasComponentId; clientX?: number; clientY?: number }>).detail ?? {};
+      if (!componentId) return;
+      if (isFreeCanvas) insertCommonComponentAtClientPoint(componentId);
+      else if (typeof clientX === 'number' && typeof clientY === 'number') {
+        const range = findCellRangeAtClientPoint(clientX, clientY);
+        if (range) insertCommonComponentInCell(componentId, range);
+      }
+      else if (normalizedRange) insertCommonComponentInCell(componentId, normalizedRange);
+      else showMessage('请先选择要放置组件的单元格。', 'info');
     };
 
     document.addEventListener(COMMON_COMPONENT_INSERT_EVENT, handleCommonComponentInsert);
     return () => document.removeEventListener(COMMON_COMPONENT_INSERT_EVENT, handleCommonComponentInsert);
-  }, [insertCommonComponentAtClientPoint]);
+  }, [insertCommonComponentAtClientPoint, isFreeCanvas, normalizedRange, insertCommonComponentInCell]);
 
   useEffect(() => {
     activePagePreviewIndexRef.current = currentPage ? activePagePreviewIndexes[currentPage.id] ?? 0 : 0;
@@ -4902,7 +4928,7 @@ export default function CanvasSheetWorkspace() {
               openCellContextMenu(cellSelectionRange, event);
             }}
             onDragOver={(event) => {
-              if (!event.dataTransfer.types.includes('application/x-template-designer-field')) return;
+              if (!event.dataTransfer.types.includes('application/x-template-designer-field') && !event.dataTransfer.types.includes(COMMON_COMPONENT_MIME)) return;
               event.preventDefault();
               event.dataTransfer.dropEffect = 'copy';
               setFieldDropGuideRange(cellSelectionRange);

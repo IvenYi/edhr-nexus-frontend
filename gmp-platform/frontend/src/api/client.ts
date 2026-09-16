@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { ApiResponse } from '@/types/common';
 import { clearAuthStorage } from '@/utils/sessionPolicy';
+import { showDeletionProtection } from './deletionProtection';
 
 declare module 'axios' {
   export interface AxiosRequestConfig {
@@ -41,6 +42,7 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (error.response?.status === 409) showDeletionProtection(error.response?.data?.data);
     const apiMessage = (error.response?.data as Partial<ApiResponse<unknown>> | undefined)?.message;
     if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {
       clearAuthStorage();

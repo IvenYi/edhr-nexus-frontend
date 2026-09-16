@@ -1,11 +1,11 @@
-knowledgeModelVersion: 0.3.18
+knowledgeModelVersion: 0.3.21
 facts:
   - id: fact.record-control-release-scope
     name: 记录变更首期检索范围
     conceptId: concept.record-control-application
     valueType: string
     sourceType: configuration
-    sourcePath: docs/knowledge/decisions/DEC-0051-record-change-search-scope.yaml
+    sourcePath: docs/knowledge/decisions/DEC-0054-record-change-search-scope.yaml
     aliases: [recordChange.releaseScope]
     availability: not-available
     allowedOperators: [equals]
@@ -13,7 +13,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.record-change-search-scope-user-confirmed]
     sourceRevision: working-tree
-    sourceLocator: DEC-0051-03
+    sourceLocator: DEC-0054-03
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: fact.record-control-source-status
@@ -37,7 +37,7 @@ facts:
     conceptId: concept.form-instance-revision
     valueType: boolean
     sourceType: derived
-    sourcePath: docs/knowledge/decisions/DEC-0052-record-control-v1-closure.yaml
+    sourcePath: docs/knowledge/decisions/DEC-0055-record-control-v1-closure.yaml
     aliases: [recordControl.currentRevisionPresent]
     availability: not-available
     allowedOperators: [equals]
@@ -45,7 +45,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.record-control-v1-user-confirmed]
     sourceRevision: working-tree
-    sourceLocator: DEC-0052-03
+    sourceLocator: DEC-0055-03
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: fact.record-control-active-application-present
@@ -53,7 +53,7 @@ facts:
     conceptId: concept.record-control-application
     valueType: boolean
     sourceType: derived
-    sourcePath: docs/knowledge/decisions/DEC-0052-record-control-v1-closure.yaml
+    sourcePath: docs/knowledge/decisions/DEC-0055-record-control-v1-closure.yaml
     aliases: [recordControl.activeApplicationPresent]
     availability: not-available
     allowedOperators: [equals]
@@ -61,7 +61,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.record-control-v1-user-confirmed]
     sourceRevision: working-tree
-    sourceLocator: DEC-0052-03
+    sourceLocator: DEC-0055-03
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: fact.record-control-authenticated-user-present
@@ -69,7 +69,7 @@ facts:
     conceptId: concept.record-control-application
     valueType: boolean
     sourceType: runtime-context
-    sourcePath: docs/knowledge/decisions/DEC-0052-record-control-v1-closure.yaml
+    sourcePath: docs/knowledge/decisions/DEC-0055-record-control-v1-closure.yaml
     aliases: [recordControl.authenticatedUserPresent]
     availability: not-available
     allowedOperators: [equals]
@@ -77,7 +77,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.record-control-v1-user-confirmed]
     sourceRevision: working-tree
-    sourceLocator: DEC-0052-07
+    sourceLocator: DEC-0055-07
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: fact.record-control-workflow-result
@@ -85,7 +85,7 @@ facts:
     conceptId: concept.record-control-application
     valueType: string
     sourceType: runtime-context
-    sourcePath: docs/knowledge/decisions/DEC-0052-record-control-v1-closure.yaml
+    sourcePath: docs/knowledge/decisions/DEC-0055-record-control-v1-closure.yaml
     aliases: [recordControl.workflowResult]
     availability: not-available
     allowedOperators: [equals]
@@ -93,6 +93,6 @@ facts:
     visibility: internal
     evidenceIds: [evidence.record-control-v1-user-confirmed]
     sourceRevision: working-tree
-    sourceLocator: DEC-0052-05
+    sourceLocator: DEC-0055-05
     capturedAt: '2026-09-16'
     reviewStatus: reviewed

@@ -55,7 +55,7 @@ public class ProductionBatchController {
 
     private BatchResponse toResponse(ProductionObject object) {
         WorkOrder order = productionService.requireOrder(object.getWorkOrderId());
-        Material product = productionService.requireProduct(order.getProductId());
+        Material product = productionService.findProduct(order.getProductId());
         ProductProcessVersion process = productionService.findProcessVersion(object.getProcessVersionId());
         return new BatchResponse(
                 String.valueOf(object.getId()),
@@ -64,8 +64,8 @@ public class ProductionBatchController {
                 order.getOrderNo(),
                 order.getOrderNumber(),
                 String.valueOf(order.getProductId()),
-                product.getName(),
-                product.getCode(),
+                product == null ? "产品已不存在" : product.getName(),
+                product == null ? String.valueOf(order.getProductId()) : product.getCode(),
                 String.valueOf(object.getProcessVersionId()),
                 process == null ? "-" : process.getVersionLabel(),
                 object.getTargetQuantity(),

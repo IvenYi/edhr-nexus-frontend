@@ -274,6 +274,10 @@ public class ProductionService {
         return materialRepository.findByTenantIdAndId(TENANT_ID, id).orElseThrow(() -> error("产品不存在"));
     }
 
+    public Material findProduct(Long id) {
+        return materialRepository.findByTenantIdAndId(TENANT_ID, id).orElse(null);
+    }
+
     public ProductProcessVersion findProcessVersion(Long id) {
         if (id == null) return null;
         return processVersionRepository.findByTenantIdAndId(TENANT_ID, id).orElse(null);

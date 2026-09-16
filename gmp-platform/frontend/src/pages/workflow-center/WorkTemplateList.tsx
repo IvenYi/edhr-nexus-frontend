@@ -1,3 +1,4 @@
+import { readRecordLocation } from '@/utils/recordLocation';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -740,10 +741,10 @@ export default function WorkTemplateList() {
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState<"definitions" | "rules">(
-    "definitions",
+    () => readRecordLocation().type === 'workflow_binding_rule' ? 'rules' : 'definitions',
   );
-  const [keyword, setKeyword] = useState("");
-  const [submittedKeyword, setSubmittedKeyword] = useState("");
+  const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
+  const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
   const [hiddenColumns, setHiddenColumns] = useState<WorkTemplateColumnId[]>(
     () => {
       try {
@@ -1303,6 +1304,7 @@ export default function WorkTemplateList() {
                       ? rows.map((row) => (
                           <TableRow
                             key={row.id}
+                            data-record-id={row.id}
                             hover
                             onClick={() => setDetailTarget(row)}
                             sx={{ ...tableRowSx, cursor: "pointer" }}

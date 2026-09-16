@@ -165,6 +165,7 @@ public class TemplateModelingController {
     }
 
     @DeleteMapping("/form-templates/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "form_template", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteFormTemplate(@PathVariable Long id) {
         FormTemplate existing = formTemplateRepository.findById(id)
@@ -249,6 +250,7 @@ public class TemplateModelingController {
     }
 
     @DeleteMapping("/form-templates/{id}/versions/{versionId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "form_template_version", idArgument = 1)
     @Transactional
     public ApiResponse<Void> deleteFormTemplateVersion(@PathVariable Long id, @PathVariable Long versionId) {
         formTemplateRepository.findById(id)
@@ -367,6 +369,7 @@ public class TemplateModelingController {
     }
 
     @DeleteMapping("/batch-record-templates/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "dhr_template", idArgument = 0)
     @PreAuthorize("hasAuthority('master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<Void> deleteBatchRecordTemplate(@PathVariable Long id) {
@@ -442,6 +445,7 @@ public class TemplateModelingController {
     }
 
     @DeleteMapping("/{templateType}/categories/{id}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "template_category", idArgument = 1)
     @PreAuthorize("hasAuthority(#templateType == 'form-templates' || #templateType == 'FORM' ? 'master-data.form-templates' : 'master-data.batch-record-templates')")
     @Transactional
     public ApiResponse<Void> deleteCategory(@PathVariable String templateType, @PathVariable Long id) {

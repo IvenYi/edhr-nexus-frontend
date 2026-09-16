@@ -1,14 +1,14 @@
 # Ontology P0 Coverage Review
 
-knowledgeModelVersion: `0.3.18`
+knowledgeModelVersion: `0.3.20`
 schemaVersion: `1.1.0`
-reviewedAt: `2026-09-15`
+reviewedAt: `2026-09-16`
 
 ## 结论
 
-本次审查确认 P0 的**事实目录覆盖目标**继续满足：当前工作树全部 201 个唯一非 `deprecated` 规则条件事实均可通过 fact ID 或 alias 解析到唯一事实目录记录，并按目录中的 `allowedOperators` 约束操作符。`factCatalogProfile` 仅是分组信息，不能绕过全量解析校验。废弃规则仍保留为历史表达，不计入当前覆盖率。`DEC-0038` 中的 180/180 是 P0 首次发布时的历史基线统计；后续工作树已持续增加业务规则和对应事实，本报告按当前资产重新计算，不把全部统计变化归因于某一个功能切片。
+本次增量审查确认 P0 的**事实目录覆盖目标**继续满足：当前工作树全部 211 个唯一非 `deprecated` 规则条件事实均可通过 fact ID 或 alias 解析到唯一事实目录记录，并按目录中的 `allowedOperators` 约束操作符。`factCatalogProfile` 仅是分组信息，不能绕过全量解析校验。废弃规则仍保留为历史表达，不计入当前覆盖率。`DEC-0038` 中的 180/180 是 P0 首次发布时的历史基线统计；本切片在0.3.19的206条基础上增加5条个人查询权限、资格和身份历史事实。下列既有分域实现说明是历史核对摘要，并非本切片重新审查全系统运行能力。
 
-这不等于 201 个事实都已实现为运行时读取字段。事实目录中已有真实实现证据的记录保留 `implemented`；仅有规则定义、设计约束或未来运行时语义的记录保持 `specified / not-available / unreviewed`。规则 `implemented` 不能单独证明其条件事实已经实现。
+这不等于 211 个事实都已实现为运行时读取字段。事实目录中已有真实实现证据的记录保留 `implemented`；仅有规则定义、设计约束或未来运行时语义的记录保持 `specified / not-available / unreviewed`。规则 `implemented` 不能单独证明其条件事实已经实现。
 
 ## 分域核对
 
@@ -23,17 +23,17 @@ reviewedAt: `2026-09-15`
 
 ## 机械校验结果
 
-- `core-business.yaml`：186 条事实；`form-process-binding.yaml`：15 条事实；事实目录合计 201 条，无重复 ID、无重复 alias、无悬空 `conceptId` 或 `evidenceIds`。
+- `core-business.yaml`：185 条；`form-process-binding.yaml`：15 条；`material-fields.yaml`：2 条；`material-import.yaml`：1 条；`form-instance-number.yaml`：1 条；`form-instance-query.yaml`：2 条；`form-worklists.yaml`：5 条；事实目录合计 211 条，无重复 ID、无重复 alias、无悬空 `conceptId` 或 `evidenceIds`。
 - `implementation-anchors/core-business.yaml`：11 个核心域锚点；代码、迁移、UI 和测试路径均存在。
-- 规则事实覆盖：201/201 个唯一非废弃规则事实，覆盖率 100%；事实目录按文件分为 `core-business` 186 条、`form-process-binding` 15 条。
+- 规则事实覆盖：211/211 个唯一非废弃规则事实，覆盖率 100%；各目录文件数量见上一项；当前切片沿用现有事实目录，不新建 schema 分组。
 - 事实操作符：均来自对应事实的 `allowedOperators`；正式校验器负责拒绝非法操作符。
-- 版本：知识模型 `0.3.18`、schema `1.1.0` 与当前资产头一致。
+- 版本：知识模型 `0.3.20`、schema `1.1.0` 与当前资产头一致。
 
 ## 证据边界
 
 当前 `sourceLocator` 对核心事实主要达到领域级定位，部分语义别名不是源码中的字面字段或方法名。这是 P0 的已知证据边界，不应伪装成精确符号级依赖索引。P1 再补充逐事实代码符号、接口字段、数据库字段和查询路径，并建立结构化影响路径与冲突检查。
 
-独立质量子智能体已完成复验，覆盖统计、引用和正式测试均通过；本次 P0 质量门禁已关闭。工作树仍为未提交状态，因此 provenance 中的 `working-tree` 不能被解释为不可变发布版本。
+历史 P0 基线的独立质量门禁已关闭；本次查询切片的独立质量门禁由主智能体另行收尾，不能复用历史结果。工作树仍为未提交状态，因此 provenance 中的 `working-tree` 不能被解释为不可变发布版本。
 
 ## Roadmap
 

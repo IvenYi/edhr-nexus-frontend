@@ -258,13 +258,13 @@ export default function ProductionExecutionPage() {
     : stageIssues.length ? `${stageIssues[0]}${stageIssues.length > 1 ? `（共 ${stageIssues.length} 项未满足）` : ''}`
     : pending ? startConditionText : completionConditionText;
   const scanNext = () => protect(() => { setBarcode(''); scanRef.current?.focus(); });
-  const scanInput = <Box component="form" className={view ? 'execution-scan' : 'execution-scan execution-scan-welcome'} onSubmit={(event) => { event.preventDefault(); protect(() => void load()); }}>
+  const scanInput = <Box component="form" aria-busy={busy} className={view ? 'execution-scan' : 'execution-scan execution-scan-welcome'} onSubmit={(event) => { event.preventDefault(); protect(() => void load()); }}>
     <TextField inputRef={scanRef} autoFocus fullWidth size="small" value={barcode} disabled={busy}
       onChange={(event) => setBarcode(event.target.value)} placeholder={view ? '扫描批次 / SN 条码' : '请扫描或输入批次号 / SN 条码'}
       inputProps={{ maxLength: 64, 'aria-label': '扫描批次号 / SN 条码' }}
       InputProps={{ startAdornment: <InputAdornment position="start"><QrCodeScannerRounded color="primary" /></InputAdornment>,
         endAdornment: <InputAdornment position="end"><kbd>Enter</kbd></InputAdornment> }} />
-    <Button type="submit" variant="contained" disabled={busy || !barcode.trim()} endIcon={busy ? <CircularProgress size={16} color="inherit" /> : !view ? <ArrowForwardRounded /> : undefined}>{busy ? '识别中' : view ? '识别' : '识别条码'}</Button>
+    <Button className="execution-scan-submit" type="submit" variant="contained" disabled={busy || !barcode.trim()} endIcon={busy ? <CircularProgress size={16} color="inherit" /> : !view ? <ArrowForwardRounded /> : undefined}>{busy ? '识别中' : view ? '识别' : '识别条码'}</Button>
   </Box>;
   const documentPreview = <Box ref={documentBodyRef} className="execution-document-body">
     {documentError ? <Alert severity="error">{documentError}</Alert>
@@ -343,9 +343,7 @@ export default function ProductionExecutionPage() {
         <Button variant="outlined" aria-label="全屏工作台" startIcon={<FullscreenRounded fontSize="small" />} onClick={() => void (globalThis.document.fullscreenElement ? globalThis.document.exitFullscreen() : rootRef.current?.requestFullscreen())}>全屏</Button>
       </Stack>
     </Box>
-    {busy && <LinearProgress className="execution-loading" />}
     <Box className="execution-notices" aria-live="polite">
-      {error && <Alert severity="error" onClose={() => setError('')}>{error}</Alert>}
       {view?.configurationError && <Alert severity="error">{view.configurationError}</Alert>}
       {view?.historicalWithoutExecution && <Alert severity="warning">此对象已有生产状态，但没有工序执行记录。当前仅展示已有关联信息，不能恢复或推断历史工序。</Alert>}
     </Box>
@@ -476,6 +474,7 @@ export default function ProductionExecutionPage() {
         protect(() => void act({ action: 'ADD_FORM_COPY', formId }));
       }}>新增一份</Button></Box>
     </Drawer>
+    <Snackbar open={Boolean(error) && !signing} autoHideDuration={4000} onClose={(_, reason) => { if (reason !== 'clickaway') setError(''); }} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="error" onClose={() => setError('')} sx={{ maxWidth: 480 }}>{error}</Alert></Snackbar>
     <Snackbar open={Boolean(notice)} autoHideDuration={6000} onClose={() => setNotice('')} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="success" onClose={() => setNotice('')} sx={{ maxWidth: 480 }}>{notice}</Alert></Snackbar>
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.warnings.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText={incompleteNotice?.action === 'COMPLETE' ? '已知晓，工序完工' : '已知晓，结束本表单填报'} cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: next.action, acknowledgeIncomplete: true, ...(next.action === 'END_FORM' ? { formId } : {}) }); }} />
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" destructive open={Boolean(pendingSwitch)} title="当前表单尚未保存" message={`${context?.objectNo ?? ''} · ${op?.name ?? ''} · ${form?.name ?? '当前表单'}：切换会丢弃未保存内容。可以返回继续填写并保存，或放弃修改后切换。`} confirmText="放弃修改并切换" cancelText="返回表单" onCancel={() => { setPendingSwitch(null); setOperationDrawerOpen(false); }} onConfirm={() => { const next = pendingSwitch; setPendingSwitch(null); setDirty(false); next?.(); }} />

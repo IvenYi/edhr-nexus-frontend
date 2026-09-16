@@ -133,6 +133,7 @@ public class DocumentManagementController {
     }
 
     @DeleteMapping("/categories/{categoryId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "document_category", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteCategory(@PathVariable Long categoryId) {
         DocumentCategory category = requireDocumentCategory(categoryId);
@@ -259,6 +260,7 @@ public class DocumentManagementController {
     }
 
     @DeleteMapping("/{documentId}/versions/{versionId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "document_version", idArgument = 1)
     @Transactional
     public ApiResponse<Void> deleteVersion(@PathVariable Long documentId, @PathVariable Long versionId) {
         SopDocument document = requireDocument(documentId);
@@ -272,6 +274,7 @@ public class DocumentManagementController {
     }
 
     @DeleteMapping("/{documentId}")
+    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "sop_document", idArgument = 0)
     @Transactional
     public ApiResponse<Void> delete(@PathVariable Long documentId) {
         SopDocument document = requireDocument(documentId);

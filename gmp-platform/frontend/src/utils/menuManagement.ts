@@ -79,6 +79,16 @@ const REQUIRED_PRODUCTION_CONFIGURATION_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_FORM_MANAGEMENT_MENU: SidebarMenu = {
+  label: '表单管理',
+  icon: 'FactCheck',
+  children: [
+    { label: '表单列表', path: '/form-management/list' },
+    { label: '表单填报', path: '/form-management/filling' },
+    { label: '表单审核', path: '/form-management/review' },
+  ],
+};
+
 const REQUIRED_RECORD_CHANGE_MENU: SidebarMenu = {
   label: '变更管理',
   icon: 'Article',
@@ -88,6 +98,13 @@ const REQUIRED_RECORD_CHANGE_MENU: SidebarMenu = {
     { label: '变更审批', path: '/records/approvals' },
     { label: '变更记录', path: '/records/history' },
   ],
+};
+
+const REQUIRED_RECORDS_MODULE: SidebarModule = {
+  id: 'records',
+  label: '记录',
+  icon: 'FactCheck',
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_RECORD_CHANGE_MENU],
 };
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
@@ -114,6 +131,13 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/production/work-orders',
   '/production/batches',
   '/production/execution',
+  '/form-management/list',
+  '/form-management/filling',
+  '/form-management/review',
+]);
+const RECORDS_MANAGED_PATHS = new Set([
+  ...PRODUCTION_MANAGED_PATHS,
+  ...(REQUIRED_RECORD_CHANGE_MENU.children?.map((child) => child.path) ?? []),
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -221,8 +245,8 @@ export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
     .filter((menu) => menu.icon)
     .map((menu) => [`${module.id}:${menu.path || menu.label}`, menu.icon] as const)));
   ensureRequiredProcessModeling(nextModules);
+  ensureRequiredRecordsModule(nextModules);
   ensureRequiredProductionMenus(nextModules);
-  ensureRequiredRecordMenus(nextModules);
   ensureRequiredSystemMenus(nextModules);
   for (const module of nextModules) {
     for (const menu of module.menus) {
@@ -231,25 +255,6 @@ export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
     }
   }
   return nextModules;
-}
-
-function ensureRequiredRecordMenus(modules: SidebarModule[]) {
-  const paths = new Set(REQUIRED_RECORD_CHANGE_MENU.children?.map((child) => child.path) ?? []);
-  for (const module of modules) {
-    module.menus = module.menus.map((menu) => {
-      if (menu.children) return { ...menu, children: menu.children.filter((child) => !paths.has(child.path)) };
-      return menu.path && paths.has(menu.path) ? null : menu;
-    }).filter((menu): menu is SidebarMenu => menu !== null && (!menu.children || menu.children.length > 0));
-  }
-  let records = modules.find((module) => module.id === 'records');
-  if (!records) {
-    records = { id: 'records', label: '记录', icon: 'Article', menus: [] };
-    const productionIndex = modules.findIndex((module) => module.id === 'production');
-    modules.splice(productionIndex < 0 ? modules.length : productionIndex, 0, records);
-  }
-  records.label = '记录';
-  records.menus = records.menus.filter((menu) => menu.label !== '变更管理');
-  records.menus.push(JSON.parse(JSON.stringify(REQUIRED_RECORD_CHANGE_MENU)) as SidebarMenu);
 }
 
 export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModule[] {
@@ -334,6 +339,33 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
   productionModule.icon = productionModule.icon || 'PrecisionManufacturing';
 
   for (const module of modules) {
+    if (module.id === REQUIRED_RECORDS_MODULE.id) continue;
+    module.menus = module.menus
+      .map((menu) => {
+        if (menu.children) {
+          const children = menu.children.filter((child) => !RECORDS_MANAGED_PATHS.has(child.path));
+          return children.length > 0 ? { ...menu, children } : null;
+        }
+        return menu.path && RECORDS_MANAGED_PATHS.has(menu.path) ? null : menu;
+      })
+      .filter((menu): menu is SidebarMenu => menu !== null);
+  }
+
+  productionModule.menus = productionModule.menus.filter(
+    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置' && menu.label !== '生产准备' && menu.label !== '表单管理',
+  );
+  productionModule.menus.unshift(
+    ...cloneSidebarModules([{
+      id: 'production',
+      label: '生产',
+      icon: 'PrecisionManufacturing',
+      menus: [{ label: '生产执行', icon: 'PrecisionManufacturing', path: '/production/execution' }, REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
+    }])[0].menus,
+  );
+}
+
+function ensureRequiredRecordsModule(modules: SidebarModule[]) {
+  for (const module of modules) {
     module.menus = module.menus
       .map((menu) => {
         if (menu.children) {
@@ -345,17 +377,16 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
       .filter((menu): menu is SidebarMenu => menu !== null);
   }
 
-  productionModule.menus = productionModule.menus.filter(
-    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置' && menu.label !== '生产准备',
-  );
-  productionModule.menus.unshift(
-    ...cloneSidebarModules([{
-      id: 'production',
-      label: '生产',
-      icon: 'PrecisionManufacturing',
-      menus: [{ label: '生产执行', icon: 'PrecisionManufacturing', path: '/production/execution' }, REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
-    }])[0].menus,
-  );
+  let recordsModule = modules.find((module) => module.id === REQUIRED_RECORDS_MODULE.id);
+  if (!recordsModule) {
+    modules.push(cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0]);
+    return;
+  }
+
+  recordsModule.label = REQUIRED_RECORDS_MODULE.label;
+  recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
+  recordsModule.menus = recordsModule.menus.filter((menu) => menu.label !== REQUIRED_FORM_MANAGEMENT_MENU.label && menu.label !== REQUIRED_RECORD_CHANGE_MENU.label);
+  recordsModule.menus.unshift(...cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
@@ -471,6 +502,9 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/production/work-orders') return 'production.work-orders';
   if (path === '/production/batches') return 'production.batches';
   if (path === '/production/execution') return 'production.execution';
+  if (path === '/form-management/list') return 'form-instances.view';
+  if (path === '/form-management/filling') return 'form-management.filling';
+  if (path === '/form-management/review') return 'form-management.review';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

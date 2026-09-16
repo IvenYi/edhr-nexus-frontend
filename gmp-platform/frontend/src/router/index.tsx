@@ -21,6 +21,8 @@ const InstanceList = lazy(() => import('@/pages/workflow-center/InstanceList'));
 const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail'));
 const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
+const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInstanceListPage'));
+const FormManagementPlaceholderPage = lazy(() => import('@/pages/form-management/FormManagementPlaceholderPage'));
 const RecordChangePage = lazy(() => import('@/pages/record-control/RecordChangePage'));
 const RecordRequestListPage = lazy(() => import('@/pages/record-control/RecordRequestListPage'));
 const RecordRequestDetailPage = lazy(() => import('@/pages/record-control/RecordRequestDetailPage'));
@@ -96,12 +98,10 @@ const AppRouter = () => {
           <Route path="instances/:id/logs" element={<Suspense fallback={<Loading />}><InstanceLogs /></Suspense>} />
           <Route path="tasks/:id" element={<Suspense fallback={<Loading />}><TaskDetail /></Suspense>} />
         </Route>
-        <Route path="production">
-          <Route path="execution" element={<Suspense fallback={<Loading />}><ProductionExecutionPage /></Suspense>} />
-          <Route path="work-orders" element={<Suspense fallback={<Loading />}><WorkOrderPage /></Suspense>} />
-          <Route path="batches" element={<Suspense fallback={<Loading />}><BatchManagementPage /></Suspense>} />
-          <Route path="work-templates" element={<Suspense fallback={<Loading />}><WorkTemplateList /></Suspense>} />
-          <Route path="work-templates/:id" element={<Suspense fallback={<Loading />}><WorkTemplateEditor /></Suspense>} />
+        <Route path="form-management">
+          <Route path="list" element={<Suspense fallback={<Loading />}><FormInstanceListPage /></Suspense>} />
+          <Route path="filling" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单填报" /></Suspense>} />
+          <Route path="review" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单审核" /></Suspense>} />
         </Route>
         <Route path="records">
           <Route path="change" element={<Suspense fallback={<Loading />}><RecordChangePage /></Suspense>} />
@@ -109,6 +109,13 @@ const AppRouter = () => {
           <Route path="approvals" element={<Suspense fallback={<Loading />}><RecordApprovalPage /></Suspense>} />
           <Route path="history" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="all" /></Suspense>} />
           <Route path="requests/:requestId" element={<Suspense fallback={<Loading />}><RecordRequestDetailPage /></Suspense>} />
+        </Route>
+        <Route path="production">
+          <Route path="execution" element={<Suspense fallback={<Loading />}><ProductionExecutionPage /></Suspense>} />
+          <Route path="work-orders" element={<Suspense fallback={<Loading />}><WorkOrderPage /></Suspense>} />
+          <Route path="batches" element={<Suspense fallback={<Loading />}><BatchManagementPage /></Suspense>} />
+          <Route path="work-templates" element={<Suspense fallback={<Loading />}><WorkTemplateList /></Suspense>} />
+          <Route path="work-templates/:id" element={<Suspense fallback={<Loading />}><WorkTemplateEditor /></Suspense>} />
         </Route>
         <Route path="master-data">
           <Route path="materials" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="materials" /></Suspense>} />

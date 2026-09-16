@@ -484,6 +484,7 @@ export default function ProductModelingWorkspacePage() {
         onClose={() => setAuditTarget(null)}
       />
       <ConfirmDialog
+        deletionTarget={deleteTarget && { type: 'product_process_version', id: deleteTarget.id }}
         open={Boolean(deleteTarget)}
         title="删除制程配置版本"
         message={`确定删除版本「${deleteTarget?.version || ''}」吗？删除后不可恢复。`}

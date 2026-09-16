@@ -1,3 +1,4 @@
+import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -184,8 +185,8 @@ function BatchDetailDrawer({ detail, tab, onTabChange, auditRows, auditLoading, 
 
 export default function BatchManagementPage() {
   const [page, setPage] = useState(1);
-  const [keyword, setKeyword] = useState('');
-  const [submittedKeyword, setSubmittedKeyword] = useState('');
+  const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
+  const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
   const [status, setStatus] = useState('');
   const [detail, setDetail] = useState<BatchRecord | null>(null);
   const [detailTab, setDetailTab] = useState(0);
@@ -208,6 +209,7 @@ export default function BatchManagementPage() {
     },
   });
   const rows = batches.data?.content ?? [];
+  const showBatchTableState = batches.isLoading || batches.isError || rows.length === 0;
   const auditRows = useMemo(() => audit.data ?? [], [audit.data]);
 
   const cancelMutation = useMutation({
@@ -259,13 +261,13 @@ export default function BatchManagementPage() {
           <Typography variant="body2" sx={{ color: '#606266' }}>由工单生产对象拆分生成</Typography>
         </Box>
         <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-          <Table stickyHeader size="small" sx={{ minWidth: 1340, tableLayout: 'fixed' }}>
+          <Table stickyHeader size="small" sx={{ minWidth: 1340, tableLayout: 'fixed', height: showBatchTableState ? '100%' : 'auto' }}>
             <colgroup>
               <col style={{ width: 180 }} /><col style={{ width: 170 }} /><col style={{ width: 190 }} /><col style={{ width: 150 }} />
               <col style={{ width: 110 }} /><col style={{ width: 100 }} /><col style={{ width: 100 }} /><col style={{ width: 100 }} />
               <col style={{ width: 160 }} /><col style={{ width: 160 }} /><col style={{ width: 110 }} /><col style={{ width: 128 }} />
             </colgroup>
-            <TableHead>
+            <TableHead sx={{ height: 48 }}>
               <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
                 {['批次号', '工单号', '产品', '制程版本', '目标数量', '良品', 'NG', '报废', '计划开始', '计划结束', '状态', '操作'].map((label) => (
                   <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { ...tableHeaderCellSx, ...operationColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : label === '状态' ? { ...tableHeaderCellSx, ...statusColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : tableHeaderCellSx}>{label}</TableCell>
@@ -273,11 +275,11 @@ export default function BatchManagementPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {batches.isLoading && <TableRow><TableStateCell colSpan={12} align="center" sx={{ height: 240 }}><CircularProgress size={24} /></TableStateCell></TableRow>}
-              {batches.isError && <TableRow><TableStateCell colSpan={12} align="center" sx={{ height: 240, color: '#c62828' }}>批次数据加载失败</TableStateCell></TableRow>}
-              {!batches.isLoading && !batches.isError && rows.length === 0 && <TableRow><TableStateCell colSpan={12} align="center" sx={{ height: 240, color: '#909399' }}>暂无批次数据</TableStateCell></TableRow>}
+              {batches.isLoading && <TableRow><TableStateCell colSpan={12} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>}
+              {batches.isError && <TableRow><TableStateCell colSpan={12} align="center" sx={{ color: '#c62828' }}>批次数据加载失败：{batches.error instanceof Error ? batches.error.message : '请稍后重试'}</TableStateCell></TableRow>}
+              {!batches.isLoading && !batches.isError && rows.length === 0 && <TableRow><TableStateCell colSpan={12} align="center" sx={{ color: '#909399' }}>暂无批次数据</TableStateCell></TableRow>}
               {!batches.isLoading && !batches.isError && rows.map((row) => (
-                <TableRow key={row.id} hover tabIndex={0} onClick={() => { setDetail(row); setDetailTab(0); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { setDetail(row); setDetailTab(0); } }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
+                <TableRow data-record-id={row.id} key={row.id} hover tabIndex={0} onClick={() => { setDetail(row); setDetailTab(0); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { setDetail(row); setDetailTab(0); } }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}>
                       <Typography variant="body2" noWrap title={row.objectNo} sx={{ flex: 1, minWidth: 0, fontWeight: 600 }}>{row.objectNo}</Typography>
