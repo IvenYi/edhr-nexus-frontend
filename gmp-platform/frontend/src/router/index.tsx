@@ -21,6 +21,10 @@ const InstanceList = lazy(() => import('@/pages/workflow-center/InstanceList'));
 const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail'));
 const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
+const RecordChangePage = lazy(() => import('@/pages/record-control/RecordChangePage'));
+const RecordRequestListPage = lazy(() => import('@/pages/record-control/RecordRequestListPage'));
+const RecordRequestDetailPage = lazy(() => import('@/pages/record-control/RecordRequestDetailPage'));
+const RecordApprovalPage = lazy(() => import('@/pages/record-control/RecordApprovalPage'));
 
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const ProductModelingPage = lazy(() => import('@/pages/master-data/ProductModelingPage'));
@@ -98,6 +102,13 @@ const AppRouter = () => {
           <Route path="batches" element={<Suspense fallback={<Loading />}><BatchManagementPage /></Suspense>} />
           <Route path="work-templates" element={<Suspense fallback={<Loading />}><WorkTemplateList /></Suspense>} />
           <Route path="work-templates/:id" element={<Suspense fallback={<Loading />}><WorkTemplateEditor /></Suspense>} />
+        </Route>
+        <Route path="records">
+          <Route path="change" element={<Suspense fallback={<Loading />}><RecordChangePage /></Suspense>} />
+          <Route path="mine" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="mine" /></Suspense>} />
+          <Route path="approvals" element={<Suspense fallback={<Loading />}><RecordApprovalPage /></Suspense>} />
+          <Route path="history" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="all" /></Suspense>} />
+          <Route path="requests/:requestId" element={<Suspense fallback={<Loading />}><RecordRequestDetailPage /></Suspense>} />
         </Route>
         <Route path="master-data">
           <Route path="materials" element={<Suspense fallback={<Loading />}><ProcessModelingPage pageKey="materials" /></Suspense>} />

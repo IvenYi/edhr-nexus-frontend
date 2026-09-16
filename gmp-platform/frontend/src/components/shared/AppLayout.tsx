@@ -199,6 +199,7 @@ function getModuleIdByPath(pathname: string): string {
   if (isPathSegmentMatch(pathname, '/master-data')) return 'data';
   if (isPathSegmentMatch(pathname, '/production')) return 'production';
   if (isPathSegmentMatch(pathname, '/workflow')) return 'production';
+  if (isPathSegmentMatch(pathname, '/records')) return 'records';
   if (isPathSegmentMatch(pathname, '/system')) return 'system';
   return 'home';
 }
@@ -224,6 +225,7 @@ function getLayoutPermissionCode(path: string): string | undefined {
 }
 
 function canAccessPath(path: string, permissionSet: Set<string>): boolean {
+  if (path.startsWith('/records/')) return true;
   const permissionCode = getLayoutPermissionCode(path);
   return Boolean(permissionCode && permissionSet.has(permissionCode));
 }

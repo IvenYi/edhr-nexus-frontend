@@ -79,6 +79,17 @@ const REQUIRED_PRODUCTION_CONFIGURATION_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_RECORD_CHANGE_MENU: SidebarMenu = {
+  label: '变更管理',
+  icon: 'Article',
+  children: [
+    { label: '记录变更', path: '/records/change' },
+    { label: '我的变更', path: '/records/mine' },
+    { label: '变更审批', path: '/records/approvals' },
+    { label: '变更记录', path: '/records/history' },
+  ],
+};
+
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
   label: '生产准备',
   icon: 'Assignment',
@@ -211,6 +222,7 @@ export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
     .map((menu) => [`${module.id}:${menu.path || menu.label}`, menu.icon] as const)));
   ensureRequiredProcessModeling(nextModules);
   ensureRequiredProductionMenus(nextModules);
+  ensureRequiredRecordMenus(nextModules);
   ensureRequiredSystemMenus(nextModules);
   for (const module of nextModules) {
     for (const menu of module.menus) {
@@ -219,6 +231,25 @@ export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
     }
   }
   return nextModules;
+}
+
+function ensureRequiredRecordMenus(modules: SidebarModule[]) {
+  const paths = new Set(REQUIRED_RECORD_CHANGE_MENU.children?.map((child) => child.path) ?? []);
+  for (const module of modules) {
+    module.menus = module.menus.map((menu) => {
+      if (menu.children) return { ...menu, children: menu.children.filter((child) => !paths.has(child.path)) };
+      return menu.path && paths.has(menu.path) ? null : menu;
+    }).filter((menu): menu is SidebarMenu => menu !== null && (!menu.children || menu.children.length > 0));
+  }
+  let records = modules.find((module) => module.id === 'records');
+  if (!records) {
+    records = { id: 'records', label: '记录', icon: 'Article', menus: [] };
+    const productionIndex = modules.findIndex((module) => module.id === 'production');
+    modules.splice(productionIndex < 0 ? modules.length : productionIndex, 0, records);
+  }
+  records.label = '记录';
+  records.menus = records.menus.filter((menu) => menu.label !== '变更管理');
+  records.menus.push(JSON.parse(JSON.stringify(REQUIRED_RECORD_CHANGE_MENU)) as SidebarMenu);
 }
 
 export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModule[] {

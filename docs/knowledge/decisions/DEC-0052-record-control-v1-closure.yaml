@@ -1,0 +1,90 @@
+knowledgeModelVersion: 0.3.18
+decisions:
+  - id: DEC-0052
+    title: 记录变更与作废首期闭环及暂缓边界
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；补充 DEC-0037、DEC-0041、DEC-0042、DEC-0043 和 DEC-0051。交接文档只描述目标，后续用户确认的菜单仅交付变更管理四入口、无岗位/菜单权限、DHR 放行判断暂缓、Rev.2 原业务签署人不重签覆盖旧资料中的首期范围。公共流程代码由逸文负责；本决策不声称运行代码或迁移已落地。"
+    decisionStatements:
+      - id: DEC-0052-01
+        statement: "provenance: user-confirmed；本期仅在记录下交付变更管理的记录变更、我的变更、变更审批、变更记录四个入口。当前没有独立的表单列表、表单填报和表单审批页面，本期不新增表单管理空菜单或开发该三页。首期仅按表单流水号检索已完成且存在当前有效修订的实例，并在同页发起 CHANGE 或 OBSOLETE；批次/SN 检索延期，不设置 DHR 或记录本独立入口。"
+        status: specified
+        visibility: internal
+      - id: DEC-0052-02
+        statement: "provenance: user-confirmed；表单模板版本与实例修订独立。同一实例 ID、流水号、模板版本和模板快照不变；首次完成建立 Rev.1，变更批准才产生唯一当前有效的下一 Rev.N，旧修订完整只读保留。拟数据审批前不写正式值；退回或撤回使拟数据失效且来源不变；作废批准不产生内容新修订，也不删除原值、附件、签名或历史。"
+        status: specified
+        visibility: internal
+      - id: DEC-0052-03
+        statement: "provenance: user-confirmed；同一实例同一时刻最多一笔活动申请，打开页面或进入编辑不占锁；最终确认须在事务中复核来源已完成、当前修订、活动锁与认证身份。审批期间来源主状态仍为已完成，只增加活动申请标识；变更批准后仍已完成但指向新修订，作废批准后才进入已作废。"
+        status: specified
+        visibility: internal
+      - id: DEC-0052-04
+        statement: "provenance: user-confirmed；变更拟数据使用同一模板快照、稳定 fieldId/子行 ID/附件 fileId 比对；无实际内容差异不得提交，原因必填。作废原文只读且原因必填，不建立拟内容修订。两类申请均显式选择类型匹配的已发布流程版本，内容与版本确定后取得申请人真实签名，再由记录控制域一次确认并原子启动公共流程。"
+        status: specified
+        visibility: internal
+      - id: DEC-0052-05
+        statement: "provenance: user-confirmed；APPROVED 在同步事务中幂等落地业务结果；RETURNED 终结旧申请和旧流程、使并行其他待办失效、释放活动锁且来源不变；WITHDRAWN 仅允许当前审批轮次尚无批准或退回决定时执行，终结申请并保持来源不变。退回后不能编辑或重提旧申请，再发起必须获得新申请 ID、编号、签名与流程实例。业务落地失败须回滚最终审批动作。"
+        status: specified
+        visibility: internal
+      - id: DEC-0052-06
+        statement: "provenance: user-confirmed；原表单签名永久归属原修订，申请人与审批人的新签名是各自动作的独立证据，不得冒充原表单对新内容的签署；本期不增加原业务签署人对 Rev.2 重新签署动作。申请、修订、完整前后快照及哈希、字段差异、状态历史、WorkflowActionLog 和不可变 AuditEvent 通过申请、流程、事件与审计关联标识追溯。"
+        status: specified
+        visibility: internal
+      - id: DEC-0052-07
+        statement: "provenance: user-confirmed；首期不实施岗位角色或菜单权限授权。当前租户内所有已登录用户可按表单流水号检索和发起 CHANGE/OBSOLETE，并查看变更记录全量历史；我的变更列表及详情仅当前申请人可见，变更审批仅当前候选/处理人和本人已处理任务可见。后端从认证上下文取得用户身份，不信任前端传入的人员参数。现有公共流程候选接口的权限校验与此目标边界不一致，须由公共流程负责人协同收敛。"
+        status: specified
+        visibility: internal
+      - id: DEC-0052-08
+        statement: "provenance: user-confirmed；当前没有可靠 DHR 实例及放行状态数据源，本期不实现 DHR 放行状态判断或 DHR 联动，不能宣称已阻断外部/历史已放行 DHR。作废后自动标记 DHR 证据缺项、补开提示或待办、重新汇总均暂缓；不自动创建替代表单。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-change-search-scope-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.record-control-v1-menu-scope
+        given: 当前仓库没有独立的表单列表、表单填报和表单审批页面
+        when: 用户查看首期记录菜单
+        then: 仅新增变更管理下的记录变更、我的变更、变更审批和变更记录四个入口，不创建表单管理空菜单或三张新页面
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [菜单配置检查, 页面路由检查, 浏览器菜单验证]
+      - id: scenario.record-control-v1-revision-approval
+        given: 已完成表单拥有当前 Rev.1 且申请人提交了存在真实差异的变更申请
+        when: 匹配流程全部批准且业务落地成功
+        then: Rev.2 唯一生效，Rev.1 及其原签名只读保留；审批前的正式值未改变
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [迁移与修订集成测试, 差异与签名归属测试, 审批事务回滚测试]
+      - id: scenario.record-control-v1-return-reapply
+        given: 一笔表单变更或作废申请正在审批
+        when: 任一待办退回，随后用户再次发起
+        then: 旧申请和流程终结且来源不变，新申请生成不同编号和流程实例；旧新申请分别占一行历史
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [并行待办失效测试, 活动锁释放测试, 新申请编号与流程实例测试]
+      - id: scenario.record-control-v1-authenticated-access
+        given: 当前租户用户已登录但没有记录控制岗位角色或菜单权限
+        when: 查询流水号、发起申请、打开我的变更或变更审批
+        then: 可按本期开放边界发起和查看全量变更记录，但不能查看他人的我的变更或非本人候选及已处理审批任务
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [非管理员接口授权测试, 伪造前端人员参数测试, 列表和详情越权测试]
+      - id: scenario.record-control-v1-dhr-deferred
+        given: 当前没有权威 DHR 实例和放行状态来源
+        when: 验收首期记录变更与作废
+        then: 不宣称已实现放行阻断、证据缺项、补开或重汇总，也不自动生成替代表单
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [页面文案检查, 验收范围检查]
+    implementationDiscrepancies:
+      - id: discrepancy.record-control-v1-runtime-pending
+        status: accepted
+        severity: high
+        visibility: internal
+        path: docs/knowledge/evidence/record-control-v1-user-confirmed.md
+        lineHint: 1
+        summary: "provenance: user-confirmed-and-evidence-gap；该首期闭环是目标规则，尚未据本决策取得申请、修订、同步结果落地、权限边界和端到端验证证据；不得投影为 implemented、verified 或 runtime。"
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+      - id: discrepancy.record-control-v1-workflow-permission-mismatch
+        status: open
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java
+        lineHint: 1
+        summary: "provenance: original-evidence-and-user-confirmed；公共流程当前候选接口按既有发起权限码授权，而最新用户决定本期所有已登录用户均可发起；需由公共流程负责人处理，不能把知识目标视为已实现。"
+        evidenceIds: [evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-v1-user-confirmed]

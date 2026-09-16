@@ -9,6 +9,7 @@ export interface FormRuntime {
   disabled?: boolean;
   upload?: (file: File) => Promise<{ fileId: string; originalName: string }>;
   references?: (fieldId: string, keyword: string) => Promise<Array<{ id: string; name: string }>>;
+  rowIdentity?: boolean;
 }
 export const FormRuntimeContext = createContext<FormRuntime | undefined>(undefined);
 
@@ -47,9 +48,9 @@ function RuntimeSubTable({ field, disabled, runtime }: { field: ModelField; disa
   const rows = Array.isArray(runtime.values[field.id]) ? runtime.values[field.id] as Record<string, unknown>[] : [];
   if (!columns.length) return <Alert severity="warning">子表尚未配置字段，无法填报。</Alert>;
   return <Box sx={{ width: '100%', overflowX: 'auto' }}><Table size="small"><TableHead><TableRow>{columns.map((column) => <TableCell key={column.id}>{column.name}</TableCell>)}<TableCell /></TableRow></TableHead><TableBody>
-    {rows.map((row, index) => <TableRow key={index}>{columns.map((column) => <TableCell key={column.id} sx={{ minWidth: 140 }}><FormRuntimeContext.Provider value={{ ...runtime, values: row, disabled, onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled} /></FormRuntimeContext.Provider></TableCell>)}
+    {rows.map((row, index) => <TableRow key={runtime.rowIdentity ? String(row.__recordRowId ?? index) : index}>{columns.map((column) => <TableCell key={column.id} sx={{ minWidth: 140 }}><FormRuntimeContext.Provider value={{ ...runtime, values: row, disabled, onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled} /></FormRuntimeContext.Provider></TableCell>)}
       <TableCell><IconButton size="small" aria-label={`删除第 ${index + 1} 行`} disabled={disabled} onClick={() => runtime.onChange(field.id, rows.filter((_, i) => i !== index))}><DeleteOutlineRounded /></IconButton></TableCell></TableRow>)}
-  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, {}])}>添加记录</Button></Box>;
+  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, runtime.rowIdentity ? { __recordRowId: crypto.randomUUID() } : {}])}>添加记录</Button></Box>;
 }
 
 function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disabled: boolean; runtime: FormRuntime }) {

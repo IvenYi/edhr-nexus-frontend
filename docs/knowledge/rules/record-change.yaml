@@ -1,0 +1,74 @@
+knowledgeModelVersion: 0.3.18
+rules:
+  - id: rule.record-change-search-scope-v1
+    name: 记录变更首版检索范围
+    status: specified
+    visibility: internal
+    trigger: record-change.search
+    scope: record-change
+    condition:
+      all:
+        - fact: recordChange.releaseScope
+          operator: equals
+          value: v1
+    result:
+      type: allow-with-governance
+      action: record-change.search
+      allowedSearchModes: [formSerialNo]
+      deferredSearchModes: [batchOrSerialNo]
+      excludedDedicatedSearchEntries: [dhr, notebook]
+    explanation: user-confirmed；为了交期，记录变更本次首版仅允许按表单流水号检索并发起变更；按批次/SN检索延期到后续版本而非永久取消，且本次仍不单独提供DHR或记录本检索入口。本规则只约束当前交付的检索范围；控件样式、资格状态、结果字段、审批、签名、作废、前后对比和审计语义均未由本规则定义。当前仓库尚无记录变更运行代码或测试，因此保持specified/internal，不进入客户或运行时投影。
+    evidenceIds: [evidence.record-change-search-scope-user-confirmed, evidence.record-change-existing-prd]
+  - id: rule.record-control-source-eligibility-v1
+    name: 记录控制首期来源资格
+    status: specified
+    visibility: internal
+    trigger: record-control.application.confirm
+    scope: record-control
+    condition:
+      all:
+        - {fact: fact.record-control-source-status, operator: equals, value: COMPLETED}
+        - {fact: fact.record-control-current-revision-present, operator: equals, value: true}
+        - {fact: fact.record-control-active-application-present, operator: equals, value: false}
+    result:
+      type: allow-with-governance
+      action: record-control.application-confirm
+      transactionalRecheck: [sourceStatus, currentRevisionId, activeApplication]
+      lockCardinality: one-active-application-per-form-instance
+    explanation: user-confirmed；首期只允许已完成且有当前有效修订的实例确认申请；同一实例至多一笔活动申请，最终确认在事务中复核，打开页面不占锁。DHR 放行状态判断本期暂缓，不得将其伪装成已经执行的阻断。
+    evidenceIds: [evidence.record-control-v1-user-confirmed]
+  - id: rule.record-control-authenticated-access-v1
+    name: 记录控制首期认证访问边界
+    status: specified
+    visibility: internal
+    trigger: record-control.read-or-start
+    scope: record-control
+    condition: {fact: fact.record-control-authenticated-user-present, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      sourceSearchAndStart: all-authenticated-users-in-current-tenant
+      changeRecordHistory: all-authenticated-users-in-current-tenant
+      myChanges: current-applicant-only
+      approvalTasks: current-candidate-or-processor-and-own-processed-only
+      actorSource: backend-authentication-context
+      forbidClientActorOverride: true
+    explanation: user-confirmed；本期不实施岗位角色或菜单权限授权，但“我的变更”和“变更审批”的身份边界仍由后端认证上下文强制执行；已有公共流程候选权限检查待负责人收敛。
+    evidenceIds: [evidence.record-control-v1-user-confirmed]
+  - id: rule.record-control-return-terminates-request
+    name: 记录控制退回终结旧申请
+    status: specified
+    visibility: internal
+    trigger: record-control.workflow-result
+    scope: record-control
+    condition: {fact: fact.record-control-workflow-result, operator: equals, value: RETURNED}
+    result:
+      type: allow-with-governance
+      applicationState: terminal-read-only
+      workflowState: terminal
+      otherPendingTasks: invalidated
+      proposedRevision: invalidated
+      sourceRevision: unchanged
+      activeLock: released
+      retrySemantics: new-request-and-workflow-instance
+    explanation: user-confirmed；退回即终结旧申请和流程，不能在旧申请上修改或重新提交；再次发起使用新编号和流程实例。该目标规则尚未进入运行时投影。
+    evidenceIds: [evidence.record-control-v1-user-confirmed]

@@ -68,7 +68,7 @@ terms:
     visibility: internal
   - id: term.form-instance
     name: 表单实例
-    definition: 基于表单模板版本创建的生产填报记录；表单流程绑定是可选的，未绑定流程时提交校验通过即进入已完成，绑定流程时在流程完成后进入同一已完成终态。
+    definition: 基于表单模板版本创建的生产填报记录；表单流程绑定是可选的，未绑定流程时提交校验通过即进入已完成，绑定流程时在流程完成后进入同一已完成终态。实例 ID、流水号和模板快照与内容修订分离，首次完成后才建立 Rev.1。
     aliases: [生产表单实例, FormInstance]
     status: specified
     visibility: internal
@@ -92,7 +92,7 @@ terms:
     visibility: internal
   - id: term.record-control-application
     name: 记录控制申请
-    definition: 表单变更或表单作废申请的公共上位概念；申请域负责申请内容、来源资格、申请人签名、业务锁和批准后业务落地。当前变更申请和作废申请仍保留独立对象与生命周期，不因该公共概念而合并状态。
+    definition: 表单变更或表单作废申请的公共上位概念；申请域负责申请内容、来源资格、申请人签名、业务锁和批准后业务落地。同一来源实例同时最多一笔活动申请；退回或撤回终结旧申请，再次发起创建新申请编号和流程实例。变更和作废仍保留独立业务结果，不因该公共概念而合并状态。
     aliases: [记录控制申请单, RecordControlApplication]
     status: specified
     visibility: internal
@@ -584,7 +584,7 @@ terms:
     visibility: internal
   - id: term.record-correction-request
     name: 表单变更申请
-    definition: 针对已完成记录发起的独立受控申请；申请提交新修订，经匹配的已发布审核流程批准后替代当前有效修订。
+    definition: 针对已完成且存在当前有效修订的记录发起的独立受控申请；提交时只冻结拟修订，不改写正式值，经匹配的已发布审批流程批准后产生下一内容修订并替代当前有效修订。
     aliases: [变更申请, 变更申请单, RecordCorrectionRequest]
     status: specified
     visibility: internal
@@ -598,6 +598,12 @@ terms:
     name: 变更修订
     definition: 表单变更产生的完整数据修订，保留基于修订、哈希、生效区间和申请引用；历史修订只读且不可覆盖。
     aliases: [记录修订, CorrectionRevision]
+    status: specified
+    visibility: internal
+  - id: term.form-instance-revision
+    name: 表单实例修订
+    definition: 同一表单实例已完成内容的受控历史，与表单模板版本独立；首次完成产生 Rev.1，变更批准产生下一 Rev.N，任一时刻至多一个当前有效修订，历史修订只读。作废不产生内容新修订。
+    aliases: [当前修订, 历史修订, Rev.N]
     status: specified
     visibility: internal
   - id: term.record-impact-assessment
