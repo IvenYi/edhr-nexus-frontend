@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.20
+evidence:
+  - id: evidence.form-instance-query-decision
+    type: document
+    path: docs/development/form-instance-query-decision-package.yaml
+    description: user-confirmed；2026-09-16 用户明确回答采用建议按来源权限查看全部记录。决策包与配套 API 文档明确当前已保存生产来源、专门权限加来源权限以及读写边界；附件目标中尚未接入的来源、修订和申请查询不作为已实现能力。
+    visibility: internal
+  - id: evidence.form-instance-query-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceQueryController.java
+    description: original-evidence；2026-09-16 working-tree，基于 e5772f81184e708a6b023f5112700be6820cb1be，类级 PreAuthorize 同时检查 form-instances.view 与 production.execution，包含列表、编号、详情和 FILL 上下文四个 GET 入口；仅源码核对，不是发布验证。
+    visibility: internal
+  - id: evidence.form-instance-query-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java
+    description: original-evidence；2026-09-16 working-tree，list/find 固定 default 租户，list 使用白名单及绑定参数，摘要与详情分离；operationContext 读取 ProductionExecutionService.get 的 revision 和 controls，不执行动作。聚焦测试另有证据登记，源码与测试不代表发布。
+    visibility: internal
+  - id: evidence.form-instance-query-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql
+    description: original-evidence；2026-09-16 working-tree 增量搜索投影、冻结 JSON 历史回填和专门权限初始化。保留旧实例身份、值和快照，不从历史显示名推测主体 ID；当前引用 SQL 不代表已在发布数据库应用。
+    visibility: internal
+  - id: evidence.form-instance-query-integration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；2026-09-16 working-tree 的 globalQueryRequiresBothPermissionsAndPreservesOldEntry、globalQueryUsesFrozenMetadataCrossTemplateFiltersAndStablePages、globalQueryExactDetailsTenantBoundaryAndSourceControls、globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory、globalQueryRejectsUnsupportedAndMalformedConditions 覆盖权限、兼容、冻结筛选、来源动作与非法参数。核对 target/surefire-reports/com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.txt 为27项、0失败、0错误、2个浏览器fixture条件跳过；独立PG执行由质量角色报告，不当作本角色亲自运行或发布证据。
+    visibility: internal
+  - id: evidence.form-instance-query-migration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java
+    description: original-evidence；2026-09-16 working-tree 的 additiveMigrationPreservesEvidenceAndGrantsOnlyAdminIdempotently 验证0083重复运行、身份和值保留、历史主体空值、跨租户缺失上下文以及仅ADMIN获权；PG分支额外断言冻结搜索投影。核对 target/surefire-reports/com.zencas.edhr.production.service.FormInstanceQueryMigrationTest.txt 为1项、0失败、0错误、0跳过；本角色读取测试及报告，PG实跑证据由主/质量角色提供，不解释为发布数据库已应用。
+    visibility: internal

@@ -1,0 +1,45 @@
+knowledgeModelVersion: 0.3.20
+decisions:
+  - id: DEC-0051
+    title: 全局表单实例查询的来源授权与只读边界
+    status: implemented
+    visibility: internal
+    context: 用户授权开发跨模板查询，并明确采用专门实例查看权限加来源权限、可查看默认租户内来源全部已保存记录的方案。本决策增补 DEC-0050 的稳定实例身份和冻结详情，不改变原模板范围接口，也不扩展 DHR、附录或记录本。DEC-PACKAGE-20260916-FORM-INSTANCE-QUERY 无未决问题；工作树实现已完成并具备聚焦集成与迁移测试证据；保持 implemented/internal，不代表部署或发布。
+    decisionStatements:
+      - id: DEC-0051-01
+        statement: 新全局查询同时要求 form-instances.view 与当前来源 production.execution，不默认限本人或部门；列表、总数、详情、完整号定位和填写上下文使用同一授权边界和默认租户。新专门权限只初始化给 ADMIN，其他角色需显式分配。
+        status: implemented
+        visibility: internal
+      - id: DEC-0051-02
+        statement: 复用 form_instance_record 的主键和实例号，不创建第二实例库；第一切片仅包含已保存生产执行来源。列表是冻结元数据摘要，详情读取原冻结表单和值；一张模板多份实例保持独立。
+        status: implemented
+        visibility: internal
+      - id: DEC-0051-03
+        statement: 查询权限不授予填报权限。FILL 上下文复用源控制投影，写动作仍在原生产执行入口重新校验；查询创建人或更新人不能代替任务资格与参与历史。非生产来源、变更作废资格和修订查询不在本切片内。
+        status: implemented
+        visibility: internal
+      - id: DEC-0051-04
+        statement: 查询采用白名单条件、服务端分页和稳定排序；不匹配的 AND 条件返回空集，不跨读未授权主数据验证。历史搜索投影仅从冻结数据补充，未知主体 ID 保持空，现有无时区时间保留来源本地语义，不伪造历史绝对时刻。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-controller, evidence.form-instance-query-service, evidence.form-instance-query-migration, evidence.form-instance-query-integration-test, evidence.form-instance-query-migration-test]
+    acceptanceScenarios:
+      - id: scenario.form-instance-global-query-authorization
+        given: 默认租户中存在多个模板和创建人的已保存生产实例
+        when: 用户查询列表、详情、完整号和填写上下文
+        then: 同时有两项权限可查符合条件的全部生产实例，缺认证401、缺任一权限403，其他租户或不存在记录不泄漏
+        evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-integration-test]
+        evidenceRequirements: [认证及权限矩阵测试, 默认租户范围测试]
+      - id: scenario.form-instance-global-query-compatible-projection
+        given: 历史实例和同一模板多份实例已存在
+        when: 回填搜索字段并执行组合过滤、分页与详情重读
+        then: 身份、冻结内容和旧接口保持不变，多份不合并，列表不读取完整值，未知历史主体不猜测
+        evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-migration, evidence.form-instance-query-integration-test]
+        evidenceRequirements: [迁移测试, 查询过滤与兼容回归]
+      - id: scenario.form-instance-global-query-source-action-boundary
+        given: 用户具备两项查询权限但当前源节点不允许填报
+        when: 查询填写上下文并尝试原填报动作
+        then: 上下文不得授予新权限，动作仍由源拒绝
+        evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-service, evidence.form-instance-query-integration-test]
+        evidenceRequirements: [来源控制投影测试, 动作权限回归]

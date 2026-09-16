@@ -28,8 +28,12 @@ public class FormInstanceRecordService {
     public void saved(Long objectId, String tenantId, JsonNode snapshot, ObjectNode state,
                       String operationId, String formId, String requestedCopyId) {
         JsonNode form = null;
+        String operationName = null;
         for (JsonNode op : snapshot.path("operations")) if (operationId.equals(op.path("id").asText()))
-            for (JsonNode candidate : op.path("forms")) if (formId.equals(candidate.path("id").asText())) form = candidate;
+            for (JsonNode candidate : op.path("forms")) if (formId.equals(candidate.path("id").asText())) {
+                form = candidate;
+                operationName = op.path("name").asText(null);
+            }
         String copyId = requestedCopyId == null || requestedCopyId.isBlank() ? formId : requestedCopyId;
         JsonNode formState = state.path("operations").path(operationId).path("forms").path(copyId);
         if (form == null || !formState.has("savedAt")) throw invalid("表单记录来源不完整");
@@ -50,10 +54,17 @@ public class FormInstanceRecordService {
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,FALSE)
                 """, id, tenantId, instanceNo, objectId, operationId, formId, copyId, templateId, versionId,
                     form.toString(), formState.path("values").toString(), formState.path("status").asText(), actor, now, actor, now, now);
+            JsonNode context = snapshot.path("context");
+            jdbc.update("""
+                UPDATE form_instance_record SET template_code=?,template_name=?,template_version=?,work_order_id=?,
+                    work_order_no=?,object_no=?,object_type=?,operation_name=?,created_by_id=?,updated_by_id=? WHERE id=? AND tenant_id=?
+                """, form.path("code").asText(null), form.path("name").asText(null), form.path("version").asText(null),
+                context.path("workOrderId").asText(null), context.path("workOrderNo").asText(null), context.path("objectNo").asText(null),
+                context.path("objectType").asText(null), operationName, AuditContext.getOperatorId(), AuditContext.getOperatorId(), id, tenantId);
         } else {
             instanceNo = existing.getFirst().get("instance_no").toString();
-            jdbc.update("UPDATE form_instance_record SET values_json=?,status=?,updated_by=?,updated_at=? WHERE id=? AND tenant_id=?",
-                    formState.path("values").toString(), formState.path("status").asText(), actor, now, existing.getFirst().get("id"), tenantId);
+            jdbc.update("UPDATE form_instance_record SET values_json=?,status=?,updated_by=?,updated_at=?,updated_by_id=? WHERE id=? AND tenant_id=?",
+                    formState.path("values").toString(), formState.path("status").asText(), actor, now, AuditContext.getOperatorId(), existing.getFirst().get("id"), tenantId);
         }
         ((ObjectNode) formState).put("instanceNo", instanceNo);
     }

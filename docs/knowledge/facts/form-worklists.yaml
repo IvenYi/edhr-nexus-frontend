@@ -1,0 +1,82 @@
+knowledgeModelVersion: 0.3.20
+facts:
+  - id: fact.form-worklist.has-source-permission
+    name: 当前用户具有生产来源权限
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormWorklistController.java
+    aliases: [formWorklist.hasSourcePermission]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history]
+    sourceRevision: working-tree
+    sourceLocator: 类级PreAuthorize的production.execution
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
+  - id: fact.form-worklist.has-view-permission
+    name: 当前用户具有指定个人视图权限
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java
+    aliases: [formWorklist.hasViewPermission]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history]
+    sourceRevision: working-tree
+    sourceLocator: authorize按视图区分form-management.filling与form-management.review
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
+  - id: fact.form-worklist.has-current-source-qualification
+    name: 当前用户满足当前填写或审批节点源资格
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java
+    aliases: [formWorklist.hasCurrentSourceQualification]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history]
+    sourceRevision: working-tree
+    sourceLocator: query复用ProductionExecutionService.view的controls.canAct及nodeKind
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
+  - id: fact.form-worklist.has-explicit-personal-creation
+    name: 当前份具有本人主动创建身份
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    aliases: [formWorklist.hasExplicitPersonalCreation]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history]
+    sourceRevision: working-tree
+    sourceLocator: attach/addFormCopy保存explicitCreatorId；FormWorklistService.CREATED按认证主体匹配
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
+  - id: fact.form-worklist.has-personal-participation
+    name: 当前份具有本人成功提交或审核的结构化历史
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java
+    aliases: [formWorklist.hasPersonalParticipation]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history]
+    sourceRevision: working-tree
+    sourceLocator: query匹配history.operator/operationId/formId/copyId/actionCode/nodeKind；不解析旧显示文字
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed

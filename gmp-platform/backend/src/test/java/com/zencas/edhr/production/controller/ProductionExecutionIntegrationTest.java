@@ -93,6 +93,10 @@ class ProductionExecutionIntegrationTest {
         for (String sql : migration.split("--changeset codex:0082-form-instance-history")[0].split(";")) {
             if (sql.contains("CREATE")) jdbc.execute(sql);
         }
+        var queryMigration = new String(getClass().getResourceAsStream("/db/changelog/0083-form-instance-query.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : queryMigration.split("--changeset codex:0083-form-instance-query-history")[0].split(";")) {
+            if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);
+        }
         for (String ddl : List.of(
             "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16))",
             "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT)",
@@ -535,9 +539,287 @@ class ProductionExecutionIntegrationTest {
         return mvc.perform(auth(post("/api/v1/production/execution/" + id + "/actions").contentType("application/json").content(mapper.writeValueAsString(body))));
     }
 
+    @Test void globalQueryRequiresBothPermissionsAndPreservesOldEntry() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        for (String path : List.of("/api/v1/form-instances", "/api/v1/form-instances/1", "/api/v1/form-instances/by-number/missing", "/api/v1/form-instances/1/operation-context")) {
+            mvc.perform(get(path)).andExpect(status().isUnauthorized());
+            for (List<String> permissions : List.of(List.of("production.execution"), List.of("form-instances.view"), List.of("master-data.form-templates", "production.execution"))) {
+                mvc.perform(get(path).header("Authorization", "Bearer " + tokens.generateToken("2", "reader", "读者", 5, permissions))).andExpect(status().isForbidden());
+            }
+        }
+        mvc.perform(queryAuth(get("/api/v1/form-instances"))).andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+            .andExpect(jsonPath("$.data.content[0].createdById").value("1")); // Reader 2 sees author 1 without own/dept scope.
+        mvc.perform(queryAuth(get("/api/v1/form-instance-records").param("templateId", "5"))).andExpect(status().isForbidden());
+        mvc.perform(get("/api/v1/form-instance-records").param("templateId", "5").header("Authorization", "Bearer " +
+            tokens.generateToken("2", "reader", "读者", 5, List.of("master-data.form-templates", "production.execution"))))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.content[0].fieldValues.temperature").value(22));
+    }
+
+    @Test void globalQueryUsesFrozenMetadataCrossTemplateFiltersAndStablePages() throws Exception {
+        seedQueryRecords();
+        jdbc.update("UPDATE form_template SET name='新的模板名',code='NEW'");
+        int auditsBefore = jdbc.queryForObject("SELECT count(*) FROM audit_event", Integer.class);
+        mvc.perform(queryAuth(get("/api/v1/form-instances"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.totalElements").value(2)).andExpect(jsonPath("$.data.content[0].fieldValues").doesNotExist())
+            .andExpect(jsonPath("$.data.content[0].snapshot").doesNotExist());
+        var query = get("/api/v1/form-instances").param("templateId", "6").param("templateVersionId", "6")
+            .param("templateCode", "F02").param("templateName", "补充").param("workOrderId", "100")
+            .param("productionObjectId", "102").param("productionObjectType", "SN").param("operationId", "a")
+            .param("sourceType", "PRODUCTION_EXECUTION").param("sourceId", "102").param("recordStatus", "COMPLETED", "ACTIVE")
+            .param("createdById", "1").param("updatedById", "1").param("keyword", "SN01");
+        mvc.perform(queryAuth(query)).andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+            .andExpect(jsonPath("$.data.content[0].templateName").value("补充记录"))
+            .andExpect(jsonPath("$.data.content[0].source.workOrderNo").value("WO01"));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("templateId", "5").param("templateVersionId", "6")))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("productionObjectId", "101").param("productionObjectType", "SN")))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("productionObjectId", "101").param("workOrderId", "999")))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+        jdbc.update("UPDATE form_instance_record SET created_at=TIMESTAMP '2026-09-15 10:00:00'");
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("size", "1"))).andExpect(jsonPath("$.data.content[0].formInstanceId").value("2"));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("size", "1").param("page", "1"))).andExpect(jsonPath("$.data.content[0].formInstanceId").value("1"));
+        jdbc.update("UPDATE form_instance_record SET created_at=NULL WHERE id=2");
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("size", "1"))).andExpect(jsonPath("$.data.content[0].formInstanceId").value("1"));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("createdFrom", "2026-09-15T10:00:00").param("createdTo", "2026-09-15T10:00:01")))
+            .andExpect(jsonPath("$.data.totalElements").value(1));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("createdTo", "2026-09-15T10:00:00")))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("updatedTo", "2020-01-01T00:00:00")))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+        for (String special : List.of("%", "_", "!", "' OR 1=1 --", "temperature")) {
+            mvc.perform(queryAuth(get("/api/v1/form-instances").param("keyword", special))).andExpect(jsonPath("$.data.totalElements").value(0));
+        }
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event", Integer.class)).isEqualTo(auditsBefore);
+    }
+
+    @Test void globalQueryExactDetailsTenantBoundaryAndSourceControls() throws Exception {
+        seedQueryRecords();
+        String number = jdbc.queryForObject("SELECT instance_no FROM form_instance_record WHERE id=1", String.class);
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("instanceNo", number))).andExpect(jsonPath("$.data.totalElements").value(1));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("instanceNo", number.substring(0, 5)))).andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("instanceNoContains", "FR-"))).andExpect(jsonPath("$.data.totalElements").value(2));
+        for (String path : List.of("/api/v1/form-instances/1", "/api/v1/form-instances/by-number/" + number)) {
+            mvc.perform(queryAuth(get(path))).andExpect(status().isOk()).andExpect(jsonPath("$.data.formInstanceId").value("1"))
+                .andExpect(jsonPath("$.data.snapshot.name").value("装配记录")).andExpect(jsonPath("$.data.fieldValues.temperature").value(22));
+        }
+        mvc.perform(queryAuth(get("/api/v1/form-instances/1/operation-context"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.source.copyId").value("form-51")).andExpect(jsonPath("$.data.revision").value(2))
+            .andExpect(jsonPath("$.data.controls.canAct").value(true));
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 23))).andExpect(status().isOk());
+        mvc.perform(queryAuth(get("/api/v1/form-instances/1/operation-context"))).andExpect(jsonPath("$.data.controls.canAct").value(false));
+        mvc.perform(queryAuth(post("/api/v1/production/execution/101/actions").contentType("application/json")
+            .content("{\"action\":\"SAVE\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"form-51\",\"values\":{}}")))
+            .andExpect(status().isBadRequest());
+        jdbc.update("UPDATE form_instance_record SET tenant_id='other' WHERE id=1");
+        mvc.perform(queryAuth(get("/api/v1/form-instances"))).andExpect(jsonPath("$.data.totalElements").value(1));
+        for (String path : List.of("/api/v1/form-instances/1", "/api/v1/form-instances/1/operation-context", "/api/v1/form-instances/by-number/" + number)) {
+            mvc.perform(queryAuth(get(path))).andExpect(status().isNotFound());
+        }
+    }
+
+    @Test void globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory() throws Exception {
+        seedSignedWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        mvc.perform(queryAuth(post("/api/v1/production/execution/101/actions").contentType("application/json")
+            .content("{\"action\":\"SUBMIT\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{\"temperature\":23}}")))
+            .andExpect(status().isOk());
+        mvc.perform(queryAuth(get("/api/v1/form-instances/1"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.createdById").value("1")).andExpect(jsonPath("$.data.updatedById").value("2"));
+        mvc.perform(queryAuth(get("/api/v1/form-instances/1/operation-context"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.controls.canAct").value(false));
+        mvc.perform(queryAuth(post("/api/v1/production/execution/101/actions").contentType("application/json")
+            .content("{\"action\":\"APPROVE\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}")))
+            .andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record WHERE id=1", String.class)).isEqualTo("ACTIVE");
+    }
+
+    @Test void globalQueryRejectsUnsupportedAndMalformedConditions() throws Exception {
+        for (var entry : Map.ofEntries(Map.entry("size", "201"), Map.entry("page", "-1"), Map.entry("templateId", "NaN"),
+            Map.entry("productionObjectType", "OTHER"), Map.entry("sourceType", "STANDALONE"), Map.entry("sourceId", "101"),
+            Map.entry("sort", "values_json,desc"), Map.entry("tenantId", "other"), Map.entry("activeRequestType", "NONE"),
+            Map.entry("recordStatus", "VOIDED"), Map.entry("createdFrom", "2026-09-16T00:00:00Z"), Map.entry("keyword", " ")).entrySet()) {
+            mvc.perform(queryAuth(get("/api/v1/form-instances").param(entry.getKey(), entry.getValue()))).andExpect(status().isBadRequest());
+        }
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("templateId", "5", "6"))).andExpect(status().isBadRequest());
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("instanceNo", "FR-1").param("instanceNoContains", "FR-"))).andExpect(status().isBadRequest());
+        mvc.perform(queryAuth(get("/api/v1/form-instances").param("updatedFrom", "2026-09-16T01:00:00").param("updatedTo", "2026-09-16T00:00:00")))
+            .andExpect(status().isBadRequest());
+        mvc.perform(queryAuth(get("/api/v1/form-instances/no-number"))).andExpect(status().isBadRequest());
+        mvc.perform(queryAuth(get("/api/v1/form-instances/999"))).andExpect(status().isNotFound());
+        mvc.perform(queryAuth(get("/api/v1/form-instances/1/operation-context").param("intent", "CHANGE"))).andExpect(status().isBadRequest());
+    }
+
+    private void seedQueryRecords() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        jdbc.update("INSERT INTO form_template(id,name,code,category_name) VALUES(6,'补充记录','F02','生产记录')");
+        jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json,canvas_design_json) SELECT 6,6,'V1',model_design_json,canvas_design_json FROM form_template_version WHERE id=5");
+        jdbc.update("UPDATE product_process_operation_form_binding SET form_template_version_id=6 WHERE id=51");
+        action(102, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(102, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 24))).andExpect(status().isOk());
+    }
+
+    private MockHttpServletRequestBuilder queryAuth(MockHttpServletRequestBuilder request) {
+        return request.header("Authorization", "Bearer " + tokens.generateToken("2", "reader", "读者", 5, List.of("production.execution", "form-instances.view")));
+    }
+
+    @Test void worklistIncludesUnsavedAndSavedButFilledRequiresActualSubmit() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+            .andExpect(jsonPath("$.data.content[0].saved").value(false)).andExpect(jsonPath("$.data.content[0].instanceNo").isEmpty());
+        mvc.perform(personal(worklistDetail("FILLABLE", "form-51", "form-51"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.controls.canAct").value(true));
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE").param("saved", "true"), "1")).andExpect(jsonPath("$.data.totalElements").value(1));
+        for (String view : List.of("FILLED", "CREATED", "REVIEW_DONE")) {
+            mvc.perform(personal(get("/api/v1/form-worklists/" + view), "1")).andExpect(jsonPath("$.data.totalElements").value(0));
+        }
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 23))).andExpect(status().isOk());
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLED"), "1")).andExpect(jsonPath("$.data.totalElements").value(1));
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLED"), "2")).andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(personal(worklistDetail("FILLED", "form-51", "form-51"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.controls.canAct").value(false)).andExpect(jsonPath("$.data.myEvents.length()").value(1));
+        mvc.perform(personal(worklistDetail("FILLED", "form-51", "form-51"), "2")).andExpect(status().isNotFound());
+        mvc.perform(personal(get("/api/v1/form-instances"), "1")).andExpect(status().isForbidden());
+    }
+
+    @Test void worklistExplicitCreationIsIndependentFromFirstSaverAndSystemFirstCopy() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "ADD_FORM_COPY", 1, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+        String response = action(101, "ATTACH_FORM", 2, "a", Map.of("templateVersionId", "5", "required", false))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String custom = mapper.readTree(response).path("data").path("attachedFormId").asText();
+        mvc.perform(personal(get("/api/v1/form-worklists/CREATED"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(2)).andExpect(jsonPath("$.data.content[0].saved").value(false));
+        mvc.perform(personal(worklistDetail("CREATED", custom, custom), "1")).andExpect(jsonPath("$.data.controls.canAct").value(false));
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+            .content(mapper.writeValueAsString(Map.of("action", "SAVE", "revision", 3, "operationId", "a",
+                "formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of("temperature", 22)))), "2")).andExpect(status().isOk());
+        mvc.perform(personal(get("/api/v1/form-worklists/CREATED").param("saved", "true"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(1)).andExpect(jsonPath("$.data.content[0].creatorId").value("1"));
+        mvc.perform(personal(get("/api/v1/form-worklists/CREATED"), "2")).andExpect(jsonPath("$.data.totalElements").value(0));
+        assertThat(jdbc.queryForObject("SELECT created_by_id FROM form_instance_record", String.class)).isEqualTo("2");
+    }
+
+    @Test void worklistReturnAndResubmitKeepPersonalHistoryAndUseActualApprovalQualification() throws Exception {
+        seedSignedWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(1)).andExpect(jsonPath("$.data.content[0].nodeId").value("review"));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "2")).andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(personal(worklistDetail("REVIEW_PENDING", "work-7-f", "work-7-f"), "2")).andExpect(status().isNotFound());
+        action(101, "RETURN", 2, "a", Map.of("formId", "work-7-f", "values", Map.of())).andExpect(status().isOk());
+        for (String view : List.of("FILLABLE", "FILLED", "REVIEW_DONE")) {
+            mvc.perform(personal(get("/api/v1/form-worklists/" + view), "1")).andExpect(jsonPath("$.data.totalElements").value(1));
+        }
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 23))).andExpect(status().isOk());
+        mvc.perform(personal(worklistDetail("FILLED", "work-7-f", "work-7-f"), "1")).andExpect(jsonPath("$.data.myEvents.length()").value(2));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "1")).andExpect(jsonPath("$.data.totalElements").value(1));
+        action(101, "APPROVE", 4, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk());
+        mvc.perform(personal(worklistDetail("REVIEW_DONE", "work-7-f", "work-7-f"), "1"))
+            .andExpect(jsonPath("$.data.myEvents.length()").value(2)).andExpect(jsonPath("$.data.controls.canAct").value(false));
+        JsonNode state = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        for (JsonNode event : state.path("history")) {
+            if ("RETURN".equals(event.path("actionCode").asText())) ((com.fasterxml.jackson.databind.node.ObjectNode) event).put("at", "2026-09-01T10:00:00");
+            if ("APPROVE".equals(event.path("actionCode").asText())) ((com.fasterxml.jackson.databind.node.ObjectNode) event).put("at", "2026-09-02T10:00:00");
+        }
+        jdbc.update("UPDATE production_execution SET state_json=? WHERE object_id=101", state.toString());
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_DONE").param("reviewResult", "RETURN").param("reviewedFrom", "2026-09-02T00:00:00"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_DONE").param("reviewResult", "APPROVE").param("reviewedFrom", "2026-09-02T00:00:00"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(1));
+    }
+
+    @Test void worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest() throws Exception {
+        seedSignedWork();
+        jdbc.update("UPDATE workflow_definition_version SET nodes_json=?,edges_json=? WHERE id=8", """
+            [{"id":"s","data":{"kind":"START"}},
+             {"id":"review","data":{"kind":"APPROVAL","label":"初审","config":{"approverSubjects":[{"type":"USER","id":"1"}],"defaultPermission":"READ_ONLY"}}},
+             {"id":"review2","data":{"kind":"APPROVAL","label":"复审","config":{"approverSubjects":[{"type":"USER","id":"1"}],"defaultPermission":"READ_ONLY"}}},
+             {"id":"e","data":{"kind":"END"}}]
+            """, """
+            [{"source":"s","target":"review"},{"source":"review","target":"review2"},{"source":"review2","target":"e"}]
+            """);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of())).andExpect(status().isOk());
+        action(101, "APPROVE", 3, "a", Map.of("formId", "work-7-f", "values", Map.of())).andExpect(status().isOk());
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_DONE"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(1)).andExpect(jsonPath("$.data.content[0].nodeId").value("review2"));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_DONE").param("nodeId", "review"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(1)).andExpect(jsonPath("$.data.content[0].nodeId").value("review"));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_DONE").param("nodeName", "初审"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(1)).andExpect(jsonPath("$.data.content[0].nodeId").value("review"));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_DONE").param("nodeId", "review").param("nodeName", "复审"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+        JsonNode state = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        for (JsonNode event : state.path("history")) if ("APPROVE".equals(event.path("actionCode").asText())) {
+            ((com.fasterxml.jackson.databind.node.ObjectNode) event).put("at", event.path("nodeId").asText().equals("review") ? "2026-09-01T10:00:00" : "2026-09-02T10:00:00");
+        }
+        jdbc.update("UPDATE production_execution SET state_json=? WHERE object_id=101", state.toString());
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_DONE").param("nodeId", "review").param("reviewedFrom", "2026-09-02T00:00:00"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(0));
+    }
+
+    @Test void worklistFilteringPaginationAndLegacyHistoryDoNotInventParticipation() throws Exception {
+        seedQueryRecords();
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE").param("size", "1"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(2)).andExpect(jsonPath("$.data.content[0].productionObjectId").value("102"));
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE").param("size", "1").param("page", "1"), "1"))
+            .andExpect(jsonPath("$.data.content[0].productionObjectId").value("101"));
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE").param("productionObjectType", "SN").param("templateName", "补充").param("saved", "true"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(1));
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE").param("keyword", "temperature"), "1")).andExpect(jsonPath("$.data.totalElements").value(0));
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 23))).andExpect(status().isOk());
+        JsonNode state = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        for (JsonNode event : state.path("history")) ((com.fasterxml.jackson.databind.node.ObjectNode) event).remove(List.of("actionCode", "formId", "copyId", "nodeKind"));
+        jdbc.update("UPDATE production_execution SET state_json=? WHERE object_id=101", state.toString());
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLED"), "1"))
+            .andExpect(jsonPath("$.data.totalElements").value(0)).andExpect(jsonPath("$.data.historyCoverage").value("STRUCTURED_EVENTS_ONLY"));
+        jdbc.update("UPDATE production_object SET tenant_id='foreign' WHERE id=102");
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE"), "1")).andExpect(jsonPath("$.data.totalElements").value(0));
+    }
+
+    @Test void worklistRejectsWrongPermissionsParamsAndFailedActionsCreateNoHistory() throws Exception {
+        for (String view : List.of("FILLABLE", "CREATED", "FILLED", "REVIEW_PENDING", "REVIEW_DONE")) {
+            String path = "/api/v1/form-worklists/" + view;
+            mvc.perform(get(path)).andExpect(status().isUnauthorized());
+            mvc.perform(get(path).header("Authorization", "Bearer " + tokens.generateToken("1", "operator", "测试", 5, List.of("production.execution")))).andExpect(status().isForbidden());
+            mvc.perform(get(path).header("Authorization", "Bearer " + tokens.generateToken("1", "operator", "测试", 5, List.of("form-management.filling", "form-management.review")))).andExpect(status().isForbidden());
+        }
+        for (var entry : Map.of("actorId", "2", "size", "201", "saved", "yes", "sort", "id,desc", "reviewResult", "RETURN", "createdFrom", "2026-09-01T00:00:00Z").entrySet()) {
+            mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE").param(entry.getKey(), entry.getValue()), "1")).andExpect(status().isBadRequest());
+        }
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE/detail"), "1")).andExpect(status().isBadRequest());
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String before = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        doThrow(new IllegalStateException("test audit failure")).when(audits).save(any());
+        try {
+            action(101, "SUBMIT", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 23))).andExpect(status().isInternalServerError());
+        } finally { reset(audits); }
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLED"), "1")).andExpect(jsonPath("$.data.totalElements").value(0));
+        jdbc.update("UPDATE production_object SET status='COMPLETED' WHERE id=101");
+        mvc.perform(personal(get("/api/v1/form-worklists/FILLABLE"), "1")).andExpect(jsonPath("$.data.totalElements").value(0));
+    }
+
+    private MockHttpServletRequestBuilder personal(MockHttpServletRequestBuilder request, String actor) {
+        return request.header("Authorization", "Bearer " + tokens.generateToken(actor, actor.equals("1") ? "operator" : "reader", "测试用户", 5,
+            List.of("production.execution", "form-management.filling", "form-management.review")));
+    }
+
+    private MockHttpServletRequestBuilder worklistDetail(String view, String form, String copy) {
+        return get("/api/v1/form-worklists/" + view + "/detail").param("productionObjectId", "101").param("operationId", "a").param("formId", form).param("copyId", copy);
+    }
+
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
-    @Import({FormInstanceRecordController.class, FormInstanceRecordService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
+    @Import({FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
         ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class})
     static class Config {
         @Bean

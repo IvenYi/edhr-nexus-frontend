@@ -97,7 +97,10 @@ test('reset persists target defaults and retains target production and workshop 
   const { api } = context(menuCode, { api: { put: async (value) => { saved = clone(value); return { configured: true, modules: value }; } } });
   await api.resetManagedSidebarModules();
   const paths = JSON.stringify(saved);
-  for (const path of ['/master-data/workshops', '/workflow/form-processes', '/production/work-orders', '/production/batches']) assert.ok(paths.includes(path), path);
+  for (const path of ['/master-data/workshops', '/workflow/form-processes', '/production/work-orders', '/production/batches', '/form-management/list', '/form-management/filling', '/form-management/review']) assert.ok(paths.includes(path), path);
+  const records = saved.find((module) => module.id === 'records');
+  assert.equal(records?.label, '记录');
+  assert.deepEqual(records?.menus.find((menu) => menu.label === '表单管理')?.children.map((child) => child.path), ['/form-management/list', '/form-management/filling', '/form-management/review']);
   assert.ok(!paths.includes('/inventory/'));
 });
 

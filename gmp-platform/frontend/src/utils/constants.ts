@@ -188,6 +188,22 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
     ],
   },
   {
+    id: 'records',
+    label: '记录',
+    icon: 'FactCheck',
+    menus: [
+      {
+        label: '表单管理',
+        icon: 'FactCheck',
+        children: [
+          { label: '表单列表', path: '/form-management/list' },
+          { label: '表单填报', path: '/form-management/filling' },
+          { label: '表单审核', path: '/form-management/review' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'system',
     label: '系统',
     icon: 'Settings',

@@ -70,6 +70,8 @@ public enum ErrorCode {
     TPL_002(404, "TPL-002", "表单模板版本不存在"),
     TPL_003(400, "TPL-003", "表单模板编码已存在"),
 
+    FORM_001(404, "FORM-001", "表单实例不存在或不可见"),
+
     // General
     GENERAL_001(400, "GENERAL-001", "请求参数校验失败"),
     GENERAL_002(500, "GENERAL-002", "系统内部错误"),

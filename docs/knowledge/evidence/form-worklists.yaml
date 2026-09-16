@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.20
+evidence:
+  - id: evidence.form-worklists-integration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；working-tree中六项worklist测试覆盖未保存/已保存待填与提交历史、主动新增和首次保存者区别、退回重提及真实审批资格、同事件节点/时间/结果筛选、分页/旧日志不推测、权限/错误参数与审计失败回滚。QF-WL-001修复后新增worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest，真实双串行审批验证较早节点不会被末次事件覆盖。本体角色读取2026-09-16主修复后surefire报告为集成33项、0失败、0错误、2个既有浏览器fixture条件跳过，主执行日志/tmp/edhr-worklists-fixed-tests.log；修复前H2与隔离PG的32项通过记录保留于/tmp/edhr-worklists-tests.log、/tmp/edhr-worklists-pg-tests.log，不混称新增用例也已跑PG。最终独立质量复验由主收尾，不冒称本体角色亲自执行或页面/发布验收。
+    visibility: internal
+  - id: evidence.form-worklists-migration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormWorklistMigrationTest.java
+    description: original-evidence；working-tree的0084权限幂等测试。本体角色读取2026-09-16主执行后的surefire报告为1项、0失败、0错误、0跳过，主报告H2与隔离PG均通过；新增两项权限只授ADMIN，重跑不重复，不表示生产数据库已应用。
+    visibility: internal
+  - id: evidence.form-worklists-decision
+    type: document
+    path: docs/development/form-worklists-decision-package.yaml
+    description: user-confirmed；用户2026-09-16确认只保存归当前我的填报、成功提交归我的已填且退回保留；主动新建归我的创建而非首次保存者。决策包和API契约限定三个填报视图、两个审核视图，仅生产来源，不扩展变更作废或DHR。
+    visibility: internal
+  - id: evidence.form-worklists-query
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java
+    description: original-evidence；working-tree中authorize/query/detail复用源view控制，按认证主体、主动身份和结构化事件投影；默认租户，同资格计数分页和详情。历史事件先经FormWorklistQuery.matchesEventNode连同时间、结果筛选，再选最后匹配事件，避免遗漏较早审核节点。当前按源32个对象扫描，不是生产规模性能承诺，未发布。
+    visibility: internal
+  - id: evidence.form-worklists-source-history
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    description: original-evidence；working-tree中formAction给已有history补actionCode/formId/copyId/nodeId/nodeKind/nodeName，主动新增保存explicitCreatorId/explicitCreatedAt，节点记录nodeArrivedAt。仍由原ProductionExecutionService事务和审计承载，不创建第二日志或引擎；旧历史身份不推断。
+    visibility: internal
+  - id: evidence.form-worklists-permissions
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql
+    description: original-evidence；working-tree新增两项个人查询权限，只授予ADMIN，不改业务表、不回填猜测历史。源码存在不代表部署数据库已执行。
+    visibility: internal

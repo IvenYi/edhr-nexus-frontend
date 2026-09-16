@@ -21,6 +21,8 @@ const InstanceList = lazy(() => import('@/pages/workflow-center/InstanceList'));
 const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail'));
 const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
+const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInstanceListPage'));
+const FormManagementPlaceholderPage = lazy(() => import('@/pages/form-management/FormManagementPlaceholderPage'));
 
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const ProductModelingPage = lazy(() => import('@/pages/master-data/ProductModelingPage'));
@@ -91,6 +93,11 @@ const AppRouter = () => {
           <Route path="instances/:id" element={<Suspense fallback={<Loading />}><InstanceDetail /></Suspense>} />
           <Route path="instances/:id/logs" element={<Suspense fallback={<Loading />}><InstanceLogs /></Suspense>} />
           <Route path="tasks/:id" element={<Suspense fallback={<Loading />}><TaskDetail /></Suspense>} />
+        </Route>
+        <Route path="form-management">
+          <Route path="list" element={<Suspense fallback={<Loading />}><FormInstanceListPage /></Suspense>} />
+          <Route path="filling" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单填报" /></Suspense>} />
+          <Route path="review" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单审核" /></Suspense>} />
         </Route>
         <Route path="production">
           <Route path="execution" element={<Suspense fallback={<Loading />}><ProductionExecutionPage /></Suspense>} />

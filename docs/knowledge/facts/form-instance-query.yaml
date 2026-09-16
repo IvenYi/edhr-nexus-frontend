@@ -1,0 +1,34 @@
+knowledgeModelVersion: 0.3.20
+facts:
+  - id: fact.form-instance-query.has-dedicated-view-permission
+    name: 当前用户具有表单实例专门查看权限
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceQueryController.java
+    aliases: [formInstanceQuery.hasDedicatedViewPermission]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-controller, evidence.form-instance-query-integration-test]
+    sourceRevision: working-tree
+    sourceLocator: FormInstanceQueryController 类级 PreAuthorize 的 form-instances.view 检查；基于 e5772f81184e708a6b023f5112700be6820cb1be 未提交增量
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
+  - id: fact.form-instance-query.has-source-view-permission
+    name: 当前用户具有当前表单实例来源查看权限
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceQueryController.java
+    aliases: [formInstanceQuery.hasSourceViewPermission]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-controller, evidence.form-instance-query-integration-test]
+    sourceRevision: working-tree
+    sourceLocator: FormInstanceQueryController 类级 PreAuthorize 的 production.execution 检查；仅当前生产来源，不泛化为尚未接入的其他来源
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed

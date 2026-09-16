@@ -1,6 +1,10 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.18`，schema 版本：`1.1.0`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.20`，schema 版本：`1.1.0`。
+
+`0.3.20` 增量记录个人表单查询（`DEC-0052`）：三个填报视图和两个审核视图按源当前资格、主动创建身份或本人结构化成功动作历史查询；仅保存不算已填，退回保留历史。权限为生产来源权限加对应个人入口权限，不依赖全局查看；历史详情只读，写动作继续由源引擎校验。复用原执行状态、history及审计，不新增任务表或日志表。旧自由文本历史不推测，新接口仅覆盖生产来源；页面、独立新建、转发、变更作废和DHR不在本切片中。知识保持 `implemented/internal`，不表示已发布。
+
+`0.3.19` 增量记录全局表单实例查询的来源授权和读写边界（`DEC-0051`）：专门实例查看权限加当前生产来源权限，允许查看默认租户内该来源全部已保存记录，不默认限定本人或部门。复用已有实例身份与源动作校验，不新增实例库或执行引擎。本切片已有源码和聚焦集成、迁移测试证据，知识为 `implemented/internal`；工作树实现与测试通过不等于已部署或发布，也不改变既有生产执行能力的独立证据。
 
 表单流程公共主体选择器第一版统一支持用户、部门和角色三类稳定主体引用。部门默认覆盖本部门及下级，也可切换为仅本部门；审批节点到达时按最新组织或角色关系解析候选人，填报权限在用户访问时按最新关系判断。用户组、部门负责人和业务责任人尚无完整主数据与解析契约，不进入当前配置入口。详见 `DEC-0029`。
 
@@ -114,7 +118,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.18" && schema.fetch("schemaVersion") == "1.1.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.20" && schema.fetch("schemaVersion") == "1.1.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

@@ -1,0 +1,35 @@
+knowledgeModelVersion: 0.3.20
+rules:
+  - id: rule.form-instance-global-query-source-permission
+    name: 全局表单实例查询按来源授权
+    status: implemented
+    visibility: internal
+    trigger: form-instance.query
+    scope: production-owned-global-form-instance-query
+    condition:
+      all:
+        - {fact: fact.form-instance-query.has-dedicated-view-permission, operator: equals, value: true}
+        - {fact: fact.form-instance-query.has-source-view-permission, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: formInstanceQuery.visibleRecords
+      tenant: default
+      sourceType: PRODUCTION_EXECUTION
+      persistedOnly: true
+      ownershipRestriction: none
+    explanation: 新全局列表、计数、编号定位、详情及填写上下文同时要求 form-instances.view 与 production.execution；可跨模板查看默认租户内该来源全部已保存记录，不默认限定本人或部门。查询条件进一步缩小范围，未支持参数拒绝。旧模板入口权限保持不变；当前来源覆盖不等于全来源或多租户能力。本切片已有源码和聚焦集成测试证据，仍为未发布工作树，不进入发布投影。
+    evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-controller, evidence.form-instance-query-service, evidence.form-instance-query-integration-test]
+  - id: rule.form-instance-global-query-read-not-write
+    name: 全局查询不授予来源填报权限
+    status: implemented
+    visibility: internal
+    trigger: form-instance.continue-fill
+    scope: production-owned-global-form-instance-query
+    condition: {fact: fact.form-instance-query.has-dedicated-view-permission, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      target: production-execution.source-action-authorization
+      requirements: [existing-source-validation, current-node-permission, current-execution-revision]
+      queryGrantsWritePermission: false
+    explanation: FILL 上下文只返回既有生产执行来源定位、revision 和实例控制投影，不预占任务或授予写权限；实际动作仍由原生产执行入口重新校验。创建人、更新人筛选不代表我的填报资格或我的已填参与历史，不推导变更或作废资格。
+    evidenceIds: [evidence.form-instance-query-decision, evidence.form-instance-query-service, evidence.form-instance-query-integration-test]

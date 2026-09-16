@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.20
+implementationAnchors:
+  - id: anchor.form-instance-global-query-authorization
+    targetId: rule.form-instance-global-query-source-permission
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceQueryController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java]
+    apiReferences: [docs/development/form-instance-query-api.md]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-query-controller, evidence.form-instance-query-service, evidence.form-instance-query-migration, evidence.form-instance-query-integration-test, evidence.form-instance-query-migration-test]
+    sourceRevision: working-tree
+    sourceLocator: 类级 PreAuthorize、list/find 的 tenant_id 过滤、0083 专门权限初始化；基于 e5772f81184e708a6b023f5112700be6820cb1be，权限矩阵、冻结查询与迁移测试已登记
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
+  - id: anchor.form-instance-global-query-source-actions
+    targetId: rule.form-instance-global-query-read-not-write
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    apiReferences: [docs/development/form-instance-query-api.md]
+    databaseReferences: []
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-query-service, evidence.form-instance-query-integration-test]
+    sourceRevision: working-tree
+    sourceLocator: operationContext 只调用 execution.get 读取原 availability；写入继续由 ProductionExecutionService.act 校验，不新建动作引擎
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed

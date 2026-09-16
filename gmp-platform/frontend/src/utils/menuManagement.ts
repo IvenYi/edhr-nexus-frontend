@@ -79,6 +79,23 @@ const REQUIRED_PRODUCTION_CONFIGURATION_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_FORM_MANAGEMENT_MENU: SidebarMenu = {
+  label: '表单管理',
+  icon: 'FactCheck',
+  children: [
+    { label: '表单列表', path: '/form-management/list' },
+    { label: '表单填报', path: '/form-management/filling' },
+    { label: '表单审核', path: '/form-management/review' },
+  ],
+};
+
+const REQUIRED_RECORDS_MODULE: SidebarModule = {
+  id: 'records',
+  label: '记录',
+  icon: 'FactCheck',
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU],
+};
+
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
   label: '生产准备',
   icon: 'Assignment',
@@ -103,6 +120,9 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/production/work-orders',
   '/production/batches',
   '/production/execution',
+  '/form-management/list',
+  '/form-management/filling',
+  '/form-management/review',
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -210,6 +230,7 @@ export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
     .filter((menu) => menu.icon)
     .map((menu) => [`${module.id}:${menu.path || menu.label}`, menu.icon] as const)));
   ensureRequiredProcessModeling(nextModules);
+  ensureRequiredRecordsModule(nextModules);
   ensureRequiredProductionMenus(nextModules);
   ensureRequiredSystemMenus(nextModules);
   for (const module of nextModules) {
@@ -303,6 +324,7 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
   productionModule.icon = productionModule.icon || 'PrecisionManufacturing';
 
   for (const module of modules) {
+    if (module.id === REQUIRED_RECORDS_MODULE.id) continue;
     module.menus = module.menus
       .map((menu) => {
         if (menu.children) {
@@ -315,7 +337,7 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
   }
 
   productionModule.menus = productionModule.menus.filter(
-    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置' && menu.label !== '生产准备',
+    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置' && menu.label !== '生产准备' && menu.label !== '表单管理',
   );
   productionModule.menus.unshift(
     ...cloneSidebarModules([{
@@ -325,6 +347,31 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
       menus: [{ label: '生产执行', icon: 'PrecisionManufacturing', path: '/production/execution' }, REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
     }])[0].menus,
   );
+}
+
+function ensureRequiredRecordsModule(modules: SidebarModule[]) {
+  for (const module of modules) {
+    module.menus = module.menus
+      .map((menu) => {
+        if (menu.children) {
+          const children = menu.children.filter((child) => !PRODUCTION_MANAGED_PATHS.has(child.path));
+          return children.length > 0 ? { ...menu, children } : null;
+        }
+        return menu.path && PRODUCTION_MANAGED_PATHS.has(menu.path) ? null : menu;
+      })
+      .filter((menu): menu is SidebarMenu => menu !== null);
+  }
+
+  let recordsModule = modules.find((module) => module.id === REQUIRED_RECORDS_MODULE.id);
+  if (!recordsModule) {
+    modules.push(cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0]);
+    return;
+  }
+
+  recordsModule.label = REQUIRED_RECORDS_MODULE.label;
+  recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
+  recordsModule.menus = recordsModule.menus.filter((menu) => menu.label !== REQUIRED_FORM_MANAGEMENT_MENU.label);
+  recordsModule.menus.unshift(cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus[0]);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
@@ -440,6 +487,9 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/production/work-orders') return 'production.work-orders';
   if (path === '/production/batches') return 'production.batches';
   if (path === '/production/execution') return 'production.execution';
+  if (path === '/form-management/list') return 'form-instances.view';
+  if (path === '/form-management/filling') return 'form-management.filling';
+  if (path === '/form-management/review') return 'form-management.review';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

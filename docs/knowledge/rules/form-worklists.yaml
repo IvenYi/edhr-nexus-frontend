@@ -1,0 +1,63 @@
+knowledgeModelVersion: 0.3.20
+rules:
+  - id: rule.form-worklist-personal-qualification
+    name: 个人表单查询采用来源权限和视图权限
+    status: implemented
+    visibility: internal
+    trigger: form-worklist.query
+    scope: production-form-management-worklists
+    condition:
+      all:
+        - {fact: fact.form-worklist.has-source-permission, operator: equals, value: true}
+        - {fact: fact.form-worklist.has-view-permission, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: formWorklist.personalRows
+      requirements: [current-source-qualification-or-explicit-personal-event, default-tenant, server-pagination, same-scope-detail]
+    explanation: 三个填报视图要求form-management.filling，两个审核视图要求form-management.review，均另需production.execution，不要求form-instances.view。查询主体取认证身份，不能由请求冒充；该权限不授予全局查看或写权限。两项权限只初始化给ADMIN，其他角色显式分配。当前仅生产来源、未发布工作树。
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-permissions, evidence.form-worklists-integration-test]
+  - id: rule.form-worklist-current-tasks
+    name: 我的填报和审核待办复用当前源资格
+    status: implemented
+    visibility: internal
+    trigger: form-worklist.current-query
+    scope: production-form-management-worklists
+    condition: {fact: fact.form-worklist.has-current-source-qualification, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: formWorklist.currentRows
+      fillingNodeKind: START
+      reviewNodeKind: APPROVAL
+      includeReachedUnsavedCopies: true
+    explanation: FILLABLE包括已到达且当前有资格的未保存、保存未提交、退回后填写份；REVIEW_PENDING仅当前可处理审批份。未到达不虚构待办，未保存份使用生产对象/工序/表单绑定/份定位，不伪造实例ID和编号。沿用工单、对象、工序及节点阻断，动作仍在源入口重验revision、权限和签名；草稿只是展示说明，不新增生命周期状态。
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-integration-test]
+  - id: rule.form-worklist-explicit-creation
+    name: 我的创建只认主动新增身份
+    status: implemented
+    visibility: internal
+    trigger: form-worklist.created-query
+    scope: production-form-management-worklists
+    condition: {fact: fact.form-worklist.has-explicit-personal-creation, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: formWorklist.createdRows
+      include: [explicit-custom-first-copy, explicit-added-copy]
+      inferFromFirstSave: false
+    explanation: CREATED仅本人主动新增的自定义首份或新增份。系统自动首份不把首次保存人作为创建人，退回不抹去主动创建身份；旧数据未知身份保留未知。该入口与已填或当前待填可重叠，历史详情只读，不改变全实例接口createdById的原始保存者语义。
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-integration-test]
+  - id: rule.form-worklist-personal-history
+    name: 已填和审核已办基于成功动作历史
+    status: implemented
+    visibility: internal
+    trigger: form-worklist.history-query
+    scope: production-form-management-worklists
+    condition: {fact: fact.form-worklist.has-personal-participation, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: formWorklist.historyRows
+      filledAction: SUBMIT
+      reviewActions: [APPROVE, RETURN]
+      uniqueBy: source-copy
+      preserveHistoryOnReturn: true
+    explanation: FILLED仅本人填写节点成功SUBMIT，SAVE不算；REVIEW_DONE仅本人审批节点成功APPROVE或RETURN。按份去重，退回保留历史，再次到达可同时待办和已办；节点ID/名称、时间与结果条件必须同时匹配同一本人事件，再选择最后匹配事件，不能先取最后事件再按节点过滤而漏掉较早节点。结构化事件扩充原history，原事务审计承载，失败不留参与事件；旧自由文本不猜测，historyCoverage明确为STRUCTURED_EVENTS_ONLY。历史详情只读。
+    evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-integration-test]

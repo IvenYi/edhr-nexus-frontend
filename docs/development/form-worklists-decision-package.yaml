@@ -1,0 +1,94 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260916-FORM-WORKLISTS
+  scope: production-form-management-worklists
+  knowledgeBaselineVersion: 0.3.19
+  summary: 补齐生产来源三个填报视图、两个审核视图及授权详情，复用源引擎和历史，不改变全实例接口。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.form-worklist-personal-qualification
+        name: 个人表单入口按当前资格或真实参与记录查询
+        status: specified
+        trigger: form-worklist.query
+        condition:
+          all:
+            - fact: formWorklist.hasSourcePermission
+              operator: equals
+              value: true
+            - fact: formWorklist.hasViewPermission
+              operator: equals
+              value: true
+        result:
+          type: return-query-projection
+          target: formWorklist.personalRows
+          requirements: [current-source-qualification-or-explicit-personal-event, default-tenant, server-pagination]
+        sourceReferences: [docs/development/form-worklists-api.md]
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: form-management
+        change: 五个个人视图以及同范围详情、专属筛选、未保存份定位。
+        evidenceReferences: [docs/development/form-worklists-api.md]
+    transitiveImpacts:
+      - area: production-execution
+        change: 已有状态与事件增加主动创建身份、稳定参与定位和节点到达时间；原动作事务和审计承载。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
+    potentialImpacts:
+      - area: query-performance
+        concern: 动态权限需逐来源投影，生产规模需后续资格一致的索引优化和压测。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: out-of-scope
+        reason: 不实现新流程引擎、申请、并行加签、独立新建、转发、附录、记录本、DHR或页面。
+    compatibilityAndMigration:
+      - area: historical-data
+        change: 不从自由文本猜测旧参与历史；保留未知并披露结构化事件覆盖。0084只增加权限，不改业务表和旧接口。
+    snapshotImpacts:
+      - area: execution-state
+        change: 仅扩展原状态/历史JSON；系统生成首份不填主动创建人；退回保留创建身份和提交事件。
+    auditImpacts:
+      - area: source-audit
+        change: 原事务保存完整状态审计，不新建日志表；失败回滚应无参与事件。
+    permissionImpacts:
+      - area: personal-query
+        change: 生产来源权限加个人填报或审核权限，不要求全局实例查看；认证主体不可被查询参数替换。历史查看不授予当前写权限。
+    testImpacts:
+      - scope: form-worklists
+        scenarios: [未保存待填, 保存不算已填, 提交后已填, 退回重提, 主动创建和系统创建区分, 真实审核资格, 已办历史, 默认租户隔离, 权限及详情一致, 分页过滤, 原执行回归, 0084幂等权限]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps:
+      - 旧自由文本日志缺稳定份/节点ID，不能完整重建历史参与；不阻塞当前资格投影和新动作历史记录。
+      - 当前未执行生产规模压测；工作树不是已发布版本。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 查询统一消费生产源控制与结构化历史，保留原执行所有权，避免复制引擎。
+    ownershipBoundaries:
+      - owner: production
+        responsibility: 资格、源动作、身份历史和审计。
+      - owner: form-management
+        responsibility: 视图查询及后续页面消费，不维护第二套任务运行状态。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java
+      changeType: create
+      reason: 个人授权查询。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      changeType: update
+      reason: 扩展现有历史事件的可靠身份。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql
+      changeType: create
+      reason: 注册两项专门个人查询权限。
+  acceptanceScenarios:
+    - id: scenario.form-worklist-fill-history
+      given: 本人有资格处理系统产生的未保存首份。
+      when: 保存、提交、退回后重提。
+      then: 保存只留待填；提交进入本人已填；退回保留历史且恢复当前资格待填；不冒充主动创建。
+      evidenceRequirements: [API集成与源重读]
+    - id: scenario.form-worklist-review-access
+      given: 两个用户只有一个是当前审批候选。
+      when: 查询待办及以不同视图读取详情。
+      then: 仅真实候选看到待办；已办来自本人真实APPROVE或RETURN；历史入口只读。
+      evidenceRequirements: [权限及审批回归]

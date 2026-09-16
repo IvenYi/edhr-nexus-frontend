@@ -190,7 +190,7 @@ public class ProductionExecutionService {
         return result;
     }
 
-    private ObjectNode view(ProductionObject object, WorkOrder order, ProductionExecution execution) {
+    ObjectNode view(ProductionObject object, WorkOrder order, ProductionExecution execution) {
         ObjectNode response = mapper.createObjectNode();
         ObjectNode snapshot;
         try { snapshot = execution == null ? snapshots.build(object, order) : parse(execution.getSnapshotJson()); }
