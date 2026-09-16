@@ -27,6 +27,7 @@ import AppDialog from '@/components/AppDialog';
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
 import CellDisplayContent from '../CellDisplayContent';
 import { isCellDisplayNode } from '../../registry/commonComponentRegistry';
+import { buildDynamicSubTablePage } from '../../utils/dynamicSubTableLayout';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
 import { getFilePreviewBlob } from '@/api/files';
 import { verifyCurrentUserSignaturePassword } from '@/api/identity';
@@ -1019,18 +1020,8 @@ function mapChildRangeToRecord(childRange: CanvasSelectionRange, templateRange: 
   });
 }
 
-function getMockPageRowCount(page: CanvasPage, recordCounts: SubTableRecordCounts) {
-  const allNodes = flattenNodes(page.nodes);
-  return allNodes.reduce((rowCount, node) => {
-    if (node.type !== 'sub-table' || node.bindings?.subTableRegion?.repeat.type !== 'dynamic') return rowCount;
-    const recordRanges = buildSubTableRecordRanges(node, recordCounts[node.id] ?? 1);
-    const lastRangeBottom = recordRanges.reduce((bottom, range) => Math.max(bottom, range.b), 0);
-    return Math.max(rowCount, lastRangeBottom);
-  }, page.sheet.rowCount);
-}
-
 function MockFillPage({
-  page,
+  page: templatePage,
   document,
   values,
   subTableRecordCounts,
@@ -1039,13 +1030,14 @@ function MockFillPage({
   onAddSubTableRecord,
   onRemoveSubTableRecord,
 }: MockFillPageProps) {
+  const page = useMemo(() => buildDynamicSubTablePage(templatePage, subTableRecordCounts), [templatePage, subTableRecordCounts]);
   const allNodes = useMemo(() => flattenNodes(page.nodes), [page.nodes]);
   const renderedPage = useMemo(() => buildSubTableRepeatedGroupSheetLayout({
     cells: page.cells,
     mergedCells: page.mergedCells,
     nodes: page.nodes,
   }), [page.cells, page.mergedCells, page.nodes]);
-  const rowCount = getMockPageRowCount(page, subTableRecordCounts);
+  const rowCount = page.sheet.rowCount;
   const displayPage = useMemo(() => ({
     ...page,
     sheet: { ...page.sheet, rowCount },
