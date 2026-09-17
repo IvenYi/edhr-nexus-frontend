@@ -5,7 +5,7 @@
 export const WORKFLOW_STATUS_MAP = {
   DRAFT: { label: '草稿', color: 'default' as const },
   PUBLISHED: { label: '已发布', color: 'success' as const },
-  IN_REVIEW: { label: '审核中', color: 'warning' as const },
+  IN_REVIEW: { label: '审批中', color: 'warning' as const },
   EFFECTIVE: { label: '已生效', color: 'success' as const },
   OBSOLETE: { label: '已作废', color: 'error' as const },
 } as const;
@@ -187,7 +187,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         label: '流程中心',
         icon: 'AccountTree',
         children: [
-          { label: '审核流程模板', path: '/workflow/review-templates' },
+          { label: '审批流程', path: '/workflow/review-templates' },
           { label: '表单流程', path: '/workflow/form-processes' },
           { label: '流程实例', path: '/workflow/instances' },
         ],
@@ -212,7 +212,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         children: [
           { label: '表单列表', path: '/form-management/list' },
           { label: '表单填报', path: '/form-management/filling' },
-          { label: '表单审核', path: '/form-management/review' },
+          { label: '表单审批', path: '/form-management/review' },
         ],
       },
     ],

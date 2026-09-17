@@ -435,25 +435,25 @@ public class WorkflowTemplateController {
             JsonNode startButtons = config.get("buttons");
             if (startButtons != null && !startButtons.isNull()
                     && (!startButtons.isArray() || !startButtons.isEmpty())) {
-                throw new BusinessException(ErrorCode.WF_002, "记录控制审核的发起节点不配置按钮");
+                throw new BusinessException(ErrorCode.WF_002, "记录控制审批的发起节点不配置按钮");
             }
             JsonNode startEvents = config.get("buttonEvents");
             if (startEvents != null && !startEvents.isNull()
                     && (!startEvents.isArray() || !startEvents.isEmpty())) {
-                throw new BusinessException(ErrorCode.WF_002, "记录控制审核的发起节点不配置按钮事件");
+                throw new BusinessException(ErrorCode.WF_002, "记录控制审批的发起节点不配置按钮事件");
             }
             if (config.has("guardMode")) {
-                throw new BusinessException(ErrorCode.WF_002, "审核流程不支持表单校验配置");
+                throw new BusinessException(ErrorCode.WF_002, "审批流程不支持表单校验配置");
             }
             return;
         }
         if (config == null || config.isMissingNode() || config.isNull()) {
-            if (recordControl) throw new BusinessException(ErrorCode.WF_002, "审核流程必须配置系统固定动作");
+            if (recordControl) throw new BusinessException(ErrorCode.WF_002, "审批流程必须配置系统固定动作");
             return;
         }
         JsonNode buttons = config.get("buttons");
         if (recordControl && (buttons == null || buttons.isNull() || !buttons.isArray())) {
-            throw new BusinessException(ErrorCode.WF_002, "审核流程必须配置系统固定动作");
+            throw new BusinessException(ErrorCode.WF_002, "审批流程必须配置系统固定动作");
         }
         if (buttons != null && !buttons.isNull()) {
             if (!buttons.isArray()) throw new BusinessException(ErrorCode.WF_002, "流程按钮配置格式不正确");
@@ -474,10 +474,10 @@ public class WorkflowTemplateController {
                     throw new BusinessException(ErrorCode.WF_002, "流程按钮动作不受支持");
                 }
                 if (!seenActions.add(action)) {
-                    throw new BusinessException(ErrorCode.WF_002, "审核流程固定动作不能重复配置");
+                    throw new BusinessException(ErrorCode.WF_002, "审批流程固定动作不能重复配置");
                 }
                 if (button.has("visible") && !button.path("visible").asBoolean(true)) {
-                    throw new BusinessException(ErrorCode.WF_002, "审核流程固定动作不能隐藏");
+                    throw new BusinessException(ErrorCode.WF_002, "审批流程固定动作不能隐藏");
                 }
                 if (button.has("requireOpinion") && !button.path("requireOpinion").isBoolean()) {
                     throw new BusinessException(ErrorCode.WF_002, "审批意见必填配置格式不正确");
@@ -492,7 +492,7 @@ public class WorkflowTemplateController {
                     ? Set.of("SAVE", "SUBMIT")
                     : recordControl ? Set.of("APPROVE", "RETURN", "TRANSFER") : Set.of("APPROVE", "RETURN");
             if (!seenActions.containsAll(required) || seenActions.size() != required.size()) {
-                throw new BusinessException(ErrorCode.WF_002, "审核流程固定动作不能增删");
+                throw new BusinessException(ErrorCode.WF_002, "审批流程固定动作不能增删");
             }
         }
         JsonNode events = config.get("buttonEvents");
@@ -515,7 +515,7 @@ public class WorkflowTemplateController {
                         : ("APPROVE".equals(action) || "RETURN".equals(action)
                         || (recordControl && "TRANSFER".equals(action)));
                 if (!allowedAction || (recordControl && !builtin.isBlank() && !"NONE".equals(builtin))) {
-                    throw new BusinessException(ErrorCode.WF_002, "审核流程电子签名不支持表单字段事件");
+                    throw new BusinessException(ErrorCode.WF_002, "审批流程电子签名不支持表单字段事件");
                 }
                 if ((!builtin.isBlank() || !signatureMethod.isBlank()) && !"BEFORE".equals(phase)) {
                     throw new BusinessException(ErrorCode.WF_002, "电子签名事件仅支持执行前处理");
@@ -530,7 +530,7 @@ public class WorkflowTemplateController {
             }
         }
         if (recordControl && config.has("guardMode")) {
-            throw new BusinessException(ErrorCode.WF_002, "审核流程不支持表单校验配置");
+            throw new BusinessException(ErrorCode.WF_002, "审批流程不支持表单校验配置");
         }
     }
 
@@ -632,7 +632,7 @@ public class WorkflowTemplateController {
     private void validateBusinessType(String businessType) {
         if (businessType == null || businessType.isBlank()
                 || (!"CHANGE".equals(businessType) && !"OBSOLETE".equals(businessType))) {
-            throw new BusinessException(ErrorCode.GENERAL_003, "审核流程模板分类仅支持表单变更或表单作废");
+            throw new BusinessException(ErrorCode.GENERAL_003, "审批流程分类仅支持表单变更或表单作废");
         }
     }
 
@@ -670,10 +670,10 @@ public class WorkflowTemplateController {
                     .contentAfter(GRAPH_MAPPER.writeValueAsString(after))
                     .operatorId(AuditContext.getOperatorId()).operatorName(AuditContext.getOperatorName())
                     .operatorAccount(AuditContext.getOperatorAccount()).source(AuditContext.getSource())
-                    .moduleName("生产管理").menuName("流程中心 · 审核流程模板")
+                    .moduleName("生产管理").menuName("流程中心 · 审批流程")
                     .createdAt(LocalDateTime.now()).build());
         } catch (Exception exception) {
-            throw new IllegalStateException("审核流程模板审计记录保存失败", exception);
+            throw new IllegalStateException("审批流程审计记录保存失败", exception);
         }
     }
 

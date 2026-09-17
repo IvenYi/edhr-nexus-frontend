@@ -78,6 +78,12 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.record-correction-void-design, evidence.production-form-process-user-confirmed-v5]
+  - id: concept.form-instance-business-source
+    termId: term.form-instance-business-source
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-record-service, evidence.form-instance-business-source-query-service, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-integration-test, evidence.form-instance-business-source-migration-test]
   - id: concept.form-instance-number
     termId: term.form-instance-number
     kind: business-fact
@@ -663,6 +669,13 @@ relations:
     status: specified
     visibility: internal
     evidenceIds: [evidence.form-instance-number-user-decision]
+  - id: relation.form-instance-has-business-source
+    source: concept.form-instance
+    target: concept.form-instance-business-source
+    cardinality: many-to-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-migration-test]
   - id: relation.production-line-references-workshop
     source: concept.production-line
     target: concept.workshop

@@ -8,25 +8,25 @@ evidence:
   - id: evidence.record-control-start-entry-user-confirmed
     type: document
     path: docs/knowledge/evidence/record-control-start-entry-user-confirmed.md
-    description: 用户确认的记录控制申请发起语义：申请内容、申请人电子签名和已发布流程选择在申请入口完成，点击确认即启动审核并直接进入首个审批节点；审核模板开始节点仅为流程边界，不配置保存或提交按钮。该证据确认业务规则，但不证明申请入口和审核运行时已经实现。
+    description: 用户确认的记录控制申请发起语义：申请内容、申请人电子签名和已发布流程选择在申请入口完成，点击确认即启动审批并直接进入首个审批节点；审批流程开始节点仅为流程边界，不配置保存或提交按钮。该证据确认业务规则，但不证明申请入口和审批运行时已经实现。
     visibility: internal
   - id: evidence.record-correction-void-design
     type: document
     path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
-    description: 用户确认的表单变更与作废设计收敛稿；定义独立申请、新修订、作废语义、表单流程可选时无流程提交直接完成、显式匹配已发布流程并冻结引用、受限撤回、转办、重新分配、并行审核、字段标红、审计快照及 P0 不支持终止跳过加签等范围。该文档是设计证据，不是实现证据。
+    description: 用户确认的表单变更与作废设计收敛稿；定义独立申请、新修订、作废语义、表单流程可选时无流程提交直接完成、显式匹配已发布流程并冻结引用、受限撤回、转办、重新分配、并行审批、字段标红、审计快照及 P0 不支持终止跳过加签等范围。该文档是设计证据，不是实现证据。
     visibility: internal
   - id: evidence.record-control-review-template-required-approvers
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java
-    description: 审核流程模板发布校验的实现证据；每个审批节点必须配置审批主体，审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定。记录控制开始节点无按钮的新规则以当前工作树实现和聚焦测试为准；该证据不覆盖申请入口及审核运行时。
+    description: 审批流程发布校验的实现证据；每个审批节点必须配置审批主体，审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定。记录控制开始节点无按钮的新规则以当前工作树实现和聚焦测试为准；该证据不覆盖申请入口及审批运行时。
     visibility: internal
   - id: evidence.record-control-review-template-editor
     type: code
     path: gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
-    description: 审核流程模板设计器配置审批主体、并行结构及审批节点固定动作的按钮显示名称、样式、意见要求和电子签名；开始节点仅显示流程边界属性且不提供节点按钮页，审批节点显示审批、退回和转办，转办不显示意见必填；不提供显隐/动作输入、发起填报权限、表单校验或签名字段绑定。
+    description: 审批流程设计器配置审批主体、并行结构及审批节点固定动作的按钮显示名称、样式、意见要求和电子签名；开始节点仅显示流程边界属性且不提供节点按钮页，审批节点显示审批、退回和转办，转办不显示意见必填；不提供显隐/动作输入、发起填报权限、表单校验或签名字段绑定。
     visibility: internal
   - id: evidence.record-control-review-template-publish-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTemplateControllerTest.java
-    description: 覆盖审核流程模板缺少审批主体时阻断发布、开始节点无按钮可发布且携带非空按钮配置被拒绝，以及审批节点固定包含审批、退回、转办，固定动作显示名称可修改、动作缺失或隐藏被拒绝、转办携带意见必填被拒绝、样式和电子签名可保存。
+    description: 覆盖审批流程缺少审批主体时阻断发布、开始节点无按钮可发布且携带非空按钮配置被拒绝，以及审批节点固定包含审批、退回、转办，固定动作显示名称可修改、动作缺失或隐藏被拒绝、转办携带意见必填被拒绝、样式和电子签名可保存。
     visibility: internal

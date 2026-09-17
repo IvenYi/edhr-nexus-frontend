@@ -184,4 +184,6 @@ databaseChangeLog:
   - include:
       file: db/changelog/0086-master-data-deletion-protection.sql
   - include:
+      file: db/changelog/0086-form-instance-business-source.sql
+  - include:
       file: db/changelog/0087-restore-standard-material-types.sql

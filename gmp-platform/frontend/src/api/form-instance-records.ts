@@ -87,6 +87,8 @@ export interface FormWorklistRow extends FormWorklistIdentity {
   productionObjectNo: string | null; productionObjectType: 'BATCH' | 'SN' | null;
   workOrderId: string | null; workOrderNo: string | null; operationName: string;
   recordStatus: 'ACTIVE' | 'COMPLETED'; saved: boolean;
+  /** Present only when this row is an explicit creation by the current user. */
+  creationType: 'CUSTOM_FORM' | 'ADDED_COPY' | null;
   /** Explicit creation only; system initial copies and unknown legacy creators remain null. */
   creatorId: string | null; createdAt: string | null;
   /** Source execution update time, not an individual-copy edit time. All times are source-local ISO. */

@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { UNSAFE_NavigationContext } from 'react-router-dom';
+import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom';
 import { Alert, Box, Button, Chip, CircularProgress, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
@@ -27,6 +27,7 @@ const panel = { bgcolor: 'background.paper', border: '1px solid', borderColor: '
 
 export default function ProductionExecutionPage() {
   const navigation = useContext(UNSAFE_NavigationContext);
+  const location = useLocation();
   const [barcode, setBarcode] = useState('');
   const [view, setView] = useState<ExecutionView | null>(null);
   const [operationId, setOperationId] = useState('');
@@ -62,6 +63,8 @@ export default function ProductionExecutionPage() {
   const documentBodyRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef(0);
   const busyRef = useRef(false);
+  const initialBarcodeRef = useRef<string | null>(null);
+  const initialTargetRef = useRef<{ operationId: string; formId: string; copyId: string } | null>(null);
   const scanRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const [quickRailContainer, setQuickRailContainer] = useState<HTMLDivElement | null>(null);
@@ -204,19 +207,27 @@ export default function ProductionExecutionPage() {
   const protect = (action: () => void) => { if (busyRef.current) return; if (dirty) setPendingSwitch(() => action); else action(); };
   const receive = (next: ExecutionView, reset = false) => {
     setView(next);
-    const id = !reset && next.snapshot.operations.some((item) => item.id === operationId) ? operationId
+    const target = reset ? initialTargetRef.current : null;
+    const targetedOperation = target && next.snapshot.operations.some((item) => item.id === target.operationId) ? target.operationId : '';
+    const id = targetedOperation || (!reset && next.snapshot.operations.some((item) => item.id === operationId) ? operationId
       : next.snapshot.operations.find((item) => next.state.operations[item.id]?.status === 'IN_PROGRESS')?.id
-      ?? next.snapshot.operations.find((item) => next.availability[item.id]?.canStart)?.id ?? next.snapshot.operations[0]?.id ?? '';
+      ?? next.snapshot.operations.find((item) => next.availability[item.id]?.canStart)?.id ?? next.snapshot.operations[0]?.id ?? '');
     chooseOperation(id, next);
-    if (!reset && id === operationId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === formId && !item.fulfilledBy))
+    if (targetedOperation && target?.formId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === target.formId && !item.fulfilledBy)) {
+      chooseForm(target.formId, next, id, target.copyId);
+      initialTargetRef.current = null;
+    } else if (reset) {
+      initialTargetRef.current = null;
+    } else if (id === operationId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === formId && !item.fulfilledBy))
       chooseForm(formId, next, id, selectedInstanceId);
   };
-  const load = async (refresh = false) => {
-    if (busyRef.current || (!refresh && !barcode.trim())) { if (!barcode.trim()) scanRef.current?.focus(); return; }
+  const load = async (refresh = false, requestedBarcode?: string) => {
+    const barcodeValue = (requestedBarcode ?? barcode).trim();
+    if (busyRef.current || (!refresh && !barcodeValue)) { if (!barcodeValue) scanRef.current?.focus(); return; }
     busyRef.current = true; setBusy(true); setError(''); setNotice('');
     const request = ++requestRef.current;
     try {
-      const next = refresh && context ? await getProductionExecution(context.objectId) : await scanProduction(barcode.trim());
+      const next = refresh && context ? await getProductionExecution(context.objectId) : await scanProduction(barcodeValue);
       if (request !== requestRef.current) return;
       receive(next, !refresh); setBarcode(next.snapshot.context.objectNo); if (!refresh) setActivePanel(null);
     } catch (reason) {
@@ -225,6 +236,22 @@ export default function ProductionExecutionPage() {
       if (!refresh) { setView(null); setDirty(false); }
     } finally { if (request === requestRef.current) { busyRef.current = false; setBusy(false); } }
   };
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const requestedBarcode = params.get('barcode')?.trim();
+    if (!requestedBarcode) {
+      initialBarcodeRef.current = null;
+      initialTargetRef.current = null;
+      return;
+    }
+    if (view || initialBarcodeRef.current === requestedBarcode) return;
+    initialBarcodeRef.current = requestedBarcode;
+    const operationId = params.get('operationId')?.trim();
+    const formId = params.get('formId')?.trim();
+    const copyId = params.get('copyId')?.trim();
+    initialTargetRef.current = operationId && formId && copyId ? { operationId, formId, copyId } : null;
+    setBarcode(requestedBarcode);
+  }, [location.search, view]);
   const act = async (command: Omit<ExecutionCommand, 'revision' | 'operationId'>) => {
     if (!view || !context || busyRef.current) return;
     busyRef.current = true; setBusy(true); setError(''); setNotice('');

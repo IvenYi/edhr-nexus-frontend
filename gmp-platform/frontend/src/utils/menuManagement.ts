@@ -65,7 +65,7 @@ const REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU: SidebarMenu = {
   label: '流程中心',
   icon: 'AccountTree',
   children: [
-    { label: '审核流程模板', path: '/workflow/review-templates' },
+    { label: '审批流程', path: '/workflow/review-templates' },
     { label: '表单流程', path: '/workflow/form-processes' },
     { label: '流程实例', path: '/workflow/instances' },
   ],
@@ -85,7 +85,7 @@ const REQUIRED_FORM_MANAGEMENT_MENU: SidebarMenu = {
   children: [
     { label: '表单列表', path: '/form-management/list' },
     { label: '表单填报', path: '/form-management/filling' },
-    { label: '表单审核', path: '/form-management/review' },
+    { label: '表单审批', path: '/form-management/review' },
   ],
 };
 

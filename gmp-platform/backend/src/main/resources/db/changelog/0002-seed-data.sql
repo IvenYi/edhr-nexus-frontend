@@ -2,6 +2,7 @@
 --changeset edhr:0002-seed-data
 --validCheckSum: 9:66667c278c075f6f0fae02047f30e0b8
 --validCheckSum: 9:1ce12afc133d77632f79ae871d79b6e8
+--validCheckSum: 9:7f2448703297f17cf365a0e941b2b602
 
 -- ============================================================
 -- Seed Data: Default tenant, admin user, core roles, permissions
@@ -22,7 +23,7 @@ INSERT INTO user_account (id, tenant_id, username, password_hash, display_name, 
 -- Core roles
 INSERT INTO role (id, tenant_id, code, name, description) VALUES
 (1, 1, 'ADMIN', '系统管理员', '系统最高权限角色'),
-(2, 1, 'QUALITY_MGR', '质量经理', '质量管理与审核流程配置'),
+(2, 1, 'QUALITY_MGR', '质量经理', '质量管理与审批流程配置'),
 (3, 1, 'OPERATOR', '生产操作员', '生产操作与表单填写'),
 (4, 1, 'WORKFLOW_ADMIN', '流程管理员', '流程监控与干预');
 
@@ -39,14 +40,14 @@ INSERT INTO permission (id, code, name, type, parent_code, sort_order) VALUES
 -- Workflow Center
 INSERT INTO permission (id, code, name, type, parent_code, sort_order) VALUES
 (20, 'workflow', '流程中心', 'PAGE', NULL, 2),
-(21, 'workflow.review-templates', '审核流程模板', 'PAGE', 'workflow', 1),
+(21, 'workflow.review-templates', '审批流程', 'PAGE', 'workflow', 1),
 (22, 'workflow.txn-templates', '事务流程模板', 'PAGE', 'workflow', 2),
 (23, 'workflow.binding-rules', '流程绑定配置', 'PAGE', 'workflow', 3),
 (24, 'workflow.instances', '流程实例', 'PAGE', 'workflow', 4),
 (25, 'workflow.logs', '流程日志', 'PAGE', 'workflow', 5),
-(26, 'workflow.template.edit', '编辑流程模板', 'BUTTON', 'workflow.review-templates', 1),
-(27, 'workflow.template.publish', '发布流程模板', 'BUTTON', 'workflow.review-templates', 2),
-(28, 'workflow.task.approve', '审核通过/退回', 'BUTTON', 'workflow.instances', 1),
+(26, 'workflow.template.edit', '编辑审批流程', 'BUTTON', 'workflow.review-templates', 1),
+(27, 'workflow.template.publish', '发布审批流程', 'BUTTON', 'workflow.review-templates', 2),
+(28, 'workflow.task.approve', '审批通过/退回', 'BUTTON', 'workflow.instances', 1),
 (29, 'workflow.task.transfer', '转办', 'BUTTON', 'workflow.instances', 2),
 (30, 'workflow.intervene', '流程干预', 'BUTTON', 'workflow.instances', 3);
 

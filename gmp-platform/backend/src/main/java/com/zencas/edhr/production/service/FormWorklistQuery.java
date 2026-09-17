@@ -31,7 +31,7 @@ final class FormWorklistQuery {
         if (values.containsKey("instanceNo") && values.containsKey("instanceNoContains")) throw invalid("实例号精确与模糊条件互斥");
         if (values.containsKey("saved") && !Set.of("true", "false").contains(values.get("saved"))) throw invalid("saved 必须为 true 或 false");
         if (values.containsKey("productionObjectType") && !Set.of("BATCH", "SN").contains(values.get("productionObjectType"))) throw invalid("生产对象类型必须为 BATCH 或 SN");
-        if (values.containsKey("reviewResult") && (!view.equals("REVIEW_DONE") || !Set.of("APPROVE", "RETURN").contains(values.get("reviewResult")))) throw invalid("审核结果仅适用于 REVIEW_DONE，取 APPROVE 或 RETURN");
+        if (values.containsKey("reviewResult") && (!view.equals("REVIEW_DONE") || !Set.of("APPROVE", "RETURN").contains(values.get("reviewResult")))) throw invalid("审批结果仅适用于 REVIEW_DONE，取 APPROVE 或 RETURN");
         for (String prefix : List.of("created", "updated", "submitted", "reviewed", "arrived")) {
             String from = values.get(prefix + "From"), to = values.get(prefix + "To");
             if (from == null && to == null) continue;

@@ -49,10 +49,10 @@ public class FormInstanceRecordService {
             Long id = jdbc.queryForObject("SELECT nextval('form_instance_number_seq')", Long.class);
             instanceNo = "FR-" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + String.format(java.util.Locale.ROOT, "%06d", id);
             jdbc.update("""
-                INSERT INTO form_instance_record(id,tenant_id,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
+                INSERT INTO form_instance_record(id,tenant_id,source_type,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
                     snapshot_json,values_json,status,created_by,created_at,updated_by,updated_at,numbered_at,legacy)
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,FALSE)
-                """, id, tenantId, instanceNo, objectId, operationId, formId, copyId, templateId, versionId,
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,FALSE)
+                """, id, tenantId, "PRODUCTION_EXECUTION", instanceNo, objectId, operationId, formId, copyId, templateId, versionId,
                     form.toString(), formState.path("values").toString(), formState.path("status").asText(), actor, now, actor, now, now);
             JsonNode context = snapshot.path("context");
             jdbc.update("""

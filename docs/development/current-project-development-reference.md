@@ -6,7 +6,7 @@
 
 ## 1. 项目定位
 
-本项目是商业级、可配置、可私有化部署的 eDHR 产品与工程仓库，面向批次/SN 生产记录、DHR 汇总、审核放行、追溯和受控电子记录等数据完整性场景。
+本项目是商业级、可配置、可私有化部署的 eDHR 产品与工程仓库，面向批次/SN 生产记录、DHR 汇总、审批放行、追溯和受控电子记录等数据完整性场景。
 
 医疗器械、GMP、CSV/CSA 是重要的高监管实施参考和验证场景，但不是产品的唯一行业边界。
 
@@ -17,7 +17,7 @@
 - 物料、工序、工艺路线、产品、产品簇和文档等主数据；
 - 产品/产品簇制程及制程版本；
 - 表单模板、批记录/DHR 模板及可视化设计器；
-- 审核流程和生产作业模板配置。
+- 审批流程和生产作业模板配置。
 
 完整生产工单、批次/SN 执行、作业运行实例、生产快照和端到端追溯仍存在规划或未完整实现的部分。不得把文档中的目标能力直接描述成当前已经可运行的功能。
 
@@ -157,7 +157,7 @@ gmp-platform/frontend/src/
 - `/master-data/documents`：文档管理；
 - `/master-data/form-templates`：表单模板；
 - `/master-data/batch-record-templates`：批记录模板；
-- `/workflow/review-templates`：审核流程模板；
+- `/workflow/review-templates`：审批流程；
 - `/workflow/binding-rules`：流程绑定规则；
 - `/workflow/instances`：流程实例；
 - `/workflow/tasks/:id`：流程任务；
@@ -217,7 +217,7 @@ gmp-platform/backend/src/main/java/com/zencas/edhr/EdhrApplication.java
 - `masterdata`：物料、工序、路线、产品、产品簇、产品制程、文档、批次和 SN；
 - `system`：系统设置、业务字典和图标；
 - `template`：表单模板、DHR/批记录模板、目录与模板项；
-- `workflow`：审核流程、实例、任务、绑定规则和生产作业模板。
+- `workflow`：审批流程、实例、任务、绑定规则和生产作业模板。
 
 当前代码不是完全严格的 Controller -> Service -> Repository 分层。部分 Controller 直接编排多个 Repository，Service 主要承担跨实体、版本归属、解析和复杂规则。修改业务逻辑前必须定位真实写入路径，不能默认逻辑只存在于 Service。
 
@@ -297,7 +297,7 @@ gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
 - `@EnableMethodSecurity` 已启用；
 - 当前 `@PreAuthorize` 主要集中在模板相关 Controller，细粒度权限覆盖不均匀。
 
-后续新增查询、保存、删除、发布、审核、签名、转办等接口时，必须明确：
+后续新增查询、保存、删除、发布、审批、签名、转办等接口时，必须明确：
 
 - 所需权限码；
 - 后端校验位置；

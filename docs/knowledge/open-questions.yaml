@@ -1,7 +1,7 @@
 knowledgeModelVersion: 0.3.21
 questions:
   - id: question.record-control-managerial-reassignment-signature
-    question: 记录控制审核的重新分配是否必须额外完成电子签名，还是只要求专门权限、原因和不可变审计？
+    question: 记录控制审批的重新分配是否必须额外完成电子签名，还是只要求专门权限、原因和不可变审计？
     context: 阶段一共享命令保留可选 signatureId，但重新分配运行时尚未实现；当前已确认其需要专门权限、目标资格、原因并保持节点和流程路径不变，尚未确认是否以电子签名作为执行阻断条件。
     options:
       - 重新分配必须电子签名，缺少有效签名时阻断动作
@@ -10,13 +10,13 @@ questions:
     impact: 该问题只阻塞重新分配的签名校验、签名审计字段和发布级验收，不阻塞阶段一候选查询、显式版本启动以及后续权限、原因和目标资格边界实现。
     visibility: internal
   - id: question.record-control-active-form-void-boundary
-    question: 活动中的表单记录是否允许发起作废申请，还是必须在作废入口阻断并继续原填报或审核流程？
+    question: 活动中的表单记录是否允许发起作废申请，还是必须在作废入口阻断并继续原填报或审批流程？
     context: 本次记录控制设计已确认独立作废申请、P0 审批和来源记录状态保留，但“打开中、已提交待审、已退回或未填报记录”的可作废边界仍需产品确认；不得将阻断建议写成 user-confirmed 规则。
     options:
-      - 允许活动记录进入作废申请，但仍必须走 P0 审核
+      - 允许活动记录进入作废申请，但仍必须走 P0 审批
       - 阻断活动表单作废，仅允许已完成记录或误创建记录进入作废申请
-      - 分状态分别定义允许条件、替代方案和审核影响后再确定
-    impact: 该边界会影响作废候选查询、状态机入口、表单审核流程、DHR 完整性检查和前端动作可见性；确认前不得新增活动表单作废阻断规则。
+      - 分状态分别定义允许条件、替代方案和审批影响后再确定
+    impact: 该边界会影响作废候选查询、状态机入口、表单审批流程、DHR 完整性检查和前端动作可见性；确认前不得新增活动表单作废阻断规则。
     visibility: internal
   - id: question.production-work-condition-runtime-source-snapshot-contract
     question: 已确认作业条件第一版字段目录和字段类型，但运行时真实来源、取值快照方式以及目录版本与生产实例快照的绑定契约何时闭环？

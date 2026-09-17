@@ -128,6 +128,8 @@ public class FormWorklistService {
                             .put("productionObjectType", context.path("objectType").asText(null)).put("workOrderId", context.path("workOrderId").asText(null))
                             .put("workOrderNo", context.path("workOrderNo").asText(null)).put("operationId", opId).put("operationName", op.path("name").asText())
                             .put("formId", formId).put("copyId", copyId).put("recordStatus", copy.path("status").asText())
+                            .put("creationType", actor.equals(copy.path("explicitCreatorId").asText())
+                                ? (copyId.equals(formId) && "CUSTOM".equals(form.path("sourceType").asText()) ? "CUSTOM_FORM" : "ADDED_COPY") : null)
                             .put("creatorId", copy.path("explicitCreatorId").asText(null)).put("createdAt", copy.path("explicitCreatedAt").asText(null))
                             .put("updatedAt", ((java.sql.Timestamp) source.get("updated_at")).toLocalDateTime().toString())
                             .put("saved", copy.hasNonNull("savedAt")).put("nodeId", pending ? nodeId : lastEvent == null ? null : lastEvent.path("nodeId").asText(null))

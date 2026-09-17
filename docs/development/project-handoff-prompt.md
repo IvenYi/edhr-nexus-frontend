@@ -23,7 +23,7 @@
 
 ## 2. 项目基础信息
 
-- 产品定位：商业级可定制 eDHR 平台，面向批次/SN 生产记录、DHR 汇总、审核放行、追溯和受控电子记录场景。
+- 产品定位：商业级可定制 eDHR 平台，面向批次/SN 生产记录、DHR 汇总、审批放行、追溯和受控电子记录场景。
 - 前端：React 18、TypeScript、MUI、Vite、React Query、React Router、Zustand。
 - 后端：Spring Boot 3.3、Java 21、Maven、Spring Security、JPA、Liquibase、PostgreSQL。
 - 数据库：PostgreSQL 16 或兼容版本。

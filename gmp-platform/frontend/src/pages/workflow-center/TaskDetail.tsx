@@ -41,7 +41,7 @@ export default function TaskDetail() {
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2 }}>任务详情</Typography>
           <Typography variant="body2" color="text.secondary">
-            展示关联表单、字段权限、审核人等信息。
+            展示关联表单、字段权限、审批人等信息。
           </Typography>
         </CardContent>
       </Card>
@@ -49,7 +49,7 @@ export default function TaskDetail() {
       <Card>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2 }}>处理操作</Typography>
-          <TextField label="审核意见" fullWidth multiline rows={3} sx={{ mb: 2 }}
+          <TextField label="审批意见" fullWidth multiline rows={3} sx={{ mb: 2 }}
             value={opinion} onChange={(e) => setOpinion(e.target.value)} />
           <TextField label="签名密码" type="password" fullWidth sx={{ mb: 3 }}
             value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -61,19 +61,19 @@ export default function TaskDetail() {
               variant="contained"
               color="success"
               startIcon={<CheckCircle />}
-              onClick={() => handleAction('approve', '审核通过')}
+              onClick={() => handleAction('approve', '审批通过')}
               disabled={loading !== null}
             >
-              {loading === 'approve' ? '处理中...' : '审核通过'}
+              {loading === 'approve' ? '处理中...' : '审批通过'}
             </Button>
             <Button
               variant="contained"
               color="error"
               startIcon={<Cancel />}
-              onClick={() => handleAction('reject', '审核退回')}
+              onClick={() => handleAction('reject', '审批退回')}
               disabled={loading !== null}
             >
-              {loading === 'reject' ? '处理中...' : '审核退回'}
+              {loading === 'reject' ? '处理中...' : '审批退回'}
             </Button>
             <Button
               variant="outlined"

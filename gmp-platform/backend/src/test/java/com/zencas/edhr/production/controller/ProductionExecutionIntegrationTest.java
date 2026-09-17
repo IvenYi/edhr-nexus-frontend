@@ -97,6 +97,10 @@ class ProductionExecutionIntegrationTest {
         for (String sql : queryMigration.split("--changeset codex:0083-form-instance-query-history")[0].split(";")) {
             if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);
         }
+        var sourceMigration = new String(getClass().getResourceAsStream("/db/changelog/0086-form-instance-business-source.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : sourceMigration.split(";")) {
+            if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);
+        }
         for (String ddl : List.of(
             "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16))",
             "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT)",
@@ -207,6 +211,7 @@ class ProductionExecutionIntegrationTest {
         action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
         String number = jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class);
         assertThat(number).matches("FR-\\d{8}-\\d{6,}");
+        assertThat(jdbc.queryForObject("SELECT source_type FROM form_instance_record", String.class)).isEqualTo("PRODUCTION_EXECUTION");
         action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 23))).andExpect(status().isOk());
         assertThat(jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class)).isEqualTo(number);
         jdbc.update("UPDATE form_template SET name='修改后的模板'");
@@ -549,7 +554,8 @@ class ProductionExecutionIntegrationTest {
             }
         }
         mvc.perform(queryAuth(get("/api/v1/form-instances"))).andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
-            .andExpect(jsonPath("$.data.content[0].createdById").value("1")); // Reader 2 sees author 1 without own/dept scope.
+            .andExpect(jsonPath("$.data.content[0].createdById").value("1"))
+            .andExpect(jsonPath("$.data.content[0].source.sourceType").value("PRODUCTION_EXECUTION")); // Reader 2 sees author 1 without own/dept scope.
         mvc.perform(queryAuth(get("/api/v1/form-instance-records").param("templateId", "5"))).andExpect(status().isForbidden());
         mvc.perform(get("/api/v1/form-instance-records").param("templateId", "5").header("Authorization", "Bearer " +
             tokens.generateToken("2", "reader", "读者", 5, List.of("master-data.form-templates", "production.execution"))))
@@ -602,7 +608,8 @@ class ProductionExecutionIntegrationTest {
         mvc.perform(queryAuth(get("/api/v1/form-instances").param("instanceNoContains", "FR-"))).andExpect(jsonPath("$.data.totalElements").value(2));
         for (String path : List.of("/api/v1/form-instances/1", "/api/v1/form-instances/by-number/" + number)) {
             mvc.perform(queryAuth(get(path))).andExpect(status().isOk()).andExpect(jsonPath("$.data.formInstanceId").value("1"))
-                .andExpect(jsonPath("$.data.snapshot.name").value("装配记录")).andExpect(jsonPath("$.data.fieldValues.temperature").value(22));
+                .andExpect(jsonPath("$.data.snapshot.name").value("装配记录")).andExpect(jsonPath("$.data.fieldValues.temperature").value(22))
+                .andExpect(jsonPath("$.data.source.sourceType").value("PRODUCTION_EXECUTION"));
         }
         mvc.perform(queryAuth(get("/api/v1/form-instances/1/operation-context"))).andExpect(status().isOk())
             .andExpect(jsonPath("$.data.source.copyId").value("form-51")).andExpect(jsonPath("$.data.revision").value(2))
@@ -612,6 +619,10 @@ class ProductionExecutionIntegrationTest {
         mvc.perform(queryAuth(post("/api/v1/production/execution/101/actions").contentType("application/json")
             .content("{\"action\":\"SAVE\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"form-51\",\"values\":{}}")))
             .andExpect(status().isBadRequest());
+        jdbc.update("UPDATE form_instance_record SET source_type='UNSUPPORTED' WHERE id=2");
+        mvc.perform(queryAuth(get("/api/v1/form-instances"))).andExpect(jsonPath("$.data.totalElements").value(1));
+        mvc.perform(queryAuth(get("/api/v1/form-instances/2"))).andExpect(status().isNotFound());
+        jdbc.update("UPDATE form_instance_record SET source_type='PRODUCTION_EXECUTION' WHERE id=2");
         jdbc.update("UPDATE form_instance_record SET tenant_id='other' WHERE id=1");
         mvc.perform(queryAuth(get("/api/v1/form-instances"))).andExpect(jsonPath("$.data.totalElements").value(1));
         for (String path : List.of("/api/v1/form-instances/1", "/api/v1/form-instances/1/operation-context", "/api/v1/form-instances/by-number/" + number)) {
@@ -694,8 +705,11 @@ class ProductionExecutionIntegrationTest {
             .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         String custom = mapper.readTree(response).path("data").path("attachedFormId").asText();
         mvc.perform(personal(get("/api/v1/form-worklists/CREATED"), "1"))
-            .andExpect(jsonPath("$.data.totalElements").value(2)).andExpect(jsonPath("$.data.content[0].saved").value(false));
-        mvc.perform(personal(worklistDetail("CREATED", custom, custom), "1")).andExpect(jsonPath("$.data.controls.canAct").value(false));
+            .andExpect(jsonPath("$.data.totalElements").value(2))
+            .andExpect(jsonPath("$.data.content[?(@.copyId == 'form-51:copy:2')].creationType").value("ADDED_COPY"))
+            .andExpect(jsonPath("$.data.content[?(@.copyId == '" + custom + "')].creationType").value("CUSTOM_FORM"));
+        mvc.perform(personal(worklistDetail("CREATED", custom, custom), "1"))
+            .andExpect(jsonPath("$.data.controls.canAct").value(false)).andExpect(jsonPath("$.data.creationType").value("CUSTOM_FORM"));
         mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
             .content(mapper.writeValueAsString(Map.of("action", "SAVE", "revision", 3, "operationId", "a",
                 "formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of("temperature", 22)))), "2")).andExpect(status().isOk());

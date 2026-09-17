@@ -77,7 +77,7 @@ Playwright
 - Vite 适合内部 ToB SPA，启动和构建简单，不需要 Next.js 的 SSR 复杂度。
 - Ant Design 适合企业级后台系统，表格、表单、弹窗、步骤、筛选、权限页面、详情页都成熟。
 - TanStack Query 适合服务端状态管理，能减少前端手写请求和缓存逻辑。
-- Playwright 适合验证关键 ToB 流程，例如登录、记录填写、签名、审核和放行。
+- Playwright 适合验证关键 ToB 流程，例如登录、记录填写、签名、审批和放行。
 
 前端风格建议：
 
@@ -147,9 +147,9 @@ templates     表单模板、DHR 模板、放行单模板、模板版本
 process       工艺路线、制程配置、工序绑定、作业显隐规则
 work          作业定义、作业版本、作业流程、作业实例
 production    工单、批次、SN 基础模型和查询、工序执行、生产过站
-records       表单实例、字段值、表单审核
+records       表单实例、字段值、表单审批
 dhr           DHR 实例、DHR 汇总、完整性检查、追溯聚合
-release       放行单、放行审核、证据冻结
+release       放行单、放行审批、证据冻结
 record-control 表单变更、表单作废、受控修订
 files         附件、图片、报告、归档包、对象存储
 integration   导入、外部系统引用、OpenAPI/Webhook
@@ -160,17 +160,17 @@ common        通用异常、时间、ID、租户上下文、审计上下文
 
 ```text
 identity      登录、用户、角色、权限
-dashboard     工作台、待办、我的作业、表单审核
+dashboard     工作台、待办、我的作业、表单审批
 workflow      流程模板、流程版本、流程绑定、任务、日志、干预
 master-data   工厂、车间、产线、产品、设备、SOP、工序、原因
 templates     表单模板、DHR 模板、放行单模板、模板审批
 process       工艺路线、制程配置
 work          作业列表、作业流程配置、作业配置、作业实例
 production    工单、批次、SN 基础查询、批次执行、返工执行、批次作业
-records       表单填报、表单审核、表单列表、DHR 填报
-dhr           DHR 列表、DHR 汇总、DHR 审核、DHR 详情
+records       表单填报、表单审批、表单列表、DHR 填报
+dhr           DHR 列表、DHR 汇总、DHR 审批、DHR 详情
 release       放行执行、放行列表、放行签名、归档
-record-control 表单变更、表单作废、变更与作废审核
+record-control 表单变更、表单作废、变更与作废审批
 traceability  DHR 追溯、表单追溯、生产追溯
 audit         审计追踪查询、流程日志查询
 settings      字典、编号规则、系统配置、导入导出

@@ -44,7 +44,7 @@ public class FormInstanceQueryService {
         "createdFrom", "createdTo", "updatedFrom", "updatedTo");
     private static final Set<String> NUMERIC = Set.of("templateId", "templateVersionId", "sourceId", "productionObjectId", "workOrderId");
     private static final String COLUMNS = "id,instance_no,template_id,version_id,status,template_code,template_name,template_version,"
-        + "object_id,operation_id,form_id,copy_id,work_order_id,work_order_no,object_no,object_type,operation_name,"
+        + "source_type,object_id,operation_id,form_id,copy_id,work_order_id,work_order_no,object_no,object_type,operation_name,"
         + "created_by_id,created_by,created_at,updated_by_id,updated_by,updated_at,legacy";
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
@@ -63,8 +63,8 @@ public class FormInstanceQueryService {
         if (query.containsKey("productionObjectType") && !Set.of("BATCH", "SN").contains(value(query, "productionObjectType"))) throw invalid("生产对象类型必须为 BATCH 或 SN");
         String[] sort = query.getFirst("sort") == null ? new String[]{"createdAt", "desc"} : value(query, "sort").split(",", -1);
         if (sort.length != 2 || !SORTS.containsKey(sort[0]) || !Set.of("asc", "desc").contains(sort[1])) throw invalid("排序必须为白名单字段,asc或desc");
-        StringBuilder where = new StringBuilder(" WHERE tenant_id=?");
-        List<Object> args = new ArrayList<>(List.of("default"));
+        StringBuilder where = new StringBuilder(" WHERE tenant_id=? AND source_type=?");
+        List<Object> args = new ArrayList<>(List.of("default", "PRODUCTION_EXECUTION"));
         EXACT.forEach((key, column) -> {
             if (query.containsKey(key)) {
                 where.append(" AND ").append(column).append("=?");
@@ -129,8 +129,8 @@ public class FormInstanceQueryService {
     }
 
     private ObjectNode find(String column, Object value) {
-        var rows = jdbc.query("SELECT " + COLUMNS + ",snapshot_json,values_json FROM form_instance_record WHERE tenant_id=? AND " + column + "=?",
-            (rs, index) -> row(rs, true), "default", value);
+        var rows = jdbc.query("SELECT " + COLUMNS + ",snapshot_json,values_json FROM form_instance_record WHERE tenant_id=? AND source_type=? AND " + column + "=?",
+            (rs, index) -> row(rs, true), "default", "PRODUCTION_EXECUTION", value);
         if (rows.isEmpty()) throw new BusinessException(ErrorCode.FORM_001);
         return rows.getFirst();
     }
@@ -144,7 +144,7 @@ public class FormInstanceQueryService {
             .put("updatedById", rs.getString("updated_by_id")).put("updatedByName", rs.getString("updated_by"))
             .put("createdAt", localTime(rs, "created_at")).put("updatedAt", localTime(rs, "updated_at"))
             .put("legacy", rs.getBoolean("legacy"));
-        row.putObject("source").put("sourceType", "PRODUCTION_EXECUTION").put("sourceId", rs.getString("object_id"))
+        row.putObject("source").put("sourceType", rs.getString("source_type")).put("sourceId", rs.getString("object_id"))
             .put("productionObjectId", rs.getString("object_id")).put("productionObjectNo", rs.getString("object_no"))
             .put("productionObjectType", rs.getString("object_type")).put("workOrderId", rs.getString("work_order_id"))
             .put("workOrderNo", rs.getString("work_order_no")).put("operationId", rs.getString("operation_id"))

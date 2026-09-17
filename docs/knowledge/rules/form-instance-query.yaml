@@ -1,5 +1,19 @@
 knowledgeModelVersion: 0.3.21
 rules:
+  - id: rule.form-instance-global-query-persisted-business-source
+    name: 全局表单实例查询使用持久化业务来源
+    status: implemented
+    visibility: internal
+    trigger: form-instance.save-and-query
+    scope: production-owned-global-form-instance-query
+    condition: {fact: fact.form-instance.business-source, operator: equals, value: PRODUCTION_EXECUTION}
+    result:
+      type: return-query-projection
+      target: formInstanceQuery.source
+      sourceType: PRODUCTION_EXECUTION
+      persistedOnly: true
+    explanation: 全局实例来源是创建时冻结的业务承载域，不是工序配置、作业发起或自定义附件等生产执行内部入口类型。当前切片只允许生产执行来源；保存写入、历史回填和查询读取已通过聚焦迁移与集成测试，但独立质量验证尚未完成，因此保持 implemented/internal。
+    evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-record-service, evidence.form-instance-business-source-query-service, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-integration-test, evidence.form-instance-business-source-migration-test]
   - id: rule.form-instance-global-query-source-permission
     name: 全局表单实例查询按来源授权
     status: implemented

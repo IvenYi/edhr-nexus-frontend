@@ -1,0 +1,39 @@
+knowledgeModelVersion: 0.3.20
+decisions:
+  - id: DEC-0054
+    title: 全局表单实例业务来源与生产执行表单入口边界
+    status: implemented
+    visibility: internal
+    context: 用户要求全局表单实例列表的“来源”与冠骋保持同一业务颗粒度。原始代码核对显示冠骋来源表达实例的业务承载域，而不是表单进入方式。当前 eDHR 全局目录只接入生产执行记录；本工作树通过 0086 在记录表持久化来源，保存和查询服务读写该值，并通过聚焦迁移与集成测试。本决策不预先定义非生产来源，也不把工作树实现误写成已发布。
+    decisionStatements:
+      - id: DEC-0054-01
+        statement: 全局表单实例“来源”定义为实例创建时冻结的业务承载域，用于列表、详情、筛选和来源授权；当前唯一有效值为 PRODUCTION_EXECUTION，客户展示为“生产执行”。
+        status: implemented
+        visibility: internal
+      - id: DEC-0054-02
+        statement: 工序配置、作业发起和自定义附件是生产执行内部的表单入口类型，不是全局表单实例来源；全局目录不得从表单标识、快照结构或前端路径推断入口类型来填充来源。
+        status: implemented
+        visibility: internal
+      - id: DEC-0054-03
+        statement: 生产执行首次保存表单实例时必须写入 PRODUCTION_EXECUTION，历史生产执行记录迁移时回填同值；全局列表、详情和来源筛选读取保存值，不再由查询服务写死来源常量。
+        status: implemented
+        visibility: internal
+      - id: DEC-0054-04
+        statement: 后续非生产模块接入统一表单实例目录时，必须在创建处写入自身业务来源，并补齐该来源的授权、快照、审计和查询适配；不得只新增客户标签或复用生产执行权限。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-record-service, evidence.form-instance-business-source-query-service, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-integration-test, evidence.form-instance-business-source-migration-test]
+    acceptanceScenarios:
+      - id: scenario.form-instance-business-source-persistence
+        given: 生产执行完成一份表单实例的首次保存
+        when: 重读全局实例列表或详情
+        then: 返回保存的 PRODUCTION_EXECUTION 业务来源并展示为生产执行；工序配置、作业发起和自定义附件不改变该来源
+        evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-integration-test]
+        evidenceRequirements: [持久化及接口重读测试, 前端来源显示构建验证]
+      - id: scenario.form-instance-business-source-history
+        given: 已存在由生产执行产生的历史表单实例
+        when: 执行业务来源迁移并重新读取
+        then: 来源回填为 PRODUCTION_EXECUTION，实例号、快照、字段值、状态和历史主体均不被改写
+        evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-migration-test]
+        evidenceRequirements: [迁移幂等测试, 历史记录完整性对比]

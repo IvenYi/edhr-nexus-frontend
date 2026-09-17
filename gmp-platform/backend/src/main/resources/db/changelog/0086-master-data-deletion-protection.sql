@@ -44,8 +44,8 @@ ALTER TABLE sop_document ADD CONSTRAINT fk_delete_guard_035 FOREIGN KEY (categor
 ALTER TABLE form_template_version ADD CONSTRAINT fk_delete_guard_036 FOREIGN KEY (template_id) REFERENCES form_template(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE dhr_template_item ADD CONSTRAINT fk_delete_guard_037 FOREIGN KEY (form_template_id) REFERENCES form_template(id) ON DELETE RESTRICT NOT VALID;
 ALTER TABLE form_instance_record ADD CONSTRAINT fk_delete_guard_039 FOREIGN KEY (template_id) REFERENCES form_template(id) ON DELETE RESTRICT NOT VALID;
-ALTER TABLE form_template_analysis ADD CONSTRAINT fk_delete_guard_040 FOREIGN KEY (template_id) REFERENCES form_template(id) ON DELETE CASCADE NOT VALID;
-ALTER TABLE form_template_source_revision ADD CONSTRAINT fk_delete_guard_041 FOREIGN KEY (template_id) REFERENCES form_template(id) ON DELETE CASCADE NOT VALID;
+ALTER TABLE IF EXISTS form_template_analysis ADD CONSTRAINT fk_delete_guard_040 FOREIGN KEY (template_id) REFERENCES form_template(id) ON DELETE CASCADE NOT VALID;
+ALTER TABLE IF EXISTS form_template_source_revision ADD CONSTRAINT fk_delete_guard_041 FOREIGN KEY (template_id) REFERENCES form_template(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE dhr_template_item ADD CONSTRAINT fk_delete_guard_042 FOREIGN KEY (form_template_version_id) REFERENCES form_template_version(id) ON DELETE RESTRICT NOT VALID;
 ALTER TABLE product_process_operation_form_binding ADD CONSTRAINT fk_delete_guard_043 FOREIGN KEY (form_template_version_id) REFERENCES form_template_version(id) ON DELETE RESTRICT NOT VALID;
 ALTER TABLE work_form_process_reference ADD CONSTRAINT fk_delete_guard_044 FOREIGN KEY (form_template_version_id) REFERENCES form_template_version(id) ON DELETE RESTRICT NOT VALID;
@@ -53,8 +53,8 @@ ALTER TABLE form_instance_record ADD CONSTRAINT fk_delete_guard_047 FOREIGN KEY 
 ALTER TABLE form_section ADD CONSTRAINT fk_delete_guard_048 FOREIGN KEY (version_id) REFERENCES form_template_version(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE form_signature_block ADD CONSTRAINT fk_delete_guard_049 FOREIGN KEY (version_id) REFERENCES form_template_version(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE form_review_block ADD CONSTRAINT fk_delete_guard_050 FOREIGN KEY (version_id) REFERENCES form_template_version(id) ON DELETE CASCADE NOT VALID;
-ALTER TABLE form_template_analysis ADD CONSTRAINT fk_delete_guard_051 FOREIGN KEY (version_id) REFERENCES form_template_version(id) ON DELETE CASCADE NOT VALID;
-ALTER TABLE form_template_source_revision ADD CONSTRAINT fk_delete_guard_052 FOREIGN KEY (version_id) REFERENCES form_template_version(id) ON DELETE CASCADE NOT VALID;
+ALTER TABLE IF EXISTS form_template_analysis ADD CONSTRAINT fk_delete_guard_051 FOREIGN KEY (version_id) REFERENCES form_template_version(id) ON DELETE CASCADE NOT VALID;
+ALTER TABLE IF EXISTS form_template_source_revision ADD CONSTRAINT fk_delete_guard_052 FOREIGN KEY (version_id) REFERENCES form_template_version(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE form_field ADD CONSTRAINT fk_delete_guard_053 FOREIGN KEY (section_id) REFERENCES form_section(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE form_table ADD CONSTRAINT fk_delete_guard_054 FOREIGN KEY (section_id) REFERENCES form_section(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE form_validation_rule ADD CONSTRAINT fk_delete_guard_055 FOREIGN KEY (field_id) REFERENCES form_field(id) ON DELETE CASCADE NOT VALID;
@@ -65,7 +65,7 @@ ALTER TABLE product_process_version ADD CONSTRAINT fk_delete_guard_061 FOREIGN K
 ALTER TABLE dhr_directory ADD CONSTRAINT fk_delete_guard_063 FOREIGN KEY (parent_id) REFERENCES dhr_directory(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE dhr_template_item ADD CONSTRAINT fk_delete_guard_064 FOREIGN KEY (directory_id) REFERENCES dhr_directory(id) ON DELETE CASCADE NOT VALID;
 ALTER TABLE product_process_operation_form_binding ADD CONSTRAINT fk_delete_guard_066 FOREIGN KEY (dhr_template_item_id) REFERENCES dhr_template_item(id) ON DELETE RESTRICT NOT VALID;
-ALTER TABLE dhr_evidence_item ADD CONSTRAINT fk_delete_guard_067 FOREIGN KEY (dhr_template_item_id) REFERENCES dhr_template_item(id) ON DELETE RESTRICT NOT VALID;
+ALTER TABLE IF EXISTS dhr_evidence_item ADD CONSTRAINT fk_delete_guard_067 FOREIGN KEY (dhr_template_item_id) REFERENCES dhr_template_item(id) ON DELETE RESTRICT NOT VALID;
 ALTER TABLE form_instance_record ADD CONSTRAINT fk_delete_guard_073 FOREIGN KEY (object_id) REFERENCES production_object(id) ON DELETE RESTRICT NOT VALID;
 ALTER TABLE serial_number ADD CONSTRAINT fk_delete_guard_074 FOREIGN KEY (batch_id) REFERENCES batch(id) ON DELETE RESTRICT NOT VALID;
 ALTER TABLE product_process ADD COLUMN deletion_product_owner_id BIGINT GENERATED ALWAYS AS (CASE WHEN owner_type = 'PRODUCT' THEN owner_id END) STORED;
