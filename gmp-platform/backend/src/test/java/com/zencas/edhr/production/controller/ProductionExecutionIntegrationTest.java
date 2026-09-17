@@ -87,14 +87,20 @@ class ProductionExecutionIntegrationTest {
     @SpyBean AuditEventRepository audits;
 
     @BeforeEach void setup() throws Exception {
-        jdbc.execute("DROP TABLE IF EXISTS form_instance_record");
+        jdbc.execute("DROP TABLE IF EXISTS form_instance_record CASCADE");
+        jdbc.execute("DROP TABLE IF EXISTS form_instance_revision CASCADE");
         jdbc.execute("DROP SEQUENCE IF EXISTS form_instance_number_seq");
+        jdbc.execute("CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START WITH 1 INCREMENT BY 1");
         var migration = new String(getClass().getResourceAsStream("/db/changelog/0082-form-instance-records.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         for (String sql : migration.split("--changeset codex:0082-form-instance-history")[0].split(";")) {
             if (sql.contains("CREATE")) jdbc.execute(sql);
         }
         var queryMigration = new String(getClass().getResourceAsStream("/db/changelog/0083-form-instance-query.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         for (String sql : queryMigration.split("--changeset codex:0083-form-instance-query-history")[0].split(";")) {
+            if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);
+        }
+        var revisionMigration = new String(getClass().getResourceAsStream("/db/changelog/0087-record-control.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : revisionMigration.split("--changeset codex:0087-record-control-baseline")[0].split(";")) {
             if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);
         }
         for (String ddl : List.of(

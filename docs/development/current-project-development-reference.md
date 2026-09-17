@@ -262,10 +262,10 @@ Liquibase 主入口：
 gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
 ```
 
-当前主链包含 62 个 SQL 文件，最新迁移为：
+当前主链包含至 `0088` 的 SQL 迁移，最新迁移为：
 
 ```text
-0060-work-template-version-integrity.sql
+0088-record-change-menu-permissions.sql
 ```
 
 强制规则：
@@ -279,13 +279,7 @@ gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
 
 ### 7.1 当前本地脚本风险
 
-工作区外层脚本存在迁移偏差：
-
-- `start-postgres.cmd` 当前只手工执行到 `0054`；
-- `run-backend.cmd` 显式设置 `spring.liquibase.enabled=false`；
-- 正式 Liquibase 主链已经到 `0060`。
-
-使用外层 Windows 快捷脚本时，本地数据库可能缺少 `0055` 至 `0060`。涉及数据库或作业模板开发前，必须先核对实际 `databasechangelog` 和数据库结构。
+`run-backend.cmd` 显式设置 `spring.liquibase.enabled=false`，因此外层 `start-postgres.cmd` 必须与 Liquibase 主链保持同步；当前脚本已执行至 `0088`。涉及数据库开发前，仍须核对实际 `app_schema_migration`、`databasechangelog` 和数据库结构，特别是历史数据库可能存在“表已创建但迁移未登记”的状态。
 
 ## 8. 权限、安全与审计
 
