@@ -201,7 +201,17 @@
 .execution-form-canvas.is-fields > .MuiBox-root > .MuiBox-root { background: white; padding: 12px 18px; }
 .execution-form-canvas.is-fields > .MuiBox-root > .MuiBox-root > .MuiBox-root { border: 0; padding: 0; }
 .execution-form-actions { display: flex; align-items: center; padding: 8px 14px; border-top: 1px solid #e8edf3; background: #fff; flex-shrink: 0; flex-wrap: wrap; gap: 8px; }
-.execution-form-actions > .MuiTypography-root { flex: 1; min-width: 90px; font-size: 11px; }
+.execution-form-footer-context { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 180px; }
+.execution-form-footer-context > .MuiTypography-root { font-size: 11px; }
+.execution-layout-switch { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(2, 1fr); flex: 0 0 64px; width: 64px; height: 28px; box-sizing: border-box; padding: 2px; border: 1px solid #e1e6ed; border-radius: 7px; background: #eef1f5; }
+.execution-layout-switch::before { content: ''; position: absolute; z-index: -1; top: 2px; bottom: 2px; left: 2px; width: calc((100% - 4px) / 2); border-radius: 5px; background: #fff; box-shadow: 0 1px 3px #26365024; transition: transform 160ms ease; }
+.execution-layout-switch[data-layout="canvas"]::before { transform: translateX(100%); }
+.execution-layout-switch button { display: flex; align-items: center; justify-content: center; min-width: 0; padding: 0; border: 0; border-radius: 5px; background: transparent; color: #7b8797; cursor: pointer; }
+.execution-layout-switch button[aria-pressed="true"] { color: #1677c8; }
+.execution-layout-switch button:hover { color: #1677c8; }
+.execution-layout-switch button:focus-visible { outline: 2px solid #1677c8; outline-offset: -1px; }
+.execution-layout-switch svg { font-size: 17px; }
+@media (prefers-reduced-motion: reduce) { .execution-layout-switch::before { transition: none; } }
 .execution-form-actions .MuiButton-root { font-size: 13px; }
 .execution-scroll-content { padding: 18px; flex: 1; min-height: 0; overflow: auto; }
 .execution-empty-content { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 28px; flex: 1; min-height: 0; overflow: auto; }
@@ -254,7 +264,7 @@
   .execution-welcome { margin-block: 25px; padding-inline: 8px; }
   .execution-welcome h2 { font-size: 26px; }
   .execution-guide { gap: 14px; }
-  .execution-form-actions > .MuiTypography-root { flex-basis: 100%; }
+  .execution-form-footer-context { flex-basis: 100%; }
   .execution-form-actions > button:first-of-type { margin-left: auto; }
 }
 @media (max-width: 720px), (max-height: 560px) {

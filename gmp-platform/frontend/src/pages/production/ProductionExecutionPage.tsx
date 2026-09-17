@@ -1,10 +1,12 @@
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { UNSAFE_NavigationContext } from 'react-router-dom';
-import { Alert, Box, Button, Chip, CircularProgress, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Typography } from '@mui/material';
-import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded } from '@mui/icons-material';
+import { Alert, Box, Button, Chip, CircularProgress, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
+import FormDocumentPreview from '@/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview';
+import type { FormRuntime } from '@/components/form-renderer/FormRuntimeField';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { executeProduction, getProductionExecution, getExecutionReferences, uploadExecutionFile, scanProduction, type ExecutionButton, type ExecutionCommand, type ExecutionValues, type ExecutionView } from '@/api/production-execution';
 import { getFilePagePreviewBlob } from '@/api/files';
@@ -44,7 +46,7 @@ export default function ProductionExecutionPage() {
   const [navigationSection, setNavigationSection] = useState<ExecutionPanelId | null>(null);
   const [selectedWorkId, setSelectedWorkId] = useState('');
   const [historyType, setHistoryType] = useState('operation');
-  const [layout, setLayout] = useState<'fields' | 'canvas'>('fields');
+  const [layout, setLayout] = useState<'fields' | 'canvas'>('canvas');
   const [pendingSwitch, setPendingSwitch] = useState<(() => void) | null>(null);
   const [signing, setSigning] = useState<ExecutionButton | null>(null);
   const [account, setAccount] = useState('');
@@ -137,6 +139,9 @@ export default function ProductionExecutionPage() {
     try { return await uploadExecutionFile(context.objectId, file); }
     finally { busyRef.current = false; setBusy(false); }
   };
+  const formRuntime: FormRuntime = { values, upload, references, disabled: busy || !controls?.canAct, onChange: (id, value) => {
+    setValues((current) => ({ ...current, [id]: value })); setDirty(true); markEditing();
+  } };
 
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => { if (dirty || busyRef.current) { event.preventDefault(); event.returnValue = ''; } };
@@ -336,7 +341,7 @@ export default function ProductionExecutionPage() {
 
   return <Box ref={rootRef} className="execution-page">
     <Box className="execution-toolbar">
-      <Box className="execution-title"><Typography component="h1">生产执行</Typography></Box>
+      <Box className="execution-title"><Typography component="h1">生产执行工作台</Typography></Box>
       {view && scanInput}
       <Stack direction="row" className="execution-tools">
         {view && <Button variant="outlined" aria-label="刷新执行状态" disabled={busy} startIcon={<RefreshRounded fontSize="small" />} onClick={() => protect(() => void load(true))}>刷新</Button>}
@@ -428,10 +433,19 @@ export default function ProductionExecutionPage() {
           </Box>
           <>
             {form && formDocument ? <>
-              <Box aria-label={`当前填报表单：${form.name}`} className={`execution-form-canvas ${layout === 'fields' ? 'is-fields' : ''}`}><FormCanvasPreview key={`${operationId}/${selectedInstanceId}`} document={formDocument} layout={layout} fieldPermissions={controls?.permissions} runtime={{ values, upload, references, disabled: busy || !controls?.canAct, onChange: (id, value) => { setValues((current) => ({ ...current, [id]: value })); setDirty(true); markEditing(); } }} /></Box>
+              <Box aria-label={`当前填报表单：${form.name}`} className={`execution-form-canvas ${layout === 'fields' ? 'is-fields' : ''}`}>
+                {layout === 'canvas' ? <FormDocumentPreview key={`${operationId}/${selectedInstanceId}`} document={formDocument} fieldPermissions={controls?.permissions} runtime={formRuntime}
+                  fallback={<FormCanvasPreview document={formDocument} layout="fields" fieldPermissions={controls?.permissions} runtime={formRuntime} />} />
+                  : <FormCanvasPreview key={`${operationId}/${selectedInstanceId}`} document={formDocument} layout="fields" fieldPermissions={controls?.permissions} runtime={formRuntime} />}
+              </Box>
               <Box role="region" aria-label="表单操作" className="execution-form-actions">
-                <Typography variant="caption" color={dirty ? 'warning.main' : 'text.secondary'}>{dirty ? '有未暂存内容 · ' : formState?.savedAt ? `已暂存 ${time(formState.savedAt)} · ` : ''}{formState?.status === 'COMPLETED' ? '表单已完成，只读查阅' : controls?.canAct && controls.buttons.some((button) => button.action === 'SAVE') ? '暂存保留草稿，提交仅提交当前份' : controls?.nodeName ? `当前节点：${controls.nodeName}` : '等待工序或作业到达'}</Typography>
-                <Button size="small" onClick={() => setLayout(layout === 'fields' ? 'canvas' : 'fields')}>{layout === 'fields' ? '查看表单版式' : '按字段填报'}</Button>
+                <Box className="execution-form-footer-context">
+                <Box role="group" aria-label="填报方式" className="execution-layout-switch" data-layout={layout}>
+                  <Tooltip title="按字段填报" placement="top" arrow><button type="button" aria-label="按字段填报" aria-pressed={layout === 'fields'} onClick={() => setLayout('fields')}><ViewListOutlined /></button></Tooltip>
+                  <Tooltip title="按表单填报" placement="top" arrow><button type="button" aria-label="按表单填报" aria-pressed={layout === 'canvas'} onClick={() => setLayout('canvas')}><TableChartOutlined /></button></Tooltip>
+                </Box>
+                <Typography variant="caption" color={dirty ? 'warning.main' : 'text.secondary'}>{dirty ? '有未暂存内容 · ' : formState?.savedAt ? `已暂存 ${time(formState.savedAt)} · ` : ''}{formState?.status === 'COMPLETED' ? '表单已完成，只读查阅' : controls?.canAct && controls.buttons.some((button) => button.action === 'SAVE') ? '暂存保留草稿，提交仅提交当前份' : controls?.nodeName ? `当前节点：${controls.nodeName}` : null}</Typography>
+                </Box>
                 {copies && !copies.ended && <Button variant="outlined" disabled={busy || dirty || !copies.canEnd} onClick={() => finishReporting('END_FORM')}>结束本表单填报</Button>}
                 {controls?.buttons.filter(button => button.action !== 'SAVE' && button.action !== 'SUBMIT').map(button => <Button key={button.action} disabled={busy || !controls.canAct} color={button.action === 'RETURN' ? 'error' : 'primary'} variant={button.action === 'RETURN' ? 'outlined' : 'contained'} onClick={() => formAction(button)}>{button.label}{button.requiresSignature ? '并签署' : ''}</Button>)}
                 {['SAVE', 'SUBMIT'].map(action => {
