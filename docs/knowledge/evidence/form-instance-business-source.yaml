@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.20
+evidence:
+  - id: evidence.form-instance-business-source-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/form-instance-business-source-user-confirmed.md
+    description: user-confirmed；用户确认全局表单实例来源按创建时冻结的业务承载域定义，当前唯一值为 PRODUCTION_EXECUTION/生产执行；工序配置、作业发起和自定义附件只是生产执行内部表单入口类型，不能作为全局来源。冠骋外部源码的原始核对只作为本次决策的交叉线索，其路径不进入仓库证据字段。
+    visibility: internal
+  - id: evidence.form-instance-business-source-integration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；global query 集成测试验证新保存记录写入 PRODUCTION_EXECUTION、列表和详情投影保存来源，并拒绝 source_type 为非生产值的记录。主智能体于 2026-09-16 执行 FormInstanceQueryMigrationTest 与 ProductionExecutionIntegrationTest 聚焦测试通过；独立质量验证仍是交付门禁。
+    visibility: internal
+  - id: evidence.form-instance-business-source-migration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java
+    description: original-evidence；Liquibase 测试重复执行 0083 与 0086 后断言历史行 source_type 回填为 PRODUCTION_EXECUTION，并保留已有实例身份及历史字段。主智能体于 2026-09-16 执行聚焦测试通过；独立质量验证仍是交付门禁。
+    visibility: internal

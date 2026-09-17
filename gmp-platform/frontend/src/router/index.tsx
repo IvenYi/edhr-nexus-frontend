@@ -22,6 +22,7 @@ const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail
 const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInstanceListPage'));
+const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPage'));
 const FormManagementPlaceholderPage = lazy(() => import('@/pages/form-management/FormManagementPlaceholderPage'));
 const RecordChangePage = lazy(() => import('@/pages/record-control/RecordChangePage'));
 const RecordRequestListPage = lazy(() => import('@/pages/record-control/RecordRequestListPage'));
@@ -100,8 +101,8 @@ const AppRouter = () => {
         </Route>
         <Route path="form-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><FormInstanceListPage /></Suspense>} />
-          <Route path="filling" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单填报" /></Suspense>} />
-          <Route path="review" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单审核" /></Suspense>} />
+          <Route path="filling" element={<Suspense fallback={<Loading />}><FormFillingPage /></Suspense>} />
+          <Route path="review" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单审批" /></Suspense>} />
         </Route>
         <Route path="records">
           <Route path="change" element={<Suspense fallback={<Loading />}><RecordChangePage /></Suspense>} />

@@ -211,7 +211,7 @@ function buildSignatureStatements(account: string, name: string) {
     },
     {
       key: 'authorizedUse' as const,
-      text: '本人（{name}）授权该电子签名用于本系统内各类电子表单的审核、确认与批准等合规操作；'
+      text: '本人（{name}）授权该电子签名用于本系统内各类电子表单的审批、确认与批准等合规操作；'
         .replace(/\{name\}/g, name),
     },
     {

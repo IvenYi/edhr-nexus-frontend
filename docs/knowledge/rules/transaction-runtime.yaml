@@ -510,7 +510,7 @@ rules:
       persistedIsActive: true
       userMayToggleActive: false
       excludes: [active-status, active-toggle]
-    explanation: 所有已保存的 WORK 作业适用规则均为有效规则。共享实体保留 isActive 字段以避免影响审核流程绑定规则，但 WORK 配置不得接受用户启用或停用选择，既有 WORK 规则恢复后也必须为有效；未来运行时据此将保存规则视为可参与适用性判定的规则。
+    explanation: 所有已保存的 WORK 作业适用规则均为有效规则。共享实体保留 isActive 字段以避免影响审批流程绑定规则，但 WORK 配置不得接受用户启用或停用选择，既有 WORK 规则恢复后也必须为有效；未来运行时据此将保存规则视为可参与适用性判定的规则。
     evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
   - id: rule.production-work.applicability-query-projection
     name: 作业适用规则查询投影
@@ -1272,7 +1272,7 @@ rules:
       createWorkflowInstanceWhen: formInstance.formProcessVersionId is present
       createReviewTaskWhen: formInstance.formProcessVersionId is present
       createEffectiveRevision: true
-    explanation: 表单流程绑定是可选的。未绑定表单流程时，提交校验通过即可将表单实例从 OPEN 直接置为 COMPLETED，不创建表单流程实例或审核任务；绑定表单流程时，提交先进入流程，只有流程完成后才将表单实例置为同一 COMPLETED 终态。完成方式和流程事件用于区分是否经过审核，不能用“已复核”作为无流程表单的状态名称。
+    explanation: 表单流程绑定是可选的。未绑定表单流程时，提交校验通过即可将表单实例从 OPEN 直接置为 COMPLETED，不创建表单流程实例或审批任务；绑定表单流程时，提交先进入流程，只有流程完成后才将表单实例置为同一 COMPLETED 终态。完成方式和流程事件用于区分是否经过审批，不能用“已复核”作为无流程表单的状态名称。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.record-correction-void-design]
   - id: rule.form-process.delete-referenced-forbidden
     factCatalogProfile: form-process-binding

@@ -333,7 +333,7 @@ export default function ReviewTemplateList() {
   };
 
   if (!canAccess) {
-    return <Box sx={{ p: 3, color: '#606266' }}>无权访问审核流程模板。</Box>;
+    return <Box sx={{ p: 3, color: '#606266' }}>无权访问审批流程。</Box>;
   }
 
   return (
@@ -451,7 +451,7 @@ export default function ReviewTemplateList() {
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setPropertyTarget(null)}>取消</Button><Button variant="contained" disabled={!propertyForm.name.trim() || updateMutation.isPending} onClick={() => updateMutation.mutate()}>{updateMutation.isPending ? '保存中...' : '保存'}</Button></DialogActions>
       </AppDialog>
-      <ConfirmDialog open={canEdit && deleteId !== null} title="删除审核流程模板" message="删除后模板及其草稿版本将不可恢复，确认继续吗？" confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteId(null)} onConfirm={() => deleteId !== null && deleteMutation.mutate(deleteId)} />
+      <ConfirmDialog open={canEdit && deleteId !== null} title="删除审批流程" message="删除后流程及其草稿版本将不可恢复，确认继续吗？" confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteId(null)} onConfirm={() => deleteId !== null && deleteMutation.mutate(deleteId)} />
     </Box>
   );
 }

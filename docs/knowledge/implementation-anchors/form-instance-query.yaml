@@ -1,5 +1,20 @@
 knowledgeModelVersion: 0.3.21
 implementationAnchors:
+  - id: anchor.form-instance-global-query-persisted-business-source
+    targetId: rule.form-instance-global-query-persisted-business-source
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java]
+    apiReferences: [docs/development/form-instance-query-api.md]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-business-source-record-service, evidence.form-instance-business-source-query-service, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-integration-test, evidence.form-instance-business-source-migration-test]
+    sourceRevision: working-tree
+    sourceLocator: source_type 的保存、历史回填、列表/详情过滤及 source.sourceType 投影；2026-09-16 聚焦迁移和生产执行集成测试通过，未作为发布级或独立质量验证证据
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
   - id: anchor.form-instance-global-query-authorization
     targetId: rule.form-instance-global-query-source-permission
     targetType: rule

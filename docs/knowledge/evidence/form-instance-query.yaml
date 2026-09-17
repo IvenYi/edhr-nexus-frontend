@@ -30,3 +30,18 @@ evidence:
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java
     description: original-evidence；2026-09-16 working-tree 的 additiveMigrationPreservesEvidenceAndGrantsOnlyAdminIdempotently 验证0083重复运行、身份和值保留、历史主体空值、跨租户缺失上下文以及仅ADMIN获权；PG分支额外断言冻结搜索投影。核对 target/surefire-reports/com.zencas.edhr.production.service.FormInstanceQueryMigrationTest.txt 为1项、0失败、0错误、0跳过；本角色读取测试及报告，PG实跑证据由主/质量角色提供，不解释为发布数据库已应用。
     visibility: internal
+  - id: evidence.form-instance-business-source-record-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    description: original-evidence；2026-09-16 working-tree 新保存 INSERT 已传入 PRODUCTION_EXECUTION 作为 source_type。该源码仅证明待验证实现路径，不替代迁移执行、接口回读或独立质量结果。
+    visibility: internal
+  - id: evidence.form-instance-business-source-query-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java
+    description: original-evidence；2026-09-16 working-tree 的列表和详情查询以 source_type=PRODUCTION_EXECUTION 限定当前来源，并将已保存 source_type 投影为响应 source.sourceType；该源码不证明数据库已迁移或测试通过。
+    visibility: internal
+  - id: evidence.form-instance-business-source-record-schema
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql
+    description: original-evidence；2026-09-16 working-tree 增加 form_instance_record.source_type、为历史生产执行记录回填 PRODUCTION_EXECUTION 并增加来源索引。该迁移文件尚待聚焦测试及独立质量验证，不能解释为用户运行库已应用。
+    visibility: internal

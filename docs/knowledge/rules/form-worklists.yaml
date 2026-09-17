@@ -14,10 +14,10 @@ rules:
       type: return-query-projection
       target: formWorklist.personalRows
       requirements: [current-source-qualification-or-explicit-personal-event, default-tenant, server-pagination, same-scope-detail]
-    explanation: 三个填报视图要求form-management.filling，两个审核视图要求form-management.review，均另需production.execution，不要求form-instances.view。查询主体取认证身份，不能由请求冒充；该权限不授予全局查看或写权限。两项权限只初始化给ADMIN，其他角色显式分配。当前仅生产来源、未发布工作树。
+    explanation: 三个填报视图要求form-management.filling，两个审批视图要求form-management.review，均另需production.execution，不要求form-instances.view。查询主体取认证身份，不能由请求冒充；该权限不授予全局查看或写权限。两项权限只初始化给ADMIN，其他角色显式分配。当前仅生产来源、未发布工作树。
     evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-permissions, evidence.form-worklists-integration-test]
   - id: rule.form-worklist-current-tasks
-    name: 我的填报和审核待办复用当前源资格
+    name: 我的填报和审批待办复用当前源资格
     status: implemented
     visibility: internal
     trigger: form-worklist.current-query
@@ -46,7 +46,7 @@ rules:
     explanation: CREATED仅本人主动新增的自定义首份或新增份。系统自动首份不把首次保存人作为创建人，退回不抹去主动创建身份；旧数据未知身份保留未知。该入口与已填或当前待填可重叠，历史详情只读，不改变全实例接口createdById的原始保存者语义。
     evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-integration-test]
   - id: rule.form-worklist-personal-history
-    name: 已填和审核已办基于成功动作历史
+    name: 已填和审批已办基于成功动作历史
     status: implemented
     visibility: internal
     trigger: form-worklist.history-query

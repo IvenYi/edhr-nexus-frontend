@@ -19,7 +19,7 @@ rules:
       target: correctionRevision
       referenceMode: new-revision-with-frozen-source
       sourceRevisionReadOnly: true
-    explanation: 已完成记录的变更提交必须创建新修订并保留来源修订的完整快照、签名和哈希；审核通过前不得写回来源记录，审核通过后新修订成为当前有效修订，旧修订只读保留。
+    explanation: 已完成记录的变更提交必须创建新修订并保留来源修订的完整快照、签名和哈希；审批通过前不得写回来源记录，审批通过后新修订成为当前有效修订，旧修订只读保留。
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.record-void.no-field-mutation
     name: 表单作废不修改字段值
@@ -43,7 +43,7 @@ rules:
     explanation: 作废是记录级结果；通过后当前有效修订标为已作废但不改字段值，历史修订、投影、DHR 成员、签名和审计证据不得物理删除。
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.record-control.explicit-published-workflow-selection
-    name: 记录控制发起必须显式选择匹配的已发布审核流程
+    name: 记录控制发起必须显式选择匹配的已发布审批流程
     status: implemented
     visibility: internal
     trigger: record-control.application.confirm
@@ -63,10 +63,10 @@ rules:
       type: freeze-execution-snapshot
       references: [workflowDefinitionId, workflowVersionId]
       blockWhenNoCandidate: true
-    explanation: P0 变更和作废不预绑定、不自动代选；申请人必须从有对应发起权限且动作类型匹配的当前已发布流程版本中显式选择。公共流程阶段一已实现候选查询和显式版本启动，启动时重新校验定义类型、申请类型和当前已发布版本，冻结定义、版本、上下文和流程快照摘要；草稿、历史非当前版本和停用模板不可用于发起。来源记录资格、申请人签名真实性、申请确认事务和申请侧流程引用仍由记录控制域后续实现。
+    explanation: P0 变更和作废不预绑定、不自动代选；申请人必须从有对应发起权限且动作类型匹配的当前已发布流程版本中显式选择。公共流程阶段一已实现候选查询和显式版本启动，启动时重新校验定义类型、申请类型和当前已发布版本，冻结定义、版本、上下文和流程快照摘要；草稿、历史非当前版本和停用模板不可用于发起。来源记录资格、申请人签名真实性、申请确认事务和申请侧审批流程引用仍由记录控制域后续实现。
     evidenceIds: [evidence.record-correction-void-design, evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests]
   - id: rule.record-control.application-confirmation-starts-review
-    name: 记录控制申请确认即启动审核
+    name: 记录控制申请确认即启动审批
     status: specified
     visibility: internal
     trigger: record-control.application.confirm
@@ -94,10 +94,10 @@ rules:
       freezeReferences: [workflowDefinitionId, workflowVersionId]
       target: firstApprovalNode
       startNodeTask: none
-    explanation: 申请内容准备完成、申请人电子签名验证通过且显式选择匹配的已发布流程后，点击确认即构成一次发起动作；系统应在同一确定性事务中创建审核实例、冻结流程版本并直接推进到首个审批节点，不产生开始节点待办或二次保存、提交动作。公共流程 Java 端口、幂等显式启动和首审批任务推进已有阶段一实现，但记录控制申请入口、签名真实性验证、申请与流程原子提交及申请侧回写尚未实现，因此本条更广业务规则仍保持 specified/internal。
+    explanation: 申请内容准备完成、申请人电子签名验证通过且显式选择匹配的已发布流程后，点击确认即构成一次发起动作；系统应在同一确定性事务中创建审批实例、冻结流程版本并直接推进到首个审批节点，不产生开始节点待办或二次保存、提交动作。公共流程 Java 端口、幂等显式启动和首审批任务推进已有阶段一实现，但记录控制申请入口、签名真实性验证、申请与流程原子提交及申请侧回写尚未实现，因此本条更广业务规则仍保持 specified/internal。
     evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-correction-void-design, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests]
   - id: rule.record-control.review-template-category-scope
-    name: 首切片审核流程模板仅支持表单变更和表单作废
+    name: 首切片审批流程仅支持表单变更和表单作废
     status: specified
     visibility: internal
     trigger: review-template.configure-or-reference
@@ -111,7 +111,7 @@ rules:
       type: allow-with-governance
       categories: [CHANGE, OBSOLETE]
       appliesTo: [new-template, new-reference]
-    explanation: 首切片流程模板工作台仅管理表单变更和表单作废两类审核模板；分类持久化并参与查询和动作匹配。
+    explanation: 首切片流程工作台仅管理表单变更和表单作废两类审批流程；分类持久化并参与查询和动作匹配。
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.record-control.canonical-action-terms
     name: 记录控制动作使用统一中文产品术语
@@ -132,7 +132,7 @@ rules:
     explanation: 当前产品文档、页面文案、接口说明和验收用例中的记录控制动作统一使用表单变更、表单作废、转办、重新分配和退回；“更正”“普通转办”“管理重新分配”不再作为现行中文产品动作名。稳定英文技术标识、Java 类名、数据库字段和权限码不因中文术语治理而破坏性重命名；CAPA 纠正措施和普通语义中的请求拒绝不属于本规则范围。
     evidenceIds: [evidence.record-control-terminology-user-confirmed]
   - id: rule.record-control.review-template-required-approver-subjects
-    name: 审核流程模板审批节点必须配置审批主体
+    name: 审批流程审批节点必须配置审批主体
     status: specified
     visibility: internal
     trigger: review-template.publish
@@ -148,10 +148,10 @@ rules:
     result:
       type: block
       reason: review-template-approval-subjects-required
-    explanation: 记录控制审核流程发布前必须至少有一个审批节点，且每个审批节点都必须配置审批主体。未配置审批主体不得发布，也不能解释为当前租户全员可审。
+    explanation: 记录控制审批流程发布前必须至少有一个审批节点，且每个审批节点都必须配置审批主体。未配置审批主体不得发布，也不能解释为当前租户全员可审。
     evidenceIds: [evidence.record-control-review-template-required-approvers]
   - id: rule.record-control.review-template-fixed-actions
-    name: 审核流程模板动作语义固定但呈现属性可配置
+    name: 审批流程动作语义固定但呈现属性可配置
     status: specified
     visibility: internal
     trigger: review-template.configure
@@ -167,10 +167,10 @@ rules:
     result:
       type: block
       reason: review-template-actions-are-system-fixed
-    explanation: 记录控制审核流程不提供发起填报权限或表单校验配置，也不绑定具体表单字段。开始节点只表示流程边界，不配置按钮；审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定，不能增删、替换、重复或隐藏。审批按钮的显示名称、样式和动作前账户密码电子签名可配置，审批和退回可配置审批意见必填，转办不提供审批意见必填配置。记录控制审核模板不提供填充签名字段或签名字段绑定。
+    explanation: 记录控制审批流程不提供发起填报权限或表单校验配置，也不绑定具体表单字段。开始节点只表示流程边界，不配置按钮；审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定，不能增删、替换、重复或隐藏。审批按钮的显示名称、样式和动作前账户密码电子签名可配置，审批和退回可配置审批意见必填，转办不提供审批意见必填配置。记录控制审批流程不提供填充签名字段或签名字段绑定。
     evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
   - id: rule.record-control.review-template-start-has-no-buttons
-    name: 记录控制审核模板开始节点不配置按钮
+    name: 记录控制审批流程开始节点不配置按钮
     status: specified
     visibility: internal
     trigger: review-template.configure-or-publish
@@ -183,10 +183,10 @@ rules:
     result:
       type: block
       reason: review-template-start-node-has-no-button-configuration
-    explanation: 记录控制审核模板只描述申请确认后的审核路径；开始节点是无用户任务的流程边界。开始节点不得保存 SAVE、SUBMIT、按钮事件或其他按钮配置，编辑器不显示节点按钮页，发布接口必须拒绝非空开始节点按钮配置。该规则不改变普通表单流程开始节点的保存和提交按钮。
+    explanation: 记录控制审批流程只描述申请确认后的审批路径；开始节点是无用户任务的流程边界。开始节点不得保存 SAVE、SUBMIT、按钮事件或其他按钮配置，编辑器不显示节点按钮页，发布接口必须拒绝非空开始节点按钮配置。该规则不改变普通表单流程开始节点的保存和提交按钮。
     evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-editor, evidence.record-control-review-template-publish-tests]
   - id: rule.record-control.review-template-transfer-button-present
-    name: 审核节点配置中固定提供转办按钮
+    name: 审批节点配置中固定提供转办按钮
     status: specified
     visibility: internal
     trigger: review-template.configure
@@ -203,10 +203,10 @@ rules:
       configurable: [displayName, style]
       forbiddenConfig: [requireOpinion]
       runtimeBoundary: transfer-task-action
-    explanation: 每个记录控制审核审批节点都固定提供转办按钮；按钮动作语义和显隐由系统固定，显示名称和按钮样式可配置，不提供审批意见必填配置。转办运行时仍需按任务权限、授权候选范围和原因校验，并记录任务处理人变化及审计。
+    explanation: 每个记录控制审批节点都固定提供转办按钮；按钮动作语义和显隐由系统固定，显示名称和按钮样式可配置，不提供审批意见必填配置。转办运行时仍需按任务权限、授权候选范围和原因校验，并记录任务处理人变化及审计。
     evidenceIds: [evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-editor, evidence.record-correction-void-design]
   - id: rule.record-control.source-record-remains-completed-during-review
-    name: 记录控制审核中不改变来源记录主状态
+    name: 记录控制审批中不改变来源记录主状态
     status: specified
     visibility: internal
     trigger: record-control.submit
@@ -221,10 +221,10 @@ rules:
       target: sourceRecord
       referenceMode: retain-lifecycle-status-and-add-active-request-marker
       lockConflictingRequest: true
-    explanation: 审核中的变更或作废只锁定来源记录并显示对应标记，不借用 IN_AUDIT 改写表单主状态；来源记录继续显示提交前的完成或复核状态。
+    explanation: 审批中的变更或作废只锁定来源记录并显示对应标记，不借用 IN_AUDIT 改写表单主状态；来源记录继续显示提交前的完成或复核状态。
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.record-control.parallel-review-joins-all-approval
-    name: 记录控制并行审核全部通过后汇合
+    name: 记录控制并行审批全部通过后汇合
     status: specified
     visibility: internal
     trigger: change-review-task.resolve
@@ -242,7 +242,7 @@ rules:
       action: apply-record-correction-or-void
       rejectOnAnyReturn: true
       invalidateRemainingTasksOnReturn: true
-    explanation: P0 支持顺序和并行审核；并行分支必须全部批准后汇合，任一退回则本轮退回且其余待办失效。该规则描述审核引擎待开发契约，不表示旧表单按钮配置已经提供并行审核。
+    explanation: P0 支持顺序和并行审批；并行分支必须全部批准后汇合，任一退回则本轮退回且其余待办失效。该规则描述审批引擎待开发契约，不表示旧表单按钮配置已经提供并行审批。
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.record-control.intervention-preserves-path
     name: 转办和重新分配不改变流程路径
@@ -282,7 +282,7 @@ rules:
     result:
       type: block
       reason: p0-action-not-supported-and-not-a-form-button-configuration
-    explanation: P0 只定义记录控制审核的受限撤回、转办和重新分配；终止、强制跳转、跳过、加签和管理员直接批准不进入 P0。记录控制规划动作不得被投影为旧表单按钮配置或已实现能力。
+    explanation: P0 只定义记录控制审批的受限撤回、转办和重新分配；终止、强制跳转、跳过、加签和管理员直接批准不进入 P0。记录控制规划动作不得被投影为旧表单按钮配置或已实现能力。
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.production.work-order-required-fields
     name: 工单必填字段和计划数量校验

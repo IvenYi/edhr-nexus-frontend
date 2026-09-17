@@ -155,7 +155,7 @@ public class WorkflowEngine {
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_014));
         List<WorkflowNode> startNodes = nodeRepository.findByVersionIdAndNodeType(versionId, "START");
         if (startNodes.size() != 1) {
-            throw new BusinessException(ErrorCode.WF_011, "审核流程必须且只能包含一个开始节点");
+            throw new BusinessException(ErrorCode.WF_011, "审批流程必须且只能包含一个开始节点");
         }
 
         String snapshotHash = workflowSnapshotHash(version);
@@ -188,7 +188,7 @@ public class WorkflowEngine {
         instance = instanceRepository.saveAndFlush(instance);
 
         logAction(instance.getId(), null, startNode.getId().toString(),
-                "INSTANCE_START", initiatorId, "记录控制审核实例创建");
+                "INSTANCE_START", initiatorId, "记录控制审批实例创建");
         progressFromNode(instance, startNode, initiatorId, null);
         return instance;
     }

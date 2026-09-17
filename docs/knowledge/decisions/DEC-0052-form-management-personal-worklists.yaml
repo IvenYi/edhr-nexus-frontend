@@ -1,21 +1,21 @@
 knowledgeModelVersion: 0.3.21
 decisions:
   - id: DEC-0052
-    title: 表单管理个人填报和审核查询口径
+    title: 表单管理个人填报和审批查询口径
     status: implemented
     visibility: internal
-    context: 用户授权先补表单列表、填报、审核配套再开发页面，并确认个人创建和提交历史口径。本决策增补DEC-0051，不改变全局查询权限或实例身份；仅生产来源，不建立第二套任务状态、日志表或流程引擎。源码已核对，保持工作树implemented/internal，不能解释为发布。
+    context: 用户授权先补表单列表、填报、审批配套再开发页面，并确认个人创建和提交历史口径。本决策增补DEC-0051，不改变全局查询权限或实例身份；仅生产来源，不建立第二套任务状态、日志表或流程引擎。源码已核对，保持工作树implemented/internal，不能解释为发布。
     decisionStatements:
       - id: DEC-0052-01
-        statement: 我的填报查询已到达且本人当前具备源填写资格的份，包括尚未保存和保存未提交；我的审核待办查询当前审批资格份，保留全部源状态和签名约束。
+        statement: 我的填报查询已到达且本人当前具备源填写资格的份，包括尚未保存和保存未提交；我的审批待办查询当前审批资格份，保留全部源状态和签名约束。
         status: implemented
         visibility: internal
       - id: DEC-0052-02
-        statement: 我的创建仅本人主动自定义首份或新增份；系统首份不以首次保存人冒充创建人。我的已填仅本人成功提交过，保存不算，退回保留。审核已办仅本人成功审批或退回。五个视图允许重叠，不是互斥生命周期状态。
+        statement: 我的创建仅本人主动自定义首份或新增份；系统首份不以首次保存人冒充创建人。我的已填仅本人成功提交过，保存不算，退回保留。审批已办仅本人成功审批或退回。五个视图允许重叠，不是互斥生命周期状态。
         status: implemented
         visibility: internal
       - id: DEC-0052-03
-        statement: 个人查询要求生产来源权限加填报或审核专门权限，不要求全局实例查看；列表和详情同范围，未保存份使用源四元组，历史详情只读，实际操作仍在原执行入口重新校验。
+        statement: 个人查询要求生产来源权限加填报或审批专门权限，不要求全局实例查看；列表和详情同范围，未保存份使用源四元组，历史详情只读，实际操作仍在原执行入口重新校验。
         status: implemented
         visibility: internal
       - id: DEC-0052-04
@@ -36,4 +36,4 @@ decisions:
         when: 查询待审、已办和详情
         then: 按当前资格和本人事件分别筛选，可重叠，历史不授予当前写权限，缺视图权限拒绝
         evidenceIds: [evidence.form-worklists-decision, evidence.form-worklists-query]
-        evidenceRequirements: [审核候选权限矩阵, 相同事件过滤及分页测试]
+        evidenceRequirements: [审批候选权限矩阵, 相同事件过滤及分页测试]

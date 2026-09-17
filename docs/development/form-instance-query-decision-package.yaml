@@ -1,7 +1,7 @@
 decisionPackage:
   id: DEC-PACKAGE-20260916-FORM-INSTANCE-QUERY
   scope: production-owned-global-form-instance-query
-  knowledgeBaselineVersion: 0.3.18
+  knowledgeBaselineVersion: 0.3.20
   summary: 在既有表单实例索引旁增加跨模板的生产来源查询，保留旧接口，不新增实例库或执行引擎。
   confirmed:
     concepts: []
@@ -44,7 +44,7 @@ decisionPackage:
   inferred:
     - id: inference.form-management-before-dhr
       statement: 本接口可支撑表单管理先行，后续 DHR 复用身份和来源查询。
-      rationale: 当前查询不依赖 DHR 汇总和审核实现；任务资格与参与历史仍需另接来源逻辑。
+      rationale: 当前查询不依赖 DHR 汇总和审批实现；任务资格与参与历史仍需另接来源逻辑。
       relatedIds: []
   unresolved: []
   impactAnalysis:

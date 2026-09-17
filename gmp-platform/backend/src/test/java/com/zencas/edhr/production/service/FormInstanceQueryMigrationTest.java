@@ -45,9 +45,14 @@ class FormInstanceQueryMigrationTest {
                 (2,'default','FR-OLD-2',999,'missing','form-2','form-2',5,6,'{}','{}','COMPLETED',NULL,NULL,TIMESTAMP '2026-09-15 09:00:00',TRUE),
                 (3,'default','FR-OLD-3',102,'a','form-3','form-3',5,6,'{}','{}','ACTIVE',NULL,NULL,TIMESTAMP '2026-09-15 09:00:00',TRUE)
                 """);
-            try (var migration = new Liquibase("db/changelog/0083-form-instance-query.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(connection))) {
-                migration.update(new Contexts(), new LabelExpression());
-                migration.update(new Contexts(), new LabelExpression());
+            try (var queryConnection = DriverManager.getConnection(url, System.getProperty("query.migration.user", "sa"), "");
+                 var sourceConnection = DriverManager.getConnection(url, System.getProperty("query.migration.user", "sa"), "");
+                 var queryMigration = new Liquibase("db/changelog/0083-form-instance-query.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(queryConnection));
+                 var sourceMigration = new Liquibase("db/changelog/0086-form-instance-business-source.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(sourceConnection))) {
+                queryMigration.update(new Contexts(), new LabelExpression());
+                queryMigration.update(new Contexts(), new LabelExpression());
+                sourceMigration.update(new Contexts(), new LabelExpression());
+                sourceMigration.update(new Contexts(), new LabelExpression());
                 try (var row = sql.executeQuery("SELECT * FROM form_instance_record WHERE id=1")) {
                     assertThat(row.next()).isTrue();
                     assertThat(row.getString("instance_no")).isEqualTo("FR-OLD-1");
@@ -57,6 +62,7 @@ class FormInstanceQueryMigrationTest {
                     assertThat(row.getString("updated_by_id")).isNull();
                     assertThat(row.getString("created_at")).isNull();
                     assertThat(row.getString("created_by")).isEqualTo("同名用户");
+                    assertThat(row.getString("source_type")).isEqualTo("PRODUCTION_EXECUTION");
                     if (url.startsWith("jdbc:postgresql:")) {
                         assertThat(row.getString("template_name")).isEqualTo("旧版名称");
                         assertThat(row.getString("template_code")).isEqualTo("F_01%");

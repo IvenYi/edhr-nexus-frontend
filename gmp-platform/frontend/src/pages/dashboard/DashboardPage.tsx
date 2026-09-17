@@ -121,9 +121,9 @@ export default function DashboardPage() {
           <Typography variant="h6" sx={{ mb: 2 }}>最近活动</Typography>
           <Stack spacing={2}>
             {[
-              { time: '14:30', user: '系统', action: 'DHR-2026-001 汇总审核通过', type: 'success' },
+              { time: '14:30', user: '系统', action: 'DHR-2026-001 汇总审批通过', type: 'success' },
               { time: '13:15', user: '李四', action: '提交了批次记录 BP-2026-042', type: 'info' },
-              { time: '11:00', user: '张三', action: '完成了 SOP-003 的审核', type: 'success' },
+              { time: '11:00', user: '张三', action: '完成了 SOP-003 的审批', type: 'success' },
               { time: '09:45', user: '系统', action: '自动生成放行单 RL-2026-018', type: 'default' },
             ].map((item, idx) => (
               <Stack key={idx} direction="row" spacing={2} alignItems="center">

@@ -1,0 +1,45 @@
+knowledgeModelVersion: 0.3.20
+decisions:
+  - id: DEC-0053
+    title: 审批语义客户展示术语统一
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；产品讨论确认审批决策语义的客户可见页面、菜单、任务和流程配置统一使用“审批”。流程中心原“审核流程模板”展示名改为四字“审批流程”，同时保留稳定技术标识和历史追溯。"
+    decisionStatements:
+      - id: DEC-0053-01
+        statement: "provenance: user-confirmed；表达审批决策动作时，流程中心、表单个人待办和后续 DHR 审批页面统一使用“审批”而不是“审核”；表单审核和 DHR 审核在该语义下分别展示为“表单审批”和“DHR 审批”。"
+        status: specified
+        visibility: internal
+      - id: DEC-0053-02
+        statement: "provenance: user-confirmed；原“审核流程模板”菜单和页面展示名统一改为四字“审批流程”，初始化脚本同步使用该名称；“模板”仅在确实描述模板实体或版本时保留，不进入该菜单/页面名称。"
+        status: specified
+        visibility: internal
+      - id: DEC-0053-03
+        statement: "provenance: scope-boundary；检查、评审、审计和 CAPA 的“纠正措施”等非审批语义保留原词；REVIEW、REVIEW_PENDING、IN_REVIEW、APPROVAL、APPROVE、路由、权限码、数据库值和 Java 标识不做破坏性重命名。"
+        status: specified
+        visibility: internal
+      - id: DEC-0053-04
+        statement: "provenance: evidence-boundary；当前 DHR 审批运行时页面和任务没有实现证据，因此本决策只约束未来客户展示投影，不把 DHR 审批能力标记为已实现。"
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.approval-display-terminology-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.approval-display-four-character-flow
+        given: 用户进入流程中心或查看流程配置入口
+        when: 页面展示记录控制审批流程菜单或标题
+        then: 展示“审批流程”，不展示“审核流程模板”，稳定路径和权限码保持不变
+        evidenceIds: [evidence.approval-display-terminology-user-confirmed]
+        evidenceRequirements: [前端菜单文案扫描, 初始化脚本文案扫描]
+      - id: scenario.approval-display-form-and-dhr
+        given: 用户查看表单或未来 DHR 的审批决策入口
+        when: 页面展示审批任务或审批模块名称
+        then: 使用“审批”语义；当前 DHR 页面未实现的事实不得被伪装为已交付
+        evidenceIds: [evidence.approval-display-terminology-user-confirmed]
+        evidenceRequirements: [前端路由和页面文案扫描, DHR 实现证据核对]
+      - id: scenario.approval-display-technical-compatibility
+        given: 客户展示术语已完成统一
+        when: 检查接口、权限、数据库、枚举和历史审计
+        then: 稳定技术标识与历史记录不被重命名或改写，非审批语义不被机械替换
+        evidenceIds: [evidence.approval-display-terminology-user-confirmed]
+        evidenceRequirements: [源码标识扫描, 知识模型引用校验]

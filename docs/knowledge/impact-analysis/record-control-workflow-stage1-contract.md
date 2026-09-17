@@ -1,6 +1,6 @@
 # 记录控制公共流程阶段一契约影响分析
 
-- 知识基线：`knowledgeModelVersion: 0.3.18`（基于 0.3.16 更新）。
+- 知识基线：`knowledgeModelVersion: 0.3.20`（基于 0.3.16 增量更新）。
 - 执行级别：L2。
 - 决策包：`DEC-PACKAGE-20260915-RECORD-CONTROL-STAGE1`。
 - 扩展路径：`product-core`、`transaction-orchestration`、`standard-action`。

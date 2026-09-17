@@ -1,5 +1,21 @@
 knowledgeModelVersion: 0.3.21
 facts:
+  - id: fact.form-instance.business-source
+    name: 表单实例已保存业务来源
+    conceptId: concept.form-instance-business-source
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql
+    aliases: [formInstance.businessSource, formInstance.source.sourceType]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-record-service, evidence.form-instance-business-source-query-service, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-integration-test, evidence.form-instance-business-source-migration-test]
+    sourceRevision: working-tree
+    sourceLocator: form_instance_record.source_type；0086 为生产执行历史行回填 PRODUCTION_EXECUTION，保存服务写入、查询服务读取；2026-09-16 聚焦迁移和生产执行集成测试通过，独立质量验证待完成
+    capturedAt: '2026-09-16'
+    reviewStatus: reviewed
   - id: fact.form-instance-query.has-dedicated-view-permission
     name: 当前用户具有表单实例专门查看权限
     conceptId: concept.form-instance

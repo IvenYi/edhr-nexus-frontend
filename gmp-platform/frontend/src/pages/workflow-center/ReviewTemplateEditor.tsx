@@ -491,7 +491,7 @@ export default function ReviewTemplateEditor() {
       initialNodes,
     );
     // 旧草稿可能尚未保存转办按钮，或仍带有已取消的开始节点按钮；
-    // 打开审核流程时统一归一化，避免配置面板与发布校验看到不同语义。
+    // 打开审批流程时统一归一化，避免配置面板与发布校验看到不同语义。
     const loadedNodes = parsedNodes.map((node) => {
       if (node.data.kind === "APPROVAL") {
         return { ...node, type: "formProcessNode", data: { ...node.data, config: approvalNodeConfig(node.data.config) } };
@@ -1144,7 +1144,7 @@ export default function ReviewTemplateEditor() {
       queryClient.invalidateQueries({
         queryKey: ["review-template-version", processId],
       });
-      showMessage("审核流程已发布");
+      showMessage("审批流程已发布");
     },
     onError: (error) =>
       showMessage(error instanceof Error ? error.message : "发布失败", "error"),
@@ -1245,7 +1245,7 @@ export default function ReviewTemplateEditor() {
           ? "将同时删除并行拆分、两个审批分支、并行聚合及组内连线，确认继续吗？"
         : "当前草稿尚有未保存的修改，确认不保存并关闭吗？";
   if (!canAccess) {
-    return <Box sx={{ p: 3, color: "#606266" }}>无权访问审核流程模板。</Box>;
+    return <Box sx={{ p: 3, color: "#606266" }}>无权访问审批流程。</Box>;
   }
   if (definition.isLoading || versions.isLoading) {
     return <Box sx={{ p: 3, color: "#606266" }}>正在加载流程配置...</Box>;
@@ -1255,8 +1255,8 @@ export default function ReviewTemplateEditor() {
   }
   return (
     <FullScreenFlowDesigner
-      title="配置审核流程"
-      subject={`${definition.data?.name || "审核流程"}${definition.data?.code ? ` / ${definition.data.code}` : ""}`}
+      title="配置审批流程"
+      subject={`${definition.data?.name || "审批流程"}${definition.data?.code ? ` / ${definition.data.code}` : ""}`}
       headerContent={
         <FlowVersionPicker
           currentVersion={
@@ -1322,7 +1322,7 @@ export default function ReviewTemplateEditor() {
           open={Boolean(confirmation)}
           title={
             confirmation === "publish"
-              ? "发布审核流程"
+              ? "发布审批流程"
               : confirmation === "switch"
                 ? "切换流程版本"
                 : confirmation === "deleteParallel"
@@ -1627,7 +1627,7 @@ export default function ReviewTemplateEditor() {
                   />
                   {selected.data.kind === "START" ? (
                     <Typography variant="caption" color="text.secondary">
-                      发起节点只表示审核流程入口。申请人在表单变更或作废页面完成申请内容、电子签名并选择流程后，确认即发起审核并直接流转至首个审批节点；此处无需配置按钮或填报权限。
+                      发起节点只表示审批流程入口。申请人在表单变更或作废页面完成申请内容、电子签名并选择流程后，确认即发起审批并直接流转至首个审批节点；此处无需配置按钮或填报权限。
                     </Typography>
                   ) : null}
                   {selected.data.kind === "APPROVAL" ? (
