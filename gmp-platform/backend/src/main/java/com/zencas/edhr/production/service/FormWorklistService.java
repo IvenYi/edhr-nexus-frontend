@@ -97,11 +97,15 @@ public class FormWorklistService {
                         String nodeId = controls.path("nodeId").asText("");
                         String nodeKind = "START";
                         for (JsonNode node : form.path("flow").path("nodes")) if (nodeId.equals(node.path("id").asText())) nodeKind = node.path("data").path("kind").asText();
-                        JsonNode lastEvent = null;
+                        JsonNode lastEvent = null, inboundTransfer = null;
                         var events = mapper.createArrayNode();
                         for (JsonNode event : state.path("history")) {
-                            if (!actor.equals(event.path("operator").asText()) || !opId.equals(event.path("operationId").asText())
-                                || !formId.equals(event.path("formId").asText()) || !copyId.equals(event.path("copyId").asText())) continue;
+                            if (!opId.equals(event.path("operationId").asText()) || !formId.equals(event.path("formId").asText())
+                                || !copyId.equals(event.path("copyId").asText())) continue;
+                            if ("TRANSFER".equals(event.path("actionCode").asText())
+                                && nodeId.equals(event.path("nodeId").asText())
+                                && actor.equals(event.path("targetUserId").asText())) inboundTransfer = event;
+                            if (!actor.equals(event.path("operator").asText())) continue;
                             String action = event.path("actionCode").asText();
                             boolean matches = view.equals("FILLED") && action.equals("SUBMIT") && "START".equals(event.path("nodeKind").asText()) && filter.inRange("submitted", event.path("at").asText(null))
                                 || view.equals("REVIEW_DONE") && Set.of("APPROVE", "RETURN").contains(action) && "APPROVAL".equals(event.path("nodeKind").asText())
@@ -121,6 +125,9 @@ public class FormWorklistService {
                         String templateId = record.path("templateId").asText(null);
                         if (templateId == null) templateId = templateIds.computeIfAbsent(versionId, id -> jdbc.query("SELECT v.template_id FROM form_template_version v JOIN form_template t ON t.id=v.template_id WHERE v.id=? AND t.tenant_id='default'",
                             (rs, n) -> rs.getString(1), Long.valueOf(id)).stream().findFirst().orElse(""));
+                        JsonNode transferButton = null;
+                        if (pending && nodeKind.equals("APPROVAL")) for (JsonNode button : controls.path("buttons"))
+                            if ("TRANSFER".equals(button.path("action").asText())) transferButton = button;
                         ObjectNode row = mapper.createObjectNode().put("view", view).put("formInstanceId", record.path("id").asText(null)).put("instanceNo", record.path("instanceNo").asText(null))
                             .put("templateId", templateId).put("templateVersionId", versionId).put("templateCode", form.path("code").asText(null))
                             .put("templateName", form.path("name").asText(null)).put("templateVersion", form.path("version").asText(null))
@@ -137,6 +144,12 @@ public class FormWorklistService {
                             .put("arrivedAt", pending ? copy.path("nodeArrivedAt").path(nodeId).asText(null) : null)
                             .put("handledAt", lastEvent == null ? null : lastEvent.path("at").asText(null))
                             .put("handledAction", lastEvent == null ? null : lastEvent.path("actionCode").asText(null))
+                            .put("canTransfer", transferButton != null)
+                            .put("transferLabel", transferButton == null ? null : transferButton.path("label").asText("转办"))
+                            .put("transferStyle", transferButton == null ? null : transferButton.path("style").asText("DEFAULT"))
+                            .put("transferFrom", pending && inboundTransfer != null ? inboundTransfer.path("sourceUserName").asText(null) : null)
+                            .put("transferReason", pending && inboundTransfer != null ? inboundTransfer.path("reason").asText(null) : null)
+                            .put("transferredAt", pending && inboundTransfer != null ? inboundTransfer.path("at").asText(null) : null)
                             .put("revision", execution.getRevision()).put("historyCoverage", "STRUCTURED_EVENTS_ONLY");
                         if (!filter.matches(row)) continue;
                         if (detail || count >= (long) filter.page * filter.size && result.size() < filter.size) {

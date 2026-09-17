@@ -370,12 +370,15 @@ public class FormProcessController {
                 String action = button.path("action").asText("").trim();
                 boolean allowed = startNode
                         ? ("SAVE".equals(action) || "SUBMIT".equals(action))
-                        : ("APPROVE".equals(action) || "RETURN".equals(action));
+                        : ("APPROVE".equals(action) || "RETURN".equals(action) || "TRANSFER".equals(action));
                 if (action.isBlank() || !allowed) {
                     throw new BusinessException(ErrorCode.WF_002, "流程按钮动作不受支持");
                 }
                 if (button.has("requireOpinion") && !button.path("requireOpinion").isBoolean()) {
                     throw new BusinessException(ErrorCode.WF_002, "审批意见必填配置格式不正确");
+                }
+                if ("TRANSFER".equals(action) && button.path("requireOpinion").asBoolean()) {
+                    throw new BusinessException(ErrorCode.WF_002, "转办原因由系统固定要求，不能配置审批意见必填");
                 }
                 validateButtonEnum(button, "style", Set.of("PRIMARY", "DEFAULT", "DANGER"), "按钮样式");
                 validateButtonEnum(button, "size", Set.of("SMALL", "MEDIUM", "LARGE"), "按钮尺寸");

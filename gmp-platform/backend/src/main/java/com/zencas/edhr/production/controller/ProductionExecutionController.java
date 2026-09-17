@@ -41,6 +41,13 @@ public class ProductionExecutionController {
         return ApiResponse.success(service.references(id, operationId, formId, fieldId, keyword));
     }
 
+    @GetMapping("/{id}/transfer-targets")
+    public ApiResponse<java.util.List<java.util.Map<String, String>>> transferTargets(@PathVariable Long id,
+            @RequestParam String operationId, @RequestParam String formId, @RequestParam(required = false) String instanceId,
+            @RequestParam(defaultValue = "") String keyword) {
+        return ApiResponse.success(service.transferTargets(id, operationId, formId, instanceId, keyword));
+    }
+
     @PostMapping("/{id}/actions")
     public ApiResponse<ObjectNode> act(@PathVariable Long id, @RequestBody ProductionExecutionService.Command command) {
         return ApiResponse.success(service.act(id, command));

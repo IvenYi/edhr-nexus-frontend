@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invalid;
 
@@ -130,11 +131,24 @@ public class ProductionExecutionService {
         return view(object, production.requireOrder(object.getWorkOrderId()), executions.findById(id).orElse(null));
     }
 
+    @Transactional(readOnly = true)
+    public List<Map<String, String>> transferTargets(Long id, String operationId, String formId, String instanceId, String keyword) {
+        if (operationId == null || operationId.isBlank() || formId == null || formId.isBlank()) throw invalid("请选择待转办的表单审批任务");
+        ProductionObject object = production.requireObject(id);
+        WorkOrder order = production.requireOrder(object.getWorkOrderId());
+        if (!"IN_PROGRESS".equals(object.getStatus()) || !List.of("CREATED", "IN_PROCESS").contains(order.getStatus()))
+            throw invalid("当前生产对象不可转办表单审批");
+        ProductionExecution execution = executions.findById(id).orElseThrow(() -> invalid("生产对象尚无执行记录"));
+        String operator = AuditContext.getOperatorId();
+        if (operator == null || operator.isBlank()) throw invalid("请先登录");
+        return engine.transferTargets(parse(execution.getSnapshotJson()), parse(execution.getStateJson()), operationId, formId, instanceId, operator, keyword);
+    }
+
     @Transactional
     public ObjectNode act(Long id, Command command) {
         if (command == null || command.action() == null || command.revision() == null) throw invalid("执行动作和修订号不能为空");
         if (command.operationId() == null || command.operationId().isBlank()) throw invalid("请选择执行工序");
-        if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN", "ADD_FORM_COPY", "END_FORM").contains(command.action()) && (command.formId() == null || command.formId().isBlank())) throw invalid("请选择执行表单");
+        if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN", "TRANSFER", "ADD_FORM_COPY", "END_FORM").contains(command.action()) && (command.formId() == null || command.formId().isBlank())) throw invalid("请选择执行表单");
         if ("CONFIRM".equals(command.action()) && (command.workId() == null || command.nodeId() == null)) throw invalid("请选择执行作业");
         // Keep the order/object lock order consistent with order termination and allocation.
         Long orderId = objects.findWorkOrderId("default", id).orElseThrow(() -> invalid("生产对象不存在"));
@@ -173,6 +187,7 @@ public class ProductionExecutionService {
             case "CONFIRM" -> engine.confirm(snapshot, state, command.operationId(), command.workId(), command.nodeId(), operator);
             case "SAVE", "SUBMIT", "APPROVE", "RETURN" -> engine.formAction(snapshot, state, command.operationId(), command.formId(), command.instanceId(), command.action(),
                     command.values(), command.opinion(), command.account(), command.password(), operator);
+            case "TRANSFER" -> engine.transferForm(snapshot, state, command.operationId(), command.formId(), command.instanceId(), command.targetUserId(), command.reason(), operator, AuditContext.getOperatorName());
             default -> throw invalid("不支持的执行动作");
         }
         if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN").contains(command.action())) {
@@ -191,6 +206,7 @@ public class ProductionExecutionService {
                 .contentAfter(auditAfter.toString())
                 .operatorId(operator).operatorName(AuditContext.getOperatorName()).operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource()).moduleName("生产").menuName("生产执行").functionName(command.action())
+                .reason("TRANSFER".equals(command.action()) ? command.reason().strip() : null)
                 .dataSummary(object.getObjectNo() + " · " + command.operationId()).ipAddress(AuditContext.getIpAddress()).createdAt(LocalDateTime.now()).build());
         ObjectNode result = view(object, order, execution);
         if (attachedFormId != null) result.put("attachedFormId", attachedFormId);
@@ -272,10 +288,10 @@ public class ProductionExecutionService {
 
     public record Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                           JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete,
-                          String templateVersionId, Boolean required) {
+                          String templateVersionId, Boolean required, String targetUserId, String reason) {
         public Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                        JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete) {
-            this(action, revision, operationId, formId, workId, nodeId, values, opinion, account, password, instanceId, acknowledgeIncomplete, null, null);
+            this(action, revision, operationId, formId, workId, nodeId, values, opinion, account, password, instanceId, acknowledgeIncomplete, null, null, null, null);
         }
         public Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                        JsonNode values, String opinion, String account, String password) {

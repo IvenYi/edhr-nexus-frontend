@@ -390,6 +390,10 @@ export default function DocumentManagementPage() {
     queryKey: ['managed-documents', selectedCategory, page, pageSize, submittedKeyword],
     queryFn: async () => (await getDocuments({ page, size: pageSize, keyword: submittedKeyword || undefined, categoryId: selectedCategory })).data.data,
   });
+  useEffect(() => {
+    const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [page, query.data?.totalPages]);
   const documents = query.data?.content ?? [];
   const documentCategoriesQuery = useQuery({
     queryKey: ['managed-document-categories'],
@@ -711,7 +715,7 @@ export default function DocumentManagementPage() {
         <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
           <Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography>
           <Stack direction="row" spacing={1.5} alignItems="center">
-            {(query.data?.totalPages ?? 0) > 1 && <Pagination size="small" page={page} count={query.data?.totalPages ?? 0} onChange={(_, next) => setPage(next)} />}
+            <Pagination size="small" page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))} count={Math.max(query.data?.totalPages ?? 0, 1)} onChange={(_, next) => setPage(next)} />
             <FormControl size="small" sx={{ minWidth: 104 }}><Select value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(1); }}>{[20, 50, 100, 200].map((size) => <MenuItem key={size} value={size}>{size} 条/页</MenuItem>)}</Select></FormControl>
           </Stack>
         </Box>
@@ -786,12 +790,12 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
     {expanded ? <TableRow sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={mainTableColumnCount} sx={{ p: 0, bgcolor: '#fafcff' }}>
         <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}><Table stickyHeader size="small" aria-label="文档版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}>
           <colgroup>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <col data-document-version-action-spacer style={{ width: versionTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'version') }} /></Fragment>)}</colgroup>
-          <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0, ...tableHeaderCellSx, py: 0.75 }} /> : null}
+          <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0, ...tableHeaderCellSx, py: 0 }} /> : null}
             <TableCell
               sx={{
                 width: getColumnWidth(column, 'version'), minWidth: column.minWidth, position: 'sticky', top: 0,
                 zIndex: column.id === 'actions' ? 4 : 2,
-                ...(column.id === 'actions' ? getOperationColumnSx(getColumnWidth(column, 'version'), 'head') : tableHeaderCellSx), py: 0.75,
+              ...(column.id === 'actions' ? getOperationColumnSx(getColumnWidth(column, 'version'), 'head') : tableHeaderCellSx), py: 0,
                 ...(column.resizable ? { pr: 2, userSelect: 'none' } : {}),
               }}
             >

@@ -65,7 +65,7 @@ import type { PageResult } from '@/types/common';
 import { getRdoVersionStatusMeta } from '@/utils/rdoVersionStatus';
 import ProductProcessVersionEditorDialog, { type ProductProcessVersionDialogMode } from './components/ProductProcessVersionEditorDialog';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const COLUMN_STORAGE_KEY = 'product-modeling-parent-columns:v1';
 const ACTION_COLUMN_WIDTH = 128;
 
@@ -211,6 +211,7 @@ export default function ProductModelingPage() {
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(PAGE_SIZE_OPTIONS[0]);
   const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
   const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
   const [expandedProductIds, setExpandedProductIds] = useState<string[]>(() => [readRecordLocation().id].filter(Boolean));
@@ -230,9 +231,13 @@ export default function ProductModelingPage() {
 
   useEffect(() => { localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(hiddenColumns)); }, [hiddenColumns]);
   const query = useQuery({
-    queryKey: ['product-modeling-products', page, submittedKeyword],
-    queryFn: async () => (await getProductModelingProducts({ page, size: PAGE_SIZE, keyword: submittedKeyword, status: 'ALL' })).data.data,
+    queryKey: ['product-modeling-products', page, pageSize, submittedKeyword],
+    queryFn: async () => (await getProductModelingProducts({ page, size: pageSize, keyword: submittedKeyword, status: 'ALL' })).data.data,
   });
+  useEffect(() => {
+    const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [page, query.data?.totalPages]);
   const rows = query.data?.content ?? [];
   const visibleColumns = useMemo(() => PARENT_COLUMNS.filter((column) => !hiddenColumns.includes(column.id)), [hiddenColumns]);
   const parentTableWidth = visibleColumns.reduce((total, column) => total + column.width, 0);
@@ -363,7 +368,7 @@ export default function ProductModelingPage() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography variant="body2" sx={{ color: '#606266' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography>{(query.data?.totalPages ?? 0) > 1 ? <Pagination size="small" count={query.data?.totalPages} page={page} onChange={(_, value) => setPage(value)} /> : null}</Box>
+      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center"><Pagination size="small" count={Math.max(query.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} SelectProps={{ native: true }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <option key={option} value={option}>{option} 条/页</option>)}</TextField></Stack></Box>
     </Box>
 
     <Popover open={Boolean(columnAnchor)} anchorEl={columnAnchor} onClose={() => setColumnAnchor(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} PaperProps={{ sx: { width: 220, p: 1.25 } }}>

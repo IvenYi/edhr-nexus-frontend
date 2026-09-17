@@ -300,6 +300,55 @@ public class ProductionExecutionEngine {
         }
     }
 
+    public List<Map<String, String>> transferTargets(JsonNode snapshot, ObjectNode state, String operationId, String formId,
+                                                      String instanceId, String operator, String keyword) {
+        TransferContext context = transferContext(snapshot, state, operationId, formId, instanceId, operator);
+        if (!transferEnabled(context.controls())) throw invalid("当前表单节点未启用转办");
+        return access.transferTargets(context.form(), context.node(), context.formState(), operator, keyword);
+    }
+
+    public void transferForm(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId,
+                             String targetUserId, String reason, String operator, String operatorName) {
+        if (reason == null || reason.strip().isBlank()) throw invalid("请填写转办原因");
+        if (reason.strip().length() > 500) throw invalid("转办原因不能超过500个字符");
+        TransferContext context = transferContext(snapshot, state, operationId, formId, instanceId, operator);
+        if (!transferEnabled(context.controls())) throw invalid("当前表单节点未启用转办");
+        var target = access.requireTransferTarget(context.node(), context.formState(), operator, targetUserId);
+        String nodeId = context.node().path("id").asText();
+        context.formState().withObject("/transferAssignees").put(nodeId, targetUserId);
+        history(state, context.operation(), "转办表单审批", operator,
+                context.form().path("name").asText() + " · " + context.copyId() + " · 转办给 " + target.getDisplayName() + " · " + reason.strip())
+                .put("actionCode", "TRANSFER").put("formId", formId).put("copyId", context.copyId()).put("nodeId", nodeId)
+                .put("nodeKind", "APPROVAL").put("nodeName", context.node().path("data").path("label").asText("表单审批"))
+                .put("sourceUserName", operatorName == null || operatorName.isBlank() ? operator : operatorName)
+                .put("targetUserId", targetUserId).put("targetUserName", target.getDisplayName()).put("reason", reason.strip());
+    }
+
+    private TransferContext transferContext(JsonNode snapshot, ObjectNode state, String operationId, String formId,
+                                             String instanceId, String operator) {
+        JsonNode operation = find(snapshot.path("operations"), operationId);
+        ObjectNode current = requireInProgress(state, operationId);
+        JsonNode form = find(operation.path("forms"), formId);
+        if ((instanceId == null || instanceId.isBlank()) && ExecutionFormCopies.ids(current, formId).size() > 1) throw invalid("请选择具体表单份");
+        String copyId = instanceId == null || instanceId.isBlank() ? formId : instanceId;
+        if (!ExecutionFormCopies.ids(current, formId).contains(copyId)) throw invalid("表单份不属于当前表单或尚未到达");
+        JsonNode existing = current.path("forms").path(copyId);
+        if (!existing.isObject()) throw invalid("表单尚未到达可执行节点");
+        ObjectNode formState = (ObjectNode) existing;
+        ObjectNode controls = formControls(form, formState, operator);
+        if (!controls.path("canAct").asBoolean()) throw invalid("当前用户无权处理此表单节点");
+        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), controls.path("nodeId").asText()) : defaultFormNode();
+        if (!"APPROVAL".equals(kind(node))) throw invalid("只有表单审批节点可以转办");
+        return new TransferContext(operation, form, formState, controls, node, copyId);
+    }
+
+    private record TransferContext(JsonNode operation, JsonNode form, ObjectNode formState, ObjectNode controls, JsonNode node, String copyId) { }
+
+    private boolean transferEnabled(JsonNode controls) {
+        for (JsonNode button : controls.path("buttons")) if ("TRANSFER".equals(button.path("action").asText())) return true;
+        return false;
+    }
+
     public List<String> completionWarnings(JsonNode op, JsonNode current) {
         List<String> warnings = new ArrayList<>();
         for (JsonNode form : op.path("forms")) if (!form.has("fulfilledBy") && !ExecutionFormCopies.required(op, form))
@@ -444,7 +493,7 @@ public class ProductionExecutionEngine {
         ExecutionFormCopies.ensureGroup(state, id).put("ended", false);
     }
     private void initializeFormGraph(JsonNode form, ObjectNode state) {
-        state.putObject("approvers"); state.putObject("restrictedApprovers");
+        state.putObject("approvers"); state.putObject("restrictedApprovers"); state.putObject("transferAssignees");
         state.put("status", "ACTIVE");
         if (form.has("flow")) { initializeGraph(form.path("flow"), state); state.put("status", "ACTIVE"); settleForm(form, state); }
         else { state.putArray("active").add("entry"); state.putArray("done"); }
@@ -620,6 +669,7 @@ public class ProductionExecutionEngine {
         ArrayNode buttons = mapper.createArrayNode();
         if ("APPROVAL".equals(kind)) {
             buttons.addObject().put("action", "APPROVE").put("label", "审批"); buttons.addObject().put("action", "RETURN").put("label", "退回");
+            buttons.addObject().put("action", "TRANSFER").put("label", "转办");
         } else {
             buttons.addObject().put("action", "SAVE").put("label", "保存"); buttons.addObject().put("action", "SUBMIT").put("label", "提交");
         }

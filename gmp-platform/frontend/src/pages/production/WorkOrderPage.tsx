@@ -1,6 +1,6 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { useMemo, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
@@ -13,8 +13,8 @@ import {
   DialogContent,
   DialogTitle,
   Drawer,
-  FormControlLabel,
   IconButton,
+  FormControlLabel,
   InputAdornment,
   MenuItem,
   Pagination,
@@ -50,6 +50,8 @@ import {
   DeleteOutline,
   Visibility,
   InfoOutlined,
+  TuneRounded,
+  ViewColumnRounded,
 } from '@mui/icons-material';
 import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
@@ -77,8 +79,32 @@ import {
 } from '@/api/work-orders';
 import type { PageResult } from '@/types/common';
 import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
+import ListColumnSettingsPopover, {
+  getCurrentUserPreferenceStorageKey,
+  loadListColumnSettings,
+  reorderListColumns,
+  type ListColumnOption,
+  type ListColumnSettings,
+} from '@/components/ListColumnSettingsPopover';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
+const WORK_ORDER_COLUMN_SETTINGS_VERSION = 1;
+const WORK_ORDER_COLUMN_SETTINGS_PREFIX = 'production-work-order-columns:';
+const WORK_ORDER_COLUMN_WIDTHS_PREFIX = 'production-work-order-column-widths:';
+const WORK_ORDER_ACTION_COLUMN_WIDTH = 128;
+type WorkOrderColumnId = 'orderNo' | 'product' | 'processVersion' | 'productionMode' | 'productionForm' | 'plannedQuantity' | 'createdAt' | 'status';
+type WorkOrderColumn = ListColumnOption<WorkOrderColumnId> & { width: number; minWidth: number };
+type WorkOrderColumnWidths = Partial<Record<WorkOrderColumnId, number>>;
+const WORK_ORDER_COLUMNS: WorkOrderColumn[] = [
+  { id: 'orderNo', label: '工单号', width: 180, minWidth: 140 },
+  { id: 'product', label: '产品', width: 190, minWidth: 160 },
+  { id: 'processVersion', label: '制程版本', width: 120, minWidth: 110 },
+  { id: 'productionMode', label: '生产模式', width: 104, minWidth: 96 },
+  { id: 'productionForm', label: '生产形态', width: 104, minWidth: 96 },
+  { id: 'plannedQuantity', label: '计划数量', width: 110, minWidth: 96 },
+  { id: 'createdAt', label: '创建时间', width: 164, minWidth: 148 },
+  { id: 'status', label: '状态', width: 104, minWidth: 96, fixed: true },
+];
 const QUICK_ADD_PROCESS_VERSION = '__quick_add_process_version__';
 const statusLabels: Record<string, string> = {
   CREATED: '已创建',
@@ -107,14 +133,20 @@ const tableHeaderCellSx = {
   borderBottom: '1px solid #e4e7ed',
 };
 const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
-const statusColumnSx = {
-  position: 'sticky' as const, right: 128, zIndex: 2, width: 104, minWidth: 104, maxWidth: 104,
-  bgcolor: '#fff', backgroundClip: 'padding-box', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)', whiteSpace: 'nowrap',
-};
-const operationColumnSx = {
-  position: 'sticky' as const, right: 0, zIndex: 2, width: 128, minWidth: 128, maxWidth: 128,
-  bgcolor: '#fff', backgroundClip: 'padding-box', whiteSpace: 'nowrap',
-};
+function getStatusColumnSx(width: number, layer: 'head' | 'body') {
+  return {
+    position: 'sticky' as const, right: WORK_ORDER_ACTION_COLUMN_WIDTH, zIndex: layer === 'head' ? 10 : 2,
+    width, minWidth: width, maxWidth: width, bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
+    top: layer === 'head' ? 0 : undefined, backgroundClip: 'padding-box', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)', whiteSpace: 'nowrap',
+  };
+}
+function getOperationColumnSx(layer: 'head' | 'body') {
+  return {
+    position: 'sticky' as const, right: 0, zIndex: layer === 'head' ? 10 : 2,
+    width: WORK_ORDER_ACTION_COLUMN_WIDTH, minWidth: WORK_ORDER_ACTION_COLUMN_WIDTH, maxWidth: WORK_ORDER_ACTION_COLUMN_WIDTH,
+    top: layer === 'head' ? 0 : undefined, bgcolor: layer === 'head' ? '#f5f7fa' : '#fff', backgroundClip: 'padding-box', whiteSpace: 'nowrap',
+  };
+}
 const clearableSelectSx = {
   '& .MuiSelect-icon': { transition: 'opacity 120ms ease' },
   '& .select-clear-adornment': {
@@ -160,6 +192,16 @@ function formatDateTime(value?: string | null) {
   if (!value) return '-';
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value.replace('T', ' ').slice(0, 19) : date.toLocaleString('zh-CN', { hour12: false }).replace(/\//g, '-');
+}
+
+function loadColumnWidths(storageKey: string): WorkOrderColumnWidths {
+  if (typeof window === 'undefined') return {};
+  try {
+    const parsed = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    return typeof parsed === 'object' && parsed ? parsed as WorkOrderColumnWidths : {};
+  } catch {
+    return {};
+  }
 }
 
 function toInputDateTime(value?: string | null) { return value ? value.replace(' ', 'T').slice(0, 16) : ''; }
@@ -292,7 +334,14 @@ function ProcessVersionPreviewDialog({ open, version, loading, error, onClose }:
 export default function WorkOrderPage() {
   const client = useQueryClient();
   const { showMessage } = useSnackbar();
+  const columnResizeRef = useRef<{ id: WorkOrderColumnId; startX: number; startWidth: number } | null>(null);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(PAGE_SIZE_OPTIONS[0]);
+  const columnSettingsStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(WORK_ORDER_COLUMN_SETTINGS_PREFIX), []);
+  const columnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(WORK_ORDER_COLUMN_WIDTHS_PREFIX), []);
+  const [columnSettingsAnchor, setColumnSettingsAnchor] = useState<HTMLElement | null>(null);
+  const [columnSettings, setColumnSettings] = useState<ListColumnSettings<WorkOrderColumnId>>(() => loadListColumnSettings(columnSettingsStorageKey, WORK_ORDER_COLUMNS, WORK_ORDER_COLUMN_SETTINGS_VERSION));
+  const [columnWidths, setColumnWidths] = useState<WorkOrderColumnWidths>(() => loadColumnWidths(columnWidthStorageKey));
   const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
   const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
   const [status, setStatus] = useState('');
@@ -311,7 +360,49 @@ export default function WorkOrderPage() {
   const [processPreviewOpen, setProcessPreviewOpen] = useState(false);
   const [pendingObjects, setPendingObjects] = useState<Array<{ processVersionId: string; targetQuantity: string; objectNo: string; remark: string; plannedStartAt: string; plannedEndAt: string }>>([]);
 
-  const orders = useQuery({ queryKey: ['work-orders', page, submittedKeyword, status], queryFn: async () => (await listWorkOrders({ page, size: PAGE_SIZE, keyword: submittedKeyword, status })).data.data as PageResult<WorkOrder> });
+  const visibleColumns = useMemo(() => columnSettings.order
+    .map((id) => WORK_ORDER_COLUMNS.find((column) => column.id === id))
+    .filter((column): column is WorkOrderColumn => Boolean(column))
+    .filter((column) => !columnSettings.hidden.includes(column.id)), [columnSettings]);
+  const resolvedColumnWidths = useMemo(() => Object.fromEntries(WORK_ORDER_COLUMNS.map((column) => [column.id, Math.max(column.minWidth, columnWidths[column.id] ?? column.width)])) as Record<WorkOrderColumnId, number>, [columnWidths]);
+  const mainTableWidth = visibleColumns.reduce((total, column) => total + resolvedColumnWidths[column.id], WORK_ORDER_ACTION_COLUMN_WIDTH);
+
+  useEffect(() => { localStorage.setItem(columnSettingsStorageKey, JSON.stringify(columnSettings)); }, [columnSettings, columnSettingsStorageKey]);
+  useEffect(() => { localStorage.setItem(columnWidthStorageKey, JSON.stringify(columnWidths)); }, [columnWidthStorageKey, columnWidths]);
+
+  const toggleColumnVisibility = (columnId: WorkOrderColumnId) => setColumnSettings((current) => {
+    const isVisible = !current.hidden.includes(columnId);
+    const visibleCount = current.order.length - current.hidden.length;
+    if (isVisible && visibleCount <= 1) return current;
+    return { ...current, hidden: isVisible ? [...current.hidden, columnId] : current.hidden.filter((id) => id !== columnId) };
+  });
+  const reorderColumns = (sourceId: WorkOrderColumnId, targetId: WorkOrderColumnId) => setColumnSettings((current) => reorderListColumns(WORK_ORDER_COLUMNS, current, sourceId, targetId));
+  const beginColumnResize = (event: ReactPointerEvent<HTMLDivElement>, column: WorkOrderColumnId) => {
+    event.preventDefault();
+    event.stopPropagation();
+    columnResizeRef.current = { id: column, startX: event.clientX, startWidth: resolvedColumnWidths[column] };
+    const onMove = (moveEvent: PointerEvent) => {
+      const resize = columnResizeRef.current;
+      if (!resize) return;
+      const definition = WORK_ORDER_COLUMNS.find((item) => item.id === resize.id);
+      if (!definition) return;
+      setColumnWidths((current) => ({ ...current, [resize.id]: Math.max(definition.minWidth, resize.startWidth + moveEvent.clientX - resize.startX) }));
+    };
+    const onUp = () => {
+      columnResizeRef.current = null;
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
+
+  const orders = useQuery({ queryKey: ['work-orders', page, pageSize, submittedKeyword, status], queryFn: async () => (await listWorkOrders({ page, size: pageSize, keyword: submittedKeyword, status })).data.data as PageResult<WorkOrder> });
+  useEffect(() => {
+    const totalPages = orders.data?.totalPages ?? 0;
+    const lastPage = Math.max(totalPages, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [orders.data?.totalPages, page]);
   const products = useQuery({ queryKey: ['work-order-products'], queryFn: async () => (await getProductModelingProducts({ page: 1, size: 500, status: 'ACTIVE' })).data.data as PageResult<ProductModelSource> });
   const process = useQuery({ queryKey: ['work-order-process', form.productId], enabled: Boolean(form.productId), queryFn: async () => (await getProductModelWorkspace(form.productId)).data.data });
   const objects = useQuery({ queryKey: ['production-objects', objectOrder?.id], enabled: Boolean(objectOrder), queryFn: async () => (await listProductionObjects(objectOrder!.id)).data.data });
@@ -538,6 +629,21 @@ export default function WorkOrderPage() {
   const objectTable = <TableContainer sx={{ maxHeight: { xs: 360, lg: 460 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 1060 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '状态', '制程版本', '数量', '良品', 'NG', '报废', '计划开始', '计划结束', '备注'].map((label) => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{objects.isLoading ? <TableRow><TableStateCell colSpan={10} align="center" sx={{ height: 160 }}><CircularProgress size={24} /></TableStateCell></TableRow> : objects.isError ? <TableRow><TableStateCell colSpan={10} align="center" sx={{ height: 160, color: '#c62828' }}>生产对象加载失败</TableStateCell></TableRow> : objectRows.length === 0 ? <TableRow><TableStateCell colSpan={10} align="center" sx={{ height: 160, color: '#909399' }}>暂无已拆分{isSnProduction ? 'SN' : '批次'}</TableStateCell></TableRow> : objectRows.map((item) => <TableRow data-record-id={item.id} key={item.id} sx={tableRowSx}><TableCell>{item.objectNo}</TableCell><TableCell>{statusBadge(item.status, objectStatusLabels)}</TableCell><TableCell>{item.processVersion}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell>{item.goodQuantity}</TableCell><TableCell>{item.ngQuantity}</TableCell><TableCell>{item.scrapQuantity}</TableCell><TableCell>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '-'}</TableCell><TableCell>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '-'}</TableCell><TableCell sx={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell></TableRow>)}</TableBody></Table></TableContainer>;
   const selectProduct = (productId: string) => setForm((current) => ({ ...current, productId, processVersionId: '' }));
   const submitSearch = () => { setPage(1); setSubmittedKeyword(keyword.trim()); };
+  const renderWorkOrderCell = (item: WorkOrder, column: WorkOrderColumn) => {
+    const width = resolvedColumnWidths[column.id];
+    const commonSx = { width, minWidth: width, maxWidth: width, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const };
+    switch (column.id) {
+      case 'orderNo': return <TableCell sx={commonSx} title={item.orderNo}>{item.orderNo}</TableCell>;
+      case 'product': return <TableCell sx={commonSx} title={`${item.productName}（${item.productCode}）`}><Typography variant="body2" noWrap>{item.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{item.productCode}</Typography></TableCell>;
+      case 'processVersion': return <TableCell sx={commonSx}>{item.processVersion || '-'}</TableCell>;
+      case 'productionMode': return <TableCell sx={commonSx}>{item.productionMode || '-'}</TableCell>;
+      case 'productionForm': return <TableCell sx={commonSx}>{formLabels[item.productionForm || ''] || item.productionForm || '-'}</TableCell>;
+      case 'plannedQuantity': return <TableCell sx={commonSx}>{item.plannedQuantity}</TableCell>;
+      case 'createdAt': return <TableCell sx={commonSx}>{formatDateTime(item.createdAt)}</TableCell>;
+      case 'status': return <TableCell sx={{ ...commonSx, ...getStatusColumnSx(width, 'body') }}>{statusBadge(item.status, statusLabels)}</TableCell>;
+      default: return null;
+    }
+  };
 
   return <Box sx={{ minWidth: 0, height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, display: 'flex', flexDirection: 'column', gap: 1.5, minHeight: 0, overflow: 'hidden' }}>
     <Box sx={{ flex: '0 0 auto', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', p: 2 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center' }}>
@@ -546,20 +652,24 @@ export default function WorkOrderPage() {
       <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end"><Button size="small" sx={{ height: 40, width: 80, minWidth: 80 }} variant="outlined" startIcon={<RestartAlt />} onClick={() => { setKeyword(''); setSubmittedKeyword(''); setStatus(''); setPage(1); }}>重置</Button><Button size="small" sx={{ height: 40, width: 80, minWidth: 80 }} variant="contained" startIcon={<Search />} onClick={submitSearch}>查询</Button></Stack>
     </Box></Box>
     <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
-      <Box sx={{ flex: '0 0 auto', px: 2, py: 0.75, minHeight: 48, borderBottom: '1px solid #ebeef5', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}><Button variant="contained" size="small" startIcon={<Add />} onClick={openCreate}>新建工单</Button></Box>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: 1200, height: showOrderTableState ? '100%' : 'auto' }}>
-        <colgroup><col style={{ width: 180 }} /><col style={{ width: 190 }} /><col style={{ width: 120 }} /><col style={{ width: 104 }} /><col style={{ width: 104 }} /><col style={{ width: 110 }} /><col style={{ width: 164 }} /><col style={{ width: 104 }} /><col style={{ width: 128 }} /></colgroup>
-        <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{['工单号', '产品', '制程版本', '生产模式', '生产形态', '计划数量', '创建时间', '状态', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { ...tableHeaderCellSx, ...operationColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : label === '状态' ? { ...tableHeaderCellSx, ...statusColumnSx, bgcolor: '#f5f7fa', zIndex: 4 } : tableHeaderCellSx}>{label}</TableCell>)}</TableRow></TableHead>
-        <TableBody>{orders.isLoading ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ color: '#909399' }}><CircularProgress size={24} /></TableStateCell></TableRow> : orders.isError ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ color: '#c62828' }}>工单数据加载失败</TableStateCell></TableRow> : (orders.data?.content ?? []).length === 0 ? <TableRow><TableStateCell colSpan={9} align="center" sx={{ color: '#909399' }}>暂无数据</TableStateCell></TableRow> : orders.data!.content.map((item) => <TableRow data-record-id={item.id} key={item.id} hover tabIndex={0} onClick={() => openDetail(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') openDetail(item); }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
-          <TableCell sx={{ whiteSpace: 'nowrap' }} title={item.orderNo}>{item.orderNo}</TableCell><TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${item.productName}（${item.productCode}）`}><Typography variant="body2" noWrap>{item.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{item.productCode}</Typography></TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.processVersion || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{item.productionMode || '-'}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formLabels[item.productionForm || ''] || item.productionForm || '-'}</TableCell><TableCell>{item.plannedQuantity}</TableCell><TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(item.createdAt)}</TableCell><TableCell sx={statusColumnSx}>{statusBadge(item.status, statusLabels)}</TableCell>
-          <TableCell align="center" sx={operationColumnSx} onClick={(event) => event.stopPropagation()}>
+      <Box sx={{ flex: '0 0 auto', px: 2, py: 0.75, minHeight: 48, borderBottom: '1px solid #ebeef5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Tooltip title="字段设置" arrow><IconButton size="small" aria-label="字段设置" onClick={(event) => setColumnSettingsAnchor(event.currentTarget)} sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } }}><Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><ViewColumnRounded sx={{ fontSize: 21 }} /><TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} /></Box></IconButton></Tooltip>
+        <Button variant="contained" size="small" startIcon={<Add />} onClick={openCreate}>新建工单</Button>
+      </Box>
+      <ListColumnSettingsPopover anchorEl={columnSettingsAnchor} columns={WORK_ORDER_COLUMNS} settings={columnSettings} onClose={() => setColumnSettingsAnchor(null)} onToggle={toggleColumnVisibility} onReorder={reorderColumns} />
+      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: mainTableWidth, width: '100%', height: showOrderTableState ? '100%' : 'auto' }}>
+        <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: resolvedColumnWidths[column.id] }} />)}<col style={{ width: WORK_ORDER_ACTION_COLUMN_WIDTH }} /></colgroup>
+        <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ ...tableHeaderCellSx, width: resolvedColumnWidths[column.id], minWidth: resolvedColumnWidths[column.id], maxWidth: resolvedColumnWidths[column.id], ...(column.id === 'status' ? getStatusColumnSx(resolvedColumnWidths[column.id], 'head') : {}), top: 0, zIndex: column.id === 'status' ? 10 : 5, position: 'sticky' }}><Box sx={{ position: 'relative', pr: 1 }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column.id)} sx={{ position: 'absolute', top: 0, right: -8, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} /></Box></TableCell>)}<TableCell align="center" sx={{ ...tableHeaderCellSx, ...getOperationColumnSx('head') }}>操作</TableCell></TableRow></TableHead>
+        <TableBody>{orders.isLoading ? <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#909399' }}><CircularProgress size={24} /></TableStateCell></TableRow> : orders.isError ? <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#c62828' }}>工单数据加载失败</TableStateCell></TableRow> : (orders.data?.content ?? []).length === 0 ? <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#909399' }}>暂无数据</TableStateCell></TableRow> : orders.data!.content.map((item) => <TableRow data-record-id={item.id} key={item.id} hover tabIndex={0} onClick={() => openDetail(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') openDetail(item); }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
+          {visibleColumns.map((column) => <Fragment key={column.id}>{renderWorkOrderCell(item, column)}</Fragment>)}
+          <TableCell align="center" sx={getOperationColumnSx('body')} onClick={(event) => event.stopPropagation()}>
             <Tooltip title="生产对象" arrow><IconButton size="small" aria-label="生产对象" onClick={() => openObjects(item)}><ViewList fontSize="small" /></IconButton></Tooltip>
             {item.status === 'CREATED' ? <Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip> : <Tooltip title="编辑（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="编辑暂不可用"><Edit fontSize="small" /></IconButton></span></Tooltip>}
             {item.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消" color="error" onClick={() => setCancelTarget(item)}><Cancel fontSize="small" /></IconButton></Tooltip> : item.status === 'COMPLETED' ? <Tooltip title="关闭" arrow><IconButton size="small" aria-label="关闭" onClick={() => setCloseTarget(item)}><Close fontSize="small" /></IconButton></Tooltip> : <Tooltip title="取消（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="取消暂不可用"><Cancel fontSize="small" /></IconButton></span></Tooltip>}
           </TableCell>
         </TableRow>)}</TableBody>
       </Table></TableContainer>
-      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Typography variant="body2" sx={{ color: '#606266' }}>共 {orders.data?.totalElements ?? 0} 条数据</Typography>{(orders.data?.totalPages ?? 0) > 1 && <Pagination size="small" count={orders.data?.totalPages} page={page} onChange={(_, value) => setPage(value)} />}</Box>
+      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {orders.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center" sx={{ marginLeft: 'auto' }}><Pagination size="small" count={Math.max(orders.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(orders.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option} 条/页</MenuItem>)}</TextField></Stack></Box>
     </Box>
 
     <AppDialog open={dialogOpen} onClose={save.isPending ? undefined : () => setDialogOpen(false)} maxWidth="md" fullWidth>

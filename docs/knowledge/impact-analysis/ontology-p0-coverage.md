@@ -1,14 +1,14 @@
 # Ontology P0 Coverage Review
 
-knowledgeModelVersion: `0.3.20`
+knowledgeModelVersion: `0.3.23`
 schemaVersion: `1.1.0`
-reviewedAt: `2026-09-16`
+reviewedAt: `2026-09-17`
 
 ## 结论
 
-本次增量审查确认 P0 的**事实目录覆盖目标**继续满足：当前工作树全部 212 个唯一非 `deprecated` 规则条件事实均可通过 fact ID 或 alias 解析到唯一事实目录记录，并按目录中的 `allowedOperators` 约束操作符。`factCatalogProfile` 仅是分组信息，不能绕过全量解析校验。废弃规则仍保留为历史表达，不计入当前覆盖率。`DEC-0038` 中的 180/180 是 P0 首次发布时的历史基线统计；本切片在 0.3.19 的206条基础上增加5条个人查询权限、资格和身份历史事实，以及1条全局实例持久化业务来源事实。下列既有分域实现说明是历史核对摘要，并非本切片重新审查全系统运行能力。
+本次增量审查确认 P0 的**事实目录覆盖目标**继续满足：当前工作树全部 217 个唯一非 `deprecated` 规则条件事实均可通过 fact ID 或 alias 解析到唯一事实目录记录，并按目录中的 `allowedOperators` 约束操作符。`factCatalogProfile` 仅是分组信息，不能绕过全量解析校验。废弃规则仍保留为历史表达，不计入当前覆盖率。`DEC-0038` 中的 180/180 是 P0 首次发布时的历史基线统计；在后续个人表单查询和全局实例来源增量基础上，`0.3.22`补录了5条早期遗漏的普通表单审批转办事实，分别覆盖节点、处理权、按钮、原因和目标资格；这是对既有预期能力的知识缺口修复，不是此时新增产品方向。下列既有分域实现说明是历史核对摘要，并非本切片重新审查全系统运行能力。
 
-这不等于 211 个事实都已实现为运行时读取字段。事实目录中已有真实实现证据的记录保留 `implemented`；仅有规则定义、设计约束或未来运行时语义的记录保持 `specified / not-available / unreviewed`。规则 `implemented` 不能单独证明其条件事实已经实现。
+这不等于 217 个事实都已实现为运行时读取字段。事实目录中已有真实实现证据的记录保留 `implemented`；仅有规则定义、设计约束或未来运行时语义的记录保持 `specified / not-available / unreviewed`。规则 `implemented` 不能单独证明其条件事实已经实现。
 
 ## 分域核对
 
@@ -23,11 +23,11 @@ reviewedAt: `2026-09-16`
 
 ## 机械校验结果
 
-- `core-business.yaml`：185 条；`form-process-binding.yaml`：15 条；`material-fields.yaml`：2 条；`material-import.yaml`：1 条；`form-instance-number.yaml`：1 条；`form-instance-query.yaml`：3 条；`form-worklists.yaml`：5 条；事实目录合计 212 条，无重复 ID、无重复 alias、无悬空 `conceptId` 或 `evidenceIds`。
+- `core-business.yaml`：185 条；`form-process-binding.yaml`：15 条；`material-fields.yaml`：2 条；`material-import.yaml`：1 条；`form-instance-number.yaml`：1 条；`form-instance-query.yaml`：3 条；`form-worklists.yaml`：5 条；`form-approval-transfer.yaml`：5 条；事实目录合计 217 条，无重复 ID、无重复 alias、无悬空 `conceptId` 或 `evidenceIds`。
 - `implementation-anchors/core-business.yaml`：11 个核心域锚点；代码、迁移、UI 和测试路径均存在。
-- 规则事实覆盖：212/212 个唯一非废弃规则事实，覆盖率 100%；各目录文件数量见上一项；当前切片沿用现有事实目录，不新建 schema 分组。
+- 规则事实覆盖：217/217 个唯一非废弃规则事实，覆盖率 100%；各目录文件数量见上一项；当前切片沿用现有事实目录，不新建 schema 分组。
 - 事实操作符：均来自对应事实的 `allowedOperators`；正式校验器负责拒绝非法操作符。
-- 版本：知识模型 `0.3.20`、schema `1.1.0` 与当前资产头一致。
+- 版本：知识模型 `0.3.23`、schema `1.1.0` 与当前资产头一致。
 
 ## 证据边界
 
@@ -38,7 +38,7 @@ reviewedAt: `2026-09-16`
 ## Roadmap
 
 - P0：事实目录全量解析、最小 provenance、核心域实现锚点、正式校验和独立质量门禁已完成。
-- 记录控制审批入口：`DEC-0041` 已替代 `DEC-0040`，开始节点只保留流程边界且不配置按钮；申请确认即启动审批的运行时事务仍保持 specified。审批节点固定转办动作及其呈现边界继续有效。`DEC-0053` 统一审批决策语义的客户展示术语，未改变技术标识或 P0 阶段边界。
+- 记录控制审批入口：`DEC-0041` 已替代 `DEC-0040`，开始节点只保留流程边界且不配置按钮；申请确认即启动审批的运行时事务仍保持 specified。审批节点固定转办动作及其呈现边界继续有效。`DEC-0056` 统一审批决策语义的客户展示术语，未改变技术标识或 P0 阶段边界。
 - P1：精确符号级事实定位、关系语义、查询投影和自动影响路径，暂缓。
 - P2：知识发布 manifest、时间版本和历史解释，暂缓。
 - P3：JSON-LD/RDF/OWL/SHACL 与受控推理，暂缓。

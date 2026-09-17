@@ -10,13 +10,10 @@ import {
   CircularProgress,
   Collapse,
   Drawer,
-  FormControl,
   IconButton,
   InputAdornment,
   MenuItem,
-  Pagination,
   Popover,
-  Select,
   Stack,
   Tab,
   Table,
@@ -54,8 +51,17 @@ import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialo
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
 import type { PageResult } from '@/types/common';
+import {
+  formListAdvancedGridSx,
+  formListFieldSx,
+  formListFilterActionsSx,
+  formListQueryGridSx,
+  formListQueryPanelSx,
+  formTableBodyCellSx,
+  formTableHeaderCellSx,
+  FormListPagination,
+} from './formManagementListStyles';
 
-const PAGE_SIZE_OPTIONS = [20, 50, 100, 200];
 const STORAGE_KEY_PREFIX = 'form-management-list-columns-';
 const COLUMN_LAYOUT_VERSION = 5;
 
@@ -77,9 +83,9 @@ const columns: ListColumn[] = [
 ];
 const FROZEN_COLUMN_IDS: ColumnId[] = ['sourceType', 'status'];
 
-const headerCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', height: 48, py: 0, borderBottom: '1px solid #e4e7ed' };
-const bodyCellSx = { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' };
-const fieldSx = { '& .MuiInputBase-root': { height: 40 }, '& .MuiInputBase-input': { boxSizing: 'border-box' } };
+const headerCellSx = formTableHeaderCellSx;
+const bodyCellSx = formTableBodyCellSx;
+const fieldSx = formListFieldSx;
 const drawerRootSx = { top: 0, bottom: 0, zIndex: (theme: { zIndex: { drawer: number } }) => theme.zIndex.drawer + 2, '& .MuiBackdrop-root': { top: 0 } };
 const drawerBackdropSx = { top: 0 };
 const drawerPaperSx = { width: { xs: '100vw', sm: 560 }, top: 0, bottom: 0, height: '100vh', transform: 'none !important' };
@@ -215,7 +221,7 @@ function FormInstanceDetailDrawer({ recordId, tab, onTabChange, onClose }: { rec
             <DetailField label="生产对象" value={`${detail.source.productionObjectNo || '-'}（${typeLabel(detail.source.productionObjectType)}）`} /><DetailField label="工单" value={detail.source.workOrderNo || '-'} />
             <DetailField label="工序" value={detail.source.operationName || '-'} /><DetailField label="表单来源" value="生产执行" />
           </Box></DetailSection>
-          {document ? <DetailSection title="表单内容"><FormCanvasPreview document={document} runtime={{ values: detail.fieldValues, disabled: true, onChange: () => {} }} /></DetailSection> : <DetailSection title="表单数据"><Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{JSON.stringify(detail.fieldValues, null, 2)}</Typography></DetailSection>}
+          {document ? <DetailSection title="表单内容"><FormCanvasPreview document={document} fullPage runtime={{ values: detail.fieldValues, disabled: true, onChange: () => {} }} /></DetailSection> : <DetailSection title="表单数据"><Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{JSON.stringify(detail.fieldValues, null, 2)}</Typography></DetailSection>}
         </Stack> : <Stack spacing={1} sx={{ mt: 2 }}>
           {auditQuery.isFetching ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : auditQuery.isError ? <Typography sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>数据审计加载失败</Typography> : auditQuery.data?.length ? auditQuery.data.map((item) => <Accordion key={item.id} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}><AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { my: 0 }, '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', columnGap: 1, width: '100%', minWidth: 0 }}><Typography variant="body2" noWrap>{item.operatorDisplayName || item.operatorAccount || '-'}</Typography><Typography variant="body2" noWrap>{item.actionLabel || item.action || '-'}</Typography><Typography variant="body2" noWrap sx={{ color: '#606266' }}>{formatDateTime(item.operationTime || item.createdAt)}</Typography></Box></AccordionSummary><AccordionDetails sx={{ pt: 0, pb: 1.5 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}><AuditFieldBlock title="变更前" fields={toProductionAuditFields(item.contentBefore, { objectStatus: '生产对象状态' })} /><AuditFieldBlock title="变更后" fields={toProductionAuditFields(item.contentAfter, { objectStatus: '生产对象状态' })} /></Box></AccordionDetails></Accordion>) : <Typography sx={{ py: 8, textAlign: 'center', color: '#909399' }}>暂无审计记录</Typography>}
         </Stack>}
@@ -228,7 +234,7 @@ export default function FormInstanceListPage() {
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
-  const [draft, setDraft] = useState({ instanceNo: readRecordLocation().keyword, templateCode: '', templateName: '', productionObjectNo: '', productionObjectType: '', workOrderNo: '', recordStatus: '', keyword: '', createdFrom: '', createdTo: '' });
+  const [draft, setDraft] = useState({ instanceNo: '', templateCode: '', templateName: '', productionObjectNo: '', productionObjectType: '', workOrderNo: '', recordStatus: '', keyword: readRecordLocation().keyword, createdFrom: '', createdTo: '' });
   const [filters, setFilters] = useState(draft);
   const [recordId, setRecordId] = useState<string | null>(null);
   const [detailTab, setDetailTab] = useState(0);
@@ -245,6 +251,7 @@ export default function FormInstanceListPage() {
       Object.keys(queryParams).forEach((key) => { const typedKey = key as keyof GlobalFormInstanceQuery; if (queryParams[typedKey] === '') delete queryParams[typedKey]; });
       return listGlobalFormInstances(queryParams);
     },
+    refetchOnMount: 'always',
   });
   useEffect(() => {
     setSettings((current) => {
@@ -279,7 +286,7 @@ export default function FormInstanceListPage() {
   const renderCell = (row: GlobalFormInstanceSummary, column: ListColumn) => {
     const cellSx = { ...bodyCellSx, ...frozenColumnSx(column.id, 'body', frozenStatusWidth, columnWidth(column)) };
     switch (column.id) {
-      case 'instanceNo': return <TableCell key={column.id} sx={cellSx}><Typography component="button" type="button" onClick={() => openDetail(row.formInstanceId)} sx={{ p: 0, border: 0, bgcolor: 'transparent', font: 'inherit', color: '#1890ff', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}>{row.instanceNo}</Typography></TableCell>;
+      case 'instanceNo': return <TableCell key={column.id} sx={cellSx}>{row.instanceNo || '-'}</TableCell>;
       case 'template': return <TableCell key={column.id} sx={cellSx} title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {row.templateVersion || '-'}</Typography></TableCell>;
       case 'templateCode': return <TableCell key={column.id} sx={cellSx}>{row.templateCode || '-'}</TableCell>;
       case 'sourceType': return <TableCell key={column.id} sx={cellSx}><StatusBadge label={sourceTypeLabel(row.source.sourceType)} color="success" showDot={false} /></TableCell>;
@@ -291,19 +298,21 @@ export default function FormInstanceListPage() {
       case 'updatedAt': return <TableCell key={column.id} sx={cellSx}>{formatDateTime(row.updatedAt)}</TableCell>;
     }
   };
-  const filterActions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ gridColumn: advancedFiltersOpen ? '1 / -1' : { xs: '1 / -1', md: 'auto' } }}>
+  const filterActions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={formListFilterActionsSx}>
     <Button size="small" variant="outlined" startIcon={<RestartAlt />} onClick={resetSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>重置</Button>
     <Button size="small" variant="contained" startIcon={<Search />} onClick={submitSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>查询</Button>
     <Button size="small" variant="text" endIcon={<ExpandMore sx={{ transform: advancedFiltersOpen ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }} />} onClick={() => setAdvancedFiltersOpen((open) => !open)} aria-expanded={advancedFiltersOpen} sx={{ height: 40, minWidth: 72, px: 1, color: '#1890ff', '&:hover': { bgcolor: '#f5faff' } }}>{advancedFiltersOpen ? '收起' : '展开'}</Button>
   </Stack>;
   return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1.5, overflow: 'hidden' }}>
-    <Box sx={{ flex: '0 0 auto', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', p: 2 }}>
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center' }}>
-        <TextField size="small" label="表单实例号" placeholder="请输入表单实例号" value={draft.instanceNo} onChange={(event) => setDraft({ ...draft, instanceNo: event.target.value })} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} sx={fieldSx} />
+    <Box sx={formListQueryPanelSx}>
+      <Box sx={formListQueryGridSx}>
+        <TextField size="small" label="关键词" placeholder="实例号、模板、工单或生产对象" value={draft.keyword} onChange={(event) => setDraft({ ...draft, keyword: event.target.value })} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} sx={fieldSx} />
         <TextField size="small" label="表单模板" placeholder="请输入表单模板" value={draft.templateName} onChange={(event) => setDraft({ ...draft, templateName: event.target.value })} sx={fieldSx} />
-        {advancedFiltersOpen ? <TextField size="small" label="表单编码" placeholder="请输入表单编码" value={draft.templateCode} onChange={(event) => setDraft({ ...draft, templateCode: event.target.value })} sx={fieldSx} /> : filterActions}
+        {filterActions}
         <Collapse in={advancedFiltersOpen} timeout={180} unmountOnExit sx={{ gridColumn: '1 / -1' }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, pt: 1.5, borderTop: '1px solid #ebeef5' }}>
+          <Box sx={formListAdvancedGridSx}>
+          <TextField size="small" label="表单实例号" placeholder="请输入表单实例号" value={draft.instanceNo} onChange={(event) => setDraft({ ...draft, instanceNo: event.target.value })} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} sx={fieldSx} />
+          <TextField size="small" label="表单编码" placeholder="请输入表单编码" value={draft.templateCode} onChange={(event) => setDraft({ ...draft, templateCode: event.target.value })} sx={fieldSx} />
           <TextField size="small" label="生产对象" placeholder="请输入批次号或SN" value={draft.productionObjectNo} onChange={(event) => setDraft({ ...draft, productionObjectNo: event.target.value })} sx={fieldSx} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} />
           <TextField size="small" label="工单" placeholder="请输入工单号" value={draft.workOrderNo} onChange={(event) => setDraft({ ...draft, workOrderNo: event.target.value })} sx={fieldSx} />
           <TextField select size="small" label="生产对象类型" value={draft.productionObjectType} onChange={(event) => setDraft({ ...draft, productionObjectType: event.target.value })} sx={fieldSx}><MenuItem value="">全部</MenuItem><MenuItem value="BATCH">批次</MenuItem><MenuItem value="SN">SN</MenuItem></TextField>
@@ -312,7 +321,6 @@ export default function FormInstanceListPage() {
           <TextField size="small" type="datetime-local" label="创建时间止" value={draft.createdTo} onChange={(event) => setDraft({ ...draft, createdTo: event.target.value })} sx={fieldSx} InputLabelProps={{ shrink: true }} />
           </Box>
         </Collapse>
-        {advancedFiltersOpen ? filterActions : null}
       </Box>
     </Box>
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
@@ -327,7 +335,7 @@ export default function FormInstanceListPage() {
         <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ width: columnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, userSelect: 'none', ...frozenColumnSx(column.id, 'head', frozenStatusWidth, columnWidth(column)) }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} onPointerMove={(event) => { const start = resizeRef.current; if (start?.id === column.id) setSettings((current) => ({ ...current, widths: { ...current.widths, [column.id]: Math.max(column.minWidth, start.startWidth + event.clientX - start.startX) } })); }} onPointerUp={() => { resizeRef.current = null; }} onPointerCancel={() => { resizeRef.current = null; }} onLostPointerCapture={() => { resizeRef.current = null; }} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 3, touchAction: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} /></TableCell>)}</TableRow></TableHead>
         <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '表单列表加载失败'}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow data-record-id={row.formInstanceId} key={row.formInstanceId} hover tabIndex={0} onClick={() => openDetail(row.formInstanceId)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row.formInstanceId); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看表单实例号 ${row.instanceNo}`}>{visibleColumns.map((column) => <Fragment key={column.id}>{renderCell(row, column)}</Fragment>)}</TableRow>)}</TableBody>
       </Table></TableContainer>
-      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center">{(query.data?.totalPages ?? 0) > 1 && <Pagination size="small" page={page + 1} count={query.data?.totalPages ?? 0} onChange={(_, value) => setPage(value - 1)} />}<FormControl size="small" sx={{ minWidth: 104 }}><Select value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(0); }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((size) => <MenuItem key={size} value={size}>{size} 条/页</MenuItem>)}</Select></FormControl></Stack></Box>
+      <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />
     </Box>
     <FormInstanceDetailDrawer recordId={recordId} tab={detailTab} onTabChange={setDetailTab} onClose={() => setRecordId(null)} />
   </Box>;

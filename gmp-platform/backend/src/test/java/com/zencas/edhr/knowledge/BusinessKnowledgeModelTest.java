@@ -44,7 +44,7 @@ class BusinessKnowledgeModelTest {
     void currentKnowledgeBaselineIsTheReleasedP0Schema() throws Exception {
         BusinessKnowledgeModel model = BusinessKnowledgeModelLoader.load();
 
-        assertThat(model.schema()).containsEntry("knowledgeModelVersion", "0.3.21")
+        assertThat(model.schema()).containsEntry("knowledgeModelVersion", "0.3.23")
                 .containsEntry("schemaVersion", "1.1.0");
     }
 

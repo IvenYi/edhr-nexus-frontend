@@ -1,22 +1,22 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.23
 decisions:
   - id: DEC-0024
     title: 表单流程节点按钮与按钮事件配置第一版
     status: specified
     visibility: internal
-    context: "provenance: user-confirmed；本决策补充 DEC-0023 的流程节点配置入口，仅定义按钮和按钮事件的配置持久化范围，不改变表单复用、主体默认权限或绑定级真实字段例外模型，也不声称运行时已经具备动作执行能力。"
+    context: "provenance: historical-user-confirmed-with-correction；本决策保留早期表单流程节点按钮与事件配置的历史。其中 DEC-0024-01 和 DEC-0024-03 未包含审批转办，是当时业务澄清与实现的共同遗漏，不是已确认的产品排除决策；二者已由 DEC-0055 纠正且不得再进入现行业务投影。其他历史配置结论及后续决策对事件和电子签名的替代关系保持可追溯。"
     decisionStatements:
       - id: DEC-0024-01
-        statement: "provenance: user-confirmed；可复用的表单流程版本在开始节点和审批节点保存节点级按钮配置；开始节点默认提供保存、提交，审批节点默认提供审批、退回。"
-        status: specified
+        statement: "provenance: historical-clarification-error；历史表述为开始节点默认提供保存、提交，审批节点默认只提供审批、退回。“只提供审批、退回”源于早期共同遗漏，已由 DEC-0055 纠正；现行标准动作还包含转办。"
+        status: deprecated
         visibility: internal
       - id: DEC-0024-02
         statement: "provenance: historical-user-confirmed；历史方案曾描述按钮可见和启用两个状态；当前产品实现按最新简化方案只保留可见/不可见，审批按钮仍可配置处理意见是否必填。"
         status: specified
         visibility: internal
       - id: DEC-0024-03
-        statement: "provenance: user-confirmed；第一版标准动作仅支持保存（SAVE）、提交（SUBMIT）、审批（APPROVE）和退回（RETURN）；不开放转交、加签、拒绝、终止、撤回。"
-        status: specified
+        statement: "provenance: historical-clarification-error；历史表述将标准动作限定为保存（SAVE）、提交（SUBMIT）、审批（APPROVE）和退回（RETURN），并将转办与加签、拒绝、终止、撤回一并排除。其中排除转办是早期共同遗漏，不构成“当时决定不做转办”的有效证据，已由 DEC-0055 纠正；其他被排除动作的边界不受本次纠正影响。"
+        status: deprecated
         visibility: internal
       - id: DEC-0024-04
         statement: "provenance: historical-user-confirmed；历史方案曾允许事件保存可选处理器标识；该配置已由 DEC-0025 替代，当前只持久化动作执行前/后时机、关联动作和受控内置事件，不代表运行时执行。"
@@ -34,17 +34,17 @@ decisions:
     evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-user-confirmed-v2]
     acceptanceScenarios:
       - id: scenario.production-form-process-button-defaults
-        given: 一个包含开始节点和审批节点的表单流程草稿
-        when: 用户打开节点按钮配置
-        then: 开始节点展示保存和提交，审批节点展示审批和退回，且可继续调整显示状态
+        given: 读者查阅早期未包含转办的按钮默认值验收场景
+        when: 该场景被用于解释现行表单流程审批节点
+        then: 必须将其识别为遗漏转办的历史错误验收场景，不得据此排除现行转办标准动作
         evidenceIds: [evidence.production-form-process-buttons-events-v1]
-        evidenceRequirements: [节点按钮配置保存重读测试]
+        evidenceRequirements: [历史追溯保留, DEC-0055现行转办规则核对]
       - id: scenario.production-form-process-button-action-whitelist
-        given: 用户正在配置节点按钮动作
-        when: 用户尝试选择标准动作
-        then: 仅能选择 SAVE、SUBMIT、APPROVE、RETURN，转交、加签、拒绝、终止和撤回不可选
+        given: 读者查阅早期未包含 TRANSFER 的动作白名单验收场景
+        when: 该场景被用于判定现行产品范围
+        then: 必须将排除 TRANSFER 识别为已被纠正的历史澄清错误；加签、拒绝、终止和撤回仍保持原排除边界
         evidenceIds: [evidence.production-form-process-buttons-events-v1]
-        evidenceRequirements: [动作白名单校验测试]
+        evidenceRequirements: [历史追溯保留, DEC-0055现行转办规则核对]
       - id: scenario.production-form-process-button-event-persistence
         given: 节点存在一个标准按钮动作
         when: 用户配置 BEFORE 或 AFTER 事件并保存

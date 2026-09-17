@@ -203,6 +203,28 @@ class FormProcessControllerTest {
     }
 
     @Test
+    void allowsTransferButtonButRejectsConfigurableTransferOpinion() {
+        WorkflowDefinition definition = WorkflowDefinition.builder().id(11L).type("FORM_PROCESS").name("转办配置").build();
+        WorkflowDefinitionVersion draft = WorkflowDefinitionVersion.builder().id(21L).definitionId(11L)
+                .versionNumber(1).status("DRAFT").nodesJson("[]").edgesJson("[]").build();
+        when(definitionRepository.findById(11L)).thenReturn(Optional.of(definition));
+        when(versionRepository.findById(21L)).thenReturn(Optional.of(draft));
+        when(versionRepository.save(any(WorkflowDefinitionVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        var transfer = java.util.Map.<String, Object>of("id", "transfer", "label", "转办", "action", "TRANSFER", "visible", true);
+        var start = java.util.Map.of("id", "start", "data", java.util.Map.of("kind", "START"));
+        var approval = java.util.Map.of("id", "approval", "data", java.util.Map.of("kind", "APPROVAL", "config", java.util.Map.of("buttons", List.of(transfer))));
+        var end = java.util.Map.of("id", "end", "data", java.util.Map.of("kind", "END"));
+        var edges = List.of(java.util.Map.of("source", "start", "target", "approval"), java.util.Map.of("source", "approval", "target", "end"));
+        var payload = java.util.Map.<String, Object>of("nodes", List.of(start, approval, end), "edges", edges);
+        assertThat(controller.saveGraph(11L, 21L, payload).getData().getNodesJson()).contains("TRANSFER");
+
+        var invalidTransfer = new java.util.HashMap<String, Object>(transfer); invalidTransfer.put("requireOpinion", true);
+        var invalidApproval = java.util.Map.of("id", "approval", "data", java.util.Map.of("kind", "APPROVAL", "config", java.util.Map.of("buttons", List.of(invalidTransfer))));
+        var invalid = java.util.Map.<String, Object>of("nodes", List.of(start, invalidApproval, end), "edges", edges);
+        assertThatThrownBy(() -> controller.saveGraph(11L, 21L, invalid)).hasMessageContaining("转办原因");
+    }
+
+    @Test
     void allowsBuiltinFillSignFieldEventWhenSavingDraftGraph() {
         WorkflowDefinition definition = WorkflowDefinition.builder().id(11L).type("FORM_PROCESS").name("按钮事件").build();
         WorkflowDefinitionVersion draft = WorkflowDefinitionVersion.builder().id(21L).definitionId(11L)

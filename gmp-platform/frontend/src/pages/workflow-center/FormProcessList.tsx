@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AccountTreeOutlined,
@@ -9,6 +9,8 @@ import {
   Edit,
   ExpandMore,
   Search,
+  TuneRounded,
+  ViewColumnRounded,
 } from "@mui/icons-material";
 import {
   Accordion,
@@ -57,6 +59,12 @@ import type { PageResult } from "@/types/common";
 import { getAuditLogs, type AuditLogItem } from "@/api/audit";
 import StatusBadge from "@/components/StatusBadge";
 import TableStateCell from '@/components/TableStateCell';
+import ListColumnSettingsPopover, {
+  getCurrentUserPreferenceStorageKey,
+  loadListColumnSettings,
+  reorderListColumns,
+  type ListColumnSettings,
+} from '@/components/ListColumnSettingsPopover';
 
 type Process = {
   id: FormProcessId;
@@ -68,6 +76,26 @@ type Process = {
   draftVersionNumber?: number | null;
 };
 const ACTION_COLUMN_WIDTH = 160;
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
+const FORM_PROCESS_COLUMN_SETTINGS_VERSION = 1;
+const FORM_PROCESS_COLUMN_SETTINGS_PREFIX = 'form-process-list-columns:';
+const FORM_PROCESS_COLUMN_WIDTHS_PREFIX = 'form-process-list-column-widths:';
+
+type FormProcessColumnId = 'name' | 'code' | 'versionStatus' | 'description' | 'updatedAt';
+type FormProcessColumn = {
+  id: FormProcessColumnId;
+  label: string;
+  defaultWidth: number;
+  minWidth: number;
+};
+
+const FORM_PROCESS_COLUMNS: FormProcessColumn[] = [
+  { id: 'name', label: '流程名称', defaultWidth: 240, minWidth: 180 },
+  { id: 'code', label: '编码', defaultWidth: 160, minWidth: 120 },
+  { id: 'versionStatus', label: '版本状态', defaultWidth: 180, minWidth: 140 },
+  { id: 'description', label: '说明', defaultWidth: 260, minWidth: 160 },
+  { id: 'updatedAt', label: '更新时间', defaultWidth: 170, minWidth: 150 },
+];
 const cellSx = { height: 40, py: 0.5, borderBottom: "1px solid #ebeef5" };
 const tableRowSx = {
   "& > .MuiTableCell-root": {
@@ -84,6 +112,15 @@ const headSx = {
   py: 0,
   borderBottom: "1px solid #e4e7ed",
   whiteSpace: "nowrap",
+};
+const toolbarIconSx = {
+  width: 36,
+  height: 36,
+  border: '1px solid #e4e7ed',
+  borderRadius: 1,
+  color: '#606266',
+  bgcolor: '#fff',
+  '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' },
 };
 const operationColumnSx = (layer: "head" | "body") => ({
   position: "sticky" as const,
@@ -756,6 +793,33 @@ export default function FormProcessList() {
   const client = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(
+    PAGE_SIZE_OPTIONS[0],
+  );
+  const columnSettingsStorageKey = useMemo(
+    () => getCurrentUserPreferenceStorageKey(FORM_PROCESS_COLUMN_SETTINGS_PREFIX),
+    [],
+  );
+  const columnWidthsStorageKey = useMemo(
+    () => getCurrentUserPreferenceStorageKey(FORM_PROCESS_COLUMN_WIDTHS_PREFIX),
+    [],
+  );
+  const [columnSettings, setColumnSettings] = useState<ListColumnSettings<FormProcessColumnId>>(
+    () => loadListColumnSettings(
+      getCurrentUserPreferenceStorageKey(FORM_PROCESS_COLUMN_SETTINGS_PREFIX),
+      FORM_PROCESS_COLUMNS,
+      FORM_PROCESS_COLUMN_SETTINGS_VERSION,
+    ),
+  );
+  const [columnWidths, setColumnWidths] = useState<Partial<Record<FormProcessColumnId, number>>>(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(getCurrentUserPreferenceStorageKey(FORM_PROCESS_COLUMN_WIDTHS_PREFIX)) || '{}');
+      return stored && typeof stored === 'object' ? stored as Partial<Record<FormProcessColumnId, number>> : {};
+    } catch {
+      return {};
+    }
+  });
+  const [columnAnchor, setColumnAnchor] = useState<HTMLElement | null>(null);
   const [keyword, setKeyword] = useState("");
   const [submitted, setSubmitted] = useState("");
   const [editing, setEditing] = useState<Process | null | undefined>(undefined);
@@ -764,11 +828,22 @@ export default function FormProcessList() {
   const [usageTarget, setUsageTarget] = useState<Process | null>(null);
   const [form, setForm] = useState({ name: "", code: "", description: "" });
   const query = useQuery({
-    queryKey: ["form-processes", page, submitted],
+    queryKey: ["form-processes", page, pageSize, submitted],
     queryFn: async () =>
-      (await listFormProcesses({ page, size: 20, keyword: submitted })).data
+      (await listFormProcesses({ page, size: pageSize, keyword: submitted })).data
         .data as PageResult<Process>,
+    refetchOnMount: 'always',
   });
+  useEffect(() => {
+    const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [page, query.data?.totalPages]);
+  useEffect(() => {
+    localStorage.setItem(columnSettingsStorageKey, JSON.stringify(columnSettings));
+  }, [columnSettings, columnSettingsStorageKey]);
+  useEffect(() => {
+    localStorage.setItem(columnWidthsStorageKey, JSON.stringify(columnWidths));
+  }, [columnWidths, columnWidthsStorageKey]);
   const save = useMutation({
     mutationFn: () =>
       editing ? updateFormProcess(editing.id, form) : createFormProcess(form),
@@ -796,6 +871,59 @@ export default function FormProcessList() {
       showMessage(e instanceof Error ? e.message : "删除失败", "error"),
   });
   const rows = query.data?.content ?? [];
+  const visibleColumns = useMemo(() => {
+    const columnsById = new Map(FORM_PROCESS_COLUMNS.map((column) => [column.id, column]));
+    return columnSettings.order
+      .filter((columnId) => !columnSettings.hidden.includes(columnId))
+      .map((columnId) => columnsById.get(columnId))
+      .filter((column): column is FormProcessColumn => Boolean(column));
+  }, [columnSettings]);
+  const getColumnWidth = (column: FormProcessColumn) => Math.max(
+    column.minWidth,
+    columnWidths[column.id] ?? column.defaultWidth,
+  );
+  const tableWidth = ACTION_COLUMN_WIDTH + visibleColumns.reduce(
+    (total, column) => total + getColumnWidth(column),
+    0,
+  );
+  const beginColumnResize = (event: ReactPointerEvent<HTMLDivElement>, column: FormProcessColumn) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const startX = event.clientX;
+    const startWidth = getColumnWidth(column);
+    const onMove = (moveEvent: PointerEvent) => {
+      setColumnWidths((current) => ({
+        ...current,
+        [column.id]: Math.max(column.minWidth, startWidth + moveEvent.clientX - startX),
+      }));
+    };
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+  };
+  const toggleColumn = (columnId: FormProcessColumnId) => {
+    setColumnSettings((current) => {
+      const isVisible = !current.hidden.includes(columnId);
+      if (isVisible && current.order.length - current.hidden.length <= 1) return current;
+      return {
+        ...current,
+        hidden: isVisible
+          ? [...current.hidden, columnId]
+          : current.hidden.filter((id) => id !== columnId),
+      };
+    });
+  };
+  const reorderColumn = (sourceId: FormProcessColumnId, targetId: FormProcessColumnId) => {
+    setColumnSettings((current) => reorderListColumns(
+      FORM_PROCESS_COLUMNS,
+      current,
+      sourceId,
+      targetId,
+    ));
+  };
   const submitSearch = () => {
     setPage(1);
     setSubmitted(keyword.trim());
@@ -883,27 +1011,43 @@ export default function FormProcessList() {
             px: 2,
             display: "flex",
             alignItems: "center",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
             borderBottom: "1px solid #e4e7ed",
           }}
         >
-          <Button variant="contained" startIcon={<Add />} onClick={openCreate}>
-            新建表单流程
-          </Button>
+          <Tooltip title="字段设置" arrow>
+            <IconButton
+              size="small"
+              aria-label="字段设置"
+              onClick={(event) => setColumnAnchor(event.currentTarget)}
+              sx={toolbarIconSx}
+            >
+              <Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                <ViewColumnRounded sx={{ fontSize: 21 }} />
+                <TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} />
+              </Box>
+            </IconButton>
+          </Tooltip>
+          <Button variant="contained" startIcon={<Add />} onClick={openCreate}>新建表单流程</Button>
         </Box>
         <TableContainer sx={{ flex: 1, overflow: "auto" }}>
           <Table
             stickyHeader
             size="small"
-            sx={{ minWidth: 820, tableLayout: "fixed" }}
+            sx={{ width: tableWidth, minWidth: tableWidth, tableLayout: "fixed" }}
           >
+            <colgroup>
+              {visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}
+              <col style={{ width: ACTION_COLUMN_WIDTH }} />
+            </colgroup>
             <TableHead>
               <TableRow sx={{ "& .MuiTableCell-root": headSx }}>
-                <TableCell sx={{ ...headSx, width: 240 }}>流程名称</TableCell>
-                <TableCell sx={{ ...headSx, width: 160 }}>编码</TableCell>
-                <TableCell sx={{ ...headSx, width: 180 }}>版本状态</TableCell>
-                <TableCell sx={{ ...headSx }}>说明</TableCell>
-                <TableCell sx={{ ...headSx, width: 170 }}>更新时间</TableCell>
+                {visibleColumns.map((column) => (
+                  <TableCell key={column.id} sx={{ ...headSx, width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, pr: 2, userSelect: 'none' }}>
+                    {column.label}
+                    <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 3, '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} />
+                  </TableCell>
+                ))}
                 <TableCell
                   sx={{ ...headSx, ...operationColumnSx("head") }}
                   align="center"
@@ -916,7 +1060,7 @@ export default function FormProcessList() {
               {query.isPending ? (
                 <TableRow>
                   <TableStateCell
-                    colSpan={6}
+                    colSpan={visibleColumns.length + 1}
                     align="center"
                     sx={{ ...cellSx, py: 5, color: "#909399" }}
                   >
@@ -926,7 +1070,7 @@ export default function FormProcessList() {
               ) : query.isError ? (
                 <TableRow>
                   <TableStateCell
-                    colSpan={6}
+                    colSpan={visibleColumns.length + 1}
                     align="center"
                     sx={{ ...cellSx, py: 5, color: "#c62828" }}
                   >
@@ -936,7 +1080,7 @@ export default function FormProcessList() {
               ) : rows.length === 0 ? (
                 <TableRow>
                   <TableStateCell
-                    colSpan={6}
+                    colSpan={visibleColumns.length + 1}
                     align="center"
                     sx={{ ...cellSx, py: 5, color: "#909399" }}
                   >
@@ -965,56 +1109,13 @@ export default function FormProcessList() {
                       },
                     }}
                   >
-                    <TableCell sx={cellSx}>
-                      <Typography noWrap sx={{ color: "#303133" }}>
-                        {row.name}
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        ...cellSx,
-                        fontFamily: "monospace",
-                        color: "#606266",
-                      }}
-                    >
-                      {row.code || "-"}
-                    </TableCell>
-                    <TableCell sx={cellSx}>
-                      <Stack
-                        direction="row"
-                        spacing={0.75}
-                        alignItems="center"
-                        sx={{ minWidth: 0, whiteSpace: "nowrap" }}
-                      >
-                        {row.currentVersionNumber ? (
-                          <StatusBadge
-                            label={`当前 V${row.currentVersionNumber}`}
-                            color="success"
-                            showDot={false}
-                          />
-                        ) : row.draftVersionNumber ? (
-                          <StatusBadge
-                            label={`草稿 V${row.draftVersionNumber}`}
-                            color="warning"
-                            showDot={false}
-                          />
-                        ) : (
-                          <StatusBadge
-                            label="未发布"
-                            color="default"
-                            showDot={false}
-                          />
-                        )}
-                      </Stack>
-                    </TableCell>
-                    <TableCell sx={cellSx}>
-                      <Typography noWrap sx={{ color: "#606266" }}>
-                        {row.description || "-"}
-                      </Typography>
-                    </TableCell>
-                    <TableCell sx={{ ...cellSx, color: "#606266" }}>
-                      {formatDateTime(row.updatedAt)}
-                    </TableCell>
+                    {visibleColumns.map((column) => {
+                      if (column.id === 'name') return <TableCell key={column.id} sx={cellSx}><Typography noWrap sx={{ color: "#303133" }}>{row.name}</Typography></TableCell>;
+                      if (column.id === 'code') return <TableCell key={column.id} sx={{ ...cellSx, fontFamily: "monospace", color: "#606266" }}>{row.code || "-"}</TableCell>;
+                      if (column.id === 'versionStatus') return <TableCell key={column.id} sx={cellSx}><Stack direction="row" spacing={0.75} alignItems="center" sx={{ minWidth: 0, whiteSpace: "nowrap" }}>{row.currentVersionNumber ? <StatusBadge label={`当前 V${row.currentVersionNumber}`} color="success" showDot={false} /> : row.draftVersionNumber ? <StatusBadge label={`草稿 V${row.draftVersionNumber}`} color="warning" showDot={false} /> : <StatusBadge label="未发布" color="default" showDot={false} />}</Stack></TableCell>;
+                      if (column.id === 'description') return <TableCell key={column.id} sx={cellSx}><Typography noWrap sx={{ color: "#606266" }}>{row.description || "-"}</Typography></TableCell>;
+                      return <TableCell key={column.id} sx={{ ...cellSx, color: "#606266" }}>{formatDateTime(row.updatedAt)}</TableCell>;
+                    })}
                     <TableCell
                       sx={{ ...cellSx, ...operationColumnSx("body") }}
                       align="center"
@@ -1079,15 +1180,43 @@ export default function FormProcessList() {
           <Typography variant="body2" color="text.secondary">
             共 {query.data?.totalElements ?? 0} 条数据
           </Typography>
-          {query.data && query.data.totalPages > 1 ? (
+          <Stack direction="row" spacing={1.5} alignItems="center">
             <Pagination
               size="small"
-              count={query.data.totalPages}
-              page={page}
+              count={Math.max(query.data?.totalPages ?? 0, 1)}
+              page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))}
               onChange={(_, value) => setPage(value)}
             />
-          ) : null}
+            <TextField
+              select
+              size="small"
+              value={pageSize}
+              onChange={(event) => {
+                setPageSize(
+                  Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number],
+                );
+                setPage(1);
+              }}
+              SelectProps={{ native: true }}
+              sx={{ width: 112 }}
+              inputProps={{ "aria-label": "每页条数" }}
+            >
+              {PAGE_SIZE_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option} 条/页
+                </option>
+              ))}
+            </TextField>
+          </Stack>
         </Box>
+        <ListColumnSettingsPopover
+          anchorEl={columnAnchor}
+          columns={FORM_PROCESS_COLUMNS}
+          settings={columnSettings}
+          onClose={() => setColumnAnchor(null)}
+          onToggle={toggleColumn}
+          onReorder={reorderColumn}
+        />
       </Paper>
       <AppDialog
         open={editing !== undefined}

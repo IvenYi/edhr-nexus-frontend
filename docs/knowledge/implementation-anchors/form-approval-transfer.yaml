@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.23
+implementationAnchors:
+  - id: anchor.form-approval-transfer-configuration
+    targetId: rule.form-process.node-button-configuration-v1
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java, gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx]
+    apiReferences: ["POST /api/form-processes/{id}/versions/{versionId}/graph"]
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx, gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/FormProcessControllerTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-tests]
+    sourceRevision: working-tree
+    sourceLocator: 普通表单流程审批按钮TRANSFER白名单、原因固定及签名事件排除
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: anchor.form-approval-transfer-runtime
+    targetId: rule.form-approval-transfer
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java]
+    apiReferences: ["GET /api/v1/production/execution/{id}/transfer-targets", "POST /api/v1/production/execution/{id}/actions", "GET /api/v1/form-worklists/REVIEW_PENDING"]
+    databaseReferences: [production_execution.state_json, audit_event]
+    uiReferences: [gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-api, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests]
+    sourceRevision: working-tree
+    sourceLocator: transferAssignees运行投影、冻结候选校验、候选接口、表单审批待办转办入口及TRANSFER审计
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed

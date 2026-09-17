@@ -1,0 +1,82 @@
+knowledgeModelVersion: 0.3.23
+facts:
+  - id: fact.form-approval-transfer.current-node-approval
+    name: 当前表单节点是审批节点
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    aliases: [formProcess.currentNode.isApproval]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-approval-transfer-runtime]
+    sourceRevision: working-tree
+    sourceLocator: transferContext校验节点kind为APPROVAL
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.form-approval-transfer.current-actor-can-act
+    name: 当前用户具有表单审批节点处理权
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    aliases: [formProcess.currentActor.canAct]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-approval-transfer-runtime]
+    sourceRevision: working-tree
+    sourceLocator: canAct优先校验transferAssignees，否则校验开放范围或冻结approvers
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.form-approval-transfer.button-visible
+    name: 当前审批节点启用转办按钮
+    conceptId: concept.form-process-node-button-config
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    aliases: [formProcess.currentNode.transfer.visible]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-runtime]
+    sourceRevision: working-tree
+    sourceLocator: formControls过滤visible按钮且transferEnabled要求TRANSFER存在
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.form-approval-transfer.reason-present
+    name: 转办原因已填写
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    aliases: [formProcess.transfer.reasonPresent]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-approval-transfer-runtime]
+    sourceRevision: working-tree
+    sourceLocator: transferForm拒绝空白原因并限制500字符
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.form-approval-transfer.target-authorized
+    name: 转办目标属于当前审批节点授权范围
+    conceptId: concept.form-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    aliases: [formProcess.transfer.targetWithinFrozenCandidates]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-tests]
+    sourceRevision: working-tree
+    sourceLocator: requireTransferTarget校验非本人、有效未锁定用户及restrictedApprovers冻结范围
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed

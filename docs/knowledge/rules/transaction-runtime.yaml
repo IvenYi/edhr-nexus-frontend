@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.23
 rules:
   - id: rule.transaction.published-version-only
     name: 事务运行只读取已发布版本
@@ -976,7 +976,7 @@ rules:
     evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
   - id: rule.form-process.node-button-configuration-v1
     name: 表单流程节点按钮配置白名单
-    status: specified
+    status: implemented
     visibility: internal
     trigger: form-process.node-button.configure
     scope: form-process-configuration
@@ -987,18 +987,19 @@ rules:
           value: [START, APPROVAL]
         - fact: formProcessNode.button.action
           operator: in
-          value: [SAVE, SUBMIT, APPROVE, RETURN]
+          value: [SAVE, SUBMIT, APPROVE, RETURN, TRANSFER]
     result:
       type: persist-flow-configuration
       target: formProcessNode.buttons
       persists: [visible, label, action, parameters]
       electronicSignatureActions: [SAVE, SUBMIT, APPROVE, RETURN]
       signatureEvent: {builtin: FILL_SIGN_FIELD, event: BEFORE, signatureMethod: ACCOUNT_PASSWORD}
-      forbiddenActions: [TRANSFER, ADD_SIGN, REJECT, DENY, DISAPPROVE, TERMINATE, WITHDRAW]
+      transfer: {nodeKind: APPROVAL, reasonRequired: true, opinionRequiredConfigurable: false, electronicSignatureConfigurable: false}
+      forbiddenActions: [ADD_SIGN, REJECT, DENY, DISAPPROVE, TERMINATE, WITHDRAW]
       approvalOpinionRequiredConfigurable: true
       publishedVersionEditable: false
-    explanation: 第一版允许开始节点和审批节点保存按钮的显示状态、显示名称和标准动作；电子签名通过独立签署事件关联保存、提交、审批或退回，事件固定为执行前账户密码签署，并可选择是否填充签名字段。产品层不提供启用勾选，不需要事件时直接删除。该规则只约束配置层持久化，不表示运行时动作处理器或电子签名已经实现。
-    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+    explanation: 开始节点支持保存和提交，审批节点支持审批、退回和转办；按钮可保存显隐、显示名称和样式。电子签名事件仅关联保存、提交、审批或退回；转办原因由系统固定必填，不配置审批意见必填或签名字段事件。配置持久化已经实现；各动作的运行时成熟度仍以对应规则和证据为准。
+    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.form-approval-transfer-user-confirmed, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-tests]
   - id: rule.form-process.node-button-event-configuration-v1
     name: 表单流程节点按钮事件配置
     status: deprecated

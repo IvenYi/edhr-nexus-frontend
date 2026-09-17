@@ -44,7 +44,9 @@ export interface ExecutionCommand {
   instanceId?: string; acknowledgeIncomplete?: boolean;
   templateVersionId?: string; required?: boolean;
   values?: ExecutionValues; opinion?: string; account?: string; password?: string;
+  targetUserId?: string; reason?: string;
 }
+export interface ExecutionTransferTarget { id: string; name: string; username: string }
 export interface ExecutionTemplate { versionId: string; name: string; code: string; version: string; categoryName?: string }
 export type ExecutionEditors = Record<string, Record<string, { userId: string; name: string; avatarUrl?: string; sequences: number[] }>>;
 export const getExecutionTemplates = async (keyword: string): Promise<ExecutionTemplate[]> =>
@@ -58,6 +60,8 @@ export const getProductionExecution = async (id: string): Promise<ExecutionView>
 export const executeProduction = async (id: string, command: ExecutionCommand): Promise<ExecutionView> => (await client.post(`/production/execution/${id}/actions`, command)).data.data;
 export const getExecutionReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown> = {}): Promise<Array<{ id: string; name: string }>> =>
   (await client.post(`/production/execution/${id}/references`, { operationId, formId, fieldId, keyword, values })).data.data;
+export const getExecutionTransferTargets = async (id: string, operationId: string, formId: string, instanceId: string, keyword: string): Promise<ExecutionTransferTarget[]> =>
+  (await client.get(`/production/execution/${id}/transfer-targets`, { params: { operationId, formId, instanceId, keyword } })).data.data;
 export const uploadExecutionFile = async (id: string, file: File): Promise<{ fileId: string; originalName: string }> => {
   const body = new FormData(); body.append('file', file); body.append('targetType', 'PRODUCTION_EXECUTION'); body.append('targetId', id);
   return (await client.post('/files/upload', body, { headers: { 'Content-Type': 'multipart/form-data' } })).data.data;

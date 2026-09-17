@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom';
 import { Alert, Box, Button, Chip, CircularProgress, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
@@ -28,6 +29,7 @@ const panel = { bgcolor: 'background.paper', border: '1px solid', borderColor: '
 export default function ProductionExecutionPage() {
   const navigation = useContext(UNSAFE_NavigationContext);
   const location = useLocation();
+  const queryClient = useQueryClient();
   const [barcode, setBarcode] = useState('');
   const [view, setView] = useState<ExecutionView | null>(null);
   const [operationId, setOperationId] = useState('');
@@ -258,6 +260,11 @@ export default function ProductionExecutionPage() {
     try {
       const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId });
       receive(next); setSigning(null); setPassword(''); setOpinion('');
+      void Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['form-management-global-list'] }),
+        queryClient.invalidateQueries({ queryKey: ['form-filling-worklist'] }),
+        queryClient.invalidateQueries({ queryKey: ['form-review-worklist'] }),
+      ]);
       if (command.action === 'ATTACH_FORM' && next.attachedFormId) chooseForm(next.attachedFormId, next);
       if (command.action === 'ADD_FORM_COPY' && command.formId) {
         const ids = next.availability[operationId]?.formCopies?.[command.formId]?.instanceIds;

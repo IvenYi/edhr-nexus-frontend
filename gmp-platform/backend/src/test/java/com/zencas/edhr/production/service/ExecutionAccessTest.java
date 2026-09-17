@@ -19,6 +19,7 @@ import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.time.LocalDateTime;
 import java.util.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -60,6 +61,28 @@ class ExecutionAccessTest {
         assertThat(access.canAct(mapper.createObjectNode(), node, state, "2")).isFalse();
         ObjectNode unresolved = mapper.createObjectNode(); access.captureApprovers(node, unresolved);
         assertThat(access.canAct(mapper.createObjectNode(), node, unresolved, "1")).isFalse();
+    }
+
+    @Test void transferKeepsTheFrozenApprovalBoundaryAndOnlyAssigneeCanAct() throws Exception {
+        var node = mapper.readTree("""
+            {"id":"a","data":{"kind":"APPROVAL","config":{}}}
+            """);
+        ObjectNode state = mapper.createObjectNode();
+        state.putObject("restrictedApprovers").put("a", true);
+        state.putObject("approvers").putArray("a").add("1").add("2").add("4").add("5");
+        state.putObject("transferAssignees").put("a", "2");
+        when(users.findById(2L)).thenReturn(Optional.of(UserAccount.builder().id(2L).username("reviewer2").displayName("复核员2").status("ACTIVE").build()));
+        when(users.findById(3L)).thenReturn(Optional.of(UserAccount.builder().id(3L).username("reviewer3").displayName("复核员3").status("ACTIVE").build()));
+        when(users.findById(4L)).thenReturn(Optional.of(UserAccount.builder().id(4L).username("inactive").displayName("已停用").status("INACTIVE").build()));
+        when(users.findById(5L)).thenReturn(Optional.of(UserAccount.builder().id(5L).username("locked").displayName("已锁定").status("ACTIVE").lockedUntil(LocalDateTime.now().plusHours(1)).build()));
+
+        assertThat(access.canAct(mapper.createObjectNode(), node, state, "1")).isFalse();
+        assertThat(access.canAct(mapper.createObjectNode(), node, state, "2")).isTrue();
+        assertThat(access.requireTransferTarget(node, state, "1", "2").getDisplayName()).isEqualTo("复核员2");
+        assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "1")).hasMessageContaining("当前处理人");
+        assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "3")).hasMessageContaining("授权范围");
+        assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "4")).hasMessageContaining("停用");
+        assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "5")).hasMessageContaining("锁定");
     }
 
     @Test void stableFieldOverridesAndReadOnlyConflictWin() throws Exception {

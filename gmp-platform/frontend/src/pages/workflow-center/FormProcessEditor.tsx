@@ -552,11 +552,12 @@ export default function FormProcessEditor() {
     ) {
       initialVersionAttempted.current = true;
       createFormProcessVersion(processId)
-        .then(() =>
+        .then(() => Promise.all([
           queryClient.invalidateQueries({
             queryKey: ["form-process-versions", processId],
           }),
-        )
+          queryClient.invalidateQueries({ queryKey: ["form-processes"] }),
+        ]))
         .catch(() => showMessage("初始化草稿失败", "error"));
     }
   }, [versions.isSuccess, versions.data, processId, queryClient, showMessage]);
@@ -1010,6 +1011,7 @@ export default function FormProcessEditor() {
       queryClient.invalidateQueries({
         queryKey: ["form-process-versions", processId],
       });
+      queryClient.invalidateQueries({ queryKey: ["form-processes"] });
       showMessage("草稿已保存");
     },
     onError: (error) =>
@@ -1032,6 +1034,7 @@ export default function FormProcessEditor() {
       queryClient.invalidateQueries({
         queryKey: ["form-process-version", processId],
       });
+      queryClient.invalidateQueries({ queryKey: ["form-processes"] });
       showMessage("表单流程已发布");
     },
     onError: (error) =>

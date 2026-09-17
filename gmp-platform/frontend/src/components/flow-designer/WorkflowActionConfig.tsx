@@ -59,7 +59,7 @@ export const defaultWorkflowButtons = (
     : [
         { id: "approve", label: "审批", action: "APPROVE", visible: true, style: "PRIMARY" },
         { id: "return", label: "退回", action: "RETURN", visible: true, style: "DANGER" },
-        ...(options?.includeTransfer ? [{ id: "transfer", label: "转办", action: "TRANSFER" as WorkflowButtonAction, visible: true, style: "DEFAULT" as const }] : []),
+        ...(options?.includeTransfer !== false ? [{ id: "transfer", label: "转办", action: "TRANSFER" as WorkflowButtonAction, visible: true, style: "DEFAULT" as const }] : []),
       ];
 
 export function WorkflowActionConfig({
@@ -85,9 +85,13 @@ export function WorkflowActionConfig({
 }) {
   const recordControl = profile === "RECORD_CONTROL";
   const availableActions: WorkflowButtonAction[] =
-    kind === "START" ? ["SAVE", "SUBMIT"] : recordControl ? ["APPROVE", "RETURN", "TRANSFER"] : ["APPROVE", "RETURN"];
-  const currentButtons = buttons?.length ? buttons : defaultWorkflowButtons(kind, { includeTransfer: recordControl });
+    kind === "START" ? ["SAVE", "SUBMIT"] : ["APPROVE", "RETURN", "TRANSFER"];
+  const configuredButtons = buttons?.length ? buttons : defaultWorkflowButtons(kind);
+  const currentButtons = editable && kind === "APPROVAL" && !configuredButtons.some((button) => button.action === "TRANSFER")
+    ? [...configuredButtons, { id: "transfer", label: "转办", action: "TRANSFER" as const, visible: true, style: "DEFAULT" as const }]
+    : configuredButtons;
   const currentEvents = events ?? [];
+  const signableActions = availableActions.filter((action) => action !== "TRANSFER");
   const update = (
     nextButtons: WorkflowButtonConfig[],
     nextEvents = currentEvents,
@@ -107,7 +111,7 @@ export function WorkflowActionConfig({
         <Typography variant="caption" color="text.secondary">
           {recordControl
             ? "审批动作及显隐由系统固定；可配置显示名称、按钮样式和电子签名，审批与退回可设置意见必填。"
-            : "设置用户在此节点可以看到和执行的操作。"}
+            : kind === "APPROVAL" ? "配置审批、退回和转办动作；转办始终要求填写原因，并受当前节点审批主体范围约束。" : "设置用户在此节点可以看到和执行的操作。"}
         </Typography>
       </Stack>
 
@@ -127,7 +131,7 @@ export function WorkflowActionConfig({
       <Box sx={{ pt: 2 }}>
         <Typography variant="body2" fontWeight={700} sx={{ mb: 0.5 }}>按钮列表</Typography>
         <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap", display: "block", overflow: "hidden", textOverflow: "ellipsis" }}>
-          {recordControl ? "动作及可见性由系统固定；转办不配置意见必填。" : "只控制按钮是否显示，隐藏后仍可恢复。"}
+          {recordControl ? "动作及可见性由系统固定；转办不配置意见必填。" : "只控制按钮是否显示，隐藏后仍可恢复；转办原因由系统固定为必填。"}
         </Typography>
         <Stack sx={{ mt: 0.75, gap: 0.75 }}>
           {currentButtons.map((button, index) => {
@@ -187,7 +191,7 @@ export function WorkflowActionConfig({
             <Typography variant="body2" fontWeight={700}>电子签名</Typography>
             <Typography variant="caption" color="text.secondary" noWrap sx={{ display: "block", overflow: "hidden", textOverflow: "ellipsis" }}>{recordControl ? "为指定审批动作添加账户密码签署。" : "为按钮添加账户密码签署，可选填充签名字段。"}</Typography>
           </Box>
-          <Button size="small" variant="text" startIcon={<Add />} disabled={!editable} onClick={() => update(currentButtons, [...currentEvents, { id: `event-${Date.now()}`, event: "BEFORE", action: availableActions[0], builtin: "NONE", signatureMethod: "ACCOUNT_PASSWORD" }])}>添加签署</Button>
+          <Button size="small" variant="text" startIcon={<Add />} disabled={!editable} onClick={() => update(currentButtons, [...currentEvents, { id: `event-${Date.now()}`, event: "BEFORE", action: signableActions[0], builtin: "NONE", signatureMethod: "ACCOUNT_PASSWORD" }])}>添加签署</Button>
         </Stack>
         {currentEvents.length === 0 ? <Box sx={{ mt: 1, px: 1.25, py: 1, bgcolor: "#f7f9fc", borderRadius: 1 }}><Typography variant="caption" color="text.secondary">暂未配置事件</Typography></Box> : null}
         <Stack sx={{ mt: 0.75, gap: 0.75 }}>
@@ -200,7 +204,7 @@ export function WorkflowActionConfig({
                 <Tooltip title="删除事件"><span><IconButton size="small" aria-label="删除事件" color="error" disabled={!editable} onClick={() => update(currentButtons, currentEvents.filter((_, i) => i !== index))}><DeleteOutline fontSize="small" /></IconButton></span></Tooltip>
               </Stack>
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" }, gap: 0.75 }}>
-                <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-action-${item.id}`}>关联按钮</InputLabel><Select labelId={`event-action-${item.id}`} label="关联按钮" value={item.action} disabled={!editable} onChange={(event) => updateEvent({ action: event.target.value as WorkflowButtonAction })}>{availableActions.map((action) => <MenuItem key={action} value={action}>{actionLabels[action]}</MenuItem>)}</Select></FormControl>
+                <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-action-${item.id}`}>关联按钮</InputLabel><Select labelId={`event-action-${item.id}`} label="关联按钮" value={item.action} disabled={!editable} onChange={(event) => updateEvent({ action: event.target.value as WorkflowButtonAction })}>{signableActions.map((action) => <MenuItem key={action} value={action}>{actionLabels[action]}</MenuItem>)}</Select></FormControl>
                 <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-signature-${item.id}`}>签名方式</InputLabel><Select labelId={`event-signature-${item.id}`} label="签名方式" value={item.signatureMethod ?? "ACCOUNT_PASSWORD"} disabled={!editable} onChange={(event) => updateEvent({ signatureMethod: event.target.value as "ACCOUNT_PASSWORD" })}><MenuItem value="ACCOUNT_PASSWORD">账户密码</MenuItem></Select></FormControl>
               </Box>
               {!recordControl ? <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ mt: 0.5, minWidth: 0 }}>

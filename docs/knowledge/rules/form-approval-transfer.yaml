@@ -1,0 +1,25 @@
+knowledgeModelVersion: 0.3.23
+rules:
+  - id: rule.form-approval-transfer
+    name: 普通表单审批节点转办当前处理责任
+    status: implemented
+    visibility: internal
+    trigger: form-approval.transfer
+    scope: production-form-process-runtime
+    condition:
+      all:
+        - {fact: fact.form-approval-transfer.current-node-approval, operator: equals, value: true}
+        - {fact: fact.form-approval-transfer.current-actor-can-act, operator: equals, value: true}
+        - {fact: fact.form-approval-transfer.button-visible, operator: equals, value: true}
+        - {fact: fact.form-approval-transfer.reason-present, operator: equals, value: true}
+        - {fact: fact.form-approval-transfer.target-authorized, operator: equals, value: true}
+    result:
+      type: update-reference
+      target: formProcess.currentNode.transferAssignee
+      valueFrom: selectedTargetUser.id
+      preserves: [current-node, form-values, original-frozen-candidates, process-path, business-result]
+      projections: [remove-source-review-pending, add-target-review-pending]
+      structuredHistory: [source-actor, target-user, reason, form-copy, approval-node, occurred-at]
+      auditAction: TRANSFER
+    explanation: 普通表单流程转办只改变当前审批节点的处理责任，不产生审批结论。已配置审批主体时目标限于节点到达时冻结的候选范围；开放节点目标限于有效且未锁定用户；不得转给自己。原因固定必填，转办不推进节点、不修改表单数据，原冻结候选范围保留供后续再次转办，退回并重建流程时清除旧转办人。REVIEW_DONE仍只记录审批或退回结果。
+    evidenceIds: [evidence.form-approval-transfer-user-confirmed, evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-api, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests]

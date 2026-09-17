@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.23
 concepts:
   - id: concept.master-data-deletion-impact
     termId: term.master-data-deletion-impact
@@ -267,9 +267,9 @@ concepts:
   - id: concept.form-process-node-button-config
     termId: term.form-process-node-button-config
     kind: business-configuration
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.production-form-process-buttons-events-v3]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.production-form-process-buttons-events-v3, evidence.form-approval-transfer-configuration]
   - id: concept.form-process-button-electronic-signature
     termId: term.form-process-button-electronic-signature
     kind: business-configuration
@@ -279,9 +279,9 @@ concepts:
   - id: concept.form-process-standard-action
     termId: term.form-process-standard-action
     kind: business-concept
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.form-approval-transfer-runtime]
   - id: concept.form-process-node-event-config
     termId: term.form-process-node-event-config
     kind: business-configuration
@@ -869,16 +869,16 @@ relations:
     source: concept.form-process-template-version
     target: concept.form-process-node-button-config
     cardinality: one-to-zero-or-many
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.form-approval-transfer-configuration]
   - id: relation.form-process-node-button-uses-standard-action
     source: concept.form-process-node-button-config
     target: concept.form-process-standard-action
     cardinality: many-to-one
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-runtime]
   - id: relation.form-process-node-button-has-electronic-signature-requirement
     source: concept.form-process-node-button-config
     target: concept.form-process-button-electronic-signature

@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.23
 terms:
   - id: term.master-data-deletion-impact
     name: 主数据删除关联清单
@@ -130,7 +130,7 @@ terms:
     name: 转办
     definition: 当前审批任务处理人在授权候选范围内变更该任务处理人的标准动作；不改变当前节点、流程路径或业务结果。中文产品文案不得使用“普通转办”作为并列正式名称。
     aliases: [TRANSFER]
-    status: specified
+    status: implemented
     visibility: internal
   - id: term.workflow-reassignment-action
     name: 重新分配
@@ -314,7 +314,7 @@ terms:
     visibility: internal
   - id: term.form-process-standard-action
     name: 表单流程标准动作
-    definition: 表单流程节点按钮可引用的受控动作标识；第一版仅支持保存、提交、审批和退回，转交、加签、拒绝、终止、撤回不在开放范围内。
+    definition: 表单流程节点按钮可引用的受控动作标识；开始节点支持保存和提交，审批节点支持审批、退回和转办。转办原本就是审批节点应具备的标准动作；早期将其排除是已纠正的共同遗漏。加签、拒绝、终止和撤回仍不在开放范围内。
     aliases: [标准动作, 流程动作]
     status: specified
     visibility: internal

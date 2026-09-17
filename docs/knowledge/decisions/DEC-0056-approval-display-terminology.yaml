@@ -1,24 +1,24 @@
-knowledgeModelVersion: 0.3.20
+knowledgeModelVersion: 0.3.23
 decisions:
-  - id: DEC-0053
+  - id: DEC-0056
     title: 审批语义客户展示术语统一
     status: specified
     visibility: internal
     context: "provenance: user-confirmed；产品讨论确认审批决策语义的客户可见页面、菜单、任务和流程配置统一使用“审批”。流程中心原“审核流程模板”展示名改为四字“审批流程”，同时保留稳定技术标识和历史追溯。"
     decisionStatements:
-      - id: DEC-0053-01
+      - id: DEC-0056-01
         statement: "provenance: user-confirmed；表达审批决策动作时，流程中心、表单个人待办和后续 DHR 审批页面统一使用“审批”而不是“审核”；表单审核和 DHR 审核在该语义下分别展示为“表单审批”和“DHR 审批”。"
         status: specified
         visibility: internal
-      - id: DEC-0053-02
+      - id: DEC-0056-02
         statement: "provenance: user-confirmed；原“审核流程模板”菜单和页面展示名统一改为四字“审批流程”，初始化脚本同步使用该名称；“模板”仅在确实描述模板实体或版本时保留，不进入该菜单/页面名称。"
         status: specified
         visibility: internal
-      - id: DEC-0053-03
+      - id: DEC-0056-03
         statement: "provenance: scope-boundary；检查、评审、审计和 CAPA 的“纠正措施”等非审批语义保留原词；REVIEW、REVIEW_PENDING、IN_REVIEW、APPROVAL、APPROVE、路由、权限码、数据库值和 Java 标识不做破坏性重命名。"
         status: specified
         visibility: internal
-      - id: DEC-0053-04
+      - id: DEC-0056-04
         statement: "provenance: evidence-boundary；当前 DHR 审批运行时页面和任务没有实现证据，因此本决策只约束未来客户展示投影，不把 DHR 审批能力标记为已实现。"
         status: specified
         visibility: internal

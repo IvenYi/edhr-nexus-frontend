@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.23
+evidence:
+  - id: evidence.form-approval-transfer-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/form-approval-transfer-user-confirmed.md
+    description: user-confirmed；普通表单流程审批节点转办的配置、当前处理权、冻结候选边界、原因、待办投影和历史审计规则；同时记录2026-09-17对真实时间线的纠偏：转办是早期业务澄清与实现共同遗漏的既有预期能力，不是后续新增产品方向。
+    visibility: internal
+  - id: evidence.form-approval-transfer-configuration
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java
+    description: original-evidence；普通表单流程审批节点允许保存TRANSFER按钮，拒绝为转办配置审批意见必填；前端WorkflowActionConfig提供显示名称、样式和显隐配置，并排除转办的签名字段事件。
+    visibility: internal
+  - id: evidence.form-approval-transfer-runtime
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    description: original-evidence；生产表单流程在同一表单份审批状态中保存transferAssignees，转办不推进节点也不修改表单值，保留原approvers和restrictedApprovers冻结范围并写入结构化history；ExecutionAccess和ProductionExecutionService负责当前处理权、目标资格、原因与审计事务。
+    visibility: internal
+  - id: evidence.form-approval-transfer-api
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java
+    description: original-evidence；生产执行源提供与当前表单份审批节点绑定的候选人查询和TRANSFER动作入口，由服务端按当前处理权与冻结候选范围校验，客户端不能传入任意数据范围绕过授权。
+    visibility: internal
+  - id: evidence.form-approval-transfer-worklist-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx
+    description: original-evidence；表单审批待办操作栏仅在当前节点启用转办时展示入口，弹窗查询服务端候选人并强制目标和原因，成功后刷新待办；审批处理弹窗和填报列表不承载该入口。
+    visibility: internal
+  - id: evidence.form-approval-transfer-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；测试源码覆盖候选查询、转办修订、原待办移除、目标待办出现、原处理人审批被拒、目标审批成功及TRANSFER审计；ExecutionAccessTest、ProductionExecutionEngineTest和FormProcessControllerTest分别覆盖冻结边界、不推进不改值、原因必填和配置校验。测试源码不单独证明测试命令已经通过。
+    visibility: internal

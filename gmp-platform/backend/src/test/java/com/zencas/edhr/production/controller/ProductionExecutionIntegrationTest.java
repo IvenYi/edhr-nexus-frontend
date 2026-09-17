@@ -852,6 +852,80 @@ class ProductionExecutionIntegrationTest {
             .andExpect(jsonPath("$.data.totalElements").value(1));
     }
 
+    @Test void formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow() throws Exception {
+        seedSignedWork();
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'reviewer2','复核员2',?,'ACTIVE')", passwords.encode("test-secret"));
+        jdbc.update("UPDATE workflow_definition_version SET nodes_json=? WHERE id=8", """
+            [{"id":"s","data":{"kind":"START"}},
+             {"id":"review","data":{"kind":"APPROVAL","label":"现场复核","config":{"approverSubjects":[],"defaultPermission":"READ_ONLY","buttons":[
+               {"id":"approve","label":"通过","action":"APPROVE"},{"id":"return","label":"退回","action":"RETURN"},{"id":"transfer","label":"转办","action":"TRANSFER"}]}}},
+             {"id":"e","data":{"kind":"END"}}]
+            """);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "1"))
+            .andExpect(jsonPath("$.data.content[0].canTransfer").value(true))
+            .andExpect(jsonPath("$.data.content[0].transferLabel").value("转办"))
+            .andExpect(jsonPath("$.data.content[0].transferStyle").value("DEFAULT"));
+        mvc.perform(personal(get("/api/v1/production/execution/101/transfer-targets")
+                .param("operationId", "a").param("formId", "work-7-f").param("instanceId", "work-7-f"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").value("2")).andExpect(jsonPath("$.data[0].name").value("复核员2"));
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"TRANSFER\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"instanceId\":\"work-7-f\",\"targetUserId\":\"2\",\"reason\":\"交由当班复核员\"}"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.revision").value(3))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['work-7-f'].active[0]").value("review"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['work-7-f'].values.temperature").value(22));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "1")).andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "2")).andExpect(jsonPath("$.data.totalElements").value(1));
+        mvc.perform(personal(worklistDetail("REVIEW_PENDING", "work-7-f", "work-7-f"), "2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.transferFrom").value("测试用户"))
+            .andExpect(jsonPath("$.data.transferReason").value("交由当班复核员"))
+            .andExpect(jsonPath("$.data.transferredAt").isNotEmpty());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"APPROVE\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"), "1"))
+            .andExpect(status().isBadRequest());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"APPROVE\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"), "2"))
+            .andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT reason FROM audit_event WHERE function_name='TRANSFER'", String.class)).isEqualTo("交由当班复核员");
+    }
+
+    @Test void transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn() throws Exception {
+        seedSignedWork();
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'reviewer2','复核员2',?,'ACTIVE')", passwords.encode("test-secret"));
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(3,0,'reviewer3','复核员3',?,'ACTIVE')", passwords.encode("test-secret"));
+        jdbc.update("UPDATE workflow_definition_version SET nodes_json=?,edges_json=? WHERE id=8", """
+            [{"id":"s","data":{"kind":"START"}},
+             {"id":"review","data":{"kind":"APPROVAL","label":"初审","config":{"approverSubjects":[]}}},
+             {"id":"review2","data":{"kind":"APPROVAL","label":"复审","config":{"approverSubjects":[]}}},
+             {"id":"e","data":{"kind":"END"}}]
+            """, """
+            [{"source":"s","target":"review"},{"source":"review","target":"review2"},{"source":"review2","target":"e"}]
+            """);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"TRANSFER\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"targetUserId\":\"2\",\"reason\":\"初审转办\"}"), "1"))
+            .andExpect(status().isOk());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"APPROVE\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"), "2"))
+            .andExpect(status().isOk());
+        mvc.perform(personal(worklistDetail("REVIEW_PENDING", "work-7-f", "work-7-f"), "2"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.nodeId").value("review2"))
+            .andExpect(jsonPath("$.data.transferReason").isEmpty());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"TRANSFER\",\"revision\":4,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"targetUserId\":\"3\",\"reason\":\"复审第一次转办\"}"), "2"))
+            .andExpect(status().isOk());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"TRANSFER\",\"revision\":5,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"targetUserId\":\"1\",\"reason\":\"复审再次转办\"}"), "3"))
+            .andExpect(status().isOk());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"RETURN\",\"revision\":6,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"), "1"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['work-7-f'].transferAssignees").isEmpty());
+    }
+
     @Test void worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest() throws Exception {
         seedSignedWork();
         jdbc.update("UPDATE workflow_definition_version SET nodes_json=?,edges_json=? WHERE id=8", """

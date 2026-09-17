@@ -121,7 +121,7 @@ interface WorkTemplateColumn {
   configurable?: boolean;
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const COLUMN_STORAGE_KEY = "work-template-list-columns:v2";
 const ACTION_COLUMN_WIDTH = 128;
 const WORK_TEMPLATE_COLUMNS: WorkTemplateColumn[] = [
@@ -740,6 +740,9 @@ export default function WorkTemplateList() {
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(
+    PAGE_SIZE_OPTIONS[0],
+  );
   const [activeTab, setActiveTab] = useState<"definitions" | "rules">(
     () => readRecordLocation().type === 'workflow_binding_rule' ? 'rules' : 'definitions',
   );
@@ -771,16 +774,21 @@ export default function WorkTemplateList() {
   const [detailTarget, setDetailTarget] = useState<WorkTemplate | null>(null);
   const [form, setForm] = useState({ name: "", code: "", description: "" });
   const query = useQuery({
-    queryKey: ["work-templates", page, submittedKeyword],
+    queryKey: ["work-templates", page, pageSize, submittedKeyword],
     queryFn: async () =>
       (
         await listWorkTemplates({
           page,
-          size: PAGE_SIZE,
+          size: pageSize,
           keyword: submittedKeyword,
         })
       ).data.data as PageResult<WorkTemplate>,
+    refetchOnMount: 'always',
   });
+  useEffect(() => {
+    const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [page, query.data?.totalPages]);
   const applicabilityQuery = useQuery({
     queryKey: ["work-applicability-rules"],
     queryFn: async () =>
@@ -1333,14 +1341,34 @@ export default function WorkTemplateList() {
                 <Typography variant="body2" sx={{ color: "#909399" }}>
                   共 {query.data?.totalElements ?? 0} 条数据
                 </Typography>
-                {query.data && query.data.totalPages > 1 ? (
+                <Stack direction="row" spacing={1.5} alignItems="center">
                   <Pagination
                     size="small"
-                    count={query.data.totalPages}
-                    page={page}
+                    count={Math.max(query.data?.totalPages ?? 0, 1)}
+                    page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))}
                     onChange={(_, value) => setPage(value)}
                   />
-                ) : null}
+                  <TextField
+                    select
+                    size="small"
+                    value={pageSize}
+                    onChange={(event) => {
+                      setPageSize(
+                        Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number],
+                      );
+                      setPage(1);
+                    }}
+                    SelectProps={{ native: true }}
+                    sx={{ width: 112 }}
+                    inputProps={{ "aria-label": "每页条数" }}
+                  >
+                    {PAGE_SIZE_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option} 条/页
+                      </option>
+                    ))}
+                  </TextField>
+                </Stack>
               </Box>
             </Box>
           </>

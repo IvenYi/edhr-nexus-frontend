@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import com.zencas.edhr.identity.entity.UserAccount;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -187,6 +188,46 @@ class ProductionExecutionEngineTest {
         engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, "u", "valid", "1");
         engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");
+    }
+
+    @Test void transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason() throws Exception {
+        var snapshot = withForm(); var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+        form.set("flow", tree("""
+            {"nodes":[{"id":"s","data":{"kind":"START"}},
+              {"id":"a","data":{"kind":"APPROVAL","label":"质量复核","config":{"buttons":[
+                {"action":"APPROVE","label":"通过"},{"action":"RETURN","label":"退回"},{"action":"TRANSFER","label":"转办"}]}}},
+              {"id":"e","data":{"kind":"END"}}],"edges":[{"source":"s","target":"a"},{"source":"a","target":"e"}]}
+            """));
+        var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+        engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+        when(access.requireTransferTarget(any(), any(), eq("1"), eq("2"))).thenReturn(UserAccount.builder().id(2L).displayName("复核员2").build());
+
+        assertThatThrownBy(() -> engine.transferForm(snapshot, state, "a", "f", null, "2", " ", "1", "复核员1")).hasMessageContaining("转办原因");
+        assertThatThrownBy(() -> engine.transferForm(snapshot, state, "a", "f", null, "2", "x".repeat(501), "1", "复核员1")).hasMessageContaining("500");
+        engine.transferForm(snapshot, state, "a", "f", null, "2", "交由当班复核员", "1", "复核员1");
+
+        JsonNode formState = state.path("operations").path("a").path("forms").path("f");
+        assertThat(formState.path("active").get(0).asText()).isEqualTo("a");
+        assertThat(formState.path("values").path("temperature").asInt()).isEqualTo(25);
+        assertThat(formState.path("transferAssignees").path("a").asText()).isEqualTo("2");
+        assertThat(state.path("history").get(state.path("history").size() - 1).path("actionCode").asText()).isEqualTo("TRANSFER");
+    }
+
+    @Test void explicitLegacyOrHiddenButtonsDoNotEnableTransfer() throws Exception {
+        for (String buttons : List.of(
+            "[{\"action\":\"APPROVE\",\"label\":\"通过\"},{\"action\":\"RETURN\",\"label\":\"退回\"}]",
+            "[{\"action\":\"APPROVE\",\"label\":\"通过\"},{\"action\":\"RETURN\",\"label\":\"退回\"},{\"action\":\"TRANSFER\",\"label\":\"转办\",\"visible\":false}]")) {
+            var snapshot = withForm(); var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+            form.set("flow", tree("""
+                {"nodes":[{"id":"s","data":{"kind":"START"}},
+                  {"id":"a","data":{"kind":"APPROVAL","config":{"buttons":%s}}},
+                  {"id":"e","data":{"kind":"END"}}],"edges":[{"source":"s","target":"a"},{"source":"a","target":"e"}]}
+                """.formatted(buttons)));
+            var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+            engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+            assertThatThrownBy(() -> engine.transferForm(snapshot, state, "a", "f", null, "2", "交接", "1", "复核员1"))
+                .hasMessageContaining("未启用转办");
+        }
     }
 
     private ObjectNode snapshot() throws Exception {

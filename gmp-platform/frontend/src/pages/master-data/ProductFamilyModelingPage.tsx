@@ -80,7 +80,7 @@ import ProductProcessVersionEditorDialog, {
   type ProductProcessVersionDialogMode,
 } from "./components/ProductProcessVersionEditorDialog";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const COLUMN_STORAGE_KEY = "product-family-modeling-parent-columns:v1";
 const ACTION_COLUMN_WIDTH = 160;
 
@@ -319,6 +319,9 @@ export default function ProductFamilyModelingPage() {
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(
+    PAGE_SIZE_OPTIONS[0],
+  );
   const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
   const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
   const [expandedIds, setExpandedIds] = useState<string[]>(() => [readRecordLocation().id].filter(Boolean));
@@ -357,16 +360,20 @@ export default function ProductFamilyModelingPage() {
   );
 
   const listQuery = useQuery({
-    queryKey: ["product-family-modeling", page, submittedKeyword],
+    queryKey: ["product-family-modeling", page, pageSize, submittedKeyword],
     queryFn: async () =>
       (
         await getProductFamilies({
           page,
-          size: PAGE_SIZE,
+          size: pageSize,
           keyword: submittedKeyword,
         })
       ).data.data,
   });
+  useEffect(() => {
+    const lastPage = Math.max(listQuery.data?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [listQuery.data?.totalPages, page]);
   const rows = listQuery.data?.content ?? [];
   useRecordLocationAction((location) => {
     if (location.type !== 'product_family_member') return false;
@@ -755,24 +762,50 @@ export default function ProductFamilyModelingPage() {
             </TableBody>
           </Table>
         </TableContainer>
-        {listQuery.data && listQuery.data.totalPages > 1 ? (
-          <Box
-            sx={{
-              px: 2,
-              py: 1,
-              borderTop: "1px solid #ebeef5",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
+        <Box
+          sx={{
+            flex: "0 0 auto",
+            minHeight: 56,
+            px: 2,
+            borderTop: "1px solid #ebeef5",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Typography variant="body2" sx={{ color: "#606266" }}>
+            共 {listQuery.data?.totalElements ?? 0} 条数据
+          </Typography>
+          <Stack direction="row" spacing={1.5} alignItems="center">
             <Pagination
               size="small"
-              count={listQuery.data.totalPages}
-              page={page}
+              count={Math.max(listQuery.data?.totalPages ?? 0, 1)}
+              page={Math.min(page, Math.max(listQuery.data?.totalPages ?? 0, 1))}
               onChange={(_, value) => setPage(value)}
             />
-          </Box>
-        ) : null}
+            <TextField
+              select
+              size="small"
+              value={pageSize}
+              onChange={(event) => {
+                setPageSize(
+                  Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number],
+                );
+                setPage(1);
+              }}
+              SelectProps={{ native: true }}
+              sx={{ width: 112 }}
+              inputProps={{ "aria-label": "每页条数" }}
+            >
+              {PAGE_SIZE_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option} 条/页
+                </option>
+              ))}
+            </TextField>
+          </Stack>
+        </Box>
       </Box>
 
       <Popover

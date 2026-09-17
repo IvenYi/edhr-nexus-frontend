@@ -1,6 +1,6 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { type MouseEvent, type ReactNode, useMemo, useState } from 'react';
+import { type MouseEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
@@ -74,6 +74,7 @@ const headerCellSx = {
   color: '#606266',
   fontWeight: 600,
   bgcolor: '#f5f7fa',
+  whiteSpace: 'nowrap',
   borderBottom: '1px solid #e4e7ed',
 };
 const bodyCellSx = {
@@ -242,6 +243,9 @@ export default function WorkshopManagementPage() {
   });
 
   const totalPages = Math.max(workshopsQuery.data?.totalPages ?? 0, 1);
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
   const canSave = form.code.trim().length > 0 && form.name.trim().length > 0 && !saveMutation.isPending;
   const auditEvents = useMemo(() => auditQuery.data ?? [], [auditQuery.data]);
 
@@ -316,7 +320,7 @@ export default function WorkshopManagementPage() {
             <col style={{ width: 104 }} />
           </colgroup>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>
               <TableCell sx={headerCellSx}>车间编码</TableCell>
               <TableCell sx={headerCellSx}>车间名称</TableCell>
               <TableCell sx={headerCellSx}>描述</TableCell>
@@ -349,8 +353,8 @@ export default function WorkshopManagementPage() {
         </Table>
       </TableContainer>
 
-      <Box sx={{ minHeight: 52, px: 2, borderTop: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexShrink: 0 }}>
-        <Typography sx={{ color: '#909399' }}>共 {workshopsQuery.data?.totalElements ?? 0} 条数据</Typography>
+      <Box sx={{ minHeight: 56, px: 2, borderTop: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexShrink: 0 }}>
+        <Typography variant="body2" sx={{ color: '#606266' }}>共 {workshopsQuery.data?.totalElements ?? 0} 条数据</Typography>
         <Stack direction="row" spacing={1.5} alignItems="center">
           <Pagination page={page} count={totalPages} color="primary" size="small" onChange={(_, value) => setPage(value)} />
           <FormControl size="small" sx={{ minWidth: 116 }}>

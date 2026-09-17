@@ -1,0 +1,43 @@
+knowledgeModelVersion: 0.3.23
+decisions:
+  - id: DEC-0055
+    title: 普通表单流程审批节点转办遗漏修复
+    status: implemented
+    visibility: internal
+    context: user-confirmed-provenance-correction；普通表单流程审批转办本来就是审批节点应具备的标准动作。DEC-0024-01和DEC-0024-03在早期业务澄清和实现中共同遗漏了该能力，不代表当时决定不做、后续才新增产品方向。本决策记录的是对遗漏的业务知识补录和运行缺口修复：在既有生产表单状态机和个人审批待办投影中落实转办，不建立第二套流程引擎、任务表或审计日志。2026-09-17的用户确认是对真实历史的当时纠偏，不回写为早期已准确形成的决策记录。
+    decisionStatements:
+      - id: DEC-0055-01
+        statement: 普通表单流程审批节点可配置TRANSFER按钮的显示名称、样式和显隐；转办原因由系统固定必填，不提供审批意见必填配置，也不参与FILL_SIGN_FIELD电子签名事件配置。填报节点不提供转办。
+        status: implemented
+        visibility: internal
+      - id: DEC-0055-02
+        statement: 只有当前具有审批处理权的用户可以转办。已配置审批主体时目标限于节点到达时冻结的候选范围；未配置审批主体时目标限于当前有效且未锁定用户；不得转办给自己。原冻结候选范围保留，受让人再次转办仍受同一范围约束。
+        status: implemented
+        visibility: internal
+      - id: DEC-0055-03
+        statement: 转办只改变当前审批节点的处理责任，不推进节点、不修改表单数据、不产生审批结果。原用户的REVIEW_PENDING待办移除，目标用户出现同一表单份和节点的待办；REVIEW_DONE继续只收录APPROVE和RETURN。
+        status: implemented
+        visibility: internal
+      - id: DEC-0055-04
+        statement: 转办在原生产执行事务中写入结构化历史和不可变审计，至少记录转出人、目标人、原因、表单份、审批节点和时间；退回并重新初始化表单流程时清除旧转办人投影，不回写或改写已发布流程定义。
+        status: implemented
+        visibility: internal
+      - id: DEC-0055-05
+        statement: provenance-correction；普通表单审批转办是早期表单流程审批节点应具备的标准动作。DEC-0024-01和DEC-0024-03的排除表述属于已纠正的共同遗漏，不得用于推导“曾明确不做、后来新增”的产品时间线；0.3.22的知识与实现增量属于遗漏修复。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.form-approval-transfer-user-confirmed, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-api, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests]
+    acceptanceScenarios:
+      - id: scenario.form-approval-transfer-current-task
+        given: 表单到达已启用转办的审批节点，当前用户具有处理权且目标用户符合节点授权范围
+        when: 当前用户在表单审批待办选择目标并填写原因后确认转办
+        then: 表单数据和当前节点保持不变，原用户待办消失、目标用户待办出现，只有目标用户可以继续审批，历史和审计保存完整转办证据
+        evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests]
+        evidenceRequirements: [配置校验测试, 冻结候选权限测试, HTTP集成测试, 审计回归]
+      - id: scenario.form-transfer-provenance-correction
+        given: 读者查询普通表单审批转办为何在0.3.22进入知识模型并完成实现
+        when: 读取DEC-0024、DEC-0055、知识README与用户确认证据
+        then: 得到“既有预期能力在早期业务澄清和实现中被遗漏，后续补录并修复”的唯一现行解释；历史错误仍可追溯且明确不进入现行投影
+        evidenceIds: [evidence.form-approval-transfer-user-confirmed]
+        evidenceRequirements: [BusinessKnowledgeModelTest, 关键表述全文检索, 引用与状态校验]

@@ -51,6 +51,7 @@ const REVIEW_TEMPLATE_COLUMN_SETTINGS_VERSION = 1;
 const REVIEW_TEMPLATE_COLUMN_SETTINGS_STORAGE_PREFIX = 'review-template-list-column-settings:';
 const REVIEW_TEMPLATE_COLUMN_WIDTH_STORAGE_PREFIX = 'review-template-list-column-widths:';
 const REVIEW_TEMPLATE_ACTION_COLUMN_WIDTH = 128;
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 const REVIEW_TEMPLATE_COLUMNS: TemplateColumn[] = [
   { id: 'name', label: '模板名称', defaultWidth: 260, minWidth: 160 },
   { id: 'code', label: '编码', defaultWidth: 180, minWidth: 120 },
@@ -182,7 +183,7 @@ export default function ReviewTemplateList() {
   const columnDragSourceRef = useRef<ConfigurableTemplateColumnId | null>(null);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const [category, setCategory] = useState<Category>('CHANGE');
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(PAGE_SIZE_OPTIONS[0]);
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState('');
   const [submittedKeyword, setSubmittedKeyword] = useState('');
@@ -202,7 +203,12 @@ export default function ReviewTemplateList() {
     queryKey: ['review-templates', category, page, pageSize, submittedKeyword],
     queryFn: async () => (await listTemplates({ page, size: pageSize, businessType: category, keyword: submittedKeyword })).data.data as PageResult<Template>,
     enabled: canAccess,
+    refetchOnMount: 'always',
   });
+  useEffect(() => {
+    const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [page, query.data?.totalPages]);
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(columnSettings), [columnSettings]);
   const visibleColumns = useMemo(() => getVisibleColumns(columnSettings), [columnSettings]);
   const visibleConfigurableColumnCount = columnSettings.order.length - columnSettings.hidden.length;
@@ -422,8 +428,8 @@ export default function ReviewTemplateList() {
           <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
             <Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography>
             <Stack direction="row" spacing={1.5} alignItems="center">
-              {(query.data?.totalPages ?? 0) > 1 ? <Pagination size="small" count={query.data?.totalPages ?? 0} page={page} onChange={(_, value) => setPage(value)} /> : null}
-              <TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(1); }} SelectProps={{ native: true }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}><option value={10}>10 条/页</option><option value={20}>20 条/页</option><option value={50}>50 条/页</option></TextField>
+              <Pagination size="small" count={Math.max(query.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} />
+              <TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} SelectProps={{ native: true }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <option key={option} value={option}>{option} 条/页</option>)}</TextField>
             </Stack>
           </Box>
         </Box>
