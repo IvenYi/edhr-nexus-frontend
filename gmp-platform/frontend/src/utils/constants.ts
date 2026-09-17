@@ -164,23 +164,6 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
     ],
   },
   {
-    id: 'records',
-    label: '记录',
-    icon: 'Article',
-    menus: [
-      {
-        label: '变更管理',
-        icon: 'Article',
-        children: [
-          { label: '记录变更', path: '/records/change' },
-          { label: '我的变更', path: '/records/mine' },
-          { label: '变更审批', path: '/records/approvals' },
-          { label: '变更记录', path: '/records/history' },
-        ],
-      },
-    ],
-  },
-  {
     id: 'production',
     label: '生产',
     icon: 'PrecisionManufacturing',
@@ -216,6 +199,16 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
           { label: '表单列表', path: '/form-management/list' },
           { label: '表单填报', path: '/form-management/filling' },
           { label: '表单审核', path: '/form-management/review' },
+        ],
+      },
+      {
+        label: '变更管理',
+        icon: 'Article',
+        children: [
+          { label: '记录变更', path: '/records/change' },
+          { label: '我的变更', path: '/records/mine' },
+          { label: '变更审批', path: '/records/approvals' },
+          { label: '变更记录', path: '/records/history' },
         ],
       },
     ],

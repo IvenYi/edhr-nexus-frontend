@@ -79,33 +79,7 @@ const REQUIRED_PRODUCTION_CONFIGURATION_MENU: SidebarMenu = {
   ],
 };
 
-const REQUIRED_FORM_MANAGEMENT_MENU: SidebarMenu = {
-  label: '表单管理',
-  icon: 'FactCheck',
-  children: [
-    { label: '表单列表', path: '/form-management/list' },
-    { label: '表单填报', path: '/form-management/filling' },
-    { label: '表单审核', path: '/form-management/review' },
-  ],
-};
-
-const REQUIRED_RECORD_CHANGE_MENU: SidebarMenu = {
-  label: '变更管理',
-  icon: 'Article',
-  children: [
-    { label: '记录变更', path: '/records/change' },
-    { label: '我的变更', path: '/records/mine' },
-    { label: '变更审批', path: '/records/approvals' },
-    { label: '变更记录', path: '/records/history' },
-  ],
-};
-
-const REQUIRED_RECORDS_MODULE: SidebarModule = {
-  id: 'records',
-  label: '记录',
-  icon: 'FactCheck',
-  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_RECORD_CHANGE_MENU],
-};
+const REQUIRED_RECORDS_MODULE = SIDEBAR_MODULES.find((module) => module.id === 'records')!;
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
   label: '生产准备',
@@ -137,7 +111,7 @@ const PRODUCTION_MANAGED_PATHS = new Set([
 ]);
 const RECORDS_MANAGED_PATHS = new Set([
   ...PRODUCTION_MANAGED_PATHS,
-  ...(REQUIRED_RECORD_CHANGE_MENU.children?.map((child) => child.path) ?? []),
+  ...REQUIRED_RECORDS_MODULE.menus.flatMap((menu) => menu.children?.map((child) => child.path) ?? []),
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -241,12 +215,12 @@ export function normalizeManagedSidebarModules(modules: SidebarModule[]): Sideba
 
 export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
   const nextModules = cloneSidebarModules(removeRetiredSidebarModules(modules));
-  const menuIcons = new Map(nextModules.flatMap((module) => module.menus
+  const menuIcons = new Map(nextModules.filter((module) => module.id !== REQUIRED_RECORDS_MODULE.id).flatMap((module) => module.menus
     .filter((menu) => menu.icon)
     .map((menu) => [`${module.id}:${menu.path || menu.label}`, menu.icon] as const)));
   ensureRequiredProcessModeling(nextModules);
-  ensureRequiredRecordsModule(nextModules);
   ensureRequiredProductionMenus(nextModules);
+  ensureRequiredRecordsModule(nextModules);
   ensureRequiredSystemMenus(nextModules);
   for (const module of nextModules) {
     for (const menu of module.menus) {
@@ -365,28 +339,11 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
 }
 
 function ensureRequiredRecordsModule(modules: SidebarModule[]) {
-  for (const module of modules) {
-    module.menus = module.menus
-      .map((menu) => {
-        if (menu.children) {
-          const children = menu.children.filter((child) => !PRODUCTION_MANAGED_PATHS.has(child.path));
-          return children.length > 0 ? { ...menu, children } : null;
-        }
-        return menu.path && PRODUCTION_MANAGED_PATHS.has(menu.path) ? null : menu;
-      })
-      .filter((menu): menu is SidebarMenu => menu !== null);
+  for (let index = modules.length - 1; index >= 0; index -= 1) {
+    if (modules[index].id === REQUIRED_RECORDS_MODULE.id) modules.splice(index, 1);
   }
-
-  let recordsModule = modules.find((module) => module.id === REQUIRED_RECORDS_MODULE.id);
-  if (!recordsModule) {
-    modules.push(cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0]);
-    return;
-  }
-
-  recordsModule.label = REQUIRED_RECORDS_MODULE.label;
-  recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
-  recordsModule.menus = recordsModule.menus.filter((menu) => menu.label !== REQUIRED_FORM_MANAGEMENT_MENU.label && menu.label !== REQUIRED_RECORD_CHANGE_MENU.label);
-  recordsModule.menus.unshift(...cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus);
+  const productionIndex = modules.findIndex((module) => module.id === 'production');
+  modules.splice(productionIndex < 0 ? modules.length : productionIndex + 1, 0, cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0]);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
