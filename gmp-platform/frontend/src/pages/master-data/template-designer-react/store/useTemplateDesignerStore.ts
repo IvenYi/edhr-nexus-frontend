@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { syncReferenceConfig } from '@/components/form-renderer/referenceConfig';
 import type {
   CanvasCellBorder,
   CanvasMode,
@@ -2573,13 +2574,13 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
   }),
   updateNodeBindings: (nodeId, patch) => set((state) => pushDocumentHistory(state, {
     document: state.document
-      ? updateCanvasPage(state.document, (page) => ({
+      ? syncReferenceConfig(updateCanvasPage(state.document, (page) => ({
           ...page,
           nodes: mapNodes(page.nodes, nodeId, (node) => ({
             ...node,
             bindings: { ...node.bindings, ...patch } as CanvasNode['bindings'],
           })),
-        }))
+        })), nodeId)
       : state.document,
   })),
   updateSelectedSubTableRegion: (patch) => set((state) => {

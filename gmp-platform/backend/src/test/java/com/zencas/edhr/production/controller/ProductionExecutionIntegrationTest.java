@@ -143,6 +143,55 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
     }
 
+    @Test void referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave() throws Exception {
+        String model = """
+            {"fields":[{"id":"lookup","name":"账号","type":"text","status":"enabled"},
+              {"id":"ref","name":"人员","type":"reference","status":"enabled","typeConfig":{"sourceType":"dictionary"}},
+              {"id":"rows","name":"明细","type":"subTable","status":"enabled","typeConfig":{"columns":[
+                {"id":"account","type":"text","status":"enabled","typeConfig":{}},
+                {"id":"person","type":"reference","status":"enabled","typeConfig":{"sourceType":"user","referenceField":"username","referenceQueryConditions":[{"sourceField":"username","operator":"eq","targetFieldId":"account"}]}}
+              ]}}]}
+            """;
+        String canvas = """
+            {"pages":[{"nodes":[{"bindings":{"fieldId":"ref","widgetConfig":{"referenceSourceType":"user","referenceField":"username","referenceQueryConditions":[{"sourceField":"username","operator":"eq","targetFieldId":"lookup"}]}}}]}]}
+            """;
+        jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json=? WHERE id=5", model, canvas);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String before = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        Long revision = jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class);
+        Integer auditsBefore = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+        jdbc.update("UPDATE form_template_version SET canvas_design_json='{}' WHERE id=5");
+        mvc.perform(auth(post("/api/v1/production/execution/101/references").contentType("application/json").content("""
+            {"operationId":"a","formId":"form-51","fieldId":"ref","keyword":"operator","values":{"lookup":"operator"}}
+            """))).andExpect(status().isOk()).andExpect(jsonPath("$.data[0].name").value("operator"));
+        mvc.perform(auth(post("/api/v1/production/execution/101/references").contentType("application/json").content("""
+            {"operationId":"a","formId":"form-51","fieldId":"ref","values":{}}
+            """))).andExpect(status().isOk()).andExpect(jsonPath("$.data.length()").value(0));
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(auditsBefore);
+        Map<String, Object> values = new HashMap<>(Map.of("lookup", "operator", "ref", Map.of("id", "1", "name", "operator"), "rows", List.of(
+            Map.of("account", "operator", "person", Map.of("id", "1", "name", "operator")),
+            Map.of("account", "other", "person", Map.of("id", "1", "name", "operator")))));
+        action(101, "SAVE", revision, "a", Map.of("formId", "form-51", "values", values)).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(revision);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(auditsBefore);
+        values.put("rows", List.of(Map.of("account", "operator", "person", Map.of("id", "1", "name", "operator"))));
+        action(101, "SAVE", revision, "a", Map.of("formId", "form-51", "values", values)).andExpect(status().isOk());
+        action(101, "SAVE", revision + 1, "a", Map.of("formId", "form-51", "values", Map.of("lookup", "other"))).andExpect(status().isBadRequest());
+    }
+
+    @Test void previewReferencesRequireDesignPermissionAndDoNotWriteData() throws Exception {
+        String query = "{\"config\":{\"sourceType\":\"user\",\"referenceField\":\"username\"},\"keyword\":\"operator\"}";
+        String endpoint = "/api/v1/master-data/template-modeling/reference-options";
+        mvc.perform(auth(post(endpoint).contentType("application/json").content(query))).andExpect(status().isForbidden());
+        mvc.perform(post(endpoint).contentType("application/json").content(query).header("Authorization", "Bearer " + tokens.generateToken("1", "operator", "测试", 5, List.of("master-data.form-templates"))))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].name").value("operator"));
+        mvc.perform(post("/api/v1/production/execution/101/references").contentType("application/json").content("{\"operationId\":\"a\",\"formId\":\"5\",\"fieldId\":\"ref\"}")
+            .header("Authorization", "Bearer " + tokens.generateToken("1", "operator", "测试", 5, List.of("master-data.form-templates")))).andExpect(status().isForbidden());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM production_execution", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isZero();
+    }
+
     @Test void batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration() throws Exception {
         for (String barcode : List.of("B01", "SN01")) {
             mvc.perform(auth(get("/api/v1/production/execution/scan").param("barcode", barcode))).andExpect(status().isOk())
@@ -320,6 +369,25 @@ class ProductionExecutionIntegrationTest {
     }
 
     @Test void configuredWorkFormReplacesDuplicateEdhrSubmissionAndRequiresConfirmation() throws Exception {
+        seedConfirmationWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms.work-7-f.status").value("ACTIVE"));
+        action(101, "ADD_FORM_COPY", 1, "a", Map.of("formId", "work-7-f")).andExpect(status().isOk());
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "work-7-f", "instanceId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.works['7'].active[0]").value("f"));
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "work-7-f", "instanceId", "work-7-f:copy:2", "values", Map.of("temperature", 26))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.works['7'].active[0]").value("c"))
+            .andExpect(jsonPath("$.data.availability.a.formCopies.work-7-f.canAdd").value(false));
+        action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isBadRequest());
+        action(101, "CONFIRM", 4, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isOk());
+        action(101, "COMPLETE", 5, "a", Map.of()).andExpect(status().isOk());
+        var persisted = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        assertThat(persisted.path("history").findValuesAsText("actionCode")).filteredOn("AUTO_END_FORM"::equals).hasSize(1);
+        assertThat(jdbc.queryForObject("SELECT content_after FROM audit_event WHERE function_name='SUBMIT' AND entity_id='101' ORDER BY created_at DESC LIMIT 1", String.class))
+            .contains("ALL_COPIES_COMPLETED", "AUTO_END_FORM", "work-7-f:copy:2");
+    }
+
+    private void seedConfirmationWork() {
         jdbc.update("INSERT INTO workflow_definition VALUES(7,'default','WORK','装配作业')");
         jdbc.update("INSERT INTO workflow_definition_version VALUES(7,7,1,'PUBLISHED',true,?,?)", """
             [{"id":"s","data":{"kind":"START"}},
@@ -330,31 +398,60 @@ class ProductionExecutionIntegrationTest {
             [{"source":"s","target":"f"},{"source":"f","target":"c"},{"source":"c","target":"e"}]
             """);
         jdbc.update("INSERT INTO workflow_binding_rule VALUES(7,'default',7,'SCOPED',true,1,NULL,11)");
-        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.state.operations.a.forms.work-7-f.status").value("ACTIVE"));
-        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk());
-        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isBadRequest());
-        action(101, "CONFIRM", 2, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isBadRequest());
-        action(101, "END_FORM", 2, "a", Map.of("formId", "work-7-f")).andExpect(status().isOk());
-        action(101, "CONFIRM", 3, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isOk());
-        action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
+    }
+
+    @Test void legacyCompletedWorkProjectsNextNodeWithoutWritingAndSettlesOnTheNextAuditedAction() throws Exception {
+        seedConfirmationWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        var legacy = (com.fasterxml.jackson.databind.node.ObjectNode) mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        var form = legacy.withObject("/operations/a/forms/work-7-f");
+        form.put("status", "COMPLETED").put("lastSignatureId", "legacy-evidence");
+        form.withObject("/values").put("temperature", 25);
+        jdbc.update("UPDATE production_execution SET state_json=? WHERE object_id=101", legacy.toString());
+        int beforeAudit = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.works['7'].active[0]").value("c"));
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(legacy.toString());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(beforeAudit);
+        action(101, "CONFIRM", 1, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isOk());
+        var persisted = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        assertThat(persisted.at("/operations/a/forms/work-7-f")).isEqualTo(form);
+        assertThat(persisted.path("history").findValuesAsText("actionCode")).filteredOn("AUTO_END_FORM"::equals).hasSize(1);
+        assertThat(jdbc.queryForObject("SELECT content_before FROM audit_event WHERE function_name='CONFIRM'", String.class)).doesNotContain("AUTO_END_FORM");
+        assertThat(jdbc.queryForObject("SELECT content_after FROM audit_event WHERE function_name='CONFIRM'", String.class)).contains("AUTO_END_FORM", "legacy-evidence");
+    }
+
+    @Test void automaticWorkAdvanceRollsBackWithItsSubmissionWhenAuditFails() throws Exception {
+        seedConfirmationWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String before = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        doThrow(new IllegalStateException("audit unavailable")).when(audits).save(any(AuditEvent.class));
+        try {
+            action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().is5xxServerError());
+        } finally { reset(audits); }
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM form_instance_record", Integer.class)).isZero();
     }
 
     @Test void realApprovalIdentityAndPasswordSignaturePersistAtomically() throws Exception {
         seedSignedWork();
         action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
-        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.works['7'].active[0]").value("f"))
+            .andExpect(jsonPath("$.data.state.operations.a.formGroups.work-7-f.ended").value(false));
         String other = tokens.generateToken("2", "other", "其他人员", 5, List.of("production.execution"));
         mvc.perform(post("/api/v1/production/execution/101/actions").header("Authorization", "Bearer " + other).contentType("application/json")
             .content("{\"action\":\"APPROVE\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"))
             .andExpect(status().isBadRequest());
         action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "wrong")).andExpect(status().isBadRequest());
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class)).isZero();
-        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk());
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.works['7'].status").value("COMPLETED"))
+            .andExpect(jsonPath("$.data.state.operations.a.formGroups.work-7-f.endedReason").value("ALL_COPIES_COMPLETED"));
         assertThat(jdbc.queryForObject("SELECT signer_id FROM signature", String.class)).isEqualTo("1");
         assertThat(jdbc.queryForObject("SELECT snapshot_data FROM signature", String.class)).contains("temperature").doesNotContain("test-secret", "password");
-        action(101, "END_FORM", 3, "a", Map.of("formId", "work-7-f")).andExpect(status().isOk());
-        action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
+        action(101, "COMPLETE", 3, "a", Map.of()).andExpect(status().isOk());
     }
 
     @Test void legacyTextSubtableColumnsUseTheSameStableIdsAsTheUnifiedRenderer() throws Exception {
@@ -365,8 +462,7 @@ class ProductionExecutionIntegrationTest {
             .andExpect(jsonPath("$.data.snapshot.operations[0].forms[0].fields[0].typeConfig.columns[0].id").value("sub-field-1"));
         action(101, "SUBMIT", 1, "a", Map.of("formId", "form-51", "values", Map.of("rows", List.of(Map.of("sub-field-1", "外观", "sub-field-2", "合格")))))
             .andExpect(status().isOk());
-        action(101, "END_FORM", 2, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
-        action(101, "COMPLETE", 3, "a", Map.of()).andExpect(status().isOk());
+        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isOk());
     }
 
     @Test void copiesPersistSeparateValuesSumOutputAndRejectStaleOrForeignWrites() throws Exception {
@@ -391,6 +487,15 @@ class ProductionExecutionIntegrationTest {
             .andExpect(jsonPath("$.data.state.operations.a.forms['form-51:copy:2'].values.good").value(12))
             .andExpect(jsonPath("$.data.operationOutputs.a.goodQuantity").value("22"));
         assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).contains("form-51:copy:2", "新增表单份", "第 2 份");
+        action(101, "SUBMIT", 4, "a", Map.of("formId", "form-51", "instanceId", "form-51", "values", Map.of())).andExpect(status().isOk());
+        action(101, "COMPLETE", 5, "a", Map.of()).andExpect(status().isBadRequest());
+        action(101, "SUBMIT", 5, "a", Map.of("formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of())).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.availability.a.canComplete").value(true))
+            .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.canAdd").value(true));
+        action(101, "COMPLETE", 6, "a", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.formGroups.form-51.endedReason").value("OPERATION_COMPLETE"));
+        assertThat(jdbc.queryForObject("SELECT content_after FROM audit_event WHERE function_name='COMPLETE' AND entity_id='101'", String.class))
+            .contains("OPERATION_COMPLETE", "form-51:copy:2");
     }
 
     @Test void optionalCopyCompletionRequiresAcknowledgementAndPersistsUnfinishedState() throws Exception {
@@ -398,14 +503,12 @@ class ProductionExecutionIntegrationTest {
         action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
         action(101, "ADD_FORM_COPY", 1, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
         action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isBadRequest());
-        action(101, "END_FORM", 2, "a", Map.of("formId", "form-51")).andExpect(status().isBadRequest());
-        action(101, "END_FORM", 2, "a", Map.of("formId", "form-51", "acknowledgeIncomplete", true)).andExpect(status().isOk());
-        action(101, "COMPLETE", 3, "a", Map.of("acknowledgeIncomplete", true)).andExpect(status().isOk())
+        action(101, "COMPLETE", 2, "a", Map.of("acknowledgeIncomplete", true)).andExpect(status().isOk())
             .andExpect(jsonPath("$.data.state.operations.a.status").value("COMPLETED"))
             .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.status").value("IN_PROGRESS"))
             .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.canAdd").value(false))
             .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.instances['form-51:copy:2'].canAct").value(false));
-        action(101, "SUBMIT", 4, "a", Map.of("formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of("temperature", 30))).andExpect(status().isBadRequest());
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "form-51", "instanceId", "form-51:copy:2", "values", Map.of("temperature", 30))).andExpect(status().isBadRequest());
         assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).contains("第 2 份未完成", "已告知", "保持进行中");
     }
 
@@ -834,7 +937,8 @@ class ProductionExecutionIntegrationTest {
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
     @Import({FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
-        ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class})
+        ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class,
+        com.zencas.edhr.template.controller.FormReferenceController.class, com.zencas.edhr.template.service.FormReferenceLookup.class})
     static class Config {
         @Bean
         @org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "form.records.browser", havingValue = "true")

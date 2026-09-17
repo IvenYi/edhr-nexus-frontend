@@ -34,37 +34,30 @@ public class ExecutionAccess {
     private final JdbcTemplate jdbc;
 
     public List<Map<String, String>> references(JsonNode field, String keyword) {
-        String source = field.path("typeConfig").path("sourceType").asText();
-        String name = "user".equals(source) ? "display_name" : "name";
-        String query = "%" + (keyword == null ? "" : keyword.toLowerCase(Locale.ROOT)) + "%";
-        return jdbc.query(referenceSource(field) + " AND (LOWER(" + name + ") LIKE ? OR CAST(id AS VARCHAR) LIKE ?) ORDER BY id LIMIT 100",
-                (rs, i) -> Map.of("id", rs.getString("id"), "name", rs.getString("name")), query, query);
+        return references(field, keyword, mapper.createObjectNode());
     }
 
-    private String referenceSource(JsonNode field) {
-        return switch (field.path("typeConfig").path("sourceType").asText()) {
-            case "user" -> "SELECT id, display_name AS name FROM user_account WHERE status='ACTIVE'";
-            case "department" -> "SELECT id, name FROM department WHERE 1=1";
-            case "equipment" -> "SELECT id, name FROM equipment WHERE status='ACTIVE'";
-            case "material" -> "SELECT id, name FROM material WHERE status='ACTIVE'";
-            case "product" -> "SELECT id, name FROM product WHERE status='ACTIVE'";
-            default -> throw invalid("引用字段「" + field.path("name").asText() + "」尚未配置可用的数据来源");
-        };
+    public List<Map<String, String>> references(JsonNode field, String keyword, JsonNode values) {
+        return new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).search(field.path("typeConfig"), keyword, values);
     }
 
     public void validateEvidence(JsonNode field, JsonNode value, String objectId) {
+        validateEvidence(field, value, objectId, mapper.createObjectNode());
+    }
+
+    public void validateEvidence(JsonNode field, JsonNode value, String objectId, JsonNode values) {
         if (value.isNull() || value.isMissingNode() || (value.isTextual() && value.asText().isBlank())) return;
         String type = field.path("type").asText();
         if ("subTable".equals(type) && value.isArray()) {
-            for (JsonNode row : value) for (JsonNode column : field.path("typeConfig").path("columns"))
-                validateEvidence(column, row.path(column.path("id").asText()), objectId);
+            for (JsonNode row : value) {
+                ObjectNode context = values.isObject() ? ((ObjectNode) values).deepCopy() : mapper.createObjectNode();
+                if (row.isObject()) context.setAll((ObjectNode) row);
+                for (JsonNode column : field.path("typeConfig").path("columns"))
+                    validateEvidence(column, row.path(column.path("id").asText()), objectId, context);
+            }
         }
         if ("reference".equals(type)) {
-            if (!value.isObject() || !value.hasNonNull("id")) throw invalid("引用字段必须从配置来源中选择");
-            long referenceId;
-            try { referenceId = Long.parseLong(value.path("id").asText()); } catch (NumberFormatException e) { throw invalid("引用记录标识不正确"); }
-            boolean found = jdbc.query(referenceSource(field) + " AND id=?", (rs, i) -> rs.getString("name"), referenceId).stream().anyMatch(name -> name.equals(value.path("name").asText()));
-            if (!found) throw invalid("引用记录已失效，请重新选择");
+            new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).validate(field.path("typeConfig"), value, values);
         }
         if (Set.of("attachment", "image").contains(type)) {
             if (!value.isArray()) throw invalid("附件字段必须使用上传文件记录");

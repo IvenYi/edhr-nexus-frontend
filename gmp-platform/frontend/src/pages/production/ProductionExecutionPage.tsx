@@ -20,7 +20,7 @@ import ExecutionFormSelector from './ExecutionFormSelector';
 import useExecutionPresence from './useExecutionPresence';
 import { executionHistoryGroups } from './executionHistory';
 
-const labels: Record<string, string> = { CREATED: '未开工', IN_PROGRESS: '生产中', IN_PROCESS: '生产中', COMPLETED: '已完工', PENDING: '待开工', ACTIVE: '待处理', RUNNING: '执行中', CANCELLED: '已取消', EARLY_TERMINATED: '已提前结束', CLOSED: '已关闭' };
+const labels: Record<string, string> = { CREATED: '待开工', IN_PROGRESS: '进行中', IN_PROCESS: '进行中', COMPLETED: '已完成', PENDING: '待开工', ACTIVE: '待处理', RUNNING: '进行中', CANCELLED: '已取消', EARLY_TERMINATED: '已提前结束', CLOSED: '已关闭' };
 const time = (value?: string) => value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
 const errorText = (error: unknown) => (error as { response?: { data?: { message?: string } }; message?: string })?.response?.data?.message || (error as Error)?.message || '操作失败，请重试';
 const panel = { bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2, minWidth: 0 };
@@ -33,7 +33,7 @@ export default function ProductionExecutionPage() {
   const [operationId, setOperationId] = useState('');
   const [formId, setFormId] = useState('');
   const [instanceId, setInstanceId] = useState('');
-  const [incompleteNotice, setIncompleteNotice] = useState<{ action: 'END_FORM' | 'COMPLETE'; warnings: string[] } | null>(null);
+  const [incompleteNotice, setIncompleteNotice] = useState<string[] | null>(null);
   const [formCategory, setFormCategory] = useState<{ versionId: string; name: string } | null>(null);
   const [values, setValues] = useState<ExecutionValues>({});
   const [dirty, setDirty] = useState(false);
@@ -135,7 +135,7 @@ export default function ProductionExecutionPage() {
     parsed.model.fields = form.fields.map((field, index) => ({ ...field, typeConfig: field.typeConfig ?? {}, status: field.status ?? 'enabled', sortOrder: field.sortOrder ?? index }));
     return parsed;
   }, [form]);
-  const references = useCallback((fieldId: string, keyword: string) => context ? getExecutionReferences(context.objectId, operationId, formId, fieldId, keyword) : Promise.resolve([]), [context?.objectId, operationId, formId]);
+  const references = useCallback((fieldId: string, keyword: string, referenceValues: Record<string, unknown>) => context ? getExecutionReferences(context.objectId, operationId, formId, fieldId, keyword, referenceValues) : Promise.resolve([]), [context?.objectId, operationId, formId]);
   const upload = async (file: File) => {
     if (!context || busyRef.current) throw new Error('当前无法上传');
     busyRef.current = true; setBusy(true); setDirty(true);
@@ -272,10 +272,10 @@ export default function ProductionExecutionPage() {
       setSigning(button); setPassword(''); setOpinion('');
     } else void act({ action: button.action, formId, instanceId: selectedInstanceId, values });
   };
-  const finishReporting = (action: 'END_FORM' | 'COMPLETE') => {
-    const warnings = action === 'COMPLETE' ? available?.completionWarnings ?? [] : copies?.required ? [] : copies?.incomplete ?? [];
-    if (warnings.length) setIncompleteNotice({ action, warnings });
-    else void act({ action, ...(action === 'END_FORM' ? { formId } : {}) });
+  const finishOperation = () => {
+    const warnings = available?.completionWarnings ?? [];
+    if (warnings.length) setIncompleteNotice(warnings);
+    else void act({ action: 'COMPLETE' });
   };
 
 
@@ -340,7 +340,8 @@ export default function ProductionExecutionPage() {
     else protect(() => { chooseForm(id); setActivePanel(null); });
   };
   const navigationContent = <Box className="execution-navigation-content">
-    <Box className="execution-navigation-heading"><Typography component="h3">{navigationTitle}</Typography>{navigationSection && <Typography component="span">{navigationItems.length}</Typography>}</Box>
+    <Box className={`execution-navigation-heading${!navigationSection && form && copies ? ' has-form-corner' : ''}`}><Typography component="h3">{navigationTitle}</Typography>{navigationSection && <Typography component="span">{navigationItems.length}</Typography>}</Box>
+    {!navigationSection && form && copies && <Box component="span" className="execution-form-corner" data-required={copies.required}>{copies.required ? '必填' : '非必填'}</Box>}
     {!navigationSection && form ? <Box className="execution-current-form">
       <Box className="execution-current-form-heading">
         <Typography className="execution-current-form-name">{form.name}</Typography>
@@ -349,6 +350,7 @@ export default function ProductionExecutionPage() {
       <Box component="dl" className="execution-order-summary execution-current-form-fields">
         <Box><Typography component="dt">表单编码</Typography><Typography component="dd">{form.code || '—'}</Typography></Box>
         <Box><Typography component="dt">表单版本</Typography><Typography component="dd">{form.version || '—'}</Typography></Box>
+        <Box><Typography component="dt">表单实例号</Typography><Typography component="dd" className="execution-form-instance-number" title={formState?.instanceNo || '首次暂存或提交当前份后生成'}>{formState?.instanceNo || '未生成'}</Typography></Box>
         <Box className="execution-copy-summary"><Typography component="dt">表单份序</Typography><Box component="dd">
           <Button className="execution-copy-switch" title="切换份序" aria-label={`切换份序，当前第 ${Math.max(1, instanceIds.indexOf(selectedInstanceId) + 1)} 份，共 ${Math.max(1, instanceIds.length)} 份`} aria-haspopup="dialog" aria-expanded={copyDrawerOpen} aria-controls="execution-copy-drawer" disabled={busy} onClick={() => setCopyDrawerOpen(true)}>
             <span className="execution-copy-switch-value">第 {Math.max(1, instanceIds.indexOf(selectedInstanceId) + 1)} 份 / 共 {Math.max(1, instanceIds.length)} 份</span>
@@ -358,7 +360,7 @@ export default function ProductionExecutionPage() {
         <Box><Typography component="dt">表单状态</Typography><Typography component="dd" className="execution-form-status" data-status={formStatus}>{formStatusLabel}</Typography></Box>
         <Box><Typography component="dt">表单模板分类</Typography><Typography component="dd" title={form.categoryName === undefined ? '历史执行未保存分类，展示模板当前分类' : '执行快照中的表单模板分类'}>{form.categoryName !== undefined ? form.categoryName || '未分类' : formCategory?.versionId === form.versionId ? formCategory.name : '—'}</Typography></Box>
       </Box>
-      {copies && <Typography className="execution-copy-status">{copies.required ? '必填' : '非必填'}{copies.ended ? ' · 已结束本阶段填报' : ''}</Typography>}
+      {copies?.ended && <Typography className="execution-copy-status">已结束本阶段填报</Typography>}
     </Box> : navigationSection && <List className="execution-navigation-list" disablePadding aria-label={navigationTitle}>
       {navigationItems.map(item => <ListItemButton component="button" type="button" key={item.id} selected={item.id === selectedNavigationId} aria-current={item.id === selectedNavigationId ? 'true' : undefined} disabled={busy} onClick={() => selectNavigationItem(item.id)}><Typography component="span" className="execution-navigation-name">{item.name}</Typography><Typography component="span" className="execution-navigation-detail">{item.detail}</Typography></ListItemButton>)}
     </List>}
@@ -368,7 +370,7 @@ export default function ProductionExecutionPage() {
 
   return <Box ref={rootRef} className="execution-page">
     <Box className="execution-toolbar">
-      <Box className="execution-title"><Typography component="h1">生产执行工作台</Typography></Box>
+      <Box className="execution-title"><Typography component="h1">生产工作台</Typography></Box>
       {view && scanInput}
       <Stack direction="row" className="execution-tools">
         {view && <Button variant="outlined" aria-label="刷新执行状态" disabled={busy} startIcon={<RefreshRounded fontSize="small" />} onClick={() => protect(() => void load(true))}>刷新</Button>}
@@ -380,7 +382,7 @@ export default function ProductionExecutionPage() {
       {view?.historicalWithoutExecution && <Alert severity="warning">此对象已有生产状态，但没有工序执行记录。当前仅展示已有关联信息，不能恢复或推断历史工序。</Alert>}
     </Box>
     {!view ? <Box className="execution-welcome">
-      <Typography className="execution-eyebrow" color="primary">生产执行工作台</Typography>
+      <Typography className="execution-eyebrow" color="primary">生产工作台</Typography>
       <Typography component="h2">扫描条码，开始作业</Typography>
       <Typography color="text.secondary">批次与 SN 自动识别，直接定位对应工单和当前工序。</Typography>
       <Box className="execution-welcome-input"><Typography component="label" variant="body2">批次号 / SN 条码</Typography>{scanInput}</Box>
@@ -395,7 +397,7 @@ export default function ProductionExecutionPage() {
           <Stack direction="row" alignItems="center" className="execution-object-heading">
             <Box className="execution-object-label-row">
               <Typography className="execution-object-label">{context?.objectType === 'SN' ? 'SN 码' : '批次号'}</Typography>
-              <Typography className={`execution-object-status status-${view.objectStatus}`}>{labels[view.objectStatus] ?? view.objectStatus}</Typography>
+              <Typography className="execution-status" data-status={view.objectStatus}>{labels[view.objectStatus] ?? view.objectStatus}</Typography>
             </Box>
             <Typography component="h2">{context?.objectNo}</Typography>
           </Stack>
@@ -425,10 +427,10 @@ export default function ProductionExecutionPage() {
             <Typography component="h2">{op?.name ?? '暂无可执行工序'}</Typography>
           </Box>
           <ExecutionOperationDrawer open={operationDrawerOpen} onOpen={() => { setActivePanel(null); setOperationDrawerOpen(true); }} onClose={() => setOperationDrawerOpen(false)} disabled={busy || !operations.length}
-            currentName={op?.name || op?.code || '暂无工序'} currentStatus={opState?.status === 'IN_PROGRESS' ? '正在执行' : labels[opState?.status ?? ''] || '待开工'} container={() => rootRef.current}>
+            currentName={op?.name || op?.code || '暂无工序'} currentStatus={labels[opState?.status ?? ''] || '待开工'} currentStatusCode={opState?.status} container={() => rootRef.current}>
         <Box component="aside" aria-label="工序导航" className="execution-route">
           <Stack direction="row" justifyContent="space-between" className="execution-route-heading"><Typography variant="body2" fontWeight={600}>工序导航</Typography><Typography variant="caption" color="text.secondary">{operations.length} 道工序</Typography></Stack>
-          <Typography className="execution-route-summary">{operations.filter((item) => view.availability[item.id]?.canStart).length} 道可开工 · {operations.filter((item) => view.state.operations[item.id]?.status === 'IN_PROGRESS').length} 道执行中</Typography>
+          <Typography className="execution-route-summary">{operations.filter((item) => view.availability[item.id]?.canStart).length} 道可开工 · {operations.filter((item) => view.state.operations[item.id]?.status === 'IN_PROGRESS').length} 道进行中</Typography>
           <List className="execution-operation-list">{operations.map((item) => {
             const status = view.state.operations[item.id]?.status; const ready = view.availability[item.id]?.canStart;
             const selected = operationId === item.id;
@@ -436,7 +438,7 @@ export default function ProductionExecutionPage() {
             return <ListItemButton key={item.id} selected={selected} disabled={busy} aria-current={selected ? 'step' : undefined} onClick={() => { if (selected) setOperationDrawerOpen(false); else protect(() => { chooseOperation(item.id); setOperationDrawerOpen(false); }); }} className={`execution-operation ${status === 'COMPLETED' ? 'is-complete' : ''} ${ready ? 'is-ready' : ''} ${status === 'IN_PROGRESS' ? 'is-running' : ''}`}>
               <Box className="execution-operation-text">
                 <Box className="execution-operation-title"><Typography variant="body2" fontWeight={600}>{item.name || item.code}</Typography>{selected && <span className="execution-viewing">查看中</span>}</Box>
-                <Typography className="execution-operation-status">{status === 'COMPLETED' ? <CheckCircleRounded /> : status === 'IN_PROGRESS' || ready ? <PlayArrowRounded /> : <LockOutlined />}{view.historicalWithoutExecution ? '无执行记录' : status === 'IN_PROGRESS' ? '正在执行' : ready ? '可开工' : status === 'PENDING' ? '未满足条件' : labels[status] ?? status}</Typography>
+                <Typography className="execution-operation-status">{status === 'COMPLETED' ? <CheckCircleRounded /> : status === 'IN_PROGRESS' || ready ? <PlayArrowRounded /> : <LockOutlined />}{view.historicalWithoutExecution ? '无执行记录' : status === 'IN_PROGRESS' ? labels[status] : ready ? '可开工' : status === 'PENDING' ? '未满足条件' : labels[status] ?? status}</Typography>
                 {!!links?.before.length && <Typography className="execution-operation-dependency">{links.before.length > 1 ? '汇合前置' : '前置'}：{links.before.map((id: string) => operationNames.get(id)).join('、')}</Typography>}
                 {links?.after.length > 1 && <Typography className="execution-operation-dependency">后续分支：{links.after.map((id: string) => operationNames.get(id)).join('、')}</Typography>}
               </Box>
@@ -445,7 +447,11 @@ export default function ProductionExecutionPage() {
           <Stack direction="row" spacing={0.75} className="execution-route-note"><InfoOutlined fontSize="small" /><Typography variant="caption">按路线关系查看工序；各分支是否可执行，以条件校验为准。</Typography></Stack>
         </Box>
           </ExecutionOperationDrawer>
-          {pending && view.objectStatus !== 'COMPLETED' && <Box className="execution-header-start"><Button size="small" startIcon={<PlayArrowRounded />} variant="contained" disabled={busy || dirty || !available?.canStart} onClick={() => void act({ action: 'START' })}>工序开工</Button></Box>}
+          <Box className="execution-header-action">
+            {view.objectStatus === 'COMPLETED' ? <Button size="small" variant="contained" disabled={busy} onClick={scanNext}>扫描下一个</Button>
+              : pending ? <Button size="small" startIcon={<PlayArrowRounded />} variant="contained" disabled={busy || dirty || !available?.canStart} onClick={() => void act({ action: 'START' })}>工序开工</Button>
+              : opState?.status === 'IN_PROGRESS' ? <Tooltip title={dirty ? '请先暂存当前表单，再进行工序完工' : ''}><span><Button size="small" startIcon={<CheckCircleRounded />} variant={available?.canComplete ? 'contained' : 'outlined'} disabled={busy || dirty || !available?.canComplete} onClick={finishOperation}>工序完工</Button></span></Tooltip> : null}
+          </Box>
           </Stack>
           <Box component="details" key={operationId} className={`execution-conditions ${stageIssues.length && !objectEnded ? 'has-issues' : ''}`}>
             <Box component="summary" title={conditionSummary}><Typography variant="body2">开/完工作业条件：{conditionSummary}</Typography><Box component="span" className="execution-condition-actions"><Button size="small" startIcon={<RefreshRounded />} disabled={busy || dirty} onClick={(event) => { event.preventDefault(); event.stopPropagation(); void load(true); }}>校验条件</Button><ExpandMoreRounded className="execution-condition-chevron" fontSize="small" /></Box></Box>
@@ -473,7 +479,6 @@ export default function ProductionExecutionPage() {
                 </Box>
                 <Typography variant="caption" color={dirty ? 'warning.main' : 'text.secondary'}>{dirty ? '有未暂存内容 · ' : formState?.savedAt ? `已暂存 ${time(formState.savedAt)} · ` : ''}{formState?.status === 'COMPLETED' ? '表单已完成，只读查阅' : controls?.canAct && controls.buttons.some((button) => button.action === 'SAVE') ? '暂存保留草稿，提交仅提交当前份' : controls?.nodeName ? `当前节点：${controls.nodeName}` : null}</Typography>
                 </Box>
-                {copies && !copies.ended && <Button variant="outlined" disabled={busy || dirty || !copies.canEnd} onClick={() => finishReporting('END_FORM')}>结束本表单填报</Button>}
                 {controls?.buttons.filter(button => button.action !== 'SAVE' && button.action !== 'SUBMIT').map(button => <Button key={button.action} disabled={busy || !controls.canAct} color={button.action === 'RETURN' ? 'error' : 'primary'} variant={button.action === 'RETURN' ? 'outlined' : 'contained'} onClick={() => formAction(button)}>{button.label}{button.requiresSignature ? '并签署' : ''}</Button>)}
                 {['SAVE', 'SUBMIT'].map(action => {
                   const button = controls?.buttons.find(item => item.action === action);
@@ -482,11 +487,6 @@ export default function ProductionExecutionPage() {
               </Box>
             </> : <Box className="execution-empty-content"><InfoOutlined color="disabled" /><Typography color="text.secondary">本工序未配置生产表单。请查看作业与完工条件。</Typography></Box>}
           </>
-          {(!pending || view.objectStatus === 'COMPLETED') && <Box className="execution-operation-actions">
-            <Box><Typography variant="body2" fontWeight={600}>{view.objectStatus === 'COMPLETED' ? '本生产对象已完成全部工序' : op?.name ?? '请选择工序'}</Typography><Typography variant="caption" color="text.secondary">{objectEnded ? '保留生产记录供查阅' : opState?.status === 'COMPLETED' ? '本工序已完工，请选择其他可执行工序' : dirty ? '请先保存当前表单，再进行工序操作' : available?.canStart ? '条件已满足，可以开工' : available?.canComplete ? '已具备完工条件' : stageIssues[0] ?? '按当前工序要求完成表单与作业'}</Typography></Box>
-            {view.objectStatus === 'COMPLETED' ? <Button variant="contained" disabled={busy} onClick={scanNext}>扫描下一个</Button>
-              : <Button startIcon={<CheckCircleRounded />} variant={available?.canComplete ? 'contained' : 'outlined'} disabled={busy || dirty || !available?.canComplete} onClick={() => finishReporting('COMPLETE')}>工序完工</Button>}
-          </Box>}
         </Box>
       </ExecutionQuickPanel>
     </Box>}
@@ -517,7 +517,7 @@ export default function ProductionExecutionPage() {
     </Drawer>
     <Snackbar open={Boolean(error) && !signing} autoHideDuration={4000} onClose={(_, reason) => { if (reason !== 'clickaway') setError(''); }} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="error" onClose={() => setError('')} sx={{ maxWidth: 480 }}>{error}</Alert></Snackbar>
     <Snackbar open={Boolean(notice)} autoHideDuration={6000} onClose={() => setNotice('')} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="success" onClose={() => setNotice('')} sx={{ maxWidth: 480 }}>{notice}</Alert></Snackbar>
-    <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.warnings.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText={incompleteNotice?.action === 'COMPLETE' ? '已知晓，工序完工' : '已知晓，结束本表单填报'} cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: next.action, acknowledgeIncomplete: true, ...(next.action === 'END_FORM' ? { formId } : {}) }); }} />
+    <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText="已知晓，工序完工" cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: 'COMPLETE', acknowledgeIncomplete: true }); }} />
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" destructive open={Boolean(pendingSwitch)} title="当前表单尚未保存" message={`${context?.objectNo ?? ''} · ${op?.name ?? ''} · ${form?.name ?? '当前表单'}：切换会丢弃未保存内容。可以返回继续填写并保存，或放弃修改后切换。`} confirmText="放弃修改并切换" cancelText="返回表单" onCancel={() => { setPendingSwitch(null); setOperationDrawerOpen(false); }} onConfirm={() => { const next = pendingSwitch; setPendingSwitch(null); setDirty(false); next?.(); }} />
     <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setPassword(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
       <Box sx={{ p: 1.5, bgcolor: '#f3f6fa', borderRadius: 1 }}><Typography variant="body2" fontWeight={600}>{context?.objectNo}</Typography><Typography variant="body2" color="text.secondary">{op?.name} · {form?.name} · 第 {instanceIds.indexOf(selectedInstanceId) + 1} 份</Typography><Typography variant="caption" color="text.secondary">本次操作：{signing?.label}</Typography></Box>

@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.21
+facts:
+  - id: fact.form-field.type
+    name: 表单字段类型
+    conceptId: concept.form-template-field
+    valueType: string
+    sourceType: configuration
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    aliases: [formField.type]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.form-reference-original-boundary]
+    sourceRevision: working-tree
+    sourceLocator: validateEvidence 读取字段 type 并区分 reference、subTable、attachment 和 image；本事实只证明字段类型存在，不证明引用配置贯通
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed

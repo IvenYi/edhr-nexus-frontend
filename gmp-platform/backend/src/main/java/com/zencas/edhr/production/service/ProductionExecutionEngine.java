@@ -92,8 +92,6 @@ public class ProductionExecutionEngine {
                 if (requiredBinding) issues.add("表单「" + form.path("name").asText() + "」尚未提交完成");
             }
             issues.addAll(ExecutionFormCopies.incomplete(opState, form));
-            if (!ExecutionFormCopies.ids(opState, formId).isEmpty() && ExecutionFormCopies.incomplete(opState, form).isEmpty()
-                    && !ExecutionFormCopies.ended(opState, formId)) issues.add("表单「" + form.path("name").asText() + "」尚未结束填报");
         }
         for (JsonNode work : op.path("works")) {
             if (!"COMPLETED".equals(opState.path("works").path(work.path("id").asText()).path("status").asText()))
@@ -138,7 +136,7 @@ public class ProductionExecutionEngine {
         List<String> warnings = completionWarnings(op, current);
         if (!warnings.isEmpty() && !acknowledged) throw invalid("请确认未完成表单告知：" + String.join("；", warnings));
         for (JsonNode form : op.path("forms")) {
-            if (form.has("fulfilledBy") || ExecutionFormCopies.required(op, form) || ExecutionFormCopies.ids(current, form.path("id").asText()).isEmpty()) continue;
+            if (form.has("fulfilledBy") || form.has("workId") || ExecutionFormCopies.ids(current, form.path("id").asText()).isEmpty()) continue;
             if (!ExecutionFormCopies.ended(current, form.path("id").asText()))
                 ExecutionFormCopies.ensureGroup(current, form.path("id").asText()).put("ended", true).put("endedBy", operator)
                         .put("endedAt", LocalDateTime.now().toString()).put("endedReason", "OPERATION_COMPLETE");
@@ -214,6 +212,7 @@ public class ProductionExecutionEngine {
         if (button.path("requireOpinion").asBoolean() && (opinion == null || opinion.isBlank())) throw invalid("请填写操作意见");
         if (values == null || !values.isObject()) throw invalid("表单数据格式不正确");
         ObjectNode previous = formState.withObject("/values");
+        ObjectNode merged = previous.deepCopy(); merged.setAll((ObjectNode) values);
         Iterator<String> keys = values.fieldNames();
         while (keys.hasNext()) {
             String id = keys.next();
@@ -221,10 +220,11 @@ public class ProductionExecutionEngine {
             if (!"EDIT".equals(controls.path("permissions").path(id).asText()) && !Objects.equals(values.get(id), previous.get(id)))
                 throw invalid("字段「" + field.path("name").asText(id) + "」为只读");
             if ("disabled".equals(field.path("status").asText())) throw invalid("不能修改停用字段");
-            access.validateEvidence(field, values.get(id), snapshot.path("context").path("objectId").asText());
             validateNestedEdits(field, values.get(id), previous.path(id));
         }
-        ObjectNode merged = previous.deepCopy(); merged.setAll((ObjectNode) values);
+        for (JsonNode field : com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper)) {
+            access.validateEvidence(field, merged.path(field.path("id").asText()), snapshot.path("context").path("objectId").asText(), merged);
+        }
         String nodeId = controls.path("nodeId").asText();
         JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), nodeId) : defaultFormNode();
         JsonNode activeBefore = formState.path("active").deepCopy();
@@ -268,6 +268,36 @@ public class ProductionExecutionEngine {
         history(state, op, switch (action) { case "SAVE" -> "保存表单"; case "SUBMIT" -> "提交表单"; case "APPROVE" -> "审批表单"; case "RETURN" -> "退回表单"; default -> action; }, operator, form.path("name").asText() + " · 第 " + (ExecutionFormCopies.ids(current, formId).indexOf(target) + 1) + " 份 · " + target + (opinion == null || opinion.isBlank() ? "" : " · " + opinion))
             .put("actionCode", action).put("formId", formId).put("copyId", target).put("nodeId", nodeId)
             .put("nodeKind", kind(node)).put("nodeName", node.path("data").path("label").asText("现场填报"));
+        settleCompletedWorkForms(snapshot, state, operationId, operator);
+    }
+
+    /** A null operator computes the read projection; write commands persist the same transition with audit history. */
+    public void settleCompletedWorkForms(JsonNode snapshot, ObjectNode state, String operationId, String operator) {
+        JsonNode op = find(snapshot.path("operations"), operationId);
+        JsonNode existing = state.path("operations").path(operationId);
+        if (!"IN_PROGRESS".equals(existing.path("status").asText())) return;
+        ObjectNode current = (ObjectNode) existing;
+        for (int pass = 0; pass < op.path("forms").size(); pass++) {
+            boolean changed = false;
+            for (JsonNode form : op.path("forms")) {
+                if (!form.has("workId") || form.has("fulfilledBy")) continue;
+                String formId = form.path("id").asText(), workId = form.path("workId").asText(), nodeId = form.path("workNodeId").asText();
+                JsonNode workState = current.path("works").path(workId);
+                if (!contains(workState.path("active"), nodeId) || ExecutionFormCopies.ids(current, formId).isEmpty()
+                        || !ExecutionFormCopies.incomplete(current, form).isEmpty()) continue;
+                for (String copyId : ExecutionFormCopies.ids(current, formId)) requireEmpty(validateValues(form, current.path("forms").path(copyId).path("values")));
+                ObjectNode group = ExecutionFormCopies.ensureGroup(current, formId);
+                group.put("ended", true).put("endedReason", "ALL_COPIES_COMPLETED");
+                if (operator != null) group.put("endedBy", operator).put("endedAt", LocalDateTime.now().toString());
+                JsonNode work = find(op.path("works"), workId);
+                finishNode(work, (ObjectNode) workState, nodeId, null);
+                advanceWork(snapshot, op, current, work, (ObjectNode) workState);
+                if (operator != null) history(state, op, "自动结束表单填报", operator, form.path("name").asText() + " · 所有已创建份已完成")
+                        .put("actionCode", "AUTO_END_FORM").put("formId", formId).put("workId", workId).put("nodeId", nodeId);
+                changed = true;
+            }
+            if (!changed) break;
+        }
     }
 
     public List<String> completionWarnings(JsonNode op, JsonNode current) {

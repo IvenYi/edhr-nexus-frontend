@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.21
+evidence:
+  - id: evidence.production-form-auto-finish-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-form-auto-finish-confirmed.md
+    description: user-confirmed；2026-09-17 用户要求直接删除结束本表单填报按钮，并确认普通表单随工序完工统一结束、作业表单已有份全部最终完成后自动推进。保留必填全部完成、普通选填未完成告知并保持进行中、后续节点独立校验。仅确认业务语义，不代表实现或验证通过。
+    visibility: internal
+  - id: evidence.production-form-auto-finish-design
+    type: document
+    path: docs/knowledge/evidence/production-form-auto-finish-confirmed.md
+    description: inference；DEC-PACKAGE-20260917-PRODUCTION-AUTO-FINISH 的 product-core 扩展策略及旧数据兼容设计。保留 END_FORM 旧接口，读取时仅在副本投影中收敛旧全份完成活动节点、写命令事务中落状态和审计，不重写生产快照或已完工历史。此条为实现选择和待验收边界，不能作为运行通过证据。
+    visibility: internal

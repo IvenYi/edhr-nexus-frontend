@@ -92,13 +92,19 @@ public class ProductionExecutionService {
 
     @Transactional(readOnly = true)
     public List<java.util.Map<String, String>> references(Long id, String operationId, String formId, String fieldId, String keyword) {
+        return references(id, operationId, formId, fieldId, keyword, mapper.createObjectNode());
+    }
+
+    @Transactional(readOnly = true)
+    public List<java.util.Map<String, String>> references(Long id, String operationId, String formId, String fieldId, String keyword, JsonNode values) {
+        if (fieldId == null || fieldId.isBlank() || formId == null || operationId == null) throw invalid("请指定工序、表单和引用字段");
         ObjectNode view = get(id);
         JsonNode op = engine.find(view.path("snapshot").path("operations"), operationId);
         JsonNode form = engine.find(op.path("forms"), formId);
-        JsonNode field = findField(form.path("fields"), fieldId);
+        JsonNode field = findField(com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper), fieldId);
         if (field == null) throw invalid("执行配置中不存在该字段");
         if (!"reference".equals(field.path("type").asText())) throw invalid("此字段不是引用字段");
-        return access.references(field, keyword);
+        return access.references(field, keyword, values);
     }
 
     private JsonNode findField(JsonNode fields, String id) {
@@ -153,6 +159,7 @@ public class ProductionExecutionService {
         ObjectNode snapshotBefore = "ATTACH_FORM".equals(command.action()) ? snapshot.deepCopy() : null;
         String attachedFormId = null;
         String previousObjectStatus = object.getStatus();
+        engine.settleCompletedWorkForms(snapshot, state, command.operationId(), operator);
         switch (command.action()) {
             case "ATTACH_FORM" -> {
                 if (command.required() == null) throw invalid("请明确选择必填或选填");
@@ -211,6 +218,7 @@ public class ProductionExecutionService {
         ObjectNode availability = response.putObject("availability");
         ObjectNode operationOutputs = response.putObject("operationOutputs");
         for (JsonNode op : snapshot.path("operations")) {
+            if (allowed) engine.settleCompletedWorkForms(snapshot, state, op.path("id").asText(), null);
             String id = op.path("id").asText(); JsonNode current = state.path("operations").path(id);
             operationOutputs.set(id, ExecutionOutputSummary.project(mapper, op, current));
             ObjectNode entry = availability.putObject(id);

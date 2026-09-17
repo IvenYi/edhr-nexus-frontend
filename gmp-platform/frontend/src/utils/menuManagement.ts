@@ -109,7 +109,7 @@ const REQUIRED_PRODUCTION_EXECUTION_MENU: SidebarMenu = {
   label: '生产执行',
   icon: 'PrecisionManufacturing',
   children: [
-    { label: '生产执行工作台', path: '/production/execution' },
+    { label: '生产工作台', path: '/production/execution' },
   ],
 };
 

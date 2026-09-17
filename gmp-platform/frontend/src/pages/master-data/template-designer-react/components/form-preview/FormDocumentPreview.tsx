@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 import { FormRuntimeContext, FormRuntimeField, type FormRuntime } from '@/components/form-renderer/FormRuntimeField';
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
+import { resolveReferenceField } from '@/components/form-renderer/referenceConfig';
 import { readSignaturePresentation } from '@/components/form-renderer/signaturePresentation';
 import type { CanvasNode, ModelField, TemplateDesignerDocument } from '../../types';
 import WordCanvasPreview from '../canvas/WordCanvasPreview';
@@ -26,6 +27,7 @@ export function bindFormPreviewField(runtime: FormRuntime, node: CanvasNode, fie
     ...runtime,
     disabled: readOnly,
     values: tableId ? rows[recordIndex] ?? {} : runtime.values,
+    referenceValues: tableId ? { ...runtime.values, ...rows[recordIndex] } : runtime.values,
     onChange: (id: string, value: unknown) => {
       if (readOnly || field.type === 'signature') return;
       if (!tableId) { runtime.onChange(id, value); return; }
@@ -60,7 +62,7 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     const binding = runtime && field ? bindFormPreviewField({ ...runtime, disabled: runtime.disabled || Boolean(table?.bindings?.readonly) }, node, field, recordIndex, fieldPermissions) : undefined;
     const value = binding && field ? binding.values[field.id] : undefined;
     if (binding && field && (['attachment', 'image'].includes(field.type) || (field.type === 'reference' && !binding.disabled))) {
-      return <FormRuntimeContext.Provider value={binding}><FormRuntimeField field={field} readOnly={binding.disabled} canvas /></FormRuntimeContext.Provider>;
+      return <FormRuntimeContext.Provider value={binding}><FormRuntimeField field={resolveReferenceField(field, node)} readOnly={binding.disabled} canvas /></FormRuntimeContext.Provider>;
     }
     if (binding && field?.type === 'signature' && readSignaturePresentation(value)) {
       return <SignatureDisplay value={value} displayMode={node.bindings?.widgetConfig?.signatureDisplayMode ?? field.typeConfig.signatureDisplayMode} />;

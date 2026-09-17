@@ -33,10 +33,10 @@ class ExecutionFormCopiesTest {
         assertThatThrownBy(() -> engine.endForm(snapshot, state, "op", "f", true, "user")).hasMessageContaining("第 2 份未完成");
         assertThatThrownBy(() -> engine.complete(snapshot, state, "op", "user", true)).hasMessageContaining("第 2 份未完成");
         save(snapshot, state, "f:copy:2", "SUBMIT", 13);
-        assertThatThrownBy(() -> engine.complete(snapshot, state, "op", "user")).hasMessageContaining("尚未结束填报");
-        engine.endForm(snapshot, state, "op", "f", false, "user");
-        assertThatThrownBy(() -> engine.addFormCopy(snapshot, state, "op", "f", "user")).hasMessageContaining("不允许新增");
+        assertThat(engine.canManageCopies(form(snapshot), current(state), "user")).isTrue();
         engine.complete(snapshot, state, "op", "user");
+        assertThat(current(state).at("/formGroups/f/endedReason").asText()).isEqualTo("OPERATION_COMPLETE");
+        assertThatThrownBy(() -> engine.addFormCopy(snapshot, state, "op", "f", "user")).hasMessageContaining("不在执行中");
         assertThat(ExecutionFormCopies.status(current(state), "f")).isEqualTo("COMPLETED");
     }
 
@@ -46,8 +46,6 @@ class ExecutionFormCopiesTest {
         save(snapshot, state, "f", "SUBMIT", 10);
         engine.addFormCopy(snapshot, state, "op", "f", "user");
         save(snapshot, state, "f:copy:2", "SAVE", 12);
-        assertThatThrownBy(() -> engine.endForm(snapshot, state, "op", "f", false, "user")).hasMessageContaining("告知");
-        engine.endForm(snapshot, state, "op", "f", true, "user");
         assertThatThrownBy(() -> engine.complete(snapshot, state, "op", "user")).hasMessageContaining("告知");
         engine.complete(snapshot, state, "op", "user", true);
         assertThat(current(state).path("status").asText()).isEqualTo("COMPLETED");
@@ -100,7 +98,7 @@ class ExecutionFormCopiesTest {
         assertThat(current.has("formGroups")).isFalse();
     }
 
-    @Test void oldInProgressCopyAdoptsExplicitFinishWithoutReplacingItsData() throws Exception {
+    @Test void oldInProgressCopyFinishesWithOperationWithoutReplacingItsData() throws Exception {
         var snapshot = snapshot(true); var state = engine.initialState(snapshot);
         engine.start(snapshot, state, "op", "user");
         current(state).remove("formGroups");
@@ -110,9 +108,39 @@ class ExecutionFormCopiesTest {
         assertThat(current(state).at("/forms/f/lastSignatureId").asText()).isEqualTo("existing-evidence");
         assertThat(current(state).at("/forms/f/values/good").asInt()).isEqualTo(10);
         assertThat(engine.canManageCopies(form(snapshot), current(state), "user")).isTrue();
-        assertThatThrownBy(() -> engine.complete(snapshot, state, "op", "user")).hasMessageContaining("尚未结束填报");
-        engine.endForm(snapshot, state, "op", "f", false, "user");
         engine.complete(snapshot, state, "op", "user");
+    }
+
+    @Test void workFormAdvancesOnlyAfterEveryExistingCopyIsComplete() throws Exception {
+        var snapshot = workSnapshot(); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "op", "user");
+        engine.addFormCopy(snapshot, state, "op", "f", "user");
+        save(snapshot, state, "f", "SUBMIT", 10);
+        assertThat(current(state).at("/works/w/active/0").asText()).isEqualTo("entry");
+        save(snapshot, state, "f:copy:2", "SAVE", 12);
+        assertThat(current(state).at("/works/w/active/0").asText()).isEqualTo("entry");
+        save(snapshot, state, "f:copy:2", "SUBMIT", 12);
+        assertThat(current(state).at("/formGroups/f/endedReason").asText()).isEqualTo("ALL_COPIES_COMPLETED");
+        assertThat(current(state).at("/works/w/active/0").asText()).isEqualTo("check");
+        assertThat(current(state).at("/works/w/status").asText()).isEqualTo("RUNNING");
+        assertThat(engine.canManageCopies(form(snapshot), current(state), "user")).isFalse();
+        var beforeRetry = state.deepCopy();
+        assertThatThrownBy(() -> save(snapshot, state, "f:copy:2", "SUBMIT", 12)).hasMessageContaining("无权");
+        assertThat(state).isEqualTo(beforeRetry);
+        assertThatThrownBy(() -> engine.complete(snapshot, state, "op", "user")).hasMessageContaining("复核作业");
+        engine.confirm(snapshot, state, "op", "w", "check", "user");
+        engine.complete(snapshot, state, "op", "user");
+    }
+
+    private ObjectNode workSnapshot() throws Exception {
+        var snapshot = snapshot(true);
+        form(snapshot).put("workId", "w").put("workNodeId", "entry");
+        ((ObjectNode) snapshot.path("operations").get(0)).set("works", mapper.readTree("""
+            [{"id":"w","name":"复核作业","nodes":[{"id":"s","data":{"kind":"START"}},
+            {"id":"entry","data":{"kind":"FORM"}},{"id":"check","data":{"kind":"CONFIRMATION"}},{"id":"e","data":{"kind":"END"}}],
+            "edges":[{"source":"s","target":"entry"},{"source":"entry","target":"check"},{"source":"check","target":"e"}]}]
+            """));
+        return snapshot;
     }
 
     private void save(ObjectNode snapshot, ObjectNode state, String instanceId, String action, int good) {

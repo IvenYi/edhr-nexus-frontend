@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.21
+rules:
+  - id: rule.form-reference-runtime
+    name: 引用配置在模拟与正式填报中生效
+    status: implemented
+    visibility: internal
+    trigger: form.reference.query-or-fill-or-submit
+    scope: form-reference-runtime
+    condition: {fact: fact.form-field.type, operator: equals, value: reference}
+    result:
+      type: allow-with-governance
+      actions: [query-reference-options, select-reference-record, validate-reference-on-submit]
+      configuration: [source, display-field, query-conditions]
+      contexts: [main-form, dynamic-subtable-row]
+      preserveContracts: [source-authorization, frozen-template-version, signature, audit]
+    explanation: user-confirmed；引用字段须在模拟和正式填报按配置生效，覆盖主表与动态子表，并在正式提交验证引用有效性。typeConfig 归一化、旧控件兼容、条件组合、缺值处理、SQL映射和暂不支持来源的提示策略属于工程实现选择，不提升为额外用户规则。已有工作树源码和聚焦测试证据，保持 implemented/internal，不能据此宣称运行部署或发布验证通过。
+    evidenceIds: [evidence.form-reference-user-confirmed, evidence.form-reference-runtime-design, evidence.form-reference-original-boundary, evidence.form-reference-lookup-implementation, evidence.form-reference-frozen-config-implementation, evidence.form-reference-preview-controller, evidence.form-reference-frontend-config, evidence.form-reference-runtime-control, evidence.form-reference-lookup-tests, evidence.form-reference-config-tests, evidence.form-reference-production-integration-tests, evidence.form-reference-frontend-tests]

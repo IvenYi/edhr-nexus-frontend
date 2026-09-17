@@ -2,9 +2,9 @@ import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Box, Button, Drawer, IconButton, Typography } from '@mui/material';
 import { CloseRounded, SwapHorizRounded } from '@mui/icons-material';
 
-export default function ExecutionOperationDrawer({ open, onOpen, onClose, disabled, currentName, currentStatus, container, children }: {
+export default function ExecutionOperationDrawer({ open, onOpen, onClose, disabled, currentName, currentStatus, currentStatusCode, container, children }: {
   open: boolean; onOpen: () => void; onClose: () => void; disabled: boolean;
-  currentName: string; currentStatus: string; container: () => HTMLElement | null; children: ReactNode;
+  currentName: string; currentStatus: string; currentStatusCode?: string; container: () => HTMLElement | null; children: ReactNode;
 }) {
   const wasOpen = useRef(open);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -20,7 +20,7 @@ export default function ExecutionOperationDrawer({ open, onOpen, onClose, disabl
 
   return <>
     <Box className="execution-operation-switch">
-      <Typography component="span" className="execution-switch-status">{currentStatus}</Typography>
+      <Typography component="span" className="execution-switch-status execution-status" data-status={currentStatusCode}>{currentStatus}</Typography>
       <Button ref={triggerRef} className="execution-switch-action" aria-label={`切换工序，当前${currentName}`} aria-haspopup="dialog" aria-expanded={open} aria-controls={id} disabled={disabled}
         onClick={() => { if (open) onClose(); else onOpen(); }}><SwapHorizRounded /><span>切换工序</span></Button>
     </Box>

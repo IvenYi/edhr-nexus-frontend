@@ -172,6 +172,7 @@ public class ExecutionSnapshotBuilder {
         normalizeColumns(form.path("fields"));
         JsonNode canvas = json(form.path("canvas").asText(), mapper.createObjectNode());
         collectBindings(canvas, form.path("fields"));
+        form.set("fields", com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper));
         return form;
     }
 

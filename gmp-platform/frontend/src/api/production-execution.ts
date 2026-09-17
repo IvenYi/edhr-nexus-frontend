@@ -17,7 +17,7 @@ export interface ExecutionOperation {
   forms: ExecutionForm[]; works: ExecutionWork[];
   documents: Array<{ id: string; name: string; version: string; code: string; fileId?: string; pageStart?: string; pageEnd?: string }>;
 }
-export interface ExecutionFormState { status: string; values: ExecutionValues; savedAt?: string; active?: string[] }
+export interface ExecutionFormState { status: string; values: ExecutionValues; instanceNo?: string; savedAt?: string; active?: string[] }
 export interface ExecutionFormControls { canAct?: boolean; buttons: ExecutionButton[]; permissions: Record<string, 'EDIT' | 'READ_ONLY'>; nodeName?: string }
 export interface ExecutionFormCopies {
   instanceIds: string[]; status: string; ended: boolean; required: boolean; canAdd: boolean; canEnd: boolean;
@@ -56,8 +56,8 @@ export const updateExecutionEditor = async (id: string, operationId: string, com
 export const scanProduction = async (barcode: string): Promise<ExecutionView> => (await client.get('/production/execution/scan', { params: { barcode } })).data.data;
 export const getProductionExecution = async (id: string): Promise<ExecutionView> => (await client.get(`/production/execution/${id}`)).data.data;
 export const executeProduction = async (id: string, command: ExecutionCommand): Promise<ExecutionView> => (await client.post(`/production/execution/${id}/actions`, command)).data.data;
-export const getExecutionReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string): Promise<Array<{ id: string; name: string }>> =>
-  (await client.get(`/production/execution/${id}/references`, { params: { operationId, formId, fieldId, keyword } })).data.data;
+export const getExecutionReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown> = {}): Promise<Array<{ id: string; name: string }>> =>
+  (await client.post(`/production/execution/${id}/references`, { operationId, formId, fieldId, keyword, values })).data.data;
 export const uploadExecutionFile = async (id: string, file: File): Promise<{ fileId: string; originalName: string }> => {
   const body = new FormData(); body.append('file', file); body.append('targetType', 'PRODUCTION_EXECUTION'); body.append('targetId', id);
   return (await client.post('/files/upload', body, { headers: { 'Content-Type': 'multipart/form-data' } })).data.data;

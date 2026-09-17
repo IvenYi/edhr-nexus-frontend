@@ -1,0 +1,62 @@
+knowledgeModelVersion: 0.3.21
+evidence:
+  - id: evidence.form-reference-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/form-reference-runtime-confirmed.md
+    description: user-confirmed；用户反馈已配置引用字段在模拟及正式填报均未生效，并授权恢复本功能项目门禁完成前后端修复。确认覆盖配置、查询条件、主表和动态子表、冻结版本兼容及提交验证，不表示实现已通过。
+    visibility: internal
+  - id: evidence.form-reference-runtime-design
+    type: document
+    path: docs/knowledge/evidence/form-reference-runtime-confirmed.md
+    description: inference；DEC-PACKAGE-20260917-FORM-REFERENCE 的配置归一化、条件上下文、白名单查询、旧快照兼容和权限测试设计；与用户确认及 original-evidence 分开记录。工程选择不自动成为用户已确认权威规则，待源码和测试闭环。
+    visibility: internal
+  - id: evidence.form-reference-original-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    description: original-evidence；2026-09-17 修复前读取 validateEvidence 可确认字段 type 存在、子表递归和引用 ID/名称回查；references 仅从 typeConfig.sourceType 读取来源并使用固定名称列。该定位说明原实现边界及缺陷起点，不证明新查询条件、前端配置贯通或完整来源支持已经实现。
+    visibility: internal
+  - id: evidence.form-reference-lookup-implementation
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java
+    description: original-evidence；共享来源字段白名单、参数化条件查询、展示字段和有效状态过滤；search 与 validate 复用查询约束。已核对物料及字典聚焦测试；其他来源的真实运行数据仍需相应验证，源码存在不等于全部来源均已验收。
+    visibility: internal
+  - id: evidence.form-reference-frozen-config-implementation
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java
+    description: original-evidence；fields 在副本中读取本表单 fields 和 canvas，兼容文本 JSON 或对象画布、主表与子表旧 widgetConfig，并拒绝同字段多个控件冲突。该解释器不查询最新模板；生产快照构建和引用查询使用它。
+    visibility: internal
+  - id: evidence.form-reference-preview-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormReferenceController.java
+    description: original-evidence；POST /api/v1/master-data/template-modeling/reference-options 供设计模拟查询，要求 master-data.form-templates 或 master-data.batch-record-templates 权限，调用共享只读来源查询；与正式填报的生产来源授权入口分开。
+    visibility: internal
+  - id: evidence.form-reference-frontend-config
+    type: code
+    path: gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts
+    description: original-evidence；resolveReferenceField 兼容旧控件，syncReferenceConfig 同步主表或子表字段与同字段其他放置控件，mockReferenceValues 按主表和当前行组装依赖。保持 id/name 值形状；纯函数测试验证不同记录不串值。
+    visibility: internal
+  - id: evidence.form-reference-runtime-control
+    type: code
+    path: gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx
+    description: original-evidence；RuntimeReference 为模拟和正式填报提供引用选项查询与选择控件，按引用配置和依赖值触发查询。组件源码核对不能替代真实登录页面交互及运行服务验收。
+    visibility: internal
+  - id: evidence.form-reference-lookup-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java
+    description: original-evidence；H2 真实 SQL 测试展示字段、有效状态、四种条件操作符、缺少依赖、引用显示值依赖、伪造值拒绝、来源字段白名单、参数注入与 LIKE 转义、字典及字典项状态，以及产品仅从有效产成品/半成品物料查询、原料不可作为产品引用提交。测试数据库为隔离构造数据，不代表本地业务数据库来源已联调。
+    visibility: internal
+  - id: evidence.form-reference-config-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceConfigTest.java
+    description: original-evidence；主表和子表历史控件配置兼容、画布文本/对象两种结构、读取不修改原快照及同字段多个控件冲突拒绝。
+    visibility: internal
+  - id: evidence.form-reference-production-integration-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave 覆盖冻结配置不跟随模板修改、缺少依赖空结果、查询不写快照/审计、当前行条件不匹配时保存拒绝并保持 revision/审计、已有引用随条件变更重新校验；previewReferencesRequireDesignPermissionAndDoNotWriteData 覆盖设计与生产权限隔离和模拟只读。整体套件含其他功能的既有跳过项，具体本次运行结果以证据 Markdown 及最终质量报告为准。
+    visibility: internal
+  - id: evidence.form-reference-frontend-tests
+    type: test
+    path: gmp-platform/frontend/scripts/test-form-references.mjs
+    description: original-evidence；Node/esbuild 纯函数测试旧配置读取、同字段多控件同步、子表字段和嵌入字段同步以及当前行查询依赖隔离。这些测试不宣称浏览器真实交互已通过。
+    visibility: internal

@@ -12,13 +12,13 @@ rules:
       action: production-form.add-copy
       target: productionFormCopy
       effect: create-independent-copy
-    explanation: user-confirmed；操作员在填报阶段按需新增同一表单的份数，不采用预先配置固定份数；每份独立保存、提交。提交本份不表示结束整个表单填报阶段。稳定标识和序号的具体存储属于实现设计，不据此新增默认份数或复制上一份业务值的规则。
-    evidenceIds: [evidence.production-form-copies-user-decision]
+    explanation: user-confirmed；操作员在填报阶段按需新增同一表单的份数，不采用预先配置固定份数；每份独立保存、提交。DEC-0055 将结束时点区分为普通表单随工序完工结束、作业表单所有已有份最终完成后自动结束并推进，因此新增仅在本表单填报仍开放时适用；作业表单最后一份最终完成后不再保留显式结束前的新增窗口。稳定标识和序号的具体存储属于实现设计，不据此新增默认份数或复制上一份业务值的规则。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed]
   - id: rule.production-form-copy-required-completion
     name: 必填表单所有已创建份完成
     status: specified
     visibility: internal
-    trigger: production-form.finish-reporting-or-operation.complete
+    trigger: production-operation.complete
     scope: production-execution-form-copies
     condition:
       all:
@@ -26,15 +26,15 @@ rules:
         - {fact: form.hasIncompleteCopies, operator: equals, value: true}
     result:
       type: block
-      actions: [production-form.finish-reporting, production-operation.complete]
+      actions: [production-operation.complete]
       reason: required-form-copies-incomplete
-    explanation: user-confirmed；必填表单所有已创建份均需完成，存在未完成份时不能结束本表单填报或工序完工，并须列出未完成份。完成沿用既有表单流程的最终完成语义，保存不算完成，待审批不等于已完成。本规则细化既有必填表单阻断规则，不跳过其他作业和前置条件。
-    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-execution-product-configuration-contract]
+    explanation: user-confirmed；必填表单所有已创建份均需完成，存在未完成份时阻断工序完工并列出未完成份。完成沿用既有表单流程的最终完成语义，保存不算完成，待审批不等于已完成。DEC-0055 取消另行显式结束的前置要求，不跳过其他作业和前置条件。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-execution-product-configuration-contract, evidence.production-form-auto-finish-confirmed]
   - id: rule.production-form-copy-optional-incomplete
     name: 非必填未完成份提示并保留进行中
     status: specified
     visibility: internal
-    trigger: production-form.finish-reporting-or-operation.complete
+    trigger: production-operation.complete
     scope: production-execution-form-copies
     condition:
       all:
@@ -42,16 +42,16 @@ rules:
         - {fact: form.hasIncompleteCopies, operator: equals, value: true}
     result:
       type: allow-with-governance
-      actions: [production-form.finish-reporting, production-operation.complete]
+      actions: [production-operation.complete]
       requiredNotice: incomplete-optional-form-copies
       retainedFormStatus: IN_PROGRESS
       preserveIncompleteCopies: true
       retainOtherCompletionChecks: true
-    explanation: user-confirmed；非必填存在未完成份时，结束填报及工序完工须告知未完成表单，其他条件满足时允许继续。工序可已完工而该表单仍进行中，不能随工序完工把未完成份改为已完成，也不能回写已完成单份为进行中。补填入口定位为后期能力，本次保留数据和状态，不开放完工后写入或解除已有权限限制。
-    evidenceIds: [evidence.production-form-copies-user-decision]
+    explanation: user-confirmed；普通非必填表单存在未完成份时，工序完工须告知未完成表单，其他条件满足时允许继续。工序可已完工而该表单仍进行中，不能随工序完工把未完成份改为已完成，也不能回写已完成单份为进行中。DEC-0055 下作业表单仍须全部已有份最终完成才自动推进，不以本规则跳过未完成作业节点。补填入口定位为后期能力，本次保留数据和状态，不开放完工后写入或解除已有权限限制。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed]
   - id: rule.production-form-copy-explicit-finish
     name: 提交本份与结束本表单分开
-    status: specified
+    status: deprecated
     visibility: internal
     trigger: production-form.finish-reporting
     scope: production-execution-form-copies
@@ -61,8 +61,39 @@ rules:
       action: production-form.finish-reporting
       target: outerWorkFormNode
       effect: finish-reporting-stage-and-advance-form-node
-    explanation: user-confirmed；提交本份仅推进该份自身流程，仍可新增份。操作员显式结束本表单填报时，必填检查所有份完成，非必填告知并保留未完成状态，随后才让外层作业的对应表单节点继续。结束阶段和表单数据完成是两个事实，不顺带完成后续人工确认或其他作业节点；历史已推进节点的兼容不应自动撤回。
-    evidenceIds: [evidence.production-form-copies-user-decision]
+    explanation: 历史 user-confirmed；DEC-0046 原要求提交本份与显式结束独立，结束后才推进外层作业。此显式结束前置规则已被 DEC-0055 的普通表单工序完工收尾及作业表单全份最终完成自动推进替代，仅保留历史追溯；结束阶段与单份完成仍为不同事实，后续人工确认等节点和历史已推进事实仍须保留。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed]
+  - id: rule.production-form-operation-finish
+    name: 普通表单随工序完工结束
+    status: specified
+    visibility: internal
+    trigger: production-operation.complete
+    scope: production-execution-ordinary-forms
+    condition: {fact: fact.catalog.operation-completionconditionssatisfied, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: production-operation.complete
+      target: ordinary-operation-forms
+      effect: finish-reporting-with-operation
+      preserveCopyStatusAndValues: true
+    explanation: user-confirmed；工作台删除结束本表单填报按钮，普通表单在工序完工时统一结束填报；必填所有已创建份最终完成，非必填未完成须告知且保留进行中。仍检查其他完工条件，收尾不重写单份内容、状态或历史证据。
+    evidenceIds: [evidence.production-form-auto-finish-confirmed]
+  - id: rule.production-work-form-auto-finish
+    name: 作业表单全部份最终完成自动推进
+    status: specified
+    visibility: internal
+    trigger: production-form.copy-completed
+    scope: production-execution-active-work-form-node
+    condition: {fact: fact.catalog.form-hasincompletecopies, operator: equals, value: false}
+    result:
+      type: allow-with-governance
+      action: production-form.auto-finish
+      target: outerWorkFormNode
+      effect: finish-reporting-stage-and-advance-form-node
+      requireCreatedCopies: true
+      preserveSubsequentNodeChecks: true
+    explanation: user-confirmed；作业表单所有已创建份最终完成时自动结束该表单并推进对应外层 FORM 节点，不再等待显式结束。保存、待审批、退回或任何未完成份均不能提前推进；无已创建份不按空集合完成。自动推进不跳过后续确认、审批、签名或其他作业，不重复推进已经完成的节点；历史兼容须保留既有已推进事实。
+    evidenceIds: [evidence.production-form-auto-finish-confirmed]
   - id: rule.production-form-copy-output-sum
     name: 各份增量产出累加
     status: specified

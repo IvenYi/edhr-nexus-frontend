@@ -56,8 +56,6 @@ class ProductionExecutionEngineTest {
         engine.start(snapshot, state, "a", "1");
         engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\": 25}"), null, null, null, "1");
         assertThat(state.path("operations").path("a").path("forms").path("f").path("values").path("temperature").asInt()).isEqualTo(25);
-        assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("尚未结束填报");
-        engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");
         assertThat(state.path("operations").path("a").path("status").asText()).isEqualTo("COMPLETED");
     }

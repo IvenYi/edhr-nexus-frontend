@@ -187,3 +187,5 @@ databaseChangeLog:
       file: db/changelog/0086-form-instance-business-source.sql
   - include:
       file: db/changelog/0087-restore-standard-material-types.sql
+  - include:
+      file: db/changelog/0088-workflow-definition-business-type.sql

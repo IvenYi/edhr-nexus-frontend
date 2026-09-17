@@ -105,7 +105,7 @@ test('reset persists target defaults and retains target production and workshop 
   const production = saved.find((module) => module.id === 'production');
   assert.equal(production.menus[0].label, '生产准备');
   assert.equal(production.menus[1].label, '生产执行');
-  assert.deepEqual(production.menus[1].children, [{ label: '生产执行工作台', path: '/production/execution' }]);
+  assert.deepEqual(production.menus[1].children, [{ label: '生产工作台', path: '/production/execution' }]);
 });
 
 test('legacy production execution becomes one workbench under preparation and survives save and reload', async () => {
@@ -124,7 +124,7 @@ test('legacy production execution becomes one workbench under preparation and su
   const execution = menus[preparationIndex + 1];
   assert.equal(execution.label, '生产执行');
   assert.equal(execution.path, undefined);
-  assert.deepEqual(clone(execution.children), [{ label: '生产执行工作台', path: '/production/execution' }]);
+  assert.deepEqual(clone(execution.children), [{ label: '生产工作台', path: '/production/execution' }]);
   const paths = loaded.flatMap((module) => module.menus.flatMap((menu) => menu.children?.map((child) => child.path) ?? [menu.path]));
   assert.equal(paths.filter((path) => path === '/production/execution').length, 1);
   assert.ok(paths.includes('/custom/production'));

@@ -1,0 +1,52 @@
+knowledgeModelVersion: 0.3.21
+decisions:
+  - id: DEC-0055
+    title: 生产表单自动收尾替代显式结束
+    status: specified
+    visibility: internal
+    context: user-confirmed；用户要求直接删除结束本表单填报按钮，并在被告知只删按钮会阻塞必填完工及作业推进后，确认普通表单在工序完工时统一结束、作业表单已有份全部最终完成后自动推进。此决定仅替代 DEC-0046 的显式结束前置条件及 DEC-0047 对该条件的继承，保留按需新增、每份独立保存提交、审批最终完成、数量增量累加、冻结快照、权限和追溯契约。历史决策文件保留；本知识为 specified/internal，不代表实现、运行实例升级或发布验证完成。
+    decisionStatements:
+      - id: DEC-0055-01
+        statement: 生产工作台不再提供结束本表单填报按钮；普通表单在工序完工时统一结束，必填表单所有已创建份最终完成后无需再执行独立结束动作。
+        status: specified
+        visibility: internal
+      - id: DEC-0055-02
+        statement: 普通非必填表单存在未完成份时，工序完工须告知；其他条件满足后允许完工，表单仍进行中，保留未完成份和值及已完成单份事实，后期补填入口不在本次开放。
+        status: specified
+        visibility: internal
+      - id: DEC-0055-03
+        statement: 作业表单所有已创建份最终完成时，自动结束该表单并推进对应外层 FORM 节点；最后一份尚待审批或被退回时不推进，无已创建份不视为完成。自动收尾后不再保留原显式结束前的新增窗口，后续确认、审批、签名和其他作业仍按自身条件执行。
+        status: specified
+        visibility: internal
+      - id: DEC-0055-04
+        statement: 既有模板、表单份身份和值、执行快照及已经推进或完工的历史事实继续保留；自动推进不得重复完成同一节点或倒退历史节点。具体旧实例收敛时点及旧 END_FORM 接口兼容属于实现策略，不作为另行确认的业务常量。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0046, DEC-0047]
+    evidenceIds: [evidence.production-form-auto-finish-confirmed, evidence.production-form-auto-finish-design]
+    acceptanceScenarios:
+      - id: scenario.form-auto-finish-ordinary
+        given: 普通必填表单所有已创建份最终完成且其他工序完工条件满足
+        when: 操作员工序完工
+        then: 无需显式结束表单，普通表单随工序收尾，全部份值和完成事实保留
+        evidenceIds: [evidence.production-form-auto-finish-confirmed]
+        evidenceRequirements: [引擎必填阻断与完工测试, API重读和审计持久化]
+      - id: scenario.form-auto-finish-optional
+        given: 普通非必填表单存在未完成份
+        when: 工序完工并确认未完成告知
+        then: 其他条件满足时工序可完工，表单保留进行中及全部份数据
+        evidenceIds: [evidence.production-form-auto-finish-confirmed]
+        evidenceRequirements: [API告知和状态重读, 进行中及已完成单份保留]
+      - id: scenario.form-auto-finish-work-final-copy
+        given: 当前活动作业 FORM 节点下已有多份表单
+        when: 最后一份经过其自身流程最终完成
+        then: 对应 FORM 节点自动推进一次，未完成或待审批份不提前推进，后续确认节点仍等待自身动作
+        evidenceIds: [evidence.production-form-auto-finish-confirmed]
+        evidenceRequirements: [引擎多份及审批退回测试, API原子持久化和审计, 重复非法提交拒绝]
+      - id: scenario.form-auto-finish-legacy
+        given: 旧单份或多份作业表单所有份完成但外层 FORM 节点仍活动，或旧节点已经推进
+        when: 读取及后续受控执行命令按兼容策略处理
+        then: 未推进者有可继续执行的路径，已推进者不重复推进或回退；只读查询不落库，受控写动作才原子保存状态与审计
+        evidenceIds: [evidence.production-form-auto-finish-design]
+        evidenceRequirements: [旧单份及旧多份引擎测试, GET无写入及后续命令持久化集成测试]
+    implementationDiscrepancies: []

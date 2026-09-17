@@ -1,0 +1,44 @@
+knowledgeModelVersion: 0.3.21
+decisions:
+  - id: DEC-0056
+    title: 表单引用字段配置贯通模拟与正式填报
+    status: implemented
+    visibility: internal
+    context: user-confirmed；用户反馈物料领用单动态子表的物料名称已配置为物料来源引用，但模拟与正式填报未生效，随后授权恢复本功能项目门禁并完成前后端修复。范围为配置、查询条件、主表及动态子表运行、冻结版本兼容和提交有效性验证，不新增业务数据源或独立引用记录库。本决定不替代生产权限、版本快照、签名或审计契约；实现推断与证据缺口单独记录。
+    decisionStatements:
+      - id: DEC-0056-01
+        statement: 设计器中配置的引用字段应在模拟填报和正式填报中按其配置的数据来源、展示字段和查询条件生效，覆盖主表及动态子表。
+        status: implemented
+        visibility: internal
+      - id: DEC-0056-02
+        statement: 正式填报提交须验证引用记录有效性；引用字段的前后端修复沿用当前生产来源授权及冻结表单版本，不提供绕过权限、签名、审批或审计的通道。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.form-reference-user-confirmed, evidence.form-reference-runtime-design, evidence.form-reference-original-boundary, evidence.form-reference-lookup-implementation, evidence.form-reference-frozen-config-implementation, evidence.form-reference-preview-controller, evidence.form-reference-frontend-config, evidence.form-reference-runtime-control, evidence.form-reference-lookup-tests, evidence.form-reference-config-tests, evidence.form-reference-production-integration-tests, evidence.form-reference-frontend-tests]
+    acceptanceScenarios:
+      - id: scenario.form-reference-material-selection
+        given: 主表或动态子表物料名称字段已配置物料来源和名称展示字段
+        when: 在模拟或正式填报搜索并选择物料
+        then: 展示可选的有效来源记录，选择结果保留引用身份及展示值，不能退化为任意文本输入
+        evidenceIds: [evidence.form-reference-user-confirmed]
+        evidenceRequirements: [共享引用组件交互检查, 后端真实SQL查询测试, 配置保存与重读]
+      - id: scenario.form-reference-query-context
+        given: 引用字段配置主表字段或动态子表当前行字段作为查询条件
+        when: 依赖值变化后重新查询或正式提交
+        then: 查询使用对应上下文且不同子表行不串值；与条件不匹配的引用不能通过正式提交校验
+        evidenceIds: [evidence.form-reference-user-confirmed, evidence.form-reference-runtime-design]
+        evidenceRequirements: [前端主表及行上下文测试, 后端条件查询及提交验证测试]
+      - id: scenario.form-reference-frozen-compatibility
+        given: 历史模板引用配置仅保存在画布控件，或生产对象使用旧冻结快照
+        when: 读取和使用引用字段
+        then: 使用当前模板版本或冻结快照自身配置解释引用，不读取最新模板覆盖历史依据；无效配置明确提示
+        evidenceIds: [evidence.form-reference-runtime-design]
+        evidenceRequirements: [旧配置兼容测试, 冻结快照查询测试, 只读接口无写入验证]
+      - id: scenario.form-reference-invalid-record
+        given: 引用值被伪造或来源记录失效，或调用者没有对应设计或生产入口权限
+        when: 查询引用来源或保存提交正式填报
+        then: 按当前授权和引用有效性契约拒绝操作，失败不留下部分业务状态或审计变更
+        evidenceIds: [evidence.form-reference-user-confirmed, evidence.form-reference-runtime-design]
+        evidenceRequirements: [权限接口测试, 无效引用与事务回滚测试]
+    implementationDiscrepancies: []

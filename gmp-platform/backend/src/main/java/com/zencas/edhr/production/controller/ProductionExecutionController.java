@@ -45,4 +45,10 @@ public class ProductionExecutionController {
     public ApiResponse<ObjectNode> act(@PathVariable Long id, @RequestBody ProductionExecutionService.Command command) {
         return ApiResponse.success(service.act(id, command));
     }
+
+    public record ReferenceQuery(String operationId, String formId, String fieldId, String keyword, com.fasterxml.jackson.databind.JsonNode values) {}
+    @PostMapping("/{id}/references")
+    public ApiResponse<java.util.List<java.util.Map<String, String>>> references(@PathVariable Long id, @RequestBody ReferenceQuery query) {
+        return ApiResponse.success(service.references(id, query.operationId(), query.formId(), query.fieldId(), query.keyword(), query.values()));
+    }
 }

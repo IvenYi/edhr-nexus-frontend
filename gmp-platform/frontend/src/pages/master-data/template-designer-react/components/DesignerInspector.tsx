@@ -10,7 +10,7 @@ import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { isCellDisplayNode } from '../registry/commonComponentRegistry';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
-import type { FieldTypeIconKey } from '../types';
+import type { FieldTypeIconKey, ModelField } from '../types';
 
 type FillLimitKey = 'required' | 'readonly' | 'hidden';
 
@@ -117,7 +117,7 @@ const REFERENCE_FUNCTION_DATA_OPTIONS = [
   { label: '物料', value: 'material' },
   { label: '设备', value: 'equipment' },
   { label: '产品', value: 'product' },
-  { label: '供应商', value: 'supplier' },
+  { label: '供应商（暂不可用）', value: 'supplier', disabled: true },
   { label: '字典', value: 'dictionary' },
 ];
 
@@ -672,7 +672,7 @@ function CompactSelect({
   onChange,
 }: {
   value: string;
-  options: Array<{ label: string; value: string }>;
+  options: Array<{ label: string; value: string; disabled?: boolean }>;
   onChange: (value: string) => void;
 }) {
   return (
@@ -686,7 +686,7 @@ function CompactSelect({
       sx={compactSelectSx}
     >
       {options.map((option) => (
-        <MenuItem key={option.value} value={option.value}>
+        <MenuItem key={option.value} value={option.value} disabled={option.disabled}>
           {option.label}
         </MenuItem>
       ))}
@@ -1649,7 +1649,7 @@ export default function DesignerInspector() {
     const referenceSourceType = REFERENCE_FUNCTION_DATA_OPTIONS.some((option) => option.value === rawReferenceSourceType)
       ? rawReferenceSourceType
       : 'dictionary';
-    const referenceField = readText(widgetConfig.referenceField);
+    const referenceField = readText(widgetConfig.referenceField, readText(boundField?.typeConfig.referenceField));
     const referenceDisplayMode = displayMode === 'link' ? 'link' : 'text';
     const referenceSourceFieldOptions = REFERENCE_QUERY_SOURCE_FIELDS[referenceSourceType] ?? REFERENCE_QUERY_SOURCE_FIELDS.dictionary;
     const referenceFieldOptions = [
@@ -1660,8 +1660,11 @@ export default function DesignerInspector() {
       { label: '引用表中的字段', value: '' },
       ...referenceSourceFieldOptions,
     ];
-    const referenceTargetFieldOptions = (document?.model.fields ?? [])
-      .filter((field) => field.status === 'enabled' && field.id !== boundFieldId)
+    const mainFields = document?.model.fields ?? [];
+    const table = mainFields.find(field => field.id === bindings.subTableId);
+    const columns = Array.isArray(table?.typeConfig.columns) ? table.typeConfig.columns as ModelField[] : [];
+    const referenceTargetFieldOptions = [...mainFields, ...columns]
+      .filter((field) => field.status === 'enabled' && field.id !== (bindings.subTableFieldId ?? boundFieldId) && ['text', 'number', 'datetime', 'singleSelect', 'reference'].includes(field.type))
       .map((field) => ({
         label: field.name || field.code || field.id,
         value: field.id,
@@ -1669,7 +1672,7 @@ export default function DesignerInspector() {
     const referenceTargetFieldSelectOptions = referenceTargetFieldOptions.length
       ? [{ label: '当前表中的字段', value: '' }, ...referenceTargetFieldOptions]
       : [{ label: '暂无字段', value: '' }];
-    const referenceConditions = readReferenceQueryConditions(widgetConfig.referenceQueryConditions);
+    const referenceConditions = readReferenceQueryConditions(widgetConfig.referenceQueryConditions ?? boundField?.typeConfig.referenceQueryConditions);
     const editableConditions = referenceConditions.length ? referenceConditions : [createReferenceQueryCondition()];
     const normalizedReferenceField = referenceFieldOptions.some((option) => option.value === referenceField) ? referenceField : '';
     const updateReferenceConditions = (rows: Array<{ sourceField: string; operator: string; targetFieldId: string }>) => {
