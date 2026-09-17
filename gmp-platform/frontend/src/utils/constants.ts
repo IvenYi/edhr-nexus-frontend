@@ -168,7 +168,21 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
     label: '生产',
     icon: 'PrecisionManufacturing',
     menus: [
-      { label: '生产执行', icon: 'PrecisionManufacturing', path: '/production/execution' },
+      {
+        label: '生产准备',
+        icon: 'Assignment',
+        children: [
+          { label: '工单管理', path: '/production/work-orders' },
+          { label: '批次管理', path: '/production/batches' },
+        ],
+      },
+      {
+        label: '生产执行',
+        icon: 'PrecisionManufacturing',
+        children: [
+          { label: '生产执行工作台', path: '/production/execution' },
+        ],
+      },
       {
         label: '流程中心',
         icon: 'AccountTree',

@@ -79,6 +79,7 @@ interface MergedCellMaps {
 }
 
 interface RenderMockFillControlParams {
+  options?: Array<{ key: string; label: string; value: string }>;
   previewOnly?: boolean;
   node: CanvasNode;
   field: ModelField | null;
@@ -89,6 +90,8 @@ interface RenderMockFillControlParams {
 }
 
 interface MockFillPageProps {
+  renderField?: (node: CanvasNode, field: ModelField | null, recordIndex: number) => ReactNode;
+  isSubTableReadOnly?: (node: CanvasNode) => boolean;
   previewOnly?: boolean;
   page: CanvasPage;
   document: TemplateDesignerDocument;
@@ -444,7 +447,8 @@ function resolveCellTextSx(cell?: CanvasSheetCell | null): CSSProperties {
   };
 }
 
-function renderMockFillControl({
+export function renderMockFillControl({
+  options: runtimeOptions,
   previewOnly = false,
   node,
   field,
@@ -468,7 +472,7 @@ function renderMockFillControl({
   const isNumberField = field?.type === 'number';
   const value = values[valueKey] ?? createInitialNodeValue(node, field);
   const textValue = readValueAsText(value);
-  const options = parseConfiguredOptions(node, field);
+  const options = runtimeOptions ?? parseConfiguredOptions(node, field);
   const optionShape = String(readConfig('optionShape', 'select'));
   const optionLayout = String(readConfig('optionLayout', 'horizontal'));
   const isVerticalOptionLayout = ['vertical', 'column'].includes(optionLayout);
@@ -956,7 +960,9 @@ function mapChildRangeToRecord(childRange: CanvasSelectionRange, templateRange: 
   });
 }
 
-function MockFillPage({
+export function FormSheetPage({
+  renderField,
+  isSubTableReadOnly,
   previewOnly = false,
   page: templatePage,
   document,
@@ -992,7 +998,7 @@ function MockFillPage({
 
   const renderFieldNode = (node: CanvasNode, range: CanvasSelectionRange, valueKey: string, recordIndex = 0) => {
     const field = resolveBoundField(document, node);
-    const content = isCellDisplayNode(node) ? <CellDisplayContent node={node} recordIndex={recordIndex} /> : renderMockFillControl({
+    const content = isCellDisplayNode(node) ? <CellDisplayContent node={node} recordIndex={recordIndex} /> : renderField ? renderField(node, field, recordIndex) : renderMockFillControl({
       previewOnly,
       node,
       field,
@@ -1237,7 +1243,7 @@ function MockFillPage({
                     {subTableField.name || '子表'}
                   </Box>
                 </Box>
-                {isDynamic && !previewOnly ? (
+                {isDynamic && !previewOnly && !isSubTableReadOnly?.(subTableNode) ? (
                   <Box
                     data-mock-fill-sub-table-actions="true"
                     sx={{
@@ -1349,7 +1355,7 @@ export function MockFillPreviewPage({ page, document }: { page: CanvasPage; docu
   const values = useMemo(() => createInitialMockFillValues(document), [document]);
   const subTableRecordCounts = useMemo(() => createInitialSubTableRecordCounts(document), [document]);
   return (
-    <MockFillPage
+    <FormSheetPage
       previewOnly
       page={page}
       document={document}
@@ -1555,7 +1561,7 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
         <Stack spacing={3}>
           {document.canvas.pages.map((page) => (
             <Box key={page.id} sx={{ overflowX: 'auto' }}>
-              <MockFillPage
+              <FormSheetPage
                 page={page}
                 document={document}
                 values={values}

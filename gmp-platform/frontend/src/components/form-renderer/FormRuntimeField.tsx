@@ -19,7 +19,7 @@ export const FormRuntimeContext = createContext<FormRuntime | undefined>(undefin
 export const SignatureDisplayModeContext = createContext<Record<string, unknown>>({});
 export const SubTableDisplayNodesContext = createContext<CanvasNode[]>([]);
 
-export function FormRuntimeField({ field, readOnly = false, signatureDisplayMode }: { field: ModelField; readOnly?: boolean; signatureDisplayMode?: unknown }) {
+export function FormRuntimeField({ field, readOnly = false, signatureDisplayMode, canvas = false }: { field: ModelField; readOnly?: boolean; signatureDisplayMode?: unknown; canvas?: boolean }) {
   const runtime = useContext(FormRuntimeContext);
   const signatureDisplayModes = useContext(SignatureDisplayModeContext);
   if (!runtime) return null;
@@ -43,7 +43,7 @@ export function FormRuntimeField({ field, readOnly = false, signatureDisplayMode
     ? <SignatureDisplay value={value} displayMode={signatureDisplayMode ?? signatureDisplayModes[field.id] ?? config.signatureDisplayMode} />
     : <Typography variant="body2" color="text.secondary">执行签署动作后自动记录</Typography>;
   if (field.type === 'subTable') return <RuntimeSubTable field={field} disabled={Boolean(disabled)} runtime={runtime} />;
-  if (field.type === 'reference') return <RuntimeReference field={field} disabled={Boolean(disabled)} runtime={runtime} />;
+  if (field.type === 'reference') return <RuntimeReference field={field} disabled={Boolean(disabled)} runtime={runtime} canvas={canvas} />;
   if (field.type === 'attachment' || field.type === 'image') return <RuntimeFiles field={field} disabled={Boolean(disabled)} runtime={runtime} />;
   const type = field.type === 'number' ? 'number' : field.type === 'datetime' ? (config.mode === 'date' ? 'date' : config.mode === 'time' ? 'time' : 'datetime-local') : 'text';
   return <TextField {...props} type={type} value={String(value)} onChange={(event) => runtime.onChange(field.id, event.target.value)}
@@ -83,7 +83,7 @@ function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disable
     }} /></Button></Stack>;
 }
 
-function RuntimeReference({ field, disabled, runtime }: { field: ModelField; disabled: boolean; runtime: FormRuntime }) {
+function RuntimeReference({ field, disabled, runtime, canvas = false }: { field: ModelField; disabled: boolean; runtime: FormRuntime; canvas?: boolean }) {
   const [options, setOptions] = useState<Array<{ id: string; name: string }>>([]); const [error, setError] = useState('');
   const [keyword, setKeyword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -98,9 +98,10 @@ function RuntimeReference({ field, disabled, runtime }: { field: ModelField; dis
   }, [field.id, disabled, runtime.references, keyword]);
   const value = runtime.values[field.id] as { id: string; name: string } | undefined;
   return <Autocomplete fullWidth size="small" disabled={disabled} options={options} value={value?.id ? value : null} loading={loading}
+    sx={canvas ? { height: '100%', '& .MuiTextField-root, & .MuiInputBase-root': { height: '100%', minHeight: 0 }, '& .MuiInputBase-root': { fontSize: 12, py: 0 }, '&& .MuiAutocomplete-input': { py: 0, px: 0.75, minWidth: 0 }, '& .MuiAutocomplete-endAdornment': { top: 'calc(50% - 14px)' } } : undefined}
     getOptionLabel={(item) => item.name} isOptionEqualToValue={(item, selected) => item.id === selected.id} filterOptions={(items) => items}
     noOptionsText="未找到匹配记录" loadingText="正在查询…" onInputChange={(_, text, reason) => { if (reason === 'input' || reason === 'clear') setKeyword(text); }}
     onChange={(_, selected) => runtime.onChange(field.id, selected)}
     renderOption={(props, item) => <li {...props} key={item.id}>{item.name} · {item.id}</li>}
-    renderInput={(params) => <TextField {...params} label={field.name} error={Boolean(error)} helperText={error || (!disabled ? '输入名称或记录编号搜索' : undefined)} />} />;
+    renderInput={(params) => <TextField {...params} label={canvas ? undefined : field.name} placeholder={canvas ? field.name : undefined} inputProps={{ ...params.inputProps, 'aria-label': field.name }} error={Boolean(error)} helperText={error || (!canvas && !disabled ? '输入名称或记录编号搜索' : undefined)} />} />;
 }

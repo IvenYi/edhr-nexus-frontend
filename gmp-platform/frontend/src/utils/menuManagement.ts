@@ -105,6 +105,14 @@ const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_PRODUCTION_EXECUTION_MENU: SidebarMenu = {
+  label: '生产执行',
+  icon: 'PrecisionManufacturing',
+  children: [
+    { label: '生产执行工作台', path: '/production/execution' },
+  ],
+};
+
 const PROCESS_MODELING_PATHS = new Set(REQUIRED_PROCESS_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const TEMPLATE_MODELING_PATHS = new Set(REQUIRED_TEMPLATE_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const FACTORY_MODELING_PATHS = new Set(REQUIRED_FACTORY_MODELING_MENU.children?.map((child) => child.path) ?? []);
@@ -337,14 +345,14 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
   }
 
   productionModule.menus = productionModule.menus.filter(
-    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置' && menu.label !== '生产准备' && menu.label !== '表单管理',
+    (menu) => menu.label !== '流程中心' && menu.label !== '生产配置' && menu.label !== '生产准备' && menu.label !== '生产执行' && menu.label !== '表单管理',
   );
   productionModule.menus.unshift(
     ...cloneSidebarModules([{
       id: 'production',
       label: '生产',
       icon: 'PrecisionManufacturing',
-      menus: [{ label: '生产执行', icon: 'PrecisionManufacturing', path: '/production/execution' }, REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
+      menus: [REQUIRED_PRODUCTION_PREPARATION_MENU, REQUIRED_PRODUCTION_EXECUTION_MENU, REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU, REQUIRED_PRODUCTION_CONFIGURATION_MENU],
     }])[0].menus,
   );
 }

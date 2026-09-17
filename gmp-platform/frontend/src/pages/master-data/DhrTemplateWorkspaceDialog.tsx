@@ -73,7 +73,7 @@ import {
   type TemplateVersionRecord,
 } from "@/api/template-modeling";
 import { parseReactTemplateDesignerDocument } from "./template-designer-react/utils/document";
-import { MockFillPreviewPage } from './template-designer-react/components/mock-fill/MockFillDialog';
+import FormDocumentPreview from './template-designer-react/components/form-preview/FormDocumentPreview';
 import { shouldRenderSheetCellBorderEdge } from './template-designer-react/utils/sheetCellBorders';
 import WordCanvasPreview from "./template-designer-react/components/canvas/WordCanvasPreview";
 import type {
@@ -1048,25 +1048,9 @@ export function FormCanvasPreview({
     page &&
     (Object.keys(page.cells).length || page.nodes.length || page.images.length),
   );
-  if (fullPage && layout === 'canvas' && !runtime && !fieldPermissions && !interaction) {
-    return (
-      <Box data-form-document-preview="true" sx={{ flex: 1, minHeight: 0, overflow: 'auto', bgcolor: '#eef3f8', p: 3 }}>
-        <Stack {...{ inert: '' }} spacing={3} sx={{ minWidth: 'fit-content' }}>
-          {document.canvas.pages.map((entry) => (
-            entry.wordDocument ? (
-              <WordCanvasPreview key={entry.id} page={entry} embedded renderField={(node) => (
-                <PreviewField node={node} document={document} />
-              )} />
-            ) : Object.keys(entry.cells).length || entry.nodes.length || entry.images.length ? (
-              <MockFillPreviewPage key={entry.id} page={entry} document={document} />
-            ) : (
-              <FieldListPreview key={entry.id} document={document} />
-            )
-          ))}
-          {!document.canvas.pages.length ? <FieldListPreview document={document} /> : null}
-        </Stack>
-      </Box>
-    );
+  if (fullPage && layout === 'canvas' && !interaction) {
+    return <FormRuntimeContext.Provider value={runtime}><FormDocumentPreview document={document} runtime={runtime} fieldPermissions={fieldPermissions}
+      fallback={<FieldListPreview document={document} fieldPermissions={fieldPermissions} />} /></FormRuntimeContext.Provider>;
   }
   return (
     <SubTableDisplayNodesContext.Provider value={subTableDisplayNodes}><SignatureDisplayModeContext.Provider value={signatureDisplayModes}><FormRuntimeContext.Provider value={runtime}><Box

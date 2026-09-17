@@ -102,6 +102,36 @@ test('reset persists target defaults and retains target production and workshop 
   assert.equal(records?.label, '记录');
   assert.deepEqual(records?.menus.find((menu) => menu.label === '表单管理')?.children.map((child) => child.path), ['/form-management/list', '/form-management/filling', '/form-management/review']);
   assert.ok(!paths.includes('/inventory/'));
+  const production = saved.find((module) => module.id === 'production');
+  assert.equal(production.menus[0].label, '生产准备');
+  assert.equal(production.menus[1].label, '生产执行');
+  assert.deepEqual(production.menus[1].children, [{ label: '生产执行工作台', path: '/production/execution' }]);
+});
+
+test('legacy production execution becomes one workbench under preparation and survives save and reload', async () => {
+  let saved = [{ id: 'production', label: '生产', icon: 'PrecisionManufacturing', menus: [
+    { label: '生产执行', path: '/production/execution' },
+    { label: '旧目录', children: [{ label: '旧执行入口', path: '/production/execution' }] },
+    { label: '自定义目录', children: [{ label: '保留页面', path: '/custom/production' }] },
+  ] }];
+  const { api } = context(menuCode, { api: {
+    get: async () => ({ configured: true, modules: saved }),
+    put: async (value) => { saved = clone(value); return { configured: true, modules: saved }; },
+  } });
+  const loaded = await api.refreshManagedSidebarModules();
+  const menus = loaded.find((module) => module.id === 'production').menus;
+  const preparationIndex = menus.findIndex((menu) => menu.label === '生产准备');
+  const execution = menus[preparationIndex + 1];
+  assert.equal(execution.label, '生产执行');
+  assert.equal(execution.path, undefined);
+  assert.deepEqual(clone(execution.children), [{ label: '生产执行工作台', path: '/production/execution' }]);
+  const paths = loaded.flatMap((module) => module.menus.flatMap((menu) => menu.children?.map((child) => child.path) ?? [menu.path]));
+  assert.equal(paths.filter((path) => path === '/production/execution').length, 1);
+  assert.ok(paths.includes('/custom/production'));
+  assert.equal(api.inferPermissionCode('/production/execution'), 'production.execution');
+  await api.saveManagedSidebarModules(loaded);
+  assert.deepEqual(clone(await api.refreshManagedSidebarModules()), clone(loaded));
+  assert.deepEqual(clone(api.normalizeManagedSidebarModules(loaded)), clone(loaded));
 });
 
 test('normalization preserves configured module and required-menu icons on repeated saves', () => {
