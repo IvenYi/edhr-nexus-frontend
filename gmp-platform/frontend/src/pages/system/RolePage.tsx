@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -231,14 +232,7 @@ const fieldSx = {
   },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -279,7 +273,7 @@ const roleColumns: RoleColumn[] = [
   { id: 'createdAt', label: '创建时间', defaultWidth: 150, minWidth: ROLE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: ROLE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 150, minWidth: ROLE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: ROLE_ACTION_COLUMN_WIDTH, minWidth: ROLE_ACTION_COLUMN_WIDTH, resizable: false },
+  { id: 'actions', label: '操作', defaultWidth: ROLE_ACTION_COLUMN_WIDTH, minWidth: ROLE_ACTION_COLUMN_WIDTH, resizable: false, align: 'center' },
 ];
 
 const roleAuditFieldLabelMap: Record<string, string> = {
@@ -774,6 +768,7 @@ function getStickyActionColumnSx(column: RoleColumn, section: 'head' | 'body') {
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    textAlign: 'center',
   };
 }
 

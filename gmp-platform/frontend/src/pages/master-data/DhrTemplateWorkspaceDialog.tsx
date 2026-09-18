@@ -1378,13 +1378,32 @@ export default function DhrTemplateWorkspaceDialog({
   useEffect(() => {
     if (!open) return;
     if (versions.length === 0) return;
-    if (
-      !selectedVersionId ||
-      !versions.some((version) => version.id === selectedVersionId)
-    ) {
-      setSelectedVersionId(versions[0]?.id ?? null);
+    const requestedVersionId =
+      initialVersionId == null ? null : String(initialVersionId);
+    const requestedVersionExists = requestedVersionId !== null &&
+      versions.some((version) => String(version.id) === requestedVersionId);
+    const selectedVersionExists = selectedVersionId !== null &&
+      versions.some((version) => String(version.id) === selectedVersionId);
+    const nextVersionId = requestedVersionExists
+      ? requestedVersionId
+      : selectedVersionExists
+        ? selectedVersionId
+        : String(versions[0]?.id ?? '');
+
+    if (nextVersionId && nextVersionId !== selectedVersionId) {
+      setSelectedVersionId(nextVersionId);
     }
-  }, [open, selectedVersionId, versions]);
+  }, [initialVersionId, open, selectedVersionId, versions]);
+
+  useEffect(() => {
+    if (!selectedVersionId) return;
+    setSelectedDirectoryId(null);
+    setSelectedEvidenceId(null);
+    setBaseComposition(null);
+    setCompositionDraft(null);
+    setAppliedCompositionRevision("");
+    setHasChanges(false);
+  }, [selectedVersionId]);
 
   useEffect(() => {
     if (

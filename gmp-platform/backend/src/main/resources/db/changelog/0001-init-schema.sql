@@ -1,6 +1,7 @@
 --liquibase formatted sql
 --changeset edhr:0001-init-schema
 --validCheckSum: 9:8d772a914cd3477393fdd7164ab41631
+--validCheckSum: 9:ae0f9a1e991a38eb408465ee38d593b1
 
 -- ============================================================
 -- Identity Domain: Tenant, Organization, Users, Roles, Permissions
@@ -560,7 +561,6 @@ CREATE TABLE IF NOT EXISTS dhr_template_version (
     id BIGINT PRIMARY KEY,
     dhr_template_id BIGINT NOT NULL,
     version_number INTEGER NOT NULL DEFAULT 1,
-    directory_snapshot JSONB,
     is_current BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

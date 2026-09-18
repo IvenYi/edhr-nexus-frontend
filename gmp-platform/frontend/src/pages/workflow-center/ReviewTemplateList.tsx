@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import StatusBadge from '@/components/StatusBadge';
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
 import { useAuthStore } from '@/stores/authStore';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { createTemplate, deleteTemplate, listTemplates, updateTemplate } from '@/api/workflow-templates';
@@ -58,10 +59,7 @@ const REVIEW_TEMPLATE_COLUMNS: TemplateColumn[] = [
   { id: 'status', label: '状态', defaultWidth: 120, minWidth: 100 },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 180, minWidth: 160 },
 ];
-const tableHeaderCellSx = {
-  bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, height: 48, py: 0,
-  borderBottom: '1px solid #e4e7ed', whiteSpace: 'nowrap',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 const tableRowSx = {
   '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' },
 };
@@ -90,6 +88,7 @@ function getOperationColumnSx(layer: 'head' | 'body') {
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
     backgroundClip: 'padding-box',
     boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    textAlign: 'center',
     whiteSpace: 'nowrap',
   };
 }
@@ -403,7 +402,7 @@ export default function ReviewTemplateList() {
                   <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
                     {visibleColumns.map((column) => <TableCell key={column.id} sx={{ width: resolvedColumnWidths[column.id], minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, pr: 2, userSelect: 'none' }}>
                       {column.label}
-                      <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 3, '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} />
+                      <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} sx={listColumnResizeHandleSx} />
                     </TableCell>)}
                     <TableCell align="center" sx={getOperationColumnSx('head')}>操作</TableCell>
                   </TableRow>

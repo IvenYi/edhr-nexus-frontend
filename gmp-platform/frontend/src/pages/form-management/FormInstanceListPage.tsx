@@ -37,6 +37,7 @@ import {
   ViewColumnRounded,
 } from '@mui/icons-material';
 import TableStateCell from '@/components/TableStateCell';
+import { listColumnResizeHandleSx } from '@/components/listTableStyles';
 import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
@@ -113,6 +114,7 @@ function frozenColumnSx(id: ColumnId, layer: 'head' | 'body', statusWidth: numbe
     position: 'sticky' as const, right, zIndex: layer === 'head' ? 4 : 2,
     width, minWidth: width, maxWidth: width, boxSizing: 'border-box' as const,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff', backgroundClip: 'padding-box', overflow: 'hidden',
+    textAlign: layer === 'head' ? 'center' as const : undefined,
     borderLeft: id === 'sourceType' ? '1px solid #e4e7ed' : undefined,
     boxShadow: id === 'sourceType' ? '-6px 0 8px -8px rgba(0, 0, 0, 0.35)' : undefined,
   };
@@ -298,7 +300,7 @@ export default function FormInstanceListPage() {
       case 'updatedAt': return <TableCell key={column.id} sx={cellSx}>{formatDateTime(row.updatedAt)}</TableCell>;
     }
   };
-  const filterActions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={formListFilterActionsSx}>
+  const filterActions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ ...formListFilterActionsSx, gridColumn: advancedFiltersOpen ? '1 / -1' : { xs: '1 / -1', md: 'auto' } }}>
     <Button size="small" variant="outlined" startIcon={<RestartAlt />} onClick={resetSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>重置</Button>
     <Button size="small" variant="contained" startIcon={<Search />} onClick={submitSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>查询</Button>
     <Button size="small" variant="text" endIcon={<ExpandMore sx={{ transform: advancedFiltersOpen ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }} />} onClick={() => setAdvancedFiltersOpen((open) => !open)} aria-expanded={advancedFiltersOpen} sx={{ height: 40, minWidth: 72, px: 1, color: '#1890ff', '&:hover': { bgcolor: '#f5faff' } }}>{advancedFiltersOpen ? '收起' : '展开'}</Button>
@@ -308,11 +310,10 @@ export default function FormInstanceListPage() {
       <Box sx={formListQueryGridSx}>
         <TextField size="small" label="关键词" placeholder="实例号、模板、工单或生产对象" value={draft.keyword} onChange={(event) => setDraft({ ...draft, keyword: event.target.value })} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} sx={fieldSx} />
         <TextField size="small" label="表单模板" placeholder="请输入表单模板" value={draft.templateName} onChange={(event) => setDraft({ ...draft, templateName: event.target.value })} sx={fieldSx} />
-        {filterActions}
+        {advancedFiltersOpen ? <TextField size="small" label="表单编码" placeholder="请输入表单编码" value={draft.templateCode} onChange={(event) => setDraft({ ...draft, templateCode: event.target.value })} sx={fieldSx} /> : filterActions}
         <Collapse in={advancedFiltersOpen} timeout={180} unmountOnExit sx={{ gridColumn: '1 / -1' }}>
           <Box sx={formListAdvancedGridSx}>
           <TextField size="small" label="表单实例号" placeholder="请输入表单实例号" value={draft.instanceNo} onChange={(event) => setDraft({ ...draft, instanceNo: event.target.value })} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} sx={fieldSx} />
-          <TextField size="small" label="表单编码" placeholder="请输入表单编码" value={draft.templateCode} onChange={(event) => setDraft({ ...draft, templateCode: event.target.value })} sx={fieldSx} />
           <TextField size="small" label="生产对象" placeholder="请输入批次号或SN" value={draft.productionObjectNo} onChange={(event) => setDraft({ ...draft, productionObjectNo: event.target.value })} sx={fieldSx} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} />
           <TextField size="small" label="工单" placeholder="请输入工单号" value={draft.workOrderNo} onChange={(event) => setDraft({ ...draft, workOrderNo: event.target.value })} sx={fieldSx} />
           <TextField select size="small" label="生产对象类型" value={draft.productionObjectType} onChange={(event) => setDraft({ ...draft, productionObjectType: event.target.value })} sx={fieldSx}><MenuItem value="">全部</MenuItem><MenuItem value="BATCH">批次</MenuItem><MenuItem value="SN">SN</MenuItem></TextField>
@@ -321,6 +322,7 @@ export default function FormInstanceListPage() {
           <TextField size="small" type="datetime-local" label="创建时间止" value={draft.createdTo} onChange={(event) => setDraft({ ...draft, createdTo: event.target.value })} sx={fieldSx} InputLabelProps={{ shrink: true }} />
           </Box>
         </Collapse>
+        {advancedFiltersOpen ? filterActions : null}
       </Box>
     </Box>
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
@@ -332,7 +334,7 @@ export default function FormInstanceListPage() {
       </Popover>
       <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: visibleTableWidth, minWidth: visibleTableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
         <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: columnWidth(column) }} />)}</colgroup>
-        <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ width: columnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, userSelect: 'none', ...frozenColumnSx(column.id, 'head', frozenStatusWidth, columnWidth(column)) }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} onPointerMove={(event) => { const start = resizeRef.current; if (start?.id === column.id) setSettings((current) => ({ ...current, widths: { ...current.widths, [column.id]: Math.max(column.minWidth, start.startWidth + event.clientX - start.startX) } })); }} onPointerUp={() => { resizeRef.current = null; }} onPointerCancel={() => { resizeRef.current = null; }} onLostPointerCapture={() => { resizeRef.current = null; }} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 3, touchAction: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} /></TableCell>)}</TableRow></TableHead>
+        <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ width: columnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, userSelect: 'none', ...frozenColumnSx(column.id, 'head', frozenStatusWidth, columnWidth(column)) }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} onPointerMove={(event) => { const start = resizeRef.current; if (start?.id === column.id) setSettings((current) => ({ ...current, widths: { ...current.widths, [column.id]: Math.max(column.minWidth, start.startWidth + event.clientX - start.startX) } })); }} onPointerUp={() => { resizeRef.current = null; }} onPointerCancel={() => { resizeRef.current = null; }} onLostPointerCapture={() => { resizeRef.current = null; }} sx={listColumnResizeHandleSx} /></TableCell>)}</TableRow></TableHead>
         <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '表单列表加载失败'}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow data-record-id={row.formInstanceId} key={row.formInstanceId} hover tabIndex={0} onClick={() => openDetail(row.formInstanceId)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row.formInstanceId); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看表单实例号 ${row.instanceNo}`}>{visibleColumns.map((column) => <Fragment key={column.id}>{renderCell(row, column)}</Fragment>)}</TableRow>)}</TableBody>
       </Table></TableContainer>
       <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />

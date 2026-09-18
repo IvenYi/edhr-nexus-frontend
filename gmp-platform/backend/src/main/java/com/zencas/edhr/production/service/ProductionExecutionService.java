@@ -40,6 +40,7 @@ public class ProductionExecutionService {
     private final ExecutionPresenceRegistry presence;
     private final UserAccountRepository userAccounts;
     private final FormInstanceRecordService formRecords;
+    private final DhrInstanceService dhrInstances;
 
     @Transactional(readOnly = true)
     public com.fasterxml.jackson.databind.node.ArrayNode publishedForms(String keyword) { return snapshots.publishedForms(keyword); }
@@ -193,8 +194,14 @@ public class ProductionExecutionService {
         if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN", "SIGN_FIELD").contains(command.action())) {
             formRecords.saved(id, object.getTenantId(), snapshot, state, command.operationId(), command.formId(), command.instanceId());
         }
-        if (created) production.startObject(id);
-        if (engine.allComplete(snapshot, state)) production.completeObject(id);
+        if (created) {
+            dhrInstances.createAtFirstStart(object, order, snapshot);
+            production.startObject(id);
+        }
+        if (engine.allComplete(snapshot, state)) {
+            dhrInstances.completeWithProductionObject(id);
+            production.completeObject(id);
+        }
         execution.setSnapshotJson(snapshot.toString()); execution.setStateJson(state.toString());
         execution.setRevision(execution.getRevision() + 1); execution.setUpdatedAt(LocalDateTime.now());
         executions.saveAndFlush(execution);

@@ -1,5 +1,6 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   Fragment,
   type ChangeEvent,
@@ -556,14 +557,7 @@ function RouteDesignerNode({ id, data, selected, isConnectable }: NodeProps<Rout
   );
 }
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -4684,6 +4678,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
       backgroundClip: 'padding-box',
       boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)',
+      textAlign: 'center',
     };
   }
 

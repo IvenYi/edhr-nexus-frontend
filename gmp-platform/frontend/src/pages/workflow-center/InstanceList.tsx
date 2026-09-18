@@ -52,7 +52,7 @@ export default function InstanceList() {
               <TableCell>发起人</TableCell>
               <TableCell>开始时间</TableCell>
               <TableCell>结束时间</TableCell>
-              <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>操作</TableCell>
+              <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -77,7 +77,7 @@ export default function InstanceList() {
                   <TableCell>{item.startUserName}</TableCell>
                   <TableCell>{item.startTime}</TableCell>
                   <TableCell>{item.endTime || '-'}</TableCell>
-                  <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>
+                  <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
                     <Tooltip title="详情"><IconButton size="small" aria-label="详情" onClick={() => navigate(`/workflow/instances/${item.id}`)}><VisibilityOutlined fontSize="small" /></IconButton></Tooltip>
                     <Tooltip title="日志"><IconButton size="small" aria-label="日志" onClick={() => navigate(`/workflow/instances/${item.id}/logs`)}><HistoryOutlined fontSize="small" /></IconButton></Tooltip>
                   </TableCell>

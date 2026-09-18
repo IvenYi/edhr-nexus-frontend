@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.23
+facts:
+  - id: fact.dhr-template-design.explicit-version-selected
+    name: DHR 模板设计已明确选择版本
+    conceptId: concept.dhr-template-version
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+    aliases: [dhrTemplateDesign.explicitVersionSelected]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-template-version-design-isolation-user-confirmed, evidence.dhr-template-workspace-version-selection]
+    sourceRevision: working-tree
+    sourceLocator: initialVersionId 归一化后优先于工作区默认版本写入 selectedVersionId；composition 查询和保存均读取该选择
+    capturedAt: '2026-09-18'
+    reviewStatus: reviewed

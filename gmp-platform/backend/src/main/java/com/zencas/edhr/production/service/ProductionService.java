@@ -64,6 +64,7 @@ public class ProductionService {
             throw error("同一工单不能混用批次和SN生产形态");
         }
         BigDecimal allocated = existing.stream()
+                .filter(item -> !"CANCELLED".equals(item.getStatus()))
                 .map(ProductionObject::getTargetQuantity)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (allocated.add(targetQuantity).compareTo(order.getPlannedQuantity()) > 0) {

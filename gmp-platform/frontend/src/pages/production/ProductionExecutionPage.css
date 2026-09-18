@@ -153,6 +153,7 @@
 .execution-status::before, .execution-form-status::before { content: ''; width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: currentColor; }
 .execution-page .execution-status[data-status="IN_PROGRESS"], .execution-page .execution-status[data-status="IN_PROCESS"], .execution-page .execution-form-status[data-status="IN_PROGRESS"], .execution-page .execution-form-status[data-status="ACTIVE"] { color: #1677c8; }
 .execution-page .execution-status[data-status="COMPLETED"], .execution-page .execution-form-status[data-status="COMPLETED"] { color: #2e8059; }
+.execution-page .execution-form-status[data-status="WAITING_OPERATION_START"], .execution-page .execution-form-status[data-status="WAITING_WORK_NODE"], .execution-page .execution-form-status[data-status="NOT_APPLICABLE"] { color: #909399; }
 .execution-current-form-fields > .execution-copy-summary { align-items: baseline; }
 .execution-page .execution-sidebar-shortcuts .execution-quick-rail .execution-copy-switch { display: inline-flex; vertical-align: baseline; width: auto; min-width: 0; height: 20px; padding: 0; flex-direction: row; gap: 6px; border: 0; border-radius: 0; background: transparent; box-shadow: none; white-space: nowrap; font-family: inherit; font-size: 13px; font-weight: 600; line-height: 20px; letter-spacing: normal; text-transform: none; }
 .execution-copy-switch-value { font-size: 13px; line-height: 20px; font-weight: 600; color: #344256; }

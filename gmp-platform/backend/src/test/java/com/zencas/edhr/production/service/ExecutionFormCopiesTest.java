@@ -69,8 +69,8 @@ class ExecutionFormCopiesTest {
 
     @Test void optionalWorkFormEndsOnlyItsNodeWithoutCompletingRemainingWork() throws Exception {
         var snapshot = snapshot(false); var op = (ObjectNode) snapshot.path("operations").get(0);
-        var workForm = form(snapshot).deepCopy(); workForm.put("id", "wf").put("workId", "w").put("workNodeId", "entry");
-        form(snapshot).put("fulfilledBy", "wf"); op.withArray("forms").add(workForm);
+        var workForm = form(snapshot).deepCopy(); workForm.put("id", "wf").put("workId", "w").put("workNodeId", "entry").put("required", false);
+        op.withArray("forms").add(workForm);
         op.set("works", mapper.readTree("""
             [{"id":"w","name":"复核作业","nodes":[{"id":"s","data":{"kind":"START"}},
             {"id":"entry","data":{"kind":"FORM"}},{"id":"check","data":{"kind":"CONFIRMATION"}},{"id":"e","data":{"kind":"END"}}],

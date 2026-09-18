@@ -1,9 +1,11 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   Fragment,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
   type ReactNode } from 'react';
@@ -176,7 +178,7 @@ const emptyVersionForm = (version = 'V1.0'): VersionForm => ({
   version, code: '', fileId: '', fileName: '', fileMimeType: '', description: '', remark: '', effectiveDate: '', expiryDate: '',
 });
 
-const tableHeaderCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', height: 48, py: 0, borderBottom: '1px solid #e4e7ed' };
+const tableHeaderCellSx = listTableHeaderCellSx;
 const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
 function getOperationColumnSx(width: number, layer: 'head' | 'body') {
   return {
@@ -189,6 +191,7 @@ function getOperationColumnSx(width: number, layer: 'head' | 'body') {
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
     backgroundClip: 'padding-box',
     boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    textAlign: 'center',
     whiteSpace: 'nowrap',
   };
 }
@@ -385,6 +388,8 @@ export default function DocumentManagementPage() {
   const [categoryName, setCategoryName] = useState('');
   const [deleteCategoryTarget, setDeleteCategoryTarget] = useState<DocumentCategory | null>(null);
   const [draggingCategoryId, setDraggingCategoryId] = useState('');
+  const resizeCleanupRef = useRef<(() => void) | null>(null);
+  useEffect(() => () => resizeCleanupRef.current?.(), []);
 
   const query = useQuery({
     queryKey: ['managed-documents', selectedCategory, page, pageSize, submittedKeyword],
@@ -547,6 +552,7 @@ export default function DocumentManagementPage() {
   const startColumnResize = (event: ReactPointerEvent<HTMLDivElement>, column: DocumentColumn, target: DocumentColumnSettingsTarget) => {
     event.preventDefault();
     event.stopPropagation();
+    resizeCleanupRef.current?.();
     const startX = event.clientX;
     const initialWidth = getColumnWidth(column, target);
     const onMove = (moveEvent: PointerEvent) => {
@@ -554,9 +560,18 @@ export default function DocumentManagementPage() {
       if (target === 'main') setMainColumnWidths((current) => ({ ...current, [column.id]: width }));
       else setVersionColumnWidths((current) => ({ ...current, [column.id]: width }));
     };
-    const onUp = () => { window.removeEventListener('pointermove', onMove); window.removeEventListener('pointerup', onUp); };
+    let cleanup = () => {};
+    const onUp = () => cleanup();
+    cleanup = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      if (resizeCleanupRef.current === cleanup) resizeCleanupRef.current = null;
+    };
+    resizeCleanupRef.current = cleanup;
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
   };
   const openDetailDrawer = (document: ManagedDocument, version?: ManagedDocumentVersion) => {
     setDrawerDocument(document);
@@ -705,7 +720,7 @@ export default function DocumentManagementPage() {
         <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth, height: query.isLoading || query.isError || documents.length === 0 ? '100%' : 'auto' }}>
             <colgroup>{visibleMainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <col data-document-main-action-spacer style={{ width: mainTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'main') }} /></Fragment>)}</colgroup>
             <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleMainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell sx={{ width: getColumnWidth(column, 'main'), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: column.id === 'actions' ? 4 : 2, ...(column.id === 'actions' ? getOperationColumnSx(getColumnWidth(column, 'main'), 'head') : tableHeaderCellSx), ...(column.resizable ? { pr: 2, userSelect: 'none' } : {}) }}>
-              {column.label}{column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => startColumnResize(event, column, 'main')} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 1 }} />}
+              {column.label}{column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => startColumnResize(event, column, 'main')} sx={listColumnResizeHandleSx} />}
             </TableCell></Fragment>)}</TableRow></TableHead>
             <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '文档加载失败'}</TableStateCell></TableRow> : documents.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>暂无数据</TableStateCell></TableRow> : documents.map((document) => {
               const isExpanded = expanded.has(document.id);
@@ -788,7 +803,7 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
   return <>
     <TableRow data-record-id={document.id} hover sx={{ ...tableRowSx, cursor: 'pointer' }} onClick={onToggle}>{mainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0 }} /> : null}{renderMainCell(column)}</Fragment>)}</TableRow>
     {expanded ? <TableRow sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={mainTableColumnCount} sx={{ p: 0, bgcolor: '#fafcff' }}>
-        <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}><Table stickyHeader size="small" aria-label="文档版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}>
+        <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'auto' }}><Table stickyHeader size="small" aria-label="文档版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}>
           <colgroup>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <col data-document-version-action-spacer style={{ width: versionTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'version') }} /></Fragment>)}</colgroup>
           <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0, ...tableHeaderCellSx, py: 0 }} /> : null}
             <TableCell
@@ -800,7 +815,7 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
               }}
             >
               {column.label}
-              {column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => onResizeColumn(event, column, 'version')} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 1 }} />}
+              {column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => onResizeColumn(event, column, 'version')} sx={listColumnResizeHandleSx} />}
             </TableCell>
           </Fragment>)}</TableRow></TableHead>
           <TableBody>{document.versions.map((version) => <TableRow data-record-id={version.id} key={version.id} hover onClick={() => onOpenDetail(version)} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0 }} /> : null}{renderVersionCell(version, column)}</Fragment>)}</TableRow>)}</TableBody>

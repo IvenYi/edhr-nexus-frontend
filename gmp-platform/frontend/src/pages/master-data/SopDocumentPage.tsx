@@ -118,7 +118,7 @@ export default function SopDocumentPage() {
                 <TableCell>文件引用</TableCell>
                 <TableCell>状态</TableCell>
                 <TableCell>创建时间</TableCell>
-                <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>操作</TableCell>
+                <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -136,7 +136,7 @@ export default function SopDocumentPage() {
                     />
                   </TableCell>
                   <TableCell>{item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN') : '-'}</TableCell>
-                  <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>
+                  <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
                     <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => { setEditing(item); setForm(item); setOpen(true); }}><Edit fontSize="small" /></IconButton></Tooltip>
                     <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteTarget(item)}><Delete fontSize="small" /></IconButton></Tooltip>
                   </TableCell>

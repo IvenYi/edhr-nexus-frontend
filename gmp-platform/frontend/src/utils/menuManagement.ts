@@ -89,11 +89,19 @@ const REQUIRED_FORM_MANAGEMENT_MENU: SidebarMenu = {
   ],
 };
 
+const REQUIRED_DHR_MANAGEMENT_MENU: SidebarMenu = {
+  label: 'DHR管理',
+  icon: 'AssignmentTurnedIn',
+  children: [
+    { label: 'DHR列表', path: '/dhr-management/list' },
+  ],
+};
+
 const REQUIRED_RECORDS_MODULE: SidebarModule = {
   id: 'records',
   label: '记录',
   icon: 'FactCheck',
-  menus: [REQUIRED_FORM_MANAGEMENT_MENU],
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU],
 };
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
@@ -131,6 +139,7 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/form-management/list',
   '/form-management/filling',
   '/form-management/review',
+  '/dhr-management/list',
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -378,8 +387,8 @@ function ensureRequiredRecordsModule(modules: SidebarModule[]) {
 
   recordsModule.label = REQUIRED_RECORDS_MODULE.label;
   recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
-  recordsModule.menus = recordsModule.menus.filter((menu) => menu.label !== REQUIRED_FORM_MANAGEMENT_MENU.label);
-  recordsModule.menus.unshift(cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus[0]);
+  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label].includes(menu.label));
+  recordsModule.menus.unshift(...cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
@@ -498,6 +507,7 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/form-management/list') return 'form-instances.view';
   if (path === '/form-management/filling') return 'form-management.filling';
   if (path === '/form-management/review') return 'form-management.review';
+  if (path === '/dhr-management/list') return 'dhr.instances.view';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

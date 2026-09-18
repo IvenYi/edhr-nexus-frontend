@@ -50,18 +50,18 @@ class ExecutionOutputSummaryTest {
         assertThat(ExecutionOutputSummary.project(mapper, op, state("{\"g\":1,\"n\":0,\"s\":0}")).path("status").asText()).isEqualTo("INVALID");
     }
 
-    @Test void skipsFulfilledAliasAndSumsDifferentFormsAndSubtableRows() throws Exception {
+    @Test void sumsIndependentFormsAndSubtableRows() throws Exception {
         var op = operation(); var forms = op.withArray("forms");
-        ObjectNode alias = ((ObjectNode) forms.get(0)).deepCopy(); alias.put("id", "alias").put("fulfilledBy", "f1"); forms.add(alias);
+        ObjectNode secondRecord = ((ObjectNode) forms.get(0)).deepCopy(); secondRecord.put("id", "second-record"); forms.add(secondRecord);
         ObjectNode sub = forms.addObject().put("id", "f2").put("name", "补充产出");
         var table = sub.putArray("fields").addObject().put("id", "rows").put("name", "明细").put("type", "subTable");
         table.putObject("typeConfig").putArray("columns").add(op.at("/forms/0/fields/0").deepCopy());
         var values = state("{\"g\":2,\"n\":1,\"s\":0}");
-        values.withObject("/forms").set("alias", mapper.readTree("{\"values\":{\"g\":100,\"n\":100,\"s\":100}}"));
+        values.withObject("/forms").set("second-record", mapper.readTree("{\"values\":{\"g\":100,\"n\":100,\"s\":100}}"));
         values.withObject("/forms").set("f2", mapper.readTree("{\"values\":{\"rows\":[{\"g\":3},{\"g\":4}]}}"));
         var result = ExecutionOutputSummary.project(mapper, op, values);
-        assertThat(result.path("outputQuantity").asText()).isEqualTo("10");
-        assertThat(result.path("goodQuantity").asText()).isEqualTo("9");
+        assertThat(result.path("outputQuantity").asText()).isEqualTo("310");
+        assertThat(result.path("goodQuantity").asText()).isEqualTo("109");
         values.withObject("/forms/f2/values").putArray("rows");
         assertThat(ExecutionOutputSummary.project(mapper, op, values).path("status").asText()).isEqualTo("PENDING");
     }

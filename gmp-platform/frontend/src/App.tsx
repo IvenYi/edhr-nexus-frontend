@@ -6,6 +6,7 @@ import { SnackbarProvider } from './components/SnackbarProvider';
 import AppRouter from './router';
 import DeletionProtectionDialog from './components/DeletionProtectionDialog';
 import RecordLocationHighlight from './components/RecordLocationHighlight';
+import { listTableHeaderCellStyle } from './components/listTableStyles';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -164,30 +165,16 @@ const theme = createTheme({
         },
       },
     },
-    MuiTableHead: {
-      styleOverrides: {
-        root: {
-          '& .MuiTableCell-head': {
-            height: 63,
-            padding: '8px 16px',
-            fontWeight: 600,
-            fontSize: 14,
-            color: '#909399',
-            backgroundColor: '#f5f7fa',
-            borderBottom: '1px solid #ebeef5',
-            whiteSpace: 'nowrap',
-          },
-        },
-      },
-    },
     MuiTableCell: {
       styleOverrides: {
         root: {
-          padding: '8px 16px',
+          height: 40,
+          padding: '4px 16px',
           color: '#606266',
           borderBottom: '1px solid #ebeef5',
           fontSize: 14,
         },
+        head: listTableHeaderCellStyle,
       },
     },
     MuiTableRow: {

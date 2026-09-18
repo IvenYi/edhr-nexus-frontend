@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.23
+evidence:
+  - id: evidence.dhr-template-version-design-isolation-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md
+    description: user-confirmed；用户确认批记录模板设计必须以明确选择的 templateId 与 versionId 读取和保存 composition，复制后的版本目录及表单引用独立。该证据不将前端竞态诊断提升为业务规则，也不证明浏览器验收已完成。
+    visibility: internal
+  - id: evidence.dhr-template-composition-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/DhrTemplateWorkspaceController.java
+    description: original-evidence；composition 读取和保存端点均接收 templateId 与 versionId，findVersion 以二者定位版本，目录按 versionId 查询；创建版本时 cloneComposition 从源版本复制到目标版本。源码证明工作树中的作用域实现，不替代发布或真实交互验证。
+    visibility: internal
+  - id: evidence.dhr-template-workspace-version-selection
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+    description: original-evidence；工作区查询键包含 templateId 与 selectedVersionId，打开时优先保留有效 initialVersionId，并在切换版本时清空上一版本草稿；保存调用携带 selectedVersionId。源码证明工作树实现，不证明真实浏览器交互已完成。
+    visibility: internal
+  - id: evidence.dhr-template-composition-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java
+    description: original-evidence；getDhrTemplateCompositionReadsOnlyTheRequestedVersion 覆盖指定 V1 composition 只读取 V1 目录，不查询 V2。测试源码存在不等于本次已执行通过。
+    visibility: internal
+  - id: evidence.dhr-template-workspace-static-regression
+    type: test
+    path: gmp-platform/frontend/scripts/verify-dhr-template-workspace.mjs
+    description: original-evidence；静态回归检查显式版本优先于默认版本、缓存工作区不得替换请求版本，以及版本切换清除先前 composition 草稿。该脚本不是浏览器端到端验证。
+    visibility: internal

@@ -1,0 +1,114 @@
+knowledgeModelVersion: 0.3.23
+facts:
+  - id: fact.dhr-instance.first-legal-start
+    name: 生产对象发生首次合法开工
+    conceptId: concept.production-object
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    aliases: [productionObject.firstLegalStart]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-start-transaction-source]
+    sourceRevision: 343ee1910d82b945841b0c132d2c3912a886b250
+    sourceLocator: ProductionExecutionService.act 中 execution 不存在且 action=START、对象状态为 CREATED 的创建分支
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.dhr-instance.count-for-production-object
+    name: 生产对象已关联的 DHR 实例数量
+    conceptId: concept.dhr-instance
+    valueType: integer
+    sourceType: database
+    sourcePath: docs/knowledge/evidence/dhr-instance-management-user-confirmed.md
+    aliases: [productionObject.dhrInstanceCount]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: 用户确认每个生产对象首次开工只创建一个 DHR；持久化唯一约束由本期实现闭环
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.dhr-instance.context-snapshot-present
+    name: DHR 实例上下文快照完整
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
+    aliases: [dhrInstance.contextSnapshotPresent]
+    availability: configuration-and-runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+    sourceRevision: working-tree
+    sourceLocator: 首次 START 复用冻结执行上下文，并从已绑定 DHR 模板版本的目录与表单引用构建后持久化实例目录快照
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.dhr-instance.production-complete
+    name: 生产对象执行已完成全部工序
+    conceptId: concept.production-object
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    aliases: [productionExecution.allOperationsComplete]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-start-transaction-source]
+    sourceRevision: 343ee1910d82b945841b0c132d2c3912a886b250
+    sourceLocator: ProductionExecutionService.act 中 engine.allComplete 后调用 production.completeObject
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.dhr-instance.form-record-dhr-item-id
+    name: 表单实例记录冻结的 DHR 目录项标识
+    conceptId: concept.form-instance
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    aliases: [formInstance.snapshot.dhrItemId]
+    availability: runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema]
+    sourceRevision: 343ee1910d82b945841b0c132d2c3912a886b250
+    sourceLocator: FormInstanceRecordService 保存的 snapshotJson.form.dhrItemId
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.dhr-instance.form-record-copy-id
+    name: 表单实例记录的份标识
+    conceptId: concept.form-instance
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql
+    aliases: [formInstance.copyId]
+    availability: runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-form-record-schema]
+    sourceRevision: 343ee1910d82b945841b0c132d2c3912a886b250
+    sourceLocator: form_instance_record.copy_id 及 tenant_id/object_id/operation_id/copy_id 唯一约束
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: fact.dhr-instance.has-view-permission
+    name: 当前用户具有 DHR 实例查看权限
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: docs/knowledge/evidence/dhr-instance-management-user-confirmed.md
+    aliases: [dhrInstanceQuery.hasViewPermission]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DhrInstanceController 以 dhr.instances.view 保护查询接口；0089 创建菜单与操作权限并仅默认授予 ADMIN
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed

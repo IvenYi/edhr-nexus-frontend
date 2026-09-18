@@ -87,7 +87,6 @@ public class FormWorklistService {
                     records.put(rs.getString("operation_id") + "\u0000" + rs.getString("copy_id"), record);
                 }, "default", objectId);
                 for (JsonNode op : snapshot.path("operations")) for (JsonNode form : op.path("forms")) {
-                    if (form.hasNonNull("fulfilledBy")) continue; // Alias bindings are not another physical record.
                     String opId = op.path("id").asText(), formId = form.path("id").asText();
                     JsonNode current = state.path("operations").path(opId);
                     for (String copyId : ExecutionFormCopies.ids(current, formId)) {

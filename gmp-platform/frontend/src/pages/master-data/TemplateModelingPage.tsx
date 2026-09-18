@@ -1,5 +1,6 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   ContentCopy,
   DataObjectOutlined,
@@ -310,7 +311,6 @@ const auditFieldLabelMap: Record<string, string> = {
   formVersion: '表单版本',
   displayName: 'DHR 内表单名称',
   required: '必填证据',
-  directorySnapshot: '目录和表单快照',
   modelingChange: '建模变更',
   modelDesignJson: '表单模型快照',
   canvasDesignJson: '表单画布快照',
@@ -318,7 +318,6 @@ const auditFieldLabelMap: Record<string, string> = {
 };
 
 const auditSnapshotFields = new Set([
-  'directorySnapshot',
   'modelingChange',
   'modelDesignJson',
   'canvasDesignJson',
@@ -579,14 +578,7 @@ const fieldSx = {
   '& .MuiInputBase-input': { boxSizing: 'border-box' },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -1502,6 +1494,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
       backgroundClip: 'padding-box',
       boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)',
+      textAlign: 'center',
     };
   }
 

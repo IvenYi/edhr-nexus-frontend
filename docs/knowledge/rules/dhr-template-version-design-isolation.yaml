@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.23
+rules:
+  - id: rule.dhr-template-design-version-isolation
+    name: DHR 模板设计按明确选择的版本隔离 composition
+    status: implemented
+    visibility: internal
+    trigger: dhr-template-design.open-or-save
+    scope: dhr-template-version-design
+    condition: {fact: fact.dhr-template-design.explicit-version-selected, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      readScope: templateId-and-versionId
+      saveScope: templateId-and-versionId
+      fallbackSelection: forbidden
+      preserveVersionIsolation: true
+    explanation: user-confirmed；从版本行进入设计时，窗口必须读取并保存用户明确选择的 DHR 模板版本。复制后的版本目录与表单引用独立；缓存、默认排序、最新版本或父模板均不能替代明确的 versionId。后端 endpoint 的具体查询方式和前端首次打开竞态诊断是实现证据，不新增其他业务规则。
+    evidenceIds: [evidence.dhr-template-version-design-isolation-user-confirmed, evidence.dhr-template-composition-controller, evidence.dhr-template-workspace-version-selection, evidence.dhr-template-composition-controller-test, evidence.dhr-template-workspace-static-regression]

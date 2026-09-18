@@ -188,6 +188,32 @@ class ProductionServiceTest {
     }
 
     @Test
+    void allowsResplittingTheQuantityOfACancelledUnstartedObject() {
+        WorkOrder order = order(BigDecimal.TEN);
+        ProductProcessVersion version = version(100L, "BATCH");
+        order.setProcessVersionId(version.getId());
+        ProductionObject cancelled = ProductionObject.builder()
+                .id(200L).objectType("BATCH").status("CANCELLED")
+                .targetQuantity(BigDecimal.TEN).build();
+        when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
+        when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId()))
+                .thenReturn(List.of(cancelled));
+        when(processResolutionService.findVersionForProduct(order.getProductId(), version.getId()))
+                .thenReturn(Optional.of(version));
+        when(idGenerator.nextId()).thenReturn(201L);
+        when(productionObjectRepository.existsByTenantIdAndObjectNo("default", "BATCH-201")).thenReturn(false);
+        when(workOrderRepository.save(order)).thenReturn(order);
+        when(productionObjectRepository.save(any(ProductionObject.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ProductionObject replacement = productionService.split(
+                order.getId(), version.getId(), BigDecimal.TEN, "BATCH-201", null);
+
+        assertThat(replacement.getTargetQuantity()).isEqualByComparingTo(BigDecimal.TEN);
+        assertThat(replacement.getStatus()).isEqualTo("CREATED");
+    }
+
+    @Test
     void rejectsInvalidProductionObjectPlannedWindow() {
         WorkOrder order = order(BigDecimal.TEN);
         when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));

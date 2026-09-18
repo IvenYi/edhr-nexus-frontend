@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.23
+decisions:
+  - id: DEC-0061
+    title: DHR 模板设计版本隔离
+    status: implemented
+    visibility: internal
+    context: user-confirmed；同一批记录模板可拥有独立版本 composition。用户从版本行点击设计时必须以明确选择的版本作为设计上下文，避免缓存或默认排序展示或保存到另一个版本。本决策具体化 RDO 版本治理中的显式版本引用约束，仅覆盖模板设计 composition，不改变 DHR 实例、生产快照、审计事件或持久化模型。
+    decisionStatements:
+      - id: DEC-0061-01
+        statement: 批记录模板复制版本后，目标版本的目录和表单引用可独立于源版本保存。
+        status: implemented
+        visibility: internal
+      - id: DEC-0061-02
+        statement: 从版本行点击设计时，DHR 模板设计窗口必须读取和保存用户明确选择的 templateId 与 versionId；不得以缓存、默认排序、最新版本或父模板替代该 versionId。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.dhr-template-version-design-isolation-user-confirmed, evidence.dhr-template-composition-controller, evidence.dhr-template-workspace-version-selection, evidence.dhr-template-composition-controller-test, evidence.dhr-template-workspace-static-regression]
+    acceptanceScenarios:
+      - id: scenario.dhr-template-design-target-version
+        given: 同一批记录模板存在 V1 和已复制并独立修改的 V2，且工作区查询已缓存
+        when: 用户从 V1 版本行点击设计
+        then: 窗口标题、目录和引用表单均来自 V1，不显示或保存 V2 内容
+        evidenceIds: [evidence.dhr-template-version-design-isolation-user-confirmed, evidence.dhr-template-workspace-version-selection, evidence.dhr-template-workspace-static-regression]
+        evidenceRequirements: [前端回归断言, 用户手工交互验收]
+      - id: scenario.dhr-template-composition-read-scope
+        given: V1 与 V2 各有不同目录
+        when: 请求 V1 composition
+        then: 后端只读取 V1 目录和条目
+        evidenceIds: [evidence.dhr-template-composition-controller, evidence.dhr-template-composition-controller-test]
+        evidenceRequirements: [控制器单元测试]
+    implementationDiscrepancies: []

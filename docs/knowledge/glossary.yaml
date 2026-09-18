@@ -66,6 +66,12 @@ terms:
     aliases: [DHR 表单目录项, 批记录目录项]
     status: implemented
     visibility: internal
+  - id: term.dhr-instance
+    name: DHR 实例
+    definition: 以单个 BATCH 或 SN 生产对象为唯一业务锚点的动态批记录；在对象首次合法开工时同事务自动创建，冻结开工时的生产、制程、路线、DHR 模板版本和目录快照，并按目录项聚合对应生产执行表单证据。第一期只提供列表和只读详情。
+    aliases: [动态批记录, 生产对象 DHR, 批记录实例]
+    status: specified
+    visibility: internal
   - id: term.form-template-version
     name: 表单模板版本
     definition: DHR 目录项实际引用并由工序绑定追溯的受控表单版本；用户可见的生效状态由 effectiveFrom/effectiveTo 时间窗计算，持久化 status 不替代该状态。

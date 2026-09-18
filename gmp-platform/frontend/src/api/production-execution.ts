@@ -6,7 +6,7 @@ export interface ExecutionButton { action: string; label: string; requiresSignat
 export interface ExecutionForm {
   sourceType?: 'CUSTOM';
   id: string; versionId: string; name: string; code: string; version: string; categoryName?: string | null;
-  model: string; canvas: string; fields: ModelField[]; required?: boolean; fulfilledBy?: string; workId?: string; workNodeId?: string;
+  model: string; canvas: string; fields: ModelField[]; required?: boolean; workId?: string; workNodeId?: string;
 }
 export interface ExecutionWork {
   id: string; name: string; version: string;

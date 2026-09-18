@@ -4,11 +4,13 @@ import { AddRounded, ArrowBackRounded, CloseRounded, MoreHorizRounded, SearchRou
 import { getExecutionTemplates, type ExecutionEditors, type ExecutionForm, type ExecutionFormCopies, type ExecutionTemplate } from '@/api/production-execution';
 
 export function formSource(form: ExecutionForm) { return form.sourceType === 'CUSTOM' ? 'custom' : form.workId ? 'work' : 'configured'; }
-export function selectableForms(forms: ExecutionForm[], copies: Record<string, ExecutionFormCopies>) {
-  return forms.filter(form => !form.fulfilledBy && (!form.workId || (copies[form.id]?.instanceIds.length ?? 0) > 0));
-}
+export function selectableForms(forms: ExecutionForm[]) { return forms; }
 const categories = [{ id: 'configured', label: '工序配置' }, { id: 'custom', label: '自定义' }, { id: 'work', label: '作业发起' }];
-const statusLabel = (status?: string) => status === 'COMPLETED' ? '已完成' : status === 'IN_PROGRESS' ? '进行中' : '未填报';
+const statusLabel = (status?: string) => status === 'COMPLETED' ? '已完成'
+  : status === 'IN_PROGRESS' ? '进行中'
+    : status === 'WAITING_OPERATION_START' ? '待工序开工'
+      : status === 'WAITING_WORK_NODE' ? '待作业流程到达'
+        : status === 'NOT_APPLICABLE' ? '不适用' : '未填报';
 
 export function EditorAvatars({ users, onClick }: { users: ExecutionEditors[string][string][] | null; onClick: React.MouseEventHandler<HTMLButtonElement> }) {
   if (!users?.length) return null;
@@ -23,10 +25,11 @@ export function EditorAvatars({ users, onClick }: { users: ExecutionEditors[stri
 interface Props {
   open: boolean; container: () => HTMLElement | null; onClose: () => void; forms: ExecutionForm[];
   copies: Record<string, ExecutionFormCopies>; selectedId: string; busy: boolean; canAttach: boolean;
+  operationStatus?: string; workStates?: Record<string, { status: string }>;
   editors: ExecutionEditors | null; onSelect: (id: string) => void; onAttach: (versionId: string, required: boolean) => void;
 }
 export default function ExecutionFormSelector(props: Props) {
-  const { open, container, onClose, forms, copies, selectedId, busy, canAttach, editors, onSelect, onAttach } = props;
+  const { open, container, onClose, forms, copies, selectedId, busy, canAttach, operationStatus, workStates, editors, onSelect, onAttach } = props;
   const [category, setCategory] = useState('configured');
   const [keyword, setKeyword] = useState('');
   const [adding, setAdding] = useState(false);
@@ -36,7 +39,7 @@ export default function ExecutionFormSelector(props: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [people, setPeople] = useState<{ anchor: HTMLElement; id: string } | null>(null);
-  const visible = selectableForms(forms, copies);
+  const visible = selectableForms(forms);
   useEffect(() => {
     if (people && !Object.keys(editors?.[people.id] ?? {}).length) setPeople(null);
   }, [editors, people]);
@@ -89,14 +92,16 @@ export default function ExecutionFormSelector(props: Props) {
       <Box className="execution-form-selector-list" role="list" aria-label="当前工序表单">
         {filtered.map(form => {
           const group = copies[form.id]; const active = form.id === selectedId; const users = editors ? Object.values(editors[form.id] ?? {}) : null;
-          const status = group?.status ?? 'PENDING';
-          return <Box key={form.id} role="listitem" className={`execution-form-selector-row${active ? ' is-selected' : ''}`}>
-            <button type="button" className="execution-form-selector-target" disabled={busy} aria-current={active || undefined} onClick={() => onSelect(form.id)}>
+          const arrived = Boolean(group?.instanceIds.length);
+          const workCompleted = form.workId && workStates?.[form.workId]?.status === 'COMPLETED';
+          const status = group?.status ?? (operationStatus !== 'IN_PROGRESS' ? 'WAITING_OPERATION_START' : workCompleted ? 'NOT_APPLICABLE' : form.workId ? 'WAITING_WORK_NODE' : 'PENDING');
+          return <Box key={form.id} role="listitem" className={`execution-form-selector-row${active ? ' is-selected' : ''}${arrived ? '' : ' is-planned'}`}>
+            <button type="button" className="execution-form-selector-target" disabled={busy || !arrived} aria-current={active || undefined} onClick={() => onSelect(form.id)}>
               <span className="execution-form-selector-name">{form.name}</span>
               <span className="execution-form-selector-meta"><span>编码 {form.code || '—'}</span><span>版本 {form.version || '—'}</span></span>
-              <span className="execution-form-selector-facts"><span className={group?.required ?? form.required ?? true ? 'is-required' : ''}>{group?.required ?? form.required ?? true ? '必填' : '选填'}</span><span>共 {Math.max(1, group?.instanceIds.length ?? 0)} 份</span><span className="execution-form-status" data-status={status}>{statusLabel(status)}</span></span>
+              <span className="execution-form-selector-facts"><span className={group?.required ?? form.required ?? true ? 'is-required' : ''}>{group?.required ?? form.required ?? true ? '必填' : '选填'}</span><span>{arrived ? `共 ${group?.instanceIds.length} 份` : '计划表单'}</span><span className="execution-form-status" data-status={status}>{statusLabel(status)}</span></span>
             </button>
-            <EditorAvatars users={users} onClick={event => setPeople({ anchor: event.currentTarget, id: form.id })} />
+            {arrived && <EditorAvatars users={users} onClick={event => setPeople({ anchor: event.currentTarget, id: form.id })} />}
           </Box>;
         })}
         {!filtered.length && <Typography className="execution-form-selector-hint">{keyword ? '未找到匹配的表单' : category === 'work' ? '当前工序暂无作业挂载表单' : category === 'custom' ? '尚未添加自定义表单' : '当前工序未配置独立表单'}</Typography>}

@@ -1,0 +1,95 @@
+knowledgeModelVersion: 0.3.23
+rules:
+  - id: rule.dhr-instance-create-on-first-start
+    name: 首次合法开工自动创建 DHR 实例
+    status: implemented
+    visibility: internal
+    trigger: production-execution.start
+    scope: dhr-instance-management
+    condition:
+      all:
+        - {fact: fact.dhr-instance.first-legal-start, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: create-dhr-instance
+      initialStatus: IN_PROGRESS
+      manualCreationAllowed: false
+      transactionBoundary: production-execution-start
+    explanation: BATCH 与 SN 生产对象均只在首次合法 START 时由系统自动创建 DHR，禁止手工创建；DHR 创建与生产开工处于同一事务，任一失败时整体回滚。拆分、未开工或取消阶段不创建有效 DHR。
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
+  - id: rule.dhr-instance-unique-per-production-object
+    name: 每个生产对象最多一个 DHR 实例
+    status: specified
+    visibility: internal
+    trigger: dhr-instance.create
+    scope: dhr-instance-management
+    condition: {fact: fact.dhr-instance.count-for-production-object, operator: equals, value: 0}
+    result:
+      type: allow-with-governance
+      action: persist-dhr-instance
+      uniqueness: tenant-and-production-object
+      duplicateBehavior: reuse-or-reject-without-second-instance
+    explanation: DHR 以生产对象为唯一业务锚点；租户与生产对象组合必须由数据库唯一约束和事务内创建共同防止重复。该规则不引入批次/SN之外的独立手工 DHR。
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed]
+  - id: rule.dhr-instance-freeze-start-context
+    name: DHR 创建时冻结生产与模板上下文
+    status: specified
+    visibility: internal
+    trigger: dhr-instance.create
+    scope: dhr-instance-management
+    condition: {fact: fact.dhr-instance.context-snapshot-present, operator: equals, value: true}
+    result:
+      type: freeze-execution-snapshot
+      fields: [workOrder, product, productionObject, productProcessVersion, routeVersion, dhrTemplateVersion, dhrDirectorySnapshot]
+      laterTemplateChangesRewriteInstance: false
+    explanation: DHR 在首次开工时冻结工单、产品、生产对象、产品制程版本、工艺路线版本、DHR 模板版本及目录快照。后续模板或配置变化不能改写既有 DHR 上下文。
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+  - id: rule.dhr-instance-complete-with-production
+    name: 全部工序完成时同步完成 DHR
+    status: specified
+    visibility: internal
+    trigger: production-execution.complete-all-operations
+    scope: dhr-instance-management
+    condition: {fact: fact.dhr-instance.production-complete, operator: equals, value: true}
+    result:
+      type: update-reference
+      target: dhrInstance.status
+      value: COMPLETED
+      transactionBoundary: production-execution-action
+    explanation: DHR 创建后为 IN_PROGRESS；当同一生产执行动作完成全部工序并使生产对象正常完成时，关联 DHR 在同一事务同步进入 COMPLETED。本期不定义提前结束、作废、审批、发布或归档的 DHR 状态迁移。
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
+  - id: rule.dhr-instance-aggregate-production-form-evidence
+    name: DHR 只读详情自动聚合生产表单证据
+    status: specified
+    visibility: internal
+    trigger: dhr-instance.query-detail
+    scope: dhr-instance-management
+    condition:
+      all:
+        - {fact: fact.form-instance.business-source, operator: equals, value: PRODUCTION_EXECUTION}
+        - {fact: fact.dhr-instance.form-record-dhr-item-id, operator: is-present, value: null}
+        - {fact: fact.dhr-instance.form-record-copy-id, operator: is-present, value: null}
+    result:
+      type: return-query-projection
+      target: dhrInstance.directoryEvidence
+      groupBy: dhrItemId
+      preserveCopiesBy: copyId
+      duplicateSourceEvidence: false
+      readOnly: true
+    explanation: 第一阶段只按同一生产对象聚合 PRODUCTION_EXECUTION 来源表单记录中冻结的 dhrItemId，并按 copyId 分别保留每一份。只有工序/DHR 绑定表单携带该目录项；作业发起、自定义挂载或其他无 dhrItemId 的独立记录不自动进入 DHR，即使引用同一表单模板版本也不共享来源证据。
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema]
+  - id: rule.dhr-instance-query-permission
+    name: DHR 列表与详情使用专门查看权限
+    status: specified
+    visibility: internal
+    trigger: dhr-instance.query
+    scope: dhr-instance-management
+    condition: {fact: fact.dhr-instance.has-view-permission, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      target: dhrInstance.list-and-read-only-detail
+      menuPermission: records.dhr-management
+      operationPermission: dhr.instances.view
+      defaultGrant: administrator-only
+    explanation: DHR 管理路由属于生产记录模块；菜单和查看接口使用独立权限，初始化只默认授予管理员，其他角色必须显式分配。本规则不授予汇总、审批、发布或修改来源证据的权限。
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed]

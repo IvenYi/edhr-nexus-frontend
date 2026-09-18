@@ -1,0 +1,79 @@
+knowledgeModelVersion: 0.3.23
+decisions:
+  - id: DEC-0062
+    title: DHR 实例管理第一期边界
+    status: specified
+    visibility: internal
+    context: user-confirmed；用户授权开始 DHR 管理开发。本决策收敛 DEC-0018-07 中尚待确认的首次开工创建时点，覆盖 BATCH/SN 唯一实例、同事务创建、冻结上下文、表单证据聚合、列表只读详情、权限与管理员默认授权。汇总审批、退回、发布、归档、作废、拖拽和人工补充均为明确非目标。
+    decisionStatements:
+      - id: DEC-0062-01
+        statement: BATCH 与 SN 生产对象均在首次合法 START 时由系统自动创建唯一 DHR 实例，禁止手工创建；创建与生产开工处于同一事务，失败整体回滚。
+        status: specified
+        visibility: internal
+      - id: DEC-0062-02
+        statement: DHR 以生产对象为唯一业务锚点，并以租户和生产对象组合唯一约束防止重复；拆分、未开工或取消阶段不创建有效 DHR。
+        status: specified
+        visibility: internal
+      - id: DEC-0062-03
+        statement: DHR 创建时冻结工单、产品、生产对象、产品制程版本、工艺路线版本、DHR 模板版本和目录快照；后续模板变化不改写既有实例。
+        status: specified
+        visibility: internal
+      - id: DEC-0062-04
+        statement: DHR 创建状态为 IN_PROGRESS；同一生产执行动作完成全部工序并正常完成生产对象时，DHR 在同一事务进入 COMPLETED。本期不定义提前结束等其他 DHR 状态迁移。
+        status: specified
+        visibility: internal
+      - id: DEC-0062-05
+        statement: DHR 第一阶段只按同一生产对象聚合 PRODUCTION_EXECUTION 来源表单记录中冻结的 dhrItemId；每个 copyId 分别保留。仅工序/DHR 绑定产生的表单记录携带该目录项；作业发起、自定义挂载或其他无 dhrItemId 的独立记录不自动进入 DHR，即使引用同一表单模板版本也不共享实例或证据。
+        status: specified
+        visibility: internal
+      - id: DEC-0062-06
+        statement: DHR 管理第一阶段提供列表和只读详情；菜单权限为 records.dhr-management，查看操作权限为 dhr.instances.view，初始化只默认授予管理员。
+        status: specified
+        visibility: internal
+      - id: DEC-0062-07
+        statement: 进入 DHR 闭环的生产执行必须具有关联实例；全部工序完成时若实例缺失，必须阻断生产完成并回滚当前动作，不允许静默跳过 DHR 状态同步。
+        status: specified
+        visibility: internal
+      - id: DEC-0062-08
+        statement: DHR 汇总审批、退回、发布、归档、作废、拖拽和人工补充证据均不属于本期，不得从既有规划或竞品参考推导为已实现。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-management-business-boundary, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-snapshot-source, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema]
+    acceptanceScenarios:
+      - id: scenario.dhr-instance-created-on-first-legal-start
+        given: BATCH 或 SN 生产对象尚未开工且没有 DHR 实例
+        when: 用户执行首次合法 START
+        then: 系统在同一事务创建一个 IN_PROGRESS DHR 并启动生产；任一环节失败时均不保留部分结果
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
+        evidenceRequirements: [BATCH 首次开工集成测试, SN 首次开工集成测试, 事务回滚测试, 并发唯一创建测试]
+      - id: scenario.dhr-instance-freezes-start-context
+        given: 生产对象绑定产品制程、路线和 DHR 模板版本
+        when: 首次开工创建 DHR 后修改后续模板或配置
+        then: 既有 DHR 仍返回创建时的生产与 DHR 目录快照
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+        evidenceRequirements: [快照持久化测试, 模板变化不改写历史实例测试]
+      - id: scenario.dhr-instance-aggregates-form-copies
+        given: 同一生产对象具有多个带相同 dhrItemId 且 copyId 不同的生产执行表单实例记录
+        when: 有权限用户查看 DHR 只读详情
+        then: 详情按目录项聚合并分别保留每一份；同模板的作业或自定义表单因无 dhrItemId 不进入该目录项
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema]
+        evidenceRequirements: [多份聚合测试, 同模板来源隔离测试, 无目录映射排除测试]
+      - id: scenario.dhr-instance-completes-with-production
+        given: 生产对象的 DHR 状态为 IN_PROGRESS 且只剩最后一个未完成工序
+        when: 同一生产执行动作完成全部工序
+        then: 生产对象与 DHR 在同一事务分别进入正常完成和 COMPLETED
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
+        evidenceRequirements: [正常完工状态同步测试, 状态同步失败回滚测试]
+      - id: scenario.dhr-instance-permission-default
+        given: 初始化数据库存在管理员和普通角色
+        when: 执行 DHR 菜单与权限迁移
+        then: 管理员默认获得 records.dhr-management 和 dhr.instances.view，普通角色不被自动授权且无权访问列表和详情
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed]
+        evidenceRequirements: [迁移测试, 控制器授权测试, 菜单可见性测试]
+      - id: scenario.dhr-instance-missing-blocks-completion
+        given: 已进入 DHR 闭环的生产执行缺少关联 DHR 实例
+        when: 用户完成最后一个未完成工序
+        then: 当前动作失败并回滚，生产对象不得进入完成状态
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
+        evidenceRequirements: [DHR 缺失阻断测试, 生产状态和执行修订回滚校验]

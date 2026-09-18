@@ -199,6 +199,7 @@ function getModuleIdByPath(pathname: string): string {
   if (isPathSegmentMatch(pathname, '/master-data')) return 'data';
   if (isPathSegmentMatch(pathname, '/production')) return 'production';
   if (isPathSegmentMatch(pathname, '/form-management')) return 'records';
+  if (isPathSegmentMatch(pathname, '/dhr-management')) return 'records';
   if (isPathSegmentMatch(pathname, '/workflow')) return 'production';
   if (isPathSegmentMatch(pathname, '/system')) return 'system';
   return 'home';

@@ -83,13 +83,10 @@ public class ProductionExecutionEngine {
     public List<String> completionIssues(JsonNode op, JsonNode opState) {
         List<String> issues = new ArrayList<>();
         for (JsonNode form : op.path("forms")) {
-            if (form.has("fulfilledBy") || !ExecutionFormCopies.required(op, form)) continue;
+            if (!ExecutionFormCopies.required(op, form)) continue;
             String formId = form.path("id").asText();
             if (ExecutionFormCopies.ids(opState, formId).isEmpty()) {
-                boolean requiredBinding = !form.has("workId");
-                for (JsonNode direct : op.path("forms"))
-                    if (formId.equals(direct.path("fulfilledBy").asText()) && direct.path("required").asBoolean(true)) requiredBinding = true;
-                if (requiredBinding) issues.add("表单「" + form.path("name").asText() + "」尚未提交完成");
+                if (!form.has("workId")) issues.add("表单「" + form.path("name").asText() + "」尚未提交完成");
             }
             issues.addAll(ExecutionFormCopies.incomplete(opState, form));
         }
@@ -98,7 +95,6 @@ public class ProductionExecutionEngine {
                 issues.add("作业「" + work.path("name").asText() + "」尚未完成");
         }
         for (JsonNode form : op.path("forms")) {
-            if (form.has("fulfilledBy")) continue;
             for (String instanceId : ExecutionFormCopies.ids(opState, form.path("id").asText())) {
                 JsonNode entry = opState.path("forms").path(instanceId);
                 if ("COMPLETED".equals(entry.path("status").asText())) issues.addAll(validateValues(form, entry.path("values")));
@@ -114,7 +110,7 @@ public class ProductionExecutionEngine {
         requireEmpty(startIssues(snapshot, state, op));
         current.put("status", "IN_PROGRESS").put("startedAt", LocalDateTime.now().toString());
         for (JsonNode form : op.path("forms")) {
-            if (form.has("workId") || form.has("fulfilledBy")) continue;
+            if (form.has("workId")) continue;
             initializeBindingForm(form, current);
         }
         for (JsonNode work : op.path("works")) {
@@ -136,7 +132,7 @@ public class ProductionExecutionEngine {
         List<String> warnings = completionWarnings(op, current);
         if (!warnings.isEmpty() && !acknowledged) throw invalid("请确认未完成表单告知：" + String.join("；", warnings));
         for (JsonNode form : op.path("forms")) {
-            if (form.has("fulfilledBy") || form.has("workId") || ExecutionFormCopies.ids(current, form.path("id").asText()).isEmpty()) continue;
+            if (form.has("workId") || ExecutionFormCopies.ids(current, form.path("id").asText()).isEmpty()) continue;
             if (!ExecutionFormCopies.ended(current, form.path("id").asText()))
                 ExecutionFormCopies.ensureGroup(current, form.path("id").asText()).put("ended", true).put("endedBy", operator)
                         .put("endedAt", LocalDateTime.now().toString()).put("endedReason", "OPERATION_COMPLETE");
@@ -320,7 +316,7 @@ public class ProductionExecutionEngine {
         for (int pass = 0; pass < op.path("forms").size(); pass++) {
             boolean changed = false;
             for (JsonNode form : op.path("forms")) {
-                if (!form.has("workId") || form.has("fulfilledBy")) continue;
+                if (!form.has("workId")) continue;
                 String formId = form.path("id").asText(), workId = form.path("workId").asText(), nodeId = form.path("workNodeId").asText();
                 JsonNode workState = current.path("works").path(workId);
                 if (!contains(workState.path("active"), nodeId) || ExecutionFormCopies.ids(current, formId).isEmpty()
@@ -391,14 +387,14 @@ public class ProductionExecutionEngine {
 
     public List<String> completionWarnings(JsonNode op, JsonNode current) {
         List<String> warnings = new ArrayList<>();
-        for (JsonNode form : op.path("forms")) if (!form.has("fulfilledBy") && !ExecutionFormCopies.required(op, form))
+        for (JsonNode form : op.path("forms")) if (!ExecutionFormCopies.required(op, form))
             warnings.addAll(ExecutionFormCopies.incomplete(current, form));
         return warnings;
     }
 
     public boolean canManageCopies(JsonNode form, JsonNode current, String operator) {
         String id = form.path("id").asText();
-        if (!"IN_PROGRESS".equals(current.path("status").asText()) || form.has("fulfilledBy")
+        if (!"IN_PROGRESS".equals(current.path("status").asText())
                 || ExecutionFormCopies.ids(current, id).isEmpty() || ExecutionFormCopies.ended(current, id)) return false;
         if (form.has("workId") && !contains(current.path("works").path(form.path("workId").asText()).path("active"), form.path("workNodeId").asText())) return false;
         JsonNode node = defaultFormNode();

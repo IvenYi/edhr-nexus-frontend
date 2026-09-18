@@ -881,7 +881,7 @@ rules:
     evidenceIds: [evidence.production-object-start-side-effects-current, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.guancheng-batch-start-source]
   - id: rule.production.object-cancel-before-start
     name: 未开工生产对象取消保留追溯
-    status: specified
+    status: implemented
     visibility: internal
     trigger: production-object.cancel
     scope: production-object
@@ -894,8 +894,9 @@ rules:
       type: write-audit-record
       objectStatus: CANCELLED
       physicalDelete: false
+      excludeFromWorkOrderAllocation: true
       reevaluateWorkOrderTerminalState: true
-    explanation: 取消仅适用于尚未开工的生产对象；目标语义等同删除未开始对象，但保留对象和审计。当前 eDHR 虽能写入 CANCELLED，却尚未释放工单可分配数量，且部分拆分后取消可能错误结束工单；这些联动必须在批次管理实现前修正，不能把当前状态写入行为当作完整业务闭环。
+    explanation: 取消仅适用于尚未开工的生产对象；取消对象保留对象记录和审计，但其 targetQuantity 不再计入工单有效分配量，工单计划数量不变。工单仍为 CREATED 时，可按首次锁定制程继续拆分；全部对象取消时工单保持 CREATED，不得误判为 COMPLETED。
     evidenceIds: [evidence.production-object-cancel-side-effects-current, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-service-test, evidence.guancheng-batch-remove-source]
   - id: rule.production.object-early-termination
     name: 进行中生产对象提前结束

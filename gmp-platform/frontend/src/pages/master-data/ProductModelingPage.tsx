@@ -1,6 +1,8 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
+import { Fragment, useEffect, useMemo, useState, type PointerEventHandler, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
@@ -113,7 +115,7 @@ const VERSION_COLUMNS: VersionColumn[] = [
   { id: 'actions', label: '操作', width: ACTION_COLUMN_WIDTH, minWidth: ACTION_COLUMN_WIDTH },
 ];
 
-const tableHeaderCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', height: 48, py: 0, borderBottom: '1px solid #e4e7ed' };
+const tableHeaderCellSx = listTableHeaderCellSx;
 const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
 const toolbarIconSx = { width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } };
 const drawerRootSx = {
@@ -135,6 +137,7 @@ function operationColumnSx(width: number, layer: 'head' | 'body') {
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
     backgroundClip: 'padding-box',
     boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    textAlign: 'center',
     whiteSpace: 'nowrap',
   };
 }
@@ -208,6 +211,8 @@ interface EditorTarget {
 }
 
 export default function ProductModelingPage() {
+  const { getColumnWidth: getParentColumnWidth, getResizeHandleProps: getParentResizeHandleProps } = usePersistedListColumnWidths(PARENT_COLUMNS, 'product-modeling-column-widths:v1:');
+  const { getColumnWidth: getVersionColumnWidth, getResizeHandleProps: getVersionResizeHandleProps } = usePersistedListColumnWidths(VERSION_COLUMNS, 'product-modeling-version-column-widths:v1:');
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
@@ -240,8 +245,8 @@ export default function ProductModelingPage() {
   }, [page, query.data?.totalPages]);
   const rows = query.data?.content ?? [];
   const visibleColumns = useMemo(() => PARENT_COLUMNS.filter((column) => !hiddenColumns.includes(column.id)), [hiddenColumns]);
-  const parentTableWidth = visibleColumns.reduce((total, column) => total + column.width, 0);
-  const versionTableWidth = VERSION_COLUMNS.reduce((total, column) => total + column.width, 0);
+  const parentTableWidth = visibleColumns.reduce((total, column) => total + getParentColumnWidth(column), 0);
+  const versionTableWidth = VERSION_COLUMNS.reduce((total, column) => total + getVersionColumnWidth(column), 0);
   const sharedTableWidth = Math.max(parentTableWidth, versionTableWidth);
   const parentActionSpacerWidth = Math.max(0, versionTableWidth - parentTableWidth);
   const versionActionSpacerWidth = Math.max(0, parentTableWidth - versionTableWidth);
@@ -361,10 +366,13 @@ export default function ProductModelingPage() {
       </Box>
       <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
         <Table stickyHeader size="small" sx={{ width: sharedTableWidth, minWidth: sharedTableWidth, tableLayout: 'fixed', height: isTableEmptyState ? '100%' : 'auto' }}>
-          <colgroup>{visibleColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <col data-product-parent-action-spacer style={{ width: parentActionSpacerWidth }} /> : null}<col style={{ width: column.width }} /></Fragment>)}</colgroup>
-          <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <TableCell data-product-parent-action-spacer aria-hidden="true" sx={{ width: parentActionSpacerWidth, minWidth: parentActionSpacerWidth, maxWidth: parentActionSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell sx={{ ...tableHeaderCellSx, width: column.width, minWidth: column.minWidth, ...(column.id === 'actions' ? operationColumnSx(column.width, 'head') : {}) }}>{column.label}</TableCell></Fragment>)}</TableRow></TableHead>
+          <colgroup>{visibleColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <col data-product-parent-action-spacer style={{ width: parentActionSpacerWidth }} /> : null}<col style={{ width: getParentColumnWidth(column) }} /></Fragment>)}</colgroup>
+          <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => {
+            const width = getParentColumnWidth(column);
+            return <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <TableCell data-product-parent-action-spacer aria-hidden="true" sx={{ width: parentActionSpacerWidth, minWidth: parentActionSpacerWidth, maxWidth: parentActionSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell align={column.id === 'actions' ? 'center' : undefined} sx={{ ...tableHeaderCellSx, position: column.id === 'actions' ? 'sticky' : 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? operationColumnSx(width, 'head') : {}) }}>{column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getParentResizeHandleProps(column)} /> : null}</TableCell></Fragment>;
+          })}</TableRow></TableHead>
           <TableBody sx={{ height: isTableEmptyState ? '100%' : 'auto' }}>
-            {query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#c62828' }}>产品管理数据加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((product) => <ProductTreeRows key={product.id} product={product} visibleColumns={visibleColumns} expanded={expandedProductIds.includes(product.id)} parentTableColumnCount={parentTableColumnCount} sharedTableWidth={sharedTableWidth} parentActionSpacerWidth={parentActionSpacerWidth} versionActionSpacerWidth={versionActionSpacerWidth} onToggle={() => toggleExpanded(product.id)} onViewProduct={() => setDetailTarget({ product })} onAddVersion={() => void openCreateEditor(product)} onDeleteOnlyVersion={() => void openOnlyVersionDelete(product)} onViewVersion={(version, tab = 0) => setDetailTarget({ product, version, initialTab: tab })} onEditVersion={(version, mode, versions) => setEditorTarget({ product, versions, target: version, mode })} onDeleteVersion={(version) => setDeleteTarget({ product, version })} />)}
+            {query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#c62828' }}>产品管理数据加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((product) => <ProductTreeRows key={product.id} product={product} visibleColumns={visibleColumns} expanded={expandedProductIds.includes(product.id)} parentTableColumnCount={parentTableColumnCount} sharedTableWidth={sharedTableWidth} parentActionSpacerWidth={parentActionSpacerWidth} versionActionSpacerWidth={versionActionSpacerWidth} getVersionColumnWidth={getVersionColumnWidth} getVersionResizeHandleProps={getVersionResizeHandleProps} onToggle={() => toggleExpanded(product.id)} onViewProduct={() => setDetailTarget({ product })} onAddVersion={() => void openCreateEditor(product)} onDeleteOnlyVersion={() => void openOnlyVersionDelete(product)} onViewVersion={(version, tab = 0) => setDetailTarget({ product, version, initialTab: tab })} onEditVersion={(version, mode, versions) => setEditorTarget({ product, versions, target: version, mode })} onDeleteVersion={(version) => setDeleteTarget({ product, version })} />)}
           </TableBody>
         </Table>
       </TableContainer>
@@ -390,6 +398,8 @@ function ProductTreeRows({
   sharedTableWidth,
   parentActionSpacerWidth,
   versionActionSpacerWidth,
+  getVersionColumnWidth,
+  getVersionResizeHandleProps,
   onToggle,
   onViewProduct,
   onAddVersion,
@@ -405,6 +415,13 @@ function ProductTreeRows({
   sharedTableWidth: number;
   parentActionSpacerWidth: number;
   versionActionSpacerWidth: number;
+  getVersionColumnWidth: (column: VersionColumn) => number;
+  getVersionResizeHandleProps: (column: VersionColumn) => {
+    onPointerDown: PointerEventHandler<HTMLDivElement>;
+    onPointerMove: PointerEventHandler<HTMLDivElement>;
+    onPointerUp: PointerEventHandler<HTMLDivElement>;
+    onPointerCancel: PointerEventHandler<HTMLDivElement>;
+  };
   onToggle: () => void;
   onViewProduct: () => void;
   onAddVersion: () => void;
@@ -443,7 +460,10 @@ function ProductTreeRows({
       {visibleColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <TableCell data-product-parent-action-spacer aria-hidden="true" sx={{ width: parentActionSpacerWidth, minWidth: parentActionSpacerWidth, maxWidth: parentActionSpacerWidth, p: 0 }} /> : null}{renderParentCell(column)}</Fragment>)}
     </TableRow>
     {expanded ? <TableRow sx={{ '& > .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={parentTableColumnCount} sx={{ p: 0, bgcolor: '#fbfdff' }}>
-      {workspaceQuery.isLoading ? <Box sx={{ minHeight: 84, display: 'grid', placeItems: 'center', color: '#909399' }}><CircularProgress size={20} /></Box> : workspaceQuery.isError ? <Box sx={{ px: 2, py: 2, color: '#c62828' }}>制程配置版本加载失败</Box> : versions.length === 0 ? <Box sx={{ minHeight: 72, display: 'flex', alignItems: 'center', px: 2, color: '#909399', bgcolor: '#fbfdff' }}>暂无制程配置版本</Box> : <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}><Table stickyHeader size="small" aria-label="产品制程配置版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}><colgroup>{VERSION_COLUMNS.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <col data-product-version-action-spacer style={{ width: versionActionSpacerWidth }} /> : null}<col style={{ width: column.width }} /></Fragment>)}</colgroup><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{VERSION_COLUMNS.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <TableCell data-product-version-action-spacer aria-hidden="true" sx={{ width: versionActionSpacerWidth, minWidth: versionActionSpacerWidth, maxWidth: versionActionSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell align={column.id === 'actions' ? 'center' : undefined} sx={{ ...tableHeaderCellSx, width: column.width, minWidth: column.minWidth, ...(column.id === 'actions' ? operationColumnSx(column.width, 'head') : {}) }}>{column.label}</TableCell></Fragment>)}</TableRow></TableHead><TableBody>{versions.map((version) => <ProductVersionTableRow key={version.id} version={version} versionActionSpacerWidth={versionActionSpacerWidth} onOpen={() => onViewVersion(version)} onEdit={() => onEditVersion(version, 'edit', versions)} onCopy={() => onEditVersion(version, 'copy', versions)} onDelete={() => onDeleteVersion(version)} />)}</TableBody></Table></TableContainer>}
+      {workspaceQuery.isLoading ? <Box sx={{ minHeight: 84, display: 'grid', placeItems: 'center', color: '#909399' }}><CircularProgress size={20} /></Box> : workspaceQuery.isError ? <Box sx={{ px: 2, py: 2, color: '#c62828' }}>制程配置版本加载失败</Box> : versions.length === 0 ? <Box sx={{ minHeight: 72, display: 'flex', alignItems: 'center', px: 2, color: '#909399', bgcolor: '#fbfdff' }}>暂无制程配置版本</Box> : <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'auto' }}><Table stickyHeader size="small" aria-label="产品制程配置版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}><colgroup>{VERSION_COLUMNS.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <col data-product-version-action-spacer style={{ width: versionActionSpacerWidth }} /> : null}<col style={{ width: getVersionColumnWidth(column) }} /></Fragment>)}</colgroup><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{VERSION_COLUMNS.map((column) => {
+        const width = getVersionColumnWidth(column);
+        return <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <TableCell data-product-version-action-spacer aria-hidden="true" sx={{ width: versionActionSpacerWidth, minWidth: versionActionSpacerWidth, maxWidth: versionActionSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell align={column.id === 'actions' ? 'center' : undefined} sx={{ ...tableHeaderCellSx, position: column.id === 'actions' ? 'sticky' : 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? operationColumnSx(width, 'head') : {}) }}>{column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getVersionResizeHandleProps(column)} /> : null}</TableCell></Fragment>;
+      })}</TableRow></TableHead><TableBody>{versions.map((version) => <ProductVersionTableRow key={version.id} version={version} versionActionSpacerWidth={versionActionSpacerWidth} onOpen={() => onViewVersion(version)} onEdit={() => onEditVersion(version, 'edit', versions)} onCopy={() => onEditVersion(version, 'copy', versions)} onDelete={() => onDeleteVersion(version)} />)}</TableBody></Table></TableContainer>}
     </TableCell></TableRow> : null}
   </>;
 }

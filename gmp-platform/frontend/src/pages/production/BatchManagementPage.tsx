@@ -1,5 +1,6 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -82,15 +83,7 @@ const statusColors: Record<string, 'success' | 'warning' | 'error' | 'info' | 'd
   EARLY_TERMINATED: 'error',
   CANCELLED: 'error',
 };
-const tableHeaderCellSx = {
-  bgcolor: '#f5f7fa',
-  color: '#606266',
-  fontWeight: 600,
-  whiteSpace: 'nowrap',
-  height: 48,
-  py: 0,
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 const tableRowSx = {
   '& > .MuiTableCell-root': {
     height: 40,
@@ -110,6 +103,7 @@ function getStatusColumnSx(width: number, layer: 'head' | 'body') {
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
     backgroundClip: 'padding-box',
     boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    textAlign: layer === 'head' ? 'center' as const : undefined,
     whiteSpace: 'nowrap',
   };
 }
@@ -124,6 +118,7 @@ function getOperationColumnSx(layer: 'head' | 'body') {
     top: layer === 'head' ? 0 : undefined,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
     backgroundClip: 'padding-box',
+    textAlign: 'center' as const,
     whiteSpace: 'nowrap',
   };
 }
@@ -374,7 +369,7 @@ export default function BatchManagementPage() {
         <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
           <Table stickyHeader size="small" sx={{ minWidth: mainTableWidth, width: '100%', tableLayout: 'fixed', height: showBatchTableState ? '100%' : 'auto' }}>
             <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: resolvedColumnWidths[column.id] }} />)}<col style={{ width: BATCH_ACTION_COLUMN_WIDTH }} /></colgroup>
-            <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ ...tableHeaderCellSx, width: resolvedColumnWidths[column.id], minWidth: resolvedColumnWidths[column.id], maxWidth: resolvedColumnWidths[column.id], ...(column.id === 'status' ? getStatusColumnSx(resolvedColumnWidths[column.id], 'head') : {}), top: 0, zIndex: column.id === 'status' ? 10 : 5, position: 'sticky' }}><Box sx={{ position: 'relative', pr: 1 }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column.id)} sx={{ position: 'absolute', top: 0, right: -8, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} /></Box></TableCell>)}<TableCell align="center" sx={{ ...tableHeaderCellSx, ...getOperationColumnSx('head') }}>操作</TableCell></TableRow></TableHead>
+            <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ ...tableHeaderCellSx, width: resolvedColumnWidths[column.id], minWidth: resolvedColumnWidths[column.id], maxWidth: resolvedColumnWidths[column.id], ...(column.id === 'status' ? getStatusColumnSx(resolvedColumnWidths[column.id], 'head') : {}), top: 0, zIndex: column.id === 'status' ? 10 : 5, position: 'sticky' }}><Box sx={{ position: 'relative', pr: 1 }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column.id)} sx={{ ...listColumnResizeHandleSx, right: -8 }} /></Box></TableCell>)}<TableCell align="center" sx={{ ...tableHeaderCellSx, ...getOperationColumnSx('head') }}>操作</TableCell></TableRow></TableHead>
             <TableBody>
               {batches.isLoading && <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>}
               {batches.isError && <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#c62828' }}>批次数据加载失败：{batches.error instanceof Error ? batches.error.message : '请稍后重试'}</TableStateCell></TableRow>}

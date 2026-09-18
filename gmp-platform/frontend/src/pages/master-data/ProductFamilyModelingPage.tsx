@@ -1,6 +1,8 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
+import { Fragment, useEffect, useMemo, useState, type PointerEventHandler, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Box,
@@ -97,27 +99,42 @@ interface ProductFamilyColumn {
   id: ProductFamilyColumnId;
   label: string;
   width: number;
+  minWidth: number;
   configurable?: boolean;
 }
 
 const PRODUCT_FAMILY_COLUMNS: ProductFamilyColumn[] = [
-  { id: "name", label: "产品簇名称", width: 260, configurable: true },
-  { id: "code", label: "产品簇编码", width: 170, configurable: true },
-  { id: "memberCount", label: "产品成员数", width: 110, configurable: true },
-  { id: "processVersionCount", label: "制程版本数", width: 120, configurable: true },
-  { id: "updatedBy", label: "更新人", width: 132, configurable: true },
-  { id: "updatedAt", label: "更新时间", width: 172, configurable: true },
-  { id: "actions", label: "操作", width: ACTION_COLUMN_WIDTH },
+  { id: "name", label: "产品簇名称", width: 260, minWidth: 180, configurable: true },
+  { id: "code", label: "产品簇编码", width: 170, minWidth: 128, configurable: true },
+  { id: "memberCount", label: "产品成员数", width: 110, minWidth: 96, configurable: true },
+  { id: "processVersionCount", label: "制程版本数", width: 120, minWidth: 96, configurable: true },
+  { id: "updatedBy", label: "更新人", width: 132, minWidth: 96, configurable: true },
+  { id: "updatedAt", label: "更新时间", width: 172, minWidth: 150, configurable: true },
+  { id: "actions", label: "操作", width: ACTION_COLUMN_WIDTH, minWidth: ACTION_COLUMN_WIDTH },
 ];
-const tableHeaderCellSx = {
-  bgcolor: "#f5f7fa",
-  color: "#606266",
-  fontWeight: 600,
-  whiteSpace: "nowrap",
-  height: 48,
-  py: 0,
-  borderBottom: "1px solid #e4e7ed",
-};
+
+type ProductFamilyVersionColumnId = "version" | "productionMode" | "productionForm" | "route" | "dhrTemplate" | "status" | "effectiveFrom" | "effectiveTo" | "updatedBy" | "actions";
+
+interface ProductFamilyVersionColumn {
+  id: ProductFamilyVersionColumnId;
+  label: string;
+  width: number;
+  minWidth: number;
+}
+
+const PRODUCT_FAMILY_VERSION_COLUMNS: ProductFamilyVersionColumn[] = [
+  { id: "version", label: "制程版本号", width: 132, minWidth: 132 },
+  { id: "productionMode", label: "生产模式", width: 104, minWidth: 104 },
+  { id: "productionForm", label: "生产方式", width: 104, minWidth: 104 },
+  { id: "route", label: "工艺路线版本", width: 230, minWidth: 180 },
+  { id: "dhrTemplate", label: "批记录模板版本", width: 230, minWidth: 180 },
+  { id: "status", label: "版本状态", width: 104, minWidth: 104 },
+  { id: "effectiveFrom", label: "生效时间", width: 164, minWidth: 150 },
+  { id: "effectiveTo", label: "失效时间", width: 164, minWidth: 150 },
+  { id: "updatedBy", label: "更新人", width: 128, minWidth: 100 },
+  { id: "actions", label: "操作", width: 128, minWidth: 128 },
+];
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 function operationColumnSx(width: number, layer: "head" | "body") {
   return {
@@ -130,6 +147,7 @@ function operationColumnSx(width: number, layer: "head" | "body") {
     bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
     backgroundClip: "padding-box",
     boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+    textAlign: "center",
     whiteSpace: "nowrap",
   };
 }
@@ -316,6 +334,8 @@ interface EditorTarget {
 }
 
 export default function ProductFamilyModelingPage() {
+  const { getColumnWidth, getResizeHandleProps } = usePersistedListColumnWidths(PRODUCT_FAMILY_COLUMNS, 'product-family-modeling-column-widths:v1:');
+  const { getColumnWidth: getVersionColumnWidth, getResizeHandleProps: getVersionResizeHandleProps } = usePersistedListColumnWidths(PRODUCT_FAMILY_VERSION_COLUMNS, 'product-family-modeling-version-column-widths:v1:');
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
@@ -390,7 +410,7 @@ export default function ProductFamilyModelingPage() {
     [hiddenColumns],
   );
   const parentTableWidth = visibleColumns.reduce(
-    (total, column) => total + column.width,
+    (total, column) => total + getColumnWidth(column),
     0,
   );
 
@@ -703,22 +723,27 @@ export default function ProductFamilyModelingPage() {
                   : "auto",
             }}
           >
+            <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup>
             <TableHead>
               <TableRow sx={{ "& .MuiTableCell-root": tableHeaderCellSx }}>
-                {visibleColumns.map((column) => (
-                  <TableCell
+                {visibleColumns.map((column) => {
+                  const width = getColumnWidth(column);
+                  return <TableCell
                     key={column.id}
                     align={column.id === "actions" ? "center" : undefined}
                     sx={{
                       ...tableHeaderCellSx,
-                      width: column.width,
-                      minWidth: column.width,
-                      ...(column.id === "actions" ? operationColumnSx(ACTION_COLUMN_WIDTH, "head") : {}),
+                      position: column.id === "actions" ? "sticky" : "relative",
+                      width,
+                      minWidth: width,
+                      maxWidth: width,
+                      ...(column.id === "actions" ? operationColumnSx(width, "head") : {}),
                     }}
                   >
                     {column.label}
-                  </TableCell>
-                ))}
+                    {column.id !== "actions" ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /> : null}
+                  </TableCell>;
+                })}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -736,6 +761,8 @@ export default function ProductFamilyModelingPage() {
                     visibleColumns={visibleColumns}
                     parentColumnCount={visibleColumns.length}
                     expanded={expandedIds.includes(family.id)}
+                    getVersionColumnWidth={getVersionColumnWidth}
+                    getVersionResizeHandleProps={getVersionResizeHandleProps}
                     onToggle={() => toggleExpanded(family.id)}
                     onView={() => setDetailTarget({ family })}
                     onMembers={() => setMemberFamily(family)}
@@ -966,6 +993,8 @@ function ProductFamilyTreeRows({
   visibleColumns,
   parentColumnCount,
   expanded,
+  getVersionColumnWidth,
+  getVersionResizeHandleProps,
   onToggle,
   onView,
   onMembers,
@@ -980,6 +1009,13 @@ function ProductFamilyTreeRows({
   visibleColumns: ProductFamilyColumn[];
   parentColumnCount: number;
   expanded: boolean;
+  getVersionColumnWidth: (column: ProductFamilyVersionColumn) => number;
+  getVersionResizeHandleProps: (column: ProductFamilyVersionColumn) => {
+    onPointerDown: PointerEventHandler<HTMLDivElement>;
+    onPointerMove: PointerEventHandler<HTMLDivElement>;
+    onPointerUp: PointerEventHandler<HTMLDivElement>;
+    onPointerCancel: PointerEventHandler<HTMLDivElement>;
+  };
   onToggle: () => void;
   onView: () => void;
   onMembers: () => void;
@@ -1149,43 +1185,23 @@ function ProductFamilyTreeRows({
               <TableContainer sx={{ overflow: "auto" }}>
                 <Table
                   size="small"
-                  sx={{ minWidth: 1120, tableLayout: "fixed" }}
+                  aria-label="产品簇制程配置版本列表"
+                  sx={{ width: PRODUCT_FAMILY_VERSION_COLUMNS.reduce((total, column) => total + getVersionColumnWidth(column), 0), minWidth: PRODUCT_FAMILY_VERSION_COLUMNS.reduce((total, column) => total + getVersionColumnWidth(column), 0), tableLayout: "fixed" }}
                 >
+                  <colgroup>{PRODUCT_FAMILY_VERSION_COLUMNS.map((column) => <col key={column.id} style={{ width: getVersionColumnWidth(column) }} />)}</colgroup>
                   <TableHead>
                     <TableRow sx={{ "& .MuiTableCell-root": tableHeaderCellSx }}>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 132 }}>
-                        制程版本号
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 104 }}>
-                        生产模式
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 104 }}>
-                        生产方式
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 230 }}>
-                        工艺路线版本
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 230 }}>
-                        批记录模板版本
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 104 }}>
-                        版本状态
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 164 }}>
-                        生效时间
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 164 }}>
-                        失效时间
-                      </TableCell>
-                      <TableCell sx={{ ...tableHeaderCellSx, width: 128 }}>
-                        更新人
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        sx={{ ...tableHeaderCellSx, ...operationColumnSx(128, "head") }}
-                      >
-                        操作
-                      </TableCell>
+                      {PRODUCT_FAMILY_VERSION_COLUMNS.map((column) => {
+                        const width = getVersionColumnWidth(column);
+                        return <TableCell
+                          key={column.id}
+                          align={column.id === "actions" ? "center" : undefined}
+                          sx={{ ...tableHeaderCellSx, position: column.id === "actions" ? "sticky" : "relative", width, minWidth: width, maxWidth: width, ...(column.id === "actions" ? operationColumnSx(width, "head") : {}) }}
+                        >
+                          {column.label}
+                          {column.id !== "actions" ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getVersionResizeHandleProps(column)} /> : null}
+                        </TableCell>;
+                      })}
                     </TableRow>
                   </TableHead>
                   <TableBody>

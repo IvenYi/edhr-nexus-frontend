@@ -95,7 +95,7 @@ export default function BindingRuleList() {
       </Box>
       <TableContainer>
         <Table>
-          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>名称</TableCell><TableCell>业务类型</TableCell><TableCell>流程模板</TableCell><TableCell>优先级</TableCell><TableCell>描述</TableCell><TableCell align="center" sx={{ width: 96, minWidth: 96 }}>操作</TableCell></TableRow></TableHead>
+          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>名称</TableCell><TableCell>业务类型</TableCell><TableCell>流程模板</TableCell><TableCell>优先级</TableCell><TableCell>描述</TableCell><TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell></TableRow></TableHead>
           <TableBody>
             {isLoading ? <TableRow><TableStateCell colSpan={7} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>
             : isError ? <TableRow><TableStateCell colSpan={7} align="center">加载失败</TableStateCell></TableRow>
@@ -104,7 +104,7 @@ export default function BindingRuleList() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.name}</TableCell><TableCell>{item.businessType}</TableCell>
                 <TableCell>{item.templateName}</TableCell><TableCell>{item.priority}</TableCell><TableCell>{item.description}</TableCell>
-                <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>
+                <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
                   <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => handleEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip>
                   <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteConfirm(item.id)}><Delete fontSize="small" /></IconButton></Tooltip>
                 </TableCell>

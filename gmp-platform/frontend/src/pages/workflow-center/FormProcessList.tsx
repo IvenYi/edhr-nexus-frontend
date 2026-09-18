@@ -59,6 +59,7 @@ import type { PageResult } from "@/types/common";
 import { getAuditLogs, type AuditLogItem } from "@/api/audit";
 import StatusBadge from "@/components/StatusBadge";
 import TableStateCell from '@/components/TableStateCell';
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
 import ListColumnSettingsPopover, {
   getCurrentUserPreferenceStorageKey,
   loadListColumnSettings,
@@ -104,15 +105,7 @@ const tableRowSx = {
     borderBottom: "1px solid #ebeef5",
   },
 };
-const headSx = {
-  bgcolor: "#f5f7fa",
-  color: "#606266",
-  fontWeight: 600,
-  height: 48,
-  py: 0,
-  borderBottom: "1px solid #e4e7ed",
-  whiteSpace: "nowrap",
-};
+const headSx = listTableHeaderCellSx;
 const toolbarIconSx = {
   width: 36,
   height: 36,
@@ -132,6 +125,7 @@ const operationColumnSx = (layer: "head" | "body") => ({
   bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
   backgroundClip: "padding-box",
   boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+  textAlign: "center",
   whiteSpace: "nowrap",
 });
 const drawerRootSx = {
@@ -1045,7 +1039,7 @@ export default function FormProcessList() {
                 {visibleColumns.map((column) => (
                   <TableCell key={column.id} sx={{ ...headSx, width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, pr: 2, userSelect: 'none' }}>
                     {column.label}
-                    <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} sx={{ position: 'absolute', top: 0, right: -3, width: 8, height: '100%', cursor: 'col-resize', zIndex: 3, '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} />
+                    <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} sx={listColumnResizeHandleSx} />
                   </TableCell>
                 ))}
                 <TableCell

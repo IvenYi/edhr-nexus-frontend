@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -140,14 +141,7 @@ const fieldSx = {
   },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,

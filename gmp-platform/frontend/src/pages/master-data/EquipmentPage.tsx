@@ -10,6 +10,7 @@ import { Add, Delete, DragIndicator, Edit, Search, TuneRounded, ViewColumnRounde
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import StatusBadge from '@/components/StatusBadge';
 import {
   createEquipment, createEquipmentCategory, createEquipmentType, deleteEquipment,
@@ -22,7 +23,7 @@ import type { PageResult } from '@/types/common';
 type EquipmentRow = EquipmentRecord | EquipmentTypeRecord;
 const emptyForm = { code: '', name: '', categoryId: '', equipmentTypeId: '', brand: '', model: '', serialNumber: '', purchaseDate: '', status: 'ACTIVE' };
 const panelSx = { bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' };
-const tableHeaderCellSx = { height: 48, py: 0, color: '#606266', fontWeight: 600, bgcolor: '#f5f7fa', borderBottom: '1px solid #e4e7ed' };
+const tableHeaderCellSx = listTableHeaderCellSx;
 type EquipmentColumn = { id: string; label: string; width: number };
 type ColumnPreferences = { order: string[]; hidden: string[]; widths: Record<string, number> };
 export const equipmentSystemColumns: EquipmentColumn[] = [
@@ -291,7 +292,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
             <TableContainer ref={tableContainerRef} sx={{ flex: 1, minHeight: 180, containerType: 'inline-size', overflow: 'auto' }}>
               <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: columns.reduce((sum, col) => sum + columnWidths[col.id], 0), height: !data?.content.length ? '100%' : 'auto' }}>
                 <colgroup>{columns.map((column) => <col key={column.id} style={{ width: columnWidths[column.id] }} />)}</colgroup>
-                <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{columns.map((column) => <TableCell key={column.id} data-equipment-column={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ position: 'sticky', userSelect: 'none', ...(column.id === 'actions' ? { right: 0, zIndex: 3, boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : { pr: 2 }) }}>
+                <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{columns.map((column) => <TableCell key={column.id} data-equipment-column={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ position: 'sticky', userSelect: 'none', ...(column.id === 'actions' ? { right: 0, zIndex: 3, width: columnWidths[column.id], minWidth: columnWidths[column.id], maxWidth: columnWidths[column.id], boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : { pr: 2 }) }}>
                   <Box component="span" title={column.label} sx={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{column.label}</Box>
                   {column.id !== 'actions' && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => { event.preventDefault(); event.stopPropagation(); resizeStart.current = { id: column.id, x: event.clientX, width: columnWidths[column.id], widths: { ...columnPreferences.widths, ...columnWidths } }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { const start = resizeStart.current; if (start?.id === column.id) setColumnPreferences((current) => ({ ...current, widths: { ...start.widths, [column.id]: Math.max(80, start.width + event.clientX - start.x) } })); }} onPointerUp={() => { resizeStart.current = null; }} onPointerCancel={() => { resizeStart.current = null; }} onLostPointerCapture={() => { resizeStart.current = null; }} sx={{ position: 'absolute', top: 0, right: 0, width: 8, height: '100%', cursor: 'col-resize', touchAction: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} />}
                 </TableCell>)}</TableRow></TableHead>
@@ -299,7 +300,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
                   {listQuery.isLoading ? <TableRow><TableStateCell colSpan={columns.length} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>
                     : listQuery.isError ? <TableRow><TableStateCell colSpan={columns.length} align="center">加载失败 <Button onClick={() => listQuery.refetch()}>重试</Button></TableStateCell></TableRow>
                       : !data?.content.length ? <TableRow><TableStateCell colSpan={columns.length} align="center">暂无数据</TableStateCell></TableRow>
-                        : data.content.map((row) => <TableRow data-record-id={row.id} key={row.id} hover sx={{ '& .MuiTableCell-root': { height: 40, py: 0, lineHeight: '20px', borderBottom: '1px solid #ebeef5' }, '&:hover .MuiTableCell-root': { bgcolor: '#f5f7fa' } }}>{columns.map((column) => <TableCell key={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', ...(column.id === 'actions' ? { position: 'sticky', right: 0, bgcolor: '#fff', zIndex: 1, boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : {}) }}>
+                        : data.content.map((row) => <TableRow data-record-id={row.id} key={row.id} hover sx={{ '& .MuiTableCell-root': { height: 40, py: 0, lineHeight: '20px', borderBottom: '1px solid #ebeef5' }, '&:hover .MuiTableCell-root': { bgcolor: '#f5f7fa' } }}>{columns.map((column) => <TableCell key={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', ...(column.id === 'actions' ? { position: 'sticky', right: 0, width: columnWidths[column.id], minWidth: columnWidths[column.id], maxWidth: columnWidths[column.id], bgcolor: '#fff', zIndex: 1, boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : {}) }}>
                           {column.id === 'actions' ? <>
                             <Tooltip title="编辑"><IconButton size="small" aria-label={`编辑 ${row.name}`} onClick={() => openEditor(row)}><Edit fontSize="small" /></IconButton></Tooltip>
                             <Tooltip title="删除"><IconButton size="small" color="error" aria-label={`删除 ${row.name}`} onClick={() => setDeleteTarget({ id: row.id, name: row.name, category: false })}><Delete fontSize="small" /></IconButton></Tooltip>

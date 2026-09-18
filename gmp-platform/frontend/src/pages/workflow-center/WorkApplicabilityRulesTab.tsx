@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Add, DeleteOutline, EditOutlined, RestartAlt, Search, TuneRounded, ViewColumnRounded, VisibilityOutlined } from '@mui/icons-material';
@@ -51,7 +52,7 @@ type RuleFilters = { keyword: string; ruleType: 'ALL' | RuleType; productFamilyI
 type WorkRuleColumnId = 'definitionName' | 'definitionCode' | 'ruleType' | 'scope' | 'updatedAt' | 'actions';
 interface WorkRuleColumn { id: WorkRuleColumnId; label: string; width: number; configurable?: boolean; }
 
-const headerCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap', height: 48, py: 0.75 };
+const headerCellSx = listTableHeaderCellSx;
 const ACTION_COLUMN_WIDTH = 96;
 const RULE_COLUMN_STORAGE_KEY = 'work-applicability-rule-list-columns:v1';
 const RULE_COLUMNS: WorkRuleColumn[] = [
@@ -78,6 +79,7 @@ function operationColumnSx(layer: 'head' | 'body') {
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
     backgroundClip: 'padding-box',
     boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    textAlign: 'center',
     whiteSpace: 'nowrap',
   };
 }

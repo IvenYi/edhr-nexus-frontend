@@ -1,0 +1,72 @@
+knowledgeModelVersion: 0.3.23
+evidence:
+  - id: evidence.dhr-instance-management-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-instance-management-user-confirmed.md
+    description: user-confirmed；用户确认 DHR 管理第一期覆盖 BATCH/SN 首次合法开工同事务自动创建唯一实例、冻结上下文、聚合生产执行表单证据、完成状态同步、列表只读详情、专门权限及管理员默认授权；进入闭环的执行若缺失 DHR 必须阻断完成。本证据只证明业务决定；实现与测试分别由本文件中的 working-tree 源码、迁移和测试证据支持。
+    visibility: internal
+  - id: evidence.dhr-instance-management-business-boundary
+    type: document
+    path: docs/architecture/transaction-traceability-dhr-business-rules.md
+    description: secondary-reference；既有业务边界说明 DHR 汇总消费带目录映射的来源表单/作业实例关系，并要求冻结目录结构和成员清单。该文档用于交叉核对证据关系，不替代本次用户确认，也不证明审批、发布或人工补充已实现。
+    visibility: internal
+  - id: evidence.dhr-instance-start-transaction-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    description: original-evidence；working-tree 的 ProductionExecutionService.act 在首次合法 START 分支调用 DhrInstanceService.createAtFirstStart，并在全部工序完成分支调用 completeWithProductionObject；两次调用均处于 act 的同一事务内。该源码证明接入实现存在，不等同于已发布或已部署。
+    visibility: internal
+  - id: evidence.dhr-instance-snapshot-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    description: original-evidence；执行快照构建器冻结产品、制程、路线、DHR 模板版本及对象和工单上下文，是 DHR 实例上下文冻结的现有来源。当前读取不证明独立 DHR 实例已经持久化这些字段。
+    visibility: internal
+  - id: evidence.dhr-instance-form-record-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    description: original-evidence；生产表单记录保存冻结快照、值、状态、copyId 与 DHR 目录项映射，是 DHR 只读详情自动聚合的现有证据来源。聚合规则必须复用稳定实例记录并按份保留，不复制来源证据。
+    visibility: internal
+  - id: evidence.dhr-instance-form-record-schema
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql
+    description: original-evidence；表单实例记录表提供生产对象、工序、表单、copyId、冻结快照和值等持久化字段及对象/工序/份唯一约束，是 DHR 证据聚合的数据库来源。
+    visibility: internal
+  - id: evidence.dhr-instance-form-business-source-schema
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql
+    description: original-evidence；表单实例记录持久化业务来源，当前生产执行来源值为 PRODUCTION_EXECUTION。DHR 第一阶段只消费该来源，不把其他未来来源写成已支持。
+    visibility: internal
+  - id: evidence.dhr-instance-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
+    description: original-evidence；working-tree 服务实现首次开工创建、从已绑定模板版本的目录和表单引用构建并持久化实例目录快照、生产完成同步、缺失实例时阻断完成、列表查询及按 dhrItemId 聚合 PRODUCTION_EXECUTION 表单记录的只读详情；copyId 与来源记录身份保持独立，不复制证据。该源码不表示能力已发布。
+    visibility: internal
+  - id: evidence.dhr-instance-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java
+    description: original-evidence；working-tree 控制器提供 /api/v1/dhr-instances 列表与 /{id} 只读详情，并在类级要求 dhr.instances.view 权限；没有创建、编辑、审批或发布端点。
+    visibility: internal
+  - id: evidence.dhr-instance-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql
+    description: original-evidence；0089 建立 dhr_instance 表、状态和对象类型约束、tenant_id 与 production_object_id 唯一约束及必要外键；0090/0091 删除从未启用的 dhr_template_version.directory_snapshot 与 status 列。0089 同时创建 records.dhr-management 与 dhr.instances.view 并只为 ADMIN 默认授权。
+    visibility: internal
+  - id: evidence.dhr-instance-integration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；聚焦集成测试覆盖 BATCH/SN 首次 START、无模板版本快照列时创建 DHR、DHR 完成同步、两份表单证据聚合、专门查看权限、缺失 DHR 阻断完成、并发首次 START 唯一实例以及审计失败整事务回滚。本地 surefire 报告记录 47 项测试通过、2 项跳过；该结果是 working-tree 验证，不代表已发布环境。
+    visibility: internal
+  - id: evidence.dhr-instance-migration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java
+    description: original-evidence；聚焦迁移测试重复执行 0089，断言迁移后 DHR 表为空、管理员获得记录菜单与查看权限、普通角色不被默认授权，并验证生产对象唯一约束。本地 surefire 报告记录该测试通过；不表示迁移已应用于用户运行库。
+    visibility: internal
+  - id: evidence.dhr-instance-frontend-api
+    type: code
+    path: gmp-platform/frontend/src/api/dhr-instances.ts
+    description: original-evidence；working-tree 前端 API 仅投影 DHR 列表和只读详情，状态限制为 IN_PROGRESS/COMPLETED，并保留目录项记录、copyId 与未映射记录的读取结构。
+    visibility: internal
+  - id: evidence.dhr-instance-management-page
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx
+    description: original-evidence；working-tree 页面在 /dhr-management/list 消费列表与详情 API，提供 BATCH/SN、状态和关键字筛选及只读详情抽屉；页面没有手工创建、证据拖拽、审批、发布或修改动作。
+    visibility: internal

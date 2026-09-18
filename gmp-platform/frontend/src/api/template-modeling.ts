@@ -306,6 +306,3 @@ export const updateDhrEvidenceItem = (templateId: string | number, versionId: st
 
 export const deleteDhrEvidenceItem = (templateId: string | number, versionId: string | number, itemId: string | number) =>
   client.delete(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/items/${itemId}`);
-
-export const publishDhrTemplateVersion = (templateId: string | number, versionId: string | number) =>
-  client.post(`${templateModelingBase}/batch-record-templates/${templateId}/versions/${versionId}/publish`) as Promise<{ data: { data: DhrTemplateVersionRecord } }>;

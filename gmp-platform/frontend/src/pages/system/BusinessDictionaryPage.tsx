@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -193,14 +194,7 @@ const fieldSx = {
   '& .MuiInputBase-input': { boxSizing: 'border-box' },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -452,6 +446,7 @@ function getStickyActionColumnSx(column: TableColumn<string>, layer: 'head' | 'b
     right: 0,
     zIndex: layer === 'head' ? 8 : 4,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
+    textAlign: 'center',
   };
 }
 

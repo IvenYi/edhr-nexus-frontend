@@ -1,24 +1,24 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.23
 decisions:
-  - id: DEC-0055
+  - id: DEC-0059
     title: 生产表单自动收尾替代显式结束
     status: specified
     visibility: internal
     context: user-confirmed；用户要求直接删除结束本表单填报按钮，并在被告知只删按钮会阻塞必填完工及作业推进后，确认普通表单在工序完工时统一结束、作业表单已有份全部最终完成后自动推进。此决定仅替代 DEC-0046 的显式结束前置条件及 DEC-0047 对该条件的继承，保留按需新增、每份独立保存提交、审批最终完成、数量增量累加、冻结快照、权限和追溯契约。历史决策文件保留；本知识为 specified/internal，不代表实现、运行实例升级或发布验证完成。
     decisionStatements:
-      - id: DEC-0055-01
+      - id: DEC-0059-01
         statement: 生产工作台不再提供结束本表单填报按钮；普通表单在工序完工时统一结束，必填表单所有已创建份最终完成后无需再执行独立结束动作。
         status: specified
         visibility: internal
-      - id: DEC-0055-02
+      - id: DEC-0059-02
         statement: 普通非必填表单存在未完成份时，工序完工须告知；其他条件满足后允许完工，表单仍进行中，保留未完成份和值及已完成单份事实，后期补填入口不在本次开放。
         status: specified
         visibility: internal
-      - id: DEC-0055-03
+      - id: DEC-0059-03
         statement: 作业表单所有已创建份最终完成时，自动结束该表单并推进对应外层 FORM 节点；最后一份尚待审批或被退回时不推进，无已创建份不视为完成。自动收尾后不再保留原显式结束前的新增窗口，后续确认、审批、签名和其他作业仍按自身条件执行。
         status: specified
         visibility: internal
-      - id: DEC-0055-04
+      - id: DEC-0059-04
         statement: 既有模板、表单份身份和值、执行快照及已经推进或完工的历史事实继续保留；自动推进不得重复完成同一节点或倒退历史节点。具体旧实例收敛时点及旧 END_FORM 接口兼容属于实现策略，不作为另行确认的业务常量。
         status: specified
         visibility: internal

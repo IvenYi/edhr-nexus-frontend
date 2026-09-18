@@ -1,6 +1,12 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import {
   AccountTreeOutlined,
   Add,
@@ -49,6 +55,8 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import StatusBadge from "@/components/StatusBadge";
 import { useSnackbar } from "@/components/SnackbarProvider";
 import TableStateCell from '@/components/TableStateCell';
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { getCurrentUserPreferenceStorageKey } from '@/components/ListColumnSettingsPopover';
 import { getAuditLogs, type AuditLogItem } from "@/api/audit";
 import {
   createWorkTemplate,
@@ -121,8 +129,11 @@ interface WorkTemplateColumn {
   configurable?: boolean;
 }
 
+type WorkTemplateColumnWidths = Partial<Record<WorkTemplateColumnId, number>>;
+
 const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
-const COLUMN_STORAGE_KEY = "work-template-list-columns:v2";
+const COLUMN_STORAGE_PREFIX = "work-template-list-columns:v2:";
+const COLUMN_WIDTH_STORAGE_PREFIX = "work-template-list-column-widths:v1:";
 const ACTION_COLUMN_WIDTH = 128;
 const WORK_TEMPLATE_COLUMNS: WorkTemplateColumn[] = [
   { id: "name", label: "作业名称", width: 260, configurable: true },
@@ -143,15 +154,7 @@ const WORK_TEMPLATE_COLUMNS: WorkTemplateColumn[] = [
   { id: "updatedAt", label: "更新时间", width: 172, configurable: true },
   { id: "actions", label: "操作", width: ACTION_COLUMN_WIDTH },
 ];
-const tableHeaderCellSx = {
-  bgcolor: "#f5f7fa",
-  color: "#606266",
-  fontWeight: 600,
-  whiteSpace: "nowrap",
-  height: 48,
-  py: 0,
-  borderBottom: "1px solid #e4e7ed",
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 const tableRowSx = {
   "& > .MuiTableCell-root": {
     height: 40,
@@ -225,6 +228,7 @@ function operationColumnSx(layer: "head" | "body") {
     bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
     backgroundClip: "padding-box",
     boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+    textAlign: "center",
     whiteSpace: "nowrap",
   };
 }
@@ -746,13 +750,21 @@ export default function WorkTemplateList() {
   const [activeTab, setActiveTab] = useState<"definitions" | "rules">(
     () => readRecordLocation().type === 'workflow_binding_rule' ? 'rules' : 'definitions',
   );
+  const columnStorageKey = useMemo(
+    () => getCurrentUserPreferenceStorageKey(COLUMN_STORAGE_PREFIX),
+    [],
+  );
+  const columnWidthStorageKey = useMemo(
+    () => getCurrentUserPreferenceStorageKey(COLUMN_WIDTH_STORAGE_PREFIX),
+    [],
+  );
   const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
   const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
   const [hiddenColumns, setHiddenColumns] = useState<WorkTemplateColumnId[]>(
     () => {
       try {
         const stored = JSON.parse(
-          localStorage.getItem(COLUMN_STORAGE_KEY) || "[]",
+          localStorage.getItem(columnStorageKey) || "[]",
         );
         return Array.isArray(stored)
           ? stored.filter((columnId): columnId is WorkTemplateColumnId =>
@@ -766,6 +778,36 @@ export default function WorkTemplateList() {
       }
     },
   );
+  const [columnWidths, setColumnWidths] = useState<WorkTemplateColumnWidths>(() => {
+    try {
+      const stored = JSON.parse(
+        localStorage.getItem(columnWidthStorageKey) || "{}",
+      );
+      if (!stored || typeof stored !== "object" || Array.isArray(stored)) {
+        return {};
+      }
+      return WORK_TEMPLATE_COLUMNS.reduce<WorkTemplateColumnWidths>(
+        (widths, column) => {
+          const value = stored[column.id];
+          if (typeof value === "number" && Number.isFinite(value)) {
+            widths[column.id] = Math.max(
+              column.id === "actions" ? ACTION_COLUMN_WIDTH : 96,
+              value,
+            );
+          }
+          return widths;
+        },
+        {},
+      );
+    } catch {
+      return {};
+    }
+  });
+  const columnResizeRef = useRef<{
+    id: WorkTemplateColumnId;
+    startX: number;
+    startWidth: number;
+  } | null>(null);
   const [columnAnchor, setColumnAnchor] = useState<HTMLElement | null>(null);
   const [editing, setEditing] = useState<WorkTemplate | null | undefined>(
     undefined,
@@ -829,15 +871,24 @@ export default function WorkTemplateList() {
       ),
     [hiddenColumns],
   );
+  const getColumnWidth = (column: WorkTemplateColumn) =>
+    Math.max(
+      column.id === "actions" ? ACTION_COLUMN_WIDTH : 96,
+      columnWidths[column.id] ?? column.width,
+    );
   const tableMinWidth = useMemo(
-    () => visibleColumns.reduce((total, column) => total + column.width, 0),
-    [visibleColumns],
+    () =>
+      visibleColumns.reduce((total, column) => total + getColumnWidth(column), 0),
+    [visibleColumns, columnWidths],
   );
   const tableWidth = Math.max(tableMinWidth, Math.floor(tableContainerWidth));
 
   useEffect(() => {
-    localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(hiddenColumns));
-  }, [hiddenColumns]);
+    localStorage.setItem(columnStorageKey, JSON.stringify(hiddenColumns));
+  }, [columnStorageKey, hiddenColumns]);
+  useEffect(() => {
+    localStorage.setItem(columnWidthStorageKey, JSON.stringify(columnWidths));
+  }, [columnWidthStorageKey, columnWidths]);
   useEffect(() => {
     const element = tableContainerRef.current;
     if (!element) return undefined;
@@ -895,6 +946,32 @@ export default function WorkTemplateList() {
     setKeyword("");
     setPage(1);
     setSubmittedKeyword("");
+  };
+
+  const startColumnResize = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    column: WorkTemplateColumn,
+  ) => {
+    if (!column.configurable) return;
+    event.preventDefault();
+    event.stopPropagation();
+    columnResizeRef.current = {
+      id: column.id,
+      startX: event.clientX,
+      startWidth: getColumnWidth(column),
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const updateColumnResize = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const resize = columnResizeRef.current;
+    if (!resize) return;
+    setColumnWidths((current) => ({
+      ...current,
+      [resize.id]: Math.max(96, resize.startWidth + event.clientX - resize.startX),
+    }));
+  };
+  const stopColumnResize = () => {
+    columnResizeRef.current = null;
   };
 
   const renderCell = (row: WorkTemplate, column: WorkTemplateColumn) => {
@@ -1265,7 +1342,7 @@ export default function WorkTemplateList() {
                 >
                   <colgroup>
                     {visibleColumns.map((column) => (
-                      <col key={column.id} style={{ width: column.width }} />
+                      <col key={column.id} style={{ width: getColumnWidth(column) }} />
                     ))}
                   </colgroup>
                   <TableHead>
@@ -1278,13 +1355,27 @@ export default function WorkTemplateList() {
                           align={column.id === "actions" ? "center" : undefined}
                           sx={{
                             ...tableHeaderCellSx,
-                            width: column.width,
+                            width: getColumnWidth(column),
+                            minWidth: getColumnWidth(column),
                             ...(column.id === "actions"
                               ? operationColumnSx("head")
                               : {}),
                           }}
                         >
-                          {column.label}
+                          <Box sx={{ position: "relative", pr: column.configurable ? 1 : 0 }}>
+                            {column.label}
+                            {column.configurable ? (
+                              <Box
+                                aria-label={`调整${column.label}列宽`}
+                                onPointerDown={(event) => startColumnResize(event, column)}
+                                onPointerMove={updateColumnResize}
+                                onPointerUp={stopColumnResize}
+                                onPointerCancel={stopColumnResize}
+                                onLostPointerCapture={stopColumnResize}
+                                sx={listColumnResizeHandleSx}
+                              />
+                            ) : null}
+                          </Box>
                         </TableCell>
                       ))}
                     </TableRow>

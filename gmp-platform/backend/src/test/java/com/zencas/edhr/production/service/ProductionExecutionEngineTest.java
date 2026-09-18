@@ -114,14 +114,16 @@ class ProductionExecutionEngineTest {
         engine.complete(snapshot, state, "a", "1");
     }
 
-    @Test void skippedWorkFormNeverSatisfiesRequiredEdhrItem() throws Exception {
+    @Test void workFormNeverSatisfiesIndependentRequiredOperationForm() throws Exception {
         var op = mapper.readTree("""
-            {"id":"a","forms":[{"id":"direct","name":"必填记录","versionId":"5","required":true,"fulfilledBy":"work-form"},
+            {"id":"a","forms":[{"id":"direct","name":"必填记录","versionId":"5","required":true},
              {"id":"work-form","name":"必填记录","versionId":"5","workId":"w","fields":[]}],"works":[{"id":"w","name":"条件作业"}]}
             """);
         var state = tree("{\"status\":\"IN_PROGRESS\",\"forms\":{},\"works\":{\"w\":{\"status\":\"COMPLETED\"}}}");
         assertThat(engine.completionIssues(op, state)).singleElement().asString().contains("必填记录");
         state.withObject("/forms").putObject("work-form").put("status", "COMPLETED");
+        assertThat(engine.completionIssues(op, state)).singleElement().asString().contains("必填记录");
+        state.withObject("/forms").putObject("direct").put("status", "COMPLETED");
         assertThat(engine.completionIssues(op, state)).isEmpty();
     }
 

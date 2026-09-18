@@ -23,7 +23,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0046-05
-        statement: 各份填写本份新增产出数量，按当前工序已保存的显式良品、不良和报废用途字段跨份相加，10加12等于22；不取最新累计份，不重复统计同一来源的别名绑定。
+        statement: 各份填写本份新增产出数量，按当前工序已保存的显式良品、不良和报废用途字段跨份相加，10加12等于22；工序配置、作业发起和自定义挂载即使引用同一表单模板版本，仍是独立记录并分别累计，不取最新累计份。
         status: specified
         visibility: internal
     supersedes: [DEC-0045]

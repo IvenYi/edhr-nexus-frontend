@@ -97,7 +97,7 @@ export default function UnitPage() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell><TableCell>编码</TableCell><TableCell>名称</TableCell><TableCell>符号</TableCell><TableCell align="center" sx={{ width: 96, minWidth: 96 }}>操作</TableCell>
+              <TableCell>ID</TableCell><TableCell>编码</TableCell><TableCell>名称</TableCell><TableCell>符号</TableCell><TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -111,7 +111,7 @@ export default function UnitPage() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.code}</TableCell><TableCell>{item.name}</TableCell>
                 <TableCell>{item.symbol}</TableCell>
-                <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>
+                <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
                   <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => handleEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip>
                   <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteConfirm(item.id)}><Delete fontSize="small" /></IconButton></Tooltip>
                 </TableCell>

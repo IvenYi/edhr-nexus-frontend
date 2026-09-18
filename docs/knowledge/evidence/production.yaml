@@ -13,7 +13,7 @@ evidence:
   - id: evidence.production-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
-    description: 生产服务实现工单拆分、批量拆分、制程解析与首次锁定、BATCH/SN 生产形态及数量校验、生产对象编号全局唯一校验、对象计划时间校验、对象开工/完成/取消和工单关闭；SN 生产对象目标数量固定为 1，同一工单不得混用 BATCH/SN；工单创建后可直接拆分，不存在独立发布步骤；已锁定制程通过 findVersionForProduct 继续解析，不重新应用有效期筛选。
+    description: 生产服务实现工单拆分、批量拆分、制程解析与首次锁定、BATCH/SN 生产形态及数量校验、生产对象编号全局唯一校验、对象计划时间校验、对象开工/完成/取消和工单关闭；拆分时仅聚合非 CANCELLED 对象的 targetQuantity，取消对象不占用工单可拆数量；SN 生产对象目标数量固定为 1，同一工单不得混用 BATCH/SN；工单创建后可直接拆分，不存在独立发布步骤；已锁定制程通过 findVersionForProduct 继续解析，不重新应用有效期筛选。
     visibility: internal
   - id: evidence.production-object-status-machine
     type: code
@@ -88,7 +88,7 @@ evidence:
   - id: evidence.production-service-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java
-    description: 生产服务聚焦测试覆盖制程锁定、产品/产品簇解析、BATCH/SN 数量约束、对象生命周期和工单状态联动；其中验证生产对象提前结束后对象进入 EARLY_TERMINATED，并在关联对象全部终态时将 IN_PROCESS 工单自动汇总为 EARLY_TERMINATED。批量拆分事务与导入列名解析尚未有独立自动化测试。
+    description: 生产服务聚焦测试覆盖制程锁定、产品/产品簇解析、BATCH/SN 数量约束、对象生命周期和工单状态联动；其中验证生产对象提前结束后对象进入 EARLY_TERMINATED，并在关联对象全部终态时将 IN_PROCESS 工单自动汇总为 EARLY_TERMINATED；另验证计划数量为 10 的工单在未开工对象 10 取消后可按已锁定制程重新拆分替代对象 10。批量拆分事务与导入列名解析尚未有独立自动化测试。
     visibility: internal
   - id: evidence.guancheng-sn-split-source
     type: document

@@ -347,26 +347,6 @@ public class DhrTemplateWorkspaceController {
         return ApiResponse.success(null);
     }
 
-    @PostMapping("/{templateId}/versions/{versionId}/publish")
-    @Transactional
-    public ApiResponse<DhrVersionResponse> publishDhrTemplateVersion(@PathVariable Long templateId, @PathVariable Long versionId) {
-        DhrTemplate template = findTemplate(templateId);
-        DhrTemplateVersion version = findVersion(templateId, versionId);
-        validateVersionCanBePublished(version);
-        List<DhrDirectory> directories = directories(versionId);
-        List<DhrTemplateItem> items = itemsForDirectories(directories);
-        if (directories.isEmpty()) throw new BusinessException(ErrorCode.GENERAL_001, "请至少配置一个 DHR 目录");
-        if (items.isEmpty()) throw new BusinessException(ErrorCode.GENERAL_001, "请至少配置一个表单证据");
-        Map<String, Object> before = versionSnapshot(version);
-        version.setDirectorySnapshot(toSnapshotJson(version, directories, items));
-        DhrTemplateVersion saved = dhrTemplateVersionRepository.save(version);
-        template.setUpdatedBy(currentOperatorName());
-        template.setUpdatedAt(LocalDateTime.now());
-        dhrTemplateRepository.save(template);
-        writeChangedAudit("DHR_TEMPLATE_VERSION", saved.getId(), "发布批记录模板版本", before, versionSnapshot(saved));
-        return ApiResponse.success(toVersionResponse(saved, directories, items));
-    }
-
     private DhrTemplate findTemplate(Long templateId) {
         return dhrTemplateRepository.findById(templateId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "批记录模板不存在"));
@@ -608,13 +588,6 @@ public class DhrTemplateWorkspaceController {
         }
     }
 
-    private void validateVersionCanBePublished(DhrTemplateVersion version) {
-        LocalDateTime now = LocalDateTime.now();
-        if (version.getEffectiveTo() != null && !now.isBefore(version.getEffectiveTo())) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "版本已失效，无法发布");
-        }
-    }
-
     private Long validateParent(Long versionId, Long parentId, Long currentDirectoryId) {
         if (parentId == null) return null;
         if (Objects.equals(parentId, currentDirectoryId)) throw new BusinessException(ErrorCode.GENERAL_001, "目录不能设置为自身的子目录");
@@ -753,34 +726,6 @@ public class DhrTemplateWorkspaceController {
         });
     }
 
-    private String toSnapshotJson(DhrTemplateVersion version, List<DhrDirectory> directories, List<DhrTemplateItem> items) {
-        Map<Long, List<DhrTemplateItem>> itemsByDirectory = items.stream().collect(Collectors.groupingBy(DhrTemplateItem::getDirectoryId, LinkedHashMap::new, Collectors.toList()));
-        Map<Long, FormTemplate> formTemplates = orEmpty(formTemplateRepository.findAllById(items.stream()
-                        .map(DhrTemplateItem::getFormTemplateId)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet())))
-                .stream().collect(Collectors.toMap(FormTemplate::getId, value -> value));
-        Map<Long, FormTemplateVersion> formVersions = orEmpty(formTemplateVersionRepository.findAllById(items.stream()
-                        .map(DhrTemplateItem::getFormTemplateVersionId)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet())))
-                .stream().collect(Collectors.toMap(FormTemplateVersion::getId, value -> value));
-        Map<String, Object> snapshot = new LinkedHashMap<>();
-        snapshot.put("version", versionLabel(version));
-        snapshot.put("publishedAt", LocalDateTime.now());
-        snapshot.put("directories", directories.stream().map(directory -> {
-            Map<String, Object> directorySnapshot = new LinkedHashMap<>();
-            directorySnapshot.put("id", directory.getId());
-            directorySnapshot.put("parentId", directory.getParentId());
-            directorySnapshot.put("name", directory.getName());
-            directorySnapshot.put("sortOrder", directory.getSortOrder());
-            directorySnapshot.put("items", itemsByDirectory.getOrDefault(directory.getId(), List.of()).stream()
-                    .map(item -> evidenceSnapshot(item, formTemplates, formVersions)).toList());
-            return directorySnapshot;
-        }).toList());
-        return toJson(snapshot);
-    }
-
     private Map<String, Object> compositionSnapshot(List<DhrDirectory> directories, List<DhrTemplateItem> items) {
         Map<Long, List<DhrTemplateItem>> itemsByDirectory = items.stream()
                 .collect(Collectors.groupingBy(DhrTemplateItem::getDirectoryId, LinkedHashMap::new, Collectors.toList()));
@@ -814,7 +759,6 @@ public class DhrTemplateWorkspaceController {
         snapshot.put("effectiveFrom", formatDateTime(version.getEffectiveFrom()));
         snapshot.put("effectiveTo", formatDateTime(version.getEffectiveTo()));
         snapshot.put("status", RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo()));
-        snapshot.put("directorySnapshot", version.getDirectorySnapshot());
         return snapshot;
     }
 
@@ -841,6 +785,7 @@ public class DhrTemplateWorkspaceController {
 
     private Map<String, Object> evidenceSnapshot(DhrTemplateItem item, Map<Long, FormTemplate> formTemplates, Map<Long, FormTemplateVersion> formVersions) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("id", item.getId());
         snapshot.put("directoryId", item.getDirectoryId());
         if (item.getDirectoryId() != null) {
             dhrDirectoryRepository.findById(item.getDirectoryId())

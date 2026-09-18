@@ -34,6 +34,8 @@ import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import TableStateCell from '@/components/TableStateCell';
 import StatusBadge from '@/components/StatusBadge';
+import { listColumnResizeHandleSx } from '@/components/listTableStyles';
+import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import {
@@ -70,12 +72,25 @@ import {
 const headerCellSx = formTableHeaderCellSx;
 const bodyCellSx = formTableBodyCellSx;
 const fieldSx = formListFieldSx;
-const actionHeadSx = { position: 'sticky' as const, right: 0, zIndex: 4, width: 96, minWidth: 96, maxWidth: 96, bgcolor: '#f5f7fa', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)' };
-const actionBodySx = { position: 'sticky' as const, right: 0, zIndex: 2, width: 96, minWidth: 96, maxWidth: 96, bgcolor: '#fff', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.2)' };
+const actionHeadSx = { position: 'sticky' as const, right: 0, zIndex: 4, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#f5f7fa', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)' };
+const actionBodySx = { position: 'sticky' as const, right: 0, zIndex: 2, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#fff', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.2)' };
 const drawerRootSx = { top: 0, bottom: 0, zIndex: (theme: { zIndex: { drawer: number } }) => theme.zIndex.drawer + 2 };
 const drawerPaperSx = { width: { xs: '100vw', sm: 560 }, top: 0, bottom: 0, height: '100vh', transform: 'none !important' };
 
 type FillingView = Extract<FormWorklistView, 'FILLABLE' | 'CREATED' | 'FILLED'>;
+type FillingColumnId = 'instanceNo' | 'template' | 'creationType' | 'productionObject' | 'workOrder' | 'operation' | 'saved' | 'status' | 'nodeTime' | 'actions';
+const FILLING_COLUMNS: ReadonlyArray<{ id: FillingColumnId; label: string; width: number; minWidth: number }> = [
+  { id: 'instanceNo', label: '表单实例号', width: 170, minWidth: 150 },
+  { id: 'template', label: '表单模板', width: 210, minWidth: 170 },
+  { id: 'creationType', label: '创建类型', width: 110, minWidth: 96 },
+  { id: 'productionObject', label: '生产对象', width: 180, minWidth: 150 },
+  { id: 'workOrder', label: '工单', width: 160, minWidth: 140 },
+  { id: 'operation', label: '工序', width: 150, minWidth: 120 },
+  { id: 'saved', label: '保存状态', width: 110, minWidth: 96 },
+  { id: 'status', label: '状态', width: 120, minWidth: 96 },
+  { id: 'nodeTime', label: '节点 / 更新时间', width: 170, minWidth: 150 },
+  { id: 'actions', label: '操作', width: 96, minWidth: 96 },
+];
 interface FilterDraft { keyword: string; instanceNo: string; templateName: string; productionObjectNo: string; workOrderNo: string; productionObjectType: string; recordStatus: string; saved: string }
 
 const views: Array<{ id: FillingView; label: string; helper: string }> = [
@@ -354,6 +369,7 @@ function FormWorklistDetailDrawer({ view, identity, onClose, onOpenExecution, on
 }
 
 export default function FormFillingPage() {
+  const { getColumnWidth, getResizeHandleProps } = usePersistedListColumnWidths(FILLING_COLUMNS, 'form-filling-column-widths:v1:');
   const [view, setView] = useState<FillingView>('FILLABLE');
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
@@ -366,13 +382,15 @@ export default function FormFillingPage() {
   const query = useQuery({ queryKey: ['form-filling-worklist', view, page, pageSize, filters], queryFn: () => listFormWorklist(view, toQuery(filters, page, pageSize)), refetchOnMount: 'always' });
   const rows = query.data?.content ?? [];
   const activeView = views.find((item) => item.id === view)!;
+  const visibleColumns = useMemo(() => FILLING_COLUMNS.filter((column) => column.id !== 'creationType' || view === 'CREATED'), [view]);
+  const tableWidth = visibleColumns.reduce((total, column) => total + getColumnWidth(column), 0);
   const submitSearch = () => { setPage(0); setFilters({ ...draft, keyword: draft.keyword.trim(), instanceNo: draft.instanceNo.trim(), templateName: draft.templateName.trim(), productionObjectNo: draft.productionObjectNo.trim(), workOrderNo: draft.workOrderNo.trim() }); };
   const resetSearch = () => { const empty = emptyFilters(); setDraft(empty); setFilters(empty); setPage(0); };
   const updateDraft = (key: keyof FilterDraft, value: string) => setDraft((current) => ({ ...current, [key]: value }));
   const openFill = (row: FormWorklistRow) => setFillIdentity({ productionObjectId: row.productionObjectId, operationId: row.operationId, formId: row.formId, copyId: row.copyId });
   const openDetail = (row: FormWorklistRow) => setIdentity({ productionObjectId: row.productionObjectId, operationId: row.operationId, formId: row.formId, copyId: row.copyId });
   const openPreview = (row: FormWorklistRow) => setPreviewIdentity({ productionObjectId: row.productionObjectId, operationId: row.operationId, formId: row.formId, copyId: row.copyId });
-  const filterActions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={formListFilterActionsSx}>
+  const filterActions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ ...formListFilterActionsSx, gridColumn: advancedFiltersOpen ? '1 / -1' : { xs: '1 / -1', md: 'auto' } }}>
     <Button size="small" variant="outlined" startIcon={<RestartAlt />} onClick={resetSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>重置</Button>
     <Button size="small" variant="contained" startIcon={<Search />} onClick={submitSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>查询</Button>
     <Button size="small" variant="text" endIcon={<ExpandMore sx={{ transform: advancedFiltersOpen ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }} />} onClick={() => setAdvancedFiltersOpen((open) => !open)} aria-expanded={advancedFiltersOpen} sx={{ height: 40, minWidth: 72, px: 1, color: '#1890ff', '&:hover': { bgcolor: '#f5faff' } }}>{advancedFiltersOpen ? '收起' : '展开'}</Button>
@@ -382,10 +400,9 @@ export default function FormFillingPage() {
       <Box sx={formListQueryGridSx}>
         <TextField size="small" label="关键词" placeholder="实例号、模板、工单或生产对象" value={draft.keyword} onChange={(event) => updateDraft('keyword', event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} sx={fieldSx} />
         <TextField size="small" label="表单模板" placeholder="请输入表单模板名称" value={draft.templateName} onChange={(event) => updateDraft('templateName', event.target.value)} sx={fieldSx} />
-        {filterActions}
+        {advancedFiltersOpen ? <TextField size="small" label="表单实例号" placeholder="请输入实例号" value={draft.instanceNo} onChange={(event) => updateDraft('instanceNo', event.target.value)} sx={fieldSx} /> : filterActions}
         <Collapse in={advancedFiltersOpen} timeout={180} unmountOnExit sx={{ gridColumn: '1 / -1' }}>
           <Box sx={formListAdvancedGridSx}>
-            <TextField size="small" label="表单实例号" placeholder="请输入实例号" value={draft.instanceNo} onChange={(event) => updateDraft('instanceNo', event.target.value)} sx={fieldSx} />
             <TextField size="small" label="生产对象" placeholder="请输入批次号或SN" value={draft.productionObjectNo} onChange={(event) => updateDraft('productionObjectNo', event.target.value)} sx={fieldSx} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} />
             <TextField size="small" label="工单" placeholder="请输入工单号" value={draft.workOrderNo} onChange={(event) => updateDraft('workOrderNo', event.target.value)} sx={fieldSx} />
             <TextField select size="small" label="生产对象类型" value={draft.productionObjectType} onChange={(event) => updateDraft('productionObjectType', event.target.value)} sx={fieldSx}><MenuItem value="">全部</MenuItem><MenuItem value="BATCH">批次</MenuItem><MenuItem value="SN">SN</MenuItem></TextField>
@@ -393,14 +410,18 @@ export default function FormFillingPage() {
             <TextField select size="small" label="保存状态" value={draft.saved} onChange={(event) => updateDraft('saved', event.target.value)} sx={fieldSx}><MenuItem value="">全部</MenuItem><MenuItem value="true">已保存</MenuItem><MenuItem value="false">未保存</MenuItem></TextField>
           </Box>
         </Collapse>
+        {advancedFiltersOpen ? filterActions : null}
       </Box>
     </Box>
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
       <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1.5 }}><Tabs value={view} onChange={(_, next: FillingView) => { setView(next); setPage(0); setIdentity(null); setPreviewIdentity(null); setFillIdentity(null); }} aria-label="表单填报视图"><Tab value="FILLABLE" label="我的填报" /><Tab value="CREATED" label="我的创建" /><Tab value="FILLED" label="我的已填" /></Tabs><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: 1160, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
-        <colgroup><col style={{ width: 170 }} /><col style={{ width: 210 }} />{view === 'CREATED' ? <col style={{ width: 110 }} /> : null}<col style={{ width: 180 }} /><col style={{ width: 160 }} /><col style={{ width: 150 }} /><col style={{ width: 110 }} /><col style={{ width: 120 }} /><col style={{ width: 170 }} /><col style={{ width: 96 }} /></colgroup>
-        <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}><TableCell>表单实例号</TableCell><TableCell>表单模板</TableCell>{view === 'CREATED' ? <TableCell>创建类型</TableCell> : null}<TableCell>生产对象</TableCell><TableCell>工单</TableCell><TableCell>工序</TableCell><TableCell>保存状态</TableCell><TableCell>状态</TableCell><TableCell>节点 / 更新时间</TableCell><TableCell sx={actionHeadSx}>操作</TableCell></TableRow></TableHead>
-        <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={view === 'CREATED' ? 10 : 9} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={view === 'CREATED' ? 10 : 9} sx={{ height: '100%', color: '#c62828' }}>表单填报列表加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={view === 'CREATED' ? 10 : 9} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}-${row.operationId}-${row.formId}-${row.copyId}`} hover tabIndex={0} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看${row.templateName || '表单'}填报记录`}>
+      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: tableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
+        <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup>
+        <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => {
+          const width = getColumnWidth(column);
+          return <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...headerCellSx, position: 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? actionHeadSx : {}) }}>{column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /> : null}</TableCell>;
+        })}</TableRow></TableHead>
+        <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>表单填报列表加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}-${row.operationId}-${row.formId}-${row.copyId}`} hover tabIndex={0} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看${row.templateName || '表单'}填报记录`}>
           <TableCell>{row.instanceNo || <Typography component="span" variant="body2" sx={{ color: '#909399' }}>未保存</Typography>}</TableCell>
           <TableCell title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {row.templateVersion || '-'}</Typography></TableCell>
           {view === 'CREATED' ? <TableCell>{creationTypeLabel(row.creationType)}</TableCell> : null}

@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -253,14 +254,7 @@ const userSelectSx = {
   },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -316,7 +310,7 @@ const personnelColumns: PersonnelColumn[] = [
   { id: 'createdAt', label: '创建时间', defaultWidth: 130, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 130, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false },
+  { id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false, align: 'center' },
 ];
 
 function isConfigurablePersonnelColumn(
@@ -803,6 +797,7 @@ function getStickyActionColumnSx(column: PersonnelColumn, section: 'head' | 'bod
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    textAlign: 'center',
   };
 }
 
@@ -1558,9 +1553,9 @@ export default function OrganizationPage() {
       <TableCell key={column.id} sx={cellSx}>
         <Stack
           direction="row"
-          spacing={0.25}
+          spacing={0}
           onClick={(event) => event.stopPropagation()}
-          sx={{ alignItems: 'center' }}
+          sx={{ alignItems: 'center', justifyContent: 'center' }}
         >
           <Tooltip title="编辑" arrow>
             <IconButton size="small" aria-label="编辑" onClick={() => openEditUserDialog(row)}>

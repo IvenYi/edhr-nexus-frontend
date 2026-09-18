@@ -66,6 +66,12 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-template-item-entity, evidence.migration-0049-dhr-item-binding]
+  - id: concept.dhr-instance
+    termId: term.dhr-instance
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-snapshot-source]
   - id: concept.form-template-version
     termId: term.form-template-version
     kind: business-fact
@@ -767,6 +773,34 @@ relations:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-template-item-entity, evidence.operation-form-binding-entity]
+  - id: relation.dhr-instance-freezes-dhr-template-version
+    source: concept.dhr-instance
+    target: concept.dhr-template-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+  - id: relation.dhr-instance-freezes-process-version
+    source: concept.dhr-instance
+    target: concept.product-process-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+  - id: relation.dhr-instance-freezes-route-version
+    source: concept.dhr-instance
+    target: concept.route-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+  - id: relation.dhr-instance-aggregates-form-instances
+    source: concept.dhr-instance
+    target: concept.form-instance
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema]
   - id: relation.form-process-template-has-flow-versions
     source: concept.form-process-template
     target: concept.form-process-template-version
@@ -1334,6 +1368,13 @@ relations:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+  - id: relation.production-object-has-dhr-instance
+    source: concept.production-object
+    target: concept.dhr-instance
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
   - id: relation.work-order-early-terminates-active-production
     source: concept.work-order-early-termination
     target: concept.production-object

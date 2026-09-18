@@ -23,7 +23,7 @@ evidence:
   - id: evidence.operation-output-summary-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
-    description: original-evidence；查询投影读取当前工序冻结表单字段与已保存 values，按三类显式用途以 BigDecimal 求和，支持子表数字列，跳过 disabled 字段和 fulfilledBy 别名表单。三类映射齐全且所有来源为有效非负数量才返回 READY 和字符串总数，否则返回缺配置、待填或非法状态及空数量。完整映射、保存时点、去重和数值限制均为本切片实现策略，不提高为用户确认的通用业务规则；不写回批次产量或改变工序完成条件。
+    description: original-evidence；查询投影读取当前工序冻结表单字段与已保存 values，按三类显式用途以 BigDecimal 求和，支持子表数字列，跳过 disabled 字段。同模板版本由不同触发源产生的独立表单实例分别参与汇总；三类映射齐全且所有来源为有效非负数量才返回 READY 和字符串总数，否则返回缺配置、待填或非法状态及空数量。完整映射、保存时点和数值限制均为本切片实现策略，不提高为用户确认的通用业务规则；不写回批次产量或改变工序完成条件。
     visibility: internal
   - id: evidence.operation-output-user-decision
     type: document
@@ -68,7 +68,7 @@ evidence:
   - id: evidence.production-execution-snapshot-builder-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
-    description: original-evidence；按对象与工单装配产品、制程版本、路线节点与连线、eDHR版本、表单模型/画布及SOP文档版本和页段；根据产品、产品簇和工序匹配WORK规则，命中EXCEPTION排除，冻结命中规则和当前已发布作业流程及表单流程配置。缺少或不唯一的配置拒绝构建。相同版本的作业表单可关联对应eDHR项的完成判断，这是本切片实现选择，不定义泛领域表单共享规则。
+    description: original-evidence；按对象与工单装配产品、制程版本、路线节点与连线、eDHR版本、表单模型/画布及SOP文档版本和页段；根据产品、产品簇和工序匹配WORK规则，命中EXCEPTION排除，冻结命中规则和当前已发布作业流程及表单流程配置。缺少或不唯一的配置拒绝构建。工序配置表单和作业表单即使引用同一模板版本，仍为独立来源：只有工序配置表单保留对应eDHR项身份，作业表单在节点到达后独立创建，不共享完成判断或实例。
     visibility: internal
   - id: evidence.production-execution-engine-source
     type: code

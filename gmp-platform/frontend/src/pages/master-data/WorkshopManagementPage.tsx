@@ -1,5 +1,7 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
+import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { type MouseEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -64,19 +66,18 @@ interface AuditField {
 }
 
 const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
+const WORKSHOP_COLUMNS = [
+  { id: 'code', label: '车间编码', width: 180, minWidth: 128 },
+  { id: 'name', label: '车间名称', width: 220, minWidth: 160 },
+  { id: 'description', label: '描述', width: 224, minWidth: 160 },
+  { id: 'status', label: '状态', width: 100, minWidth: 96 },
+  { id: 'actions', label: '操作', width: 96, minWidth: 96 },
+] as const;
 const emptyFilters: WorkshopFilters = { keyword: '', status: 'ALL' };
 const emptyForm: WorkshopForm = { code: '', name: '', description: '', status: 'ACTIVE' };
 const fieldSx = { '& .MuiInputBase-root': { minHeight: 40 } };
 const queryButtonSx = { height: 40, width: 80, minWidth: 80 };
-const headerCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  whiteSpace: 'nowrap',
-  borderBottom: '1px solid #e4e7ed',
-};
+const headerCellSx = listTableHeaderCellSx;
 const bodyCellSx = {
   height: 40,
   py: 0,
@@ -177,6 +178,7 @@ function errorMessage(error: unknown) {
 }
 
 export default function WorkshopManagementPage() {
+  const { getColumnWidth, getResizeHandleProps } = usePersistedListColumnWidths(WORKSHOP_COLUMNS, 'workshop-management-column-widths:v1:');
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -311,21 +313,19 @@ export default function WorkshopManagementPage() {
       </Box>
 
       <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-        <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: 820, height: rows.length === 0 ? '100%' : 'auto' }}>
+        <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: WORKSHOP_COLUMNS.reduce((total, column) => total + getColumnWidth(column), 0), height: rows.length === 0 ? '100%' : 'auto' }}>
           <colgroup>
-            <col style={{ width: 180 }} />
-            <col style={{ width: 220 }} />
-            <col />
-            <col style={{ width: 100 }} />
-            <col style={{ width: 104 }} />
+            {WORKSHOP_COLUMNS.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}
           </colgroup>
           <TableHead>
             <TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>
-              <TableCell sx={headerCellSx}>车间编码</TableCell>
-              <TableCell sx={headerCellSx}>车间名称</TableCell>
-              <TableCell sx={headerCellSx}>描述</TableCell>
-              <TableCell sx={headerCellSx}>状态</TableCell>
-              <TableCell align="center" sx={{ ...headerCellSx, position: 'sticky', right: 0, zIndex: 4 }}>操作</TableCell>
+              {WORKSHOP_COLUMNS.map((column) => {
+                const width = getColumnWidth(column);
+                return <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...headerCellSx, position: 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? { position: 'sticky', right: 0, zIndex: 4 } : {}) }}>
+                  {column.label}
+                  {column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /> : null}
+                </TableCell>;
+              })}
             </TableRow>
           </TableHead>
           <TableBody sx={{ height: rows.length === 0 ? '100%' : 'auto' }}>
@@ -341,7 +341,7 @@ export default function WorkshopManagementPage() {
                 <TableCell><Typography component="span" sx={{ color: '#1890ff', fontSize: 14 }}>{workshop.name}</Typography></TableCell>
                 <TableCell sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{workshop.description || '-'}</TableCell>
                 <TableCell><StatusBadge label={statusLabel(workshop.status)} color={workshop.status === 'ACTIVE' ? 'success' : 'default'} /></TableCell>
-                <TableCell align="center" onClick={stopRowClick} sx={{ position: 'sticky', right: 0, bgcolor: '#fff', boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)' }}>
+                <TableCell align="center" onClick={stopRowClick} sx={{ width: 96, minWidth: 96, maxWidth: 96, position: 'sticky', right: 0, bgcolor: '#fff', boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)' }}>
                   <Tooltip title="编辑"><IconButton size="small" aria-label={`编辑车间 ${workshop.name}`} onClick={() => openEditDialog(workshop)}><Edit fontSize="small" /></IconButton></Tooltip>
                   <Tooltip title={workshop.deletable ? '删除' : '车间已被引用，只能停用'}>
                     <span><IconButton size="small" color="error" disabled={!workshop.deletable} aria-label={`删除车间 ${workshop.name}`} onClick={() => setDeleteTarget(workshop)}><Delete fontSize="small" /></IconButton></span>

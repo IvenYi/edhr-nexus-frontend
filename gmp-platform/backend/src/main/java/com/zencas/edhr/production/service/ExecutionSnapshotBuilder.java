@@ -29,7 +29,8 @@ public class ExecutionSnapshotBuilder {
                    m.specification, m.unit, p.id AS "processVersionId", p.version_label AS "processVersion",
                    p.production_mode AS "productionMode", p.production_form AS "productionForm",
                    r.id AS "routeVersionId", r.version AS "routeVersion", rt.name AS "routeName",
-                   rt.code AS "routeCode", d.id AS "dhrTemplateVersionId", d.version_label AS "dhrVersion",
+                   rt.code AS "routeCode", dt.id AS "dhrTemplateId", d.id AS "dhrTemplateVersionId",
+                   d.version_label AS "dhrVersion",
                    dt.name AS "dhrName", dt.code AS "dhrCode"
             FROM product_process_version p JOIN material m ON m.id = ?
             JOIN route_version r ON r.id = p.route_version_id JOIN route rt ON rt.id = r.route_id
@@ -122,13 +123,6 @@ public class ExecutionSnapshotBuilder {
                         flow.set("nodes", json(flow.path("nodes").asText(), mapper.createArrayNode()));
                         flow.set("edges", json(flow.path("edges").asText(), mapper.createArrayNode()));
                         form.set("flow", flow);
-                    }
-                    // A work-bound form satisfies the matching eDHR item; do not require a second independent submission.
-                    for (JsonNode direct : forms) {
-                        if (direct.path("versionId").asText().equals(form.path("versionId").asText()) && !direct.has("workId")) {
-                            ((ObjectNode) direct).put("fulfilledBy", form.path("id").asText());
-                            form.set("dhrItemId", direct.path("dhrItemId"));
-                        }
                     }
                     forms.add(form);
                 }

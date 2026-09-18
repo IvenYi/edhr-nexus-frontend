@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.23
+implementationAnchors:
+  - id: anchor.dhr-template-design-version-isolation
+    targetId: rule.dhr-template-design-version-isolation
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/DhrTemplateWorkspaceController.java, gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx]
+    apiReferences: ['GET /api/v1/master-data/template-modeling/batch-record-templates/{templateId}/versions/{versionId}/composition', 'PUT /api/v1/master-data/template-modeling/batch-record-templates/{templateId}/versions/{versionId}/composition']
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx, gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java, gmp-platform/frontend/scripts/verify-dhr-template-workspace.mjs]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-template-version-design-isolation-user-confirmed, evidence.dhr-template-composition-controller, evidence.dhr-template-workspace-version-selection, evidence.dhr-template-composition-controller-test, evidence.dhr-template-workspace-static-regression]
+    sourceRevision: working-tree
+    sourceLocator: DhrTemplateWorkspaceDialog 将明确初始版本优先写入 selectedVersionId；前后端 composition API 均以 templateId/versionId 组合定位和保存
+    capturedAt: '2026-09-18'
+    reviewStatus: reviewed

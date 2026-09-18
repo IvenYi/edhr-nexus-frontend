@@ -215,6 +215,13 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
           { label: '表单审批', path: '/form-management/review' },
         ],
       },
+      {
+        label: 'DHR管理',
+        icon: 'AssignmentTurnedIn',
+        children: [
+          { label: 'DHR列表', path: '/dhr-management/list' },
+        ],
+      },
     ],
   },
   {

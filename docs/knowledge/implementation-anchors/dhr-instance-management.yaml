@@ -1,0 +1,62 @@
+knowledgeModelVersion: 0.3.23
+implementationAnchors:
+  - id: anchor.dhr-instance-first-start-transaction
+    targetId: rule.dhr-instance-create-on-first-start
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql, gmp-platform/backend/src/main/resources/db/changelog/0090-remove-dhr-template-version-snapshot.sql, gmp-platform/backend/src/main/resources/db/changelog/0091-remove-dhr-template-version-status.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-service, evidence.dhr-instance-migration, evidence.dhr-instance-integration-test, evidence.dhr-instance-migration-test]
+    sourceRevision: working-tree
+    sourceLocator: ProductionExecutionService.act 的首次 START 分支在同一事务调用 DhrInstanceService.createAtFirstStart；0089 以租户与生产对象唯一约束闭环，聚焦集成与迁移测试已在 working tree 通过，不表示已发布
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: anchor.dhr-instance-context-snapshot
+    targetId: rule.dhr-instance-freeze-start-context
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    uiReferences: []
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source, evidence.dhr-instance-service, evidence.dhr-instance-migration, evidence.dhr-instance-integration-test]
+    sourceRevision: working-tree
+    sourceLocator: ExecutionSnapshotBuilder 提供首次 START 的冻结上下文；DhrInstanceService 从已绑定模板版本的目录和表单引用构建目录快照，并持久化到 0089 定义的独立实例字段；0090/0091 已移除模板版本旧快照与旧状态列，working-tree 集成测试已覆盖无模板版本隐藏生命周期字段时的创建与读取
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: anchor.dhr-instance-form-evidence-query
+    targetId: rule.dhr-instance-aggregate-production-form-evidence
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java]
+    apiReferences: ['GET /api/v1/dhr-instances', 'GET /api/v1/dhr-instances/{id}']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql, gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql, gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    uiReferences: [gmp-platform/frontend/src/api/dhr-instances.ts, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema, evidence.dhr-instance-service, evidence.dhr-instance-controller, evidence.dhr-instance-integration-test, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page]
+    sourceRevision: working-tree
+    sourceLocator: DhrInstanceService.detail 按生产对象查询 PRODUCTION_EXECUTION 来源记录，按冻结 dhrItemId 归入目录项并保留每条 copyId；控制器、前端 API 与页面只提供列表和只读详情，working-tree 集成测试已覆盖两份证据聚合与权限拒绝
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed
+  - id: anchor.dhr-instance-query-permission
+    targetId: rule.dhr-instance-query-permission
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java]
+    apiReferences: ['GET /api/v1/dhr-instances', 'GET /api/v1/dhr-instances/{id}']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    uiReferences: [gmp-platform/frontend/src/router/index.tsx, gmp-platform/frontend/src/utils/constants.ts, gmp-platform/frontend/src/utils/menuManagement.ts, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-controller, evidence.dhr-instance-migration, evidence.dhr-instance-integration-test, evidence.dhr-instance-migration-test, evidence.dhr-instance-management-page]
+    sourceRevision: working-tree
+    sourceLocator: DhrInstanceController 要求 dhr.instances.view；0089 创建菜单/操作权限并仅为 ADMIN 默认授权；前端注册 /dhr-management/list 与权限映射，working-tree 集成与迁移测试已覆盖拒绝访问和默认授权
+    capturedAt: '2026-09-17'
+    reviewStatus: reviewed

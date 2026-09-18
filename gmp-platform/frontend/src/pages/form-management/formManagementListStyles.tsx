@@ -1,23 +1,12 @@
 import { Box, FormControl, MenuItem, Pagination, Select, Stack, Typography } from '@mui/material';
+import { listTableBodyCellSx, listTableHeaderCellSx } from '@/components/listTableStyles';
 
 export const FORM_PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
 
-export const formTableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  whiteSpace: 'nowrap',
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+export const formTableHeaderCellSx = listTableHeaderCellSx;
 
 export const formTableBodyCellSx = {
-  height: 40,
-  lineHeight: '20px',
-  py: 0,
-  borderBottom: 'none',
-  boxShadow: 'inset 0 -1px 0 #ebeef5',
+  ...listTableBodyCellSx,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -47,8 +36,6 @@ export const formListAdvancedGridSx = {
   display: 'grid',
   gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' },
   gap: 1.5,
-  pt: 1.5,
-  borderTop: '1px solid #ebeef5',
 };
 
 export const formListFilterActionsSx = {

@@ -1,16 +1,16 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.23
 decisions:
-  - id: DEC-0056
+  - id: DEC-0060
     title: 表单引用字段配置贯通模拟与正式填报
     status: implemented
     visibility: internal
     context: user-confirmed；用户反馈物料领用单动态子表的物料名称已配置为物料来源引用，但模拟与正式填报未生效，随后授权恢复本功能项目门禁并完成前后端修复。范围为配置、查询条件、主表及动态子表运行、冻结版本兼容和提交有效性验证，不新增业务数据源或独立引用记录库。本决定不替代生产权限、版本快照、签名或审计契约；实现推断与证据缺口单独记录。
     decisionStatements:
-      - id: DEC-0056-01
+      - id: DEC-0060-01
         statement: 设计器中配置的引用字段应在模拟填报和正式填报中按其配置的数据来源、展示字段和查询条件生效，覆盖主表及动态子表。
         status: implemented
         visibility: internal
-      - id: DEC-0056-02
+      - id: DEC-0060-02
         statement: 正式填报提交须验证引用记录有效性；引用字段的前后端修复沿用当前生产来源授权及冻结表单版本，不提供绕过权限、签名、审批或审计的通道。
         status: implemented
         visibility: internal

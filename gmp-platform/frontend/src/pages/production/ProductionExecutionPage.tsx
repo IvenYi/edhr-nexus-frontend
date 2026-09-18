@@ -109,7 +109,7 @@ export default function ProductionExecutionPage() {
   const opState = view?.state.operations[operationId];
   const available = view?.availability[operationId];
   const output = view?.operationOutputs?.[operationId];
-  const forms = op?.forms.filter((item) => !item.fulfilledBy) ?? [];
+  const forms = op?.forms ?? [];
   const form = forms.find((item) => item.id === formId);
   useEffect(() => {
     let cancelled = false;
@@ -216,8 +216,8 @@ export default function ProductionExecutionPage() {
   const chooseOperation = (id: string, source = view) => {
     setOperationId(id);
     const next = source?.snapshot.operations.find((item) => item.id === id);
-    const active = next?.forms.find((item) => !item.fulfilledBy && (source?.availability[id]?.formCopies?.[item.id]?.instanceIds ?? [item.id]).some(copyId => source?.state.operations[id]?.forms[copyId]?.status === 'ACTIVE'));
-    chooseForm(active?.id ?? next?.forms.find((item) => !item.fulfilledBy)?.id ?? '', source, id);
+    const active = next?.forms.find((item) => (source?.availability[id]?.formCopies?.[item.id]?.instanceIds ?? [item.id]).some(copyId => source?.state.operations[id]?.forms[copyId]?.status === 'ACTIVE'));
+    chooseForm(active?.id ?? next?.forms[0]?.id ?? '', source, id);
     if (id !== operationId || source?.snapshot.context.objectId !== context?.objectId) {
       setDocumentId(next?.documents[0]?.id ?? ''); setActivePanel(null);
       setNavigationSection(null); setSelectedWorkId(next?.works[0]?.id ?? ''); setHistoryType('operation');
@@ -232,12 +232,12 @@ export default function ProductionExecutionPage() {
       : next.snapshot.operations.find((item) => next.state.operations[item.id]?.status === 'IN_PROGRESS')?.id
       ?? next.snapshot.operations.find((item) => next.availability[item.id]?.canStart)?.id ?? next.snapshot.operations[0]?.id ?? '');
     chooseOperation(id, next);
-    if (targetedOperation && target?.formId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === target.formId && !item.fulfilledBy)) {
+    if (targetedOperation && target?.formId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === target.formId)) {
       chooseForm(target.formId, next, id, target.copyId);
       initialTargetRef.current = null;
     } else if (reset) {
       initialTargetRef.current = null;
-    } else if (id === operationId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === formId && !item.fulfilledBy))
+    } else if (id === operationId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === formId))
       chooseForm(formId, next, id, selectedInstanceId);
   };
   const load = async (refresh = false, requestedBarcode?: string) => {
@@ -522,7 +522,7 @@ export default function ProductionExecutionPage() {
       </ExecutionQuickPanel>
     </Box>}
     <ExecutionFormSelector open={formDrawerOpen} onClose={() => setFormDrawerOpen(false)} container={() => rootRef.current} forms={forms}
-      copies={available?.formCopies ?? {}} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachForm)} editors={editors}
+      copies={available?.formCopies ?? {}} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachForm)} operationStatus={opState?.status} workStates={opState?.works} editors={editors}
       onSelect={id => { setFormDrawerOpen(false); if (id !== formId) protect(() => { chooseForm(id); setActivePanel(null); }); }}
       onAttach={(templateVersionId, required) => { setFormDrawerOpen(false); protect(() => void act({ action: 'ATTACH_FORM', templateVersionId, required })); }} />
     <Drawer anchor="left" open={copyDrawerOpen} onClose={() => setCopyDrawerOpen(false)} container={() => rootRef.current} className="execution-operation-drawer execution-copy-drawer"
