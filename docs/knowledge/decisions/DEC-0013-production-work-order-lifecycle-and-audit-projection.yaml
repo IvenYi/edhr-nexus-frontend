@@ -4,14 +4,14 @@ decisions:
     title: 工单创建即生产准备与审计动作统一投影
     status: implemented
     visibility: internal
-    context: "provenance: user-confirmed；本决策修订工单创建与发布分离的历史设计。工单创建后保持 CREATED 并可直接拆分生产对象，不再存在 RELEASED 状态或发布动作；对象开工、全部对象终态和工单关闭沿既定生产准备生命周期推进。生产工单及生产对象的数据审计在客户页面统一只展示新增和修改，取消、开工、完成、关闭等生命周期动作归入修改。实现已由后端聚焦测试和前端构建核对。"
+    context: "provenance: user-confirmed；本决策修订工单创建与发布分离的历史设计。工单创建后保持 CREATED，且在 CREATED 或 IN_PROCESS 状态均可继续拆分剩余生产对象；不再存在 RELEASED 状态或发布动作。对象开工、全部对象终态和工单关闭沿既定生产准备生命周期推进。生产工单及生产对象的数据审计在客户页面统一只展示新增和修改，取消、开工、完成、关闭等生命周期动作归入修改。"
     decisionStatements:
       - id: DEC-0013-01
-        statement: "provenance: user-confirmed；工单创建和编辑使用 CREATED；创建后即可拆分生产对象，不需要单独发布动作；RELEASED 不是本版本工单生命周期状态。"
+        statement: "provenance: user-confirmed；工单创建和编辑使用 CREATED；CREATED 与 IN_PROCESS 工单均可在剩余计划数量内拆分生产对象，不需要单独发布动作；RELEASED 不是本版本工单生命周期状态。"
         status: implemented
         visibility: internal
       - id: DEC-0013-02
-        statement: "provenance: user-confirmed；首次生产对象开工时，CREATED 工单转为 IN_PROCESS；生产对象全部为 COMPLETED 或 CANCELLED 时，CREATED 或 IN_PROCESS 工单转为 COMPLETED；已完成工单可关闭为 CLOSED；无对象且未开工的 CREATED 工单可取消为 CANCELLED。"
+        statement: "provenance: user-confirmed；首次生产对象开工时，CREATED 工单转为 IN_PROCESS；IN_PROCESS 工单的生产对象全部为 COMPLETED 或 CANCELLED 时转为 COMPLETED；全部对象均为未开工取消时工单保持 CREATED；已完成工单可关闭为 CLOSED；无对象且未开工的 CREATED 工单可取消为 CANCELLED。"
         status: implemented
         visibility: internal
       - id: DEC-0013-03
@@ -26,15 +26,15 @@ decisions:
     evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-service-test, evidence.work-order-page]
     acceptanceScenarios:
       - id: scenario.production-work-order-create-direct-split
-        given: 用户创建一个字段有效且状态为 CREATED 的工单
-        when: 用户直接执行生产对象拆分
-        then: 系统允许拆分，不要求发布动作，工单保持 CREATED 直到对象开工或全部对象终态联动
+        given: 用户创建一个字段有效的 CREATED 工单，或工单已因其他对象开工进入 IN_PROCESS
+        when: 用户在剩余计划数量内执行生产对象拆分
+        then: 系统允许拆分，不要求发布动作；进入 IN_PROCESS 后继续拆分必须继承既有锁定制程和生产形态
         evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-service-test, evidence.work-order-page]
         evidenceRequirements: [创建后直接拆分 API 测试, 页面不显示发布动作]
       - id: scenario.production-work-order-start-and-terminal-link
-        given: CREATED 工单已存在生产对象
+        given: CREATED 或 IN_PROCESS 工单已存在生产对象
         when: 首个对象开工，或最后一个对象完成/取消
-        then: 首个对象开工使工单进入 IN_PROCESS；全部对象终态时工单进入 COMPLETED
+        then: 首个对象开工使工单进入 IN_PROCESS；IN_PROCESS 工单的全部对象完成或取消时进入 COMPLETED；全部对象均未开工取消时保持 CREATED
         evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-service-test]
         evidenceRequirements: [状态机转移测试, 对象终态联动测试]
       - id: scenario.production-audit-action-projection

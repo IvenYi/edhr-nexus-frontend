@@ -78,7 +78,7 @@ evidence:
   - id: evidence.production-execution-service-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
-    description: original-evidence；扫码和查询只读；首次合法START生成并持久化对象执行快照，后续沿用快照与运行记录，revision防止过期提交。执行事务按工单后对象获取锁并在锁后重新判断终态，历史已开工但无记录不能补造状态；全部普通工序完成后更新对象完成。执行状态、对象状态及PRODUCTION_EXECUTION前后快照审计在同一事务保存。该局部运行链不代表全系统所有生产操作已具备同等验证。
+    description: original-evidence；扫码和查询只读；首次合法START生成并持久化对象执行快照，后续沿用快照与运行记录，revision防止过期提交。查询投影对未创建实例的计划表单按当前工序和作业节点返回 WAITING_OPERATION_START、WAITING_WORK_NODE 或 NOT_APPLICABLE，避免将不可填的计划表单冒充为未填报实例。执行事务按工单后对象获取锁并在锁后重新判断终态，历史已开工但无记录不能补造状态；全部普通工序完成后更新对象完成。执行状态、对象状态及PRODUCTION_EXECUTION前后快照审计在同一事务保存。该局部运行链不代表全系统所有生产操作已具备同等验证。
     visibility: internal
   - id: evidence.production-execution-access-source
     type: code

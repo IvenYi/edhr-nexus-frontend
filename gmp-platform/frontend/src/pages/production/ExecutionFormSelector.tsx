@@ -96,7 +96,7 @@ export default function ExecutionFormSelector(props: Props) {
           const workCompleted = form.workId && workStates?.[form.workId]?.status === 'COMPLETED';
           const status = group?.status ?? (operationStatus !== 'IN_PROGRESS' ? 'WAITING_OPERATION_START' : workCompleted ? 'NOT_APPLICABLE' : form.workId ? 'WAITING_WORK_NODE' : 'PENDING');
           return <Box key={form.id} role="listitem" className={`execution-form-selector-row${active ? ' is-selected' : ''}${arrived ? '' : ' is-planned'}`}>
-            <button type="button" className="execution-form-selector-target" disabled={busy || !arrived} aria-current={active || undefined} onClick={() => onSelect(form.id)}>
+            <button type="button" className="execution-form-selector-target" disabled={busy} aria-current={active || undefined} onClick={() => onSelect(form.id)}>
               <span className="execution-form-selector-name">{form.name}</span>
               <span className="execution-form-selector-meta"><span>编码 {form.code || '—'}</span><span>版本 {form.version || '—'}</span></span>
               <span className="execution-form-selector-facts"><span className={group?.required ?? form.required ?? true ? 'is-required' : ''}>{group?.required ?? form.required ?? true ? '必填' : '选填'}</span><span>{arrived ? `共 ${group?.instanceIds.length} 份` : '计划表单'}</span><span className="execution-form-status" data-status={status}>{statusLabel(status)}</span></span>

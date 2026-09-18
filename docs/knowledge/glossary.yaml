@@ -482,7 +482,7 @@ terms:
     visibility: internal
   - id: term.work-order
     name: 工单
-    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，可直接拆分多个生产对象，不存在 RELEASED 发布状态；生产执行中可主动提前结束并进入 EARLY_TERMINATED，区别于正常完成和行政关闭。
+    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，CREATED 与 IN_PROCESS 状态均可在剩余计划数量内继续拆分多个生产对象，不存在 RELEASED 发布状态；生产执行中可主动提前结束并进入 EARLY_TERMINATED，区别于正常完成和行政关闭。
     aliases: [生产工单, 工单计划]
     status: specified
     visibility: internal

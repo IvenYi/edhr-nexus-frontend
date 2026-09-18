@@ -39,7 +39,7 @@ decisions:
         status: deprecated
         visibility: internal
       - id: DEC-0018-08
-        statement: "provenance: user-confirmed；工单管理中的生产对象拆分弹窗只负责工单初始拆分和待提交清单；批次管理中的再拆分弹窗负责既有批次的后续拆分，两者不可复用为同一业务入口。"
+        statement: "provenance: user-confirmed；工单管理中的生产对象拆分弹窗负责工单在 CREATED 或 IN_PROCESS 状态下按剩余计划数量创建对象并维护待提交清单；批次管理中的再拆分属于既有批次的独立能力，两者不可复用为同一业务入口。"
         status: specified
         visibility: internal
     supersedes: [DEC-0013]
@@ -52,9 +52,9 @@ decisions:
         evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-object-status-machine, evidence.guancheng-batch-close-source]
         evidenceRequirements: [工单状态机转移测试, 活动对象级联测试, 结束原因和审计快照测试]
       - id: scenario.production-cancel-releases-work-order-allocation
-        given: CREATED 工单有一个或多个未开工生产对象
+        given: CREATED 或 IN_PROCESS 工单有一个或多个未开工生产对象
         when: 用户取消其中对象或全部对象
-        then: 计划数量不变，取消对象数量从有效分配量中扣除；全部对象取消时工单保持 CREATED 并可继续拆分
+        then: 计划数量不变，取消对象数量从有效分配量中扣除；全部对象均未开工取消时工单保持 CREATED 并可继续拆分；已进入 IN_PROCESS 的工单仍可在剩余计划数量内继续拆分
         evidenceIds: [evidence.production-service, evidence.production-object-cancel-side-effects-current, evidence.production-service-test, evidence.guancheng-batch-remove-source]
         evidenceRequirements: [已取消未开工对象全量替代拆分测试, 全部取消保持 CREATED 测试]
       - id: scenario.production-batch-resplit-is-post-mvp

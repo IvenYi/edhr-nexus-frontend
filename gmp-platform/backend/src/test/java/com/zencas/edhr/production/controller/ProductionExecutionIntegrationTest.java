@@ -412,6 +412,9 @@ class ProductionExecutionIntegrationTest {
 
     @Test void configuredAndWorkFormsUsingTheSameTemplateRemainIndependent() throws Exception {
         seedConfirmationWork();
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.status").value("WAITING_OPERATION_START"))
+            .andExpect(jsonPath("$.data.availability.a.formCopies.work-7-f.status").value("WAITING_OPERATION_START"));
         action(101, "START", 0, "a", Map.of()).andExpect(status().isOk())
             .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.status").value("ACTIVE"))
             .andExpect(jsonPath("$.data.state.operations.a.forms.work-7-f.status").value("ACTIVE"))

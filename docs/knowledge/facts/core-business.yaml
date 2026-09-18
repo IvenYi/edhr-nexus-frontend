@@ -2500,34 +2500,34 @@ facts:
     name: "规则事实 workOrder.status"
     conceptId: concept.work-order
     valueType: string
-    sourceType: configuration
+    sourceType: runtime-context
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
     aliases: ["workOrder.status"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
     evidenceIds: [evidence.production-service]
     sourceRevision: working-tree
-    sourceLocator: "workOrder.status"
+    sourceLocator: "WorkOrder.status"
     capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    reviewStatus: reviewed
   - id: fact.catalog.workorder-statustransition
     name: "规则事实 workOrder.statusTransition"
     conceptId: concept.work-order
     valueType: string
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/WorkOrderStatusMachine.java"
     aliases: ["workOrder.statusTransition"]
-    availability: not-available
+    availability: configuration-and-runtime
     allowedOperators: [equals]
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service]
+    evidenceIds: [evidence.work-order-status-machine]
     sourceRevision: working-tree
-    sourceLocator: "workOrder.statusTransition"
+    sourceLocator: "WorkOrderStatusMachine.transitions"
     capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    reviewStatus: reviewed
   - id: fact.catalog.workflow-allbranchesapproved
     name: "规则事实 workflow.allBranchesApproved"
     conceptId: concept.business-rule-runtime

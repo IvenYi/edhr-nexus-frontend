@@ -128,7 +128,11 @@ export default function ProductionExecutionPage() {
   const selectedInstanceId = instanceIds.includes(instanceId) ? instanceId : instanceIds[0] ?? formId;
   const formState = opState?.forms[selectedInstanceId];
   const formStatus = copies?.status ?? formState?.status ?? 'PENDING';
-  const formStatusLabel = formStatus === 'COMPLETED' ? '已完成' : formStatus === 'PENDING' ? '未填报' : '进行中';
+  const formStatusLabel = formStatus === 'COMPLETED' ? '已完成'
+    : formStatus === 'WAITING_OPERATION_START' ? '待工序开工'
+      : formStatus === 'WAITING_WORK_NODE' ? '待作业流程到达'
+        : formStatus === 'NOT_APPLICABLE' ? '不适用'
+          : formStatus === 'PENDING' ? '未填报' : '进行中';
   const controls = copies?.instances[selectedInstanceId] ?? available?.forms[formId];
   const { editors, markEditing } = useExecutionPresence(context?.objectId, operationId, formId, selectedInstanceId, Boolean(controls?.canAct && !navigationSection && !activePanel), formDrawerOpen);
   const completed = operations.filter((item) => item.type !== 'REWORK' && view?.state.operations[item.id]?.status === 'COMPLETED').length;
@@ -509,6 +513,8 @@ export default function ProductionExecutionPage() {
                   <Tooltip title="按表单填报" placement="top" arrow><button type="button" aria-label="按表单填报" aria-pressed={layout === 'canvas'} onClick={() => setLayout('canvas')}><TableChartOutlined /></button></Tooltip>
                 </Box>
                 {formState?.savedAt && <Typography variant="caption" color="text.secondary">已暂存 {time(formState.savedAt)}</Typography>}
+                {formStatus === 'WAITING_OPERATION_START' && <Typography variant="caption" color="text.secondary">计划预览，工序开工后可填报</Typography>}
+                {formStatus === 'WAITING_WORK_NODE' && <Typography variant="caption" color="text.secondary">计划预览，作业流程到达后可填报</Typography>}
                 </Box>
                 {controls?.buttons.filter(button => button.action !== 'SAVE' && button.action !== 'SUBMIT').map(button => <Button key={button.action} disabled={busy || !controls.canAct} color={button.action === 'RETURN' ? 'error' : 'primary'} variant={button.action === 'RETURN' ? 'outlined' : 'contained'} onClick={() => formAction(button)}>{button.label}{button.requiresSignature ? '并签署' : ''}</Button>)}
                 {['SAVE', 'SUBMIT'].map(action => {

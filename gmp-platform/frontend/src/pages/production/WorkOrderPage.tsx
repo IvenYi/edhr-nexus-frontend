@@ -437,7 +437,7 @@ export default function WorkOrderPage() {
   const split = useMutation({
     mutationFn: () => splitProductionObjectsBatch(objectOrder!.id, pendingObjects.map((item) => ({ processVersionId: item.processVersionId || null, targetQuantity: Number(item.targetQuantity), objectNo: item.objectNo.trim() || undefined, remark: item.remark.trim() || undefined, plannedStartAt: item.plannedStartAt || null, plannedEndAt: item.plannedEndAt || null }))),
     onSuccess: (response) => { const created = response.data.data[0]; setObjectOrder((current) => current ? { ...current, processVersionId: created.processVersionId, processVersion: created.processVersion, productionForm: created.objectType } : current); void client.invalidateQueries({ queryKey: ['production-objects', objectOrder?.id] }); void client.invalidateQueries({ queryKey: ['work-orders'] }); setPendingObjects([]); setSplitForm((current) => ({ ...current, processVersionId: created.processVersionId, targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' })); showMessage(`已添加 ${response.data.data.length} 个生产对象`); },
-    onError: (error: any) => showMessage(error?.response?.data?.message || '生产对象创建失败', 'error'),
+    onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '生产对象创建失败', 'error'),
   });
   const objectAction = useMutation({
     mutationFn: ({ action, id }: { action: 'start' | 'complete' | 'cancel'; id: string }) => action === 'start' ? startProductionObject(id) : action === 'complete' ? completeProductionObject(id) : cancelProductionObject(id),
@@ -455,11 +455,11 @@ export default function WorkOrderPage() {
   const showOrderTableState = orders.isLoading || orders.isError || !orders.data?.content.length;
   const selectedProduct = (products.data?.content ?? []).find((product) => String(product.id) === form.productId);
   const objectRows = objects.data ?? [];
-  const allocated = objectRows.reduce((sum, item) => sum + Number(item.targetQuantity), 0);
+  const allocated = objectRows.filter((item) => item.status !== 'CANCELLED').reduce((sum, item) => sum + Number(item.targetQuantity), 0);
   const remaining = Math.max(0, Number(objectOrder?.plannedQuantity || 0) - allocated);
   const pendingAllocated = pendingObjects.reduce((sum, item) => sum + Number(item.targetQuantity || 0), 0);
   const availableRemaining = Math.max(0, remaining - pendingAllocated);
-  const canSplit = Boolean(objectOrder && objectOrder.status === 'CREATED');
+  const canSplit = Boolean(objectOrder && ['CREATED', 'IN_PROCESS'].includes(objectOrder.status));
   const endBeforeStart = Boolean(form.plannedStartAt && form.plannedEndAt && form.plannedEndAt < form.plannedStartAt);
   const canSave = Boolean(form.orderNo.trim() && form.productId && Number(form.plannedQuantity) > 0 && !endBeforeStart && !save.isPending);
 

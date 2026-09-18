@@ -46,7 +46,9 @@ public class ProductionService {
     public ProductionObject split(Long workOrderId, Long requestedProcessVersionId, BigDecimal targetQuantity,
                                    String objectNo, String remark, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt) {
         WorkOrder order = requireOrderForUpdate(workOrderId);
-        if (!"CREATED".equals(order.getStatus())) throw error("只有已创建的工单可以拆分生产对象");
+        if (!List.of("CREATED", "IN_PROCESS").contains(order.getStatus())) {
+            throw error("只有已创建或生产中的工单可以拆分生产对象");
+        }
         if (targetQuantity == null || targetQuantity.signum() <= 0) {
             throw error("生产对象目标数量必须大于0");
         }
@@ -196,7 +198,7 @@ public class ProductionService {
             if (hasEarlyTermination && "IN_PROCESS".equals(order.getStatus())) {
                 stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "EARLY_TERMINATED");
                 order.setStatus("EARLY_TERMINATED");
-            } else if (allCompleted) {
+            } else if (allCompleted || "IN_PROCESS".equals(order.getStatus())) {
                 stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "COMPLETED");
                 order.setStatus("COMPLETED");
             } else {

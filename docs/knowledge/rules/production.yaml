@@ -728,6 +728,26 @@ rules:
       reason: process-version-required-before-first-split
     explanation: 工单创建时制程可以为空，但首次拆分生产对象时必须显式选择属于该产品或产品簇解析结果的制程。
     evidenceIds: [evidence.production-service, evidence.work-order-controller, evidence.production-service-test]
+  - id: rule.production.work-order-split-eligibility
+    name: 工单在创建或生产中可继续拆分
+    status: implemented
+    visibility: internal
+    trigger: production-object.split
+    scope: work-order
+    condition:
+      any:
+        - fact: workOrder.status
+          operator: equals
+          value: CREATED
+        - fact: workOrder.status
+          operator: equals
+          value: IN_PROCESS
+    result:
+      type: allow-with-governance
+      allowedStatuses: [CREATED, IN_PROCESS]
+      requiredConstraints: [remaining-planned-quantity, locked-process-version, single-production-form]
+    explanation: 工单进入 IN_PROCESS 只表示至少一个生产对象已开工，不冻结尚未分配的计划数量；CREATED 与 IN_PROCESS 工单均可继续拆分。COMPLETED、CLOSED、CANCELLED 和 EARLY_TERMINATED 工单不得拆分。
+    evidenceIds: [evidence.production-service, evidence.production-service-test, evidence.work-order-page]
   - id: rule.production.first-split-locks-process
     name: 首次拆分写回并锁定制程
     status: implemented
@@ -835,7 +855,7 @@ rules:
     result:
       type: block
       reason: object-target-quantity-exceeds-work-order-plan
-    explanation: 同一工单所有生产对象目标数量之和不得超过工单计划数量；良品、NG 和报废数量独立记录，不减少目标数量。
+    explanation: 同一工单非 CANCELLED 生产对象目标数量之和不得超过工单计划数量；取消的未开工对象释放其分配量。良品、NG 和报废数量独立记录，不减少对象目标数量。
     evidenceIds: [evidence.production-service, evidence.production-object-entity, evidence.production-service-test]
   - id: rule.production.object-lifecycle
     name: 生产对象生命周期
@@ -1002,7 +1022,7 @@ rules:
     result:
       type: write-audit-record
       allowedTransitions: [CREATED->IN_PROCESS, IN_PROCESS->COMPLETED, IN_PROCESS->EARLY_TERMINATED, COMPLETED->CLOSED, CREATED->CANCELLED]
-    explanation: 工单创建和编辑使用 CREATED；创建后即可拆分生产对象；首次对象开工使工单进入 IN_PROCESS；对象全部正常完成时才进入 COMPLETED；进行中工单可主动提前结束进入 EARLY_TERMINATED；已完成工单可 CLOSED；无对象且未开工工单可 CANCELLED。全部未开工对象取消后工单保持 CREATED 并恢复可分配量，不得误判为 COMPLETED。工单不再有 RELEASED 状态或发布动作。
+    explanation: 工单创建和编辑使用 CREATED；CREATED 与 IN_PROCESS 工单均可继续拆分剩余生产对象；首次对象开工使工单进入 IN_PROCESS；进行中工单的所有对象完成或取消后进入 COMPLETED；进行中工单可主动提前结束进入 EARLY_TERMINATED；已完成工单可 CLOSED；无对象且未开工工单可 CANCELLED。全部未开工对象取消后工单保持 CREATED 并恢复可分配量，不得误判为 COMPLETED。工单不再有 RELEASED 状态或发布动作。
     evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-service-test]
   - id: rule.production.work-order-early-termination
     name: 生产中工单提前结束

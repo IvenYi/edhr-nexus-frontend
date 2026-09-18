@@ -259,7 +259,7 @@ public class ProductionExecutionService {
                 ObjectNode group = copyControls.putObject(formId);
                 List<String> instanceIds = ExecutionFormCopies.ids(current, formId);
                 group.set("instanceIds", mapper.valueToTree(instanceIds));
-                group.put("status", ExecutionFormCopies.status(current, formId));
+                group.put("status", formAvailabilityStatus(form, current, formId));
                 group.put("ended", ExecutionFormCopies.ended(current, formId));
                 group.put("required", ExecutionFormCopies.required(op, form));
                 List<String> incomplete = ExecutionFormCopies.incomplete(current, form);
@@ -287,6 +287,22 @@ public class ProductionExecutionService {
         controls.put("canAct", false); controls.putArray("buttons");
         controls.putObject("signaturePermissions");
         for (JsonNode field : form.path("fields")) controls.withObject("/permissions").put(field.path("id").asText(), "READ_ONLY");
+    }
+
+    private String formAvailabilityStatus(JsonNode form, JsonNode operationState, String formId) {
+        if (!ExecutionFormCopies.ids(operationState, formId).isEmpty()) {
+            return ExecutionFormCopies.status(operationState, formId);
+        }
+        if (!"IN_PROGRESS".equals(operationState.path("status").asText())) {
+            return "WAITING_OPERATION_START";
+        }
+        if (form.has("workId")) {
+            if ("COMPLETED".equals(operationState.path("works").path(form.path("workId").asText()).path("status").asText())) {
+                return "NOT_APPLICABLE";
+            }
+            return "WAITING_WORK_NODE";
+        }
+        return "PENDING";
     }
 
     private ObjectNode parse(String source) {
