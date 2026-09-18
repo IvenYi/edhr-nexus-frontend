@@ -1,0 +1,66 @@
+knowledgeModelVersion: 0.3.24
+facts:
+  - id: fact.dhr-summary.production-complete
+    name: DHR 对应生产对象已完成
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    aliases: [dhrSummary.productionComplete]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-service]
+    sourceRevision: working-tree
+    sourceLocator: lockedCompletedDhr 只允许 status=COMPLETED 的 DHR 保存或提交汇总
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.required-directory-complete
+    name: DHR 必填基础目录项具有已完成实例
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    aliases: [dhrSummary.requiredDirectoryComplete]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-service]
+    sourceRevision: working-tree
+    sourceLocator: ensureRequiredDirectoryItems 检查每个 required 基础目录项至少包含一份已完成目录实例
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.review-mode
+    name: DHR 汇总审核策略
+    conceptId: concept.dhr-instance
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    aliases: [dhrSummary.reviewMode]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-migration, evidence.dhr-summary-process-configuration-ui]
+    sourceRevision: working-tree
+    sourceLocator: product_process_version 与 dhr_instance 的 dhr_review_mode 及流程定义/版本外键
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.version-frozen
+    name: DHR 汇总版本已提交冻结
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    aliases: [dhrSummary.versionFrozen]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-migration]
+    sourceRevision: working-tree
+    sourceLocator: dhr_summary_version 与 dhr_summary_evidence 仅在提交时插入，已提交状态阻断后续草稿修改
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed

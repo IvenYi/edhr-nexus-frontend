@@ -60,8 +60,9 @@ public class DhrInstanceService {
                 id,tenant_id,dhr_no,production_object_id,object_no,object_type,work_order_id,work_order_no,
                 product_id,product_code,product_name,process_version_id,process_version,route_version_id,route_version,
                 route_code,route_name,dhr_template_id,dhr_template_version_id,dhr_template_version,dhr_template_code,
-                dhr_template_name,context_snapshot,directory_snapshot,status,created_by,created_at,updated_by,updated_at)
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                dhr_template_name,context_snapshot,directory_snapshot,status,summary_status,dhr_review_mode,
+                dhr_review_workflow_definition_id,dhr_review_workflow_version_id,created_by,created_at,updated_by,updated_at)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """,
             sequence, object.getTenantId(), dhrNo, object.getId(), object.getObjectNo(), object.getObjectType(),
             order.getId(), order.getOrderNo(), requiredLong(context, "productId", "产品"),
@@ -69,7 +70,10 @@ public class DhrInstanceService {
             requiredLong(context, "processVersionId", "制程版本"), text(context, "processVersion"),
             routeVersionId, text(context, "routeVersion"), text(context, "routeCode"), text(context, "routeName"),
             templateId, templateVersionId, text(context, "dhrVersion"), text(context, "dhrCode"), text(context, "dhrName"),
-            contextSnapshot.toString(), directorySnapshot.toString(), "IN_PROGRESS", actor, now, actor, now);
+            contextSnapshot.toString(), directorySnapshot.toString(), "IN_PROGRESS", "NOT_STARTED",
+            text(context, "dhrReviewMode") == null ? "NONE" : text(context, "dhrReviewMode"),
+            optionalLong(context, "dhrReviewWorkflowDefinitionId"), optionalLong(context, "dhrReviewWorkflowVersionId"),
+            actor, now, actor, now);
 
         ObjectNode after = mapper.createObjectNode().put("dhrNo", dhrNo).put("productionObjectId", object.getId().toString())
                 .put("objectNo", object.getObjectNo()).put("objectType", object.getObjectType())
@@ -95,6 +99,11 @@ public class DhrInstanceService {
 
     @Transactional(readOnly = true)
     public PageResult<ObjectNode> list(String keyword, String objectType, String status, int page, int size) {
+        return list(keyword, objectType, status, "", page, size);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResult<ObjectNode> list(String keyword, String objectType, String status, String summaryStatus, int page, int size) {
         page = Math.max(0, page);
         size = Math.max(1, Math.min(200, size));
         StringBuilder where = new StringBuilder(" WHERE tenant_id=?");
@@ -111,6 +120,14 @@ public class DhrInstanceService {
         if (status != null && !status.isBlank()) {
             if (!List.of("IN_PROGRESS", "COMPLETED").contains(status)) throw invalid("DHR 状态无效");
             where.append(" AND status=?"); args.add(status);
+        }
+        if (summaryStatus != null && !summaryStatus.isBlank()) {
+            if ("PENDING_GROUP".equals(summaryStatus)) where.append(" AND summary_status IN ('NOT_STARTED','DRAFT')");
+            else if ("SUBMITTED_GROUP".equals(summaryStatus)) where.append(" AND summary_status IN ('PENDING_REVIEW','FORMALIZED')");
+            else {
+                if (!List.of("NOT_STARTED", "DRAFT", "PENDING_REVIEW", "FORMALIZED").contains(summaryStatus)) throw invalid("DHR 汇总状态无效");
+                where.append(" AND summary_status=?"); args.add(summaryStatus);
+            }
         }
         Long count = jdbc.queryForObject("SELECT count(*) FROM dhr_instance" + where, Long.class, args.toArray());
         args.add(size); args.add((long) page * size);
@@ -163,6 +180,19 @@ public class DhrInstanceService {
                 .put("recordCount", mappedRecordCount + unmapped.size())
                 .put("unmappedRecordCount", unmapped.size());
         result.set("unmappedRecords", unmapped);
+        ObjectNode origins = result.putObject("recordsByOrigin");
+        ArrayNode directoryRecords = origins.putArray("directory");
+        ArrayNode workRecords = origins.putArray("work");
+        ArrayNode customRecords = origins.putArray("custom");
+        for (JsonNode directoryNode : directory.path("directories")) {
+            for (JsonNode itemNode : directoryNode.path("items")) directoryRecords.addAll((ArrayNode) itemNode.path("records"));
+        }
+        for (JsonNode record : unmapped) {
+            String origin = record.path("originKind").asText();
+            if ("DIRECTORY".equals(origin)) directoryRecords.add(record);
+            else if ("WORK".equals(origin)) workRecords.add(record);
+            else customRecords.add(record);
+        }
         return result;
     }
 
@@ -233,7 +263,9 @@ public class DhrInstanceService {
                 .put("productName", rs.getString("product_name")).put("processVersion", rs.getString("process_version"))
                 .put("routeName", rs.getString("route_name")).put("routeVersion", rs.getString("route_version"))
                 .put("dhrTemplateName", rs.getString("dhr_template_name")).put("dhrTemplateVersion", rs.getString("dhr_template_version"))
-                .put("status", rs.getString("status")).put("createdBy", rs.getString("created_by"))
+                .put("status", rs.getString("status")).put("summaryStatus", rs.getString("summary_status"))
+                .put("dhrReviewMode", rs.getString("dhr_review_mode"))
+                .put("createdBy", rs.getString("created_by"))
                 .put("createdAt", timestamp(rs, "created_at")).put("updatedBy", rs.getString("updated_by"))
                 .put("updatedAt", timestamp(rs, "updated_at"))
                 .put("completedAt", timestamp(rs, "completed_at"));
@@ -244,7 +276,9 @@ public class DhrInstanceService {
         result.put("productId", rs.getString("product_id")).put("processVersionId", rs.getString("process_version_id"))
                 .put("routeVersionId", rs.getString("route_version_id")).put("routeCode", rs.getString("route_code"))
                 .put("dhrTemplateId", rs.getString("dhr_template_id")).put("dhrTemplateVersionId", rs.getString("dhr_template_version_id"))
-                .put("dhrTemplateCode", rs.getString("dhr_template_code"));
+                .put("dhrTemplateCode", rs.getString("dhr_template_code"))
+                .put("dhrReviewWorkflowDefinitionId", rs.getString("dhr_review_workflow_definition_id"))
+                .put("dhrReviewWorkflowVersionId", rs.getString("dhr_review_workflow_version_id"));
         result.set("context", json(rs.getString("context_snapshot"), "DHR 上下文快照"));
         result.set("directorySnapshot", json(rs.getString("directory_snapshot"), "DHR 目录快照"));
         return result;
@@ -261,6 +295,10 @@ public class DhrInstanceService {
                 .put("updatedBy", rs.getString("updated_by")).put("updatedAt", timestamp(rs, "updated_at"));
         result.set("snapshot", json(rs.getString("snapshot_json"), "表单实例快照"));
         result.set("fieldValues", json(rs.getString("values_json"), "表单实例值"));
+        JsonNode snapshot = result.path("snapshot");
+        String originKind = snapshot.hasNonNull("dhrItemId") && !snapshot.path("dhrItemId").asText().isBlank()
+                ? "DIRECTORY" : snapshot.hasNonNull("workId") && !snapshot.path("workId").asText().isBlank() ? "WORK" : "CUSTOM";
+        result.put("originKind", originKind);
         return result;
     }
 
@@ -282,6 +320,12 @@ public class DhrInstanceService {
         if (!context.hasNonNull(field) || context.path(field).asText().isBlank()) throw invalid(label + "缺失，无法创建 DHR");
         try { return Long.parseLong(context.path(field).asText()); }
         catch (NumberFormatException ex) { throw invalid(label + "标识无效，无法创建 DHR"); }
+    }
+
+    private static Long optionalLong(JsonNode context, String field) {
+        if (!context.hasNonNull(field) || context.path(field).asText().isBlank()) return null;
+        try { return Long.parseLong(context.path(field).asText()); }
+        catch (NumberFormatException ex) { throw invalid(field + "标识无效，无法创建 DHR"); }
     }
 
     private static String text(JsonNode node, String field) {

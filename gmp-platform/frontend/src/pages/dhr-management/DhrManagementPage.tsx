@@ -12,13 +12,17 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Divider,
-  Drawer,
+  Dialog,
+  DialogContent,
   IconButton,
   InputAdornment,
   MenuItem,
   Skeleton,
   Stack,
+  Tab,
+  Tabs,
   Table,
   TableBody,
   TableCell,
@@ -41,7 +45,7 @@ import SearchRounded from '@mui/icons-material/SearchRounded';
 import TuneRounded from '@mui/icons-material/TuneRounded';
 import ViewColumnRounded from '@mui/icons-material/ViewColumnRounded';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
-import type { DhrDirectoryItem, DhrInstanceSummary, DhrObjectType, DhrStatus } from '@/api/dhr-instances';
+import type { DhrEvidenceRecord, DhrInstanceSummary, DhrObjectType, DhrStatus } from '@/api/dhr-instances';
 import { getDhrInstance, listDhrInstances } from '@/api/dhr-instances';
 import { logout } from '@/api/auth';
 import ListColumnSettingsPopover, {
@@ -63,6 +67,8 @@ import {
   FormListPagination,
 } from '@/pages/form-management/formManagementListStyles';
 import { clearAuthStorage } from '@/utils/sessionPolicy';
+import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
+import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 
 const COLUMN_SETTINGS_VERSION = 2;
 const COLUMN_STORAGE_KEY_PREFIX = 'dhr-list-columns:';
@@ -126,163 +132,113 @@ function Meta({ label, value }: { label: string; value?: ReactNode }) {
   );
 }
 
-function SectionHeader({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
-  return (
-    <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2} sx={{ px: 2.5, py: 1.75 }}>
-      <Box sx={{ minWidth: 0 }}>
-        <Typography variant="subtitle1" fontWeight={700}>{title}</Typography>
-        {description && <Typography variant="caption" color="text.secondary">{description}</Typography>}
-      </Box>
-      {action}
-    </Stack>
-  );
-}
-
-function EvidenceItem({ item }: { item: DhrDirectoryItem }) {
-  const title = item.displayName || item.formName || '未命名表单';
-  return (
-    <Box sx={{ py: 1.75, '& + &': { borderTop: '1px solid', borderColor: 'divider' } }}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'center' }} justifyContent="space-between" gap={1.25}>
-        <Box sx={{ minWidth: 0 }}>
-          <Stack direction="row" alignItems="center" gap={1}>
-            <Typography fontWeight={650} noWrap>{title}</Typography>
-            {item.required && <Chip label="必填" size="small" color="warning" variant="outlined" />}
-          </Stack>
-          <Typography variant="caption" color="text.secondary">
-            {item.formName || title}{item.formVersion ? ` · ${item.formVersion}` : ''}
-          </Typography>
-        </Box>
-        <Chip
-          size="small"
-          label={item.records.length ? `${item.records.length} 份记录` : '尚无记录'}
-          color={item.records.length ? 'primary' : 'default'}
-          variant="outlined"
-          sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
-        />
-      </Stack>
-      {item.records.length > 0 && (
-        <Stack spacing={1} sx={{ mt: 1.25 }}>
-          {item.records.map((record) => (
-            <Box key={record.id} sx={{ px: 1.5, py: 1.2, bgcolor: '#f7f9fc', border: '1px solid #ebeef5', borderRadius: 1 }}>
-              <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={0.5}>
-                <Typography variant="body2" fontWeight={600}>{record.instanceNo}</Typography>
-                <Typography variant="caption" color="text.secondary">{formatTime(record.updatedAt)}</Typography>
-              </Stack>
-              <Typography variant="caption" color="text.secondary">
-                {record.operationName || record.operationId} · {record.updatedBy || '系统'} · 副本 {record.copyId}
-              </Typography>
-            </Box>
-          ))}
-        </Stack>
-      )}
-    </Box>
-  );
-}
-
-function DetailDrawer({ selected, onClose }: { selected: DhrInstanceSummary | null; onClose: () => void }) {
+function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | null; onClose: () => void }) {
   const query = useQuery({
     queryKey: ['dhr-instance-detail', selected?.id],
     queryFn: () => getDhrInstance(selected!.id),
     enabled: Boolean(selected),
   });
   const detail = query.data;
+  const [source, setSource] = useState<'DIRECTORY' | 'WORK' | 'CUSTOM'>('DIRECTORY');
+  const [nodeKey, setNodeKey] = useState('');
+  const [recordId, setRecordId] = useState('');
+
+  useEffect(() => {
+    if (!detail) return;
+    const firstDirectory = detail.directorySnapshot.directories[0];
+    setSource('DIRECTORY');
+    setNodeKey(firstDirectory ? `directory-${firstDirectory.id}` : '');
+    setRecordId('');
+  }, [detail]);
+
+  const sourceRecords = useMemo(() => {
+    if (!detail) return [];
+    if (source === 'WORK') return detail.recordsByOrigin.work;
+    if (source === 'CUSTOM') return detail.recordsByOrigin.custom;
+    const directories = detail.directorySnapshot.directories;
+    if (nodeKey.startsWith('item-')) {
+      const itemId = nodeKey.slice(5);
+      return directories.flatMap((directory) => directory.items).find((item) => String(item.id) === itemId)?.records ?? [];
+    }
+    if (nodeKey.startsWith('directory-')) {
+      const directoryId = nodeKey.slice(10);
+      return directories.find((directory) => String(directory.id) === directoryId)?.items.flatMap((item) => item.records) ?? [];
+    }
+    return detail.recordsByOrigin.directory;
+  }, [detail, nodeKey, source]);
+  useEffect(() => {
+    if (!sourceRecords.some((record) => record.id === recordId)) setRecordId(sourceRecords[0]?.id ?? '');
+  }, [recordId, sourceRecords]);
+  const record = sourceRecords.find((item) => item.id === recordId) ?? null;
+  const previewDocument = useMemo(() => {
+    if (!record?.snapshot.model || !record.snapshot.canvas) return null;
+    try {
+      const parsed = parseReactTemplateDesignerDocument(
+        { id: record.templateId, name: record.templateName || record.snapshot.name || '表单' },
+        { id: record.templateVersionId, version: record.templateVersion || record.snapshot.version || '', modelDesignJson: record.snapshot.model, canvasDesignJson: record.snapshot.canvas },
+      );
+      const fields = Array.isArray(record.snapshot.fields) ? record.snapshot.fields : [];
+      parsed.model.fields = fields.map((field, index) => ({ ...field, typeConfig: field.typeConfig ?? {}, status: field.status ?? 'enabled', sortOrder: field.sortOrder ?? index })) as typeof parsed.model.fields;
+      return parsed;
+    } catch { return null; }
+  }, [record]);
+
+  const sourceCount = detail ? {
+    DIRECTORY: detail.recordsByOrigin.directory.length,
+    WORK: detail.recordsByOrigin.work.length,
+    CUSTOM: detail.recordsByOrigin.custom.length,
+  } : { DIRECTORY: 0, WORK: 0, CUSTOM: 0 };
 
   return (
-    <Drawer
-      anchor="right"
+    <Dialog
       open={Boolean(selected)}
       onClose={onClose}
-      sx={{ zIndex: 1800, '& .MuiDrawer-paper': { zIndex: 1800 } }}
-      PaperProps={{ sx: { width: { xs: '100%', md: 680 }, bgcolor: '#f6f8f9' } }}
+      fullScreen
+      PaperProps={{ sx: { bgcolor: '#eef1f6' } }}
     >
-      <Box sx={{ position: 'sticky', top: 0, zIndex: 2, px: { xs: 2, sm: 3 }, py: 2, bgcolor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider' }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" gap={2}>
-          <Box sx={{ minWidth: 0 }}>
-            <Stack direction="row" alignItems="center" gap={1.25} sx={{ mb: 0.5 }}>
-              <ArticleOutlined color="primary" />
-              <Typography variant="h6" noWrap>{selected?.dhrNo}</Typography>
-              {selected && <DhrStatusBadge status={selected.status} />}
-            </Stack>
-            <Typography variant="body2" color="text.secondary">DHR 只读详情 · 展示开工时冻结的执行上下文与已关联记录</Typography>
-          </Box>
-          <IconButton onClick={onClose} aria-label="关闭详情"><CloseRounded /></IconButton>
+      <Box sx={{ height: 64, px: 2.5, bgcolor: '#fff', borderBottom: '1px solid #dfe3eb', display: 'flex', alignItems: 'center' }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%" gap={2}>
+          <Stack direction="row" alignItems="center" gap={1.25} minWidth={0}>
+            <ArticleOutlined color="primary" />
+            <Typography variant="h6" noWrap>{selected?.dhrNo}</Typography>
+            {selected && <Chip size="small" label={`${objectTypeLabel[selected.objectType]} · ${selected.objectNo}`} variant="outlined" />}
+            {selected && <DhrStatusBadge status={selected.status} />}
+          </Stack>
+          <IconButton onClick={onClose} aria-label="关闭 DHR 详情"><CloseRounded /></IconButton>
         </Stack>
       </Box>
-
-      {query.isLoading && (
-        <Stack spacing={2} sx={{ p: 3 }}>
-          {[220, 360].map((height) => <Skeleton key={height} variant="rounded" height={height} />)}
-        </Stack>
-      )}
-
-      {query.isError && (
-        <Box sx={{ m: 3, p: 4, textAlign: 'center', bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-          <Typography fontWeight={700}>详情加载失败</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75, mb: 2 }}>请检查服务状态后重试。</Typography>
-          <Button variant="outlined" startIcon={<RefreshRounded />} onClick={() => query.refetch()}>重新加载</Button>
-        </Box>
-      )}
-
-      {detail && (
-        <Stack spacing={2} sx={{ p: { xs: 2, sm: 3 } }}>
-          <Box sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
-            <SectionHeader title="冻结上下文" description="以下信息随生产对象首次开工固定，用于后续追溯。" />
+      <DialogContent sx={{ p: 0, overflow: 'hidden' }}>
+        {query.isLoading ? <Box sx={{ height: '100%', display: 'grid', placeItems: 'center' }}><CircularProgress /></Box> : query.isError || !detail ? (
+          <Box sx={{ height: '100%', display: 'grid', placeItems: 'center' }}><Stack alignItems="center" spacing={1.5}><Typography fontWeight={700}>DHR 详情加载失败</Typography><Button variant="outlined" startIcon={<RefreshRounded />} onClick={() => query.refetch()}>重新加载</Button></Stack></Box>
+        ) : <Box sx={{ height: '100%', display: 'grid', gridTemplateColumns: '92px 300px minmax(0,1fr)' }}>
+          <Tabs orientation="vertical" value={source} onChange={(_, value) => { setSource(value); setNodeKey(''); }} sx={{ bgcolor: '#fff', borderRight: '1px solid #dfe3eb', pt: 1.5, '& .MuiTab-root': { minWidth: 0, minHeight: 72, px: 1, fontSize: 13 } }}>
+            <Tab value="DIRECTORY" icon={<FolderOutlined />} label={`目录 ${sourceCount.DIRECTORY}`} />
+            <Tab value="WORK" icon={<FactCheckOutlined />} label={`作业 ${sourceCount.WORK}`} />
+            <Tab value="CUSTOM" icon={<ArticleOutlined />} label={`自定义 ${sourceCount.CUSTOM}`} />
+          </Tabs>
+          <Box sx={{ bgcolor: '#fff', borderRight: '1px solid #dfe3eb', overflow: 'auto' }}>
+            <Box sx={{ p: 2, borderBottom: '1px solid #ebeef5' }}><Typography fontWeight={700}>{source === 'DIRECTORY' ? detail.dhrTemplateName || 'DHR 目录' : source === 'WORK' ? '作业表单' : '自定义表单'}</Typography><Typography variant="caption" color="text.secondary">{source === 'DIRECTORY' ? `冻结版本 ${detail.dhrTemplateVersion || '—'}` : '生产执行形成的表单实例'}</Typography></Box>
+            {source === 'DIRECTORY' ? <Stack spacing={0.5} sx={{ p: 1 }}>
+              {detail.directorySnapshot.directories.map((directory) => <Box key={directory.id}>
+                <Button fullWidth startIcon={<FolderOutlined />} onClick={() => setNodeKey(`directory-${directory.id}`)} sx={{ justifyContent: 'flex-start', color: nodeKey === `directory-${directory.id}` ? 'primary.main' : 'text.primary', bgcolor: nodeKey === `directory-${directory.id}` ? '#e8f4ff' : 'transparent' }}>{directory.name}</Button>
+                {directory.items.map((item) => <Button key={item.id} fullWidth onClick={() => setNodeKey(`item-${item.id}`)} sx={{ pl: 5, justifyContent: 'space-between', color: nodeKey === `item-${item.id}` ? 'primary.main' : 'text.secondary', bgcolor: nodeKey === `item-${item.id}` ? '#f0f7ff' : 'transparent' }}><Typography variant="body2" noWrap>{item.displayName || item.formName}</Typography><Chip size="small" label={item.records.length} variant="outlined" /></Button>)}
+              </Box>)}
+            </Stack> : null}
             <Divider />
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 2.5, p: 2.5 }}>
-              <Meta label="生产对象" value={`${objectTypeLabel[detail.objectType]} · ${detail.objectNo}`} />
-              <Meta label="工单" value={detail.workOrderNo} />
-              <Meta label="产品" value={[detail.productCode, detail.productName].filter(Boolean).join(' · ')} />
-              <Meta label="制程版本" value={detail.processVersion} />
-              <Meta label="工艺路线" value={`${detail.routeName || '—'}${detail.routeVersion ? ` · ${detail.routeVersion}` : ''}`} />
-              <Meta label="DHR 模板" value={`${detail.dhrTemplateName || '—'}${detail.dhrTemplateVersion ? ` · ${detail.dhrTemplateVersion}` : ''}`} />
-            </Box>
-          </Box>
-
-          <Box sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
-            <SectionHeader
-              title="记录目录"
-              description="按冻结模板目录自动汇集受控表单证据。"
-              action={(
-                <Stack direction="row" gap={0.75} sx={{ flexShrink: 0 }}>
-                  <Chip size="small" label={`${detail.evidenceSummary.suppliedItemCount}/${detail.evidenceSummary.itemCount} 项`} variant="outlined" />
-                  <Chip size="small" label={`${detail.evidenceSummary.recordCount} 份记录`} color="primary" variant="outlined" />
-                </Stack>
-              )}
-            />
-            <Divider />
-            <Stack spacing={1.5} sx={{ p: 2 }}>
-              {detail.directorySnapshot.directories.map((directory) => (
-                <Box key={directory.id} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
-                  <Stack direction="row" alignItems="center" gap={1.1} sx={{ px: 2, py: 1.35, bgcolor: '#f7f9fc' }}>
-                    <FolderOutlined sx={{ fontSize: 19, color: 'primary.main' }} />
-                    <Typography fontWeight={700}>{directory.name}</Typography>
-                    <Typography variant="caption" color="text.secondary">{directory.items.length} 项</Typography>
-                  </Stack>
-                  <Divider />
-                  <Box sx={{ px: 2 }}>{directory.items.map((item) => <EvidenceItem key={item.id} item={item} />)}</Box>
-                </Box>
-              ))}
-
-              {detail.directorySnapshot.directories.length === 0 && (
-                <Box sx={{ py: 5, textAlign: 'center' }}>
-                  <FactCheckOutlined sx={{ fontSize: 36, color: 'text.disabled' }} />
-                  <Typography color="text.secondary" sx={{ mt: 0.75 }}>该 DHR 模板没有目录项</Typography>
-                </Box>
-              )}
-
-              {detail.evidenceSummary.unmappedRecordCount > 0 && (
-                <Box sx={{ display: 'flex', gap: 1, p: 1.5, bgcolor: '#fff8e1', border: '1px solid #ffe0a3', borderRadius: 1 }}>
-                  <InfoOutlined sx={{ color: '#ed8b00', fontSize: 20, mt: 0.1 }} />
-                  <Typography variant="body2" color="text.secondary">
-                    另有 {detail.evidenceSummary.unmappedRecordCount} 份自定义或未绑定目录的表单记录，未计入目录完成度。
-                  </Typography>
-                </Box>
-              )}
+            <Stack spacing={0.75} sx={{ p: 1.25 }}>
+              {sourceRecords.map((item) => <Button key={item.id} onClick={() => setRecordId(item.id)} sx={{ display: 'block', textAlign: 'left', px: 1.5, py: 1.25, color: 'text.primary', bgcolor: recordId === item.id ? '#e8f4ff' : '#fff', border: '1px solid', borderColor: recordId === item.id ? '#91caff' : '#ebeef5' }}><Typography variant="body2" fontWeight={650} noWrap>{item.templateName || '未命名表单'}</Typography><Typography variant="caption" color="text.secondary" display="block" noWrap>{item.instanceNo} · 副本 {item.copyId}</Typography></Button>)}
+              {!sourceRecords.length && <Typography sx={{ py: 5, textAlign: 'center' }} color="text.secondary">暂无表单实例</Typography>}
             </Stack>
           </Box>
-        </Stack>
-      )}
-    </Drawer>
+          <Box sx={{ minWidth: 0, overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ px: 2.5, py: 1.5, bgcolor: '#fff', borderBottom: '1px solid #dfe3eb' }}>
+              {record ? <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2}><Box minWidth={0}><Typography fontWeight={700} noWrap>{record.templateName}</Typography><Typography variant="caption" color="text.secondary">{record.instanceNo} · {record.templateVersion} · {record.operationName || '生产执行'} · {formatTime(record.updatedAt)}</Typography></Box><Chip size="small" label={record.status === 'COMPLETED' ? '已完成' : record.status} color={record.status === 'COMPLETED' ? 'success' : 'default'} /></Stack> : <Typography color="text.secondary">请选择一份表单实例</Typography>}
+            </Box>
+            {record ? previewDocument ? <FormCanvasPreview document={previewDocument} fullPage runtime={{ values: record.fieldValues, disabled: true, onChange: () => {} }} /> : <Box sx={{ m: 3, p: 3, bgcolor: '#fff', border: '1px solid #dfe3eb' }}><Typography fontWeight={700} sx={{ mb: 2 }}>表单数据</Typography><Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 2 }}>{Object.entries(record.fieldValues).map(([key, value]) => <Meta key={key} label={key} value={typeof value === 'object' ? JSON.stringify(value) : String(value ?? '—')} />)}</Box></Box> : <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><Typography color="text.secondary">选择左侧实例查看真实表单内容</Typography></Box>}
+          </Box>
+        </Box>}
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -407,7 +363,7 @@ export default function DhrManagementPage() {
     const cellSx = { ...bodyCellSx };
     switch (columnId) {
       case 'dhrNo':
-        return <TableCell key={columnId} sx={{ ...cellSx, color: '#1890ff', fontWeight: 600 }} title={row.dhrNo}>{row.dhrNo}</TableCell>;
+        return <TableCell key={columnId} sx={{ ...cellSx, color: '#303133', fontWeight: 600 }} title={row.dhrNo}>{row.dhrNo}</TableCell>;
       case 'object':
         return <TableCell key={columnId} sx={{ ...cellSx, fontWeight: 600 }} title={`${row.objectNo} · ${objectTypeLabel[row.objectType]}`}>{row.objectNo} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {objectTypeLabel[row.objectType]}</Typography></TableCell>;
       case 'workOrderNo':
@@ -658,7 +614,7 @@ export default function DhrManagementPage() {
         />
       </Box>
 
-      <DetailDrawer selected={selected} onClose={() => setSelected(null)} />
+      <DetailDialog selected={selected} onClose={() => setSelected(null)} />
     </Box>
   );
 }

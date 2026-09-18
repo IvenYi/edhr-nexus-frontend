@@ -106,7 +106,7 @@ class ProductionExecutionIntegrationTest {
         }
         for (String ddl : List.of(
             "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16))",
-            "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT)",
+            "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT,dhr_review_mode VARCHAR(16) DEFAULT 'NONE',dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT)",
             "route(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64))",
             "route_version(id BIGINT PRIMARY KEY,route_id BIGINT,version VARCHAR(64))",
             "dhr_template(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64))",
@@ -122,7 +122,7 @@ class ProductionExecutionIntegrationTest {
             "document_version(id BIGINT PRIMARY KEY,document_id BIGINT,code VARCHAR(64),version VARCHAR(64),file_id BIGINT)",
             "form_template(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64),category_name VARCHAR(128),tenant_id VARCHAR(64) DEFAULT 'default',status VARCHAR(32) DEFAULT 'ACTIVE')",
             "form_template_version(id BIGINT PRIMARY KEY,template_id BIGINT,version_label VARCHAR(64),model_design_json TEXT,canvas_design_json TEXT,tenant_id VARCHAR(64) DEFAULT 'default',status VARCHAR(32) DEFAULT 'PUBLISHED')",
-            "workflow_definition(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),type VARCHAR(32),name VARCHAR(128))",
+            "workflow_definition(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),type VARCHAR(32),name VARCHAR(128),code VARCHAR(64),business_type VARCHAR(32))",
             "workflow_definition_version(id BIGINT PRIMARY KEY,definition_id BIGINT,version_number INT,status VARCHAR(32),is_current BOOLEAN,nodes_json TEXT,edges_json TEXT)",
             "workflow_binding_rule(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),definition_id BIGINT,rule_type VARCHAR(32),is_active BOOLEAN,product_id BIGINT,product_family_id BIGINT,operation_id BIGINT)",
             "product_family_member(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),product_id BIGINT,product_family_id BIGINT)")) {
@@ -133,11 +133,15 @@ class ProductionExecutionIntegrationTest {
         for (String sql : dhrMigration.split("INSERT INTO permission")[0].split(";")) {
             if (sql.contains("CREATE")) jdbc.execute(sql);
         }
+        jdbc.execute("ALTER TABLE dhr_instance ADD COLUMN summary_status VARCHAR(32) DEFAULT 'NOT_STARTED' NOT NULL");
+        jdbc.execute("ALTER TABLE dhr_instance ADD COLUMN dhr_review_mode VARCHAR(16) DEFAULT 'NONE' NOT NULL");
+        jdbc.execute("ALTER TABLE dhr_instance ADD COLUMN dhr_review_workflow_definition_id BIGINT");
+        jdbc.execute("ALTER TABLE dhr_instance ADD COLUMN dhr_review_workflow_version_id BIGINT");
         jdbc.update("DELETE FROM production_execution"); jdbc.update("DELETE FROM production_object"); jdbc.update("DELETE FROM work_order"); jdbc.update("DELETE FROM audit_event");
         jdbc.update("DELETE FROM signature"); jdbc.update("DELETE FROM user_account");
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(1,0,'operator','测试操作员',?,'ACTIVE')", passwords.encode("test-secret"));
         jdbc.update("INSERT INTO material VALUES(1,'default','P01','导管','规格A','件')");
-        jdbc.update("INSERT INTO product_process_version VALUES(2,'default','配置V1','量产','批次',3,4)");
+        jdbc.update("INSERT INTO product_process_version(id,tenant_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id,dhr_review_mode) VALUES(2,'default','配置V1','量产','批次',3,4,'NONE')");
         jdbc.update("INSERT INTO route VALUES(3,'导管装配','R01')"); jdbc.update("INSERT INTO route_version VALUES(3,3,'V1')");
         jdbc.update("INSERT INTO dhr_template VALUES(4,'导管生产记录','D01')");
         jdbc.update("INSERT INTO dhr_template_version(id,dhr_template_id,version_label) VALUES(4,4,'V1')");
@@ -440,7 +444,7 @@ class ProductionExecutionIntegrationTest {
     }
 
     private void seedConfirmationWork() {
-        jdbc.update("INSERT INTO workflow_definition VALUES(7,'default','WORK','装配作业')");
+        jdbc.update("INSERT INTO workflow_definition(id,tenant_id,type,name) VALUES(7,'default','WORK','装配作业')");
         jdbc.update("INSERT INTO workflow_definition_version VALUES(7,7,1,'PUBLISHED',true,?,?)", """
             [{"id":"s","data":{"kind":"START"}},
              {"id":"f","data":{"kind":"FORM","config":{"formTemplateVersionId":"5"}}},
@@ -770,7 +774,7 @@ class ProductionExecutionIntegrationTest {
     }
 
     private void seedSignedWork() {
-        jdbc.update("INSERT INTO workflow_definition VALUES(7,'default','WORK','装配复核'),(8,'default','FORM_PROCESS','填报与复核')");
+        jdbc.update("INSERT INTO workflow_definition(id,tenant_id,type,name) VALUES(7,'default','WORK','装配复核'),(8,'default','FORM_PROCESS','填报与复核')");
         jdbc.update("INSERT INTO workflow_definition_version VALUES(8,8,1,'PUBLISHED',true,?,?)", """
             [{"id":"s","data":{"kind":"START"}},{"id":"review","data":{"kind":"APPROVAL","label":"现场复核","config":{
               "approverSubjects":[{"type":"USER","id":"1"}],"defaultPermission":"READ_ONLY",

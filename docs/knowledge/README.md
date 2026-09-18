@@ -1,6 +1,8 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.23`，schema 版本：`1.1.0`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.24`，schema 版本：`1.1.0`。
+
+当前 `0.3.24` 基线增量记录 DHR 汇总与制程审核配置（`DEC-0063`）：DHR列表 与 DHR汇总 使用独立菜单；汇总消费目录直接绑定、作业表单节点和生产执行自定义表单三类实例，在不可变基础目录之上允许增加多级覆盖目录，按实例创建受控关联，并在提交时冻结完整候选范围、归档关系、来源快照和哈希。产品/产品簇共用制程版本可选择 `NONE` 或绑定已发布 `DHR_SUMMARY` 流程版本的 `REQUIRED` 策略，并在首次开工时冻结；历史 DHR 不回填汇总版本或审核绑定。当前只完成配置与 `PENDING_REVIEW` 边界，DHR审核 独立菜单、审批实例/任务、电子签名、退回和批准结果落地仍属后续切片；不得把待审核解释为已批准或产品已放行。本体核对发现并已修复覆盖目录空 `parentKey` 可形成孤立根目录的偏差，服务端现强制所有覆盖目录位于基础目录之下。知识保持 `implemented/internal`，不表示发布级验证完成。
 
 当前工作树增量定义 DHR 模板设计的版本隔离（`DEC-0061`）：批记录模板的复制版本可独立保存目录与表单引用；从版本行进入设计时，composition 的读取和保存必须同时绑定用户明确选择的 `templateId + versionId`，不得回退为缓存、默认排序、最新版本或父模板。该规则保持 `implemented/internal`；控制器和静态前端回归证据已登记，真实浏览器交互仍由用户验收，不改变 DHR 实例快照、审计或持久化结构。
 
@@ -138,7 +140,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.23" && schema.fetch("schemaVersion") == "1.1.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.24" && schema.fetch("schemaVersion") == "1.1.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")

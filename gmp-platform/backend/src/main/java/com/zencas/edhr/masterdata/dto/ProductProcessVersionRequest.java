@@ -19,6 +19,9 @@ public class ProductProcessVersionRequest {
     private String productionForm;
     private Long routeVersionId;
     private Long dhrTemplateVersionId;
+    private String dhrReviewMode;
+    private Long dhrReviewWorkflowDefinitionId;
+    private Long dhrReviewWorkflowVersionId;
     private String description;
     private LocalDateTime effectiveFrom;
     private LocalDateTime effectiveTo;

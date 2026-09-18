@@ -220,6 +220,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         icon: 'AssignmentTurnedIn',
         children: [
           { label: 'DHR列表', path: '/dhr-management/list' },
+          { label: 'DHR汇总', path: '/dhr-management/summary' },
         ],
       },
     ],

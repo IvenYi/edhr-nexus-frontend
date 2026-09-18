@@ -44,6 +44,10 @@ import com.zencas.edhr.template.repository.DhrDirectoryRepository;
 import com.zencas.edhr.template.repository.DhrTemplateItemRepository;
 import com.zencas.edhr.template.repository.DhrTemplateVersionRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
+import com.zencas.edhr.workflow.entity.WorkflowDefinition;
+import com.zencas.edhr.workflow.entity.WorkflowDefinitionVersion;
+import com.zencas.edhr.workflow.repository.WorkflowDefinitionRepository;
+import com.zencas.edhr.workflow.repository.WorkflowDefinitionVersionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +88,8 @@ public class ProductProcessOwnerService {
     private final DhrDirectoryRepository dhrDirectoryRepository;
     private final DhrTemplateItemRepository dhrTemplateItemRepository;
     private final FormTemplateVersionRepository formTemplateVersionRepository;
+    private final WorkflowDefinitionRepository workflowDefinitionRepository;
+    private final WorkflowDefinitionVersionRepository workflowDefinitionVersionRepository;
     private final DocumentVersionRepository documentVersionRepository;
     private final FileObjectRepository fileObjectRepository;
     private final AuditEventRepository auditEventRepository;
@@ -207,6 +213,9 @@ public class ProductProcessOwnerService {
                 .productionForm(requireProductionForm(request.getProductionForm()))
                 .routeVersionId(requireId(request.getRouteVersionId(), "工艺路线版本不能为空"))
                 .dhrTemplateVersionId(requireId(request.getDhrTemplateVersionId(), "批记录模板版本不能为空"))
+                .dhrReviewMode(reviewMode(request.getDhrReviewMode()))
+                .dhrReviewWorkflowDefinitionId(request.getDhrReviewWorkflowDefinitionId())
+                .dhrReviewWorkflowVersionId(request.getDhrReviewWorkflowVersionId())
                 .description(trimToNull(request.getDescription()))
                 .effectiveFrom(request.getEffectiveFrom())
                 .effectiveTo(request.getEffectiveTo())
@@ -227,6 +236,9 @@ public class ProductProcessOwnerService {
         existing.setProductionForm(requireProductionForm(request.getProductionForm()));
         existing.setRouteVersionId(requireId(request.getRouteVersionId(), "工艺路线版本不能为空"));
         existing.setDhrTemplateVersionId(requireId(request.getDhrTemplateVersionId(), "批记录模板版本不能为空"));
+        existing.setDhrReviewMode(reviewMode(request.getDhrReviewMode()));
+        existing.setDhrReviewWorkflowDefinitionId(request.getDhrReviewWorkflowDefinitionId());
+        existing.setDhrReviewWorkflowVersionId(request.getDhrReviewWorkflowVersionId());
         existing.setDescription(trimToNull(request.getDescription()));
         existing.setEffectiveFrom(request.getEffectiveFrom());
         existing.setEffectiveTo(request.getEffectiveTo());
@@ -245,6 +257,25 @@ public class ProductProcessOwnerService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "批记录模板版本不存在"));
         if (!RdoVersionStatusResolver.isReferenceable(dhrVersion.getEffectiveFrom(), dhrVersion.getEffectiveTo())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "仅能引用生效中的批记录模板版本");
+        }
+        validateDhrReviewBinding(version);
+    }
+
+    private void validateDhrReviewBinding(ProductProcessVersion version) {
+        if ("NONE".equals(version.getDhrReviewMode())) {
+            version.setDhrReviewWorkflowDefinitionId(null);
+            version.setDhrReviewWorkflowVersionId(null);
+            return;
+        }
+        Long definitionId = requireId(version.getDhrReviewWorkflowDefinitionId(), "请选择 DHR 汇总审批流程");
+        Long versionId = requireId(version.getDhrReviewWorkflowVersionId(), "请选择已发布的 DHR 汇总审批流程版本");
+        WorkflowDefinition definition = workflowDefinitionRepository.findById(definitionId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "DHR 汇总审批流程不存在"));
+        WorkflowDefinitionVersion workflowVersion = workflowDefinitionVersionRepository.findById(versionId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "DHR 汇总审批流程版本不存在"));
+        if (!"RECORD_CONTROL".equals(definition.getType()) || !"DHR_SUMMARY".equals(definition.getBusinessType())
+                || !definitionId.equals(workflowVersion.getDefinitionId()) || !"PUBLISHED".equals(workflowVersion.getStatus())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "只能绑定已发布的 DHR 汇总审批流程版本");
         }
     }
 
@@ -428,6 +459,9 @@ public class ProductProcessOwnerService {
         snapshot.put("productionForm", version.getProductionForm());
         snapshot.put("routeVersionId", String.valueOf(version.getRouteVersionId()));
         snapshot.put("dhrTemplateVersionId", String.valueOf(version.getDhrTemplateVersionId()));
+        snapshot.put("dhrReviewMode", version.getDhrReviewMode());
+        snapshot.put("dhrReviewWorkflowDefinitionId", version.getDhrReviewWorkflowDefinitionId() == null ? null : String.valueOf(version.getDhrReviewWorkflowDefinitionId()));
+        snapshot.put("dhrReviewWorkflowVersionId", version.getDhrReviewWorkflowVersionId() == null ? null : String.valueOf(version.getDhrReviewWorkflowVersionId()));
         snapshot.put("description", version.getDescription());
         snapshot.put("effectiveFrom", version.getEffectiveFrom());
         snapshot.put("effectiveTo", version.getEffectiveTo());
@@ -527,6 +561,14 @@ public class ProductProcessOwnerService {
 
     private String trimToNull(String value) {
         return hasText(value) ? value.trim() : null;
+    }
+
+    private String reviewMode(String value) {
+        String mode = hasText(value) ? value.trim().toUpperCase() : "NONE";
+        if (!Set.of("NONE", "REQUIRED").contains(mode)) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "DHR 审核策略仅支持无需审核或需要审核");
+        }
+        return mode;
     }
 
     private String menuName(ProcessOwnerType ownerType) {

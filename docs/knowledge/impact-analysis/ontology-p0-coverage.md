@@ -1,6 +1,6 @@
 # Ontology P0 Coverage Review
 
-knowledgeModelVersion: `0.3.23`
+knowledgeModelVersion: `0.3.24`
 schemaVersion: `1.1.0`
 reviewedAt: `2026-09-17`
 
@@ -27,7 +27,7 @@ reviewedAt: `2026-09-17`
 - `implementation-anchors/core-business.yaml`：11 个核心域锚点；代码、迁移、UI 和测试路径均存在。
 - 规则事实覆盖：217/217 个唯一非废弃规则事实，覆盖率 100%；各目录文件数量见上一项；当前切片沿用现有事实目录，不新建 schema 分组。
 - 事实操作符：均来自对应事实的 `allowedOperators`；正式校验器负责拒绝非法操作符。
-- 版本：知识模型 `0.3.23`、schema `1.1.0` 与当前资产头一致。
+- 版本：知识模型 `0.3.24`、schema `1.1.0` 与当前资产头一致。
 
 ## 证据边界
 

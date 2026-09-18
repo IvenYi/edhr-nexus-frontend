@@ -66,6 +66,9 @@ export interface ProductProcessVersion {
   dhrTemplateName?: string | null;
   dhrTemplateCode?: string | null;
   dhrTemplateVersion?: string | null;
+  dhrReviewMode: 'NONE' | 'REQUIRED';
+  dhrReviewWorkflowDefinitionId?: string | null;
+  dhrReviewWorkflowVersionId?: string | null;
   description?: string | null;
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
@@ -159,6 +162,9 @@ export interface ProductProcessVersionPayload {
   productionForm: string;
   routeVersionId: string;
   dhrTemplateVersionId: string;
+  dhrReviewMode: 'NONE' | 'REQUIRED';
+  dhrReviewWorkflowDefinitionId?: string | null;
+  dhrReviewWorkflowVersionId?: string | null;
   description?: string | null;
   effectiveFrom?: string | null;
   effectiveTo?: string | null;

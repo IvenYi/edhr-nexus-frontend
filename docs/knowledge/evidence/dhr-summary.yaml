@@ -1,0 +1,47 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.dhr-summary-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-user-confirmed.md
+    description: user-confirmed；用户确认独立 DHR 汇总菜单、三类表单实例来源、基础目录不可变与多级覆盖目录、选择纳入而非逐条排除、实例级唯一归档、提交冻结、受控证据关联、制程版本审核配置以及 DHR 审核运行时后续开发边界。
+    visibility: internal
+  - id: evidence.dhr-summary-compliance-assessment
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-compliance-assessment.md
+    description: original-evidence-index；基于中国医疗器械 GMP、FDA QMSR、21 CFR Part 11 和 EU MDR 官方文本形成的开发门禁评估，明确不可变版本、候选范围、访问审计和产品放行边界；不替代法律意见。
+    visibility: internal
+  - id: evidence.dhr-summary-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    description: original-evidence；working-tree 服务实现汇总工作区、草稿乐观修订、多级目录校验、三类候选实例、必填目录完整性、实例唯一归档、不可变版本快照、证据哈希和审计；不包含审批运行时。
+    visibility: internal
+  - id: evidence.dhr-summary-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java
+    description: original-evidence；working-tree 控制器提供汇总工作区、冻结版本读取、草稿保存和提交端点，并区分查看、编辑、提交权限。
+    visibility: internal
+  - id: evidence.dhr-summary-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    description: original-evidence；working-tree 迁移定义 DHR_SUMMARY 流程分类、制程和 DHR 审核绑定字段、草稿/不可变版本/证据关联表及独立菜单权限；该源码路径本身不证明迁移已在真实 PostgreSQL 实例执行成功。
+    visibility: internal
+  - id: evidence.dhr-summary-review-binding-constraint
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql
+    description: original-evidence；working-tree 增量迁移约束冻结汇总版本的审核模式与流程定义、版本绑定保持一致。
+    visibility: internal
+  - id: evidence.dhr-summary-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+    description: original-evidence；working-tree 页面为独立 DHR 汇总菜单，提供待汇总/已提交列表、三栏汇总工作台、多级目录、实例级选择、真实表单预览和冻结版本只读查看。
+    visibility: internal
+  - id: evidence.dhr-summary-process-configuration-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+    description: original-evidence；working-tree 产品/产品簇共用制程版本编辑器配置 DHR 汇总审批策略和已发布 DHR_SUMMARY 流程版本。
+    visibility: internal
+  - id: evidence.dhr-summary-focused-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java
+    description: original-evidence；working-tree 聚焦测试校验汇总迁移契约和独立权限；控制器权限分层由 ProductionControllerAuthorizationTest 覆盖。测试通过不等同于发布级验证。
+    visibility: internal

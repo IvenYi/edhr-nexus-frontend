@@ -25,6 +25,7 @@ const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInst
 const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPage'));
 const FormReviewPage = lazy(() => import('@/pages/form-management/FormReviewPage'));
 const DhrManagementPage = lazy(() => import('@/pages/dhr-management/DhrManagementPage'));
+const DhrSummaryPage = lazy(() => import('@/pages/dhr-management/DhrSummaryPage'));
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const ProductModelingPage = lazy(() => import('@/pages/master-data/ProductModelingPage'));
 const ProductModelingWorkspacePage = lazy(() => import('@/pages/master-data/ProductModelingWorkspacePage'));
@@ -102,6 +103,7 @@ const AppRouter = () => {
         </Route>
         <Route path="dhr-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />
+          <Route path="summary" element={<Suspense fallback={<Loading />}><DhrSummaryPage /></Suspense>} />
         </Route>
         <Route path="production">
           <Route path="execution" element={<Suspense fallback={<Loading />}><ProductionExecutionPage /></Suspense>} />

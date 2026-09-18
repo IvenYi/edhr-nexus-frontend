@@ -24,13 +24,15 @@ public class DhrInstanceController {
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "") String objectType,
             @RequestParam(defaultValue = "") String status,
+            @RequestParam(defaultValue = "") String summaryStatus,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        return ApiResponse.success(service.list(keyword, objectType, status, page, size));
+        return ApiResponse.success(service.list(keyword, objectType, status, summaryStatus, page, size));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<ObjectNode> detail(@PathVariable Long id) {
         return ApiResponse.success(service.detail(id));
     }
+
 }

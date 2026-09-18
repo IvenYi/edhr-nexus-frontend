@@ -20,9 +20,9 @@
 1. `AGENTS.md`：项目治理、业务门禁、智能体协作和完成条件
 2. `codeplzreadme.md`：编码行为准则、最小修改、风险匹配验证和 Git 安全规则
 3. `docs/architecture/business-knowledge-model.md`：业务知识模型和概念边界
-4. `docs/knowledge/README.md`：当前知识基线 `0.3.23` 及其使用规则
+4. `docs/knowledge/README.md`：当前知识基线 `0.3.24` 及其使用规则
 5. `docs/knowledge/open-questions.yaml`：当前未决问题
-6. `docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml`：DHR 第一阶段用户确认的边界
+6. `docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml` 与 `DEC-0063-dhr-summary-and-review-configuration.yaml`：DHR 实例首版、汇总和审核配置边界
 7. `docs/knowledge/rules/dhr-instance-management.yaml`、`docs/knowledge/facts/dhr-instance-management.yaml`、`docs/knowledge/evidence/dhr-instance-management.yaml`、`docs/knowledge/implementation-anchors/dhr-instance-management.yaml`：DHR 的规则、事实、证据和实现锚点
 8. `docs/prd/edhr-mvp-prd.md` 和 `docs/prd/GMP合规软件基座_功能矩阵PRD.md`：产品范围和功能矩阵
 
@@ -83,11 +83,11 @@
 - Git：`edhr-dev` 与 `origin/edhr-dev` 对齐，DHR 和知识基线相关改动仍在工作区，尚未提交。
 - 目录：代码、前端和数据库迁移均已在 `/Users/ivenwang/Documents/edhr-nexus`；不要再从 `/Users/ivenwang/.codex/worktrees/ce63/edhr-nexus` 读取或写入。
 - 服务：后端已从本地项目启动在 `8081`，前端已启动在 `127.0.0.1:3000`。
-- 数据库：`0089-dhr-instance-management` 已成功执行；`dhr_instance` 当前为 0，因为不回填历史数据。
-- 权限：数据库中已有 `records.dhr-management` 和 `dhr.instances.view`，`ADMIN` 已获得两项权限。
+- 数据库：`0089-dhr-instance-management` 与 `0092-dhr-summary-workspace` 已在本地 PostgreSQL 成功执行；不回填历史 DHR。
+- 权限：数据库中已有 DHR 管理/查看以及独立 DHR汇总 页面、编辑和提交权限，初始化只默认授予 `ADMIN`。
 - 页面：菜单显示依赖登录权限快照；启动后必须退出登录、重新登录并刷新，才能验证 DHR 菜单。
-- 验证：已完成后端完整测试（688 tests，0 failures，0 errors，23 skipped）、前端构建/菜单检查和知识基线测试；新上下文仍需完成一次真实页面验收。
-- 未完成：没有提交、推送或创建 PR；DHR 汇总审批、人工补充、发布归档和历史数据均不属于当前已实现范围。
+- 验证：DHR列表 加载、来源分类详情、真实表单画布以及独立 DHR汇总 菜单已完成浏览器语义检查；前端生产构建通过；后端完整回归 704 tests、0 failures、0 errors、23 skipped；知识基线校验通过；`0092` 已在真实本地 PostgreSQL 成功执行。
+- 未完成：没有提交、推送或创建 PR；DHR审核 独立菜单、审批实例/任务、电子签名、退回和批准结果落地尚未实现；发布归档、最终产品放行和历史数据仍不在本切片。
 
 ## 后续按顺序开发规划
 
@@ -114,17 +114,18 @@
 
 验收标准：真实 PostgreSQL、后端集成测试、接口权限测试和浏览器页面结果一致；发现问题先修复第一阶段，不提前进入审批功能。
 
-### 第 2 步：DHR 汇总工作流（下一产品切片，方向已提出但仍需细化）
+### 第 2 步：DHR 汇总工作台与审核配置（working tree 已实现，待发布级验收）
 
-这是基于用户确认方向和功能矩阵参考的后续规划，不代表已经实现：
+这是用户已确认并已形成 working-tree 实现的当前切片：
 
-1. 在流程中心的审批流程菜单中增加 DHR 汇总审批分类/流程类型。
-2. 在制程配置绑定批记录模板时，允许选择 DHR 汇总流程。
-3. DHR 汇总页面区分“待汇总”和“已汇总”，支持查看汇总详情和返回重新整理。
-4. 汇总范围覆盖生产预处理/事务/返工/附录、检验事务/附录、灭菌、记录本、批次拆分及关联表单，并将可汇总证据放入 DHR 目录。
-5. 明确“直接汇总”和“提交审核后汇总”两种模式的配置开关、默认值、权限和审计记录。
+1. DHR列表 与 DHR汇总 是 DHR管理 下的两个独立菜单。
+2. 流程中心增加 `DHR_SUMMARY` 分类，产品/产品簇共用制程版本选择 `NONE` 或绑定已发布流程版本的 `REQUIRED` 策略。
+3. DHR汇总 页面区分“待汇总”和“已提交”，支持基础目录、多级覆盖目录、候选实例归档、草稿保存和冻结版本查看。
+4. 当前候选严格限于三类表单实例：目录直接绑定、作业表单节点和生产执行自定义表单；冠骋的生产/检验/灭菌等模块分类仅为未来来源契约参考。
+5. 目录实例自动纳入；作业和自定义实例按选择纳入，未选择即不纳入，不要求逐条排除原因。
+6. 提交冻结完整候选范围、归档关系、来源快照和哈希；拖拽/选择只是交互，不改写来源表单。
 
-进入编码前必须确认：流程绑定层级、审批节点和动作、退回后可修改范围、直接汇总开关，以及不同证据类型的汇总权限。
+后续进入 DHR审核 前仍需实现并验证：独立审核菜单、审批实例/任务、电子签名适用规则、退回后新版本、状态映射和批准结果落地。
 
 ### 第 3 步：人工补充证据（形式待用户确认）
 

@@ -43,6 +43,15 @@ public class ProductProcessVersion {
     @Column(name = "dhr_template_version_id", nullable = false)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long dhrTemplateVersionId;
+    @Column(name = "dhr_review_mode", nullable = false, length = 16)
+    @Builder.Default
+    private String dhrReviewMode = "NONE";
+    @Column(name = "dhr_review_workflow_definition_id")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long dhrReviewWorkflowDefinitionId;
+    @Column(name = "dhr_review_workflow_version_id")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long dhrReviewWorkflowVersionId;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Column(name = "effective_from")

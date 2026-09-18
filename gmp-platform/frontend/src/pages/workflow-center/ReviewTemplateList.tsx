@@ -16,7 +16,7 @@ import { useSnackbar } from '@/components/SnackbarProvider';
 import { createTemplate, deleteTemplate, listTemplates, updateTemplate } from '@/api/workflow-templates';
 import type { PageResult } from '@/types/common';
 
-type Category = 'CHANGE' | 'OBSOLETE';
+type Category = 'CHANGE' | 'OBSOLETE' | 'DHR_SUMMARY';
 type Template = {
   id: number;
   name: string;
@@ -47,6 +47,7 @@ type TemplateColumnWidths = Partial<Record<ConfigurableTemplateColumnId, number>
 const categories: Array<{ value: Category; label: string }> = [
   { value: 'CHANGE', label: '表单变更' },
   { value: 'OBSOLETE', label: '表单作废' },
+  { value: 'DHR_SUMMARY', label: 'DHR 汇总审批' },
 ];
 const REVIEW_TEMPLATE_COLUMN_SETTINGS_VERSION = 1;
 const REVIEW_TEMPLATE_COLUMN_SETTINGS_STORAGE_PREFIX = 'review-template-list-column-settings:';

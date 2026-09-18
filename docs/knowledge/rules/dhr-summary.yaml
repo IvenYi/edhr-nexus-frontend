@@ -1,0 +1,53 @@
+knowledgeModelVersion: 0.3.24
+rules:
+  - id: rule.dhr-summary-only-after-production-complete
+    name: 生产完成后才能整理和提交 DHR 汇总
+    status: implemented
+    visibility: internal
+    trigger: dhr-summary.save-or-submit
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.production-complete, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: edit-or-submit-summary
+    explanation: 汇总只处理生产已经完成的 DHR；进行中 DHR 仍在收集证据，不进入待汇总列表。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service]
+  - id: rule.dhr-summary-required-directory-completeness
+    name: 提交前满足必填基础目录完整性
+    status: implemented
+    visibility: internal
+    trigger: dhr-summary.submit
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.required-directory-complete, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: freeze-summary-version
+    explanation: 每个必填基础目录项至少要有一份已完成的目录直接绑定实例；未完成或缺失时阻断提交。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service]
+  - id: rule.dhr-summary-freeze-version
+    name: DHR 汇总提交形成不可变版本
+    status: implemented
+    visibility: internal
+    trigger: dhr-summary.submit
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.version-frozen, operator: equals, value: false}
+    result:
+      type: freeze-execution-snapshot
+      fields: [baseDirectory, overlayDirectories, completeCandidateUniverse, placements, sourceSnapshots, sourceHashes, summaryHash, reviewBinding]
+      laterChangesRewriteVersion: false
+    explanation: 提交冻结完整候选范围及纳入关系，不复制或改写来源表单；同一实例在同一版本只能出现一次。已提交版本不可编辑。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration]
+  - id: rule.dhr-summary-review-binding
+    name: DHR 汇总审核策略绑定已发布流程版本
+    status: implemented
+    visibility: internal
+    trigger: product-process-version.save
+    scope: dhr-summary-review-configuration
+    condition: {fact: fact.dhr-summary.review-mode, operator: equals, value: REQUIRED}
+    result:
+      type: persist-version-references
+      workflowBusinessType: DHR_SUMMARY
+      workflowVersionStatus: PUBLISHED
+      freezeAt: first-production-start
+    explanation: REQUIRED 必须选择 DHR_SUMMARY 分类下已发布流程定义和版本；NONE 不绑定流程。当前配置冻结不表示审批运行时已经实现。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-process-configuration-ui]

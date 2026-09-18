@@ -195,3 +195,7 @@ databaseChangeLog:
       file: db/changelog/0090-remove-dhr-template-version-snapshot.sql
   - include:
       file: db/changelog/0091-remove-dhr-template-version-status.sql
+  - include:
+      file: db/changelog/0092-dhr-summary-workspace.sql
+  - include:
+      file: db/changelog/0093-dhr-summary-version-review-binding.sql

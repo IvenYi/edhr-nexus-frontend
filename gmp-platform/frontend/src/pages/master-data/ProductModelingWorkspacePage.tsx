@@ -82,6 +82,7 @@ import type { AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
 import { getProcessRouteGraph, type RouteGraphResponse, type RouteNodeRecord } from '@/api/master-data';
 import { DhrDirectoryFormPicker, DocumentPreviewDialog, FormTemplatePreviewDialog, ReferenceBindingList, isPdfDocument, type RdoVersionChoice } from './components/ProductProcessVersionEditorDialog';
+import { getTemplateVersions, listTemplates } from '@/api/workflow-templates';
 
 type VersionDialogMode = 'create' | 'copy' | 'edit';
 
@@ -92,6 +93,9 @@ interface VersionForm {
   productionForm: string;
   routeVersionId: string;
   dhrTemplateVersionId: string;
+  dhrReviewMode: 'NONE' | 'REQUIRED';
+  dhrReviewWorkflowDefinitionId: string;
+  dhrReviewWorkflowVersionId: string;
   description: string;
   effectiveFrom: string;
   effectiveTo: string;
@@ -120,6 +124,9 @@ const emptyVersionForm: VersionForm = {
   productionForm: '',
   routeVersionId: '',
   dhrTemplateVersionId: '',
+  dhrReviewMode: 'NONE',
+  dhrReviewWorkflowDefinitionId: '',
+  dhrReviewWorkflowVersionId: '',
   description: '',
   effectiveFrom: '',
   effectiveTo: '',
@@ -150,6 +157,9 @@ function toPayload(form: VersionForm, operationBindings?: OperationDraft[]): Pro
     productionForm: form.productionForm.trim(),
     routeVersionId: form.routeVersionId,
     dhrTemplateVersionId: form.dhrTemplateVersionId,
+    dhrReviewMode: form.dhrReviewMode,
+    dhrReviewWorkflowDefinitionId: form.dhrReviewMode === 'REQUIRED' ? form.dhrReviewWorkflowDefinitionId : null,
+    dhrReviewWorkflowVersionId: form.dhrReviewMode === 'REQUIRED' ? form.dhrReviewWorkflowVersionId : null,
     description: form.description.trim() || null,
     effectiveFrom: form.effectiveFrom || null,
     effectiveTo: form.effectiveTo || null,
@@ -170,6 +180,9 @@ function toVersionForm(version: ProductProcessVersion, sourceVersionId: string |
     productionForm: normalizeProductionForm(version.productionForm),
     routeVersionId: version.routeVersionId,
     dhrTemplateVersionId: version.dhrTemplateVersionId,
+    dhrReviewMode: version.dhrReviewMode || 'NONE',
+    dhrReviewWorkflowDefinitionId: version.dhrReviewWorkflowDefinitionId || '',
+    dhrReviewWorkflowVersionId: version.dhrReviewWorkflowVersionId || '',
     description: version.description || '',
     effectiveFrom: toInputDateTime(version.effectiveFrom),
     effectiveTo: toInputDateTime(version.effectiveTo),
@@ -568,7 +581,22 @@ function VersionDialog({ open, mode, form, options, graph, onChange, onClose, on
   const set = <K extends keyof VersionForm>(key: K, value: VersionForm[K]) => onChange({ ...form, [key]: value });
   const routeValue = options.routes.find((option) => option.id === form.routeVersionId) ?? null;
   const dhrValue = options.dhrTemplates.find((option) => option.id === form.dhrTemplateVersionId) ?? null;
-  const canSubmit = Boolean(form.version.trim() && form.productionMode.trim() && form.productionForm.trim() && form.routeVersionId && form.dhrTemplateVersionId);
+  const reviewWorkflowsQuery = useQuery({
+    queryKey: ['dhr-summary-review-workflows'],
+    enabled: open,
+    queryFn: async () => {
+      const response = await listTemplates({ page: 1, size: 200, businessType: 'DHR_SUMMARY' });
+      const definitions = (response.data.data?.content ?? []) as Array<{ id: string | number; name: string; code?: string | null }>;
+      const versions = await Promise.all(definitions.map(async (definition) => {
+        const versionResponse = await getTemplateVersions(definition.id);
+        const published = ((versionResponse.data.data ?? []) as Array<{ id: string | number; versionNumber: number; status: string; isCurrent?: boolean }>).find((version) => version.status === 'PUBLISHED' && version.isCurrent);
+        return published ? { definitionId: String(definition.id), versionId: String(published.id), name: definition.name, code: definition.code, versionNumber: published.versionNumber } : null;
+      }));
+      return versions.filter((item): item is NonNullable<typeof item> => Boolean(item));
+    },
+  });
+  const canSubmit = Boolean(form.version.trim() && form.productionMode.trim() && form.productionForm.trim() && form.routeVersionId && form.dhrTemplateVersionId
+    && (form.dhrReviewMode === 'NONE' || (form.dhrReviewWorkflowDefinitionId && form.dhrReviewWorkflowVersionId)));
   return (
     <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="lg">
       <DialogTitle>{title}</DialogTitle>
@@ -594,6 +622,18 @@ function VersionDialog({ open, mode, form, options, graph, onChange, onClose, on
             onChange={(_, value) => set('dhrTemplateVersionId', value?.id ?? '')}
             renderInput={(params) => <TextField {...params} required size="small" label="批记录模板版本" />}
           />
+          <TextField select required size="small" label="DHR 汇总审核" value={form.dhrReviewMode} onChange={(event) => {
+            const mode = event.target.value as 'NONE' | 'REQUIRED';
+            onChange({ ...form, dhrReviewMode: mode, dhrReviewWorkflowDefinitionId: mode === 'NONE' ? '' : form.dhrReviewWorkflowDefinitionId, dhrReviewWorkflowVersionId: mode === 'NONE' ? '' : form.dhrReviewWorkflowVersionId });
+          }}>
+            <MenuItem value="REQUIRED">需要审核</MenuItem><MenuItem value="NONE">无需审核</MenuItem>
+          </TextField>
+          {form.dhrReviewMode === 'REQUIRED' ? <TextField select required size="small" label="DHR 汇总审批流程" value={form.dhrReviewWorkflowDefinitionId && form.dhrReviewWorkflowVersionId ? `${form.dhrReviewWorkflowDefinitionId}:${form.dhrReviewWorkflowVersionId}` : ''} onChange={(event) => {
+            const [definitionId, versionId] = event.target.value.split(':');
+            onChange({ ...form, dhrReviewWorkflowDefinitionId: definitionId, dhrReviewWorkflowVersionId: versionId });
+          }} helperText={reviewWorkflowsQuery.data?.length ? '开工时冻结所选流程版本' : '请先发布 DHR 汇总审批流程'}>
+            {(reviewWorkflowsQuery.data ?? []).map((workflow) => <MenuItem key={workflow.versionId} value={`${workflow.definitionId}:${workflow.versionId}`}>{[workflow.code, workflow.name, `V${workflow.versionNumber}`].filter(Boolean).join(' / ')}</MenuItem>)}
+          </TextField> : null}
           <TextField size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => set('effectiveFrom', event.target.value)} InputLabelProps={{ shrink: true }} />
           <TextField size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => set('effectiveTo', event.target.value)} InputLabelProps={{ shrink: true }} />
           <TextField sx={{ gridColumn: { sm: '1 / -1' } }} size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />

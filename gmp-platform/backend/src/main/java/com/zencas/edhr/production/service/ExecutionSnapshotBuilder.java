@@ -28,6 +28,11 @@ public class ExecutionSnapshotBuilder {
             SELECT m.id AS "productId", m.code AS "productCode", m.name AS "productName",
                    m.specification, m.unit, p.id AS "processVersionId", p.version_label AS "processVersion",
                    p.production_mode AS "productionMode", p.production_form AS "productionForm",
+                   p.dhr_review_mode AS "dhrReviewMode",
+                   p.dhr_review_workflow_definition_id AS "dhrReviewWorkflowDefinitionId",
+                   p.dhr_review_workflow_version_id AS "dhrReviewWorkflowVersionId",
+                   wd.name AS "dhrReviewWorkflowName", wd.code AS "dhrReviewWorkflowCode",
+                   wv.version_number AS "dhrReviewWorkflowVersion",
                    r.id AS "routeVersionId", r.version AS "routeVersion", rt.name AS "routeName",
                    rt.code AS "routeCode", dt.id AS "dhrTemplateId", d.id AS "dhrTemplateVersionId",
                    d.version_label AS "dhrVersion",
@@ -36,6 +41,8 @@ public class ExecutionSnapshotBuilder {
             JOIN route_version r ON r.id = p.route_version_id JOIN route rt ON rt.id = r.route_id
             JOIN dhr_template_version d ON d.id = p.dhr_template_version_id
             JOIN dhr_template dt ON dt.id = d.dhr_template_id
+            LEFT JOIN workflow_definition wd ON wd.id = p.dhr_review_workflow_definition_id
+            LEFT JOIN workflow_definition_version wv ON wv.id = p.dhr_review_workflow_version_id
             WHERE p.id = ? AND p.tenant_id = 'default' AND m.tenant_id = 'default'
             """, order.getProductId(), object.getProcessVersionId());
         context.put("objectId", object.getId().toString()).put("objectNo", object.getObjectNo())

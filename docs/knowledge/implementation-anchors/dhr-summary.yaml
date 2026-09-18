@@ -1,0 +1,47 @@
+knowledgeModelVersion: 0.3.24
+implementationAnchors:
+  - id: anchor.dhr-summary-workspace
+    targetId: rule.dhr-summary-only-after-production-complete
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java]
+    apiReferences: ['GET /api/v1/dhr-instances/{id}/summary', 'PUT /api/v1/dhr-instances/{id}/summary/draft', 'POST /api/v1/dhr-instances/{id}/summary/submit']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx, gmp-platform/frontend/src/router/index.tsx, gmp-platform/frontend/src/utils/menuManagement.ts]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionControllerAuthorizationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-migration, evidence.dhr-summary-ui, evidence.dhr-summary-focused-tests]
+    sourceRevision: working-tree
+    sourceLocator: 独立 DHR汇总 页面和控制器以 COMPLETED DHR 为工作对象，分离查看、编辑和提交权限
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: anchor.dhr-summary-immutable-version
+    targetId: rule.dhr-summary-freeze-version
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+    apiReferences: ['GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}', 'POST /api/v1/dhr-instances/{id}/summary/submit']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration, evidence.dhr-summary-review-binding-constraint, evidence.dhr-summary-ui]
+    sourceRevision: working-tree
+    sourceLocator: submit 冻结基础/覆盖目录、完整候选、唯一 placements、来源快照与 SHA-256；版本端点按冻结数据只读返回
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: anchor.dhr-summary-review-binding
+    targetId: rule.dhr-summary-review-binding
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    apiReferences: []
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx, gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx, gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateList.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-migration, evidence.dhr-summary-review-binding-constraint]
+    sourceRevision: working-tree
+    sourceLocator: 产品与产品簇共用制程版本校验并保存 NONE/REQUIRED；REQUIRED 仅接受已发布 DHR_SUMMARY 版本，开工快照冻结到 DHR 实例
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed

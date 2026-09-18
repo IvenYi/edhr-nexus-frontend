@@ -1,0 +1,140 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260919-DHR-SUMMARY
+  scope: dhr-list-detail-summary-and-process-review-configuration
+  knowledgeBaselineVersion: 0.3.24
+  summary: 实现 DHR 列表与真实证据详情、独立 DHR 汇总工作区，以及产品和产品簇制程版本的 DHR 汇总审核配置；审批运行时和产品放行不在本切片。
+  confirmed:
+    concepts:
+      - id: concept.dhr-summary-version
+        name: DHR 汇总版本
+        definition: 将基础目录、覆盖目录、完整候选范围、实例归档关系、来源快照和审核绑定冻结形成的不可变版本。
+        status: implemented
+        sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    relationships:
+      - id: relation.dhr-summary-version-contains-evidence-instances
+        sourceId: concept.dhr-summary-version
+        targetId: concept.form-instance-record
+        cardinality: one-to-many
+        description: 同一表单模板可对应多份实例，同一实例在同一汇总版本中只能归入一个目录位置。
+        sourceReferences: [docs/knowledge/rules/dhr-summary.yaml]
+    rules:
+      - id: rule.dhr-summary-submit-freezes-revision
+        name: 按预期草稿修订提交不可变汇总版本
+        status: implemented
+        trigger: dhr-summary.submit
+        condition:
+          all:
+            - fact: dhr.status
+              operator: equals
+              value: COMPLETED
+            - fact: dhrSummary.expectedRevision
+              operator: equals
+              value: dhrSummary.currentDraftRevision
+        result:
+          type: freeze-version
+          target: dhrSummaryVersion
+          valueFrom: controlled-summary-snapshot
+        sourceReferences: [docs/knowledge/rules/dhr-summary.yaml]
+    executionContracts:
+      - id: execution.dhr-summary-controlled-freeze
+        ruleId: rule.dhr-summary-submit-freezes-revision
+        action: 在同一事务锁定 DHR 和草稿、校验预期修订并冻结汇总版本及证据关系。
+        implementationReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+        evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-migration, evidence.dhr-summary-review-binding-constraint]
+  inferred: []
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: dhr-management
+        change: DHR 列表展示完整生产与制程元数据，详情按目录、作业、自定义三类来源查看真实表单实例；DHR 汇总使用独立菜单、路由、权限和工作区。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+      - area: product-process
+        change: 产品与产品簇制程版本配置 NONE/REQUIRED；REQUIRED 绑定已发布 DHR_SUMMARY 流程定义和版本。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java]
+    transitiveImpacts:
+      - area: production-start-snapshot
+        change: 首次开工冻结 DHR 审核配置到 DHR 实例，后续制程配置变化不回写既有实例。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+      - area: workflow-template
+        change: 审批流程模板分类增加 DHR_SUMMARY，但不创建审批实例、任务或签名。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java]
+    potentialImpacts:
+      - area: future-dhr-review
+        concern: 后续 DHR 审核菜单需消费冻结 reviewBinding 和 summary version，不得修改已提交版本。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+      - area: release-decision
+        concern: DHR 汇总及审核是放行证据而非产品放行本身，未来放行模块必须独立建模。
+        evidenceReferences: [docs/knowledge/evidence/dhr-summary-compliance-assessment.md]
+    unaffectedAreas:
+      - area: dhr-review-runtime
+        reason: 本切片不创建审核实例、任务、批准、退回或电子签名。
+      - area: product-release
+        reason: 本切片不改变产品放行状态或放行决策。
+      - area: historical-dhr
+        reason: 不为存量 DHR 回填汇总草稿、版本或证据关系。
+    compatibilityAndMigration:
+      - area: process-version-default
+        change: 新增审核模式默认 NONE；旧请求缺字段时归一化为 NONE。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql]
+      - area: summary-storage
+        change: 0092 新增草稿、版本和证据表；0093 增加冻结版本审核绑定一致性约束，均为增量迁移。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql]
+    snapshotImpacts:
+      - area: dhr-instance
+        change: 开工冻结基础目录和审核绑定；汇总提交冻结覆盖目录、完整候选、实例归档、来源内容哈希、汇总哈希和审核绑定。
+    auditImpacts:
+      - area: dhr-summary
+        change: 保存草稿和提交版本记录操作者、时间、DHR、修订/版本、状态与汇总哈希；提交后版本不可修改。
+    permissionImpacts:
+      - area: dhr-summary
+        change: 独立页面 records.dhr-summary；保存叠加 dhr.summaries.edit；提交叠加 dhr.summaries.submit，前后端一致执行。
+    testImpacts:
+      - scope: dhr-summary
+        scenarios: [目录任意层级与禁止孤立根, 三类候选来源, 实例唯一归档, 必填目录完整性, 草稿与提交并发修订, 审核绑定哈希和数据库约束, 权限矩阵, 独立列表规范, 真实表单详情]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionControllerAuthorizationTest.java]
+    evidenceGaps:
+      - 当前本地数据没有 COMPLETED DHR，真实浏览器尚不能覆盖草稿保存、并发冲突、提交冻结和版本只读详情；当前由服务测试、迁移验证和静态浏览器验收覆盖，后续需准备隔离验收数据。
+      - DHR 审核运行时尚未开发，PENDING_REVIEW 仅表示汇总版本等待未来审核处理。
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 审核是否必需及绑定流程属于制程版本配置；DHR 实例、不可变汇总版本、证据关系、权限和审计属于所有客户共享的产品内核，不能散落为客户条件分支。
+    ownershipBoundaries:
+      - owner: masterdata-product-process
+        responsibility: 保存并校验制程版本的 DHR 审核策略与已发布流程绑定。
+      - owner: production-dhr
+        responsibility: 冻结 DHR 配置、聚合三类表单实例、维护草稿并生成不可变汇总版本。
+      - owner: workflow-review
+        responsibility: 当前仅提供 DHR_SUMMARY 流程定义；未来独立实现 DHR 审核运行时。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+      changeType: create
+      reason: 汇总草稿、并发控制、不可变版本、证据与审计核心。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+      changeType: create
+      reason: 汇总存储、审核绑定和权限。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql
+      changeType: create
+      reason: 冻结版本审核绑定一致性。
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+      changeType: create
+      reason: 独立列表和汇总工作区。
+    - path: docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+      changeType: create
+      reason: 固化用户确认的业务边界。
+  acceptanceScenarios:
+    - id: scenario.dhr-summary-independent-menu
+      given: 用户拥有 DHR 汇总页面权限。
+      when: 进入记录模块。
+      then: DHR列表与DHR汇总分别显示，汇总列表只读取 COMPLETED DHR。
+      evidenceRequirements: [浏览器验收, 权限测试]
+    - id: scenario.dhr-summary-controlled-submit
+      given: COMPLETED DHR 具有合法汇总草稿和当前 revision。
+      when: 用户以相同 expectedRevision 提交。
+      then: 系统原子校验修订并冻结完整版本；陈旧 revision 被拒绝。
+      evidenceRequirements: [服务测试, 数据库迁移验证]
+    - id: scenario.dhr-summary-review-boundary
+      given: 制程审核模式为 REQUIRED。
+      when: 用户提交汇总。
+      then: 版本进入 PENDING_REVIEW 并冻结流程绑定，但不创建审批任务或产品放行结果。
+      evidenceRequirements: [服务测试, 知识模型校验]
