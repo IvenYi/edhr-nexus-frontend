@@ -1,0 +1,38 @@
+knowledgeModelVersion: 0.3.23
+decisions:
+  - id: DEC-0058
+    title: 生产表单字段认证签名与内容修改失效
+    status: specified
+    visibility: internal
+    context: user-confirmed；正式填报签名控件不能响应点击，用户授权恢复签名功能 L2 门禁并确认独立字段签署、电子签名密码及认证图片、签后内容修改失效和历史证据保留。此入口补充既有按钮签署，保留 DEC-0025、DEC-0035 的按钮前账户密码事件配置与绑定规则，不替代提交、审批、份完成或工序完工。
+    decisionStatements:
+      - id: DEC-0058-01
+        statement: 点击生产表单签名字段后验证个人电子签名密码，使用已认证的签名图片，保存字段签名及审计并回显；表单提交独立执行。
+        status: specified
+        visibility: internal
+      - id: DEC-0058-02
+        statement: 修改本份表单内容后，本份已有签名失效并要求重新签名；原签名和其签署内容快照保留用于追溯，不删除历史签名证据。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-field-signature-confirmed, evidence.production-field-signature-design, evidence.production-field-signature-personal-auth-source, evidence.production-field-signature-original-runtime-boundary, evidence.production-execution-signature-protection-source]
+    acceptanceScenarios:
+      - id: scenario.production-field-signature-independent-submit
+        given: 当前份可填报且用户已有有效个人电子签名认证和图片
+        when: 点击签名字段并通过电子签名密码验证
+        then: 保存该字段签名及审计并回显认证图片，不代替表单提交
+        evidenceIds: [evidence.production-field-signature-confirmed]
+        evidenceRequirements: [正式动作集成测试, 前端签名弹窗与回显验证, 签名及审计持久化]
+      - id: scenario.production-field-signature-content-change
+        given: 本份表单已有一个或多个有效签名
+        when: 修改本份表单内容
+        then: 本份已有签名失效并要求重新签名，其他份不受影响，历史签名和签署内容快照仍可追溯
+        evidenceIds: [evidence.production-field-signature-confirmed]
+        evidenceRequirements: [多签名失效及份隔离测试, 历史证据保留测试]
+      - id: scenario.production-field-signature-existing-button-event
+        given: 表单流程按钮配置了执行前账户密码签署事件
+        when: 执行该按钮或使用字段签名入口
+        then: 两类入口遵守各自认证和动作契约，字段签名不绕过按钮事件或提前推进流程
+        evidenceIds: [evidence.production-field-signature-design, evidence.production-execution-signature-protection-source]
+        evidenceRequirements: [既有按钮签名回归测试, 提交独立与节点状态验证]
+    implementationDiscrepancies: []

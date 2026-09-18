@@ -66,5 +66,8 @@ public class SignatureController {
         if ("PRODUCTION_EXECUTION".equals(signature.getTargetType()))
             throw new com.zencas.edhr.common.exception.BusinessException(
                 com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "生产执行签名只能由执行动作生成，且不可修改或删除");
+        if ("USER_PROFILE".equals(signature.getTargetType()))
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "个人电子签名只能通过认证流程生成，且不可修改或删除");
     }
 }

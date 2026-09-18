@@ -18,7 +18,7 @@ export interface ExecutionOperation {
   documents: Array<{ id: string; name: string; version: string; code: string; fileId?: string; pageStart?: string; pageEnd?: string }>;
 }
 export interface ExecutionFormState { status: string; values: ExecutionValues; instanceNo?: string; savedAt?: string; active?: string[] }
-export interface ExecutionFormControls { canAct?: boolean; buttons: ExecutionButton[]; permissions: Record<string, 'EDIT' | 'READ_ONLY'>; nodeName?: string }
+export interface ExecutionFormControls { canAct?: boolean; buttons: ExecutionButton[]; permissions: Record<string, 'EDIT' | 'READ_ONLY'>; signaturePermissions?: Record<string, 'EDIT' | 'READ_ONLY'>; nodeName?: string }
 export interface ExecutionFormCopies {
   instanceIds: string[]; status: string; ended: boolean; required: boolean; canAdd: boolean; canEnd: boolean;
   incomplete: string[]; instances: Record<string, ExecutionFormControls>;
@@ -45,6 +45,7 @@ export interface ExecutionCommand {
   templateVersionId?: string; required?: boolean;
   values?: ExecutionValues; opinion?: string; account?: string; password?: string;
   targetUserId?: string; reason?: string;
+  signatureTarget?: { fieldId: string; tableId?: string; rowIndex?: number };
 }
 export interface ExecutionTransferTarget { id: string; name: string; username: string }
 export interface ExecutionTemplate { versionId: string; name: string; code: string; version: string; categoryName?: string }

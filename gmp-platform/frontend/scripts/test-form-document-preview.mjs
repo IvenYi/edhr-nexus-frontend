@@ -71,6 +71,23 @@ test('signature placeholder matches preview while real saved signatures are pres
   assert.match(saved, /操作员甲/);
 });
 
+test('signature callbacks carry field and row identity while readonly previews stay inert', () => {
+  const requests = [];
+  const field = { id: 'signature', type: 'signature' };
+  const runtime = { values: {}, signaturePermissions: { signature: 'EDIT', rows: 'EDIT' }, onChange() { throw Error('signature must not write values'); }, onSignatureRequest: target => requests.push(target) };
+  const main = bindFormPreviewField(runtime, { bindings: {} }, field, 0, { signature: 'READ_ONLY' });
+  main.onSignatureRequest();
+  const row = bindFormPreviewField(runtime, { bindings: { subTableId: 'rows' } }, field, 2, { rows: 'EDIT' });
+  row.onSignatureRequest();
+  assert.equal(JSON.stringify(requests), JSON.stringify([{ fieldId: 'signature' }, { fieldId: 'signature', tableId: 'rows', rowIndex: 2 }]));
+  main.onChange('signature', 'forged');
+  assert.equal(bindFormPreviewField({ ...runtime, disabled: true }, { bindings: {} }, field, 0).onSignatureRequest, undefined);
+  assert.equal(bindFormPreviewField(runtime, { bindings: { readonly: true } }, field, 0).onSignatureRequest, undefined);
+  const html = render(controlsDocument(), { ...runtime, values: { signature: 'Old signed name' }, signaturesInvalidated: true });
+  assert.doesNotMatch(html, /Old signed name/);
+  assert.match(html, /点击签名/);
+});
+
 test('runtime keeps references as records and shows their names in the paper controls', () => {
   const document = controlsDocument();
   document.model.fields[0].type = 'reference';

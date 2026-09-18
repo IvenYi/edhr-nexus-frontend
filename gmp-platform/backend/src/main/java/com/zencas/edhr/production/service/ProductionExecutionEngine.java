@@ -158,6 +158,7 @@ public class ProductionExecutionEngine {
     }
 
     public ObjectNode formControls(JsonNode form, JsonNode formState, String operator) {
+        form = withCanvasBindings(form);
         ObjectNode result = mapper.createObjectNode();
         result.putArray("buttons"); result.putObject("permissions");
         for (JsonNode field : form.path("fields")) result.withObject("/permissions").put(field.path("id").asText(), "READ_ONLY");
@@ -170,6 +171,7 @@ public class ProductionExecutionEngine {
         result.put("nodeId", active).put("nodeName", node.path("data").path("label").asText("现场填报"));
         result.put("canAct", access.canAct(form, node, formState, operator));
         result.set("permissions", access.permissions(form, node, formState, operator));
+        result.set("signaturePermissions", access.permissions(form, node, formState, operator, true));
         ArrayNode buttons = (ArrayNode) result.get("buttons");
         JsonNode configured = node.path("data").path("config").path("buttons");
         if (!configured.isArray() || configured.isEmpty()) configured = defaultButtons(kind(node));
@@ -195,9 +197,14 @@ public class ProductionExecutionEngine {
 
     public void formAction(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId, String action,
                            JsonNode values, String opinion, String account, String password, String operator) {
+        formAction(snapshot, state, operationId, formId, instanceId, action, values, opinion, account, password, operator, null);
+    }
+
+    public void formAction(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId, String action,
+                           JsonNode values, String opinion, String account, String password, String operator, JsonNode signatureTarget) {
         JsonNode op = find(snapshot.path("operations"), operationId);
         ObjectNode current = requireInProgress(state, operationId);
-        JsonNode form = find(op.path("forms"), formId);
+        JsonNode form = withCanvasBindings(find(op.path("forms"), formId));
         if ((instanceId == null || instanceId.isBlank()) && ExecutionFormCopies.ids(current, formId).size() > 1) throw invalid("请选择具体表单份");
         String target = instanceId == null || instanceId.isBlank() ? formId : instanceId;
         if (!ExecutionFormCopies.ids(current, formId).contains(target)) throw invalid("表单份不属于当前表单或尚未到达");
@@ -208,11 +215,16 @@ public class ProductionExecutionEngine {
         if (!controls.path("canAct").asBoolean()) throw invalid("当前用户无权处理此表单节点");
         JsonNode button = null;
         for (JsonNode item : controls.path("buttons")) if (action.equals(item.path("action").asText())) button = item;
+        if ("SIGN_FIELD".equals(action)) button = mapper.createObjectNode();
         if (button == null) throw invalid("当前表单节点不允许该动作");
         if (button.path("requireOpinion").asBoolean() && (opinion == null || opinion.isBlank())) throw invalid("请填写操作意见");
         if (values == null || !values.isObject()) throw invalid("表单数据格式不正确");
         ObjectNode previous = formState.withObject("/values");
         ObjectNode merged = previous.deepCopy(); merged.setAll((ObjectNode) values);
+        ObjectNode previousContent = previous.deepCopy(), nextContent = merged.deepCopy();
+        clearSignatures(form.path("fields"), previousContent);
+        clearSignatures(form.path("fields"), nextContent);
+        boolean contentChanged = !previousContent.equals(nextContent);
         Iterator<String> keys = values.fieldNames();
         while (keys.hasNext()) {
             String id = keys.next();
@@ -220,14 +232,42 @@ public class ProductionExecutionEngine {
             if (!"EDIT".equals(controls.path("permissions").path(id).asText()) && !Objects.equals(values.get(id), previous.get(id)))
                 throw invalid("字段「" + field.path("name").asText(id) + "」为只读");
             if ("disabled".equals(field.path("status").asText())) throw invalid("不能修改停用字段");
-            validateNestedEdits(field, values.get(id), previous.path(id));
+            validateNestedEdits(field, values.get(id), previous.path(id), contentChanged);
         }
+        if (contentChanged) clearSignatures(form.path("fields"), merged);
         for (JsonNode field : com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper)) {
             access.validateEvidence(field, merged.path(field.path("id").asText()), snapshot.path("context").path("objectId").asText(), merged);
         }
         String nodeId = controls.path("nodeId").asText();
         JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), nodeId) : defaultFormNode();
         JsonNode activeBefore = formState.path("active").deepCopy();
+        if ("SIGN_FIELD".equals(action)) {
+            if (signatureTarget == null || !signatureTarget.isObject()) throw invalid("请选择签名字段");
+            String fieldId = signatureTarget.path("fieldId").asText(), tableId = signatureTarget.path("tableId").asText();
+            JsonNode fields = form.path("fields");
+            ObjectNode destination = merged;
+            if (!tableId.isBlank()) {
+                JsonNode table = find(fields, tableId);
+                if (!"subTable".equals(table.path("type").asText()) || !"EDIT".equals(controls.path("signaturePermissions").path(tableId).asText()))
+                    throw invalid("当前子表不允许签署");
+                JsonNode index = signatureTarget.path("rowIndex");
+                if (!index.isIntegralNumber() || !index.canConvertToInt() || index.asInt() < 0 || !merged.path(tableId).path(index.asInt()).isObject())
+                    throw invalid("签名子表行不存在");
+                destination = (ObjectNode) merged.path(tableId).get(index.asInt());
+                fields = table.path("typeConfig").path("columns");
+            } else if (!"EDIT".equals(controls.path("signaturePermissions").path(fieldId).asText())) throw invalid("当前字段不允许签署");
+            JsonNode field = find(fields, fieldId);
+            if (!"signature".equals(field.path("type").asText()) || field.path("readOnly").asBoolean() || "disabled".equals(field.path("status").asText()))
+                throw invalid("当前字段不允许签署");
+            JsonNode signed = destination.path(fieldId);
+            if (!signed.isMissingNode() && !signed.isNull() && !(signed.isTextual() && signed.asText().isBlank())) throw invalid("当前字段已签名");
+            ObjectNode evidence = mapper.createObjectNode().put("objectId", snapshot.path("context").path("objectId").asText())
+                    .put("operationId", operationId).put("formId", formId).put("copyId", target).put("versionId", form.path("versionId").asText())
+                    .put("fieldId", fieldId).put("nodeId", nodeId).put("action", action);
+            evidence.set("target", signatureTarget.deepCopy()); evidence.set("values", merged.deepCopy());
+            ObjectNode signature = access.signField(evidence, password);
+            destination.set(fieldId, signature); formState.put("lastSignatureId", signature.path("signatureId").asText());
+        }
         if (button.path("requiresSignature").asBoolean()) {
             String signature = access.sign(snapshot.path("context").path("objectId").asText(), operationId + "/" + target, action, merged, account, password);
             formState.put("lastSignatureId", signature);
@@ -243,7 +283,7 @@ public class ProductionExecutionEngine {
                 }
             }
         }
-        if (!Set.of("SAVE", "RETURN").contains(action)) {
+        if (!Set.of("SAVE", "RETURN", "SIGN_FIELD").contains(action)) {
             ObjectNode nodeForm = form.deepCopy();
             for (JsonNode field : nodeForm.path("fields")) {
                 if (!"EDIT".equals(controls.path("permissions").path(field.path("id").asText()).asText())) {
@@ -256,7 +296,7 @@ public class ProductionExecutionEngine {
         ExecutionFormCopies.ensureGroup(current, formId);
         formState.set("values", merged); formState.put("savedAt", LocalDateTime.now().toString());
         if ("RETURN".equals(action)) initializeFormGraph(form, formState);
-        else if (!"SAVE".equals(action)) {
+        else if (!Set.of("SAVE", "SIGN_FIELD").contains(action)) {
             if (form.has("flow")) {
                 finishNode(form.path("flow"), formState, nodeId, null);
                 settleForm(form, formState);
@@ -265,7 +305,7 @@ public class ProductionExecutionEngine {
         }
         for (JsonNode activeId : formState.path("active")) if (!contains(activeBefore, activeId.asText()))
             formState.withObject("/nodeArrivedAt").put(activeId.asText(), LocalDateTime.now().toString());
-        history(state, op, switch (action) { case "SAVE" -> "保存表单"; case "SUBMIT" -> "提交表单"; case "APPROVE" -> "审批表单"; case "RETURN" -> "退回表单"; default -> action; }, operator, form.path("name").asText() + " · 第 " + (ExecutionFormCopies.ids(current, formId).indexOf(target) + 1) + " 份 · " + target + (opinion == null || opinion.isBlank() ? "" : " · " + opinion))
+        history(state, op, switch (action) { case "SIGN_FIELD" -> "表单字段签名"; case "SAVE" -> "保存表单"; case "SUBMIT" -> "提交表单"; case "APPROVE" -> "审批表单"; case "RETURN" -> "退回表单"; default -> action; }, operator, form.path("name").asText() + " · 第 " + (ExecutionFormCopies.ids(current, formId).indexOf(target) + 1) + " 份 · " + target + (opinion == null || opinion.isBlank() ? "" : " · " + opinion))
             .put("actionCode", action).put("formId", formId).put("copyId", target).put("nodeId", nodeId)
             .put("nodeKind", kind(node)).put("nodeName", node.path("data").path("label").asText("现场填报"));
         settleCompletedWorkForms(snapshot, state, operationId, operator);
@@ -424,8 +464,11 @@ public class ProductionExecutionEngine {
                 if (field.path("required").asBoolean() || config.path("required").asBoolean()) issues.add("请填写「" + name + "」");
                 continue;
             }
-            if (Set.of("text", "datetime", "signature").contains(field.path("type").asText()) && !value.isTextual())
+            if (Set.of("text", "datetime").contains(field.path("type").asText()) && !value.isTextual())
                 issues.add(name + "必须为文本值");
+            if ("signature".equals(field.path("type").asText()) && !value.isTextual()
+                    && !(value.isObject() && "signature".equals(value.path("type").asText()) && !value.path("signatureId").asText().isBlank()))
+                issues.add(name + "必须为有效签名");
             if ("text".equals(field.path("type").asText()) && config.path("maxLength").asInt(0) > 0 && value.asText().length() > config.path("maxLength").asInt())
                 issues.add(name + "超过最大长度");
             if ("datetime".equals(field.path("type").asText()) && value.isTextual()) {
@@ -472,16 +515,44 @@ public class ProductionExecutionEngine {
         return issues;
     }
 
-    private void validateNestedEdits(JsonNode field, JsonNode value, JsonNode previous) {
+    private JsonNode withCanvasBindings(JsonNode form) {
+        JsonNode canvas = form.path("canvas");
+        if (canvas.isMissingNode() || canvas.isNull() || (canvas.isTextual() && canvas.asText().isBlank())) return form;
+        try {
+            JsonNode copy = form.deepCopy();
+            ExecutionSnapshotBuilder.collectBindings(canvas.isTextual() ? mapper.readTree(canvas.asText()) : canvas, copy.path("fields"));
+            return copy;
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw invalid("表单冻结画布格式不正确");
+        }
+    }
+
+    private void clearSignatures(JsonNode fields, ObjectNode values) {
+        for (JsonNode field : fields) {
+            String id = field.path("id").asText();
+            if ("signature".equals(field.path("type").asText())) values.remove(id);
+            if ("subTable".equals(field.path("type").asText()) && values.path(id).isArray())
+                for (JsonNode row : values.path(id)) if (row.isObject()) clearSignatures(field.path("typeConfig").path("columns"), (ObjectNode) row);
+        }
+    }
+
+    private void validateNestedEdits(JsonNode field, JsonNode value, JsonNode previous, boolean contentChanged) {
         if (!"subTable".equals(field.path("type").asText()) || !value.isArray()) return;
         JsonNode columns = field.path("typeConfig").path("columns");
         for (int i = 0; i < value.size(); i++) {
             JsonNode row = value.get(i);
             for (Iterator<String> keys = row.fieldNames(); keys.hasNext();) {
                 String key = keys.next(); JsonNode column = find(columns, key);
+                if (contentChanged && "signature".equals(column.path("type").asText())) {
+                    JsonNode signature = row.path(key);
+                    boolean known = signature.isNull() || (signature.isTextual() && signature.asText().isBlank());
+                    for (JsonNode oldRow : previous) if (signature.equals(oldRow.path(key))) known = true;
+                    if (!known) throw invalid("不能修改子表签名字段");
+                    continue;
+                }
                 if ((column.path("readOnly").asBoolean() || "signature".equals(column.path("type").asText()) || "disabled".equals(column.path("status").asText()))
                         && !Objects.equals(row.path(key), previous.path(i).path(key))) throw invalid("子表字段「" + column.path("name").asText() + "」为只读");
-                validateNestedEdits(column, row.path(key), previous.path(i).path(key));
+                validateNestedEdits(column, row.path(key), previous.path(i).path(key), contentChanged);
             }
         }
     }

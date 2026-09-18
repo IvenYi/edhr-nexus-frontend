@@ -7,6 +7,7 @@ CREATE FUNCTION deletion_reference_id(value TEXT) RETURNS BIGINT LANGUAGE sql IM
 $$;
 
 --changeset codex:0086-master-data-reference-constraints
+--validCheckSum: 9:add5b4810548a5dd528f04cf1c6a4eaa
 -- NOT VALID keeps legacy orphan rows; PostgreSQL enforces new references and future deletes.
 ALTER TABLE work_order ADD CONSTRAINT fk_delete_guard_000 FOREIGN KEY (product_id) REFERENCES material(id) ON DELETE RESTRICT NOT VALID;
 ALTER TABLE workflow_binding_rule ADD CONSTRAINT fk_delete_guard_002 FOREIGN KEY (product_id) REFERENCES material(id) ON DELETE RESTRICT NOT VALID;

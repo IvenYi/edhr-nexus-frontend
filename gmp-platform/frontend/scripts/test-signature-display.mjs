@@ -75,7 +75,9 @@ test('runtime canvas override and list context both honor the configured display
   assert.match(renderRuntime(field, signature, { signature: 'signatureDateTime' }), />2026-09-16 09:08:07<\/time>/);
   assert.match(renderRuntime(field, signature, { signature: 'signatureDateTime' }, { signatureDisplayMode: 'signatureDate' }), />2026-09-16<\/time>/);
   assert.match(renderRuntime(field, '测试人 · 2026-09-16T09:08:07 · 123', { signature: 'signatureDate' }), />2026-09-16<\/time>/);
-  assert.match(renderRuntime(field, '', { signature: 'signatureDate' }), /执行签署动作后自动记录/);
+  const empty = renderRuntime(field, '', { signature: 'signatureDate' });
+  assert.match(empty, /点击签名/);
+  assert.match(empty, /disabled=""/);
 });
 
 test('sub-table rows inherit signature display configuration and keep distinct recorded dates', () => {

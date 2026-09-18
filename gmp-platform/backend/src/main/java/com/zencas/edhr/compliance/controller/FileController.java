@@ -259,6 +259,8 @@ public class FileController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.FILE_001));
         if ("PRODUCTION_EXECUTION".equals(fileObject.getTargetType()))
             throw new BusinessException(ErrorCode.GENERAL_003, "生产执行附件作为追溯证据保留，不能删除");
+        if ("SIGNATURE_EVIDENCE".equals(fileObject.getTargetType()))
+            throw new BusinessException(ErrorCode.GENERAL_003, "电子签名认证材料作为追溯证据保留，不能删除");
 
         // Delete physical file
         try {

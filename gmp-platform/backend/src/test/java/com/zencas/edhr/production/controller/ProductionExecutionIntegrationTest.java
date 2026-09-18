@@ -76,6 +76,7 @@ class ProductionExecutionIntegrationTest {
     @Autowired UserAccountRepository users;
     @Autowired PasswordEncoder passwords;
     @Autowired FileObjectRepository files;
+    @Autowired SignatureRepository signatures;
     @Autowired org.springframework.transaction.PlatformTransactionManager transactions;
     @Autowired ProductionService production;
     @MockBean DepartmentRepository departments;
@@ -432,6 +433,151 @@ class ProductionExecutionIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
         assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM form_instance_record", Integer.class)).isZero();
+    }
+
+    @Test void inlineSignatureSavesWithoutSubmittingAndContentChangesInvalidateIt() throws Exception {
+        seedInlineSignature();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("wrong", Map.of("temperature", 25))).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of("temperature", 25))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].status").value("ACTIVE"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.sign.signerName").value("测试操作员"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.sign.signatureImageFileId").value("901"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].instanceNo").isNotEmpty());
+        String signatureSnapshot = jdbc.queryForObject("SELECT snapshot_data FROM signature WHERE target_type='PRODUCTION_EXECUTION'", String.class);
+        assertThat(signatureSnapshot).contains("temperature", "fieldId", "form-51", "versionId").doesNotContain("sign-secret", "password");
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of())).andExpect(status().isBadRequest());
+        action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", Map.of("sign", Map.of("signerName", "伪造")))).andExpect(status().isBadRequest());
+        action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 26))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.sign").doesNotExist());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT content_before FROM audit_event WHERE function_name='SAVE'", String.class)).contains("signatureImageFileId");
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "form-51", "values", Map.of())).andExpect(status().isBadRequest());
+    }
+
+    @Test void inlineSignatureRollsBackWhenAuditFails() throws Exception {
+        seedInlineSignature();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String before = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        doThrow(new IllegalStateException("audit unavailable")).when(audits).save(any());
+        try { action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of("temperature", 25))).andExpect(status().is5xxServerError()); }
+        finally { reset(audits); }
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM form_instance_record", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
+    }
+
+    @Test void inlineSignatureRejectsUnavailableCertificationAndInvalidTargets() throws Exception {
+        seedInlineSignature();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        var command = new HashMap<>(inlineSign("sign-secret", Map.of("temperature", 25)));
+        command.put("signatureTarget", Map.of("fieldId", "temperature"));
+        action(101, "SIGN_FIELD", 1, "a", command).andExpect(status().isBadRequest());
+        command.put("signatureTarget", Map.of("fieldId", "sign")); command.put("instanceId", "foreign-copy");
+        action(101, "SIGN_FIELD", 1, "a", command).andExpect(status().isBadRequest());
+        jdbc.update("UPDATE signature SET expires_at=? WHERE id=900", java.time.LocalDateTime.now().minusDays(1));
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of())).andExpect(status().isBadRequest());
+        jdbc.update("UPDATE signature SET expires_at=? WHERE id=900", java.time.LocalDateTime.now().plusDays(1));
+        jdbc.update("UPDATE user_account SET status='DISABLED' WHERE id=1");
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of())).andExpect(status().isBadRequest());
+        jdbc.update("UPDATE user_account SET status='ACTIVE' WHERE id=1");
+        jdbc.update("DELETE FROM signature WHERE id=900");
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of())).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+    }
+
+    @Test void inlineSignaturesCoexistAndSubtableContentInvalidatesAllWithoutDeletingEvidence() throws Exception {
+        seedInlineSignature();
+        jdbc.update("UPDATE form_template_version SET model_design_json=? WHERE id=5", """
+            {"fields":[{"id":"temperature","name":"温度","type":"number"},{"id":"sign","name":"领料人","type":"signature"},
+            {"id":"rows","name":"明细","type":"subTable","typeConfig":{"columns":[{"id":"amount","name":"数量","type":"number"},{"id":"rowSign","name":"确认","type":"signature"}]}}]}
+            """);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of("temperature", 25, "rows", List.of(Map.of("amount", 1))))).andExpect(status().isOk());
+        var command = new HashMap<>(inlineSign("sign-secret", Map.of()));
+        command.put("signatureTarget", Map.of("fieldId", "rowSign", "tableId", "rows", "rowIndex", 0));
+        action(101, "SIGN_FIELD", 2, "a", command).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.sign.signatureId").isNotEmpty())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.rows[0].rowSign.signatureId").isNotEmpty());
+        action(101, "SIGN_FIELD", 3, "a", command).andExpect(status().isBadRequest());
+        command.put("signatureTarget", Map.of("fieldId", "rowSign", "tableId", "rows", "rowIndex", 9));
+        action(101, "SIGN_FIELD", 3, "a", command).andExpect(status().isBadRequest());
+        var state = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        var rows = state.path("operations").path("a").path("forms").path("form-51").path("values").path("rows").deepCopy();
+        ((com.fasterxml.jackson.databind.node.ObjectNode) rows.get(0)).put("amount", 2);
+        action(101, "SAVE", 3, "a", Map.of("formId", "form-51", "values", Map.of("rows", rows))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.sign").doesNotExist())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.rows[0].rowSign").doesNotExist());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isEqualTo(2);
+    }
+
+    @Test void inlineSignatureHonorsFrozenReadonlyAndNodePermissions() throws Exception {
+        seedInlineSignature();
+        jdbc.update("UPDATE form_template_version SET canvas_design_json=? WHERE id=5", "{\"bindings\":{\"fieldId\":\"sign\",\"readonly\":true}}");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.availability.a.forms['form-51'].signaturePermissions.sign").value("READ_ONLY"));
+        action(101, "SIGN_FIELD", 1, "a", inlineSign("sign-secret", Map.of())).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+    }
+
+    @Test void deletingSignedRowsInvalidatesRemainingSignaturesAndRejectsForgery() throws Exception {
+        seedInlineSignature();
+        jdbc.update("UPDATE form_template_version SET model_design_json=? WHERE id=5", """
+            {"fields":[{"id":"rows","name":"明细","type":"subTable","typeConfig":{"columns":[{"id":"amount","type":"number"},{"id":"rowSign","type":"signature"}]}}]}
+            """);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        var command = new HashMap<String, Object>(inlineSign("sign-secret", Map.of("rows", List.of(Map.of("amount", 1), Map.of("amount", 2)))));
+        command.put("signatureTarget", Map.of("fieldId", "rowSign", "tableId", "rows", "rowIndex", 0));
+        action(101, "SIGN_FIELD", 1, "a", command).andExpect(status().isOk());
+        command.put("values", Map.of());
+        command.put("signatureTarget", Map.of("fieldId", "rowSign", "tableId", "rows", "rowIndex", 1));
+        action(101, "SIGN_FIELD", 2, "a", command).andExpect(status().isOk());
+        var rows = (com.fasterxml.jackson.databind.node.ArrayNode) mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class))
+            .path("operations").path("a").path("forms").path("form-51").path("values").path("rows").deepCopy();
+        rows.remove(0);
+        var forged = rows.deepCopy();
+        ((com.fasterxml.jackson.databind.node.ObjectNode) forged.get(0).path("rowSign")).put("signerName", "伪造");
+        action(101, "SAVE", 3, "a", Map.of("formId", "form-51", "values", Map.of("rows", forged))).andExpect(status().isBadRequest());
+        action(101, "SAVE", 3, "a", Map.of("formId", "form-51", "values", Map.of("rows", rows))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.rows[0].amount").value(2))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51'].values.rows[0].rowSign").doesNotExist());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isEqualTo(2);
+    }
+
+    @Test void subtableCanvasReadonlyIsEnforcedForNewAndLegacySnapshots() throws Exception {
+        seedInlineSignature();
+        jdbc.update("UPDATE form_template_version SET model_design_json=?, canvas_design_json=? WHERE id=5", """
+            {"fields":[{"id":"rows","name":"明细","type":"subTable","typeConfig":{"columns":[{"id":"rowSign","type":"signature"}]}}]}
+            """, "{\"bindings\":{\"subTableId\":\"rows\",\"subTableFieldId\":\"rowSign\",\"readonly\":true}}");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[0].forms[0].fields[0].typeConfig.columns[0].readOnly").value(true));
+        var command = new HashMap<String, Object>(inlineSign("sign-secret", Map.of("rows", List.of(Map.of()))));
+        command.put("signatureTarget", Map.of("fieldId", "rowSign", "tableId", "rows", "rowIndex", 0));
+        action(101, "SIGN_FIELD", 1, "a", command).andExpect(status().isBadRequest());
+        var snapshot = mapper.readTree(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class));
+        ((com.fasterxml.jackson.databind.node.ObjectNode) snapshot.path("operations").get(0).path("forms").get(0).path("fields").get(0).path("typeConfig").path("columns").get(0)).remove("readOnly");
+        jdbc.update("UPDATE production_execution SET snapshot_json=? WHERE object_id=101", mapper.writeValueAsString(snapshot));
+        action(101, "SIGN_FIELD", 1, "a", command).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+    }
+
+    private void seedInlineSignature() {
+        jdbc.update("UPDATE form_template_version SET model_design_json=? WHERE id=5", """
+            {"fields":[{"id":"temperature","name":"温度","type":"number","status":"enabled"},
+              {"id":"sign","name":"领料人","type":"signature","required":true,"status":"enabled","typeConfig":{}}]}
+            """);
+        new org.springframework.transaction.support.TransactionTemplate(transactions).executeWithoutResult(status -> signatures.save(Signature.builder()
+            .id(900L).targetType("USER_PROFILE").targetId("1").signerId("1").signerName("测试操作员")
+            .signaturePasswordHash(passwords.encode("sign-secret")).snapshotData("{\"signatureImage\":{\"fileId\":\"901\"}}")
+            .signedAt(java.time.LocalDateTime.now()).expiresAt(java.time.LocalDateTime.now().plusDays(1)).build()));
+        jdbc.update("DELETE FROM file_object WHERE id=901");
+        jdbc.update("INSERT INTO file_object(id,tenant_id,original_name,mime_type,stored_path,file_size) VALUES(901,'default','signature.png','image/png','test-signature.png',1)");
+    }
+
+    private Map<String, Object> inlineSign(String password, Map<String, Object> values) {
+        return Map.of("formId", "form-51", "instanceId", "form-51", "values", values, "password", password, "signatureTarget", Map.of("fieldId", "sign"));
     }
 
     @Test void realApprovalIdentityAndPasswordSignaturePersistAtomically() throws Exception {

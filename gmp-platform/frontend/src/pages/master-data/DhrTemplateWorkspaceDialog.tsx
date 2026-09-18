@@ -935,7 +935,7 @@ function FieldListPreview({
                 }}
               >
                 {groupFields.map((field) => {
-                  const readOnly = Boolean(runtime?.disabled) || fieldPermissions?.[field.id] === "READ_ONLY";
+                  const readOnly = Boolean(runtime?.disabled) || (field.type === 'signature' ? runtime?.signaturePermissions?.[field.id] !== 'EDIT' : fieldPermissions?.[field.id] === "READ_ONLY");
                   const highlighted =
                     interaction?.highlightFieldId === field.id;
                   const actions =

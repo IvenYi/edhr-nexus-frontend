@@ -194,9 +194,17 @@ public class ExecutionSnapshotBuilder {
         }
     }
 
-    private void collectBindings(JsonNode node, JsonNode fields) {
-        if (node.isObject() && node.has("fieldId")) {
-            for (JsonNode field : fields) if (node.path("fieldId").asText().equals(field.path("id").asText())) {
+    static void collectBindings(JsonNode node, JsonNode fields) {
+        if (node.isObject()) {
+            String tableId = node.path("subTableId").asText();
+            JsonNode targets = fields;
+            if (!tableId.isBlank()) {
+                targets = com.fasterxml.jackson.databind.node.MissingNode.getInstance();
+                for (JsonNode field : fields) if (tableId.equals(field.path("id").asText()))
+                    targets = field.path("typeConfig").path("columns");
+            }
+            String fieldId = node.path(tableId.isBlank() ? "fieldId" : "subTableFieldId").asText();
+            for (JsonNode field : targets) if (!fieldId.isBlank() && fieldId.equals(field.path("id").asText())) {
                 if (node.path("required").asBoolean()) ((ObjectNode) field).put("required", true);
                 if (node.path("readonly").asBoolean()) ((ObjectNode) field).put("readOnly", true);
             }

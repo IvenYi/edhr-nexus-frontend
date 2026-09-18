@@ -148,7 +148,7 @@ public class ProductionExecutionService {
     public ObjectNode act(Long id, Command command) {
         if (command == null || command.action() == null || command.revision() == null) throw invalid("执行动作和修订号不能为空");
         if (command.operationId() == null || command.operationId().isBlank()) throw invalid("请选择执行工序");
-        if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN", "TRANSFER", "ADD_FORM_COPY", "END_FORM").contains(command.action()) && (command.formId() == null || command.formId().isBlank())) throw invalid("请选择执行表单");
+        if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN", "TRANSFER", "SIGN_FIELD", "ADD_FORM_COPY", "END_FORM").contains(command.action()) && (command.formId() == null || command.formId().isBlank())) throw invalid("请选择执行表单");
         if ("CONFIRM".equals(command.action()) && (command.workId() == null || command.nodeId() == null)) throw invalid("请选择执行作业");
         // Keep the order/object lock order consistent with order termination and allocation.
         Long orderId = objects.findWorkOrderId("default", id).orElseThrow(() -> invalid("生产对象不存在"));
@@ -185,12 +185,12 @@ public class ProductionExecutionService {
             case "ADD_FORM_COPY" -> engine.addFormCopy(snapshot, state, command.operationId(), command.formId(), operator);
             case "END_FORM" -> engine.endForm(snapshot, state, command.operationId(), command.formId(), Boolean.TRUE.equals(command.acknowledgeIncomplete()), operator);
             case "CONFIRM" -> engine.confirm(snapshot, state, command.operationId(), command.workId(), command.nodeId(), operator);
-            case "SAVE", "SUBMIT", "APPROVE", "RETURN" -> engine.formAction(snapshot, state, command.operationId(), command.formId(), command.instanceId(), command.action(),
-                    command.values(), command.opinion(), command.account(), command.password(), operator);
+            case "SAVE", "SUBMIT", "APPROVE", "RETURN", "SIGN_FIELD" -> engine.formAction(snapshot, state, command.operationId(), command.formId(), command.instanceId(), command.action(),
+                    command.values(), command.opinion(), command.account(), command.password(), operator, command.signatureTarget());
             case "TRANSFER" -> engine.transferForm(snapshot, state, command.operationId(), command.formId(), command.instanceId(), command.targetUserId(), command.reason(), operator, AuditContext.getOperatorName());
             default -> throw invalid("不支持的执行动作");
         }
-        if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN").contains(command.action())) {
+        if (List.of("SAVE", "SUBMIT", "APPROVE", "RETURN", "SIGN_FIELD").contains(command.action())) {
             formRecords.saved(id, object.getTenantId(), snapshot, state, command.operationId(), command.formId(), command.instanceId());
         }
         if (created) production.startObject(id);
@@ -278,6 +278,7 @@ public class ProductionExecutionService {
 
     private void disableForm(JsonNode form, ObjectNode controls) {
         controls.put("canAct", false); controls.putArray("buttons");
+        controls.putObject("signaturePermissions");
         for (JsonNode field : form.path("fields")) controls.withObject("/permissions").put(field.path("id").asText(), "READ_ONLY");
     }
 
@@ -288,10 +289,15 @@ public class ProductionExecutionService {
 
     public record Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                           JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete,
-                          String templateVersionId, Boolean required, String targetUserId, String reason) {
+                          String templateVersionId, Boolean required, String targetUserId, String reason, JsonNode signatureTarget) {
+        public Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
+                       JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete,
+                       String templateVersionId, Boolean required) {
+            this(action, revision, operationId, formId, workId, nodeId, values, opinion, account, password, instanceId, acknowledgeIncomplete, templateVersionId, required, null, null, null);
+        }
         public Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                        JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete) {
-            this(action, revision, operationId, formId, workId, nodeId, values, opinion, account, password, instanceId, acknowledgeIncomplete, null, null, null, null);
+            this(action, revision, operationId, formId, workId, nodeId, values, opinion, account, password, instanceId, acknowledgeIncomplete, null, null, null, null, null);
         }
         public Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                        JsonNode values, String opinion, String account, String password) {

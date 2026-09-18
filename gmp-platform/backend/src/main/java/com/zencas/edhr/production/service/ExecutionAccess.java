@@ -163,6 +163,10 @@ public class ExecutionAccess {
     }
 
     public ObjectNode permissions(JsonNode form, JsonNode node, JsonNode state, String operator) {
+        return permissions(form, node, state, operator, false);
+    }
+
+    public ObjectNode permissions(JsonNode form, JsonNode node, JsonNode state, String operator, boolean signing) {
         ObjectNode result = mapper.createObjectNode();
         boolean allowed = canAct(form, node, state, operator);
         JsonNode config = node.path("data").path("config");
@@ -173,7 +177,8 @@ public class ExecutionAccess {
         }
         for (JsonNode field : form.path("fields")) {
             String id = field.path("id").asText();
-            boolean edit = allowed && !"signature".equals(field.path("type").asText()) && !field.path("readOnly").asBoolean();
+            boolean edit = allowed && (signing || !"signature".equals(field.path("type").asText())) && !field.path("readOnly").asBoolean()
+                    && !"disabled".equals(field.path("status").asText());
             if (!matched.isEmpty()) {
                 for (JsonNode group : matched) {
                     String key = "start:" + group.path("id").asText();
@@ -225,5 +230,42 @@ public class ExecutionAccess {
                     .authMethod("PASSWORD").snapshotHash(hash).snapshotData(payload).signedAt(LocalDateTime.now()).build());
             return String.valueOf(id);
         } catch (Exception e) { throw invalid("签署记录保存失败"); }
+    }
+
+    public ObjectNode signField(ObjectNode evidence, String password) {
+        String operator = AuditContext.getOperatorId();
+        if (operator == null) throw invalid("请重新登录后签署");
+        var user = users.findById(Long.valueOf(operator)).orElseThrow(() -> invalid("签署用户不存在"));
+        if (!"ACTIVE".equals(user.getStatus()) || (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())))
+            throw invalid("签署账户不可用");
+        Signature certification = signatures.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", operator)
+                .orElseThrow(() -> invalid("请先在个人设置中完成电子签名认证"));
+        if (certification.getExpiresAt() != null && !certification.getExpiresAt().isAfter(LocalDateTime.now()))
+            throw invalid("电子签名已过期，请先在个人设置中重新认证");
+        if (password == null || password.isBlank() || certification.getSignaturePasswordHash() == null
+                || !passwords.matches(password, certification.getSignaturePasswordHash())) throw invalid("电子签名密码错误");
+        String fileId;
+        JsonNode image;
+        try { image = mapper.readTree(certification.getSnapshotData()).path("signatureImage"); fileId = image.path("fileId").asText(); }
+        catch (Exception e) { throw invalid("电子签名图片不存在，请先在个人设置中重新认证"); }
+        if (!fileId.matches("[0-9]+") || jdbc.queryForObject("SELECT COUNT(*) FROM file_object WHERE id=? AND mime_type LIKE 'image/%'", Integer.class, Long.valueOf(fileId)) == 0)
+            throw invalid("电子签名图片不存在，请先在个人设置中重新认证");
+        String signedAt = LocalDateTime.now().withNano(0).toString();
+        String signatureId = String.valueOf(ids.nextId());
+        ObjectNode presentation = mapper.createObjectNode().put("type", "signature").put("signatureId", signatureId)
+                .put("signerId", operator).put("signerName", user.getDisplayName()).put("signedAt", signedAt)
+                .put("signatureImageFileId", fileId).put("certificationId", certification.getId().toString());
+        evidence.set("signature", presentation.deepCopy());
+        evidence.set("signatureImage", image.deepCopy());
+        evidence.put("certificationSnapshotHash", certification.getSnapshotHash());
+        try {
+            String payload = mapper.writeValueAsString(evidence);
+            String hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(payload.getBytes(StandardCharsets.UTF_8)));
+            signatures.save(Signature.builder().id(Long.valueOf(signatureId)).targetType("PRODUCTION_EXECUTION")
+                    .targetId(evidence.path("objectId").asText()).meaning("SIGN_FIELD · " + evidence.path("fieldId").asText())
+                    .signerId(operator).signerName(user.getDisplayName()).authMethod("SIGNATURE_PASSWORD")
+                    .authEventRef(certification.getId().toString()).snapshotData(payload).snapshotHash(hash).signedAt(LocalDateTime.parse(signedAt)).build());
+        } catch (Exception e) { throw invalid("签署记录保存失败"); }
+        return presentation;
     }
 }

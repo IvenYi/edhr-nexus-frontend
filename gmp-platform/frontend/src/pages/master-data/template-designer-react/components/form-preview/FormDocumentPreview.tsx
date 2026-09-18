@@ -22,12 +22,14 @@ const flattenNodes = (nodes: CanvasNode[]): CanvasNode[] => nodes.flatMap(node =
 export function bindFormPreviewField(runtime: FormRuntime, node: CanvasNode, field: ModelField, recordIndex: number, permissions: FormDocumentPreviewProps['fieldPermissions']) {
   const tableId = node.bindings?.subTableId;
   const rows = tableId && Array.isArray(runtime.values[tableId]) ? runtime.values[tableId] as Record<string, unknown>[] : [];
-  const readOnly = Boolean(runtime.disabled || node.bindings?.readonly || permissions?.[field.id] === 'READ_ONLY' || (tableId && permissions?.[tableId] === 'READ_ONLY'));
+  const signatureAllowed = field.type === 'signature' && runtime.signaturePermissions?.[tableId || field.id] === 'EDIT';
+  const readOnly = Boolean(runtime.disabled || node.bindings?.readonly || (!signatureAllowed && permissions?.[field.id] === 'READ_ONLY') || (tableId && permissions?.[tableId] === 'READ_ONLY'));
   return {
     ...runtime,
     disabled: readOnly,
     values: tableId ? rows[recordIndex] ?? {} : runtime.values,
     referenceValues: tableId ? { ...runtime.values, ...rows[recordIndex] } : runtime.values,
+    onSignatureRequest: runtime.onSignatureRequest && !readOnly ? () => runtime.onSignatureRequest?.({ fieldId: field.id, ...(tableId ? { tableId, rowIndex: recordIndex } : {}) }) : undefined,
     onChange: (id: string, value: unknown) => {
       if (readOnly || field.type === 'signature') return;
       if (!tableId) { runtime.onChange(id, value); return; }
@@ -64,10 +66,10 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     if (binding && field && (['attachment', 'image'].includes(field.type) || (field.type === 'reference' && !binding.disabled))) {
       return <FormRuntimeContext.Provider value={binding}><FormRuntimeField field={resolveReferenceField(field, node)} readOnly={binding.disabled} canvas /></FormRuntimeContext.Provider>;
     }
-    if (binding && field?.type === 'signature' && readSignaturePresentation(value)) {
+    if (binding && field?.type === 'signature' && !binding.signaturesInvalidated && readSignaturePresentation(value)) {
       return <SignatureDisplay value={value} displayMode={node.bindings?.widgetConfig?.signatureDisplayMode ?? field.typeConfig.signatureDisplayMode} />;
     }
-    const readOnly = !binding || binding.disabled || field?.type === 'signature';
+    const readOnly = !binding || binding.disabled || (field?.type === 'signature' && (!binding.onSignatureRequest || binding.signaturePermissions?.[node.bindings?.subTableId || field.id] !== 'EDIT'));
     const displayValue = field?.type === 'reference' && value && typeof value === 'object' && 'name' in value ? value.name : value;
     const rawOptions = field?.typeConfig.options;
     const options = binding && field && ['singleSelect', 'multiSelect'].includes(field.type) ? (
@@ -77,9 +79,9 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     const control = renderMockFillControl({
       node, field, previewOnly: readOnly, options,
       valueKey: field?.id ?? node.id,
-      values: binding && field ? { [field.id]: (displayValue ?? '') as Parameters<typeof renderMockFillControl>[0]['values'][string] } : {},
+      values: binding && field ? { [field.id]: (field.type === 'signature' && binding.signaturesInvalidated ? '' : displayValue ?? '') as Parameters<typeof renderMockFillControl>[0]['values'][string] } : {},
       onValueChange: (id, next) => { if (!readOnly) binding?.onChange(id, next); },
-      onSignatureRequest: ignoreChange,
+      onSignatureRequest: () => { if (!readOnly && field) binding?.onSignatureRequest?.(); },
     });
     return <Box {...(readOnly ? { inert: '' } : {})} sx={{ height: '100%', minHeight: 0, minWidth: 0 }}>{control}</Box>;
   };

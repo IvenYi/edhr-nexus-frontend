@@ -120,6 +120,17 @@ class ExecutionAccessTest {
         verify(files, never()).deleteById(any());
     }
 
+    @Test void personalSignatureCredentialsCannotBeForgedOrExposedThroughGenericCrud() throws Exception {
+        Signature certification = Signature.builder().id(900L).targetType("USER_PROFILE").signaturePasswordHash("private-hash").build();
+        when(signatures.findById(900L)).thenReturn(Optional.of(certification));
+        SignatureController controller = new SignatureController(signatures);
+        assertThatThrownBy(() -> controller.create(certification)).hasMessageContaining("认证流程");
+        assertThatThrownBy(() -> controller.update(900L, Signature.builder().targetType("OTHER").build())).hasMessageContaining("认证流程");
+        assertThatThrownBy(() -> controller.delete(900L)).hasMessageContaining("认证流程");
+        assertThat(mapper.writeValueAsString(certification)).doesNotContain("private-hash", "signaturePasswordHash");
+        verify(signatures, never()).save(any()); verify(signatures, never()).deleteById(any());
+    }
+
     @Test void referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows() throws Exception {
         var jdbc = new JdbcTemplate(new org.springframework.jdbc.datasource.DriverManagerDataSource("jdbc:h2:mem:execution-references;DB_CLOSE_DELAY=-1", "sa", ""));
         jdbc.execute("CREATE TABLE material(id BIGINT PRIMARY KEY,name VARCHAR(128),status VARCHAR(16))");

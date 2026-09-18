@@ -1,0 +1,22 @@
+knowledgeModelVersion: 0.3.23
+evidence:
+  - id: evidence.production-field-signature-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-field-signature-confirmed.md
+    description: user-confirmed；正式填报点击字段签名，使用个人电子签名密码和已认证图片，保存签名及审计并回显，提交独立；本份内容修改使本份已有签名失效并要求重签，原签名及内容快照保留。
+    visibility: internal
+  - id: evidence.production-field-signature-design
+    type: document
+    path: docs/knowledge/evidence/production-field-signature-confirmed.md
+    description: inference；复用生产执行资格、冻结版本、修订和事务，结构化签名值、保存实例号和子表定位属于工程方案，不是额外用户规则；未据此宣称实现和发布验证完成。
+    visibility: internal
+  - id: evidence.production-field-signature-personal-auth-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java
+    description: original-evidence；verifyCurrentUserSignature 已验证当前用户个人认证的电子签名密码、有效期及图片引用并返回展示信息；此原有个人验证接口不能独自证明正式生产字段签署持久化已接通。
+    visibility: internal
+  - id: evidence.production-field-signature-original-runtime-boundary
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx
+    description: original-evidence；2026-09-17 修复前正式纸张填报签名字段受只读约束且没有有效签名回调；该定位仅说明缺陷起点，不作为新能力实现证据。
+    visibility: internal

@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.23
+rules:
+  - id: rule.production-inline-signature
+    name: 生产表单字段签名独立于提交
+    status: specified
+    visibility: internal
+    trigger: production-form.sign-field
+    scope: production-execution-field-signature
+    condition: {fact: fact.form-field.type, operator: equals, value: signature}
+    result:
+      type: allow-with-governance
+      actions: [authenticate-personal-signature-password, persist-field-signature-and-audit, display-certified-signature-image]
+      submitSeparately: true
+      contentChange: invalidate-existing-signatures-in-current-copy-and-require-resigning
+      preserveEvidence: [historical-signatures, signed-content-snapshots]
+    explanation: user-confirmed；正式填报允许点击签名字段，验证个人电子签名密码并使用已认证图片，保存签名和审计后回显；签名与提交独立。本份内容修改使本份已有签名失效，必须重新签署，原签名及内容快照保留。既有按钮前签署事件仍按自己的配置和认证方式执行，不因本规则绕过；不从字段名称推断审核身份。实现的事务、结构化值和份内字段定位属于工程方案，当前保持 specified/internal。
+    evidenceIds: [evidence.production-field-signature-confirmed, evidence.production-field-signature-design, evidence.production-field-signature-personal-auth-source, evidence.production-field-signature-original-runtime-boundary, evidence.production-execution-signature-protection-source]
