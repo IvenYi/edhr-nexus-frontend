@@ -34,6 +34,10 @@ export default function ProductionExecutionPage() {
   const queryClient = useQueryClient();
   const [barcode, setBarcode] = useState('');
   const [view, setView] = useState<ExecutionView | null>(null);
+  const [openingExecution, setOpeningExecution] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('autoScan') === '1' && Boolean(params.get('barcode')?.trim());
+  });
   const [operationId, setOperationId] = useState('');
   const [formId, setFormId] = useState('');
   const [instanceId, setInstanceId] = useState('');
@@ -195,7 +199,11 @@ export default function ProductionExecutionPage() {
     window.addEventListener('popstate', pop, true);
     return () => { navigator.push = push; navigator.replace = replace; navigator.go = go; window.removeEventListener('popstate', pop, true); };
   }, [navigation, dirty, busy]);
-  useEffect(() => () => { requestRef.current++; }, []);
+  useEffect(() => () => {
+    requestRef.current++;
+    busyRef.current = false;
+    initialBarcodeRef.current = null;
+  }, []);
   useEffect(() => { setDocumentPage(Number(document?.pageStart) || 1); setDocumentPages(1); setDocumentZoom(1); }, [context?.objectId, operationId, document?.id, document?.pageStart]);
   useEffect(() => { documentBodyRef.current?.scrollTo(0, 0); }, [document?.id, documentPage]);
   useEffect(() => {
@@ -263,7 +271,7 @@ export default function ProductionExecutionPage() {
         focusScanAfterLoadRef.current = true;
       }
       if (!refresh) { setView(null); setDirty(false); }
-    } finally { if (request === requestRef.current) { busyRef.current = false; setBusy(false); } }
+    } finally { if (request === requestRef.current) { busyRef.current = false; setBusy(false); setOpeningExecution(false); } }
   };
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -280,6 +288,7 @@ export default function ProductionExecutionPage() {
     const copyId = params.get('copyId')?.trim();
     initialTargetRef.current = operationId && formId && copyId ? { operationId, formId, copyId } : null;
     setBarcode(requestedBarcode);
+    if (params.get('autoScan') === '1') void load(false, requestedBarcode);
   }, [location.search, view]);
   const act = async (command: Omit<ExecutionCommand, 'revision' | 'operationId'>) => {
     if (!view || !context || busyRef.current) return;
@@ -415,7 +424,7 @@ export default function ProductionExecutionPage() {
       {view?.configurationError && <Alert severity="error">{view.configurationError}</Alert>}
       {view?.historicalWithoutExecution && <Alert severity="warning">此对象已有生产状态，但没有工序执行记录。当前仅展示已有关联信息，不能恢复或推断历史工序。</Alert>}
     </Box>
-    {!view ? <Box className="execution-welcome">
+    {!view ? openingExecution ? <Box className="execution-empty-content" role="status" aria-label="正在加载生产工作台"><CircularProgress size={24} /><Typography color="text.secondary">正在加载生产工作台…</Typography></Box> : <Box className="execution-welcome">
       <Typography className="execution-eyebrow" color="primary">生产工作台</Typography>
       <Typography component="h2">扫描条码，开始作业</Typography>
       <Typography color="text.secondary">批次与 SN 自动识别，直接定位对应工单和当前工序。</Typography>

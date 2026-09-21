@@ -1,4 +1,5 @@
 import { readRecordLocation } from '@/utils/recordLocation';
+import { useNavigate } from 'react-router-dom';
 import TableStateCell from '@/components/TableStateCell';
 import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
@@ -222,6 +223,7 @@ function BatchDetailDrawer({ detail, tab, onTabChange, auditRows, auditLoading, 
 }
 
 export default function BatchManagementPage() {
+  const navigate = useNavigate();
   const columnResizeRef = useRef<{ id: BatchColumnId; startX: number; startWidth: number } | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(PAGE_SIZE_OPTIONS[0]);
@@ -378,7 +380,7 @@ export default function BatchManagementPage() {
                 {visibleColumns.map((column) => <Fragment key={column.id}>{renderBatchCell(row, column)}</Fragment>)}
                 <TableCell align="center" onClick={(event) => event.stopPropagation()} sx={getOperationColumnSx('body')}>
                   {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="DHR" arrow><IconButton size="small" aria-label="查看DHR" onClick={() => notifyUnavailable('DHR 查看')}><DescriptionOutlined fontSize="small" /></IconButton></Tooltip> : <Tooltip title="DHR（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="DHR 暂不可用"><DescriptionOutlined fontSize="small" /></IconButton></span></Tooltip>}
-                  {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="执行详情" arrow><IconButton size="small" aria-label="执行详情" onClick={() => notifyUnavailable('执行详情')}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip> : <Tooltip title="执行详情（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="执行详情暂不可用"><PlayCircleOutline fontSize="small" /></IconButton></span></Tooltip>}
+                  {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="执行详情" arrow><IconButton size="small" aria-label="执行详情" onClick={() => navigate(`/production/execution?${new URLSearchParams({ barcode: row.objectNo, autoScan: '1' })}`)}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip> : <Tooltip title="执行详情（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="执行详情暂不可用"><PlayCircleOutline fontSize="small" /></IconButton></span></Tooltip>}
                   {row.status === 'IN_PROGRESS' ? <Tooltip title="结束" arrow><IconButton size="small" aria-label="提前结束批次" color="warning" onClick={() => { setEndTarget(row); setEndReason(''); }}><StopCircleOutlined fontSize="small" /></IconButton></Tooltip> : row.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消批次" color="error" onClick={() => setCancelTarget(row)}><Cancel fontSize="small" /></IconButton></Tooltip> : <Tooltip title="结束（仅进行中的批次可用）" arrow><span><IconButton size="small" disabled aria-label="结束暂不可用"><StopCircleOutlined fontSize="small" /></IconButton></span></Tooltip>}
                 </TableCell>
               </TableRow>)}
