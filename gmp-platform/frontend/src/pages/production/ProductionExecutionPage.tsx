@@ -252,12 +252,13 @@ export default function ProductionExecutionPage() {
     try {
       const next = refresh && context ? await getProductionExecution(context.objectId) : await scanProduction(barcodeValue);
       if (request !== requestRef.current) return;
+      if (!refresh && next.objectStatus === 'CANCELLED') throw new Error('当前批次已取消');
       receive(next, !refresh); setBarcode(next.snapshot.context.objectNo); if (!refresh) setActivePanel(null);
     } catch (reason) {
       if (request !== requestRef.current) return;
       const message = errorText(reason);
       setError(message);
-      if (!refresh && message === '未找到该批次或 SN，请核对条码') {
+      if (!refresh && (message === '未找到该批次或 SN，请核对条码' || message === '当前批次已取消')) {
         setBarcode('');
         focusScanAfterLoadRef.current = true;
       }

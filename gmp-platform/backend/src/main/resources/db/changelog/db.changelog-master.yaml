@@ -190,6 +190,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/0088-workflow-definition-business-type.sql
   - include:
+      file: db/changelog/0088a-dhr-instance-legacy-table-preparation.sql
+  - include:
       file: db/changelog/0089-dhr-instance-management.sql
   - include:
       file: db/changelog/0090-remove-dhr-template-version-snapshot.sql
@@ -199,3 +201,5 @@ databaseChangeLog:
       file: db/changelog/0092-dhr-summary-workspace.sql
   - include:
       file: db/changelog/0093-dhr-summary-version-review-binding.sql
+  - include:
+      file: db/changelog/0094-created-at-schema-compatibility.sql
