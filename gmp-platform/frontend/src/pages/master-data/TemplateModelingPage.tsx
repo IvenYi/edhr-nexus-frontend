@@ -50,6 +50,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import FormDialogSection from '@/components/FormDialogSection';
 import StatusBadge from '@/components/StatusBadge';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -2023,13 +2025,13 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       {renderTemplateCategoryPanel()}
       {renderTemplateRightPanel()}
 
-      <AppDialog variant="form" open={dialogOpen} onClose={() => { setDialogOpen(false); setCreatingVersionFrom(null); setEditingVersion(null); }} fullWidth maxWidth="sm">
+      <FormDialog open={dialogOpen} onClose={() => { setDialogOpen(false); setCreatingVersionFrom(null); setEditingVersion(null); }} fullWidth maxWidth="sm">
         <DialogTitle>{creatingVersionFrom ? '新增子版本' : editingVersion ? '编辑版本' : editingRow ? config.editTitle : config.createTitle}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5} sx={{ pt: 0.5 }}>
             {creatingVersionFrom || editingVersion ? null : (
               <DetailSection title="基础信息">
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+                <FormDialogFieldGrid>
                   <TextField required fullWidth size="small" label={pageKey === 'formTemplates' ? '表单名称' : '模板名称'} value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} sx={fieldSx} />
                   {pageKey === 'formTemplates' ? <TextField required fullWidth size="small" label="表单编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} sx={fieldSx} /> : null}
                   <Autocomplete
@@ -2041,19 +2043,19 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                     renderInput={(params) => <TextField {...params} fullWidth size="small" label="模板分类" sx={fieldSx} />}
                   />
                   <TextField fullWidth size="small" label="描述" multiline minRows={3} value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
-                </Box>
+                </FormDialogFieldGrid>
               </DetailSection>
             )}
             {shouldRenderVersionSection ? (
               <DetailSection title="版本信息">
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+                <FormDialogFieldGrid>
                   <TextField required fullWidth size="small" label="版本" value={form.version} onChange={(event) => setForm((current) => ({ ...current, version: event.target.value }))} sx={fieldSx} />
                   {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="模板编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} inputProps={{ maxLength: 64 }} helperText={`${form.code.length} / 64`} sx={fieldSx} /> : null}
                   {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="线下版本" value={form.offlineVersion} onChange={(event) => setForm((current) => ({ ...current, offlineVersion: event.target.value }))} inputProps={{ maxLength: 20 }} helperText={`${form.offlineVersion.length} / 20`} sx={fieldSx} /> : null}
                   <TextField required={isCreatingDhrTemplate} fullWidth size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => setForm((current) => ({ ...current, effectiveFrom: event.target.value }))} inputRef={effectiveFromInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
                   <TextField fullWidth size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => setForm((current) => ({ ...current, effectiveTo: event.target.value }))} inputRef={effectiveToInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
                   <TextField fullWidth size="small" label="版本说明" multiline minRows={3} value={form.versionDescription} onChange={(event) => setForm((current) => ({ ...current, versionDescription: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
-                </Box>
+                </FormDialogFieldGrid>
               </DetailSection>
             ) : null}
           </Stack>
@@ -2062,25 +2064,25 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           <Button onClick={() => { setDialogOpen(false); setCreatingVersionFrom(null); setEditingVersion(null); }}>取消</Button>
           <Button variant="contained" disabled={saveMutation.isPending} onClick={handleSubmit}>保存</Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
-      <AppDialog variant="form" open={dhrVersionDialog !== null} onClose={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }} fullWidth maxWidth="sm">
+      <FormDialog open={dhrVersionDialog !== null} onClose={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }} fullWidth maxWidth="sm">
         <DialogTitle>{dhrVersionDialog?.mode === 'edit' ? '编辑版本' : dhrVersionDialog?.mode === 'copy' ? '复制版本' : '新增子版本'}</DialogTitle>
         <DialogContent dividers>
           <FormDialogSection title="版本信息"><Stack spacing={1.5}>
             <TextField fullWidth size="small" label="批记录模板" value={dhrVersionDialog?.row.name ?? ''} InputProps={{ readOnly: true }} sx={fieldSx} />
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+            <FormDialogFieldGrid>
               <TextField required fullWidth size="small" label="版本" value={dhrVersionLabel} onChange={(event) => setDhrVersionLabel(event.target.value)} inputProps={{ maxLength: 64 }} sx={fieldSx} />
               <TextField fullWidth size="small" label="版本来源" value={dhrVersionDialog?.mode === 'edit' ? '编辑中的版本' : dhrVersionDialog?.sourceVersion ? `${dhrVersionDialog.sourceVersion.version}（复制目录与表单证据）` : '空白版本'} InputProps={{ readOnly: true }} sx={fieldSx} />
-            </Box>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+            </FormDialogFieldGrid>
+            <FormDialogFieldGrid>
               <TextField fullWidth size="small" label="模板编码" value={dhrVersionCode} onChange={(event) => setDhrVersionCode(event.target.value)} inputProps={{ maxLength: 64 }} helperText={`${dhrVersionCode.length} / 64`} sx={fieldSx} />
               <TextField fullWidth size="small" label="线下版本" value={dhrVersionOfflineVersion} onChange={(event) => setDhrVersionOfflineVersion(event.target.value)} inputProps={{ maxLength: 20 }} helperText={`${dhrVersionOfflineVersion.length} / 20`} sx={fieldSx} />
-            </Box>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+            </FormDialogFieldGrid>
+            <FormDialogFieldGrid>
               <TextField required fullWidth size="small" label="生效时间" type="datetime-local" value={dhrVersionEffectiveFrom} onChange={(event) => setDhrVersionEffectiveFrom(event.target.value)} InputLabelProps={{ shrink: true }} sx={fieldSx} />
               <TextField fullWidth size="small" label="失效时间" type="datetime-local" value={dhrVersionEffectiveTo} onChange={(event) => setDhrVersionEffectiveTo(event.target.value)} InputLabelProps={{ shrink: true }} sx={fieldSx} />
-            </Box>
+            </FormDialogFieldGrid>
             <TextField fullWidth autoFocus size="small" label="版本说明" multiline minRows={3} value={dhrVersionDescription} onChange={(event) => setDhrVersionDescription(event.target.value)} />
           </Stack></FormDialogSection>
         </DialogContent>
@@ -2088,19 +2090,20 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           <Button onClick={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }}>取消</Button>
           <Button variant="contained" disabled={!dhrVersionDialog || saveDhrVersionMutation.isPending} onClick={submitDhrVersionDialog}>确认</Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
-      <AppDialog variant="form" open={categoryDialog.open} onClose={() => setCategoryDialog({ open: false, target: null, name: '' })} fullWidth maxWidth="xs">
+      <FormDialog open={categoryDialog.open} onClose={() => setCategoryDialog({ open: false, target: null, name: '' })} fullWidth maxWidth="xs">
         <DialogTitle>{categoryDialog.target ? '编辑分类' : '新增分类'}</DialogTitle>
-        <DialogContent dividers><FormDialogSection title="基本信息">
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
           <TextField fullWidth autoFocus size="small" label="分类名称" value={categoryDialog.name} onChange={(event) => setCategoryDialog((current) => ({ ...current, name: event.target.value }))} />
+        </FormDialogFieldGrid>
         </FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setCategoryDialog({ open: false, target: null, name: '' })}>取消</Button>
           <Button variant="contained" disabled={!categoryDialog.name.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>保存</Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog deletionTarget={deleteCategoryTarget && { type: 'template_category', id: deleteCategoryTarget.id }} open={deleteCategoryTarget !== null} onClose={() => setDeleteCategoryTarget(null)} fullWidth maxWidth="xs">
         <DialogTitle>删除分类</DialogTitle>

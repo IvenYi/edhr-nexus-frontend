@@ -21,7 +21,8 @@ import {
   TextField,
   Pagination,
 } from '@mui/material';
-import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import FormDialogSection from '@/components/FormDialogSection';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import PageHeader from '@/components/PageHeader';
@@ -156,9 +157,9 @@ export default function SopDocumentPage() {
         </Box>
       )}
 
-      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? '编辑' : '新增'}SOP 文档</DialogTitle>
-        <DialogContent dividers><FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
           <TextField size="small" label="编码" fullWidth value={form.code ?? ''}
             onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))} />
           <TextField size="small" label="标题" fullWidth value={form.title ?? ''}
@@ -167,7 +168,7 @@ export default function SopDocumentPage() {
             onChange={e => setForm(prev => ({ ...prev, version: e.target.value }))} />
           <TextField size="small" label="文件引用" fullWidth value={form.fileReference ?? ''}
             onChange={e => setForm(prev => ({ ...prev, fileReference: e.target.value }))} />
-        </Box></FormDialogSection>
+        </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
@@ -175,7 +176,7 @@ export default function SopDocumentPage() {
             {createMutation.isPending || updateMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <ConfirmDialog
         deletionTarget={deleteTarget && { type: 'sop_document', id: deleteTarget.id }}

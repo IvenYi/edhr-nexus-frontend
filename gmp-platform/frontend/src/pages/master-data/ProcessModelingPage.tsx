@@ -75,6 +75,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import OperationImportActions from './components/OperationImportActions';
 import {
   Add,
@@ -5016,19 +5018,21 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </DialogActions>
       </AppDialog>
 
-      <AppDialog variant="form" open={operationCategoryDialog.open} onClose={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })} maxWidth="xs" fullWidth>
+      <FormDialog open={operationCategoryDialog.open} onClose={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })} maxWidth="xs" fullWidth>
         <DialogTitle>{operationCategoryDialog.mode === 'edit' ? '编辑分类' : '新增分类'}</DialogTitle>
         <DialogContent dividers><DetailSection title="基本信息">
-          <TextField
-            label="工序分类名称"
-            value={operationCategoryDialog.name}
-            onChange={(event) => setOperationCategoryDialog((current) => ({ ...current, name: event.target.value }))}
-            size="small"
-            fullWidth
-            required
-            autoFocus
-            sx={fieldSx}
-          />
+          <FormDialogFieldGrid>
+            <TextField
+              label="工序分类名称"
+              value={operationCategoryDialog.name}
+              onChange={(event) => setOperationCategoryDialog((current) => ({ ...current, name: event.target.value }))}
+              size="small"
+              fullWidth
+              required
+              autoFocus
+              sx={fieldSx}
+            />
+          </FormDialogFieldGrid>
         </DetailSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })}>取消</Button>
@@ -5036,7 +5040,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
             {saveOperationCategoryMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog deletionTarget={deleteOperationCategoryTarget && { type: 'operation_category', id: deleteOperationCategoryTarget.id }} open={deleteOperationCategoryTarget !== null} onClose={() => setDeleteOperationCategoryTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>删除分类</DialogTitle>

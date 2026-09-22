@@ -54,6 +54,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
@@ -2336,10 +2338,10 @@ export default function OrganizationPage() {
         </Box>
       </Drawer>
 
-      <AppDialog variant="form" open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
+      <FormDialog open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingUserId ? '编辑用户' : '新增用户'}</DialogTitle>
         <DialogContent dividers><FormDialogSection title="基本信息">
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
+          <FormDialogFieldGrid>
             <TextField
               label="账号"
               required
@@ -2455,7 +2457,7 @@ export default function OrganizationPage() {
                 ))}
               </Select>
             </FormControl>
-          </Box>
+          </FormDialogFieldGrid>
         </FormDialogSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setUserDialogOpen(false)}>取消</Button>
@@ -2473,7 +2475,7 @@ export default function OrganizationPage() {
             保存
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
         <DialogTitle>重置密码</DialogTitle>
@@ -2518,7 +2520,7 @@ export default function OrganizationPage() {
         </DialogActions>
       </AppDialog>
 
-      <AppDialog variant="form" open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent dividers><FormDialogSection title="基本信息">
           {!editingId && (
@@ -2540,7 +2542,9 @@ export default function OrganizationPage() {
               </Typography>
             </Box>
           )}
-          <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          <FormDialogFieldGrid>
+            <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          </FormDialogFieldGrid>
         </FormDialogSection></DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
           <Box>
@@ -2568,7 +2572,7 @@ export default function OrganizationPage() {
             </Button>
           </Stack>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle>

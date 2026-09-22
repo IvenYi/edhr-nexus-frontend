@@ -52,6 +52,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import FormDialogSection from '@/components/FormDialogSection';
 import { Add, Close, Delete, DragIndicator, Edit, ExpandMore, LockReset, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import {
@@ -2141,10 +2143,10 @@ export default function UserPage() {
         </Box>
       </Drawer>
 
-      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingId ? '编辑用户' : '新增用户'}</DialogTitle>
         <DialogContent dividers><FormDialogSection title="基本信息">
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
+          <FormDialogFieldGrid>
             <TextField
               label="账号"
               required
@@ -2243,7 +2245,7 @@ export default function UserPage() {
                 ))}
               </Select>
             </FormControl>
-          </Box>
+          </FormDialogFieldGrid>
         </FormDialogSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
@@ -2261,7 +2263,7 @@ export default function UserPage() {
             保存
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
         <DialogTitle>重置密码</DialogTitle>

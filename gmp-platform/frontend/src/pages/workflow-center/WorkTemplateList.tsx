@@ -152,7 +152,7 @@ const WORK_TEMPLATE_COLUMNS: WorkTemplateColumn[] = [
     width: 120,
     configurable: true,
   },
-  { id: "description", label: "备注", width: 260, configurable: true },
+  { id: "description", label: "描述", width: 260, configurable: true },
   { id: "updatedAt", label: "更新时间", width: 172, configurable: true },
   { id: "actions", label: "操作", width: ACTION_COLUMN_WIDTH },
 ];
@@ -204,7 +204,7 @@ function getWorkApiErrorMessage(error: unknown, fallback: string) {
 const auditFieldLabels: Record<string, string> = {
   name: "名称",
   code: "编码",
-  description: "备注",
+  description: "描述",
   status: "状态",
   versionNumber: "流程版本",
   nodes: "流程节点",

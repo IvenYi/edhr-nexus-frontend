@@ -50,6 +50,8 @@ import {
   ViewColumnRounded,
 } from "@mui/icons-material";
 import AppDialog from "@/components/AppDialog";
+import FormDialog from "@/components/FormDialog";
+import FormDialogFieldGrid from "@/components/FormDialogFieldGrid";
 import FormDialogSection from "@/components/FormDialogSection";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import StatusBadge from "@/components/StatusBadge";
@@ -1610,8 +1612,7 @@ function ProductFamilyFormDialog({
     });
   }, [target]);
   return (
-    <AppDialog
-      variant="form"
+    <FormDialog
       open
       onClose={saving ? undefined : onClose}
       fullWidth
@@ -1619,7 +1620,7 @@ function ProductFamilyFormDialog({
     >
       <DialogTitle>{target ? "编辑产品簇" : "新增产品簇"}</DialogTitle>
       <DialogContent dividers>
-        <FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+        <FormDialogSection title="基本信息"><FormDialogFieldGrid>
           {target ? (
             <Box
               sx={{
@@ -1671,7 +1672,7 @@ function ProductFamilyFormDialog({
               }))
             }
           />
-        </Box></FormDialogSection>
+        </FormDialogFieldGrid></FormDialogSection>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={saving}>
@@ -1692,7 +1693,7 @@ function ProductFamilyFormDialog({
           {saving ? "保存中..." : "保存"}
         </Button>
       </DialogActions>
-    </AppDialog>
+    </FormDialog>
   );
 }
 

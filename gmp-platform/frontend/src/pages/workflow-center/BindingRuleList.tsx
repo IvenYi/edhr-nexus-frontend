@@ -27,6 +27,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import FormDialogSection from '@/components/FormDialogSection';
 import { ListTableShell } from '@/components/ListTableShell';
 import { listTableStickyActionSx } from '@/components/listTableStyles';
@@ -117,9 +119,9 @@ export default function BindingRuleList() {
         </Table>
       </ListTableShell>
       {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
-      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑绑定规则' : '新增绑定规则'}</DialogTitle>
-        <DialogContent dividers><FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
           <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <TextField size="small" select label="业务类型" fullWidth value={form.businessType} onChange={(e) => setForm({ ...form, businessType: e.target.value })}>
             {BUSINESS_TYPES.map((bt) => <MenuItem key={bt.value} value={bt.value}>{bt.label}</MenuItem>)}
@@ -127,13 +129,13 @@ export default function BindingRuleList() {
           <TextField size="small" label="流程模板" fullWidth value={form.templateName} onChange={(e) => setForm({ ...form, templateName: e.target.value })} />
           <TextField size="small" label="优先级" type="number" fullWidth value={form.priority} onChange={(e) => setForm({ ...form, priority: Number(e.target.value) })} />
           <TextField size="small" label="描述" fullWidth multiline rows={3} sx={{ gridColumn: '1 / -1' }} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        </Box></FormDialogSection>
+        </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
           <Button variant="contained" onClick={() => saveMutation.mutate(form)} disabled={!form.name || !form.businessType || saveMutation.isPending}>保存</Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
       <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle><DialogContent>确定要删除该绑定规则吗？</DialogContent>
         <DialogActions><Button onClick={() => setDeleteConfirm(null)}>取消</Button><Button color="error" variant="contained" onClick={() => { if (deleteConfirm) { deleteMutation.mutate(deleteConfirm); setDeleteConfirm(null); } }}>删除</Button></DialogActions>

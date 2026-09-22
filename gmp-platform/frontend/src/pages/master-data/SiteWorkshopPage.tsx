@@ -18,7 +18,8 @@ import {
   IconButton,
   CircularProgress,
 } from '@mui/material';
-import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import FormDialogSection from '@/components/FormDialogSection';
 import { Add, Edit, Delete, ExpandMore, ExpandLess } from '@mui/icons-material';
 import PageHeader from '@/components/PageHeader';
@@ -203,14 +204,14 @@ export default function SiteWorkshopPage() {
         </List>
       )}
 
-      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent dividers><FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
           <TextField size="small" label="编码" fullWidth value={form.code}
             onChange={e => setForm({ ...form, code: e.target.value })} />
           <TextField size="small" label="名称" fullWidth value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })} />
-        </Box></FormDialogSection>
+        </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
@@ -218,7 +219,7 @@ export default function SiteWorkshopPage() {
             创建
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <ConfirmDialog
         open={deleteTarget !== null}

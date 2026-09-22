@@ -258,7 +258,8 @@ mustInclude(pageContent, 'draggable={!category.system}', 'system operation categ
 mustInclude(pageContent, '新增分类', 'operation category panel should expose a create action label');
 mustInclude(pageContent, '编辑分类', 'operation category panel should expose edit action labels');
 mustInclude(pageContent, '删除分类', 'operation category panel should expose delete action labels');
-mustInclude(pageContent, '<AppDialog variant="form" open={operationCategoryDialog.open}', 'operation category create and edit should render a standard form dialog');
+mustInclude(pageContent, '<FormDialog open={operationCategoryDialog.open}', 'operation category create and edit should render the shared form dialog');
+mustInclude(pageContent, '<FormDialogFieldGrid>', 'operation category dialog should use the shared field grid');
 mustInclude(pageContent, '<AppDialog deletionTarget={deleteOperationCategoryTarget && { type: \'operation_category\'', 'operation category delete should render a standard application dialog');
 mustInclude(pageContent, '工序分类名称', 'operation category dialog should expose a category name field');
 mustInclude(pageContent, 'Autocomplete', 'operation form category should use a searchable select');
