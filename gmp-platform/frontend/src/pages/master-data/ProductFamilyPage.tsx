@@ -19,6 +19,7 @@ import {
   DialogActions,
   TextField,
   Pagination,
+  Stack,
 } from '@mui/material';
 import FormDialog from '@/components/FormDialog';
 import FormDialogSection from '@/components/FormDialogSection';
@@ -156,12 +157,14 @@ export default function Page() {
         <DialogTitle>{editing ? '编辑' : '新增'}产品家族</DialogTitle>
         <DialogContent dividers>
           <FormDialogSection title="基本信息">
-          <FormDialogFieldGrid hasTrailingFullRow>
+          <Stack spacing={1.5}>
               {editing && <TextField label="ID" size="small" fullWidth value={form.id ?? ''} disabled />}
+            <FormDialogFieldGrid>
               <TextField label="编码" size="small" fullWidth value={form.code ?? ''} onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))} />
               <TextField label="名称" size="small" fullWidth value={form.name ?? ''} onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))} />
-              <TextField label="描述" size="small" fullWidth multiline rows={3} sx={{ gridColumn: '1 / -1' }} value={form.description ?? ''} onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))} />
             </FormDialogFieldGrid>
+            <TextField label="描述" size="small" fullWidth multiline rows={3} value={form.description ?? ''} onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))} />
+          </Stack>
           </FormDialogSection>
         </DialogContent>
         <DialogActions>

@@ -1620,7 +1620,7 @@ function ProductFamilyFormDialog({
     >
       <DialogTitle>{target ? "编辑产品簇" : "新增产品簇"}</DialogTitle>
       <DialogContent dividers>
-        <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
+        <FormDialogSection title="基本信息"><Stack spacing={1.5}>
           {target ? (
             <Box
               sx={{
@@ -1632,7 +1632,6 @@ function ProductFamilyFormDialog({
                 bgcolor: "#f8fafc",
                 border: "1px solid #e4e7ed",
                 borderRadius: 1,
-                gridColumn: '1 / -1',
               }}
             >
               <DetailField label="创建时间">
@@ -1640,30 +1639,31 @@ function ProductFamilyFormDialog({
               </DetailField>
             </Box>
           ) : null}
-          <TextField
-            required
-            size="small"
-            label="产品簇名称"
-            value={form.name}
-            onChange={(event) =>
-              setForm((value) => ({ ...value, name: event.target.value }))
-            }
-          />
-          <TextField
-            required
-            size="small"
-            label="产品簇编码"
-            value={form.code}
-            onChange={(event) =>
-              setForm((value) => ({ ...value, code: event.target.value }))
-            }
-          />
+          <FormDialogFieldGrid>
+            <TextField
+              required
+              size="small"
+              label="产品簇名称"
+              value={form.name}
+              onChange={(event) =>
+                setForm((value) => ({ ...value, name: event.target.value }))
+              }
+            />
+            <TextField
+              required
+              size="small"
+              label="产品簇编码"
+              value={form.code}
+              onChange={(event) =>
+                setForm((value) => ({ ...value, code: event.target.value }))
+              }
+            />
+          </FormDialogFieldGrid>
           <TextField
             size="small"
             label="描述"
             multiline
             minRows={3}
-            sx={{ gridColumn: '1 / -1' }}
             value={form.description || ""}
             onChange={(event) =>
               setForm((value) => ({
@@ -1672,7 +1672,7 @@ function ProductFamilyFormDialog({
               }))
             }
           />
-        </FormDialogFieldGrid></FormDialogSection>
+        </Stack></FormDialogSection>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={saving}>
