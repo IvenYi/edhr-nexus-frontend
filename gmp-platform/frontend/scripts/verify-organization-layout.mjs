@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const content = readFileSync(new URL('../src/pages/system/OrganizationPage.tsx', import.meta.url), 'utf8');
+const sharedFieldGridContent = readFileSync(new URL('../src/components/FormDialogFieldGrid.tsx', import.meta.url), 'utf8');
 const constantsContent = readFileSync(new URL('../src/utils/constants.ts', import.meta.url), 'utf8');
 const uiStandardContent = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
 const departmentControllerContent = readFileSync(new URL('../../backend/src/main/java/com/zencas/edhr/identity/controller/DepartmentController.java', import.meta.url), 'utf8');
@@ -29,6 +30,10 @@ function uiStandardMustInclude(token, reason) {
 
 function departmentControllerMustInclude(token, reason) {
   if (!departmentControllerContent.includes(token)) failures.push(`missing DepartmentController ${JSON.stringify(token)} (${reason})`);
+}
+
+function sharedFieldGridMustInclude(token, reason) {
+  if (!sharedFieldGridContent.includes(token)) failures.push(`missing shared field grid ${JSON.stringify(token)} (${reason})`);
 }
 
 function mustAppearInOrder(tokens, reason) {
@@ -265,8 +270,8 @@ mustInclude('userFieldSx', 'user dialog controls should share the same visual he
 mustInclude('userSelectSx', 'user dialog select controls should share the same visual height as text fields');
 mustInclude('height: 40', 'user dialog controls should follow the compact eDHR user-management height');
 mustInclude('<DialogContent dividers>', 'user dialog should follow the eDHR divided content pattern');
-mustInclude('rowGap: 1.5', 'user dialog field rows should use a consistent vertical gap');
-mustInclude('columnGap: 1.5', 'user dialog field columns should use a consistent horizontal gap');
+mustInclude('<FormDialogFieldGrid>', 'user dialog fields should use the shared field grid');
+sharedFieldGridMustInclude('gap: 1.5', 'shared field grid should provide the standard field gap');
 mustNotInclude("? '请输入正确的邮箱地址' : ' '", 'email helper text should not reserve blank vertical space when valid');
 mustNotInclude("? '请输入正确的手机号' : ' '", 'mobile helper text should not reserve blank vertical space when valid');
 mustInclude('size="small" sx={userSelectSx}', 'user dialog select controls should use the compact eDHR size');

@@ -2031,31 +2031,35 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           <Stack spacing={1.5} sx={{ pt: 0.5 }}>
             {creatingVersionFrom || editingVersion ? null : (
               <DetailSection title="基础信息">
-                <FormDialogFieldGrid>
-                  <TextField required fullWidth size="small" label={pageKey === 'formTemplates' ? '表单名称' : '模板名称'} value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} sx={fieldSx} />
-                  {pageKey === 'formTemplates' ? <TextField required fullWidth size="small" label="表单编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} sx={fieldSx} /> : null}
-                  <Autocomplete
-                    freeSolo
-                    options={categoryOptions}
-                    value={form.categoryName}
-                    noOptionsText="暂无数据"
-                    onInputChange={(_, value) => setForm((current) => ({ ...current, categoryName: value }))}
-                    renderInput={(params) => <TextField {...params} fullWidth size="small" label="模板分类" sx={fieldSx} />}
-                  />
-                  <TextField fullWidth size="small" label="描述" multiline minRows={3} value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
-                </FormDialogFieldGrid>
+                <Stack spacing={1.5}>
+                  <FormDialogFieldGrid>
+                    <TextField required fullWidth size="small" label={pageKey === 'formTemplates' ? '表单名称' : '模板名称'} value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} sx={fieldSx} />
+                    {pageKey === 'formTemplates' ? <TextField required fullWidth size="small" label="表单编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} sx={fieldSx} /> : null}
+                    <Autocomplete
+                      freeSolo
+                      options={categoryOptions}
+                      value={form.categoryName}
+                      noOptionsText="暂无数据"
+                      onInputChange={(_, value) => setForm((current) => ({ ...current, categoryName: value }))}
+                      renderInput={(params) => <TextField {...params} fullWidth size="small" label="模板分类" sx={fieldSx} />}
+                    />
+                  </FormDialogFieldGrid>
+                  <TextField fullWidth size="small" label="描述" multiline minRows={3} value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} />
+                </Stack>
               </DetailSection>
             )}
             {shouldRenderVersionSection ? (
               <DetailSection title="版本信息">
-                <FormDialogFieldGrid>
-                  <TextField required fullWidth size="small" label="版本" value={form.version} onChange={(event) => setForm((current) => ({ ...current, version: event.target.value }))} sx={fieldSx} />
-                  {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="模板编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} inputProps={{ maxLength: 64 }} helperText={`${form.code.length} / 64`} sx={fieldSx} /> : null}
-                  {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="线下版本" value={form.offlineVersion} onChange={(event) => setForm((current) => ({ ...current, offlineVersion: event.target.value }))} inputProps={{ maxLength: 20 }} helperText={`${form.offlineVersion.length} / 20`} sx={fieldSx} /> : null}
-                  <TextField required={isCreatingDhrTemplate} fullWidth size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => setForm((current) => ({ ...current, effectiveFrom: event.target.value }))} inputRef={effectiveFromInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
-                  <TextField fullWidth size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => setForm((current) => ({ ...current, effectiveTo: event.target.value }))} inputRef={effectiveToInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
-                  <TextField fullWidth size="small" label="版本说明" multiline minRows={3} value={form.versionDescription} onChange={(event) => setForm((current) => ({ ...current, versionDescription: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
-                </FormDialogFieldGrid>
+                <Stack spacing={1.5}>
+                  <FormDialogFieldGrid>
+                    <TextField required fullWidth size="small" label="版本" value={form.version} onChange={(event) => setForm((current) => ({ ...current, version: event.target.value }))} sx={fieldSx} />
+                    {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="模板编码" value={form.code} onChange={(event) => setForm((current) => ({ ...current, code: event.target.value }))} inputProps={{ maxLength: 64 }} helperText={`${form.code.length} / 64`} sx={fieldSx} /> : null}
+                    {pageKey === 'batchRecordTemplates' ? <TextField fullWidth size="small" label="线下版本" value={form.offlineVersion} onChange={(event) => setForm((current) => ({ ...current, offlineVersion: event.target.value }))} inputProps={{ maxLength: 20 }} helperText={`${form.offlineVersion.length} / 20`} sx={fieldSx} /> : null}
+                    <TextField required={isCreatingDhrTemplate} fullWidth size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => setForm((current) => ({ ...current, effectiveFrom: event.target.value }))} inputRef={effectiveFromInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
+                    <TextField fullWidth size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => setForm((current) => ({ ...current, effectiveTo: event.target.value }))} inputRef={effectiveToInputRef} InputLabelProps={{ shrink: true }} sx={fieldSx} />
+                  </FormDialogFieldGrid>
+                  <TextField fullWidth size="small" label="版本说明" multiline minRows={3} value={form.versionDescription} onChange={(event) => setForm((current) => ({ ...current, versionDescription: event.target.value }))} />
+                </Stack>
               </DetailSection>
             ) : null}
           </Stack>

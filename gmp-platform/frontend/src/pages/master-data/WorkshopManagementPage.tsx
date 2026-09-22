@@ -431,7 +431,7 @@ export default function WorkshopManagementPage() {
       <FormDialog open={dialogOpen} onClose={() => !saveMutation.isPending && setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingWorkshop ? '编辑车间' : '新增车间'}</DialogTitle>
         <DialogContent dividers><FormDialogSection title="基本信息">
-          <FormDialogFieldGrid>
+          <FormDialogFieldGrid hasTrailingFullRow>
             <TextField
               size="small"
               required

@@ -121,7 +121,7 @@ export default function BindingRuleList() {
       {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
       <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑绑定规则' : '新增绑定规则'}</DialogTitle>
-        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
           <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <TextField size="small" select label="业务类型" fullWidth value={form.businessType} onChange={(e) => setForm({ ...form, businessType: e.target.value })}>
             {BUSINESS_TYPES.map((bt) => <MenuItem key={bt.value} value={bt.value}>{bt.label}</MenuItem>)}

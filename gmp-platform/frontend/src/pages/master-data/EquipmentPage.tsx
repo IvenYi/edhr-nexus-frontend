@@ -328,7 +328,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
         <DialogTitle>{editingId ? '编辑' : '新增'}{recordLabel}</DialogTitle>
         <DialogContent dividers>
           <FormDialogSection title="基本信息">
-          <FormDialogFieldGrid>
+          <FormDialogFieldGrid hasTrailingFullRow>
           <TextField size="small" required label={`${recordLabel}名称`} fullWidth value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
           <TextField size="small" required label={`${recordLabel}编码`} fullWidth value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
           {isTypes ? <>

@@ -1219,7 +1219,7 @@ export default function FormProcessList() {
         <DialogTitle>{editing ? "编辑表单流程" : "新建表单流程"}</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
           <DetailSection title="基本信息">
-            <FormDialogFieldGrid>
+            <FormDialogFieldGrid hasTrailingFullRow>
               <TextField
                 autoFocus
                 required

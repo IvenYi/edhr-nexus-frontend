@@ -115,7 +115,7 @@ export default function OperationPage() {
       {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
       <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑工序' : '新增工序'}</DialogTitle>
-        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
           <TextField size="small" label="编码" fullWidth value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
           <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <TextField size="small" label="描述" fullWidth multiline rows={3} sx={{ gridColumn: '1 / -1' }} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />

@@ -1620,7 +1620,7 @@ function ProductFamilyFormDialog({
     >
       <DialogTitle>{target ? "编辑产品簇" : "新增产品簇"}</DialogTitle>
       <DialogContent dividers>
-        <FormDialogSection title="基本信息"><FormDialogFieldGrid>
+        <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
           {target ? (
             <Box
               sx={{

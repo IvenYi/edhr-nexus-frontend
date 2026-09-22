@@ -1515,7 +1515,7 @@ export default function WorkTemplateList() {
         <DialogTitle>{editing ? "编辑作业模板" : "新增作业模板"}</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
           <DetailSection title="基本信息">
-            <FormDialogFieldGrid>
+            <FormDialogFieldGrid hasTrailingFullRow>
               <TextField
                 required
                 size="small"

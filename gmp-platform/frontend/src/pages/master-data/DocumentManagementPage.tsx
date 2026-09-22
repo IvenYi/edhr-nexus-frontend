@@ -908,7 +908,7 @@ function DocumentMasterDialog({ open, selectedCategory, categories, mode, form, 
   const set = <K extends keyof MasterForm>(key: K, value: MasterForm[K]) => onChange({ ...form, [key]: value });
   return <FormDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{isCreate ? '新增文档' : '编辑文档'}</DialogTitle><DialogContent dividers>
     <Stack spacing={1.5} sx={{ pt: 0.5 }}>
-    <DetailSection title="基础信息"><FormDialogFieldGrid>
+    <DetailSection title="基础信息"><FormDialogFieldGrid hasTrailingFullRow>
       {categoryLocked ? <Stack spacing={0.25} justifyContent="center" sx={{ minHeight: 40, px: 0.25 }}><Typography variant="caption" sx={{ color: '#909399', lineHeight: 1.2 }}>文档分类</Typography><Typography sx={{ color: '#303133', fontSize: 14, lineHeight: 1.35 }}>{categoryName}</Typography></Stack> : <TextField select size="small" label="文档分类" value={form.categoryId} onChange={(event) => set('categoryId', event.target.value)}><MenuItem value="">未分类</MenuItem>{categories.filter((category) => category.id !== DOCUMENT_CATEGORY_ALL && category.id !== DOCUMENT_CATEGORY_UNCATEGORIZED).map((category) => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}</TextField>}
       <TextField required size="small" label="文档名称" value={form.title} onChange={(event) => set('title', event.target.value)} />
       <TextField size="small" label="描述" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={2} sx={{ gridColumn: { sm: '1 / -1' } }} />
@@ -939,7 +939,7 @@ function VersionFields({ form, onChange, onPreview }: { form: VersionForm; onCha
     } catch (error) { showMessage(error instanceof Error ? error.message : '文件上传失败', 'error'); }
     finally { setUploading(false); if (input) input.value = ''; }
   };
-  return <FormDialogFieldGrid>
+  return <FormDialogFieldGrid hasTrailingFullRow>
     <TextField required size="small" label="版本号" value={form.version} onChange={(event) => set('version', event.target.value)} />
     <TextField required size="small" label="文档编码" value={form.code} onChange={(event) => set('code', event.target.value)} />
     <TextField size="small" label="版本文件" value={form.fileName} placeholder="未上传文件" fullWidth InputProps={{ readOnly: true, endAdornment: <InputAdornment position="end" sx={{ mr: -0.75 }}><Stack direction="row" spacing={0.25} alignItems="center"><Tooltip title="预览文件"><span><IconButton size="small" aria-label="预览版本文件" disabled={!form.fileId || uploading} onClick={() => onPreview({ fileId: form.fileId, fileName: form.fileName, fileMimeType: form.fileMimeType, version: form.version })}><PreviewOutlined fontSize="small" /></IconButton></span></Tooltip><Button component="label" size="small" startIcon={<UploadFileOutlined fontSize="small" />} disabled={uploading} sx={{ minWidth: 76, whiteSpace: 'nowrap' }}>{uploading ? '上传中' : form.fileName ? '替换' : '上传'}<input hidden type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.mp4,.webm,.mov,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onChange={(event) => { void selectFile(event.target.files?.[0], event.currentTarget); }} /></Button></Stack></InputAdornment> }} inputProps={{ title: form.fileName || '未上传文件' }} />

@@ -1928,7 +1928,7 @@ export default function RolePage() {
       <AppDialog variant="form" open={roleDialogOpen} onClose={() => setRoleDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑岗位角色' : '新增岗位角色'}</DialogTitle>
         <DialogContent dividers>
-          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
             <TextField
               label="岗位角色"
               value={form.name}

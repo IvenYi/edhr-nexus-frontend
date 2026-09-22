@@ -604,7 +604,7 @@ function VersionDialog({ open, mode, form, options, graph, onChange, onClose, on
     <FormDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="lg">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent dividers>
-        <FormDialogSection title="版本信息"><FormDialogFieldGrid>
+        <FormDialogSection title="版本信息"><Stack spacing={1.5}><FormDialogFieldGrid>
           <TextField required size="small" label="版本号" value={form.version} onChange={(event) => set('version', event.target.value)} />
           <TextField select required size="small" label="生产方式" value={form.productionForm} onChange={(event) => set('productionForm', event.target.value)}>
             {PRODUCTION_MODALITY_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
@@ -639,8 +639,7 @@ function VersionDialog({ open, mode, form, options, graph, onChange, onClose, on
           </TextField> : null}
           <TextField size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => set('effectiveFrom', event.target.value)} InputLabelProps={{ shrink: true }} />
           <TextField size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => set('effectiveTo', event.target.value)} InputLabelProps={{ shrink: true }} />
-          <TextField sx={{ gridColumn: { sm: '1 / -1' } }} size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />
-        </FormDialogFieldGrid></FormDialogSection>
+        </FormDialogFieldGrid><TextField size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} /></Stack></FormDialogSection>
         {form.routeVersionId && <Box sx={{ mt: 2 }}><Typography variant="subtitle2" sx={{ mb: 1, color: '#303133' }}>工艺路线</Typography><RouteGraphPreview graph={graph} /></Box>}
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 1.5 }}>

@@ -1316,7 +1316,7 @@ export default function BusinessDictionaryPage() {
       <AppDialog variant="form" open={dictionaryDialogOpen} onClose={() => setDictionaryDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingDictionary ? '编辑业务字典' : '新增业务字典'}</DialogTitle>
         <DialogContent dividers>
-          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
             <TextField label="字典名称" value={dictionaryForm.name} required size="small" fullWidth sx={fieldSx} onChange={(event) => setDictionaryForm((current) => ({ ...current, name: event.target.value }))} />
             <TextField label="字典编码" value={dictionaryForm.code} required size="small" fullWidth sx={fieldSx} onChange={(event) => setDictionaryForm((current) => ({ ...current, code: event.target.value }))} />
             <TextField select label="状态" value={dictionaryForm.status} size="small" fullWidth sx={fieldSx} onChange={(event) => setDictionaryForm((current) => ({ ...current, status: event.target.value }))}>
@@ -1335,7 +1335,7 @@ export default function BusinessDictionaryPage() {
       <AppDialog variant="form" open={itemDialogOpen} onClose={() => setItemDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingItem ? '编辑字典项' : '新增字典项'}</DialogTitle>
         <DialogContent dividers>
-          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
             <TextField label="字典项名称" value={itemForm.label} required size="small" fullWidth sx={fieldSx} onChange={(event) => setItemForm((current) => ({ ...current, label: event.target.value }))} />
             <TextField label="字典项值" value={itemForm.value} required size="small" fullWidth sx={fieldSx} onChange={(event) => setItemForm((current) => ({ ...current, value: event.target.value }))} />
             <TextField select label="状态" value={itemForm.status} size="small" fullWidth sx={fieldSx} onChange={(event) => setItemForm((current) => ({ ...current, status: event.target.value }))}>

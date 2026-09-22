@@ -431,7 +431,7 @@ export default function ReviewTemplateList() {
       <AppDialog variant="form" open={canEdit && createOpen} onClose={() => setCreateOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>新建{selected.label}模板</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
-          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
             <TextField autoFocus label="模板名称" required fullWidth size="small" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
             <TextField label="模板编码" fullWidth size="small" value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
             <TextField label="描述" fullWidth size="small" multiline minRows={3} value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} sx={{ gridColumn: { sm: '1 / -1' } }} />
@@ -442,7 +442,7 @@ export default function ReviewTemplateList() {
       <AppDialog variant="form" open={canEdit && propertyTarget !== null} onClose={() => setPropertyTarget(null)} maxWidth="sm" fullWidth>
         <DialogTitle>编辑模板属性</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
-          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
             <TextField autoFocus label="模板名称" required fullWidth size="small" value={propertyForm.name} onChange={(event) => setPropertyForm({ ...propertyForm, name: event.target.value })} />
             <TextField label="模板编码" fullWidth size="small" value={propertyForm.code} onChange={(event) => setPropertyForm({ ...propertyForm, code: event.target.value })} />
             <TextField label="描述" fullWidth size="small" multiline minRows={3} value={propertyForm.description} onChange={(event) => setPropertyForm({ ...propertyForm, description: event.target.value })} sx={{ gridColumn: { sm: '1 / -1' } }} />

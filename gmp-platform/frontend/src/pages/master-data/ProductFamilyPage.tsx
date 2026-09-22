@@ -156,7 +156,7 @@ export default function Page() {
         <DialogTitle>{editing ? '编辑' : '新增'}产品家族</DialogTitle>
         <DialogContent dividers>
           <FormDialogSection title="基本信息">
-            <FormDialogFieldGrid>
+          <FormDialogFieldGrid hasTrailingFullRow>
               {editing && <TextField label="ID" size="small" fullWidth value={form.id ?? ''} disabled />}
               <TextField label="编码" size="small" fullWidth value={form.code ?? ''} onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))} />
               <TextField label="名称" size="small" fullWidth value={form.name ?? ''} onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))} />

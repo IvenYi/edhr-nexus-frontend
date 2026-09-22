@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const content = readFileSync(new URL('../src/pages/system/UserPage.tsx', import.meta.url), 'utf8');
+const sharedFieldGridContent = readFileSync(new URL('../src/components/FormDialogFieldGrid.tsx', import.meta.url), 'utf8');
 const constantsContent = readFileSync(new URL('../src/utils/constants.ts', import.meta.url), 'utf8');
 const appLayoutContent = readFileSync(new URL('../src/components/shared/AppLayout.tsx', import.meta.url), 'utf8');
 const uiStandardContent = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
@@ -25,6 +26,10 @@ function constantsMustNotInclude(token, reason) {
 
 function appLayoutMustInclude(token, reason) {
   if (!appLayoutContent.includes(token)) failures.push(`missing AppLayout ${JSON.stringify(token)} (${reason})`);
+}
+
+function sharedFieldGridMustInclude(token, reason) {
+  if (!sharedFieldGridContent.includes(token)) failures.push(`missing shared field grid ${JSON.stringify(token)} (${reason})`);
 }
 
 function uiStandardMustInclude(token, reason) {
@@ -265,8 +270,8 @@ mustInclude('userFieldSx', 'user dialog controls should share the same visual he
 mustInclude('userSelectSx', 'user dialog select controls should share text-field height');
 mustInclude('height: 40', 'user dialog controls should follow compact height');
 mustInclude('<DialogContent dividers>', 'user dialog should follow divided content pattern');
-mustInclude('rowGap: 1.5', 'user dialog fields should use consistent vertical gap');
-mustInclude('columnGap: 1.5', 'user dialog fields should use consistent horizontal gap');
+mustInclude('<FormDialogFieldGrid>', 'user dialog fields should use the shared field grid');
+sharedFieldGridMustInclude('gap: 1.5', 'shared field grid should provide the standard field gap');
 
 mustInclude('getApiErrorMessage', 'mutations should extract concrete backend error text');
 mustInclude("getApiErrorMessage(error, '用户保存失败')", 'save failures should show backend-provided error text');
