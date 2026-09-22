@@ -18,7 +18,6 @@ export interface ManagedDocumentVersion {
   fileName?: string | null;
   fileMimeType?: string | null;
   description?: string | null;
-  remark?: string | null;
   effectiveDate?: string | null;
   expiryDate?: string | null;
   status: 'ACTIVE' | 'EXPIRED';
@@ -34,7 +33,6 @@ export interface ManagedDocument {
   categoryId?: string | null;
   categoryName?: string | null;
   description?: string | null;
-  remark?: string | null;
   createdBy?: string | null;
   createdAt?: string | null;
   updatedBy?: string | null;
@@ -47,11 +45,9 @@ export interface DocumentWritePayload {
   title: string;
   categoryId?: string | null;
   description?: string | null;
-  remark?: string | null;
   version: string;
   fileId?: string | null;
   versionDescription?: string | null;
-  versionRemark?: string | null;
   effectiveDate?: string | null;
   expiryDate?: string | null;
 }
@@ -61,7 +57,6 @@ export interface DocumentVersionWritePayload {
   code: string;
   fileId?: string | null;
   description?: string | null;
-  remark?: string | null;
   effectiveDate?: string | null;
   expiryDate?: string | null;
 }
@@ -89,7 +84,7 @@ export const reorderDocumentCategories = (ids: string[]) =>
 export const createDocument = (body: DocumentWritePayload) =>
   client.post(basePath, body) as Promise<{ data: { data: ManagedDocument } }>;
 
-export const updateDocument = (documentId: string, body: Pick<DocumentWritePayload, 'title' | 'description' | 'remark'>) =>
+export const updateDocument = (documentId: string, body: Pick<DocumentWritePayload, 'title' | 'description'>) =>
   client.put(`${basePath}/${documentId}`, body) as Promise<{ data: { data: ManagedDocument } }>;
 
 export const deleteDocument = (documentId: string) => client.delete(`${basePath}/${documentId}`);

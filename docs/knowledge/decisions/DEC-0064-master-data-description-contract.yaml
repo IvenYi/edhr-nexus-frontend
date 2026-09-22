@@ -1,0 +1,50 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0064
+    title: 主数据描述字段与车间页面标准化
+    status: implemented
+    visibility: internal
+    context: user-confirmed；普通主数据表单规范已经确定父记录使用“描述”、版本子记录使用“版本说明”，产品簇父记录、文档主记录和文档版本不再保留重复 remark 字段。车间页面的共享列表/表单壳属于实现策略，不新增业务规则。
+    decisionStatements:
+      - id: DEC-0064-01
+        statement: 无子版本主数据的父记录只保留一个自由文本说明字段，客户界面标签为“描述”；本次范围明确覆盖 product_family.description 和 sop_document.description。
+        status: implemented
+        visibility: internal
+      - id: DEC-0064-02
+        statement: 带子版本主数据的版本记录只保留一个版本级自由文本说明字段，客户界面标签为“版本说明”；本次范围明确覆盖 document_version.description。
+        status: implemented
+        visibility: internal
+      - id: DEC-0064-03
+        statement: product_family.remark、sop_document.remark 和 document_version.remark 不再属于持久化或接口契约；迁移可丢弃既有 remark 值，回滚只恢复空的结构列，不恢复已丢弃值。
+        status: implemented
+        visibility: internal
+      - id: DEC-0064-04
+        statement: 车间页面复用共享列表壳和普通表单壳，统一列表首列正文样式、列调整把手、横向滚动边界和普通表单双列布局；该条是前端实现标准化，不扩展为其他主数据的业务语义。
+        status: implemented
+        visibility: internal
+      - id: DEC-0064-05
+        statement: 历史审计 JSON 不因本次字段清理而回写或重构；新产生的产品簇、文档主记录和文档版本审计快照不再写入已删除的 remark 键，只保留当前 description/版本说明字段契约。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-migration, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-description-migration-test, evidence.master-data-description-document-controller-test, evidence.master-data-workshop-shared-shell-guidelines, evidence.master-data-workshop-shared-shell-page, evidence.master-data-workshop-shared-shell-verification]
+    acceptanceScenarios:
+      - id: scenario.master-data-description-columns-removed
+        given: product_family、sop_document 和 document_version 存在旧 remark 列
+        when: Liquibase 0095 执行一次或重复执行
+        then: 三列均不存在，重复执行无害；回滚只恢复三列空结构
+        evidenceIds: [evidence.master-data-description-migration, evidence.master-data-description-migration-test]
+        evidenceRequirements: [迁移测试, 本地 PostgreSQL schema query]
+      - id: scenario.master-data-description-and-version-description
+        given: 用户编辑产品簇、文档主记录或文档版本
+        when: 打开表单并提交
+        then: 父记录使用“描述”，版本记录使用“版本说明”，接口和审计不再写入三张表的重复 remark 字段
+        evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-description-document-controller-test]
+        evidenceRequirements: [后端控制器测试, 前端字段契约检查, 审计快照核对]
+      - id: scenario.workshop-shared-shell
+        given: 车间管理页面渲染列表和新增/编辑弹窗
+        when: 检查列表几何、首列文字、列调整和普通表单布局
+        then: 页面使用共享列表/表单壳、统一样式 token、列调整把手和双列普通表单布局
+        evidenceIds: [evidence.master-data-workshop-shared-shell-guidelines, evidence.master-data-workshop-shared-shell-page, evidence.master-data-workshop-shared-shell-verification]
+        evidenceRequirements: [前端构建, 车间聚焦验证, 列表样式契约验证]
+    implementationDiscrepancies: []

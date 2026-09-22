@@ -1,5 +1,10 @@
 knowledgeModelVersion: 0.3.24
 evidence:
+  - id: evidence.equipment-description-user-decision
+    type: document
+    path: docs/knowledge/evidence/equipment-description-confirmed.md
+    description: user-confirmed；2026-09-22 设备类型和单台设备普通新增、编辑表单各有一个可选“描述”字段，作为无版本主数据保存。长度512、审计字段形状及旧行置空策略是实现推断，不作为用户确认的业务规则；纯视觉布局不进入本体。
+    visibility: internal
   - id: evidence.equipment-modeling-user-decision
     type: document
     path: docs/superpowers/plans/2026-09-09-equipment-modeling.md

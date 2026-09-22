@@ -1,6 +1,7 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
+import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { Fragment, useEffect, useMemo, useState, type PointerEventHandler, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -49,6 +50,7 @@ import {
   ViewColumnRounded,
 } from "@mui/icons-material";
 import AppDialog from "@/components/AppDialog";
+import FormDialogSection from "@/components/FormDialogSection";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import StatusBadge from "@/components/StatusBadge";
 import { useSnackbar } from "@/components/SnackbarProvider";
@@ -134,6 +136,7 @@ const PRODUCT_FAMILY_VERSION_COLUMNS: ProductFamilyVersionColumn[] = [
   { id: "updatedBy", label: "更新人", width: 128, minWidth: 100 },
   { id: "actions", label: "操作", width: 128, minWidth: 128 },
 ];
+const PRODUCT_FAMILY_VERSION_ACTION_COLUMN = PRODUCT_FAMILY_VERSION_COLUMNS.find((column) => column.id === "actions")!;
 const tableHeaderCellSx = listTableHeaderCellSx;
 
 function operationColumnSx(width: number, layer: "head" | "body") {
@@ -145,18 +148,13 @@ function operationColumnSx(width: number, layer: "head" | "body") {
     minWidth: width,
     maxWidth: width,
     bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
-    backgroundClip: "padding-box",
-    boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+    ...listTableStickyEdgeSx,
     textAlign: "center",
     whiteSpace: "nowrap",
   };
 }
 const tableRowSx = {
-  "& > .MuiTableCell-root": {
-    height: 40,
-    py: 0.5,
-    borderBottom: "1px solid #ebeef5",
-  },
+  "& > .MuiTableCell-root": listTableBodyCellSx,
 };
 const toolbarIconSx = {
   width: 36,
@@ -216,8 +214,7 @@ function parseAuditContent(content: unknown): Record<string, unknown> {
 const AUDIT_LABELS: Record<string, string> = {
   name: "名称",
   code: "编码",
-  description: "备注",
-  remark: "备注",
+  description: "描述",
   status: "版本状态",
   processVersion: "制程版本",
   version: "版本",
@@ -409,10 +406,15 @@ export default function ProductFamilyModelingPage() {
       ),
     [hiddenColumns],
   );
-  const parentTableWidth = visibleColumns.reduce(
+  const parentTableBaseWidth = visibleColumns.reduce(
     (total, column) => total + getColumnWidth(column),
     0,
   );
+  const versionTableBaseWidth = PRODUCT_FAMILY_VERSION_COLUMNS.reduce(
+    (total, column) => total + getVersionColumnWidth(column),
+    0,
+  );
+  const sharedTableMinWidth = Math.max(parentTableBaseWidth, versionTableBaseWidth);
 
   useEffect(() => {
     localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(hiddenColumns));
@@ -709,13 +711,28 @@ export default function ProductFamilyModelingPage() {
             新增产品簇
           </Button>
         </Box>
-        <TableContainer sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
-          <Table
+        <ListTableShell minTableWidth={sharedTableMinWidth} sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
+          {(tableWidth) => {
+            const parentColumnWidths = resolveListColumnWidths(
+              visibleColumns.map((column) => ({ id: column.id, width: getColumnWidth(column) })),
+              tableWidth,
+              "name",
+              ["actions"],
+            );
+            const versionColumnWidths = resolveListColumnWidths(
+              PRODUCT_FAMILY_VERSION_COLUMNS.map((column) => ({ id: column.id, width: getVersionColumnWidth(column) })),
+              tableWidth,
+              "dhrTemplate",
+              ["actions"],
+            );
+            const getResolvedParentColumnWidth = (column: ProductFamilyColumn) => parentColumnWidths[column.id];
+            const getResolvedVersionColumnWidth = (column: ProductFamilyVersionColumn) => versionColumnWidths[column.id];
+            return <Table
             stickyHeader
             size="small"
             sx={{
-              minWidth: parentTableWidth,
-              width: "100%",
+              minWidth: tableWidth,
+              width: tableWidth,
               tableLayout: "fixed",
               height:
                 listQuery.isLoading || listQuery.isError || rows.length === 0
@@ -723,11 +740,11 @@ export default function ProductFamilyModelingPage() {
                   : "auto",
             }}
           >
-            <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup>
+            <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getResolvedParentColumnWidth(column) }} />)}</colgroup>
             <TableHead>
               <TableRow sx={{ "& .MuiTableCell-root": tableHeaderCellSx }}>
                 {visibleColumns.map((column) => {
-                  const width = getColumnWidth(column);
+                  const width = getResolvedParentColumnWidth(column);
                   return <TableCell
                     key={column.id}
                     align={column.id === "actions" ? "center" : undefined}
@@ -761,7 +778,8 @@ export default function ProductFamilyModelingPage() {
                     visibleColumns={visibleColumns}
                     parentColumnCount={visibleColumns.length}
                     expanded={expandedIds.includes(family.id)}
-                    getVersionColumnWidth={getVersionColumnWidth}
+                    tableWidth={tableWidth}
+                    getResolvedVersionColumnWidth={getResolvedVersionColumnWidth}
                     getVersionResizeHandleProps={getVersionResizeHandleProps}
                     onToggle={() => toggleExpanded(family.id)}
                     onView={() => setDetailTarget({ family })}
@@ -787,8 +805,9 @@ export default function ProductFamilyModelingPage() {
                 ))
               )}
             </TableBody>
-          </Table>
-        </TableContainer>
+          </Table>;
+          }}
+        </ListTableShell>
         <Box
           sx={{
             flex: "0 0 auto",
@@ -993,7 +1012,8 @@ function ProductFamilyTreeRows({
   visibleColumns,
   parentColumnCount,
   expanded,
-  getVersionColumnWidth,
+  tableWidth,
+  getResolvedVersionColumnWidth,
   getVersionResizeHandleProps,
   onToggle,
   onView,
@@ -1009,7 +1029,8 @@ function ProductFamilyTreeRows({
   visibleColumns: ProductFamilyColumn[];
   parentColumnCount: number;
   expanded: boolean;
-  getVersionColumnWidth: (column: ProductFamilyVersionColumn) => number;
+  tableWidth: number;
+  getResolvedVersionColumnWidth: (column: ProductFamilyVersionColumn) => number;
   getVersionResizeHandleProps: (column: ProductFamilyVersionColumn) => {
     onPointerDown: PointerEventHandler<HTMLDivElement>;
     onPointerMove: PointerEventHandler<HTMLDivElement>;
@@ -1072,14 +1093,13 @@ function ProductFamilyTreeRows({
                   p: 0,
                   minWidth: 0,
                   bgcolor: "transparent",
-                  color: "#1890ff",
+                  ...listTablePrimaryTextSx,
                   cursor: "pointer",
                   fontSize: 14,
                   textAlign: "left",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
-                  "&:hover": { color: "#096dd9", textDecoration: "underline" },
                 }}
               >
                 {family.name}
@@ -1182,17 +1202,17 @@ function ProductFamilyTreeRows({
                 </Typography>
               </Box>
             ) : (
-              <TableContainer sx={{ overflow: "auto" }}>
+              <TableContainer sx={{ overflow: "visible" }}>
                 <Table
                   size="small"
                   aria-label="产品簇制程配置版本列表"
-                  sx={{ width: PRODUCT_FAMILY_VERSION_COLUMNS.reduce((total, column) => total + getVersionColumnWidth(column), 0), minWidth: PRODUCT_FAMILY_VERSION_COLUMNS.reduce((total, column) => total + getVersionColumnWidth(column), 0), tableLayout: "fixed" }}
+                  sx={{ width: tableWidth, minWidth: tableWidth, tableLayout: "fixed" }}
                 >
-                  <colgroup>{PRODUCT_FAMILY_VERSION_COLUMNS.map((column) => <col key={column.id} style={{ width: getVersionColumnWidth(column) }} />)}</colgroup>
+                  <colgroup>{PRODUCT_FAMILY_VERSION_COLUMNS.map((column) => <col key={column.id} style={{ width: getResolvedVersionColumnWidth(column) }} />)}</colgroup>
                   <TableHead>
                     <TableRow sx={{ "& .MuiTableCell-root": tableHeaderCellSx }}>
                       {PRODUCT_FAMILY_VERSION_COLUMNS.map((column) => {
-                        const width = getVersionColumnWidth(column);
+                        const width = getResolvedVersionColumnWidth(column);
                         return <TableCell
                           key={column.id}
                           align={column.id === "actions" ? "center" : undefined}
@@ -1247,7 +1267,7 @@ function ProductFamilyTreeRows({
                         <TableCell
                           align="center"
                           onClick={(event) => event.stopPropagation()}
-                          sx={operationColumnSx(128, "body")}
+                          sx={operationColumnSx(getResolvedVersionColumnWidth(PRODUCT_FAMILY_VERSION_ACTION_COLUMN), "body")}
                         >
                           <Tooltip title="编辑" arrow>
                             <IconButton
@@ -1406,7 +1426,7 @@ function ProductFamilyDetailDrawer({
                         version.dhrTemplateVersion,
                       )}
                     </DetailField>
-                    <DetailField label="备注">
+                    <DetailField label="版本说明">
                       {version.description}
                     </DetailField>
                   </Box>
@@ -1460,8 +1480,7 @@ function ProductFamilyDetailDrawer({
                       {family.processVersionCount}
                     </DetailField>
                     <DetailField label="更新人">{family.updatedBy}</DetailField>
-                    <DetailField label="描述">{family.description}</DetailField>
-                    <DetailField label="备注">{family.remark}</DetailField>
+                    <DetailField label="描述">{family.description || '-'}</DetailField>
                   </Box>
                 </DetailSection>
               </Stack>
@@ -1582,18 +1601,17 @@ function ProductFamilyFormDialog({
     code: target?.code || "",
     name: target?.name || "",
     description: target?.description || "",
-    remark: target?.remark || "",
   }));
   useEffect(() => {
     setForm({
       code: target?.code || "",
       name: target?.name || "",
       description: target?.description || "",
-      remark: target?.remark || "",
     });
   }, [target]);
   return (
     <AppDialog
+      variant="form"
       open
       onClose={saving ? undefined : onClose}
       fullWidth
@@ -1601,7 +1619,7 @@ function ProductFamilyFormDialog({
     >
       <DialogTitle>{target ? "编辑产品簇" : "新增产品簇"}</DialogTitle>
       <DialogContent dividers>
-        <Stack spacing={1.5}>
+        <FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
           {target ? (
             <Box
               sx={{
@@ -1613,6 +1631,7 @@ function ProductFamilyFormDialog({
                 bgcolor: "#f8fafc",
                 border: "1px solid #e4e7ed",
                 borderRadius: 1,
+                gridColumn: '1 / -1',
               }}
             >
               <DetailField label="创建时间">
@@ -1643,6 +1662,7 @@ function ProductFamilyFormDialog({
             label="描述"
             multiline
             minRows={3}
+            sx={{ gridColumn: '1 / -1' }}
             value={form.description || ""}
             onChange={(event) =>
               setForm((value) => ({
@@ -1651,17 +1671,7 @@ function ProductFamilyFormDialog({
               }))
             }
           />
-          <TextField
-            size="small"
-            label="备注"
-            multiline
-            minRows={2}
-            value={form.remark || ""}
-            onChange={(event) =>
-              setForm((value) => ({ ...value, remark: event.target.value }))
-            }
-          />
-        </Stack>
+        </Box></FormDialogSection>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={saving}>
@@ -1676,7 +1686,6 @@ function ProductFamilyFormDialog({
               code: form.code.trim(),
               name: form.name.trim(),
               description: form.description?.trim() || null,
-              remark: form.remark?.trim() || null,
             })
           }
         >

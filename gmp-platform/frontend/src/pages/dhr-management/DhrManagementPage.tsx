@@ -60,7 +60,8 @@ import ListColumnSettingsPopover, {
 } from '@/components/ListColumnSettingsPopover';
 import StatusBadge from '@/components/StatusBadge';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listColumnResizeHandleSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   formListFieldSx,
   formListFilterActionsSx,
@@ -457,7 +458,7 @@ export default function DhrManagementPage() {
     right: DHR_ACTION_COLUMN_WIDTH,
     zIndex: 1,
     bgcolor: '#fff',
-    boxShadow: '-4px 0 8px rgba(31, 35, 41, 0.06)',
+    ...listTableStickyEdgeSx,
   };
   const stickyActionCellSx = {
     ...bodyCellSx,
@@ -529,7 +530,7 @@ export default function DhrManagementPage() {
           onReorder={(sourceId, targetId) => setColumnSettings((current) => reorderListColumns(columns, current, sourceId, targetId))}
         />
 
-        <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}>
+        <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}>
           <Table
             stickyHeader
             size="small"
@@ -579,7 +580,7 @@ export default function DhrManagementPage() {
                     right: DHR_ACTION_COLUMN_WIDTH,
                     zIndex: 3,
                     bgcolor: '#f5f7fa',
-                    boxShadow: '-4px 0 8px rgba(31, 35, 41, 0.06)',
+                    ...listTableStickyEdgeSx,
                   }}
                 >
                   状态
@@ -658,7 +659,7 @@ export default function DhrManagementPage() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </ListTableShell>
 
         <FormListPagination
           totalElements={query.data?.totalElements ?? 0}

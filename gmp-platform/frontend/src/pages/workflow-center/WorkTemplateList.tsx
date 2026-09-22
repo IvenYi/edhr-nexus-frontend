@@ -51,11 +51,13 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppDialog from "@/components/AppDialog";
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import ConfirmDialog from "@/components/ConfirmDialog";
 import StatusBadge from "@/components/StatusBadge";
 import { useSnackbar } from "@/components/SnackbarProvider";
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listColumnResizeHandleSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { getCurrentUserPreferenceStorageKey } from '@/components/ListColumnSettingsPopover';
 import { getAuditLogs, type AuditLogItem } from "@/api/audit";
 import {
@@ -226,8 +228,7 @@ function operationColumnSx(layer: "head" | "body") {
     minWidth: ACTION_COLUMN_WIDTH,
     maxWidth: ACTION_COLUMN_WIDTH,
     bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
-    backgroundClip: "padding-box",
-    boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+    ...listTableStickyEdgeSx,
     textAlign: "center",
     whiteSpace: "nowrap",
   };
@@ -590,7 +591,7 @@ function WorkTemplateDetailDrawer({
                   <DetailField label="适用规则数">
                     {rules.data?.length ?? 0}
                   </DetailField>
-                  <DetailField label="备注">
+                  <DetailField label="描述">
                     {definition.data?.description ?? target?.description ?? "-"}
                   </DetailField>
                 </Box>
@@ -1316,7 +1317,7 @@ export default function WorkTemplateList() {
                   新增作业
                 </Button>
               </Box>
-              <TableContainer
+              <ListTableShell
                 ref={tableContainerRef}
                 sx={{
                   flex: 1,
@@ -1416,7 +1417,7 @@ export default function WorkTemplateList() {
                       : null}
                   </TableBody>
                 </Table>
-              </TableContainer>
+              </ListTableShell>
               <Box
                 sx={{
                   flex: "0 0 auto",
@@ -1505,6 +1506,7 @@ export default function WorkTemplateList() {
         )}
       </Popover>
       <AppDialog
+        variant="form"
         open={editing !== undefined}
         onClose={() => setEditing(undefined)}
         maxWidth="sm"
@@ -1513,7 +1515,7 @@ export default function WorkTemplateList() {
         <DialogTitle>{editing ? "编辑作业模板" : "新增作业模板"}</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
           <DetailSection title="基本信息">
-            <Stack spacing={1.5}>
+            <FormDialogFieldGrid>
               <TextField
                 required
                 size="small"
@@ -1536,16 +1538,17 @@ export default function WorkTemplateList() {
               />
               <TextField
                 size="small"
-                label="备注"
+                label="描述"
                 fullWidth
                 multiline
                 minRows={3}
+                sx={{ gridColumn: { sm: '1 / -1' } }}
                 value={form.description}
                 onChange={(event) =>
                   setForm({ ...form, description: event.target.value })
                 }
               />
-            </Stack>
+            </FormDialogFieldGrid>
           </DetailSection>
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}>

@@ -7,6 +7,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.dto.ProcessModelingRequest;
+import com.zencas.edhr.masterdata.dto.MasterDataDescriptionRequest;
 import com.zencas.edhr.masterdata.dto.ProductFamilyMemberResponse;
 import com.zencas.edhr.masterdata.dto.RouteGraphRequest;
 import com.zencas.edhr.masterdata.entity.Route;
@@ -167,7 +168,7 @@ class ProcessModelingControllerTest {
         when(productFamilyRepository.save(any(ProductFamily.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(idGenerator.nextId()).thenReturn(11001L);
 
-        var response = controller.createProductFamily(ProcessModelingRequest.builder()
+        var response = controller.createProductFamily(MasterDataDescriptionRequest.builder()
                 .code(" PF-SYR-001 ")
                 .name("注射器产品簇")
                 .build());
@@ -180,7 +181,7 @@ class ProcessModelingControllerTest {
 
     @Test
     void rejectsBlankOrDuplicatedProductFamilyCode() {
-        assertThatThrownBy(() -> controller.createProductFamily(ProcessModelingRequest.builder()
+        assertThatThrownBy(() -> controller.createProductFamily(MasterDataDescriptionRequest.builder()
                 .name("注射器产品簇")
                 .build()))
                 .isInstanceOf(BusinessException.class)
@@ -188,7 +189,7 @@ class ProcessModelingControllerTest {
 
         when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "PF-SYR-001"))
                 .thenReturn(Optional.of(ProductFamily.builder().id(11L).code("pf-syr-001").build()));
-        assertThatThrownBy(() -> controller.createProductFamily(ProcessModelingRequest.builder()
+        assertThatThrownBy(() -> controller.createProductFamily(MasterDataDescriptionRequest.builder()
                 .code("PF-SYR-001")
                 .name("注射器产品簇")
                 .build()))
@@ -204,7 +205,7 @@ class ProcessModelingControllerTest {
                 .thenReturn(Optional.of(existing));
         when(productFamilyRepository.save(existing)).thenReturn(existing);
 
-        assertThat(controller.updateProductFamily(11L, ProcessModelingRequest.builder()
+        assertThat(controller.updateProductFamily(11L, MasterDataDescriptionRequest.builder()
                 .code("pf-syr-001")
                 .name("新产品簇")
                 .build()).getData().getCode()).isEqualTo("pf-syr-001");
@@ -212,7 +213,7 @@ class ProcessModelingControllerTest {
         ProductFamily another = ProductFamily.builder().id(12L).tenantId("default").code("PF-SYR-002").name("其他产品簇").build();
         when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "PF-SYR-002"))
                 .thenReturn(Optional.of(another));
-        assertThatThrownBy(() -> controller.updateProductFamily(11L, ProcessModelingRequest.builder()
+        assertThatThrownBy(() -> controller.updateProductFamily(11L, MasterDataDescriptionRequest.builder()
                 .code("PF-SYR-002")
                 .name("新产品簇")
                 .build()))

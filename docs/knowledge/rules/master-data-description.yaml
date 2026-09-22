@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.24
+rules:
+  - id: rule.master-data.single-description-field-contract
+    factCatalogProfile: core-business
+    name: 主数据父记录和版本子记录不保留重复备注字段
+    status: implemented
+    visibility: internal
+    trigger: master-data.form.submit
+    scope: master-data-description-contract
+    condition:
+      all:
+        - fact: form.parentHasDescription
+          operator: equals
+          value: true
+        - fact: form.versionHasVersionDescription
+          operator: equals
+          value: true
+    result:
+      type: persist-field-contract
+      targetFields: [product_family.description, sop_document.description, document_version.description]
+      labels:
+        parent: 描述
+        version: 版本说明
+      forbiddenFields: [product_family.remark, sop_document.remark, document_version.remark]
+    explanation: 产品簇父记录和文档主记录各保留一个描述字段；文档版本保留唯一的版本级说明字段。三张表的重复 remark 列不属于当前持久化契约，执行迁移时允许按已确认范围丢弃其存量值；执行记录、工单、路线等其他 remark 字段不受本规则影响。
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-migration, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-migration-test, evidence.master-data-description-document-controller-test]
+    executionContractId: execution.master-data-description-field-contract

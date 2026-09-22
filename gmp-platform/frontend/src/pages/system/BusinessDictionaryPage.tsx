@@ -1,5 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
-import { listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -48,6 +49,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
   Close,
@@ -446,6 +449,7 @@ function getStickyActionColumnSx(column: TableColumn<string>, layer: 'head' | 'b
     right: 0,
     zIndex: layer === 'head' ? 8 : 4,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
   };
 }
@@ -1090,7 +1094,7 @@ export default function BusinessDictionaryPage() {
           </Box>
         </Box>
         <Box sx={{ position: 'relative', flex: 1, minHeight: 0, minWidth: 0 }}>
-          <TableContainer ref={dictionaryTableRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
+          <ListTableShell ref={dictionaryTableRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
             <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: dictionaryTotalTableWidth, minWidth: dictionaryTotalTableWidth, height: dictionaryEmptyState ? '100%' : 'auto' }}>
               <colgroup>{visibleDictionaryColumns.map((column) => <col key={column.id} style={{ width: dictionaryResolvedWidths[column.id] }} />)}</colgroup>
               {renderTableHeader(visibleDictionaryColumns, dictionaryResolvedWidths, (event, column) => beginColumnResize(event, column, (id) => dictionaryResolvedWidths[id], setDictionaryColumnWidths))}
@@ -1118,8 +1122,8 @@ export default function BusinessDictionaryPage() {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
-          <Box data-business-dictionary-action-column-shadow sx={{ position: 'absolute', top: 0, bottom: 0, right: dictionaryScrollbarWidth, width: ACTION_COLUMN_WIDTH, boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)', pointerEvents: 'none', zIndex: 7 }} />
+          </ListTableShell>
+          <Box data-business-dictionary-action-column-shadow sx={{ position: 'absolute', top: 0, bottom: 0, right: dictionaryScrollbarWidth, width: ACTION_COLUMN_WIDTH, boxShadow: listTableStickyEdgeShadow, pointerEvents: 'none', zIndex: 7 }} />
         </Box>
         <Box sx={{ minHeight: 52, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexShrink: 0, borderTop: '1px solid #e4e7ed' }}>
           <Typography sx={{ color: '#909399' }}>共 {dictionariesQuery.data?.totalElements ?? 0} 条数据</Typography>
@@ -1163,7 +1167,7 @@ export default function BusinessDictionaryPage() {
           </Box>
         </Box>
         <Box sx={{ position: 'relative', flex: 1, minHeight: 0, minWidth: 0 }}>
-          <TableContainer ref={itemTableRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
+          <ListTableShell ref={itemTableRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
             <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: itemTotalTableWidth, minWidth: itemTotalTableWidth, height: itemEmptyState ? '100%' : 'auto' }}>
               <colgroup>{visibleItemColumns.map((column) => <col key={column.id} style={{ width: itemResolvedWidths[column.id] }} />)}</colgroup>
               {renderTableHeader(visibleItemColumns, itemResolvedWidths, (event, column) => beginColumnResize(event, column, (id) => itemResolvedWidths[id], setItemColumnWidths))}
@@ -1193,8 +1197,8 @@ export default function BusinessDictionaryPage() {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
-          <Box data-business-dictionary-item-action-column-shadow sx={{ position: 'absolute', top: 0, bottom: 0, right: itemScrollbarWidth, width: ACTION_COLUMN_WIDTH, boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)', pointerEvents: 'none', zIndex: 7 }} />
+          </ListTableShell>
+          <Box data-business-dictionary-item-action-column-shadow sx={{ position: 'absolute', top: 0, bottom: 0, right: itemScrollbarWidth, width: ACTION_COLUMN_WIDTH, boxShadow: listTableStickyEdgeShadow, pointerEvents: 'none', zIndex: 7 }} />
         </Box>
         <Box sx={{ minHeight: 52, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexShrink: 0, borderTop: '1px solid #e4e7ed' }}>
           <Typography sx={{ color: '#909399' }}>共 {itemTotalElements} 条数据</Typography>
@@ -1260,7 +1264,7 @@ export default function BusinessDictionaryPage() {
                           <DetailField label="所属字典">{selectedDetail.data.dictionaryName}</DetailField>
                           <DetailField label="排序">{selectedDetail.data.sortOrder ?? 0}</DetailField>
                           <DetailField label="状态">{getStatusLabel(selectedDetail.data.status)}</DetailField>
-                          <DetailField label="备注">{selectedDetail.data.remark || '-'}</DetailField>
+                          <DetailField label="描述">{selectedDetail.data.remark || '-'}</DetailField>
                         </>
                       )}
                     </Box>
@@ -1309,18 +1313,18 @@ export default function BusinessDictionaryPage() {
         </Box>
       </Drawer>
 
-      <AppDialog open={dictionaryDialogOpen} onClose={() => setDictionaryDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={dictionaryDialogOpen} onClose={() => setDictionaryDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingDictionary ? '编辑业务字典' : '新增业务字典'}</DialogTitle>
         <DialogContent dividers>
-          <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
             <TextField label="字典名称" value={dictionaryForm.name} required size="small" fullWidth sx={fieldSx} onChange={(event) => setDictionaryForm((current) => ({ ...current, name: event.target.value }))} />
             <TextField label="字典编码" value={dictionaryForm.code} required size="small" fullWidth sx={fieldSx} onChange={(event) => setDictionaryForm((current) => ({ ...current, code: event.target.value }))} />
             <TextField select label="状态" value={dictionaryForm.status} size="small" fullWidth sx={fieldSx} onChange={(event) => setDictionaryForm((current) => ({ ...current, status: event.target.value }))}>
               {statusOptions.filter((option) => option.value !== 'ALL').map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
             </TextField>
             <TextField label="排序" type="number" value={dictionaryForm.sortOrder} size="small" fullWidth sx={fieldSx} onChange={(event) => setDictionaryForm((current) => ({ ...current, sortOrder: event.target.value }))} />
-            <TextField label="描述" value={dictionaryForm.description} multiline rows={3} fullWidth onChange={(event) => setDictionaryForm((current) => ({ ...current, description: event.target.value }))} />
-          </Stack>
+            <TextField label="描述" value={dictionaryForm.description} multiline rows={3} fullWidth sx={{ gridColumn: { sm: '1 / -1' } }} onChange={(event) => setDictionaryForm((current) => ({ ...current, description: event.target.value }))} />
+          </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDictionaryDialogOpen(false)}>取消</Button>
@@ -1328,18 +1332,18 @@ export default function BusinessDictionaryPage() {
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={itemDialogOpen} onClose={() => setItemDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={itemDialogOpen} onClose={() => setItemDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingItem ? '编辑字典项' : '新增字典项'}</DialogTitle>
         <DialogContent dividers>
-          <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
             <TextField label="字典项名称" value={itemForm.label} required size="small" fullWidth sx={fieldSx} onChange={(event) => setItemForm((current) => ({ ...current, label: event.target.value }))} />
             <TextField label="字典项值" value={itemForm.value} required size="small" fullWidth sx={fieldSx} onChange={(event) => setItemForm((current) => ({ ...current, value: event.target.value }))} />
             <TextField select label="状态" value={itemForm.status} size="small" fullWidth sx={fieldSx} onChange={(event) => setItemForm((current) => ({ ...current, status: event.target.value }))}>
               {statusOptions.filter((option) => option.value !== 'ALL').map((option) => <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>)}
             </TextField>
             <TextField label="排序" type="number" value={itemForm.sortOrder} size="small" fullWidth sx={fieldSx} onChange={(event) => setItemForm((current) => ({ ...current, sortOrder: event.target.value }))} />
-            <TextField label="备注" value={itemForm.remark} multiline rows={3} fullWidth onChange={(event) => setItemForm((current) => ({ ...current, remark: event.target.value }))} />
-          </Stack>
+            <TextField label="描述" value={itemForm.remark} multiline rows={3} fullWidth sx={{ gridColumn: { sm: '1 / -1' } }} onChange={(event) => setItemForm((current) => ({ ...current, remark: event.target.value }))} />
+          </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setItemDialogOpen(false)}>取消</Button>

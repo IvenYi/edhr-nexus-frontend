@@ -42,6 +42,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppDialog from "@/components/AppDialog";
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useSnackbar } from "@/components/SnackbarProvider";
 import {
@@ -59,7 +60,8 @@ import type { PageResult } from "@/types/common";
 import { getAuditLogs, type AuditLogItem } from "@/api/audit";
 import StatusBadge from "@/components/StatusBadge";
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import ListColumnSettingsPopover, {
   getCurrentUserPreferenceStorageKey,
   loadListColumnSettings,
@@ -97,13 +99,9 @@ const FORM_PROCESS_COLUMNS: FormProcessColumn[] = [
   { id: 'description', label: '说明', defaultWidth: 260, minWidth: 160 },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 170, minWidth: 150 },
 ];
-const cellSx = { height: 40, py: 0.5, borderBottom: "1px solid #ebeef5" };
+const cellSx = listTableBodyCellSx;
 const tableRowSx = {
-  "& > .MuiTableCell-root": {
-    height: 40,
-    py: 0.5,
-    borderBottom: "1px solid #ebeef5",
-  },
+  "& > .MuiTableCell-root": listTableBodyCellSx,
 };
 const headSx = listTableHeaderCellSx;
 const toolbarIconSx = {
@@ -123,8 +121,7 @@ const operationColumnSx = (layer: "head" | "body") => ({
   minWidth: ACTION_COLUMN_WIDTH,
   maxWidth: ACTION_COLUMN_WIDTH,
   bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
-  backgroundClip: "padding-box",
-  boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+  ...listTableStickyEdgeSx,
   textAlign: "center",
   whiteSpace: "nowrap",
 });
@@ -739,7 +736,7 @@ function FormProcessDetailDrawer({
                   <DetailField label="版本数量">
                     {versions.data?.length ?? 0}
                   </DetailField>
-                  <DetailField label="说明">
+                  <DetailField label="描述">
                     {definition.data?.description ?? target?.description ?? "-"}
                   </DetailField>
                 </Box>
@@ -1024,7 +1021,7 @@ export default function FormProcessList() {
           </Tooltip>
           <Button variant="contained" startIcon={<Add />} onClick={openCreate}>新建表单流程</Button>
         </Box>
-        <TableContainer sx={{ flex: 1, overflow: "auto" }}>
+        <ListTableShell sx={{ flex: 1, overflow: "auto" }}>
           <Table
             stickyHeader
             size="small"
@@ -1160,7 +1157,7 @@ export default function FormProcessList() {
               )}
             </TableBody>
           </Table>
-        </TableContainer>
+        </ListTableShell>
         <Box
           sx={{
             height: 56,
@@ -1213,6 +1210,7 @@ export default function FormProcessList() {
         />
       </Paper>
       <AppDialog
+        variant="form"
         open={editing !== undefined}
         onClose={() => setEditing(undefined)}
         maxWidth="sm"
@@ -1221,7 +1219,7 @@ export default function FormProcessList() {
         <DialogTitle>{editing ? "编辑表单流程" : "新建表单流程"}</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
           <DetailSection title="基本信息">
-            <Stack spacing={1.5}>
+            <FormDialogFieldGrid>
               <TextField
                 autoFocus
                 required
@@ -1240,16 +1238,17 @@ export default function FormProcessList() {
               />
               <TextField
                 size="small"
-                label="说明"
+                label="描述"
                 fullWidth
                 multiline
                 minRows={3}
+                sx={{ gridColumn: { sm: '1 / -1' } }}
                 value={form.description}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
               />
-            </Stack>
+            </FormDialogFieldGrid>
           </DetailSection>
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}>

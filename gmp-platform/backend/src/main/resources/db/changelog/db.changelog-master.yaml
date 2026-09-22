@@ -199,3 +199,7 @@ databaseChangeLog:
       file: db/changelog/0092-dhr-summary-workspace.sql
   - include:
       file: db/changelog/0093-dhr-summary-version-review-binding.sql
+  - include:
+      file: db/changelog/0094-equipment-description.sql
+  - include:
+      file: db/changelog/0095-remove-duplicate-remarks.sql

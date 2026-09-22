@@ -31,7 +31,7 @@ decisions:
         status: implemented
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.workshop-master-data-decision, evidence.workshop-master-data-architecture, evidence.workshop-legacy-schema, evidence.workshop-entity, evidence.production-line-entity, evidence.production-line-repository, evidence.migration-0061-workshop-management, evidence.workshop-controller, evidence.workshop-controller-test, evidence.workshop-frontend-api, evidence.workshop-management-page, evidence.workshop-router, evidence.workshop-navigation, evidence.workshop-managed-menu, evidence.workshop-page-verification]
+    evidenceIds: [evidence.workshop-master-data-decision, evidence.workshop-master-data-architecture, evidence.workshop-legacy-schema, evidence.workshop-entity, evidence.production-line-entity, evidence.production-line-repository, evidence.migration-0061-workshop-management, evidence.workshop-controller, evidence.workshop-controller-test, evidence.workshop-frontend-api, evidence.workshop-management-page, evidence.workshop-router, evidence.workshop-navigation, evidence.workshop-managed-menu, evidence.workshop-page-verification, evidence.master-data-workshop-shared-shell-guidelines, evidence.master-data-workshop-shared-shell-page, evidence.master-data-workshop-shared-shell-verification]
     acceptanceScenarios:
       - id: scenario.workshop-crud
         given: 用户具有车间管理权限

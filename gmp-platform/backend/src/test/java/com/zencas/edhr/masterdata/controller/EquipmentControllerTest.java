@@ -41,7 +41,7 @@ class EquipmentControllerTest {
     @Test
     void rejectsMissingOrMalformedParentReferenceBeforeDatabaseAccess() {
         for (String parent : new String[]{null, "", "unknown", "9223372036854775808"}) {
-            assertThatThrownBy(() -> controller.createType(new EquipmentController.TypeRequest("T001", "注塑机", parent)))
+            assertThatThrownBy(() -> controller.createType(new EquipmentController.TypeRequest("T001", "注塑机", parent, null)))
                     .isInstanceOf(BusinessException.class).hasMessage("请选择有效的设备分类");
         }
         verifyNoInteractions(categories, types, equipment, audits);
@@ -49,9 +49,9 @@ class EquipmentControllerTest {
 
     @Test
     void rejectsOversizedDeviceFieldsAndUnknownStatusBeforeParentLock() {
-        assertThatThrownBy(() -> controller.create(new EquipmentController.EquipmentRequest("E001", "注塑机001", "1", "M".repeat(129), null, "ACTIVE", null, null)))
+        assertThatThrownBy(() -> controller.create(new EquipmentController.EquipmentRequest("E001", "注塑机001", "1", "M".repeat(129), null, "ACTIVE", null, null, null)))
                 .isInstanceOf(BusinessException.class).hasMessage("型号不能超过128个字符");
-        assertThatThrownBy(() -> controller.create(new EquipmentController.EquipmentRequest("E001", "注塑机001", "1", null, null, "BROKEN", null, null)))
+        assertThatThrownBy(() -> controller.create(new EquipmentController.EquipmentRequest("E001", "注塑机001", "1", null, null, "BROKEN", null, null, null)))
                 .isInstanceOf(BusinessException.class).hasMessage("设备状态只能是启用或停用");
         verifyNoInteractions(categories, types, equipment, audits);
     }

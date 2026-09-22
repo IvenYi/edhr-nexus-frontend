@@ -4,7 +4,7 @@ decisions:
     title: 设备分类、设备类型与单台设备分层维护
     status: implemented
     visibility: internal
-    context: 用户要求在数据模块新增设备建模目录，下挂设备类型与设备列表；明确类型页面参照工序管理，左侧分类、右侧类型，而设备列表维护具体某一台设备。用户随后明确要求两个页面按规范补齐创建人、创建时间、更新人和更新时间，并要求单台设备增加设备品牌、采购时间，品牌放在型号前面；进一步确认采购时间不得晚于今天。内置分类的修改删除限制、必填上级、引用保护、系统字段的人员解析和历史回填方式，以及品牌与采购时间可空、采购时间按日期记录、今天的时区取值、其他输入校验与旧偏好补列方式属于实现推断，不在本决策中提升为用户确认的业务规则。
+    context: 用户要求在数据模块新增设备建模目录，下挂设备类型与设备列表；明确类型页面参照工序管理，左侧分类、右侧类型，而设备列表维护具体某一台设备。用户随后明确要求两个页面按规范补齐创建人、创建时间、更新人和更新时间，并要求单台设备增加设备品牌、采购时间，品牌放在型号前面；进一步确认采购时间不得晚于今天。2026-09-22 用户另确认设备类型及单台设备普通新增、编辑表单各有一个可选备注字段，统一标为“描述”，作为无版本主数据保存。内置分类的修改删除限制、必填上级、引用保护、系统字段的人员解析和历史回填方式，以及品牌与采购时间可空、采购时间按日期记录、今天的时区取值、其他输入校验与旧偏好补列方式属于实现推断，不在本决策中提升为用户确认的业务规则；描述的512字符上限及审计快照字段纳入方式也尚属实现推断。
     decisionStatements:
       - id: DEC-0044-01
         statement: 数据模块下设设备建模目录，其下包含设备类型和设备列表两个页面。
@@ -34,8 +34,16 @@ decisions:
         statement: 单台设备的采购时间不得晚于今天。
         status: implemented
         visibility: internal
+      - id: DEC-0044-08
+        statement: 设备类型普通新增、编辑表单维护一个可选备注字段，字段标为“描述”，随设备类型作为无版本主数据保存。
+        status: specified
+        visibility: internal
+      - id: DEC-0044-09
+        statement: 单台设备普通新增、编辑表单维护一个可选备注字段，字段标为“描述”，随单台设备作为无版本主数据保存。
+        status: specified
+        visibility: internal
     supersedes: []
-    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-type-entity, evidence.equipment-instance-entity, evidence.equipment-modeling-migration, evidence.equipment-system-fields-migration, evidence.equipment-brand-purchase-date-migration, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-menu, evidence.equipment-modeling-routes, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]
+    evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-description-user-decision, evidence.equipment-type-entity, evidence.equipment-instance-entity, evidence.equipment-modeling-migration, evidence.equipment-system-fields-migration, evidence.equipment-brand-purchase-date-migration, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-menu, evidence.equipment-modeling-routes, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]
     acceptanceScenarios:
       - id: scenario.equipment-modeling-menu
         given: 用户打开数据模块
@@ -73,3 +81,9 @@ decisions:
         then: 今天和过去日期不因日期上限被阻断，未来日期无法保存
         evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-modeling-controller, evidence.equipment-modeling-page, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-frontend-tests]
         evidenceRequirements: [日期边界测试, 接口无写入及审计回归, 页面检查]
+      - id: scenario.equipment-description
+        given: 用户新增或编辑设备类型或单台设备
+        when: 在可选的“描述”字段输入内容并保存，或留空保存
+        then: 各实体仅保存自己的描述，重新打开可回显
+        evidenceIds: [evidence.equipment-description-user-decision, evidence.equipment-type-entity, evidence.equipment-instance-entity, evidence.equipment-modeling-controller, evidence.equipment-modeling-page]
+        evidenceRequirements: [接口及持久化测试, 页面检查]

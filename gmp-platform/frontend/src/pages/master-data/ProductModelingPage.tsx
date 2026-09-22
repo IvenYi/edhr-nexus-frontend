@@ -1,6 +1,7 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
+import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { Fragment, useEffect, useMemo, useState, type PointerEventHandler, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -109,14 +110,14 @@ const VERSION_COLUMNS: VersionColumn[] = [
   { id: 'status', label: '版本状态', width: 104, minWidth: 104 },
   { id: 'effectiveFrom', label: '生效时间', width: 164, minWidth: 150 },
   { id: 'effectiveTo', label: '失效时间', width: 164, minWidth: 150 },
-  { id: 'description', label: '备注', width: 180, minWidth: 140 },
+  { id: 'description', label: '版本说明', width: 180, minWidth: 140 },
   { id: 'updatedBy', label: '更新人', width: 118, minWidth: 100 },
   { id: 'updatedAt', label: '更新时间', width: 164, minWidth: 150 },
   { id: 'actions', label: '操作', width: ACTION_COLUMN_WIDTH, minWidth: ACTION_COLUMN_WIDTH },
 ];
 
 const tableHeaderCellSx = listTableHeaderCellSx;
-const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
+const tableRowSx = { '& > .MuiTableCell-root': listTableBodyCellSx };
 const toolbarIconSx = { width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } };
 const drawerRootSx = {
   top: 0,
@@ -135,8 +136,7 @@ function operationColumnSx(width: number, layer: 'head' | 'body') {
     minWidth: width,
     maxWidth: width,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-    backgroundClip: 'padding-box',
-    boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
     whiteSpace: 'nowrap',
   };
@@ -166,7 +166,7 @@ function parseAuditContent(content: unknown): Record<string, unknown> {
 
 const AUDIT_LABELS: Record<string, string> = {
   name: '名称', code: '编码', version: '版本', productionMode: '生产模式', productionForm: '生产方式',
-  routeVersion: '工艺路线版本', dhrTemplateVersion: '批记录模板版本', description: '备注',
+  routeVersion: '工艺路线版本', dhrTemplateVersion: '批记录模板版本', description: '版本说明',
   effectiveFrom: '生效时间', effectiveTo: '失效时间', operationBindings: '工序配置',
   operation: '工序', forms: 'DHR 目录表单', documents: 'SOP 文档', operationCount: '已配置工序数',
   materialTypeName: '物料类型', specification: '规格型号', unit: '单位', status: '状态',
@@ -211,8 +211,8 @@ interface EditorTarget {
 }
 
 export default function ProductModelingPage() {
-  const { getColumnWidth: getParentColumnWidth, getResizeHandleProps: getParentResizeHandleProps } = usePersistedListColumnWidths(PARENT_COLUMNS, 'product-modeling-column-widths:v1:');
-  const { getColumnWidth: getVersionColumnWidth, getResizeHandleProps: getVersionResizeHandleProps } = usePersistedListColumnWidths(VERSION_COLUMNS, 'product-modeling-version-column-widths:v1:');
+  const { getColumnWidth: getParentColumnWidth, getResizeHandleProps: getParentResizeHandleProps } = usePersistedListColumnWidths(PARENT_COLUMNS, 'product-modeling-column-widths:v2:');
+  const { getColumnWidth: getVersionColumnWidth, getResizeHandleProps: getVersionResizeHandleProps } = usePersistedListColumnWidths(VERSION_COLUMNS, 'product-modeling-version-column-widths:v2:');
   const queryClient = useQueryClient();
   const { showMessage } = useSnackbar();
   const [page, setPage] = useState(1);
@@ -246,11 +246,8 @@ export default function ProductModelingPage() {
   const rows = query.data?.content ?? [];
   const visibleColumns = useMemo(() => PARENT_COLUMNS.filter((column) => !hiddenColumns.includes(column.id)), [hiddenColumns]);
   const parentTableWidth = visibleColumns.reduce((total, column) => total + getParentColumnWidth(column), 0);
-  const versionTableWidth = VERSION_COLUMNS.reduce((total, column) => total + getVersionColumnWidth(column), 0);
-  const sharedTableWidth = Math.max(parentTableWidth, versionTableWidth);
-  const parentActionSpacerWidth = Math.max(0, versionTableWidth - parentTableWidth);
-  const versionActionSpacerWidth = Math.max(0, parentTableWidth - versionTableWidth);
-  const parentTableColumnCount = visibleColumns.length + (parentActionSpacerWidth > 0 ? 1 : 0);
+  const versionTableMinWidth = VERSION_COLUMNS.reduce((total, column) => total + getVersionColumnWidth(column), 0);
+  const parentTableColumnCount = visibleColumns.length;
   const isTableEmptyState = query.isLoading || query.isError || rows.length === 0;
 
   useEffect(() => {
@@ -364,18 +361,36 @@ export default function ProductModelingPage() {
         </Stack>
         <Typography variant="body2" sx={{ color: '#606266' }}>由物料管理中“半成品、产成品”自动派生</Typography>
       </Box>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-        <Table stickyHeader size="small" sx={{ width: sharedTableWidth, minWidth: sharedTableWidth, tableLayout: 'fixed', height: isTableEmptyState ? '100%' : 'auto' }}>
-          <colgroup>{visibleColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <col data-product-parent-action-spacer style={{ width: parentActionSpacerWidth }} /> : null}<col style={{ width: getParentColumnWidth(column) }} /></Fragment>)}</colgroup>
+      <ListTableShell minTableWidth={parentTableWidth} sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+        {(tableWidth) => {
+          const versionTableWidth = Math.max(tableWidth, versionTableMinWidth);
+          const parentColumnWidths = resolveListColumnWidths(
+            visibleColumns.map((column) => ({ id: column.id, width: getParentColumnWidth(column) })),
+            tableWidth,
+            'name',
+            ['actions'],
+          );
+          const versionColumnWidths = resolveListColumnWidths(
+            VERSION_COLUMNS.map((column) => ({ id: column.id, width: getVersionColumnWidth(column) })),
+            versionTableWidth,
+            'dhrTemplate',
+            ['actions'],
+          );
+          const getResolvedParentColumnWidth = (column: ParentColumn) => parentColumnWidths[column.id];
+          const getResolvedVersionColumnWidth = (column: VersionColumn) => versionColumnWidths[column.id];
+
+          return <Table stickyHeader size="small" sx={{ width: tableWidth, minWidth: tableWidth, tableLayout: 'fixed', height: isTableEmptyState ? '100%' : 'auto' }}>
+          <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getResolvedParentColumnWidth(column) }} />)}</colgroup>
           <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => {
-            const width = getParentColumnWidth(column);
-            return <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <TableCell data-product-parent-action-spacer aria-hidden="true" sx={{ width: parentActionSpacerWidth, minWidth: parentActionSpacerWidth, maxWidth: parentActionSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell align={column.id === 'actions' ? 'center' : undefined} sx={{ ...tableHeaderCellSx, position: column.id === 'actions' ? 'sticky' : 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? operationColumnSx(width, 'head') : {}) }}>{column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getParentResizeHandleProps(column)} /> : null}</TableCell></Fragment>;
+            const width = getResolvedParentColumnWidth(column);
+            return <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...tableHeaderCellSx, position: column.id === 'actions' ? 'sticky' : 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? operationColumnSx(width, 'head') : {}) }}>{column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getParentResizeHandleProps(column)} /> : null}</TableCell>;
           })}</TableRow></TableHead>
           <TableBody sx={{ height: isTableEmptyState ? '100%' : 'auto' }}>
-            {query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#c62828' }}>产品管理数据加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((product) => <ProductTreeRows key={product.id} product={product} visibleColumns={visibleColumns} expanded={expandedProductIds.includes(product.id)} parentTableColumnCount={parentTableColumnCount} sharedTableWidth={sharedTableWidth} parentActionSpacerWidth={parentActionSpacerWidth} versionActionSpacerWidth={versionActionSpacerWidth} getVersionColumnWidth={getVersionColumnWidth} getVersionResizeHandleProps={getVersionResizeHandleProps} onToggle={() => toggleExpanded(product.id)} onViewProduct={() => setDetailTarget({ product })} onAddVersion={() => void openCreateEditor(product)} onDeleteOnlyVersion={() => void openOnlyVersionDelete(product)} onViewVersion={(version, tab = 0) => setDetailTarget({ product, version, initialTab: tab })} onEditVersion={(version, mode, versions) => setEditorTarget({ product, versions, target: version, mode })} onDeleteVersion={(version) => setDeleteTarget({ product, version })} />)}
+            {query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#c62828' }}>产品管理数据加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={parentTableColumnCount} align="center" sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((product) => <ProductTreeRows key={product.id} product={product} visibleColumns={visibleColumns} expanded={expandedProductIds.includes(product.id)} parentTableColumnCount={parentTableColumnCount} versionTableWidth={versionTableWidth} getVersionColumnWidth={getResolvedVersionColumnWidth} getVersionResizeHandleProps={getVersionResizeHandleProps} onToggle={() => toggleExpanded(product.id)} onViewProduct={() => setDetailTarget({ product })} onAddVersion={() => void openCreateEditor(product)} onDeleteOnlyVersion={() => void openOnlyVersionDelete(product)} onViewVersion={(version, tab = 0) => setDetailTarget({ product, version, initialTab: tab })} onEditVersion={(version, mode, versions) => setEditorTarget({ product, versions, target: version, mode })} onDeleteVersion={(version) => setDeleteTarget({ product, version })} />)}
           </TableBody>
-        </Table>
-      </TableContainer>
+        </Table>;
+        }}
+      </ListTableShell>
       <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center"><Pagination size="small" count={Math.max(query.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} SelectProps={{ native: true }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <option key={option} value={option}>{option} 条/页</option>)}</TextField></Stack></Box>
     </Box>
 
@@ -395,9 +410,7 @@ function ProductTreeRows({
   visibleColumns,
   expanded,
   parentTableColumnCount,
-  sharedTableWidth,
-  parentActionSpacerWidth,
-  versionActionSpacerWidth,
+  versionTableWidth,
   getVersionColumnWidth,
   getVersionResizeHandleProps,
   onToggle,
@@ -412,9 +425,7 @@ function ProductTreeRows({
   visibleColumns: ParentColumn[];
   expanded: boolean;
   parentTableColumnCount: number;
-  sharedTableWidth: number;
-  parentActionSpacerWidth: number;
-  versionActionSpacerWidth: number;
+  versionTableWidth: number;
   getVersionColumnWidth: (column: VersionColumn) => number;
   getVersionResizeHandleProps: (column: VersionColumn) => {
     onPointerDown: PointerEventHandler<HTMLDivElement>;
@@ -445,7 +456,7 @@ function ProductTreeRows({
   });
   const renderParentCell = (column: ParentColumn) => {
     switch (column.id) {
-      case 'name': return <TableCell key={column.id}><Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}><Tooltip title={expanded ? '收起制程版本' : '展开制程版本'} arrow><IconButton size="small" aria-label={expanded ? '收起制程版本' : '展开制程版本'} onClick={(event) => { event.stopPropagation(); onToggle(); }}>{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}</IconButton></Tooltip><Typography component="button" type="button" onClick={(event) => { event.stopPropagation(); onViewProduct(); }} sx={{ p: 0, minWidth: 0, border: 0, bgcolor: 'transparent', font: 'inherit', color: '#1890ff', fontWeight: 500, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left', '&:hover': { color: '#096dd9', textDecoration: 'underline' } }}>{product.name}</Typography></Stack></TableCell>;
+      case 'name': return <TableCell key={column.id}><Stack direction="row" spacing={0.5} alignItems="center" sx={{ minWidth: 0 }}><Tooltip title={expanded ? '收起制程版本' : '展开制程版本'} arrow><IconButton size="small" aria-label={expanded ? '收起制程版本' : '展开制程版本'} onClick={(event) => { event.stopPropagation(); onToggle(); }}>{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}</IconButton></Tooltip><Typography component="button" type="button" onClick={(event) => { event.stopPropagation(); onViewProduct(); }} sx={{ p: 0, minWidth: 0, border: 0, bgcolor: 'transparent', font: 'inherit', ...listTablePrimaryTextSx, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left' }}>{product.name}</Typography></Stack></TableCell>;
       case 'code': return <TableCell key={column.id}>{product.code || '-'}</TableCell>;
       case 'materialType': return <TableCell key={column.id}>{product.materialTypeName || '-'}</TableCell>;
       case 'specification': return <TableCell key={column.id} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.specification || '-'}</TableCell>;
@@ -457,20 +468,19 @@ function ProductTreeRows({
   };
   return <>
     <TableRow data-record-id={product.id} hover onClick={onToggle} sx={{ ...tableRowSx, cursor: 'pointer' }}>
-      {visibleColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && parentActionSpacerWidth > 0 ? <TableCell data-product-parent-action-spacer aria-hidden="true" sx={{ width: parentActionSpacerWidth, minWidth: parentActionSpacerWidth, maxWidth: parentActionSpacerWidth, p: 0 }} /> : null}{renderParentCell(column)}</Fragment>)}
+      {visibleColumns.map((column) => renderParentCell(column))}
     </TableRow>
     {expanded ? <TableRow sx={{ '& > .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={parentTableColumnCount} sx={{ p: 0, bgcolor: '#fbfdff' }}>
-      {workspaceQuery.isLoading ? <Box sx={{ minHeight: 84, display: 'grid', placeItems: 'center', color: '#909399' }}><CircularProgress size={20} /></Box> : workspaceQuery.isError ? <Box sx={{ px: 2, py: 2, color: '#c62828' }}>制程配置版本加载失败</Box> : versions.length === 0 ? <Box sx={{ minHeight: 72, display: 'flex', alignItems: 'center', px: 2, color: '#909399', bgcolor: '#fbfdff' }}>暂无制程配置版本</Box> : <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'auto' }}><Table stickyHeader size="small" aria-label="产品制程配置版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}><colgroup>{VERSION_COLUMNS.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <col data-product-version-action-spacer style={{ width: versionActionSpacerWidth }} /> : null}<col style={{ width: getVersionColumnWidth(column) }} /></Fragment>)}</colgroup><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{VERSION_COLUMNS.map((column) => {
+      {workspaceQuery.isLoading ? <Box sx={{ minHeight: 84, display: 'grid', placeItems: 'center', color: '#909399' }}><CircularProgress size={20} /></Box> : workspaceQuery.isError ? <Box sx={{ px: 2, py: 2, color: '#c62828' }}>制程配置版本加载失败</Box> : versions.length === 0 ? <Box sx={{ minHeight: 72, display: 'flex', alignItems: 'center', px: 2, color: '#909399', bgcolor: '#fbfdff' }}>暂无制程配置版本</Box> : <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}><Table stickyHeader size="small" aria-label="产品制程配置版本列表" sx={{ tableLayout: 'fixed', width: versionTableWidth, minWidth: versionTableWidth }}><colgroup>{VERSION_COLUMNS.map((column) => <col key={column.id} style={{ width: getVersionColumnWidth(column) }} />)}</colgroup><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{VERSION_COLUMNS.map((column) => {
         const width = getVersionColumnWidth(column);
-        return <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <TableCell data-product-version-action-spacer aria-hidden="true" sx={{ width: versionActionSpacerWidth, minWidth: versionActionSpacerWidth, maxWidth: versionActionSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell align={column.id === 'actions' ? 'center' : undefined} sx={{ ...tableHeaderCellSx, position: column.id === 'actions' ? 'sticky' : 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? operationColumnSx(width, 'head') : {}) }}>{column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getVersionResizeHandleProps(column)} /> : null}</TableCell></Fragment>;
-      })}</TableRow></TableHead><TableBody>{versions.map((version) => <ProductVersionTableRow key={version.id} version={version} versionActionSpacerWidth={versionActionSpacerWidth} onOpen={() => onViewVersion(version)} onEdit={() => onEditVersion(version, 'edit', versions)} onCopy={() => onEditVersion(version, 'copy', versions)} onDelete={() => onDeleteVersion(version)} />)}</TableBody></Table></TableContainer>}
+        return <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...tableHeaderCellSx, position: column.id === 'actions' ? 'sticky' : 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? operationColumnSx(width, 'head') : {}) }}>{column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getVersionResizeHandleProps(column)} /> : null}</TableCell>;
+      })}</TableRow></TableHead><TableBody>{versions.map((version) => <ProductVersionTableRow key={version.id} version={version} onOpen={() => onViewVersion(version)} onEdit={() => onEditVersion(version, 'edit', versions)} onCopy={() => onEditVersion(version, 'copy', versions)} onDelete={() => onDeleteVersion(version)} />)}</TableBody></Table></TableContainer>}
     </TableCell></TableRow> : null}
   </>;
 }
 
-function ProductVersionTableRow({ version, versionActionSpacerWidth, onOpen, onEdit, onCopy, onDelete }: {
+function ProductVersionTableRow({ version, onOpen, onEdit, onCopy, onDelete }: {
   version: ProductProcessVersion;
-  versionActionSpacerWidth: number;
   onOpen: () => void;
   onEdit: () => void;
   onCopy: () => void;
@@ -480,7 +490,7 @@ function ProductVersionTableRow({ version, versionActionSpacerWidth, onOpen, onE
   const cellSx = { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' };
   const renderCell = (column: VersionColumn) => {
     switch (column.id) {
-      case 'version': return <TableCell key={column.id} sx={{ ...cellSx, fontWeight: 600 }}>{version.version}</TableCell>;
+      case 'version': return <TableCell key={column.id} sx={cellSx}>{version.version}</TableCell>;
       case 'productionMode': return <TableCell key={column.id} sx={cellSx}>{version.productionMode || '-'}</TableCell>;
       case 'productionForm': return <TableCell key={column.id} sx={cellSx}>{version.productionForm || '-'}</TableCell>;
       case 'route': return <TableCell key={column.id} sx={cellSx} title={formatVersionReference(version.routeCode, version.routeName, version.routeVersion)}>{formatVersionReference(version.routeCode, version.routeName, version.routeVersion)}</TableCell>;
@@ -488,7 +498,7 @@ function ProductVersionTableRow({ version, versionActionSpacerWidth, onOpen, onE
       case 'status': return <TableCell key={column.id} sx={cellSx}><StatusBadge {...status} /></TableCell>;
       case 'effectiveFrom': return <TableCell key={column.id} sx={{ ...cellSx, whiteSpace: 'nowrap' }}>{formatDateTime(version.effectiveFrom)}</TableCell>;
       case 'effectiveTo': return <TableCell key={column.id} sx={{ ...cellSx, whiteSpace: 'nowrap' }}>{formatDateTime(version.effectiveTo)}</TableCell>;
-      case 'description': return <TableCell key={column.id} sx={cellSx} title={version.description || '-'}>{version.description || '-'}</TableCell>;
+      case 'description': return <TableCell key={column.id} sx={cellSx}>{version.description || '-'}</TableCell>;
       case 'updatedBy': return <TableCell key={column.id} sx={cellSx}>{version.updatedBy || version.createdBy || '-'}</TableCell>;
       case 'updatedAt': return <TableCell key={column.id} sx={{ ...cellSx, whiteSpace: 'nowrap' }}>{formatDateTime(version.updatedAt || version.createdAt)}</TableCell>;
       case 'actions': return <TableCell key={column.id} align="center" onClick={(event) => event.stopPropagation()} sx={operationColumnSx(column.width, 'body')}>
@@ -499,7 +509,7 @@ function ProductVersionTableRow({ version, versionActionSpacerWidth, onOpen, onE
       default: return null;
     }
   };
-  return <TableRow data-record-id={version.id} hover onClick={onOpen} sx={{ ...tableRowSx, cursor: 'pointer' }}>{VERSION_COLUMNS.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionActionSpacerWidth > 0 ? <TableCell data-product-version-action-spacer aria-hidden="true" sx={{ width: versionActionSpacerWidth, minWidth: versionActionSpacerWidth, maxWidth: versionActionSpacerWidth, p: 0 }} /> : null}{renderCell(column)}</Fragment>)}</TableRow>;
+  return <TableRow data-record-id={version.id} hover onClick={onOpen} sx={{ ...tableRowSx, cursor: 'pointer' }}>{VERSION_COLUMNS.map((column) => renderCell(column))}</TableRow>;
 }
 
 function ProductDetailDrawer({ target, tab, onTabChange, events, loading, error, onClose }: {
@@ -525,7 +535,7 @@ function ProductDetailDrawer({ target, tab, onTabChange, events, loading, error,
               <DetailField label="制程版本">{version.version}</DetailField><DetailField label="版本状态">{status ? <StatusBadge {...status} /> : '-'}</DetailField>
               <DetailField label="生产模式">{version.productionMode}</DetailField><DetailField label="生产方式">{version.productionForm}</DetailField>
               <DetailField label="工艺路线版本">{formatVersionReference(version.routeCode, version.routeName, version.routeVersion)}</DetailField><DetailField label="批记录模板版本">{formatVersionReference(version.dhrTemplateCode, version.dhrTemplateName, version.dhrTemplateVersion)}</DetailField>
-              <DetailField label="生效时间">{formatDateTime(version.effectiveFrom)}</DetailField><DetailField label="失效时间">{formatDateTime(version.effectiveTo)}</DetailField><DetailField label="备注">{version.description || '-'}</DetailField>
+              <DetailField label="生效时间">{formatDateTime(version.effectiveFrom)}</DetailField><DetailField label="失效时间">{formatDateTime(version.effectiveTo)}</DetailField><DetailField label="版本说明">{version.description || '-'}</DetailField>
             </> : <>
               <DetailField label="产品名称">{target.product.name}</DetailField><DetailField label="产品编码">{target.product.code}</DetailField>
               <DetailField label="物料版本">{target.product.version || '-'}</DetailField><DetailField label="物料类型">{target.product.materialTypeName || '-'}</DetailField>

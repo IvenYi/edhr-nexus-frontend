@@ -12,6 +12,7 @@ import com.zencas.edhr.common.util.RdoVersionStatusResolver;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.dto.MaterialGroupRecord;
+import com.zencas.edhr.masterdata.dto.MasterDataDescriptionRequest;
 import com.zencas.edhr.masterdata.dto.ProcessModelingRequest;
 import com.zencas.edhr.masterdata.dto.ProductFamilyMemberResponse;
 import com.zencas.edhr.masterdata.dto.RouteGraphRequest;
@@ -336,7 +337,7 @@ public class ProcessModelingController {
 
     @PostMapping("/product-families")
     @Transactional
-    public ApiResponse<ProductFamily> createProductFamily(@RequestBody ProcessModelingRequest request) {
+    public ApiResponse<ProductFamily> createProductFamily(@RequestBody MasterDataDescriptionRequest request) {
         LocalDateTime now = LocalDateTime.now();
         String code = requireProductFamilyCode(request);
         ensureProductFamilyCodeAvailable(code, null);
@@ -348,7 +349,6 @@ public class ProcessModelingController {
                 .description(trimToNull(request.getDescription()))
                 // Retained only for legacy persistence compatibility; the UI never exposes a parent status.
                 .status("ACTIVE")
-                .remark(trimToNull(request.getRemark()))
                 .createdBy(currentOperatorName())
                 .createdAt(now)
                 .updatedBy(currentOperatorName())
@@ -361,7 +361,7 @@ public class ProcessModelingController {
 
     @PutMapping("/product-families/{id}")
     @Transactional
-    public ApiResponse<ProductFamily> updateProductFamily(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
+    public ApiResponse<ProductFamily> updateProductFamily(@PathVariable Long id, @RequestBody MasterDataDescriptionRequest request) {
         ProductFamily existing = productFamilyRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_001));
         Map<String, Object> before = productFamilySnapshot(existing);
@@ -370,7 +370,6 @@ public class ProcessModelingController {
         existing.setCode(code);
         existing.setName(requireName(request));
         existing.setDescription(trimToNull(request.getDescription()));
-        existing.setRemark(trimToNull(request.getRemark()));
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
         ProductFamily saved = productFamilyRepository.save(existing);
@@ -817,7 +816,7 @@ public class ProcessModelingController {
 
     @PostMapping("/documents")
     @Transactional
-    public ApiResponse<SopDocument> createDocument(@RequestBody ProcessModelingRequest request) {
+    public ApiResponse<SopDocument> createDocument(@RequestBody MasterDataDescriptionRequest request) {
         LocalDateTime now = LocalDateTime.now();
         SopDocument entity = SopDocument.builder()
                 .id(idGenerator.nextId())
@@ -828,7 +827,6 @@ public class ProcessModelingController {
                 .fileReference(trimToNull(request.getFileReference()))
                 .description(trimToNull(request.getDescription()))
                 .status(resolveStatus(request, "DRAFT"))
-                .remark(trimToNull(request.getRemark()))
                 .createdBy(currentOperatorName())
                 .createdAt(now)
                 .updatedBy(currentOperatorName())
@@ -841,7 +839,7 @@ public class ProcessModelingController {
 
     @PutMapping("/documents/{id}")
     @Transactional
-    public ApiResponse<SopDocument> updateDocument(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
+    public ApiResponse<SopDocument> updateDocument(@PathVariable Long id, @RequestBody MasterDataDescriptionRequest request) {
         SopDocument existing = sopDocumentRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MD_009));
         Map<String, Object> before = documentSnapshot(existing);
@@ -850,7 +848,6 @@ public class ProcessModelingController {
         existing.setFileReference(trimToNull(request.getFileReference()));
         existing.setDescription(trimToNull(request.getDescription()));
         existing.setStatus(resolveStatus(request, existing.getStatus()));
-        existing.setRemark(trimToNull(request.getRemark()));
         existing.setUpdatedBy(currentOperatorName());
         existing.setUpdatedAt(LocalDateTime.now());
         SopDocument saved = sopDocumentRepository.save(existing);
@@ -1274,6 +1271,13 @@ public class ProcessModelingController {
         return request.getName().trim();
     }
 
+    private String requireName(MasterDataDescriptionRequest request) {
+        if (request == null || !StringUtils.hasText(request.getName())) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "名称不能为空");
+        }
+        return request.getName().trim();
+    }
+
     private String requireOperationCode(ProcessModelingRequest request) {
         if (request == null || !StringUtils.hasText(request.getCode())) {
             throw new BusinessException(ErrorCode.GENERAL_001, "工序编码不能为空");
@@ -1423,12 +1427,25 @@ public class ProcessModelingController {
         return StringUtils.hasText(fallback) ? fallback : "ACTIVE";
     }
 
+    private String resolveStatus(MasterDataDescriptionRequest request, String fallback) {
+        if (request != null && StringUtils.hasText(request.getStatus())) return request.getStatus().trim();
+        return StringUtils.hasText(fallback) ? fallback : "ACTIVE";
+    }
+
     private String resolveCode(ProcessModelingRequest request, String prefix) {
         if (request != null && StringUtils.hasText(request.getCode())) return request.getCode().trim();
         return generateCode(prefix);
     }
 
     private String requireProductFamilyCode(ProcessModelingRequest request) {
+        String code = request == null ? null : trimToNull(request.getCode());
+        if (code == null) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "产品簇编码不能为空");
+        }
+        return code;
+    }
+
+    private String requireProductFamilyCode(MasterDataDescriptionRequest request) {
         String code = request == null ? null : trimToNull(request.getCode());
         if (code == null) {
             throw new BusinessException(ErrorCode.GENERAL_001, "产品簇编码不能为空");
@@ -1635,7 +1652,6 @@ public class ProcessModelingController {
                 entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
         snapshot.remove("status");
         snapshot.put("description", entity.getDescription());
-        snapshot.put("remark", entity.getRemark());
         return snapshot;
     }
 
@@ -1645,7 +1661,6 @@ public class ProcessModelingController {
                 entity.getCode(),
                 entity.getName(),
                 entity.getDescription(),
-                entity.getRemark(),
                 entity.getCreatedBy(),
                 entity.getCreatedAt(),
                 entity.getUpdatedBy(),
@@ -1708,7 +1723,6 @@ public class ProcessModelingController {
         snapshot.put("version", entity.getVersion());
         snapshot.put("fileReference", entity.getFileReference());
         snapshot.put("description", entity.getDescription());
-        snapshot.put("remark", entity.getRemark());
         return snapshot;
     }
 
@@ -1748,7 +1762,6 @@ public class ProcessModelingController {
             String code,
             String name,
             String description,
-            String remark,
             String createdBy,
             LocalDateTime createdAt,
             String updatedBy,

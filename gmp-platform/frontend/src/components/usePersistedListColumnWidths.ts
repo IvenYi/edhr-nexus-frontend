@@ -15,6 +15,12 @@ type ResizeSession<ColumnId extends string> = {
   minWidth: number;
 };
 
+type ResizeDocumentHandlers = {
+  move: (event: PointerEvent) => void;
+  up: (event: PointerEvent) => void;
+  cancel: (event: PointerEvent) => void;
+};
+
 export function usePersistedListColumnWidths<ColumnId extends string>(
   columns: readonly ResizableListColumn<ColumnId>[],
   storagePrefix: string,
@@ -35,6 +41,48 @@ export function usePersistedListColumnWidths<ColumnId extends string>(
     }
   });
   const resizeSessionRef = useRef<ResizeSession<ColumnId> | null>(null);
+  const resizeDocumentHandlersRef = useRef<ResizeDocumentHandlers | null>(null);
+
+  const updateResize = useCallback((pointerId: number, clientX: number) => {
+    const session = resizeSessionRef.current;
+    if (!session || session.pointerId !== pointerId) return;
+    setWidths((current) => ({
+      ...current,
+      [session.columnId]: Math.max(session.minWidth, session.startWidth + clientX - session.startX),
+    }));
+  }, []);
+
+  const removeDocumentListeners = useCallback(() => {
+    const handlers = resizeDocumentHandlersRef.current;
+    if (!handlers) return;
+    document.removeEventListener('pointermove', handlers.move);
+    document.removeEventListener('pointerup', handlers.up);
+    document.removeEventListener('pointercancel', handlers.cancel);
+    resizeDocumentHandlersRef.current = null;
+  }, []);
+
+  const finishResize = useCallback((pointerId: number) => {
+    if (resizeSessionRef.current?.pointerId !== pointerId) return;
+    resizeSessionRef.current = null;
+    removeDocumentListeners();
+  }, [removeDocumentListeners]);
+
+  const handleDocumentPointerMove = useCallback((event: PointerEvent) => {
+    updateResize(event.pointerId, event.clientX);
+  }, [updateResize]);
+
+  const handleDocumentPointerUp = useCallback((event: PointerEvent) => {
+    finishResize(event.pointerId);
+  }, [finishResize]);
+
+  const handleDocumentPointerCancel = useCallback((event: PointerEvent) => {
+    finishResize(event.pointerId);
+  }, [finishResize]);
+
+  useEffect(() => () => {
+    resizeSessionRef.current = null;
+    removeDocumentListeners();
+  }, [removeDocumentListeners]);
 
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(widths));
@@ -56,23 +104,26 @@ export function usePersistedListColumnWidths<ColumnId extends string>(
         startWidth: getColumnWidth(column),
         minWidth: column.minWidth ?? 80,
       };
+      const handlers = {
+        move: handleDocumentPointerMove,
+        up: handleDocumentPointerUp,
+        cancel: handleDocumentPointerCancel,
+      };
+      resizeDocumentHandlersRef.current = handlers;
+      document.addEventListener('pointermove', handleDocumentPointerMove);
+      document.addEventListener('pointerup', handleDocumentPointerUp);
+      document.addEventListener('pointercancel', handleDocumentPointerCancel);
       event.currentTarget.setPointerCapture(event.pointerId);
     },
     onPointerMove: (event: ReactPointerEvent<HTMLDivElement>) => {
-      const session = resizeSessionRef.current;
-      if (!session || session.pointerId !== event.pointerId || session.columnId !== column.id) return;
-      setWidths((current) => ({
-        ...current,
-        [column.id]: Math.max(session.minWidth, session.startWidth + event.clientX - session.startX),
-      }));
+      updateResize(event.pointerId, event.clientX);
     },
     onPointerUp: (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (resizeSessionRef.current?.pointerId !== event.pointerId) return;
-      resizeSessionRef.current = null;
+      finishResize(event.pointerId);
       if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     },
-    onPointerCancel: () => { resizeSessionRef.current = null; },
-  }), [getColumnWidth]);
+    onPointerCancel: (event: ReactPointerEvent<HTMLDivElement>) => { finishResize(event.pointerId); },
+  }), [finishResize, getColumnWidth, handleDocumentPointerCancel, handleDocumentPointerMove, handleDocumentPointerUp, updateResize]);
 
   return { getColumnWidth, getResizeHandleProps };
 }

@@ -218,6 +218,7 @@ public class EquipmentController {
         if (typeRepository.existsByTenantIdAndCodeAndIdNot(TENANT, code, type.getId())) throw invalid("设备类型编码已存在");
         type.setCode(code);
         type.setName(name);
+        type.setDescription(text(request.description(), "描述", 512, false));
         type.setCategoryId(category.getId());
         type.setUpdatedBy(currentOperatorName());
         type.setUpdatedAt(LocalDateTime.now());
@@ -236,6 +237,7 @@ public class EquipmentController {
         if (equipmentRepository.existsByCodeAndIdNot(code, equipment.getId())) throw invalid("设备编码已存在");
         equipment.setCode(code);
         equipment.setName(name);
+        equipment.setDescription(text(request.description(), "描述", 512, false));
         equipment.setBrand(brand);
         equipment.setModel(model);
         equipment.setSerialNumber(serialNumber);
@@ -261,13 +263,13 @@ public class EquipmentController {
     }
     private TypeResponse typeResponse(EquipmentType type) {
         return new TypeResponse(type.getId().toString(), type.getCode(), type.getName(), stringId(type.getCategoryId()),
-                categoryName(type.getCategoryId()), type.getCreatedBy(), type.getCreatedAt(), type.getUpdatedBy(), type.getUpdatedAt());
+                categoryName(type.getCategoryId()), type.getDescription(), type.getCreatedBy(), type.getCreatedAt(), type.getUpdatedBy(), type.getUpdatedAt());
     }
     private EquipmentResponse equipmentResponse(Equipment equipment) {
         var type = equipment.getEquipmentTypeId() == null ? null : typeRepository.findByIdAndTenantId(equipment.getEquipmentTypeId(), TENANT).orElse(null);
         return new EquipmentResponse(equipment.getId().toString(), equipment.getCode(), equipment.getName(), equipment.getBrand(), equipment.getModel(),
                 equipment.getSerialNumber(), equipment.getPurchaseDate(), stringId(equipment.getEquipmentTypeId()), type == null ? null : type.getName(),
-                type == null ? null : categoryName(type.getCategoryId()), equipment.getStatus(), stringId(equipment.getSiteId()),
+                type == null ? null : categoryName(type.getCategoryId()), equipment.getStatus(), stringId(equipment.getSiteId()), equipment.getDescription(),
                 equipment.getCreatedBy(), equipment.getCreatedAt(), equipment.getUpdatedBy(), equipment.getUpdatedAt());
     }
     private String categoryName(Long id) {
@@ -280,6 +282,7 @@ public class EquipmentController {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("code", type.getCode());
         snapshot.put("name", type.getName());
+        snapshot.put("description", type.getDescription());
         snapshot.put("categoryId", stringId(type.getCategoryId()));
         return snapshot;
     }
@@ -287,6 +290,7 @@ public class EquipmentController {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("code", equipment.getCode());
         snapshot.put("name", equipment.getName());
+        snapshot.put("description", equipment.getDescription());
         snapshot.put("equipmentTypeId", stringId(equipment.getEquipmentTypeId()));
         snapshot.put("brand", equipment.getBrand());
         snapshot.put("model", equipment.getModel());
@@ -350,11 +354,11 @@ public class EquipmentController {
 
     public record CategoryRequest(String name) {}
     public record CategoryResponse(String id, String name, boolean system, long count) {}
-    public record TypeRequest(String code, String name, String categoryId) {}
+    public record TypeRequest(String code, String name, String categoryId, String description) {}
     public record TypeResponse(String id, String code, String name, String categoryId, String categoryName,
-                               String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt) {}
-    public record EquipmentRequest(String code, String name, String equipmentTypeId, String model, String serialNumber, String status, String brand, String purchaseDate) {}
+                               String description, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt) {}
+    public record EquipmentRequest(String code, String name, String equipmentTypeId, String model, String serialNumber, String status, String brand, String purchaseDate, String description) {}
     public record EquipmentResponse(String id, String code, String name, String brand, String model, String serialNumber, LocalDate purchaseDate, String equipmentTypeId,
-                                    String equipmentTypeName, String categoryName, String status, String siteId,
+                                    String equipmentTypeName, String categoryName, String status, String siteId, String description,
                                     String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt) {}
 }

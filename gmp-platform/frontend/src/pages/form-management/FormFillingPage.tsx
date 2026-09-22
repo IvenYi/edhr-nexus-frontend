@@ -21,7 +21,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Tabs,
@@ -32,9 +31,10 @@ import {
 import { Close, ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { ListTableShell } from '@/components/ListTableShell';
 import TableStateCell from '@/components/TableStateCell';
 import StatusBadge from '@/components/StatusBadge';
-import { listColumnResizeHandleSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
@@ -72,8 +72,8 @@ import {
 const headerCellSx = formTableHeaderCellSx;
 const bodyCellSx = formTableBodyCellSx;
 const fieldSx = formListFieldSx;
-const actionHeadSx = { position: 'sticky' as const, right: 0, zIndex: 4, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#f5f7fa', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)' };
-const actionBodySx = { position: 'sticky' as const, right: 0, zIndex: 2, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#fff', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.2)' };
+const actionHeadSx = { position: 'sticky' as const, right: 0, zIndex: 4, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#f5f7fa', ...listTableStickyEdgeSx };
+const actionBodySx = { position: 'sticky' as const, right: 0, zIndex: 2, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#fff', ...listTableStickyEdgeSx };
 const drawerRootSx = { top: 0, bottom: 0, zIndex: (theme: { zIndex: { drawer: number } }) => theme.zIndex.drawer + 2 };
 const drawerPaperSx = { width: { xs: '100vw', sm: 560 }, top: 0, bottom: 0, height: '100vh', transform: 'none !important' };
 
@@ -416,7 +416,7 @@ export default function FormFillingPage() {
     </Box>
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
       <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1.5 }}><Tabs value={view} onChange={(_, next: FillingView) => { setView(next); setPage(0); setIdentity(null); setPreviewIdentity(null); setFillIdentity(null); }} aria-label="表单填报视图"><Tab value="FILLABLE" label="我的填报" /><Tab value="CREATED" label="我的创建" /><Tab value="FILLED" label="我的已填" /></Tabs><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: tableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
+      <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: tableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
         <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup>
         <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => {
           const width = getColumnWidth(column);
@@ -432,7 +432,7 @@ export default function FormFillingPage() {
           <TableCell>{formatDateTime(row.updatedAt)}</TableCell>
           <TableCell sx={actionBodySx} onClick={(event) => event.stopPropagation()}><Stack direction="row" alignItems="center" justifyContent="center"><Tooltip title={view === 'FILLABLE' ? '进入填报' : '预览表单'} arrow>{view === 'FILLABLE' ? <IconButton size="small" color="primary" aria-label="进入填报" onClick={() => openFill(row)}><PlayCircleOutline fontSize="small" /></IconButton> : <IconButton size="small" aria-label="预览表单" onClick={() => openPreview(row)}><PreviewOutlined fontSize="small" /></IconButton>}</Tooltip>{view === 'FILLABLE' ? <Tooltip title="预览表单" arrow><IconButton size="small" aria-label="预览表单" onClick={() => openPreview(row)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip> : null}</Stack></TableCell>
         </TableRow>)}</TableBody>
-      </Table></TableContainer>
+      </Table></ListTableShell>
       <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />
     </Box>
     <FormWorklistDetailDrawer view={view} identity={identity} onClose={() => setIdentity(null)} onOpenExecution={(row) => { setIdentity(null); openFill(row); }} onOpenPreview={() => { setIdentity(null); setPreviewIdentity(identity); }} />

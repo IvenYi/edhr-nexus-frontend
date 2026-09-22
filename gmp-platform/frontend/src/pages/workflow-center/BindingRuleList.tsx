@@ -27,6 +27,9 @@ import {
   CircularProgress,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogSection from '@/components/FormDialogSection';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableStickyActionSx } from '@/components/listTableStyles';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { getBindingRules, createBindingRule, updateBindingRule, deleteBindingRule } from '@/api/workflow-binding';
 import { BUSINESS_TYPES, WORKFLOW_STATUS_MAP } from '@/utils/constants';
@@ -93,9 +96,9 @@ export default function BindingRuleList() {
         <Typography variant="h5">流程绑定配置</Typography>
         <Button variant="contained" startIcon={<Add />} onClick={() => { setEditingId(null); setForm({ name: '', businessType: '', templateName: '', priority: 0, description: '' }); setOpen(true); }}>新增绑定</Button>
       </Box>
-      <TableContainer>
+      <ListTableShell>
         <Table>
-          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>名称</TableCell><TableCell>业务类型</TableCell><TableCell>流程模板</TableCell><TableCell>优先级</TableCell><TableCell>描述</TableCell><TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell></TableRow></TableHead>
+          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>名称</TableCell><TableCell>业务类型</TableCell><TableCell>流程模板</TableCell><TableCell>优先级</TableCell><TableCell>描述</TableCell><TableCell align="center" sx={listTableStickyActionSx(96, 'head')}>操作</TableCell></TableRow></TableHead>
           <TableBody>
             {isLoading ? <TableRow><TableStateCell colSpan={7} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>
             : isError ? <TableRow><TableStateCell colSpan={7} align="center">加载失败</TableStateCell></TableRow>
@@ -104,7 +107,7 @@ export default function BindingRuleList() {
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.name}</TableCell><TableCell>{item.businessType}</TableCell>
                 <TableCell>{item.templateName}</TableCell><TableCell>{item.priority}</TableCell><TableCell>{item.description}</TableCell>
-                <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
+                <TableCell align="center" sx={listTableStickyActionSx(96, 'body')}>
                   <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => handleEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip>
                   <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteConfirm(item.id)}><Delete fontSize="small" /></IconButton></Tooltip>
                 </TableCell>
@@ -112,18 +115,19 @@ export default function BindingRuleList() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
       {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
-      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑绑定规则' : '新增绑定规则'}</DialogTitle>
-        <DialogContent>
-          <TextField label="名称" fullWidth margin="normal" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          <TextField select label="业务类型" fullWidth margin="normal" value={form.businessType} onChange={(e) => setForm({ ...form, businessType: e.target.value })}>
+        <DialogContent dividers><FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+          <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          <TextField size="small" select label="业务类型" fullWidth value={form.businessType} onChange={(e) => setForm({ ...form, businessType: e.target.value })}>
             {BUSINESS_TYPES.map((bt) => <MenuItem key={bt.value} value={bt.value}>{bt.label}</MenuItem>)}
           </TextField>
-          <TextField label="流程模板" fullWidth margin="normal" value={form.templateName} onChange={(e) => setForm({ ...form, templateName: e.target.value })} />
-          <TextField label="优先级" type="number" fullWidth margin="normal" value={form.priority} onChange={(e) => setForm({ ...form, priority: Number(e.target.value) })} />
-          <TextField label="描述" fullWidth margin="normal" multiline rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          <TextField size="small" label="流程模板" fullWidth value={form.templateName} onChange={(e) => setForm({ ...form, templateName: e.target.value })} />
+          <TextField size="small" label="优先级" type="number" fullWidth value={form.priority} onChange={(e) => setForm({ ...form, priority: Number(e.target.value) })} />
+          <TextField size="small" label="描述" fullWidth multiline rows={3} sx={{ gridColumn: '1 / -1' }} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        </Box></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>

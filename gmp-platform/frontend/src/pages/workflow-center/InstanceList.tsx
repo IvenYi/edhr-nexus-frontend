@@ -1,4 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableStickyActionSx } from '@/components/listTableStyles';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
@@ -41,7 +43,7 @@ export default function InstanceList() {
       <Box sx={{ mb: 2 }}>
         <Typography variant="h5">流程实例列表</Typography>
       </Box>
-      <TableContainer>
+      <ListTableShell>
         <Table>
           <TableHead>
             <TableRow>
@@ -52,7 +54,7 @@ export default function InstanceList() {
               <TableCell>发起人</TableCell>
               <TableCell>开始时间</TableCell>
               <TableCell>结束时间</TableCell>
-              <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell>
+              <TableCell align="center" sx={listTableStickyActionSx(96, 'head')}>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -65,7 +67,7 @@ export default function InstanceList() {
             ) : (
               content.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell sx={{ fontFamily: 'monospace' }}>{item.id}</TableCell>
+                  <TableCell>{item.id}</TableCell>
                   <TableCell>{item.templateName}</TableCell>
                   <TableCell>{item.businessKey}</TableCell>
                   <TableCell>
@@ -77,7 +79,7 @@ export default function InstanceList() {
                   <TableCell>{item.startUserName}</TableCell>
                   <TableCell>{item.startTime}</TableCell>
                   <TableCell>{item.endTime || '-'}</TableCell>
-                  <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
+                  <TableCell align="center" sx={listTableStickyActionSx(96, 'body')}>
                     <Tooltip title="详情"><IconButton size="small" aria-label="详情" onClick={() => navigate(`/workflow/instances/${item.id}`)}><VisibilityOutlined fontSize="small" /></IconButton></Tooltip>
                     <Tooltip title="日志"><IconButton size="small" aria-label="日志" onClick={() => navigate(`/workflow/instances/${item.id}/logs`)}><HistoryOutlined fontSize="small" /></IconButton></Tooltip>
                   </TableCell>
@@ -86,7 +88,7 @@ export default function InstanceList() {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
       {data && data.totalPages > 1 && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
           <Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} />

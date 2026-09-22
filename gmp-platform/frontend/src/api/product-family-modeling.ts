@@ -8,7 +8,6 @@ export interface ProductFamilyModel {
   code: string;
   name: string;
   description?: string | null;
-  remark?: string | null;
   createdBy?: string | null;
   createdAt?: string | null;
   updatedBy?: string | null;
@@ -21,7 +20,6 @@ export interface ProductFamilyPayload {
   code: string;
   name: string;
   description?: string | null;
-  remark?: string | null;
 }
 
 export interface ProductFamilyMemberOption {

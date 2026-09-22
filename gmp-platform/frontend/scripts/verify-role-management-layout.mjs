@@ -90,7 +90,7 @@ mustInclude('emptyTableBodyCellSx', 'role table empty/loading/error states shoul
 mustInclude('const isRoleTableEmptyState = isLoading || isError || pagedRows.length === 0;', 'role table should track empty state for full-height rendering');
 mustInclude('<Table stickyHeader size="small" sx={{ tableLayout: \'fixed\', width: totalTableWidth, minWidth: totalTableWidth, height: isRoleTableEmptyState ? \'100%\' : \'auto\' }}>', 'role table should stretch only empty states');
 mustInclude('<TableBody sx={{ height: isRoleTableEmptyState ? \'100%\' : \'auto\' }}>', 'role table body should stretch only empty states');
-mustInclude('<TableCell colSpan={visibleRoleColumns.length}', 'role table empty state should respect hidden columns');
+mustInclude('<TableStateCell colSpan={visibleRoleColumns.length}', 'role table empty state should respect hidden columns');
 mustInclude('<colgroup>', 'role table should apply widths through colgroup');
 mustInclude('visibleRoleColumns.map((column)', 'role table should render colgroup, header, and rows from visible columns');
 mustInclude('getStickyActionColumnSx', 'role action column should be sticky on the right');
@@ -133,7 +133,7 @@ mustInclude("queryClient.fetchQuery({ queryKey: ['role-management-users'], query
 mustInclude('if (assignedUsers.length === 0)', 'role delete should skip the confirmation dialog when no accounts are assigned');
 mustInclude('deleteMutation.mutate(row.id)', 'role delete should directly delete roles that have no assigned accounts');
 mustInclude('deleteConfirmAssignedUsers', 'role delete confirmation should derive affected accounts for the selected role');
-mustInclude('<Dialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)} maxWidth="sm" fullWidth>', 'role delete confirmation should match the user management delete dialog sizing');
+mustInclude('<AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)} maxWidth="sm" fullWidth>', 'role delete confirmation should match the user management delete dialog sizing');
 mustInclude('<Stack spacing={1.5}>', 'role delete confirmation should match the user management delete dialog spacing');
 mustInclude('<Alert severity="error">危险的操作，请仔细阅读并确认数据后操作</Alert>', 'role delete confirmation should use the same danger alert style as user management');
 mustInclude("bgcolor: '#f8fafc'", 'role delete impacted account list should match the user management delete list background');

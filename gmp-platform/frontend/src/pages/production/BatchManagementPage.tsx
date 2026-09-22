@@ -1,6 +1,6 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -20,7 +20,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Tab,
@@ -34,6 +33,7 @@ import {
 import { Cancel, Close, ContentCopyOutlined, DescriptionOutlined, ExpandMore, InfoOutlined, PlayCircleOutline, RestartAlt, Search, StopCircleOutlined, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { ListTableShell } from '@/components/ListTableShell';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import StatusBadge from '@/components/StatusBadge';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
@@ -101,13 +101,12 @@ function getStatusColumnSx(width: number, layer: 'head' | 'body') {
     maxWidth: width,
     top: layer === 'head' ? 0 : undefined,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-    backgroundClip: 'padding-box',
-    boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    ...listTableStickyEdgeSx,
     textAlign: layer === 'head' ? 'center' as const : undefined,
     whiteSpace: 'nowrap',
   };
 }
-function getOperationColumnSx(layer: 'head' | 'body') {
+function getOperationColumnSx(layer: 'head' | 'body', hasVisibleStatusColumn: boolean) {
   return {
     position: 'sticky' as const,
     right: 0,
@@ -118,6 +117,7 @@ function getOperationColumnSx(layer: 'head' | 'body') {
     top: layer === 'head' ? 0 : undefined,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
     backgroundClip: 'padding-box',
+    ...(!hasVisibleStatusColumn ? listTableStickyEdgeSx : {}),
     textAlign: 'center' as const,
     whiteSpace: 'nowrap',
   };
@@ -265,6 +265,7 @@ export default function BatchManagementPage() {
     .map((id) => BATCH_COLUMNS.find((column) => column.id === id))
     .filter((column): column is BatchColumn => Boolean(column))
     .filter((column) => !columnSettings.hidden.includes(column.id)), [columnSettings]);
+  const hasVisibleStatusColumn = visibleColumns.some((column) => column.id === 'status');
   const resolvedColumnWidths = useMemo(() => Object.fromEntries(BATCH_COLUMNS.map((column) => [column.id, Math.max(column.minWidth, columnWidths[column.id] ?? column.width)])) as Record<BatchColumnId, number>, [columnWidths]);
   const mainTableWidth = visibleColumns.reduce((total, column) => total + resolvedColumnWidths[column.id], BATCH_ACTION_COLUMN_WIDTH);
 
@@ -319,7 +320,7 @@ export default function BatchManagementPage() {
     const width = resolvedColumnWidths[column.id];
     const commonSx = { width, minWidth: width, maxWidth: width, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const };
     switch (column.id) {
-      case 'batchNo': return <TableCell sx={commonSx}><Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}><Typography variant="body2" noWrap title={row.objectNo} sx={{ flex: 1, minWidth: 0, fontWeight: 600 }}>{row.objectNo}</Typography><Tooltip title="复制批次号" arrow><IconButton size="small" aria-label="复制批次号" sx={{ flexShrink: 0 }} onKeyDown={(event) => event.stopPropagation()} onClick={async (event) => { event.stopPropagation(); try { await navigator.clipboard.writeText(row.objectNo); showMessage('批次号已复制'); } catch { showMessage('复制失败，请重试', 'error'); } }}><ContentCopyOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip></Box></TableCell>;
+      case 'batchNo': return <TableCell sx={commonSx}><Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}><Typography variant="body2" noWrap title={row.objectNo} sx={{ flex: 1, minWidth: 0, ...listTablePrimaryTextSx }}>{row.objectNo}</Typography><Tooltip title="复制批次号" arrow><IconButton size="small" aria-label="复制批次号" sx={{ flexShrink: 0 }} onKeyDown={(event) => event.stopPropagation()} onClick={async (event) => { event.stopPropagation(); try { await navigator.clipboard.writeText(row.objectNo); showMessage('批次号已复制'); } catch { showMessage('复制失败，请重试', 'error'); } }}><ContentCopyOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip></Box></TableCell>;
       case 'workOrderNo': return <TableCell sx={commonSx} title={row.workOrderNo}>{row.workOrderNo}</TableCell>;
       case 'product': return <TableCell sx={commonSx} title={`${row.productName}（${row.productCode}）`}><Typography variant="body2" noWrap>{row.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{row.productCode}</Typography></TableCell>;
       case 'processVersion': return <TableCell sx={commonSx}>{row.processVersion || '-'}</TableCell>;
@@ -366,17 +367,17 @@ export default function BatchManagementPage() {
           <Tooltip title="批次由工单生产对象拆分生成" arrow><InfoOutlined sx={{ color: '#909399', fontSize: 20 }} /></Tooltip>
         </Box>
         <ListColumnSettingsPopover anchorEl={columnSettingsAnchor} columns={BATCH_COLUMNS} settings={columnSettings} onClose={() => setColumnSettingsAnchor(null)} onToggle={toggleColumnVisibility} onReorder={reorderColumns} />
-        <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+        <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
           <Table stickyHeader size="small" sx={{ minWidth: mainTableWidth, width: '100%', tableLayout: 'fixed', height: showBatchTableState ? '100%' : 'auto' }}>
             <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: resolvedColumnWidths[column.id] }} />)}<col style={{ width: BATCH_ACTION_COLUMN_WIDTH }} /></colgroup>
-            <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ ...tableHeaderCellSx, width: resolvedColumnWidths[column.id], minWidth: resolvedColumnWidths[column.id], maxWidth: resolvedColumnWidths[column.id], ...(column.id === 'status' ? getStatusColumnSx(resolvedColumnWidths[column.id], 'head') : {}), top: 0, zIndex: column.id === 'status' ? 10 : 5, position: 'sticky' }}><Box sx={{ position: 'relative', pr: 1 }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column.id)} sx={{ ...listColumnResizeHandleSx, right: -8 }} /></Box></TableCell>)}<TableCell align="center" sx={{ ...tableHeaderCellSx, ...getOperationColumnSx('head') }}>操作</TableCell></TableRow></TableHead>
+            <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ ...tableHeaderCellSx, width: resolvedColumnWidths[column.id], minWidth: resolvedColumnWidths[column.id], maxWidth: resolvedColumnWidths[column.id], ...(column.id === 'status' ? getStatusColumnSx(resolvedColumnWidths[column.id], 'head') : {}), top: 0, zIndex: column.id === 'status' ? 10 : 5, position: 'sticky' }}><Box sx={{ position: 'relative', pr: 1 }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column.id)} sx={{ ...listColumnResizeHandleSx, right: -8 }} /></Box></TableCell>)}<TableCell align="center" sx={{ ...tableHeaderCellSx, ...getOperationColumnSx('head', hasVisibleStatusColumn) }}>操作</TableCell></TableRow></TableHead>
             <TableBody>
               {batches.isLoading && <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>}
               {batches.isError && <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#c62828' }}>批次数据加载失败：{batches.error instanceof Error ? batches.error.message : '请稍后重试'}</TableStateCell></TableRow>}
               {!batches.isLoading && !batches.isError && rows.length === 0 && <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#909399' }}>暂无批次数据</TableStateCell></TableRow>}
               {!batches.isLoading && !batches.isError && rows.map((row) => <TableRow data-record-id={row.id} key={row.id} hover tabIndex={0} onClick={() => { setDetail(row); setDetailTab(0); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { setDetail(row); setDetailTab(0); } }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
                 {visibleColumns.map((column) => <Fragment key={column.id}>{renderBatchCell(row, column)}</Fragment>)}
-                <TableCell align="center" onClick={(event) => event.stopPropagation()} sx={getOperationColumnSx('body')}>
+                <TableCell align="center" onClick={(event) => event.stopPropagation()} sx={getOperationColumnSx('body', hasVisibleStatusColumn)}>
                   {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="DHR" arrow><IconButton size="small" aria-label="查看DHR" onClick={() => notifyUnavailable('DHR 查看')}><DescriptionOutlined fontSize="small" /></IconButton></Tooltip> : <Tooltip title="DHR（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="DHR 暂不可用"><DescriptionOutlined fontSize="small" /></IconButton></span></Tooltip>}
                   {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="执行详情" arrow><IconButton size="small" aria-label="执行详情" onClick={() => notifyUnavailable('执行详情')}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip> : <Tooltip title="执行详情（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="执行详情暂不可用"><PlayCircleOutline fontSize="small" /></IconButton></span></Tooltip>}
                   {row.status === 'IN_PROGRESS' ? <Tooltip title="结束" arrow><IconButton size="small" aria-label="提前结束批次" color="warning" onClick={() => { setEndTarget(row); setEndReason(''); }}><StopCircleOutlined fontSize="small" /></IconButton></Tooltip> : row.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消批次" color="error" onClick={() => setCancelTarget(row)}><Cancel fontSize="small" /></IconButton></Tooltip> : <Tooltip title="结束（仅进行中的批次可用）" arrow><span><IconButton size="small" disabled aria-label="结束暂不可用"><StopCircleOutlined fontSize="small" /></IconButton></span></Tooltip>}
@@ -384,7 +385,7 @@ export default function BatchManagementPage() {
               </TableRow>)}
             </TableBody>
           </Table>
-        </TableContainer>
+        </ListTableShell>
         <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
           <Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {batches.data?.totalElements ?? 0} 条数据</Typography>
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ marginLeft: 'auto' }}>

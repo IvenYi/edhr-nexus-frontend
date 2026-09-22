@@ -1,6 +1,7 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
+import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import {
   ContentCopy,
   DataObjectOutlined,
@@ -49,6 +50,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogSection from '@/components/FormDialogSection';
 import StatusBadge from '@/components/StatusBadge';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
@@ -698,8 +700,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const [categoryId, setCategoryId] = useState(TEMPLATE_CATEGORY_ALL);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const tableContainerRef = useRef<HTMLDivElement | null>(null);
-  const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const columnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(TEMPLATE_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
   const columnSettingsStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(TEMPLATE_COLUMN_SETTINGS_STORAGE_PREFIX, pageKey), [pageKey]);
   const templateVersionColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(TEMPLATE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
@@ -806,7 +806,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(allColumns, columnSettings), [allColumns, columnSettings]);
   const visibleColumns = useMemo(() => getVisibleColumns(allColumns, columnSettings), [allColumns, columnSettings]);
   const visibleConfigurableColumnCount = columnSettings.order.length - columnSettings.hidden.length;
-  const resolvedColumnWidths = useMemo(() => resolveColumnWidths(columnWidths, tableContainerWidth, visibleColumns), [columnWidths, tableContainerWidth, visibleColumns]);
+  const resolvedColumnWidths = useMemo(() => resolveColumnWidths(columnWidths, 0, visibleColumns), [columnWidths, visibleColumns]);
   const totalTableWidth = visibleColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0);
   const templateVersionColumnSettingsItems = useMemo(() => getColumnSettingsItems(versionColumns, templateVersionColumnSettings), [templateVersionColumnSettings, versionColumns]);
   const visibleTemplateVersionColumns = useMemo(() => getVisibleColumns(versionColumns, templateVersionColumnSettings), [templateVersionColumnSettings, versionColumns]);
@@ -815,12 +815,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const activeColumnSettingsItems = columnSettingsTab === 'version' ? templateVersionColumnSettingsItems : columnSettingsItems;
   const activeVisibleConfigurableColumnCount = columnSettingsTab === 'version' ? visibleTemplateVersionConfigurableColumnCount : visibleConfigurableColumnCount;
   const setActiveColumnSettings = columnSettingsTab === 'version' ? setTemplateVersionColumnSettings : setColumnSettings;
-  const resolvedTemplateVersionColumnWidths = useMemo(() => resolveColumnWidths(templateVersionColumnWidths, totalTableWidth, visibleTemplateVersionColumns), [templateVersionColumnWidths, totalTableWidth, visibleTemplateVersionColumns]);
+  const resolvedTemplateVersionColumnWidths = useMemo(() => resolveColumnWidths(templateVersionColumnWidths, 0, visibleTemplateVersionColumns), [templateVersionColumnWidths, visibleTemplateVersionColumns]);
   const totalTemplateVersionTableWidth = visibleTemplateVersionColumns.reduce((sum, column) => sum + resolvedTemplateVersionColumnWidths[column.id], 0);
-  const effectiveMainTableWidth = Math.max(totalTableWidth, totalTemplateVersionTableWidth);
-  const mainTableSpacerWidth = Math.max(0, effectiveMainTableWidth - totalTableWidth);
-  const hasMainTableSpacer = mainTableSpacerWidth > 0;
-  const mainTableColSpan = visibleColumns.length + (hasMainTableSpacer ? 1 : 0);
+  const sharedTableMinWidth = Math.max(totalTableWidth, totalTemplateVersionTableWidth);
+  const mainTableColSpan = visibleColumns.length;
   const pageCount = Math.max(1, listQuery.data?.totalPages ?? Math.ceil((listQuery.data?.totalElements ?? 0) / pageSize));
   const totalElements = listQuery.data?.totalElements ?? 0;
   const templateCategoryOptions = useMemo<TemplateCategoryOption[]>(() => {
@@ -880,16 +878,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     setColumnSettingsTab('main');
     setExpandedTemplateGroups(new Set([readRecordLocation().id].filter(Boolean)));
   }, [pageKey]);
-
-  useEffect(() => {
-    const container = tableContainerRef.current;
-    if (!container) return undefined;
-    const updateWidth = () => setTableContainerWidth(container.clientWidth);
-    updateWidth();
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -1492,8 +1480,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       maxWidth: actionColumnWidth,
       zIndex: layer === 'head' ? 10 : 6,
       bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-      backgroundClip: 'padding-box',
-      boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)',
+      ...listTableStickyEdgeSx,
       textAlign: 'center',
     };
   }
@@ -1588,7 +1575,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         p: 0,
         border: 'none',
         bgcolor: 'transparent',
-        color: '#1890ff',
+        ...listTablePrimaryTextSx,
         cursor: 'pointer',
         font: 'inherit',
         lineHeight: 'inherit',
@@ -1596,7 +1583,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         textAlign: 'left',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
-        '&:hover': { color: '#096dd9', textDecoration: 'underline' },
       }}
     >
       {row.name || '-'}
@@ -1617,13 +1603,12 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
           p: 0,
           border: 'none',
           bgcolor: 'transparent',
-          color: '#1890ff',
+          ...listTablePrimaryTextSx,
           cursor: 'pointer',
           font: 'inherit',
           lineHeight: 'inherit',
           textAlign: 'left',
           whiteSpace: 'nowrap',
-          '&:hover': { color: '#096dd9', textDecoration: 'underline' },
         }}
       >
         {version.version || '-'}
@@ -1631,13 +1616,14 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     </Tooltip>
   );
 
-  const renderTemplateVersionTable = (row: TemplateModelingRecord) => {
+  const renderTemplateVersionTable = (row: TemplateModelingRecord, tableWidth: number, versionColumnWidths: Record<TemplateColumnId, number>) => {
+    const getTemplateVersionColumnWidth = (column: TemplateColumn) => versionColumnWidths[column.id] ?? column.defaultWidth;
     const versions = getTemplateVersionRows(row);
     return (
       <TableRow key={`${row.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
         <TableCell colSpan={mainTableColSpan} sx={{ p: 0, bgcolor: '#fafcff' }}>
           <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
-            <Table stickyHeader size="small" aria-label={pageKey === 'formTemplates' ? '表单模板版本列表' : '批记录模板版本列表'} sx={{ tableLayout: 'fixed', width: totalTemplateVersionTableWidth, minWidth: totalTemplateVersionTableWidth }}>
+            <Table stickyHeader size="small" aria-label={pageKey === 'formTemplates' ? '表单模板版本列表' : '批记录模板版本列表'} sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth }}>
               <colgroup>
                 {visibleTemplateVersionColumns.map((column) => <col key={`${row.id}:${column.id}`} style={{ width: getTemplateVersionColumnWidth(column) }} />)}
               </colgroup>
@@ -1694,24 +1680,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     );
   };
 
-  const renderMainTableActionSpacerCell = (layer: 'head' | 'body') => (
-    hasMainTableSpacer ? (
-      <TableCell
-        data-template-main-action-spacer
-        aria-hidden="true"
-        sx={{
-          width: mainTableSpacerWidth,
-          minWidth: mainTableSpacerWidth,
-          maxWidth: mainTableSpacerWidth,
-          p: 0,
-          bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-          ...(layer === 'head' ? { position: 'sticky', top: 0, zIndex: 5 } : {}),
-        }}
-      />
-    ) : null
-  );
-
-  const renderTemplateTableRow = (row: TemplateModelingRecord) => {
+  const renderTemplateTableRow = (row: TemplateModelingRecord, tableWidth: number, mainColumnWidths: Record<TemplateColumnId, number>, versionColumnWidths: Record<TemplateColumnId, number>) => {
+    const getColumnWidth = (column: TemplateColumn) => mainColumnWidths[column.id] ?? column.defaultWidth;
     const isExpanded = expandedTemplateGroups.has(String(row.id));
     return (
       <Fragment key={row.id}>
@@ -1725,7 +1695,6 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
             };
             return (
               <Fragment key={column.id}>
-                {column.id === 'actions' ? renderMainTableActionSpacerCell('body') : null}
                 <TableCell align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx} title={column.id === 'actions' ? undefined : renderTemplateGroupCell(row, column)}>
                   {column.id === 'actions' ? renderCell(row, column) : index === 0 ? (
                   <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
@@ -1757,7 +1726,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
             );
           })}
         </TableRow>
-        {isExpanded ? renderTemplateVersionTable(row) : null}
+        {isExpanded ? renderTemplateVersionTable(row, tableWidth, versionColumnWidths) : null}
       </Fragment>
     );
   };
@@ -1927,48 +1896,56 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </Popover>
 
         <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
-          <TableContainer ref={tableContainerRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
-            <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: effectiveMainTableWidth, minWidth: effectiveMainTableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
-              <colgroup>
-                {visibleColumns.map((column) => (
-                  column.id === 'actions' ? (
-                    <Fragment key={column.id}>
-                      {hasMainTableSpacer ? <col data-template-main-action-spacer style={{ width: mainTableSpacerWidth }} /> : null}
-                      <col style={{ width: getColumnWidth(column) }} />
-                    </Fragment>
-                  ) : <col key={column.id} style={{ width: getColumnWidth(column) }} />
-                ))}
-              </colgroup>
-              <TableHead>
-                <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
-                  {visibleColumns.map((column) => (
-                    <Fragment key={column.id}>
-                      {column.id === 'actions' ? renderMainTableActionSpacerCell('head') : null}
-                      <TableCell align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={{ width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
+          <ListTableShell minTableWidth={sharedTableMinWidth} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
+            {(tableWidth) => {
+              const mainFlexibleColumnId = visibleColumns.find((column) => column.id === 'description')?.id
+                ?? visibleColumns.find((column) => column.id !== 'actions')?.id
+                ?? visibleColumns[0].id;
+              const versionFlexibleColumnId = visibleTemplateVersionColumns.find((column) => column.id === 'description')?.id
+                ?? visibleTemplateVersionColumns.find((column) => column.id !== 'actions')?.id
+                ?? visibleTemplateVersionColumns[0].id;
+              const mainColumnWidths = resolveListColumnWidths(
+                visibleColumns.map((column) => ({ id: column.id, width: getColumnWidth(column) })),
+                tableWidth,
+                mainFlexibleColumnId,
+                ['actions'],
+              );
+              const versionColumnWidths = resolveListColumnWidths(
+                visibleTemplateVersionColumns.map((column) => ({ id: column.id, width: getTemplateVersionColumnWidth(column) })),
+                tableWidth,
+                versionFlexibleColumnId,
+                ['actions'],
+              );
+              return <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
+                <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: mainColumnWidths[column.id] }} />)}</colgroup>
+                <TableHead>
+                  <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
+                    {visibleColumns.map((column) => (
+                      <TableCell key={column.id} align={column.align} data-template-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={{ width: mainColumnWidths[column.id], minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
                         {column.label}
                         {column.resizable ? (
-                        <Box
-                          data-template-column-resizer
-                          onMouseDown={(event) => beginColumnResize(event, column.id)}
-                          sx={{ position: 'absolute', top: 0, right: 0, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
-                        />
+                          <Box
+                            data-template-column-resizer
+                            onMouseDown={(event) => beginColumnResize(event, column.id)}
+                            sx={{ position: 'absolute', top: 0, right: 0, zIndex: 3, width: 8, height: '100%', cursor: 'col-resize', userSelect: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }}
+                          />
                         ) : null}
                       </TableCell>
-                    </Fragment>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody sx={{ height: isTableEmptyState ? '100%' : 'auto' }}>
-                {listQuery.isLoading ? (
-                  <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}><CircularProgress size={24} /></TableStateCell></TableRow>
-                ) : listQuery.isError ? (
-                  <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>加载失败</TableStateCell></TableRow>
-                ) : rows.length === 0 ? (
-                  <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>暂无数据</TableStateCell></TableRow>
-                ) : rows.map((row) => renderTemplateTableRow(row))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody sx={{ height: isTableEmptyState ? '100%' : 'auto' }}>
+                  {listQuery.isLoading ? (
+                    <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}><CircularProgress size={24} /></TableStateCell></TableRow>
+                  ) : listQuery.isError ? (
+                    <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>加载失败</TableStateCell></TableRow>
+                  ) : rows.length === 0 ? (
+                    <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>暂无数据</TableStateCell></TableRow>
+                  ) : rows.map((row) => renderTemplateTableRow(row, tableWidth, mainColumnWidths, versionColumnWidths))}
+                </TableBody>
+              </Table>;
+            }}
+          </ListTableShell>
         </Box>
 
         <Box sx={{ minHeight: 56, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
@@ -2046,7 +2023,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       {renderTemplateCategoryPanel()}
       {renderTemplateRightPanel()}
 
-      <AppDialog open={dialogOpen} onClose={() => { setDialogOpen(false); setCreatingVersionFrom(null); setEditingVersion(null); }} fullWidth maxWidth="sm">
+      <AppDialog variant="form" open={dialogOpen} onClose={() => { setDialogOpen(false); setCreatingVersionFrom(null); setEditingVersion(null); }} fullWidth maxWidth="sm">
         <DialogTitle>{creatingVersionFrom ? '新增子版本' : editingVersion ? '编辑版本' : editingRow ? config.editTitle : config.createTitle}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={1.5} sx={{ pt: 0.5 }}>
@@ -2063,7 +2040,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
                     onInputChange={(_, value) => setForm((current) => ({ ...current, categoryName: value }))}
                     renderInput={(params) => <TextField {...params} fullWidth size="small" label="模板分类" sx={fieldSx} />}
                   />
-                  <TextField fullWidth size="small" label={pageKey === 'formTemplates' ? '表单描述' : '模板描述'} multiline minRows={3} value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
+                  <TextField fullWidth size="small" label="描述" multiline minRows={3} value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} sx={{ gridColumn: { xs: 'auto', sm: '1 / -1' } }} />
                 </Box>
               </DetailSection>
             )}
@@ -2087,10 +2064,10 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={dhrVersionDialog !== null} onClose={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }} fullWidth maxWidth="sm">
+      <AppDialog variant="form" open={dhrVersionDialog !== null} onClose={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }} fullWidth maxWidth="sm">
         <DialogTitle>{dhrVersionDialog?.mode === 'edit' ? '编辑版本' : dhrVersionDialog?.mode === 'copy' ? '复制版本' : '新增子版本'}</DialogTitle>
         <DialogContent dividers>
-          <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+          <FormDialogSection title="版本信息"><Stack spacing={1.5}>
             <TextField fullWidth size="small" label="批记录模板" value={dhrVersionDialog?.row.name ?? ''} InputProps={{ readOnly: true }} sx={fieldSx} />
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
               <TextField required fullWidth size="small" label="版本" value={dhrVersionLabel} onChange={(event) => setDhrVersionLabel(event.target.value)} inputProps={{ maxLength: 64 }} sx={fieldSx} />
@@ -2105,7 +2082,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
               <TextField fullWidth size="small" label="失效时间" type="datetime-local" value={dhrVersionEffectiveTo} onChange={(event) => setDhrVersionEffectiveTo(event.target.value)} InputLabelProps={{ shrink: true }} sx={fieldSx} />
             </Box>
             <TextField fullWidth autoFocus size="small" label="版本说明" multiline minRows={3} value={dhrVersionDescription} onChange={(event) => setDhrVersionDescription(event.target.value)} />
-          </Stack>
+          </Stack></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => { setDhrVersionDialog(null); setDhrVersionLabel(''); setDhrVersionCode(''); setDhrVersionOfflineVersion(''); setDhrVersionDescription(''); setDhrVersionEffectiveFrom(defaultEffectiveFromValue()); setDhrVersionEffectiveTo(''); }}>取消</Button>
@@ -2113,10 +2090,11 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={categoryDialog.open} onClose={() => setCategoryDialog({ open: false, target: null, name: '' })} fullWidth maxWidth="xs">
+      <AppDialog variant="form" open={categoryDialog.open} onClose={() => setCategoryDialog({ open: false, target: null, name: '' })} fullWidth maxWidth="xs">
         <DialogTitle>{categoryDialog.target ? '编辑分类' : '新增分类'}</DialogTitle>
-        <DialogContent sx={{ pt: 1 }}>
-          <TextField fullWidth autoFocus label="分类名称" value={categoryDialog.name} onChange={(event) => setCategoryDialog((current) => ({ ...current, name: event.target.value }))} sx={{ mt: 1 }} />
+        <DialogContent dividers><FormDialogSection title="基本信息">
+          <TextField fullWidth autoFocus size="small" label="分类名称" value={categoryDialog.name} onChange={(event) => setCategoryDialog((current) => ({ ...current, name: event.target.value }))} />
+        </FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setCategoryDialog({ open: false, target: null, name: '' })}>取消</Button>

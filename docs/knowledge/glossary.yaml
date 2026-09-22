@@ -6,6 +6,18 @@ terms:
     aliases: [删除影响, 删除约束关系]
     status: specified
     visibility: internal
+  - id: term.master-data-description
+    name: 主数据描述
+    definition: 无子版本主数据的唯一自由文本说明字段；客户界面统一标为“描述”，不与同层级的备注字段并存。
+    aliases: [主数据说明, description]
+    status: implemented
+    visibility: internal
+  - id: term.version-description
+    name: 版本说明
+    definition: 带子版本主数据的版本级唯一自由文本说明字段；客户界面统一标为“版本说明”，不额外保留重复的版本备注字段。
+    aliases: [版本级说明, version description]
+    status: implemented
+    visibility: internal
   - id: term.workshop
     name: 车间
     definition: 在同一租户内独立维护、不采用业务版本管理的工厂建模主数据；字段为车间编码、车间名称、描述和启用或停用状态，供产线及后续生产业务引用。

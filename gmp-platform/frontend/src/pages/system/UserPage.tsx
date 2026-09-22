@@ -1,5 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
-import { listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -51,6 +52,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogSection from '@/components/FormDialogSection';
 import { Add, Close, Delete, DragIndicator, Edit, ExpandMore, LockReset, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import {
   createUser,
@@ -793,6 +795,7 @@ function getStickyActionColumnSx(column: UserColumn, section: 'head' | 'body') {
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
   };
 }
@@ -1785,7 +1788,7 @@ export default function UserPage() {
 	          </Stack>
 	        </Popover>
 		        <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
-	          <TableContainer
+	          <ListTableShell
 	            ref={tableContainerRef}
 	            sx={{
 	              width: '100%',
@@ -1895,7 +1898,7 @@ export default function UserPage() {
               ))}
             </TableBody>
           </Table>
-	          </TableContainer>
+	          </ListTableShell>
 	          <Box
 	            data-user-action-column-shadow
 	            sx={{
@@ -1904,7 +1907,7 @@ export default function UserPage() {
 	              bottom: 0,
 	              right: tableScrollbarWidth,
 	              width: USER_ACTION_COLUMN_WIDTH,
-	              boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+	              boxShadow: listTableStickyEdgeShadow,
 	              pointerEvents: 'none',
 	              zIndex: 7,
 	            }}
@@ -2138,9 +2141,9 @@ export default function UserPage() {
         </Box>
       </Drawer>
 
-      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingId ? '编辑用户' : '新增用户'}</DialogTitle>
-        <DialogContent dividers>
+        <DialogContent dividers><FormDialogSection title="基本信息">
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
             <TextField
               label="账号"
@@ -2241,7 +2244,7 @@ export default function UserPage() {
               </Select>
             </FormControl>
           </Box>
-        </DialogContent>
+        </FormDialogSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
           <Button

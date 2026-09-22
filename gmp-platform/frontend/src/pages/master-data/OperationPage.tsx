@@ -26,6 +26,9 @@ import {
   CircularProgress,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogSection from '@/components/FormDialogSection';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableStickyActionSx } from '@/components/listTableStyles';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { getOperations, createOperation, updateOperation, deleteOperation } from '@/api/master-data';
 import type { PageResult } from '@/types/common';
@@ -88,9 +91,9 @@ export default function OperationPage() {
         <Typography variant="h5">工序管理</Typography>
         <Button variant="contained" startIcon={<Add />} onClick={handleAdd}>新增工序</Button>
       </Box>
-      <TableContainer>
+      <ListTableShell>
         <Table>
-          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>编码</TableCell><TableCell>名称</TableCell><TableCell>描述</TableCell><TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell></TableRow></TableHead>
+          <TableHead><TableRow><TableCell>ID</TableCell><TableCell>编码</TableCell><TableCell>名称</TableCell><TableCell>描述</TableCell><TableCell align="center" sx={listTableStickyActionSx(96, 'head')}>操作</TableCell></TableRow></TableHead>
           <TableBody>
             {isLoading ? <TableRow><TableStateCell colSpan={5} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>
             : isError ? <TableRow><TableStateCell colSpan={5} align="center">加载失败</TableStateCell></TableRow>
@@ -98,7 +101,7 @@ export default function OperationPage() {
             : content.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.id}</TableCell><TableCell>{item.code}</TableCell><TableCell>{item.name}</TableCell><TableCell>{item.description}</TableCell>
-                <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
+                <TableCell align="center" sx={listTableStickyActionSx(96, 'body')}>
                   <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => handleEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip>
                   <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteConfirm(item.id)}><Delete fontSize="small" /></IconButton></Tooltip>
                 </TableCell>
@@ -106,14 +109,15 @@ export default function OperationPage() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
       {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
-      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑工序' : '新增工序'}</DialogTitle>
-        <DialogContent>
-          <TextField label="编码" fullWidth margin="normal" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
-          <TextField label="名称" fullWidth margin="normal" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          <TextField label="描述" fullWidth margin="normal" multiline rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        <DialogContent dividers><FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+          <TextField size="small" label="编码" fullWidth value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
+          <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          <TextField size="small" label="描述" fullWidth multiline rows={3} sx={{ gridColumn: '1 / -1' }} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        </Box></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>

@@ -6,6 +6,18 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.master-data-deletion-user-confirmed]
+  - id: concept.master-data-description
+    termId: term.master-data-description
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page]
+  - id: concept.version-description
+    termId: term.version-description
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-document-controller, evidence.master-data-description-document-page]
   - id: concept.workshop
     termId: term.workshop
     kind: business-fact

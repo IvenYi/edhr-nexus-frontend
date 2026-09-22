@@ -61,10 +61,11 @@ import ListColumnSettingsPopover, {
   reorderListColumns,
   type ListColumnOption,
 } from '@/components/ListColumnSettingsPopover';
-import { listColumnResizeHandleSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import StatusBadge from '@/components/StatusBadge';
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
 import {
   formListFieldSx,
   formListFilterActionsSx,
@@ -596,8 +597,7 @@ export default function DhrSummaryPage() {
     minWidth: SUMMARY_STATUS_COLUMN_WIDTH,
     maxWidth: SUMMARY_STATUS_COLUMN_WIDTH,
     bgcolor: '#fff',
-    borderLeft: '1px solid #e4e7ed',
-    boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    ...listTableStickyEdgeSx,
   };
   const stickyActionSx = {
     ...bodyCellSx,
@@ -655,13 +655,13 @@ export default function DhrSummaryPage() {
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
       <Box sx={{ flex: '0 0 auto', minHeight: 48, px: 2, borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center' }}><Tooltip title="字段设置" arrow><IconButton size="small" aria-label="字段设置" onClick={(event) => setColumnSettingsAnchor(event.currentTarget)} sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1 }}><Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><ViewColumnRounded sx={{ fontSize: 21 }} /><TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} /></Box></IconButton></Tooltip></Box>
       <ListColumnSettingsPopover anchorEl={columnSettingsAnchor} columns={summaryColumns} settings={columnSettings} onClose={() => setColumnSettingsAnchor(null)} onToggle={(columnId) => setColumnSettings((current) => ({ ...current, hidden: current.hidden.includes(columnId) ? current.hidden.filter((id) => id !== columnId) : [...current.hidden, columnId] }))} onReorder={(sourceId, targetId) => setColumnSettings((current) => reorderListColumns(summaryColumns, current, sourceId, targetId))} />
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}>
+      <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}>
         <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
           <colgroup>{visibleColumns.map((columnId) => <col key={columnId} style={{ width: getColumnWidth(columnId) }} />)}<col style={{ width: SUMMARY_STATUS_COLUMN_WIDTH }} /><col style={{ width: SUMMARY_ACTION_COLUMN_WIDTH }} /></colgroup>
-          <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((columnId) => <TableCell key={columnId} sx={{ width: getColumnWidth(columnId), minWidth: getColumnWidth(columnId) }}><Box sx={{ position: 'relative', pr: 1 }}>{summaryColumns.find((column) => column.id === columnId)?.label}<Box aria-label={`调整${summaryColumns.find((column) => column.id === columnId)?.label ?? ''}列宽`} onPointerDown={(event) => startColumnResize(event, columnId)} onPointerMove={updateColumnResize} onPointerUp={() => { columnResizeRef.current = null; }} onPointerCancel={() => { columnResizeRef.current = null; }} onLostPointerCapture={() => { columnResizeRef.current = null; }} sx={listColumnResizeHandleSx} /></Box></TableCell>)}<TableCell align="center" sx={{ ...headerCellSx, position: 'sticky', right: SUMMARY_ACTION_COLUMN_WIDTH, zIndex: 4, width: SUMMARY_STATUS_COLUMN_WIDTH, minWidth: SUMMARY_STATUS_COLUMN_WIDTH, maxWidth: SUMMARY_STATUS_COLUMN_WIDTH, bgcolor: '#f5f7fa', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)' }}>汇总状态</TableCell><TableCell align="center" sx={{ ...headerCellSx, position: 'sticky', right: 0, zIndex: 5, width: SUMMARY_ACTION_COLUMN_WIDTH, minWidth: SUMMARY_ACTION_COLUMN_WIDTH, maxWidth: SUMMARY_ACTION_COLUMN_WIDTH, bgcolor: '#f5f7fa' }}>操作</TableCell></TableRow></TableHead>
+          <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((columnId) => <TableCell key={columnId} sx={{ width: getColumnWidth(columnId), minWidth: getColumnWidth(columnId) }}><Box sx={{ position: 'relative', pr: 1 }}>{summaryColumns.find((column) => column.id === columnId)?.label}<Box aria-label={`调整${summaryColumns.find((column) => column.id === columnId)?.label ?? ''}列宽`} onPointerDown={(event) => startColumnResize(event, columnId)} onPointerMove={updateColumnResize} onPointerUp={() => { columnResizeRef.current = null; }} onPointerCancel={() => { columnResizeRef.current = null; }} onLostPointerCapture={() => { columnResizeRef.current = null; }} sx={listColumnResizeHandleSx} /></Box></TableCell>)}<TableCell align="center" sx={{ ...headerCellSx, position: 'sticky', right: SUMMARY_ACTION_COLUMN_WIDTH, zIndex: 4, width: SUMMARY_STATUS_COLUMN_WIDTH, minWidth: SUMMARY_STATUS_COLUMN_WIDTH, maxWidth: SUMMARY_STATUS_COLUMN_WIDTH, bgcolor: '#f5f7fa', ...listTableStickyEdgeSx }}>汇总状态</TableCell><TableCell align="center" sx={{ ...headerCellSx, position: 'sticky', right: 0, zIndex: 5, width: SUMMARY_ACTION_COLUMN_WIDTH, minWidth: SUMMARY_ACTION_COLUMN_WIDTH, maxWidth: SUMMARY_ACTION_COLUMN_WIDTH, bgcolor: '#f5f7fa' }}>操作</TableCell></TableRow></TableHead>
           <TableBody>{query.isLoading || query.isError || !rows.length ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length + 2} sx={{ height: '100%' }}><Stack alignItems="center" spacing={1.5}>{query.isLoading ? <CircularProgress size={28} /> : query.isError ? <><Typography fontWeight={700}>DHR 汇总列表加载失败</Typography><Button size="small" startIcon={<RefreshRounded />} onClick={() => query.refetch()}>重新加载</Button></> : <Typography color="text.secondary" sx={{ maxWidth: 360, textAlign: 'center' }}>{emptyMessage}</Typography>}</Stack></TableStateCell></TableRow> : rows.map((row) => <TableRow key={row.id} hover>{visibleColumns.map((columnId) => renderCell(columnId, row))}<TableCell sx={stickyStatusSx}><StatusBadge label={summaryLabels[row.summaryStatus]} color={row.summaryStatus === 'FORMALIZED' ? 'success' : row.summaryStatus === 'PENDING_REVIEW' ? 'warning' : 'primary'} /></TableCell><TableCell sx={stickyActionSx}><Tooltip title={tab === 'pending' ? '进入汇总' : '查看冻结版本'}><IconButton size="small" aria-label={tab === 'pending' ? `进入汇总 ${row.dhrNo}` : `查看冻结版本 ${row.dhrNo}`} onClick={() => setSelected(row)} sx={{ color: '#606266', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } }}><PreviewOutlined fontSize="small" /></IconButton></Tooltip></TableCell></TableRow>)}</TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
       <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={(next) => { setSize(next); setPage(0); }} />
     </Box>
     {selected && <SummaryWorkspace dhr={selected} onClose={() => setSelected(null)} />}

@@ -1,0 +1,34 @@
+knowledgeModelVersion: 0.3.24
+facts:
+  - id: fact.master-data.parent-has-description
+    name: 普通主数据父记录具有描述字段
+    conceptId: concept.master-data-description
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: docs/frontend/dialog-guidelines.md
+    aliases: [form.parentHasDescription]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-process-controller, evidence.master-data-description-product-family-page]
+    sourceRevision: working-tree
+    sourceLocator: 普通主对象字段命名规则
+    capturedAt: '2026-09-22'
+    reviewStatus: reviewed
+  - id: fact.master-data.version-has-version-description
+    name: 版本子记录具有版本说明字段
+    conceptId: concept.version-description
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: docs/frontend/dialog-guidelines.md
+    aliases: [form.versionHasVersionDescription]
+    availability: configuration
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-document-controller, evidence.master-data-description-document-page]
+    sourceRevision: working-tree
+    sourceLocator: 带子版本主对象字段命名规则
+    capturedAt: '2026-09-22'
+    reviewStatus: reviewed

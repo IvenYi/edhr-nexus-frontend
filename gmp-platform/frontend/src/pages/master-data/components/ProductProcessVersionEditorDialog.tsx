@@ -1042,7 +1042,7 @@ export default function ProductProcessVersionEditorDialog({
             <TextField size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => set('effectiveFrom', event.target.value)} InputLabelProps={{ shrink: true }} />
             <TextField size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => set('effectiveTo', event.target.value)} InputLabelProps={{ shrink: true }} />
           </Box>
-          <TextField size="small" label="备注" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />
+          <TextField size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />
         </Stack>
         <Box sx={{ minWidth: 0, display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', bgcolor: '#fcfdff' }}>
           <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>

@@ -7,10 +7,13 @@ import {
   TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography,
 } from '@mui/material';
 import { Add, Delete, DragIndicator, Edit, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
-import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogSection from '@/components/FormDialogSection';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import TableStateCell from '@/components/TableStateCell';
-import { listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import StatusBadge from '@/components/StatusBadge';
 import {
   createEquipment, createEquipmentCategory, createEquipmentType, deleteEquipment,
@@ -21,7 +24,7 @@ import {
 import type { PageResult } from '@/types/common';
 
 type EquipmentRow = EquipmentRecord | EquipmentTypeRecord;
-const emptyForm = { code: '', name: '', categoryId: '', equipmentTypeId: '', brand: '', model: '', serialNumber: '', purchaseDate: '', status: 'ACTIVE' };
+const emptyForm = { code: '', name: '', description: '', categoryId: '', equipmentTypeId: '', brand: '', model: '', serialNumber: '', purchaseDate: '', status: 'ACTIVE' };
 const panelSx = { bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' };
 const tableHeaderCellSx = listTableHeaderCellSx;
 type EquipmentColumn = { id: string; label: string; width: number };
@@ -80,7 +83,7 @@ export function equipmentEditorForm(row: EquipmentRow, isTypes: boolean) {
   const type = row as EquipmentTypeRecord;
   const equipment = row as EquipmentRecord;
   return {
-    ...emptyForm, code: row.code, name: row.name,
+    ...emptyForm, code: row.code, name: row.name, description: row.description ?? '',
     ...(isTypes ? { categoryId: type.categoryId ?? '' } : {
       equipmentTypeId: equipment.equipmentTypeId ?? '', brand: equipment.brand ?? '', model: equipment.model ?? '',
       serialNumber: equipment.serialNumber ?? '', purchaseDate: equipment.purchaseDate ?? '', status: equipment.status,
@@ -178,8 +181,8 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
         if (error) throw new Error(error);
       }
       const body = isTypes
-        ? { code: form.code.trim(), name: form.name.trim(), categoryId: form.categoryId }
-        : { code: form.code.trim(), name: form.name.trim(), equipmentTypeId: form.equipmentTypeId, brand: form.brand.trim(), model: form.model.trim(), serialNumber: form.serialNumber.trim(), purchaseDate: form.purchaseDate || null, status: form.status };
+        ? { code: form.code.trim(), name: form.name.trim(), categoryId: form.categoryId, description: form.description.trim() || null }
+        : { code: form.code.trim(), name: form.name.trim(), equipmentTypeId: form.equipmentTypeId, brand: form.brand.trim(), model: form.model.trim(), serialNumber: form.serialNumber.trim(), purchaseDate: form.purchaseDate || null, status: form.status, description: form.description.trim() || null };
       return isTypes
         ? editingId ? updateEquipmentType(editingId, body) : createEquipmentType(body)
         : editingId ? updateEquipment(editingId, body) : createEquipment(body);
@@ -289,10 +292,10 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
                 <Button size="small" onClick={() => setColumnPreferences(normalizeEquipmentColumns(allColumns))}>恢复默认</Button>
               </Stack>
             </Popover>
-            <TableContainer ref={tableContainerRef} sx={{ flex: 1, minHeight: 180, containerType: 'inline-size', overflow: 'auto' }}>
+            <ListTableShell ref={tableContainerRef} sx={{ flex: 1, minHeight: 180, containerType: 'inline-size', overflow: 'auto' }}>
               <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: columns.reduce((sum, col) => sum + columnWidths[col.id], 0), height: !data?.content.length ? '100%' : 'auto' }}>
                 <colgroup>{columns.map((column) => <col key={column.id} style={{ width: columnWidths[column.id] }} />)}</colgroup>
-                <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{columns.map((column) => <TableCell key={column.id} data-equipment-column={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ position: 'sticky', userSelect: 'none', ...(column.id === 'actions' ? { right: 0, zIndex: 3, width: columnWidths[column.id], minWidth: columnWidths[column.id], maxWidth: columnWidths[column.id], boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : { pr: 2 }) }}>
+                <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{columns.map((column) => <TableCell key={column.id} data-equipment-column={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ position: 'sticky', userSelect: 'none', ...(column.id === 'actions' ? { right: 0, zIndex: 3, width: columnWidths[column.id], minWidth: columnWidths[column.id], maxWidth: columnWidths[column.id], ...listTableStickyEdgeSx } : { pr: 2 }) }}>
                   <Box component="span" title={column.label} sx={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{column.label}</Box>
                   {column.id !== 'actions' && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => { event.preventDefault(); event.stopPropagation(); resizeStart.current = { id: column.id, x: event.clientX, width: columnWidths[column.id], widths: { ...columnPreferences.widths, ...columnWidths } }; event.currentTarget.setPointerCapture(event.pointerId); }} onPointerMove={(event) => { const start = resizeStart.current; if (start?.id === column.id) setColumnPreferences((current) => ({ ...current, widths: { ...start.widths, [column.id]: Math.max(80, start.width + event.clientX - start.x) } })); }} onPointerUp={() => { resizeStart.current = null; }} onPointerCancel={() => { resizeStart.current = null; }} onLostPointerCapture={() => { resizeStart.current = null; }} sx={{ position: 'absolute', top: 0, right: 0, width: 8, height: '100%', cursor: 'col-resize', touchAction: 'none', '&::after': { content: '""', position: 'absolute', top: '50%', right: 0, transform: 'translateY(-50%)', width: '1px', height: 18, bgcolor: '#dcdfe6' }, '&:hover': { bgcolor: '#d1e9ff' }, '&:hover::after': { bgcolor: '#1890ff' } }} />}
                 </TableCell>)}</TableRow></TableHead>
@@ -300,7 +303,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
                   {listQuery.isLoading ? <TableRow><TableStateCell colSpan={columns.length} align="center"><CircularProgress size={24} /></TableStateCell></TableRow>
                     : listQuery.isError ? <TableRow><TableStateCell colSpan={columns.length} align="center">加载失败 <Button onClick={() => listQuery.refetch()}>重试</Button></TableStateCell></TableRow>
                       : !data?.content.length ? <TableRow><TableStateCell colSpan={columns.length} align="center">暂无数据</TableStateCell></TableRow>
-                        : data.content.map((row) => <TableRow data-record-id={row.id} key={row.id} hover sx={{ '& .MuiTableCell-root': { height: 40, py: 0, lineHeight: '20px', borderBottom: '1px solid #ebeef5' }, '&:hover .MuiTableCell-root': { bgcolor: '#f5f7fa' } }}>{columns.map((column) => <TableCell key={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', ...(column.id === 'actions' ? { position: 'sticky', right: 0, width: columnWidths[column.id], minWidth: columnWidths[column.id], maxWidth: columnWidths[column.id], bgcolor: '#fff', zIndex: 1, boxShadow: '-2px 0 4px rgba(0,0,0,.06)' } : {}) }}>
+                        : data.content.map((row) => <TableRow data-record-id={row.id} key={row.id} hover sx={{ '& .MuiTableCell-root': { height: 40, py: 0, lineHeight: '20px', borderBottom: '1px solid #ebeef5' }, '&:hover .MuiTableCell-root': { bgcolor: '#f5f7fa' } }}>{columns.map((column) => <TableCell key={column.id} align={column.id === 'actions' ? 'center' : 'left'} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', ...(column.id === 'actions' ? { position: 'sticky', right: 0, width: columnWidths[column.id], minWidth: columnWidths[column.id], maxWidth: columnWidths[column.id], bgcolor: '#fff', zIndex: 1, ...listTableStickyEdgeSx } : {}) }}>
                           {column.id === 'actions' ? <>
                             <Tooltip title="编辑"><IconButton size="small" aria-label={`编辑 ${row.name}`} onClick={() => openEditor(row)}><Edit fontSize="small" /></IconButton></Tooltip>
                             <Tooltip title="删除"><IconButton size="small" color="error" aria-label={`删除 ${row.name}`} onClick={() => setDeleteTarget({ id: row.id, name: row.name, category: false })}><Delete fontSize="small" /></IconButton></Tooltip>
@@ -310,7 +313,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
                         </TableCell>)}</TableRow>)}
                 </TableBody>
               </Table>
-            </TableContainer>
+            </ListTableShell>
             <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" useFlexGap gap={1} sx={{ minHeight: 56, px: 2, borderTop: '1px solid #e4e7ed', flexShrink: 0 }}>
               <Typography variant="body2" sx={{ color: '#909399' }}>共 {data?.totalElements ?? 0} 条数据</Typography>
               <Stack direction="row" spacing={1.5} alignItems="center">
@@ -321,11 +324,11 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
           </Box>
         </Stack>
       </Box>
-      <AppDialog open={open} onClose={() => { if (!saveMutation.isPending) setOpen(false); }} maxWidth="sm" fullWidth>
+      <FormDialog open={open} onClose={() => { if (!saveMutation.isPending) setOpen(false); }} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑' : '新增'}{recordLabel}</DialogTitle>
-        <DialogContent dividers sx={{ px: 3, py: 2 }}>
-          <Typography fontWeight={600} sx={{ mb: 1.5 }}>基本信息</Typography>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+        <DialogContent dividers>
+          <FormDialogSection title="基本信息">
+          <FormDialogFieldGrid>
           <TextField size="small" required label={`${recordLabel}名称`} fullWidth value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
           <TextField size="small" required label={`${recordLabel}编码`} fullWidth value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
           {isTypes ? <>
@@ -342,15 +345,17 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
             <TextField size="small" type="date" label="采购时间" fullWidth value={form.purchaseDate} onChange={(event) => setForm({ ...form, purchaseDate: event.target.value })} InputLabelProps={{ shrink: true }} inputProps={{ max: today }} error={!!purchaseDateError} helperText={purchaseDateError} />
             <TextField size="small" select label="状态" fullWidth value={form.status} onChange={(event) => setForm({ ...form, status: event.target.value })}><MenuItem value="ACTIVE">启用</MenuItem><MenuItem value="INACTIVE">停用</MenuItem></TextField>
           </>}
-          </Box>
+          <TextField size="small" label="描述" fullWidth multiline minRows={3} value={form.description} inputProps={{ maxLength: 512 }} onChange={(event) => setForm({ ...form, description: event.target.value })} sx={{ gridColumn: { sm: '1 / -1' } }} />
+          </FormDialogFieldGrid>
+          </FormDialogSection>
         </DialogContent>
-        <DialogActions sx={{ px: 3, py: 1.5 }}><Button disabled={saveMutation.isPending} onClick={() => setOpen(false)}>取消</Button><Button variant="contained" disabled={!form.code.trim() || !form.name.trim() || !validParent || !!purchaseDateError || saveMutation.isPending} onClick={() => saveMutation.mutate()}>{saveMutation.isPending ? '保存中…' : '保存'}</Button></DialogActions>
-      </AppDialog>
-      <AppDialog open={categoryDialog !== null} onClose={() => { if (!saveCategoryMutation.isPending) setCategoryDialog(null); }} maxWidth="xs" fullWidth>
+        <DialogActions><Button disabled={saveMutation.isPending} onClick={() => setOpen(false)}>取消</Button><Button variant="contained" disabled={!form.code.trim() || !form.name.trim() || !validParent || !!purchaseDateError || saveMutation.isPending} onClick={() => saveMutation.mutate()}>{saveMutation.isPending ? '保存中…' : '保存'}</Button></DialogActions>
+      </FormDialog>
+      <FormDialog open={categoryDialog !== null} onClose={() => { if (!saveCategoryMutation.isPending) setCategoryDialog(null); }} maxWidth="xs" fullWidth>
         <DialogTitle>{categoryDialog?.id ? '编辑' : '新增'}设备分类</DialogTitle>
-        <DialogContent dividers sx={{ px: 3, py: 2 }}><Stack spacing={1.5}><Typography fontWeight={600}>基本信息</Typography><TextField size="small" autoFocus required fullWidth label="设备分类名称" value={categoryDialog?.name ?? ''} onChange={(event) => setCategoryDialog((current) => current ? { ...current, name: event.target.value } : null)} /></Stack></DialogContent>
-        <DialogActions sx={{ px: 3, py: 1.5 }}><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryDialog?.name.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>保存</Button></DialogActions>
-      </AppDialog>
+        <DialogContent dividers><FormDialogSection title="基本信息"><TextField size="small" autoFocus required fullWidth label="设备分类名称" value={categoryDialog?.name ?? ''} onChange={(event) => setCategoryDialog((current) => current ? { ...current, name: event.target.value } : null)} /></FormDialogSection></DialogContent>
+        <DialogActions><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryDialog?.name.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>保存</Button></DialogActions>
+      </FormDialog>
       <ConfirmDialog deletionTarget={deleteTarget && { type: deleteTarget.category ? 'equipment_category' : isTypes ? 'equipment_type' : 'equipment', id: deleteTarget.id }} open={deleteTarget !== null} title="确认删除" message={`确定要删除${deleteTarget?.category ? '分类' : recordLabel}“${deleteTarget?.name ?? ''}”吗？`} destructive confirmText="删除" loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
       <Snackbar open={snackbar !== null} autoHideDuration={4000} onClose={() => setSnackbar(null)} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity={snackbar?.severity ?? 'success'} onClose={() => setSnackbar(null)}>{snackbar?.message}</Alert></Snackbar>
     </>

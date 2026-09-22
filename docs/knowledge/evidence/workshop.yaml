@@ -58,7 +58,7 @@ evidence:
   - id: evidence.workshop-management-page
     type: code
     path: gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx
-    description: 车间四字段无版本列表、筛选、分页、新增、编辑、删除、引用状态保护、详情和数据审计界面。
+    description: 车间四字段无版本列表、筛选、分页、新增、编辑、删除、引用状态保护、详情和数据审计界面；当前列表接入 ListTableShell，普通表单接入 FormDialog 与双列字段网格，并使用统一首列正文、列调整把手和共享样式 token。
     visibility: internal
   - id: evidence.workshop-router
     type: code

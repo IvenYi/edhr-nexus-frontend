@@ -1,6 +1,6 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -58,6 +58,7 @@ import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { ListTableShell } from '@/components/ListTableShell';
 import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
@@ -131,19 +132,19 @@ const statusColors: Record<string, 'success' | 'warning' | 'error' | 'info' | 'd
   CANCELLED: 'error',
 };
 const tableHeaderCellSx = listTableHeaderCellSx;
-const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
+const tableRowSx = { '& > .MuiTableCell-root': listTableBodyCellSx };
 function getStatusColumnSx(width: number, layer: 'head' | 'body') {
   return {
     position: 'sticky' as const, right: WORK_ORDER_ACTION_COLUMN_WIDTH, zIndex: layer === 'head' ? 10 : 2,
     width, minWidth: width, maxWidth: width, bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-    top: layer === 'head' ? 0 : undefined, backgroundClip: 'padding-box', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)', textAlign: layer === 'head' ? 'center' as const : undefined, whiteSpace: 'nowrap',
+    top: layer === 'head' ? 0 : undefined, ...listTableStickyEdgeSx, textAlign: layer === 'head' ? 'center' as const : undefined, whiteSpace: 'nowrap',
   };
 }
-function getOperationColumnSx(layer: 'head' | 'body') {
+function getOperationColumnSx(layer: 'head' | 'body', hasVisibleStatusColumn: boolean) {
   return {
     position: 'sticky' as const, right: 0, zIndex: layer === 'head' ? 10 : 2,
     width: WORK_ORDER_ACTION_COLUMN_WIDTH, minWidth: WORK_ORDER_ACTION_COLUMN_WIDTH, maxWidth: WORK_ORDER_ACTION_COLUMN_WIDTH,
-    top: layer === 'head' ? 0 : undefined, bgcolor: layer === 'head' ? '#f5f7fa' : '#fff', backgroundClip: 'padding-box', textAlign: 'center' as const, whiteSpace: 'nowrap',
+    top: layer === 'head' ? 0 : undefined, bgcolor: layer === 'head' ? '#f5f7fa' : '#fff', backgroundClip: 'padding-box', ...(!hasVisibleStatusColumn ? listTableStickyEdgeSx : {}), textAlign: 'center' as const, whiteSpace: 'nowrap',
   };
 }
 const clearableSelectSx = {
@@ -235,7 +236,6 @@ function DetailSection({ title, children }: { title: string; children: ReactNode
 function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden' }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: { xs: 1.5, sm: 2 }, py: 1.25, bgcolor: '#f8fafc', borderBottom: '1px solid #e4e7ed' }}>
-      <Box sx={{ width: 3, height: 18, borderRadius: 1, bgcolor: '#1890ff', flex: '0 0 auto' }} />
       <Typography variant="subtitle2" sx={{ color: '#303133', fontWeight: 600 }}>{title}</Typography>
     </Box>
     <Box sx={{ p: { xs: 1.5, sm: 2 } }}>{children}</Box>
@@ -316,7 +316,7 @@ function ProcessVersionPreviewDialog({ open, version, loading, error, onClose }:
           <DetailField label="生产模式">{version.productionMode}</DetailField><DetailField label="生产形态">{version.productionForm}</DetailField>
           <DetailField label="工艺路线版本">{version.routeCode || version.routeName ? `${version.routeCode || ''}${version.routeCode && version.routeName ? ' · ' : ''}${version.routeName || ''}（${version.routeVersion || '-'}）` : version.routeVersion || '-'}</DetailField>
           <DetailField label="批记录模板版本">{version.dhrTemplateCode || version.dhrTemplateName ? `${version.dhrTemplateCode || ''}${version.dhrTemplateCode && version.dhrTemplateName ? ' · ' : ''}${version.dhrTemplateName || ''}（${version.dhrTemplateVersion || '-'}）` : version.dhrTemplateVersion || '-'}</DetailField>
-          <DetailField label="备注">{version.description || '-'}</DetailField>
+          <DetailField label="版本说明">{version.description || '-'}</DetailField>
         </Box></FormSection>
         <FormSection title={`工序配置（${version.operations?.length || 0}）`}>
           {version.operations?.length ? <Stack spacing={1}>{version.operations.map((operation, index) => <Box key={operation.id || operation.routeNodeKey} sx={{ p: 1.25, bgcolor: '#fbfdff', border: '1px solid #e4e7ed', borderRadius: 1 }}>
@@ -363,6 +363,7 @@ export default function WorkOrderPage() {
     .map((id) => WORK_ORDER_COLUMNS.find((column) => column.id === id))
     .filter((column): column is WorkOrderColumn => Boolean(column))
     .filter((column) => !columnSettings.hidden.includes(column.id)), [columnSettings]);
+  const hasVisibleStatusColumn = visibleColumns.some((column) => column.id === 'status');
   const resolvedColumnWidths = useMemo(() => Object.fromEntries(WORK_ORDER_COLUMNS.map((column) => [column.id, Math.max(column.minWidth, columnWidths[column.id] ?? column.width)])) as Record<WorkOrderColumnId, number>, [columnWidths]);
   const mainTableWidth = visibleColumns.reduce((total, column) => total + resolvedColumnWidths[column.id], WORK_ORDER_ACTION_COLUMN_WIDTH);
 
@@ -656,25 +657,25 @@ export default function WorkOrderPage() {
         <Button variant="contained" size="small" startIcon={<Add />} onClick={openCreate}>新建工单</Button>
       </Box>
       <ListColumnSettingsPopover anchorEl={columnSettingsAnchor} columns={WORK_ORDER_COLUMNS} settings={columnSettings} onClose={() => setColumnSettingsAnchor(null)} onToggle={toggleColumnVisibility} onReorder={reorderColumns} />
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: mainTableWidth, width: '100%', height: showOrderTableState ? '100%' : 'auto' }}>
+      <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: mainTableWidth, width: '100%', height: showOrderTableState ? '100%' : 'auto' }}>
         <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: resolvedColumnWidths[column.id] }} />)}<col style={{ width: WORK_ORDER_ACTION_COLUMN_WIDTH }} /></colgroup>
-        <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ ...tableHeaderCellSx, width: resolvedColumnWidths[column.id], minWidth: resolvedColumnWidths[column.id], maxWidth: resolvedColumnWidths[column.id], ...(column.id === 'status' ? getStatusColumnSx(resolvedColumnWidths[column.id], 'head') : {}), top: 0, zIndex: column.id === 'status' ? 10 : 5, position: 'sticky' }}><Box sx={{ position: 'relative', pr: 1 }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column.id)} sx={{ ...listColumnResizeHandleSx, right: -8 }} /></Box></TableCell>)}<TableCell align="center" sx={{ ...tableHeaderCellSx, ...getOperationColumnSx('head') }}>操作</TableCell></TableRow></TableHead>
+        <TableHead sx={{ height: 48 }}><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ ...tableHeaderCellSx, width: resolvedColumnWidths[column.id], minWidth: resolvedColumnWidths[column.id], maxWidth: resolvedColumnWidths[column.id], ...(column.id === 'status' ? getStatusColumnSx(resolvedColumnWidths[column.id], 'head') : {}), top: 0, zIndex: column.id === 'status' ? 10 : 5, position: 'sticky' }}><Box sx={{ position: 'relative', pr: 1 }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column.id)} sx={{ ...listColumnResizeHandleSx, right: -8 }} /></Box></TableCell>)}<TableCell align="center" sx={{ ...tableHeaderCellSx, ...getOperationColumnSx('head', hasVisibleStatusColumn) }}>操作</TableCell></TableRow></TableHead>
         <TableBody>{orders.isLoading ? <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#909399' }}><CircularProgress size={24} /></TableStateCell></TableRow> : orders.isError ? <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#c62828' }}>工单数据加载失败</TableStateCell></TableRow> : (orders.data?.content ?? []).length === 0 ? <TableRow><TableStateCell colSpan={visibleColumns.length + 1} align="center" sx={{ color: '#909399' }}>暂无数据</TableStateCell></TableRow> : orders.data!.content.map((item) => <TableRow data-record-id={item.id} key={item.id} hover tabIndex={0} onClick={() => openDetail(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') openDetail(item); }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
           {visibleColumns.map((column) => <Fragment key={column.id}>{renderWorkOrderCell(item, column)}</Fragment>)}
-          <TableCell align="center" sx={getOperationColumnSx('body')} onClick={(event) => event.stopPropagation()}>
+          <TableCell align="center" sx={getOperationColumnSx('body', hasVisibleStatusColumn)} onClick={(event) => event.stopPropagation()}>
             <Tooltip title="生产对象" arrow><IconButton size="small" aria-label="生产对象" onClick={() => openObjects(item)}><ViewList fontSize="small" /></IconButton></Tooltip>
             {item.status === 'CREATED' ? <Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip> : <Tooltip title="编辑（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="编辑暂不可用"><Edit fontSize="small" /></IconButton></span></Tooltip>}
             {item.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消" color="error" onClick={() => setCancelTarget(item)}><Cancel fontSize="small" /></IconButton></Tooltip> : item.status === 'COMPLETED' ? <Tooltip title="关闭" arrow><IconButton size="small" aria-label="关闭" onClick={() => setCloseTarget(item)}><Close fontSize="small" /></IconButton></Tooltip> : <Tooltip title="取消（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="取消暂不可用"><Cancel fontSize="small" /></IconButton></span></Tooltip>}
           </TableCell>
         </TableRow>)}</TableBody>
-      </Table></TableContainer>
+      </Table></ListTableShell>
       <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {orders.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center" sx={{ marginLeft: 'auto' }}><Pagination size="small" count={Math.max(orders.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(orders.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option} 条/页</MenuItem>)}</TextField></Stack></Box>
     </Box>
 
-    <AppDialog open={dialogOpen} onClose={save.isPending ? undefined : () => setDialogOpen(false)} maxWidth="md" fullWidth>
+    <AppDialog variant="form" open={dialogOpen} onClose={save.isPending ? undefined : () => setDialogOpen(false)} maxWidth="md" fullWidth>
       <DialogTitle>{editing ? '编辑工单' : '新建工单'}</DialogTitle>
-      <DialogContent dividers sx={{ p: 0, bgcolor: '#fff' }}>
-        <Stack spacing={1.5} sx={{ p: { xs: 1.5, sm: 2.5 } }}>
+      <DialogContent dividers>
+        <Stack spacing={1.5}>
           <FormSection title="基础信息">
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
               <TextField autoFocus={!editing} required fullWidth size="small" label="工单编号" value={form.orderNo} onChange={(event) => setForm({ ...form, orderNo: event.target.value })} />

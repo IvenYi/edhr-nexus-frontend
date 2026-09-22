@@ -122,6 +122,29 @@ class EquipmentControllerIntegrationTest {
     }
 
     @Test
+    void descriptionsPersistForTypesAndEquipmentAndAppearInAudit() throws Exception {
+        var typeBody = new java.util.HashMap<String, Object>(typeBody("DESC-T", "描述类型", "-1"));
+        typeBody.put("description", "  类型说明  ");
+        String typeId = create("/types", typeBody).path("id").asText();
+        var equipmentBody = new java.util.HashMap<String, Object>(equipmentBody("DESC-E", "描述设备", typeId));
+        equipmentBody.put("description", "  设备说明  ");
+        String equipmentId = create("", equipmentBody).path("id").asText();
+
+        mvc.perform(authorized(get(URL + "/types/" + typeId))).andExpect(jsonPath("$.data.description").value("类型说明"));
+        mvc.perform(authorized(get(URL + "/" + equipmentId))).andExpect(jsonPath("$.data.description").value("设备说明"));
+        assertThat(jdbc.queryForObject("SELECT description FROM equipment_type WHERE id=?", String.class, Long.valueOf(typeId))).isEqualTo("类型说明");
+        assertThat(jdbc.queryForObject("SELECT description FROM equipment WHERE id=?", String.class, Long.valueOf(equipmentId))).isEqualTo("设备说明");
+
+        equipmentBody.put("description", "更新后的描述");
+        mvc.perform(authorized(put(URL + "/" + equipmentId)).contentType("application/json")
+                .content(mapper.writeValueAsString(equipmentBody)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.description").value("更新后的描述"));
+        var audit = audits.findAll().stream().filter(event -> "EQUIPMENT".equals(event.getEntityType()) && "UPDATE".equals(event.getAction())).findFirst().orElseThrow();
+        assertThat(mapper.readTree(audit.getContentBefore()).path("description").asText()).isEqualTo("设备说明");
+        assertThat(mapper.readTree(audit.getContentAfter()).path("description").asText()).isEqualTo("更新后的描述");
+    }
+
+    @Test
     void systemFieldsPersistRealOperatorsAndPreserveCreationMetadata() throws Exception {
         JsonNode type = create("/types", typeBody("META-T", "系统字段类型", "-1"));
         JsonNode equipment = create("", equipmentBody("META-E", "系统字段设备", type.path("id").asText()));
@@ -428,6 +451,38 @@ class EquipmentControllerIntegrationTest {
                     liquibase.rollback(1, new Contexts(), new LabelExpression());
                     assertThat(jdbc.queryForObject("SELECT model FROM " + schema + ".equipment WHERE id=1", String.class)).isEqualTo("M100");
                     assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM information_schema.columns WHERE LOWER(table_schema)=? AND LOWER(column_name) IN ('brand','purchase_date')", Integer.class, schema)).isZero();
+                } finally { connection.setSchema(originalSchema); }
+            }
+        } finally { jdbc.execute("DROP SCHEMA " + schema + " CASCADE"); }
+    }
+
+    @Test
+    void descriptionMigrationPreservesExistingEquipmentAndRollsBackAddedColumns() throws Exception {
+        String schema = "equipment_description_" + java.util.UUID.randomUUID().toString().replace("-", "");
+        jdbc.execute("CREATE SCHEMA " + schema);
+        try (var connection = dataSource.getConnection()) {
+            String originalSchema = connection.getSchema();
+            boolean postgres = connection.getMetaData().getDatabaseProductName().equals("PostgreSQL");
+            connection.setSchema(postgres ? schema : schema.toUpperCase(java.util.Locale.ROOT));
+            try (var statement = connection.createStatement()) {
+                statement.execute("CREATE TABLE equipment_type(id BIGINT PRIMARY KEY, name VARCHAR(128))");
+                statement.execute("CREATE TABLE equipment(id BIGINT PRIMARY KEY, name VARCHAR(128))");
+                statement.execute("INSERT INTO equipment_type VALUES(1,'历史类型')");
+                statement.execute("INSERT INTO equipment VALUES(1,'历史设备')");
+            }
+            var database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            database.setDefaultSchemaName(schema);
+            database.setLiquibaseSchemaName(schema);
+            try (var liquibase = new Liquibase("db/changelog/0094-equipment-description.sql", new ClassLoaderResourceAccessor(), database)) {
+                try {
+                    liquibase.update(new Contexts(), new LabelExpression());
+                    liquibase.update(new Contexts(), new LabelExpression());
+                    assertThat(jdbc.queryForObject("SELECT description FROM " + schema + ".equipment_type WHERE id=1", String.class)).isNull();
+                    assertThat(jdbc.queryForObject("SELECT description FROM " + schema + ".equipment WHERE id=1", String.class)).isNull();
+                    liquibase.rollback(1, new Contexts(), new LabelExpression());
+                    assertThat(jdbc.queryForObject("SELECT name FROM " + schema + ".equipment_type WHERE id=1", String.class)).isEqualTo("历史类型");
+                    assertThat(jdbc.queryForObject("SELECT name FROM " + schema + ".equipment WHERE id=1", String.class)).isEqualTo("历史设备");
+                    assertThat(jdbc.queryForList("SELECT table_name FROM information_schema.columns WHERE LOWER(table_schema)=? AND LOWER(table_name) IN ('equipment_type','equipment') AND LOWER(column_name)='description'", String.class, schema)).isEmpty();
                 } finally { connection.setSchema(originalSchema); }
             }
         } finally { jdbc.execute("DROP SCHEMA " + schema + " CASCADE"); }

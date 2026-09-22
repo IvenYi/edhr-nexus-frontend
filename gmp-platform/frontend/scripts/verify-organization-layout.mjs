@@ -107,7 +107,7 @@ mustInclude('tableScrollbarWidth', 'personnel table action shadow should account
 mustInclude('data-personnel-action-column-shadow', 'personnel table fixed action shadow should be an overlay outside the scrolling table body');
 mustInclude('width: PERSONNEL_ACTION_COLUMN_WIDTH', 'personnel table fixed action shadow should cover the full action column height and width');
 mustInclude('right: tableScrollbarWidth', 'personnel table fixed action shadow should align with the sticky action column');
-mustInclude("boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)'", 'personnel table fixed action column divider should be one full-height shadow');
+mustInclude('listTableStickyEdgeShadow', 'personnel table fixed action column divider should reuse the shared full-height shadow token');
 mustInclude("pointerEvents: 'none'", 'personnel table fixed action shadow should not intercept row or action clicks');
 mustInclude("position: 'sticky'", 'personnel table header cells should stay visible while table rows scroll');
 mustInclude('top: 0,', 'personnel table header cells should stay at the top of the table container while rows scroll');
@@ -331,12 +331,12 @@ uiStandardMustInclude('支持拖拽排序和勾选显隐', 'UI standard should r
 uiStandardMustInclude('按当前用户持久化', 'UI standard should require per-user persistence for field settings');
 mustInclude('personnelColumns', 'personnel table columns should be driven by a resizable column model');
 mustInclude("{ id: 'select', label: '', defaultWidth: 50, minWidth: 50, resizable: false, align: 'center' }", 'personnel selection column should be fixed at 50px and not draggable');
-mustInclude("{ id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false }", 'personnel action column should be fixed at 150px and not draggable');
+mustInclude("{ id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false, align: 'center' }", 'personnel action column should be fixed and not draggable');
 mustInclude('getStickyActionColumnSx', 'personnel action column should use shared sticky-column styling');
 mustInclude("column.id !== 'actions'", 'only the action column should be sticky on the right');
 mustInclude("position: 'sticky'", 'personnel action column should stay fixed while horizontally scrolling');
 mustInclude('right: 0', 'personnel action column should be pinned to the right edge');
-mustInclude("boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)'", 'personnel action column should have a subtle left separation shadow');
+mustInclude('...listTableStickyEdgeSx', 'personnel action column should reuse the shared left separation shadow');
 mustInclude("...getStickyActionColumnSx(column, 'head')", 'personnel action header should stay fixed on the right');
 mustInclude("...getStickyActionColumnSx(column, 'body')", 'personnel action body cells should stay fixed on the right');
 mustInclude('selectedPersonnelIds', 'personnel table should track selected rows as controlled state');
@@ -402,7 +402,7 @@ mustInclude('ViewColumn', 'personnel field settings trigger should use a column 
 mustInclude('DragIndicator', 'personnel field setting rows should show a drag affordance icon');
 mustInclude('Popover', 'personnel field settings should render in a popover');
 mustInclude('visiblePersonnelColumns.map((column)', 'personnel table should map visible columns in colgroup, header, and body');
-mustInclude('<TableCell colSpan={visiblePersonnelColumns.length}', 'personnel empty state should sync colSpan with visible columns');
+mustInclude('colSpan={visiblePersonnelColumns.length}', 'personnel empty state should sync colSpan with visible columns');
 mustInclude("minHeight: 48", 'personnel table toolbar should be compact');
 mustInclude("borderTop: 'none'", 'personnel pagination footer should not double the table bottom divider');
 mustInclude('新增', 'personnel add button should use create wording');

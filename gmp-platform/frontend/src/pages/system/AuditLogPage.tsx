@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
 import { listTableHeaderCellSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
@@ -970,7 +971,7 @@ export default function AuditLogPage() {
           </Popover>
 
           <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
-            <TableContainer ref={tableContainerRef} data-audit-log-table-scroll sx={{ height: '100%', overflow: 'auto' }}>
+            <ListTableShell ref={tableContainerRef} data-audit-log-table-scroll sx={{ height: '100%', overflow: 'auto' }}>
               <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: resolvedTableWidth, minWidth: resolvedTableWidth, height: isAuditTableEmptyState ? '100%' : 'auto' }}>
                 <colgroup>
                   {visibleAuditColumns.map((column) => (
@@ -1017,7 +1018,7 @@ export default function AuditLogPage() {
                   ))}
                 </TableBody>
               </Table>
-            </TableContainer>
+            </ListTableShell>
           </Box>
 
           <Box sx={{ minHeight: 56, px: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>

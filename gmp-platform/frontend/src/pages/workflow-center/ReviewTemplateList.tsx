@@ -8,9 +8,12 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AppDialog from '@/components/AppDialog';
+import FormDialogSection from '@/components/FormDialogSection';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { ListTableShell } from '@/components/ListTableShell';
 import StatusBadge from '@/components/StatusBadge';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { useAuthStore } from '@/stores/authStore';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { createTemplate, deleteTemplate, listTemplates, updateTemplate } from '@/api/workflow-templates';
@@ -61,22 +64,13 @@ const REVIEW_TEMPLATE_COLUMNS: TemplateColumn[] = [
   { id: 'updatedAt', label: '更新时间', defaultWidth: 180, minWidth: 160 },
 ];
 const tableHeaderCellSx = listTableHeaderCellSx;
-const tableRowSx = {
-  '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' },
-};
+const tableRowSx = { '& > .MuiTableCell-root': listTableBodyCellSx };
 const toolbarIconSx = {
   width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1, color: '#606266', bgcolor: '#fff',
   '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' },
 };
 const emptyTableRowSx = { height: '100%' };
 const emptyTableCellSx = { height: '100%', py: 0, color: '#909399', verticalAlign: 'middle' };
-
-function DialogSection({ children }: { children: React.ReactNode }) {
-  return <Box sx={{ border: '1px solid #ebeef5', borderRadius: 1, overflow: 'hidden' }}>
-    <Box sx={{ px: 1.5, py: 1, bgcolor: '#f5f7fa', borderBottom: '1px solid #ebeef5' }}><Typography variant="subtitle2" fontWeight={700}>基本信息</Typography></Box>
-    <Box sx={{ p: 2 }}>{children}</Box>
-  </Box>;
-}
 
 function getOperationColumnSx(layer: 'head' | 'body') {
   return {
@@ -87,8 +81,7 @@ function getOperationColumnSx(layer: 'head' | 'body') {
     minWidth: REVIEW_TEMPLATE_ACTION_COLUMN_WIDTH,
     maxWidth: REVIEW_TEMPLATE_ACTION_COLUMN_WIDTH,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-    backgroundClip: 'padding-box',
-    boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
     whiteSpace: 'nowrap',
   };
@@ -393,7 +386,7 @@ export default function ReviewTemplateList() {
           </Popover>
 
           <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
-            <TableContainer ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
+            <ListTableShell ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
               <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth, height: isTableNonDataState ? '100%' : 'auto' }}>
                 <colgroup>
                   {visibleColumns.map((column) => <col key={column.id} style={{ width: resolvedColumnWidths[column.id] }} />)}
@@ -422,7 +415,7 @@ export default function ReviewTemplateList() {
                   </TableRow>) : null}
                 </TableBody>
               </Table>
-            </TableContainer>
+            </ListTableShell>
           </Box>
 
           <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
@@ -435,25 +428,25 @@ export default function ReviewTemplateList() {
         </Box>
       </Box>
 
-      <AppDialog open={canEdit && createOpen} onClose={() => setCreateOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={canEdit && createOpen} onClose={() => setCreateOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>新建{selected.label}模板</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
-          <DialogSection><Stack spacing={1.5}>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
             <TextField autoFocus label="模板名称" required fullWidth size="small" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
             <TextField label="模板编码" fullWidth size="small" value={form.code} onChange={(event) => setForm({ ...form, code: event.target.value })} />
-            <TextField label="说明" fullWidth size="small" multiline minRows={3} value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} />
-          </Stack></DialogSection>
+            <TextField label="描述" fullWidth size="small" multiline minRows={3} value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} sx={{ gridColumn: { sm: '1 / -1' } }} />
+          </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setCreateOpen(false)}>取消</Button><Button variant="contained" disabled={!form.name.trim() || createMutation.isPending} onClick={() => createMutation.mutate()}>{createMutation.isPending ? '创建中...' : '创建'}</Button></DialogActions>
       </AppDialog>
-      <AppDialog open={canEdit && propertyTarget !== null} onClose={() => setPropertyTarget(null)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={canEdit && propertyTarget !== null} onClose={() => setPropertyTarget(null)} maxWidth="sm" fullWidth>
         <DialogTitle>编辑模板属性</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
-          <DialogSection><Stack spacing={1.5}>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
             <TextField autoFocus label="模板名称" required fullWidth size="small" value={propertyForm.name} onChange={(event) => setPropertyForm({ ...propertyForm, name: event.target.value })} />
             <TextField label="模板编码" fullWidth size="small" value={propertyForm.code} onChange={(event) => setPropertyForm({ ...propertyForm, code: event.target.value })} />
-            <TextField label="说明" fullWidth size="small" multiline minRows={3} value={propertyForm.description} onChange={(event) => setPropertyForm({ ...propertyForm, description: event.target.value })} />
-          </Stack></DialogSection>
+            <TextField label="描述" fullWidth size="small" multiline minRows={3} value={propertyForm.description} onChange={(event) => setPropertyForm({ ...propertyForm, description: event.target.value })} sx={{ gridColumn: { sm: '1 / -1' } }} />
+          </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setPropertyTarget(null)}>取消</Button><Button variant="contained" disabled={!propertyForm.name.trim() || updateMutation.isPending} onClick={() => updateMutation.mutate()}>{updateMutation.isPending ? '保存中...' : '保存'}</Button></DialogActions>
       </AppDialog>

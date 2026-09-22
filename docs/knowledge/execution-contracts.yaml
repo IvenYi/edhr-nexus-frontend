@@ -1,5 +1,12 @@
 knowledgeModelVersion: 0.3.24
 executionContracts:
+  - id: execution.master-data-description-field-contract
+    name: 主数据描述字段契约写入
+    status: verified
+    visibility: runtime
+    actionType: persist-master-data-description-contract
+    handler: ProcessModelingController product-family CRUD and DocumentManagementController document/version CRUD with Liquibase 0095 schema cleanup
+    evidenceIds: [evidence.master-data-description-migration, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-migration-test, evidence.master-data-description-document-controller-test]
   - id: execution.production-object-audit-snapshot
     name: 生产对象审计快照写入契约
     status: verified

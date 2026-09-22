@@ -37,7 +37,8 @@ import {
   ViewColumnRounded,
 } from '@mui/icons-material';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listColumnResizeHandleSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
@@ -115,8 +116,7 @@ function frozenColumnSx(id: ColumnId, layer: 'head' | 'body', statusWidth: numbe
     width, minWidth: width, maxWidth: width, boxSizing: 'border-box' as const,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff', backgroundClip: 'padding-box', overflow: 'hidden',
     textAlign: layer === 'head' ? 'center' as const : undefined,
-    borderLeft: id === 'sourceType' ? '1px solid #e4e7ed' : undefined,
-    boxShadow: id === 'sourceType' ? '-6px 0 8px -8px rgba(0, 0, 0, 0.35)' : undefined,
+    ...(id === 'sourceType' ? listTableStickyEdgeSx : {}),
   };
 }
 function statusBadge(status?: string | null) {
@@ -332,11 +332,11 @@ export default function FormInstanceListPage() {
       <Popover open={Boolean(settingsOpen)} anchorEl={settingsOpen} onClose={() => setSettingsOpen(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} PaperProps={{ sx: { mt: 1, width: 240, border: '1px solid #e4e7ed', borderRadius: 1 } }}>
         <Stack spacing={0.5} sx={{ p: 1.5 }}>{settings.order.map((id) => { const column = columns.find((item) => item.id === id)!; const checked = !settings.hidden.includes(id); return <Box key={id} draggable onDragStart={() => setDragging(id)} onDragOver={(event) => event.preventDefault()} onDrop={() => { if (dragging) moveColumn(dragging, id); setDragging(null); }} onDragEnd={() => setDragging(null)} sx={{ display: 'grid', gridTemplateColumns: '24px 30px minmax(0, 1fr)', alignItems: 'center', minHeight: 36, cursor: 'move', '&:hover': { bgcolor: '#f5f7fa' } }}><DragIndicator fontSize="small" sx={{ color: '#909399' }} /><input type="checkbox" aria-label={`${column.label}字段显隐`} checked={checked} disabled={checked && settings.hidden.length >= settings.order.length - 1} onChange={() => toggleColumn(id)} onClick={(event) => event.stopPropagation()} /><Typography variant="body2" noWrap>{column.label}</Typography></Box>; })}</Stack>
       </Popover>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: visibleTableWidth, minWidth: visibleTableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
+      <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: visibleTableWidth, minWidth: visibleTableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
         <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: columnWidth(column) }} />)}</colgroup>
         <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ width: columnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, userSelect: 'none', ...frozenColumnSx(column.id, 'head', frozenStatusWidth, columnWidth(column)) }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} onPointerMove={(event) => { const start = resizeRef.current; if (start?.id === column.id) setSettings((current) => ({ ...current, widths: { ...current.widths, [column.id]: Math.max(column.minWidth, start.startWidth + event.clientX - start.startX) } })); }} onPointerUp={() => { resizeRef.current = null; }} onPointerCancel={() => { resizeRef.current = null; }} onLostPointerCapture={() => { resizeRef.current = null; }} sx={listColumnResizeHandleSx} /></TableCell>)}</TableRow></TableHead>
         <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '表单列表加载失败'}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow data-record-id={row.formInstanceId} key={row.formInstanceId} hover tabIndex={0} onClick={() => openDetail(row.formInstanceId)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row.formInstanceId); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看表单实例号 ${row.instanceNo}`}>{visibleColumns.map((column) => <Fragment key={column.id}>{renderCell(row, column)}</Fragment>)}</TableRow>)}</TableBody>
-      </Table></TableContainer>
+      </Table></ListTableShell>
       <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />
     </Box>
     <FormInstanceDetailDrawer recordId={recordId} tab={detailTab} onTabChange={setDetailTab} onClose={() => setRecordId(null)} />

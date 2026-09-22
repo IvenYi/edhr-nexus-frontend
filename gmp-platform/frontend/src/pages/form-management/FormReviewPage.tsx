@@ -3,14 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import {
   Alert, Autocomplete, Box, Button, CircularProgress, Collapse, DialogActions, DialogContent, DialogTitle, Drawer,
   IconButton, InputAdornment, MenuItem, Stack, Tab, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, Tabs, TextField, Tooltip, Typography,
+  TableHead, TableRow, Tabs, TextField, Tooltip, Typography,
 } from '@mui/material';
 import { Close, ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search, SwapHoriz } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { ListTableShell } from '@/components/ListTableShell';
 import StatusBadge from '@/components/StatusBadge';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
@@ -59,8 +60,8 @@ type FilterDraft = {
 const headerCellSx = formTableHeaderCellSx;
 const bodyCellSx = formTableBodyCellSx;
 const fieldSx = formListFieldSx;
-const actionHeadSx = { position: 'sticky' as const, right: 0, zIndex: 4, width: 128, minWidth: 128, maxWidth: 128, textAlign: 'center' as const, bgcolor: '#f5f7fa', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)' };
-const actionBodySx = { position: 'sticky' as const, right: 0, zIndex: 2, width: 128, minWidth: 128, maxWidth: 128, textAlign: 'center' as const, bgcolor: '#fff', backgroundClip: 'padding-box', borderLeft: '1px solid #e4e7ed', boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.2)' };
+const actionHeadSx = { position: 'sticky' as const, right: 0, zIndex: 4, width: 128, minWidth: 128, maxWidth: 128, textAlign: 'center' as const, bgcolor: '#f5f7fa', ...listTableStickyEdgeSx };
+const actionBodySx = { position: 'sticky' as const, right: 0, zIndex: 2, width: 128, minWidth: 128, maxWidth: 128, textAlign: 'center' as const, bgcolor: '#fff', ...listTableStickyEdgeSx };
 const drawerRootSx = { top: 0, bottom: 0, zIndex: (theme: { zIndex: { drawer: number } }) => theme.zIndex.drawer + 2, '& .MuiBackdrop-root': { top: 0 } };
 const drawerBackdropSx = { top: 0 };
 const drawerPaperSx = { width: { xs: '100vw', sm: 560 }, top: 0, bottom: 0, height: '100vh', transform: 'none !important' };
@@ -248,13 +249,13 @@ export default function FormReviewPage() {
       </Box>
     <Box sx={{ flex: 1, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1.5 }}><Tabs value={view} onChange={(_, next: ReviewView) => { setView(next); setPage(0); setIdentity(null); setDetailIdentity(null); }} aria-label="表单审批视图"><Tab value="REVIEW_PENDING" label="我的待办" /><Tab value="REVIEW_DONE" label="我的已办" /></Tabs><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box>
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ minWidth: tableWidth, tableLayout: 'fixed', height: query.isFetching || query.isError || rows.length === 0 ? '100%' : 'auto' }}><colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup><TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => {
+      <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ minWidth: tableWidth, tableLayout: 'fixed', height: query.isFetching || query.isError || rows.length === 0 ? '100%' : 'auto' }}><colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup><TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => {
         const width = getColumnWidth(column);
         const label = column.id === 'time' && view === 'REVIEW_DONE' ? '审批时间' : column.label;
         return <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...headerCellSx, position: 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? actionHeadSx : {}) }}>{label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /> : null}</TableCell>;
       })}</TableRow></TableHead><TableBody>
         {query.isFetching ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>正在加载审批任务…</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>表单审批列表加载失败：{errorText(query.error)}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>{view === 'REVIEW_PENDING' ? '暂无待处理的表单审批任务' : '暂无已办表单审批记录'}</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}/${row.operationId}/${row.copyId}`} hover tabIndex={0} aria-label={`查看${row.templateName || '表单'}审批详情`} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter') openDetail(row); }} sx={{ cursor: 'pointer', '& .MuiTableCell-root': bodyCellSx }}><TableCell title={row.instanceNo || '未保存'}>{row.instanceNo || '未保存'}</TableCell><TableCell title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" color="text.secondary">· {row.templateVersion || '-'}</Typography></TableCell><TableCell title={row.productionObjectNo || '-'}>{row.productionObjectNo || '-'} <Typography component="span" variant="caption" color="text.secondary">· {typeLabel(row.productionObjectType)}</Typography></TableCell><TableCell title={row.workOrderNo || '-'}>{row.workOrderNo || '-'}</TableCell><TableCell title={row.operationName}>{row.operationName}</TableCell><TableCell title={row.nodeName || '-'}>{row.nodeName || '-'}</TableCell>{view === 'REVIEW_DONE' ? <TableCell>{reviewResultLabel(row.handledAction)}</TableCell> : null}<TableCell>{formatDateTime(view === 'REVIEW_DONE' ? row.handledAt : row.arrivedAt)}</TableCell><TableCell>{statusBadge(row.recordStatus)}</TableCell><TableCell sx={actionBodySx} onClick={(event) => event.stopPropagation()}><Stack direction="row" spacing={0} justifyContent="center">{view === 'REVIEW_PENDING' ? <><Tooltip title="处理" arrow><IconButton color="primary" size="small" aria-label="处理审批" onClick={() => openTask(row, false)}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip>{row.canTransfer ? <Tooltip title={row.transferLabel || '转办'} arrow><IconButton color={row.transferStyle === 'DANGER' ? 'error' : row.transferStyle === 'PRIMARY' ? 'primary' : 'default'} size="small" aria-label={row.transferLabel || '转办审批'} onClick={() => openTransfer(row)}><SwapHoriz fontSize="small" /></IconButton></Tooltip> : null}</> : null}<Tooltip title="查看" arrow><IconButton size="small" aria-label="查看审批" onClick={() => openTask(row, true)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip></Stack></TableCell></TableRow>)}
-      </TableBody></Table></TableContainer>
+      </TableBody></Table></ListTableShell>
       <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={(value) => { setSize(value); setPage(0); }} />
     </Box>
     <Drawer anchor="right" open={Boolean(detailIdentity)} onClose={() => setDetailIdentity(null)} sx={drawerRootSx} slotProps={{ backdrop: { sx: drawerBackdropSx } }} PaperProps={{ sx: drawerPaperSx }}>

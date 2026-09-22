@@ -1,0 +1,28 @@
+knowledgeModelVersion: 0.3.24
+implementationAnchors:
+  - id: anchor.master-data-description-field-contract
+    targetId: rule.master-data.single-description-field-contract
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+    apiReferences:
+      - /api/v1/master-data/product-families
+      - /api/v1/master-data/documents
+      - /api/v1/master-data/documents/{documentId}/versions
+    databaseReferences:
+      - gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql
+    uiReferences:
+      - gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+      - docs/frontend/dialog-guidelines.md
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DuplicateRemarkMigrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-description-migration, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-description-migration-test, evidence.master-data-description-document-controller-test]
+    sourceRevision: working-tree
+    sourceLocator: ProcessModelingController product-family CRUD / DocumentManagementController document and version CRUD / migration 0095
+    capturedAt: '2026-09-22'
+    reviewStatus: reviewed

@@ -1,5 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
-import { listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -51,6 +52,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
   Close,
@@ -768,6 +771,7 @@ function getStickyActionColumnSx(column: RoleColumn, section: 'head' | 'body') {
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
   };
 }
@@ -1622,7 +1626,7 @@ export default function RolePage() {
         </Popover>
 
         <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
-          <TableContainer
+          <ListTableShell
             ref={tableContainerRef}
             sx={{
               width: '100%',
@@ -1722,7 +1726,7 @@ export default function RolePage() {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
+          </ListTableShell>
           <Box
             data-role-action-column-shadow
             sx={{
@@ -1731,7 +1735,7 @@ export default function RolePage() {
               bottom: 0,
               right: tableScrollbarWidth,
               width: ROLE_ACTION_COLUMN_WIDTH,
-              boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+              boxShadow: listTableStickyEdgeShadow,
               pointerEvents: 'none',
               zIndex: 7,
             }}
@@ -1921,10 +1925,10 @@ export default function RolePage() {
         </Box>
       </Drawer>
 
-      <AppDialog open={roleDialogOpen} onClose={() => setRoleDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={roleDialogOpen} onClose={() => setRoleDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑岗位角色' : '新增岗位角色'}</DialogTitle>
         <DialogContent dividers>
-          <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid>
             <TextField
               label="岗位角色"
               value={form.name}
@@ -1941,8 +1945,9 @@ export default function RolePage() {
               fullWidth
               multiline
               minRows={3}
+              sx={{ gridColumn: { sm: '1 / -1' } }}
             />
-          </Stack>
+          </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setRoleDialogOpen(false)}>取消</Button>

@@ -1,5 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
-import { listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableBodyCellSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Add, DeleteOutline, EditOutlined, RestartAlt, Search, TuneRounded, ViewColumnRounded, VisibilityOutlined } from '@mui/icons-material';
@@ -77,8 +78,7 @@ function operationColumnSx(layer: 'head' | 'body') {
     minWidth: ACTION_COLUMN_WIDTH,
     maxWidth: ACTION_COLUMN_WIDTH,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-    backgroundClip: 'padding-box',
-    boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
     whiteSpace: 'nowrap',
   };
@@ -243,7 +243,7 @@ export default function WorkApplicabilityRulesTab() {
       <Tooltip title="字段设置" arrow><IconButton size="small" aria-label="字段设置" onClick={(event) => setColumnAnchor(event.currentTarget)} sx={toolbarIconSx}><Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><ViewColumnRounded sx={{ fontSize: 21 }} /><TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} /></Box></IconButton></Tooltip>
       <Button size="small" variant="contained" startIcon={<Add />} onClick={openCreate}>新增适用规则</Button>
     </Box>
-    <TableContainer ref={tableContainerRef} sx={{ flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0, overflow: 'auto' }}>
+    <ListTableShell ref={tableContainerRef} sx={{ flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0, overflow: 'auto' }}>
       <Table stickyHeader size="small" sx={{ width: tableWidth, minWidth: tableMinWidth, tableLayout: 'fixed', height: rules.isLoading || rules.isError || rows.length === 0 ? '100%' : 'auto' }}>
         <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: column.width }} />)}</colgroup>
         <TableHead><TableRow>{visibleColumns.map((column) => <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...headerCellSx, width: column.width, ...(column.id === 'actions' ? operationColumnSx('head') : {}) }}>{column.label}</TableCell>)}</TableRow></TableHead>
@@ -251,15 +251,15 @@ export default function WorkApplicabilityRulesTab() {
           {rules.isLoading ? <TableRow><TableStateCell colSpan={visibleColumns.length} align="center" sx={{ py: 8, color: '#909399' }}>加载中...</TableStateCell></TableRow> : null}
           {rules.isError ? <TableRow><TableStateCell colSpan={visibleColumns.length} align="center" sx={{ py: 8, color: '#c62828' }}>作业适用规则加载失败</TableStateCell></TableRow> : null}
           {!rules.isLoading && !rules.isError && rows.length === 0 ? <TableRow><TableStateCell colSpan={visibleColumns.length} align="center" sx={{ py: 8, color: '#909399' }}>暂无适用规则</TableStateCell></TableRow> : null}
-          {!rules.isLoading && !rules.isError ? rows.map((rule) => <TableRow data-record-id={rule.id} key={rule.id} hover sx={{ '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } }}>
+          {!rules.isLoading && !rules.isError ? rows.map((rule) => <TableRow data-record-id={rule.id} key={rule.id} hover sx={{ '& > .MuiTableCell-root': listTableBodyCellSx }}>
             {visibleColumns.map((column) => renderCell(rule, column))}
           </TableRow>) : null}
         </TableBody>
       </Table>
-    </TableContainer>
+    </ListTableShell>
     <Popover open={Boolean(columnAnchor)} anchorEl={columnAnchor} onClose={() => setColumnAnchor(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} transformOrigin={{ vertical: 'top', horizontal: 'left' }} PaperProps={{ sx: { width: 220, p: 1.25 } }}><Typography variant="subtitle2" sx={{ px: 0.75, pb: 0.75 }}>作业适用规则字段</Typography>{RULE_COLUMNS.filter((column) => column.configurable).map((column) => <FormControlLabel key={column.id} sx={{ display: 'flex', mx: 0, '& .MuiFormControlLabel-label': { fontSize: 13 } }} control={<Checkbox size="small" checked={!hiddenColumns.includes(column.id)} onChange={(event) => setHiddenColumns((current) => event.target.checked ? current.filter((id) => id !== column.id) : [...current, column.id])} />} label={column.label} />)}</Popover>
 
-    <AppDialog open={editing !== undefined} onClose={() => setEditing(undefined)} maxWidth="md" fullWidth>
+    <AppDialog variant="form" open={editing !== undefined} onClose={() => setEditing(undefined)} maxWidth="md" fullWidth>
       <DialogTitle>{editing ? '编辑作业适用规则' : '新增适用规则'}</DialogTitle>
       <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: { xs: 2, sm: 2.5 } }}>
         <Stack spacing={3}>
@@ -297,7 +297,7 @@ export default function WorkApplicabilityRulesTab() {
             </Box> : null}
           </Box>
           <Box sx={{ borderLeft: '3px solid #2f73d9', bgcolor: '#f6f9ff', px: 2, py: 1.5 }}><Typography component="span" sx={{ color: '#2f4b7d', fontWeight: 650 }}>规则摘要：</Typography><Typography component="span" sx={{ color: '#47617f' }}>{summary}</Typography></Box>
-          <TextField label="备注" fullWidth multiline minRows={2} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} />
+          <TextField label="描述" fullWidth multiline minRows={2} value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} />
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setEditing(undefined)}>取消</Button><Button variant="contained" disabled={!definitionId || !publishedVersion || !hasScope || save.isPending} onClick={() => save.mutate()}>保存</Button></DialogActions>

@@ -1,6 +1,7 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
-import { listColumnResizeHandleSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
+import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import {
   Fragment,
   useEffect,
@@ -44,6 +45,9 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogSection from '@/components/FormDialogSection';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import {
   Add,
   Close,
@@ -126,7 +130,6 @@ interface MasterForm {
   title: string;
   categoryId: string;
   description: string;
-  remark: string;
 }
 
 interface VersionForm {
@@ -136,7 +139,6 @@ interface VersionForm {
   fileName: string;
   fileMimeType: string;
   description: string;
-  remark: string;
   effectiveDate: string;
   expiryDate: string;
 }
@@ -173,13 +175,13 @@ const documentVersionColumns: DocumentColumn[] = [
   { id: 'actions', label: '操作', defaultWidth: 128, minWidth: 128 },
 ];
 
-const emptyMasterForm = (categoryId = ''): MasterForm => ({ title: '', categoryId, description: '', remark: '' });
+const emptyMasterForm = (categoryId = ''): MasterForm => ({ title: '', categoryId, description: '' });
 const emptyVersionForm = (version = 'V1.0'): VersionForm => ({
-  version, code: '', fileId: '', fileName: '', fileMimeType: '', description: '', remark: '', effectiveDate: '', expiryDate: '',
+  version, code: '', fileId: '', fileName: '', fileMimeType: '', description: '', effectiveDate: '', expiryDate: '',
 });
 
 const tableHeaderCellSx = listTableHeaderCellSx;
-const tableRowSx = { '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } };
+const tableRowSx = { '& > .MuiTableCell-root': listTableBodyCellSx };
 function getOperationColumnSx(width: number, layer: 'head' | 'body') {
   return {
     position: 'sticky' as const,
@@ -189,8 +191,7 @@ function getOperationColumnSx(width: number, layer: 'head' | 'body') {
     minWidth: width,
     maxWidth: width,
     bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-    backgroundClip: 'padding-box',
-    boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
     whiteSpace: 'nowrap',
   };
@@ -318,7 +319,6 @@ function toVersionPayload(form: VersionForm): DocumentVersionWritePayload {
     code: form.code.trim(),
     fileId: form.fileId || null,
     description: form.description.trim() || null,
-    remark: form.remark.trim() || null,
     effectiveDate: form.effectiveDate || null,
     expiryDate: form.expiryDate || null,
   };
@@ -332,7 +332,6 @@ function toVersionForm(version: ManagedDocumentVersion): VersionForm {
     fileName: version.fileName || '',
     fileMimeType: version.fileMimeType || '',
     description: version.description || '',
-    remark: version.remark || '',
     effectiveDate: toInputDateTime(version.effectiveDate),
     expiryDate: toInputDateTime(version.expiryDate),
   };
@@ -434,12 +433,10 @@ export default function DocumentManagementPage() {
       ...masterForm,
       categoryId: masterForm.categoryId || null,
       description: masterForm.description.trim() || null,
-      remark: masterForm.remark.trim() || null,
       version: initialVersionForm.version.trim(),
       code: initialVersionForm.code.trim(),
       fileId: initialVersionForm.fileId || null,
       versionDescription: initialVersionForm.description.trim() || null,
-      versionRemark: initialVersionForm.remark.trim() || null,
       effectiveDate: initialVersionForm.effectiveDate || null,
       expiryDate: initialVersionForm.expiryDate || null,
     }),
@@ -500,7 +497,7 @@ export default function DocumentManagementPage() {
     setMasterDialog({ mode: 'create' });
   };
   const openEdit = (document: ManagedDocument) => {
-    setMasterForm({ title: document.title, categoryId: document.categoryId || '', description: document.description || '', remark: document.remark || '' });
+    setMasterForm({ title: document.title, categoryId: document.categoryId || '', description: document.description || '' });
     setMasterDialog({ mode: 'edit', document });
   };
   const openVersion = (document: ManagedDocument, version?: ManagedDocumentVersion) => {
@@ -524,12 +521,10 @@ export default function DocumentManagementPage() {
     column.minWidth,
     column.id === 'actions' ? column.defaultWidth : (target === 'main' ? mainColumnWidths : versionColumnWidths)[column.id] ?? column.defaultWidth,
   );
-  const mainTableWidth = visibleMainColumns.reduce((total, column) => total + getColumnWidth(column, 'main'), 0);
-  const versionTableWidth = visibleVersionColumns.reduce((total, column) => total + getColumnWidth(column, 'version'), 0);
-  const sharedTableWidth = Math.max(mainTableWidth, versionTableWidth);
-  const mainTableSpacerWidth = Math.max(0, versionTableWidth - mainTableWidth);
-  const versionTableSpacerWidth = Math.max(0, mainTableWidth - versionTableWidth);
-  const mainTableColumnCount = visibleMainColumns.length + (mainTableSpacerWidth > 0 ? 1 : 0);
+  const mainTableBaseWidth = visibleMainColumns.reduce((total, column) => total + getColumnWidth(column, 'main'), 0);
+  const versionTableBaseWidth = visibleVersionColumns.reduce((total, column) => total + getColumnWidth(column, 'version'), 0);
+  const sharedTableMinWidth = Math.max(mainTableBaseWidth, versionTableBaseWidth);
+  const mainTableColumnCount = visibleMainColumns.length;
   const updateActiveColumnSettings = (updater: (current: DocumentColumnSettings) => DocumentColumnSettings) => {
     if (columnSettingsTarget === 'main') setMainColumnSettings(updater);
     else setVersionColumnSettings(updater);
@@ -717,16 +712,34 @@ export default function DocumentManagementPage() {
             })}
           </Stack>
         </Popover>
-        <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth, height: query.isLoading || query.isError || documents.length === 0 ? '100%' : 'auto' }}>
-            <colgroup>{visibleMainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <col data-document-main-action-spacer style={{ width: mainTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'main') }} /></Fragment>)}</colgroup>
-            <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleMainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0, ...tableHeaderCellSx }} /> : null}<TableCell sx={{ width: getColumnWidth(column, 'main'), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: column.id === 'actions' ? 4 : 2, ...(column.id === 'actions' ? getOperationColumnSx(getColumnWidth(column, 'main'), 'head') : tableHeaderCellSx), ...(column.resizable ? { pr: 2, userSelect: 'none' } : {}) }}>
-              {column.label}{column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => startColumnResize(event, column, 'main')} sx={listColumnResizeHandleSx} />}
-            </TableCell></Fragment>)}</TableRow></TableHead>
-            <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '文档加载失败'}</TableStateCell></TableRow> : documents.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>暂无数据</TableStateCell></TableRow> : documents.map((document) => {
-              const isExpanded = expanded.has(document.id);
-              return <DocumentRows key={document.id} document={document} expanded={isExpanded} mainColumns={visibleMainColumns} versionColumns={visibleVersionColumns} mainTableColumnCount={mainTableColumnCount} sharedTableWidth={sharedTableWidth} mainTableSpacerWidth={mainTableSpacerWidth} versionTableSpacerWidth={versionTableSpacerWidth} getColumnWidth={getColumnWidth} onResizeColumn={startColumnResize} onToggle={() => toggleExpanded(document.id)} onOpenDetail={(version) => openDetailDrawer(document, version)} onEdit={() => openEdit(document)} onAddVersion={() => openVersion(document)} onEditVersion={(version) => openVersion(document, version)} onPreview={preview} onDelete={(version) => setDeleteTarget({ document, version })} />;
-            })}</TableBody>
-          </Table></TableContainer>
+        <ListTableShell minTableWidth={sharedTableMinWidth} sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+          {(tableWidth) => {
+            const mainColumnWidths = resolveListColumnWidths(
+              visibleMainColumns.map((column) => ({ id: column.id, width: getColumnWidth(column, 'main') })),
+              tableWidth,
+              'title',
+              ['actions'],
+            );
+            const versionColumnWidths = resolveListColumnWidths(
+              visibleVersionColumns.map((column) => ({ id: column.id, width: getColumnWidth(column, 'version') })),
+              tableWidth,
+              'file',
+              ['actions'],
+            );
+            const getResolvedColumnWidth = (column: DocumentColumn, target: DocumentColumnSettingsTarget) =>
+              target === 'main' ? mainColumnWidths[column.id] : versionColumnWidths[column.id];
+            return <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth, height: query.isLoading || query.isError || documents.length === 0 ? '100%' : 'auto' }}>
+              <colgroup>{visibleMainColumns.map((column) => <col key={column.id} style={{ width: getResolvedColumnWidth(column, 'main') }} />)}</colgroup>
+              <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{visibleMainColumns.map((column) => <TableCell key={column.id} sx={{ width: getResolvedColumnWidth(column, 'main'), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: column.id === 'actions' ? 4 : 2, ...(column.id === 'actions' ? getOperationColumnSx(getResolvedColumnWidth(column, 'main'), 'head') : tableHeaderCellSx), ...(column.resizable ? { pr: 2, userSelect: 'none' } : {}) }}>
+                {column.label}{column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => startColumnResize(event, column, 'main')} sx={listColumnResizeHandleSx} />}
+              </TableCell>)}</TableRow></TableHead>
+              <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '文档加载失败'}</TableStateCell></TableRow> : documents.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={mainTableColumnCount} align="center" sx={{ height: '100%', py: 0, color: '#909399' }}>暂无数据</TableStateCell></TableRow> : documents.map((document) => {
+                const isExpanded = expanded.has(document.id);
+                return <DocumentRows key={document.id} document={document} expanded={isExpanded} mainColumns={visibleMainColumns} versionColumns={visibleVersionColumns} mainTableColumnCount={mainTableColumnCount} tableWidth={tableWidth} getResolvedColumnWidth={getResolvedColumnWidth} onResizeColumn={startColumnResize} onToggle={() => toggleExpanded(document.id)} onOpenDetail={(version) => openDetailDrawer(document, version)} onEdit={() => openEdit(document)} onAddVersion={() => openVersion(document)} onEditVersion={(version) => openVersion(document, version)} onPreview={preview} onDelete={(version) => setDeleteTarget({ document, version })} />;
+              })}</TableBody>
+            </Table>;
+          }}
+        </ListTableShell>
         <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
           <Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography>
           <Stack direction="row" spacing={1.5} alignItems="center">
@@ -742,22 +755,20 @@ export default function DocumentManagementPage() {
       <DocumentPreviewDialog version={previewVersion} onClose={() => setPreviewVersion(null)} />
       <DocumentDetailDrawer open={drawerDocument !== null} document={drawerDocument} version={drawerVersion} tab={drawerTab} onTabChange={setDrawerTab} auditRecords={auditRecords} auditLoading={auditQuery.isLoading} auditError={auditQuery.isError} onClose={closeDetailDrawer} />
       <ConfirmDialog deletionTarget={deleteTarget && { type: deleteTarget.version ? 'document_version' : 'sop_document', id: deleteTarget.version?.id || deleteTarget.document.id }} open={Boolean(deleteTarget)} title={deleteTarget?.version ? '删除文档版本' : '删除文档'} message={deleteTarget?.version ? `确定删除版本「${deleteTarget.version.version}」吗？` : `确定删除文档「${deleteTarget?.document.title || ''}」及其未被引用版本吗？`} confirmText="删除" destructive loading={deleteMutation.isPending} onCancel={() => setDeleteTarget(null)} onConfirm={() => deleteMutation.mutate()} />
-      <AppDialog open={Boolean(categoryDialog)} onClose={saveCategoryMutation.isPending ? undefined : () => setCategoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{categoryDialog?.mode === 'edit' ? '编辑文档分类' : '新增文档分类'}</DialogTitle><DialogContent dividers><TextField autoFocus required fullWidth size="small" label="文档分类名称" value={categoryName} onChange={(event) => setCategoryName(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && categoryName.trim()) saveCategoryMutation.mutate(); }} /></DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryName.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>{saveCategoryMutation.isPending ? '保存中...' : '保存'}</Button></DialogActions></AppDialog>
+      <FormDialog open={Boolean(categoryDialog)} onClose={saveCategoryMutation.isPending ? undefined : () => setCategoryDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{categoryDialog?.mode === 'edit' ? '编辑文档分类' : '新增文档分类'}</DialogTitle><DialogContent dividers><FormDialogSection title="基本信息"><TextField autoFocus required fullWidth size="small" label="文档分类名称" value={categoryName} onChange={(event) => setCategoryName(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && categoryName.trim()) saveCategoryMutation.mutate(); }} /></FormDialogSection></DialogContent><DialogActions><Button disabled={saveCategoryMutation.isPending} onClick={() => setCategoryDialog(null)}>取消</Button><Button variant="contained" disabled={!categoryName.trim() || saveCategoryMutation.isPending} onClick={() => saveCategoryMutation.mutate()}>{saveCategoryMutation.isPending ? '保存中...' : '保存'}</Button></DialogActions></FormDialog>
       <ConfirmDialog deletionTarget={deleteCategoryTarget && { type: 'document_category', id: deleteCategoryTarget.id }} open={Boolean(deleteCategoryTarget)} title="删除文档分类" message={`确定删除分类「${deleteCategoryTarget?.name || ''}」吗？该分类下的文档将自动转为未分类。`} confirmText="删除" destructive loading={deleteCategoryMutation.isPending} onCancel={() => setDeleteCategoryTarget(null)} onConfirm={() => deleteCategoryMutation.mutate()} />
     </Box>
   );
 }
 
-function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTableColumnCount, sharedTableWidth, mainTableSpacerWidth, versionTableSpacerWidth, getColumnWidth, onResizeColumn, onToggle, onOpenDetail, onEdit, onAddVersion, onEditVersion, onPreview, onDelete }: {
+function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTableColumnCount, tableWidth, getResolvedColumnWidth, onResizeColumn, onToggle, onOpenDetail, onEdit, onAddVersion, onEditVersion, onPreview, onDelete }: {
   document: ManagedDocument;
   expanded: boolean;
   mainColumns: DocumentColumn[];
   versionColumns: DocumentColumn[];
   mainTableColumnCount: number;
-  sharedTableWidth: number;
-  mainTableSpacerWidth: number;
-  versionTableSpacerWidth: number;
-  getColumnWidth: (column: DocumentColumn, target: DocumentColumnSettingsTarget) => number;
+  tableWidth: number;
+  getResolvedColumnWidth: (column: DocumentColumn, target: DocumentColumnSettingsTarget) => number;
   onResizeColumn: (event: ReactPointerEvent<HTMLDivElement>, column: DocumentColumn, target: DocumentColumnSettingsTarget) => void;
   onToggle: () => void;
   onOpenDetail: (version?: ManagedDocumentVersion) => void;
@@ -770,14 +781,14 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
   const categoryName = document.categoryName || '未分类';
   const renderMainCell = (column: DocumentColumn) => {
     switch (column.id) {
-      case 'title': return <TableCell key={column.id}><Stack direction="row" spacing={0.5} alignItems="center"><IconButton size="small" onClick={(event) => { event.stopPropagation(); onToggle(); }} aria-label={expanded ? '收起文档版本' : '展开文档版本'}>{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}</IconButton><Typography component="button" type="button" data-document-name-link onClick={(event) => { event.stopPropagation(); onOpenDetail(); }} sx={{ p: 0, border: 0, bgcolor: 'transparent', font: 'inherit', fontWeight: 500, color: '#1890ff', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left', '&:hover': { color: '#096dd9', textDecoration: 'underline' } }}>{document.title}</Typography></Stack></TableCell>;
+      case 'title': return <TableCell key={column.id}><Stack direction="row" spacing={0.5} alignItems="center"><IconButton size="small" onClick={(event) => { event.stopPropagation(); onToggle(); }} aria-label={expanded ? '收起文档版本' : '展开文档版本'}>{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}</IconButton><Typography component="button" type="button" data-document-name-link onClick={(event) => { event.stopPropagation(); onOpenDetail(); }} sx={{ p: 0, border: 0, bgcolor: 'transparent', font: 'inherit', ...listTablePrimaryTextSx, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'left' }}>{document.title}</Typography></Stack></TableCell>;
       case 'type': return <TableCell key={column.id}><Chip size="small" label={categoryName} variant="outlined" /></TableCell>;
       case 'versionCount': return <TableCell key={column.id}>{document.versions.length}</TableCell>;
       case 'createdBy': return <TableCell key={column.id}>{document.createdBy || '-'}</TableCell>;
       case 'createdAt': return <TableCell key={column.id} sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(document.createdAt)}</TableCell>;
       case 'updatedBy': return <TableCell key={column.id}>{document.updatedBy || document.createdBy || '-'}</TableCell>;
       case 'updatedAt': return <TableCell key={column.id} sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(document.updatedAt || document.createdAt)}</TableCell>;
-      case 'actions': return <TableCell key={column.id} align="center" sx={getOperationColumnSx(getColumnWidth(column, 'main'), 'body')} onClick={(event) => event.stopPropagation()}>
+      case 'actions': return <TableCell key={column.id} align="center" sx={getOperationColumnSx(getResolvedColumnWidth(column, 'main'), 'body')} onClick={(event) => event.stopPropagation()}>
         <Tooltip title="新增版本"><IconButton size="small" onClick={onAddVersion}><PlaylistAdd fontSize="small" /></IconButton></Tooltip>
         <Tooltip title="编辑文档"><IconButton size="small" onClick={onEdit}><Edit fontSize="small" /></IconButton></Tooltip>
         <Tooltip title="删除文档"><IconButton size="small" color="error" onClick={() => onDelete()}><Delete fontSize="small" /></IconButton></Tooltip>
@@ -796,21 +807,21 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
       case 'file': return <TableCell key={column.id} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{version.fileName || '-'}</TableCell>;
       case 'description': return <TableCell key={column.id} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{version.description || '-'}</TableCell>;
       case 'updatedAt': return <TableCell key={column.id} sx={{ whiteSpace: 'nowrap' }}>{formatDateTime(version.updatedAt || version.createdAt)}</TableCell>;
-      case 'actions': return <TableCell key={column.id} align="center" sx={getOperationColumnSx(getColumnWidth(column, 'version'), 'body')} onClick={(event) => event.stopPropagation()}><Tooltip title="预览文件"><span><IconButton size="small" disabled={!version.fileId} onClick={() => onPreview(version)}><PreviewOutlined fontSize="small" /></IconButton></span></Tooltip><Tooltip title="编辑版本"><IconButton size="small" onClick={() => onEditVersion(version)}><Edit fontSize="small" /></IconButton></Tooltip><Tooltip title="删除版本"><IconButton size="small" color="error" onClick={() => onDelete(version)}><Delete fontSize="small" /></IconButton></Tooltip></TableCell>;
+      case 'actions': return <TableCell key={column.id} align="center" sx={getOperationColumnSx(getResolvedColumnWidth(column, 'version'), 'body')} onClick={(event) => event.stopPropagation()}><Tooltip title="预览文件"><span><IconButton size="small" disabled={!version.fileId} onClick={() => onPreview(version)}><PreviewOutlined fontSize="small" /></IconButton></span></Tooltip><Tooltip title="编辑版本"><IconButton size="small" onClick={() => onEditVersion(version)}><Edit fontSize="small" /></IconButton></Tooltip><Tooltip title="删除版本"><IconButton size="small" color="error" onClick={() => onDelete(version)}><Delete fontSize="small" /></IconButton></Tooltip></TableCell>;
       default: return null;
     }
   };
   return <>
-    <TableRow data-record-id={document.id} hover sx={{ ...tableRowSx, cursor: 'pointer' }} onClick={onToggle}>{mainColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && mainTableSpacerWidth > 0 ? <TableCell data-document-main-action-spacer aria-hidden="true" sx={{ width: mainTableSpacerWidth, minWidth: mainTableSpacerWidth, maxWidth: mainTableSpacerWidth, p: 0 }} /> : null}{renderMainCell(column)}</Fragment>)}</TableRow>
+    <TableRow data-record-id={document.id} hover sx={{ ...tableRowSx, cursor: 'pointer' }} onClick={onToggle}>{mainColumns.map((column) => renderMainCell(column))}</TableRow>
     {expanded ? <TableRow sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}><TableCell colSpan={mainTableColumnCount} sx={{ p: 0, bgcolor: '#fafcff' }}>
-        <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'auto' }}><Table stickyHeader size="small" aria-label="文档版本列表" sx={{ tableLayout: 'fixed', width: sharedTableWidth, minWidth: sharedTableWidth }}>
-          <colgroup>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <col data-document-version-action-spacer style={{ width: versionTableSpacerWidth }} /> : null}<col style={{ width: getColumnWidth(column, 'version') }} /></Fragment>)}</colgroup>
-          <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0, ...tableHeaderCellSx, py: 0 }} /> : null}
+        <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}><Table stickyHeader size="small" aria-label="文档版本列表" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth }}>
+          <colgroup>{versionColumns.map((column) => <col key={column.id} style={{ width: getResolvedColumnWidth(column, 'version') }} />)}</colgroup>
+          <TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{versionColumns.map((column) => <Fragment key={column.id}>
             <TableCell
               sx={{
-                width: getColumnWidth(column, 'version'), minWidth: column.minWidth, position: 'sticky', top: 0,
+                width: getResolvedColumnWidth(column, 'version'), minWidth: column.minWidth, position: 'sticky', top: 0,
                 zIndex: column.id === 'actions' ? 4 : 2,
-              ...(column.id === 'actions' ? getOperationColumnSx(getColumnWidth(column, 'version'), 'head') : tableHeaderCellSx), py: 0,
+              ...(column.id === 'actions' ? getOperationColumnSx(getResolvedColumnWidth(column, 'version'), 'head') : tableHeaderCellSx), py: 0,
                 ...(column.resizable ? { pr: 2, userSelect: 'none' } : {}),
               }}
             >
@@ -818,7 +829,7 @@ function DocumentRows({ document, expanded, mainColumns, versionColumns, mainTab
               {column.resizable && <Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => onResizeColumn(event, column, 'version')} sx={listColumnResizeHandleSx} />}
             </TableCell>
           </Fragment>)}</TableRow></TableHead>
-          <TableBody>{document.versions.map((version) => <TableRow data-record-id={version.id} key={version.id} hover onClick={() => onOpenDetail(version)} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': { height: 40, py: 0.5, borderBottom: '1px solid #ebeef5' } }}>{versionColumns.map((column) => <Fragment key={column.id}>{column.id === 'actions' && versionTableSpacerWidth > 0 ? <TableCell data-document-version-action-spacer aria-hidden="true" sx={{ width: versionTableSpacerWidth, minWidth: versionTableSpacerWidth, maxWidth: versionTableSpacerWidth, p: 0 }} /> : null}{renderVersionCell(version, column)}</Fragment>)}</TableRow>)}</TableBody>
+          <TableBody>{document.versions.map((version) => <TableRow data-record-id={version.id} key={version.id} hover onClick={() => onOpenDetail(version)} sx={{ ...tableRowSx, cursor: 'pointer' }}>{versionColumns.map((column) => renderVersionCell(version, column))}</TableRow>)}</TableBody>
         </Table></TableContainer>
     </TableCell></TableRow> : null}
   </>;
@@ -868,7 +879,7 @@ function DocumentDetailDrawer({ open, document, version, tab, onTabChange, audit
           <DetailSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
             <DetailField label="文档名称">{document.title}</DetailField>
             <DetailField label="文档分类">{document.categoryName || '未分类'}</DetailField>
-            {version ? <><DetailField label="版本号">{version.version}</DetailField><DetailField label="文档编码">{version.code}</DetailField><DetailField label="版本状态">{versionStatus ? <StatusBadge label={versionStatus.label} color={versionStatus.color} /> : '-'}</DetailField><DetailField label="生效时间">{formatDateTime(version.effectiveDate)}</DetailField><DetailField label="失效时间">{formatDateTime(version.expiryDate)}</DetailField><DetailField label="版本文件">{version.fileName || '-'}</DetailField><DetailField label="版本说明">{version.description || '-'}</DetailField><DetailField label="备注">{version.remark || '-'}</DetailField></> : <><DetailField label="版本数量">{document.versions.length}</DetailField><DetailField label="文档描述">{document.description || '-'}</DetailField><DetailField label="备注">{document.remark || '-'}</DetailField></>}
+            {version ? <><DetailField label="版本号">{version.version}</DetailField><DetailField label="文档编码">{version.code}</DetailField><DetailField label="版本状态">{versionStatus ? <StatusBadge label={versionStatus.label} color={versionStatus.color} /> : '-'}</DetailField><DetailField label="生效时间">{formatDateTime(version.effectiveDate)}</DetailField><DetailField label="失效时间">{formatDateTime(version.expiryDate)}</DetailField><DetailField label="版本文件">{version.fileName || '-'}</DetailField><DetailField label="版本说明">{version.description || '-'}</DetailField></> : <><DetailField label="版本数量">{document.versions.length}</DetailField><DetailField label="描述">{document.description || '-'}</DetailField></>}
           </Box></DetailSection>
           <DetailSection title="系统信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
             <DetailField label="创建人">{version?.createdBy || document.createdBy || '-'}</DetailField><DetailField label="创建时间">{formatDateTime(version?.createdAt || document.createdAt)}</DetailField><DetailField label="更新人">{version?.updatedBy || version?.createdBy || document.updatedBy || document.createdBy || '-'}</DetailField><DetailField label="更新时间">{formatDateTime(version?.updatedAt || version?.createdAt || document.updatedAt || document.createdAt)}</DetailField>
@@ -895,23 +906,22 @@ function DocumentMasterDialog({ open, selectedCategory, categories, mode, form, 
   const categoryLocked = !isCreate || selectedCategory !== DOCUMENT_CATEGORY_ALL;
   const categoryName = form.categoryId ? categories.find((category) => category.id === form.categoryId)?.name || '-' : '未分类';
   const set = <K extends keyof MasterForm>(key: K, value: MasterForm[K]) => onChange({ ...form, [key]: value });
-  return <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{isCreate ? '新增文档' : '编辑文档'}</DialogTitle><DialogContent dividers>
+  return <FormDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{isCreate ? '新增文档' : '编辑文档'}</DialogTitle><DialogContent dividers>
     <Stack spacing={1.5} sx={{ pt: 0.5 }}>
-    <DetailSection title="基础信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+    <DetailSection title="基础信息"><FormDialogFieldGrid>
       {categoryLocked ? <Stack spacing={0.25} justifyContent="center" sx={{ minHeight: 40, px: 0.25 }}><Typography variant="caption" sx={{ color: '#909399', lineHeight: 1.2 }}>文档分类</Typography><Typography sx={{ color: '#303133', fontSize: 14, lineHeight: 1.35 }}>{categoryName}</Typography></Stack> : <TextField select size="small" label="文档分类" value={form.categoryId} onChange={(event) => set('categoryId', event.target.value)}><MenuItem value="">未分类</MenuItem>{categories.filter((category) => category.id !== DOCUMENT_CATEGORY_ALL && category.id !== DOCUMENT_CATEGORY_UNCATEGORIZED).map((category) => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}</TextField>}
-      <TextField required size="small" label="文档名称" value={form.title} onChange={(event) => set('title', event.target.value)} sx={{ gridColumn: { sm: '1 / -1' } }} />
-      <TextField size="small" label="文档描述" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={2} sx={{ gridColumn: { sm: '1 / -1' } }} />
-      <TextField size="small" label="备注" value={form.remark} onChange={(event) => set('remark', event.target.value)} multiline minRows={2} sx={{ gridColumn: { sm: '1 / -1' } }} />
-    </Box></DetailSection>
+      <TextField required size="small" label="文档名称" value={form.title} onChange={(event) => set('title', event.target.value)} />
+      <TextField size="small" label="描述" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={2} sx={{ gridColumn: { sm: '1 / -1' } }} />
+    </FormDialogFieldGrid></DetailSection>
     {isCreate && <DetailSection title="版本信息"><VersionFields form={versionForm} onChange={onVersionChange} onPreview={onPreview} /></DetailSection>}
     </Stack>
-  </DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={onClose} disabled={saving}>取消</Button><Button variant="contained" disabled={!canSubmit || saving} onClick={onSubmit}>{saving ? '保存中...' : '保存'}</Button></DialogActions></AppDialog>;
+  </DialogContent><DialogActions><Button onClick={onClose} disabled={saving}>取消</Button><Button variant="contained" disabled={!canSubmit || saving} onClick={onSubmit}>{saving ? '保存中...' : '保存'}</Button></DialogActions></FormDialog>;
 }
 
 function DocumentVersionDialog({ open, document, editing, form, onChange, onPreview, onClose, onSubmit, saving }: {
   open: boolean; document: ManagedDocument | null; editing: ManagedDocumentVersion | null; form: VersionForm; onChange: (form: VersionForm) => void; onPreview: (file: FilePreviewTarget) => void; onClose: () => void; onSubmit: () => void; saving: boolean;
 }) {
-  return <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{editing ? '编辑文档版本' : '新增文档版本'}{document ? ` - ${document.title}` : ''}</DialogTitle><DialogContent dividers><DetailSection title="版本信息"><VersionFields form={form} onChange={onChange} onPreview={onPreview} /></DetailSection></DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={onClose} disabled={saving}>取消</Button><Button variant="contained" disabled={!form.version.trim() || !form.code.trim() || saving} onClick={onSubmit}>{saving ? '保存中...' : '保存'}</Button></DialogActions></AppDialog>;
+  return <FormDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="md"><DialogTitle>{editing ? '编辑文档版本' : '新增文档版本'}{document ? ` - ${document.title}` : ''}</DialogTitle><DialogContent dividers><DetailSection title="版本信息"><VersionFields form={form} onChange={onChange} onPreview={onPreview} /></DetailSection></DialogContent><DialogActions><Button onClick={onClose} disabled={saving}>取消</Button><Button variant="contained" disabled={!form.version.trim() || !form.code.trim() || saving} onClick={onSubmit}>{saving ? '保存中...' : '保存'}</Button></DialogActions></FormDialog>;
 }
 
 function VersionFields({ form, onChange, onPreview }: { form: VersionForm; onChange: (form: VersionForm) => void; onPreview: (file: FilePreviewTarget) => void }) {
@@ -929,15 +939,14 @@ function VersionFields({ form, onChange, onPreview }: { form: VersionForm; onCha
     } catch (error) { showMessage(error instanceof Error ? error.message : '文件上传失败', 'error'); }
     finally { setUploading(false); if (input) input.value = ''; }
   };
-  return <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+  return <FormDialogFieldGrid>
     <TextField required size="small" label="版本号" value={form.version} onChange={(event) => set('version', event.target.value)} />
     <TextField required size="small" label="文档编码" value={form.code} onChange={(event) => set('code', event.target.value)} />
     <TextField size="small" label="版本文件" value={form.fileName} placeholder="未上传文件" fullWidth InputProps={{ readOnly: true, endAdornment: <InputAdornment position="end" sx={{ mr: -0.75 }}><Stack direction="row" spacing={0.25} alignItems="center"><Tooltip title="预览文件"><span><IconButton size="small" aria-label="预览版本文件" disabled={!form.fileId || uploading} onClick={() => onPreview({ fileId: form.fileId, fileName: form.fileName, fileMimeType: form.fileMimeType, version: form.version })}><PreviewOutlined fontSize="small" /></IconButton></span></Tooltip><Button component="label" size="small" startIcon={<UploadFileOutlined fontSize="small" />} disabled={uploading} sx={{ minWidth: 76, whiteSpace: 'nowrap' }}>{uploading ? '上传中' : form.fileName ? '替换' : '上传'}<input hidden type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.mp4,.webm,.mov,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip" onChange={(event) => { void selectFile(event.target.files?.[0], event.currentTarget); }} /></Button></Stack></InputAdornment> }} inputProps={{ title: form.fileName || '未上传文件' }} />
     <TextField size="small" label="生效时间" type="datetime-local" value={form.effectiveDate} onChange={(event) => set('effectiveDate', event.target.value)} InputLabelProps={{ shrink: true }} />
     <TextField size="small" label="失效时间" type="datetime-local" value={form.expiryDate} onChange={(event) => set('expiryDate', event.target.value)} InputLabelProps={{ shrink: true }} />
     <TextField size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={2} sx={{ gridColumn: { sm: '1 / -1' } }} />
-    <TextField size="small" label="备注" value={form.remark} onChange={(event) => set('remark', event.target.value)} multiline minRows={2} sx={{ gridColumn: { sm: '1 / -1' } }} />
-  </Box>;
+  </FormDialogFieldGrid>;
 }
 
 function DocumentPreviewDialog({ version, onClose }: { version: FilePreviewTarget | null; onClose: () => void }) {

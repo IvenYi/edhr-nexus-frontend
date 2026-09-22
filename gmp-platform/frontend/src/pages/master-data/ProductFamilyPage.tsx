@@ -20,9 +20,13 @@ import {
   TextField,
   Pagination,
 } from '@mui/material';
-import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogSection from '@/components/FormDialogSection';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import { listTableBodyCellSx, listTableHeaderCellSx, listTableStickyActionSx } from '@/components/listTableStyles';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import PageHeader from '@/components/PageHeader';
+import { ListTableShell } from '@/components/ListTableShell';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import TableSkeleton from '@/components/TableSkeleton';
 import EmptyState from '@/components/EmptyState';
@@ -110,27 +114,27 @@ export default function Page() {
           action={{ label: '新增', onClick: () => { setEditing(null); setForm({ code: '', name: '', description: '' }); setOpen(true); } }}
         />
       ) : (
-        <TableContainer>
+        <ListTableShell>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>编码</TableCell>
-                <TableCell>名称</TableCell>
-                <TableCell>描述</TableCell>
-                <TableCell>创建时间</TableCell>
-                <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>操作</TableCell>
+              <TableRow sx={{ '& .MuiTableCell-root': listTableHeaderCellSx }}>
+                <TableCell sx={listTableHeaderCellSx}>ID</TableCell>
+                <TableCell sx={listTableHeaderCellSx}>编码</TableCell>
+                <TableCell sx={listTableHeaderCellSx}>名称</TableCell>
+                <TableCell sx={listTableHeaderCellSx}>描述</TableCell>
+                <TableCell sx={listTableHeaderCellSx}>创建时间</TableCell>
+                <TableCell align="center" sx={{ ...listTableHeaderCellSx, ...listTableStickyActionSx(96, 'head') }}>操作</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {content.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell sx={{ fontFamily: 'monospace' }}>{item.id}</TableCell>
+                <TableRow key={item.id} sx={{ '& .MuiTableCell-root': listTableBodyCellSx }}>
+                  <TableCell>{item.id}</TableCell>
                   <TableCell>{item.code || '-'}</TableCell>
                   <TableCell>{item.name || '-'}</TableCell>
                   <TableCell>{item.description || '-'}</TableCell>
                   <TableCell>{item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN') : '-'}</TableCell>
-                  <TableCell align="center" sx={{ width: 96, minWidth: 96, maxWidth: 96 }}>
+                  <TableCell align="center" sx={listTableStickyActionSx(96, 'body')}>
                     <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => { setEditing(item); setForm(item); setOpen(true); }}><Edit fontSize="small" /></IconButton></Tooltip>
                     <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteTarget(item)}><Delete fontSize="small" /></IconButton></Tooltip>
                   </TableCell>
@@ -138,7 +142,7 @@ export default function Page() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </ListTableShell>
       )}
 
       {data && data.totalPages > 1 && (
@@ -148,18 +152,17 @@ export default function Page() {
       )}
 
       {/* Create / Edit Dialog */}
-      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? '编辑' : '新增'}产品家族</DialogTitle>
-        <DialogContent>
-          {editing && (
-            <TextField label="ID" fullWidth margin="dense" value={form.id ?? ''} disabled />
-          )}
-          <TextField label="编码" fullWidth margin="dense"
-            value={form.code ?? ''} onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))} />
-          <TextField label="名称" fullWidth margin="dense"
-            value={form.name ?? ''} onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))} />
-          <TextField label="描述" fullWidth margin="dense" multiline rows={3}
-            value={form.description ?? ''} onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))} />
+        <DialogContent dividers>
+          <FormDialogSection title="基本信息">
+            <FormDialogFieldGrid>
+              {editing && <TextField label="ID" size="small" fullWidth value={form.id ?? ''} disabled />}
+              <TextField label="编码" size="small" fullWidth value={form.code ?? ''} onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))} />
+              <TextField label="名称" size="small" fullWidth value={form.name ?? ''} onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))} />
+              <TextField label="描述" size="small" fullWidth multiline rows={3} sx={{ gridColumn: '1 / -1' }} value={form.description ?? ''} onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))} />
+            </FormDialogFieldGrid>
+          </FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
@@ -167,7 +170,7 @@ export default function Page() {
             {createMutation.isPending || updateMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       {/* Delete Confirmation */}
       <ConfirmDialog

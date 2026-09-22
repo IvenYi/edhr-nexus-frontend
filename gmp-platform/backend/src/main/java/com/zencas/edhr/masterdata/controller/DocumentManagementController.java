@@ -190,10 +190,10 @@ public class DocumentManagementController {
         LocalDateTime now = LocalDateTime.now();
         SopDocument document = documentRepository.save(SopDocument.builder()
                 .id(idGenerator.nextId()).tenantId(TENANT_ID).code(null).title(requireText(request.title(), "文档名称不能为空"))
-                .categoryId(category == null ? null : category.getId()).documentType(legacyDocumentType(category)).description(trimToNull(request.description())).remark(trimToNull(request.remark()))
+                .categoryId(category == null ? null : category.getId()).documentType(legacyDocumentType(category)).description(trimToNull(request.description()))
                 .createdBy(currentOperatorName()).createdAt(now).updatedBy(currentOperatorName()).updatedAt(now).build());
         DocumentVersion version = createVersionEntity(document.getId(), request.version(), request.code(), request.fileId(), request.fileReference(),
-                request.versionDescription(), request.versionRemark(), request.effectiveDate(), request.expiryDate(), now);
+                request.versionDescription(), request.effectiveDate(), request.expiryDate(), now);
         DocumentVersion savedVersion = documentVersionRepository.save(version);
         writeAudit("PROCESS_DOCUMENT", document.getId(), "CREATE", "新增", Map.of(), documentSnapshot(document));
         writeAudit("DOCUMENT_VERSION", savedVersion.getId(), "CREATE", "新增", Map.of(), versionSnapshot(document, savedVersion));
@@ -207,7 +207,6 @@ public class DocumentManagementController {
         Map<String, Object> before = documentSnapshot(document);
         document.setTitle(requireText(request.title(), "文档名称不能为空"));
         document.setDescription(trimToNull(request.description()));
-        document.setRemark(trimToNull(request.remark()));
         document.setUpdatedBy(currentOperatorName());
         document.setUpdatedAt(LocalDateTime.now());
         SopDocument saved = documentRepository.save(document);
@@ -220,7 +219,7 @@ public class DocumentManagementController {
     public ApiResponse<DocumentVersionResponse> createVersion(@PathVariable Long documentId, @RequestBody DocumentVersionWriteRequest request) {
         SopDocument document = requireDocument(documentId);
         DocumentVersion version = createVersionEntity(documentId, request.version(), request.code(), request.fileId(), request.fileReference(),
-                request.description(), request.remark(), request.effectiveDate(), request.expiryDate(), LocalDateTime.now());
+                request.description(), request.effectiveDate(), request.expiryDate(), LocalDateTime.now());
         DocumentVersion saved = documentVersionRepository.save(version);
         writeAudit("DOCUMENT_VERSION", saved.getId(), "CREATE", "新增", Map.of(), versionSnapshot(document, saved));
         return ApiResponse.success(toVersionResponse(saved));
@@ -248,7 +247,6 @@ public class DocumentManagementController {
         version.setFileId(request.fileId());
         version.setFileReference(trimToNull(request.fileReference()));
         version.setDescription(trimToNull(request.description()));
-        version.setRemark(trimToNull(request.remark()));
         version.setEffectiveDate(request.effectiveDate());
         version.setExpiryDate(request.expiryDate());
         version.setVersionStatus(resolveRuntimeStatus(version));
@@ -289,7 +287,7 @@ public class DocumentManagementController {
     }
 
     private DocumentVersion createVersionEntity(Long documentId, String version, String code, Long fileId, String fileReference, String description,
-                                                String remark, LocalDateTime effectiveDate, LocalDateTime expiryDate, LocalDateTime now) {
+                                                LocalDateTime effectiveDate, LocalDateTime expiryDate, LocalDateTime now) {
         String label = requireText(version, "版本号不能为空");
         if (documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(documentId, label)) {
             throw new BusinessException(ErrorCode.GENERAL_001, "版本号已存在，请更换后重试");
@@ -302,7 +300,7 @@ public class DocumentManagementController {
         validateFile(fileId);
         DocumentVersion entity = DocumentVersion.builder().id(idGenerator.nextId()).tenantId(TENANT_ID).documentId(documentId)
                 .version(label).code(normalizedCode).fileId(fileId).fileReference(trimToNull(fileReference)).description(trimToNull(description))
-                .remark(trimToNull(remark)).effectiveDate(effectiveDate).expiryDate(expiryDate).createdBy(currentOperatorName())
+                .effectiveDate(effectiveDate).expiryDate(expiryDate).createdBy(currentOperatorName())
                 .createdAt(now).updatedBy(currentOperatorName()).updatedAt(now).build();
         entity.setVersionStatus(resolveRuntimeStatus(entity));
         return entity;
@@ -320,7 +318,7 @@ public class DocumentManagementController {
     private DocumentResponse toResponse(SopDocument document, List<DocumentVersion> versions, Map<Long, DocumentCategory> categoriesById) {
         DocumentCategory category = document.getCategoryId() == null ? null : categoriesById.get(document.getCategoryId());
         return new DocumentResponse(id(document.getId()), document.getTitle(), idOrNull(document.getCategoryId()), category == null ? null : category.getName(),
-                document.getDescription(), document.getRemark(), document.getCreatedBy(), document.getCreatedAt(), document.getUpdatedBy(), document.getUpdatedAt(),
+                document.getDescription(), document.getCreatedBy(), document.getCreatedAt(), document.getUpdatedBy(), document.getUpdatedAt(),
                 versions.stream().map(this::toVersionResponse).toList());
     }
 
@@ -328,7 +326,7 @@ public class DocumentManagementController {
         FileObject file = version.getFileId() == null ? null : fileObjectRepository.findById(version.getFileId()).orElse(null);
         return new DocumentVersionResponse(id(version.getId()), id(version.getDocumentId()), version.getVersion(), version.getCode(), version.getFileId() == null ? null : id(version.getFileId()),
                 file == null ? null : file.getOriginalName(), file == null ? null : file.getMimeType(),
-                version.getFileReference(), version.getDescription(), version.getRemark(), version.getEffectiveDate(), version.getExpiryDate(),
+                version.getFileReference(), version.getDescription(), version.getEffectiveDate(), version.getExpiryDate(),
                 resolveRuntimeStatus(version), version.getCreatedBy(), version.getCreatedAt(), version.getUpdatedBy(), version.getUpdatedAt());
     }
 
@@ -337,7 +335,6 @@ public class DocumentManagementController {
         snapshot.put("名称", document.getTitle());
         snapshot.put("分类", documentCategoryName(document));
         snapshot.put("描述", document.getDescription());
-        snapshot.put("备注", document.getRemark());
         return snapshot;
     }
 
@@ -350,7 +347,6 @@ public class DocumentManagementController {
         snapshot.put("文件", fileSnapshot(version.getFileId()));
         snapshot.put("文件引用", version.getFileReference());
         snapshot.put("版本说明", version.getDescription());
-        snapshot.put("备注", version.getRemark());
         snapshot.put("生效时间", version.getEffectiveDate());
         snapshot.put("失效时间", version.getExpiryDate());
         snapshot.put("状态", resolveRuntimeStatus(version));
@@ -521,16 +517,16 @@ public class DocumentManagementController {
     private String id(Long value) { return value == null ? "" : String.valueOf(value); }
     private String idOrNull(Long value) { return value == null ? null : String.valueOf(value); }
 
-    public record DocumentWriteRequest(String code, String title, String categoryId, String description, String remark, String version,
-                                       Long fileId, String fileReference, String versionDescription, String versionRemark,
+    public record DocumentWriteRequest(String code, String title, String categoryId, String description, String version,
+                                       Long fileId, String fileReference, String versionDescription,
                                        LocalDateTime effectiveDate, LocalDateTime expiryDate) {}
-    public record DocumentMasterWriteRequest(String title, String description, String remark) {}
-    public record DocumentVersionWriteRequest(String version, String code, Long fileId, String fileReference, String description, String remark,
+    public record DocumentMasterWriteRequest(String title, String description) {}
+    public record DocumentVersionWriteRequest(String version, String code, Long fileId, String fileReference, String description,
                                               LocalDateTime effectiveDate, LocalDateTime expiryDate) {}
-    public record DocumentResponse(String id, String title, String categoryId, String categoryName, String description, String remark,
+    public record DocumentResponse(String id, String title, String categoryId, String categoryName, String description,
                                    String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, List<DocumentVersionResponse> versions) {}
     public record DocumentVersionResponse(String id, String documentId, String version, String code, String fileId, String fileName, String fileMimeType, String fileReference, String description,
-                                          String remark, LocalDateTime effectiveDate, LocalDateTime expiryDate, String status, String createdBy,
+                                          LocalDateTime effectiveDate, LocalDateTime expiryDate, String status, String createdBy,
                                           LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt) {}
     public record DocumentCategoryRequest(String name) {}
     public record DocumentCategoryOrderRequest(List<String> ids) {}

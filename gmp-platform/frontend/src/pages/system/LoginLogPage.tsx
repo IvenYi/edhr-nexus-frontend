@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
@@ -109,7 +110,7 @@ export default function LoginLogPage() {
         </Stack>
       </Stack>
 
-      <TableContainer sx={{ flex: 1, border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff' }}>
+      <ListTableShell sx={{ flex: 1, border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff' }}>
         <Table stickyHeader size="small" sx={{ minWidth: 1120, height: isEmptyState ? '100%' : 'auto' }}>
           <TableHead>
             <TableRow>
@@ -150,7 +151,7 @@ export default function LoginLogPage() {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
 
       {data && data.totalPages > 1 && (
         <Stack alignItems="center">

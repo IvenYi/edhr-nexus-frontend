@@ -47,6 +47,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
   ArrowBack,
@@ -598,10 +599,10 @@ function VersionDialog({ open, mode, form, options, graph, onChange, onClose, on
   const canSubmit = Boolean(form.version.trim() && form.productionMode.trim() && form.productionForm.trim() && form.routeVersionId && form.dhrTemplateVersionId
     && (form.dhrReviewMode === 'NONE' || (form.dhrReviewWorkflowDefinitionId && form.dhrReviewWorkflowVersionId)));
   return (
-    <AppDialog open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="lg">
+    <AppDialog variant="form" open={open} onClose={saving ? undefined : onClose} fullWidth maxWidth="lg">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent dividers>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 2, pt: 0.5 }}>
+        <FormDialogSection title="版本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
           <TextField required size="small" label="版本号" value={form.version} onChange={(event) => set('version', event.target.value)} />
           <TextField select required size="small" label="生产方式" value={form.productionForm} onChange={(event) => set('productionForm', event.target.value)}>
             {PRODUCTION_MODALITY_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
@@ -637,7 +638,7 @@ function VersionDialog({ open, mode, form, options, graph, onChange, onClose, on
           <TextField size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => set('effectiveFrom', event.target.value)} InputLabelProps={{ shrink: true }} />
           <TextField size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => set('effectiveTo', event.target.value)} InputLabelProps={{ shrink: true }} />
           <TextField sx={{ gridColumn: { sm: '1 / -1' } }} size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />
-        </Box>
+        </Box></FormDialogSection>
         {form.routeVersionId && <Box sx={{ mt: 2 }}><Typography variant="subtitle2" sx={{ mb: 1, color: '#303133' }}>工艺路线</Typography><RouteGraphPreview graph={graph} /></Box>}
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 1.5 }}>

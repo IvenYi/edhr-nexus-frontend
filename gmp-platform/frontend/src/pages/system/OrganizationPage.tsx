@@ -1,5 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
-import { listTableHeaderCellSx } from '@/components/listTableStyles';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -53,6 +54,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
   Apartment,
@@ -797,6 +799,7 @@ function getStickyActionColumnSx(column: PersonnelColumn, section: 'head' | 'bod
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
     textAlign: 'center',
   };
 }
@@ -2004,7 +2007,7 @@ export default function OrganizationPage() {
             </Popover>
 
 	            <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
-	              <TableContainer ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
+	              <ListTableShell ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
                 <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth, height: isPersonnelTableEmptyState ? '100%' : 'auto' }}>
                 <colgroup>
                   {visiblePersonnelColumns.map((column) => (
@@ -2096,7 +2099,7 @@ export default function OrganizationPage() {
                   ))}
                 </TableBody>
 	                </Table>
-	              </TableContainer>
+	              </ListTableShell>
 	              <Box
 	                data-personnel-action-column-shadow
 	                sx={{
@@ -2105,7 +2108,7 @@ export default function OrganizationPage() {
 	                  bottom: 0,
 	                  right: tableScrollbarWidth,
 	                  width: PERSONNEL_ACTION_COLUMN_WIDTH,
-	                  boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+	                  boxShadow: listTableStickyEdgeShadow,
 	                  pointerEvents: 'none',
 	                  zIndex: 7,
 	                }}
@@ -2333,9 +2336,9 @@ export default function OrganizationPage() {
         </Box>
       </Drawer>
 
-      <AppDialog open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
+      <AppDialog variant="form" open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingUserId ? '编辑用户' : '新增用户'}</DialogTitle>
-        <DialogContent dividers>
+        <DialogContent dividers><FormDialogSection title="基本信息">
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
             <TextField
               label="账号"
@@ -2453,7 +2456,7 @@ export default function OrganizationPage() {
               </Select>
             </FormControl>
           </Box>
-        </DialogContent>
+        </FormDialogSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setUserDialogOpen(false)}>取消</Button>
           <Button
@@ -2515,9 +2518,9 @@ export default function OrganizationPage() {
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers><FormDialogSection title="基本信息">
           {!editingId && (
             <Box
               sx={{
@@ -2537,8 +2540,8 @@ export default function OrganizationPage() {
               </Typography>
             </Box>
           )}
-          <TextField label="名称" fullWidth margin="normal" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        </DialogContent>
+          <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        </FormDialogSection></DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
           <Box>
             {editingId && (

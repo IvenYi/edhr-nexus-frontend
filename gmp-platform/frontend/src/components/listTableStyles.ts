@@ -13,12 +13,60 @@ export const listTableHeaderCellStyle = {
 
 export const listTableHeaderCellSx = listTableHeaderCellStyle;
 
+/** Canonical shadow at the left edge of a right-frozen table column. */
+export const listTableStickyEdgeShadow = '-6px 0 8px -8px rgba(0, 0, 0, 0.35)';
+const listTableBodyDividerShadow = 'inset 0 -1px 0 #ebeef5';
+
+/** Shared paint contract for a right-frozen table cell. */
+export const listTableStickyEdgeSx = {
+  backgroundClip: 'padding-box',
+  boxShadow: listTableStickyEdgeShadow,
+  // Row-level body-cell rules also set boxShadow. Keep the frozen edge above
+  // those rules without losing the row divider inside the sticky cell.
+  '&&.MuiTableCell-body': {
+    borderBottom: 'none',
+    boxShadow: `${listTableStickyEdgeShadow}, ${listTableBodyDividerShadow}`,
+  },
+} as const;
+
+/** Shared right-frozen operation-column geometry and edge paint. */
+export function listTableStickyActionSx(width: number, layer: 'head' | 'body') {
+  return {
+    position: 'sticky' as const,
+    right: 0,
+    zIndex: layer === 'head' ? 4 : 2,
+    width,
+    minWidth: width,
+    maxWidth: width,
+    backgroundColor: layer === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
+  } as const;
+}
+
 export const listTableBodyCellSx = {
   height: 40,
   lineHeight: '20px',
   py: 0,
   borderBottom: 'none',
-  boxShadow: 'inset 0 -1px 0 #ebeef5',
+  boxShadow: listTableBodyDividerShadow,
+} as const;
+
+/**
+ * Primary text in an independent list remains ordinary body text even when
+ * the cell opens a detail view. The row or neutral button carries the action
+ * affordance; the text itself is not styled as a hyperlink.
+ */
+export const listTablePrimaryTextSx = {
+  color: '#303133',
+  fontWeight: 400,
+  fontFamily: 'inherit',
+  fontSize: 14,
+  lineHeight: '20px',
+  textDecoration: 'none',
+  '&:hover': {
+    color: '#303133',
+    textDecoration: 'none',
+  },
 } as const;
 
 /** Shared visual contract for a resizable list-table column handle. */
@@ -33,6 +81,7 @@ export const listColumnResizeHandleSx = {
   width: 8,
   height: '100%',
   cursor: 'col-resize',
+  pointerEvents: 'auto' as const,
   userSelect: 'none' as const,
   touchAction: 'none' as const,
   '&::after': {
