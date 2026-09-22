@@ -86,7 +86,7 @@ public class ProductController {
         ProductFamily existing = productFamilyRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "记录不存在"));
         productFamilyRepository.deleteById(id);
-        writeAudit(id, "DELETE", productFamilySnapshot(existing), Map.of());
+        writeAudit(id, "DELETE", productFamilySnapshot(existing), productFamilySnapshot(existing));
         return ApiResponse.success(null);
     }
 

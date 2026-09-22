@@ -66,8 +66,21 @@ class ProductControllerIntegrationTest {
     }
 
     @Test
-    void allowsAuthenticatedUsersWithProductFamilyPermissionToList() throws Exception {
-        mvc.perform(get(URL).header("Authorization", auth("master-data.product-families")))
+    void allowsAuthenticatedUsersWithProductFamilyPermissionAcrossLegacyEndpoints() throws Exception {
+        String authorization = auth("master-data.product-families");
+
+        mvc.perform(get(URL).header("Authorization", authorization)).andExpect(status().isOk());
+        mvc.perform(post(URL).header("Authorization", authorization)
+                        .contentType("application/json")
+                        .content("{\"id\":9001,\"code\":\"PF-SECURITY-001\",\"name\":\"产品簇\",\"description\":\"描述\"}"))
+                .andExpect(status().isOk());
+        mvc.perform(get(URL + "/9001").header("Authorization", authorization))
+                .andExpect(status().isOk());
+        mvc.perform(put(URL + "/9001").header("Authorization", authorization)
+                        .contentType("application/json")
+                        .content("{\"code\":\"PF-SECURITY-001\",\"name\":\"产品簇-已编辑\",\"description\":\"新描述\"}"))
+                .andExpect(status().isOk());
+        mvc.perform(delete(URL + "/9001").header("Authorization", authorization))
                 .andExpect(status().isOk());
     }
 

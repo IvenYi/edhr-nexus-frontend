@@ -67,6 +67,8 @@ class ProductControllerTest {
         assertThat(captor.getAllValues()).extracting(AuditEvent::getAction).containsExactly("UPDATE", "DELETE");
         assertThat(captor.getAllValues().get(0).getContentBefore()).contains("旧描述");
         assertThat(captor.getAllValues().get(0).getContentAfter()).contains("新描述");
+        assertThat(captor.getAllValues().get(1).getContentBefore()).contains("旧描述");
+        assertThat(captor.getAllValues().get(1).getContentAfter()).contains("旧描述");
         verify(productFamilyRepository).deleteById(101L);
     }
 }
