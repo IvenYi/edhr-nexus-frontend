@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -99,6 +100,15 @@ class ProcessModelingControllerTest {
                 .toList();
 
         assertThat(mappings).doesNotContain("/material-types", "/material-types/{id}");
+    }
+
+    @Test
+    void requiresThePagePermissionForEveryProcessModelingEndpoint() {
+        Arrays.stream(ProcessModelingController.class.getDeclaredMethods())
+                .filter(method -> mappingValues(method).findAny().isPresent())
+                .forEach(method -> assertThat(method.getAnnotation(PreAuthorize.class))
+                        .as("permission for %s", method.getName())
+                        .isNotNull());
     }
 
     @Test

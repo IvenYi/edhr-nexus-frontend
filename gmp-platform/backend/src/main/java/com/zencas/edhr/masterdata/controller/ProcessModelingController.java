@@ -60,6 +60,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -118,6 +119,7 @@ public class ProcessModelingController {
     private final SnowflakeIdGenerator idGenerator;
 
     @GetMapping("/materials")
+    @PreAuthorize("hasAuthority('master-data.materials')")
     public ApiResponse<PageResult<MaterialGroupRecord>> listMaterials(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String materialName,
@@ -140,6 +142,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/materials")
+    @PreAuthorize("hasAuthority('master-data.materials')")
     @Transactional
     public ApiResponse<Material> createMaterial(@RequestBody ProcessModelingRequest request) {
         validateMaterialDateRange(request);
@@ -175,6 +178,7 @@ public class ProcessModelingController {
     }
 
     @GetMapping(value = "/materials/import-template", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @PreAuthorize("hasAuthority('master-data.materials')")
     public ResponseEntity<byte[]> downloadMaterialImportTemplate() throws IOException {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
@@ -185,6 +189,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping(value = "/materials/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('master-data.materials')")
     @Transactional
     public ApiResponse<MaterialImportResult> importMaterials(@RequestParam("file") MultipartFile file) throws IOException {
         MaterialImportResult result = materialImportService.importWorkbook(file);
@@ -197,6 +202,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/materials/{id}")
+    @PreAuthorize("hasAuthority('master-data.materials')")
     @Transactional
     public ApiResponse<Material> updateMaterial(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
         validateMaterialDateRange(request);
@@ -273,6 +279,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/materials/{id}")
+    @PreAuthorize("hasAuthority('master-data.materials')")
     @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "material", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteMaterial(@PathVariable Long id) {
@@ -284,6 +291,7 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/products")
+    @PreAuthorize("hasAuthority('master-data.products')")
     public ApiResponse<PageResult<Material>> listProducts(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String status,
@@ -303,24 +311,28 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/products")
+    @PreAuthorize("hasAuthority('master-data.products')")
     @Transactional
     public ApiResponse<Product> createProduct(@RequestBody ProcessModelingRequest request) {
         throw derivedProductMutationException();
     }
 
     @PutMapping("/products/{id}")
+    @PreAuthorize("hasAuthority('master-data.products')")
     @Transactional
     public ApiResponse<Product> updateProduct(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
         throw derivedProductMutationException();
     }
 
     @DeleteMapping("/products/{id}")
+    @PreAuthorize("hasAuthority('master-data.products')")
     @Transactional
     public ApiResponse<Void> deleteProduct(@PathVariable Long id) {
         throw derivedProductMutationException();
     }
 
     @GetMapping("/product-families")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     public ApiResponse<PageResult<ProductFamilySummaryResponse>> listProductFamilies(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "1") int page,
@@ -336,6 +348,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/product-families")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     @Transactional
     public ApiResponse<ProductFamily> createProductFamily(@RequestBody MasterDataDescriptionRequest request) {
         LocalDateTime now = LocalDateTime.now();
@@ -360,6 +373,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/product-families/{id}")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     @Transactional
     public ApiResponse<ProductFamily> updateProductFamily(@PathVariable Long id, @RequestBody MasterDataDescriptionRequest request) {
         ProductFamily existing = productFamilyRepository.findById(id)
@@ -378,6 +392,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/product-families/{id}")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "product_family", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteProductFamily(@PathVariable Long id) {
@@ -393,11 +408,13 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/product-families/{id}/members")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     public ApiResponse<List<ProductFamilyMemberResponse>> listProductFamilyMembers(@PathVariable Long id) {
         return ApiResponse.success(productFamilyMembershipService.listMemberOptions(id));
     }
 
     @PostMapping("/product-families/{id}/members/batch-add")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     @Transactional
     public ApiResponse<List<ProductFamilyMember>> addProductFamilyMembers(
             @PathVariable Long id,
@@ -406,6 +423,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/product-families/{id}/members/{productId}/transfer")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     @Transactional
     public ApiResponse<ProductFamilyMember> transferProductFamilyMember(
             @PathVariable Long id,
@@ -416,6 +434,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/product-families/{id}/members/{productId}")
+    @PreAuthorize("hasAuthority('master-data.product-families')")
     @Transactional
     public ApiResponse<Void> removeProductFamilyMember(
             @PathVariable Long id,
@@ -425,6 +444,7 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/operations")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     public ApiResponse<PageResult<Operation>> listOperations(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String operationName,
@@ -440,11 +460,13 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/operations/categories")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     public ApiResponse<List<OperationCategoryResponse>> listOperationCategories() {
         return ApiResponse.success(toOperationCategoryResponses());
     }
 
     @PostMapping("/operations/categories")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @Transactional
     public ApiResponse<OperationCategoryResponse> createOperationCategory(@RequestBody OperationCategoryRequest request) {
         String name = requireOperationCategoryName(request);
@@ -466,6 +488,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/operations/categories/{id}")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @Transactional
     public ApiResponse<OperationCategoryResponse> updateOperationCategory(@PathVariable Long id, @RequestBody OperationCategoryRequest request) {
         OperationCategory existing = operationCategoryRepository.findById(id)
@@ -498,6 +521,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/operations/categories/{id}")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "operation_category", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteOperationCategory(@PathVariable Long id) {
@@ -521,6 +545,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/operations/categories/order")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @Transactional
     public ApiResponse<List<OperationCategoryResponse>> reorderOperationCategories(@RequestBody OperationCategoryOrderRequest request) {
         List<String> orderedIds = request == null || request.ids() == null ? List.of() : request.ids();
@@ -542,6 +567,7 @@ public class ProcessModelingController {
     }
 
     @GetMapping(value = "/operations/import-template", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     public ResponseEntity<byte[]> downloadOperationImportTemplate() throws IOException {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
@@ -551,6 +577,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping(value = "/operations/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @Transactional(rollbackOn = Exception.class)
     public ApiResponse<OperationImportResult> importOperations(@RequestParam("file") MultipartFile file) throws IOException {
         OperationImportResult result = operationImportService.importWorkbook(file);
@@ -560,6 +587,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/operations")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @Transactional
     public ApiResponse<Operation> createOperation(@RequestBody ProcessModelingRequest request) {
         LocalDateTime now = LocalDateTime.now();
@@ -590,6 +618,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/operations/{id}")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @Transactional
     public ApiResponse<Operation> updateOperation(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
         Operation existing = operationRepository.findById(id)
@@ -616,6 +645,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/operations/{id}")
+    @PreAuthorize("hasAuthority('master-data.operations')")
     @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "operation", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteOperation(@PathVariable Long id) {
@@ -627,6 +657,7 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/routes")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     public ApiResponse<PageResult<Route>> listRoutes(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String status,
@@ -641,6 +672,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/routes")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     @Transactional
     public ApiResponse<Route> createRoute(@RequestBody ProcessModelingRequest request) {
         validateRouteDateRange(request);
@@ -671,6 +703,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/routes/{id}")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     @Transactional
     public ApiResponse<Route> updateRoute(@PathVariable Long id, @RequestBody ProcessModelingRequest request) {
         Route existing = routeRepository.findById(id)
@@ -690,6 +723,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/routes/{id}")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "route", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteRoute(@PathVariable Long id) {
@@ -701,6 +735,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/routes/{routeId}/versions")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     @Transactional
     public ApiResponse<RouteVersion> createRouteVersion(@PathVariable Long routeId, @RequestBody ProcessModelingRequest request) {
         Route route = routeRepository.findById(routeId)
@@ -715,6 +750,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/routes/{routeId}/versions/{versionId}")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     @Transactional
     public ApiResponse<RouteVersion> updateRouteVersion(
             @PathVariable Long routeId,
@@ -742,6 +778,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/routes/{routeId}/versions/{versionId}")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "route_version", idArgument = 1)
     @Transactional
     public ApiResponse<Void> deleteRouteVersion(@PathVariable Long routeId, @PathVariable Long versionId) {
@@ -760,6 +797,7 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/routes/{routeId}/versions/{versionId}/graph")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     public ApiResponse<RouteGraphResponse> getRouteGraph(@PathVariable Long routeId, @PathVariable Long versionId) {
         requireRouteVersion(routeId, versionId);
         return ApiResponse.success(RouteGraphResponse.builder()
@@ -771,6 +809,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/routes/{routeId}/versions/{versionId}/graph")
+    @PreAuthorize("hasAuthority('master-data.routes')")
     @Transactional
     public ApiResponse<RouteGraphResponse> saveRouteGraph(
             @PathVariable Long routeId,
@@ -803,6 +842,7 @@ public class ProcessModelingController {
     }
 
     @GetMapping("/documents")
+    @PreAuthorize("hasAuthority('master-data.documents')")
     public ApiResponse<PageResult<SopDocument>> listDocuments(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String status,
@@ -815,6 +855,7 @@ public class ProcessModelingController {
     }
 
     @PostMapping("/documents")
+    @PreAuthorize("hasAuthority('master-data.documents')")
     @Transactional
     public ApiResponse<SopDocument> createDocument(@RequestBody MasterDataDescriptionRequest request) {
         LocalDateTime now = LocalDateTime.now();
@@ -838,6 +879,7 @@ public class ProcessModelingController {
     }
 
     @PutMapping("/documents/{id}")
+    @PreAuthorize("hasAuthority('master-data.documents')")
     @Transactional
     public ApiResponse<SopDocument> updateDocument(@PathVariable Long id, @RequestBody MasterDataDescriptionRequest request) {
         SopDocument existing = sopDocumentRepository.findById(id)
@@ -856,6 +898,7 @@ public class ProcessModelingController {
     }
 
     @DeleteMapping("/documents/{id}")
+    @PreAuthorize("hasAuthority('master-data.documents')")
     @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "sop_document", idArgument = 0)
     @Transactional
     public ApiResponse<Void> deleteDocument(@PathVariable Long id) {

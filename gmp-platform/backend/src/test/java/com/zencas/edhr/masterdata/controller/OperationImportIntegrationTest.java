@@ -165,6 +165,16 @@ class OperationImportIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void rejectsAuthenticatedUsersWithoutOperationPermission() throws Exception {
+        mvc.perform(get(URL).header("Authorization", auth()))
+                .andExpect(status().isOk());
+        mvc.perform(get(URL).header("Authorization", auth("production.work-orders")))
+                .andExpect(status().isForbidden());
+        mvc.perform(get(URL + "/import-template").header("Authorization", auth("production.work-orders")))
+                .andExpect(status().isForbidden());
+    }
+
     private void assertRolledBack() {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM operation", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM operation_category", Integer.class)).isEqualTo(1);
@@ -172,7 +182,11 @@ class OperationImportIntegrationTest {
     }
 
     private String auth() {
-        return "Bearer " + tokens.generateToken("operation-test", "operation-test", "工序验收员", 5, List.of("master-data.operations"));
+        return auth("master-data.operations");
+    }
+
+    private String auth(String... permissions) {
+        return "Bearer " + tokens.generateToken("operation-test", "operation-test", "工序验收员", 5, List.of(permissions));
     }
 
     private byte[] template() throws Exception {
