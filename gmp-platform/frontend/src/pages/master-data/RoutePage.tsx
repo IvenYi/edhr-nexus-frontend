@@ -26,7 +26,9 @@ import {
   CircularProgress,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
 import FormDialogSection from '@/components/FormDialogSection';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import { ListTableShell } from '@/components/ListTableShell';
 import { listTableStickyActionSx } from '@/components/listTableStyles';
 import { Add, Edit, Delete } from '@mui/icons-material';
@@ -111,19 +113,19 @@ export default function RoutePage() {
         </Table>
       </ListTableShell>
       {data && data.totalPages > 1 && <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}><Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} /></Box>}
-      <AppDialog variant="form" open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑路线' : '新增路线'}</DialogTitle>
-        <DialogContent dividers><FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
           <TextField size="small" label="编码" fullWidth value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
           <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <TextField size="small" label="描述" fullWidth multiline rows={3} sx={{ gridColumn: '1 / -1' }} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        </Box></FormDialogSection>
+        </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
           <Button variant="contained" onClick={() => saveMutation.mutate(form)} disabled={!form.code || !form.name || saveMutation.isPending}>保存</Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
       <AppDialog deletionTarget={deleteConfirm !== null ? { type: 'route', id: deleteConfirm } : null} open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle><DialogContent>确定要删除该工艺路线吗？</DialogContent>
         <DialogActions>

@@ -11,7 +11,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0065-02
-        statement: 旧 /api/v1/master-data/product-families 兼容接口与当前产品簇能力使用同一 master-data.product-families 页面权限，覆盖其列表和创建、更新、删除操作。
+        statement: 旧 /api/v1/master-data/product-families 兼容接口与当前产品簇能力使用同一 master-data.product-families 页面权限，覆盖其列表、详情和创建、更新、删除操作。
         status: implemented
         visibility: internal
       - id: DEC-0065-03

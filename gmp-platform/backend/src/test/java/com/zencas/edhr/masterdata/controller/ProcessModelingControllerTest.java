@@ -106,9 +106,13 @@ class ProcessModelingControllerTest {
     void requiresThePagePermissionForEveryProcessModelingEndpoint() {
         Arrays.stream(ProcessModelingController.class.getDeclaredMethods())
                 .filter(method -> mappingValues(method).findAny().isPresent())
-                .forEach(method -> assertThat(method.getAnnotation(PreAuthorize.class))
-                        .as("permission for %s", method.getName())
-                        .isNotNull());
+                .forEach(method -> {
+                    PreAuthorize authorization = method.getAnnotation(PreAuthorize.class);
+                    assertThat(authorization).as("permission for %s", method.getName()).isNotNull();
+                    mappingValues(method).forEach(mapping -> assertThat(authorization.value())
+                            .as("permission for %s %s", method.getName(), mapping)
+                            .isEqualTo("hasAuthority('" + expectedPermissionFor(mapping) + "')"));
+                });
     }
 
     @Test
@@ -1586,5 +1590,15 @@ class ProcessModelingControllerTest {
                 ? Arrays.stream(method.getAnnotation(DeleteMapping.class).value())
                 : Stream.empty();
         return Stream.of(getMappings, postMappings, putMappings, deleteMappings).flatMap(stream -> stream);
+    }
+
+    private String expectedPermissionFor(String mapping) {
+        if (mapping.startsWith("/materials")) return "master-data.materials";
+        if (mapping.startsWith("/products")) return "master-data.products";
+        if (mapping.startsWith("/product-families")) return "master-data.product-families";
+        if (mapping.startsWith("/operations")) return "master-data.operations";
+        if (mapping.startsWith("/routes")) return "master-data.routes";
+        if (mapping.startsWith("/documents")) return "master-data.documents";
+        throw new AssertionError("Unexpected process modeling mapping: " + mapping);
     }
 }
