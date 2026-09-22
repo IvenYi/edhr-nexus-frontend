@@ -218,7 +218,7 @@ rules:
         productionForm: 生产方式
         routeVersionId: 工艺路线版本
         dhrTemplateVersionId: 批记录模板版本
-        description: 备注
+        description: 描述
         effectiveFrom: 生效时间
         effectiveTo: 失效时间
         status: 版本状态
@@ -227,7 +227,7 @@ rules:
         forms: DHR 目录表单
         documents: 文档
     explanation: 产品簇详情审计记录制程版本新增、编辑和删除的变更前后快照，并包含版本字段及工序表单、文档配置。审计投影隐藏技术键 id 和 productProcessId，使用中文业务标签；嵌套制程版本的 status 保留为版本状态，不代表产品簇具有独立业务状态。
-    evidenceIds: [evidence.product-process-owner-service, evidence.product-process-owner-service-test, evidence.product-family-modeling-page]
+    evidenceIds: [evidence.product-process-owner-service, evidence.product-process-owner-service-test, evidence.product-family-modeling-page, evidence.master-data-description-process-controller, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
   - id: rule.product-process.shared-owner-model
     name: 产品与产品簇共用制程绑定模型
     status: implemented

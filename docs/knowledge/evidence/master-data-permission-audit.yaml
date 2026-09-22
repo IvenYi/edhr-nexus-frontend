@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.master-data-page-authority-process-modeling-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    description: 工艺建模控制器的主数据接口按资源边界使用现有页面权限码：物料、产品、产品簇、工序、工艺路线和文档分别要求对应的 master-data.* authority；权限检查覆盖读取、写入、导入、模板下载、成员操作和版本图操作。
+    visibility: internal
+  - id: evidence.master-data-page-authority-legacy-product-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductController.java
+    description: 旧 /api/v1/master-data/product-families 兼容控制器在类级别要求 master-data.product-families，因而覆盖列表、详情和产品簇创建、更新、删除接口。
+    visibility: internal
+  - id: evidence.master-data-page-authority-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+    description: 工艺建模控制器测试检查每个映射接口方法都声明了 PreAuthorize 页面权限注解。
+    visibility: internal
+  - id: evidence.master-data-page-authority-operation-integration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/OperationImportIntegrationTest.java
+    description: 工序接口集成测试验证未认证请求被拒绝，并验证仅有其他业务权限的已认证用户不能访问工序列表和导入模板接口。
+    visibility: internal
+  - id: evidence.master-data-legacy-product-family-audit-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductController.java
+    description: 旧产品簇兼容控制器的创建、更新和删除在同一事务中写入 PRODUCT_FAMILY AuditEvent；更新和删除读取持久化对象形成变更前快照，所有快照包含 description，并沿用数据/工艺建模/产品簇的统一审计元数据。
+    visibility: internal
+  - id: evidence.master-data-legacy-product-family-audit-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductControllerTest.java
+    description: 旧产品簇兼容控制器测试验证页面权限声明、创建审计的 description 变更后快照，以及更新和删除的变更前后快照与动作。
+    visibility: internal

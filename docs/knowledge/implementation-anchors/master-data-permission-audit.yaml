@@ -1,0 +1,46 @@
+knowledgeModelVersion: 0.3.24
+implementationAnchors:
+  - id: anchor.master-data-page-authority-boundary
+    targetId: rule.master-data.endpoint-page-authority
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductController.java
+    apiReferences:
+      - /api/v1/master-data/process-modeling/{resource}
+      - /api/v1/master-data/product-families
+    databaseReferences: []
+    uiReferences: []
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/OperationImportIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-page-authority-controller-test, evidence.master-data-page-authority-operation-integration-test, evidence.master-data-legacy-product-family-audit-test]
+    sourceRevision: 04831797
+    sourceLocator: ProcessModelingController method annotations and ProductController class annotation
+    capturedAt: '2026-09-22'
+    reviewStatus: unreviewed
+  - id: anchor.master-data-write-audit-snapshot
+    targetId: rule.master-data.write-audit-snapshot
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductController.java
+    apiReferences:
+      - POST /api/v1/master-data/product-families
+      - PUT /api/v1/master-data/product-families/{id}
+      - DELETE /api/v1/master-data/product-families/{id}
+    databaseReferences: []
+    uiReferences: []
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test, evidence.audit-aspect, evidence.audit-aspect-test]
+    sourceRevision: 04831797
+    sourceLocator: ProductController.writeAudit and ProcessModelingController.writeAudit/productFamilySnapshot
+    capturedAt: '2026-09-22'
+    reviewStatus: unreviewed

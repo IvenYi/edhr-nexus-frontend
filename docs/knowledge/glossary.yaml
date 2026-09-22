@@ -12,6 +12,12 @@ terms:
     aliases: [主数据说明, description]
     status: implemented
     visibility: internal
+  - id: term.master-data-page-permission
+    name: 主数据页面权限
+    definition: 绑定主数据页面资源及其服务端接口的现有 master-data.* authority；接口访问必须与对应页面权限一致。
+    aliases: [主数据页面权限码, master-data authority]
+    status: implemented
+    visibility: internal
   - id: term.version-description
     name: 版本说明
     definition: 带子版本主数据的版本级唯一自由文本说明字段；客户界面统一标为“版本说明”，不额外保留重复的版本备注字段。

@@ -6,6 +6,7 @@ implementationAnchors:
     codeReferences:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductController.java
     apiReferences:
       - /api/v1/master-data/product-families
       - /api/v1/master-data/documents
@@ -19,9 +20,10 @@ implementationAnchors:
     testReferences:
       - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DuplicateRemarkMigrationTest.java
       - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductControllerTest.java
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.master-data-description-migration, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-description-migration-test, evidence.master-data-description-document-controller-test]
+    evidenceIds: [evidence.master-data-description-migration, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-description-migration-test, evidence.master-data-description-document-controller-test, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
     sourceRevision: working-tree
     sourceLocator: ProcessModelingController product-family CRUD / DocumentManagementController document and version CRUD / migration 0095
     capturedAt: '2026-09-22'

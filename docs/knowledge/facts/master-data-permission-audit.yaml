@@ -1,0 +1,34 @@
+knowledgeModelVersion: 0.3.24
+facts:
+  - id: fact.master-data.endpoint-page-authority
+    name: 主数据接口页面权限码
+    conceptId: concept.master-data-page-permission
+    valueType: string
+    sourceType: configuration
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    aliases: [masterData.endpointPageAuthority]
+    availability: configuration-and-runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller]
+    sourceRevision: 04831797
+    sourceLocator: ProcessModelingController and ProductController PreAuthorize declarations
+    capturedAt: '2026-09-22'
+    reviewStatus: unreviewed
+  - id: fact.master-data.write-action
+    name: 主数据写操作审计动作
+    conceptId: concept.data-audit-action-category
+    valueType: string
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductController.java
+    aliases: [masterData.writeAction]
+    availability: configuration-and-runtime
+    allowedOperators: [in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
+    sourceRevision: 04831797
+    sourceLocator: ProductController.create/update/delete AuditEvent action
+    capturedAt: '2026-09-22'
+    reviewStatus: unreviewed

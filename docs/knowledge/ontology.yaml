@@ -11,7 +11,13 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page]
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
+  - id: concept.master-data-page-permission
+    termId: term.master-data-page-permission
+    kind: business-configuration
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-page-authority-controller-test, evidence.master-data-page-authority-operation-integration-test]
   - id: concept.version-description
     termId: term.version-description
     kind: business-concept
@@ -47,7 +53,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-family-member-entity, evidence.migration-0053-product-family-process-owner, evidence.product-family-membership-service, evidence.product-process-owner-service, evidence.product-family-repository, evidence.migration-0054-product-family-code-case-insensitive, evidence.process-modeling-controller, evidence.product-family-modeling-page, evidence.product-family-membership-service-test, evidence.product-process-owner-service-test, evidence.process-modeling-controller-test]
+    evidenceIds: [evidence.product-family-member-entity, evidence.migration-0053-product-family-process-owner, evidence.product-family-membership-service, evidence.product-process-owner-service, evidence.product-family-repository, evidence.migration-0054-product-family-code-case-insensitive, evidence.process-modeling-controller, evidence.product-family-modeling-page, evidence.product-family-membership-service-test, evidence.product-process-owner-service-test, evidence.process-modeling-controller-test, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
   - id: concept.product-process-version
     termId: term.product-process-version
     kind: business-configuration
@@ -551,7 +557,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
+    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
   - id: concept.production-object-pending-list
     termId: term.production-object-pending-list
     kind: runtime-fact
@@ -581,7 +587,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline]
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
   - id: concept.record-correction-request
     termId: term.record-correction-request
     kind: business-fact
