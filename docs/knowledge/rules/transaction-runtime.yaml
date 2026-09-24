@@ -1225,7 +1225,7 @@ rules:
   - id: rule.production-work.form-entry-form-process-optional
     factCatalogProfile: form-process-binding
     name: 表单填报节点的表单流程可选
-    status: implemented
+    status: deprecated
     visibility: internal
     trigger: production-work.flow-version.publish
     scope: form-process-configuration
@@ -1242,7 +1242,7 @@ rules:
       publishAllowed: true
       skipValidations: [formProcessVersion, fieldPermissions, eventBindings, signatureFieldBindings]
       requiredReference: form-template-version
-    explanation: 表单填报节点必须绑定当前生效的表单模板版本，但不需要审批流程时可以不配置表单流程并发布。只有实际绑定表单流程后，系统才校验流程版本、字段权限、按钮事件和签名字段绑定；清除表单流程时应同步清理绑定级配置，避免隐藏配置继续影响发布。
+    explanation: 历史规则保留；DEC-0067 以显式填报方式局部替代无流程即跳过字段权限、按钮事件和签名字段校验及清除绑定配置的约定。直接填报现在要求独立配置并执行适用设置，按流程填报继续沿用既有流程；表单模板版本必选和流程版本治理不变。保留本记录原 result 用于历史解释，不进入现行规则投影。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-optional-binding-controller]
   - id: rule.form-instance.completion-path-by-form-process-binding
     name: 表单实例按表单流程绑定状态完成

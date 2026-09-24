@@ -55,4 +55,10 @@ public class DhrSummaryController {
     public ApiResponse<ObjectNode> submit(@PathVariable Long id, @RequestBody JsonNode command) {
         return ApiResponse.success(service.submit(id, command));
     }
+
+    @PostMapping("/{id}/summary/reorganize")
+    @PreAuthorize("hasAuthority('records.dhr-summary') and hasAuthority('dhr.summaries.reorganize')")
+    public ApiResponse<ObjectNode> reorganize(@PathVariable Long id, @RequestBody JsonNode command) {
+        return ApiResponse.success(service.reorganize(id, command));
+    }
 }

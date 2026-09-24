@@ -163,8 +163,10 @@ public class ProductionExecutionEngine {
         if (form.has("flow")) for (JsonNode id : formState.path("active")) {
             if (access.canAct(form, find(form.path("flow").path("nodes"), id.asText()), formState, operator)) { active = id.asText(); break; }
         }
-        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), active) : defaultFormNode();
-        result.put("nodeId", active).put("nodeName", node.path("data").path("label").asText("现场填报"));
+        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), active) : defaultFormNode(form);
+        result.put("nodeId", active)
+                .put("nodeName", node.path("data").path("label").asText("现场填报"))
+                .put("nodeKind", kind(node));
         result.put("canAct", access.canAct(form, node, formState, operator));
         result.set("permissions", access.permissions(form, node, formState, operator));
         result.set("signaturePermissions", access.permissions(form, node, formState, operator, true));
@@ -176,7 +178,7 @@ public class ProductionExecutionEngine {
             ObjectNode copy = button.deepCopy();
             boolean sign = false;
             for (JsonNode event : node.path("data").path("config").path("buttonEvents"))
-                if (event.path("action").asText().equals(button.path("action").asText())) {
+                if (event.path("enabled").asBoolean(true) && event.path("action").asText().equals(button.path("action").asText())) {
                     if (!"BEFORE".equals(event.path("event").asText()) || !"ACCOUNT_PASSWORD".equals(event.path("signatureMethod").asText()))
                         throw invalid("表单动作配置了不支持的签署事件");
                     sign = true;
@@ -198,8 +200,24 @@ public class ProductionExecutionEngine {
 
     public void formAction(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId, String action,
                            JsonNode values, String opinion, String account, String password, String operator, JsonNode signatureTarget) {
+        formActionInternal(snapshot, state, operationId, formId, instanceId, action, values, opinion, account, password, operator, signatureTarget, false);
+    }
+
+    public void supplementAction(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId, String action,
+                                 JsonNode values, String opinion, String account, String password, String operator, JsonNode signatureTarget) {
+        formActionInternal(snapshot, state, operationId, formId, instanceId, action, values, opinion, account, password, operator, signatureTarget, true);
+    }
+
+    private void formActionInternal(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId, String action,
+                           JsonNode values, String opinion, String account, String password, String operator, JsonNode signatureTarget, boolean supplement) {
         JsonNode op = find(snapshot.path("operations"), operationId);
-        ObjectNode current = requireInProgress(state, operationId);
+        ObjectNode current;
+        if (supplement) {
+            JsonNode candidate = state.path("operations").path(operationId);
+            if (!"COMPLETED".equals(candidate.path("status").asText()) || instanceId == null
+                    || !candidate.path("forms").path(instanceId).path("supplement").isObject()) throw invalid("只能处理明确创建的完工补录实例");
+            current = (ObjectNode) candidate;
+        } else current = requireInProgress(state, operationId);
         JsonNode form = withCanvasBindings(find(op.path("forms"), formId));
         if ((instanceId == null || instanceId.isBlank()) && ExecutionFormCopies.ids(current, formId).size() > 1) throw invalid("请选择具体表单份");
         String target = instanceId == null || instanceId.isBlank() ? formId : instanceId;
@@ -235,7 +253,7 @@ public class ProductionExecutionEngine {
             access.validateEvidence(field, merged.path(field.path("id").asText()), snapshot.path("context").path("objectId").asText(), merged);
         }
         String nodeId = controls.path("nodeId").asText();
-        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), nodeId) : defaultFormNode();
+        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), nodeId) : defaultFormNode(form);
         JsonNode activeBefore = formState.path("active").deepCopy();
         if ("SIGN_FIELD".equals(action)) {
             if (signatureTarget == null || !signatureTarget.isObject()) throw invalid("请选择签名字段");
@@ -268,6 +286,7 @@ public class ProductionExecutionEngine {
             String signature = access.sign(snapshot.path("context").path("objectId").asText(), operationId + "/" + target, action, merged, account, password);
             formState.put("lastSignatureId", signature);
             for (JsonNode event : node.path("data").path("config").path("buttonEvents")) {
+                if (!event.path("enabled").asBoolean(true)) continue;
                 if (!action.equals(event.path("action").asText()) || !"FILL_SIGN_FIELD".equals(event.path("builtin").asText())) continue;
                 String key = nodeId + ":" + event.path("id").asText();
                 String fieldId = form.path("binding").path("eventBindings").path(key).path("fieldId").asText();
@@ -373,7 +392,7 @@ public class ProductionExecutionEngine {
         ObjectNode formState = (ObjectNode) existing;
         ObjectNode controls = formControls(form, formState, operator);
         if (!controls.path("canAct").asBoolean()) throw invalid("当前用户无权处理此表单节点");
-        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), controls.path("nodeId").asText()) : defaultFormNode();
+        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), controls.path("nodeId").asText()) : defaultFormNode(form);
         if (!"APPROVAL".equals(kind(node))) throw invalid("只有表单审批节点可以转办");
         return new TransferContext(operation, form, formState, controls, node, copyId);
     }
@@ -397,7 +416,7 @@ public class ProductionExecutionEngine {
         if (!"IN_PROGRESS".equals(current.path("status").asText())
                 || ExecutionFormCopies.ids(current, id).isEmpty() || ExecutionFormCopies.ended(current, id)) return false;
         if (form.has("workId") && !contains(current.path("works").path(form.path("workId").asText()).path("active"), form.path("workNodeId").asText())) return false;
-        JsonNode node = defaultFormNode();
+        JsonNode node = defaultFormNode(form);
         if (form.has("flow")) {
             node = null;
             for (JsonNode candidate : form.path("flow").path("nodes")) if ("START".equals(kind(candidate))) node = candidate;
@@ -414,6 +433,26 @@ public class ProductionExecutionEngine {
         ((ObjectNode) current.path("forms").path(form.path("id").asText())).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString());
         history(state, op, "挂载自定义表单", operator, form.path("name").asText() + " · " + form.path("versionId").asText()
                 + " · " + (form.path("required").asBoolean() ? "必填" : "选填") + " · " + form.path("id").asText());
+    }
+
+    public void createSupplement(JsonNode snapshot, ObjectNode state, String operationId, String formId, String copyId,
+                                 String operator, String reason, String occurredAt) {
+        JsonNode op = find(snapshot.path("operations"), operationId);
+        JsonNode form = find(op.path("forms"), formId);
+        JsonNode value = state.path("operations").path(operationId);
+        if (!"COMPLETED".equals(value.path("status").asText())) throw invalid("仅已完工工序可追加补录");
+        ObjectNode current = (ObjectNode) value;
+        if (ExecutionFormCopies.ids(current, formId).isEmpty()) throw invalid("只能补录已实际到达的表单，不得绕过作业适用规则");
+        ObjectNode copy = mapper.createObjectNode();
+        initializeForm(form, copy);
+        if (!formControls(form, copy, operator).path("canAct").asBoolean()) throw invalid("当前用户没有该表单的填写权限");
+        String now = LocalDateTime.now().toString();
+        copy.put("explicitCreatorId", operator).put("explicitCreatedAt", now);
+        copy.putObject("supplement").put("reason", reason).put("occurredAt", occurredAt).put("recordedAt", now).put("createdById", operator);
+        ObjectNode group = ExecutionFormCopies.ensureGroup(current, formId);
+        ((ArrayNode) group.path("instanceIds")).add(copyId);
+        current.withObject("/forms").set(copyId, copy);
+        history(state, op, "追加补录", operator, reason).put("actionCode", "SUPPLEMENT").put("formId", formId).put("copyId", copyId);
     }
 
     public void addFormCopy(JsonNode snapshot, ObjectNode state, String operationId, String formId, String operator) {
@@ -728,7 +767,8 @@ public class ProductionExecutionEngine {
         return ((ArrayNode) state.get("history")).addObject().put("operationId", op.path("id").asText()).put("operationName", op.path("name").asText())
                 .put("action", action).put("operator", operator).put("at", LocalDateTime.now().toString()).put("detail", detail);
     }
-    private JsonNode defaultFormNode() {
+    private JsonNode defaultFormNode(JsonNode form) {
+        if (form.path("entryNode").isObject()) return form.path("entryNode");
         ObjectNode node = mapper.createObjectNode().put("id", "entry");
         node.putObject("data").put("kind", "START").put("label", "现场填报"); return node;
     }

@@ -211,6 +211,10 @@ public class ExecutionAccess {
     }
 
     public String sign(String objectId, String formId, String action, JsonNode values, String account, String password) {
+        return signTarget("PRODUCTION_EXECUTION", objectId, formId, action, values, account, password);
+    }
+
+    public String signTarget(String targetType, String objectId, String formId, String action, JsonNode values, String account, String password) {
         String operator = AuditContext.getOperatorId();
         if (operator == null) throw invalid("请重新登录后签署");
         var user = users.findById(Long.valueOf(operator)).orElseThrow(() -> invalid("签署用户不存在"));
@@ -225,7 +229,7 @@ public class ExecutionAccess {
             String payload = mapper.writeValueAsString(evidence);
             String hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(payload.getBytes(StandardCharsets.UTF_8)));
             long id = ids.nextId();
-            signatures.save(Signature.builder().id(id).targetType("PRODUCTION_EXECUTION").targetId(objectId)
+            signatures.save(Signature.builder().id(id).targetType(targetType).targetId(objectId)
                     .meaning(action + " · " + formId).signerId(operator).signerName(user.getDisplayName())
                     .authMethod("PASSWORD").snapshotHash(hash).snapshotData(payload).signedAt(LocalDateTime.now()).build());
             return String.valueOf(id);

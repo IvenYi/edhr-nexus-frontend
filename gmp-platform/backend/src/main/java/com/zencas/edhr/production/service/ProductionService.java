@@ -35,6 +35,7 @@ public class ProductionService {
     private final ProductProcessResolutionService processResolutionService;
     private final StateMachineService stateMachineService;
     private final SnowflakeIdGenerator idGenerator;
+    private final DhrInstanceService dhrInstances;
 
     @Transactional
     public ProductionObject split(Long workOrderId, Long requestedProcessVersionId, BigDecimal targetQuantity,
@@ -159,10 +160,12 @@ public class ProductionService {
         ProductionObject object = requireObjectForUpdate(id);
         if (!"IN_PROGRESS".equals(object.getStatus())) throw error("只有生产中的对象可以提前结束");
         if (!StringUtils.hasText(reason)) throw error("提前结束必须填写结束原因");
+        LocalDateTime terminatedAt = LocalDateTime.now();
+        dhrInstances.terminateWithProductionObject(id, reason.trim(), terminatedAt);
         stateMachineService.transit("PRODUCTION_OBJECT", object.getId(), object.getStatus(), "EARLY_TERMINATED");
         object.setStatus("EARLY_TERMINATED");
         object.setTerminationReason(reason.trim());
-        object.setTerminationAt(LocalDateTime.now());
+        object.setTerminationAt(terminatedAt);
         ProductionObject saved = productionObjectRepository.save(object);
         updateOrderWhenObjectsTerminal(order);
         return saved;

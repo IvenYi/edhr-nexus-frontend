@@ -1,0 +1,63 @@
+knowledgeModelVersion: 0.3.24
+rules:
+  - id: rule.form-fill-explicit-mode
+    name: 作业与工序表单显式保存填报方式
+    status: specified
+    visibility: internal
+    trigger: form-binding.configure
+    scope: work-and-operation-form-fill-settings
+    condition: {fact: fact.form-fill-settings.mode, operator: in, value: [直接填报, 按流程填报]}
+    result:
+      type: persist-flow-configuration
+      target: form-binding
+      persist: [selected-fill-mode, applicable-fill-settings]
+      configurationComponent: shared-between-work-node-and-operation-binding
+      legacyDataCompatibility: false
+      historicalDataBackfill: false
+      automaticLegacyDataMigration: false
+    explanation: user-confirmed；作业表单节点与产品/产品簇工序绑定显式选择并保存填报方式，共用配置组件。最新指令明确当前 MVP 不兼容旧数据、旧数据可重造，取消历史回填、新旧双轨兼容和旧数据自动迁移；不再按旧流程引用推导缺失模式或为旧数据保留开放默认。交接包中的空 all 与 persist-configuration 不是当前 schema 有效结构，本规则用已登记事实和既有结果类型表达相同确认语义。
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+  - id: rule.form-fill-settings.direct-configuration
+    name: 直接填报的绑定配置和运行校验
+    status: specified
+    visibility: internal
+    trigger: form-binding.configure-and-execute
+    scope: work-and-operation-form-fill-settings
+    condition: {fact: fact.form-fill-settings.mode, operator: equals, value: 直接填报}
+    result:
+      type: allow-with-governance
+      configurationOwner: current-form-binding
+      configurable: [permission-groups, field-exceptions, buttons, signatures]
+      requireSeparateFormProcess: false
+      enforceAtRuntime: [permissions, field-exceptions, allowed-buttons, configured-signatures]
+    explanation: user-confirmed；直接模式允许在绑定上配置权限组、字段例外、按钮和签署，运行必须执行适用要求，不能把未绑定流程当作跳过校验的理由。既有直接提交完成语义继续适用，不把配置能力等同于实现或电子签名发布验证完成。
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+  - id: rule.form-fill-settings.workflow-configuration
+    name: 按流程填报沿用既有流程配置
+    status: specified
+    visibility: internal
+    trigger: form-binding.configure-and-execute
+    scope: work-and-operation-form-fill-settings
+    condition: {fact: fact.form-fill-settings.mode, operator: equals, value: 按流程填报}
+    result:
+      type: allow-with-governance
+      configurationSource: selected-published-form-process
+      preserve: [version-reference-governance, node-permissions, binding-field-exceptions, node-buttons, signature-events, node-progression]
+      applyDirectModeConfiguration: false
+    explanation: user-confirmed；按流程模式沿用既有流程配置和绑定例外，依当前节点运行，不混用直接模式设置。是否保留非活动模式草稿属于 inference，不因本规则成为强制业务约定。
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+  - id: rule.form-fill-settings.snapshot-runtime-continuity
+    name: 填报设置贯通保存发布快照与运行
+    status: specified
+    visibility: internal
+    trigger: form-binding.publish-and-instantiate
+    scope: work-and-operation-form-fill-settings
+    condition: {fact: fact.form-fill-settings.mode, operator: in, value: [直接填报, 按流程填报]}
+    result:
+      type: freeze-execution-snapshot
+      include: [selected-fill-mode, applicable-fill-settings]
+      runtimeConsumes: frozen-fill-settings
+      configurationReadbackRequired: true
+      newExecutionSnapshotImmutable: true
+    explanation: user-confirmed；两类绑定的已选模式及适用配置必须在保存重读、发布快照和生产运行保持一致。取消旧数据兼容不改变新执行快照不可变以及基于冻结配置的权限和签署校验；具体快照字段仍属工程方案。尚未独立质量验证，不登记 verified 执行契约。
+    evidenceIds: [evidence.form-fill-settings-confirmed]

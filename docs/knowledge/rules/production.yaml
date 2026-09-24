@@ -937,10 +937,10 @@ rules:
       statusLabel: 提前结束
       requiresEndReason: true
       terminal: true
-      sideEffects: [close-active-production-transactions, cascade-close-active-child-objects, abandon-dhr, reevaluate-work-order-status]
+      sideEffects: [close-active-production-transactions, cascade-close-active-child-objects, terminate-associated-dhr-without-voiding-forms, reevaluate-work-order-status]
       canonicalStatusCode: EARLY_TERMINATED
-    explanation: 进行中批次点击“结束”表示提前结束，不得投影为正常完成；必须记录结束原因和终止时间，并关闭活动生产执行事务、级联处理其子 SN/返工对象、作废或标记 DHR 后再重新计算工单状态。英文状态码统一使用 EARLY_TERMINATED。当前 eDHR 已实现状态转移、结束原因和接口，但执行事务、DHR 及完整工单联动仍待补齐。
-    evidenceIds: [evidence.production-object-early-termination-gap, evidence.guancheng-batch-close-source, evidence.production-service, evidence.production-object-controller]
+    explanation: 进行中生产对象点击“提前结束”不得投影为正常完成；记录原因和终止时间，同事务将关联 DHR 真实标记已终止，停止普通执行并保留真实表单，不自动作废。英文状态码统一使用 EARLY_TERMINATED。工单级直接提前结束命令仍非本期范围；联动实现与验证按 DEC-0069 核对。
+    evidenceIds: [evidence.production-object-early-termination-gap, evidence.guancheng-batch-close-source, evidence.production-service, evidence.production-object-controller, evidence.dhr-termination-user-confirmed]
   - id: rule.production.split-initializes-execution-context
     name: 批次拆分初始化生产执行上下文
     status: specified
@@ -1043,8 +1043,8 @@ rules:
       workOrderStatus: EARLY_TERMINATED
       requiresEndReason: true
       terminal: true
-      sideEffects: [cancel-not-started-production-objects, early-terminate-active-production-objects, close-active-production-transactions, abandon-dhr, prohibit-further-split-or-start]
-    explanation: 工单进入生产中后允许用户填写结束原因并提前结束；该动作不代表正常完工。仍未开工的对象转为取消，进行中的对象转为提前结束，活动执行事务关闭，DHR 不能继续推进，工单进入 EARLY_TERMINATED 后不得继续拆分、开工或推进。具体权限、事务实现和已有完成对象的处理仍需生产执行阶段实现。
+      sideEffects: [cancel-not-started-production-objects, early-terminate-active-production-objects, close-active-production-transactions, terminate-associated-dhr-without-voiding-forms, prohibit-further-split-or-start]
+    explanation: 历史工单级规划仍为后续能力：用户主动工单提前结束命令当前不在 DEC-0069 本期范围。若未来实施，未开工对象取消、进行中对象提前结束及其 DHR 真实终止，已完成对象保持原状；DHR 不自动作废表单，具体权限、事务和级联仍需单独验证。
     evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap]
   - id: rule.production.batch-management-resplit-planned
     name: 批次管理再拆分作为后续扩展能力

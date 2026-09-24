@@ -28,9 +28,10 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Close, ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search } from '@mui/icons-material';
+import { Close, ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import ListColumnSettingsPopover, { getCurrentUserPreferenceStorageKey, loadListColumnSettings, reorderListColumns } from '@/components/ListColumnSettingsPopover';
 import { ListTableShell } from '@/components/ListTableShell';
 import TableStateCell from '@/components/TableStateCell';
 import StatusBadge from '@/components/StatusBadge';
@@ -58,6 +59,7 @@ import {
   type ExecutionValues,
 } from '@/api/production-execution';
 import type { PageResult } from '@/types/common';
+import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
 import {
   formListAdvancedGridSx,
   formListFieldSx,
@@ -91,6 +93,7 @@ const FILLING_COLUMNS: ReadonlyArray<{ id: FillingColumnId; label: string; width
   { id: 'updatedAt', label: '更新时间', width: 170, minWidth: 150 },
   { id: 'actions', label: '操作', width: 96, minWidth: 96 },
 ];
+const FILLING_CONFIGURABLE_COLUMNS = FILLING_COLUMNS.filter((column) => column.id !== 'actions');
 const PENDING_INSTANCE_LABEL = '待生成';
 const INSTANCE_NUMBER_TIP = '表单实例号在首次保存成功后生成；“待生成”表示填报任务已经到达，但尚未形成表单实例。';
 interface FilterDraft { keyword: string; instanceNo: string; templateName: string; productionObjectNo: string; workOrderNo: string; productionObjectType: string; recordStatus: string; saved: string }
@@ -316,7 +319,7 @@ function FormWorklistFillDialog({ identity, onClose, onChanged }: { identity: Fo
       </DialogContent>
       <DialogActions sx={{ minHeight: 64, px: 2.5, py: 1, bgcolor: '#fff', borderTop: '1px solid #e4e7ed', justifyContent: 'space-between' }}>
         <Typography variant="caption" sx={{ color: dirty ? '#d97706' : '#909399' }}>{busy ? '正在处理…' : dirty ? '有尚未保存的修改' : detail?.saved ? '已保存草稿' : '尚未保存'}</Typography>
-        <Stack direction="row" spacing={1}><Button onClick={close} disabled={busy}>关闭</Button>{actionButtons.map((button) => <Button key={button.action} variant={button.action === 'SAVE' ? 'outlined' : 'contained'} disabled={busy || !detail?.controls?.canAct} onClick={() => requestAction(button)}>{button.action === 'SAVE' ? '保存' : button.label || '提交'}{button.requiresSignature ? '并签署' : ''}</Button>)}</Stack>
+        <Stack direction="row" spacing={1}><Button onClick={close} disabled={busy}>关闭</Button><WorkflowActionButtons buttons={actionButtons} busy={busy} canAct={detail?.controls?.canAct} labelFor={(button) => button.action === 'SAVE' ? '保存' : button.label || '提交'} onAction={requestAction} /></Stack>
       </DialogActions>
     </AppDialog>
     <ConfirmDialog initialFocus="cancel" destructive open={confirmClose} title="当前表单尚未保存" message="关闭后将丢失本次未保存的修改。" confirmText="放弃修改并关闭" cancelText="继续填写" onCancel={() => setConfirmClose(false)} onConfirm={() => { setConfirmClose(false); setDirty(false); onClose(); }} />
@@ -371,6 +374,10 @@ function FormWorklistDetailDrawer({ view, identity, onClose, onOpenExecution, on
 
 export default function FormFillingPage() {
   const { getColumnWidth, getResizeHandleProps } = usePersistedListColumnWidths(FILLING_COLUMNS, 'form-filling-column-widths:v1:');
+  const columnSettingsKey = useMemo(() => getCurrentUserPreferenceStorageKey('form-filling-column-settings:v1:'), []);
+  const [columnSettings, setColumnSettings] = useState(() => loadListColumnSettings(columnSettingsKey, FILLING_CONFIGURABLE_COLUMNS, 1));
+  const [columnSettingsAnchor, setColumnSettingsAnchor] = useState<HTMLElement | null>(null);
+  useEffect(() => { localStorage.setItem(columnSettingsKey, JSON.stringify(columnSettings)); }, [columnSettingsKey, columnSettings]);
   const [view, setView] = useState<FillingView>('FILLABLE');
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
@@ -383,7 +390,10 @@ export default function FormFillingPage() {
   const query = useQuery({ queryKey: ['form-filling-worklist', view, page, pageSize, filters], queryFn: () => listFormWorklist(view, toQuery(filters, page, pageSize)), refetchOnMount: 'always' });
   const rows = query.data?.content ?? [];
   const activeView = views.find((item) => item.id === view)!;
-  const visibleColumns = useMemo(() => FILLING_COLUMNS.filter((column) => column.id !== 'creationType' || view === 'CREATED'), [view]);
+  const visibleColumns = useMemo(() => [
+    ...columnSettings.order.filter((id) => !columnSettings.hidden.includes(id) && (id !== 'creationType' || view === 'CREATED')).map((id) => FILLING_COLUMNS.find((column) => column.id === id)!),
+    FILLING_COLUMNS[FILLING_COLUMNS.length - 1],
+  ], [columnSettings, view]);
   const tableWidth = visibleColumns.reduce((total, column) => total + getColumnWidth(column), 0);
   const submitSearch = () => { setPage(0); setFilters({ ...draft, keyword: draft.keyword.trim(), instanceNo: draft.instanceNo.trim(), templateName: draft.templateName.trim(), productionObjectNo: draft.productionObjectNo.trim(), workOrderNo: draft.workOrderNo.trim() }); };
   const resetSearch = () => { const empty = emptyFilters(); setDraft(empty); setFilters(empty); setPage(0); };
@@ -391,6 +401,20 @@ export default function FormFillingPage() {
   const openFill = (row: FormWorklistRow) => setFillIdentity({ productionObjectId: row.productionObjectId, operationId: row.operationId, formId: row.formId, copyId: row.copyId });
   const openDetail = (row: FormWorklistRow) => setIdentity({ productionObjectId: row.productionObjectId, operationId: row.operationId, formId: row.formId, copyId: row.copyId });
   const openPreview = (row: FormWorklistRow) => setPreviewIdentity({ productionObjectId: row.productionObjectId, operationId: row.operationId, formId: row.formId, copyId: row.copyId });
+  const renderCell = (row: FormWorklistRow, id: FillingColumnId) => {
+    switch (id) {
+      case 'instanceNo': return <TableCell key={id}>{row.instanceNo || <Typography component="span" variant="body2" sx={{ color: '#909399' }}>{PENDING_INSTANCE_LABEL}</Typography>}</TableCell>;
+      case 'template': return <TableCell key={id} title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {row.templateVersion || '-'}</Typography></TableCell>;
+      case 'creationType': return <TableCell key={id}>{creationTypeLabel(row.creationType)}</TableCell>;
+      case 'productionObject': return <TableCell key={id} title={row.productionObjectNo || ''}>{row.productionObjectNo || '-'} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {typeLabel(row.productionObjectType)}</Typography></TableCell>;
+      case 'workOrder': return <TableCell key={id}>{row.workOrderNo || '-'}</TableCell>;
+      case 'operation': return <TableCell key={id}>{row.operationName || '-'}</TableCell>;
+      case 'status': return <TableCell key={id}>{statusBadge(row.recordStatus)}</TableCell>;
+      case 'node': return <TableCell key={id} title={row.nodeName || ''}>{row.nodeName || '-'}</TableCell>;
+      case 'updatedAt': return <TableCell key={id}>{formatDateTime(row.updatedAt)}</TableCell>;
+      case 'actions': return <TableCell key={id} sx={actionBodySx} onClick={(event) => event.stopPropagation()}><Stack direction="row" alignItems="center" justifyContent="center"><Tooltip title={view === 'FILLABLE' ? '进入填报' : '预览表单'} arrow>{view === 'FILLABLE' ? <IconButton size="small" color="primary" aria-label="进入填报" onClick={() => openFill(row)}><PlayCircleOutline fontSize="small" /></IconButton> : <IconButton size="small" aria-label="预览表单" onClick={() => openPreview(row)}><PreviewOutlined fontSize="small" /></IconButton>}</Tooltip>{view === 'FILLABLE' ? <Tooltip title="预览表单" arrow><IconButton size="small" aria-label="预览表单" onClick={() => openPreview(row)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip> : null}</Stack></TableCell>;
+    }
+  };
   const filterActions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ ...formListFilterActionsSx, gridColumn: advancedFiltersOpen ? '1 / -1' : { xs: '1 / -1', md: 'auto' } }}>
     <Button size="small" variant="outlined" startIcon={<RestartAlt />} onClick={resetSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>重置</Button>
     <Button size="small" variant="contained" startIcon={<Search />} onClick={submitSearch} sx={{ height: 40, width: 80, minWidth: 80 }}>查询</Button>
@@ -415,7 +439,8 @@ export default function FormFillingPage() {
       </Box>
     </Box>
     <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', overflow: 'hidden' }}>
-      <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1.5 }}><Tabs value={view} onChange={(_, next: FillingView) => { setView(next); setPage(0); setIdentity(null); setPreviewIdentity(null); setFillIdentity(null); }} aria-label="表单填报视图"><Tab value="FILLABLE" label="我的填报" /><Tab value="CREATED" label="我的创建" /><Tab value="FILLED" label="我的已填" /></Tabs><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box>
+      <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', pr: 1.5 }}><Tabs value={view} onChange={(_, next: FillingView) => { setView(next); setPage(0); setIdentity(null); setPreviewIdentity(null); setFillIdentity(null); }} aria-label="表单填报视图"><Tab value="FILLABLE" label="我的填报" /><Tab value="CREATED" label="我的创建" /><Tab value="FILLED" label="我的已填" /></Tabs><Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}><Tooltip title="字段设置" arrow><IconButton size="small" aria-label="字段设置" onClick={(event) => setColumnSettingsAnchor(event.currentTarget)} sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1 }}><Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><ViewColumnRounded sx={{ fontSize: 21 }} /><TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} /></Box></IconButton></Tooltip><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box></Box>
+      <ListColumnSettingsPopover anchorEl={columnSettingsAnchor} columns={FILLING_CONFIGURABLE_COLUMNS.filter((column) => view === 'CREATED' || column.id !== 'creationType')} settings={columnSettings} onClose={() => setColumnSettingsAnchor(null)} canHide={(id) => id === 'creationType' || FILLING_CONFIGURABLE_COLUMNS.filter((column) => column.id !== 'creationType' && !columnSettings.hidden.includes(column.id)).length > 1} onToggle={(id) => setColumnSettings((current) => ({ ...current, hidden: current.hidden.includes(id) ? current.hidden.filter((value) => value !== id) : [...current.hidden, id] }))} onReorder={(from, to) => setColumnSettings((current) => reorderListColumns(FILLING_CONFIGURABLE_COLUMNS, current, from, to))} />
       <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: tableWidth, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
         <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup>
         <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => {
@@ -423,14 +448,7 @@ export default function FormFillingPage() {
           return <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...headerCellSx, position: 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? actionHeadSx : {}) }}>{column.id === 'instanceNo' ? <Stack direction="row" spacing={0.25} alignItems="center"><Typography component="span" variant="inherit">{column.label}</Typography><Tooltip title={INSTANCE_NUMBER_TIP} arrow><IconButton size="small" aria-label="表单实例号说明" sx={{ p: 0.25, color: '#909399', '&:hover': { color: '#606266', bgcolor: '#ebeef5' } }}><InfoOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip></Stack> : column.label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /> : null}</TableCell>;
         })}</TableRow></TableHead>
         <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>表单填报列表加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}-${row.operationId}-${row.formId}-${row.copyId}`} hover tabIndex={0} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看${row.templateName || '表单'}填报记录`}>
-          <TableCell>{row.instanceNo || <Typography component="span" variant="body2" sx={{ color: '#909399' }}>{PENDING_INSTANCE_LABEL}</Typography>}</TableCell>
-          <TableCell title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {row.templateVersion || '-'}</Typography></TableCell>
-          {view === 'CREATED' ? <TableCell>{creationTypeLabel(row.creationType)}</TableCell> : null}
-          <TableCell title={row.productionObjectNo || ''}>{row.productionObjectNo || '-'} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {typeLabel(row.productionObjectType)}</Typography></TableCell>
-          <TableCell>{row.workOrderNo || '-'}</TableCell><TableCell>{row.operationName || '-'}</TableCell><TableCell>{statusBadge(row.recordStatus)}</TableCell>
-          <TableCell title={row.nodeName || ''}>{row.nodeName || '-'}</TableCell>
-          <TableCell>{formatDateTime(row.updatedAt)}</TableCell>
-          <TableCell sx={actionBodySx} onClick={(event) => event.stopPropagation()}><Stack direction="row" alignItems="center" justifyContent="center"><Tooltip title={view === 'FILLABLE' ? '进入填报' : '预览表单'} arrow>{view === 'FILLABLE' ? <IconButton size="small" color="primary" aria-label="进入填报" onClick={() => openFill(row)}><PlayCircleOutline fontSize="small" /></IconButton> : <IconButton size="small" aria-label="预览表单" onClick={() => openPreview(row)}><PreviewOutlined fontSize="small" /></IconButton>}</Tooltip>{view === 'FILLABLE' ? <Tooltip title="预览表单" arrow><IconButton size="small" aria-label="预览表单" onClick={() => openPreview(row)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip> : null}</Stack></TableCell>
+          {visibleColumns.map((column) => renderCell(row, column.id))}
         </TableRow>)}</TableBody>
       </Table></ListTableShell>
       <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />

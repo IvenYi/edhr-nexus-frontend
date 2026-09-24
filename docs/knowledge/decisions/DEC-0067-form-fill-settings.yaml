@@ -1,0 +1,62 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0067
+    title: 作业与工序表单显式填报方式和共享填报设置
+    status: specified
+    visibility: internal
+    context: user-confirmed；依据 DEC-PACKAGE-20260922-FORM-FILL-MODES 及本任务完整确认建立 L2 工作树增量。仅替代 DEC-0036-01A 中无流程即跳过配置校验及清除流程即清理绑定配置的旧边界，保留表单版本必选、流程版本治理和其他声明；DEC-0035 在按流程模式中继续适用，DEC-0073 保留。最新用户确认当前 MVP 不兼容旧数据、旧数据可重造，撤销此前兼容回退推断及历史兼容验收范围；存储和双模式草稿保留仍是独立 inference，不能解释为新旧数据双轨兼容。基线 0.3.24，尚未经独立质量验证，不表示发布。
+    decisionStatements:
+      - id: DEC-0067-01
+        statement: user-confirmed；作业表单节点和产品/产品簇工序绑定表单均显式选择直接填报或按流程填报，不以有无流程引用替代新配置入口的模式选择。
+        status: specified
+        visibility: internal
+      - id: DEC-0067-02
+        statement: user-confirmed；直接填报无需另建表单审批流程，在当前绑定配置权限组、字段例外、按钮和签署，并在运行时执行适用设置；无流程不等于免除已配置的权限和签署要求。
+        status: specified
+        visibility: internal
+      - id: DEC-0067-03
+        statement: user-confirmed；按流程填报沿用既有已发布表单流程及其配置，以流程节点推进；直接填报配置不能替代该模式的节点权限、按钮和签署规则。
+        status: specified
+        visibility: internal
+      - id: DEC-0067-04
+        statement: user-confirmed；两处入口共用填报设置组件，所选模式及适用配置须贯通保存重读、发布快照和生产运行；不能仅在编辑器显示配置而不落入快照或运行校验。
+        status: specified
+        visibility: internal
+      - id: DEC-0067-05
+        statement: user-confirmed；最新指令明确本填报设置切片的当前 MVP 不需要兼容旧数据，旧数据可重造；取消历史数据回填、新旧数据双轨兼容及旧数据自动迁移方案，不再按旧流程引用自动推导缺失模式或为旧数据保留开放默认。新执行快照仍不可变，既有权限与签署校验继续执行，不因取消兼容而放宽。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0036]
+    evidenceIds: [evidence.form-fill-settings-confirmed, evidence.form-fill-settings-design]
+    acceptanceScenarios:
+      - id: scenario.form-fill-settings-both-entries
+        given: 作业表单节点或产品/产品簇工序绑定表单
+        when: 显式选择填报方式并保存后重新读取
+        then: 两处共享配置组件，持久化并回显所选模式与适用配置
+        evidenceIds: [evidence.form-fill-settings-confirmed]
+        evidenceRequirements: [两入口交互验证, 保存重读集成测试, 版本复制回归]
+      - id: scenario.form-fill-settings-direct-runtime
+        given: 直接填报已配置权限组、字段例外、按钮和签署
+        when: 创建生产实例并执行填报、保存或提交
+        then: 使用冻结的适用设置校验权限与签署，合法提交完成表单；未获授权或未满足签署时不能绕过服务端执行
+        evidenceIds: [evidence.form-fill-settings-confirmed]
+        evidenceRequirements: [冻结快照测试, 权限允许和拒绝测试, 字段及按钮签署测试, 直接提交完成测试]
+      - id: scenario.form-fill-settings-workflow-runtime
+        given: 按流程填报引用已发布表单流程版本
+        when: 填报后进入后续流程节点
+        then: 沿用所选流程的节点权限、按钮、签署和推进规则，不混用直接模式配置
+        evidenceIds: [evidence.form-fill-settings-confirmed]
+        evidenceRequirements: [流程审批回归, 模式隔离测试, 当前节点动作投影回归]
+      - id: scenario.form-fill-settings-mvp-no-legacy-compatibility
+        given: 当前 MVP 的旧表单配置或旧执行数据不具备新填报设置
+        when: 验收本填报设置切片的实现范围
+        then: 不要求旧数据继续运行；旧数据可重造，不提供历史回填、新旧双轨兼容、缺失模式推导或旧数据自动迁移
+        evidenceIds: [evidence.form-fill-settings-confirmed]
+        evidenceRequirements: [无旧数据兼容分支源码核对, 无历史回填或自动迁移核对, 新配置保存和运行测试]
+      - id: scenario.form-fill-settings-new-snapshot-immutable
+        given: 按新填报设置创建的执行实例已冻结模式及适用配置
+        when: 修改后续配置或尝试执行不满足权限或签署要求的动作
+        then: 已冻结的新执行快照不被改写，运行继续依据该快照校验权限与签署
+        evidenceIds: [evidence.form-fill-settings-confirmed]
+        evidenceRequirements: [新执行快照不可变测试, 权限和签署拒绝回归]
+    implementationDiscrepancies: []

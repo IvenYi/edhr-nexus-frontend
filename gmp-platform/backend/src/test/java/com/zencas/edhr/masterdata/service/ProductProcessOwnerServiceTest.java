@@ -81,6 +81,12 @@ class ProductProcessOwnerServiceTest {
     @Mock private SnowflakeIdGenerator idGenerator;
     @InjectMocks private ProductProcessOwnerService service;
 
+    @org.junit.jupiter.api.BeforeEach
+    void fillSettings() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "fillSettingsService",
+                new com.zencas.edhr.workflow.service.FormFillSettingsService(new com.fasterxml.jackson.databind.ObjectMapper(), null, null, formTemplateVersionRepository));
+    }
+
     @Test
     void createsSeparateOwnerRootsAndRejectsDuplicateLabelsWithinTheSameOwner() {
         ProductProcess familyProcess = process(1001L, "PRODUCT_FAMILY", 201L);

@@ -12,7 +12,7 @@ decisions:
         visibility: internal
       - id: DEC-0036-01A
         statement: "provenance: user-confirmed；作业流程表单填报节点必须绑定当前生效的表单模板版本，但表单流程本身可选；不需要审批流程时可以不配置表单流程并发布。只有实际绑定表单流程后，系统才校验该流程的字段权限、按钮事件和签名字段绑定；清除表单流程时同步清理绑定级配置。"
-        status: implemented
+        status: deprecated
         visibility: internal
       - id: DEC-0036-02
         statement: "provenance: user-confirmed；表单流程侧提供使用情况分析，可查看每个流程版本被哪些作业模板、作业流程版本、表单填报节点和表单版本引用，并区分作业流程草稿、当前发布和历史发布状态。"

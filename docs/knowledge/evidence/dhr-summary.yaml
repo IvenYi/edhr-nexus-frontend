@@ -45,3 +45,68 @@ evidence:
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java
     description: original-evidence；working-tree 聚焦测试校验汇总迁移契约和独立权限；控制器权限分层由 ProductionControllerAuthorizationTest 覆盖。测试通过不等同于发布级验证。
     visibility: internal
+  - id: evidence.dhr-summary-order-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-order-user-confirmed.md
+    description: user-confirmed；2026-09-24 原确认可选实例插入同级任意位置、顺序跨草稿与冻结版本保持、可移出但不删源实例；逐实例候选操作是历史表述，已由 DEC-0072 局部替代，底层逐实例关系仍有效。
+    visibility: internal
+  - id: evidence.dhr-summary-order-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    description: original-evidence；2026-09-24 working-tree 静态核对同级锚点和非负顺序校验、草稿保存、冻结关联及哈希、冻结版本读取、重新整理继承顺序、草稿保存前后审计；尚不代表集成或发布验证。
+    visibility: internal
+  - id: evidence.dhr-summary-order-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql
+    description: original-evidence；working-tree 迁移为冻结证据关联增加可空 before_node_key 与 display_order；未核实真实数据库迁移结果。
+    visibility: internal
+  - id: evidence.dhr-summary-order-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/summaryPlacementOrder.ts
+    description: original-evidence；working-tree 同级可选实例按锚点和显示序号排列、插入前重排；DhrSummaryPage.tsx 提供插入槽和移出操作。
+    visibility: internal
+  - id: evidence.dhr-summary-order-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java
+    description: original-evidence；working-tree 测试源码覆盖锚点归属与排序值校验；前端浏览器脚本覆盖同模板多实例插入、重开与移出。仅核对测试存在，未据此声称通过。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-source-group-user-confirmed.md
+    description: user-confirmed；2026-09-24 直接修订 DEC-0072 同一讨论方案：来源分组默认整组并支持明确单份选择；全部已归档来源包括 DIRECTORY 支持逐实例关联别名，组行当前范围全部实例、单份仅一份。目录去掉独立份数，单例保留列表按钮，行点击预览首份，拖拽单落点；DIRECTORY 固定归属、自动归位和不可移除不变。最新增量测试待主智能体完成，历史测试记录不构成其验收证据。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts
+    description: original-evidence；working-tree summarySourceKey 按 originKind、operationId、formId 形成来源键，缺失来源键时按实例独立，placeSummarySourceGroup 展开为逐实例 placements。DhrSummaryPage.tsx 已实现展开选择、部分反馈、逐份移出及草稿/readOnly 相邻折叠；2026-09-24 聚焦浏览器验证通过，测试边界见来源分组确认证据。
+    visibility: internal
+  - id: evidence.dhr-summary-work-form-id
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    description: original-evidence；working-tree 作业 FORM 节点从作业定义 id 与节点 id 生成稳定的 work-... formId；同模板不同作业节点有不同来源键。
+    visibility: internal
+  - id: evidence.dhr-summary-custom-form-id
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    description: original-evidence；working-tree ATTACH_FORM 动作按每次创建生成 custom-... formId；同模板再次创建不是同一来源项。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-test
+    type: test
+    path: gmp-platform/frontend/scripts/test-dhr-summary-directory-browser.mjs
+    description: original-evidence；2026-09-24 主智能体执行 working-tree 浏览器脚本通过，覆盖默认整组、明确单份拖拽/选择/移出、部分数量、不同来源分离、混合状态不静默跳过、草稿及只读交错顺序；API 使用隔离测试响应，不代表真实后端端到端提交通过。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-backend-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java
+    description: original-evidence；2026-09-24 DhrSummaryServiceTest、DhrSummaryPersistenceTest、DhrSummaryOrderMigrationTest 共 20 项通过，覆盖部分/分目录/交错归档保存提交重开、逐实例合法性、必填目录和未完成补录阻断及冻结顺序。持久化采用 H2；不声称真实 PostgreSQL 全流程或发布验证通过。
+    visibility: internal
+  - id: evidence.dhr-summary-display-name-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
+    description: original-evidence；working-tree 迁移给 dhr_summary_evidence 增加可空 display_name，兼容既有冻结证据。DhrSummaryDisplayNameMigrationTest 使用 H2 验证迁移；真实 PostgreSQL 迁移尚未据此确认。
+    visibility: internal
+  - id: evidence.dhr-summary-display-name-test-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java
+    description: original-evidence；working-tree 测试源码包含显示名草稿重开、冻结读回、来源候选不变、重新整理及异常名场景；只核对测试存在，不据此声称本轮测试已执行。
+    visibility: internal

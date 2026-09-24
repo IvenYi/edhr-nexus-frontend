@@ -25,9 +25,11 @@ public class DhrInstanceController {
             @RequestParam(defaultValue = "") String objectType,
             @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "") String summaryStatus,
+            @RequestParam(defaultValue = "") String productionStatus,
+            @RequestParam(defaultValue = "") String displayStatus,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        return ApiResponse.success(service.list(keyword, objectType, status, summaryStatus, page, size));
+        return ApiResponse.success(service.list(keyword, objectType, status, summaryStatus, productionStatus, displayStatus, page, size));
     }
 
     @GetMapping("/{id}")

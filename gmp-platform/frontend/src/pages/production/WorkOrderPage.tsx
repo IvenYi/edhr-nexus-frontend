@@ -112,6 +112,7 @@ const QUICK_ADD_PROCESS_VERSION = '__quick_add_process_version__';
 const statusLabels: Record<string, string> = {
   CREATED: '已创建',
   IN_PROCESS: '生产中',
+  EARLY_TERMINATED: '提前结束',
   COMPLETED: '已完成',
   CLOSED: '已关闭',
   CANCELLED: '已取消',
@@ -119,6 +120,7 @@ const statusLabels: Record<string, string> = {
 const objectStatusLabels: Record<string, string> = {
   CREATED: '已创建',
   IN_PROGRESS: '生产中',
+  EARLY_TERMINATED: '提前结束',
   COMPLETED: '已完成',
   CANCELLED: '已取消',
 };
@@ -127,6 +129,7 @@ const statusColors: Record<string, 'success' | 'warning' | 'error' | 'info' | 'd
   CREATED: 'info',
   IN_PROCESS: 'warning',
   IN_PROGRESS: 'warning',
+  EARLY_TERMINATED: 'error',
   COMPLETED: 'success',
   CLOSED: 'default',
   CANCELLED: 'error',

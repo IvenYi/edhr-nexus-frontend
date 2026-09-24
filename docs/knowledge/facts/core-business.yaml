@@ -2960,3 +2960,35 @@ facts:
     sourceLocator: "operation.completionConditionsSatisfied"
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
+  - id: fact.catalog.productionform-currentnodekind
+    name: "规则事实 productionForm.currentNodeKind"
+    conceptId: concept.production-form-copy
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java"
+    aliases: ["productionForm.currentNodeKind"]
+    availability: runtime
+    allowedOperators: [in, equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-engine-test]
+    sourceRevision: working-tree
+    sourceLocator: "ProductionExecutionEngine.formControls result.nodeKind"
+    capturedAt: '2026-09-22'
+    reviewStatus: unreviewed
+  - id: fact.catalog.productionform-currentnodeactionprojection
+    name: "规则事实 productionForm.currentNodeActionProjection"
+    conceptId: concept.production-form-copy
+    valueType: string
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java"
+    aliases: ["productionForm.currentNodeActionProjection"]
+    availability: runtime
+    allowedOperators: [exists, is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-execution-form-action-projection-user-confirmed, evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-page-source]
+    sourceRevision: working-tree
+    sourceLocator: "ProductionExecutionEngine.formControls result.buttons / ProductionExecutionPage controls.buttons"
+    capturedAt: '2026-09-22'
+    reviewStatus: unreviewed

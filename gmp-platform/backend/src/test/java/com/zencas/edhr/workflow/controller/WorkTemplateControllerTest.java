@@ -734,6 +734,25 @@ class WorkTemplateControllerTest {
     }
 
     @Test
+    void saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess() throws Exception {
+        WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("表单作业").type("WORK").build();
+        WorkflowDefinitionVersion draft = draftVersion(201L, "[]");
+        when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
+        when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
+        when(versionRepository.save(any(WorkflowDefinitionVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        controller.saveGraph(101L, 201L, Map.of(
+                "nodes", List.of(Map.of("id", "form", "data", Map.of("kind", "FORM",
+                        "config", Map.of("formProcessVersionId", "901"))),
+                        Map.of("id", "start", "data", Map.of("kind", "START")),
+                        Map.of("id", "end", "data", Map.of("kind", "END"))), "edges", List.of()));
+
+        JsonNode config = new ObjectMapper().readTree(draft.getNodesJson()).get(0).path("data").path("config");
+        assertThat(config.path("fillMode").asText()).isEqualTo("DIRECT");
+        assertThat(config.path("formProcessVersionId").asText()).isEqualTo("901");
+    }
+
+    @Test
     void saveGraphRebuildsFormProcessReferenceProjection() {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("表单作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
@@ -756,7 +775,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("表单作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"label\":\"表单填写\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"label\":\"表单填写\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinition processDefinition = WorkflowDefinition.builder().id(902L).type("FORM_PROCESS").name("现场填报审批").build();
         WorkflowDefinitionVersion oldProcess = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)
@@ -787,7 +806,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("表单作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{\"start:event-1\":{\"fieldId\":\"signature\"}}}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{\"start:event-1\":{\"fieldId\":\"signature\"}}}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinition processDefinition = WorkflowDefinition.builder().id(902L).type("FORM_PROCESS").name("现场填报审批").build();
         WorkflowDefinitionVersion oldProcess = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)

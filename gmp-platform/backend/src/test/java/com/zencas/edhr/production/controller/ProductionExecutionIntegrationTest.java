@@ -88,6 +88,9 @@ class ProductionExecutionIntegrationTest {
     @SpyBean AuditEventRepository audits;
 
     @BeforeEach void setup() throws Exception {
+        jdbc.execute("DROP TABLE IF EXISTS dhr_termination");
+        jdbc.execute("DROP TABLE IF EXISTS dhr_summary_draft");
+        jdbc.execute("DROP TABLE IF EXISTS dhr_summary_version");
         jdbc.execute("DROP TABLE IF EXISTS dhr_instance");
         jdbc.execute("DROP SEQUENCE IF EXISTS dhr_instance_number_seq");
         jdbc.execute("DROP TABLE IF EXISTS form_instance_record");
@@ -116,7 +119,7 @@ class ProductionExecutionIntegrationTest {
             "route_node(id BIGINT PRIMARY KEY,route_version_id BIGINT,node_key VARCHAR(64),operation_id BIGINT,operation_code VARCHAR(64),operation_name VARCHAR(128),node_type VARCHAR(32),config_json TEXT,sort_order INT)",
             "route_relation(id BIGINT PRIMARY KEY,route_version_id BIGINT,source_node_key VARCHAR(64),target_node_key VARCHAR(64),relation_type VARCHAR(64),rule_expression TEXT,priority INT)",
             "product_process_operation_binding(id BIGINT PRIMARY KEY,product_process_version_id BIGINT,route_node_key VARCHAR(64))",
-            "product_process_operation_form_binding(id BIGINT PRIMARY KEY,product_process_operation_binding_id BIGINT,form_template_version_id BIGINT,dhr_template_item_id BIGINT,required BOOLEAN,sort_order INT)",
+            "product_process_operation_form_binding(id BIGINT PRIMARY KEY,product_process_operation_binding_id BIGINT,form_template_version_id BIGINT,dhr_template_item_id BIGINT,required BOOLEAN,sort_order INT,fill_settings_json TEXT)",
             "product_process_operation_document_binding(id BIGINT PRIMARY KEY,product_process_operation_binding_id BIGINT,document_version_id BIGINT,page_start INT,page_end INT,sort_order INT)",
             "sop_document(id BIGINT PRIMARY KEY,title VARCHAR(128))",
             "document_version(id BIGINT PRIMARY KEY,document_id BIGINT,code VARCHAR(64),version VARCHAR(64),file_id BIGINT)",
@@ -137,6 +140,11 @@ class ProductionExecutionIntegrationTest {
         jdbc.execute("ALTER TABLE dhr_instance ADD COLUMN dhr_review_mode VARCHAR(16) DEFAULT 'NONE' NOT NULL");
         jdbc.execute("ALTER TABLE dhr_instance ADD COLUMN dhr_review_workflow_definition_id BIGINT");
         jdbc.execute("ALTER TABLE dhr_instance ADD COLUMN dhr_review_workflow_version_id BIGINT");
+        jdbc.execute("ALTER TABLE dhr_instance DROP CONSTRAINT ck_dhr_instance_status");
+        jdbc.execute("ALTER TABLE dhr_instance ADD CONSTRAINT ck_dhr_instance_status CHECK (status IN ('IN_PROGRESS','COMPLETED','EARLY_TERMINATED'))");
+        jdbc.execute("CREATE TABLE dhr_termination(dhr_instance_id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),reason TEXT,terminated_at TIMESTAMP,terminated_by VARCHAR(192),recorded_at TIMESTAMP NOT NULL,snapshot_json TEXT,snapshot_hash VARCHAR(64),historical BOOLEAN NOT NULL)");
+        jdbc.execute("CREATE TABLE dhr_summary_draft(id BIGINT PRIMARY KEY,dhr_instance_id BIGINT)");
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,dhr_instance_id BIGINT)");
         jdbc.update("DELETE FROM production_execution"); jdbc.update("DELETE FROM production_object"); jdbc.update("DELETE FROM work_order"); jdbc.update("DELETE FROM audit_event");
         jdbc.update("DELETE FROM signature"); jdbc.update("DELETE FROM user_account");
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(1,0,'operator','测试操作员',?,'ACTIVE')", passwords.encode("test-secret"));
@@ -154,7 +162,7 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json,canvas_design_json) VALUES(5,5,'V1',?,?)",
             "{\"fields\":[{\"id\":\"temperature\",\"name\":\"温度\",\"type\":\"number\",\"status\":\"enabled\"}]}",
             "{\"bindings\":{\"fieldId\":\"temperature\",\"required\":true}}");
-        jdbc.update("INSERT INTO product_process_operation_form_binding VALUES(51,11,5,50,true,1)");
+        jdbc.update("INSERT INTO product_process_operation_form_binding VALUES(51,11,5,50,true,1,'{\"fillMode\":\"DIRECT\"}')");
         jdbc.update("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status,created_at,updated_at) VALUES(100,'default','WO01',1,2,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
         jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
     }
@@ -251,6 +259,83 @@ class ProductionExecutionIntegrationTest {
         assertThat(mapper.readTree(persisted).at("/operations/a/forms/form-51/values/temperature").asInt()).isEqualTo(2);
     }
 
+    @Test void dhrFillingProjectsAndFiltersProductionStatusWithoutChangingDhrOrWriteRules() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(102, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        jdbc.update("UPDATE production_object SET status='EARLY_TERMINATED' WHERE id=101");
+        Long dhrId = jdbc.queryForObject("SELECT id FROM dhr_instance WHERE production_object_id=101", Long.class);
+        String dhrBearer = "Bearer " + tokens.generateToken("1", "operator", "操作员", 5, List.of("dhr.instances.view"));
+        mvc.perform(get("/api/v1/dhr-instances").header("Authorization", dhrBearer).param("status", "IN_PROGRESS").param("productionStatus", "EARLY_TERMINATED"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+                .andExpect(jsonPath("$.data.content[0].productionObjectId").value("101"))
+                .andExpect(jsonPath("$.data.content[0].status").value("IN_PROGRESS"))
+                .andExpect(jsonPath("$.data.content[0].productionStatus").value("EARLY_TERMINATED"));
+        mvc.perform(get("/api/v1/dhr-instances").header("Authorization", dhrBearer).param("status", "IN_PROGRESS").param("productionStatus", "IN_PROGRESS"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+                .andExpect(jsonPath("$.data.content[0].productionObjectId").value("102"));
+        mvc.perform(get("/api/v1/dhr-instances/" + dhrId).header("Authorization", dhrBearer))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.status").value("IN_PROGRESS"))
+                .andExpect(jsonPath("$.data.productionStatus").value("EARLY_TERMINATED"));
+        mvc.perform(get("/api/v1/dhr-instances").header("Authorization", dhrBearer).param("productionStatus", "INVALID"))
+                .andExpect(status().isBadRequest());
+        String token = tokens.generateToken("1", "operator", "操作员", 5, List.of("records.dhr-filling", "dhr.filling.act", "dhr.filling.supplement"));
+        String bearer = "Bearer " + token;
+        mvc.perform(get("/api/v1/dhr-filling").header("Authorization", bearer).param("displayStatus", "STATUS_ERROR").param("size", "1"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+                .andExpect(jsonPath("$.data.content[0].productionObjectId").value("101"))
+                .andExpect(jsonPath("$.data.content[0].productionStatus").value("EARLY_TERMINATED"))
+                .andExpect(jsonPath("$.data.content[0].status").value("IN_PROGRESS"));
+        mvc.perform(get("/api/v1/dhr-filling").header("Authorization", bearer).param("displayStatus", "FILLING"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1))
+                .andExpect(jsonPath("$.data.content[0].productionObjectId").value("102"));
+        mvc.perform(get("/api/v1/dhr-filling").header("Authorization", bearer).param("displayStatus", "STATUS_ERROR").param("page", "1").param("size", "1"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(1)).andExpect(jsonPath("$.data.content").isEmpty());
+        mvc.perform(get("/api/v1/dhr-filling").header("Authorization", bearer).param("displayStatus", "INVALID"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/api/v1/dhr-filling/" + dhrId).header("Authorization", bearer))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.objectStatus").value("EARLY_TERMINATED"))
+                .andExpect(jsonPath("$.data.availability.a.formCopies.form-51.instances.form-51.canAct").value(false));
+        mvc.perform(post("/api/v1/dhr-filling/" + dhrId + "/actions").header("Authorization", bearer).contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("revision", 1, "action", "SAVE", "operationId", "a", "formId", "form-51", "values", Map.of("temperature", 99)))))
+                .andExpect(status().isBadRequest());
+        mvc.perform(post("/api/v1/dhr-filling/" + dhrId + "/supplements").header("Authorization", bearer).contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("revision", 1, "operationId", "a", "formId", "form-51", "reason", "实际记录", "occurredAt", "2026-01-01T10:00:00"))))
+                .andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT status FROM dhr_instance WHERE id=?", String.class, dhrId)).isEqualTo("IN_PROGRESS");
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(1L);
+    }
+
+    @Test void dhrSupplementUsesRealExecutionAndRecordServicesWithoutReopeningProduction() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        action(101, "END_FORM", 2, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+        action(101, "COMPLETE", 3, "a", Map.of()).andExpect(status().isOk());
+        action(101, "START", 4, "b", Map.of()).andExpect(status().isOk());
+        action(101, "COMPLETE", 5, "b", Map.of()).andExpect(status().isOk());
+        Long dhrId = jdbc.queryForObject("SELECT id FROM dhr_instance", Long.class);
+        String original = jdbc.queryForObject("SELECT values_json FROM form_instance_record", String.class);
+        String frozen = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        String token = tokens.generateToken("1", "operator", "操作员", 5, List.of("records.dhr-filling", "dhr.filling.act", "dhr.filling.supplement"));
+        String root = "/api/v1/dhr-filling/" + dhrId;
+        var response = mvc.perform(post(root + "/supplements").header("Authorization", "Bearer " + token).contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("revision", 6, "operationId", "a", "formId", "form-51", "reason", "补充实际记录", "occurredAt", "2026-01-01T10:00:00"))))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.objectStatus").value("COMPLETED")).andReturn();
+        String copyId = mapper.readTree(response.getResponse().getContentAsString()).at("/data/createdCopyId").asText();
+        assertThat(copyId).startsWith("dhr-copy-");
+        var command = Map.of("revision", 7, "action", "SUBMIT", "operationId", "a", "formId", "form-51", "instanceId", copyId, "values", Map.of("temperature", 23));
+        mvc.perform(post(root + "/actions").header("Authorization", "Bearer " + token).contentType("application/json").content(mapper.writeValueAsString(command)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.objectStatus").value("COMPLETED"));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM form_instance_record", Integer.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE copy_id='form-51'", String.class)).isEqualTo(original);
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM form_instance_record WHERE copy_id=?", String.class, copyId)).contains("补充实际记录", "supplement");
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(frozen);
+        assertThat(jdbc.queryForObject("SELECT status FROM dhr_instance", String.class)).isEqualTo("COMPLETED");
+        // Even a DHR operator cannot edit a completed original through the supplementary endpoint.
+        mvc.perform(post(root + "/actions").header("Authorization", "Bearer " + token).contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("revision", 8, "action", "SAVE", "operationId", "a", "formId", "form-51", "instanceId", "form-51", "values", Map.of("temperature", 99)))))
+                .andExpect(status().isBadRequest());
+    }
+
     @Test void executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations() throws Exception {
         for (long object : List.of(101L, 102L)) {
             action(object, "START", 0, "a", Map.of()).andExpect(status().isOk());
@@ -305,6 +390,28 @@ class ProductionExecutionIntegrationTest {
                 .andExpect(jsonPath("$.data.directorySnapshot.directories[0].items[0].records.length()").value(2))
                 .andExpect(jsonPath("$.data.evidenceSummary.recordCount").value(2));
         mvc.perform(auth(get("/api/v1/dhr-instances"))).andExpect(status().isForbidden());
+    }
+
+    @Test void firstStartAndDetailKeepSnowflakeDirectoryIdsAsStrings() throws Exception {
+        long rootId = 377634999500804097L;
+        long childId = 377634999500804098L;
+        jdbc.update("UPDATE dhr_directory SET id=? WHERE id=40", rootId);
+        jdbc.update("UPDATE dhr_template_item SET directory_id=? WHERE directory_id=40", rootId);
+        jdbc.update("INSERT INTO dhr_directory VALUES(?,4,'子目录',?,2)", childId, rootId);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String frozen = jdbc.queryForObject("SELECT directory_snapshot FROM dhr_instance", String.class);
+        JsonNode snapshot = mapper.readTree(frozen);
+        assertThat(snapshot.at("/directories/0/id").isTextual()).isTrue();
+        assertThat(snapshot.at("/directories/0/id").asText()).isEqualTo(Long.toString(rootId));
+        assertThat(snapshot.at("/directories/1/parentId").asText()).isEqualTo(Long.toString(rootId));
+        String token = tokens.generateToken("1", "operator", "操作员", 5, List.of("dhr.instances.view"));
+        Long dhrId = jdbc.queryForObject("SELECT id FROM dhr_instance", Long.class);
+        mvc.perform(get("/api/v1/dhr-instances/" + dhrId).header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.directorySnapshot.directories[0].id").value(Long.toString(rootId)))
+                .andExpect(jsonPath("$.data.directorySnapshot.directories[1].id").value(Long.toString(childId)))
+                .andExpect(jsonPath("$.data.directorySnapshot.directories[1].parentId").value(Long.toString(rootId)));
+        assertThat(jdbc.queryForObject("SELECT directory_snapshot FROM dhr_instance", String.class)).isEqualTo(frozen);
     }
 
     @Test void concurrentFirstSavesAllocateDifferentNumbers() throws Exception {
@@ -406,6 +513,38 @@ class ProductionExecutionIntegrationTest {
         }
         assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("EARLY_TERMINATED");
+        assertThat(jdbc.queryForObject("SELECT status FROM dhr_instance WHERE production_object_id=101", String.class)).isEqualTo("EARLY_TERMINATED");
+    }
+
+    @Test void earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(102, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        Long dhrId = jdbc.queryForObject("SELECT id FROM dhr_instance WHERE production_object_id=101", Long.class);
+
+        production.endObject(101L, "设备故障");
+
+        assertThat(jdbc.queryForObject("SELECT status FROM dhr_instance WHERE id=?", String.class, dhrId)).isEqualTo("EARLY_TERMINATED");
+        assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("EARLY_TERMINATED");
+        assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=102", String.class)).isEqualTo("IN_PROGRESS");
+        assertThat(jdbc.queryForObject("SELECT snapshot_hash FROM dhr_termination WHERE dhr_instance_id=?", String.class, dhrId)).hasSize(64);
+        String token = "Bearer " + tokens.generateToken("1", "operator", "操作员", 5, List.of("dhr.instances.view"));
+        mvc.perform(get("/api/v1/dhr-instances/" + dhrId).header("Authorization", token)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.displayStatus").value("TERMINATED"))
+                .andExpect(jsonPath("$.data.terminationReason").value("设备故障"))
+                .andExpect(jsonPath("$.data.directorySnapshot.directories[0].items[0].records[0].fieldValues.temperature").value(22));
+        jdbc.update("UPDATE form_instance_record SET values_json='{\"temperature\":99}' WHERE object_id=101");
+        mvc.perform(get("/api/v1/dhr-instances/" + dhrId).header("Authorization", token)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.directorySnapshot.directories[0].items[0].records[0].fieldValues.temperature").value(22));
+        assertThatThrownBy(() -> production.endObject(101L, "第二次结束")).hasMessageContaining("只有生产中的对象");
+    }
+
+    @Test void missingDhrBlocksEarlyTerminationWithoutChangingProduction() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        jdbc.update("DELETE FROM dhr_instance WHERE production_object_id=101");
+        assertThatThrownBy(() -> production.endObject(101L, "设备故障")).hasMessageContaining("DHR 实例缺失");
+        assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("IN_PROGRESS");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM dhr_termination", Long.class)).isZero();
     }
 
     @Test void missingPermissionCannotReadOrExecute() throws Exception {
@@ -782,7 +921,7 @@ class ProductionExecutionIntegrationTest {
               {"id":"e","data":{"kind":"END"}}]
             """, "[{\"source\":\"s\",\"target\":\"review\"},{\"source\":\"review\",\"target\":\"e\"}]");
         jdbc.update("INSERT INTO workflow_definition_version VALUES(7,7,1,'PUBLISHED',true,?,?)", """
-            [{"id":"s","data":{"kind":"START"}},{"id":"f","data":{"kind":"FORM","label":"装配记录","config":{"formTemplateVersionId":"5","formProcessVersionId":"8"}}},{"id":"e","data":{"kind":"END"}}]
+            [{"id":"s","data":{"kind":"START"}},{"id":"f","data":{"kind":"FORM","label":"装配记录","config":{"formTemplateVersionId":"5","formProcessVersionId":"8","fillMode":"PROCESS"}}},{"id":"e","data":{"kind":"END"}}]
             """, "[{\"source\":\"s\",\"target\":\"f\"},{\"source\":\"f\",\"target\":\"e\"}]");
         jdbc.update("INSERT INTO workflow_binding_rule VALUES(7,'default',7,'SCOPED',true,1,NULL,11)");
     }
@@ -1213,7 +1352,7 @@ class ProductionExecutionIntegrationTest {
 
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
-    @Import({FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, DhrInstanceController.class, DhrInstanceService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
+    @Import({DhrFillingController.class, DhrFillingService.class, FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, DhrInstanceController.class, DhrInstanceService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
         ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class,
         com.zencas.edhr.template.controller.FormReferenceController.class, com.zencas.edhr.template.service.FormReferenceLookup.class})
     static class Config {

@@ -308,7 +308,7 @@ export default function BatchManagementPage() {
   });
   const endMutation = useMutation({
     mutationFn: ({ id, reason }: { id: string; reason: string }) => endProductionObject(id, reason),
-    onSuccess: () => { showMessage('批次已提前结束'); setEndTarget(null); setEndReason(''); void queryClient.invalidateQueries({ queryKey: ['production-batches'] }); },
+    onSuccess: () => { showMessage('批次提前结束，关联 DHR 已终止'); setEndTarget(null); setEndReason(''); void queryClient.invalidateQueries({ queryKey: ['production-batches'] }); void queryClient.invalidateQueries({ queryKey: ['dhr-instances'] }); },
     onError: () => showMessage('批次提前结束失败，请检查状态和结束原因', 'error'),
   });
 
@@ -402,7 +402,7 @@ export default function BatchManagementPage() {
       <AppDialog open={endTarget !== null} onClose={() => { setEndTarget(null); setEndReason(''); }} maxWidth="sm" fullWidth>
         <DialogTitle>提前结束批次</DialogTitle>
         <DialogContent dividers>
-          <Typography variant="body2" sx={{ color: '#606266', mb: 1.5 }}>批次「{endTarget?.objectNo ?? '-'}」将进入“提前结束”，生产执行和后续 DHR 推进将停止。</Typography>
+          <Typography variant="body2" sx={{ color: '#606266', mb: 1.5 }}>批次「{endTarget?.objectNo ?? '-'}」将提前结束，关联 DHR 同步标记为“已终止”。已保存记录保留供查阅，普通生产和填报将停止。</Typography>
           <TextField autoFocus fullWidth required multiline minRows={3} label="结束原因" placeholder="请输入提前结束原因" value={endReason} onChange={(event) => setEndReason(event.target.value)} error={endReason.length > 0 && !endReason.trim()} helperText="结束原因必填" />
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => { setEndTarget(null); setEndReason(''); }}>取消</Button><Button variant="contained" color="warning" disabled={!endReason.trim() || endMutation.isPending} onClick={() => endTarget && endMutation.mutate({ id: endTarget.id, reason: endReason.trim() })}>{endMutation.isPending ? '提交中...' : '确认结束'}</Button></DialogActions>

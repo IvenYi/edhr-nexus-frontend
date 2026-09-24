@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import FormFillSettingsButton, { FormFillModeLabel } from '@/components/form-fill-settings/FormFillSettingsButton';
 import {
   useEffect,
   useMemo,
@@ -109,7 +110,7 @@ interface OperationDraft {
   operationName: string;
   operationCode?: string | null;
   sortOrder: number;
-  forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; required: boolean; sortOrder: number }>;
+  forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; fillSettings?: import('@/components/form-fill-settings/types').FormFillSettingsValue; required: boolean; sortOrder: number }>;
   documents: Array<{ documentVersionId: string; sortOrder: number; pageStart?: number | null; pageEnd?: number | null }>;
 }
 
@@ -204,7 +205,7 @@ function toOperationDrafts(nodes: RouteNodeRecord[], configured: ProductProcessO
         operationName: node.operationName || node.nodeKey,
         operationCode: node.operationCode,
         sortOrder: current?.sortOrder ?? node.sortOrder ?? index + 1,
-        forms: (current?.forms ?? []).map((form) => ({ dhrTemplateItemId: form.dhrTemplateItemId, formTemplateVersionId: form.formTemplateVersionId, required: form.required, sortOrder: form.sortOrder ?? 0 })),
+        forms: (current?.forms ?? []).map((form) => ({ dhrTemplateItemId: form.dhrTemplateItemId, formTemplateVersionId: form.formTemplateVersionId, fillSettings: form.fillSettings, required: form.required, sortOrder: form.sortOrder ?? 0 })),
         documents: (current?.documents ?? []).map((document) => ({ documentVersionId: document.documentVersionId, sortOrder: document.sortOrder ?? 0, pageStart: document.pageStart ?? null, pageEnd: document.pageEnd ?? null })),
       };
     });
@@ -783,7 +784,7 @@ function OperationDialog({ open, version, options, graph, drafts, onChange, load
                       onConfirm={(selections) => updateDraft(draft.routeNodeKey, (current) => {
                         const existing = new Set(current.forms.map((item) => item.formTemplateVersionId));
                         const additions = selections.filter((selection) => !existing.has(selection.formTemplateVersionId));
-                        return { ...current, forms: [...current.forms, ...additions.map((selection) => ({ dhrTemplateItemId: selection.dhrTemplateItemId, formTemplateVersionId: selection.formTemplateVersionId, required: true, sortOrder: 0 }))] };
+                        return { ...current, forms: [...current.forms, ...additions.map((selection) => ({ dhrTemplateItemId: selection.dhrTemplateItemId, formTemplateVersionId: selection.formTemplateVersionId, fillSettings: { fillMode: 'DIRECT' as const }, required: true, sortOrder: 0 }))] };
                       })}
                       emptyText="该批记录模板中暂无可引用表单"
                       onPreview={setPreviewForm}
@@ -799,10 +800,15 @@ function OperationDialog({ open, version, options, graph, drafts, onChange, load
                       const forms = [...current.forms]; [forms[index], forms[nextIndex]] = [forms[nextIndex], forms[index]];
                       return { ...current, forms };
                     })}
+                    renderActions={(option) => {
+                      const binding = draft.forms.find((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id));
+                      return binding ? <FormFillSettingsButton value={binding.fillSettings} form={option} onChange={(fillSettings) => updateDraft(draft.routeNodeKey, current => ({ ...current, forms: current.forms.map(item => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id) ? { ...item, fillSettings } : item) }))} /> : null;
+                    }}
                     renderDetails={(option) => {
                       const binding = draft.forms.find((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id));
-                      return <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                        {option.code ? <Typography variant="caption" sx={{ color: '#909399' }}>表单编码：{option.code}</Typography> : null}
+                      return <Stack direction="row" alignItems="center" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 0.25 }}>
+                        <FormFillModeLabel value={binding?.fillSettings} />
+                        {option.code ? <Typography variant="caption" noWrap title={`表单编码：${option.code}`} sx={{ color: '#909399', maxWidth: 100 }}>编码 {option.code}</Typography> : null}
                         {binding ? <Stack component="label" direction="row" spacing={0.25} alignItems="center" sx={{ cursor: 'pointer' }}><Checkbox size="small" checked={binding.required} onChange={(event) => updateDraft(draft.routeNodeKey, (current) => ({ ...current, forms: current.forms.map((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id) ? { ...item, required: event.target.checked } : item) }))} sx={{ p: 0.25 }} /><Typography variant="caption" sx={{ color: '#606266' }}>工序结束前完成</Typography></Stack> : null}
                       </Stack>;
                     }}

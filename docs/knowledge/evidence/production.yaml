@@ -238,7 +238,7 @@ evidence:
   - id: evidence.production-object-early-termination-gap
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/ProductionObjectStatusMachine.java
-    description: 当前 eDHR 已补齐生产对象 IN_PROGRESS->EARLY_TERMINATED 状态转移、termination_reason 持久化字段、对象提前结束接口，以及对象全部终态后的工单 EARLY_TERMINATED 自动汇总；但用户主动工单级提前结束命令、工单结束原因、未开工及进行中对象主动级联、活动生产事务关闭和 DHR 作废/冻结仍未实现，需后续生产执行阶段补齐并验证。
+    description: historical original-evidence；旧阶段核对已补齐生产对象 IN_PROGRESS->EARLY_TERMINATED 状态转移、termination_reason、对象提前结束接口及工单终态汇总，但当时未完成活动执行与 DHR 联动。2026-09-23 DEC-0069 已确认 DHR 应真实终止并保留表单，不再使用旧“DHR 作废/冻结”二选一推断；当前实现与验证应读新证据，不以本历史快照宣称完成。
     visibility: internal
   - id: evidence.production-batch-management-page
     type: code

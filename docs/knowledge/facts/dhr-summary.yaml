@@ -64,3 +64,35 @@ facts:
     sourceLocator: dhr_summary_version 与 dhr_summary_evidence 仅在提交时插入，已提交状态阻断后续草稿修改
     capturedAt: '2026-09-19'
     reviewStatus: reviewed
+  - id: fact.dhr-summary.source-definition-key
+    name: DHR 汇总可选来源定义键
+    conceptId: concept.dhr-instance
+    valueType: string
+    sourceType: derived
+    sourcePath: gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts
+    aliases: [dhrSummary.sourceDefinitionKey]
+    availability: runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id]
+    sourceRevision: working-tree
+    sourceLocator: summarySourceKey 按 originKind、operationId、formId 定义候选分组，缺失来源键时按实例独立；仅标识展示来源，不定义全组纳入、同目录或连续位置约束
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.archive-display-name
+    name: DHR 汇总归档显示名
+    conceptId: concept.dhr-summary-archive-display-name
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
+    aliases: [dhrSummary.placementDisplayName]
+    availability: runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
+    sourceRevision: working-tree
+    sourceLocator: dhr_summary_evidence.display_name 可空且不按来源拆字段；validatePlacements 的 DIRECTORY 分支只合入 displayName，固定目标且禁止排序覆盖；prepareNextDraft 查询包括有别名的 DIRECTORY。仅核对存储及服务源码，完整交互与运行验证待主智能体完成；空别名回退原名
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed

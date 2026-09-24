@@ -2,7 +2,7 @@ import client from './client';
 import type { ModelField } from '@/pages/master-data/template-designer-react/types';
 
 export type ExecutionValues = Record<string, unknown>;
-export interface ExecutionButton { action: string; label: string; requiresSignature?: boolean; requireOpinion?: boolean }
+export interface ExecutionButton { action: string; label: string; visible?: boolean; style?: 'PRIMARY' | 'DEFAULT' | 'DANGER'; requiresSignature?: boolean; requireOpinion?: boolean }
 export interface ExecutionForm {
   sourceType?: 'CUSTOM';
   id: string; versionId: string; name: string; code: string; version: string; categoryName?: string | null;
@@ -18,7 +18,7 @@ export interface ExecutionOperation {
   documents: Array<{ id: string; name: string; version: string; code: string; fileId?: string; pageStart?: string; pageEnd?: string }>;
 }
 export interface ExecutionFormState { status: string; values: ExecutionValues; instanceNo?: string; savedAt?: string; active?: string[] }
-export interface ExecutionFormControls { canAct?: boolean; buttons: ExecutionButton[]; permissions: Record<string, 'EDIT' | 'READ_ONLY'>; signaturePermissions?: Record<string, 'EDIT' | 'READ_ONLY'>; nodeName?: string }
+export interface ExecutionFormControls { canAct?: boolean; buttons: ExecutionButton[]; permissions: Record<string, 'EDIT' | 'READ_ONLY'>; signaturePermissions?: Record<string, 'EDIT' | 'READ_ONLY'>; nodeId?: string; nodeName?: string; nodeKind?: string }
 export interface ExecutionFormCopies {
   instanceIds: string[]; status: string; ended: boolean; required: boolean; canAdd: boolean; canEnd: boolean;
   incomplete: string[]; instances: Record<string, ExecutionFormControls>;

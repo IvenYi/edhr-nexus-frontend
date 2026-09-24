@@ -5,9 +5,10 @@ import {
   IconButton, InputAdornment, MenuItem, Stack, Tab, Table, TableBody, TableCell,
   TableHead, TableRow, Tabs, TextField, Tooltip, Typography,
 } from '@mui/material';
-import { Close, ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search, SwapHoriz } from '@mui/icons-material';
+import { Close, ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search, SwapHoriz, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import ListColumnSettingsPopover, { getCurrentUserPreferenceStorageKey, loadListColumnSettings, reorderListColumns } from '@/components/ListColumnSettingsPopover';
 import { ListTableShell } from '@/components/ListTableShell';
 import StatusBadge from '@/components/StatusBadge';
 import TableStateCell from '@/components/TableStateCell';
@@ -26,6 +27,7 @@ import {
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
+import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
 import type { PageResult } from '@/types/common';
 import {
   formListAdvancedGridSx,
@@ -52,6 +54,7 @@ const REVIEW_COLUMNS: ReadonlyArray<{ id: ReviewColumnId; label: string; width: 
   { id: 'status', label: '记录状态', width: 110, minWidth: 96 },
   { id: 'actions', label: '操作', width: 128, minWidth: 128 },
 ];
+const REVIEW_CONFIGURABLE_COLUMNS = REVIEW_COLUMNS.filter((column) => column.id !== 'actions');
 type FilterDraft = {
   keyword: string; templateName: string; productionObjectNo: string; workOrderNo: string;
   productionObjectType: string; nodeName: string; reviewResult: string; reviewedFrom: string; reviewedTo: string;
@@ -176,7 +179,7 @@ function ReviewTaskDialog({ view, identity, readOnly, onClose, onChanged }: { vi
           <Box component="section" aria-label="表单审批内容" sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: { xs: 1.5, md: 2.5 }, bgcolor: '#fff' }}>{document ? <FormCanvasPreview key={`${identity?.operationId}/${identity?.copyId}/${detail.revision}`} document={document} fullPage fieldPermissions={detail.controls?.permissions} runtime={{ values, upload, references, disabled: busy || !actionable, onChange: (id, value) => { setValues((current) => ({ ...current, [id]: value })); setDirty(true); } }} /> : null}</Box>
         </> : null}
       </DialogContent>
-      <DialogActions sx={{ minHeight: 64, px: 2.5, py: 1, borderTop: '1px solid #e4e7ed', bgcolor: '#fff' }}><Typography variant="caption" sx={{ mr: 'auto', color: dirty ? '#e6a23c' : '#909399' }}>{dirty ? '有未提交修改' : view === 'REVIEW_DONE' ? `处理结果：${reviewResultLabel(detail?.handledAction)}` : detail?.controls?.nodeName ? `当前节点：${detail.controls.nodeName}` : ''}</Typography><Button onClick={close} disabled={busy}>关闭</Button>{actionable ? detail?.controls.buttons.filter((button) => ['APPROVE', 'RETURN'].includes(button.action)).map((button) => <Button key={button.action} variant={button.action === 'RETURN' ? 'outlined' : 'contained'} color={button.action === 'RETURN' ? 'error' : 'primary'} disabled={busy} onClick={() => chooseAction(button)}>{button.label}{button.requiresSignature ? '并签署' : ''}</Button>) : null}</DialogActions>
+      <DialogActions sx={{ minHeight: 64, px: 2.5, py: 1, borderTop: '1px solid #e4e7ed', bgcolor: '#fff' }}><Typography variant="caption" sx={{ mr: 'auto', color: dirty ? '#e6a23c' : '#909399' }}>{dirty ? '有未提交修改' : view === 'REVIEW_DONE' ? `处理结果：${reviewResultLabel(detail?.handledAction)}` : detail?.controls?.nodeName ? `当前节点：${detail.controls.nodeName}` : ''}</Typography><Button onClick={close} disabled={busy}>关闭</Button>{actionable ? <WorkflowActionButtons buttons={detail?.controls.buttons.filter((button) => ['APPROVE', 'RETURN'].includes(button.action))} busy={busy} canAct={actionable} onAction={chooseAction} /> : null}</DialogActions>
     </AppDialog>
     <ConfirmDialog open={confirmClose} title="当前审批内容尚未提交" message="关闭后将放弃本次页面修改，审批任务仍保留在我的待办。" confirmText="放弃修改并关闭" cancelText="继续处理" destructive initialFocus="cancel" onCancel={() => setConfirmClose(false)} onConfirm={() => { setConfirmClose(false); onClose(); }} />
     <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => setSigning(null)} maxWidth="xs" fullWidth><DialogTitle>{signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>{signing?.requiresSignature ? <><TextField label="当前操作人账户" value={account} autoComplete="username" onChange={(event) => setAccount(event.target.value)} disabled={busy} /><TextField label="账户密码" value={password} autoComplete="current-password" type="password" onChange={(event) => setPassword(event.target.value)} disabled={busy} /></> : null}<TextField label="处理意见" required={signing?.requireOpinion} value={opinion} onChange={(event) => setOpinion(event.target.value)} multiline minRows={3} disabled={busy} />{error ? <Alert severity="error">{error}</Alert> : null}</Stack></DialogContent><DialogActions><Button disabled={busy} onClick={() => setSigning(null)}>取消</Button><Button variant="contained" disabled={busy || Boolean(signing?.requiresSignature && (!account || !password)) || Boolean(signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void runAction(signing, { account, password, opinion }); }}>{busy ? '正在处理…' : '确认'}</Button></DialogActions></AppDialog>
@@ -186,6 +189,10 @@ function ReviewTaskDialog({ view, identity, readOnly, onClose, onChanged }: { vi
 export default function FormReviewPage() {
   const { showMessage } = useSnackbar();
   const { getColumnWidth, getResizeHandleProps } = usePersistedListColumnWidths(REVIEW_COLUMNS, 'form-review-column-widths:v1:');
+  const columnSettingsKey = useMemo(() => getCurrentUserPreferenceStorageKey('form-review-column-settings:v1:'), []);
+  const [columnSettings, setColumnSettings] = useState(() => loadListColumnSettings(columnSettingsKey, REVIEW_CONFIGURABLE_COLUMNS, 1));
+  const [columnSettingsAnchor, setColumnSettingsAnchor] = useState<HTMLElement | null>(null);
+  useEffect(() => { localStorage.setItem(columnSettingsKey, JSON.stringify(columnSettings)); }, [columnSettingsKey, columnSettings]);
   const [view, setView] = useState<ReviewView>('REVIEW_PENDING');
   const [draft, setDraft] = useState<FilterDraft>(emptyFilters);
   const [filters, setFilters] = useState<FilterDraft>(emptyFilters);
@@ -212,7 +219,10 @@ export default function FormReviewPage() {
     enabled: Boolean(transferIdentity), retry: false,
   });
   const activeView = views.find((item) => item.id === view)!;
-  const visibleColumns = useMemo(() => REVIEW_COLUMNS.filter((column) => column.id !== 'result' || view === 'REVIEW_DONE'), [view]);
+  const visibleColumns = useMemo(() => [
+    ...columnSettings.order.filter((id) => !columnSettings.hidden.includes(id) && (id !== 'result' || view === 'REVIEW_DONE')).map((id) => REVIEW_COLUMNS.find((column) => column.id === id)!),
+    REVIEW_COLUMNS[REVIEW_COLUMNS.length - 1],
+  ], [columnSettings, view]);
   const tableWidth = visibleColumns.reduce((total, column) => total + getColumnWidth(column), 0);
   const rows = query.data?.content ?? [];
   const apply = () => { setFilters(draft); setPage(0); };
@@ -229,6 +239,20 @@ export default function FormReviewPage() {
       showMessage(`已转办给${transferTarget.name}`, 'success'); setTransferIdentity(null); setDetailIdentity(null); await query.refetch();
     } catch (reason) { setTransferError(errorText(reason)); }
     finally { setTransferBusy(false); }
+  };
+  const renderCell = (row: FormWorklistRow, id: ReviewColumnId) => {
+    switch (id) {
+      case 'instanceNo': return <TableCell key={id} title={row.instanceNo || '未保存'}>{row.instanceNo || '未保存'}</TableCell>;
+      case 'template': return <TableCell key={id} title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" color="text.secondary">· {row.templateVersion || '-'}</Typography></TableCell>;
+      case 'productionObject': return <TableCell key={id} title={row.productionObjectNo || '-'}>{row.productionObjectNo || '-'} <Typography component="span" variant="caption" color="text.secondary">· {typeLabel(row.productionObjectType)}</Typography></TableCell>;
+      case 'workOrder': return <TableCell key={id} title={row.workOrderNo || '-'}>{row.workOrderNo || '-'}</TableCell>;
+      case 'operation': return <TableCell key={id} title={row.operationName}>{row.operationName}</TableCell>;
+      case 'node': return <TableCell key={id} title={row.nodeName || '-'}>{row.nodeName || '-'}</TableCell>;
+      case 'result': return <TableCell key={id}>{reviewResultLabel(row.handledAction)}</TableCell>;
+      case 'time': return <TableCell key={id}>{formatDateTime(view === 'REVIEW_DONE' ? row.handledAt : row.arrivedAt)}</TableCell>;
+      case 'status': return <TableCell key={id}>{statusBadge(row.recordStatus)}</TableCell>;
+      case 'actions': return <TableCell key={id} sx={actionBodySx} onClick={(event) => event.stopPropagation()}><Stack direction="row" spacing={0} justifyContent="center">{view === 'REVIEW_PENDING' ? <><Tooltip title="处理" arrow><IconButton color="primary" size="small" aria-label="处理审批" onClick={() => openTask(row, false)}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip>{row.canTransfer ? <Tooltip title={row.transferLabel || '转办'} arrow><IconButton color={row.transferStyle === 'DANGER' ? 'error' : row.transferStyle === 'PRIMARY' ? 'primary' : 'default'} size="small" aria-label={row.transferLabel || '转办审批'} onClick={() => openTransfer(row)}><SwapHoriz fontSize="small" /></IconButton></Tooltip> : null}</> : null}<Tooltip title="查看" arrow><IconButton size="small" aria-label="查看审批" onClick={() => openTask(row, true)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip></Stack></TableCell>;
+    }
   };
   const renderField = (key: keyof FilterDraft, label: string, placeholder: string) => <TextField size="small" label={label} placeholder={placeholder} value={draft[key]} onChange={(event) => setDraft((current) => ({ ...current, [key]: event.target.value }))} sx={fieldSx} />;
   const filterActions = <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ ...formListFilterActionsSx, gridColumn: expanded ? '1 / -1' : { xs: '1 / -1', md: 'auto' } }}>
@@ -248,13 +272,14 @@ export default function FormReviewPage() {
         </Box>
       </Box>
     <Box sx={{ flex: 1, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1.5 }}><Tabs value={view} onChange={(_, next: ReviewView) => { setView(next); setPage(0); setIdentity(null); setDetailIdentity(null); }} aria-label="表单审批视图"><Tab value="REVIEW_PENDING" label="我的待办" /><Tab value="REVIEW_DONE" label="我的已办" /></Tabs><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box>
+      <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', pr: 1.5 }}><Tabs value={view} onChange={(_, next: ReviewView) => { setView(next); setPage(0); setIdentity(null); setDetailIdentity(null); }} aria-label="表单审批视图"><Tab value="REVIEW_PENDING" label="我的待办" /><Tab value="REVIEW_DONE" label="我的已办" /></Tabs><Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}><Tooltip title="字段设置" arrow><IconButton size="small" aria-label="字段设置" onClick={(event) => setColumnSettingsAnchor(event.currentTarget)} sx={{ width: 36, height: 36, border: '1px solid #e4e7ed', borderRadius: 1 }}><Box aria-hidden="true" sx={{ position: 'relative', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}><ViewColumnRounded sx={{ fontSize: 21 }} /><TuneRounded sx={{ position: 'absolute', right: -3, bottom: -2, fontSize: 13, p: '1px', borderRadius: '50%', bgcolor: '#fff', boxShadow: '0 0 0 1px #fff' }} /></Box></IconButton></Tooltip><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box></Box>
+      <ListColumnSettingsPopover anchorEl={columnSettingsAnchor} columns={REVIEW_CONFIGURABLE_COLUMNS.filter((column) => view === 'REVIEW_DONE' || column.id !== 'result')} settings={columnSettings} onClose={() => setColumnSettingsAnchor(null)} canHide={(id) => id === 'result' || REVIEW_CONFIGURABLE_COLUMNS.filter((column) => column.id !== 'result' && !columnSettings.hidden.includes(column.id)).length > 1} onToggle={(id) => setColumnSettings((current) => ({ ...current, hidden: current.hidden.includes(id) ? current.hidden.filter((value) => value !== id) : [...current.hidden, id] }))} onReorder={(from, to) => setColumnSettings((current) => reorderListColumns(REVIEW_CONFIGURABLE_COLUMNS, current, from, to))} />
       <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ minWidth: tableWidth, tableLayout: 'fixed', height: query.isFetching || query.isError || rows.length === 0 ? '100%' : 'auto' }}><colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: getColumnWidth(column) }} />)}</colgroup><TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => {
         const width = getColumnWidth(column);
         const label = column.id === 'time' && view === 'REVIEW_DONE' ? '审批时间' : column.label;
         return <TableCell key={column.id} align={column.id === 'actions' ? 'center' : undefined} sx={{ ...headerCellSx, position: 'relative', width, minWidth: width, maxWidth: width, ...(column.id === 'actions' ? actionHeadSx : {}) }}>{label}{column.id !== 'actions' ? <Box aria-hidden="true" data-column-resize-handle={column.id} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /> : null}</TableCell>;
       })}</TableRow></TableHead><TableBody>
-        {query.isFetching ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>正在加载审批任务…</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>表单审批列表加载失败：{errorText(query.error)}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>{view === 'REVIEW_PENDING' ? '暂无待处理的表单审批任务' : '暂无已办表单审批记录'}</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}/${row.operationId}/${row.copyId}`} hover tabIndex={0} aria-label={`查看${row.templateName || '表单'}审批详情`} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter') openDetail(row); }} sx={{ cursor: 'pointer', '& .MuiTableCell-root': bodyCellSx }}><TableCell title={row.instanceNo || '未保存'}>{row.instanceNo || '未保存'}</TableCell><TableCell title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" color="text.secondary">· {row.templateVersion || '-'}</Typography></TableCell><TableCell title={row.productionObjectNo || '-'}>{row.productionObjectNo || '-'} <Typography component="span" variant="caption" color="text.secondary">· {typeLabel(row.productionObjectType)}</Typography></TableCell><TableCell title={row.workOrderNo || '-'}>{row.workOrderNo || '-'}</TableCell><TableCell title={row.operationName}>{row.operationName}</TableCell><TableCell title={row.nodeName || '-'}>{row.nodeName || '-'}</TableCell>{view === 'REVIEW_DONE' ? <TableCell>{reviewResultLabel(row.handledAction)}</TableCell> : null}<TableCell>{formatDateTime(view === 'REVIEW_DONE' ? row.handledAt : row.arrivedAt)}</TableCell><TableCell>{statusBadge(row.recordStatus)}</TableCell><TableCell sx={actionBodySx} onClick={(event) => event.stopPropagation()}><Stack direction="row" spacing={0} justifyContent="center">{view === 'REVIEW_PENDING' ? <><Tooltip title="处理" arrow><IconButton color="primary" size="small" aria-label="处理审批" onClick={() => openTask(row, false)}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip>{row.canTransfer ? <Tooltip title={row.transferLabel || '转办'} arrow><IconButton color={row.transferStyle === 'DANGER' ? 'error' : row.transferStyle === 'PRIMARY' ? 'primary' : 'default'} size="small" aria-label={row.transferLabel || '转办审批'} onClick={() => openTransfer(row)}><SwapHoriz fontSize="small" /></IconButton></Tooltip> : null}</> : null}<Tooltip title="查看" arrow><IconButton size="small" aria-label="查看审批" onClick={() => openTask(row, true)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip></Stack></TableCell></TableRow>)}
+        {query.isFetching ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>正在加载审批任务…</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>表单审批列表加载失败：{errorText(query.error)}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>{view === 'REVIEW_PENDING' ? '暂无待处理的表单审批任务' : '暂无已办表单审批记录'}</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}/${row.operationId}/${row.copyId}`} hover tabIndex={0} aria-label={`查看${row.templateName || '表单'}审批详情`} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter') openDetail(row); }} sx={{ cursor: 'pointer', '& .MuiTableCell-root': bodyCellSx }}>{visibleColumns.map((column) => renderCell(row, column.id))}</TableRow>)}
       </TableBody></Table></ListTableShell>
       <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={(value) => { setSize(value); setPage(0); }} />
     </Box>

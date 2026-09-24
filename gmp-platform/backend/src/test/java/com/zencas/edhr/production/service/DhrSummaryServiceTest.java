@@ -25,7 +25,7 @@ class DhrSummaryServiceTest {
     @BeforeEach
     void setup() {
         service = new DhrSummaryService(mock(JdbcTemplate.class), mapper, mock(DhrInstanceService.class),
-                mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class));
+                mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class), mock(com.zencas.edhr.workflow.engine.WorkflowEngine.class), mock(DhrEvidenceImpactService.class));
     }
 
     @Test
@@ -86,6 +86,59 @@ class DhrSummaryServiceTest {
         assertThatThrownBy(() -> invoke("validatePlacements", candidates, baseDirectory(), mapper.createArrayNode(), incomplete))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("只有已完成");
+    }
+
+    @Test
+    void placementOrderIsPreservedAndInsertionAnchorMustBelongToTargetDirectory() {
+        ArrayNode candidates = mapper.createArrayNode()
+                .add(candidate("101", "WORK", "COMPLETED", null))
+                .add(candidate("102", "WORK", "COMPLETED", null));
+        ArrayNode ordered = mapper.createArrayNode()
+                .add(mapper.createObjectNode().put("recordId", "101").put("targetNodeKey", "base-dir-10")
+                        .put("beforeNodeKey", "base-item-20").put("displayOrder", 0))
+                .add(mapper.createObjectNode().put("recordId", "102").put("targetNodeKey", "base-dir-10")
+                        .put("beforeNodeKey", "base-item-20").put("displayOrder", 1));
+        @SuppressWarnings("unchecked")
+        Map<String, ObjectNode> result = invoke("validatePlacements", candidates, baseDirectory(), mapper.createArrayNode(), ordered);
+        assertThat(result.get("101").path("beforeNodeKey").asText()).isEqualTo("base-item-20");
+        assertThat(result.get("102").path("displayOrder").asInt()).isEqualTo(1);
+
+        ((ObjectNode) ordered.get(1)).put("displayOrder", 0);
+        assertThatThrownBy(() -> invoke("validatePlacements", candidates, baseDirectory(), mapper.createArrayNode(), ordered))
+                .isInstanceOf(BusinessException.class).hasMessageContaining("同一目录位置");
+        ((ObjectNode) ordered.get(1)).put("displayOrder", 1);
+
+        ArrayNode overlay = mapper.createArrayNode().add(directory("summary-dir-a", "base-dir-10", "附录"));
+        ((ObjectNode) ordered.get(0)).put("targetNodeKey", "summary-dir-a");
+        assertThatThrownBy(() -> invoke("validatePlacements", candidates, baseDirectory(), overlay, ordered))
+                .isInstanceOf(BusinessException.class).hasMessageContaining("插入位置不属于目标目录");
+        ((ObjectNode) ordered.get(0)).put("targetNodeKey", "base-dir-10").put("displayOrder", -1);
+        assertThatThrownBy(() -> invoke("validatePlacements", candidates, baseDirectory(), overlay, ordered))
+                .isInstanceOf(BusinessException.class).hasMessageContaining("排序无效");
+    }
+
+    @Test
+    void sourceGroupingDoesNotRestrictIndividualPlacementOrOrder() {
+        ObjectNode first = candidate("101", "WORK", "COMPLETED", null).put("operationId", "op-1").put("formId", "work-1-node-a");
+        ObjectNode copy = candidate("102", "WORK", "COMPLETED", null).put("operationId", "op-1").put("formId", "work-1-node-a");
+        ObjectNode otherNode = candidate("103", "WORK", "COMPLETED", null).put("operationId", "op-1").put("formId", "work-1-node-b");
+        ObjectNode custom = candidate("104", "CUSTOM", "COMPLETED", null).put("operationId", "op-1").put("formId", "custom-1");
+        ObjectNode customCopy = candidate("105", "CUSTOM", "COMPLETED", null).put("operationId", "op-1").put("formId", "custom-1");
+        ArrayNode candidates = mapper.createArrayNode().add(first).add(copy).add(otherNode).add(custom).add(customCopy);
+        ArrayNode placements = mapper.createArrayNode();
+        placements.addObject().put("recordId", "101").put("targetNodeKey", "base-dir-10").put("displayOrder", 0);
+        placements.addObject().put("recordId", "104").put("targetNodeKey", "base-dir-10").put("displayOrder", 1);
+        assertThatCode(() -> invoke("validatePlacements", candidates, baseDirectory(), mapper.createArrayNode(), placements))
+                .doesNotThrowAnyException(); // partial work and custom groups
+        placements.addObject().put("recordId", "102").put("targetNodeKey", "base-dir-10").put("displayOrder", 2);
+        assertThatCode(() -> invoke("validatePlacements", candidates, baseDirectory(), mapper.createArrayNode(), placements))
+                .doesNotThrowAnyException(); // interleaved sources preserve their actual order
+        ArrayNode overlay = mapper.createArrayNode().add(directory("summary-dir-a", "base-dir-10", "附录"));
+        ((ObjectNode) placements.get(2)).put("targetNodeKey", "summary-dir-a");
+        assertThatCode(() -> invoke("validatePlacements", candidates, baseDirectory(), overlay, placements)).doesNotThrowAnyException();
+        copy.put("status", "ACTIVE");
+        assertThatThrownBy(() -> invoke("validatePlacements", candidates, baseDirectory(), overlay, placements))
+                .isInstanceOf(BusinessException.class).hasMessageContaining("只有已完成");
     }
 
     @Test

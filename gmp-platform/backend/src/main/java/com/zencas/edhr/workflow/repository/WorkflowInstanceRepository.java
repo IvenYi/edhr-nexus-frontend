@@ -12,6 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface WorkflowInstanceRepository extends JpaRepository<WorkflowInstance, Long> {
+    @Query("select i from WorkflowInstance i where i.businessType is null or i.businessType <> 'DHR_SUMMARY'")
+    org.springframework.data.domain.Page<WorkflowInstance> findNonDhr(org.springframework.data.domain.Pageable pageable);
     List<WorkflowInstance> findByBusinessTypeAndBusinessId(String businessType, String businessId);
     List<WorkflowInstance> findByInitiatorId(String initiatorId);
     List<WorkflowInstance> findByStatus(String status);

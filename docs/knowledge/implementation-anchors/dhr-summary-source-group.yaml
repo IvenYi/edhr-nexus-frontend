@@ -1,0 +1,47 @@
+knowledgeModelVersion: 0.3.24
+implementationAnchors:
+  - id: anchor.dhr-summary-source-definition-key
+    targetId: fact.dhr-summary.source-definition-key
+    targetType: fact
+    codeReferences: [gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    apiReferences: ['GET /api/v1/dhr-instances/{id}/summary', 'PUT /api/v1/dhr-instances/{id}/summary/draft', 'POST /api/v1/dhr-instances/{id}/summary/submit']
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+    testReferences: [gmp-platform/frontend/scripts/test-dhr-summary-directory-browser.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-service, evidence.dhr-summary-source-group-test, evidence.dhr-summary-source-group-backend-test]
+    sourceRevision: working-tree
+    sourceLocator: summarySourceKey；来源键仅用于候选分组和左侧相邻同源折叠的识别，不作为全组归档约束；实例合法性继续由 DhrSummaryService.validatePlacements 校验
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed
+  - id: anchor.dhr-summary-source-group-presentation
+    targetId: rule.dhr-summary-source-group-presentation
+    targetType: rule
+    codeReferences: [gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    apiReferences: ['GET /api/v1/dhr-instances/{id}/summary', 'PUT /api/v1/dhr-instances/{id}/summary/draft', 'POST /api/v1/dhr-instances/{id}/summary/submit']
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+    testReferences: [gmp-platform/frontend/scripts/test-dhr-summary-directory-browser.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-source-group-test, evidence.dhr-summary-service, evidence.dhr-summary-source-group-backend-test]
+    sourceRevision: working-tree
+    sourceLocator: groupSummarySources/placeSummarySourceGroup 与 DhrSummaryPage 候选展开、逐份纳入及移出、草稿和 readOnly 相邻同源折叠；DhrSummaryService.saveDraft/submit/validatePlacements；2026-09-24 主智能体测试及全新独立质量实例复验通过，验证边界见来源分组确认证据
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed
+  - id: anchor.dhr-summary-archive-display-name
+    targetId: rule.dhr-summary-archive-display-name
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java]
+    apiReferences: ['GET /api/v1/dhr-instances/{id}/summary', 'PUT /api/v1/dhr-instances/{id}/summary/draft', 'POST /api/v1/dhr-instances/{id}/summary/submit']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryDisplayNameMigrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-ui, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
+    sourceRevision: working-tree
+    sourceLocator: DhrSummaryPage.openRename/saveRename 及 formRowActions 支持全来源已有证据重命名和单例列表；DhrSummaryService.validatePlacements DIRECTORY 分支校验固定目标与无排序覆盖后合入别名，prepareNextDraft 继承 DIRECTORY 别名；0101 可空列复用。主智能体新增持久化测试覆盖目录别名冻结/重整与固定目标校验，隔离浏览器覆盖单例列表、单落点与对齐
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed

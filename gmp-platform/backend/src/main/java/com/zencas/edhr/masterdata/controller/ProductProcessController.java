@@ -105,6 +105,7 @@ public class ProductProcessController {
     private final ProductProcessVersionRepository productProcessVersionRepository;
     private final ProductProcessOperationBindingRepository operationBindingRepository;
     private final ProductProcessOperationFormBindingRepository operationFormBindingRepository;
+    private final com.zencas.edhr.workflow.service.FormFillSettingsService fillSettingsService;
     private final ProductProcessOperationDocumentBindingRepository operationDocumentBindingRepository;
     private final RouteRepository routeRepository;
     private final RouteVersionRepository routeVersionRepository;
@@ -500,6 +501,7 @@ public class ProductProcessController {
                             .id(idGenerator.nextId())
                             .productProcessOperationBindingId(binding.getId())
                             .dhrTemplateItemId(form.getDhrTemplateItemId())
+                            .fillSettingsJson(fillSettingsService.serialize(form.getFillSettings(), form.getFormTemplateVersionId()))
                             .formTemplateVersionId(form.getFormTemplateVersionId())
                             .required(form.getRequired() == null || form.getRequired())
                             .sortOrder(form.getSortOrder() == null ? 0 : form.getSortOrder())
@@ -570,7 +572,7 @@ public class ProductProcessController {
         return data.bindings().stream()
                 .map(operation -> new ProductProcessVersionRequest.OperationBindingRequest(
                         operation.getRouteNodeKey(), operation.getSortOrder(),
-                        data.forms().getOrDefault(operation.getId(), List.of()).stream().map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getDhrTemplateItemId(), form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder())).toList(),
+                        data.forms().getOrDefault(operation.getId(), List.of()).stream().map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getDhrTemplateItemId(), form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder(), fillSettingsService.parse(form.getFillSettingsJson()))).toList(),
                         data.documents().getOrDefault(operation.getId(), List.of()).stream().map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder(), document.getPageStart(), document.getPageEnd())).toList()))
                 .toList();
     }
@@ -667,7 +669,7 @@ public class ProductProcessController {
     private FormBindingResponse toFormBindingResponse(ProductProcessOperationFormBinding form) {
         FormTemplateVersion version = formTemplateVersionRepository.findById(form.getFormTemplateVersionId()).orElse(null);
         FormTemplate template = version == null ? null : formTemplateRepository.findById(version.getTemplateId()).orElse(null);
-        return new FormBindingResponse(id(form.getId()), idOrNull(form.getDhrTemplateItemId()), id(form.getFormTemplateVersionId()), template == null ? null : template.getName(), template == null ? null : template.getCode(), version == null ? null : version.getVersion(), form.getRequired(), form.getSortOrder());
+        return new FormBindingResponse(id(form.getId()), idOrNull(form.getDhrTemplateItemId()), id(form.getFormTemplateVersionId()), template == null ? null : template.getName(), template == null ? null : template.getCode(), version == null ? null : version.getVersion(), form.getRequired(), form.getSortOrder(), fillSettingsService.parse(form.getFillSettingsJson()));
     }
 
     private DocumentBindingResponse toDocumentBindingResponse(ProductProcessOperationDocumentBinding binding, Map<Long, DocumentCategory> documentCategoriesById) {
@@ -753,6 +755,7 @@ public class ProductProcessController {
         snapshot.put("forms", operation.forms().stream()
                 .map(form -> joinReference(form.templateCode(), form.templateName(), form.version()) + (Boolean.TRUE.equals(form.required()) ? "（工序结束前完成）" : ""))
                 .toList());
+        snapshot.put("fillSettings", operation.forms().stream().map(form -> Map.of("formTemplateVersionId", form.formTemplateVersionId(), "settings", form.fillSettings())).toList());
         snapshot.put("documents", operation.documents().stream()
                 .map(document -> joinReference(document.documentCategoryName(), document.code(), document.title(), document.version())
                         + formatPageRange(document.pageStart(), document.pageEnd()))
@@ -866,7 +869,7 @@ public class ProductProcessController {
     public record ProductProcessResponse(String id, List<ProductProcessVersionResponse> versions) {}
     public record ProductProcessVersionResponse(String id, String version, String productionMode, String productionForm, String routeVersionId, String routeName, String routeCode, String routeVersion, String dhrTemplateVersionId, String dhrTemplateName, String dhrTemplateCode, String dhrTemplateVersion, String dhrReviewMode, String dhrReviewWorkflowDefinitionId, String dhrReviewWorkflowVersionId, String description, LocalDateTime effectiveFrom, LocalDateTime effectiveTo, String status, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, List<ProductProcessOperationResponse> operations) {}
     public record ProductProcessOperationResponse(String id, String routeNodeKey, String operationId, String operationCode, String operationName, Integer sortOrder, List<FormBindingResponse> forms, List<DocumentBindingResponse> documents) {}
-    public record FormBindingResponse(String id, String dhrTemplateItemId, String formTemplateVersionId, String templateName, String templateCode, String version, Boolean required, Integer sortOrder) {}
+    public record FormBindingResponse(String id, String dhrTemplateItemId, String formTemplateVersionId, String templateName, String templateCode, String version, Boolean required, Integer sortOrder, com.fasterxml.jackson.databind.JsonNode fillSettings) {}
     public record DocumentBindingResponse(String id, String documentVersionId, String title, String code, String documentCategoryName, String version, Integer sortOrder, Integer pageStart, Integer pageEnd) {}
     public record ProductModelOptionsResponse(List<RouteOption> routes, List<TemplateOption> dhrTemplates, List<TemplateOption> formTemplates, List<DocumentOption> documents, List<DhrDirectoryOption> dhrDirectories) {}
     public record RouteOption(String id, String routeId, String routeName, String version, String versionCode, String status) {}

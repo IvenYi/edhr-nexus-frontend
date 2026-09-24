@@ -1,5 +1,37 @@
 knowledgeModelVersion: 0.3.24
 facts:
+  - id: fact.dhr-instance.status
+    name: DHR 实例真实生命周期状态
+    conceptId: concept.dhr-instance
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
+    aliases: [dhrInstance.status]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-working-tree-source]
+    sourceRevision: working-tree
+    sourceLocator: dhr_instance.status；EARLY_TERMINATED 写入正在并行实现，终态查询与跨入口阻断尚未完成验证
+    capturedAt: '2026-09-23'
+    reviewStatus: reviewed
+  - id: fact.dhr-instance.has-summary-artifacts
+    name: DHR 已有关联汇总草稿或版本
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
+    aliases: [dhrInstance.hasSummaryArtifacts]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-working-tree-source]
+    sourceRevision: working-tree
+    sourceLocator: terminateWithProductionObject 查询 dhr_summary_draft 和 dhr_summary_version；终止与汇总并发边界仍待验证
+    capturedAt: '2026-09-23'
+    reviewStatus: reviewed
   - id: fact.dhr-instance.first-legal-start
     name: 生产对象发生首次合法开工
     conceptId: concept.production-object

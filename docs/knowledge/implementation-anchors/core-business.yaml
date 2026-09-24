@@ -242,3 +242,25 @@ implementationAnchors:
     sourceLocator: 'WorkflowDefinitionVersion / WorkflowEngine.createRecordControlInstance'
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
+  - id: anchor.core.production-execution-form-action-projection
+    targetId: rule.production-execution.form-current-node-action-projection
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+    apiReferences: []
+    databaseReferences: []
+    uiReferences:
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.production-execution-form-action-projection-user-confirmed, evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-page-source, evidence.production-execution-form-action-projection-renderer-source, evidence.production-execution-form-action-projection-engine-test]
+    sourceRevision: working-tree
+    sourceLocator: 'ProductionExecutionEngine.formControls / ProductionExecutionPage controls.buttons'
+    capturedAt: '2026-09-22'
+    reviewStatus: unreviewed

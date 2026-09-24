@@ -76,7 +76,7 @@ export function WorkflowActionConfig({
   events?: WorkflowButtonEvent[];
   guardMode?: "NONE" | "BLOCK_ON_INVALID" | "WARN_ON_INVALID";
   editable: boolean;
-  profile?: "FORM_PROCESS" | "RECORD_CONTROL";
+  profile?: "FORM_PROCESS" | "RECORD_CONTROL" | "DIRECT_FILL";
   onChange: (patch: {
     buttons: WorkflowButtonConfig[];
     buttonEvents: WorkflowButtonEvent[];
@@ -171,7 +171,7 @@ export function WorkflowActionConfig({
         </Stack>
       </Box>
 
-      {!recordControl ? <><Divider sx={{ mt: 1.25 }} />
+      {profile === "FORM_PROCESS" ? <><Divider sx={{ mt: 1.25 }} />
       <Box sx={{ pt: 1.75 }}>
         <Typography variant="body2" fontWeight={700}>表单校验</Typography>
         <Typography variant="caption" color="text.secondary">点击提交或审批前，如何处理未通过校验的表单。</Typography>
@@ -186,12 +186,12 @@ export function WorkflowActionConfig({
 
       <Divider sx={{ mt: 1.75 }} />
       <Box sx={{ pt: 1.75, pb: 1 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Box>
+        <Stack direction="row" justifyContent="space-between" alignItems="center" useFlexGap flexWrap="wrap" spacing={0.75}>
+          <Box sx={{ flex: "1 1 160px", minWidth: 0 }}>
             <Typography variant="body2" fontWeight={700}>电子签名</Typography>
-            <Typography variant="caption" color="text.secondary" noWrap sx={{ display: "block", overflow: "hidden", textOverflow: "ellipsis" }}>{recordControl ? "为指定审批动作添加账户密码签署。" : "为按钮添加账户密码签署，可选填充签名字段。"}</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "block", overflowWrap: "anywhere" }}>{recordControl ? "审批动作账户密码签署" : "账户密码签署 · 可关联签名字段"}</Typography>
           </Box>
-          <Button size="small" variant="text" startIcon={<Add />} disabled={!editable} onClick={() => update(currentButtons, [...currentEvents, { id: `event-${Date.now()}`, event: "BEFORE", action: signableActions[0], builtin: "NONE", signatureMethod: "ACCOUNT_PASSWORD" }])}>添加签署</Button>
+          <Button size="small" variant="text" startIcon={<Add />} sx={{ flexShrink: 0, whiteSpace: "nowrap" }} disabled={!editable} onClick={() => update(currentButtons, [...currentEvents, { id: `event-${Date.now()}`, event: "BEFORE", action: signableActions[0], builtin: "NONE", signatureMethod: "ACCOUNT_PASSWORD" }])}>添加签署</Button>
         </Stack>
         {currentEvents.length === 0 ? <Box sx={{ mt: 1, px: 1.25, py: 1, bgcolor: "#f7f9fc", borderRadius: 1 }}><Typography variant="caption" color="text.secondary">暂未配置事件</Typography></Box> : null}
         <Stack sx={{ mt: 0.75, gap: 0.75 }}>
@@ -213,7 +213,7 @@ export function WorkflowActionConfig({
                   label="填充签名字段"
                   sx={{ ml: 0, mr: 0, minWidth: 0, '& .MuiFormControlLabel-label': { fontSize: 13, whiteSpace: "nowrap" } }}
                 />
-                {item.builtin === "FILL_SIGN_FIELD" ? <Typography variant="caption" color="text.secondary" noWrap sx={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", textAlign: "right" }}>字段在作业流程的表单节点绑定</Typography> : null}
+                {item.builtin === "FILL_SIGN_FIELD" && profile === "FORM_PROCESS" ? <Typography variant="caption" color="text.secondary" noWrap sx={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", textAlign: "right" }}>字段在表单绑定处配置</Typography> : null}
               </Stack> : null}
             </Box>;
           })}

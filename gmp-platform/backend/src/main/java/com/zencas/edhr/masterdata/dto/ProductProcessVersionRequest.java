@@ -48,6 +48,12 @@ public class ProductProcessVersionRequest {
         private Boolean required;
         private Integer sortOrder;
 
+        private com.fasterxml.jackson.databind.JsonNode fillSettings;
+
+        public FormBindingRequest(Long dhrTemplateItemId, Long formTemplateVersionId, Boolean required, Integer sortOrder) {
+            this(dhrTemplateItemId, formTemplateVersionId, required, sortOrder, null);
+        }
+
         public FormBindingRequest(Long formTemplateVersionId, Boolean required, Integer sortOrder) {
             this(null, formTemplateVersionId, required, sortOrder);
         }

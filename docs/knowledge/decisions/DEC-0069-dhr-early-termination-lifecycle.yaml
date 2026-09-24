@@ -1,0 +1,73 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0069
+    title: 生产对象提前结束与 DHR 真实终止
+    status: specified
+    visibility: internal
+    context: >-
+      user-confirmed；DEC-PACKAGE-20260923-DHR-TERMINATION-IMPLEMENT，L2，基线 0.3.24。
+      用户确认 docs/dhr-termination-lifecycle-design.md 的本期推荐政策。局部替代 DEC-0018 中
+      “abandon-dhr”可解释为作废的旧投影、DEC-0062-04 的“本期不定义提前结束”范围及
+      DEC-0062-08 的阶段性排除；保留 DEC-0062 的唯一实例与正常完工、DEC-0063 的三类
+      候选和不可变汇总、DEC-0068 的正常完工补录及审核契约。终止后补录与异常结案审核
+      延期，企业 SOP 是否要求额外签名留待未来配置研究，不阻塞本期且不据此新建审批。
+      具体数据库、接口、锁及快照存储路径属于 inferred，须由主开发核对实现。
+    decisionStatements:
+      - id: DEC-0069-01
+        statement: user-confirmed；BATCH/SN 生产对象执行既有“提前结束”时，已关联且仍填报中的 DHR 在同一事务真实进入已终止；任一环节失败全部回滚。终止不是正常完成、表单作废、审核通过或产品放行，不新增工单级直接提前结束命令。
+        status: specified
+        visibility: internal
+      - id: DEC-0069-02
+        statement: user-confirmed；DHR 已终止后保留终止前服务端已保存的目录、三类来源的各实例、暂存内容、已完成记录、签名和审计，并保留可追溯的终止时视图；未完成实例显示已停止但不伪称已完成，不自动作废表单或补造未产生的实例。后续受控变化不得覆盖终止时证据。
+        status: specified
+        visibility: internal
+      - id: DEC-0069-03
+        statement: user-confirmed；终止记录保留操作者、服务端时间、原因、原状态、关联生产动作和版本标识；重复命令不覆盖首次终止事实。生产、DHR、通用表单和普通工作流入口均不得继续正常执行或修改，相关待办停止可执行并说明原因；记录控制模块仍独立判定日后受控变更或作废资格。
+        status: specified
+        visibility: internal
+      - id: DEC-0069-04
+        statement: user-confirmed；DHR 列表、填报、详情、汇总和审核使用同一 DHR 状态与允许动作投影，区分生产对象状态和审核任务处理状态。正常采集完成展示待汇总，不能将底层 COMPLETED 直接展示为总体已完成；终止记录只读可查，不进入普通汇总或审核队列。NONE 免审核定版不称审核通过，退回和人工新版本保留既有历史。
+        status: specified
+        visibility: internal
+      - id: DEC-0069-05
+        statement: user-confirmed；本期不默认开放终止后补录、异常结案审核或恢复生产，不新增独立质量审批，也不改变已正常完成的其他对象/DHR、DHR_SUMMARY 冻结策略及产品放行语义。企业 SOP 对额外签名的要求作为未来配置研究，不成为本期未经确认的阻断条件。
+        status: specified
+        visibility: internal
+      - id: DEC-0069-06
+        statement: user-confirmed；历史修正仅针对“生产已提前结束、DHR 仍 IN_PROGRESS、且无汇总草稿或版本”的明确记录，要求幂等和可审计；冲突记录人工核对，缺失的历史操作者或终止时快照明确标缺失，不用迁移时数据冒充历史现场。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0018, DEC-0062]
+    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design, evidence.dhr-termination-working-tree-source]
+    acceptanceScenarios:
+      - id: scenario.dhr-termination-atomic-transition
+        given: BATCH 或 SN 正在生产，关联 DHR 正在填报且不存在汇总草稿或正式版本
+        when: 有权用户填写原因并执行一次生产对象提前结束
+        then: 生产对象与 DHR 同事务分别进入提前结束和已终止，首次终止事实保留；任一失败不留部分成功
+        evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
+        evidenceRequirements: [BATCH/SN 集成测试, 事务回滚与并发测试, 幂等及审计测试]
+      - id: scenario.dhr-termination-evidence-retention
+        given: DHR 含已完成、未完成、已暂存及多份表单实例
+        when: 生产对象提前结束且之后发生合法受控记录变化
+        then: 终止时已保存内容及目录、实例、签名、审计仍可追溯；未完成实例标明已停止，后续变化不改写终止时视图
+        evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
+        evidenceRequirements: [多来源多实例快照测试, 终止后受控变化历史测试, 未保存浏览器内容不入证据测试]
+      - id: scenario.dhr-termination-all-entry-block
+        given: DHR 已终止且存在普通填报、生产执行或普通工作流待办
+        when: 用户从 DHR、生产、通用表单或工作流接口尝试继续普通执行
+        then: 服务端阻断所有普通写动作，待办停止可执行；不自动作废共享或独立表单，记录控制资格仍由其自身判定
+        evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
+        evidenceRequirements: [跨入口防绕过集成测试, 待办阻断测试, 共享实例隔离测试]
+      - id: scenario.dhr-termination-status-projection
+        given: 同时存在填报中、正常完工待汇总、审核中、正式完成和终止 DHR
+        when: 查询列表、填报、详情、汇总及审核入口
+        then: 各页面标签、筛选、计数和允许动作使用一致的 DHR 状态；终止只读可查且不进入普通汇总审核队列
+        evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
+        evidenceRequirements: [状态投影及过滤测试, 页面交互验证, NONE/REQUIRED 路径回归]
+      - id: scenario.dhr-termination-historical-repair
+        given: 历史记录中有明确可修正记录、汇总冲突记录和缺少历史证据记录
+        when: 执行历史修正并重复执行
+        then: 仅明确记录幂等转为终止且留下审计；冲突和缺失分别列示，不臆造操作者或终止时快照
+        evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
+        evidenceRequirements: [迁移正反例和重复执行测试, 历史缺口标记测试]
+    implementationDiscrepancies: []

@@ -207,3 +207,15 @@ databaseChangeLog:
       file: db/changelog/0095-remove-duplicate-remarks.sql
   - include:
       file: db/changelog/0094-created-at-schema-compatibility.sql
+  - include:
+      file: db/changelog/0096-form-fill-settings.sql
+  - include:
+      file: db/changelog/0097-dhr-review-workbench.sql
+  - include:
+      file: db/changelog/0098-dhr-early-termination.sql
+  - include:
+      file: db/changelog/0099-dhr-approval-display-name.sql
+  - include:
+      file: db/changelog/0100-dhr-summary-evidence-order.sql
+  - include:
+      file: db/changelog/0101-dhr-summary-evidence-display-name.sql

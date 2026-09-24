@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.24
+implementationAnchors:
+  - id: anchor.dhr-summary-optional-placement-order
+    targetId: rule.dhr-summary-optional-placement-order
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/frontend/src/pages/dhr-management/summaryPlacementOrder.ts]
+    apiReferences: ['PUT /api/v1/dhr-instances/{id}/summary/draft', 'POST /api/v1/dhr-instances/{id}/summary/submit', 'GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java, gmp-platform/frontend/scripts/test-dhr-summary-directory-browser.mjs]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-migration, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-tests]
+    sourceRevision: working-tree
+    sourceLocator: DhrSummaryService.validatePlacements/saveDraft/submit/version/prepareNextDraft；summaryPlacementOrder.orderedSummaryChildren/placeSummaryRecord；DhrSummaryPage 插入槽与移出操作
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed

@@ -1,4 +1,5 @@
 import client from './client';
+import type { FormFillSettingsValue } from '@/components/form-fill-settings/types';
 import type { AuditLogItem } from './audit';
 import type { PageResult } from '@/types/common';
 
@@ -23,6 +24,7 @@ export interface ProductProcessFormBinding {
   id?: string;
   dhrTemplateItemId?: string | null;
   formTemplateVersionId: string;
+  fillSettings?: FormFillSettingsValue;
   templateName?: string | null;
   templateCode?: string | null;
   version?: string | null;
@@ -171,7 +173,7 @@ export interface ProductProcessVersionPayload {
   operationBindings?: Array<{
     routeNodeKey: string;
     sortOrder?: number | null;
-    forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; required: boolean; sortOrder?: number | null }>;
+    forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; fillSettings?: FormFillSettingsValue; required: boolean; sortOrder?: number | null }>;
     documents: Array<{ documentVersionId: string; sortOrder?: number | null; pageStart?: number | null; pageEnd?: number | null }>;
   }>;
 }

@@ -27,7 +27,7 @@ public class SignatureController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<Signature> result = signatureRepository.findAll(pageable);
+        Page<Signature> result = signatureRepository.findNonDhr(pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
@@ -35,7 +35,11 @@ public class SignatureController {
     @GetMapping("/{id}")
     public ApiResponse<Signature> getById(@PathVariable Long id) {
         return signatureRepository.findById(id)
-                .map(ApiResponse::success)
+                .map(signature -> {
+                    if ("DHR_SUMMARY".equals(signature.getTargetType())) throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "请通过 DHR 审核查看签署证据");
+                    return ApiResponse.success(signature);
+                })
                 .orElseThrow(() -> new com.zencas.edhr.common.exception.BusinessException(
                         com.zencas.edhr.common.exception.ErrorCode.GENERAL_001, "记录不存在"));
     }
@@ -63,6 +67,9 @@ public class SignatureController {
     }
 
     private void protectExecutionSignature(Signature signature) {
+        if ("DHR_SUMMARY".equals(signature.getTargetType()))
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "DHR 签名只能由审核动作生成，且不可修改或删除");
         if ("PRODUCTION_EXECUTION".equals(signature.getTargetType()))
             throw new com.zencas.edhr.common.exception.BusinessException(
                 com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "生产执行签名只能由执行动作生成，且不可修改或删除");

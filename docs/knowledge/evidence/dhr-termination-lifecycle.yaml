@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.dhr-termination-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md
+    description: user-confirmed；2026-09-23 用户明确确认本期同步真实终止、保留记录、停止普通执行、不自动作废表单、不新增独立质量审批；终止后补录和异常结案审核延期。只证明产品政策，不证明实现或发布。
+    visibility: internal
+  - id: evidence.dhr-termination-design
+    type: document
+    path: docs/dhr-termination-lifecycle-design.md
+    description: secondary-reference；L2 设计文档第 3-8 节列出状态、动作、影响和验收条件。原文标题及“待确认”反映撰写时状态；本期政策以用户随后明确确认为准，不据文档推断运行代码已完成。
+    visibility: internal
+  - id: evidence.dhr-termination-working-tree-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
+    description: original-evidence；2026-09-23 静态读取进行中的 working-tree：已出现 terminateWithProductionObject、EARLY_TERMINATED 写入和终止快照代码；同次读取的 list 状态过滤仍仅接受 IN_PROGRESS/COMPLETED。源码正在并行修改，不能据此宣称终止链路、页面、迁移或测试闭环。
+    visibility: internal

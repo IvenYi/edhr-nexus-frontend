@@ -1,0 +1,36 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0071
+    title: DHR 汇总可选表单实例的同级归档顺序
+    status: implemented
+    visibility: internal
+    context: user-confirmed；依据 DEC-PACKAGE-20260924-DHR-SUMMARY-ORDER，细化 DEC-0063 的实例级受控归档关系与提交冻结范围。基础目录仍按首次开工快照冻结；本决策不改变源表单或审核权限。
+    decisionStatements:
+      - id: DEC-0071-01
+        statement: 可选候选表单实例可以插入同级目录或表单之间的任意位置；归档位置和顺序在保存草稿、重新打开及提交冻结后保持一致。同一模板产生的多份实例分别作为候选及归档关联。末句的逐实例候选操作为历史结论，现行汇总交互由 DEC-0072-01 局部替代；逐实例位置、顺序与冻结关联继续有效。
+        status: implemented
+        visibility: internal
+      - id: DEC-0071-02
+        statement: 已放入的可选实例可以移出本次汇总；移出只取消该实例在本次汇总的归档关系，不删除或改写来源表单实例。未纳入候选仍可作为候选范围进入冻结版本。
+        status: implemented
+        visibility: internal
+      - id: DEC-0071-03
+        statement: 提交时将可选实例的归档位置和顺序纳入不可变汇总版本及校验指纹；退回后重新整理须产生新草稿和新版本，不得改写旧版本。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-migration, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-tests]
+    acceptanceScenarios:
+      - id: scenario.dhr-summary-ordered-placement
+        given: 同一目录下存在静态目录或表单节点，且有两份同模板的已完成可选表单实例
+        when: 用户分别插入同级位置、保存草稿、重新打开并提交汇总
+        then: 两份实例各自保留归档位置及顺序，冻结版本按同一顺序重读且校验指纹覆盖归档关系；历史逐实例候选操作已由 DEC-0072 局部替代
+        evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-tests]
+        evidenceRequirements: [同级锚点校验, 草稿保存重开, 冻结版本重读, 同模板多实例]
+      - id: scenario.dhr-summary-remove-optional-placement
+        given: 一份可选实例已纳入汇总草稿
+        when: 用户将其移出本次汇总并保存草稿
+        then: 该实例不再具有本次汇总的归档位置，来源表单实例仍保留
+        evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-service]
+        evidenceRequirements: [移出后草稿重读, 来源表单未删除]
+    implementationDiscrepancies: []

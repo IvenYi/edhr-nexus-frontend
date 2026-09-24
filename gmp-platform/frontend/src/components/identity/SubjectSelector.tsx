@@ -37,6 +37,7 @@ import {
 import AppDialog from '@/components/AppDialog';
 import { getDepartmentTree, getRoles, getUsers } from '@/api/identity';
 import type { PageResult } from '@/types/common';
+import { subjectDisplayName } from './subjectDisplay';
 
 export type SubjectType = 'USER' | 'DEPARTMENT' | 'ROLE' | 'LEGACY';
 export type DepartmentScope = 'SELF_AND_CHILDREN' | 'SELF_ONLY';
@@ -247,9 +248,14 @@ export function SubjectSelector({
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<string | null>(null);
   const [draft, setDraft] = useState<SubjectRef[]>(value);
   const [candidatePage, setCandidatePage] = useState(1);
-  const users = useQuery({ queryKey: ['subject-selector', 'users'], queryFn: fetchUsers, enabled: open });
-  const roles = useQuery({ queryKey: ['subject-selector', 'roles'], queryFn: fetchRoles, enabled: open });
-  const departments = useQuery({ queryKey: ['subject-selector', 'departments'], queryFn: fetchDepartments, enabled: open });
+  const missingName = (type: SubjectType) => value.some(item => item.type === type && !item.nameSnapshot?.trim());
+  const users = useQuery({ queryKey: ['subject-selector', 'users'], queryFn: fetchUsers, enabled: open || missingName('USER') });
+  const roles = useQuery({ queryKey: ['subject-selector', 'roles'], queryFn: fetchRoles, enabled: open || missingName('ROLE') });
+  const departments = useQuery({ queryKey: ['subject-selector', 'departments'], queryFn: fetchDepartments, enabled: open || missingName('DEPARTMENT') });
+  const subjectName = (subject: SubjectRef) => {
+    const candidates = subject.type === 'USER' ? users.data : subject.type === 'ROLE' ? roles.data : subject.type === 'DEPARTMENT' ? departments.data?.options : [];
+    return subjectDisplayName(subject, candidates);
+  };
 
   const departmentData = departments.data;
   useEffect(() => {
@@ -309,7 +315,7 @@ export function SubjectSelector({
         {value.length ? (
           <Stack direction="row" flexWrap="wrap" gap={0.5} sx={{ mt: 0.75 }}>
             {value.map((subject) => (
-              <Chip key={subjectKey(subject)} size="small" label={`${subject.nameSnapshot}${subject.type === 'DEPARTMENT' ? (subject.departmentScope === 'SELF_ONLY' ? '（本部门）' : '（含下级）') : subject.type === 'LEGACY' ? '（历史配置）' : ''}`} onDelete={disabled ? undefined : () => onChange(value.filter((item) => subjectKey(item) !== subjectKey(subject)))} />
+              <Chip key={subjectKey(subject)} size="small" label={`${subjectName(subject)}${subject.type === 'DEPARTMENT' ? (subject.departmentScope === 'SELF_ONLY' ? '（本部门）' : '（含下级）') : subject.type === 'LEGACY' ? '（历史配置）' : ''}`} onDelete={disabled ? undefined : () => onChange(value.filter((item) => subjectKey(item) !== subjectKey(subject)))} />
             ))}
           </Stack>
         ) : null}
@@ -385,9 +391,9 @@ export function SubjectSelector({
                         {items.map((item) => (
                           <Box key={subjectKey(item)} title={item.nameSnapshot} sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 0.75, px: 0.75, py: 0.625, minWidth: 0, minHeight: type === 'DEPARTMENT' ? 66 : 36, display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'border-color 140ms ease, background-color 140ms ease', '&:hover': { borderColor: '#b9c8d8' } }}>
                             <Stack direction="row" alignItems="center" spacing={0.25} sx={{ minWidth: 0 }}>
-                              <Typography variant="body2" noWrap sx={{ color: '#303133', minWidth: 0, flex: 1, fontSize: 12 }}>{item.nameSnapshot}</Typography>
+                              <Typography variant="body2" noWrap title={subjectName(item)} sx={{ color: '#303133', minWidth: 0, flex: 1, fontSize: 12 }}>{subjectName(item)}</Typography>
                               <Tooltip title="移除" arrow>
-                                <IconButton size="small" aria-label={`移除${item.nameSnapshot}`} onClick={() => setDraft((current) => current.filter((entry) => subjectKey(entry) !== subjectKey(item)))} sx={{ flexShrink: 0, width: 24, height: 24, color: '#909399', '&:hover': { color: '#d4380d', bgcolor: '#fff1f0' } }}>
+                                <IconButton size="small" aria-label={`移除${subjectName(item)}`} onClick={() => setDraft((current) => current.filter((entry) => subjectKey(entry) !== subjectKey(item)))} sx={{ flexShrink: 0, width: 24, height: 24, color: '#909399', '&:hover': { color: '#d4380d', bgcolor: '#fff1f0' } }}>
                                   <Close sx={{ fontSize: 15 }} />
                                 </IconButton>
                               </Tooltip>

@@ -118,6 +118,38 @@ class WorkflowEngineTest {
     }
 
     @Test
+    void dhrUsesFrozenPublishedVersionEvenWhenNoLongerCurrent() {
+        var definition = WorkflowDefinition.builder().id(100L).type("RECORD_CONTROL").businessType("DHR_SUMMARY").status("PUBLISHED").build();
+        var version = WorkflowDefinitionVersion.builder().id(200L).definitionId(100L).status("PUBLISHED").isCurrent(false).nodesJson("[]").edgesJson("[]").build();
+        var start = WorkflowNode.builder().id(300L).versionId(200L).nodeType("START").build();
+        var approval = WorkflowNode.builder().id(301L).versionId(200L).nodeType("APPROVAL").name("质量审核").properties("{}").build();
+        when(definitionRepository.findByIdForUpdate(100L)).thenReturn(Optional.of(definition));
+        when(versionRepository.findById(200L)).thenReturn(Optional.of(version));
+        when(nodeRepository.findByVersionIdAndNodeType(200L,"START")).thenReturn(List.of(start));
+        when(nodeRepository.findByVersionId(200L)).thenReturn(List.of(start,approval));
+        when(edgeRepository.findBySourceNodeId(300L)).thenReturn(List.of(WorkflowEdge.builder().targetNodeId(301L).build()));
+        when(instanceRepository.saveAndFlush(any())).thenAnswer(i -> i.getArgument(0));
+        when(userAccountRepository.findById(1L)).thenReturn(Optional.of(UserAccount.builder().tenantId(5L).build()));
+        var result = workflowEngine.createDhrSummaryInstance(100L,200L,"900","1");
+        assertThat(result.getVersionId()).isEqualTo(200L);
+        assertThat(result.getBusinessId()).isEqualTo("900");
+        assertThat(result.getIdempotencyKey()).isEqualTo("DHR_SUMMARY:900");
+        verify(taskRepository).save(argThat(task -> task.getNodeId().equals(301L)));
+        verifyNoInteractions(bindingRuleRepository);
+    }
+
+    @Test
+    void genericTaskCompletionCannotBypassDhrDomainChecks() {
+        var task = WorkflowTask.builder().id(2L).instanceId(3L).build();
+        var instance = WorkflowInstance.builder().id(3L).businessType("DHR_SUMMARY").status("RUNNING").build();
+        when(taskRepository.findById(2L)).thenReturn(Optional.of(task));
+        when(instanceRepository.findByIdForUpdate(3L)).thenReturn(Optional.of(instance));
+        assertThatThrownBy(() -> workflowEngine.completeTask(2L,"APPROVE","","1",null)).hasMessageContaining("DHR 审核入口");
+        verify(taskRepository,never()).save(any());
+        assertThatThrownBy(() -> workflowEngine.createInstance("DHR_SUMMARY","900","1")).hasMessageContaining("DHR 汇总");
+    }
+
+    @Test
     void explicitRecordControlStartRejectsMismatchedIdempotencyReuse() {
         WorkflowInstance existing = WorkflowInstance.builder()
                 .id(1L).definitionId(100L).versionId(200L).businessType("CHANGE")

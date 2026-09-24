@@ -1,5 +1,11 @@
 knowledgeModelVersion: 0.3.24
 terms:
+  - id: term.form-fill-settings
+    name: 表单填报设置
+    definition: 作业表单节点或工序绑定表单的配置，显式选择直接填报或按流程填报；直接模式配置权限组、字段例外、按钮和签署，按流程模式沿用既有流程配置，所选模式及适用设置须贯通保存、发布快照和运行。当前为已确认要求，不表示闭环已验证。
+    aliases: [填报方式配置]
+    status: specified
+    visibility: internal
   - id: term.master-data-deletion-impact
     name: 主数据删除关联清单
     definition: 删除主数据或版本前查询并展示的阻断关联及处理位置；由已有业务引用派生，不是另一套业务关联事实库。
@@ -88,6 +94,18 @@ terms:
     name: DHR 实例
     definition: 以单个 BATCH 或 SN 生产对象为唯一业务锚点的动态批记录；在对象首次合法开工时同事务自动创建，冻结开工时的生产、制程、路线、DHR 模板版本和目录快照，并按目录项聚合对应生产执行表单证据。第一期只提供列表和只读详情。
     aliases: [动态批记录, 生产对象 DHR, 批记录实例]
+    status: specified
+    visibility: internal
+  - id: term.dhr-summary-archive-display-name
+    name: DHR 汇总归档显示名
+    definition: 汇总草稿或冻结版本中一份已归档表单实例的目录展示别名，归属于该版本的实例归档关联；相邻同源折叠行修改当前相邻段的已归档实例，单份行只修改一份。别名不改变来源表单名称、内容或实例号；冻结版本只读，旧版空别名回退来源名称。
+    aliases: [汇总文档名称, 归档别名]
+    status: implemented
+    visibility: internal
+  - id: term.dhr-early-terminated
+    name: DHR 已终止
+    definition: 关联 BATCH/SN 生产对象提前结束后，DHR 真实停止正常推进的生命周期状态；已保存表单、签名和审计仍为真实记录。它不表示表单作废、审核通过、正常完工或产品放行。
+    aliases: [已终止 DHR, EARLY_TERMINATED DHR]
     status: specified
     visibility: internal
   - id: term.form-template-version
@@ -512,7 +530,7 @@ terms:
     visibility: internal
   - id: term.production-object-early-termination
     name: 生产对象提前结束
-    definition: 生产对象处于进行中时由用户主动结束生产，不代表按完整制程正常完工；业务状态统一使用 EARLY_TERMINATED，并保留结束原因及其对活动执行事务、DHR 和工单状态计算的影响。当前 eDHR 已实现状态转移、结束原因和接口，但执行事务、DHR 和完整工单联动仍待补齐。
+    definition: 生产对象处于进行中时由用户主动结束生产，不代表按完整制程正常完工；业务状态统一使用 EARLY_TERMINATED，并保留结束原因。本期确认其关联 DHR 同事务真实终止、保留已保存证据并停止普通执行；运行实现仍待独立验证。工单级主动命令不在本期范围。
     aliases: [批次提前结束, 提前结束, early termination]
     status: specified
     visibility: internal

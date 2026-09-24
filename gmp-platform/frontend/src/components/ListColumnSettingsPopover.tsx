@@ -82,13 +82,14 @@ type ListColumnSettingsPopoverProps<ColumnId extends string> = {
   onClose: () => void;
   onToggle: (columnId: ColumnId) => void;
   onReorder: (sourceId: ColumnId, targetId: ColumnId) => void;
+  canHide?: (columnId: ColumnId) => boolean;
 };
 
-export default function ListColumnSettingsPopover<ColumnId extends string>({ anchorEl, columns, settings, onClose, onToggle, onReorder }: ListColumnSettingsPopoverProps<ColumnId>) {
+export default function ListColumnSettingsPopover<ColumnId extends string>({ anchorEl, columns, settings, onClose, onToggle, onReorder, canHide }: ListColumnSettingsPopoverProps<ColumnId>) {
   const [draggingColumnId, setDraggingColumnId] = useState<ColumnId | null>(null);
   const dragSourceRef = useRef<ColumnId | null>(null);
-  const visibleCount = settings.order.length - settings.hidden.length;
   const orderedColumns = settings.order.map((id) => columns.find((column) => column.id === id)).filter((column): column is ListColumnOption<ColumnId> => Boolean(column));
+  const visibleCount = orderedColumns.filter((column) => !settings.hidden.includes(column.id)).length;
 
   const handleDragStart = (event: DragEvent<HTMLDivElement>, columnId: ColumnId) => {
     dragSourceRef.current = columnId;
@@ -116,7 +117,7 @@ export default function ListColumnSettingsPopover<ColumnId extends string>({ anc
       <Typography variant="subtitle2" sx={{ pb: 0.5 }}>列设置</Typography>
       {orderedColumns.map((column) => {
         const checked = !settings.hidden.includes(column.id);
-        const disabled = checked && visibleCount <= 1;
+        const disabled = checked && (visibleCount <= 1 || canHide?.(column.id) === false);
         return <Box
           key={column.id}
           draggable={!column.fixed}

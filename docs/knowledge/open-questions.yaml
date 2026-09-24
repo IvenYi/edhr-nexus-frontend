@@ -1,5 +1,13 @@
 knowledgeModelVersion: 0.3.24
 questions:
+  - id: question.dhr-termination-sop-extra-signature
+    question: 具体企业 SOP 是否要求生产对象提前结束动作增加额外电子签名，若要求应由哪项受控配置决定？
+    context: DEC-0069 已确认本期只复用现有生产提前结束权限、原因和审计，不新增独立质量审批；企业 SOP 的额外签名要求需结合客户制度、签名责任及配置所有权后研究，不能从法规引用或历史系统行为直接推断。
+    options:
+      - 企业 SOP 不要求额外签名，沿用现有终止权限、原因和审计
+      - 企业 SOP 要求额外签名，后续定义受控配置、责任人、校验与审计契约
+    impact: 非本期阻断问题；不改变已确认的同步真实终止、证据保留和普通执行停止政策，也不授权当前实现私自新增审批或豁免既有签署要求。
+    visibility: internal
   - id: question.record-control-managerial-reassignment-signature
     question: 记录控制审批的重新分配是否必须额外完成电子签名，还是只要求专门权限、原因和不可变审计？
     context: 阶段一共享命令保留可选 signatureId，但重新分配运行时尚未实现；当前已确认其需要专门权限、目标资格、原因并保持节点和流程路径不变，尚未确认是否以电子签名作为执行阻断条件。

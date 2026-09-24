@@ -94,7 +94,9 @@ const REQUIRED_DHR_MANAGEMENT_MENU: SidebarMenu = {
   icon: 'AssignmentTurnedIn',
   children: [
     { label: 'DHR列表', path: '/dhr-management/list' },
+    { label: 'DHR填报', path: '/dhr-management/filling' },
     { label: 'DHR汇总', path: '/dhr-management/summary' },
+    { label: 'DHR审批', path: '/dhr-management/review' },
   ],
 };
 
@@ -142,6 +144,8 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/form-management/review',
   '/dhr-management/list',
   '/dhr-management/summary',
+  '/dhr-management/filling',
+  '/dhr-management/review',
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -511,6 +515,8 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/form-management/review') return 'form-management.review';
   if (path === '/dhr-management/list') return 'dhr.instances.view';
   if (path === '/dhr-management/summary') return 'records.dhr-summary';
+  if (path === '/dhr-management/filling') return 'records.dhr-filling';
+  if (path === '/dhr-management/review') return 'records.dhr-review';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

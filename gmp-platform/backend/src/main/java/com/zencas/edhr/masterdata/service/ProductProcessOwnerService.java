@@ -81,6 +81,7 @@ public class ProductProcessOwnerService {
     private final ProductProcessVersionRepository productProcessVersionRepository;
     private final ProductProcessOperationBindingRepository operationBindingRepository;
     private final ProductProcessOperationFormBindingRepository operationFormBindingRepository;
+    private final com.zencas.edhr.workflow.service.FormFillSettingsService fillSettingsService;
     private final ProductProcessOperationDocumentBindingRepository operationDocumentBindingRepository;
     private final RouteVersionRepository routeVersionRepository;
     private final RouteNodeRepository routeNodeRepository;
@@ -324,6 +325,7 @@ public class ProductProcessOwnerService {
             operationFormBindingRepository.saveAll((request.getForms() == null ? List.<ProductProcessVersionRequest.FormBindingRequest>of() : request.getForms()).stream()
                     .map(form -> ProductProcessOperationFormBinding.builder().id(idGenerator.nextId())
                             .productProcessOperationBindingId(binding.getId()).dhrTemplateItemId(form.getDhrTemplateItemId())
+                            .fillSettingsJson(fillSettingsService.serialize(form.getFillSettings(), form.getFormTemplateVersionId()))
                             .formTemplateVersionId(form.getFormTemplateVersionId()).required(form.getRequired() == null || form.getRequired())
                             .sortOrder(form.getSortOrder() == null ? 0 : form.getSortOrder()).createdAt(LocalDateTime.now()).build())
                     .toList());
@@ -382,7 +384,7 @@ public class ProductProcessOwnerService {
         return data.bindings().stream().map(operation -> new ProductProcessVersionRequest.OperationBindingRequest(
                 operation.getRouteNodeKey(), operation.getSortOrder(),
                 data.forms().getOrDefault(operation.getId(), List.of()).stream()
-                        .map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getDhrTemplateItemId(), form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder())).toList(),
+                        .map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getDhrTemplateItemId(), form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder(), fillSettingsService.parse(form.getFillSettingsJson()))).toList(),
                 data.documents().getOrDefault(operation.getId(), List.of()).stream()
                         .map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder(), document.getPageStart(), document.getPageEnd())).toList()))
                 .toList();
@@ -477,6 +479,8 @@ public class ProductProcessOwnerService {
             String reference = "表单版本 #" + form.getFormTemplateVersionId();
             return Boolean.TRUE.equals(form.getRequired()) ? reference + "（工序结束前完成）" : reference;
         }).toList());
+        snapshot.put("fillSettings", data.forms().getOrDefault(operation.getId(), List.of()).stream()
+                .map(form -> Map.of("formTemplateVersionId", form.getFormTemplateVersionId().toString(), "settings", fillSettingsService.parse(form.getFillSettingsJson()))).toList());
         snapshot.put("documents", data.documents().getOrDefault(operation.getId(), List.of()).stream()
                 .map(document -> "文档版本 #" + document.getDocumentVersionId() + formatPageRange(document.getPageStart(), document.getPageEnd())).toList());
         return snapshot;

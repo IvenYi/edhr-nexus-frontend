@@ -56,8 +56,55 @@ rules:
       target: dhrInstance.status
       value: COMPLETED
       transactionBoundary: production-execution-action
-    explanation: DHR 创建后为 IN_PROGRESS；当同一生产执行动作完成全部工序并使生产对象正常完成时，关联 DHR 在同一事务同步进入 COMPLETED。本期不定义提前结束、作废、审批、发布或归档的 DHR 状态迁移。
+    explanation: DHR 创建后为 IN_PROGRESS；当同一生产执行动作完成全部工序并使生产对象正常完成时，关联 DHR 在同一事务同步进入 COMPLETED。该正常完工规则不适用于生产对象提前结束，后者按 DEC-0069 同步进入已终止。
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
+  - id: rule.dhr-instance-terminate-with-production-object
+    name: 生产对象提前结束同步真实终止 DHR
+    status: specified
+    visibility: internal
+    trigger: production-object.early-terminate
+    scope: dhr-instance-management
+    condition:
+      all:
+        - {fact: fact.dhr-instance.status, operator: equals, value: IN_PROGRESS}
+        - {fact: fact.dhr-instance.has-summary-artifacts, operator: equals, value: false}
+    result:
+      type: update-reference
+      target: dhrInstance.status
+      value: EARLY_TERMINATED
+      transactionBoundary: production-object-early-termination
+      preserveSavedEvidence: true
+      autoVoidForms: false
+    explanation: 一次生产对象提前结束同步真实终止关联 DHR，整事务原子成功或回滚；保留服务端已保存证据和终止时视图，不自动作废表单、启动汇总审核或放行产品。只对仍在填报且无汇总冲突的 DHR 执行该迁移。
+    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
+  - id: rule.dhr-instance-termination-block-normal-execution
+    name: 已终止 DHR 阻断普通执行
+    status: specified
+    visibility: internal
+    trigger: dhr-instance.normal-write-action
+    scope: dhr-instance-management
+    condition: {fact: fact.dhr-instance.status, operator: equals, value: EARLY_TERMINATED}
+    result:
+      type: block
+      actions: [production-execution, normal-form-fill, normal-form-approval, dhr-summary-edit, dhr-summary-submit]
+      relatedTasksExecutable: false
+      recordControlRemainsIndependent: true
+    explanation: 已终止 DHR 在生产、DHR、通用表单和普通工作流的服务端入口停止普通写动作，相关待办停止可执行；保留只读与记录控制模块独立判断的受控变更/作废资格。
+    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
+  - id: rule.dhr-instance-termination-display
+    name: 已终止 DHR 使用统一状态投影
+    status: specified
+    visibility: internal
+    trigger: dhr-instance.query
+    scope: dhr-instance-management
+    condition: {fact: fact.dhr-instance.status, operator: equals, value: EARLY_TERMINATED}
+    result:
+      type: return-query-projection
+      dhrStatus: 已终止
+      allowedActions: [view]
+      excludeFromQueues: [normal-summary, normal-review]
+    explanation: 列表、填报、详情、汇总和审核统一解释真实 DHR 终止状态与只读动作；生产状态和审核任务处理状态是独立维度，旧链接可只读查看终止原因。
+    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design]
   - id: rule.dhr-instance-aggregate-production-form-evidence
     name: DHR 只读详情自动聚合生产表单证据
     status: specified

@@ -11,7 +11,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0063-02
-        statement: 当前汇总候选只包含目录直接绑定、作业表单节点和生产执行自定义表单三类实例；同模板多份实例分别呈现，同一实例在同一汇总版本中只能归入一个位置。
+        statement: 当前汇总候选只包含目录直接绑定、作业表单节点和生产执行自定义表单三类实例；同模板多份实例分别呈现，同一实例在同一汇总版本中只能归入一个位置。前句“分别呈现”为 2026-09-19 的历史候选展示结论，汇总候选的现行展示与整组操作由 DEC-0072-01 局部替代；实例级唯一归档仍有效。
         status: implemented
         visibility: internal
       - id: DEC-0063-03

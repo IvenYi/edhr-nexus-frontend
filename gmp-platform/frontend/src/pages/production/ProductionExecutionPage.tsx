@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom';
-import { Alert, Box, Button, Chip, CircularProgress, ClickAwayListener, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Chip, CircularProgress, ClickAwayListener, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
@@ -11,7 +11,7 @@ import type { FormRuntime, SignatureTarget } from '@/components/form-renderer/Fo
 import { signatureContent } from '@/components/form-renderer/signatureContent';
 import type { ModelField } from '@/pages/master-data/template-designer-react/types';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
-import { executeProduction, getProductionExecution, getExecutionReferences, uploadExecutionFile, scanProduction, type ExecutionButton, type ExecutionCommand, type ExecutionValues, type ExecutionView } from '@/api/production-execution';
+import { executeProduction, getProductionExecution, getExecutionReferences, getExecutionTransferTargets, uploadExecutionFile, scanProduction, type ExecutionButton, type ExecutionCommand, type ExecutionTransferTarget, type ExecutionValues, type ExecutionView } from '@/api/production-execution';
 import { getFilePagePreviewBlob } from '@/api/files';
 import { getFormTemplates } from '@/api/template-modeling';
 import './ProductionExecutionPage.css';
@@ -22,6 +22,7 @@ import ExecutionProductDetails from './ExecutionProductDetails';
 import ExecutionFormSelector from './ExecutionFormSelector';
 import useExecutionPresence from './useExecutionPresence';
 import { executionHistoryGroups } from './executionHistory';
+import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
 
 const labels: Record<string, string> = { CREATED: '待开工', IN_PROGRESS: '进行中', IN_PROCESS: '进行中', COMPLETED: '已完成', PENDING: '待开工', ACTIVE: '待处理', RUNNING: '进行中', CANCELLED: '已取消', EARLY_TERMINATED: '已提前结束', CLOSED: '已关闭' };
 const time = (value?: string) => value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
@@ -58,6 +59,14 @@ export default function ProductionExecutionPage() {
   const [layout, setLayout] = useState<'fields' | 'canvas'>('canvas');
   const [pendingSwitch, setPendingSwitch] = useState<(() => void) | null>(null);
   const [signing, setSigning] = useState<(ExecutionButton & { signatureTarget?: SignatureTarget }) | null>(null);
+  const [transferButton, setTransferButton] = useState<ExecutionButton | null>(null);
+  const [transferKeyword, setTransferKeyword] = useState('');
+  const [transferTarget, setTransferTarget] = useState<ExecutionTransferTarget | null>(null);
+  const [transferReason, setTransferReason] = useState('');
+  const [transferTargets, setTransferTargets] = useState<ExecutionTransferTarget[]>([]);
+  const [transferLoading, setTransferLoading] = useState(false);
+  const [transferError, setTransferError] = useState('');
+  const transferRequestRef = useRef(0);
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
   const [opinion, setOpinion] = useState('');
@@ -225,6 +234,22 @@ export default function ProductionExecutionPage() {
     const selected = nextInstance && ids.includes(nextInstance) ? nextInstance : ids.find(id => source?.state.operations[nextOperation]?.forms[id]?.status === 'ACTIVE') ?? ids[0] ?? nextId;
     setFormId(nextId); setInstanceId(selected); setValues(source?.state.operations[nextOperation]?.forms[selected]?.values ?? {}); setDirty(false);
   };
+
+  useEffect(() => {
+    if (!transferButton || !context || !formId || !selectedInstanceId) {
+      setTransferTargets([]);
+      setTransferLoading(false);
+      return;
+    }
+    const request = ++transferRequestRef.current;
+    setTransferLoading(true);
+    setTransferError('');
+    getExecutionTransferTargets(context.objectId, operationId, formId, selectedInstanceId, transferKeyword)
+      .then((items) => { if (request === transferRequestRef.current) setTransferTargets(items); })
+      .catch((reason) => { if (request === transferRequestRef.current) setTransferError(errorText(reason)); })
+      .finally(() => { if (request === transferRequestRef.current) setTransferLoading(false); });
+    return () => { transferRequestRef.current++; };
+  }, [context?.objectId, formId, operationId, selectedInstanceId, transferButton, transferKeyword]);
   const chooseOperation = (id: string, source = view) => {
     setOperationId(id);
     const next = source?.snapshot.operations.find((item) => item.id === id);
@@ -296,6 +321,9 @@ export default function ProductionExecutionPage() {
     try {
       const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId });
       receive(next); setSigning(null); setPassword(''); setOpinion('');
+      if (command.action === 'TRANSFER') {
+        setTransferButton(null); setTransferTarget(null); setTransferKeyword(''); setTransferReason(''); setTransferTargets([]); setTransferError('');
+      }
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: ['form-management-global-list'] }),
         queryClient.invalidateQueries({ queryKey: ['form-filling-worklist'] }),
@@ -306,11 +334,15 @@ export default function ProductionExecutionPage() {
         const ids = next.availability[operationId]?.formCopies?.[command.formId]?.instanceIds;
         chooseForm(command.formId, next, operationId, ids?.[ids.length - 1]);
       }
-      setNotice(command.action === 'COMPLETE' ? next.objectStatus === 'COMPLETED' ? '全部工序已完成，当前生产对象已完工。可扫描下一个条码。' : '工序已完工，执行记录已保存。请选择下一道可执行工序。' : '操作成功，执行记录已保存。');
+      setNotice(command.action === 'COMPLETE' ? next.objectStatus === 'COMPLETED' ? '全部工序已完成，当前生产对象已完工。可扫描下一个条码。' : '工序已完工，执行记录已保存。请选择下一道可执行工序。' : command.action === 'TRANSFER' ? '转办成功，执行记录已保存。' : '操作成功，执行记录已保存。');
     } catch (reason) { setError(errorText(reason)); setPassword(''); }
     finally { busyRef.current = false; setBusy(false); }
   };
   const formAction = (button: ExecutionButton) => {
+    if (button.action === 'TRANSFER') {
+      setTransferButton(button); setTransferKeyword(''); setTransferTarget(null); setTransferReason(''); setTransferError('');
+      return;
+    }
     if (button.requiresSignature || button.requireOpinion || button.action === 'RETURN') {
       setSigning(button); setPassword(''); setOpinion('');
     } else void act({ action: button.action, formId, instanceId: selectedInstanceId, values });
@@ -526,11 +558,7 @@ export default function ProductionExecutionPage() {
                 {formStatus === 'WAITING_OPERATION_START' && <Typography variant="caption" color="text.secondary">计划预览，工序开工后可填报</Typography>}
                 {formStatus === 'WAITING_WORK_NODE' && <Typography variant="caption" color="text.secondary">计划预览，作业流程到达后可填报</Typography>}
                 </Box>
-                {controls?.buttons.filter(button => button.action !== 'SAVE' && button.action !== 'SUBMIT').map(button => <Button key={button.action} disabled={busy || !controls.canAct} color={button.action === 'RETURN' ? 'error' : 'primary'} variant={button.action === 'RETURN' ? 'outlined' : 'contained'} onClick={() => formAction(button)}>{button.label}{button.requiresSignature ? '并签署' : ''}</Button>)}
-                {['SAVE', 'SUBMIT'].map(action => {
-                  const button = controls?.buttons.find(item => item.action === action);
-                  return <Button key={action} variant={action === 'SAVE' ? 'outlined' : 'contained'} disabled={busy || !controls?.canAct || !button} onClick={() => { if (button) formAction(button); }}>{action === 'SAVE' ? '暂存' : '提交'}{button?.requiresSignature ? '并签署' : ''}</Button>;
-                })}
+                <WorkflowActionButtons buttons={controls?.buttons} busy={busy} canAct={controls?.canAct} labelFor={(button) => button.action === 'SAVE' ? '暂存' : button.label} onAction={formAction} />
               </Box>
             </> : <Box className="execution-empty-content"><InfoOutlined color="disabled" /><Typography color="text.secondary">本工序未配置生产表单。请查看作业与完工条件。</Typography></Box>}
           </>
@@ -566,6 +594,17 @@ export default function ProductionExecutionPage() {
     <Snackbar open={Boolean(notice)} autoHideDuration={6000} onClose={() => setNotice('')} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="success" onClose={() => setNotice('')} sx={{ maxWidth: 480 }}>{notice}</Alert></Snackbar>
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText="已知晓，工序完工" cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: 'COMPLETE', acknowledgeIncomplete: true }); }} />
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" destructive open={Boolean(pendingSwitch)} title="当前表单尚未保存" message={`${context?.objectNo ?? ''} · ${op?.name ?? ''} · ${form?.name ?? '当前表单'}：切换会丢弃未保存内容。可以返回继续填写并保存，或放弃修改后切换。`} confirmText="放弃修改并切换" cancelText="返回表单" onCancel={() => { setPendingSwitch(null); setOperationDrawerOpen(false); }} onConfirm={() => { const next = pendingSwitch; setPendingSwitch(null); setDirty(false); next?.(); }} />
+    <AppDialog open={Boolean(transferButton)} onClose={busy ? undefined : () => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }} maxWidth="sm" fullWidth>
+      <DialogTitle>转办审批</DialogTitle>
+      <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
+        <Typography variant="body2" color="text.secondary">将当前审批节点转办给其他授权用户。转办不会推进流程，受让人处理后流程才会继续。</Typography>
+        <Autocomplete options={transferTargets} value={transferTarget} loading={transferLoading} getOptionLabel={(option) => `${option.name}（${option.username}）`} isOptionEqualToValue={(option, value) => option.id === value.id}
+          onChange={(_, value) => setTransferTarget(value)} onInputChange={(_, value) => setTransferKeyword(value)} noOptionsText={transferError ? '候选用户加载失败' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '当前授权范围内没有其他可转办用户'}
+          renderInput={(params) => <TextField {...params} label="转办给" required error={Boolean(transferError)} helperText={transferError || '仅可选择当前审批节点授权范围内的其他启用用户'} />} />
+        <TextField label="转办原因" required value={transferReason} onChange={(event) => setTransferReason(event.target.value)} multiline minRows={3} inputProps={{ maxLength: 500 }} helperText={`${transferReason.length}/500`} disabled={busy} />
+      </Stack></DialogContent>
+      <DialogActions><Button disabled={busy} onClick={() => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }}>取消</Button><Button variant="contained" disabled={busy || transferLoading || !transferTarget || !transferReason.trim()} onClick={() => { if (transferTarget) void act({ action: 'TRANSFER', formId, instanceId: selectedInstanceId, targetUserId: transferTarget.id, reason: transferReason.trim() }); }}>{busy ? '正在转办…' : '确认转办'}</Button></DialogActions>
+    </AppDialog>
     <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setPassword(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.signatureTarget ? '签署签名' : signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
       {!signing?.signatureTarget && <Box sx={{ p: 1.5, bgcolor: '#f3f6fa', borderRadius: 1 }}><Typography variant="body2" fontWeight={600}>{context?.objectNo}</Typography><Typography variant="body2" color="text.secondary">{op?.name} · {form?.name} · 第 {instanceIds.indexOf(selectedInstanceId) + 1} 份</Typography><Typography variant="caption" color="text.secondary">本次操作：{signing?.label}</Typography></Box>}
       {signing?.signatureTarget ? <><Typography variant="body2" color="text.secondary">签名将保存当前内容并使用您已认证的签名图片。修改本份内容后需重新签名；表单仍需单独提交。</Typography><TextField autoFocus label="电子签名密码" value={password} autoComplete="off" type="password" onChange={(event) => setPassword(event.target.value)} disabled={busy} /></> : <>

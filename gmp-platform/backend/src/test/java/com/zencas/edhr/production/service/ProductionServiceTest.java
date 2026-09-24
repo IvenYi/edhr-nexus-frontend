@@ -36,6 +36,7 @@ class ProductionServiceTest {
     @Mock private com.zencas.edhr.masterdata.service.ProductProcessResolutionService processResolutionService;
     @Mock private com.zencas.edhr.workflow.engine.StateMachineService stateMachineService;
     @Mock private com.zencas.edhr.common.util.SnowflakeIdGenerator idGenerator;
+    @Mock private DhrInstanceService dhrInstances;
     @InjectMocks private ProductionService productionService;
 
     @Test
@@ -100,6 +101,7 @@ class ProductionServiceTest {
         assertThat(object.getTerminationAt()).isNotNull();
         assertThat(order.getStatus()).isEqualTo("EARLY_TERMINATED");
         verify(stateMachineService).transit("PRODUCTION_OBJECT", object.getId(), "IN_PROGRESS", "EARLY_TERMINATED");
+        verify(dhrInstances).terminateWithProductionObject(eq(object.getId()), eq("设备故障"), any(LocalDateTime.class));
         verify(stateMachineService).transit("WORK_ORDER", order.getId(), "IN_PROCESS", "EARLY_TERMINATED");
     }
 

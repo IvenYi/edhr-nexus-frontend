@@ -27,6 +27,8 @@ import {
 } from '@mui/material';
 import { Add, ArrowDownward, ArrowDropDown, ArrowUpward, ChevronRight, Close, DeleteOutline, ExpandMore, FolderOutlined, Search, VisibilityOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
+import FormFillSettingsButton, { FormFillModeLabel } from '@/components/form-fill-settings/FormFillSettingsButton';
+import type { FormFillSettingsValue } from '@/components/form-fill-settings/types';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import {
   getProductModelOptions,
@@ -67,7 +69,7 @@ interface OperationDraft {
   operationName: string;
   operationCode?: string | null;
   sortOrder: number;
-  forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; required: boolean; sortOrder: number }>;
+  forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; fillSettings?: FormFillSettingsValue; required: boolean; sortOrder: number }>;
   documents: Array<{ documentVersionId: string; sortOrder: number; pageStart?: number | null; pageEnd?: number | null }>;
 }
 
@@ -159,6 +161,7 @@ function toOperationDrafts(nodes: RouteNodeRecord[], configured: ProductProcessO
         forms: (configuredOperation?.forms ?? []).map((form) => ({
           dhrTemplateItemId: form.dhrTemplateItemId,
           formTemplateVersionId: form.formTemplateVersionId,
+          fillSettings: form.fillSettings,
           required: form.required ?? true,
           sortOrder: form.sortOrder ?? 0,
         })),
@@ -701,6 +704,7 @@ export function ReferenceBindingList<T extends { id: string }>({
   onRemove,
   onMove,
   renderDetails,
+  renderActions,
   onPreview,
   previewOpen = false,
   addControl,
@@ -718,6 +722,7 @@ export function ReferenceBindingList<T extends { id: string }>({
   onRemove: (id: string) => void;
   onMove: (id: string, direction: -1 | 1) => void;
   renderDetails?: (option: T, index: number) => ReactNode;
+  renderActions?: (option: T, index: number) => ReactNode;
   onPreview?: (option: T) => void;
   previewOpen?: boolean;
   addControl?: ReactNode;
@@ -737,14 +742,16 @@ export function ReferenceBindingList<T extends { id: string }>({
     {value.length === 0 ? <Box sx={{ border: '1px dashed #cfd8e3', borderRadius: 1, px: 1.25, py: 2, textAlign: 'center', bgcolor: '#fbfcfe' }}><Typography variant="caption" sx={{ color: '#909399' }}>{emptySelectionText ?? emptyText}</Typography></Box> : value.map((option, index) => <Box data-record-id={getOptionId(option)} key={getOptionId(option)} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, px: 1.25, py: 1, bgcolor: '#fff' }}>
       <Stack direction="row" spacing={1} alignItems="flex-start">
         <Typography variant="caption" sx={{ width: 24, pt: 0.5, color: '#909399' }}>{String(index + 1).padStart(2, '0')}</Typography>
-        <Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap title={getOptionLabel(option)} sx={{ color: '#303133', fontWeight: 500 }}>{getOptionLabel(option)}</Typography>{renderDetails?.(option, index)}</Box>
+        <Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap title={getOptionLabel(option)} sx={{ color: '#303133', fontWeight: 500 }}>{getOptionLabel(option)}</Typography>{!renderActions ? renderDetails?.(option, index) : null}</Box>
         <Stack direction="row" spacing={0}>
           {onPreview ? <Tooltip title="预览" arrow><IconButton size="small" aria-label={`预览引用 ${getOptionLabel(option)}`} onClick={() => onPreview(option)}><VisibilityOutlined sx={{ fontSize: 17 }} /></IconButton></Tooltip> : null}
+          {renderActions?.(option, index)}
           <Tooltip title="上移" arrow><span><IconButton size="small" aria-label="上移引用" onClick={() => onMove(getOptionId(option), -1)} disabled={index === 0}><ArrowUpward sx={{ fontSize: 16 }} /></IconButton></span></Tooltip>
           <Tooltip title="下移" arrow><span><IconButton size="small" aria-label="下移引用" onClick={() => onMove(getOptionId(option), 1)} disabled={index === value.length - 1}><ArrowDownward sx={{ fontSize: 16 }} /></IconButton></span></Tooltip>
           <Tooltip title="移除引用" arrow><IconButton size="small" aria-label="移除引用" onClick={() => onRemove(getOptionId(option))}><DeleteOutline sx={{ fontSize: 17 }} /></IconButton></Tooltip>
         </Stack>
       </Stack>
+      {renderActions ? <Box sx={{ pl: 4 }}>{renderDetails?.(option, index)}</Box> : null}
     </Box>)}
   </Stack>;
 }
@@ -949,7 +956,7 @@ export default function ProductProcessVersionEditorDialog({
   const addForms = (selections: DhrDirectoryFormSelection[]) => updateSelectedNode((draft) => {
     const existing = new Set(draft.forms.map((item) => item.formTemplateVersionId));
     const additions = selections.filter((selection) => !existing.has(selection.formTemplateVersionId));
-    return { ...draft, forms: [...draft.forms, ...additions.map((selection) => ({ dhrTemplateItemId: selection.dhrTemplateItemId, formTemplateVersionId: selection.formTemplateVersionId, required: true, sortOrder: 0 }))] };
+    return { ...draft, forms: [...draft.forms, ...additions.map((selection) => ({ dhrTemplateItemId: selection.dhrTemplateItemId, formTemplateVersionId: selection.formTemplateVersionId, fillSettings: { fillMode: 'DIRECT' as const }, required: true, sortOrder: 0 }))] };
   });
   const addDocuments = (ids: string[]) => updateSelectedNode((draft) => {
     const existing = new Set(draft.documents.map((item) => item.documentVersionId));
@@ -1087,10 +1094,15 @@ export default function ProductProcessVersionEditorDialog({
                     const index = draft.forms.findIndex((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === id);
                     return { ...draft, forms: reorder(draft.forms, index, direction) };
                   })}
+                  renderActions={(option) => {
+                    const binding = selectedNode.forms.find((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id));
+                    return binding ? <FormFillSettingsButton value={binding.fillSettings} form={option} onChange={(fillSettings) => updateSelectedNode(draft => ({ ...draft, forms: draft.forms.map(item => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id) ? { ...item, fillSettings } : item) }))} /> : null;
+                  }}
                   renderDetails={(option) => {
                     const binding = selectedNode.forms.find((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id));
-                    return <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                      {option.code ? <Typography variant="caption" sx={{ color: '#909399' }}>表单编码：{option.code}</Typography> : null}
+                    return <Stack direction="row" alignItems="center" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 0.25 }}>
+                      <FormFillModeLabel value={binding?.fillSettings} />
+                      {option.code ? <Typography variant="caption" noWrap title={`表单编码：${option.code}`} sx={{ color: '#909399', maxWidth: 100 }}>编码 {option.code}</Typography> : null}
                       {binding ? <Stack component="label" direction="row" spacing={0.25} alignItems="center" sx={{ cursor: 'pointer' }}><Checkbox size="small" checked={binding.required} onChange={(event) => updateSelectedNode((draft) => ({ ...draft, forms: draft.forms.map((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id) ? { ...item, required: event.target.checked } : item) }))} sx={{ p: 0.25 }} /><Typography variant="caption" sx={{ color: '#606266' }}>工序结束前完成</Typography></Stack> : null}
                     </Stack>;
                   }}

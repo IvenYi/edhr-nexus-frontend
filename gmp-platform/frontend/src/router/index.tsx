@@ -26,6 +26,8 @@ const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPa
 const FormReviewPage = lazy(() => import('@/pages/form-management/FormReviewPage'));
 const DhrManagementPage = lazy(() => import('@/pages/dhr-management/DhrManagementPage'));
 const DhrSummaryPage = lazy(() => import('@/pages/dhr-management/DhrSummaryPage'));
+const DhrFillingPage = lazy(() => import('@/pages/dhr-management/DhrFillingPage'));
+const DhrReviewPage = lazy(() => import('@/pages/dhr-management/DhrReviewPage'));
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const ProductModelingPage = lazy(() => import('@/pages/master-data/ProductModelingPage'));
 const ProductModelingWorkspacePage = lazy(() => import('@/pages/master-data/ProductModelingWorkspacePage'));
@@ -104,6 +106,8 @@ const AppRouter = () => {
         <Route path="dhr-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />
           <Route path="summary" element={<Suspense fallback={<Loading />}><DhrSummaryPage /></Suspense>} />
+          <Route path="filling" element={<Suspense fallback={<Loading />}><DhrFillingPage /></Suspense>} />
+          <Route path="review" element={<Suspense fallback={<Loading />}><DhrReviewPage /></Suspense>} />
         </Route>
         <Route path="production">
           <Route path="execution" element={<Suspense fallback={<Loading />}><ProductionExecutionPage /></Suspense>} />

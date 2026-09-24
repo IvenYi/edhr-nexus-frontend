@@ -1,5 +1,11 @@
 knowledgeModelVersion: 0.3.24
 concepts:
+  - id: concept.form-fill-settings
+    termId: term.form-fill-settings
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
   - id: concept.master-data-deletion-impact
     termId: term.master-data-deletion-impact
     kind: business-concept
@@ -90,6 +96,12 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-snapshot-source]
+  - id: concept.dhr-summary-archive-display-name
+    termId: term.dhr-summary-archive-display-name
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
   - id: concept.form-template-version
     termId: term.form-template-version
     kind: business-fact
@@ -679,6 +691,27 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.work-form-node-has-fill-settings
+    source: concept.production-work-form-node-business-document-reference
+    target: concept.form-fill-settings
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+  - id: relation.operation-binding-has-form-fill-settings
+    source: concept.operation-binding
+    target: concept.form-fill-settings
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+  - id: relation.execution-snapshot-freezes-form-fill-settings
+    source: concept.execution-snapshot
+    target: concept.form-fill-settings
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
   - id: relation.form-instance-number-identifies-instance
     source: concept.form-instance-number
     target: concept.form-instance

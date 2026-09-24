@@ -35,7 +35,7 @@ rules:
       type: freeze-execution-snapshot
       fields: [baseDirectory, overlayDirectories, completeCandidateUniverse, placements, sourceSnapshots, sourceHashes, summaryHash, reviewBinding]
       laterChangesRewriteVersion: false
-    explanation: 提交冻结完整候选范围及纳入关系，不复制或改写来源表单；同一实例在同一版本只能出现一次。已提交版本不可编辑。
+    explanation: 提交冻结完整候选范围、纳入关系及各归档关联的显示名，显示名随 placements 纳入校验指纹；不复制或改写来源表单。同一实例在同一版本只能出现一次，已提交版本不可编辑。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration]
   - id: rule.dhr-summary-review-binding
     name: DHR 汇总审核策略绑定已发布流程版本
@@ -51,3 +51,62 @@ rules:
       freezeAt: first-production-start
     explanation: REQUIRED 必须选择 DHR_SUMMARY 分类下已发布流程定义和版本；NONE 不绑定流程。当前配置冻结不表示审批运行时已经实现。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-process-configuration-ui]
+  - id: rule.dhr-summary-optional-placement-order
+    name: 可选表单实例同级有序归档
+    status: implemented
+    visibility: internal
+    trigger: dhr-summary.save-or-submit
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.version-frozen, operator: equals, value: false}
+    result:
+      type: allow-with-governance
+      action: persist-optional-instance-placement-order
+      positionScope: same-level-directory-or-form
+      preserveAcross: [draft-reopen, frozen-version-read]
+      removal: unlink-from-current-summary-without-deleting-source
+      sameTemplateInstances: independent-persistence
+    explanation: 可选来源可插入同级任意位置或移出本次汇总；保存、重开和提交后保留位置与顺序，冻结版本不可修改。来源定义成组交互见 rule.dhr-summary-source-group-presentation；归档关联仍以表单实例为单位，源表单不受移出影响。
+    evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-migration]
+  - id: rule.dhr-summary-source-group-presentation
+    name: 来源分组默认批量与实例级纳入
+    status: implemented
+    visibility: internal
+    trigger: dhr-summary.open-or-place-or-submit
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.source-definition-key, operator: is-present, value: true}
+    result:
+      type: allow-with-governance
+      action: present-and-place-source-definition-group
+      groupingKey: [originKind, operationId, formId]
+      missingSourceKeyFallback: recordId
+      placementInteraction: default-whole-group-with-explicit-instance-selection
+      partialPlacementDisplay: placed-count/total-count
+      mixedCompletionHandling: explicit-feedback-and-selection-without-silent-skipping
+      leftDirectoryGrouping: adjacent-same-source-instances-only
+      preservePlacementOrderIn: [draft, readOnly]
+      instanceRemoval: unlink-from-current-draft-without-deleting-source
+      persistenceUnit: form-instance
+      frozenVersionMutation: forbidden
+    explanation: 同一工序的作业节点定义或同一次自定义表单创建项在候选中成组，同模板不同节点或创建项不得合组。默认整组纳入，也可展开明确选择已完成实例，部分显示 x/y；含未完成实例时整组操作不得静默跳过，未完成实例不可纳入。来源组不构成全有或全无、同目录或连续位置约束；保存和提交保留 validatePlacements 逐实例校验及既有证据纳入政策、源业务校验、必填目录和未完成补录阻断，不新增必填或选填豁免。草稿与只读目录保持真实交错顺序，仅相邻同源实例折叠，每份可查看且草稿可逐份移出；完整候选范围及逐实例关联、顺序、哈希继续冻结，空来源不生成证据，冻结历史不改写。2026-09-24 主智能体聚焦浏览器与服务持久化测试通过，仍为内部实现状态；验证范围及限制见证据。
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-source-group-test, evidence.dhr-summary-service, evidence.dhr-summary-source-group-backend-test]
+  - id: rule.dhr-summary-archive-display-name
+    name: 草稿归档显示名按当前归档实例修改并随版本冻结
+    status: implemented
+    visibility: internal
+    trigger: dhr-summary.rename-placement-or-submit
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.version-frozen, operator: equals, value: false}
+    result:
+      type: allow-with-governance
+      action: persist-placement-display-name
+      editScope: current-draft-archived-instances
+      originKinds: [DIRECTORY, WORK, CUSTOM]
+      directoryPlacement: automatic-fixed-target-without-order-override-or-removal
+      adjacentGroupScope: current-adjacent-segment-only
+      singleRowScope: one-instance
+      sourceMutation: forbidden
+      frozenVersionMutation: forbidden
+      legacyNullFallback: source-name
+      reorganize: copy-previous-version-display-name
+    explanation: 所有目录下已有真实证据的表单均可重命名，包括 DIRECTORY；显示名只属于逐实例汇总关联，草稿重命名须有编辑权限并校验非空、首尾空格和长度。组行修改当前范围全部实例，可选来源相邻同源折叠行仍只修改本段，单份只改一份。草稿保存重开保持，提交冻结并参与指纹，重新整理复制包括 DIRECTORY 在内的上版别名；来源表单和基础快照不变，旧版空别名回退原名。DIRECTORY 自动归位、固定归属、不可移除且不得覆盖排序。全来源增量已通过主智能体的聚焦持久化与隔离浏览器测试，保持内部实现状态，不等于真实业务发布验证。
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-ui, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]

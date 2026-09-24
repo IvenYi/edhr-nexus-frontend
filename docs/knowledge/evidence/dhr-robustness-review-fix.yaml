@@ -1,0 +1,47 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.dhr-robustness-review-fix-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-robustness-review-fix.md
+    description: user-confirmed；2026-09-23 用户授权按 DEC-PACKAGE-20260923-DHR-ROBUSTNESS 修复 DHR ID 传输、草稿恢复及审计缺陷；仅在 DEC-0062/63 范围内修复，不新增业务，不证明修复已实现或已验证。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-context
+    type: document
+    path: docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    description: secondary-reference；既有三类候选、目录和提交冻结及审批延期边界，仅作为本轮知识对照；已有 implemented 状态和旧差异解决记录不是本轮修复完成证据。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-engineering-inference
+    type: document
+    path: docs/knowledge/evidence/dhr-robustness-review-fix.md
+    description: inference；复用 AuditEvent contentBefore/contentAfter 保存目录、placements、revision 与 dhrId 的完整草稿前后快照，属于决策包中的工程选择，不提升为新增用户业务规则。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-directory-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
+    description: original-evidence；2026-09-23 working-tree 静态核对 createDirectorySnapshot、detailRow 和 directoryForResponse：新目录 ID 存字符串，历史目录仅在 deepCopy 响应中转字符串。定位及源码 SHA-256 见同名 md；不证明长 ID 运行测试通过。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-summary-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    description: original-evidence；2026-09-23 working-tree 静态核对 version、saveDraft、draftAuditSnapshot、writeAudit：版本基础目录只做响应投影；草稿事务方法保存含 dhrId/revision/overlayDirectories/placements 的前后审计，首次创建 before 为 null。基础目录仍关联 DHR 冻结快照，不在审计 payload 中；未声明事务回滚或发布验证通过，摘要见同名 md。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-ui-source
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+    description: original-evidence；2026-09-23 working-tree 末次静态核对 SummaryWorkspace 的 initializedKey 和明确重载、persistDraft 的缓存及 revision 同步、write 的共享互斥、remoteDraftChanged 提示与异常重新查询均已见源码；取代初次读取的旧观察，不表示交互测试或独立复验通过，定位及源码摘要见同名 md。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-fixture-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；2026-09-23 working-tree setup 的 H2 绑定表增加 fill_settings_json，绑定种子指定 fillMode DIRECT，seedSignedWork 的流程种子补充 fillMode PROCESS，匹配相邻填报设置依赖；仅记录测试源码调整，不表示运行测试已通过或填报设置全域已验证。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-persistence-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java
+    description: original-evidence；2026-09-23 完整读取五项测试源码，使用 H2 真实 JDBC 事务及 mock DhrInstanceService/AuditEventRepository，覆盖长 ID、草稿前后审计内容与冲突、保存及提交审计失败回滚、失败重试和冻结不可变；不证明真实 PostgreSQL 或实际审计仓储持久化，报告见同名 md。
+    visibility: internal
+  - id: evidence.dhr-robustness-review-fix-test-report-observation
+    type: document
+    path: docs/knowledge/evidence/dhr-robustness-review-fix.md
+    description: original-evidence；只读核对 2026-09-23T00:20:01+0800 两份原始 Surefire 文本报告，DhrSummaryPersistenceTest 为 5/0失败/0错误/0跳过，ProductionExecutionIntegrationTest 为 47/0失败/0错误/2跳过；文档保留路径及摘要，与用户交接一致。本体角色未运行 Maven，正式知识测试及独立质量结论仍待提供，不提升 verified。
+    visibility: internal

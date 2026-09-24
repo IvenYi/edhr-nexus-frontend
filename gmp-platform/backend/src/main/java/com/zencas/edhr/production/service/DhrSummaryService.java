@@ -34,6 +34,8 @@ public class DhrSummaryService {
     private final DhrInstanceService dhrInstances;
     private final AuditEventRepository audits;
     private final SnowflakeIdGenerator ids;
+    private final com.zencas.edhr.workflow.engine.WorkflowEngine workflowEngine;
+    private final DhrEvidenceImpactService impacts;
 
     @Transactional(readOnly = true)
     public ObjectNode workspace(Long dhrId) {
@@ -60,6 +62,10 @@ public class DhrSummaryService {
                 .put("snapshotHash", rs.getString("snapshot_hash")).put("submittedBy", rs.getString("submitted_by"))
                 .put("submittedAt", rs.getTimestamp("submitted_at").toLocalDateTime().toString()), TENANT, dhrId);
         result.set("versions", versions);
+        Map<String, String> outcomes = new HashMap<>();
+        jdbc.query("SELECT r.summary_version_id,r.status FROM dhr_summary_review r JOIN dhr_summary_version v ON v.id=r.summary_version_id WHERE v.tenant_id=? AND v.dhr_instance_id=?",
+                (org.springframework.jdbc.core.RowCallbackHandler) rs -> outcomes.put(rs.getString(1), rs.getString(2)), TENANT, dhrId);
+        for (JsonNode version : versions) ((ObjectNode) version).put("reviewOutcome", outcomes.get(version.path("id").asText()));
         return result;
     }
 
@@ -79,7 +85,7 @@ public class DhrSummaryService {
                     .put("reviewWorkflowVersionId", rs.getString("review_workflow_version_id"))
                     .put("submittedBy", rs.getString("submitted_by"))
                     .put("submittedAt", rs.getTimestamp("submitted_at").toLocalDateTime().toString());
-            version.set("baseDirectory", json(rs.getString("base_directory_snapshot"), "DHR 基础目录快照"));
+            version.set("baseDirectory", DhrInstanceService.directoryForResponse(json(rs.getString("base_directory_snapshot"), "DHR 基础目录快照")));
             version.set("overlayDirectories", json(rs.getString("overlay_directory_snapshot"), "DHR 汇总目录快照"));
             version.set("candidates", json(rs.getString("candidate_snapshot"), "DHR 候选证据快照"));
             return version;
@@ -88,12 +94,20 @@ public class DhrSummaryService {
         ObjectNode result = mapper.createObjectNode();
         result.set("dhr", detail);
         result.set("version", versions.getFirst());
+        var outcomes = jdbc.queryForList("SELECT status FROM dhr_summary_review WHERE summary_version_id=?", String.class, versionId);
+        versions.getFirst().put("reviewOutcome", outcomes.isEmpty() ? null : outcomes.getFirst());
+        result.set("evidenceChanges", impacts.changes(versionId, false));
         ArrayNode placements = result.putArray("placements");
         jdbc.query("""
-            SELECT source_record_id,target_node_key FROM dhr_summary_evidence
+            SELECT source_record_id,target_node_key,before_node_key,display_order,display_name FROM dhr_summary_evidence
             WHERE tenant_id=? AND summary_version_id=? ORDER BY id
-            """, (org.springframework.jdbc.core.RowCallbackHandler) rs -> placements.addObject()
-                .put("recordId", rs.getString("source_record_id")).put("targetNodeKey", rs.getString("target_node_key")), TENANT, versionId);
+            """, (org.springframework.jdbc.core.RowCallbackHandler) rs -> {
+                ObjectNode placement = placements.addObject().put("recordId", rs.getString("source_record_id"))
+                        .put("targetNodeKey", rs.getString("target_node_key"));
+                if (rs.getString("before_node_key") != null) placement.put("beforeNodeKey", rs.getString("before_node_key"));
+                if (rs.getObject("display_order") != null) placement.put("displayOrder", rs.getInt("display_order"));
+                if (rs.getString("display_name") != null) placement.put("displayName", rs.getString("display_name"));
+            }, TENANT, versionId);
         return result;
     }
 
@@ -107,10 +121,12 @@ public class DhrSummaryService {
         LocalDateTime now = LocalDateTime.now();
         String actor = actor();
         List<Map<String, Object>> existing = jdbc.queryForList(
-                "SELECT id,revision FROM dhr_summary_draft WHERE tenant_id=? AND dhr_instance_id=? FOR UPDATE", TENANT, dhrId);
+                "SELECT id,revision,overlay_directory_json,evidence_placement_json FROM dhr_summary_draft WHERE tenant_id=? AND dhr_instance_id=? FOR UPDATE", TENANT, dhrId);
+        ObjectNode before = null;
         int revision;
         long draftId;
         if (existing.isEmpty()) {
+            if (command.hasNonNull("draftId") || command.hasNonNull("revision")) throw invalid("草稿已变化，请重新载入");
             draftId = ids.nextId();
             revision = 1;
             jdbc.update("""
@@ -119,13 +135,17 @@ public class DhrSummaryService {
                 """, draftId, TENANT, dhrId, overlay.toString(), placements.toString(), revision, actor, now, actor, now);
         } else {
             draftId = ((Number) existing.getFirst().get("id")).longValue();
+            requireDraftIdentity(command, "draftId", draftId);
             int storedRevision = ((Number) existing.getFirst().get("revision")).intValue();
+            before = draftAuditSnapshot(dhrId, storedRevision,
+                    json(String.valueOf(existing.getFirst().get("overlay_directory_json")), "汇总目录草稿"),
+                    json(String.valueOf(existing.getFirst().get("evidence_placement_json")), "汇总证据草稿"));
             revision = nextRevision(command, storedRevision);
             jdbc.update("UPDATE dhr_summary_draft SET overlay_directory_json=?,evidence_placement_json=?,revision=?,updated_by=?,updated_at=? WHERE id=?",
                     overlay.toString(), placements.toString(), revision, actor, now, draftId);
         }
         jdbc.update("UPDATE dhr_instance SET summary_status='DRAFT',updated_by=?,updated_at=? WHERE id=?", actor, now, dhrId);
-        writeAudit(draftId, "SAVE", "保存汇总草稿", mapper.createObjectNode().put("dhrId", dhrId).put("revision", revision));
+        writeAudit(draftId, "SAVE", "保存汇总草稿", before, draftAuditSnapshot(dhrId, revision, overlay, placements));
         return mapper.createObjectNode().put("id", Long.toString(draftId)).put("revision", revision);
     }
 
@@ -136,11 +156,20 @@ public class DhrSummaryService {
                 "SELECT * FROM dhr_summary_draft WHERE tenant_id=? AND dhr_instance_id=? FOR UPDATE", TENANT, dhrId);
         if (rows.isEmpty()) throw invalid("请先保存 DHR 汇总草稿");
         Map<String, Object> draft = rows.getFirst();
+        requireDraftIdentity(command, "expectedDraftId", ((Number) draft.get("id")).longValue());
         requireExpectedRevision(command, ((Number) draft.get("revision")).intValue());
         ArrayNode overlay = (ArrayNode) json(String.valueOf(draft.get("overlay_directory_json")), "汇总目录草稿");
         ArrayNode placements = (ArrayNode) json(String.valueOf(draft.get("evidence_placement_json")), "汇总证据草稿");
         ObjectNode detail = dhrInstances.detail(dhrId);
         ArrayNode candidateSnapshot = candidates(detail);
+        // Unsaved supplemental copies have no form_instance_record yet, but are still unfinished evidence.
+        if (detail.hasNonNull("productionObjectId")) {
+            var states = jdbc.queryForList("SELECT state_json FROM production_execution WHERE object_id=?", Long.valueOf(detail.path("productionObjectId").asText()));
+            for (var row : states) for (JsonNode operation : json(String.valueOf(row.get("state_json")), "生产执行记录").path("operations")) {
+                for (JsonNode copy : operation.path("forms")) if (copy.path("supplement").isObject() && !"COMPLETED".equals(copy.path("status").asText()))
+                    throw invalid("存在尚未完成的补录表单，请先完成后再提交汇总");
+            }
+        }
         validateOverlay(dhr.path("directory_snapshot"), overlay);
         Map<String, ObjectNode> placementByRecord = validatePlacements(candidateSnapshot, dhr.path("directory_snapshot"), overlay, placements);
         ensureRequiredDirectoryItems(detail, placementByRecord);
@@ -180,16 +209,62 @@ public class DhrSummaryService {
             String sourceSnapshot = candidate.toString();
             jdbc.update("""
                 INSERT INTO dhr_summary_evidence(id,tenant_id,summary_version_id,source_record_id,target_node_key,
-                    origin_kind,source_snapshot,source_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?)
+                    before_node_key,display_order,display_name,origin_kind,source_snapshot,source_hash,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
                 """, ids.nextId(), TENANT, versionId, Long.valueOf(entry.getKey()), entry.getValue().path("targetNodeKey").asText(),
+                    entry.getValue().path("beforeNodeKey").isTextual() ? entry.getValue().path("beforeNodeKey").asText() : null,
+                    entry.getValue().path("displayOrder").isInt() ? entry.getValue().path("displayOrder").asInt() : null,
+                    entry.getValue().path("displayName").isTextual() ? entry.getValue().path("displayName").asText() : null,
                     candidate.path("originKind").asText(), sourceSnapshot, hash(sourceSnapshot), now);
         }
         jdbc.update("DELETE FROM dhr_summary_draft WHERE id=?", draft.get("id"));
         jdbc.update("UPDATE dhr_instance SET summary_status=?,updated_by=?,updated_at=? WHERE id=?", status, actor, now, dhrId);
-        writeAudit(versionId, "SUBMIT", "提交 DHR 汇总", mapper.createObjectNode().put("dhrId", dhrId)
+        if ("REQUIRED".equals(mode)) {
+            var workflow = workflowEngine.createDhrSummaryInstance(reviewDefinitionId, reviewVersionId,
+                    Long.toString(versionId), AuditContext.getOperatorId());
+            if (!"RUNNING".equals(workflow.getStatus())) throw invalid("DHR 审核流程必须包含审核节点");
+            jdbc.update("INSERT INTO dhr_summary_review(summary_version_id,workflow_instance_id,status,submitted_by_id,updated_at) VALUES(?,?,?,?,?)",
+                    versionId, workflow.getId(), "PENDING_REVIEW", AuditContext.getOperatorId(), now);
+        }
+        writeAudit(versionId, "SUBMIT", "提交 DHR 汇总", null, mapper.createObjectNode().put("dhrId", dhrId.toString())
                 .put("versionNo", versionNo).put("status", status).put("snapshotHash", snapshotHash));
         return mapper.createObjectNode().put("id", Long.toString(versionId)).put("versionNo", versionNo)
                 .put("status", status).put("snapshotHash", snapshotHash);
+    }
+
+    @Transactional
+    public ObjectNode reorganize(Long dhrId, JsonNode command) {
+        var rows = jdbc.queryForList("SELECT summary_status FROM dhr_instance WHERE tenant_id=? AND id=? FOR UPDATE", TENANT, dhrId);
+        if (rows.isEmpty() || !"FORMALIZED".equals(rows.getFirst().get("summary_status"))) throw invalid("只有已定稿的 DHR 可重新整理；审核中请先退回");
+        String reason = command.path("reason").asText("").strip();
+        if (reason.isBlank()) throw invalid("请填写重新整理原因");
+        Long latest = jdbc.queryForObject("SELECT id FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=? ORDER BY version_no DESC LIMIT 1", Long.class, TENANT, dhrId);
+        if (latest == null || !latest.toString().equals(command.path("expectedVersionId").asText())) throw invalid("汇总版本已变化，请刷新");
+        prepareNextDraft(dhrId, latest, reason);
+        return workspace(dhrId);
+    }
+
+    private void requireDraftIdentity(JsonNode command, String field, long id) {
+        if (!Long.toString(id).equals(command.path(field).asText())) throw invalid("草稿已被其他操作创建或替换，请重新载入");
+    }
+
+    // Caller holds the DHR row lock. Used only by explicit reorganization or a human review return.
+    void prepareNextDraft(Long dhrId, Long versionId, String reason) {
+        var frozen = jdbc.queryForMap("SELECT overlay_directory_snapshot FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=? AND id=?", TENANT, dhrId, versionId);
+        ArrayNode placements = mapper.createArrayNode();
+        jdbc.query("SELECT source_record_id,target_node_key,before_node_key,display_order,display_name FROM dhr_summary_evidence WHERE tenant_id=? AND summary_version_id=? AND (origin_kind<>'DIRECTORY' OR display_name IS NOT NULL) ORDER BY id",
+                (org.springframework.jdbc.core.RowCallbackHandler) rs -> {
+                    ObjectNode placement = placements.addObject().put("recordId", rs.getString(1)).put("targetNodeKey", rs.getString(2));
+                    if (rs.getString(3) != null) placement.put("beforeNodeKey", rs.getString(3));
+                    if (rs.getObject(4) != null) placement.put("displayOrder", rs.getInt(4));
+                    if (rs.getString(5) != null) placement.put("displayName", rs.getString(5));
+                }, TENANT, versionId);
+        long draftId = ids.nextId();
+        LocalDateTime now = LocalDateTime.now();
+        jdbc.update("INSERT INTO dhr_summary_draft(id,tenant_id,dhr_instance_id,overlay_directory_json,evidence_placement_json,revision,created_by,created_at,updated_by,updated_at) VALUES(?,?,?,?,?,1,?,?,?,?)",
+                draftId, TENANT, dhrId, frozen.get("overlay_directory_snapshot"), placements.toString(), actor(), now, actor(), now);
+        jdbc.update("UPDATE dhr_instance SET summary_status='DRAFT',updated_by=?,updated_at=? WHERE tenant_id=? AND id=?", actor(), now, TENANT, dhrId);
+        writeAudit(draftId, "SAVE", "重新整理 DHR", null, mapper.createObjectNode().put("dhrId", dhrId.toString())
+                .put("fromVersionId", versionId.toString()).put("reason", reason).put("revision", 1));
     }
 
     private ObjectNode lockedCompletedDhr(Long dhrId) {
@@ -252,14 +327,27 @@ public class DhrSummaryService {
         JsonNode base = baseDirectoryText.isTextual() ? json(baseDirectoryText.asText(), "DHR 目录快照") : baseDirectoryText;
         Set<String> targetKeys = new HashSet<>();
         Set<String> baseItemKeys = new HashSet<>();
+        Map<String, String> staticNodeParents = new HashMap<>();
         base.path("directories").forEach(directory -> {
-            targetKeys.add("base-dir-" + directory.path("id").asText());
-            directory.path("items").forEach(item -> baseItemKeys.add("base-item-" + item.path("id").asText()));
+            String directoryKey = "base-dir-" + directory.path("id").asText();
+            targetKeys.add(directoryKey);
+            if (!directory.path("parentId").isNull() && !directory.path("parentId").isMissingNode())
+                staticNodeParents.put(directoryKey, "base-dir-" + directory.path("parentId").asText());
+            directory.path("items").forEach(item -> {
+                String itemKey = "base-item-" + item.path("id").asText();
+                baseItemKeys.add(itemKey);
+                staticNodeParents.put(itemKey, directoryKey);
+            });
         });
-        overlay.forEach(node -> targetKeys.add(node.path("key").asText()));
+        overlay.forEach(node -> {
+            String key = node.path("key").asText();
+            targetKeys.add(key);
+            staticNodeParents.put(key, node.path("parentKey").asText());
+        });
         Map<String, JsonNode> candidateById = new LinkedHashMap<>();
         for (JsonNode candidate : candidates) candidateById.put(candidate.path("id").asText(), candidate);
         Map<String, ObjectNode> result = new LinkedHashMap<>();
+        Set<String> occupiedPositions = new HashSet<>();
         for (JsonNode candidate : candidates) {
             if (!"DIRECTORY".equals(candidate.path("originKind").asText()) || !"COMPLETED".equals(candidate.path("status").asText())) continue;
             String itemId = candidate.path("snapshot").path("dhrItemId").asText();
@@ -267,19 +355,52 @@ public class DhrSummaryService {
             result.put(candidate.path("id").asText(), mapper.createObjectNode().put("recordId", candidate.path("id").asText())
                     .put("targetNodeKey", "base-item-" + itemId));
         }
+        Set<String> suppliedRecords = new HashSet<>();
         for (JsonNode placement : placements) {
             String recordId = placement.path("recordId").asText();
             String target = placement.path("targetNodeKey").asText();
             JsonNode candidate = candidateById.get(recordId);
             if (candidate == null) throw invalid("汇总候选记录不存在或已发生变化");
-            if ("DIRECTORY".equals(candidate.path("originKind").asText())) continue;
+            if (!suppliedRecords.add(recordId)) throw invalid("同一表单实例在一个汇总版本中只能归入一个目录位置");
+            if ("DIRECTORY".equals(candidate.path("originKind").asText())) {
+                ObjectNode automatic = result.get(recordId);
+                if (automatic == null || !target.equals(automatic.path("targetNodeKey").asText())
+                        || placement.hasNonNull("beforeNodeKey") || placement.hasNonNull("displayOrder"))
+                    throw invalid("目录表单必须保持原目录归属和顺序");
+                applyDisplayName(placement, automatic);
+                continue;
+            }
             if (!targetKeys.contains(target)) throw invalid("候选记录的目标目录不存在");
             if (!"COMPLETED".equals(candidate.path("status").asText())) throw invalid("只有已完成的表单记录才能纳入 DHR 汇总");
-            if (result.putIfAbsent(recordId, mapper.createObjectNode().put("recordId", recordId).put("targetNodeKey", target)) != null) {
+            ObjectNode validated = mapper.createObjectNode().put("recordId", recordId).put("targetNodeKey", target);
+            JsonNode before = placement.path("beforeNodeKey");
+            if (!before.isMissingNode() && !before.isNull()) {
+                if (!before.isTextual() || !target.equals(staticNodeParents.get(before.asText())))
+                    throw invalid("插入位置不属于目标目录");
+                validated.put("beforeNodeKey", before.asText());
+            }
+            JsonNode order = placement.path("displayOrder");
+            if (!order.isMissingNode() && !order.isNull()) {
+                if (!order.isInt() || order.asInt() < 0) throw invalid("汇总表单排序无效");
+                if (!occupiedPositions.add(target + "\u0000" + before.asText("") + "\u0000" + order.asInt()))
+                    throw invalid("同一目录位置不能放置多个表单实例");
+                validated.put("displayOrder", order.asInt());
+            }
+            applyDisplayName(placement, validated);
+            if (result.putIfAbsent(recordId, validated) != null) {
                 throw invalid("同一表单实例在一个汇总版本中只能归入一个目录位置");
             }
         }
         return result;
+    }
+
+    private void applyDisplayName(JsonNode placement, ObjectNode validated) {
+        JsonNode displayName = placement.path("displayName");
+        if (!displayName.isMissingNode() && !displayName.isNull()) {
+            if (!displayName.isTextual() || displayName.asText().isBlank() || !displayName.asText().equals(displayName.asText().strip())
+                    || displayName.asText().length() > 120) throw invalid("汇总文档名称须为 1 至 120 字且不能首尾留空");
+            validated.put("displayName", displayName.asText());
+        }
     }
 
     private void ensureRequiredDirectoryItems(ObjectNode detail, Map<String, ObjectNode> placements) {
@@ -341,9 +462,16 @@ public class DhrSummaryService {
         return name == null || name.isBlank() ? AuditContext.getOperatorId() : name;
     }
 
-    private void writeAudit(long id, String action, String functionName, ObjectNode after) {
+    private ObjectNode draftAuditSnapshot(Long dhrId, int revision, JsonNode overlay, JsonNode placements) {
+        ObjectNode snapshot = mapper.createObjectNode().put("dhrId", dhrId.toString()).put("revision", revision);
+        snapshot.set("overlayDirectories", overlay.deepCopy());
+        snapshot.set("placements", placements.deepCopy());
+        return snapshot;
+    }
+
+    private void writeAudit(long id, String action, String functionName, ObjectNode before, ObjectNode after) {
         audits.save(AuditEvent.builder().id(ids.nextId()).entityType(action.equals("SAVE") ? "DHR_SUMMARY_DRAFT" : "DHR_SUMMARY_VERSION")
-                .entityId(Long.toString(id)).action(action).contentAfter(after.toString())
+                .entityId(Long.toString(id)).action(action).contentBefore(before == null ? null : before.toString()).contentAfter(after.toString())
                 .operatorId(AuditContext.getOperatorId()).operatorName(AuditContext.getOperatorName())
                 .operatorAccount(AuditContext.getOperatorAccount()).source(AuditContext.getSource())
                 .moduleName("记录").menuName("DHR管理 · DHR汇总").functionName(functionName)

@@ -48,3 +48,29 @@ rules:
       requiredCheck: current-operation-completion-conditions
     explanation: 当前工序申请完工时必须校验完工条件，并向操作者说明检查结果；仅当条件满足才允许完工。本切片已有服务端必填表单实际完成记录、适用作业完成与字段值复校验；不能把缺少来源当成满足。通知投递、原始路线连线条件、返工入口与不支持节点继续明确阻断，implemented只描述该受限运行链，不表示全部配置可运行。既有必填表单业务语义仍复用 rule.product-process.form-complete-before-operation，不据此全局推进旧规则成熟度。
     evidenceIds: [evidence.production-execution-user-decision, evidence.production-execution-product-configuration-contract, evidence.production-execution-engine-source, evidence.production-execution-service-source, evidence.production-execution-access-source, evidence.production-execution-engine-tests, evidence.production-execution-integration-tests]
+  - id: rule.production-execution.form-current-node-action-projection
+    name: 生产执行按当前表单流程节点投影动作
+    status: specified
+    visibility: internal
+    trigger: production-form.controls.query
+    scope: production-execution-form-process
+    condition:
+      all:
+        - fact: productionForm.currentNodeKind
+          operator: in
+          value: [START, APPROVAL]
+        - fact: productionForm.currentNodeActionProjection
+          operator: is-present
+          value: true
+    result:
+      type: return-query-projection
+      fields: [nodeId, nodeName, nodeKind, buttons, permissions, signaturePermissions]
+      source: active-form-process-node
+      actionSource: current-node-button-configuration
+      fillActionsOnlyAt: [START]
+      approvalActionsOnlyAt: [APPROVAL]
+      forbiddenActionsAtApproval: [SAVE, SUBMIT]
+      clientRendering: controls.buttons
+      authorization: server-recomputed-before-execution
+    explanation: 用户已确认生产执行表单完成首个填报节点并到达后续审批节点后不再展示暂存/提交；审批节点动作由当前节点按钮配置投影。源码证据表明底部动作栏位于生产执行页，FormCanvasPreview/FormDocumentPreview 只负责字段或文档渲染；前端投影不能替代服务端当前节点、处理权和动作白名单校验。空或缺失按钮配置的历史回退策略登记为实现差异，不在本规则中静默扩展业务语义。
+    evidenceIds: [evidence.production-execution-form-action-projection-user-confirmed, evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-page-source, evidence.production-execution-form-action-projection-renderer-source, evidence.production-execution-form-action-projection-engine-test]

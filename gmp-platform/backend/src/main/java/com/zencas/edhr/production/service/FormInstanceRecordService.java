@@ -37,6 +37,11 @@ public class FormInstanceRecordService {
         String copyId = requestedCopyId == null || requestedCopyId.isBlank() ? formId : requestedCopyId;
         JsonNode formState = state.path("operations").path(operationId).path("forms").path(copyId);
         if (form == null || !formState.has("savedAt")) throw invalid("表单记录来源不完整");
+        if (formState.path("supplement").isObject()) {
+            ObjectNode withSupplement = form.deepCopy();
+            withSupplement.set("supplement", formState.path("supplement").deepCopy());
+            form = withSupplement;
+        }
         var existing = jdbc.queryForList("SELECT id, instance_no FROM form_instance_record WHERE tenant_id=? AND object_id=? AND operation_id=? AND copy_id=?",
                 tenantId, objectId, operationId, copyId);
         LocalDateTime now = LocalDateTime.now();
