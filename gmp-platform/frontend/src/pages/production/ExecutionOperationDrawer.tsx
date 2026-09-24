@@ -26,7 +26,7 @@ export default function ExecutionOperationDrawer({ open, onOpen, onClose, disabl
     </Box>
     <Drawer anchor="left" open={open} onClose={onClose} container={container} className="execution-operation-drawer"
       ModalProps={{ keepMounted: true }} PaperProps={{ role: 'dialog', 'aria-modal': true, 'aria-labelledby': `${id}-title`, id }}>
-      <Box className="execution-drawer-heading"><Typography component="h2" id={`${id}-title`}>切换工序</Typography><IconButton aria-label="关闭工序抽屉" onClick={onClose}><CloseRounded /></IconButton></Box>
+      <Box className="execution-drawer-heading"><Typography component="h2" id={`${id}-title`}>切换工序</Typography><IconButton size="small" aria-label="关闭工序抽屉" onClick={onClose}><CloseRounded fontSize="small" /></IconButton></Box>
       {children}
     </Drawer>
   </>;

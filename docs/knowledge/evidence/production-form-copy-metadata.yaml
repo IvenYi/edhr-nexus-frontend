@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.production-form-copy-metadata-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-form-copy-metadata-confirmed.md
+    description: user-confirmed；2026-09-21 用户要求重设计切换份序抽屉，显示表单总览和每份备注、创建人时间、实例号复制及状态，突出新增和选中份，新增时填写该份备注；随后确认恢复本功能 L2 门禁继续前后端实现。2026-09-24 补充悬浮备注出现编辑图标并修改，截图覆盖进行中工序内已完成份和进行中份，编辑不切换份。本说明只证明产品决策，不证明实现或测试通过。
+    visibility: internal
+  - id: evidence.production-form-copy-metadata-design
+    type: document
+    path: docs/knowledge/evidence/production-form-copy-metadata-confirmed.md
+    description: inference；复用执行状态存储份备注和创建信息，备注 trim 且最多 500 字符，历史缺失显示占位而不编造。备注更新复用 canManageCopies 资格、显式份归属、revision 和审计事务；不改变字段、签名、创建信息、保存时间、回执或流程，不丢失页面未暂存输入，无新增 DDL。工程细节和待验收项不升级为已确认业务规则或运行事实。
+    visibility: internal

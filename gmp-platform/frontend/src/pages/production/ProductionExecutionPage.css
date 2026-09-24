@@ -114,8 +114,8 @@
 .execution-page .execution-operation-drawer { position: absolute; }
 .execution-operation-drawer .MuiBackdrop-root { position: absolute; background-color: #24324730; }
 .execution-operation-drawer .MuiDrawer-paper { position: absolute; width: min(360px, 100%); max-width: 100%; border-radius: 0; }
-.execution-drawer-heading { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #e5eaf0; flex-shrink: 0; }
-.execution-drawer-heading h2 { font-size: 17px; font-weight: 600; }
+.execution-drawer-heading, .execution-form-selector-heading { display: flex; align-items: center; gap: 4px; flex: 0 0 40px; height: 40px; box-sizing: border-box; padding: 0 12px; border-bottom: 1px solid #dce3ed; }
+.execution-drawer-heading h2, .execution-form-selector-heading h2 { flex: 1; font-size: 14px; font-weight: 600; }
 .execution-page .execution-operation-drawer .execution-route { border: 0; border-radius: 0; padding: 16px; }
 .execution-workarea { display: flex; flex-direction: column; min-height: 0; min-width: 0; overflow: hidden; background: white; border: 1px solid #dfe5ed; border-radius: 8px; }
 .execution-stage { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 12px; min-height: 0; min-width: 0; }
@@ -162,10 +162,49 @@
 .execution-copy-switch:hover .execution-copy-switch-value { color: #1677c8; }
 .execution-page .execution-copy-switch.Mui-focusVisible { outline: 2px solid #91bce3; outline-offset: 2px; }
 .execution-page .execution-copy-switch.Mui-disabled { opacity: 0.45; }
-.execution-copy-drawer-summary { padding: 12px 16px; border-bottom: 1px solid #e5eaf0; }
-.execution-copy-drawer-list { flex: 1; padding: 12px; }
+.execution-copy-drawer .MuiDrawer-paper { width: min(380px, 100%); }
+.execution-copy-drawer-summary { padding: 10px 16px; border-bottom: 1px solid #e5eaf0; flex-shrink: 0; }
+.execution-copy-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 30px; }
+.execution-copy-form-heading { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.execution-copy-form-heading h3 { min-width: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #243247; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.execution-copy-form-heading .execution-copy-count { flex-shrink: 0; padding: 1px 6px; border-radius: 4px; background: #f3f5f8; font-size: 11px; line-height: 18px; color: #718096; }
+.execution-copy-toolbar > .MuiButton-root { height: 30px; padding: 0 10px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; font-size: 12px; }
+.execution-copy-toolbar > .MuiButton-root .MuiButton-startIcon { margin-right: 4px; }
+.execution-copy-drawer-list { position: relative; flex: 1; min-height: 0; overflow-y: auto; list-style: none; margin: 0; padding: 0; background: white; }
+.execution-copy-card { position: relative; height: 88px; box-sizing: border-box; border-bottom: 1px solid #edf0f4; background: white; transition: background-color 150ms ease; }
+.execution-copy-card.is-selected { background: #f4f8fd; }
+.execution-copy-card.is-new { animation: execution-copy-added 900ms ease-out; }
+.execution-copy-card .execution-copy-card-select { position: absolute; inset: 0; width: 100%; height: 100%; }
+.execution-copy-card-select:hover { background: #1677c805; }
+.execution-copy-card-select.Mui-focusVisible { outline: 2px solid #1677c8; outline-offset: -3px; }
+.execution-copy-card .execution-copy-title { flex-shrink: 0; font-size: 13px; line-height: 20px; font-weight: 600; color: #35465e; }
+.execution-copy-card.is-selected .execution-copy-title { color: #1677c8; }
+.execution-copy-content { position: relative; display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 12px 16px; pointer-events: none; }
+.execution-copy-remark-group { display: flex; align-items: center; gap: 2px; flex: 1; min-width: 0; pointer-events: auto; }
+.execution-copy-remark-group .execution-copy-remark-edit { flex-shrink: 0; width: 20px; height: 20px; padding: 2px; color: #1677c8; opacity: 0; }
+.execution-copy-remark-edit svg { font-size: 14px; }
+.execution-copy-remark-group:hover .execution-copy-remark-edit, .execution-copy-remark-group:focus-within .execution-copy-remark-edit { opacity: 1; }
+@media (hover: none) { .execution-copy-remark-group .execution-copy-remark-edit { opacity: 1; } }
 .execution-copy-drawer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.execution-copy-drawer-actions { padding: 12px 16px; border-top: 1px solid #e5eaf0; flex-shrink: 0; }
+.execution-copy-card .execution-form-status { flex-shrink: 0; font-size: 11px; line-height: 20px; white-space: nowrap; }
+.execution-copy-card .execution-copy-remark { display: block; flex: 0 1 auto; min-width: 0; padding-left: 8px; border-left: 1px solid #dce3ed; font-size: 13px; font-weight: 400; line-height: 20px; color: #718096; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.execution-copy-card .execution-copy-remark.is-empty { color: #929eae; }
+.execution-copy-creation { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.execution-copy-creation .MuiTypography-root { font-size: 11px; line-height: 18px; color: #8290a4; white-space: nowrap; }
+.execution-copy-creation > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.execution-copy-creation time { flex-shrink: 0; }
+.execution-copy-creation time::before { content: '·'; margin-right: 8px; color: #bbc4d0; }
+.execution-copy-content .execution-copy-number { display: block; padding-right: 26px; font-size: 12px; line-height: 20px; color: #718096; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.execution-copy-number-action { position: absolute; right: 12px; top: 32px; }
+.execution-copy-number-action .MuiIconButton-root { width: 24px; height: 24px; color: #8290a4; }
+.execution-copy-number-action .MuiIconButton-root.Mui-disabled { color: #c4cbd5; }
+.execution-copy-number-action svg { font-size: 14px; }
+@keyframes execution-copy-added { from { background: #dcecff; } to { background: #f4f8fd; } }
+@media (prefers-reduced-motion: reduce) { .execution-copy-card { transition: none; animation: none; } }
+.execution-copy-create { margin-top: 14px; }
+.execution-copy-create h4 { font-size: 13px; font-weight: 600; margin-bottom: 12px; color: #243247; }
+.execution-copy-create .MuiFormHelperText-root { margin-left: 0; text-align: right; }
+.execution-copy-create-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 .execution-page .execution-copy-status { font-size: 11px; color: #718096; margin-top: 6px; }
 .execution-page .execution-quick-rail .MuiButton-root[aria-expanded="true"], .execution-page .execution-quick-rail .MuiButton-root[aria-pressed="true"] { color: #1677c8; background: #e8f2ff; }
 .execution-peek-backdrop { position: absolute; inset: 0 76px 0 0; z-index: 4; background: #24324720; border-radius: 8px; }
@@ -281,25 +320,32 @@
 .execution-page[data-compact="true"] .execution-form-actions { padding: 6px 12px; }
 .execution-page[data-compact="true"] .execution-form-canvas.is-fields > .MuiBox-root > .MuiBox-root { padding: 8px 14px; }
 .execution-page[data-compact="true"] .execution-form-canvas.is-fields > .MuiBox-root > .MuiBox-root > .MuiBox-root > .MuiBox-root > .MuiTypography-root { margin-bottom: 8px; padding-bottom: 4px; }
-.execution-form-drawer .MuiDrawer-paper { width: min(420px, 100%); }
-.execution-form-selector-heading { display: flex; align-items: center; gap: 4px; flex: 0 0 40px; padding: 0 12px; border-bottom: 1px solid #dce3ed; }
-.execution-form-selector-heading h2 { flex: 1; font-size: 14px; font-weight: 600; }
+.execution-form-drawer .MuiDrawer-paper { width: min(380px, 100%); }
 .execution-form-source-tabs { flex-shrink: 0; min-height: 40px; border-bottom: 1px solid #dce3ed; }
 .execution-form-source-tabs .MuiTab-root { min-height: 40px; min-width: 0; padding: 8px 6px; font-size: 12px; }
 .execution-form-selector-search { display: flex; align-items: center; gap: 8px; margin: 10px 12px; color: #8091aa; }
 .execution-form-selector-search .MuiTextField-root { flex: 1; }
 .execution-form-selector-search input { padding: 7px 8px; font-size: 12px; }
 .execution-form-selector-hint.MuiTypography-root { margin: 10px 12px; color: #8091aa; font-size: 12px; line-height: 1.6; }
-.execution-form-selector-list { min-height: 0; overflow: auto; padding: 0 12px 12px; }
-.execution-form-selector-row { position: relative; border-bottom: 1px solid #e3e9f1; border-left: 3px solid transparent; }
-.execution-form-selector-row.is-selected { background: #edf5ff; border-left-color: #1976d2; }
-.execution-form-selector-target { display: flex; flex-direction: column; width: 100%; gap: 8px; border: 0; padding: 12px 10px; background: transparent; color: #263650; text-align: left; cursor: pointer; font: inherit; }
+.execution-form-selector-list { flex: 1; min-height: 0; overflow: auto; padding: 0; background: white; }
+.execution-form-selector-row { position: relative; border-bottom: 1px solid #edf0f4; }
+.execution-form-selector-row.is-selected { background: #f4f8fd; }
+.execution-form-selector-target { display: flex; flex-direction: column; width: 100%; height: 87px; box-sizing: border-box; gap: 2px; border: 0; padding: 12px 16px 12px 40px; background: transparent; color: #35465e; text-align: left; cursor: pointer; font: inherit; }
 .execution-form-selector-target:hover { background: #f3f7fc; }
 .execution-form-selector-target:focus-visible { outline: 2px solid #1976d2; outline-offset: -2px; }
-.execution-form-selector-name { font-size: 13px; line-height: 20px; font-weight: 600; overflow-wrap: anywhere; }
-.execution-form-selector-meta { display: flex; flex-wrap: wrap; gap: 4px 16px; color: #8091aa; font-size: 12px; line-height: 18px; }
-.execution-form-selector-facts { display: flex; gap: 12px; align-items: center; padding-right: 95px; font-size: 12px; line-height: 20px; color: #667890; }
-.execution-form-selector-facts .is-required { color: #ad6523; }
+.execution-form-selector-title-row { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; }
+.execution-form-selector-name { flex: 1; min-width: 0; font-size: 13px; line-height: 20px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.execution-form-selector-row.is-selected .execution-form-selector-name { color: #1677c8; }
+.execution-form-selector-title-row .execution-form-status { flex-shrink: 0; font-size: 11px; line-height: 20px; white-space: nowrap; }
+.execution-form-selector-code { max-width: 100%; font-size: 12px; line-height: 20px; color: #718096; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.execution-form-selector-meta { display: flex; gap: 8px; max-width: calc(100% - 40px); color: #8290a4; font-size: 11px; line-height: 18px; }
+.execution-form-selector-meta > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.execution-form-selector-meta > span:last-child { flex-shrink: 0; }
+.execution-form-selector-meta > span + span::before { content: '·'; margin-right: 8px; color: #bbc4d0; }
+.execution-form-selector-row .execution-form-corner { top: 0; left: 0; right: auto; bottom: auto; border-radius: 0 0 6px 0; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+.execution-form-selector-row .execution-form-corner[data-required="true"] { padding: 1px 5px; font-size: 10px; line-height: 16px; }
+.execution-form-selector-row:has(.execution-form-editor-avatars) .execution-form-selector-meta { max-width: calc(100% - 142px); }
+.execution-form-selector-row .execution-form-editor-avatars { right: 56px; }
 .execution-form-editor-avatars { position: absolute; right: 8px; bottom: 10px; display: flex; align-items: center; padding: 0; border: 0; border-radius: 14px; background: transparent; cursor: pointer; }
 .execution-form-editor-avatars .MuiAvatar-root { width: 24px; height: 24px; box-sizing: border-box; border: 2px solid #fff; background: #e4edf7; color: #526c8a; font-size: 11px; font-weight: 500; }
 .execution-form-editor-avatars .MuiAvatar-root + .MuiAvatar-root { margin-left: -7px; }

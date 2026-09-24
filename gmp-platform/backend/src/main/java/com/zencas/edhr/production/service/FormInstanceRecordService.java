@@ -23,6 +23,17 @@ public class FormInstanceRecordService {
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
 
+    @Transactional(readOnly = true)
+    public void projectCreationMetadata(Long objectId, String tenantId, ObjectNode state) {
+        jdbc.query("SELECT operation_id,copy_id,created_by,created_at FROM form_instance_record WHERE tenant_id=? AND object_id=? AND legacy=FALSE",
+                (org.springframework.jdbc.core.RowCallbackHandler) rs -> {
+                    JsonNode copy = state.path("operations").path(rs.getString("operation_id")).path("forms").path(rs.getString("copy_id"));
+                    if (!(copy instanceof ObjectNode entry) || entry.hasNonNull("explicitCreatedAt")) return;
+                    if (!entry.hasNonNull("createdAt") && rs.getTimestamp("created_at") != null) entry.put("createdAt", rs.getTimestamp("created_at").toLocalDateTime().toString());
+                    if (!entry.hasNonNull("createdByName")) entry.put("createdByName", rs.getString("created_by"));
+                }, tenantId, objectId);
+    }
+
     // Called inside the locked production execution transaction; a failed action cannot allocate a visible record.
     @Transactional
     public void saved(Long objectId, String tenantId, JsonNode snapshot, ObjectNode state,

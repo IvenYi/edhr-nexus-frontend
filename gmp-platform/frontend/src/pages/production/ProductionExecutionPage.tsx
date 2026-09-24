@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom';
-import { Alert, Box, Button, Chip, CircularProgress, ClickAwayListener, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
+import { Alert, Box, Button, Chip, CircularProgress, ClickAwayListener, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { ArrowForwardRounded, CheckCircleRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
@@ -18,10 +18,11 @@ import './ProductionExecutionPage.css';
 import { executionRouteLinks } from './executionRouteLinks';
 import ExecutionQuickPanel, { type ExecutionPanelId } from './ExecutionQuickPanel';
 import ExecutionOperationDrawer from './ExecutionOperationDrawer';
+import ExecutionCopyDrawer from './ExecutionCopyDrawer';
 import ExecutionProductDetails from './ExecutionProductDetails';
 import ExecutionFormSelector from './ExecutionFormSelector';
 import useExecutionPresence from './useExecutionPresence';
-import { executionHistoryGroups } from './executionHistory';
+import { executionFormReceipt, executionHistoryGroups } from './executionHistory';
 
 const labels: Record<string, string> = { CREATED: '待开工', IN_PROGRESS: '进行中', IN_PROCESS: '进行中', COMPLETED: '已完成', PENDING: '待开工', ACTIVE: '待处理', RUNNING: '进行中', CANCELLED: '已取消', EARLY_TERMINATED: '已提前结束', CLOSED: '已关闭' };
 const time = (value?: string) => value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
@@ -60,6 +61,11 @@ export default function ProductionExecutionPage() {
   const [signing, setSigning] = useState<(ExecutionButton & { signatureTarget?: SignatureTarget }) | null>(null);
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
+  const signaturePasswordError = Boolean(signing?.signatureTarget) && error === '电子签名密码错误';
+  const signaturePasswordRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (signaturePasswordError && !busy) signaturePasswordRef.current?.focus();
+  }, [signaturePasswordError, busy]);
   const [opinion, setOpinion] = useState('');
   const [documentId, setDocumentId] = useState('');
   const [documentUrl, setDocumentUrl] = useState('');
@@ -131,6 +137,7 @@ export default function ProductionExecutionPage() {
   const instanceIds = copies?.instanceIds ?? (opState?.forms[formId] ? [formId] : []);
   const selectedInstanceId = instanceIds.includes(instanceId) ? instanceId : instanceIds[0] ?? formId;
   const formState = opState?.forms[selectedInstanceId];
+  const formReceipt = executionFormReceipt(view?.state.history ?? [], operationId, formId, selectedInstanceId, formState?.savedAt);
   const formStatus = copies?.status ?? formState?.status ?? 'PENDING';
   const formStatusLabel = formStatus === 'COMPLETED' ? '已完成'
     : formStatus === 'WAITING_OPERATION_START' ? '待工序开工'
@@ -291,11 +298,13 @@ export default function ProductionExecutionPage() {
     if (params.get('autoScan') === '1') void load(false, requestedBarcode);
   }, [location.search, view]);
   const act = async (command: Omit<ExecutionCommand, 'revision' | 'operationId'>) => {
-    if (!view || !context || busyRef.current) return;
+    if (!view || !context || busyRef.current) return false;
     busyRef.current = true; setBusy(true); setError(''); setNotice('');
     try {
       const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId });
-      receive(next); setSigning(null); setPassword(''); setOpinion('');
+      if (command.action === 'UPDATE_FORM_COPY_REMARK') setView(next);
+      else receive(next);
+      setSigning(null); setPassword(''); setOpinion('');
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: ['form-management-global-list'] }),
         queryClient.invalidateQueries({ queryKey: ['form-filling-worklist'] }),
@@ -307,7 +316,8 @@ export default function ProductionExecutionPage() {
         chooseForm(command.formId, next, operationId, ids?.[ids.length - 1]);
       }
       setNotice(command.action === 'COMPLETE' ? next.objectStatus === 'COMPLETED' ? '全部工序已完成，当前生产对象已完工。可扫描下一个条码。' : '工序已完工，执行记录已保存。请选择下一道可执行工序。' : '操作成功，执行记录已保存。');
-    } catch (reason) { setError(errorText(reason)); setPassword(''); }
+      return true;
+    } catch (reason) { setError(errorText(reason)); setPassword(''); return false; }
     finally { busyRef.current = false; setBusy(false); }
   };
   const formAction = (button: ExecutionButton) => {
@@ -522,7 +532,7 @@ export default function ProductionExecutionPage() {
                   <Tooltip title="按字段填报" placement="top" arrow><button type="button" aria-label="按字段填报" aria-pressed={layout === 'fields'} onClick={() => setLayout('fields')}><ViewListOutlined /></button></Tooltip>
                   <Tooltip title="按表单填报" placement="top" arrow><button type="button" aria-label="按表单填报" aria-pressed={layout === 'canvas'} onClick={() => setLayout('canvas')}><TableChartOutlined /></button></Tooltip>
                 </Box>
-                {formState?.savedAt && <Typography variant="caption" color="text.secondary">已暂存 {time(formState.savedAt)}</Typography>}
+                {formReceipt && <Typography variant="caption" color="text.secondary">{formReceipt.label} {time(formReceipt.at)}</Typography>}
                 {formStatus === 'WAITING_OPERATION_START' && <Typography variant="caption" color="text.secondary">计划预览，工序开工后可填报</Typography>}
                 {formStatus === 'WAITING_WORK_NODE' && <Typography variant="caption" color="text.secondary">计划预览，作业流程到达后可填报</Typography>}
                 </Box>
@@ -541,38 +551,24 @@ export default function ProductionExecutionPage() {
       copies={available?.formCopies ?? {}} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachForm)} operationStatus={opState?.status} workStates={opState?.works} editors={editors}
       onSelect={id => { setFormDrawerOpen(false); if (id !== formId) protect(() => { chooseForm(id); setActivePanel(null); }); }}
       onAttach={(templateVersionId, required) => { setFormDrawerOpen(false); protect(() => void act({ action: 'ATTACH_FORM', templateVersionId, required })); }} />
-    <Drawer anchor="left" open={copyDrawerOpen} onClose={() => setCopyDrawerOpen(false)} container={() => rootRef.current} className="execution-operation-drawer execution-copy-drawer"
-      PaperProps={{ role: 'dialog', 'aria-modal': true, 'aria-labelledby': 'execution-copy-drawer-title', id: 'execution-copy-drawer' }}>
-      <Box className="execution-drawer-heading"><Typography component="h2" id="execution-copy-drawer-title">切换份序</Typography><IconButton aria-label="关闭份序抽屉" onClick={() => setCopyDrawerOpen(false)}><CloseRounded /></IconButton></Box>
-      <Box className="execution-copy-drawer-summary"><Typography className="execution-current-form-name">{form?.name}</Typography><Typography variant="caption" color="text.secondary">共 {Math.max(1, instanceIds.length)} 份</Typography></Box>
-      <List className="execution-navigation-list execution-copy-drawer-list" aria-label="当前表单份序">
-        {(instanceIds.length ? instanceIds : [formId]).map((id, index) => {
-          const status = opState?.forms[id]?.status ?? 'PENDING';
-          const selected = id === selectedInstanceId;
-          return <ListItemButton component="button" type="button" key={id} selected={selected} aria-current={selected ? 'true' : undefined} disabled={busy} onClick={() => {
-            setCopyDrawerOpen(false);
-            if (!selected) protect(() => chooseForm(formId, view, operationId, id));
-          }}><Box className="execution-copy-drawer-row"><Typography component="span" className="execution-navigation-name">第 {index + 1} 份</Typography><Typography component="span" className="execution-form-status" data-status={status}>{status === 'COMPLETED' ? '已完成' : status === 'PENDING' ? '未填报' : '进行中'}</Typography></Box>
-            {selected && <Typography component="span" className="execution-navigation-detail">当前选中</Typography>}
-          </ListItemButton>;
-        })}
-      </List>
-      <Box className="execution-copy-drawer-actions"><Button variant="outlined" fullWidth size="small" disabled={busy || !copies?.canAdd} onClick={() => {
-        setCopyDrawerOpen(false);
-        protect(() => void act({ action: 'ADD_FORM_COPY', formId }));
-      }}>新增一份</Button></Box>
-    </Drawer>
+    <ExecutionCopyDrawer open={copyDrawerOpen} onClose={() => setCopyDrawerOpen(false)} container={() => rootRef.current}
+      formName={form?.name ?? ''} instanceIds={instanceIds} forms={opState?.forms ?? {}} selectedId={selectedInstanceId}
+      busy={busy} canAdd={Boolean(copies?.canAdd)} beforeAdd={open => protect(() => { chooseForm(formId, view, operationId, selectedInstanceId); open(); })}
+      onSelect={id => { setCopyDrawerOpen(false); if (id !== selectedInstanceId) protect(() => chooseForm(formId, view, operationId, id)); }}
+      onAdd={remark => act({ action: 'ADD_FORM_COPY', formId, remark })}
+      canEditRemark={Boolean(copies?.canEditRemark)} onEditRemark={(instanceId, remark) => act({ action: 'UPDATE_FORM_COPY_REMARK', formId, instanceId, remark })}
+      onCopyResult={success => success ? setNotice('表单实例号已复制') : setError('复制失败，请重试')} />
     <Snackbar open={Boolean(error) && !signing} autoHideDuration={4000} onClose={(_, reason) => { if (reason !== 'clickaway') setError(''); }} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="error" onClose={() => setError('')} sx={{ maxWidth: 480 }}>{error}</Alert></Snackbar>
     <Snackbar open={Boolean(notice)} autoHideDuration={6000} onClose={() => setNotice('')} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="success" onClose={() => setNotice('')} sx={{ maxWidth: 480 }}>{notice}</Alert></Snackbar>
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText="已知晓，工序完工" cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: 'COMPLETE', acknowledgeIncomplete: true }); }} />
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" destructive open={Boolean(pendingSwitch)} title="当前表单尚未保存" message={`${context?.objectNo ?? ''} · ${op?.name ?? ''} · ${form?.name ?? '当前表单'}：切换会丢弃未保存内容。可以返回继续填写并保存，或放弃修改后切换。`} confirmText="放弃修改并切换" cancelText="返回表单" onCancel={() => { setPendingSwitch(null); setOperationDrawerOpen(false); }} onConfirm={() => { const next = pendingSwitch; setPendingSwitch(null); setDirty(false); next?.(); }} />
-    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setPassword(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.signatureTarget ? '签署签名' : signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
+    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setPassword(''); setError(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.signatureTarget ? '签署签名' : signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
       {!signing?.signatureTarget && <Box sx={{ p: 1.5, bgcolor: '#f3f6fa', borderRadius: 1 }}><Typography variant="body2" fontWeight={600}>{context?.objectNo}</Typography><Typography variant="body2" color="text.secondary">{op?.name} · {form?.name} · 第 {instanceIds.indexOf(selectedInstanceId) + 1} 份</Typography><Typography variant="caption" color="text.secondary">本次操作：{signing?.label}</Typography></Box>}
-      {signing?.signatureTarget ? <><Typography variant="body2" color="text.secondary">签名将保存当前内容并使用您已认证的签名图片。修改本份内容后需重新签名；表单仍需单独提交。</Typography><TextField autoFocus label="电子签名密码" value={password} autoComplete="off" type="password" onChange={(event) => setPassword(event.target.value)} disabled={busy} /></> : <>
+      {signing?.signatureTarget ? <><Typography variant="body2" color="text.secondary">签名将保存当前内容并使用您已认证的签名图片。修改本份内容后需重新签名；表单仍需单独提交。</Typography><TextField autoFocus inputRef={signaturePasswordRef} label="电子签名密码" value={password} autoComplete="off" type="password" error={signaturePasswordError} helperText={signaturePasswordError ? error : undefined} onChange={(event) => { setPassword(event.target.value); if (signaturePasswordError) setError(''); }} disabled={busy} /></> : <>
         {signing?.requiresSignature && <><TextField label="当前操作人账户" value={account} autoComplete="username" onChange={(event) => setAccount(event.target.value)} disabled={busy} /><TextField label="账户密码" value={password} autoComplete="current-password" type="password" onChange={(event) => setPassword(event.target.value)} disabled={busy} /></>}
         <TextField label="操作意见" required={signing?.requireOpinion} value={opinion} onChange={(event) => setOpinion(event.target.value)} multiline minRows={2} disabled={busy} />
       </>}
-      {error && <Alert severity="error">{error}</Alert>}</Stack></DialogContent><DialogActions><Button disabled={busy} onClick={() => { setSigning(null); setPassword(''); }}>取消</Button><Button variant="contained" disabled={busy || (signing?.signatureTarget && !password) || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void act({ action: signing.action, formId, instanceId: selectedInstanceId, values, ...(signing.signatureTarget ? { signatureTarget: signing.signatureTarget, password } : { account, password, opinion }) }); }}>{busy ? '正在处理…' : signing?.signatureTarget ? '确认签名' : '确认'}</Button></DialogActions></AppDialog>
+      {error && !signaturePasswordError && <Alert severity="error">{error}</Alert>}</Stack></DialogContent><DialogActions><Button disabled={busy} onClick={() => { setSigning(null); setPassword(''); setError(''); }}>取消</Button><Button variant="contained" disabled={busy || (signing?.signatureTarget && !password) || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void act({ action: signing.action, formId, instanceId: selectedInstanceId, values, ...(signing.signatureTarget ? { signatureTarget: signing.signatureTarget, password } : { account, password, opinion }) }); }}>{busy ? '正在处理…' : signing?.signatureTarget ? '确认签名' : '确认'}</Button></DialogActions></AppDialog>
   </Box>;
 }
 function ConditionList({ issues, emptyText, met = false }: { issues: string[]; emptyText: string; met?: boolean }) {
