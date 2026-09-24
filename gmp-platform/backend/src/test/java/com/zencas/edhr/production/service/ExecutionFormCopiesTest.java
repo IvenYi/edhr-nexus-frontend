@@ -18,12 +18,64 @@ class ExecutionFormCopiesTest {
         when(access.permissions(any(), any(), any(), any())).thenReturn(mapper.createObjectNode().put("good", "EDIT").put("ng", "EDIT").put("scrap", "EDIT"));
     }
 
+    @Test void remarkEditingPreservesCompletedAndActiveCopyContentAndIdentity() throws Exception {
+        var snapshot = snapshot(true); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "op", "user");
+        save(snapshot, state, "f", "SUBMIT", 10);
+        engine.addFormCopy(snapshot, state, "op", "f", "user", "追加检验");
+        for (String id : new String[] {"f", "f:copy:2"}) {
+            ObjectNode copy = (ObjectNode) current(state).path("forms").path(id);
+            copy.putObject("fieldSignatures").put("signature", "existing-signature");
+            var expected = current(state).deepCopy();
+            ((ObjectNode) expected.path("forms").path(id)).put("remark", "复检说明");
+            engine.updateFormCopyRemark(snapshot, state, "op", "f", id, "user", "  复检说明  ");
+            assertThat(current(state)).isEqualTo(expected);
+        }
+    }
+
+    @Test void invalidRemarkEditsCannotMutateState() throws Exception {
+        var snapshot = snapshot(true); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "op", "user");
+        var before = state.deepCopy();
+        for (String remark : new String[] {null, "", " \n\t", "x".repeat(501)}) {
+            assertThatThrownBy(() -> engine.updateFormCopyRemark(snapshot, state, "op", "f", "f", "user", remark)).hasMessageContaining("备注");
+            assertThat(state).isEqualTo(before);
+        }
+        for (String id : new String[] {null, "foreign-copy"}) {
+            assertThatThrownBy(() -> engine.updateFormCopyRemark(snapshot, state, "op", "f", id, "user", "备注")).hasMessageContaining("份序");
+            assertThat(state).isEqualTo(before);
+        }
+        when(access.canAct(any(), any(), any(), any())).thenReturn(false);
+        assertThatThrownBy(() -> engine.updateFormCopyRemark(snapshot, state, "op", "f", "f", "other", "备注")).hasMessageContaining("不允许");
+        assertThat(state).isEqualTo(before);
+        when(access.canAct(any(), any(), any(), any())).thenReturn(true);
+        save(snapshot, state, "f", "SUBMIT", 10);
+        engine.complete(snapshot, state, "op", "user");
+        var finished = state.deepCopy();
+        assertThatThrownBy(() -> engine.updateFormCopyRemark(snapshot, state, "op", "f", "f", "user", "备注")).hasMessageContaining("不在执行中");
+        assertThat(state).isEqualTo(finished);
+    }
+
+    @Test void copyRemarkIsRequiredAndValidatedBeforeCreatingAnything() throws Exception {
+        var snapshot = snapshot(true); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "op", "user");
+        var before = state.deepCopy();
+        for (String remark : new String[] {null, "", " \n\t", "x".repeat(501)}) {
+            assertThatThrownBy(() -> engine.addFormCopy(snapshot, state, "op", "f", "user", remark)).hasMessageContaining("备注");
+            assertThat(state).isEqualTo(before);
+        }
+        engine.addFormCopy(snapshot, state, "op", "f", "user", "  第二次抽样\n复核  ");
+        assertThat(current(state).at("/forms/f:copy:2/remark").asText()).isEqualTo("第二次抽样\n复核");
+        assertThat(current(state).at("/forms/f:copy:2/values").isEmpty()).isTrue();
+        assertThat(state.path("history").toString()).contains("第二次抽样");
+    }
+
     @Test void copiesAreIndependentAndSumSavedIncrementsWithoutDoubleCounting() throws Exception {
         var snapshot = snapshot(true); var state = engine.initialState(snapshot);
         engine.start(snapshot, state, "op", "user");
         save(snapshot, state, "f", "SUBMIT", 10);
         assertThat(engine.canManageCopies(form(snapshot), current(state), "user")).isTrue();
-        engine.addFormCopy(snapshot, state, "op", "f", "user");
+        engine.addFormCopy(snapshot, state, "op", "f", "user", "追加检验");
         assertThat(current(state).at("/forms/f:copy:2/values").isEmpty()).isTrue();
         save(snapshot, state, "f:copy:2", "SAVE", 12);
         assertThat(current(state).at("/forms/f/values/good").asInt()).isEqualTo(10);
@@ -36,7 +88,7 @@ class ExecutionFormCopiesTest {
         assertThat(engine.canManageCopies(form(snapshot), current(state), "user")).isTrue();
         engine.complete(snapshot, state, "op", "user");
         assertThat(current(state).at("/formGroups/f/endedReason").asText()).isEqualTo("OPERATION_COMPLETE");
-        assertThatThrownBy(() -> engine.addFormCopy(snapshot, state, "op", "f", "user")).hasMessageContaining("不在执行中");
+        assertThatThrownBy(() -> engine.addFormCopy(snapshot, state, "op", "f", "user", "追加检验")).hasMessageContaining("不在执行中");
         assertThat(ExecutionFormCopies.status(current(state), "f")).isEqualTo("COMPLETED");
     }
 
@@ -44,7 +96,7 @@ class ExecutionFormCopiesTest {
         var snapshot = snapshot(false); var state = engine.initialState(snapshot);
         engine.start(snapshot, state, "op", "user");
         save(snapshot, state, "f", "SUBMIT", 10);
-        engine.addFormCopy(snapshot, state, "op", "f", "user");
+        engine.addFormCopy(snapshot, state, "op", "f", "user", "追加检验");
         save(snapshot, state, "f:copy:2", "SAVE", 12);
         assertThatThrownBy(() -> engine.complete(snapshot, state, "op", "user")).hasMessageContaining("告知");
         engine.complete(snapshot, state, "op", "user", true);
@@ -62,7 +114,7 @@ class ExecutionFormCopiesTest {
         engine.start(snapshot, state, "op", "user");
         assertThatThrownBy(() -> save(snapshot, state, "other:copy:2", "SAVE", 4)).hasMessageContaining("不属于");
         when(access.canAct(any(), any(), any(), any())).thenReturn(false);
-        assertThatThrownBy(() -> engine.addFormCopy(snapshot, state, "op", "f", "other")).hasMessageContaining("不允许");
+        assertThatThrownBy(() -> engine.addFormCopy(snapshot, state, "op", "f", "other", "追加检验")).hasMessageContaining("不允许");
         assertThatThrownBy(() -> engine.endForm(snapshot, state, "op", "f", true, "other")).hasMessageContaining("不允许");
         assertThat(ExecutionFormCopies.ids(current(state), "f")).containsExactly("f");
     }
@@ -114,7 +166,7 @@ class ExecutionFormCopiesTest {
     @Test void workFormAdvancesOnlyAfterEveryExistingCopyIsComplete() throws Exception {
         var snapshot = workSnapshot(); var state = engine.initialState(snapshot);
         engine.start(snapshot, state, "op", "user");
-        engine.addFormCopy(snapshot, state, "op", "f", "user");
+        engine.addFormCopy(snapshot, state, "op", "f", "user", "追加检验");
         save(snapshot, state, "f", "SUBMIT", 10);
         assertThat(current(state).at("/works/w/active/0").asText()).isEqualTo("entry");
         save(snapshot, state, "f:copy:2", "SAVE", 12);

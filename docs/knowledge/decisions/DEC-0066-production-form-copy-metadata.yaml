@@ -1,0 +1,51 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0066
+    title: 生产表单份备注与创建信息呈现
+    status: specified
+    visibility: internal
+    context: user-confirmed；DEC-PACKAGE-20260921-FORM-COPY-METADATA 确认生产工作台切换份序抽屉展示各份备注及真实创建信息，新增时填写该份备注；2026-09-24 同一功能切片补充悬浮备注显示编辑入口，覆盖截图中的已完成份及进行中份。复用既有表单份和实例概念，补充 DEC-0046 的按需新增交互；不改变 DEC-0050 实例身份分配契约或 DEC-0059 完工规则。当前实现与独立质量验证进行中，保持 specified/internal。
+    decisionStatements:
+      - id: DEC-0066-01
+        statement: 新增表单份时必须填写该份备注，备注归属于该份独立元数据，与表单模板字段值分开保存；取消新增不创建份，创建成功后选中新份。
+        status: specified
+        visibility: internal
+      - id: DEC-0066-02
+        statement: 切换份序抽屉展示表单名称和总份数，突出新增入口；每份展示份序、备注、创建人、创建时间、可复制的表单实例号及状态，并突出当前选中份。复制实例号不切换当前份。
+        status: specified
+        visibility: internal
+      - id: DEC-0066-03
+        statement: 新增与读取份元数据继续遵守既有执行权限、执行状态、版本并发控制及审计事务；不更改签名、模板、表单值、提交或完工状态算法。
+        status: specified
+        visibility: internal
+      - id: DEC-0066-04
+        statement: 鼠标悬浮在份备注上时显示编辑图标，点击可修改该份备注；该交互覆盖进行中工序内截图所示的已完成份和进行中份，修改备注不切换当前选择的份。备注仍是独立说明，不作为模板业务字段内容或创建人、创建时间的修改。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-form-copy-metadata-confirmed, evidence.production-form-copy-metadata-design]
+    acceptanceScenarios:
+      - id: scenario.form-copy-metadata-create
+        given: 用户具备当前表单新增份资格且执行版本有效
+        when: 填写该份备注并确认新增
+        then: 新份独立保存备注与真实创建信息，重新读取保持一致，页面选中新份且份数增加
+        evidenceIds: [evidence.production-form-copy-metadata-confirmed]
+        evidenceRequirements: [服务端备注校验, API持久化重读, 事务审计, 页面新增与选中验证]
+      - id: scenario.form-copy-metadata-rejection
+        given: 新增备注为空或用户无新增资格或执行版本已过期
+        when: 请求新增表单份
+        then: 拒绝请求且不新增份或成功审计；取消新增也不创建份
+        evidenceIds: [evidence.production-form-copy-metadata-confirmed]
+        evidenceRequirements: [权限与版本回归, 空白备注校验, 审计失败回滚, 取消交互验证]
+      - id: scenario.form-copy-metadata-selection
+        given: 抽屉有多份表单并已选中其中一份
+        when: 查看卡片或复制另一份实例号
+        then: 当前选中份始终清晰可辨，复制不会切换当前份，展示信息只来自真实记录
+        evidenceIds: [evidence.production-form-copy-metadata-confirmed, evidence.form-instance-number-user-decision]
+        evidenceRequirements: [当前份高亮验证, 复制事件隔离, 历史缺失信息兼容]
+      - id: scenario.form-copy-remark-edit
+        given: 切换份序抽屉展示已完成份和进行中份且当前仍处于进行中的工序
+        when: 悬浮其中一份备注并点击编辑图标修改备注
+        then: 可修改指定份的独立备注，保存后重新读取仍显示新备注，当前选中份不切换，表单字段、已有签名及真实创建信息保持不变
+        evidenceIds: [evidence.production-form-copy-metadata-confirmed]
+        evidenceRequirements: [已完成份及进行中份编辑, 悬浮及点击验证, 持久化重读, 备注与字段和签名隔离, 同事务修改审计]

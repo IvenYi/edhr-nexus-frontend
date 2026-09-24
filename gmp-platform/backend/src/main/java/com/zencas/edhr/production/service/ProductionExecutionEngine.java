@@ -455,18 +455,36 @@ public class ProductionExecutionEngine {
         history(state, op, "追加补录", operator, reason).put("actionCode", "SUPPLEMENT").put("formId", formId).put("copyId", copyId);
     }
 
-    public void addFormCopy(JsonNode snapshot, ObjectNode state, String operationId, String formId, String operator) {
+    public void addFormCopy(JsonNode snapshot, ObjectNode state, String operationId, String formId, String operator, String remark) {
         JsonNode op = find(snapshot.path("operations"), operationId);
         ObjectNode current = requireInProgress(state, operationId);
         JsonNode form = find(op.path("forms"), formId);
         if (!canManageCopies(form, current, operator)) throw invalid("当前用户或表单阶段不允许新增份");
+        if (remark == null || remark.isBlank()) throw invalid("请填写本份备注");
+        remark = remark.strip();
+        if (remark.length() > 500) throw invalid("本份备注不能超过500个字符");
         ObjectNode group = ExecutionFormCopies.ensureGroup(current, formId);
         int sequence = group.path("instanceIds").size() + 1;
         String instanceId = formId + ":copy:" + sequence;
         initializeForm(form, current.withObject("/forms").putObject(instanceId));
-        ((ObjectNode) current.path("forms").path(instanceId)).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString());
+        ((ObjectNode) current.path("forms").path(instanceId)).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString()).put("remark", remark);
         ((ArrayNode) group.path("instanceIds")).add(instanceId);
-        history(state, op, "新增表单份", operator, form.path("name").asText() + " · 第 " + sequence + " 份 · " + instanceId);
+        history(state, op, "新增表单份", operator, form.path("name").asText() + " · 第 " + sequence + " 份 · " + instanceId + " · " + remark);
+    }
+
+    public void updateFormCopyRemark(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId, String operator, String remark) {
+        JsonNode op = find(snapshot.path("operations"), operationId);
+        ObjectNode current = requireInProgress(state, operationId);
+        JsonNode form = find(op.path("forms"), formId);
+        if (!canManageCopies(form, current, operator)) throw invalid("当前用户或表单阶段不允许修改备注");
+        List<String> ids = ExecutionFormCopies.ids(current, formId);
+        if (instanceId == null || !ids.contains(instanceId)) throw invalid("请选择本表单的有效份序");
+        if (remark == null || remark.isBlank()) throw invalid("请填写本份备注");
+        remark = remark.strip();
+        if (remark.length() > 500) throw invalid("本份备注不能超过500个字符");
+        ((ObjectNode) current.path("forms").path(instanceId)).put("remark", remark);
+        history(state, op, "修改表单份备注", operator, form.path("name").asText() + " · 第 " + (ids.indexOf(instanceId) + 1) + " 份 · " + remark)
+                .put("actionCode", "UPDATE_FORM_COPY_REMARK").put("formId", formId).put("copyId", instanceId);
     }
 
     public void endForm(JsonNode snapshot, ObjectNode state, String operationId, String formId, boolean acknowledged, String operator) {

@@ -12,8 +12,11 @@ rules:
       action: production-form.add-copy
       target: productionFormCopy
       effect: create-independent-copy
-    explanation: user-confirmed；操作员在填报阶段按需新增同一表单的份数，不采用预先配置固定份数；每份独立保存、提交。DEC-0059 将结束时点区分为普通表单随工序完工结束、作业表单所有已有份最终完成后自动结束并推进，因此新增仅在本表单填报仍开放时适用；作业表单最后一份最终完成后不再保留显式结束前的新增窗口。稳定标识和序号的具体存储属于实现设计，不据此新增默认份数或复制上一份业务值的规则。
-    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed]
+      requiredInput: copyRemark
+      metadataScope: productionFormCopy
+      preserveExistingPermissionsAndRevision: true
+    explanation: user-confirmed；操作员在填报阶段按需新增同一表单的份数，不采用预先配置固定份数；每份独立保存、提交。DEC-0059 将结束时点区分为普通表单随工序完工结束、作业表单所有已有份最终完成后自动结束并推进，因此新增仅在本表单填报仍开放时适用；作业表单最后一份最终完成后不再保留显式结束前的新增窗口。DEC-0066 补充新增份须填写本份备注，备注独立于模板业务字段值保存，取消不创建，成功后选中新份；沿用原权限、版本控制和审计事务。稳定标识和序号的具体存储属于实现设计，不据此新增默认份数或复制上一份业务值的规则。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed, evidence.production-form-copy-metadata-confirmed]
   - id: rule.production-form-copy-required-completion
     name: 必填表单所有已创建份完成
     status: specified
