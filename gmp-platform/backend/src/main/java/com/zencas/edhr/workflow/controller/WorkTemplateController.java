@@ -846,7 +846,7 @@ public class WorkTemplateController {
             Set<String> fieldIds,
             String formTemplateVersionId,
             String formNodeLabel) {
-        if (bindings == null || bindings.isMissingNode() || bindings.isNull()) return;
+        if (bindings == null || bindings.isMissingNode() || bindings.isNull()) bindings = FLOW_GRAPH_OBJECT_MAPPER.createObjectNode();
         if (!bindings.isObject()) {
             throw new com.zencas.edhr.common.exception.BusinessException(
                     com.zencas.edhr.common.exception.ErrorCode.WF_002,
@@ -908,15 +908,10 @@ public class WorkTemplateController {
                     String signatureMethod = event.path("signatureMethod").asText("").trim();
                     String action = event.path("action").asText("").trim();
                     String phase = event.path("event").asText("").trim();
-                    // Older published versions predate the builtin field. Keep
-                    // their read compatibility aligned with the frontend and
-                    // form-process controller validation.
-                    boolean signatureEvent = (builtin.isBlank() || "FILL_SIGN_FIELD".equals(builtin))
+                    boolean signatureEvent = "FILL_SIGN_FIELD".equals(builtin)
                             && ("ACCOUNT_PASSWORD".equals(signatureMethod) || signatureMethod.isBlank());
-                    boolean fillsField = builtin.isBlank() || "FILL_SIGN_FIELD".equals(builtin);
                     if (event.path("enabled").asBoolean(true)
                             && signatureEvent
-                            && fillsField
                             && "BEFORE".equals(phase)
                             && ("SAVE".equals(action) || "SUBMIT".equals(action) || "APPROVE".equals(action) || "RETURN".equals(action))) {
                         String eventId = event.path("id").asText("").trim();

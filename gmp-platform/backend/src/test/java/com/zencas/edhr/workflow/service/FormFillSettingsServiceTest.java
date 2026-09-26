@@ -53,6 +53,13 @@ class FormFillSettingsServiceTest {
         service.validate(value, 1L);
     }
 
+    @Test void accountPasswordSignatureWithoutFieldFillDoesNotRequireAFieldBinding() throws Exception {
+        var value = direct();
+        ((ObjectNode) value.at("/directFillConfig/buttonEvents/0")).put("builtin", "NONE");
+        value.withObject("/directFillConfig").remove("eventBindings");
+        service.validate(value, 1L);
+    }
+
     @Test void rejectsUnknownFieldAndRemovedPermissionGroup() throws Exception {
         var value = direct();
         ((ObjectNode) value.at("/directFillConfig/fieldPermissions/start:g")).putArray("readOnlyFieldIds").add("missing");
@@ -90,5 +97,24 @@ class FormFillSettingsServiceTest {
         value.withObject("/directFillConfig").put("guardMode", "NONE");
         service.validate(value, 1L);
         assertThat(service.activeBinding(value)).isSameAs(value);
+    }
+
+    @Test void processModeBindsOnlyExplicitFieldFillEvents() throws Exception {
+        var value = direct().put("fillMode", "PROCESS").put("formProcessVersionId", "2");
+        value.remove("eventBindings");
+        var version = WorkflowDefinitionVersion.builder().id(2L).definitionId(3L).status("PUBLISHED")
+                .nodesJson("""
+                    [{"id":"start","data":{"kind":"START","config":{"buttonEvents":[
+                      {"id":"plain","event":"BEFORE","action":"SUBMIT","builtin":"NONE","signatureMethod":"ACCOUNT_PASSWORD"}]}}},
+                     {"id":"first","data":{"kind":"APPROVAL","config":{"buttonEvents":[
+                      {"id":"legacy","event":"BEFORE","action":"APPROVE","signatureMethod":"ACCOUNT_PASSWORD"}]}}},
+                     {"id":"last","data":{"kind":"APPROVAL","config":{"buttonEvents":[
+                      {"id":"fill","event":"BEFORE","action":"APPROVE","builtin":"FILL_SIGN_FIELD","signatureMethod":"ACCOUNT_PASSWORD"}]}}}]
+                    """).build();
+        when(versions.findById(2L)).thenReturn(Optional.of(version));
+        when(definitions.findById(3L)).thenReturn(Optional.of(WorkflowDefinition.builder().id(3L).type("FORM_PROCESS").build()));
+        assertThatThrownBy(() -> service.validate(value, 1L)).hasMessageContaining("签名字段");
+        value.withObject("/eventBindings").putObject("last:fill").put("fieldId", "sig");
+        service.validate(value, 1L);
     }
 }

@@ -1,3 +1,16 @@
+# DHR 填报与审批设计确认及证据边界
+
+知识基线：`0.3.24`；修订日期：2026-09-25；`specified/internal`。
+统一交接：DEC-PACKAGE-20260919-DHR-SUMMARY；原位修订 DEC-0068。
+
+user-confirmed：完整证据范围沿用 DEC-0063，审批冻结全部实例/附件、含人工逐项确认的检查结果及流程绑定，目录与来源是同版本视图。审批任务专属附件下载只对当前任务授权主体开放，且仅限该冻结版本包含的附件。NONE 不免法定审核、源签署或放行。系统检测有效来源变化（含新增关联实例及附件）并提示，阻断过时批准；人工退回或发起新版重审，旧批准保留。申请待审不等于生效，来源变更/作废仍归记录控制域。受控追加不重开生产，终止政策不变，实例日志与 DHR 审计分层关联。客户菜单名按 DEC-0070 使用 DHR审批。
+
+original-evidence：本轮读取 DhrSummaryService.submit、DhrReviewService.detail/act、DhrReviewController.attachment、DhrAttachmentService.downloadableFile 与 DhrEvidenceImpactService.changes，已有流程创建、任务授权、冻结版本成员校验、签署、批准和人工退回路径；聚焦测试源码覆盖无审批权限/任务拒绝时附件服务不被调用，尚无完整真实任务附件下载端到端证据。影响比较现已覆盖冻结表单、新增关联实例和受控附件，但未见生效事件主动通知、质量检查结果变化的完整比较及记录控制真实生效联调。具体差异见 DEC-0068 implementationDiscrepancies。
+
+secondary-reference：下列 2026-09-23 记录保留为历史时点；其“仅新增资产”“当前未实现”等说法不描述 2026-09-25 当前工作树，也不构成本轮校验结果。历史业务报告见 dhr-filling-review-implementation.md，新能力仍待运行验收；市场及 SOP 适用性是 evidenceGap，不阻塞本轮通用设计修订。
+
+---
+
 # DHR 填报与审核设计确认及证据边界
 
 知识基线：`0.3.24`；日期：2026-09-23；切片：`dhr-filling-review`；执行级别：L2。

@@ -1,13 +1,13 @@
 import { useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Stack, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
-import { ArticleOutlined, FolderOutlined, PreviewOutlined, RestartAlt, Search } from '@mui/icons-material';
+import { ArticleOutlined, AttachFileOutlined, DownloadOutlined, FolderOutlined, PreviewOutlined, RestartAlt, Search } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
 import { useAuthStore } from '@/stores/authStore';
-import { actDhrReview, getDhrReviewTask, listDhrReviewTasks, type DhrReviewTask } from '@/api/dhr-workbenches';
+import { actDhrReview, downloadDhrReviewAttachment, getDhrReviewTask, listDhrReviewTasks, type DhrReviewTask } from '@/api/dhr-workbenches';
 import type { ExecutionButton } from '@/api/production-execution';
 import { formListFieldSx, formListQueryGridSx, formListQueryPanelSx } from '@/pages/form-management/formManagementListStyles';
 import DhrWorklistTable from './DhrWorklistTable';
@@ -32,6 +32,7 @@ function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => v
   const query = useQuery({ queryKey: ['dhr-review', task.id], queryFn: () => getDhrReviewTask(task.id), staleTime: 0, refetchOnMount: 'always', refetchOnWindowFocus: false });
   const [nodeKey, setNodeKey] = useState(''), [recordId, setRecordId] = useState('');
   const [button, setButton] = useState<ExecutionButton | null>(null), [busy, setBusy] = useState(false);
+  const [attachmentsOpen, setAttachmentsOpen] = useState(false);
   const busyRef = useRef(false);
   const detail = query.data;
   const directoryNodes = useMemo(() => {
@@ -42,6 +43,11 @@ function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => v
         ...d.items.map(i => ({ key: `base-item-${i.id}`, name: i.displayName || i.formName || '表单', parent: `base-dir-${d.id}`, kind: 'item', rank: 1, order: i.sortOrder ?? 0 })),
       ]),
       ...detail.version.overlayDirectories.map(d => ({ key: d.key, name: d.name, parent: d.parentKey ?? '', kind: 'directory', rank: 2, order: d.sortOrder })),
+      ...(detail.version.evidenceModelVersion >= 2 ? [
+        { key: 'source-directory', name: '未匹配目录表单', parent: '', kind: 'directory', rank: 3, order: 0 },
+        { key: 'source-work', name: '作业表单', parent: '', kind: 'directory', rank: 4, order: 0 },
+        { key: 'source-custom', name: '自定义表单', parent: '', kind: 'directory', rank: 5, order: 0 },
+      ] : []),
     ];
     const byKey = new Map(nodes.map(n => [n.key, n]));
     const candidates = new Map(detail.version.candidates.map(r => [r.id, r]));
@@ -72,6 +78,21 @@ function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => v
   const record = detail?.version.candidates.find(r => r.id === activeRecordId) ?? null;
   const archivedName = record ? detail?.placements.find(p => p.recordId === record.id)?.displayName : undefined;
   const affected = detail?.evidenceChanges.length ?? 0;
+  const manualReview = detail?.version.checkResult?.manualReview;
+  const missingReview = Boolean(detail && detail.version.evidenceModelVersion >= 2
+    && (!manualReview?.qualityAndExceptionsReviewed || !manualReview.sourceSignaturesReviewed
+      || !manualReview.completeScopeReviewed || !manualReview.note?.trim()
+      || !manualReview.confirmedBy?.trim() || !manualReview.confirmedAt?.trim()));
+  const downloadAttachment = async (attachmentId: string, name: string) => {
+    try {
+      const blob = await downloadDhrReviewAttachment(task.id, attachmentId);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url; link.download = name;
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) { showMessage(errorText(error), 'error'); }
+  };
   const approve = async (credentials: { account: string; password: string; opinion: string }) => {
     if (!button || !detail || busyRef.current) return;
     busyRef.current = true; setBusy(true);
@@ -87,7 +108,7 @@ function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => v
   };
   return <>
     <AppDialog open fullScreen onClose={busy ? undefined : onClose}>
-      <DialogTitle>{task.dhrNo} · 汇总 V{task.versionNo}<Typography variant="caption" component="div" color="text.secondary">{task.objectNo} · {task.nodeName} · 查看本次提交的冻结证据</Typography></DialogTitle>
+      <DialogTitle><Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}><Box>{task.dhrNo} · 汇总 V{task.versionNo}<Typography variant="caption" component="div" color="text.secondary">{task.objectNo} · {task.nodeName} · 查看本次提交的冻结证据</Typography></Box>{detail && <Button variant="outlined" size="small" startIcon={<AttachFileOutlined />} onClick={() => setAttachmentsOpen(true)}>附件证据 {detail.version.attachments.length}</Button>}</Stack></DialogTitle>
       <DialogContent dividers sx={{ p: 0, display: 'flex', overflow: 'hidden' }}>
         {!detail ? <Box sx={{ m: 'auto', p: 3 }}>{query.isError ? <><Typography color="error">{errorText(query.error)}</Typography><Button onClick={() => query.refetch()}>重新加载</Button></> : '加载中…'}</Box> : <>
           <Box sx={{ width: { xs: 210, md: 300 }, flexShrink: 0, overflow: 'auto', borderRight: '1px solid #e4e7ed', p: 1 }}>
@@ -98,15 +119,29 @@ function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => v
             </Button>)}
           </Box>
           <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', bgcolor: '#f6f8f9' }}>
-            {affected > 0 && <Alert severity="warning">{affected} 份已纳入表单发生变化，本次冻结内容保持不变。请核对后退回整理，不能批准过时证据。{detail.evidenceChanges.map(c => <Typography key={c.recordId} variant="caption" component="div">{c.instanceNo}：{c.message}</Typography>)}</Alert>}
+            {affected > 0 && <Alert severity="warning">{affected} 项冻结证据或来源范围发生变化，本次冻结内容保持不变。请核对后退回整理，不能批准过时证据。{detail.evidenceChanges.map(c => <Typography key={c.recordId ?? `attachment-${c.attachmentId}`} variant="caption" component="div">{c.instanceNo || (c.attachmentId ? `附件 ${c.attachmentId}` : '证据')}：{c.message}</Typography>)}</Alert>}
+            {missingReview && <Alert severity="error">本版本提交核查结果不完整，不能批准；请退回整理。</Alert>}
+            {manualReview && <Box sx={{ px: 2, py: 1.25, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed' }}>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} flexWrap="wrap"><Typography variant="subtitle2">提交核查结果</Typography><Typography variant="caption" color="text.secondary">{manualReview.confirmedBy} · {manualReview.confirmedAt?.replace('T', ' ').slice(0, 19)}</Typography></Stack>
+              <Typography variant="body2" color="text.secondary">质量结论与异常处置：{manualReview.qualityAndExceptionsReviewed ? '已确认核查' : '未确认'} · 源审批签署：{manualReview.sourceSignaturesReviewed ? '已确认核查' : '未确认'} · 完整证据范围：{manualReview.completeScopeReviewed ? '已确认核查' : '未确认'}</Typography>
+              <Typography variant="body2" sx={{ mt: 0.5, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>核查说明：{manualReview.note}</Typography>
+              <Typography variant="caption" color="text.secondary">人工核查确认不等于系统自动判定合格，也不等于产品放行。</Typography>
+            </Box>}
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 2, py: 1, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed', minHeight: 48 }}><Typography variant="body2" noWrap>{record ? `${archivedName || record.templateName} · ${record.instanceNo}` : '请选择目录中的表单'}</Typography></Stack>
             <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: 2 }}><EvidenceCanvas record={record} emptyMessage="此目录没有直接归入的表单，请选择下级目录" /></Box>
           </Box>
         </>}
       </DialogContent>
-      <DialogActions><Typography variant="caption" color="text.secondary" sx={{ mr: 'auto', pl: 1 }}>{detail?.task.opinion || '审批通过不等同于产品放行'}</Typography><WorkflowActionButtons buttons={detail?.buttons.filter(b => !(affected && b.action === 'APPROVE'))} busy={busy} canAct={canAct && detail?.canAct && !query.isFetching && !query.isError} onAction={b => setButton({ ...b, requireOpinion: b.action === 'RETURN' || b.requireOpinion })} /></DialogActions>
+      <DialogActions><Typography variant="caption" color="text.secondary" sx={{ mr: 'auto', pl: 1 }}>{detail?.task.opinion || '审批通过不等同于产品放行'}</Typography><WorkflowActionButtons buttons={detail?.buttons.filter(b => !((affected || missingReview) && b.action === 'APPROVE'))} busy={busy} canAct={canAct && detail?.canAct && !query.isFetching && !query.isError} onAction={b => setButton({ ...b, requireOpinion: b.action === 'RETURN' || b.requireOpinion })} /></DialogActions>
     </AppDialog>
-    <DhrActionDialog button={button} busy={busy} initialOpinion={button?.action === 'RETURN' && affected ? `已纳入表单发生变化：${detail?.evidenceChanges.map(c => c.instanceNo).join('、')}。请重新整理并提交新汇总版本。` : ''} onCancel={() => setButton(null)} onConfirm={approve} />
+    <AppDialog open={attachmentsOpen} onClose={() => setAttachmentsOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>冻结附件证据</DialogTitle>
+      <DialogContent dividers>
+        {!detail?.version.attachments.length ? <Typography color="text.secondary">本次汇总无附件证据</Typography> : <Stack spacing={1}>{detail.version.attachments.map(attachment => <Stack key={attachment.id} direction="row" alignItems="center" justifyContent="space-between" gap={2} sx={{ py: 1, borderBottom: '1px solid #e4e7ed' }}><Box minWidth={0}><Typography variant="body2" fontWeight={600} noWrap title={attachment.name}>{attachment.name}</Typography><Typography variant="caption" color="text.secondary">{attachment.purpose} · {attachment.verificationStatus === 'VERIFIED' ? '已核验' : '待核验'}</Typography></Box><Tooltip title="下载冻结附件"><IconButton aria-label={`下载附件 ${attachment.name}`} onClick={() => void downloadAttachment(attachment.id, attachment.name)}><DownloadOutlined /></IconButton></Tooltip></Stack>)}</Stack>}
+      </DialogContent>
+      <DialogActions><Button onClick={() => setAttachmentsOpen(false)}>关闭</Button></DialogActions>
+    </AppDialog>
+    <DhrActionDialog button={button} busy={busy} initialOpinion={button?.action === 'RETURN' && affected ? `冻结证据或来源范围发生变化：${detail?.evidenceChanges.map(c => c.instanceNo || (c.attachmentId ? `附件 ${c.attachmentId}` : '证据')).join('、')}。请重新核查并提交新汇总版本。` : ''} onCancel={() => setButton(null)} onConfirm={approve} />
   </>;
 }
 

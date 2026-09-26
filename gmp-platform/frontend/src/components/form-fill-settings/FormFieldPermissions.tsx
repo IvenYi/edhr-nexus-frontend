@@ -15,6 +15,7 @@ export type FormFieldOption = {
 };
 export type ProcessPermissionSubject = {
   id: string;
+  nodeId: string;
   label: string;
   members: string;
   defaultPermission: "EDIT" | "READ_ONLY";
@@ -123,6 +124,7 @@ export function processPermissionSubjects(
           if (validRefs.length)
             subjects.push({
               id: `start:${rule.id ?? `legacy-${index}`}`,
+              nodeId: String(node.id ?? "node"),
               label: `填报权限组 ${index + 1}`,
               members: validRefs
                 .map(
@@ -137,6 +139,7 @@ export function processPermissionSubjects(
         if (!rules.length)
           subjects.push({
             id: "start:open",
+            nodeId: String(node.id ?? "node"),
             label: "填报权限组",
             members: "未配置主体，所有人可填报",
             defaultPermission: config?.defaultPermission ?? "EDIT",
@@ -149,6 +152,7 @@ export function processPermissionSubjects(
           config?.approverSubjects ?? parseSubjectRefs(config?.approvers);
         subjects.push({
           id: `approval:${node.id ?? subjects.length}`,
+          nodeId: String(node.id ?? "node"),
           label: String(node.data?.label ?? "审批节点"),
           members: refs.length
             ? refs
@@ -198,14 +202,10 @@ export function processBuiltinEvents(
         const id = String(event.id ?? `event-${index + 1}`).trim();
         const action = event.action;
         if (!id || !event.event || !action) return;
-        const isSignature =
-          (!event.builtin || event.builtin === "FILL_SIGN_FIELD") &&
-          (!event.signatureMethod ||
-            event.signatureMethod === "ACCOUNT_PASSWORD") &&
-          ["SAVE", "SUBMIT", "APPROVE", "RETURN"].includes(action);
         if (
-          !isSignature ||
-          (event.builtin && event.builtin !== "FILL_SIGN_FIELD")
+          event.builtin !== "FILL_SIGN_FIELD" ||
+          (event.signatureMethod && event.signatureMethod !== "ACCOUNT_PASSWORD") ||
+          !["SAVE", "SUBMIT", "APPROVE", "RETURN"].includes(action)
         )
           return;
         if (event.event !== "BEFORE") return;
@@ -219,7 +219,7 @@ export function processBuiltinEvents(
         });
       });
     });
-    return events.filter((event) => event.builtin === "FILL_SIGN_FIELD");
+    return events;
   } catch {
     return [];
   }
@@ -317,6 +317,9 @@ export function FormPermissionConfigDialog({
   }, [open, permissions, subjects]);
   const selectedSubject =
     subjects.find((subject) => subject.id === selectedSubjectId) ?? null;
+  const selectedEvents = events.filter(
+    (event) => event.nodeId === selectedSubject?.nodeId,
+  );
   const selectedRule = selectedSubject
     ? (draft[selectedSubject.id] ?? {
         defaultPermission: selectedSubject.defaultPermission,
@@ -380,6 +383,7 @@ export function FormPermissionConfigDialog({
       highlightFieldId,
       onFieldHover: setHighlightFieldId,
       actionsForField: (field) => {
+        if (!fields.some((option) => option.id === field.id)) return [];
         const actions: PreviewFieldAction[] = [];
         if (editable && selectedSubject) {
           const isException = exceptions.includes(field.id);
@@ -407,13 +411,13 @@ export function FormPermissionConfigDialog({
             onClick: () => toggleExceptionField(field.id),
           });
         }
-        if (editable && events.length && isSignatureFieldType(field.type)) {
+        if (editable && selectedEvents.length && isSignatureFieldType(field.type)) {
           actions.push({
             key: "bind-signature",
-            title: events.length === 1 ? "填充该字段" : "选择按钮填充该字段",
+            title: selectedEvents.length === 1 ? "填充该字段" : "选择按钮填充该字段",
             icon: <DrawOutlined fontSize="small" />,
             onClick: (_fieldId, anchor) => {
-              if (events.length === 1) bindSignatureField(field.id, events[0]);
+              if (selectedEvents.length === 1) bindSignatureField(field.id, selectedEvents[0]);
               else setSignatureMenu({ anchor, fieldId: field.id });
             },
           });
@@ -424,7 +428,8 @@ export function FormPermissionConfigDialog({
     [
       defaultPermission,
       editable,
-      events,
+      fields,
+      selectedEvents,
       exceptions,
       highlightFieldId,
       selectedSubject,
@@ -496,6 +501,8 @@ export function FormPermissionConfigDialog({
           ) : document ? (
             <FormCanvasPreview
               document={document}
+              fullPage
+              runtime={{ values: {}, disabled: false, onChange: () => {} }}
               fieldPermissions={previewPermissions}
               interaction={fieldInteraction}
             />
@@ -541,7 +548,7 @@ export function FormPermissionConfigDialog({
                           <Button
                             key={subject.id}
                             size="small"
-                            onClick={() => setSelectedSubjectId(subject.id)}
+                            onClick={() => { setSelectedSubjectId(subject.id); setSignatureMenu(null); }}
                             sx={{
                               justifyContent: "flex-start",
                               textAlign: "left",
@@ -673,7 +680,7 @@ export function FormPermissionConfigDialog({
                 </Box>
               </>
             ) : null}
-            {events.length ? (
+            {selectedEvents.length ? (
               <Box sx={{ pt: 1.5, borderTop: "1px solid #e4e7ed" }}>
                 <Typography variant="body2" fontWeight={600}>
                   节点按钮
@@ -684,7 +691,7 @@ export function FormPermissionConfigDialog({
                 <Box sx={{ mt: 0.75 }}>
                   <FormProcessEventBindingEditor
                     compact
-                    events={events}
+                    events={selectedEvents}
                     fields={fields}
                     bindings={eventDraft}
                     editable={editable}
@@ -703,7 +710,7 @@ export function FormPermissionConfigDialog({
         open={Boolean(signatureMenu)}
         onClose={() => setSignatureMenu(null)}
       >
-        {events.map((event) => (
+        {selectedEvents.map((event) => (
           <MenuItem
             key={event.key}
             onClick={() => {
@@ -815,19 +822,6 @@ export function FormProcessEventBindingEditor({
               pb: compact ? 1 : 0,
             }}
           >
-            {compact ? (
-              <Typography
-                variant="caption"
-                sx={{
-                  display: "block",
-                  mb: 0.5,
-                  color: "#697586",
-                  fontWeight: 600,
-                }}
-              >
-                {nodeEvents[0]?.nodeLabel}
-              </Typography>
-            ) : null}
             <Stack spacing={0.75}>
               {nodeEvents.map((event) => {
                 const selected =

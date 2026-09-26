@@ -96,10 +96,22 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-snapshot-source]
+  - id: concept.dhr-summary-version
+    termId: term.dhr-summary-version
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-filling-review-confirmed]
+  - id: concept.dhr-controlled-attachment
+    termId: term.dhr-controlled-attachment
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]
   - id: concept.dhr-summary-archive-display-name
     termId: term.dhr-summary-archive-display-name
     kind: business-fact
-    status: implemented
+    status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
   - id: concept.form-template-version
@@ -691,6 +703,20 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.dhr-summary-version-contains-evidence-instances
+    source: concept.dhr-summary-version
+    target: concept.form-instance
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed]
+  - id: relation.dhr-summary-version-contains-controlled-attachments
+    source: concept.dhr-summary-version
+    target: concept.dhr-controlled-attachment
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]
   - id: relation.work-form-node-has-fill-settings
     source: concept.production-work-form-node-business-document-reference
     target: concept.form-fill-settings

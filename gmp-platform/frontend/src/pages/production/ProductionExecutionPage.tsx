@@ -575,9 +575,9 @@ export default function ProductionExecutionPage() {
         </Box>
       </ExecutionQuickPanel>
     </Box>}
-    <ExecutionFormSelector open={formDrawerOpen} onClose={() => setFormDrawerOpen(false)} container={() => rootRef.current} forms={forms}
+    <ExecutionFormSelector open={formDrawerOpen} onClose={() => setFormDrawerOpen(false)} container={() => rootRef.current} forms={forms} works={op?.works ?? []}
       copies={available?.formCopies ?? {}} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachForm)} operationStatus={opState?.status} workStates={opState?.works} editors={editors}
-      onSelect={id => { setFormDrawerOpen(false); if (id !== formId) protect(() => { chooseForm(id); setActivePanel(null); }); }}
+      onSelect={(id, copyId) => { setFormDrawerOpen(false); if (id !== formId || (copyId && copyId !== selectedInstanceId)) protect(() => { chooseForm(id, view, operationId, copyId); setActivePanel(null); }); }}
       onAttach={(templateVersionId, required) => { setFormDrawerOpen(false); protect(() => void act({ action: 'ATTACH_FORM', templateVersionId, required })); }} />
     <ExecutionCopyDrawer open={copyDrawerOpen} onClose={() => setCopyDrawerOpen(false)} container={() => rootRef.current}
       formName={form?.name ?? ''} instanceIds={instanceIds} forms={opState?.forms ?? {}} selectedId={selectedInstanceId}

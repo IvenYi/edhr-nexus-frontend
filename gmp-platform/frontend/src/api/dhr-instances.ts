@@ -132,11 +132,21 @@ export interface DhrSummaryDirectoryOverlay {
 
 export interface DhrSummaryPlacement { recordId: string; targetNodeKey: string; beforeNodeKey?: string; displayOrder?: number; displayName?: string }
 
+export interface DhrAttachment {
+  id: string; name: string; mimeType: string; size: number; sha256: string;
+  sourceKind: 'EXTERNAL_REPORT' | 'CERTIFICATE' | 'PAPER_SCAN' | 'OTHER'; purpose: string;
+  originalRecordedAt: string | null; custodyLocation: string | null;
+  verificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED'; verifiedBy: string | null;
+  verifiedAt: string | null; linkedBy: string | null; linkedAt: string;
+}
+
 export interface DhrSummaryWorkspace {
+  sourceScopeHash: string;
   dhr: DhrInstanceDetail;
   candidates: DhrEvidenceRecord[];
-  draft: null | { id: string; revision: number; overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[] };
-  versions: Array<{ id: string; versionNo: number; status: 'PENDING_REVIEW' | 'FORMALIZED'; reviewOutcome?: 'PENDING_REVIEW' | 'APPROVED' | 'RETURNED' | null; reviewMode: 'NONE' | 'REQUIRED'; reviewWorkflowDefinitionId: string | null; reviewWorkflowVersionId: string | null; snapshotHash: string; submittedBy: string | null; submittedAt: string }>;
+  attachments: DhrAttachment[];
+  draft: null | { id: string; revision: number; sourceScopeHash?: string | null; overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[] };
+  versions: Array<{ id: string; versionNo: number; evidenceModelVersion: number; status: 'PENDING_REVIEW' | 'FORMALIZED'; reviewOutcome?: 'PENDING_REVIEW' | 'APPROVED' | 'RETURNED' | null; reviewMode: 'NONE' | 'REQUIRED'; reviewWorkflowDefinitionId: string | null; reviewWorkflowVersionId: string | null; snapshotHash: string; submittedBy: string | null; submittedAt: string }>;
 }
 
 export async function getDhrSummaryWorkspace(id: string): Promise<DhrSummaryWorkspace> {
@@ -144,12 +154,16 @@ export async function getDhrSummaryWorkspace(id: string): Promise<DhrSummaryWork
 }
 
 export interface DhrSummaryVersionDetail {
-  evidenceChanges?: Array<{ recordId: string; instanceNo: string; message: string }>;
+  evidenceChanges?: Array<{ recordId?: string; attachmentId?: string; instanceNo?: string; message: string }>;
   dhr: DhrInstanceDetail;
   version: DhrSummaryWorkspace['versions'][number] & {
     baseDirectory: DhrInstanceDetail['directorySnapshot'];
     overlayDirectories: DhrSummaryDirectoryOverlay[];
     candidates: DhrEvidenceRecord[];
+    attachments: DhrAttachment[];
+    checkResult?: { ruleVersion: string; checkedAt: string; checkedBy: string; actualRecordCount: number;
+      manualReview?: { qualityAndExceptionsReviewed: boolean; sourceSignaturesReviewed: boolean; completeScopeReviewed: boolean;
+        note: string; confirmedBy: string; confirmedAt: string } } | null;
   };
   placements: DhrSummaryPlacement[];
 }
@@ -158,10 +172,49 @@ export async function getDhrSummaryVersion(id: string, versionId: string): Promi
   return (await client.get(`/dhr-instances/${encodeURIComponent(id)}/summary/versions/${encodeURIComponent(versionId)}`)).data.data;
 }
 
-export async function saveDhrSummaryDraft(id: string, body: { draftId?: string; revision?: number; overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[] }) {
+export interface DhrAuditEvent {
+  id: string; entityType: string; entityId: string; action: string; functionName: string | null;
+  operator: string | null; at: string; reason: string | null; before: string | null; after: string | null;
+}
+
+export async function getDhrSummaryAudit(id: string, page = 0): Promise<{ page: number; total: number; events: DhrAuditEvent[] }> {
+  return (await client.get(`/dhr-instances/${encodeURIComponent(id)}/summary/audit`, { params: { page } })).data.data;
+}
+
+export async function saveDhrSummaryDraft(id: string, body: { draftId?: string; revision?: number; expectedScopeHash: string; overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[] }) {
   return (await client.put(`/dhr-instances/${encodeURIComponent(id)}/summary/draft`, body)).data.data as { id: string; revision: number };
 }
 
-export async function submitDhrSummary(id: string, expectedRevision: number, expectedDraftId: string) {
-  return (await client.post(`/dhr-instances/${encodeURIComponent(id)}/summary/submit`, { expectedRevision, expectedDraftId })).data.data as { id: string; versionNo: number; status: 'PENDING_REVIEW' | 'FORMALIZED'; snapshotHash: string };
+export async function submitDhrSummary(id: string, expectedRevision: number, expectedDraftId: string, manualReview: { qualityAndExceptionsReviewed: true; sourceSignaturesReviewed: true; completeScopeReviewed: true; note: string }) {
+  return (await client.post(`/dhr-instances/${encodeURIComponent(id)}/summary/submit`, { expectedRevision, expectedDraftId, manualReview })).data.data as { id: string; versionNo: number; status: 'PENDING_REVIEW' | 'FORMALIZED'; snapshotHash: string };
+}
+
+export async function uploadDhrAttachment(id: string, input: { file: File; sourceKind: DhrAttachment['sourceKind']; purpose: string; originalRecordedAt?: string; custodyLocation?: string }) {
+  const data = new FormData();
+  data.append('file', input.file);
+  data.append('sourceKind', input.sourceKind);
+  data.append('purpose', input.purpose);
+  if (input.originalRecordedAt) data.append('originalRecordedAt', input.originalRecordedAt);
+  if (input.custodyLocation) data.append('custodyLocation', input.custodyLocation);
+  return (await client.post(`/dhr-instances/${encodeURIComponent(id)}/attachments`, data)).data.data as { attachmentId: string };
+}
+
+export async function verifyDhrAttachment(id: string, attachmentId: string) {
+  await client.post(`/dhr-instances/${encodeURIComponent(id)}/attachments/${encodeURIComponent(attachmentId)}/verify`);
+}
+
+export async function unlinkDhrAttachment(id: string, attachmentId: string, reason: string) {
+  await client.post(`/dhr-instances/${encodeURIComponent(id)}/attachments/${encodeURIComponent(attachmentId)}/unlink`, { reason });
+}
+
+export async function downloadDhrArchive(id: string, versionId: string, scope: 'FULL' | 'SELECTED', recordIds: string[] = [], attachmentIds: string[] = []) {
+  const response = await client.get(`/dhr-instances/${encodeURIComponent(id)}/summary/versions/${encodeURIComponent(versionId)}/export`, {
+    params: { scope, recordIds: recordIds.join(','), attachmentIds: attachmentIds.join(',') }, responseType: 'blob',
+  });
+  return response.data as Blob;
+}
+
+export async function downloadDhrAttachment(id: string, attachmentId: string, versionId?: string) {
+  const response = await client.get(`/dhr-instances/${encodeURIComponent(id)}/attachments/${encodeURIComponent(attachmentId)}/download`, { params: versionId ? { versionId } : undefined, responseType: 'blob' });
+  return response.data as Blob;
 }

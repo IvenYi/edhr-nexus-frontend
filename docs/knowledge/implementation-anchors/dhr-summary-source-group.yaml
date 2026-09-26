@@ -12,8 +12,8 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-service, evidence.dhr-summary-source-group-test, evidence.dhr-summary-source-group-backend-test]
     sourceRevision: working-tree
-    sourceLocator: summarySourceKey；来源键仅用于候选分组和左侧相邻同源折叠的识别，不作为全组归档约束；实例合法性继续由 DhrSummaryService.validatePlacements 校验
-    capturedAt: '2026-09-24'
+    sourceLocator: summarySourceKey 按实际来源节点形成展示组；证据范围由服务端全部实际实例及附件决定，来源键不定义纳入范围。
+    capturedAt: '2026-09-25'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-source-group-presentation
     targetId: rule.dhr-summary-source-group-presentation
@@ -23,12 +23,12 @@ implementationAnchors:
     databaseReferences: []
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/frontend/scripts/test-dhr-summary-directory-browser.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java]
-    status: implemented
+    status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-source-group-test, evidence.dhr-summary-service, evidence.dhr-summary-source-group-backend-test]
     sourceRevision: working-tree
-    sourceLocator: groupSummarySources/placeSummarySourceGroup 与 DhrSummaryPage 候选展开、逐份纳入及移出、草稿和 readOnly 相邻同源折叠；DhrSummaryService.saveDraft/submit/validatePlacements；2026-09-24 主智能体测试及全新独立质量实例复验通过，验证边界见来源分组确认证据
-    capturedAt: '2026-09-24'
+    sourceLocator: groupSummarySources/placeSummarySourceGroup 与 DhrSummaryPage 展示整组、单份和相邻同源折叠；空目标只取消自定义位置，effectivePlacements 补默认位置；DhrSummaryService.validatePlacements 为所有实际实例建冻结关联。旧 2026-09-24 验收仅解释历史时点，新交互待主智能体验收。
+    capturedAt: '2026-09-25'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-archive-display-name
     targetId: rule.dhr-summary-archive-display-name
@@ -38,10 +38,10 @@ implementationAnchors:
     databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryDisplayNameMigrationTest.java]
-    status: implemented
+    status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-ui, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
     sourceRevision: working-tree
-    sourceLocator: DhrSummaryPage.openRename/saveRename 及 formRowActions 支持全来源已有证据重命名和单例列表；DhrSummaryService.validatePlacements DIRECTORY 分支校验固定目标与无排序覆盖后合入别名，prepareNextDraft 继承 DIRECTORY 别名；0101 可空列复用。主智能体新增持久化测试覆盖目录别名冻结/重整与固定目标校验，隔离浏览器覆盖单例列表、单落点与对齐
-    capturedAt: '2026-09-24'
+    sourceLocator: DhrSummaryPage.openRename/saveRename 及 formRowActions 支持全来源已有证据的展示别名；DhrSummaryService.validatePlacements 固定 DIRECTORY 目标、合入别名并在 prepareNextDraft 继承，0101 可空列复用。完整自动范围上的别名交互仍需浏览器和持久化收尾验收。
+    capturedAt: '2026-09-25'
     reviewStatus: reviewed

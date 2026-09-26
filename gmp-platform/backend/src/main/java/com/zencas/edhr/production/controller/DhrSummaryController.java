@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/dhr-instances")
-@PreAuthorize("hasAuthority('records.dhr-summary')")
+@PreAuthorize("hasAnyAuthority('dhr.instances.view','records.dhr-summary')")
 @RequiredArgsConstructor
 public class DhrSummaryController {
     private final DhrSummaryService service;
@@ -42,6 +42,11 @@ public class DhrSummaryController {
     @GetMapping("/{id}/summary/versions/{versionId}")
     public ApiResponse<ObjectNode> version(@PathVariable Long id, @PathVariable Long versionId) {
         return ApiResponse.success(service.version(id, versionId));
+    }
+
+    @GetMapping("/{id}/summary/audit")
+    public ApiResponse<ObjectNode> audit(@PathVariable Long id, @RequestParam(defaultValue = "0") int page) {
+        return ApiResponse.success(service.audit(id, page));
     }
 
     @PutMapping("/{id}/summary/draft")

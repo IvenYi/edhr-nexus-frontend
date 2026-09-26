@@ -1048,8 +1048,9 @@ export function FormCanvasPreview({
     page &&
     (Object.keys(page.cells).length || page.nodes.length || page.images.length),
   );
-  if (fullPage && layout === 'canvas' && !interaction) {
+  if (fullPage && layout === 'canvas') {
     return <FormRuntimeContext.Provider value={runtime}><FormDocumentPreview document={document} runtime={runtime} fieldPermissions={fieldPermissions}
+      interaction={interaction}
       fallback={<FieldListPreview document={document} fieldPermissions={fieldPermissions} />} /></FormRuntimeContext.Provider>;
   }
   return (

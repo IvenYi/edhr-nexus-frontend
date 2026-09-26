@@ -44,7 +44,7 @@ class DhrReviewLifecycleIntegrationTest {
 
     @BeforeEach void seed() throws Exception {
         AuditContext.setOperator("7", "审核人");
-        for (String table : new String[]{"dhr_summary_review", "dhr_summary_evidence", "dhr_summary_draft", "dhr_summary_version", "dhr_instance", "form_instance_record"}) jdbc.execute("DROP TABLE IF EXISTS " + table);
+        for (String table : new String[]{"dhr_summary_review", "dhr_summary_evidence", "dhr_summary_draft", "dhr_summary_version", "dhr_attachment", "dhr_instance", "production_object", "form_instance_record"}) jdbc.execute("DROP TABLE IF EXISTS " + table);
         for (String table : new String[]{"workflow_action_log", "workflow_task", "workflow_instance", "workflow_edge", "workflow_node", "workflow_definition_version", "workflow_definition", "audit_event", "signature", "user_account"}) jdbc.update("DELETE FROM " + table);
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(7,0,'reviewer','审核人',?,'ACTIVE')", passwords.encode("test-secret"));
         jdbc.update("INSERT INTO workflow_definition(id,type,business_type,name,code,status) VALUES(50,'RECORD_CONTROL','DHR_SUMMARY','审核','DHR-FLOW','ACTIVE')");
@@ -52,15 +52,18 @@ class DhrReviewLifecycleIntegrationTest {
         jdbc.update("INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES(100,51,'START','开始','{}'),(102,51,'END','结束','{}')");
         jdbc.update("INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES(101,51,'APPROVAL','质量审核',? FORMAT JSON)", "{\"config\":{\"buttonEvents\":[{\"event\":\"BEFORE\",\"action\":\"APPROVE\",\"enabled\":true,\"signatureMethod\":\"ACCOUNT_PASSWORD\",\"builtin\":\"NONE\"}]}}");
         jdbc.update("INSERT INTO workflow_edge(id,version_id,source_node_id,target_node_id) VALUES(110,51,100,101),(111,51,101,102)");
-        jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,directory_snapshot TEXT,dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),work_order_no VARCHAR(64),product_name VARCHAR(64),updated_by VARCHAR(64),updated_at TIMESTAMP)");
-        jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),snapshot_json TEXT,values_json TEXT,status VARCHAR(32),version_id BIGINT)");
+        jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),production_object_id BIGINT,status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,directory_snapshot TEXT,dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),work_order_no VARCHAR(64),product_name VARCHAR(64),updated_by VARCHAR(64),updated_at TIMESTAMP)");
+        jdbc.execute("CREATE TABLE production_object(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32))");
+        jdbc.execute("INSERT INTO production_object VALUES(10,'default')");
+        jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),source_type VARCHAR(32),object_id BIGINT,instance_no VARCHAR(64),snapshot_json TEXT,values_json TEXT,status VARCHAR(32),version_id BIGINT)");
+        jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),dhr_instance_id BIGINT,active BOOLEAN,sha256 VARCHAR(64),verification_status VARCHAR(32),stored_path VARCHAR(1024))");
         String base = "{\"directories\":[{\"id\":10,\"name\":\"目录\",\"items\":[{\"id\":20,\"required\":true}]}]}";
-        jdbc.update("INSERT INTO dhr_instance(id,tenant_id,status,summary_status,dhr_review_mode,dhr_review_workflow_definition_id,dhr_review_workflow_version_id,directory_snapshot,dhr_no,object_no,object_type,work_order_no,product_name) VALUES(1,'default','COMPLETED','NOT_STARTED','REQUIRED',50,51,?,'DHR-1','B1','BATCH','WO1','产品')", base);
-        jdbc.update("INSERT INTO form_instance_record VALUES(200,'default','{\"dhrItemId\":\"20\"}','{\"temperature\":20}','COMPLETED',5)");
+        jdbc.update("INSERT INTO dhr_instance(id,tenant_id,production_object_id,status,summary_status,dhr_review_mode,dhr_review_workflow_definition_id,dhr_review_workflow_version_id,directory_snapshot,dhr_no,object_no,object_type,work_order_no,product_name) VALUES(1,'default',10,'COMPLETED','NOT_STARTED','REQUIRED',50,51,?,'DHR-1','B1','BATCH','WO1','产品')", base);
+        jdbc.update("INSERT INTO form_instance_record VALUES(200,'default','PRODUCTION_EXECUTION',10,'FR-200','{\"dhrItemId\":\"20\"}','{\"temperature\":20}','COMPLETED',5)");
         try (var stream = getClass().getResourceAsStream("/db/changelog/0092-dhr-summary-workspace.sql")) {
             for (String sql : new String(stream.readAllBytes(), StandardCharsets.UTF_8).split(";")) if (sql.contains("CREATE TABLE") || sql.contains("CREATE INDEX")) jdbc.execute(sql);
         }
-        for (String migration : new String[]{"0100-dhr-summary-evidence-order.sql", "0101-dhr-summary-evidence-display-name.sql"}) {
+        for (String migration : new String[]{"0100-dhr-summary-evidence-order.sql", "0101-dhr-summary-evidence-display-name.sql", "0102-dhr-summary-complete-evidence.sql", "0103-dhr-controlled-attachments.sql"}) {
             try (var stream = getClass().getResourceAsStream("/db/changelog/" + migration)) {
                 for (String sql : new String(stream.readAllBytes(), StandardCharsets.UTF_8).split(";")) if (sql.contains("ALTER TABLE")) jdbc.execute(sql);
             }
@@ -83,11 +86,16 @@ class DhrReviewLifecycleIntegrationTest {
     }
     @AfterEach void clear() { AuditContext.clear(); }
     ObjectNode submit() {
-        ObjectNode request = mapper.createObjectNode(); request.putArray("overlayDirectories"); request.putArray("placements");
+        ObjectNode request = mapper.createObjectNode().put("expectedScopeHash", summaries.workspace(1L).path("sourceScopeHash").asText());
+        request.putArray("overlayDirectories"); request.putArray("placements");
         var drafts = jdbc.queryForList("SELECT id,revision FROM dhr_summary_draft");
         if (!drafts.isEmpty()) request.put("draftId", drafts.getFirst().get("id").toString()).put("revision", ((Number) drafts.getFirst().get("revision")).intValue());
         ObjectNode draft = summaries.saveDraft(1L, request);
-        return summaries.submit(1L, mapper.createObjectNode().put("expectedDraftId", draft.path("id").asText()).put("expectedRevision", draft.path("revision").asInt()));
+        ObjectNode command = mapper.createObjectNode().put("expectedDraftId", draft.path("id").asText()).put("expectedRevision", draft.path("revision").asInt());
+        command.putObject("manualReview").put("qualityAndExceptionsReviewed", true)
+                .put("sourceSignaturesReviewed", true).put("completeScopeReviewed", true)
+                .put("note", "已核对质量结论、异常处置及源签署");
+        return summaries.submit(1L, command);
     }
     @Test void realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory() {
         ObjectNode first = submit();
@@ -110,6 +118,7 @@ class DhrReviewLifecycleIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT status FROM dhr_summary_review WHERE summary_version_id=?", String.class, second.path("id").asLong())).isEqualTo("APPROVED");
         assertThat(jdbc.queryForObject("SELECT snapshot_data FROM signature", String.class)).contains(second.path("snapshotHash").asText());
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='DHR_SUMMARY_REVIEW'", Integer.class)).isEqualTo(2);
+        assertThat(summaries.audit(1L, 0).path("events").toString()).contains("DHR_SUMMARY_DRAFT", "DHR_SUMMARY_VERSION", "DHR_SUMMARY_REVIEW");
         assertThat(reviews.list("DONE", "", 0, 20).getTotalElements()).isEqualTo(2);
         String original = jdbc.queryForObject("SELECT candidate_snapshot FROM dhr_summary_version WHERE id=?", String.class, second.path("id").asLong());
         jdbc.update("UPDATE form_instance_record SET values_json='{\"temperature\":21}'");
@@ -138,12 +147,55 @@ class DhrReviewLifecycleIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='DHR_SUMMARY_REVIEW'", Integer.class)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT status FROM dhr_summary_review", String.class)).isEqualTo("APPROVED");
     }
+    @Test void newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion() {
+        ObjectNode submitted = submit();
+        Long taskId = jdbc.queryForObject("SELECT id FROM workflow_task WHERE status='PENDING'", Long.class);
+        String frozen = jdbc.queryForObject("SELECT candidate_snapshot FROM dhr_summary_version WHERE id=?", String.class, submitted.path("id").asLong());
+        jdbc.update("INSERT INTO form_instance_record VALUES(201,'default','PRODUCTION_EXECUTION',10,'FR-201','{}','{}','COMPLETED',5)");
+        jdbc.update("INSERT INTO dhr_attachment VALUES(301,'default',1,TRUE,'digest','VERIFIED','/missing')");
+        var changes = reviews.detail(taskId).path("evidenceChanges");
+        assertThat(changes.size()).isEqualTo(2);
+        assertThat(changes.toString()).contains("FR-201", "301");
+        ObjectNode command = mapper.createObjectNode().put("expectedSnapshotHash", submitted.path("snapshotHash").asText())
+                .put("action", "APPROVE").put("account", "reviewer").put("password", "test-secret");
+        assertThatThrownBy(() -> reviews.act(taskId, command)).hasMessageContaining("不能按过时证据批准");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT candidate_snapshot FROM dhr_summary_version WHERE id=?", String.class, submitted.path("id").asLong())).isEqualTo(frozen);
+        command.put("action", "RETURN").put("opinion", "核对新增来源");
+        reviews.act(taskId, command);
+        assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("DRAFT");
+    }
+    @Test void incompleteFrozenManualReviewBlocksApprovalButAllowsReturn() throws Exception {
+        ObjectNode submitted = submit();
+        Long versionId = submitted.path("id").asLong();
+        Long taskId = jdbc.queryForObject("SELECT id FROM workflow_task WHERE status='PENDING'", Long.class);
+        String original = jdbc.queryForObject("SELECT check_result_snapshot FROM dhr_summary_version WHERE id=?", String.class, versionId);
+        ObjectNode command = mapper.createObjectNode().put("expectedSnapshotHash", submitted.path("snapshotHash").asText())
+                .put("action", "APPROVE").put("opinion", "已核对").put("account", "reviewer").put("password", "test-secret");
+        for (String missing : new String[]{"confirmedBy", "confirmedAt", "note"}) {
+            ObjectNode check = (ObjectNode) mapper.readTree(original);
+            ((ObjectNode) check.path("manualReview")).remove(missing);
+            jdbc.update("UPDATE dhr_summary_version SET check_result_snapshot=? WHERE id=?", check.toString(), versionId);
+            assertThatThrownBy(() -> reviews.act(taskId, command)).hasMessageContaining("核查结果不完整");
+        }
+        jdbc.update("UPDATE dhr_summary_version SET check_result_snapshot=NULL WHERE id=?", versionId);
+        assertThatThrownBy(() -> reviews.act(taskId, command)).hasMessageContaining("核查结果不完整");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("PENDING_REVIEW");
+        reviews.act(taskId, command.put("action", "RETURN").put("opinion", "核查信息缺失，退回整理"));
+        assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("DRAFT");
+    }
     @Configuration(proxyBeanMethods=false) @EnableAutoConfiguration(exclude=JpaRepositoriesAutoConfiguration.class)
     @Import({WorkflowEngine.class, DhrSummaryService.class, DhrReviewService.class, DhrEvidenceImpactService.class, ExecutionAccess.class})
     static class Config {
         @Bean EntityManager em(EntityManagerFactory factory) { return SharedEntityManagerCreator.createSharedEntityManager(factory); }
         @Bean PersistenceManagedTypes types() { return PersistenceManagedTypes.of(WorkflowDefinition.class.getName(), WorkflowDefinitionVersion.class.getName(), WorkflowNode.class.getName(), WorkflowEdge.class.getName(), WorkflowInstance.class.getName(), WorkflowTask.class.getName(), WorkflowActionLog.class.getName(), UserAccount.class.getName(), Signature.class.getName(), AuditEvent.class.getName()); }
         @Bean DhrInstanceService instances() { return mock(DhrInstanceService.class); }
+        @Bean DhrAttachmentService attachments(ObjectMapper mapper) {
+            DhrAttachmentService service = mock(DhrAttachmentService.class);
+            when(service.snapshot(anyLong())).thenAnswer(ignored -> mapper.createArrayNode());
+            return service;
+        }
         @Bean SnowflakeIdGenerator ids() { return new SnowflakeIdGenerator(4); }
         @Bean PasswordEncoder passwords() { return new BCryptPasswordEncoder(4); }
         @Bean SubjectResolver subjects() { return mock(SubjectResolver.class); }

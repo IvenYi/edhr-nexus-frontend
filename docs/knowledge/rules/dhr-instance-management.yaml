@@ -123,7 +123,7 @@ rules:
       preserveCopiesBy: copyId
       duplicateSourceEvidence: false
       readOnly: true
-    explanation: 第一阶段只按同一生产对象聚合 PRODUCTION_EXECUTION 来源表单记录中冻结的 dhrItemId，并按 copyId 分别保留每一份。只有工序/DHR 绑定表单携带该目录项；作业发起、自定义挂载或其他无 dhrItemId 的独立记录不自动进入 DHR，即使引用同一表单模板版本也不共享来源证据。
+    explanation: 本规则仅描述目录子视图：按同一生产对象及冻结 dhrItemId 聚合，并以 copyId 保留每份。无 dhrItemId 的作业/自定义记录不进入此目录项子视图，但按 DEC-0063 进入完整证据范围并在默认来源位置可查；不得将目录映射条件解释为排除 DHR 证据。
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema]
   - id: rule.dhr-instance-query-permission
     name: DHR 列表与详情使用专门查看权限

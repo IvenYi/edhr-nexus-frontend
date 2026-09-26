@@ -1,140 +1,152 @@
 decisionPackage:
   id: DEC-PACKAGE-20260919-DHR-SUMMARY
-  scope: dhr-list-detail-summary-and-process-review-configuration
+  scope: dhr-summary-review-runtime-correction
   knowledgeBaselineVersion: 0.3.24
-  summary: 实现 DHR 列表与真实证据详情、独立 DHR 汇总工作区，以及产品和产品簇制程版本的 DHR 汇总审核配置；审批运行时和产品放行不在本切片。
+  summary: 2026-09-25 在原方案上直接修正并实现汇总与审批；自动归集与人工核查为主，目录仅组织展示；附件及 ZIP 在同一冻结版本中闭环。
   confirmed:
     concepts:
       - id: concept.dhr-summary-version
         name: DHR 汇总版本
-        definition: 将基础目录、覆盖目录、完整候选范围、实例归档关系、来源快照和审核绑定冻结形成的不可变版本。
-        status: implemented
-        sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+        definition: 按生产对象冻结完整证据范围、核查结果、展示目录和审批绑定的不可变版本；手工目录不决定证据是否属于 DHR。
+        status: specified
+        sourceReferences: [docs/dhr-management-product-research-and-roadmap.md]
     relationships:
       - id: relation.dhr-summary-version-contains-evidence-instances
         sourceId: concept.dhr-summary-version
-        targetId: concept.form-instance-record
-        cardinality: one-to-many
-        description: 同一表单模板可对应多份实例，同一实例在同一汇总版本中只能归入一个目录位置。
-        sourceReferences: [docs/knowledge/rules/dhr-summary.yaml]
+        targetId: concept.form-instance
+        cardinality: one-to-zero-or-many
+        description: 实际存在的关联记录逐实例追溯；来源组为展示与批量整理单位；空来源不生成虚构证据。
+        sourceReferences: [docs/dhr-management-product-research-and-roadmap.md]
     rules:
-      - id: rule.dhr-summary-submit-freezes-revision
-        name: 按预期草稿修订提交不可变汇总版本
-        status: implemented
+      - id: rule.dhr-summary-freeze-version
+        name: 核查后冻结完整 DHR 版本
+        status: specified
         trigger: dhr-summary.submit
-        condition:
-          all:
-            - fact: dhr.status
-              operator: equals
-              value: COMPLETED
-            - fact: dhrSummary.expectedRevision
-              operator: equals
-              value: dhrSummary.currentDraftRevision
+        condition: {fact: fact.dhr-summary.version-frozen, operator: equals, value: false}
         result:
-          type: freeze-version
-          target: dhrSummaryVersion
-          valueFrom: controlled-summary-snapshot
-        sourceReferences: [docs/knowledge/rules/dhr-summary.yaml]
-    executionContracts:
-      - id: execution.dhr-summary-controlled-freeze
-        ruleId: rule.dhr-summary-submit-freezes-revision
-        action: 在同一事务锁定 DHR 和草稿、校验预期修订并冻结汇总版本及证据关系。
-        implementationReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
-        evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-migration, evidence.dhr-summary-review-binding-constraint]
-  inferred: []
+          type: freeze-execution-snapshot
+          fields: [evidenceScope, checkResults, directoryPresentation, sourceSnapshots, reviewBinding]
+          laterChangesRewriteVersion: false
+        sourceReferences: [docs/dhr-management-product-research-and-roadmap.md]
+    executionContracts: []
+  inferred:
+    - id: inference.dhr-summary-foreign-market-baseline
+      statement: 海外设计先核对美国 QMSR/Part 11、欧盟 MDR/IVDR，具体目标市场、器械类别和适用性由企业确认。
+      rationale: 用户要求考虑国外法规但未指定销售市场，不能宣称覆盖全部国外法规。
+      relatedIds: [concept.dhr-summary-version]
+    - id: inference.dhr-summary-export-package-format
+      statement: ZIP 内建议使用可读记录、原始附件、机器可读清单和版本/签署/审计信息；具体序列化和文件布局属于工程方案。
+      rationale: 用户确认 ZIP 和选定范围导出，未逐一指定内部文件格式。
+      relatedIds: [concept.dhr-summary-version]
   unresolved: []
   impactAnalysis:
     level: L2
     directImpacts:
-      - area: dhr-management
-        change: DHR 列表展示完整生产与制程元数据，详情按目录、作业、自定义三类来源查看真实表单实例；DHR 汇总使用独立菜单、路由、权限和工作区。
-        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
-      - area: product-process
-        change: 产品与产品簇制程版本配置 NONE/REQUIRED；REQUIRED 绑定已发布 DHR_SUMMARY 流程定义和版本。
-        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java]
+      - area: dhr-summary
+        change: 直接修改旧设计，取消作业/自定义未手选即排除；生产关联记录自动可见，核查决定可否提交，不以完成状态隐藏历史记录。
+        evidenceReferences: [docs/dhr-management-product-research-and-roadmap.md, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+      - area: dhr-review
+        change: 审批对象为完整冻结证据版本；目录和来源是同一版本的视图，不替代质量放行。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
     transitiveImpacts:
-      - area: production-start-snapshot
-        change: 首次开工冻结 DHR 审核配置到 DHR 实例，后续制程配置变化不回写既有实例。
-        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
-      - area: workflow-template
-        change: 审批流程模板分类增加 DHR_SUMMARY，但不创建审批实例、任务或签名。
-        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java]
+      - area: dhr-detail-export
+        change: 列表详情、审批详情与导出需读取相同版本、实例身份及展示目录；明确实时记录与冻结版本差异。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
     potentialImpacts:
-      - area: future-dhr-review
-        concern: 后续 DHR 审核菜单需消费冻结 reviewBinding 和 summary version，不得修改已提交版本。
-        evidenceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
-      - area: release-decision
-        concern: DHR 汇总及审核是放行证据而非产品放行本身，未来放行模块必须独立建模。
+      - area: external-evidence-and-retention
+        concern: 附件来源契约、文件安全、备份恢复及导出可读性需要继续验证；基础运行代码已接入，不据此宣称监管验证完成。
         evidenceReferences: [docs/knowledge/evidence/dhr-summary-compliance-assessment.md]
     unaffectedAreas:
-      - area: dhr-review-runtime
-        reason: 本切片不创建审核实例、任务、批准、退回或电子签名。
-      - area: product-release
-        reason: 本切片不改变产品放行状态或放行决策。
-      - area: historical-dhr
-        reason: 不为存量 DHR 回填汇总草稿、版本或证据关系。
+      - area: source-record-control
+        reason: 不实现表单变更/作废、不开放跨批次移动；消费来源生效事件，仍由既有记录控制域负责。
+      - area: production-termination-and-release
+        reason: 不恢复终止生产、不改变已确认终止政策、不新增自动放行。
     compatibilityAndMigration:
-      - area: process-version-default
-        change: 新增审核模式默认 NONE；旧请求缺字段时归一化为 NONE。
+      - area: existing-summary-version
+        change: 新增完整证据模型与附件字段，不回写旧冻结版本；用户明确旧汇总数据非本轮兼容目标，本轮不做历史数据删除。
         evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql]
-      - area: summary-storage
-        change: 0092 新增草稿、版本和证据表；0093 增加冻结版本审核绑定一致性约束，均为增量迁移。
-        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql]
     snapshotImpacts:
-      - area: dhr-instance
-        change: 开工冻结基础目录和审核绑定；汇总提交冻结覆盖目录、完整候选、实例归档、来源内容哈希、汇总哈希和审核绑定。
+      - area: summary-evidence
+        change: 完整证据范围与展示位置解耦；提交冻结来源版本、状态、附件引用和核查结果。
     auditImpacts:
-      - area: dhr-summary
-        change: 保存草稿和提交版本记录操作者、时间、DHR、修订/版本、状态与汇总哈希；提交后版本不可修改。
+      - area: dhr-and-instance-logs
+        change: DHR 详情数据审计记录目录、附件关联、核查、提交、审批、导出；实例操作日志负责填报、签署、变更作废并能定位历史内容。
     permissionImpacts:
-      - area: dhr-summary
-        change: 独立页面 records.dhr-summary；保存叠加 dhr.summaries.edit；提交叠加 dhr.summaries.submit，前后端一致执行。
+      - area: dhr-summary-review-export
+        change: 查看、目录整理、附件、提交、审批、导出分权；NONE 不豁免源表单签署或适用放行要求。
     testImpacts:
-      - scope: dhr-summary
-        scenarios: [目录任意层级与禁止孤立根, 三类候选来源, 实例唯一归档, 必填目录完整性, 草稿与提交并发修订, 审核绑定哈希和数据库约束, 权限矩阵, 独立列表规范, 真实表单详情]
-        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionControllerAuthorizationTest.java]
+      - scope: runtime-and-documentation
+        scenarios: [旧规则冲突消除, 自动归集不遗漏, 目录移除不删除证据, 附件核验与解除历史, 冻结审批与影响处理, ZIP完整与部分输出, 法规适用性和责任边界]
+        evidenceReferences: [docs/dhr-management-product-research-and-roadmap.md]
+      - scope: knowledge-baseline
+        scenarios: [YAML解析, ID及引用, 事实来源, specified内部投影]
+        evidenceReferences: [docs/knowledge/README.md]
     evidenceGaps:
-      - 当前本地数据没有 COMPLETED DHR，真实浏览器尚不能覆盖草稿保存、并发冲突、提交冻结和版本只读详情；当前由服务测试、迁移验证和静态浏览器验收覆盖，后续需准备隔离验收数据。
-      - DHR 审核运行时尚未开发，PENDING_REVIEW 仅表示汇总版本等待未来审核处理。
+      - 海外目标市场、器械类别、企业 SOP 的签署/留存规则待落地客户确认；不阻塞通用设计修订，不写成已确认部署规则。
+      - 新附件类型仅做结构与可读性校验；恶意文件扫描、纸质原件 SOP、监管副本版式适用性和备份恢复需单独验证，不把单测等同发布验收。
   extensionStrategy:
-    selectedPaths: [configuration, product-core]
-    rationale: 审核是否必需及绑定流程属于制程版本配置；DHR 实例、不可变汇总版本、证据关系、权限和审计属于所有客户共享的产品内核，不能散落为客户条件分支。
+    selectedPaths: [product-core, configuration, transaction-orchestration]
+    rationale: 通用证据与版本归产品内核，适用检查和审批策略使用受控配置，DHR 编排已有来源及审批服务，不新增客户条件分支。
     ownershipBoundaries:
-      - owner: masterdata-product-process
-        responsibility: 保存并校验制程版本的 DHR 审核策略与已发布流程绑定。
       - owner: production-dhr
-        responsibility: 冻结 DHR 配置、聚合三类表单实例、维护草稿并生成不可变汇总版本。
+        responsibility: 证据范围、核查、展示目录、附件关联、版本和导出。
+      - owner: source-record-control
+        responsibility: 来源内容、表单变更/作废的资格及生效，不由 DHR 越权改写。
       - owner: workflow-review
-        responsibility: 当前仅提供 DHR_SUMMARY 流程定义；未来独立实现 DHR 审核运行时。
+        responsibility: 冻结版本审批任务、身份、签署、结论和历史。
   affectedFiles:
     - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+      changeType: update
+      reason: 自动证据范围、核查与冻结版本。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
       changeType: create
-      reason: 汇总草稿、并发控制、不可变版本、证据与审计核心。
-    - path: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+      reason: 受控附件元数据、核验、历史保留。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
       changeType: create
-      reason: 汇总存储、审核绑定和权限。
-    - path: gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql
-      changeType: create
-      reason: 冻结版本审核绑定一致性。
+      reason: 冻结版本的完整和选定范围 ZIP。
     - path: gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+      changeType: update
+      reason: 自动证据范围、附件与导出交互。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql
       changeType: create
-      reason: 独立列表和汇总工作区。
+      reason: 完整证据模型与核查快照。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql
+      changeType: create
+      reason: 受控附件关系与冻结快照。
+    - path: docs/prd/edhr-mvp-prd.md
+      changeType: update
+      reason: 同步上层 PRD 中汇总证据范围和审批对象，链接本专题当前设计。
+    - path: docs/prd/edhr-commercial-prd.md
+      changeType: update
+      reason: 消除手工候选补充决定证据范围的直接冲突，不扩大其他模块路线图。
+    - path: docs/dhr-management-product-research-and-roadmap.md
+      changeType: update
+      reason: 原设计内直接修订汇总、审批、详情、附件及 ZIP 方案。
+    - path: docs/dhr-management-handoff.md
+      changeType: update
+      reason: 删除现行交接中的错误纳入规则和过时审批延期判断。
     - path: docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
-      changeType: create
-      reason: 固化用户确认的业务边界。
+      changeType: update
+      reason: 同一设计直接修订；保留实现差异及 Git 历史，不复制第二套方案。
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      reason: 审批完整证据范围与旧版保护保持一致。
+    - path: docs/knowledge/decisions/DEC-0072-dhr-summary-source-group-presentation.yaml
+      changeType: update
+      reason: 分组整理与实例查看不再等同选择性证据纳入。
   acceptanceScenarios:
-    - id: scenario.dhr-summary-independent-menu
-      given: 用户拥有 DHR 汇总页面权限。
-      when: 进入记录模块。
-      then: DHR列表与DHR汇总分别显示，汇总列表只读取 COMPLETED DHR。
-      evidenceRequirements: [浏览器验收, 权限测试]
-    - id: scenario.dhr-summary-controlled-submit
-      given: COMPLETED DHR 具有合法汇总草稿和当前 revision。
-      when: 用户以相同 expectedRevision 提交。
-      then: 系统原子校验修订并冻结完整版本；陈旧 revision 被拒绝。
-      evidenceRequirements: [服务测试, 数据库迁移验证]
-    - id: scenario.dhr-summary-review-boundary
-      given: 制程审核模式为 REQUIRED。
-      when: 用户提交汇总。
-      then: 版本进入 PENDING_REVIEW 并冻结流程绑定，但不创建审批任务或产品放行结果。
-      evidenceRequirements: [服务测试, 知识模型校验]
+    - id: scenario.dhr-auto-evidence-without-drag
+      given: 同一生产对象已有目录、作业、自定义实例以及受控附件
+      when: 用户不拖拽目录进入核查
+      then: 全部关联证据有默认位置可查，必需缺项和未完成项明确提示，完成状态与证据可见性分离。
+      evidenceRequirements: [设计规则检查, 后续运行集成测试]
+    - id: scenario.dhr-directory-is-not-evidence-removal
+      given: 实例具有默认来源位置与自定义展示位置
+      when: 用户取消自定义展示位置
+      then: 恢复默认位置，证据身份、内容、归属和审批范围不变，不计为证据排除。
+      evidenceRequirements: [文档一致性检查, 后续持久化测试]
+    - id: scenario.dhr-frozen-review-and-zip
+      given: 已冻结汇总版本包含来源状态及展示目录
+      when: 查看、审批或导出该版本
+      then: 使用同一证据基准，完整和选定范围ZIP明确区分，源变化自动标识但人工退回/重审，旧版不覆写。
+      evidenceRequirements: [设计验收矩阵, 后续审批与导出并发测试]

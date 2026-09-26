@@ -35,15 +35,17 @@ class DhrSummaryPersistenceTest {
     @Autowired ObjectMapper mapper;
     @Autowired AuditEventRepository audits;
     @Autowired com.zencas.edhr.workflow.engine.WorkflowEngine engine;
+    @Autowired DhrAttachmentService attachments;
     private ObjectNode base;
     private ObjectNode detail;
 
     @BeforeEach void setup() throws Exception {
-        reset(instances, audits, engine);
+        reset(instances, audits, engine, attachments);
+        when(attachments.snapshot(anyLong())).thenAnswer(ignored -> mapper.createArrayNode());
         jdbc.execute("DROP ALL OBJECTS");
-        jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),directory_snapshot TEXT,dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,updated_by VARCHAR(128),updated_at TIMESTAMP)");
-        jdbc.execute("CREATE TABLE dhr_summary_draft(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT UNIQUE,overlay_directory_json TEXT,evidence_placement_json TEXT,revision INT,created_by VARCHAR(128),created_at TIMESTAMP,updated_by VARCHAR(128),updated_at TIMESTAMP)");
-        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),review_mode VARCHAR(32),review_workflow_definition_id BIGINT,review_workflow_version_id BIGINT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,candidate_snapshot TEXT,snapshot_hash VARCHAR(64),submitted_by VARCHAR(128),submitted_at TIMESTAMP,created_at TIMESTAMP,UNIQUE(dhr_instance_id,version_no))");
+        jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),directory_snapshot TEXT,production_object_id BIGINT,dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,updated_by VARCHAR(128),updated_at TIMESTAMP)");
+        jdbc.execute("CREATE TABLE dhr_summary_draft(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT UNIQUE,overlay_directory_json TEXT,evidence_placement_json TEXT,source_scope_hash VARCHAR(64),revision INT,created_by VARCHAR(128),created_at TIMESTAMP,updated_by VARCHAR(128),updated_at TIMESTAMP)");
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),review_mode VARCHAR(32),review_workflow_definition_id BIGINT,review_workflow_version_id BIGINT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,candidate_snapshot TEXT,attachment_snapshot TEXT DEFAULT '[]',snapshot_hash VARCHAR(64),submitted_by VARCHAR(128),submitted_at TIMESTAMP,created_at TIMESTAMP,evidence_model_version SMALLINT DEFAULT 1,check_result_snapshot TEXT,UNIQUE(dhr_instance_id,version_no))");
         jdbc.execute("CREATE TABLE dhr_summary_evidence(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),summary_version_id BIGINT,source_record_id BIGINT,target_node_key VARCHAR(128),before_node_key VARCHAR(128),display_order INT,display_name VARCHAR(120),origin_kind VARCHAR(32),source_snapshot TEXT,source_hash VARCHAR(64),created_at TIMESTAMP,UNIQUE(summary_version_id,source_record_id))");
         jdbc.execute("CREATE TABLE dhr_summary_review(summary_version_id BIGINT PRIMARY KEY,workflow_instance_id BIGINT,status VARCHAR(32),submitted_by_id VARCHAR(64),updated_at TIMESTAMP)");
         // Numeric IDs model an already frozen snapshot. Reads must not rewrite it.
@@ -125,10 +127,20 @@ class DhrSummaryPersistenceTest {
         assertThat(version.at("/version/baseDirectory/directories/0/id").asText()).isEqualTo(DIRECTORY_ID);
         assertThat(version.at("/version/candidates")).isEqualTo(mapper.readTree(frozenCandidates));
         assertThat(version.at("/version/snapshotHash").asText()).isEqualTo(hash);
-        assertThat(version.path("placements").size()).isEqualTo(2); // directory + chosen WORK, not unselected CUSTOM
+        assertThat(version.path("placements").size()).isEqualTo(3); // Every actual source record is evidence.
+        assertThat(version.at("/version/evidenceModelVersion").asInt()).isEqualTo(2);
+        assertThat(version.at("/version/checkResult/actualRecordCount").asInt()).isEqualTo(3);
         assertThatThrownBy(() -> service.saveDraft(1L, command(2))).hasMessageContaining("不能修改已冻结版本");
         assertThatThrownBy(() -> service.submit(1L, submitCommand(2))).hasMessageContaining("不能修改已冻结版本");
         assertThat(jdbc.queryForObject("SELECT base_directory_snapshot FROM dhr_summary_version", String.class)).isEqualTo(frozenBase);
+    }
+
+    @Test void submitRequiresAuditableManualCheckBeforeFreezing() {
+        service.saveDraft(1L, command(null));
+        ObjectNode withoutReview = submitCommand(1);
+        withoutReview.remove("manualReview");
+        assertThatThrownBy(() -> service.submit(1L, withoutReview)).hasMessageContaining("人工核查");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version", Integer.class)).isZero();
     }
 
     @Test void submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion() {
@@ -194,7 +206,7 @@ class DhrSummaryPersistenceTest {
         ObjectNode version = service.version(1L, versionId);
         assertThat(version.path("placements").findValuesAsText("recordId")).contains("101", "103");
         assertThat(version.path("placements").findValuesAsText("beforeNodeKey")).containsExactlyInAnyOrder("base-item-20", "base-item-20");
-        assertThat(jdbc.queryForList("SELECT display_order FROM dhr_summary_evidence WHERE origin_kind='WORK' ORDER BY display_order", Integer.class))
+        assertThat(jdbc.queryForList("SELECT display_order FROM dhr_summary_evidence WHERE origin_kind='WORK' AND display_order IS NOT NULL ORDER BY display_order", Integer.class))
                 .containsExactly(0, 1);
         ObjectNode request = mapper.createObjectNode().put("expectedVersionId", Long.toString(versionId)).put("reason", "调整归档");
         ObjectNode reorganized = service.reorganize(1L, request);
@@ -282,7 +294,7 @@ class DhrSummaryPersistenceTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_draft", Integer.class)).isZero();
     }
 
-    @Test void partialSourceSelectionFreezesAllCandidatesButOnlyExplicitEvidence() throws Exception {
+    @Test void partialDisplayPlacementStillFreezesAllActualEvidence() throws Exception {
         ((ObjectNode) detail.at("/recordsByOrigin/work/0")).put("operationId", "op-1").put("formId", "node-a");
         var work = (com.fasterxml.jackson.databind.node.ArrayNode) detail.at("/recordsByOrigin/work");
         work.add(record("103", "WORK").put("operationId", "op-1").put("formId", "node-a"));
@@ -298,10 +310,21 @@ class DhrSummaryPersistenceTest {
         ObjectNode submitted = service.submit(1L, submitCommand(1));
         ObjectNode frozen = service.version(1L, submitted.path("id").asLong());
         assertThat(frozen.at("/version/candidates").findValuesAsText("id")).contains("100", "101", "102", "103", "104", "105");
-        assertThat(frozen.path("placements").findValuesAsText("recordId")).containsExactlyInAnyOrder("100", "101", "102");
+        assertThat(frozen.path("placements").findValuesAsText("recordId")).containsExactlyInAnyOrder("100", "101", "102", "103", "104", "105");
         String frozenCandidates = frozen.at("/version/candidates").toString();
         ((ObjectNode) work.get(2)).put("status", "COMPLETED");
         assertThat(service.version(1L, submitted.path("id").asLong()).at("/version/candidates").toString()).isEqualTo(frozenCandidates);
+    }
+
+    @Test void newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted() {
+        service.saveDraft(1L, command(null));
+        ((com.fasterxml.jackson.databind.node.ArrayNode) detail.at("/recordsByOrigin/work")).add(record("103", "WORK"));
+        assertThatThrownBy(() -> service.submit(1L, submitCommand(1)))
+                .hasMessageContaining("来源记录或附件在核查后发生变化");
+        ObjectNode refreshed = service.saveDraft(1L, command(1));
+        ObjectNode submitted = service.submit(1L, submitCommand(refreshed.path("revision").asInt()));
+        assertThat(service.version(1L, submitted.path("id").asLong()).path("placements").findValuesAsText("recordId"))
+                .containsExactlyInAnyOrder("100", "101", "102", "103");
     }
 
     @Test void sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions() {
@@ -324,10 +347,10 @@ class DhrSummaryPersistenceTest {
                 .containsExactlyInAnyOrder("100", "101", "102", "103", "104");
     }
 
-    @Test void partialSelectionDoesNotBypassIncompleteSupplementOrChangedRecordStatus() {
+    @Test void staleScopeAndIncompleteSupplementBlockSubmission() {
         service.saveDraft(1L, command(null));
         ((ObjectNode) detail.at("/recordsByOrigin/work/0")).put("status", "ACTIVE");
-        assertThatThrownBy(() -> service.submit(1L, submitCommand(1))).hasMessageContaining("只有已完成");
+        assertThatThrownBy(() -> service.submit(1L, submitCommand(1))).hasMessageContaining("来源记录或附件在核查后发生变化");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version", Integer.class)).isZero();
         ((ObjectNode) detail.at("/recordsByOrigin/work/0")).put("status", "COMPLETED");
         detail.put("productionObjectId", "10");
@@ -339,7 +362,7 @@ class DhrSummaryPersistenceTest {
     }
 
     private ObjectNode command(Integer revision) {
-        ObjectNode command = mapper.createObjectNode();
+        ObjectNode command = mapper.createObjectNode().put("expectedScopeHash", service.workspace(1L).path("sourceScopeHash").asText());
         if (revision != null) {
             command.put("revision", revision);
             var rows = jdbc.queryForList("SELECT id FROM dhr_summary_draft", Long.class);
@@ -352,7 +375,11 @@ class DhrSummaryPersistenceTest {
 
     private ObjectNode submitCommand(int revision) {
         var rows = jdbc.queryForList("SELECT id FROM dhr_summary_draft", Long.class);
-        return mapper.createObjectNode().put("expectedRevision", revision).put("expectedDraftId", rows.isEmpty() ? "stale" : rows.getFirst().toString());
+        ObjectNode command = mapper.createObjectNode().put("expectedRevision", revision).put("expectedDraftId", rows.isEmpty() ? "stale" : rows.getFirst().toString());
+        command.putObject("manualReview").put("qualityAndExceptionsReviewed", true)
+                .put("sourceSignaturesReviewed", true).put("completeScopeReviewed", true)
+                .put("note", "已核对质量结论、异常处置及源签署");
+        return command;
     }
 
     private ObjectNode record(String id, String origin) {
@@ -370,8 +397,9 @@ class DhrSummaryPersistenceTest {
         @Bean AuditEventRepository audits() { return mock(AuditEventRepository.class); }
         @Bean DhrInstanceService instances() { return mock(DhrInstanceService.class); }
         @Bean com.zencas.edhr.workflow.engine.WorkflowEngine engine() { return mock(com.zencas.edhr.workflow.engine.WorkflowEngine.class); }
-        @Bean DhrSummaryService service(JdbcTemplate jdbc, ObjectMapper mapper, DhrInstanceService instances, AuditEventRepository audits, com.zencas.edhr.workflow.engine.WorkflowEngine engine) {
-            return new DhrSummaryService(jdbc, mapper, instances, audits, new SnowflakeIdGenerator(1), engine, mock(DhrEvidenceImpactService.class));
+        @Bean DhrAttachmentService attachments() { return mock(DhrAttachmentService.class); }
+        @Bean DhrSummaryService service(JdbcTemplate jdbc, ObjectMapper mapper, DhrInstanceService instances, AuditEventRepository audits, com.zencas.edhr.workflow.engine.WorkflowEngine engine, DhrAttachmentService attachments) {
+            return new DhrSummaryService(jdbc, mapper, instances, audits, new SnowflakeIdGenerator(1), engine, mock(DhrEvidenceImpactService.class), attachments);
         }
     }
 }

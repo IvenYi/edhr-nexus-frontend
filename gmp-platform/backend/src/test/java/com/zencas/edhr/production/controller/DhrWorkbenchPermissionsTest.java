@@ -24,8 +24,9 @@ class DhrWorkbenchPermissionsTest {
     @Autowired DhrReviewService reviews;
     @Autowired DhrFillingService fills;
     @Autowired DhrSummaryService summaries;
+    @Autowired DhrAttachmentService attachments;
     final ObjectMapper mapper = new ObjectMapper();
-    @BeforeEach void resetMocks() { reset(reviews, fills, summaries); }
+    @BeforeEach void resetMocks() { reset(reviews, fills, summaries, attachments); }
     @AfterEach void clear() { SecurityContextHolder.clearContext(); }
     void auth(String... grants) { SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("7", "", Arrays.stream(grants).map(SimpleGrantedAuthority::new).toList())); }
     @Test void reviewRequiresBothMenuAndActionPermission() {
@@ -38,6 +39,15 @@ class DhrWorkbenchPermissionsTest {
         auth("records.dhr-review", "dhr.reviews.act");
         review.act(1L, mapper.createObjectNode());
         verify(reviews).act(1L, mapper.createObjectNode());
+    }
+    @Test void reviewAttachmentDownloadRequiresReviewMenuPermission() {
+        auth("dhr.reviews.act");
+        assertThatThrownBy(() -> review.attachment(1L, 2L)).isInstanceOf(AccessDeniedException.class);
+        verifyNoInteractions(reviews, attachments);
+        auth("records.dhr-review");
+        when(reviews.detail(1L)).thenThrow(new AccessDeniedException("not assigned"));
+        assertThatThrownBy(() -> review.attachment(1L, 2L)).isInstanceOf(AccessDeniedException.class);
+        verifyNoInteractions(attachments);
     }
     @Test void fillingAndSupplementPermissionsAreIndependent() {
         auth("records.dhr-filling", "dhr.filling.act");
@@ -61,9 +71,10 @@ class DhrWorkbenchPermissionsTest {
         @Bean DhrReviewService reviews() { return mock(DhrReviewService.class); }
         @Bean DhrFillingService fills() { return mock(DhrFillingService.class); }
         @Bean DhrSummaryService summaries() { return mock(DhrSummaryService.class); }
+        @Bean DhrAttachmentService attachments() { return mock(DhrAttachmentService.class); }
         @Bean DhrInstanceService instances() { return mock(DhrInstanceService.class); }
         @Bean ProductionExecutionService executions() { return mock(ProductionExecutionService.class); }
-        @Bean DhrReviewController review(DhrReviewService service) { return new DhrReviewController(service); }
+        @Bean DhrReviewController review(DhrReviewService service, DhrAttachmentService attachments) { return new DhrReviewController(service, attachments); }
         @Bean DhrFillingController filling(DhrFillingService service, DhrInstanceService instances, ProductionExecutionService executions) { return new DhrFillingController(service, instances, executions); }
         @Bean DhrSummaryController summary(DhrSummaryService service, DhrInstanceService instances) { return new DhrSummaryController(service, instances); }
     }

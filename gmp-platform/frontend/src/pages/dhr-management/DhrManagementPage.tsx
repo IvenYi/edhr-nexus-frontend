@@ -52,6 +52,7 @@ import ViewColumnRounded from '@mui/icons-material/ViewColumnRounded';
 import ViewListOutlined from '@mui/icons-material/ViewListOutlined';
 import type { DhrDirectoryItem, DhrDisplayStatus, DhrEvidenceRecord, DhrInstanceSummary, DhrObjectType } from '@/api/dhr-instances';
 import { getDhrInstance, listDhrInstances } from '@/api/dhr-instances';
+import { SummaryWorkspace } from './DhrSummaryPage';
 import { logout } from '@/api/auth';
 import ListColumnSettingsPopover, {
   getCurrentUserPreferenceStorageKey,
@@ -678,7 +679,9 @@ export default function DhrManagementPage() {
         />
       </Box>
 
-      <DetailDialog selected={selected} onClose={() => setSelected(null)} />
+      {selected && (selected.summaryStatus === 'PENDING_REVIEW' || selected.summaryStatus === 'FORMALIZED')
+        ? <SummaryWorkspace dhr={selected} onClose={() => setSelected(null)} />
+        : <DetailDialog selected={selected} onClose={() => setSelected(null)} />}
     </Box>
   );
 }

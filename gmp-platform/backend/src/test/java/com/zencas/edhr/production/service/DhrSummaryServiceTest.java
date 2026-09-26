@@ -25,7 +25,8 @@ class DhrSummaryServiceTest {
     @BeforeEach
     void setup() {
         service = new DhrSummaryService(mock(JdbcTemplate.class), mapper, mock(DhrInstanceService.class),
-                mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class), mock(com.zencas.edhr.workflow.engine.WorkflowEngine.class), mock(DhrEvidenceImpactService.class));
+                mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class), mock(com.zencas.edhr.workflow.engine.WorkflowEngine.class),
+                mock(DhrEvidenceImpactService.class), mock(DhrAttachmentService.class));
     }
 
     @Test
@@ -39,9 +40,7 @@ class DhrSummaryServiceTest {
         assertThatCode(() -> invoke("validateOverlay", base, valid)).doesNotThrowAnyException();
 
         ArrayNode rootLevel = mapper.createArrayNode().add(directory("summary-dir-root", "", "孤立目录"));
-        assertThatThrownBy(() -> invoke("validateOverlay", base, rootLevel))
-                .isInstanceOf(BusinessException.class)
-                .hasMessageContaining("必须建立在基础目录之下");
+        assertThatCode(() -> invoke("validateOverlay", base, rootLevel)).doesNotThrowAnyException();
 
         ArrayNode cycle = mapper.createArrayNode()
                 .add(directory("summary-dir-a", "summary-dir-b", "A"))
@@ -52,11 +51,11 @@ class DhrSummaryServiceTest {
     }
 
     @Test
-    void placementsAutoIncludeDirectoryInstancesAndKeepOptionalCandidatesExplicit() {
+    void placementsAutoIncludeEveryActualInstanceWithoutManualSelection() {
         ArrayNode candidates = mapper.createArrayNode()
                 .add(candidate("100", "DIRECTORY", "COMPLETED", "20"))
                 .add(candidate("101", "WORK", "COMPLETED", null))
-                .add(candidate("102", "CUSTOM", "COMPLETED", null));
+                .add(candidate("102", "CUSTOM", "IN_PROGRESS", null));
         ArrayNode overlay = mapper.createArrayNode().add(directory("summary-dir-a", "base-dir-10", "附录"));
         ArrayNode placements = mapper.createArrayNode()
                 .add(mapper.createObjectNode().put("recordId", "101").put("targetNodeKey", "summary-dir-a"));
@@ -64,14 +63,14 @@ class DhrSummaryServiceTest {
         @SuppressWarnings("unchecked")
         Map<String, ObjectNode> result = invoke("validatePlacements", candidates, baseDirectory(), overlay, placements);
 
-        assertThat(result).containsOnlyKeys("100", "101");
+        assertThat(result).containsOnlyKeys("100", "101", "102");
         assertThat(result.get("100").path("targetNodeKey").asText()).isEqualTo("base-item-20");
         assertThat(result.get("101").path("targetNodeKey").asText()).isEqualTo("summary-dir-a");
-        assertThat(result).doesNotContainKey("102");
+        assertThat(result.get("102").path("targetNodeKey").asText()).isEqualTo("source-custom");
     }
 
     @Test
-    void sameInstanceCannotBePlacedTwiceAndIncompleteCandidatesCannotBeIncluded() {
+    void sameInstanceCannotBePlacedTwiceAndIncompleteEvidenceRemainsVisible() {
         ArrayNode candidates = mapper.createArrayNode().add(candidate("101", "WORK", "COMPLETED", null));
         ArrayNode duplicate = mapper.createArrayNode()
                 .add(mapper.createObjectNode().put("recordId", "101").put("targetNodeKey", "base-dir-10"))
@@ -83,9 +82,9 @@ class DhrSummaryServiceTest {
         ((ObjectNode) candidates.get(0)).put("status", "IN_PROGRESS");
         ArrayNode incomplete = mapper.createArrayNode()
                 .add(mapper.createObjectNode().put("recordId", "101").put("targetNodeKey", "base-dir-10"));
-        assertThatThrownBy(() -> invoke("validatePlacements", candidates, baseDirectory(), mapper.createArrayNode(), incomplete))
-                .isInstanceOf(BusinessException.class)
-                .hasMessageContaining("只有已完成");
+        @SuppressWarnings("unchecked")
+        Map<String, ObjectNode> result = invoke("validatePlacements", candidates, baseDirectory(), mapper.createArrayNode(), incomplete);
+        assertThat(result.get("101").path("targetNodeKey").asText()).isEqualTo("base-dir-10");
     }
 
     @Test
@@ -137,8 +136,7 @@ class DhrSummaryServiceTest {
         ((ObjectNode) placements.get(2)).put("targetNodeKey", "summary-dir-a");
         assertThatCode(() -> invoke("validatePlacements", candidates, baseDirectory(), overlay, placements)).doesNotThrowAnyException();
         copy.put("status", "ACTIVE");
-        assertThatThrownBy(() -> invoke("validatePlacements", candidates, baseDirectory(), overlay, placements))
-                .isInstanceOf(BusinessException.class).hasMessageContaining("只有已完成");
+        assertThatCode(() -> invoke("validatePlacements", candidates, baseDirectory(), overlay, placements)).doesNotThrowAnyException();
     }
 
     @Test

@@ -219,3 +219,7 @@ databaseChangeLog:
       file: db/changelog/0100-dhr-summary-evidence-order.sql
   - include:
       file: db/changelog/0101-dhr-summary-evidence-display-name.sql
+  - include:
+      file: db/changelog/0102-dhr-summary-complete-evidence.sql
+  - include:
+      file: db/changelog/0103-dhr-controlled-attachments.sql

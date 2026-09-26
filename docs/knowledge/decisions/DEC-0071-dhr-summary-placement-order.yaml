@@ -1,36 +1,44 @@
 knowledgeModelVersion: 0.3.24
 decisions:
   - id: DEC-0071
-    title: DHR 汇总可选表单实例的同级归档顺序
-    status: implemented
+    title: DHR 汇总实例展示位置与同级顺序
+    status: specified
     visibility: internal
-    context: user-confirmed；依据 DEC-PACKAGE-20260924-DHR-SUMMARY-ORDER，细化 DEC-0063 的实例级受控归档关系与提交冻结范围。基础目录仍按首次开工快照冻结；本决策不改变源表单或审核权限。
+    context: user-confirmed；2026-09-25 在原 DEC-0071 直接纠正目录展示与证据范围混同，承接统一决策包；基础目录开工快照、同级顺序和实例身份保留。旧移出行为由 Git 追溯，当前工作树已有默认位置回退路径；完整规则仍为 specified/internal。
     decisionStatements:
       - id: DEC-0071-01
-        statement: 可选候选表单实例可以插入同级目录或表单之间的任意位置；归档位置和顺序在保存草稿、重新打开及提交冻结后保持一致。同一模板产生的多份实例分别作为候选及归档关联。末句的逐实例候选操作为历史结论，现行汇总交互由 DEC-0072-01 局部替代；逐实例位置、顺序与冻结关联继续有效。
-        status: implemented
+        statement: user-confirmed；作业/自定义实例可在同级目录或表单之间调整自定义展示位置；保存、重开与提交冻结保持位置和顺序。同模板多份仍是独立证据，来源组仅便于整组或单份整理，不控制证据纳入。
+        status: specified
         visibility: internal
       - id: DEC-0071-02
-        statement: 已放入的可选实例可以移出本次汇总；移出只取消该实例在本次汇总的归档关系，不删除或改写来源表单实例。未纳入候选仍可作为候选范围进入冻结版本。
-        status: implemented
+        statement: user-confirmed；取消自定义展示位置恢复默认来源位置，不删除实例、证据关联、内容或生产归属，不改变完整审批范围；不存在通过移出目录排除本次证据的动作。
+        status: specified
         visibility: internal
       - id: DEC-0071-03
-        statement: 提交时将可选实例的归档位置和顺序纳入不可变汇总版本及校验指纹；退回后重新整理须产生新草稿和新版本，不得改写旧版本。
-        status: implemented
+        statement: user-confirmed；提交冻结全部证据并记录其展示位置、别名和顺序及校验指纹；人工退回或重新整理产生新草稿和新版本，不改写旧版。
+        status: specified
         visibility: internal
     supersedes: []
     evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-migration, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-tests]
     acceptanceScenarios:
       - id: scenario.dhr-summary-ordered-placement
-        given: 同一目录下存在静态目录或表单节点，且有两份同模板的已完成可选表单实例
+        given: 同一目录下存在静态目录或表单节点，且有两份同模板的实际关联表单实例
         when: 用户分别插入同级位置、保存草稿、重新打开并提交汇总
-        then: 两份实例各自保留归档位置及顺序，冻结版本按同一顺序重读且校验指纹覆盖归档关系；历史逐实例候选操作已由 DEC-0072 局部替代
+        then: 两份实例各自保留展示位置及顺序，冻结版本使用完整证据范围；整组和单份整理不改变证据身份或完整性检查
         evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-tests]
         evidenceRequirements: [同级锚点校验, 草稿保存重开, 冻结版本重读, 同模板多实例]
       - id: scenario.dhr-summary-remove-optional-placement
-        given: 一份可选实例已纳入汇总草稿
-        when: 用户将其移出本次汇总并保存草稿
-        then: 该实例不再具有本次汇总的归档位置，来源表单实例仍保留
+        given: 一份自动归集实例已有自定义展示位置
+        when: 用户取消自定义展示位置并保存草稿
+        then: 该实例恢复默认位置，证据仍可见且属于完整审批范围，源记录和生产归属不变
         evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-service]
-        evidenceRequirements: [移出后草稿重读, 来源表单未删除]
-    implementationDiscrepancies: []
+        evidenceRequirements: [恢复默认位置后重读, 证据范围不变, 来源表单未删除]
+    implementationDiscrepancies:
+      - id: discrepancy.dhr-summary-removal-is-still-unlink
+        status: open
+        severity: high
+        visibility: internal
+        path: gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts
+        lineHint: 35
+        summary: original-evidence；placeSummarySourceGroup 在目标为空时过滤自定义 placements，当前前端 effectivePlacements 以默认位置补回实例，后端 validatePlacements 先为全部实际实例建默认位置再叠加自定义展示。旧移出即排除证据的缺口已由源码消除；仍需真实交互、持久化及并发回归证明恢复默认位置不缩减冻结范围，故本项保留为 open 验证缺口。
+        evidenceIds: [evidence.dhr-summary-source-group-ui, evidence.dhr-summary-order-service]

@@ -8,10 +8,10 @@ implementationAnchors:
     databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java, gmp-platform/frontend/scripts/test-dhr-summary-directory-browser.mjs]
-    status: implemented
+    status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-migration, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-tests]
     sourceRevision: working-tree
-    sourceLocator: DhrSummaryService.validatePlacements/saveDraft/submit/version/prepareNextDraft；summaryPlacementOrder.orderedSummaryChildren/placeSummaryRecord；DhrSummaryPage 插入槽与移出操作
-    capturedAt: '2026-09-24'
+    sourceLocator: DhrSummaryService.validatePlacements/saveDraft/submit/version/prepareNextDraft 给全部实际实例默认位置，再叠加自定义同级顺序；DhrSummaryPage 插入槽与取消自定义位置后补回默认位置。测试源码存在，真实浏览器和 PostgreSQL 回归待主智能体验收。
+    capturedAt: '2026-09-25'
     reviewStatus: reviewed

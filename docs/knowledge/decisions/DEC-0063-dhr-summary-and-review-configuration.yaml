@@ -1,49 +1,73 @@
 knowledgeModelVersion: 0.3.24
 decisions:
   - id: DEC-0063
-    title: DHR 汇总与制程审核配置边界
-    status: implemented
+    title: DHR 完整证据汇总与制程审批配置边界
+    status: specified
     visibility: internal
-    context: user-confirmed；在 DEC-0062 的 DHR 实例闭环之上新增独立 DHR 汇总菜单、三类表单实例候选、基础目录与多级覆盖目录、不可变汇总版本和制程版本级审核配置。DHR 审核独立菜单及运行时明确延期，不得将待审核状态解释为已获批准或产品已放行。
+    context: user-confirmed；2026-09-25 按 DEC-PACKAGE-20260919-DHR-SUMMARY 原位纠正同一设计，基线保持 0.3.24。用户明确授权修订原决策，不另建重复方案；旧手选及完成状态过滤仅由 Git 历史解释。当前并行工作树已有部分新实现，但完整规则仍为 specified/internal；本体角色只读代码、不回写历史、不宣称发布。
     decisionStatements:
       - id: DEC-0063-01
-        statement: DHR 列表和 DHR 汇总必须作为 DHR 管理下两个独立菜单；列表负责查询与来源分类详情，汇总负责候选整理、草稿和提交冻结。
-        status: implemented
+        statement: user-confirmed；DHR 列表和 DHR 汇总作为独立菜单；列表负责查询与来源/目录视图，汇总负责自动归集后的人工核查、展示整理、草稿与提交冻结；DHR 填报及审核职责沿用 DEC-0068。
+        status: specified
         visibility: internal
       - id: DEC-0063-02
-        statement: 当前汇总候选只包含目录直接绑定、作业表单节点和生产执行自定义表单三类实例；同模板多份实例分别呈现，同一实例在同一汇总版本中只能归入一个位置。前句“分别呈现”为 2026-09-19 的历史候选展示结论，汇总候选的现行展示与整组操作由 DEC-0072-01 局部替代；实例级唯一归档仍有效。
-        status: implemented
+        statement: user-confirmed；按生产对象自动归集目录直接绑定、作业表单节点、生产执行自定义表单的实际实例以及受控附件；同模板多份逐实例追溯，来源组仅用于展示整理，不能按同模板合并身份。空来源不生成虚构证据，应有缺项按适用规则阻断。
+        status: specified
         visibility: internal
       - id: DEC-0063-03
-        statement: 首次开工冻结的基础目录不可改名、删除或移动；汇总草稿允许在基础目录下增加任意层级覆盖目录，并可把作业/自定义实例放入已有或新增目录。
-        status: implemented
+        statement: user-confirmed；首次开工冻结的基础目录不可改名、删除或移动；草稿可在展示层增加根级自定义目录及子目录并为作业/自定义实例整理位置。目录编排、同级顺序和别名不决定证据范围；取消自定义位置恢复默认来源位置，不删除证据或改变生产归属。
+        status: specified
         visibility: internal
       - id: DEC-0063-04
-        statement: 已完成的目录直接绑定实例自动纳入对应基础目录项；作业与自定义实例按用户选择纳入，未选择即不纳入，不强制逐条填写排除原因。
-        status: implemented
+        statement: user-confirmed；实际关联实例不以手选或完成状态决定证据可见；未完成、失败、作废、已替代记录保留真实状态与追溯，不能冒充合格完成。表单 COMPLETED 不等于检验合格，质量结果及失败处置须核查；提交资格由适用完整性、有效性、签署及未完成补录等检查决定，不因选填或目录整理豁免检查。
+        status: specified
         visibility: internal
       - id: DEC-0063-05
-        statement: 提交汇总必须冻结基础目录、覆盖目录、完整候选范围、实例归档关系、来源快照和校验指纹；已提交版本不可修改，拖拽或选择仅是创建受控关系的交互形式。
-        status: implemented
+        statement: user-confirmed；自动收集持续发生，但普通整理/提交仍限生产正常完成。提交时重核集合和来源版本并阻断陈旧提交，冻结全部实际关联证据及来源版本、状态、内容快照/哈希、附件引用、检查结果、基础及展示目录、逐实例位置/别名和审批绑定。审批、版本详情与导出读取同一冻结证据基准；后续变化不改写旧版，实时视图须明确区分。
+        status: specified
         visibility: internal
       - id: DEC-0063-06
-        statement: 产品与产品簇共用的制程版本配置 DHR 汇总审核策略；REQUIRED 必须绑定已发布 DHR_SUMMARY 流程定义和版本，首次开工时冻结到 DHR 实例，NONE 保持兼容且不绑定流程。
-        status: implemented
+        statement: user-confirmed；产品与产品簇共用制程版本配置 NONE/REQUIRED；REQUIRED 绑定已发布 DHR_SUMMARY 定义和版本，首次开工冻结。NONE 仅表示不另启本系统汇总审批，不豁免适用法定审核、源表单签署或产品放行。
+        status: specified
         visibility: internal
       - id: DEC-0063-07
-        statement: DHR 审核需要后续开发独立菜单和运行时；当前只冻结审核配置并令 REQUIRED 汇总进入 PENDING_REVIEW，不创建审批实例、任务、电子签名或审批结果落地。
+        statement: user-confirmed；DHR 审核提供针对完整冻结证据版本及检查结果的个人待办/已办，沿用 DEC-0068 的人工退回和新版本重审。当前已有审批代码但尚未满足本次新设计，不再把审核整体写成未开发，也不把旧 PENDING_REVIEW 或局部测试视为新能力验收。
         status: specified
         visibility: internal
       - id: DEC-0063-08
-        statement: DHR 汇总或审核不是最终产品放行本身；授权产品放行仍须检查完整生产、检验、偏差和适用批准记录。
+        statement: user-confirmed；DHR 汇总、NONE 定版或审批通过均不等于最终产品放行；授权放行仍须检查完整生产、检验、偏差及适用批准记录。终止政策保持 DEC-0069，不恢复生产、不开放终止后普通汇总审批。
         status: specified
         visibility: internal
       - id: DEC-0063-09
-        statement: 本切片不为历史 DHR 回填汇总草稿、汇总版本、证据关联或审核流程绑定；新增兼容字段的默认值不构成历史汇总或审核记录。
-        status: implemented
+        statement: user-confirmed；旧汇总历史数据不是本轮兼容目标，无需删除；不回填历史 DHR 的证据、汇总版本及审批事实，不把新证据范围写回旧冻结版本，保留已经发生的运行事实。
+        status: specified
+        visibility: internal
+      - id: DEC-0063-10
+        statement: user-confirmed；手工补充附件与纸质扫描件须核验来源、对应生产对象及内容关联，并保留关联与核验追溯；它们是受控附件证据，不虚构为第四种表单实例业务来源。
+        status: specified
+        visibility: internal
+      - id: DEC-0063-11
+        statement: user-confirmed；支持整份 DHR 和明确选定范围的 ZIP 导出，范围及版本须标识，部分输出不得冒充完整 DHR；暂不打印。具体文件布局、可读文件和机器清单格式属于工程方案，未作为已确认格式或已实现能力。
+        status: specified
+        visibility: internal
+      - id: DEC-0063-12
+        statement: user-confirmed；实例操作日志负责填报、签署、表单变更/作废及历史内容定位；DHR 详情的数据审计记录目录、附件关联、核查、提交、审批和导出。两层沿证据身份和版本关联，不相互替代；查看、整理、附件、提交、审批、导出分权。
+        status: specified
+        visibility: internal
+      - id: DEC-0063-13
+        statement: user-confirmed；作业/工序表单由执行上下文绑定生产对象，不设计为人工选择归属。填入另一批次的值属于内容错误；自定义表单选错执行上下文或附件误关联属于不同错误，应分别核验，不假设正常自动归属会错，也不开放跨批次移动。
+        status: specified
+        visibility: internal
+      - id: DEC-0063-14
+        statement: user-confirmed；submit 必须由人逐项确认质量结果与异常处置、来源审批签署和完整证据范围，并填写核查说明；确认项、确认人、时间与说明冻结于 checkResult。系统不得把任意表单质量结论自动判读为合格，人工确认亦不替代可自动执行的客观阻断检查或最终放行。
+        status: specified
+        visibility: internal
+      - id: DEC-0063-15
+        statement: user-confirmed；整份与选定范围 ZIP 均应携带与该冻结版本关联的来源生产执行审计及签名，连同 DHR 审计和审批签署保持可追溯；选定范围仅改变导出内容，不改变冻结证据或审批对象。历史汇总无需兼容、回填或清理，不主动删除旧数据。
+        status: specified
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-migration, evidence.dhr-summary-ui, evidence.dhr-summary-process-configuration-ui]
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-migration, evidence.dhr-summary-ui, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests]
     acceptanceScenarios:
       - id: scenario.dhr-summary-separate-menu
         given: 用户具有 DHR 查看和汇总页面权限
@@ -51,24 +75,38 @@ decisions:
         then: 系统分别显示 DHR列表 和 DHR汇总，两个页面使用独立路由和职责边界
         evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-ui, evidence.dhr-summary-migration]
         evidenceRequirements: [菜单权限测试, 浏览器路由检查]
-      - id: scenario.dhr-summary-freezes-selected-evidence
-        given: 已完成 DHR 具有目录、作业和自定义表单实例候选
+      - id: scenario.dhr-summary-freezes-complete-evidence
+        given: 正常完工 DHR 具有三类实际表单实例、不同状态记录及受控附件
         when: 用户保存草稿并提交汇总
-        then: 系统自动纳入已完成目录实例，按选择纳入作业和自定义实例，冻结完整候选范围和实例唯一归档关系且不修改来源记录
+        then: 无需拖拽或手选即可查看全部关联证据，保留异常状态；提交人逐项确认质量与异常、源审批签署和完整范围并填写说明，确认人/时间/说明随检查结果冻结；核查阻断项不能通过目录整理消除且不改写来源
         evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-migration]
-        evidenceRequirements: [三类来源测试, 同模板多实例测试, 重复实例阻断测试, 不可变版本测试]
+        evidenceRequirements: [三类来源测试, 同模板多实例测试, 重复实例阻断测试, 三项确认及说明校验和冻结读回测试, 不可变版本测试]
       - id: scenario.dhr-summary-required-review-binding
         given: 制程版本的 DHR 汇总审核策略为 REQUIRED
         when: 用户保存或发布该制程版本并在生产开工后提交 DHR 汇总
-        then: 系统要求绑定已发布 DHR_SUMMARY 流程版本、在 DHR 中冻结该绑定并使汇总进入 PENDING_REVIEW，但当前不创建审核任务
+        then: 使用开工冻结的已发布 DHR_SUMMARY 定义及版本启动审批，任务绑定完整汇总版本及检查结果，不能追随最新流程或绕过法定审核与放行
         evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-service]
         evidenceRequirements: [绑定类型校验测试, 发布版本校验测试, 开工快照测试, 待审核状态测试]
+      - id: scenario.dhr-summary-attachment-export-and-audit
+        given: DHR 具有已核验手工附件或纸质扫描、实例日志及冻结版本
+        when: 用户按权限查看审计并导出整份或选定范围 ZIP
+        then: 附件来源和生产对象可追溯，实例日志与 DHR 审计可关联；ZIP 包含来源生产执行审计及签名，版本和范围明确，部分 ZIP 不冒充完整 DHR
+        evidenceIds: [evidence.dhr-summary-user-confirmed]
+        evidenceRequirements: [附件来源核验, 完整及部分导出比对, 来源生产执行审计与签名完整性测试, 权限及双层审计验证]
     implementationDiscrepancies:
+      - id: discrepancy.dhr-summary-selected-completed-evidence
+        status: open
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+        lineHint: 339
+        summary: original-evidence；旧手选/完成状态过滤已由并行工作树改为全部实际表单实例的默认展示位置和逐实例冻结，根级自定义目录、附件快照及 ZIP 路径也已有源码和聚焦测试。submit 已强制三项人工确认及说明，并在 checkResult 冻结确认人/时间/说明，明确不自动判读任意质量结论；客观检查主要覆盖必填目录已完成实例、必需表单、未完成补录和附件核验，尚无通用质量结论、异常处置及源签署有效性自动闭环。新完整规则仍为 specified/internal；旧行为仅由 Git 历史解释。
+        evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-attachment-service, evidence.dhr-summary-archive-service, evidence.dhr-summary-user-confirmed]
       - id: discrepancy.dhr-summary-overlay-root-parent-not-rejected
         status: resolved
         severity: medium
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
         lineHint: 226
-        summary: "provenance: original-evidence；本体核对发现 validateOverlay 曾允许 parentKey 为空，构造 API 请求可保存根级覆盖目录；现已在服务端阻断空 parentKey，并由 DhrSummaryServiceTest 覆盖该回归场景。"
+        summary: "历史实现记录（secondary-reference）；旧设计下 validateOverlay 空 parentKey 问题曾修复并由旧测试覆盖。该 resolved 仅解释原切片，不代表 2026-09-25 已支持展示层根级自定义目录；新设计差异见 discrepancy.dhr-summary-selected-completed-evidence。"
         evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service]

@@ -6,12 +6,14 @@ import {
   ChevronRightRounded,
   CloseRounded,
   DeleteOutlineRounded,
+  DownloadRounded,
   DragIndicatorRounded,
   EditOutlined,
   ExpandMoreRounded,
   FactCheckOutlined,
   FolderOutlined,
   FolderOpenOutlined,
+  HistoryRounded,
   PostAddRounded,
   PreviewOutlined,
   RefreshRounded,
@@ -20,11 +22,13 @@ import {
   TuneRounded,
   ViewColumnRounded,
   ViewListOutlined,
+  AttachFileRounded,
 } from '@mui/icons-material';
 import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
   Collapse,
@@ -49,9 +53,16 @@ import {
 import {
   getDhrSummaryVersion,
   getDhrSummaryWorkspace,
+  getDhrSummaryAudit,
+  downloadDhrArchive,
+  downloadDhrAttachment,
   listDhrSummaryInstances,
   saveDhrSummaryDraft,
   submitDhrSummary,
+  uploadDhrAttachment,
+  verifyDhrAttachment,
+  unlinkDhrAttachment,
+  type DhrAttachment,
   type DhrDirectory,
   type DhrEvidenceRecord,
   type DhrInstanceSummary,
@@ -204,11 +215,12 @@ function EvidencePreview({ record, onClose }: { record: DhrEvidenceRecord | null
   </Dialog>;
 }
 
-function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: () => void }) {
+export function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: () => void }) {
   const snackbar = useSnackbar();
   const canEdit = useAuthStore((state) => state.hasPermission('dhr.summaries.edit'));
   const canSubmit = useAuthStore((state) => state.hasPermission('dhr.summaries.submit'));
   const canReorganize = useAuthStore((state) => state.hasPermission('dhr.summaries.reorganize'));
+  const canExport = useAuthStore((state) => state.hasPermission('dhr.summaries.export'));
   const [reorganizing, setReorganizing] = useState(false);
   const reorganizeButton = useMemo(() => reorganizing ? { action: 'REORGANIZE', label: '重新整理', requireOpinion: true } : null, [reorganizing]);
   const client = useQueryClient();
@@ -234,8 +246,10 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     return {
       dhr: { ...frozen.dhr, directorySnapshot: frozen.version.baseDirectory },
       candidates: frozen.version.candidates,
+      attachments: frozen.version.attachments,
       draft: { id: frozen.version.id, revision: 0, overlayDirectories: frozen.version.overlayDirectories, placements: frozen.placements },
       versions: query.data.versions,
+      sourceScopeHash: query.data.sourceScopeHash,
     };
   }, [query.data, readOnly, versionQuery.data]);
   const [overlay, setOverlay] = useState<DhrSummaryDirectoryOverlay[]>([]);
@@ -263,6 +277,25 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
   const [collapsedNodeKeys, setCollapsedNodeKeys] = useState<string[]>([]);
   const [initializedKey, setInitializedKey] = useState<string>();
   const [confirmReload, setConfirmReload] = useState(false);
+  const [attachmentDialogOpen, setAttachmentDialogOpen] = useState(false);
+  const [selectedAttachmentIds, setSelectedAttachmentIds] = useState<string[]>([]);
+  const [auditDialogOpen, setAuditDialogOpen] = useState(false);
+  const [checkDialogOpen, setCheckDialogOpen] = useState(false);
+  const [qualityReviewed, setQualityReviewed] = useState(false);
+  const [signaturesReviewed, setSignaturesReviewed] = useState(false);
+  const [scopeReviewed, setScopeReviewed] = useState(false);
+  const [checkNote, setCheckNote] = useState('');
+  const [auditPage, setAuditPage] = useState(0);
+  const auditQuery = useQuery({ queryKey: ['dhr-summary-audit', dhr.id, auditPage], queryFn: () => getDhrSummaryAudit(dhr.id, auditPage), enabled: auditDialogOpen });
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+  const [attachmentKind, setAttachmentKind] = useState<DhrAttachment['sourceKind']>('EXTERNAL_REPORT');
+  const [attachmentPurpose, setAttachmentPurpose] = useState('');
+  const [originalRecordedAt, setOriginalRecordedAt] = useState('');
+  const [custodyLocation, setCustodyLocation] = useState('');
+  const [attachmentBusy, setAttachmentBusy] = useState(false);
+  const [exportBusy, setExportBusy] = useState(false);
+  const [unlinkingAttachmentId, setUnlinkingAttachmentId] = useState('');
+  const [unlinkReason, setUnlinkReason] = useState('');
 
   useEffect(() => {
     if (!readOnly || selectedVersionId || !query.data?.versions.length) return;
@@ -276,7 +309,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     setPlacements(workspace.draft?.placements ?? []);
     setRevision(workspace.draft?.revision);
     setDraftId(workspace.draft?.id);
-    setSelectedNode(`base-dir-${workspace.dhr.directorySnapshot.directories[0]?.id ?? ''}`);
+    setSelectedNode(workspace.dhr.directorySnapshot.directories[0]?.id ? `base-dir-${workspace.dhr.directorySnapshot.directories[0].id}` : 'source-work');
     setSelectedRecordId('');
     setInstancePanel(null);
     setInitializedKey(workspaceKey);
@@ -332,16 +365,23 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       return label;
     };
     overlay.forEach((directory) => options.push({ key: directory.key, label: resolveOverlay(directory.key) }));
+    options.push({ key: 'source-work', label: '作业来源（默认）' }, { key: 'source-custom', label: '自定义来源（默认）' }, { key: 'source-directory', label: '未匹配目录的表单' });
     return options;
   }, [baseDirectories, basePathById, overlay]);
   const targetLabelByKey = useMemo(() => new Map(targetOptions.map((target) => [target.key, target.label] as const)), [targetOptions]);
-  const directPlacements = useMemo(() => (workspace?.candidates ?? [])
-    .filter((record) => record.originKind === 'DIRECTORY' && record.status === 'COMPLETED')
-    .map((record) => ({ recordId: record.id, targetNodeKey: `base-item-${String(record.snapshot.dhrItemId ?? '')}` })), [workspace?.candidates]);
-  const effectivePlacements = useMemo(() => [
-    ...directPlacements,
-    ...placements.filter((placement) => candidateById.get(placement.recordId)?.originKind !== 'DIRECTORY'),
-  ], [candidateById, directPlacements, placements]);
+  const legacyVersion = readOnly && versionQuery.data?.version.evidenceModelVersion === 1;
+  const defaultPlacements = useMemo<DhrSummaryPlacement[]>(() => (workspace?.candidates ?? []).map((record) => ({
+    recordId: record.id,
+    targetNodeKey: record.originKind === 'DIRECTORY'
+      ? (baseDirectories.some((directory) => directory.items.some((item) => String(item.id) === String(record.snapshot.dhrItemId ?? '')))
+        ? `base-item-${String(record.snapshot.dhrItemId)}` : 'source-directory')
+      : record.originKind === 'WORK' ? 'source-work' : 'source-custom',
+  })), [baseDirectories, workspace?.candidates]);
+  const directPlacements = useMemo(() => defaultPlacements.filter((placement) => candidateById.get(placement.recordId)?.originKind === 'DIRECTORY'), [candidateById, defaultPlacements]);
+  const effectivePlacements = useMemo(() => legacyVersion ? placements : [
+    ...defaultPlacements.filter((placement) => !placements.some((override) => override.recordId === placement.recordId)),
+    ...placements,
+  ], [defaultPlacements, legacyVersion, placements]);
   const placementByRecordId = useMemo(() => new Map(effectivePlacements.map((placement) => [placement.recordId, placement.targetNodeKey] as const)), [effectivePlacements]);
   const recordsByTarget = useMemo(() => {
     const groups = new Map<string, DhrEvidenceRecord[]>();
@@ -351,7 +391,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     });
     return groups;
   }, [candidateById, effectivePlacements]);
-  const assignedRecordIds = useMemo(() => new Set(effectivePlacements.map((placement) => placement.recordId)), [effectivePlacements]);
+  const adjustedRecordIds = useMemo(() => new Set(placements.filter((placement) => placement.targetNodeKey !== defaultPlacements.find((entry) => entry.recordId === placement.recordId)?.targetNodeKey).map((placement) => placement.recordId)), [defaultPlacements, placements]);
   const sourceGroups = useMemo(() => groupSummarySources(workspace?.candidates ?? []), [workspace?.candidates]);
   const sourceGroupsByKey = useMemo(() => new Map(sourceGroups.map((group) => [group.key, group] as const)), [sourceGroups]);
   const candidateGroups = useMemo(() => ({
@@ -398,24 +438,8 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     .filter((record): record is DhrEvidenceRecord => Boolean(record)), [candidateById, effectivePlacements, itemDirectoryById, selectedNodeKeys]);
   const selectedRecord = selectedRecords.find((record) => record.id === selectedRecordId) ?? selectedRecords[0] ?? null;
   const selectedNodeLabel = targetLabelByKey.get(selectedNode) ?? '未选择目录';
-  const rootDirectoryKey = (() => {
-    let key = selectedNode;
-    const visited = new Set<string>();
-    while (key && !visited.has(key)) {
-      visited.add(key);
-      if (key.startsWith('base-dir-')) {
-        const parentId = baseDirectoryById.get(key.slice(9))?.parentId;
-        if (parentId == null) return key;
-        key = `base-dir-${parentId}`;
-      } else key = overlay.find((directory) => directory.key === key)?.parentKey ?? '';
-    }
-    const firstRoot = baseChildren.get(null)?.[0];
-    return firstRoot ? `base-dir-${firstRoot.id}` : '';
-  })();
-  const completedSelectableRecords = useMemo(() => sourceGroups.flatMap((group) => group.records).filter((record) => record.status === 'COMPLETED'), [sourceGroups]);
-  const unassignedSelectableCount = completedSelectableRecords.filter((record) => !assignedRecordIds.has(record.id)).length;
-  const optionalCount = sourceGroups.reduce((count, group) => count + group.records.length, 0);
-  const directCount = (workspace?.candidates ?? []).filter((record) => record.originKind === 'DIRECTORY').length;
+  const incompleteCount = (workspace?.candidates ?? []).filter((record) => record.status !== 'COMPLETED').length;
+  const actualRecordCount = workspace?.candidates.length ?? 0;
   const placementNameByRecordId = useMemo(() => new Map(placements.filter((placement) => placement.displayName).map((placement) => [placement.recordId, placement.displayName!] as const)), [placements]);
   const activeVersion = query.data?.versions.find((version) => version.id === selectedVersionId);
 
@@ -424,7 +448,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
   }, [selectedRecordId, selectedRecords]);
 
   const persistDraft = async () => {
-    const saved = await saveDhrSummaryDraft(dhr.id, { draftId, revision, overlayDirectories: overlay, placements });
+    const saved = await saveDhrSummaryDraft(dhr.id, { draftId, revision, expectedScopeHash: workspace?.sourceScopeHash ?? '', overlayDirectories: overlay, placements });
     // Saving succeeded even if the following submission fails.
     setRevision(saved.revision);
     setDraftId(saved.id);
@@ -463,14 +487,18 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
   });
   const submitMutation = useMutation({
     mutationFn: () => write(async () => {
+      if (!qualityReviewed || !signaturesReviewed || !scopeReviewed || !checkNote.trim()) throw new Error('请完成提交前人工核查');
+      const manualReview = { qualityAndExceptionsReviewed: true as const, sourceSignaturesReviewed: true as const,
+        completeScopeReviewed: true as const, note: checkNote.trim() };
       if (!canEdit) {
         if (revision === undefined || !draftId) throw new Error('当前没有可提交的汇总草稿');
-        return submitDhrSummary(dhr.id, revision, draftId);
+        return submitDhrSummary(dhr.id, revision, draftId, manualReview);
       }
       const saved = await persistDraft();
-      return submitDhrSummary(dhr.id, saved.revision, saved.id);
+      return submitDhrSummary(dhr.id, saved.revision, saved.id, manualReview);
     }),
     onSuccess: (result) => {
+      setCheckDialogOpen(false);
       snackbar.showMessage(result.status === 'PENDING_REVIEW' ? `汇总 V${result.versionNo} 已冻结，等待审核` : `汇总 V${result.versionNo} 已正式化`, 'success');
       client.invalidateQueries({ queryKey: ['dhr-instances'] });
       client.invalidateQueries({ queryKey: ['dhr-summary-workspace', dhr.id] });
@@ -478,6 +506,62 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     },
     onError: (error: Error) => refreshAfterError(error, '提交 DHR 汇总失败'),
   });
+  const saveBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  const exportArchive = async (scope: 'FULL' | 'SELECTED', recordIds = scope === 'SELECTED' ? selectedRecords.map((record) => record.id) : [], attachmentIds: string[] = []) => {
+    if (!selectedVersionId || exportBusy) return;
+    setExportBusy(true);
+    try {
+      const blob = await downloadDhrArchive(dhr.id, selectedVersionId, scope, recordIds, attachmentIds);
+      saveBlob(blob, `${dhr.dhrNo}-V${activeVersion?.versionNo ?? ''}-${scope === 'FULL' ? '完整DHR' : '选定范围'}.zip`);
+      snackbar.showMessage(scope === 'FULL' ? '完整版本 ZIP 已导出' : '选定范围 ZIP 已导出（非完整 DHR）', 'success');
+    } catch (error) { snackbar.showMessage(error instanceof Error ? error.message : '导出失败', 'error'); }
+    finally { setExportBusy(false); }
+  };
+  const uploadAttachment = async () => {
+    if (!attachmentFile || !attachmentPurpose.trim() || attachmentBusy) return;
+    setAttachmentBusy(true);
+    try {
+      await uploadDhrAttachment(dhr.id, { file: attachmentFile, sourceKind: attachmentKind,
+        purpose: attachmentPurpose.trim(), originalRecordedAt: originalRecordedAt || undefined,
+        custodyLocation: custodyLocation.trim() || undefined });
+      setAttachmentFile(null);
+      setAttachmentPurpose('');
+      setOriginalRecordedAt('');
+      setCustodyLocation('');
+      await query.refetch();
+      snackbar.showMessage('附件已关联，请核对内容后点击“确认核验”', 'success');
+    } catch (error) { snackbar.showMessage(error instanceof Error ? error.message : '上传附件失败', 'error'); }
+    finally { setAttachmentBusy(false); }
+  };
+  const verifyAttachment = async (attachmentId: string) => {
+    setAttachmentBusy(true);
+    try { await verifyDhrAttachment(dhr.id, attachmentId); await query.refetch(); snackbar.showMessage('附件已核验', 'success'); }
+    catch (error) { snackbar.showMessage(error instanceof Error ? error.message : '附件核验失败', 'error'); }
+    finally { setAttachmentBusy(false); }
+  };
+  const unlinkAttachment = async () => {
+    if (!unlinkingAttachmentId || !unlinkReason.trim()) return;
+    setAttachmentBusy(true);
+    try {
+      await unlinkDhrAttachment(dhr.id, unlinkingAttachmentId, unlinkReason.trim());
+      setUnlinkingAttachmentId(''); setUnlinkReason(''); await query.refetch();
+      snackbar.showMessage('附件关联已解除，历史记录与文件保留', 'success');
+    } catch (error) { snackbar.showMessage(error instanceof Error ? error.message : '解除附件关联失败', 'error'); }
+    finally { setAttachmentBusy(false); }
+  };
+  const getAttachment = async (attachment: DhrAttachment) => {
+    try { saveBlob(await downloadDhrAttachment(dhr.id, attachment.id, readOnly ? selectedVersionId : undefined), attachment.name); }
+    catch (error) { snackbar.showMessage(error instanceof Error ? error.message : '下载附件失败', 'error'); }
+  };
   const openDirectoryCreator = (parentKey: string) => {
     if (!editable || writeInFlight.current) return;
     setDirectoryParentKey(parentKey);
@@ -493,7 +577,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       return;
     }
     const key = `summary-dir-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-    setOverlay((current) => [...current, { key, parentKey: directoryParentKey, name, sortOrder: current.length + 1 }]);
+    setOverlay((current) => [...current, { key, parentKey: directoryParentKey === '__root__' ? null : directoryParentKey, name, sortOrder: current.length + 1 }]);
     setCollapsedNodeKeys((current) => current.filter((item) => item !== directoryParentKey));
     setSelectedNode(key);
     setNewDirectoryName('');
@@ -520,7 +604,12 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       .find((node) => !descendants.has(node.key));
     setOverlay((current) => current.filter((node) => !descendants.has(node.key)));
     setPlacements((current) => {
-      const remaining = current.filter((placement) => !descendants.has(placement.targetNodeKey));
+      const restored: DhrSummaryPlacement[] = current.filter((placement) => descendants.has(placement.targetNodeKey))
+        .map((placement) => ({ recordId: placement.recordId,
+          targetNodeKey: candidateById.get(placement.recordId)?.originKind === 'DIRECTORY' ? 'source-directory'
+            : candidateById.get(placement.recordId)?.originKind === 'WORK' ? 'source-work' : 'source-custom',
+          ...(placement.displayName ? { displayName: placement.displayName } : {}) }));
+      const remaining = [...current.filter((placement) => !descendants.has(placement.targetNodeKey)), ...restored];
       const displaced = remaining.filter((placement) => placement.beforeNodeKey === pendingRemoval)
         .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
       if (!displaced.length) return remaining;
@@ -531,13 +620,15 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       return displaced.reduce((result, placement) => placeSummaryRecord(result, placement.recordId, placement.targetNodeKey,
         firstFollowing ? `record-${firstFollowing.recordId}` : nextAnchor), remaining);
     });
-    setSelectedNode(`base-dir-${baseDirectories[0]?.id ?? ''}`);
+    setSelectedNode(baseDirectories[0]?.id ? `base-dir-${baseDirectories[0].id}` : 'source-work');
     setPendingRemoval(null);
   };
   const assignSource = (group: SummarySourceGroup, targetNodeKey: string, beforeKey?: string) => {
     if (!editable || writeInFlight.current) return;
-    if (targetNodeKey && (!targetLabelByKey.has(targetNodeKey) || group.records.some((record) => record.status !== 'COMPLETED'))) return;
-    setPlacements((current) => placeSummarySourceGroup(current, group, targetNodeKey, beforeKey));
+    const target = targetNodeKey || (group.originKind === 'WORK' ? 'source-work' : 'source-custom');
+    if (!targetLabelByKey.has(target)) return;
+    if (target.startsWith('source-') && target !== (group.originKind === 'WORK' ? 'source-work' : 'source-custom')) return;
+    setPlacements((current) => placeSummarySourceGroup(current, group, target, beforeKey));
     if (targetNodeKey) {
       const ancestors = new Set<string>();
       let key = targetNodeKey;
@@ -638,7 +729,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
   const endRecordDrag = () => { setDraggingRecordId(''); setDragOverNode(''); };
   const placementLabel = (recordId: string) => {
     const target = placementByRecordId.get(recordId);
-    if (!target) return '未纳入';
+    if (!target) return '默认来源位置';
     if (target.startsWith('base-item-')) return itemLabelById.get(target.slice(10)) || '目录表单';
     return targetLabelByKey.get(target) || '已归入目录';
   };
@@ -704,7 +795,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
       {editable && records.length > 0 && <Tooltip title="重命名汇总文档"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`重命名汇总 ${label}`} onClick={() => openRename(records)} sx={treeActionSx}><EditOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip>}
-      {editable && remove && <Tooltip title="移出此处实例（来源实例保留）"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`移出汇总 ${label}`} onClick={remove} sx={treeActionSx}><DeleteOutlineRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>}
+      {editable && remove && <Tooltip title="恢复默认来源位置"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`恢复默认位置 ${label}`} onClick={remove} sx={treeActionSx}><RestartAltRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>}
       <Tooltip title={`实例列表（${records.length} 份）`}><IconButton className="summary-tree-action" size="small" aria-label={`实例列表 ${label}`} aria-expanded={expanded} onClick={() => expanded ? setInstancePanel(null) : showInstancePanel(records, label, key, directoryKey)} sx={{ ...treeActionSx, color: expanded ? 'primary.main' : 'text.secondary' }}><ViewListOutlined sx={{ fontSize: 18 }} /></IconButton></Tooltip>
     </Box>
     );
@@ -714,13 +805,13 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       {...(record.originKind === 'DIRECTORY' ? {} : insertionDropHandlers(directoryKey, `record-${record.id}`, afterKey ?? null, 'instance:'))}
       sx={{ ...treeRowSx(selectedRecordId === record.id, 0), gridTemplateColumns: 'minmax(0, 1fr)', p: 1, mx: 1, borderRadius: 1 }}>
       <Button fullWidth aria-label={`查看实例 ${record.instanceNo}`} onClick={() => selectRecord(record, directoryKey)}
-        draggable={editable && !isWriting && record.originKind !== 'DIRECTORY' && record.status === 'COMPLETED'}
+        draggable={editable && !isWriting && record.originKind !== 'DIRECTORY'}
         onDragStart={(event) => startSourceDrag(event, summarySourceKey(record), [record])} onDragEnd={endRecordDrag}
         startIcon={<ArticleOutlined sx={{ fontSize: 16, color: '#6c7a89' }} />}
         sx={{ ...treeButtonSx(selectedRecordId === record.id), minHeight: 42 }}>
         <Box minWidth={0} flex={1} textAlign="left"><Typography variant="body2" noWrap>{placementNameByRecordId.get(record.id) ?? getRecordTitle(record)}</Typography><Typography variant="caption" color="text.secondary" display="block" noWrap>{record.instanceNo} · {evidenceStatus(record).label}</Typography></Box>
       </Button>
-      <Stack direction="row" justifyContent="flex-end">{editable && <Tooltip title="重命名汇总文档"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`重命名实例 ${record.instanceNo}`} onClick={() => openRename([record])} sx={treeActionSx}><EditOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip>}{editable && record.originKind !== 'DIRECTORY' && <Tooltip title="移出本次汇总（来源实例保留）"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`移出实例 ${record.instanceNo}`} onClick={() => assignSource({ key: summarySourceKey(record), originKind: record.originKind as 'WORK' | 'CUSTOM', records: [record] }, '')} sx={treeActionSx}><DeleteOutlineRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>}</Stack>
+      <Stack direction="row" justifyContent="flex-end">{editable && <Tooltip title="重命名汇总文档"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`重命名实例 ${record.instanceNo}`} onClick={() => openRename([record])} sx={treeActionSx}><EditOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip>}{editable && adjustedRecordIds.has(record.id) && record.originKind !== 'DIRECTORY' && <Tooltip title="恢复默认来源位置"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`恢复默认位置 ${record.instanceNo}`} onClick={() => assignSource({ key: summarySourceKey(record), originKind: record.originKind as 'WORK' | 'CUSTOM', records: [record] }, '')} sx={treeActionSx}><RestartAltRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip>}</Stack>
     </Box>
   );
   const renderOptionalSourceNode = (group: SummarySourceGroup, records: DhrEvidenceRecord[], parentKey: string, depth: number, afterKey?: string | null): ReactNode => {
@@ -730,13 +821,13 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       <Box {...insertionDropHandlers(parentKey, `record-${first.id}`, afterKey ?? null)} sx={treeRowSx(records.some((record) => record.id === selectedRecordId), depth)}>
         <Box />
         <Button fullWidth data-summary-record={first.id} aria-label={`来源表单 ${getRecordTitle(first)} ${records.length} 份`} onClick={() => selectFormRow(records, getRecordTitle(first), expandedKey, parentKey)}
-          draggable={editable && !isWriting && records.every((record) => record.status === 'COMPLETED')}
+          draggable={editable && !isWriting}
           onDragStart={(event) => startSourceDrag(event, group.key, records)} onDragEnd={endRecordDrag}
           startIcon={<ArticleOutlined sx={{ fontSize: 16, color: '#6c7a89' }} />}
           sx={treeButtonSx(records.some((record) => record.id === selectedRecordId))}>
           <Typography variant="body2" noWrap sx={{ flex: 1, textAlign: 'left' }}>{placementNameByRecordId.get(first.id) ?? getRecordTitle(first)}</Typography>
         </Button>
-        {formRowActions(records, getRecordTitle(first), expandedKey, parentKey, () => assignSource({ ...group, records }, ''))}
+        {formRowActions(records, getRecordTitle(first), expandedKey, parentKey, records.some((record) => adjustedRecordIds.has(record.id)) ? () => assignSource({ ...group, records }, '') : undefined)}
       </Box>
     </Box>;
   };
@@ -746,7 +837,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     const items = [...(base?.items ?? [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
     const overlayDirectories = [...(overlayChildren.get(parentKey) ?? [])].sort((a, b) => a.sortOrder - b.sortOrder);
     const staticKeys = [...childDirectories.map((directory) => `base-dir-${directory.id}`), ...items.map((item) => `base-item-${item.id}`), ...overlayDirectories.map((node) => node.key)];
-    const children = orderedSummaryChildren(parentKey, staticKeys, placements);
+    const children = orderedSummaryChildren(parentKey, staticKeys, effectivePlacements);
     return <>{children.map((key, index) => {
       const before = insertionSlot(parentKey, key);
       if (key.startsWith('record-')) {
@@ -804,6 +895,21 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
       {editable && <Stack direction="row" justifyContent="flex-end"><Tooltip title="新增子目录"><IconButton className="summary-tree-action" size="small" disabled={isWriting} aria-label={`新增子目录 ${directory.name}`} onClick={() => openDirectoryCreator(key)} sx={treeActionSx}><PostAddRounded sx={{ fontSize: 16 }} /></IconButton></Tooltip></Stack>}
     </Box><Collapse in={expanded} timeout={160} unmountOnExit>{renderDirectoryChildren(key, 1)}</Collapse></Box>;
   });
+  const renderSourceNode = (key: 'source-work' | 'source-custom' | 'source-directory', label: string): ReactNode => {
+    const records = recordsByTarget.get(key) ?? [];
+    if (!records.length) return null;
+    const selected = selectedNode === key && !selectedRecordId;
+    const groups = key === 'source-directory' ? [] : groupSummarySources(records);
+    return <Box key={key}>
+      <Box {...directoryDropHandlers(key)} sx={treeRowSx(selected, 0)}>
+        <Box><FolderOutlined sx={{ fontSize: 18, color: '#d9a441' }} /></Box>
+        <Button fullWidth onClick={() => selectDirectory(key)} sx={treeButtonSx(selected)}>{label}（{records.length}）</Button>
+        <Box />
+      </Box>
+      {groups.map((group) => renderOptionalSourceNode(group, group.records, key, 1))}
+      {key === 'source-directory' && records.map((record) => renderRecordNode(record, key))}
+    </Box>;
+  };
   const isLoading = query.isLoading || (!readOnly && initializedKey !== workspaceKey && query.isFetching)
     || (readOnly && (versionQuery.isLoading || (!selectedVersionId && query.isFetching)));
   const isError = query.isError || (readOnly && versionQuery.isError);
@@ -814,7 +920,7 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     ...(baseChildren.get(panelDirectory ? String(panelDirectory.id) : '') ?? []).slice().sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((node) => `base-dir-${node.id}`),
     ...(panelDirectory?.items ?? []).slice().sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((item) => `base-item-${item.id}`),
     ...(overlayChildren.get(instancePanel.directoryKey) ?? []).slice().sort((a, b) => a.sortOrder - b.sortOrder).map((node) => node.key),
-  ], placements) : [];
+  ], effectivePlacements) : [];
   const panelRecords = instancePanel ? (instancePanel.key.startsWith('base-item-')
     ? recordsByTarget.get(instancePanel.key) ?? []
     : panelChildKeys.filter((key) => key.startsWith('record-') && instancePanel.recordIds.includes(key.slice(7)))
@@ -833,18 +939,22 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
         </Box>
         <Stack direction="row" spacing={1} alignItems="center">
           {summaryStatus === 'FORMALIZED' && canReorganize && <Button disabled={isWriting || !query.data?.versions.length} onClick={() => setReorganizing(true)}>重新整理</Button>}
-          {readOnly && <TextField select size="small" label="冻结版本" value={selectedVersionId} onChange={(event) => setSelectedVersionId(event.target.value)} sx={{ minWidth: 164, ...fieldSx }}>
+          {readOnly && <TextField select size="small" label="冻结版本" value={selectedVersionId} onChange={(event) => { setSelectedVersionId(event.target.value); setSelectedAttachmentIds([]); }} sx={{ minWidth: 164, ...fieldSx }}>
             {(query.data?.versions ?? []).map((version) => <MenuItem key={version.id} value={version.id}>V{version.versionNo} · {version.reviewOutcome === 'APPROVED' ? '已通过' : version.reviewOutcome === 'RETURNED' ? '已退回' : summaryLabels[version.status]}</MenuItem>)}
           </TextField>}
-          {editable && <Button variant="outlined" onClick={() => saveMutation.mutate()} disabled={!workspace || isLoading || isWriting || remoteDraftChanged}>保存草稿</Button>}
-          {!readOnly && canSubmit && <Button variant="contained" onClick={() => submitMutation.mutate()} disabled={!workspace || isLoading || isWriting || remoteDraftChanged || (!canEdit && revision === undefined)}>提交汇总</Button>}
+          <Button startIcon={<AttachFileRounded />} onClick={() => setAttachmentDialogOpen(true)} disabled={!workspace}>附件 {workspace?.attachments.length ?? 0}</Button>
+          <Tooltip title="查看 DHR 层数据审计"><IconButton aria-label="DHR 数据审计" onClick={() => { setAuditPage(0); setAuditDialogOpen(true); }}><HistoryRounded /></IconButton></Tooltip>
+          {readOnly && canExport && !legacyVersion && <Button startIcon={<DownloadRounded />} disabled={!selectedVersionId || exportBusy} onClick={() => void exportArchive('FULL')}>导出完整 ZIP</Button>}
+          {readOnly && canExport && !legacyVersion && <Button disabled={!selectedVersionId || !selectedRecords.length || exportBusy} onClick={() => void exportArchive('SELECTED')}>导出当前目录</Button>}
+          {editable && <Button variant="outlined" onClick={() => saveMutation.mutate()} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged}>保存草稿</Button>}
+          {!readOnly && canSubmit && <Button variant="contained" onClick={() => setCheckDialogOpen(true)} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged || (!canEdit && revision === undefined)}>提交汇总</Button>}
           <IconButton onClick={onClose} disabled={isWriting} aria-label="关闭"><CloseRounded /></IconButton>
         </Stack>
       </Stack>
     </DialogTitle>
     <DialogContent sx={{ p: 2, overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 0.75 }}>
       {remoteDraftChanged && <Alert severity="warning" action={<Button color="inherit" size="small" onClick={() => setConfirmReload(true)}>重新载入</Button>}>草稿已在其他操作中更新。本地编辑已保留，请核对后重新载入最新草稿。</Alert>}
-      {readOnly && Boolean(versionQuery.data?.evidenceChanges?.length) && <Alert severity="warning">本版本有 {versionQuery.data?.evidenceChanges?.length} 份已纳入证据发生变化。原冻结内容与审核历史保持不变。{summaryStatus === 'PENDING_REVIEW' ? '请由审核人核对后退回整理。' : '需要纳入变化时，请通过“重新整理”形成新版本。'}{versionQuery.data?.evidenceChanges?.map(change => <Typography variant="caption" component="div" key={change.recordId}>{change.instanceNo}：{change.message}</Typography>)}</Alert>}
+      {readOnly && Boolean(versionQuery.data?.evidenceChanges?.length) && <Alert severity="warning">本版本有 {versionQuery.data?.evidenceChanges?.length} 项冻结证据与当前来源不一致。原冻结内容与审批历史保持不变。{summaryStatus === 'PENDING_REVIEW' ? '请由审批人核对后退回整理。' : '需要纳入变化时，请通过“重新整理”形成新版本。'}{versionQuery.data?.evidenceChanges?.map(change => <Typography variant="caption" component="div" key={change.recordId ?? `attachment-${change.attachmentId}`}>{change.instanceNo || (change.attachmentId ? `附件 ${change.attachmentId}` : '证据')}：{change.message}</Typography>)}</Alert>}
       {isLoading ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><CircularProgress /></Box> : isError || !workspace ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><Stack spacing={1.5} alignItems="center"><Typography color="text.secondary">DHR 汇总工作区加载失败</Typography><Button startIcon={<RefreshRounded />} onClick={() => { query.refetch(); if (readOnly && selectedVersionId) versionQuery.refetch(); }}>重新加载</Button></Stack></Box> : <>
         <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, flex: '0 0 auto' }}>
           <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.5, minHeight: 34 }}>
@@ -854,10 +964,10 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
           <Collapse in={overviewExpanded} timeout={180}>
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, minmax(0, 1fr))' }, gap: 1, px: 1.5, pb: 1.25 }}>
               {[
-                { label: '表单实例', value: directCount + optionalCount, note: '当前候选范围', color: '#1677c8' },
-                { label: '已纳入', value: assignedRecordIds.size, note: '含目录自动归位', color: '#20a365' },
-                { label: '未纳入', value: unassignedSelectableCount, note: '已完成的可选实例', color: '#c57b14' },
-                { label: '来源组成', value: `${candidateGroups.WORK.length} / ${candidateGroups.CUSTOM.length}`, note: '作业节点 / 自定义创建项', color: '#596577' },
+                { label: '表单实例', value: actualRecordCount, note: '生产对象关联的实际记录', color: '#1677c8' },
+                { label: '已完成', value: actualRecordCount - incompleteCount, note: '不代表检验结论合格', color: '#20a365' },
+                { label: '待核查状态', value: incompleteCount, note: '未完成记录仍保留在证据中', color: '#c57b14' },
+                { label: '附件证据', value: workspace.attachments.length, note: `${workspace.attachments.filter((attachment) => attachment.verificationStatus !== 'VERIFIED').length} 份待核验`, color: '#596577' },
               ].map((stat) => <Box key={stat.label} sx={{ border: '1px solid #e6eaf0', borderRadius: 1, px: 1.5, py: 0.75, minWidth: 0, borderLeft: `3px solid ${stat.color}` }}><Stack direction="row" alignItems="baseline" spacing={0.75}><Typography variant="h6" sx={{ color: stat.color, fontVariantNumeric: 'tabular-nums', lineHeight: 1.25 }}>{stat.value}</Typography><Typography variant="body2" fontWeight={600} noWrap>{stat.label}</Typography></Stack><Typography variant="caption" color="text.secondary" noWrap display="block">{stat.note}</Typography></Box>)}
             </Box>
           </Collapse>
@@ -866,9 +976,9 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
           <Box data-summary-directory sx={{ minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.5, py: 1, minHeight: 62, borderBottom: '1px solid #e4e7ed' }}>
               <Typography fontWeight={600}>汇总目录</Typography>
-              {editable && <Tooltip title="在基础目录下新增一级目录"><span><IconButton size="small" aria-label="新增一级目录" disabled={isWriting || !rootDirectoryKey} onClick={() => openDirectoryCreator(rootDirectoryKey)}><AddRounded fontSize="small" /></IconButton></span></Tooltip>}
+              {editable && <Tooltip title="新增根目录"><span><IconButton size="small" aria-label="新增根目录" disabled={isWriting} onClick={() => openDirectoryCreator('__root__')}><AddRounded fontSize="small" /></IconButton></span></Tooltip>}
             </Stack>
-            <Box sx={{ flex: 1, overflow: 'auto', py: 0.75 }}>{renderBaseNodes()}{!baseDirectories.length && <Typography variant="body2" color="text.secondary" sx={{ px: 2, py: 4, textAlign: 'center' }}>该 DHR 没有冻结目录。</Typography>}</Box>
+            <Box sx={{ flex: 1, overflow: 'auto', py: 0.75 }}>{renderBaseNodes()}{renderDirectoryChildren('', 0)}{renderSourceNode('source-directory', '未匹配目录表单')}{renderSourceNode('source-work', '作业表单')}{renderSourceNode('source-custom', '自定义表单')}{!baseDirectories.length && !actualRecordCount && !overlay.length && <Typography variant="body2" color="text.secondary" sx={{ px: 2, py: 4, textAlign: 'center' }}>尚无可展示的来源记录。</Typography>}</Box>
           </Box>
           <Box data-summary-instances sx={{ gridColumn: { md: 2 }, display: instancePanel ? 'flex' : 'none', flexDirection: 'column', ml: { md: 1 }, minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', position: { xs: 'absolute', md: 'relative' }, top: { xs: 0, md: 'auto' }, bottom: { xs: 0, md: 'auto' }, left: { xs: 0, md: 'auto' }, width: { xs: 'min(280px, calc(100% - 64px))', md: 'auto' }, zIndex: 2 }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.5, minHeight: 62, borderBottom: '1px solid #e4e7ed' }}><Box minWidth={0}><Typography fontWeight={600}>表单实例（{panelRecords.length}）</Typography><Typography variant="caption" color="text.secondary" noWrap display="block">{placementNameByRecordId.get(panelRecords[0]?.id) ?? instancePanel?.label}</Typography></Box><IconButton size="small" aria-label="收起实例列表" onClick={() => setInstancePanel(null)}><CloseRounded fontSize="small" /></IconButton></Stack>
@@ -890,49 +1000,49 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
                 </Box> : <Box minWidth={0} flex="1 1 260px"><Typography fontWeight={600}>目录内容</Typography><Typography variant="caption" color="text.secondary">{selectedNodeLabel}</Typography></Box>}
               </Stack>
             </Box>
-            <EvidenceCanvas record={selectedRecord} emptyMessage="当前目录尚无已归集的表单实例。" />
+            <EvidenceCanvas record={selectedRecord} emptyMessage="当前目录尚无实际表单实例。" />
           </Box>
           <Box sx={{ gridColumn: { lg: 4 }, ml: { xs: 0, lg: candidateDrawerOpen ? 1.5 : 0 }, minHeight: 0, minWidth: 0, bgcolor: '#fff', border: candidateDrawerOpen ? '1px solid #e4e7ed' : 0, borderRadius: 1, overflow: 'hidden', position: { xs: 'absolute', lg: 'relative' }, right: { xs: 64, lg: 'auto' }, top: { xs: 0, lg: 'auto' }, bottom: { xs: 0, lg: 'auto' }, width: { xs: candidateDrawerOpen ? 'min(360px, calc(100% - 64px))' : 0, lg: 'auto' }, zIndex: 2, transition: 'margin-left 240ms ease, width 240ms ease', '@media (prefers-reduced-motion: reduce)': { transition: 'none' } }}>
           <Box aria-hidden={!candidateDrawerOpen} sx={{ minWidth: 0, height: '100%', display: 'flex', flexDirection: 'column', opacity: candidateDrawerOpen ? 1 : 0, visibility: candidateDrawerOpen ? 'visible' : 'hidden', pointerEvents: candidateDrawerOpen ? 'auto' : 'none', transition: 'opacity 180ms ease, visibility 180ms ease', '@media (prefers-reduced-motion: reduce)': { transition: 'none' } }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.5, py: 1.25, borderBottom: '1px solid #e4e7ed' }}><Box minWidth={0}><Typography fontWeight={700}>{originLabels[candidateOrigin]}</Typography><Typography variant="caption" color="text.secondary">{readOnly ? '提交时冻结的候选范围' : '拖入左侧目录或选择目录；未选择即不纳入'}</Typography></Box><IconButton size="small" aria-label="收起候选表单" onClick={() => setCandidateDrawerOpen(false)}><CloseRounded fontSize="small" /></IconButton></Stack>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.5, py: 1.25, borderBottom: '1px solid #e4e7ed' }}><Box minWidth={0}><Typography fontWeight={700}>{originLabels[candidateOrigin]}</Typography><Typography variant="caption" color="text.secondary">{readOnly ? '本版本的来源记录' : '全部实际实例已自动关联；可按需要调整展示位置'}</Typography></Box><IconButton size="small" aria-label="收起来源表单" onClick={() => setCandidateDrawerOpen(false)}><CloseRounded fontSize="small" /></IconButton></Stack>
             <Stack spacing={1} sx={{ p: 1.25, overflow: 'auto' }}>{candidateGroups[candidateOrigin].map((group) => {
               const first = group.records[0];
+              const defaultTarget = group.originKind === 'WORK' ? 'source-work' : 'source-custom';
               const targets = group.records.map((record) => placementByRecordId.get(record.id) ?? '');
-              const placedCount = targets.filter(Boolean).length;
-              const currentTarget = placedCount === group.records.length && targets.every((target) => target === targets[0]) ? targets[0] : placedCount ? '__PARTIAL__' : '';
-              const allCompleted = group.records.every((record) => record.status === 'COMPLETED');
+              const adjustedCount = group.records.filter((record) => adjustedRecordIds.has(record.id)).length;
+              const currentTarget = targets.every((target) => target === targets[0]) ? (targets[0] === defaultTarget ? '' : targets[0]) : '__PARTIAL__';
               const completedCount = group.records.filter((record) => record.status === 'COMPLETED').length;
               const expanded = expandedSourceKeys.includes(group.key);
               return <Box key={group.key} data-source-key={group.key}
-                sx={{ p: 1.25, border: '1px solid #ebeef5', borderRadius: 1, bgcolor: currentTarget && currentTarget !== '__PARTIAL__' ? '#f6ffed' : '#fff' }}>
+                sx={{ p: 1.25, border: '1px solid #ebeef5', borderRadius: 1, bgcolor: adjustedCount ? '#f6ffed' : '#fff' }}>
                 <Stack data-source-drag direction="row" justifyContent="space-between" gap={1} alignItems="flex-start"
-                  draggable={editable && !isWriting && allCompleted} onDragStart={(event) => startSourceDrag(event, group.key)} onDragEnd={endRecordDrag}
-                  sx={{ cursor: editable && allCompleted ? 'grab' : 'default', '&:active': { cursor: editable && allCompleted ? 'grabbing' : 'default' } }}>
-                  <Stack direction="row" alignItems="flex-start" minWidth={0} gap={0.5}>{editable && allCompleted && <DragIndicatorRounded fontSize="small" sx={{ mt: 0.25, color: '#909399' }} />}<Box minWidth={0}><Typography fontWeight={600} noWrap title={getRecordTitle(first)}>{getRecordTitle(first)}</Typography><Typography variant="caption" color="text.secondary" display="block" noWrap title={`${first.operationName || '生产执行'} · ${first.formId}`}>{group.originKind === 'WORK' ? `作业节点 ${first.snapshot.workNodeId || first.formId}` : `自定义创建项 ${first.formId}`} · {group.records.length} 份实例</Typography></Box></Stack>
+                  draggable={editable && !isWriting} onDragStart={(event) => startSourceDrag(event, group.key)} onDragEnd={endRecordDrag}
+                  sx={{ cursor: editable ? 'grab' : 'default', '&:active': { cursor: editable ? 'grabbing' : 'default' } }}>
+                  <Stack direction="row" alignItems="flex-start" minWidth={0} gap={0.5}>{editable && <DragIndicatorRounded fontSize="small" sx={{ mt: 0.25, color: '#909399' }} />}<Box minWidth={0}><Typography fontWeight={600} noWrap title={getRecordTitle(first)}>{getRecordTitle(first)}</Typography><Typography variant="caption" color="text.secondary" display="block" noWrap title={`${first.operationName || '生产执行'} · ${first.formId}`}>{group.originKind === 'WORK' ? `作业节点 ${first.snapshot.workNodeId || first.formId}` : `自定义创建项 ${first.formId}`} · {group.records.length} 份实例</Typography></Box></Stack>
 
                 </Stack>
                 <Stack direction="row" justifyContent="space-between" gap={1} sx={{ mt: 0.75 }}>
                   <Typography variant="caption" color="text.secondary">已完成 {completedCount}/{group.records.length}</Typography>
-                  <Typography variant="caption" color={placedCount === group.records.length ? 'success.main' : placedCount ? 'primary.main' : 'text.secondary'}>{placedCount === 0 ? '未纳入' : placedCount === group.records.length ? `全部纳入 ${placedCount} 份` : `部分纳入 ${placedCount}/${group.records.length}`}</Typography>
+                  <Typography variant="caption" color={adjustedCount ? 'primary.main' : 'text.secondary'}>{adjustedCount ? `已调整展示位置 ${adjustedCount}/${group.records.length}` : '默认来源位置'}</Typography>
                 </Stack>
-                {!allCompleted && <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>{group.records.length > 1 ? '含未完成实例，请展开后逐份处理。' : '本实例尚未完成，暂不可纳入。'}</Typography>}
-                {editable ? <TextField select size="small" fullWidth label={group.records.length > 1 ? '整组归入目录' : '归入目录'} value={currentTarget} disabled={isWriting || (!allCompleted && !placedCount)} onChange={(event) => assignSource(group, event.target.value)} sx={{ mt: 1, ...fieldSx }}><MenuItem value="">未纳入</MenuItem>{currentTarget === '__PARTIAL__' && <MenuItem value="__PARTIAL__" disabled>{placedCount < group.records.length ? `部分纳入 ${placedCount}/${group.records.length}` : '已纳入多个目录'}</MenuItem>}{targetOptions.map((target) => <MenuItem key={target.key} value={target.key} disabled={!allCompleted}>{target.label}</MenuItem>)}</TextField> : <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>{currentTarget === '__PARTIAL__' ? '展开查看各实例归入位置' : currentTarget ? `已归入：${placementLabel(first.id)}` : '未纳入本汇总版本'}</Typography>}
+                {completedCount < group.records.length && <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>存在未完成实例；证据保留，提交是否阻断由核查规则决定。</Typography>}
+                {editable ? <TextField select size="small" fullWidth label={group.records.length > 1 ? '整组展示位置' : '展示位置'} value={currentTarget} disabled={isWriting} onChange={(event) => assignSource(group, event.target.value)} sx={{ mt: 1, ...fieldSx }}><MenuItem value="">默认来源位置</MenuItem>{currentTarget === '__PARTIAL__' && <MenuItem value="__PARTIAL__" disabled>实例展示位置不同</MenuItem>}{targetOptions.filter((target) => !target.key.startsWith('source-')).map((target) => <MenuItem key={target.key} value={target.key}>{target.label}</MenuItem>)}</TextField> : <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>{currentTarget === '__PARTIAL__' ? '展开查看各实例展示位置' : currentTarget ? `展示于：${placementLabel(first.id)}` : legacyVersion ? '未纳入此历史汇总版本' : '默认来源位置'}</Typography>}
                 <Button size="small" aria-label={`${expanded ? '收起' : '展开'}实例 ${getRecordTitle(first)}`} aria-expanded={expanded} startIcon={<ViewListOutlined />} endIcon={expanded ? <ExpandMoreRounded /> : <ChevronRightRounded />} onClick={() => setExpandedSourceKeys((current) => expanded ? current.filter((key) => key !== group.key) : [...current, group.key])} sx={{ mt: 1 }}>查看实例（{group.records.length}）</Button>
                 <Collapse in={expanded} timeout={160} unmountOnExit><Box sx={{ mt: 1, borderTop: '1px solid #ebeef5' }}>{group.records.map((record) => {
                   const target = placementByRecordId.get(record.id) ?? '';
-                  const eligible = record.status === 'COMPLETED';
+                  const displayTarget = target === defaultTarget ? '' : target;
                   return <Box key={record.id} data-source-instance={record.id} sx={{ py: 1, '& + &': { borderTop: '1px solid #ebeef5' } }}>
                     <Stack data-instance-drag direction="row" alignItems="center" justifyContent="space-between" gap={0.5}
-                      draggable={editable && !isWriting && eligible} onDragStart={(event) => startSourceDrag(event, group.key, [record])} onDragEnd={endRecordDrag}
-                      sx={{ cursor: editable && eligible ? 'grab' : 'default' }}>
-                      {editable && eligible && <DragIndicatorRounded sx={{ fontSize: 16, color: '#909399' }} />}
+                      draggable={editable && !isWriting} onDragStart={(event) => startSourceDrag(event, group.key, [record])} onDragEnd={endRecordDrag}
+                      sx={{ cursor: editable ? 'grab' : 'default' }}>
+                      {editable && <DragIndicatorRounded sx={{ fontSize: 16, color: '#909399' }} />}
                       <Box minWidth={0} flex={1}><Typography variant="caption" noWrap display="block" title={record.instanceNo}>{record.instanceNo}</Typography><Typography variant="caption" color="text.secondary" noWrap display="block">{evidenceStatus(record).label} · {record.copyId}</Typography></Box>
                       <Tooltip title="查看实例"><IconButton size="small" aria-label={`预览实例 ${record.instanceNo}`} onClick={() => setPreview(record)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip>
                     </Stack>
-                    {editable ? <TextField select size="small" fullWidth label="本份归入目录" value={target} disabled={isWriting || (!eligible && !target)} SelectProps={{ inputProps: { 'aria-label': `实例归入目录 ${record.instanceNo}` } }}
+                    {editable ? <TextField select size="small" fullWidth label="本份展示位置" value={displayTarget} disabled={isWriting} SelectProps={{ inputProps: { 'aria-label': `实例展示位置 ${record.instanceNo}` } }}
                       onChange={(event) => assignSource({ ...group, records: [record] }, event.target.value)} sx={{ mt: 0.75, ...fieldSx }}>
-                      <MenuItem value="">未纳入</MenuItem>{targetOptions.map((option) => <MenuItem key={option.key} value={option.key} disabled={!eligible}>{option.label}</MenuItem>)}
-                    </TextField> : <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>{target ? `已归入：${placementLabel(record.id)}` : '未纳入本汇总版本'}</Typography>}
+                      <MenuItem value="">默认来源位置</MenuItem>{targetOptions.filter((option) => !option.key.startsWith('source-')).map((option) => <MenuItem key={option.key} value={option.key}>{option.label}</MenuItem>)}
+                    </TextField> : <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>{target ? `展示于：${placementLabel(record.id)}` : legacyVersion ? '未纳入此历史汇总版本' : '默认来源位置'}</Typography>}
                   </Box>;
                 })}</Box></Collapse>
               </Box>;
@@ -953,10 +1063,76 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
         </Box>
       </>}
     </DialogContent>
+    <AppDialog open={checkDialogOpen} onClose={() => setCheckDialogOpen(false)} variant="form" fullWidth maxWidth="sm">
+      <DialogTitle>提交前核查</DialogTitle>
+      <DialogContent dividers>
+        <Alert severity="info" sx={{ mb: 1.5 }}>系统已自动归集关联记录并检查必需项、补录与附件核验；表单字段中的质量结论和异常处置不能仅凭“已完成”自动判定。本确认将连同操作者、时间和说明写入冻结版本。</Alert>
+        <Stack spacing={1}>
+          <Stack direction="row" alignItems="flex-start"><Checkbox checked={qualityReviewed} onChange={(event) => setQualityReviewed(event.target.checked)} inputProps={{ 'aria-label': '确认质量结论与异常处置已核查' }} /><Typography variant="body2" sx={{ pt: 1 }}>我已核对适用的质量结论、异常及处置依据；存在未解决事项时不提交。</Typography></Stack>
+          <Stack direction="row" alignItems="flex-start"><Checkbox checked={signaturesReviewed} onChange={(event) => setSignaturesReviewed(event.target.checked)} inputProps={{ 'aria-label': '确认源表单签署已核查' }} /><Typography variant="body2" sx={{ pt: 1 }}>我已核对适用的源表单审批与签署记录。</Typography></Stack>
+          <Stack direction="row" alignItems="flex-start"><Checkbox checked={scopeReviewed} onChange={(event) => setScopeReviewed(event.target.checked)} inputProps={{ 'aria-label': '确认完整证据范围已核查' }} /><Typography variant="body2" sx={{ pt: 1 }}>我已核对本次完整证据范围，理解汇总定稿不等于产品放行。</Typography></Stack>
+          <TextField multiline minRows={2} fullWidth required label="核查说明" value={checkNote} onChange={(event) => setCheckNote(event.target.value)} inputProps={{ maxLength: 500 }} helperText="记录结论依据或异常处置引用，不超过 500 字" />
+        </Stack>
+      </DialogContent>
+      <DialogActions><Button onClick={() => setCheckDialogOpen(false)}>取消</Button><Button variant="contained" disabled={!qualityReviewed || !signaturesReviewed || !scopeReviewed || !checkNote.trim() || isWriting} onClick={() => submitMutation.mutate()}>确认并提交</Button></DialogActions>
+    </AppDialog>
+    <AppDialog open={auditDialogOpen} onClose={() => setAuditDialogOpen(false)} variant="form" fullWidth maxWidth="md">
+      <DialogTitle>DHR 数据审计 · {dhr.dhrNo}</DialogTitle>
+      <DialogContent dividers sx={{ minHeight: 320 }}>
+        <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1.5 }}>目录整理、附件关联、汇总提交、审批及导出事件；生产表单的填报与签署记录需到来源实例查看。</Typography>
+        {auditQuery.isLoading ? <Box sx={{ display: 'grid', placeItems: 'center', py: 6 }}><CircularProgress size={24} /></Box>
+          : auditQuery.isError ? <Alert severity="error">审计记录加载失败，请重试。</Alert>
+            : !auditQuery.data?.events.length ? <Typography color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>暂无 DHR 层审计记录</Typography>
+              : <Stack spacing={1}>{auditQuery.data.events.map((event) => <Box key={event.id} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 1.5 }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}><Typography variant="body2" fontWeight={600}>{event.functionName || event.action}</Typography><Typography variant="caption" color="text.secondary">{event.at.replace('T', ' ')}</Typography></Stack>
+                <Typography variant="caption" color="text.secondary">{event.operator || '系统'} · {event.entityType}{event.reason ? ` · 原因：${event.reason}` : ''}</Typography>
+                {(event.before || event.after) && <Box component="details" sx={{ mt: 1 }}><Box component="summary" sx={{ cursor: 'pointer', fontSize: 12, color: 'primary.main' }}>查看前后证据</Box>
+                  <Box component="pre" sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: 12, maxHeight: 240, overflow: 'auto', bgcolor: '#f7f9fc', p: 1 }}>{event.before ? `变更前：${event.before}\n` : ''}{event.after ? `变更后：${event.after}` : ''}</Box>
+                </Box>}
+              </Box>)}</Stack>}
+      </DialogContent>
+      <DialogActions><Typography variant="caption" sx={{ mr: 'auto', pl: 1 }} color="text.secondary">共 {auditQuery.data?.total ?? 0} 条</Typography><Button disabled={auditPage === 0 || auditQuery.isFetching} onClick={() => setAuditPage((value) => value - 1)}>上一页</Button><Button disabled={auditQuery.isFetching || (auditPage + 1) * 50 >= (auditQuery.data?.total ?? 0)} onClick={() => setAuditPage((value) => value + 1)}>下一页</Button><Button onClick={() => setAuditDialogOpen(false)}>关闭</Button></DialogActions>
+    </AppDialog>
+    <AppDialog open={attachmentDialogOpen} onClose={() => setAttachmentDialogOpen(false)} variant="form" fullWidth maxWidth="sm">
+      <DialogTitle>附件证据</DialogTitle>
+      <DialogContent dividers>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>附件与生产对象自动关联。上传后需核对原件内容；解除当前关联不会删除历史文件。</Typography>
+        <Stack spacing={1.25}>
+          {(workspace?.attachments ?? []).map((attachment) => <Box key={attachment.id} sx={{ p: 1.25, border: '1px solid #e4e7ed', borderRadius: 1 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1}>
+              {readOnly && canExport && !legacyVersion && <Checkbox size="small" checked={selectedAttachmentIds.includes(attachment.id)} onChange={(event) => setSelectedAttachmentIds((ids) => event.target.checked ? [...ids, attachment.id] : ids.filter((id) => id !== attachment.id))} inputProps={{ 'aria-label': `选择导出附件 ${attachment.name}` }} />}
+              <Box minWidth={0}><Typography fontWeight={600} noWrap title={attachment.name}>{attachment.name}</Typography><Typography variant="caption" color="text.secondary">{attachment.sourceKind} · {attachment.purpose} · {Math.ceil(attachment.size / 1024)} KB</Typography></Box>
+              <StatusBadge label={attachment.verificationStatus === 'VERIFIED' ? '已核验' : '待核验'} color={attachment.verificationStatus === 'VERIFIED' ? 'success' : 'warning'} />
+            </Stack>
+            {attachment.sourceKind === 'PAPER_SCAN' && <Typography variant="caption" color="text.secondary" display="block">原记录形成：{attachment.originalRecordedAt || '—'} · 原件保管：{attachment.custodyLocation || '—'}</Typography>}
+            <Stack direction="row" spacing={1} sx={{ mt: 0.75 }}>
+              <Button size="small" startIcon={<DownloadRounded />} onClick={() => void getAttachment(attachment)}>下载原件</Button>
+              {editable && attachment.verificationStatus !== 'VERIFIED' && <Button size="small" disabled={attachmentBusy} onClick={() => void verifyAttachment(attachment.id)}>确认核验</Button>}
+              {editable && <Button size="small" color="error" disabled={attachmentBusy} onClick={() => setUnlinkingAttachmentId(attachment.id)}>解除关联</Button>}
+            </Stack>
+          </Box>)}
+          {!workspace?.attachments.length && <Typography variant="body2" color="text.secondary">暂无附件证据</Typography>}
+        </Stack>
+        {editable && <Stack spacing={1.25} sx={{ mt: 2, pt: 2, borderTop: '1px solid #e4e7ed' }}>
+          <Typography fontWeight={600}>关联新附件</Typography>
+          <Stack direction="row" spacing={1} alignItems="center"><Button component="label" variant="outlined" size="small">选择 PDF / PNG / JPEG<input hidden type="file" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" onChange={(event) => setAttachmentFile(event.target.files?.[0] ?? null)} /></Button><Typography variant="body2" noWrap>{attachmentFile?.name || '尚未选择文件（不超过 25 MB）'}</Typography></Stack>
+          <TextField select size="small" label="来源类型" value={attachmentKind} onChange={(event) => setAttachmentKind(event.target.value as DhrAttachment['sourceKind'])}><MenuItem value="EXTERNAL_REPORT">委外报告</MenuItem><MenuItem value="CERTIFICATE">外部证书</MenuItem><MenuItem value="PAPER_SCAN">纸质原件扫描</MenuItem><MenuItem value="OTHER">其他</MenuItem></TextField>
+          <TextField size="small" label="来源与用途" value={attachmentPurpose} onChange={(event) => setAttachmentPurpose(event.target.value)} inputProps={{ maxLength: 500 }} required />
+          {attachmentKind === 'PAPER_SCAN' && <><TextField size="small" type="datetime-local" label="原记录形成时间" InputLabelProps={{ shrink: true }} value={originalRecordedAt} onChange={(event) => setOriginalRecordedAt(event.target.value)} required /><TextField size="small" label="纸质原件保管位置" value={custodyLocation} onChange={(event) => setCustodyLocation(event.target.value)} required /></>}
+          <Box><Button variant="contained" disabled={!attachmentFile || !attachmentPurpose.trim() || attachmentBusy || (attachmentKind === 'PAPER_SCAN' && (!originalRecordedAt || !custodyLocation.trim()))} onClick={() => void uploadAttachment()}>上传并关联</Button></Box>
+        </Stack>}
+      </DialogContent>
+      <DialogActions>{readOnly && canExport && !legacyVersion && <Button disabled={!selectedAttachmentIds.length || exportBusy} onClick={() => void exportArchive('SELECTED', [], selectedAttachmentIds)}>导出已选附件 ZIP</Button>}<Button onClick={() => setAttachmentDialogOpen(false)}>关闭</Button></DialogActions>
+    </AppDialog>
+    <AppDialog open={Boolean(unlinkingAttachmentId)} onClose={() => setUnlinkingAttachmentId('')} variant="form" fullWidth maxWidth="xs">
+      <DialogTitle>解除附件关联</DialogTitle>
+      <DialogContent dividers><TextField autoFocus fullWidth multiline minRows={2} label="解除原因" value={unlinkReason} onChange={(event) => setUnlinkReason(event.target.value)} inputProps={{ maxLength: 500 }} /></DialogContent>
+      <DialogActions><Button onClick={() => setUnlinkingAttachmentId('')}>取消</Button><Button color="error" disabled={!unlinkReason.trim() || attachmentBusy} onClick={() => void unlinkAttachment()}>确认解除</Button></DialogActions>
+    </AppDialog>
     <AppDialog open={Boolean(directoryParentKey)} onClose={() => setDirectoryParentKey('')} variant="form" fullWidth maxWidth="xs">
       <DialogTitle>新增汇总目录</DialogTitle>
       <DialogContent dividers>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>上级目录：{targetLabelByKey.get(directoryParentKey) ?? '生产记录'}</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>上级目录：{directoryParentKey === '__root__' ? 'DHR 根目录' : targetLabelByKey.get(directoryParentKey) ?? '生产记录'}</Typography>
         <TextField autoFocus inputRef={directoryNameInputRef} size="small" fullWidth label="目录名称" disabled={isWriting} error={directoryNameError} helperText={directoryNameError ? '请填写目录名称' : ' '} value={newDirectoryName} onChange={(event) => { setNewDirectoryName(event.target.value); if (event.target.value.trim()) setDirectoryNameError(false); }} onKeyDown={(event) => { if (event.key === 'Enter') addDirectory(); }} sx={fieldSx} />
       </DialogContent>
       <DialogActions><Button onClick={() => setDirectoryParentKey('')}>取消</Button><Button variant="contained" disabled={isWriting} onClick={addDirectory}>确定</Button></DialogActions>
@@ -971,11 +1147,11 @@ function SummaryWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
     </AppDialog>
     <Dialog open={Boolean(pendingRemoval)} onClose={() => setPendingRemoval(null)}>
       <DialogTitle>删除汇总目录？</DialogTitle>
-      <DialogContent><Typography color="text.secondary">该目录及其下级汇总目录会从草稿移除；归入这些目录的表单将恢复为未纳入。冻结基础目录不会被修改。</Typography></DialogContent>
+      <DialogContent><Typography color="text.secondary">该目录及其下级自定义目录会从草稿移除；其中的表单会恢复默认来源位置，仍属于 DHR 证据。冻结基础目录不会改变。</Typography></DialogContent>
       <DialogActions><Button onClick={() => setPendingRemoval(null)}>取消</Button><Button color="error" variant="contained" disabled={isWriting} onClick={removeDirectory}>删除目录</Button></DialogActions>
     </Dialog>
     <ConfirmDialog open={confirmReload} onCancel={() => setConfirmReload(false)}
-      title="重新载入最新草稿？" message="当前未保存的目录和归档调整将被替换为服务器上的最新草稿。"
+      title="重新载入最新草稿？" message="当前未保存的目录和展示位置调整将被替换为服务器上的最新草稿。"
       cancelText="保留本地编辑" confirmText="确认重新载入" initialFocus="cancel" onConfirm={async () => {
         setConfirmReload(false);
         const result = await query.refetch();

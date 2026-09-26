@@ -40,15 +40,15 @@ class DhrReviewServiceTest {
         reset(summaries, engine, workflows, access, audits);
         AuditContext.setOperator("7", "审核人");
         jdbc.execute("DROP ALL OBJECTS");
-        jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,summary_status VARCHAR(32),tenant_id VARCHAR(32),dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),work_order_no VARCHAR(64),product_name VARCHAR(64),updated_by VARCHAR(64),updated_at TIMESTAMP)");
-        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),version_no INT,snapshot_hash VARCHAR(64),dhr_instance_id BIGINT,submitted_by VARCHAR(64),submitted_at TIMESTAMP)");
+        jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,summary_status VARCHAR(32),tenant_id VARCHAR(32),production_object_id BIGINT,dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),work_order_no VARCHAR(64),product_name VARCHAR(64),updated_by VARCHAR(64),updated_at TIMESTAMP)");
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),version_no INT,snapshot_hash VARCHAR(64),dhr_instance_id BIGINT,submitted_by VARCHAR(64),submitted_at TIMESTAMP,evidence_model_version SMALLINT DEFAULT 1,check_result_snapshot TEXT,attachment_snapshot TEXT DEFAULT '[]')");
         jdbc.execute("CREATE TABLE dhr_summary_review(summary_version_id BIGINT PRIMARY KEY,workflow_instance_id BIGINT,status VARCHAR(32),updated_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE workflow_node(id BIGINT PRIMARY KEY,name VARCHAR(64),properties TEXT)");
         jdbc.execute("CREATE TABLE workflow_task(id BIGINT PRIMARY KEY,instance_id BIGINT,node_id BIGINT,status VARCHAR(32),assignee_id VARCHAR(64),candidate_snapshot TEXT,opinion TEXT,action VARCHAR(32),created_at TIMESTAMP,completed_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE dhr_summary_evidence(tenant_id VARCHAR(32),summary_version_id BIGINT,source_record_id BIGINT,source_snapshot TEXT)");
         jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),snapshot_json TEXT,values_json TEXT,status VARCHAR(32),version_id BIGINT)");
         jdbc.update("INSERT INTO dhr_instance(id,tenant_id,summary_status,dhr_no,object_no,object_type,work_order_no,product_name) VALUES(1,'default','PENDING_REVIEW','DHR-1','B1','BATCH','W1','产品')");
-        jdbc.update("INSERT INTO dhr_summary_version VALUES(2,'default',1,'hash',1,'提交人',CURRENT_TIMESTAMP)");
+        jdbc.update("INSERT INTO dhr_summary_version(id,tenant_id,version_no,snapshot_hash,dhr_instance_id,submitted_by,submitted_at) VALUES(2,'default',1,'hash',1,'提交人',CURRENT_TIMESTAMP)");
         jdbc.update("INSERT INTO dhr_summary_review VALUES(2,3,'PENDING_REVIEW',CURRENT_TIMESTAMP)");
         jdbc.update("INSERT INTO workflow_node VALUES(4,'质量审核','{}')");
         jdbc.update("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot,created_at) VALUES(5,3,4,'PENDING',NULL,'{\"userIds\":[\"7\"]}',CURRENT_TIMESTAMP)");

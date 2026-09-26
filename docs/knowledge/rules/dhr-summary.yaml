@@ -2,7 +2,7 @@ knowledgeModelVersion: 0.3.24
 rules:
   - id: rule.dhr-summary-only-after-production-complete
     name: 生产完成后才能整理和提交 DHR 汇总
-    status: implemented
+    status: specified
     visibility: internal
     trigger: dhr-summary.save-or-submit
     scope: dhr-summary
@@ -10,36 +10,53 @@ rules:
     result:
       type: allow-with-governance
       action: edit-or-submit-summary
-    explanation: 汇总只处理生产已经完成的 DHR；进行中 DHR 仍在收集证据，不进入待汇总列表。
+    explanation: 普通汇总整理与提交仍要求生产正常完成；该资格不控制证据可见性，进行中及已终止 DHR 仍按权限只读查阅实际证据。终止后不进入普通汇总或审批，沿用 DEC-0069。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service]
   - id: rule.dhr-summary-required-directory-completeness
     name: 提交前满足必填基础目录完整性
-    status: implemented
+    status: specified
     visibility: internal
     trigger: dhr-summary.submit
     scope: dhr-summary
-    condition: {fact: fact.dhr-summary.required-directory-complete, operator: equals, value: true}
+    condition: {fact: fact.dhr-summary.required-directory-qualified, operator: equals, value: true}
     result:
       type: allow-with-governance
       action: freeze-summary-version
-    explanation: 每个必填基础目录项至少要有一份已完成的目录直接绑定实例；未完成或缺失时阻断提交。
+    explanation: 必填基础目录应具有适用规则要求的合格完成记录；缺失、未完成或无有效记录时阻断提交，作废/失败/已替代记录可查但不冒充合格完成。表单 COMPLETED 不代表检验合格；该检查不替代其他适用质量结论、异常处置、签署、有效性及未完成补录检查，目录整理不能绕过检查。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service]
   - id: rule.dhr-summary-freeze-version
     name: DHR 汇总提交形成不可变版本
-    status: implemented
+    status: specified
     visibility: internal
     trigger: dhr-summary.submit
     scope: dhr-summary
     condition: {fact: fact.dhr-summary.version-frozen, operator: equals, value: false}
     result:
       type: freeze-execution-snapshot
-      fields: [baseDirectory, overlayDirectories, completeCandidateUniverse, placements, sourceSnapshots, sourceHashes, summaryHash, reviewBinding]
+      fields: [evidenceScope, checkResults, manualReviewConfirmation, baseDirectory, overlayDirectories, directoryPresentation, placements, sourceVersions, sourceStatuses, sourceSnapshots, attachmentReferences, sourceHashes, summaryHash, reviewBinding]
       laterChangesRewriteVersion: false
-    explanation: 提交冻结完整候选范围、纳入关系及各归档关联的显示名，显示名随 placements 纳入校验指纹；不复制或改写来源表单。同一实例在同一版本只能出现一次，已提交版本不可编辑。
+    explanation: 核查后在提交时重新核对完整集合、来源版本及新增实例/附件，陈旧提交拒绝并提示刷新；冻结生产对象全部实际关联证据及检查结果（规则依据/版本、时间、问题、处置及确认），目录位置、顺序和别名仅是同一版本的展示属性，不能定义证据子集。审批、详情和 ZIP 使用同一冻结基准；实时来源视图明确区分。同一实例身份唯一，后续变化不改写旧版。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration]
+  - id: rule.dhr-summary-manual-review-confirmation
+    name: 提交前人工逐项确认并冻结确认记录
+    status: specified
+    visibility: internal
+    trigger: dhr-summary.submit
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.manual-review-confirmed, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: freeze-summary-version
+      requiredConfirmations: [quality-and-exceptions, source-approvals-and-signatures, complete-evidence-scope]
+      requiredNote: true
+      freezeIn: checkResult.manualReview
+      freezeFields: [confirmedBy, confirmedAt, note]
+      automaticQualityConclusionInterpretation: false
+    explanation: 提交人须逐项人工核查质量结果及异常处置、来源审批签署和完整证据范围，填写说明；缺任一确认或说明阻断提交。checkResult 保留三项确认、确认人、时间及说明。该签认只记录人的核查责任，不自动判定任意表单质量合格或签署有效，亦不替代其他客观阻断检查。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-complete-evidence-tests]
   - id: rule.dhr-summary-review-binding
     name: DHR 汇总审核策略绑定已发布流程版本
-    status: implemented
+    status: specified
     visibility: internal
     trigger: product-process-version.save
     scope: dhr-summary-review-configuration
@@ -49,49 +66,49 @@ rules:
       workflowBusinessType: DHR_SUMMARY
       workflowVersionStatus: PUBLISHED
       freezeAt: first-production-start
-    explanation: REQUIRED 必须选择 DHR_SUMMARY 分类下已发布流程定义和版本；NONE 不绑定流程。当前配置冻结不表示审批运行时已经实现。
+    explanation: REQUIRED 选择已发布 DHR_SUMMARY 定义和版本并在开工冻结；NONE 不另启本系统汇总审批，不豁免适用法定审核、源表单签署或放行。当前已有旧审批代码，但本次完整证据及检查结果审批尚未验收。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-process-configuration-ui]
   - id: rule.dhr-summary-optional-placement-order
-    name: 可选表单实例同级有序归档
-    status: implemented
+    name: 实例自定义展示位置与同级顺序
+    status: specified
     visibility: internal
     trigger: dhr-summary.save-or-submit
     scope: dhr-summary
     condition: {fact: fact.dhr-summary.version-frozen, operator: equals, value: false}
     result:
       type: allow-with-governance
-      action: persist-optional-instance-placement-order
+      action: persist-instance-presentation-order
       positionScope: same-level-directory-or-form
       preserveAcross: [draft-reopen, frozen-version-read]
-      removal: unlink-from-current-summary-without-deleting-source
+      removal: restore-default-position-without-changing-evidence-scope
       sameTemplateInstances: independent-persistence
-    explanation: 可选来源可插入同级任意位置或移出本次汇总；保存、重开和提交后保留位置与顺序，冻结版本不可修改。来源定义成组交互见 rule.dhr-summary-source-group-presentation；归档关联仍以表单实例为单位，源表单不受移出影响。
+    explanation: 作业/自定义实例可整理到同级任意位置，取消自定义位置恢复默认来源位置；证据范围、内容和生产归属不变。保存重开及提交冻结保持位置与顺序，来源分组仅改变批量整理单位，旧冻结版本不可修改。
     evidenceIds: [evidence.dhr-summary-order-user-confirmed, evidence.dhr-summary-order-service, evidence.dhr-summary-order-ui, evidence.dhr-summary-order-migration]
   - id: rule.dhr-summary-source-group-presentation
-    name: 来源分组默认批量与实例级纳入
-    status: implemented
+    name: 来源分组与实例级展示整理
+    status: specified
     visibility: internal
     trigger: dhr-summary.open-or-place-or-submit
     scope: dhr-summary
     condition: {fact: fact.dhr-summary.source-definition-key, operator: is-present, value: true}
     result:
       type: allow-with-governance
-      action: present-and-place-source-definition-group
+      action: present-and-organize-source-definition-group
       groupingKey: [originKind, operationId, formId]
       missingSourceKeyFallback: recordId
-      placementInteraction: default-whole-group-with-explicit-instance-selection
-      partialPlacementDisplay: placed-count/total-count
-      mixedCompletionHandling: explicit-feedback-and-selection-without-silent-skipping
+      placementInteraction: whole-group-or-single-instance-presentation-only
+      partialPlacementDisplay: customized-presentation-count/total-count-not-evidence-coverage
+      mixedCompletionHandling: retain-all-real-statuses-without-silent-skipping
       leftDirectoryGrouping: adjacent-same-source-instances-only
       preservePlacementOrderIn: [draft, readOnly]
-      instanceRemoval: unlink-from-current-draft-without-deleting-source
+      instanceRemoval: restore-default-position-without-changing-evidence-scope
       persistenceUnit: form-instance
       frozenVersionMutation: forbidden
-    explanation: 同一工序的作业节点定义或同一次自定义表单创建项在候选中成组，同模板不同节点或创建项不得合组。默认整组纳入，也可展开明确选择已完成实例，部分显示 x/y；含未完成实例时整组操作不得静默跳过，未完成实例不可纳入。来源组不构成全有或全无、同目录或连续位置约束；保存和提交保留 validatePlacements 逐实例校验及既有证据纳入政策、源业务校验、必填目录和未完成补录阻断，不新增必填或选填豁免。草稿与只读目录保持真实交错顺序，仅相邻同源实例折叠，每份可查看且草稿可逐份移出；完整候选范围及逐实例关联、顺序、哈希继续冻结，空来源不生成证据，冻结历史不改写。2026-09-24 主智能体聚焦浏览器与服务持久化测试通过，仍为内部实现状态；验证范围及限制见证据。
+    explanation: 同工序同作业填报节点或同一次自定义创建项成组，同模板不同节点/创建项不得合组。全部实例自动归集并保留真实状态，整组和单份操作仅整理展示，不以完成或手选过滤证据。左侧仅相邻同源折叠，真实交错顺序保持；应有缺项及未完成补录按适用规则阻断，空来源不造证据。旧实现测试仅见 DEC-0072 实现差异，不证明本次能力。
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-source-group-test, evidence.dhr-summary-service, evidence.dhr-summary-source-group-backend-test]
   - id: rule.dhr-summary-archive-display-name
-    name: 草稿归档显示名按当前归档实例修改并随版本冻结
-    status: implemented
+    name: 草稿实例展示别名与证据范围解耦并随版本冻结
+    status: specified
     visibility: internal
     trigger: dhr-summary.rename-placement-or-submit
     scope: dhr-summary
@@ -99,7 +116,7 @@ rules:
     result:
       type: allow-with-governance
       action: persist-placement-display-name
-      editScope: current-draft-archived-instances
+      editScope: current-draft-evidence-presentation
       originKinds: [DIRECTORY, WORK, CUSTOM]
       directoryPlacement: automatic-fixed-target-without-order-override-or-removal
       adjacentGroupScope: current-adjacent-segment-only
@@ -108,5 +125,66 @@ rules:
       frozenVersionMutation: forbidden
       legacyNullFallback: source-name
       reorganize: copy-previous-version-display-name
-    explanation: 所有目录下已有真实证据的表单均可重命名，包括 DIRECTORY；显示名只属于逐实例汇总关联，草稿重命名须有编辑权限并校验非空、首尾空格和长度。组行修改当前范围全部实例，可选来源相邻同源折叠行仍只修改本段，单份只改一份。草稿保存重开保持，提交冻结并参与指纹，重新整理复制包括 DIRECTORY 在内的上版别名；来源表单和基础快照不变，旧版空别名回退原名。DIRECTORY 自动归位、固定归属、不可移除且不得覆盖排序。全来源增量已通过主智能体的聚焦持久化与隔离浏览器测试，保持内部实现状态，不等于真实业务发布验证。
+    explanation: DIRECTORY、WORK、CUSTOM 的真实证据均可设置草稿展示别名；组行限当前范围，相邻折叠行限本段，单份限一份。保存重开、冻结指纹和新草稿继承保留别名，旧版空别名回退原名；来源内容、生产归属、基础目录及完整证据范围不变，DIRECTORY 固定展示位置保留。旧别名代码不证明新完整证据设计已经实现。
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-ui, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
+  - id: rule.dhr-summary-auto-evidence-scope
+    name: 按生产对象自动归集全部实际关联证据
+    status: specified
+    visibility: internal
+    trigger: dhr-summary.collect-or-check
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.evidence-scope, operator: is-present, value: true}
+    result:
+      type: return-query-projection
+      target: dhrSummary.completeEvidence
+      sources: [directory-instance, work-instance, custom-instance, controlled-attachment]
+      manualSelectionFiltersEvidence: false
+      completionFiltersVisibility: false
+      emptySourceCreatesEvidence: false
+    explanation: 执行上下文绑定作业/工序表单的生产对象，自动归集实际实例及受控附件。未完成、失败、作废、已替代记录保持可见与真实状态；合格完成和提交资格由适用检查决定。自定义上下文和附件关联须核验，填错批次值是内容错误，不假设正常自动归属会错。
+    evidenceIds: [evidence.dhr-summary-user-confirmed]
+  - id: rule.dhr-summary-block-stale-approval
+    name: 有效证据变化阻断过时批准且保留历史
+    status: specified
+    visibility: internal
+    trigger: dhr-summary.source-effective-change-or-approve
+    scope: dhr-summary-review
+    condition: {fact: fact.dhr-summary.effective-evidence-change, operator: equals, value: true}
+    result:
+      type: block
+      action: approve-stale-summary-version
+      notifyAffectedReview: true
+      automaticReturn: false
+      humanResolution: return-or-new-version-review
+      preserveOldApproval: true
+    explanation: 自动检测完整证据范围的来源生效变化并提示，包含新增关联证据及附件变化；申请待审不等于生效。人工退回或发起新版本重审，旧批准和快照保留，源变更作废仍由记录控制域判定；不改变生产、终止或放行状态。
+    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-summary-user-confirmed]
+  - id: rule.dhr-review-task-frozen-attachment-download
+    name: 审批任务附件仅供任务授权主体按冻结版本下载
+    status: specified
+    visibility: internal
+    trigger: dhr-review.attachment-download
+    scope: dhr-summary-review
+    condition: {fact: fact.dhr-summary.review-task-attachment-authorized, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: download-frozen-version-attachment
+      taskScope: current-pending-or-own-handled-task
+      attachmentScope: task-bound-frozen-version
+      liveDhrViewPermissionSubstitute: false
+    explanation: 审批页附件下载必须经过任务处理权或本人已办授权，并仅返回任务绑定版本快照中 id 与摘要匹配的附件；仅有 DHR 查看权或其他任务权限不能扩大下载范围。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-review-controller, evidence.dhr-review-service, evidence.dhr-summary-attachment-service, evidence.dhr-review-attachment-permission-tests]
+  - id: rule.dhr-summary-zip-source-trace
+    name: 冻结版本 ZIP 包含来源生产执行审计与签名
+    status: specified
+    visibility: internal
+    trigger: dhr-summary.export-zip
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.version-frozen, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: export-frozen-version-zip
+      include: [source-production-execution-audit, source-production-execution-signatures, dhr-audit, review-signatures]
+      selectedRangeChangesApprovalScope: false
+    explanation: ZIP 应带可关联冻结版本的来源生产执行审计与签名及 DHR 自身审计/审批签署，完整与选定范围均明确标识；导出范围不重定义冻结证据或审批对象。当前代码按提交时点截取来源审计/签名，对来源和审批两类签名均导出 payload 并核对 SHA-256；不证明所有外部记录控制事件已纳入。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests]

@@ -96,11 +96,23 @@ terms:
     aliases: [动态批记录, 生产对象 DHR, 批记录实例]
     status: specified
     visibility: internal
+  - id: term.dhr-summary-version
+    name: DHR 汇总版本
+    definition: 以生产对象为锚点、提交时冻结全部实际关联实例与受控附件、来源版本及状态、检查结果（含提交人对质量与异常、源审批签署、完整范围的逐项人工确认及说明）、目录展示与审批绑定的不可变版本；人工确认不等于系统自动判定质量合格，目录整理和导出选定范围不缩减证据或审批范围，旧批准只解释当时版本。
+    aliases: [DHR 冻结汇总版本]
+    status: specified
+    visibility: internal
+  - id: term.dhr-controlled-attachment
+    name: DHR 受控附件
+    definition: 与生产对象 DHR 建立可追溯关联的手工文件或纸质记录扫描件；记录来源、内容摘要、核验与关联历史，冻结版本保留其当时引用。它不是表单实例的第四种业务来源。
+    aliases: [DHR 附件证据, 纸质扫描附件]
+    status: specified
+    visibility: internal
   - id: term.dhr-summary-archive-display-name
     name: DHR 汇总归档显示名
-    definition: 汇总草稿或冻结版本中一份已归档表单实例的目录展示别名，归属于该版本的实例归档关联；相邻同源折叠行修改当前相邻段的已归档实例，单份行只修改一份。别名不改变来源表单名称、内容或实例号；冻结版本只读，旧版空别名回退来源名称。
+    definition: 汇总草稿或冻结版本内真实证据的目录展示别名，与完整证据范围解耦；组行限当前范围，相邻折叠行限本段，单份限一份。别名不改变来源内容、实例身份或生产归属；冻结版本只读，旧版空别名回退来源名称。
     aliases: [汇总文档名称, 归档别名]
-    status: implemented
+    status: specified
     visibility: internal
   - id: term.dhr-early-terminated
     name: DHR 已终止

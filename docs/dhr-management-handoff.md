@@ -1,218 +1,109 @@
-# DHR 管理开发交接
+# DHR 管理设计与开发交接
 
-产品调研、用户确认决策、参考功能矩阵解读和完整开发路线见：
-`docs/dhr-management-product-research-and-roadmap.md`。新上下文必须先读该文件，再读本文件的环境和代码交接内容。
+更新日期：2026-09-25。现行设计以 [汇总核查与审批设计](dhr-management-product-research-and-roadmap.md) 为主，重点阅读第 6～10 节。本文直接修订原交接，不再沿用“作业/自定义未手选即不纳入 DHR”的错误方案。
 
-## 新上下文必须使用的项目环境
+## 1. 当前任务边界
 
-- 项目目录：`/Users/ivenwang/Documents/edhr-nexus`
-- 项目：`edhr-nexus`
-- 分支：`edhr-dev`
-- 远程跟踪：`origin/edhr-dev`
-- 环境类型：选择“本地（Local）”，不要选择“工作树（Worktree）”
-- 当前改动：已在工作区中，尚未提交；请先检查 `git status -sb`，不要重置或覆盖现有改动
-- 用户原有的 `output/` 目录是未跟踪内容，必须保留，不要删除
+本次已在原设计和知识之上实现自动归集、展示目录与证据范围解耦、受控附件、冻结版本及 ZIP 导出，并执行 0102/0103 开发库迁移与后端重启。尚未 Git 提交或推送。通用业务设计仍标为 specified/internal；实现和测试结果不等于整系统合规认证。
 
-## 工作契约与开发规范（新上下文必须遵守）
+- 保留 DHR填报、DHR汇总、DHR审批、DHR列表菜单。
+- 汇总的主线变为自动归集、完整性检查和人工核查；人工目录整理只是辅助。
+- 中国法规按 2025 新版医疗器械 GMP 设计，不考虑旧版；海外先核对美国/欧盟，具体客户适用范围未确认。
+- 暂不做打印；设计完整 DHR 版本 ZIP 与选定范围 ZIP，部分输出不能冒充完整档案。
+- 不新增跨批次移表、不自动放行、不恢复终止生产、不改朋友负责的表单变更/作废流程。
 
-开始任何开发、迁移、测试或配置修改前，必须先完整阅读：
+## 2. 环境与安全边界
 
-1. `AGENTS.md`：项目治理、业务门禁、智能体协作和完成条件
-2. `codeplzreadme.md`：编码行为准则、最小修改、风险匹配验证和 Git 安全规则
-3. `docs/architecture/business-knowledge-model.md`：业务知识模型和概念边界
-4. `docs/knowledge/README.md`：当前知识基线 `0.3.24` 及其使用规则
-5. `docs/knowledge/open-questions.yaml`：当前未决问题
-6. `docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml` 与 `DEC-0063-dhr-summary-and-review-configuration.yaml`：DHR 实例首版、汇总和审核配置边界
-7. `docs/knowledge/rules/dhr-instance-management.yaml`、`docs/knowledge/facts/dhr-instance-management.yaml`、`docs/knowledge/evidence/dhr-instance-management.yaml`、`docs/knowledge/implementation-anchors/dhr-instance-management.yaml`：DHR 的规则、事实、证据和实现锚点
-8. `docs/prd/edhr-mvp-prd.md` 和 `docs/prd/GMP合规软件基座_功能矩阵PRD.md`：产品范围和功能矩阵
+- 仓库：`/Users/ivenwang/Documents/edhr-nexus`。
+- 既有协作分支：`edhr-dev`，实际操作前用 `git status -sb` 和 `git branch --show-current` 核对，不假定远程已同步。
+- 使用当前本地项目；不要求新建上下文或切换 Worktree。
+- 用户原有未跟踪 `output/` 必须保留，不重置或覆盖其他开发者改动。
+- 本地开发环境使用后端 8081、前端 3000；本轮已在开发 PostgreSQL 应用 0102/0103，并通过浏览器读取已有 DHR 数据审计。后续使用时仍须重新检查服务状态。
+- 历史记录的“DHR 数量为 0”“尚无审批运行时”“尚未提交推送”和既往测试数量，不是当前环境事实，不能据此继续开发。
 
-继续开发时必须遵守以下工作契约：
+## 3. 开始实施前必读
 
-- 先判定执行级别。本 DHR 功能涉及生命周期、生产完成阻断、权限和数据库迁移，按 L2 风险处理；若后续只是纯文档/静态文案可降为 L0，普通非关键 CRUD 可按 L1，但扩大范围时必须升级。
-- 编码前明确需求理解、事实与假设、未决问题、最小修改范围、成功标准、影响分析和验证方式；有会改变验收结果的歧义时先停下澄清。
-- 只做已确认范围，不猜测扩展功能，不把竞品或旧 PRD 推断成已实现能力；保留用户已有改动和 `output/`，不使用 `git reset --hard`、`git checkout --` 等破坏性操作。
-- 手工编辑使用 `apply_patch`；只清理本次改动造成的无用代码，不顺手重构无关模块。
-- 业务概念、状态、规则、事件、审计、证据、权限或执行契约变化时，必须同步知识资产并触发本体门禁；代码、接口、数据库、权限、用户交互或知识基线变化时，必须触发质量验证门禁。
-- 影响分析只维护当前 DHR 功能切片的一份版本；区分 `confirmed`、`inferred` 和 `unresolved`，并以源码、迁移和真实运行结果作为原始证据。
-- 验证不能只报告“已修改”：必须运行与风险相称的聚焦测试；涉及数据库迁移时验证真实 PostgreSQL；涉及菜单权限时验证迁移、角色授权、接口授权和登录后菜单可见性。
-- 最终报告必须列出实际修改、实际执行的测试/迁移/交互检查、未执行的验证、残余风险和明确暂缓范围；未执行的检查不能声称已通过。
+1. `AGENTS.md`、`codeplzreadme.md`。
+2. `docs/dhr-management-product-research-and-roadmap.md`。
+3. `docs/development/dhr-summary-decision-package.yaml`。
+4. `docs/architecture/business-knowledge-model.md`、`docs/knowledge/README.md`、`docs/knowledge/open-questions.yaml`。
+5. `DEC-0063`、`DEC-0068`、`DEC-0069`、`DEC-0070`、`DEC-0071`、`DEC-0072` 及对应规则/事实/证据。
+6. 当前共享组件规范与源记录控制模块契约。
 
-## 本阶段不可擅自扩大的产品边界
+知识基线为 0.3.24。相同功能切片维护一个决策包；用户负责真实业务决策，智能体负责同步知识和验证。新业务实施属于 L2，不能因是 UI 改版而跳过来源、并发、权限、审计和快照检查。
 
-- 不回填历史批次/SN，不为历史数据新增兼容策略；用户已确认前期忽略历史数据。
-- DHR 只在 BATCH/SN 首次合法 `START` 时由系统自动创建，禁止手工创建，创建与开工同事务。
-- DHR 以生产对象为唯一业务锚点，创建时冻结生产、制程、路线、模板和目录快照。
-- 本期只做 DHR 列表和只读详情；不擅自加入汇总审批、退回、发布、归档、作废、拖拽证据或人工补充证据。
-- 生产执行进入 DHR 闭环后，完成全部工序时必须同步完成 DHR；关联实例缺失时必须阻断完成并回滚。
+## 4. 必须一致的业务规则
 
-## 为什么需要新上下文
+| 事项 | 现行设计 |
+| --- | --- |
+| DHR 形成 | 继续以生产对象为锚点，首次合法开工自动创建；不要求手工组装目录才形成 DHR |
+| 证据范围 | 生产关联的目录/作业/自定义实际实例自动归集，附件受控关联；状态不决定记录是否可追溯 |
+| 缺项与未完成 | 应有记录按冻结配置及适用规则核查；零实例不造证据，失败/作废/替代不能静默消失 |
+| 人工目录 | 别名、顺序、展示位置可调整，不改变来源归属、内容或证据成员；取消自定义位置恢复默认 |
+| 分组 | 按具体作业节点或自定义创建项，不按相同模板混组；组和单份均可整理/查看 |
+| 审批 | 冻结完整证据及检查结果，按既定 NONE/REQUIRED 执行；NONE 不绕过适用签署、质量审核或放行 |
+| 来源变化 | 自动识别、提示并阻断过时批准；人工退回/发起新版本，保留旧结论与旧快照 |
+| 详情 | 正式版本默认展示汇总目录，可切来源视图但仍读同一版本；实时记录必须显式区分 |
+| 审计 | 实例日志查看源填报/签署/变更；DHR 详情数据审计查看目录/附件/提交/审批/导出等 |
+| 附件 | 保留原始文件、版本、来源与核验；扫描/上传时间不冒充原记录形成时间 |
+| 导出 | 完整与部分 ZIP 明确标识，不修改证据范围，不能静默缺件或混用版本 |
+| 终止 | DEC-0069 的终止只读留证政策不变；本轮不补终止后追加/异常结案 |
 
-此前的 Codex 任务是在 `/Users/ivenwang/.codex/worktrees/ce63/edhr-nexus` 这个隔离工作树中创建的，因此界面显示“工作树”。该工作树已被移除；真正的代码和开发环境现在都在上面的本地项目目录中。当前任务的环境元数据不能原地切换，所以请从 `edhr-nexus` 项目创建一个“本地”上下文，并选择 `edhr-dev`。
+自动工序/作业表单绑定当前执行对象，自定义创建也绑定当前上下文，不是自由选择表单归属。“在 A 页录入 B 的值”属于内容错误；“附件误关联”属于关系错误。不得将这两者混写为正常自动归属会串批，也不通过 DHR 拖拽改 objectId。
 
-## 当前已完成内容
+## 5. 原始实现与本轮改造核对
 
-### DHR 管理第一阶段
+2026-09-25 读取以下源码：
 
-- 增加 DHR 实例后端服务、控制器和数据访问逻辑
-- 首次生产执行开始时自动创建 DHR
-- DHR 支持按批次/生产对象汇总并查看只读详情
-- 当前自动证据聚合只处理同一生产对象下、`source_type=PRODUCTION_EXECUTION` 且带冻结 `dhrItemId` 的表单记录，并按 `copyId` 保留副本；目录可以来自 DHR 模板，但跨生产/检验/灭菌/物料/记录本等模块的正式汇总仍是后续规划
-- 增加 DHR 列表及只读详情页面
-- 前端菜单路径：`记录 → DHR管理 → DHR列表`
-- 暂不处理历史数据回填；历史批次/SN 没有 DHR 是当前 0-1 阶段的明确策略
-- 新 DHR 产生后，相关数据和功能必须正常；如果没有 DHR，不应假装已有历史 DHR
+- `ProductionExecutionService`：按生产对象锁定执行上下文；`ATTACH_FORM` 在该对象/工序内追加自定义定义，保存时传递同一 objectId。
+- `FormInstanceRecordService.saved`：从执行快照查找工序/表单，按 objectId、operationId、copyId 保存唯一来源记录。
+- 原 `DhrSummaryService.submit/validatePlacements` 由 placements 决定正式证据行，是本轮已替换的旧语义；现行提交按生产对象实际来源记录生成完整证据集合，placements 只保存展示位置。
+- `DhrReviewService`：已有个人审批任务查询、动作、流程结果与审计路径。不能再称“审批运行时完全不存在”；新证据范围下的审批正确性仍须重新验证。
+- `DhrManagementPage` 的正式版本详情现使用 `DhrSummaryPage` 的冻结版本视图；生产中实时详情仍由 `DhrInstanceService.detail` 提供，不能冒充冻结版本。
+- 新增 `DhrAttachmentService`、`DhrArchiveService` 和对应控制器，0102/0103 迁移分别支持完整证据版本与受控附件。
+- 现有来源分组、目录顺序、全来源别名和实例面板可复用，不重建第二套 UI。
 
-### 菜单与权限
+已在真实开发 PostgreSQL 执行迁移并通过浏览器打开旧版 DHR 的冻结详情及 DHR 数据审计；新版待汇总对象的端到端页面操作因当前库无测试对象，尚未实测。附件/ZIP、并发和审批变化通过聚焦集成测试验证。提交前需逐项人工确认质量与异常、源审批签署及证据范围，并填写说明后随版本冻结；系统当前不能通用解释任意表单的质量结论，不能把这一确认称为自动判定合格。签署全链路、企业备份恢复、恶意文件扫描及全部记录控制接口未在本轮完成验证。
 
-- 新增菜单权限：`records.dhr-management`
-- 新增查看权限：`dhr.instances.view`
-- `ADMIN` 角色已绑定上述两个权限
-- 菜单显示依赖登录后的权限快照；新上下文启动服务后，浏览器需要退出登录、重新登录并刷新页面
+## 6. 实施顺序与成功标准
 
-### 数据库
+1. **证据范围与展示目录解耦**：先定义实例身份、状态与完整范围及缺项核查；验收“不拖拽也完整、恢复默认不删证据”。
+2. **审批/详情一致性**：完整证据版本、源变化检测、签署与权限；验收列表/审批/汇总读同版，新增来源与并发变化不漏检。
+3. **附件与审计入口**：受控文件关系、来源核验、旧版本可查；验收误关联处理不破坏其他引用，实例日志与 DHR 审计可达。
+4. **ZIP**：固定版本、完整/部分标识、原件与索引、权限和失败策略；验收不漏项、不重复、不混版。
+5. **可选目录/UI**：保留已确认的整组/单份整理、顺序、别名、hover/focus行操作、独立实例与来源面板；按现有公共组件对齐。
 
-- 新增 Liquibase：`gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql`
-- 已在本机开发 PostgreSQL 数据库成功执行，变更集：`0089-dhr-instance-management::codex`
-- 已确认 `ADMIN` 拥有 DHR 菜单和查看权限
-- 当前 `dhr_instance` 数量为 0，这是因为按策略不回填历史数据，不是迁移失败
+详细场景以主设计 AC-01～AC-12 为准。客户市场、器械类别、企业签署/保存 SOP、恶意文件扫描和监管可接受的电子副本格式仍需专项确认，不冒称通用实现覆盖所有客户法规。
 
-## 当前真实状态快照
+## 7. 数据与历史保护
 
-以下是交接时的事实，不是规划：
+- 本轮已执行 0102/0103 数据结构迁移；不做旧汇总数据回填、旧逻辑兼容或历史清理。用户允许必要时清理旧数据，但本轮没有实施删除。
+- 新提交版本使用完整证据语义；旧版本只保留现有历史读取，不因新设计补入证据或重写已发生的审批事实。
+- 首次开工冻结生产上下文及审批绑定；后续配置发布不能静默改变在途对象。
+- 新版本可引用原来源记录但必须保存可靠内容版本及签署/状态依据，不能只保存指向实时变化对象的 ID。
+- 表单变更/作废由来源记录控制域负责，DHR 消费真实生效事件；活动记录作废资格沿用该域未决边界，不在这里补全。
 
-- Git：`edhr-dev` 与 `origin/edhr-dev` 对齐，DHR 和知识基线相关改动仍在工作区，尚未提交。
-- 目录：代码、前端和数据库迁移均已在 `/Users/ivenwang/Documents/edhr-nexus`；不要再从 `/Users/ivenwang/.codex/worktrees/ce63/edhr-nexus` 读取或写入。
-- 服务：后端已从本地项目启动在 `8081`，前端已启动在 `127.0.0.1:3000`。
-- 数据库：`0089-dhr-instance-management` 与 `0092-dhr-summary-workspace` 已在本地 PostgreSQL 成功执行；不回填历史 DHR。
-- 权限：数据库中已有 DHR 管理/查看以及独立 DHR汇总 页面、编辑和提交权限，初始化只默认授予 `ADMIN`。
-- 页面：菜单显示依赖登录权限快照；启动后必须退出登录、重新登录并刷新，才能验证 DHR 菜单。
-- 验证：DHR列表 加载、来源分类详情、真实表单画布以及独立 DHR汇总 菜单已完成浏览器语义检查；前端生产构建通过；后端完整回归 704 tests、0 failures、0 errors、23 skipped；知识基线校验通过；`0092` 已在真实本地 PostgreSQL 成功执行。
-- 未完成：没有提交、推送或创建 PR；DHR审核 独立菜单、审批实例/任务、电子签名、退回和批准结果落地尚未实现；发布归档、最终产品放行和历史数据仍不在本切片。
-
-## 后续按顺序开发规划
-
-### 第 0 步：新上下文接管和冒烟验收（下一步立即做）
-
-1. 在 `edhr-nexus` 项目中创建“本地（Local）”上下文，选择 `edhr-dev`。
-2. 阅读本交接文档、`AGENTS.md`、`codeplzreadme.md` 和上面列出的业务知识文档。
-3. 执行 `git status -sb`，确认已有改动和 `output/` 未被覆盖。
-4. 启动前后端，退出登录并重新登录。
-5. 验收 `记录 → DHR管理 → DHR列表` 菜单、DHR 列表空态、详情路由和无权限返回。
-
-验收标准：新上下文确实使用本地目录；菜单可见；接口能访问；不改变现有未提交改动。
-
-### 第 1 步：DHR 第一阶段闭环验证（先补真实验收，不扩产品范围）
-
-使用新的 BATCH 和 SN 测试数据逐项验证：
-
-1. 首次合法 `START` 与生产开工同事务创建唯一 `IN_PROGRESS` DHR。
-2. 重复开工、并发创建、拆分、未开工和取消场景不产生第二个有效 DHR。
-3. 创建时冻结工单、产品、制程版本、路线版本、模板版本和目录快照。
-4. 生产执行表单按 `dhrItemId` 聚合，按 `copyId` 保留副本，复用来源不重复计入。
-5. 最后一个工序完成时生产对象与 DHR 同事务完成；缺失 DHR 时动作回滚并阻断完成。
-6. `ADMIN` 可看列表/详情，未授权角色不能访问；浏览器菜单与后端接口权限一致。
-
-验收标准：真实 PostgreSQL、后端集成测试、接口权限测试和浏览器页面结果一致；发现问题先修复第一阶段，不提前进入审批功能。
-
-### 第 2 步：DHR 汇总工作台与审核配置（working tree 已实现，待发布级验收）
-
-这是用户已确认并已形成 working-tree 实现的当前切片：
-
-1. DHR列表 与 DHR汇总 是 DHR管理 下的两个独立菜单。
-2. 流程中心增加 `DHR_SUMMARY` 分类，产品/产品簇共用制程版本选择 `NONE` 或绑定已发布流程版本的 `REQUIRED` 策略。
-3. DHR汇总 页面区分“待汇总”和“已提交”，支持基础目录、多级覆盖目录、候选实例归档、草稿保存和冻结版本查看。
-4. 当前候选严格限于三类表单实例：目录直接绑定、作业表单节点和生产执行自定义表单；冠骋的生产/检验/灭菌等模块分类仅为未来来源契约参考。
-5. 目录实例自动纳入；作业和自定义实例按选择纳入，未选择即不纳入，不要求逐条排除原因。
-6. 提交冻结完整候选范围、归档关系、来源快照和哈希；拖拽/选择只是交互，不改写来源表单。
-
-后续进入 DHR审核 前仍需实现并验证：独立审核菜单、审批实例/任务、电子签名适用规则、退回后新版本、状态映射和批准结果落地。
-
-### 第 3 步：人工补充证据（形式待用户确认）
-
-推荐设计为受控拖拽/选择已有业务证据，而不是任意上传或直接改写 DHR：
-
-- 只能从有业务来源、权限允许且与当前生产对象相关的记录中选择；
-- 保存来源 ID、来源类型、操作者、时间、原因和目录位置；
-- 同一来源不得重复挂载，撤回/替换必须留审计轨迹；
-- 拖拽只是交互形式，不等于“冠骋功能已确认照搬”。
-
-在实现前需要确认：可拖拽的证据类型、是否允许跨模块选择、人工补充是否需要审批、补充后是否重新触发 DHR 审核。
-
-### 第 4 步：DHR 审核与状态闭环
-
-在汇总切片稳定后，再实现 DHR 审核页面和流程：
-
-- 待办/已办两个视图；
-- 审核通过、退回、再次提交及权限控制；
-- 汇总内容、人工补充、退回原因和操作者的审计记录；
-- 审核状态与 DHR 生命周期状态的明确映射。
-
-必须先形成状态机和迁移规则，再改代码和知识基线；不能仅按页面按钮名称推导状态语义。
-
-### 第 5 步：列表、发布和归档（后续阶段）
-
-- 扩展 DHR 全量列表、生产/灭菌/物料等模块的详情查看和筛选。
-- 根据确认后的业务规则增加发布、归档、作废和只读导出等能力。
-- 手工创建 DHR、历史数据回填和历史兼容仍然不在当前计划；只有用户重新确认产品决策后才可进入单独切片。
-
-## 每个后续切片的固定交付顺序
-
-需求确认 → 执行级别与影响分析 → 读取相关知识资产和源码 → 最小设计 → 代码/迁移/前端实现 → 聚焦测试 → 真实数据库/页面验收 → 更新知识基线 → 独立质量验证 → 汇总未验证项和残余风险。
-
-任何一步失败都不能用“代码已写完”代替完成；不得把后续规划、竞品参考或推断内容写成当前已实现能力。
-
-## 关键文件
-
-### 后端
-
-- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java`
-- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java`
-- `gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql`
-- `gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java`
-
-### 前端
-
-- `gmp-platform/frontend/src/api/dhr-instances.ts`
-- `gmp-platform/frontend/src/pages/dhr-management/`
-- `gmp-platform/frontend/src/components/shared/AppLayout.tsx`
-- `gmp-platform/frontend/src/router/index.tsx`
-- `gmp-platform/frontend/src/utils/menuManagement.ts`
-
-### 知识基线
-
-- 已补充 DHR 管理相关 ontology、facts、rules、evidence、implementation anchors 和 decision
-- 已修复知识基线版本与重复 DEC ID 问题
-- 当前知识策略不记录历史数据兼容/回填方案，因为用户明确要求前期忽略历史数据
-
-## 已验证结果
-
-- 后端 focused tests：通过
-- 前端构建及菜单/AppShell 检查：通过
-- BusinessKnowledgeModelTest：通过
-- 后端完整测试：688 个测试，0 failures，0 errors，23 skipped
-- 后端可从正确目录启动在 `8081`
-- 前端可从正确目录启动在 `3000`
-
-## 本地启动
+## 8. 关键文件
 
 后端：
 
-```bash
-cd /Users/ivenwang/Documents/edhr-nexus/gmp-platform/backend
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
+- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java`
+- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java`
+- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java`
+- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java`
+- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java`
+- `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java`
 
 前端：
 
-```bash
-cd /Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend
-npm run dev -- --host 127.0.0.1
-```
+- `gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx`
+- `gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx`
+- `gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts`
 
-## 新上下文的第一步
+本轮新增并已在开发库应用 0102 完整证据版本、0103 受控附件迁移；0089、0092、0093、0101 为此前基础。
 
-1. 确认当前目录是 `/Users/ivenwang/Documents/edhr-nexus`，分支是 `edhr-dev`。
-2. 执行 `git status -sb`，保留现有未提交改动。
-3. 不要重新创建工作树，不要把代码复制到其他目录。
-4. 启动前后端并重新登录系统，确认 `记录 → DHR管理 → DHR列表` 可见。
-5. 继续开发前先阅读本交接文档和现有 DHR 代码，避免重复实现或加入历史数据回填。
+## 9. 验证与交付
+
+本轮已运行后端全量测试、前端类型检查及真实 PostgreSQL 迁移；独立质量门禁和最终验证结果以当前任务交付记录为准。新版提交、上传及 ZIP 的完整浏览器闭环、备份恢复、文件恶意内容检查和电子签署专项验证仍是交付前的待办，不得以单元测试替代。
+
+本文件是设计/工程交接，不替代企业质量负责人、法规适用性评估或系统验证。

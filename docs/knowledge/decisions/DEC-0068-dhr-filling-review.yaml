@@ -5,18 +5,17 @@ decisions:
     status: specified
     visibility: internal
     context: >-
-      user-confirmed；依据 DEC-PACKAGE-20260923-DHR-FILLING-REVIEW 及本次用户确认沉淀 L2 设计，实施仍在进行。
-      supersedes 仅局部替代 DEC-0063-07 的审核延期、DEC-0062-08 的填报补充及汇总审核退回排除边界，
-      以及 DEC-0056-01 中本切片 DHR 菜单的展示名称；按最新明确指令使用 DHR审核，其他模块审批术语不变。
-      DEC-0062 的唯一 DHR 与生产完成语义、DEC-0063 的三类实例、不可变版本、制程冻结绑定及不回填边界继续适用。
-      不将进行中的代码、旧测试报告或接口设想解释为本切片已经实现；不扩展 schema、事实目录或执行契约。
+      user-confirmed；2026-09-25 按 DEC-PACKAGE-20260919-DHR-SUMMARY 直接修订原审批设计，基线 0.3.24。
+      保留原 supersedes 的局部范围及 DEC-0062 唯一 DHR、DEC-0069 终止政策；菜单最新展示由 DEC-0070 解释。
+      审批对象为 DEC-0063 自动归集全部实际证据及检查结果的冻结版本，目录与来源仅为同一版本视图。
+      当前已有审批服务及部分检测代码，具体差异保留于 implementationDiscrepancies，不把旧行为写成新设计已实现。
     decisionStatements:
       - id: DEC-0068-01
-        statement: user-confirmed；DHR 管理保留 DHR填报、DHR汇总、DHR审核、DHR列表四个菜单。填报承载来源表单的填报与受控追加，汇总整理并冻结版本，审核提供针对不可变汇总版本的个人待办/已办，列表承担查询与详情；不能因新增入口混淆职责或授予其他动作权限。
+        statement: user-confirmed；DHR 管理保留 DHR填报、DHR汇总、DHR审批、DHR列表四个菜单（客户展示沿用 DEC-0070）。填报承载来源表单的填报与受控追加，汇总整理并冻结版本，审核提供针对不可变汇总版本的个人待办/已办，列表承担查询与详情；不能因新增入口混淆职责或授予其他动作权限。
         status: specified
         visibility: internal
       - id: DEC-0068-02
-        statement: user-confirmed；沿用目录直接绑定、作业表单节点、生产执行自定义表单三种实例来源，按实例区分同模板多份，保持既有实例级归档规则。“补录”是低频动作，不凸显为日常主操作，也不因此定义第四种业务来源；具体追加来源映射留待实现核对。DHR 汇总候选的视觉呈现与整组操作由 DEC-0072 局部细化，不改变本条的逐实例证据边界。
+        statement: user-confirmed；沿用目录、作业、自定义三类表单实际实例并自动归集受控附件，保留全部真实状态和逐实例身份；目录及来源组仅用于展示，未手选不能排除证据。补录创建新的表单实例，附件及纸质扫描按独立受控附件核验来源，不虚构第四种表单实例业务来源。
         status: specified
         visibility: internal
       - id: DEC-0068-03
@@ -28,7 +27,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-05
-        statement: user-confirmed；汇总版本审核中，系统自动识别并标识已纳入证据的有效变化，通知受影响情况并阻断基于过时证据的批准；退回整理必须由人执行，不由系统自动退回。退回后形成新草稿与新汇总版本，原提交快照与审批历史保留。
+        statement: user-confirmed；汇总版本审核中，系统自动识别并标识完整证据范围的有效变化（包括新增关联证据、来源版本/状态及附件变化），通知受影响情况并阻断基于过时证据的批准；退回整理必须由人执行，不由系统自动退回。退回后形成新草稿与新汇总版本，原提交快照与审批历史保留。
         status: specified
         visibility: internal
       - id: DEC-0068-06
@@ -36,7 +35,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-07
-        statement: user-confirmed；需要审核的汇总按生产开工时冻结的 DHR_SUMMARY 流程定义及版本显式启动，审核任务与结果绑定本次不可变汇总版本；不得自动追随最新流程、临时改用绑定规则或通过通用流程入口绕过 DHR 的权限、证据有效性和版本校验。NONE 不被本决策改为强制审核。
+        statement: user-confirmed；需要审核的汇总按生产开工时冻结的 DHR_SUMMARY 流程定义及版本显式启动，审核任务与结果绑定本次不可变汇总版本；不得自动追随最新流程、临时改用绑定规则或通过通用流程入口绕过 DHR 的权限、证据有效性和版本校验。NONE 仅不另启本系统汇总审批，不豁免源表单签署、适用法定审核或产品放行要求；审批对象必须包含完整证据及检查结果，不能只审批人工目录子集。
         status: specified
         visibility: internal
       - id: DEC-0068-08
@@ -48,11 +47,15 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-10
-        statement: user-confirmed；扩展路径为 product-core 与 transaction-orchestration，由 DHR 域编排既有表单及流程引擎；主开发负责 DHR 代码和测试，朋友负责表单变更作废模块。菜单/动作授权、冻结流程候选资格、证据检测与人工动作审计分别核验，不增加客户条件分支。
+        statement: user-confirmed；扩展路径为 product-core、configuration 与 transaction-orchestration，由 DHR 域编排既有表单及流程引擎；主开发负责 DHR 代码和测试，朋友负责表单变更作废模块。适用检查及审批策略归受控配置；菜单/动作授权、冻结流程候选资格、证据检测与人工动作审计分别核验，不增加客户条件分支。
+        status: specified
+        visibility: internal
+      - id: DEC-0068-11
+        statement: user-confirmed；DHR 审批任务的专属附件下载只授权当前任务候选处理人或本人已办任务持有人，并且只可取得任务绑定冻结版本包含的附件；DHR 通用查看权或其他任务的资格不得替代任务授权，也不得越过版本附件快照。
         status: specified
         visibility: internal
     supersedes: [DEC-0062, DEC-0063, DEC-0056]
-    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-filling-review-source-boundary, evidence.dhr-filling-review-ui-standard]
+    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-filling-review-source-boundary, evidence.dhr-filling-review-ui-standard, evidence.dhr-review-controller, evidence.dhr-review-attachment-permission-tests]
     acceptanceScenarios:
       - id: scenario.dhr-filling-review-menus-and-sources
         given: 用户具有相应 DHR 菜单与动作权限，生产对象已有 DHR 和三类表单实例
@@ -69,12 +72,18 @@ decisions:
       - id: scenario.dhr-filling-review-frozen-binding
         given: 已完成 DHR 冻结 REQUIRED 审核绑定，之后流程已发布其他版本
         when: 提交本次汇总并生成个人审核待办
-        then: 任务准确绑定本次不可变汇总版本和既定流程版本，通用入口不得绕过 DHR 校验，不产生产品放行
+        then: 任务准确绑定本次完整证据、检查结果及不可变汇总版本和既定流程版本，通用入口不得绕过 DHR 校验，不产生产品放行
         evidenceIds: [evidence.dhr-filling-review-confirmed]
         evidenceRequirements: [冻结绑定集成测试, 任务与已办归属测试, 通用入口防绕过测试, 并发提交测试]
+      - id: scenario.dhr-review-task-frozen-attachment
+        given: DHR 审批任务绑定一个包含受控附件的冻结汇总版本
+        when: 当前任务授权主体下载本版附件，或其他主体及跨版本附件尝试下载
+        then: 仅当前任务授权主体可下载该版包含且摘要匹配的附件；无任务权或跨版本附件被拒绝
+        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-review-controller, evidence.dhr-summary-attachment-service, evidence.dhr-review-attachment-permission-tests]
+        evidenceRequirements: [任务授权与本人已办矩阵测试, 冻结版本成员与摘要测试, 真实任务附件下载端到端测试]
       - id: scenario.dhr-filling-review-effective-impact
-        given: 审核中的冻结汇总已纳入一份来源实例
-        when: 来源变更或作废实际生效后请求批准
+        given: 审核中的冻结汇总已包含全部实际关联证据和检查结果
+        when: 来源变更或作废实际生效，或新增关联证据及附件发生有效变化后请求批准
         then: 系统自动标识影响并阻断过时批准，人工退回整理后形成新版本，保留旧快照和退回历史；仅申请待审不伪装为来源已生效
         evidenceIds: [evidence.dhr-filling-review-confirmed]
         evidenceRequirements: [真实生效接口集成测试, 生效与批准并发测试, 待审申请对照测试, 人工退回与历史保留测试]
@@ -84,4 +93,20 @@ decisions:
         then: 系统不自动退回或擦除旧批准，由人创建新版本重审，原批准与原快照保持可追溯，生产及放行状态不自动变化
         evidenceIds: [evidence.dhr-filling-review-confirmed]
         evidenceRequirements: [批准后影响集成测试, 人工新版重审测试, 快照与审计历史不可变回归]
-    implementationDiscrepancies: []
+    implementationDiscrepancies:
+      - id: discrepancy.dhr-review-complete-evidence-impact-gap
+        status: open
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+        lineHint: 19
+        summary: original-evidence；当前 changes 已比较冻结表单、新增关联实例及受控附件，DhrReviewService 在批准时阻断发现变化并保留人工退回路径。尚未见来源生效事件驱动的主动通知、质量检查结果变化的完整比较、记录控制真实生效联调与并发发布级证据；不能把读取时比较视为全部影响闭环。
+        evidenceIds: [evidence.dhr-review-service, evidence.dhr-evidence-impact-service, evidence.dhr-summary-service]
+      - id: discrepancy.dhr-review-effective-source-integration
+        status: open
+        severity: high
+        visibility: internal
+        path: docs/knowledge/evidence/dhr-filling-review-implementation.md
+        lineHint: 1
+        summary: secondary-reference；旧实现报告记录真实变更/作废生效接口、有效修订标识、主动通知及并发集成证据尚有缺口；本轮只核对现有只读比较源码，未重做该业务验收。该缺口阻止宣称运行闭环，不阻塞已获授权的通用文档修订。
+        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service]

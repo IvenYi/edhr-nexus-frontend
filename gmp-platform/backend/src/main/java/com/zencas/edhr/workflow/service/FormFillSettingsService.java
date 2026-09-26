@@ -105,7 +105,7 @@ public class FormFillSettingsService {
                 if (!event.path("enabled").asBoolean(true)) continue;
                 if (!process && (!eventIds.add(event.path("id").asText())
                         || (!actions.isEmpty() && !actions.contains(event.path("action").asText())))) throw invalid("签署事件引用的按钮不存在或事件标识重复");
-                if ("FILL_SIGN_FIELD".equals(event.path("builtin").asText()) || !event.has("builtin"))
+                if ("FILL_SIGN_FIELD".equals(event.path("builtin").asText()))
                     eventKeys.add(node.path("id").asText() + ":" + event.path("id").asText());
             }
         }

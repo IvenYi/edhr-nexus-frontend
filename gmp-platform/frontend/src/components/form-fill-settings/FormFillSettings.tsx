@@ -172,8 +172,9 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
     <FormPermissionConfigDialog open={permissionsOpen} subjects={subjects} fields={fields} document={document}
       permissions={active.fieldPermissions} events={events} eventBindings={active.eventBindings ?? {}} editable={editable} loading={version.isLoading}
       onClose={() => setPermissionsOpen(false)} onSave={(fieldPermissions, eventBindings) => {
-        if (mode === 'DIRECT') onChange({ ...value, fillMode: mode, directFillConfig: { ...direct, fieldPermissions, eventBindings } });
-        else onChange({ ...value, fillMode: mode, fieldPermissions, eventBindings });
+        const validBindings = pruneEventBindings(eventBindings, events, fields);
+        if (mode === 'DIRECT') onChange({ ...value, fillMode: mode, directFillConfig: { ...direct, fieldPermissions, eventBindings: validBindings } });
+        else onChange({ ...value, fillMode: mode, fieldPermissions, eventBindings: validBindings });
         setPermissionsOpen(false);
       }} />
   </Stack>;

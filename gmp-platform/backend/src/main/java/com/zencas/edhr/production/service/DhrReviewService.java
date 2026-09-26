@@ -39,6 +39,7 @@ public class DhrReviewService {
     private static final String SELECT = """
         SELECT t.id AS task_id,t.status AS task_status,t.assignee_id,t.candidate_snapshot,t.opinion,t.action,
           t.created_at,t.completed_at,n.name AS node_name,n.properties,v.id AS version_id,v.version_no,v.snapshot_hash,
+          v.evidence_model_version,v.check_result_snapshot,
           v.dhr_instance_id,v.submitted_by,v.submitted_at,d.dhr_no,d.object_no,d.object_type,
           d.work_order_no,d.product_name,r.status AS review_status,r.workflow_instance_id
         FROM dhr_summary_review r JOIN workflow_task t ON t.instance_id=r.workflow_instance_id
@@ -85,9 +86,13 @@ public class DhrReviewService {
     @Transactional
     public ObjectNode act(Long taskId, JsonNode command) {
         var reference = requireTask(taskId);
-        // Lock order is instance -> DHR -> evidence -> task; engine reuses this instance lock.
+        // The production object lock serializes source writes with approval; keep object before DHR.
         var workflow = workflows.findByIdForUpdate(number(reference, "workflow_instance_id")).orElseThrow(() -> invalid("审批流程不存在"));
         Long dhrId = number(reference, "dhr_instance_id"), versionId = number(reference, "version_id");
+        var objectRows = jdbc.queryForList("SELECT production_object_id FROM dhr_instance WHERE tenant_id='default' AND id=?", dhrId);
+        if (objectRows.isEmpty()) throw invalid("DHR 实例不存在");
+        Object objectId = objectRows.getFirst().get("production_object_id");
+        if (objectId != null) jdbc.queryForMap("SELECT id FROM production_object WHERE tenant_id='default' AND id=? FOR UPDATE", objectId);
         var dhr = jdbc.queryForMap("SELECT summary_status FROM dhr_instance WHERE tenant_id='default' AND id=? FOR UPDATE", dhrId);
         var row = requireTask(taskId);
         if (!pending(row) || !"RUNNING".equals(workflow.getStatus()) || !"PENDING_REVIEW".equals(dhr.get("summary_status"))) throw invalid("审批任务已处理，请刷新");
@@ -99,8 +104,9 @@ public class DhrReviewService {
         if (button == null) throw invalid("当前节点不支持该审批动作");
         String opinion = command.path("opinion").asText("").strip();
         if (("RETURN".equals(action) || button.path("requireOpinion").asBoolean()) && opinion.isBlank()) throw invalid("请填写审批意见");
+        if ("APPROVE".equals(action) && !hasCompleteManualReview(row)) throw invalid("汇总提交核查结果不完整，不能批准；请退回整理");
         ArrayNode changes = evidenceChanges(versionId, true);
-        if ("APPROVE".equals(action) && !changes.isEmpty()) throw invalid("已纳入表单发生变化，不能按过时证据批准；请退回整理");
+        if ("APPROVE".equals(action) && !changes.isEmpty()) throw invalid("DHR 冻结证据或来源范围发生变化，不能按过时证据批准；请退回整理");
         Long signatureId = null;
         if (button.path("requiresSignature").asBoolean()) {
             ObjectNode evidence = mapper.createObjectNode().put("summaryVersionId", versionId.toString())
@@ -126,7 +132,7 @@ public class DhrReviewService {
         return evidence;
     }
 
-    /** Compare only included record identity/content/status. A new candidate does not rewrite old evidence. */
+    /** Read-time comparison; never rewrites a historical approval or frozen version. */
     ArrayNode evidenceChanges(Long versionId, boolean lock) {
         return impacts.changes(versionId, lock);
     }
@@ -161,6 +167,16 @@ public class DhrReviewService {
         return rows.getFirst();
     }
     private boolean pending(Map<String, Object> row) { return "PENDING_REVIEW".equals(row.get("review_status")) && Set.of("PENDING", "PROCESSING").contains(text(row, "task_status")); }
+    private boolean hasCompleteManualReview(Map<String, Object> row) {
+        if (((Number) row.get("evidence_model_version")).intValue() < 2) return true;
+        JsonNode review = json(text(row, "check_result_snapshot")).path("manualReview");
+        return review.path("qualityAndExceptionsReviewed").asBoolean(false)
+                && review.path("sourceSignaturesReviewed").asBoolean(false)
+                && review.path("completeScopeReviewed").asBoolean(false)
+                && !review.path("note").asText("").isBlank()
+                && !review.path("confirmedBy").asText("").isBlank()
+                && !review.path("confirmedAt").asText("").isBlank();
+    }
     private boolean handled(Map<String, Object> row, String actor) { return actor.equals(text(row, "assignee_id")) && Set.of("COMPLETED", "REJECTED").contains(text(row, "task_status")); }
     private boolean eligible(Map<String, Object> row, String actor) {
         JsonNode snapshot = json(text(row, "candidate_snapshot"));

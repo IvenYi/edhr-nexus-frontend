@@ -11,6 +11,7 @@ export interface ExecutionForm {
 export interface ExecutionWork {
   id: string; name: string; version: string;
   nodes: Array<{ id: string; data: { kind: string; label: string; config?: { confirmationInstruction?: string; message?: string } } }>;
+  edges: Array<{ source: string; target: string }>;
 }
 export interface ExecutionOperation {
   id: string; name: string; code?: string; type: string;
