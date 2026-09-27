@@ -8,11 +8,13 @@ import { usePersistedListColumnWidths } from '@/components/usePersistedListColum
 import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { FormListPagination } from '@/pages/form-management/formManagementListStyles';
 
+import { dhrDetailRowSx, dhrRowDetailProps } from './dhrListPresentation';
+
 export interface DhrWorkColumn { id: string; label: string; width: number }
-export default function DhrWorklistTable<T extends { id: string }>({ storageKey, columns, rows, loading, error, toolbar, helpText, cell, action, page, size, total, pages, onPage, onSize }: {
+export default function DhrWorklistTable<T extends { id: string; dhrNo: string }>({ storageKey, columns, rows, loading, error, toolbar, helpText, cell, action, page, size, total, pages, onPage, onSize, onRowClick }: {
   storageKey: string; columns: readonly DhrWorkColumn[]; rows: T[]; loading: boolean; error?: string; toolbar?: ReactNode; helpText?: string;
   cell: (row: T, id: string) => ReactNode; action: (row: T) => ReactNode; page: number; size: number; total: number; pages: number;
-  onPage: (page: number) => void; onSize: (size: number) => void;
+  onRowClick: (row: T) => void; onPage: (page: number) => void; onSize: (size: number) => void;
 }) {
   const key = useMemo(() => getCurrentUserPreferenceStorageKey(storageKey), [storageKey]);
   const dataColumns = useMemo(() => columns.filter(c => c.id !== 'status'), [columns]);
@@ -36,7 +38,7 @@ export default function DhrWorklistTable<T extends { id: string }>({ storageKey,
       return <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth, height: empty ? '100%' : 'auto' }}>
         <colgroup>{widths.map(c => <col key={c.id} style={{ width: resolved[c.id] }} />)}</colgroup>
         <TableHead><TableRow>{visible.map(c => <TableCell key={c.id} sx={{ ...listTableHeaderCellSx, position: 'sticky', width: resolved[c.id] }}>{c.label}<Box aria-label={`调整${c.label}列宽`} sx={listColumnResizeHandleSx} {...getResizeHandleProps(c)} /></TableCell>)}{statusColumn && <TableCell align="center" sx={{ ...listTableHeaderCellSx, right: 64, width: statusColumn.width, zIndex: 4, ...listTableStickyEdgeSx }}>{statusColumn.label}</TableCell>}<TableCell align="center" sx={{ ...listTableHeaderCellSx, position: 'sticky', right: 0, width: 64, minWidth: 64, maxWidth: 64, zIndex: 4 }}>操作</TableCell></TableRow></TableHead>
-        <TableBody>{empty ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={widths.length} sx={{ height: '100%', color: error ? 'error.main' : 'text.secondary' }}>{loading ? '加载中…' : error || '暂无数据'}</TableStateCell></TableRow> : rows.map(row => <TableRow key={row.id} hover>{visible.map(c => <TableCell key={c.id} sx={listTableBodyCellSx}>{cell(row, c.id)}</TableCell>)}{statusColumn && <TableCell align="center" sx={{ ...listTableBodyCellSx, position: 'sticky', right: 64, width: statusColumn.width, bgcolor: '#fff', ...listTableStickyEdgeSx }}>{cell(row, 'status')}</TableCell>}<TableCell align="center" sx={{ ...listTableBodyCellSx, position: 'sticky', right: 0, width: 64, minWidth: 64, maxWidth: 64, bgcolor: '#fff' }}>{action(row)}</TableCell></TableRow>)}</TableBody>
+        <TableBody>{empty ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={widths.length} sx={{ height: '100%', color: error ? 'error.main' : 'text.secondary' }}>{loading ? '加载中…' : error || '暂无数据'}</TableStateCell></TableRow> : rows.map(row => <TableRow key={row.id} hover {...dhrRowDetailProps(row, onRowClick)} sx={dhrDetailRowSx}>{visible.map(c => <TableCell key={c.id} sx={listTableBodyCellSx}>{cell(row, c.id)}</TableCell>)}{statusColumn && <TableCell align="center" sx={{ ...listTableBodyCellSx, position: 'sticky', right: 64, width: statusColumn.width, bgcolor: '#fff', ...listTableStickyEdgeSx }}>{cell(row, 'status')}</TableCell>}<TableCell align="center" onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} sx={{ ...listTableBodyCellSx, position: 'sticky', right: 0, width: 64, minWidth: 64, maxWidth: 64, bgcolor: '#fff' }}>{action(row)}</TableCell></TableRow>)}</TableBody>
       </Table>;
     }}</ListTableShell>
     <FormListPagination totalElements={total} totalPages={pages} page={page} pageSize={size} onPageChange={onPage} onPageSizeChange={onSize} />

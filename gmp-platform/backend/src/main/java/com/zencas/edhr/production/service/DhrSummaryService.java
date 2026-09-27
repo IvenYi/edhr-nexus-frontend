@@ -58,11 +58,10 @@ public class DhrSummaryService {
         result.set("draft", drafts.isEmpty() ? mapper.nullNode() : drafts.getFirst());
         ArrayNode versions = mapper.createArrayNode();
         jdbc.query("""
-            SELECT id,version_no,status,review_mode,review_workflow_definition_id,review_workflow_version_id,evidence_model_version,
+            SELECT id,version_no,status,review_mode,review_workflow_definition_id,review_workflow_version_id,
                    snapshot_hash,submitted_by,submitted_at
             FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=? ORDER BY version_no DESC
             """, (org.springframework.jdbc.core.RowCallbackHandler) rs -> versions.addObject().put("id", rs.getString("id")).put("versionNo", rs.getInt("version_no"))
-                .put("evidenceModelVersion", rs.getInt("evidence_model_version"))
                 .put("status", rs.getString("status")).put("reviewMode", rs.getString("review_mode"))
                 .put("reviewWorkflowDefinitionId", rs.getString("review_workflow_definition_id"))
                 .put("reviewWorkflowVersionId", rs.getString("review_workflow_version_id"))
@@ -82,12 +81,11 @@ public class DhrSummaryService {
         List<ObjectNode> versions = jdbc.query("""
             SELECT id,version_no,status,review_mode,review_workflow_definition_id,review_workflow_version_id,
                    base_directory_snapshot,overlay_directory_snapshot,
-                   candidate_snapshot,attachment_snapshot,snapshot_hash,submitted_by,submitted_at,evidence_model_version,check_result_snapshot
+                   candidate_snapshot,attachment_snapshot,snapshot_hash,submitted_by,submitted_at,check_result_snapshot
             FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=? AND id=?
             """, (rs, index) -> {
             ObjectNode version = mapper.createObjectNode().put("id", rs.getString("id"))
                     .put("versionNo", rs.getInt("version_no")).put("status", rs.getString("status"))
-                    .put("evidenceModelVersion", rs.getInt("evidence_model_version"))
                     .put("reviewMode", rs.getString("review_mode")).put("snapshotHash", rs.getString("snapshot_hash"))
                     .put("reviewWorkflowDefinitionId", rs.getString("review_workflow_definition_id"))
                     .put("reviewWorkflowVersionId", rs.getString("review_workflow_version_id"))
@@ -125,15 +123,32 @@ public class DhrSummaryService {
     @Transactional(readOnly = true)
     public ObjectNode audit(Long dhrId, int page) {
         dhrInstances.detail(dhrId);
-        int safePage = Math.max(0, page);
         String where = """
             tenant_id=? AND ((entity_type='DHR_INSTANCE' AND entity_id=?)
               OR (entity_type IN ('DHR_SUMMARY_DRAFT','DHR_ATTACHMENT') AND data_summary=?)
               OR (entity_type IN ('DHR_SUMMARY_VERSION','DHR_SUMMARY_REVIEW','DHR_SUMMARY_EXPORT')
-                  AND entity_id IN (SELECT CAST(id AS VARCHAR) FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=?)))
+                  AND (entity_id IN (SELECT CAST(id AS VARCHAR) FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=?)
+                    OR (data_summary=? AND NOT EXISTS (SELECT 1 FROM dhr_summary_version v
+                        WHERE v.tenant_id=audit_event.tenant_id AND CAST(v.id AS VARCHAR)=audit_event.entity_id)))))
             """;
-        Object[] args = {TENANT, dhrId.toString(), dhrId.toString(), TENANT, dhrId};
+        Object[] args = {TENANT, dhrId.toString(), dhrId.toString(), TENANT, dhrId, dhrId.toString()};
+        return auditPage(where, args, page);
+    }
+
+    @Transactional(readOnly = true)
+    public ObjectNode versionAudit(Long dhrId, Long versionId, int page) {
+        Long count = jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=? AND id=?",
+                Long.class, TENANT, dhrId, versionId);
+        if (count == null || count == 0) throw invalid("DHR 汇总版本不存在");
+        return auditPage("tenant_id=? AND entity_type IN ('DHR_SUMMARY_VERSION','DHR_SUMMARY_REVIEW','DHR_SUMMARY_EXPORT') AND entity_id=?",
+                new Object[]{TENANT, versionId.toString()}, page);
+    }
+
+    private ObjectNode auditPage(String where, Object[] args, int page) {
+        int safePage = Math.max(0, page);
         Long total = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE " + where, Long.class, args);
+        Object[] pageArgs = java.util.Arrays.copyOf(args, args.length + 1);
+        pageArgs[args.length] = safePage * 50L;
         ArrayNode events = mapper.createArrayNode();
         jdbc.query("SELECT id,entity_type,entity_id,action,function_name,operator_name,operator_account,created_at,reason,content_before,content_after "
                         + "FROM audit_event WHERE " + where + " ORDER BY created_at DESC,id DESC LIMIT 50 OFFSET ?",
@@ -145,7 +160,7 @@ public class DhrSummaryService {
                         .put("at", rs.getTimestamp("created_at").toLocalDateTime().toString())
                         .put("reason", rs.getString("reason"))
                         .put("before", rs.getString("content_before")).put("after", rs.getString("content_after")),
-                TENANT, dhrId.toString(), dhrId.toString(), TENANT, dhrId, safePage * 50L);
+                pageArgs);
         ObjectNode result = mapper.createObjectNode().put("page", safePage).put("total", total == null ? 0 : total);
         result.set("events", events);
         return result;
@@ -253,7 +268,6 @@ public class DhrSummaryService {
                 .put("note", reviewNote).put("confirmedBy", actor())
                 .put("confirmedAt", java.time.OffsetDateTime.now().toString()));
         ObjectNode frozen = mapper.createObjectNode().put("dhrInstanceId", dhrId).put("versionNo", versionNo)
-                .put("evidenceModelVersion", 2)
                 .put("status", status).put("reviewMode", mode);
         ObjectNode reviewBinding = frozen.putObject("reviewBinding").put("mode", mode);
         Long reviewDefinitionId = nullableLong(dhr, "dhr_review_workflow_definition_id");
@@ -275,12 +289,12 @@ public class DhrSummaryService {
             INSERT INTO dhr_summary_version(id,tenant_id,dhr_instance_id,version_no,status,review_mode,
                 review_workflow_definition_id,review_workflow_version_id,base_directory_snapshot,
                 overlay_directory_snapshot,candidate_snapshot,snapshot_hash,submitted_by,submitted_at,created_at,
-                evidence_model_version,check_result_snapshot,attachment_snapshot)
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                check_result_snapshot,attachment_snapshot)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """, versionId, TENANT, dhrId, versionNo, status, mode,
                 reviewDefinitionId, reviewVersionId,
                 dhr.path("directory_snapshot").asText(), overlay.toString(), candidateSnapshot.toString(), snapshotHash, actor, now, now,
-                2, checkResult.toString(), attachmentSnapshot.toString());
+                checkResult.toString(), attachmentSnapshot.toString());
         Map<String, JsonNode> candidatesById = new HashMap<>();
         candidateSnapshot.forEach(candidate -> candidatesById.put(candidate.path("id").asText(), candidate));
         for (Map.Entry<String, ObjectNode> entry : placementByRecord.entrySet()) {

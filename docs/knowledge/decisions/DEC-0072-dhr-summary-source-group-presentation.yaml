@@ -10,7 +10,7 @@ decisions:
       保留 DEC-0063/0071 的局部细化关系及 Git 历史；旧实现和旧测试仅记录于实现差异，不证明本次新设计已交付。
     decisionStatements:
       - id: DEC-0072-01
-        statement: user-confirmed；右侧作业来源按同一生产工序及同一作业填报节点 formId 成组，自定义来源按同一次创建项 formId 成组；分组键为 originKind、operationId、formId，同模板不同节点或创建项不得合组，缺失来源键时按实例独立。默认整组或展开单份操作仅整理展示位置，不选择证据是否纳入；每份自动可见。
+        statement: user-confirmed；作业来源按同一生产工序及同一作业填报节点 formId 成组，自定义来源按同一次创建项 formId 成组；分组键为 originKind、operationId、formId，同模板不同节点或创建项不得合组，缺失来源键时按实例独立。默认整组或展开单份操作仅整理展示位置，不选择证据是否纳入；每份自动可见。
         status: specified
         visibility: internal
       - id: DEC-0072-02
@@ -26,11 +26,11 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0072-05
-        statement: user-confirmed；工作区保留可收起概览和右侧独立来源入口；所有实际证据有默认位置，无需先拖拽才能核查。空来源仅显示缺项或占位，不生成实例或证据；应有缺项按适用规则阻断。
+        statement: user-confirmed；工作区保留可收起概览与来源访问，普通浏览采用 DEC-0063/0068 的档案目录/按来源双视图，整理时来源与目录相邻，不将右侧入口位置固定为业务约束。所有实际证据有默认位置，无需先拖拽才能核查。空来源仅显示缺项或占位，不生成实例或证据；应有缺项按适用规则阻断。
         status: specified
         visibility: internal
       - id: DEC-0072-06
-        statement: user-confirmed；DIRECTORY、WORK、CUSTOM 的真实证据支持草稿展示别名。组行只修改当前范围实例，相邻折叠行限当前段，单份仅改一份；保存重开保留，提交冻结并参与指纹，重新整理复制上版别名。别名不改来源名称、内容、实例号、生产归属或基础目录；DIRECTORY 固定位置不变，旧版空别名回退原名，显示名不能改变证据范围。
+        statement: user-confirmed；DIRECTORY、WORK、CUSTOM 的真实证据支持草稿展示别名。组行只修改当前范围实例，相邻折叠行限当前段，单份仅改一份；保存重开保留，提交冻结并参与指纹，正常修订复制上版别名。别名不改来源名称、内容、实例号、生产归属或基础目录；DIRECTORY 固定位置不变，未设置别名时显示来源名称，不是旧模型兼容。错误旧汇总转换保留可用目录、位置及别名，按 DEC-0063-09 重新核查提交；显示名不能改变证据范围。
         status: specified
         visibility: internal
       - id: DEC-0072-07
@@ -65,11 +65,11 @@ decisions:
         evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-source-group-backend-test]
         evidenceRequirements: [必填目录与未完成补录回归, 空来源证据检查]
       - id: scenario.dhr-summary-archive-display-name
-        given: 汇总草稿内有 DIRECTORY 目录实例、相邻同源可选多份归档实例、单份归档实例和旧版本空显示名
+        given: 汇总草稿内有 DIRECTORY 目录实例、相邻同源多份归档实例、单份归档实例和未设置显示名的记录
         when: 用户分别重命名相邻折叠行与单份行，保存重开、提交并重新整理
-        then: 所有来源仅当前范围的目标已归档实例获得显示名；冻结版本及指纹保持该名称，新草稿继承该名称，旧版本空别名显示原名；来源表单和基础快照不变，DIRECTORY 固定展示位置不变，其他来源取消自定义位置恢复默认位置，证据范围不变，冻结版本不可编辑
+        then: 所有来源仅当前范围的目标实例获得显示名；冻结版本及指纹保持该名称，新草稿继承该名称，空别名显示原名；来源表单和基础快照不变，DIRECTORY 固定展示位置不变，其他来源取消自定义位置恢复默认位置，证据范围不变，正常冻结版本不可编辑
         evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
-        evidenceRequirements: [目录组及可选相邻段与单份作用域交互, 全来源草稿保存重开, 冻结哈希与只读及审核显示名, DIRECTORY 重新整理继承, 空别名旧版读取, 拒绝 DIRECTORY 移动及排序覆盖, 重复实例及异常名称与越权阻断, 单实例列表按钮与首份预览, 单一拖拽落点及行尾对齐]
+        evidenceRequirements: [目录组及相邻段与单份作用域交互, 全来源草稿保存重开, 冻结哈希与只读及审核显示名, DIRECTORY 重新整理继承, 未设置别名显示原名, 拒绝 DIRECTORY 移动及排序覆盖, 重复实例及异常名称与越权阻断, 单实例列表按钮与首份预览, 单一拖拽落点及行尾对齐]
     implementationDiscrepancies:
       - id: discrepancy.dhr-summary-group-old-selection-tests
         status: open

@@ -34,6 +34,7 @@ class DhrFillingServiceTest {
         jdbc.execute("CREATE TABLE production_object(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),work_order_id BIGINT,status VARCHAR(32))");
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),production_object_id BIGINT,summary_status VARCHAR(32),directory_snapshot TEXT)");
         jdbc.execute("CREATE TABLE production_execution(object_id BIGINT PRIMARY KEY,snapshot_json TEXT,state_json TEXT,revision BIGINT,updated_at TIMESTAMP)");
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),dhr_instance_id BIGINT,version_no INT,overlay_directory_snapshot TEXT)");
         jdbc.update("INSERT INTO work_order VALUES(1,'default')");
         jdbc.update("INSERT INTO production_object VALUES(2,'default',1,'COMPLETED')");
         jdbc.update("INSERT INTO dhr_instance VALUES(3,'default',2,'FORMALIZED','{\"directories\":[]}')");

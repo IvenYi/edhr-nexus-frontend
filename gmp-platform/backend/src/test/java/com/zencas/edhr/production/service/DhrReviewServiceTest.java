@@ -41,7 +41,7 @@ class DhrReviewServiceTest {
         AuditContext.setOperator("7", "审核人");
         jdbc.execute("DROP ALL OBJECTS");
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,summary_status VARCHAR(32),tenant_id VARCHAR(32),production_object_id BIGINT,dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),work_order_no VARCHAR(64),product_name VARCHAR(64),updated_by VARCHAR(64),updated_at TIMESTAMP)");
-        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),version_no INT,snapshot_hash VARCHAR(64),dhr_instance_id BIGINT,submitted_by VARCHAR(64),submitted_at TIMESTAMP,evidence_model_version SMALLINT DEFAULT 1,check_result_snapshot TEXT,attachment_snapshot TEXT DEFAULT '[]')");
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),version_no INT,snapshot_hash VARCHAR(64),dhr_instance_id BIGINT,submitted_by VARCHAR(64),submitted_at TIMESTAMP,check_result_snapshot TEXT,attachment_snapshot TEXT DEFAULT '[]')");
         jdbc.execute("CREATE TABLE dhr_summary_review(summary_version_id BIGINT PRIMARY KEY,workflow_instance_id BIGINT,status VARCHAR(32),updated_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE workflow_node(id BIGINT PRIMARY KEY,name VARCHAR(64),properties TEXT)");
         jdbc.execute("CREATE TABLE workflow_task(id BIGINT PRIMARY KEY,instance_id BIGINT,node_id BIGINT,status VARCHAR(32),assignee_id VARCHAR(64),candidate_snapshot TEXT,opinion TEXT,action VARCHAR(32),created_at TIMESTAMP,completed_at TIMESTAMP)");
@@ -49,10 +49,19 @@ class DhrReviewServiceTest {
         jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),snapshot_json TEXT,values_json TEXT,status VARCHAR(32),version_id BIGINT)");
         jdbc.update("INSERT INTO dhr_instance(id,tenant_id,summary_status,dhr_no,object_no,object_type,work_order_no,product_name) VALUES(1,'default','PENDING_REVIEW','DHR-1','B1','BATCH','W1','产品')");
         jdbc.update("INSERT INTO dhr_summary_version(id,tenant_id,version_no,snapshot_hash,dhr_instance_id,submitted_by,submitted_at) VALUES(2,'default',1,'hash',1,'提交人',CURRENT_TIMESTAMP)");
+        jdbc.update("UPDATE dhr_summary_version SET check_result_snapshot=?", """
+                {"manualReview":{"qualityAndExceptionsReviewed":true,"sourceSignaturesReviewed":true,
+                  "completeScopeReviewed":true,"note":"核查完成","confirmedBy":"提交人","confirmedAt":"2026-09-27T10:00:00+08:00"}}
+                """);
+        jdbc.update("UPDATE dhr_instance SET production_object_id=1000");
+        jdbc.execute("CREATE TABLE production_object(id BIGINT PRIMARY KEY,tenant_id VARCHAR)");
+        jdbc.update("INSERT INTO production_object VALUES(1000,'default')");
+        jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN source_type VARCHAR DEFAULT 'PRODUCTION_EXECUTION'; ALTER TABLE form_instance_record ADD COLUMN object_id BIGINT DEFAULT 1000; ALTER TABLE form_instance_record ADD COLUMN instance_no VARCHAR");
+        jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT,tenant_id VARCHAR,dhr_instance_id BIGINT,active BOOLEAN,sha256 VARCHAR,verification_status VARCHAR,stored_path VARCHAR)");
         jdbc.update("INSERT INTO dhr_summary_review VALUES(2,3,'PENDING_REVIEW',CURRENT_TIMESTAMP)");
         jdbc.update("INSERT INTO workflow_node VALUES(4,'质量审核','{}')");
         jdbc.update("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot,created_at) VALUES(5,3,4,'PENDING',NULL,'{\"userIds\":[\"7\"]}',CURRENT_TIMESTAMP)");
-        jdbc.update("INSERT INTO form_instance_record VALUES(10,'default','{\"name\":\"表单\"}','{\"temperature\":20}','COMPLETED',100)");
+        jdbc.update("INSERT INTO form_instance_record(id,tenant_id,snapshot_json,values_json,status,version_id) VALUES(10,'default','{\"name\":\"表单\"}','{\"temperature\":20}','COMPLETED',100)");
         jdbc.update("INSERT INTO dhr_summary_evidence VALUES('default',2,10,?)", "{\"id\":\"10\",\"instanceNo\":\"FR-10\",\"templateVersionId\":\"100\",\"status\":\"COMPLETED\",\"snapshot\":{\"name\":\"表单\"},\"fieldValues\":{\"temperature\":20}}");
         workflow = WorkflowInstance.builder().id(3L).businessType("DHR_SUMMARY").status("RUNNING").build();
         when(workflows.findByIdForUpdate(3L)).thenReturn(Optional.of(workflow));
@@ -116,11 +125,11 @@ class DhrReviewServiceTest {
         service.act(5L, command("APPROVE").put("account", "reviewer").put("password", "password"));
         verify(engine).completeDhrTask(5L, "APPROVE", "已核对", "7", 77L);
     }
-    @Test void missingRecordIsAffectedButNewUnselectedRecordsAreNot() {
-        jdbc.update("INSERT INTO form_instance_record VALUES(11,'default','{}','{}','DRAFT',100)");
-        assertThat(service.evidenceChanges(2L, false)).isEmpty();
-        jdbc.update("DELETE FROM form_instance_record WHERE id=10");
+    @Test void missingAndNewRecordsBothAffectCompleteEvidenceScope() {
+        jdbc.update("INSERT INTO form_instance_record(id,tenant_id,snapshot_json,values_json,status,version_id) VALUES(11,'default','{}','{}','DRAFT',100)");
         assertThat(service.evidenceChanges(2L, false).size()).isEqualTo(1);
+        jdbc.update("DELETE FROM form_instance_record WHERE id=10");
+        assertThat(service.evidenceChanges(2L, false).size()).isEqualTo(2);
     }
     @Configuration @EnableTransactionManagement static class Config {
         @Bean DataSource source() { return new DriverManagerDataSource("jdbc:h2:mem:dhr-review;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", ""); }

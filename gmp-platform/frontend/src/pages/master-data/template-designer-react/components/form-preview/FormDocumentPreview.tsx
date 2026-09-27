@@ -86,7 +86,7 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
         : fallbackControl();
     const actions = field ? interaction?.actionsForField?.({ id: field.id, name: field.name, type: field.type }) ?? [] : [];
     const highlighted = Boolean(field && interaction?.highlightFieldId === field.id);
-    return <Box onMouseEnter={() => field && interaction?.onFieldHover?.(field.id)} onMouseLeave={() => interaction?.onFieldHover?.(null)}
+    return <Box data-form-preview-field={field?.id} onMouseEnter={() => field && interaction?.onFieldHover?.(field.id)} onMouseLeave={() => interaction?.onFieldHover?.(null)}
       sx={{ position: 'relative', height: '100%', minHeight: 0, minWidth: 0,
         outline: highlighted ? '2px solid #1677c8' : undefined,
         '&:hover .preview-field-actions, &:focus-within .preview-field-actions': { opacity: 1 } }}>

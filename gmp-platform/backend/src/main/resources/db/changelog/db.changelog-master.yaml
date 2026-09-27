@@ -223,3 +223,7 @@ databaseChangeLog:
       file: db/changelog/0102-dhr-summary-complete-evidence.sql
   - include:
       file: db/changelog/0103-dhr-controlled-attachments.sql
+  - include:
+      file: db/changelog/0104-dhr-current-evidence-only.sql
+  - include:
+      file: db/changelog/0105-dhr-office-attachments.sql

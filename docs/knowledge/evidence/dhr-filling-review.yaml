@@ -3,15 +3,15 @@ evidence:
   - id: evidence.dhr-filling-review-confirmed
     type: document
     path: docs/knowledge/evidence/dhr-filling-review-confirmed.md
-    description: user-confirmed；2026-09-25 按统一汇总决策包修订完整证据及人工确认检查结果审批、任务专属附件的授权与冻结版本边界、有效变化阻断、人工退回/新版重审、旧批准保留、NONE边界；旧2026-09-23记录标明历史时点，新设计为specified/internal。
+    description: user-confirmed；四列表详情/审计、工作区双视图、默认入口、来源及档案同一实例、附件右侧主内容、冻结成员内混选ZIP和正常发起修订边界保留。最新L2确认按DEC-0063-09转换或清理错误旧汇总，不伪造checkResult，草稿重新人工核查提交，审批及导出删除旧模型分支；保留当前模型冻结/草稿、正常version_no、源表单、生产对象、签署、原审计及终止快照，迁移备份并补审计事件。生产完成及权限不变，公共开启图标蓝色仅为展示。0.3.24、specified/internal不变，不新增替代DEC；PG交接二手证据、源码时点和迁移待验收范围见所引文档，不宣称运行或合规完成。
     visibility: internal
   - id: evidence.dhr-filling-review-source-boundary
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
-    description: original-evidence；2026-09-23 静态读取 working-tree 的 submit、version、candidates、lockedCompletedDhr，见三类候选、冻结汇总和旧待审核边界；本观察仅为切片接入基点，不证明填报追加、审核任务、有效变更检测或新版重审已实现，详细来源与缺口见同名 confirmed 文档。
+    description: original-evidence；2026-09-28 静态核对audit/versionAudit：audit保留已清理版本的原始事件，优先现存版本归属，只有该租户内版本已不存在时才按data_summary归属查询，避免跨DHR或租户；versionAudit仍要求版本存在且属于本DHR。只读分页不改原audit_event，不构成旧模型兼容；DhrAuditReadTest已有清理后可读及跨DHR拒绝断言源码，本体未运行此业务测试，权限及SQL运行验收由主开发负责。
     visibility: internal
   - id: evidence.dhr-filling-review-ui-standard
     type: document
     path: docs/frontend/list-page-guidelines.md
-    description: original-evidence；读取当前项目共享组件规范，独立列表复用 ListTableShell 和公共表格状态、样式，普通表单弹窗按其引用的 dialog-guidelines.md 使用 FormDialog 及字段分组/网格；是设计约束，不是本切片页面已满足规范的验收证明。
+    description: original-evidence；2026-09-27复核当前共享规范第194-195及290-292行：行点击详情使用右侧Drawer及数据信息/数据审计页签，业务动作独立，操作列不重复审计入口，窄栏使用折叠审计。独立列表仍复用ListTableShell、公共表格状态及样式；这是既有设计约束，不是四列表已经通过交互或视觉验收的证明。
     visibility: internal

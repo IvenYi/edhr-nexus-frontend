@@ -8,7 +8,7 @@ evidence:
   - id: evidence.dhr-instance-management-business-boundary
     type: document
     path: docs/architecture/transaction-traceability-dhr-business-rules.md
-    description: secondary-reference；既有业务边界说明 DHR 汇总消费带目录映射的来源表单/作业实例关系，并要求冻结目录结构和成员清单。该文档用于交叉核对证据关系，不替代本次用户确认，也不证明审批、发布或人工补充已实现。
+    description: secondary-reference；现行业务边界区分完整证据与目录展示，生产关联的目录、作业、自定义实际实例及受控附件自动归集；目录映射仅决定基础目录子视图，不能过滤完整范围。该文档用于交叉核对关系，不代替用户确认或运行验收。
     visibility: internal
   - id: evidence.dhr-instance-start-transaction-source
     type: code

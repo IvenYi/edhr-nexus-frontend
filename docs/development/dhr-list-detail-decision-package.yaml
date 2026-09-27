@@ -1,0 +1,78 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260927-DHR-LIST-DETAIL
+  scope: dhr-list-detail-and-audit
+  knowledgeBaselineVersion: 0.3.24
+  summary: 修复 DHR 四列表遗漏的通用行详情与数据审计，业务工作区保留独立入口。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.dhr-list-standard-detail-entry
+        name: DHR 列表通用详情与工作区分离
+        status: specified
+        trigger: dhr-list.row-click
+        condition: {all: [{fact: authorized-list-row, operator: equals, value: true}]}
+        result: {type: return-query-projection, target: standard-detail-drawer, tabs: [数据信息, 数据审计]}
+        sourceReferences: [docs/frontend/list-page-guidelines.md, docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    executionContracts: []
+  inferred:
+    - id: inference.dhr-review-audit-scope
+      statement: 审批页审计沿任务授权，仅展示绑定汇总版本的提交、审批和导出事件，不扩大为全部版本或全局审计查询。
+      rationale: 复用既有任务详情的候选人/本人已办授权，不授予无关版本访问权；其余页面沿原有 DHR 读取权限。
+      relatedIds: [DEC-0068-01, DEC-0068-07]
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: dhr-four-lists
+        change: 行点击和键盘 Enter/Space 打开共享右侧详情抽屉；操作图标阻止冒泡并保持原工作区。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+      - area: audit-read
+        change: 复用 DHR 审计记录，补齐填报/审批只读入口、中文快照及翻页。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+    transitiveImpacts:
+      - area: summary-workspace
+        change: 现有 DHR 审计快捷入口复用同一审计展示，避免详情中文展示与工作区原始 JSON 两套行为。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+    potentialImpacts: []
+    unaffectedAreas:
+      - 生产状态机、汇总提交和审批写动作、电子签名以及来源表单内容与日志。
+    compatibilityAndMigration:
+      - 只增加只读 API；不改表结构、不迁移、不删除历史审计。
+    snapshotImpacts:
+      - 展示转换不写回原始快照；审批详情继续使用任务绑定冻结版本。
+    auditImpacts:
+      - DHR 层与来源实例操作日志分层不变；不把查看详情伪造成数据修改。
+    permissionImpacts:
+      - 填报详情/审计使用 records.dhr-filling；汇总详情沿原汇总查看权限。
+      - 审批详情/审计使用 records.dhr-review 并再次验证任务归属；不得依赖全局 dhr.instances.view。
+    testImpacts:
+      - scope: frontend
+        scenarios: [四页行点击与键盘, 操作图标无冒泡, 信息/审计页签, 关闭重开复位, 审计翻页/空态/错误, 中文快照, 响应式抽屉]
+        evidenceReferences: [docs/frontend/list-page-guidelines.md]
+      - scope: backend
+        scenarios: [入口权限矩阵, 非候选/非本人任务拒绝, 绑定版本审计隔离, DHR审计集合与分页]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrWorkbenchPermissionsTest.java]
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 通用列表交互与 DHR 域只读投影修复，不引入客户条件或第二套审计存储。
+    ownershipBoundaries:
+      - {owner: dhr-frontend, responsibility: 四页共享详情抽屉、审计展示与操作入口分离}
+      - {owner: dhr-backend, responsibility: 沿现有读取授权提供审计查询与版本隔离}
+  affectedFiles:
+    - {path: gmp-platform/frontend/src/pages/dhr-management, changeType: update, reason: 共享抽屉及四页接入}
+    - {path: gmp-platform/frontend/src/api/dhr-workbenches.ts, changeType: update, reason: 填报与审批只读 API}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller, changeType: update, reason: 独立入口的只读授权}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, changeType: update, reason: 绑定版本审计查询}
+  acceptanceScenarios:
+    - id: scenario.dhr-four-list-detail
+      given: 用户有当前 DHR 菜单访问权且列表存在记录
+      when: 点击行或使用 Enter/Space
+      then: 打开右侧详情，包含数据信息/数据审计；独立动作按钮仅打开相应工作区。
+      evidenceRequirements: [浏览器交互验证, 前端构建]
+    - id: scenario.dhr-scoped-audit
+      given: 用户只有填报或审批入口权限、没有全局 DHR 查看权限
+      when: 查看有权访问的行详情与审计或尝试越权任务
+      then: 合法请求成功，越权任务拒绝，审批事件限定绑定版本，既有审计证据不变。
+      evidenceRequirements: [权限测试, 审计查询测试, 中文投影测试]

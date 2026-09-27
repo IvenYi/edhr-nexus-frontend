@@ -1,0 +1,483 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260927-DHR-WORKSPACE-NAVIGATION
+  scope: dhr-workspace-navigation
+  knowledgeBaselineVersion: 0.3.24
+  summary: 原位修正 DHR 查看、填报、汇总导航与目录整理交互
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.dhr-workspace-source-placement-display
+        name: 来源与档案位置分离展示
+        status: specified
+        trigger: dhr.workspace.browse
+        condition:
+          all:
+            - fact: evidence.originKind
+              operator: exists
+              value: true
+        result:
+          type: display
+          description: 同一实例保留来源身份，整理目录只改变展示位置；来源和档案位置都可找到记录且总数不重复。
+        sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml]
+    executionContracts: []
+  inferred:
+    - id: inference.dhr-workspace-shared-components
+      statement: 三页复用来源导航、表单行与实例窄栏；整理模式使用相邻来源与目录面板，窄屏允许收起预览。
+      rationale: 落实用户确认的布局一致性、短距离拖拽及多份实例可发现性。
+      relatedIds: [DEC-0063, DEC-0068]
+  unresolved: []
+  revisionPrintableExport:
+    executionLevel: L2
+    knowledgeBaselineVersion: 0.3.24
+    confirmed:
+      - user-confirmed：列表修订入口使用符合统一规范的纯图标及提示，查看弹窗直接显示发起修订，不再藏在更多菜单。
+      - user-confirmed：修订基于最新定版新建草稿，旧版不覆盖；草稿及历次冻结版本可切换，旧版只读及可导出。
+      - user-confirmed：导出选择按冻结档案目录展示，支持完整及自定义范围、目录/组/实例勾选。
+      - user-confirmed：ZIP使用中文目录，总DHR为可打印PDF，单表PDF按来源分类；表单内附件放在对应实例的附件目录，汇总附件单独放根目录汇总附件。
+      - user-confirmed：附件内容不并入总PDF，只保留附件索引和ZIP原件，Office不转码、不在线编辑。
+      - 总PDF按冻结档案目录顺序，所有输出使用同一冻结版本；JSON保留在追溯资料，不能用当前值代替冻结值。
+    inferred:
+      - 使用现有React版式渲染组件及离线服务端Chromium打印，PDFBox合并；不另写一套表单布局解释器。
+      - 表单文件按冻结字段引用识别，校验不可覆盖的文件对象元数据和原件，缺失或摘要不符阻断导出。
+      - 自定义范围带出选中表单的字段附件，不额外带出未选实例的字段数据或附件。
+    unresolved: []
+    impactAnalysis:
+      level: L2
+      directImpacts: [DHR列表及汇总工作区修订入口、版本选择、导出勾选树、PDF及ZIP结构]
+      transitiveImpacts: [模板共享预览组件的独立打印构建、文件对象读取、服务器浏览器运行依赖]
+      potentialImpacts: [长表单分页与嵌套子表版式、字体可用性、导出内存与处理耗时]
+      unaffectedAreas: [生产执行和放行规则、电子签名语义、汇总审批配置、Office上传格式及50MiB限制]
+      compatibilityAndMigration: [不覆盖既有冻结版本，不新增旧证据模型分支；缺少原件/版式的快照应明确拒绝而非伪造PDF]
+      snapshotImpacts: [冻结记录和版式作为唯一内容来源，归档位置与来源身份分离，当前草稿不得污染历史PDF]
+      auditImpacts: [继续记录版本及范围导出审计、文件摘要清单；修订原因及旧审批历史保留]
+      permissionImpacts: [沿用reorganize和export权限及后端授权，不因新增入口放宽权限]
+      testImpacts: [旧版查看/导出与新草稿切换、树勾选及搜索、ZIP中文路径和去重、单表/总PDF页数和版式、字段附件完整性及篡改拒绝、选定范围边界]
+      evidenceGaps: [冠骋所给源码仅包含打印任务和实例选取适配，平台合并及ZIP实现不在源码内；参考ZIP证实总PDF，未证实其按来源单表PDF结构]
+    extensionStrategy:
+      selectedPaths: [product-core]
+      rationale: 标准冻结档案输出与修订能力，复用预览组件、PDFBox和文件存储，不引入客户条件分支。
+      ownershipBoundaries: [DHR服务负责版本/范围/附件校验及ZIP，离线打印入口只渲染已授权冻结数据，前端负责导航与选择]
+    acceptanceScenarios:
+      - 发起修订后可在当前草稿和V1间切换；V1保持只读，可独立导出。
+      - 档案中跨来源调整位置的记录在总PDF按档案顺序，在ZIP按原来源归档，不重复计数。
+      - 单表附件和汇总附件原件独立保存，总PDF只有附件索引；选定范围有明确非完整标识。
+      - 缺失或被修改的原件、无法渲染的冻结版式阻断输出，不返回看似成功的残缺ZIP。
+    implementationChecks:
+      - 前端构建及11项导航/详情投影测试通过；真实Chrome配合mock接口验证目录半选、混选导出、跨版本重置、行图标修订、当前草稿/V1切换、旧版只读和权限。
+      - 后端PDF、原件解析、ZIP、修订持久化与权限聚焦测试通过；包含总PDF不合入附件、原件字节一致、字段附件随选中实例输出、伪造/损坏/跨对象原件拒绝。
+      - PDF实测横向Word、长表60行分页、字段溢出拒绝、外部网络资源拒绝；只读查询开发库唯一当前定版的3份表单完成原版式PDF生成与目视检查，未执行真实业务修订或导出审计写入。
+      - 2026-09-28 02:33修复后本机8081后端重启为PID49877，启动及API文档HTTP200；日志/tmp/dhr-print-runtime.JSOz8u/backend-final.log；没有新增数据库迁移，134个已应用变更集不变。
+      - 独立发现修复后主实现再验48项聚焦后端检查（含7项PDF及只读真实3表）、前端构建与浏览器5组回归通过；源码及模板预览字段标记不改变生产记录。
+    ontologyResult:
+      result: updated
+      reviewer: 01a0e3ff-93e1-7330-a6d3-5fdc9e5797ba
+      baselineBefore: 0.3.24
+      baselineAfter: 0.3.24
+      report: /tmp/dhr-print-ontology-result.yaml
+      detail: 11份知识资产原位同步，181份YAML解析及59项知识校验通过；规则保持specified/internal，不冒称整体法规或发布验收；实例已关闭。
+    firstQualityResult:
+      result: failed
+      reviewer: 01a0e418-6775-73c0-9a7c-994fb9878f29
+      report: /tmp/dhr-print-independent-qa-result.yaml
+      findings: [QF-PRINT-001高风险Word选项省略未拒绝、QF-PRINT-002选定范围丢失来源审计签名索引]
+      remediation:
+        - 共享预览增加统一字段DOM标记，打印检查覆盖网格和Word全部字段后代；Word长下拉选项补失败闭合回归，不仅检查input。
+        - 部分导出保留所选记录的来源身份及所属生产对象审计/签名的标识、人员、时间和摘要索引，剔除可能含未选字段的原始载荷；明确对象级上下文不是实例专属证据，完整验签载荷查完整DHR。仅选汇总附件时不带生产表单追溯。
+      disposition: 原质量实例未参与修复并已关闭，修复完成后交全新L2质量实例复验。
+    qualityResult:
+      result: passed
+      reviewer: 01a0e424-1ca4-77f3-a2da-4f6439ced541
+      baseCommit: dcbc67864147750579b8328da28c45d380798693
+      headCommit: dcbc67864147750579b8328da28c45d380798693
+      workingTreeState: dirty
+      report: /tmp/dhr-print-final-qa-result.yaml
+      resolvedFindings: [QF-PRINT-001, QF-PRINT-002]
+      detail: 全新且未参与修复的质量实例独立复跑48项后端、59项知识校验、11项前端测试及构建；真实Chrome配合隔离mock完成导出修订5组、相邻导航7组回归；重新生成3份真实冻结模板及长表/横向Word等PDF并目视检查。无阻塞发现，实例已关闭。
+      limitations: [真实数据库只读取冻结样例，业务写入使用H2和mock；未执行Docker/Nginx运行验证、生产容量或实际业务全链验收；不覆盖并行按钮签署及旧迁移。]
+    residualLimitations:
+      - 本机无Docker，容器构建、部署网关超时和生产容量尚未实测。
+      - 冻结字段超出版式时明确阻断，不在导出时静默修改旧版式；复杂版式仍需按客户模板验收。
+      - 缺少冠骋平台打印合并实现，不将本产品按来源单表PDF结构描述为已核实的竞品实现。
+    validationStatus: passed
+  officeAttachmentSupport:
+    executionLevel: L2
+    knowledgeBaselineVersion: 0.3.24
+    confirmed:
+      - user-confirmed：新增DOC/DOCX/XLS/XLSX原文件上传下载，不做Office在线编辑或预览；保留PDF/PNG/JPEG。
+      - user-confirmed：单个附件上限50MB（50*1024*1024字节，含边界）。
+      - 受控附件核验、摘要、权限、冻结引用和解除关联保留历史原件的规则不变。
+    inferred:
+      - 文件扩展名与内容结构共同校验，不信任客户端MIME；加密、宏和无法解析的Office文件拒绝，格式检查不等于病毒扫描或人工核验。
+    unresolved: []
+    impactAnalysis:
+      level: L2
+      directImpacts: [DHR附件上传格式与50MB边界、选择控件和提示、修复附件API继承JSON请求头造成的非multipart上传]
+      transitiveImpacts: [附件核验读取、单件下载原文件名、冻结ZIP中Office扩展名、Nginx请求体限制]
+      potentialImpacts: [Office解析内存和压缩展开开销，限制压缩展开总量；外部部署网关仍需核对]
+      unaffectedAreas: [eSOP及通用上传业务规则、生产记录、表单在线编辑、汇总审批与放行规则]
+      compatibilityAndMigration: [新增迁移扩容mime_type为128字符，不重写已应用迁移、不修改既有附件字节或摘要]
+      snapshotImpacts: [快照结构不变，记录真实Office MIME及原文件名；ZIP原样输出]
+      auditImpacts: [沿用LINK/VERIFY/UNLINK及导出审计，不改事件语义]
+      permissionImpacts: [保持汇总编辑权与审批任务冻结附件授权]
+      testImpacts: [四种Office合法上传核验下载及ZIP、伪造格式和加密宏拒绝、50MB与超限、MIME字段迁移、浏览器上传下载与只读回归]
+      evidenceGaps: [未引入恶意软件扫描服务；自动格式检查不能证明内容无恶意或证据合格]
+    extensionStrategy:
+      selectedPaths: [product-core]
+      rationale: DHR标准附件能力，复用现有POI依赖，不增加客户分支或新文件存储子系统。
+      ownershipBoundaries: [DHR附件服务负责格式和证据保留，下载控制器负责文件名，ZIP服务负责冻结输出，前端负责选择和提示]
+    implementationChecks:
+      - 后端已用真实DOC、生成DOCX/XLS/XLSX验证原件上传、人工核验状态、单件下载及完整/混选/附件单选ZIP，字节一致且保留冻结解除关联规则。
+      - 50MiB含边界通过、超限读取前拒绝；伪造格式、宏、加密、损坏Office及100MiB以上ZIP展开拒绝。
+      - 独立临时PostgreSQL验证0105扩容、既有数据不变和事务回滚；独立复验后本机开发库已由Liquibase正式应用0105。
+      - 前端构建通过；真实Chrome配合HTTP mock检查multipart文件名和字节、四种Office原件下载、超限请求不发送及冻结只读/导出权限回归；不是实际用户档案写入。
+    ontologyResult:
+      result: updated
+      reviewer: 01a0e3c6-9fc4-74d3-9db1-965a8dfdd25b
+      baselineBefore: 0.3.24
+      baselineAfter: 0.3.24
+      detail: 四份DHR知识资产原位同步，59项知识校验通过，工程防护与用户确认分开记录，实例已关闭。
+    firstQualityResult:
+      result: failed
+      reviewer: 01a0e3cf-d7d0-7292-a09e-a9c37b88e50f
+      report: /tmp/dhr-office-independent-qa.J5xjJD/quality-result.yaml
+      findings: [QF-OFFICE-001模板更名绕过、QF-OFFICE-002缺中央目录损坏包被容错读取]
+      remediation: 核对主部件精确内容类型，严格ZIP中央目录与局部条目一致性及CRC/大小校验；已补DOCX/XLSX两种回归并通过后端13+8项，交全新实例复验。
+    qualityResult:
+      result: passed
+      reviewer: 01a0e3d9-4e7f-78b0-a6f3-b7fed4a4b913
+      report: /tmp/dhr-office-final-qa.Acytge/quality-result.yaml
+      detail: 全新独立实例关闭两项medium，复跑后端13+8、知识59、导航6、浏览器4组、前端构建、0105隔离迁移和中央目录8种一致性探针通过，无发现和阻塞，实例已关闭。
+      scope: 仅Office/50MiB切片；不包含并行按钮签署或全系统发布验收。
+    validationStatus: passed
+    localRuntimeEvidence:
+      - 2026-09-28 01:19 本机开发后端成功重启，PID42404监听8081；Liquibase记录0105 EXECUTED，mime_type长度128。
+      - 迁移前后真实dhr_attachment数量均为0，没有向用户档案写入测试附件；未删除或重建DHR、生产记录或既有附件。
+      - 启动日志：/tmp/edhr-office-runtime.EbJUSg/backend.log；Nginx配置已修改，但本机采用Vite代理，未执行生产Nginx容量验收。
+    residualLimitations: [未引入病毒扫描服务、浏览器使用HTTP mock而非真实业务写入、未做生产部署容量或全系统验收、外部网关仍须匹配上传请求上限]
+  confirmedUiRefinements:
+    - 使用分段按钮区分档案目录/按来源，仅来源视图显示来源分类；不改变选择身份和未保存保护。
+    - 汇总及冻结查看的附件入口切换右侧主内容为附件列表，沿用原上传信息、核验、下载及带原因解除关联，不物理删除历史文件；其他工作区不新增写权。
+    - 冻结版本导出统一入口支持完整ZIP或跨来源实例与附件混选，显式标记部分范围，切换版本清空选择，不改变证据范围。
+    - 发起修订在列表操作栏使用带提示的纯图标，冻结查看头部直接显示按钮；基于最新定版创建新草稿、保留旧版、重新提交并按配置审批，技术动作和权限不变。
+    - 四工作区统一档案目录与按来源两种视图；来源分类显示批记录模板、作业表单、自定义表单。填报默认按来源，其余默认档案目录。
+    - 整理是档案目录的编辑状态，完成整理返回档案浏览并保留选中实例；来源身份不变、同一实例不重复计数。
+    - 默认作业与自定义区域可折叠，零份仍显示紧凑入口及空态；整理后只保留未调整位置的实例，来源视图始终保留全部。
+    - 审批及定版查看的两种视图仅使用同一冻结版本；填报仍展示当前生产记录及已有展示编排，不增加整理或上传权限。
+    - 覆盖 DHR 管理下相似工作区的公共标题、间距和导航样式；审批保留冻结档案树，不增加汇总专属整理或上传动作。
+    - 导航统一称 DHR 导航，压缩标题留白；范围说明移至工作区头部。
+    - 整理目录入口放在导航标题行，返回浏览保留当前实例；模式和实例栏以短过渡切换并支持减少动态效果。
+    - 附件入口放在导航底部独立行，不增加第四种表单来源；零附件仍可打开，权限与冻结范围不变。
+    - 移除业务工作区重复 DHR 数据审计入口，保留四列表行详情数据审计；表单实例日志以表单管理为主入口，本轮不新增实例日志界面。
+  latestRefinementEvidence:
+    permission:
+      type: original-evidence
+      source: 本机 edhr_dev 只读查询及0103-dhr-controlled-attachments.sql、DhrArchiveController
+      finding: ADMIN角色具有dhr.summaries.export；导出接口同时要求dhr.instances.view，前端按登录权限集合判定，不以账号称谓绕过。
+    legacyVersion:
+      type: original-evidence
+      source: 本机 edhr_dev 只读查询 dhr_summary_version
+      finding: 唯一存量冻结版378445557658828800对应DHR-20260922-000003的V1，evidence_model_version为1，check_result_snapshot为空，3份候选与3个位置。
+      disposition: 用户已授权开发期清理；备份后将可恢复编排转为待核查草稿，删除旧冻结汇总与其位置，移除模型代际字段；不补造历史核查，原始表单及审计保留。
+  currentModelCorrection:
+    authorization: user-confirmed，最新请求允许转换或清理错误的开发期旧汇总，不保留旧业务模型；本体原位修正。
+    implementation: 0104恢复最新旧版编排为草稿，已有当前草稿或当前冻结版本优先；source_scope_hash为空，须重新保存并核查提交。
+    deletionBoundary: 仅旧dhr_summary_version及其dhr_summary_evidence；不删除原始表单、生产对象、附件、签名和审计。
+    safetyBoundary: 已进入审批工作流或生产非完成的意外旧数据阻断自动迁移，避免扩大删除范围；本地唯一旧版不涉及。
+    schema: 删除evidence_model_version及前后端分支，check_result_snapshot非空；正常冻结version_no及修订保留。
+    audit: 保留旧事件原文，按DHR归属可查看已清理版本事件，新增MIGRATE维护记录，不伪造人工作业。
+    icon: 四工作区实例面板展开时对应图标蓝色且可见，收起后灰色悬停显示，aria-expanded与实际状态一致。
+    backup: output/dhr-model-migration-nd28ev/pre-apply.dump
+    executionEvidence:
+      - original-evidence：2026-09-28本地edhr_dev的0104由Liquibase正式执行成功，DHR3状态COMPLETED保持，汇总DRAFT，1份草稿恢复作业7的target/before/order；旧版本1条及位置3条清理，model列不存在。
+      - original-evidence：pre/post-apply-fingerprints.txt相同，原表单、生产对象、签名和原审计内容未变；MIGRATE为新增事件。
+      - PostgreSQL备份恢复脚本四组通过，覆盖原始记录不变、编排恢复、当前草稿/冻结优先、真实guard报错、晚期失败原子回滚及无旧数据结构迁移。
+      - 聚焦后端43项通过（18持久化、8审批、4审批生命周期、2附件ZIP、4审计、7权限），补转换草稿须重新保存及人工核查后才能提交。
+      - 前端build、node10项、导航7组（含四入口蓝色/展开状态及关闭恢复）、导出附件3组通过，截图目视确认。
+    validationStatus: passed
+    ontologyResult:
+      result: updated
+      reviewer: 01a0e390-7411-7113-8d13-d92e347f52eb
+      baselineBefore: 0.3.24
+      baselineAfter: 0.3.24
+      detail: DHR知识与架构原位纠正，直接核对本机迁移日志、指纹和只读状态；59项知识校验通过，实例已关闭。
+    qualityResult:
+      result: passed
+      reviewer: 01a0e398-e675-7df1-9425-5811b924ff5c
+      report: /tmp/dhr-independent-current-qa.bvb4SK/quality-result.yaml
+      detail: 独立复跑后端46项、知识59项、前端10项及构建；两份备份各4组迁移验证；导航7组、附件导出3组及四入口ARCHIVE图标探针通过，无发现或阻塞，实例已关闭。
+      scope: 仅旧汇总转换及当前模型修正、审计归属和图标切片；不包含并行按钮签署变更或整系统发布验收。
+    evidenceLimitations:
+      - 浏览器使用真实Chrome及HTTP mock，真实库已执行0104并只读复核；未替用户核查提交、审批、签署、上传或导出业务数据。
+      - 成功迁移回退依赖pre-apply.dump及匹配应用版本；意外旧审批或非完成数据在其他环境仍阻断。
+    competitor:
+      type: original-evidence
+      source: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/edhr/biz/SummaryEdhrRollBackBs.java
+      finding: biz_rollback注册DHR回退，要求SUMMARIZED，设置IN_SUMMARY并将相关审核历史activity_bool置false及记录回退时间。
+      limitation: 证明存在回退业务，不证明前端入口或与本产品保留旧版的新修订机制等价。
+  latestRefinementValidation:
+    scope: 前一次UI与冻结导航修复的历史验证记录；本次迁移与模型修正结果以currentModelCorrection为准。
+    implementationChecks:
+      - command: npm run build
+        outcome: passed
+      - command: node --test scripts/test-dhr-workspace-navigation.mjs scripts/test-dhr-list-detail.mjs
+        outcome: passed
+        detail: 分别6项与4项通过；冻结定义无records新增回归。
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-workspace-navigation-browser.py
+        outcome: passed
+        detail: 7组PASS，覆盖四工作区、未保存保护、来源与目录、冻结范围及窄屏。
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-export-attachments-browser.py
+        outcome: passed
+        detail: 混选及完整导出请求、换版本清空、空选阻断、旧模型及权限禁用、冻结附件只读、修订说明、附件上传核验解除；无浏览器错误。
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-list-detail-browser.py
+        outcome: passed
+        detail: 5组PASS，四列表详情审计、分页重试空态及操作隔离；无写入或JS错误。
+      - command: mvn -q -Dtest=DhrAttachmentAndArchiveTest test
+        outcome: passed
+        detail: 2项通过；新增混选及仅附件ZIP的文件内容、排除未选成员及部分包标记断言；本轮未更改后端导出契约。
+      - command: mvn -q -Dtest=DhrWorkbenchPermissionsTest test
+        outcome: passed
+        detail: 7项DHR工作区权限检查通过。
+    ontologyResult:
+      result: updated
+      reviewer: 01a0e375-a86f-7221-8297-a2b03f28c311
+      baselineBefore: 0.3.24
+      baselineAfter: 0.3.24
+      detail: 六份相关知识原位修正，59项BusinessKnowledgeModelTest通过，实例已关闭。
+    qualityResult:
+      result: passed
+      reviewer: 01a0e37f-00ba-7112-80d6-519f34a66725
+      baseCommit: dcbc67864147750579b8328da28c45d380798693
+      headCommit: dcbc67864147750579b8328da28c45d380798693
+      workingTreeState: dirty
+      detail: 全新独立实例复跑前端10项、导航7组、详情5组、附件导出脚本、后端89项及新增ZIP断言复跑；另探针验证不同版本成员、附件下载版本参数与仅附件导出，截图目视检查，无发现；实例已关闭。
+      report: /var/folders/sv/f_vzczh51y9cqbtqhfnvwmyw0000gn/T/dhr-independent-refinement-hsyzyl89/quality-result.yaml
+      scope: 仅本轮前四条UI补正与冻结导航缺records修复，不代表整个脏工作树或生产发布验收。
+    evidenceLimitations:
+      - 浏览器使用真实Chrome和隔离HTTP样例，未执行真实业务上传、修订、提交或生产下载。
+      - 旧版无完整核查历史，未迁移数据；冠骋前端入口未核对。
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: current-evidence-model-correction
+        change: 开发期错误旧汇总转换和清理，数据库及前后端统一当前完整证据模型，实例列表图标反映真实开启状态。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+      - area: frozen-navigation-export-attachments
+        change: 冻结目录定义缺少 records 时从同版 candidates 解析；双视图分段按钮；附件改主内容列表；冻结版完整及跨来源混选导出；发起修订移入更多菜单。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/dhrSourceNavigation.ts, gmp-platform/frontend/src/pages/dhr-management/DhrAttachmentPanel.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrExportDialog.tsx]
+      - area: dhr-workspace
+        change: 四工作区统一档案目录、来源分类和实例选择，汇总明确进入相邻双栏目录整理；来源不因移动消失。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx]
+      - area: workspace-ui-refinement
+        change: 紧凑 DHR 导航、标题行整理切换、底部独立附件入口、减少动态效果支持及实例栏过渡；审批同步公共面板样式但保留冻结目录和审批动作。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx]
+    transitiveImpacts:
+      - area: archive-layout-read
+        change: 普通查看与填报通过原读取接口增加只读目录位置，不额外依赖汇总权限。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFillingService.java]
+    potentialImpacts:
+      - area: filling-selection
+        concern: 必须保留未保存保护、实例选择和节点动作权限。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx]
+    unaffectedAreas: [生产执行逻辑与原始表单, 电子签名与审批权限, 当前冻结证据范围和 ZIP 格式及成员校验, 既有行详情布局]
+    compatibilityAndMigration: [0104移除错误旧汇总模型，恢复编排为待核查草稿，当前草稿和冻结优先, 完整数据库备份并独立数据库验证，源表单与生产状态校验不变, 不补造历史签名核查，失败事务回滚，成功后恢复须用停机备份]
+    snapshotImpacts: [审批和定版两视图共用任务或显式版本的候选与位置，禁止混入实时草稿, 错误旧汇总冻结不改成当前批准版本，只恢复编排为待核查草稿；正常当前冻结保持不变]
+    auditImpacts: [视图切换不生成业务写动作，原目录编辑审计不变, 保留旧版本审计并新增DHR迁移事件，清理版本后审计仍可查且不跨DHR或租户泄漏]
+    permissionImpacts: [仅扩展已有获权工作区的展示数据，不扩张接口读取或写动作权限]
+    testImpacts:
+      - scope: current-model-migration
+        scenarios: [完整备份恢复, 保留源记录及审计, 目录位置及顺序恢复, 当前草稿和冻结优先, 旧审批依赖阻断, 生产非完成阻断, 晚期失败事务回滚, 核查快照非空, 空数据迁移, 恢复草稿重新保存核查提交, 已清理版本审计归属, 四工作区图标开启关闭]
+        evidenceReferences: [gmp-platform/backend/scripts/test-dhr-model-migration.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java]
+      - scope: frozen-export-attachments
+        scenarios: [冻结定义无records切换来源, 跨来源实例与附件混选, 空选择阻断, 切换版本清空选择, 完整范围导出, 导出权限禁用, 上传核验及带原因解除关联, 冻结附件只读, 修订说明及取消无写入]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-dhr-export-attachments-browser.py, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java]
+      - scope: dhr-workspace
+        scenarios: [三来源导航一致, 多实例选择, 未保存保护, 相邻拖拽与保存重开, 来源与目录引用同一实例, 冻结版只读, 窄屏布局]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-dhr-workspace-navigation.mjs, gmp-platform/frontend/scripts/test-dhr-workspace-navigation-browser.py, gmp-platform/frontend/scripts/test-dhr-list-detail-browser.py]
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: DHR 域共享导航展示组件，沿用各入口的数据与动作契约。
+    ownershipBoundaries:
+      - owner: dhr-frontend
+        responsibility: 导航、选择、布局与目录整理交互；不更改来源身份和冻结版本。
+      - owner: dhr-backend
+        responsibility: 当前证据模型与迁移、完整范围及核查、原审计可追溯；正常冻结不可变，移除旧模型审批绕过与导出分支，不扩张权限。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrAttachmentPanel.tsx
+      changeType: create
+      reason: 附件主内容列表，沿用受控动作
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrExportDialog.tsx
+      changeType: create
+      reason: 冻结版完整或跨来源实例与附件混选导出
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrActionDialog.tsx
+      changeType: update
+      reason: 仅新增修订说明可选属性，其他并行签名改动不属本轮
+    - path: gmp-platform/frontend/scripts/test-dhr-export-attachments-browser.py
+      changeType: create
+      reason: 导出范围和版本、权限、附件流程隔离浏览器验证
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java
+      changeType: update
+      reason: 补充混选和仅附件ZIP实际内容断言
+    - path: gmp-platform/frontend/src/pages/dhr-management/dhrSourceNavigation.ts
+      changeType: create
+      reason: 按原始来源和节点身份组织导航，独立于汇总展示位置
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx
+      changeType: create
+      reason: 共享导航和实例面板
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+      changeType: update
+      reason: 来源浏览与相邻目录整理模式
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx
+      changeType: update
+      reason: 共用导航与实例窄栏
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx
+      changeType: update
+      reason: 共用导航、按来源节点分组与实例窄栏
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx
+      changeType: update
+      reason: 审批工作区公共导航标题、间距与卡片样式一致，保留原冻结目录和任务动作
+  acceptanceScenarios:
+    - id: scenario.dhr-source-remains-after-placement
+      given: 同一作业节点有两份实际实例
+      when: 整组或其中一份拖入档案目录并保存重开
+      then: 来源列表仍有两份、档案位置正确、实例总数不增加
+      evidenceRequirements: [浏览器交互, 位置排序聚焦测试]
+    - id: scenario.dhr-common-workspace-navigation
+      given: 查看、填报、汇总工作区
+      when: 切换来源、表单或实例
+      then: 导航和实例窄栏位置一致，首次打开第一份，关闭面板保留已选实例，填报未保存时保护输入
+      evidenceRequirements: [浏览器交互, 构建]
+  dualViewValidation:
+    level: L2
+    implementationChecks:
+      - command: npm run build
+        outcome: passed
+      - command: node --test scripts/test-dhr-workspace-navigation.mjs scripts/test-dhr-list-detail.mjs
+        outcome: passed
+        detail: 9项通过，包括目录位置/别名、拆组插序、来源保留与零份区域。
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-workspace-navigation-browser.py
+        outcome: passed
+        detail: 四工作区双视图、默认视图、保存重开、实例保持、填报copyId映射及补填和未保存保护、冻结隔离、目录折叠、窄屏实际动画；追加不同别名独立操作、交错顺序及查看/填报预览别名回归。
+      - command: mvn -q -Dtest=DhrArchiveLayoutReaderTest,DhrFillingServiceTest,DhrSummaryPersistenceTest,DhrReviewLifecycleIntegrationTest,DhrWorkbenchPermissionsTest test
+        outcome: passed
+        detail: 34项通过，使用隔离H2，覆盖只读编排、租户及对象范围、版本读取、保存冻结、填报和权限邻接回归。
+      - command: mvn -q '-Dtest=Dhr*Test' test
+        outcome: passed
+        detail: DHR领域68项中63项通过、5项既有跳过，无失败或错误。
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-list-detail-browser.py
+        outcome: passed
+        detail: 四列表行详情、键盘、数据审计分页/重试及业务按钮隔离通过。
+    ontologyResult:
+      result: updated
+      reviewer: 01a0e345-b3fc-7781-ad96-efd4abbbdbee
+      baselineBefore: 0.3.24
+      baselineAfter: 0.3.24
+      detail: 原位修正DEC0063/0068和五项关联证据；正式知识校验59项通过。
+    qualityResult:
+      result: passed
+      reviewer: 01a0e35b-89bc-7280-8c93-89460f8723ed
+      baseCommit: dcbc67864147750579b8328da28c45d380798693
+      headCommit: dcbc67864147750579b8328da28c45d380798693
+      workingTreeState: dirty
+      detail: 全新独立实例复跑9项测试、最终导航浏览器及补充探针，实际核对四张截图和冻结/权限边界；不同别名操作范围、WORK/CUSTOM交错顺序、查看/填报预览别名均复验通过。后端、知识与构建沿用本轮修复前后已记录证据，最终质量实例未重复执行。
+      resolvedFindings: [QF-DUAL-001, QF-DUAL-002, QF-DUAL-003]
+      evidence: [/tmp/dhr-final-quality-ao8hUS/quality-result.yaml, /tmp/dhr-final-quality-ao8hUS/browser.log, /tmp/dhr-final-quality-ao8hUS/probe.log]
+    evidenceLimitations: [浏览器使用隔离HTTP样例，不代表真实生产数据库验收；不改写生产记录，不执行提交推送。]
+  previousLayoutValidation:
+    implementationChecks:
+      - command: npm run build
+        outcome: passed
+        detail: 最终动画修复后完整构建通过
+      - command: node --test scripts/test-dhr-workspace-navigation.mjs scripts/test-dhr-list-detail.mjs
+        outcome: passed
+        detail: 7 tests passed
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-workspace-navigation-browser.py
+        outcome: passed
+        detail: 四工作区、实例保持、附件零份入口、冻结版、拖拽保存重开及1024/1100实际宽度逐帧进入退出断言
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-list-detail-browser.py
+        outcome: passed
+        detail: 四列表详情审计、键盘、分页、重试与业务按钮隔离
+    ontologyResult:
+      result: updated
+      baselineBefore: 0.3.24
+      baselineAfter: 0.3.24
+      detail: 原位修正 DEC-0063/0068 及五项关联证据；正式知识校验59项通过，未新增迭代。
+    qualityResult:
+      result: passed
+      reviewer: 01a0e316-61ca-7551-b199-053a6e898521
+      baseCommit: dcbc67864147750579b8328da28c45d380798693
+      headCommit: dcbc67864147750579b8328da28c45d380798693
+      workingTreeState: dirty
+      detail: 独立复跑7项测试、两套浏览器及59项知识校验；发现QF-NAV-001窄屏宽度跳变，修复后逐帧复验通过，并复验减少动态效果、8px间距、冻结附件与只读权限展示。
+      resolvedFindings: [QF-NAV-001]
+      evidence: [/tmp/dhr-independent-qa.GYHaCL/supplement-retest.log, /tmp/dhr-independent-qa.GYHaCL/retest-1024.png]
+      sourceBlobs:
+        navigation: dc5082d7032d37e5f3b25569911355ab8d3074ba
+        summaryPage: 4d2174d6be4b55ef0ebe86417e09c11a99a5ba0e
+        navigationBrowserTest: c2b8ee957051459d988bb8f509c0736124f0a7ae
+    evidenceLimitations:
+      - 浏览器使用隔离 HTTP 样例，无真实业务数据写入；不证明生产数据库或真实审批全流程。
+      - 本轮不改后端、证据范围、签名、节点动作与审批权限，不新增 DHR 实例日志界面。
+      - 未执行全量生产回归、提交或推送。
+  instanceToggleRefinement:
+    level: L1
+    confirmed: 同一表单实例图标切换列表展开收起；其他表单图标切换并展开；收起保留当前实例与填报输入。
+    impactAnalysis:
+      directImpacts: [DHR列表查看、填报、汇总的实例面板可见性]
+      adjacentRisks: [填报未保存保护、切换表单时错误收起面板]
+      evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+      testScope: [三入口同图标开关、实例保留、不同组切换展开、填报未保存值保持]
+      evidenceGaps: []
+    extensionStrategy:
+      selectedPaths: [product-core]
+      ownershipBoundaries: [DHR工作区各页面维护既有面板状态，不改共享数据模型]
+    ontologyResult:
+      result: not-applicable
+      reason: 仅改变面板可见性切换，不改变业务规则、证据范围、审计或权限。
+    implementationChecks:
+      - command: npx tsc --noEmit
+        outcome: passed
+      - command: node --test scripts/test-dhr-workspace-navigation.mjs scripts/test-dhr-list-detail.mjs
+        outcome: passed
+        detail: 7项通过
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-workspace-navigation-browser.py
+        outcome: passed
+        detail: 三入口重复图标开关保持第二份实例、不同作业组图标切换展开、填报未保存输入保持及相邻导航回归通过。
+    evidenceLimitations: [浏览器使用隔离HTTP样例，未执行真实数据库及生产流程验证，未提交推送。]
+    qualityResult:
+      result: passed
+      reviewer: 01a0e327-b668-7241-a915-ede985dd4d81
+      detail: 独立复跑7项聚焦测试、浏览器套件及双表单填报保护探针通过，无本轮发现。
+      residualRisks: [既有Tooltip可能遮挡相邻图标的连续指针操作；本次不改共享提示框行为。]
+  previousSliceValidation:
+    implementationChecks:
+      - command: npm run build
+        outcome: passed
+      - command: node --test scripts/test-dhr-workspace-navigation.mjs scripts/test-dhr-list-detail.mjs
+        outcome: passed
+        detail: 7 tests passed
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-workspace-navigation-browser.py
+        outcome: passed
+        detail: 三页导航与实例选择、填报未保存保护、组与单份拖拽、保存重开、来源保留、冻结版只读、窄屏
+      - command: /tmp/edhr-dhr-browser-venv/bin/python scripts/test-dhr-list-detail-browser.py
+        outcome: passed
+        detail: 四列表行详情、键盘、数据审计分页与重试、操作隔离
+    evidenceLimitations:
+      - 浏览器使用隔离 HTTP 样例；保存重开验证前端请求和重新加载，不代表真实数据库持久化或生产验收。
+      - 本次不变更后端证据冻结、审批、签名、导出和权限契约，不重复验证全量生产流程。
+    ontologyResult:
+      result: updated
+      baselineBefore: 0.3.24
+      baselineAfter: 0.3.24
+      detail: 本体建模实例原位修正 DEC-0063、DEC-0068 及相关证据；BusinessKnowledgeModelTest 59 项通过。
+    qualityResult:
+      result: passed
+      reviewer: 01a0defb-1923-7d03-aa21-7f47e791f8a9
+      baseCommit: dcbc67864147750579b8328da28c45d380798693
+      headCommit: dcbc67864147750579b8328da28c45d380798693
+      workingTreeState: dirty
+      detail: 独立复跑构建、7项聚焦测试、两组浏览器回归与59项知识校验；另核对空定义、自定义同模板不同创建项、切换表单/实例未保存保护和1024/1100布局，无发现。
+      sourceBlobs:
+        summaryPage: 5a09a3b245c30e064215e7c5a0e6d45d143a00e1
+        navigationBrowserTest: 12542e859b1f5f8ded525c825f2234b49cb1678b

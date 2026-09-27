@@ -6,4 +6,4 @@
 
 旧“移出本次汇总”语义仅由 Git 历史解释。当前前端空目标过滤自定义 placements 后通过默认位置补回实例，后端先给全部实际实例建默认位置并在提交时全部写入冻结证据；源码已提供恢复默认位置路径，仍需真实交互与持久化复验，不以旧测试证明本次新设计全部验收。
 
-来源为统一 DEC-PACKAGE-20260919-DHR-SUMMARY 与主设计第 6～11 节。具体 beforeNodeKey/displayOrder 和历史版本兼容属于工程方案；设计保持 specified/internal，本轮不回写旧版或修改代码。
+来源为统一 DEC-PACKAGE-20260919-DHR-SUMMARY 与主设计第 6～11 节；2026-09-27 最新确认沿用 DEC-PACKAGE-20260927-DHR-WORKSPACE-NAVIGATION。正常定版修订及展示顺序保留；错误旧汇总按 DEC-0063-09 转换或清理，保留可用目录、位置、顺序及别名，不保留旧模型兼容，不伪造核查。beforeNodeKey/displayOrder 的存储方式属于工程方案，转换草稿须重新核查提交；知识保持 specified/internal，本体不修改代码。

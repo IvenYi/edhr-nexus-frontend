@@ -45,7 +45,7 @@ class DhrSummaryPersistenceTest {
         jdbc.execute("DROP ALL OBJECTS");
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),directory_snapshot TEXT,production_object_id BIGINT,dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,updated_by VARCHAR(128),updated_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE dhr_summary_draft(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT UNIQUE,overlay_directory_json TEXT,evidence_placement_json TEXT,source_scope_hash VARCHAR(64),revision INT,created_by VARCHAR(128),created_at TIMESTAMP,updated_by VARCHAR(128),updated_at TIMESTAMP)");
-        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),review_mode VARCHAR(32),review_workflow_definition_id BIGINT,review_workflow_version_id BIGINT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,candidate_snapshot TEXT,attachment_snapshot TEXT DEFAULT '[]',snapshot_hash VARCHAR(64),submitted_by VARCHAR(128),submitted_at TIMESTAMP,created_at TIMESTAMP,evidence_model_version SMALLINT DEFAULT 1,check_result_snapshot TEXT,UNIQUE(dhr_instance_id,version_no))");
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),review_mode VARCHAR(32),review_workflow_definition_id BIGINT,review_workflow_version_id BIGINT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,candidate_snapshot TEXT,attachment_snapshot TEXT DEFAULT '[]',snapshot_hash VARCHAR(64),submitted_by VARCHAR(128),submitted_at TIMESTAMP,created_at TIMESTAMP,check_result_snapshot TEXT,UNIQUE(dhr_instance_id,version_no))");
         jdbc.execute("CREATE TABLE dhr_summary_evidence(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),summary_version_id BIGINT,source_record_id BIGINT,target_node_key VARCHAR(128),before_node_key VARCHAR(128),display_order INT,display_name VARCHAR(120),origin_kind VARCHAR(32),source_snapshot TEXT,source_hash VARCHAR(64),created_at TIMESTAMP,UNIQUE(summary_version_id,source_record_id))");
         jdbc.execute("CREATE TABLE dhr_summary_review(summary_version_id BIGINT PRIMARY KEY,workflow_instance_id BIGINT,status VARCHAR(32),submitted_by_id VARCHAR(64),updated_at TIMESTAMP)");
         // Numeric IDs model an already frozen snapshot. Reads must not rewrite it.
@@ -128,11 +128,29 @@ class DhrSummaryPersistenceTest {
         assertThat(version.at("/version/candidates")).isEqualTo(mapper.readTree(frozenCandidates));
         assertThat(version.at("/version/snapshotHash").asText()).isEqualTo(hash);
         assertThat(version.path("placements").size()).isEqualTo(3); // Every actual source record is evidence.
-        assertThat(version.at("/version/evidenceModelVersion").asInt()).isEqualTo(2);
+        assertThat(version.path("version").has("evidenceModelVersion")).isFalse();
         assertThat(version.at("/version/checkResult/actualRecordCount").asInt()).isEqualTo(3);
         assertThatThrownBy(() -> service.saveDraft(1L, command(2))).hasMessageContaining("不能修改已冻结版本");
         assertThatThrownBy(() -> service.submit(1L, submitCommand(2))).hasMessageContaining("不能修改已冻结版本");
         assertThat(jdbc.queryForObject("SELECT base_directory_snapshot FROM dhr_summary_version", String.class)).isEqualTo(frozenBase);
+    }
+
+    @Test void recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing() {
+        service.saveDraft(1L, command(null));
+        jdbc.update("UPDATE dhr_summary_draft SET source_scope_hash=NULL,created_by='migration:0104'");
+        String layout = jdbc.queryForObject("SELECT evidence_placement_json FROM dhr_summary_draft", String.class);
+        assertThat(service.workspace(1L).path("candidates").size()).isEqualTo(3);
+        assertThatThrownBy(() -> service.submit(1L, submitCommand(1))).hasMessageContaining("重新确认汇总草稿");
+        service.saveDraft(1L, command(1));
+        assertThat(jdbc.queryForObject("SELECT evidence_placement_json FROM dhr_summary_draft", String.class)).isEqualTo(layout);
+        ObjectNode missingReview = submitCommand(2);
+        missingReview.remove("manualReview");
+        assertThatThrownBy(() -> service.submit(1L, missingReview)).hasMessageContaining("人工核查");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version", Integer.class)).isZero();
+        ObjectNode submitted = service.submit(1L, submitCommand(2));
+        ObjectNode frozen = service.version(1L, submitted.path("id").asLong());
+        assertThat(frozen.path("placements").size()).isEqualTo(3);
+        assertThat(frozen.at("/version/checkResult/manualReview/completeScopeReviewed").asBoolean()).isTrue();
     }
 
     @Test void submitRequiresAuditableManualCheckBeforeFreezing() {

@@ -24,6 +24,8 @@ import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -40,6 +42,8 @@ public class DhrArchiveService {
     private final DhrAttachmentService attachments;
     private final AuditEventRepository audits;
     private final SnowflakeIdGenerator ids;
+    private final DhrPdfRenderer pdfRenderer;
+    private final DhrFormFiles formFiles;
 
     public Path export(Long dhrId, Long versionId, String scope, Set<String> selectedRecords, Set<String> selectedAttachments) throws IOException {
         if (!Set.of("FULL", "SELECTED").contains(scope)) throw invalid("导出范围无效");
@@ -50,8 +54,6 @@ public class DhrArchiveService {
             """, dhrId, versionId);
         if (versions.isEmpty()) throw invalid("冻结的 DHR 汇总版本不存在");
         Map<String, Object> version = versions.getFirst();
-        if (((Number) version.get("evidence_model_version")).intValue() < 2)
-            throw invalid("此汇总不是完整证据模型，不能作为完整 DHR 版本导出");
         ArrayNode records = (ArrayNode) json(text(version, "candidate_snapshot"));
         ArrayNode frozenAttachments = (ArrayNode) json(text(version, "attachment_snapshot"));
         Set<String> availableRecords = new HashSet<>();
@@ -64,6 +66,10 @@ public class DhrArchiveService {
             throw invalid("选定导出范围无效或包含非当前版本证据");
         Set<String> chosenRecords = "FULL".equals(scope) ? availableRecords : selectedRecords;
         Set<String> chosenAttachments = "FULL".equals(scope) ? availableAttachments : selectedAttachments;
+        Object productionObjectId = version.get("production_object_id");
+        if (productionObjectId == null || version.get("submitted_at") == null) throw invalid("冻结版本缺少来源追溯时间或生产对象");
+        String objectId = productionObjectId.toString();
+        var submittedAt = (java.sql.Timestamp) version.get("submitted_at");
         ObjectNode manifest = mapper.createObjectNode().put("archiveType", "DHR_FROZEN_VERSION")
                 .put("scope", scope).put("completeVersion", "FULL".equals(scope))
                 .put("dhrId", dhrId.toString()).put("dhrNo", text(version, "dhr_no"))
@@ -75,23 +81,57 @@ public class DhrArchiveService {
         manifest.set("overlayDirectories", json(text(version, "overlay_directory_snapshot")));
         manifest.set("checkResult", version.get("check_result_snapshot") == null ? mapper.nullNode() : json(text(version, "check_result_snapshot")));
         ArrayNode placements = manifest.putArray("placements");
+        ArrayNode allPlacements = mapper.createArrayNode();
         jdbc.query("SELECT source_record_id,target_node_key,before_node_key,display_order,display_name FROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY id",
                 (org.springframework.jdbc.core.RowCallbackHandler) rs -> {
-                    if (!chosenRecords.contains(rs.getString(1))) return;
-                    placements.addObject().put("recordId", rs.getString(1)).put("targetNodeKey", rs.getString(2))
+                    ObjectNode placement = allPlacements.addObject().put("recordId", rs.getString(1)).put("targetNodeKey", rs.getString(2))
                             .put("beforeNodeKey", rs.getString(3)).put("displayOrder", rs.getObject(4) == null ? null : rs.getInt(4))
                             .put("displayName", rs.getString(5));
+                    if (chosenRecords.contains(rs.getString(1))) placements.add(placement);
                 }, versionId);
         if (placements.size() != chosenRecords.size()) throw invalid("冻结证据清单不完整，导出已停止");
         ArrayNode inventory = manifest.putArray("files");
         Path zip = Files.createTempFile("dhr-archive-", ".zip");
-        try (OutputStream output = Files.newOutputStream(zip); ZipOutputStream archive = new ZipOutputStream(output, StandardCharsets.UTF_8)) {
+        try (OutputStream output = Files.newOutputStream(zip); ZipOutputStream archive = new ZipOutputStream(output, StandardCharsets.UTF_8);
+             var renderer = pdfRenderer.open(); var combined = new org.apache.pdfbox.pdmodel.PDDocument()) {
+            ObjectNode ordering = mapper.createObjectNode();
+            ordering.set("baseDirectory", manifest.path("baseDirectory"));
+            ordering.set("overlayDirectories", manifest.path("overlayDirectories"));
+            ordering.set("placements", allPlacements); ordering.set("records", records);
+            JsonNode ordered = renderer.order(ordering);
+            Map<String, JsonNode> byId = new LinkedHashMap<>();
+            records.forEach(record -> byId.put(record.path("id").asText(), record));
+            Set<String> orderedIds = new HashSet<>();
+            for (JsonNode entry : ordered) if (!orderedIds.add(entry.path("id").asText())) throw invalid("冻结目录重复引用同一证据，导出已停止");
+            if (!orderedIds.equals(availableRecords)) throw invalid("冻结目录与证据范围不一致，导出已停止");
+            for (String directory : List.of("批记录模板/", "作业表单/", "自定义表单/", "汇总附件/", "追溯资料/")) {
+                archive.putNextEntry(new ZipEntry(directory)); archive.closeEntry();
+            }
+            List<Map<String, String>> indexRows = new ArrayList<>();
+            List<byte[]> formPdfs = new ArrayList<>();
+            ArrayNode archiveOrder = manifest.putArray("archiveOrder");
+            String exportTitle = ("FULL".equals(scope) ? "完整DHR" : "选定范围（非完整DHR）") + "_" + text(version, "dhr_no") + "_V" + version.get("version_no");
             int writtenRecords = 0;
-            for (JsonNode record : records) {
-                String id = record.path("id").asText();
+            for (JsonNode entry : ordered) {
+                String id = entry.path("id").asText();
                 if (!chosenRecords.contains(id)) continue;
-                add(archive, inventory, "forms/" + id + ".json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(record), "FORM_RECORD", id);
-                add(archive, inventory, "forms/" + id + ".html", readableHtml(record).getBytes(StandardCharsets.UTF_8), "FORM_RENDERING", id);
+                JsonNode record = byId.get(id);
+                String title = entry.path("title").asText();
+                String name = safeName(title) + "_" + safeName(record.path("instanceNo").asText()) + "_" + id;
+                String folder = switch (record.path("originKind").asText()) { case "DIRECTORY" -> "批记录模板"; case "WORK" -> "作业表单"; case "CUSTOM" -> "自定义表单"; default -> throw invalid("冻结表单来源无效：" + id); };
+                String recordPath = folder + "/" + name + "/";
+                DhrFormFiles.Resolved resolved = formFiles.resolve(record, objectId, submittedAt.toLocalDateTime());
+                byte[] pdf = renderer.form(resolved.renderingRecord(), exportTitle + " · " + record.path("instanceNo").asText());
+                add(archive, inventory, recordPath + name + ".pdf", pdf, "FORM_PDF", id);
+                formPdfs.add(pdf);
+                add(archive, inventory, "追溯资料/表单快照/" + id + ".json", mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(record), "FORM_RECORD", id);
+                archiveOrder.add(entry.deepCopy());
+                indexRows.add(Map.of("name", title + " · " + record.path("instanceNo").asText(), "detail", entry.path("archivePath").asText(), "path", recordPath + name + ".pdf"));
+                for (var original : resolved.attachments()) {
+                    String path = recordPath + "附件/" + original.id() + "_" + safeName(original.name());
+                    add(archive, inventory, path, original.bytes(), "FORM_ATTACHMENT", id);
+                    indexRows.add(Map.of("name", original.name(), "detail", "表单附件 · " + record.path("instanceNo").asText(), "path", path));
+                }
                 writtenRecords++;
             }
             if (writtenRecords != chosenRecords.size()) throw invalid("冻结表单快照不完整，导出已停止");
@@ -103,31 +143,45 @@ public class DhrArchiveService {
                 byte[] bytes = Files.readAllBytes(file);
                 if (bytes.length != attachment.path("size").asLong() || !sha256(bytes).equals(attachment.path("sha256").asText()))
                     throw invalid("附件内容与冻结版本不一致，导出已停止：" + id);
-                String extension = switch (attachment.path("mimeType").asText()) {
-                    case "application/pdf" -> "pdf"; case "image/png" -> "png"; case "image/jpeg" -> "jpg";
-                    default -> throw invalid("冻结附件类型无效，导出已停止：" + id);
-                };
-                add(archive, inventory, "attachments/" + id + "." + extension, bytes, "ATTACHMENT", id);
+                String path = "汇总附件/" + id + "_" + safeName(attachment.path("name").asText());
+                add(archive, inventory, path, bytes, "ATTACHMENT", id);
+                indexRows.add(Map.of("name", attachment.path("name").asText(), "detail", "汇总附件 · " + attachment.path("purpose").asText(), "path", path));
                 writtenAttachments++;
             }
             if (writtenAttachments != chosenAttachments.size()) throw invalid("冻结附件清单不完整，导出已停止");
             manifest.set("attachments", selectedAttachmentMetadata(frozenAttachments, chosenAttachments));
             manifest.set("auditEvents", auditsFor(dhrId, versionId));
             manifest.put("auditEventsBoundary", "AS_OF_EXPORT");
-            Object productionObjectId = version.get("production_object_id");
-            if (productionObjectId == null || version.get("submitted_at") == null) throw invalid("冻结版本缺少来源追溯时间或生产对象");
-            String objectId = productionObjectId.toString();
-            var submittedAt = (java.sql.Timestamp) version.get("submitted_at");
             manifest.put("sourceTraceCutoffAt", submittedAt.toLocalDateTime().toString());
-            manifest.set("sourceAuditEvents", sourceAuditEvents(objectId, submittedAt));
-            manifest.set("sourceSignatures", sourceSignatures(objectId, submittedAt));
+            // Source events are object-scoped. Keep their identity/digest metadata
+            // for traceability, but never leak whole-object field payloads in a subset.
+            boolean includeSourceTrace = "FULL".equals(scope) || !chosenRecords.isEmpty();
+            manifest.set("sourceAuditEvents", includeSourceTrace ? sourceAuditEvents(objectId, submittedAt) : mapper.createArrayNode());
+            manifest.set("sourceSignatures", includeSourceTrace ? sourceSignatures(objectId, submittedAt) : mapper.createArrayNode());
             manifest.set("reviewSignatures", signaturesFor(versionId));
+            if (!"FULL".equals(scope)) {
+                manifest.path("auditEvents").forEach(event -> ((ObjectNode) event).remove(List.of("before", "after")));
+                manifest.path("reviewSignatures").forEach(signature -> ((ObjectNode) signature).remove("snapshotData"));
+                manifest.path("sourceAuditEvents").forEach(event -> ((ObjectNode) event).remove(List.of("before", "after", "dataSummary")));
+                manifest.path("sourceSignatures").forEach(signature -> ((ObjectNode) signature).remove("snapshotData"));
+                manifest.put("sourceTraceBoundary", "PRODUCTION_OBJECT_METADATA_ONLY; NOT_INSTANCE_EXCLUSIVE; RAW_PAYLOADS_EXCLUDED");
+                manifest.put("sourceProductionObjectId", objectId);
+                ArrayNode references = manifest.putArray("selectedSourceRecords");
+                records.forEach(record -> {
+                    if (chosenRecords.contains(record.path("id").asText())) references.addObject()
+                            .put("recordId", record.path("id").asText()).put("instanceNo", record.path("instanceNo").asText())
+                            .put("operationId", record.path("operationId").asText()).put("formId", record.path("formId").asText()).put("copyId", record.path("copyId").asText());
+                });
+            }
             manifest.put("formCount", writtenRecords).put("attachmentCount", writtenAttachments);
-            add(archive, inventory, "README.txt", ("DHR 冻结版本 " + text(version, "dhr_no") + " V" + version.get("version_no")
+            DhrPdfRenderer.append(combined, renderer.index(exportTitle, "冻结版本 · " + submittedAt.toLocalDateTime() + " · " + text(version, "status"), indexRows));
+            for (byte[] pdf : formPdfs) DhrPdfRenderer.append(combined, pdf);
+            add(archive, inventory, safeName(exportTitle) + ".pdf", DhrPdfRenderer.bytes(combined), "DHR_PDF", versionId.toString());
+            add(archive, inventory, "导出说明.txt", ("DHR 冻结版本 " + text(version, "dhr_no") + " V" + version.get("version_no")
                     + "\n导出范围：" + ("FULL".equals(scope) ? "完整版本" : "选定范围（不是完整 DHR）")
-                    + "\nmanifest.json 包含目录、证据索引、摘要、审批和审计信息；sourceAuditEvents/sourceSignatures 截止于版本提交时间，auditEvents 为导出时 DHR 审计。forms 目录为逐实例冻结 JSON 与字段级可阅读 HTML（非原模板版式）。\n").getBytes(StandardCharsets.UTF_8), "README", "");
+                    + "\n总PDF按档案目录顺序包含索引及表单正文，附件内容不并入PDF。单表PDF按原始来源分类；表单上传文件在该实例的附件目录，汇总附件在同名根目录。\n追溯资料/清单.json 包含目录、证据索引、文件摘要、审批和审计信息；冻结数据为机器可读核对材料，不代替PDF。\n来源审计/签名截止提交时间，DHR审计截至导出时间。选定表单导出保留所属生产对象级审计与签名的身份、人员、时间、摘要等索引，不包含可能涉及未选字段的原始载荷，也不将对象级事件声称为仅属于所选实例；完整验签载荷请查阅完整DHR。\n").getBytes(StandardCharsets.UTF_8), "README", "");
             byte[] manifestBytes = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(manifest);
-            archive.putNextEntry(new ZipEntry("manifest.json"));
+            archive.putNextEntry(new ZipEntry("追溯资料/清单.json"));
             archive.write(manifestBytes);
             archive.closeEntry();
         } catch (Exception ex) {
@@ -240,22 +294,16 @@ public class DhrArchiveService {
                 .put("size", bytes.length).put("sha256", sha256(bytes));
     }
 
-    private static String readableHtml(JsonNode record) {
-        StringBuilder html = new StringBuilder("<!doctype html><html lang=\"zh-CN\"><meta charset=\"utf-8\"><title>DHR 表单实例</title><style>body{font:16px system-ui;max-width:900px;margin:32px auto;color:#263241}table{border-collapse:collapse;width:100%}td,th{border:1px solid #cbd5e1;padding:10px;text-align:left;vertical-align:top}th{width:30%;background:#f4f7fb}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style><h1>")
-                .append(escape(record.path("templateName").asText("表单实例"))).append("</h1><p>")
-                .append(escape(record.path("instanceNo").asText())).append(" · ")
-                .append(escape(record.path("status").asText())).append("</p><table>");
-        JsonNode values = record.path("fieldValues");
-        if (values.isObject()) values.fields().forEachRemaining(field -> html.append("<tr><th>").append(escape(field.getKey()))
-                .append("</th><td><pre>").append(escape(field.getValue().isValueNode() ? field.getValue().asText() : field.getValue().toString()))
-                .append("</pre></td></tr>"));
-        html.append("</table></html>");
-        return html.toString();
-    }
-
-    private static String escape(String value) {
-        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-                .replace("\"", "&quot;").replace("'", "&#39;");
+    static String safeName(String value) {
+        String safe = java.text.Normalizer.normalize(value == null ? "" : value, java.text.Normalizer.Form.NFKC)
+                .replaceAll("[\\p{Cntrl}\\\\/:*?\"<>|]", "_").replaceAll("^[. ]+|[. ]+$", "");
+        if (safe.isBlank()) return "未命名";
+        if (safe.getBytes(StandardCharsets.UTF_8).length <= 160) return safe;
+        int dot = safe.lastIndexOf('.');
+        String extension = dot > 0 && safe.length() - dot < 12 ? safe.substring(dot) : "";
+        String stem = extension.isEmpty() ? safe : safe.substring(0, dot);
+        while ((stem + extension).getBytes(StandardCharsets.UTF_8).length > 160) stem = stem.substring(0, stem.offsetByCodePoints(stem.length(), -1));
+        return stem + extension;
     }
 
     private JsonNode json(String value) {

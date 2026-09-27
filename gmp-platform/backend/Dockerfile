@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre
+FROM mcr.microsoft.com/playwright/java:v1.58.0-noble
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY scripts ./scripts
 COPY requirements-ocr.txt ./requirements-ocr.txt
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 python3-pip libgomp1 libglib2.0-0 libgl1 \
+    && apt-get install -y --no-install-recommends python3 python3-pip libgomp1 libglib2.0-0 libgl1 fonts-noto-cjk \
     && python3 -m pip install --no-cache-dir --break-system-packages -r requirements-ocr.txt \
     && mkdir -p /app/uploads \
     && rm -rf /var/lib/apt/lists/*

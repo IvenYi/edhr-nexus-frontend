@@ -8,6 +8,7 @@ import com.zencas.edhr.production.service.DhrAttachmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,7 +59,9 @@ public class DhrAttachmentController {
                                                        @RequestParam(required = false) Long versionId) {
         var file = service.downloadableFile(dhrId, attachmentId, versionId);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"dhr-attachment-" + attachmentId + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+                        .filename(service.originalName(dhrId, attachmentId), java.nio.charset.StandardCharsets.UTF_8).build().toString())
+                .header("X-Content-Type-Options", "nosniff")
                 .body(new FileSystemResource(file));
     }
 }

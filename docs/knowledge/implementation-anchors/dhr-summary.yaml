@@ -20,15 +20,15 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
     apiReferences: ['GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}', 'POST /api/v1/dhr-instances/{id}/summary/submit']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql, gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql, gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql, gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
-    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java, gmp-platform/backend/scripts/test-dhr-model-migration.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration, evidence.dhr-summary-complete-evidence-migration, evidence.dhr-summary-attachment-migration, evidence.dhr-summary-complete-evidence-tests, evidence.dhr-summary-attachment-archive-tests]
     sourceRevision: working-tree
-    sourceLocator: submit 重核候选及附件范围，为全部实际实例生成默认或自定义位置并写逐实例冻结证据；版本端点返回附件与 checkResult.manualReview 三项确认、说明、确认人及时间。人工确认不等于系统通用自动判读质量结论、异常处置或签署有效性，故目标规则保持 specified/internal。
-    capturedAt: '2026-09-19'
+    sourceLocator: submit/version 保留version_no和完整冻结及人工确认，无evidence_model_version；reorganize/prepareNextDraft先建DRAFT，submit才分配MAX(version_no)+1，workspace返回草稿和历史版、version按指定版本读取。0104转换及原审计保护的旧切片验证见确认证据；revisionPrintableExport的草稿/历史版切换及只读导出仍待本轮UI/端到端验收，不能复用迁移切片质量结论。目标规则保持specified/internal。
+    capturedAt: '2026-09-28'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-manual-review-confirmation
     targetId: rule.dhr-summary-manual-review-confirmation
@@ -72,8 +72,8 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests, evidence.dhr-summary-user-confirmed]
     sourceRevision: working-tree
-    sourceLocator: manifest.sourceAuditEvents/sourceSignatures 截至提交时间，另列 auditEvents/reviewSignatures；两类签名均导出 snapshotData 并校验 SHA-256。H2 测试断言两类 payload，相应审批签名摘要失配会阻断 FULL ZIP，恢复摘要后继续原测试；外部记录控制审计全集及真实数据库 ZIP 验收仍缺。
-    capturedAt: '2026-09-25'
+    sourceLocator: revisionPrintableExport初核export仍输出forms JSON/字段表HTML及汇总附件原件，尚未有总PDF/来源单表PDF/字段原件链；已有manifest.sourceAuditEvents/sourceSignatures按提交时点截取、auditEvents/reviewSignatures和两类签名payload摘要校验。现有测试源码不证明本轮中文目录、PDF版式、实例附件、版本隔离或真实ZIP端到端通过；打印运行链由主开发并行实现，规则保持specified/internal。
+    capturedAt: '2026-09-28'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-review-binding
     targetId: rule.dhr-summary-review-binding

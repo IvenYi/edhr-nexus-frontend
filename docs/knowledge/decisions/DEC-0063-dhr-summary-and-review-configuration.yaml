@@ -4,7 +4,7 @@ decisions:
     title: DHR 完整证据汇总与制程审批配置边界
     status: specified
     visibility: internal
-    context: user-confirmed；2026-09-25 按 DEC-PACKAGE-20260919-DHR-SUMMARY 原位纠正同一设计，基线保持 0.3.24。用户明确授权修订原决策，不另建重复方案；旧手选及完成状态过滤仅由 Git 历史解释。当前并行工作树已有部分新实现，但完整规则仍为 specified/internal；本体角色只读代码、不回写历史、不宣称发布。
+    context: user-confirmed；2026-09-25 起原位纠正同一设计，2026-09-28 沿用 DEC-PACKAGE-20260927-DHR-WORKSPACE-NAVIGATION 的 revisionPrintableExport 及用户最新确认，基线保持 0.3.24。前期旧汇总是错误设计，允许转换旧数据、清理无法转换的旧汇总并去掉旧模型兼容；既有定义原位修正，不新增替代性 DEC。正常定版修订、源表单、生产对象、签署、原审计和终止快照保留；旧手选及完成状态过滤由 Git 历史解释。修订入口、历史版本可达性和中文可打印 ZIP 由主开发并行实现，附件内容不合入总 PDF；完整规则仍为 specified/internal，不宣称运行或发布验收。
     decisionStatements:
       - id: DEC-0063-01
         statement: user-confirmed；DHR 列表和 DHR 汇总作为独立菜单；列表负责查询与来源/目录视图，汇总负责自动归集后的人工核查、展示整理、草稿与提交冻结；DHR 填报及审核职责沿用 DEC-0068。
@@ -15,7 +15,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0063-03
-        statement: user-confirmed；首次开工冻结的基础目录不可改名、删除或移动；草稿可在展示层增加根级自定义目录及子目录并为作业/自定义实例整理位置。目录编排、同级顺序和别名不决定证据范围；取消自定义位置恢复默认来源位置，不删除证据或改变生产归属。
+        statement: user-confirmed；首次开工冻结的基础目录不可改名、删除或移动；草稿可在展示层增加根级自定义目录及子目录并为作业/自定义实例整理位置。四工作区以分段按钮统一提供“档案目录/按来源”两视图，仅按来源视图显示来源分类；切换保持选择身份及填报未保存保护。填报默认按来源，汇总、查看、审批默认档案目录。DIRECTORY 来源显示名为“批记录模板”，WORK/CUSTOM 显示为“作业表单/自定义表单”，枚举及来源关系不变。目录编排、同级顺序和别名不决定证据范围；整理后来源视图仍保留当前范围内全部实例，两视图引用同一实例，同一证据不重复计数。档案目录的默认作业/自定义区域可折叠，零项仍保留紧凑入口及空态；已调整位置的实例只挂在其档案位置，不重复挂在默认目录。整理只是档案目录的编辑状态，不是第三种业务视图或生命周期状态；完成整理返回档案浏览并保留选中目录和实例。使用紧凑的“DHR 导航”标题，范围说明移至工作区头部，整理切换位于导航标题行；模式和实例栏以短过渡切换并支持减少动态效果。编辑时来源与目录相邻，整组和单份沿用既有摆放、顺序及别名规则；取消自定义位置恢复默认位置，不删除证据或改变生产归属，整理完成不代表提交、审批或定版。
         status: specified
         visibility: internal
       - id: DEC-0063-04
@@ -23,7 +23,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0063-05
-        statement: user-confirmed；自动收集持续发生，但普通整理/提交仍限生产正常完成。提交时重核集合和来源版本并阻断陈旧提交，冻结全部实际关联证据及来源版本、状态、内容快照/哈希、附件引用、检查结果、基础及展示目录、逐实例位置/别名和审批绑定。审批、版本详情与导出读取同一冻结证据基准；后续变化不改写旧版，实时视图须明确区分。
+        statement: user-confirmed；自动收集持续发生，但普通整理/提交仍限生产正常完成。提交时重核集合和来源版本并阻断陈旧提交，冻结全部实际关联证据及来源版本、状态、内容快照/哈希、附件引用、检查结果、基础及展示目录、逐实例位置/别名和审批绑定。审批、版本详情与导出读取同一冻结证据基准；来源导航报错修复只读取当前冻结版本 candidates，不以实时实例或草稿补齐冻结成员；后续变化不改写旧版，实时视图须明确区分。
         status: specified
         visibility: internal
       - id: DEC-0063-06
@@ -39,19 +39,19 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0063-09
-        statement: user-confirmed；旧汇总历史数据不是本轮兼容目标，无需删除；不回填历史 DHR 的证据、汇总版本及审批事实，不把新证据范围写回旧冻结版本，保留已经发生的运行事实。
+        statement: user-confirmed；前期错误旧汇总统一转换到当前自动完整归集、人工核查、目录仅展示的模型，不能转换的旧汇总可清理。缺少 checkResult 的旧冻结即使为 NONE/FORMALIZED 也不能追认为已完成核查或合规完成；保留可用目录、位置、顺序及别名转换为待核查草稿，重新归集源表单并再次核查提交，清理对应错误旧冻结和证据位置，不补造过去的检查、确认或审批。自动迁移仅处理 NONE、无审批且生产正常完成的明确旧记录；意外旧审批依赖或非完成记录须阻断并排查，不自动扩大清理，也不形成运行时旧模型兼容。已有当前模型冻结版本和草稿优先且不得覆盖。迁移须备份原汇总与关联、保留原审计并追加迁移事件，不删除原始表单、生产对象、签署、附件文件或终止快照，不改变生产完成状态、审批策略或权限。移除 evidence_model_version/evidenceModelVersion 模型分支及无意义兼容；version_no/versionNo 正常业务修订继续保留。
         status: specified
         visibility: internal
       - id: DEC-0063-10
-        statement: user-confirmed；手工补充附件与纸质扫描件须核验来源、对应生产对象及内容关联，并保留关联与核验追溯；它们是受控附件证据，不虚构为第四种表单实例业务来源。
+        statement: user-confirmed；手工补充附件与纸质扫描件须核验来源、对应生产对象及内容关联，并保留关联与核验追溯；它们是受控附件证据，不虚构为第四种表单实例业务来源。保留 PDF/PNG/JPEG，新增 DOC/DOCX/XLS/XLSX；单文件上限 50MB，定义为 50*1024*1024=52428800 字节且含边界。Office 仅原文件上传下载，不在线预览、编辑或转换；保留原件字节及 SHA-256、受控核验、原权限与冻结引用。附件在 DHR 导航底部提供独立入口，零份附件仍可打开；汇总及冻结查看点击该入口后以附件列表作为右侧主内容，沿用原上传元信息、核验、下载及带原因解除关联，历史文件不物理删除；冻结查看只读，其他工作区不增加写权限。本次不新增附件接口，不改变证据范围或冻结版本边界。
         status: specified
         visibility: internal
       - id: DEC-0063-11
-        statement: user-confirmed；支持整份 DHR 和明确选定范围的 ZIP 导出，范围及版本须标识，部分输出不得冒充完整 DHR；暂不打印。具体文件布局、可读文件和机器清单格式属于工程方案，未作为已确认格式或已实现能力。
+        statement: user-confirmed；冻结版本通过统一入口选择完整 ZIP 或自定义 ZIP；选择器按当前冻结档案目录、顺序与别名展示，支持目录、组及实例勾选，并可混选本版附件，切换版本清空选择。ZIP 使用中文目录，包含按冻结档案顺序汇成的可打印总 DHR PDF，以及按批记录模板、作业表单、自定义表单来源分类的单实例原模板版式 PDF；档案位置不改来源身份，也不重复计算同一实例。表单内上传文件放在对应实例的附件目录，汇总整理附件放在与来源目录同级的汇总附件目录。附件内容不并入总 PDF，只在 PDF 中列附件索引，并在 ZIP 中保留原文件；Office 不预览、编辑或转换。JSON 及机器清单保留于追溯资料，服务冻结数据、摘要、审计及签署追溯，不作为用户打印正文。总 PDF、单表 PDF、附件引用及追溯资料均绑定同一显式冻结版本，不以当前草稿或当前表单值替代；范围及版本须明确标识，选定范围不得冒充完整 DHR，总 PDF 也不能替代含附件原件的完整 ZIP。本轮提供可下载打印的 PDF，不新增在线打印流程；具体打印引擎、文件防护及命名去重算法仍属工程方案，不表示已实现或已验证。
         status: specified
         visibility: internal
       - id: DEC-0063-12
-        statement: user-confirmed；实例操作日志负责填报、签署、表单变更/作废及历史内容定位；DHR 详情的数据审计记录目录、附件关联、核查、提交、审批和导出。两层沿证据身份和版本关联，不相互替代；查看、整理、附件、提交、审批、导出分权。
+        statement: user-confirmed；实例操作日志负责填报、签署、表单变更/作废及历史内容定位，以表单管理为主入口，本轮不新增 DHR 实例日志 UI；DHR 详情的数据审计记录目录、附件关联、核查、提交、审批和导出。移除业务工作区重复的 DHR 数据审计按钮，保留四列表行详情中的数据审计入口。两层沿证据身份和版本关联，不相互替代；查看、整理、附件、提交、审批、导出分权，入口调整不改变审计语义和原授权。
         status: specified
         visibility: internal
       - id: DEC-0063-13
@@ -63,7 +63,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0063-15
-        statement: user-confirmed；整份与选定范围 ZIP 均应携带与该冻结版本关联的来源生产执行审计及签名，连同 DHR 审计和审批签署保持可追溯；选定范围仅改变导出内容，不改变冻结证据或审批对象。历史汇总无需兼容、回填或清理，不主动删除旧数据。
+        statement: user-confirmed；整份与选定范围 ZIP 均应携带与该冻结版本关联的来源生产执行审计及签名，连同 DHR 审计和审批签署保持可追溯；选定范围仅改变导出内容，不改变冻结证据或审批对象。导出和审批统一当前模型，不保留旧模型特例；错误旧汇总按 DEC-0063-09 转换或清理，不能靠翻模型标记或补造 checkResult 获得完整档案或合规结论。
         status: specified
         visibility: internal
     supersedes: []
@@ -78,9 +78,9 @@ decisions:
       - id: scenario.dhr-summary-freezes-complete-evidence
         given: 正常完工 DHR 具有三类实际表单实例、不同状态记录及受控附件
         when: 用户保存草稿并提交汇总
-        then: 无需拖拽或手选即可查看全部关联证据，保留异常状态；提交人逐项确认质量与异常、源审批签署和完整范围并填写说明，确认人/时间/说明随检查结果冻结；核查阻断项不能通过目录整理消除且不改写来源
+        then: 无需拖拽或手选即可查看全部关联证据，保留异常状态；整组或单份整理保存重开后来源仍保留原记录，档案位置引用同一实例且总数不增加，默认作业/自定义目录不重复挂载已移实例且零项仍保留可折叠入口；完成整理保留目录和实例并返回档案浏览，不改变生命周期；提交人逐项确认质量与异常、源审批签署和完整范围并填写说明，确认人/时间/说明随检查结果冻结；核查阻断项不能通过目录整理消除且不改写来源
         evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-migration]
-        evidenceRequirements: [三类来源测试, 同模板多实例测试, 重复实例阻断测试, 三项确认及说明校验和冻结读回测试, 不可变版本测试]
+        evidenceRequirements: [三类来源测试, 同模板多实例测试, 重复实例阻断测试, 相邻来源目录整组及单份摆放保存重开与不重复计数验证, 三项确认及说明校验和冻结读回测试, 不可变版本测试]
       - id: scenario.dhr-summary-required-review-binding
         given: 制程版本的 DHR 汇总审核策略为 REQUIRED
         when: 用户保存或发布该制程版本并在生产开工后提交 DHR 汇总
@@ -88,12 +88,32 @@ decisions:
         evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-service]
         evidenceRequirements: [绑定类型校验测试, 发布版本校验测试, 开工快照测试, 待审核状态测试]
       - id: scenario.dhr-summary-attachment-export-and-audit
-        given: DHR 具有已核验手工附件或纸质扫描、实例日志及冻结版本
-        when: 用户按权限查看审计并导出整份或选定范围 ZIP
-        then: 附件来源和生产对象可追溯，实例日志与 DHR 审计可关联；ZIP 包含来源生产执行审计及签名，版本和范围明确，部分 ZIP 不冒充完整 DHR
+        given: 可编辑 DHR 具有 PDF/PNG/JPEG 及 DOC/DOCX/XLS/XLSX 原件，另有已核验附件、实例日志及冻结版本
+        when: 用户按权限上传、核验、下载附件，查看审计并导出整份或选定范围 ZIP
+        then: 满足其他条件的 52428800 字节原件允许上传，52428801 字节拒绝；Office 仅原文件上传下载，不在线预览、编辑或转换，下载及冻结 ZIP 保留原件字节与 SHA-256。附件来源和生产对象可追溯，实例日志与 DHR 审计可关联；附件入口切换右侧主内容且沿用原上传元信息、核验和带原因解除关联，解除关联保留原文件及旧冻结引用；冻结版只读。统一导出入口支持完整 ZIP 与当前冻结版本内跨来源实例及附件混选，切换版本清空选择；ZIP 包含来源生产执行审计及签名，版本和范围明确，部分 ZIP 不冒充完整 DHR
         evidenceIds: [evidence.dhr-summary-user-confirmed]
-        evidenceRequirements: [附件来源核验, 完整及部分导出比对, 来源生产执行审计与签名完整性测试, 权限及双层审计验证]
+        evidenceRequirements: [七种格式上传核验下载, 50MB含边界及超限测试, Office原件与冻结ZIP字节及SHA256比对, 附件来源核验, 解除关联后冻结引用及原件保留, 完整及部分导出比对, 来源生产执行审计与签名完整性测试, 权限及双层审计验证]
+      - id: scenario.dhr-summary-printable-archive-layout
+        given: 指定冻结版本含跨来源调整档案位置的实例、表单内上传文件及汇总附件
+        when: 用户按冻结档案目录选择完整或自定义范围并下载 ZIP
+        then: 中文 ZIP 包含总 PDF、按真实来源归类的单实例原模板版式 PDF、对应实例附件、根级汇总附件及追溯资料；总 PDF 按本版档案顺序呈现所选表单和附件索引，不合入附件内容，Office 保留原件。同一实例不因来源和档案位置同时可见而重复输出；版本及完整/选定范围明确，不混入实时内容，JSON 用于追溯而非替代打印版式
+        evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-archive-service, evidence.dhr-summary-ui]
+        evidenceRequirements: [冻结目录树目录组实例勾选及跨版本清空, 中文ZIP路径与同名记录区分, 档案顺序和来源分类交叉对照, 总PDF及单表PDF版式分页视觉校验, 两类附件原件及索引比对, PDF附件不合入与Office不转换, 完整及选定范围同版冻结和去重, 缺失或摘要失配原件及不可渲染版式拒绝输出, JSON审计签署与文件摘要核对]
+      - id: scenario.dhr-summary-legacy-draft-conversion
+        given: NONE、无审批且生产正常完成的前期错误冻结汇总缺少 checkResult，源表单仍存在并有可用编排；另有当前模型冻结/草稿及意外旧审批或非完成记录作对照
+        when: 备份并执行当前模型统一迁移，然后重新打开、核查并提交转换草稿
+        then: 明确旧记录的可用编排保留，旧冻结及位置清理；意外旧审批依赖或非完成记录阻断并排查，不自动删。当前模型冻结和草稿优先且不覆盖。转换草稿按当前完整范围重新核查提交，不伪造旧核查或审批；原表单、生产对象、签署、原审计、附件文件和终止快照不删除，生产完成状态不变。已清理版本的原审计按 DHR 归属仍可查，现存版本归属优先且不跨 DHR/租户；迁移事件与备份可追溯，失败原子回滚，Liquibase 重跑不重复转换；正常 version_no 修订仍可用
+        evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-current-model-migration, evidence.dhr-summary-current-model-migration-tests]
+        evidenceRequirements: [隔离迁移正反例及幂等验证, 可用编排和别名保留, 新版冻结及草稿不覆盖, 意外审批依赖和非完成阻断, 失败回滚与备份恢复, 源实例签署审计及终止快照保护, 清理版本审计归属及跨DHR租户拒绝, 无历史核查伪造, 转换草稿重新核查提交, 正常业务修订回归, 审批及导出无旧模型分支]
     implementationDiscrepancies:
+      - id: discrepancy.dhr-summary-legacy-conversion-validation
+        status: resolved
+        severity: high
+        visibility: internal
+        path: docs/knowledge/evidence/dhr-summary-user-confirmed.md
+        lineHint: 16
+        summary: original-evidence；已静态核对0104迁移、注册及迁移测试脚本，服务/前端runtime无模型分支，审计查询优先现存版本归属、仅已清理版本回退data_summary；0104只自动处理NONE/无审批/正常完成旧记录，已有当前冻结或草稿优先、scope hash置空要求重新保存核查，删旧冻结及位置并加MIGRATE，原审计不改写。original-evidence；本体已直接核对0104成功及后端启动日志、postgres-regression.log四组PASS、前后指纹diff为空，并只读查询edhr_dev确认DHR3为COMPLETED/DRAFT、1草稿恢复作业7位置、旧冻结/位置0、模型列删除及1条MIGRATE；本机迁移已验证。用户再次核查/正式提交未做，本切片独立质量验证已通过；迁移验收缺口关闭，真实业务再次核查提交仍由用户执行，非旧模型兼容。
+        evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-archive-service, evidence.dhr-summary-current-model-migration, evidence.dhr-summary-current-model-migration-tests]
       - id: discrepancy.dhr-summary-selected-completed-evidence
         status: open
         severity: high

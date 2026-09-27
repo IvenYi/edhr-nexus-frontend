@@ -268,6 +268,7 @@ public class DhrInstanceService {
                 .put("recordCount", mappedRecordCount + unmapped.size())
                 .put("unmappedRecordCount", unmapped.size());
         result.set("unmappedRecords", unmapped);
+        result.set("archiveLayout", DhrArchiveLayoutReader.read(jdbc, mapper, id, result.path("summaryStatus").asText()));
         ObjectNode origins = result.putObject("recordsByOrigin");
         ArrayNode directoryRecords = origins.putArray("directory");
         ArrayNode workRecords = origins.putArray("work");

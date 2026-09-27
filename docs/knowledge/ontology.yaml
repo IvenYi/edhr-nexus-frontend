@@ -95,7 +95,7 @@ concepts:
     kind: runtime-fact
     status: specified
     visibility: internal
-    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-snapshot-source]
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-snapshot-source, evidence.dhr-summary-user-confirmed, evidence.dhr-termination-user-confirmed]
   - id: concept.dhr-summary-version
     termId: term.dhr-summary-version
     kind: runtime-fact

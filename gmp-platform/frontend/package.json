@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --config vite.config.ts",
     "build": "tsc -b && vite build --config vite.config.ts",
+    "build:dhr-print": "vite build --config vite.dhr-print.config.ts",
     "preview": "vite preview",
     "verify:organization": "node scripts/verify-organization-layout.mjs",
     "verify:user-management": "node scripts/verify-user-management-layout.mjs",

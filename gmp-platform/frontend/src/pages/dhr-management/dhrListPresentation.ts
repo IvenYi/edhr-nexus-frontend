@@ -1,4 +1,21 @@
 import type { DhrDisplayStatus, DhrObjectType, DhrProductionStatus } from '@/api/dhr-instances';
+import type { KeyboardEvent } from 'react';
+
+export function dhrRowDetailProps<T extends { dhrNo: string }>(row: T, onOpen: (row: T) => void) {
+  return {
+    tabIndex: 0,
+    'aria-label': `查看 ${row.dhrNo} 详情`,
+    onClick: () => onOpen(row),
+    onKeyDown: (event: KeyboardEvent<HTMLTableRowElement>) => {
+      if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        onOpen(row);
+      }
+    },
+  };
+}
+
+export const dhrDetailRowSx = { cursor: 'pointer', '&:hover .MuiTableCell-root': { bgcolor: '#f5f9ff' }, '&:focus-visible': { outline: '2px solid #1890ff', outlineOffset: -2 } };
 
 export const dhrObjectTypeLabel: Record<DhrObjectType, string> = { BATCH: '批次', SN: 'SN' };
 

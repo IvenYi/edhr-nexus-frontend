@@ -35,7 +35,12 @@ rules:
       type: freeze-execution-snapshot
       fields: [evidenceScope, checkResults, manualReviewConfirmation, baseDirectory, overlayDirectories, directoryPresentation, placements, sourceVersions, sourceStatuses, sourceSnapshots, attachmentReferences, sourceHashes, summaryHash, reviewBinding]
       laterChangesRewriteVersion: false
-    explanation: 核查后在提交时重新核对完整集合、来源版本及新增实例/附件，陈旧提交拒绝并提示刷新；冻结生产对象全部实际关联证据及检查结果（规则依据/版本、时间、问题、处置及确认），目录位置、顺序和别名仅是同一版本的展示属性，不能定义证据子集。审批、详情和 ZIP 使用同一冻结基准；实时来源视图明确区分。同一实例身份唯一，后续变化不改写旧版。
+      revisionBasis: latest-formalized-version
+      revisionCreates: draft
+      revisionDraftSummaryStatus: DRAFT
+      nextVersionNumberAssignedAt: submit
+      historicalVersionAccess: explicit-version-selector-read-only
+    explanation: 核查后在提交时重新核对完整集合、来源版本及新增实例/附件，陈旧提交拒绝并提示刷新；冻结生产对象全部实际关联证据及检查结果（规则依据/版本、时间、问题、处置及确认），目录位置、顺序和别名仅是同一版本的展示属性。审批、详情和 ZIP 统一当前模型，同一实例身份唯一；version_no 保留正常业务修订，不设 evidence_model_version 分支。发起修订沿既有资格、原因及权限基于最新定版创建 DRAFT 汇总中草稿，不立即创建或批准下一冻结版本；重新核查提交时才分配下一 version_no，并按原配置审批。草稿存在时历史版本仍可通过版本选择只读查看及按原权限导出，不以数据审计替代版本正文查看，也不以历史只读入口开放草稿写权。正常版本不被后续变化改写；前期错误旧汇总按 DEC-0063-09 备份后转换为待核查草稿或清理，保留可用编排，不覆盖当前模型冻结和草稿，不删除源表单、生产对象、签署、原审计或终止快照。转换草稿必须重新核查提交，旧 FORMALIZED 状态或版本行存在不证明完成核查。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration]
   - id: rule.dhr-summary-manual-review-confirmation
     name: 提交前人工逐项确认并冻结确认记录
@@ -52,7 +57,7 @@ rules:
       freezeIn: checkResult.manualReview
       freezeFields: [confirmedBy, confirmedAt, note]
       automaticQualityConclusionInterpretation: false
-    explanation: 提交人须逐项人工核查质量结果及异常处置、来源审批签署和完整证据范围，填写说明；缺任一确认或说明阻断提交。checkResult 保留三项确认、确认人、时间及说明。该签认只记录人的核查责任，不自动判定任意表单质量合格或签署有效，亦不替代其他客观阻断检查。
+    explanation: 提交人须逐项人工核查质量结果及异常处置、来源审批签署和完整证据范围，填写说明；缺任一确认或说明阻断提交。checkResult 保留三项确认、确认人、时间及说明。该签认只记录人的核查责任，不自动判定任意表单质量合格或签署有效，亦不替代其他客观阻断检查。旧冻结缺少 checkResult 不能追认为已核查，转换草稿必须再次确认；迁移不得补造过去的确认人、时间、说明或审批，审批不因模型标记而豁免核查。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-complete-evidence-tests]
   - id: rule.dhr-summary-review-binding
     name: DHR 汇总审核策略绑定已发布流程版本
@@ -123,9 +128,9 @@ rules:
       singleRowScope: one-instance
       sourceMutation: forbidden
       frozenVersionMutation: forbidden
-      legacyNullFallback: source-name
+      emptyDisplayNameFallback: source-name
       reorganize: copy-previous-version-display-name
-    explanation: DIRECTORY、WORK、CUSTOM 的真实证据均可设置草稿展示别名；组行限当前范围，相邻折叠行限本段，单份限一份。保存重开、冻结指纹和新草稿继承保留别名，旧版空别名回退原名；来源内容、生产归属、基础目录及完整证据范围不变，DIRECTORY 固定展示位置保留。旧别名代码不证明新完整证据设计已经实现。
+    explanation: DIRECTORY、WORK、CUSTOM 的真实证据均可设置草稿展示别名；组行限当前范围，相邻折叠行限本段，单份限一份。保存重开、冻结指纹和新草稿继承保留别名，未设置别名时显示来源名称，这是当前展示默认值而非旧模型兼容；来源内容、生产归属、基础目录及完整证据范围不变，DIRECTORY 固定展示位置保留。旧汇总转换保留可用别名和位置，不能据此继承历史核查结论；迁移验证见 DEC-0063-09。
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-ui, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
   - id: rule.dhr-summary-auto-evidence-scope
     name: 按生产对象自动归集全部实际关联证据
@@ -159,6 +164,29 @@ rules:
       preserveOldApproval: true
     explanation: 自动检测完整证据范围的来源生效变化并提示，包含新增关联证据及附件变化；申请待审不等于生效。人工退回或发起新版本重审，旧批准和快照保留，源变更作废仍由记录控制域判定；不改变生产、终止或放行状态。
     evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-summary-user-confirmed]
+  - id: rule.dhr-summary-controlled-attachment-upload
+    name: DHR 受控附件格式与单文件容量边界
+    status: specified
+    visibility: internal
+    trigger: dhr-summary.attachment-upload
+    scope: dhr-summary
+    condition: {fact: fact.dhr-summary.production-complete, operator: equals, value: true}
+    result:
+      type: allow-with-governance
+      action: upload-controlled-attachment
+      supportedFormats: [PDF, PNG, JPEG, DOC, DOCX, XLS, XLSX]
+      maxFileSizeBytes: 52428800
+      maxFileSizeInclusive: true
+      officeHandling: original-file-upload-and-download
+      officeOnlinePreview: false
+      officeOnlineEdit: false
+      officeConversion: false
+      preserveOriginalBytes: true
+      originalDigestAlgorithm: SHA-256
+      unlinkDeletesOriginalFile: false
+      preserveFrozenReferences: true
+    explanation: DEC-0063-10 与 officeAttachmentSupport 的已确认范围；50MB 为 50*1024*1024 字节，含边界，超出一字节拒绝。保留既有 PDF/PNG/JPEG，新增四种 Office 原文件上传下载；原件字节、摘要、核验、权限、冻结引用及带原因解除关联保留原文件的规则不变。生产完成仅为前置条件，仍须满足原汇总编辑授权和可编辑状态；格式与容量合格不等于来源、生产对象或内容核验通过。此规则为 specified/internal，不证明实现、迁移或整体验证已通过。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]
   - id: rule.dhr-review-task-frozen-attachment-download
     name: 审批任务附件仅供任务授权主体按冻结版本下载
     status: specified
@@ -175,7 +203,7 @@ rules:
     explanation: 审批页附件下载必须经过任务处理权或本人已办授权，并仅返回任务绑定版本快照中 id 与摘要匹配的附件；仅有 DHR 查看权或其他任务权限不能扩大下载范围。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-review-controller, evidence.dhr-review-service, evidence.dhr-summary-attachment-service, evidence.dhr-review-attachment-permission-tests]
   - id: rule.dhr-summary-zip-source-trace
-    name: 冻结版本 ZIP 包含来源生产执行审计与签名
+    name: 冻结版本中文 ZIP 的可打印正文、附件原件与来源追溯
     status: specified
     visibility: internal
     trigger: dhr-summary.export-zip
@@ -186,5 +214,21 @@ rules:
       action: export-frozen-version-zip
       include: [source-production-execution-audit, source-production-execution-signatures, dhr-audit, review-signatures]
       selectedRangeChangesApprovalScope: false
-    explanation: ZIP 应带可关联冻结版本的来源生产执行审计与签名及 DHR 自身审计/审批签署，完整与选定范围均明确标识；导出范围不重定义冻结证据或审批对象。当前代码按提交时点截取来源审计/签名，对来源和审批两类签名均导出 payload 并核对 SHA-256；不证明所有外部记录控制事件已纳入。
+      selectionStructure: frozen-archive-directory-tree
+      selectionUnits: [directory, group, instance, controlled-attachment]
+      scope: [FULL, SELECTED]
+      humanDirectoryLanguage: zh-CN
+      sourceDirectories: [批记录模板, 作业表单, 自定义表单]
+      combinedPdf: frozen-template-layouts-in-archive-order
+      instancePdf: original-template-layout-by-source
+      instanceAttachmentsDirectory: 附件
+      summaryAttachmentsDirectory: 汇总附件
+      traceDirectory: 追溯资料
+      traceFormat: JSON
+      attachmentContentInCombinedPdf: false
+      attachmentIndexInCombinedPdf: true
+      officeConversion: false
+      contentBasis: same-explicit-frozen-version
+      currentLiveValuesSubstitute: false
+    explanation: 选择器按同版冻结档案目录、顺序和别名支持完整及自定义范围；总 PDF 按档案顺序呈现表单正文与附件索引，单实例原模板版式 PDF 按实际来源归类，目录整理不改变来源身份或重复计数。表单内附件原件归对应实例的附件目录，汇总附件原件归根级汇总附件；附件内容不合入总 PDF，Office 不转换。JSON 与机器清单留在追溯资料，用于冻结数据、摘要、来源生产执行审计与签名及 DHR 审计/审批签署的关联，不代替可打印正文。版本及完整/选定范围明确标识，部分包不冒充完整 DHR，总 PDF 不替代附件原件；导出不重定义冻结证据或审批对象。具体打印引擎、字段文件识别和防护、默认联选依赖属于工程推断，见确认证据；实现仍在进行，不据旧 ZIP 源码或旧测试声称本轮 PDF、全部外部记录控制事件或发布验收完成。
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests]

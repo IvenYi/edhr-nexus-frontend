@@ -9,13 +9,18 @@ decisions:
       保留原 supersedes 的局部范围及 DEC-0062 唯一 DHR、DEC-0069 终止政策；菜单最新展示由 DEC-0070 解释。
       审批对象为 DEC-0063 自动归集全部实际证据及检查结果的冻结版本，目录与来源仅为同一版本视图。
       当前已有审批服务及部分检测代码，具体差异保留于 implementationDiscrepancies，不把旧行为写成新设计已实现。
+      2026-09-27 按 DEC-PACKAGE-20260927-DHR-LIST-DETAIL 补正原有四列表遗漏的通用详情与审计入口说明；
+      这是既有共享规范的遗漏修复，不是新增产品迭代，不新增概念、决策版本或改变日志分层及授权。
+      同日按 DEC-PACKAGE-20260927-DHR-WORKSPACE-NAVIGATION 及新增四条 confirmedUiRefinements 原位补正四工作区双视图、默认入口、档案编辑状态和默认目录去重；执行级别 L2，用户授权纠正原设计，不作为新迭代，不升级基线或新增决策。
+      同包 confirmedUiRefinements 原位补正分段视图、附件右侧主内容及完整/自定义混选 ZIP；2026-09-28 revisionPrintableExport 进一步明确列表纯图标修订入口、查看弹窗直接发起修订、草稿与历史版切换及 DEC-0063-11 的中文可打印 ZIP。最新确认按 DEC-0063-09 转换或清理错误旧汇总并移除旧模型兼容，迁移备份与审计保留，不伪造历史核查。
+      同包 confirmedUiRefinements 确认紧凑 DHR 导航标题、标题行整理/返回浏览、底部独立附件入口及审计/实例日志入口分工；仍为指定设计，不代表本轮 UI 已验证。
     decisionStatements:
       - id: DEC-0068-01
         statement: user-confirmed；DHR 管理保留 DHR填报、DHR汇总、DHR审批、DHR列表四个菜单（客户展示沿用 DEC-0070）。填报承载来源表单的填报与受控追加，汇总整理并冻结版本，审核提供针对不可变汇总版本的个人待办/已办，列表承担查询与详情；不能因新增入口混淆职责或授予其他动作权限。
         status: specified
         visibility: internal
       - id: DEC-0068-02
-        statement: user-confirmed；沿用目录、作业、自定义三类表单实际实例并自动归集受控附件，保留全部真实状态和逐实例身份；目录及来源组仅用于展示，未手选不能排除证据。补录创建新的表单实例，附件及纸质扫描按独立受控附件核验来源，不虚构第四种表单实例业务来源。
+        statement: user-confirmed；沿用目录、作业、自定义三类表单实际实例并自动归集受控附件，保留全部真实状态和逐实例身份；DIRECTORY 的来源显示名为“批记录模板”，不改变枚举、来源关系或归集规则。目录及来源组仅用于展示，未手选不能排除证据。整理后来源视图仍含当前范围内全部记录，来源和档案位置指向同一实例，同一证据不重复计数；来源分类不随展示目录移动而改变。档案默认作业/自定义区域可折叠，零项保留入口及空态，已移实例不重复挂回默认目录。审批和定版查看的两视图使用同一任务或显式版本的冻结候选及位置，不混入实时草稿；来源导航报错修复仅读取冻结 candidates，不借实时来源补齐；填报展示当前生产实例和只读既有编排，不增加整理、上传或其他写入权限。补录创建新的表单实例，附件及纸质扫描按独立受控附件核验来源，不虚构第四种表单实例业务来源。
         status: specified
         visibility: internal
       - id: DEC-0068-03
@@ -31,7 +36,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-06
-        statement: user-confirmed；已批准汇总版本受到证据变化影响时，不自动退回、不清除批准结论或历史，不就地改写旧版证据；需要重新审核时，由人发起新版本整理和重审，旧批准只解释其当时的冻结版本。
+        statement: user-confirmed；已批准汇总版本受到证据变化影响时，不自动退回、不清除批准结论或历史，不就地改写旧版证据；需要重新审核时，由人发起新版本整理和重审，旧批准只解释其当时的冻结版本。列表操作栏使用符合共享规范的纯图标及提示表达“发起修订”，查看弹窗直接显示同名按钮，不再藏于更多菜单。两入口共用原技术动作、资格、原因和权限，基于最新定版创建 DRAFT 汇总中草稿，不立即生成下一冻结版本或进入批准；重新核查提交时才分配下一 version_no，并按原配置审批。当前草稿与历次冻结版本都可通过版本选择访问；即使存在草稿，旧版本仍只读且可按原权限导出，不混入实时内容，不由数据审计替代正文查看，不因入口调整授予编辑或导出权限。
         status: specified
         visibility: internal
       - id: DEC-0068-07
@@ -39,15 +44,15 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-08
-        statement: user-confirmed；填报、追加、证据影响识别、退回、新版本重审与批准均不自动改变生产完成状态或产品放行状态；不新增产品放行规则，不自动重开生产，不回填历史 DHR 审核绑定、汇总版本或历史审批事实。
+        statement: user-confirmed；填报、追加、证据影响识别、退回、新版本重审与批准均不自动改变生产完成状态或产品放行状态；不新增产品放行规则或自动重开生产。错误旧汇总按 DEC-0063-09 转成待核查草稿或清理，不补造历史审核绑定、核查确认及审批事实，不覆盖已有当前模型冻结和草稿；正常发起修订仍保留原版本与批准。审批统一要求本次冻结核查结果，不能用旧模型分支绕过人工核查。
         status: specified
         visibility: internal
       - id: DEC-0068-09
-        statement: user-confirmed；新页面复用当前共享组件规范。独立列表使用 ListTableShell、共享表格样式及 TableStateCell；普通新建编辑使用 FormDialog、FormDialogSection 与 FormDialogFieldGrid，确认使用 ConfirmDialog；详情、预览和签名按既有专用组件边界处理。规范路径和验收要点见本决策证据，不另建本切片 UI 规范。
+        statement: user-confirmed；DHR 四列表复用当前共享组件规范。行点击打开右侧详情抽屉，包含数据信息、数据审计页签；独立业务按钮打开相应工作区，不与行点击互相触发，不在操作列重复提供同一对象的数据审计入口。移除业务工作区重复 DHR 数据审计按钮，保留四列表行详情审计；实例日志以表单管理为主入口，本轮不新增 DHR 实例日志 UI。详情和审计沿各入口原有读取授权，不额外授予工作区写动作；实例操作日志与 DHR 数据审计仍按 DEC-0063-12 分层关联。独立列表使用 ListTableShell、共享表格样式及 TableStateCell；普通新建编辑使用 FormDialog、FormDialogSection 与 FormDialogFieldGrid，确认使用 ConfirmDialog；预览和签名按既有专用组件边界处理。查看、填报、汇总、审批四工作区以分段按钮统一“档案目录/按来源”两视图，仅按来源视图显示来源分类，切换保持选择身份及未保存保护；填报默认按来源，其余默认档案目录；表单选择及实例窄栏布局一致，首次打开第一份，关闭实例面板保留已选实例，切换时保留填报未保存保护。导航统一称“DHR 导航”并压缩标题留白，范围说明移至工作区头部；整理切换位于导航标题行，整理只是档案编辑状态，完成返回档案浏览并保留当前目录和实例，不新增生命周期状态或提交动作。模式和实例栏以短过渡切换并支持减少动态效果；附件位于导航底部独立入口，零份仍可打开，不增加第四种表单来源；汇总及冻结查看以附件列表切换右侧主内容，原上传元信息、核验、下载及带原因解除关联保持，历史文件不物理删除，冻结查看只读，不新增附件接口或其他工作区写权。冻结版本统一导出入口支持完整 ZIP 或当前冻结成员内跨来源实例与附件混选的自定义 ZIP，部分包明确标记，切换版本清空选择，不改变证据范围。汇总编辑时来源位于目录旁边，组/单份沿用既有摆放规则；双视图不改变各页归集、权限、写入、节点动作或冻结只读边界。此为原设计补正，规范路径和验收要点见本决策证据，不另建 UI 规范。
         status: specified
         visibility: internal
       - id: DEC-0068-10
-        statement: user-confirmed；扩展路径为 product-core、configuration 与 transaction-orchestration，由 DHR 域编排既有表单及流程引擎；主开发负责 DHR 代码和测试，朋友负责表单变更作废模块。适用检查及审批策略归受控配置；菜单/动作授权、冻结流程候选资格、证据检测与人工动作审计分别核验，不增加客户条件分支。
+        statement: user-confirmed；本次当前模型统一、旧汇总转换及工作区调整采用 product-core，DHR 主开发负责迁移、服务、UI 和测试，本体角色仅维护 DHR 知识。既有适用检查和审批策略的 configuration、流程编排的 transaction-orchestration 职责保留，朋友仍负责表单变更作废模块；本次不改变审批配置或权限，不增加客户条件分支。原审计保留并追加迁移事件，实例日志与 DHR 审计继续分层。
         status: specified
         visibility: internal
       - id: DEC-0068-11
@@ -60,9 +65,9 @@ decisions:
       - id: scenario.dhr-filling-review-menus-and-sources
         given: 用户具有相应 DHR 菜单与动作权限，生产对象已有 DHR 和三类表单实例
         when: 使用四个菜单查询、填报、整理和审核
-        then: 各入口职责和权限独立，实例身份与证据关联逐份保留；DHR 汇总候选按 DEC-0072 成组呈现，低频补录不成为突出主操作，列表和弹窗遵守共享组件规范
+        then: 各入口职责和权限独立，四列表行点击打开数据信息/数据审计右侧抽屉，独立业务按钮只打开相应工作区，详情与审计沿原授权且日志分层不变；实例身份与证据关联逐份保留，DHR 汇总候选按 DEC-0072 成组呈现，低频补录不成为突出主操作，列表和弹窗遵守共享组件规范
         evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-filling-review-ui-standard]
-        evidenceRequirements: [菜单及接口权限测试, 三类来源与多份回归, 页面交互与共享组件视觉验证]
+        evidenceRequirements: [菜单及接口权限测试, 三类来源与多份回归, 四页行点击与键盘及业务按钮无冒泡验证, 详情页签与审计分页空态错误态验证, 页面交互与共享组件视觉验证]
       - id: scenario.dhr-filling-review-controlled-addition
         given: 生产已完成且已有来源实例及冻结汇总版本
         when: 有权用户执行受控补录
@@ -72,9 +77,9 @@ decisions:
       - id: scenario.dhr-filling-review-frozen-binding
         given: 已完成 DHR 冻结 REQUIRED 审核绑定，之后流程已发布其他版本
         when: 提交本次汇总并生成个人审核待办
-        then: 任务准确绑定本次完整证据、检查结果及不可变汇总版本和既定流程版本，通用入口不得绕过 DHR 校验，不产生产品放行
+        then: 任务准确绑定本次完整证据、检查结果及不可变汇总版本和既定流程版本；审批及定版查看切换档案目录/按来源始终使用同一冻结候选及位置，不混入实时草稿；填报则使用当前生产实例及只读既有编排，不因查看编排获得整理或上传权；通用入口不得绕过 DHR 校验，不产生产品放行
         evidenceIds: [evidence.dhr-filling-review-confirmed]
-        evidenceRequirements: [冻结绑定集成测试, 任务与已办归属测试, 通用入口防绕过测试, 并发提交测试]
+        evidenceRequirements: [冻结绑定集成测试, 双视图冻结候选与位置隔离验证, 填报当前实例及编排只读权限回归, 任务与已办归属测试, 通用入口防绕过测试, 并发提交测试]
       - id: scenario.dhr-review-task-frozen-attachment
         given: DHR 审批任务绑定一个包含受控附件的冻结汇总版本
         when: 当前任务授权主体下载本版附件，或其他主体及跨版本附件尝试下载
@@ -90,9 +95,9 @@ decisions:
       - id: scenario.dhr-filling-review-approved-history
         given: 汇总版本已经批准，后续其证据发生有效变化
         when: 系统识别影响且用户决定发起重新审核
-        then: 系统不自动退回或擦除旧批准，由人创建新版本重审，原批准与原快照保持可追溯，生产及放行状态不自动变化
+        then: 系统不自动退回或擦除旧批准，列表纯图标与查看弹窗直接“发起修订”沿同一技术动作、资格、原因和权限基于最新定版创建 DRAFT 汇总中草稿；重新提交才生成下一冻结版本并按原配置审批。草稿存在时仍可切换历史版只读正文并按权导出，再返回当前草稿；旧版内容及批准不变，数据审计不替代版本正文，生产及放行状态不自动变化
         evidenceIds: [evidence.dhr-filling-review-confirmed]
-        evidenceRequirements: [批准后影响集成测试, 人工新版重审测试, 快照与审计历史不可变回归]
+        evidenceRequirements: [批准后影响集成测试, 两入口同流程及权限资格回归, 新草稿与下一冻结版本生成时点断言, 草稿和历史版切换及未保存保护, 旧版只读导出及当前数据隔离, 快照与审计历史不可变回归]
     implementationDiscrepancies:
       - id: discrepancy.dhr-review-complete-evidence-impact-gap
         status: open

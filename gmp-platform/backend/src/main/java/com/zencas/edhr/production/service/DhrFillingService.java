@@ -35,6 +35,7 @@ public class DhrFillingService {
         var dhr = jdbc.queryForMap("SELECT directory_snapshot,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?", dhrId);
         result.set("directorySnapshot", DhrInstanceService.directoryForResponse(json(dhr.get("directory_snapshot"))));
         result.put("dhrSummaryStatus", dhr.get("summary_status").toString());
+        result.set("archiveLayout", DhrArchiveLayoutReader.read(jdbc, mapper, dhrId, dhr.get("summary_status").toString()));
         if ("COMPLETED".equals(result.path("objectStatus").asText())) {
             for (JsonNode op : result.path("snapshot").path("operations")) {
                 String opId = op.path("id").asText();

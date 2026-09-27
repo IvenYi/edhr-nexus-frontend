@@ -41,8 +41,8 @@ public class DhrEvidenceImpactService {
             if (changed) result.addObject().put("recordId", item.get("source_record_id").toString())
                     .put("instanceNo", frozen.path("instanceNo").asText()).put("message", "来源记录与提交时冻结证据不一致，请核对表单变更或作废记录");
         }
-        var version = jdbc.queryForList("SELECT v.evidence_model_version,v.attachment_snapshot,d.production_object_id,d.id AS dhr_id FROM dhr_summary_version v JOIN dhr_instance d ON d.id=v.dhr_instance_id AND d.tenant_id=v.tenant_id WHERE v.tenant_id='default' AND v.id=?", versionId);
-        if (!version.isEmpty() && ((Number) version.getFirst().get("evidence_model_version")).intValue() >= 2) {
+        var version = jdbc.queryForList("SELECT v.attachment_snapshot,d.production_object_id,d.id AS dhr_id FROM dhr_summary_version v JOIN dhr_instance d ON d.id=v.dhr_instance_id AND d.tenant_id=v.tenant_id WHERE v.tenant_id='default' AND v.id=?", versionId);
+        if (!version.isEmpty()) {
             Object objectId = version.getFirst().get("production_object_id");
             if (objectId == null) throw invalid("DHR 生产对象关联缺失，无法核对新记录");
             var current = jdbc.queryForList("SELECT id,instance_no FROM form_instance_record WHERE tenant_id='default' AND source_type='PRODUCTION_EXECUTION' AND object_id=? ORDER BY id" + (lock ? " FOR UPDATE" : ""), objectId);

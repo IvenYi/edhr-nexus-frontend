@@ -97,7 +97,7 @@ facts:
     capturedAt: '2026-09-19'
     reviewStatus: reviewed
   - id: fact.dhr-summary.version-frozen
-    name: DHR 汇总版本已提交冻结
+    name: DHR 汇总版本已提交冻结（不等于合规结论）
     conceptId: concept.dhr-instance
     valueType: boolean
     sourceType: database
@@ -109,8 +109,8 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-migration]
     sourceRevision: working-tree
-    sourceLocator: dhr_summary_version 与 dhr_summary_evidence 仅在提交时插入，已提交状态阻断后续草稿修改
-    capturedAt: '2026-09-19'
+    sourceLocator: dhr_summary_version 与 dhr_summary_evidence 保存业务冻结及位置，version_no 标识正常修订；正常冻结不可编辑。行存在或 FORMALIZED 不证明核查完成，缺 checkResult 的错误旧汇总按 DEC-0063-09 转换为待核查草稿或清理，不能直接改标记追认；本机0104迁移已由原始日志及只读查询验证，DHR3已转草稿但未重新核查提交
+    capturedAt: '2026-09-27'
     reviewStatus: reviewed
   - id: fact.dhr-summary.source-definition-key
     name: DHR 汇总来源定义键
@@ -141,7 +141,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
     sourceRevision: working-tree
-    sourceLocator: dhr_summary_evidence.display_name 可空且不按来源拆字段；validatePlacements 的 DIRECTORY 分支只合入 displayName，固定目标且禁止排序覆盖；prepareNextDraft 查询包括有别名的 DIRECTORY。仅核对存储及服务源码，完整交互与运行验证待主智能体完成；空别名回退原名
+    sourceLocator: dhr_summary_evidence.display_name 可空且不按来源拆字段；validatePlacements 的 DIRECTORY 分支只合入 displayName，固定目标且禁止排序覆盖；prepareNextDraft 查询包括有别名的 DIRECTORY。空别名显示来源名称是当前可选展示规则，不是旧模型兼容；DEC-0063-09 要求转换保留可用别名与位置，本机迁移及作业7位置恢复已验证；用户重新核查提交和独立质量尚未完成
     capturedAt: '2026-09-24'
     reviewStatus: reviewed
   - id: fact.dhr-summary.evidence-scope
@@ -157,7 +157,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-user-confirmed]
     sourceRevision: working-tree
-    sourceLocator: DEC-0063-02/04/05 完整设计来源；工作树已有三类实际实例默认位置和受控附件快照，但适用核查及完整证据语义尚未闭环，本事实仍不作为可用的完整运行来源
+    sourceLocator: DEC-0063-02/04/05/09 完整设计来源；三类实际实例及受控附件按生产对象自动归集，目录或手选不决定范围，转换草稿也须重新归集核查。工作树已有默认位置和附件快照，本机迁移已验证，但适用核查、用户重新提交及独立质量尚未完成，本事实不作为已验证的完整运行来源
     capturedAt: '2026-09-25'
     reviewStatus: reviewed
   - id: fact.dhr-summary.effective-evidence-change

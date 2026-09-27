@@ -76,6 +76,7 @@ export interface DhrDirectory {
 }
 
 export interface DhrInstanceDetail extends DhrInstanceSummary {
+  archiveLayout?: { overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[]; recordRefs?: Array<{ id: string; operationId: string; formId: string; copyId: string }> };
   productId: string;
   processVersionId: string;
   routeVersionId: string;
@@ -123,6 +124,10 @@ export async function getDhrInstance(id: string): Promise<DhrInstanceDetail> {
   return (await client.get(`/dhr-instances/${encodeURIComponent(id)}`)).data.data;
 }
 
+export async function getDhrSummaryDetail(id: string): Promise<DhrInstanceDetail> {
+  return (await client.get(`/dhr-instances/${encodeURIComponent(id)}/summary/detail`)).data.data;
+}
+
 export interface DhrSummaryDirectoryOverlay {
   key: string;
   parentKey: string | null;
@@ -146,7 +151,7 @@ export interface DhrSummaryWorkspace {
   candidates: DhrEvidenceRecord[];
   attachments: DhrAttachment[];
   draft: null | { id: string; revision: number; sourceScopeHash?: string | null; overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[] };
-  versions: Array<{ id: string; versionNo: number; evidenceModelVersion: number; status: 'PENDING_REVIEW' | 'FORMALIZED'; reviewOutcome?: 'PENDING_REVIEW' | 'APPROVED' | 'RETURNED' | null; reviewMode: 'NONE' | 'REQUIRED'; reviewWorkflowDefinitionId: string | null; reviewWorkflowVersionId: string | null; snapshotHash: string; submittedBy: string | null; submittedAt: string }>;
+  versions: Array<{ id: string; versionNo: number; status: 'PENDING_REVIEW' | 'FORMALIZED'; reviewOutcome?: 'PENDING_REVIEW' | 'APPROVED' | 'RETURNED' | null; reviewMode: 'NONE' | 'REQUIRED'; reviewWorkflowDefinitionId: string | null; reviewWorkflowVersionId: string | null; snapshotHash: string; submittedBy: string | null; submittedAt: string }>;
 }
 
 export async function getDhrSummaryWorkspace(id: string): Promise<DhrSummaryWorkspace> {
@@ -196,7 +201,9 @@ export async function uploadDhrAttachment(id: string, input: { file: File; sourc
   data.append('purpose', input.purpose);
   if (input.originalRecordedAt) data.append('originalRecordedAt', input.originalRecordedAt);
   if (input.custodyLocation) data.append('custodyLocation', input.custodyLocation);
-  return (await client.post(`/dhr-instances/${encodeURIComponent(id)}/attachments`, data)).data.data as { attachmentId: string };
+  return (await client.post(`/dhr-instances/${encodeURIComponent(id)}/attachments`, data, {
+    headers: { 'Content-Type': 'multipart/form-data' }, timeout: 120000,
+  })).data.data as { attachmentId: string };
 }
 
 export async function verifyDhrAttachment(id: string, attachmentId: string) {
@@ -209,7 +216,7 @@ export async function unlinkDhrAttachment(id: string, attachmentId: string, reas
 
 export async function downloadDhrArchive(id: string, versionId: string, scope: 'FULL' | 'SELECTED', recordIds: string[] = [], attachmentIds: string[] = []) {
   const response = await client.get(`/dhr-instances/${encodeURIComponent(id)}/summary/versions/${encodeURIComponent(versionId)}/export`, {
-    params: { scope, recordIds: recordIds.join(','), attachmentIds: attachmentIds.join(',') }, responseType: 'blob',
+    params: { scope, recordIds: recordIds.join(','), attachmentIds: attachmentIds.join(',') }, responseType: 'blob', timeout: 300000,
   });
   return response.data as Blob;
 }

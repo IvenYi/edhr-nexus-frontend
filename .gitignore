@@ -19,3 +19,6 @@ __pycache__/
 *.log
 tmp/
 .playwright-cli/
+
+# Local database recovery artifacts must never be committed.
+output/dhr-model-migration-*/

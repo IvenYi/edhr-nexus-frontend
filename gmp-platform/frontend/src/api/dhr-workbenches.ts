@@ -1,5 +1,5 @@
 import client from './client';
-import type { DhrInstancePage, DhrInstanceSummary, DhrSummaryVersionDetail, DhrInstanceDetail } from './dhr-instances';
+import type { DhrAuditEvent, DhrInstancePage, DhrInstanceSummary, DhrSummaryVersionDetail, DhrInstanceDetail } from './dhr-instances';
 import type { ExecutionButton, ExecutionCommand, ExecutionView } from './production-execution';
 
 export interface DhrReviewTask {
@@ -13,6 +13,8 @@ export interface DhrReviewDetail extends DhrSummaryVersionDetail {
 }
 export const listDhrReviewTasks = async (params: { view: string; keyword: string; page: number; size: number }): Promise<{ content: DhrReviewTask[]; totalElements: number; totalPages: number }> => (await client.get('/dhr-reviews', { params })).data.data;
 export const getDhrReviewTask = async (id: string): Promise<DhrReviewDetail> => (await client.get(`/dhr-reviews/${id}`)).data.data;
+export const getDhrReviewAudit = async (id: string, page: number): Promise<{ page: number; total: number; events: DhrAuditEvent[] }> =>
+  (await client.get(`/dhr-reviews/${encodeURIComponent(id)}/audit`, { params: { page } })).data.data;
 export const downloadDhrReviewAttachment = async (taskId: string, attachmentId: string): Promise<Blob> => {
   const response = await client.get(`/dhr-reviews/${encodeURIComponent(taskId)}/attachments/${encodeURIComponent(attachmentId)}/download`, { responseType: 'blob' });
   return response.data as Blob;
@@ -20,8 +22,12 @@ export const downloadDhrReviewAttachment = async (taskId: string, attachmentId: 
 export const actDhrReview = async (id: string, command: { action: string; expectedSnapshotHash: string; opinion: string; account?: string; password?: string }) => (await client.post(`/dhr-reviews/${id}/actions`, command)).data.data;
 export interface DhrFillingSummary extends DhrInstanceSummary { productionStatus: string | null }
 export const listDhrFilling = async (params: { keyword: string; displayStatus: string; page: number; size: number }): Promise<Omit<DhrInstancePage, 'content'> & { content: DhrFillingSummary[] }> => (await client.get('/dhr-filling', { params })).data.data;
-export interface DhrFillingView extends ExecutionView { directorySnapshot: DhrInstanceDetail['directorySnapshot']; dhrSummaryStatus: string }
+export interface DhrFillingView extends ExecutionView { directorySnapshot: DhrInstanceDetail['directorySnapshot']; dhrSummaryStatus: string; archiveLayout?: DhrInstanceDetail['archiveLayout'] }
 export const getDhrFilling = async (id: string): Promise<DhrFillingView> => (await client.get(`/dhr-filling/${id}`)).data.data;
+export const getDhrFillingDetail = async (id: string): Promise<DhrInstanceDetail> =>
+  (await client.get(`/dhr-filling/${encodeURIComponent(id)}/detail`)).data.data;
+export const getDhrFillingAudit = async (id: string, page: number): Promise<{ page: number; total: number; events: DhrAuditEvent[] }> =>
+  (await client.get(`/dhr-filling/${encodeURIComponent(id)}/audit`, { params: { page } })).data.data;
 export const actDhrFilling = async (id: string, command: ExecutionCommand): Promise<DhrFillingView> => (await client.post(`/dhr-filling/${id}/actions`, command)).data.data;
 export const createDhrSupplement = async (id: string, command: { revision: number; operationId: string; formId: string; reason: string; occurredAt: string }): Promise<DhrFillingView & { createdCopyId: string }> => (await client.post(`/dhr-filling/${id}/supplements`, command)).data.data;
 export const dhrReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown>): Promise<Array<{ id: string; name: string }>> => (await client.post(`/dhr-filling/${id}/references`, { operationId, formId, fieldId, keyword, values })).data.data;

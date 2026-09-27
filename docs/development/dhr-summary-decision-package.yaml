@@ -63,8 +63,8 @@ decisionPackage:
         reason: 不恢复终止生产、不改变已确认终止政策、不新增自动放行。
     compatibilityAndMigration:
       - area: existing-summary-version
-        change: 新增完整证据模型与附件字段，不回写旧冻结版本；用户明确旧汇总数据非本轮兼容目标，本轮不做历史数据删除。
-        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql]
+        change: 原位修正错误旧汇总处置；按0104备份后恢复可用编排为待核查草稿并清理旧冻结及位置，移除模型代际分支。已有当前草稿/冻结、源表单、生产对象、签署和原审计保留；不补造核查或审批。当前执行和验收记录沿用dhr-workspace-navigation-decision-package.yaml，不另建替代模型。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql, docs/development/dhr-workspace-navigation-decision-package.yaml]
     snapshotImpacts:
       - area: summary-evidence
         change: 完整证据范围与展示位置解耦；提交冻结来源版本、状态、附件引用和核查结果。

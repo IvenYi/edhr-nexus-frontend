@@ -39,6 +39,11 @@ public class DhrSummaryController {
         return ApiResponse.success(service.workspace(id));
     }
 
+    @GetMapping("/{id}/summary/detail")
+    public ApiResponse<ObjectNode> detail(@PathVariable Long id) {
+        return ApiResponse.success(instances.detail(id));
+    }
+
     @GetMapping("/{id}/summary/versions/{versionId}")
     public ApiResponse<ObjectNode> version(@PathVariable Long id, @PathVariable Long versionId) {
         return ApiResponse.success(service.version(id, versionId));

@@ -32,7 +32,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 @Service
 @RequiredArgsConstructor
 public class DhrAttachmentService {
-    private static final long MAX_BYTES = 25L * 1024 * 1024;
+    private static final long MAX_BYTES = 50L * 1024 * 1024;
     private static final Set<String> SOURCE_KINDS = Set.of("EXTERNAL_REPORT", "CERTIFICATE", "PAPER_SCAN", "OTHER");
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
@@ -77,17 +77,22 @@ public class DhrAttachmentService {
             throw invalid("纸质原件扫描件须填写原记录形成时间和原件保管位置");
         if (originalRecordedAt != null && originalRecordedAt.isAfter(LocalDateTime.now())) throw invalid("原记录形成时间不能晚于当前时间");
         if (custodyLocation != null && custodyLocation.length() > 500) throw invalid("原件保管位置过长");
-        if (file == null || file.isEmpty() || file.getSize() > MAX_BYTES) throw invalid("附件不能为空且不能超过 25MB");
+        if (file == null || file.isEmpty() || file.getSize() > MAX_BYTES) throw invalid("附件不能为空且不能超过 50MB");
         String name = file.getOriginalFilename();
         if (name == null || name.isBlank() || name.length() > 255 || name.contains("/") || name.contains("\\")
                 || name.chars().anyMatch(c -> c < 32)) throw invalid("附件原文件名无效");
         byte[] bytes = file.getBytes();
-        if (bytes.length == 0 || bytes.length > MAX_BYTES) throw invalid("附件不能为空且不能超过 25MB");
-        String mime = detectedType(bytes);
-        if (mime == null) throw invalid("仅支持内容可识别的 PDF、PNG、JPEG 附件");
+        if (bytes.length == 0 || bytes.length > MAX_BYTES) throw invalid("附件不能为空且不能超过 50MB");
+        String suffix = name.substring(name.lastIndexOf('.') + 1).toLowerCase(java.util.Locale.ROOT);
+        String mime = DhrOfficeAttachment.mimeType(suffix);
+        if (mime == null) {
+            mime = detectedType(bytes);
+            if (mime == null || !(suffix.equals(DhrOfficeAttachment.extension(mime)) || (suffix.equals("jpeg") && mime.equals("image/jpeg"))))
+                throw invalid("仅支持扩展名与内容一致的 PDF、PNG、JPEG、DOC、DOCX、XLS、XLSX 附件");
+        }
         inspectReadable(bytes, mime);
         long id = ids.nextId();
-        String extension = switch (mime) { case "application/pdf" -> "pdf"; case "image/png" -> "png"; default -> "jpg"; };
+        String extension = DhrOfficeAttachment.extension(mime);
         Path directory = Path.of(storagePath).resolve("dhr");
         Files.createDirectories(directory);
         Path stored = directory.resolve(id + "." + extension);
@@ -175,6 +180,12 @@ public class DhrAttachmentService {
         return file(dhrId, attachmentId);
     }
 
+    @Transactional(readOnly = true)
+    public String originalName(Long dhrId, Long attachmentId) {
+        return jdbc.queryForObject("SELECT original_name FROM dhr_attachment WHERE tenant_id='default' AND dhr_instance_id=? AND id=?",
+                String.class, dhrId, attachmentId);
+    }
+
     private void ensureDhr(Long dhrId, boolean editable) {
         String sql = "SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND id=?" + (editable ? " FOR UPDATE" : "");
         var rows = jdbc.queryForList(sql, dhrId);
@@ -206,6 +217,8 @@ public class DhrAttachmentService {
                 try (var document = org.apache.pdfbox.Loader.loadPDF(bytes)) {
                     if (document.isEncrypted() || document.getNumberOfPages() < 1) throw invalid("PDF 无法作为可读证据");
                 }
+            } else if (!mime.startsWith("image/")) {
+                DhrOfficeAttachment.inspect(bytes, mime);
             } else {
                 try (var input = javax.imageio.ImageIO.createImageInputStream(new java.io.ByteArrayInputStream(bytes))) {
                     var readers = javax.imageio.ImageIO.getImageReaders(input);

@@ -17,6 +17,7 @@ public class DhrFillingController {
     private final DhrFillingService service;
     private final DhrInstanceService instances;
     private final ProductionExecutionService executions;
+    private final DhrSummaryService summaries;
     @GetMapping
     public ApiResponse<PageResult<ObjectNode>> list(@RequestParam(defaultValue="") String keyword,
             @RequestParam(defaultValue="") String displayStatus,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size) {
@@ -24,6 +25,12 @@ public class DhrFillingController {
     }
     @GetMapping("/{id}")
     public ApiResponse<ObjectNode> workspace(@PathVariable Long id) { return ApiResponse.success(service.workspace(id)); }
+    @GetMapping("/{id}/detail")
+    public ApiResponse<ObjectNode> detail(@PathVariable Long id) { return ApiResponse.success(instances.detail(id)); }
+    @GetMapping("/{id}/audit")
+    public ApiResponse<ObjectNode> audit(@PathVariable Long id, @RequestParam(defaultValue="0") int page) {
+        return ApiResponse.success(summaries.audit(id, page));
+    }
     @PostMapping("/{id}/actions")
     @PreAuthorize("hasAuthority('records.dhr-filling') and hasAuthority('dhr.filling.act')")
     public ApiResponse<ObjectNode> act(@PathVariable Long id,@RequestBody ProductionExecutionService.Command command) { return ApiResponse.success(service.act(id,command)); }

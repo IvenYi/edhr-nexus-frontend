@@ -4,7 +4,7 @@ decisions:
     title: DHR 实例管理第一期边界
     status: specified
     visibility: internal
-    context: user-confirmed；用户授权开始 DHR 管理开发。本决策收敛 DEC-0018-07 中尚待确认的首次开工创建时点，覆盖 BATCH/SN 唯一实例、同事务创建、冻结上下文、表单证据聚合、列表只读详情、权限与管理员默认授权。汇总审批、退回、发布、归档、作废、拖拽和人工补充均为明确非目标。
+    context: user-confirmed；本决策保留第一期 BATCH/SN 唯一实例、同事务创建、冻结上下文、目录子视图、权限及管理员默认授权。第一期列表只读和延期范围仅解释当时切片，现行完整归集与汇总按 DEC-0063、填报审批按 DEC-0068、终止按 DEC-0069。2026-09-27 原位消除无 dhrItemId 即不进入 DHR 的错误现行解释；不改变唯一实例、开工或生产完成规则。
     decisionStatements:
       - id: DEC-0062-01
         statement: BATCH 与 SN 生产对象均在首次合法 START 时由系统自动创建唯一 DHR 实例，禁止手工创建；创建与生产开工处于同一事务，失败整体回滚。
@@ -23,7 +23,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0062-05
-        statement: DHR 第一阶段只按同一生产对象聚合 PRODUCTION_EXECUTION 来源表单记录中冻结的 dhrItemId；每个 copyId 分别保留。仅工序/DHR 绑定产生的表单记录携带该目录项；作业发起、自定义挂载或其他无 dhrItemId 的独立记录不自动进入 DHR，即使引用同一表单模板版本也不共享实例或证据。
+        statement: DHR 基础目录子视图按同一生产对象的 PRODUCTION_EXECUTION 表单记录中冻结的 dhrItemId 聚合，每个 copyId 分别保留。无 dhrItemId 的作业/自定义记录不进入该基础目录项，但按 DEC-0063 自动进入完整 DHR 证据并有默认来源位置；同模板不构成合并实例或转移证据的依据，人工整理不决定证据范围。
         status: specified
         visibility: internal
       - id: DEC-0062-06

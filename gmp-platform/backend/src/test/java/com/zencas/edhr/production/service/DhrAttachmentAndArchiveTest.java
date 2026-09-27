@@ -7,6 +7,8 @@ import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -32,6 +34,7 @@ class DhrAttachmentAndArchiveTest {
     private DhrAttachmentService attachments;
     private DhrArchiveService archives;
     private AuditEventRepository audits;
+    private com.zencas.edhr.compliance.repository.FileObjectRepository formFiles;
 
     @BeforeEach void setup() {
         jdbc = new JdbcTemplate(new DriverManagerDataSource("jdbc:h2:mem:dhr-archive-" + System.nanoTime() + ";MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", ""));
@@ -40,10 +43,11 @@ class DhrAttachmentAndArchiveTest {
         var ids = new SnowflakeIdGenerator(1);
         attachments = new DhrAttachmentService(jdbc, mapper, ids, audits);
         ReflectionTestUtils.setField(attachments, "storagePath", temp.toString());
-        archives = new DhrArchiveService(jdbc, mapper, attachments, audits, ids);
+        formFiles = mock(com.zencas.edhr.compliance.repository.FileObjectRepository.class);
+        archives = new DhrArchiveService(jdbc, mapper, attachments, audits, ids, new DhrPdfRenderer(mapper), new DhrFormFiles(formFiles));
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),status VARCHAR(32),summary_status VARCHAR(32),dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),production_object_id BIGINT)");
         jdbc.execute("INSERT INTO dhr_instance VALUES(1,'default','COMPLETED','DRAFT','DHR-1','BATCH-1','BATCH',77)");
-        jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,original_name VARCHAR(512),stored_path VARCHAR(1024),mime_type VARCHAR(64),file_size BIGINT,sha256 VARCHAR(64),source_kind VARCHAR(32),purpose VARCHAR(500),original_recorded_at TIMESTAMP,custody_location VARCHAR(500),active BOOLEAN,verification_status VARCHAR(32),verified_by VARCHAR(192),verified_at TIMESTAMP,linked_by VARCHAR(192),linked_at TIMESTAMP,unlinked_by VARCHAR(192),unlinked_at TIMESTAMP,unlink_reason VARCHAR(500))");
+        jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,original_name VARCHAR(512),stored_path VARCHAR(1024),mime_type VARCHAR(128),file_size BIGINT,sha256 VARCHAR(64),source_kind VARCHAR(32),purpose VARCHAR(500),original_recorded_at TIMESTAMP,custody_location VARCHAR(500),active BOOLEAN,verification_status VARCHAR(32),verified_by VARCHAR(192),verified_at TIMESTAMP,linked_by VARCHAR(192),linked_at TIMESTAMP,unlinked_by VARCHAR(192),unlinked_at TIMESTAMP,unlink_reason VARCHAR(500))");
         AuditContext.setOperator("7", "测试操作员");
     }
 
@@ -69,18 +73,38 @@ class DhrAttachmentAndArchiveTest {
         verify(audits, times(3)).save(any());
     }
 
-    @Test void fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment() throws Exception {
-        var attachment = attachments.upload(1L, png(), "EXTERNAL_REPORT", "委外检验", null, null);
+    @ParameterizedTest
+    @ValueSource(strings = {"pdf", "png", "jpg", "doc", "docx", "xls", "xlsx"})
+    void fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String extension) throws Exception {
+        var original = attachmentFile(extension);
+        var attachment = attachments.upload(1L, original, "EXTERNAL_REPORT", "委外检验", null, null);
         Long attachmentId = Long.valueOf(attachment.path("attachmentId").asText());
+        assertThat(Files.readAllBytes(attachments.downloadableFile(1L, attachmentId, null))).isEqualTo(original.getBytes());
+        assertThat(attachments.snapshot(1L).get(0).path("name").asText()).isEqualTo(original.getOriginalFilename());
+        var response = new com.zencas.edhr.production.controller.DhrAttachmentController(attachments).download(1L, attachmentId, null);
+        assertThat(response.getHeaders().getContentDisposition().getFilename()).isEqualTo(original.getOriginalFilename());
+        assertThat(response.getHeaders().getContentDisposition().getType()).isEqualTo("attachment");
+        assertThat(response.getHeaders().getFirst("X-Content-Type-Options")).isEqualTo("nosniff");
+        assertThat(response.getBody().getInputStream().readAllBytes()).isEqualTo(original.getBytes());
         attachments.verify(1L, attachmentId);
         String attachmentJson = attachments.snapshot(1L).toString();
         var records = mapper.createArrayNode();
-        records.addObject().put("id", "100").put("instanceNo", "FR-100").put("templateName", "上料检查")
+        records.addObject().put("originKind", "WORK").put("id", "100").put("instanceNo", "FR-100").put("templateName", "上料检查")
                 .put("status", "COMPLETED").putObject("fieldValues").put("quantity", "12");
-        records.addObject().put("id", "101").put("instanceNo", "FR-101").put("templateName", "来料检查")
+        records.addObject().put("originKind", "CUSTOM").put("id", "101").put("instanceNo", "FR-101").put("templateName", "来料检查")
                 .put("status", "COMPLETED").putObject("fieldValues").put("result", "通过");
-        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),snapshot_hash VARCHAR(64),evidence_model_version SMALLINT,candidate_snapshot TEXT,attachment_snapshot TEXT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,check_result_snapshot TEXT,submitted_at TIMESTAMP)");
-        jdbc.update("INSERT INTO dhr_summary_version VALUES(10,'default',1,1,'FORMALIZED','frozen-hash',2,?,?,?,?,'{}',TIMESTAMP '2026-01-02 12:00:00')",
+        records.forEach(record -> ((com.fasterxml.jackson.databind.node.ObjectNode) record).set("snapshot", DhrPrintTestFixtures.record(mapper, record.path("id").asText()).path("snapshot")));
+        byte[] nativeBytes = "NATIVE_ATTACHMENT_BODY_NOT_IN_PDF".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        Path nativeFile = temp.resolve("form-original.xls"); Files.write(nativeFile, nativeBytes);
+        when(formFiles.findById(501L)).thenReturn(java.util.Optional.of(com.zencas.edhr.compliance.entity.FileObject.builder()
+                .id(501L).tenantId("default").targetType("PRODUCTION_EXECUTION").targetId("77").originalName("原始检测.xls")
+                .mimeType("application/vnd.ms-excel").storedPath(nativeFile.toString()).fileSize((long) nativeBytes.length)
+                .md5Hash(java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("MD5").digest(nativeBytes)))
+                .createdAt(LocalDateTime.of(2026, 1, 1, 12, 0)).build()));
+        ((com.fasterxml.jackson.databind.node.ObjectNode) records.get(0).path("fieldValues")).putArray("files").addObject().put("fileId", "501").put("originalName", "原始检测.xls");
+        String nativePath = "作业表单/上料检查_FR-100_100/附件/501_原始检测.xls";
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),snapshot_hash VARCHAR(64),candidate_snapshot TEXT,attachment_snapshot TEXT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,check_result_snapshot TEXT,submitted_at TIMESTAMP)");
+        jdbc.update("INSERT INTO dhr_summary_version VALUES(10,'default',1,1,'FORMALIZED','frozen-hash',?,?,?,?,'{}',TIMESTAMP '2026-01-02 12:00:00')",
                 records.toString(), attachmentJson, "{\"directories\":[]}", "[]");
         jdbc.execute("CREATE TABLE dhr_summary_evidence(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),summary_version_id BIGINT,source_record_id BIGINT,target_node_key VARCHAR(128),before_node_key VARCHAR(128),display_order INT,display_name VARCHAR(120))");
         jdbc.execute("INSERT INTO dhr_summary_evidence VALUES(20,'default',10,100,'source-work',NULL,1,NULL),(21,'default',10,101,'source-custom',NULL,2,NULL)");
@@ -100,10 +124,16 @@ class DhrAttachmentAndArchiveTest {
         jdbc.execute("INSERT INTO workflow_task VALUES(50,60,41,'APPROVE','同意')");
         Path full = archives.export(1L, 10L, "FULL", Set.of(), Set.of());
         try (ZipFile zip = new ZipFile(full.toFile())) {
-            assertThat(zip.getEntry("forms/100.json")).isNotNull();
-            assertThat(zip.getEntry("forms/101.html")).isNotNull();
-            assertThat(zip.getEntry("attachments/" + attachmentId + ".png")).isNotNull();
-            var manifest = mapper.readTree(zip.getInputStream(zip.getEntry("manifest.json")));
+            assertThat(zip.getInputStream(zip.getEntry(nativePath)).readAllBytes()).isEqualTo(nativeBytes);
+            try (var pdf = org.apache.pdfbox.Loader.loadPDF(zip.getInputStream(zip.getEntry("完整DHR_DHR-1_V1.pdf")).readAllBytes())) {
+                assertThat(pdf.getNumberOfPages()).isEqualTo(3); // index + two forms, never attachment pages
+                String text = java.text.Normalizer.normalize(new org.apache.pdfbox.text.PDFTextStripper().getText(pdf), java.text.Normalizer.Form.NFKC);
+                assertThat(text).contains("上料检查", "来料检查", "原始检测.xls").doesNotContain("NATIVE_ATTACHMENT_BODY_NOT_IN_PDF");
+            }
+            assertThat(zip.getEntry("追溯资料/表单快照/100.json")).isNotNull();
+            assertThat(zip.getEntry("自定义表单/来料检查_FR-101_101/来料检查_FR-101_101.pdf")).isNotNull();
+            assertThat(zip.getInputStream(zip.getEntry("汇总附件/" + attachmentId + "_" + original.getOriginalFilename())).readAllBytes()).isEqualTo(original.getBytes());
+            var manifest = mapper.readTree(zip.getInputStream(zip.getEntry("追溯资料/清单.json")));
             assertThat(manifest.path("completeVersion").asBoolean()).isTrue();
             assertThat(manifest.path("formCount").asInt()).isEqualTo(2);
             assertThat(manifest.path("attachmentCount").asInt()).isEqualTo(1);
@@ -114,10 +144,38 @@ class DhrAttachmentAndArchiveTest {
         } finally { Files.deleteIfExists(full); }
         Path selected = archives.export(1L, 10L, "SELECTED", Set.of("100"), Set.of());
         try (ZipFile zip = new ZipFile(selected.toFile())) {
-            assertThat(zip.getEntry("forms/101.json")).isNull();
-            assertThat(zip.getEntry("attachments/" + attachmentId + ".png")).isNull();
-            assertThat(mapper.readTree(zip.getInputStream(zip.getEntry("manifest.json"))).path("completeVersion").asBoolean()).isFalse();
+            assertThat(zip.getInputStream(zip.getEntry(nativePath)).readAllBytes()).isEqualTo(nativeBytes);
+            assertThat(zip.getEntry("追溯资料/表单快照/101.json")).isNull();
+            assertThat(zip.getEntry("汇总附件/" + attachmentId + "_" + original.getOriginalFilename())).isNull();
+            var subset = mapper.readTree(zip.getInputStream(zip.getEntry("追溯资料/清单.json")));
+            assertThat(subset.path("completeVersion").asBoolean()).isFalse();
+            assertThat(subset.path("sourceAuditEvents")).hasSize(1);
+            assertThat(subset.path("sourceAuditEvents").get(0).path("id").asText()).isEqualTo("30");
+            assertThat(subset.path("sourceAuditEvents").get(0).has("after")).isFalse();
+            assertThat(subset.path("sourceSignatures")).hasSize(1);
+            assertThat(subset.path("sourceSignatures").get(0).path("snapshotHash").asText()).isEqualTo(signedDigest);
+            assertThat(subset.path("sourceSignatures").get(0).has("snapshotData")).isFalse();
+            assertThat(subset.path("sourceTraceBoundary").asText()).contains("NOT_INSTANCE_EXCLUSIVE", "RAW_PAYLOADS_EXCLUDED");
+            assertThat(subset.path("selectedSourceRecords")).hasSize(1);
+            assertThat(subset.path("selectedSourceRecords").get(0).path("recordId").asText()).isEqualTo("100");
         } finally { Files.deleteIfExists(selected); }
+        Path mixed = archives.export(1L, 10L, "SELECTED", Set.of("101"), Set.of(attachmentId.toString()));
+        try (ZipFile zip = new ZipFile(mixed.toFile())) {
+            assertThat(zip.getEntry(nativePath)).isNull();
+            assertThat(zip.getEntry("追溯资料/表单快照/100.json")).isNull();
+            assertThat(zip.getEntry("追溯资料/表单快照/101.json")).isNotNull();
+            assertThat(zip.getInputStream(zip.getEntry("汇总附件/" + attachmentId + "_" + original.getOriginalFilename())).readAllBytes()).isEqualTo(original.getBytes());
+            var manifest = mapper.readTree(zip.getInputStream(zip.getEntry("追溯资料/清单.json")));
+            assertThat(manifest.path("completeVersion").asBoolean()).isFalse();
+            assertThat(manifest.path("formCount").asInt()).isEqualTo(1);
+            assertThat(manifest.path("attachmentCount").asInt()).isEqualTo(1);
+        } finally { Files.deleteIfExists(mixed); }
+        Path attachmentOnly = archives.export(1L, 10L, "SELECTED", Set.of(), Set.of(attachmentId.toString()));
+        try (ZipFile zip = new ZipFile(attachmentOnly.toFile())) {
+            assertThat(zip.getEntry("追溯资料/表单快照/100.json")).isNull();
+            assertThat(zip.getEntry("追溯资料/表单快照/101.json")).isNull();
+            assertThat(zip.getInputStream(zip.getEntry("汇总附件/" + attachmentId + "_" + original.getOriginalFilename())).readAllBytes()).isEqualTo(original.getBytes());
+        } finally { Files.deleteIfExists(attachmentOnly); }
         assertThatThrownBy(() -> archives.export(1L, 10L, "SELECTED", Set.of("999"), Set.of())).hasMessageContaining("范围无效");
         jdbc.update("UPDATE signature SET snapshot_hash='wrong' WHERE id=41");
         assertThatThrownBy(() -> archives.export(1L, 10L, "FULL", Set.of(), Set.of())).hasMessageContaining("审批签署证据摘要不一致");
@@ -127,6 +185,154 @@ class DhrAttachmentAndArchiveTest {
         assertThatThrownBy(() -> attachments.downloadableFile(1L, attachmentId, null)).hasMessageContaining("已解除关联");
         Files.write(attachments.file(1L, attachmentId), new byte[]{1, 2, 3});
         assertThatThrownBy(() -> archives.export(1L, 10L, "FULL", Set.of(), Set.of())).hasMessageContaining("摘要不一致");
+    }
+
+    @Test void acceptsExactly50MiBButRejectsOneByteOverBeforeReading() throws Exception {
+        byte[] bytes = java.util.Arrays.copyOf(png().getBytes(), 50 * 1024 * 1024);
+        var result = attachments.upload(1L, new MockMultipartFile("file", "large.png", "image/png", bytes), "OTHER", "容量边界", null, null);
+        assertThat(attachments.snapshot(1L).get(0).path("size").asLong()).isEqualTo(bytes.length);
+        assertThat(Files.size(attachments.file(1L, Long.valueOf(result.path("attachmentId").asText())))).isEqualTo(bytes.length);
+        var tooLarge = mock(org.springframework.web.multipart.MultipartFile.class);
+        when(tooLarge.getSize()).thenReturn((long) bytes.length + 1);
+        assertThatThrownBy(() -> attachments.upload(1L, tooLarge, "OTHER", "超限", null, null)).hasMessageContaining("50MB");
+        verify(tooLarge, never()).getBytes();
+    }
+
+    @Test void officeRejectsDisguisedUnsupportedCorruptEncryptedAndMacroFiles() throws Exception {
+        rejects("report.docx", png().getBytes());
+        rejects("report.xls", office("docx").getBytes());
+        rejects("report.docx", office("xlsx").getBytes());
+        rejects("report.doc", office("xls").getBytes());
+        rejects("report.xlsm", office("xlsx").getBytes());
+        rejects("report.pptx", office("docx").getBytes());
+        rejects("report.doc", new byte[]{1, 2, 3});
+        try (var fs = new org.apache.poi.poifs.filesystem.POIFSFileSystem()) {
+            fs.createDocument(new java.io.ByteArrayInputStream(new byte[16]), "WordDocument");
+            var out = new ByteArrayOutputStream();
+            fs.writeFilesystem(out);
+            rejects("report.doc", out.toByteArray());
+        }
+        try (var fs = new org.apache.poi.poifs.filesystem.POIFSFileSystem(new java.io.ByteArrayInputStream(office("xls").getBytes()))) {
+            fs.getRoot().createDirectory("_VBA_PROJECT_CUR").createDirectory("VBA");
+            var out = new ByteArrayOutputStream();
+            fs.writeFilesystem(out);
+            rejects("report.xls", out.toByteArray());
+        }
+        try (var fs = new org.apache.poi.poifs.filesystem.POIFSFileSystem(new java.io.ByteArrayInputStream(office("doc").getBytes()))) {
+            fs.getRoot().createDirectory("Macros");
+            var out = new ByteArrayOutputStream();
+            fs.writeFilesystem(out);
+            rejects("report.doc", out.toByteArray());
+        }
+        try (var workbook = new org.apache.poi.hssf.usermodel.HSSFWorkbook()) {
+            workbook.createSheet("encrypted");
+            org.apache.poi.hssf.record.crypto.Biff8EncryptionKey.setCurrentUserPassword("test");
+            var out = new ByteArrayOutputStream();
+            workbook.write(out);
+            org.apache.poi.hssf.record.crypto.Biff8EncryptionKey.setCurrentUserPassword(null);
+            rejects("report.xls", out.toByteArray());
+        } finally { org.apache.poi.hssf.record.crypto.Biff8EncryptionKey.setCurrentUserPassword(null); }
+        try (var pkg = org.apache.poi.openxml4j.opc.OPCPackage.open(new java.io.ByteArrayInputStream(office("docx").getBytes()))) {
+            pkg.createPart(org.apache.poi.openxml4j.opc.PackagingURIHelper.createPartName("/word/vbaProject.bin"), "application/vnd.ms-office.vbaProject");
+            var out = new ByteArrayOutputStream();
+            pkg.save(out);
+            rejects("report.docx", out.toByteArray());
+        }
+        try (var fs = new org.apache.poi.poifs.filesystem.POIFSFileSystem()) {
+            var info = new org.apache.poi.poifs.crypt.EncryptionInfo(org.apache.poi.poifs.crypt.EncryptionMode.agile);
+            var encryptor = info.getEncryptor();
+            encryptor.confirmPassword("test");
+            try (var stream = encryptor.getDataStream(fs)) { stream.write(office("xlsx").getBytes()); }
+            var out = new ByteArrayOutputStream();
+            fs.writeFilesystem(out);
+            rejects("report.xlsx", out.toByteArray());
+        }
+        assertThat(attachments.snapshot(1L)).isEmpty();
+        verifyNoInteractions(audits);
+    }
+
+    @Test void rejectsExcessiveOfficeZipExpansionBeforeParsing() throws Exception {
+        var out = new ByteArrayOutputStream();
+        try (var zip = new java.util.zip.ZipOutputStream(out)) {
+            zip.putNextEntry(new java.util.zip.ZipEntry("word/document.xml"));
+            byte[] block = new byte[1024 * 1024];
+            for (int i = 0; i < 101; i++) zip.write(block);
+        }
+        assertThatThrownBy(() -> attachments.upload(1L, new MockMultipartFile("file", "bomb.docx", "application/octet-stream", out.toByteArray()),
+                "OTHER", "展开限制", null, null)).hasMessageContaining("解压后过大");
+        assertThat(attachments.snapshot(1L)).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"docx", "xlsx"})
+    void rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String extension) throws Exception {
+        byte[] original = office(extension).getBytes();
+        var pkg = org.apache.poi.openxml4j.opc.OPCPackage.open(new java.io.ByteArrayInputStream(original));
+        try {
+            String partName = extension.equals("docx") ? "/word/document.xml" : "/xl/workbook.xml";
+            String mainType = extension.equals("docx") ? "wordprocessingml.template.main+xml" : "spreadsheetml.template.main+xml";
+            pkg.getPart(org.apache.poi.openxml4j.opc.PackagingURIHelper.createPartName(partName))
+                    .setContentType("application/vnd.openxmlformats-officedocument." + mainType);
+            var output = new ByteArrayOutputStream();
+            pkg.save(output);
+            rejects("template." + extension, output.toByteArray());
+        } finally { pkg.revert(); }
+        int centralOffset = -1;
+        for (int i = original.length - 22; i >= 0; i--) {
+            if (original[i] == 'P' && original[i + 1] == 'K' && original[i + 2] == 5 && original[i + 3] == 6) {
+                centralOffset = java.nio.ByteBuffer.wrap(original, i + 16, 4).order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt();
+                break;
+            }
+        }
+        assertThat(centralOffset).isPositive();
+        rejects("damaged." + extension, java.util.Arrays.copyOf(original, centralOffset));
+        assertThat(attachments.snapshot(1L)).isEmpty();
+        verifyNoInteractions(audits);
+    }
+
+    private void rejects(String name, byte[] bytes) {
+        assertThatThrownBy(() -> attachments.upload(1L, new MockMultipartFile("file", name, "application/octet-stream", bytes),
+                "EXTERNAL_REPORT", "格式校验", null, null)).isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+    }
+
+    private MockMultipartFile office(String extension) throws Exception {
+        var out = new ByteArrayOutputStream();
+        switch (extension) {
+            case "doc" -> {
+                // Repository-owned real Word 97-2003 file, read only; no conversion of uploaded bytes.
+                var source = Path.of("../../docs/regulation/医疗器械生产质量管理规范（2025）.doc");
+                out.write(Files.readAllBytes(source));
+            }
+            case "docx" -> {
+                try (var doc = new org.apache.poi.xwpf.usermodel.XWPFDocument()) {
+                    doc.createParagraph().createRun().setText("委外报告");
+                    doc.write(out);
+                }
+            }
+            case "xls", "xlsx" -> {
+                try (org.apache.poi.ss.usermodel.Workbook workbook = extension.equals("xls")
+                        ? new org.apache.poi.hssf.usermodel.HSSFWorkbook() : new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+                    workbook.createSheet("结果").createRow(0).createCell(0).setCellValue("报告");
+                    workbook.write(out);
+                }
+            }
+            default -> throw new IllegalArgumentException(extension);
+        }
+        return new MockMultipartFile("file", "委外报告." + extension.toUpperCase(java.util.Locale.ROOT), "application/octet-stream", out.toByteArray());
+    }
+
+    private MockMultipartFile attachmentFile(String extension) throws Exception {
+        if (extension.equals("png")) return png();
+        var output = new ByteArrayOutputStream();
+        if (extension.equals("pdf")) {
+            try (var document = new org.apache.pdfbox.pdmodel.PDDocument()) {
+                document.addPage(new org.apache.pdfbox.pdmodel.PDPage());
+                document.save(output);
+            }
+        } else if (extension.equals("jpg")) {
+            ImageIO.write(new BufferedImage(2, 2, BufferedImage.TYPE_INT_RGB), "jpg", output);
+        } else return office(extension);
+        return new MockMultipartFile("file", "委外报告." + extension, "application/octet-stream", output.toByteArray());
     }
 
     private MockMultipartFile png() throws Exception {

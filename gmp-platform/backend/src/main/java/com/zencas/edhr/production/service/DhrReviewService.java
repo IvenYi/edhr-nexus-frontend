@@ -39,7 +39,7 @@ public class DhrReviewService {
     private static final String SELECT = """
         SELECT t.id AS task_id,t.status AS task_status,t.assignee_id,t.candidate_snapshot,t.opinion,t.action,
           t.created_at,t.completed_at,n.name AS node_name,n.properties,v.id AS version_id,v.version_no,v.snapshot_hash,
-          v.evidence_model_version,v.check_result_snapshot,
+          v.check_result_snapshot,
           v.dhr_instance_id,v.submitted_by,v.submitted_at,d.dhr_no,d.object_no,d.object_type,
           d.work_order_no,d.product_name,r.status AS review_status,r.workflow_instance_id
         FROM dhr_summary_review r JOIN workflow_task t ON t.instance_id=r.workflow_instance_id
@@ -168,7 +168,6 @@ public class DhrReviewService {
     }
     private boolean pending(Map<String, Object> row) { return "PENDING_REVIEW".equals(row.get("review_status")) && Set.of("PENDING", "PROCESSING").contains(text(row, "task_status")); }
     private boolean hasCompleteManualReview(Map<String, Object> row) {
-        if (((Number) row.get("evidence_model_version")).intValue() < 2) return true;
         JsonNode review = json(text(row, "check_result_snapshot")).path("manualReview");
         return review.path("qualityAndExceptionsReviewed").asBoolean(false)
                 && review.path("sourceSignaturesReviewed").asBoolean(false)
