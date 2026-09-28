@@ -47,7 +47,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0063-11
-        statement: user-confirmed；冻结版本通过统一入口选择完整 ZIP 或自定义 ZIP；选择器按当前冻结档案目录、顺序与别名展示，支持目录、组及实例勾选，并可混选本版附件，切换版本清空选择。ZIP 使用中文目录，包含按冻结档案顺序汇成的可打印总 DHR PDF，以及按批记录模板、作业表单、自定义表单来源分类的单实例原模板版式 PDF；档案位置不改来源身份，也不重复计算同一实例。表单内上传文件放在对应实例的附件目录，汇总整理附件放在与来源目录同级的汇总附件目录。附件内容不并入总 PDF，只在 PDF 中列附件索引，并在 ZIP 中保留原文件；Office 不预览、编辑或转换。JSON 及机器清单保留于追溯资料，服务冻结数据、摘要、审计及签署追溯，不作为用户打印正文。总 PDF、单表 PDF、附件引用及追溯资料均绑定同一显式冻结版本，不以当前草稿或当前表单值替代；范围及版本须明确标识，选定范围不得冒充完整 DHR，总 PDF 也不能替代含附件原件的完整 ZIP。本轮提供可下载打印的 PDF，不新增在线打印流程；具体打印引擎、文件防护及命名去重算法仍属工程方案，不表示已实现或已验证。
+        statement: user-confirmed；冻结版本通过统一入口选择完整 ZIP 或自定义 ZIP；选择器按当前冻结档案目录、顺序与别名展示，支持目录、组及实例勾选，并可混选本版附件，切换版本清空选择。ZIP 使用中文目录，包含按冻结档案顺序汇成的可打印总 DHR PDF，以及按批记录模板、作业表单、自定义表单来源分类的单实例原模板版式 PDF；档案位置不改来源身份，也不重复计算同一实例。表单内上传文件是该实例的原证据，放在对应实例的附件目录；汇总整理附件放在与来源目录同级的汇总附件目录。实例原件缺失或内容损坏时不得省略附件后输出“完整档案”，包含该实例的选定范围导出也须阻断。附件内容不并入总 PDF，只在 PDF 中列附件索引，并在 ZIP 中保留原文件；Office 不预览、编辑或转换。JSON 及机器清单保留于追溯资料，服务冻结数据、摘要、审计及签署追溯，不作为用户打印正文。总 PDF、单表 PDF、附件引用及追溯资料均绑定同一显式冻结版本，不以当前草稿或当前表单值替代；范围及版本须明确标识，选定范围不得冒充完整 DHR，总 PDF 也不能替代含附件原件的完整 ZIP。本轮提供可下载打印的 PDF，不新增在线打印流程；具体打印引擎、文件防护及命名去重算法仍属工程方案，不表示已实现或已验证。
         status: specified
         visibility: internal
       - id: DEC-0063-12
@@ -67,7 +67,7 @@ decisions:
         status: specified
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-migration, evidence.dhr-summary-ui, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests]
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-migration, evidence.dhr-summary-ui, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-archive-service, evidence.dhr-form-files-source, evidence.dhr-form-files-test-source, evidence.dhr-summary-attachment-archive-tests]
     acceptanceScenarios:
       - id: scenario.dhr-summary-separate-menu
         given: 用户具有 DHR 查看和汇总页面权限
@@ -97,7 +97,7 @@ decisions:
         given: 指定冻结版本含跨来源调整档案位置的实例、表单内上传文件及汇总附件
         when: 用户按冻结档案目录选择完整或自定义范围并下载 ZIP
         then: 中文 ZIP 包含总 PDF、按真实来源归类的单实例原模板版式 PDF、对应实例附件、根级汇总附件及追溯资料；总 PDF 按本版档案顺序呈现所选表单和附件索引，不合入附件内容，Office 保留原件。同一实例不因来源和档案位置同时可见而重复输出；版本及完整/选定范围明确，不混入实时内容，JSON 用于追溯而非替代打印版式
-        evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-archive-service, evidence.dhr-summary-ui]
+        evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-archive-service, evidence.dhr-form-files-source, evidence.dhr-form-files-test-source, evidence.dhr-summary-ui]
         evidenceRequirements: [冻结目录树目录组实例勾选及跨版本清空, 中文ZIP路径与同名记录区分, 档案顺序和来源分类交叉对照, 总PDF及单表PDF版式分页视觉校验, 两类附件原件及索引比对, PDF附件不合入与Office不转换, 完整及选定范围同版冻结和去重, 缺失或摘要失配原件及不可渲染版式拒绝输出, JSON审计签署与文件摘要核对]
       - id: scenario.dhr-summary-legacy-draft-conversion
         given: NONE、无审批且生产正常完成的前期错误冻结汇总缺少 checkResult，源表单仍存在并有可用编排；另有当前模型冻结/草稿及意外旧审批或非完成记录作对照

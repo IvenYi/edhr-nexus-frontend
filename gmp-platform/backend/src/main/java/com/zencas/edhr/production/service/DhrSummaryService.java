@@ -37,6 +37,8 @@ public class DhrSummaryService {
     private final com.zencas.edhr.workflow.engine.WorkflowEngine workflowEngine;
     private final DhrEvidenceImpactService impacts;
     private final DhrAttachmentService attachments;
+    private final DhrFormFiles formFiles;
+    private final DhrFrozenEvidenceIntegrity frozenIntegrity;
 
     @Transactional(readOnly = true)
     public ObjectNode workspace(Long dhrId) {
@@ -77,7 +79,7 @@ public class DhrSummaryService {
 
     @Transactional(readOnly = true)
     public ObjectNode version(Long dhrId, Long versionId) {
-        ObjectNode detail = dhrInstances.detail(dhrId);
+        ObjectNode detail = dhrInstances.header(dhrId);
         List<ObjectNode> versions = jdbc.query("""
             SELECT id,version_no,status,review_mode,review_workflow_definition_id,review_workflow_version_id,
                    base_directory_snapshot,overlay_directory_snapshot,
@@ -100,8 +102,11 @@ public class DhrSummaryService {
             return version;
         }, TENANT, dhrId, versionId);
         if (versions.isEmpty()) throw invalid("DHR 汇总版本不存在");
+        frozenIntegrity.verify(versionId, versions.getFirst().path("candidates"));
         ObjectNode result = mapper.createObjectNode();
-        result.set("dhr", detail);
+        // A review task may read this endpoint without live DHR-detail permission. Never
+        // include current form values or live directory records in a historical response.
+        result.set("dhr", versionHeader(detail, versions.getFirst().path("baseDirectory")));
         result.set("version", versions.getFirst());
         var outcomes = jdbc.queryForList("SELECT status FROM dhr_summary_review WHERE summary_version_id=?", String.class, versionId);
         versions.getFirst().put("reviewOutcome", outcomes.isEmpty() ? null : outcomes.getFirst());
@@ -118,6 +123,19 @@ public class DhrSummaryService {
                 if (rs.getString("display_name") != null) placement.put("displayName", rs.getString("display_name"));
             }, TENANT, versionId);
         return result;
+    }
+
+    private ObjectNode versionHeader(ObjectNode detail, JsonNode baseDirectory) {
+        ObjectNode header = mapper.createObjectNode();
+        for (String field : List.of("id", "dhrNo", "productionObjectId", "objectNo", "objectType", "workOrderId",
+                "workOrderNo", "productCode", "productName", "processVersion", "routeName", "routeVersion",
+                "dhrTemplateName", "dhrTemplateVersion", "status", "displayStatus", "productionStatus",
+                "terminationReason", "terminationAt", "terminatedBy", "terminationSnapshotAvailable",
+                "summaryStatus", "dhrReviewMode", "createdBy", "createdAt", "updatedBy", "updatedAt", "completedAt")) {
+            if (detail.has(field)) header.set(field, detail.path(field).deepCopy());
+        }
+        header.set("directorySnapshot", baseDirectory.deepCopy());
+        return header;
     }
 
     @Transactional(readOnly = true)
@@ -251,6 +269,7 @@ public class DhrSummaryService {
             throw invalid("请确认质量结论、异常处置、源签署和完整证据范围已人工核查");
         String reviewNote = manualReview.path("note").asText("").strip();
         if (reviewNote.isBlank() || reviewNote.length() > 500) throw invalid("请填写本次人工核查说明（不超过 500 字）");
+        validateFormFiles(candidateSnapshot, dhr.path("productionObjectId").asText(), LocalDateTime.now());
 
         int versionNo = jdbc.queryForObject("SELECT COALESCE(MAX(version_no),0)+1 FROM dhr_summary_version WHERE tenant_id=? AND dhr_instance_id=?",
                 Integer.class, TENANT, dhrId);
@@ -262,6 +281,7 @@ public class DhrSummaryService {
                 .put("verifiedAttachmentCount", attachmentSnapshot.size())
                 .put("requiredDirectoryItemsChecked", true).put("requiredSourceRecordsChecked", true)
                 .put("unfinishedSupplementsChecked", true)
+                .put("formOriginalsChecked", true)
                 .put("qualityConclusionAutomaticallyInterpreted", false);
         checkResult.set("manualReview", mapper.createObjectNode().put("qualityAndExceptionsReviewed", true)
                 .put("sourceSignaturesReviewed", true).put("completeScopeReviewed", true)
@@ -322,6 +342,26 @@ public class DhrSummaryService {
                 .put("versionNo", versionNo).put("status", status).put("snapshotHash", snapshotHash));
         return mapper.createObjectNode().put("id", Long.toString(versionId)).put("versionNo", versionNo)
                 .put("status", status).put("snapshotHash", snapshotHash);
+    }
+
+    /** Approval rechecks the originals referenced by this exact submitted snapshot. */
+    void validateFrozenFormFiles(Long dhrId, Long versionId) {
+        var rows = jdbc.queryForList("""
+            SELECT v.candidate_snapshot,v.submitted_at,d.production_object_id
+            FROM dhr_summary_version v JOIN dhr_instance d ON d.id=v.dhr_instance_id AND d.tenant_id=v.tenant_id
+            WHERE v.tenant_id=? AND v.dhr_instance_id=? AND v.id=?
+            """, TENANT, dhrId, versionId);
+        if (rows.isEmpty()) throw invalid("DHR 汇总版本不存在");
+        var row = rows.getFirst();
+        if (row.get("production_object_id") == null) throw invalid("DHR 生产对象关联缺失，无法核对表单附件");
+        JsonNode candidates = json(String.valueOf(row.get("candidate_snapshot")), "DHR 候选证据快照");
+        frozenIntegrity.verify(versionId, candidates);
+        validateFormFiles(candidates,
+                row.get("production_object_id").toString(), ((java.sql.Timestamp) row.get("submitted_at")).toLocalDateTime());
+    }
+
+    private void validateFormFiles(JsonNode candidates, String objectId, LocalDateTime cutoff) {
+        for (JsonNode candidate : candidates) formFiles.validate(candidate, objectId, cutoff);
     }
 
     @Transactional

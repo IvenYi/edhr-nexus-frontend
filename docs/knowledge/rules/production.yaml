@@ -167,7 +167,7 @@ rules:
     result:
       type: block
       reason: review-template-actions-are-system-fixed
-    explanation: 记录控制审批流程不提供发起填报权限或表单校验配置，也不绑定具体表单字段。开始节点只表示流程边界，不配置按钮；审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定，不能增删、替换、重复或隐藏。审批按钮的显示名称、样式和动作前账户密码电子签名可配置，审批和退回可配置审批意见必填，转办不提供审批意见必填配置。记录控制审批流程不提供填充签名字段或签名字段绑定。
+    explanation: 记录控制审批流程不提供发起填报权限或表单校验配置，也不绑定具体表单字段。开始节点只表示流程边界，不配置按钮；审批节点固定提供审批、退回、转办，动作语义及显隐由系统固定，不能增删、替换、重复或隐藏。审批按钮的显示名称、样式和动作前账户密码电子签名可配置，审批和退回可配置审批意见必填，转办不提供审批意见必填配置。记录控制审批流程不提供填充签名字段或签名字段绑定；此处沿用 DEC-0041 的配置范围，记录控制运行时签署尚未实现，不套用 DEC-0074 的生产/DHR 按钮认证规则。
     evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-control-review-template-required-approvers, evidence.record-control-review-template-publish-tests]
   - id: rule.record-control.review-template-start-has-no-buttons
     name: 记录控制审批流程开始节点不配置按钮
@@ -649,31 +649,35 @@ rules:
       availability:
         cancel: productionObject.status == CREATED
         early-terminate: productionObject.status == IN_PROGRESS and earlyTermination.reasonPresent == true
-        dhr-view: productionObject.status in [IN_PROGRESS, COMPLETED, EARLY_TERMINATED]
+        dhr-view: always-visible
         execution-detail: productionObject.status in [IN_PROGRESS, COMPLETED, EARLY_TERMINATED]
         print-travel-sheet: true
       rowClickOwns: [production-object.detail, production-object.detail.audit-tab]
       forbiddenAction: view
-    explanation: 批次管理操作栏只承载独立业务动作，不重复提供查看按钮。未开工 BATCH 可取消；进行中 BATCH 的“结束”语义为要求填写原因的提前结束，不得调用正常完成；DHR 和执行详情仅在首次开工后具备业务对象，当前后端能力未实现时只能提供明确的待开放入口；流转单打印同样不得伪造下载。数据审计沿统一行点击详情及详情页签承载。
-    evidenceIds: [evidence.production-batch-management-page, evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-close-source, evidence.guancheng-batch-start-source]
-  - id: rule.production.batch-management-dhr-available-after-start
-    name: DHR 查看入口的开工后可用边界
-    status: planned
+    explanation: 批次管理操作栏只承载独立业务动作，不重复提供查看按钮。未开工 BATCH 可取消；进行中 BATCH 的“结束”语义为要求填写原因的提前结束，不得调用正常完成。DHR 图标对任意批次状态显示，点击后按既有查看权限和实例存在性给出结果，入口本身不创建实例；执行详情仍按开工后可用边界处理。流转单打印不得伪造下载，数据审计沿统一行点击详情及详情页签承载。
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-close-source, evidence.guancheng-batch-start-source]
+  - id: rule.production.batch-management-dhr-read-only-entry
+    name: 批次 DHR 图标常显与只读查阅
+    status: implemented
     visibility: internal
     trigger: production-object.dhr-view
-    scope: production-object
+    scope: production-batch-management
     condition:
       all:
-        - fact: productionObject.status
-          operator: in
-          value: [IN_PROGRESS, COMPLETED, EARLY_TERMINATED]
+        - fact: productionObject.objectType
+          operator: equals
+          value: BATCH
     result:
-      type: block
-      reason: dhr-instance-not-available-before-first-start
+      type: omit-projection
+      entry: always-visible
+      permission: dhr.instances.view
+      deniedMessage: 没有 DHR 查看权限
+      missingMessage: 该批次尚未生成 DHR（首次开工后自动创建）
+      foundView: dhr-archive-read-only
+      lookupCreatesInstance: false
       creationTiming: first-production-object-start
-      unavailableStatuses: [CREATED, CANCELLED]
-    explanation: DHR 实例在生产对象首次开工时创建或激活；未开工和取消对象不显示有效 DHR 内容。当前 eDHR 尚无 DHR 实例查询接口，入口实现必须保持待开放状态，不能返回虚构记录。
-    evidenceIds: [evidence.production-object-start-side-effects-current, evidence.guancheng-batch-start-source, evidence.production-object-early-termination-gap]
+    explanation: 批次 DHR 图标在所有状态下始终占位展示，保持操作列对齐。DHR 仅在首次合法 START 同事务自动创建，每生产对象至多一份；入口按生产对象查找，无权限时提示，有权限但无实例时提示尚未生成，有实例时复用列表档案界面只读查看。当前工作树已有查询、权限与界面代码及聚焦服务测试；浏览器真实交互尚未验证。
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-migration]
   - id: rule.production.batch-management-execution-detail-entry
     name: 批次执行详情入口暂不伪造执行数据
     status: planned
@@ -897,8 +901,8 @@ rules:
       type: write-audit-record
       objectStatus: IN_PROGRESS
       firstObjectWorkOrderStatus: IN_PROCESS
-    explanation: 当前状态投影服务只将 CREATED 对象转为 IN_PROGRESS，并在首个对象开工时将 CREATED 工单转为 IN_PROCESS，同时写入审计；真正的开工入口、路由节点、事务实例和 DHR 初始化由后续生产执行能力承接。
-    evidenceIds: [evidence.production-object-start-side-effects-current, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.guancheng-batch-start-source]
+    explanation: ProductionService.startObject 只负责将 CREATED 对象转为 IN_PROGRESS，并在首个对象开工时将 CREATED 工单转为 IN_PROCESS；公开的生产对象直接开工接口已阻断。首次合法 START 由生产执行服务校验工序并在同一事务创建 DHR，拆分阶段不创建 DHR。
+    evidenceIds: [evidence.production-object-start-side-effects-current, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller, evidence.dhr-instance-start-transaction-source]
   - id: rule.production.object-cancel-before-start
     name: 未开工生产对象取消保留追溯
     status: implemented
@@ -942,7 +946,7 @@ rules:
     explanation: 进行中生产对象点击“提前结束”不得投影为正常完成；记录原因和终止时间，同事务将关联 DHR 真实标记已终止，停止普通执行并保留真实表单，不自动作废。英文状态码统一使用 EARLY_TERMINATED。工单级直接提前结束命令仍非本期范围；联动实现与验证按 DEC-0069 核对。
     evidenceIds: [evidence.production-object-early-termination-gap, evidence.guancheng-batch-close-source, evidence.production-service, evidence.production-object-controller, evidence.dhr-termination-user-confirmed]
   - id: rule.production.split-initializes-execution-context
-    name: 批次拆分初始化生产执行上下文
+    name: 批次拆分准备生产对象与制程引用
     status: specified
     visibility: internal
     trigger: production-object.split
@@ -955,17 +959,18 @@ rules:
     result:
       type: persist-version-references
       initialStatus: CREATED
-      executionReferences: [process-version, routing-version, first-operation, dhr-template, release-template]
-      traceability: [production-create-transaction, subject-transaction-reference]
-      updateWorkOrderAllocation: true
-    explanation: 外部原始实现表明批次拆分不是单纯写入编号和数量：还要冻结制程/路线及首工序引用、建立 DHR 和追溯上下文，并同步工单已分配数量。当前 eDHR 已保存制程版本和数量，但 DHR、路由执行记录、事务追溯和打印/放行引用待后续生产执行实现。
-    evidenceIds: [evidence.guancheng-batch-split-source, evidence.production-service, evidence.production-object-entity, evidence.production-object-batch-controller]
+      objectReferences: [work-order, process-version]
+      firstSplitLocksWorkOrderProcessVersion: true
+      dhrCreatedBySplit: false
+      dhrCreationTiming: first-legal-start
+    explanation: 沿用历史规则 ID 原位纠正前期错误语义。当前拆分仅创建 CREATED 生产对象并保存工单与锁定制程版本引用；分配量按未取消对象目标数量计算。拆分不生成 DHR，也不建立首工序执行记录。BATCH/SN 的唯一 DHR 只在首次合法 START 同事务创建；外部系统的拆分行为不能移植为本产品现行规则。
+    evidenceIds: [evidence.production-service, evidence.production-object-entity, evidence.production-object-batch-controller, evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
   - id: rule.production.object-normal-completion-dhr-projection
-    name: 正常完工与 DHR 投影
+    name: 正常完工同步 DHR 状态
     status: specified
     visibility: internal
-    trigger: production-object.complete
-    scope: production-batch
+    trigger: production-execution.complete-all-operations
+    scope: production-object
     condition:
       all:
         - fact: productionObject.routeHasNoCurrentOperation
@@ -974,10 +979,10 @@ rules:
     result:
       type: write-audit-record
       status: COMPLETED
-      dhrMaterialRunningStatus: FINISHED
-      optionalActions: [create-product-release, remove-production-execution-task, reevaluate-work-order-status]
-    explanation: 正常完工必须由生产执行推进工序后确认无当前工序，随后将批次置为 COMPLETED 并更新 DHR 物料运行状态；DHR 已完成且配置允许时可创建产品放行单。提前结束不适用该正常完工投影。
-    evidenceIds: [evidence.guancheng-batch-complete-source, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller]
+      dhrStatus: COMPLETED
+      productReleaseImplied: false
+    explanation: 同一生产执行动作确认全部工序完成后，生产对象与关联 DHR 在同一事务进入 COMPLETED；缺失 DHR 时阻断完成。DHR 正常完成不等于汇总定版、审核通过或产品放行；提前结束另按 DEC-0069 处理。历史外部系统的放行单联动不定义本产品当前动作。
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-service, evidence.production-object-status-machine, evidence.production-service]
   - id: rule.production.object-terminal-cascade-to-work-order
     name: 生产对象终态回算工单
     status: planned

@@ -73,6 +73,7 @@ class ProductionExecutionIntegrationTest {
     @MockBean ProductProcessVersionRepository processVersions;
     @MockBean ProductProcessResolutionService resolution;
     @MockBean StateMachineService stateMachines;
+    @MockBean DhrSummaryService summaries;
     @Autowired UserAccountRepository users;
     @Autowired PasswordEncoder passwords;
     @Autowired FileObjectRepository files;
@@ -434,7 +435,7 @@ class ProductionExecutionIntegrationTest {
         String number = jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class);
         action(101, "RETURN", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "opinion", "请复核温度")).andExpect(status().isOk());
         action(101, "SUBMIT", 3, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 26))).andExpect(status().isOk());
-        action(101, "APPROVE", 4, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk());
+        action(101, "APPROVE", 4, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "sign-secret")).andExpect(status().isOk());
         assertThat(jdbc.queryForObject("SELECT instance_no FROM form_instance_record", String.class)).isEqualTo(number);
         assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record", String.class)).isEqualTo("COMPLETED");
     }
@@ -774,7 +775,7 @@ class ProductionExecutionIntegrationTest {
         return Map.of("formId", "form-51", "instanceId", "form-51", "values", values, "password", password, "signatureTarget", Map.of("fieldId", "sign"));
     }
 
-    @Test void realApprovalIdentityAndPasswordSignaturePersistAtomically() throws Exception {
+    @Test void realApprovalIdentityAndSignaturePasswordPersistAtomically() throws Exception {
         seedSignedWork();
         action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
         action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk())
@@ -785,12 +786,13 @@ class ProductionExecutionIntegrationTest {
             .content("{\"action\":\"APPROVE\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"))
             .andExpect(status().isBadRequest());
         action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "wrong")).andExpect(status().isBadRequest());
-        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class)).isZero();
-        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk())
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "sign-secret")).andExpect(status().isOk())
             .andExpect(jsonPath("$.data.state.operations.a.works['7'].status").value("COMPLETED"))
             .andExpect(jsonPath("$.data.state.operations.a.formGroups.work-7-f.endedReason").value("ALL_COPIES_COMPLETED"));
-        assertThat(jdbc.queryForObject("SELECT signer_id FROM signature", String.class)).isEqualTo("1");
-        assertThat(jdbc.queryForObject("SELECT snapshot_data FROM signature", String.class)).contains("temperature").doesNotContain("test-secret", "password");
+        assertThat(jdbc.queryForObject("SELECT signer_id FROM signature WHERE target_type='PRODUCTION_EXECUTION'", String.class)).isEqualTo("1");
+        assertThat(jdbc.queryForObject("SELECT snapshot_data FROM signature WHERE target_type='PRODUCTION_EXECUTION'", String.class)).contains("temperature").doesNotContain("sign-secret", "password");
         action(101, "SUBMIT", 3, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 25))).andExpect(status().isOk());
         action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
     }
@@ -1007,6 +1009,7 @@ class ProductionExecutionIntegrationTest {
     }
 
     private void seedSignedWork() {
+        seedButtonCertification(900L, "1");
         jdbc.update("INSERT INTO workflow_definition(id,tenant_id,type,name) VALUES(7,'default','WORK','装配复核'),(8,'default','FORM_PROCESS','填报与复核')");
         jdbc.update("INSERT INTO workflow_definition_version VALUES(8,8,1,'PUBLISHED',true,?,?)", """
             [{"id":"s","data":{"kind":"START"}},{"id":"review","data":{"kind":"APPROVAL","label":"现场复核","config":{
@@ -1020,10 +1023,112 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO workflow_binding_rule VALUES(7,'default',7,'SCOPED',true,1,NULL,11)");
     }
 
+    private void seedButtonCertification(long id, String signerId) {
+        new org.springframework.transaction.support.TransactionTemplate(transactions).executeWithoutResult(status -> signatures.save(Signature.builder()
+                .id(id).targetType("USER_PROFILE").targetId(signerId).signerId(signerId).signerName("签署人")
+                .signaturePasswordHash(passwords.encode("sign-secret")).snapshotData("{}")
+                .signedAt(java.time.LocalDateTime.now()).expiresAt(java.time.LocalDateTime.now().plusDays(1)).build()));
+    }
+
+    @Test void sharedWorkstationUsesSignerPermissionsAndDualIdentityWithoutChangingSession() throws Exception {
+        seedSignedWork();
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'reviewer2','复核员B',?,'ACTIVE')", passwords.encode("other-login"));
+        seedButtonCertification(902L, "2");
+        var nodes = mapper.readTree(jdbc.queryForObject("SELECT nodes_json FROM workflow_definition_version WHERE id=8", String.class));
+        ((com.fasterxml.jackson.databind.node.ObjectNode) nodes.get(1).path("data").path("config").path("approverSubjects").get(0)).put("id", "2");
+        jdbc.update("UPDATE workflow_definition_version SET nodes_json=? WHERE id=8", nodes.toString());
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.availability.a.forms.work-7-f.canAct").value(false));
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "sign-secret"))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("无权")));
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 99), "account", "reviewer2", "password", "sign-secret"))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("只读")));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "reviewer2", "password", "sign-secret"))
+                .andExpect(status().isOk());
+        var signed = jdbc.queryForMap("SELECT signer_id,auth_method,auth_event_ref,snapshot_data FROM signature WHERE target_type='PRODUCTION_EXECUTION'");
+        assertThat(signed.get("signer_id")).isEqualTo("2");
+        assertThat(signed.get("auth_method")).isEqualTo("SIGNATURE_PASSWORD");
+        assertThat(signed.get("auth_event_ref")).isEqualTo("902");
+        assertThat(mapper.readTree(jdbc.queryForObject("SELECT snapshot_data FROM signature WHERE target_type='PRODUCTION_EXECUTION'", String.class)).path("sessionOperatorId").asText()).isEqualTo("1");
+        assertThat(jdbc.queryForObject("SELECT operator_id FROM audit_event WHERE function_name='APPROVE'", String.class)).isEqualTo("1");
+        var state = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        JsonNode history = java.util.stream.StreamSupport.stream(state.path("history").spliterator(), false)
+                .filter(item -> "APPROVE".equals(item.path("actionCode").asText())).findFirst().orElseThrow();
+        assertThat(history.path("operator").asText()).isEqualTo("2");
+        assertThat(history.path("sessionOperatorId").asText()).isEqualTo("1");
+    }
+
+    @Test void failedSignedActionRollsBackSignatureValuesAndAudit() throws Exception {
+        seedSignedWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk());
+        String before = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        doThrow(new IllegalStateException("audit unavailable")).when(audits).save(argThat(event -> event != null && "APPROVE".equals(event.getFunctionName())));
+        action(101, "APPROVE", 2, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "sign-secret"))
+                .andExpect(status().is5xxServerError());
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(2L);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='PRODUCTION_EXECUTION'", Integer.class)).isZero();
+    }
+
+    private void seedDirectButtonSignature() {
+        jdbc.update("UPDATE product_process_operation_form_binding SET fill_settings_json=? WHERE id=51", """
+            {"fillMode":"DIRECT","directFillConfig":{"buttonEvents":[
+              {"id":"sign","action":"SUBMIT","event":"BEFORE","signatureMethod":"ACCOUNT_PASSWORD","builtin":"NONE"}]}}
+            """);
+    }
+
+    @Test void directSigningBlocksMissingExpiredAndCustomerAdminLoginCredentialsWithoutLosingDraft() throws Exception {
+        seedDirectButtonSignature();
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'customer-admin','客户管理员',?,'ACTIVE')", passwords.encode("other-login"));
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 25))).andExpect(status().isOk());
+        var command = Map.of("formId", "form-51", "values", Map.of("temperature", 25), "account", "customer-admin", "password", "other-login");
+        action(101, "SUBMIT", 2, "a", command).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("尚未完成")));
+        seedButtonCertification(902L, "2");
+        action(101, "SUBMIT", 2, "a", command).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("电子签名密码错误")));
+        jdbc.update("UPDATE signature SET expires_at=? WHERE id=902", java.time.LocalDateTime.now().minusDays(1));
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of(), "account", "customer-admin", "password", "sign-secret"))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("已过期")));
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(jsonPath("$.data.revision").value(2))
+                .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.values.temperature").value(25));
+        jdbc.update("UPDATE signature SET expires_at=? WHERE id=902", java.time.LocalDateTime.now().plusDays(1));
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of(), "account", "customer-admin", "password", "sign-secret"))
+                .andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT signer_id FROM signature WHERE target_type='PRODUCTION_EXECUTION'", String.class)).isEqualTo("2");
+    }
+
+    @Test void internalAdminUsesLoginPasswordOnlyForButtonAndUnsignedActionsDoNotImpersonate() throws Exception {
+        seedDirectButtonSignature();
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'admin','维护账号',?,'ACTIVE')", passwords.encode("maintenance-login"));
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 25), "account", "admin", "password", "wrong"))
+                .andExpect(status().isOk());
+        var state = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        assertThat(state.path("history").get(1).path("operator").asText()).isEqualTo("1");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class)).isZero();
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of(), "account", "admin", "password", "maintenance-login"))
+                .andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT auth_method FROM signature", String.class)).isEqualTo("ADMIN_LOGIN_PASSWORD");
+        assertThat(jdbc.queryForObject("SELECT signer_id FROM signature", String.class)).isEqualTo("2");
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "form-51", "values", Map.of(), "account", "admin", "password", "maintenance-login"))
+                .andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class)).isEqualTo(1);
+    }
+
     @Test
     @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "execution.browser", matches = "true")
     void browserEvidenceFixture() throws Exception {
         seedSignedWork();
+        if (Boolean.getBoolean("execution.buttonSignature")) {
+            seedDirectButtonSignature();
+            jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'reviewer2','复核员B',?,'ACTIVE'),(3,0,'uncertified','未认证人员',?,'ACTIVE')", passwords.encode("other-login"), passwords.encode("other-login"));
+            seedButtonCertification(902L, "2");
+        }
         if (Boolean.getBoolean("execution.optional")) jdbc.update("UPDATE product_process_operation_form_binding SET required=false");
         if (Boolean.getBoolean("execution.output")) {
             var model = mapper.createObjectNode(); var fields = model.putArray("fields");
@@ -1273,7 +1378,7 @@ class ProductionExecutionIntegrationTest {
         action(101, "SUBMIT", 3, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 23))).andExpect(status().isOk());
         mvc.perform(personal(worklistDetail("FILLED", "work-7-f", "work-7-f"), "1")).andExpect(jsonPath("$.data.myEvents.length()").value(2));
         mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "1")).andExpect(jsonPath("$.data.totalElements").value(1));
-        action(101, "APPROVE", 4, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "test-secret")).andExpect(status().isOk());
+        action(101, "APPROVE", 4, "a", Map.of("formId", "work-7-f", "values", Map.of(), "account", "operator", "password", "sign-secret")).andExpect(status().isOk());
         mvc.perform(personal(worklistDetail("REVIEW_DONE", "work-7-f", "work-7-f"), "1"))
             .andExpect(jsonPath("$.data.myEvents.length()").value(2)).andExpect(jsonPath("$.data.controls.canAct").value(false));
         JsonNode state = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));

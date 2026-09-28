@@ -362,7 +362,7 @@ terms:
     visibility: internal
   - id: term.form-process-button-electronic-signature
     name: 表单流程按钮签署事件
-    definition: 关联保存、提交、审批或退回按钮的账户密码签署事件；事件存在即表示动作执行前需要签名，是否填充签名字段由事件单独选择，当前仅定义配置层。
+    definition: 关联保存、提交、审批或退回按钮的签署事件；事件存在即表示动作执行前需要签名，是否填充签名字段由事件单独选择。DEC-0074 确认普通账号使用实际签署人的独立电子签名密码和有效认证，允许共享终端跨账号本人签署，仅用户名 admin 暂用登录密码例外；不改变 SIGN_FIELD。新认证规则仍为 specified/internal，不代表运行验证完成。
     aliases: [按钮签名要求, 电子签名配置]
     status: specified
     visibility: internal
@@ -596,7 +596,7 @@ terms:
     visibility: internal
   - id: term.production-batch-management
     name: 批次管理页面
-    definition: 生产准备阶段面向既有 BATCH 生产对象的列表页面；页面复用 ProductionObject 列表投影，支持整行打开详情以及在详情中查看该生产对象的数据审计，并由操作栏承载状态受限的业务动作。操作栏不提供重复的查看动作；未开工对象可取消，进行中对象可填写原因后提前结束，DHR、执行详情和流转单打印仅在对应生产执行能力可用时提供入口，不得伪造已实现数据。批次管理 MVP 不提供既有 BATCH 再拆分。
+    definition: 生产准备阶段面向既有 BATCH 生产对象的列表页面；页面复用 ProductionObject 列表投影，支持整行打开详情及数据审计，操作栏不重复提供查看动作。未开工对象可取消，进行中对象可填写原因后提前结束；DHR 图标对所有批次状态显示并按查看权限及实例存在性给出只读档案或提示，点击不创建 DHR。执行详情和流转单打印仍按各自能力边界提供，不得伪造数据。批次管理 MVP 不提供既有 BATCH 再拆分。
     aliases: [批次列表, 生产批次管理]
     status: implemented
     visibility: internal
@@ -608,9 +608,9 @@ terms:
     visibility: internal
   - id: term.production-object-dhr-view
     name: 生产对象 DHR 查看
-    definition: 从批次管理进入的生产对象 DHR 实例查看入口；DHR 实例应在生产对象首次开工时创建或激活，未开工、取消对象没有可查看的有效 DHR。当前 DHR 运行页面尚未实现。
+    definition: 批次管理操作栏常显的关联 DHR 只读查阅入口；无 dhr.instances.view 权限时提示无权，有权限但尚无关联实例时提示尚未生成，有实例时复用 DHR 档案界面只读查看。查询和点击不创建实例；BATCH/SN DHR 仅在首次合法 START 时自动创建。当前工作树已有入口及查询源码，浏览器交互和发布验收尚未据此证明。
     aliases: [批次 DHR, 批记录查看]
-    status: planned
+    status: implemented
     visibility: internal
   - id: term.serial-number
     name: SN

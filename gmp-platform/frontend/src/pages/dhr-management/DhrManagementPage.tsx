@@ -261,6 +261,12 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
   );
 }
 
+export function DhrArchiveViewer({ selected, onClose, viewOnly = false }: { selected: DhrInstanceSummary; onClose: () => void; viewOnly?: boolean }) {
+  return selected.summaryStatus === 'DRAFT' || selected.summaryStatus === 'PENDING_REVIEW' || selected.summaryStatus === 'FORMALIZED'
+    ? <SummaryWorkspace dhr={selected} viewOnly={viewOnly} onClose={onClose} />
+    : <DetailDialog selected={selected} onClose={onClose} />;
+}
+
 export default function DhrManagementPage() {
   const navigate = useNavigate();
   const [draftKeyword, setDraftKeyword] = useState('');
@@ -628,9 +634,9 @@ export default function DhrManagementPage() {
       </Box>
 
       {detailRow && <DhrDetailDrawer key={detailRow.id} source="list" id={detailRow.id} dhrNo={detailRow.dhrNo} onClose={() => setDetailRow(null)} />}
-      {selected && (selected.summaryStatus === 'DRAFT' || selected.summaryStatus === 'PENDING_REVIEW' || selected.summaryStatus === 'FORMALIZED')
-        ? <SummaryWorkspace dhr={selected} initialRevision={initialRevision} onClose={() => setSelected(null)} />
-        : <DetailDialog selected={selected} onClose={() => setSelected(null)} />}
+      {selected && (initialRevision
+        ? <SummaryWorkspace dhr={selected} initialRevision onClose={() => setSelected(null)} />
+        : <DhrArchiveViewer selected={selected} onClose={() => setSelected(null)} />)}
     </Box>
   );
 }

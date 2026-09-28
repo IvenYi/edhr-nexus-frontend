@@ -13,7 +13,7 @@ import { formListFieldSx, formListQueryGridSx, formListQueryPanelSx } from '@/pa
 import DhrDetailDrawer from './DhrDetailDrawer';
 import DhrWorklistTable from './DhrWorklistTable';
 import DhrActionDialog from './DhrActionDialog';
-import { EvidenceCanvas } from './DhrSummaryPage';
+import { EvidenceCanvas } from './DhrEvidenceCanvas';
 import { archiveNavigation, evidenceNavigation, type DhrNavigationView, type DhrSource } from './dhrSourceNavigation';
 import { DhrWorkspaceNavigation, DhrInstancePanel, workspaceBodySx, workspacePanelSx } from './DhrWorkspaceNavigation';
 

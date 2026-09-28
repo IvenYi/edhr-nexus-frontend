@@ -226,11 +226,20 @@ public class ProductionExecutionEngine {
         if (!existing.isObject()) throw invalid("表单尚未到达可执行节点");
         ObjectNode formState = (ObjectNode) existing;
         ObjectNode controls = formControls(form, formState, operator);
-        if (!controls.path("canAct").asBoolean()) throw invalid("当前用户无权处理此表单节点");
         JsonNode button = null;
         for (JsonNode item : controls.path("buttons")) if (action.equals(item.path("action").asText())) button = item;
         if ("SIGN_FIELD".equals(action)) button = mapper.createObjectNode();
         if (button == null) throw invalid("当前表单节点不允许该动作");
+        String nodeId = controls.path("nodeId").asText();
+        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), nodeId) : defaultFormNode(form);
+        ExecutionAccess.ButtonSigner signer = null;
+        String actionOperator = operator;
+        if (button.path("requiresSignature").asBoolean()) {
+            signer = access.authenticateButtonSigner(account, password);
+            if (!access.canAct(form, node, formState, signer.id())) throw invalid("签署账户无权处理此表单节点");
+            actionOperator = signer.id();
+            controls.set("permissions", access.permissions(form, node, formState, actionOperator));
+        } else if (!controls.path("canAct").asBoolean()) throw invalid("当前用户无权处理此表单节点");
         if (button.path("requireOpinion").asBoolean() && (opinion == null || opinion.isBlank())) throw invalid("请填写操作意见");
         if (values == null || !values.isObject()) throw invalid("表单数据格式不正确");
         ObjectNode previous = formState.withObject("/values");
@@ -252,8 +261,6 @@ public class ProductionExecutionEngine {
         for (JsonNode field : com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper)) {
             access.validateEvidence(field, merged.path(field.path("id").asText()), snapshot.path("context").path("objectId").asText(), merged);
         }
-        String nodeId = controls.path("nodeId").asText();
-        JsonNode node = form.has("flow") ? find(form.path("flow").path("nodes"), nodeId) : defaultFormNode(form);
         JsonNode activeBefore = formState.path("active").deepCopy();
         if ("SIGN_FIELD".equals(action)) {
             if (signatureTarget == null || !signatureTarget.isObject()) throw invalid("请选择签名字段");
@@ -283,7 +290,7 @@ public class ProductionExecutionEngine {
             destination.set(fieldId, signature); formState.put("lastSignatureId", signature.path("signatureId").asText());
         }
         if (button.path("requiresSignature").asBoolean()) {
-            String signature = access.sign(snapshot.path("context").path("objectId").asText(), operationId + "/" + target, action, merged, account, password);
+            String signature = access.sign(snapshot.path("context").path("objectId").asText(), operationId + "/" + target, action, merged, signer);
             formState.put("lastSignatureId", signature);
             for (JsonNode event : node.path("data").path("config").path("buttonEvents")) {
                 if (!event.path("enabled").asBoolean(true)) continue;
@@ -294,7 +301,7 @@ public class ProductionExecutionEngine {
                 {
                     JsonNode field = find(form.path("fields"), fieldId);
                     if (!"signature".equals(field.path("type").asText())) throw invalid("签名绑定不是签名字段");
-                    merged.put(fieldId, operator + " · " + LocalDateTime.now() + " · " + signature);
+                    merged.put(fieldId, actionOperator + " · " + LocalDateTime.now() + " · " + signature);
                 }
             }
         }
@@ -320,10 +327,12 @@ public class ProductionExecutionEngine {
         }
         for (JsonNode activeId : formState.path("active")) if (!contains(activeBefore, activeId.asText()))
             formState.withObject("/nodeArrivedAt").put(activeId.asText(), LocalDateTime.now().toString());
-        history(state, op, switch (action) { case "SIGN_FIELD" -> "表单字段签名"; case "SAVE" -> "保存表单"; case "SUBMIT" -> "提交表单"; case "APPROVE" -> "审批表单"; case "RETURN" -> "退回表单"; default -> action; }, operator, form.path("name").asText() + " · 第 " + (ExecutionFormCopies.ids(current, formId).indexOf(target) + 1) + " 份 · " + target + (opinion == null || opinion.isBlank() ? "" : " · " + opinion))
+        ObjectNode actionHistory = history(state, op, switch (action) { case "SIGN_FIELD" -> "表单字段签名"; case "SAVE" -> "保存表单"; case "SUBMIT" -> "提交表单"; case "APPROVE" -> "审批表单"; case "RETURN" -> "退回表单"; default -> action; }, actionOperator, form.path("name").asText() + " · 第 " + (ExecutionFormCopies.ids(current, formId).indexOf(target) + 1) + " 份 · " + target + (opinion == null || opinion.isBlank() ? "" : " · " + opinion))
             .put("actionCode", action).put("formId", formId).put("copyId", target).put("nodeId", nodeId)
             .put("nodeKind", kind(node)).put("nodeName", node.path("data").path("label").asText("现场填报"));
-        settleCompletedWorkForms(snapshot, state, operationId, operator);
+        if (signer != null) actionHistory.put("sessionOperatorId", operator).put("signerName", signer.name())
+                .put("signerAccount", signer.account()).put("signatureId", formState.path("lastSignatureId").asText());
+        settleCompletedWorkForms(snapshot, state, operationId, actionOperator);
     }
 
     /** A null operator computes the read projection; write commands persist the same transition with audit history. */

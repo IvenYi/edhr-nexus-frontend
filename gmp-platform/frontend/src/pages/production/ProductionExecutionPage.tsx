@@ -24,6 +24,7 @@ import ExecutionFormSelector from './ExecutionFormSelector';
 import useExecutionPresence from './useExecutionPresence';
 import { executionFormReceipt, executionHistoryGroups } from './executionHistory';
 import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
+import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
 
 const labels: Record<string, string> = { CREATED: '待开工', IN_PROGRESS: '进行中', IN_PROCESS: '进行中', COMPLETED: '已完成', PENDING: '待开工', ACTIVE: '待处理', RUNNING: '进行中', CANCELLED: '已取消', EARLY_TERMINATED: '已提前结束', CLOSED: '已关闭' };
 const time = (value?: string) => value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
@@ -329,7 +330,7 @@ export default function ProductionExecutionPage() {
       const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId });
       if (command.action === 'UPDATE_FORM_COPY_REMARK') setView(next);
       else receive(next);
-      setSigning(null); setPassword(''); setOpinion('');
+      setSigning(null); setAccount(''); setPassword(''); setOpinion('');
       if (command.action === 'TRANSFER') {
         setTransferButton(null); setTransferTarget(null); setTransferKeyword(''); setTransferReason(''); setTransferTargets([]); setTransferError('');
       }
@@ -354,7 +355,7 @@ export default function ProductionExecutionPage() {
       return;
     }
     if (button.requiresSignature || button.requireOpinion || button.action === 'RETURN') {
-      setSigning(button); setPassword(''); setOpinion('');
+      setSigning(button); setAccount(''); setPassword(''); setOpinion('');
     } else void act({ action: button.action, formId, instanceId: selectedInstanceId, values });
   };
   const finishOperation = () => {
@@ -568,7 +569,7 @@ export default function ProductionExecutionPage() {
                 {formStatus === 'WAITING_OPERATION_START' && <Typography variant="caption" color="text.secondary">计划预览，工序开工后可填报</Typography>}
                 {formStatus === 'WAITING_WORK_NODE' && <Typography variant="caption" color="text.secondary">计划预览，作业流程到达后可填报</Typography>}
                 </Box>
-                <WorkflowActionButtons buttons={controls?.buttons} busy={busy} canAct={controls?.canAct} labelFor={(button) => button.action === 'SAVE' ? '暂存' : button.label} onAction={formAction} />
+                <WorkflowActionButtons buttons={controls?.buttons} busy={busy} canAct={controls?.canAct} allowAccountSigning={!objectEnded && opState?.status === 'IN_PROGRESS'} labelFor={(button) => button.action === 'SAVE' ? '暂存' : button.label} onAction={formAction} />
               </Box>
             </> : <Box className="execution-empty-content"><InfoOutlined color="disabled" /><Typography color="text.secondary">本工序未配置生产表单。请查看作业与完工条件。</Typography></Box>}
           </>
@@ -601,13 +602,13 @@ export default function ProductionExecutionPage() {
       </Stack></DialogContent>
       <DialogActions><Button disabled={busy} onClick={() => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }}>取消</Button><Button variant="contained" disabled={busy || transferLoading || !transferTarget || !transferReason.trim()} onClick={() => { if (transferTarget) void act({ action: 'TRANSFER', formId, instanceId: selectedInstanceId, targetUserId: transferTarget.id, reason: transferReason.trim() }); }}>{busy ? '正在转办…' : '确认转办'}</Button></DialogActions>
     </AppDialog>
-    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setPassword(''); setError(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.signatureTarget ? '签署签名' : signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
+    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setAccount(''); setPassword(''); setError(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.signatureTarget ? '签署签名' : signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
       {!signing?.signatureTarget && <Box sx={{ p: 1.5, bgcolor: '#f3f6fa', borderRadius: 1 }}><Typography variant="body2" fontWeight={600}>{context?.objectNo}</Typography><Typography variant="body2" color="text.secondary">{op?.name} · {form?.name} · 第 {instanceIds.indexOf(selectedInstanceId) + 1} 份</Typography><Typography variant="caption" color="text.secondary">本次操作：{signing?.label}</Typography></Box>}
       {signing?.signatureTarget ? <><Typography variant="body2" color="text.secondary">签名将保存当前内容并使用您已认证的签名图片。修改本份内容后需重新签名；表单仍需单独提交。</Typography><TextField autoFocus inputRef={signaturePasswordRef} label="电子签名密码" value={password} autoComplete="off" type="password" error={signaturePasswordError} helperText={signaturePasswordError ? error : undefined} onChange={(event) => { setPassword(event.target.value); if (signaturePasswordError) setError(''); }} disabled={busy} /></> : <>
-        {signing?.requiresSignature && <><TextField label="当前操作人账户" value={account} autoComplete="username" onChange={(event) => setAccount(event.target.value)} disabled={busy} /><TextField label="账户密码" value={password} autoComplete="current-password" type="password" onChange={(event) => setPassword(event.target.value)} disabled={busy} /></>}
+        {signing?.requiresSignature && <ButtonSignatureCredentials account={account} password={password} onAccountChange={setAccount} onPasswordChange={setPassword} disabled={busy} />}
         <TextField label="操作意见" required={signing?.requireOpinion} value={opinion} onChange={(event) => setOpinion(event.target.value)} multiline minRows={2} disabled={busy} />
       </>}
-      {error && !signaturePasswordError && <Alert severity="error">{error}</Alert>}</Stack></DialogContent><DialogActions><Button disabled={busy} onClick={() => { setSigning(null); setPassword(''); setError(''); }}>取消</Button><Button variant="contained" disabled={busy || (signing?.signatureTarget && !password) || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void act({ action: signing.action, formId, instanceId: selectedInstanceId, values, ...(signing.signatureTarget ? { signatureTarget: signing.signatureTarget, password } : { account, password, opinion }) }); }}>{busy ? '正在处理…' : signing?.signatureTarget ? '确认签名' : '确认'}</Button></DialogActions></AppDialog>
+      {error && !signaturePasswordError && <Alert severity="error">{error}</Alert>}</Stack></DialogContent><DialogActions><Button disabled={busy} onClick={() => { setSigning(null); setAccount(''); setPassword(''); setError(''); }}>取消</Button><Button variant="contained" disabled={busy || (signing?.signatureTarget && !password) || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void act({ action: signing.action, formId, instanceId: selectedInstanceId, values, ...(signing.signatureTarget ? { signatureTarget: signing.signatureTarget, password } : { account, password, opinion }) }); }}>{busy ? '正在处理…' : signing?.signatureTarget ? '确认签名' : '确认'}</Button></DialogActions></AppDialog>
   </Box>;
 }
 function ConditionList({ issues, emptyText, met = false }: { issues: string[]; emptyText: string; met?: boolean }) {

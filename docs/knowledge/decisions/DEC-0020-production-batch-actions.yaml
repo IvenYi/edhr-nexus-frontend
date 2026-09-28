@@ -4,7 +4,7 @@ decisions:
     title: 批次管理操作栏与生产对象动作边界
     status: specified
     visibility: internal
-    context: "provenance: user-confirmed；批次管理操作栏不能只显示数据审计，应承载已确认的批次业务动作；数据审计继续遵循统一行点击详情及详情页签规范。provenance: original-evidence；当前 eDHR 仅实现生产对象基础状态和取消接口，冠骋源码显示批次删除、提前结束、开工和 DHR 存在明确生命周期联动，但外部行为不直接证明本项目已实现。"
+    context: "provenance: user-confirmed；批次管理操作栏不能只显示数据审计，应承载已确认的批次业务动作；数据审计继续遵循统一行点击详情及详情页签规范。历史阶段的‘仅实现生产对象基础状态和取消接口’及 DHR 入口待开放记录不再代表当前工作树；本轮仅同步批次 DHR 查阅入口，保留其他动作的原业务历史。provenance: original-evidence；冠骋源码显示批次删除、提前结束、开工和 DHR 存在明确生命周期联动，但外部行为不直接证明本项目已实现。"
     decisionStatements:
       - id: DEC-0020-01
         statement: "provenance: user-confirmed；批次管理列表操作栏提供取消、结束、DHR 查看、执行详情等独立业务动作入口；不提供重复的查看按钮，整行点击打开详情。"
@@ -15,7 +15,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0020-03
-        statement: "provenance: user-confirmed + original-evidence；DHR 查看和执行详情只有在生产对象首次开工后才有业务意义；当前相关后端页面/接口尚未实现，页面可以保留入口但必须明确待开放，不得伪造数据。"
+        statement: "provenance: user-confirmed + original-evidence；批次操作栏 DHR 图标在所有批次状态下始终占位展示，避免操作列错位；点击时无 dhr.instances.view 权限提示无权限，有权限但无关联实例时提示尚未生成，有实例时复用 DHR 列表的档案界面只读查阅。DHR 只在生产对象首次合法 START 时自动创建，每对象至多一份，点击入口不创建。‘首次开工后才有业务意义’只指 DHR 内容存在的时点，不限制图标展示。历史‘DHR 待开放/占位’表述仅作旧阶段记录；执行详情仍按其独立入口边界解释。"
         status: specified
         visibility: internal
       - id: DEC-0020-04
@@ -27,7 +27,7 @@ decisions:
         status: specified
         visibility: internal
     supersedes: [DEC-0019]
-    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-object-controller, evidence.production-object-status-machine, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-lifecycle-source, evidence.guancheng-batch-close-source, evidence.guancheng-batch-start-source, evidence.audit-controller-action-projection]
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-migration, evidence.production-batch-management-controller, evidence.production-object-controller, evidence.production-object-status-machine, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-lifecycle-source, evidence.guancheng-batch-close-source, evidence.guancheng-batch-start-source, evidence.audit-controller-action-projection]
     acceptanceScenarios:
       - id: scenario.production-batch-actions-by-status
         given: 批次管理列表存在 CREATED、IN_PROGRESS、COMPLETED 或 CANCELLED 的 BATCH 生产对象
@@ -39,11 +39,11 @@ decisions:
         when: 用户点击整行
         then: 打开生产对象详情并可在详情数据审计页签查看该对象审计，动作继续按新增/修改投影
         evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test]
-      - id: scenario.production-batch-dhr-and-execution-placeholders
-        given: 用户查看已开工或已完成批次
-        when: 用户点击 DHR 查看或执行详情
-        then: 已实现模块则进入对应数据；模块尚未实现时显示明确待开放提示，不返回虚假 DHR、工序或事务数据
-        evidenceIds: [evidence.production-object-start-side-effects-current, evidence.guancheng-batch-start-source, evidence.production-object-entity]
+      - id: scenario.production-batch-dhr-read-only-entry
+        given: 用户查看任意状态的批次
+        when: 用户点击操作栏 DHR 图标
+        then: DHR 图标始终占位且操作列对齐；无查看权限时提示无权限；有权限但无关联 DHR 时提示尚未生成；有 DHR 时复用 DHR 列表档案界面只读查阅，点击不创建 DHR；执行详情按独立入口处理
+        evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-management-page, evidence.dhr-instance-start-transaction-source]
     implementationDiscrepancies:
       - id: discrepancy.production-batch-early-termination-not-implemented
         status: open
@@ -51,13 +51,13 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/ProductionObjectStatusMachine.java
         lineHint: 20
-        summary: "provenance: original-evidence + implementation-check；当前已补齐 IN_PROGRESS->EARLY_TERMINATED、结束原因和批次接口，但尚未实现活动生产事务关闭、DHR 作废/冻结及完整工单级联语义。"
+        summary: "provenance: original-evidence + implementation-check；提前结束已同事务将关联 DHR 标记已终止并保留证据，不作废表单；原‘DHR 作废/冻结未实现’是错误边界。活动生产事务停止及工单级联的完整验收仍需独立核对，本缺口仅指这些剩余范围。"
         evidenceIds: [evidence.production-object-early-termination-gap]
       - id: discrepancy.production-batch-dhr-execution-entry-not-implemented
-        status: open
+        status: resolved
         severity: medium
         visibility: internal
-        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
-        lineHint: 70
-        summary: "provenance: original-evidence；当前没有 DHR 实例查看或生产执行详情查询接口；页面入口必须保持占位并明确能力边界。"
-        evidenceIds: [evidence.production-object-start-side-effects-current, evidence.production-object-controller]
+        path: gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+        lineHint: 319
+        summary: "provenance: original-evidence；旧阶段的 DHR/执行入口均未实现判断已过时。当前批次页接入关联 DHR 只读查询和共用档案界面，执行详情已导航到生产执行页；此 resolved 仅消除旧‘占位’断言，不等于浏览器交互或发布验收已通过。"
+        evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-management-page]

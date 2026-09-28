@@ -158,7 +158,22 @@ evidence:
   - id: evidence.dhr-summary-archive-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
-    description: original-evidence；2026-09-28 revisionPrintableExport初核working-tree仍从冻结版本生成FULL/SELECTED ZIP，表单为forms下JSON和字段表HTML，尚非原模板版式PDF；汇总附件已用DhrOfficeAttachment.extension按冻结size/sha256校验原字节。已有来源生产执行审计/签名、DHR审计及审批签名payload和摘要校验。总PDF、来源单表PDF及实例字段原件链正在并行改造，初核源码指纹见确认证据；不得据历史ZIP测试称新版已完成，不证明所有外部记录控制事件、真实数据库或准确完整副本的发布验收。
+    description: original-evidence；2026-09-28 revisionPrintableExport 初核时表单仍为 JSON/HTML；本次静态复核的 working-tree 已见 DhrArchiveService 从显式冻结版本的 candidate_snapshot、attachment_snapshot 生成 FULL/SELECTED ZIP，调用 DhrFormFiles 读取实例文件，输出来源分类单表 PDF、总 PDF、原件及追溯清单。冻结目录或附件清单不完整、汇总附件摘要不符时导出停止；这仅是源码观察，PDF 版式、实例附件真实运行、浏览器和发布验收尚未由本体角色验证，早期观察保留于确认证据。
+    visibility: internal
+  - id: evidence.dhr-form-files-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java
+    description: original-evidence；本次静态复核 working-tree 的 resolve 从冻结表单 fieldValues 中按 fileId 找到实例内原件，核对租户、生产对象、来源类型、提交前创建时点及原件大小和登记 MD5；文件缺失或内容不符即抛错，不以实时表单值补齐。源码存在不等于实例附件 ZIP 路径已通过运行验收。
+    visibility: internal
+  - id: evidence.dhr-frozen-evidence-integrity-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java
+    description: original-evidence；冻结版本读取、审批批准前和导出前按候选实例与逐条 dhr_summary_evidence 源快照及 SHA-256 比较，并重建冻结版本摘要；清单、逐条快照或版本摘要不一致时阻断。该同库存储校验不替代独立防篡改存储、数据库管理员操作审计或外部备份验收。
+    visibility: internal
+  - id: evidence.dhr-form-files-test-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java
+    description: original-evidence；本次只读测试源码可见重复 fileId 去重、跨生产对象/提交时点拒绝、原件损坏和文件缺失拒绝用例；未运行本测试，不以测试源码存在证明通过或发布验收。
     visibility: internal
   - id: evidence.dhr-summary-complete-evidence-tests
     type: test

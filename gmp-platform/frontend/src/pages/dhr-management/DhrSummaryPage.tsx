@@ -96,8 +96,6 @@ import {
   formTableHeaderCellSx,
   FormListPagination,
 } from '@/pages/form-management/formManagementListStyles';
-import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
-import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { useAuthStore } from '@/stores/authStore';
 import { reorganizeDhr } from '@/api/dhr-workbenches';
 import DhrActionDialog from './DhrActionDialog';
@@ -105,6 +103,7 @@ import { DhrInstancePanel, DhrSidePanel, DhrWorkspaceNavigation, workspaceBodySx
 import { archiveNavigation, evidenceNavigation, type DhrNavigationView, type DhrSource } from './dhrSourceNavigation';
 import { orderedSummaryChildren, placeSummaryRecord } from './summaryPlacementOrder';
 import { groupSummarySources, placeSummarySourceGroup, summarySourceKey, type SummarySourceGroup } from './summarySourceGroups';
+import { EvidenceCanvas, EvidencePreview, getRecordTitle } from './DhrEvidenceCanvas';
 
 const SUMMARY_COLUMN_SETTINGS_VERSION = 1;
 const SUMMARY_COLUMN_STORAGE_KEY_PREFIX = 'dhr-summary-list-columns:';
@@ -149,10 +148,6 @@ function formatTime(value?: string | null) {
   return value ? value.replace('T', ' ').slice(0, 16) : '—';
 }
 
-function getRecordTitle(record: DhrEvidenceRecord) {
-  return record.templateName || record.snapshot.name || '未命名表单';
-}
-
 function evidenceStatus(record?: DhrEvidenceRecord | null) {
   if (!record) return { label: '未填报', color: 'default' as const };
   return record.status === 'COMPLETED'
@@ -160,74 +155,13 @@ function evidenceStatus(record?: DhrEvidenceRecord | null) {
     : { label: '未完成', color: 'warning' as const };
 }
 
-function formDocument(record: DhrEvidenceRecord | null) {
-  if (!record?.snapshot.model || !record.snapshot.canvas) return null;
-  try {
-    const document = parseReactTemplateDesignerDocument(
-      { id: record.templateId, name: getRecordTitle(record) },
-      {
-        id: record.templateVersionId,
-        version: record.templateVersion || record.snapshot.version || '',
-        modelDesignJson: record.snapshot.model,
-        canvasDesignJson: record.snapshot.canvas,
-      },
-    );
-    const fields = Array.isArray(record.snapshot.fields) ? record.snapshot.fields : [];
-    document.model.fields = fields.map((field, index) => ({
-      ...field,
-      typeConfig: field.typeConfig ?? {},
-      status: field.status ?? 'enabled',
-      sortOrder: field.sortOrder ?? index,
-    })) as typeof document.model.fields;
-    return document;
-  } catch {
-    return null;
-  }
-}
-
-export function EvidenceCanvas({ record, emptyMessage }: { record: DhrEvidenceRecord | null; emptyMessage: string }) {
-  const document = useMemo(() => formDocument(record), [record]);
-  const fields = Array.isArray(record?.snapshot.fields) ? record.snapshot.fields : [];
-
-  if (!record) {
-    return <Box sx={{ flex: 1, display: 'grid', placeItems: 'center', p: 3, color: '#909399', textAlign: 'center' }}>
-      <Box><FolderOutlined sx={{ fontSize: 42, opacity: 0.45, mb: 1 }} /><Typography>{emptyMessage}</Typography></Box>
-    </Box>;
-  }
-  if (document) return <FormCanvasPreview document={document} fullPage runtime={{ values: record.fieldValues, disabled: true, onChange: () => {} }} />;
-
-  return <Box sx={{ flex: 1, overflow: 'auto', m: 2, p: 3, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1 }}>
-    {fields.length ? <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 2 }}>
-      {fields.map((field, index) => {
-        const id = String(field.id ?? field.fieldId ?? index);
-        const label = String(field.name ?? field.label ?? `字段 ${index + 1}`);
-        const value = record.fieldValues[id];
-        return <Box key={id} sx={{ minWidth: 0 }}>
-          <Typography variant="caption" color="text.secondary">{label}</Typography>
-          <Typography sx={{ mt: 0.5, overflowWrap: 'anywhere' }}>{value === undefined || value === null || value === '' ? '—' : typeof value === 'object' ? JSON.stringify(value) : String(value)}</Typography>
-        </Box>;
-      })}
-    </Box> : <Typography color="text.secondary">该实例没有可展示的字段定义。</Typography>}
-  </Box>;
-}
-
-function EvidencePreview({ record, onClose }: { record: DhrEvidenceRecord | null; onClose: () => void }) {
-  return <Dialog open={Boolean(record)} onClose={onClose} fullScreen PaperProps={{ sx: { bgcolor: '#eef1f6' } }}>
-    <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Box minWidth={0}><Typography variant="h6" noWrap>{record ? getRecordTitle(record) : '表单实例'}</Typography><Typography variant="caption" color="text.secondary">{record?.instanceNo} · {record?.templateVersion}</Typography></Box>
-      <IconButton onClick={onClose} aria-label="关闭"><CloseRounded /></IconButton>
-    </DialogTitle>
-    <DialogContent dividers sx={{ bgcolor: '#eef1f6', p: 0, display: 'flex', minHeight: 0 }}><EvidenceCanvas record={record} emptyMessage="请选择一份表单实例。" /></DialogContent>
-  </Dialog>;
-}
-
-export function SummaryWorkspace({ dhr, onClose, initialRevision = false }: { dhr: DhrInstanceSummary; onClose: () => void; initialRevision?: boolean }) {
+export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOnly = false }: { dhr: DhrInstanceSummary; onClose: () => void; initialRevision?: boolean; viewOnly?: boolean }) {
   const snackbar = useSnackbar();
   const canEdit = useAuthStore((state) => state.hasPermission('dhr.summaries.edit'));
   const canSubmit = useAuthStore((state) => state.hasPermission('dhr.summaries.submit'));
   const canReorganize = useAuthStore((state) => state.hasPermission('dhr.summaries.reorganize'));
   const canExport = useAuthStore((state) => state.hasPermission('dhr.summaries.export'));
-  const [reorganizing, setReorganizing] = useState(initialRevision && canReorganize);
+  const [reorganizing, setReorganizing] = useState(initialRevision && canReorganize && !viewOnly);
   const reorganizeButton = useMemo(() => reorganizing ? { action: 'REORGANIZE', label: '发起修订', requireOpinion: true } : null, [reorganizing]);
   const [exportOpen, setExportOpen] = useState(false);
   const [attachmentsActive, setAttachmentsActive] = useState(false);
@@ -239,8 +173,9 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false }: { dh
   const [selectedVersionId, setSelectedVersionId] = useState('');
   const hasCurrentDraft = summaryStatus === 'DRAFT' || summaryStatus === 'NOT_STARTED';
   const readOnly = !hasCurrentDraft || Boolean(selectedVersionId);
-  const editable = !readOnly && canEdit;
+  const editable = !readOnly && canEdit && !viewOnly;
   const [pendingVersionId, setPendingVersionId] = useState<string | null>(null);
+  const [confirmClose, setConfirmClose] = useState(false);
   const versionQuery = useQuery({
     queryKey: ['dhr-summary-version', dhr.id, selectedVersionId],
     queryFn: () => getDhrSummaryVersion(dhr.id, selectedVersionId),
@@ -459,6 +394,21 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false }: { dh
   const actualRecordCount = workspace?.candidates.length ?? 0;
   const placementNameByRecordId = useMemo(() => new Map(placements.filter((placement) => placement.displayName).map((placement) => [placement.recordId, placement.displayName!] as const)), [placements]);
   const activeVersion = query.data?.versions.find((version) => version.id === selectedVersionId);
+  const hasUnsavedDraft = editable && Boolean(workspace) && (
+    JSON.stringify(overlay) !== JSON.stringify(workspace?.draft?.overlayDirectories ?? [])
+    || JSON.stringify(placements) !== JSON.stringify(workspace?.draft?.placements ?? [])
+  );
+  const requestClose = () => {
+    if (writeInFlight.current) return;
+    if (hasUnsavedDraft) setConfirmClose(true);
+    else onClose();
+  };
+  useEffect(() => {
+    if (!hasUnsavedDraft) return;
+    const beforeUnload = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => window.removeEventListener('beforeunload', beforeUnload);
+  }, [hasUnsavedDraft]);
   const changeVersion = (id: string) => {
     setSelectedVersionId(id); setExportOpen(false); setCandidateDrawerOpen(false);
     setInitializedKey(undefined);
@@ -982,7 +932,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false }: { dh
     : panelChildKeys.filter((key) => key.startsWith('record-') && instancePanel.recordIds.includes(key.slice(7)))
       .map((key) => candidateById.get(key.slice(7))).filter((record): record is DhrEvidenceRecord => Boolean(record))) : [];
 
-  return <Dialog open fullScreen onClose={() => { if (!writeInFlight.current) onClose(); }} PaperProps={{ sx: { bgcolor: '#f3f5f8' } }}>
+  return <Dialog open fullScreen onClose={requestClose} PaperProps={{ sx: { bgcolor: '#f3f5f8' } }}>
     <DialogTitle sx={{ px: 2.5, py: 1.25, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed' }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}>
         <Box minWidth={0}>
@@ -994,18 +944,17 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false }: { dh
           <Typography variant="caption" color="text.secondary">{dhr.objectNo} · {dhr.productCode || '未填写产品编码'} / {dhr.productName || '未填写产品名称'} · {readOnly ? `冻结汇总版本 V${activeVersion?.versionNo ?? ''}` : '当前汇总草稿'}</Typography>
         </Box>
         <Stack direction="row" spacing={1} alignItems="center">
-          {summaryStatus === 'FORMALIZED' && canReorganize && <Button startIcon={<EditNoteRounded />} disabled={isWriting || exportBusy || !query.data?.versions.length} onClick={() => setReorganizing(true)}>发起修订</Button>}
+          {summaryStatus === 'FORMALIZED' && canReorganize && !viewOnly && <Button startIcon={<EditNoteRounded />} disabled={isWriting || exportBusy || !query.data?.versions.length} onClick={() => setReorganizing(true)}>发起修订</Button>}
           {Boolean(query.data?.versions.length) && <TextField select size="small" SelectProps={{ displayEmpty: true }} InputLabelProps={{ shrink: true }} disabled={exportBusy || isWriting || attachmentBusy} label="档案版本" value={selectedVersionId} onChange={(event) => {
-            const changed = !readOnly && (JSON.stringify(overlay) !== JSON.stringify(workspace?.draft?.overlayDirectories ?? []) || JSON.stringify(placements) !== JSON.stringify(workspace?.draft?.placements ?? []));
-            if (changed) setPendingVersionId(event.target.value); else changeVersion(event.target.value);
+            if (hasUnsavedDraft) setPendingVersionId(event.target.value); else changeVersion(event.target.value);
           }} sx={{ minWidth: 164, ...fieldSx }}>
             {hasCurrentDraft && <MenuItem value="">当前草稿</MenuItem>}
             {(query.data?.versions ?? []).map((version) => <MenuItem key={version.id} value={version.id}>V{version.versionNo} · {version.reviewOutcome === 'APPROVED' ? '已通过' : version.reviewOutcome === 'RETURNED' ? '已退回' : summaryLabels[version.status]}</MenuItem>)}
           </TextField>}
           {readOnly && <Tooltip title={!canExport ? '需要 DHR汇总导出 权限' : '导出当前冻结版本'}><span><Button startIcon={<DownloadRounded />} disabled={!canExport || !workspace || !selectedVersionId || exportBusy} onClick={() => setExportOpen(true)}>导出 DHR</Button></span></Tooltip>}
           {editable && <Button variant="outlined" onClick={() => saveMutation.mutate()} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged}>保存草稿</Button>}
-          {!readOnly && canSubmit && <Button variant="contained" onClick={() => setCheckDialogOpen(true)} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged || (!canEdit && revision === undefined)}>提交汇总</Button>}
-          <IconButton onClick={onClose} disabled={isWriting} aria-label="关闭"><CloseRounded /></IconButton>
+          {!readOnly && canSubmit && !viewOnly && <Button variant="contained" onClick={() => setCheckDialogOpen(true)} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged || (!canEdit && revision === undefined)}>提交汇总</Button>}
+          <IconButton onClick={requestClose} disabled={isWriting} aria-label="关闭"><CloseRounded /></IconButton>
         </Stack>
       </Stack>
     </DialogTitle>
@@ -1137,6 +1086,7 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false }: { dh
     </AppDialog>
     {exportOpen && readOnly && canExport && workspace && activeVersion && <DhrExportDialog key={selectedVersionId} versionNo={activeVersion.versionNo} nodes={archiveNodes} records={workspace.candidates} attachments={workspace.attachments} busy={exportBusy} onClose={() => setExportOpen(false)} onExport={(scope, records, attachments) => void exportArchive(scope, records, attachments)} />}
     <ConfirmDialog open={pendingVersionId !== null} title="切换档案版本" message="目录有未保存的调整。切换将放弃这些调整，已保存的草稿不受影响。" confirmText="放弃调整并切换" onCancel={() => setPendingVersionId(null)} onConfirm={() => { if (pendingVersionId !== null) changeVersion(pendingVersionId); setPendingVersionId(null); }} />
+    <ConfirmDialog open={confirmClose} title="放弃未保存的汇总调整？" message="目录和展示位置的本地调整尚未保存。关闭后这些调整将丢失，已保存的草稿不受影响。" cancelText="继续整理" confirmText="放弃调整并关闭" initialFocus="cancel" onCancel={() => setConfirmClose(false)} onConfirm={() => { setConfirmClose(false); onClose(); }} />
     <AppDialog open={attachmentDialogOpen && editable} onClose={attachmentBusy ? undefined : () => setAttachmentDialogOpen(false)} variant="form" fullWidth maxWidth="sm">
       <DialogTitle>上传附件</DialogTitle>
       <DialogContent dividers>

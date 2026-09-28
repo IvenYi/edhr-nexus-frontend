@@ -72,7 +72,7 @@ export default function FormProcessPreviewDialog({ option, onClose, onExited }: 
                 {!subjects.length ? <Typography variant="caption" color="text.secondary">未配置有效权限主体</Typography> : null}
                 {node.data.kind === 'APPROVAL' ? <Typography variant="caption" color="text.secondary">任一审批人完成</Typography> : null}
                 <Typography variant="caption" sx={{ overflowWrap: 'anywhere' }}>按钮：{buttons.filter(button => button.visible !== false).map(button => `${button.label}${button.requireOpinion || button.action === 'TRANSFER' ? '（意见/原因必填）' : ''}`).join('、') || '无'}</Typography>
-                <Typography variant="caption" color="text.secondary">{signatures.length ? `签署：${signatures.length} 项账户密码签署` : '无需签署'}</Typography>
+                <Typography variant="caption" color="text.secondary">{signatures.length ? `签署：${signatures.length} 项签名密码签署` : '无需签署'}</Typography>
                 {signatures.map(event => <Typography key={event.id} variant="caption" color="text.secondary">
                   {({ SAVE: '保存', SUBMIT: '提交', APPROVE: '审批', RETURN: '退回', TRANSFER: '转办' })[event.action]}前签署{event.builtin === 'FILL_SIGN_FIELD' ? ' · 关联签名字段' : ''}
                 </Typography>)}

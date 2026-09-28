@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -32,6 +33,47 @@ public class DhrFormFiles {
         return new Resolved(rendering, List.copyOf(originals.values()));
     }
 
+    /** Check originals before freezing or approving; stream bytes rather than loading the archive. */
+    public void validate(JsonNode record, String objectId, LocalDateTime cutoff) {
+        validateValues(record.path("fieldValues"), objectId, cutoff, new HashSet<>());
+    }
+
+    private void validateValues(JsonNode node, String objectId, LocalDateTime cutoff, Set<String> checked) {
+        if (node.isArray()) {
+            for (JsonNode child : node) validateValues(child, objectId, cutoff, checked);
+        } else if (node.isObject()) {
+            if (node.hasNonNull("fileId")) validateOriginal(node.path("fileId").asText(), "PRODUCTION_EXECUTION", objectId, cutoff, checked);
+            if (node.hasNonNull("signatureImageFileId")) validateOriginal(node.path("signatureImageFileId").asText(), "SIGNATURE_EVIDENCE", null, cutoff, checked);
+            for (JsonNode child : node) validateValues(child, objectId, cutoff, checked);
+        }
+    }
+
+    private void validateOriginal(String id, String expectedType, String objectId, LocalDateTime cutoff, Set<String> checked) {
+        if (!checked.add(expectedType + ':' + id)) return;
+        FileObject file = requireFile(id, expectedType, objectId, cutoff);
+        if ("SIGNATURE_EVIDENCE".equals(expectedType) && !Set.of("image/png", "image/jpeg").contains(file.getMimeType()))
+            throw invalid("签名图片格式不支持导出");
+        Path path = Path.of(file.getStoredPath());
+        if (!Files.isRegularFile(path)) throw invalid("冻结表单附件原件缺失：" + id);
+        try (InputStream input = Files.newInputStream(path)) {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] buffer = new byte[8192];
+            long size = 0;
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                md5.update(buffer, 0, count);
+                size += count;
+            }
+            if (file.getFileSize() == null || size != file.getFileSize()
+                    || !HexFormat.of().formatHex(md5.digest()).equals(file.getMd5Hash()))
+                throw invalid("表单附件内容与原件登记不一致：" + id);
+        } catch (IOException ex) {
+            throw invalid("表单附件原件无法读取：" + id);
+        } catch (java.security.NoSuchAlgorithmException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
     private void resolveValues(JsonNode node, String objectId, LocalDateTime cutoff, Map<String, Original> originals) throws IOException {
         if (node.isArray()) {
             for (JsonNode child : node) resolveValues(child, objectId, cutoff, originals);
@@ -50,12 +92,7 @@ public class DhrFormFiles {
     }
 
     private Original read(String id, String expectedType, String objectId, LocalDateTime cutoff) throws IOException {
-        long fileId;
-        try { fileId = Long.parseLong(id); } catch (NumberFormatException ex) { throw invalid("冻结表单附件标识无效"); }
-        FileObject file = files.findById(fileId).orElseThrow(() -> invalid("冻结表单附件原件缺失：" + id));
-        if (!"default".equals(file.getTenantId()) || !expectedType.equals(file.getTargetType())
-                || (objectId != null && !objectId.equals(file.getTargetId())) || file.getCreatedAt() == null || file.getCreatedAt().isAfter(cutoff))
-            throw invalid("表单文件不属于冻结证据范围：" + id);
+        FileObject file = requireFile(id, expectedType, objectId, cutoff);
         Path path = Path.of(file.getStoredPath());
         if (!Files.isRegularFile(path)) throw invalid("冻结表单附件原件缺失：" + id);
         byte[] bytes = Files.readAllBytes(path);
@@ -65,5 +102,15 @@ public class DhrFormFiles {
                 throw invalid("表单附件内容与原件登记不一致：" + id);
         } catch (java.security.NoSuchAlgorithmException ex) { throw new IllegalStateException(ex); }
         return new Original(id, file.getOriginalName(), file.getMimeType(), bytes);
+    }
+
+    private FileObject requireFile(String id, String expectedType, String objectId, LocalDateTime cutoff) {
+        long fileId;
+        try { fileId = Long.parseLong(id); } catch (NumberFormatException ex) { throw invalid("冻结表单附件标识无效"); }
+        FileObject file = files.findById(fileId).orElseThrow(() -> invalid("冻结表单附件原件缺失：" + id));
+        if (!"default".equals(file.getTenantId()) || !expectedType.equals(file.getTargetType())
+                || (objectId != null && !objectId.equals(file.getTargetId())) || file.getCreatedAt() == null || file.getCreatedAt().isAfter(cutoff))
+            throw invalid("表单文件不属于冻结证据范围：" + id);
+        return file;
     }
 }

@@ -36,11 +36,12 @@ class DhrSummaryPersistenceTest {
     @Autowired AuditEventRepository audits;
     @Autowired com.zencas.edhr.workflow.engine.WorkflowEngine engine;
     @Autowired DhrAttachmentService attachments;
+    @Autowired DhrFormFiles formFiles;
     private ObjectNode base;
     private ObjectNode detail;
 
     @BeforeEach void setup() throws Exception {
-        reset(instances, audits, engine, attachments);
+        reset(instances, audits, engine, attachments, formFiles);
         when(attachments.snapshot(anyLong())).thenAnswer(ignored -> mapper.createArrayNode());
         jdbc.execute("DROP ALL OBJECTS");
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),directory_snapshot TEXT,production_object_id BIGINT,dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,updated_by VARCHAR(128),updated_at TIMESTAMP)");
@@ -59,6 +60,7 @@ class DhrSummaryPersistenceTest {
         origins.putArray("custom").add(record("102", "CUSTOM"));
         ((com.fasterxml.jackson.databind.node.ArrayNode) detail.at("/directorySnapshot/directories/0/items/0/records")).add(record("100", "DIRECTORY"));
         when(instances.detail(1L)).thenAnswer(ignored -> detail.deepCopy());
+        when(instances.header(1L)).thenAnswer(ignored -> detail.deepCopy());
     }
 
     @Test void directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData() throws Exception {
@@ -133,6 +135,59 @@ class DhrSummaryPersistenceTest {
         assertThatThrownBy(() -> service.saveDraft(1L, command(2))).hasMessageContaining("不能修改已冻结版本");
         assertThatThrownBy(() -> service.submit(1L, submitCommand(2))).hasMessageContaining("不能修改已冻结版本");
         assertThat(jdbc.queryForObject("SELECT base_directory_snapshot FROM dhr_summary_version", String.class)).isEqualTo(frozenBase);
+    }
+
+    @Test void historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates() {
+        ((ObjectNode) detail.at("/recordsByOrigin/work/0")).putObject("fieldValues").put("lot", "FROZEN-LOT-A");
+        service.saveDraft(1L, command(null));
+        long versionId = service.submit(1L, submitCommand(1)).path("id").asLong();
+        ((ObjectNode) detail.at("/recordsByOrigin/work/0/fieldValues")).put("lot", "LIVE-LOT-B");
+
+        ObjectNode historical = service.version(1L, versionId);
+        assertThat(historical.at("/version/candidates/1/fieldValues/lot").asText()).isEqualTo("FROZEN-LOT-A");
+        assertThat(historical.path("dhr").has("recordsByOrigin")).isFalse();
+        assertThat(historical.path("dhr").has("unmappedRecords")).isFalse();
+        assertThat(historical.toString()).doesNotContain("LIVE-LOT-B");
+    }
+
+    @Test void historicalVersionDoesNotRequireReadableLiveFormValues() {
+        service.saveDraft(1L, command(null));
+        long versionId = service.submit(1L, submitCommand(1)).path("id").asLong();
+        when(instances.detail(1L)).thenThrow(new IllegalArgumentException("当前表单值无法读取"));
+
+        ObjectNode historical = service.version(1L, versionId);
+        assertThat(historical.at("/version/candidates/1/id").asText()).isEqualTo("101");
+    }
+
+    @Test void changedFrozenCandidateCannotBypassOriginalFileCheck() throws Exception {
+        ((ObjectNode) detail.at("/recordsByOrigin/work/0")).putObject("fieldValues").putObject("attachment").put("fileId", "20");
+        service.saveDraft(1L, command(null));
+        long versionId = service.submit(1L, submitCommand(1)).path("id").asLong();
+        jdbc.update("UPDATE dhr_instance SET production_object_id=10 WHERE id=1");
+        com.fasterxml.jackson.databind.node.ArrayNode altered = (com.fasterxml.jackson.databind.node.ArrayNode) mapper.readTree(
+                jdbc.queryForObject("SELECT candidate_snapshot FROM dhr_summary_version", String.class));
+        ((ObjectNode) altered.get(1).path("fieldValues").path("attachment")).remove("fileId");
+        jdbc.update("UPDATE dhr_summary_version SET candidate_snapshot=?", altered.toString());
+
+        assertThatThrownBy(() -> service.validateFrozenFormFiles(1L, versionId))
+                .hasMessageContaining("冻结证据");
+    }
+
+    @Test void changedFrozenAttachmentListBlocksHistoricalVersionRead() {
+        service.saveDraft(1L, command(null));
+        long versionId = service.submit(1L, submitCommand(1)).path("id").asLong();
+        jdbc.update("UPDATE dhr_summary_version SET attachment_snapshot='[{\"id\":\"999\"}]' WHERE id=?", versionId);
+
+        assertThatThrownBy(() -> service.version(1L, versionId)).hasMessageContaining("冻结证据版本摘要不一致");
+    }
+
+    @Test void missingFormOriginalBlocksSubmitWithoutDiscardingDraft() {
+        service.saveDraft(1L, command(null));
+        doThrow(new IllegalArgumentException("表单附件原件缺失：20")).when(formFiles).validate(any(), anyString(), any());
+
+        assertThatThrownBy(() -> service.submit(1L, submitCommand(1))).hasMessageContaining("表单附件原件缺失");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_draft", Integer.class)).isEqualTo(1);
     }
 
     @Test void recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing() {
@@ -416,8 +471,10 @@ class DhrSummaryPersistenceTest {
         @Bean DhrInstanceService instances() { return mock(DhrInstanceService.class); }
         @Bean com.zencas.edhr.workflow.engine.WorkflowEngine engine() { return mock(com.zencas.edhr.workflow.engine.WorkflowEngine.class); }
         @Bean DhrAttachmentService attachments() { return mock(DhrAttachmentService.class); }
-        @Bean DhrSummaryService service(JdbcTemplate jdbc, ObjectMapper mapper, DhrInstanceService instances, AuditEventRepository audits, com.zencas.edhr.workflow.engine.WorkflowEngine engine, DhrAttachmentService attachments) {
-            return new DhrSummaryService(jdbc, mapper, instances, audits, new SnowflakeIdGenerator(1), engine, mock(DhrEvidenceImpactService.class), attachments);
+        @Bean DhrFormFiles formFiles() { return mock(DhrFormFiles.class); }
+        @Bean DhrFrozenEvidenceIntegrity frozenIntegrity(JdbcTemplate jdbc, ObjectMapper mapper) { return new DhrFrozenEvidenceIntegrity(jdbc, mapper); }
+        @Bean DhrSummaryService service(JdbcTemplate jdbc, ObjectMapper mapper, DhrInstanceService instances, AuditEventRepository audits, com.zencas.edhr.workflow.engine.WorkflowEngine engine, DhrAttachmentService attachments, DhrFrozenEvidenceIntegrity frozenIntegrity) {
+            return new DhrSummaryService(jdbc, mapper, instances, audits, new SnowflakeIdGenerator(1), engine, mock(DhrEvidenceImpactService.class), attachments, formFiles(), frozenIntegrity);
         }
     }
 }

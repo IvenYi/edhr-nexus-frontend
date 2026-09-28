@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Alert, Box, Button, CircularProgress, Drawer, IconButton, Stack, Tab, Tabs, Typography } from '@mui/material';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import StatusBadge from '@/components/StatusBadge';
-import { getDhrInstance, getDhrSummaryDetail, type DhrInstanceDetail } from '@/api/dhr-instances';
+import { getDhrInstance, getDhrSummaryDetail, type DhrInstanceSummary } from '@/api/dhr-instances';
 import { getDhrFillingDetail, getDhrReviewTask, type DhrReviewTask } from '@/api/dhr-workbenches';
 import DhrAuditTrail, { type DhrDetailSource } from './DhrAuditTrail';
 import { dhrDateTime } from './dhrAuditPresentation';
@@ -21,7 +21,7 @@ function DetailField({ label, value }: { label: string; value?: ReactNode }) {
 
 export default function DhrDetailDrawer({ source, id, dhrNo, onClose }: { source: DhrDetailSource; id: string; dhrNo: string; onClose: () => void }) {
   const [tab, setTab] = useState(0);
-  const query = useQuery<{ dhr: DhrInstanceDetail; task?: DhrReviewTask }>({
+  const query = useQuery<{ dhr: DhrInstanceSummary; task?: DhrReviewTask }>({
     queryKey: ['dhr-row-detail', source, id],
     queryFn: async () => source === 'review' ? getDhrReviewTask(id) : { dhr: await (source === 'filling' ? getDhrFillingDetail(id) : source === 'summary' ? getDhrSummaryDetail(id) : getDhrInstance(id)) },
     staleTime: 0, refetchOnMount: 'always',

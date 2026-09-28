@@ -1,0 +1,68 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0074
+    title: 共享终端按钮签署使用本人电子签名密码
+    status: specified
+    visibility: internal
+    context: user-confirmed；依据 DEC-PACKAGE-20260926-BUTTON-SIGNATURE，本次仅局部替代 DEC-0028-03 及其验收场景中的按钮账户登录密码约定，以及 DEC-0058 背景和按钮回归场景对该旧约定的沿用。supersedes 不表示整项废弃：DEC-0058-01/02 的 SIGN_FIELD 字段签名、当前用户个人认证、图片、有效期、内容修改失效及历史保留原样有效；DEC-0025/0035 的按钮事件声明、动作前签署、字段绑定和流程版本治理不变。知识基线保持 0.3.24；实现、测试及独立质量收尾结果按来源登记于证据文件，admin精确匹配和本切片验证缺口均已关闭；本体更新不代替独立质量，不提升知识verified或宣称已部署。
+    decisionStatements:
+      - id: DEC-0074-01
+        statement: user-confirmed；普通按钮签署使用实际签署账号的独立电子签名密码及有效个人认证，不使用该账号的登录密码。共享终端允许 A 登录、B 本人输入 B 的账号及签名密码签署；签署人须有本次动作的业务处理资格，不能借用 A 的权限，不切换 A 的登录会话。
+        status: specified
+        visibility: internal
+      - id: DEC-0074-02
+        statement: user-confirmed；暂仅按签署用户名 admin 识别内部超管按钮认证例外，使用其登录密码且不要求个人电子签名认证；不按管理员角色识别，不扩大到客户管理员。例外不豁免账号可用性、节点授权、业务状态、字段权限、快照或审计约束。
+        status: specified
+        visibility: internal
+      - id: DEC-0074-03
+        statement: user-confirmed；非 admin 签署人未完成认证或认证过期时只阻断并就地提示，保留表单输入，不自动跳转或在 A 会话打开 B 的个人设置；不因认证失败推进动作或保存成功签署。
+        status: specified
+        visibility: internal
+      - id: DEC-0074-04
+        statement: user-confirmed；SIGN_FIELD 继续使用当前会话用户的原字段签名逻辑，包括独立签名密码、有效认证与图片、字段权限、签后内容修改失效和历史证据保留。不得把按钮的跨账号签署或 admin 登录密码例外应用于字段签名，也不修改个人认证设置。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0028, DEC-0058]
+    evidenceIds: [evidence.button-signature-confirmed, evidence.button-signature-decision-package, evidence.button-signature-auth-source, evidence.button-signature-execution-source, evidence.button-signature-dhr-caller-source]
+    acceptanceScenarios:
+      - id: scenario.button-signature-shared-terminal-identity
+        given: A 登录且可访问记录，非 admin 的 B 有本次节点处理权及有效个人认证
+        when: B 本人输入 B 账号和独立签名密码执行需签署按钮
+        then: 签署和动作归属 B，保留 A 会话和审计关联；错误密码、禁用、锁定或 B 无权时不推进、不保存成功签署，不得用 A 权限补足 B 资格
+        evidenceIds: [evidence.button-signature-confirmed, evidence.button-signature-decision-package]
+        evidenceRequirements: [密码隔离与账号状态测试, 跨账号节点授权集成测试, 双身份审计及事务回滚断言, 浏览器交互验证]
+      - id: scenario.button-signature-admin-only-exception
+        given: 签署账号用户名为 admin 且具有业务处理资格
+        when: 使用其登录密码执行需签署按钮
+        then: 仅免个人认证和独立签名密码要求，记录真实认证方式；客户管理员及其他用户名不享受例外，无权或不可用的 admin 仍拒绝
+        evidenceIds: [evidence.button-signature-confirmed]
+        evidenceRequirements: [admin 成功及无权拒绝测试, 客户管理员不豁免测试, 认证方式快照断言]
+      - id: scenario.button-signature-certification-local-rejection
+        given: A 登录，待签署普通账号 B 没有个人认证或认证已过期
+        when: B 尝试按钮签署
+        then: 原位阻断提示并保留输入，不导航设置、不切换登录人、不创建成功签名或推进业务
+        evidenceIds: [evidence.button-signature-confirmed]
+        evidenceRequirements: [缺失与过期认证单元测试, 签署弹窗无跳转及输入保留验证]
+      - id: scenario.button-signature-preserve-sign-field
+        given: 当前用户为 admin 或普通账号，使用 SIGN_FIELD 字段入口
+        when: 尝试用登录密码例外或其他账号签署，或使用当前用户有效个人认证签署
+        then: 只按原字段逻辑处理，不应用按钮例外或跨账号能力；有效签名仍使用认证图片，内容变化仍使本份签名失效并保留历史
+        evidenceIds: [evidence.button-signature-auth-source, evidence.button-signature-regression-source]
+        evidenceRequirements: [signField 方法差异检查, 字段签名集成回归, 内容失效及份隔离回归]
+    implementationDiscrepancies:
+      - id: discrepancy.button-signature-implementation-verification-pending
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+        lineHint: 217
+        summary: 2026-09-27主智能体收尾；全新独立质量实例01a0de7f-2c34-7853-a067-da0dfca64c07返回qualityResult passed，复核exact-admin、失败清密、双身份授权审计及SIGN_FIELD不变；独立六套件163项中161通过、2个浏览器fixture条件跳过，前端10项及构建通过。个人填报与DHR实际React组件的隔离浏览器回归通过，非完整业务页面到数据库E2E；生产工作台完整隔离链由主实现实测。主智能体重新解析该次六份XML确认计数，完整证据边界见evidence/button-signature-confirmed.md收尾节。关闭本切片验证缺口，不宣称已部署、全页面E2E或提升知识verified。
+        evidenceIds: [evidence.button-signature-auth-source, evidence.button-signature-execution-source, evidence.button-signature-session-audit-source, evidence.button-signature-dhr-caller-source, evidence.button-signature-regression-source, evidence.button-signature-test-run-record]
+      - id: discrepancy.button-signature-admin-case-scope
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+        lineHint: 220
+        summary: original-evidence；2026-09-27复核后端已改为"admin".equals(user.getUsername())，前端为account.trim() === 'admin'，均严格区分大小写；ExecutionAccessTest已新增ADMIN使用登录密码仍因缺失个人认证被拒绝的断言。原宽匹配源码差异已解决，按schema合法状态resolved表达closed；不放宽confirmed规则，不删除问题历史。本次关闭依据源码及断言复核，新增断言实际执行由后续质量回归确认，不借用此前测试结果。
+        evidenceIds: [evidence.button-signature-decision-package, evidence.button-signature-auth-source, evidence.button-signature-ui-source, evidence.button-signature-admin-case-regression-source, evidence.button-signature-test-run-record]

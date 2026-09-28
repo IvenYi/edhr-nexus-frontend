@@ -210,28 +210,50 @@ public class ExecutionAccess {
         throw invalid("旧版主体配置无法可靠解析，请先在表单流程中更新主体配置");
     }
 
-    public String sign(String objectId, String formId, String action, JsonNode values, String account, String password) {
-        return signTarget("PRODUCTION_EXECUTION", objectId, formId, action, values, account, password);
+    public record ButtonSigner(String id, String name, String account, String authMethod, String certificationId) { }
+
+    public ButtonSigner authenticateButtonSigner(String account, String password) {
+        if (AuditContext.getOperatorId() == null) throw invalid("请重新登录后签署");
+        var user = users.findByUsername(account == null ? "" : account.strip())
+                .filter(this::availableForTransfer).orElseThrow(() -> invalid("签署账户或密码不正确，或账户不可用"));
+        String signerId = user.getId().toString();
+        if ("admin".equals(user.getUsername())) {
+            if (password == null || password.isBlank() || !passwords.matches(password, user.getPasswordHash()))
+                throw invalid("签署账户或密码不正确，或账户不可用");
+            return new ButtonSigner(signerId, user.getDisplayName(), user.getUsername(), "ADMIN_LOGIN_PASSWORD", null);
+        }
+        Signature certification = signatures.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", signerId)
+                .orElseThrow(() -> invalid("签署账户尚未完成电子签名认证，请由本人登录后在个人设置中完成认证"));
+        if (certification.getExpiresAt() != null && !certification.getExpiresAt().isAfter(LocalDateTime.now()))
+            throw invalid("签署账户的电子签名已过期，请由本人登录后在个人设置中重新认证");
+        if (certification.getSignaturePasswordHash() == null || certification.getSignaturePasswordHash().isBlank())
+            throw invalid("签署账户尚未设置电子签名密码，请由本人登录后在个人设置中完成认证");
+        if (password == null || password.isBlank() || !passwords.matches(password, certification.getSignaturePasswordHash()))
+            throw invalid("电子签名密码错误");
+        return new ButtonSigner(signerId, user.getDisplayName(), user.getUsername(), "SIGNATURE_PASSWORD", certification.getId().toString());
     }
 
-    public String signTarget(String targetType, String objectId, String formId, String action, JsonNode values, String account, String password) {
+    public String sign(String objectId, String formId, String action, JsonNode values, ButtonSigner signer) {
+        return signTarget("PRODUCTION_EXECUTION", objectId, formId, action, values, signer);
+    }
+
+    public String signTarget(String targetType, String objectId, String formId, String action, JsonNode values, ButtonSigner signer) {
         String operator = AuditContext.getOperatorId();
         if (operator == null) throw invalid("请重新登录后签署");
-        var user = users.findById(Long.valueOf(operator)).orElseThrow(() -> invalid("签署用户不存在"));
-        if (!Objects.equals(account, user.getUsername()) || !"ACTIVE".equals(user.getStatus())
-                || (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now()))
-                || password == null || !passwords.matches(password, user.getPasswordHash())) {
-            throw invalid("签署账户或密码不正确，或账户不可用");
-        }
-        ObjectNode evidence = mapper.createObjectNode().put("objectId", objectId).put("formId", formId).put("action", action);
+        ObjectNode evidence = mapper.createObjectNode().put("objectId", objectId).put("formId", formId).put("action", action)
+                .put("sessionOperatorId", operator).put("sessionOperatorName", AuditContext.getOperatorName())
+                .put("sessionOperatorAccount", AuditContext.getOperatorAccount()).put("signerId", signer.id())
+                .put("signerName", signer.name()).put("signerAccount", signer.account()).put("authMethod", signer.authMethod())
+                .put("certificationId", signer.certificationId());
         evidence.set("values", values.deepCopy());
         try {
             String payload = mapper.writeValueAsString(evidence);
             String hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(payload.getBytes(StandardCharsets.UTF_8)));
             long id = ids.nextId();
             signatures.save(Signature.builder().id(id).targetType(targetType).targetId(objectId)
-                    .meaning(action + " · " + formId).signerId(operator).signerName(user.getDisplayName())
-                    .authMethod("PASSWORD").snapshotHash(hash).snapshotData(payload).signedAt(LocalDateTime.now()).build());
+                    .meaning(action + " · " + formId).signerId(signer.id()).signerName(signer.name())
+                    .authMethod(signer.authMethod()).authEventRef(signer.certificationId())
+                    .snapshotHash(hash).snapshotData(payload).signedAt(LocalDateTime.now()).build());
             return String.valueOf(id);
         } catch (Exception e) { throw invalid("签署记录保存失败"); }
     }

@@ -1,0 +1,114 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260926-BUTTON-SIGNATURE
+  scope: shared-terminal-button-signature
+  knowledgeBaselineVersion: 0.3.24
+  summary: 按钮签署使用签署人的电子签名密码，允许共享终端跨账号签署；admin 保留登录密码例外，字段签名完全不变。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.button-signature-account-identity
+        name: 按钮签署独立验证实际签署人
+        status: specified
+        trigger: form.button.sign
+        condition: { all: [{ fact: button.requiresSignature, operator: equals, value: true }] }
+        result: { type: verify-signing-account, credential: signature-password, allowDifferentSessionUser: true, requireSignerPermission: true }
+        sourceReferences: [用户于2026-09-26确认共享终端A登录B本人签署以及统一签名密码]
+      - id: rule.button-signature-admin-exception
+        name: 内部admin按钮签署认证例外
+        status: specified
+        trigger: form.button.sign
+        condition: { all: [{ fact: signer.username, operator: equals, value: admin }] }
+        result: { type: verify-signing-account, credential: login-password, bypassPersonalCertification: true, bypassBusinessAuthorization: false }
+        sourceReferences: [用户于2026-09-26确认暂按用户名识别内部超管]
+      - id: rule.button-signature-certification-required
+        name: 未认证或过期只阻断提示
+        status: specified
+        trigger: form.button.sign
+        condition: { all: [{ fact: signer.certificationValid, operator: equals, value: false }] }
+        result: { type: reject-action, openSettings: false, retainFormInput: true }
+        sourceReferences: [用户明确不在A会话打开B的认证设置]
+    executionContracts: []
+  inferred:
+    - id: inference.button-signature-same-node
+      statement: 签署人必须有本次展示节点的处理权限；同次提交的字段改动也按该签署人的字段权限验证，不能以签署冒充编辑授权。
+      rationale: 复用当前节点授权和字段校验，避免跨账号借用会话权限或意外选择其他并行节点。
+      relatedIds: [rule.button-signature-account-identity]
+    - id: inference.button-signature-scope
+      statement: 共享ExecutionAccess的生产表单和DHR按钮统一认证；个人工作列表的发现和访问范围不扩大，生产工作台已有可见记录提供签署入口。
+      rationale: 变更签署身份而不引入代登录或按他人身份查询数据。
+      relatedIds: [rule.button-signature-account-identity]
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: button-authentication
+        change: 用户名查询实际签署人；普通账号校验有效认证及签名密码，admin校验登录密码。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]
+    transitiveImpacts:
+      - area: production-form-and-dhr-review
+        change: 同一入口的节点授权、签署归属、处理历史和任务完成使用实际签署人；会话审计保留原账号。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+    potentialImpacts:
+      - area: authentication-abuse
+        concern: 密码失败与账号状态检查需要回归；本次不扩大为全系统身份认证重构。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java]
+    unaffectedAreas:
+      - area: field-signature
+        reason: 用户明确保留SIGN_FIELD和个人认证设置原逻辑，包括当前用户、签名密码、图片、有效期及字段签名失效。
+      - area: login-and-personal-worklists
+        reason: 不切换登录会话，不修改登录策略、个人待办发现权限或开放他人认证设置。
+    compatibilityAndMigration:
+      - area: persistence
+        change: 不迁移、不修改历史签名；保留现有ACCOUNT_PASSWORD配置枚举以避免改写冻结流程，用户文案改为账号与签名密码，实际authMethod记录真实认证方式。
+    snapshotImpacts:
+      - area: signature-evidence
+        change: 新按钮签名快照增加sessionOperatorId和实际签署人信息及认证引用，不回写既有生产配置快照。
+    auditImpacts:
+      - area: dual-identity
+        change: 审计operator仍是会话账号，签名signer和签署动作历史标识实际签署人，保留sessionOperatorId以追溯。
+    permissionImpacts:
+      - area: signing-authorization
+        change: 签署人不可借用登录人的节点权限；admin仅凭据豁免，不豁免节点、状态、字段、快照及审计约束。
+    testImpacts:
+      - scope: focused-security-and-regression
+        scenarios: [普通签名密码与登录密码隔离, A登录B签署, 签署人无权, 未认证与过期, admin例外与客户管理员不豁免, 禁用锁定, 事务失败回滚, 双身份审计, 字段签名不变, 签署弹窗交互]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps:
+      - 已在隔离H2环境完成共享终端浏览器验证；未改动用户现有数据库，未重启现有开发后端。个人待办和DHR审核由聚焦测试覆盖，未逐页进行浏览器验证。
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 复用共享签署校验，在已有动作事务内授权并保存证据，不添加客户分支或新执行引擎。
+    ownershipBoundaries:
+      - owner: ExecutionAccess
+        responsibility: 按钮认证和签名证据；signField保持不变。
+      - owner: ProductionExecutionEngine-and-DhrReviewService
+        responsibility: 本次动作的签署资格、状态、事务与历史归属。
+      - owner: frontend-button-signature
+        responsibility: 明确签署账号和密码类型，错误就地提示，不开放他人设置。
+  affectedFiles:
+    - { path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java, changeType: update, reason: 按钮认证与证据 }
+    - { path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, changeType: update, reason: 实际签署人授权和历史 }
+    - { path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java, changeType: update, reason: 相邻共享签署调用授权 }
+    - { path: gmp-platform/frontend/src/components/workflow/ButtonSignatureCredentials.tsx, changeType: create, reason: 按钮签署账号和凭据输入统一，账号变化清空密码 }
+    - { path: gmp-platform/frontend/src/components/workflow/WorkflowActionButtons.tsx, changeType: update, reason: 共享终端仅允许打开已配置签署的按钮，不开放未签署动作或SIGN_FIELD }
+    - { path: gmp-platform/frontend/src/pages, changeType: update, reason: 生产工作台与个人填报审核复用按钮凭据输入，保持字段签名分支 }
+    - { path: gmp-platform/backend/src/test/java/com/zencas/edhr/production, changeType: update, reason: 凭据隔离、双身份授权审计、阻断和事务回滚回归 }
+    - { path: gmp-platform/frontend/scripts/test-button-signature.mjs, changeType: create, reason: 精确admin识别、切换账号清空凭据和签署按钮边界 }
+    - { path: docs/knowledge/decisions, changeType: update, reason: 已确认新规则显式替代按钮登录密码约定而保留字段签名 }
+  acceptanceScenarios:
+    - id: scenario.shared-terminal-button-signature
+      given: A登录且可访问表单，B具备当前节点处理权与有效认证
+      when: 输入B账号及B签名密码
+      then: 动作归属B，保留A会话及审计关联；错误或无权时不推进、不保存签署
+      evidenceRequirements: [聚焦集成测试, 审计和签名快照断言, 浏览器交互验证]
+    - id: scenario.admin-button-signature-exception
+      given: 签署账户用户名为admin且具有业务处理资格
+      when: 输入其登录密码
+      then: 允许按钮签署并明确记录内部例外认证方式，其他管理员无此例外
+      evidenceRequirements: [认证单元测试, 客户管理员拒绝测试]
+    - id: scenario.field-signature-unchanged
+      given: 使用SIGN_FIELD字段签名入口
+      when: admin或普通用户尝试字段签名
+      then: 仍仅验证当前用户的电子签名认证和密码，不应用按钮例外或其他账号
+      evidenceRequirements: [原字段签名集成回归, signField原逻辑无差异]

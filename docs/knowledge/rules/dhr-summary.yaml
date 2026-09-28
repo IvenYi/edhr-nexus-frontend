@@ -41,7 +41,7 @@ rules:
       nextVersionNumberAssignedAt: submit
       historicalVersionAccess: explicit-version-selector-read-only
     explanation: 核查后在提交时重新核对完整集合、来源版本及新增实例/附件，陈旧提交拒绝并提示刷新；冻结生产对象全部实际关联证据及检查结果（规则依据/版本、时间、问题、处置及确认），目录位置、顺序和别名仅是同一版本的展示属性。审批、详情和 ZIP 统一当前模型，同一实例身份唯一；version_no 保留正常业务修订，不设 evidence_model_version 分支。发起修订沿既有资格、原因及权限基于最新定版创建 DRAFT 汇总中草稿，不立即创建或批准下一冻结版本；重新核查提交时才分配下一 version_no，并按原配置审批。草稿存在时历史版本仍可通过版本选择只读查看及按原权限导出，不以数据审计替代版本正文查看，也不以历史只读入口开放草稿写权。正常版本不被后续变化改写；前期错误旧汇总按 DEC-0063-09 备份后转换为待核查草稿或清理，保留可用编排，不覆盖当前模型冻结和草稿，不删除源表单、生产对象、签署、原审计或终止快照。转换草稿必须重新核查提交，旧 FORMALIZED 状态或版本行存在不证明完成核查。
-    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration]
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-frozen-evidence-integrity-source, evidence.dhr-summary-migration]
   - id: rule.dhr-summary-manual-review-confirmation
     name: 提交前人工逐项确认并冻结确认记录
     status: specified
@@ -227,8 +227,10 @@ rules:
       traceFormat: JSON
       attachmentContentInCombinedPdf: false
       attachmentIndexInCombinedPdf: true
+      instanceAttachments: frozen-instance-original-evidence
+      missingOrCorruptInstanceAttachment: block-export
       officeConversion: false
       contentBasis: same-explicit-frozen-version
       currentLiveValuesSubstitute: false
-    explanation: 选择器按同版冻结档案目录、顺序和别名支持完整及自定义范围；总 PDF 按档案顺序呈现表单正文与附件索引，单实例原模板版式 PDF 按实际来源归类，目录整理不改变来源身份或重复计数。表单内附件原件归对应实例的附件目录，汇总附件原件归根级汇总附件；附件内容不合入总 PDF，Office 不转换。JSON 与机器清单留在追溯资料，用于冻结数据、摘要、来源生产执行审计与签名及 DHR 审计/审批签署的关联，不代替可打印正文。版本及完整/选定范围明确标识，部分包不冒充完整 DHR，总 PDF 不替代附件原件；导出不重定义冻结证据或审批对象。具体打印引擎、字段文件识别和防护、默认联选依赖属于工程推断，见确认证据；实现仍在进行，不据旧 ZIP 源码或旧测试声称本轮 PDF、全部外部记录控制事件或发布验收完成。
-    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests]
+    explanation: 选择器按同版冻结档案目录、顺序和别名支持完整及自定义范围；总 PDF 按档案顺序呈现表单正文与附件索引，单实例原模板版式 PDF 按实际来源归类，目录整理不改变来源身份或重复计数。表单内附件原件归对应实例的附件目录，汇总附件原件归根级汇总附件；实例原件缺失或内容损坏时阻断完整导出及包含该实例的选定范围导出，不能静默省略原证据。附件内容不合入总 PDF，Office 不转换。JSON 与机器清单留在追溯资料，用于冻结数据、摘要、来源生产执行审计与签名及 DHR 审计/审批签署的关联，不代替可打印正文。版本及完整/选定范围明确标识，部分包不冒充完整 DHR，总 PDF 不替代附件原件；导出不重定义冻结证据或审批对象。具体打印引擎、字段文件识别和防护、默认联选依赖属于工程推断，见确认证据；实现仍在进行，不据旧 ZIP 源码或旧测试声称本轮 PDF、全部外部记录控制事件或发布验收完成。
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-archive-service, evidence.dhr-frozen-evidence-integrity-source, evidence.dhr-form-files-source, evidence.dhr-form-files-test-source, evidence.dhr-summary-attachment-archive-tests]

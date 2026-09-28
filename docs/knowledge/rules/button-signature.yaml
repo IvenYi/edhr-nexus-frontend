@@ -1,0 +1,58 @@
+knowledgeModelVersion: 0.3.24
+rules:
+  - id: rule.button-signature-account-identity
+    name: 按钮签署独立验证实际签署人
+    status: specified
+    visibility: internal
+    trigger: form.button.sign
+    scope: shared-terminal-button-signature-excluding-SIGN_FIELD
+    condition:
+      all:
+        - {fact: fact.button-signature.required, operator: equals, value: true}
+        - {fact: fact.button-signature.signer-username, operator: not-equals, value: admin}
+    result:
+      type: allow-with-governance
+      authentication: {credential: signature-password, requireValidPersonalCertification: true}
+      allowDifferentSessionUser: true
+      requireSignerPermission: true
+      switchSessionUser: false
+    explanation: user-confirmed；需要签署的普通按钮按实际签署账号校验独立电子签名密码和有效认证，允许 A 登录、B 本人签署，但不能借用 A 权限。不接受普通账号的登录密码作为替代凭据；SIGN_FIELD 不适用。仅用户名 admin 的认证例外由 rule.button-signature-admin-exception 定义。交接包 verify-signing-account 以既有 allow-with-governance 结果词汇承载，不新增 schema 或运行执行契约。
+    evidenceIds: [evidence.button-signature-confirmed, evidence.button-signature-decision-package, evidence.button-signature-auth-source]
+  - id: rule.button-signature-admin-exception
+    name: 内部admin按钮签署认证例外
+    status: specified
+    visibility: internal
+    trigger: form.button.sign
+    scope: shared-terminal-button-signature-excluding-SIGN_FIELD
+    condition:
+      all:
+        - {fact: fact.button-signature.required, operator: equals, value: true}
+        - {fact: fact.button-signature.signer-username, operator: equals, value: admin}
+    result:
+      type: allow-with-governance
+      authentication: {credential: login-password, bypassPersonalCertification: true}
+      bypassBusinessAuthorization: false
+      bypassAccountAvailability: false
+      switchSessionUser: false
+    explanation: user-confirmed；暂按签署用户名 admin 而非管理员角色识别内部例外，客户管理员不豁免。只替换按钮认证凭据，不豁免节点、状态、字段权限、快照和审计；不改变 SIGN_FIELD 的个人认证与签名密码要求。
+    evidenceIds: [evidence.button-signature-confirmed, evidence.button-signature-decision-package]
+  - id: rule.button-signature-certification-required
+    name: 按钮签署未认证或过期只阻断提示
+    status: specified
+    visibility: internal
+    trigger: form.button.sign
+    scope: shared-terminal-button-signature-excluding-SIGN_FIELD
+    condition:
+      all:
+        - {fact: fact.button-signature.required, operator: equals, value: true}
+        - {fact: fact.button-signature.signer-username, operator: not-equals, value: admin}
+        - {fact: fact.button-signature.certification-valid, operator: equals, value: false}
+    result:
+      type: block
+      reason: signer-certification-missing-or-expired
+      openSettings: false
+      retainFormInput: true
+      advanceAction: false
+      persistSuccessfulSignature: false
+    explanation: user-confirmed；普通签署人未认证或过期仅在当前操作处提示，不能在 A 会话打开 B 设置。显式排除 admin 以保持已确认按钮例外，不将该例外传播到字段签名。交接包 reject-action 对应既有 block 词汇。
+    evidenceIds: [evidence.button-signature-confirmed, evidence.button-signature-decision-package]

@@ -34,18 +34,68 @@ class ExecutionAccessTest {
     final ExecutionAccess access = new ExecutionAccess(subjects, users, encoder, signatures, new SnowflakeIdGenerator(1), mapper, mock(JdbcTemplate.class));
     @AfterEach void clear() { AuditContext.clear(); }
 
-    @Test void signatureAuthenticatesCurrentUserAndStoresHashWithoutCredentials() throws Exception {
+    @Test void buttonSignatureAuthenticatesNamedSignerAndRetainsSessionWithoutCredentials() throws Exception {
         AuditContext.setOperator("1", "操作员");
-        when(users.findById(1L)).thenReturn(Optional.of(UserAccount.builder().id(1L).username("operator").displayName("操作员").status("ACTIVE").passwordHash(encoder.encode("test-secret")).build()));
-        assertThatThrownBy(() -> access.sign("101", "f", "SUBMIT", mapper.createObjectNode(), "other", "test-secret")).hasMessageContaining("密码不正确");
-        assertThatThrownBy(() -> access.sign("101", "f", "SUBMIT", mapper.createObjectNode(), "operator", "wrong")).hasMessageContaining("密码不正确");
-        verifyNoInteractions(signatures);
-        access.sign("101", "f", "SUBMIT", mapper.createObjectNode().put("temperature", 20), "operator", "test-secret");
+        UserAccount signer = signer("reviewer");
+        certification(signer);
+        assertThatThrownBy(() -> access.authenticateButtonSigner("other", "login-secret")).hasMessageContaining("密码不正确");
+        assertThatThrownBy(() -> access.authenticateButtonSigner("reviewer", "login-secret")).hasMessageContaining("电子签名密码错误");
+        var authenticated = access.authenticateButtonSigner(" reviewer ", "sign-secret");
+        access.sign("101", "f", "SUBMIT", mapper.createObjectNode().put("temperature", 20), authenticated);
         var captured = ArgumentCaptor.forClass(Signature.class); verify(signatures).save(captured.capture());
         Signature signed = captured.getValue();
-        assertThat(signed.getSignerId()).isEqualTo("1");
+        assertThat(signed.getSignerId()).isEqualTo("2");
+        assertThat(signed.getAuthMethod()).isEqualTo("SIGNATURE_PASSWORD");
+        assertThat(signed.getAuthEventRef()).isEqualTo("900");
+        assertThat(mapper.readTree(signed.getSnapshotData()).path("sessionOperatorId").asText()).isEqualTo("1");
+        assertThat(AuditContext.getOperatorId()).isEqualTo("1");
         assertThat(signed.getSnapshotHash()).hasSize(64);
-        assertThat(signed.getSnapshotData()).contains("temperature").doesNotContain("test-secret", "password");
+        assertThat(signed.getSnapshotData()).contains("temperature").doesNotContain("sign-secret", "login-secret", "passwordHash");
+    }
+
+    @Test void unavailableUncertifiedExpiredAndUnsetSignersAreBlocked() {
+        AuditContext.setOperator("1", "操作员");
+        var user = signer("reviewer");
+        assertThatThrownBy(() -> access.authenticateButtonSigner("reviewer", "sign-secret")).hasMessageContaining("尚未完成");
+        var cert = certification(user);
+        cert.setExpiresAt(LocalDateTime.now().minusSeconds(1));
+        assertThatThrownBy(() -> access.authenticateButtonSigner("reviewer", "sign-secret")).hasMessageContaining("已过期");
+        cert.setExpiresAt(LocalDateTime.now().plusDays(1)); cert.setSignaturePasswordHash(null);
+        assertThatThrownBy(() -> access.authenticateButtonSigner("reviewer", "sign-secret")).hasMessageContaining("尚未设置");
+        user.setStatus("INACTIVE");
+        assertThatThrownBy(() -> access.authenticateButtonSigner("reviewer", "sign-secret")).hasMessageContaining("不可用");
+        user.setStatus("ACTIVE"); user.setLockedUntil(LocalDateTime.now().plusHours(1));
+        assertThatThrownBy(() -> access.authenticateButtonSigner("reviewer", "sign-secret")).hasMessageContaining("不可用");
+        verify(signatures, never()).save(any());
+    }
+
+    @Test void onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly() {
+        AuditContext.setOperator("1", "操作员");
+        var admin = signer("admin");
+        assertThat(access.authenticateButtonSigner("admin", "login-secret").authMethod()).isEqualTo("ADMIN_LOGIN_PASSWORD");
+        assertThatThrownBy(() -> access.authenticateButtonSigner("admin", "sign-secret")).hasMessageContaining("密码不正确");
+        signer("customer-admin");
+        assertThatThrownBy(() -> access.authenticateButtonSigner("customer-admin", "login-secret")).hasMessageContaining("尚未完成");
+        signer("ADMIN");
+        assertThatThrownBy(() -> access.authenticateButtonSigner("ADMIN", "login-secret")).hasMessageContaining("尚未完成");
+        when(users.findById(1L)).thenReturn(Optional.of(admin));
+        assertThatThrownBy(() -> access.signField(mapper.createObjectNode(), "login-secret")).hasMessageContaining("完成电子签名认证");
+        verify(signatures).findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", "1");
+        verify(signatures, never()).save(any());
+    }
+
+    private UserAccount signer(String username) {
+        var user = UserAccount.builder().id(2L).username(username).displayName("签署人B").status("ACTIVE")
+                .passwordHash(encoder.encode("login-secret")).build();
+        when(users.findByUsername(username)).thenReturn(Optional.of(user));
+        return user;
+    }
+
+    private Signature certification(UserAccount user) {
+        var cert = Signature.builder().id(900L).targetType("USER_PROFILE").targetId(user.getId().toString())
+                .signaturePasswordHash(encoder.encode("sign-secret")).expiresAt(LocalDateTime.now().plusDays(1)).build();
+        when(signatures.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", user.getId().toString())).thenReturn(Optional.of(cert));
+        return cert;
     }
 
     @Test void capturesApprovalCandidatesOnceAndDoesNotOpenAnUnresolvedRestrictedGroup() throws Exception {

@@ -1049,8 +1049,8 @@ rules:
       forbiddenFields: [handlerId, processorId, processingMarker]
       runtimeExecution: unavailable
       publishedVersionEditable: false
-    explanation: 当前第一版签署事件按节点内具体按钮独立保存，固定使用执行前时机、关联标准动作、账户密码签名方式和受控内置事件类型；不同按钮可以声明不同事件并在绑定阶段使用不同签名字段。不提供单独的启用勾选，不需要事件时直接删除该按钮事件配置。处理标识、处理器标识等技术字段不属于用户配置项，当前不得宣称已有运行时事件触发、签名字段写入或审计副作用。
-    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.production-form-process-user-confirmed-v4]
+    explanation: 当前第一版签署事件按节点内具体按钮独立保存，固定使用执行前时机、关联标准动作和受控内置事件类型；不同按钮可以声明不同事件并在绑定阶段使用不同签名字段。不提供单独的启用勾选，不需要事件时直接删除该按钮事件配置。DEC-0074 局部替代旧账户登录密码约定：普通按钮使用实际签署人的独立签名密码，仅用户名 admin 暂用登录密码例外；ACCOUNT_PASSWORD 仅保留为既有配置枚举，不据此推导登录密码认证。处理标识等技术字段不属于用户配置项；本配置规则不证明新认证、事件执行或审计副作用已完成验证，SIGN_FIELD 不受影响。
+    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.production-form-process-user-confirmed-v4, evidence.button-signature-confirmed, evidence.button-signature-decision-package]
   - id: rule.form-process.node-button-event-empty-projection
     name: 未配置按钮事件时隐藏节点事件区域
     status: specified

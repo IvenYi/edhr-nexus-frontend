@@ -13,7 +13,7 @@ evidence:
   - id: evidence.production-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
-    description: 生产服务实现工单拆分、批量拆分、制程解析与首次锁定、BATCH/SN 生产形态及数量校验、生产对象编号全局唯一校验、对象计划时间校验、对象开工/完成/取消和工单关闭；CREATED 与 IN_PROCESS 工单均可拆分，拆分时仅聚合非 CANCELLED 对象的 targetQuantity，取消对象不占用工单可拆数量；SN 生产对象目标数量固定为 1，同一工单不得混用 BATCH/SN；不存在独立发布步骤；已锁定制程通过 findVersionForProduct 继续解析，不重新应用有效期筛选。
+    description: original-evidence；生产服务实现工单拆分、批量拆分、制程解析与首次锁定、BATCH/SN 生产形态及数量校验、生产对象编号全局唯一校验、对象计划时间校验、对象开工/完成/取消和工单关闭；CREATED 与 IN_PROCESS 工单均可拆分，拆分时仅聚合非 CANCELLED 对象的 targetQuantity，取消对象不占用工单可拆数量；SN 生产对象目标数量固定为 1，同一工单不得混用 BATCH/SN；不存在独立发布步骤；已锁定制程通过 findVersionForProduct 继续解析，不重新应用有效期筛选。split/splitBatch 只保存 CREATED 生产对象和制程引用，不创建 DHR；首次合法 START 另由 ProductionExecutionService 接入 DHR 创建。
     visibility: internal
   - id: evidence.production-object-status-machine
     type: code
@@ -33,7 +33,7 @@ evidence:
   - id: evidence.production-object-controller
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
-    description: 生产对象列表、制程选项、单条拆分、批量拆分、开工、完成、取消和提前结束接口；批量拆分以单次请求接收待提交对象列表，并在事务边界内复用生产服务校验；拆分及生命周期接口显式写入 PRODUCTION_OBJECT 业务快照审计。
+    description: original-evidence；生产对象控制器提供列表、制程选项、单条及批量拆分、取消和提前结束；旧直接开工/完成路由保留但明确拒绝，要求从生产执行工作台校验工序。批量拆分以单次请求接收待提交对象列表，并在事务边界内复用生产服务校验；拆分、取消和提前结束显式写入 PRODUCTION_OBJECT 业务快照审计。
     visibility: internal
   - id: evidence.product-process-resolution-for-production
     type: code
@@ -198,7 +198,7 @@ evidence:
   - id: evidence.production-object-start-side-effects-current
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
-    description: 当前 eDHR 的 ProductionService.startObject 仅允许 CREATED 生产对象开工，转为 IN_PROGRESS；首个对象开工时同步将 CREATED 工单转为 IN_PROCESS。生产对象控制器通过显式业务快照审计记录生命周期变更；路由节点、事务实例和 DHR 初始化暂未由该服务执行。
+    description: original-evidence；ProductionService.startObject 只执行 CREATED->IN_PROGRESS 状态及首对象工单 IN_PROCESS 投影，本身不创建 DHR。公开生产对象直接开工接口已阻断；ProductionExecutionService 首次合法 START 在同一事务调用 DhrInstanceService.createAtFirstStart 和 startObject，不能将旧状态投影服务单独视为完整开工入口。
     visibility: internal
   - id: evidence.production-object-cancel-side-effects-current
     type: code
@@ -243,7 +243,12 @@ evidence:
   - id: evidence.production-batch-management-page
     type: code
     path: gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
-    description: 批次管理页面位于生产准备菜单，列表仅展示 ProductionObject 的 BATCH 形态；整行点击打开批次详情及数据审计页签，审计变更前后通过共享生产审计格式化器展示中文业务字段和值，不直接展示原始英文 key JSON。
+    description: original-evidence；working-tree 批次页对所有状态的每行显示 DHR 图标，点击时先检查 dhr.instances.view，无权限提示；随后按生产对象调用 DHR 查询，空结果提示尚未生成，有结果时以 viewOnly 复用 DhrArchiveViewer。浏览器真实交互尚未核验。页面仍只展示 ProductionObject 的 BATCH 形态；整行点击详情及数据审计页签，审计变更前后通过共享生产审计格式化器展示中文业务字段和值。
+    visibility: internal
+  - id: evidence.production-batch-dhr-lookup-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceLookupTest.java
+    description: original-evidence；working-tree 测试源码检查按默认租户和 production_object_id 查询、返回含汇总状态的 DHR 摘要、无实例返回 null、控制器路径及类级 dhr.instances.view 权限；本轮只核对测试源码，不把它写成已运行通过或浏览器验收。
     visibility: internal
   - id: evidence.production-batch-management-controller
     type: code
@@ -268,7 +273,7 @@ evidence:
   - id: evidence.production-object-audit-snapshot-controller
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
-    description: 生产对象控制器显式写入 PRODUCTION_OBJECT 审计。单条拆分写入 CREATE 空前快照和完整创建后快照；批量拆分为每个对象各写一条 CREATE；开工、完成、取消及提前结束写入仅包含实际变化字段的 UPDATE 前后快照。审计与业务动作处于同一控制器事务，不依赖 AuditAspect 推断快照。
+    description: original-evidence；生产对象控制器显式写入 PRODUCTION_OBJECT 审计：单条拆分写入 CREATE 空前快照和完整创建后快照，批量拆分为每个对象各写一条 CREATE，取消及提前结束写入仅包含实际变化字段的 UPDATE 前后快照。旧直接开工/完成路由已拒绝，不再由该控制器写这两类动作审计；合法工序执行的审计由生产执行服务承担。审计与控制器业务动作同事务，不依赖 AuditAspect 推断快照。
     visibility: internal
   - id: evidence.production-object-audit-snapshot-controller-test
     type: test

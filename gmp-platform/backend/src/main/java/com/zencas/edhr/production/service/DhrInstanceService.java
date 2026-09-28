@@ -216,6 +216,20 @@ public class DhrInstanceService {
     }
 
     @Transactional(readOnly = true)
+    public ObjectNode findByProductionObjectId(Long productionObjectId) {
+        return jdbc.query("SELECT *," + productionStatusSql() + " AS production_status," + displayStatusSql() + " AS display_status," + terminationColumns()
+                        + " FROM dhr_instance WHERE tenant_id=? AND production_object_id=?",
+                (rs, index) -> summary(rs), "default", productionObjectId).stream().findFirst().orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public ObjectNode header(Long id) {
+        return jdbc.query("SELECT *," + productionStatusSql() + " AS production_status," + displayStatusSql() + " AS display_status," + terminationColumns() + " FROM dhr_instance WHERE tenant_id=? AND id=?",
+                (rs, index) -> summary(rs), "default", id).stream().findFirst()
+                .orElseThrow(() -> invalid("DHR 实例不存在"));
+    }
+
+    @Transactional(readOnly = true)
     public ObjectNode detail(Long id) {
         List<ObjectNode> rows = jdbc.query("SELECT *," + productionStatusSql() + " AS production_status," + displayStatusSql() + " AS display_status," + terminationColumns() + " FROM dhr_instance WHERE tenant_id=? AND id=?",
                 (rs, index) -> detailRow(rs), "default", id);

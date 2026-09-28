@@ -38,12 +38,12 @@ evidence:
   - id: evidence.dhr-instance-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
-    description: original-evidence；working-tree 服务实现首次开工创建、从已绑定模板版本的目录和表单引用构建并持久化实例目录快照、生产完成同步、缺失实例时阻断完成、列表查询及按 dhrItemId 聚合 PRODUCTION_EXECUTION 表单记录的只读详情；copyId 与来源记录身份保持独立，不复制证据。该源码不表示能力已发布。
+    description: original-evidence；working-tree 服务实现首次开工创建、目录快照持久化、生产完成同步、缺失实例时阻断完成、列表与详情查询；findByProductionObjectId 在只读事务中按默认租户和 production_object_id 返回现有实例摘要或 null，不创建实例。详情按 dhrItemId 聚合 PRODUCTION_EXECUTION 表单记录并保留 copyId 与来源身份。该源码不表示能力已发布。
     visibility: internal
   - id: evidence.dhr-instance-controller
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java
-    description: original-evidence；working-tree 控制器提供 /api/v1/dhr-instances 列表与 /{id} 只读详情，并在类级要求 dhr.instances.view 权限；没有创建、编辑、审批或发布端点。
+    description: original-evidence；working-tree 控制器提供 /api/v1/dhr-instances 列表、/by-production-object/{productionObjectId} 关联只读查询与 /{id} 详情，并在类级要求 dhr.instances.view 权限；关联查询只调用服务查找，不提供创建动作。
     visibility: internal
   - id: evidence.dhr-instance-migration
     type: database
@@ -63,7 +63,7 @@ evidence:
   - id: evidence.dhr-instance-frontend-api
     type: code
     path: gmp-platform/frontend/src/api/dhr-instances.ts
-    description: original-evidence；working-tree 前端 API 仅投影 DHR 列表和只读详情，状态限制为 IN_PROGRESS/COMPLETED，并保留目录项记录、copyId 与未映射记录的读取结构。
+    description: original-evidence；working-tree 前端 API 包含 getDhrByProductionObject，通过 /dhr-instances/by-production-object/{productionObjectId} 读取实例摘要或 null；既有 DHR 列表、详情及目录项、copyId 与未映射记录的读取结构继续复用。
     visibility: internal
   - id: evidence.dhr-instance-management-page
     type: code

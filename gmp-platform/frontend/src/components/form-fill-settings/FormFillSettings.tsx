@@ -59,7 +59,7 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
             ...buttons.map(button => `${button.label}：${actionName(button.action)}，${button.visible === false ? '隐藏' : '显示'}${button.requireOpinion || button.action === 'TRANSFER' ? '，意见/原因必填' : ''}`),
             ...signatures.map(event => {
               const fieldId = active.eventBindings?.[`${node.id}:${event.id}`]?.fieldId;
-              return `${actionName(event.action)}前：账户密码签署${event.builtin === 'FILL_SIGN_FIELD' ? `；签名字段：${fieldId ? fields.find(field => field.id === fieldId)?.name || `字段 #${fieldId}` : '未绑定'}` : ''}`;
+              return `${actionName(event.action)}前：签名密码签署${event.builtin === 'FILL_SIGN_FIELD' ? `；签名字段：${fieldId ? fields.find(field => field.id === fieldId)?.name || `字段 #${fieldId}` : '未绑定'}` : ''}`;
             }),
           ].join('\n') };
       });

@@ -1,5 +1,20 @@
 knowledgeModelVersion: 0.3.24
 implementationAnchors:
+  - id: anchor.production-batch-dhr-entry
+    targetId: rule.production.batch-management-dhr-read-only-entry
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
+    apiReferences: ['GET /api/v1/dhr-instances/by-production-object/{productionObjectId}', 'GET /api/v1/dhr-instances/{id}']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx, gmp-platform/frontend/src/api/dhr-instances.ts, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceLookupTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page]
+    sourceRevision: working-tree
+    sourceLocator: BatchManagementPage 每行 DHR 图标及 openDhr；DhrInstanceController.byProductionObject；DhrInstanceService.findByProductionObjectId；DhrArchiveViewer 的 viewOnly 分支。浏览器交互未验收
+    capturedAt: '2026-09-28'
+    reviewStatus: reviewed
   - id: anchor.dhr-instance-first-start-transaction
     targetId: rule.dhr-instance-create-on-first-start
     targetType: rule

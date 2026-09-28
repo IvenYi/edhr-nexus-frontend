@@ -18,14 +18,14 @@ implementationAnchors:
   - id: anchor.dhr-summary-immutable-version
     targetId: rule.dhr-summary-freeze-version
     targetType: rule
-    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java]
     apiReferences: ['GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}', 'POST /api/v1/dhr-instances/{id}/summary/submit']
     databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql, gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql, gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java, gmp-platform/backend/scripts/test-dhr-model-migration.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-summary-migration, evidence.dhr-summary-complete-evidence-migration, evidence.dhr-summary-attachment-migration, evidence.dhr-summary-complete-evidence-tests, evidence.dhr-summary-attachment-archive-tests]
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-frozen-evidence-integrity-source, evidence.dhr-summary-migration, evidence.dhr-summary-complete-evidence-migration, evidence.dhr-summary-attachment-migration, evidence.dhr-summary-complete-evidence-tests, evidence.dhr-summary-attachment-archive-tests]
     sourceRevision: working-tree
     sourceLocator: submit/version 保留version_no和完整冻结及人工确认，无evidence_model_version；reorganize/prepareNextDraft先建DRAFT，submit才分配MAX(version_no)+1，workspace返回草稿和历史版、version按指定版本读取。0104转换及原审计保护的旧切片验证见确认证据；revisionPrintableExport的草稿/历史版切换及只读导出仍待本轮UI/端到端验收，不能复用迁移切片质量结论。目标规则保持specified/internal。
     capturedAt: '2026-09-28'

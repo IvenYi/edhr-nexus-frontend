@@ -32,6 +32,11 @@ public class DhrInstanceController {
         return ApiResponse.success(service.list(keyword, objectType, status, summaryStatus, productionStatus, displayStatus, page, size));
     }
 
+    @GetMapping("/by-production-object/{productionObjectId}")
+    public ApiResponse<ObjectNode> byProductionObject(@PathVariable Long productionObjectId) {
+        return ApiResponse.success(service.findByProductionObjectId(productionObjectId));
+    }
+
     @GetMapping("/{id}")
     public ApiResponse<ObjectNode> detail(@PathVariable Long id) {
         return ApiResponse.success(service.detail(id));

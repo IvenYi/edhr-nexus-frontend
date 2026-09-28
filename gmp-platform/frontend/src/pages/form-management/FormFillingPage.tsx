@@ -60,6 +60,7 @@ import {
 } from '@/api/production-execution';
 import type { PageResult } from '@/types/common';
 import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
+import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
 import {
   formListAdvancedGridSx,
   formListFieldSx,
@@ -285,6 +286,7 @@ function FormWorklistFillDialog({ identity, onClose, onChanged }: { identity: Fo
         onClose();
       }
     } catch (error) {
+      setPassword('');
       showMessage(errorText(error), 'error');
     } finally {
       setBusy(false);
@@ -323,10 +325,10 @@ function FormWorklistFillDialog({ identity, onClose, onChanged }: { identity: Fo
       </DialogActions>
     </AppDialog>
     <ConfirmDialog initialFocus="cancel" destructive open={confirmClose} title="当前表单尚未保存" message="关闭后将丢失本次未保存的修改。" confirmText="放弃修改并关闭" cancelText="继续填写" onCancel={() => setConfirmClose(false)} onConfirm={() => { setConfirmClose(false); setDirty(false); onClose(); }} />
-    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => setSigning(null)} maxWidth="xs" fullWidth>
+    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setAccount(''); setPassword(''); }} maxWidth="xs" fullWidth>
       <DialogTitle>{signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle>
-      <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>{signing?.requiresSignature ? <><TextField label="当前操作人账户" value={account} autoComplete="username" onChange={(event) => setAccount(event.target.value)} disabled={busy} /><TextField label="账户密码" value={password} autoComplete="current-password" type="password" onChange={(event) => setPassword(event.target.value)} disabled={busy} /></> : null}<TextField label="操作意见" required={signing?.requireOpinion} value={opinion} onChange={(event) => setOpinion(event.target.value)} multiline minRows={2} disabled={busy} /></Stack></DialogContent>
-      <DialogActions><Button disabled={busy} onClick={() => setSigning(null)}>取消</Button><Button variant="contained" disabled={busy || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void runAction(signing, { account, password, opinion }); }}>{busy ? '正在处理…' : '确认'}</Button></DialogActions>
+      <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>{signing?.requiresSignature ? <ButtonSignatureCredentials account={account} password={password} onAccountChange={setAccount} onPasswordChange={setPassword} disabled={busy} /> : null}<TextField label="操作意见" required={signing?.requireOpinion} value={opinion} onChange={(event) => setOpinion(event.target.value)} multiline minRows={2} disabled={busy} /></Stack></DialogContent>
+      <DialogActions><Button disabled={busy} onClick={() => { setSigning(null); setAccount(''); setPassword(''); }}>取消</Button><Button variant="contained" disabled={busy || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void runAction(signing, { account, password, opinion }); }}>{busy ? '正在处理…' : '确认'}</Button></DialogActions>
     </AppDialog>
   </>;
 }

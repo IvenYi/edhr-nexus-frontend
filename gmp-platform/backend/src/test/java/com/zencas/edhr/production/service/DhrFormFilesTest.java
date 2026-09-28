@@ -28,14 +28,17 @@ class DhrFormFilesTest {
         var record = mapper.readTree("{\"fieldValues\":{\"a\":[{\"fileId\":\"20\",\"originalName\":\"委外原始数据.xls\"}],\"subtable\":[{\"b\":[{\"fileId\":\"20\"}]}]}}");
         var cutoff = LocalDateTime.of(2026, 1, 2, 0, 0);
         var result = service.resolve(record, "77", cutoff);
+        assertThatCode(() -> service.validate(record, "77", cutoff)).doesNotThrowAnyException();
         assertThat(result.attachments()).hasSize(1);
         assertThat(result.attachments().getFirst().bytes()).isEqualTo(bytes);
         assertThat(result.renderingRecord()).isEqualTo(record);
         assertThatThrownBy(() -> service.resolve(record, "88", cutoff)).hasMessageContaining("不属于冻结证据范围");
         assertThatThrownBy(() -> service.resolve(record, "77", cutoff.minusDays(2))).hasMessageContaining("不属于冻结证据范围");
         Files.writeString(path, "modified");
+        assertThatThrownBy(() -> service.validate(record, "77", cutoff)).hasMessageContaining("内容与原件登记不一致");
         assertThatThrownBy(() -> service.resolve(record, "77", cutoff)).hasMessageContaining("内容与原件登记不一致");
         Files.delete(path);
+        assertThatThrownBy(() -> service.validate(record, "77", cutoff)).hasMessageContaining("原件缺失");
         assertThatThrownBy(() -> service.resolve(record, "77", cutoff)).hasMessageContaining("原件缺失");
     }
 

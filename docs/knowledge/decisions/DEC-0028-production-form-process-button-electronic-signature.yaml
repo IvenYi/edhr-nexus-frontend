@@ -4,7 +4,7 @@ decisions:
     title: 表单流程按钮电子签名与事件简化配置
     status: specified
     visibility: internal
-    context: "provenance: user-confirmed；本决策补充 DEC-0025 的按钮认证要求，并明确移除事件启用勾选；仅定义配置层，不声称运行时电子签名或事件执行已经实现。"
+    context: "provenance: user-confirmed；本决策补充 DEC-0025 的按钮签署事件与配置边界，并移除事件启用勾选。现行认证按 DEC-0074：普通签署人使用本人独立电子签名密码及有效认证，精确用户名 admin 使用登录密码例外；动作前签署、可选字段填充及绑定归属不变。运行能力以当前实现和验证证据分别判断，不再沿用旧‘尚未实现’判断。"
     decisionStatements:
       - id: DEC-0028-01
         statement: "provenance: user-confirmed；按钮配置只保留显示/不可见，不再提供单独的启用配置；不需要的按钮事件直接删除事件配置。"
@@ -15,7 +15,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0028-03
-        statement: "provenance: user-confirmed；签署事件固定使用账户密码并在动作执行前处理；是否填充签名字段由事件单独选择，选择填充时才在作业流程节点绑定字段。"
+        statement: "provenance: user-confirmed；签署事件在动作执行前处理，认证方式遵循 DEC-0074；是否填充签名字段由事件单独选择，选择填充时才在作业流程节点绑定字段。"
         status: specified
         visibility: internal
       - id: DEC-0028-03A
@@ -32,8 +32,8 @@ decisions:
       - id: scenario.production-form-process-button-signature-options
         given: 用户正在配置开始或审批节点按钮
         when: 用户添加电子签名
-        then: 用户选择关联按钮、账户密码签名及是否填充字段；审批节点可关联审批或退回；不显示启用勾选
-        evidenceIds: [evidence.production-form-process-buttons-events-v3]
+        then: 用户选择关联按钮、按 DEC-0074 由实际签署人认证及是否填充字段；审批节点可关联审批或退回；不显示启用勾选
+        evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.button-signature-confirmed]
         evidenceRequirements: [按钮配置保存重读测试]
       - id: scenario.production-form-process-signature-event-binding
         given: 提交、审批或退回按钮配置为需要电子签名，且选择了填充签名字段
@@ -43,10 +43,10 @@ decisions:
         evidenceRequirements: [事件字段绑定保存重读测试]
     implementationDiscrepancies:
       - id: discrepancy.production-form-process-electronic-signature-runtime-unimplemented
-        status: accepted
+        status: resolved
         severity: high
         visibility: internal
         path: docs/knowledge/rules/transaction-runtime.yaml
         lineHint: 1
-        summary: "provenance: original-evidence；当前 eDHR 尚未实现电子签名采集、按钮动作签名阻断、签名对象快照或填充签名字段运行时写入。"
-        evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.ai-transaction-runtime-architecture]
+        summary: "provenance: original-evidence；旧‘运行时尚未实现’断言已过时。当前 ExecutionAccess 与 ProductionExecutionEngine 已有按钮认证、签署记录及快照、动作阻断和签名字段绑定写入；聚焦测试已覆盖主要路径。完整业务页面到数据库的端到端及发布验收不由本项 resolved 推断。"
+        evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.button-signature-auth-source, evidence.button-signature-execution-source, evidence.button-signature-regression-source]

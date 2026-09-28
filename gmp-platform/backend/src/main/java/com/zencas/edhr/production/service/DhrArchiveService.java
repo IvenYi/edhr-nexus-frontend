@@ -44,6 +44,7 @@ public class DhrArchiveService {
     private final SnowflakeIdGenerator ids;
     private final DhrPdfRenderer pdfRenderer;
     private final DhrFormFiles formFiles;
+    private final DhrFrozenEvidenceIntegrity frozenIntegrity;
 
     public Path export(Long dhrId, Long versionId, String scope, Set<String> selectedRecords, Set<String> selectedAttachments) throws IOException {
         if (!Set.of("FULL", "SELECTED").contains(scope)) throw invalid("导出范围无效");
@@ -55,6 +56,7 @@ public class DhrArchiveService {
         if (versions.isEmpty()) throw invalid("冻结的 DHR 汇总版本不存在");
         Map<String, Object> version = versions.getFirst();
         ArrayNode records = (ArrayNode) json(text(version, "candidate_snapshot"));
+        frozenIntegrity.verify(versionId, records);
         ArrayNode frozenAttachments = (ArrayNode) json(text(version, "attachment_snapshot"));
         Set<String> availableRecords = new HashSet<>();
         records.forEach(record -> availableRecords.add(record.path("id").asText()));

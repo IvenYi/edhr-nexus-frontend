@@ -33,8 +33,11 @@ public class DhrEvidenceImpactService {
             boolean changed = current.isEmpty();
             if (!changed) {
                 var record = current.getFirst();
-                changed = !frozen.path("snapshot").equals(json(text(record, "snapshot_json")))
-                        || !frozen.path("fieldValues").equals(json(text(record, "values_json")))
+                JsonNode currentSnapshot = liveJson(text(record, "snapshot_json"));
+                JsonNode currentValues = liveJson(text(record, "values_json"));
+                changed = currentSnapshot == null || currentValues == null
+                        || !frozen.path("snapshot").equals(currentSnapshot)
+                        || !frozen.path("fieldValues").equals(currentValues)
                         || !frozen.path("status").asText().equals(text(record, "status"))
                         || !frozen.path("templateVersionId").asText().equals(text(record, "version_id"));
             }
@@ -73,4 +76,5 @@ public class DhrEvidenceImpactService {
     }
     private static String text(Map<String, Object> row, String key) { return row.get(key) == null ? "" : row.get(key).toString(); }
     private JsonNode json(String value) { try { return mapper.readTree(value); } catch (Exception e) { throw invalid("审核证据无法读取"); } }
+    private JsonNode liveJson(String value) { try { return mapper.readTree(value); } catch (Exception e) { return null; } }
 }

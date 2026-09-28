@@ -44,7 +44,7 @@ class DhrAttachmentAndArchiveTest {
         attachments = new DhrAttachmentService(jdbc, mapper, ids, audits);
         ReflectionTestUtils.setField(attachments, "storagePath", temp.toString());
         formFiles = mock(com.zencas.edhr.compliance.repository.FileObjectRepository.class);
-        archives = new DhrArchiveService(jdbc, mapper, attachments, audits, ids, new DhrPdfRenderer(mapper), new DhrFormFiles(formFiles));
+        archives = new DhrArchiveService(jdbc, mapper, attachments, audits, ids, new DhrPdfRenderer(mapper), new DhrFormFiles(formFiles), new DhrFrozenEvidenceIntegrity(jdbc, mapper));
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),status VARCHAR(32),summary_status VARCHAR(32),dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),production_object_id BIGINT)");
         jdbc.execute("INSERT INTO dhr_instance VALUES(1,'default','COMPLETED','DRAFT','DHR-1','BATCH-1','BATCH',77)");
         jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,original_name VARCHAR(512),stored_path VARCHAR(1024),mime_type VARCHAR(128),file_size BIGINT,sha256 VARCHAR(64),source_kind VARCHAR(32),purpose VARCHAR(500),original_recorded_at TIMESTAMP,custody_location VARCHAR(500),active BOOLEAN,verification_status VARCHAR(32),verified_by VARCHAR(192),verified_at TIMESTAMP,linked_by VARCHAR(192),linked_at TIMESTAMP,unlinked_by VARCHAR(192),unlinked_at TIMESTAMP,unlink_reason VARCHAR(500))");
@@ -103,11 +103,31 @@ class DhrAttachmentAndArchiveTest {
                 .createdAt(LocalDateTime.of(2026, 1, 1, 12, 0)).build()));
         ((com.fasterxml.jackson.databind.node.ObjectNode) records.get(0).path("fieldValues")).putArray("files").addObject().put("fileId", "501").put("originalName", "原始检测.xls");
         String nativePath = "作业表单/上料检查_FR-100_100/附件/501_原始检测.xls";
-        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),snapshot_hash VARCHAR(64),candidate_snapshot TEXT,attachment_snapshot TEXT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,check_result_snapshot TEXT,submitted_at TIMESTAMP)");
-        jdbc.update("INSERT INTO dhr_summary_version VALUES(10,'default',1,1,'FORMALIZED','frozen-hash',?,?,?,?,'{}',TIMESTAMP '2026-01-02 12:00:00')",
+        jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),dhr_instance_id BIGINT,version_no INT,status VARCHAR(32),review_mode VARCHAR(32),review_workflow_definition_id BIGINT,review_workflow_version_id BIGINT,snapshot_hash VARCHAR(64),candidate_snapshot TEXT,attachment_snapshot TEXT,base_directory_snapshot TEXT,overlay_directory_snapshot TEXT,check_result_snapshot TEXT,submitted_at TIMESTAMP)");
+        jdbc.update("INSERT INTO dhr_summary_version VALUES(10,'default',1,1,'FORMALIZED','NONE',NULL,NULL,'pending',?,?,?,?,'{}',TIMESTAMP '2026-01-02 12:00:00')",
                 records.toString(), attachmentJson, "{\"directories\":[]}", "[]");
-        jdbc.execute("CREATE TABLE dhr_summary_evidence(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),summary_version_id BIGINT,source_record_id BIGINT,target_node_key VARCHAR(128),before_node_key VARCHAR(128),display_order INT,display_name VARCHAR(120))");
-        jdbc.execute("INSERT INTO dhr_summary_evidence VALUES(20,'default',10,100,'source-work',NULL,1,NULL),(21,'default',10,101,'source-custom',NULL,2,NULL)");
+        jdbc.execute("CREATE TABLE dhr_summary_evidence(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),summary_version_id BIGINT,source_record_id BIGINT,target_node_key VARCHAR(128),before_node_key VARCHAR(128),display_order INT,display_name VARCHAR(120),source_snapshot TEXT,source_hash VARCHAR(64))");
+        for (int index = 0; index < records.size(); index++) {
+            String snapshot = records.get(index).toString();
+            String digest = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(snapshot.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+            jdbc.update("INSERT INTO dhr_summary_evidence VALUES(?,?,?,?,?,NULL,?,?,?,?)", 20 + index, "default", 10, 100 + index,
+                    index == 0 ? "source-work" : "source-custom", index + 1, null, snapshot, digest);
+        }
+        var frozen = mapper.createObjectNode().put("dhrInstanceId", 1L).put("versionNo", 1)
+                .put("status", "FORMALIZED").put("reviewMode", "NONE");
+        frozen.putObject("reviewBinding").put("mode", "NONE");
+        frozen.set("baseDirectory", mapper.readTree("{\"directories\":[]}"));
+        frozen.set("overlayDirectories", mapper.createArrayNode());
+        frozen.set("candidates", records.deepCopy());
+        frozen.set("attachments", mapper.readTree(attachmentJson));
+        frozen.set("checkResult", mapper.createObjectNode());
+        frozen.putArray("placements")
+                .addObject().put("recordId", "100").put("targetNodeKey", "source-work").put("displayOrder", 1);
+        frozen.withArray("placements")
+                .addObject().put("recordId", "101").put("targetNodeKey", "source-custom").put("displayOrder", 2);
+        String frozenHash = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+                .digest(frozen.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        jdbc.update("UPDATE dhr_summary_version SET snapshot_hash=? WHERE id=10", frozenHash);
         jdbc.execute("CREATE TABLE audit_event(id BIGINT,tenant_id VARCHAR(64),entity_type VARCHAR(64),entity_id VARCHAR(64),action VARCHAR(32),content_before TEXT,content_after TEXT,snapshot_hash VARCHAR(64),operator_id VARCHAR(64),operator_name VARCHAR(64),created_at TIMESTAMP,data_summary VARCHAR(64))");
         jdbc.execute("INSERT INTO audit_event VALUES(30,'default','PRODUCTION_EXECUTION','77','SAVE',NULL,'{\"copyId\":\"a\"}',NULL,'7','测试操作员',TIMESTAMP '2026-01-02 11:00:00','上料 · a')");
         jdbc.execute("INSERT INTO audit_event VALUES(31,'default','PRODUCTION_EXECUTION','77','SAVE',NULL,'{\"copyId\":\"b\"}',NULL,'7','测试操作员',TIMESTAMP '2026-01-03 11:00:00','后续操作 · b')");
@@ -176,6 +196,16 @@ class DhrAttachmentAndArchiveTest {
             assertThat(zip.getEntry("追溯资料/表单快照/101.json")).isNull();
             assertThat(zip.getInputStream(zip.getEntry("汇总附件/" + attachmentId + "_" + original.getOriginalFilename())).readAllBytes()).isEqualTo(original.getBytes());
         } finally { Files.deleteIfExists(attachmentOnly); }
+        if ("pdf".equals(extension)) {
+            var altered = records.deepCopy();
+            ((com.fasterxml.jackson.databind.node.ObjectNode) altered.get(0).path("fieldValues")).remove("files");
+            jdbc.update("UPDATE dhr_summary_version SET candidate_snapshot=? WHERE id=10", altered.toString());
+            assertThatThrownBy(() -> archives.export(1L, 10L, "FULL", Set.of(), Set.of())).hasMessageContaining("冻结证据");
+            jdbc.update("UPDATE dhr_summary_version SET candidate_snapshot=? WHERE id=10", records.toString());
+            jdbc.update("UPDATE dhr_summary_version SET attachment_snapshot='[]' WHERE id=10");
+            assertThatThrownBy(() -> archives.export(1L, 10L, "FULL", Set.of(), Set.of())).hasMessageContaining("冻结证据");
+            jdbc.update("UPDATE dhr_summary_version SET attachment_snapshot=? WHERE id=10", attachmentJson);
+        }
         assertThatThrownBy(() -> archives.export(1L, 10L, "SELECTED", Set.of("999"), Set.of())).hasMessageContaining("范围无效");
         jdbc.update("UPDATE signature SET snapshot_hash='wrong' WHERE id=41");
         assertThatThrownBy(() -> archives.export(1L, 10L, "FULL", Set.of(), Set.of())).hasMessageContaining("审批签署证据摘要不一致");

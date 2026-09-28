@@ -124,6 +124,10 @@ export async function getDhrInstance(id: string): Promise<DhrInstanceDetail> {
   return (await client.get(`/dhr-instances/${encodeURIComponent(id)}`)).data.data;
 }
 
+export async function getDhrByProductionObject(productionObjectId: string): Promise<DhrInstanceSummary | null> {
+  return (await client.get(`/dhr-instances/by-production-object/${encodeURIComponent(productionObjectId)}`)).data.data ?? null;
+}
+
 export async function getDhrSummaryDetail(id: string): Promise<DhrInstanceDetail> {
   return (await client.get(`/dhr-instances/${encodeURIComponent(id)}/summary/detail`)).data.data;
 }
@@ -147,7 +151,7 @@ export interface DhrAttachment {
 
 export interface DhrSummaryWorkspace {
   sourceScopeHash: string;
-  dhr: DhrInstanceDetail;
+  dhr: DhrInstanceSummary & { directorySnapshot: DhrInstanceDetail['directorySnapshot'] };
   candidates: DhrEvidenceRecord[];
   attachments: DhrAttachment[];
   draft: null | { id: string; revision: number; sourceScopeHash?: string | null; overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[] };
@@ -160,7 +164,7 @@ export async function getDhrSummaryWorkspace(id: string): Promise<DhrSummaryWork
 
 export interface DhrSummaryVersionDetail {
   evidenceChanges?: Array<{ recordId?: string; attachmentId?: string; instanceNo?: string; message: string }>;
-  dhr: DhrInstanceDetail;
+  dhr: DhrSummaryWorkspace['dhr'];
   version: DhrSummaryWorkspace['versions'][number] & {
     baseDirectory: DhrInstanceDetail['directorySnapshot'];
     overlayDirectories: DhrSummaryDirectoryOverlay[];

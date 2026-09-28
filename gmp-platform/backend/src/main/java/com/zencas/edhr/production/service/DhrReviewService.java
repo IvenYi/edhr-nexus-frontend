@@ -107,14 +107,19 @@ public class DhrReviewService {
         if ("APPROVE".equals(action) && !hasCompleteManualReview(row)) throw invalid("汇总提交核查结果不完整，不能批准；请退回整理");
         ArrayNode changes = evidenceChanges(versionId, true);
         if ("APPROVE".equals(action) && !changes.isEmpty()) throw invalid("DHR 冻结证据或来源范围发生变化，不能按过时证据批准；请退回整理");
+        if ("APPROVE".equals(action)) summaries.validateFrozenFormFiles(dhrId, versionId);
+        ExecutionAccess.ButtonSigner signer = button.path("requiresSignature").asBoolean()
+                ? access.authenticateButtonSigner(command.path("account").asText(), command.path("password").asText()) : null;
+        String actionOperator = signer == null ? actor() : signer.id();
+        if (!eligible(row, actionOperator)) throw new AccessDeniedException("签署账户不是当前审批处理人");
         Long signatureId = null;
         if (button.path("requiresSignature").asBoolean()) {
             ObjectNode evidence = mapper.createObjectNode().put("summaryVersionId", versionId.toString())
                     .put("snapshotHash", text(row, "snapshot_hash")).put("taskId", taskId.toString()).put("opinion", opinion);
             signatureId = Long.valueOf(access.signTarget("DHR_SUMMARY", versionId.toString(), taskId.toString(), action, evidence,
-                    command.path("account").asText(), command.path("password").asText()));
+                    signer));
         }
-        engine.completeDhrTask(taskId, "RETURN".equals(action) ? "REJECT" : "APPROVE", opinion, actor(), signatureId);
+        engine.completeDhrTask(taskId, "RETURN".equals(action) ? "REJECT" : "APPROVE", opinion, actionOperator, signatureId);
         var after = workflows.findById(workflow.getId()).orElseThrow();
         String outcome = "RETURN".equals(action) ? "RETURNED" : "COMPLETED".equals(after.getStatus()) ? "APPROVED" : "PENDING_REVIEW";
         jdbc.update("UPDATE dhr_summary_review SET status=?,updated_at=? WHERE summary_version_id=?", outcome, LocalDateTime.now(), versionId);
@@ -124,6 +129,8 @@ public class DhrReviewService {
                 .put("taskId", taskId.toString()).put("action", action).put("outcome", outcome).put("opinion", opinion)
                 .put("snapshotHash", text(row, "snapshot_hash"));
         evidence.set("evidenceChanges", changes);
+        if (signer != null) evidence.put("sessionOperatorId", actor()).put("signerId", signer.id())
+                .put("signerName", signer.name()).put("signerAccount", signer.account()).put("signatureId", signatureId.toString());
         audits.save(AuditEvent.builder().id(ids.nextId()).entityType("DHR_SUMMARY_REVIEW").entityId(versionId.toString())
                 .action(action).contentBefore(mapper.createObjectNode().put("status", "PENDING_REVIEW").toString()).contentAfter(evidence.toString())
                 .reason(opinion).operatorId(actor()).operatorName(AuditContext.getOperatorName()).operatorAccount(AuditContext.getOperatorAccount())

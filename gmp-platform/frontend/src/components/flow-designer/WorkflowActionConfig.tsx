@@ -189,7 +189,7 @@ export function WorkflowActionConfig({
         <Stack direction="row" justifyContent="space-between" alignItems="center" useFlexGap flexWrap="wrap" spacing={0.75}>
           <Box sx={{ flex: "1 1 160px", minWidth: 0 }}>
             <Typography variant="body2" fontWeight={700}>电子签名</Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ display: "block", overflowWrap: "anywhere" }}>{recordControl ? "审批动作账户密码签署" : "账户密码签署 · 可关联签名字段"}</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "block", overflowWrap: "anywhere" }}>{recordControl ? "审批动作账户密码签署" : "签名密码签署 · 可关联签名字段"}</Typography>
           </Box>
           <Button size="small" variant="text" startIcon={<Add />} sx={{ flexShrink: 0, whiteSpace: "nowrap" }} disabled={!editable} onClick={() => update(currentButtons, [...currentEvents, { id: `event-${Date.now()}`, event: "BEFORE", action: signableActions[0], builtin: "NONE", signatureMethod: "ACCOUNT_PASSWORD" }])}>添加签署</Button>
         </Stack>
@@ -200,12 +200,12 @@ export function WorkflowActionConfig({
               update(currentButtons, currentEvents.map((entry, i) => i === index ? { ...entry, ...patch } : entry));
             return <Box key={item.id || index} sx={{ p: 1, bgcolor: "#fff", border: "1px solid #e4e7ed", borderRadius: 1 }}>
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-                <Typography variant="caption" color="text.secondary">账户密码签署</Typography>
+                <Typography variant="caption" color="text.secondary">{recordControl ? "账户密码签署" : "签名密码签署"}</Typography>
                 <Tooltip title="删除事件"><span><IconButton size="small" aria-label="删除事件" color="error" disabled={!editable} onClick={() => update(currentButtons, currentEvents.filter((_, i) => i !== index))}><DeleteOutline fontSize="small" /></IconButton></span></Tooltip>
               </Stack>
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" }, gap: 0.75 }}>
                 <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-action-${item.id}`}>关联按钮</InputLabel><Select labelId={`event-action-${item.id}`} label="关联按钮" value={item.action} disabled={!editable} onChange={(event) => updateEvent({ action: event.target.value as WorkflowButtonAction })}>{signableActions.map((action) => <MenuItem key={action} value={action}>{actionLabels[action]}</MenuItem>)}</Select></FormControl>
-                <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-signature-${item.id}`}>签名方式</InputLabel><Select labelId={`event-signature-${item.id}`} label="签名方式" value={item.signatureMethod ?? "ACCOUNT_PASSWORD"} disabled={!editable} onChange={(event) => updateEvent({ signatureMethod: event.target.value as "ACCOUNT_PASSWORD" })}><MenuItem value="ACCOUNT_PASSWORD">账户密码</MenuItem></Select></FormControl>
+                <FormControl size="small" variant="outlined" fullWidth><InputLabel id={`event-signature-${item.id}`}>签名方式</InputLabel><Select labelId={`event-signature-${item.id}`} label="签名方式" value={item.signatureMethod ?? "ACCOUNT_PASSWORD"} disabled={!editable} onChange={(event) => updateEvent({ signatureMethod: event.target.value as "ACCOUNT_PASSWORD" })}><MenuItem value="ACCOUNT_PASSWORD">{recordControl ? "账户密码" : "电子签名密码"}</MenuItem></Select></FormControl>
               </Box>
               {!recordControl ? <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ mt: 0.5, minWidth: 0 }}>
                 <FormControlLabel

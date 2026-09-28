@@ -23,7 +23,7 @@ class DhrAuditReadTest {
         jdbc.execute("CREATE TABLE audit_event(id BIGINT PRIMARY KEY,tenant_id VARCHAR,entity_type VARCHAR,entity_id VARCHAR,data_summary VARCHAR,action VARCHAR,function_name VARCHAR,operator_name VARCHAR,operator_account VARCHAR,created_at TIMESTAMP,reason VARCHAR,content_before TEXT,content_after TEXT)");
         jdbc.update("INSERT INTO dhr_summary_version VALUES (10,'default',1),(11,'default',1),(20,'default',2),(30,'other',1)");
         instances = mock(DhrInstanceService.class);
-        service = new DhrSummaryService(jdbc, new ObjectMapper(), instances, mock(AuditEventRepository.class), new SnowflakeIdGenerator(1), mock(WorkflowEngine.class), mock(DhrEvidenceImpactService.class), mock(DhrAttachmentService.class));
+        service = new DhrSummaryService(jdbc, new ObjectMapper(), instances, mock(AuditEventRepository.class), new SnowflakeIdGenerator(1), mock(WorkflowEngine.class), mock(DhrEvidenceImpactService.class), mock(DhrAttachmentService.class), mock(DhrFormFiles.class), mock(DhrFrozenEvidenceIntegrity.class));
     }
     void event(long id, String tenant, String type, String entity, String summary) {
         jdbc.update("INSERT INTO audit_event VALUES (?,?,?,?,?,'UPDATE','测试操作',NULL,'operator',TIMESTAMP '2026-09-27 10:00:00','原因',NULL,'{\"status\":\"FORMALIZED\"}')", id, tenant, type, entity, summary);

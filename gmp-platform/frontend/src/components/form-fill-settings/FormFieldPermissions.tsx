@@ -809,7 +809,7 @@ export function FormProcessEventBindingEditor({
               lineHeight: 1.45,
             }}
           >
-            需要签名的按钮会在执行前要求账户密码，并将签名写入这里绑定的表单字段。
+            需要签名的按钮会在执行前要求签署人用户名与电子签名密码，并将签名写入这里绑定的表单字段。
           </Typography>
         </>
       ) : null}
@@ -857,7 +857,7 @@ export function FormProcessEventBindingEditor({
                             : event.action === "APPROVE"
                               ? "审批"
                               : "退回"}{" "}
-                        · 账户密码签名
+                        · 签名密码签署
                       </Typography>
                     </Box>
                     <Autocomplete

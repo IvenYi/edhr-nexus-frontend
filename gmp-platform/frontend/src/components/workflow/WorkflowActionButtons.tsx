@@ -14,6 +14,7 @@ type WorkflowActionButtonsProps = {
   buttons?: ExecutionButton[];
   busy?: boolean;
   canAct?: boolean;
+  allowAccountSigning?: boolean;
   size?: ButtonProps['size'];
   labelFor?: (button: ExecutionButton) => ReactNode;
   onAction: (button: ExecutionButton) => void;
@@ -26,12 +27,12 @@ function buttonPresentation(button: ExecutionButton): Pick<ButtonProps, 'color' 
   return { color: 'primary', variant: 'contained' };
 }
 
-export default function WorkflowActionButtons({ buttons = [], busy = false, canAct = false, size = 'medium', labelFor, onAction }: WorkflowActionButtonsProps) {
+export default function WorkflowActionButtons({ buttons = [], busy = false, canAct = false, allowAccountSigning = false, size = 'medium', labelFor, onAction }: WorkflowActionButtonsProps) {
   return <>
     {buttons.filter((button) => button.visible !== false).map((button) => {
       const presentation = buttonPresentation(button);
       const label = labelFor?.(button) ?? (button.label || actionLabels[button.action] || button.action);
-      return <Button key={button.action} size={size} disabled={busy || !canAct} {...presentation} onClick={() => onAction(button)}>
+      return <Button key={button.action} size={size} disabled={busy || (!canAct && !(allowAccountSigning && button.requiresSignature && button.action !== 'SIGN_FIELD'))} {...presentation} onClick={() => onAction(button)}>
         {label}{button.requiresSignature ? '并签署' : ''}
       </Button>;
     })}

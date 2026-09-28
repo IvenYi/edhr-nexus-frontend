@@ -106,13 +106,16 @@ class ProductionExecutionEngineTest {
         var formState = (ObjectNode) state.at("/operations/a/forms/f");
         assertThat(engine.formControls(form, formState, "1").path("buttons").get(0).path("label").asText()).isEqualTo("签署并提交");
         assertThat(engine.formControls(form, formState, "1").path("buttons").get(0).path("requiresSignature").asBoolean()).isTrue();
-        assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "2")).hasMessageContaining("无权");
+        when(access.authenticateButtonSigner("other", "secret")).thenReturn(new ExecutionAccess.ButtonSigner("2", "其他人", "other", "SIGNATURE_PASSWORD", "902"));
+        assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, "other", "secret", "1")).hasMessageContaining("无权");
         assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "SAVE", tree("{}"), null, null, null, "1")).hasMessageContaining("不允许");
-        when(access.sign(anyString(), anyString(), eq("SUBMIT"), any(), eq("operator"), eq("secret"))).thenReturn("signature-1");
+        var signer = new ExecutionAccess.ButtonSigner("1", "操作员", "operator", "SIGNATURE_PASSWORD", "901");
+        when(access.authenticateButtonSigner("operator", "secret")).thenReturn(signer);
+        when(access.sign(anyString(), anyString(), eq("SUBMIT"), any(), eq(signer))).thenReturn("signature-1");
         engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, "operator", "secret", "1");
         assertThat(formState.path("status").asText()).isEqualTo("COMPLETED");
         assertThat(formState.path("lastSignatureId").asText()).isEqualTo("signature-1");
-        verify(access).sign(anyString(), anyString(), eq("SUBMIT"), any(), eq("operator"), eq("secret"));
+        verify(access).sign(anyString(), anyString(), eq("SUBMIT"), any(), eq(signer));
     }
 
     @Test void disabledDirectSignatureEventIsNotExecuted() throws Exception {
@@ -125,7 +128,7 @@ class ProductionExecutionEngineTest {
         var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
         engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
         assertThat(state.at("/operations/a/forms/f/status").asText()).isEqualTo("COMPLETED");
-        verify(access, never()).sign(any(), any(), any(), any(), any(), any());
+        verify(access, never()).sign(any(), any(), any(), any(), any());
     }
 
     @Test void rejectsUnknownFieldsAndInvalidNumbers() throws Exception {
@@ -257,9 +260,10 @@ class ProductionExecutionEngineTest {
         assertThat(approvalControls.path("nodeKind").asText()).isEqualTo("APPROVAL");
         assertThat(approvalControls.path("buttons").findValuesAsText("action")).containsExactly("APPROVE");
         assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("第 1 份未完成");
-        when(access.sign(anyString(), anyString(), anyString(), any(), any(), any())).thenThrow(ExecutionSnapshotBuilder.invalid("签署账户或密码不正确"));
+        when(access.authenticateButtonSigner("u", "bad")).thenThrow(ExecutionSnapshotBuilder.invalid("签署账户或密码不正确"));
         assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, "u", "bad", "1")).hasMessageContaining("密码不正确");
-        doReturn("signature-1").when(access).sign(anyString(), anyString(), anyString(), any(), any(), any());
+        when(access.authenticateButtonSigner("u", "valid")).thenReturn(new ExecutionAccess.ButtonSigner("1", "操作员", "u", "SIGNATURE_PASSWORD", "901"));
+        doReturn("signature-1").when(access).sign(anyString(), anyString(), anyString(), any(), any());
         engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, "u", "valid", "1");
         engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");

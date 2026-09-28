@@ -323,7 +323,7 @@ concepts:
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.button-signature-confirmed]
   - id: concept.form-process-standard-action
     termId: term.form-process-standard-action
     kind: business-concept
@@ -567,9 +567,9 @@ concepts:
   - id: concept.production-object-dhr-view
     termId: term.production-object-dhr-view
     kind: runtime-fact
-    status: planned
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-close-source]
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page]
   - id: concept.serial-number
     termId: term.serial-number
     kind: runtime-fact

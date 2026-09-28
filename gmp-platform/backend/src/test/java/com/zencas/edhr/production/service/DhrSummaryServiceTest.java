@@ -26,7 +26,7 @@ class DhrSummaryServiceTest {
     void setup() {
         service = new DhrSummaryService(mock(JdbcTemplate.class), mapper, mock(DhrInstanceService.class),
                 mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class), mock(com.zencas.edhr.workflow.engine.WorkflowEngine.class),
-                mock(DhrEvidenceImpactService.class), mock(DhrAttachmentService.class));
+                mock(DhrEvidenceImpactService.class), mock(DhrAttachmentService.class), mock(DhrFormFiles.class), mock(DhrFrozenEvidenceIntegrity.class));
     }
 
     @Test

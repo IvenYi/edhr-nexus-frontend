@@ -89,6 +89,21 @@ class DhrReviewServiceTest {
         verifyNoInteractions(engine);
         verify(summaries, never()).prepareNextDraft(anyLong(), anyLong(), anyString());
     }
+
+    @Test void unreadableLiveValuesAreReportedAsImpactAndBlockApproval() {
+        jdbc.update("UPDATE form_instance_record SET values_json='not-json' WHERE id=10");
+
+        assertThat(service.detail(5L).path("evidenceChanges").size()).isEqualTo(1);
+        assertThatThrownBy(() -> service.act(5L, command("APPROVE"))).hasMessageContaining("过时证据");
+        verifyNoInteractions(engine);
+    }
+    @Test void missingFrozenFormOriginalBlocksApprovalButNotReturn() {
+        doThrow(new IllegalArgumentException("表单附件原件缺失：20")).when(summaries).validateFrozenFormFiles(1L, 2L);
+        assertThatThrownBy(() -> service.act(5L, command("APPROVE"))).hasMessageContaining("表单附件原件缺失");
+        verifyNoInteractions(engine);
+        assertThat(service.act(5L, command("RETURN")).path("outcome").asText()).isEqualTo("RETURNED");
+        verify(engine).completeDhrTask(5L, "REJECT", "已核对", "7", null);
+    }
     @Test void humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly() {
         jdbc.update("UPDATE form_instance_record SET status='VOIDED'");
         assertThatThrownBy(() -> service.act(5L, command("RETURN").put("opinion", " "))).hasMessageContaining("审批意见");
@@ -120,8 +135,10 @@ class DhrReviewServiceTest {
         assertThat(service.detail(5L).path("buttons").size()).isEqualTo(1);
         assertThat(service.detail(5L).at("/buttons/0/requiresSignature").asBoolean()).isTrue();
         assertThatThrownBy(() -> service.act(5L, command("RETURN"))).hasMessageContaining("不支持");
+        var signer = new ExecutionAccess.ButtonSigner("7", "复核员", "reviewer", "SIGNATURE_PASSWORD", "900");
+        when(access.authenticateButtonSigner(anyString(), anyString())).thenReturn(signer);
         assertThatThrownBy(() -> service.act(5L, command("APPROVE").put("opinion", ""))).hasMessageContaining("审批意见");
-        when(access.signTarget(eq("DHR_SUMMARY"), eq("2"), eq("5"), eq("APPROVE"), any(), eq("reviewer"), eq("password"))).thenReturn("77");
+        when(access.signTarget(eq("DHR_SUMMARY"), eq("2"), eq("5"), eq("APPROVE"), any(), eq(signer))).thenReturn("77");
         service.act(5L, command("APPROVE").put("account", "reviewer").put("password", "password"));
         verify(engine).completeDhrTask(5L, "APPROVE", "已核对", "7", 77L);
     }
@@ -130,6 +147,22 @@ class DhrReviewServiceTest {
         assertThat(service.evidenceChanges(2L, false).size()).isEqualTo(1);
         jdbc.update("DELETE FROM form_instance_record WHERE id=10");
         assertThat(service.evidenceChanges(2L, false).size()).isEqualTo(2);
+    }
+    @Test void signedReviewChecksNamedSignerAndRecordsBothIdentities() {
+        jdbc.update("UPDATE workflow_node SET properties=?", "{\"config\":{\"buttonEvents\":[{\"action\":\"APPROVE\",\"event\":\"BEFORE\",\"signatureMethod\":\"ACCOUNT_PASSWORD\"}]}}");
+        var signer = new ExecutionAccess.ButtonSigner("8", "签署人B", "reviewerB", "SIGNATURE_PASSWORD", "901");
+        when(access.authenticateButtonSigner("reviewerB", "signature-secret")).thenReturn(signer);
+        var request = command("APPROVE").put("account", "reviewerB").put("password", "signature-secret");
+        assertThatThrownBy(() -> service.act(5L, request)).isInstanceOf(AccessDeniedException.class);
+        verify(access, never()).signTarget(any(), any(), any(), any(), any(), any());
+        jdbc.update("UPDATE workflow_task SET candidate_snapshot='{\"userIds\":[\"7\",\"8\"]}'");
+        when(access.signTarget(eq("DHR_SUMMARY"), eq("2"), eq("5"), eq("APPROVE"), any(), eq(signer))).thenReturn("77");
+        ObjectNode evidence = service.act(5L, request);
+        assertThat(evidence.path("signerId").asText()).isEqualTo("8");
+        assertThat(evidence.path("sessionOperatorId").asText()).isEqualTo("7");
+        verify(engine).completeDhrTask(5L, "APPROVE", "已核对", "8", 77L);
+        verify(audits).save(argThat(event -> "7".equals(event.getOperatorId()) && event.getContentAfter().contains("签署人B")));
+        assertThat(AuditContext.getOperatorId()).isEqualTo("7");
     }
     @Configuration @EnableTransactionManagement static class Config {
         @Bean DataSource source() { return new DriverManagerDataSource("jdbc:h2:mem:dhr-review;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1", "sa", ""); }

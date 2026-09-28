@@ -72,8 +72,8 @@ decisions:
       - id: scenario.production-dhr-created-on-first-start
         given: 生产对象已完成工单拆分但尚未开工
         when: 生产执行模块首次开工该对象
-        then: 系统在开工时创建或激活 DHR 实例并绑定执行快照；拆分阶段不生成有效 DHR 内容
-        evidenceIds: [evidence.guancheng-batch-start-source, evidence.guancheng-batch-lifecycle-source, evidence.production-service]
+        then: 系统在首次合法 START 时同事务创建唯一 DHR 并绑定执行快照；拆分阶段不创建 DHR
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.production-service]
         evidenceRequirements: [首次开工 DHR 创建测试, 未开工取消无 DHR 残留测试]
     implementationDiscrepancies:
       - id: discrepancy.production-work-order-early-termination-contract-not-implemented

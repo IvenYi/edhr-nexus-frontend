@@ -39,6 +39,9 @@ import { useSnackbar } from '@/components/SnackbarProvider';
 import StatusBadge from '@/components/StatusBadge';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import { cancelProductionObject, endProductionObject, listBatches, type BatchRecord } from '@/api/work-orders';
+import { getDhrByProductionObject, type DhrInstanceSummary } from '@/api/dhr-instances';
+import { DhrArchiveViewer } from '@/pages/dhr-management/DhrManagementPage';
+import { useAuthStore } from '@/stores/authStore';
 import type { PageResult } from '@/types/common';
 import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
 import ListColumnSettingsPopover, {
@@ -240,6 +243,8 @@ export default function BatchManagementPage() {
   const [cancelTarget, setCancelTarget] = useState<BatchRecord | null>(null);
   const [endTarget, setEndTarget] = useState<BatchRecord | null>(null);
   const [endReason, setEndReason] = useState('');
+  const [selectedDhr, setSelectedDhr] = useState<DhrInstanceSummary | null>(null);
+  const canViewDhr = useAuthStore((state) => state.hasPermission('dhr.instances.view'));
   const { showMessage } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -311,8 +316,18 @@ export default function BatchManagementPage() {
     onSuccess: () => { showMessage('批次提前结束，关联 DHR 已终止'); setEndTarget(null); setEndReason(''); void queryClient.invalidateQueries({ queryKey: ['production-batches'] }); void queryClient.invalidateQueries({ queryKey: ['dhr-instances'] }); },
     onError: () => showMessage('批次提前结束失败，请检查状态和结束原因', 'error'),
   });
-
-  const notifyUnavailable = (label: string) => showMessage(`${label}将在生产执行模块上线后提供`, 'info');
+  const dhrLookup = useMutation({
+    mutationFn: getDhrByProductionObject,
+    onSuccess: (dhr) => {
+      if (dhr) setSelectedDhr(dhr);
+      else showMessage('该批次尚未生成 DHR（首次开工后自动创建）', 'info');
+    },
+    onError: (error: Error) => showMessage(error.message.includes('权限') ? '没有 DHR 查看权限' : 'DHR 查询失败，请稍后重试', 'error'),
+  });
+  const openDhr = (row: BatchRecord) => {
+    if (!canViewDhr) { showMessage('没有 DHR 查看权限', 'warning'); return; }
+    dhrLookup.mutate(row.id);
+  };
 
   const submitSearch = () => {
     setPage(1);
@@ -380,7 +395,7 @@ export default function BatchManagementPage() {
               {!batches.isLoading && !batches.isError && rows.map((row) => <TableRow data-record-id={row.id} key={row.id} hover tabIndex={0} onClick={() => { setDetail(row); setDetailTab(0); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { setDetail(row); setDetailTab(0); } }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
                 {visibleColumns.map((column) => <Fragment key={column.id}>{renderBatchCell(row, column)}</Fragment>)}
                 <TableCell align="center" onClick={(event) => event.stopPropagation()} sx={getOperationColumnSx('body', hasVisibleStatusColumn)}>
-                  {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="DHR" arrow><IconButton size="small" aria-label="查看DHR" onClick={() => notifyUnavailable('DHR 查看')}><DescriptionOutlined fontSize="small" /></IconButton></Tooltip> : <Tooltip title="DHR（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="DHR 暂不可用"><DescriptionOutlined fontSize="small" /></IconButton></span></Tooltip>}
+                  <Tooltip title="查看 DHR" arrow><IconButton size="small" aria-label={`查看DHR ${row.objectNo}`} disabled={dhrLookup.isPending} onClick={() => openDhr(row)}><DescriptionOutlined fontSize="small" /></IconButton></Tooltip>
                   {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="执行详情" arrow><IconButton size="small" aria-label="执行详情" onClick={() => navigate(`/production/execution?${new URLSearchParams({ barcode: row.objectNo, autoScan: '1' })}`)}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip> : <Tooltip title="执行详情（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="执行详情暂不可用"><PlayCircleOutline fontSize="small" /></IconButton></span></Tooltip>}
                   {row.status === 'IN_PROGRESS' ? <Tooltip title="结束" arrow><IconButton size="small" aria-label="提前结束批次" color="warning" onClick={() => { setEndTarget(row); setEndReason(''); }}><StopCircleOutlined fontSize="small" /></IconButton></Tooltip> : row.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消批次" color="error" onClick={() => setCancelTarget(row)}><Cancel fontSize="small" /></IconButton></Tooltip> : <Tooltip title="结束（仅进行中的批次可用）" arrow><span><IconButton size="small" disabled aria-label="结束暂不可用"><StopCircleOutlined fontSize="small" /></IconButton></span></Tooltip>}
                 </TableCell>
@@ -398,6 +413,7 @@ export default function BatchManagementPage() {
       </Box>
 
       <BatchDetailDrawer detail={detail} tab={detailTab} onTabChange={setDetailTab} auditRows={auditRows} auditLoading={audit.isLoading} auditError={audit.isError} onClose={() => setDetail(null)} />
+      {selectedDhr && <DhrArchiveViewer selected={selectedDhr} viewOnly onClose={() => setSelectedDhr(null)} />}
       <ConfirmDialog open={cancelTarget !== null} title="取消批次" message={cancelTarget ? `确定取消批次「${cancelTarget.objectNo}」吗？取消后不能再开工。` : ''} confirmText="取消批次" destructive loading={cancelMutation.isPending} onCancel={() => setCancelTarget(null)} onConfirm={() => cancelTarget && cancelMutation.mutate(cancelTarget.id)} />
       <AppDialog open={endTarget !== null} onClose={() => { setEndTarget(null); setEndReason(''); }} maxWidth="sm" fullWidth>
         <DialogTitle>提前结束批次</DialogTitle>
