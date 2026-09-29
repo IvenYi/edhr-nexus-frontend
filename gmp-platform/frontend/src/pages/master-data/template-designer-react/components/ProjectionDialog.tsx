@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, FormControlLabel, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Collapse, DialogActions, DialogContent, DialogTitle, FormControlLabel, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
 import client from '@/api/client';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
@@ -21,6 +21,8 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   const [samples, setSamples] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<PreviewRecord[] | null>(null);
   const [newModel, setNewModel] = useState('formTrace');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
   const [materials, setMaterials] = useState<{ id: string; name: string }[]>([]);
   useEffect(() => {
     if (open) void client.get(`${base}/projection-catalog`).then(response => setCatalog(response.data.data as Catalog))
@@ -40,6 +42,8 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   const change = (id: string, patch: Partial<ProjectionBinding>) => update(bindings.map(binding => binding.id === id ? { ...binding, ...patch } : binding));
   const sources = (binding: ProjectionBinding): ModelField[] => binding.tableId
     ? (fields.find(field => field.id === binding.tableId)?.typeConfig.columns as ModelField[] ?? []) : fields;
+  const sourceSummary = (binding: ProjectionBinding) => [...new Set(Object.values(binding.sources)
+    .map(id => sources(binding).find(field => field.id === id)?.name ?? id))].join('、') || '尚未配置来源';
   const run = async (action: () => Promise<void>) => {
     setError(''); setBusy(true);
     try { await action(); } catch (reason) { setError(reason instanceof Error ? reason.message : '操作失败'); } finally { setBusy(false); }
@@ -64,22 +68,26 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   return <AppDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
     <DialogTitle>追溯与统计</DialogTitle>
     <DialogContent dividers>
-      <Stack spacing={2.5}>
-        <Typography color="text.secondary">这里汇总整张表的用途记录。一条记录把多个表单字段组合成一条报工、报废、消耗或查表结果；也可在画布选中字段后，直接到左侧“字段配置 → 数据用途”逐个指定。</Typography>
+      <Stack spacing={1.5}>
+        <Typography color="text.secondary">先核对每项结果使用了哪些字段；需要调整来源或输入模拟值时，再展开相应明细。画布左侧“字段配置 → 数据用途”也能逐个设置。</Typography>
         {focusField && <Alert severity="info">正在配置字段「{focusField.name}」。下方编辑的是全表共用配置；来源选项标有“当前字段”。</Alert>}
         <Alert severity="info">左列选来源字段，会随模板保存；右列“模拟值”仅用于下方预览，不会写入模板或正式报表。{catalog?.notice ?? '正在读取可用用途…'} 数量与单位需完整配置；正式结果只在最终完成后生成。</Alert>
         {error && <Alert severity="error">{error}</Alert>}
-        {bindings.map((binding, index) => {
+        {bindings.map((binding) => {
           const available = sources(binding).filter(field => field.status !== 'disabled');
           const model = catalog?.models.find(item => item.id === binding.modelId);
           const attributes = model?.attributes ?? [];
-          return <Box key={binding.id} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography fontWeight={600}>记录 {index + 1} · {model?.name ?? binding.modelId}</Typography>
-              <Stack direction="row"><FormControlLabel label={binding.enabled ? '启用' : '停用'} control={<Switch disabled={busy} checked={binding.enabled} onChange={(_, enabled) => change(binding.id, { enabled })} />} />
-                <Button disabled={busy} color="error" onClick={() => update(bindings.filter(item => item.id !== binding.id))}>移除</Button></Stack>
+          return <Box key={binding.id} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1.5 }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography fontWeight={600}>{model?.name ?? binding.modelId} · {binding.enabled ? '已启用' : '未启用'}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{sourceSummary(binding)}</Typography>
+              </Box>
+              <Button size="small" sx={{ flexShrink: 0 }} onClick={() => setExpandedId(expandedId === binding.id ? null : binding.id)}>{expandedId === binding.id ? '收起' : '编辑 / 预览'}</Button>
             </Stack>
-            <Stack spacing={2} sx={{ mt: 1 }}>
+            <Collapse in={expandedId === binding.id} unmountOnExit><Stack spacing={2} sx={{ mt: 2 }}>
+              <Stack direction="row" justifyContent="flex-end"><FormControlLabel label={binding.enabled ? '启用' : '停用'} control={<Switch disabled={busy} checked={binding.enabled} onChange={(_, enabled) => change(binding.id, { enabled })} />} />
+                <Button disabled={busy} color="error" onClick={() => update(bindings.filter(item => item.id !== binding.id))}>移除</Button></Stack>
               <Stack direction="row" spacing={2}><Typography variant="caption" sx={{ flex: 1 }}>来源字段（保存）</Typography><Typography variant="caption" sx={{ flex: 1 }}>模拟值（仅预览）</Typography></Stack>
               <TextField select size="small" label="来源区域" value={binding.tableId || '__main'} disabled={busy}
                 onChange={event => change(binding.id, { tableId: event.target.value === '__main' ? '' : event.target.value, rowKeyFieldId: '', sources: {} })}>
@@ -108,19 +116,20 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
               </Stack>)}
               {binding.tableId && binding.rowKeyFieldId && <TextField size="small" label="模拟行记录键" value={samples[`${binding.tableId}/${binding.rowKeyFieldId}`] ?? ''}
                 onChange={event => { setPreview(null); setSamples({ ...samples, [`${binding.tableId}/${binding.rowKeyFieldId}`]: event.target.value }); }} />}
-            </Stack>
+            </Stack></Collapse>
           </Box>;
         })}
-        <Stack direction="row" spacing={2}>
+        {!isAdding ? <Button variant="outlined" onClick={() => setIsAdding(true)}>添加查询或业务记录</Button> : <Stack direction="row" spacing={2}>
           <TextField select size="small" fullWidth label="记录用途" value={newModel} onChange={event => setNewModel(event.target.value)}>
             {(catalog?.models ?? []).map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
           </TextField>
-          <Button variant="outlined" sx={{ flexShrink: 0 }} disabled={!catalog || busy} onClick={() => update([...bindings, { id: crypto.randomUUID(), modelId: newModel, enabled: false, tableId: focusField?.tableId, sources: {} }])}>添加记录</Button>
-        </Stack>
+          <Button variant="outlined" sx={{ flexShrink: 0 }} disabled={!catalog || busy} onClick={() => { const id = crypto.randomUUID(); update([...bindings, { id, modelId: newModel, enabled: false, tableId: focusField?.tableId, sources: {} }]); setExpandedId(id); setIsAdding(false); }}>添加记录</Button>
+          <Button onClick={() => setIsAdding(false)}>取消</Button>
+        </Stack>}
         {preview && <Box aria-live="polite"><Typography fontWeight={600}>预览：{preview.length} 条命中记录</Typography>
           <Typography variant="body2" color="text.secondary">仅使用上方模拟值，每个子表预览一行；不会保存正式结果。</Typography>
           {preview.map(record => <Box key={`${record.bindingId}/${record.rowKey}`} sx={{ py: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
-            <Typography variant="body2">记录 {bindings.findIndex(binding => binding.id === record.bindingId) + 1} · {record.rowKey === 'form' ? '普通字段组' : `明细 ${record.rowKey}`}</Typography>
+            <Typography variant="body2">来源明细 {bindings.findIndex(binding => binding.id === record.bindingId) + 1} · {record.rowKey === 'form' ? '普通字段组' : `明细 ${record.rowKey}`}</Typography>
             {Object.entries(record.attributes).map(([id, value]) => <Typography key={id} variant="body2">{catalog?.models.flatMap(model => model.attributes).find(attribute => attribute.id === id)?.name}: {typeof value === 'object' && value ? String((value as { name: string }).name) : String(value)}</Typography>)}
           </Box>)}</Box>}
       </Stack>
