@@ -14,6 +14,7 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   focusField?: { id: string; name: string; tableId?: string } | null;
 }) {
   const document = useTemplateDesignerStore(state => state.document);
+  const setProjectionBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -34,9 +35,7 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   const fields = document.model.fields;
   const update = (next: ProjectionBinding[]) => {
     setPreview(null);
-    useTemplateDesignerStore.setState(state => ({ document: state.document ? {
-      ...state.document, model: { ...state.document.model, projection: { version: catalog?.version ?? 'form-projection-v1', bindings: next } },
-    } : null }));
+    setProjectionBindings(next, catalog?.version);
   };
   const change = (id: string, patch: Partial<ProjectionBinding>) => update(bindings.map(binding => binding.id === id ? { ...binding, ...patch } : binding));
   const sources = (binding: ProjectionBinding): ModelField[] => binding.tableId
@@ -66,9 +65,9 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
     <DialogTitle>追溯与统计</DialogTitle>
     <DialogContent dividers>
       <Stack spacing={2.5}>
-        <Typography color="text.secondary">选择要查找的信息及来源字段。每项用途保留一组对应关系；没有追溯需求的表单可以不配置。</Typography>
+        <Typography color="text.secondary">这里汇总整张表的用途记录。一条记录把多个表单字段组合成一条报工、报废、消耗或查表结果；也可在画布选中字段后，直接到左侧“字段配置 → 数据用途”逐个指定。</Typography>
         {focusField && <Alert severity="info">正在配置字段「{focusField.name}」。下方编辑的是全表共用配置；来源选项标有“当前字段”。</Alert>}
-        <Alert severity="info">{catalog?.notice ?? '正在读取可用用途…'} 数量与单位需完整配置；正式结果只在最终完成后生成。</Alert>
+        <Alert severity="info">左列选来源字段，会随模板保存；右列“模拟值”仅用于下方预览，不会写入模板或正式报表。{catalog?.notice ?? '正在读取可用用途…'} 数量与单位需完整配置；正式结果只在最终完成后生成。</Alert>
         {error && <Alert severity="error">{error}</Alert>}
         {bindings.map((binding, index) => {
           const available = sources(binding).filter(field => field.status !== 'disabled');
@@ -76,11 +75,12 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
           const attributes = model?.attributes ?? [];
           return <Box key={binding.id} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography fontWeight={600}>用途 {index + 1} · {model?.name ?? binding.modelId}</Typography>
+              <Typography fontWeight={600}>记录 {index + 1} · {model?.name ?? binding.modelId}</Typography>
               <Stack direction="row"><FormControlLabel label={binding.enabled ? '启用' : '停用'} control={<Switch disabled={busy} checked={binding.enabled} onChange={(_, enabled) => change(binding.id, { enabled })} />} />
                 <Button disabled={busy} color="error" onClick={() => update(bindings.filter(item => item.id !== binding.id))}>移除</Button></Stack>
             </Stack>
             <Stack spacing={2} sx={{ mt: 1 }}>
+              <Stack direction="row" spacing={2}><Typography variant="caption" sx={{ flex: 1 }}>来源字段（保存）</Typography><Typography variant="caption" sx={{ flex: 1 }}>模拟值（仅预览）</Typography></Stack>
               <TextField select size="small" label="来源区域" value={binding.tableId || '__main'} disabled={busy}
                 onChange={event => change(binding.id, { tableId: event.target.value === '__main' ? '' : event.target.value, rowKeyFieldId: '', sources: {} })}>
                 <MenuItem value="__main">普通字段（本组一条）</MenuItem>
@@ -112,15 +112,15 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
           </Box>;
         })}
         <Stack direction="row" spacing={2}>
-          <TextField select size="small" fullWidth label="添加用途" value={newModel} onChange={event => setNewModel(event.target.value)}>
+          <TextField select size="small" fullWidth label="记录用途" value={newModel} onChange={event => setNewModel(event.target.value)}>
             {(catalog?.models ?? []).map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
           </TextField>
-          <Button variant="outlined" sx={{ flexShrink: 0 }} disabled={!catalog || busy} onClick={() => update([...bindings, { id: crypto.randomUUID(), modelId: newModel, enabled: true, tableId: focusField?.tableId, sources: {} }])}>添加用途</Button>
+          <Button variant="outlined" sx={{ flexShrink: 0 }} disabled={!catalog || busy} onClick={() => update([...bindings, { id: crypto.randomUUID(), modelId: newModel, enabled: false, tableId: focusField?.tableId, sources: {} }])}>添加记录</Button>
         </Stack>
         {preview && <Box aria-live="polite"><Typography fontWeight={600}>预览：{preview.length} 条命中记录</Typography>
           <Typography variant="body2" color="text.secondary">仅使用上方模拟值，每个子表预览一行；不会保存正式结果。</Typography>
           {preview.map(record => <Box key={`${record.bindingId}/${record.rowKey}`} sx={{ py: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
-            <Typography variant="body2">用途 {bindings.findIndex(binding => binding.id === record.bindingId) + 1} · {record.rowKey === 'form' ? '普通字段组' : `明细 ${record.rowKey}`}</Typography>
+            <Typography variant="body2">记录 {bindings.findIndex(binding => binding.id === record.bindingId) + 1} · {record.rowKey === 'form' ? '普通字段组' : `明细 ${record.rowKey}`}</Typography>
             {Object.entries(record.attributes).map(([id, value]) => <Typography key={id} variant="body2">{catalog?.models.flatMap(model => model.attributes).find(attribute => attribute.id === id)?.name}: {typeof value === 'object' && value ? String((value as { name: string }).name) : String(value)}</Typography>)}
           </Box>)}</Box>}
       </Stack>

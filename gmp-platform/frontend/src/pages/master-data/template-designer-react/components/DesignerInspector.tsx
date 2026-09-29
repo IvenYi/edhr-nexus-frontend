@@ -6,6 +6,7 @@ import { Box, Checkbox, Divider, IconButton, MenuItem, Stack, TextField, Tooltip
 import { useRef, useState } from 'react';
 import FieldTypeIcon from './FieldTypeIcon';
 import PropertyFormRenderer from './PropertyFormRenderer';
+import FieldProjectionConfig from './FieldProjectionConfig';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { isCellDisplayNode } from '../registry/commonComponentRegistry';
@@ -778,6 +779,11 @@ export default function DesignerInspector() {
   const fieldType = boundField?.type ?? 'text';
   const fieldTypeDefinition = getFieldTypeDefinition(fieldType);
   const fieldDisplayName = boundField?.name || readText(selectedNode.props?.label, fieldTypeDefinition.label);
+  const projectionTableId = selectedNode.bindings?.subTableId ?? document?.model.fields.find((field) =>
+    field.type === 'subTable' && Array.isArray(field.typeConfig.columns)
+      && (field.typeConfig.columns as ModelField[]).some((column) => column.id === boundField?.id))?.id;
+  const canConfigureProjection = boundField && (['text', 'number', 'singleSelect'].includes(boundField.type)
+    || (boundField.type === 'reference' && boundField.typeConfig.sourceType === 'material'));
   const displayMode = readText(bindings.displayMode, 'text');
   const isSubTableGroupSelected = selectedNode.type === 'sub-table'
     && fieldType === 'subTable'
@@ -2252,6 +2258,12 @@ export default function DesignerInspector() {
         },
       }}
     >
+      {canConfigureProjection && <>
+        <FieldConfigSection title="数据用途" marker="projection">
+          <FieldProjectionConfig field={boundField} tableId={projectionTableId} />
+        </FieldConfigSection>
+        <Divider />
+      </>}
       {renderFieldSections()}
     </Stack>
   );

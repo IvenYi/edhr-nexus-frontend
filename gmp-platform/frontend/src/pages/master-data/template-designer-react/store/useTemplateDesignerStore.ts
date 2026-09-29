@@ -12,6 +12,7 @@ import type {
   FieldType,
   ModelField,
   ModelFieldStatus,
+  ProjectionBinding,
   SubTableRegion,
   TemplateDesignerCanvasRailKey,
   TemplateDesignerDocument,
@@ -1797,6 +1798,7 @@ export interface TemplateDesignerStore {
   selectedRange: CanvasSelectionRange | null;
   setDocument: (document: TemplateDesignerDocument) => void;
   setActiveTab: (tab: TemplateDesignerTabKey) => void;
+  setProjectionBindings: (bindings: ProjectionBinding[], version?: string) => void;
   setActiveCanvasRail: (rail: TemplateDesignerCanvasRailKey) => void;
   setCanvasSidebarVisible: (visible: boolean) => void;
   setCurrentPageId: (pageId: string) => void;
@@ -1927,6 +1929,15 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     selectedSubTableGroupNodeId: null,
   }),
   setActiveTab: (activeTab) => set({ activeTab }),
+  setProjectionBindings: (bindings, version) => set((state) => pushDocumentHistory(state, {
+    document: state.document ? {
+      ...state.document,
+      model: {
+        ...state.document.model,
+        projection: { version: version ?? state.document.model.projection?.version ?? 'form-projection-v1', bindings },
+      },
+    } : null,
+  })),
   setActiveCanvasRail: (activeCanvasRail) => set({ activeCanvasRail, isCanvasSidebarVisible: true }),
   setCanvasSidebarVisible: (isCanvasSidebarVisible) => set({ isCanvasSidebarVisible }),
   setCurrentPageId: (pageId) => set((state) => ({

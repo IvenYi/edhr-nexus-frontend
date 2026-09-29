@@ -139,6 +139,9 @@ decisionPackage:
       - area: template-projection-report
         change: 统一属性目录和解释器、模板内配置及生产使用时快照、完成事件持久化、报表明细与合计、快照回查。
         evidenceReferences: [docs/architecture/transaction-traceability-dhr-business-rules.md]
+      - area: template-designer-field-configuration
+        change: 普通字段配置面板直接编辑同一用途记录来源，显示记录内已有字段；全表弹窗保留整表核对与模拟预览。
+        evidenceReferences: [docs/architecture/form-traceability-projection-design.md]
       - area: knowledge
         change: 记录已确认职责及本轮Q1/Q2/Q5/Q7/Q8确认，尚未闭环部分保留内部状态。
         evidenceReferences: [docs/knowledge/README.md]
@@ -177,6 +180,9 @@ decisionPackage:
       - scope: current-first-completion-delivery
         scenarios: [分组取值, 使用时校验, 模板编辑前后实例快照隔离, 完成与退回, 幂等并发, 部分失败回滚, 来源权限, 同条过滤, 工序与单位隔离, 报表回查, 独立数据库迁移]
         evidenceReferences: []
+      - scope: field-configuration-usability
+        scenarios: [字段面板已有来源回显, 新增停用用途记录, 保存重开后保留, 全表入口读取同一配置, 左侧滚动]
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx]
     evidenceGaps:
       - A12受控修订作废及规则重建按用户确认暂缓；首次最终来源修订固定为1。
       - 当前实现只覆盖四个标准用途，没有证明全部客户表单或报表矩阵已实现。
@@ -211,7 +217,19 @@ decisionPackage:
       reason: 复用公共列表规范、来源详情与冻结表单预览。
     - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
       changeType: create
-      reason: 全表及字段快捷入口编辑同一配置，保存与预览；不新增模板发布。
+      reason: 全表入口编辑同一配置，澄清保存来源与仅用于预览的模拟值；不新增模板发布。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      changeType: create
+      reason: 在字段配置中选择用途记录和字段含义，显示同记录来源并复用模板配置。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      changeType: update
+      reason: 普通字段的侧栏接入数据用途配置。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      changeType: update
+      reason: 字段面板与全表弹窗共用支持撤销的映射更新。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx
+      changeType: update
+      reason: 将字段设计快捷入口的说明标明为全表配置。
     - path: gmp-platform/backend/scripts/form-projection-demo.py
       changeType: create
       reason: 独立库虚构配置及真实生产API演示闭环。
@@ -249,6 +267,11 @@ decisionPackage:
       changeType: read-only
       reason: 核对现有元数据查询与来源权限。
   acceptanceScenarios:
+    - id: scenario.projection-field-configuration
+      given: 制表人员在表单设计画布选中普通字段
+      when: 从字段配置的数据用途加入已有或新用途记录并保存
+      then: 无需打开全表弹窗即可编辑来源；保存重开后回显，全表入口读取同一配置；模拟值不保存。
+      evidenceRequirements: [前端构建, 设计器检查, 独立库浏览器保存重开]
     - id: scenario.projection-design-brief-and-handoff
       given: 朋友阅读简版，后续开发上下文阅读完整方案
       when: 分别理解客户配置过程和定位开发起点

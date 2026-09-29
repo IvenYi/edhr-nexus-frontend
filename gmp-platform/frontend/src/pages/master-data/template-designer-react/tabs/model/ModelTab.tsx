@@ -931,8 +931,8 @@ export default function ModelTab({
                             {field.status === 'enabled' ? <ToggleOffOutlined sx={{ fontSize: 16 }} /> : <ToggleOnOutlined sx={{ fontSize: 16 }} />}
                           </IconButton>
                         </Tooltip>
-                        {onProjectionField && field.type !== 'subTable' && <Tooltip title="字段追溯与统计" arrow>
-                          <IconButton size="small" aria-label={`${field.name}的追溯与统计`} onClick={() => onProjectionField(field, subTableDesignFieldId ?? undefined)} sx={{ width: 24, height: 24 }}><Search sx={{ fontSize: 16 }} /></IconButton>
+                        {onProjectionField && field.type !== 'subTable' && <Tooltip title="打开全表追溯配置（标出当前字段）" arrow>
+                          <IconButton size="small" aria-label={`在全表追溯配置中查看${field.name}`} onClick={() => onProjectionField(field, subTableDesignFieldId ?? undefined)} sx={{ width: 24, height: 24 }}><Search sx={{ fontSize: 16 }} /></IconButton>
                         </Tooltip>}
                         <Tooltip title="编辑" arrow>
                           <IconButton
