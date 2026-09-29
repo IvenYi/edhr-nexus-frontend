@@ -258,7 +258,7 @@ export default function TemplateDesignerReactShell({
         )}
       </Box>
       {projectionPublished && <Alert severity="info">已发布冻结，只读查看。修改表单或来源配置请创建新版本。</Alert>}
-      <Box component="fieldset" disabled={projectionPublished} sx={{ flex: 1, minWidth: 0, minHeight: 0, overflow: 'hidden', border: 0, p: 0, m: 0, pointerEvents: projectionPublished ? 'none' : 'auto' }}>
+      <Box component="fieldset" disabled={projectionPublished} sx={{ flex: 1, minWidth: 0, minHeight: 0, overflow: 'hidden', border: 0, p: 0, m: 0 }}>
         {activeTab === 'model' ? (
           <Box sx={{ height: '100%', minHeight: 0, p: 3 }}>
             <ModelTab
