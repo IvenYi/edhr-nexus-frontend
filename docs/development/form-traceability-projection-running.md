@@ -49,25 +49,25 @@ python3 scripts/form-projection-demo.py
 
 脚本只允许本机 `edhr_form_projection` / `8087`，需要 Python 3、可连接该库的 `psql` 与开发管理员登录。`psql` 沿用本机 PGUSER/PGPASSWORD 等连接配置；`PROJECTION_DEMO_PASSWORD` 可覆盖初始化管理员密码（默认沿用仓库初始化值）。脚本不打印令牌。
 
-脚本创建 `PROJECTION-DEMO2-*` 虚构主数据（ID 980001–980020），随后通过真实 API 发布冻结模板、启动工序、暂存、最终完成并等待投影。断言暂存不投影、两个工序各100件、4条消耗明细、同条条件不跨组误配、冻结来源值及真实DHR关联。重复运行成功样本不会改写完成记录。运行前不要自行占用该虚构ID区间。
+脚本创建 `PROJECTION-DEMO2-*` 虚构主数据（ID 980001–980020），随后通过真实 API 启动生产执行、暂存、最终完成并等待投影。断言暂存不投影、两个工序各100件、4条消耗明细、同条条件不跨组误配、使用时快照中的来源值及真实DHR关联。重复运行成功样本不会改写完成记录。运行前不要自行占用该虚构ID区间。
 
 访问 `http://localhost:3007`，菜单“记录 → 报表 → 追溯与统计”。本机还保留早期虚构样本作开发证据，可展开筛选并输入生产对象编号 `PROJECTION-DEMO2-BATCH` 只看当前演示。新拉取环境只会产生当前演示样本。表单追溯按实例去重，展开详情查看所有命中；报工、报废、消耗可切换“来源明细／按工序用途合计”。
 
-模板的全表入口及普通字段快捷入口编辑同一配置。启用用途须在发布时完整；草稿可保存，发布后禁止修改原版本。需要改变映射时创建新版本。演示版无审批配置，提交即最终完成；有审批流程的模板仍由原执行引擎决定最终完成时机。
+模板的全表入口及普通字段快捷入口编辑同一配置。未完成配置可保存；启用用途在生产对象首次执行或后续挂接表单时必须通过校验，配置随执行快照固定。模板版本仍可编辑，修改后的配置只影响之后使用它的实例。演示版无审批配置，提交即最终完成；有审批流程的模板仍由原执行引擎决定最终完成时机。
 
 ## 验证与范围
 
 ```sh
 # backend；真实PostgreSQL测试在随机临时schema内执行并清理
 PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection \
-  mvn -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest,TemplateModelingControllerTest,FormFillSnapshotTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test
+  mvn -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest,TemplateProjectionAuthorizationTest,TemplateModelingControllerTest,FormFillSnapshotTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test
 # frontend
 npm run build
 ```
 
-测试 DB 环境变量缺失时 PostgreSQL 集成测试会跳过；不能把跳过当通过。不要并行运行多个 Maven 测试进程共享同一 `target/`。2026-09-29 主开发已运行上述139项测试、空库全量 Liquibase、前端构建、真实演示 API 闭环及浏览器来源回查。全新独立质量实例重跑139项测试（零失败、零跳过）、前端构建，并完成浏览器复验，结果为 `passed`；本体核对结果为 `updated`。证据与验证边界见同目录 `form-traceability-projection-quality-result.yaml` 和 `form-traceability-projection-ontology-result.yaml`。独立质量实例未重演空库全量迁移、来源审批签署提交或生产降级演练。
+测试 DB 环境变量缺失时 PostgreSQL 集成测试会跳过；不能把跳过当通过。不要并行运行多个 Maven 测试进程共享同一 `target/`。2026-09-29 初始交付已运行空库全量 Liquibase、真实演示 API 闭环及浏览器来源回查；此前独立质量结果见同目录 `form-traceability-projection-quality-result.yaml`。改为使用时快照后，主开发重新运行上述139项测试（零失败、零跳过）、前端构建，并在隔离库的虚构模板上验证旧版本仍可保存；本体核对结果为 `updated`。首次独立复验发现设计保存接口缺少显式模板管理权限，修复前结果见 `form-traceability-projection-quality-use-time.yaml`；补权限后由未参与修复的全新质量实例重跑139项测试、构建和浏览器回归，最终结果 `passed`，见 `form-traceability-projection-quality-use-time-final.yaml`。独立验证未重演来源审批签署提交或生产降级演练。
 
-交付四项标准用途：表单内容追溯、正式报工、报废、物料消耗。表单完成与待处理事件同事务，消费者原子写入结果；失败保留来源及完成状态，系统管理员填写原因后可重试，报表明确提示待处理／失败。未配置模板保留原路径，生产工作台旧汇总标为过程参考。
+交付四项标准用途：表单内容追溯、正式报工、报废、物料消耗。表单完成与待处理事件同事务，消费者原子写入结果；失败保留来源及完成状态，系统管理员填写原因后可重试，报表明确提示待处理／失败。未配置模板保留原路径，生产工作台旧汇总标为过程参考。此前分支已应用的 `projection_frozen_json` 列为演示遗留列，当前运行与界面不再读取；已启动生产执行的 `snapshot_json` 保持原样。
 
 用户已接受首次完成范围：A12修订／作废及规则重建未覆盖；首次来源修订为1。长期记录本、不良原因件数／缺陷次数、文本自动解析实体、库存、复杂谱系、AI、批次／工单最终产出联动和客户制表试用未实现。批次产出取最终产出工序、工单汇总批次的层级已确认，但本分支工序合计不得当作最终产出。无报表导出功能。DHR链接只展示实际生产关系，不按批号字符串伪造归属。
 
@@ -75,4 +75,4 @@ npm run build
 
 ## 数据与恢复边界
 
-未在原 `edhr_dev` 执行迁移、写入或历史转换。独立库新增两张投影表和模板冻结／并发版本列。它共享本机PostgreSQL进程但不共享数据库表；本轮未做生产迁移或降级验证。演示重建应新建空库并重新运行迁移与脚本，不能删除真实业务库。原库记录清点保持3模板版本、13实例。
+未在原 `edhr_dev` 执行迁移、写入或历史转换。独立库新增两张投影表；0106 曾增加模板 `projection_frozen_json` 与并发版本列，前者不再参与运行，以免改写已应用 Liquibase 变更和演示历史。它共享本机PostgreSQL进程但不共享数据库表；本轮未做生产迁移或降级验证。演示重建应新建空库并重新运行迁移与脚本，不能删除真实业务库。原库记录清点保持3模板版本、13实例。

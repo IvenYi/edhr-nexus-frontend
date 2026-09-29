@@ -70,9 +70,6 @@ public class FormTemplateVersion {
     @Column(name = "workflow_design_json", columnDefinition = "TEXT")
     private String workflowDesignJson;
 
-    @Column(name = "projection_frozen_json", columnDefinition = "TEXT")
-    private String projectionFrozenJson;
-
     @jakarta.persistence.Version
     @Column(name = "lock_version")
     private Long lockVersion;

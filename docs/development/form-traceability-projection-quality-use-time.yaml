@@ -1,0 +1,129 @@
+qualityResult:
+  result: failed
+  baseCommit: e5c7bb76f8d07adc617195904ef89a55ee5453c2
+  headCommit: e5c7bb76f8d07adc617195904ef89a55ee5453c2
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-running.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - gmp-platform/backend/scripts/form-projection-demo.py
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java
+      - gmp-platform/frontend/src/api/template-modeling.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-traceability-projection-quality-use-time.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: use-time-snapshot-code
+      required: true
+      category: requirements
+      description: 核对START与ATTACH_FORM形成执行快照，完成取旧快照，模板编辑锁及发布动作撤回。
+      method: inspection
+      command: "git diff -- ExecutionSnapshotBuilder.java TemplateModelingController.java FormTemplateVersion.java TemplateDesignerReactShell.tsx ProjectionDialog.tsx"
+      outcome: passed
+      evidence:
+        - ProductionExecutionService.act 首次START调用build并保存snapshot_json，后续从保存快照读取；ATTACH_FORM调用customForm。
+        - ExecutionSnapshotBuilder.form从当前model_design_json复制projection和fields并先校验启用映射；FormInstanceRecordService.saved及FormProjectionService.completed从执行快照记录来源。
+        - 专属publish-projection路由、编辑禁止与前端发布按钮已移除，旧0106列不再被运行源码引用。
+    - id: focused-backend-tests
+      required: true
+      category: integration
+      description: 在隔离PostgreSQL数据库运行快照、投影、权限、模板、执行及知识模型聚焦回归。
+      method: automated-test
+      command: "PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -q -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest,TemplateModelingControllerTest,FormFillSnapshotTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test"
+      outcome: passed
+      evidence:
+        - 7 suites，138 tests，0 failures，0 errors，0 skipped；Postgres测试只在edhr_form_projection随机schema运行。
+    - id: frontend-build
+      required: true
+      category: regression
+      description: TypeScript及生产构建。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - tsc -b与vite build退出码0。
+    - id: browser-template-editor
+      required: true
+      category: e2e
+      description: 浏览器核对已有projection_frozen_json的虚构模板仍可编辑、保存及侧栏滚动。
+      method: browser
+      command: "Chrome http://localhost:3007/master-data/form-templates"
+      outcome: passed
+      evidence:
+        - PROJECTION-DEMO2-F V1设计器无冻结提示，保存及模板导入可用；追溯弹窗只有校验预览、保存配置，无发布并冻结。
+        - 对已有projection_frozen_json的V1点击保存配置成功，独立库版本980012的updated_at变为2026-09-29 14:51:18.834451。
+        - 选中字段后左侧属性面板由基础信息滚动到填写限制、验证规则和查看效果；截图 /tmp/edhr-projection-qa-scroll.png。
+    - id: migration-and-isolation
+      required: true
+      category: database
+      description: 核对已应用迁移不改写、测试schema清理及原库只读状态。
+      method: query
+      command: "psql -U edhr -d edhr_form_projection -Atqc 'SELECT count(*) FROM databasechangelog WHERE filename LIKE ...'"
+      outcome: passed
+      evidence:
+        - 隔离库0106与0107记录共2条；没有遗留projection_test_ schema。
+        - 原edhr_dev只读计数仍为3个模板版本、13份表单实例。
+    - id: knowledge-and-documents
+      required: true
+      category: ontology
+      description: DEC-0075-12与设计、决策包、运行说明一致，YAML可解析，diff无空白错误。
+      method: command
+      command: "ruby -e 'require \"yaml\"; ARGV.each { |p| YAML.load_file(p) }' docs/development/form-traceability-projection-decision-package.yaml docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml docs/knowledge/evidence/form-traceability-projection-ownership.yaml; git diff --check"
+      outcome: passed
+      evidence:
+        - 使用时快照、模板可编辑、A12暂缓一致；Ruby解析及git diff --check退出码0。
+    - id: template-save-authorization
+      required: true
+      category: security
+      description: 核对映射配置保存API的后端权限。
+      method: inspection
+      command: "sed -n '225,262p' gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java; sed -n '38,69p' gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java"
+      outcome: failed
+      evidence:
+        - saveFormTemplateVersionDesign没有@PreAuthorize，TemplateModelingController也没有类级权限；SecurityConfig对其仅要求authenticated()。
+        - 同控制器projection-catalog/preview与类别接口明确要求master-data.form-templates权限。
+  findings:
+    - id: QF-USE-SNAPSHOT-001
+      severity: high
+      scope: 表单模板设计与追溯映射配置权限
+      summary: 任意已登录用户可直接调用设计保存接口修改未来生产使用的追溯映射。
+      reproductionSteps:
+        - 使用没有master-data.form-templates权限的已登录账号获取JWT。
+        - 向PUT /api/v1/master-data/template-modeling/form-templates/{id}/versions/{versionId}/design提交modelDesignJson内新的projection映射。
+        - 观察SecurityConfig仅要求authenticated，控制器保存方法没有方法或类级PreAuthorize，仍进入保存及审计逻辑。
+      expectedResult: 缺少master-data.form-templates权限者收到403，映射及审计不变。
+      actualResult: 缺少权限的认证用户未被后端权限规则阻断；映射可能持久化并影响新启动生产执行。此结论由完整过滤链与方法注解的源码静态复现得出，未以低权限真实账号发起HTTP请求。
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java:225
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.deferred-a12
+      description: 已完成来源的受控修订、作废及规则重建未纳入本轮。
+      impact: 不能宣称完整记录控制或生产发布。
+      mitigation: 按用户确认独立后续交付；当前仅首次最终完成闭环。
+    - id: risk.end-to-end-snapshot
+      description: 本轮独立验证未另造完整START-模板编辑-旧实例完成的浏览器/API样本；真实PG测试覆盖customForm生成、快照序列化、模板编辑和旧映射投影。
+      impact: START整体集成路径仍以源码路径与既有执行测试为证据。
+      mitigation: 后续发布候选需在独立库重演全链路及审批签署场景。
+  blockingConditions: []

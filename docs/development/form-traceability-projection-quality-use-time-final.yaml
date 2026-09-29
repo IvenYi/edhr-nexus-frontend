@@ -1,0 +1,133 @@
+qualityResult:
+  result: passed
+  baseCommit: e5c7bb76f8d07adc617195904ef89a55ee5453c2
+  headCommit: e5c7bb76f8d07adc617195904ef89a55ee5453c2
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-running.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - gmp-platform/backend/scripts/form-projection-demo.py
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateProjectionAuthorizationTest.java
+      - gmp-platform/frontend/src/api/template-modeling.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-traceability-projection-quality-use-time.yaml
+      - docs/development/form-traceability-projection-quality-use-time-final.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: qa-final-template-save-authorization
+      required: true
+      category: security
+      description: 全新实例复验设计保存方法权限拦截、缺权时不触发存储，合法保存仍可用。
+      method: automated-test
+      command: "PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -q -Dexec.skip=true -Dtest=TemplateProjectionAuthorizationTest,TemplateModelingControllerTest test"
+      outcome: passed
+      evidence:
+        - "TemplateModelingController.saveFormTemplateVersionDesign 显式 @PreAuthorize('master-data.form-templates')；实际 SecurityConfig 开启 @EnableMethodSecurity。"
+        - "Spring 代理测试用仅有 form-instances.view 的主体得到 AccessDeniedException，verifyNoInteractions(forms) 确认拒绝发生在仓储调用前；两套测试共39项通过。"
+        - "Chrome 管理员账户点击已使用的虚构模板 V1 保存，独立库 form_template_version 980012 updated_at 更新为 2026-09-29 14:58:58.009355；该测试未冒充低权限 HTTP 账户。"
+    - id: qa-final-snapshot-contract
+      required: true
+      category: integration
+      description: START/ATTACH_FORM 使用时复制当时映射，旧实例与后续模板编辑隔离，完成只读冻结来源。
+      method: automated-test
+      command: "PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -q -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest,TemplateModelingControllerTest,TemplateProjectionAuthorizationTest,FormFillSnapshotTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test"
+      outcome: passed
+      evidence:
+        - "8 suites、139 tests、0 failures、0 errors、0 skipped；其中真实 PostgreSQL 7 项。"
+        - "ExecutionSnapshotBuilder.build 在首次 START 获取所绑表单模型；customForm 在 ATTACH_FORM 获取当前版本，validate 后复制映射。ProductionExecutionService 将快照存入 snapshot_json，后续动作读取已存快照。"
+        - "FormProjectionPostgresTest 编辑模板后旧快照仍取 lot1、新使用取 lot2，旧表单完成投影 L1；坏映射阻断新使用。FormInstanceRecordService 和 FormProjectionService 从执行快照入完成事件。"
+    - id: qa-final-browser
+      required: true
+      category: e2e
+      description: 真实浏览器复验原有演示 V1 可编辑保存、左侧字段配置可滚动，追溯弹窗不再发布冻结。
+      method: browser
+      command: "Chrome http://localhost:3007/master-data/form-templates，独立 QA 标签页 1797316539"
+      outcome: passed
+      evidence:
+        - "已使用的 PROJECTION-DEMO2-F V1 打开后保存及模板导入可用，保存请求更新隔离数据库；无冻结提示。"
+        - "选中物料批号一后，左侧面板滚动至填写限制、验证规则及查看效果；截图 /tmp/edhr-projection-final-qa-scroll.png。"
+        - "追溯与统计弹窗仅有校验并预览、保存配置，无发布并冻结按钮。"
+    - id: qa-final-database
+      required: true
+      category: database
+      description: 核对迁移、隔离库及原库只读基线。
+      method: query
+      command: "psql -U edhr -d edhr_form_projection 与 psql -U edhr -d edhr_dev 的只读查询"
+      outcome: passed
+      evidence:
+        - "独立库 databasechangelog 保留 0106、0107 两条已应用迁移；随机 projection_test_% schema 残留数为0。"
+        - "0106 的 projection_frozen_json 遗留列未重写已应用变更，当前业务代码不读它；原 edhr_dev 仍为3个模板版本、13个表单实例。"
+    - id: qa-final-docs-audit-style
+      required: true
+      category: documentation
+      description: 核对权限与审计边界、DEC-0075-12、运行说明和现有界面规范。
+      method: inspection
+      command: "ruby YAML.load_file decision-package/DEC-0075/evidence; git diff --check; inspect docs/frontend/list-page-guidelines.md and docs/design-audit/vue-admin-plus-ui-style-constraints.md"
+      outcome: passed
+      evidence:
+        - "三份 YAML 可解析，git diff --check 通过；文档均说明使用时快照、模板可编辑、A12 暂缓。"
+        - "设计保存沿用原有模板审计；无配置专属发布审计；报表来源、DHR、重试权限和审计按现有控制器核对。"
+        - "本轮 UI 仅撤回编辑锁与发布按钮，未修改列表骨架；报表页仍使用 ListTableShell。"
+    - id: qa-final-frontend-build
+      required: true
+      category: regression
+      description: TypeScript 与 Vite 生产构建。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - "tsc -b 和 vite build 均退出码0，12136 modules transformed。"
+  findings:
+    - id: QF-USE-SNAPSHOT-001
+      severity: high
+      scope: 表单模板设计与追溯映射配置权限
+      summary: 修复前任意登录用户可调用设计保存接口改写未来来源映射；本次已复验解决。
+      reproductionSteps:
+        - 以缺少 master-data.form-templates 权限的已认证主体调用设计保存方法。
+        - 验证权限异常及仓储没有被调用，再由合法管理员通过浏览器保存虚构 V1。
+      expectedResult: 缺权主体在存储前遭拒；合法主体仍可编辑并保存已使用的模板版本。
+      actualResult: Spring 方法安全代理抛 AccessDeniedException，仓储无调用；管理员保存更新隔离库 V1。
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java:27
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java:226
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateProjectionAuthorizationTest.java
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: "独立运行 TemplateProjectionAuthorizationTest 和完整139项聚焦测试：0失败、0跳过。"
+        - type: command
+          reference: "Chrome 管理员保存后 SELECT updated_at FROM form_template_version WHERE id=980012 -> 2026-09-29 14:58:58.009355。"
+  residualRisks:
+    - id: risk.deferred-a12
+      description: 受控修订、作废、重建没有来源业务流程，本轮仅首次最终完成。
+      impact: 不能宣称完整记录控制或生产发布。
+      mitigation: 按用户确认列为独立后续交付。
+    - id: risk.full-start-browser
+      description: 独立复验未另造 START-模板编辑-旧实例完成的完整浏览器样本；真实 PostgreSQL 测试覆盖挂接与旧快照投影，START 路径由源码及执行引擎测试核对。
+      impact: 整链发布候选仍需包括审批签署和异常恢复的生产演练。
+      mitigation: 后续发布候选在隔离环境补真实全链路与降级验证。
+    - id: risk.preexisting-template-crud-authorization
+      description: TemplateModelingController 的其他旧模板 CRUD 路由只受通用 authenticated 过滤链约束，未见统一模板管理权限。
+      impact: 既有模板管理操作存在权限审计改进空间；本次新增的投影映射设计保存入口已单独封闭。
+      mitigation: 在模板模块权限治理切片统一梳理并加端到端低权限测试。
+  blockingConditions: []

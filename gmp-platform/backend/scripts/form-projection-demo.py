@@ -93,7 +93,6 @@ INSERT INTO product_process_operation_form_binding(id,product_process_operation_
 INSERT INTO work_order(id,order_no,product_id,process_version_id,planned_quantity,status) VALUES(980017,'PROJECTION-DEMO2-WO',980001,980010,100,'CREATED');
 INSERT INTO production_object(id,work_order_id,object_no,object_type,process_version_id,target_quantity) VALUES(980018,980017,'PROJECTION-DEMO2-BATCH','BATCH',980010,100);
 COMMIT;""")
-api('/master-data/template-modeling/form-templates/980011/versions/980012/publish-projection', {})
 values = {'material': {'id': '980002', 'name': '虚构物料M'}, 'lot1': 'DEMO-L1', 'lot2': 'DEMO-L2', 'qty1': 2, 'qty2': 3, 'unit': '件', 'team1': '甲班', 'team2': '乙班', 'good': 100, 'scrap': 1, 'category': '虚构外观类'}
 preview = api('/master-data/template-modeling/projection-preview', {'model': model, 'values': values})
 assert len(preview) == 6

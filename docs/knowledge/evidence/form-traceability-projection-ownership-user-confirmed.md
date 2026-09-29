@@ -76,3 +76,10 @@
 - `original-evidence`：本体实例于2026-09-29直接读取本机 `/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/service/ProductNumDataService.java` 第42–101行及第114–123行：按批次/工序查询报工，累加`goodQty`，`ifFinalOutPut`读取`FieldName.FINAL_OUTPUT_BOOL`，命中时将`goodQtySum`写入批次`OUTPUT_QTY`，再累加该工单各批次`OUTPUT_QTY`写入`finished_container_qty_`。同根目录`FieldName.java:201`确认常量值为`final_output_bool_`。来源修订为外部本机工作树，未核验其发布版本；文件不随本分支分发。可复用索引为`docs/development/form-projection-gct-report-reference.md`。
 - 以上原始源码只证明冠骋使用良品量，用户尚未单独确认本项目最终产出也只取良品。良品与总量问题登记为`question.form-projection-final-output-quantity`，仅阻塞未来最终产出运行，不阻塞已接受的首次投影闭环。
 - 既有`rule.operation-output-field-purpose`描述工序过程参考含良品、不良和报废，不代表批次最终产出；`rule.product-process.final-output`保留`planned/internal`；`fact.catalog.operation-finaloutput`保留`specified/internal`、`availability: not-available`及未复核来源定位。新增层级说明不提升上述成熟度，不把首次投影报表解释为工序产出写回及批次/工单联动已实现。
+
+## 同切片纠正：使用时冻结来源配置
+
+- `user-confirmed`：用户针对新增的“发布并冻结追溯配置”明确指出：“我感觉这里不要改，还是按之前的，我们之前不是讨论过吗，这些数据和批次工单制程等一样是使用的时候进行冻结快照，你核对一下是否这样，那我觉得这里也该那样”。该纠正要求沿用使用时快照，撤销投影专属手动发布冻结及由此引入的模板编辑禁止；它不取消执行快照本身的不可变性。先前把“模板版本冻结”解释成新增发布动作是实现推断，不是用户确认的业务规则。
+- `original-evidence`：本体实例于2026-09-29直接读取当前仓库 `ProductionExecutionService.act`：首次合法 `START` 调用 `ExecutionSnapshotBuilder.build`，之后保存 `production_execution.snapshot_json`；`ATTACH_FORM` 调用 `snapshots.customForm` 并将结果并入该执行快照。`ExecutionSnapshotBuilder.form` 从当时的 `form_template_version.model_design_json` 和 `canvas_design_json` 复制字段及 `projection`，对启用映射执行校验。已有执行的其他动作从 `execution.getSnapshotJson()` 读取，不重新取当前模板；`FormInstanceRecordService.saved` 再把来源 `form` 存入表单实例，最终完成时 `FormProjectionService.completed` 将 `form`、`model`、`values` 和上下文复制到投影批次。以上是当前工作树的局部运行路径证据，最终验证以本切片测试与独立质量门禁为准。
+- `inference`：对启用来源映射在使用时先校验；无映射表单沿原路径。历史已开工实例与已完成投影按旧快照解释，新使用读取修改后的模板配置。用户没有授权自动改写旧实例或旧结果。
+- `unresolved`：批次最终产出取良品或总量及 A12 受控修订/作废仍按既有边界暂缓；均不使本轮使用时快照规则重新引入发布冻结。

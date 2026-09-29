@@ -9,8 +9,8 @@ interface Catalog { version: string; models: { id: string; name: string; attribu
 interface PreviewRecord { bindingId: string; rowKey: string; attributes: Record<string, unknown>; sources: Record<string, string> }
 const base = '/master-data/template-modeling';
 
-export default function ProjectionDialog({ open, onClose, onSave, onPublish, published, focusField }: {
-  open: boolean; onClose: () => void; onSave: () => Promise<void>; onPublish: () => Promise<void>; published: boolean;
+export default function ProjectionDialog({ open, onClose, onSave, focusField }: {
+  open: boolean; onClose: () => void; onSave: () => Promise<void>;
   focusField?: { id: string; name: string; tableId?: string } | null;
 }) {
   const document = useTemplateDesignerStore(state => state.document);
@@ -69,7 +69,6 @@ export default function ProjectionDialog({ open, onClose, onSave, onPublish, pub
         <Typography color="text.secondary">选择要查找的信息及来源字段。每项用途保留一组对应关系；没有追溯需求的表单可以不配置。</Typography>
         {focusField && <Alert severity="info">正在配置字段「{focusField.name}」。下方编辑的是全表共用配置；来源选项标有“当前字段”。</Alert>}
         <Alert severity="info">{catalog?.notice ?? '正在读取可用用途…'} 数量与单位需完整配置；正式结果只在最终完成后生成。</Alert>
-        {published && <Alert severity="success">此版本已发布冻结。修改来源或表单设计需创建新版本。</Alert>}
         {error && <Alert severity="error">{error}</Alert>}
         {bindings.map((binding, index) => {
           const available = sources(binding).filter(field => field.status !== 'disabled');
@@ -78,21 +77,21 @@ export default function ProjectionDialog({ open, onClose, onSave, onPublish, pub
           return <Box key={binding.id} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography fontWeight={600}>用途 {index + 1} · {model?.name ?? binding.modelId}</Typography>
-              <Stack direction="row"><FormControlLabel label={binding.enabled ? '启用' : '停用'} control={<Switch disabled={published || busy} checked={binding.enabled} onChange={(_, enabled) => change(binding.id, { enabled })} />} />
-                <Button disabled={published || busy} color="error" onClick={() => update(bindings.filter(item => item.id !== binding.id))}>移除</Button></Stack>
+              <Stack direction="row"><FormControlLabel label={binding.enabled ? '启用' : '停用'} control={<Switch disabled={busy} checked={binding.enabled} onChange={(_, enabled) => change(binding.id, { enabled })} />} />
+                <Button disabled={busy} color="error" onClick={() => update(bindings.filter(item => item.id !== binding.id))}>移除</Button></Stack>
             </Stack>
             <Stack spacing={2} sx={{ mt: 1 }}>
-              <TextField select size="small" label="来源区域" value={binding.tableId || '__main'} disabled={published || busy}
+              <TextField select size="small" label="来源区域" value={binding.tableId || '__main'} disabled={busy}
                 onChange={event => change(binding.id, { tableId: event.target.value === '__main' ? '' : event.target.value, rowKeyFieldId: '', sources: {} })}>
                 <MenuItem value="__main">普通字段（本组一条）</MenuItem>
                 {fields.filter(field => field.type === 'subTable').map(field => <MenuItem key={field.id} value={field.id}>{field.name}（每行一条）</MenuItem>)}
               </TextField>
-              {binding.tableId && <TextField select size="small" label="明细记录键（每行唯一、改版后保持不变）" value={binding.rowKeyFieldId ?? ''} disabled={published || busy}
+              {binding.tableId && <TextField select size="small" label="明细记录键（每行唯一、改版后保持不变）" value={binding.rowKeyFieldId ?? ''} disabled={busy}
                 onChange={event => change(binding.id, { rowKeyFieldId: event.target.value })}>
                 <MenuItem value="">请选择</MenuItem>{available.map(field => <MenuItem key={field.id} value={field.id}>{field.name}</MenuItem>)}
               </TextField>}
               {attributes.map(attribute => <Stack key={attribute.id} direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField select fullWidth size="small" label={attribute.name} value={binding.sources[attribute.id] ?? ''} disabled={published || busy}
+                <TextField select fullWidth size="small" label={attribute.name} value={binding.sources[attribute.id] ?? ''} disabled={busy}
                   onChange={event => { const next = { ...binding.sources }; if (event.target.value) next[attribute.id] = event.target.value; else delete next[attribute.id]; change(binding.id, { sources: next }); }}>
                   <MenuItem value="">不配置</MenuItem>
                   {binding.sources[attribute.id] && !available.some(field => field.id === binding.sources[attribute.id]) && <MenuItem value={binding.sources[attribute.id]}>来源失效，请重新选择</MenuItem>}
@@ -116,7 +115,7 @@ export default function ProjectionDialog({ open, onClose, onSave, onPublish, pub
           <TextField select size="small" fullWidth label="添加用途" value={newModel} onChange={event => setNewModel(event.target.value)}>
             {(catalog?.models ?? []).map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
           </TextField>
-          <Button variant="outlined" sx={{ flexShrink: 0 }} disabled={!catalog || published || busy} onClick={() => update([...bindings, { id: crypto.randomUUID(), modelId: newModel, enabled: true, tableId: focusField?.tableId, sources: {} }])}>添加用途</Button>
+          <Button variant="outlined" sx={{ flexShrink: 0 }} disabled={!catalog || busy} onClick={() => update([...bindings, { id: crypto.randomUUID(), modelId: newModel, enabled: true, tableId: focusField?.tableId, sources: {} }])}>添加用途</Button>
         </Stack>
         {preview && <Box aria-live="polite"><Typography fontWeight={600}>预览：{preview.length} 条命中记录</Typography>
           <Typography variant="body2" color="text.secondary">仅使用上方模拟值，每个子表预览一行；不会保存正式结果。</Typography>
@@ -129,8 +128,7 @@ export default function ProjectionDialog({ open, onClose, onSave, onPublish, pub
     <DialogActions>
       <Button onClick={onClose}>关闭</Button>
       <Button disabled={busy || !catalog} onClick={() => void run(showPreview)}>校验并预览</Button>
-      <Button disabled={busy || published} onClick={() => void run(onSave)}>保存草稿</Button>
-      <Button variant="contained" disabled={busy || published || !catalog} onClick={() => void run(onPublish)}>发布并冻结此版本</Button>
+      <Button variant="contained" disabled={busy} onClick={() => void run(onSave)}>保存配置</Button>
     </DialogActions>
   </AppDialog>;
 }

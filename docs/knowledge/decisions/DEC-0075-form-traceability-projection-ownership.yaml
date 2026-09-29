@@ -50,6 +50,10 @@ decisions:
         statement: 数量层级为工序报工同步修改工序产出，批次产出来自配置的最终产出工序，工单产出为所属各批次产出之和；不能把不同工序直接相加为批次产出。该层级已确认，最终产出取良品还是总量尚待确认，仅阻塞未来最终产出运行。当前首次投影按工序报表不证明工序、批次、工单产出联动已实现。
         status: specified
         visibility: internal
+      - id: DEC-0075-12
+        statement: 表单追溯与统计的字段来源映射随实际生产使用进入执行快照；工序或作业表单在生产对象首次开工时复制当时模板配置，执行中附加的自定义表单在附加时复制当时配置。后续修改同一表单模板版本不回写已形成的执行快照、来源表单或投影结果；新使用读取当时配置。表单模板沿用原有编辑和版本规则，不为追溯投影另设手动发布冻结或禁止编辑的生命周期。
+        status: specified
+        visibility: internal
     supersedes: []
     evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
     acceptanceScenarios:
@@ -77,4 +81,9 @@ decisions:
         given: 最终完成前业务校验通过，但完成后投影处理发生系统故障
         when: 查询状态、重试并尝试依赖正式结果的下游动作
         then: 已完成表单与持久化事件保留，状态明确且重试不重复入账，下游等待成功；必要业务校验失败则不完成
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-use-time-snapshot
+        given: 一个表单模板版本已配置追溯来源，生产实例已开工或已附加自定义表单
+        when: 修改同一模板版本的字段或来源映射并创建新的生产使用
+        then: 已使用实例继续按自己的执行快照填写、完成和投影；新的使用复制修改后的配置，不要求执行追溯专属发布冻结动作
         evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]

@@ -2,7 +2,7 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
-  summary: 在独立数据库实现普通字段配置、冻结、最终完成投影、按工序用途合计及来源回查。2026-09-29用户确认Q1由所选字段表示报废数量，Q2按工序用途合计并可查明细，Q5业务校验阻断完成而处理故障可靠重试，Q7保留过程参考，Q8保留旧库并使用独立演示库。
+  summary: 在独立数据库实现普通字段配置、使用时执行快照、最终完成投影、按工序用途合计及来源回查。用户确认Q1由所选字段表示报废数量，Q2按工序用途合计并可查明细，Q5业务校验阻断完成而处理故障可靠重试，Q7保留过程参考，Q8保留旧库并使用独立演示库；随后纠正模板发布冻结为生产使用时快照。
   confirmed:
     concepts: []
     relationships: []
@@ -69,6 +69,20 @@ decisionPackage:
           retryRequiresReason: true
           downstreamRequiresSucceeded: true
         sourceReferences: [DEC-0075-07, DEC-0075-10]
+      - id: design-rule.form-projection.use-time-snapshot
+        name: 来源配置在生产使用时进入执行快照
+        status: specified
+        trigger: production-execution.first-use-or-attach-form
+        condition:
+          all:
+            - fact: formTemplateVersion.selectedForUse
+              operator: equals
+              value: true
+        result:
+          type: validate-and-copy-execution-snapshot
+          templateRemainsEditable: true
+          completedProjectionReadsInstanceSnapshot: true
+        sourceReferences: [DEC-0075-12]
       - id: design-rule.form-projection.operation-totals
         name: 工序用途合计与数量来源
         status: specified
@@ -123,14 +137,14 @@ decisionPackage:
     level: L2
     directImpacts:
       - area: template-projection-report
-        change: 统一属性目录和解释器、模板内配置及冻结、完成事件持久化、报表明细与合计、快照回查；具体实现证据随验证更新。
+        change: 统一属性目录和解释器、模板内配置及生产使用时快照、完成事件持久化、报表明细与合计、快照回查。
         evidenceReferences: [docs/architecture/transaction-traceability-dhr-business-rules.md]
       - area: knowledge
         change: 记录已确认职责及本轮Q1/Q2/Q5/Q7/Q8确认，尚未闭环部分保留内部状态。
         evidenceReferences: [docs/knowledge/README.md]
     transitiveImpacts:
       - area: future-template-and-report-integration
-        change: 模板冻结、生产快照、完成事件及报表读取共用稳定映射契约；普通未配置模板保持原路径。
+        change: 模板可编辑，生产使用时快照、完成事件及报表读取共用稳定映射契约；普通未配置模板保持原路径。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
     potentialImpacts:
       - area: cross-form-record-authority
@@ -147,34 +161,36 @@ decisionPackage:
         requirement: 用户确认旧库保留、不转换历史；新库edhr_form_projection从空库迁移，只用虚构数据。
     snapshotImpacts:
       - area: future-projection
-        requirement: 冻结模板配置及目录版本、摘要、最终值与生产上下文，来源回查读取投影批次快照；不读取最新模板替代。
+        requirement: 首次执行或后续挂接表单时冻结当时配置及目录版本；最终值与生产上下文、来源回查读取投影批次快照，不读取最新模板替代。
     auditImpacts:
       - area: future-projection
-        requirement: 配置发布和重试需审计，批次保留来源；变更作废运行模块未闭环，不能宣称正式生产切换或伪造审批路径。
+        requirement: 模板保存沿既有审计，生产执行保存快照并审计；投影重试需审计，批次保留来源。专属投影发布审计退出；变更作废运行模块未闭环。
     permissionImpacts:
       - area: future-report
         requirement: 搜索、聚合、来源回查和导出均复用来源授权，报表入口不扩大数据可见范围。
+      - area: template-projection-configuration
+        requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
       - scope: current-knowledge-delivery
         scenarios: [知识正式校验, 文档内部引用检查, 已确认与候选边界核对, 独立读者和质量审查]
         evidenceReferences: [docs/agents/quality-verifier.md]
       - scope: current-first-completion-delivery
-        scenarios: [分组取值, 发布校验, 完成与退回, 幂等并发, 部分失败回滚, 来源权限, 版本冻结, 同条过滤, 工序与单位隔离, 报表回查, 独立数据库迁移]
+        scenarios: [分组取值, 使用时校验, 模板编辑前后实例快照隔离, 完成与退回, 幂等并发, 部分失败回滚, 来源权限, 同条过滤, 工序与单位隔离, 报表回查, 独立数据库迁移]
         evidenceReferences: []
     evidenceGaps:
       - A12受控修订作废及规则重建按用户确认暂缓；首次最终来源修订固定为1。
       - 当前实现只覆盖四个标准用途，没有证明全部客户表单或报表矩阵已实现。
       - 客户制表人员试用、真实AI效果及生产迁移验证尚未进行。
   extensionStrategy:
-    selectedPaths: [product-core, configuration]
+    selectedPaths: [product-core, configuration, transaction-orchestration]
     rationale: 产品方定义标准模型与确定性解释器，模板配置仅选择来源；投影事件与结果由内核持久化，报表读取同一事实。
     ownershipBoundaries:
       - owner: template-module
-        responsibility: 字段与分组身份、模板版本、配置入口、发布时冻结配置。
+        responsibility: 字段与分组身份、模板版本及可编辑配置入口；不新增专属发布锁。
       - owner: projection-module
         responsibility: 标准模型目录、取值校验、投影批次、业务记录与查询索引。
       - owner: production-and-work-runtime
-        responsibility: 真实执行上下文、最终完成事件与来源权限。
+        responsibility: 首次执行或后续挂接时校验并保存配置快照、真实执行上下文、最终完成事件与来源权限。
       - owner: report-and-dhr
         responsibility: 授权查询及沿实际证据关系导航；不改写来源记录或决定生产归属。
   affectedFiles:
@@ -189,13 +205,13 @@ decisionPackage:
       reason: 同条筛选、查表去重与事实复用、工序单位分组、权限、回查和审计重试。
     - path: gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql
       changeType: create
-      reason: 批次事件及事实表；0106同时冻结模板和增加并发版本。
+      reason: 批次事件及事实表；已应用的0106遗留列保留但不作为运行入口。
     - path: gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
       changeType: create
       reason: 复用公共列表规范、来源详情与冻结表单预览。
     - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
       changeType: create
-      reason: 全表及字段快捷入口编辑同一配置，发布冻结与预览。
+      reason: 全表及字段快捷入口编辑同一配置，保存与预览；不新增模板发布。
     - path: gmp-platform/backend/scripts/form-projection-demo.py
       changeType: create
       reason: 独立库虚构配置及真实生产API演示闭环。

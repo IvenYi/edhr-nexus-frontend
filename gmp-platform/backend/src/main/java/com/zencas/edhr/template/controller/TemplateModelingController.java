@@ -223,6 +223,7 @@ public class TemplateModelingController {
     }
 
     @PutMapping("/form-templates/{id}/versions/{versionId}/design")
+    @PreAuthorize("hasAuthority('master-data.form-templates')")
     @Transactional
     public ApiResponse<TemplateVersionResponse> saveFormTemplateVersionDesign(
             @PathVariable Long id,
@@ -231,9 +232,6 @@ public class TemplateModelingController {
         formTemplateRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "表单模板不存在"));
         FormTemplateVersion version = findVersion(id, versionId);
-        if (version.getProjectionFrozenJson() != null) {
-            throw new BusinessException(ErrorCode.GENERAL_001, "该版本已冻结追溯配置，请创建新版本后修改设计");
-        }
         Map<String, Object> before = versionSnapshot(version);
         if (request != null) {
             if (request.getModelDesignJson() != null) {
@@ -264,30 +262,6 @@ public class TemplateModelingController {
     public ApiResponse<com.fasterxml.jackson.databind.node.ArrayNode> projectionPreview(
             @RequestBody com.fasterxml.jackson.databind.JsonNode request) {
         return ApiResponse.success(FormProjectionInterpreter.preview(request.path("model"), request.path("values")));
-    }
-
-    @PostMapping("/form-templates/{id}/versions/{versionId}/publish-projection")
-    @PreAuthorize("hasAuthority('master-data.form-templates')")
-    @Transactional
-    public ApiResponse<TemplateVersionResponse> publishProjection(@PathVariable Long id, @PathVariable Long versionId) {
-        FormTemplateVersion version = findVersion(id, versionId);
-        if (version.getProjectionFrozenJson() != null) return ApiResponse.success(toVersionResponse(version));
-        var model = FormProjectionInterpreter.model(version.getModelDesignJson());
-        FormProjectionInterpreter.validate(model);
-        var before = versionSnapshot(version);
-        var frozen = AUDIT_OBJECT_MAPPER.createObjectNode().put("ruleVersion", FormProjectionInterpreter.VERSION);
-        frozen.set("model", model.deepCopy());
-        frozen.put("canvas", version.getCanvasDesignJson());
-        frozen.put("workflow", version.getWorkflowDesignJson());
-        try {
-            frozen.put("configurationHash", java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
-                    .digest(frozen.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8))));
-        } catch (java.security.NoSuchAlgorithmException ex) { throw new IllegalStateException(ex); }
-        version.setProjectionFrozenJson(frozen.toString());
-        version.setUpdatedBy(currentOperatorName());
-        FormTemplateVersion saved = formTemplateVersionRepository.saveAndFlush(version);
-        writeAudit("FORM_TEMPLATE_VERSION", saved.getId(), "UPDATE", "表单模板", "发布并冻结追溯配置", before, versionSnapshot(saved));
-        return ApiResponse.success(toVersionResponse(saved));
     }
 
     @DeleteMapping("/form-templates/{id}/versions/{versionId}")
@@ -948,7 +922,6 @@ public class TemplateModelingController {
         snapshot.put("modelDesignJson", entity.getModelDesignJson());
         snapshot.put("canvasDesignJson", entity.getCanvasDesignJson());
         snapshot.put("workflowDesignJson", entity.getWorkflowDesignJson());
-        snapshot.put("projectionFrozenJson", entity.getProjectionFrozenJson());
         snapshot.put("status", RdoVersionStatusResolver.resolve(entity.getEffectiveFrom(), entity.getEffectiveTo()));
         snapshot.put("createdBy", entity.getCreatedBy());
         snapshot.put("createdAt", entity.getCreatedAt());
@@ -1133,7 +1106,6 @@ public class TemplateModelingController {
                 version.getModelDesignJson(),
                 version.getCanvasDesignJson(),
                 version.getWorkflowDesignJson(),
-                version.getProjectionFrozenJson() != null,
                 RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo()),
                 version.getCreatedBy(),
                 formatDateTime(version.getCreatedAt()),
@@ -1231,7 +1203,6 @@ public class TemplateModelingController {
             String modelDesignJson,
             String canvasDesignJson,
             String workflowDesignJson,
-            boolean projectionPublished,
             String status,
             String createdBy,
             String createdAt,

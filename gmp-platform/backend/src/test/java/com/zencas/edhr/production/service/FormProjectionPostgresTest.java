@@ -50,6 +50,35 @@ class FormProjectionPostgresTest {
     }
     private long batchId() { return jdbc.queryForObject("SELECT id FROM form_projection_batch", Long.class); }
 
+    @Test void editingTemplateAfterFirstUseDoesNotChangeThatExecutionSnapshot() throws Exception {
+        jdbc.execute("CREATE TABLE form_template(id BIGINT PRIMARY KEY,tenant_id text,name text,code text,category_name text,status text)");
+        jdbc.execute("CREATE TABLE form_template_version(id BIGINT PRIMARY KEY,template_id bigint,tenant_id text,version_label text,status text,model_design_json text,canvas_design_json text)");
+        jdbc.update("INSERT INTO form_template VALUES (10,'default','示例表','FORM-10',null,'ACTIVE')");
+        String firstModel = """
+            {"fields":[{"id":"lot1","type":"text"},{"id":"lot2","type":"text"}],
+             "projection":{"version":"form-projection-v1","bindings":[
+               {"id":"trace","enabled":true,"modelId":"formTrace","sources":{"materialLotText":"lot1"}}]}}
+            """;
+        jdbc.update("INSERT INTO form_template_version VALUES (20,10,'default','V1','PUBLISHED',?,?)", firstModel, "{}");
+        var builder = new ExecutionSnapshotBuilder(jdbc, mapper);
+        ObjectNode firstUse = builder.customForm("20", true, "first", "tester");
+        String persistedExecutionForm = firstUse.toString();
+        jdbc.update("UPDATE form_template_version SET model_design_json=? WHERE id=20",
+                firstModel.replace("\"materialLotText\":\"lot1\"", "\"materialLotText\":\"lot2\""));
+        ObjectNode restoredFirstUse = (ObjectNode) mapper.readTree(persistedExecutionForm);
+        ObjectNode secondUse = builder.customForm("20", true, "second", "tester");
+        assertThat(restoredFirstUse.path("projection").path("bindings").get(0).path("sources").path("materialLotText").asText()).isEqualTo("lot1");
+        assertThat(secondUse.path("projection").path("bindings").get(0).path("sources").path("materialLotText").asText()).isEqualTo("lot2");
+        tx.executeWithoutResult(status -> projection.completed(1, "default", restoredFirstUse,
+                mapper.createObjectNode().put("lot1", "L1").put("lot2", "L2"), mapper.createObjectNode(), "a"));
+        tx.executeWithoutResult(status -> projection.process(batchId()));
+        assertThat(jdbc.queryForObject("SELECT attributes->>'materialLotText' FROM form_projection_record", String.class)).isEqualTo("L1");
+        jdbc.update("UPDATE form_template_version SET model_design_json=? WHERE id=20",
+                firstModel.replace("\"materialLotText\":\"lot1\"", "\"materialLotText\":\"missing\""));
+        assertThatThrownBy(() -> builder.customForm("20", true, "invalid", "tester"))
+                .hasMessageContaining("字段");
+    }
+
     @Test void completionAndOutboxRollbackTogetherOnFailure() throws Exception {
         var form = form();
         assertThatThrownBy(() -> tx.executeWithoutResult(status -> {
