@@ -1,0 +1,164 @@
+qualityResult:
+  result: passed
+  baseCommit: f2710af9ea717e760fef456cad09d6304c7f4e55
+  headCommit: f2710af9ea717e760fef456cad09d6304c7f4e55
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/development/form-traceability-projection-*.yaml
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-projection-gct-report-reference.md
+      - docs/knowledge/
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/
+      - gmp-platform/backend/src/main/resources/db/changelog/
+      - gmp-platform/backend/src/main/resources/application-projection.yml
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/
+      - gmp-platform/backend/scripts/form-projection-demo.py
+      - gmp-platform/frontend/src/
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-ontology-result.yaml
+      - docs/development/form-traceability-projection-quality-initial.yaml
+      - docs/development/form-traceability-projection-quality-result.yaml
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-projection-gct-report-reference.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - gmp-platform/backend/scripts/form-projection-demo.py
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionWorker.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/main/resources/application-projection.yml
+      - gmp-platform/backend/src/main/resources/db/changelog/0106-form-projection-freeze.sql
+      - gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/FormProjectionAuthorizationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.final-independent-regression
+      required: true
+      category: regression
+      description: 全新质量实例独立重跑所有聚焦测试，未参与修复
+      method: command
+      command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -q -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,TemplateModelingControllerTest,ProductionExecutionEngineTest,FormFillSnapshotTest,BusinessKnowledgeModelTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest test
+      outcome: passed
+      evidence:
+        - /tmp/projection-final-quality-tests.log
+        - surefire结果139项，0失败、0错误、0跳过；解释器8、模板40、引擎21、快照2、知识59、Postgres6、授权3
+    - id: check.final-build
+      required: true
+      category: regression
+      description: 独立执行前端类型检查和生产构建
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence: [/tmp/projection-final-quality-build.log, '退出码0，Vite构建完成']
+    - id: check.final-dedup-and-reuse
+      required: true
+      category: integration
+      description: 复核初轮001实例去重和002跨用途属性复用
+      method: automated-test
+      command: FormProjectionPostgresTest.reportFiltersMustMatchSameRecordAndPendingIsNotVisible
+      outcome: passed
+      evidence:
+        - 真实Postgres中同实例两事实total为1、单条records保留两个hits
+        - category仅存在scrap事实时，formTrace仍可找到该表单
+        - L1与另一条记录的班组B不能拼接匹配；PENDING不进入结果
+        - 浏览器查询PROJECTION-DEMO2-BATCH返回2份表单，各保留6个命中；打开详情显示全部命中
+    - id: check.final-transaction-migration
+      required: true
+      category: database
+      description: 复核独立库迁移状态及持久化、幂等和失败回滚
+      method: query
+      command: psql -d edhr_form_projection 查询databasechangelog、form_projection_batch、pg_namespace；结合FormProjectionPostgresTest
+      outcome: passed
+      evidence:
+        - 0106与0107均EXECUTED，独立库4个SUCCEEDED批次，测试后无projection_test临时schema残留
+        - 实际0107 SQL在每项测试随机schema执行；并发消费者、重复完成、部分插入回滚、重启快照测试通过
+        - 源完成校验及事件加入原事务；消费者通过FOR UPDATE SKIP LOCKED单独事务写入全部事实
+    - id: check.final-security-audit
+      required: true
+      category: security
+      description: 来源权限覆盖计数、状态和回查；附加权限不能替代来源授权；核对审计
+      method: automated-test
+      command: FormProjectionAuthorizationTest；审查发布及重试事务；只读查询audit_event
+      outcome: passed
+      evidence:
+        - 实际Spring方法安全代理3项测试通过，缺来源权限拒绝query/source/status，system.edit与dhr权限不能单独绕过
+        - 发布冻结使用乐观锁、阻止原版本设计保存；模板40项测试包含冻结和幂等发布
+        - 独立库存在2条发布并冻结追溯配置审计；retry必须原因且UPDATE与审计同事务
+    - id: check.final-browser
+      required: true
+      category: visual
+      description: 独立浏览器核对列表、来源原版式和冻结设计器
+      method: browser
+      command: cua独立tab访问localhost:3007/reports/form-projections与master-data/form-templates
+      outcome: passed
+      evidence:
+        - 1280x720截图观察查询面板、共享列表和横向滚动正常，按工序合计A与B分别100件
+        - 来源全页预览显示冻结物料、两批号DEMO-L1/L2、用量2/3、良品100和报废1
+        - PROJECTION-DEMO2-F设计器显示已发布冻结提示，保存、模板导入及编辑控件禁用
+        - 页面源码使用ListTableShell、列宽设置、规范表头及表体、560px抽屉与DetailSection，未另造应用壳
+    - id: check.final-scope-and-docs
+      required: true
+      category: documentation
+      description: 对照DEC0075和用户接受的首次完成交付范围，核对影响分析、边界与运行说明
+      method: inspection
+      command: 阅读decisionPackage、design第18节、running、DEC0075及前端列表规范；git diff --check
+      outcome: passed
+      evidence:
+        - 基线0.3.24，Q1/Q2/Q5/Q7/Q8与用户确认一致，Q3/Q4/Q6及最终产出口径保留后续问题
+        - A12及批次工单正式产出联动明确未覆盖，不将工序合计解释为批次200件
+        - 独立库edhr_form_projection、后端8087、前端3007和虚构脚本步骤可定位；原库不用于测试
+        - git diff --check退出码0
+  findings:
+    - id: QA-PROJECTION-001
+      severity: medium
+      scope: 表单追溯计数与分页
+      summary: 初轮按事实重复列出来源表单，现已修复
+      reproductionSteps: [为同实例产生多个用途事实, 查询formTrace]
+      expectedResult: 按实例分页计数并保留全部命中
+      actualResult: 本次复验total按实例去重，records包含hits集合
+      evidence: [FormProjectionPostgresTest.reportFiltersMustMatchSameRecordAndPendingIsNotVisible, 浏览器PROJECTION-DEMO2-BATCH结果2条]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: /tmp/projection-final-quality-tests.log
+    - id: QA-PROJECTION-002
+      severity: medium
+      scope: 表单追溯复用已有用途属性
+      summary: 初轮强制formTrace模型导致不能复用统计属性，现已修复
+      reproductionSteps: [仅在scrap事实保存category, 通过formTrace按category查询]
+      expectedResult: 无需重复映射即可找到来源表单
+      actualResult: 本次真实Postgres回归返回对应来源表单
+      evidence: [FormProjectionPostgresTest.reportFiltersMustMatchSameRecordAndPendingIsNotVisible]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: /tmp/projection-final-quality-tests.log
+  residualRisks:
+    - id: risk.deferred-scope
+      description: A12受控修订作废与重建、批次工单最终产出联动、长期记录本、复杂不良模型及AI未覆盖
+      impact: 通过仅针对首次最终完成闭环，不代表完整记录控制或生产发布
+      mitigation: 运行说明明确边界，对应流程和口径确认后另行实现验证
+    - id: risk.validation-limits
+      description: 本实例未重建整个空库或重演来源最终提交，未执行浏览器审批签署和生产降级演练
+      impact: 全量首次迁移及真实API提交证据来自主开发，独立复验覆盖实际迁移SQL、已迁移库、引擎与聚焦回归
+      mitigation: 当前仅隔离演示交付；生产发布前进行目标环境迁移、审批签署和恢复验收
+    - id: risk.single-tenant-and-scale
+      description: 当前按既有default单租户及模块级来源授权运行，未验证大数据量性能或客户独立制表体验
+      impact: 不宣称多租户生产隔离或全部客户报表覆盖
+      mitigation: 后续真实部署与规模评估时补充数据授权和性能验证
+  blockingConditions: []

@@ -2,7 +2,7 @@ import ArrowBackOutlined from '@mui/icons-material/ArrowBackOutlined';
 import SaveOutlined from '@mui/icons-material/SaveOutlined';
 import WarningAmberRounded from '@mui/icons-material/WarningAmberRounded';
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
-import { Box, Button, DialogActions, DialogContent, DialogTitle, Divider, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, Divider, Stack, Typography } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
 import type { TemplateDesignerDialogProps } from './types';
 import { useTemplateDesignerStore } from './store/useTemplateDesignerStore';
@@ -10,6 +10,8 @@ import CanvasTab from './tabs/canvas/CanvasTab';
 import MockFillDialog from './components/mock-fill/MockFillDialog';
 import ModelTab from './tabs/model/ModelTab';
 import WorkflowTab from './tabs/workflow/WorkflowTab';
+import ProjectionDialog from './components/ProjectionDialog';
+import client from '@/api/client';
 import { parseReactTemplateDesignerDocument, serializeTemplateDesignerDocument } from './utils/document';
 import { importTemplateToCanvasPage } from './utils/templateImport';
 
@@ -62,6 +64,9 @@ export default function TemplateDesignerReactShell({
   const replaceCurrentPageFromImport = useTemplateDesignerStore((state) => state.replaceCurrentPageFromImport);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mockFillOpen, setMockFillOpen] = useState(false);
+  const [projectionOpen, setProjectionOpen] = useState(false);
+  const [projectionField, setProjectionField] = useState<{ id: string; name: string; tableId?: string } | null>(null);
+  const [projectionPublished, setProjectionPublished] = useState(Boolean(version?.projectionPublished));
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
   const [subTableDesignFieldId, setSubTableDesignFieldId] = useState<string | null>(null);
   const activeSubTableDesignField = useMemo(
@@ -79,6 +84,7 @@ export default function TemplateDesignerReactShell({
     setDocument(parseReactTemplateDesignerDocument(row, version));
     setActiveTab('canvas');
     setSubTableDesignFieldId(null);
+    setProjectionPublished(Boolean(version.projectionPublished));
     markSaved();
   }, [markSaved, row, setActiveTab, setDocument, version]);
 
@@ -98,7 +104,7 @@ export default function TemplateDesignerReactShell({
   const handleSave = async () => persistCurrentDocument(onSave);
 
   const handleFieldConfirmPersist = async () => {
-    if (!onAutoSave) return;
+    if (!onAutoSave || projectionPublished) return;
     await persistCurrentDocument(onAutoSave);
   };
 
@@ -159,7 +165,11 @@ export default function TemplateDesignerReactShell({
       />
       <Box
         sx={{
-          height: 64,
+          minHeight: 64,
+          flexShrink: 0,
+          gap: 1,
+          flexWrap: 'wrap',
+          py: 1,
           px: 3,
           display: 'flex',
           alignItems: 'center',
@@ -189,12 +199,12 @@ export default function TemplateDesignerReactShell({
               borderColor: 'rgba(255,255,255,.24)',
             }}
           />
-          <Typography data-shell-template-path="true" sx={{ fontSize: 14, color: 'rgba(255,255,255,.82)', whiteSpace: 'nowrap' }}>
+          <Typography data-shell-template-path="true" sx={{ fontSize: 14, color: 'rgba(255,255,255,.82)', whiteSpace: 'nowrap', maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {templatePathLabel}
           </Typography>
         </Stack>
         {isSubTableDesigning ? null : (
-          <Stack direction="row" spacing={1.25} alignItems="center" sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <Stack direction="row" spacing={1.25} alignItems="center">
             {[
               { key: 'model', label: '字段设计' },
               { key: 'canvas', label: '表单设计' },
@@ -220,9 +230,11 @@ export default function TemplateDesignerReactShell({
         )}
         {isSubTableDesigning ? null : (
           <Stack direction="row" spacing={1.25} alignItems="center">
+            <Button variant="outlined" onClick={() => { setProjectionField(null); setProjectionOpen(true); }} sx={headerOutlinedActionButtonSx}>追溯与统计</Button>
             <Button
               variant="outlined"
               onClick={handleImportTemplate}
+              disabled={projectionPublished}
               sx={headerOutlinedActionButtonSx}
             >
               模板导入
@@ -233,7 +245,7 @@ export default function TemplateDesignerReactShell({
             <Button
               variant="contained"
               startIcon={<SaveOutlined />}
-              disabled={saving}
+              disabled={saving || projectionPublished}
               onClick={() => void handleSave()}
               sx={headerPrimaryActionButtonSx}
             >
@@ -245,13 +257,15 @@ export default function TemplateDesignerReactShell({
           </Stack>
         )}
       </Box>
-      <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+      {projectionPublished && <Alert severity="info">已发布冻结，只读查看。修改表单或来源配置请创建新版本。</Alert>}
+      <Box component="fieldset" disabled={projectionPublished} sx={{ flex: 1, minWidth: 0, minHeight: 0, overflow: 'hidden', border: 0, p: 0, m: 0, pointerEvents: projectionPublished ? 'none' : 'auto' }}>
         {activeTab === 'model' ? (
           <Box sx={{ height: '100%', minHeight: 0, p: 3 }}>
             <ModelTab
               subTableDesignFieldId={subTableDesignFieldId}
               onSubTableDesignFieldIdChange={setSubTableDesignFieldId}
               onFieldConfirmPersist={handleFieldConfirmPersist}
+              onProjectionField={(field, tableId) => { setProjectionField({ id: field.id, name: field.name, tableId }); setProjectionOpen(true); }}
               saving={saving}
             />
           </Box>
@@ -263,6 +277,12 @@ export default function TemplateDesignerReactShell({
           </Box>
         ) : null}
       </Box>
+      <ProjectionDialog open={projectionOpen} onClose={() => setProjectionOpen(false)} published={projectionPublished} focusField={projectionField}
+        onSave={handleSave} onPublish={async () => {
+          await handleSave();
+          await client.post(`/master-data/template-modeling/form-templates/${row?.id}/versions/${version?.id}/publish-projection`);
+          setProjectionPublished(true);
+        }} />
       <AppDialog
         open={closeConfirmOpen}
         onClose={() => setCloseConfirmOpen(false)}

@@ -181,10 +181,19 @@ public class ExecutionSnapshotBuilder {
         if (versionId.isBlank()) throw invalid("作业表单未绑定模板版本");
         ObjectNode form = one("""
             SELECT v.id AS "versionId", t.name, t.code, t.category_name AS "categoryName", v.version_label AS version,
-                   v.model_design_json AS model, v.canvas_design_json AS canvas
+                   v.model_design_json AS model, v.canvas_design_json AS canvas, v.projection_frozen_json AS "projectionFrozen"
             FROM form_template_version v JOIN form_template t ON t.id = v.template_id WHERE v.id = ?
             """, Long.valueOf(versionId));
         JsonNode model = json(form.path("model").asText(), mapper.createObjectNode());
+        JsonNode payload = model.has("payload") ? model.path("payload") : model;
+        if (payload.hasNonNull("projection")) {
+            if (form.path("projectionFrozen").asText("").isBlank()) throw invalid("表单追溯配置尚未发布冻结");
+            JsonNode frozen = json(form.path("projectionFrozen").asText(), mapper.createObjectNode());
+            model = frozen.path("model");
+            form.put("model", model.toString());
+            form.put("canvas", frozen.path("canvas").asText());
+            form.set("projection", model.path("projection").deepCopy());
+        }
         form.set("fields", model.has("payload") ? model.path("payload").path("fields") : model.path("fields"));
         normalizeColumns(form.path("fields"));
         JsonNode canvas = json(form.path("canvas").asText(), mapper.createObjectNode());

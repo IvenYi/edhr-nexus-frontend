@@ -104,7 +104,7 @@ const REQUIRED_RECORDS_MODULE: SidebarModule = {
   id: 'records',
   label: '记录',
   icon: 'FactCheck',
-  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU],
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU, { label: '报表', icon: 'FactCheck', children: [{ label: '追溯与统计', path: '/reports/form-projections' }] }],
 };
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
@@ -393,8 +393,15 @@ function ensureRequiredRecordsModule(modules: SidebarModule[]) {
 
   recordsModule.label = REQUIRED_RECORDS_MODULE.label;
   recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
-  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label].includes(menu.label));
-  recordsModule.menus.unshift(...cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus);
+  const reportMenu = recordsModule.menus.find((menu) => menu.label === '报表');
+  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label, '报表'].includes(menu.label));
+  const requiredMenus = cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus;
+  const requiredReport = requiredMenus.find((menu) => menu.label === '报表');
+  if (reportMenu && requiredReport) {
+    requiredReport.children = [...(reportMenu.children ?? []).filter((child) => child.path !== '/reports/form-projections'), ...(requiredReport.children ?? [])];
+    if (reportMenu.path && reportMenu.path !== '/reports/form-projections') recordsModule.menus.push(reportMenu);
+  }
+  recordsModule.menus.unshift(...requiredMenus);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
@@ -511,6 +518,7 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/production/batches') return 'production.batches';
   if (path === '/production/execution') return 'production.execution';
   if (path === '/form-management/list') return 'form-instances.view';
+  if (path === '/reports/form-projections') return 'form-instances.view';
   if (path === '/form-management/filling') return 'form-management.filling';
   if (path === '/form-management/review') return 'form-management.review';
   if (path === '/dhr-management/list') return 'dhr.instances.view';

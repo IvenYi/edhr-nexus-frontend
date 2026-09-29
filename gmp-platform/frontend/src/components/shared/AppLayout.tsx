@@ -228,7 +228,7 @@ function getLayoutPermissionCode(path: string): string | undefined {
 function getLayoutPermissionCodes(path: string): string[] {
   const code = getLayoutPermissionCode(path);
   if (!code) return [];
-  if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];
+  if (isPathSegmentMatch(path, '/form-management') || path === '/reports/form-projections') return [code, 'production.execution'];
   return [code];
 }
 

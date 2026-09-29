@@ -20,6 +20,7 @@ export interface TemplateModelingRecord {
 }
 
 export interface TemplateVersionRecord {
+  projectionPublished?: boolean;
   id: string | number;
   templateId?: string | number | null;
   version: string;

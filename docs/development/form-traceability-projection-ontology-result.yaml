@@ -1,0 +1,47 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.24
+  baselineAfter: 0.3.24
+  reason: 专业本体实例完成同切片两次增量核对；明确首次完成范围、数量层级及未实现边界，不以冠骋良品口径替代本项目确认。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      changeType: update
+      ids: [DEC-0075-05, DEC-0075-06, DEC-0075-07, DEC-0075-08, DEC-0075-09, DEC-0075-10, DEC-0075-11]
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      changeType: update
+      ids: []
+    - path: docs/knowledge/open-questions.yaml
+      changeType: update
+      ids: [question.form-projection-final-output-quantity]
+    - path: docs/knowledge/rules/product-process.yaml
+      changeType: update
+      ids: [rule.product-process.final-output]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.projection-quantity-knowledge
+      checkType: schema
+      command: cd gmp-platform/backend && mvn -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence: [59 tests, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS 2026-09-29 12:56:43 +08:00]
+    - id: validation.projection-final-output-source
+      checkType: evidence-path
+      command: 读取冠骋ProductNumDataService.java第42至101及114至123行和FieldName.java第201行
+      outcome: passed
+      evidence: [专业实例直接核对final_output_bool与goodQtySum，登记original-evidence；最终产出保持planned/internal，未提高成熟度]
+    - id: validation.projection-quantity-diff
+      checkType: schema
+      command: git diff --check -- docs/knowledge
+      outcome: passed
+      evidence: [退出码0]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

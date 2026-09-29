@@ -1,5 +1,37 @@
 knowledgeModelVersion: 0.3.24
 questions:
+  - id: question.form-projection-final-output-quantity
+    question: 配置的最终产出工序向批次产出传递良品数量，还是含不良和报废的总量？
+    context: DEC-0075-11已确认工序报工更新工序产出、最终产出工序决定批次产出、工单累加所属批次。冠骋源码取goodQtySum只是外部实现事实，不能代替本项目口径确认；现有工序过程参考含良品、不良和报废，也不能据此推定批次正式产出。
+    options:
+      - 批次最终产出只取最终产出工序良品数量
+      - 批次最终产出取最终产出工序含不良和报废的总量
+    impact: 仅阻塞未来最终产出运行与工单产出联动，不阻塞用户已接受的首次最终完成投影、按工序用途报表和来源回查；未确认前不增加运行默认口径。
+    visibility: internal
+  - id: question.form-projection-notebook-effective-unit
+    question: 长期记录本按单条还是整本最终生效，条目如何关联跨工单生产对象？
+    context: DEC-0075首轮实施只覆盖普通生产表单，设计Q3尚未确定长期记录本的记录单位和生命周期。
+    options:
+      - 独立条目最终完成后生效并显式绑定各自生产上下文
+      - 整本受控完成后生效并另行定义条目跨工单关联
+    impact: 仅阻塞长期记录本投影，不阻塞普通字段配置、最终完成投影和来源回查；不得以生产表单替代完整记录本模型。
+    visibility: internal
+  - id: question.form-projection-defect-count-semantics
+    question: 不良原因分项数量统计不良件数还是缺陷次数，各原因是否允许重叠？
+    context: DEC-0075按工序用途合计不自动解决设计Q4，同一件多缺陷不能推定为多件不良品，缺少分项数量不能从总量自动拆分。
+    options:
+      - 统计不良件数并明确原因互斥或归属规则
+      - 统计缺陷次数并与不良品件数分别展示
+    impact: 仅阻塞不良原因分项数量模型及报表，不阻塞已明确用途的普通数量投影。
+    visibility: internal
+  - id: question.form-projection-free-text-identity
+    question: 自由输入批次、SN、设备或班组编号应在何种身份范围内解析，由谁确认歧义？
+    context: 设计Q6尚未闭环，本轮仅复用已有主数据引用和文本查表；相同批号跨物料或来源范围不能默认等同实体。
+    options:
+      - 仅接受已存在的受控引用，自由文字继续只作文本查询
+      - 定义身份范围及受控解析确认流程后开放自由文字转实体关联
+    impact: 仅阻塞自由文本实体解析及据此生成关系追溯，不阻塞文字查表和既有物料引用；不能凭字符串相同改变生产或DHR归属。
+    visibility: internal
   - id: question.dhr-termination-sop-extra-signature
     question: 具体企业 SOP 是否要求生产对象提前结束动作增加额外电子签名，若要求应由哪项受控配置决定？
     context: DEC-0069 已确认本期只复用现有生产提前结束权限、原因和审计，不新增独立质量审批；企业 SOP 的额外签名要求需结合客户制度、签名责任及配置所有权后研究，不能从法规引用或历史系统行为直接推断。

@@ -165,6 +165,7 @@ function normalizeModelState(model: ModelDesignState | undefined): ModelDesignSt
       : [{ id: 'default-group', name: '默认分组' }],
     fields,
     fieldReportColumnWidths: normalizeFieldReportColumnWidths(model.fieldReportColumnWidths),
+    projection: model.projection,
   };
 }
 

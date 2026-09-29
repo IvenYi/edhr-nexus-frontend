@@ -67,6 +67,31 @@ class TemplateModelingControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Test
+    void frozenProjectionRejectsDesignChanges() {
+        when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(FormTemplate.builder().id(101L).build()));
+        when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(
+                FormTemplateVersion.builder().id(202L).templateId(101L).projectionFrozenJson("{}").build()));
+        assertThatThrownBy(() -> controller.saveFormTemplateVersionDesign(101L, 202L,
+                TemplateModelingRequest.builder().modelDesignJson("{}").build())).hasMessageContaining("冻结");
+        verify(formTemplateVersionRepository, never()).save(any());
+    }
+
+    @Test
+    void publishFreezesConfigurationAndAuditsAndIsIdempotent() throws Exception {
+        var version = FormTemplateVersion.builder().id(202L).templateId(101L)
+                .modelDesignJson("{\"fields\":[]}").canvasDesignJson("{}").workflowDesignJson("{}").build();
+        when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(version));
+        when(formTemplateVersionRepository.saveAndFlush(version)).thenReturn(version);
+        controller.publishProjection(101L, 202L);
+        var frozen = objectMapper.readTree(version.getProjectionFrozenJson());
+        assertThat(frozen.path("model").path("fields").isArray()).isTrue();
+        assertThat(frozen.path("configurationHash").asText()).hasSize(64);
+        controller.publishProjection(101L, 202L);
+        verify(formTemplateVersionRepository, times(1)).saveAndFlush(version);
+        verify(auditEventRepository, times(1)).save(any());
+    }
+
     @AfterEach
     void clearAuditContext() {
         AuditContext.clear();

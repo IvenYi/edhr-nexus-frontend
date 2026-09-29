@@ -1,0 +1,80 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0075
+    title: 电子表单追溯与业务投影的模型所有权和配置边界
+    status: specified
+    visibility: internal
+    context: user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择与 AI 不冒充用户业务决定。
+    decisionStatements:
+      - id: DEC-0075-01
+        statement: 各报表使用的统计模型由产品方预先定义和维护；客户负责从自身表单选择取值字段并配置对应来源，不承担从头建立统计模型的职责。配置体验以降低实施和培训成本为目标，但原型或设计文档不能作为客户已经能独立低成本配置的验证证据。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-02
+        statement: 现有试验性、零散的表单用途和投影代码可以被更合理的统一方案替换，不能以旧实现限制新设计；该授权只覆盖相关实现的统一收敛，不授权删除源表单、历史投影、签名、审计或 DHR 证据。实际历史处置须在后续实现前清点并明确。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-03
+        statement: 并非每张客户表单都需要内容追溯或业务统计配置，应按实际查询与统计需求选择用途；没有配置这类用途不改变表单记录保存、实际生产关联及既有 DHR 证据归集职责。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-04
+        statement: 报废后自动扣库存等新增业务动作不纳入本次追溯投影配置范围，应另行提出业务需求并开发相应功能；不能把此类动作当作新增查询属性或展示维度自动开放。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-05
+        statement: 报废数量取客户明确配置为报废数量的字段，不强加申请、批准或实际处理阶段；保留具体字段来源。统计模型仍由产品方维护，不能通过字段名称猜测口径。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-06
+        statement: 正式统计按工序和用途合计并可回查逐来源明细；同工序配置为正式来源的多份记录可累加，重复记载表只配置查表用途。同批工序A报工100件、工序B报工100件不得合称批次产量200件；技术重试幂等不解决业务重复来源选择问题。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-07
+        statement: 必要业务数据或配置校验失败阻止表单最终完成；完成状态与待投影事件必须同事务持久化。投影系统处理故障或延迟不撤销已完成表单，必须明确展示待处理或失败并支持可靠重试；依赖正式投影结果的下游动作须等待成功。保存、提交待审及退回不是正式统计生效事件。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-08
+        statement: 生产工作台保留进行中数量并明确标为过程参考，不混入最终正式报表；既有数量用途和跨份已保存汇总仅在此边界继续解释。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-09
+        statement: 本轮保留原数据库及全部旧数据，使用独立本地数据库和虚构新模板、数据验证；Git功能分支本身不隔离数据库，本次不授权历史转换、清理或正式生产切换。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-10
+        statement: 用户接受本分支先交付首次最终完成的投影闭环；A12受控修订和作废未覆盖，不作为本次已实现范围，也不据此宣称完整记录控制或正式生产发布。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-11
+        statement: 数量层级为工序报工同步修改工序产出，批次产出来自配置的最终产出工序，工单产出为所属各批次产出之和；不能把不同工序直接相加为批次产出。该层级已确认，最终产出取良品还是总量尚待确认，仅阻塞未来最终产出运行。当前首次投影按工序报表不证明工序、批次、工单产出联动已实现。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.form-projection-product-owned-models
+        given: 产品设计包含表单配置、报表统计模型和客户实施流程
+        when: 核对模型所有权与客户操作职责
+        then: 统计模型由产品方维护，客户只配置来源；候选配置体验不被表述为已经通过客户易用性验收
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-replacement-preserves-evidence
+        given: 后续实现准备统一替换试验性字段用途和投影逻辑
+        when: 判断本次授权范围
+        then: 可以重构相关代码，但不能据此删除历史证据或宣称新的运行契约已经实现
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-optional-scope
+        given: 客户表单没有内容追溯或业务统计需求
+        when: 配置该表单并判断关联业务范围
+        then: 无需强制配置数据用途，既有表单与生产证据职责保留；新增库存动作另走需求
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-operation-purpose-total
+        given: 同批次工序A与工序B各有正式报工100件，另有仅供查表的重复记载
+        when: 查询正式统计及来源明细
+        then: 每个工序和用途分别合计100件，重复记载不入账，每笔正式结果可定位来源表单，不显示批次产量200件
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-completion-retry
+        given: 最终完成前业务校验通过，但完成后投影处理发生系统故障
+        when: 查询状态、重试并尝试依赖正式结果的下游动作
+        then: 已完成表单与持久化事件保留，状态明确且重试不重复入账，下游等待成功；必要业务校验失败则不完成
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]

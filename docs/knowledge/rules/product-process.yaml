@@ -682,8 +682,8 @@ rules:
           value: true
     result:
       type: planned-final-output
-    explanation: 以工序配置最终产出的能力仅为内部规划，当前不得进入客户或运行时投影。
-    evidenceIds: [evidence.business-knowledge-model]
+    explanation: DEC-0075-11已确认工序报工更新工序产出，批次产出来自配置的最终产出工序，工单累加所属批次产出。最终产出取良品或总量尚待确认，配置与运行联动仍为内部规划；当前首次完成投影及工序报表不能证明本规则已实现，不进入客户或运行时投影。
+    evidenceIds: [evidence.business-knowledge-model, evidence.form-traceability-projection-ownership-user-confirmed]
   - id: rule.product-process.material-readiness
     name: 物料齐套校验
     status: planned

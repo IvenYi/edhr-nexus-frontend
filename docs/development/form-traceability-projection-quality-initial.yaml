@@ -1,0 +1,128 @@
+qualityResult:
+  result: failed
+  baseCommit: f2710af9ea717e760fef456cad09d6304c7f4e55
+  headCommit: f2710af9ea717e760fef456cad09d6304c7f4e55
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-projection-gct-report-reference.md
+      - docs/knowledge/
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/
+      - gmp-platform/backend/src/main/resources/db/changelog/
+      - gmp-platform/backend/src/main/resources/application-projection.yml
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/
+      - gmp-platform/backend/scripts/form-projection-demo.py
+      - gmp-platform/frontend/src/
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - docs/development/form-traceability-projection-quality-result.yaml
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-projection-gct-report-reference.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionWorker.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/main/resources/application-projection.yml
+      - gmp-platform/backend/src/main/resources/db/changelog/0106-form-projection-freeze.sql
+      - gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java
+      - gmp-platform/backend/scripts/form-projection-demo.py
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.independent-focused-tests
+      required: true
+      category: regression
+      description: 独立重跑解释器、真实Postgres临时schema、模板冻结、执行引擎、快照和知识校验
+      method: command
+      command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -q -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormProjectionPostgresTest,TemplateModelingControllerTest,ProductionExecutionEngineTest,FormFillSnapshotTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-projection-independent-quality.log
+        - 8解释器、6Postgres、40模板控制器、21引擎、2快照、59知识测试；退出码0
+        - Postgres测试仅在edhr_form_projection临时schema建表并清理，不操作原业务库
+    - id: check.live-query-and-authentication
+      required: true
+      category: api
+      description: 对8087独立演示服务执行登录后只读查询与未登录拒绝验证
+      method: command
+      command: Python urllib读取 /api/v1/reports/form-projections/query、status、source、dhr
+      outcome: passed
+      evidence:
+        - production两条，工序a和b各100件，未跨工序加为批次200
+        - consumption四条，按工序和物料批号分组2/3件；scrap两条各1件
+        - 未登录status、source及dhr均返回401
+    - id: check.form-search-granularity-and-reuse
+      required: true
+      category: functional
+      description: 核对设计8.1和8.2的来源事实复用、同条过滤及表单去重
+      method: review-and-api
+      command: 阅读FormProjectionController.query并查询demo的formTrace结果
+      outcome: failed
+      evidence:
+        - formTrace返回total=4，FR-20260929-000001及FR-20260929-000002各重复两条
+        - query强制r.model_id等于formTrace，不能复用scrap或consumption中的来源属性
+    - id: check.static-contract-and-whitespace
+      required: true
+      category: code-review
+      description: 核对冻结、事务outbox、批次幂等、并发锁、参数化SQL、权限注解与列表共享组件
+      method: review-and-command
+      command: git diff --check
+      outcome: passed
+      evidence:
+        - 退出码0；完成前preview校验、完成同事务写batch、worker独立事务发布结果
+        - 唯一批次键和FOR UPDATE SKIP LOCKED控制重复与并发；部分失败回滚测试通过
+        - 默认租户及来源双权限复用；DHR附加权限、retry附加system.edit并同事务写原因审计
+        - 新列表使用ListTableShell、共享列宽设置、分页、560px右侧Drawer
+  findings:
+    - id: QA-PROJECTION-001
+      severity: medium
+      scope: FormProjectionController.query / 表单追溯列表
+      summary: 表单追溯按事实分页计数，未按来源表单去重
+      reproductionSteps:
+        - 在独立演示数据库中使用demo的两个trace binding
+        - POST query，modelId=formTrace、filters为空、page=0、size=20
+      expectedResult: 返回2份来源表单，每份保留其两个命中位置；分页和total以表单为单位
+      actualResult: total为4，两份instanceNo各出现两次，页面同样重复展示来源表单
+      evidence:
+        - docs/architecture/form-traceability-projection-design.md第8.2节
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java的count(*)与r.id分页
+        - 8087实时API返回FR-20260929-000002两条及FR-20260929-000001两条
+      resolutionStatus: open
+      resolutionEvidence: []
+    - id: QA-PROJECTION-002
+      severity: medium
+      scope: FormProjectionController.query / formTrace模型
+      summary: 按内容查表无法复用已有报废或消耗事实，需要第二套映射
+      reproductionSteps:
+        - 模板只配置消耗用途的materialLotText或报废用途的category并最终完成
+        - 在表单追溯页以该批号或分类查询
+      expectedResult: 复用已有业务记录属性返回对应来源表单，不要求新增重复trace映射
+      actualResult: formTrace固定过滤r.model_id='formTrace'，scrap和consumption事实均被排除；formTrace目录也不提供category映射
+      evidence:
+        - docs/architecture/form-traceability-projection-design.md第8.1节及A03
+        - FormProjectionController.query初始where
+        - FormProjectionInterpreter.allowed的formTrace属性集合
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - 本轮是失败结果，未宣称完整质量门禁通过；主仍在修复demo画布并补运行说明，需新实例收尾复验
+    - 本实例未执行浏览器视觉交互，不能将静态列表组件核对视为视觉通过
+    - A12受控修订、作废与规则重建依用户确认暂缓；最终产出工序向批次及工单数量联动尚未实现
+    - 当前仅默认单租户契约；未宣称多租户生产隔离
+    - 来源抽屉读取失败应提供抽屉内可见反馈，并按规范复用DetailSection布局
+  blockingConditions: []

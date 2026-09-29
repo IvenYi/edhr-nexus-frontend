@@ -1,0 +1,17 @@
+server:
+  port: ${PROJECTION_SERVER_PORT:8087}
+spring:
+  datasource:
+    url: ${PROJECTION_DATABASE_URL:jdbc:postgresql://localhost:5432/edhr_form_projection}
+    username: ${PROJECTION_DATABASE_USER:edhr}
+    password: ${PROJECTION_DATABASE_PASSWORD:edhr_dev_pwd}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false
+app:
+  file:
+    upload-dir: ${PROJECTION_UPLOAD_DIR:./uploads-projection}
+edhr:
+  ocr:
+    paddle:
+      enabled: false

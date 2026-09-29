@@ -1,0 +1,255 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260929-FORM-PROJECTION
+  scope: form-traceability-projection-implementation
+  knowledgeBaselineVersion: 0.3.24
+  summary: 在独立数据库实现普通字段配置、冻结、最终完成投影、按工序用途合计及来源回查。2026-09-29用户确认Q1由所选字段表示报废数量，Q2按工序用途合计并可查明细，Q5业务校验阻断完成而处理故障可靠重试，Q7保留过程参考，Q8保留旧库并使用独立演示库。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: design-rule.form-projection.product-owned-models
+        name: 统计模型由产品方维护
+        status: specified
+        trigger: form-projection.configure
+        condition:
+          all:
+            - fact: configuration.targetsBusinessReport
+              operator: equals
+              value: true
+        result:
+          type: persist-field-contract
+          modelOwner: product-team
+          customerResponsibility: select-source-fields-and-confirm-mappings
+        sourceReferences:
+          - docs/architecture/transaction-traceability-dhr-business-rules.md
+          - user-confirmed-20260929-statistical-models-owned-by-product
+      - id: design-rule.form-projection.unified-replacement
+        name: 试验实现允许被统一方案替换
+        status: specified
+        trigger: form-projection.implement
+        condition:
+          all:
+            - fact: implementation.isExperimentalProjectionLogic
+              operator: equals
+              value: true
+        result:
+          type: allow-with-governance
+          target: unified-projection-contract
+          scope: relevant-experimental-code
+          historicalDataDeletionAuthorized: false
+        sourceReferences:
+          - user-confirmed-20260929-replace-experimental-projection-code
+      - id: design-rule.form-projection.optional-use
+        name: 按实际需求配置追溯与统计
+        status: specified
+        trigger: form-template.configure
+        condition:
+          all:
+            - fact: template.requiresTraceOrStatistics
+              operator: equals
+              value: false
+        result:
+          type: omit-projection
+          preserveFormAndProductionEvidence: true
+        sourceReferences:
+          - user-confirmed-not-every-customer-form-needs-projection
+          - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - id: design-rule.form-projection.first-completion
+        name: 首次完成正式投影边界
+        status: specified
+        trigger: form.final-completion
+        condition:
+          all:
+            - fact: projection.enabled
+              operator: equals
+              value: true
+        result:
+          type: validate-and-enqueue-atomically
+          operationalFailureRevokesCompletion: false
+          retryRequiresReason: true
+          downstreamRequiresSucceeded: true
+        sourceReferences: [DEC-0075-07, DEC-0075-10]
+      - id: design-rule.form-projection.operation-totals
+        name: 工序用途合计与数量来源
+        status: specified
+        trigger: report.aggregate
+        condition:
+          all:
+            - fact: projection.status
+              operator: equals
+              value: SUCCEEDED
+        result:
+          type: aggregate-by-operation-and-purpose
+          scrapQuantityFrom: configured-field
+          retainSourceDetails: true
+          implyBatchFinalOutput: false
+        sourceReferences: [DEC-0075-05, DEC-0075-06, DEC-0075-11]
+      - id: design-rule.form-projection.isolated-first-delivery
+        name: 独立演示与分期交付
+        status: specified
+        trigger: form-projection.deliver
+        condition:
+          all:
+            - fact: delivery.scope
+              operator: equals
+              value: first-completion
+        result:
+          type: preserve-existing-data
+          isolatedDatabase: true
+          ongoingQuantityLabel: process-reference
+          exclude: [controlled-revision, void, rule-rebuild]
+        sourceReferences: [DEC-0075-08, DEC-0075-09, DEC-0075-10]
+    executionContracts: []
+  inferred:
+    - id: inference.form-projection.metadata-and-extension-storage
+      statement: 采用产品维护的属性目录、固定业务核心字段及有类型的JSONB扩展值；客户不建立统计模型或自定义执行动作。
+      rationale: 减少字段枚举膨胀及预留空列，满足既有报表的新增展示、筛选和分组需求；存储与接口名称是待评审技术建议。
+      relatedIds: [design-rule.form-projection.product-owned-models]
+    - id: inference.form-projection.unified-entrypoints
+      statement: 全表入口、字段快捷入口及可选AI候选入口编辑同一版本化配置。
+      rationale: 避免不同入口产生重复规则或双重计数；尚未作为已实现或用户已定版的交互写入权威规则。
+      relatedIds: [design-rule.form-projection.unified-replacement]
+    - id: inference.form-projection.current-scope
+      statement: 当前不把工序报工明细或合计解释为批次最终产出，也不实现尚未确认数量口径的最终产出联动。
+      rationale: 用户确认工序、最终产出工序、批次、工单层级；冠骋取良品是外部源码事实，不能替代本项目口径确认。
+      relatedIds: [DEC-0075-11]
+  unresolved:
+    - id: question.form-projection.deferred-models
+      question: Q3长期记录本、Q4不良件数与缺陷次数、Q6自由文本身份解析及最终产出取良品还是总量
+      context: 均不进入当前首次完成投影交付，保持相关报表未启用
+      options: [在对应功能实现前集中确认]
+      impact: 仅阻塞这些后续模型及运行路径
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: template-projection-report
+        change: 统一属性目录和解释器、模板内配置及冻结、完成事件持久化、报表明细与合计、快照回查；具体实现证据随验证更新。
+        evidenceReferences: [docs/architecture/transaction-traceability-dhr-business-rules.md]
+      - area: knowledge
+        change: 记录已确认职责及本轮Q1/Q2/Q5/Q7/Q8确认，尚未闭环部分保留内部状态。
+        evidenceReferences: [docs/knowledge/README.md]
+    transitiveImpacts:
+      - area: future-template-and-report-integration
+        change: 模板冻结、生产快照、完成事件及报表读取共用稳定映射契约；普通未配置模板保持原路径。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    potentialImpacts:
+      - area: cross-form-record-authority
+        concern: 同工序正式来源记录累加，重复记载表只配置查表用途；不同工序不合为批次产量。配置人员误标正式来源仍需培训和预览发现。
+        evidenceReferences: []
+      - area: notebook-and-task-domains
+        concern: 长期记录本及灭菌/检验/放行任务需要各自关联和生命周期来源，不能用表单属性伪造。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: production-signature-and-dhr-lifecycle
+        reason: 不修改签署身份、生产完成条件、DHR归集和冻结成员；不自动创建DHR、不做库存动作。
+    compatibilityAndMigration:
+      - area: future-experimental-code-replacement
+        requirement: 用户确认旧库保留、不转换历史；新库edhr_form_projection从空库迁移，只用虚构数据。
+    snapshotImpacts:
+      - area: future-projection
+        requirement: 冻结模板配置及目录版本、摘要、最终值与生产上下文，来源回查读取投影批次快照；不读取最新模板替代。
+    auditImpacts:
+      - area: future-projection
+        requirement: 配置发布和重试需审计，批次保留来源；变更作废运行模块未闭环，不能宣称正式生产切换或伪造审批路径。
+    permissionImpacts:
+      - area: future-report
+        requirement: 搜索、聚合、来源回查和导出均复用来源授权，报表入口不扩大数据可见范围。
+    testImpacts:
+      - scope: current-knowledge-delivery
+        scenarios: [知识正式校验, 文档内部引用检查, 已确认与候选边界核对, 独立读者和质量审查]
+        evidenceReferences: [docs/agents/quality-verifier.md]
+      - scope: current-first-completion-delivery
+        scenarios: [分组取值, 发布校验, 完成与退回, 幂等并发, 部分失败回滚, 来源权限, 版本冻结, 同条过滤, 工序与单位隔离, 报表回查, 独立数据库迁移]
+        evidenceReferences: []
+    evidenceGaps:
+      - A12受控修订作废及规则重建按用户确认暂缓；首次最终来源修订固定为1。
+      - 当前实现只覆盖四个标准用途，没有证明全部客户表单或报表矩阵已实现。
+      - 客户制表人员试用、真实AI效果及生产迁移验证尚未进行。
+  extensionStrategy:
+    selectedPaths: [product-core, configuration]
+    rationale: 产品方定义标准模型与确定性解释器，模板配置仅选择来源；投影事件与结果由内核持久化，报表读取同一事实。
+    ownershipBoundaries:
+      - owner: template-module
+        responsibility: 字段与分组身份、模板版本、配置入口、发布时冻结配置。
+      - owner: projection-module
+        responsibility: 标准模型目录、取值校验、投影批次、业务记录与查询索引。
+      - owner: production-and-work-runtime
+        responsibility: 真实执行上下文、最终完成事件与来源权限。
+      - owner: report-and-dhr
+        responsibility: 授权查询及沿实际证据关系导航；不改写来源记录或决定生产归属。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      changeType: create
+      reason: 四个标准模型、来源类型校验和预览与运行共用解释器。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+      changeType: create
+      reason: 首次完成同事务事件及原子投影，配套worker和registry完成入口。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+      changeType: create
+      reason: 同条筛选、查表去重与事实复用、工序单位分组、权限、回查和审计重试。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql
+      changeType: create
+      reason: 批次事件及事实表；0106同时冻结模板和增加并发版本。
+    - path: gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      changeType: create
+      reason: 复用公共列表规范、来源详情与冻结表单预览。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      changeType: create
+      reason: 全表及字段快捷入口编辑同一配置，发布冻结与预览。
+    - path: gmp-platform/backend/scripts/form-projection-demo.py
+      changeType: create
+      reason: 独立库虚构配置及真实生产API演示闭环。
+    - path: gmp-platform/backend/src/main/resources/application-projection.yml
+      changeType: create
+      reason: 数据库、上传目录及端口隔离。
+    - path: docs/architecture/transaction-traceability-dhr-business-rules.md
+      changeType: update
+      reason: 仅修正相关范围说明并链接独立方案。
+    - path: docs/architecture/form-traceability-projection-design.md
+      changeType: create
+      reason: 用户要求独立承载本次追溯投影设计与实施规划，并补足后续开发上下文接手所需说明。
+    - path: docs/architecture/form-traceability-projection-brief.md
+      changeType: create
+      reason: 用户要求另附通俗简略、可独立阅读的朋友评审版；与主设计稿同步，不新增业务决定。
+    - path: docs/development/form-traceability-projection-decision-package.yaml
+      changeType: create
+      reason: 同一切片的已确认边界和影响分析。
+    - path: docs/knowledge/README.md
+      changeType: update
+      reason: 本体角色按已确认内容登记内部设计增量。
+    - path: docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      changeType: create
+      reason: 记录模型所有权、按需配置和统一替换试验代码的已确认边界。
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      changeType: create
+      reason: 保存用户原话并区分已有约束与候选设计。
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      changeType: create
+      reason: 注册仓库内确认证据。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
+      changeType: read-only
+      reason: 核对现有试验汇总机制，不把它视为新方案限制。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java
+      changeType: read-only
+      reason: 核对现有元数据查询与来源权限。
+  acceptanceScenarios:
+    - id: scenario.projection-design-brief-and-handoff
+      given: 朋友阅读简版，后续开发上下文阅读完整方案
+      when: 分别理解客户配置过程和定位开发起点
+      then: 简版以实例解释配置与报表复用，明确首次完成交付与未覆盖范围；开发版提供接手顺序、约束、问题依赖及阶段出口，二者业务含义一致。
+      evidenceRequirements: [独立读者审查, 两版一致性检查, 本地链接检查]
+    - id: scenario.projection-design-customer-responsibility
+      given: 读者只阅读设计文档
+      when: 判断谁定义统计模型和扩展属性
+      then: 能确认由产品方维护，客户只配置来源，不要求客户建模。
+      evidenceRequirements: [独立读者审查]
+    - id: scenario.projection-design-maturity-and-scope
+      given: 文档包含原型、当前源码、候选设计与实施计划
+      when: 读者判断可交付范围和剩余问题
+      then: 能区分已确认边界、待评审实现、现有能力与后续问题，不误认全部矩阵已实现。
+      evidenceRequirements: [原始源码核对, 文档一致性检查]
+    - id: scenario.projection-design-branch-sharing
+      given: 用户希望在GitHub功能分支向朋友展示
+      when: 阅读协作与演示计划
+      then: 本目录功能分支可推送，分支不隔离数据库；朋友按运行说明在空的独立数据库迁移和运行虚构演示。
+      evidenceRequirements: [Git状态只读核对, 文档审查]

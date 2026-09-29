@@ -22,6 +22,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 public class FormInstanceRecordService {
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
+    private final FormProjectionService projection;
 
     @Transactional(readOnly = true)
     public void projectCreationMetadata(Long objectId, String tenantId, ObjectNode state) {
@@ -83,6 +84,11 @@ public class FormInstanceRecordService {
                     formState.path("values").toString(), formState.path("status").asText(), actor, now, AuditContext.getOperatorId(), existing.getFirst().get("id"), tenantId);
         }
         ((ObjectNode) formState).put("instanceNo", instanceNo);
+        if ("COMPLETED".equals(formState.path("status").asText())) {
+            Long recordId = jdbc.queryForObject("SELECT id FROM form_instance_record WHERE tenant_id=? AND object_id=? AND operation_id=? AND copy_id=?",
+                    Long.class, tenantId, objectId, operationId, copyId);
+            projection.completed(recordId, tenantId, form, formState.path("values"), snapshot.path("context"), operationId);
+        }
     }
 
     @Transactional(readOnly = true)

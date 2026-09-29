@@ -227,3 +227,7 @@ databaseChangeLog:
       file: db/changelog/0104-dhr-current-evidence-only.sql
   - include:
       file: db/changelog/0105-dhr-office-attachments.sql
+  - include:
+      file: db/changelog/0106-form-projection-freeze.sql
+  - include:
+      file: db/changelog/0107-form-projection-runtime.sql
