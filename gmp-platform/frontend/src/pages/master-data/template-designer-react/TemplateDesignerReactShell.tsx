@@ -227,7 +227,7 @@ export default function TemplateDesignerReactShell({
         )}
         {isSubTableDesigning ? null : (
           <Stack direction="row" spacing={1.25} alignItems="center">
-            <Button variant="outlined" onClick={() => { setProjectionField(null); setProjectionOpen(true); }} sx={headerOutlinedActionButtonSx}>追溯与统计</Button>
+            <Button variant="outlined" onClick={() => { setProjectionField(null); setProjectionOpen(true); }} sx={headerOutlinedActionButtonSx}>用途总览</Button>
             <Button
               variant="outlined"
               onClick={handleImportTemplate}

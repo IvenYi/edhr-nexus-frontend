@@ -1,171 +1,110 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, FormControlLabel, MenuItem, Stack, Switch, TextField, Typography } from '@mui/material';
-import client from '@/api/client';
+import { Alert, Box, Button, Checkbox, Collapse, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
-
-interface Catalog {
-  version: string;
-  models: { id: string; name: string; attributes: { id: string; name: string; type: string }[] }[];
-}
-
-function accepts(field: ModelField, type: string) {
-  if (type === 'number') return field.type === 'number';
-  if (type === 'reference') return field.type === 'reference' && field.typeConfig.sourceType === 'material';
-  return field.type === 'text' || field.type === 'singleSelect';
-}
+import { acceptsProjectionAttribute, projectionConfigurationIssues, projectionSourceSummary, useProjectionCatalog } from '../utils/projectionConfiguration';
+import ProjectionSourceEditor from './ProjectionSourceEditor';
 
 export default function FieldProjectionConfig({ field, tableId }: { field: ModelField; tableId?: string }) {
-  const document = useTemplateDesignerStore((state) => state.document);
-  const setProjectionBindings = useTemplateDesignerStore((state) => state.setProjectionBindings);
-  const [catalog, setCatalog] = useState<Catalog | null>(null);
-  const [error, setError] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
-  const [editingBindingId, setEditingBindingId] = useState<string | null>(null);
-  const [showLookupGrouping, setShowLookupGrouping] = useState(false);
-  const [targetId, setTargetId] = useState('__new');
-  const [newModelId, setNewModelId] = useState('');
+  const document = useTemplateDesignerStore(state => state.document);
+  const setBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
+  const { data: catalog, isPending, isError, refetch } = useProjectionCatalog();
+  const [traceOpen, setTraceOpen] = useState(false);
+  const [statisticsOpen, setStatisticsOpen] = useState(false);
+  const [modelId, setModelId] = useState('');
   const [attributeId, setAttributeId] = useState('');
-  const [newRowKey, setNewRowKey] = useState('');
-
-  useEffect(() => {
-    void client.get('/master-data/template-modeling/projection-catalog')
-      .then((response) => setCatalog(response.data.data as Catalog))
-      .catch(() => setError('用途目录加载失败，请刷新页面后重试'));
-  }, []);
-  useEffect(() => {
-    setIsAdding(false);
-    setEditingBindingId(null);
-    setShowLookupGrouping(false);
-    setTargetId('__new');
-    setNewModelId('');
-    setAttributeId('');
-    setNewRowKey('');
-    setError('');
-  }, [field.id, tableId]);
-
+  const [targetId, setTargetId] = useState('__new');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  useEffect(() => { setTraceOpen(false); setStatisticsOpen(false); setModelId(''); setAttributeId(''); setTargetId('__new'); setEditingId(null); }, [field.id, tableId]);
   if (!document) return null;
   const bindings = document.model.projection?.bindings ?? [];
-  const records = bindings.filter((binding) => (binding.tableId ?? '') === (tableId ?? ''));
-  const availableModels = catalog?.models.filter((model) => model.attributes.some((attribute) => accepts(field, attribute.type))) ?? [];
-  const model = availableModels.find((item) => item.id === newModelId);
-  const attributes = model?.attributes.filter((attribute) => accepts(field, attribute.type)) ?? [];
-  const effectiveAttributeId = attributes.some((attribute) => attribute.id === attributeId) ? attributeId : '';
-  const compatibleRecords = records.filter((binding) => binding.modelId === newModelId
-    && !!effectiveAttributeId && !binding.sources[effectiveAttributeId]
-    && !Object.values(binding.sources).includes(field.id));
-  const alreadyUsedForSameRole = records.some((binding) => binding.modelId === newModelId
-    && !!effectiveAttributeId && binding.sources[effectiveAttributeId] === field.id);
-  const selected = compatibleRecords.find((binding) => binding.id === targetId);
-  const columns = tableId
-    ? (document.model.fields.find((item) => item.id === tableId)?.typeConfig.columns as ModelField[] | undefined) ?? []
-    : [];
-  const rowKeyOptions = columns.filter((item) => item.status !== 'disabled' && accepts(item, 'text'));
-  const assignments = records.flatMap((binding) => Object.entries(binding.sources)
-    .filter(([, sourceId]) => sourceId === field.id)
-    .map(([attribute]) => ({ binding, attribute })));
-
-  const recordName = (binding: ProjectionBinding) => catalog?.models.find((item) => item.id === binding.modelId)?.name ?? binding.modelId;
-  const recordFields = (binding: ProjectionBinding) => {
-    const fields = tableId ? columns : document.model.fields;
-    return [...new Set(Object.values(binding.sources).map((id) => fields.find((item) => item.id === id)?.name ?? id))].join('、');
-  };
-  const selectedRecordName = (id: unknown) => {
-    const binding = compatibleRecords.find((item) => item.id === id);
-    return binding ? recordFields(binding) : '新的一条明细';
-  };
-  const update = (next: ProjectionBinding[]) => setProjectionBindings(next, catalog?.version);
-  const changeRecord = (id: string, patch: Partial<ProjectionBinding>) =>
-    update(bindings.map((binding) => binding.id === id ? { ...binding, ...patch } : binding));
-  const removeAssignment = (record: ProjectionBinding, attribute: string) => {
-    const sources = { ...record.sources };
-    delete sources[attribute];
-    update(Object.keys(sources).length === 0
-      ? bindings.filter((binding) => binding.id !== record.id)
-      : bindings.map((binding) => binding.id === record.id ? { ...binding, sources } : binding));
-  };
-  const addAssignment = () => {
-    if (!effectiveAttributeId || !model) return;
-    if (selected) {
-      changeRecord(selected.id, { sources: { ...selected.sources, [effectiveAttributeId]: field.id } });
-    } else {
-      if (tableId && !newRowKey) {
-        setError('明细记录须先选择稳定的记录键字段');
-        return;
-      }
-      update([...bindings, {
-        id: crypto.randomUUID(), modelId: model.id, enabled: false,
-        ...(tableId ? { tableId, rowKeyFieldId: newRowKey } : {}),
-        sources: { [effectiveAttributeId]: field.id },
-      }]);
+  const inRegion = bindings.filter(binding => (binding.tableId ?? '') === (tableId ?? ''));
+  const assignments = inRegion.filter(binding => Object.values(binding.sources).includes(field.id));
+  const traces = assignments.filter(binding => binding.modelId === 'formTrace');
+  const statistical = assignments.filter(binding => binding.modelId !== 'formTrace');
+  const traceModel = catalog?.models.find(model => model.id === 'formTrace');
+  const models = catalog?.models.filter(model => model.id !== 'formTrace' && model.attributes.some(attribute => acceptsProjectionAttribute(field, attribute))) ?? [];
+  const model = models.find(item => item.id === modelId);
+  const available = model?.attributes.filter(attribute => acceptsProjectionAttribute(field, attribute)) ?? [];
+  const candidates = inRegion.filter(binding => binding.modelId === modelId && !binding.sources[attributeId] && !Object.values(binding.sources).includes(field.id));
+  const update = (next: ProjectionBinding[]) => setBindings(next, catalog?.version);
+  const change = (id: string, patch: Partial<ProjectionBinding>) => update(bindings.map(binding => binding.id === id ? { ...binding, ...patch } : binding));
+  const removeFieldFrom = (items: ProjectionBinding[]) => update(bindings.flatMap(binding => {
+    if (!items.some(item => item.id === binding.id)) return [binding];
+    const sources = Object.fromEntries(Object.entries(binding.sources).filter(([, id]) => id !== field.id));
+    return Object.keys(sources).length ? [{ ...binding, sources }] : [];
+  }));
+  const assignTrace = (queryId: string) => {
+    if (!queryId || traces.some(binding => binding.sources[queryId] === field.id)) return;
+    const existing = inRegion.find(binding => binding.modelId === 'formTrace' && !binding.sources[queryId] && !Object.values(binding.sources).includes(field.id));
+    if (existing) change(existing.id, { sources: { ...existing.sources, [queryId]: field.id } });
+    else {
+      const binding = { id: crypto.randomUUID(), modelId: 'formTrace', enabled: false, ...(tableId ? { tableId, rowKeyFieldId: inRegion.find(item => item.rowKeyFieldId)?.rowKeyFieldId } : {}), sources: { [queryId]: field.id } };
+      update([...bindings, { ...binding, enabled: projectionConfigurationIssues(document.model, binding, traceModel).length === 0 }]);
     }
-    setIsAdding(false);
-    setNewModelId('');
-    setTargetId('__new');
-    setAttributeId('');
-    setNewRowKey('');
-    setShowLookupGrouping(false);
-    setError('');
   };
-
-  return <Stack spacing={1.25}>
-    {assignments.length === 0 && <Typography sx={{ fontSize: 12, color: '#909399' }}>当前字段尚未用于查找或正式统计；普通填报不需要配置。</Typography>}
-    {assignments.map(({ binding, attribute }) => <Box key={`${binding.id}/${attribute}`} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 1 }}>
-      <Typography sx={{ fontSize: 13, fontWeight: 500 }}>{recordName(binding)} · {catalog?.models.find((item) => item.id === binding.modelId)?.attributes.find((item) => item.id === attribute)?.name ?? attribute}</Typography>
-      <Typography sx={{ fontSize: 12, color: '#909399', mt: 0.5, overflowWrap: 'anywhere' }}>
-        同条字段：{recordFields(binding)} · {binding.enabled ? '已启用' : '未启用'}
-      </Typography>
-      <Button size="small" sx={{ px: 0, mt: 0.5 }} onClick={() => setEditingBindingId(editingBindingId === binding.id ? null : binding.id)}>
-        {editingBindingId === binding.id ? '收起管理' : '管理这条明细'}
-      </Button>
-      {editingBindingId === binding.id && <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <FormControlLabel sx={{ m: 0 }} label={<Typography sx={{ fontSize: 12 }}>整条记录启用</Typography>}
-          control={<Switch size="small" checked={binding.enabled} onChange={(_, enabled) => changeRecord(binding.id, { enabled })} />} />
-        <Button size="small" color="error" onClick={() => removeAssignment(binding, attribute)}>移除此关联</Button>
-      </Stack>}
-    </Box>)}
-    {!isAdding ? <Button variant="outlined" size="small" onClick={() => setIsAdding(true)}>为此字段添加用途</Button> : <Stack spacing={1.25} sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
-      <Typography sx={{ fontSize: 13, fontWeight: 600 }}>先选要得到什么结果</Typography>
-      {availableModels.find((item) => item.id === 'formTrace') && <Box>
-        <Typography sx={{ fontSize: 12, color: '#909399', mb: 0.5 }}>查找来源 · 不计入数量统计</Typography>
-        <Button fullWidth size="small" variant={newModelId === 'formTrace' ? 'contained' : 'outlined'} onClick={() => { setNewModelId('formTrace'); setAttributeId(''); setTargetId('__new'); setShowLookupGrouping(false); }}>按字段内容查找表单</Button>
-      </Box>}
-      {availableModels.some((item) => item.id !== 'formTrace') && <Box>
-        <Typography sx={{ fontSize: 12, color: '#909399', mb: 0.5 }}>形成正式业务明细 · 最终完成后入报表</Typography>
-        <Stack spacing={0.75}>{availableModels.filter((item) => item.id !== 'formTrace').map((item) =>
-          <Button key={item.id} fullWidth size="small" variant={newModelId === item.id ? 'contained' : 'outlined'} onClick={() => { setNewModelId(item.id); setAttributeId(''); setTargetId('__new'); setShowLookupGrouping(false); }}>{item.name}</Button>)}</Stack>
-      </Box>}
-      {model && <TextField select fullWidth size="small" label="这个字段代表" value={effectiveAttributeId}
-        onChange={(event) => { setAttributeId(event.target.value); setTargetId('__new'); }}>
-        <MenuItem value="">请选择</MenuItem>
-        {attributes.map((item) => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}
-      </TextField>}
-      {model?.id === 'formTrace' && !!effectiveAttributeId && compatibleRecords.length > 0 && !showLookupGrouping &&
-        <Button size="small" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={() => setShowLookupGrouping(true)}>与已有查找条件组成同一条（可选）</Button>}
-      {!!effectiveAttributeId && model && compatibleRecords.length > 0 && (model.id !== 'formTrace' || showLookupGrouping) && <>
-        <Typography sx={{ fontSize: 12, color: '#606266' }}>哪些字段描述同一条明细？新的一条会形成另一笔；选择已有明细则只补充它的信息。</Typography>
-        <TextField select fullWidth size="small" label="明细归属" value={selected ? targetId : '__new'} SelectProps={{ renderValue: selectedRecordName }}
-          onChange={(event) => { setTargetId(event.target.value); setError(''); }}>
-          <MenuItem value="__new">新的一条明细</MenuItem>
-          {compatibleRecords.map((binding) => <MenuItem key={binding.id} value={binding.id} sx={{ display: 'block' }}>
-            <Typography sx={{ fontSize: 13 }}>加入已有明细</Typography>
-            <Typography sx={{ fontSize: 12, color: '#909399', maxWidth: 240, overflow: 'hidden', textOverflow: 'ellipsis' }} noWrap>{recordFields(binding)}</Typography>
-          </MenuItem>)}
+  const addStatistics = () => {
+    if (!model || !attributeId) return;
+    const existing = candidates.find(binding => binding.id === targetId);
+    const id = existing?.id ?? crypto.randomUUID();
+    if (existing) change(id, { sources: { ...existing.sources, [attributeId]: field.id } });
+    else update([...bindings, { id, modelId, enabled: false, ...(tableId ? { tableId, rowKeyFieldId: inRegion.find(binding => binding.rowKeyFieldId)?.rowKeyFieldId } : {}), sources: { [attributeId]: field.id } }]);
+    setEditingId(id); setModelId(''); setAttributeId(''); setTargetId('__new');
+  };
+  return <Stack spacing={2}>
+    <Box>
+      <Typography fontWeight={600}>{field.name}</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>按需要选择用途，填报方式保持原样。{tableId ? '同一列对各行生效。' : ''}</Typography>
+    </Box>
+    {isPending && <Typography variant="body2" color="text.secondary">正在加载可用查找项与业务用途…</Typography>}
+    {isError && <Alert severity="error" action={<Button size="small" onClick={() => void refetch()}>重试</Button>}>用途目录加载失败</Alert>}
+    {traceModel && (traces.length > 0 || traceModel.attributes.some(attribute => acceptsProjectionAttribute(field, attribute))) && <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
+      <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={traceOpen || traces.length > 0}
+        onChange={(_, checked) => { setTraceOpen(checked); if (!checked) removeFieldFrom(traces); }} />} label={<Typography fontWeight={600} variant="body2">用于查找与追溯</Typography>} />
+      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>按字段值找到原表单和命中位置，不计入数量统计。</Typography>
+      <Collapse in={traceOpen || traces.length > 0}><Stack spacing={1} sx={{ mt: 1.5 }}>
+        {traces.flatMap(binding => Object.entries(binding.sources).filter(([, id]) => id === field.id).map(([id]) =>
+          <Stack key={`${binding.id}/${id}`} direction="row" alignItems="center" justifyContent="space-between">
+            <Typography variant="body2">{traceModel.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? '查找项已失效'}{!binding.enabled ? '（未启用）' : ''}</Typography>
+            <Button size="small" onClick={() => { const sources = { ...binding.sources }; delete sources[id]; update(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id)); }}>移除</Button>
+          </Stack>))}
+        <TextField select fullWidth size="small" label="选择查找项" value="" onChange={event => assignTrace(event.target.value)}>
+          <MenuItem value="">请选择字段的查询含义</MenuItem>
+          {traceModel.attributes.filter(attribute => acceptsProjectionAttribute(field, attribute) && !traces.some(binding => binding.sources[attribute.id] === field.id))
+            .map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name.replace(/（.*?）/g, '')}</MenuItem>)}
         </TextField>
-      </>}
-      {!!effectiveAttributeId && model?.id !== 'formTrace' && compatibleRecords.length === 0 && <Typography sx={{ fontSize: 12, color: '#606266' }}>没有可补充的同用途明细，将新建一条。</Typography>}
-      {alreadyUsedForSameRole && model?.id !== 'formTrace' && <Typography sx={{ fontSize: 12, color: '#b26a00' }}>这个字段已作为同一用途的“{attributes.find((item) => item.id === effectiveAttributeId)?.name}”使用。再建一条可能重复计入，请先核对来源。</Typography>}
-      {tableId && !!effectiveAttributeId && !selected && <TextField select fullWidth size="small" label="每行记录键" value={newRowKey}
-        onChange={(event) => setNewRowKey(event.target.value)}>
-        <MenuItem value="">请选择每行唯一的字段</MenuItem>
-        {rowKeyOptions.map((item) => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}
-      </TextField>}
-      {error && <Typography role="alert" sx={{ fontSize: 12, color: 'error.main' }}>{error}</Typography>}
-      <Stack direction="row" spacing={1}>
-        <Button variant="contained" size="small" disabled={!effectiveAttributeId || field.status === 'disabled'} onClick={addAssignment}>添加</Button>
-        <Button size="small" onClick={() => { setIsAdding(false); setError(''); }}>取消</Button>
-      </Stack>
-      <Typography sx={{ fontSize: 12, color: '#909399', lineHeight: 1.5 }}>新明细先停用，补齐来源后再启用并保存；启用但未补全会阻止生产使用。</Typography>
-    </Stack>}
+        {tableId && traces.some(binding => !binding.rowKeyFieldId) && <Alert severity="info">当前版本的子表行定位尚未配置，请在整子表用途中补齐后启用。</Alert>}
+      </Stack></Collapse>
+    </Box>}
+    {(models.length > 0 || statistical.length > 0) && <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
+      <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={statisticsOpen || statistical.length > 0}
+        onChange={(_, checked) => { setStatisticsOpen(checked); if (!checked) removeFieldFrom(statistical); }} />} label={<Typography fontWeight={600} variant="body2">用于业务统计</Typography>} />
+      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>选择预设用途，最终完成后进入对应报表。</Typography>
+      <Collapse in={statisticsOpen || statistical.length > 0}><Stack spacing={1.5} sx={{ mt: 1.5 }}>
+        {statistical.map(binding => {
+          const definition = catalog?.models.find(item => item.id === binding.modelId);
+          if (!definition) return <Alert key={binding.id} severity="warning">用途目录失效，请核对配置。</Alert>;
+          return <Box key={binding.id} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 1.5 }}>
+            <Typography variant="body2" fontWeight={600}>{definition.name} · {binding.enabled ? '已启用' : '配置草稿'}</Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{projectionSourceSummary(document.model, binding)}</Typography>
+            <Button size="small" sx={{ display: 'block', px: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{editingId === binding.id ? '收起来源' : '补齐 / 调整来源'}</Button>
+            <Collapse in={editingId === binding.id} unmountOnExit><ProjectionSourceEditor binding={binding} definition={definition} onChange={patch => change(binding.id, patch)} onRemove={() => update(bindings.filter(item => item.id !== binding.id))} /></Collapse>
+          </Box>;
+        })}
+        <TextField select size="small" fullWidth label="添加业务用途" value={modelId} onChange={event => { setModelId(event.target.value); setAttributeId(''); setTargetId('__new'); }}>
+          <MenuItem value="">请选择</MenuItem>{models.map(item => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}
+        </TextField>
+        {model && <>
+          <TextField select size="small" fullWidth label="这个字段代表" value={attributeId} onChange={event => { setAttributeId(event.target.value); setTargetId('__new'); }}>
+            <MenuItem value="">请选择</MenuItem>{available.map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name.replace(/（.*?）/g, '')}</MenuItem>)}
+          </TextField>
+          {!!attributeId && candidates.length > 0 && <TextField select size="small" fullWidth label={tableId ? '补充哪项子表用途' : '补充哪笔业务'} value={targetId} onChange={event => setTargetId(event.target.value)}>
+            <MenuItem value="__new">另配一笔{model.name}</MenuItem>{candidates.map(binding => <MenuItem key={binding.id} value={binding.id}>{projectionSourceSummary(document.model, binding)}</MenuItem>)}
+          </TextField>}
+          <Button size="small" variant="outlined" disabled={!attributeId || statistical.some(binding => binding.modelId === modelId && binding.sources[attributeId] === field.id)} onClick={addStatistics}>使用此字段，再补齐来源</Button>
+        </>}
+      </Stack></Collapse>
+    </Box>}
+    <Typography variant="caption" color="text.secondary">配置后点顶部“保存”；历史实例继续使用各自的快照。</Typography>
   </Stack>;
 }

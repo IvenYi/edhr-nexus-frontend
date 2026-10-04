@@ -682,7 +682,7 @@ rules:
           value: true
     result:
       type: planned-final-output
-    explanation: DEC-0075-11已确认工序报工更新工序产出，批次产出来自配置的最终产出工序，工单累加所属批次产出。最终产出取良品或总量尚待确认，配置与运行联动仍为内部规划；当前首次完成投影及工序报表不能证明本规则已实现，不进入客户或运行时投影。
+    explanation: DEC-0075-11/13已确认：工序报工更新各自工序产出；批次最终产出取指定最终产出工序的正式报工数量，工单汇总所属批次，禁止跨工序加总。来源字段须表达约定产出语义，不强制映射外部系统字段名；良品、不良、报废按各自配置独立统计，不自动加减最终产出，也不要求另有质量表单。无采集或无正式生效数据不等于实际零。配置与批次/工单运行联动仍为内部规划；当前首次完成投影及工序报表不能证明本规则已实现，不进入客户或运行时投影。
     evidenceIds: [evidence.business-knowledge-model, evidence.form-traceability-projection-ownership-user-confirmed]
   - id: rule.product-process.material-readiness
     name: 物料齐套校验

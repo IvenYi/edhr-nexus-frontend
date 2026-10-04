@@ -28,4 +28,6 @@
 
 `service/ProductNumDataService.java` 的汇总与 `updateOutPutQty` 方法通过 `ifFinalOutPut` 读取制程／工艺节点上的 `FINAL_OUTPUT_BOOL`，用该节点报工的良品和更新批次 `OUTPUT_QTY`，再遍历工单下批次累加并更新 `finished_container_qty_`。因此前述通用工作台累加方法不能用来解释冠骋的批次最终产出。
 
-用户随后确认（`user-confirmed`）：工序报工同步修改工序产出；批次产出取配置的最终产出工序；工单产出为各批次之和。我们保留这个层级；当前仓库 `rule.operation.final-output` 仍为规划态，本分支的工序投影报表不冒充批次／工单最终产出。冠骋“取良品”的实现事实不自动替代本项目数量口径确认。
+用户随后确认（`user-confirmed`）：工序报工同步修改工序产出；批次产出取配置的最终产出工序；工单产出为各批次之和。我们保留这个层级；当前仓库 `rule.product-process.final-output` 仍为规划态，本分支的工序投影报表不冒充批次／工单最终产出。冠骋“取良品”的实现事实不自动替代本项目数量口径确认。
+
+路径用途说明：`FormReportInfoEntity` 与 `BizReportDataSearchBs` 对应工单报工、质量及报废数量等报表统计；`ProductNumDataService.updateOutPutQty` 则读取标记为最终产出的工序正式报工，更新批次 `OUTPUT_QTY` 并汇总更新工单 `finished_container_qty_`。前者是工单质量／报工统计路径，后者是批次及工单最终产出更新路径；它们用途不同，不是同一最终产出的两套算法。以上仅描述冠骋历史实现，本项目口径仍以用户确认和本仓库证据为准。

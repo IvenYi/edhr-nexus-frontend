@@ -123,7 +123,7 @@ export default function CanvasTab() {
             }}
           >
             {panelRail === 'thumbnails' ? <CanvasPageThumbnails onClose={() => setIsSidebarVisible(false)} title={activeRailItem.title} /> : (
-              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -131,6 +131,7 @@ export default function CanvasTab() {
                     justifyContent: 'space-between',
                     px: 2,
                     height: 36,
+                    flexShrink: 0,
                     borderBottom: '1px solid #e8edf4',
                   }}
                 >

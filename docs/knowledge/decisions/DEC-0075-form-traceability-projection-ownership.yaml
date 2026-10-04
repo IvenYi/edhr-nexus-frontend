@@ -4,7 +4,7 @@ decisions:
     title: 电子表单追溯与业务投影的模型所有权和配置边界
     status: specified
     visibility: internal
-    context: user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择与 AI 不冒充用户业务决定。
+    context: user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认，2026-09-30确认最终产出与独立质量统计口径，2026-10-03补录画布优先、低成本二开、跨表单指标汇总、查找追溯与业务统计并列可选、真实上下文统计归属及部分字段自动带入目标。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择、具体交互、跨表单同事件关联方式、独立检索索引时机与结果页面、上下文带入生命周期及 AI 不冒充用户业务决定。
     decisionStatements:
       - id: DEC-0075-01
         statement: 各报表使用的统计模型由产品方预先定义和维护；客户负责从自身表单选择取值字段并配置对应来源，不承担从头建立统计模型的职责。配置体验以降低实施和培训成本为目标，但原型或设计文档不能作为客户已经能独立低成本配置的验证证据。
@@ -47,11 +47,47 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0075-11
-        statement: 数量层级为工序报工同步修改工序产出，批次产出来自配置的最终产出工序，工单产出为所属各批次产出之和；不能把不同工序直接相加为批次产出。该层级已确认，最终产出取良品还是总量尚待确认，仅阻塞未来最终产出运行。当前首次投影按工序报表不证明工序、批次、工单产出联动已实现。
+        statement: 数量层级为工序报工更新各自工序产出，批次最终产出来自配置的最终产出工序，工单产出为所属批次产出之和；不能把不同工序直接相加为批次产出。最终产出字段语义已由 DEC-0075-13 于 2026-09-30 确认；2026-09-29 曾记录的良品或总量未决状态仅为当时状态。当前首次投影与工序报表不证明批次/工单最终产出联动已实现。
         status: specified
         visibility: internal
       - id: DEC-0075-12
         statement: 表单追溯与统计的字段来源映射随实际生产使用进入执行快照；工序或作业表单在生产对象首次开工时复制当时模板配置，执行中附加的自定义表单在附加时复制当时配置。后续修改同一表单模板版本不回写已形成的执行快照、来源表单或投影结果；新使用读取当时配置。表单模板沿用原有编辑和版本规则，不为追溯投影另设手动发布冻结或禁止编辑的生命周期。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-13
+        statement: 用途配置在正式生效后按配置形成统计或内容追溯投影；未配置用途不强制产生投影，实际生产关联与 DHR 证据独立保留。批次最终产出取指定最终产出工序的正式报工数量，工单汇总各批次产出，不能跨工序相加。所选报工字段须表达约定的产出语义，但不强制映射任何外部系统字段名或固定为 goodQty。良品、不良和报废按各自配置独立统计，不自动加减最终产出；计算产出不要求另有质量表单。无采集或无正式生效数据不等于实际零。同一表单可配置多个用途，相关指标可在同一报表展示；质量比率、对账、倒扣等另行提出需求。使用时配置冻结和历史实例保护继续适用，A12 受控修订/作废仍延期。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-14
+        statement: 表单画布上直接点选字段或子表是用途配置的主要入口；集中配置面向熟练后的总览与调整。页面应有主次并渐进展示，降低首次配置的学习门槛。该要求替代此前集中配置优先的建议；轻量侧栏、用途配置模式及与布局编辑的具体交互仍是待评审建议，不因本条确认而定版。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-15
+        statement: 未来新增业务用途允许二次开发，目标是开发成本低、容易维护；不要求所有业务通过零代码配置完成，也不为此提前建设庞大通用规则引擎。统计模型默认由产品方维护的现有边界继续适用；公共配置与投影基础流程加用途独立业务实现的拆分属于技术建议，客户自建业务模型能力仍未定。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-16
+        statement: 认可不同表单分别提供指标并汇总到同一报表行的方向，但每个指标必须明确统计对象、范围与来源。该方向不等于已支持任意跨表单事件关联；同一次业务事件的关联方式仍待定。指标并列不自动产生最终产出加减、良率或对账规则，无正式生效数据仍不能记为真实零；原始表单记录、正式业务数据、报表汇总与证据追溯保持各自层次。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-17
+        statement: 画布优先配置覆盖用于查找与追溯、用于业务统计两个并列且可选的任务，允许仅前者、仅后者、两者都配或都不配；查找与追溯不能藏成业务统计的高级附属。保留用户按批次号、设备号、工序等信息查找所有相关报表的意图，并区分原始表单或证据与业务报表入口，具体结果页面待设计。检索命中只表明配置字段与查询信息匹配，不证明正式谱系、设备使用或工序执行身份；文本不覆盖实际执行上下文，同字符串的不同信息类型不混查，命中保留字段来源与实例。所有相关限既有授权范围，不开放越权全局查询。本条不改变既有formTrace与最终内容索引沿首次最终完成路径的当前契约，也不替独立检索索引决定暂存、进行中、未完成或失效数据的范围、生效或更新时机。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-18
+        statement: 冠骋源码与产品可作参考对照，交互应自行设计以降低配置学习成本，并满足可维护二开目标，不照搬竞品交互。业务统计事实必须按用途定义具有批次、工序等明确归属与粒度，由真实执行上下文确定，不依赖额外手填同名字段或配置查找追溯用途。部分表单字段可配置生产上下文自动带入；系统事实归属、上下文字段展示或原始证据、字段检索采集须分层，同字段可兼容带入与查询或统计但不能因此重复形成事实，编辑显示文本不能覆盖实际身份。取值来源与用途正交、身份字段只读或受控修改是交互建议；带入时机、持久化、缺上下文、刷新、可编辑覆盖及多个设备选择与唯一性仍待定，不假设单工序单设备，也不以文本设备号形成正式设备使用关系。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-19
+        statement: 首期用途配置同时覆盖子表和主表多个分散字段组合成一条业务明细的场景；子表是常见采集形式和降低配置成本的交互设计重点，不代表首期只交付子表投影或将主表字段配对延期。用户对安速康表单子表常见性的观察属于用户反馈，不是本轮原始样本统计。数据对象用于解释哪些值属于同一条明细，但不因本条确认而定版具体配置交互、子表行身份、表头共享字段或其他运行契约；Q14只收敛来源形态范围，其余阶段出口和能力分期继续待定。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-20
+        statement: MVP纳入客户维护可复用查找项目录、普通字段或子表列关联查找项、查询页面按查找项提供条件并回查有权限来源表单与命中位置的路径；名称不同的来源字段可以关联同一查找项。客户管理员定义查找项，值类型限产品支持范围，常用项可预置；制表人配置字段来源，查询人使用条件。此职责划分不规定每份表单必须由三人依次操作。查找项是运行查询配置，不等于客户编辑研发本体、定义任意统计口径或据文本建立正式实体关系；具体类型、操作符、目录生命周期、组合条件、索引时机与历史处理仍须在对应实现前明确。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-21
+        statement: MVP业务统计继续使用预设报表展示，不新增用户自定义报表编辑器；自定义报表放第二期，当前架构保留扩展空间，不提前实现BI、自由公式或跨来源连接引擎。二期自定义报表组合不等于客户自由创建统计模型，其指标、维度、编辑分享权限及开放范围仍待设计。此分期不取消首期子表与主表分散字段明细、查找与统计并列可选、产品维护统计口径、真实执行归属、使用时快照与历史保护、正式统计首次最终完成、来源权限、独立数据库及A12延期；Q14仅进一步收敛本条所列分期边界，其他未定运行契约不因此获得默认答案。
         status: specified
         visibility: internal
     supersedes: []
@@ -86,4 +122,59 @@ decisions:
         given: 一个表单模板版本已配置追溯来源，生产实例已开工或已附加自定义表单
         when: 修改同一模板版本的字段或来源映射并创建新的生产使用
         then: 已使用实例继续按自己的执行快照填写、完成和投影；新的使用复制修改后的配置，不要求执行追溯专属发布冻结动作
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-final-output-and-independent-quality-quantities
+        given: 指定的最终产出工序有正式报工，且表单可配置产出、不良和报废等多个用途
+        when: 形成批次/工单最终产出及同报表中的用途统计
+        then: 批次最终产出只取指定工序约定语义的正式报工数量，工单只汇总所属批次；不良和报废按配置独立展示且不自动加减产出，无数据不显示为实际零
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-canvas-primary-entry
+        given: 制表人员首次配置用途，并在画布选中字段或子表
+        when: 从所选对象进入配置，再需要全表总览或调整
+        then: 预期主要配置路径从画布开始，信息按需渐进展示，集中入口承担总览与调整；此场景是未来验收要求，具体侧栏与模式交互仍待评审，不证明当前实现或易用性验收已通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-cross-form-independent-metrics
+        given: 同一已明确统计对象与范围中，表A正式良品指标为90，表B正式不良指标为5
+        when: 将两项指标汇总到同一报表行
+        then: 预期可以并列展示90与5并分别回查来源，不能据此自动扣减最终产出或计算良率；此例不证明任意跨表单同事件关联已支持，也不是已运行测试结果
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-cross-form-missing-metric
+        given: 同一已明确统计范围中，表A存在正式指标，表B无正式生效数据
+        when: 展示该报表行及指标来源
+        then: 预期表A指标仍可展示，表B不填为真实0；如何表示缺失值随后定义，此例仅是验收行为而非当前运行结果
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-same-fact-header-detail-no-double-count
+        given: 同一业务事实同时有表头总数和子表明细合计，另有独立的多次正式记录
+        when: 按明确的事实身份、统计粒度与来源形成汇总
+        then: 预期同一事实的表头与明细不重复累计，独立多次记录仍可累计；事实身份及具体去重实现待设计，此例不证明当前解释器已完成去重
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-new-purpose-preserves-old-snapshot
+        given: 已有生产实例在START或ATTACH_FORM时冻结了用途配置
+        when: 后续新增业务用途或字段并形成新的使用
+        then: 预期新增配置不改写旧实例的冻结配置，旧记录与投影继续按原快照解释；此例延续DEC-0075-12，不新增发布冻结步骤或宣称本例已运行验证
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-trace-only-source-search
+        given: 表单设备号字段只配置查找与追溯，用户在既有授权范围查询；待确认的索引契约已明确哪些数据可查询
+        when: 按对应设备号信息类型检索匹配字段值
+        then: 预期定位准确表单实例与字段位置，保留来源，不产生报工、报废或消耗正式统计明细；不同信息类型的同字符串不混查，命中不证明设备实际使用或改变执行身份。本例不预设索引生效时机或记录状态范围，不证明已实现或运行验收通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-context-owned-statistics-and-prefill
+        given: 批次B001在工序P10的真实执行上下文中启用表单并配置正式统计，部分字段配置上下文带入，但不配置查找追溯用途
+        when: 按未来确认的带入生命周期呈现字段，并按既有正式生效边界形成统计事实
+        then: 预期统计归属由真实B001/P10上下文及用途粒度确定，所配置带入字段显示相应信息；没有检索用途不影响统计归属，字段显示或查询复用不重复统计，也不能改写真实上下文。本例不预定带入时机、证据持久化、刷新或覆盖规则，不证明已实现或运行验收通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-first-phase-both-source-shapes
+        given: 表单既有用子表采集明细的场景，也有主表多个分散字段描述同一条业务明细的场景
+        when: 评审首期配置范围及后续交互稿
+        then: 预期两种来源形态都进入首期，子表配置以简单快捷清晰为重点；主表字段配对不被排除或延期。本例不预定具体交互、行身份或表头共享机制，也不证明两类配置已实现或通过易用性验收
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-mvp-reusable-lookup-items
+        given: 客户有灭菌锅次等查找需求，相关索引可查范围和来源权限已按对应契约明确
+        when: 管理员定义产品支持类型的查找项，制表人把不同名称的普通字段或子表列关联同一查找项，查询人按值查询
+        then: 预期查询页面提供对应条件并定位有权限的来源表单和命中位置；仅查找不要求统计数量，也不形成正式实体关系。本例不预定类型全集、组合条件、索引生命周期或历史回填，不证明当前已实现或验收通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-mvp-preset-reports-phase-two-custom-reports
+        given: MVP已有产品维护的业务统计口径及预设报表，后续希望客户组合自定义报表
+        when: 核对本轮MVP交付与二期扩展范围
+        then: MVP保留预设报表而不加入自定义报表编辑器，架构留二期扩展空间；不重复生成事实、不改写旧快照，不把二期报表组合解释为客户任意建立统计模型或已完成二期能力
         evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]

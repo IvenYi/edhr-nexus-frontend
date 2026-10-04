@@ -1,0 +1,174 @@
+qualityResult:
+  result: passed
+  baseCommit: ac1a395b31e5a93f1077abbf0b8481f99f82818a
+  headCommit: ac1a395b31e5a93f1077abbf0b8481f99f82818a
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/development/form-projection-gct-report-reference.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-traceability-projection-handoff-2026-10-03.md
+      - docs/development/form-projection-interaction-2026-10-05.md
+      - docs/development/form-projection-interaction-quality-2026-10-05.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/open-questions.yaml
+      - docs/knowledge/rules/product-process.yaml
+      - docs/knowledge/rules/production-execution.yaml
+      - docs/knowledge/rules/production-form-copies.yaml
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts
+      - gmp-platform/frontend/scripts/test-projection-preview.mjs
+      - gmp-platform/backend/scripts/form-projection-ux-demo.py
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-interaction-2026-10-05.md
+      - docs/development/form-projection-interaction-quality-2026-10-05.yaml
+      - docs/development/form-projection-interaction-quality-final-2026-10-05.yaml
+      - docs/development/form-traceability-projection-handoff-2026-10-03.md
+      - gmp-platform/backend/scripts/form-projection-ux-demo.py
+      - gmp-platform/frontend/scripts/test-projection-preview.mjs
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.final-independent-scope
+      required: true
+      category: requirements
+      description: 全新质量实例独立核对最终工作树、阶段范围、业务边界及完整L2影响分析，未参与代码或测试修复。
+      method: inspection
+      command: 阅读AGENTS、codeplzreadme、交接与质量契约、知识模型及入口、DEC-0075、开放问题、当前决策包、交互记录和最终源码。
+      outcome: passed
+      evidence:
+        - 实际目录/分支为/Users/ivenwang/Documents/edhr-nexus及form-traceability-projection，实际HEAD与base/head相同；未提交范围如上。
+        - 两类并列用途、子表优先且首期包含主表配对、产品统计口径、真实上下文及使用时冻结与延期范围一致；未自行关闭Q12/Q15/Q17或目录契约。
+        - impactAnalysis覆盖直接、传递、潜在、不受影响、迁移兼容、快照、审计、权限、测试及证据缺口；extensionStrategy与组件和运行所有权边界一致。
+        - 当前通过仅指设计器交互阶段，不是客户目录/独立索引或完整MVP，也没有客户易用性验证结论。
+    - id: check.final-preview-unit
+      required: true
+      category: unit
+      description: 本实例新执行模拟取值构造测试。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-preview.mjs
+      outcome: passed
+      evidence:
+        - 本实例新运行3项，0失败、0跳过；逐行/主表隔离、同列多用途、null与草稿、不变模板和行数调整通过。
+    - id: check.final-designer-build
+      required: true
+      category: regression
+      description: 最后模式按钮纯样式调整之后，本实例新运行设计器检查与TypeScript/Vite构建。
+      method: command
+      command: cd gmp-platform/frontend && npm run verify:template-designer-react && npm run build
+      outcome: passed
+      evidence:
+        - verify-template-designer-react passed；tsc -b及Vite生产构建退出0，12141模块，built in 5.71s。
+        - 采用最终DesignerInspector按钮minWidth0与whiteSpace nowrap源码，不借用首轮构建结果。
+    - id: check.final-backend-report-evidence
+      required: true
+      category: integration
+      description: 独立解析八份真实PostgreSQL及相邻回归Surefire报告，并核对当前业务后端无变更；本实例没有再次运行Maven。
+      method: inspection
+      command: Python ElementTree解析gmp-platform/backend/target/surefire-reports/TEST-*.xml中的八个指定测试类；git diff --name-only。
+      outcome: passed
+      evidence:
+        - FormProjectionInterpreterTest8、FormProjectionPostgresTest7、FormProjectionAuthorizationTest3、TemplateProjectionAuthorizationTest1、TemplateModelingControllerTest38、FormFillSnapshotTest2、ProductionExecutionEngineTest21、BusinessKnowledgeModelTest59。
+        - 独立解析合计139项，failures0/errors0/skipped0；首轮质量文件保留其2026-10-05T02:26:47+08:00真实复跑命令与完成时点。
+        - 当前业务Java、迁移及授权代码无工作树变更；新增后端文件仅固定隔离库虚构设计配置脚本。
+        - 此项是报告/源码证据审查，不能表述为本实例新执行139项后端测试。
+    - id: check.final-browser-entry-and-pairing
+      required: true
+      category: e2e
+      description: 独立新开后台IAB页验证已保存主表、整子表入口及总览一致性，不保存覆盖样本。
+      method: browser
+      command: CUA打开localhost:3007表单模板列表中的PROJECTION-UX-20261005 V1，点选整子表及主表设备/数量，进入用途总览。
+      outcome: passed
+      evidence:
+        - 整子表一次列映射，表内查找与统计均已启用；主表设备仅查找无需数量，主表数量显示同笔物料/批号/单位统计来源。
+        - 总览读回四项已启用用途，来源与侧栏一致；用途配置/模拟预览独立页签，模板保存入口仍可用且无专属发布冻结动作。
+        - 本实例只选择、展开和模拟，未点击保存；临时tab1结束已关闭，根tab3未操作。
+    - id: check.final-browser-preview-and-errors
+      required: true
+      category: api
+      description: 经最终真实界面调用预览接口，验证独立行、主表值及空数量与实际0。
+      method: browser
+      command: CUA填写FINAL-A/B、FINAL-L1/L2、数量2/3及主表QA-FINAL-MAIN/QA-FINAL-EQ/数量4，再测试空数量和实际0。
+      outcome: passed
+      evidence:
+        - 正常实际返回6条：逐行消耗2/3及相应批号、逐行批号查找2条、主表设备查找1条、主表消耗数量4一条；未跨行配对。
+        - 清空第一行数量后预览显示数量必须填写非负数字且清除旧结果；显式填写0后成功返回6条，第一行正式模拟数量为0。
+        - output/projection-designer-quality-final-20261005/preview-six-records.jpg
+    - id: check.final-style-scroll-responsive
+      required: true
+      category: visual
+      description: 最终按钮、来源展开侧栏滚动及窄屏模拟页实际核对，复用项目风格与AppDialog。
+      method: browser
+      command: CUA默认尺寸展开子表来源并滚动；临时viewport390x844检查模拟网格、底栏及截图，随后reset。
+      outcome: passed
+      evidence:
+        - 查找与统计按钮实测14px字体、32px高、whiteSpace nowrap/minWidth0；模式按钮父容器position sticky。
+        - 来源展开后容器574px、内容1330px，scrollTop由349.5到758；模式按钮top保持174，单行文案可见。
+        - 390x844实测输入网格单列238px，底部关闭/校验并预览/保存配置均可见；临时viewport已reset。
+        - output/projection-designer-quality-final-20261005/subtable-sidebar.jpg
+        - output/projection-designer-quality-final-20261005/preview-390.jpg
+        - 无新增独立列表页，当前内嵌配置/模拟按项目范围不强制ListTableShell；保留既有字体、颜色、小边框及紧凑控件。
+    - id: check.final-database-and-authority
+      required: true
+      category: database
+      description: 只读核对当前服务隔离库、已有配置与快照摘要、演示脚本边界及原权威校验。
+      method: query
+      command: psql -X -h localhost -d edhr_form_projection查询pg_stat_activity及配置/快照摘要；核对虚构脚本、控制器/解释器、保存审计和setProjectionBindings源码。
+      outcome: passed
+      evidence:
+        - 10个PostgreSQL JDBC Driver连接均位于edhr_form_projection、127.0.0.1；没有向原业务库写入。
+        - 样本model_design_json与canvas_design_json拼接MD5仍为9e138ff4fb670f459dea27a889dbf6b5，与首轮独立结果一致。
+        - 4个正式批次source_json::text按id无分隔拼接MD5仍为eb1332f26798a9db2cbf6162b30e2348，与同算法首轮独立结果一致。
+        - 演示脚本固定-h localhost/-d edhr_form_projection、仅事务性虚构配置初始化，已存在保留；本实例未执行新增或重复初始化。
+        - 保存沿原writeChangedAudit，配置变更沿原撤销历史，服务权限要求master-data.form-templates；前端提示不替代后端必需来源/数量/唯一行键校验。
+        - 本次未改统计口径、使用时快照、完成事件、来源授权或DHR；客户目录和独立索引差异明确披露。
+    - id: check.final-knowledge-and-hygiene
+      required: true
+      category: documentation
+      description: 独立解析受影响知识YAML及决策包，核对实施说明与补丁卫生。
+      method: command
+      command: Ruby YAML.safe_load读取决策包、DEC-0075、证据、开放问题及三份规则；git diff --check。
+      outcome: passed
+      evidence:
+        - YAML parse passed；git diff --check退出0。
+        - 知识保持0.3.24/specified或planned/internal；客户目录、系统行身份、上下文带入及A12没有标记为已实现。
+        - 原有未提交功能文档保留，无关输出目录排除；本实例只新增本最终质量证据文件。
+  findings: []
+  residualRisks:
+    - id: residual.full-mvp-and-customer-usability
+      description: 客户维护查找目录、动态查询与独立索引、系统行身份及上下文带入尚未交付，也未开展客户制表人员试用。
+      impact: 不能把本阶段通过解释为完整MVP或已证明学习成本降低。
+      mitigation: 按待定目录运行细则、Q12/Q15-Q17继续阶段开发，结合真实客户子表与主表任务试用。
+    - id: residual.runtime-boundary
+      description: 仍用v1显式唯一行字段和最终成功批次查询，尚无表头共享/同事实去重、任意跨表事件关联、最终产出联动或A12修订作废。
+      impact: 当前子表仍有额外行定位配置；同事实表头及明细需由配置人员避免重复选择正式数量。
+      mitigation: 保留旧解释与冻结实例，相关能力在确认业务身份与粒度后单独实现和验收。
+    - id: residual.existing-template-detail-dom-warning
+      description: 本实例最初点击样本名称打开既有详情页时捕获validateDOMNesting警告，TemplateModelingPage的DetailField用p类型Typography包裹StatusBadge的div。
+      impact: 属于本次未修改的列表详情HTML嵌套提示，未阻碍设计器或预览流程；不能宣称本次控制台全程零提示。
+      mitigation: 后续在详情页维护范围内处理；本次保持精准修改，不进行无关修复。
+    - id: residual.final-verification-boundary
+      description: 本实例没有新跑后端139项、重新保存配置、提交生产表单、签署/审批、空库迁移或全系统回归。
+      impact: 本结果不是完整生产发布证明；后端139项为独立报告审查，首次完成及初始化证据依各自历史时点解释。
+      mitigation: 新运行契约或发布候选再补相称的真实流程、数据库迁移及回归；保留主开发与首轮独立验证来源。
+  blockingConditions: []
