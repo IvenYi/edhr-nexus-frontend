@@ -1,0 +1,120 @@
+qualityResult:
+  result: passed
+  baseCommit: "2741842f2a3baeaa91b9e50b2833cfe156cfa754"
+  headCommit: "2741842f2a3baeaa91b9e50b2833cfe156cfa754"
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-preset-source-review-2026-10-05.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/development/form-projection-designer-preset-quality-2026-10-05.yaml
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-designer-preset-quality-2026-10-05.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.designer-preset.scope
+      required: true
+      category: documentation
+      description: 核对本轮L2文档增量、独立性与Git范围。
+      method: command
+      command: git branch --show-current; git rev-parse HEAD; git status --short --branch; git diff --stat; git diff --check
+      outcome: passed
+      evidence:
+        - 仓库为/Users/ivenwang/Documents/edhr-nexus，分支form-traceability-projection，HEAD与本报告完整哈希一致。
+        - 最终仅研究表、同一决策包及三份知识来源资产修改，无代码/接口/数据库/运行默认变更；两个output目录排除。
+        - 已重新读取AGENTS、quality-verifier、handoff契约及当前知识与设计边界；本实例未参与本轮编写或修复，只新增本报告。
+        - git diff --check退出码0；旧质量结果不作为本轮通过证据。
+    - id: check.designer-preset.menu-and-backend-declarations
+      required: true
+      category: requirements
+      description: 从原始前后端独立核对菜单覆盖、条件和后端声明差异。
+      method: inspection
+      command: sed读取在线designer constants、toolkit父组件及两palette组件；python3计数前端列表、后端model/field类与非注释Service/Component注解。
+      outcome: passed
+      evidence:
+        - 前端OnlineFormTraceTypes为8个不同类型，OnlineFormBusinessTypes为21个不同类型，两palette按对应列表生成。
+        - 父入口仅suiteKey=eDHR、isEasyEdition且非文本表单显示；Cell面板multiFields组合单元格返回空palette，研究没有宣称无条件可用。
+        - 后端41类/41枚举项，分组trace7/report19/inspection7/material3/warehouse3/顶层2；40类有非注释注册注解，唯一排除Operation。
+        - 前端RELATED_LOT_NO与后端额外检验/材料声明分别记录；注册注解、菜单与实际运行注册不混为一谈。
+    - id: check.designer-preset.values-reference-and-signature
+      required: true
+      category: audit
+      description: 核对记录号、默认/引用带入、关联批次渲染和人员签署的原始锚点。
+      method: inspection
+      command: sed读取trace-props/ref-props/double-props/useReverseModeling、useRenderPageFactory:489-523、render.ts:1288-1373、util.ts及Transaction/Esop/数量/工时声明与处理器。
+      outcome: passed
+      evidence:
+        - 记录单号有唯一/链接选择，子模型禁用唯一模式；研究将文案与后端全局唯一证明分开。
+        - 新字段defaultValue为NONE；固定默认、系统日期、引用属性和实际生产上下文分别解释，没有新增本项目数量0/日期默认规则。
+        - RELATED_LOT_NO有Trace组件映射和mainRelatedLotNo默认取值；完整SDK关联语义仍为缺口，未认定正式谱系。
+        - 默认链取得产品/工序/工单及默认用户组织；设备不在该函数取值分支，报工人和仓管员映射Sign，登录者不被当作签署人。
+        - DOUBLE数量、DECIMAL工时/一位精度、事务模型字典及Esop LOGIC/LONG_TEXT描述吻合，均没有成为本项目运行统计或动作契约。
+    - id: check.designer-preset.dictionary-source
+      required: true
+      category: requirements
+      description: 核对原因分类主数据及原始601结论字典，并检查候选无预选或动作联动。
+      method: command
+      command: rg/sed读取四原因分类FieldBizHandler及两个结论StructureHandler；python3 ElementTree解析两份601迁移XML的value_/text_。
+      outcome: passed
+      evidence:
+        - NotGoodReason/Group、ScrapReason/Group分别绑定对应原因/分类主数据，没有虚构通用选项。
+        - 原始inspection_result初始化qualified合格/unqualified不合格；review_result初始化concession让步接收/sorting挑选使用/scrap报废/reject退货，与总表一致。
+        - 初始化选项不等同当前租户值或本项目默认；候选明确无预选结论，不触发放行、审批、报废、退货或库存动作。
+    - id: check.designer-preset.fingerprints-and-references
+      required: true
+      category: documentation
+      description: 独立核对本轮原始指纹和文档引用，不扩大复审历史消费者。
+      method: command
+      command: python3 pathlib/hashlib比对研究表13个SHA256、校验30个原始路径和6个本地Markdown链接及整体补查章节锚点。
+      outcome: passed
+      evidence:
+        - 两个原始根为/Users/ivenwang/Documents/iven space/paas-main-front及/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed。
+        - 13个原始前端/后端/迁移SHA256全部匹配研究表；30个引用路径存在，6个本地链接与整体补查章节定位有效。
+        - 五个历史源码仅重算指纹，未以旧报告代替新菜单/取值/字典的原始核对，未重新开展全部业务消费者调研。
+    - id: check.designer-preset.knowledge-and-business-boundaries
+      required: true
+      category: ontology
+      description: 核对最终三份本体来源增量与同一决策包，保护原确认规则和未决项。
+      method: command
+      command: Ruby Psych解析四YAML，比较HEAD confirmed/unresolved/extensionStrategy及DEC/open-questions/design/handoff，检查局部ID、新引用和旧验收场景；读取最终三知识资产diff。
+      outcome: passed
+      evidence:
+        - 四YAML解析通过，基线0.3.24、包ID DEC-PACKAGE-20260929-FORM-PROJECTION不变；48个ID唯一，新增inference和scenario引用有效。
+        - 原17个验收场景逐项保留，新增后18个；confirmed/unresolved/extensionStrategy未变，DEC/open-questions/design/handoff与HEAD逐字一致。
+        - 五类提炼仍为inference；MVP三用途、两类来源及主表多笔、真实归属、使用时快照、权限、独立库、Q12/Q15-Q17与A12延期均保留。
+        - 三知识来源新增17行，分别限定直接读取与secondary-reference；管理员目录未实现、产出联动差距和SDK/租户字典缺口未被隐藏。
+        - 主智能体转发本轮正式ontologyResult.updated，baselineBefore/After均0.3.24、conflicts/questions为空、P0 in-progress；最终落盘范围与独立检查一致，无阶段退出宣称。
+    - id: check.designer-preset.formal-test-report
+      required: true
+      category: unit
+      description: 独立解析最终本体增量后的本轮正式知识报告。
+      method: command
+      command: python3 ElementTree解析gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml并核对计数与testcase数量。
+      outcome: passed
+      evidence:
+        - tests=59、failures=0、errors=0、skipped=0，实际testcase=59。
+        - 本轮报告mtime为2026-10-05T18:50:17.917763本地时间，suite time=2.181，晚于本轮最终知识增量。
+        - 实际执行独立报告解析，没有复跑Maven，也未声称执行浏览器、外部SDK、迁移或数据库运行验证。
+  findings: []
+  residualRisks:
+    - id: risk.designer-preset.static-only
+      description: 冠骋UI、外部SDK、关联批次完整语义和当前租户字典未验证。
+      impact: 静态入口、注册声明与初始化字典不能证明完整运行行为或可直接移植。
+      mitigation: 保留证据缺口及候选标签，未来仅对实际实现依赖追加原始和运行验证。
+    - id: risk.designer-preset.future-contracts
+      description: 管理目录、行身份、索引状态/组合条件、上下文带入与产出联动仍有未决或未实现范围。
+      impact: 总表不是新增默认、业务动作或完整MVP已交付证明。
+      mitigation: 保留Q12/Q15-Q17与目录兼容细则，相关实现前确认真正阻塞的边界，A12仍延期。
+    - id: risk.designer-preset.limited-acceptance
+      description: 本轮passed只覆盖设计器整体预置来源研究及文档/知识增量。
+      impact: 不构成全功能L2、运行环境、迁移或发布验收通过。
+      mitigation: 后续运行切片按实际风险执行聚焦测试与独立质量门禁。
+  blockingConditions: []

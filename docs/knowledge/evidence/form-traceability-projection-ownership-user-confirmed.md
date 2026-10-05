@@ -317,3 +317,17 @@
 - 管理员查找目录 CRUD、动态查询条件、定义历史兼容、独立索引状态／更新、系统行身份与上下文带入均没有因本次研究完成。保留 Q12、Q15–Q17、目录类型／操作符／生命周期／多条件范围／历史补索引等未决项，A12 继续延期，自定义业务报表继续二期。
 
 本轮只更新知识来源索引与证据，不改业务代码、数据库、运行默认、旧绑定或快照，不把候选名单写入权威统计口径。保持 `0.3.24` 与既有 `specified/internal`；没有本体实例执行的浏览器、数据库、迁移或候选项运行验收，也不继承上一阶段质量结果为本次研究通过证明。
+
+## 2026-10-05 同日整体补查：设计器字段与配置来源
+
+用户进一步要求总体参考冠骋表单设计器的追溯字段与业务字段，提炼需要预置的内容。`user-confirmed` 仅覆盖这个研究要求，候选含义、用途、属性、取值来源及字典选项仍为 `inference`；不代表确认业务数量、日期、人员的默认值。完整覆盖表与文件指纹沿用同一[研究表整体补查章节](../../development/form-projection-preset-source-review-2026-10-05.md#同日补查表单设计器整体字段与配置)，不新建DEC或运行契约。
+
+来源 provenance：本次静态复核于 `2026-10-05`，项目为 `form-traceability-projection` / HEAD `2741842f2a3baeaa91b9e50b2833cfe156cfa754`，知识基线 `0.3.24`，`reviewStatus: reviewed`；后端根目录沿用上节，前端根目录为 `/Users/ivenwang/Documents/iven space/paas-main-front`。外部源码树无可读取Git HEAD，以下原始文件直接读取并以研究表SHA256记录版本线索，未运行冠骋页面、迁移或外部SDK。
+
+- `original-evidence`：后端 `model/enums/EDHRFieldTypeEnum.java` 与 `model/field/**` 共41项／41类，trace 7、report 19、inspection 7、material 3、warehouse 3、Transaction/Esop 2；40类有未注释的服务／组件注解，`model/field/report/Operation.java:17` 的注解被注释。原始注解不证明运行注册成功，后端分组也不等于前端菜单。
+- `original-evidence`：前端 `src/projects/online-form/src/views/designer/constants/index.ts:176–211` 定义8种追溯／21种业务字段，`modules/toolkit/toolkit-content-widgets/toolkit-content-widgets.vue:3–6,19–27` 受eDHR套件、简易版及非文本表单条件限制。前端关联批次与后端额外检验、材料字段差异见研究表，不能将41项都称为可拖拽菜单或已消费统计指标。
+- `original-evidence`：后端 `model/handler/structure/InspectionResultFieldStructureHandler.java:16`、`model/handler/structure/ReviewResultFieldStructureHandler.java:12` 绑定结论字典；原始资源 `src/main/resources/com/gct/apaas/liquibase/suit/edhr/upgrade/601/changelog-inspection_result_601.xml:29–30,50–51` 初始化合格／不合格，`changelog-review_result_601.xml:29–30,50–51,71–72,92–93` 初始化让步接收／挑选使用／报废／退货。两XML SHA256分别为 `4567e2c232f55fa3da9ee97e16adc97c719ba178c061d5859260c8c88ef1c58a`、`cdf3e9f42d49dc2ccb7f62309b56779ea43beae9ff49fe6e96c2b746f1648682`，本体角色重算与研究表一致；初始化不证明当前租户值，不成为本项目默认或审批／库存动作。
+- `original-evidence`：后端 `NotGoodReason/GroupFieldBizHandler` 与 `ScrapReason/GroupFieldBizHandler` 绑定原因／分类主数据；数量字段DOUBLE、工时DECIMAL及一位精度是注册／结构声明，不成为本项目统计精度或自动0规则。Transaction字典取事务模型元数据，Esop为LOGIC/LONG_TEXT；均不等同真实执行实例引用或普通查找含义。
+- `original-evidence`：前端 `designer/hooks/reverse-modeling/useReverseModeling.ts:184–191` 的新字段默认为NONE，`packages/nocode-base/src/interface/util.ts:610–611,664–665` 的报工人、仓管员采用签名组件。主开发已直接核对的日期／引用配置与运行默认取值链在同一研究表中索引；这部分来源作为本体的 `secondary-reference` 定位入口，不扩大本体自身已读运行链范围。字段默认、人员签署、真实执行归属三者不能互换，设备默认及Q17生命周期仍未确认。
+
+五类提炼（查找含义、统计用途、模型属性／字典来源、取值来源、业务动作）只是 `inference` 设计组织，客户侧仍按场景渐进显示，子表优先并保留主表分散字段配对。MVP统计仍为报工／报废／实耗，后续工时／检验／领退料不因字段声明扩入首期；当前五个固定查找属性、管理员目录未实现及独立产出／批次工单联动差距保留。Q12、Q15–Q17、目录类型／生命周期／组合条件／历史补索引及A12延期不被本次研究关闭；无代码、数据库、运行默认、旧快照或知识成熟度变更，本轮适用校验限来源、引用和知识结构。

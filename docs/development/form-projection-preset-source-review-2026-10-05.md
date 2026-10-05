@@ -1,6 +1,6 @@
 # 查找项与业务用途预置清单：冠骋原始源码复核
 
-核对日期：2026-10-05。项目基线：`form-traceability-projection` / `ca30878fc2eaab31b0278312231bf95e2d7ab0fa`，知识基线 `0.3.24`。本轮是同一功能切片的 L2 研究与证据增量，不修改代码、数据库、运行默认或旧快照。
+核对日期：2026-10-05。首轮项目基线：`form-traceability-projection` / `ca30878fc2eaab31b0278312231bf95e2d7ab0fa`；同日设计器整体补查基线为 `2741842f2a3baeaa91b9e50b2833cfe156cfa754`，知识基线均为 `0.3.24`。本轮是同一功能切片的 L2 研究与证据增量，不修改代码、数据库、运行默认或旧快照。
 
 ## 当前实现，而非完整 MVP
 
@@ -76,6 +76,68 @@
 - 本轮只新增研究／来源证据，不改变数据库或端口，不回填旧数据。独立库仍为 `edhr_form_projection`；原库保留。验证只覆盖本轮文档、知识证据及原始源码一致性，不宣称运行候选项、冠骋 UI 或完整 MVP 已验证。
 - 管理员目录 CRUD、动态查询条件、定义兼容与历史索引仍未实现；Q12 行身份、Q15 索引时机／状态、多条件范围、Q17 自动带入等未决项保留，A12 受控修订作废仍暂缓。
 
+## 同日补查：表单设计器整体字段与配置
+
+用户进一步要求总体考虑冠骋表单设计中的追溯字段和业务字段。此前读取后端定义和消费者不等于完整核对设计器；本增量直接读取原始前端及后端全部领域字段注册、相关处理器和结论字典迁移。以下是 `original-evidence`，提炼方案仍为 `inference`，没有新增预置运行项。
+
+前端源码根目录：`/Users/ivenwang/Documents/iven space/paas-main-front`，下列前端路径相对此根目录。外部前后端均没有可读取的 Git HEAD，使用指纹记录版本线索；没有启动冠骋、执行其迁移或确认其当前租户字典值。
+
+### 设计器的字段覆盖
+
+`src/projects/online-form/src/views/designer/constants/index.ts:176–211` 定义 **8 种追溯字段、21 种业务字段**。同目录下 `modules/toolkit/toolkit-content-widgets/trace-widgets.vue:34–49`、`business-widgets.vue:34–49` 用这两份列表生成拖拽项；父组件 `toolkit-content-widgets.vue:3–6,19–27` 只在 eDHR 套件、简易版、非文本表单条件下显示，组合字段单元格另有过滤。这是源码中的条件性入口，不宣称所有版本／页面都无条件显示全部字段。
+
+| 前端组／子类 | 原始字段全集 | 对本项目的候选归类 |
+| --- | --- | --- |
+| 追溯 8 项 | 设备、LOT/SN、关联批次、产品、工单、记录单号、订单号、追溯日期 | 查找含义与取值来源候选；不自动建立实体、单据或谱系关系 |
+| 业务：工序与数量 3 项 | 工序节点、良品数、不良品数 | 工序来自真实上下文；数量属于报工模型属性，不各建一个用途 |
+| 业务：报工时间与人员 5 项 | 报工开始时间、报工结束时间、工时、生产日期、报工人 | 时间／人员属性及带入候选；工时算法、业务日期和人员身份另定 |
+| 业务：不良维度 2 项 | 不良原因、不良分类 | 主数据／字典来源候选；不擅定不良件数与缺陷次数 |
+| 业务：报废 5 项 | 报废原因、报废分类、报废数、报废物料、报废物料批次号 | 报废模型属性；数量所处阶段与审批、处理动作分开 |
+| 业务：检验数量 3 项 | 破坏性试验数量、产品检验数量、材料检验数量 | 后续检验模型的独立度量，不合并成一个检验总数或直接算合格率 |
+| 业务：仓储 3 项 | 仓管员、单据编号、单据日期 | 单据属性与人员证据；出入库、领退料仍由相应业务动作决定 |
+
+以上业务子类合计 21，不包含后端另有的检验结果／检验人等字段，也不包含实际消耗子表全部内置列。
+
+后端 `model/field/**` 共有 **41 个类**，与本模块 `EDHRFieldTypeEnum` 的 41 项对应：trace 7、report 19、inspection 7、material 3、warehouse 3、顶层 Transaction／Esop 2。40 个类有活跃注册注解，普通 Operation 的注解被注释。后端集合和前端拖拽列表不是一一对应，不能用后端枚举代替设计器菜单：
+
+| 后端补充组 | 全集或差异 | 处理边界 |
+| --- | --- | --- |
+| inspection 7 项 | 检验结果、评审结果、检验人、审核人、检验时间、审核时间、批次数量 | 结论、人员、时间、数量分别提炼；定义存在不证明完整统计或审批流程已消费 |
+| material 3 项 | 需求数量、消耗数量、通用数量 | 前端类型映射支持数字组件，但不在上述 21 项内；专用消耗子表另有 BOM／上料及库存配置，需求与实耗不互相替代 |
+| report 差异 | 后端还有普通工序 OPERATION（未活跃注册）；前端使用工序节点 ROUTING_OPERATION | 不将普通工序声明当成可操作的活跃字段 |
+| trace 差异 | 前端多出关联批次 RELATED_LOT_NO；本次提供的 eDHR 后端模块没有对应类／枚举项 | 前端确有渲染和取值分支；外部平台 SDK 的完整关联语义未获得，不把它定义成正式上下游关系 |
+| Transaction／Esop | 事务为 LOGIC/TEXT、字典取模型元数据；E-SOP 为 LOGIC/LONG_TEXT | 系统／文档配置，不应变成普通查找项或自动生产动作 |
+
+### 配置项、选项值和默认值分开
+
+| 能力 | 原始证据 | 可借鉴及限制 |
+| --- | --- | --- |
+| 记录单号的唯一／链接模式 | 前端 `trace/trace-props.vue:13–24,72–103,144–148`，唯一模式子模型禁用；文案在 `src/locales/lang/zh-CN/sys/onlineForm.ts:696–698` | 可识别不同单据意图；不能把页面文案当作后端全局唯一已验证证明，也不由同文本直接建立正式关系 |
+| 日期默认与引用联动 | `trace-props.vue:42–52,124–132`；`ref/ref-props.vue:14–32,67–76` | 当前日期和选中引用后带出属性是取值配置，不属于查找或统计口径 |
+| 业务字段重名约束 | `designer/hooks/reverse-modeling/useReverseModeling.ts:274–283` 检查同模型已有相同业务类型 | 本项目主表可有多笔分散来源，不能复制每模型仅一份同类型的限制，仍须明确配对与重复计数边界 |
+| 数量及工时类型 | 后端数量类映射 DOUBLE；`WorkHours.java` 为 DECIMAL，`WorkHoursFieldStructureHandler.java:17` 设 digits=1；前端默认值与范围编辑见 `double/double-props.vue:13–25` | 提炼数量／精度能力，不复制浮点或一位精度作为统计契约；字段定义不证明工时公式。默认未填不等于 0 |
+| 原因／分类字典 | 后端 `NotGoodReason/GroupFieldBizHandler`、`ScrapReason/GroupFieldBizHandler` 引用相应主数据 | 可预置属性含义和字典来源类型，实际原因／分类值由客户主数据维护，不虚构通用原因列表 |
+| 检验结论选项 | 后端 `InspectionResultFieldStructureHandler.java`；原始迁移 `upgrade/601/changelog-inspection_result_601.xml:29–30,50–51` 为 qualified 合格、unqualified 不合格 | 结论字典候选；不是本项目已采用的默认，不自动认定完成即合格或放行 |
+| 评审结论选项 | `ReviewResultFieldStructureHandler.java`；同目录 `changelog-review_result_601.xml:29–30,50–51,71–72,92–93` 为 concession 让步接收、sorting 挑选使用、scrap 报废、reject 退货 | 处置字典候选；选择值不自动执行审批、报废、退货或库存动作 |
+
+配置组件短路径相对前端 `src/projects/online-form/src/views/__cell_widgets__/`；后端 Java 定位相对前述 eDHR Java 根目录；两份字典迁移相对后端项目的 `src/main/resources/com/gct/apaas/liquibase/suit/edhr/`。迁移只证明原始初始化选项，当前租户是否改动、完整运行校验均未确认。
+
+默认带入确有前端实现线索：`packages/nocode-base/src/hooks/useRenderPageFactory.ts:489–522` 取得产品、工序、工单数据，将主 LOT、关联 LOT、产品、工序、工单及默认用户／组织交给 `packages/nocode-base/src/interface/render.ts:1288–1372`；后者形成各主表／子表的默认值和引用属性映射。设备不在该函数的默认取值分支，不能宣称自动带入当前设备。默认用户不等于报工签署人：`packages/nocode-base/src/interface/util.ts:610–611,664–665` 将报工人和仓管员渲染为签名组件；后端用户系统变量转换也不足以证明自动默认签署身份。
+
+`useReverseModeling.ts:184–191` 创建字段时默认值为 NONE；日期的当前系统值、引用联动、生产上下文默认、客户输入的固定默认值属于不同来源。上述静态实现不能替本项目确定 Q17 的取值时点、覆盖、重开刷新、证据持久化及多设备策略。
+
+### 本项目总体提炼建议
+
+“预设哪些值”本轮按可选含义、用途、属性、取值来源与字典选项理解，**不代表给业务数量、日期或人员自动填默认数据**。建议在研发清单中分五类，但客户侧仍按场景渐进展示，不做五栏全铺开的配置页：
+
+1. **查找含义**：常用候选沿用前文七项；新增关联批次、订单号为补充候选，日期为类型扩展候选。保留现有班组与关联单据身份。客户还可在产品支持类型内维护查找项。
+2. **统计用途**：MVP 沿用报工、报废、实耗三类；检验、工时、仓储／领退料列为后续用途候选，不因发现更多字段就扩大首期报表范围。
+3. **模型属性与字典来源**：提炼产出／良品／不良／报废／实耗／需求／各检验数、单位、物料、原因分类、业务日期／人员等候选，按用途显示可选属性。已确认独立产出数量仍待实现；其他属性未全部作为运行项启用。原因分类建议选择现有主数据；检验／评审选项只列候选，无预选结论或动作联动。
+4. **取值来源**：手填、固定默认、主数据引用联动、真实上下文带入、系统当前日期是候选来源。数量不自动为 0；业务日期不默用更新时间；签署人不默用登录者；设备不假设工序只有一台。Q17 收敛前不新增默认规则。
+5. **业务动作**：事务、E-SOP、审批放行、库存等继续由各自模块执行，不因“用于查找”或“用于统计”配置而自动触发。
+
+子表优先按每行记录一次配置列含义；主表保留多笔分散字段配对能力。借鉴业务词汇、受控字典及引用带入，继续使用普通文本／数字／日期／单选／引用组件，不按竞品的每个业务词汇新增专用字段类型。共享表头、系统行身份、独立索引状态和目录兼容仍按已有未决项处理。此分层是候选设计，不是新增运行契约或客户易用性已验证结论。
+
 ## 原始文件指纹
 
 2026-10-05 本机读取的 SHA256（路径相对上述冠骋根目录）：
@@ -87,3 +149,21 @@
 | `notebook/method/NotebookReverseListMethod.java` | `9ec6e438148e0c41d4f8fac81461912d41e9519d20bbe49e165ef8d8167b17c9` |
 | `service/ProductNumDataService.java` | `624b0c513dae3dc8542db599770630518bb2576222dca04339780393d83c2196` |
 | `bizProcess/service/OnlineFormDataCatchService.java` | `d457a6d1c731789618e21975db57eb40ed7100792f7f12c457111dc129177cee` |
+
+同日设计器补查的前端指纹（相对前端根目录）：
+
+| 文件 | SHA256 |
+| --- | --- |
+| `src/projects/online-form/src/views/designer/constants/index.ts` | `6e5ce52b5e7fd6728bc66907552e2957f5a55b44e407eccb1b4c8efe29a3d063` |
+| `src/projects/online-form/src/views/designer/modules/toolkit/toolkit-content-widgets/toolkit-content-widgets.vue` | `f41ad856b4df214f81e2e2fdf1a63fc0fa2cb83933f0acd95383b75b177775f6` |
+| `src/projects/online-form/src/views/designer/modules/toolkit/toolkit-content-widgets/trace-widgets.vue` | `a873b269a609e0238dd2596e893a88f9a93d2890eec238bc3419c992d4eddaa3` |
+| `src/projects/online-form/src/views/designer/modules/toolkit/toolkit-content-widgets/business-widgets.vue` | `64111de72b372a19a0848b8152e776758714b5a43e1abe85e8232895fea30b49` |
+| `src/projects/online-form/src/views/__cell_widgets__/trace/trace-props.vue` | `51fb97564225648f098a78c25dca5b8cd41c595f5c77d1a992854d5a431f8d2b` |
+| `packages/nocode-base/src/interface/render.ts` | `ab87cbe69cd55bca940bf1564d1018a57338e1f0a0173694dd4bdca9f594b8bb` |
+
+字典迁移指纹（相对后端项目根目录）：
+
+| 文件 | SHA256 |
+| --- | --- |
+| `src/main/resources/com/gct/apaas/liquibase/suit/edhr/upgrade/601/changelog-inspection_result_601.xml` | `4567e2c232f55fa3da9ee97e16adc97c719ba178c061d5859260c8c88ef1c58a` |
+| `src/main/resources/com/gct/apaas/liquibase/suit/edhr/upgrade/601/changelog-review_result_601.xml` | `cdf3e9f42d49dc2ccb7f62309b56779ea43beae9ff49fe6e96c2b746f1648682` |
