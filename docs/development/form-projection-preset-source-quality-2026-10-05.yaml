@@ -1,0 +1,132 @@
+qualityResult:
+  result: passed
+  baseCommit: "ca30878fc2eaab31b0278312231bf95e2d7ab0fa"
+  headCommit: "ca30878fc2eaab31b0278312231bf95e2d7ab0fa"
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-preset-source-review-2026-10-05.md
+      - docs/development/form-projection-gct-report-reference.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/development/form-projection-preset-source-quality-2026-10-05.yaml
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-preset-source-review-2026-10-05.md
+      - docs/development/form-projection-preset-source-quality-2026-10-05.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.preset-source.scope-and-independence
+      required: true
+      category: documentation
+      description: 核对本轮独立性、Git范围与研究增量，不复用历史质量结论。
+      method: command
+      command: git status --short --branch; git diff --numstat; git rev-parse HEAD; git diff --check
+      outcome: passed
+      evidence:
+        - 仓库为/Users/ivenwang/Documents/edhr-nexus，分支form-traceability-projection，HEAD与本报告完整哈希一致。
+        - 检查开始时仅五份已跟踪文档修改、研究表新文件及两个排除的output目录；五份修改合计66行新增、1行删除。
+        - 没有本轮业务代码、测试、接口、数据库或运行配置变更；git diff --check退出码0。
+        - 本质量实例未参与本轮研究文档编写或修复，唯一写入为本质量证据文件；按明确授权复用角色，不以此前结果作为本次通过证据。
+    - id: check.preset-source.requirements-and-knowledge-boundaries
+      required: true
+      category: requirements
+      description: 按当前DEC与设计约束区分候选、已实现、用户确认和二手线索。
+      method: inspection
+      command: 阅读AGENTS.md、quality-verifier.md、agent-handoff-contract.md、知识README/open-questions、DEC-0075、主设计、handoff及本轮六份增量。
+      outcome: passed
+      evidence:
+        - 候选名单、名称和优先层明确标为inference；用户确认研究方向，不等于确认运行预置项。
+        - 查找含义与取值类型、实体引用、统计度量/维度和业务动作分层；LOT/SN生产标识与物料批号分开。
+        - 两类用途并列可选，首期子表及主表分散字段两类来源继续保留；统计模型产品维护、MVP预设报表与二期自定义报表边界一致。
+        - 按工序/用途/单位统计、真实上下文归属、使用时快照、旧绑定及来源权限、独立数据库与A12延期均保留；不把本轮研究当作运行验收。
+        - Q12、Q15-Q17及目录类型/操作符、生命周期、多条件范围、历史补索引没有被关闭；来源风险分析有条件限定，不断言冠骋所有查询错误。
+    - id: check.preset-source.current-static-capabilities
+      required: true
+      category: api
+      description: 回到本项目原始解释器、目录和报表源码复核实际能力及差距。
+      method: inspection
+      command: sed读取FormProjectionInterpreter.java:15-105、TemplateModelingController.java:249-263、FormProjectionController.java:24-85及FormProjectionReportPage.tsx:12-34；rg核对FormProjectionService的COMPLETED/SUCCEEDED路径。
+      outcome: passed
+      evidence:
+        - FormProjectionInterpreter的formTrace仅允许materialLotText、serialNumberText、equipmentText、teamText、documentNumberText五个固定属性。
+        - 三类统计用途production/scrap/consumption准确；production数量仅goodQuantity/ngQuantity，无独立工序产出属性。
+        - GET /projection-catalog只返回静态代码目录，并要求master-data.form-templates；这不是管理员可维护目录CRUD。
+        - 当前查询白名单及前端固定条件与研究表一致；SQL仅查询SUCCEEDED批次，多个属性条件作用于同一投影记录，不替未来组合条件契约定版。
+        - 报工独立产出属性及批次/工单最终产出联动被列为实现差距，没有把goodQuantity自动称作已确认产出量。
+    - id: check.preset-source.original-consumers
+      required: true
+      category: regression
+      description: 独立读取冠骋原始定义和影响研究结论的实际消费者，核对字段注册与消费者区别。
+      method: inspection
+      command: sed读取冠骋EDHRFieldTypeEnum、MaterialNoFieldStructureHandler、MfgOrderFieldStructureHandler、ProductFieldBizHandler、DeviceFieldBizHandler、OrderNo、Operation、NotebookReverseListMethod、FormTraceManager、ProductNumDataService及OnlineFormDataCatchService的研究锚点和邻接行。
+      outcome: passed
+      evidence:
+        - 原始根为/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr，未以旧调研报告替代本次原始读取。
+        - material_no的LOT/SN结构处理器绑定PRODUCTION_IDENTIFICATION；设备/产品/工单分别引用对应模型。
+        - NotebookReverseListMethod:76-105实际消费LOT/SN、设备、工单、记录单号、产品和日期范围；OrderNo仅有定义，不能宣称此反查入口已消费。
+        - Operation.java普通OPERATION服务注解被注释；枚举存在不能证明当前字段注册活跃。
+        - FormTraceManager:134-166,223-249收集主/子表集合并做笛卡尔组合，不保留原行配对；研究只限定该路径用于同明细证明时的风险。
+        - ProductNumDataService:39-81,114-154按批次和工序节点聚合、读FINAL_OUTPUT_BOOL并用节点goodQty更新批次再汇总工单；研究没有将该良品口径直接移植为本项目已确认口径。
+        - OnlineFormDataCatchService:112-212包含报工数量、日期及人员消费者；353-385的表头/子表并存重复风险以同一事实重复记载为条件。
+        - OnlineFormDataCatchService:626-697,713-789,796-958分别处理专用消耗子表和库存/仓储动作；实耗、需求量和库存副作用没有被混为查找或统计映射默认行为。
+    - id: check.preset-source.fingerprints-and-paths
+      required: true
+      category: audit
+      description: 独立重算五个原始文件SHA256并核对研究引用的源码路径。
+      method: command
+      command: python3内联脚本使用pathlib/hashlib逐项比对研究表五个SHA256，并验证引用的11个冠骋源码路径存在。
+      outcome: passed
+      evidence:
+        - "model/enums/EDHRFieldTypeEnum.java: 6162c178aea62422b35188ad01dd6646a99ceef53416a819e79583084bcac88d"
+        - "notebook/FormTraceManager.java: acd8dd55cf721aa1a8ed3d9889b4ed5826b4401e6e35151ac734c093a4a6b405"
+        - "notebook/method/NotebookReverseListMethod.java: 9ec6e438148e0c41d4f8fac81461912d41e9519d20bbe49e165ef8d8167b17c9"
+        - "service/ProductNumDataService.java: 624b0c513dae3dc8542db599770630518bb2576222dca04339780393d83c2196"
+        - "bizProcess/service/OnlineFormDataCatchService.java: d457a6d1c731789618e21975db57eb40ed7100792f7f12c457111dc129177cee"
+        - 11个精确原始源码路径存在，五个指纹与研究表及最终知识证据一致；版本定位没有补造外部Git提交。
+    - id: check.preset-source.yaml-references-and-unchanged-decisions
+      required: true
+      category: ontology
+      description: 独立解析最终知识资产与同一决策包，核对新增inference/验收场景及旧知识保护。
+      method: command
+      command: ruby -rpsych -rdate -ropen3内联解析四YAML，比较HEAD confirmed/unresolved/extensionStrategy及DEC/open-questions原文，核对局部ID/新增引用/旧验收场景；python3校验四Markdown本地链接。
+      outcome: passed
+      evidence:
+        - 决策包、ownership证据、open-questions、DEC-0075四份YAML全部解析成功；基线0.3.24、包ID DEC-PACKAGE-20260929-FORM-PROJECTION保持不变。
+        - 46个包内ID唯一；inference.form-projection.source-derived-presets引用DEC-0075-18/20/21及新研究文件存在。
+        - confirmed、unresolved和extensionStrategy与HEAD结构一致；DEC-0075及open-questions与HEAD逐字一致，没有新增权威规则/事实/执行契约或静默关闭问题。
+        - 原16个验收场景逐项保持，新增scenario.projection-preset-source-review后共17个。
+        - 四份Markdown共有5个本地链接，全部目标存在；原报告仅新增研究链接，没有将历史摘要变成本轮原始证据。
+        - 主智能体已返回本轮正式ontologyResult.updated、baselineBefore/After均0.3.24、conflicts/questions为空；独立审查最终README及两份ownership证据与该范围一致，P0仍为in-progress，没有阶段退出宣称。
+    - id: check.preset-source.formal-knowledge-test-report
+      required: true
+      category: unit
+      description: 独立解析本轮最终增量后的正式知识测试报告，不复跑Maven或继承历史QA。
+      method: command
+      command: python3内联脚本以xml.etree.ElementTree解析gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml并核对四计数及testcase数量。
+      outcome: passed
+      evidence:
+        - BusinessKnowledgeModelTest报告tests=59、failures=0、errors=0、skipped=0；实际59个testcase。
+        - 报告mtime为2026-10-05T16:14:24.396418本地时间，suite time=2.173；与本体最终增量后的正式测试证据一致。
+        - 质量角色实际执行的是独立报告解析；未声称独立运行Maven、浏览器、SDK或数据库验证。
+  findings: []
+  residualRisks:
+    - id: risk.preset-source.static-only
+      description: 冠骋外部SDK、可运行UI和完整检验报表消费者未验证，静态定义与源码指纹不能证明运行行为。
+      impact: 不能据此确认候选项完整性、易用性、所有报表计算或对外产品兼容。
+      mitigation: 保留original-evidence与inference边界，未来实现时只对实际依赖补齐原始消费者及聚焦运行验证。
+    - id: risk.preset-source.pending-runtime-contracts
+      description: 管理员目录CRUD、动态条件、系统行身份、独立索引生命周期、自动带入和独立产出/最终产出联动仍未实现或尚有运行契约待定。
+      impact: 当前清单不能作为完整MVP已交付或候选默认已可用的证据。
+      mitigation: 保留Q12/Q15-Q17及目录类型、生命周期、组合条件、历史补索引；实现相关能力前确认真正阻塞的边界，A12仍延期。
+    - id: risk.preset-source.limited-l2-acceptance
+      description: 本轮passed仅覆盖预置来源研究及六份文档/知识增量，不重新验收已提交交互代码或整个投影功能。
+      impact: 不构成全功能L2、生产发布、迁移或完整MVP运行通过结论。
+      mitigation: 按各切片保留独立门禁证据，后续运行实现另行执行适用的聚焦测试、独立审查和实际交互/数据验证。
+  blockingConditions: []

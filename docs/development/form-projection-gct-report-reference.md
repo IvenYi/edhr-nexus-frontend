@@ -2,6 +2,8 @@
 
 核对日期：2026-09-29。证据分类：`original-evidence`。本次直接读取本机冠骋源码，不以既有调研摘要替代源码。源码根目录为 `/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr`；该外部仓库不随本分支分发。
 
+2026-10-05 原始定义与消费代码再次复核，补充查找项／业务用途候选、当前实现缺口和源码指纹，见[预置项来源核对](form-projection-preset-source-review-2026-10-05.md)。候选未写入运行目录或统计默认。
+
 | 模型与原始文件 | 已看到的维度 | 度量／来源 |
 | --- | --- | --- |
 | `producing/entity/FormReportInfoEntity.java` | 工单、产品及版本、批次／SN、工艺节点与工序、主体、处理日期、生产日期、报工人、原因与分类 | 良品、不良、报废数量、起止时间、工时；表单实例与模板 |

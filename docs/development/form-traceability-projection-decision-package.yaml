@@ -3,6 +3,7 @@ decisionPackage:
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
   summary: 同一首次完成投影切片保留既有统计、真实上下文、两类来源及使用时快照边界。2026-10-05确认MVP纳入客户维护可复用查找项目录、普通字段或子表列关联、生成查询条件及授权来源定位；业务统计MVP保持预设报表，自定义业务报表进入二期并保留扩展空间。本轮开始L2交互改造，先实施不依赖未决运行规则的字段/整子表渐进配置、全表总览与独立多行模拟预览，沿用现有v1接口与映射持久化。客户查找目录、系统行身份及索引状态范围仍待收敛，不把界面改造当成完整MVP交付；Q15-Q17及目录历史兼容继续保留。
+  # 同日预置项复核：管理员目录尚未实现；从冠骋原始字段与消费者提炼候选，见form-projection-preset-source-review-2026-10-05.md。本增量不修改运行目录、统计默认、数据库或未决问题。
   # 同日追加：查找与追溯、业务统计是并列可选任务，可仅其一/两者/都不配；部分字段可配置生产上下文自动带入。统计归属独立来自实际执行上下文。Q15-Q17保留独立索引时机、结果页面及字段带入生命周期，当前formTrace完成路径不替未来需求定版。
   # 首期来源形态补充确认：子表是交互设计重点，但首期也覆盖主表多个分散字段组成一条业务明细；子表优先不等于仅交付子表。具体交互与其他运行契约继续按对应未决项处理。
   confirmed:
@@ -284,6 +285,10 @@ decisionPackage:
         sourceReferences: [DEC-0075-21, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
     executionContracts: []
   inferred:
+    - id: inference.form-projection.source-derived-presets
+      statement: 建议从冠骋实际反查消费者提炼生产批号/产品序列号、设备、工单、产品、记录单号等查找含义，保留现有物料批号及补充项；日期查询属于类型扩展候选。统计MVP保留正式报工、报废、实耗，工时/检验/仓储另定规则。
+      rationale: 原始LOT/SN关联生产标识，不能误当物料批号；枚举混合度量、维度、实体引用和动作，不能直接全部作为查找项或投影用途。当前管理员目录未实现，正式报工独立产出属性及批次/工单联动仍缺失；候选命名和优先层不升为用户已确认默认。
+      relatedIds: [DEC-0075-18, DEC-0075-20, DEC-0075-21, docs/development/form-projection-preset-source-review-2026-10-05.md]
     - id: inference.form-projection.metadata-and-extension-storage
       statement: 采用产品维护的属性目录、固定业务核心字段及有类型的JSONB扩展值；客户不建立统计模型或自定义执行动作。
       rationale: 减少字段枚举膨胀及预留空列，满足既有报表的新增展示、筛选和分组需求；存储与接口名称是待评审技术建议。
@@ -333,6 +338,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: preset-source-review
+        change: 复核固定三类统计用途、五种查找属性与管理员目录缺口；增补冠骋原始定义及消费者证据、候选分层和实现差异，不新增运行预置项。
+        evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
       - area: mvp-trace-and-report-phase-scope
         change: 同步查找项目录三角色路径及分期边界；本轮先改造设计器交互，客户可维护目录和动态运行查询尚未实现。
         evidenceReferences: [docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
@@ -397,6 +405,9 @@ decisionPackage:
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: preset-source-provenance
+        scenarios: [当前目录与源码一致, LOT/SN生产标识不误为物料批号, 定义与消费者分开, 候选与已实现分开, 不默认关闭未决项, 知识正式校验及独立来源审查]
+        evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md]
       - scope: current-mvp-phase-decision
         scenarios: [DEC-0075-20与21一致, MVP目录三角色链路, MVP统计保持预设报表, 二期自定义报表不误为客户自由建模, 两类来源与快照权限继续适用, Q15-Q17和目录运行细则未被默认关闭]
         evidenceReferences: [docs/architecture/form-traceability-projection-design.md, docs/development/form-traceability-projection-handoff-2026-10-03.md]
@@ -413,6 +424,7 @@ decisionPackage:
         scenarios: [普通字段及整子表入口, 查找与统计并列且可独立选择, 主表同笔来源引导, 子表列映射逐行生效, 配置草稿与启用, 保存重开与撤销, 总览及侧栏共用配置, 多行预览不串行不写入模板, 左侧滚动, 窄屏布局]
         evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx, gmp-platform/frontend/scripts/test-projection-preview.mjs]
     evidenceGaps:
+      - 2026-10-05冠骋预置项研究为本机原始源码静态复核，外部SDK与可运行页面未获得；未确认完整检验报表消费链路。枚举与候选名单不代表本项目运行能力，不将未核对的运算、唯一性、索引状态和库存动作提升为规则。
       - Q14已确认首期两种来源形态，并于2026-10-05收敛MVP查找目录链路和预设统计报表、自定义报表二期；具体交互、阶段出口及其余运行契约仍待定，不把范围确认等同Q9-Q17全部闭环。用户对安速康表单子表常见性的观察是用户反馈，不是本轮原始样本统计。
       - 查找目录的支持类型/操作符、定义生命周期与历史兼容、多条件匹配范围及历史补索引仍待设计。截图中的文本精确/单选先行与技术建议不自动提升为已确认运行规则。自定义报表二期的指标组合/权限/布局细则及客户自建模型Q13没有定版。
       - 同日追加Q15-Q17：独立查找索引状态范围及生效/更新、相关记录证据与业务报表结果页、生产上下文字段带入生命周期和多设备策略。查找命中保留信息类型/字段来源/实例位置，同字符串不同类型不混查，所有相关限已有权限。
@@ -436,8 +448,14 @@ decisionPackage:
         responsibility: 首次执行或后续挂接时校验并保存配置快照、真实执行上下文、最终完成事件与来源权限。
       - owner: report-and-dhr
         responsibility: 授权查询及沿实际证据关系导航，MVP预设统计展示与二期报表扩展边界；不改写来源记录或决定生产归属。
-  # affectedFiles保留同一切片的历史实现及后续计划；本次交互增量为前端设计器组件/预览工具及针对性测试，不改运行统计口径。
+  # affectedFiles保留同一切片的历史实现及后续计划；本次预置项复核增量仅研究及证据文档，不改运行目录、统计口径或数据库。
   affectedFiles:
+    - path: docs/development/form-projection-preset-source-review-2026-10-05.md
+      changeType: create
+      reason: 冠骋原始字段与消费者复核、当前目录缺口、候选清单及来源指纹，区分事实和建议。
+    - path: docs/development/form-projection-gct-report-reference.md
+      changeType: update
+      reason: 既有来源索引链接同日预置项复核，不以历史摘要替代原始源码。
     - path: docs/development/form-traceability-projection-handoff-2026-10-03.md
       changeType: create
       reason: 同一方案短交接入口，列必读、确认/建议/待定、统计基线、当前差异、验收例子和开发前核对。
@@ -544,6 +562,11 @@ decisionPackage:
       changeType: read-only
       reason: 核对现有元数据查询与来源权限。
   acceptanceScenarios:
+    - id: scenario.projection-preset-source-review
+      given: 当前目录仍是固定五种查找属性与三类统计用途，用户要求参考冠骋原始字段提炼预置项
+      when: 核对字段定义、实际反查及报表消费者并提出候选
+      then: 明确管理员目录未实现，区分生产LOT/SN与物料批号、度量维度与业务动作，候选不改运行默认或关闭未决项
+      evidenceRequirements: [docs/development/form-projection-preset-source-review-2026-10-05.md, 原始源码锚点及指纹, 知识正式校验, 独立来源质量审查]
     - id: scenario.projection.mvp-customer-trace-query-catalog
       given: 管理员定义灭菌锅次查找项，两个表单的普通字段或子表列名称不同但关联同一项
       when: 查询人员按该项输入值，在明确索引范围和权限内查询

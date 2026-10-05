@@ -280,3 +280,40 @@
 - 后端 `ExecutionSnapshotBuilder.form` 仍复制 `projection` 到使用时快照；`FormInstanceRecordService.saved` 在来源 `COMPLETED` 时调用 `FormProjectionService.completed`，解释器 `FormProjectionInterpreter` 仍按 v1 映射解释。此次界面增量未更改真实执行归属、快照时机、最终完成生效边界或旧实例数据。
 
 本轮没有实现客户查找项目录 CRUD、稳定系统行身份、独立检索索引状态/生效时机、上下文自动带入生命周期，也没有实现二期自定义报表编辑器。Q12、Q15、Q17及目录类型、生命周期、组合条件与历史补索引仍按 `open-questions.yaml` 和当前决策包的 `evidenceGaps` 处理，不能把本轮 v1 设计器交互当作这些未来契约的答案。没有本体实例执行的浏览器、数据库、迁移或生产路径验证；知识模型维持 `0.3.24`、`specified/internal`，不新增已验证规则、事实或执行契约。
+
+## 2026-10-05 查找项与业务用途预置来源复核
+
+本轮用户要求核对管理员定义查找项是否已做、当前预置内容，并建议先从冠骋追溯字段与业务字段提炼类型。此研究方向属于 `user-confirmed`，并不确认具体候选名称、优先级或运行目录细则。完整清单及差异见[预置项来源研究](../../development/form-projection-preset-source-review-2026-10-05.md)；同一决策包只追加 `inferred` 与来源影响，不新增 DEC 或正式运行规则。
+
+### 当前实现与来源定位（original-evidence）
+
+本体角色在 `form-traceability-projection` 分支、HEAD `ca30878fc2eaab31b0278312231bf95e2d7ab0fa` 上读取当前原始源码。`FormProjectionInterpreter.java:21–40,46–57,94–98` 仍定义五个固定文本查找属性（物料批号、序列号、设备编号、责任班组、关联单据号）及正式报工、报废、实际物料消耗三类统计用途；查表用途不构成第四种统计模型。目录内容是代码返回的只读目录，不是客户管理员维护目录的完成证据。正式报工当前仅有良品／不良数量，没有独立工序产出数量属性；不能把良品数量自动改称已确认的产出语义，批次／工单最终产出联动仍为差距。
+
+以下外部定位相对 `/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr`。本轮回到文件直接读取，不使用旧报表摘要代替原始证据；没有运行冠骋 UI 或未提供的外部 SDK。
+
+| 原始定位 | 静态复核事实及边界 |
+| --- | --- |
+| `model/enums/EDHRFieldTypeEnum.java:6–56`，`model/handler/structure/MaterialNoFieldStructureHandler.java:19` | 枚举混合追溯、报工、检验、仓储及数量字段；LOT/SN 绑定生产标识，不可因 `material_no` 名称把它等同物料批号。普通 `Operation.java:17` 服务注解被注释，枚举不证明活跃字段注册。 |
+| `notebook/method/NotebookReverseListMethod.java:76–105` | 反查请求实际消费 LOT/SN、设备、工单、记录单号、产品及追溯日期范围；订单号有定义不等于这条入口已消费。 |
+| `notebook/FormTraceManager.java:134–166,223–249` | 主／子表字段值汇入集合并做笛卡尔组合，此路径不保留原子表行配对；不能把该组合用于证明“同一明细同时满足”。这是局部风险分析，不断言冠骋所有查询均有错误。 |
+| `bizProcess/service/OnlineFormDataCatchService.java:112–198,353–385,626–697,713–789,796–958` | 报工有真实事务上下文及字段数量／日期／人员来源；部分路径同时保存表头与子表记录，同事实相加须防重复。实耗从专用子表取得并按配置调用库存处理，仓储出入是另一条动作；查找／统计映射不应自动复制库存副作用。 |
+| `service/ProductNumDataService.java:39–81,114–154` | 按批次及工序节点汇总，读取最终产出标记，用对应节点良品和写批次再汇总工单；层级可参考，取良品及缺值处理不能覆盖本项目已确认的产出数量语义。 |
+
+来源 provenance：采集／复核日期 `2026-10-05`，知识基线 `0.3.24`，`reviewStatus: reviewed` 仅表示静态源码核对。外部源码树没有可读取 Git HEAD，不补造版本；本体角色重新计算并核对以下 SHA256，与研究表一致：
+
+| 文件 | SHA256 |
+| --- | --- |
+| `model/enums/EDHRFieldTypeEnum.java` | `6162c178aea62422b35188ad01dd6646a99ceef53416a819e79583084bcac88d` |
+| `notebook/FormTraceManager.java` | `acd8dd55cf721aa1a8ed3d9889b4ed5826b4401e6e35151ac734c093a4a6b405` |
+| `notebook/method/NotebookReverseListMethod.java` | `9ec6e438148e0c41d4f8fac81461912d41e9519d20bbe49e165ef8d8167b17c9` |
+| `service/ProductNumDataService.java` | `624b0c513dae3dc8542db599770630518bb2576222dca04339780393d83c2196` |
+| `bizProcess/service/OnlineFormDataCatchService.java` | `d457a6d1c731789618e21975db57eb40ed7100792f7f12c457111dc129177cee` |
+
+### 候选、旧参考与未覆盖范围
+
+- `inference`：建议查找含义分开生产批号、产品序列号、物料批号，再提炼设备编号、工单号、产品编码、记录单号；兼容保留现有班组／关联单据项。日期属支持类型与操作符另行定版的扩展候选；现有“序列号”“关联单据号”的身份不能静默替换成更窄含义。名称与优先层尚未成为确认默认。
+- `inference`：统计 MVP 保留三类用途，数量是度量、原因／分类／日期／人员是属性或维度，不各自变成统计模型。需求量、上料量、领料量不天然等于实耗；工时、检验、领退料／上卸料／仓储后续分别确认口径及动作。检验字段定义不证明完整报表消费链，也不证明 COMPLETED 就是合格。
+- `secondary-reference`：既有 `form-projection-gct-report-reference.md` 只作定位索引；上述主干事实本轮已回到原始文件核对。研究表关于其他消费者的精确定位作为主开发来源审查索引，不扩大本体自身已读范围。
+- 管理员查找目录 CRUD、动态查询条件、定义历史兼容、独立索引状态／更新、系统行身份与上下文带入均没有因本次研究完成。保留 Q12、Q15–Q17、目录类型／操作符／生命周期／多条件范围／历史补索引等未决项，A12 继续延期，自定义业务报表继续二期。
+
+本轮只更新知识来源索引与证据，不改业务代码、数据库、运行默认、旧绑定或快照，不把候选名单写入权威统计口径。保持 `0.3.24` 与既有 `specified/internal`；没有本体实例执行的浏览器、数据库、迁移或候选项运行验收，也不继承上一阶段质量结果为本次研究通过证明。
