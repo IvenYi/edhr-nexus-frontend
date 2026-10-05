@@ -6,8 +6,6 @@ import { Box, Button, Checkbox, Divider, IconButton, MenuItem, Stack, TextField,
 import { useRef, useState } from 'react';
 import FieldTypeIcon from './FieldTypeIcon';
 import PropertyFormRenderer from './PropertyFormRenderer';
-import FieldProjectionConfig from './FieldProjectionConfig';
-import SubTableProjectionConfig from './SubTableProjectionConfig';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { isCellDisplayNode } from '../registry/commonComponentRegistry';
@@ -743,7 +741,6 @@ export default function DesignerInspector() {
   const selectedNode = useTemplateDesignerStore((state) => state.getSelectedNode());
   const selectedSubTableGroupNodeId = useTemplateDesignerStore((state) => state.selectedSubTableGroupNodeId);
   const [draggingOptionIndex, setDraggingOptionIndex] = useState<number | null>(null);
-  const [inspectorMode, setInspectorMode] = useState<'field' | 'projection'>('field');
   const draggingOptionIndexRef = useRef<number | null>(null);
 
   if (!selectedNode) {
@@ -781,11 +778,6 @@ export default function DesignerInspector() {
   const fieldType = boundField?.type ?? 'text';
   const fieldTypeDefinition = getFieldTypeDefinition(fieldType);
   const fieldDisplayName = boundField?.name || readText(selectedNode.props?.label, fieldTypeDefinition.label);
-  const projectionTableId = selectedNode.bindings?.subTableId ?? document?.model.fields.find((field) =>
-    field.type === 'subTable' && Array.isArray(field.typeConfig.columns)
-      && (field.typeConfig.columns as ModelField[]).some((column) => column.id === boundField?.id))?.id;
-  const canConfigureProjection = boundField && (['text', 'number', 'singleSelect', 'subTable'].includes(boundField.type)
-    || (boundField.type === 'reference' && boundField.typeConfig.sourceType === 'material'));
   const displayMode = readText(bindings.displayMode, 'text');
   const isSubTableGroupSelected = selectedNode.type === 'sub-table'
     && fieldType === 'subTable'
@@ -2262,13 +2254,7 @@ export default function DesignerInspector() {
         },
       }}
     >
-      {canConfigureProjection && <Stack direction="row" spacing={0.5} sx={{ borderBottom: '1px solid #e4e7ed', py: 1.5, mx: -2, px: 2, flexShrink: 0, position: 'sticky', top: 0, zIndex: 1, bgcolor: '#fff' }}>
-        <Button size="small" variant={inspectorMode === 'field' ? 'contained' : 'text'} sx={{ flex: 1, minWidth: 0, whiteSpace: 'nowrap' }} onClick={() => setInspectorMode('field')}>字段设置</Button>
-        <Button size="small" variant={inspectorMode === 'projection' ? 'contained' : 'text'} sx={{ flex: 1, minWidth: 0, whiteSpace: 'nowrap' }} onClick={() => setInspectorMode('projection')}>查找与统计</Button>
-      </Stack>}
-      {canConfigureProjection && inspectorMode === 'projection'
-        ? boundField.type === 'subTable' ? <SubTableProjectionConfig field={boundField} /> : <FieldProjectionConfig field={boundField} tableId={projectionTableId} />
-        : renderFieldSections()}
+      {renderFieldSections()}
     </Stack>
   );
 }

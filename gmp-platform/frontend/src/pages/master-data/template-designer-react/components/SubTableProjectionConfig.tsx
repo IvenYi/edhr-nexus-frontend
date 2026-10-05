@@ -5,7 +5,7 @@ import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import { acceptsProjectionAttribute, projectionConfigurationIssues, projectionSourceSummary, useProjectionCatalog } from '../utils/projectionConfiguration';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 
-export default function SubTableProjectionConfig({ field }: { field: ModelField }) {
+export default function SubTableProjectionConfig({ field, showIdentity = true }: { field: ModelField; showIdentity?: boolean }) {
   const document = useTemplateDesignerStore(state => state.document);
   const setBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
   const { data: catalog, isPending, isError, refetch } = useProjectionCatalog();
@@ -33,7 +33,7 @@ export default function SubTableProjectionConfig({ field }: { field: ModelField 
     }
   };
   return <Stack spacing={2}>
-    <Box><Typography fontWeight={600}>{field.name} · 子表</Typography><Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>选择列的含义，配置对每一行生效，无需逐行建立记录组。</Typography></Box>
+    <Box>{showIdentity && <Typography fontWeight={600}>{field.name} · 子表</Typography>}<Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>选择列的含义，配置对每一行生效，无需逐行建立记录组。</Typography></Box>
     {isPending && <Typography variant="body2" color="text.secondary">正在加载可用查找项与业务用途…</Typography>}
     {isError && <Alert severity="error" action={<Button size="small" onClick={() => void refetch()}>重试</Button>}>用途目录加载失败</Alert>}
     <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>

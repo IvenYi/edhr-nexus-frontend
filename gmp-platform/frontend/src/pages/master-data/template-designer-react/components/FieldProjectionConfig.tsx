@@ -5,7 +5,7 @@ import type { ModelField, ProjectionBinding } from '../types/model';
 import { acceptsProjectionAttribute, projectionConfigurationIssues, projectionSourceSummary, useProjectionCatalog } from '../utils/projectionConfiguration';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 
-export default function FieldProjectionConfig({ field, tableId }: { field: ModelField; tableId?: string }) {
+export default function FieldProjectionConfig({ field, tableId, showIdentity = true }: { field: ModelField; tableId?: string; showIdentity?: boolean }) {
   const document = useTemplateDesignerStore(state => state.document);
   const setBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
   const { data: catalog, isPending, isError, refetch } = useProjectionCatalog();
@@ -53,7 +53,7 @@ export default function FieldProjectionConfig({ field, tableId }: { field: Model
   };
   return <Stack spacing={2}>
     <Box>
-      <Typography fontWeight={600}>{field.name}</Typography>
+      {showIdentity && <Typography fontWeight={600}>{field.name}</Typography>}
       <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>按需要选择用途，填报方式保持原样。{tableId ? '同一列对各行生效。' : ''}</Typography>
     </Box>
     {isPending && <Typography variant="body2" color="text.secondary">正在加载可用查找项与业务用途…</Typography>}

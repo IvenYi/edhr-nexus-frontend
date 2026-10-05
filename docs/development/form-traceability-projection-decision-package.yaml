@@ -7,6 +7,7 @@ decisionPackage:
   # 同日整体补查：直接核对冠骋前端设计器8种追溯/21种业务字段和后端41种注册声明，补字典选项/取值来源/动作分层；候选非运行默认，未新增字段类型、统计规则或Q17答案。
   # 同日追加：查找与追溯、业务统计是并列可选任务，可仅其一/两者/都不配；部分字段可配置生产上下文自动带入。统计归属独立来自实际执行上下文。Q15-Q17保留独立索引时机、结果页面及字段带入生命周期，当前formTrace完成路径不替未来需求定版。
   # 首期来源形态补充确认：子表是交互设计重点，但首期也覆盖主表多个分散字段组成一条业务明细；子表优先不等于仅交付子表。具体交互与其他运行契约继续按对应未决项处理。
+  # 同日用户确认独立侧栏：查找与统计作为画布内同级入口；保留当前选择、同一配置与统一保存，不跳到脱离画布的整页。本增量不实现目录CRUD或改变Q12/Q15-Q17。
   confirmed:
     concepts: []
     relationships: []
@@ -284,6 +285,23 @@ decisionPackage:
           customerOwnedBusinessModelsConfirmed: false
           arbitraryFormulaAndCrossSourceJoinConfirmed: false
         sourceReferences: [DEC-0075-21, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.independent-canvas-panel
+        name: 同一画布内独立查找与统计侧栏
+        status: specified
+        trigger: form-projection.designer-interaction
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: designer-panel-scope
+          entryLevel: canvas-side-rail
+          preserveSelectedSource: true
+          sharedConfigurationAndSave: true
+          fullPageNavigation: false
+          sourceShapes: [subtable, scattered-main-form-fields]
+        sourceReferences: [DEC-0075-22, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
     executionContracts: []
   inferred:
     - id: inference.form-projection.designer-field-preset-layers
@@ -308,7 +326,7 @@ decisionPackage:
       relatedIds: [DEC-0075-11, DEC-0075-13]
     - id: inference.form-projection.progressive-configuration-order
       statement: 建议画布加轻量侧栏，选字段后选用途并引导补齐同一业务记录所需字段，集中入口默认收起详细来源；用途配置模式区分布局编辑，提供单条与子表逐行预览。
-      rationale: 画布优先与渐进展示已确认；具体侧栏、模式、选项顺序和逐行预览仍为建议，未回复不当作确认，尚无客户使用频率数据。
+      rationale: 画布优先与渐进展示已确认，DEC-0075-22进一步确认画布内独立同级侧栏及选择/配置/保存连续性；其余选项顺序、引导和客户使用频率仍缺少试用证据。
       relatedIds: [design-rule.form-projection.optional-use]
     - id: inference.form-projection.purpose-owned-business-implementation
       statement: 建议通用配置与投影基础流程加用途独立业务实现，普通新用途主要加定义、业务代码和测试并少改公共页面；用途按业务事实定义，新报表优先复用已有事实。
@@ -343,6 +361,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: independent-canvas-projection-panel
+        change: 将字段配置中的查找统计模式拆为同一画布独立侧栏；切换不改选择，选新来源保持用途面板，沿用共享映射及保存/撤销。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
       - area: designer-field-source-coverage
         change: 补齐冠骋设计器追溯/业务字段原始入口、后端注册声明、结论字典和默认/引用取值链的总体来源表，区分显示条件、候选与已实现。
         evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md]
@@ -441,7 +462,7 @@ decisionPackage:
       - 查找目录的支持类型/操作符、定义生命周期与历史兼容、多条件匹配范围及历史补索引仍待设计。截图中的文本精确/单选先行与技术建议不自动提升为已确认运行规则。自定义报表二期的指标组合/权限/布局细则及客户自建模型Q13没有定版。
       - 同日追加Q15-Q17：独立查找索引状态范围及生效/更新、相关记录证据与业务报表结果页、生产上下文字段带入生命周期和多设备策略。查找命中保留信息类型/字段来源/实例位置，同字符串不同类型不混查，所有相关限已有权限。
       - 当前原始源码只证明formTrace沿COMPLETED进入binding批次并只查询SUCCEEDED结果，不形成统计合计；独立索引未来时机不可仅从业务统计完成时机推出。字段自动带入的已实现/缺口见主设计18节，不把执行context或普通默认值当成带入闭环。
-      - 2026-10-03新增六项未来待定：表头共享字段、具体侧栏与模式、同事件跨表单关联、稳定行标识、客户自建模型、下一阶段第一期范围；见主设计Q9-Q14和open-questions，不将未回复建议写成确认。
+      - 2026-10-03曾新增Q9-Q14六项未来待定；其后Q14首期范围与Q10同一画布独立侧栏入口已分别收敛，其余表头共享、跨表单关联、稳定行标识、客户自建模型及未确认交互细节仍以open-questions为准，不将未回复建议写成确认。
       - 开发前原始源码核对发现整子表入口缺失及仅一行模拟；本轮补齐上述交互，实际浏览器和独立质量结果另行登记。v1非空唯一rowKeyFieldId仍必需，系统行身份方案待用户回答，不擅自改变旧解释契约；表头共享与同事实总数加明细重计边界尚未新增实现。
       - Q3长期记录本、Q4不良件数与缺陷次数、Q6自由文本身份解析不属于本轮实现范围；最终产出数量来源已确认，但批次/工单联动仍待实现。
       - A12受控修订作废及规则重建按用户确认暂缓；首次最终来源修订固定为1。
@@ -460,8 +481,23 @@ decisionPackage:
         responsibility: 首次执行或后续挂接时校验并保存配置快照、真实执行上下文、最终完成事件与来源权限。
       - owner: report-and-dhr
         responsibility: 授权查询及沿实际证据关系导航，MVP预设统计展示与二期报表扩展边界；不改写来源记录或决定生产归属。
-  # affectedFiles保留同一切片的历史实现及后续计划；本次预置项复核增量仅研究及证据文档，不改运行目录、统计口径或数据库。
+  # affectedFiles保留同一切片的历史实现及后续计划；最新增量仅独立画布侧栏、选择联动及对应验证，不改运行目录、统计口径或数据库。
   affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      changeType: create
+      reason: 独立用途面板解析当前字段/子表并复用原来源配置，提供明确的选择范围和空态。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx
+      changeType: update
+      reason: 查找与统计同级入口、可访问标签及共享画布侧栏滚动。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx
+      changeType: update
+      reason: 用途模式下点选字段或子表不强制切回字段配置。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx
+      changeType: update
+      reason: 直接输入节点及子表标识的选择回调也须保持用途面板；以实际画布点击验证，不仅验证store选择动作。
+    - path: gmp-platform/frontend/scripts/test-projection-panel.mjs
+      changeType: create
+      reason: 聚焦选择保留、用途配置撤销及切换后共享状态。
     - path: docs/development/form-projection-preset-source-review-2026-10-05.md
       changeType: create
       reason: 冠骋原始字段与消费者复核、当前目录缺口、候选清单及来源指纹，区分事实和建议。
@@ -574,6 +610,11 @@ decisionPackage:
       changeType: read-only
       reason: 核对现有元数据查询与来源权限。
   acceptanceScenarios:
+    - id: scenario.independent-canvas-projection-panel
+      given: 画布已选择普通字段或整子表，来源配置有未保存修改
+      when: 切换字段配置与查找统计侧栏，或在用途面板点选另一来源
+      then: 保持画布与选中位置，显示对应字段/子表用途；配置、撤销及保存共用原链路，空白或不支持的来源只显示指引，不自动启用用途。
+      evidenceRequirements: [前端聚焦测试, 浏览器主表/子表交互, 保存重开及撤销, 侧栏滚动与窄屏核对]
     - id: scenario.projection-designer-preset-source-review
       given: 用户要求总体参考冠骋表单设计器追溯与业务字段，现有目录仍固定且MVP统计维持三类
       when: 补核对原始前端入口、后端完整声明、字典初始化及默认/引用取值链

@@ -90,6 +90,10 @@ decisions:
         statement: MVP业务统计继续使用预设报表展示，不新增用户自定义报表编辑器；自定义报表放第二期，当前架构保留扩展空间，不提前实现BI、自由公式或跨来源连接引擎。二期自定义报表组合不等于客户自由创建统计模型，其指标、维度、编辑分享权限及开放范围仍待设计。此分期不取消首期子表与主表分散字段明细、查找与统计并列可选、产品维护统计口径、真实执行归属、使用时快照与历史保护、正式统计首次最终完成、来源权限、独立数据库及A12延期；Q14仅进一步收敛本条所列分期边界，其他未定运行契约不因此获得默认答案。
         status: specified
         visibility: internal
+      - id: DEC-0075-22
+        statement: 查找与统计采用同一表单画布内的独立侧栏入口，与字段配置同级；不以离开画布的独立整页作为日常配置入口。切换侧栏保留所选字段或子表及画布定位，共用原有来源配置、保存和撤销；用途面板显示当前配置范围。子表与主表分散字段两类来源继续覆盖，集中总览承担核对和预览。此确认仅收敛Q10的入口组织与上下文连续性，不证明客户易用性已经验证，也不决定目录CRUD、行身份、独立索引、上下文带入生命周期或新增统计口径；其余规则与未决项继续适用。
+        status: specified
+        visibility: internal
     supersedes: []
     evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
     acceptanceScenarios:
@@ -177,4 +181,9 @@ decisions:
         given: MVP已有产品维护的业务统计口径及预设报表，后续希望客户组合自定义报表
         when: 核对本轮MVP交付与二期扩展范围
         then: MVP保留预设报表而不加入自定义报表编辑器，架构留二期扩展空间；不重复生成事实、不改写旧快照，不把二期报表组合解释为客户任意建立统计模型或已完成二期能力
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-independent-canvas-panel
+        given: 制表人在同一画布选择普通字段或子表，并有当前来源配置的未保存修改
+        when: 在字段配置与独立查找统计侧栏间切换，或在用途面板选择另一来源
+        then: 预期保留画布选择及定位，面板明确当前范围，沿同一配置、保存和撤销处理修改；不自动启用用途或跳转离开画布。此为本次交互验收要求，不证明运行测试、完整MVP或客户易用性已经通过
         evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]

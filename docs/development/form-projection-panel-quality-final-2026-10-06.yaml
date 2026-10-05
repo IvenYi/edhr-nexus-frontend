@@ -1,0 +1,223 @@
+qualityResult:
+  result: passed
+  baseCommit: 87b0134a89871a3968dbd8bcb7ba00deb2c62df9
+  headCommit: 87b0134a89871a3968dbd8bcb7ba00deb2c62df9
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-interaction-2026-10-05.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-handoff-2026-10-03.md
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-projection-panel-quality-2026-10-06.yaml
+      - docs/development/form-projection-panel-quality-final-2026-10-06.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/open-questions.yaml
+      - gmp-platform/frontend/scripts/verify-template-designer-react.mjs
+      - gmp-platform/frontend/scripts/test-projection-panel.mjs
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/types/document.ts
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - docs/development/form-projection-panel-quality-final-2026-10-06.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: panel-final.requirements-and-source
+      required: true
+      category: requirements
+      description: 全新实例独立读取项目契约、DEC-0075-22、未决项、L2影响分析与当前全部增量，核对同级侧栏、两种来源、共享选择配置及正常布局回归边界。
+      method: inspection
+      command: git diff HEAD; inspect ProjectionInspector, CanvasTab, CanvasNodeRenderer, CanvasSheetWorkspace, store and decisionPackage
+      outcome: passed
+      evidence:
+        - DEC-0075-22规定同一画布独立入口及配置上下文连续性；没有新增整页路由、第二套model.projection或保存接口。
+        - CanvasNodeRenderer两处、CanvasSheetWorkspace三处及store单元格选择resolver均保留已激活的projection侧栏；非projection选择仍沿原字段配置/字段管理路径。
+        - 新面板复用原FieldProjectionConfig和SubTableProjectionConfig，仅去除重复来源标题；共享setProjectionBindings与既有undo/redo和保存状态。
+        - Q12、Q15-Q17、目录CRUD、自定义报表二期、真实归属、使用时冻结及A12延期没有被本增量关闭或改写。
+    - id: panel-final.focused-unit
+      required: true
+      category: unit
+      description: 独立执行三项侧栏状态测试及三项既有模拟预览测试。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-panel.mjs scripts/test-projection-preview.mjs
+      outcome: passed
+      evidence:
+        - tests 6; pass 6; fail 0; skipped 0
+        - 切换保留来源/文档/脏状态/编辑历史；点选主表/子表/空白保持用途模式；来源编辑支持共享撤销重做。
+        - 主表与子表行取值隔离、空数量保留null、草稿不参与预览及行数变化不抹掉其他行均通过。
+    - id: panel-final.static-designer-check
+      required: true
+      category: regression
+      description: 独立执行现有设计器静态契约校验和diff空白检查。
+      method: command
+      command: cd gmp-platform/frontend && npm run verify:template-designer-react; git diff --check
+      outcome: passed
+      evidence: [verify-template-designer-react passed, git diff --check退出码0]
+    - id: panel-final.build
+      required: true
+      category: regression
+      description: 本实例独立执行前端目标构建，不借用主开发或历史构建结果。
+      method: command
+      command: cd gmp-platform/frontend && npm run build > /tmp/edhr-projection-panel-final-quality-build.log 2>&1
+      outcome: passed
+      evidence:
+        - /tmp/edhr-projection-panel-final-quality-build.log
+        - 退出码0；built in 5.85s；现有大bundle提示不构成构建失败。
+    - id: panel-final.knowledge-formal
+      required: true
+      category: ontology
+      description: 本实例独立运行正式知识校验，核对追加决定、证据及历史未决边界。
+      method: automated-test
+      command: cd gmp-platform/backend && mvn -Dexec.skip=true -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-projection-panel-final-quality-knowledge.log
+        - Tests run 59; Failures 0; Errors 0; Skipped 0; BUILD SUCCESS
+        - 知识仍为0.3.24，DEC-0075-22为specified/internal；无新增运行规则、事实或执行契约。
+    - id: panel-final.real-source-selection
+      required: true
+      category: e2e
+      description: 系统Chrome真实鼠标核对独立模板的普通字段、子表列与可见整子表入口，复验首轮失败路径及相邻选择行为。
+      method: browser
+      command: PYTHONUNBUFFERED=1 /tmp/edhr-projection-panel-venv/bin/python /tmp/projection-panel-final-qa.py
+      outcome: passed
+      evidence:
+        - output/projection-panel-final-browser.log
+        - output/projection-panel-final-20261006/evidence.json
+        - output/projection-panel-final-20261006/main-dual-use-after-undo-redo.png
+        - output/projection-panel-final-20261006/subtable-dual-use.png
+        - output/projection-panel-final-20261006/lookup-only.png
+        - output/projection-panel-final-20261006/unsupported-datetime.png
+        - 独立虚构模板PROJECTION-PANEL-FINAL-20261006仅在edhr_form_projection经POST创建及PUT design初始化；没有修改主开发QA、原UX或其他样本。
+        - 输入节点通过可见边界中心mouse.click命中画布代理选择层，不使用force；整子表先移到列区域，确认label-bar opacity=1，再正常点击上料明细。
+        - 主表领料批号与子表物料批号同时支持查找和既有实耗用途；设备字段仅配置查找，没有误启用业务统计。
+        - 无选择有明确指引；合法datetime显示暂不支持说明且不提供用途勾选；切换/关闭重开侧栏保留当前来源。
+        - 撤销重做恢复同一配置，按既有清选择行为重新点选后映射恢复；新增未完整报废用途保持草稿，启用控件禁用。
+        - 本实例捕获pageerror为0；未把这项结果扩大为所有页面console零警告。
+    - id: panel-final.save-reopen-audit
+      required: true
+      category: audit
+      description: 独立通过真实页面保存、重开与只读数据库查询核对持久化和既有审计链。
+      method: browser
+      command: /tmp/edhr-projection-panel-venv/bin/python /tmp/projection-panel-final-qa.py; readonly psql query on own template and audit_event
+      outcome: passed
+      evidence:
+        - output/projection-panel-final-20261006/saved-reopened.png
+        - 真实PUT design返回HTTP200且业务code200，持久化5项绑定；主表/子表查找、两项实耗与报废草稿保存重开一致。
+        - own templateId 382594280864804864; versionId 382594280868999168
+        - audit_event 382596081961857024; FORM_TEMPLATE_VERSION/382594280868999168; UPDATE/保存设计; 2026-10-06 00:33:34.231212
+    - id: panel-final.overview-and-preview
+      required: true
+      category: api
+      description: 实际核对总览使用同一配置，执行两行模拟预览并检查响应及模板没有被模拟值修改。
+      method: browser
+      command: /tmp/edhr-projection-panel-venv/bin/python /tmp/projection-panel-final-qa.py
+      outcome: passed
+      evidence:
+        - output/projection-panel-final-20261006/overview-same-config.png
+        - output/projection-panel-final-20261006/preview-two-distinct-rows.png
+        - output/projection-panel-final-20261006/evidence.json
+        - 总览按主表/上料明细回显相同来源与报废草稿；实际POST projection-preview返回HTTP200、业务code200及6条明细。
+        - 子表QA-ROW-1/QA-ROW-2分别形成数量11/22，批号QA-TABLE-LOT-1/2独立，草稿binding不进入结果。
+        - 添加第三模拟行再移除末行，前两行保持；预览前后该模板model_design_json逐字一致，未创建生产记录。
+    - id: panel-final.scroll-responsive-visual
+      required: true
+      category: visual
+      description: 对独立滚动和1280/768/390宽度的用途侧栏进行真实交互、几何检查及像素查看，按项目既有字体、颜色和控件规范核对。
+      method: browser
+      command: /tmp/edhr-projection-panel-venv/bin/python /tmp/projection-panel-final-qa.py; view_image of generated screenshots
+      outcome: passed
+      evidence:
+        - output/projection-panel-final-20261006/draft-and-sidebar-scroll.png
+        - output/projection-panel-final-20261006/responsive-1280.png
+        - output/projection-panel-final-20261006/responsive-768.png
+        - output/projection-panel-final-20261006/responsive-390.png
+        - 主表草稿面板高度800、内容970，鼠标滚轮后scrollTop170；当前来源标题保持可见。
+        - 三个宽度下侧栏内容clientWidth和scrollWidth均249，右边界299，不超出视口；内容高度分别700/669/627、scrollHeight831，均可实际滚动。
+        - 各宽度关闭侧栏再从真实入口重开，保留当前子表；白色面板、既有MUI图标、紧凑控件与轻边框没有引入新视觉体系。
+        - 本次不是独立列表页或普通表单弹窗，不要求给画布套ListTableShell或FormDialog外壳。
+    - id: panel-final.permission-and-runtime-boundary
+      required: true
+      category: security
+      description: 源码核对本增量继续使用原设计保存权限/审计与运行快照边界；不把无改动边界核对写成新的权限或生产E2E测试。
+      method: inspection
+      command: git diff --name-only; inspect TemplateModelingController save/preview authorization and existing snapshot entry points
+      outcome: passed
+      evidence:
+        - 工作树无后端、迁移、权限、生产状态或快照实现改动，当前设计保存与预览仍要求master-data.form-templates。
+        - 未新增发布冻结、保存即检索索引、业务动作、统计默认或客户目录接口；使用时START/ATTACH_FORM快照继续沿原链路。
+        - 本次没有重跑无改动的139项后端回归、来源授权负向场景或生产完成链；采用源码边界核对、实际设计审计及正式来源指纹匹配当前增量风险。
+    - id: panel-final.database-isolation
+      required: true
+      category: database
+      description: 独立库专用样本及正式投影来源指纹核对；不运行无变更迁移，不连接edhr_dev。
+      method: query
+      command: "psql -X -U edhr -d edhr_form_projection -Atc \"select count(*),md5(string_agg(source_json::text,'|' order by id)) from form_projection_batch;\""
+      outcome: passed
+      evidence:
+        - 开始与结束均为4|07ea8728d0f057deb0bb7fe6f302ef4c；原4条正式投影来源保持不变。
+        - 服务为localhost3007/8087、projection profile；所有本实例SQL显式指定edhr_form_projection，仅写独立虚构模板。
+    - id: panel-final.documentation-increment
+      required: true
+      category: documentation
+      description: 核对主开发最后追加的真实验证记录、撤销/窄屏边界及决策包历史待定表述，与当前实现及本实例证据一致。
+      method: inspection
+      command: git diff -- docs; inspect current interaction/handoff/running documents and decisionPackage
+      outcome: passed
+      evidence:
+        - 交互记录新增2026-10-06侧栏阶段，历史嵌套模式证据与当前增量分开；撤销清选择及390仅侧栏范围明确披露。
+        - 决策包Q9-Q14历史缺口说明已经补充Q10入口和Q14分期部分收敛；Q12/Q15-Q17及目录、预置候选和整体MVP缺口保留。
+        - 完整L2影响分析覆盖配置、历史兼容、快照、审计、权限和测试边界，扩展所有权沿template/projection/runtime/report模块保留。
+  findings:
+    - id: QF-PANEL-001
+      severity: medium
+      scope: designer-projection-selection
+      summary: 首轮直接字段选择强制切回字段配置的问题，已由主开发修复并经本全新实例独立复验解决。
+      reproductionSteps:
+        - 在3007打开本实例虚构模板PROJECTION-PANEL-FINAL-20261006的V1设计。
+        - 从左侧查找与统计入口进入，正常鼠标点击画布主表领料批号、子表列物料批号和可见整子表标签。
+        - 检查侧栏aria-pressed与当前来源，再切换/关闭重开侧栏并保存重开。
+      expectedResult: 继续停留查找与统计，当前来源随选择更新，共享来源配置不丢失。
+      actualResult: 最终工作树所有复验路径均保持projection；主表、子表列与整子表上下文及保存映射正确。
+      evidence:
+        - docs/development/form-projection-panel-quality-2026-10-06.yaml
+        - output/projection-panel-final-20261006/evidence.json
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: output/projection-panel-final-browser.log
+        - type: screenshot
+          reference: output/projection-panel-final-20261006/subtable-dual-use.png
+        - type: screenshot
+          reference: output/projection-panel-final-20261006/main-dual-use-after-undo-redo.png
+  residualRisks:
+    - id: panel-final.customer-usability
+      description: 当前通过工程验证；尚无客户制表人员首次理解、配置耗时或使用频率的试用证据。
+      impact: 不能宣称低学习成本已经得到客户验证。
+      mitigation: 按Q10剩余细节安排代表性子表和主表配对任务试用。
+    - id: panel-final.desktop-mobile-scope
+      description: 390px验证范围是用途侧栏的可见入口、边界、重开与滚动；原桌面设计器顶栏仍有手机宽度限制。
+      impact: 侧栏通过不等于整个设计器已完成手机适配。
+      mitigation: 日常制表继续使用桌面；完整移动适配需要独立明确范围。
+    - id: panel-final.deferred-mvp-contracts
+      description: 管理员查找目录与动态查询、系统行身份Q12、独立索引Q15、结果页Q16、上下文带入Q17、最终产出联动及A12仍未覆盖。
+      impact: 本报告仅验收独立侧栏增量，不证明完整MVP、受控修订作废或生产发布。
+      mitigation: 保持文档分期和未决项，在对应实现前收敛运行契约及验收。
+    - id: panel-final.unchanged-runtime-tests
+      description: 本实例未重演来源授权负向、审批签署完成、生产降级或数据库迁移；无相关实现改动。
+      impact: 不可把本次设计器浏览器通过当成这些运行链的新验证证明。
+      mitigation: 后续涉及这些边界时执行相应后端/真实生产链回归；保留已有历史证据时点。
+  blockingConditions: []

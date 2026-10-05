@@ -272,11 +272,13 @@ export default function CanvasNodeRenderer({
       onNodeSelect?.();
       if (cellRange) {
         setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l });
-        const activeRail = node.type === 'sub-table' ? 'fields' : 'config';
-        if (activeRail === 'config') {
-          setActiveCanvasRail('config');
-        } else {
-          setActiveCanvasRail(activeRail);
+        if (useTemplateDesignerStore.getState().activeCanvasRail !== 'projection') {
+          const activeRail = node.type === 'sub-table' ? 'fields' : 'config';
+          if (activeRail === 'config') {
+            setActiveCanvasRail('config');
+          } else {
+            setActiveCanvasRail(activeRail);
+          }
         }
       }
       setSelectedNodeId(node.id);
@@ -286,7 +288,7 @@ export default function CanvasNodeRenderer({
         setSelectedRange(cellRange, { row: cellRange.t, col: cellRange.l });
       }
       setSelectedNodeId(node.id);
-      setActiveCanvasRail('config');
+      if (useTemplateDesignerStore.getState().activeCanvasRail !== 'projection') setActiveCanvasRail('config');
     };
 
     return (

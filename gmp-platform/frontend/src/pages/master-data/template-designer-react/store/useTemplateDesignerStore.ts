@@ -1464,7 +1464,9 @@ function selectionCrossesSubTableBoundary(nodes: CanvasNode[], targetRange: Canv
 function resolveSelectedCellRail(
   selectedFieldNode: CanvasNode | null,
   selectedRange: CanvasSelectionRange | null,
+  activeRail: TemplateDesignerCanvasRailKey,
 ) {
+  if (activeRail === 'projection') return 'projection';
   if (selectedFieldNode) {
     return selectedFieldNode?.type === 'sub-table' ? 'fields' : 'config';
   }
@@ -1995,7 +1997,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedRange,
       selectedNodeId: selectedFieldNodeId,
       selectedSubTableGroupNodeId: null,
-      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange),
+      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange, state.activeCanvasRail),
       isCanvasSidebarVisible: true,
     };
   }),
@@ -2016,7 +2018,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       } : null),
       selectedNodeId: selectedFieldNodeId,
       selectedSubTableGroupNodeId: null,
-      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, normalizedSelection),
+      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, normalizedSelection, state.activeCanvasRail),
       isCanvasSidebarVisible: true,
     };
   }),

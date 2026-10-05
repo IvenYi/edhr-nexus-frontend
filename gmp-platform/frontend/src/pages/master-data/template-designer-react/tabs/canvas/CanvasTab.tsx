@@ -1,6 +1,7 @@
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import GridViewOutlined from '@mui/icons-material/GridViewOutlined';
+import ManageSearchOutlined from '@mui/icons-material/ManageSearchOutlined';
 import TuneRounded from '@mui/icons-material/TuneRounded';
 import ViewListOutlined from '@mui/icons-material/ViewListOutlined';
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
@@ -10,6 +11,7 @@ import CanvasPageThumbnails from '../../components/canvas/CanvasPageThumbnails';
 import CanvasSheetWorkspace from '../../components/canvas/CanvasSheetWorkspace';
 import { WordTableCellStyleProvider } from '../../components/canvas/WordTableCellStyleContext';
 import DesignerInspector from '../../components/DesignerInspector';
+import ProjectionInspector from '../../components/ProjectionInspector';
 import DesignerSidebar from '../../components/DesignerSidebar';
 import ComponentLibrary from '../../components/ComponentLibrary';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
@@ -19,6 +21,7 @@ const sideRailItems = [
   { id: 'fields', title: '字段管理', tooltip: '字段', icon: <ViewListOutlined fontSize="small" /> },
   { id: 'grid', title: '组件管理', tooltip: '组件', icon: <GridViewOutlined fontSize="small" /> },
   { id: 'config', title: '字段配置', tooltip: '配置', icon: <TuneRounded fontSize="small" /> },
+  { id: 'projection', title: '查找与统计', tooltip: '查找与统计', icon: <ManageSearchOutlined fontSize="small" /> },
 ] as const;
 
 const defaultPanelMinWidth = 250;
@@ -42,8 +45,8 @@ export default function CanvasTab() {
   const panelRail = activeRail === 'config' && !shouldShowConfigRail ? 'thumbnails' : activeRail;
   const activeRailItem = visibleSideRailItems.find((item) => item.id === panelRail) ?? visibleSideRailItems[0];
   const activePanelTitle = panelRail === 'config' && selectedSubTableGroupNodeId ? '分组配置' : activeRailItem.title;
-  const activePanelMinWidth = panelRail === 'config' ? configPanelMinWidth : defaultPanelMinWidth;
-  const activePanelMaxWidth = panelRail === 'config' ? configPanelMaxWidth : defaultPanelMaxWidth;
+  const activePanelMinWidth = ['config', 'projection'].includes(panelRail) ? configPanelMinWidth : defaultPanelMinWidth;
+  const activePanelMaxWidth = ['config', 'projection'].includes(panelRail) ? configPanelMaxWidth : defaultPanelMaxWidth;
   const effectiveSidebarWidth = Math.max(activePanelMinWidth, Math.min(activePanelMaxWidth, sidebarWidth));
 
   useEffect(() => {
@@ -89,6 +92,8 @@ export default function CanvasTab() {
           {visibleSideRailItems.map((item) => (
             <Tooltip key={item.id} title={item.tooltip} placement="right">
               <Button
+                aria-label={item.title}
+                aria-pressed={isSidebarVisible && panelRail === item.id}
                 onClick={() => {
                   setActiveRail(item.id);
                   setIsSidebarVisible(true);
@@ -144,7 +149,7 @@ export default function CanvasTab() {
                     <CloseOutlined fontSize="small" />
                   </Button>
                 </Box>
-                {panelRail === 'fields' ? <DesignerSidebar /> : panelRail === 'config' ? <DesignerInspector /> : panelRail === 'grid' ? <ComponentLibrary /> : (
+                {panelRail === 'fields' ? <DesignerSidebar /> : panelRail === 'config' ? <DesignerInspector /> : panelRail === 'projection' ? <ProjectionInspector /> : panelRail === 'grid' ? <ComponentLibrary /> : (
                   <Stack sx={{ p: 2.5, color: '#98a2b3', fontSize: 13 }}>
                     当前面板正在迁移中。
                   </Stack>

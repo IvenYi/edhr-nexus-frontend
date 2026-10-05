@@ -759,7 +759,7 @@ if (!storeFile.includes('create<TemplateDesignerStore>')) failures.push('useTemp
 if (!storeFile.includes('setActiveTab')) failures.push('useTemplateDesignerStore.ts: missing setActiveTab action');
 if (!storeFile.includes('markSaved')) failures.push('useTemplateDesignerStore.ts: missing markSaved action');
 if (!storeFile.includes("activeTab: 'canvas'")) failures.push('useTemplateDesignerStore.ts: missing default canvas tab');
-if (!documentTypes.includes("export type TemplateDesignerCanvasRailKey = 'thumbnails' | 'fields' | 'grid' | 'config';")) failures.push('document.ts: canvas side rail keys must use config for the fourth rail');
+if (!documentTypes.includes("export type TemplateDesignerCanvasRailKey = 'thumbnails' | 'fields' | 'grid' | 'config' | 'projection';")) failures.push('document.ts: canvas must expose independent configuration and projection rails');
 if (!storeFile.includes('activeCanvasRail: TemplateDesignerCanvasRailKey')) failures.push('useTemplateDesignerStore.ts: missing active canvas side rail state');
 if (!storeFile.includes('isCanvasSidebarVisible: boolean')) failures.push('useTemplateDesignerStore.ts: missing canvas side panel visibility state');
 if (!storeFile.includes('setActiveCanvasRail: (rail: TemplateDesignerCanvasRailKey) => void')) failures.push('useTemplateDesignerStore.ts: missing canvas side rail setter');
@@ -1914,7 +1914,7 @@ if (!storeFile.includes('findFirstCellFieldNodeInRange(currentPage.nodes, normal
 if (!storeFile.includes('? rangesEqual(cellRange, normalizedTarget)')) failures.push('useTemplateDesignerStore.ts: selecting a sub-table cell must not select the whole sub-table frame unless the ranges match exactly');
 if (!storeFile.includes('findSubTableNodeInRange')) failures.push('useTemplateDesignerStore.ts: selected sub-table cell context must be resolved separately from selected field nodes');
 if (!storeFile.includes('getSubTableFieldForSelectedRange')) failures.push('useTemplateDesignerStore.ts: store must expose the sub-table field for the selected cell range');
-if (!storeFile.includes('activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange)')) failures.push('useTemplateDesignerStore.ts: selecting a field-bearing cell must switch side rail without a config-to-fields flicker');
+if (!storeFile.includes('activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange, state.activeCanvasRail)')) failures.push('useTemplateDesignerStore.ts: cell selection must resolve the rail atomically while respecting projection mode');
 if (!storeFile.includes('selectedNodeId: selectedFieldNodeId')) failures.push('useTemplateDesignerStore.ts: selecting a field-bearing cell edge must select the bound field node');
 if (!canvasTypes.includes('onCellMouseDown?:')) failures.push('canvas.ts: cell-only designer renderers must expose a mouse-down bridge for range selection');
 if (!canvasTypes.includes('onCellContextMenu?:')) failures.push('canvas.ts: cell-only designer renderers must expose a context-menu bridge for cell menus');

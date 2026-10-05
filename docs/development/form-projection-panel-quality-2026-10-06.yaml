@@ -1,0 +1,144 @@
+qualityResult:
+  result: failed
+  baseCommit: 87b0134a89871a3968dbd8bcb7ba00deb2c62df9
+  headCommit: 87b0134a89871a3968dbd8bcb7ba00deb2c62df9
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-interaction-2026-10-05.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-handoff-2026-10-03.md
+      - docs/development/form-traceability-projection-running.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/open-questions.yaml
+      - gmp-platform/frontend/scripts/verify-template-designer-react.mjs
+      - gmp-platform/frontend/scripts/test-projection-panel.mjs
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/types/document.ts
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - gmp-platform/frontend/scripts/test-projection-panel.mjs
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: panel.requirements-and-source-review
+      required: true
+      category: requirements
+      description: 核对 DEC-0075-22、L2 影响分析、扩展边界及独立侧栏与原共享配置源码；发现真实节点点击仍跳出用途模式。
+      method: inspection
+      command: git diff; inspect CanvasTab, ProjectionInspector, CanvasNodeRenderer, store and decisionPackage
+      outcome: failed
+      evidence:
+        - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+        - 原首轮 CanvasNodeRenderer 两个选择回调仍无条件调用 setActiveCanvasRail('config')，store 聚焦测试未覆盖真实节点回调。
+    - id: panel.focused-tests
+      required: true
+      category: unit
+      description: 独立运行侧栏状态与预览聚焦测试，六项通过，零失败与跳过。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-panel.mjs scripts/test-projection-preview.mjs
+      outcome: passed
+      evidence:
+        - tests 6; pass 6; fail 0; skipped 0
+    - id: panel.static-designer-check
+      required: true
+      category: regression
+      description: 独立运行既有设计器静态契约检查。
+      method: command
+      command: cd gmp-platform/frontend && npm run verify:template-designer-react
+      outcome: passed
+      evidence: [verify-template-designer-react passed]
+    - id: panel.first-browser-selection
+      required: true
+      category: e2e
+      description: 系统 Chrome 与 Python Playwright 真实点击首轮直接字段选择路径。
+      method: browser
+      command: /tmp/edhr-projection-panel-venv/bin/python /tmp/projection-panel-independent-qa.py
+      outcome: failed
+      evidence:
+        - output/projection-panel-independent-20261006/QF-PANEL-001-original-observation.txt
+        - 首轮点击主表领料批号后，字段配置出现，查找统计按钮 aria-pressed=false，ProjectionInspector 卸载。
+        - 首轮截图被后续探查覆盖，故不把现存同名截图作为修复前像素证据。
+    - id: panel.partial-browser-follow-through
+      required: true
+      category: e2e
+      description: 后续探查覆盖共享配置的字段/子表列/整子表上下文、切换、查找映射、撤销重做后重新点选、真实保存及重开。运行期间主开发已修复节点回调；本实例未参与修复，这些局部结果不能代替全新 L2 最终回归。
+      method: browser
+      command: PYTHONUNBUFFERED=1 /tmp/edhr-projection-panel-venv/bin/python /tmp/projection-panel-independent-qa.py
+      outcome: passed
+      evidence:
+        - output/projection-panel-independent-20261006/browser.log
+        - output/projection-panel-independent-20261006/main-edited.png
+        - output/projection-panel-independent-20261006/column.png
+        - output/projection-panel-independent-20261006/table.png
+        - output/projection-panel-independent-20261006/saved-reopened.png
+        - 虚构模板 PROJECTION-PANEL-INDEPENDENT-20261006 通过真实创建与 PUT design 初始化，未修改主开发 QA 模板或原 UX 模板。
+        - 保存真实 PUT 返回成功；只读 SQL 确认 formTrace materialLotText=main-lot；重新加载并打开 V1 后映射仍显示。
+    - id: panel.database-boundary
+      required: true
+      category: database
+      description: 核对全部改动路径未涉及后端/迁移；仅使用独立库，正式投影来源指纹保持四条，未访问 edhr_dev。
+      method: query
+      command: "psql -X -U edhr -d edhr_form_projection -Atc \"select count(*),md5(string_agg(source_json::text,'|' order by id)) from form_projection_batch;\""
+      outcome: passed
+      evidence:
+        - 4|07ea8728d0f057deb0bb7fe6f302ef4c
+        - 与主开发交接前指纹一致，本实例只增加独立虚构设计模板。
+        - 本轮不重跑完整后端139项：未改后端/API/权限/数据库/使用时快照，正式来源指纹检查与聚焦前端验证匹配本轮风险。
+    - id: panel.knowledge-and-docs
+      required: true
+      category: documentation
+      description: 核对 DEC-0075-22、README、open-questions、运行说明和同一决策包；已确认入口与仍未决目录/运行契约分别表述，未提升成熟度。
+      method: inspection
+      command: git diff -- docs; inspect impactAnalysis and extensionStrategy
+      outcome: passed
+      evidence:
+        - 基线仍为0.3.24，DEC-0075-22为specified/internal。
+        - Q10仅收敛同级侧栏入口；Q12/Q15-Q17、目录CRUD、自定义业务报表二期及 A12 延期保留。
+        - 不新增业务模型、预置项、路由、目录接口、冻结动作或迁移，统一 model.projection 与现有保存权限路径保留。
+  findings:
+    - id: QF-PANEL-001
+      severity: medium
+      scope: designer-projection-selection
+      summary: 独立用途面板中直接点击主表字段仍切回字段配置，未保持已确认的配置上下文。
+      reproductionSteps:
+        - 在3007打开虚构模板 PROJECTION-PANEL-INDEPENDENT-20261006 的 V1设计。
+        - 点击左侧查找与统计入口，看到选择配置来源指引。
+        - 点击画布内 placeholder 为领料批号的普通输入节点。
+      expectedResult: 继续停留查找与统计，显示当前字段领料批号，并可继续配置用途。
+      actualResult: 首轮切回字段配置，查找统计 aria-pressed=false，ProjectionInspector 被卸载。
+      evidence:
+        - output/projection-panel-independent-20261006/QF-PANEL-001-original-observation.txt
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: panel.final-regression-pending
+      description: 主开发已在本轮探查期间修改 CanvasNodeRenderer；首轮 failed 保留，需未参与修复的全新实例核验最终工作树及相邻真实点击流程。
+      impact: 本文件不能作为最终质量门禁 passed 证明。
+      mitigation: 全新质量实例运行最终回归并输出独立最终报告。
+    - id: panel.uncovered-browser-cases
+      description: 本首轮未完成真实多行模拟预览、独立滚动及1280/768/390响应式验证；未独立重跑构建或知识59项正式测试，也未执行权限/生产完成等无改动运行链。
+      impact: 局部截图与聚焦单元测试不证明这些真实交互和运行链已通过。
+      mitigation: 最终实例覆盖适用浏览器场景及目标构建；无需借用历史证据冒称本轮已运行。
+    - id: panel.unsupported-fixture-gap
+      description: 本实例初始日期样本使用非合法字段类型date，被既有解析器归为text，故不把该样本当作暂不支持类型的验证或缺陷。
+      impact: 暂不支持类型指引只有本轮源码核对，尚缺有效样本真实点击证明。
+      mitigation: 最终实例使用合法datetime或signature字段验证。
+    - id: panel.preexisting-undo-selection
+      description: 原 store 撤销/重做一直清除 selectedNodeId；重新点选后可查看恢复映射。本次未改变该既有行为。
+      impact: 用户撤销后需要重新点选来源；本轮只确认共享历史及映射恢复，不声明撤销保留节点选择。
+      mitigation: 交付说明准确区分侧栏切换保留选择与既有撤销行为；后续有明确需求再调整。
+  blockingConditions: []
