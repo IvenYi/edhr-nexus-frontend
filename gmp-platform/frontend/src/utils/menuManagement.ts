@@ -12,6 +12,7 @@ function cloneSidebarModules(modules: SidebarModule[]): SidebarModule[] {
 
 const REQUIRED_SYSTEM_MANAGEMENT_CHILDREN: SidebarSubMenu[] = [
   { label: '业务字典', path: '/system/dictionaries' },
+  { label: '追溯项管理', path: '/system/form-lookup-items' },
   { label: '图标管理', path: '/system/icons' },
   { label: '系统设置', path: '/system/settings' },
 ];
@@ -290,6 +291,9 @@ export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModu
   }
 
   const children = systemManagement.children ?? [];
+  for (const child of children) {
+    if (child.path === '/system/form-lookup-items' && child.label === '查找项管理') child.label = '追溯项管理';
+  }
   const existingPaths = new Set(children.map((child) => child.path));
   const requiredChildren = REQUIRED_SYSTEM_MANAGEMENT_CHILDREN.filter((child) => !existingPaths.has(child.path));
 
@@ -527,6 +531,7 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/dhr-management/review') return 'records.dhr-review';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
+  if (path === '/system/form-lookup-items') return 'system.edit';
   if (path === '/system/icons') return 'system.icons';
   if (path === '/system/settings') return 'system.settings';
   if (path === '/system/login-logs') return 'system.login-logs';

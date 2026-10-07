@@ -47,6 +47,7 @@ export interface ModelDesignState {
   projection?: {
     version: string;
     bindings: ProjectionBinding[];
+    lookupItems?: Record<string, { name: string; type: 'text'; revision: number }>;
   };
   groups: ModelFieldGroup[];
   fields: ModelField[];

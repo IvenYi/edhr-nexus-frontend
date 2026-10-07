@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
+import com.zencas.edhr.template.service.FormLookupCatalogService;
 
 @RestController
 @RequestMapping("/api/v1/reports/form-projections")
@@ -26,6 +27,7 @@ public class FormProjectionController {
     private final ObjectMapper mapper;
     private final AuditEventRepository audits;
     private final SnowflakeIdGenerator ids;
+    private final FormLookupCatalogService lookupCatalog;
 
     public record Query(String modelId, Long objectId, String operationId, Map<String, String> filters, int page, int size, String objectNo, String operationName) {}
 
@@ -43,7 +45,8 @@ public class FormProjectionController {
         if (query.objectNo() != null && !query.objectNo().isBlank()) { where.append(" AND f.object_no=?"); args.add(query.objectNo().trim()); }
         if (query.operationName() != null && !query.operationName().isBlank()) { where.append(" AND f.operation_name=?"); args.add(query.operationName().trim()); }
         if (query.filters() != null) for (var filter : query.filters().entrySet()) {
-            if (!Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText", "unit", "reason", "category").contains(filter.getKey())
+            if (!(Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText", "unit", "reason", "category").contains(filter.getKey())
+                    || (trace && filter.getKey().startsWith("lookup_") && lookupCatalog.contains(filter.getKey())))
                     || filter.getValue() == null || filter.getValue().isBlank() || filter.getValue().length() > 512) throw invalid("筛选属性或值不受支持");
             where.append(" AND r.attributes ->> ? = ?"); args.add(filter.getKey()); args.add(filter.getValue().trim());
         }
@@ -56,7 +59,7 @@ public class FormProjectionController {
         String grouping = trace ? " GROUP BY b.id,f.id ORDER BY b.id DESC" : " ORDER BY r.id DESC";
         result.set("records", mapper.valueToTree(jdbc.query("SELECT " + recordSelect + """
                 ,f.instance_no,f.id AS instance_id,f.object_id,f.object_no,f.operation_id,f.operation_name,b.final_revision,
-                f.created_by,f.created_at,f.updated_by,f.updated_at
+                f.created_by,f.created_at,f.updated_by,f.updated_at,b.source_json->'model'->'projection'->'lookupItems' AS lookup_items
                 """ + from + where + grouping + " LIMIT ? OFFSET ?", (rs, i) -> {
             ObjectNode record = mapper.createObjectNode().put("id", rs.getString("id")).put("batchId", rs.getString("batch_id"))
                     .put("instanceId", rs.getString("instance_id")).put("instanceNo", rs.getString("instance_no"))
@@ -67,6 +70,7 @@ public class FormProjectionController {
                     .put("updatedBy", rs.getString("updated_by")).put("updatedAt", rs.getString("updated_at"));
             record.set("attributes", parse(rs.getString("attributes"))); record.set("sources", parse(rs.getString("sources")));
             record.set("hits", parse(rs.getString("hits")));
+            record.set("lookupItems", rs.getString("lookup_items") == null ? mapper.createObjectNode() : parse(rs.getString("lookup_items")));
             return record;
         }, pageArgs.toArray())));
         if (trace) { result.putArray("totals"); result.put("totalsTruncated", false); return ApiResponse.success(result); }

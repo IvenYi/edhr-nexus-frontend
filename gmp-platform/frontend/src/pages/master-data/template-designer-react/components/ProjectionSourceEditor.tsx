@@ -21,9 +21,9 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     onChange({ sources });
   };
   return <Stack spacing={1.5}>
-    <Typography variant="body2" color="text.secondary">{binding.modelId === 'formTrace' ? '选择查找项对应的来源，按填写值查找原表单。' : binding.tableId ? '配置一次列含义，每行分别形成业务明细。' : '选择描述同一笔业务的字段；另一笔业务单独配置。'}</Typography>
+    <Typography variant="body2" color="text.secondary">{binding.modelId === 'formTrace' ? '选择追溯项对应的来源，按填写值查找原表单。' : binding.tableId ? '配置一次列含义，每行分别形成业务明细。' : '选择描述同一笔业务的字段；另一笔业务单独配置。'}</Typography>
     {attributes.map(attribute => <TextField key={attribute.id} select fullWidth size="small"
-      label={`${attribute.name.replace(/（.*?）/g, '')}${required.includes(attribute.id) ? ' *' : ''}`} value={binding.sources[attribute.id] ?? ''}
+      label={`${binding.modelId === 'formTrace' ? attribute.name : attribute.name.replace(/（.*?）/g, '')}${required.includes(attribute.id) ? ' *' : ''}`} value={binding.sources[attribute.id] ?? ''}
       onChange={event => selectSource(attribute.id, event.target.value)}>
       <MenuItem value="">请选择来源{binding.tableId ? '列' : '字段'}</MenuItem>
       {!!binding.sources[attribute.id] && !fields.some(field => field.id === binding.sources[attribute.id] && acceptsProjectionAttribute(field, attribute)) &&

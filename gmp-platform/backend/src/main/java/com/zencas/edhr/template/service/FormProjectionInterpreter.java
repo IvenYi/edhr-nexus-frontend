@@ -100,7 +100,10 @@ public final class FormProjectionInterpreter {
             Set<String> sourceIds = new HashSet<>();
             while (entries.hasNext()) {
                 var entry = entries.next();
-                if (!allowed(modelId).contains(entry.getKey())) throw invalid("不支持的查询属性：" + entry.getKey());
+                boolean lookup = "formTrace".equals(modelId) && entry.getKey().matches("lookup_[A-Za-z0-9_-]{1,56}")
+                        && "text".equals(configuration.path("lookupItems").path(entry.getKey()).path("type").asText())
+                        && !configuration.path("lookupItems").path(entry.getKey()).path("name").asText().isBlank();
+                if (!allowed(modelId).contains(entry.getKey()) && !lookup) throw invalid("不支持的查询属性：" + entry.getKey());
                 if (!entry.getValue().isTextual() || !sourceIds.add(entry.getValue().asText())) throw invalid("同一用途不能重复映射同一字段");
                 JsonNode source = field(fields, entry.getValue().asText());
                 if (NUMBERS.contains(entry.getKey())) {

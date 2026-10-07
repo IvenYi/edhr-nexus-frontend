@@ -56,7 +56,7 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
       {showIdentity && <Typography fontWeight={600}>{field.name}</Typography>}
       <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>按需要选择用途，填报方式保持原样。{tableId ? '同一列对各行生效。' : ''}</Typography>
     </Box>
-    {isPending && <Typography variant="body2" color="text.secondary">正在加载可用查找项与业务用途…</Typography>}
+    {isPending && <Typography variant="body2" color="text.secondary">正在加载可用追溯项与业务用途…</Typography>}
     {isError && <Alert severity="error" action={<Button size="small" onClick={() => void refetch()}>重试</Button>}>用途目录加载失败</Alert>}
     {traceModel && (traces.length > 0 || traceModel.attributes.some(attribute => acceptsProjectionAttribute(field, attribute))) && <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
       <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={traceOpen || traces.length > 0}
@@ -65,13 +65,13 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
       <Collapse in={traceOpen || traces.length > 0}><Stack spacing={1} sx={{ mt: 1.5 }}>
         {traces.flatMap(binding => Object.entries(binding.sources).filter(([, id]) => id === field.id).map(([id]) =>
           <Stack key={`${binding.id}/${id}`} direction="row" alignItems="center" justifyContent="space-between">
-            <Typography variant="body2">{traceModel.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? '查找项已失效'}{!binding.enabled ? '（未启用）' : ''}</Typography>
+            <Typography variant="body2">{traceModel.attributes.find(attribute => attribute.id === id)?.name ?? '追溯项已失效'}{!binding.enabled ? '（未启用）' : ''}</Typography>
             <Button size="small" onClick={() => { const sources = { ...binding.sources }; delete sources[id]; update(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id)); }}>移除</Button>
           </Stack>))}
-        <TextField select fullWidth size="small" label="选择查找项" value="" onChange={event => assignTrace(event.target.value)}>
+        <TextField select fullWidth size="small" label="选择追溯项" value="" onChange={event => assignTrace(event.target.value)}>
           <MenuItem value="">请选择字段的查询含义</MenuItem>
           {traceModel.attributes.filter(attribute => acceptsProjectionAttribute(field, attribute) && !traces.some(binding => binding.sources[attribute.id] === field.id))
-            .map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name.replace(/（.*?）/g, '')}</MenuItem>)}
+            .map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}
         </TextField>
         {tableId && traces.some(binding => !binding.rowKeyFieldId) && <Alert severity="info">当前版本的子表行定位尚未配置，请在整子表用途中补齐后启用。</Alert>}
       </Stack></Collapse>

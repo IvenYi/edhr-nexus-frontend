@@ -11,6 +11,7 @@ import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.template.repository.TemplateCategoryRepository;
 import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
+import com.zencas.edhr.template.service.FormLookupCatalogService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ class TemplateProjectionAuthorizationTest {
                     mock(DhrTemplateRepository.class), mock(DhrTemplateVersionRepository.class),
                     mock(DhrDirectoryRepository.class), mock(DhrTemplateItemRepository.class),
                     mock(TemplateCategoryRepository.class), mock(AuditEventRepository.class),
-                    mock(SnowflakeIdGenerator.class), mock(TemplateLegacyWordImportService.class));
+                    mock(SnowflakeIdGenerator.class), mock(TemplateLegacyWordImportService.class), mock(FormLookupCatalogService.class));
         }
     }
 

@@ -1,5 +1,11 @@
 knowledgeModelVersion: 0.3.24
 terms:
+  - id: term.form-lookup-item
+    name: 追溯项
+    definition: 供管理员维护、制表人员显式关联普通字段或子表列、查询人员选择条件并输入值的可复用业务查找含义。产品对外统一称追溯项，历史讨论中的查找项为同义旧称；改称不创建新身份，不改变类型兼容、来源绑定、授权、索引或快照契约，也不表示正式实体关系或统计模型。当前术语要求已确认，不表示完整目录能力已经验证。
+    aliases: [查找项]
+    status: specified
+    visibility: internal
   - id: term.form-fill-settings
     name: 表单填报设置
     definition: 作业表单节点或工序绑定表单的配置，显式选择直接填报或按流程填报；直接模式配置权限组、字段例外、按钮和签署，按流程模式沿用既有流程配置，所选模式及适用设置须贯通保存、发布快照和运行。当前为已确认要求，不表示闭环已验证。

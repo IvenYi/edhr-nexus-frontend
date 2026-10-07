@@ -94,6 +94,22 @@ decisions:
         statement: 查找与统计采用同一表单画布内的独立侧栏入口，与字段配置同级；不以离开画布的独立整页作为日常配置入口。切换侧栏保留所选字段或子表及画布定位，共用原有来源配置、保存和撤销；用途面板显示当前配置范围。子表与主表分散字段两类来源继续覆盖，集中总览承担核对和预览。此确认仅收敛Q10的入口组织与上下文连续性，不证明客户易用性已经验证，也不决定目录CRUD、行身份、独立索引、上下文带入生命周期或新增统计口径；其余规则与未决项继续适用。
         status: specified
         visibility: internal
+      - id: DEC-0075-23
+        statement: 普通文本只有在明确配置的追溯或统计用途表示相应物料时，才可触发对应身份匹配；不能凭字段名、内容形态或仅声明其他文本查找含义猜测物料身份。匹配信息采用次要展示，优先hover且避免遮挡相邻单元格；影响正式统计的阻断问题仍须明确定位，不能仅藏在hover。原生引用字段继续按自身引用配置查询、选取和校验，不要求另配投影用途，沿用DEC-0060。本条仅确认普通文本匹配的触发前提与展示要求，不确认Q6编号唯一范围、改号重用、零或多匹配处置及解析是否纳入MVP，不将唯一匹配视为填写意图证明，也不授权自动建立物料使用关系。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-24
+        statement: 管理员新增可用查找项后，表单设计侧兼容字段的用途候选和授权追溯页面的条件候选自动从同一目录获得该项，不另维护查询页面条件，不要求先有模板绑定、实例或索引命中。制表人仍须明确关联来源字段，查询人选择条件后输入实际查询值；候选出现不代表已有数据已覆盖。设计侧按产品支持类型与语义兼容性筛选，查询侧继续遵守权限，目录管理不授予来源数据访问权。本条不新增任意统计模型、实体类型或操作符，也不决定目录完整停用生命周期及Q15可查状态。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-25
+        statement: 新查找含义对未关联该含义的旧实例进行补充覆盖，包括回填绑定、补索引或重新解释，排入第二期；MVP不凭旧字段同名或同值猜测新含义。新增配置供后续采用该配置的新实例使用；原有已配置实例的查询、冻结快照、审计和DHR证据继续保留。本延期不授权删除旧数据、不取消已有含义下的查询能力，也不允许用最新目录或模板解释静默覆盖旧实例；目录自身历史读取及其他未定生命周期仍须分别设计。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-26
+        statement: 产品对外将查找项统一称为追溯项，两者表示同一配置含义，不创建第二套目录或重分配身份。开发页面须遵循仓库统一UI/UE、列表及弹窗规范，不自行引入不一致的交互和样式。历史用户引文和证据原文保留旧称，既有稳定ID、API、表名和历史快照保持兼容；本次称谓与界面约束不改变统计、冻结、引用或索引规则，不关闭原有未决项，也不证明完整功能或客户易用性已验证。
+        status: specified
+        visibility: internal
     supersedes: []
     evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
     acceptanceScenarios:
@@ -186,4 +202,29 @@ decisions:
         given: 制表人在同一画布选择普通字段或子表，并有当前来源配置的未保存修改
         when: 在字段配置与独立查找统计侧栏间切换，或在用途面板选择另一来源
         then: 预期保留画布选择及定位，面板明确当前范围，沿同一配置、保存和撤销处理修改；不自动启用用途或跳转离开画布。此为本次交互验收要求，不证明运行测试、完整MVP或客户易用性已经通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-text-material-match-explicit-purpose
+        given: 普通文本未声明物料用途，原生物料引用已配置自身数据来源但未配置投影用途
+        when: 填写文本或使用引用选择器，并判断未来文本匹配是否可触发
+        then: 普通文本不能凭名称或内容触发物料解析，原生引用仍按自身配置查询选取和校验；明确物料用途仅满足未来解析的必要前提，Q6其余契约及MVP纳入未定，本例不证明文本解析已经实现
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-reference-user-confirmed]
+      - id: scenario.form-projection-text-match-secondary-presentation
+        given: 未来文本身份匹配能力已按另行确认的Q6契约实现，表格存在相邻可填写单元格
+        when: 展示物料匹配信息或需要阻断正式统计的异常
+        then: 匹配信息次要呈现且优先hover，不遮挡相邻单元格；阻断异常仍明确定位而非仅藏于hover。轻量标记与聚焦点击是候选实现，不证明当前解析或客户易用性已验证
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-new-lookup-item-without-bindings
+        given: 管理员新增产品支持类型的可用灭菌锅次查找项，尚无模板关联或命中数据
+        when: 制表人打开兼容字段的用途候选，授权查询人员选择追溯条件
+        then: 两处均从同一目录提供该项，无需二次维护查询条件；来源关联仍须显式配置，没有数据不伪造命中。本例是当前目录切片验收要求，不证明已完成运行验证
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-new-meaning-no-implicit-history
+        given: 旧实例具有与新查找项同名或同值的字段，但其冻结配置未关联该项，另有实例已配置原有查找含义
+        when: 新增查找项并查询新旧含义
+        then: 未关联旧实例不因字段同名或同值被新项命中，原有已配置查询及快照审计DHR证据保留；新含义历史补充覆盖排二期，本例不授权删除旧数据或证明历史回填已实现
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-trace-item-terminology
+        given: 产品目录、设计器用途候选及追溯条件仍有查找项旧称，且已存在稳定配置身份和历史证据
+        when: 按统一UI/UE规范更新对外页面、提示、列表与弹窗
+        then: 同一业务含义统一显示为追溯项，历史引文保留原文，旧稳定ID/API/表名与快照语义不因改称而变化；不新增统计或索引规则。本例是本轮展示与兼容验收要求，不证明产品或视觉检查已通过
         evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]

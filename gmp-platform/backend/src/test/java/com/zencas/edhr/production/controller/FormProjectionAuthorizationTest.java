@@ -3,6 +3,7 @@ package com.zencas.edhr.production.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
+import com.zencas.edhr.template.service.FormLookupCatalogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,7 @@ class FormProjectionAuthorizationTest {
     static class Config {
         @Bean JdbcTemplate jdbc() { return mock(JdbcTemplate.class); }
         @Bean FormProjectionController controller(JdbcTemplate jdbc) {
-            return new FormProjectionController(jdbc, new ObjectMapper(), mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class));
+            return new FormProjectionController(jdbc, new ObjectMapper(), mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class), mock(FormLookupCatalogService.class));
         }
     }
     @Autowired FormProjectionController reports;

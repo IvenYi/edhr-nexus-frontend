@@ -127,7 +127,8 @@ class FormProjectionPostgresTest {
     private com.zencas.edhr.production.controller.FormProjectionController reports() {
         return new com.zencas.edhr.production.controller.FormProjectionController(jdbc, mapper,
                 org.mockito.Mockito.mock(com.zencas.edhr.compliance.repository.AuditEventRepository.class),
-                org.mockito.Mockito.mock(com.zencas.edhr.common.util.SnowflakeIdGenerator.class));
+                org.mockito.Mockito.mock(com.zencas.edhr.common.util.SnowflakeIdGenerator.class),
+                org.mockito.Mockito.mock(com.zencas.edhr.template.service.FormLookupCatalogService.class));
     }
     @Test void reportFiltersMustMatchSameRecordAndPendingIsNotVisible() throws Exception {
         enqueue(form());

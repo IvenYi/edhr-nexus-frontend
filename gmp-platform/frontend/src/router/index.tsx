@@ -43,6 +43,7 @@ const UserPage = lazy(() => import('@/pages/system/UserPage'));
 const RolePage = lazy(() => import('@/pages/system/RolePage'));
 const MenuManagementPage = lazy(() => import('@/pages/system/MenuManagementPage'));
 const BusinessDictionaryPage = lazy(() => import('@/pages/system/BusinessDictionaryPage'));
+const FormLookupItemsPage = lazy(() => import('@/pages/system/FormLookupItemsPage'));
 const IconManagementPage = lazy(() => import('@/pages/system/IconManagementPage'));
 const SystemSettingsPage = lazy(() => import('@/pages/system/SystemSettingsPage'));
 const AuditLogPage = lazy(() => import('@/pages/system/AuditLogPage'));
@@ -138,6 +139,7 @@ const AppRouter = () => {
           <Route path="roles" element={<Suspense fallback={<Loading />}><RolePage /></Suspense>} />
           <Route path="menu-management" element={<Suspense fallback={<Loading />}><MenuManagementPage /></Suspense>} />
           <Route path="dictionaries" element={<Suspense fallback={<Loading />}><BusinessDictionaryPage /></Suspense>} />
+          <Route path="form-lookup-items" element={<Suspense fallback={<Loading />}><FormLookupItemsPage /></Suspense>} />
           <Route path="icons" element={<Suspense fallback={<Loading />}><IconManagementPage /></Suspense>} />
           <Route path="settings" element={<Suspense fallback={<Loading />}><SystemSettingsPage /></Suspense>} />
           <Route path="login-logs" element={<Suspense fallback={<Loading />}><LoginLogPage /></Suspense>} />

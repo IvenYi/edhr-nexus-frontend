@@ -231,3 +231,5 @@ databaseChangeLog:
       file: db/changelog/0106-form-projection-freeze.sql
   - include:
       file: db/changelog/0107-form-projection-runtime.sql
+  - include:
+      file: db/changelog/0108-form-lookup-items.sql

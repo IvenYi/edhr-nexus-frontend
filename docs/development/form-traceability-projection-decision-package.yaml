@@ -2,16 +2,80 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
-  summary: 同一首次完成投影切片保留既有统计、真实上下文、两类来源及使用时快照边界。2026-10-05确认MVP纳入客户维护可复用查找项目录、普通字段或子表列关联、生成查询条件及授权来源定位；业务统计MVP保持预设报表，自定义业务报表进入二期并保留扩展空间。本轮开始L2交互改造，先实施不依赖未决运行规则的字段/整子表渐进配置、全表总览与独立多行模拟预览，沿用现有v1接口与映射持久化。客户查找目录、系统行身份及索引状态范围仍待收敛，不把界面改造当成完整MVP交付；Q15-Q17及目录历史兼容继续保留。
-  # 同日预置项复核：管理员目录尚未实现；从冠骋原始字段与消费者提炼候选，见form-projection-preset-source-review-2026-10-05.md。本增量不修改运行目录、统计默认、数据库或未决问题。
+  summary: 同一首次完成投影切片保留既有统计、真实上下文、两类来源及使用时快照边界。2026-10-07侧边确认目录自动进入设计及查询候选、新含义未关联历史补充覆盖排二期、文本物料匹配须显式配置对应含义并次要展示。继续L2实施不依赖Q6/Q9/Q15/Q17的目录切片：新增与显示信息维护、已有文本精确能力的动态来源映射、既有最终完成查询中的自定义条件。仅采用产品当前支持的文本/单选来源，保存服务端目录解释到模板配置并随使用快照固定；不新增文本实体解析、在制索引或历史回填。此前侧栏成果和评审证据保留，不把本切片当成完整MVP。
+  # 2026-10-05预置项复核时管理员目录尚未实现；从冠骋原始字段与消费者提炼候选，见form-projection-preset-source-review-2026-10-05.md。该历史增量不修改运行目录、统计默认、数据库或未决问题；10-07当前实现以目录切片记录为准。
   # 同日整体补查：直接核对冠骋前端设计器8种追溯/21种业务字段和后端41种注册声明，补字典选项/取值来源/动作分层；候选非运行默认，未新增字段类型、统计规则或Q17答案。
   # 同日追加：查找与追溯、业务统计是并列可选任务，可仅其一/两者/都不配；部分字段可配置生产上下文自动带入。统计归属独立来自实际执行上下文。Q15-Q17保留独立索引时机、结果页面及字段带入生命周期，当前formTrace完成路径不替未来需求定版。
   # 首期来源形态补充确认：子表是交互设计重点，但首期也覆盖主表多个分散字段组成一条业务明细；子表优先不等于仅交付子表。具体交互与其他运行契约继续按对应未决项处理。
   # 同日用户确认独立侧栏：查找与统计作为画布内同级入口；保留当前选择、同一配置与统一保存，不跳到脱离画布的整页。本增量不实现目录CRUD或改变Q12/Q15-Q17。
+  # 2026-10-07开发前整体评审及多角色流程图见form-projection-final-design-review-2026-10-07.md；复用本决策包。仅核对并提出建议，未修改产品代码或数据库，未将混合编号检索、Q6/Q9/Q15/Q17建议提升为confirmed。该评审补充当前切片L2影响与验收范围，不新建竞争性决策包。
+  # 2026-10-07侧边用户确认增量见主设计2.5节及handoff同日入口：用途驱动的文本匹配与次要展示、查找项自动进入两处候选、新含义对未关联旧实例的补充覆盖排二期。其余Q6/Q9/Q15/Q17保留；原生引用能力与原有历史查询保留。主会话须同步适用结构化知识并复核门禁，本条不冒充已完成同步或实现。用户追加授权：交接后判断开发/优化条件，具备则开始。
   confirmed:
     concepts: []
     relationships: []
     rules:
+      - id: design-rule.form-projection.trace-item-terminology
+        name: 产品统一使用追溯项并遵循统一页面规范
+        status: specified
+        trigger: form-projection.present
+        condition:
+          all:
+            - fact: presentation.targetsCustomer
+              operator: equals
+              value: true
+        result:
+          type: constrain-presentation
+          preferredTerm: 追溯项
+          previousTerm: 查找项
+          sharedUiGuidelinesRequired: true
+          preserveStableIdentifiersAndHistoricalEvidence: true
+        sourceReferences: [docs/development/form-lookup-catalog-2026-10-07.md]
+      - id: design-rule.form-projection.explicit-text-material-purpose
+        name: 普通文本须明确物料用途才触发身份匹配
+        status: specified
+        trigger: form-field.text-identity-match
+        condition:
+          all:
+            - fact: field.explicitPurposeRepresentsMaterial
+              operator: equals
+              value: true
+        result:
+          type: constrain-identity-matching
+          inferFromFieldNameOrTextShape: false
+          presentation: secondary-hover-preferred
+          nativeReferenceRequiresProjectionPurpose: false
+          uniqueMatchProvesUserIntent: false
+        sourceReferences: [docs/architecture/form-traceability-projection-design.md#25-c侧边讨论确认增量2026-10-07供主开发会话接手]
+      - id: design-rule.form-projection.lookup-directory-shared-candidates
+        name: 新增查找项自动进入设计与查询候选
+        status: specified
+        trigger: form-lookup-item.create
+        condition:
+          all:
+            - fact: lookupItem.available
+              operator: equals
+              value: true
+        result:
+          type: expose-shared-directory
+          targets: [compatible-designer-sources, authorized-query-conditions]
+          requiresExistingBindingsOrHits: false
+          sourceBinding: explicit
+        sourceReferences: [docs/architecture/form-traceability-projection-design.md]
+      - id: design-rule.form-projection.new-meaning-history-phase-two
+        name: 未关联新含义的历史补充覆盖排二期
+        status: specified
+        trigger: form-lookup-item.create
+        condition:
+          all:
+            - fact: historicalInstance.snapshotHasLookupBinding
+              operator: equals
+              value: false
+        result:
+          type: defer-historical-enrichment
+          targetPhase: phase-two
+          inferBindingFromNameOrValue: false
+          preserveExistingQueriesAndEvidence: true
+        sourceReferences: [docs/architecture/form-traceability-projection-design.md]
       - id: design-rule.form-projection.product-owned-models
         name: 统计模型由产品方维护
         status: specified
@@ -310,7 +374,7 @@ decisionPackage:
       relatedIds: [DEC-0075-18, DEC-0075-19, DEC-0075-20, DEC-0075-21, docs/development/form-projection-preset-source-review-2026-10-05.md]
     - id: inference.form-projection.source-derived-presets
       statement: 建议从冠骋实际反查消费者提炼生产批号/产品序列号、设备、工单、产品、记录单号等查找含义，保留现有物料批号及补充项；日期查询属于类型扩展候选。统计MVP保留正式报工、报废、实耗，工时/检验/仓储另定规则。
-      rationale: 原始LOT/SN关联生产标识，不能误当物料批号；枚举混合度量、维度、实体引用和动作，不能直接全部作为查找项或投影用途。当前管理员目录未实现，正式报工独立产出属性及批次/工单联动仍缺失；候选命名和优先层不升为用户已确认默认。
+      rationale: 原始LOT/SN关联生产标识，不能误当物料批号；枚举混合度量、维度、实体引用和动作，不能直接全部作为查找项或投影用途。2026-10-05复核时管理员目录未实现，10-07已完成的目录范围以当日实现记录为准；正式报工独立产出属性及批次/工单联动仍缺失，历史候选不升为用户已确认默认。
       relatedIds: [DEC-0075-18, DEC-0075-20, DEC-0075-21, docs/development/form-projection-preset-source-review-2026-10-05.md]
     - id: inference.form-projection.metadata-and-extension-storage
       statement: 采用产品维护的属性目录、固定业务核心字段及有类型的JSONB扩展值；客户不建立统计模型或自定义执行动作。
@@ -349,8 +413,8 @@ decisionPackage:
       rationale: 首期两种来源形态及子表交互重点已确认；每行语义、具体引导、命名和行身份机制仍需交互稿核对，不能凭物理表格或字段名称自动确定业务口径。
       relatedIds: [DEC-0075-19, DEC-0075-14, DEC-0075-17]
     - id: inference.form-projection.trace-query-catalog-contract
-      statement: 建议查找项用稳定身份关联来源与查询控件，类型/语义变化按兼容契约管理；优先文本精确与单选，再扩展数字日期。多条件范围及历史补索引单独设计。
-      rationale: 客户可维护目录的MVP路径已确认，但具体支持类型、操作符、目录生命周期与历史处置未定，不能据截图默认运行规则。
+      statement: 当前目录切片复用既有文本精确/单选来源、稳定身份及同记录条件匹配；新增与显示信息维护先行，不开放改类型或删除。更多类型与生命周期后续设计，新含义未关联历史的补充覆盖已排二期。
+      rationale: 这是明确目录目标下的最小工程范围，不把工程选择写成完整生命周期确认，也不扩大既有查询索引时机。
       relatedIds: [DEC-0075-20]
     - id: inference.form-projection.phase-two-report-extension-boundary
       statement: 建议二期报表定义复用属性身份、正式事实与来源定位，来源绑定不依赖某一张报表；MVP不提前建设报表编辑器、自由公式或通用跨表查询引擎。
@@ -361,6 +425,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: current-lookup-directory-slice
+        change: 新增可审计查找项及显示信息编辑，复用现有文本精确取值；设计器与查询页动态读取同一目录，服务端捕获所选自定义定义；不扩展统计模型和引用来源。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
       - area: independent-canvas-projection-panel
         change: 将字段配置中的查找统计模式拆为同一画布独立侧栏；切换不改选择，选新来源保持用途面板，沿用共享映射及保存/撤销。
         evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
@@ -371,7 +438,7 @@ decisionPackage:
         change: 复核固定三类统计用途、五种查找属性与管理员目录缺口；增补冠骋原始定义及消费者证据、候选分层和实现差异，不新增运行预置项。
         evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
       - area: mvp-trace-and-report-phase-scope
-        change: 同步查找项目录三角色路径及分期边界；本轮先改造设计器交互，客户可维护目录和动态运行查询尚未实现。
+        change: 2026-10-05阶段先同步查找项目录三角色路径并改造设计器交互，当时目录与动态查询未实现；2026-10-07已接续实现文本目录及既有完成投影的动态条件，范围以本包lookup-directory切片和当日实现记录为准。
         evidenceReferences: [docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - area: first-phase-source-shape-coverage
         change: 首期配置交互覆盖子表及主表分散字段形成业务明细，子表作为降低配置成本的设计重点；不将普通字段配对场景推迟到首期之外。
@@ -397,7 +464,7 @@ decisionPackage:
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
     potentialImpacts:
       - area: customer-query-catalog-runtime
-        concern: 客户定义查找项将影响来源绑定、查询控件、权限及历史兼容；类型/操作符、定义生命周期、多条件范围和补索引未定，本轮不写入默认运行实现。
+        concern: 更多支持类型与操作符、定义停用删除和跨记录条件语义仍待设计；当前复用文本精确及同记录查询，旧实例无新绑定的历史补充覆盖排二期。
         evidenceReferences: [docs/architecture/form-traceability-projection-design.md]
       - area: cross-form-record-authority
         concern: 同工序正式来源记录累加，重复记载表只配置查表用途；不同工序不合为批次产量。配置人员误标正式来源仍需培训和预览发现。
@@ -413,27 +480,30 @@ decisionPackage:
         reason: 不修改签署身份、生产完成条件、DHR归集和冻结成员；不自动创建DHR、不做库存动作。
     compatibilityAndMigration:
       - area: current-scope-recording
-        requirement: 本轮不修改数据库或迁移，不回填旧数据，不重写旧来源快照；查找项新增后是否及如何补索引另行设计。
+        requirement: 0108只新增目录表与常用文本项，在独立edhr_form_projection迁移；旧v1属性标识与完成查询保留，新项仅命中快照中显式绑定的记录，不回填旧数据或重写旧来源快照。新含义历史补充覆盖已排二期。
       - area: future-experimental-code-replacement
         requirement: 用户确认旧库保留、不转换历史；新库edhr_form_projection从空库迁移，只用虚构数据。
     snapshotImpacts:
       - area: future-query-catalog-binding
-        requirement: 来源映射继续在使用时进入快照；新增目录或改定义不能静默改写旧实例及旧投影，具体定义兼容契约待设计。
+        requirement: 来源映射继续在使用时进入快照；新保存同时捕获旧内置ID与新查找项的名称/类型/修订号，结果与详情使用冻结名称，无目录快照的旧来源沿v1固定名称解释。当前目录编辑不改写旧实例；完整停用删除及变类型兼容仍待设计。
       - area: future-projection
         requirement: 首次执行或后续挂接表单时冻结当时配置及目录版本；最终值与生产上下文、来源回查读取投影批次快照，不读取最新模板替代。
     auditImpacts:
       - area: future-query-catalog-management
-        requirement: 目录维护需在实现时定义配置变更的授权与审计证据；本轮未新增运行审计或替换既有日志。
+        requirement: 新增与显示信息编辑记录FORM_LOOKUP_ITEM审计，与目录写入同事务；并发修订号防止覆盖。不提供改变含义/类型或删除定义的接口，完整停用生命周期仍另行收敛。
       - area: future-projection
         requirement: 模板保存沿既有审计，生产执行保存快照并审计；投影重试需审计，批次保留来源。专属投影发布审计退出；变更作废运行模块未闭环。
     permissionImpacts:
       - area: future-query-catalog
-        requirement: 管理目录、修改表单来源和查询来源是不同授权动作；新增查找项或共享查询入口不扩大来源及字段访问权限，具体管理权限待实现设计。
+        requirement: 当前目录管理使用system.edit；目录候选允许模板设计权限或已有报表读取资格，均不赋予相互操作权限。记录查询继续原有来源权限，不用目录管理权限读取来源；细粒度只读查询授权另行完善。
       - area: future-report
         requirement: 搜索、聚合、来源回查和导出均复用来源授权，报表入口不扩大数据可见范围。
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: lookup-directory-slice
+        scenarios: [目录无数据也进入两处候选, 主表和子表显式关联, 客户定义不能生成统计属性, 服务端覆盖伪造目录解释, 新旧内置名称在来源解释中不漂移, 客户名称括号保真, 同名同值旧表不误命中, 旧条件保留, 同行配对不串行, 权限隔离, 新增编辑审计与并发冲突, 0108空schema迁移及独立库实际迁移]
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql]
       - scope: designer-field-source-review
         scenarios: [前端8种追溯/21种业务与后端41声明区分, 条件性菜单不误为全版本无条件可用, 字典初始化与当前租户/本项目默认区分, 字段默认与人员签署/实际执行归属分开, 候选不新增运行规则, 来源锚点指纹与知识正式校验]
         evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md]
@@ -459,7 +529,7 @@ decisionPackage:
       - 同日设计器整体补查未运行冠骋UI或外部SDK，关联批次完整业务语义、当前租户字典及所有联动校验未证明。前端入口有套件/版本/表单模式条件；字段或字典声明不证明业务动作、生产带入生命周期、公式或运行统计已闭环。
       - 2026-10-05冠骋预置项研究为本机原始源码静态复核，外部SDK与可运行页面未获得；未确认完整检验报表消费链路。枚举与候选名单不代表本项目运行能力，不将未核对的运算、唯一性、索引状态和库存动作提升为规则。
       - Q14已确认首期两种来源形态，并于2026-10-05收敛MVP查找目录链路和预设统计报表、自定义报表二期；具体交互、阶段出口及其余运行契约仍待定，不把范围确认等同Q9-Q17全部闭环。用户对安速康表单子表常见性的观察是用户反馈，不是本轮原始样本统计。
-      - 查找目录的支持类型/操作符、定义生命周期与历史兼容、多条件匹配范围及历史补索引仍待设计。截图中的文本精确/单选先行与技术建议不自动提升为已确认运行规则。自定义报表二期的指标组合/权限/布局细则及客户自建模型Q13没有定版。
+      - 当前目录切片复用产品既有文本精确及同记录匹配，新增与显示信息维护不证明完整生命周期已定版。更多类型/操作符、停用删除及跨记录条件需后续设计；新含义对无冻结绑定旧实例的补充覆盖明确二期。自定义报表二期的指标组合/权限/布局细则及客户自建模型Q13没有定版。
       - 同日追加Q15-Q17：独立查找索引状态范围及生效/更新、相关记录证据与业务报表结果页、生产上下文字段带入生命周期和多设备策略。查找命中保留信息类型/字段来源/实例位置，同字符串不同类型不混查，所有相关限已有权限。
       - 当前原始源码只证明formTrace沿COMPLETED进入binding批次并只查询SUCCEEDED结果，不形成统计合计；独立索引未来时机不可仅从业务统计完成时机推出。字段自动带入的已实现/缺口见主设计18节，不把执行context或普通默认值当成带入闭环。
       - 2026-10-03曾新增Q9-Q14六项未来待定；其后Q14首期范围与Q10同一画布独立侧栏入口已分别收敛，其余表头共享、跨表单关联、稳定行标识、客户自建模型及未确认交互细节仍以open-questions为准，不将未回复建议写成确认。
@@ -481,8 +551,29 @@ decisionPackage:
         responsibility: 首次执行或后续挂接时校验并保存配置快照、真实执行上下文、最终完成事件与来源权限。
       - owner: report-and-dhr
         responsibility: 授权查询及沿实际证据关系导航，MVP预设统计展示与二期报表扩展边界；不改写来源记录或决定生产归属。
-  # affectedFiles保留同一切片的历史实现及后续计划；最新增量仅独立画布侧栏、选择联动及对应验证，不改运行目录、统计口径或数据库。
+  # affectedFiles保留历史实现及后续计划；2026-10-07增量为查找目录、动态候选、显式绑定快照和既有完成查询，不改统计口径。
   affectedFiles:
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql
+      changeType: create
+      reason: 独立目录表及12项常用文本含义，不改写旧实例。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+      changeType: create
+      reason: 目录新增/显示信息更新、并发版本、事务审计与服务端定义快照。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormLookupCatalogController.java
+      changeType: create
+      reason: 管理员写权限与设计/查询角色读权限。
+    - path: gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx
+      changeType: create
+      reason: 按列表规范提供目录管理和真实审计详情。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java
+      changeType: create
+      reason: 临时schema验证目录、事务回滚、快照、旧值不回填和子表不跨行匹配。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/FormLookupCatalogAuthorizationTest.java
+      changeType: create
+      reason: 管理/设计/查询角色权限矩阵。
+    - path: gmp-platform/backend/scripts/form-lookup-catalog-demo.py
+      changeType: create
+      reason: 仅独立本地库的虚构目录到完成查询及来源回查API闭环。
     - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
       changeType: create
       reason: 独立用途面板解析当前字段/子表并复用原来源配置，提供明确的选择范围和空态。
@@ -610,6 +701,11 @@ decisionPackage:
       changeType: read-only
       reason: 核对现有元数据查询与来源权限。
   acceptanceScenarios:
+    - id: scenario.lookup-catalog-ready-slice
+      given: 管理员新建文本查找项，尚无绑定与填写值
+      when: 制表人员打开兼容字段候选，查询人员打开条件候选
+      then: 两处均提供新项；无结果正常返回空集，不按旧同名字段或同值自动回填；显式配置的新实例完成后可查到字段或子表行。
+      evidenceRequirements: [真实PostgreSQL集成测试, 方法权限测试, 迁移与实际API闭环, 浏览器新增与查询验证]
     - id: scenario.independent-canvas-projection-panel
       given: 画布已选择普通字段或整子表，来源配置有未保存修改
       when: 切换字段配置与查找统计侧栏，或在用途面板点选另一来源
@@ -621,9 +717,9 @@ decisionPackage:
       then: 总表覆盖8种追溯/21种业务入口与其余声明差异，按含义/用途/属性/来源/动作提炼候选，不新增运行默认或关闭未决项
       evidenceRequirements: [docs/development/form-projection-preset-source-review-2026-10-05.md, 原始前端/后端及迁移锚点指纹, 知识正式校验, 本轮独立质量审查]
     - id: scenario.projection-preset-source-review
-      given: 当前目录仍是固定五种查找属性与三类统计用途，用户要求参考冠骋原始字段提炼预置项
+      given: 2026-10-05调研时目录仍是固定五种查找属性与三类统计用途，用户要求参考冠骋原始字段提炼预置项
       when: 核对字段定义、实际反查及报表消费者并提出候选
-      then: 明确管理员目录未实现，区分生产LOT/SN与物料批号、度量维度与业务动作，候选不改运行默认或关闭未决项
+      then: 明确调研时管理员目录未实现，区分生产LOT/SN与物料批号、度量维度与业务动作，候选不改运行默认或关闭未决项；后续10-07目录实现不改变该历史调研证据
       evidenceRequirements: [docs/development/form-projection-preset-source-review-2026-10-05.md, 原始源码锚点及指纹, 知识正式校验, 独立来源质量审查]
     - id: scenario.projection.mvp-customer-trace-query-catalog
       given: 管理员定义灭菌锅次查找项，两个表单的普通字段或子表列名称不同但关联同一项

@@ -34,7 +34,7 @@ export default function SubTableProjectionConfig({ field, showIdentity = true }:
   };
   return <Stack spacing={2}>
     <Box>{showIdentity && <Typography fontWeight={600}>{field.name} · 子表</Typography>}<Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>选择列的含义，配置对每一行生效，无需逐行建立记录组。</Typography></Box>
-    {isPending && <Typography variant="body2" color="text.secondary">正在加载可用查找项与业务用途…</Typography>}
+    {isPending && <Typography variant="body2" color="text.secondary">正在加载可用追溯项与业务用途…</Typography>}
     {isError && <Alert severity="error" action={<Button size="small" onClick={() => void refetch()}>重试</Button>}>用途目录加载失败</Alert>}
     <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
       <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={traceOpen || traces.length > 0}
@@ -47,13 +47,13 @@ export default function SubTableProjectionConfig({ field, showIdentity = true }:
           return <Box key={column.id} sx={{ borderBottom: '1px solid #e4e7ed', pb: 1.5 }}>
             <Typography variant="body2" fontWeight={500} sx={{ mb: 1 }}>{column.name}</Typography>
             {assignments.map(({ binding, id }) => <Stack key={`${binding.id}/${id}`} direction="row" alignItems="center" justifyContent="space-between">
-              <Typography variant="caption">{traceModel?.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? '查找项已失效'}</Typography>
+              <Typography variant="caption">{traceModel?.attributes.find(attribute => attribute.id === id)?.name ?? '追溯项已失效'}</Typography>
               <Button size="small" onClick={() => { const sources = { ...binding.sources }; delete sources[id]; update(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id)); }}>移除</Button>
             </Stack>)}
-            <TextField select fullWidth size="small" label="关联查找项" value="" onChange={event => addTrace(column, event.target.value)}>
+            <TextField select fullWidth size="small" label="关联追溯项" value="" onChange={event => addTrace(column, event.target.value)}>
               <MenuItem value="">不配置或选择查询含义</MenuItem>
               {traceModel?.attributes.filter(attribute => acceptsProjectionAttribute(column, attribute) && !assignments.some(item => item.id === attribute.id))
-                .map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name.replace(/（.*?）/g, '')}</MenuItem>)}
+                .map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}
             </TextField>
           </Box>;
         })}

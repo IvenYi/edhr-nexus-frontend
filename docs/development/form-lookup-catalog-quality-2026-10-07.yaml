@@ -1,0 +1,214 @@
+qualityResult:
+  result: failed
+  baseCommit: "5c2a6a6c3bc78bf03a69da8ff8004f62c88cd199"
+  headCommit: "5c2a6a6c3bc78bf03a69da8ff8004f62c88cd199"
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-handoff-2026-10-03.md
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-projection-final-design-review-2026-10-07.md
+      - docs/development/form-lookup-catalog-2026-10-07.md
+      - docs/development/diagrams/form-projection-overview-2026-10-07.mmd
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/open-questions.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormLookupCatalogController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+      - gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql
+      - gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/FormLookupCatalogAuthorizationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateProjectionAuthorizationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/FormProjectionAuthorizationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java
+      - gmp-platform/backend/scripts/form-lookup-catalog-demo.py
+      - gmp-platform/frontend/src/api/formLookupCatalog.ts
+      - gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/types/model.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      - gmp-platform/frontend/src/router/index.tsx
+      - gmp-platform/frontend/src/utils/menuManagement.ts
+    excludedPaths: [output/, gmp-platform/frontend/output/, .playwright-cli/, gmp-platform/backend/target/, gmp-platform/frontend/dist/]
+    untrackedPaths:
+      - docs/development/diagrams/form-projection-overview-2026-10-07.mmd
+      - docs/development/form-projection-final-design-review-2026-10-07.md
+      - docs/development/form-lookup-catalog-2026-10-07.md
+      - gmp-platform/backend/scripts/form-lookup-catalog-demo.py
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormLookupCatalogController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+      - gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/FormLookupCatalogAuthorizationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java
+      - gmp-platform/frontend/src/api/formLookupCatalog.ts
+      - gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.scope-and-boundaries
+      required: true
+      category: requirements
+      description: 目录切片与DEC-0075-23/24/25、同日确认及未决范围对照。
+      method: inspection
+      command: 阅读决策包、DEC-0075、open-questions、实现记录和本轮源码差异。
+      outcome: passed
+      evidence:
+        - 审查截止为2026-10-07 16:43 Asia/Shanghai的修复前工作树；本结果不涵盖主开发随后对QF-LOOKUP-001/002的修复，由全新实例最终复验。
+        - 未把文字查找项作为实体解析或统计模型；Q6/Q9/Q15/Q17、A12等仍明确延期。
+        - 保留既有COMPLETED到SUCCEEDED查询，统计和真实DHR关系未改。
+        - Mermaid为整体建议图，评审文档和实现记录明确区分未实现能力。
+    - id: check.knowledge
+      required: true
+      category: ontology
+      description: 独立执行正式知识测试。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -Dexec.skip=true -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence: ["/tmp/edhr-lookup-catalog-independent-knowledge.log：59项，0失败/错误/跳过。"]
+    - id: check.postgres-and-permissions
+      required: true
+      category: integration
+      description: 独立重跑目录PostgreSQL集成及目录、投影、模板方法权限测试。
+      method: automated-test
+      command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -Dexec.skip=true -Dtest=FormLookupCatalogPostgresTest,FormLookupCatalogAuthorizationTest,FormProjectionAuthorizationTest,TemplateProjectionAuthorizationTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-lookup-catalog-independent-quality.log：14项，0失败/错误/跳过。
+        - 包含唯一名称、并发修订冲突、审计失败事务回滚、伪造定义覆盖、旧同名值不回填及子表不跨行。
+        - system.edit、模板设计、完整与不完整来源权限分别验证；不是所有真实账号组合的浏览器验收。
+    - id: check.database
+      required: true
+      category: database
+      description: 独立库迁移和测试schema清理核验。
+      method: query
+      command: psql -X -d edhr_form_projection；读取current_database、databasechangelog、form_lookup_item及information_schema。
+      outcome: passed
+      evidence:
+        - current_database为edhr_form_projection，0108-form-lookup-items为EXECUTED，内置目录12行。
+        - PostgreSQL测试随机schema覆盖0107到0108增量；结束后lookup_test_临时schema数量为0。
+        - 本实例未访问或写入edhr_dev；生产环境迁移/回滚未演练。
+    - id: check.frontend-regression
+      required: true
+      category: regression
+      description: 独立执行设计器预览及侧栏状态测试。
+      method: automated-test
+      command: node --test scripts/test-projection-preview.mjs scripts/test-projection-panel.mjs
+      outcome: passed
+      evidence: [6项通过；撤销共享状态、来源切换、子表行隔离和空数量行为通过。]
+    - id: check.browser-directory-flow
+      required: true
+      category: e2e
+      description: 独立Playwright会话核验新增、编辑、审计、新项候选及零结果查询。
+      method: browser
+      command: playwright-cli -s=lookup-catalog-qa，localhost:3007；admin登录。
+      outcome: passed
+      evidence:
+        - 新增QA独立验证锅次20261007，仅修改该QA项说明；实际审计显示CREATE与UPDATE、操作者和前后值。
+        - 无绑定新项在追溯条件和普通文本字段设计候选中均出现，QA-NODATA查询返回0条。
+        - 设计候选只打开查看，没有保存或修改已有模板。
+        - output/playwright/lookup-catalog-qa-audit.png
+        - output/playwright/lookup-catalog-qa-designer-options.png
+    - id: check.runtime-source
+      required: true
+      category: api
+      description: 通过真实API读取既有虚构完成记录和冻结来源。
+      method: query
+      command: 登录后GET form-lookup-items，POST reports/form-projections/query，GET batchId/source；不输出token。
+      outcome: passed
+      evidence:
+        - 虚构演示灭菌锅次与DEMO-POT-001命中1条；source.model.projection.lookupItems保存名称/type/revision，values.pot为DEMO-POT-001。
+        - QA新项无数据查询为0；原五项历史查询能力仍保留。
+        - 本实例不重新执行生产完成或修改既有演示证据；完成链路由集成测试和主开发API证据补充。
+    - id: check.visual-list
+      required: true
+      category: visual
+      description: 1280x720列表与详情审计视觉核验。
+      method: browser
+      command: Playwright截图并人工查看lookup-catalog-qa-audit.png。
+      outcome: passed
+      evidence:
+        - 公共查询/列表骨架、工具栏、分页及详情数据信息/数据审计存在；抽屉不被顶部导航遮挡。
+        - 目录页无新增控制台错误；模板旧详情有div嵌套p警告，定位在未改的StatusBadge/详情代码。
+    - id: check.frozen-display-compatibility
+      required: true
+      category: regression
+      description: 内置查找项改名对冻结来源显示的影响。
+      method: browser
+      command: 仅在独立浏览器拦截目录GET响应更改materialLotText.name，然后查看FR-20260929-000004；不更改数据库。
+      outcome: failed
+      evidence:
+        - 真实API证实旧来源缺少materialLotText定义快照；详情显示QA仅浏览器模拟改名而非固定历史名称。
+        - output/playwright/lookup-catalog-qa-legacy-label-drift.png
+    - id: check.customer-name-fidelity
+      required: true
+      category: requirements
+      description: 自定义查找项名称完整呈现。
+      method: inspection
+      command: 检查FieldProjectionConfig/SubTableProjectionConfig/ProjectionSourceEditor；Node执行相同名称替换表达式。
+      outcome: failed
+      evidence: ["批号（供应商）与批号（内部）都被replace(/（.*?）/g,'')变为批号。"]
+    - id: check.diff-hygiene
+      required: true
+      category: documentation
+      description: 工作树空白、记录边界和生成目录排除核验。
+      method: command
+      command: git diff --check
+      outcome: passed
+      evidence: [退出码0；输出和截图不在业务提交范围。]
+  findings:
+    - id: QF-LOOKUP-001
+      severity: medium
+      scope: 目录定义快照及来源展示
+      summary: 原五个内置查找项允许改名，却不冻结定义；历史结果摘要和来源详情会使用当前目录名称。
+      reproductionSteps:
+        - 以materialLotText等原内置项配置并完成一份表单；该项的定义不会被withLookupSnapshot收集。
+        - 管理员修改该内置项名称；或如本次验证仅拦截浏览器GET目录响应模拟改名，不改现有数据。
+        - 打开该历史表单的查询结果和来源详情。
+      expectedResult: 已使用实例仍显示当时定义；无定义快照的存量实例使用既有v1固定解释，不由最新目录改名改变历史解释。
+      actualResult: FR-20260929-000004来源详情声明来自冻结快照，却显示QA仅浏览器模拟改名；新保存也因只收集lookup_前缀而不保护原五项。
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java:91
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java:106
+        - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx:101
+        - output/playwright/lookup-catalog-qa-legacy-label-drift.png
+      resolutionStatus: open
+      resolutionEvidence: []
+    - id: QF-LOOKUP-002
+      severity: medium
+      scope: 自定义查找项在普通字段、子表列和来源编辑中的名称展示
+      summary: 接入管理员目录后仍删除名称内中文括号及内容，使不同业务含义的候选显示相同名称。
+      reproductionSteps:
+        - 新建名称批号（供应商）和批号（内部）；名称校验及数据库唯一约束允许它们作为两个不同ID存在。
+        - 在普通文本字段或子表列的选择查找项中查看候选。
+      expectedResult: 两个候选和已选用途完整显示管理员定义的名称，可明确区分业务含义。
+      actualResult: 组件对所有目录名称执行replace(/（.*?）/g,'')，两项均显示批号；源码表达式已实际执行核对，本实例未新增这两项目录数据。
+      evidence:
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx:68
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx:74
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx:50
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx:56
+        - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx:26
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.explicit-deferred-contracts
+      description: 引用文本统一身份、独立进行中索引、历史新含义补索引、A12等未在本切片交付。
+      impact: 不能宣称完整投影MVP或全部设计已定版。
+      mitigation: 按实现记录和open-questions保持延期边界，仅验收目录切片。
+    - id: risk.test-scope
+      description: 本实例未执行全系统构建回归、生产迁移回滚、客户试用或大规模目录性能测试，也未重新完成独立浏览器填报链路。
+      impact: 结论限定为记录中的聚焦检查；主开发测试日志不能冒充本实例执行。
+      mitigation: 最终全新实例按修复范围回归；部署前另做环境和容量验证。
+    - id: risk.qa-fictional-item
+      description: 独立库留下QA独立验证锅次20261007及其真实CREATE/UPDATE审计，没有绑定生产实例。
+      impact: 目录及候选包含一个明确标记的虚构QA项目。
+      mitigation: 作为本地验证证据保留；不复制到真实业务库，不进行未授权删除。
+  blockingConditions: []

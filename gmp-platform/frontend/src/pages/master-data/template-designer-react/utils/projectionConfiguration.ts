@@ -9,7 +9,7 @@ export interface ProjectionPreviewRecord { bindingId: string; rowKey: string; mo
 
 export function useProjectionCatalog() {
   return useQuery({ queryKey: ['form-projection-catalog'], queryFn: async () =>
-    (await client.get('/master-data/template-modeling/projection-catalog')).data.data as ProjectionCatalog, staleTime: 30_000 });
+    (await client.get('/master-data/template-modeling/projection-catalog')).data.data as ProjectionCatalog, staleTime: 0 });
 }
 
 export function acceptsProjectionAttribute(field: ModelField, attribute: ProjectionAttribute) {
