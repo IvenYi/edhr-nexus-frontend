@@ -33,6 +33,18 @@ public final class FormProjectionInterpreter {
     }
     private static final Map<String, String> MODELS = Map.of("formTrace", "按内容查找表单", "production", "正式报工", "scrap", "报废记录", "consumption", "实际物料消耗");
     private static final Set<String> NUMBERS = Set.of("quantity", "goodQuantity", "ngQuantity");
+    // Stable preset meanings, independent of display names or administrator-created text items.
+    public static java.util.List<String> referenceSources(String attributeId) {
+        return switch (attributeId) {
+            case "equipmentText" -> java.util.List.of("equipment");
+            case "serialNumberText" -> java.util.List.of("serialNumber");
+            case "lookup_production_batch", "lookup_related_batch" -> java.util.List.of("productionBatch");
+            case "lookup_work_order" -> java.util.List.of("workOrder");
+            case "lookup_material_code" -> java.util.List.of("material");
+            case "lookup_product_code" -> java.util.List.of("product");
+            default -> java.util.List.of();
+        };
+    }
     private static Set<String> allowed(String model) {
         return switch (model) {
             case "formTrace" -> Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText");
@@ -113,6 +125,12 @@ public final class FormProjectionInterpreter {
                 } else if ("material".equals(entry.getKey())) {
                     if (!"reference".equals(source.path("type").asText()) || !"material".equals(source.path("typeConfig").path("sourceType").asText()))
                         throw invalid("物料来源必须是物料主数据引用字段");
+                } else if ("formTrace".equals(modelId) && "reference".equals(source.path("type").asText())) {
+                    String sourceType = source.path("typeConfig").path("sourceType").asText();
+                    boolean compatible = false;
+                    for (JsonNode candidate : configuration.path("lookupItems").path(entry.getKey()).path("referenceSources"))
+                        if (sourceType.equals(candidate.asText())) compatible = true;
+                    if (!compatible) throw invalid("引用对象与追溯项不匹配：" + entry.getKey());
                 } else scalar(source);
             }
         }
@@ -126,7 +144,7 @@ public final class FormProjectionInterpreter {
             if (!binding.path("enabled").asBoolean()) continue;
             String tableId = binding.path("tableId").asText("");
             if (tableId.isBlank()) {
-                append(results, binding, values, "form", "");
+                append(results, binding, model.path("fields"), values, "form", "");
             } else {
                 JsonNode rows = values.path(tableId);
                 if (!rows.isArray()) throw invalid("缺少明细数据：" + tableId);
@@ -134,14 +152,14 @@ public final class FormProjectionInterpreter {
                 for (JsonNode row : rows) {
                     String key = scalarValue(row.path(binding.path("rowKeyFieldId").asText()));
                     if (key.isBlank() || !keys.add(key)) throw invalid("明细记录键缺失或重复：" + tableId);
-                    append(results, binding, row, key, tableId);
+                    append(results, binding, field(model.path("fields"), tableId).path("typeConfig").path("columns"), row, key, tableId);
                 }
             }
         }
         return results;
     }
 
-    private static void append(ArrayNode results, JsonNode binding, JsonNode values, String rowKey, String tableId) {
+    private static void append(ArrayNode results, JsonNode binding, JsonNode fields, JsonNode values, String rowKey, String tableId) {
         ObjectNode record = MAPPER.createObjectNode().put("bindingId", binding.path("id").asText())
                 .put("modelId", binding.path("modelId").asText()).put("rowKey", rowKey).put("tableId", tableId);
         ObjectNode attributes = record.putObject("attributes");
@@ -158,7 +176,9 @@ public final class FormProjectionInterpreter {
                     throw invalid("请选择物料主数据：" + fieldId);
                 attributes.set(key, raw.deepCopy());
             } else {
-                String value = scalarValue(raw);
+                JsonNode sourceField = field(fields, fieldId);
+                String value = "reference".equals(sourceField.path("type").asText())
+                        ? referenceCode(sourceField, raw) : scalarValue(raw);
                 if (!"formTrace".equals(binding.path("modelId").asText()) && Set.of("unit", "materialLotText").contains(key) && value.isBlank())
                     throw invalid("正式记录缺少单位或物料批号：" + fieldId);
                 if (!value.isBlank()) attributes.put(key, value);
@@ -166,6 +186,15 @@ public final class FormProjectionInterpreter {
             locations.put(key, fieldId);
         });
         if (!attributes.isEmpty()) results.add(record);
+    }
+
+    private static String referenceCode(JsonNode field, JsonNode value) {
+        if (value.isMissingNode() || value.isNull()) return "";
+        if (!value.isObject() || !value.path("id").asText().matches("[1-9][0-9]*")
+                || !field.path("typeConfig").path("sourceType").asText().equals(value.path("sourceType").asText())
+                || !value.path("code").isTextual() || value.path("code").asText().isBlank())
+            throw invalid("追溯引用缺少对象身份或编号，请重新选择：" + field.path("id").asText());
+        return scalarValue(value.path("code"));
     }
 
     private static String scalarValue(JsonNode value) {

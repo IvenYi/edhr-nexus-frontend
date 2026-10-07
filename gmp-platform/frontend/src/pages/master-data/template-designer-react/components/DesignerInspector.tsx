@@ -117,6 +117,10 @@ const REFERENCE_FUNCTION_DATA_OPTIONS = [
   { label: '物料', value: 'material' },
   { label: '设备', value: 'equipment' },
   { label: '产品', value: 'product' },
+  { label: '生产批次', value: 'productionBatch' },
+  { label: '产品SN', value: 'serialNumber' },
+  { label: '工单', value: 'workOrder' },
+  { label: '工序', value: 'operation' },
   { label: '供应商（暂不可用）', value: 'supplier', disabled: true },
   { label: '字典', value: 'dictionary' },
 ];
@@ -176,6 +180,10 @@ const REFERENCE_QUERY_SOURCE_FIELDS: Record<string, Array<{ label: string; value
     { label: '名称', value: 'name' },
     { label: '规格', value: 'specification' },
   ],
+  productionBatch: [{ label: '批次号', value: 'code' }, { label: '工单号', value: 'workOrderNo' }],
+  serialNumber: [{ label: 'SN', value: 'code' }, { label: '工单号', value: 'workOrderNo' }],
+  workOrder: [{ label: '工单号', value: 'code' }],
+  operation: [{ label: '编码', value: 'code' }, { label: '名称', value: 'name' }],
   supplier: [
     { label: '编码', value: 'code' },
     { label: '名称', value: 'name' },
@@ -1653,7 +1661,7 @@ export default function DesignerInspector() {
     const referenceDisplayMode = displayMode === 'link' ? 'link' : 'text';
     const referenceSourceFieldOptions = REFERENCE_QUERY_SOURCE_FIELDS[referenceSourceType] ?? REFERENCE_QUERY_SOURCE_FIELDS.dictionary;
     const referenceFieldOptions = [
-      { label: '选择引用字段', value: '' },
+      { label: '默认显示内容', value: '' },
       ...referenceSourceFieldOptions,
     ];
     const referenceSourceFieldSelectOptions = [
@@ -1706,26 +1714,27 @@ export default function DesignerInspector() {
               onChange={(value) => updateBinding({ helpText: value })}
             />
           </FieldConfigRow>
-          <FieldConfigRow label="需要引用的功能数据" layout="vertical">
-            <Stack direction="row" spacing={1}>
-              <CompactSelect
-                value={referenceSourceType}
-                options={REFERENCE_FUNCTION_DATA_OPTIONS}
-                onChange={(value) =>
-                  updateWidgetConfig({
-                    referenceSourceType: value,
-                    referenceField: '',
-                    referenceQueryConditions: [createReferenceQueryCondition()],
-                  })
-                }
-              />
-              <CompactSelect
-                value={normalizedReferenceField}
-                options={referenceFieldOptions}
-                onChange={(value) => updateWidgetConfig({ referenceField: value })}
-              />
-            </Stack>
+          <FieldConfigRow label="引用对象" layout="vertical">
+            <CompactSelect
+              value={referenceSourceType}
+              options={REFERENCE_FUNCTION_DATA_OPTIONS}
+              onChange={(value) =>
+                updateWidgetConfig({
+                  referenceSourceType: value,
+                  referenceField: '',
+                  referenceQueryConditions: [createReferenceQueryCondition()],
+                })
+              }
+            />
           </FieldConfigRow>
+          <FieldConfigRow label="显示内容" layout="vertical">
+            <CompactSelect
+              value={normalizedReferenceField}
+              options={referenceFieldOptions}
+              onChange={(value) => updateWidgetConfig({ referenceField: value })}
+            />
+          </FieldConfigRow>
+          <Typography variant="caption" color="text.secondary">保存选中对象的身份；显示内容只决定填报时看到什么，追溯使用对象编号。</Typography>
         </FieldConfigSection>
 
         <Divider />

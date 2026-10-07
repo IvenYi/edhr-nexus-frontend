@@ -72,6 +72,41 @@ class FormProjectionInterpreterTest {
         assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, mapper.readTree("{\"lot1\":{\"id\":\"secret\"}}")))
                 .hasMessageContaining("类型不正确");
     }
+
+    @Test void referenceTraceUsesFrozenCodeAndRejectsWrongTypesOrLegacyDisplayFallback() throws Exception {
+        var model = (ObjectNode) mapper.readTree("""
+          {"fields":[{"id":"batch","type":"reference","typeConfig":{"sourceType":"productionBatch"}}],
+           "projection":{"version":"form-projection-v1","lookupItems":{"lookup_production_batch":{"name":"批次号","type":"text","referenceSources":["productionBatch"]}},
+           "bindings":[{"id":"r","enabled":true,"modelId":"formTrace","sources":{"lookup_production_batch":"batch"}}]}}
+          """);
+        var values = mapper.readTree("""
+            {"batch":{"id":"123","sourceType":"productionBatch","code":"B-A","name":"WO-A"}}
+            """);
+        assertThat(FormProjectionInterpreter.preview(model, values).get(0).path("attributes").path("lookup_production_batch").asText()).isEqualTo("B-A");
+        assertThat(FormProjectionInterpreter.preview(model, mapper.createObjectNode())).isEmpty();
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, mapper.readTree("{\"batch\":{\"id\":\"123\",\"name\":\"B-A\"}}"))).hasMessageContaining("重新选择");
+        ((ObjectNode) values.path("batch")).put("sourceType", "workOrder");
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("重新选择");
+        ((ObjectNode) model.path("fields").get(0).path("typeConfig")).put("sourceType", "material");
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("不匹配");
+    }
+
+    @Test void referenceSubtableRowsRetainSeparateCodesAndLocations() throws Exception {
+        var model = mapper.readTree("""
+            {"fields":[{"id":"lines","type":"subTable","typeConfig":{"columns":[{"id":"key","type":"text"},
+              {"id":"ref","type":"reference","typeConfig":{"sourceType":"equipment"}}]}}],
+             "projection":{"version":"form-projection-v1","lookupItems":{"equipmentText":{"name":"设备编号","type":"text","referenceSources":["equipment"]}},
+              "bindings":[{"id":"trace","modelId":"formTrace","enabled":true,"tableId":"lines","rowKeyFieldId":"key","sources":{"equipmentText":"ref"}}]}}
+            """);
+        var result = FormProjectionInterpreter.preview(model, mapper.readTree("""
+            {"lines":[{"key":"A","ref":{"id":"1","sourceType":"equipment","code":"E-A","name":"同名设备"}},
+                      {"key":"B","ref":{"id":"2","sourceType":"equipment","code":"E-B","name":"同名设备"}}]}
+            """));
+        assertThat(result.get(0).path("attributes").path("equipmentText").asText()).isEqualTo("E-A");
+        assertThat(result.get(1).path("attributes").path("equipmentText").asText()).isEqualTo("E-B");
+        assertThat(result.get(1).path("rowKey").asText()).isEqualTo("B");
+        assertThat(result.get(1).path("sources").path("equipmentText").asText()).isEqualTo("ref");
+    }
     @Test void formalQuantityRequiresUnitsRejectsNegativeAndDuplicateSources() throws Exception {
         var model = (ObjectNode) mapper.readTree("""
           {"fields":[{"id":"qty","type":"number"},{"id":"unit","type":"text"}],

@@ -145,6 +145,37 @@ class FormLookupCatalogPostgresTest {
         assertThatThrownBy(() -> catalog.withLookupSnapshot(form("lookup_other"))).hasMessageContaining("不存在");
     }
 
+    @Test void textAndNativeBatchNumbersShareLookupWithoutChangingContextOrDuplicatingForms() throws Exception {
+        String key = "lookup_production_batch";
+        var nativeModel = form(key);
+        ((ObjectNode) nativeModel.path("fields").get(0)).put("type", "reference").putObject("typeConfig").put("sourceType", "productionBatch");
+        ObjectNode prepared = (ObjectNode) catalog.withLookupSnapshot(nativeModel);
+        assertThat(prepared.path("projection").path("lookupItems").path(key).path("referenceSources").get(0).asText()).isEqualTo("productionBatch");
+        ObjectNode raw = (ObjectNode) mapper.readTree("{\"number\":{\"id\":\"999\",\"sourceType\":\"productionBatch\",\"code\":\"P-001\",\"name\":\"显示工单号\"}}");
+        tx.executeWithoutResult(status -> projection.completed(1, "default", prepared, raw, mapper.createObjectNode().put("objectId", 1), "a"));
+        complete(2, (ObjectNode) catalog.withLookupSnapshot(form(key)));
+        tx.executeWithoutResult(status -> projection.process(jdbc.queryForObject("SELECT id FROM form_projection_batch WHERE form_instance_id=1", Long.class)));
+        assertThat(query(key, "P-001").path("total").asInt()).isEqualTo(2);
+        assertThat(query(key, "显示工单号").path("total").asInt()).isZero();
+        // Duplicate content hits remain evidence, not a second form or a production association.
+        jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,model_id,row_key,table_id,attributes,sources) SELECT r.batch_id,'another','formTrace','form','',r.attributes,r.sources FROM form_projection_record r JOIN form_projection_batch b ON b.id=r.batch_id WHERE b.form_instance_id=1");
+        assertThat(query(key, "P-001").path("total").asInt()).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT object_id FROM form_instance_record WHERE id=1", Long.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT source_json->'values'->'number'->>'id' FROM form_projection_batch WHERE form_instance_id=1", String.class)).isEqualTo("999");
+        assertThat(jdbc.queryForObject("SELECT source_json->'values'->'number'->>'name' FROM form_projection_batch WHERE form_instance_id=1", String.class)).isEqualTo("显示工单号");
+        assertThat(FormProjectionInterpreter.preview(prepared, raw).get(0).path("attributes").path(key).asText()).isEqualTo("P-001");
+    }
+
+    @Test void serverSnapshotRejectsForgedCustomReferenceCompatibility() {
+        var item = create();
+        ObjectNode draft = form(item.id());
+        ((ObjectNode) draft.path("fields").get(0)).put("type", "reference").putObject("typeConfig").put("sourceType", "productionBatch");
+        ((ObjectNode) draft.path("projection")).putObject("lookupItems").putObject(item.id()).put("type", "text").put("name", "伪造含义").putArray("referenceSources").add("productionBatch");
+        ObjectNode prepared = (ObjectNode) catalog.withLookupSnapshot(draft);
+        assertThat(prepared.path("projection").path("lookupItems").path(item.id()).path("referenceSources").isEmpty()).isTrue();
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(prepared)).hasMessageContaining("不匹配");
+    }
+
     @Test void legacyLookupNamesFreezeOnNewSaveAndReportsNeverReadCurrentAliases() throws Exception {
         var item = catalog.list().stream().filter(row -> row.id().equals("materialLotText")).findFirst().orElseThrow();
         ObjectNode before = (ObjectNode) mapper.readTree(catalog.prepareDesign(form(item.id()).toString()));

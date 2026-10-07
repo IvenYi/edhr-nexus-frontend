@@ -217,6 +217,37 @@ class ProductionExecutionIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isZero();
     }
 
+    @Test void productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership() throws Exception {
+        String model = """
+            {"fields":[{"id":"batch","type":"reference","status":"enabled","typeConfig":{"sourceType":"productionBatch","referenceField":"workOrderNo"}},
+              {"id":"order","type":"reference","status":"enabled","typeConfig":{"sourceType":"workOrder"}},
+              {"id":"rows","type":"subTable","status":"enabled","typeConfig":{"columns":[
+                {"id":"sn","type":"reference","status":"enabled","typeConfig":{"sourceType":"serialNumber"}}]}}]}
+            """;
+        jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json='{}' WHERE id=5", model);
+        jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(103,'default',100,'B02','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String endpoint = "/api/v1/production/execution/101/references";
+        mvc.perform(auth(post(endpoint).contentType("application/json").content("{\"operationId\":\"a\",\"formId\":\"form-51\",\"fieldId\":\"batch\",\"keyword\":\"B02\"}")))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").value("103"))
+                .andExpect(jsonPath("$.data[0].code").value("B02")).andExpect(jsonPath("$.data[0].name").value("WO01"))
+                .andExpect(jsonPath("$.data[0].sourceType").value("productionBatch"));
+        Map<String, Object> batch = Map.of("id", "103", "sourceType", "productionBatch", "code", "B02", "name", "WO01");
+        Map<String, Object> values = Map.of("batch", batch, "order", Map.of("id", "100", "sourceType", "workOrder", "code", "WO01", "name", "WO01"),
+                "rows", List.of(Map.of("sn", Map.of("id", "102", "sourceType", "serialNumber", "code", "SN01", "name", "SN01"))));
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", values)).andExpect(status().isOk());
+        JsonNode saved = mapper.readTree(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class));
+        assertThat(saved.path("batch").path("code").asText()).isEqualTo("B02");
+        assertThat(saved.path("batch").path("id").asText()).isEqualTo("103");
+        assertThat(saved.path("rows").get(0).path("sn").path("sourceType").asText()).isEqualTo("serialNumber");
+        assertThat(jdbc.queryForObject("SELECT object_id FROM form_instance_record", Long.class)).isEqualTo(101);
+        var forged = new HashMap<>(values);
+        forged.put("batch", Map.of("id", "102", "sourceType", "productionBatch", "code", "SN01", "name", "WO01"));
+        action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", forged)).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class)).contains("B02");
+    }
+
     @Test void batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration() throws Exception {
         for (String barcode : List.of("B01", "SN01")) {
             mvc.perform(auth(get("/api/v1/production/execution/scan").param("barcode", barcode))).andExpect(status().isOk())
@@ -1551,7 +1582,7 @@ class ProductionExecutionIntegrationTest {
 
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
-    @Import({DhrFillingController.class, DhrFillingService.class, FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, DhrInstanceController.class, DhrInstanceService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
+    @Import({DhrFillingController.class, DhrFillingService.class, FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, FormProjectionService.class, DhrInstanceController.class, DhrInstanceService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
         ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class,
         com.zencas.edhr.template.controller.FormReferenceController.class, com.zencas.edhr.template.service.FormReferenceLookup.class})
     static class Config {

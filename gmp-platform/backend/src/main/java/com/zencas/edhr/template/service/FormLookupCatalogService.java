@@ -45,6 +45,8 @@ public class FormLookupCatalogService {
         ObjectNode result = FormProjectionInterpreter.catalog();
         for (JsonNode model : result.path("models")) if ("formTrace".equals(model.path("id").asText())) {
             ((ObjectNode) model).set("attributes", mapper.valueToTree(list()));
+            for (JsonNode attribute : model.path("attributes"))
+                ((ObjectNode) attribute).set("referenceSources", mapper.valueToTree(FormProjectionInterpreter.referenceSources(attribute.path("id").asText())));
         }
         return result;
     }
@@ -100,7 +102,8 @@ public class FormLookupCatalogService {
         for (String key : keys) {
             Item item = available.stream().filter(candidate -> candidate.id().equals(key)).findFirst()
                     .orElseThrow(() -> invalid("追溯项不存在，请重新选择：" + key));
-            definitions.putObject(key).put("name", item.name()).put("type", item.type()).put("revision", item.revision());
+            definitions.putObject(key).put("name", item.name()).put("type", item.type()).put("revision", item.revision())
+                    .set("referenceSources", mapper.valueToTree(FormProjectionInterpreter.referenceSources(key)));
         }
         return copy;
     }

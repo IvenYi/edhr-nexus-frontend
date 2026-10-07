@@ -1,6 +1,6 @@
 import type { CanvasNode, ModelField, TemplateDesignerDocument } from '@/pages/master-data/template-designer-react/types';
 
-export interface ReferenceValue { id: string; name: string }
+export interface ReferenceValue { id: string; name: string; sourceType?: string; code?: string }
 export interface ReferenceCondition { sourceField: string; operator: string; targetFieldId: string }
 export function referenceConditions(field: ModelField): ReferenceCondition[] {
   const raw = field.typeConfig.referenceQueryConditions;

@@ -7,7 +7,7 @@ import { isCellDisplayNode } from '@/pages/master-data/template-designer-react/r
 import { readNodeCellRange } from '@/pages/master-data/template-designer-react/utils/subTableRegion';
 import SignatureDisplay from './SignatureDisplay';
 import { readSignaturePresentation } from './signaturePresentation';
-import { referenceConditions, referenceDependencyValues } from './referenceConfig';
+import { referenceConditions, referenceDependencyValues, type ReferenceValue } from './referenceConfig';
 
 export interface SignatureTarget { fieldId: string; tableId?: string; rowIndex?: number }
 export interface FormRuntime {
@@ -19,7 +19,7 @@ export interface FormRuntime {
   signaturesInvalidated?: boolean;
   upload?: (file: File) => Promise<{ fileId: string; originalName: string }>;
   referenceValues?: Record<string, unknown>;
-  references?: (fieldId: string, keyword: string, values: Record<string, unknown>) => Promise<Array<{ id: string; name: string }>>;
+  references?: (fieldId: string, keyword: string, values: Record<string, unknown>) => Promise<ReferenceValue[]>;
 }
 export const FormRuntimeContext = createContext<FormRuntime | undefined>(undefined);
 export const SignatureDisplayModeContext = createContext<Record<string, unknown>>({});
@@ -93,7 +93,7 @@ function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disable
 }
 
 export function RuntimeReference({ field, disabled, runtime, canvas = false }: { field: ModelField; disabled: boolean; runtime: FormRuntime; canvas?: boolean }) {
-  const [options, setOptions] = useState<Array<{ id: string; name: string }>>([]); const [error, setError] = useState('');
+  const [options, setOptions] = useState<ReferenceValue[]>([]); const [error, setError] = useState('');
   const [keyword, setKeyword] = useState('');
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
@@ -118,7 +118,7 @@ export function RuntimeReference({ field, disabled, runtime, canvas = false }: {
     }, 200);
     return () => { active = false; window.clearTimeout(timer); };
   }, [field.id, disabled, runtime.references, keyword, retry, dependencies, configKey, incomplete, missing]);
-  const value = runtime.values[field.id] as { id: string; name: string } | undefined;
+  const value = runtime.values[field.id] as ReferenceValue | undefined;
   return <Autocomplete fullWidth size="small" disabled={disabled} options={options} value={value?.id ? value : null} loading={loading}
     popupIcon={error ? <Tooltip title="引用数据加载失败，点击查看详情" placement="top" arrow><WarningAmberRounded sx={{ fontSize: 17, color: 'error.main' }} /></Tooltip> : <ArrowDropDownRounded />}
     openText={error ? '查看引用数据加载异常' : '展开选项'} closeText="收起选项"
@@ -127,6 +127,6 @@ export function RuntimeReference({ field, disabled, runtime, canvas = false }: {
     getOptionLabel={(item) => item.name} isOptionEqualToValue={(item, selected) => item.id === selected.id} filterOptions={(items) => items}
     noOptionsText={error ? <Box role="status"><Typography sx={{ fontSize: 13, fontWeight: 600, color: '#344256', mb: 0.5 }}>引用数据加载失败</Typography><Typography sx={{ fontSize: 12, lineHeight: 1.6, color: '#718096' }}>{error}</Typography><Button size="small" startIcon={<RefreshRounded />} onMouseDown={(event) => event.preventDefault()} onClick={() => setRetry((value) => value + 1)} sx={{ mt: 1, px: 0.75, minWidth: 0, fontSize: 12 }}>重新加载</Button></Box> : <Box><Typography sx={{ fontSize: 12, color: '#526277' }}>{missing ? '请先填写查询条件关联的字段' : '未找到匹配记录'}</Typography>{!missing && <Typography sx={{ fontSize: 12, color: '#718096' }}>请尝试其他名称或记录编号</Typography>}</Box>} loadingText="正在查询…" onInputChange={(_, text, reason) => { if (reason === 'input' || reason === 'clear') setKeyword(text); }}
     onChange={(_, selected) => runtime.onChange(field.id, selected)}
-    renderOption={(props, item) => <li {...props} key={item.id}>{item.name}</li>}
+    renderOption={(props, item) => <li {...props} key={item.id}><Box><Typography variant="body2">{item.name}</Typography>{item.code && item.code !== item.name && <Typography variant="caption" color="text.secondary">{item.code}</Typography>}</Box></li>}
     renderInput={(params) => <TextField {...params} label={canvas ? undefined : field.name} placeholder={canvas ? field.name : undefined} inputProps={{ ...params.inputProps, 'aria-label': field.name }} helperText={!canvas && !disabled ? '输入名称或记录编号搜索' : undefined} />} />;
 }

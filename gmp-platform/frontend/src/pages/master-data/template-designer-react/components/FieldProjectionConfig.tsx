@@ -61,7 +61,7 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
     {traceModel && (traces.length > 0 || traceModel.attributes.some(attribute => acceptsProjectionAttribute(field, attribute))) && <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
       <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={traceOpen || traces.length > 0}
         onChange={(_, checked) => { setTraceOpen(checked); if (!checked) removeFieldFrom(traces); }} />} label={<Typography fontWeight={600} variant="body2">用于查找与追溯</Typography>} />
-      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>关联这个字段记录的信息，之后可在追溯页面按填写值找到原表单。</Typography>
+      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>{field.type === 'reference' ? '按选中对象的编号找到原表单。显示内容不会改变追溯使用的编号。' : '关联这个字段记录的信息，之后可在追溯页面按填写值找到原表单。'}</Typography>
       <Collapse in={traceOpen || traces.length > 0}><Stack spacing={1} sx={{ mt: 1.5 }}>
         {traces.flatMap(binding => Object.entries(binding.sources).filter(([, id]) => id === field.id).map(([id]) =>
           <Stack key={`${binding.id}/${id}`} direction="row" alignItems="center" justifyContent="space-between">
@@ -80,6 +80,8 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
         {tableId && traces.some(binding => !binding.rowKeyFieldId) && <Alert severity="info">当前版本的子表行定位尚未配置，请在整子表用途中补齐后启用。</Alert>}
       </Stack></Collapse>
     </Box>}
+    {traceModel && !traces.length && !statistical.length && !models.length && !traceModel.attributes.some(attribute => acceptsProjectionAttribute(field, attribute))
+      && <Typography variant="body2" color="text.secondary">当前引用对象暂无兼容的预置追溯项或统计用途。引用选择仍可正常使用。</Typography>}
     {(models.length > 0 || statistical.length > 0) && <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
       <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={statisticsOpen || statistical.length > 0}
         onChange={(_, checked) => { setStatisticsOpen(checked); if (!checked) removeFieldFrom(statistical); }} />} label={<Typography fontWeight={600} variant="body2">用于业务统计</Typography>} />

@@ -183,13 +183,15 @@ class ExecutionAccessTest {
 
     @Test void referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows() throws Exception {
         var jdbc = new JdbcTemplate(new org.springframework.jdbc.datasource.DriverManagerDataSource("jdbc:h2:mem:execution-references;DB_CLOSE_DELAY=-1", "sa", ""));
-        jdbc.execute("CREATE TABLE material(id BIGINT PRIMARY KEY,name VARCHAR(128),status VARCHAR(16))");
+        jdbc.execute("CREATE TABLE material(id BIGINT PRIMARY KEY,code VARCHAR(128),name VARCHAR(128),status VARCHAR(16))");
         try {
-            for (int i = 1; i <= 105; i++) jdbc.update("INSERT INTO material VALUES(?,'同名物料','ACTIVE')", i);
+            for (int i = 1; i <= 105; i++) jdbc.update("INSERT INTO material VALUES(?,?,'同名物料','ACTIVE')", i, "MAT-" + i);
             var real = new ExecutionAccess(subjects, users, encoder, signatures, new SnowflakeIdGenerator(1), mapper, jdbc);
             var field = mapper.readTree("{\"id\":\"ref\",\"name\":\"物料\",\"type\":\"reference\",\"typeConfig\":{\"sourceType\":\"material\"}}");
-            assertThat(real.references(field, "105")).singleElement().satisfies(item -> assertThat(item.get("id")).isEqualTo("105"));
+            assertThat(real.references(field, "105")).singleElement().satisfies(item -> assertThat(item)
+                    .containsEntry("id", "105").containsEntry("code", "MAT-105").containsEntry("sourceType", "material"));
             real.validateEvidence(field, mapper.readTree("{\"id\":\"105\",\"name\":\"同名物料\"}"), "101");
+            real.validateEvidence(field, mapper.readTree("{\"id\":\"105\",\"name\":\"同名物料\",\"sourceType\":\"material\",\"code\":\"MAT-105\"}"), "101");
             assertThatThrownBy(() -> real.validateEvidence(field, mapper.readTree("{\"id\":\"105\",\"name\":\"伪造名称\"}"), "101")).hasMessageContaining("已失效");
         } finally { jdbc.execute("DROP TABLE material"); }
     }

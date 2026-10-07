@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Alert, Box, Button, Collapse, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { RuntimeReference } from '@/components/form-renderer/FormRuntimeField';
+import { getPreviewReferences } from '@/api/form-references';
 import FormDialog from '@/components/FormDialog';
 import FormDialogSection from '@/components/FormDialogSection';
 import client from '@/api/client';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
 import { projectionConfigurationIssues, projectionSourceSummary, projectionSources, useProjectionCatalog, type ProjectionPreviewRecord } from '../utils/projectionConfiguration';
-import { buildProjectionPreviewValues, previewSampleKey } from '../utils/projectionPreview';
+import { buildProjectionPreviewValues, previewSampleKey, projectionPreviewFieldIds } from '../utils/projectionPreview';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 import FieldProjectionConfig from './FieldProjectionConfig';
 import SubTableProjectionConfig from './SubTableProjectionConfig';
@@ -23,17 +24,11 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [regionId, setRegionId] = useState<string | null>(null);
   const [fieldId, setFieldId] = useState('');
-  const [samples, setSamples] = useState<Record<string, string>>({});
+  const [samples, setSamples] = useState<Record<string, unknown>>({});
   const [rowCounts, setRowCounts] = useState<Record<string, number>>({});
   const [preview, setPreview] = useState<ProjectionPreviewRecord[] | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const { data: materials = [], isError: materialsError } = useQuery({
-    queryKey: ['projection-preview-materials'], enabled: open && tab === 1,
-    queryFn: async () => (await client.post('/master-data/template-modeling/reference-options', {
-      config: { sourceType: 'material' }, keyword: '', values: {},
-    })).data.data as { id: string; name: string }[],
-  });
   useEffect(() => {
     if (!open) return;
     setTab(0); setError(''); setPreview(null); setExpandedId(null);
@@ -46,6 +41,8 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   const focusedTable = document.model.fields.find(field => field.id === regionId && field.type === 'subTable');
   const focusedField = projectionSources(document.model, { tableId: regionId ?? undefined } as ProjectionBinding).find(field => field.id === fieldId);
   const enabled = bindings.filter(binding => binding.enabled);
+  const previewValues = buildProjectionPreviewValues(document.model, samples, rowCounts);
+  const previewIds = projectionPreviewFieldIds(document.model);
   const update = (next: ProjectionBinding[]) => setBindings(next, catalog?.version);
   const run = async (action: () => Promise<void>) => {
     setError(''); setBusy(true);
@@ -54,17 +51,22 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
   const showPreview = async () => {
     setPreview(null);
     const response = await client.post('/master-data/template-modeling/projection-preview', {
-      model: document.model, values: buildProjectionPreviewValues(document.model, samples, rowCounts, materials),
+      model: document.model, values: previewValues,
     });
     setPreview(response.data.data as ProjectionPreviewRecord[]);
   };
   const renderSample = (field: ModelField, tableId: string, rowIndex: number) => {
     const key = previewSampleKey(tableId, rowIndex, field.id);
-    const material = field.type === 'reference';
-    return <TextField key={key} size="small" fullWidth label={field.name} select={material} type={field.type === 'number' ? 'number' : 'text'}
-      value={samples[key] ?? ''} onChange={event => { setPreview(null); setSamples({ ...samples, [key]: event.target.value }); }}>
-      {material ? [<MenuItem key="empty" value="">请选择物料</MenuItem>, ...materials.map(item => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)] : undefined}
-    </TextField>;
+    if (field.type === 'reference') {
+      const row = tableId ? (previewValues[tableId] as Record<string, unknown>[])[rowIndex] : previewValues;
+      return <RuntimeReference key={key} field={field} disabled={false} runtime={{
+        values: row, referenceValues: { ...previewValues, ...row },
+        references: (_id, keyword, values) => getPreviewReferences(field.typeConfig, keyword, values),
+        onChange: (_id, value) => { setPreview(null); setSamples({ ...samples, [key]: value }); },
+      }} />;
+    }
+    return <TextField key={key} size="small" fullWidth label={field.name} type={field.type === 'number' ? 'number' : 'text'}
+      value={samples[key] ?? ''} onChange={event => { setPreview(null); setSamples({ ...samples, [key]: event.target.value }); }} />;
   };
   return <FormDialog open={open} onClose={() => { if (!busy) onClose(); }} maxWidth="md" fullWidth>
     <DialogTitle>查找与统计总览</DialogTitle>
@@ -117,12 +119,10 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
         </> : <>
           <Alert severity="info">模拟填写只用于核对已启用的用途，不保存到模板或正式记录。子表可填写多行，核对每行是否形成正确明细。配置草稿不参与预览。</Alert>
           {!enabled.length && <Typography color="text.secondary">尚无已启用用途，请先在“用途配置”中补齐并启用。</Typography>}
-          {materialsError && enabled.some(binding => binding.sources.material) && <Alert severity="warning">物料选项读取失败，请切换页面后重试。</Alert>}
           {regions.map(region => {
-            const items = enabled.filter(binding => (binding.tableId ?? '') === region.id);
-            if (!items.length) return null;
-            const ids = new Set(items.flatMap(binding => [...Object.values(binding.sources), ...(binding.rowKeyFieldId ? [binding.rowKeyFieldId] : [])]));
-            const fields = projectionSources(document.model, items[0]).filter(field => ids.has(field.id));
+            const ids = previewIds.get(region.id);
+            if (!ids?.size) return null;
+            const fields = projectionSources(document.model, { tableId: region.id }).filter(field => ids.has(field.id));
             const count = region.id ? rowCounts[region.id] ?? 2 : 1;
             return <FormDialogSection key={region.id} title={region.name}>
               {Array.from({ length: count }, (_, rowIndex) => <Box key={rowIndex} sx={{ mt: 2 }}>

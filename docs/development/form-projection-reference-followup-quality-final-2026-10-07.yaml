@@ -1,0 +1,169 @@
+qualityResult:
+  result: passed
+  baseCommit: bb613f1195be9b249f9f332dd5931ad1e66deb70
+  headCommit: bb613f1195be9b249f9f332dd5931ad1e66deb70
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-traceability-projection-handoff-2026-10-03.md
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/form-projection-reference-followup-2026-10-07.md
+      - docs/development/form-projection-reference-followup-quality-2026-10-07.yaml
+      - docs/development/form-projection-reference-followup-quality-final-2026-10-07.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/evidence/form-reference-runtime-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java
+      - gmp-platform/frontend/scripts/test-projection-preview.mjs
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - gmp-platform/frontend/scripts/verify-template-designer-react.mjs
+      - gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx
+      - gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - docs/development/form-projection-reference-followup-2026-10-07.md
+      - docs/development/form-projection-reference-followup-quality-2026-10-07.yaml
+      - docs/development/form-projection-reference-followup-quality-final-2026-10-07.yaml
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: final-reference-scope-and-knowledge
+      required: true
+      category: requirements
+      description: 全新独立实例核对角色契约、DEC-0060/0075、未决问题、本轮L2影响分析及当前产品与知识diff。
+      method: inspection
+      command: 阅读AGENTS.md、codeplzreadme.md、质量及交接契约、知识入口/未决项、决策/规则、本轮记录与git diff。
+      outcome: passed
+      evidence:
+        - 原生引用取值与追溯/统计用途正交；编号证据与显示name分开，不根据显示名称兜底。
+        - 预置兼容矩阵由服务端稳定ID重建并冻结，客户端自定义兼容信息不能扩展任意引用语义。
+        - 真实执行归属、DHR、统计口径、使用时冻结与首次最终完成契约未改变。
+        - 知识0.3.24保持不变；用户纠偏、原始缺口和inference工程枚举区分，无新增verified状态或完整MVP声明。
+        - running.md与handoff新入口准确记录此次增量及旧值不补编号的限制。
+    - id: final-reference-backend-regression
+      required: true
+      category: integration
+      description: 全新实例独立复跑引用、解释器、PostgreSQL投影/目录、授权、生产执行/快照及本体检查，包含两个初轮失败场景。
+      method: automated-test
+      command: >-
+        JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
+        PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection
+        mvn '-Dtest=FormReferenceLookupTest,FormReferenceConfigTest,FormProjectionInterpreterTest,FormLookupCatalogPostgresTest,FormProjectionPostgresTest,TemplateProjectionAuthorizationTest,FormProjectionAuthorizationTest,FormLookupCatalogAuthorizationTest,ProductionExecutionEngineTest,ExecutionAccessTest,FormFillSnapshotTest,ProductionExecutionIntegrationTest#referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave+previewReferencesRequireDesignPermissionAndDoNotWriteData+productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership+outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters,BusinessKnowledgeModelTest' test
+      outcome: passed
+      evidence:
+        - /tmp/reference-followup-quality-final-backend-20261007.log:4596，140 tests，0 failures，0 errors，0 skipped；BUILD SUCCESS。
+        - 实际集合为投影/引用/目录/授权43项、生产邻接及4个聚焦集成38项、本体59项，不含不存在的ProductionExecutionServiceTest。
+        - 原ExecutionAccessTest 105个同名记录按ID检索及旧id/name校验保留，新增sourceType/code断言通过。
+        - 生产集成Config使用真实FormProjectionService；冻结引用查询、设计预览权限/只读、新typed批次/工单/子表SN保存与伪造来源拒绝、数量快照共4项实际运行通过。
+        - PostgreSQL随机schema检查文本/引用同编号检索、表单去重、source_json身份/显示证据及真实归属不改；不是仅H2或空API返回。
+    - id: final-reference-frontend-regression
+      required: true
+      category: regression
+      description: 独立验证主表/子表引用同步、两用途保存撤销、候选类型约束、多行模拟与依赖字段装配并构建。
+      method: automated-test
+      command: node scripts/test-form-references.mjs && node scripts/test-projection-panel.mjs && node scripts/test-projection-source-editor.mjs && node scripts/test-projection-preview.mjs && npm run verify:template-designer-react && npm run build
+      outcome: passed
+      evidence:
+        - references5、panel3、source-editor5、preview4，共17项通过；无跳过。
+        - verify-template-designer-react passed。
+        - /tmp/reference-followup-quality-final-build-20261007.log，TypeScript与Vite构建退出0。
+    - id: final-reference-browser
+      required: true
+      category: e2e
+      description: 新建浏览器session只读复核已保存的虚构验收模板，实际运行原生批次搜索与混合预览，不修改模板或正式实例。
+      method: browser
+      command: playwright-cli --session=reference-followup-quality-final-20261007
+      outcome: passed
+      evidence:
+        - 使用REFERENCE-FOLLOWUP-QUALITY-20261007，版本383272975886254081；保存配置重开为productionBatch/workOrderNo，UI来源新增生产批次、产品SN、工单、工序。
+        - 实际按PROJECTION-DEMO2-BATCH搜索，候选显示PROJECTION-DEMO2-WO及次要批次编号；选择后显示配置的工单号。
+        - 总览预览中相同批次的文本与原生引用分别产生两条编号证据，子表产生一条FINAL-ROW-A/FINAL-LOT-A/2.5件物料消耗，共3条；没有将显示工单号作为批次检索值。
+        - 全屏模拟填报独立按批次号搜索并选择，显示PROJECTION-DEMO2-WO；均为模拟值，无生产数据写入。
+        - output/playwright/reference-followup-quality-final-preview-20261007.png
+        - output/playwright/reference-followup-quality-final-fill-20261007.png
+        - 登录后目标页面与设计/预览/模拟填报控制台0 errors；2条既有React Router future warnings。
+        - 本实例浏览器session已关闭，测试命令均已退出。
+    - id: final-reference-visual
+      required: true
+      category: visual
+      description: 核对统一UI规范及实际截图；复用原字段侧栏、选择组件和现有总览/模拟外壳。
+      method: inspection
+      command: 阅读docs/frontend/dialog-guidelines.md、detail-drawer-guidelines.md、list-page-guidelines.md；view_image独立预览及模拟截图。
+      outcome: passed
+      evidence:
+        - 引用对象和显示内容分开，字段配置使用既有FieldConfigRow；选项编号次要呈现。
+        - 本轮不新增独立列表或详情抽屉，不把全屏模拟套普通表单外壳；模拟与既有画布呈现保持一致。
+    - id: final-reference-database-and-diff
+      required: true
+      category: database
+      description: 核对隔离库旧投影完整行指纹、无新迁移及diff卫生。
+      method: query
+      command: SELECT count(*)||'|'||md5(string_agg(to_jsonb(b)::text,',' ORDER BY id)) FROM form_projection_batch b; git diff --check
+      outcome: passed
+      evidence:
+        - edhr_form_projection验证前后均5|37a1da10aa28db1defd81185ba32f47e；后端8087/frontend3007。
+        - 本轮未新增schema变更；PG集成临时schema清理，浏览器只读配置及模拟。
+        - git diff --check退出0；输出目录未纳入审查交付资产；未写原业务库。
+  findings:
+    - id: QF-REFERENCE-001
+      severity: medium
+      scope: execution-access-regression-fixture
+      summary: 初轮旧H2物料fixture缺少code列已由主开发修复，全新实例独立复验通过。
+      reproductionSteps: [Java21执行ExecutionAccessTest.referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows]
+      expectedResult: 105个同名记录按ID检索、旧值及新元数据校验均通过。
+      actualResult: 原断言保留，11项ExecutionAccessTest全部通过。
+      evidence: [docs/development/form-projection-reference-followup-quality-2026-10-07.yaml]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java:184
+        - type: command
+          reference: /tmp/reference-followup-quality-final-backend-20261007.log:4592
+    - id: QF-REFERENCE-002
+      severity: medium
+      scope: actual-execution-integration-config
+      summary: 初轮测试Config缺真实投影服务已由主开发补齐，全新实例复验原3项及新增SAVE场景通过。
+      reproductionSteps: [Java21执行本报告所列ProductionExecutionIntegrationTest的4个聚焦方法]
+      expectedResult: 实际上下文成功启动，冻结配置、引用保存、预览授权及数量映射进入真实测试并通过。
+      actualResult: 真实FormProjectionService装配生效，4项测试全部通过，无跳过。
+      evidence: [docs/development/form-projection-reference-followup-quality-2026-10-07.yaml]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java:1585
+        - type: command
+          reference: /tmp/reference-followup-quality-final-backend-20261007.log:4584
+  residualRisks:
+    - id: source-sample-coverage
+      description: 当前隔离库SN/工序/设备/产品缺样本，最终浏览器只实际选择批次与物料；H2受控来源及生产SAVE集成覆盖其余身份协议，不能称当前数据库浏览器逐来源全部验过。
+      impact: 客户真实主数据的各来源选择及筛选仍需部署环境试用。
+      mitigation: 后续使用独立虚构数据或客户验收环境逐来源验证，不改既有正式证据。
+    - id: customer-usability-and-performance
+      description: 使用虚构模板验证工程交互，未执行客户真实表单试用、大数据性能或全系统回归。
+      impact: 本次passed不证明客户学习成本和整体MVP验收已完成。
+      mitigation: 以代表性真实表单进行后续试用，按新增风险扩大回归。
+    - id: deferred-runtime-scope
+      description: Q6自由文本实体解析、Q9表头共享、Q12自动行身份、Q15独立索引、Q17上下文带入、A12、自定义项引用兼容、工序预置内容追溯及二期自定义报表均保持排除。
+      impact: 当前交付是常用受控引用与既有预置编号检索补修，不构成完整关系追溯或任意模型支持。
+      mitigation: 最终交付及接手入口保持明确范围，相应运行实现前处理依赖决策。
+  blockingConditions: []
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
+    note: 本报告由未参与任何修复的全新质量实例独立形成，只写质量报告，不修改业务代码、测试或知识资产。

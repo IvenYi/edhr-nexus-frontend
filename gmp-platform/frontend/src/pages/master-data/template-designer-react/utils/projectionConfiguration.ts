@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import client from '@/api/client';
 import type { ModelField, ModelDesignState, ProjectionBinding } from '../types/model';
 
-export interface ProjectionAttribute { id: string; name: string; type: string }
+export interface ProjectionAttribute { id: string; name: string; type: string; referenceSources?: string[] }
 export interface ProjectionModel { id: string; name: string; attributes: ProjectionAttribute[] }
 export interface ProjectionCatalog { version: string; models: ProjectionModel[]; notice: string }
 export interface ProjectionPreviewRecord { bindingId: string; rowKey: string; modelId: string; tableId: string; attributes: Record<string, unknown>; sources: Record<string, string> }
@@ -16,6 +16,7 @@ export function acceptsProjectionAttribute(field: ModelField, attribute: Project
   if (field.status === 'disabled') return false;
   if (attribute.type === 'number') return field.type === 'number';
   if (attribute.type === 'reference') return field.type === 'reference' && field.typeConfig.sourceType === 'material';
+  if (field.type === 'reference') return attribute.referenceSources?.includes(String(field.typeConfig.sourceType)) ?? false;
   return field.type === 'text' || field.type === 'singleSelect';
 }
 

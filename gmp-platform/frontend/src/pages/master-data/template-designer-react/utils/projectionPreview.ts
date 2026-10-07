@@ -1,21 +1,35 @@
 import type { ModelDesignState, ModelField } from '../types/model';
+import { referenceConditions } from '@/components/form-renderer/referenceConfig';
 
 export function previewSampleKey(tableId: string | undefined, rowIndex: number, fieldId: string) {
   return `${tableId ?? ''}/${rowIndex}/${fieldId}`;
 }
 
-/** Build independent rows from one shared column configuration; never mutate the template. */
-export function buildProjectionPreviewValues(model: ModelDesignState, samples: Record<string, string>,
-  rowCounts: Record<string, number>, materials: { id: string; name: string }[]) {
-  const values: Record<string, unknown> = {};
+export function projectionPreviewFieldIds(model: ModelDesignState) {
   const assigned = new Map<string, Set<string>>();
+  const add = (region: string, id: string) => {
+    const ids = assigned.get(region) ?? new Set<string>();
+    if (ids.has(id)) return;
+    ids.add(id); assigned.set(region, ids);
+    const columns = region ? (model.fields.find(field => field.id === region)?.typeConfig.columns as ModelField[] | undefined) ?? [] : model.fields;
+    const field = columns.find(item => item.id === id);
+    if (field?.type === 'reference') referenceConditions(field).forEach(condition => {
+      if (condition.targetFieldId) add(columns.some(column => column.id === condition.targetFieldId) ? region : '', condition.targetFieldId);
+    });
+  };
   model.projection?.bindings.filter(binding => binding.enabled).forEach(binding => {
     const region = binding.tableId ?? '';
-    const ids = assigned.get(region) ?? new Set<string>();
-    Object.values(binding.sources).forEach(id => ids.add(id));
-    if (binding.rowKeyFieldId) ids.add(binding.rowKeyFieldId);
-    assigned.set(region, ids);
+    Object.values(binding.sources).forEach(id => add(region, id));
+    if (binding.rowKeyFieldId) add(region, binding.rowKeyFieldId);
   });
+  return assigned;
+}
+
+/** Build independent rows from one shared column configuration; never mutate the template. */
+export function buildProjectionPreviewValues(model: ModelDesignState, samples: Record<string, unknown>,
+  rowCounts: Record<string, number>) {
+  const values: Record<string, unknown> = {};
+  const assigned = projectionPreviewFieldIds(model);
   assigned.forEach((ids, region) => {
     const fields = region ? (model.fields.find(field => field.id === region)?.typeConfig.columns as ModelField[] | undefined) ?? [] : model.fields;
     const rows = Array.from({ length: region ? rowCounts[region] ?? 2 : 1 }, (_, rowIndex) => {
@@ -24,7 +38,7 @@ export function buildProjectionPreviewValues(model: ModelDesignState, samples: R
         const field = fields.find(item => item.id === id);
         const sample = samples[previewSampleKey(region, rowIndex, id)] ?? '';
         row[id] = field?.type === 'number' ? (sample === '' ? null : Number(sample))
-          : field?.type === 'reference' ? materials.find(material => material.id === sample) ?? null : sample;
+          : field?.type === 'reference' ? (sample && typeof sample === 'object' ? sample : null) : sample;
       });
       return row;
     });

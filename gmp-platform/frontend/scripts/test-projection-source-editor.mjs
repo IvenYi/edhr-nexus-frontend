@@ -13,6 +13,7 @@ await build({ stdin: { contents: `
   import React from 'react';
   import { renderToStaticMarkup } from 'react-dom/server';
   import ProjectionSourceEditor from './src/pages/master-data/template-designer-react/components/ProjectionSourceEditor';
+  export { acceptsProjectionAttribute } from './src/pages/master-data/template-designer-react/utils/projectionConfiguration';
   import { useTemplateDesignerStore as store } from './src/pages/master-data/template-designer-react/store/useTemplateDesignerStore';
   export function renderEditor(model, binding, definition) {
     store.getState().setDocument({ meta: {}, model, canvas: { pages: [] }, workflow: { nodes: [], edges: [], config: {} } });
@@ -24,7 +25,7 @@ await build({ stdin: { contents: `
   }
 `, resolveDir: fileURLToPath(new URL('..', import.meta.url)), loader: 'tsx' }, outfile, bundle: true, format: 'cjs', platform: 'node', logLevel: 'silent',
   alias: { '@': fileURLToPath(new URL('../src', import.meta.url)) } });
-const { renderEditor } = createRequire(import.meta.url)(outfile);
+const { renderEditor, acceptsProjectionAttribute } = createRequire(import.meta.url)(outfile);
 await rm(tempDir, { recursive: true, force: true });
 
 const lot = { id: 'lot', name: '供应商批号输入', type: 'text', typeConfig: {} };
@@ -64,5 +65,20 @@ test('trace editor offers no additional meaning when every compatible source is 
   const { html, changes } = renderEditor({ groups: [], fields: [lot] }, { id: 'trace', modelId: 'formTrace', enabled: true, sources: { supplierLot: 'lot' } }, definition);
   assert.ok(!html.includes('添加追溯项'));
   assert.ok(html.includes('供应商批号（外部）'));
+  assert.deepEqual(changes, []);
+});
+
+test('trace accepts compatible native sources while statistics and unrelated meanings keep their boundaries', () => {
+  const batch = { id: 'batch', name: '生产批次选择', type: 'reference', typeConfig: { sourceType: 'productionBatch' } };
+  const meaning = { id: 'lookup_production_batch', name: '生产批次号', type: 'text', referenceSources: ['productionBatch'] };
+  assert.equal(acceptsProjectionAttribute(batch, meaning), true);
+  assert.equal(acceptsProjectionAttribute(lot, meaning), true);
+  assert.equal(acceptsProjectionAttribute(batch, { ...meaning, referenceSources: ['material'] }), false);
+  assert.equal(acceptsProjectionAttribute(batch, { id: 'custom', type: 'text' }), false);
+  assert.equal(acceptsProjectionAttribute(batch, { id: 'quantity', type: 'number' }), false);
+  assert.equal(acceptsProjectionAttribute(batch, { id: 'material', type: 'reference' }), false);
+  const { html, changes } = renderEditor({ fields: [batch] }, { id: 'trace', modelId: 'formTrace', enabled: true, sources: { lookup_production_batch: 'batch' } }, { id: 'formTrace', attributes: [meaning] });
+  assert.ok(html.includes('生产批次选择'));
+  assert.ok(!html.includes('类型不匹配'));
   assert.deepEqual(changes, []);
 });

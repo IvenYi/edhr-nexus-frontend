@@ -1793,10 +1793,11 @@ if (singleSelectConfigBlock.includes('optionColor') || singleSelectConfigBlock.i
 if (singleSelectConfigBlock.includes('longLabelHoverPreview') || singleSelectConfigBlock.includes('长标签 hover 预览')) failures.push('DesignerInspector.tsx: single-select display must not expose 长标签 hover 预览');
 if (singleSelectDisplayOptionsBlock.includes('文本/标签样式')) failures.push('DesignerInspector.tsx: single-select display options must not expose 文本/标签样式');
 assertIncludes(referenceConfigBlock, [
-  '需要引用的功能数据',
+  '引用对象',
+  '显示内容',
   'referenceSourceType',
   'referenceField',
-  '选择引用字段',
+  '默认显示内容',
   '查询条件',
   '查找条件',
   'referenceQueryConditions',
@@ -1805,6 +1806,7 @@ assertIncludes(referenceConfigBlock, [
   'REFERENCE_QUERY_OPERATOR_OPTIONS',
   '显示样式',
 ], 'DesignerInspector.tsx: reference field configuration');
+assertIncludes(inspector, ["value: 'productionBatch'", "value: 'serialNumber'", "value: 'workOrder'", "value: 'operation'"], 'DesignerInspector.tsx: controlled production reference sources');
 assertIncludes(referenceDisplayOptionsBlock, [
   '链接文本',
   '纯文本',

@@ -12,3 +12,8 @@ evidence:
     # 2026-10-07追加23/24/25见文末：普通文本物料匹配须显式用途且次要展示，原生引用不依赖投影用途；可用新项自动进入兼容设计及授权查询候选，不要求已有绑定或命中；新含义对未关联旧实例的补充覆盖排二期，原有查询/快照/审计/DHR保留。Q6解析细则、Q9/Q15/Q17继续未决；只同步已确认业务要求，不将目录开发范围或未运行能力提升为verified。
     # 同日追加26：用户要求产品中查找项统一称追溯项，并遵循统一UI/UE规范；历史引文、稳定ID/API/表名和快照保留，词典旧称作为同义alias，不改运行规则、不提升实现成熟度。
     visibility: internal
+  - id: evidence.form-projection-reference-followup
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: 2026-10-07同切片引用配置补修；user-confirmed为用户指出引用配置未落实此前讨论并要求纠正，original-evidence为bb613f11起点的6类引用来源、id/name值形状和设计/解释器兼容缺口。受控生产来源集合、编号快照增量和预置项语义兼容矩阵为inference工程切片，沿用DEC-0060及DEC-0075-17/18/23/24/25；不新增统计规则，不关闭Q6/Q9/Q12/Q15/Q17，不证明代码、浏览器、数据库、权限或完整MVP已验收。
+    visibility: internal
