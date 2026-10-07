@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Add, Close, EditOutlined, ExpandMore, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, Stack, Tab, Tabs, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Add, EditOutlined, ExpandMore, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import DetailDrawer from '@/components/DetailDrawer';
 import FormDialog from '@/components/FormDialog';
 import FormDialogSection from '@/components/FormDialogSection';
 import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
@@ -116,22 +117,19 @@ export default function FormLookupItemsPage() {
         </DialogContent>
         <DialogActions><Button onClick={() => setOpened(false)} disabled={save.isPending}>取消</Button><Button type="submit" variant="contained" disabled={save.isPending || !name.trim()}>保存</Button></DialogActions>
     </FormDialog>
-    <Drawer anchor="right" open={Boolean(selected)} onClose={() => setSelected(undefined)} sx={{ zIndex: theme => theme.zIndex.drawer + 3 }} PaperProps={{ sx: { width: { xs: '100vw', sm: 560 }, height: '100vh' } }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}><Typography variant="subtitle1">{selected?.name}</Typography><Tooltip title="关闭" placement="left"><IconButton aria-label="关闭详情" onClick={() => setSelected(undefined)}><Close /></IconButton></Tooltip></Stack>
-      <Tabs value={detailTab} onChange={(_, value: number) => setDetailTab(value)} aria-label="追溯项详情切换" sx={{ px: 2, borderBottom: '1px solid #e4e7ed' }}><Tab label="数据信息" /><Tab label="数据审计" /></Tabs>
-      {detailTab === 0 ? <Stack spacing={2} sx={{ p: 2, bgcolor: '#f7f9fc', flex: 1, minHeight: 0, overflow: 'auto', '& > *': { flexShrink: 0 }, '& > .MuiBox-root': { bgcolor: '#fff' } }}>{selected && <>
-        <FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>{columns.slice(0, 4).map(column => <Box key={column.id} sx={column.id === 'description' ? { gridColumn: '1 / -1' } : undefined}><DetailField label={column.label}>{valueOf(selected, column.id)}</DetailField></Box>)}</Box></FormDialogSection>
-        <FormDialogSection title="系统信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>{columns.slice(4).map(column => <DetailField key={column.id} label={column.label}>{valueOf(selected, column.id)}</DetailField>)}</Box></FormDialogSection>
-      </>}<Typography variant="caption" color="text.secondary">此项只提供查找含义，不建立实体关系或统计模型。</Typography></Stack> : <>
-        <Stack spacing={2} sx={{ p: 2, bgcolor: '#f7f9fc', flex: 1, minHeight: 0, overflow: 'auto', '& > *': { flexShrink: 0 }, '& > .MuiBox-root': { bgcolor: '#fff' } }}><FormDialogSection title="审计记录"><Stack spacing={1}>
+    <DetailDrawer open={Boolean(selected)} onClose={() => setSelected(undefined)} label="追溯项详情" tab={detailTab} onTabChange={setDetailTab}
+      footer={detailTab === 1 && <FormListPagination totalElements={audit.data?.totalElements ?? 0} totalPages={audit.data?.totalPages ?? 0} page={auditPage} pageSize={auditSize} onPageChange={setAuditPage} onPageSizeChange={next => { setAuditSize(next); setAuditPage(0); }} />}>
+      {detailTab === 0 ? <>{selected && <>
+        <FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>{columns.slice(0, 4).map(column => <Box key={column.id} sx={column.id === 'description' ? { gridColumn: '1 / -1' } : undefined}><DetailField label={column.label}>{valueOf(selected, column.id)}</DetailField></Box>)}</Box></FormDialogSection>
+        <FormDialogSection title="系统信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>{columns.slice(4).map(column => <DetailField key={column.id} label={column.label}>{valueOf(selected, column.id)}</DetailField>)}</Box></FormDialogSection>
+      </>}<Typography variant="caption" color="text.secondary">此项只提供查找含义，不建立实体关系或统计模型。</Typography></> : <>
+        <FormDialogSection title="审计记录"><Stack spacing={1}>
           {audit.isPending ? <Typography>加载中…</Typography> : audit.isError ? <Alert severity="error" action={<Button onClick={() => void audit.refetch()}>重试</Button>}>审计读取失败</Alert> : !audit.data?.content.length ? <Typography color="text.secondary">暂无审计记录</Typography> : audit.data.content.map(record => <Accordion key={record.id} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}>
             <AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { m: 0, minWidth: 0 }, '& .MuiAccordionSummary-content.Mui-expanded': { m: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.35fr', gap: 1, width: '100%', minWidth: 0 }}>{[record.operatorDisplayName || record.operatorAccount || '—', record.functionName || record.actionLabel, (record.operationTime || record.createdAt)?.replace('T', ' ').slice(0, 19)].map((text, index) => <Typography key={index} variant="body2" noWrap title={text}>{text}</Typography>)}</Box></AccordionSummary>
-            <AccordionDetails sx={{ px: 1.5, pt: 0, pb: 1.5 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>{[['变更前', record.contentBefore], ['变更后', record.contentAfter]].map(([title, value]) => <Box key={String(title)} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#f8fafc', p: 1 }}><Typography variant="caption" sx={{ color: '#606266', fontWeight: 600 }}>{String(title)}</Typography><Typography variant="body2" sx={{ mt: 0.75, overflowWrap: 'anywhere' }}>{auditDisplay(value)}</Typography></Box>)}</Box></AccordionDetails>
+            <AccordionDetails sx={{ px: 1.5, pt: 0, pb: 1.5 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>{[['变更前', record.contentBefore], ['变更后', record.contentAfter]].map(([title, value]) => <Box key={String(title)} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#f8fafc', p: 1 }}><Typography variant="caption" sx={{ color: '#606266', fontWeight: 600 }}>{String(title)}</Typography><Typography variant="body2" sx={{ mt: 0.75, overflowWrap: 'anywhere' }}>{auditDisplay(value)}</Typography></Box>)}</Box></AccordionDetails>
           </Accordion>)}
         </Stack></FormDialogSection>
-        </Stack>
-        <FormListPagination totalElements={audit.data?.totalElements ?? 0} totalPages={audit.data?.totalPages ?? 0} page={auditPage} pageSize={auditSize} onPageChange={setAuditPage} onPageSizeChange={next => { setAuditSize(next); setAuditPage(0); }} />
       </>}
-    </Drawer>
+    </DetailDrawer>
   </Box>;
 }

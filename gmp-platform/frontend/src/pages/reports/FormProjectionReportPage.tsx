@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Collapse, DialogContent, DialogTitle, Drawer, IconButton, MenuItem, Stack, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Tooltip, Typography } from '@mui/material';
-import { Close, ExpandLess, ExpandMore, InfoOutlined, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Collapse, DialogContent, DialogTitle, IconButton, MenuItem, Stack, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Tooltip, Typography } from '@mui/material';
+import { ExpandLess, ExpandMore, InfoOutlined, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import DetailDrawer from '@/components/DetailDrawer';
 import client from '@/api/client';
 import AppDialog from '@/components/AppDialog';
 import FormDialogSection from '@/components/FormDialogSection';
@@ -151,28 +152,24 @@ export default function FormProjectionReportPage() {
     {view === 1 && data.data?.totalsTruncated && <Alert severity="warning">分组超过200个，请缩小查询范围；当前仅显示前200组。</Alert>}
     {view === 0 ? <ProjectionTable key="detail" preference="detail" description={modelId === 'formTrace' ? '仅查询最终完成并成功处理的记录；新增追溯项不会自动覆盖旧记录。' : undefined} columns={detailColumns} rows={detailRows} loading={data.isFetching} failed={data.isError} onSource={index => { setSelected(data.data!.records[index]); setDetailTab(0); setDhrs(null); setError(''); }} footer={<FormListPagination totalElements={data.data?.total ?? 0} totalPages={Math.ceil((data.data?.total ?? 0) / request.size)} page={request.page} pageSize={request.size} onPageChange={page => setRequest({ ...request, page })} onPageSizeChange={size => setRequest({ ...request, size, page: 0 })} />} />
       : <ProjectionTable key="total" preference="total" columns={totalColumns} rows={data.data?.totals ?? []} loading={data.isFetching} failed={data.isError} footer={<Typography variant="body2" color="text.secondary" sx={{ p: 2, borderTop: '1px solid #e4e7ed' }}>共 {data.data?.totals.length ?? 0} 组（最多200组，请使用查询条件缩小范围）</Typography>} />}
-    <Drawer anchor="right" open={Boolean(selected)} onClose={() => setSelected(null)} sx={{ zIndex: theme => theme.zIndex.drawer + 3 }} PaperProps={{ sx: { width: { xs: '100vw', sm: 560 }, height: '100vh' } }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}><Typography variant="subtitle1">{selected?.instanceNo}</Typography><Tooltip title="关闭" placement="left"><IconButton aria-label="关闭来源详情" onClick={() => setSelected(null)}><Close /></IconButton></Tooltip></Stack>
-      <Tabs value={detailTab} onChange={(_, next: number) => setDetailTab(next)}><Tab label="数据信息" /><Tab label="数据审计" /></Tabs>
-      <Stack spacing={2} sx={{ p: 2, bgcolor: '#f7f9fc', flex: 1, minHeight: 0, overflow: 'auto', '& > *': { flexShrink: 0 }, '& > .MuiBox-root': { bgcolor: '#fff' } }}>
+    <DetailDrawer open={Boolean(selected)} onClose={() => setSelected(null)} label="来源详情" tab={detailTab} onTabChange={setDetailTab}>
         {detailTab === 0 ? <>
           <Alert severity="info">结果来自最终完成时的冻结快照。DHR 查询展示当前真实归属，不替代冻结 DHR 版本。</Alert>
-          <DetailSection title="生产来源"><DetailField label="生产对象">{selected?.objectNo}</DetailField><DetailField label="工序">{selected?.operationName}</DetailField></DetailSection>
+          <DetailSection title="生产来源"><DetailField label="来源表单">{selected?.instanceNo}</DetailField><DetailField label="生产对象">{selected?.objectNo}</DetailField><DetailField label="工序">{selected?.operationName}</DetailField></DetailSection>
           {selected && hitsOf(selected).map((hit, index) => <DetailSection key={`${hit.bindingId}/${hit.rowKey}`} title={`命中 ${index + 1} · ${hit.rowKey === 'form' ? '普通字段组' : `明细 ${hit.rowKey}`}`}>{Object.entries(hit.attributes).map(([key, item]) => <DetailField key={key} label={sourceAttributeName(key)}>{display(item)}</DetailField>)}</DetailSection>)}
           <Button variant="outlined" disabled={!document} onClick={() => setPreviewOpen(true)}>预览来源表单</Button>
           {canDhr && <Button onClick={async () => { try { setDhrs((await client.get(`${base}/${selected?.batchId}/dhr`)).data.data); } catch (reason) { setError(reason instanceof Error ? reason.message : 'DHR查询失败'); } }}>查看实际关联 DHR</Button>}
           {dhrs && <Typography variant="body2">{dhrs.length ? dhrs.map(dhr => `${dhr.dhrNo} · ${dhr.status}`).join('；') : '该来源没有实际关联的DHR。'}</Typography>}
         </> : <>
-          <Typography variant="body2">来源修订：{selected?.revision}；历史值读取同一冻结快照。</Typography>
+          <Typography variant="body2">来源表单：{selected?.instanceNo}；来源修订：{selected?.revision}；历史值读取同一冻结快照。</Typography>
           <DetailSection title="系统信息">{['createdBy', 'createdAt', 'updatedBy', 'updatedAt'].map(key => <DetailField key={key} label={detailColumns.find(column => column.id === key)?.label ?? key}>{display(selected?.[key as keyof RecordRow])}</DetailField>)}</DetailSection>
-          {selected && hitsOf(selected).map((hit, index) => <Accordion key={`${hit.bindingId}/${hit.rowKey}`} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}><AccordionSummary expandIcon={<ExpandMore fontSize="small" />}><Typography variant="body2">命中 {index + 1} 的字段来源</Typography></AccordionSummary><AccordionDetails><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>{Object.entries(hit.sources).map(([key, fieldId]) => {
+          {selected && hitsOf(selected).map((hit, index) => <Accordion key={`${hit.bindingId}/${hit.rowKey}`} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}><AccordionSummary expandIcon={<ExpandMore fontSize="small" />}><Typography variant="body2">命中 {index + 1} 的字段来源</Typography></AccordionSummary><AccordionDetails><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>{Object.entries(hit.sources).map(([key, fieldId]) => {
             const fields = hit.tableId ? source.data?.form.fields.find(field => field.id === hit.tableId)?.typeConfig.columns as ModelField[] | undefined : source.data?.form.fields;
             return <DetailField key={key} label={sourceAttributeName(key)}>{fields?.find(field => field.id === fieldId)?.name ?? '来源字段'} · {hit.rowKey === 'form' ? '普通字段组' : `明细 ${hit.rowKey}`}</DetailField>;
           })}</Box></AccordionDetails></Accordion>)}
         </>}
         {error && <Alert severity="error">{error}</Alert>}{source.isError && <Alert severity="error">来源快照读取失败</Alert>}
-      </Stack>
-    </Drawer>
+    </DetailDrawer>
     <AppDialog open={previewOpen && Boolean(selected)} onClose={() => setPreviewOpen(false)} fullScreen><DialogTitle>来源表单 · {selected?.instanceNo} · 修订 {selected?.revision}</DialogTitle><DialogContent dividers sx={{ bgcolor: '#f7f9fc' }}>{document && source.data && <FormCanvasPreview document={document} fullPage runtime={{ values: source.data.values, disabled: true, onChange: () => {} }} />}</DialogContent></AppDialog>
   </Box>;
 }
