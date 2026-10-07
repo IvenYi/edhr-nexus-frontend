@@ -61,15 +61,19 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
     {traceModel && (traces.length > 0 || traceModel.attributes.some(attribute => acceptsProjectionAttribute(field, attribute))) && <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
       <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={traceOpen || traces.length > 0}
         onChange={(_, checked) => { setTraceOpen(checked); if (!checked) removeFieldFrom(traces); }} />} label={<Typography fontWeight={600} variant="body2">用于查找与追溯</Typography>} />
-      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>按字段值找到原表单和命中位置，不计入数量统计。</Typography>
+      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>关联这个字段记录的信息，之后可在追溯页面按填写值找到原表单。</Typography>
       <Collapse in={traceOpen || traces.length > 0}><Stack spacing={1} sx={{ mt: 1.5 }}>
         {traces.flatMap(binding => Object.entries(binding.sources).filter(([, id]) => id === field.id).map(([id]) =>
           <Stack key={`${binding.id}/${id}`} direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="body2">{traceModel.attributes.find(attribute => attribute.id === id)?.name ?? '追溯项已失效'}{!binding.enabled ? '（未启用）' : ''}</Typography>
             <Button size="small" onClick={() => { const sources = { ...binding.sources }; delete sources[id]; update(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id)); }}>移除</Button>
           </Stack>))}
-        <TextField select fullWidth size="small" label="选择追溯项" value="" onChange={event => assignTrace(event.target.value)}>
-          <MenuItem value="">请选择字段的查询含义</MenuItem>
+        {traces.map(binding => traceModel && <Box key={binding.id}>
+          <Button size="small" sx={{ px: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{editingId === binding.id ? '收起追溯来源' : binding.enabled ? '调整追溯来源 · 已启用' : '完善并启用追溯配置'}</Button>
+          <Collapse in={editingId === binding.id} unmountOnExit><ProjectionSourceEditor binding={binding} definition={traceModel} onChange={patch => change(binding.id, patch)} onRemove={() => update(bindings.filter(item => item.id !== binding.id))} /></Collapse>
+        </Box>)}
+        <TextField select fullWidth size="small" label="关联追溯项" value="" onChange={event => assignTrace(event.target.value)}>
+          <MenuItem value="">请选择字段记录的信息</MenuItem>
           {traceModel.attributes.filter(attribute => acceptsProjectionAttribute(field, attribute) && !traces.some(binding => binding.sources[attribute.id] === field.id))
             .map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}
         </TextField>

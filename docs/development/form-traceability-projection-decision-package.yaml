@@ -11,6 +11,7 @@ decisionPackage:
   # 2026-10-07开发前整体评审及多角色流程图见form-projection-final-design-review-2026-10-07.md；复用本决策包。仅核对并提出建议，未修改产品代码或数据库，未将混合编号检索、Q6/Q9/Q15/Q17建议提升为confirmed。该评审补充当前切片L2影响与验收范围，不新建竞争性决策包。
   # 2026-10-07侧边用户确认增量见主设计2.5节及handoff同日入口：用途驱动的文本匹配与次要展示、查找项自动进入两处候选、新含义对未关联旧实例的补充覆盖排二期。其余Q6/Q9/Q15/Q17保留；原生引用能力与原有历史查询保留。主会话须同步适用结构化知识并复核门禁，本条不冒充已完成同步或实现。用户追加授权：交接后判断开发/优化条件，具备则开始。
   # 2026-10-07同切片L1前端规范修复：查询布局、点击行详情、560px分组抽屉与折叠审计；不改变本包L2业务契约。本轮精简影响分析、not-applicable本体依据与针对性质量结果见form-projection-ui-conformance-2026-10-07.md。
+  # 2026-10-07继续L2设计器优化：已有主表/子表侧栏与总览继续完善；追溯来源按已关联项渐进展示、主表草稿可就地启用、预览名称保真及配置总览规范分组。具体工程选择不新增业务口径或关闭Q6/Q9/Q12/Q15/Q17；本轮证据见form-projection-designer-followup-2026-10-07.md。
   confirmed:
     concepts: []
     relationships: []
@@ -426,6 +427,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: designer-followup-usability
+        change: 已确认画布优先与低配置成本目标下，追溯来源编辑仅显示已关联项并按需增加；主表侧栏提供草稿调整和启用，预览保持追溯项完整名称，总览沿用公共分组及保存状态。不改变来源类型、同条配对、行身份或运行时机。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx, docs/development/form-projection-designer-followup-2026-10-07.md]
       - area: current-lookup-directory-slice
         change: 新增可审计查找项及显示信息编辑，复用现有文本精确取值；设计器与查询页动态读取同一目录，服务端捕获所选自定义定义；不扩展统计模型和引用来源。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
@@ -502,6 +506,9 @@ decisionPackage:
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: designer-followup
+        scenarios: [追溯编辑不铺开无关项, 动态新增与失效来源可见, 主表草稿画布调整并启用, 追溯项括号名称在预览保真, 子表多行不串行, 主表统计配对, 保存重开与撤销重做, 两并列用途, 原使用快照不漂移, 规范分组及短窗口滚动]
+        evidenceReferences: [docs/development/form-projection-designer-followup-2026-10-07.md]
       - scope: lookup-directory-slice
         scenarios: [目录无数据也进入两处候选, 主表和子表显式关联, 客户定义不能生成统计属性, 服务端覆盖伪造目录解释, 新旧内置名称在来源解释中不漂移, 客户名称括号保真, 同名同值旧表不误命中, 旧条件保留, 同行配对不串行, 权限隔离, 新增编辑审计与并发冲突, 0108空schema迁移及独立库实际迁移]
         evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql]

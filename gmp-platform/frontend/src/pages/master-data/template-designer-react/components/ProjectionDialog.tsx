@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Alert, Box, Button, Collapse, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogSection from '@/components/FormDialogSection';
 import client from '@/api/client';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
@@ -65,12 +66,12 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
       {material ? [<MenuItem key="empty" value="">请选择物料</MenuItem>, ...materials.map(item => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)] : undefined}
     </TextField>;
   };
-  return <AppDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+  return <FormDialog open={open} onClose={() => { if (!busy) onClose(); }} maxWidth="md" fullWidth>
     <DialogTitle>查找与统计总览</DialogTitle>
     <Tabs value={tab} onChange={(_, value: number) => { setTab(value); setError(''); }} sx={{ px: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
       <Tab label="用途配置" /><Tab label="模拟预览" />
     </Tabs>
-    <DialogContent>
+    <DialogContent dividers>
       <Stack spacing={2}>
         {isPending && <Typography color="text.secondary">正在加载用途目录…</Typography>}
         {isError && <Alert severity="error" action={<Button onClick={() => void refetch()}>重试</Button>}>用途目录加载失败</Alert>}
@@ -81,9 +82,8 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
             const items = bindings.filter(binding => (binding.tableId ?? '') === region.id);
             const trace = items.filter(binding => binding.modelId === 'formTrace');
             const statistics = items.filter(binding => binding.modelId !== 'formTrace');
-            return <Box key={region.id} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography fontWeight={600}>{region.name}</Typography>
+            return <FormDialogSection key={region.id} title={region.name}>
+              <Stack direction="row" justifyContent="flex-end" alignItems="center">
                 <Button size="small" onClick={() => { setRegionId(regionId === region.id ? null : region.id); setFieldId(''); }}>{regionId === region.id ? '收起配置' : region.id ? '配置子表用途' : '选择字段配置'}</Button>
               </Stack>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>查找与追溯：{trace.length ? trace.map(item => projectionSourceSummary(document.model, item)).join('；') : '未配置'}</Typography>
@@ -112,7 +112,7 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
                   {focusedField && <FieldProjectionConfig field={focusedField} />}
                 </Stack>}
               </Box></Collapse>
-            </Box>;
+            </FormDialogSection>;
           })}
         </> : <>
           <Alert severity="info">模拟填写只用于核对已启用的用途，不保存到模板或正式记录。子表可填写多行，核对每行是否形成正确明细。配置草稿不参与预览。</Alert>
@@ -124,8 +124,7 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
             const ids = new Set(items.flatMap(binding => [...Object.values(binding.sources), ...(binding.rowKeyFieldId ? [binding.rowKeyFieldId] : [])]));
             const fields = projectionSources(document.model, items[0]).filter(field => ids.has(field.id));
             const count = region.id ? rowCounts[region.id] ?? 2 : 1;
-            return <Box key={region.id} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2 }}>
-              <Typography fontWeight={600}>{region.name}</Typography>
+            return <FormDialogSection key={region.id} title={region.name}>
               {Array.from({ length: count }, (_, rowIndex) => <Box key={rowIndex} sx={{ mt: 2 }}>
                 {region.id && <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>第 {rowIndex + 1} 行</Typography>}
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>{fields.map(field => renderSample(field, region.id, rowIndex))}</Box>
@@ -134,7 +133,7 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
                 <Button size="small" disabled={count >= 10} onClick={() => { setPreview(null); setRowCounts({ ...rowCounts, [region.id]: count + 1 }); }}>添加模拟行</Button>
                 <Button size="small" disabled={count <= 1} onClick={() => { setPreview(null); setRowCounts({ ...rowCounts, [region.id]: count - 1 }); }}>移除末行</Button>
               </Stack>}
-            </Box>;
+            </FormDialogSection>;
           })}
           {preview && <Box aria-live="polite"><Typography fontWeight={600}>预览结果 · {preview.length} 条明细</Typography>
             {preview.map(record => {
@@ -142,16 +141,19 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
               const definition = catalog?.models.find(model => model.id === binding?.modelId);
               return <Box key={`${record.bindingId}/${record.rowKey}`} sx={{ mt: 1.5, p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
                 <Typography variant="body2" fontWeight={600}>{definition?.name} · {regions.find(region => region.id === (binding?.tableId ?? ''))?.name}{binding?.tableId ? ` · 行定位值 ${record.rowKey}` : ''}</Typography>
-                {Object.entries(record.attributes).map(([id, value]) => <Typography key={id} variant="body2">{definition?.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? id}：{typeof value === 'object' && value ? String((value as { name: string }).name) : String(value)}</Typography>)}
+                {Object.entries(record.attributes).map(([id, value]) => {
+                  const name = definition?.attributes.find(attribute => attribute.id === id)?.name;
+                  return <Typography key={id} variant="body2">{binding?.modelId === 'formTrace' ? name ?? '追溯项已失效' : name?.replace(/（.*?）/g, '') ?? '业务信息已失效'}：{typeof value === 'object' && value ? String((value as { name: string }).name) : String(value)}</Typography>;
+                })}
               </Box>;
             })}
           </Box>}
         </>}
       </Stack>
     </DialogContent>
-    <DialogActions><Button onClick={onClose}>关闭</Button>
+    <DialogActions><Button disabled={busy} onClick={onClose}>关闭</Button>
       {tab === 1 && <Button disabled={busy || !catalog || !enabled.length} onClick={() => void run(showPreview)}>校验并预览</Button>}
-      <Button variant="contained" disabled={busy || !catalog} onClick={() => void run(onSave)}>保存配置</Button>
+      <Button variant="contained" disabled={busy || !catalog} onClick={() => void run(onSave)}>{busy ? '处理中…' : '保存配置'}</Button>
     </DialogActions>
-  </AppDialog>;
+  </FormDialog>;
 }

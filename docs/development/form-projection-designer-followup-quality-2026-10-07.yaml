@@ -1,0 +1,158 @@
+qualityResult:
+  result: passed
+  baseCommit: ac7c8067e2d34fbca7ac3f0bf921724aa8b59cc0
+  headCommit: ac7c8067e2d34fbca7ac3f0bf921724aa8b59cc0
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-designer-followup-2026-10-07.md
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - docs/development/form-projection-designer-followup-2026-10-07.md
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.designer-followup-requirements
+      required: true
+      category: requirements
+      description: 核对L2同一切片的两类来源、两种并列用途和渐进配置范围；保留真实归属、使用快照、首次最终完成、权限及未决项。
+      method: inspection
+      command: 阅读AGENTS、quality-verifier、交接契约、知识README/open-questions、DEC-0075用户证据、当前决策包及四组件diff。
+      outcome: passed
+      evidence:
+        - 知识基线0.3.24；具体工程选择未升级为新统计或索引规则。
+        - 仅四个前端组件和配套测试/记录增量；无后端、数据库、运行时快照或权限代码改动。
+        - Q6/Q9/Q12/Q15/Q17、A12及二期报表未作为本轮已实现范围。
+    - id: check.designer-followup-focused-tests
+      required: true
+      category: unit
+      description: 独立执行来源侧栏状态、预览行隔离及来源编辑SSR回归。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-panel.mjs scripts/test-projection-preview.mjs scripts/test-projection-source-editor.mjs
+      outcome: passed
+      evidence:
+        - 最终10项通过，0失败、0跳过；包含新增无剩余兼容来源时不显示添加项的第4项SSR回归。
+        - 已关联含义按需显示；已删除含义/字段明确保留失效提示；渲染不改已有映射。
+    - id: check.designer-followup-build-static
+      required: true
+      category: regression
+      description: 核对主开发构建正式输出，并独立运行设计器静态检查和差异卫生。
+      method: command
+      command: npm run build（主开发正式日志）; node scripts/verify-template-designer-react.mjs; git diff --check
+      outcome: passed
+      evidence:
+        - /tmp/edhr-designer-followup-build.log 构建成功；/tmp/edhr-designer-followup-front-tests-final.log 最终10项通过。
+        - 独立verify-template-designer-react passed；git diff --check退出0。
+    - id: check.designer-followup-backend-evidence
+      required: true
+      category: integration
+      description: 核对适用后端投影、授权、模板、生产快照及知识基线回归正式结果；不与主开发Maven并行复跑同target。
+      method: inspection
+      command: 核对 /tmp/edhr-designer-followup-back-tests.log 及 target/surefire-reports。
+      outcome: passed
+      evidence:
+        - 136项通过、0失败、0错误、0跳过、BUILD SUCCESS。
+        - 含真实PostgreSQL7项、知识59项、模板38项、生产执行21项、解释器8项、授权1项、快照2项。
+        - 仅核验主开发正式运行证据，未将此记录称为质量实例独立重复运行136项。
+    - id: check.designer-followup-canvas-save
+      required: true
+      category: e2e
+      description: 独立浏览器真实鼠标点选普通字段、整子表及列，完成主表追溯草稿保存重开、侧栏启用及撤销重做。
+      method: browser
+      command: playwright-cli -s=designer-followup-qa；localhost3007/8087；自有虚构模板 DESIGNER-QA-20261007。
+      outcome: passed
+      evidence:
+        - 模板383226602260860928、版本383226602269249536；复制PROJECTION-UX演示配置后只修改此虚构模板。
+        - 设备编号草稿保存后重开显示完善并启用入口；启用、撤销、重做均按已有store规则重新点选后核验成功。
+        - 整子表显示当前子表上料明细；列显示当前子表列上料明细/物料批号，保持用途侧栏及双用途配置。
+        - output/playwright/designer-followup-qa-main-editor.png
+    - id: check.designer-followup-progressive-source
+      required: true
+      category: e2e
+      description: 动态目录项按需添加、已有来源排除占用、未选来源不持久化映射，追溯项完整名称保留。
+      method: browser
+      command: 从画布侧栏添加 QA末轮批号（供应商）并选择领料批号；总览仅选 QA末轮批号（内部）但不选来源后保存并GET核验。
+      outcome: passed
+      evidence:
+        - 单项编辑只显示已关联设备编号及添加入口，没有把全部目录作为展开字段。
+        - 新来源候选为领料批号/领料单位，不提供已被同用途占用的设备编号。
+        - supplier含义持久化到main-lot；未选来源的internal含义未加入任何binding.sources。
+        - 配置及实际模拟预览均显示 QA末轮批号（供应商）完整括号名称。
+    - id: check.designer-followup-real-preview
+      required: true
+      category: api
+      description: 通过真实模拟输入与projection-preview响应验证多行主子表隔离及两种用途独立。
+      method: browser
+      command: 输入主表3kg、ROW-1用量5kg、ROW-2用量9kg与不同批号/物料，点击校验并预览；随后仅追溯/仅统计/均禁用的只读预览POST。
+      outcome: passed
+      evidence:
+        - 实际UI预览6条：子表2条consumption、2条formTrace；主表1条consumption、1条formTrace。
+        - ROW-1为QA-SUB-LOT-1/970001/5，ROW-2为QA-SUB-LOT-2/970002/9；主表QA-MAIN-LOT/970001/3，未跨行配对。
+        - 仅追溯返回3条formTrace；仅统计返回3条consumption；都不启用返回0条，均HTTP/业务200。
+        - output/playwright/designer-followup-qa-preview.png
+    - id: check.designer-followup-visual-scroll
+      required: true
+      category: visual
+      description: 独立检查总览统一FormDialog/分组样式和短窗、窄屏滚动；检查来源侧栏短窗独立滚动。
+      method: browser
+      command: 800x520、390x640总览及800x520整子表用途侧栏；读取实际DOM尺寸并查看截图。
+      outcome: passed
+      evidence:
+        - 总览标题20px、内容20px/24px、分组边框1px rgb(228,231,237)，复用公共组件。
+        - 800x520总览内容高290/scroll674且overflow auto，底栏在视口内；390x640弹窗宽326且内容413/scroll737。
+        - 侧栏短窗内容289/scroll842，滚动到启用与行定位控件可见，来源标题保持。
+        - output/playwright/designer-followup-qa-overview-short.png
+        - output/playwright/designer-followup-qa-overview-mobile.png
+        - output/playwright/designer-followup-qa-sidebar-short.png
+    - id: check.designer-followup-errors-busy
+      required: true
+      category: e2e
+      description: 验证目录失败重试及保存处理期间的重复操作阻断。
+      method: browser
+      command: 独立浏览器路由模拟projection-catalog 500后恢复重试；只延迟自有模板design PUT2200ms。
+      outcome: passed
+      evidence:
+        - 目录失败显示用途目录加载失败，保存禁用；解除故障后点重试恢复可保存。
+        - 保存忙时显示处理中，底部关闭禁用；Escape保持弹窗，实际鼠标重复点处理按钮仅1次PUT。
+        - 故障模拟仅当前独立浏览器会话并已解除，不改服务器或产品配置。
+    - id: check.designer-followup-evidence-isolation
+      required: true
+      category: database
+      description: 核验独立库及既有正式投影批次未改变。
+      method: query
+      command: psql -X -d edhr_form_projection -Atc "SELECT count(*)||'|'||md5(string_agg(to_jsonb(b)::text,',' ORDER BY id)) FROM form_projection_batch b;"
+      outcome: passed
+      evidence:
+        - 复核结果5|37a1da10aa28db1defd81185ba32f47e，与主开发交接基准一致。
+        - 质量实例只创建/保存自有虚构模板和执行不落库模拟预览，未创建生产来源、未完成表单或改历史证据。
+  findings: []
+  residualRisks:
+    - id: residual.designer-global-notification
+      description: 既有全局设计已保存Snackbar持续显示时会挡住全屏设计器右上关闭按钮。
+      impact: 关闭前需先点该通知Close；本轮总览底栏与保存状态验证不受影响。
+      mitigation: 记录为共享通知后续修复；未扩大本轮四组件范围。
+    - id: residual.designer-baseline-console
+      description: 浏览器仍出现既有React Router future warnings和模板详情Chip嵌套DOM warning；登录favicon404亦属已有静态资源。
+      impact: 不改变本轮来源映射、预览或保存结果；不把模拟目录500的预期请求失败计为产品回归。
+      mitigation: 与基点未修改共享组件及路由代码区分，后续单独处理。
+    - id: residual.designer-deferred-capabilities
+      description: Q6文本实体解析、Q9表头共享、Q12系统行身份、Q15独立索引范围、Q17带入生命周期、A12与二期自定义报表仍未覆盖。
+      impact: 当前受控切片不能称为全部MVP或所有引用场景已经完成。
+      mitigation: 按既有决策和未决项另行收敛；当前子表仍使用显式有效行定位，统计及冻结契约保持。
+    - id: residual.designer-customer-usability
+      description: 本机工程和独立质量验证不等于真实客户制表人员试用。
+      impact: 低学习成本仍需代表性客户场景反馈。
+      mitigation: 使用真实表单代表性任务试用，不以当前虚构演示推断全部客户场景易用。
+    - id: residual.designer-browser-session-tail
+      description: 所有适用QA完成后，末尾只读page状态探针返回Playwright modal状态异常和login页面；主开发另会话同时出现about:blank。
+      impact: 无法保证自动化会话末尾继续停留模板总览；此前已完成的真实请求、截图、保存读取和PG校验证据完整。
+      mitigation: 已向主开发报告工具会话异常；没有执行close-all、会话重置或文件上传，未将此末尾工具异常推断为产品缺陷。
+  blockingConditions: []

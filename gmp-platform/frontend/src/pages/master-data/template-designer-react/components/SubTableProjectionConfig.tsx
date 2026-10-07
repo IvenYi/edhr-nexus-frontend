@@ -40,7 +40,7 @@ export default function SubTableProjectionConfig({ field, showIdentity = true }:
       <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={traceOpen || traces.length > 0}
         onChange={(_, checked) => { setTraceOpen(checked); if (!checked) update(bindings.filter(binding => !traces.some(item => item.id === binding.id))); }} />}
         label={<Typography variant="body2" fontWeight={600}>用于查找与追溯</Typography>} />
-      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>按这些列的值查到来源表单和具体行。</Typography>
+      <Typography variant="caption" color="text.secondary" display="block" sx={{ pl: 4 }}>关联各列记录的信息，之后可在追溯页面按填写值找到具体行。</Typography>
       <Collapse in={traceOpen || traces.length > 0}><Stack spacing={1.5} sx={{ mt: 1.5 }}>
         {columns.filter(column => traceModel?.attributes.some(attribute => acceptsProjectionAttribute(column, attribute))).map(column => {
           const assignments = traces.flatMap(binding => Object.entries(binding.sources).filter(([, id]) => id === column.id).map(([id]) => ({ binding, id })));
@@ -51,14 +51,14 @@ export default function SubTableProjectionConfig({ field, showIdentity = true }:
               <Button size="small" onClick={() => { const sources = { ...binding.sources }; delete sources[id]; update(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id)); }}>移除</Button>
             </Stack>)}
             <TextField select fullWidth size="small" label="关联追溯项" value="" onChange={event => addTrace(column, event.target.value)}>
-              <MenuItem value="">不配置或选择查询含义</MenuItem>
+              <MenuItem value="">不配置或选择这列记录的信息</MenuItem>
               {traceModel?.attributes.filter(attribute => acceptsProjectionAttribute(column, attribute) && !assignments.some(item => item.id === attribute.id))
                 .map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}
             </TextField>
           </Box>;
         })}
         {traces.map(binding => traceModel && <Box key={binding.id}>
-          <Button size="small" sx={{ px: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{binding.enabled ? '调整查找配置 · 已启用' : '完善并启用查找配置'}</Button>
+          <Button size="small" sx={{ px: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{editingId === binding.id ? '收起追溯来源' : binding.enabled ? '调整追溯来源 · 已启用' : '完善并启用追溯配置'}</Button>
           <Collapse in={editingId === binding.id} unmountOnExit><ProjectionSourceEditor binding={binding} definition={traceModel} onChange={patch => change(binding.id, patch)} onRemove={() => update(bindings.filter(item => item.id !== binding.id))} /></Collapse>
         </Box>)}
       </Stack></Collapse>
