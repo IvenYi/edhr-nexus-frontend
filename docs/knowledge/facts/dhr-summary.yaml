@@ -1,0 +1,178 @@
+knowledgeModelVersion: 0.3.24
+facts:
+  - id: fact.dhr-summary.production-complete
+    name: DHR 对应生产对象已完成
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    aliases: [dhrSummary.productionComplete]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-service]
+    sourceRevision: working-tree
+    sourceLocator: lockedCompletedDhr 只允许 status=COMPLETED 的 DHR 保存或提交汇总
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.required-directory-complete
+    name: DHR 必填基础目录项具有 COMPLETED 实例（当前代码检查）
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    aliases: [dhrSummary.requiredDirectoryComplete]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-service]
+    sourceRevision: working-tree
+    sourceLocator: ensureRequiredDirectoryItems 检查每个 required 基础目录项至少包含一份已完成目录实例
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.required-directory-qualified
+    name: DHR 必填基础目录项满足适用合格记录要求
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    aliases: [dhrSummary.requiredDirectoryQualified]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0063-04；必填目录的有效记录资格须同时服从适用质量结论、处置、签署及有效性要求；当前 COMPLETED 状态检查不足以解析该事实
+    capturedAt: '2026-09-25'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.manual-review-confirmed
+    name: 提交人已逐项人工确认并填写核查说明
+    conceptId: concept.dhr-summary-version
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    aliases: [dhrSummary.manualReviewConfirmed]
+    availability: runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-complete-evidence-tests]
+    sourceRevision: working-tree
+    sourceLocator: submit 要求质量与异常、源签署、完整范围三项人工确认及非空说明，并把确认人、时间、说明冻结于 checkResult.manualReview；该事实只证明确认动作，不证明质量结论已被系统判读
+    capturedAt: '2026-09-25'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.review-task-attachment-authorized
+    name: 审批任务对冻结版本附件的下载已授权
+    conceptId: concept.dhr-controlled-attachment
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java
+    aliases: [dhrSummary.reviewTaskAttachmentAuthorized]
+    availability: runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-review-controller, evidence.dhr-review-service, evidence.dhr-summary-attachment-service, evidence.dhr-review-attachment-permission-tests]
+    sourceRevision: working-tree
+    sourceLocator: 审批专属下载先通过任务 detail 判定当前待办候选或本人已办，再校验附件 id 与摘要属于任务绑定的冻结版本；不复用宽泛 DHR 查看授权
+    capturedAt: '2026-09-25'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.review-mode
+    name: DHR 汇总审核策略
+    conceptId: concept.dhr-instance
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    aliases: [dhrSummary.reviewMode]
+    availability: configuration-and-runtime
+    allowedOperators: [equals, in]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-migration, evidence.dhr-summary-process-configuration-ui]
+    sourceRevision: working-tree
+    sourceLocator: product_process_version 与 dhr_instance 的 dhr_review_mode 及流程定义/版本外键
+    capturedAt: '2026-09-19'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.version-frozen
+    name: DHR 汇总版本已提交冻结（不等于合规结论）
+    conceptId: concept.dhr-instance
+    valueType: boolean
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    aliases: [dhrSummary.versionFrozen]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-migration]
+    sourceRevision: working-tree
+    sourceLocator: dhr_summary_version 与 dhr_summary_evidence 保存业务冻结及位置，version_no 标识正常修订；正常冻结不可编辑。行存在或 FORMALIZED 不证明核查完成，缺 checkResult 的错误旧汇总按 DEC-0063-09 转换为待核查草稿或清理，不能直接改标记追认；本机0104迁移已由原始日志及只读查询验证，DHR3已转草稿但未重新核查提交
+    capturedAt: '2026-09-27'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.source-definition-key
+    name: DHR 汇总来源定义键
+    conceptId: concept.dhr-instance
+    valueType: string
+    sourceType: derived
+    sourcePath: gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts
+    aliases: [dhrSummary.sourceDefinitionKey]
+    availability: runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id]
+    sourceRevision: working-tree
+    sourceLocator: summarySourceKey 按 originKind、operationId、formId 定义来源分组，缺失来源键时按实例独立；该键实现不证明新自动证据范围已实现，仅标识展示来源
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.archive-display-name
+    name: DHR 汇总归档显示名
+    conceptId: concept.dhr-summary-archive-display-name
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
+    aliases: [dhrSummary.placementDisplayName]
+    availability: runtime
+    allowedOperators: [is-present]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
+    sourceRevision: working-tree
+    sourceLocator: dhr_summary_evidence.display_name 可空且不按来源拆字段；validatePlacements 的 DIRECTORY 分支只合入 displayName，固定目标且禁止排序覆盖；prepareNextDraft 查询包括有别名的 DIRECTORY。空别名显示来源名称是当前可选展示规则，不是旧模型兼容；DEC-0063-09 要求转换保留可用别名与位置，本机迁移及作业7位置恢复已验证；用户重新核查提交和独立质量尚未完成
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.evidence-scope
+    name: DHR 完整实际关联证据范围
+    conceptId: concept.dhr-summary-version
+    valueType: object
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    aliases: [dhrSummary.evidenceScope]
+    availability: not-available
+    allowedOperators: [is-present]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0063-02/04/05/09 完整设计来源；三类实际实例及受控附件按生产对象自动归集，目录或手选不决定范围，转换草稿也须重新归集核查。工作树已有默认位置和附件快照，本机迁移已验证，但适用核查、用户重新提交及独立质量尚未完成，本事实不作为已验证的完整运行来源
+    capturedAt: '2026-09-25'
+    reviewStatus: reviewed
+  - id: fact.dhr-summary.effective-evidence-change
+    name: 完整冻结证据范围存在有效变化
+    conceptId: concept.dhr-summary-version
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+    aliases: [dhrSummary.effectiveEvidenceChange]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0068-05/06 完整设计来源；当前 changes 已比较冻结表单、新增实例和附件，尚未见生效事件主动通知及质量检查结果变化的完整比较，本事实暂不作为已验证的完整运行来源
+    capturedAt: '2026-09-25'
+    reviewStatus: reviewed

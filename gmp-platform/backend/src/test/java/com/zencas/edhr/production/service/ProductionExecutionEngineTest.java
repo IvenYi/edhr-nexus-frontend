@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import com.zencas.edhr.identity.entity.UserAccount;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -56,10 +57,78 @@ class ProductionExecutionEngineTest {
         engine.start(snapshot, state, "a", "1");
         engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\": 25}"), null, null, null, "1");
         assertThat(state.path("operations").path("a").path("forms").path("f").path("values").path("temperature").asInt()).isEqualTo(25);
-        assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("尚未结束填报");
-        engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");
         assertThat(state.path("operations").path("a").path("status").asText()).isEqualTo("COMPLETED");
+    }
+
+    @Test void supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord() throws Exception {
+        var snapshot = withForm(); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "a", "1");
+        engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+        engine.complete(snapshot, state, "a", "1");
+        JsonNode original = state.at("/operations/a/forms/f").deepCopy();
+        JsonNode completedAt = state.at("/operations/a/completedAt").deepCopy();
+        engine.createSupplement(snapshot, state, "a", "f", "dhr-copy-1", "1", "补充现场记录", "2026-09-20T10:00:00");
+        engine.supplementAction(snapshot, state, "a", "f", "dhr-copy-1", "SUBMIT", tree("{\"temperature\":26}"), null, null, null, "1", null);
+        assertThat(state.at("/operations/a/status").asText()).isEqualTo("COMPLETED");
+        assertThat(state.at("/operations/a/completedAt")).isEqualTo(completedAt);
+        assertThat(state.at("/operations/a/forms/f")).isEqualTo(original);
+        assertThat(state.at("/operations/a/forms/dhr-copy-1/status").asText()).isEqualTo("COMPLETED");
+        assertThat(state.at("/operations/a/forms/dhr-copy-1/supplement/reason").asText()).isEqualTo("补充现场记录");
+        assertThatThrownBy(() -> engine.supplementAction(snapshot, state, "a", "f", "f", "SAVE", tree("{}"), null, null, null, "1", null)).hasMessageContaining("明确创建");
+        assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "dhr-copy-1", "SAVE", tree("{}"), null, null, null, "1", null)).hasMessageContaining("不在执行中");
+    }
+
+    @Test void supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms() throws Exception {
+        var snapshot = withForm(); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "a", "1");
+        engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+        engine.complete(snapshot, state, "a", "1");
+        when(access.canAct(any(), any(), any(), any())).thenReturn(false);
+        assertThatThrownBy(() -> engine.createSupplement(snapshot, state, "a", "f", "dhr-copy-1", "2", "原因", "2026-09-20T10:00:00")).hasMessageContaining("填写权限");
+        assertThat(state.at("/operations/a/forms").has("dhr-copy-1")).isFalse();
+        ((ObjectNode) state.at("/operations/a")).putObject("formGroups").putObject("f").putArray("instanceIds");
+        assertThatThrownBy(() -> engine.createSupplement(snapshot, state, "a", "f", "dhr-copy-1", "1", "原因", "2026-09-20T10:00:00")).hasMessageContaining("实际到达");
+    }
+
+    @Test void directEntryConfigurationControlsPermissionsButtonsAndSignature() throws Exception {
+        var snapshot = withForm();
+        var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+        var entry = tree("""
+            {"id":"entry","data":{"kind":"START","label":"直接填报","config":{
+              "permissionGroupRules":[{"id":"g","subjects":[{"type":"USER","id":"1"}]}],
+              "buttons":[{"id":"submit","label":"签署并提交","action":"SUBMIT","visible":true}],
+              "buttonEvents":[{"id":"sign","event":"BEFORE","action":"SUBMIT","builtin":"NONE","signatureMethod":"ACCOUNT_PASSWORD"}]}}}
+            """);
+        form.set("entryNode", entry);
+        when(access.canAct(any(), eq(entry), any(), eq("2"))).thenReturn(false);
+        var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+        var formState = (ObjectNode) state.at("/operations/a/forms/f");
+        assertThat(engine.formControls(form, formState, "1").path("buttons").get(0).path("label").asText()).isEqualTo("签署并提交");
+        assertThat(engine.formControls(form, formState, "1").path("buttons").get(0).path("requiresSignature").asBoolean()).isTrue();
+        when(access.authenticateButtonSigner("other", "secret")).thenReturn(new ExecutionAccess.ButtonSigner("2", "其他人", "other", "SIGNATURE_PASSWORD", "902"));
+        assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, "other", "secret", "1")).hasMessageContaining("无权");
+        assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "SAVE", tree("{}"), null, null, null, "1")).hasMessageContaining("不允许");
+        var signer = new ExecutionAccess.ButtonSigner("1", "操作员", "operator", "SIGNATURE_PASSWORD", "901");
+        when(access.authenticateButtonSigner("operator", "secret")).thenReturn(signer);
+        when(access.sign(anyString(), anyString(), eq("SUBMIT"), any(), eq(signer))).thenReturn("signature-1");
+        engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, "operator", "secret", "1");
+        assertThat(formState.path("status").asText()).isEqualTo("COMPLETED");
+        assertThat(formState.path("lastSignatureId").asText()).isEqualTo("signature-1");
+        verify(access).sign(anyString(), anyString(), eq("SUBMIT"), any(), eq(signer));
+    }
+
+    @Test void disabledDirectSignatureEventIsNotExecuted() throws Exception {
+        var snapshot = withForm();
+        var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+        form.set("entryNode", tree("""
+            {"id":"entry","data":{"kind":"START","config":{"buttonEvents":[
+              {"id":"sign","event":"BEFORE","action":"SUBMIT","builtin":"FILL_SIGN_FIELD","signatureMethod":"ACCOUNT_PASSWORD","enabled":false}]}}}
+            """));
+        var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+        engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+        assertThat(state.at("/operations/a/forms/f/status").asText()).isEqualTo("COMPLETED");
+        verify(access, never()).sign(any(), any(), any(), any(), any());
     }
 
     @Test void rejectsUnknownFieldsAndInvalidNumbers() throws Exception {
@@ -115,14 +184,16 @@ class ProductionExecutionEngineTest {
         engine.complete(snapshot, state, "a", "1");
     }
 
-    @Test void skippedWorkFormNeverSatisfiesRequiredEdhrItem() throws Exception {
+    @Test void workFormNeverSatisfiesIndependentRequiredOperationForm() throws Exception {
         var op = mapper.readTree("""
-            {"id":"a","forms":[{"id":"direct","name":"必填记录","versionId":"5","required":true,"fulfilledBy":"work-form"},
+            {"id":"a","forms":[{"id":"direct","name":"必填记录","versionId":"5","required":true},
              {"id":"work-form","name":"必填记录","versionId":"5","workId":"w","fields":[]}],"works":[{"id":"w","name":"条件作业"}]}
             """);
         var state = tree("{\"status\":\"IN_PROGRESS\",\"forms\":{},\"works\":{\"w\":{\"status\":\"COMPLETED\"}}}");
         assertThat(engine.completionIssues(op, state)).singleElement().asString().contains("必填记录");
         state.withObject("/forms").putObject("work-form").put("status", "COMPLETED");
+        assertThat(engine.completionIssues(op, state)).singleElement().asString().contains("必填记录");
+        state.withObject("/forms").putObject("direct").put("status", "COMPLETED");
         assertThat(engine.completionIssues(op, state)).isEmpty();
     }
 
@@ -181,14 +252,63 @@ class ProductionExecutionEngineTest {
               {"id":"e","data":{"kind":"END"}}],"edges":[{"source":"s","target":"a"},{"source":"a","target":"e"}]}
             """));
         var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+        assertThat(engine.formControls(form, state.path("operations").path("a").path("forms").path("f"), "1").path("nodeKind").asText()).isEqualTo("START");
+        assertThat(engine.formControls(form, state.path("operations").path("a").path("forms").path("f"), "1").path("buttons").findValuesAsText("action"))
+            .containsExactly("SAVE", "SUBMIT");
         engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+        var approvalControls = engine.formControls(form, state.path("operations").path("a").path("forms").path("f"), "1");
+        assertThat(approvalControls.path("nodeKind").asText()).isEqualTo("APPROVAL");
+        assertThat(approvalControls.path("buttons").findValuesAsText("action")).containsExactly("APPROVE");
         assertThatThrownBy(() -> engine.complete(snapshot, state, "a", "1")).hasMessageContaining("第 1 份未完成");
-        when(access.sign(anyString(), anyString(), anyString(), any(), any(), any())).thenThrow(ExecutionSnapshotBuilder.invalid("签署账户或密码不正确"));
+        when(access.authenticateButtonSigner("u", "bad")).thenThrow(ExecutionSnapshotBuilder.invalid("签署账户或密码不正确"));
         assertThatThrownBy(() -> engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, "u", "bad", "1")).hasMessageContaining("密码不正确");
-        doReturn("signature-1").when(access).sign(anyString(), anyString(), anyString(), any(), any(), any());
+        when(access.authenticateButtonSigner("u", "valid")).thenReturn(new ExecutionAccess.ButtonSigner("1", "操作员", "u", "SIGNATURE_PASSWORD", "901"));
+        doReturn("signature-1").when(access).sign(anyString(), anyString(), anyString(), any(), any());
         engine.formAction(snapshot, state, "a", "f", "APPROVE", tree("{}"), null, "u", "valid", "1");
         engine.endForm(snapshot, state, "a", "f", false, "1");
         engine.complete(snapshot, state, "a", "1");
+    }
+
+    @Test void transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason() throws Exception {
+        var snapshot = withForm(); var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+        form.set("flow", tree("""
+            {"nodes":[{"id":"s","data":{"kind":"START"}},
+              {"id":"a","data":{"kind":"APPROVAL","label":"质量复核","config":{"buttons":[
+                {"action":"APPROVE","label":"通过"},{"action":"RETURN","label":"退回"},{"action":"TRANSFER","label":"转办"}]}}},
+              {"id":"e","data":{"kind":"END"}}],"edges":[{"source":"s","target":"a"},{"source":"a","target":"e"}]}
+            """));
+        var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+        engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+        assertThat(engine.formControls(form, state.path("operations").path("a").path("forms").path("f"), "1").path("buttons").findValuesAsText("action"))
+            .containsExactly("APPROVE", "RETURN", "TRANSFER");
+        when(access.requireTransferTarget(any(), any(), eq("1"), eq("2"))).thenReturn(UserAccount.builder().id(2L).displayName("复核员2").build());
+
+        assertThatThrownBy(() -> engine.transferForm(snapshot, state, "a", "f", null, "2", " ", "1", "复核员1")).hasMessageContaining("转办原因");
+        assertThatThrownBy(() -> engine.transferForm(snapshot, state, "a", "f", null, "2", "x".repeat(501), "1", "复核员1")).hasMessageContaining("500");
+        engine.transferForm(snapshot, state, "a", "f", null, "2", "交由当班复核员", "1", "复核员1");
+
+        JsonNode formState = state.path("operations").path("a").path("forms").path("f");
+        assertThat(formState.path("active").get(0).asText()).isEqualTo("a");
+        assertThat(formState.path("values").path("temperature").asInt()).isEqualTo(25);
+        assertThat(formState.path("transferAssignees").path("a").asText()).isEqualTo("2");
+        assertThat(state.path("history").get(state.path("history").size() - 1).path("actionCode").asText()).isEqualTo("TRANSFER");
+    }
+
+    @Test void explicitLegacyOrHiddenButtonsDoNotEnableTransfer() throws Exception {
+        for (String buttons : List.of(
+            "[{\"action\":\"APPROVE\",\"label\":\"通过\"},{\"action\":\"RETURN\",\"label\":\"退回\"}]",
+            "[{\"action\":\"APPROVE\",\"label\":\"通过\"},{\"action\":\"RETURN\",\"label\":\"退回\"},{\"action\":\"TRANSFER\",\"label\":\"转办\",\"visible\":false}]")) {
+            var snapshot = withForm(); var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+            form.set("flow", tree("""
+                {"nodes":[{"id":"s","data":{"kind":"START"}},
+                  {"id":"a","data":{"kind":"APPROVAL","config":{"buttons":%s}}},
+                  {"id":"e","data":{"kind":"END"}}],"edges":[{"source":"s","target":"a"},{"source":"a","target":"e"}]}
+                """.formatted(buttons)));
+            var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+            engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, null, null, "1");
+            assertThatThrownBy(() -> engine.transferForm(snapshot, state, "a", "f", null, "2", "交接", "1", "复核员1"))
+                .hasMessageContaining("未启用转办");
+        }
     }
 
     private ObjectNode snapshot() throws Exception {

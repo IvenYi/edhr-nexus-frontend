@@ -67,6 +67,12 @@ const { equipmentSystemColumns, formatEquipmentDateTime } = pageSandbox.module.e
 const { equipmentPurchaseDateError } = pageSandbox.module.exports;
 const testColumns = [{ id: 'name', width: 220 }, { id: 'code', width: 180 }, { id: 'actions', width: 96 }];
 
+test('equipment descriptions populate both editors and default safely for older rows', () => {
+  assert.equal(equipmentEditorForm({ code: 'T1', name: '类型', categoryId: '1', description: '类型描述' }, true).description, '类型描述');
+  assert.equal(equipmentEditorForm({ code: 'E1', name: '设备', equipmentTypeId: '2', status: 'ACTIVE', description: '设备描述' }, false).description, '设备描述');
+  assert.equal(equipmentEditorForm({ code: 'T2', name: '旧类型' }, true).description, '');
+});
+
 test('purchase date accepts today past and empty but blocks future dates across month and year boundaries', () => {
   for (const [today, tomorrow] of [['2026-09-10', '2026-09-11'], ['2026-09-30', '2026-10-01'], ['2026-12-31', '2027-01-01']]) {
     assert.equal(equipmentPurchaseDateError('', today), '');

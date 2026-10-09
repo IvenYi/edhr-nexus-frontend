@@ -28,13 +28,21 @@ public class ExecutionSnapshotBuilder {
             SELECT m.id AS "productId", m.code AS "productCode", m.name AS "productName",
                    m.specification, m.unit, p.id AS "processVersionId", p.version_label AS "processVersion",
                    p.production_mode AS "productionMode", p.production_form AS "productionForm",
+                   p.dhr_review_mode AS "dhrReviewMode",
+                   p.dhr_review_workflow_definition_id AS "dhrReviewWorkflowDefinitionId",
+                   p.dhr_review_workflow_version_id AS "dhrReviewWorkflowVersionId",
+                   wd.name AS "dhrReviewWorkflowName", wd.code AS "dhrReviewWorkflowCode",
+                   wv.version_number AS "dhrReviewWorkflowVersion",
                    r.id AS "routeVersionId", r.version AS "routeVersion", rt.name AS "routeName",
-                   rt.code AS "routeCode", d.id AS "dhrTemplateVersionId", d.version_label AS "dhrVersion",
+                   rt.code AS "routeCode", dt.id AS "dhrTemplateId", d.id AS "dhrTemplateVersionId",
+                   d.version_label AS "dhrVersion",
                    dt.name AS "dhrName", dt.code AS "dhrCode"
             FROM product_process_version p JOIN material m ON m.id = ?
             JOIN route_version r ON r.id = p.route_version_id JOIN route rt ON rt.id = r.route_id
             JOIN dhr_template_version d ON d.id = p.dhr_template_version_id
             JOIN dhr_template dt ON dt.id = d.dhr_template_id
+            LEFT JOIN workflow_definition wd ON wd.id = p.dhr_review_workflow_definition_id
+            LEFT JOIN workflow_definition_version wv ON wv.id = p.dhr_review_workflow_version_id
             WHERE p.id = ? AND p.tenant_id = 'default' AND m.tenant_id = 'default'
             """, order.getProductId(), object.getProcessVersionId());
         context.put("objectId", object.getId().toString()).put("objectNo", object.getObjectNo())
@@ -72,12 +80,13 @@ public class ExecutionSnapshotBuilder {
             if (!bindings.isEmpty()) {
                 long bindingId = bindings.get(0).path("id").asLong();
                 for (JsonNode binding : rows("""
-                    SELECT id, form_template_version_id AS "versionId", dhr_template_item_id AS "dhrItemId", required
+                    SELECT id, form_template_version_id AS "versionId", dhr_template_item_id AS "dhrItemId", required, fill_settings_json AS "fillSettings"
                     FROM product_process_operation_form_binding WHERE product_process_operation_binding_id = ? ORDER BY sort_order, id
                     """, bindingId)) {
                     ObjectNode form = form(binding.path("versionId").asText());
                     form.put("id", "form-" + binding.path("id").asText());
                     form.set("required", binding.path("required")); form.set("dhrItemId", binding.path("dhrItemId"));
+                    attachFillSettings(form, json(binding.path("fillSettings").asText(), mapper.createObjectNode()));
                     forms.add(form);
                 }
                 documents.addAll(rows("""
@@ -114,22 +123,7 @@ public class ExecutionSnapshotBuilder {
                     ObjectNode form = form(config.path("formTemplateVersionId").asText());
                     form.put("id", "work-" + work.path("id").asText() + "-" + workNode.path("id").asText());
                     form.put("workId", work.path("id").asText()).put("workNodeId", workNode.path("id").asText());
-                    form.set("binding", config.deepCopy());
-                    String processId = config.path("formProcessVersionId").asText();
-                    if (!processId.isBlank()) {
-                        ObjectNode flow = one("SELECT nodes_json AS nodes, edges_json AS edges FROM workflow_definition_version WHERE id = ? AND status = 'PUBLISHED'", Long.valueOf(processId));
-                        flow.put("versionId", processId);
-                        flow.set("nodes", json(flow.path("nodes").asText(), mapper.createArrayNode()));
-                        flow.set("edges", json(flow.path("edges").asText(), mapper.createArrayNode()));
-                        form.set("flow", flow);
-                    }
-                    // A work-bound form satisfies the matching eDHR item; do not require a second independent submission.
-                    for (JsonNode direct : forms) {
-                        if (direct.path("versionId").asText().equals(form.path("versionId").asText()) && !direct.has("workId")) {
-                            ((ObjectNode) direct).put("fulfilledBy", form.path("id").asText());
-                            form.set("dhrItemId", direct.path("dhrItemId"));
-                        }
-                    }
+                    attachFillSettings(form, config);
                     forms.add(form);
                 }
                 works.add(work);
@@ -137,6 +131,29 @@ public class ExecutionSnapshotBuilder {
             operations.add(op);
         }
         return root;
+    }
+
+    private void attachFillSettings(ObjectNode form, JsonNode settings) {
+        boolean process = com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(settings);
+        if (process) {
+            String processId = settings.path("formProcessVersionId").asText();
+            if (!processId.matches("[0-9]+")) throw invalid("表单尚未选择已发布流程");
+            ObjectNode flow = one("""
+                SELECT v.nodes_json AS nodes, v.edges_json AS edges
+                FROM workflow_definition_version v JOIN workflow_definition d ON d.id=v.definition_id
+                WHERE v.id=? AND v.status='PUBLISHED' AND d.type='FORM_PROCESS'
+                """, Long.valueOf(processId));
+            flow.put("versionId", processId);
+            flow.set("nodes", json(flow.path("nodes").asText(), mapper.createArrayNode()));
+            flow.set("edges", json(flow.path("edges").asText(), mapper.createArrayNode()));
+            form.set("flow", flow);
+            form.set("binding", settings.deepCopy());
+        } else {
+            JsonNode config = settings.path("directFillConfig").isObject() ? settings.path("directFillConfig") : mapper.createObjectNode();
+            form.set("binding", config.deepCopy());
+            ObjectNode entry = form.putObject("entryNode").put("id", "entry");
+            entry.putObject("data").put("kind", "START").put("label", "填报").set("config", config.deepCopy());
+        }
     }
 
     public ArrayNode publishedForms(String keyword) {
@@ -172,6 +189,7 @@ public class ExecutionSnapshotBuilder {
         normalizeColumns(form.path("fields"));
         JsonNode canvas = json(form.path("canvas").asText(), mapper.createObjectNode());
         collectBindings(canvas, form.path("fields"));
+        form.set("fields", com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper));
         return form;
     }
 
@@ -193,9 +211,17 @@ public class ExecutionSnapshotBuilder {
         }
     }
 
-    private void collectBindings(JsonNode node, JsonNode fields) {
-        if (node.isObject() && node.has("fieldId")) {
-            for (JsonNode field : fields) if (node.path("fieldId").asText().equals(field.path("id").asText())) {
+    static void collectBindings(JsonNode node, JsonNode fields) {
+        if (node.isObject()) {
+            String tableId = node.path("subTableId").asText();
+            JsonNode targets = fields;
+            if (!tableId.isBlank()) {
+                targets = com.fasterxml.jackson.databind.node.MissingNode.getInstance();
+                for (JsonNode field : fields) if (tableId.equals(field.path("id").asText()))
+                    targets = field.path("typeConfig").path("columns");
+            }
+            String fieldId = node.path(tableId.isBlank() ? "fieldId" : "subTableFieldId").asText();
+            for (JsonNode field : targets) if (!fieldId.isBlank() && fieldId.equals(field.path("id").asText())) {
                 if (node.path("required").asBoolean()) ((ObjectNode) field).put("required", true);
                 if (node.path("readonly").asBoolean()) ((ObjectNode) field).put("readOnly", true);
             }

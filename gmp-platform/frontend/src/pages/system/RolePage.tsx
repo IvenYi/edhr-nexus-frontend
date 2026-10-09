@@ -1,4 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -50,6 +52,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
   Close,
@@ -231,14 +235,7 @@ const fieldSx = {
   },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -279,7 +276,7 @@ const roleColumns: RoleColumn[] = [
   { id: 'createdAt', label: '创建时间', defaultWidth: 150, minWidth: ROLE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: ROLE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 150, minWidth: ROLE_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: ROLE_ACTION_COLUMN_WIDTH, minWidth: ROLE_ACTION_COLUMN_WIDTH, resizable: false },
+  { id: 'actions', label: '操作', defaultWidth: ROLE_ACTION_COLUMN_WIDTH, minWidth: ROLE_ACTION_COLUMN_WIDTH, resizable: false, align: 'center' },
 ];
 
 const roleAuditFieldLabelMap: Record<string, string> = {
@@ -774,6 +771,8 @@ function getStickyActionColumnSx(column: RoleColumn, section: 'head' | 'body') {
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
+    textAlign: 'center',
   };
 }
 
@@ -1627,7 +1626,7 @@ export default function RolePage() {
         </Popover>
 
         <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
-          <TableContainer
+          <ListTableShell
             ref={tableContainerRef}
             sx={{
               width: '100%',
@@ -1727,7 +1726,7 @@ export default function RolePage() {
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
+          </ListTableShell>
           <Box
             data-role-action-column-shadow
             sx={{
@@ -1736,7 +1735,7 @@ export default function RolePage() {
               bottom: 0,
               right: tableScrollbarWidth,
               width: ROLE_ACTION_COLUMN_WIDTH,
-              boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+              boxShadow: listTableStickyEdgeShadow,
               pointerEvents: 'none',
               zIndex: 7,
             }}
@@ -1926,10 +1925,10 @@ export default function RolePage() {
         </Box>
       </Drawer>
 
-      <AppDialog open={roleDialogOpen} onClose={() => setRoleDialogOpen(false)} maxWidth="sm" fullWidth>
+      <AppDialog variant="form" open={roleDialogOpen} onClose={() => setRoleDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingId ? '编辑岗位角色' : '新增岗位角色'}</DialogTitle>
         <DialogContent dividers>
-          <Stack spacing={1.5} sx={{ pt: 0.5 }}>
+          <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
             <TextField
               label="岗位角色"
               value={form.name}
@@ -1946,8 +1945,9 @@ export default function RolePage() {
               fullWidth
               multiline
               minRows={3}
+              sx={{ gridColumn: { sm: '1 / -1' } }}
             />
-          </Stack>
+          </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setRoleDialogOpen(false)}>取消</Button>

@@ -31,6 +31,9 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
   Delete,
@@ -733,23 +736,26 @@ export default function IconManagementPage() {
         </Stack>
       </Box>
 
-      <AppDialog open={groupDialog.open} onClose={() => setGroupDialog((current) => ({ ...current, open: false }))} fullWidth maxWidth="xs">
+      <FormDialog open={groupDialog.open} onClose={() => setGroupDialog((current) => ({ ...current, open: false }))} fullWidth maxWidth="xs">
         <DialogTitle>{groupDialog.mode === 'edit' ? '重命名分组' : '新增分组'}</DialogTitle>
-        <DialogContent dividers>
-          <TextField
-            autoFocus
-            label="分组名称"
-            fullWidth
-            value={groupDialog.name}
-            onChange={(event) => setGroupDialog((current) => ({ ...current, name: event.target.value }))}
-            sx={fieldSx}
-          />
-        </DialogContent>
+        <DialogContent dividers><FormDialogSection title="基本信息">
+          <FormDialogFieldGrid>
+            <TextField
+              autoFocus
+              size="small"
+              label="分组名称"
+              fullWidth
+              value={groupDialog.name}
+              onChange={(event) => setGroupDialog((current) => ({ ...current, name: event.target.value }))}
+              sx={fieldSx}
+            />
+          </FormDialogFieldGrid>
+        </FormDialogSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setGroupDialog((current) => ({ ...current, open: false }))}>取消</Button>
           <Button variant="contained" onClick={() => groupSaveMutation.mutate()} disabled={groupSaveMutation.isPending}>保存</Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>上传图标说明</DialogTitle>

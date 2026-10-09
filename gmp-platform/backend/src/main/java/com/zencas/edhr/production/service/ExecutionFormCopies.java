@@ -34,14 +34,7 @@ final class ExecutionFormCopies {
     }
 
     static boolean required(JsonNode op, JsonNode form) {
-        if (!form.has("workId")) return form.path("required").asBoolean(true);
-        boolean linked = false;
-        for (JsonNode direct : op.path("forms")) {
-            if (!form.path("id").asText().equals(direct.path("fulfilledBy").asText())) continue;
-            linked = true;
-            if (direct.path("required").asBoolean(true)) return true;
-        }
-        return !linked || form.path("required").asBoolean(false);
+        return form.path("required").asBoolean(true);
     }
 
     static List<String> incomplete(JsonNode state, JsonNode form) {

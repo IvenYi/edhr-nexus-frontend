@@ -1,0 +1,52 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.button-signature-confirmed
+    type: document
+    path: docs/knowledge/evidence/button-signature-confirmed.md
+    description: user-confirmed；普通按钮独立签名密码、A登录B本人签署、未认证或过期就地阻断、仅用户名admin登录密码例外及SIGN_FIELD完全不变；同时明确局部替代、工程推断和验证缺口。
+    visibility: internal
+  - id: evidence.button-signature-decision-package
+    type: document
+    path: docs/development/button-signature-decision-package.yaml
+    description: secondary-reference；主智能体交接包 DEC-PACKAGE-20260926-BUTTON-SIGNATURE，基线0.3.24；confirmed已与本次用户指令核对，inferred及影响分析仅按其来源类别保留，不独自证明实现或验收。
+    visibility: internal
+  - id: evidence.button-signature-auth-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    description: original-evidence；最终源码通过authenticateButtonSigner/ButtonSigner验证实际账号；普通用户SIGNATURE_PASSWORD及认证id写入authEventRef，内部例外ADMIN_LOGIN_PASSWORD且认证引用为空。signTarget快照保存sessionOperatorId/Name/Account及signerId/Name/Account，签名实体归实际签署人。2026-09-27已收紧为admin精确equals匹配并关闭源码差异；signField逐字未改，本角色未执行运行测试。
+    visibility: internal
+  - id: evidence.button-signature-execution-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    description: original-evidence；formControls从BEFORE/ACCOUNT_PASSWORD投影requiresSignature；formActionInternal对实际签署B重算节点和字段权限，按钮history.operator为B并附sessionOperatorId、signerName/Account及signatureId，字段填充和后续表单收尾亦传actionOperator。SIGN_FIELD分支逐字未改；身份贯通及周边流程只读核对，未由本角色运行验证。
+    visibility: internal
+  - id: evidence.button-signature-dhr-caller-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+    description: original-evidence；act保持会话A的eligible任务门禁，需签署动作另经authenticateButtonSigner并检查B eligible，completeDhrTask使用B；AuditEvent.operator仍为A，contentAfter附sessionOperatorId及signerId/Name/Account、signatureId。此为现有共享调用实现边界，不意味着任意A/B组合可访问任务，不修改其他DHR知识。
+    visibility: internal
+  - id: evidence.button-signature-regression-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；已有SIGN_FIELD签名密码、图片、内容失效、过期和审计回滚测试；当前新增共享终端签署人权限与双身份、签署失败回滚、缺失/过期认证及客户管理员、内部admin例外等测试源码。本角色未运行测试，文件与断言存在不代表通过，正式结果和独立质量结论由主智能体提供。
+    visibility: internal
+  - id: evidence.button-signature-ui-source
+    type: code
+    path: gmp-platform/frontend/src/components/workflow/ButtonSignatureCredentials.tsx
+    description: original-evidence；组件显示签署人用户名与电子签名密码，切换账号清空密码；2026-09-27已改为account.trim() === 'admin'精确判断密码标签，不再大小写折叠。本角色未浏览器验证，不能据此断言错误提示与输入保留已经通过。
+    visibility: internal
+  - id: evidence.button-signature-session-audit-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    description: original-evidence；act读取AuditContext的会话A作为operator，顶层PRODUCTION_EXECUTION AuditEvent的operatorId/Name/Account仍来自A；contentAfter保存包含B动作历史和sessionOperatorId的执行状态。没有把签署人替换为登录会话，源码核对不等于审计持久化或事务测试通过。
+    visibility: internal
+  - id: evidence.button-signature-admin-case-regression-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+    description: original-evidence；onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly新增用户名ADMIN的登录密码拒绝断言，保留小写admin成功、客户管理员不豁免及SIGN_FIELD无例外断言。本角色仅核对源码，新增断言待后续质量回归，不引用此前报告证明其通过。
+    visibility: internal
+  - id: evidence.button-signature-test-run-record
+    type: document
+    path: docs/knowledge/evidence/button-signature-confirmed.md
+    description: original-evidence与secondary-reference分层；已解析现有Surefire知识测试报告59项零失败并记录时点与摘要；主智能体报告此前六套件163项含2跳过通过。生产集成报告已由后续单用例覆盖，不拼接各时点报告，不宣称新增断言、最终知识编辑或独立质量验收已被此前运行覆盖。
+    visibility: internal

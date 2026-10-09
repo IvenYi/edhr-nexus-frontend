@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
@@ -44,7 +45,7 @@ export default function InstanceLogs() {
   return (
     <Box>
       <Typography variant="h5" sx={{ mb: 2 }}>流程日志 - 实例 {id}</Typography>
-      <TableContainer>
+      <ListTableShell>
         <Table>
           <TableHead>
             <TableRow>
@@ -84,7 +85,7 @@ export default function InstanceLogs() {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
       {data && data.totalPages > 1 && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
           <Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} />

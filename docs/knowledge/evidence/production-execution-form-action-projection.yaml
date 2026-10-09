@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.production-execution-form-action-projection-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/production-execution-form-action-projection-user-confirmed.md
+    description: user-confirmed；生产执行表单流转到后续审批节点后不展示填报节点的暂存/提交，审批节点按当前节点按钮配置投影审批、退回、转办等动作；本证据不表示最终实现已验收。
+    visibility: internal
+  - id: evidence.production-execution-form-action-projection-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    description: original-evidence；formControls 依据当前活动表单流程节点返回 nodeId、nodeName、nodeKind、buttons、permissions 和 signaturePermissions，动作执行前再次计算 controls 并校验当前动作是否允许；空或缺失按钮配置的默认动作回退属于当前实现兼容风险，不提升为业务规则。
+    visibility: internal
+  - id: evidence.production-execution-form-action-projection-page-source
+    type: code
+    path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+    description: original-evidence；生产执行页底部动作栏读取 controls.buttons 渲染按钮，未在该动作栏外无条件追加暂存/提交；FormCanvasPreview 和 FormDocumentPreview 在表单内容区域接收字段权限与运行时数据。
+    visibility: internal
+  - id: evidence.production-execution-form-action-projection-renderer-source
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+    description: original-evidence；FormCanvasPreview 负责表单字段、签名和文档预览的运行时呈现，不承载生产执行页底部的节点动作栏；动作按钮边界由生产执行页维护。
+    visibility: internal
+  - id: evidence.production-execution-form-action-projection-engine-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java
+    description: original-evidence；测试源构造开始节点到审批节点的流程，断言开始节点返回暂存/提交，提交后当前节点变为审批节点并返回审批动作；测试源码本身不单独证明当前工作树测试已通过。
+    visibility: internal

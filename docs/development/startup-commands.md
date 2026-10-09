@@ -19,6 +19,16 @@
 - JDK 21
 - Maven 3.x，当前验证环境为 Maven `3.9.16`
 - PostgreSQL 16 或兼容版本
+- Node/npm 及已安装的前端依赖（Maven 会构建随 JAR 发布的离线 DHR 打印资源）
+- Playwright 1.58 对应 Chromium；Linux 还需浏览器系统依赖和 Noto CJK 中文字体
+
+首次运行先在 `gmp-platform/frontend` 执行 `npm ci`，再在 `gmp-platform/backend` 执行：
+
+```bash
+mvn exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install chromium"
+```
+
+Linux 原生环境使用 `install --with-deps chromium` 并安装 `fonts-noto-cjk`。容器依赖由后端 Dockerfile 提供；不要跳过 Maven 的 `generate-resources` 阶段，否则 JAR 会缺少 `dhr-print/renderer.js`。详细边界见 `docs/dhr-management-handoff.md` 第10节。
 
 注意：当前机器默认 `java` 是 Java 26，后端使用 Java 26 编译会失败。必须使用 JDK 21。当前机器可用的 JDK 21 路径为：
 

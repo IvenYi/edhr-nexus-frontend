@@ -25,12 +25,15 @@ import {
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
+import { RuntimeReference } from '@/components/form-renderer/FormRuntimeField';
+import { mockReferenceValues, resolveReferenceField, updateMockFieldValue, type ReferenceValue } from '@/components/form-renderer/referenceConfig';
+import { getPreviewReferences } from '@/api/form-references';
 import CellDisplayContent from '../CellDisplayContent';
 import { isCellDisplayNode } from '../../registry/commonComponentRegistry';
 import { getFormPagePaperMetrics as getMockFillPagePaperMetrics } from '../../utils/formPagePaper';
 import { shouldRenderSheetCellBorderEdge as shouldRenderMockFillCellBorderEdge } from '../../utils/sheetCellBorders';
 import { buildDynamicSubTablePage } from '../../utils/dynamicSubTableLayout';
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ChangeEvent, type ReactNode } from 'react';
 import { getFilePreviewBlob } from '@/api/files';
 import { verifyCurrentUserSignaturePassword } from '@/api/identity';
 import type {
@@ -63,7 +66,7 @@ interface MockSignatureValue {
   authMethod?: string;
 }
 
-type MockFillValue = string | string[] | boolean | MockSignatureValue;
+type MockFillValue = string | string[] | boolean | MockSignatureValue | ReferenceValue;
 type MockFillValues = Record<string, MockFillValue>;
 type SubTableRecordCounts = Record<string, number>;
 
@@ -79,6 +82,7 @@ interface MergedCellMaps {
 }
 
 interface RenderMockFillControlParams {
+  referenceValues?: Record<string, unknown>;
   options?: Array<{ key: string; label: string; value: string }>;
   previewOnly?: boolean;
   node: CanvasNode;
@@ -217,6 +221,7 @@ function isMockSignatureValue(value: MockFillValue | undefined): value is MockSi
 
 function readValueAsText(value: MockFillValue | undefined) {
   if (isMockSignatureValue(value)) return value.signerName || '';
+  if (value && typeof value === 'object' && 'name' in value) return value.name;
   if (Array.isArray(value)) return value.join(', ');
   if (typeof value === 'boolean') return value ? 'true' : '';
   return String(value ?? '');
@@ -447,7 +452,18 @@ function resolveCellTextSx(cell?: CanvasSheetCell | null): CSSProperties {
   };
 }
 
+function MockReferenceControl({ field, node, valueKey, values, referenceValues, onValueChange }: RenderMockFillControlParams & { field: ModelField }) {
+  const resolved = resolveReferenceField(field, node);
+  const config = JSON.stringify(resolved.typeConfig);
+  const references = useCallback((_id: string, keyword: string, context: Record<string, unknown>) => getPreviewReferences(JSON.parse(config), keyword, context), [config]);
+  return <RuntimeReference field={resolved} canvas disabled={Boolean(node.bindings?.readonly)} runtime={{
+    values: { [field.id]: values[valueKey] }, referenceValues, references,
+    onChange: (_id, value) => onValueChange(valueKey, value as ReferenceValue ?? ''),
+  }} />;
+}
+
 export function renderMockFillControl({
+  referenceValues,
   options: runtimeOptions,
   previewOnly = false,
   node,
@@ -458,6 +474,7 @@ export function renderMockFillControl({
   onSignatureRequest,
 }: RenderMockFillControlParams) {
   if (Boolean(node.bindings?.hidden)) return null;
+  if (field?.type === 'reference' && !previewOnly) return <MockReferenceControl field={field} node={node} valueKey={valueKey} values={values} referenceValues={referenceValues} onValueChange={onValueChange} onSignatureRequest={onSignatureRequest} />;
 
   const widgetConfig = node.bindings?.widgetConfig ?? {};
   const readConfig = (key: string, fallback: unknown = '') => widgetConfig[key] ?? node.props[key] ?? field?.typeConfig[key] ?? fallback;
@@ -999,6 +1016,7 @@ export function FormSheetPage({
   const renderFieldNode = (node: CanvasNode, range: CanvasSelectionRange, valueKey: string, recordIndex = 0) => {
     const field = resolveBoundField(document, node);
     const content = isCellDisplayNode(node) ? <CellDisplayContent node={node} recordIndex={recordIndex} /> : renderField ? renderField(node, field, recordIndex) : renderMockFillControl({
+      referenceValues: mockReferenceValues(document, values, node, valueKey),
       previewOnly,
       node,
       field,
@@ -1411,10 +1429,7 @@ export default function MockFillDialog({ open, document, onClose }: MockFillDial
   }, [document, open]);
 
   const handleValueChange = (key: string, value: MockFillValue) => {
-    setValues((current) => ({
-      ...current,
-      [key]: value,
-    }));
+    setValues((current) => updateMockFieldValue(document, current, key, value));
   };
 
   const handleReset = () => {

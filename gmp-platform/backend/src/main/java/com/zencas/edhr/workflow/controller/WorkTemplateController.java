@@ -63,6 +63,7 @@ public class WorkTemplateController {
     private final AuditEventRepository auditEventRepository;
     private final FormTemplateVersionRepository formTemplateVersionRepository;
     private final FormProcessReferenceService formProcessReferenceService;
+    private final com.zencas.edhr.workflow.service.FormFillSettingsService fillSettingsService;
     private final SnowflakeIdGenerator idGenerator;
     private final ObjectMapper objectMapper;
 
@@ -190,7 +191,15 @@ public class WorkTemplateController {
         }
         Map<String, Object> before = versionSnapshot(version);
         try {
-            String nodesJson = FLOW_GRAPH_OBJECT_MAPPER.writeValueAsString(payload.getOrDefault("nodes", List.of()));
+            JsonNode graphNodes = FLOW_GRAPH_OBJECT_MAPPER.valueToTree(payload.getOrDefault("nodes", List.of()));
+            for (JsonNode node : graphNodes) {
+                if ("FORM".equals(node.path("data").path("kind").asText())) {
+                    var config = ((com.fasterxml.jackson.databind.node.ObjectNode) node.path("data")).withObject("/config");
+                    if (!config.hasNonNull("fillMode")) config.put("fillMode", "DIRECT");
+                    com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(config);
+                }
+            }
+            String nodesJson = FLOW_GRAPH_OBJECT_MAPPER.writeValueAsString(graphNodes);
             validateFlowBoundaries(nodesJson);
             String edgesJson = FLOW_GRAPH_OBJECT_MAPPER.writeValueAsString(payload.getOrDefault("edges", List.of()));
             validateOrdinaryNodeOutgoingEdges(nodesJson, edgesJson);
@@ -629,6 +638,7 @@ public class WorkTemplateController {
             for (JsonNode node : nodes) {
                 if (!"FORM".equals(node.path("data").path("kind").asText(""))) continue;
                 JsonNode config = node.path("data").path("config");
+                if (!com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(config)) continue;
                 String processVersionId = config.path("formProcessVersionId").asText("").trim();
                 if (processVersionId.isBlank()) continue;
                 Long processVersionIdValue = parseLong(processVersionId);
@@ -734,7 +744,12 @@ public class WorkTemplateController {
             JsonNode nodes = FLOW_GRAPH_OBJECT_MAPPER.readTree(nodesJson);
             for (JsonNode node : nodes) {
                 if (!"FORM".equals(node.path("data").path("kind").asText())) continue;
-                String processVersionId = node.path("data").path("config").path("formProcessVersionId").asText("").trim();
+                JsonNode fillSettings = node.path("data").path("config");
+                if (fillSettings.has("fillMode") || fillSettings.has("directFillConfig")) {
+                    fillSettingsService.validate(fillSettings, Long.valueOf(fillSettings.path("formTemplateVersionId").asText()));
+                    if (!com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(fillSettings)) continue;
+                }
+                String processVersionId = fillSettings.path("formProcessVersionId").asText("").trim();
                 if (processVersionId.isBlank()) {
                     continue;
                 }
@@ -831,7 +846,7 @@ public class WorkTemplateController {
             Set<String> fieldIds,
             String formTemplateVersionId,
             String formNodeLabel) {
-        if (bindings == null || bindings.isMissingNode() || bindings.isNull()) return;
+        if (bindings == null || bindings.isMissingNode() || bindings.isNull()) bindings = FLOW_GRAPH_OBJECT_MAPPER.createObjectNode();
         if (!bindings.isObject()) {
             throw new com.zencas.edhr.common.exception.BusinessException(
                     com.zencas.edhr.common.exception.ErrorCode.WF_002,
@@ -893,15 +908,10 @@ public class WorkTemplateController {
                     String signatureMethod = event.path("signatureMethod").asText("").trim();
                     String action = event.path("action").asText("").trim();
                     String phase = event.path("event").asText("").trim();
-                    // Older published versions predate the builtin field. Keep
-                    // their read compatibility aligned with the frontend and
-                    // form-process controller validation.
-                    boolean signatureEvent = (builtin.isBlank() || "FILL_SIGN_FIELD".equals(builtin))
+                    boolean signatureEvent = "FILL_SIGN_FIELD".equals(builtin)
                             && ("ACCOUNT_PASSWORD".equals(signatureMethod) || signatureMethod.isBlank());
-                    boolean fillsField = builtin.isBlank() || "FILL_SIGN_FIELD".equals(builtin);
                     if (event.path("enabled").asBoolean(true)
                             && signatureEvent
-                            && fillsField
                             && "BEFORE".equals(phase)
                             && ("SAVE".equals(action) || "SUBMIT".equals(action) || "APPROVE".equals(action) || "RETURN".equals(action))) {
                         String eventId = event.path("id").asText("").trim();

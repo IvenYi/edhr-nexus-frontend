@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.form-fill-settings-confirmed
+    type: document
+    path: docs/knowledge/evidence/form-fill-settings-confirmed.md
+    description: user-confirmed；两类绑定显式选择模式，共用配置并闭环保存、发布快照与运行。最新确认当前 MVP 不兼容旧数据、旧数据可重造，取消历史回填、新旧双轨兼容和旧数据自动迁移；保留新执行快照不可变、权限及签署校验。尚未独立质量验证，不是实现通过证明。
+    visibility: internal
+  - id: evidence.form-fill-settings-design
+    type: document
+    path: docs/knowledge/evidence/form-fill-settings-confirmed.md
+    description: inference；缺失模式推导、旧数据开放默认和在途兼容已被最新 user-confirmed 指令撤销，仅保留历史追溯；双模式草稿保留、START 复用及存储仍为工程选择，不等同于新旧双轨兼容。secondary-reference 标明交接包旧兼容内容失效。
+    visibility: internal
+  - id: evidence.form-fill-settings-work-entry-baseline
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+    description: original-evidence；2026-09-22 建模起点的可选流程入口、清除绑定例外与 selectedProcessOption 配置区域；仅标记原实现边界，非新模式闭环证明。
+    visibility: internal
+  - id: evidence.form-fill-settings-operation-entry-baseline
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+    description: original-evidence；2026-09-22 建模起点的共享产品/产品簇工序表单草稿与保存映射，作为本次配置接入位置，不证明新设置已持久化。
+    visibility: internal
+  - id: evidence.form-fill-settings-operation-entity-baseline
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationFormBinding.java
+    description: original-evidence；2026-09-22 建模起点工序表单绑定实体仅有既有版本、目录项、required 和排序等字段；不是本次迁移已完成证据。
+    visibility: internal
+  - id: evidence.form-fill-settings-snapshot-baseline
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    description: original-evidence；2026-09-22 建模起点工序表单查询与作业 binding/flow 冻结路径，定位生产消费入口；新填报模式、权限与签署冻结仍待实现和测试核对。
+    visibility: internal

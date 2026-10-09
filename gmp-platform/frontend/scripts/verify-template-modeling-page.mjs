@@ -39,7 +39,7 @@ mustNotInclude(pageContent, "['生效时间', formatDateTime(drawerRow?.currentV
 mustNotInclude(pageContent, "['失效时间', formatDateTime(drawerRow?.currentVersion?.effectiveTo)]", 'parent drawer should not show parent expiry time');
 mustInclude(pageContent, 'data-template-name-link', 'form-template parent row name should expose a dedicated clickable drawer trigger');
 mustInclude(pageContent, "onClick={(event) => {\n        event.stopPropagation();\n        openTemplateDrawer(row);\n      }}", 'form-template parent row name click should open the drawer without toggling the row');
-mustInclude(pageContent, '<TableRow key={row.id} hover onClick={() => expandTemplateGroup(row.id)}', 'form-template parent row click should expand or collapse child rows');
+mustInclude(pageContent, '<TableRow data-record-id={row.id} key={row.id} hover onClick={() => expandTemplateGroup(row.id)}', 'form-template parent row click should expand or collapse child rows');
 mustNotInclude(pageContent, '<TableRow key={row.id} hover onClick={() => openTemplateDrawer(row)} sx={{ cursor: \'pointer\' }}>\n          {visibleColumns.map((column, index)', 'form-template parent row click should not open the drawer');
 mustInclude(pageContent, "const shouldFallbackToParentCreateAudit = pageKey === 'batchRecordTemplates'", 'initial DHR versions should identify whether a legacy audit fallback is applicable');
 mustInclude(pageContent, "drawerVersionRow?.version === 'V1.0'", 'only the initial DHR version should use the parent audit fallback');
@@ -56,12 +56,15 @@ mustInclude(pageContent, "field === 'modelingChange'", 'DHR modeling-change audi
 mustInclude(pageContent, 'event.actionLabel || getAuditActionLabel(event.action)', 'audit rows should use the same generic action labels as other data-audit drawers');
 mustNotInclude(pageContent, 'event.functionName || event.actionLabel', 'audit row summaries should not require per-function action labels');
 mustInclude(pageContent, '查看${field.label}详情', 'structured audit rows should expose an explicit detail action');
-mustInclude(pageContent, 'const TEMPLATE_ACTION_COLUMN_WIDTH = 100;', 'the parent action column should use the shared RDO action width');
+mustInclude(pageContent, 'const TEMPLATE_ACTION_COLUMN_WIDTH = 128;', 'the parent action column should use the shared RDO action width');
 mustInclude(pageContent, 'const DHR_VERSION_ACTION_COLUMN_WIDTH = 160;', 'the batch-record version action column should fit its version operations');
 mustInclude(pageContent, 'data-template-column-settings-tabs', 'both parent and child column settings must be available for every template modeling page');
 mustNotInclude(pageContent, "{pageKey === 'formTemplates' ? (\n              <Tabs", 'batch-record templates must not hide the parent-child column settings tabs');
-mustInclude(pageContent, 'data-template-main-action-spacer', 'a conditional spacer should keep frozen parent and child action columns aligned');
-mustInclude(pageContent, 'effectiveMainTableWidth', 'the parent table should reserve child-table width when necessary to align frozen actions');
+mustInclude(pageContent, 'ListTableShell', 'template parent and child tables should use the shared list-table shell');
+mustInclude(pageContent, 'resolveListColumnWidths', 'template parent and child tables should resolve widths through the shared list-table shell');
+mustInclude(pageContent, 'sharedTableMinWidth', 'template parent and child tables should share a minimum table width');
+mustNotInclude(pageContent, 'data-template-main-action-spacer', 'the shared RDO shell should align frozen actions without spacer columns');
+mustNotInclude(pageContent, 'effectiveMainTableWidth', 'the shared RDO shell should replace independently calculated effective table widths');
 mustInclude(pageContent, 'data-template-version-link', 'child versions should provide an explicit detail and audit entry point');
 mustInclude(pageContent, '查看版本详情及审计', 'the child-version detail entry should name its audit behavior');
 

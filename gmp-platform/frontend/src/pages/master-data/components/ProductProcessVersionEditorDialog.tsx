@@ -27,6 +27,8 @@ import {
 } from '@mui/material';
 import { Add, ArrowDownward, ArrowDropDown, ArrowUpward, ChevronRight, Close, DeleteOutline, ExpandMore, FolderOutlined, Search, VisibilityOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
+import FormFillSettingsButton, { FormFillModeLabel } from '@/components/form-fill-settings/FormFillSettingsButton';
+import type { FormFillSettingsValue } from '@/components/form-fill-settings/types';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import {
   getProductModelOptions,
@@ -44,6 +46,7 @@ import { getFilePreviewBlob } from '@/api/files';
 import { getFormTemplateVersion, type TemplateModelingRecord, type TemplateVersionRecord } from '@/api/template-modeling';
 import { parseReactTemplateDesignerDocument } from '../template-designer-react/utils/document';
 import { FormCanvasPreview } from '../DhrTemplateWorkspaceDialog';
+import { getTemplateVersions, listTemplates } from '@/api/workflow-templates';
 
 export type ProductProcessVersionDialogMode = 'create' | 'edit' | 'copy';
 
@@ -53,6 +56,9 @@ interface VersionForm {
   productionForm: string;
   routeVersionId: string;
   dhrTemplateVersionId: string;
+  dhrReviewMode: 'NONE' | 'REQUIRED';
+  dhrReviewWorkflowDefinitionId: string;
+  dhrReviewWorkflowVersionId: string;
   description: string;
   effectiveFrom: string;
   effectiveTo: string;
@@ -63,7 +69,7 @@ interface OperationDraft {
   operationName: string;
   operationCode?: string | null;
   sortOrder: number;
-  forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; required: boolean; sortOrder: number }>;
+  forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; fillSettings?: FormFillSettingsValue; required: boolean; sortOrder: number }>;
   documents: Array<{ documentVersionId: string; sortOrder: number; pageStart?: number | null; pageEnd?: number | null }>;
 }
 
@@ -117,6 +123,9 @@ function toVersionForm(mode: ProductProcessVersionDialogMode, target: ProductPro
       productionForm: normalizeProductionForm(target.productionForm),
       routeVersionId: target.routeVersionId,
       dhrTemplateVersionId: target.dhrTemplateVersionId,
+      dhrReviewMode: target.dhrReviewMode || 'NONE',
+      dhrReviewWorkflowDefinitionId: target.dhrReviewWorkflowDefinitionId || '',
+      dhrReviewWorkflowVersionId: target.dhrReviewWorkflowVersionId || '',
       description: target.description || '',
       effectiveFrom: mode === 'copy' ? '' : toInputDateTime(target.effectiveFrom),
       effectiveTo: mode === 'copy' ? '' : toInputDateTime(target.effectiveTo),
@@ -128,6 +137,9 @@ function toVersionForm(mode: ProductProcessVersionDialogMode, target: ProductPro
     productionForm: '',
     routeVersionId: '',
     dhrTemplateVersionId: '',
+    dhrReviewMode: 'NONE',
+    dhrReviewWorkflowDefinitionId: '',
+    dhrReviewWorkflowVersionId: '',
     description: '',
     effectiveFrom: '',
     effectiveTo: '',
@@ -149,6 +161,7 @@ function toOperationDrafts(nodes: RouteNodeRecord[], configured: ProductProcessO
         forms: (configuredOperation?.forms ?? []).map((form) => ({
           dhrTemplateItemId: form.dhrTemplateItemId,
           formTemplateVersionId: form.formTemplateVersionId,
+          fillSettings: form.fillSettings,
           required: form.required ?? true,
           sortOrder: form.sortOrder ?? 0,
         })),
@@ -169,6 +182,9 @@ function toPayload(form: VersionForm, drafts: OperationDraft[]): ProductProcessV
     productionForm: form.productionForm.trim(),
     routeVersionId: form.routeVersionId,
     dhrTemplateVersionId: form.dhrTemplateVersionId,
+    dhrReviewMode: form.dhrReviewMode,
+    dhrReviewWorkflowDefinitionId: form.dhrReviewMode === 'REQUIRED' ? form.dhrReviewWorkflowDefinitionId : null,
+    dhrReviewWorkflowVersionId: form.dhrReviewMode === 'REQUIRED' ? form.dhrReviewWorkflowVersionId : null,
     description: form.description.trim() || null,
     effectiveFrom: form.effectiveFrom || null,
     effectiveTo: form.effectiveTo || null,
@@ -688,6 +704,7 @@ export function ReferenceBindingList<T extends { id: string }>({
   onRemove,
   onMove,
   renderDetails,
+  renderActions,
   onPreview,
   previewOpen = false,
   addControl,
@@ -705,6 +722,7 @@ export function ReferenceBindingList<T extends { id: string }>({
   onRemove: (id: string) => void;
   onMove: (id: string, direction: -1 | 1) => void;
   renderDetails?: (option: T, index: number) => ReactNode;
+  renderActions?: (option: T, index: number) => ReactNode;
   onPreview?: (option: T) => void;
   previewOpen?: boolean;
   addControl?: ReactNode;
@@ -724,14 +742,16 @@ export function ReferenceBindingList<T extends { id: string }>({
     {value.length === 0 ? <Box sx={{ border: '1px dashed #cfd8e3', borderRadius: 1, px: 1.25, py: 2, textAlign: 'center', bgcolor: '#fbfcfe' }}><Typography variant="caption" sx={{ color: '#909399' }}>{emptySelectionText ?? emptyText}</Typography></Box> : value.map((option, index) => <Box data-record-id={getOptionId(option)} key={getOptionId(option)} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, px: 1.25, py: 1, bgcolor: '#fff' }}>
       <Stack direction="row" spacing={1} alignItems="flex-start">
         <Typography variant="caption" sx={{ width: 24, pt: 0.5, color: '#909399' }}>{String(index + 1).padStart(2, '0')}</Typography>
-        <Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap title={getOptionLabel(option)} sx={{ color: '#303133', fontWeight: 500 }}>{getOptionLabel(option)}</Typography>{renderDetails?.(option, index)}</Box>
+        <Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap title={getOptionLabel(option)} sx={{ color: '#303133', fontWeight: 500 }}>{getOptionLabel(option)}</Typography>{!renderActions ? renderDetails?.(option, index) : null}</Box>
         <Stack direction="row" spacing={0}>
           {onPreview ? <Tooltip title="预览" arrow><IconButton size="small" aria-label={`预览引用 ${getOptionLabel(option)}`} onClick={() => onPreview(option)}><VisibilityOutlined sx={{ fontSize: 17 }} /></IconButton></Tooltip> : null}
+          {renderActions?.(option, index)}
           <Tooltip title="上移" arrow><span><IconButton size="small" aria-label="上移引用" onClick={() => onMove(getOptionId(option), -1)} disabled={index === 0}><ArrowUpward sx={{ fontSize: 16 }} /></IconButton></span></Tooltip>
           <Tooltip title="下移" arrow><span><IconButton size="small" aria-label="下移引用" onClick={() => onMove(getOptionId(option), 1)} disabled={index === value.length - 1}><ArrowDownward sx={{ fontSize: 16 }} /></IconButton></span></Tooltip>
           <Tooltip title="移除引用" arrow><IconButton size="small" aria-label="移除引用" onClick={() => onRemove(getOptionId(option))}><DeleteOutline sx={{ fontSize: 17 }} /></IconButton></Tooltip>
         </Stack>
       </Stack>
+      {renderActions ? <Box sx={{ pl: 4 }}>{renderDetails?.(option, index)}</Box> : null}
     </Box>)}
   </Stack>;
 }
@@ -851,6 +871,20 @@ export default function ProductProcessVersionEditorDialog({
     placeholderData: (previous) => previous,
   });
   const options = optionsQuery.data;
+  const reviewWorkflowsQuery = useQuery({
+    queryKey: ['dhr-summary-review-workflows'],
+    enabled: open,
+    queryFn: async () => {
+      const response = await listTemplates({ page: 1, size: 200, businessType: 'DHR_SUMMARY' });
+      const definitions = (response.data.data?.content ?? []) as Array<{ id: string | number; name: string; code?: string | null }>;
+      const versions = await Promise.all(definitions.map(async (definition) => {
+        const versionResponse = await getTemplateVersions(definition.id);
+        const published = ((versionResponse.data.data ?? []) as Array<{ id: string | number; versionNumber: number; status: string; isCurrent?: boolean }>).find((version) => version.status === 'PUBLISHED' && version.isCurrent);
+        return published ? { definitionId: String(definition.id), versionId: String(published.id), name: definition.name, code: definition.code, versionNumber: published.versionNumber } : null;
+      }));
+      return versions.filter((item): item is NonNullable<typeof item> => Boolean(item));
+    },
+  });
   const selectedRoute = options?.routes.find((route) => route.id === form.routeVersionId) ?? null;
   const routeChoices = useMemo<RdoVersionChoice[]>(() => (options?.routes ?? []).map((route) => ({
     id: route.id,
@@ -899,7 +933,8 @@ export default function ProductProcessVersionEditorDialog({
     return option ? { ...option, pageStart: binding.pageStart ?? null, pageEnd: binding.pageEnd ?? null } : null;
   }).filter((item): item is ProductModelDocumentOption & { pageStart: number | null; pageEnd: number | null } => Boolean(item)) ?? [];
   const title = mode === 'create' ? '新建制程配置版本' : mode === 'copy' ? '复制制程配置版本' : '编辑制程配置版本';
-  const canSubmit = Boolean(form.version.trim() && form.productionMode && form.productionForm && form.routeVersionId && form.dhrTemplateVersionId);
+  const canSubmit = Boolean(form.version.trim() && form.productionMode && form.productionForm && form.routeVersionId && form.dhrTemplateVersionId
+    && (form.dhrReviewMode === 'NONE' || (form.dhrReviewWorkflowDefinitionId && form.dhrReviewWorkflowVersionId)));
 
   const set = <K extends keyof VersionForm>(key: K, value: VersionForm[K]) => {
     setForm((current) => ({ ...current, [key]: value }));
@@ -921,7 +956,7 @@ export default function ProductProcessVersionEditorDialog({
   const addForms = (selections: DhrDirectoryFormSelection[]) => updateSelectedNode((draft) => {
     const existing = new Set(draft.forms.map((item) => item.formTemplateVersionId));
     const additions = selections.filter((selection) => !existing.has(selection.formTemplateVersionId));
-    return { ...draft, forms: [...draft.forms, ...additions.map((selection) => ({ dhrTemplateItemId: selection.dhrTemplateItemId, formTemplateVersionId: selection.formTemplateVersionId, required: true, sortOrder: 0 }))] };
+    return { ...draft, forms: [...draft.forms, ...additions.map((selection) => ({ dhrTemplateItemId: selection.dhrTemplateItemId, formTemplateVersionId: selection.formTemplateVersionId, fillSettings: { fillMode: 'DIRECT' as const }, required: true, sortOrder: 0 }))] };
   });
   const addDocuments = (ids: string[]) => updateSelectedNode((draft) => {
     const existing = new Set(draft.documents.map((item) => item.documentVersionId));
@@ -988,11 +1023,33 @@ export default function ProductProcessVersionEditorDialog({
           </TextField>
           <RdoVersionTreeSelect label="工艺路线版本" required options={routeChoices} value={form.routeVersionId} onChange={handleRouteChange} emptyText="暂无可引用工艺路线版本" />
           <RdoVersionTreeSelect label="批记录模板版本" required options={dhrTemplateChoices} value={form.dhrTemplateVersionId} onChange={handleDhrChange} emptyText="暂无可引用批记录模板版本" />
+          <TextField select required size="small" label="DHR 汇总审核" value={form.dhrReviewMode} onChange={(event) => {
+            const mode = event.target.value as 'NONE' | 'REQUIRED';
+            setForm((current) => ({ ...current, dhrReviewMode: mode, dhrReviewWorkflowDefinitionId: mode === 'NONE' ? '' : current.dhrReviewWorkflowDefinitionId, dhrReviewWorkflowVersionId: mode === 'NONE' ? '' : current.dhrReviewWorkflowVersionId }));
+            setDirty(true);
+          }}>
+            <MenuItem value="REQUIRED">需要审核</MenuItem>
+            <MenuItem value="NONE">无需审核</MenuItem>
+          </TextField>
+          {form.dhrReviewMode === 'REQUIRED' ? <TextField
+            select required size="small" label="DHR 汇总审批流程"
+            value={form.dhrReviewWorkflowDefinitionId && form.dhrReviewWorkflowVersionId ? `${form.dhrReviewWorkflowDefinitionId}:${form.dhrReviewWorkflowVersionId}` : ''}
+            onChange={(event) => {
+              const [definitionId, versionId] = event.target.value.split(':');
+              setForm((current) => ({ ...current, dhrReviewWorkflowDefinitionId: definitionId, dhrReviewWorkflowVersionId: versionId }));
+              setDirty(true);
+            }}
+            helperText={reviewWorkflowsQuery.isLoading ? '正在加载已发布流程…' : reviewWorkflowsQuery.data?.length ? '开工时冻结所选流程版本' : '请先在审批流程中发布 DHR 汇总审批流程'}
+          >
+            {(reviewWorkflowsQuery.data ?? []).map((workflow) => <MenuItem key={workflow.versionId} value={`${workflow.definitionId}:${workflow.versionId}`}>
+              {[workflow.code, workflow.name, `V${workflow.versionNumber}`].filter(Boolean).join(' / ')}
+            </MenuItem>)}
+          </TextField> : null}
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.25 }}>
             <TextField size="small" label="生效时间" type="datetime-local" value={form.effectiveFrom} onChange={(event) => set('effectiveFrom', event.target.value)} InputLabelProps={{ shrink: true }} />
             <TextField size="small" label="失效时间" type="datetime-local" value={form.effectiveTo} onChange={(event) => set('effectiveTo', event.target.value)} InputLabelProps={{ shrink: true }} />
           </Box>
-          <TextField size="small" label="备注" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />
+          <TextField size="small" label="版本说明" value={form.description} onChange={(event) => set('description', event.target.value)} multiline minRows={3} />
         </Stack>
         <Box sx={{ minWidth: 0, display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', bgcolor: '#fcfdff' }}>
           <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
@@ -1037,10 +1094,15 @@ export default function ProductProcessVersionEditorDialog({
                     const index = draft.forms.findIndex((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === id);
                     return { ...draft, forms: reorder(draft.forms, index, direction) };
                   })}
+                  renderActions={(option) => {
+                    const binding = selectedNode.forms.find((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id));
+                    return binding ? <FormFillSettingsButton value={binding.fillSettings} form={option} onChange={(fillSettings) => updateSelectedNode(draft => ({ ...draft, forms: draft.forms.map(item => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id) ? { ...item, fillSettings } : item) }))} /> : null;
+                  }}
                   renderDetails={(option) => {
                     const binding = selectedNode.forms.find((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id));
-                    return <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
-                      {option.code ? <Typography variant="caption" sx={{ color: '#909399' }}>表单编码：{option.code}</Typography> : null}
+                    return <Stack direction="row" alignItems="center" spacing={1} useFlexGap flexWrap="wrap" sx={{ mt: 0.25 }}>
+                      <FormFillModeLabel value={binding?.fillSettings} />
+                      {option.code ? <Typography variant="caption" noWrap title={`表单编码：${option.code}`} sx={{ color: '#909399', maxWidth: 100 }}>编码 {option.code}</Typography> : null}
                       {binding ? <Stack component="label" direction="row" spacing={0.25} alignItems="center" sx={{ cursor: 'pointer' }}><Checkbox size="small" checked={binding.required} onChange={(event) => updateSelectedNode((draft) => ({ ...draft, forms: draft.forms.map((item) => (item.dhrTemplateItemId || item.formTemplateVersionId) === (option.dhrTemplateItemId || option.id) ? { ...item, required: event.target.checked } : item) }))} sx={{ p: 0.25 }} /><Typography variant="caption" sx={{ color: '#606266' }}>工序结束前完成</Typography></Stack> : null}
                     </Stack>;
                   }}

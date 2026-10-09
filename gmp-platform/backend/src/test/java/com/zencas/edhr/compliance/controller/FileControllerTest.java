@@ -167,6 +167,17 @@ class FileControllerTest {
         assertThat(data.get("targetId")).isNull();
     }
 
+    @Test
+    void signatureEvidenceCannotBeDeleted() throws Exception {
+        Path file = tempDir.resolve("certified-signature.png");
+        Files.write(file, new byte[] {1, 2, 3});
+        when(fileObjectRepository.findById(901L)).thenReturn(Optional.of(fileObject(901L, file, "image/png", "SIGNATURE_EVIDENCE")));
+
+        assertThatThrownBy(() -> controller.delete(901L)).isInstanceOf(BusinessException.class).hasMessageContaining("不能删除");
+        assertThat(Files.exists(file)).isTrue();
+        org.mockito.Mockito.verify(fileObjectRepository, org.mockito.Mockito.never()).deleteById(901L);
+    }
+
     private FileObject fileObject(Long id, Path file, String mimeType, String targetType) {
         return FileObject.builder()
                 .id(id)

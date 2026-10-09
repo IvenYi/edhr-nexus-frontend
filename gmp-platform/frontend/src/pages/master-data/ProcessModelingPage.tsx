@@ -1,5 +1,7 @@
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
+import { listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
+import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import {
   Fragment,
   type ChangeEvent,
@@ -73,6 +75,8 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import OperationImportActions from './components/OperationImportActions';
 import {
   Add,
@@ -556,14 +560,7 @@ function RouteDesignerNode({ id, data, selected, isConnectable }: NodeProps<Rout
   );
 }
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -1890,8 +1887,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
   const [expandedMaterialGroups, setExpandedMaterialGroups] = useState<Set<string>>(() => new Set());
   const [expandedRouteGroups, setExpandedRouteGroups] = useState<Set<string>>(() => new Set([readRecordLocation().id].filter(Boolean)));
-  const tableContainerRef = useRef<HTMLDivElement | null>(null);
-  const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const columnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
   const materialVersionColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_MATERIAL_VERSION_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
   const routeVersionColumnWidthStorageKey = useMemo(() => getCurrentUserPreferenceStorageKey(PROCESS_MODELING_ROUTE_VERSION_COLUMN_WIDTH_STORAGE_PREFIX, pageKey), [pageKey]);
@@ -2144,7 +2139,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(config, columnSettings), [columnSettings, config]);
   const visibleColumns = useMemo(() => getVisibleColumns(config, columnSettings), [columnSettings, config]);
   const visibleConfigurableColumnCount = columnSettings.order.length - columnSettings.hidden.length;
-  const resolvedColumnWidths = useMemo(() => resolveColumnWidths(columnWidths, tableContainerWidth, visibleColumns), [columnWidths, tableContainerWidth, visibleColumns]);
+  const resolvedColumnWidths = useMemo(() => resolveColumnWidths(columnWidths, 0, visibleColumns), [columnWidths, visibleColumns]);
   const totalTableWidth = visibleColumns.reduce((sum, column) => sum + resolvedColumnWidths[column.id], 0);
   const materialVersionColumns = MATERIAL_VERSION_COLUMNS;
   const routeVersionColumns = ROUTE_VERSION_COLUMNS;
@@ -2158,14 +2153,12 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const activeColumnSettingsItems = columnSettingsTab === 'materialVersion' ? materialVersionColumnSettingsItems : columnSettingsTab === 'routeVersion' ? routeVersionColumnSettingsItems : columnSettingsItems;
   const activeVisibleConfigurableColumnCount = columnSettingsTab === 'materialVersion' ? visibleMaterialVersionConfigurableColumnCount : columnSettingsTab === 'routeVersion' ? visibleRouteVersionConfigurableColumnCount : visibleConfigurableColumnCount;
   const setActiveColumnSettings = columnSettingsTab === 'materialVersion' ? setMaterialVersionColumnSettings : columnSettingsTab === 'routeVersion' ? setRouteVersionColumnSettings : setColumnSettings;
-  const resolvedMaterialVersionColumnWidths = useMemo(() => resolveColumnWidths(materialVersionColumnWidths, totalTableWidth, visibleMaterialVersionColumns), [materialVersionColumnWidths, totalTableWidth, visibleMaterialVersionColumns]);
+  const resolvedMaterialVersionColumnWidths = useMemo(() => resolveColumnWidths(materialVersionColumnWidths, 0, visibleMaterialVersionColumns), [materialVersionColumnWidths, visibleMaterialVersionColumns]);
   const totalMaterialVersionTableWidth = visibleMaterialVersionColumns.reduce((sum, column) => sum + resolvedMaterialVersionColumnWidths[column.id], 0);
-  const resolvedRouteVersionColumnWidths = useMemo(() => resolveColumnWidths(routeVersionColumnWidths, totalTableWidth, visibleRouteVersionColumns), [routeVersionColumnWidths, totalTableWidth, visibleRouteVersionColumns]);
+  const resolvedRouteVersionColumnWidths = useMemo(() => resolveColumnWidths(routeVersionColumnWidths, 0, visibleRouteVersionColumns), [routeVersionColumnWidths, visibleRouteVersionColumns]);
   const totalRouteVersionTableWidth = visibleRouteVersionColumns.reduce((sum, column) => sum + resolvedRouteVersionColumnWidths[column.id], 0);
-  const effectiveMainTableWidth = Math.max(totalTableWidth, pageKey === 'materials' ? totalMaterialVersionTableWidth : pageKey === 'routes' ? totalRouteVersionTableWidth : totalTableWidth);
-  const mainTableSpacerWidth = Math.max(0, effectiveMainTableWidth - totalTableWidth);
-  const hasMainTableSpacer = mainTableSpacerWidth > 0;
-  const mainTableColSpan = visibleColumns.length + (hasMainTableSpacer ? 1 : 0);
+  const sharedTableMinWidth = Math.max(totalTableWidth, pageKey === 'materials' ? totalMaterialVersionTableWidth : pageKey === 'routes' ? totalRouteVersionTableWidth : totalTableWidth);
+  const mainTableColSpan = visibleColumns.length;
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -2222,18 +2215,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     setRouteNodes(graph.nodes.map((node) => ({ ...node, selected: node.id === readRecordLocation().node })));
     setRouteEdges(graph.edges);
   }, [creatingRouteVersionFrom, dialogOpen, editingRouteVersionFrom, editingRow, pageKey, routeGraphQuery.data, selectedRouteVersionId, setRouteEdges, setRouteNodes]);
-
-  useEffect(() => {
-    const container = tableContainerRef.current;
-    if (!container) return undefined;
-    const updateWidth = () => {
-      setTableContainerWidth(container.clientWidth);
-    };
-    updateWidth();
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
 
   const showSnackbar = (message: string, severity: 'success' | 'error') => {
     setSnackbar({ open: true, message, severity });
@@ -3870,12 +3851,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     if (column.id === 'actions') {
       if (isReadOnlyPage(config)) return null;
       return (
-        <Fragment key={column.id}>
-          {renderMainTableActionSpacerCell('body')}
-          <TableCell align="center" data-process-main-action-column="true" sx={commonSx}>
-            {renderRowActions(row)}
-          </TableCell>
-        </Fragment>
+        <TableCell key={column.id} align="center" data-process-main-action-column="true" sx={commonSx}>
+          {renderRowActions(row)}
+        </TableCell>
       );
     }
     return (
@@ -4025,7 +4003,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         p: 0,
         border: 'none',
         bgcolor: 'transparent',
-        color: '#1890ff',
+        ...listTablePrimaryTextSx,
         cursor: 'pointer',
         font: 'inherit',
         lineHeight: 'inherit',
@@ -4033,7 +4011,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         textAlign: 'left',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
-        '&:hover': { color: '#096dd9', textDecoration: 'underline' },
       }}
     >
       {row.materialGroupDisplayName}
@@ -4061,7 +4038,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         p: 0,
         border: 'none',
         bgcolor: 'transparent',
-        color: '#1890ff',
+        ...listTablePrimaryTextSx,
         cursor: 'pointer',
         font: 'inherit',
         lineHeight: 'inherit',
@@ -4069,19 +4046,19 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         textAlign: 'left',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
-        '&:hover': { color: '#096dd9', textDecoration: 'underline' },
       }}
     >
       {getDisplayName(route)}
     </Typography>
   );
 
-  const renderMaterialVersionTable = (group: MaterialGroupRow) => {
+  const renderMaterialVersionTable = (group: MaterialGroupRow, tableWidth: number, versionColumnWidths: Record<ProcessColumnId, number>) => {
+    const getMaterialVersionColumnWidth = (column: ProcessColumn) => versionColumnWidths[column.id] ?? column.defaultWidth;
     return (
       <TableRow key={`${group.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
         <TableCell colSpan={mainTableColSpan} sx={{ p: 0, bgcolor: '#fafcff' }}>
           <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
-            <Table stickyHeader size="small" aria-label="物料版本列表" sx={{ tableLayout: 'fixed', width: totalMaterialVersionTableWidth, minWidth: totalMaterialVersionTableWidth }}>
+            <Table stickyHeader size="small" aria-label="物料版本列表" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth }}>
               <colgroup>
                 {visibleMaterialVersionColumns.map((column) => <col key={`${group.id}:${column.id}`} style={{ width: getMaterialVersionColumnWidth(column) }} />)}
               </colgroup>
@@ -4133,13 +4110,14 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     );
   };
 
-  const renderRouteVersionTable = (route: RouteRecord) => {
+  const renderRouteVersionTable = (route: RouteRecord, tableWidth: number, versionColumnWidths: Record<ProcessColumnId, number>) => {
+    const getRouteVersionColumnWidth = (column: ProcessColumn) => versionColumnWidths[column.id] ?? column.defaultWidth;
     const versions = route.versions ?? [];
     return (
       <TableRow key={`${route.id}:versions`} sx={{ '& .MuiTableCell-root': { borderBottom: 'none' } }}>
         <TableCell colSpan={mainTableColSpan} sx={{ p: 0, bgcolor: '#fafcff' }}>
           <TableContainer sx={{ width: '100%', bgcolor: '#fff', overflow: 'visible' }}>
-            <Table stickyHeader size="small" aria-label="工艺路线版本列表" sx={{ tableLayout: 'fixed', width: totalRouteVersionTableWidth, minWidth: totalRouteVersionTableWidth }}>
+            <Table stickyHeader size="small" aria-label="工艺路线版本列表" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth }}>
               <colgroup>
                 {visibleRouteVersionColumns.map((column) => <col key={`${route.id}:${column.id}`} style={{ width: getRouteVersionColumnWidth(column) }} />)}
               </colgroup>
@@ -4497,24 +4475,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     );
   };
 
-  const renderMainTableActionSpacerCell = (layer: 'head' | 'body') => (
-    hasMainTableSpacer ? (
-      <TableCell
-        data-process-main-action-spacer
-        aria-hidden="true"
-        sx={{
-          width: mainTableSpacerWidth,
-          minWidth: mainTableSpacerWidth,
-          maxWidth: mainTableSpacerWidth,
-          p: 0,
-          bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-          ...(layer === 'head' ? { position: 'sticky', top: 0, zIndex: 5 } : {}),
-        }}
-      />
-    ) : null
-  );
-
-  const renderTableRow = (row: ProcessTableRow) => {
+  const renderTableRow = (row: ProcessTableRow, tableWidth: number, mainColumnWidths: Record<ProcessColumnId, number>, materialVersionColumnWidths: Record<ProcessColumnId, number>, routeVersionColumnWidths: Record<ProcessColumnId, number>) => {
+    const getColumnWidth = (column: ProcessColumn) => mainColumnWidths[column.id] ?? column.defaultWidth;
     if (isMaterialGroupRow(row)) {
       const isExpanded = expandedMaterialGroups.has(row.groupKey);
       return (
@@ -4531,7 +4493,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               };
               return (
                 <Fragment key={column.id}>
-                  {column.id === 'actions' ? renderMainTableActionSpacerCell('body') : null}
                   <TableCell align={column.align} data-process-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx} title={String(renderMaterialGroupCell(row, column))}>
                   {column.id === 'actions' ? (row.versions.length > 1 ? renderMultiVersionMaterialGroupActions(row) : renderSingleVersionMaterialGroupActions(row)) : index === 0 ? (
                     <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
@@ -4565,7 +4526,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               );
             })}
           </TableRow>
-          {isExpanded ? renderMaterialVersionTable(row) : null}
+          {isExpanded ? renderMaterialVersionTable(row, tableWidth, materialVersionColumnWidths) : null}
         </Fragment>
       );
     }
@@ -4588,7 +4549,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               };
               return (
                 <Fragment key={column.id}>
-                  {column.id === 'actions' ? renderMainTableActionSpacerCell('body') : null}
                   <TableCell align={column.align} data-process-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={commonSx} title={String(renderRouteGroupCell(route, column))}>
                   {column.id === 'actions' ? (versions.length > 1 ? renderMultiVersionRouteActions(route) : renderSingleVersionRouteActions(route)) : index === 0 ? (
                     <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
@@ -4622,7 +4582,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               );
             })}
           </TableRow>
-          {isExpanded ? renderRouteVersionTable(route) : null}
+          {isExpanded ? renderRouteVersionTable(route, tableWidth, routeVersionColumnWidths) : null}
         </Fragment>
       );
     }
@@ -4682,8 +4642,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       maxWidth: PROCESS_ACTION_COLUMN_WIDTH,
       zIndex: layer === 'head' ? 10 : 6,
       bgcolor: layer === 'head' ? '#f5f7fa' : '#fff',
-      backgroundClip: 'padding-box',
-      boxShadow: '-6px 0 8px -8px rgba(0,0,0,.35)',
+      ...listTableStickyEdgeSx,
+      textAlign: 'center',
     };
   }
 
@@ -4824,24 +4784,41 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </Popover>
 
         <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
-          <TableContainer ref={tableContainerRef} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
-            <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: effectiveMainTableWidth, minWidth: effectiveMainTableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
-              <colgroup>
-                {visibleColumns.map((column) => (
-                  column.id === 'actions' ? (
-                    <Fragment key={column.id}>
-                      {hasMainTableSpacer ? <col data-process-main-action-spacer style={{ width: mainTableSpacerWidth }} /> : null}
-                      <col style={{ width: getColumnWidth(column) }} />
-                    </Fragment>
-                  ) : <col key={column.id} style={{ width: getColumnWidth(column) }} />
-                ))}
-              </colgroup>
+          <ListTableShell minTableWidth={sharedTableMinWidth} sx={{ width: '100%', maxWidth: '100%', minWidth: 0, height: '100%', minHeight: 0, overflow: 'auto' }}>
+            {(tableWidth) => {
+              const mainFlexibleColumnId = visibleColumns.find((column) => column.id === 'description')?.id
+                ?? visibleColumns.find((column) => column.id !== 'actions')?.id
+                ?? visibleColumns[0].id;
+              const materialFlexibleColumnId = visibleMaterialVersionColumns.find((column) => column.id === 'description')?.id
+                ?? visibleMaterialVersionColumns.find((column) => column.id !== 'actions')?.id
+                ?? visibleMaterialVersionColumns[0].id;
+              const routeFlexibleColumnId = visibleRouteVersionColumns.find((column) => column.id === 'description')?.id
+                ?? visibleRouteVersionColumns.find((column) => column.id !== 'actions')?.id
+                ?? visibleRouteVersionColumns[0].id;
+              const mainColumnWidths = resolveListColumnWidths(
+                visibleColumns.map((column) => ({ id: column.id, width: getColumnWidth(column) })),
+                tableWidth,
+                mainFlexibleColumnId,
+                ['actions'],
+              );
+              const materialVersionColumnWidths = resolveListColumnWidths(
+                visibleMaterialVersionColumns.map((column) => ({ id: column.id, width: getMaterialVersionColumnWidth(column) })),
+                tableWidth,
+                materialFlexibleColumnId,
+                ['actions'],
+              );
+              const routeVersionColumnWidths = resolveListColumnWidths(
+                visibleRouteVersionColumns.map((column) => ({ id: column.id, width: getRouteVersionColumnWidth(column) })),
+                tableWidth,
+                routeFlexibleColumnId,
+                ['actions'],
+              );
+              return <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, minWidth: tableWidth, height: isTableEmptyState ? '100%' : 'auto' }}>
+              <colgroup>{visibleColumns.map((column) => <col key={column.id} style={{ width: mainColumnWidths[column.id] }} />)}</colgroup>
               <TableHead>
                 <TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>
                   {visibleColumns.map((column) => (
-                    <Fragment key={column.id}>
-                      {column.id === 'actions' ? renderMainTableActionSpacerCell('head') : null}
-                      <TableCell align={column.align} data-process-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={{ width: getColumnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
+                      <TableCell key={column.id} align={column.align} data-process-main-action-column={column.id === 'actions' ? 'true' : undefined} sx={{ width: mainColumnWidths[column.id], minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 5, userSelect: 'none', ...(column.resizable ? { pr: 2 } : {}), ...getStickyActionColumnSx(column, 'head') }}>
                         {column.label}
                         {column.resizable ? (
                           <Box
@@ -4851,7 +4828,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                           />
                         ) : null}
                       </TableCell>
-                    </Fragment>
                   ))}
                 </TableRow>
               </TableHead>
@@ -4862,10 +4838,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                   <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>加载失败</TableStateCell></TableRow>
                 ) : displayRows.length === 0 ? (
                   <TableRow sx={emptyTableRowSx}><TableStateCell colSpan={mainTableColSpan} align="center" sx={emptyTableBodyCellSx}>暂无数据</TableStateCell></TableRow>
-                ) : displayRows.map((row) => renderTableRow(row))}
+                ) : displayRows.map((row) => renderTableRow(row, tableWidth, mainColumnWidths, materialVersionColumnWidths, routeVersionColumnWidths))}
               </TableBody>
-            </Table>
-          </TableContainer>
+            </Table>;
+            }}
+          </ListTableShell>
         </Box>
 
         <Box sx={{ minHeight: 56, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
@@ -5004,6 +4981,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       </Drawer>
 
       <AppDialog
+        variant="form"
         hideCloseButton={isRouteFullScreenDialog}
         open={dialogOpen}
         onClose={() => resetDialogState()}
@@ -5029,9 +5007,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               {shouldRenderMaterialVersionSection ? renderMaterialFormSection('物料版本信息', MATERIAL_VERSION_FIELD_IDS) : null}
             </Stack>
           ) : (
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5, pt: 0.5 }}>
+            <DetailSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
               {config.formFields.map(renderFormField)}
-            </Box>
+            </Box></DetailSection>
           )}
         </DialogContent>
         <DialogActions>
@@ -5040,27 +5018,29 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={operationCategoryDialog.open} onClose={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })} maxWidth="xs" fullWidth>
+      <FormDialog open={operationCategoryDialog.open} onClose={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })} maxWidth="xs" fullWidth>
         <DialogTitle>{operationCategoryDialog.mode === 'edit' ? '编辑分类' : '新增分类'}</DialogTitle>
-        <DialogContent dividers>
-          <TextField
-            label="工序分类名称"
-            value={operationCategoryDialog.name}
-            onChange={(event) => setOperationCategoryDialog((current) => ({ ...current, name: event.target.value }))}
-            size="small"
-            fullWidth
-            required
-            autoFocus
-            sx={fieldSx}
-          />
-        </DialogContent>
+        <DialogContent dividers><DetailSection title="基本信息">
+          <FormDialogFieldGrid>
+            <TextField
+              label="工序分类名称"
+              value={operationCategoryDialog.name}
+              onChange={(event) => setOperationCategoryDialog((current) => ({ ...current, name: event.target.value }))}
+              size="small"
+              fullWidth
+              required
+              autoFocus
+              sx={fieldSx}
+            />
+          </FormDialogFieldGrid>
+        </DetailSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setOperationCategoryDialog({ open: false, mode: 'create', name: '' })}>取消</Button>
           <Button variant="contained" onClick={() => saveOperationCategoryMutation.mutate()} disabled={saveOperationCategoryMutation.isPending}>
             {saveOperationCategoryMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog deletionTarget={deleteOperationCategoryTarget && { type: 'operation_category', id: deleteOperationCategoryTarget.id }} open={deleteOperationCategoryTarget !== null} onClose={() => setDeleteOperationCategoryTarget(null)} maxWidth="xs" fullWidth>
         <DialogTitle>删除分类</DialogTitle>

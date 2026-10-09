@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
- * Resolves the display status of a DHR template version without changing its persisted lifecycle state.
+ * Resolves the RDO display status of a DHR template version from its effective period.
  */
 public final class DhrTemplateVersionStatusResolver {
     public static final String ACTIVE = RdoVersionStatusResolver.ACTIVE;

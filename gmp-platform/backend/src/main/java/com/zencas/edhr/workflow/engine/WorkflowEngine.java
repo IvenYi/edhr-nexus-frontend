@@ -51,6 +51,7 @@ public class WorkflowEngine {
      */
     @Transactional
     public WorkflowInstance createInstance(String businessType, String businessId, String initiatorId) {
+        if ("DHR_SUMMARY".equals(businessType)) throw new BusinessException(ErrorCode.WF_007, "请通过 DHR 汇总发起审核");
         // Find active binding rule
         WorkflowBindingRule rule = bindingRuleRepository
                 .findByBusinessTypeAndIsActiveTrue(businessType)
@@ -193,15 +194,64 @@ public class WorkflowEngine {
         return instance;
     }
 
+    /** Start only the process version frozen at first production start, never the latest binding. */
+    @Transactional
+    public WorkflowInstance createDhrSummaryInstance(Long definitionId, Long versionId, String summaryVersionId, String initiatorId) {
+        if (definitionId == null || versionId == null || summaryVersionId == null || initiatorId == null)
+            throw new BusinessException(ErrorCode.WF_014, "DHR 审核绑定不完整");
+        String key = "DHR_SUMMARY:" + summaryVersionId;
+        WorkflowDefinition definition = definitionRepository.findByIdForUpdate(definitionId)
+                .filter(d -> "RECORD_CONTROL".equals(d.getType()) && "DHR_SUMMARY".equals(d.getBusinessType()))
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_014));
+        var existing = instanceRepository.findByIdempotencyKey(key);
+        if (existing.isPresent()) {
+            WorkflowInstance previous = existing.get();
+            if (!definitionId.equals(previous.getDefinitionId()) || !versionId.equals(previous.getVersionId())
+                    || !summaryVersionId.equals(previous.getBusinessId()) || !initiatorId.equals(previous.getInitiatorId()))
+                throw new BusinessException(ErrorCode.WF_014, "DHR 审核重复发起参数不一致");
+            return previous;
+        }
+        WorkflowDefinitionVersion version = versionRepository.findById(versionId)
+                .filter(v -> definitionId.equals(v.getDefinitionId()) && "PUBLISHED".equals(v.getStatus()))
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_014));
+        List<WorkflowNode> starts = nodeRepository.findByVersionIdAndNodeType(versionId, "START");
+        if (starts.size() != 1) throw new BusinessException(ErrorCode.WF_011);
+        WorkflowNode start = starts.getFirst();
+        WorkflowInstance instance = instanceRepository.saveAndFlush(WorkflowInstance.builder()
+                .id(idGenerator.nextId()).definitionId(definition.getId()).versionId(versionId)
+                .businessType("DHR_SUMMARY").businessId(summaryVersionId).initiatorId(initiatorId)
+                .status("RUNNING").currentNodeIds(start.getId().toString()).startedAt(LocalDateTime.now())
+                .workflowSnapshotHash(workflowSnapshotHash(version)).idempotencyKey(key)
+                .contextSnapshot(writeJson(Map.of("summaryVersionId", summaryVersionId, "workflowVersionId", versionId.toString())))
+                .build());
+        logAction(instance.getId(), null, start.getId().toString(), "INSTANCE_START", initiatorId, "DHR 汇总审核发起");
+        progressFromNode(instance, start, initiatorId, null);
+        return instance;
+    }
+
     /**
      * Process task completion and advance the workflow.
      */
     @Transactional
     public void completeTask(Long taskId, String action, String opinion, String operatorId, Long signatureId) {
+        completeTask(taskId, action, opinion, operatorId, signatureId, false);
+    }
+
+    /** DHR domain service has already checked the frozen evidence and signed action. */
+    @Transactional
+    public void completeDhrTask(Long taskId, String action, String opinion, String operatorId, Long signatureId) {
+        if (!Set.of("APPROVE", "REJECT").contains(action)) throw new BusinessException(ErrorCode.WF_007);
+        completeTask(taskId, action, opinion, operatorId, signatureId, true);
+    }
+
+    private void completeTask(Long taskId, String action, String opinion, String operatorId, Long signatureId, boolean dhrAction) {
         WorkflowTask taskRef = taskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
         WorkflowInstance instance = instanceRepository.findByIdForUpdate(taskRef.getInstanceId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        if ("DHR_SUMMARY".equals(instance.getBusinessType()) != dhrAction) {
+            throw new BusinessException(ErrorCode.WF_007, "DHR 审核必须通过 DHR 审核入口处理");
+        }
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
         }
@@ -384,7 +434,7 @@ public class WorkflowEngine {
                 taskRepository.save(other);
             }
         });
-        if (hasParallelSplitAncestor(task.getNodeId())) {
+        if ("DHR_SUMMARY".equals(instance.getBusinessType()) || hasParallelSplitAncestor(task.getNodeId())) {
             terminateInstance(instance);
             return;
         }
@@ -604,6 +654,7 @@ public class WorkflowEngine {
     /** Transfer a task to a different assignee. */
     @Transactional
     public void transferTask(Long taskId, String newAssigneeId, String operatorId) {
+        assertNotDhrTask(taskId);
         WorkflowTask taskRef = taskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
         WorkflowInstance instance = instanceRepository.findByIdForUpdate(taskRef.getInstanceId())
@@ -637,6 +688,7 @@ public class WorkflowEngine {
     public void terminateInstance(Long instanceId, String reason, String operatorId, Long signatureId) {
         WorkflowInstance instance = instanceRepository.findByIdForUpdate(instanceId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        if ("DHR_SUMMARY".equals(instance.getBusinessType())) throw new BusinessException(ErrorCode.WF_007, "请通过 DHR 审核退回整理");
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
         }
@@ -660,6 +712,16 @@ public class WorkflowEngine {
         Set<String> candidateIds = parseCandidateIds(task.getCandidateSnapshot());
         if (!candidateIds.isEmpty()) return candidateIds.contains(operatorId);
         return task.getAssigneeId() != null && task.getAssigneeId().equals(operatorId);
+    }
+
+    public void assertNotDhrTask(Long taskId) {
+        if (taskId != null) taskRepository.findById(taskId).ifPresent(task -> assertNotDhrInstance(task.getInstanceId()));
+    }
+
+    public void assertNotDhrInstance(Long instanceId) {
+        if (instanceId != null) instanceRepository.findById(instanceId).ifPresent(instance -> {
+            if ("DHR_SUMMARY".equals(instance.getBusinessType())) throw new BusinessException(ErrorCode.WF_007, "DHR 审核证据不能通过通用流程接口修改");
+        });
     }
 
     private void validateTransferTarget(String newAssigneeId, WorkflowInstance instance) {

@@ -9,16 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HexFormat;
 import java.util.List;
-import java.util.Objects;
 import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invalid;
 
 @Service
@@ -26,6 +22,17 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 public class FormInstanceRecordService {
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
+
+    @Transactional(readOnly = true)
+    public void projectCreationMetadata(Long objectId, String tenantId, ObjectNode state) {
+        jdbc.query("SELECT operation_id,copy_id,created_by,created_at FROM form_instance_record WHERE tenant_id=? AND object_id=? AND legacy=FALSE",
+                (org.springframework.jdbc.core.RowCallbackHandler) rs -> {
+                    JsonNode copy = state.path("operations").path(rs.getString("operation_id")).path("forms").path(rs.getString("copy_id"));
+                    if (!(copy instanceof ObjectNode entry) || entry.hasNonNull("explicitCreatedAt")) return;
+                    if (!entry.hasNonNull("createdAt") && rs.getTimestamp("created_at") != null) entry.put("createdAt", rs.getTimestamp("created_at").toLocalDateTime().toString());
+                    if (!entry.hasNonNull("createdByName")) entry.put("createdByName", rs.getString("created_by"));
+                }, tenantId, objectId);
+    }
 
     // Called inside the locked production execution transaction; a failed action cannot allocate a visible record.
     @Transactional
@@ -41,18 +48,21 @@ public class FormInstanceRecordService {
         String copyId = requestedCopyId == null || requestedCopyId.isBlank() ? formId : requestedCopyId;
         JsonNode formState = state.path("operations").path(operationId).path("forms").path(copyId);
         if (form == null || !formState.has("savedAt")) throw invalid("表单记录来源不完整");
-        var existing = jdbc.queryForList("SELECT id, instance_no, status, values_json, current_revision_id FROM form_instance_record WHERE tenant_id=? AND object_id=? AND operation_id=? AND copy_id=? FOR UPDATE",
+        if (formState.path("supplement").isObject()) {
+            ObjectNode withSupplement = form.deepCopy();
+            withSupplement.set("supplement", formState.path("supplement").deepCopy());
+            form = withSupplement;
+        }
+        var existing = jdbc.queryForList("SELECT id, instance_no FROM form_instance_record WHERE tenant_id=? AND object_id=? AND operation_id=? AND copy_id=?",
                 tenantId, objectId, operationId, copyId);
         LocalDateTime now = LocalDateTime.now();
         String actor = AuditContext.getOperatorName();
         if (actor == null || actor.isBlank()) actor = AuditContext.getOperatorId();
         String instanceNo;
-        Long recordId;
         if (existing.isEmpty()) {
             long versionId = Long.parseLong(form.path("versionId").asText());
             Long templateId = jdbc.queryForObject("SELECT template_id FROM form_template_version WHERE id=?", Long.class, versionId);
             Long id = jdbc.queryForObject("SELECT nextval('form_instance_number_seq')", Long.class);
-            recordId = id;
             instanceNo = "FR-" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + String.format(java.util.Locale.ROOT, "%06d", id);
             jdbc.update("""
                 INSERT INTO form_instance_record(id,tenant_id,source_type,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
@@ -69,23 +79,8 @@ public class FormInstanceRecordService {
                 context.path("objectType").asText(null), operationName, AuditContext.getOperatorId(), AuditContext.getOperatorId(), id, tenantId);
         } else {
             instanceNo = existing.getFirst().get("instance_no").toString();
-            recordId = ((Number) existing.getFirst().get("id")).longValue();
-            if (existing.getFirst().get("current_revision_id") != null) {
-                if (!"COMPLETED".equals(formState.path("status").asText())
-                        || !Objects.equals(json(existing.getFirst().get("values_json").toString()), formState.path("values")))
-                    throw invalid("已完成表单只能通过记录变更审批修改");
-            }
             jdbc.update("UPDATE form_instance_record SET values_json=?,status=?,updated_by=?,updated_at=?,updated_by_id=? WHERE id=? AND tenant_id=?",
-                    formState.path("values").toString(), formState.path("status").asText(), actor, now, AuditContext.getOperatorId(), recordId, tenantId);
-        }
-        if ("COMPLETED".equals(formState.path("status").asText())
-                && (existing.isEmpty() || existing.getFirst().get("current_revision_id") == null)) {
-            Long revisionId = jdbc.queryForObject("SELECT nextval('hibernate_sequence')", Long.class);
-            jdbc.update("""
-                INSERT INTO form_instance_revision(id,tenant_id,record_id,revision_no,status,values_json,content_hash,created_by,created_at)
-                VALUES(?,?,?,1,'EFFECTIVE',?,?,?,?)
-                """, revisionId, tenantId, recordId, formState.path("values").toString(), hash(formState.path("values").toString()), actor, now);
-            jdbc.update("UPDATE form_instance_record SET current_revision_id=? WHERE id=? AND tenant_id=?", revisionId, recordId, tenantId);
+                    formState.path("values").toString(), formState.path("status").asText(), actor, now, AuditContext.getOperatorId(), existing.getFirst().get("id"), tenantId);
         }
         ((ObjectNode) formState).put("instanceNo", instanceNo);
     }
@@ -127,7 +122,6 @@ public class FormInstanceRecordService {
         ObjectNode row = mapper.createObjectNode().put("id", rs.getString("id"))
                 .put("instanceNo", rs.getString("instance_no")).put("status", rs.getString("status"))
                 .put("templateId", rs.getString("template_id")).put("versionId", rs.getString("version_id"))
-                .put("currentRevisionId", rs.getString("current_revision_id"))
                 .put("createdBy", rs.getString("created_by")).put("createdAt", rs.getString("created_at"))
                 .put("updatedBy", rs.getString("updated_by")).put("updatedAt", rs.getString("updated_at"))
                 .put("legacy", rs.getBoolean("legacy"));
@@ -139,10 +133,6 @@ public class FormInstanceRecordService {
     private JsonNode json(String value) {
         try { return mapper.readTree(value); }
         catch (Exception ex) { throw invalid("表单记录数据无法读取"); }
-    }
-    private static String hash(String value) {
-        try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8))); }
-        catch (Exception ex) { throw new IllegalStateException("SHA-256 unavailable", ex); }
     }
     private static String pattern(String value) { return "%" + value.trim().replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%"; }
     private static void contains(StringBuilder where, List<Object> args, String column, String value) {

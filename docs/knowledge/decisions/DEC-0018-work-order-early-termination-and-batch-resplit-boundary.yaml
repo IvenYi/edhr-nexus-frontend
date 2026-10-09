@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.24
 decisions:
   - id: DEC-0018
     title: 工单提前结束与批次管理再拆分边界
@@ -19,8 +19,8 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0018-03
-        statement: "provenance: inference + original-evidence；建议未开工对象取消恢复工单的剩余可分配数量，不改变工单计划数量；若全部对象均为未开工取消，工单保持 CREATED 并可继续拆分，不应被误判为 COMPLETED。取消对象保留为逻辑记录并保留数据审计，待业务确认后实现。"
-        status: planned
+        statement: "provenance: user-confirmed + original-evidence；未开工对象取消后不改变工单计划数量；CANCELLED 对象的 targetQuantity 不计入工单有效分配量。若全部对象均为未开工取消，工单保持 CREATED 并可按首次锁定制程继续拆分，不得误判为 COMPLETED。取消对象保留为逻辑记录并保留数据审计。"
+        status: implemented
         visibility: internal
       - id: DEC-0018-04
         statement: "provenance: user-confirmed + original-evidence；批次管理页面对既有批次再次拆分是独立能力，不等同于工单管理页面把工单首次拆成 BATCH/SN 的初始拆分；既有 BATCH->BATCH 暂不纳入当前 MVP，后续再讨论是否与 BATCH->SN、返工子批次共用独立接口和生命周期设计。"
@@ -35,11 +35,11 @@ decisions:
         status: deprecated
         visibility: internal
       - id: DEC-0018-07
-        statement: "provenance: inference + original-evidence；建议 DHR 实例在生产执行首次开工时创建或激活，拆分阶段只准备制程和模板引用，不为尚未开工对象生成有效 DHR 内容；这样取消未开工对象不会留下无效 DHR。该时点待业务确认。"
-        status: planned
+        statement: "provenance: historical-inference + resolved-by-user-confirmed；该早期推断建议 DHR 在生产对象首次开工时创建，拆分阶段不创建有效 DHR。2026-09-17 用户已通过 DEC-0062 确认该时点并收敛同事务、唯一性和非目标；本声明仅保留历史推断来源。"
+        status: deprecated
         visibility: internal
       - id: DEC-0018-08
-        statement: "provenance: user-confirmed；工单管理中的生产对象拆分弹窗只负责工单初始拆分和待提交清单；批次管理中的再拆分弹窗负责既有批次的后续拆分，两者不可复用为同一业务入口。"
+        statement: "provenance: user-confirmed；工单管理中的生产对象拆分弹窗负责工单在 CREATED 或 IN_PROCESS 状态下按剩余计划数量创建对象并维护待提交清单；批次管理中的再拆分属于既有批次的独立能力，两者不可复用为同一业务入口。"
         status: specified
         visibility: internal
     supersedes: [DEC-0013]
@@ -52,11 +52,11 @@ decisions:
         evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-object-status-machine, evidence.guancheng-batch-close-source]
         evidenceRequirements: [工单状态机转移测试, 活动对象级联测试, 结束原因和审计快照测试]
       - id: scenario.production-cancel-releases-work-order-allocation
-        given: CREATED 工单有一个或多个未开工生产对象
+        given: CREATED 或 IN_PROCESS 工单有一个或多个未开工生产对象
         when: 用户取消其中对象或全部对象
-        then: 计划数量不变，取消对象数量从有效分配量中扣除；全部对象取消时工单保持 CREATED 并可继续拆分
-        evidenceIds: [evidence.production-service, evidence.production-object-cancel-side-effects-current, evidence.guancheng-batch-remove-source]
-        evidenceRequirements: [部分取消数量回滚测试, 全部取消可继续拆分测试]
+        then: 计划数量不变，取消对象数量从有效分配量中扣除；全部对象均未开工取消时工单保持 CREATED 并可继续拆分；已进入 IN_PROCESS 的工单仍可在剩余计划数量内继续拆分
+        evidenceIds: [evidence.production-service, evidence.production-object-cancel-side-effects-current, evidence.production-service-test, evidence.guancheng-batch-remove-source]
+        evidenceRequirements: [已取消未开工对象全量替代拆分测试, 全部取消保持 CREATED 测试]
       - id: scenario.production-batch-resplit-is-post-mvp
         given: 用户在批次管理页面查看既有 BATCH 生产对象
         when: 用户需要再次拆分该批次
@@ -72,8 +72,8 @@ decisions:
       - id: scenario.production-dhr-created-on-first-start
         given: 生产对象已完成工单拆分但尚未开工
         when: 生产执行模块首次开工该对象
-        then: 系统在开工时创建或激活 DHR 实例并绑定执行快照；拆分阶段不生成有效 DHR 内容
-        evidenceIds: [evidence.guancheng-batch-start-source, evidence.guancheng-batch-lifecycle-source, evidence.production-service]
+        then: 系统在首次合法 START 时同事务创建唯一 DHR 并绑定执行快照；拆分阶段不创建 DHR
+        evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.production-service]
         evidenceRequirements: [首次开工 DHR 创建测试, 未开工取消无 DHR 残留测试]
     implementationDiscrepancies:
       - id: discrepancy.production-work-order-early-termination-contract-not-implemented

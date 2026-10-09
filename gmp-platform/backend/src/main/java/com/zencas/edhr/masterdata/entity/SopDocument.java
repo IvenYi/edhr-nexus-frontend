@@ -27,8 +27,6 @@ public class SopDocument {
     private String description;
     @Column(name = "status")
     @Builder.Default private String status = "DRAFT";
-    @Column(name = "remark", columnDefinition = "TEXT")
-    private String remark;
     @Column(name = "created_by")
     private String createdBy;
     @Column(name = "created_at") private LocalDateTime createdAt;

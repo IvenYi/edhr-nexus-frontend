@@ -1,0 +1,187 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.dhr-summary-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-user-confirmed.md
+    description: user-confirmed；完整证据自动归集、人工核查冻结、目录仅展示及审批/附件/ZIP边界保留；同包原位补正四工作区双视图、附件右侧主内容、冻结成员混选ZIP和正常发起修订。revisionPrintableExport 确认列表纯图标与弹窗直接修订，先建草稿再提交生成下一冻结版，草稿及历史版通过版本选择可达；中文ZIP含档案顺序总PDF、来源分类单实例原模板版式PDF、实例附件、根级汇总附件及追溯JSON，附件内容不合入总PDF仅索引，Office不转换，同版输出且部分包不冒充完整。技术选型/字段文件识别/默认联选留作inference；竞品源码和ZIP条目直接证据与平台合并、非空附件证据缺口分开。旧汇总转换保留可用编排和正常version_no，不覆盖当前冻结/草稿、不伪造核查、不删除源表单/生产/签署/审计/终止快照；迁移与Office各时点证据独立保留，旧通过记录不证明本轮PDF及修订入口已验收。0.3.24及specified/internal不变，不新增替代DEC或宣称整体合规。
+    visibility: internal
+  - id: evidence.dhr-summary-compliance-assessment
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-compliance-assessment.md
+    description: secondary-reference；采用主智能体本轮复核的中国2025新版、FDA QMSR、eCFR及EU官方QMS来源索引；限定功能级设计评估，不声称全部条款验收或客户海外市场已确认。
+    visibility: internal
+  - id: evidence.dhr-summary-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    description: original-evidence；working-tree 服务已给全部实际表单实例默认位置，提交时重核实例及附件范围并逐实例冻结；submit 强制三项人工确认及说明，在 checkResult 存确认人、时间和说明，qualityConclusionAutomaticallyInterpreted=false。2026-09-28静态核对workspace同时返回草稿与历史版本；reorganize校验最新定版和原因后prepareNextDraft创建DRAFT，submit才分配下一version_no，旧版仍由version按ID读取。源码指纹及读取时点见确认证据，不证明入口或端到端验收；质量结论、异常处置和签署有效性自动闭环仍需证据，旧手选/完成过滤仅属Git历史。
+    visibility: internal
+  - id: evidence.dhr-summary-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java
+    description: original-evidence；working-tree 控制器提供汇总工作区、冻结版本读取、草稿保存和提交端点，并区分查看、编辑、提交权限。
+    visibility: internal
+  - id: evidence.dhr-summary-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    description: original-evidence；working-tree 迁移定义 DHR_SUMMARY 流程分类、制程和 DHR 审核绑定字段、草稿/不可变版本/证据关联表及独立菜单权限；该源码路径本身不证明迁移已在真实 PostgreSQL 实例执行成功。
+    visibility: internal
+  - id: evidence.dhr-summary-review-binding-constraint
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql
+    description: original-evidence；working-tree 增量迁移约束冻结汇总版本的审核模式与流程定义、版本绑定保持一致。
+    visibility: internal
+  - id: evidence.dhr-summary-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+    description: original-evidence；working-tree 页面为独立 DHR 汇总菜单，提供实际实例默认展示与自定义位置叠加、来源分组、附件和冻结版本读取。2026-09-28并行实现初核已见hasCurrentDraft/selectedVersionId区分只读、直接发起修订、档案版本选择及DhrExportDialog的档案树接入；只证明实现片段，不证明未保存保护、权限、历史内容隔离或PDF/ZIP真实浏览器验收。
+    visibility: internal
+  - id: evidence.dhr-summary-process-configuration-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+    description: original-evidence；working-tree 产品/产品簇共用制程版本编辑器配置 DHR 汇总审批策略和已发布 DHR_SUMMARY 流程版本。
+    visibility: internal
+  - id: evidence.dhr-summary-focused-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java
+    description: original-evidence；working-tree 聚焦测试校验汇总迁移契约和独立权限；控制器权限分层由 ProductionControllerAuthorizationTest 覆盖。测试通过不等同于发布级验证。
+    visibility: internal
+  - id: evidence.dhr-summary-order-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-order-user-confirmed.md
+    description: user-confirmed；2026-09-25 原位修订 DEC-0071，逐实例及整组仅整理展示位置与顺序，取消自定义位置恢复默认位置而不删除证据；specified/internal。
+    visibility: internal
+  - id: evidence.dhr-summary-order-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    description: original-evidence；2026-09-24 working-tree 静态核对同级锚点和非负顺序校验、草稿保存、冻结关联及哈希、冻结版本读取、重新整理继承顺序、草稿保存前后审计；尚不代表集成或发布验证。
+    visibility: internal
+  - id: evidence.dhr-summary-order-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql
+    description: original-evidence；working-tree 迁移为冻结证据关联增加可空 before_node_key 与 display_order；未核实真实数据库迁移结果。
+    visibility: internal
+  - id: evidence.dhr-summary-order-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/summaryPlacementOrder.ts
+    description: original-evidence；working-tree 同级实例按锚点和显示序号排列、插入前重排；取消自定义位置后 DhrSummaryPage.tsx 通过默认展示位置补回实例，证据身份由后端全部实际实例范围决定。
+    visibility: internal
+  - id: evidence.dhr-summary-order-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java
+    description: original-evidence；working-tree 测试源码覆盖锚点归属与排序值校验；前端浏览器脚本覆盖同模板多实例插入、重开与移出。仅核对测试存在，未据此声称通过。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-summary-source-group-user-confirmed.md
+    description: user-confirmed；2026-09-25 原位修订 DEC-0072，按来源键展示全部实际实例，组/单份仅整理；真实状态保留，别名及顺序不改变证据范围，取消自定义位置恢复默认位置；旧测试不证明新设计已实现。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/dhr-management/summarySourceGroups.ts
+    description: original-evidence；working-tree summarySourceKey 按 originKind、operationId、formId 形成来源键，缺失来源键时按实例独立；空目标过滤自定义 placements，DhrSummaryPage.tsx 的 effectivePlacements 以默认位置补回实际实例。前端源码不代替浏览器验收。
+    visibility: internal
+  - id: evidence.dhr-summary-work-form-id
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    description: original-evidence；working-tree 作业 FORM 节点从作业定义 id 与节点 id 生成稳定的 work-... formId；同模板不同作业节点有不同来源键。
+    visibility: internal
+  - id: evidence.dhr-summary-custom-form-id
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    description: original-evidence；working-tree ATTACH_FORM 动作按每次创建生成 custom-... formId；同模板再次创建不是同一来源项。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-test
+    type: test
+    path: gmp-platform/frontend/scripts/test-dhr-summary-directory-browser.mjs
+    description: secondary-reference；2026-09-24 旧语义浏览器执行报告保留于 Git；此路径为测试源码，API 拦截范围不证明本次自动完整证据、附件或真实后端闭环，本轮未执行。
+    visibility: internal
+  - id: evidence.dhr-summary-source-group-backend-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java
+    description: secondary-reference；2026-09-24 旧选择性纳入及顺序的20项服务/H2测试报告保留于Git；此路径为测试源码，不作为新自动完整范围和真实PostgreSQL验收证据，本轮未执行。
+    visibility: internal
+  - id: evidence.dhr-summary-display-name-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
+    description: original-evidence；working-tree 迁移给 dhr_summary_evidence 增加可空 display_name，兼容既有冻结证据。DhrSummaryDisplayNameMigrationTest 使用 H2 验证迁移；真实 PostgreSQL 迁移尚未据此确认。
+    visibility: internal
+  - id: evidence.dhr-summary-display-name-test-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java
+    description: original-evidence；working-tree 测试源码包含显示名草稿重开、冻结读回、来源候选不变、重新整理及异常名场景；只核对测试存在，不据此声称本轮测试已执行。
+    visibility: internal
+  - id: evidence.dhr-review-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+    description: original-evidence；2026-09-25 静态读取 act/detail，已有审批、签署、人工退回及版本引用，不证明新完整证据和附件核查已闭环。
+    visibility: internal
+  - id: evidence.dhr-review-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java
+    description: original-evidence；审批任务附件端点使用 records.dhr-review 权限，调用 DhrReviewService.detail 校验当前任务处理/本人已办资格，然后仅按任务绑定版本请求冻结附件；控制器源码不单独证明任务授权集成测试通过。
+    visibility: internal
+  - id: evidence.dhr-review-attachment-permission-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrWorkbenchPermissionsTest.java
+    description: original-evidence；工作树测试源码覆盖无审批菜单权限、任务详情拒绝时附件服务未被调用；ProductionControllerAuthorizationTest 断言任务专属路由。仅核对测试存在，非本轮运行结果。
+    visibility: internal
+  - id: evidence.dhr-evidence-impact-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+    description: original-evidence；2026-09-27 working-tree changes 比较冻结表单快照、值、状态和模板版本，并统一比较新增生产关联实例及受控附件，读取时已无证据模型 V2 分支。源码观察不证明旧数据迁移、来源生效事件、主动通知、质量结果变化或并发发布级闭环。
+    visibility: internal
+  - id: evidence.dhr-summary-complete-evidence-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql
+    description: original-evidence；0102 历史迁移源码增加草稿来源范围摘要及冻结核查/附件快照，同时曾引入 evidence_model_version。该列是旧实现标记，不定义当前业务模型；DEC-0063-09 要求转换或清理错误旧汇总并统一审批/导出，version_no 保留正常修订。本机0104执行日志及只读查询已复核，模型列已删除；用户再次核查/正式提交未做，本切片独立质量验证已通过。
+    visibility: internal
+  - id: evidence.dhr-summary-attachment-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql
+    description: original-evidence；working-tree 定义受控附件关联元数据与核验状态；仅核对迁移源码，未在真实 PostgreSQL 执行。
+    visibility: internal
+  - id: evidence.dhr-summary-current-model-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql
+    description: original-evidence；2026-09-28 静态核对0104及changelog注册：旧记录有审批依赖或DHR非正常完成则阻断，NONE无审批的明确旧记录转待核查草稿，当前冻结/草稿优先；保留可用编排，source_scope_hash置空，清理仅限旧版本及其位置，写MIGRATE且不改原审计行；移除evidence_model_version并约束check_result_snapshot非空，version_no保留。本体已直接核对0104成功及后端启动日志、postgres-regression.log四组PASS、前后指纹diff为空，并只读查询edhr_dev确认DHR3为COMPLETED/DRAFT、1草稿恢复作业7位置、旧冻结/位置0、模型列删除及1条MIGRATE；本机迁移已验证。用户再次核查/正式提交未做，本切片独立质量验证已通过。
+    visibility: internal
+  - id: evidence.dhr-summary-current-model-migration-tests
+    type: test
+    path: gmp-platform/backend/scripts/test-dhr-model-migration.mjs
+    description: original-evidence；脚本读取备份恢复到独立临时PG数据库，断言布局恢复、源表单/生产/签署/附件/原审计保留、当前草稿/冻结优先、审批与生命周期阻断、迟发约束失败回滚及空汇总迁移，结束仅清理自建库。本体已直接读取postgres-regression.log四组PASS，并核对本机执行日志、前后指纹及只读查询；未亲自运行脚本，未执行用户再次核查提交，本切片独立质量验证已通过。
+    visibility: internal
+  - id: evidence.dhr-summary-attachment-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java
+    description: original-evidence；working-tree 附件上传、内容类型/可读性校验、摘要、核验、解除关联及审计路径；downloadableFile 对指定冻结版本核对附件 id 与 sha256，已解除关联附件仅可由包含它的冻结版本读取。2026-09-28本体初核仍为25MB及PDF/PNG/JPEG，源码指纹见确认证据首节；Office/50MB由主开发并行实现，初核不证明后续实现状态。未证明病毒扫描、跨版本拒绝端到端测试、外部原件 SOP 或发布级文件保全。
+    visibility: internal
+  - id: evidence.dhr-summary-archive-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
+    description: original-evidence；2026-09-28 revisionPrintableExport 初核时表单仍为 JSON/HTML；本次静态复核的 working-tree 已见 DhrArchiveService 从显式冻结版本的 candidate_snapshot、attachment_snapshot 生成 FULL/SELECTED ZIP，调用 DhrFormFiles 读取实例文件，输出来源分类单表 PDF、总 PDF、原件及追溯清单。冻结目录或附件清单不完整、汇总附件摘要不符时导出停止；这仅是源码观察，PDF 版式、实例附件真实运行、浏览器和发布验收尚未由本体角色验证，早期观察保留于确认证据。
+    visibility: internal
+  - id: evidence.dhr-form-files-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java
+    description: original-evidence；本次静态复核 working-tree 的 resolve 从冻结表单 fieldValues 中按 fileId 找到实例内原件，核对租户、生产对象、来源类型、提交前创建时点及原件大小和登记 MD5；文件缺失或内容不符即抛错，不以实时表单值补齐。源码存在不等于实例附件 ZIP 路径已通过运行验收。
+    visibility: internal
+  - id: evidence.dhr-frozen-evidence-integrity-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java
+    description: original-evidence；冻结版本读取、审批批准前和导出前按候选实例与逐条 dhr_summary_evidence 源快照及 SHA-256 比较，并重建冻结版本摘要；清单、逐条快照或版本摘要不一致时阻断。该同库存储校验不替代独立防篡改存储、数据库管理员操作审计或外部备份验收。
+    visibility: internal
+  - id: evidence.dhr-form-files-test-source
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrFormFilesTest.java
+    description: original-evidence；本次只读测试源码可见重复 fileId 去重、跨生产对象/提交时点拒绝、原件损坏和文件缺失拒绝用例；未运行本测试，不以测试源码存在证明通过或发布验收。
+    visibility: internal
+  - id: evidence.dhr-summary-complete-evidence-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java
+    description: original-evidence；working-tree 测试源码覆盖默认全实例冻结、新增来源导致陈旧提交、未完成补录、冻结版本读取及缺少人工确认时阻断；本体角色仅核对源码存在，执行结果另计。尚未见逐个确认项、说明边界与 checkResult 确认人/时间/说明的完整断言。
+    visibility: internal
+  - id: evidence.dhr-summary-attachment-archive-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java
+    description: original-evidence；working-tree H2 测试源码覆盖附件核验、解除关联历史、完整及选定 ZIP、已解除关联但版本包含附件的正向读取，并断言源签名及审批签名 payload 写入清单；审批签名 snapshot_hash 错误时 FULL ZIP 阻断，恢复摘要后继续原测试。2026-09-28初核已加入DOC/DOCX/XLS/XLSX参数化原件上传核验下载及ZIP、50MiB含边界/超一字节和伪造损坏加密宏拒绝用例；本体只读源码，未运行这些业务测试，不表示Office增量通过。尚未见跨版本附件拒绝的直接断言；非真实 PostgreSQL 或发布验收。
+    visibility: internal

@@ -28,7 +28,6 @@ final class ExecutionOutputSummary {
     static ObjectNode project(ObjectMapper mapper, JsonNode operation, JsonNode state) {
         ExecutionOutputSummary summary = new ExecutionOutputSummary();
         for (JsonNode form : operation.path("forms")) {
-            if (!form.path("fulfilledBy").asText("").isBlank()) continue;
             var instances = ExecutionFormCopies.ids(state, form.path("id").asText());
             if (instances.isEmpty()) summary.collect(form.path("fields"), MissingNode.getInstance(), form.path("name").asText());
             for (int index = 0; index < instances.size(); index++)

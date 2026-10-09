@@ -79,7 +79,33 @@ const REQUIRED_PRODUCTION_CONFIGURATION_MENU: SidebarMenu = {
   ],
 };
 
-const REQUIRED_RECORDS_MODULE = SIDEBAR_MODULES.find((module) => module.id === 'records')!;
+const REQUIRED_FORM_MANAGEMENT_MENU: SidebarMenu = {
+  label: '表单管理',
+  icon: 'FactCheck',
+  children: [
+    { label: '表单列表', path: '/form-management/list' },
+    { label: '表单填报', path: '/form-management/filling' },
+    { label: '表单审批', path: '/form-management/review' },
+  ],
+};
+
+const REQUIRED_DHR_MANAGEMENT_MENU: SidebarMenu = {
+  label: 'DHR管理',
+  icon: 'AssignmentTurnedIn',
+  children: [
+    { label: 'DHR列表', path: '/dhr-management/list' },
+    { label: 'DHR填报', path: '/dhr-management/filling' },
+    { label: 'DHR汇总', path: '/dhr-management/summary' },
+    { label: 'DHR审批', path: '/dhr-management/review' },
+  ],
+};
+
+const REQUIRED_RECORDS_MODULE: SidebarModule = {
+  id: 'records',
+  label: '记录',
+  icon: 'FactCheck',
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU],
+};
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
   label: '生产准备',
@@ -94,7 +120,7 @@ const REQUIRED_PRODUCTION_EXECUTION_MENU: SidebarMenu = {
   label: '生产执行',
   icon: 'PrecisionManufacturing',
   children: [
-    { label: '生产执行工作台', path: '/production/execution' },
+    { label: '生产工作台', path: '/production/execution' },
   ],
 };
 
@@ -116,10 +142,10 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/form-management/list',
   '/form-management/filling',
   '/form-management/review',
-]);
-const RECORDS_MANAGED_PATHS = new Set([
-  ...PRODUCTION_MANAGED_PATHS,
-  ...REQUIRED_RECORDS_MODULE.menus.flatMap((menu) => menu.children?.map((child) => child.path) ?? []),
+  '/dhr-management/list',
+  '/dhr-management/summary',
+  '/dhr-management/filling',
+  '/dhr-management/review',
 ]);
 const REMOVED_MASTER_DATA_MENU_PATHS = new Set([
   '/master-data/material-types',
@@ -223,12 +249,12 @@ export function normalizeManagedSidebarModules(modules: SidebarModule[]): Sideba
 
 export function ensureRequiredMenus(modules: SidebarModule[]): SidebarModule[] {
   const nextModules = cloneSidebarModules(removeRetiredSidebarModules(modules));
-  const menuIcons = new Map(nextModules.filter((module) => module.id !== REQUIRED_RECORDS_MODULE.id).flatMap((module) => module.menus
+  const menuIcons = new Map(nextModules.flatMap((module) => module.menus
     .filter((menu) => menu.icon)
     .map((menu) => [`${module.id}:${menu.path || menu.label}`, menu.icon] as const)));
   ensureRequiredProcessModeling(nextModules);
-  ensureRequiredProductionMenus(nextModules);
   ensureRequiredRecordsModule(nextModules);
+  ensureRequiredProductionMenus(nextModules);
   ensureRequiredSystemMenus(nextModules);
   for (const module of nextModules) {
     for (const menu of module.menus) {
@@ -325,10 +351,10 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
     module.menus = module.menus
       .map((menu) => {
         if (menu.children) {
-          const children = menu.children.filter((child) => !RECORDS_MANAGED_PATHS.has(child.path));
+          const children = menu.children.filter((child) => !PRODUCTION_MANAGED_PATHS.has(child.path));
           return children.length > 0 ? { ...menu, children } : null;
         }
-        return menu.path && RECORDS_MANAGED_PATHS.has(menu.path) ? null : menu;
+        return menu.path && PRODUCTION_MANAGED_PATHS.has(menu.path) ? null : menu;
       })
       .filter((menu): menu is SidebarMenu => menu !== null);
   }
@@ -347,11 +373,28 @@ function ensureRequiredProductionMenus(modules: SidebarModule[]) {
 }
 
 function ensureRequiredRecordsModule(modules: SidebarModule[]) {
-  for (let index = modules.length - 1; index >= 0; index -= 1) {
-    if (modules[index].id === REQUIRED_RECORDS_MODULE.id) modules.splice(index, 1);
+  for (const module of modules) {
+    module.menus = module.menus
+      .map((menu) => {
+        if (menu.children) {
+          const children = menu.children.filter((child) => !PRODUCTION_MANAGED_PATHS.has(child.path));
+          return children.length > 0 ? { ...menu, children } : null;
+        }
+        return menu.path && PRODUCTION_MANAGED_PATHS.has(menu.path) ? null : menu;
+      })
+      .filter((menu): menu is SidebarMenu => menu !== null);
   }
-  const productionIndex = modules.findIndex((module) => module.id === 'production');
-  modules.splice(productionIndex < 0 ? modules.length : productionIndex + 1, 0, cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0]);
+
+  let recordsModule = modules.find((module) => module.id === REQUIRED_RECORDS_MODULE.id);
+  if (!recordsModule) {
+    modules.push(cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0]);
+    return;
+  }
+
+  recordsModule.label = REQUIRED_RECORDS_MODULE.label;
+  recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
+  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label].includes(menu.label));
+  recordsModule.menus.unshift(...cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
@@ -470,6 +513,10 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/form-management/list') return 'form-instances.view';
   if (path === '/form-management/filling') return 'form-management.filling';
   if (path === '/form-management/review') return 'form-management.review';
+  if (path === '/dhr-management/list') return 'dhr.instances.view';
+  if (path === '/dhr-management/summary') return 'records.dhr-summary';
+  if (path === '/dhr-management/filling') return 'records.dhr-filling';
+  if (path === '/dhr-management/review') return 'records.dhr-review';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
   if (path === '/system/icons') return 'system.icons';

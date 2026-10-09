@@ -21,9 +21,13 @@ import {
   TextField,
   Pagination,
 } from '@mui/material';
-import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import FormDialogSection from '@/components/FormDialogSection';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import PageHeader from '@/components/PageHeader';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableStickyActionSx } from '@/components/listTableStyles';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import StatusBadge from '@/components/StatusBadge';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -107,7 +111,7 @@ export default function SopDocumentPage() {
           action={{ label: '新增', onClick: () => { setEditing(null); setForm({ code: '', title: '', version: '', fileReference: '' }); setOpen(true); } }}
         />
       ) : (
-        <TableContainer>
+        <ListTableShell>
           <Table>
             <TableHead>
               <TableRow>
@@ -118,13 +122,13 @@ export default function SopDocumentPage() {
                 <TableCell>文件引用</TableCell>
                 <TableCell>状态</TableCell>
                 <TableCell>创建时间</TableCell>
-                <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>操作</TableCell>
+                <TableCell align="center" sx={listTableStickyActionSx(96, 'head')}>操作</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {content.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell sx={{ fontFamily: 'monospace' }}>{item.id}</TableCell>
+                  <TableCell>{item.id}</TableCell>
                   <TableCell>{item.code || '-'}</TableCell>
                   <TableCell>{item.title || '-'}</TableCell>
                   <TableCell>{item.version || '-'}</TableCell>
@@ -136,7 +140,7 @@ export default function SopDocumentPage() {
                     />
                   </TableCell>
                   <TableCell>{item.createdAt ? new Date(item.createdAt).toLocaleString('zh-CN') : '-'}</TableCell>
-                  <TableCell align="center" sx={{ width: 96, minWidth: 96 }}>
+                  <TableCell align="center" sx={listTableStickyActionSx(96, 'body')}>
                     <Tooltip title="编辑"><IconButton size="small" aria-label="编辑" onClick={() => { setEditing(item); setForm(item); setOpen(true); }}><Edit fontSize="small" /></IconButton></Tooltip>
                     <Tooltip title="删除"><IconButton size="small" color="error" aria-label="删除" onClick={() => setDeleteTarget(item)}><Delete fontSize="small" /></IconButton></Tooltip>
                   </TableCell>
@@ -144,7 +148,7 @@ export default function SopDocumentPage() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </ListTableShell>
       )}
 
       {data && data.totalPages > 1 && (
@@ -153,17 +157,18 @@ export default function SopDocumentPage() {
         </Box>
       )}
 
-      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editing ? '编辑' : '新增'}SOP 文档</DialogTitle>
-        <DialogContent>
-          <TextField label="编码" fullWidth margin="dense" value={form.code ?? ''}
+        <DialogContent dividers><FormDialogSection title="基本信息"><FormDialogFieldGrid>
+          <TextField size="small" label="编码" fullWidth value={form.code ?? ''}
             onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))} />
-          <TextField label="标题" fullWidth margin="dense" value={form.title ?? ''}
+          <TextField size="small" label="标题" fullWidth value={form.title ?? ''}
             onChange={e => setForm(prev => ({ ...prev, title: e.target.value }))} />
-          <TextField label="版本" fullWidth margin="dense" value={form.version ?? ''}
+          <TextField size="small" label="版本" fullWidth value={form.version ?? ''}
             onChange={e => setForm(prev => ({ ...prev, version: e.target.value }))} />
-          <TextField label="文件引用" fullWidth margin="dense" value={form.fileReference ?? ''}
+          <TextField size="small" label="文件引用" fullWidth value={form.fileReference ?? ''}
             onChange={e => setForm(prev => ({ ...prev, fileReference: e.target.value }))} />
+        </FormDialogFieldGrid></FormDialogSection>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
@@ -171,7 +176,7 @@ export default function SopDocumentPage() {
             {createMutation.isPending || updateMutation.isPending ? '保存中...' : '保存'}
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <ConfirmDialog
         deletionTarget={deleteTarget && { type: 'sop_document', id: deleteTarget.id }}

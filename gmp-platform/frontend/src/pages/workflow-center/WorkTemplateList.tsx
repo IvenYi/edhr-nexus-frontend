@@ -1,6 +1,12 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import {
   AccountTreeOutlined,
   Add,
@@ -45,10 +51,14 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AppDialog from "@/components/AppDialog";
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import ConfirmDialog from "@/components/ConfirmDialog";
 import StatusBadge from "@/components/StatusBadge";
 import { useSnackbar } from "@/components/SnackbarProvider";
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listColumnResizeHandleSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
+import { getCurrentUserPreferenceStorageKey } from '@/components/ListColumnSettingsPopover';
 import { getAuditLogs, type AuditLogItem } from "@/api/audit";
 import {
   createWorkTemplate,
@@ -121,8 +131,11 @@ interface WorkTemplateColumn {
   configurable?: boolean;
 }
 
-const PAGE_SIZE = 20;
-const COLUMN_STORAGE_KEY = "work-template-list-columns:v2";
+type WorkTemplateColumnWidths = Partial<Record<WorkTemplateColumnId, number>>;
+
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
+const COLUMN_STORAGE_PREFIX = "work-template-list-columns:v2:";
+const COLUMN_WIDTH_STORAGE_PREFIX = "work-template-list-column-widths:v1:";
 const ACTION_COLUMN_WIDTH = 128;
 const WORK_TEMPLATE_COLUMNS: WorkTemplateColumn[] = [
   { id: "name", label: "作业名称", width: 260, configurable: true },
@@ -139,19 +152,11 @@ const WORK_TEMPLATE_COLUMNS: WorkTemplateColumn[] = [
     width: 120,
     configurable: true,
   },
-  { id: "description", label: "备注", width: 260, configurable: true },
+  { id: "description", label: "描述", width: 260, configurable: true },
   { id: "updatedAt", label: "更新时间", width: 172, configurable: true },
   { id: "actions", label: "操作", width: ACTION_COLUMN_WIDTH },
 ];
-const tableHeaderCellSx = {
-  bgcolor: "#f5f7fa",
-  color: "#606266",
-  fontWeight: 600,
-  whiteSpace: "nowrap",
-  height: 48,
-  py: 0,
-  borderBottom: "1px solid #e4e7ed",
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 const tableRowSx = {
   "& > .MuiTableCell-root": {
     height: 40,
@@ -199,7 +204,7 @@ function getWorkApiErrorMessage(error: unknown, fallback: string) {
 const auditFieldLabels: Record<string, string> = {
   name: "名称",
   code: "编码",
-  description: "备注",
+  description: "描述",
   status: "状态",
   versionNumber: "流程版本",
   nodes: "流程节点",
@@ -223,8 +228,8 @@ function operationColumnSx(layer: "head" | "body") {
     minWidth: ACTION_COLUMN_WIDTH,
     maxWidth: ACTION_COLUMN_WIDTH,
     bgcolor: layer === "head" ? "#f5f7fa" : "#fff",
-    backgroundClip: "padding-box",
-    boxShadow: "-6px 0 8px -8px rgba(0, 0, 0, 0.35)",
+    ...listTableStickyEdgeSx,
+    textAlign: "center",
     whiteSpace: "nowrap",
   };
 }
@@ -586,7 +591,7 @@ function WorkTemplateDetailDrawer({
                   <DetailField label="适用规则数">
                     {rules.data?.length ?? 0}
                   </DetailField>
-                  <DetailField label="备注">
+                  <DetailField label="描述">
                     {definition.data?.description ?? target?.description ?? "-"}
                   </DetailField>
                 </Box>
@@ -740,8 +745,19 @@ export default function WorkTemplateList() {
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(
+    PAGE_SIZE_OPTIONS[0],
+  );
   const [activeTab, setActiveTab] = useState<"definitions" | "rules">(
     () => readRecordLocation().type === 'workflow_binding_rule' ? 'rules' : 'definitions',
+  );
+  const columnStorageKey = useMemo(
+    () => getCurrentUserPreferenceStorageKey(COLUMN_STORAGE_PREFIX),
+    [],
+  );
+  const columnWidthStorageKey = useMemo(
+    () => getCurrentUserPreferenceStorageKey(COLUMN_WIDTH_STORAGE_PREFIX),
+    [],
   );
   const [keyword, setKeyword] = useState(() => readRecordLocation().keyword);
   const [submittedKeyword, setSubmittedKeyword] = useState(() => readRecordLocation().keyword);
@@ -749,7 +765,7 @@ export default function WorkTemplateList() {
     () => {
       try {
         const stored = JSON.parse(
-          localStorage.getItem(COLUMN_STORAGE_KEY) || "[]",
+          localStorage.getItem(columnStorageKey) || "[]",
         );
         return Array.isArray(stored)
           ? stored.filter((columnId): columnId is WorkTemplateColumnId =>
@@ -763,6 +779,36 @@ export default function WorkTemplateList() {
       }
     },
   );
+  const [columnWidths, setColumnWidths] = useState<WorkTemplateColumnWidths>(() => {
+    try {
+      const stored = JSON.parse(
+        localStorage.getItem(columnWidthStorageKey) || "{}",
+      );
+      if (!stored || typeof stored !== "object" || Array.isArray(stored)) {
+        return {};
+      }
+      return WORK_TEMPLATE_COLUMNS.reduce<WorkTemplateColumnWidths>(
+        (widths, column) => {
+          const value = stored[column.id];
+          if (typeof value === "number" && Number.isFinite(value)) {
+            widths[column.id] = Math.max(
+              column.id === "actions" ? ACTION_COLUMN_WIDTH : 96,
+              value,
+            );
+          }
+          return widths;
+        },
+        {},
+      );
+    } catch {
+      return {};
+    }
+  });
+  const columnResizeRef = useRef<{
+    id: WorkTemplateColumnId;
+    startX: number;
+    startWidth: number;
+  } | null>(null);
   const [columnAnchor, setColumnAnchor] = useState<HTMLElement | null>(null);
   const [editing, setEditing] = useState<WorkTemplate | null | undefined>(
     undefined,
@@ -771,16 +817,21 @@ export default function WorkTemplateList() {
   const [detailTarget, setDetailTarget] = useState<WorkTemplate | null>(null);
   const [form, setForm] = useState({ name: "", code: "", description: "" });
   const query = useQuery({
-    queryKey: ["work-templates", page, submittedKeyword],
+    queryKey: ["work-templates", page, pageSize, submittedKeyword],
     queryFn: async () =>
       (
         await listWorkTemplates({
           page,
-          size: PAGE_SIZE,
+          size: pageSize,
           keyword: submittedKeyword,
         })
       ).data.data as PageResult<WorkTemplate>,
+    refetchOnMount: 'always',
   });
+  useEffect(() => {
+    const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [page, query.data?.totalPages]);
   const applicabilityQuery = useQuery({
     queryKey: ["work-applicability-rules"],
     queryFn: async () =>
@@ -821,15 +872,24 @@ export default function WorkTemplateList() {
       ),
     [hiddenColumns],
   );
+  const getColumnWidth = (column: WorkTemplateColumn) =>
+    Math.max(
+      column.id === "actions" ? ACTION_COLUMN_WIDTH : 96,
+      columnWidths[column.id] ?? column.width,
+    );
   const tableMinWidth = useMemo(
-    () => visibleColumns.reduce((total, column) => total + column.width, 0),
-    [visibleColumns],
+    () =>
+      visibleColumns.reduce((total, column) => total + getColumnWidth(column), 0),
+    [visibleColumns, columnWidths],
   );
   const tableWidth = Math.max(tableMinWidth, Math.floor(tableContainerWidth));
 
   useEffect(() => {
-    localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(hiddenColumns));
-  }, [hiddenColumns]);
+    localStorage.setItem(columnStorageKey, JSON.stringify(hiddenColumns));
+  }, [columnStorageKey, hiddenColumns]);
+  useEffect(() => {
+    localStorage.setItem(columnWidthStorageKey, JSON.stringify(columnWidths));
+  }, [columnWidthStorageKey, columnWidths]);
   useEffect(() => {
     const element = tableContainerRef.current;
     if (!element) return undefined;
@@ -887,6 +947,32 @@ export default function WorkTemplateList() {
     setKeyword("");
     setPage(1);
     setSubmittedKeyword("");
+  };
+
+  const startColumnResize = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    column: WorkTemplateColumn,
+  ) => {
+    if (!column.configurable) return;
+    event.preventDefault();
+    event.stopPropagation();
+    columnResizeRef.current = {
+      id: column.id,
+      startX: event.clientX,
+      startWidth: getColumnWidth(column),
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const updateColumnResize = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const resize = columnResizeRef.current;
+    if (!resize) return;
+    setColumnWidths((current) => ({
+      ...current,
+      [resize.id]: Math.max(96, resize.startWidth + event.clientX - resize.startX),
+    }));
+  };
+  const stopColumnResize = () => {
+    columnResizeRef.current = null;
   };
 
   const renderCell = (row: WorkTemplate, column: WorkTemplateColumn) => {
@@ -1231,7 +1317,7 @@ export default function WorkTemplateList() {
                   新增作业
                 </Button>
               </Box>
-              <TableContainer
+              <ListTableShell
                 ref={tableContainerRef}
                 sx={{
                   flex: 1,
@@ -1257,7 +1343,7 @@ export default function WorkTemplateList() {
                 >
                   <colgroup>
                     {visibleColumns.map((column) => (
-                      <col key={column.id} style={{ width: column.width }} />
+                      <col key={column.id} style={{ width: getColumnWidth(column) }} />
                     ))}
                   </colgroup>
                   <TableHead>
@@ -1270,13 +1356,27 @@ export default function WorkTemplateList() {
                           align={column.id === "actions" ? "center" : undefined}
                           sx={{
                             ...tableHeaderCellSx,
-                            width: column.width,
+                            width: getColumnWidth(column),
+                            minWidth: getColumnWidth(column),
                             ...(column.id === "actions"
                               ? operationColumnSx("head")
                               : {}),
                           }}
                         >
-                          {column.label}
+                          <Box sx={{ position: "relative", pr: column.configurable ? 1 : 0 }}>
+                            {column.label}
+                            {column.configurable ? (
+                              <Box
+                                aria-label={`调整${column.label}列宽`}
+                                onPointerDown={(event) => startColumnResize(event, column)}
+                                onPointerMove={updateColumnResize}
+                                onPointerUp={stopColumnResize}
+                                onPointerCancel={stopColumnResize}
+                                onLostPointerCapture={stopColumnResize}
+                                sx={listColumnResizeHandleSx}
+                              />
+                            ) : null}
+                          </Box>
                         </TableCell>
                       ))}
                     </TableRow>
@@ -1317,7 +1417,7 @@ export default function WorkTemplateList() {
                       : null}
                   </TableBody>
                 </Table>
-              </TableContainer>
+              </ListTableShell>
               <Box
                 sx={{
                   flex: "0 0 auto",
@@ -1333,14 +1433,34 @@ export default function WorkTemplateList() {
                 <Typography variant="body2" sx={{ color: "#909399" }}>
                   共 {query.data?.totalElements ?? 0} 条数据
                 </Typography>
-                {query.data && query.data.totalPages > 1 ? (
+                <Stack direction="row" spacing={1.5} alignItems="center">
                   <Pagination
                     size="small"
-                    count={query.data.totalPages}
-                    page={page}
+                    count={Math.max(query.data?.totalPages ?? 0, 1)}
+                    page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))}
                     onChange={(_, value) => setPage(value)}
                   />
-                ) : null}
+                  <TextField
+                    select
+                    size="small"
+                    value={pageSize}
+                    onChange={(event) => {
+                      setPageSize(
+                        Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number],
+                      );
+                      setPage(1);
+                    }}
+                    SelectProps={{ native: true }}
+                    sx={{ width: 112 }}
+                    inputProps={{ "aria-label": "每页条数" }}
+                  >
+                    {PAGE_SIZE_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option} 条/页
+                      </option>
+                    ))}
+                  </TextField>
+                </Stack>
               </Box>
             </Box>
           </>
@@ -1386,6 +1506,7 @@ export default function WorkTemplateList() {
         )}
       </Popover>
       <AppDialog
+        variant="form"
         open={editing !== undefined}
         onClose={() => setEditing(undefined)}
         maxWidth="sm"
@@ -1394,7 +1515,7 @@ export default function WorkTemplateList() {
         <DialogTitle>{editing ? "编辑作业模板" : "新增作业模板"}</DialogTitle>
         <DialogContent dividers sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
           <DetailSection title="基本信息">
-            <Stack spacing={1.5}>
+            <FormDialogFieldGrid hasTrailingFullRow>
               <TextField
                 required
                 size="small"
@@ -1417,16 +1538,17 @@ export default function WorkTemplateList() {
               />
               <TextField
                 size="small"
-                label="备注"
+                label="描述"
                 fullWidth
                 multiline
                 minRows={3}
+                sx={{ gridColumn: { sm: '1 / -1' } }}
                 value={form.description}
                 onChange={(event) =>
                   setForm({ ...form, description: event.target.value })
                 }
               />
-            </Stack>
+            </FormDialogFieldGrid>
           </DetailSection>
         </DialogContent>
         <DialogActions sx={{ px: 3, py: 1.5 }}>

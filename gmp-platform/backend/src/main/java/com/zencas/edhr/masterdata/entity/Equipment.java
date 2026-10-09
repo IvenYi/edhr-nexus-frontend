@@ -15,6 +15,8 @@ public class Equipment {
     private String code;
     @Column(name = "name", nullable = false, length = 128)
     private String name;
+    @Column(name = "description", length = 512)
+    private String description;
     @Column(name = "brand", length = 128)
     private String brand;
     @Column(name = "model")

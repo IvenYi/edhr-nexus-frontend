@@ -1,4 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -50,6 +52,9 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import FormDialogSection from '@/components/FormDialogSection';
 import { Add, Close, Delete, DragIndicator, Edit, ExpandMore, LockReset, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import {
   createUser,
@@ -265,14 +270,7 @@ const userSelectSx = {
   },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -332,7 +330,7 @@ const userColumns: UserColumn[] = [
   { id: 'createdAt', label: '创建时间', defaultWidth: 130, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 130, minWidth: USER_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: USER_ACTION_COLUMN_WIDTH, minWidth: USER_ACTION_COLUMN_WIDTH, resizable: false },
+  { id: 'actions', label: '操作', defaultWidth: USER_ACTION_COLUMN_WIDTH, minWidth: USER_ACTION_COLUMN_WIDTH, resizable: false, align: 'center' },
 ];
 
 function isConfigurableUserColumn(column: UserColumn): column is UserColumn & { id: ConfigurableUserColumnId } {
@@ -799,6 +797,8 @@ function getStickyActionColumnSx(column: UserColumn, section: 'head' | 'body') {
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
+    textAlign: 'center',
   };
 }
 
@@ -1535,7 +1535,7 @@ export default function UserPage() {
 
     return (
       <TableCell key={column.id} sx={cellSx}>
-        <Stack direction="row" spacing={0} onClick={(event) => event.stopPropagation()}>
+        <Stack direction="row" spacing={0} justifyContent="center" onClick={(event) => event.stopPropagation()}>
           <Tooltip title="编辑" arrow>
             <IconButton size="small" aria-label="编辑" onClick={() => openEditDialog(row)}>
               <Edit fontSize="small" />
@@ -1790,7 +1790,7 @@ export default function UserPage() {
 	          </Stack>
 	        </Popover>
 		        <Box sx={{ position: 'relative', flex: 1, width: '100%', maxWidth: '100%', minWidth: 0, minHeight: 0 }}>
-	          <TableContainer
+	          <ListTableShell
 	            ref={tableContainerRef}
 	            sx={{
 	              width: '100%',
@@ -1900,7 +1900,7 @@ export default function UserPage() {
               ))}
             </TableBody>
           </Table>
-	          </TableContainer>
+	          </ListTableShell>
 	          <Box
 	            data-user-action-column-shadow
 	            sx={{
@@ -1909,7 +1909,7 @@ export default function UserPage() {
 	              bottom: 0,
 	              right: tableScrollbarWidth,
 	              width: USER_ACTION_COLUMN_WIDTH,
-	              boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+	              boxShadow: listTableStickyEdgeShadow,
 	              pointerEvents: 'none',
 	              zIndex: 7,
 	            }}
@@ -2143,10 +2143,10 @@ export default function UserPage() {
         </Box>
       </Drawer>
 
-      <AppDialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+      <FormDialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingId ? '编辑用户' : '新增用户'}</DialogTitle>
-        <DialogContent dividers>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
+        <DialogContent dividers><FormDialogSection title="基本信息">
+          <FormDialogFieldGrid>
             <TextField
               label="账号"
               required
@@ -2245,8 +2245,8 @@ export default function UserPage() {
                 ))}
               </Select>
             </FormControl>
-          </Box>
-        </DialogContent>
+          </FormDialogFieldGrid>
+        </FormDialogSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>取消</Button>
           <Button
@@ -2263,7 +2263,7 @@ export default function UserPage() {
             保存
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
         <DialogTitle>重置密码</DialogTitle>

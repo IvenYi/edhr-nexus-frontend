@@ -35,7 +35,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Tabs,
@@ -43,6 +42,7 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import { ListTableShell } from '@/components/ListTableShell';
 import {
   CloseOutlined,
   EmailOutlined,
@@ -2252,7 +2252,7 @@ function PersonalLogPanel({
         {toolbar}
       </Stack>
 
-      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', border: `1px solid ${COLORS.divider}`, borderRadius: 1 }}>
+      <ListTableShell sx={{ flex: 1, minHeight: 0, overflow: 'auto', border: `1px solid ${COLORS.divider}`, borderRadius: 1 }}>
         <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: '100%', minWidth, height: showEmptyState ? '100%' : 'auto' }}>
           <TableHead>
             <TableRow>
@@ -2281,7 +2281,7 @@ function PersonalLogPanel({
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'center' }} justifyContent="space-between" gap={1.5} sx={{ pt: 1.5 }}>
         <Typography sx={{ fontSize: 13, color: COLORS.textSecondary }}>共 {totalElements} 条</Typography>

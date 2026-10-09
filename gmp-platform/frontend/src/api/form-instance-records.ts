@@ -94,6 +94,8 @@ export interface FormWorklistRow extends FormWorklistIdentity {
   /** Source execution update time, not an individual-copy edit time. All times are source-local ISO. */
   updatedAt: string; arrivedAt: string | null; handledAt: string | null;
   nodeId: string | null; nodeName: string | null; handledAction: 'SUBMIT' | 'APPROVE' | 'RETURN' | null;
+  canTransfer?: boolean; transferLabel?: string | null; transferStyle?: 'PRIMARY' | 'DEFAULT' | 'DANGER' | null;
+  transferFrom?: string | null; transferReason?: string | null; transferredAt?: string | null;
   revision: number; historyCoverage: 'STRUCTURED_EVENTS_ONLY';
 }
 export interface FormWorklistQuery {
@@ -128,5 +130,6 @@ export async function listFormWorklist(view: FormWorklistView, query: FormWorkli
   return (await client.get(`/form-worklists/${encodeURIComponent(view)}`, { params })).data.data;
 }
 export async function getFormWorklistDetail(view: FormWorklistView, identity: FormWorklistIdentity): Promise<FormWorklistDetail> {
-  return (await client.get(`/form-worklists/${encodeURIComponent(view)}/detail`, { params: identity })).data.data;
+  const { productionObjectId, operationId, formId, copyId } = identity;
+  return (await client.get(`/form-worklists/${encodeURIComponent(view)}/detail`, { params: { productionObjectId, operationId, formId, copyId } })).data.data;
 }

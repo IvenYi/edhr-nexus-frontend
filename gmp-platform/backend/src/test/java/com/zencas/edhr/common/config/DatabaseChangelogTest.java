@@ -63,6 +63,16 @@ class DatabaseChangelogTest {
     }
 
     @Test
+    void duplicateRemarkCleanupIsIncludedAndExplicitlyDestructive() throws IOException {
+        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String migration = readResource("db/changelog/0095-remove-duplicate-remarks.sql");
+
+        assertThat(master).contains("0095-remove-duplicate-remarks.sql");
+        assertThat(migration).contains("DROP COLUMN IF EXISTS remark");
+        assertThat(migration).contains("Existing values are intentionally discarded");
+    }
+
+    @Test
     void productModelingDoesNotPersistUnsupportedReleaseForms() throws IOException {
         String master = readResource("db/changelog/db.changelog-master.yaml");
         String migration = readResource("db/changelog/0046-remove-product-process-release-form.sql");

@@ -180,7 +180,7 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         label: '生产执行',
         icon: 'PrecisionManufacturing',
         children: [
-          { label: '生产执行工作台', path: '/production/execution' },
+          { label: '生产工作台', path: '/production/execution' },
         ],
       },
       {
@@ -216,13 +216,13 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         ],
       },
       {
-        label: '变更管理',
-        icon: 'Article',
+        label: 'DHR管理',
+        icon: 'AssignmentTurnedIn',
         children: [
-          { label: '记录变更', path: '/records/change' },
-          { label: '我的变更', path: '/records/mine' },
-          { label: '变更审批', path: '/records/approvals' },
-          { label: '变更记录', path: '/records/history' },
+          { label: 'DHR列表', path: '/dhr-management/list' },
+          { label: 'DHR填报', path: '/dhr-management/filling' },
+          { label: 'DHR汇总', path: '/dhr-management/summary' },
+          { label: 'DHR审批', path: '/dhr-management/review' },
         ],
       },
     ],

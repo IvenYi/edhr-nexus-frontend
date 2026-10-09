@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface SignatureRepository extends JpaRepository<Signature, Long>, JpaSpecificationExecutor<Signature> {
+    @Query("select s from Signature s where s.targetType is null or s.targetType <> 'DHR_SUMMARY'")
+    org.springframework.data.domain.Page<Signature> findNonDhr(org.springframework.data.domain.Pageable pageable);
     Optional<Signature> findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc(String targetType, String targetId);
 
     @Query("""

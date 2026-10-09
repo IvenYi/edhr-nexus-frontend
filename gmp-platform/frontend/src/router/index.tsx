@@ -23,12 +23,11 @@ const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInstanceListPage'));
 const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPage'));
-const FormManagementPlaceholderPage = lazy(() => import('@/pages/form-management/FormManagementPlaceholderPage'));
-const RecordChangePage = lazy(() => import('@/pages/record-control/RecordChangePage'));
-const RecordRequestListPage = lazy(() => import('@/pages/record-control/RecordRequestListPage'));
-const RecordRequestDetailPage = lazy(() => import('@/pages/record-control/RecordRequestDetailPage'));
-const RecordApprovalPage = lazy(() => import('@/pages/record-control/RecordApprovalPage'));
-
+const FormReviewPage = lazy(() => import('@/pages/form-management/FormReviewPage'));
+const DhrManagementPage = lazy(() => import('@/pages/dhr-management/DhrManagementPage'));
+const DhrSummaryPage = lazy(() => import('@/pages/dhr-management/DhrSummaryPage'));
+const DhrFillingPage = lazy(() => import('@/pages/dhr-management/DhrFillingPage'));
+const DhrReviewPage = lazy(() => import('@/pages/dhr-management/DhrReviewPage'));
 const ProcessModelingPage = lazy(() => import('@/pages/master-data/ProcessModelingPage'));
 const ProductModelingPage = lazy(() => import('@/pages/master-data/ProductModelingPage'));
 const ProductModelingWorkspacePage = lazy(() => import('@/pages/master-data/ProductModelingWorkspacePage'));
@@ -102,14 +101,13 @@ const AppRouter = () => {
         <Route path="form-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><FormInstanceListPage /></Suspense>} />
           <Route path="filling" element={<Suspense fallback={<Loading />}><FormFillingPage /></Suspense>} />
-          <Route path="review" element={<Suspense fallback={<Loading />}><FormManagementPlaceholderPage title="表单审批" /></Suspense>} />
+          <Route path="review" element={<Suspense fallback={<Loading />}><FormReviewPage /></Suspense>} />
         </Route>
-        <Route path="records">
-          <Route path="change" element={<Suspense fallback={<Loading />}><RecordChangePage /></Suspense>} />
-          <Route path="mine" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="mine" /></Suspense>} />
-          <Route path="approvals" element={<Suspense fallback={<Loading />}><RecordApprovalPage /></Suspense>} />
-          <Route path="history" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="all" /></Suspense>} />
-          <Route path="requests/:requestId" element={<Suspense fallback={<Loading />}><RecordRequestDetailPage /></Suspense>} />
+        <Route path="dhr-management">
+          <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />
+          <Route path="summary" element={<Suspense fallback={<Loading />}><DhrSummaryPage /></Suspense>} />
+          <Route path="filling" element={<Suspense fallback={<Loading />}><DhrFillingPage /></Suspense>} />
+          <Route path="review" element={<Suspense fallback={<Loading />}><DhrReviewPage /></Suspense>} />
         </Route>
         <Route path="production">
           <Route path="execution" element={<Suspense fallback={<Loading />}><ProductionExecutionPage /></Suspense>} />

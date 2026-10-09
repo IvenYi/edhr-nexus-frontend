@@ -1,0 +1,81 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0072
+    title: DHR 汇总来源分组与实例级展示整理
+    status: specified
+    visibility: internal
+    context: >-
+      user-confirmed；2026-09-25 按统一 DEC-PACKAGE-20260919-DHR-SUMMARY 直接修订原设计，保持 0.3.24。
+      来源分组、实例位置和别名均是完整证据范围上的展示层；取消手选及完成状态决定纳入的旧语义。
+      保留 DEC-0063/0071 的局部细化关系及 Git 历史；旧实现和旧测试仅记录于实现差异，不证明本次新设计已交付。
+    decisionStatements:
+      - id: DEC-0072-01
+        statement: user-confirmed；作业来源按同一生产工序及同一作业填报节点 formId 成组，自定义来源按同一次创建项 formId 成组；分组键为 originKind、operationId、formId，同模板不同节点或创建项不得合组，缺失来源键时按实例独立。默认整组或展开单份操作仅整理展示位置，不选择证据是否纳入；每份自动可见。
+        status: specified
+        visibility: internal
+      - id: DEC-0072-02
+        statement: user-confirmed；来源组只改变展示和批量整理单位。证据身份、内容、版本、状态、来源快照、校验指纹与审计逐实例追溯；同一实例在版本中具有唯一证据身份和目录位置，不修改来源表单。
+        status: specified
+        visibility: internal
+      - id: DEC-0072-03
+        statement: user-confirmed；实际关联的未完成、失败、作废、已替代实例保留真实状态与历史，不以 COMPLETED 过滤证据可见性。保存展示位置与提交资格分层：适用必填、签署、有效性及未完成补录等阻断仍成立，不新增选填豁免；旧完成状态纳入门槛仅由 Git 历史解释。
+        status: specified
+        visibility: internal
+      - id: DEC-0072-04
+        statement: user-confirmed；同源实例可分目录、分散或交错整理，整组操作不得静默跳过非完成记录。草稿与 readOnly 冻结目录保留真实交错顺序，仅相邻同源实例折叠；取消自定义位置恢复默认位置，不删除证据或缩减审批范围，旧冻结历史不可回写。
+        status: specified
+        visibility: internal
+      - id: DEC-0072-05
+        statement: user-confirmed；工作区保留可收起概览与来源访问，普通浏览采用 DEC-0063/0068 的档案目录/按来源双视图，整理时来源与目录相邻，不将右侧入口位置固定为业务约束。所有实际证据有默认位置，无需先拖拽才能核查。空来源仅显示缺项或占位，不生成实例或证据；应有缺项按适用规则阻断。
+        status: specified
+        visibility: internal
+      - id: DEC-0072-06
+        statement: user-confirmed；DIRECTORY、WORK、CUSTOM 的真实证据支持草稿展示别名。组行只修改当前范围实例，相邻折叠行限当前段，单份仅改一份；保存重开保留，提交冻结并参与指纹，正常修订复制上版别名。别名不改来源名称、内容、实例号、生产归属或基础目录；DIRECTORY 固定位置不变，未设置别名时显示来源名称，不是旧模型兼容。错误旧汇总转换保留可用目录、位置及别名，按 DEC-0063-09 重新核查提交；显示名不能改变证据范围。
+        status: specified
+        visibility: internal
+      - id: DEC-0072-07
+        statement: user-confirmed；目录表单行去掉独立份数数字，单实例也显示实例列表按钮，行点击预览首份，拖拽只显示一个落点。若提供 x/y 计数，只能说明自定义展示整理进度，不能表示证据纳入比例或审批覆盖比例。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0063, DEC-0071]
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-source-group-test, evidence.dhr-summary-service, evidence.dhr-summary-order-service, evidence.dhr-summary-source-group-backend-test, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
+    acceptanceScenarios:
+      - id: scenario.dhr-summary-source-bulk-placement
+        given: 同一工序作业节点有两份已完成实例，另一节点使用相同模板；一次自定义创建项有两份实例
+        when: 用户整组或单份整理展示位置，然后保存、重开并提交
+        then: 全部实例无需选择即属于证据范围；整组或单份整理不影响另一节点或创建项，取消自定义位置恢复默认位置，完整证据、状态、顺序及哈希冻结
+        evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-work-form-id, evidence.dhr-summary-custom-form-id, evidence.dhr-summary-source-group-test, evidence.dhr-summary-service, evidence.dhr-summary-source-group-backend-test]
+        evidenceRequirements: [分组键与整组及单份交互浏览器测试, 部分保存提交重开, 逐实例服务校验, 冻结版本审计与哈希核对]
+      - id: scenario.dhr-summary-source-mixed-completion
+        given: 同一来源含已完成和未完成实例
+        when: 用户查看来源并执行整组或单份展示整理
+        then: 未完成实例仍可见且保留真实状态，不静默跳过或冒充合格完成；适用规则中的未完成阻断仍在提交核查时执行
+        evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-test, evidence.dhr-summary-source-group-backend-test]
+        evidenceRequirements: [混合状态可见性及整组整理验证, 提交核查阻断]
+      - id: scenario.dhr-summary-source-interleaved-order
+        given: 同源 A1、A2 在草稿中分目录或与另一来源 B1 按 A1、B1、A2 交错归档
+        when: 用户保存重开、提交后读取 readOnly 冻结版本
+        then: 真实位置和顺序不变，左侧仅相邻同源实例折叠，不把 A2 移到 A1 旁；冻结历史不回写
+        evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-source-group-test, evidence.dhr-summary-source-group-backend-test, evidence.dhr-summary-order-service]
+        evidenceRequirements: [分目录与交错归档持久化测试, 草稿与只读目录浏览器测试]
+      - id: scenario.dhr-summary-source-preserves-existing-validation
+        given: 汇总存在必填目录缺失或未完成补录等既有阻断条件
+        when: 用户只整理部分来源实例的展示位置并提交
+        then: 全部关联实例仍在证据范围内，适用缺项与未完成补录继续阻断提交，空来源不生成证据
+        evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-source-group-backend-test]
+        evidenceRequirements: [必填目录与未完成补录回归, 空来源证据检查]
+      - id: scenario.dhr-summary-archive-display-name
+        given: 汇总草稿内有 DIRECTORY 目录实例、相邻同源多份归档实例、单份归档实例和未设置显示名的记录
+        when: 用户分别重命名相邻折叠行与单份行，保存重开、提交并重新整理
+        then: 所有来源仅当前范围的目标实例获得显示名；冻结版本及指纹保持该名称，新草稿继承该名称，空别名显示原名；来源表单和基础快照不变，DIRECTORY 固定展示位置不变，其他来源取消自定义位置恢复默认位置，证据范围不变，正常冻结版本不可编辑
+        evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
+        evidenceRequirements: [目录组及相邻段与单份作用域交互, 全来源草稿保存重开, 冻结哈希与只读及审核显示名, DIRECTORY 重新整理继承, 未设置别名显示原名, 拒绝 DIRECTORY 移动及排序覆盖, 重复实例及异常名称与越权阻断, 单实例列表按钮与首份预览, 单一拖拽落点及行尾对齐]
+    implementationDiscrepancies:
+      - id: discrepancy.dhr-summary-group-old-selection-tests
+        status: open
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+        lineHint: 374
+        summary: original-evidence；当前服务已为全部实际实例建立默认位置，不再以 COMPLETED 限定纳入；前端以默认位置叠加自定义 placements，空目标过滤仅取消自定义位置。新逻辑已有测试源码，但本体角色未执行真实浏览器、PostgreSQL 或独立质量验证；完整状态展示、整组/单份交错整理与历史版本回读仍需收尾验收，旧 2026-09-24 测试只证明旧时点语义。
+        evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-source-group-ui, evidence.dhr-summary-source-group-test, evidence.dhr-summary-source-group-backend-test]

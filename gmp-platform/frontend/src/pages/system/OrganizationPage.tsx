@@ -1,4 +1,6 @@
 import TableStateCell from '@/components/TableStateCell';
+import { ListTableShell } from '@/components/ListTableShell';
+import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -52,6 +54,9 @@ import {
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import FormDialog from '@/components/FormDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
+import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
   Apartment,
@@ -253,14 +258,7 @@ const userSelectSx = {
   },
 };
 
-const tableHeaderCellSx = {
-  height: 48,
-  py: 0,
-  color: '#606266',
-  fontWeight: 600,
-  bgcolor: '#f5f7fa',
-  borderBottom: '1px solid #e4e7ed',
-};
+const tableHeaderCellSx = listTableHeaderCellSx;
 
 const tableBodyCellSx = {
   height: TABLE_DATA_ROW_HEIGHT,
@@ -316,7 +314,7 @@ const personnelColumns: PersonnelColumn[] = [
   { id: 'createdAt', label: '创建时间', defaultWidth: 130, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedBy', label: '更新人', defaultWidth: 120, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
   { id: 'updatedAt', label: '更新时间', defaultWidth: 130, minWidth: PERSONNEL_FIELD_COLUMN_MIN_WIDTH, resizable: true },
-  { id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false },
+  { id: 'actions', label: '操作', defaultWidth: PERSONNEL_ACTION_COLUMN_WIDTH, minWidth: PERSONNEL_ACTION_COLUMN_WIDTH, resizable: false, align: 'center' },
 ];
 
 function isConfigurablePersonnelColumn(
@@ -803,6 +801,8 @@ function getStickyActionColumnSx(column: PersonnelColumn, section: 'head' | 'bod
     right: 0,
     zIndex: section === 'head' ? 6 : 4,
     bgcolor: section === 'head' ? '#f5f7fa' : '#fff',
+    ...listTableStickyEdgeSx,
+    textAlign: 'center',
   };
 }
 
@@ -1558,9 +1558,9 @@ export default function OrganizationPage() {
       <TableCell key={column.id} sx={cellSx}>
         <Stack
           direction="row"
-          spacing={0.25}
+          spacing={0}
           onClick={(event) => event.stopPropagation()}
-          sx={{ alignItems: 'center' }}
+          sx={{ alignItems: 'center', justifyContent: 'center' }}
         >
           <Tooltip title="编辑" arrow>
             <IconButton size="small" aria-label="编辑" onClick={() => openEditUserDialog(row)}>
@@ -2009,7 +2009,7 @@ export default function OrganizationPage() {
             </Popover>
 
 	            <Box sx={{ position: 'relative', flex: 1, minHeight: 0 }}>
-	              <TableContainer ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
+	              <ListTableShell ref={tableContainerRef} sx={{ width: '100%', height: '100%', minHeight: 0, overflow: 'auto' }}>
                 <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: totalTableWidth, minWidth: totalTableWidth, height: isPersonnelTableEmptyState ? '100%' : 'auto' }}>
                 <colgroup>
                   {visiblePersonnelColumns.map((column) => (
@@ -2101,7 +2101,7 @@ export default function OrganizationPage() {
                   ))}
                 </TableBody>
 	                </Table>
-	              </TableContainer>
+	              </ListTableShell>
 	              <Box
 	                data-personnel-action-column-shadow
 	                sx={{
@@ -2110,7 +2110,7 @@ export default function OrganizationPage() {
 	                  bottom: 0,
 	                  right: tableScrollbarWidth,
 	                  width: PERSONNEL_ACTION_COLUMN_WIDTH,
-	                  boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)',
+	                  boxShadow: listTableStickyEdgeShadow,
 	                  pointerEvents: 'none',
 	                  zIndex: 7,
 	                }}
@@ -2338,10 +2338,10 @@ export default function OrganizationPage() {
         </Box>
       </Drawer>
 
-      <AppDialog open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
+      <FormDialog open={userDialogOpen} onClose={() => setUserDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingUserId ? '编辑用户' : '新增用户'}</DialogTitle>
-        <DialogContent dividers>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, rowGap: 1.5, columnGap: 1.5 }}>
+        <DialogContent dividers><FormDialogSection title="基本信息">
+          <FormDialogFieldGrid>
             <TextField
               label="账号"
               required
@@ -2457,8 +2457,8 @@ export default function OrganizationPage() {
                 ))}
               </Select>
             </FormControl>
-          </Box>
-        </DialogContent>
+          </FormDialogFieldGrid>
+        </FormDialogSection></DialogContent>
         <DialogActions>
           <Button onClick={() => setUserDialogOpen(false)}>取消</Button>
           <Button
@@ -2475,7 +2475,7 @@ export default function OrganizationPage() {
             保存
           </Button>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog open={resetDialog !== null} onClose={() => setResetDialog(null)} maxWidth="xs" fullWidth>
         <DialogTitle>重置密码</DialogTitle>
@@ -2520,9 +2520,9 @@ export default function OrganizationPage() {
         </DialogActions>
       </AppDialog>
 
-      <AppDialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <FormDialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers><FormDialogSection title="基本信息">
           {!editingId && (
             <Box
               sx={{
@@ -2542,8 +2542,10 @@ export default function OrganizationPage() {
               </Typography>
             </Box>
           )}
-          <TextField label="名称" fullWidth margin="normal" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        </DialogContent>
+          <FormDialogFieldGrid>
+            <TextField size="small" label="名称" fullWidth value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          </FormDialogFieldGrid>
+        </FormDialogSection></DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
           <Box>
             {editingId && (
@@ -2570,7 +2572,7 @@ export default function OrganizationPage() {
             </Button>
           </Stack>
         </DialogActions>
-      </AppDialog>
+      </FormDialog>
 
       <AppDialog open={deleteConfirm !== null} onClose={() => setDeleteConfirm(null)}>
         <DialogTitle>确认删除</DialogTitle>

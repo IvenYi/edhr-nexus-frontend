@@ -1,0 +1,31 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0070
+    title: DHR 审批菜单客户展示名
+    status: specified
+    visibility: internal
+    context: >-
+      user-confirmed；依据 DEC-PACKAGE-20260923-DHR-APPROVAL-LABEL-AND-LIST-SETTINGS，
+      仅局部替代 DEC-0068-01 对 DHR 审核菜单客户展示名的指定。
+      DEC-0068 的审核职责、冻结汇总版本和流程语义继续适用；
+      DEC-0056 的其他审批术语以及历史决策原文保留。
+      本决策不证明前端文案已修改或页面交互已验收。
+    decisionStatements:
+      - id: DEC-0070-01
+        statement: >-
+          user-confirmed；DHR 管理中原“DHR审核”菜单的客户可见名称改为“DHR审批”。
+          仅改变菜单展示术语；既有审核/审批功能、路由、权限码、冻结汇总版本、
+          DHR_SUMMARY 流程及审计语义保持不变。其他列表设置与图标属于前端实现范围，
+          不构成新的业务规则。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0068]
+    evidenceIds: [evidence.dhr-approval-menu-display-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.dhr-approval-menu-display
+        given: 系统已有 DHR 审核技术菜单资源及 DHR_SUMMARY 审核流程
+        when: 用户进入 DHR 管理菜单
+        then: 客户可见菜单名为“DHR审批”，既有路由、权限和审核行为保持不变
+        evidenceIds: [evidence.dhr-approval-menu-display-user-confirmed]
+        evidenceRequirements: [前端菜单文案检查, 路由和权限标识静态核对]
+    implementationDiscrepancies: []

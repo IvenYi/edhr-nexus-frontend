@@ -46,13 +46,14 @@ public class WorkflowInstanceController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<WorkflowInstance> result = workflowInstanceRepository.findAll(pageable);
+        Page<WorkflowInstance> result = workflowInstanceRepository.findNonDhr(pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<WorkflowInstance> getById(@PathVariable Long id) {
+        workflowEngine.assertNotDhrInstance(id);
         return workflowInstanceRepository.findById(id)
                 .map(ApiResponse::success)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
@@ -60,17 +61,21 @@ public class WorkflowInstanceController {
 
     @PostMapping
     public ApiResponse<WorkflowInstance> create(@RequestBody WorkflowInstance entity) {
+        protectDhr(entity);
         return ApiResponse.success(workflowInstanceRepository.save(entity));
     }
 
     @PutMapping("/{id}")
     public ApiResponse<WorkflowInstance> update(@PathVariable Long id, @RequestBody WorkflowInstance entity) {
+        workflowEngine.assertNotDhrInstance(id);
+        protectDhr(entity);
         entity.setId(id);
         return ApiResponse.success(workflowInstanceRepository.save(entity));
     }
 
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable Long id) {
+        workflowEngine.assertNotDhrInstance(id);
         workflowInstanceRepository.deleteById(id);
         return ApiResponse.success(null);
     }
@@ -83,6 +88,7 @@ public class WorkflowInstanceController {
      */
     @GetMapping("/{id}/graph")
     public ApiResponse<GraphData> graph(@PathVariable Long id) {
+        workflowEngine.assertNotDhrInstance(id);
         WorkflowInstance instance = workflowInstanceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
 
@@ -140,6 +146,7 @@ public class WorkflowInstanceController {
      */
     @GetMapping("/{id}/logs")
     public ApiResponse<List<WorkflowActionLog>> logs(@PathVariable Long id) {
+        workflowEngine.assertNotDhrInstance(id);
         workflowInstanceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
 
@@ -207,6 +214,11 @@ public class WorkflowInstanceController {
         private String reason;
         private String operatorId;
         private Long signatureId;
+    }
+
+    private void protectDhr(WorkflowInstance entity) {
+        workflowEngine.assertNotDhrInstance(entity.getId());
+        if ("DHR_SUMMARY".equals(entity.getBusinessType())) throw new BusinessException(ErrorCode.WF_007, "请通过 DHR 汇总发起审核");
     }
 
     private String currentOperatorId() {

@@ -1,26 +1,32 @@
 import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { UNSAFE_NavigationContext, useLocation } from 'react-router-dom';
-import { Alert, Box, Button, Chip, CircularProgress, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Chip, CircularProgress, ClickAwayListener, DialogActions, DialogContent, DialogTitle, Drawer, IconButton, InputAdornment, LinearProgress, List, ListItemButton, Snackbar, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { ArrowForwardRounded, CheckCircleRounded, CloseRounded, ExpandMoreRounded, FullscreenRounded, InfoOutlined, LockOutlined, MenuBookRounded, FactCheckRounded, HistoryRounded, PlayArrowRounded, QrCodeScannerRounded, RefreshRounded, SwapHorizRounded, ViewListOutlined, TableChartOutlined } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import FormDocumentPreview from '@/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview';
-import type { FormRuntime } from '@/components/form-renderer/FormRuntimeField';
+import type { FormRuntime, SignatureTarget } from '@/components/form-renderer/FormRuntimeField';
+import { signatureContent } from '@/components/form-renderer/signatureContent';
+import type { ModelField } from '@/pages/master-data/template-designer-react/types';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
-import { executeProduction, getProductionExecution, getExecutionReferences, uploadExecutionFile, scanProduction, type ExecutionButton, type ExecutionCommand, type ExecutionValues, type ExecutionView } from '@/api/production-execution';
+import { executeProduction, getProductionExecution, getExecutionReferences, getExecutionTransferTargets, uploadExecutionFile, scanProduction, type ExecutionButton, type ExecutionCommand, type ExecutionTransferTarget, type ExecutionValues, type ExecutionView } from '@/api/production-execution';
 import { getFilePagePreviewBlob } from '@/api/files';
 import { getFormTemplates } from '@/api/template-modeling';
 import './ProductionExecutionPage.css';
 import { executionRouteLinks } from './executionRouteLinks';
 import ExecutionQuickPanel, { type ExecutionPanelId } from './ExecutionQuickPanel';
 import ExecutionOperationDrawer from './ExecutionOperationDrawer';
+import ExecutionCopyDrawer from './ExecutionCopyDrawer';
 import ExecutionProductDetails from './ExecutionProductDetails';
 import ExecutionFormSelector from './ExecutionFormSelector';
 import useExecutionPresence from './useExecutionPresence';
-import { executionHistoryGroups } from './executionHistory';
+import { executionFormReceipt, executionHistoryGroups } from './executionHistory';
+import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
+import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
 
-const labels: Record<string, string> = { CREATED: '未开工', IN_PROGRESS: '生产中', IN_PROCESS: '生产中', COMPLETED: '已完工', PENDING: '待开工', ACTIVE: '待处理', RUNNING: '执行中', CANCELLED: '已取消', EARLY_TERMINATED: '已提前结束', CLOSED: '已关闭' };
+const labels: Record<string, string> = { CREATED: '待开工', IN_PROGRESS: '进行中', IN_PROCESS: '进行中', COMPLETED: '已完成', PENDING: '待开工', ACTIVE: '待处理', RUNNING: '进行中', CANCELLED: '已取消', EARLY_TERMINATED: '已提前结束', CLOSED: '已关闭' };
 const time = (value?: string) => value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '—';
 const errorText = (error: unknown) => (error as { response?: { data?: { message?: string } }; message?: string })?.response?.data?.message || (error as Error)?.message || '操作失败，请重试';
 const panel = { bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2, minWidth: 0 };
@@ -28,12 +34,17 @@ const panel = { bgcolor: 'background.paper', border: '1px solid', borderColor: '
 export default function ProductionExecutionPage() {
   const navigation = useContext(UNSAFE_NavigationContext);
   const location = useLocation();
+  const queryClient = useQueryClient();
   const [barcode, setBarcode] = useState('');
   const [view, setView] = useState<ExecutionView | null>(null);
+  const [openingExecution, setOpeningExecution] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('autoScan') === '1' && Boolean(params.get('barcode')?.trim());
+  });
   const [operationId, setOperationId] = useState('');
   const [formId, setFormId] = useState('');
   const [instanceId, setInstanceId] = useState('');
-  const [incompleteNotice, setIncompleteNotice] = useState<{ action: 'END_FORM' | 'COMPLETE'; warnings: string[] } | null>(null);
+  const [incompleteNotice, setIncompleteNotice] = useState<string[] | null>(null);
   const [formCategory, setFormCategory] = useState<{ versionId: string; name: string } | null>(null);
   const [values, setValues] = useState<ExecutionValues>({});
   const [dirty, setDirty] = useState(false);
@@ -49,9 +60,22 @@ export default function ProductionExecutionPage() {
   const [historyType, setHistoryType] = useState('operation');
   const [layout, setLayout] = useState<'fields' | 'canvas'>('canvas');
   const [pendingSwitch, setPendingSwitch] = useState<(() => void) | null>(null);
-  const [signing, setSigning] = useState<ExecutionButton | null>(null);
+  const [signing, setSigning] = useState<(ExecutionButton & { signatureTarget?: SignatureTarget }) | null>(null);
+  const [transferButton, setTransferButton] = useState<ExecutionButton | null>(null);
+  const [transferKeyword, setTransferKeyword] = useState('');
+  const [transferTarget, setTransferTarget] = useState<ExecutionTransferTarget | null>(null);
+  const [transferReason, setTransferReason] = useState('');
+  const [transferTargets, setTransferTargets] = useState<ExecutionTransferTarget[]>([]);
+  const [transferLoading, setTransferLoading] = useState(false);
+  const [transferError, setTransferError] = useState('');
+  const transferRequestRef = useRef(0);
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
+  const signaturePasswordError = Boolean(signing?.signatureTarget) && error === '电子签名密码错误';
+  const signaturePasswordRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (signaturePasswordError && !busy) signaturePasswordRef.current?.focus();
+  }, [signaturePasswordError, busy]);
   const [opinion, setOpinion] = useState('');
   const [documentId, setDocumentId] = useState('');
   const [documentUrl, setDocumentUrl] = useState('');
@@ -66,7 +90,16 @@ export default function ProductionExecutionPage() {
   const initialBarcodeRef = useRef<string | null>(null);
   const initialTargetRef = useRef<{ operationId: string; formId: string; copyId: string } | null>(null);
   const scanRef = useRef<HTMLInputElement>(null);
+  const focusScanAfterLoadRef = useRef(false);
+  useEffect(() => {
+    if (!busy && focusScanAfterLoadRef.current) {
+      focusScanAfterLoadRef.current = false;
+      scanRef.current?.focus();
+    }
+  }, [busy]);
   const rootRef = useRef<HTMLDivElement>(null);
+  const conditionsRef = useRef<HTMLDetailsElement>(null);
+  const closeConditions = () => { if (conditionsRef.current) conditionsRef.current.open = false; };
   const [quickRailContainer, setQuickRailContainer] = useState<HTMLDivElement | null>(null);
   useEffect(() => { if (activePanel) setNavigationSection(activePanel); }, [activePanel]);
 
@@ -96,7 +129,7 @@ export default function ProductionExecutionPage() {
   const opState = view?.state.operations[operationId];
   const available = view?.availability[operationId];
   const output = view?.operationOutputs?.[operationId];
-  const forms = op?.forms.filter((item) => !item.fulfilledBy) ?? [];
+  const forms = op?.forms ?? [];
   const form = forms.find((item) => item.id === formId);
   useEffect(() => {
     let cancelled = false;
@@ -114,8 +147,13 @@ export default function ProductionExecutionPage() {
   const instanceIds = copies?.instanceIds ?? (opState?.forms[formId] ? [formId] : []);
   const selectedInstanceId = instanceIds.includes(instanceId) ? instanceId : instanceIds[0] ?? formId;
   const formState = opState?.forms[selectedInstanceId];
+  const formReceipt = executionFormReceipt(view?.state.history ?? [], operationId, formId, selectedInstanceId, formState?.savedAt);
   const formStatus = copies?.status ?? formState?.status ?? 'PENDING';
-  const formStatusLabel = formStatus === 'COMPLETED' ? '已完成' : formStatus === 'PENDING' ? '未填报' : '进行中';
+  const formStatusLabel = formStatus === 'COMPLETED' ? '已完成'
+    : formStatus === 'WAITING_OPERATION_START' ? '待工序开工'
+      : formStatus === 'WAITING_WORK_NODE' ? '待作业流程到达'
+        : formStatus === 'NOT_APPLICABLE' ? '不适用'
+          : formStatus === 'PENDING' ? '未填报' : '进行中';
   const controls = copies?.instances[selectedInstanceId] ?? available?.forms[formId];
   const { editors, markEditing } = useExecutionPresence(context?.objectId, operationId, formId, selectedInstanceId, Boolean(controls?.canAct && !navigationSection && !activePanel), formDrawerOpen);
   const completed = operations.filter((item) => item.type !== 'REWORK' && view?.state.operations[item.id]?.status === 'COMPLETED').length;
@@ -135,14 +173,20 @@ export default function ProductionExecutionPage() {
     parsed.model.fields = form.fields.map((field, index) => ({ ...field, typeConfig: field.typeConfig ?? {}, status: field.status ?? 'enabled', sortOrder: field.sortOrder ?? index }));
     return parsed;
   }, [form]);
-  const references = useCallback((fieldId: string, keyword: string) => context ? getExecutionReferences(context.objectId, operationId, formId, fieldId, keyword) : Promise.resolve([]), [context?.objectId, operationId, formId]);
+  const references = useCallback((fieldId: string, keyword: string, referenceValues: Record<string, unknown>) => context ? getExecutionReferences(context.objectId, operationId, formId, fieldId, keyword, referenceValues) : Promise.resolve([]), [context?.objectId, operationId, formId]);
   const upload = async (file: File) => {
     if (!context || busyRef.current) throw new Error('当前无法上传');
     busyRef.current = true; setBusy(true); setDirty(true);
     try { return await uploadExecutionFile(context.objectId, file); }
     finally { busyRef.current = false; setBusy(false); }
   };
-  const formRuntime: FormRuntime = { values, upload, references, disabled: busy || !controls?.canAct, onChange: (id, value) => {
+  const formRuntime: FormRuntime = { values, upload, references, disabled: busy || !controls?.canAct,
+    signaturePermissions: controls?.signaturePermissions,
+    signaturesInvalidated: Boolean(form && signatureContent(form.fields, values) !== signatureContent(form.fields, view?.state.operations[operationId]?.forms[selectedInstanceId]?.values ?? {})),
+    onSignatureRequest: (target) => {
+      const field = target.tableId ? (form?.fields.find(item => item.id === target.tableId)?.typeConfig.columns as ModelField[] | undefined)?.find(item => item.id === target.fieldId) : form?.fields.find(item => item.id === target.fieldId);
+      setSigning({ action: 'SIGN_FIELD', label: `签署 · ${field?.name ?? '签名字段'}${target.rowIndex === undefined ? '' : ` · 第 ${target.rowIndex + 1} 行`}`, signatureTarget: target }); setPassword(''); setError('');
+    }, onChange: (id, value) => {
     setValues((current) => ({ ...current, [id]: value })); setDirty(true); markEditing();
   } };
 
@@ -172,7 +216,11 @@ export default function ProductionExecutionPage() {
     window.addEventListener('popstate', pop, true);
     return () => { navigator.push = push; navigator.replace = replace; navigator.go = go; window.removeEventListener('popstate', pop, true); };
   }, [navigation, dirty, busy]);
-  useEffect(() => () => { requestRef.current++; }, []);
+  useEffect(() => () => {
+    requestRef.current++;
+    busyRef.current = false;
+    initialBarcodeRef.current = null;
+  }, []);
   useEffect(() => { setDocumentPage(Number(document?.pageStart) || 1); setDocumentPages(1); setDocumentZoom(1); }, [context?.objectId, operationId, document?.id, document?.pageStart]);
   useEffect(() => { documentBodyRef.current?.scrollTo(0, 0); }, [document?.id, documentPage]);
   useEffect(() => {
@@ -194,11 +242,27 @@ export default function ProductionExecutionPage() {
     const selected = nextInstance && ids.includes(nextInstance) ? nextInstance : ids.find(id => source?.state.operations[nextOperation]?.forms[id]?.status === 'ACTIVE') ?? ids[0] ?? nextId;
     setFormId(nextId); setInstanceId(selected); setValues(source?.state.operations[nextOperation]?.forms[selected]?.values ?? {}); setDirty(false);
   };
+
+  useEffect(() => {
+    if (!transferButton || !context || !formId || !selectedInstanceId) {
+      setTransferTargets([]);
+      setTransferLoading(false);
+      return;
+    }
+    const request = ++transferRequestRef.current;
+    setTransferLoading(true);
+    setTransferError('');
+    getExecutionTransferTargets(context.objectId, operationId, formId, selectedInstanceId, transferKeyword)
+      .then((items) => { if (request === transferRequestRef.current) setTransferTargets(items); })
+      .catch((reason) => { if (request === transferRequestRef.current) setTransferError(errorText(reason)); })
+      .finally(() => { if (request === transferRequestRef.current) setTransferLoading(false); });
+    return () => { transferRequestRef.current++; };
+  }, [context?.objectId, formId, operationId, selectedInstanceId, transferButton, transferKeyword]);
   const chooseOperation = (id: string, source = view) => {
     setOperationId(id);
     const next = source?.snapshot.operations.find((item) => item.id === id);
-    const active = next?.forms.find((item) => !item.fulfilledBy && (source?.availability[id]?.formCopies?.[item.id]?.instanceIds ?? [item.id]).some(copyId => source?.state.operations[id]?.forms[copyId]?.status === 'ACTIVE'));
-    chooseForm(active?.id ?? next?.forms.find((item) => !item.fulfilledBy)?.id ?? '', source, id);
+    const active = next?.forms.find((item) => (source?.availability[id]?.formCopies?.[item.id]?.instanceIds ?? [item.id]).some(copyId => source?.state.operations[id]?.forms[copyId]?.status === 'ACTIVE'));
+    chooseForm(active?.id ?? next?.forms[0]?.id ?? '', source, id);
     if (id !== operationId || source?.snapshot.context.objectId !== context?.objectId) {
       setDocumentId(next?.documents[0]?.id ?? ''); setActivePanel(null);
       setNavigationSection(null); setSelectedWorkId(next?.works[0]?.id ?? ''); setHistoryType('operation');
@@ -213,12 +277,12 @@ export default function ProductionExecutionPage() {
       : next.snapshot.operations.find((item) => next.state.operations[item.id]?.status === 'IN_PROGRESS')?.id
       ?? next.snapshot.operations.find((item) => next.availability[item.id]?.canStart)?.id ?? next.snapshot.operations[0]?.id ?? '');
     chooseOperation(id, next);
-    if (targetedOperation && target?.formId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === target.formId && !item.fulfilledBy)) {
+    if (targetedOperation && target?.formId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === target.formId)) {
       chooseForm(target.formId, next, id, target.copyId);
       initialTargetRef.current = null;
     } else if (reset) {
       initialTargetRef.current = null;
-    } else if (id === operationId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === formId && !item.fulfilledBy))
+    } else if (id === operationId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === formId))
       chooseForm(formId, next, id, selectedInstanceId);
   };
   const load = async (refresh = false, requestedBarcode?: string) => {
@@ -229,12 +293,18 @@ export default function ProductionExecutionPage() {
     try {
       const next = refresh && context ? await getProductionExecution(context.objectId) : await scanProduction(barcodeValue);
       if (request !== requestRef.current) return;
+      if (!refresh && next.objectStatus === 'CANCELLED') throw new Error('当前批次已取消');
       receive(next, !refresh); setBarcode(next.snapshot.context.objectNo); if (!refresh) setActivePanel(null);
     } catch (reason) {
       if (request !== requestRef.current) return;
-      setError(errorText(reason));
+      const message = errorText(reason);
+      setError(message);
+      if (!refresh && (message === '未找到该批次或 SN，请核对条码' || message === '当前批次已取消')) {
+        setBarcode('');
+        focusScanAfterLoadRef.current = true;
+      }
       if (!refresh) { setView(null); setDirty(false); }
-    } finally { if (request === requestRef.current) { busyRef.current = false; setBusy(false); } }
+    } finally { if (request === requestRef.current) { busyRef.current = false; setBusy(false); setOpeningExecution(false); } }
   };
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -251,31 +321,47 @@ export default function ProductionExecutionPage() {
     const copyId = params.get('copyId')?.trim();
     initialTargetRef.current = operationId && formId && copyId ? { operationId, formId, copyId } : null;
     setBarcode(requestedBarcode);
+    if (params.get('autoScan') === '1') void load(false, requestedBarcode);
   }, [location.search, view]);
   const act = async (command: Omit<ExecutionCommand, 'revision' | 'operationId'>) => {
-    if (!view || !context || busyRef.current) return;
+    if (!view || !context || busyRef.current) return false;
     busyRef.current = true; setBusy(true); setError(''); setNotice('');
     try {
       const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId });
-      receive(next); setSigning(null); setPassword(''); setOpinion('');
+      if (command.action === 'UPDATE_FORM_COPY_REMARK') setView(next);
+      else receive(next);
+      setSigning(null); setAccount(''); setPassword(''); setOpinion('');
+      if (command.action === 'TRANSFER') {
+        setTransferButton(null); setTransferTarget(null); setTransferKeyword(''); setTransferReason(''); setTransferTargets([]); setTransferError('');
+      }
+      void Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['form-management-global-list'] }),
+        queryClient.invalidateQueries({ queryKey: ['form-filling-worklist'] }),
+        queryClient.invalidateQueries({ queryKey: ['form-review-worklist'] }),
+      ]);
       if (command.action === 'ATTACH_FORM' && next.attachedFormId) chooseForm(next.attachedFormId, next);
       if (command.action === 'ADD_FORM_COPY' && command.formId) {
         const ids = next.availability[operationId]?.formCopies?.[command.formId]?.instanceIds;
         chooseForm(command.formId, next, operationId, ids?.[ids.length - 1]);
       }
-      setNotice(command.action === 'COMPLETE' ? next.objectStatus === 'COMPLETED' ? '全部工序已完成，当前生产对象已完工。可扫描下一个条码。' : '工序已完工，执行记录已保存。请选择下一道可执行工序。' : '操作成功，执行记录已保存。');
-    } catch (reason) { setError(errorText(reason)); setPassword(''); }
+      setNotice(command.action === 'COMPLETE' ? next.objectStatus === 'COMPLETED' ? '全部工序已完成，当前生产对象已完工。可扫描下一个条码。' : '工序已完工，执行记录已保存。请选择下一道可执行工序。' : command.action === 'TRANSFER' ? '转办成功，执行记录已保存。' : '操作成功，执行记录已保存。');
+      return true;
+    } catch (reason) { setError(errorText(reason)); setPassword(''); return false; }
     finally { busyRef.current = false; setBusy(false); }
   };
   const formAction = (button: ExecutionButton) => {
+    if (button.action === 'TRANSFER') {
+      setTransferButton(button); setTransferKeyword(''); setTransferTarget(null); setTransferReason(''); setTransferError('');
+      return;
+    }
     if (button.requiresSignature || button.requireOpinion || button.action === 'RETURN') {
-      setSigning(button); setPassword(''); setOpinion('');
+      setSigning(button); setAccount(''); setPassword(''); setOpinion('');
     } else void act({ action: button.action, formId, instanceId: selectedInstanceId, values });
   };
-  const finishReporting = (action: 'END_FORM' | 'COMPLETE') => {
-    const warnings = action === 'COMPLETE' ? available?.completionWarnings ?? [] : copies?.required ? [] : copies?.incomplete ?? [];
-    if (warnings.length) setIncompleteNotice({ action, warnings });
-    else void act({ action, ...(action === 'END_FORM' ? { formId } : {}) });
+  const finishOperation = () => {
+    const warnings = available?.completionWarnings ?? [];
+    if (warnings.length) setIncompleteNotice(warnings);
+    else void act({ action: 'COMPLETE' });
   };
 
 
@@ -340,7 +426,8 @@ export default function ProductionExecutionPage() {
     else protect(() => { chooseForm(id); setActivePanel(null); });
   };
   const navigationContent = <Box className="execution-navigation-content">
-    <Box className="execution-navigation-heading"><Typography component="h3">{navigationTitle}</Typography>{navigationSection && <Typography component="span">{navigationItems.length}</Typography>}</Box>
+    <Box className={`execution-navigation-heading${!navigationSection && form && copies ? ' has-form-corner' : ''}`}><Typography component="h3">{navigationTitle}</Typography>{navigationSection && <Typography component="span">{navigationItems.length}</Typography>}</Box>
+    {!navigationSection && form && copies && <Box component="span" className="execution-form-corner" data-required={copies.required}>{copies.required ? '必填' : '非必填'}</Box>}
     {!navigationSection && form ? <Box className="execution-current-form">
       <Box className="execution-current-form-heading">
         <Typography className="execution-current-form-name">{form.name}</Typography>
@@ -349,6 +436,7 @@ export default function ProductionExecutionPage() {
       <Box component="dl" className="execution-order-summary execution-current-form-fields">
         <Box><Typography component="dt">表单编码</Typography><Typography component="dd">{form.code || '—'}</Typography></Box>
         <Box><Typography component="dt">表单版本</Typography><Typography component="dd">{form.version || '—'}</Typography></Box>
+        <Box><Typography component="dt">表单实例号</Typography><Typography component="dd" className="execution-form-instance-number" title={formState?.instanceNo || '首次暂存或提交当前份后生成'}>{formState?.instanceNo || '未生成'}</Typography></Box>
         <Box className="execution-copy-summary"><Typography component="dt">表单份序</Typography><Box component="dd">
           <Button className="execution-copy-switch" title="切换份序" aria-label={`切换份序，当前第 ${Math.max(1, instanceIds.indexOf(selectedInstanceId) + 1)} 份，共 ${Math.max(1, instanceIds.length)} 份`} aria-haspopup="dialog" aria-expanded={copyDrawerOpen} aria-controls="execution-copy-drawer" disabled={busy} onClick={() => setCopyDrawerOpen(true)}>
             <span className="execution-copy-switch-value">第 {Math.max(1, instanceIds.indexOf(selectedInstanceId) + 1)} 份 / 共 {Math.max(1, instanceIds.length)} 份</span>
@@ -358,7 +446,7 @@ export default function ProductionExecutionPage() {
         <Box><Typography component="dt">表单状态</Typography><Typography component="dd" className="execution-form-status" data-status={formStatus}>{formStatusLabel}</Typography></Box>
         <Box><Typography component="dt">表单模板分类</Typography><Typography component="dd" title={form.categoryName === undefined ? '历史执行未保存分类，展示模板当前分类' : '执行快照中的表单模板分类'}>{form.categoryName !== undefined ? form.categoryName || '未分类' : formCategory?.versionId === form.versionId ? formCategory.name : '—'}</Typography></Box>
       </Box>
-      {copies && <Typography className="execution-copy-status">{copies.required ? '必填' : '非必填'}{copies.ended ? ' · 已结束本阶段填报' : ''}</Typography>}
+      {copies?.ended && <Typography className="execution-copy-status">已结束本阶段填报</Typography>}
     </Box> : navigationSection && <List className="execution-navigation-list" disablePadding aria-label={navigationTitle}>
       {navigationItems.map(item => <ListItemButton component="button" type="button" key={item.id} selected={item.id === selectedNavigationId} aria-current={item.id === selectedNavigationId ? 'true' : undefined} disabled={busy} onClick={() => selectNavigationItem(item.id)}><Typography component="span" className="execution-navigation-name">{item.name}</Typography><Typography component="span" className="execution-navigation-detail">{item.detail}</Typography></ListItemButton>)}
     </List>}
@@ -368,7 +456,7 @@ export default function ProductionExecutionPage() {
 
   return <Box ref={rootRef} className="execution-page">
     <Box className="execution-toolbar">
-      <Box className="execution-title"><Typography component="h1">生产执行工作台</Typography></Box>
+      <Box className="execution-title"><Typography component="h1">生产工作台</Typography></Box>
       {view && scanInput}
       <Stack direction="row" className="execution-tools">
         {view && <Button variant="outlined" aria-label="刷新执行状态" disabled={busy} startIcon={<RefreshRounded fontSize="small" />} onClick={() => protect(() => void load(true))}>刷新</Button>}
@@ -379,8 +467,8 @@ export default function ProductionExecutionPage() {
       {view?.configurationError && <Alert severity="error">{view.configurationError}</Alert>}
       {view?.historicalWithoutExecution && <Alert severity="warning">此对象已有生产状态，但没有工序执行记录。当前仅展示已有关联信息，不能恢复或推断历史工序。</Alert>}
     </Box>
-    {!view ? <Box className="execution-welcome">
-      <Typography className="execution-eyebrow" color="primary">生产执行工作台</Typography>
+    {!view ? openingExecution ? <Box className="execution-empty-content" role="status" aria-label="正在加载生产工作台"><CircularProgress size={24} /><Typography color="text.secondary">正在加载生产工作台…</Typography></Box> : <Box className="execution-welcome">
+      <Typography className="execution-eyebrow" color="primary">生产工作台</Typography>
       <Typography component="h2">扫描条码，开始作业</Typography>
       <Typography color="text.secondary">批次与 SN 自动识别，直接定位对应工单和当前工序。</Typography>
       <Box className="execution-welcome-input"><Typography component="label" variant="body2">批次号 / SN 条码</Typography>{scanInput}</Box>
@@ -395,7 +483,7 @@ export default function ProductionExecutionPage() {
           <Stack direction="row" alignItems="center" className="execution-object-heading">
             <Box className="execution-object-label-row">
               <Typography className="execution-object-label">{context?.objectType === 'SN' ? 'SN 码' : '批次号'}</Typography>
-              <Typography className={`execution-object-status status-${view.objectStatus}`}>{labels[view.objectStatus] ?? view.objectStatus}</Typography>
+              <Typography className="execution-status" data-status={view.objectStatus}>{labels[view.objectStatus] ?? view.objectStatus}</Typography>
             </Box>
             <Typography component="h2">{context?.objectNo}</Typography>
           </Stack>
@@ -425,10 +513,10 @@ export default function ProductionExecutionPage() {
             <Typography component="h2">{op?.name ?? '暂无可执行工序'}</Typography>
           </Box>
           <ExecutionOperationDrawer open={operationDrawerOpen} onOpen={() => { setActivePanel(null); setOperationDrawerOpen(true); }} onClose={() => setOperationDrawerOpen(false)} disabled={busy || !operations.length}
-            currentName={op?.name || op?.code || '暂无工序'} currentStatus={opState?.status === 'IN_PROGRESS' ? '正在执行' : labels[opState?.status ?? ''] || '待开工'} container={() => rootRef.current}>
+            currentName={op?.name || op?.code || '暂无工序'} currentStatus={labels[opState?.status ?? ''] || '待开工'} currentStatusCode={opState?.status} container={() => rootRef.current}>
         <Box component="aside" aria-label="工序导航" className="execution-route">
           <Stack direction="row" justifyContent="space-between" className="execution-route-heading"><Typography variant="body2" fontWeight={600}>工序导航</Typography><Typography variant="caption" color="text.secondary">{operations.length} 道工序</Typography></Stack>
-          <Typography className="execution-route-summary">{operations.filter((item) => view.availability[item.id]?.canStart).length} 道可开工 · {operations.filter((item) => view.state.operations[item.id]?.status === 'IN_PROGRESS').length} 道执行中</Typography>
+          <Typography className="execution-route-summary">{operations.filter((item) => view.availability[item.id]?.canStart).length} 道可开工 · {operations.filter((item) => view.state.operations[item.id]?.status === 'IN_PROGRESS').length} 道进行中</Typography>
           <List className="execution-operation-list">{operations.map((item) => {
             const status = view.state.operations[item.id]?.status; const ready = view.availability[item.id]?.canStart;
             const selected = operationId === item.id;
@@ -436,7 +524,7 @@ export default function ProductionExecutionPage() {
             return <ListItemButton key={item.id} selected={selected} disabled={busy} aria-current={selected ? 'step' : undefined} onClick={() => { if (selected) setOperationDrawerOpen(false); else protect(() => { chooseOperation(item.id); setOperationDrawerOpen(false); }); }} className={`execution-operation ${status === 'COMPLETED' ? 'is-complete' : ''} ${ready ? 'is-ready' : ''} ${status === 'IN_PROGRESS' ? 'is-running' : ''}`}>
               <Box className="execution-operation-text">
                 <Box className="execution-operation-title"><Typography variant="body2" fontWeight={600}>{item.name || item.code}</Typography>{selected && <span className="execution-viewing">查看中</span>}</Box>
-                <Typography className="execution-operation-status">{status === 'COMPLETED' ? <CheckCircleRounded /> : status === 'IN_PROGRESS' || ready ? <PlayArrowRounded /> : <LockOutlined />}{view.historicalWithoutExecution ? '无执行记录' : status === 'IN_PROGRESS' ? '正在执行' : ready ? '可开工' : status === 'PENDING' ? '未满足条件' : labels[status] ?? status}</Typography>
+                <Typography className="execution-operation-status">{status === 'COMPLETED' ? <CheckCircleRounded /> : status === 'IN_PROGRESS' || ready ? <PlayArrowRounded /> : <LockOutlined />}{view.historicalWithoutExecution ? '无执行记录' : status === 'IN_PROGRESS' ? labels[status] : ready ? '可开工' : status === 'PENDING' ? '未满足条件' : labels[status] ?? status}</Typography>
                 {!!links?.before.length && <Typography className="execution-operation-dependency">{links.before.length > 1 ? '汇合前置' : '前置'}：{links.before.map((id: string) => operationNames.get(id)).join('、')}</Typography>}
                 {links?.after.length > 1 && <Typography className="execution-operation-dependency">后续分支：{links.after.map((id: string) => operationNames.get(id)).join('、')}</Typography>}
               </Box>
@@ -445,9 +533,14 @@ export default function ProductionExecutionPage() {
           <Stack direction="row" spacing={0.75} className="execution-route-note"><InfoOutlined fontSize="small" /><Typography variant="caption">按路线关系查看工序；各分支是否可执行，以条件校验为准。</Typography></Stack>
         </Box>
           </ExecutionOperationDrawer>
-          {pending && view.objectStatus !== 'COMPLETED' && <Box className="execution-header-start"><Button size="small" startIcon={<PlayArrowRounded />} variant="contained" disabled={busy || dirty || !available?.canStart} onClick={() => void act({ action: 'START' })}>工序开工</Button></Box>}
+          <Box className="execution-header-action">
+            {view.objectStatus === 'COMPLETED' ? <Button size="small" variant="contained" disabled={busy} onClick={scanNext}>扫描下一个</Button>
+              : pending ? <Button size="small" startIcon={<PlayArrowRounded />} variant="contained" disabled={busy || dirty || !available?.canStart} onClick={() => void act({ action: 'START' })}>工序开工</Button>
+              : opState?.status === 'IN_PROGRESS' ? <Tooltip title={dirty ? '请先暂存当前表单，再进行工序完工' : ''}><span><Button size="small" startIcon={<CheckCircleRounded />} variant={available?.canComplete ? 'contained' : 'outlined'} disabled={busy || dirty || !available?.canComplete} onClick={finishOperation}>工序完工</Button></span></Tooltip> : null}
+          </Box>
           </Stack>
-          <Box component="details" key={operationId} className={`execution-conditions ${stageIssues.length && !objectEnded ? 'has-issues' : ''}`}>
+          <ClickAwayListener onClickAway={closeConditions}>
+          <Box component="details" ref={conditionsRef} key={operationId} className={`execution-conditions ${stageIssues.length && !objectEnded ? 'has-issues' : ''}`}>
             <Box component="summary" title={conditionSummary}><Typography variant="body2">开/完工作业条件：{conditionSummary}</Typography><Box component="span" className="execution-condition-actions"><Button size="small" startIcon={<RefreshRounded />} disabled={busy || dirty} onClick={(event) => { event.preventDefault(); event.stopPropagation(); void load(true); }}>校验条件</Button><ExpandMoreRounded className="execution-condition-chevron" fontSize="small" /></Box></Box>
             <Box className="execution-condition-content">
               {opState?.startedAt && <Typography variant="caption" color="text.secondary">开工时间 {time(opState.startedAt)}</Typography>}
@@ -455,9 +548,10 @@ export default function ProductionExecutionPage() {
               <ConditionList issues={available?.startIssues ?? []} met={Boolean(available?.canStart)} emptyText={startConditionText} />
               <Typography variant="body2" fontWeight={600}>完工检查</Typography>
               <ConditionList issues={available?.completionIssues ?? []} met={Boolean(available?.canComplete || opState?.status === 'COMPLETED')} emptyText={completionConditionText} />
-              {stageIssues.length > 0 && !pending && <Button size="small" endIcon={<ArrowForwardRounded />} onClick={() => setActivePanel(forms.length ? null : 'works')}>处理未完成项</Button>}
+              {stageIssues.length > 0 && !pending && <Button size="small" endIcon={<ArrowForwardRounded />} onClick={() => { closeConditions(); setActivePanel(forms.length ? null : 'works'); }}>处理未完成项</Button>}
             </Box>
           </Box>
+          </ClickAwayListener>
           <>
             {form && formDocument ? <>
               <Box aria-label={`当前填报表单：${form.name}`} className={`execution-form-canvas ${layout === 'fields' ? 'is-fields' : ''}`}>
@@ -471,59 +565,50 @@ export default function ProductionExecutionPage() {
                   <Tooltip title="按字段填报" placement="top" arrow><button type="button" aria-label="按字段填报" aria-pressed={layout === 'fields'} onClick={() => setLayout('fields')}><ViewListOutlined /></button></Tooltip>
                   <Tooltip title="按表单填报" placement="top" arrow><button type="button" aria-label="按表单填报" aria-pressed={layout === 'canvas'} onClick={() => setLayout('canvas')}><TableChartOutlined /></button></Tooltip>
                 </Box>
-                <Typography variant="caption" color={dirty ? 'warning.main' : 'text.secondary'}>{dirty ? '有未暂存内容 · ' : formState?.savedAt ? `已暂存 ${time(formState.savedAt)} · ` : ''}{formState?.status === 'COMPLETED' ? '表单已完成，只读查阅' : controls?.canAct && controls.buttons.some((button) => button.action === 'SAVE') ? '暂存保留草稿，提交仅提交当前份' : controls?.nodeName ? `当前节点：${controls.nodeName}` : null}</Typography>
+                {formReceipt && <Typography variant="caption" color="text.secondary">{formReceipt.label} {time(formReceipt.at)}</Typography>}
+                {formStatus === 'WAITING_OPERATION_START' && <Typography variant="caption" color="text.secondary">计划预览，工序开工后可填报</Typography>}
+                {formStatus === 'WAITING_WORK_NODE' && <Typography variant="caption" color="text.secondary">计划预览，作业流程到达后可填报</Typography>}
                 </Box>
-                {copies && !copies.ended && <Button variant="outlined" disabled={busy || dirty || !copies.canEnd} onClick={() => finishReporting('END_FORM')}>结束本表单填报</Button>}
-                {controls?.buttons.filter(button => button.action !== 'SAVE' && button.action !== 'SUBMIT').map(button => <Button key={button.action} disabled={busy || !controls.canAct} color={button.action === 'RETURN' ? 'error' : 'primary'} variant={button.action === 'RETURN' ? 'outlined' : 'contained'} onClick={() => formAction(button)}>{button.label}{button.requiresSignature ? '并签署' : ''}</Button>)}
-                {['SAVE', 'SUBMIT'].map(action => {
-                  const button = controls?.buttons.find(item => item.action === action);
-                  return <Button key={action} variant={action === 'SAVE' ? 'outlined' : 'contained'} disabled={busy || !controls?.canAct || !button} onClick={() => { if (button) formAction(button); }}>{action === 'SAVE' ? '暂存' : '提交'}{button?.requiresSignature ? '并签署' : ''}</Button>;
-                })}
+                <WorkflowActionButtons buttons={controls?.buttons} busy={busy} canAct={controls?.canAct} allowAccountSigning={!objectEnded && opState?.status === 'IN_PROGRESS'} labelFor={(button) => button.action === 'SAVE' ? '暂存' : button.label} onAction={formAction} />
               </Box>
             </> : <Box className="execution-empty-content"><InfoOutlined color="disabled" /><Typography color="text.secondary">本工序未配置生产表单。请查看作业与完工条件。</Typography></Box>}
           </>
-          {(!pending || view.objectStatus === 'COMPLETED') && <Box className="execution-operation-actions">
-            <Box><Typography variant="body2" fontWeight={600}>{view.objectStatus === 'COMPLETED' ? '本生产对象已完成全部工序' : op?.name ?? '请选择工序'}</Typography><Typography variant="caption" color="text.secondary">{objectEnded ? '保留生产记录供查阅' : opState?.status === 'COMPLETED' ? '本工序已完工，请选择其他可执行工序' : dirty ? '请先保存当前表单，再进行工序操作' : available?.canStart ? '条件已满足，可以开工' : available?.canComplete ? '已具备完工条件' : stageIssues[0] ?? '按当前工序要求完成表单与作业'}</Typography></Box>
-            {view.objectStatus === 'COMPLETED' ? <Button variant="contained" disabled={busy} onClick={scanNext}>扫描下一个</Button>
-              : <Button startIcon={<CheckCircleRounded />} variant={available?.canComplete ? 'contained' : 'outlined'} disabled={busy || dirty || !available?.canComplete} onClick={() => finishReporting('COMPLETE')}>工序完工</Button>}
-          </Box>}
         </Box>
       </ExecutionQuickPanel>
     </Box>}
-    <ExecutionFormSelector open={formDrawerOpen} onClose={() => setFormDrawerOpen(false)} container={() => rootRef.current} forms={forms}
-      copies={available?.formCopies ?? {}} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachForm)} editors={editors}
-      onSelect={id => { setFormDrawerOpen(false); if (id !== formId) protect(() => { chooseForm(id); setActivePanel(null); }); }}
+    <ExecutionFormSelector open={formDrawerOpen} onClose={() => setFormDrawerOpen(false)} container={() => rootRef.current} forms={forms} works={op?.works ?? []}
+      copies={available?.formCopies ?? {}} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachForm)} operationStatus={opState?.status} workStates={opState?.works} editors={editors}
+      onSelect={(id, copyId) => { setFormDrawerOpen(false); if (id !== formId || (copyId && copyId !== selectedInstanceId)) protect(() => { chooseForm(id, view, operationId, copyId); setActivePanel(null); }); }}
       onAttach={(templateVersionId, required) => { setFormDrawerOpen(false); protect(() => void act({ action: 'ATTACH_FORM', templateVersionId, required })); }} />
-    <Drawer anchor="left" open={copyDrawerOpen} onClose={() => setCopyDrawerOpen(false)} container={() => rootRef.current} className="execution-operation-drawer execution-copy-drawer"
-      PaperProps={{ role: 'dialog', 'aria-modal': true, 'aria-labelledby': 'execution-copy-drawer-title', id: 'execution-copy-drawer' }}>
-      <Box className="execution-drawer-heading"><Typography component="h2" id="execution-copy-drawer-title">切换份序</Typography><IconButton aria-label="关闭份序抽屉" onClick={() => setCopyDrawerOpen(false)}><CloseRounded /></IconButton></Box>
-      <Box className="execution-copy-drawer-summary"><Typography className="execution-current-form-name">{form?.name}</Typography><Typography variant="caption" color="text.secondary">共 {Math.max(1, instanceIds.length)} 份</Typography></Box>
-      <List className="execution-navigation-list execution-copy-drawer-list" aria-label="当前表单份序">
-        {(instanceIds.length ? instanceIds : [formId]).map((id, index) => {
-          const status = opState?.forms[id]?.status ?? 'PENDING';
-          const selected = id === selectedInstanceId;
-          return <ListItemButton component="button" type="button" key={id} selected={selected} aria-current={selected ? 'true' : undefined} disabled={busy} onClick={() => {
-            setCopyDrawerOpen(false);
-            if (!selected) protect(() => chooseForm(formId, view, operationId, id));
-          }}><Box className="execution-copy-drawer-row"><Typography component="span" className="execution-navigation-name">第 {index + 1} 份</Typography><Typography component="span" className="execution-form-status" data-status={status}>{status === 'COMPLETED' ? '已完成' : status === 'PENDING' ? '未填报' : '进行中'}</Typography></Box>
-            {selected && <Typography component="span" className="execution-navigation-detail">当前选中</Typography>}
-          </ListItemButton>;
-        })}
-      </List>
-      <Box className="execution-copy-drawer-actions"><Button variant="outlined" fullWidth size="small" disabled={busy || !copies?.canAdd} onClick={() => {
-        setCopyDrawerOpen(false);
-        protect(() => void act({ action: 'ADD_FORM_COPY', formId }));
-      }}>新增一份</Button></Box>
-    </Drawer>
+    <ExecutionCopyDrawer open={copyDrawerOpen} onClose={() => setCopyDrawerOpen(false)} container={() => rootRef.current}
+      formName={form?.name ?? ''} instanceIds={instanceIds} forms={opState?.forms ?? {}} selectedId={selectedInstanceId}
+      busy={busy} canAdd={Boolean(copies?.canAdd)} beforeAdd={open => protect(() => { chooseForm(formId, view, operationId, selectedInstanceId); open(); })}
+      onSelect={id => { setCopyDrawerOpen(false); if (id !== selectedInstanceId) protect(() => chooseForm(formId, view, operationId, id)); }}
+      onAdd={remark => act({ action: 'ADD_FORM_COPY', formId, remark })}
+      canEditRemark={Boolean(copies?.canEditRemark)} onEditRemark={(instanceId, remark) => act({ action: 'UPDATE_FORM_COPY_REMARK', formId, instanceId, remark })}
+      onCopyResult={success => success ? setNotice('表单实例号已复制') : setError('复制失败，请重试')} />
     <Snackbar open={Boolean(error) && !signing} autoHideDuration={4000} onClose={(_, reason) => { if (reason !== 'clickaway') setError(''); }} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="error" onClose={() => setError('')} sx={{ maxWidth: 480 }}>{error}</Alert></Snackbar>
     <Snackbar open={Boolean(notice)} autoHideDuration={6000} onClose={() => setNotice('')} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="success" onClose={() => setNotice('')} sx={{ maxWidth: 480 }}>{notice}</Alert></Snackbar>
-    <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.warnings.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText={incompleteNotice?.action === 'COMPLETE' ? '已知晓，工序完工' : '已知晓，结束本表单填报'} cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: next.action, acknowledgeIncomplete: true, ...(next.action === 'END_FORM' ? { formId } : {}) }); }} />
+    <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText="已知晓，工序完工" cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: 'COMPLETE', acknowledgeIncomplete: true }); }} />
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" destructive open={Boolean(pendingSwitch)} title="当前表单尚未保存" message={`${context?.objectNo ?? ''} · ${op?.name ?? ''} · ${form?.name ?? '当前表单'}：切换会丢弃未保存内容。可以返回继续填写并保存，或放弃修改后切换。`} confirmText="放弃修改并切换" cancelText="返回表单" onCancel={() => { setPendingSwitch(null); setOperationDrawerOpen(false); }} onConfirm={() => { const next = pendingSwitch; setPendingSwitch(null); setDirty(false); next?.(); }} />
-    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setPassword(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
-      <Box sx={{ p: 1.5, bgcolor: '#f3f6fa', borderRadius: 1 }}><Typography variant="body2" fontWeight={600}>{context?.objectNo}</Typography><Typography variant="body2" color="text.secondary">{op?.name} · {form?.name} · 第 {instanceIds.indexOf(selectedInstanceId) + 1} 份</Typography><Typography variant="caption" color="text.secondary">本次操作：{signing?.label}</Typography></Box>
-      {signing?.requiresSignature && <><TextField label="当前操作人账户" value={account} autoComplete="username" onChange={(event) => setAccount(event.target.value)} disabled={busy} /><TextField label="账户密码" value={password} autoComplete="current-password" type="password" onChange={(event) => setPassword(event.target.value)} disabled={busy} /></>}
-      <TextField label="操作意见" required={signing?.requireOpinion} value={opinion} onChange={(event) => setOpinion(event.target.value)} multiline minRows={2} disabled={busy} />
-      {error && <Alert severity="error">{error}</Alert>}</Stack></DialogContent><DialogActions><Button disabled={busy} onClick={() => { setSigning(null); setPassword(''); }}>取消</Button><Button variant="contained" disabled={busy || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void act({ action: signing.action, formId, instanceId: selectedInstanceId, values, account, password, opinion }); }}>{busy ? '正在处理…' : '确认'}</Button></DialogActions></AppDialog>
+    <AppDialog open={Boolean(transferButton)} onClose={busy ? undefined : () => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }} maxWidth="sm" fullWidth>
+      <DialogTitle>转办审批</DialogTitle>
+      <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
+        <Typography variant="body2" color="text.secondary">将当前审批节点转办给其他授权用户。转办不会推进流程，受让人处理后流程才会继续。</Typography>
+        <Autocomplete options={transferTargets} value={transferTarget} loading={transferLoading} getOptionLabel={(option) => `${option.name}（${option.username}）`} isOptionEqualToValue={(option, value) => option.id === value.id}
+          onChange={(_, value) => setTransferTarget(value)} onInputChange={(_, value) => setTransferKeyword(value)} noOptionsText={transferError ? '候选用户加载失败' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '当前授权范围内没有其他可转办用户'}
+          renderInput={(params) => <TextField {...params} label="转办给" required error={Boolean(transferError)} helperText={transferError || '仅可选择当前审批节点授权范围内的其他启用用户'} />} />
+        <TextField label="转办原因" required value={transferReason} onChange={(event) => setTransferReason(event.target.value)} multiline minRows={3} inputProps={{ maxLength: 500 }} helperText={`${transferReason.length}/500`} disabled={busy} />
+      </Stack></DialogContent>
+      <DialogActions><Button disabled={busy} onClick={() => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }}>取消</Button><Button variant="contained" disabled={busy || transferLoading || !transferTarget || !transferReason.trim()} onClick={() => { if (transferTarget) void act({ action: 'TRANSFER', formId, instanceId: selectedInstanceId, targetUserId: transferTarget.id, reason: transferReason.trim() }); }}>{busy ? '正在转办…' : '确认转办'}</Button></DialogActions>
+    </AppDialog>
+    <AppDialog open={Boolean(signing)} onClose={busy ? undefined : () => { setSigning(null); setAccount(''); setPassword(''); setError(''); }} maxWidth="xs" fullWidth><DialogTitle>{signing?.signatureTarget ? '签署签名' : signing?.label}{signing?.requiresSignature ? ' · 账户签署' : ''}</DialogTitle><DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
+      {!signing?.signatureTarget && <Box sx={{ p: 1.5, bgcolor: '#f3f6fa', borderRadius: 1 }}><Typography variant="body2" fontWeight={600}>{context?.objectNo}</Typography><Typography variant="body2" color="text.secondary">{op?.name} · {form?.name} · 第 {instanceIds.indexOf(selectedInstanceId) + 1} 份</Typography><Typography variant="caption" color="text.secondary">本次操作：{signing?.label}</Typography></Box>}
+      {signing?.signatureTarget ? <><Typography variant="body2" color="text.secondary">签名将保存当前内容并使用您已认证的签名图片。修改本份内容后需重新签名；表单仍需单独提交。</Typography><TextField autoFocus inputRef={signaturePasswordRef} label="电子签名密码" value={password} autoComplete="off" type="password" error={signaturePasswordError} helperText={signaturePasswordError ? error : undefined} onChange={(event) => { setPassword(event.target.value); if (signaturePasswordError) setError(''); }} disabled={busy} /></> : <>
+        {signing?.requiresSignature && <ButtonSignatureCredentials account={account} password={password} onAccountChange={setAccount} onPasswordChange={setPassword} disabled={busy} />}
+        <TextField label="操作意见" required={signing?.requireOpinion} value={opinion} onChange={(event) => setOpinion(event.target.value)} multiline minRows={2} disabled={busy} />
+      </>}
+      {error && !signaturePasswordError && <Alert severity="error">{error}</Alert>}</Stack></DialogContent><DialogActions><Button disabled={busy} onClick={() => { setSigning(null); setAccount(''); setPassword(''); setError(''); }}>取消</Button><Button variant="contained" disabled={busy || (signing?.signatureTarget && !password) || (signing?.requiresSignature && (!account || !password)) || (signing?.requireOpinion && !opinion.trim())} onClick={() => { if (signing) void act({ action: signing.action, formId, instanceId: selectedInstanceId, values, ...(signing.signatureTarget ? { signatureTarget: signing.signatureTarget, password } : { account, password, opinion }) }); }}>{busy ? '正在处理…' : signing?.signatureTarget ? '确认签名' : '确认'}</Button></DialogActions></AppDialog>
   </Box>;
 }
 function ConditionList({ issues, emptyText, met = false }: { issues: string[]; emptyText: string; met?: boolean }) {

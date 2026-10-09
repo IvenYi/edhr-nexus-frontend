@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.24
+facts:
+  - id: fact.form-fill-settings.mode
+    name: 表单绑定显式选择的填报方式
+    conceptId: concept.form-fill-settings
+    valueType: enum
+    sourceType: configuration
+    sourcePath: docs/knowledge/evidence/form-fill-settings-confirmed.md
+    aliases: [formFillSettings.mode]
+    availability: not-available
+    allowedOperators: [equals, in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: user-confirmed；当前仅定义直接填报与按流程填报的业务取值，存储字段和运行取值待实现核对
+    capturedAt: '2026-09-22'
+    reviewStatus: reviewed

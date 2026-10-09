@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const content = readFileSync(new URL('../src/pages/system/UserPage.tsx', import.meta.url), 'utf8');
+const sharedFieldGridContent = readFileSync(new URL('../src/components/FormDialogFieldGrid.tsx', import.meta.url), 'utf8');
 const constantsContent = readFileSync(new URL('../src/utils/constants.ts', import.meta.url), 'utf8');
 const appLayoutContent = readFileSync(new URL('../src/components/shared/AppLayout.tsx', import.meta.url), 'utf8');
 const uiStandardContent = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
@@ -25,6 +26,10 @@ function constantsMustNotInclude(token, reason) {
 
 function appLayoutMustInclude(token, reason) {
   if (!appLayoutContent.includes(token)) failures.push(`missing AppLayout ${JSON.stringify(token)} (${reason})`);
+}
+
+function sharedFieldGridMustInclude(token, reason) {
+  if (!sharedFieldGridContent.includes(token)) failures.push(`missing shared field grid ${JSON.stringify(token)} (${reason})`);
 }
 
 function uiStandardMustInclude(token, reason) {
@@ -97,7 +102,7 @@ mustInclude('data-user-action-column-shadow', 'user table fixed action shadow sh
 mustInclude('tableScrollbarWidth', 'user table fixed action shadow should account for the vertical scrollbar gutter');
 mustInclude('width: USER_ACTION_COLUMN_WIDTH', 'user table fixed action shadow should cover the full action column height and width');
 mustInclude('right: tableScrollbarWidth', 'user table fixed action shadow should align with the sticky action column');
-mustInclude("boxShadow: '-6px 0 8px -8px rgba(0, 0, 0, 0.35)'", 'user table fixed action column divider should be one full-height shadow');
+mustInclude('listTableStickyEdgeShadow', 'user table fixed action column divider should reuse the shared full-height shadow token');
 mustInclude("pointerEvents: 'none'", 'user table fixed action column divider should not intercept row or action clicks');
 mustNotInclude("right: `${USER_ACTION_COLUMN_WIDTH - 1}px`", 'user table fixed action column shadow should not be a 1px row-like divider');
 mustNotInclude("boxShadow: '-1px 0 0 #dcdfe6'", 'user table fixed action column divider should not be drawn once per row');
@@ -265,8 +270,8 @@ mustInclude('userFieldSx', 'user dialog controls should share the same visual he
 mustInclude('userSelectSx', 'user dialog select controls should share text-field height');
 mustInclude('height: 40', 'user dialog controls should follow compact height');
 mustInclude('<DialogContent dividers>', 'user dialog should follow divided content pattern');
-mustInclude('rowGap: 1.5', 'user dialog fields should use consistent vertical gap');
-mustInclude('columnGap: 1.5', 'user dialog fields should use consistent horizontal gap');
+mustInclude('<FormDialogFieldGrid>', 'user dialog fields should use the shared field grid');
+sharedFieldGridMustInclude('gap: 1.5', 'shared field grid should provide the standard field gap');
 
 mustInclude('getApiErrorMessage', 'mutations should extract concrete backend error text');
 mustInclude("getApiErrorMessage(error, '用户保存失败')", 'save failures should show backend-provided error text');

@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.24
 rules:
   - id: rule.transaction.published-version-only
     name: 事务运行只读取已发布版本
@@ -976,7 +976,7 @@ rules:
     evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
   - id: rule.form-process.node-button-configuration-v1
     name: 表单流程节点按钮配置白名单
-    status: specified
+    status: implemented
     visibility: internal
     trigger: form-process.node-button.configure
     scope: form-process-configuration
@@ -987,18 +987,19 @@ rules:
           value: [START, APPROVAL]
         - fact: formProcessNode.button.action
           operator: in
-          value: [SAVE, SUBMIT, APPROVE, RETURN]
+          value: [SAVE, SUBMIT, APPROVE, RETURN, TRANSFER]
     result:
       type: persist-flow-configuration
       target: formProcessNode.buttons
       persists: [visible, label, action, parameters]
       electronicSignatureActions: [SAVE, SUBMIT, APPROVE, RETURN]
       signatureEvent: {builtin: FILL_SIGN_FIELD, event: BEFORE, signatureMethod: ACCOUNT_PASSWORD}
-      forbiddenActions: [TRANSFER, ADD_SIGN, REJECT, DENY, DISAPPROVE, TERMINATE, WITHDRAW]
+      transfer: {nodeKind: APPROVAL, reasonRequired: true, opinionRequiredConfigurable: false, electronicSignatureConfigurable: false}
+      forbiddenActions: [ADD_SIGN, REJECT, DENY, DISAPPROVE, TERMINATE, WITHDRAW]
       approvalOpinionRequiredConfigurable: true
       publishedVersionEditable: false
-    explanation: 第一版允许开始节点和审批节点保存按钮的显示状态、显示名称和标准动作；电子签名通过独立签署事件关联保存、提交、审批或退回，事件固定为执行前账户密码签署，并可选择是否填充签名字段。产品层不提供启用勾选，不需要事件时直接删除。该规则只约束配置层持久化，不表示运行时动作处理器或电子签名已经实现。
-    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+    explanation: 开始节点支持保存和提交，审批节点支持审批、退回和转办；按钮可保存显隐、显示名称和样式。电子签名事件仅关联保存、提交、审批或退回；转办原因由系统固定必填，不配置审批意见必填或签名字段事件。配置持久化已经实现；各动作的运行时成熟度仍以对应规则和证据为准。
+    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.form-approval-transfer-user-confirmed, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-tests]
   - id: rule.form-process.node-button-event-configuration-v1
     name: 表单流程节点按钮事件配置
     status: deprecated
@@ -1048,8 +1049,8 @@ rules:
       forbiddenFields: [handlerId, processorId, processingMarker]
       runtimeExecution: unavailable
       publishedVersionEditable: false
-    explanation: 当前第一版签署事件按节点内具体按钮独立保存，固定使用执行前时机、关联标准动作、账户密码签名方式和受控内置事件类型；不同按钮可以声明不同事件并在绑定阶段使用不同签名字段。不提供单独的启用勾选，不需要事件时直接删除该按钮事件配置。处理标识、处理器标识等技术字段不属于用户配置项，当前不得宣称已有运行时事件触发、签名字段写入或审计副作用。
-    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.production-form-process-user-confirmed-v4]
+    explanation: 当前第一版签署事件按节点内具体按钮独立保存，固定使用执行前时机、关联标准动作和受控内置事件类型；不同按钮可以声明不同事件并在绑定阶段使用不同签名字段。不提供单独的启用勾选，不需要事件时直接删除该按钮事件配置。DEC-0074 局部替代旧账户登录密码约定：普通按钮使用实际签署人的独立签名密码，仅用户名 admin 暂用登录密码例外；ACCOUNT_PASSWORD 仅保留为既有配置枚举，不据此推导登录密码认证。处理标识等技术字段不属于用户配置项；本配置规则不证明新认证、事件执行或审计副作用已完成验证，SIGN_FIELD 不受影响。
+    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.production-form-process-user-confirmed-v4, evidence.button-signature-confirmed, evidence.button-signature-decision-package]
   - id: rule.form-process.node-button-event-empty-projection
     name: 未配置按钮事件时隐藏节点事件区域
     status: specified
@@ -1224,7 +1225,7 @@ rules:
   - id: rule.production-work.form-entry-form-process-optional
     factCatalogProfile: form-process-binding
     name: 表单填报节点的表单流程可选
-    status: implemented
+    status: deprecated
     visibility: internal
     trigger: production-work.flow-version.publish
     scope: form-process-configuration
@@ -1241,7 +1242,7 @@ rules:
       publishAllowed: true
       skipValidations: [formProcessVersion, fieldPermissions, eventBindings, signatureFieldBindings]
       requiredReference: form-template-version
-    explanation: 表单填报节点必须绑定当前生效的表单模板版本，但不需要审批流程时可以不配置表单流程并发布。只有实际绑定表单流程后，系统才校验流程版本、字段权限、按钮事件和签名字段绑定；清除表单流程时应同步清理绑定级配置，避免隐藏配置继续影响发布。
+    explanation: 历史规则保留；DEC-0067 以显式填报方式局部替代无流程即跳过字段权限、按钮事件和签名字段校验及清除绑定配置的约定。直接填报现在要求独立配置并执行适用设置，按流程填报继续沿用既有流程；表单模板版本必选和流程版本治理不变。保留本记录原 result 用于历史解释，不进入现行规则投影。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-optional-binding-controller]
   - id: rule.form-instance.completion-path-by-form-process-binding
     name: 表单实例按表单流程绑定状态完成

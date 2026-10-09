@@ -14,6 +14,8 @@ public class EquipmentType {
     private String code;
     @Column(name = "name", nullable = false, length = 128)
     private String name;
+    @Column(name = "description", length = 512)
+    private String description;
     @Column(name = "category_id") private Long categoryId;
     @Column(name = "created_by", length = 128) private String createdBy;
     @Column(name = "created_at") private LocalDateTime createdAt;

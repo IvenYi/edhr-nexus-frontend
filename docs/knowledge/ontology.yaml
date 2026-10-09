@@ -1,11 +1,35 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.24
 concepts:
+  - id: concept.form-fill-settings
+    termId: term.form-fill-settings
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
   - id: concept.master-data-deletion-impact
     termId: term.master-data-deletion-impact
     kind: business-concept
     status: specified
     visibility: internal
     evidenceIds: [evidence.master-data-deletion-user-confirmed]
+  - id: concept.master-data-description
+    termId: term.master-data-description
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
+  - id: concept.master-data-page-permission
+    termId: term.master-data-page-permission
+    kind: business-configuration
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-page-authority-controller-test, evidence.master-data-page-authority-operation-integration-test]
+  - id: concept.version-description
+    termId: term.version-description
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.master-data-description-dialog-guidelines, evidence.master-data-description-document-controller, evidence.master-data-description-document-page]
   - id: concept.workshop
     termId: term.workshop
     kind: business-fact
@@ -35,7 +59,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-family-member-entity, evidence.migration-0053-product-family-process-owner, evidence.product-family-membership-service, evidence.product-process-owner-service, evidence.product-family-repository, evidence.migration-0054-product-family-code-case-insensitive, evidence.process-modeling-controller, evidence.product-family-modeling-page, evidence.product-family-membership-service-test, evidence.product-process-owner-service-test, evidence.process-modeling-controller-test]
+    evidenceIds: [evidence.product-family-member-entity, evidence.migration-0053-product-family-process-owner, evidence.product-family-membership-service, evidence.product-process-owner-service, evidence.product-family-repository, evidence.migration-0054-product-family-code-case-insensitive, evidence.process-modeling-controller, evidence.product-family-modeling-page, evidence.product-family-membership-service-test, evidence.product-process-owner-service-test, evidence.process-modeling-controller-test, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
   - id: concept.product-process-version
     termId: term.product-process-version
     kind: business-configuration
@@ -66,6 +90,30 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-template-item-entity, evidence.migration-0049-dhr-item-binding]
+  - id: concept.dhr-instance
+    termId: term.dhr-instance
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-snapshot-source, evidence.dhr-summary-user-confirmed, evidence.dhr-termination-user-confirmed]
+  - id: concept.dhr-summary-version
+    termId: term.dhr-summary-version
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-filling-review-confirmed]
+  - id: concept.dhr-controlled-attachment
+    termId: term.dhr-controlled-attachment
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]
+  - id: concept.dhr-summary-archive-display-name
+    termId: term.dhr-summary-archive-display-name
+    kind: business-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
   - id: concept.form-template-version
     termId: term.form-template-version
     kind: business-fact
@@ -267,21 +315,21 @@ concepts:
   - id: concept.form-process-node-button-config
     termId: term.form-process-node-button-config
     kind: business-configuration
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.production-form-process-buttons-events-v3]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.production-form-process-buttons-events-v3, evidence.form-approval-transfer-configuration]
   - id: concept.form-process-button-electronic-signature
     termId: term.form-process-button-electronic-signature
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v3]
+    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.button-signature-confirmed]
   - id: concept.form-process-standard-action
     termId: term.form-process-standard-action
     kind: business-concept
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.form-approval-transfer-runtime]
   - id: concept.form-process-node-event-config
     termId: term.form-process-node-event-config
     kind: business-configuration
@@ -519,9 +567,9 @@ concepts:
   - id: concept.production-object-dhr-view
     termId: term.production-object-dhr-view
     kind: runtime-fact
-    status: planned
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-close-source]
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page]
   - id: concept.serial-number
     termId: term.serial-number
     kind: runtime-fact
@@ -533,7 +581,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
+    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
   - id: concept.production-object-pending-list
     termId: term.production-object-pending-list
     kind: runtime-fact
@@ -563,7 +611,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline]
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
   - id: concept.record-correction-request
     termId: term.record-correction-request
     kind: business-fact
@@ -661,6 +709,41 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.dhr-summary-version-contains-evidence-instances
+    source: concept.dhr-summary-version
+    target: concept.form-instance
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed]
+  - id: relation.dhr-summary-version-contains-controlled-attachments
+    source: concept.dhr-summary-version
+    target: concept.dhr-controlled-attachment
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-attachment-service]
+  - id: relation.work-form-node-has-fill-settings
+    source: concept.production-work-form-node-business-document-reference
+    target: concept.form-fill-settings
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+  - id: relation.operation-binding-has-form-fill-settings
+    source: concept.operation-binding
+    target: concept.form-fill-settings
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
+  - id: relation.execution-snapshot-freezes-form-fill-settings
+    source: concept.execution-snapshot
+    target: concept.form-fill-settings
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-fill-settings-confirmed]
   - id: relation.form-instance-number-identifies-instance
     source: concept.form-instance-number
     target: concept.form-instance
@@ -773,6 +856,34 @@ relations:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-template-item-entity, evidence.operation-form-binding-entity]
+  - id: relation.dhr-instance-freezes-dhr-template-version
+    source: concept.dhr-instance
+    target: concept.dhr-template-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+  - id: relation.dhr-instance-freezes-process-version
+    source: concept.dhr-instance
+    target: concept.product-process-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+  - id: relation.dhr-instance-freezes-route-version
+    source: concept.dhr-instance
+    target: concept.route-version
+    cardinality: many-to-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source]
+  - id: relation.dhr-instance-aggregates-form-instances
+    source: concept.dhr-instance
+    target: concept.form-instance
+    cardinality: one-to-zero-or-many
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema]
   - id: relation.form-process-template-has-flow-versions
     source: concept.form-process-template
     target: concept.form-process-template-version
@@ -875,16 +986,16 @@ relations:
     source: concept.form-process-template-version
     target: concept.form-process-node-button-config
     cardinality: one-to-zero-or-many
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.form-approval-transfer-configuration]
   - id: relation.form-process-node-button-uses-standard-action
     source: concept.form-process-node-button-config
     target: concept.form-process-standard-action
     cardinality: many-to-one
-    status: specified
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2]
+    evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.production-form-process-buttons-events-v2, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-runtime]
   - id: relation.form-process-node-button-has-electronic-signature-requirement
     source: concept.form-process-node-button-config
     target: concept.form-process-button-electronic-signature
@@ -1340,6 +1451,13 @@ relations:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+  - id: relation.production-object-has-dhr-instance
+    source: concept.production-object
+    target: concept.dhr-instance
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
   - id: relation.work-order-early-terminates-active-production
     source: concept.work-order-early-termination
     target: concept.production-object

@@ -19,6 +19,9 @@ public class ProductProcessVersionRequest {
     private String productionForm;
     private Long routeVersionId;
     private Long dhrTemplateVersionId;
+    private String dhrReviewMode;
+    private Long dhrReviewWorkflowDefinitionId;
+    private Long dhrReviewWorkflowVersionId;
     private String description;
     private LocalDateTime effectiveFrom;
     private LocalDateTime effectiveTo;
@@ -44,6 +47,12 @@ public class ProductProcessVersionRequest {
         private Long formTemplateVersionId;
         private Boolean required;
         private Integer sortOrder;
+
+        private com.fasterxml.jackson.databind.JsonNode fillSettings;
+
+        public FormBindingRequest(Long dhrTemplateItemId, Long formTemplateVersionId, Boolean required, Integer sortOrder) {
+            this(dhrTemplateItemId, formTemplateVersionId, required, sortOrder, null);
+        }
 
         public FormBindingRequest(Long formTemplateVersionId, Boolean required, Integer sortOrder) {
             this(null, formTemplateVersionId, required, sortOrder);

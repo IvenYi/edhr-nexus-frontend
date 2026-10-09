@@ -1,0 +1,39 @@
+knowledgeModelVersion: 0.3.24
+rules:
+  - id: rule.master-data.endpoint-page-authority
+    factCatalogProfile: core-business
+    name: 主数据接口按页面权限隔离
+    status: implemented
+    visibility: internal
+    trigger: master-data.endpoint.access
+    scope: master-data-page-permission
+    condition:
+      all:
+        - fact: masterData.endpointPageAuthority
+          operator: is-present
+          value: true
+    result:
+      type: allow-with-governance
+      requiredAuthorityCodes: [master-data.materials, master-data.operations, master-data.routes, master-data.products, master-data.product-families, master-data.documents]
+      unauthorisedOutcome: block
+    explanation: 主数据接口必须声明与页面资源一致的现有 master-data.* 页面权限码；认证但没有对应页面权限的请求被阻断。工艺建模控制器按物料、工序、工艺路线、产品、产品簇和文档资源分别隔离，旧产品簇兼容控制器复用 master-data.product-families，不新增客户条件分支或权限体系。
+    evidenceIds: [evidence.master-data-page-authority-process-modeling-controller, evidence.master-data-page-authority-legacy-product-controller, evidence.master-data-page-authority-controller-test, evidence.master-data-page-authority-operation-integration-test]
+  - id: rule.master-data.write-audit-snapshot
+    factCatalogProfile: core-business
+    name: 主数据写操作保留统一审计变更快照
+    status: implemented
+    visibility: internal
+    trigger: master-data.write
+    scope: master-data-audit
+    condition:
+      all:
+        - fact: masterData.writeAction
+          operator: in
+          value: [CREATE, UPDATE, DELETE]
+    result:
+      type: write-audit-record
+      includeBeforeAfter: true
+      snapshotSource: persisted-business-entity
+      descriptionFieldIncluded: true
+    explanation: 本切片覆盖的主数据写操作继续使用统一 AuditEvent 语义；旧产品簇兼容接口的新增、编辑和删除均记录 PRODUCT_FAMILY 审计，更新和删除使用持久化对象形成变更前快照，产品簇父记录的 description 保留在变更前后快照中。该规则不改变历史审计 JSON，也不把审计展示字段转换误写为后端快照字段。
+    evidenceIds: [evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.master-data-description-process-controller]

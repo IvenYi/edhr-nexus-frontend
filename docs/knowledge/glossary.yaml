@@ -1,10 +1,34 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.24
 terms:
+  - id: term.form-fill-settings
+    name: 表单填报设置
+    definition: 作业表单节点或工序绑定表单的配置，显式选择直接填报或按流程填报；直接模式配置权限组、字段例外、按钮和签署，按流程模式沿用既有流程配置，所选模式及适用设置须贯通保存、发布快照和运行。当前为已确认要求，不表示闭环已验证。
+    aliases: [填报方式配置]
+    status: specified
+    visibility: internal
   - id: term.master-data-deletion-impact
     name: 主数据删除关联清单
     definition: 删除主数据或版本前查询并展示的阻断关联及处理位置；由已有业务引用派生，不是另一套业务关联事实库。
     aliases: [删除影响, 删除约束关系]
     status: specified
+    visibility: internal
+  - id: term.master-data-description
+    name: 主数据描述
+    definition: 无子版本主数据的唯一自由文本说明字段；客户界面统一标为“描述”，不与同层级的备注字段并存。
+    aliases: [主数据说明, description]
+    status: implemented
+    visibility: internal
+  - id: term.master-data-page-permission
+    name: 主数据页面权限
+    definition: 绑定主数据页面资源及其服务端接口的现有 master-data.* authority；接口访问必须与对应页面权限一致。
+    aliases: [主数据页面权限码, master-data authority]
+    status: implemented
+    visibility: internal
+  - id: term.version-description
+    name: 版本说明
+    definition: 带子版本主数据的版本级唯一自由文本说明字段；客户界面统一标为“版本说明”，不额外保留重复的版本备注字段。
+    aliases: [版本级说明, version description]
+    status: implemented
     visibility: internal
   - id: term.workshop
     name: 车间
@@ -66,6 +90,36 @@ terms:
     aliases: [DHR 表单目录项, 批记录目录项]
     status: implemented
     visibility: internal
+  - id: term.dhr-instance
+    name: DHR 实例
+    definition: 以单个 BATCH 或 SN 生产对象为唯一业务锚点的动态批记录；首次合法开工时同事务自动创建，冻结生产、制程、路线、DHR 模板及目录上下文。按生产对象自动归集目录、作业、自定义实际实例及受控附件；目录映射只决定展示归属，不能排除无目录映射的实际证据。生产完成、汇总定版与放行含义分别保留，终止快照不因旧汇总转换或清理而删除。
+    aliases: [动态批记录, 生产对象 DHR, 批记录实例]
+    status: specified
+    visibility: internal
+  - id: term.dhr-summary-version
+    name: DHR 汇总版本
+    definition: 以生产对象为锚点、提交时冻结全部实际关联实例与受控附件、来源版本及状态、检查结果（含提交人对质量与异常、源审批签署、完整范围的逐项人工确认及说明）、目录展示与审批绑定的不可变业务修订，以 version_no 区分正常修订，不使用 evidence_model_version 区分并行模型。发起修订只基于最新定版创建汇总中草稿，重新提交才形成下一冻结版本；草稿和历史冻结版本通过版本选择区分，旧版正文只读且可按权限导出，数据审计不替代旧版查看。人工确认不等于系统自动判定质量合格，目录整理和导出选定范围不缩减证据或审批范围，正常旧批准只解释当时版本。前期错误旧汇总按 DEC-0063-09 转成待核查草稿或清理，不补造核查或删除源表单、生产对象、签署、原审计与终止快照。
+    aliases: [DHR 冻结汇总版本]
+    status: specified
+    visibility: internal
+  - id: term.dhr-controlled-attachment
+    name: DHR 受控附件
+    definition: 与生产对象 DHR 建立可追溯关联的手工文件或纸质记录扫描件；记录来源、内容摘要、核验与关联历史，冻结版本保留其当时引用。它不是表单实例的第四种业务来源。
+    aliases: [DHR 附件证据, 纸质扫描附件]
+    status: specified
+    visibility: internal
+  - id: term.dhr-summary-archive-display-name
+    name: DHR 汇总归档显示名
+    definition: 汇总草稿或冻结版本内真实证据的目录展示别名，与完整证据范围解耦；组行限当前范围，相邻折叠行限本段，单份限一份。别名不改变来源内容、实例身份或生产归属；正常冻结版本只读，未设置别名时显示来源名称。旧汇总转换保留可用别名、目录和位置，不表示继承旧核查结果。
+    aliases: [汇总文档名称, 归档别名]
+    status: specified
+    visibility: internal
+  - id: term.dhr-early-terminated
+    name: DHR 已终止
+    definition: 关联 BATCH/SN 生产对象提前结束后，DHR 真实停止正常推进的生命周期状态；已保存表单、签名和审计仍为真实记录。它不表示表单作废、审核通过、正常完工或产品放行。
+    aliases: [已终止 DHR, EARLY_TERMINATED DHR]
+    status: specified
+    visibility: internal
   - id: term.form-template-version
     name: 表单模板版本
     definition: DHR 目录项实际引用并由工序绑定追溯的受控表单版本；用户可见的生效状态由 effectiveFrom/effectiveTo 时间窗计算，持久化 status 不替代该状态。
@@ -74,7 +128,7 @@ terms:
     visibility: internal
   - id: term.form-instance
     name: 表单实例
-    definition: 基于表单模板版本创建并保存的一份具体填报记录；当前实现由生产执行创建，后续统一目录可接入其他业务域。表单实例的业务来源记录其创建业务承载域，区别于生产执行内的表单入口类型；表单流程绑定是可选的，未绑定流程时提交校验通过即进入已完成，绑定流程时在流程完成后进入同一已完成终态。实例 ID、流水号和模板快照与内容修订分离，首次完成后才建立 Rev.1。
+    definition: 基于表单模板版本创建并保存的一份具体填报记录；当前实现由生产执行创建，后续统一目录可接入其他业务域。表单实例的业务来源记录其创建业务承载域，区别于生产执行内的表单入口类型；表单流程绑定是可选的，未绑定流程时提交校验通过即进入已完成，绑定流程时在流程完成后进入同一已完成终态。
     aliases: [生产表单实例, FormInstance]
     status: specified
     visibility: internal
@@ -91,9 +145,9 @@ terms:
     status: specified
     visibility: internal
   - id: term.form-instance-number
-    name: 表单实例编号
+    name: 表单实例号
     definition: 由系统为一份具体填报记录生成的不可修改编号；同份记录后续保存、提交、审批和退回修改保持编号不变，新建另一份生成新编号，区别于模板编号、版本号和子表明细行号。
-    aliases: [表单实例号, 表单流水号, 表单记录号]
+    aliases: [表单记录号]
     status: specified
     visibility: internal
   - id: term.form-process-template
@@ -110,7 +164,7 @@ terms:
     visibility: internal
   - id: term.record-control-application
     name: 记录控制申请
-    definition: 表单变更或表单作废申请的公共上位概念；申请域负责申请内容、来源资格、申请人签名、业务锁和批准后业务落地。同一来源实例同时最多一笔活动申请；退回或撤回终结旧申请，再次发起创建新申请编号和流程实例。变更和作废仍保留独立业务结果，不因该公共概念而合并状态。
+    definition: 表单变更或表单作废申请的公共上位概念；申请域负责申请内容、来源资格、申请人签名、业务锁和批准后业务落地。当前变更申请和作废申请仍保留独立对象与生命周期，不因该公共概念而合并状态。
     aliases: [记录控制申请单, RecordControlApplication]
     status: specified
     visibility: internal
@@ -130,7 +184,7 @@ terms:
     name: 转办
     definition: 当前审批任务处理人在授权候选范围内变更该任务处理人的标准动作；不改变当前节点、流程路径或业务结果。中文产品文案不得使用“普通转办”作为并列正式名称。
     aliases: [TRANSFER]
-    status: specified
+    status: implemented
     visibility: internal
   - id: term.workflow-reassignment-action
     name: 重新分配
@@ -308,13 +362,13 @@ terms:
     visibility: internal
   - id: term.form-process-button-electronic-signature
     name: 表单流程按钮签署事件
-    definition: 关联保存、提交、审批或退回按钮的账户密码签署事件；事件存在即表示动作执行前需要签名，是否填充签名字段由事件单独选择，当前仅定义配置层。
+    definition: 关联保存、提交、审批或退回按钮的签署事件；事件存在即表示动作执行前需要签名，是否填充签名字段由事件单独选择。DEC-0074 确认普通账号使用实际签署人的独立电子签名密码和有效认证，允许共享终端跨账号本人签署，仅用户名 admin 暂用登录密码例外；不改变 SIGN_FIELD。新认证规则仍为 specified/internal，不代表运行验证完成。
     aliases: [按钮签名要求, 电子签名配置]
     status: specified
     visibility: internal
   - id: term.form-process-standard-action
     name: 表单流程标准动作
-    definition: 表单流程节点按钮可引用的受控动作标识；第一版仅支持保存、提交、审批和退回，转交、加签、拒绝、终止、撤回不在开放范围内。
+    definition: 表单流程节点按钮可引用的受控动作标识；开始节点支持保存和提交，审批节点支持审批、退回和转办。转办原本就是审批节点应具备的标准动作；早期将其排除是已纠正的共同遗漏。加签、拒绝、终止和撤回仍不在开放范围内。
     aliases: [标准动作, 流程动作]
     status: specified
     visibility: internal
@@ -476,7 +530,7 @@ terms:
     visibility: internal
   - id: term.work-order
     name: 工单
-    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，可直接拆分多个生产对象，不存在 RELEASED 发布状态；生产执行中可主动提前结束并进入 EARLY_TERMINATED，区别于正常完成和行政关闭。
+    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，CREATED 与 IN_PROCESS 状态均可在剩余计划数量内继续拆分多个生产对象，不存在 RELEASED 发布状态；生产执行中可主动提前结束并进入 EARLY_TERMINATED，区别于正常完成和行政关闭。
     aliases: [生产工单, 工单计划]
     status: specified
     visibility: internal
@@ -488,7 +542,7 @@ terms:
     visibility: internal
   - id: term.production-object-early-termination
     name: 生产对象提前结束
-    definition: 生产对象处于进行中时由用户主动结束生产，不代表按完整制程正常完工；业务状态统一使用 EARLY_TERMINATED，并保留结束原因及其对活动执行事务、DHR 和工单状态计算的影响。当前 eDHR 已实现状态转移、结束原因和接口，但执行事务、DHR 和完整工单联动仍待补齐。
+    definition: 生产对象处于进行中时由用户主动结束生产，不代表按完整制程正常完工；业务状态统一使用 EARLY_TERMINATED，并保留结束原因。本期确认其关联 DHR 同事务真实终止、保留已保存证据并停止普通执行；运行实现仍待独立验证。工单级主动命令不在本期范围。
     aliases: [批次提前结束, 提前结束, early termination]
     status: specified
     visibility: internal
@@ -542,7 +596,7 @@ terms:
     visibility: internal
   - id: term.production-batch-management
     name: 批次管理页面
-    definition: 生产准备阶段面向既有 BATCH 生产对象的列表页面；页面复用 ProductionObject 列表投影，支持整行打开详情以及在详情中查看该生产对象的数据审计，并由操作栏承载状态受限的业务动作。操作栏不提供重复的查看动作；未开工对象可取消，进行中对象可填写原因后提前结束，DHR、执行详情和流转单打印仅在对应生产执行能力可用时提供入口，不得伪造已实现数据。批次管理 MVP 不提供既有 BATCH 再拆分。
+    definition: 生产准备阶段面向既有 BATCH 生产对象的列表页面；页面复用 ProductionObject 列表投影，支持整行打开详情及数据审计，操作栏不重复提供查看动作。未开工对象可取消，进行中对象可填写原因后提前结束；DHR 图标对所有批次状态显示并按查看权限及实例存在性给出只读档案或提示，点击不创建 DHR。执行详情和流转单打印仍按各自能力边界提供，不得伪造数据。批次管理 MVP 不提供既有 BATCH 再拆分。
     aliases: [批次列表, 生产批次管理]
     status: implemented
     visibility: internal
@@ -554,9 +608,9 @@ terms:
     visibility: internal
   - id: term.production-object-dhr-view
     name: 生产对象 DHR 查看
-    definition: 从批次管理进入的生产对象 DHR 实例查看入口；DHR 实例应在生产对象首次开工时创建或激活，未开工、取消对象没有可查看的有效 DHR。当前 DHR 运行页面尚未实现。
+    definition: 批次管理操作栏常显的关联 DHR 只读查阅入口；无 dhr.instances.view 权限时提示无权，有权限但尚无关联实例时提示尚未生成，有实例时复用 DHR 档案界面只读查看。查询和点击不创建实例；BATCH/SN DHR 仅在首次合法 START 时自动创建。当前工作树已有入口及查询源码，浏览器交互和发布验收尚未据此证明。
     aliases: [批次 DHR, 批记录查看]
-    status: planned
+    status: implemented
     visibility: internal
   - id: term.serial-number
     name: SN
@@ -602,7 +656,7 @@ terms:
     visibility: internal
   - id: term.record-correction-request
     name: 表单变更申请
-    definition: 针对已完成且存在当前有效修订的记录发起的独立受控申请；提交时只冻结拟修订，不改写正式值，经匹配的已发布审批流程批准后产生下一内容修订并替代当前有效修订。
+    definition: 针对已完成记录发起的独立受控申请；申请提交新修订，经匹配的已发布审批流程批准后替代当前有效修订。
     aliases: [变更申请, 变更申请单, RecordCorrectionRequest]
     status: specified
     visibility: internal
@@ -616,12 +670,6 @@ terms:
     name: 变更修订
     definition: 表单变更产生的完整数据修订，保留基于修订、哈希、生效区间和申请引用；历史修订只读且不可覆盖。
     aliases: [记录修订, CorrectionRevision]
-    status: specified
-    visibility: internal
-  - id: term.form-instance-revision
-    name: 表单实例修订
-    definition: 同一表单实例已完成内容的受控历史，与表单模板版本独立；首次完成产生 Rev.1，变更批准产生下一 Rev.N，任一时刻至多一个当前有效修订，历史修订只读。作废不产生内容新修订。
-    aliases: [当前修订, 历史修订, Rev.N]
     status: specified
     visibility: internal
   - id: term.record-impact-assessment

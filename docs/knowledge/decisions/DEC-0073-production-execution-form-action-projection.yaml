@@ -1,0 +1,56 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0073
+    title: 生产执行表单流程按当前节点投影动作
+    status: specified
+    visibility: internal
+    context: 用户确认生产执行中绑定表单流程的表单完成首个填报节点并到达后续审批节点后，不应继续展示填报节点的暂存/提交按钮；运行时动作应由当前节点按钮配置决定。本决策同时记录源码核对结果：共享表单渲染器负责字段/文档内容，生产执行页负责底部节点动作栏。
+    decisionStatements:
+      - id: DEC-0073-01
+        statement: 生产执行表单流程的当前活动节点决定动作投影；填报节点保留暂存和提交，审批节点只展示当前审批节点按钮配置允许的审批、退回、转办等动作，不展示填报节点的暂存或提交。
+        status: specified
+        visibility: internal
+      - id: DEC-0073-02
+        statement: 生产执行页底部动作栏以服务端 controls.buttons 为唯一显示来源；FormCanvasPreview 和 FormDocumentPreview 只负责字段或文档渲染，不另行追加节点动作按钮。
+        status: specified
+        visibility: internal
+      - id: DEC-0073-03
+        statement: 前端动作显隐只是展示投影，不能替代授权；服务端在动作执行前必须重新计算当前节点、当前用户处理权和允许动作，并复用既有签名、意见和审计校验。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.production-execution-form-action-projection-user-confirmed, evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-page-source, evidence.production-execution-form-action-projection-renderer-source, evidence.production-execution-form-action-projection-engine-test]
+    acceptanceScenarios:
+      - id: scenario.production-execution-fill-node-actions
+        given: 表单流程当前活动节点是可由当前用户处理的填报节点
+        when: 生产执行页查询表单控件并展示动作栏
+        then: 返回并展示该填报节点允许的暂存/提交动作，字段渲染仍使用共享表单渲染器
+        evidenceIds: [evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-page-source, evidence.production-execution-form-action-projection-engine-test]
+        evidenceRequirements: [当前节点 controls.buttons 投影, 暂存/提交行为保留]
+      - id: scenario.production-execution-approval-node-actions
+        given: 表单已经完成首个填报节点并流转到当前审批节点，且当前用户具有该节点处理权
+        when: 生产执行页查询表单控件并展示动作栏
+        then: 只展示当前审批节点按钮配置的审批、退回、转办等动作，不展示暂存/提交
+        evidenceIds: [evidence.production-execution-form-action-projection-user-confirmed, evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-page-source, evidence.production-execution-form-action-projection-engine-test]
+        evidenceRequirements: [审批节点动作投影, 填报动作不泄漏, 当前用户权限校验]
+      - id: scenario.production-execution-action-renderer-boundary
+        given: 生产执行页使用字段/文档共享表单渲染组件
+        when: 检查运行时渲染边界
+        then: FormCanvasPreview/FormDocumentPreview 只负责字段或文档内容，节点动作栏由生产执行页消费 controls.buttons 渲染
+        evidenceIds: [evidence.production-execution-form-action-projection-page-source, evidence.production-execution-form-action-projection-renderer-source]
+        evidenceRequirements: [共享渲染器职责核对, 生产页动作栏唯一投影入口]
+      - id: scenario.production-execution-server-action-authorization
+        given: 客户端提交一个当前页面未展示或不属于当前节点配置的动作
+        when: 服务端执行表单动作
+        then: 服务端重新计算当前节点与 controls.buttons 并拒绝不允许动作；不能以客户端隐藏作为安全边界
+        evidenceIds: [evidence.production-execution-form-action-projection-source]
+        evidenceRequirements: [服务端动作白名单校验, 当前处理权校验]
+    implementationDiscrepancies:
+      - id: discrepancy.production-execution-form-action-projection-legacy-fallback
+        status: open
+        severity: medium
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+        lineHint: 175
+        summary: 当前实现对空或缺失按钮配置回退到按节点类型生成的默认按钮；需要实现阶段明确该回退仅用于历史快照兼容，还是对当前审批节点严格要求显式按钮配置，避免旧快照策略改变新节点动作投影。
+        evidenceIds: [evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-user-confirmed]

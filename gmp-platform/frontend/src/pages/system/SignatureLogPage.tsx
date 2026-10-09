@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import { getSignatures } from '@/api/signatures';
 import StatusBadge from '@/components/StatusBadge';
+import { ListTableShell } from '@/components/ListTableShell';
 import type { PageResult } from '@/types/common';
 
 interface Signature {
@@ -43,7 +44,7 @@ export default function SignatureLogPage() {
       <Box sx={{ mb: 2 }}>
         <Typography variant="h5">签名记录</Typography>
       </Box>
-      <TableContainer>
+      <ListTableShell>
         <Table>
           <TableHead>
             <TableRow>
@@ -83,7 +84,7 @@ export default function SignatureLogPage() {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </ListTableShell>
       {data && data.totalPages > 1 && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
           <Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} />

@@ -58,7 +58,7 @@ public class DeletionProtectionService {
                     : "点击记录下方的“定位数据”，进入对应位置解除引用或处理下级数据，再返回此弹窗刷新关联。";
             if (first.table().equals("product_family_member")) guidance = "进入产品簇的产品成员，移除该成员关系后再删除物料。";
             boolean legacy = Set.of("product", "product_version", "process_definition", "process_definition_version", "process_route_binding",
-                    "traveler_template", "batch", "serial_number", "operation_execution", "dhr_instance", "dhr_evidence_item", "release_order", "release_form_template").contains(first.table());
+                    "traveler_template", "batch", "serial_number", "operation_execution", "dhr_evidence_item", "release_order", "release_form_template").contains(first.table());
             if (legacy) guidance = "该关联来自历史模块，请联系管理员按记录编号核对处理；生产追溯记录需保留。";
             if (dataType.equals("RETAINED")) guidance = "这些生产记录或执行快照仍引用当前数据，需保留，不作为待解绑业务清单。请使用停用或失效功能停止后续使用。";
             if (dataType.equals("ORPHAN")) guidance = "所属业务数据已缺失，但引用仍存在。这是异常遗留关联，并非已确认的追溯快照；请由管理员核对修复。";
@@ -127,6 +127,7 @@ public class DeletionProtectionService {
         String permission = path.substring(1).replace('/', '.');
         Set<String> permissions = auth.getAuthorities().stream().map(org.springframework.security.core.GrantedAuthority::getAuthority).collect(java.util.stream.Collectors.toSet());
         if (path.equals("/form-management/list")) return permissions.contains("form-instances.view") && permissions.contains("production.execution");
+        if (path.equals("/dhr-management/list")) return permissions.contains("dhr.instances.view");
         if (path.equals("/master-data/equipment-types")) return permissions.contains("master-data.equipment");
         return permissions.contains(permission);
     }
@@ -134,8 +135,8 @@ public class DeletionProtectionService {
     private DeletionImpact.Item item(Row row) {
         String context = context(row, 0);
         Row named = row;
-        while (first(named, "order_no", "code", "object_no", "instance_no", "sn").isBlank() && displayParent(named) != null) named = displayParent(named);
-        String code = first(named, "order_no", "code", "object_no", "instance_no", "sn");
+        while (first(named, "order_no", "code", "object_no", "dhr_no", "instance_no", "sn").isBlank() && displayParent(named) != null) named = displayParent(named);
+        String code = first(named, "order_no", "code", "object_no", "dhr_no", "instance_no", "sn");
         String path = recordPath(row);
         String name = label(row);
         if (row.table().equals("product_process_version")) name = context + " / 制程版本 " + first(row, "version_label", "version");
@@ -184,7 +185,7 @@ public class DeletionProtectionService {
     }
 
     private String label(Row row) {
-        String label = first(row, "name", "title", "display_name", "work_node_label", "operation_name", "instance_no", "object_no", "order_no", "code", "sn");
+        String label = first(row, "name", "title", "display_name", "work_node_label", "operation_name", "dhr_no", "instance_no", "object_no", "order_no", "code", "sn");
         if (!label.isBlank()) return label;
         String referenceTable = switch (row.table()) {
             case "product_process_operation_form_binding", "dhr_template_item", "deletion_form_reference" -> "form_template_version";
@@ -276,6 +277,7 @@ public class DeletionProtectionService {
             case "/master-data/equipment" -> "数据 / 设备建模 / 设备列表";
             case "/master-data/workshops" -> "数据 / 工厂建模 / 车间管理";
             case "/form-management/list" -> "记录 / 表单管理 / 表单列表";
+            case "/dhr-management/list" -> "记录 / DHR 管理 / DHR 列表";
             case "/production/batches" -> "生产 / 生产准备 / 批次管理";
             case "/production/work-orders" -> "生产 / 生产准备 / 工单管理";
             default -> DeletionRelations.ENTITIES.get(row.table()).module();
@@ -285,7 +287,7 @@ public class DeletionProtectionService {
     private String recordPath(Row record) {
         if (record.table().equals("route_operation")) return null;
         Set<String> roots = Set.of("material", "product_family", "operation", "route", "sop_document", "form_template",
-                "dhr_template", "equipment_type", "equipment", "workshop", "work_order", "production_object",
+                "dhr_template", "equipment_type", "equipment", "workshop", "work_order", "production_object", "dhr_instance",
                 "form_instance_record", "workflow_definition");
         List<Row> chain = new ArrayList<>();
         Row root = record;
@@ -300,7 +302,7 @@ public class DeletionProtectionService {
         StringBuilder path = new StringBuilder(destination(record));
         if (workflowEditor) path.append('/').append(root.id());
         path.append("?locateId=").append(root.id());
-        String keyword = first(root, "order_no", "code", "object_no", "instance_no", "name", "title");
+        String keyword = first(root, "order_no", "code", "object_no", "dhr_no", "instance_no", "name", "title");
         path.append("&locateKeyword=").append(java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8));
         if (Set.of("form_template", "dhr_template").contains(root.table()))
             path.append("&locateName=").append(java.net.URLEncoder.encode(text(root, "name"), java.nio.charset.StandardCharsets.UTF_8));

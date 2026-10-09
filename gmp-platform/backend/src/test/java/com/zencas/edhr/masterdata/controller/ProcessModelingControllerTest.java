@@ -7,6 +7,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.dto.ProcessModelingRequest;
+import com.zencas.edhr.masterdata.dto.MasterDataDescriptionRequest;
 import com.zencas.edhr.masterdata.dto.ProductFamilyMemberResponse;
 import com.zencas.edhr.masterdata.dto.RouteGraphRequest;
 import com.zencas.edhr.masterdata.entity.Route;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -98,6 +100,19 @@ class ProcessModelingControllerTest {
                 .toList();
 
         assertThat(mappings).doesNotContain("/material-types", "/material-types/{id}");
+    }
+
+    @Test
+    void requiresThePagePermissionForEveryProcessModelingEndpoint() {
+        Arrays.stream(ProcessModelingController.class.getDeclaredMethods())
+                .filter(method -> mappingValues(method).findAny().isPresent())
+                .forEach(method -> {
+                    PreAuthorize authorization = method.getAnnotation(PreAuthorize.class);
+                    assertThat(authorization).as("permission for %s", method.getName()).isNotNull();
+                    mappingValues(method).forEach(mapping -> assertThat(authorization.value())
+                            .as("permission for %s %s", method.getName(), mapping)
+                            .isEqualTo("hasAuthority('" + expectedPermissionFor(mapping) + "')"));
+                });
     }
 
     @Test
@@ -167,7 +182,7 @@ class ProcessModelingControllerTest {
         when(productFamilyRepository.save(any(ProductFamily.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(idGenerator.nextId()).thenReturn(11001L);
 
-        var response = controller.createProductFamily(ProcessModelingRequest.builder()
+        var response = controller.createProductFamily(MasterDataDescriptionRequest.builder()
                 .code(" PF-SYR-001 ")
                 .name("注射器产品簇")
                 .build());
@@ -180,7 +195,7 @@ class ProcessModelingControllerTest {
 
     @Test
     void rejectsBlankOrDuplicatedProductFamilyCode() {
-        assertThatThrownBy(() -> controller.createProductFamily(ProcessModelingRequest.builder()
+        assertThatThrownBy(() -> controller.createProductFamily(MasterDataDescriptionRequest.builder()
                 .name("注射器产品簇")
                 .build()))
                 .isInstanceOf(BusinessException.class)
@@ -188,7 +203,7 @@ class ProcessModelingControllerTest {
 
         when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "PF-SYR-001"))
                 .thenReturn(Optional.of(ProductFamily.builder().id(11L).code("pf-syr-001").build()));
-        assertThatThrownBy(() -> controller.createProductFamily(ProcessModelingRequest.builder()
+        assertThatThrownBy(() -> controller.createProductFamily(MasterDataDescriptionRequest.builder()
                 .code("PF-SYR-001")
                 .name("注射器产品簇")
                 .build()))
@@ -204,7 +219,7 @@ class ProcessModelingControllerTest {
                 .thenReturn(Optional.of(existing));
         when(productFamilyRepository.save(existing)).thenReturn(existing);
 
-        assertThat(controller.updateProductFamily(11L, ProcessModelingRequest.builder()
+        assertThat(controller.updateProductFamily(11L, MasterDataDescriptionRequest.builder()
                 .code("pf-syr-001")
                 .name("新产品簇")
                 .build()).getData().getCode()).isEqualTo("pf-syr-001");
@@ -212,7 +227,7 @@ class ProcessModelingControllerTest {
         ProductFamily another = ProductFamily.builder().id(12L).tenantId("default").code("PF-SYR-002").name("其他产品簇").build();
         when(productFamilyRepository.findByTenantIdAndCodeIgnoreCase("default", "PF-SYR-002"))
                 .thenReturn(Optional.of(another));
-        assertThatThrownBy(() -> controller.updateProductFamily(11L, ProcessModelingRequest.builder()
+        assertThatThrownBy(() -> controller.updateProductFamily(11L, MasterDataDescriptionRequest.builder()
                 .code("PF-SYR-002")
                 .name("新产品簇")
                 .build()))
@@ -1575,5 +1590,15 @@ class ProcessModelingControllerTest {
                 ? Arrays.stream(method.getAnnotation(DeleteMapping.class).value())
                 : Stream.empty();
         return Stream.of(getMappings, postMappings, putMappings, deleteMappings).flatMap(stream -> stream);
+    }
+
+    private String expectedPermissionFor(String mapping) {
+        if (mapping.startsWith("/materials")) return "master-data.materials";
+        if (mapping.startsWith("/products")) return "master-data.products";
+        if (mapping.startsWith("/product-families")) return "master-data.product-families";
+        if (mapping.startsWith("/operations")) return "master-data.operations";
+        if (mapping.startsWith("/routes")) return "master-data.routes";
+        if (mapping.startsWith("/documents")) return "master-data.documents";
+        throw new AssertionError("Unexpected process modeling mapping: " + mapping);
     }
 }

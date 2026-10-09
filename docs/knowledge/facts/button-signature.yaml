@@ -1,0 +1,50 @@
+knowledgeModelVersion: 0.3.24
+facts:
+  - id: fact.button-signature.required
+    name: 本次按钮要求签署
+    conceptId: concept.form-process-button-electronic-signature
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    aliases: [button.requiresSignature]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.button-signature-execution-source, evidence.button-signature-dhr-caller-source]
+    sourceRevision: dcbc67864147750579b8328da28c45d380798693
+    sourceLocator: ProductionExecutionEngine.formControls 从 BEFORE/ACCOUNT_PASSWORD 事件投影 requiresSignature；DhrReviewService.buttons 亦投影此值
+    capturedAt: '2026-09-26'
+    reviewStatus: reviewed
+  - id: fact.button-signature.signer-username
+    name: 本次实际签署账号的用户名
+    conceptId: concept.form-process-button-electronic-signature
+    valueType: string
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    aliases: [signer.username]
+    availability: runtime
+    allowedOperators: [equals, not-equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.button-signature-confirmed, evidence.button-signature-auth-source]
+    sourceRevision: working-tree
+    sourceLocator: authenticateButtonSigner 通过 users.findByUsername 读取账号并返回 ButtonSigner.account；并行未提交源码，不是发布验证
+    capturedAt: '2026-09-26'
+    reviewStatus: reviewed
+  - id: fact.button-signature.certification-valid
+    name: 本次普通按钮签署人的个人认证有效
+    conceptId: concept.form-process-button-electronic-signature
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+    aliases: [signer.certificationValid]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.button-signature-confirmed, evidence.button-signature-auth-source, evidence.production-field-signature-personal-auth-source]
+    sourceRevision: working-tree
+    sourceLocator: authenticateButtonSigner 的普通账号分支按 signerId 读取 USER_PROFILE 并校验 expiresAt 和 signaturePasswordHash；并行未提交源码，不是发布验证
+    capturedAt: '2026-09-26'
+    reviewStatus: reviewed

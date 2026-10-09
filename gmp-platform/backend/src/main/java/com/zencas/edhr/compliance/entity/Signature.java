@@ -37,6 +37,7 @@ public class Signature {
     @Column(name = "signature_key")
     private String signatureKey;
     @Column(name = "signature_password_hash")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String signaturePasswordHash;
     @Column(name = "certified_at_epoch")
     private Long certifiedAtEpoch;

@@ -34,7 +34,7 @@ function page(versions = [], isError = false) {
   const mutations = [];
   let refreshes = 0;
   const form = { orderNo: 'unsaved-order', productId: 'product-1', processVersionId: '', remark: '保留草稿' };
-  const react = { ...require('react'), useMemo: (fn) => fn(), useState: (initial) => {
+  const react = { ...require('react'), useEffect: () => {}, useMemo: (fn) => fn(), useRef: (initial) => ({ current: initial }), useState: (initial) => {
     const value = typeof initial === 'function' ? initial() : initial;
     return [value && typeof value === 'object' && 'orderNo' in value ? { ...value, ...form } : value, (next) => updates.push(next)];
   } };
@@ -42,7 +42,7 @@ function page(versions = [], isError = false) {
     if (queryKey[0] === 'work-order-process') return { data: { model: { versions } }, isError, refetch: () => { refreshes++; } };
     return {};
   } };
-  const sandbox = { module: { exports: {} }, console, Error, showMessage: (...args) => messages.push(args), window: { open: (...args) => opened.push(args) },
+  const sandbox = { module: { exports: {} }, console, Error, URLSearchParams, showMessage: (...args) => messages.push(args), window: { location: { search: '' }, open: (...args) => opened.push(args) },
     require: (name) => name === 'react' ? react : name === '@tanstack/react-query' ? query : require(name) };
   sandbox.exports = sandbox.module.exports;
   vm.runInNewContext(result.outputFiles[0].text, sandbox);

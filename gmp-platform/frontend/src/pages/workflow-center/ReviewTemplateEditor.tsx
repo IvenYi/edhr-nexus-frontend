@@ -466,11 +466,12 @@ export default function ReviewTemplateEditor() {
     ) {
       initialVersionAttempted.current = true;
       createReviewTemplateVersion(processId)
-        .then(() =>
+        .then(() => Promise.all([
           queryClient.invalidateQueries({
             queryKey: ["review-template-versions", processId],
           }),
-        )
+          queryClient.invalidateQueries({ queryKey: ["review-templates"] }),
+        ]))
         .catch(() => showMessage("初始化草稿失败", "error"));
     }
   }, [versions.isSuccess, versions.data, processId, queryClient, showMessage, canEdit]);
@@ -1119,6 +1120,7 @@ export default function ReviewTemplateEditor() {
       queryClient.invalidateQueries({
         queryKey: ["review-template-versions", processId],
       });
+      queryClient.invalidateQueries({ queryKey: ["review-templates"] });
       showMessage("草稿已保存");
     },
     onError: (error) =>
@@ -1144,6 +1146,7 @@ export default function ReviewTemplateEditor() {
       queryClient.invalidateQueries({
         queryKey: ["review-template-version", processId],
       });
+      queryClient.invalidateQueries({ queryKey: ["review-templates"] });
       showMessage("审批流程已发布");
     },
     onError: (error) =>

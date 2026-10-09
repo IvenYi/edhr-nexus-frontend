@@ -8,12 +8,16 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.Signature;
 import com.zencas.edhr.compliance.repository.SignatureRepository;
 import com.zencas.edhr.identity.dto.SubjectReference;
+import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.service.SubjectResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -34,37 +38,30 @@ public class ExecutionAccess {
     private final JdbcTemplate jdbc;
 
     public List<Map<String, String>> references(JsonNode field, String keyword) {
-        String source = field.path("typeConfig").path("sourceType").asText();
-        String name = "user".equals(source) ? "display_name" : "name";
-        String query = "%" + (keyword == null ? "" : keyword.toLowerCase(Locale.ROOT)) + "%";
-        return jdbc.query(referenceSource(field) + " AND (LOWER(" + name + ") LIKE ? OR CAST(id AS VARCHAR) LIKE ?) ORDER BY id LIMIT 100",
-                (rs, i) -> Map.of("id", rs.getString("id"), "name", rs.getString("name")), query, query);
+        return references(field, keyword, mapper.createObjectNode());
     }
 
-    private String referenceSource(JsonNode field) {
-        return switch (field.path("typeConfig").path("sourceType").asText()) {
-            case "user" -> "SELECT id, display_name AS name FROM user_account WHERE status='ACTIVE'";
-            case "department" -> "SELECT id, name FROM department WHERE 1=1";
-            case "equipment" -> "SELECT id, name FROM equipment WHERE status='ACTIVE'";
-            case "material" -> "SELECT id, name FROM material WHERE status='ACTIVE'";
-            case "product" -> "SELECT id, name FROM product WHERE status='ACTIVE'";
-            default -> throw invalid("引用字段「" + field.path("name").asText() + "」尚未配置可用的数据来源");
-        };
+    public List<Map<String, String>> references(JsonNode field, String keyword, JsonNode values) {
+        return new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).search(field.path("typeConfig"), keyword, values);
     }
 
     public void validateEvidence(JsonNode field, JsonNode value, String objectId) {
+        validateEvidence(field, value, objectId, mapper.createObjectNode());
+    }
+
+    public void validateEvidence(JsonNode field, JsonNode value, String objectId, JsonNode values) {
         if (value.isNull() || value.isMissingNode() || (value.isTextual() && value.asText().isBlank())) return;
         String type = field.path("type").asText();
         if ("subTable".equals(type) && value.isArray()) {
-            for (JsonNode row : value) for (JsonNode column : field.path("typeConfig").path("columns"))
-                validateEvidence(column, row.path(column.path("id").asText()), objectId);
+            for (JsonNode row : value) {
+                ObjectNode context = values.isObject() ? ((ObjectNode) values).deepCopy() : mapper.createObjectNode();
+                if (row.isObject()) context.setAll((ObjectNode) row);
+                for (JsonNode column : field.path("typeConfig").path("columns"))
+                    validateEvidence(column, row.path(column.path("id").asText()), objectId, context);
+            }
         }
         if ("reference".equals(type)) {
-            if (!value.isObject() || !value.hasNonNull("id")) throw invalid("引用字段必须从配置来源中选择");
-            long referenceId;
-            try { referenceId = Long.parseLong(value.path("id").asText()); } catch (NumberFormatException e) { throw invalid("引用记录标识不正确"); }
-            boolean found = jdbc.query(referenceSource(field) + " AND id=?", (rs, i) -> rs.getString("name"), referenceId).stream().anyMatch(name -> name.equals(value.path("name").asText()));
-            if (!found) throw invalid("引用记录已失效，请重新选择");
+            new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).validate(field.path("typeConfig"), value, values);
         }
         if (Set.of("attachment", "image").contains(type)) {
             if (!value.isArray()) throw invalid("附件字段必须使用上传文件记录");
@@ -102,6 +99,8 @@ public class ExecutionAccess {
     public boolean canAct(JsonNode form, JsonNode node, JsonNode state, String operator) {
         if (operator == null || operator.isBlank()) return false;
         if ("APPROVAL".equals(node.path("data").path("kind").asText())) {
+            String assigned = state.path("transferAssignees").path(node.path("id").asText()).asText("");
+            if (!assigned.isBlank()) return operator.equals(assigned);
             if (!state.path("restrictedApprovers").path(node.path("id").asText()).asBoolean()) return true;
             for (JsonNode id : state.path("approvers").path(node.path("id").asText())) if (operator.equals(id.asText())) return true;
             return false;
@@ -114,7 +113,60 @@ public class ExecutionAccess {
         return false;
     }
 
+    public List<Map<String, String>> transferTargets(JsonNode form, JsonNode node, JsonNode state, String operator, String keyword) {
+        if (!"APPROVAL".equals(node.path("data").path("kind").asText()) || !canAct(form, node, state, operator))
+            throw invalid("当前用户无权转办此表单节点");
+        String query = keyword == null ? "" : keyword.strip().toLowerCase(Locale.ROOT);
+        List<UserAccount> candidates;
+        if (state.path("restrictedApprovers").path(node.path("id").asText()).asBoolean()) {
+            List<Long> ids = new ArrayList<>();
+            for (JsonNode id : state.path("approvers").path(node.path("id").asText())) {
+                try { ids.add(Long.valueOf(id.asText())); } catch (NumberFormatException ignored) { }
+            }
+            candidates = users.findAllById(ids);
+        } else {
+            Specification<com.zencas.edhr.identity.entity.UserAccount> specification = (root, ignored, cb) -> {
+                var active = cb.equal(root.get("status"), "ACTIVE");
+                if (query.isBlank()) return active;
+                String like = "%" + query + "%";
+                return cb.and(active, cb.or(cb.like(cb.lower(root.get("displayName")), like), cb.like(cb.lower(root.get("username")), like)));
+            };
+            candidates = users.findAll(specification, PageRequest.of(0, 100, Sort.by("displayName").ascending().and(Sort.by("id").ascending()))).getContent();
+        }
+        return candidates.stream()
+                .filter(this::availableForTransfer)
+                .filter(user -> !String.valueOf(user.getId()).equals(operator))
+                .filter(user -> query.isBlank() || user.getDisplayName().toLowerCase(Locale.ROOT).contains(query)
+                        || user.getUsername().toLowerCase(Locale.ROOT).contains(query))
+                .sorted(Comparator.comparing(UserAccount::getDisplayName).thenComparing(UserAccount::getId))
+                .limit(100)
+                .map(user -> Map.of("id", String.valueOf(user.getId()), "name", user.getDisplayName(), "username", user.getUsername()))
+                .toList();
+    }
+
+    public UserAccount requireTransferTarget(JsonNode node, JsonNode state, String operator, String targetUserId) {
+        if (targetUserId == null || targetUserId.isBlank()) throw invalid("请选择转办人员");
+        if (targetUserId.equals(operator)) throw invalid("不能转办给当前处理人");
+        long id;
+        try { id = Long.parseLong(targetUserId); } catch (NumberFormatException error) { throw invalid("转办人员不存在或已停用"); }
+        var target = users.findById(id).filter(this::availableForTransfer).orElseThrow(() -> invalid("转办人员不存在、已停用或当前被锁定"));
+        if (state.path("restrictedApprovers").path(node.path("id").asText()).asBoolean()) {
+            boolean allowed = false;
+            for (JsonNode candidate : state.path("approvers").path(node.path("id").asText())) if (targetUserId.equals(candidate.asText())) allowed = true;
+            if (!allowed) throw invalid("转办人员不在当前审批节点的授权范围内");
+        }
+        return target;
+    }
+
+    private boolean availableForTransfer(UserAccount user) {
+        return "ACTIVE".equals(user.getStatus()) && (user.getLockedUntil() == null || !user.getLockedUntil().isAfter(LocalDateTime.now()));
+    }
+
     public ObjectNode permissions(JsonNode form, JsonNode node, JsonNode state, String operator) {
+        return permissions(form, node, state, operator, false);
+    }
+
+    public ObjectNode permissions(JsonNode form, JsonNode node, JsonNode state, String operator, boolean signing) {
         ObjectNode result = mapper.createObjectNode();
         boolean allowed = canAct(form, node, state, operator);
         JsonNode config = node.path("data").path("config");
@@ -125,7 +177,8 @@ public class ExecutionAccess {
         }
         for (JsonNode field : form.path("fields")) {
             String id = field.path("id").asText();
-            boolean edit = allowed && !"signature".equals(field.path("type").asText()) && !field.path("readOnly").asBoolean();
+            boolean edit = allowed && (signing || !"signature".equals(field.path("type").asText())) && !field.path("readOnly").asBoolean()
+                    && !"disabled".equals(field.path("status").asText());
             if (!matched.isEmpty()) {
                 for (JsonNode group : matched) {
                     String key = "start:" + group.path("id").asText();
@@ -157,25 +210,88 @@ public class ExecutionAccess {
         throw invalid("旧版主体配置无法可靠解析，请先在表单流程中更新主体配置");
     }
 
-    public String sign(String objectId, String formId, String action, JsonNode values, String account, String password) {
+    public record ButtonSigner(String id, String name, String account, String authMethod, String certificationId) { }
+
+    public ButtonSigner authenticateButtonSigner(String account, String password) {
+        if (AuditContext.getOperatorId() == null) throw invalid("请重新登录后签署");
+        var user = users.findByUsername(account == null ? "" : account.strip())
+                .filter(this::availableForTransfer).orElseThrow(() -> invalid("签署账户或密码不正确，或账户不可用"));
+        String signerId = user.getId().toString();
+        if ("admin".equals(user.getUsername())) {
+            if (password == null || password.isBlank() || !passwords.matches(password, user.getPasswordHash()))
+                throw invalid("签署账户或密码不正确，或账户不可用");
+            return new ButtonSigner(signerId, user.getDisplayName(), user.getUsername(), "ADMIN_LOGIN_PASSWORD", null);
+        }
+        Signature certification = signatures.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", signerId)
+                .orElseThrow(() -> invalid("签署账户尚未完成电子签名认证，请由本人登录后在个人设置中完成认证"));
+        if (certification.getExpiresAt() != null && !certification.getExpiresAt().isAfter(LocalDateTime.now()))
+            throw invalid("签署账户的电子签名已过期，请由本人登录后在个人设置中重新认证");
+        if (certification.getSignaturePasswordHash() == null || certification.getSignaturePasswordHash().isBlank())
+            throw invalid("签署账户尚未设置电子签名密码，请由本人登录后在个人设置中完成认证");
+        if (password == null || password.isBlank() || !passwords.matches(password, certification.getSignaturePasswordHash()))
+            throw invalid("电子签名密码错误");
+        return new ButtonSigner(signerId, user.getDisplayName(), user.getUsername(), "SIGNATURE_PASSWORD", certification.getId().toString());
+    }
+
+    public String sign(String objectId, String formId, String action, JsonNode values, ButtonSigner signer) {
+        return signTarget("PRODUCTION_EXECUTION", objectId, formId, action, values, signer);
+    }
+
+    public String signTarget(String targetType, String objectId, String formId, String action, JsonNode values, ButtonSigner signer) {
         String operator = AuditContext.getOperatorId();
         if (operator == null) throw invalid("请重新登录后签署");
-        var user = users.findById(Long.valueOf(operator)).orElseThrow(() -> invalid("签署用户不存在"));
-        if (!Objects.equals(account, user.getUsername()) || !"ACTIVE".equals(user.getStatus())
-                || (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now()))
-                || password == null || !passwords.matches(password, user.getPasswordHash())) {
-            throw invalid("签署账户或密码不正确，或账户不可用");
-        }
-        ObjectNode evidence = mapper.createObjectNode().put("objectId", objectId).put("formId", formId).put("action", action);
+        ObjectNode evidence = mapper.createObjectNode().put("objectId", objectId).put("formId", formId).put("action", action)
+                .put("sessionOperatorId", operator).put("sessionOperatorName", AuditContext.getOperatorName())
+                .put("sessionOperatorAccount", AuditContext.getOperatorAccount()).put("signerId", signer.id())
+                .put("signerName", signer.name()).put("signerAccount", signer.account()).put("authMethod", signer.authMethod())
+                .put("certificationId", signer.certificationId());
         evidence.set("values", values.deepCopy());
         try {
             String payload = mapper.writeValueAsString(evidence);
             String hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(payload.getBytes(StandardCharsets.UTF_8)));
             long id = ids.nextId();
-            signatures.save(Signature.builder().id(id).targetType("PRODUCTION_EXECUTION").targetId(objectId)
-                    .meaning(action + " · " + formId).signerId(operator).signerName(user.getDisplayName())
-                    .authMethod("PASSWORD").snapshotHash(hash).snapshotData(payload).signedAt(LocalDateTime.now()).build());
+            signatures.save(Signature.builder().id(id).targetType(targetType).targetId(objectId)
+                    .meaning(action + " · " + formId).signerId(signer.id()).signerName(signer.name())
+                    .authMethod(signer.authMethod()).authEventRef(signer.certificationId())
+                    .snapshotHash(hash).snapshotData(payload).signedAt(LocalDateTime.now()).build());
             return String.valueOf(id);
         } catch (Exception e) { throw invalid("签署记录保存失败"); }
+    }
+
+    public ObjectNode signField(ObjectNode evidence, String password) {
+        String operator = AuditContext.getOperatorId();
+        if (operator == null) throw invalid("请重新登录后签署");
+        var user = users.findById(Long.valueOf(operator)).orElseThrow(() -> invalid("签署用户不存在"));
+        if (!"ACTIVE".equals(user.getStatus()) || (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())))
+            throw invalid("签署账户不可用");
+        Signature certification = signatures.findFirstByTargetTypeAndTargetIdOrderBySignedAtDesc("USER_PROFILE", operator)
+                .orElseThrow(() -> invalid("请先在个人设置中完成电子签名认证"));
+        if (certification.getExpiresAt() != null && !certification.getExpiresAt().isAfter(LocalDateTime.now()))
+            throw invalid("电子签名已过期，请先在个人设置中重新认证");
+        if (password == null || password.isBlank() || certification.getSignaturePasswordHash() == null
+                || !passwords.matches(password, certification.getSignaturePasswordHash())) throw invalid("电子签名密码错误");
+        String fileId;
+        JsonNode image;
+        try { image = mapper.readTree(certification.getSnapshotData()).path("signatureImage"); fileId = image.path("fileId").asText(); }
+        catch (Exception e) { throw invalid("电子签名图片不存在，请先在个人设置中重新认证"); }
+        if (!fileId.matches("[0-9]+") || jdbc.queryForObject("SELECT COUNT(*) FROM file_object WHERE id=? AND mime_type LIKE 'image/%'", Integer.class, Long.valueOf(fileId)) == 0)
+            throw invalid("电子签名图片不存在，请先在个人设置中重新认证");
+        String signedAt = LocalDateTime.now().withNano(0).toString();
+        String signatureId = String.valueOf(ids.nextId());
+        ObjectNode presentation = mapper.createObjectNode().put("type", "signature").put("signatureId", signatureId)
+                .put("signerId", operator).put("signerName", user.getDisplayName()).put("signedAt", signedAt)
+                .put("signatureImageFileId", fileId).put("certificationId", certification.getId().toString());
+        evidence.set("signature", presentation.deepCopy());
+        evidence.set("signatureImage", image.deepCopy());
+        evidence.put("certificationSnapshotHash", certification.getSnapshotHash());
+        try {
+            String payload = mapper.writeValueAsString(evidence);
+            String hash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(payload.getBytes(StandardCharsets.UTF_8)));
+            signatures.save(Signature.builder().id(Long.valueOf(signatureId)).targetType("PRODUCTION_EXECUTION")
+                    .targetId(evidence.path("objectId").asText()).meaning("SIGN_FIELD · " + evidence.path("fieldId").asText())
+                    .signerId(operator).signerName(user.getDisplayName()).authMethod("SIGNATURE_PASSWORD")
+                    .authEventRef(certification.getId().toString()).snapshotData(payload).snapshotHash(hash).signedAt(LocalDateTime.parse(signedAt)).build());
+        } catch (Exception e) { throw invalid("签署记录保存失败"); }
+        return presentation;
     }
 }

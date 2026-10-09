@@ -1,0 +1,130 @@
+import { useMemo, useRef, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Stack, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
+import { AttachFileOutlined, DownloadOutlined, PreviewOutlined, RestartAlt, Search } from '@mui/icons-material';
+import AppDialog from '@/components/AppDialog';
+import StatusBadge from '@/components/StatusBadge';
+import { useSnackbar } from '@/components/SnackbarProvider';
+import WorkflowActionButtons from '@/components/workflow/WorkflowActionButtons';
+import { useAuthStore } from '@/stores/authStore';
+import { actDhrReview, downloadDhrReviewAttachment, getDhrReviewTask, listDhrReviewTasks, type DhrReviewTask } from '@/api/dhr-workbenches';
+import type { ExecutionButton } from '@/api/production-execution';
+import { formListFieldSx, formListQueryGridSx, formListQueryPanelSx } from '@/pages/form-management/formManagementListStyles';
+import DhrDetailDrawer from './DhrDetailDrawer';
+import DhrWorklistTable from './DhrWorklistTable';
+import DhrActionDialog from './DhrActionDialog';
+import { EvidenceCanvas } from './DhrEvidenceCanvas';
+import { archiveNavigation, evidenceNavigation, type DhrNavigationView, type DhrSource } from './dhrSourceNavigation';
+import { DhrWorkspaceNavigation, DhrInstancePanel, workspaceBodySx, workspacePanelSx } from './DhrWorkspaceNavigation';
+
+const columns = [
+  { id: 'dhrNo', label: 'DHR 编号', width: 220 }, { id: 'objectNo', label: '生产对象', width: 150 },
+  { id: 'workOrderNo', label: '工单编号', width: 160 }, { id: 'productName', label: '产品名称', width: 180 },
+  { id: 'versionNo', label: '汇总版本', width: 110 }, { id: 'nodeName', label: '审批节点', width: 150 },
+  { id: 'submittedBy', label: '提交人', width: 120 }, { id: 'submittedAt', label: '提交时间', width: 180 },
+  { id: 'completedAt', label: '处理时间', width: 180 }, { id: 'status', label: '处理状态', width: 110 },
+] as const;
+const labels: Record<string, string> = { PENDING: '待审批', PROCESSING: '待审批', COMPLETED: '已通过', REJECTED: '已退回' };
+function errorText(error: unknown) { return error instanceof Error ? error.message : '操作失败，请重试'; }
+
+function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => void }) {
+  const client = useQueryClient();
+  const { showMessage } = useSnackbar();
+  const canAct = useAuthStore(s => s.hasPermission('dhr.reviews.act'));
+  const query = useQuery({ queryKey: ['dhr-review', task.id], queryFn: () => getDhrReviewTask(task.id), staleTime: 0, refetchOnMount: 'always', refetchOnWindowFocus: false });
+  const [nodeKey, setNodeKey] = useState(''), [recordId, setRecordId] = useState('');
+  const [navigationView, setNavigationView] = useState<DhrNavigationView>('ARCHIVE');
+  const [source, setSource] = useState<DhrSource>('DIRECTORY');
+  const [instancesOpen, setInstancesOpen] = useState(false);
+  const [button, setButton] = useState<ExecutionButton | null>(null), [busy, setBusy] = useState(false);
+  const [attachmentsOpen, setAttachmentsOpen] = useState(false);
+  const busyRef = useRef(false);
+  const detail = query.data;
+  const directoryNodes = useMemo(() => !detail ? [] : navigationView === 'ARCHIVE'
+    ? archiveNavigation(detail.version.baseDirectory.directories, detail.version.candidates, detail.version.overlayDirectories, detail.placements)
+    : evidenceNavigation(source, detail.version.baseDirectory.directories, detail.version.candidates), [detail, navigationView, source]);
+  const activeNode = directoryNodes.find(node => !node.folder && node.key === nodeKey) ?? directoryNodes.find(node => !node.folder);
+  const activeRecordId = activeNode?.recordIds.includes(recordId) ? recordId : activeNode?.recordIds[0];
+  const record = detail?.version.candidates.find(r => r.id === activeRecordId) ?? null;
+  const archivedName = record ? detail?.placements.find(p => p.recordId === record.id)?.displayName : undefined;
+  const affected = detail?.evidenceChanges.length ?? 0;
+  const manualReview = detail?.version.checkResult?.manualReview;
+  const missingReview = Boolean(detail
+    && (!manualReview?.qualityAndExceptionsReviewed || !manualReview.sourceSignaturesReviewed
+      || !manualReview.completeScopeReviewed || !manualReview.note?.trim()
+      || !manualReview.confirmedBy?.trim() || !manualReview.confirmedAt?.trim()));
+  const downloadAttachment = async (attachmentId: string, name: string) => {
+    try {
+      const blob = await downloadDhrReviewAttachment(task.id, attachmentId);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url; link.download = name;
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) { showMessage(errorText(error), 'error'); }
+  };
+  const approve = async (credentials: { account: string; password: string; opinion: string }) => {
+    if (!button || !detail || busyRef.current) return;
+    busyRef.current = true; setBusy(true);
+    try {
+      await actDhrReview(task.id, { ...credentials, action: button.action, expectedSnapshotHash: detail.task.snapshotHash });
+      client.removeQueries({ queryKey: ['dhr-review', task.id] });
+      await client.invalidateQueries({ queryKey: ['dhr-instances'] });
+      await client.invalidateQueries({ queryKey: ['dhr-review-tasks'] });
+      showMessage(button.action === 'RETURN' ? '已退回整理，原汇总版本及审批历史保留' : '审批操作已保存', 'success');
+      setButton(null); onClose();
+    } catch (e) { showMessage(errorText(e), 'error'); }
+    finally { busyRef.current = false; setBusy(false); }
+  };
+  return <>
+    <AppDialog open fullScreen onClose={busy ? undefined : onClose}>
+      <DialogTitle><Stack direction="row" alignItems="center" justifyContent="space-between" gap={2}><Box>{task.dhrNo} · 汇总 V{task.versionNo}<Typography variant="caption" component="div" color="text.secondary">{task.objectNo} · {task.nodeName} · 查看本次提交的冻结证据</Typography></Box>{detail && <Button variant="outlined" size="small" startIcon={<AttachFileOutlined />} onClick={() => setAttachmentsOpen(true)}>附件证据 {detail.version.attachments.length}</Button>}</Stack></DialogTitle>
+      <DialogContent dividers sx={{ ...workspaceBodySx, p: 1.5, bgcolor: '#f3f5f8' }}>
+        {!detail ? <Box sx={{ m: 'auto', p: 3 }}>{query.isError ? <><Typography color="error">{errorText(query.error)}</Typography><Button onClick={() => query.refetch()}>重新加载</Button></> : '加载中…'}</Box> : <>
+          <DhrWorkspaceNavigation view={navigationView} source={source} nodes={directoryNodes} selectedKey={activeNode?.key ?? ''} instancesOpen={instancesOpen}
+            onViewChange={next => { const origin = record?.originKind ?? source; const nodes = next === 'ARCHIVE' ? archiveNavigation(detail.version.baseDirectory.directories, detail.version.candidates, detail.version.overlayDirectories, detail.placements) : evidenceNavigation(origin, detail.version.baseDirectory.directories, detail.version.candidates); setNodeKey(nodes.find(n => record && n.recordIds.includes(record.id))?.key ?? ''); setRecordId(record?.id ?? ''); setSource(origin); setNavigationView(next); }}
+            onSourceChange={next => { setSource(next); setNodeKey(''); setRecordId(''); setInstancesOpen(false); }}
+            onSelect={node => { if (node.key !== activeNode?.key) { setNodeKey(node.key); setRecordId(''); } }}
+            onInstances={node => { if (node.key === activeNode?.key) setInstancesOpen(open => !open); else { setNodeKey(node.key); setRecordId(''); setInstancesOpen(true); } }} />
+          <DhrInstancePanel open={instancesOpen} title={activeNode?.label ?? '表单'} selectedId={record?.id ?? ''} onSelect={setRecordId} onClose={() => setInstancesOpen(false)}
+            items={(activeNode?.recordIds ?? []).map(id => { const item = detail.version.candidates.find(r => r.id === id)!; return { id, label: item.instanceNo, secondary: item.status === 'COMPLETED' ? '已完成' : '未完成' }; })} />
+          <Box sx={{ ...workspacePanelSx, flex: 1 }}>
+            {affected > 0 && <Alert severity="warning">{affected} 项冻结证据或来源范围发生变化，本次冻结内容保持不变。请核对后退回整理，不能批准过时证据。{detail.evidenceChanges.map(c => <Typography key={c.recordId ?? `attachment-${c.attachmentId}`} variant="caption" component="div">{c.instanceNo || (c.attachmentId ? `附件 ${c.attachmentId}` : '证据')}：{c.message}</Typography>)}</Alert>}
+            {missingReview && <Alert severity="error">本版本提交核查结果不完整，不能批准；请退回整理。</Alert>}
+            {manualReview && <Box sx={{ px: 2, py: 1.25, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed' }}>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1} flexWrap="wrap"><Typography variant="subtitle2">提交核查结果</Typography><Typography variant="caption" color="text.secondary">{manualReview.confirmedBy} · {manualReview.confirmedAt?.replace('T', ' ').slice(0, 19)}</Typography></Stack>
+              <Typography variant="body2" color="text.secondary">质量结论与异常处置：{manualReview.qualityAndExceptionsReviewed ? '已确认核查' : '未确认'} · 源审批签署：{manualReview.sourceSignaturesReviewed ? '已确认核查' : '未确认'} · 完整证据范围：{manualReview.completeScopeReviewed ? '已确认核查' : '未确认'}</Typography>
+              <Typography variant="body2" sx={{ mt: 0.5, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>核查说明：{manualReview.note}</Typography>
+              <Typography variant="caption" color="text.secondary">人工核查确认不等于系统自动判定合格，也不等于产品放行。</Typography>
+            </Box>}
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 2, py: 1, bgcolor: '#fff', borderBottom: '1px solid #e4e7ed', minHeight: 48 }}><Typography variant="body2" noWrap>{record ? `${archivedName || record.templateName} · ${record.instanceNo}` : '请选择目录中的表单'}</Typography></Stack>
+            <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: 2 }}><EvidenceCanvas record={record} emptyMessage="此目录没有直接归入的表单，请选择下级目录" /></Box>
+          </Box>
+        </>}
+      </DialogContent>
+      <DialogActions><Typography variant="caption" color="text.secondary" sx={{ mr: 'auto', pl: 1 }}>{detail?.task.opinion || '审批通过不等同于产品放行'}</Typography><WorkflowActionButtons buttons={detail?.buttons.filter(b => !((affected || missingReview) && b.action === 'APPROVE'))} busy={busy} canAct={canAct && detail?.canAct && !query.isFetching && !query.isError} onAction={b => setButton({ ...b, requireOpinion: b.action === 'RETURN' || b.requireOpinion })} /></DialogActions>
+    </AppDialog>
+    <AppDialog open={attachmentsOpen} onClose={() => setAttachmentsOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>冻结附件证据</DialogTitle>
+      <DialogContent dividers>
+        {!detail?.version.attachments.length ? <Typography color="text.secondary">本次汇总无附件证据</Typography> : <Stack spacing={1}>{detail.version.attachments.map(attachment => <Stack key={attachment.id} direction="row" alignItems="center" justifyContent="space-between" gap={2} sx={{ py: 1, borderBottom: '1px solid #e4e7ed' }}><Box minWidth={0}><Typography variant="body2" fontWeight={600} noWrap title={attachment.name}>{attachment.name}</Typography><Typography variant="caption" color="text.secondary">{attachment.purpose} · {attachment.verificationStatus === 'VERIFIED' ? '已核验' : '待核验'}</Typography></Box><Tooltip title="下载冻结附件"><IconButton aria-label={`下载附件 ${attachment.name}`} onClick={() => void downloadAttachment(attachment.id, attachment.name)}><DownloadOutlined /></IconButton></Tooltip></Stack>)}</Stack>}
+      </DialogContent>
+      <DialogActions><Button onClick={() => setAttachmentsOpen(false)}>关闭</Button></DialogActions>
+    </AppDialog>
+    <DhrActionDialog button={button} busy={busy} initialOpinion={button?.action === 'RETURN' && affected ? `冻结证据或来源范围发生变化：${detail?.evidenceChanges.map(c => c.instanceNo || (c.attachmentId ? `附件 ${c.attachmentId}` : '证据')).join('、')}。请重新核查并提交新汇总版本。` : ''} onCancel={() => setButton(null)} onConfirm={approve} />
+  </>;
+}
+
+export default function DhrReviewPage() {
+  const [draft, setDraft] = useState(''), [keyword, setKeyword] = useState(''), [view, setView] = useState('PENDING');
+  const [page, setPage] = useState(0), [size, setSize] = useState(20), [selected, setSelected] = useState<DhrReviewTask | null>(null);
+  const [detailRow, setDetailRow] = useState<DhrReviewTask | null>(null);
+  const query = useQuery({ queryKey: ['dhr-review-tasks', view, keyword, page, size], queryFn: () => listDhrReviewTasks({ view, keyword, page, size }) });
+  const search = () => { setPage(0); setKeyword(draft.trim()); if (keyword === draft.trim() && page === 0) void query.refetch(); };
+  return <Box sx={{ height: 'calc(100vh - 142px)', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+    <Box component="form" onSubmit={e => { e.preventDefault(); search(); }} sx={formListQueryPanelSx}><Box sx={formListQueryGridSx}><TextField size="small" label="关键词" placeholder="DHR 编号、批次/SN、工单、产品或提交人" value={draft} onChange={e => setDraft(e.target.value)} sx={{ ...formListFieldSx, gridColumn: { md: 'span 2' } }} /><Stack direction="row" spacing={1.5} justifyContent="flex-end"><Button size="small" variant="outlined" startIcon={<RestartAlt />} sx={{ height: 40, minWidth: 80 }} onClick={() => { setDraft(''); setKeyword(''); setPage(0); if (!keyword && page === 0) void query.refetch(); }}>重置</Button><Button size="small" variant="contained" startIcon={<Search />} type="submit" sx={{ height: 40, minWidth: 80 }}>查询</Button></Stack></Box></Box>
+    <DhrWorklistTable onRowClick={setDetailRow} storageKey="dhr-review-columns" columns={columns} rows={query.data?.content ?? []} loading={query.isLoading} error={query.isError ? errorText(query.error) : undefined} page={page} size={size} total={query.data?.totalElements ?? 0} pages={query.data?.totalPages ?? 0} onPage={setPage} onSize={s => { setSize(s); setPage(0); }} toolbar={<Tabs value={view} onChange={(_, v) => { setView(v); setPage(0); }} aria-label="DHR审批视图"><Tab value="PENDING" label="我的待审" /><Tab value="DONE" label="我的已审" /></Tabs>} helpText={view === 'PENDING' ? '当前可由本人处理的 DHR 汇总审批任务' : '本人已经处理的 DHR 汇总审批任务'} cell={(row, id) => id === 'status' ? <StatusBadge label={labels[row.status] || row.status} color={row.status === 'COMPLETED' ? 'success' : row.status === 'REJECTED' ? 'warning' : 'primary'} /> : id === 'versionNo' ? `V${row.versionNo}` : <Typography variant="body2" noWrap title={String(row[id as keyof DhrReviewTask] || '')}>{row[id as keyof DhrReviewTask] || '—'}</Typography>} action={row => <Tooltip title="查看并审批"><IconButton size="small" aria-label={`查看并审批 ${row.dhrNo}`} onClick={() => setSelected(row)}><PreviewOutlined fontSize="small" /></IconButton></Tooltip>} />
+    {detailRow && <DhrDetailDrawer key={detailRow.id} source="review" id={detailRow.id} dhrNo={detailRow.dhrNo} onClose={() => setDetailRow(null)} />}
+    {selected && <ReviewDialog task={selected} onClose={() => setSelected(null)} />}
+  </Box>;
+}

@@ -26,6 +26,8 @@ public class ProductProcessOperationFormBinding {
     private Long formTemplateVersionId;
     @Column(name = "dhr_template_item_id", nullable = false)
     private Long dhrTemplateItemId;
+    @Column(name = "fill_settings_json", columnDefinition = "TEXT")
+    private String fillSettingsJson;
     @Column(name = "required", nullable = false)
     @Builder.Default private Boolean required = true;
     @Column(name = "sort_order", nullable = false)

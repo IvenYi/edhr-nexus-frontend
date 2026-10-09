@@ -55,8 +55,8 @@ class DocumentManagementControllerTest {
         when(idGenerator.nextId()).thenReturn(101L, 102L, 103L, 104L);
 
         var response = controller.create(new DocumentManagementController.DocumentWriteRequest(
-                "SIP-001", "来料检验指导书", "201", "", "", "V1.0", null, null,
-                "初始版本", null, null, null));
+                "SIP-001", "来料检验指导书", "201", "", "V1.0", null, null,
+                "初始版本", null, null));
 
         assertThat(response.getData().categoryId()).isEqualTo("201");
         assertThat(response.getData().categoryName()).isEqualTo("SIP");
@@ -81,8 +81,8 @@ class DocumentManagementControllerTest {
         when(idGenerator.nextId()).thenReturn(201L, 202L, 203L, 204L);
 
         var response = controller.create(new DocumentManagementController.DocumentWriteRequest(
-                "SOP-002", "待执行作业指导书", null, null, null, "V1.0", null, null,
-                null, null, LocalDateTime.now().plusDays(1), null));
+                "SOP-002", "待执行作业指导书", null, null, "V1.0", null, null,
+                null, LocalDateTime.now().plusDays(1), null));
 
         assertThat(response.getData().versions()).singleElement()
                 .extracting(DocumentManagementController.DocumentVersionResponse::status)
@@ -163,7 +163,7 @@ class DocumentManagementControllerTest {
         when(documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(101L, "V1.0")).thenReturn(true);
 
         assertThatThrownBy(() -> controller.createVersion(101L,
-                new DocumentManagementController.DocumentVersionWriteRequest("V1.0", "SOP-001", null, null, null, null, null, null)))
+                new DocumentManagementController.DocumentVersionWriteRequest("V1.0", "SOP-001", null, null, null, null, null)))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("版本号已存在");
     }
@@ -176,7 +176,7 @@ class DocumentManagementControllerTest {
         when(documentVersionRepository.existsByTenantIdAndCodeIgnoreCase("default", "SOP-001")).thenReturn(true);
 
         assertThatThrownBy(() -> controller.createVersion(101L,
-                new DocumentManagementController.DocumentVersionWriteRequest("V2.0", "SOP-001", null, null, null, null, null, null)))
+                new DocumentManagementController.DocumentVersionWriteRequest("V2.0", "SOP-001", null, null, null, null, null)))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("文档版本编码已存在");
     }
@@ -201,7 +201,7 @@ class DocumentManagementControllerTest {
         when(documentVersionRepository.existsByDocumentIdAndVersionIgnoreCase(101L, "V2.0")).thenReturn(false);
 
         assertThatThrownBy(() -> controller.createVersion(101L,
-                new DocumentManagementController.DocumentVersionWriteRequest("V2.0", "SOP-002", null, null, null, null,
+                new DocumentManagementController.DocumentVersionWriteRequest("V2.0", "SOP-002", null, null, null,
                         LocalDateTime.of(2026, 9, 1, 0, 0), LocalDateTime.of(2026, 8, 1, 0, 0))))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("失效时间不能早于生效时间");

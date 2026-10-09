@@ -17,11 +17,14 @@ export interface ProcessModelingBaseRecord {
   title?: string;
   description?: string;
   status?: string;
-  remark?: string;
   createdBy?: string;
   createdAt?: string;
   updatedBy?: string;
   updatedAt?: string;
+}
+
+export interface RemarkProcessModelingRecord extends ProcessModelingBaseRecord {
+  remark?: string;
 }
 
 export interface MaterialRecord extends ProcessModelingBaseRecord {
@@ -42,7 +45,7 @@ export interface MaterialGroupRecord extends MaterialRecord {
   versions: MaterialRecord[];
 }
 
-export interface ProductRecord extends ProcessModelingBaseRecord {
+export interface ProductRecord extends RemarkProcessModelingRecord {
   familyId?: string | number | null;
   productFamilyId?: string | number | null;
   materialTypeId?: string | number | null;
@@ -53,7 +56,7 @@ export interface ProductRecord extends ProcessModelingBaseRecord {
 
 export interface ProductFamilyRecord extends ProcessModelingBaseRecord {}
 
-export interface OperationRecord extends ProcessModelingBaseRecord {
+export interface OperationRecord extends RemarkProcessModelingRecord {
   operationCategory?: string;
   generalDescription?: string;
   defaultOperationType?: string;
@@ -69,7 +72,7 @@ export interface OperationCategoryRecord {
   system?: boolean;
 }
 
-export interface RouteRecord extends ProcessModelingBaseRecord {
+export interface RouteRecord extends RemarkProcessModelingRecord {
   productFamilyId?: string | number | null;
   commonAsset?: boolean;
   versionCount?: number;
@@ -185,6 +188,15 @@ export interface ProcessModelingPayload {
   sortOrder?: number | null;
 }
 
+export interface MasterDataDescriptionPayload {
+  code?: string;
+  name: string;
+  description?: string;
+  status?: string;
+  version?: string;
+  fileReference?: string;
+}
+
 const processModelingBase = '/master-data/process-modeling';
 
 const getProcessModelingList = <T extends ProcessModelingRecord>(path: string, params?: ProcessModelingQuery) =>
@@ -194,6 +206,12 @@ const createProcessModelingRecord = <T extends ProcessModelingRecord>(path: stri
   client.post(`${processModelingBase}/${path}`, body) as Promise<{ data: { data: T } }>;
 
 const updateProcessModelingRecord = <T extends ProcessModelingRecord>(path: string, id: string | number, body: ProcessModelingPayload) =>
+  client.put(`${processModelingBase}/${path}/${id}`, body) as Promise<{ data: { data: T } }>;
+
+const createMasterDataDescriptionRecord = <T extends ProcessModelingRecord>(path: string, body: MasterDataDescriptionPayload) =>
+  client.post(`${processModelingBase}/${path}`, body) as Promise<{ data: { data: T } }>;
+
+const updateMasterDataDescriptionRecord = <T extends ProcessModelingRecord>(path: string, id: string | number, body: MasterDataDescriptionPayload) =>
   client.put(`${processModelingBase}/${path}/${id}`, body) as Promise<{ data: { data: T } }>;
 
 const deleteProcessModelingRecord = (path: string, id: string | number) =>
@@ -288,13 +306,13 @@ export const updateProduct = (id: string | number, body: ProcessModelingPayload)
 export const deleteProduct = (id: string | number) => deleteProcessModelingRecord('products', id);
 
 export const getProcessProductFamilies = (params?: ProcessModelingQuery) => getProcessModelingList<ProductFamilyRecord>('product-families', params);
-export const createProcessProductFamily = (body: ProcessModelingPayload) => createProcessModelingRecord<ProductFamilyRecord>('product-families', body);
-export const updateProcessProductFamily = (id: string | number, body: ProcessModelingPayload) => updateProcessModelingRecord<ProductFamilyRecord>('product-families', id, body);
+export const createProcessProductFamily = (body: MasterDataDescriptionPayload) => createMasterDataDescriptionRecord<ProductFamilyRecord>('product-families', body);
+export const updateProcessProductFamily = (id: string | number, body: MasterDataDescriptionPayload) => updateMasterDataDescriptionRecord<ProductFamilyRecord>('product-families', id, body);
 export const deleteProcessProductFamily = (id: string | number) => deleteProcessModelingRecord('product-families', id);
 
 export const getProcessDocuments = (params?: ProcessModelingQuery) => getProcessModelingList<ProcessDocumentRecord>('documents', params);
-export const createProcessDocument = (body: ProcessModelingPayload) => createProcessModelingRecord<ProcessDocumentRecord>('documents', body);
-export const updateProcessDocument = (id: string | number, body: ProcessModelingPayload) => updateProcessModelingRecord<ProcessDocumentRecord>('documents', id, body);
+export const createProcessDocument = (body: MasterDataDescriptionPayload) => createMasterDataDescriptionRecord<ProcessDocumentRecord>('documents', body);
+export const updateProcessDocument = (id: string | number, body: MasterDataDescriptionPayload) => updateMasterDataDescriptionRecord<ProcessDocumentRecord>('documents', id, body);
 export const deleteProcessDocument = (id: string | number) => deleteProcessModelingRecord('documents', id);
 
 // Product Families
@@ -328,6 +346,7 @@ export interface EquipmentTypeRecord {
   id: string;
   code: string;
   name: string;
+  description?: string | null;
   categoryId?: string | null;
   categoryName?: string | null;
   createdBy?: string | null;
@@ -340,6 +359,7 @@ export interface EquipmentRecord {
   id: string;
   code: string;
   name: string;
+  description?: string | null;
   equipmentTypeId: string;
   equipmentTypeName?: string | null;
   categoryName?: string | null;

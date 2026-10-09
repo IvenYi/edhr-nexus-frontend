@@ -1,0 +1,57 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.master-data-description-dialog-guidelines
+    type: document
+    path: docs/frontend/dialog-guidelines.md
+    description: 普通主数据表单最多保留一个“描述”字段；带子版本主数据的子记录使用“版本说明”，不在同层级保留“备注”或重复版本备注。
+    visibility: internal
+  - id: evidence.master-data-description-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql
+    description: 删除 product_family、sop_document 和 document_version 三张表的 remark 列；重复执行使用 IF EXISTS，回滚只恢复空结构列，既有 remark 值按已确认范围丢弃。
+    visibility: internal
+  - id: evidence.master-data-description-process-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    description: 产品簇创建和更新从请求读取 description 并写入产品簇实体与审计快照，不再使用父记录 remark 字段。
+    visibility: internal
+  - id: evidence.master-data-description-document-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+    description: 文档主记录创建和更新使用 description，文档版本创建和更新使用 description 作为版本级说明，接口请求与响应不再暴露重复 remark 字段。
+    visibility: internal
+  - id: evidence.master-data-description-product-family-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
+    description: 产品簇父记录前端类型、表单和审计标签使用 description/“描述”；页面同时复用共享列表几何和普通表单组件边界。
+    visibility: internal
+  - id: evidence.master-data-description-document-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+    description: 文档主记录使用“描述”，文档版本列和表单使用“版本说明”，版本负载通过 versionDescription 映射到版本 description。
+    visibility: internal
+  - id: evidence.master-data-description-migration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DuplicateRemarkMigrationTest.java
+    description: 验证三张表的 remark 列迁移后不存在、迁移可重复执行，并验证一次回滚恢复三列结构。
+    visibility: internal
+  - id: evidence.master-data-description-document-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java
+    description: 文档主记录和文档版本控制器聚焦测试入口，用于核对 description/versionDescription 的创建、更新和校验契约。
+    visibility: internal
+  - id: evidence.master-data-workshop-shared-shell-guidelines
+    type: document
+    path: docs/frontend/list-table-shell.md
+    description: 共享列表壳的范围和几何契约：统一滚动边界、稳定列宽、首列正文基线和 RDO/普通列表的复用边界。
+    visibility: internal
+  - id: evidence.master-data-workshop-shared-shell-page
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx
+    description: 车间页面使用 ListTableShell、统一列表样式 token、列调整把手、FormDialog 和双列 FormDialogFieldGrid；车间描述仍保持“描述”字段语义。
+    visibility: internal
+  - id: evidence.master-data-workshop-shared-shell-verification
+    type: test
+    path: gmp-platform/frontend/scripts/verify-workshop-management.mjs
+    description: 车间页面聚焦验证脚本，覆盖列表、列调整、统一表单壳及车间字段契约的静态检查入口。
+    visibility: internal

@@ -35,6 +35,7 @@ public class ProductionService {
     private final ProductProcessResolutionService processResolutionService;
     private final StateMachineService stateMachineService;
     private final SnowflakeIdGenerator idGenerator;
+    private final DhrInstanceService dhrInstances;
 
     @Transactional
     public ProductionObject split(Long workOrderId, Long requestedProcessVersionId, BigDecimal targetQuantity,
@@ -46,7 +47,9 @@ public class ProductionService {
     public ProductionObject split(Long workOrderId, Long requestedProcessVersionId, BigDecimal targetQuantity,
                                    String objectNo, String remark, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt) {
         WorkOrder order = requireOrderForUpdate(workOrderId);
-        if (!"CREATED".equals(order.getStatus())) throw error("只有已创建的工单可以拆分生产对象");
+        if (!List.of("CREATED", "IN_PROCESS").contains(order.getStatus())) {
+            throw error("只有已创建或生产中的工单可以拆分生产对象");
+        }
         if (targetQuantity == null || targetQuantity.signum() <= 0) {
             throw error("生产对象目标数量必须大于0");
         }
@@ -64,6 +67,7 @@ public class ProductionService {
             throw error("同一工单不能混用批次和SN生产形态");
         }
         BigDecimal allocated = existing.stream()
+                .filter(item -> !"CANCELLED".equals(item.getStatus()))
                 .map(ProductionObject::getTargetQuantity)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (allocated.add(targetQuantity).compareTo(order.getPlannedQuantity()) > 0) {
@@ -156,10 +160,12 @@ public class ProductionService {
         ProductionObject object = requireObjectForUpdate(id);
         if (!"IN_PROGRESS".equals(object.getStatus())) throw error("只有生产中的对象可以提前结束");
         if (!StringUtils.hasText(reason)) throw error("提前结束必须填写结束原因");
+        LocalDateTime terminatedAt = LocalDateTime.now();
+        dhrInstances.terminateWithProductionObject(id, reason.trim(), terminatedAt);
         stateMachineService.transit("PRODUCTION_OBJECT", object.getId(), object.getStatus(), "EARLY_TERMINATED");
         object.setStatus("EARLY_TERMINATED");
         object.setTerminationReason(reason.trim());
-        object.setTerminationAt(LocalDateTime.now());
+        object.setTerminationAt(terminatedAt);
         ProductionObject saved = productionObjectRepository.save(object);
         updateOrderWhenObjectsTerminal(order);
         return saved;
@@ -195,7 +201,7 @@ public class ProductionService {
             if (hasEarlyTermination && "IN_PROCESS".equals(order.getStatus())) {
                 stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "EARLY_TERMINATED");
                 order.setStatus("EARLY_TERMINATED");
-            } else if (allCompleted) {
+            } else if (allCompleted || "IN_PROCESS".equals(order.getStatus())) {
                 stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "COMPLETED");
                 order.setStatus("COMPLETED");
             } else {

@@ -58,8 +58,9 @@ final class DeletionRelations {
         add("unit_of_measure", "计量单位", "业务字典", "/system/dictionaries", false);
         add("work_order", "工单", "生产 / 生产准备 / 工单管理", "/production/work-orders", true);
         add("production_object", "生产对象", "生产 / 生产准备 / 批次管理", "/production/batches", true);
-        for (String table : List.of("batch", "serial_number", "operation_execution", "dhr_instance", "dhr_evidence_item", "release_order"))
+        for (String table : List.of("batch", "serial_number", "operation_execution", "dhr_evidence_item", "release_order"))
             add(table, "生产追溯记录", "生产 / 批次管理", "/production/batches", true);
+        add("dhr_instance", "DHR 实例", "记录 / DHR 管理", "/dhr-management/list", true);
         for (String table : List.of("form_instance", "form_instance_record", "form_field_value"))
             add(table, "表单实例", "表单管理 / 表单实例", "/form-management/list", true);
         add("workflow_binding_rule", "作业适用规则", "生产 / 生产配置 / 作业模板", "/production/work-templates", false);
@@ -78,6 +79,7 @@ final class DeletionRelations {
 
     static final List<Reference> REFERENCES = List.of(
         new Reference("material", "work_order", "product_id", false),
+        new Reference("material", "dhr_instance", "product_id", false),
         new Reference("material", "product_family_member", "product_id", false),
         new Reference("material", "product_process", "owner_id", true, "id", "owner_type = 'PRODUCT'"),
         new Reference("material", "workflow_binding_rule", "product_id", false),
@@ -94,6 +96,7 @@ final class DeletionRelations {
         new Reference("product_process", "product_process_version", "product_process_id", false),
         new Reference("product_process_version", "work_order", "process_version_id", false),
         new Reference("product_process_version", "production_object", "process_version_id", false),
+        new Reference("product_process_version", "dhr_instance", "process_version_id", false),
         new Reference("product_process_version", "product_process_operation_binding", "product_process_version_id", true),
         new Reference("product_process_operation_binding", "product_process_operation_document_binding", "product_process_operation_binding_id", true),
         new Reference("product_process_operation_binding", "product_process_operation_form_binding", "product_process_operation_binding_id", true),
@@ -112,6 +115,7 @@ final class DeletionRelations {
         new Reference("route_version", "route_node", "route_version_id", true),
         new Reference("route_version", "route_relation", "route_version_id", true),
         new Reference("route_version", "product_process_version", "route_version_id", false),
+        new Reference("route_version", "dhr_instance", "route_version_id", false),
         new Reference("sop_document", "document_version", "document_id", true),
         new Reference("sop_document", "product_process_operation_sop_binding", "sop_document_id", false),
         new Reference("document_version", "product_process_operation_document_binding", "document_version_id", false),
@@ -139,15 +143,12 @@ final class DeletionRelations {
         new Reference("form_field", "form_field_value", "form_field_id", false),
         new Reference("dhr_template", "dhr_template_version", "dhr_template_id", true),
         new Reference("dhr_template", "dhr_instance", "dhr_template_id", false),
-        new Reference("dhr_template", "release_form_template", "dhr_template_id", false),
         new Reference("dhr_template_version", "dhr_directory", "version_id", true),
         new Reference("dhr_template_version", "product_process_version", "dhr_template_version_id", false),
         new Reference("dhr_template_version", "dhr_instance", "dhr_template_version_id", false),
         new Reference("dhr_directory", "dhr_directory", "parent_id", true),
         new Reference("dhr_directory", "dhr_template_item", "directory_id", true),
-        new Reference("dhr_directory", "dhr_evidence_item", "dhr_directory_id", false),
         new Reference("dhr_template_item", "product_process_operation_form_binding", "dhr_template_item_id", false),
-        new Reference("dhr_template_item", "dhr_evidence_item", "dhr_template_item_id", false),
         new Reference("template_category", "form_template", "category_name", false, "name", "'FORM' = :template_type"),
         new Reference("template_category", "dhr_template", "category_name", false, "name", "'DHR' = :template_type"),
         new Reference("equipment_category", "equipment_type", "category_id", false),
@@ -155,14 +156,12 @@ final class DeletionRelations {
         new Reference("workshop", "production_line", "workshop_id", false),
         new Reference("unit_of_measure", "work_order", "unit_id", false),
         new Reference("work_order", "production_object", "work_order_id", false),
+        new Reference("work_order", "dhr_instance", "work_order_id", false),
         new Reference("production_object", "form_instance_record", "object_id", false),
+        new Reference("production_object", "dhr_instance", "production_object_id", false),
         new Reference("batch", "serial_number", "batch_id", false),
         new Reference("batch", "operation_execution", "batch_id", false),
-        new Reference("batch", "form_instance", "batch_id", false),
-        new Reference("batch", "dhr_instance", "batch_id", false),
-        new Reference("dhr_instance", "dhr_evidence_item", "dhr_instance_id", false),
-        new Reference("dhr_instance", "release_order", "dhr_instance_id", false),
-        new Reference("release_form_template", "release_order", "release_form_template_id", false)
+        new Reference("batch", "form_instance", "batch_id", false)
     );
 
     private DeletionRelations() {}

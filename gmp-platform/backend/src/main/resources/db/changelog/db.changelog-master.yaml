@@ -188,6 +188,42 @@ databaseChangeLog:
   - include:
       file: db/changelog/0087-restore-standard-material-types.sql
   - include:
-      file: db/changelog/0087-record-control.sql
+      file: db/changelog/0088-workflow-definition-business-type.sql
   - include:
-      file: db/changelog/0088-record-change-menu-permissions.sql
+      file: db/changelog/0088a-dhr-instance-legacy-table-preparation.sql
+  - include:
+      file: db/changelog/0089-dhr-instance-management.sql
+  - include:
+      file: db/changelog/0090-remove-dhr-template-version-snapshot.sql
+  - include:
+      file: db/changelog/0091-remove-dhr-template-version-status.sql
+  - include:
+      file: db/changelog/0092-dhr-summary-workspace.sql
+  - include:
+      file: db/changelog/0093-dhr-summary-version-review-binding.sql
+  - include:
+      file: db/changelog/0094-equipment-description.sql
+  - include:
+      file: db/changelog/0095-remove-duplicate-remarks.sql
+  - include:
+      file: db/changelog/0094-created-at-schema-compatibility.sql
+  - include:
+      file: db/changelog/0096-form-fill-settings.sql
+  - include:
+      file: db/changelog/0097-dhr-review-workbench.sql
+  - include:
+      file: db/changelog/0098-dhr-early-termination.sql
+  - include:
+      file: db/changelog/0099-dhr-approval-display-name.sql
+  - include:
+      file: db/changelog/0100-dhr-summary-evidence-order.sql
+  - include:
+      file: db/changelog/0101-dhr-summary-evidence-display-name.sql
+  - include:
+      file: db/changelog/0102-dhr-summary-complete-evidence.sql
+  - include:
+      file: db/changelog/0103-dhr-controlled-attachments.sql
+  - include:
+      file: db/changelog/0104-dhr-current-evidence-only.sql
+  - include:
+      file: db/changelog/0105-dhr-office-attachments.sql

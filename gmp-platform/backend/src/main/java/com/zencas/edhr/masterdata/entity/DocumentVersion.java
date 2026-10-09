@@ -41,8 +41,6 @@ public class DocumentVersion {
     private String fileReference;
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-    @Column(name = "remark", columnDefinition = "TEXT")
-    private String remark;
     @Column(name = "effective_date")
     private LocalDateTime effectiveDate;
     @Column(name = "expiry_date")

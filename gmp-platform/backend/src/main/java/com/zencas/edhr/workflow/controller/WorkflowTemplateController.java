@@ -631,8 +631,8 @@ public class WorkflowTemplateController {
 
     private void validateBusinessType(String businessType) {
         if (businessType == null || businessType.isBlank()
-                || (!"CHANGE".equals(businessType) && !"OBSOLETE".equals(businessType))) {
-            throw new BusinessException(ErrorCode.GENERAL_003, "审批流程分类仅支持表单变更或表单作废");
+                || (!"CHANGE".equals(businessType) && !"OBSOLETE".equals(businessType) && !"DHR_SUMMARY".equals(businessType))) {
+            throw new BusinessException(ErrorCode.GENERAL_003, "审批流程分类仅支持表单变更、表单作废或 DHR 汇总审批");
         }
     }
 
