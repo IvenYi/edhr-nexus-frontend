@@ -1,0 +1,177 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260924-CUSTOM-FORM-SCOPE
+  scope: production-custom-form-scope-and-record-completeness
+  knowledgeBaselineVersion: 0.3.24
+  summary: 自定义表单区分工序与批次归属，分别校验完工及批记录资料齐套
+  confirmed:
+    concepts:
+      - id: concept.custom-form-scope
+        name: 自定义表单归属
+        definition: 自定义表单归属于指定工序或生产对象；批次归属表单跨工序共享同一份记录。
+        status: specified
+        sourceReferences: [user-confirmed-20260924]
+    relationships: []
+    rules:
+      - id: rule.custom-form-template-selection
+        name: 自定义表单选择不以发布状态限制
+        status: specified
+        trigger: production.attach-form
+        condition: {all: [{fact: formTemplate.available, operator: equals, value: true}]}
+        result: {type: allow, selection: explicit-template-version, snapshot: freeze-on-attach}
+        sourceReferences: [user-confirmed-20260924-template-no-publication]
+      - id: rule.custom-form-scope-completion
+        name: 按归属校验生产完工
+        status: specified
+        trigger: production.complete
+        condition: {all: [{fact: customForm.completionRequired, operator: equals, value: true}]}
+        result: {type: block, scopeFrom: customForm.scope, until: all-copies-completed}
+        sourceReferences: [user-confirmed-20260924]
+      - id: rule.custom-form-record-completeness
+        name: 自定义表单资料闭环
+        status: specified
+        trigger: dhr.finalize
+        condition: {all: [{fact: customForm.unresolvedCopyCount, operator: greater-than, value: 0}]}
+        result: {type: block, targets: [finalize, release, normal-archive]}
+        sourceReferences: [user-confirmed-20260924]
+    executionContracts: []
+  inferred:
+    - id: inference.custom-form-compatible-storage
+      statement: 复用现有执行快照与份序状态，保留创建工序定位作为技术来源；scope 为业务归属的唯一判断。
+      rationale: 不复制跨工序表单，不迁移既有实例标识及审计链。
+      relatedIds: [concept.custom-form-scope]
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: custom-form-template-picker
+        change: 分类筛选按模板计数，以明确模板标识聚合版本；选择模板时默认选中第一个版本，允许手动切换并保留已确认版本；只查询轻量元数据且不截断版本。
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+      - area: production-execution
+        change: 新增归属、完工校验开关、添加原因；共享批次表单和资料待完善投影。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    transitiveImpacts:
+      - area: dhr-summary
+        change: 汇总提交前检查所有自定义份序，不能通过不纳入目录绕过；定稿/审核阶段限制修改。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
+    potentialImpacts:
+      - area: release-archive
+        concern: 用户已确认本次完成现有业务链路；放行和归档实际入口及其后补录留待相应模块实现，规则不能宣称已运行。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/DhrStatusMachine.java]
+    unaffectedAreas:
+      - area: template-designer
+        reason: 表单模板没有发布业务状态；仅纠正自定义选取和添加的错误发布过滤，不修改模板管理、字段校验、电子签名验证或流程发布规则。
+    compatibilityAndMigration:
+      - description: 历史缺少 scope 的自定义表单按工序归属解释；保留原 required 语义及全部实例编号；无需数据库结构迁移。
+    snapshotImpacts:
+      - description: 新表单冻结 scope、completionRequired、添加原因和来源工序；批次级实例只存一份。
+    auditImpacts:
+      - description: 添加、完工后继续填报记录原因和前后快照；历史定稿证据不被静默改写。
+    permissionImpacts:
+      - description: 复用生产执行权限和表单节点参与人；禁止对已取消/终止对象写入，审核中禁止补充，定稿后先重新整理。
+    testImpacts:
+      - scope: production-execution-and-dhr
+        scenarios: [工序必填阻断, 批次跨工序共享, 批次独立完工阻断, 关闭开关后生产完工但资料未齐套, 未保存份序阻断定稿, 多份审批完成, 历史兼容, 权限, 修订冲突, 审计回滚, 真实页面]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps:
+      - 放行/归档缺少实际入口，当前运行验证止于 DHR 定稿；相关后续规则保留 specified。
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 自定义表单归属属于通用生产记录能力，沿用现有锁、修订号和模板快照。
+    ownershipBoundaries:
+      - owner: production-execution
+        responsibility: 冻结归属、填写权限、完工规则和审计。
+      - owner: dhr-summary
+        responsibility: 资料齐套检查和不可变定稿证据。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      changeType: update
+      reason: 归属契约、补录保护和可用动作。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      changeType: update
+      reason: 区分工序和批次完工门禁。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+      changeType: update
+      reason: 全部自定义份序闭环检查。
+    - path: gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx
+      changeType: update
+      reason: 紧凑归属选择与清晰门禁说明。
+  acceptanceScenarios:
+    - id: scenario.template-category-and-version-picker
+      given: 可用表单分属多个分类且同一模板存在多个版本
+      when: 筛选分类、搜索名称或编码、选择模板及具体版本
+      then: 每个模板展示一次，分类计数不重复计算版本；多版本默认选中第一个版本且可手动切换，取消不替换已选版本，添加继续使用准确版本标识。
+      evidenceRequirements: [integration, frontend, browser]
+    - id: scenario.custom-template-without-publication
+      given: 启用模板具有已保存版本，历史技术状态为 DRAFT
+      when: 查询并添加自定义表单
+      then: 版本可搜索和选择，添加时冻结字段及画布；禁用模板、无效版本及跨租户引用仍拒绝，既有快照不受后续模板修改影响。
+      evidenceRequirements: [integration, frontend, browser]
+    - id: scenario.batch-form-across-operations
+      given: 在工序 A 添加批次表单
+      when: 切换到工序 B
+      then: 可填写同一份序，值和实例号相同；不阻断 A 完工。
+      evidenceRequirements: [integration, frontend]
+    - id: scenario.independent-completeness
+      given: 非完工必填的自定义表单未完成
+      when: 生产完工并提交 DHR 汇总
+      then: 生产已完工且资料待完善；汇总提交被阻止。
+      evidenceRequirements: [integration]
+    - id: scenario.frozen-review-boundary
+      given: DHR 审核中或定稿
+      when: 添加或修改自定义表单
+      then: 必须先退回或重新整理，不能静默改写证据。
+      evidenceRequirements: [integration]
+implementationPlan:
+  - step: 实现快照归属与分层完工检查，保持历史实例兼容。
+    validation: 引擎及 API 集成测试。
+  - step: 实现跨工序共享、完工后带原因继续填报及 DHR 齐套保护。
+    validation: 持久化、修订、权限、审计、汇总提交测试。
+  - step: 紧凑新增界面、归属标签、资料状态和补录提示。
+    validation: 类型检查、组件回归和浏览器。
+  - step: 本体更新与独立 L2 质量复核。
+    validation: 知识校验及质量结果。
+validationEvidence:
+  categoryVersionPicker:
+    ontologyResult: {result: not-applicable, reason: 复用既有模板分类、模板版本及显式版本冻结语义，仅调整查询元数据完整性和选择呈现，不新增业务规则或生命周期。}
+    independentQuality: {result: passed, verifier: category_version_picker_quality, evidence: /tmp/template-picker-independent-quality.log}
+    frontend: TypeScript 及 8 项选择器和跨工序回归通过；覆盖分类计数、搜索、显式多版本选择、跨模板清空版本、取消恢复和精确版本提交。
+    backend: 3 项聚焦集成测试通过，包含 102 个版本完整性、模板标识和分类元数据、租户保护及冻结快照。
+    browser: 桌面分类列表、键盘分类和模板选择、单版本自动选定、取消不更改已选模板通过；540x800 窄屏分类横排及底部确认无截断，测试后已恢复原窗口。未写入实际批次。
+    limitation: 实际目录当前均单版本，多版本分支以组件回归和集成测试验证；未对超大目录进行性能压测。
+  templateSelectionCorrection:
+    independentQuality: {result: passed, verifier: template_selection_quality, evidence: /tmp/template-selection-independent.log}
+    backend: 61 项集成测试中 59 项通过，2 项既有浏览器测试未启用；覆盖无发布限制、添加快照、审计、禁用模板及租户边界。
+    backendLog: /tmp/template-selection-green.log
+    frontend: TypeScript 检查及 5 项模板选择和跨工序交互测试通过。
+    browser: 本地 8081 服务更新后弹窗显示 6 个实际模板；名称搜索、版本选择及确认回显已选模板 1 通过。未向实际批次提交新增记录。
+    knowledge: 隔离正式知识校验 59 项通过，沿用排除两项既有未跟踪 DEC 冲突的验证边界。
+  independentQuality:
+    result: passed
+    verifier: custom_scope_final_quality
+    revision: ea2036027124c1fc9b9fb9aa2ddbb959478a1a81 plus scoped working tree
+    evidence: /tmp/custom-scope-independent-final.log
+    note: 全新质量实例独立复跑 7 个重点后端用例及 18 个前端用例，最终无未解决发现；视觉采用主实现真实页面证据与源码复核。
+  backend:
+    result: passed
+    log: /tmp/custom-scope-final-tests.log
+    suites: [ProductionExecutionIntegrationTest, ProductionExecutionEngineTest, DhrSummaryServiceTest, DhrSummaryPersistenceTest, DhrFillingServiceTest, DhrReviewLifecycleIntegrationTest, DhrReviewServiceTest]
+    discovered: 119
+    executed: 117
+    skipped: 2
+    note: 两个既有浏览器测试未启用。最终 canEnd 一致性修改另以 optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection 回归通过。
+  frontend:
+    result: passed
+    checks: [TypeScript build, execution-custom-forms, execution-copy-drawer, execution-history]
+    tests: 18
+    log: /tmp/custom-scope-final-frontend.log
+  browser:
+    result: partial
+    verified: [自定义新增入口, 工序默认归属与默认完工校验, 批次归属及提示联动, 校验关闭说明, 添加原因输入, 模板为空时禁止提交, 抽屉视觉布局]
+    limitation: 初次验证因错误的发布过滤未能选择模板；templateSelectionCorrection 已纠正并补验真实模板选择。未向实际批次提交测试表单，真实添加和完整业务链路使用隔离集成数据验证。
+  compatibility:
+    - 历史执行没有 DHR 实例时可补充自定义记录，不伪造历史 DHR；既有最终完工的 DHR 缺失保护保持不变。
+    - 审批前再次检查全部自定义份，阻止旧版本遗留的不完整审核直接定稿；允许退回整理。
+  knowledge:
+    result: scoped-passed
+    tests: 59
+    limitation: 完整工作树有两个既有未跟踪 DEC-0058/0059 冲突，隔离校验排除这两项；不能声称完整知识门禁通过。

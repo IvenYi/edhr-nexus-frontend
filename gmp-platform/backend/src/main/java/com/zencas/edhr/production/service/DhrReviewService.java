@@ -93,7 +93,7 @@ public class DhrReviewService {
         if (objectRows.isEmpty()) throw invalid("DHR 实例不存在");
         Object objectId = objectRows.getFirst().get("production_object_id");
         if (objectId != null) jdbc.queryForMap("SELECT id FROM production_object WHERE tenant_id='default' AND id=? FOR UPDATE", objectId);
-        var dhr = jdbc.queryForMap("SELECT summary_status FROM dhr_instance WHERE tenant_id='default' AND id=? FOR UPDATE", dhrId);
+        var dhr = jdbc.queryForMap("SELECT summary_status,production_object_id FROM dhr_instance WHERE tenant_id='default' AND id=? FOR UPDATE", dhrId);
         var row = requireTask(taskId);
         if (!pending(row) || !"RUNNING".equals(workflow.getStatus()) || !"PENDING_REVIEW".equals(dhr.get("summary_status"))) throw invalid("审批任务已处理，请刷新");
         if (!eligible(row, actor())) throw new AccessDeniedException("当前用户不是审批处理人");
@@ -105,6 +105,12 @@ public class DhrReviewService {
         String opinion = command.path("opinion").asText("").strip();
         if (("RETURN".equals(action) || button.path("requireOpinion").asBoolean()) && opinion.isBlank()) throw invalid("请填写审批意见");
         if ("APPROVE".equals(action) && !hasCompleteManualReview(row)) throw invalid("汇总提交核查结果不完整，不能批准；请退回整理");
+        if ("APPROVE".equals(action) && dhr.get("production_object_id") != null) {
+            for (var execution : jdbc.queryForList("SELECT snapshot_json,state_json FROM production_execution WHERE object_id=?", dhr.get("production_object_id"))) {
+                var issues = CustomFormPolicy.incomplete(json(text(execution, "snapshot_json")), json(text(execution, "state_json")), false);
+                if (!issues.isEmpty()) throw invalid("资料待完善，不能批准；请退回整理：" + String.join("；", issues));
+            }
+        }
         ArrayNode changes = evidenceChanges(versionId, true);
         if ("APPROVE".equals(action) && !changes.isEmpty()) throw invalid("DHR 冻结证据或来源范围发生变化，不能按过时证据批准；请退回整理");
         if ("APPROVE".equals(action)) summaries.validateFrozenFormFiles(dhrId, versionId);

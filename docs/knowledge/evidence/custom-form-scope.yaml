@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.24
+evidence:
+  - id: evidence.custom-form-template-selection-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    description: original-evidence；2026-09-24 核对候选查询及 customForm 曾错误要求表单模板版本 PUBLISHED，造成有效模板不可选择；用户明确表单模板无发布状态。修复仅纠正模板选择资格，保留模板有效性、租户过滤、显式 versionId 与 form 构建完整快照；作业及表单流程发布校验不变。业务要求见确认证据，当前知识不以并行代码修改代替验证结论。
+    visibility: internal
+  - id: evidence.custom-form-scope-confirmed
+    type: document
+    path: docs/knowledge/evidence/custom-form-scope-confirmed.md
+    description: user-confirmed；2026-09-24 用户确认工序与批次归属、可选完工校验、资料闭环、受控补录和 L2 实施；是业务定义证据，不证明实现、发布或放行归档运行能力。
+    visibility: internal
+  - id: evidence.custom-form-scope-source-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    description: original-evidence；本体核对当前 submit、validatePlacements 与未完成补录检查，确认汇总提交已有独立验证入口；结合 FormInstanceQueryService 仅支持 FILL 及记录控制开放问题，不能推定已有授权关闭闭环。新归属与完整性实现正在并行，尚无本切片验证或执行契约证明。
+    visibility: internal

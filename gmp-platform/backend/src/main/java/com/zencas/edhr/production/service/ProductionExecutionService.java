@@ -43,7 +43,7 @@ public class ProductionExecutionService {
     private final DhrInstanceService dhrInstances;
 
     @Transactional(readOnly = true)
-    public com.fasterxml.jackson.databind.node.ArrayNode publishedForms(String keyword) { return snapshots.publishedForms(keyword); }
+    public com.fasterxml.jackson.databind.node.ArrayNode selectableForms(String keyword) { return snapshots.selectableForms(keyword); }
 
     @Transactional(readOnly = true)
     public ObjectNode editors(Long id, String operationId, PresenceCommand command) {
@@ -55,7 +55,8 @@ public class ProductionExecutionService {
         if (command != null && !command.editing()) presence.leave(id, actor, command.sessionId());
         ProductionExecution execution = executions.findById(id).orElse(null);
         ObjectNode result = mapper.createObjectNode();
-        boolean allowed = execution != null && "IN_PROGRESS".equals(object.getStatus()) && List.of("CREATED", "IN_PROCESS").contains(order.getStatus());
+        boolean allowed = execution != null && List.of("IN_PROGRESS", "COMPLETED").contains(object.getStatus())
+                && List.of("CREATED", "IN_PROCESS", "COMPLETED").contains(order.getStatus()) && dhrInstances.customFormsMutable(id, false);
         if (!allowed) {
             if (command != null && command.editing()) throw invalid("当前生产对象不可填报");
             return result;
@@ -84,8 +85,9 @@ public class ProductionExecutionService {
     }
 
     private boolean canEdit(JsonNode op, JsonNode current, String formId, String instanceId, String actor) {
-        if (!"IN_PROGRESS".equals(current.path("status").asText()) || formId == null || instanceId == null || !ExecutionFormCopies.ids(current, formId).contains(instanceId)) return false;
+        if (formId == null || instanceId == null || !ExecutionFormCopies.ids(current, formId).contains(instanceId)) return false;
         JsonNode form = engine.find(op.path("forms"), formId);
+        if (!CustomFormPolicy.editable(form, current)) return false;
         ObjectNode controls = engine.formControls(form, current.path("forms").path(instanceId), actor);
         return controls.path("canAct").asBoolean() && java.util.stream.StreamSupport.stream(controls.path("permissions").spliterator(), false).anyMatch(n -> "EDIT".equals(n.asText()));
     }
@@ -137,9 +139,10 @@ public class ProductionExecutionService {
         if (operationId == null || operationId.isBlank() || formId == null || formId.isBlank()) throw invalid("请选择待转办的表单审批任务");
         ProductionObject object = production.requireObject(id);
         WorkOrder order = production.requireOrder(object.getWorkOrderId());
-        if (!"IN_PROGRESS".equals(object.getStatus()) || !List.of("CREATED", "IN_PROCESS").contains(order.getStatus()))
+        if (!List.of("IN_PROGRESS", "COMPLETED").contains(object.getStatus()) || !List.of("CREATED", "IN_PROCESS", "COMPLETED").contains(order.getStatus()))
             throw invalid("当前生产对象不可转办表单审批");
         ProductionExecution execution = executions.findById(id).orElseThrow(() -> invalid("生产对象尚无执行记录"));
+        if (!dhrInstances.customFormsMutable(id, false)) throw invalid("批记录审核中或已定稿，不能转办");
         String operator = AuditContext.getOperatorId();
         if (operator == null || operator.isBlank()) throw invalid("请先登录");
         return engine.transferTargets(parse(execution.getSnapshotJson()), parse(execution.getStateJson()), operationId, formId, instanceId, operator, keyword);
@@ -155,7 +158,10 @@ public class ProductionExecutionService {
         Long orderId = objects.findWorkOrderId("default", id).orElseThrow(() -> invalid("生产对象不存在"));
         WorkOrder order = orders.findByTenantIdAndIdForUpdate("default", orderId).orElseThrow(() -> invalid("工单不存在"));
         ProductionObject object = objects.findByTenantIdAndIdForUpdate("default", id).orElseThrow(() -> invalid("生产对象不存在"));
-        if (!List.of("CREATED", "IN_PROCESS").contains(order.getStatus()) || !List.of("CREATED", "IN_PROGRESS").contains(object.getStatus()))
+        boolean recordAction = List.of("ATTACH_FORM", "SAVE", "SUBMIT", "APPROVE", "RETURN", "SIGN_FIELD", "TRANSFER", "ADD_FORM_COPY", "UPDATE_FORM_COPY_REMARK", "END_FORM").contains(command.action());
+        boolean afterProduction = "COMPLETED".equals(object.getStatus()) && recordAction;
+        if (!(List.of("CREATED", "IN_PROCESS").contains(order.getStatus()) || (afterProduction && "COMPLETED".equals(order.getStatus())))
+                || !(List.of("CREATED", "IN_PROGRESS").contains(object.getStatus()) || afterProduction))
             throw invalid("工单或生产对象已结束，不能继续执行");
         ProductionExecution execution = executions.findById(id).orElse(null);
         if (command.revision() != (execution == null ? 0L : execution.getRevision())) throw invalid("执行记录已被更新，请刷新后重试，未保存内容仍保留在页面");
@@ -170,6 +176,15 @@ public class ProductionExecutionService {
             if (snapshot.path("operations").isEmpty()) throw invalid("产品配置没有可执行工序");
             execution = ProductionExecution.builder().objectId(id).revision(0L).startedAt(LocalDateTime.now()).build();
         } else { snapshot = parse(execution.getSnapshotJson()); state = parse(execution.getStateJson()); }
+        JsonNode targetOperation = engine.find(snapshot.path("operations"), command.operationId());
+        JsonNode targetForm = command.formId() == null ? mapper.createObjectNode() : engine.find(targetOperation.path("forms"), command.formId());
+        boolean scoped = "ATTACH_FORM".equals(command.action()) ? command.scope() != null : CustomFormPolicy.custom(targetForm);
+        boolean afterOperation = "COMPLETED".equals(state.path("operations").path(command.operationId()).path("status").asText());
+        boolean supplement = scoped && (afterProduction || (afterOperation && !CustomFormPolicy.batch(targetForm)));
+        if (afterProduction && !scoped) throw invalid("生产已完工，请通过受控补录入口处理历史表单");
+        if (recordAction && (scoped || CustomFormPolicy.custom(targetForm))) dhrInstances.requireCustomFormsMutable(id);
+        if (supplement && (command.reason() == null || command.reason().isBlank())) throw invalid("请填写完工后补充记录的原因");
+        if (command.reason() != null && command.reason().length() > 500) throw invalid("原因不能超过500个字符");
         ObjectNode before = state.deepCopy();
         ObjectNode snapshotBefore = "ATTACH_FORM".equals(command.action()) ? snapshot.deepCopy() : null;
         String attachedFormId = null;
@@ -178,9 +193,15 @@ public class ProductionExecutionService {
         if (!remarkOnly) engine.settleCompletedWorkForms(snapshot, state, command.operationId(), operator);
         switch (command.action()) {
             case "ATTACH_FORM" -> {
-                if (command.required() == null) throw invalid("请明确选择必填或选填");
+                if (command.scope() == null && afterOperation) throw invalid("完工后新增表单需明确归属并填写原因");
+                if (command.scope() != null && !List.of("OPERATION", "BATCH").contains(command.scope())) throw invalid("请选择当前工序或当前批次");
+                if (command.scope() != null && (command.completionRequired() == null || command.reason() == null || command.reason().isBlank())) throw invalid("请明确完工校验要求并填写添加原因");
+                if (command.scope() == null && command.required() == null) throw invalid("请明确选择必填或选填");
                 attachedFormId = "custom-" + ids.nextId();
-                engine.attachForm(snapshot, state, command.operationId(), snapshots.customForm(command.templateVersionId(), command.required(), attachedFormId, operator), operator);
+                ObjectNode custom = snapshots.customForm(command.templateVersionId(), command.scope() == null ? command.required() : command.completionRequired(), attachedFormId, operator);
+                if (command.scope() != null) custom.put("scope", command.scope()).put("completionRequired", command.completionRequired())
+                        .put("attachmentReason", command.reason().strip()).put("sourceOperationId", command.operationId());
+                engine.attachForm(snapshot, state, command.operationId(), custom, operator);
             }
             case "START" -> engine.start(snapshot, state, command.operationId(), operator);
             case "COMPLETE" -> engine.complete(snapshot, state, command.operationId(), operator, Boolean.TRUE.equals(command.acknowledgeIncomplete()));
@@ -207,7 +228,7 @@ public class ProductionExecutionService {
             dhrInstances.createAtFirstStart(object, order, snapshot);
             production.startObject(id);
         }
-        if (!remarkOnly && engine.allComplete(snapshot, state)) {
+        if (!afterProduction && !remarkOnly && engine.allComplete(snapshot, state)) {
             dhrInstances.completeWithProductionObject(id);
             production.completeObject(id);
         }
@@ -222,7 +243,7 @@ public class ProductionExecutionService {
                 .contentAfter(auditAfter.toString())
                 .operatorId(operator).operatorName(AuditContext.getOperatorName()).operatorAccount(AuditContext.getOperatorAccount())
                 .source(AuditContext.getSource()).moduleName("生产").menuName("生产执行").functionName(command.action())
-                .reason("TRANSFER".equals(command.action()) ? command.reason().strip() : ("ADD_FORM_COPY".equals(command.action()) || remarkOnly) ? command.remark().strip() : null)
+                .reason(command.reason() != null ? command.reason().strip() : ("ADD_FORM_COPY".equals(command.action()) || remarkOnly) ? command.remark().strip() : null)
                 .dataSummary(object.getObjectNo() + " · " + command.operationId()).ipAddress(AuditContext.getIpAddress()).createdAt(LocalDateTime.now()).build());
         ObjectNode result = view(object, order, execution);
         if (attachedFormId != null) result.put("attachedFormId", attachedFormId);
@@ -262,6 +283,12 @@ public class ProductionExecutionService {
         boolean historical = execution == null && !List.of("CREATED", "CANCELLED").contains(object.getStatus());
         response.put("historicalWithoutExecution", historical);
         boolean allowed = !historical && List.of("CREATED", "IN_PROGRESS").contains(object.getStatus()) && List.of("CREATED", "IN_PROCESS").contains(order.getStatus());
+        boolean customMutable = execution != null && List.of("IN_PROGRESS", "COMPLETED").contains(object.getStatus())
+                && List.of("CREATED", "IN_PROCESS", "COMPLETED").contains(order.getStatus()) && dhrInstances.customFormsMutable(object.getId(), false);
+        List<String> recordIssues = CustomFormPolicy.incomplete(snapshot, state, false);
+        response.set("recordIssues", mapper.valueToTree(recordIssues));
+        response.put("recordCompleteness", recordIssues.isEmpty() ? "COMPLETE" : "INCOMPLETE");
+        response.set("batchCompletionIssues", mapper.valueToTree(CustomFormPolicy.incomplete(snapshot, state, true)));
         ObjectNode availability = response.putObject("availability");
         ObjectNode operationOutputs = response.putObject("operationOutputs");
         for (JsonNode op : snapshot.path("operations")) {
@@ -276,6 +303,7 @@ public class ProductionExecutionService {
             entry.put("canStart", allowed && "PENDING".equals(current.path("status").asText()) && start.isEmpty());
             entry.put("canComplete", allowed && "IN_PROGRESS".equals(current.path("status").asText()) && completion.isEmpty());
             entry.put("canAttachForm", allowed && "IN_PROGRESS".equals(current.path("status").asText()));
+            entry.put("canAttachScopedForm", customMutable && List.of("IN_PROGRESS", "COMPLETED").contains(current.path("status").asText()));
             ObjectNode forms = entry.putObject("forms");
             ObjectNode copyControls = entry.putObject("formCopies");
             for (JsonNode form : op.path("forms")) {
@@ -288,18 +316,22 @@ public class ProductionExecutionService {
                 group.put("required", ExecutionFormCopies.required(op, form));
                 List<String> incomplete = ExecutionFormCopies.incomplete(current, form);
                 group.set("incomplete", mapper.valueToTree(incomplete));
-                boolean manage = allowed && engine.canManageCopies(form, current, AuditContext.getOperatorId());
+                boolean formAllowed = CustomFormPolicy.custom(form) ? customMutable && CustomFormPolicy.editable(form, current)
+                        : allowed && "IN_PROGRESS".equals(current.path("status").asText());
+                group.put("requiresSupplementReason", CustomFormPolicy.custom(form) && ("COMPLETED".equals(object.getStatus())
+                        || (!CustomFormPolicy.batch(form) && "COMPLETED".equals(current.path("status").asText()))));
+                boolean manage = formAllowed && engine.canManageCopies(form, current, AuditContext.getOperatorId());
                 group.put("canAdd", manage);
                 group.put("canEditRemark", manage);
-                group.put("canEnd", manage && (!ExecutionFormCopies.required(op, form) || incomplete.isEmpty()));
+                group.put("canEnd", manage && (incomplete.isEmpty() || (!CustomFormPolicy.custom(form) && !ExecutionFormCopies.required(op, form))));
                 ObjectNode instances = group.putObject("instances");
                 for (String instanceId : instanceIds) {
                     ObjectNode instance = engine.formControls(form, current.path("forms").path(instanceId), AuditContext.getOperatorId());
-                    if (!allowed || !"IN_PROGRESS".equals(current.path("status").asText())) disableForm(form, instance);
+                    if (!formAllowed) disableForm(form, instance);
                     instances.set(instanceId, instance);
                 }
                 ObjectNode controls = engine.formControls(form, current.path("forms").path(form.path("id").asText()), AuditContext.getOperatorId());
-                if (!allowed || !"IN_PROGRESS".equals(current.path("status").asText())) {
+                if (!formAllowed) {
                     disableForm(form, controls);
                 }
                 forms.set(form.path("id").asText(), controls);
@@ -337,7 +369,14 @@ public class ProductionExecutionService {
 
     public record Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                           JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete,
-                          String templateVersionId, Boolean required, String targetUserId, String reason, JsonNode signatureTarget, String remark) {
+                          String templateVersionId, Boolean required, String targetUserId, String reason, JsonNode signatureTarget, String remark,
+                          String scope, Boolean completionRequired) {
+        public Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
+                       JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete,
+                       String templateVersionId, Boolean required, String targetUserId, String reason, JsonNode signatureTarget, String remark) {
+            this(action, revision, operationId, formId, workId, nodeId, values, opinion, account, password, instanceId, acknowledgeIncomplete,
+                    templateVersionId, required, targetUserId, reason, signatureTarget, remark, null, null);
+        }
         public Command(String action, Long revision, String operationId, String formId, String workId, String nodeId,
                        JsonNode values, String opinion, String account, String password, String instanceId, Boolean acknowledgeIncomplete,
                        String templateVersionId, Boolean required, String targetUserId, String reason, JsonNode signatureTarget) {

@@ -56,6 +56,7 @@ class DhrReviewServiceTest {
         jdbc.update("UPDATE dhr_instance SET production_object_id=1000");
         jdbc.execute("CREATE TABLE production_object(id BIGINT PRIMARY KEY,tenant_id VARCHAR)");
         jdbc.update("INSERT INTO production_object VALUES(1000,'default')");
+        jdbc.execute("CREATE TABLE production_execution(object_id BIGINT PRIMARY KEY,snapshot_json TEXT,state_json TEXT)");
         jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN source_type VARCHAR DEFAULT 'PRODUCTION_EXECUTION'; ALTER TABLE form_instance_record ADD COLUMN object_id BIGINT DEFAULT 1000; ALTER TABLE form_instance_record ADD COLUMN instance_no VARCHAR");
         jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT,tenant_id VARCHAR,dhr_instance_id BIGINT,active BOOLEAN,sha256 VARCHAR,verification_status VARCHAR,stored_path VARCHAR)");
         jdbc.update("INSERT INTO dhr_summary_review VALUES(2,3,'PENDING_REVIEW',CURRENT_TIMESTAMP)");

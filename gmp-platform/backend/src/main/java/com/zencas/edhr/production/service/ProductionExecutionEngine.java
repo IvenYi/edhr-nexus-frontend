@@ -83,7 +83,7 @@ public class ProductionExecutionEngine {
     public List<String> completionIssues(JsonNode op, JsonNode opState) {
         List<String> issues = new ArrayList<>();
         for (JsonNode form : op.path("forms")) {
-            if (!ExecutionFormCopies.required(op, form)) continue;
+            if (CustomFormPolicy.batch(form) || !ExecutionFormCopies.required(op, form)) continue;
             String formId = form.path("id").asText();
             if (ExecutionFormCopies.ids(opState, formId).isEmpty()) {
                 if (!form.has("workId")) issues.add("表单「" + form.path("name").asText() + "」尚未提交完成");
@@ -132,7 +132,7 @@ public class ProductionExecutionEngine {
         List<String> warnings = completionWarnings(op, current);
         if (!warnings.isEmpty() && !acknowledged) throw invalid("请确认未完成表单告知：" + String.join("；", warnings));
         for (JsonNode form : op.path("forms")) {
-            if (form.has("workId") || ExecutionFormCopies.ids(current, form.path("id").asText()).isEmpty()) continue;
+            if (CustomFormPolicy.scoped(form) || form.has("workId") || ExecutionFormCopies.ids(current, form.path("id").asText()).isEmpty()) continue;
             if (!ExecutionFormCopies.ended(current, form.path("id").asText()))
                 ExecutionFormCopies.ensureGroup(current, form.path("id").asText()).put("ended", true).put("endedBy", operator)
                         .put("endedAt", LocalDateTime.now().toString()).put("endedReason", "OPERATION_COMPLETE");
@@ -217,7 +217,7 @@ public class ProductionExecutionEngine {
             if (!"COMPLETED".equals(candidate.path("status").asText()) || instanceId == null
                     || !candidate.path("forms").path(instanceId).path("supplement").isObject()) throw invalid("只能处理明确创建的完工补录实例");
             current = (ObjectNode) candidate;
-        } else current = requireInProgress(state, operationId);
+        } else current = requireFormProgress(snapshot, state, operationId, formId);
         JsonNode form = withCanvasBindings(find(op.path("forms"), formId));
         if ((instanceId == null || instanceId.isBlank()) && ExecutionFormCopies.ids(current, formId).size() > 1) throw invalid("请选择具体表单份");
         String target = instanceId == null || instanceId.isBlank() ? formId : instanceId;
@@ -391,7 +391,7 @@ public class ProductionExecutionEngine {
     private TransferContext transferContext(JsonNode snapshot, ObjectNode state, String operationId, String formId,
                                              String instanceId, String operator) {
         JsonNode operation = find(snapshot.path("operations"), operationId);
-        ObjectNode current = requireInProgress(state, operationId);
+        ObjectNode current = requireFormProgress(snapshot, state, operationId, formId);
         JsonNode form = find(operation.path("forms"), formId);
         if ((instanceId == null || instanceId.isBlank()) && ExecutionFormCopies.ids(current, formId).size() > 1) throw invalid("请选择具体表单份");
         String copyId = instanceId == null || instanceId.isBlank() ? formId : instanceId;
@@ -415,14 +415,14 @@ public class ProductionExecutionEngine {
 
     public List<String> completionWarnings(JsonNode op, JsonNode current) {
         List<String> warnings = new ArrayList<>();
-        for (JsonNode form : op.path("forms")) if (!ExecutionFormCopies.required(op, form))
+        for (JsonNode form : op.path("forms")) if (!CustomFormPolicy.batch(form) && !ExecutionFormCopies.required(op, form))
             warnings.addAll(ExecutionFormCopies.incomplete(current, form));
         return warnings;
     }
 
     public boolean canManageCopies(JsonNode form, JsonNode current, String operator) {
         String id = form.path("id").asText();
-        if (!"IN_PROGRESS".equals(current.path("status").asText())
+        if (!CustomFormPolicy.editable(form, current)
                 || ExecutionFormCopies.ids(current, id).isEmpty() || ExecutionFormCopies.ended(current, id)) return false;
         if (form.has("workId") && !contains(current.path("works").path(form.path("workId").asText()).path("active"), form.path("workNodeId").asText())) return false;
         JsonNode node = defaultFormNode(form);
@@ -436,7 +436,9 @@ public class ProductionExecutionEngine {
 
     public void attachForm(ObjectNode snapshot, ObjectNode state, String operationId, ObjectNode form, String operator) {
         JsonNode op = find(snapshot.path("operations"), operationId);
-        ObjectNode current = requireInProgress(state, operationId);
+        JsonNode value = state.path("operations").path(operationId);
+        if (!CustomFormPolicy.editable(form, value)) throw invalid("工序开工后才可新增表单");
+        ObjectNode current = (ObjectNode) value;
         ((ArrayNode) op.path("forms")).add(form);
         initializeBindingForm(form, current);
         ((ObjectNode) current.path("forms").path(form.path("id").asText())).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString());
@@ -466,7 +468,7 @@ public class ProductionExecutionEngine {
 
     public void addFormCopy(JsonNode snapshot, ObjectNode state, String operationId, String formId, String operator, String remark) {
         JsonNode op = find(snapshot.path("operations"), operationId);
-        ObjectNode current = requireInProgress(state, operationId);
+        ObjectNode current = requireFormProgress(snapshot, state, operationId, formId);
         JsonNode form = find(op.path("forms"), formId);
         if (!canManageCopies(form, current, operator)) throw invalid("当前用户或表单阶段不允许新增份");
         if (remark == null || remark.isBlank()) throw invalid("请填写本份备注");
@@ -483,7 +485,7 @@ public class ProductionExecutionEngine {
 
     public void updateFormCopyRemark(JsonNode snapshot, ObjectNode state, String operationId, String formId, String instanceId, String operator, String remark) {
         JsonNode op = find(snapshot.path("operations"), operationId);
-        ObjectNode current = requireInProgress(state, operationId);
+        ObjectNode current = requireFormProgress(snapshot, state, operationId, formId);
         JsonNode form = find(op.path("forms"), formId);
         if (!canManageCopies(form, current, operator)) throw invalid("当前用户或表单阶段不允许修改备注");
         List<String> ids = ExecutionFormCopies.ids(current, formId);
@@ -498,11 +500,11 @@ public class ProductionExecutionEngine {
 
     public void endForm(JsonNode snapshot, ObjectNode state, String operationId, String formId, boolean acknowledged, String operator) {
         JsonNode op = find(snapshot.path("operations"), operationId);
-        ObjectNode current = requireInProgress(state, operationId);
+        ObjectNode current = requireFormProgress(snapshot, state, operationId, formId);
         JsonNode form = find(op.path("forms"), formId);
         if (!canManageCopies(form, current, operator)) throw invalid("当前用户或表单阶段不允许结束填报");
         List<String> incomplete = ExecutionFormCopies.incomplete(current, form);
-        if (ExecutionFormCopies.required(op, form)) requireEmpty(incomplete);
+        if (CustomFormPolicy.custom(form) || ExecutionFormCopies.required(op, form)) requireEmpty(incomplete);
         else if (!incomplete.isEmpty() && !acknowledged) throw invalid("请确认未完成表单告知：" + String.join("；", incomplete));
         ExecutionFormCopies.ensureGroup(current, formId).put("ended", true).put("endedAt", LocalDateTime.now().toString()).put("endedBy", operator);
         if (form.has("workId")) {
@@ -776,7 +778,13 @@ public class ProductionExecutionEngine {
             count++;
             if (!"COMPLETED".equals(state.path("operations").path(op.path("id").asText()).path("status").asText())) return false;
         }
-        return count > 0;
+        return count > 0 && CustomFormPolicy.incomplete(snapshot, state, true).isEmpty();
+    }
+    private ObjectNode requireFormProgress(JsonNode snapshot, ObjectNode state, String operationId, String formId) {
+        JsonNode form = find(find(snapshot.path("operations"), operationId).path("forms"), formId);
+        JsonNode current = state.path("operations").path(operationId);
+        if (!CustomFormPolicy.editable(form, current)) throw invalid("当前工序不在执行中");
+        return (ObjectNode) current;
     }
     private ObjectNode requireInProgress(ObjectNode state, String id) {
         JsonNode current = state.path("operations").path(id);

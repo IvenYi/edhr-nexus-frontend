@@ -77,6 +77,8 @@ export interface DhrDirectory {
 
 export interface DhrInstanceDetail extends DhrInstanceSummary {
   archiveLayout?: { overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[]; recordRefs?: Array<{ id: string; operationId: string; formId: string; copyId: string }> };
+  recordCompleteness?: 'COMPLETE' | 'INCOMPLETE';
+  recordIssues?: string[];
   productId: string;
   processVersionId: string;
   routeVersionId: string;
@@ -151,7 +153,11 @@ export interface DhrAttachment {
 
 export interface DhrSummaryWorkspace {
   sourceScopeHash: string;
-  dhr: DhrInstanceSummary & { directorySnapshot: DhrInstanceDetail['directorySnapshot'] };
+  dhr: DhrInstanceSummary & {
+    directorySnapshot: DhrInstanceDetail['directorySnapshot'];
+    recordCompleteness?: DhrInstanceDetail['recordCompleteness'];
+    recordIssues?: DhrInstanceDetail['recordIssues'];
+  };
   candidates: DhrEvidenceRecord[];
   attachments: DhrAttachment[];
   draft: null | { id: string; revision: number; sourceScopeHash?: string | null; overlayDirectories: DhrSummaryDirectoryOverlay[]; placements: DhrSummaryPlacement[] };

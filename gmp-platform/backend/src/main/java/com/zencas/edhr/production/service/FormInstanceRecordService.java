@@ -43,7 +43,7 @@ public class FormInstanceRecordService {
         for (JsonNode op : snapshot.path("operations")) if (operationId.equals(op.path("id").asText()))
             for (JsonNode candidate : op.path("forms")) if (formId.equals(candidate.path("id").asText())) {
                 form = candidate;
-                operationName = op.path("name").asText(null);
+                operationName = CustomFormPolicy.batch(candidate) ? "批次补充记录" : op.path("name").asText(null);
             }
         String copyId = requestedCopyId == null || requestedCopyId.isBlank() ? formId : requestedCopyId;
         JsonNode formState = state.path("operations").path(operationId).path("forms").path(copyId);

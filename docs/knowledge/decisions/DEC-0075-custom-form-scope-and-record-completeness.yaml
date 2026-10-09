@@ -1,0 +1,78 @@
+knowledgeModelVersion: 0.3.24
+decisions:
+  - id: DEC-0075
+    title: 自定义表单归属、分层完工及资料齐套
+    status: specified
+    visibility: internal
+    context: >-
+      user-confirmed；用户确认自定义表单支持当前工序和当前批次两种归属，并于 2026-09-24 授权恢复本功能 L2 门禁实施。
+      本决策仅局部替代 DEC-0059 的所有普通表单随工序收尾及自定义未完成份补填延期边界；
+      为 DEC-0068 的创建新实例补录增加继续填写已有未完成自定义份的独立路径，不允许改写已完成实例。
+      保留 DEC-0062 的生产完工事实、DEC-0063/0072 的逐实例可选纳入政策和 DEC-0068 的不可变版本、人工退回及记录控制所有权。
+      实现进行中；运行验证范围止于现有生产执行、DHR 汇总和审核链路。放行、正常归档及记录控制授权关闭衔接仅登记规范，不声称已有运行入口。
+    decisionStatements:
+      - id: DEC-0075-01
+        statement: 自定义表单添加时明确归属当前工序或当前批次。工序归属绑定所选工序；批次归属在同一批次各工序共享同一个表单及份实例，不因切换工序复制记录。归属是业务事实，创建位置不改变归属。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-02
+        statement: 新增时填写添加原因，可选择是否在归属对象完工前必须完成，默认开启。工序表单开启时阻断所属工序完工；批次表单开启时只阻断批次完工，不阻断单个工序。批次校验独立于最后一道工序和线性路线假设，支持并行工序。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-03
+        statement: 完工校验关闭仅允许先完成生产，不降低表单字段、签名、权限和流程审批要求。每份最终完成才计为完成，暂存、已提交待审均不能冒充完成；任一已创建份未闭环，资料仍为待完善。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-04
+        statement: 生产完成、资料齐套和 DHR 汇总审核阶段分别计算。生产已完工但仍有未闭环自定义份时保留生产完成事实并显示资料待完善；允许整理汇总草稿，禁止提交定稿、基于不完整资料批准、产品放行或正常归档。未纳入汇总目录不构成豁免；已闭环实例是否纳入仍遵守既有可选纳入政策。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-05
+        statement: 生产或所属工序完工后，已有未完成自定义份可经权限校验、填写原因后继续填报，不重开生产、不把已完成记录改为可编辑。审核中须先人工退回；已定稿须先重新整理形成新版本。旧版本、签名、审计与原批准结论保留，不自动追随新的来源内容。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-06
+        statement: 授权关闭必须来自记录控制模块正式生效并可追溯的作废或不适用结论，不能以申请中、删除目录关联或前端标记代替。活动表单是否可申请作废仍由既有记录控制未决问题和该模块确认；本切片不新增豁免、作废审批或恢复已取消、已终止对象写入的入口。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-07
+        statement: 已放行后的补充须受控并评估是否重新放行；已归档原记录不可直接修改，只能关联受控补充或新版本。此处为后续运行模块的规范边界，当前不以 DHR 汇总通过代替产品放行，不宣称放行或归档运行功能已交付。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-08
+        statement: 新增自定义表单选择的是表单模板，表单模板没有发布生命周期；候选查询和添加资格均不得要求表单模板版本的 PUBLISHED 状态。保留模板有效性与租户范围校验，显式选择 versionId 并冻结所选模板的完整执行快照。数据库中遗留的版本状态字段不构成产品发布规则，本修复不迁移该字段；作业流程及表单流程的已发布版本校验继续独立适用。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0059, DEC-0068]
+    evidenceIds: [evidence.custom-form-scope-confirmed, evidence.custom-form-scope-source-boundary, evidence.custom-form-template-selection-boundary]
+    acceptanceScenarios:
+      - id: scenario.custom-form-template-without-publication
+        given: 当前租户存在有效表单模板，所选版本的遗留状态值不是 PUBLISHED
+        when: 用户查询并显式选择该版本添加自定义表单
+        then: 可查询并添加，冻结所选版本和完整模板内容；后续模板修改不改写该执行快照，非本租户或无效模板仍不可添加
+        evidenceIds: [evidence.custom-form-scope-confirmed, evidence.custom-form-template-selection-boundary]
+        evidenceRequirements: [候选查询及添加集成测试, 模板快照冻结验证, 租户和有效性回归]
+      - id: scenario.custom-form-batch-shared-copies
+        given: 用户在工序 A 添加批次归属自定义表单并产生一份实例
+        when: 切换至工序 B 查看和填写该表单
+        then: 使用同一实例身份、内容和状态；未完成不阻断 A，开启批次完工校验时阻断批次完工
+        evidenceIds: [evidence.custom-form-scope-confirmed]
+        evidenceRequirements: [跨工序共享集成测试, 并行路线完工测试, 页面交互]
+      - id: scenario.custom-form-production-complete-records-pending
+        given: 完工校验关闭且存在未完成的自定义份
+        when: 完成生产并整理汇总
+        then: 生产保持已完成且资料待完善，草稿可整理但提交定稿被阻断，不纳入该份不能绕过
+        evidenceIds: [evidence.custom-form-scope-confirmed]
+        evidenceRequirements: [独立状态投影测试, 全量未保存和已保存份检查, 汇总提交集成测试]
+      - id: scenario.custom-form-resume-with-reason
+        given: 生产已完成、汇总未审核或定稿且存在未完成自定义份
+        when: 有权用户提供原因继续填报
+        then: 保持原实例并记录原因及审计，不重开生产；无权限、缺少原因或审核定稿阶段时阻断普通写入
+        evidenceIds: [evidence.custom-form-scope-confirmed]
+        evidenceRequirements: [权限与原因测试, 修订冲突及审计回滚, 冻结版本不变]
+      - id: scenario.custom-form-authorized-closure-boundary
+        given: 自定义份尚未完成或仅发起作废申请
+        when: 计算资料齐套并尝试定稿
+        then: 未正式生效的关闭申请不能解除阻断；当前无记录控制生效契约时保留未闭环，不伪造完成或豁免
+        evidenceIds: [evidence.custom-form-scope-confirmed, evidence.custom-form-scope-source-boundary]
+        evidenceRequirements: [记录控制契约核对, 待审申请不等于生效的回归]

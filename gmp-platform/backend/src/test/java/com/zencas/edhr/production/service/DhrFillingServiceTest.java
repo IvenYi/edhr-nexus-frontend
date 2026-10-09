@@ -35,21 +35,22 @@ class DhrFillingServiceTest {
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),production_object_id BIGINT,summary_status VARCHAR(32),directory_snapshot TEXT)");
         jdbc.execute("CREATE TABLE production_execution(object_id BIGINT PRIMARY KEY,snapshot_json TEXT,state_json TEXT,revision BIGINT,updated_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE dhr_summary_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),dhr_instance_id BIGINT,version_no INT,overlay_directory_snapshot TEXT)");
+        jdbc.execute("CREATE TABLE dhr_summary_draft(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),dhr_instance_id BIGINT,overlay_directory_json TEXT,evidence_placement_json TEXT,source_scope_hash VARCHAR(128),revision INT,created_by VARCHAR(64),created_at TIMESTAMP,updated_by VARCHAR(64),updated_at TIMESTAMP)");
         jdbc.update("INSERT INTO work_order VALUES(1,'default')");
         jdbc.update("INSERT INTO production_object VALUES(2,'default',1,'COMPLETED')");
-        jdbc.update("INSERT INTO dhr_instance VALUES(3,'default',2,'FORMALIZED','{\"directories\":[]}')");
+        jdbc.update("INSERT INTO dhr_instance VALUES(3,'default',2,'DRAFT','{\"directories\":[]}')");
         jdbc.update("INSERT INTO production_execution VALUES(2,'{\"operations\":[]}','{\"operations\":{}}',1,CURRENT_TIMESTAMP)");
         when(executions.get(2L)).thenAnswer(x -> mapper.createObjectNode().put("objectStatus", "COMPLETED").set("snapshot", mapper.readTree("{\"operations\":[]}")));
         doAnswer(x -> { ((ObjectNode) x.getArgument(1)).put("testNewCopy", (String) x.getArgument(4)); return null; }).when(engine).createSupplement(any(), any(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
     }
     @AfterEach void clear() { AuditContext.clear(); }
     ObjectNode request() { return mapper.createObjectNode().put("revision", 1).put("operationId", "op").put("formId", "f").put("reason", "遗漏的实际记录").put("occurredAt", "2026-01-01T10:00:00"); }
-    @Test void supplementChangesExecutionRevisionButNeverProductionOrFormalizedStatus() {
+    @Test void supplementChangesExecutionRevisionButNeverProductionOrDraftStatus() {
         var result = service.supplement(3L, request());
         assertThat(result.path("createdCopyId").asText()).startsWith("dhr-copy-");
         assertThat(jdbc.queryForObject("SELECT revision FROM production_execution", Long.class)).isEqualTo(2L);
         assertThat(jdbc.queryForObject("SELECT status FROM production_object", String.class)).isEqualTo("COMPLETED");
-        assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("FORMALIZED");
+        assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("DRAFT");
         verify(audits).save(argThat(a -> a.getContentBefore().contains("operations") && a.getContentAfter().contains("testNewCopy") && a.getReason().equals("遗漏的实际记录")));
         assertThatThrownBy(() -> service.supplement(3L, request())).hasMessageContaining("已更新");
     }
@@ -59,6 +60,12 @@ class DhrFillingServiceTest {
         assertThatThrownBy(() -> service.supplement(3L, request().put("occurredAt", "2999-01-01T00:00:00"))).hasMessageContaining("不能晚于");
         jdbc.update("UPDATE dhr_instance SET summary_status='PENDING_REVIEW'");
         assertThatThrownBy(() -> service.supplement(3L, request())).hasMessageContaining("审核中");
+        verifyNoInteractions(engine, audits);
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution", Long.class)).isEqualTo(1L);
+    }
+    @Test void finalizedDhrRequiresExplicitReorganizationBeforeSupplement() {
+        jdbc.update("UPDATE dhr_instance SET summary_status='FORMALIZED'");
+        assertThatThrownBy(() -> service.supplement(3L, request())).hasMessageContaining("重新整理");
         verifyNoInteractions(engine, audits);
         assertThat(jdbc.queryForObject("SELECT revision FROM production_execution", Long.class)).isEqualTo(1L);
     }

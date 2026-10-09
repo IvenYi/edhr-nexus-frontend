@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.24
 terms:
+  - id: term.custom-form-scope
+    name: 自定义表单归属
+    definition: 自定义表单所随行的业务对象，分为指定工序与当前批次；批次归属跨工序共享同一表单及份实例，与表单创建时所在工序位置区分。
+    aliases: [工序表单归属, 批次表单归属]
+    status: specified
+    visibility: internal
+  - id: term.dhr-record-completeness
+    name: 批记录资料齐套
+    definition: 批记录所关联记录的闭环情况，独立于生产完工及汇总审核状态；自定义表单的每份最终完成或经正式授权关闭前为待完善，完工门禁关闭及不纳入目录均不构成豁免。
+    aliases: [资料完整性, 资料待完善]
+    status: specified
+    visibility: internal
   - id: term.form-fill-settings
     name: 表单填报设置
     definition: 作业表单节点或工序绑定表单的配置，显式选择直接填报或按流程填报；直接模式配置权限组、字段例外、按钮和签署，按流程模式沿用既有流程配置，所选模式及适用设置须贯通保存、发布快照和运行。当前为已确认要求，不表示闭环已验证。

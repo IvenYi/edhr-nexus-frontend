@@ -16,7 +16,7 @@ public class ProductionExecutionController {
 
     @GetMapping("/form-templates")
     public ApiResponse<com.fasterxml.jackson.databind.node.ArrayNode> templates(@RequestParam(defaultValue = "") String keyword) {
-        return ApiResponse.success(service.publishedForms(keyword));
+        return ApiResponse.success(service.selectableForms(keyword));
     }
 
     @GetMapping("/{id}/presence")

@@ -1,0 +1,50 @@
+knowledgeModelVersion: 0.3.24
+facts:
+  - id: fact.custom-form.scope
+    name: 自定义表单业务归属
+    conceptId: concept.custom-form-scope
+    valueType: string
+    sourceType: configuration
+    sourcePath: docs/knowledge/evidence/custom-form-scope-confirmed.md
+    aliases: [customForm.scope]
+    availability: not-available
+    allowedOperators: [equals, in]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.custom-form-scope-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: 已确认工序或批次归属；实现及冻结快照正在主任务开发
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed
+  - id: fact.custom-form.completion-required
+    name: 自定义表单完工前必须完成
+    conceptId: concept.custom-form-scope
+    valueType: boolean
+    sourceType: configuration
+    sourcePath: docs/knowledge/evidence/custom-form-scope-confirmed.md
+    aliases: [customForm.completionRequired]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.custom-form-scope-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: 添加自定义表单时选择的完工门禁；与内部字段必填及资料齐套分离
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed
+  - id: fact.custom-form.has-unresolved-copies
+    name: 存在未闭环的自定义表单份
+    conceptId: concept.dhr-record-completeness
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/evidence/custom-form-scope-confirmed.md
+    aliases: [customForm.hasUnresolvedCopies]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.custom-form-scope-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: 覆盖全部自定义创建项及份序，不按已保存实例或汇总纳入范围裁剪；关闭必须已有正式生效契约
+    capturedAt: '2026-09-24'
+    reviewStatus: reviewed

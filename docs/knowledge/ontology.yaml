@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.24
 concepts:
+  - id: concept.custom-form-scope
+    termId: term.custom-form-scope
+    kind: configuration-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.custom-form-scope-confirmed]
+  - id: concept.dhr-record-completeness
+    termId: term.dhr-record-completeness
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.custom-form-scope-confirmed]
   - id: concept.form-fill-settings
     termId: term.form-fill-settings
     kind: business-configuration

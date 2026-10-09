@@ -34,7 +34,7 @@ final class ExecutionFormCopies {
     }
 
     static boolean required(JsonNode op, JsonNode form) {
-        return form.path("required").asBoolean(true);
+        return CustomFormPolicy.custom(form) ? CustomFormPolicy.required(form) : form.path("required").asBoolean(true);
     }
 
     static List<String> incomplete(JsonNode state, JsonNode form) {

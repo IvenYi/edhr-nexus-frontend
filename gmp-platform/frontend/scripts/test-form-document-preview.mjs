@@ -103,15 +103,67 @@ test('runtime keeps references as records and shows their names in the paper con
   assert.equal(bindFormPreviewField({ values: { text: value }, onChange() {} }, document.canvas.pages[0].nodes[0], document.model.fields[0], 0).values.text, value);
 });
 
-test('production does not seed simulation defaults or enable disabled choices', () => {
+test('production does not seed simulation values or enable disabled choices', () => {
   const document = controlsDocument();
   const field = document.model.fields.find(field => field.id === 'multiSelect');
   field.typeConfig.options = [{ value: 'active', label: '可用选项' }, { value: 'inactive', label: '停用选项', status: 'disabled' }];
   const html = render(document, { values: {}, onChange() {} });
   assert.doesNotMatch(html, /value="预填值"|停用选项/);
   assert.match(html, /可用选项/);
-  field.typeConfig.options = [];
+  field.typeConfig.options = [{ value: 'inactive', label: '停用选项', status: 'disabled' }];
   assert.doesNotMatch(render(document, { values: {}, onChange() {} }), /选项1|选项2/);
+});
+
+test('unconfigured single and multi fields show the same default choices as the designer', () => {
+  for (const type of ['singleSelect', 'multiSelect']) {
+    const document = controlsDocument();
+    const field = document.model.fields.find(field => field.id === type);
+    const node = document.canvas.pages[0].nodes.find(node => node.id === type);
+    field.typeConfig.options = [];
+    node.bindings.widgetConfig = { optionShape: type === 'singleSelect' ? 'radio' : 'checkbox' };
+    const html = render(document, { values: {}, onChange() {} });
+    assert.match(html, />选项1</);
+    assert.match(html, />选项2</);
+    assert.doesNotMatch(html, /checked=""/);
+
+    const table = fixedTableDocument('dynamic');
+    const tableField = table.canvas.pages[0].nodes.find(node => node.id === 'result').bindings.subTableField;
+    tableField.type = type;
+    tableField.typeConfig.options = [];
+    const selected = render(table, { values: { 'inspection-table': [{ result: type === 'singleSelect' ? '选项2' : ['选项2'] }] }, onChange() {} });
+    assert.match(selected, />选项2</);
+    assert.doesNotMatch(selected, /未配置选项/);
+  }
+});
+
+test('runtime single and multi choices use configured widget options before model options', () => {
+  for (const type of ['singleSelect', 'multiSelect']) {
+    const document = controlsDocument();
+    const field = document.model.fields.find(field => field.id === type);
+    const node = document.canvas.pages[0].nodes.find(node => node.id === type);
+    node.bindings.widgetConfig = { optionList: ' 合格 : accepted \n 不合格 : rejected ', optionShape: type === 'singleSelect' ? 'radio' : 'checkbox' };
+    for (const options of [[], [{ label: '模型旧选项', value: 'old' }]]) {
+      field.typeConfig.options = options;
+      const html = render(document, { values: { [type]: type === 'singleSelect' ? 'accepted' : ['accepted'] }, onChange() {} });
+      assert.match(html, />合格</);
+      assert.match(html, />不合格</);
+      assert.match(html, /checked=""/);
+      assert.doesNotMatch(html, /模型旧选项/);
+    }
+  }
+});
+
+test('subtable single and multi dropdowns display labels from their widget options', () => {
+  for (const type of ['singleSelect', 'multiSelect']) {
+    const document = fixedTableDocument('dynamic');
+    const node = document.canvas.pages[0].nodes.find(node => node.id === 'result');
+    node.bindings.subTableField.type = type;
+    node.bindings.subTableField.typeConfig.options = [];
+    node.bindings.widgetConfig = { optionList: '合格:accepted\n不合格:rejected', optionShape: 'select' };
+    const html = render(document, { values: { 'inspection-table': [{ result: type === 'singleSelect' ? 'accepted' : ['accepted'] }] }, onChange() {} });
+    assert.match(html, />合格</);
+    assert.doesNotMatch(html, /未配置选项/);
+  }
 });
 
 test('field binding updates only the chosen record and preserves other values', () => {

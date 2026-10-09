@@ -1,0 +1,53 @@
+knowledgeModelVersion: 0.3.24
+rules:
+  - id: rule.custom-form-operation-completion
+    name: 工序归属自定义表单按工序校验完工
+    status: specified
+    visibility: internal
+    trigger: production-operation.complete
+    scope: production-custom-form
+    condition:
+      all:
+        - {fact: fact.custom-form.scope, operator: equals, value: OPERATION}
+        - {fact: fact.custom-form.completion-required, operator: equals, value: true}
+        - {fact: fact.custom-form.has-unresolved-copies, operator: equals, value: true}
+    result:
+      type: block
+      actions: [production-operation.complete]
+      target: owning-operation
+      reason: operation-custom-form-copies-incomplete
+    explanation: 只对所属工序执行完工门禁；所有已创建份须最终完成，保存、提交待审不等于完成。关闭此门禁不绕过字段、签署、权限或审批，也不等于资料齐套。
+    evidenceIds: [evidence.custom-form-scope-confirmed]
+  - id: rule.custom-form-batch-completion
+    name: 批次归属自定义表单按批次校验完工
+    status: specified
+    visibility: internal
+    trigger: production-object.complete
+    scope: production-custom-form
+    condition:
+      all:
+        - {fact: fact.custom-form.scope, operator: equals, value: BATCH}
+        - {fact: fact.custom-form.completion-required, operator: equals, value: true}
+        - {fact: fact.custom-form.has-unresolved-copies, operator: equals, value: true}
+    result:
+      type: block
+      actions: [production-object.complete]
+      target: owning-batch
+      reason: batch-custom-form-copies-incomplete
+    explanation: 批次表单跨工序共享同一份身份、数据与状态，只阻断批次完工；不得借用最后工序必填替代批次检查，也不阻断单道工序或复制跨工序实例。需兼容并行路线并提供未完成原因。
+    evidenceIds: [evidence.custom-form-scope-confirmed]
+  - id: rule.custom-form-record-completeness
+    name: 自定义表单全量闭环后才允许批记录定稿
+    status: specified
+    visibility: internal
+    trigger: dhr.finalize-or-approve-or-release-or-archive
+    scope: production-custom-form
+    condition: {fact: fact.custom-form.has-unresolved-copies, operator: equals, value: true}
+    result:
+      type: block
+      actions: [dhr-summary.submit, dhr-review.approve, product.release, dhr.normal-archive]
+      retainedProductionStatus: unchanged
+      completenessProjection: PENDING
+      allowSummaryDraft: true
+    explanation: 无论工序或批次归属、完工门禁是否开启，未闭环自定义份均阻断定稿及后续放行正常归档；覆盖未暂存份，不纳入目录不能绕过，生产完成事实保留。正式授权关闭只能消费记录控制模块已生效事实，不能以申请或界面标记替代；当前放行归档及关闭衔接仅为 specified 边界，非运行能力证明。
+    evidenceIds: [evidence.custom-form-scope-confirmed, evidence.custom-form-scope-source-boundary]

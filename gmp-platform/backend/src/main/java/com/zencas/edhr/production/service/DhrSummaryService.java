@@ -252,10 +252,15 @@ public class DhrSummaryService {
         }
         // Unsaved supplemental copies have no form_instance_record yet, but are still unfinished evidence.
         if (detail.hasNonNull("productionObjectId")) {
-            var states = jdbc.queryForList("SELECT state_json FROM production_execution WHERE object_id=?", Long.valueOf(detail.path("productionObjectId").asText()));
-            for (var row : states) for (JsonNode operation : json(String.valueOf(row.get("state_json")), "生产执行记录").path("operations")) {
+            var states = jdbc.queryForList("SELECT snapshot_json,state_json FROM production_execution WHERE object_id=?", Long.valueOf(detail.path("productionObjectId").asText()));
+            for (var row : states) {
+                var state = json(String.valueOf(row.get("state_json")), "生产执行记录");
+                var issues = CustomFormPolicy.incomplete(json(String.valueOf(row.get("snapshot_json")), "执行快照"), state, false);
+                if (!issues.isEmpty()) throw invalid("资料待完善：" + String.join("；", issues));
+                for (JsonNode operation : state.path("operations")) {
                 for (JsonNode copy : operation.path("forms")) if (copy.path("supplement").isObject() && !"COMPLETED".equals(copy.path("status").asText()))
                     throw invalid("存在尚未完成的补录表单，请先完成后再提交汇总");
+                }
             }
         }
         validateOverlay(dhr.path("directory_snapshot"), overlay);

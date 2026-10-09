@@ -57,6 +57,8 @@ class DhrReviewLifecycleIntegrationTest {
         jdbc.execute("CREATE TABLE dhr_instance(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),production_object_id BIGINT,status VARCHAR(32),summary_status VARCHAR(32),dhr_review_mode VARCHAR(32),dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT,directory_snapshot TEXT,dhr_no VARCHAR(64),object_no VARCHAR(64),object_type VARCHAR(32),work_order_no VARCHAR(64),product_name VARCHAR(64),updated_by VARCHAR(64),updated_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE production_object(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32))");
         jdbc.execute("INSERT INTO production_object VALUES(10,'default')");
+        jdbc.execute("DROP TABLE IF EXISTS production_execution");
+        jdbc.execute("CREATE TABLE production_execution(object_id BIGINT PRIMARY KEY,snapshot_json TEXT,state_json TEXT)");
         jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),source_type VARCHAR(32),object_id BIGINT,instance_no VARCHAR(64),snapshot_json TEXT,values_json TEXT,status VARCHAR(32),version_id BIGINT)");
         jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),dhr_instance_id BIGINT,active BOOLEAN,sha256 VARCHAR(64),verification_status VARCHAR(32),stored_path VARCHAR(1024))");
         String base = "{\"directories\":[{\"id\":10,\"name\":\"目录\",\"items\":[{\"id\":20,\"required\":true}]}]}";
@@ -186,6 +188,27 @@ class DhrReviewLifecycleIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature WHERE target_type='DHR_SUMMARY'", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("PENDING_REVIEW");
         reviews.act(taskId, command.put("action", "RETURN").put("opinion", "核查信息缺失，退回整理"));
+        assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("DRAFT");
+    }
+
+    @Test void legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn() {
+        var submitted = submit();
+        jdbc.update("UPDATE dhr_instance SET production_object_id=700 WHERE id=1");
+        jdbc.update("INSERT INTO production_object VALUES(700,'default')");
+        jdbc.update("INSERT INTO production_execution VALUES(700,?,?)",
+                "{\"operations\":[{\"id\":\"op\",\"forms\":[{\"id\":\"custom\",\"name\":\"跨工序补充记录\",\"sourceType\":\"CUSTOM\",\"scope\":\"BATCH\",\"completionRequired\":false}]}]}",
+                "{\"operations\":{\"op\":{\"status\":\"COMPLETED\",\"forms\":{},\"formGroups\":{\"custom\":{\"instanceIds\":[\"custom\"]}}}}}");
+        Long taskId = jdbc.queryForObject("SELECT id FROM workflow_task", Long.class);
+        var command = mapper.createObjectNode().put("expectedSnapshotHash", submitted.path("snapshotHash").asText())
+                .put("action", "APPROVE").put("account", "reviewer").put("password", "test-secret");
+        int signaturesBefore = jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class);
+        int reviewsBefore = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='DHR_SUMMARY_REVIEW'", Integer.class);
+        assertThatThrownBy(() -> reviews.act(taskId, command)).hasMessageContaining("资料待完善");
+        assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("PENDING_REVIEW");
+        assertThat(jdbc.queryForObject("SELECT status FROM workflow_task", String.class)).isEqualTo("PENDING");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM signature", Integer.class)).isEqualTo(signaturesBefore);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='DHR_SUMMARY_REVIEW'", Integer.class)).isEqualTo(reviewsBefore);
+        reviews.act(taskId, command.put("action", "RETURN").put("opinion", "补全记录后重新汇总"));
         assertThat(jdbc.queryForObject("SELECT summary_status FROM dhr_instance", String.class)).isEqualTo("DRAFT");
     }
     @Configuration(proxyBeanMethods=false) @EnableAutoConfiguration(exclude=JpaRepositoriesAutoConfiguration.class)

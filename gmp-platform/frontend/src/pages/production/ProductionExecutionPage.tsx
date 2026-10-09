@@ -16,6 +16,8 @@ import { getFilePagePreviewBlob } from '@/api/files';
 import { getFormTemplates } from '@/api/template-modeling';
 import './ProductionExecutionPage.css';
 import { executionRouteLinks } from './executionRouteLinks';
+import { executionForms, formOwner, visibleFormCopies } from './executionCustomForms';
+import ExecutionDocumentViewer from './ExecutionDocumentViewer';
 import ExecutionQuickPanel, { type ExecutionPanelId } from './ExecutionQuickPanel';
 import ExecutionOperationDrawer from './ExecutionOperationDrawer';
 import ExecutionCopyDrawer from './ExecutionCopyDrawer';
@@ -44,6 +46,8 @@ export default function ProductionExecutionPage() {
   const [operationId, setOperationId] = useState('');
   const [formId, setFormId] = useState('');
   const [instanceId, setInstanceId] = useState('');
+  const [supplementCommand, setSupplementCommand] = useState<Omit<ExecutionCommand, 'revision' | 'operationId'> | null>(null);
+  const [supplementReason, setSupplementReason] = useState('');
   const [incompleteNotice, setIncompleteNotice] = useState<string[] | null>(null);
   const [formCategory, setFormCategory] = useState<{ versionId: string; name: string } | null>(null);
   const [values, setValues] = useState<ExecutionValues>({});
@@ -83,8 +87,6 @@ export default function ProductionExecutionPage() {
   const [documentPage, setDocumentPage] = useState(1);
   const [documentPages, setDocumentPages] = useState(1);
   const [documentImage, setDocumentImage] = useState(false);
-  const [documentZoom, setDocumentZoom] = useState(1);
-  const documentBodyRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef(0);
   const busyRef = useRef(false);
   const initialBarcodeRef = useRef<string | null>(null);
@@ -129,8 +131,11 @@ export default function ProductionExecutionPage() {
   const opState = view?.state.operations[operationId];
   const available = view?.availability[operationId];
   const output = view?.operationOutputs?.[operationId];
-  const forms = op?.forms ?? [];
+  const forms = executionForms(view, operationId);
   const form = forms.find((item) => item.id === formId);
+  const formOperationId = formOwner(view, operationId, formId);
+  const formOperationState = view?.state.operations[formOperationId];
+  const formAvailability = view?.availability[formOperationId];
   useEffect(() => {
     let cancelled = false;
     setFormCategory(null);
@@ -143,19 +148,19 @@ export default function ProductionExecutionPage() {
     }
     return () => { cancelled = true; };
   }, [form?.code, form?.versionId, form?.categoryName]);
-  const copies = available?.formCopies?.[formId];
-  const instanceIds = copies?.instanceIds ?? (opState?.forms[formId] ? [formId] : []);
+  const copies = formAvailability?.formCopies?.[formId];
+  const instanceIds = copies?.instanceIds ?? (formOperationState?.forms[formId] ? [formId] : []);
   const selectedInstanceId = instanceIds.includes(instanceId) ? instanceId : instanceIds[0] ?? formId;
-  const formState = opState?.forms[selectedInstanceId];
-  const formReceipt = executionFormReceipt(view?.state.history ?? [], operationId, formId, selectedInstanceId, formState?.savedAt);
+  const formState = formOperationState?.forms[selectedInstanceId];
+  const formReceipt = executionFormReceipt(view?.state.history ?? [], formOperationId, formId, selectedInstanceId, formState?.savedAt);
   const formStatus = copies?.status ?? formState?.status ?? 'PENDING';
   const formStatusLabel = formStatus === 'COMPLETED' ? '已完成'
     : formStatus === 'WAITING_OPERATION_START' ? '待工序开工'
       : formStatus === 'WAITING_WORK_NODE' ? '待作业流程到达'
         : formStatus === 'NOT_APPLICABLE' ? '不适用'
           : formStatus === 'PENDING' ? '未填报' : '进行中';
-  const controls = copies?.instances[selectedInstanceId] ?? available?.forms[formId];
-  const { editors, markEditing } = useExecutionPresence(context?.objectId, operationId, formId, selectedInstanceId, Boolean(controls?.canAct && !navigationSection && !activePanel), formDrawerOpen);
+  const controls = copies?.instances[selectedInstanceId] ?? formAvailability?.forms[formId];
+  const { editors, markEditing } = useExecutionPresence(context?.objectId, formOperationId, formId, selectedInstanceId, Boolean(controls?.canAct && !navigationSection && !activePanel), formDrawerOpen);
   const completed = operations.filter((item) => item.type !== 'REWORK' && view?.state.operations[item.id]?.status === 'COMPLETED').length;
   const total = operations.filter((item) => item.type !== 'REWORK').length;
   const completionPercent = !view?.historicalWithoutExecution && total > 0 ? Math.round(completed / total * 100) : null;
@@ -173,7 +178,7 @@ export default function ProductionExecutionPage() {
     parsed.model.fields = form.fields.map((field, index) => ({ ...field, typeConfig: field.typeConfig ?? {}, status: field.status ?? 'enabled', sortOrder: field.sortOrder ?? index }));
     return parsed;
   }, [form]);
-  const references = useCallback((fieldId: string, keyword: string, referenceValues: Record<string, unknown>) => context ? getExecutionReferences(context.objectId, operationId, formId, fieldId, keyword, referenceValues) : Promise.resolve([]), [context?.objectId, operationId, formId]);
+  const references = useCallback((fieldId: string, keyword: string, referenceValues: Record<string, unknown>) => context ? getExecutionReferences(context.objectId, formOperationId, formId, fieldId, keyword, referenceValues) : Promise.resolve([]), [context?.objectId, formOperationId, formId]);
   const upload = async (file: File) => {
     if (!context || busyRef.current) throw new Error('当前无法上传');
     busyRef.current = true; setBusy(true); setDirty(true);
@@ -182,7 +187,7 @@ export default function ProductionExecutionPage() {
   };
   const formRuntime: FormRuntime = { values, upload, references, disabled: busy || !controls?.canAct,
     signaturePermissions: controls?.signaturePermissions,
-    signaturesInvalidated: Boolean(form && signatureContent(form.fields, values) !== signatureContent(form.fields, view?.state.operations[operationId]?.forms[selectedInstanceId]?.values ?? {})),
+    signaturesInvalidated: Boolean(form && signatureContent(form.fields, values) !== signatureContent(form.fields, formState?.values ?? {})),
     onSignatureRequest: (target) => {
       const field = target.tableId ? (form?.fields.find(item => item.id === target.tableId)?.typeConfig.columns as ModelField[] | undefined)?.find(item => item.id === target.fieldId) : form?.fields.find(item => item.id === target.fieldId);
       setSigning({ action: 'SIGN_FIELD', label: `签署 · ${field?.name ?? '签名字段'}${target.rowIndex === undefined ? '' : ` · 第 ${target.rowIndex + 1} 行`}`, signatureTarget: target }); setPassword(''); setError('');
@@ -221,8 +226,7 @@ export default function ProductionExecutionPage() {
     busyRef.current = false;
     initialBarcodeRef.current = null;
   }, []);
-  useEffect(() => { setDocumentPage(Number(document?.pageStart) || 1); setDocumentPages(1); setDocumentZoom(1); }, [context?.objectId, operationId, document?.id, document?.pageStart]);
-  useEffect(() => { documentBodyRef.current?.scrollTo(0, 0); }, [document?.id, documentPage]);
+  useEffect(() => { setDocumentPage(Number(document?.pageStart) || 1); setDocumentPages(1); }, [context?.objectId, operationId, document?.id, document?.pageStart]);
   useEffect(() => {
     setDocumentUrl(''); setDocumentError('');
     if (!document?.fileId) return;
@@ -238,9 +242,10 @@ export default function ProductionExecutionPage() {
   }, [document?.fileId, documentPage]);
 
   const chooseForm = (nextId: string, source = view, nextOperation = operationId, nextInstance?: string) => {
-    const ids = source?.availability[nextOperation]?.formCopies?.[nextId]?.instanceIds ?? [nextId];
-    const selected = nextInstance && ids.includes(nextInstance) ? nextInstance : ids.find(id => source?.state.operations[nextOperation]?.forms[id]?.status === 'ACTIVE') ?? ids[0] ?? nextId;
-    setFormId(nextId); setInstanceId(selected); setValues(source?.state.operations[nextOperation]?.forms[selected]?.values ?? {}); setDirty(false);
+    const owner = formOwner(source, nextOperation, nextId);
+    const ids = source?.availability[owner]?.formCopies?.[nextId]?.instanceIds ?? [nextId];
+    const selected = nextInstance && ids.includes(nextInstance) ? nextInstance : ids.find(id => source?.state.operations[owner]?.forms[id]?.status === 'ACTIVE') ?? ids[0] ?? nextId;
+    setFormId(nextId); setInstanceId(selected); setValues(source?.state.operations[owner]?.forms[selected]?.values ?? {}); setDirty(false);
   };
 
   useEffect(() => {
@@ -252,12 +257,12 @@ export default function ProductionExecutionPage() {
     const request = ++transferRequestRef.current;
     setTransferLoading(true);
     setTransferError('');
-    getExecutionTransferTargets(context.objectId, operationId, formId, selectedInstanceId, transferKeyword)
+    getExecutionTransferTargets(context.objectId, formOperationId, formId, selectedInstanceId, transferKeyword)
       .then((items) => { if (request === transferRequestRef.current) setTransferTargets(items); })
       .catch((reason) => { if (request === transferRequestRef.current) setTransferError(errorText(reason)); })
       .finally(() => { if (request === transferRequestRef.current) setTransferLoading(false); });
     return () => { transferRequestRef.current++; };
-  }, [context?.objectId, formId, operationId, selectedInstanceId, transferButton, transferKeyword]);
+  }, [context?.objectId, formId, formOperationId, selectedInstanceId, transferButton, transferKeyword]);
   const chooseOperation = (id: string, source = view) => {
     setOperationId(id);
     const next = source?.snapshot.operations.find((item) => item.id === id);
@@ -282,7 +287,7 @@ export default function ProductionExecutionPage() {
       initialTargetRef.current = null;
     } else if (reset) {
       initialTargetRef.current = null;
-    } else if (id === operationId && next.snapshot.operations.find((item) => item.id === id)?.forms.some((item) => item.id === formId))
+    } else if (id === operationId && executionForms(next, id).some((item) => item.id === formId))
       chooseForm(formId, next, id, selectedInstanceId);
   };
   const load = async (refresh = false, requestedBarcode?: string) => {
@@ -325,9 +330,13 @@ export default function ProductionExecutionPage() {
   }, [location.search, view]);
   const act = async (command: Omit<ExecutionCommand, 'revision' | 'operationId'>) => {
     if (!view || !context || busyRef.current) return false;
+    if (command.formId && copies?.requiresSupplementReason && !command.reason) {
+      setSupplementCommand(command); setSupplementReason(''); return false;
+    }
     busyRef.current = true; setBusy(true); setError(''); setNotice('');
     try {
-      const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId });
+      const owner = command.formId ? formOwner(view, operationId, command.formId) : operationId;
+      const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId: owner });
       if (command.action === 'UPDATE_FORM_COPY_REMARK') setView(next);
       else receive(next);
       setSigning(null); setAccount(''); setPassword(''); setOpinion('');
@@ -341,7 +350,7 @@ export default function ProductionExecutionPage() {
       ]);
       if (command.action === 'ATTACH_FORM' && next.attachedFormId) chooseForm(next.attachedFormId, next);
       if (command.action === 'ADD_FORM_COPY' && command.formId) {
-        const ids = next.availability[operationId]?.formCopies?.[command.formId]?.instanceIds;
+        const ids = next.availability[owner]?.formCopies?.[command.formId]?.instanceIds;
         chooseForm(command.formId, next, operationId, ids?.[ids.length - 1]);
       }
       setNotice(command.action === 'COMPLETE' ? next.objectStatus === 'COMPLETED' ? '全部工序已完成，当前生产对象已完工。可扫描下一个条码。' : '工序已完工，执行记录已保存。请选择下一道可执行工序。' : command.action === 'TRANSFER' ? '转办成功，执行记录已保存。' : '操作成功，执行记录已保存。');
@@ -371,7 +380,7 @@ export default function ProductionExecutionPage() {
   const startConditionText = available?.canStart ? '前置工序与配置条件已满足' : opState?.status !== 'PENDING' ? '当前工序不处于待开工状态' : '请核对对象状态与当前操作权限';
   const completionConditionText = opState?.status === 'COMPLETED' ? '工序已完工' : available?.canComplete ? '表单与作业要求已满足，可申请工序完工' : '开工后完成本工序的表单与作业';
   const conditionSummary = view?.historicalWithoutExecution ? '缺少历史执行记录 · 只读查阅'
-    : objectEnded ? '当前对象已结束 · 只读查阅'
+    : objectEnded ? view?.objectStatus === 'COMPLETED' && form?.sourceType === 'CUSTOM' && controls?.canAct ? '生产已完工 · 补充填报需填写原因' : '当前对象已结束 · 只读查阅'
     : opState?.status === 'COMPLETED' ? completionConditionText
     : stageIssues.length ? `${stageIssues[0]}${stageIssues.length > 1 ? `（共 ${stageIssues.length} 项未满足）` : ''}`
     : pending ? startConditionText : completionConditionText;
@@ -384,27 +393,12 @@ export default function ProductionExecutionPage() {
         endAdornment: <InputAdornment position="end"><kbd>Enter</kbd></InputAdornment> }} />
     <Button className="execution-scan-submit" type="submit" variant="contained" disabled={busy || !barcode.trim()} endIcon={busy ? <CircularProgress size={16} color="inherit" /> : !view ? <ArrowForwardRounded /> : undefined}>{busy ? '识别中' : view ? '识别' : '识别条码'}</Button>
   </Box>;
-  const documentPreview = <Box ref={documentBodyRef} className="execution-document-body">
-    {documentError ? <Alert severity="error">{documentError}</Alert>
-      : documentUrl ? documentImage
-        ? <Box component="img" alt={`工序 ESOP：${document?.name ?? 'SOP'}`} src={documentUrl} style={{ width: `${documentZoom * 100}%`, maxWidth: 'none' }} />
-        : <Box component="iframe" title={document?.name ?? '工序文件'} src={documentUrl} />
-      : <Box className="execution-document-empty"><InfoOutlined /><Typography variant="body2" color="text.secondary">{document?.fileId ? '正在加载文件…' : op?.documents.length ? '当前文件未配置可预览内容。' : '当前工序未配置 SOP 文件。'}</Typography></Box>}
-  </Box>;
-  const documentNavigation = <Stack direction="row" className="execution-document-pagination" alignItems="center" justifyContent="space-between">
-    <Button size="small" disabled={!documentUrl || documentPage <= (Number(document?.pageStart) || 1)} onClick={() => setDocumentPage((page) => page - 1)}>上一页</Button>
-    <Typography variant="caption" color="text.secondary">{documentUrl ? `第 ${documentPage} / ${Math.min(documentPages, Number(document?.pageEnd) || documentPages)} 页` : '—'}</Typography>
-    <Button size="small" disabled={!documentUrl || documentPage >= Math.min(documentPages, Number(document?.pageEnd) || documentPages)} onClick={() => setDocumentPage((page) => page + 1)}>下一页</Button>
-  </Stack>;
 
   const auxiliaryPanels = [
-    { id: 'sop' as const, label: 'eSOP', title: '工序 eSOP', icon: <MenuBookRounded />, content: <Box className="execution-sop">
-          <Box className="execution-document-toolbar">
-            <TextField select size="small" value={documentZoom} disabled={!documentUrl || !documentImage} onChange={(event) => setDocumentZoom(Number(event.target.value))} SelectProps={{ native: true }} inputProps={{ 'aria-label': 'ESOP 缩放' }}>{[0.75, 1, 1.25, 1.5, 2].map((zoom) => <option key={zoom} value={zoom}>{zoom === 1 ? '适合宽度' : `${zoom * 100}%`}</option>)}</TextField>
-          </Box>
-          {document && <Typography variant="caption" className="execution-document-version" color="text.secondary">{document.name} · {document.code} · {document.version}</Typography>}
-          {documentPreview}
-          {documentNavigation}
+    { id: 'sop' as const, label: 'eSOP', title: document?.name || '工序 eSOP', subtitle: document ? `${document.code} · ${document.version}` : '', icon: <MenuBookRounded />, content: <Box className="execution-sop">
+          <ExecutionDocumentViewer key={`${context?.objectId}-${operationId}-${document?.id}-${document?.version}-${document?.fileId}`} documentKey={`${document?.id}:${document?.version}:${document?.fileId}`} url={documentUrl} image={documentImage} name={document?.name ?? '工序文件'} error={documentError}
+            emptyMessage={document?.fileId ? '正在加载文件…' : op?.documents.length ? '当前文件未配置可预览内容。' : '当前工序未配置 SOP 文件。'}
+            page={documentPage} pages={documentPages} firstPage={Number(document?.pageStart) || 1} lastPage={Math.min(documentPages, Number(document?.pageEnd) || documentPages)} onPageChange={setDocumentPage} />
         </Box> },
     { id: 'works' as const, label: '作业', title: '作业动作', icon: <FactCheckRounded />, content: <Stack spacing={1.5} className="execution-scroll-content">{selectedWork ? [selectedWork].map((work) => <Box key={work.id} sx={{ ...panel, p: 1.5 }}><Stack direction="row" justifyContent="space-between"><Typography fontWeight={600}>{work.name}</Typography><Chip size="small" label={labels[opState?.works[work.id]?.status ?? 'PENDING'] ?? '待执行'} /></Stack>
             {work.nodes.filter((node) => opState?.works[work.id]?.active?.includes(node.id)).map((node) => <Box key={node.id} sx={{ mt: 1.25 }}><Typography variant="body2">{node.data.label}</Typography><Typography variant="body2" color="text.secondary">{node.data.config?.confirmationInstruction || node.data.config?.message}</Typography>
@@ -548,10 +542,12 @@ export default function ProductionExecutionPage() {
               <ConditionList issues={available?.startIssues ?? []} met={Boolean(available?.canStart)} emptyText={startConditionText} />
               <Typography variant="body2" fontWeight={600}>完工检查</Typography>
               <ConditionList issues={available?.completionIssues ?? []} met={Boolean(available?.canComplete || opState?.status === 'COMPLETED')} emptyText={completionConditionText} />
+              {Boolean(view.batchCompletionIssues?.length) && <><Typography variant="body2" fontWeight={600}>批次完工检查</Typography><ConditionList issues={view.batchCompletionIssues ?? []} met={false} emptyText="批次表单已完成" /></>}
               {stageIssues.length > 0 && !pending && <Button size="small" endIcon={<ArrowForwardRounded />} onClick={() => { closeConditions(); setActivePanel(forms.length ? null : 'works'); }}>处理未完成项</Button>}
             </Box>
           </Box>
           </ClickAwayListener>
+          {completed === total && total > 0 && view.objectStatus === 'IN_PROGRESS' && Boolean(view.batchCompletionIssues?.length) && <Alert severity="info" className="execution-batch-pending">工序已全部完成，请完成批次表单后结束生产。</Alert>}
           <>
             {form && formDocument ? <>
               <Box aria-label={`当前填报表单：${form.name}`} className={`execution-form-canvas ${layout === 'fields' ? 'is-fields' : ''}`}>
@@ -577,11 +573,20 @@ export default function ProductionExecutionPage() {
       </ExecutionQuickPanel>
     </Box>}
     <ExecutionFormSelector open={formDrawerOpen} onClose={() => setFormDrawerOpen(false)} container={() => rootRef.current} forms={forms} works={op?.works ?? []}
-      copies={available?.formCopies ?? {}} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachForm)} operationStatus={opState?.status} workStates={opState?.works} editors={editors}
+      copies={visibleFormCopies(view, operationId)} selectedId={formId} busy={busy} canAttach={Boolean(available?.canAttachScopedForm ?? available?.canAttachForm)} operationStatus={opState?.status} workStates={opState?.works} editors={editors}
       onSelect={(id, copyId) => { setFormDrawerOpen(false); if (id !== formId || (copyId && copyId !== selectedInstanceId)) protect(() => { chooseForm(id, view, operationId, copyId); setActivePanel(null); }); }}
-      onAttach={(templateVersionId, required) => { setFormDrawerOpen(false); protect(() => void act({ action: 'ATTACH_FORM', templateVersionId, required })); }} />
+      onAttach={async (templateVersionId, scope, completionRequired, reason) => {
+        if (dirty) {
+          protect(() => {
+            chooseForm(formId);
+            void act({ action: 'ATTACH_FORM', templateVersionId, scope, completionRequired, reason }).then(success => { if (success) setFormDrawerOpen(false); });
+          });
+          return false;
+        }
+        return act({ action: 'ATTACH_FORM', templateVersionId, scope, completionRequired, reason });
+      }} />
     <ExecutionCopyDrawer open={copyDrawerOpen} onClose={() => setCopyDrawerOpen(false)} container={() => rootRef.current}
-      formName={form?.name ?? ''} instanceIds={instanceIds} forms={opState?.forms ?? {}} selectedId={selectedInstanceId}
+      formName={form?.name ?? ''} instanceIds={instanceIds} forms={formOperationState?.forms ?? {}} selectedId={selectedInstanceId}
       busy={busy} canAdd={Boolean(copies?.canAdd)} beforeAdd={open => protect(() => { chooseForm(formId, view, operationId, selectedInstanceId); open(); })}
       onSelect={id => { setCopyDrawerOpen(false); if (id !== selectedInstanceId) protect(() => chooseForm(formId, view, operationId, id)); }}
       onAdd={remark => act({ action: 'ADD_FORM_COPY', formId, remark })}
@@ -589,7 +594,11 @@ export default function ProductionExecutionPage() {
       onCopyResult={success => success ? setNotice('表单实例号已复制') : setError('复制失败，请重试')} />
     <Snackbar open={Boolean(error) && !signing} autoHideDuration={4000} onClose={(_, reason) => { if (reason !== 'clickaway') setError(''); }} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="error" onClose={() => setError('')} sx={{ maxWidth: 480 }}>{error}</Alert></Snackbar>
     <Snackbar open={Boolean(notice)} autoHideDuration={6000} onClose={() => setNotice('')} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}><Alert severity="success" onClose={() => setNotice('')} sx={{ maxWidth: 480 }}>{notice}</Alert></Snackbar>
-    <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.join('；') ?? ''}。继续后保留未完成数据，表单仍为进行中；补填入口将在后续提供。`} confirmText="已知晓，工序完工" cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: 'COMPLETE', acknowledgeIncomplete: true }); }} />
+    <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" open={Boolean(incompleteNotice)} title="存在未完成的非必填表单" message={`${incompleteNotice?.join('；') ?? ''}。继续后保留未完成数据。自定义表单仍须完成，才能提交批记录汇总。`} confirmText="已知晓，工序完工" cancelText="返回填写" onCancel={() => setIncompleteNotice(null)} onConfirm={() => { const next = incompleteNotice; setIncompleteNotice(null); if (next) void act({ action: 'COMPLETE', acknowledgeIncomplete: true }); }} />
+    <AppDialog open={Boolean(supplementCommand)} onClose={busy ? undefined : () => setSupplementCommand(null)} maxWidth="xs" fullWidth>
+      <DialogTitle>补充填报原因</DialogTitle><DialogContent><Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>生产或所属工序已完工，本次填写会保留原因及操作记录。</Typography><TextField autoFocus fullWidth multiline minRows={3} label="补充原因" value={supplementReason} onChange={event => setSupplementReason(event.target.value)} inputProps={{ maxLength: 500 }} /></DialogContent>
+      <DialogActions><Button disabled={busy} onClick={() => setSupplementCommand(null)}>取消</Button><Button variant="contained" disabled={busy || !supplementReason.trim()} onClick={async () => { if (supplementCommand && await act({ ...supplementCommand, reason: supplementReason.trim() })) setSupplementCommand(null); }}>确认并继续</Button></DialogActions>
+    </AppDialog>
     <ConfirmDialog container={() => rootRef.current} initialFocus="cancel" destructive open={Boolean(pendingSwitch)} title="当前表单尚未保存" message={`${context?.objectNo ?? ''} · ${op?.name ?? ''} · ${form?.name ?? '当前表单'}：切换会丢弃未保存内容。可以返回继续填写并保存，或放弃修改后切换。`} confirmText="放弃修改并切换" cancelText="返回表单" onCancel={() => { setPendingSwitch(null); setOperationDrawerOpen(false); }} onConfirm={() => { const next = pendingSwitch; setPendingSwitch(null); setDirty(false); next?.(); }} />
     <AppDialog open={Boolean(transferButton)} onClose={busy ? undefined : () => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }} maxWidth="sm" fullWidth>
       <DialogTitle>转办审批</DialogTitle>

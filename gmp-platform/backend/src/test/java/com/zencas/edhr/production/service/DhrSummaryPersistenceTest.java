@@ -427,11 +427,24 @@ class DhrSummaryPersistenceTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version", Integer.class)).isZero();
         ((ObjectNode) detail.at("/recordsByOrigin/work/0")).put("status", "COMPLETED");
         detail.put("productionObjectId", "10");
-        jdbc.execute("CREATE TABLE production_execution(object_id BIGINT,state_json TEXT)");
-        jdbc.update("INSERT INTO production_execution VALUES(10,?)", "{\"operations\":[{\"forms\":[{\"supplement\":{},\"status\":\"ACTIVE\"}]}]}");
+        jdbc.execute("CREATE TABLE production_execution(object_id BIGINT,state_json TEXT,snapshot_json TEXT)");
+        jdbc.update("INSERT INTO production_execution VALUES(10,?,'{}')", "{\"operations\":[{\"forms\":[{\"supplement\":{},\"status\":\"ACTIVE\"}]}]}");
         assertThatThrownBy(() -> service.submit(1L, submitCommand(1))).hasMessageContaining("尚未完成的补录");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version", Integer.class)).isZero();
         assertThat(service.workspace(1L).at("/draft/revision").asInt()).isEqualTo(1);
+    }
+
+    @Test void unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced() {
+        service.saveDraft(1L, command(null));
+        detail.put("productionObjectId", "10");
+        jdbc.execute("CREATE TABLE production_execution(object_id BIGINT,state_json TEXT,snapshot_json TEXT)");
+        jdbc.update("INSERT INTO production_execution VALUES(10,?,?)",
+                "{\"operations\":{\"a\":{\"forms\":{\"custom-1\":{\"status\":\"ACTIVE\"}}}}}",
+                "{\"operations\":[{\"id\":\"a\",\"forms\":[{\"id\":\"custom-1\",\"name\":\"补充记录\",\"sourceType\":\"CUSTOM\",\"scope\":\"BATCH\",\"completionRequired\":false}]}]}");
+        assertThatThrownBy(() -> service.submit(1L, submitCommand(1))).hasMessageContaining("资料待完善").hasMessageContaining("补充记录");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_summary_version", Integer.class)).isZero();
+        jdbc.update("UPDATE production_execution SET state_json=?", "{\"operations\":{\"a\":{\"forms\":{\"custom-1\":{\"status\":\"COMPLETED\"}}}}}");
+        assertThat(service.submit(1L, submitCommand(1)).path("status").asText()).isEqualTo("FORMALIZED");
     }
 
     private ObjectNode command(Integer revision) {

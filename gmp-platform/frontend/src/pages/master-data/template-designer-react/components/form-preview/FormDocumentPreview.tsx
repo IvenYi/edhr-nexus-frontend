@@ -67,10 +67,15 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     const value = binding && field ? binding.values[field.id] : undefined;
     const readOnly = !binding || binding.disabled || (field?.type === 'signature' && (!binding.onSignatureRequest || binding.signaturePermissions?.[node.bindings?.subTableId || field.id] !== 'EDIT'));
     const displayValue = field?.type === 'reference' && value && typeof value === 'object' && 'name' in value ? value.name : value;
-    const rawOptions = field?.typeConfig.options;
+    const configuredOptions = node.bindings?.widgetConfig?.optionList;
+    const rawOptions = typeof configuredOptions === 'string' && configuredOptions.trim() ? configuredOptions : field?.typeConfig.options;
+    const hasConfiguredOptions = Array.isArray(rawOptions) ? rawOptions.length > 0 : String(rawOptions ?? '').trim().length > 0;
     const options = binding && field && ['singleSelect', 'multiSelect'].includes(field.type) ? (
-      Array.isArray(rawOptions) ? rawOptions.filter(item => item.status !== 'disabled').map(item => ({ key: String(item.value), value: String(item.value), label: String(item.label) }))
-        : String(rawOptions ?? '').split('\n').filter(Boolean).map(line => { const [label, value] = line.split(':'); return { key: value ?? label, value: value ?? label, label }; })
+      !hasConfiguredOptions ? [
+        { key: `${field.id}:default-1`, label: '选项1', value: '选项1' },
+        { key: `${field.id}:default-2`, label: '选项2', value: '选项2' },
+      ] : Array.isArray(rawOptions) ? rawOptions.filter(item => item.status !== 'disabled').map(item => ({ key: String(item.value), value: String(item.value), label: String(item.label) }))
+        : String(rawOptions ?? '').split('\n').map(line => line.trim()).filter(Boolean).map(line => { const [rawLabel, rawValue] = line.split(':'); const label = rawLabel.trim(); const value = rawValue?.trim() || label; return { key: value, value, label }; })
     ) : undefined;
     const fallbackControl = () => renderMockFillControl({
       node, field, previewOnly: readOnly, options,

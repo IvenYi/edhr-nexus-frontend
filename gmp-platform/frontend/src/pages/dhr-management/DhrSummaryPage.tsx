@@ -953,13 +953,14 @@ export function SummaryWorkspace({ dhr, onClose, initialRevision = false, viewOn
           </TextField>}
           {readOnly && <Tooltip title={!canExport ? '需要 DHR汇总导出 权限' : '导出当前冻结版本'}><span><Button startIcon={<DownloadRounded />} disabled={!canExport || !workspace || !selectedVersionId || exportBusy} onClick={() => setExportOpen(true)}>导出 DHR</Button></span></Tooltip>}
           {editable && <Button variant="outlined" onClick={() => saveMutation.mutate()} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged}>保存草稿</Button>}
-          {!readOnly && canSubmit && !viewOnly && <Button variant="contained" onClick={() => setCheckDialogOpen(true)} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged || (!canEdit && revision === undefined)}>提交汇总</Button>}
+          {!readOnly && canSubmit && !viewOnly && <Button variant="contained" onClick={() => setCheckDialogOpen(true)} disabled={!workspace || isLoading || isWriting || attachmentBusy || remoteDraftChanged || Boolean(query.data?.dhr.recordIssues?.length) || (!canEdit && revision === undefined)}>提交汇总</Button>}
           <IconButton onClick={requestClose} disabled={isWriting} aria-label="关闭"><CloseRounded /></IconButton>
         </Stack>
       </Stack>
     </DialogTitle>
     <DialogContent sx={{ p: 2, overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 0.75 }}>
       {remoteDraftChanged && <Alert severity="warning" action={<Button color="inherit" size="small" onClick={() => setConfirmReload(true)}>重新载入</Button>}>草稿已在其他操作中更新。本地编辑已保留，请核对后重新载入最新草稿。</Alert>}
+      {!readOnly && Boolean(query.data?.dhr.recordIssues?.length) && <Alert severity="warning">生产已完工，资料待完善。可继续整理草稿，完成以下记录后才能提交汇总：{query.data?.dhr.recordIssues?.map(issue => <Typography key={issue} variant="caption" component="div">{issue}</Typography>)}</Alert>}
       {readOnly && Boolean(versionQuery.data?.evidenceChanges?.length) && <Alert severity="warning">本版本有 {versionQuery.data?.evidenceChanges?.length} 项冻结证据与当前来源不一致。原冻结内容与审批历史保持不变。{summaryStatus === 'PENDING_REVIEW' ? '请由审批人核对后退回整理。' : '需要纳入变化时，请通过“发起修订”形成新版本。'}{versionQuery.data?.evidenceChanges?.map(change => <Typography variant="caption" component="div" key={change.recordId ?? `attachment-${change.attachmentId}`}>{change.instanceNo || (change.attachmentId ? `附件 ${change.attachmentId}` : '证据')}：{change.message}</Typography>)}</Alert>}
       {isLoading ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><CircularProgress /></Box> : isError || !workspace ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><Stack spacing={1.5} alignItems="center"><Typography color="text.secondary">DHR 汇总工作区加载失败</Typography><Button startIcon={<RefreshRounded />} onClick={() => { query.refetch(); if (readOnly && selectedVersionId) versionQuery.refetch(); }}>重新加载</Button></Stack></Box> : <>
         <Box sx={{ bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, flex: '0 0 auto' }}>

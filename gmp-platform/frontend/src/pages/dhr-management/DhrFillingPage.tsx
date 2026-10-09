@@ -146,9 +146,10 @@ function FillingWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
   };
   const run = async (button: SelectedAction, credentials?: { account: string; password: string; opinion: string }) => {
     if (!entry || !view || busyRef.current) return;
+    if (group?.requiresSupplementReason && !credentials?.opinion.trim()) { setAction({ ...button, requireOpinion: true }); return; }
     busyRef.current = true; setBusy(true);
     try {
-      await update(await actDhrFilling(dhr.id, { action: button.action, revision: view.revision, operationId: entry.op.id, formId: entry.form.id, instanceId: selectedCopy, values, signatureTarget: button.signatureTarget, ...credentials }));
+      await update(await actDhrFilling(dhr.id, { action: button.action, revision: view.revision, operationId: entry.op.id, formId: entry.form.id, instanceId: selectedCopy, values, signatureTarget: button.signatureTarget, ...credentials, reason: group?.requiresSupplementReason ? credentials?.opinion : undefined }));
       setAction(null); showMessage('表单操作已保存', 'success');
     } catch (e) { showMessage(errorText(e), 'error'); }
     finally { busyRef.current = false; setBusy(false); }
@@ -173,9 +174,9 @@ function FillingWorkspace({ dhr, onClose }: { dhr: DhrInstanceSummary; onClose: 
           <DhrInstancePanel open={instancesOpen} title={navigationView === 'ARCHIVE' ? archiveNode?.label ?? '表单' : entry?.form.name ?? '表单'} selectedId={selectedCopy} onClose={() => setInstancesOpen(false)}
             onSelect={id => { if (id !== selectedCopy) guarded(() => setCopyId(id)); }}
             items={visibleCopyIds.map((id, index) => { const instance = entry && view.state.operations[entry.op.id]?.forms[id]; return { id, label: instance?.instanceNo || `第 ${index + 1} 份（待生成实例号）`, secondary: instance?.status === 'COMPLETED' ? '已完成' : '填报中' }; })} />
-          <Box sx={{ ...workspacePanelSx, flex: 1 }}>
-            <Stack direction="row" alignItems="center" spacing={1} sx={{ minHeight: 56, px: 2, borderBottom: '1px solid #e4e7ed' }}><Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap>{previewTitle || '请选择表单'}</Typography><Typography variant="caption" color="text.secondary">{current?.instanceNo || (selectedCopy ? '首次保存后生成实例号' : '尚未到达填报节点')} · {controls?.nodeName || ''}</Typography></Box>
-              {mayAdd && view.objectStatus === 'COMPLETED' && view.dhrSummaryStatus !== 'PENDING_REVIEW' && group?.instanceIds.length ? <Button size="small" onClick={() => guarded(() => { setReason(''); setOccurredAt(''); setAdding(true); })}>追加补录</Button> : null}
+          <Box sx={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <Stack direction="row" alignItems="center" spacing={1} sx={{ minHeight: 56, px: 2, borderBottom: '1px solid #e4e7ed' }}><Box sx={{ flex: 1, minWidth: 0 }}><Typography variant="body2" noWrap>{entry?.form.name || '请选择表单'}</Typography><Typography variant="caption" color="text.secondary">{current?.instanceNo || (selectedCopy ? '首次保存后生成实例号' : '尚未到达填报节点')} · {controls?.nodeName || ''}</Typography></Box>
+              {mayAdd && view.objectStatus === 'COMPLETED' && ['NOT_STARTED', 'DRAFT'].includes(view.dhrSummaryStatus) && group?.instanceIds.length ? <Button size="small" onClick={() => guarded(() => { setReason(''); setOccurredAt(''); setAdding(true); })}>追加补录</Button> : null}
             </Stack>
             {terminatedReason ? <Alert severity="warning">{terminatedReason}{terminationProvenance && <Typography variant="body2" sx={{ mt: 0.5 }}>{terminationProvenance}</Typography>}</Alert> : current?.status === 'COMPLETED' ? <Alert severity="info">本实例已完成，内容只读。需要更正已有内容时请使用表单变更流程。</Alert> : null}
             <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: 2, bgcolor: '#f6f8f9' }}>{document ? <FormCanvasPreview document={document} fullPage fieldPermissions={controls?.permissions} runtime={{ values, disabled: busy || !canAct, signaturePermissions: controls?.signaturePermissions, signaturesInvalidated: dirty, onSignatureRequest: target => setAction({ action: 'SIGN_FIELD', label: '签署字段', requiresSignature: true, signatureTarget: target }), onChange: (id, value) => { setValues(v => ({ ...v, [id]: value })); setDirty(true); }, references: (id, word, referenceValues) => entry ? dhrReferences(dhr.id, entry.op.id, entry.form.id, id, word, referenceValues) : Promise.resolve([]), upload: async file => { if (busyRef.current) throw new Error('请等待当前操作完成'); busyRef.current = true; setBusy(true); try { return await uploadExecutionFile(dhr.productionObjectId, file); } finally { busyRef.current = false; setBusy(false); } } }} /> : <Typography color="text.secondary">暂无可显示的表单画布</Typography>}</Box>

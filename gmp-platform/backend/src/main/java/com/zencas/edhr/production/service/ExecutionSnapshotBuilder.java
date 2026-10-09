@@ -156,22 +156,22 @@ public class ExecutionSnapshotBuilder {
         }
     }
 
-    public ArrayNode publishedForms(String keyword) {
+    public ArrayNode selectableForms(String keyword) {
         String search = "%" + keyword.strip().replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
         return rows("""
-            SELECT v.id AS "versionId", t.name, t.code, t.category_name AS "categoryName", v.version_label AS version
+            SELECT t.id AS "templateId", v.id AS "versionId", t.name, t.code, t.category_name AS "categoryName", v.version_label AS version
             FROM form_template_version v JOIN form_template t ON t.id=v.template_id
-            WHERE v.tenant_id='default' AND t.tenant_id='default' AND v.status='PUBLISHED' AND t.status='ACTIVE'
+            WHERE v.tenant_id='default' AND t.tenant_id='default' AND t.status='ACTIVE'
               AND (LOWER(t.name) LIKE LOWER(?) ESCAPE '!' OR LOWER(t.code) LIKE LOWER(?) ESCAPE '!')
-            ORDER BY t.name, v.id DESC LIMIT 100
+            ORDER BY t.name, t.id, v.id DESC
             """, search, search);
     }
 
     public ObjectNode customForm(String versionId, boolean required, String id, String operator) {
-        if (versionId == null || !versionId.matches("[0-9]+")) throw invalid("请选择已发布的表单模板版本");
+        if (versionId == null || !versionId.matches("[0-9]+")) throw invalid("请选择表单模板版本");
         one("""
             SELECT v.id FROM form_template_version v JOIN form_template t ON t.id=v.template_id
-            WHERE v.id=? AND v.tenant_id='default' AND t.tenant_id='default' AND v.status='PUBLISHED' AND t.status='ACTIVE'
+            WHERE v.id=? AND v.tenant_id='default' AND t.tenant_id='default' AND t.status='ACTIVE'
             """, Long.valueOf(versionId));
         return form(versionId).put("id", id).put("sourceType", "CUSTOM").put("required", required)
                 .put("attachedBy", operator).put("attachedAt", java.time.LocalDateTime.now().toString());

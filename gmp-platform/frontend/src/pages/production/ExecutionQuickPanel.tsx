@@ -3,7 +3,7 @@ import { Box, Button, IconButton, Portal, Typography } from '@mui/material';
 import { CloseRounded, EditNoteRounded } from '@mui/icons-material';
 
 export type ExecutionPanelId = 'sop' | 'works' | 'history';
-type Panel = { id: ExecutionPanelId; label: string; title: string; icon: ReactNode; content: ReactNode };
+type Panel = { id: ExecutionPanelId; label: string; title: string; subtitle?: string; icon: ReactNode; content: ReactNode };
 
 export default function ExecutionQuickPanel({ active, onChange, panels, context, suspended, railContainer, section, onSectionChange, navigationContent, children }: {
   active: ExecutionPanelId | null; onChange: (panel: ExecutionPanelId | null) => void;
@@ -88,10 +88,10 @@ export default function ExecutionQuickPanel({ active, onChange, panels, context,
     {active && <Box className="execution-peek-backdrop" aria-hidden="true" />}
     <Box component="section" ref={panelRef} id={`${id}-panel`} role="dialog" aria-modal="false" aria-labelledby={`${id}-title`} hidden={!active} className="execution-peek">
       <Box className="execution-peek-heading">
-        <Box><Typography component="h2" ref={titleRef} tabIndex={-1} id={`${id}-title`}>{selected?.title}</Typography><Typography className="execution-peek-context">{context}</Typography></Box>
+        <Box><Typography component="h2" ref={titleRef} tabIndex={-1} id={`${id}-title`}>{selected?.title}</Typography><Typography className="execution-peek-context">{selected?.subtitle ?? context}</Typography></Box>
         <IconButton aria-label="收起辅助面板" onClick={close}><CloseRounded /></IconButton>
       </Box>
-      <Typography className="execution-peek-hint">点击外部或按 Esc 返回填报 · 保留当前查看位置</Typography>
+      {active !== 'sop' && <Typography className="execution-peek-hint">点击外部或按 Esc 返回填报 · 保留当前查看位置</Typography>}
       {panels.map((panel) => <Box key={panel.id} hidden={active !== panel.id} className="execution-peek-content">{panel.content}</Box>)}
     </Box>
   </Box>;

@@ -15,8 +15,8 @@ rules:
       requiredInput: copyRemark
       metadataScope: productionFormCopy
       preserveExistingPermissionsAndRevision: true
-    explanation: user-confirmed；操作员在填报阶段按需新增同一表单的份数，不采用预先配置固定份数；每份独立保存、提交。DEC-0059 将结束时点区分为普通表单随工序完工结束、作业表单所有已有份最终完成后自动结束并推进，因此新增仅在本表单填报仍开放时适用；作业表单最后一份最终完成后不再保留显式结束前的新增窗口。DEC-0066 补充新增份须填写本份备注，备注独立于模板业务字段值保存，取消不创建，成功后选中新份；沿用原权限、版本控制和审计事务。稳定标识和序号的具体存储属于实现设计，不据此新增默认份数或复制上一份业务值的规则。
-    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed, evidence.production-form-copy-metadata-confirmed]
+    explanation: user-confirmed；操作员在填报阶段按需新增同一表单的份数，不采用预先配置固定份数；每份独立保存、提交。DEC-0059 将结束时点区分为普通工序表单随工序完工结束、作业表单所有已有份最终完成后自动结束并推进，DEC-0075 则明确批次自定义表单随批次而非创建工序；新增仅在本表单填报仍开放时适用。作业表单最后一份最终完成后不再保留显式结束前的新增窗口。DEC-0066 补充新增份须填写本份备注，备注独立于模板业务字段值保存，取消不创建，成功后选中新份；沿用原权限、版本控制和审计事务。稳定标识和序号的具体存储属于实现设计，不据此新增默认份数或复制上一份业务值的规则。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed, evidence.production-form-copy-metadata-confirmed, evidence.custom-form-scope-confirmed]
   - id: rule.production-form-copy-required-completion
     name: 必填表单所有已创建份完成
     status: specified
@@ -31,8 +31,8 @@ rules:
       type: block
       actions: [production-operation.complete]
       reason: required-form-copies-incomplete
-    explanation: user-confirmed；必填表单所有已创建份均需完成，存在未完成份时阻断工序完工并列出未完成份。完成沿用既有表单流程的最终完成语义，保存不算完成，待审批不等于已完成。DEC-0059 取消另行显式结束的前置要求，不跳过其他作业和前置条件。
-    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-execution-product-configuration-contract, evidence.production-form-auto-finish-confirmed]
+    explanation: user-confirmed；工序范围内必填表单所有已创建份均需完成，存在未完成份时阻断工序完工并列出未完成份。完成沿用既有表单流程的最终完成语义，保存不算完成，待审批不等于已完成。DEC-0059 取消另行显式结束的前置要求，不跳过其他作业和前置条件。DEC-0075 明确批次归属自定义表单不属于本工序门禁范围，改在批次完工检查。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-execution-product-configuration-contract, evidence.production-form-auto-finish-confirmed, evidence.custom-form-scope-confirmed]
   - id: rule.production-form-copy-optional-incomplete
     name: 非必填未完成份提示并保留进行中
     status: specified
@@ -50,8 +50,8 @@ rules:
       retainedFormStatus: IN_PROGRESS
       preserveIncompleteCopies: true
       retainOtherCompletionChecks: true
-    explanation: user-confirmed；普通非必填表单存在未完成份时，工序完工须告知未完成表单，其他条件满足时允许继续。工序可已完工而该表单仍进行中，不能随工序完工把未完成份改为已完成，也不能回写已完成单份为进行中。DEC-0059 下作业表单仍须全部已有份最终完成才自动推进，不以本规则跳过未完成作业节点。补填入口定位为后期能力，本次保留数据和状态，不开放完工后写入或解除已有权限限制。
-    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed]
+    explanation: user-confirmed；普通非必填表单存在未完成份时，工序完工须告知未完成表单，其他条件满足时允许继续。工序可已完工而该表单仍进行中，不能随工序完工把未完成份改为已完成，也不能回写已完成单份为进行中。DEC-0059 下作业表单仍须全部已有份最终完成才自动推进，不以本规则跳过未完成作业节点。原补填延期仅对自定义表单由 DEC-0075 局部替代：已有未完成自定义份可按权限、原因和汇总阶段受控继续填报，生产完成与资料齐套分别计算；不解除其他来源原限制。
+    evidenceIds: [evidence.production-form-copies-user-decision, evidence.production-form-auto-finish-confirmed, evidence.custom-form-scope-confirmed]
   - id: rule.production-form-copy-explicit-finish
     name: 提交本份与结束本表单分开
     status: deprecated
@@ -79,8 +79,8 @@ rules:
       target: ordinary-operation-forms
       effect: finish-reporting-with-operation
       preserveCopyStatusAndValues: true
-    explanation: user-confirmed；工作台删除结束本表单填报按钮，普通表单在工序完工时统一结束填报；必填所有已创建份最终完成，非必填未完成须告知且保留进行中。仍检查其他完工条件，收尾不重写单份内容、状态或历史证据。
-    evidenceIds: [evidence.production-form-auto-finish-confirmed]
+    explanation: user-confirmed；工作台删除结束本表单填报按钮，普通工序归属表单在工序完工时统一结束正常填报；必填所有已创建份最终完成，非必填未完成须告知且保留进行中。DEC-0075 使批次归属自定义表单不再随单个工序收尾，未完成自定义份另有受控继续填报路径；其他完工条件仍检查，收尾不重写单份内容、状态或历史证据。
+    evidenceIds: [evidence.production-form-auto-finish-confirmed, evidence.custom-form-scope-confirmed]
   - id: rule.production-work-form-auto-finish
     name: 作业表单全部份最终完成自动推进
     status: specified

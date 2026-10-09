@@ -949,7 +949,8 @@ class ProductionExecutionIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).contains("第 2 份未完成", "已告知", "保持进行中");
     }
 
-    @Test void customFormsFreezePublishedVersionAndRequireExplicitRequiredChoice() throws Exception {
+    @Test void customFormsFreezeSelectedVersionAndRequireExplicitRequiredChoice() throws Exception {
+        jdbc.update("UPDATE form_template_version SET status='DRAFT' WHERE id=5");
         mvc.perform(auth(get("/api/v1/production/execution/form-templates"))).andExpect(status().isOk())
             .andExpect(jsonPath("$.data[0].versionId").value("5"));
         action(101, "ATTACH_FORM", 0, "a", Map.of("templateVersionId", "5", "required", true)).andExpect(status().isBadRequest());
@@ -962,12 +963,116 @@ class ProductionExecutionIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).contains(formId, "CUSTOM", "attachedBy", "temperature");
         assertThat(jdbc.queryForObject("SELECT content_after FROM audit_event WHERE function_name='ATTACH_FORM'", String.class)).contains("snapshot", formId, "required");
         action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isBadRequest());
-        jdbc.update("UPDATE form_template_version SET status='DRAFT',model_design_json='{}' WHERE id=5");
+        jdbc.update("UPDATE form_template_version SET model_design_json='{}' WHERE id=5");
+        jdbc.update("UPDATE form_template SET status='INACTIVE' WHERE id=5");
         mvc.perform(auth(get("/api/v1/production/execution/form-templates"))).andExpect(jsonPath("$.data.length()").value(0));
         action(101, "ATTACH_FORM", 2, "a", Map.of("templateVersionId", "5", "required", false)).andExpect(status().isBadRequest());
         mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(jsonPath("$.data.snapshot.operations[0].forms[1].fields[0].id").value("temperature"));
         action(101, "SUBMIT", 2, "a", Map.of("formId", formId, "values", Map.of("temperature", 30))).andExpect(status().isOk());
         action(101, "END_FORM", 3, "a", Map.of("formId", formId)).andExpect(status().isOk());
+    }
+
+    @Test void customFormTemplatesSearchAllVersionsWithoutPublicationAndKeepTenantBoundaries() throws Exception {
+        jdbc.update("UPDATE form_template_version SET status='DRAFT' WHERE id=5");
+        jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,status) VALUES(6,5,'V2','DRAFT')");
+        jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,tenant_id) VALUES(7,5,'V3','other')");
+        mvc.perform(auth(get("/api/v1/production/execution/form-templates")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.length()").value(2))
+            .andExpect(jsonPath("$.data[0].templateId").value("5"))
+            .andExpect(jsonPath("$.data[0].categoryName").value("生产记录"))
+            .andExpect(jsonPath("$.data[0].versionId").value("6"))
+            .andExpect(jsonPath("$.data[1].versionId").value("5"));
+        mvc.perform(auth(get("/api/v1/production/execution/form-templates").param("keyword", "no-match")))
+            .andExpect(jsonPath("$.data.length()").value(0));
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "7", "required", false)).andExpect(status().isBadRequest());
+        action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "999", "required", false)).andExpect(status().isBadRequest());
+        jdbc.update("UPDATE form_template SET tenant_id='other' WHERE id=5");
+        mvc.perform(auth(get("/api/v1/production/execution/form-templates")))
+            .andExpect(jsonPath("$.data.length()").value(0));
+        action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "required", false)).andExpect(status().isBadRequest());
+    }
+
+    @Test void customTemplatePickerDoesNotTruncateVersions() throws Exception {
+        for (int version = 1; version <= 101; version++) {
+            jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,status) VALUES(?,5,?,'DRAFT')", 1000 + version, "V" + version);
+        }
+        mvc.perform(auth(get("/api/v1/production/execution/form-templates")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.length()").value(102))
+            .andExpect(jsonPath("$.data[101].versionId").value("5"))
+            .andExpect(jsonPath("$.data[101].templateId").value("5"));
+    }
+
+    @Test void historicalExecutionWithoutDhrCanAttachCustomFormWithoutFabricatingDhr() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        jdbc.update("DELETE FROM dhr_instance WHERE production_object_id=101");
+        mvc.perform(auth(get("/api/v1/production/execution/101")))
+                .andExpect(jsonPath("$.data.availability.a.canAttachScopedForm").value(true));
+        action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "scope", "BATCH", "completionRequired", true, "reason", "历史批次补充检验"))
+                .andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_instance WHERE production_object_id=101", Integer.class)).isZero();
+    }
+
+    @Test void batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch() throws Exception {
+        jdbc.update("DELETE FROM product_process_operation_form_binding");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String response = action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "scope", "BATCH", "completionRequired", true, "reason", "跨工序检验"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String form = mapper.readTree(response).path("data").path("attachedFormId").asText();
+        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.objectStatus").value("IN_PROGRESS"));
+        action(101, "START", 3, "b", Map.of()).andExpect(status().isOk());
+        action(101, "COMPLETE", 4, "b", Map.of()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.state.operations.b.status").value("COMPLETED"))
+                .andExpect(jsonPath("$.data.objectStatus").value("IN_PROGRESS"))
+                .andExpect(jsonPath("$.data.batchCompletionIssues.length()").value(1))
+                .andExpect(jsonPath("$.data.availability.a.formCopies['" + form + "'].instances['" + form + "'].canAct").value(true));
+        action(101, "SAVE", 5, "a", Map.of("formId", form, "instanceId", form, "values", Map.of("temperature", 20)))
+                .andExpect(status().isOk());
+        action(101, "SUBMIT", 6, "a", Map.of("formId", form, "instanceId", form, "values", Map.of("temperature", 20)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.objectStatus").value("COMPLETED"))
+                .andExpect(jsonPath("$.data.recordCompleteness").value("COMPLETE"));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM form_instance_record WHERE form_id=?", Integer.class, form)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT operation_name FROM form_instance_record WHERE form_id=?", String.class, form)).isEqualTo("批次补充记录");
+    }
+
+    @Test void optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection() throws Exception {
+        jdbc.update("DELETE FROM product_process_operation_form_binding");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String response = action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "scope", "OPERATION", "completionRequired", false, "reason", "追加说明"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String form = mapper.readTree(response).path("data").path("attachedFormId").asText();
+        assertThat(mapper.readTree(response).path("data").path("availability").path("a").path("formCopies").path(form).path("canEnd").asBoolean()).isFalse();
+        action(101, "COMPLETE", 2, "a", Map.of("acknowledgeIncomplete", true)).andExpect(status().isOk());
+        action(101, "START", 3, "b", Map.of()).andExpect(status().isOk());
+        action(101, "COMPLETE", 4, "b", Map.of()).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.objectStatus").value("COMPLETED"))
+                .andExpect(jsonPath("$.data.recordCompleteness").value("INCOMPLETE"));
+        action(101, "SUBMIT", 5, "a", Map.of("formId", form, "values", Map.of("temperature", 20))).andExpect(status().isBadRequest());
+        for (String summary : List.of("PENDING_REVIEW", "FORMALIZED")) {
+            jdbc.update("UPDATE dhr_instance SET summary_status=?", summary);
+            action(101, "SUBMIT", 5, "a", Map.of("formId", form, "values", Map.of("temperature", 20), "reason", "补齐记录")).andExpect(status().isBadRequest());
+        }
+        jdbc.update("UPDATE dhr_instance SET summary_status='DRAFT'");
+        action(101, "SUBMIT", 5, "a", Map.of("formId", form, "values", Map.of("temperature", 20), "reason", "补齐记录"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.objectStatus").value("COMPLETED"))
+                .andExpect(jsonPath("$.data.recordIssues.length()").value(0));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE function_name='SUBMIT' AND reason='补齐记录'", Integer.class)).isEqualTo(1);
+    }
+
+    @Test void operationCustomGateAndExplicitScopeValidationCannotBeBypassed() throws Exception {
+        jdbc.update("DELETE FROM product_process_operation_form_binding");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "scope", "BATCH", "completionRequired", true)).andExpect(status().isBadRequest());
+        action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "scope", "unknown", "completionRequired", true, "reason", "说明")).andExpect(status().isBadRequest());
+        String response = action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "scope", "OPERATION", "completionRequired", true, "reason", "检验"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String form = mapper.readTree(response).path("data").path("attachedFormId").asText();
+        action(101, "ADD_FORM_COPY", 2, "a", Map.of("formId", form, "remark", "复检")) .andExpect(status().isOk());
+        action(101, "SUBMIT", 3, "a", Map.of("formId", form, "instanceId", form, "values", Map.of("temperature", 20))).andExpect(status().isOk());
+        action(101, "COMPLETE", 4, "a", Map.of("acknowledgeIncomplete", true)).andExpect(status().isBadRequest());
+        action(101, "SUBMIT", 4, "a", Map.of("formId", form, "instanceId", form + ":copy:2", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        action(101, "COMPLETE", 5, "a", Map.of()).andExpect(status().isOk());
     }
 
     @Test void presenceCountsEditorsAcrossCopiesAndRejectsReadOnlyInstances() throws Exception {

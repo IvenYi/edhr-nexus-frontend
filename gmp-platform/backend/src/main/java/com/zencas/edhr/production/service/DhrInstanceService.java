@@ -39,6 +39,17 @@ public class DhrInstanceService {
     private final AuditEventRepository audits;
     private final SnowflakeIdGenerator ids;
 
+    boolean customFormsMutable(Long objectId, boolean lock) {
+        var rows = jdbc.queryForList("SELECT status,summary_status FROM dhr_instance WHERE tenant_id='default' AND production_object_id=?" + (lock ? " FOR UPDATE" : ""), objectId);
+        // Historical executions can predate DHR instance creation and have no frozen summary.
+        return rows.isEmpty() || List.of("IN_PROGRESS", "COMPLETED").contains(rows.getFirst().get("status"))
+                && List.of("NOT_STARTED", "DRAFT").contains(rows.getFirst().get("summary_status"));
+    }
+
+    void requireCustomFormsMutable(Long objectId) {
+        if (!customFormsMutable(objectId, true)) throw invalid("批记录审核中或已定稿，请先退回或重新整理后再补充表单");
+    }
+
     /** Called only from the locked first-START execution transaction. */
     @Transactional
     public void createAtFirstStart(ProductionObject object, WorkOrder order, ObjectNode executionSnapshot) {
@@ -235,6 +246,13 @@ public class DhrInstanceService {
                 (rs, index) -> detailRow(rs), "default", id);
         if (rows.isEmpty()) throw invalid("DHR 实例不存在");
         ObjectNode result = rows.getFirst();
+        var executions = jdbc.queryForList("SELECT snapshot_json,state_json FROM production_execution WHERE object_id=?", Long.valueOf(result.path("productionObjectId").asText()));
+        if (!executions.isEmpty()) {
+            var execution = executions.getFirst();
+            List<String> incomplete = CustomFormPolicy.incomplete(json(execution.get("snapshot_json").toString(), "执行快照"), json(execution.get("state_json").toString(), "执行状态"), false);
+            result.put("recordCompleteness", incomplete.isEmpty() ? "COMPLETE" : "INCOMPLETE");
+            result.set("recordIssues", mapper.valueToTree(incomplete));
+        }
         if ("EARLY_TERMINATED".equals(result.path("status").asText())) {
             var frozen = jdbc.queryForList("SELECT snapshot_json,snapshot_hash FROM dhr_termination WHERE tenant_id=? AND dhr_instance_id=?", "default", id);
             if (frozen.isEmpty()) throw invalid("DHR 终止记录缺失，请联系管理员核对");

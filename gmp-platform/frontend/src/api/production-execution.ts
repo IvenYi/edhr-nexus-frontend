@@ -5,6 +5,7 @@ export type ExecutionValues = Record<string, unknown>;
 export interface ExecutionButton { action: string; label: string; visible?: boolean; style?: 'PRIMARY' | 'DEFAULT' | 'DANGER'; requiresSignature?: boolean; requireOpinion?: boolean }
 export interface ExecutionForm {
   sourceType?: 'CUSTOM';
+  scope?: 'OPERATION' | 'BATCH'; completionRequired?: boolean; sourceOperationId?: string; attachmentReason?: string;
   id: string; versionId: string; name: string; code: string; version: string; categoryName?: string | null;
   model: string; canvas: string; fields: ModelField[]; required?: boolean; workId?: string; workNodeId?: string;
 }
@@ -23,6 +24,7 @@ export interface ExecutionFormControls { canAct?: boolean; buttons: ExecutionBut
 export interface ExecutionFormCopies {
   instanceIds: string[]; status: string; ended: boolean; required: boolean; canAdd: boolean; canEnd: boolean; canEditRemark?: boolean;
   incomplete: string[]; instances: Record<string, ExecutionFormControls>;
+  requiresSupplementReason?: boolean;
 }
 export interface ExecutionView {
   operationOutputs?: Record<string, { status: 'READY' | 'NOT_CONFIGURED' | 'PENDING' | 'INVALID'; message: string; outputQuantity: string | null; goodQuantity: string | null; ngQuantity: string | null; scrapQuantity: string | null }>;
@@ -35,22 +37,24 @@ export interface ExecutionView {
   };
   state: { operations: Record<string, { status: string; startedAt?: string; completedAt?: string; forms: Record<string, ExecutionFormState>; works: Record<string, { status: string; active: string[] }> }>;
     history: Array<{ operationId: string; operationName: string; action: string; operator: string; at: string; detail: string; actionCode?: string; formId?: string; copyId?: string }> };
-  availability: Record<string, { canStart: boolean; canComplete: boolean; canAttachForm?: boolean; startIssues: string[]; completionIssues: string[]; completionWarnings?: string[];
+  availability: Record<string, { canStart: boolean; canComplete: boolean; canAttachForm?: boolean; canAttachScopedForm?: boolean; startIssues: string[]; completionIssues: string[]; completionWarnings?: string[];
     forms: Record<string, ExecutionFormControls>; formCopies?: Record<string, ExecutionFormCopies> }>;
   attachedFormId?: string;
+  recordCompleteness?: 'COMPLETE' | 'INCOMPLETE'; recordIssues?: string[]; batchCompletionIssues?: string[];
   revision: number; objectStatus: string; orderStatus: string; startedAt?: string; configurationError?: string; historicalWithoutExecution: boolean;
 }
 export interface ExecutionCommand {
   action: string; revision: number; operationId: string; formId?: string; workId?: string; nodeId?: string;
   instanceId?: string; acknowledgeIncomplete?: boolean;
   templateVersionId?: string; required?: boolean;
+  scope?: 'OPERATION' | 'BATCH'; completionRequired?: boolean;
   values?: ExecutionValues; opinion?: string; account?: string; password?: string;
   targetUserId?: string; reason?: string;
   remark?: string;
   signatureTarget?: { fieldId: string; tableId?: string; rowIndex?: number };
 }
 export interface ExecutionTransferTarget { id: string; name: string; username: string }
-export interface ExecutionTemplate { versionId: string; name: string; code: string; version: string; categoryName?: string }
+export interface ExecutionTemplate { templateId: string; versionId: string; name: string; code: string; version: string; categoryName?: string }
 export type ExecutionEditors = Record<string, Record<string, { userId: string; name: string; avatarUrl?: string; sequences: number[] }>>;
 export const getExecutionTemplates = async (keyword: string): Promise<ExecutionTemplate[]> =>
   (await client.get('/production/execution/form-templates', { params: { keyword } })).data.data;

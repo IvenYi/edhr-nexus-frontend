@@ -46,7 +46,7 @@ public class DhrFillingService {
                         JsonNode copy = current.path("forms").path(copyId);
                         if (copy.path("supplement").isObject()) {
                             ObjectNode controls = engine.formControls(form, copy, AuditContext.getOperatorId());
-                            if ("PENDING_REVIEW".equals(dhr.get("summary_status"))) {
+                            if (!Set.of("NOT_STARTED", "DRAFT").contains(dhr.get("summary_status"))) {
                                 controls.put("canAct", false); controls.putArray("buttons");
                             }
                             ((ObjectNode) result.path("availability").path(opId).path("formCopies").path(formId).path("instances")).set(copyId, controls);
@@ -67,6 +67,12 @@ public class DhrFillingService {
             executions.act(objectId, command);
             return workspace(dhrId);
         }
+        var source = executions.get(objectId);
+        var form = engine.find(engine.find(source.path("snapshot").path("operations"), command.operationId()).path("forms"), command.formId());
+        if (CustomFormPolicy.custom(form)) {
+            executions.act(objectId, command);
+            return workspace(dhrId);
+        }
         return mutate(dhrId, command, null);
     }
 
@@ -82,7 +88,7 @@ public class DhrFillingService {
         var object = jdbc.queryForMap("SELECT status FROM production_object WHERE tenant_id='default' AND id=? FOR UPDATE", objectId);
         var dhr = jdbc.queryForMap("SELECT summary_status FROM dhr_instance WHERE tenant_id='default' AND id=? FOR UPDATE", dhrId);
         if (!"COMPLETED".equals(object.get("status"))) throw invalid("仅生产完工后使用追加补录");
-        if ("PENDING_REVIEW".equals(dhr.get("summary_status"))) throw invalid("DHR 审核中，请先退回整理后再追加补录");
+        if (!Set.of("NOT_STARTED", "DRAFT").contains(dhr.get("summary_status"))) throw invalid("DHR 审核中或已定稿，请先退回或重新整理后再追加补录");
         var execution = jdbc.queryForMap("SELECT snapshot_json,state_json,revision FROM production_execution WHERE object_id=? FOR UPDATE", objectId);
         long revision = ((Number) execution.get("revision")).longValue();
         Long expected = action == null ? addition.hasNonNull("revision") ? addition.path("revision").asLong() : null : action.revision();
