@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,6 +46,20 @@ class RecordControlAccessTest {
         verify(jdbc).queryForList(contains("q.tenant_id=?"), eq("default"), eq(20), eq(0L));
         AuditContext.clear();
         assertThatThrownBy(() -> service.listRequests(false, 0, 20)).hasMessageContaining("重新登录");
+    }
+
+    @Test void applicationListFiltersAreAppliedBeforePagination() {
+        AuditContext.setOperator("42", "申请人");
+        when(jdbc.queryForList(anyString(), any(Object[].class))).thenReturn(List.of());
+        LocalDateTime from = LocalDateTime.of(2026, 9, 1, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2026, 10, 1, 0, 0);
+
+        service.listRequests(true, 2, 50, new RecordControlService.RequestListQuery(
+                "RC-01", "CHANGE", "FR-01", "点检表", "FORM-01", "张三", "IN_REVIEW", from, to));
+
+        verify(jdbc).queryForList(contains("r.template_name"), eq("default"), eq("42"), eq("%RC-01%"),
+                eq("CHANGE"), eq("%FR-01%"), eq("%点检表%"), eq("%FORM-01%"), eq("%张三%"), eq("%张三%"),
+                eq("IN_REVIEW"), eq(from), eq(to), eq(50), eq(100L));
     }
 
     @Test void approvalProjectionRequiresCurrentTaskOwnership() {

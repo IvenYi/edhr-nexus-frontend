@@ -29,7 +29,7 @@ export default function FormInstanceDetailDrawer({ templateId, recordId, onClose
       {query.isFetching ? <Box sx={{ p: 4, textAlign: 'center' }}><CircularProgress aria-label="加载表单记录" /></Box> : null}
       {query.isError ? <Alert severity="error">表单记录加载失败，请检查访问权限或稍后重试。</Alert> : null}
       {!query.isFetching && !query.isError && record && document ? <>
-        {record.legacy ? <Alert severity="info" sx={{ mb: 2 }}>历史记录已补充实例号；原始创建人和创建时间未知时显示为空。</Alert> : null}
+        {record.legacy ? <Alert severity="info" sx={{ mb: 2 }}>历史记录已补充表单实例编号；原始创建人和创建时间未知时显示为空。</Alert> : null}
         <FormCanvasPreview document={document} runtime={{ values: record.fieldValues, disabled: true, onChange: () => {} }} />
       </> : null}
     </Box>

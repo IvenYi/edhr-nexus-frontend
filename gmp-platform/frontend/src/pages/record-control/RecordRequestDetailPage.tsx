@@ -35,7 +35,7 @@ export default function RecordRequestDetailPage() {
       <Paper variant="outlined" sx={{ p: 2 }}>
         <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={2}>
           <Box><Typography fontWeight={600}>{detail.request_no}</Typography>
-            <Typography variant="body2" color="text.secondary">表单流水号：{detail.instance_no} · 来源修订 Rev.{detail.source_revision_no}</Typography>
+            <Typography variant="body2" color="text.secondary">表单实例编号：{detail.instance_no} · 来源修订 Rev.{detail.source_revision_no}</Typography>
             <Typography variant="body2" color="text.secondary">申请人：{detail.applicant_name || detail.applicant_id} · {detail.submitted_at?.replace('T', ' ')}</Typography>
             <Typography variant="body2" color="text.secondary">申请人签名记录：{detail.applicant_signature_id}</Typography>
           </Box>

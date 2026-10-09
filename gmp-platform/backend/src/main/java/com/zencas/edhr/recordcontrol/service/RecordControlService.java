@@ -52,7 +52,7 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
 
     @Transactional(readOnly = true)
     public ObjectNode findRecord(String instanceNo) {
-        if (instanceNo == null || instanceNo.isBlank()) throw invalid("请输入表单流水号");
+        if (instanceNo == null || instanceNo.isBlank()) throw invalid("请输入表单实例编号");
         var rows = jdbc.queryForList("""
             SELECT r.*, t.code AS template_code, t.name AS template_name, v.version_number,
                    rev.revision_no, rev.values_json AS revision_values,
@@ -63,7 +63,7 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
             LEFT JOIN record_control_request q ON q.record_id=r.id AND q.tenant_id=r.tenant_id AND q.status='IN_REVIEW'
             WHERE r.tenant_id=? AND r.instance_no=?
             """, TENANT, instanceNo.trim());
-        if (rows.isEmpty()) throw invalid("未找到该表单流水号");
+        if (rows.isEmpty()) throw invalid("未找到该表单实例编号");
         Map<String, Object> row = rows.getFirst();
         ObjectNode result = mapper.createObjectNode();
         for (String key : List.of("id", "instance_no", "object_id", "status", "template_code", "template_name", "version_number",
@@ -114,16 +114,39 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
 
     @Transactional(readOnly = true)
     public PageResult<ObjectNode> listRequests(boolean mine, int page, int size) {
+        return listRequests(mine, page, size, new RequestListQuery(null, null, null, null, null, null, null, null, null));
+    }
+
+    @Transactional(readOnly = true)
+    public PageResult<ObjectNode> listRequests(boolean mine, int page, int size, RequestListQuery query) {
         String currentUser = actor();
         page = Math.max(0, page); size = Math.max(1, Math.min(200, size));
-        String where = " WHERE q.tenant_id=?" + (mine ? " AND q.applicant_id=?" : "");
+        query = query == null ? new RequestListQuery(null, null, null, null, null, null, null, null, null) : query;
+        StringBuilder where = new StringBuilder(" WHERE q.tenant_id=?");
         List<Object> args = new ArrayList<>(List.of(TENANT));
-        if (mine) args.add(currentUser);
-        Long count = jdbc.queryForObject("SELECT count(*) FROM record_control_request q" + where, Long.class, args.toArray());
+        if (mine) { where.append(" AND q.applicant_id=?"); args.add(currentUser); }
+        appendContains(where, args, "q.request_no", query.requestNo());
+        appendEnum(where, args, "q.request_type", query.requestType(), Set.of("CHANGE", "OBSOLETE"), "申请类型");
+        appendContains(where, args, "r.instance_no", query.instanceNo());
+        appendContains(where, args, "r.template_name", query.templateName());
+        appendContains(where, args, "r.template_code", query.templateCode());
+        String applicant = text(query.applicant());
+        if (applicant != null) {
+            where.append(" AND (LOWER(COALESCE(q.applicant_name,'')) LIKE LOWER(?) ESCAPE '!' OR LOWER(q.applicant_id) LIKE LOWER(?) ESCAPE '!')");
+            args.add(pattern(applicant)); args.add(pattern(applicant));
+        }
+        appendEnum(where, args, "q.status", query.status(), Set.of("IN_REVIEW", "APPROVED", "RETURNED", "WITHDRAWN"), "申请状态");
+        if (query.submittedFrom() != null && query.submittedTo() != null && !query.submittedFrom().isBefore(query.submittedTo()))
+            throw invalid("申请时间区间必须为左闭右开且起点早于终点");
+        if (query.submittedFrom() != null) { where.append(" AND q.submitted_at>=?"); args.add(query.submittedFrom()); }
+        if (query.submittedTo() != null) { where.append(" AND q.submitted_at<?"); args.add(query.submittedTo()); }
+        Long count = jdbc.queryForObject("SELECT count(*) FROM record_control_request q JOIN form_instance_record r ON r.id=q.record_id" + where,
+                Long.class, args.toArray());
         args.add(size); args.add((long) page * size);
         var rows = jdbc.queryForList("""
             SELECT q.id,q.request_no,q.request_type,q.status,q.reason_text,q.applicant_id,q.applicant_name,
-                   q.submitted_at,q.resolved_at,q.workflow_instance_id,r.instance_no,r.status AS record_status
+                   q.submitted_at,q.resolved_at,q.workflow_instance_id,r.instance_no,r.template_name,r.template_code,
+                   r.status AS record_status
             FROM record_control_request q JOIN form_instance_record r ON r.id=q.record_id
             """ + where + " ORDER BY q.submitted_at DESC,q.id DESC LIMIT ? OFFSET ?", args.toArray());
         return PageResult.of(rows.stream().map(this::requestSummary).toList(), page, size, count == null ? 0 : count);
@@ -142,7 +165,8 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
         args.add(currentUser);
         var rows = jdbc.queryForList("""
             SELECT q.id,q.request_no,q.request_type,q.status,q.reason_text,q.applicant_id,q.applicant_name,
-                   q.submitted_at,q.resolved_at,q.workflow_instance_id,r.instance_no,r.status AS record_status
+                   q.submitted_at,q.resolved_at,q.workflow_instance_id,r.instance_no,r.template_name,r.template_code,
+                   r.status AS record_status
             FROM record_control_request q JOIN form_instance_record r ON r.id=q.record_id
             WHERE q.tenant_id=? AND q.workflow_instance_id IN (
             """ + placeholders + ") AND EXISTS (SELECT 1 FROM workflow_task task WHERE CAST(task.instance_id AS VARCHAR)=q.workflow_instance_id "
@@ -384,7 +408,7 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
 
     private Map<String, Object> recordByNumber(String number) {
         var rows = jdbc.queryForList("SELECT * FROM form_instance_record WHERE tenant_id=? AND instance_no=?", TENANT, number.trim());
-        if (rows.isEmpty()) throw invalid("未找到该表单流水号");
+        if (rows.isEmpty()) throw invalid("未找到该表单实例编号");
         return rows.getFirst();
     }
 
@@ -397,10 +421,40 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
     private ObjectNode requestSummary(Map<String, Object> row) {
         ObjectNode result = mapper.createObjectNode();
         for (String key : List.of("id", "request_no", "request_type", "status", "reason_text", "applicant_id",
-                "applicant_name", "submitted_at", "resolved_at", "workflow_instance_id", "instance_no", "record_status"))
+                "applicant_name", "submitted_at", "resolved_at", "workflow_instance_id", "instance_no", "template_name",
+                "template_code", "record_status"))
             put(result, key, row.get(key));
         return result;
     }
+
+    private void appendContains(StringBuilder where, List<Object> args, String column, String raw) {
+        String value = text(raw);
+        if (value == null) return;
+        where.append(" AND LOWER(COALESCE(").append(column).append(",'')) LIKE LOWER(?) ESCAPE '!'");
+        args.add(pattern(value));
+    }
+
+    private void appendEnum(StringBuilder where, List<Object> args, String column, String raw, Set<String> allowed, String label) {
+        String value = text(raw);
+        if (value == null) return;
+        if (!allowed.contains(value)) throw invalid(label + "不正确");
+        where.append(" AND ").append(column).append("=?"); args.add(value);
+    }
+
+    private String text(String value) {
+        if (value == null || value.isBlank()) return null;
+        String normalized = value.trim();
+        if (normalized.length() > 200) throw invalid("查询条件不能超过 200 个字符");
+        return normalized;
+    }
+
+    private String pattern(String value) {
+        return "%" + value.replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
+    }
+
+    public record RequestListQuery(String requestNo, String requestType, String instanceNo, String templateName,
+                                   String templateCode, String applicant, String status,
+                                   LocalDateTime submittedFrom, LocalDateTime submittedTo) {}
 
     private void put(ObjectNode node, String key, Object value) {
         if (value == null) node.putNull(key); else node.put(key, str(value));

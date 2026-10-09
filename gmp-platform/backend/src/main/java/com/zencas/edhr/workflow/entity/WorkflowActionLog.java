@@ -2,6 +2,8 @@ package com.zencas.edhr.workflow.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 
 @Entity @Table(name = "workflow_action_log")
@@ -22,7 +24,8 @@ public class WorkflowActionLog {
     private String operatorName;
     @Column(name = "comment")
     private String comment;
-    @Column(name = "snapshot")
+    @Column(name = "snapshot", columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private String snapshot;
     @Column(name = "created_at") private LocalDateTime createdAt;
     @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }

@@ -168,7 +168,7 @@ function FormWorklistPreviewDialog({ view, identity, onClose }: { view: FillingV
             <Stack direction="row" spacing={2} alignItems="center" sx={{ width: '100%', minWidth: 0 }}>
               <Typography variant="body2" sx={{ color: '#303133', fontWeight: 600, flexShrink: 0 }}>基本信息</Typography>
               {!basicInfoExpanded && detail ? <Box sx={{ minWidth: 0, flex: 1, display: 'grid', gridTemplateColumns: { xs: 'minmax(0, 1fr)', sm: 'minmax(0, 1fr) minmax(0, 1fr)', lg: 'minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1.25fr) auto' }, columnGap: { sm: 2, lg: 3 }, alignItems: 'center', overflow: 'hidden' }}>
-                <PreviewSummaryField label="实例号" value={detail.instanceNo || '未保存'} />
+                <PreviewSummaryField label="表单实例编号" value={detail.instanceNo || '未保存'} />
                 <Box sx={{ display: { xs: 'none', sm: 'block' }, minWidth: 0, pl: 2, borderLeft: '1px solid #ebeef5' }}><PreviewSummaryField label="模板" value={`${detail.templateName || '-'} · ${detail.templateVersion || '-'}`} /></Box>
                 <Box sx={{ display: { xs: 'none', lg: 'block' }, minWidth: 0, pl: 2, borderLeft: '1px solid #ebeef5' }}><PreviewSummaryField label="生产对象" value={detail.productionObjectNo ? `${detail.productionObjectNo}（${typeLabel(detail.productionObjectType)}）` : '-'} /></Box>
                 <Box sx={{ display: { xs: 'none', lg: 'block' }, pl: 2, borderLeft: '1px solid #ebeef5' }}>{statusBadge(detail.recordStatus)}</Box>
@@ -177,7 +177,7 @@ function FormWorklistPreviewDialog({ view, identity, onClose }: { view: FillingV
           </AccordionSummary>
           <AccordionDetails sx={{ p: 0, bgcolor: '#fff' }}>
             <Box component="section" aria-label="表单基本信息" sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(4, minmax(0, 1fr))' }, columnGap: { xs: 1.5, md: 3 }, rowGap: { xs: 1.5, md: 2 }, px: { xs: 1.5, md: 2.5 }, pt: { xs: 1.5, md: 2 }, pb: { xs: 2, md: 2.5 }, bgcolor: '#fafbfc', borderTop: '1px solid #ebeef5' }}>
-              <DetailField label="表单实例号" value={detail.instanceNo || '未保存'} />
+              <DetailField label="表单实例编号" value={detail.instanceNo || '未保存'} />
               <DetailField label="表单模板" value={`${detail.templateName || '-'} · ${detail.templateVersion || '-'}`} />
               <DetailField label="生产对象" value={`${detail.productionObjectNo || '-'}（${typeLabel(detail.productionObjectType)}）`} />
               <DetailField label="工单" value={detail.workOrderNo} />
@@ -281,7 +281,7 @@ function FormWorklistFillDialog({ identity, onClose, onChanged }: { identity: Fo
       <DialogContent sx={{ minHeight: 0, p: 0, display: 'flex', flexDirection: 'column', bgcolor: '#fff', overflow: 'hidden' }}>
         {detailQuery.isFetching && !detail ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><CircularProgress size={28} /></Box> : detailQuery.isError ? <Typography sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>表单填报加载失败</Typography> : detail ? <>
           <Box component="section" aria-label="当前填报信息" sx={{ flex: '0 0 auto', display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(4, minmax(0, 1fr))' }, gap: { xs: 1.25, md: 2 }, px: { xs: 1.5, md: 2.5 }, py: 1.5, bgcolor: '#fafbfc', borderBottom: '1px solid #e4e7ed' }}>
-            <DetailField label="表单实例号" value={detail.instanceNo || '未保存'} />
+            <DetailField label="表单实例编号" value={detail.instanceNo || '未保存'} />
             <DetailField label="生产对象" value={`${detail.productionObjectNo || '-'}（${typeLabel(detail.productionObjectType)}）`} />
             <DetailField label="工单 / 工序" value={`${detail.workOrderNo || '-'} / ${detail.operationName || '-'}`} />
             <DetailField label="当前节点" value={detail.nodeName || '-'} />
@@ -324,7 +324,7 @@ function FormWorklistDetailDrawer({ view, identity, onClose, onOpenExecution, on
         <Box sx={{ borderBottom: '1px solid #e4e7ed' }}><Tabs value={detailTab} onChange={(_, value: number) => setDetailTab(value)} aria-label="填报记录详情切换"><Tab label="数据信息" /><Tab label="数据审计" /></Tabs></Box>
         {detailTab === 0 ? <Stack spacing={2} sx={{ mt: 2 }}>
           <DetailSection title="表单信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.75 }}>
-            <DetailField label="表单实例号" value={detail.instanceNo || '未保存'} /><DetailField label="表单模板" value={detail.templateName} />
+            <DetailField label="表单实例编号" value={detail.instanceNo || '未保存'} /><DetailField label="表单模板" value={detail.templateName} />
             <DetailField label="表单编码" value={detail.templateCode} /><DetailField label="模板版本" value={detail.templateVersion} />
             <DetailField label="状态" value={statusBadge(detail.recordStatus)} /><DetailField label="保存状态" value={detail.saved ? '已保存' : '未保存'} />
             {view === 'CREATED' ? <DetailField label="创建类型" value={creationTypeLabel(detail.creationType)} /> : null}
@@ -372,9 +372,9 @@ export default function FormFillingPage() {
   return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1.5, overflow: 'hidden' }}>
     <Box sx={{ flex: '0 0 auto', border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', p: 2 }}>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center' }}>
-        <TextField size="small" label="关键词" placeholder="实例号、模板、工单或生产对象" value={draft.keyword} onChange={(event) => updateDraft('keyword', event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} sx={fieldSx} />
+        <TextField size="small" label="关键词" placeholder="表单实例编号、模板、工单或生产对象" value={draft.keyword} onChange={(event) => updateDraft('keyword', event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') submitSearch(); }} sx={fieldSx} />
         <TextField size="small" label="表单模板" placeholder="请输入表单模板名称" value={draft.templateName} onChange={(event) => updateDraft('templateName', event.target.value)} sx={fieldSx} />
-        {advancedFiltersOpen ? <TextField size="small" label="表单实例号" placeholder="请输入实例号" value={draft.instanceNo} onChange={(event) => updateDraft('instanceNo', event.target.value)} sx={fieldSx} /> : filterActions}
+        {advancedFiltersOpen ? <TextField size="small" label="表单实例编号" placeholder="请输入表单实例编号" value={draft.instanceNo} onChange={(event) => updateDraft('instanceNo', event.target.value)} sx={fieldSx} /> : filterActions}
         <Collapse in={advancedFiltersOpen} timeout={180} unmountOnExit sx={{ gridColumn: '1 / -1' }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5, pt: 1.5, borderTop: '1px solid #ebeef5' }}>
             <TextField size="small" label="生产对象" placeholder="请输入批次号或SN" value={draft.productionObjectNo} onChange={(event) => updateDraft('productionObjectNo', event.target.value)} sx={fieldSx} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" /></InputAdornment> }} />
@@ -391,7 +391,7 @@ export default function FormFillingPage() {
       <Box sx={{ flex: '0 0 auto', borderBottom: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1.5 }}><Tabs value={view} onChange={(_, next: FillingView) => { setView(next); setPage(0); setIdentity(null); setPreviewIdentity(null); setFillIdentity(null); }} aria-label="表单填报视图"><Tab value="FILLABLE" label="我的填报" /><Tab value="CREATED" label="我的创建" /><Tab value="FILLED" label="我的已填" /></Tabs><Tooltip title={activeView.helper} arrow><IconButton size="small" aria-label="当前视图说明" sx={{ color: '#909399' }}><InfoOutlined fontSize="small" /></IconButton></Tooltip></Box>
       <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto', containerType: 'inline-size' }}><Table stickyHeader size="small" sx={{ tableLayout: 'fixed', minWidth: 1160, height: query.isLoading || query.isError || rows.length === 0 ? '100%' : 'auto' }}>
         <colgroup><col style={{ width: 210 }} /><col style={{ width: 170 }} />{view === 'CREATED' ? <col style={{ width: 110 }} /> : null}<col style={{ width: 180 }} /><col style={{ width: 160 }} /><col style={{ width: 150 }} /><col style={{ width: 110 }} /><col style={{ width: 120 }} /><col style={{ width: 170 }} /><col style={{ width: 96 }} /></colgroup>
-        <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}><TableCell>表单模板</TableCell><TableCell>表单实例号</TableCell>{view === 'CREATED' ? <TableCell>创建类型</TableCell> : null}<TableCell>生产对象</TableCell><TableCell>工单</TableCell><TableCell>工序</TableCell><TableCell>保存状态</TableCell><TableCell>状态</TableCell><TableCell>节点 / 更新时间</TableCell><TableCell sx={actionHeadSx}>操作</TableCell></TableRow></TableHead>
+        <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}><TableCell>表单模板</TableCell><TableCell>表单实例编号</TableCell>{view === 'CREATED' ? <TableCell>创建类型</TableCell> : null}<TableCell>生产对象</TableCell><TableCell>工单</TableCell><TableCell>工序</TableCell><TableCell>保存状态</TableCell><TableCell>状态</TableCell><TableCell>节点 / 更新时间</TableCell><TableCell sx={actionHeadSx}>操作</TableCell></TableRow></TableHead>
         <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={view === 'CREATED' ? 10 : 9} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={view === 'CREATED' ? 10 : 9} sx={{ height: '100%', color: '#c62828' }}>表单填报列表加载失败</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={view === 'CREATED' ? 10 : 9} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}-${row.operationId}-${row.formId}-${row.copyId}`} hover tabIndex={0} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看${row.templateName || '表单'}填报记录`}>
           <TableCell title={`${row.templateName || '-'} · ${row.templateVersion || '-'}`}>{row.templateName || '-'} <Typography component="span" variant="caption" sx={{ color: '#909399' }}>· {row.templateVersion || '-'}</Typography></TableCell>
           <TableCell>{row.instanceNo || <Typography component="span" variant="body2" sx={{ color: '#909399' }}>未保存</Typography>}</TableCell>

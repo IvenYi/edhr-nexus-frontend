@@ -35,7 +35,21 @@ export interface RecordControlRequest {
   resolved_at: string | null;
   workflow_instance_id: string | null;
   instance_no: string;
+  template_name: string | null;
+  template_code: string | null;
   record_status: string;
+}
+
+export interface RecordControlRequestQuery {
+  requestNo?: string;
+  requestType?: RecordControlBusinessType | '';
+  instanceNo?: string;
+  templateName?: string;
+  templateCode?: string;
+  applicant?: string;
+  submittedFrom?: string;
+  submittedTo?: string;
+  status?: RecordControlRequest['status'] | '';
 }
 
 export interface RecordControlRequestDetail extends RecordControlRequest {
@@ -86,8 +100,9 @@ export const findRecordByNumber = async (instanceNo: string): Promise<RecordCont
 export const submitRecordControlRequest = async (command: SubmitRecordControlRequest): Promise<RecordControlRequestDetail> =>
   (await client.post('/record-control/requests', command)).data.data;
 
-export const listRecordControlRequests = async (scope: 'mine' | 'all', page = 0, size = 20): Promise<{ content: RecordControlRequest[]; totalElements: number }> =>
-  (await client.get('/record-control/requests', { params: { scope, page, size } })).data.data;
+export const listRecordControlRequests = async (scope: 'mine' | 'all', page = 0, size = 20,
+  query: RecordControlRequestQuery = {}): Promise<{ content: RecordControlRequest[]; page: number; size: number; totalElements: number; totalPages: number }> =>
+  (await client.get('/record-control/requests', { params: { scope, page, size, ...query } })).data.data;
 
 export const getRecordControlRequest = async (requestId: string): Promise<RecordControlRequestDetail> =>
   (await client.get(`/record-control/requests/${requestId}`)).data.data;

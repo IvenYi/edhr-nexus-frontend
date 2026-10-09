@@ -441,7 +441,7 @@ export default function ModelTab({
           getValue: (row: FieldReportRow) => reportValue(row.fieldValues[field.id]),
         }));
 
-    return [{ key: 'instanceNo', label: '表单实例号', defaultWidth: 220, minWidth: 200, resizable: true, getValue: (row: FieldReportRow) => row.instanceNo }, ...modelColumns, ...reportAuditColumns];
+    return [{ key: 'instanceNo', label: '表单实例编号', defaultWidth: 220, minWidth: 200, resizable: true, getValue: (row: FieldReportRow) => row.instanceNo }, ...modelColumns, ...reportAuditColumns];
   }, [currentFields]);
   const orderedReportColumns = useMemo(() => {
     const columnMap = new Map(reportColumns.map((column) => [column.key, column]));
@@ -993,7 +993,7 @@ export default function ModelTab({
         >
           {activeSubTableDesignField ? <Box data-sub-table-design-view="true" sx={{ display: 'none' }} /> : null}
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(4, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'center' }}>
-            <TextField size="small" label="表单实例号" placeholder="输入完整或部分实例号" value={reportInstanceNo} onChange={(event) => setReportInstanceNo(event.target.value)} sx={reportFieldSx} />
+            <TextField size="small" label="表单实例编号" placeholder="输入完整或部分实例编号" value={reportInstanceNo} onChange={(event) => setReportInstanceNo(event.target.value)} sx={reportFieldSx} />
             <TextField
               size="small"
               label="填报内容"
@@ -1081,7 +1081,7 @@ export default function ModelTab({
             PaperProps={{ sx: { mt: 1, width: 220, border: '1px solid #e4e7ed', borderRadius: 1, boxShadow: '0 8px 24px rgba(0,0,0,.12)' } }}
           >
             <Stack data-field-report-column-settings-panel spacing={0.5} sx={{ p: 1.5 }}>
-              <Typography variant="caption" color="text.secondary">表单实例号为固定列</Typography>
+              <Typography variant="caption" color="text.secondary">表单实例编号为固定列</Typography>
               {orderedReportColumns.filter((column) => column.key !== 'instanceNo').map((column) => {
                 const checked = !hiddenReportColumnKeys.includes(column.key);
                 const disabled = checked && visibleReportColumns.length <= 1;
@@ -1192,9 +1192,9 @@ export default function ModelTab({
                           >
                             {column.key === 'instanceNo' ? <Stack direction="row" alignItems="center" spacing={0.5}>
                               <Button variant="text" size="small" onClick={() => setDetailRecordId(row.id)} sx={{ p: 0, minWidth: 0, textTransform: 'none', whiteSpace: 'nowrap' }}>{row.instanceNo}</Button>
-                              <IconButton className="instance-copy" size="small" aria-label={`复制表单实例号 ${row.instanceNo}`} onClick={async () => {
-                                try { await navigator.clipboard.writeText(row.instanceNo); showMessage('表单实例号已复制', 'success'); }
-                                catch { showMessage('复制失败，请手动复制实例号', 'error'); }
+                              <IconButton className="instance-copy" size="small" aria-label={`复制表单实例编号 ${row.instanceNo}`} onClick={async () => {
+                                try { await navigator.clipboard.writeText(row.instanceNo); showMessage('表单实例编号已复制', 'success'); }
+                                catch { showMessage('复制失败，请手动复制表单实例编号', 'error'); }
                               }}><ContentCopyRounded sx={{ fontSize: 15 }} /></IconButton>
                             </Stack> : (column.getValue(row) || '—')}
                           </TableCell>

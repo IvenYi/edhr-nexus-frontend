@@ -91,9 +91,9 @@ terms:
     status: specified
     visibility: internal
   - id: term.form-instance-number
-    name: 表单实例号
+    name: 表单实例编号
     definition: 由系统为一份具体填报记录生成的不可修改编号；同份记录后续保存、提交、审批和退回修改保持编号不变，新建另一份生成新编号，区别于模板编号、版本号和子表明细行号。
-    aliases: [表单记录号]
+    aliases: [表单实例号, 表单流水号, 表单记录号]
     status: specified
     visibility: internal
   - id: term.form-process-template

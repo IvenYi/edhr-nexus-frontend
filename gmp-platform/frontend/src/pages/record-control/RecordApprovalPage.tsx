@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Box, Button, CircularProgress, Paper, Stack, Tab, Table, TableBody, TableCell, TableContainer,
+import { Box, Button, Stack, Tab, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Tabs, Typography } from '@mui/material';
-import PageHeader from '@/components/PageHeader';
+import StatusBadge from '@/components/StatusBadge';
+import TableStateCell from '@/components/TableStateCell';
 import { getRequestsForMyWorkflowTasks, listMyWorkflowTasks,
   type RecordControlRequest, type RecordControlWorkflowTask } from '@/api/record-control';
 
@@ -32,38 +33,37 @@ export default function RecordApprovalPage() {
     return () => { active = false; };
   }, [scope, page]);
 
-  return <Box>
-    <PageHeader title="变更审批" subtitle="仅显示当前登录人可处理及本人已处理的表单变更、作废任务"
-      breadcrumbs={[{ label: '记录' }, { label: '变更管理' }, { label: '变更审批' }]} />
-    <Alert severity="info" sx={{ mb: 2 }}>审批动作由公共流程运行时负责；当前页面只展示与本人任务关联的申请，处理入口将在公共流程终态和签名接口完成对接后启用。</Alert>
-    {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-    <Paper variant="outlined">
-      <Tabs value={scope} onChange={(_, value: 'todo' | 'done') => { setScope(value); setPage(1); }} sx={{ px: 2 }}>
+  return <Box sx={{ height: { xs: 'auto', lg: 'calc(100vh - 150px)' }, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', display: 'flex', flexDirection: 'column', minHeight: 0, flex: 1, overflow: 'hidden' }}>
+      <Tabs value={scope} onChange={(_, value: 'todo' | 'done') => { setScope(value); setPage(1); }} sx={{ px: 2, borderBottom: '1px solid #ebeef5', flexShrink: 0 }}>
         <Tab value="todo" label="待办任务" /><Tab value="done" label="已办任务" />
       </Tabs>
-      <TableContainer><Table size="small"><TableHead><TableRow>
-        {['任务编号', '申请编号', '申请类型', '表单流水号', '申请人', '任务时间', '状态', '操作'].map((column) =>
-          <TableCell key={column} sx={{ fontWeight: 600, bgcolor: '#f8fafc' }}>{column}</TableCell>)}
+      <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 1540 }}><TableHead><TableRow>
+        {['任务编号', '申请编号', '申请类型', '表单实例编号', '表单名称', '表单编码', '申请人', '任务时间', '状态', '操作'].map((column) =>
+          <TableCell key={column} sx={{ fontWeight: 600, bgcolor: '#f5f7fa', color: '#606266', whiteSpace: 'nowrap' }}>{column}</TableCell>)}
       </TableRow></TableHead><TableBody>
-        {rows.map(({ task, request }) => <TableRow hover key={task.id}>
+        {busy ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={10} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow>
+          : error ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={10} sx={{ height: '100%', color: '#c62828' }}>{error}</TableStateCell></TableRow>
+            : rows.map(({ task, request }) => <TableRow hover key={task.id} sx={{ '& > .MuiTableCell-root': { height: 48, color: '#606266', whiteSpace: 'nowrap' } }}>
           <TableCell>{task.id}</TableCell><TableCell>{request.request_no}</TableCell>
           <TableCell>{request.request_type === 'CHANGE' ? '表单变更' : '表单作废'}</TableCell>
           <TableCell>{request.instance_no}</TableCell>
+          <TableCell>{request.template_name || '—'}</TableCell>
+          <TableCell>{request.template_code || '—'}</TableCell>
           <TableCell>{request.applicant_name || request.applicant_id}</TableCell>
-          <TableCell>{(scope === 'done' ? task.completedAt : task.createdAt)?.replace('T', ' ') || '—'}</TableCell>
-          <TableCell>{scope === 'todo' ? '待处理' : '已处理'}</TableCell>
+          <TableCell>{(scope === 'done' ? task.completedAt : task.createdAt)?.replace('T', ' ').slice(0, 19) || '—'}</TableCell>
+          <TableCell><StatusBadge label={scope === 'todo' ? '待处理' : '已处理'} color={scope === 'todo' ? 'warning' : 'success'} /></TableCell>
           <TableCell><Button size="small" onClick={() => navigate(`/records/requests/${request.id}`)}>查看申请</Button></TableCell>
         </TableRow>)}
-        {!busy && !rows.length && <TableRow><TableCell colSpan={8} sx={{ py: 6 }} align="center">
-          <Typography color="text.secondary">暂无关联的{scope === 'todo' ? '待办' : '已办'}任务</Typography>
-        </TableCell></TableRow>}
+        {!busy && !error && !rows.length && <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={10} sx={{ height: '100%', color: '#909399' }}>暂无关联的{scope === 'todo' ? '待办' : '已办'}任务</TableStateCell></TableRow>}
       </TableBody></Table></TableContainer>
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" spacing={1} sx={{ p: 1.5 }}>
-        {busy && <CircularProgress size={18} />}
-        <Typography variant="body2" color="text.secondary">第 {page} 页</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} sx={{ px: 2, py: 1.25, borderTop: '1px solid #ebeef5', flexShrink: 0 }}>
+        <Typography variant="body2" color="text.secondary">本页 {rows.length} 条数据</Typography>
+        <Stack direction="row" spacing={1} alignItems="center"><Typography variant="body2" color="text.secondary">第 {page} 页</Typography>
         <Button size="small" disabled={page <= 1 || busy} onClick={() => setPage((current) => current - 1)}>上一页</Button>
         <Button size="small" disabled={taskCount < 50 || busy} onClick={() => setPage((current) => current + 1)}>下一页</Button>
+        </Stack>
       </Stack>
-    </Paper>
+    </Box>
   </Box>;
 }
