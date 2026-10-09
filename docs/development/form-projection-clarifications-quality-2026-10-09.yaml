@@ -1,0 +1,138 @@
+qualityResult:
+  result: passed
+  baseCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  headCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-design-clarifications-2026-10-09.md
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-projection-clarifications-quality-2026-10-09.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/open-questions.yaml
+    excludedPaths:
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - gmp-platform/frontend/output/
+      - output/
+    untrackedPaths:
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-design-clarifications-2026-10-09.md
+      - docs/development/form-projection-clarifications-quality-2026-10-09.yaml
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - gmp-platform/frontend/output/
+      - output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.clarification-requirements-and-maturity
+      required: true
+      category: requirements
+      description: 独立核对十五条注释的实际回答，以及已确认、建议和未实现的成熟度边界。
+      method: inspection
+      command: 阅读原始用户注释及form-projection-design-clarifications-2026-10-09.md、主决策包和DEC-0075增量
+      outcome: passed
+      evidence:
+        - 十五条均有实质回答；注释1/13/15进入指定规则，单位字典/default、错误值校验阶段、日期、多选、备注、目录移除和具体交互仍为候选。
+        - 对不登记物料批号与允许空批号、任意命名与正式数据正确性、自定义视图与自定义模型分别给出不同结论，未只顺从用户假设。
+        - DEC-0075-27/28/29及新增概念、词典均为specified/internal，无运行实现或verified升级。
+    - id: check.clarification-supersession-and-open-questions
+      required: true
+      category: ontology
+      description: 人工核对细粒度局部替代、未来快照、所属主体及组合查询契约的一致性。
+      method: inspection
+      command: 阅读DEC-0075-02/09/25/26/27/28/29、open-questions.yaml、glossary.yaml及ontology.yaml
+      outcome: passed
+      evidence:
+        - 旧条目明确指出MVP开发历史限制已局部替代；开发数据可修复迁移或作废，不再要求纯兼容层。
+        - 不把开发历史政策外推成真实客户生产证据删除，不取消未来正确实例使用时快照或独立数据库。
+        - 预置生产批次/SN为真实所属主体；文本或引用提及另一对象不改变生产、统计或DHR归属。
+        - 同表单主表条件及同一子表实际行条件已收敛；不同子表、复杂OR、索引时机和自动带入生命周期仍保留未决。
+        - 细粒度supersedes采用声明文字，未将嵌套条目误填到仅允许顶层DEC的schema字段；此替代语义由人工复核而非宣称测试自动验证。
+    - id: check.clarification-knowledge-tests
+      required: true
+      category: ontology
+      description: 全新独立质量实例重新运行正式知识测试。
+      method: automated-test
+      command: cd gmp-platform/backend && mvn -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 2026-10-09T23:24:11+08:00结束，退出码0，BUILD SUCCESS。
+        - Tests run 59, Failures 0, Errors 0, Skipped 0。
+        - gmp-platform/backend/target/surefire-reports/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt
+        - Maven同时执行dhr-print资源构建；此构建不作为浏览器或打印功能验收。
+    - id: check.clarification-original-consumers
+      required: true
+      category: documentation
+      description: 回到冠骋原始追溯和统计消费者，核对报告的代表性事实及推断范围。
+      method: inspection
+      command: 读取本机冠骋FormTraceManager、OnlineFormInstanceReverseTraceBs、EdhrInstanceReverseTraceBs、OnlineFormDataCatchService、ProductNumDataService、BizReportDataSearchBs
+      outcome: passed
+      evidence:
+        - FormTraceManager独立保存subjectNo及指定追溯字段materialNo；原始反查消费者分别取表单ID及所属主体编号。
+        - FormTraceManager收集字段值集合后做Sets.cartesianProduct；报告将跨行风险表述为可能性，并未照搬为本项目规则。
+        - 报工消费者提取业务日期和数量；实耗消费者取所选产品单位，查不到生产标识会抛错；最终工序标记汇总良品到批次并累加工单。
+        - 工作台消费者按当天handleDate及modifyUserId筛选后直接累加；报告未把该方法泛化为全部报表统计。
+        - 证据根为/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr；未运行冠骋页面、SDK或穷尽全部报表。
+    - id: check.clarification-current-implementation-gaps
+      required: true
+      category: documentation
+      description: 核对当前代码事实，防止把设计需求写成已经实现。
+      method: inspection
+      command: 阅读FormProjectionController、FormProjectionInterpreter、FormReferenceLookup及FormRuntimeField.tsx
+      outcome: passed
+      evidence:
+        - 当前组合条件对同一r.attributes做AND，DHR关联按真实f.object_id；文档明确新组合契约差异尚未修复。
+        - 当前materialLotText无需仓库存在性但正式统计要求非空；单位只接受文本/单选标量，字典引用为对象值，仍需适配。
+        - 子表添加记录写入空对象，报告未宣称生产新增行已持久化默认值；行身份及签名定位仍待贯通。
+        - 本轮tracked diff只有文档/知识文件，未改产品代码、测试、迁移或运行配置，未操作数据库。
+    - id: check.clarification-impact-and-date-boundaries
+      required: true
+      category: documentation
+      description: 核对L2影响、扩展所有权及历史说明不会被误读为本轮验收。
+      method: inspection
+      command: 阅读主包impactAnalysis/extensionStrategy、详细方案2.6/10/12及本轮澄清流程图
+      outcome: passed
+      evidence:
+        - L2影响覆盖直接、传递、潜在、迁移、快照、审计、权限、测试和证据缺口，沿用同一切片。
+        - configuration/product-core及既有事务编排所有权清晰；目录可配置不放开任意统计模型或客户条件分支。
+        - 详细方案明确目录实施日期为2026-10-07，2026-10-09仅设计知识；上一轮评审新增替代说明。
+        - 不恢复投影专属模板发布冻结；候选图标记未决定独立追溯索引时机。
+    - id: check.clarification-yaml-and-whitespace
+      required: true
+      category: documentation
+      description: 独立解析本轮YAML并检查修改格式。
+      method: command
+      command: |
+        ruby -ryaml -e 'ARGV.each { |p| YAML.load_file(p); puts "parsed #{p}" }' docs/development/form-traceability-projection-decision-package.yaml docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml docs/knowledge/glossary.yaml docs/knowledge/ontology.yaml docs/knowledge/open-questions.yaml docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+        git diff --check
+      outcome: passed
+      evidence:
+        - 主决策包、DEC-0075、glossary、ontology、open-questions及ownership evidence YAML解析退出码0。
+        - git diff --check退出码0。
+  findings: []
+  residualRisks:
+    - id: risk.clarification-design-not-product-acceptance
+      description: 本轮通过仅覆盖设计澄清、知识更新和代表性原始证据，当前产品实现仍有已披露差距。
+      impact: 不能据此声称主体填报卡控、新组合查询、单位字典、备注明细、日期或行身份已可使用。
+      mitigation: 后续实现切片按已确认契约执行聚焦单元/集成、UI、数据库及适用L2独立验证。
+    - id: risk.clarification-external-static-evidence
+      description: 冠骋证据为本机源码，未运行其页面与SDK，未穷尽所有报表或多选算法。
+      impact: 不保证实际版本最终样式或任意A/B场景的运行结果；不能移植未经核对的统计贡献算法。
+      mitigation: 保持original-evidence范围和未定推断，若后续实现依赖其未核对行为再补证。
+    - id: risk.clarification-migration-and-prefill-lifecycle
+      description: 历史处理政策与所属含义已确认，实际数据处理及自动带入/错误值处置细则尚未执行或定版。
+      impact: 开发历史可清理不等于A12受控作废运行能力，含义确认不等于完整填报生命周期。
+      mitigation: 实现时记录受影响环境和数据，继续收敛Q6/Q17等真正依赖的细则，不重复询问已确认政策。
+  blockingConditions: []

@@ -4,6 +4,7 @@ import { FormRuntimeContext, FormRuntimeField, type FormRuntime } from '@/compon
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
 import { resolveReferenceField } from '@/components/form-renderer/referenceConfig';
 import { readSignaturePresentation } from '@/components/form-renderer/signaturePresentation';
+import { newSubTableRow } from '@/components/form-renderer/newSubTableRow';
 import type { CanvasNode, ModelField, TemplateDesignerDocument } from '../../types';
 import type { PreviewFieldInteraction } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import WordCanvasPreview from '../canvas/WordCanvasPreview';
@@ -57,7 +58,10 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     if (!runtime || !node || !fieldId || tableReadOnly(node)) return;
     const current = Array.isArray(runtime.values[fieldId]) ? runtime.values[fieldId] as Record<string, unknown>[] : [];
     const count = Math.max(1, current.length);
-    runtime.onChange(fieldId, Array.from({ length: Math.max(1, count + delta) }, (_, index) => current[index] ?? {}));
+    const rawColumns = document.model.fields.find(field => field.id === fieldId)?.typeConfig.columns;
+    const columns = Array.isArray(rawColumns) ? rawColumns as ModelField[] : [];
+    const fieldNodes = allNodes.filter(entry => entry.bindings?.subTableId === fieldId);
+    runtime.onChange(fieldId, Array.from({ length: Math.max(1, count + delta) }, (_, index) => current[index] ?? newSubTableRow(columns, fieldNodes)));
   };
   const renderField = (node: CanvasNode, suppliedField: ModelField | null, recordIndex = 0): ReactNode => {
     if (node.bindings?.hidden) return null;

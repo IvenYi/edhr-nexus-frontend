@@ -82,3 +82,20 @@ test('trace accepts compatible native sources while statistics and unrelated mea
   assert.ok(!html.includes('类型不匹配'));
   assert.deepEqual(changes, []);
 });
+
+test('whole-table statistics needs no manual row identity or enable action and exposes optional display columns', () => {
+  const columns = [lot, { id: 'qty', name: '实际用量', type: 'number', typeConfig: {} },
+    { id: 'material', name: '物料', type: 'reference', typeConfig: { sourceType: 'material' } }];
+  const definition = { id: 'consumption', name: '实际物料消耗', attributes: [
+    { id: 'material', name: '物料', type: 'reference' }, { id: 'quantity', name: '数量', type: 'number' },
+    { id: 'materialLotText', name: '物料批号', type: 'text' }, { id: 'unit', name: '单位', type: 'text' },
+  ] };
+  const { html, changes } = renderEditor({ fields: [{ id: 'table', name: '上料明细', type: 'subTable', typeConfig: { columns } }] },
+    { id: 'c', modelId: 'consumption', tableId: 'table', enabled: true, sources: { material: 'material', quantity: 'qty' } }, definition);
+  assert.ok(!html.includes('每行唯一字段'));
+  assert.ok(!html.includes('启用此用途'));
+  assert.ok(!html.includes('待配置'));
+  assert.ok(html.includes('明细中另外显示（可选）'));
+  assert.deepEqual(changes, []);
+  assert.equal(acceptsProjectionAttribute({ type: 'reference', typeConfig: { sourceType: 'dictionary' } }, { id: 'unit', type: 'text' }), true);
+});

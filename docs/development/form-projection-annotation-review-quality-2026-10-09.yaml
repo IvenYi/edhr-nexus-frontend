@@ -1,0 +1,145 @@
+qualityResult:
+  result: passed
+  baseCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  headCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+    excludedPaths:
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: annotation-review.scope-and-independence
+      required: true
+      category: documentation
+      description: 仅验收十一条用户注释的解释准确性和候选方案边界，不验收产品实现或客户易用性
+      method: command
+      command: git branch --show-current; git rev-parse HEAD; git status --short; git diff -- docs/development/form-traceability-projection-decision-package.yaml; git diff --check
+      outcome: passed
+      evidence:
+        - 分支form-traceability-projection，HEAD与base一致；无本轮产品代码、测试、迁移或数据库变更
+        - 决策包差异仅为评审索引注释，未修改confirmed与正式运行默认
+        - 主评审文档为未提交产物，其他既有评审文件和output目录明确排除
+        - 本实例没有参与任何修复，只新增本质量记录
+    - id: annotation-review.eleven-comments
+      required: true
+      category: requirements
+      description: 逐条核对查询输入与分层、混合类型身份、相关对象、子表入口、单位行身份启用、共享配置备注、主表配对、维度类型、名称推断、带入与旧建议推导
+      method: inspection
+      command: inspection of user annotations 1-11 against docs/development/form-projection-annotation-review-2026-10-09.md sections 1-11
+      outcome: passed
+      evidence:
+        - 十一项均有明确回应及建议理由，未仅赞同用户假设
+        - 指出单位可以免手填但正式数量不能单位未知、自动UUID须持久化、自动带入不能静默覆盖
+        - 批次与SN统一展示、控件范围与主体语义均为候选，未声称已实施
+    - id: annotation-review.knowledge-and-open-boundaries
+      required: true
+      category: ontology
+      description: 核对知识基线、两种可选用途、产品统计所有权、真实归属、使用时冻结及未决问题
+      method: inspection
+      command: inspection of docs/knowledge/README.md, DEC-0060, DEC-0075, open-questions.yaml and decisionPackage
+      outcome: passed
+      evidence:
+        - 实际读取知识版本0.3.24；DEC-0060引用配置和旧快照契约保持
+        - DEC-0075-10/13/17/18/19/21/22规定首次完成、真实归属、两类来源和预设报表边界仍保持
+        - 新提议未写入正式知识，Q6/Q9/Q12/Q15/Q17与A12未宣称闭环
+    - id: annotation-review.object-identity-and-dhr
+      required: true
+      category: requirements
+      description: 独立核对同租户编号唯一、批次SN共域、真实生产和DHR关系与内容查询区别
+      method: inspection
+      command: inspection of ProductionObject.java, 0062-production-object-and-work-order-lifecycle.sql and FormProjectionController.java
+      outcome: passed
+      evidence:
+        - production_object唯一域为tenant_id加object_no，object_type未参与唯一键
+        - 当前对象筛选使用f.object_id/object_no，DHR连接d.production_object_id=f.object_id
+        - 同编号对象定位与提及该编号的表单检索分开，文本不自动修改生产归属或建立谱系
+        - 文档已注明统一目标入口未实现，历史编号规则与授权解析仍需核对
+    - id: annotation-review.catalog-and-types
+      required: true
+      category: requirements
+      description: 核对当前内置项、目录类型、引用主体兼容及统计维度解释
+      method: inspection
+      command: inspection of 0108-form-lookup-items.sql, FormProjectionInterpreter.java, FormReferenceLookup.java and FormProjectionController.java
+      outcome: passed
+      evidence:
+        - lookup_related_batch确实builtin=true；现有目录value_type限定text
+        - 原生批次与SN引用查询区分object_type，不能仅改标签就混用来源
+        - 原生引用追溯取保存code，物料身份取引用id；普通文本仍为文本值
+        - 统计按实际对象、工序、物料、批号及单位分组，维度已存在，非只有度量
+        - 日期和多选限制被说明为现有范围，未宣称理论不可支持或无歧义分摊
+    - id: annotation-review.required-unit-and-row-identity
+      required: true
+      category: requirements
+      description: 核对统计必需来源、普通required区别与系统稳定行身份方案的生命周期完整性
+      method: inspection
+      command: inspection of FormProjectionInterpreter.java and components/form-renderer/FormRuntimeField.tsx
+      outcome: passed
+      evidence:
+        - 当前单位来源和运行值必需，消耗及报废强制物料批号与数量，普通字段required不替代投影校验
+        - RuntimeSubTable新增空对象，以数组index更新、删除、React定位及请求行签名
+        - UUID方案明确新增生成并持久化、复制新身份、重排不变、冻结重试读取；不把数组index当稳定身份
+        - 固定或物料单位为未实现候选，必须保存当时依据，不按重试时最新主数据重解释
+    - id: annotation-review.shared-config-and-ux
+      required: true
+      category: documentation
+      description: 核对整表与单列共享配置、主表卡片建议、备注边界和统一查询规范
+      method: inspection
+      command: inspection of FieldProjectionConfig.tsx, SubTableProjectionConfig.tsx, ProjectionSourceEditor.tsx and docs/frontend/list-page-guidelines.md section 5.1
+      outcome: passed
+      evidence:
+        - 当前单列编辑器接收整个binding，修改确实影响共享用途；隐藏配组与点击顺序问题被披露
+        - 主表卡片和整子表主配置均为候选交互，未假称当前操作已优化
+        - 第7节已明确领料量和上料量不默认实际消耗，示例仅适用真实实耗；当前无独立领料用途，不擅自增加统计口径
+        - 备注原表保存与未来补充展示分开，未将备注默认设成分组合计维度或自定义报表
+        - 常用两条件及高级动态条件方案符合现有查询布局规范，未用竞品替代规范
+    - id: annotation-review.competitor-original-evidence
+      required: true
+      category: documentation
+      description: 针对性复核冠骋原始查询与字段定义，区分可得源码和未运行页面
+      method: inspection
+      command: inspection of paas-main-front trace.vue for edhr-tracked and document-tracked, online-form designer constants/index.ts, and gct-edhr-bed FormReportInfoEntity.java
+      outcome: passed
+      evidence:
+        - LOT/SN控件variant=auto且placeholder=inputOrSelect；工单、设备、产品等按正反入口区别配置
+        - 关联批次、记录号及追溯日期范围存在原始条件定义
+        - 业务字段含PRODUCTION_DATE、REPORT_START_TIME/END_TIME、原因及DEVICE_REF_MULTI；报工实体含productionTime、lotSn和产品版本字段
+        - 文档明确未运行竞品页面，原始定义不证明高频或具体多选贡献算法
+    - id: annotation-review.artifact-format
+      required: true
+      category: documentation
+      description: 核对评审产物格式、工作树差异和本质量结果结构
+      method: command
+      command: git diff --check; ruby -r yaml -e 'p=YAML.load_file("docs/development/form-projection-annotation-review-quality-2026-10-09.yaml").fetch("qualityResult"); abort unless p.fetch("result")=="passed" && p.fetch("knowledgeBaselineVersion")=="0.3.24" && p.fetch("checks").all? {|c| c.fetch("outcome")=="passed" && [true,false].include?(c.fetch("required"))} && p.fetch("findings").empty? && p.fetch("blockingConditions").empty?; puts "quality-result YAML parsed and status/checks verified"'
+      outcome: passed
+      evidence:
+        - git diff --check退出码0
+        - Ruby可解析YAML，result、基线、检查状态与无阻断项断言通过
+  findings: []
+  residualRisks:
+    - id: annotation-review.product-not-accepted
+      description: passed仅适用于本轮静态解释和候选设计一致性，未验收运行产品、浏览器交互或低学习成本
+      impact: 不能以本质量结果宣称已有页面修复或MVP交付完成
+      mitigation: 实现阶段对确认范围做聚焦测试、必要交互和全新独立验证
+    - id: annotation-review.unconfirmed-design-choices
+      description: 统一生产批次SN主体语义、单位来源、生效交互、系统行身份、组合查询与上下文带入仍为候选
+      impact: 可能改变生命周期、兼容、权限和查询结果
+      mitigation: 明确待确认项后增量更新同一决策包；保持Q6/Q9/Q12/Q15/Q17和历史快照保护
+    - id: annotation-review.external-evidence-gap
+      description: 冠骋源码发布版本及真实页面使用频率、业务多选统计贡献算法未独立运行核验
+      impact: 不能直接推导默认高频条件或数量分摊规则
+      mitigation: 已在评审中披露，只作为候选类型和交互参考，不变成运行默认
+  blockingConditions: []

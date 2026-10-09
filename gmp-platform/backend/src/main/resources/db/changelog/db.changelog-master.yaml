@@ -233,3 +233,9 @@ databaseChangeLog:
       file: db/changelog/0107-form-projection-runtime.sql
   - include:
       file: db/changelog/0108-form-lookup-items.sql
+  - include:
+      file: db/changelog/0109-saved-form-trace-index.sql
+  - include:
+      file: db/changelog/0110-projection-detail-display.sql
+  - include:
+      file: db/changelog/0111-form-instance-saved-stage.sql

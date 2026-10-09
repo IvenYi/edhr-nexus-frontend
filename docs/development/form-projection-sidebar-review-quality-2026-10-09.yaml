@@ -1,0 +1,119 @@
+qualityResult:
+  result: passed
+  baseCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  headCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.review-scope
+      required: true
+      category: documentation
+      description: 核对本轮仅交付客户解释及设计评审，未实施产品行为变更
+      method: command
+      command: git status --short; git branch --show-current; git rev-parse HEAD; git diff --stat; git diff --check
+      outcome: passed
+      evidence:
+        - 当前分支form-traceability-projection；HEAD与base相同
+        - 现有已跟踪变更仅为decisionPackage一行评审索引注释；新增评审文档，原output目录排除
+        - git diff --check退出码0；没有运行代码、测试、迁移或配置变更
+    - id: check.existing-decisions-and-open-boundaries
+      required: true
+      category: ontology
+      description: 核对既有两用途、来源形态、真实归属、使用时快照、MVP与未决边界
+      method: inspection
+      command: 阅读知识基线README、open-questions投影条目、业务模型及DEC-0060/DEC-0075
+      outcome: passed
+      evidence:
+        - 基线0.3.24；评审不新增统计口径、发布冻结或运行默认
+        - 保留子表重点与主表分散字段首期支持、产品维护统计模型、MVP预设报表
+        - Q6/Q9/Q12/Q15/Q17及A12未被宣称解决；当前完成路径不替独立检索索引定版
+        - 建议标明inference，客户易用性未获验收；竞品原始核对未冒充本轮执行
+    - id: check.sidebar-controls-and-scope
+      required: true
+      category: requirements
+      description: 独立核对截图中字段上下文、整笔编辑、复选框与删除作用的解释
+      method: inspection
+      command: 阅读FieldProjectionConfig.tsx、SubTableProjectionConfig.tsx、ProjectionSourceEditor.tsx及用户三张截图
+      outcome: passed
+      evidence:
+        - 顶部复选框checked依赖展开状态或已有绑定；取消会移除字段映射，整子表取消会移除整类绑定
+        - 调整来源复用整binding编辑器，可编辑其他字段；启用及移除用途作用于整binding
+        - 关联追溯项为添加入口，已关联项另行显示；已启用状态不证明模板保存或实例覆盖
+    - id: check.type-and-statistics-matrix
+      required: true
+      category: requirements
+      description: 独立核对类型过滤、统计必需项及当前报表范围差异
+      method: inspection
+      command: 阅读projectionConfiguration.ts及FormProjectionInterpreter.java
+      outcome: passed
+      evidence:
+        - 文本与单选可作文本属性，数字只作数量，物料引用可作物料身份及兼容追溯项
+        - 批次/SN/工单/设备/产品引用仅有对应预置追溯兼容；人员/部门/字典/工序引用目前无投影兼容项
+        - 消耗与报废要求material/materialLotText/quantity/unit；报工目前仅goodQuantity/ngQuantity至少其一及unit
+        - 评审明确独立产出与批次/工单产出联动不足，不擅以良品等同产出
+        - 子表来源限同表列、需文本/单选稳定行定位且运行数据非空唯一；不承诺表头共享
+    - id: check.reference-and-trace-query-contract
+      required: true
+      category: api
+      description: 核对原生引用保存编号、动态追溯目录、内容查询与组合条件边界
+      method: inspection
+      command: 阅读FormReferenceLookup.java、RuntimeReference、FormLookupCatalogService.java、FormProjectionInterpreter.java、FormProjectionController.java
+      outcome: passed
+      evidence:
+        - 新选中引用保留sourceType/id/code/name，追溯读取保存code；文本只保留文本查询含义
+        - 动态目录进入兼容候选；自定义名称不产生原生引用兼容或文本转实体能力
+        - 多条件AND作用于同一r.attributes投影记录；自动tracepack选择首个可容纳组，顺序可改变组合配对
+        - formTrace查询未按model_id限制，可命中统计共享属性；评审明确追溯勾选不是唯一查询开关
+        - 内容提及对象不改变form_instance_record真实执行归属；DHR按production_object_id真实关联
+    - id: check.snapshot-completion-and-navigation
+      required: true
+      category: regression
+      description: 核对冻结、完成与成功结果条件、重试以及报表来源回查解释
+      method: inspection
+      command: 阅读ExecutionSnapshotBuilder.java、FormInstanceRecordService.java、FormProjectionService.java及FormProjectionReportPage.tsx
+      outcome: passed
+      evidence:
+        - 使用构建中复制配置；COMPLETED调用同事务校验和持久化批次，系统处理故障不撤销已完成来源
+        - 当前查询要求SUCCEEDED，失败有状态及受控重试；未声明进行中内容索引已实现
+        - 按实际对象/工序/物料/批号/单位聚合，追溯去重来源表单并保留命中位置
+        - 当前报表可点击来源行、查看快照及完整表单，DHR回查另有授权
+    - id: check.impact-and-evidence-honesty
+      required: true
+      category: documentation
+      description: 核对L2适用影响范围、扩展所有权及说明图不夸大当前实现
+      method: inspection
+      command: 阅读form-projection-sidebar-review-2026-10-09.md及decisionPackage评审索引增量
+      outcome: passed
+      evidence:
+        - 影响增量覆盖直接、传递、潜在、不受影响、兼容迁移、快照、审计、权限、测试和证据缺口
+        - configuration与product-core扩展路径及设计器/投影查询所有权明确
+        - Mermaid只解释当前多角色路径，邻文明确Q15与统计共享索引边界；没有以旧测试替代本轮验证
+        - 2件加3件为示意机制，未冒充安速康原始样本或新增统计决定
+  findings: []
+  residualRisks:
+    - id: risk.current-product-ux-and-query-boundary
+      description: 当前侧栏混用展开删除与启用、跨当前字段编辑整笔、隐藏类型限制；追溯组合配对受配置顺序影响且查询可复用统计共享属性
+      impact: 当前产品配置学习成本和组合检索可预测性仍需修复；本轮passed仅验收这些事实的解释准确性
+      mitigation: 按评审中明确标记的建议安排后续实施与聚焦交互及查询回归，不将文档通过称为产品UX通过
+    - id: risk.unfinished-statistical-and-row-capabilities
+      description: 产出联动、非物料报废、表头共享、系统行身份、独立检索索引及修订作废仍未全部覆盖
+      impact: 不能宣称完整MVP或正式生产发布；当前解释必须保持范围差异
+      mitigation: 继续保持既有未决项及分期边界，实施前确认影响真实结果的契约
+    - id: risk.validation-scope
+      description: 本轮无运行代码更改，未执行Maven、前端构建、浏览器、数据库或客户易用性测试
+      impact: 无新的运行或真实工厂使用证据，无法据本轮评审证明低学习成本
+      mitigation: 后续实施时按实际风险运行对应测试，并用代表性客户任务验证易用性
+  blockingConditions: []

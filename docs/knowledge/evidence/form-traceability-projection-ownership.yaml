@@ -17,3 +17,18 @@ evidence:
     path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
     description: 2026-10-07同切片引用配置补修；user-confirmed为用户指出引用配置未落实此前讨论并要求纠正，original-evidence为bb613f11起点的6类引用来源、id/name值形状和设计/解释器兼容缺口。受控生产来源集合、编号快照增量和预置项语义兼容矩阵为inference工程切片，沿用DEC-0060及DEC-0075-17/18/23/24/25；不新增统计规则，不关闭Q6/Q9/Q12/Q15/Q17，不证明代码、浏览器、数据库、权限或完整MVP已验收。
     visibility: internal
+  - id: evidence.form-projection-clarifications-20261009
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: 2026-10-09第二轮注释1/13/15的user-confirmed原话及DEC-0075-27/28/29；MVP开发历史允许修复迁移或作废而无需纯兼容，预置生产批次/SN表达本单所属主体，组合查询按同一表单主表条件和同一实际子表行匹配。原始源码query对同内部r.attributes记录AND的差异与真实DHR关联分开记录；不证明数据处置、自动带入、错误文本校验或运行验收。局部supersedes以声明文字保留范围，不声称现有校验器自动验证细粒度替代引用。
+    visibility: internal
+  - id: evidence.form-projection-clarifications-20261010
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: 2026-10-10第三轮注释及异步回复的user-confirmed原话，支持DEC-0075-30至34；草稿不做阻断性业务校验，无上下文可登记系统内对象但不自动归属执行或DHR，自动带入缺上下文提示；物料批号和单位可空且MVP不换算，保留完整分组粒度；二期基于已有事实报表设计；成功保存或暂存后草稿、填报中和审批中内容即可授权查询，显示状态且不包含未保存输入。原始源码强制单位/批号非空、只查SUCCEEDED完成批次、SAVE仍有证据与权限检查的差异分开记录，不证明新运行契约已实现，不将单位字典、任意展示字段、日期/多选或索引技术方案升级为确认。
+    visibility: internal
+  - id: evidence.form-projection-runtime-correction-20261010
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: 2026-10-10用户授权澄清后的运行及交互修正；同一主包复用DEC-0075-29至34，不新增统计模型或口径。本体直接核对字段追溯关联、单列切整表统计、主表一次配齐、顶部统一校验、可空单位批号、补充明细展示、保存事务独立过程索引、真实活动节点阶段展示及内部UUID行身份的源码；读取主开发本轮Surefire结果，PG索引7、正式投影9、目录11、阶段2、行值8均零失败错误跳过。该证据不代替独立质量结果或客户易用性试用，知识不升verified；Q6最终错误值、Q17其余带入、无上下文独立登记及A12仍未实现。
+    visibility: internal

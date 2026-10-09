@@ -1936,7 +1936,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       ...state.document,
       model: {
         ...state.document.model,
-        projection: { version: version ?? state.document.model.projection?.version ?? 'form-projection-v1', bindings },
+        projection: { ...state.document.model.projection, version: version ?? state.document.model.projection?.version ?? 'form-projection-v1', bindings },
       },
     } : null,
   })),

@@ -1,0 +1,138 @@
+qualityResult:
+  result: passed
+  baseCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  headCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-design-clarifications-2026-10-10.md
+      - docs/development/form-projection-design-clarifications-2026-10-09.md
+      - docs/architecture/business-knowledge-model.md
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/open-questions.yaml
+    excludedPaths:
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-clarifications-quality-2026-10-09.yaml
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-progress-quality-2026-10-10.yaml
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-clarifications-quality-2026-10-09.yaml
+      - docs/development/form-projection-design-clarifications-2026-10-09.md
+      - docs/development/form-projection-design-clarifications-2026-10-10.md
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-progress-quality-2026-10-10.yaml
+      - docs/development/form-projection-progress-quality-final-2026-10-10.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.final-independent-scope
+      required: true
+      category: documentation
+      description: 全新质量实例未参与初审或修复，仅检查本轮设计澄清与知识增量；未复用旧质量结果。
+      method: command
+      command: pwd; git branch --show-current; git rev-parse HEAD; git status --short
+      outcome: passed
+      evidence:
+        - 工作目录为/Users/ivenwang/Documents/edhr-nexus，分支form-traceability-projection，HEAD与交接完整哈希一致。
+        - 当前受审工作树仅文档及知识文件变更；没有运行代码、测试、迁移或配置的工作树改动。
+        - 未参与任何问题修复；只新增本质量结果文件。
+    - id: check.final-knowledge-model
+      required: true
+      category: ontology
+      description: 独立重新运行正式知识结构、引用、成熟度及证据路径校验。
+      method: automated-test
+      command: cd gmp-platform/backend && mvn -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 2026-10-10T00:27:54+08:00，本实例实际命令退出码0，BUILD SUCCESS。
+        - Tests run 59，Failures 0，Errors 0，Skipped 0。
+        - gmp-platform/backend/target/surefire-reports/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt
+    - id: check.final-yaml-and-impact
+      required: true
+      category: documentation
+      description: 解析主决策包及5份相关知识YAML，检查唯一规则ID、L2影响分类、扩展路径及新声明成熟度。
+      method: command
+      command: ruby -ryaml（独立断言主决策包、DEC-0075、ontology、glossary、open-questions和evidence）
+      outcome: passed
+      evidence:
+        - 6份YAML解析通过，主包29个confirmed规则ID唯一。
+        - 基线0.3.24，新DEC-0075-30至34保持specified/internal；无新增已实现或verified运行契约。
+        - L2直接、传递、潜在、不受影响、迁移、快照、审计、权限、测试和证据缺口分类存在；扩展路径均在契约允许集合内。
+    - id: check.final-qf001-regression
+      required: true
+      category: regression
+      description: 独立验证初审QF-001的主包及设计文档修正，不以初审测试结果替代最终回归。
+      method: inspection
+      command: 检查主包independent-trace-and-statistics、shared-foundation/context-prefill推断及主设计6.6与7节。
+      outcome: passed
+      evidence:
+        - 主包indexEffectiveScopeConfirmed为true，scope为latest-saved-draft-progress-and-completed-content，invalidatedHistoryViewConfirmed为false，来源含DEC-0075-33。
+        - shared-foundation rationale不再将过程更新时间和状态范围列为未决，context-prefill rationale不再将缺上下文分支列为未决。
+        - 主设计6.6和7节明确保存后过程查询已确认；完成链路图仅描述既有最终完成索引，过程检索需另行实现。
+    - id: check.final-user-confirmed-boundaries
+      required: true
+      category: requirements
+      description: 核对七条注释和保存/暂存后可查的异步确认在正式知识、主包和客户解释中的一致性。
+      method: inspection
+      command: 对照本轮澄清报告、DEC-0075-30至34、用户确认证据、词典、本体、README及架构投影。
+      outcome: passed
+      evidence:
+        - 草稿只豁免阻断性业务完整性/投影校验，认证、字段权限、合法请求及证据安全保留；最终业务校验未取消。
+        - 无上下文登记系统对象不自动建立执行、正式统计归属或DHR成员；自动带入缺上下文明确提示。
+        - 批号与单位可空且不换算；空单位只在用途、实际对象、工序及适用物料/批号等完整粒度内隔离合计，不宣称物理计量一致。
+        - 已保存草稿、填报中、审批中及完成内容可授权查询并显示状态；未保存输入排除，正式统计仍等最终完成和投影成功。
+        - 二期基于已有事实设计报表，MVP保留预设；单位控件、明细展示列类型/布局及索引技术仍为inference。
+        - DEC声明文字局部supersedes保留旧证据和未来正确快照；Q15只余失效历史/A12，Q6、Q16、Q17其他细则及A12没有被一并闭环。
+    - id: check.final-original-source-discrepancies
+      required: true
+      category: requirements
+      description: 从当前原始源码核验文档记载的运行差距，避免将新设计误称已实现。
+      method: inspection
+      command: 读取FormProjectionInterpreter、FormProjectionController、FormInstanceRecordService、ProductionExecutionEngine、0082迁移、FormRuntimeField和DesignerInspector的相关代码。
+      outcome: passed
+      evidence:
+        - FormProjectionInterpreter仍强制单位/物料批号来源及非空值；物料批号取标量文本而非仓库批实体校验。
+        - FormProjectionController只查SUCCEEDED，模型限定后按对象/工序/物料/批号/单位完整粒度聚合；InstanceRecordService仅COMPLETED调用投影。
+        - ProductionExecutionEngine的SAVE跳过validateValues，但此前仍处理字段权限和validateEvidence；文档未要求绕过安全检查。
+        - 0082实例object_id为NOT NULL，无上下文登记尚需存储及生命周期实现，不能把手选对象当真实归属。
+        - 原生singleSelect支持本地选项渲染，DesignerInspector已有新增选项入口；字典不是唯一单位选择方案。
+    - id: check.final-diff-whitespace
+      required: true
+      category: documentation
+      description: 检查受审当前工作树差异无补丁空白错误。
+      method: command
+      command: git diff --check
+      outcome: passed
+      evidence:
+        - 命令退出码0，无错误输出。
+  findings: []
+  residualRisks:
+    - id: risk.runtime-not-accepted
+      description: 本次passed仅覆盖设计澄清和知识同步，不是完整MVP运行验收。
+      impact: 过程追溯、无上下文登记、可空单位/批号及交互优化仍有明确源码差距。
+      mitigation: 后续实现受影响单元/集成、独立数据库迁移、真实交互及来源权限回归，再执行对应L2独立质量门禁。
+    - id: risk.remaining-lifecycle-decisions
+      description: Q6最终错误值、Q17自动带入取值/持久化/刷新覆盖、Q16结果导航、系统行身份与A12失效历史仍未完整定版。
+      impact: 不得将本次已确认政策推广为所有生命周期和查询场景均完成。
+      mitigation: 继续在同一决策包按对应功能切片收敛，保持confirmed/inferred/unresolved及真实归属边界。
+    - id: risk-ui-and-db-not-run
+      description: 本轮未执行浏览器、API、数据库迁移或实际生产流程验证。
+      impact: 正式知识测试不能证明客户配置易用性、运行查询及时性、数据库变更安全或生产可用性。
+      mitigation: 本轮无运行改动而不执行这些验收；实际实现时提供当轮证据，不借用历史通过结果。
+  blockingConditions: []

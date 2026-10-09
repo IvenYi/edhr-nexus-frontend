@@ -8,6 +8,7 @@ import { readNodeCellRange } from '@/pages/master-data/template-designer-react/u
 import SignatureDisplay from './SignatureDisplay';
 import { readSignaturePresentation } from './signaturePresentation';
 import { referenceConditions, referenceDependencyValues, type ReferenceValue } from './referenceConfig';
+import { newSubTableRow } from './newSubTableRow';
 
 export interface SignatureTarget { fieldId: string; tableId?: string; rowIndex?: number }
 export interface FormRuntime {
@@ -71,12 +72,12 @@ function RuntimeSubTable({ field, disabled, runtime }: { field: ModelField; disa
   if (displayNodes.length) entries.sort((a, b) => a.position - b.position);
   if (!entries.length) return <Alert severity="warning">子表尚未配置字段，无法填报。</Alert>;
   return <Box sx={{ width: '100%', overflowX: 'auto' }}><Table size="small"><TableHead><TableRow>{entries.map((entry) => <TableCell key={entry.id}>{entry.label}</TableCell>)}<TableCell /></TableRow></TableHead><TableBody>
-    {rows.map((row, index) => <TableRow key={index}>{entries.map(({ id, node, column }) => <TableCell key={id} sx={{ minWidth: node ? 40 : 140 }}>{node ? <Box sx={{ height: 32 }}><CellDisplayContent node={node} recordIndex={index} /></Box> : column ? <FormRuntimeContext.Provider value={{ ...runtime, values: row, referenceValues: { ...runtime.values, ...row }, disabled,
+    {rows.map((row, index) => <TableRow key={String(row.__rowId ?? index)}>{entries.map(({ id, node, column }) => <TableCell key={id} sx={{ minWidth: node ? 40 : 140 }}>{node ? <Box sx={{ height: 32 }}><CellDisplayContent node={node} recordIndex={index} /></Box> : column ? <FormRuntimeContext.Provider value={{ ...runtime, values: row, referenceValues: { ...runtime.values, ...row }, disabled,
       signaturePermissions: { [column.id]: runtime.signaturePermissions?.[field.id] ?? 'READ_ONLY' },
       onSignatureRequest: runtime.onSignatureRequest ? () => runtime.onSignatureRequest?.({ fieldId: column.id, tableId: field.id, rowIndex: index }) : undefined,
-      onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled} /></FormRuntimeContext.Provider> : null}</TableCell>)}
+      onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled || Boolean((column as ModelField & { readOnly?: boolean }).readOnly || column.typeConfig.readonly)} /></FormRuntimeContext.Provider> : null}</TableCell>)}
       <TableCell><IconButton size="small" aria-label={`删除第 ${index + 1} 行`} disabled={disabled} onClick={() => runtime.onChange(field.id, rows.filter((_, i) => i !== index))}><DeleteOutlineRounded /></IconButton></TableCell></TableRow>)}
-  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, {}])}>添加记录</Button></Box>;
+  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, newSubTableRow(columns, templateNodes)])}>添加记录</Button></Box>;
 }
 
 function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disabled: boolean; runtime: FormRuntime }) {

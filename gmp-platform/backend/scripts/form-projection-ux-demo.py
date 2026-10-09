@@ -23,7 +23,7 @@ table = field('items', '上料明细', 'subTable')
 table['typeConfig'] = {'columns': columns, 'initialRows': 2, 'minRows': 1, 'allowAddRow': True, 'allowDeleteRow': True}
 model = {'groups': [{'id': 'default-group', 'name': '默认分组'}], 'fields': main + [table],
     'projection': {'version': 'form-projection-v1', 'bindings': [
-        {'id': 'table-consumption', 'modelId': 'consumption', 'enabled': True, 'tableId': 'items', 'rowKeyFieldId': 'row-key',
+        {'id': 'table-consumption', 'modelId': 'consumption', 'enabled': True, 'tableId': 'items',
             'sources': {'material': 'material', 'materialLotText': 'lot', 'quantity': 'qty', 'unit': 'unit'}}]}}
 nodes = [{'id': 'node-' + item['id'], 'type': 'inputnumber' if item['type'] == 'number' else 'input',
     'props': {'label': item['name'], 'placeholder': item['name']},

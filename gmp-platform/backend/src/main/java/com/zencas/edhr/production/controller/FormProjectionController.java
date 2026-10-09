@@ -17,6 +17,7 @@ import java.util.*;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.template.service.FormLookupCatalogService;
+import com.zencas.edhr.production.service.FormTraceIndexService;
 
 @RestController
 @RequestMapping("/api/v1/reports/form-projections")
@@ -31,35 +32,56 @@ public class FormProjectionController {
 
     public record Query(String modelId, Long objectId, String operationId, Map<String, String> filters, int page, int size, String objectNo, String operationName) {}
 
+    @GetMapping("/production-object-options")
+    public ApiResponse<List<Map<String, Object>>> productionObjectOptions(@RequestParam(defaultValue = "") String keyword) {
+        if (keyword.length() > 512) throw invalid("查询内容最多512字");
+        String pattern = "%" + keyword.trim().replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%";
+        return ApiResponse.success(jdbc.queryForList("""
+                SELECT r.id::text AS id,r.object_no AS code,w.order_no AS name,r.object_type AS type
+                FROM production_object r JOIN work_order w ON w.id=r.work_order_id AND w.tenant_id=r.tenant_id
+                WHERE r.tenant_id='default' AND w.tenant_id='default' AND r.object_type IN ('BATCH','SN')
+                    AND (r.object_no ILIKE ? ESCAPE '!' OR w.order_no ILIKE ? ESCAPE '!')
+                ORDER BY r.object_no,r.id LIMIT 50
+                """, pattern, pattern));
+    }
+
     @PostMapping("/query")
     @Transactional(readOnly = true, isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public ApiResponse<ObjectNode> query(@RequestBody Query query) {
         if (query.modelId() == null || !Set.of("formTrace", "production", "scrap", "consumption").contains(query.modelId()) || query.page() < 0 || query.size() < 1 || query.size() > 200)
             throw invalid("请选择可用报表及合法页码");
         boolean trace = "formTrace".equals(query.modelId());
+        if (trace) {
+            if (query.filters() != null) for (var filter : query.filters().entrySet()) {
+                if (!lookupCatalog.contains(filter.getKey()) || filter.getValue() == null
+                        || filter.getValue().isBlank() || filter.getValue().length() > 512)
+                    throw invalid("筛选追溯项或值不受支持");
+            }
+            return ApiResponse.success(new FormTraceIndexService(jdbc, mapper).query(query.objectId(), query.operationId(),
+                    query.objectNo(), query.operationName(), query.filters(), query.page(), query.size()));
+        }
         StringBuilder where = new StringBuilder(" WHERE b.tenant_id='default' AND b.status='SUCCEEDED'");
         List<Object> args = new ArrayList<>();
-        if (!trace) { where.append(" AND r.model_id=?"); args.add(query.modelId()); }
+        where.append(" AND r.model_id=?"); args.add(query.modelId());
         if (query.objectId() != null) { where.append(" AND f.object_id=?"); args.add(query.objectId()); }
         if (query.operationId() != null && !query.operationId().isBlank()) { where.append(" AND f.operation_id=?"); args.add(query.operationId()); }
         if (query.objectNo() != null && !query.objectNo().isBlank()) { where.append(" AND f.object_no=?"); args.add(query.objectNo().trim()); }
         if (query.operationName() != null && !query.operationName().isBlank()) { where.append(" AND f.operation_name=?"); args.add(query.operationName().trim()); }
         if (query.filters() != null) for (var filter : query.filters().entrySet()) {
-            if (!(Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText", "unit", "reason", "category").contains(filter.getKey())
-                    || (trace && filter.getKey().startsWith("lookup_") && lookupCatalog.contains(filter.getKey())))
+            if (!Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText", "unit", "reason", "category").contains(filter.getKey())
                     || filter.getValue() == null || filter.getValue().isBlank() || filter.getValue().length() > 512) throw invalid("筛选属性或值不受支持");
             where.append(" AND r.attributes ->> ? = ?"); args.add(filter.getKey()); args.add(filter.getValue().trim());
         }
         String from = " FROM form_projection_record r JOIN form_projection_batch b ON b.id=r.batch_id JOIN form_instance_record f ON f.id=b.form_instance_id";
         ObjectNode result = mapper.createObjectNode();
-        result.put("total", jdbc.queryForObject("SELECT " + (trace ? "count(DISTINCT f.id)" : "count(*)") + from + where, Long.class, args.toArray()));
+        result.put("total", jdbc.queryForObject("SELECT count(*)" + from + where, Long.class, args.toArray()));
         List<Object> pageArgs = new ArrayList<>(args); pageArgs.add(query.size()); pageArgs.add((long) query.page() * query.size());
-        String recordSelect = trace ? "b.id AS id,b.id AS batch_id,'' AS binding_id,'form' AS row_key,'{}'::jsonb AS attributes,'{}'::jsonb AS sources,jsonb_agg(jsonb_build_object('bindingId',r.binding_id,'rowKey',r.row_key,'tableId',r.table_id,'attributes',r.attributes,'sources',r.sources) ORDER BY r.id) AS hits"
-                : "r.*,'[]'::jsonb AS hits";
-        String grouping = trace ? " GROUP BY b.id,f.id ORDER BY b.id DESC" : " ORDER BY r.id DESC";
+        String recordSelect = "r.*,'[]'::jsonb AS hits";
+        String grouping = " ORDER BY r.id DESC";
         result.set("records", mapper.valueToTree(jdbc.query("SELECT " + recordSelect + """
                 ,f.instance_no,f.id AS instance_id,f.object_id,f.object_no,f.operation_id,f.operation_name,b.final_revision,
-                f.created_by,f.created_at,f.updated_by,f.updated_at,b.source_json->'model'->'projection'->'lookupItems' AS lookup_items
+                f.created_by,f.created_at,f.updated_by,f.updated_at,b.source_json AS frozen_source,
+                b.source_json->'model'->'projection'->'lookupItems' AS lookup_items
                 """ + from + where + grouping + " LIMIT ? OFFSET ?", (rs, i) -> {
             ObjectNode record = mapper.createObjectNode().put("id", rs.getString("id")).put("batchId", rs.getString("batch_id"))
                     .put("instanceId", rs.getString("instance_id")).put("instanceNo", rs.getString("instance_no"))
@@ -69,17 +91,37 @@ public class FormProjectionController {
             record.put("createdBy", rs.getString("created_by")).put("createdAt", rs.getString("created_at"))
                     .put("updatedBy", rs.getString("updated_by")).put("updatedAt", rs.getString("updated_at"));
             record.set("attributes", parse(rs.getString("attributes"))); record.set("sources", parse(rs.getString("sources")));
+            record.set("details", parse(rs.getString("details")));
             record.set("hits", parse(rs.getString("hits")));
             record.set("lookupItems", rs.getString("lookup_items") == null ? mapper.createObjectNode() : parse(rs.getString("lookup_items")));
+            String tableId = rs.getString("table_id");
+            if (tableId != null && !tableId.isBlank()) {
+                record.put("tableId", tableId);
+                JsonNode frozen = parse(rs.getString("frozen_source"));
+                String keyField = "__rowId";
+                for (JsonNode binding : frozen.path("model").path("projection").path("bindings")) {
+                    if (binding.path("id").asText().equals(rs.getString("binding_id")) && binding.hasNonNull("rowKeyFieldId")) {
+                        keyField = binding.path("rowKeyFieldId").asText();
+                        break;
+                    }
+                }
+                JsonNode frozenRows = frozen.path("values").path(tableId);
+                for (int rowIndex = 0; rowIndex < frozenRows.size(); rowIndex++) {
+                    if (frozenRows.path(rowIndex).path(keyField).asText().equals(rs.getString("row_key"))) {
+                        record.put("rowIndex", rowIndex);
+                        break;
+                    }
+                }
+            }
             return record;
         }, pageArgs.toArray())));
-        if (trace) { result.putArray("totals"); result.put("totalsTruncated", false); return ApiResponse.success(result); }
         // Aggregation is over facts, never over DHR joins; preserve object, operation, material, lot and unit.
         result.set("totals", mapper.valueToTree(jdbc.queryForList("""
                 SELECT f.object_id::text AS "objectId",f.object_no AS "objectNo",f.operation_id AS "operationId",
                 f.operation_name AS "operationName",r.attributes->'material'->>'id' AS "materialId",
                 r.attributes->'material'->>'name' AS "materialName",r.attributes->>'materialLotText' AS "materialLot",
                 r.attributes->>'unit' AS unit,
+                string_agg(DISTINCT nullif(r.attributes->>'unitLabel',''),' / ') AS "unitLabel",
                 sum((r.attributes->>'quantity')::numeric) AS quantity,
                 sum((r.attributes->>'goodQuantity')::numeric) AS "goodQuantity",
                 sum((r.attributes->>'ngQuantity')::numeric) AS "ngQuantity",count(*) AS "recordCount"
@@ -103,6 +145,33 @@ public class FormProjectionController {
         var rows = jdbc.queryForList("SELECT source_json::text AS source FROM form_projection_batch WHERE id=? AND tenant_id='default'", batchId);
         if (rows.isEmpty()) throw invalid("来源快照不存在");
         return ApiResponse.success(parse(rows.getFirst().get("source").toString()));
+    }
+
+    @GetMapping("/instances/{instanceId}/source")
+    public ApiResponse<JsonNode> instanceSource(@PathVariable long instanceId) {
+        var rows = jdbc.query("SELECT * FROM form_instance_record WHERE id=? AND tenant_id='default'", (rs, index) -> {
+            ObjectNode source = mapper.createObjectNode().put("instanceId", rs.getString("id"))
+                    .put("instanceNo", rs.getString("instance_no")).put("operationId", rs.getString("operation_id"))
+                    .put("status", rs.getString("status")).put("savedStage", rs.getString("saved_stage")).put("savedAt", rs.getString("updated_at"));
+            source.set("form", parse(rs.getString("snapshot_json")));
+            source.set("values", parse(rs.getString("values_json")));
+            source.putObject("context").put("objectId", rs.getString("object_id")).put("objectNo", rs.getString("object_no"))
+                    .put("objectType", rs.getString("object_type")).put("workOrderId", rs.getString("work_order_id"))
+                    .put("workOrderNo", rs.getString("work_order_no"));
+            return (JsonNode) source;
+        }, instanceId);
+        if (rows.isEmpty()) throw invalid("来源表单不存在");
+        return ApiResponse.success(rows.getFirst());
+    }
+
+    @GetMapping("/instances/{instanceId}/dhr")
+    @PreAuthorize("hasAuthority('form-instances.view') and hasAuthority('production.execution') and hasAuthority('dhr.instances.view')")
+    public ApiResponse<List<Map<String, Object>>> instanceDhr(@PathVariable long instanceId) {
+        return ApiResponse.success(jdbc.queryForList("""
+                SELECT d.id::text AS id,d.dhr_no AS "dhrNo",d.status FROM form_instance_record f
+                JOIN dhr_instance d ON d.production_object_id=f.object_id AND d.tenant_id=f.tenant_id
+                WHERE f.id=? AND f.tenant_id='default'
+                """, instanceId));
     }
 
     @GetMapping("/{batchId}/dhr")

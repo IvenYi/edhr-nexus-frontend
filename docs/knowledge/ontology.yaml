@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.24
 concepts:
+  - id: concept.form-production-subject-trace-item
+    termId: term.form-production-subject-trace-item
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-projection-clarifications-20261009, evidence.form-projection-clarifications-20261010]
+  - id: concept.form-saved-content-trace
+    termId: term.form-saved-content-trace
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-projection-clarifications-20261010]
   - id: concept.form-fill-settings
     termId: term.form-fill-settings
     kind: business-configuration

@@ -38,7 +38,8 @@ public final class FormProjectionInterpreter {
         return switch (attributeId) {
             case "equipmentText" -> java.util.List.of("equipment");
             case "serialNumberText" -> java.util.List.of("serialNumber");
-            case "lookup_production_batch", "lookup_related_batch" -> java.util.List.of("productionBatch");
+            case "lookup_production_batch" -> java.util.List.of("productionBatch", "serialNumber");
+            case "lookup_related_batch" -> java.util.List.of("productionBatch");
             case "lookup_work_order" -> java.util.List.of("workOrder");
             case "lookup_material_code" -> java.util.List.of("material");
             case "lookup_product_code" -> java.util.List.of("product");
@@ -96,17 +97,16 @@ public final class FormProjectionInterpreter {
                 JsonNode table = field(fields, tableId);
                 if (!"subTable".equals(table.path("type").asText())) throw invalid("明细来源不是子表");
                 fields = table.path("typeConfig").path("columns");
-                JsonNode key = field(fields, required(binding, "rowKeyFieldId", "明细稳定记录键字段"));
-                scalar(key);
+                if (binding.hasNonNull("rowKeyFieldId") && !binding.path("rowKeyFieldId").asText().isBlank())
+                    scalar(field(fields, binding.path("rowKeyFieldId").asText()));
             }
             JsonNode sources = binding.path("sources");
             if (!sources.isObject() || sources.isEmpty()) throw invalid("请至少选择一个查询属性及来源字段");
             if (!"formTrace".equals(modelId)) {
-                if (!sources.hasNonNull("unit")) throw invalid("正式记录必须配置单位来源");
                 if ("production".equals(modelId)) {
                     if (!sources.hasNonNull("goodQuantity") && !sources.hasNonNull("ngQuantity")) throw invalid("请配置正式报工数量来源");
-                } else if (!sources.hasNonNull("quantity") || !sources.hasNonNull("material") || !sources.hasNonNull("materialLotText"))
-                    throw invalid("请配置物料、物料批号及数量来源");
+                } else if (!sources.hasNonNull("quantity") || !sources.hasNonNull("material"))
+                    throw invalid("请配置物料及数量来源");
             }
             var entries = sources.fields();
             Set<String> sourceIds = new HashSet<>();
@@ -125,6 +125,9 @@ public final class FormProjectionInterpreter {
                 } else if ("material".equals(entry.getKey())) {
                     if (!"reference".equals(source.path("type").asText()) || !"material".equals(source.path("typeConfig").path("sourceType").asText()))
                         throw invalid("物料来源必须是物料主数据引用字段");
+                } else if ("unit".equals(entry.getKey()) && "reference".equals(source.path("type").asText())
+                        && "dictionary".equals(source.path("typeConfig").path("sourceType").asText())) {
+                    // Dictionary values are frozen unit codes, not conversion rules.
                 } else if ("formTrace".equals(modelId) && "reference".equals(source.path("type").asText())) {
                     String sourceType = source.path("typeConfig").path("sourceType").asText();
                     boolean compatible = false;
@@ -132,6 +135,16 @@ public final class FormProjectionInterpreter {
                         if (sourceType.equals(candidate.asText())) compatible = true;
                     if (!compatible) throw invalid("引用对象与追溯项不匹配：" + entry.getKey());
                 } else scalar(source);
+            }
+            if (binding.has("detailFieldIds")) {
+                if (!binding.path("detailFieldIds").isArray()) throw invalid("明细展示列格式不正确");
+                Set<String> detailIds = new HashSet<>();
+                for (JsonNode detailId : binding.path("detailFieldIds")) {
+                    if (!detailId.isTextual() || !detailIds.add(detailId.asText())) throw invalid("明细展示列不能重复");
+                    JsonNode detail = field(fields, detailId.asText());
+                    if (!Set.of("text", "number", "singleSelect", "multiSelect", "datetime", "reference").contains(detail.path("type").asText()))
+                        throw invalid("该字段不支持明细展示：" + detailId.asText());
+                }
             }
         }
     }
@@ -150,7 +163,8 @@ public final class FormProjectionInterpreter {
                 if (!rows.isArray()) throw invalid("缺少明细数据：" + tableId);
                 Set<String> keys = new HashSet<>();
                 for (JsonNode row : rows) {
-                    String key = scalarValue(row.path(binding.path("rowKeyFieldId").asText()));
+                    String keyField = binding.path("rowKeyFieldId").asText("");
+                    String key = scalarValue(row.path(keyField.isBlank() ? "__rowId" : keyField));
                     if (key.isBlank() || !keys.add(key)) throw invalid("明细记录键缺失或重复：" + tableId);
                     append(results, binding, field(model.path("fields"), tableId).path("typeConfig").path("columns"), row, key, tableId);
                 }
@@ -179,12 +193,24 @@ public final class FormProjectionInterpreter {
                 JsonNode sourceField = field(fields, fieldId);
                 String value = "reference".equals(sourceField.path("type").asText())
                         ? referenceCode(sourceField, raw) : scalarValue(raw);
-                if (!"formTrace".equals(binding.path("modelId").asText()) && Set.of("unit", "materialLotText").contains(key) && value.isBlank())
-                    throw invalid("正式记录缺少单位或物料批号：" + fieldId);
-                if (!value.isBlank()) attributes.put(key, value);
+                if (!value.isBlank()) {
+                    attributes.put(key, value);
+                    if ("unit".equals(key)) {
+                        if ("reference".equals(sourceField.path("type").asText())) attributes.put("unitLabel", raw.path("name").asText(value));
+                        else if ("singleSelect".equals(sourceField.path("type").asText()) && sourceField.path("typeConfig").path("options").isArray())
+                            for (JsonNode option : sourceField.path("typeConfig").path("options"))
+                                if (value.equals(option.path("value").asText())) { attributes.put("unitLabel", option.path("label").asText(value)); break; }
+                    }
+                }
             }
             locations.put(key, fieldId);
         });
+        ArrayNode details = record.putArray("details");
+        for (JsonNode detailId : binding.path("detailFieldIds")) {
+            JsonNode detailField = field(fields, detailId.asText());
+            ObjectNode detail = details.addObject().put("fieldId", detailId.asText()).put("name", detailField.path("name").asText());
+            detail.set("value", values.path(detailId.asText()).isMissingNode() ? MAPPER.nullNode() : values.path(detailId.asText()).deepCopy());
+        }
         if (!attributes.isEmpty()) results.add(record);
     }
 

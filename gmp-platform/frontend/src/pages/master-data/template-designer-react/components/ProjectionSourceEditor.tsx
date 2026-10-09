@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Button, Checkbox, ListItemText, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ProjectionBinding } from '../types/model';
@@ -16,7 +16,12 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
   const issues = projectionConfigurationIssues(document.model, binding, definition);
   const isTrace = binding.modelId === 'formTrace';
   const attributes = definition.attributes.filter(attribute => isTrace ? binding.sources[attribute.id] || attribute.id === addedTraceId
-    : showOptional || required.includes(attribute.id) || (binding.modelId === 'production' && ['goodQuantity', 'ngQuantity'].includes(attribute.id)) || binding.sources[attribute.id]);
+    : showOptional || required.includes(attribute.id) || ['unit', 'materialLotText'].includes(attribute.id)
+      || (binding.modelId === 'production' && ['goodQuantity', 'ngQuantity'].includes(attribute.id)) || binding.sources[attribute.id]);
+  if (!isTrace) {
+    const order = ['material', 'quantity', 'goodQuantity', 'ngQuantity', 'unit', 'materialLotText'];
+    attributes.sort((left, right) => (order.indexOf(left.id) < 0 ? order.length : order.indexOf(left.id)) - (order.indexOf(right.id) < 0 ? order.length : order.indexOf(right.id)));
+  }
   const missingAttributes = Object.keys(binding.sources).filter(id => !definition.attributes.some(attribute => attribute.id === id));
   const traceCandidates = definition.attributes.filter(attribute => !binding.sources[attribute.id]
     && fields.some(field => acceptsProjectionAttribute(field, attribute) && !Object.values(binding.sources).includes(field.id)));
@@ -24,7 +29,8 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     const sources = { ...binding.sources };
     if (fieldId) sources[attributeId] = fieldId; else delete sources[attributeId];
     if (fieldId && addedTraceId === attributeId) setAddedTraceId('');
-    onChange({ sources });
+    const next = { ...binding, sources, rowKeyFieldId: undefined };
+    onChange({ sources, rowKeyFieldId: undefined, enabled: projectionConfigurationIssues(document.model, next, definition).length === 0 });
   };
   return <Stack spacing={1.5}>
     <Typography variant="body2" color="text.secondary">{isTrace ? '关联字段记录的信息。填报仍按原方式录入，查询时在追溯页面输入要查的值。' : binding.tableId ? '配置一次列含义，每行分别形成业务明细。' : '选择描述同一笔业务的字段；另一笔业务单独配置。'}</Typography>
@@ -45,20 +51,15 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     </TextField>)}
     {!isTrace && definition.attributes.some(attribute => !attributes.includes(attribute)) &&
       <Button size="small" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={() => setShowOptional(true)}>添加原因、分类等补充信息</Button>}
-    {binding.tableId && <Box sx={{ borderTop: '1px solid #e4e7ed', pt: 1.5 }}>
-      <Typography variant="caption" color="text.secondary">子表行定位（现有版本要求）</Typography>
-      <TextField select fullWidth size="small" label="每行唯一字段" value={binding.rowKeyFieldId ?? ''} sx={{ mt: 1 }}
-        onChange={event => onChange({ rowKeyFieldId: event.target.value })}>
-        <MenuItem value="">请选择</MenuItem>
-        {fields.filter(field => acceptsProjectionAttribute(field, { id: 'rowKey', name: '', type: 'text' })).map(field =>
-          <MenuItem key={field.id} value={field.id}>{field.name}</MenuItem>)}
-      </TextField>
-    </Box>}
-    {issues.length > 0 && <Alert severity="warning" sx={{ fontSize: 12 }}>{issues.join('；')}。可先保存配置草稿，补齐后启用。</Alert>}
-    <Stack direction="row" alignItems="center" justifyContent="space-between">
-      <FormControlLabel sx={{ m: 0 }} control={<Checkbox size="small" checked={binding.enabled} disabled={!binding.enabled && issues.length > 0}
-        onChange={(_, enabled) => onChange({ enabled })} />} label={<Typography variant="body2" sx={{ fontSize: 12, whiteSpace: 'nowrap' }}>启用此用途</Typography>} />
-      <Button size="small" color="error" sx={{ minWidth: 0, px: 1, flexShrink: 0, whiteSpace: 'nowrap' }} onClick={onRemove}>移除用途</Button>
-    </Stack>
+    {!isTrace && <TextField select fullWidth size="small" label="明细中另外显示（可选）" value={binding.detailFieldIds ?? []}
+      SelectProps={{ multiple: true, renderValue: value => (value as string[]).map(id => fields.find(field => field.id === id)?.name ?? '已失效').join('、') }}
+      onChange={event => { const detailFieldIds = typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value;
+        const next = { ...binding, detailFieldIds, rowKeyFieldId: undefined }; onChange({ detailFieldIds, rowKeyFieldId: undefined, enabled: projectionConfigurationIssues(document.model, next, definition).length === 0 }); }}>
+      {fields.filter(field => field.status !== 'disabled' && ['text', 'number', 'singleSelect', 'multiSelect', 'datetime', 'reference'].includes(field.type)).map(field =>
+        <MenuItem key={field.id} value={field.id}><Checkbox size="small" checked={binding.detailFieldIds?.includes(field.id) ?? false} /><ListItemText primary={field.name} /></MenuItem>)}
+    </TextField>}
+    {!isTrace && <Typography variant="caption" color="text.secondary">物料批号、单位可不填；展示列只在明细中显示，不改变合计。{binding.tableId ? '子表每行由系统自动定位。' : ''}</Typography>}
+    {issues.length > 0 && <Alert severity="warning" sx={{ fontSize: 12 }}>{issues.join('；')}。请补齐后点击页面顶部“保存”。</Alert>}
+    <Button size="small" color="error" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={onRemove}>移除这项用途</Button>
   </Stack>;
 }

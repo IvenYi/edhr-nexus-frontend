@@ -38,6 +38,9 @@ class FormProjectionAuthorizationTest {
     void reportPermissionAloneCannotReadProductionSourceOrCount() {
         assertThatThrownBy(() -> reports.query(new FormProjectionController.Query("formTrace", null, null, Map.of(), 0, 20, null, null))).isInstanceOf(AccessDeniedException.class);
         assertThatThrownBy(() -> reports.source(1)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> reports.instanceSource(1)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> reports.instanceDhr(1)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> reports.productionObjectOptions("B001")).isInstanceOf(AccessDeniedException.class);
         assertThatThrownBy(() -> reports.status()).isInstanceOf(AccessDeniedException.class);
         verifyNoInteractions(jdbc);
     }
@@ -45,12 +48,15 @@ class FormProjectionAuthorizationTest {
     void reportReaderCannotRetryOrReadDhrWithoutThosePermissions() {
         assertThatThrownBy(() -> reports.retry(1, Map.of("reason", "test"))).isInstanceOf(AccessDeniedException.class);
         assertThatThrownBy(() -> reports.dhr(1)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> reports.instanceDhr(1)).isInstanceOf(AccessDeniedException.class);
         verifyNoInteractions(jdbc);
     }
     @Test @WithMockUser(authorities = {"system.edit", "dhr.instances.view"})
     void administrativePermissionsDoNotReplaceSourcePermissions() {
         assertThatThrownBy(() -> reports.retry(1, Map.of("reason", "test"))).isInstanceOf(AccessDeniedException.class);
         assertThatThrownBy(() -> reports.dhr(1)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> reports.instanceSource(1)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> reports.instanceDhr(1)).isInstanceOf(AccessDeniedException.class);
         verifyNoInteractions(jdbc);
     }
 }

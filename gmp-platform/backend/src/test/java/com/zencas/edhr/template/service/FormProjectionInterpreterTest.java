@@ -107,7 +107,7 @@ class FormProjectionInterpreterTest {
         assertThat(result.get(1).path("rowKey").asText()).isEqualTo("B");
         assertThat(result.get(1).path("sources").path("equipmentText").asText()).isEqualTo("ref");
     }
-    @Test void formalQuantityRequiresUnitsRejectsNegativeAndDuplicateSources() throws Exception {
+    @Test void formalQuantityAllowsBlankUnitsButRejectsNegativeAndDuplicateSources() throws Exception {
         var model = (ObjectNode) mapper.readTree("""
           {"fields":[{"id":"qty","type":"number"},{"id":"unit","type":"text"}],
            "projection":{"version":"form-projection-v1","bindings":[
@@ -117,9 +117,41 @@ class FormProjectionInterpreterTest {
         assertThat(FormProjectionInterpreter.preview(model, values).get(0).path("attributes").path("goodQuantity").decimalValue())
                 .isEqualByComparingTo("0.25");
         assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, mapper.readTree("{\"qty\":-1,\"unit\":\"kg\"}"))).hasMessageContaining("非负数字");
-        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, mapper.readTree("{\"qty\":1,\"unit\":\"\"}"))).hasMessageContaining("缺少单位");
+        assertThat(FormProjectionInterpreter.preview(model, mapper.readTree("{\"qty\":1,\"unit\":\"\"}")).get(0).path("attributes").has("unit")).isFalse();
         var bindings = (com.fasterxml.jackson.databind.node.ArrayNode) model.path("projection").path("bindings");
         bindings.add(((ObjectNode) bindings.get(0)).deepCopy().put("id", "duplicate"));
         assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("不能重复配置");
+    }
+    @Test void consumptionNeedsOnlyMaterialAndQuantityAndUsesSystemRowIdentity() throws Exception {
+        var model = mapper.readTree("""
+          {"fields":[{"id":"lines","type":"subTable","typeConfig":{"columns":[
+            {"id":"material","type":"reference","typeConfig":{"sourceType":"material"}},
+            {"id":"qty","type":"number"},{"id":"note","name":"补充说明","type":"text"}]}}],
+           "projection":{"version":"form-projection-v1","bindings":[{"id":"c","modelId":"consumption","enabled":true,
+            "tableId":"lines","sources":{"material":"material","quantity":"qty"},"detailFieldIds":["note"]}]}}
+          """);
+        var values = mapper.readTree("""
+          {"lines":[{"__rowId":"a2e1240b-5497-4043-874d-f9d0cdc8d0aa","material":{"id":"1","name":"螺丝"},"qty":10,"note":"无批号"}]}
+          """);
+        var result = FormProjectionInterpreter.preview(model, values).get(0);
+        assertThat(result.path("rowKey").asText()).isEqualTo("a2e1240b-5497-4043-874d-f9d0cdc8d0aa");
+        assertThat(result.path("attributes").has("materialLotText")).isFalse();
+        assertThat(result.path("attributes").has("unit")).isFalse();
+        assertThat(result.path("details").get(0).path("value").asText()).isEqualTo("无批号");
+        assertThat(result.path("attributes").has("note")).isFalse();
+        ((ObjectNode) values.path("lines").get(0)).remove("__rowId");
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("记录键缺失");
+    }
+    @Test void dictionaryUnitUsesFrozenValueWithoutConversion() throws Exception {
+        var model = mapper.readTree("""
+          {"fields":[{"id":"qty","type":"number"},{"id":"unit","type":"reference","typeConfig":{"sourceType":"dictionary"}}],
+           "projection":{"version":"form-projection-v1","bindings":[{"id":"p","enabled":true,"modelId":"production","sources":{"goodQuantity":"qty","unit":"unit"}}]}}
+          """);
+        var record = FormProjectionInterpreter.preview(model, mapper.readTree("""
+          {"qty":10,"unit":{"id":"1","sourceType":"dictionary","code":"PCS","name":"件"}}
+          """)).get(0);
+        assertThat(record.path("attributes").path("unit").asText()).isEqualTo("PCS");
+        assertThat(record.path("attributes").path("unitLabel").asText()).isEqualTo("件");
+        assertThat(record.path("attributes").path("goodQuantity").asInt()).isEqualTo(10);
     }
 }

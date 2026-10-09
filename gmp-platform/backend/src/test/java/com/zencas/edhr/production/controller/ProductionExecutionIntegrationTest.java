@@ -94,6 +94,7 @@ class ProductionExecutionIntegrationTest {
         jdbc.execute("DROP TABLE IF EXISTS dhr_summary_version");
         jdbc.execute("DROP TABLE IF EXISTS dhr_instance");
         jdbc.execute("DROP SEQUENCE IF EXISTS dhr_instance_number_seq");
+        jdbc.execute("DROP TABLE IF EXISTS form_trace_value");
         jdbc.execute("DROP TABLE IF EXISTS form_instance_record");
         jdbc.execute("DROP SEQUENCE IF EXISTS form_instance_number_seq");
         var migration = new String(getClass().getResourceAsStream("/db/changelog/0082-form-instance-records.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
@@ -108,6 +109,12 @@ class ProductionExecutionIntegrationTest {
         for (String sql : sourceMigration.split(";")) {
             if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);
         }
+        var traceMigration = new String(getClass().getResourceAsStream("/db/changelog/0109-saved-form-trace-index.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : traceMigration.split("--changeset codex:0109-saved-form-trace-index-baseline")[0].split(";")) {
+            if (sql.contains("CREATE")) jdbc.execute(sql);
+        }
+        var stageMigration = new String(getClass().getResourceAsStream("/db/changelog/0111-form-instance-saved-stage.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : stageMigration.split(";")) if (sql.contains("ALTER")) jdbc.execute(sql);
         for (String ddl : List.of(
             "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16))",
             "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT,dhr_review_mode VARCHAR(16) DEFAULT 'NONE',dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT)",

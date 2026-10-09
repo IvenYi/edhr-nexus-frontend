@@ -31,7 +31,8 @@ test('subtable rows and the main form keep independent values, even when several
     sample('table', 1, 'key', 'B'), sample('table', 1, 'lot', 'LOT-B'), sample('table', 1, 'qty', '3')]);
   const values = buildProjectionPreviewValues(model, samples, {});
   assert.deepEqual(values, { lot: 'MAIN', qty: 15, material: { id: 'm1', name: '虚构物料' }, table: [
-    { lot: 'LOT-A', qty: 2.5, key: 'A' }, { lot: 'LOT-B', qty: 3, key: 'B' },
+    { __rowId: '00000000-0000-4000-8000-000000000001', lot: 'LOT-A', qty: 2.5, key: 'A' },
+    { __rowId: '00000000-0000-4000-8000-000000000002', lot: 'LOT-B', qty: 3, key: 'B' },
   ] });
   assert.equal(JSON.stringify(model), before, 'preview must not alter stored mappings');
 });

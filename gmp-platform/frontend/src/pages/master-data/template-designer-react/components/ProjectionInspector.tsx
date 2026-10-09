@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField } from '../types/model';
+import type { CanvasNode } from '../types/canvas';
 import FieldProjectionConfig from './FieldProjectionConfig';
 import SubTableProjectionConfig from './SubTableProjectionConfig';
 
@@ -11,10 +12,22 @@ export default function ProjectionInspector() {
   const table = document?.model.fields.find(field => field.type === 'subTable'
     && (field.id === selectedNode?.bindings?.subTableId
       || (Array.isArray(field.typeConfig.columns) && (field.typeConfig.columns as ModelField[]).some(column => column.id === fieldId))));
-  const field = document?.model.fields.find(item => item.id === fieldId)
+  const field = (selectedNode?.type === 'sub-table' ? table : undefined) ?? document?.model.fields.find(item => item.id === fieldId)
     ?? (table?.typeConfig.columns as ModelField[] | undefined)?.find(column => column.id === fieldId)
     ?? selectedNode?.bindings?.subTableField;
   const supported = field && ['text', 'number', 'singleSelect', 'subTable', 'reference'].includes(field.type);
+  const editTable = () => {
+    if (!table || !document) return;
+    const find = (nodes: CanvasNode[]): CanvasNode | undefined => {
+      for (const node of nodes) {
+        if (node.type === 'sub-table' && (node.bindings?.fieldId === table.id || node.bindings?.subTableId === table.id)) return node;
+        const child = find(node.children ?? []); if (child) return child;
+      }
+    };
+    const page = document.canvas.pages.find(item => item.id === document.canvas.currentPageId);
+    const node = find(page?.nodes ?? []);
+    if (node) { const store = useTemplateDesignerStore.getState(); store.setSelectedNodeId(node.id); store.selectSubTableGroup(node.id); store.setActiveCanvasRail('projection'); }
+  };
   const context = field?.type === 'subTable' ? `当前子表：${field.name}`
     : field && table ? `当前子表列：${table.name} / ${field.name}`
       : field ? `当前字段：${field.name}` : '选择配置来源';
@@ -27,7 +40,7 @@ export default function ProjectionInspector() {
       {!field ? <Typography variant="body2" color="text.secondary">在画布中选择字段或子表，配置查找与统计用途。子表可一次设置各列的用途。</Typography>
         : !supported ? <Typography variant="body2" color="text.secondary">当前字段类型暂不支持查找与统计配置。请选择文本、数值、单选、引用字段或子表。</Typography>
           : field.type === 'subTable' ? <SubTableProjectionConfig key={field.id} field={field} showIdentity={false} />
-            : <FieldProjectionConfig key={field.id} field={field} tableId={table?.id} showIdentity={false} />}
+            : <FieldProjectionConfig key={field.id} field={field} tableId={table?.id} showIdentity={false} onEditTable={table ? editTable : undefined} />}
     </Stack>
   </Box>;
 }

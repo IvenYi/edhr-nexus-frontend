@@ -22,7 +22,13 @@ public class FormProjectionService {
                           String operationId) {
         if (!form.path("projection").path("bindings").isArray() || form.path("projection").path("bindings").isEmpty()) return;
         ObjectNode model = mapper.createObjectNode();
-        model.set("fields", form.path("fields")); model.set("projection", form.path("projection"));
+        model.set("fields", form.path("fields"));
+        ObjectNode configuration = form.path("projection").deepCopy();
+        var statistical = mapper.createArrayNode();
+        for (JsonNode binding : configuration.path("bindings"))
+            if (!"formTrace".equals(binding.path("modelId").asText())) statistical.add(binding);
+        if (statistical.isEmpty()) return;
+        configuration.set("bindings", statistical); model.set("projection", configuration);
         FormProjectionInterpreter.preview(model, values); // Domain errors abort completion, operational processing is separate.
         ObjectNode source = mapper.createObjectNode().put("operationId", operationId);
         source.set("form", form.deepCopy()); source.set("model", model); source.set("values", values.deepCopy());
@@ -41,10 +47,10 @@ public class FormProjectionService {
         JsonNode source = parse(rows.getFirst().get("source").toString());
         var records = FormProjectionInterpreter.preview(source.path("model"), source.path("values"));
         for (JsonNode record : records) jdbc.update("""
-            INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id)
-            VALUES (?,?,?,?,CAST(? AS jsonb),CAST(? AS jsonb),?)
+            INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id,details)
+            VALUES (?,?,?,?,CAST(? AS jsonb),CAST(? AS jsonb),?,CAST(? AS jsonb))
             """, batchId, record.path("bindingId").asText(), record.path("rowKey").asText(), record.path("modelId").asText(),
-                record.path("attributes").toString(), record.path("sources").toString(), record.path("tableId").asText());
+                record.path("attributes").toString(), record.path("sources").toString(), record.path("tableId").asText(), record.path("details").toString());
         jdbc.update("UPDATE form_projection_batch SET status='SUCCEEDED',attempts=attempts+1,error_message=NULL,processed_at=CURRENT_TIMESTAMP WHERE id=?", batchId);
     }
 

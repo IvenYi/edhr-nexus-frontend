@@ -15,6 +15,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 @Component
 @RequiredArgsConstructor
 public class ProductionExecutionEngine {
+    private static final String ROW_ID = "__rowId";
     private final ObjectMapper mapper;
     private final ExecutionAccess access;
 
@@ -243,11 +244,7 @@ public class ProductionExecutionEngine {
         if (button.path("requireOpinion").asBoolean() && (opinion == null || opinion.isBlank())) throw invalid("请填写操作意见");
         if (values == null || !values.isObject()) throw invalid("表单数据格式不正确");
         ObjectNode previous = formState.withObject("/values");
-        ObjectNode merged = previous.deepCopy(); merged.setAll((ObjectNode) values);
-        ObjectNode previousContent = previous.deepCopy(), nextContent = merged.deepCopy();
-        clearSignatures(form.path("fields"), previousContent);
-        clearSignatures(form.path("fields"), nextContent);
-        boolean contentChanged = !previousContent.equals(nextContent);
+        ObjectNode merged = previous.deepCopy(); merged.setAll(((ObjectNode) values).deepCopy());
         Iterator<String> keys = values.fieldNames();
         while (keys.hasNext()) {
             String id = keys.next();
@@ -255,7 +252,17 @@ public class ProductionExecutionEngine {
             if (!"EDIT".equals(controls.path("permissions").path(id).asText()) && !Objects.equals(values.get(id), previous.get(id)))
                 throw invalid("字段「" + field.path("name").asText(id) + "」为只读");
             if ("disabled".equals(field.path("status").asText())) throw invalid("不能修改停用字段");
-            validateNestedEdits(field, values.get(id), previous.path(id), contentChanged);
+        }
+        prepareTableRows(form.path("fields"), merged, previous);
+        ObjectNode previousContent = previous.deepCopy(), nextContent = merged.deepCopy();
+        clearSignatures(form.path("fields"), previousContent);
+        clearSignatures(form.path("fields"), nextContent);
+        boolean contentChanged = !previousContent.equals(nextContent);
+        keys = values.fieldNames();
+        while (keys.hasNext()) {
+            String id = keys.next();
+            JsonNode field = find(form.path("fields"), id);
+            validateNestedEdits(field, merged.get(id), previous.path(id), contentChanged);
         }
         if (contentChanged) clearSignatures(form.path("fields"), merged);
         for (JsonNode field : com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper)) {
@@ -557,9 +564,14 @@ public class ProductionExecutionEngine {
                 JsonNode columns = config.path("columns");
                 if (!columns.isArray() || columns.isEmpty()) { issues.add(name + "子字段配置不完整"); continue; }
                 ObjectNode rowForm = mapper.createObjectNode(); rowForm.set("fields", columns);
+                Set<String> rowIds = new HashSet<>();
                 for (JsonNode row : value) {
                     if (!row.isObject()) { issues.add(name + "子表行格式不正确"); continue; }
-                    for (Iterator<String> keys = row.fieldNames(); keys.hasNext();) find(columns, keys.next());
+                    if (row.has(ROW_ID) && !rowIds.add(requireRowId(row))) issues.add(name + "子表行身份重复");
+                    for (Iterator<String> keys = row.fieldNames(); keys.hasNext();) {
+                        String key = keys.next();
+                        if (!ROW_ID.equals(key)) find(columns, key);
+                    }
                     issues.addAll(validateValues(rowForm, row));
                 }
             }
@@ -582,7 +594,9 @@ public class ProductionExecutionEngine {
         if (canvas.isMissingNode() || canvas.isNull() || (canvas.isTextual() && canvas.asText().isBlank())) return form;
         try {
             JsonNode copy = form.deepCopy();
-            ExecutionSnapshotBuilder.collectBindings(canvas.isTextual() ? mapper.readTree(canvas.asText()) : canvas, copy.path("fields"));
+            JsonNode frozenCanvas = canvas.isTextual() ? mapper.readTree(canvas.asText()) : canvas;
+            ExecutionSnapshotBuilder.collectBindings(frozenCanvas, copy.path("fields"));
+            collectDefaultBindings(frozenCanvas, copy.path("fields"));
             return copy;
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
             throw invalid("表单冻结画布格式不正确");
@@ -604,22 +618,112 @@ public class ProductionExecutionEngine {
         for (int i = 0; i < value.size(); i++) {
             JsonNode row = value.get(i);
             for (Iterator<String> keys = row.fieldNames(); keys.hasNext();) {
-                String key = keys.next(); JsonNode column = find(columns, key);
+                String key = keys.next();
+                if (!ROW_ID.equals(key)) find(columns, key);
+            }
+            JsonNode oldRow = previousRow(previous, row, i);
+            if (oldRow.isMissingNode()) {
+                ObjectNode defaults = mapper.createObjectNode(); applyDefaults(columns, defaults); oldRow = defaults;
+            }
+            for (JsonNode column : columns) {
+                String key = column.path("id").asText();
                 if (contentChanged && "signature".equals(column.path("type").asText())) {
                     JsonNode signature = row.path(key);
-                    boolean known = signature.isNull() || (signature.isTextual() && signature.asText().isBlank());
-                    for (JsonNode oldRow : previous) if (signature.equals(oldRow.path(key))) known = true;
+                    boolean known = signature.isMissingNode() || signature.isNull() || (signature.isTextual() && signature.asText().isBlank())
+                            || signature.equals(oldRow.path(key));
                     if (!known) throw invalid("不能修改子表签名字段");
                     continue;
                 }
                 if ((column.path("readOnly").asBoolean() || "signature".equals(column.path("type").asText()) || "disabled".equals(column.path("status").asText()))
-                        && !Objects.equals(row.path(key), previous.path(i).path(key))) throw invalid("子表字段「" + column.path("name").asText() + "」为只读");
-                validateNestedEdits(column, row.path(key), previous.path(i).path(key), contentChanged);
+                        && !Objects.equals(row.path(key), oldRow.path(key))) throw invalid("子表字段「" + column.path("name").asText() + "」为只读");
+                validateNestedEdits(column, row.path(key), oldRow.path(key), contentChanged);
             }
         }
     }
 
-    private void initializeForm(JsonNode form, ObjectNode state) { state.putObject("values"); initializeFormGraph(form, state); }
+    private void prepareTableRows(JsonNode fields, ObjectNode values, JsonNode previous) {
+        for (JsonNode field : fields) {
+            String id = field.path("id").asText();
+            if (!"subTable".equals(field.path("type").asText()) || !values.hasNonNull(id)) continue;
+            JsonNode rows = values.path(id), columns = field.path("typeConfig").path("columns");
+            if (!rows.isArray()) throw invalid("子表「" + field.path("name").asText() + "」数据格式不正确");
+            for (JsonNode column : columns) if (ROW_ID.equals(column.path("id").asText())) throw invalid("子表字段不能使用系统行身份名称");
+            Set<String> identities = new HashSet<>();
+            for (int index = 0; index < rows.size(); index++) {
+                if (!rows.get(index).isObject()) throw invalid("子表行格式不正确");
+                ObjectNode row = (ObjectNode) rows.get(index);
+                JsonNode oldRow = previousRow(previous.path(id), row, index);
+                if (!row.has(ROW_ID)) row.put(ROW_ID, UUID.randomUUID().toString());
+                if (!identities.add(requireRowId(row))) throw invalid("子表行身份重复");
+                if (oldRow.isMissingNode()) applyDefaults(columns, row);
+                prepareTableRows(columns, row, oldRow);
+            }
+        }
+    }
+
+    private String requireRowId(JsonNode row) {
+        JsonNode id = row.path(ROW_ID);
+        try {
+            if (id.isTextual() && UUID.fromString(id.asText()).toString().equals(id.asText())) return id.asText();
+        } catch (IllegalArgumentException ignored) { }
+        throw invalid("子表行身份格式不正确");
+    }
+
+    private JsonNode previousRow(JsonNode previous, JsonNode row, int index) {
+        if (row.has(ROW_ID)) for (JsonNode oldRow : previous)
+            if (row.path(ROW_ID).equals(oldRow.path(ROW_ID))) return oldRow;
+        // Only pre-identity rows use the old edit comparison during their first adoption.
+        JsonNode legacy = previous.path(index);
+        return legacy.isObject() && !legacy.has(ROW_ID) ? legacy : com.fasterxml.jackson.databind.node.MissingNode.getInstance();
+    }
+
+    private void applyDefaults(JsonNode fields, ObjectNode values) {
+        for (JsonNode field : fields) {
+            String id = field.path("id").asText(), type = field.path("type").asText();
+            JsonNode config = field.path("typeConfig"), configured = config.path("defaultValue");
+            if (values.has(id) || "disabled".equals(field.path("status").asText()) || configured.isMissingNode() || configured.isNull()) continue;
+            if ("text".equals(type) && configured.isTextual()) values.set(id, configured.deepCopy());
+            else if ("number".equals(type) && (configured.isNumber() || configured.isTextual())) {
+                try { values.put(id, new java.math.BigDecimal(configured.asText())); } catch (NumberFormatException ignored) { }
+            } else if ("singleSelect".equals(type) && configured.isTextual()) {
+                List<String> labels = new ArrayList<>();
+                String exact = null;
+                JsonNode options = config.path("options");
+                if (options.isArray()) for (JsonNode option : options) {
+                    if ("disabled".equals(option.path("status").asText())) continue;
+                    if (configured.asText().equals(option.path("value").asText())) exact = option.path("value").asText();
+                    if (configured.asText().equals(option.path("label").asText())) labels.add(option.path("value").asText());
+                } else for (String line : options.asText().split("\\n")) {
+                    if (line.isBlank()) continue;
+                    String[] pair = line.split(":", 2); String value = pair.length > 1 ? pair[1] : pair[0];
+                    if (configured.asText().equals(value)) exact = value;
+                    if (configured.asText().equals(pair[0])) labels.add(value);
+                }
+                if (exact != null) values.put(id, exact);
+                else if (labels.size() == 1) values.put(id, labels.get(0));
+            }
+        }
+    }
+
+    private void collectDefaultBindings(JsonNode node, JsonNode fields) {
+        if (node.isObject() && node.hasNonNull("defaultValue")) {
+            String tableId = node.path("subTableId").asText();
+            JsonNode targets = fields;
+            if (!tableId.isBlank()) {
+                targets = com.fasterxml.jackson.databind.node.MissingNode.getInstance();
+                for (JsonNode field : fields) if (tableId.equals(field.path("id").asText())) targets = field.path("typeConfig").path("columns");
+            }
+            String fieldId = node.path(tableId.isBlank() ? "fieldId" : "subTableFieldId").asText();
+            for (JsonNode field : targets) if (fieldId.equals(field.path("id").asText()))
+                ((ObjectNode) field).withObject("/typeConfig").set("defaultValue", node.path("defaultValue").deepCopy());
+        }
+        if (node.isContainerNode()) for (JsonNode child : node) collectDefaultBindings(child, fields);
+    }
+
+    private void initializeForm(JsonNode form, ObjectNode state) {
+        form = withCanvasBindings(form);
+        applyDefaults(form.path("fields"), state.putObject("values")); initializeFormGraph(form, state);
+    }
     private void initializeBindingForm(JsonNode form, ObjectNode state) {
         String id = form.path("id").asText();
         initializeForm(form, state.withObject("/forms").putObject(id));

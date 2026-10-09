@@ -20,6 +20,7 @@ export function projectionPreviewFieldIds(model: ModelDesignState) {
   model.projection?.bindings.filter(binding => binding.enabled).forEach(binding => {
     const region = binding.tableId ?? '';
     Object.values(binding.sources).forEach(id => add(region, id));
+    binding.detailFieldIds?.forEach(id => add(region, id));
     if (binding.rowKeyFieldId) add(region, binding.rowKeyFieldId);
   });
   return assigned;
@@ -33,7 +34,7 @@ export function buildProjectionPreviewValues(model: ModelDesignState, samples: R
   assigned.forEach((ids, region) => {
     const fields = region ? (model.fields.find(field => field.id === region)?.typeConfig.columns as ModelField[] | undefined) ?? [] : model.fields;
     const rows = Array.from({ length: region ? rowCounts[region] ?? 2 : 1 }, (_, rowIndex) => {
-      const row: Record<string, unknown> = {};
+      const row: Record<string, unknown> = region ? { __rowId: `00000000-0000-4000-8000-${String(rowIndex + 1).padStart(12, '0')}` } : {};
       ids.forEach(id => {
         const field = fields.find(item => item.id === id);
         const sample = samples[previewSampleKey(region, rowIndex, id)] ?? '';

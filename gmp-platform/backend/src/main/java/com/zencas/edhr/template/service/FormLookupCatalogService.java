@@ -114,9 +114,13 @@ public class FormLookupCatalogService {
             JsonNode root = mapper.readTree(json);
             JsonNode model = root.has("payload") ? root.path("payload") : root;
             JsonNode prepared = withLookupSnapshot(model);
-            if (prepared == model) return json;
-            if (root.has("payload")) { ((ObjectNode) root).set("payload", prepared); return root.toString(); }
-            return prepared.toString();
+            ObjectNode configured = prepared.deepCopy();
+            for (JsonNode binding : configured.path("projection").path("bindings")) {
+                ((ObjectNode) binding).put("enabled", true).remove("rowKeyFieldId");
+            }
+            FormProjectionInterpreter.validate(configured);
+            if (root.has("payload")) { ((ObjectNode) root).set("payload", configured); return root.toString(); }
+            return configured.toString();
         } catch (com.fasterxml.jackson.core.JsonProcessingException ex) { throw invalid("字段模型格式不正确"); }
     }
 

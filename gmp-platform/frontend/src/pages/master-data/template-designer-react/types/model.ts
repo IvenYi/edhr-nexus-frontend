@@ -61,6 +61,7 @@ export interface ProjectionBinding {
   tableId?: string;
   rowKeyFieldId?: string;
   sources: Record<string, string>;
+  detailFieldIds?: string[];
 }
 
 export interface FieldTypeDefinition {

@@ -16,7 +16,8 @@ export function acceptsProjectionAttribute(field: ModelField, attribute: Project
   if (field.status === 'disabled') return false;
   if (attribute.type === 'number') return field.type === 'number';
   if (attribute.type === 'reference') return field.type === 'reference' && field.typeConfig.sourceType === 'material';
-  if (field.type === 'reference') return attribute.referenceSources?.includes(String(field.typeConfig.sourceType)) ?? false;
+  if (field.type === 'reference') return (attribute.id === 'unit' && field.typeConfig.sourceType === 'dictionary')
+    || (attribute.referenceSources?.includes(String(field.typeConfig.sourceType)) ?? false);
   return field.type === 'text' || field.type === 'singleSelect';
 }
 
@@ -32,7 +33,7 @@ export function projectionSourceSummary(model: ModelDesignState, binding: Projec
 }
 
 export function projectionRequiredAttributes(modelId: string) {
-  return modelId === 'production' ? ['unit'] : modelId === 'formTrace' ? [] : ['material', 'materialLotText', 'quantity', 'unit'];
+  return modelId === 'production' || modelId === 'formTrace' ? [] : ['material', 'quantity'];
 }
 
 export function projectionConfigurationIssues(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {
@@ -42,8 +43,6 @@ export function projectionConfigurationIssues(model: ModelDesignState, binding: 
   if (binding.tableId) {
     const table = model.fields.find(field => field.id === binding.tableId && field.type === 'subTable');
     if (!table || table.status === 'disabled') issues.push('子表来源已失效');
-    const rowKey = fields.find(field => field.id === binding.rowKeyFieldId);
-    if (!rowKey || !acceptsProjectionAttribute(rowKey, { id: 'rowKey', name: '', type: 'text' })) issues.push('尚未设置有效的子表行定位');
   }
   for (const id of projectionRequiredAttributes(binding.modelId)) {
     if (!binding.sources[id]) issues.push(`待配置${definition.attributes.find(attribute => attribute.id === id)?.name ?? id}`);
@@ -55,5 +54,7 @@ export function projectionConfigurationIssues(model: ModelDesignState, binding: 
     const field = fields.find(item => item.id === fieldId);
     if (!attribute || !field || !acceptsProjectionAttribute(field, attribute)) issues.push('存在失效或类型不匹配的来源');
   }
+  if ((binding.detailFieldIds ?? []).some(id => !fields.some(field => field.id === id && field.status !== 'disabled'
+    && ['text', 'number', 'singleSelect', 'multiSelect', 'datetime', 'reference'].includes(field.type)))) issues.push('存在失效的明细展示字段');
   return [...new Set(issues)];
 }

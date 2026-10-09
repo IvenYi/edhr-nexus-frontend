@@ -1,0 +1,287 @@
+# 独立 L2 质量初审；本实例未参与源码、测试或数据修复。
+# 修复后必须由全新质量实例出具最终结果，本文件保留修复前失败证据。
+qualityResult:
+  result: "failed"
+  baseCommit: "b63d68ee299de9a286bf4cc1cad0d0d829e39217"
+  headCommit: "b63d68ee299de9a286bf4cc1cad0d0d829e39217"
+  workingTreeState:
+    status: "dirty"
+    includedPaths:
+      - "docs/architecture/business-knowledge-model.md"
+      - "docs/architecture/form-traceability-projection-brief.md"
+      - "docs/architecture/form-traceability-projection-design.md"
+      - "docs/development/form-traceability-projection-decision-package.yaml"
+      - "docs/development/form-traceability-projection-running.md"
+      - "docs/knowledge/README.md"
+      - "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml"
+      - "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md"
+      - "docs/knowledge/evidence/form-traceability-projection-ownership.yaml"
+      - "docs/knowledge/glossary.yaml"
+      - "docs/knowledge/ontology.yaml"
+      - "docs/knowledge/open-questions.yaml"
+      - "gmp-platform/backend/scripts/form-projection-ux-demo.py"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java"
+      - "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/FormProjectionAuthorizationTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java"
+      - "gmp-platform/frontend/scripts/test-projection-preview.mjs"
+      - "gmp-platform/frontend/scripts/test-projection-source-editor.mjs"
+      - "gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/model.ts"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts"
+      - "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx"
+      - "docs/development/form-projection-annotation-review-2026-10-09.md"
+      - "docs/development/form-projection-annotation-review-quality-2026-10-09.yaml"
+      - "docs/development/form-projection-clarifications-quality-2026-10-09.yaml"
+      - "docs/development/form-projection-design-clarifications-2026-10-09.md"
+      - "docs/development/form-projection-design-clarifications-2026-10-10.md"
+      - "docs/development/form-projection-progress-quality-2026-10-10.yaml"
+      - "docs/development/form-projection-progress-quality-final-2026-10-10.yaml"
+      - "docs/development/form-projection-runtime-correction-2026-10-10.md"
+      - "docs/development/form-projection-sidebar-review-2026-10-09.md"
+      - "docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml"
+      - "gmp-platform/backend/scripts/form-projection-runtime-demo.py"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java"
+      - "gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql"
+      - "gmp-platform/backend/src/main/resources/db/changelog/0110-projection-detail-display.sql"
+      - "gmp-platform/backend/src/main/resources/db/changelog/0111-form-instance-saved-stage.sql"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceRecordStageTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexServiceTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionFormValuesTest.java"
+      - "gmp-platform/frontend/scripts/test-runtime-row-values.mjs"
+      - "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx"
+    excludedPaths:
+      - "output/"
+      - "gmp-platform/frontend/output/"
+    untrackedPaths:
+      - "docs/development/form-projection-annotation-review-2026-10-09.md"
+      - "docs/development/form-projection-annotation-review-quality-2026-10-09.yaml"
+      - "docs/development/form-projection-clarifications-quality-2026-10-09.yaml"
+      - "docs/development/form-projection-design-clarifications-2026-10-09.md"
+      - "docs/development/form-projection-design-clarifications-2026-10-10.md"
+      - "docs/development/form-projection-progress-quality-2026-10-10.yaml"
+      - "docs/development/form-projection-progress-quality-final-2026-10-10.yaml"
+      - "docs/development/form-projection-runtime-correction-2026-10-10.md"
+      - "docs/development/form-projection-sidebar-review-2026-10-09.md"
+      - "docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml"
+      - "gmp-platform/backend/scripts/form-projection-runtime-demo.py"
+      - "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java"
+      - "gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql"
+      - "gmp-platform/backend/src/main/resources/db/changelog/0110-projection-detail-display.sql"
+      - "gmp-platform/backend/src/main/resources/db/changelog/0111-form-instance-saved-stage.sql"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceRecordStageTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexServiceTest.java"
+      - "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionFormValuesTest.java"
+      - "gmp-platform/frontend/scripts/test-runtime-row-values.mjs"
+      - "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts"
+      - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx"
+  knowledgeBaselineVersion: "0.3.24"
+  checks:
+    -
+      id: "check.runtime.requirements-boundary"
+      required: true
+      category: "requirements"
+      description: "核对 DEC-0075、决策包、当前源码及明确暂缓范围；没有把真实归属与字段内容混同。"
+      method: "inspection"
+      command: "独立读取 AGENTS、角色契约、baseline 0.3.24、DEC-0075、decisionPackage、runtime-correction 及相关后端/前端差异"
+      outcome: "passed"
+      evidence:
+        - "docs/development/form-projection-runtime-correction-2026-10-10.md"
+        - "docs/development/form-traceability-projection-decision-package.yaml"
+        - "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml"
+        - "源码核对保存索引和最终统计分离、实际执行归属、同主表实例/同实际子表行 AND、可空单位和批号、展示列不参与合计。"
+    -
+      id: "check.runtime.independent-backend"
+      required: true
+      category: "integration"
+      description: "独立重跑本轮 13 套后端测试，含真实 PostgreSQL、权限、完成事务、默认值、隐藏行身份和签署边界。"
+      method: "automated-test"
+      command: "PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -q -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormTraceIndexServiceTest,FormTraceIndexPostgresTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,ProductionExecutionIntegrationTest,TemplateModelingControllerTest,TemplateProjectionAuthorizationTest,FormFillSnapshotTest,FormLookupCatalogPostgresTest,FormInstanceRecordStageTest test"
+      outcome: "passed"
+      evidence:
+        - "/tmp/edhr-projection-quality-tests.log"
+        - "独立执行 exit 0；178 tests，0 failures，0 errors，2 原有条件浏览器用例跳过；实际执行 176 项。"
+        - "27 项 PostgreSQL 测试全部实际执行，使用独立库随机可丢弃 schema。"
+        - "本结果对应主开发修复 QF-runtime-003 前的测试版本；修复后的新增测试和最终回归必须由下一全新实例独立核验。"
+    -
+      id: "check.runtime.database-migration"
+      required: true
+      category: "database"
+      description: "独立读取隔离库真实 Liquibase 记录并审查 0109–0111 迁移。"
+      method: "query"
+      command: "psql edhr_form_projection: SELECT id,exectype FROM databasechangelog WHERE id LIKE '0109%' OR id LIKE '0110%' OR id LIKE '0111%'; 审查对应 SQL 和 master changelog"
+      outcome: "passed"
+      evidence:
+        - "独立 SELECT 结果：0109-saved-form-trace-index、0109-saved-form-trace-index-baseline、0110-projection-detail-display、0111-form-instance-saved-stage 均 EXECUTED。"
+        - "0109 主库索引与重复生成边界由 PostgreSQL 回归覆盖；0110 明细展示字段；0111 已保存阶段字段。"
+        - "只读核验已有迁移成功，未在原开发数据库或生产数据库执行迁移。"
+    -
+      id: "check.runtime.security-and-ownership"
+      required: true
+      category: "security"
+      description: "审查查询/source/DHR 权限、模板修改权限、事务边界；真实页面 DHR 入口沿实际生产归属。"
+      method: "inspection"
+      command: "检查 FormProjectionController、FormInstanceRecordService、FormProjectionService、FormTraceIndexService、ProductionExecutionEngine 与相关 Authorization/Integration tests；CUA 点击 DHR"
+      outcome: "passed"
+      evidence:
+        - "上述独立后端测试均通过。"
+        - "浏览器 DHR 入口显示实际对象对应 DHR-20261010-000004 · IN_PROGRESS。"
+        - "无源码、测试或数据修复；没有建立文本编号导致的自动 DHR 关系。"
+    -
+      id: "check.runtime.trace-candidates"
+      required: true
+      category: "e2e"
+      description: "追溯查询候选应只展示服务端实际目录支持的追溯项。"
+      method: "browser"
+      command: "CUA: 追溯与统计 → 追溯 → 展开 → 添加条件 → 选择单位 → 件 → 查询"
+      outcome: "failed"
+      evidence:
+        - "output/form-projection-runtime-20261010/quality-invalid-trace-candidate.png"
+        - "QF-runtime-001；原实现候选含 category/reason/unit，FormLookupCatalogService 不接受。"
+    -
+      id: "check.runtime.source-preview"
+      required: true
+      category: "e2e"
+      description: "来源回查应完整呈现完成冻结表单中的两行明细。"
+      method: "browser"
+      command: "CUA: 选择 PROJECTION-RUNTIME-20261010-BATCH → 查询 → FR-20261010-000006 → 预览来源表单；独立 SELECT snapshot_json/values_json"
+      outcome: "failed"
+      evidence:
+        - "QF-runtime-002；record id 6 的 values_json 含两行 UUID，而来源预览仅呈现第一行。"
+        - "独立数据库读取冻结 canvas 的 items-node 缺 subTableRegion；FormDocumentPreview 的 recordCounts 因此未建立。"
+    -
+      id: "check.runtime.statistics-location"
+      required: true
+      category: "api"
+      description: "正式统计明细保留真实子表和冻结行定位，详情字段来源使用子表列定义。"
+      method: "browser"
+      command: "CUA: 实际物料消耗 → 对象 PROJECTION-RUNTIME-20261010-BATCH → 查询 → 点击 FR 行 → 数据审计 → 展开字段来源；审查统计 mapper"
+      outcome: "failed"
+      evidence:
+        - "output/form-projection-runtime-20261010/quality-stat-row-location.png"
+        - "QF-runtime-003；r.table_id=items 的两条统计记录原响应缺 tableId，页面显示主表字段。"
+    -
+      id: "check.runtime.drawer-responsive"
+      required: true
+      category: "visual"
+      description: "实际打开行详情，核对统一 DetailDrawer 结构、审计标签、字段折叠、1280×720 与 480×600。"
+      method: "browser"
+      command: "CUA: 点击 FR 表格单元格 → 数据审计；临时设置 viewport 480×600；之后 reset"
+      outcome: "passed"
+      evidence:
+        - "output/form-projection-runtime-20261010/quality-trace-drawer.png"
+        - "output/form-projection-runtime-20261010/quality-narrow-drawer.png"
+        - "默认宽度 560，高度 720，右侧位置 x=720，标题16px/600；窄屏宽480、高600且无横向溢出。"
+        - "viewport 已 reset，专用后台验证标签已关闭，没有修改父任务标签。"
+    -
+      id: "check.runtime.designer-configuration"
+      required: true
+      category: "e2e"
+      description: "浏览器验证主表一笔业务、子表整表统计、单列显示角色并切换整表、可选单位/批号/展示列及统一顶部保存说明。"
+      method: "browser"
+      command: "CUA: 虚构过程追溯与子表统计 → 消耗物料列 → 查找与统计 → 切换到上料明细 → 编辑；虚构子表与主表用途演示 → 领料物料 → 编辑这项业务"
+      outcome: "passed"
+      evidence:
+        - "output/form-projection-runtime-20261010/quality-designer-whole-table.png"
+        - "output/form-projection-runtime-20261010/quality-designer-main-fields.png"
+        - "子表单列说明统计来自整表及本列物料角色；切换后整表配置物料/数量必需、单位/物料批号可选、现有同区域字段可用于展示；无独立启用或保存。"
+        - "主表说明选择描述同一笔业务的字段，物料、数量、单位、批号在同一配置内对应。"
+        - "本实例只打开/观察已有虚构配置，没有保存修改；顶部保存行为由后端/前端既有自动化证据与源码审查覆盖，未独立重做新增模板保存。"
+    -
+      id: "check.runtime.parent-evidence-disclosure"
+      required: true
+      category: "documentation"
+      description: "区分本实例实际执行与主开发提供的证据，避免将修复或已有验证冒充独立复验。"
+      method: "inspection"
+      command: "读取 runtime correction、主开发交接及真实 API 演示脚本，核对独立测试和浏览器证据"
+      outcome: "passed"
+      evidence:
+        - "本实例独立执行 13 套 Maven、数据库只读迁移核对、查询/详情/来源/DHR/设计器浏览器检查。"
+        - "主开发的 14 项前端/verify/build、真实 API 从创建到完成闭环，以及本体智能体 59 项知识测试属于读取证据，没有在本报告中标记为独立重跑。"
+        - "本报告保留原始三项失败；主开发已通知修复但本实例未完成修复后验证，必须取得全新 qualityResult。"
+  findings:
+    -
+      id: "QF-runtime-001"
+      severity: "medium"
+      scope: "trace-query-candidates"
+      summary: "追溯候选混入统计专用分类、原因和单位，选择后查询失败并错误提示权限问题。"
+      reproductionSteps:
+        - "打开 localhost:3007 的追溯与统计，切换追溯标签。"
+        - "展开查询区域，添加条件，选择单位并输入件，点击查询。"
+      expectedResult: "追溯候选来自实际追溯目录，统计专用条件仅在适用统计模型显示；合法候选可成功请求。"
+      actualResult: "原实现允许选择单位/分类/原因，服务端目录不接受，重试后显示报表或处理状态读取失败，请检查权限后重试。"
+      evidence:
+        - "output/form-projection-runtime-20261010/quality-invalid-trace-candidate.png"
+        - "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx：原 attributes 将 legacyAttributes 和目录合并。"
+        - "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java：contains 仅接受目录 ID。"
+      resolutionStatus: "open"
+      resolutionEvidence: []
+    -
+      id: "QF-runtime-002"
+      severity: "medium"
+      scope: "runtime-demo-source-preview"
+      summary: "真实 API 演示模板 canvas 缺少子表 region，冻结来源预览遗漏第二行，演示证据不完整。"
+      reproductionSteps:
+        - "在追溯页面选择 PROJECTION-RUNTIME-20261010-BATCH 查询。"
+        - "打开 FR-20261010-000006 并点击预览来源表单。"
+        - "对 record id=6 只读查询 values_json 和 snapshot_json。"
+      expectedResult: "冻结来源预览展示保存的两行，可核对每条命中及统计明细；演示 canvas 使用真实设计器支持的结构。"
+      actualResult: "values_json 两行有效 UUID，第一行数量3/空单位、第二行数量2/PCS；冻结 canvas items-node 仅有 fieldId 缺 subTableRegion，预览只显示第一行。"
+      evidence:
+        - "gmp-platform/backend/scripts/form-projection-runtime-demo.py：原 items-node bindings 缺 subTableRegion。"
+        - "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx：tableNodes/recordCounts 依赖 subTableRegion。"
+        - "独立浏览器观察及数据库原始记录：id=6，row UUID 2b720743-17d4-432a-8e9e-8a20b3649b2f 与 ab6a950e-e9b7-4528-bfad-f268b3e32bee。"
+      resolutionStatus: "open"
+      resolutionEvidence: []
+    -
+      id: "QF-runtime-003"
+      severity: "medium"
+      scope: "statistics-source-location"
+      summary: "正式统计响应未传子表身份与冻结行定位，明细及审计将真实子表来源错误标为主表字段。"
+      reproductionSteps:
+        - "实际物料消耗标签选 PROJECTION-RUNTIME-20261010-BATCH 查询。"
+        - "观察两条明细的命中位置，并点击 FR 行打开数据审计，展开字段来源。"
+        - "核对 form_projection_record table_id=items 及原统计 result mapper。"
+      expectedResult: "返回 tableId=items，从完成冻结数据按隐藏 UUID 定位 rowIndex；页面按真实子表行展示，来源字段名来自冻结子表定义。"
+      actualResult: "原 mapper 未返回 tableId；两条统计命中位置均为主表字段，所有字段来源也显示主表字段，无法正确定位真实子表列。"
+      evidence:
+        - "output/form-projection-runtime-20261010/quality-stat-row-location.png"
+        - "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java：原统计 mapper 缺 tableId/rowIndex。"
+        - "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx：locationName 与详情来源字段依赖 hit.tableId。"
+      resolutionStatus: "open"
+      resolutionEvidence: []
+  residualRisks:
+    -
+      id: "risk.runtime.final-recheck"
+      description: "主开发审查期间开始修复三项发现，本实例的失败证据是修复前状态；本报告不代表最新工作树已通过。"
+      impact: "L2 质量门禁尚未通过。"
+      mitigation: "主开发完成修复与 API/构建基础验证后，派发全新未参与修复质量实例验证三项及相邻路径。"
+    -
+      id: "risk.runtime.disclosed-non-goals"
+      description: "Q6 错误内部编号策略、Q17 生产上下文自动带入及无上下文登记、A12、最终工序/批次/工单产出联动、日期/多选查询及二期自定义报表未实施。"
+      impact: "当前切片不能宣称完整生产统计 MVP 或完整追溯产品已完成。"
+      mitigation: "按 runtime correction 和决策包继续明确阶段边界，后续按已确认业务再实现。"
+    -
+      id: "risk.runtime.environment-and-usability"
+      description: "独立核验仅在隔离本地数据库和虚构模板/执行完成，未运行生产数据迁移、负载测试或真实工厂用户可用性试验。"
+      impact: "不能据此保证生产迁移性能或零学习成本。"
+      mitigation: "维护隔离运行步骤；后续上线前使用代表性规模及真实制表/填报用户验收。"
+  blockingConditions: []

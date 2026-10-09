@@ -13,7 +13,7 @@ import ProjectionSourceEditor from './ProjectionSourceEditor';
 import FieldProjectionConfig from './FieldProjectionConfig';
 import SubTableProjectionConfig from './SubTableProjectionConfig';
 
-export default function ProjectionDialog({ open, onClose, onSave, focusField }: {
+export default function ProjectionDialog({ open, onClose, focusField }: {
   open: boolean; onClose: () => void; onSave: () => Promise<void>;
   focusField?: { id: string; name: string; tableId?: string } | null;
 }) {
@@ -95,7 +95,7 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
                 const issues = projectionConfigurationIssues(document.model, binding, definition);
                 return <Box key={binding.id} sx={{ borderTop: '1px solid', borderColor: 'divider', mt: 1.5, pt: 1.5 }}>
                   <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-                    <Box sx={{ minWidth: 0 }}><Typography variant="body2" fontWeight={600}>{definition?.name ?? '用途已失效'} · {binding.enabled ? '已启用' : '配置草稿'}</Typography>
+                    <Box sx={{ minWidth: 0 }}><Typography variant="body2" fontWeight={600}>{definition?.name ?? '用途已失效'} · {issues.length ? '待补齐' : '已配齐'}</Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{projectionSourceSummary(document.model, binding)}</Typography>
                       {!!issues.length && <Typography variant="caption" color="warning.main" display="block">{issues.join('；')}</Typography>}
                     </Box>
@@ -117,8 +117,8 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
             </FormDialogSection>;
           })}
         </> : <>
-          <Alert severity="info">模拟填写只用于核对已启用的用途，不保存到模板或正式记录。子表可填写多行，核对每行是否形成正确明细。配置草稿不参与预览。</Alert>
-          {!enabled.length && <Typography color="text.secondary">尚无已启用用途，请先在“用途配置”中补齐并启用。</Typography>}
+          <Alert severity="info">模拟填写只用于核对已配齐的用途，不保存到模板或正式记录。子表可填写多行，核对生成的明细。模板配置统一使用页面顶部“保存”。</Alert>
+          {!enabled.length && <Typography color="text.secondary">尚无已配齐用途，请先选择来源字段。</Typography>}
           {regions.map(region => {
             const ids = previewIds.get(region.id);
             if (!ids?.size) return null;
@@ -140,7 +140,7 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
               const binding = bindings.find(item => item.id === record.bindingId);
               const definition = catalog?.models.find(model => model.id === binding?.modelId);
               return <Box key={`${record.bindingId}/${record.rowKey}`} sx={{ mt: 1.5, p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                <Typography variant="body2" fontWeight={600}>{definition?.name} · {regions.find(region => region.id === (binding?.tableId ?? ''))?.name}{binding?.tableId ? ` · 行定位值 ${record.rowKey}` : ''}</Typography>
+                <Typography variant="body2" fontWeight={600}>{definition?.name} · {regions.find(region => region.id === (binding?.tableId ?? ''))?.name}</Typography>
                 {Object.entries(record.attributes).map(([id, value]) => {
                   const name = definition?.attributes.find(attribute => attribute.id === id)?.name;
                   return <Typography key={id} variant="body2">{binding?.modelId === 'formTrace' ? name ?? '追溯项已失效' : name?.replace(/（.*?）/g, '') ?? '业务信息已失效'}：{typeof value === 'object' && value ? String((value as { name: string }).name) : String(value)}</Typography>;
@@ -153,7 +153,6 @@ export default function ProjectionDialog({ open, onClose, onSave, focusField }: 
     </DialogContent>
     <DialogActions><Button disabled={busy} onClick={onClose}>关闭</Button>
       {tab === 1 && <Button disabled={busy || !catalog || !enabled.length} onClick={() => void run(showPreview)}>校验并预览</Button>}
-      <Button variant="contained" disabled={busy || !catalog} onClick={() => void run(onSave)}>{busy ? '处理中…' : '保存配置'}</Button>
     </DialogActions>
   </FormDialog>;
 }
