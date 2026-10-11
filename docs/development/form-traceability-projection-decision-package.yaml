@@ -593,6 +593,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: configuration-feedback-20261011
+        change: 同切片追加L1设计器反馈增量；移除图标常显，主表作用范围明确，顶部保存定位缺项并按角色标红。沿用现有完整性和重复数量约束，不改统计口径、公共Snackbar、数据库或运行校验。
+        evidenceReferences: [docs/development/form-projection-configuration-feedback-2026-10-11.md]
       - area: clarified-runtime-correction-20261010
         change: 从文档澄清进入表单侧栏、可空来源及过程追溯的运行修正。新增过程检索不提前形成统计事实，配置与源值继续各自快照及审计；新增迁移仅独立数据库应用。实际实现与验证逐项登记，不复用设计passed作为运行验收。
         evidenceReferences: [docs/development/form-projection-runtime-correction-2026-10-10.md, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java]
@@ -690,6 +693,9 @@ decisionPackage:
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: configuration-feedback-20261011
+        scenarios: [多项追溯与多统计用途的原始源码核对, 未展开即可移除与撤销, 缺项与重复数量定位, 对应来源标红和修复后消失, 顶部保存与重开, 公共tip不变, 构建与浏览器核验]
+        evidenceReferences: [docs/development/form-projection-configuration-feedback-2026-10-11.md]
       - scope: runtime-correction-20261010
         scenarios: [暂存后立即追溯而不产生正式统计, 主表同实例且子表同实际行, 主表和子表条件组合, 文本与兼容引用编号, 重排保持UUID及只读签署保护, 默认值实际持久化, 空批号与空单位隔离, 明细展示不改变合计, 审批阶段可见且不改生命周期, 统一保存重开, 动态查询条件与真实DHR, 0109至0111迁移]
         evidenceReferences: [docs/development/form-projection-runtime-correction-2026-10-10.md]
@@ -751,6 +757,12 @@ decisionPackage:
         responsibility: 授权查询及沿实际证据关系导航，MVP预设统计展示与二期报表扩展边界；不改写来源记录或决定生产归属。
   # affectedFiles保留历史实现及后续计划；2026-10-07增量为查找目录、动态候选、显式绑定快照和既有完成查询，不改统计口径。
   affectedFiles:
+    - path: docs/development/form-projection-configuration-feedback-2026-10-11.md
+      changeType: create
+      reason: 本轮用户解释、最小影响及反馈验收证据。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionRemoveButton.tsx
+      changeType: create
+      reason: 当前设计器用途共用移除图标、提示和可访问名称，保留撤销与统一保存。
     - path: docs/development/form-projection-runtime-correction-2026-10-10.md
       changeType: create
       reason: 本轮运行范围、交互使用方式、独立数据库与实际验证证据。
@@ -1065,3 +1077,8 @@ decisionPackage:
       when: 阅读协作与演示计划
       then: 本目录功能分支可推送，分支不隔离数据库；朋友按运行说明在空的独立数据库迁移和运行虚构演示。
       evidenceRequirements: [Git状态只读核对, 文档审查]
+    - id: scenario.projection-configuration-feedback
+      given: 主表或子表用途不完整、来源失效或同用途数量重复，部分卡片尚未展开
+      when: 制表人移除用途、撤销，或点击顶部保存
+      then: 移除图标在未展开卡片中可用且撤销恢复映射；保存未通过时保留修改，定位区域与用途并显示具体待配置角色，修复后错误消失，公共tip和业务校验不变。
+      evidenceRequirements: [聚焦组件与配置测试, 浏览器交互, 独立质量结果]

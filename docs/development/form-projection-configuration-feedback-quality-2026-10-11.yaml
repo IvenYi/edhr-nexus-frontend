@@ -1,0 +1,134 @@
+qualityResult:
+  result: passed
+  baseCommit: "e0b542d897c52491d51355a130a90e0724964202"
+  headCommit: "e0b542d897c52491d51355a130a90e0724964202"
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-configuration-feedback-2026-10-11.md
+      - docs/development/form-projection-configuration-feedback-quality-2026-10-11.yaml
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionRemoveButton.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-configuration-feedback-2026-10-11.md
+      - docs/development/form-projection-configuration-feedback-quality-2026-10-11.yaml
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionRemoveButton.tsx
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.feedback-scope-and-original-contracts
+      required: true
+      category: requirements
+      description: 核对本轮L1反馈增量、既有多用途边界及同一决策包影响分析。
+      method: inspection
+      command: git diff及原始前后端源码与DEC-0075核对
+      outcome: passed
+      evidence:
+        - 原广义包保持L2，本轮交互增量明确按L1验证；没有后端、迁移、统计规则、权限或公共Snackbar变更。
+        - 字段多个兼容追溯项使用独立绑定；子表不同预设业务可并列，同表同用途重新打开已有配置。
+        - 前端重复角色与同模型同区域重复数量校验对应FormProjectionInterpreter.validate；prepareDesign保存时将绑定置为enabled，因此未配齐绑定不能借disabled绕过顶部保存。
+        - 主表业务范围在标题和帮助中明示，不将当前所选字段等同已映射来源。
+    - id: check.feedback-knowledge-baseline
+      required: true
+      category: ontology
+      description: 核对业务知识基线、未决问题和本轮解释是否新增业务规则。
+      method: inspection
+      command: 读取business-knowledge-model、knowledge README/open-questions及DEC-0075-form-traceability-projection-ownership.yaml
+      outcome: passed
+      evidence:
+        - 实际读取基线0.3.24；沿用DEC-0075-06/13/17/18/22/26，未替未决统计口径或上下文带入规则作答。
+        - 正式统计最终完成、使用时快照及真实生产/DHR归属不受本轮变更影响。
+    - id: check.feedback-focused-tests
+      required: true
+      category: unit
+      description: 独立运行侧栏、来源配置和预览的聚焦回归。
+      method: automated-test
+      command: node --test scripts/test-projection-panel.mjs scripts/test-projection-source-editor.mjs scripts/test-projection-preview.mjs
+      outcome: passed
+      evidence:
+        - 最终工作树17项通过、0失败、0跳过。
+        - 覆盖必需角色、失效来源、重复数量、不同用途来源边界、统一移除图标、错误输入及编辑/撤销状态。
+    - id: check.feedback-designer-verifier
+      required: true
+      category: regression
+      description: 独立运行设计器静态约束检查。
+      method: command
+      command: npm run verify:template-designer-react
+      outcome: passed
+      evidence:
+        - verify-template-designer-react passed，退出码0。
+    - id: check.feedback-build
+      required: true
+      category: regression
+      description: 独立运行TypeScript和Vite构建。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - tsc -b与Vite成功，退出码0。
+        - output/form-projection-feedback-20261011/quality-build.log
+    - id: check.feedback-browser-interactions
+      required: true
+      category: e2e
+      description: 在隔离数据库虚构模板上独立核对删除、撤销、错误定位和保存回显。
+      method: browser
+      command: CUA独立后台浏览器访问localhost:3007，后端8087，edhr_form_projection
+      outcome: passed
+      evidence:
+        - 虚构模板REFERENCE-FOLLOWUP-QUALITY-20261007、V1，无生产绑定；未新建或修改生产记录、自动化测试数据及测试配置。
+        - 删除生产批次/SN追溯映射后普通字段仍在，撤销恢复映射。
+        - 两笔主表消耗同样缺项时，错误、标题及移除aria使用第1/2笔区分；点击第2笔展开对应编辑器并聚焦物料，必需输入aria-invalid=true且helper具体。
+        - 未展开统计卡片可直接移除；子表消耗移除后撤销恢复物料、批号、单位和数量配置。
+        - 清空子表数量显示上料明细/实际物料消耗/请选择数量来源列；恢复实际用量后反馈实时变为已补齐。
+        - 恢复试验配置后以原业务用途保存，观察设计已保存；reload后更新时间2026-10-11 14:59，两项主表追溯及一项子表消耗仍与原配置一致。仅虚构模板版本修改时间更新。
+        - output/form-projection-feedback-20261011/quality-multiple-errors.png
+        - output/form-projection-feedback-20261011/quality-fixed-quantity.png
+        - output/form-projection-feedback-20261011/quality-saved.png
+    - id: check.feedback-visual-and-shared-components
+      required: true
+      category: visual
+      description: 核对统一移除样式、局部错误反馈及共享组件边界。
+      method: inspection
+      command: 对照docs/frontend规范、源码差异及独立浏览器截图
+      outcome: passed
+      evidence:
+        - 移除统一DeleteOutlined、small error IconButton、Tooltip及aria-label；可撤销模板映射操作不删除普通字段或填写数据。
+        - 关键标题及状态保留，长说明改为InfoOutlined Tooltip；没有引入新视觉体系。
+        - 错误在本设计器用途总览展开并标红；公共SnackbarProvider没有改动，服务端保存错误沿既有mutation onError报告。
+    - id: check.feedback-diff-and-package-syntax
+      required: true
+      category: documentation
+      description: 核对补录说明、决策包语法和补丁卫生。
+      method: command
+      command: git diff --check及ruby YAML.parse_file
+      outcome: passed
+      evidence:
+        - git diff --check退出码0，决策包与本质量报告YAML解析通过。
+        - 排除output与frontend/output；本轮质量实例没有修改实现、测试或业务知识资产。
+  findings: []
+  residualRisks:
+    - id: risk.feedback-usability-field-trial
+      description: 浏览器工程验证不等于真实制表人员的低学习成本试用结论。
+      impact: 客户首次配置体验仍应通过代表性任务试用评估。
+      mitigation: 交付说明区分工程通过与客户试用，保留原侧栏体验未决项。
+    - id: risk.feedback-business-duplicates
+      description: 同来源数量去重不能识别两个不同字段是否重复记载同一笔业务。
+      impact: 类型和来源检查不能自动保证业务含义正确。
+      mitigation: 提示按真实业务对应数量列；不宣称跨字段语义自动去重或统计口径自动识别。
+    - id: risk.feedback-network-failure-not-injected
+      description: 未在浏览器故障注入目录或保存接口中断，相关异常路径本轮通过源码审查核对。
+      impact: 不将本轮结果外推为所有网络异常端到端验证。
+      mitigation: 目录失败保留明确重试提示，接口错误仍由现有mutation反馈；后续出现具体网络缺陷时聚焦回归。
+  blockingConditions: []

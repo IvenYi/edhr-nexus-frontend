@@ -13,19 +13,29 @@ await build({ stdin: { contents: `
   import React from 'react';
   import { renderToStaticMarkup } from 'react-dom/server';
   import ProjectionSourceEditor from './src/pages/master-data/template-designer-react/components/ProjectionSourceEditor';
-  export { acceptsProjectionAttribute } from './src/pages/master-data/template-designer-react/utils/projectionConfiguration';
+  import StatisticsProjectionConfig from './src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig';
+  import FieldProjectionConfig from './src/pages/master-data/template-designer-react/components/FieldProjectionConfig';
+  import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+  export { acceptsProjectionAttribute, projectionConfigurationProblems } from './src/pages/master-data/template-designer-react/utils/projectionConfiguration';
   import { useTemplateDesignerStore as store } from './src/pages/master-data/template-designer-react/store/useTemplateDesignerStore';
-  export function renderEditor(model, binding, definition) {
+  export function renderEditor(model, binding, definition, showErrors = false) {
     store.getState().setDocument({ meta: {}, model, canvas: { pages: [] }, workflow: { nodes: [], edges: [], config: {} } });
     // SSR must read the loaded document rather than the store's empty creation snapshot.
     store.getInitialState().document = store.getState().document;
     const changes = [];
-    const html = renderToStaticMarkup(React.createElement(ProjectionSourceEditor, { binding, definition, onChange: patch => changes.push(patch), onRemove: () => changes.push('remove') }));
+    const html = renderToStaticMarkup(React.createElement(ProjectionSourceEditor, { binding, definition, showErrors, onChange: patch => changes.push(patch) }));
     return { html, changes };
   }
-`, resolveDir: fileURLToPath(new URL('..', import.meta.url)), loader: 'tsx' }, outfile, bundle: true, format: 'cjs', platform: 'node', logLevel: 'silent',
-  alias: { '@': fileURLToPath(new URL('../src', import.meta.url)) } });
-const { renderEditor, acceptsProjectionAttribute } = createRequire(import.meta.url)(outfile);
+  export function renderPanel(model, catalog, field, tableId) {
+    store.getState().setDocument({ meta: {}, model, canvas: { pages: [] }, workflow: { nodes: [], edges: [], config: {} } });
+    store.getInitialState().document = store.getState().document;
+    const query = new QueryClient(); query.setQueryData(['form-projection-catalog'], catalog);
+    const panel = field ? React.createElement(FieldProjectionConfig, {field, tableId}) : React.createElement(StatisticsProjectionConfig, {tableId});
+    return renderToStaticMarkup(React.createElement(QueryClientProvider, {client: query}, panel));
+  }
+`, resolveDir: fileURLToPath(new URL('..', import.meta.url)), loader: 'tsx' }, outfile, bundle: true, format: 'cjs', platform: 'node', mainFields: ['module', 'main'], logLevel: 'silent',
+  alias: { '@': fileURLToPath(new URL('../src', import.meta.url)), '@mui/icons-material': fileURLToPath(new URL('../node_modules/@mui/icons-material/esm', import.meta.url)) } });
+const { renderEditor, renderPanel, acceptsProjectionAttribute, projectionConfigurationProblems } = createRequire(import.meta.url)(outfile);
 await rm(tempDir, { recursive: true, force: true });
 
 const lot = { id: 'lot', name: '供应商批号输入', type: 'text', typeConfig: {} };
@@ -57,8 +67,63 @@ test('a removed field keeps its assigned meaning and explicit invalid-source war
   const { html, changes } = renderEditor(model, { id: 'trace', modelId: 'formTrace', enabled: false, sources: { supplierLot: 'deletedField' } }, definition);
   assert.ok(html.includes('供应商批号（外部）'));
   assert.ok(html.includes('来源已失效，请重新选择'));
-  assert.ok(html.includes('存在失效或类型不匹配的来源'));
+  assert.ok(html.includes('的来源已失效，请重新选择'));
   assert.deepEqual(changes, []);
+});
+
+const consumption = { id: 'consumption', name: '实际物料消耗', attributes: [
+  { id: 'material', name: '物料', type: 'reference' }, { id: 'quantity', name: '数量', type: 'number' },
+  { id: 'unit', name: '单位', type: 'text' }, { id: 'materialLotText', name: '物料批号', type: 'text' },
+] };
+const material = { id: 'material', name: '投料物料', type: 'reference', typeConfig: {sourceType: 'material'} };
+const quantity = { id: 'qty', name: '实际投料量', type: 'number', typeConfig: {} };
+const usage = { id: 'use', modelId: 'consumption', enabled: false, sources: {} };
+
+test('save feedback identifies and marks each required source, including an unfinished usage', () => {
+  const model = {fields: [material, quantity]};
+  assert.deepEqual(projectionConfigurationProblems(model, usage, consumption).map(p => p.attributeId), ['material', 'quantity']);
+  const {html} = renderEditor(model, usage, consumption, true);
+  assert.ok(html.includes('请选择“物料”的来源字段'));
+  assert.ok(html.includes('请选择“数量”的来源字段'));
+  assert.equal((html.match(/aria-invalid="true"/g) ?? []).length, 2);
+  assert.deepEqual(projectionConfigurationProblems(model, {...usage, sources: {material: 'material', quantity: 'qty'}}, consumption), []);
+});
+
+test('repeat quantities identify the source while different models and shared dimensions stay allowed', () => {
+  const first = {...usage, sources: {material: 'material', quantity: 'qty'}};
+  const second = {...first, id: 'second'};
+  const model = {fields: [material, quantity], projection: {bindings: [first, second]}};
+  assert.ok(projectionConfigurationProblems(model, first, consumption).some(p => p.attributeId === 'quantity' && p.message.includes('实际投料量')));
+  second.modelId = 'scrap';
+  assert.deepEqual(projectionConfigurationProblems(model, first, consumption), []);
+  second.modelId = 'consumption'; second.sources = {material: 'material', quantity: 'otherQty'};
+  model.fields.push({...quantity, id: 'otherQty'});
+  assert.deepEqual(projectionConfigurationProblems(model, first, consumption), [], 'material dimension may be shared by two independent quantities');
+});
+
+test('same field cannot fill two roles inside one business and invalid optional sources remain locatable', () => {
+  const binding = {...usage, sources: {material: 'material', quantity: 'qty', unit: 'lot', materialLotText: 'lot'}};
+  const problems = projectionConfigurationProblems({fields: [material, quantity, lot]}, binding, consumption);
+  assert.equal(problems.filter(p => p.message.includes('同一个来源')).length, 2);
+  binding.sources.unit = 'removed';
+  assert.ok(projectionConfigurationProblems({fields: [material, quantity, lot]}, binding, consumption).some(p => p.attributeId === 'unit' && p.message.includes('单位')));
+});
+
+test('collapsed business cards and each trace assignment expose consistent removal icons', () => {
+  const model = {fields: [lot], projection: {bindings: [usage]}};
+  const html = renderPanel(model, {models: [consumption]}, null);
+  assert.ok(html.includes('主表的业务统计'));
+  assert.ok(html.includes('aria-label="移除实际物料消耗配置"'));
+  assert.ok(html.includes('DeleteOutlinedIcon'));
+  assert.ok(!html.includes('移除这项用途'));
+  const traceModel = {...definition, attributes: definition.attributes.slice(0, 2)};
+  model.projection.bindings = [
+    {id: 'one', modelId: 'formTrace', enabled: true, sources: {supplierLot: 'lot'}},
+    {id: 'two', modelId: 'formTrace', enabled: true, sources: {equipment: 'lot'}},
+  ];
+  const traceHtml = renderPanel(model, {models: [traceModel]}, lot);
+  assert.ok(traceHtml.includes('aria-label="移除供应商批号（外部）关联"'));
+  assert.ok(traceHtml.includes('aria-label="移除设备编号关联"'));
 });
 
 test('trace editor offers no additional meaning when every compatible source is already used', () => {

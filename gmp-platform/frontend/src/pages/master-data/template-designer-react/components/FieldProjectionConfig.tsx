@@ -1,8 +1,10 @@
-import { Alert, Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
 import { acceptsProjectionAttribute, useProjectionCatalog } from '../utils/projectionConfiguration';
 import StatisticsProjectionConfig from './StatisticsProjectionConfig';
+import ProjectionRemoveButton from './ProjectionRemoveButton';
 
 export default function FieldProjectionConfig({ field, tableId, showIdentity = true, onEditTable }: {
   field: ModelField; tableId?: string; showIdentity?: boolean; onEditTable?: () => void;
@@ -25,15 +27,19 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
     {isPending && <Typography variant="body2" color="text.secondary">正在加载可用用途…</Typography>}
     {isError && <Alert severity="error" action={<Button size="small" onClick={() => void refetch()}>重试</Button>}>用途目录加载失败</Alert>}
     <Box>
-      <Typography variant="body2" fontWeight={600}>追溯</Typography>
-      <Typography variant="caption" color="text.secondary">这个字段记录什么信息？关联后，查询人员可在追溯页面按已保存的内容查到原表单{tableId ? '及具体行' : ''}。填报方式不变。</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography variant="body2" fontWeight={600}>追溯</Typography>
+        <Tooltip title={`关联这个字段记录的信息，可在追溯页面找到原表单${tableId ? '及具体行' : ''}。可关联多个兼容追溯项，填报方式不变。`}>
+          <IconButton size="small" aria-label="字段追溯配置说明"><InfoOutlined fontSize="small" /></IconButton>
+        </Tooltip>
+      </Stack>
       {traces.flatMap(binding => Object.entries(binding.sources).filter(([, id]) => id === field.id).map(([itemId]) =>
         <Stack key={`${binding.id}/${itemId}`} direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1 }}>
           <Typography variant="body2">{traceModel?.attributes.find(attribute => attribute.id === itemId)?.name ?? '追溯项已失效'}</Typography>
-          <Button size="small" onClick={() => {
+          <ProjectionRemoveButton label={`移除${traceModel?.attributes.find(attribute => attribute.id === itemId)?.name ?? '失效追溯项'}关联`} onClick={() => {
             const sources = { ...binding.sources }; delete sources[itemId];
             update(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id));
-          }}>移除</Button>
+          }} />
         </Stack>))}
       {!!candidates.length && <TextField select size="small" fullWidth label="关联追溯项（可选）" value="" sx={{ mt: 1.5 }} onChange={event => {
         if (!event.target.value) return;

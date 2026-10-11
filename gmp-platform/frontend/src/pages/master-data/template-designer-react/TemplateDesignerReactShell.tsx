@@ -13,6 +13,8 @@ import WorkflowTab from './tabs/workflow/WorkflowTab';
 import ProjectionDialog from './components/ProjectionDialog';
 import { parseReactTemplateDesignerDocument, serializeTemplateDesignerDocument } from './utils/document';
 import { importTemplateToCanvasPage } from './utils/templateImport';
+import { projectionConfigurationIssues, useProjectionCatalog } from './utils/projectionConfiguration';
+import { useSnackbar } from '@/components/SnackbarProvider';
 
 type TemplateDesignerReactShellProps = Pick<TemplateDesignerDialogProps, 'row' | 'version' | 'onClose' | 'onSave' | 'onAutoSave' | 'saving'>;
 
@@ -64,6 +66,11 @@ export default function TemplateDesignerReactShell({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mockFillOpen, setMockFillOpen] = useState(false);
   const [projectionOpen, setProjectionOpen] = useState(false);
+  const [projectionValidationRequested, setProjectionValidationRequested] = useState(false);
+  const [projectionFocusBindingId, setProjectionFocusBindingId] = useState<string | null>(null);
+  const [checkingProjection, setCheckingProjection] = useState(false);
+  const { refetch: refetchProjectionCatalog } = useProjectionCatalog();
+  const { showMessage } = useSnackbar();
   const [projectionField, setProjectionField] = useState<{ id: string; name: string; tableId?: string } | null>(null);
   const [closeConfirmOpen, setCloseConfirmOpen] = useState(false);
   const [subTableDesignFieldId, setSubTableDesignFieldId] = useState<string | null>(null);
@@ -98,7 +105,28 @@ export default function TemplateDesignerReactShell({
     markSaved();
   };
 
-  const handleSave = async () => persistCurrentDocument(onSave);
+  const handleSave = async () => {
+    if (checkingProjection || saving) return;
+    setCheckingProjection(true);
+    try {
+      let current = useTemplateDesignerStore.getState().document;
+      if (current?.model.projection?.bindings.length) {
+        const result = await refetchProjectionCatalog();
+        if (result.isError || !result.data) { showMessage('用途目录加载失败，请重试保存', 'error'); return; }
+        current = useTemplateDesignerStore.getState().document;
+        if (!current) return;
+        const model = current.model;
+        const invalid = model.projection?.bindings.find(binding => projectionConfigurationIssues(model, binding, result.data.models.find(item => item.id === binding.modelId)).length);
+        if (invalid) {
+          setProjectionField(null); setProjectionFocusBindingId(invalid.id); setProjectionValidationRequested(true); setProjectionOpen(true);
+          return;
+        }
+      }
+      await persistCurrentDocument(onSave);
+    } catch {
+      // The existing save mutation reports API errors and retains the document.
+    } finally { setCheckingProjection(false); }
+  };
 
   const handleFieldConfirmPersist = async () => {
     if (!onAutoSave) return;
@@ -241,7 +269,7 @@ export default function TemplateDesignerReactShell({
             <Button
               variant="contained"
               startIcon={<SaveOutlined />}
-              disabled={saving}
+              disabled={saving || checkingProjection}
               onClick={() => void handleSave()}
               sx={headerPrimaryActionButtonSx}
             >
@@ -272,7 +300,8 @@ export default function TemplateDesignerReactShell({
           </Box>
         ) : null}
       </Box>
-      <ProjectionDialog open={projectionOpen} onClose={() => setProjectionOpen(false)} focusField={projectionField} onSave={handleSave} />
+      <ProjectionDialog open={projectionOpen} onClose={() => { setProjectionOpen(false); setProjectionValidationRequested(false); setProjectionFocusBindingId(null); }}
+        focusField={projectionField} focusBindingId={projectionFocusBindingId} validationRequested={projectionValidationRequested} />
       <AppDialog
         open={closeConfirmOpen}
         onClose={() => setCloseConfirmOpen(false)}

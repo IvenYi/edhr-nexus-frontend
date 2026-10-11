@@ -4,6 +4,7 @@ import type { ModelField } from '../types/model';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import { acceptsProjectionAttribute, useProjectionCatalog } from '../utils/projectionConfiguration';
 import StatisticsProjectionConfig from './StatisticsProjectionConfig';
+import ProjectionRemoveButton from './ProjectionRemoveButton';
 
 export default function SubTableProjectionConfig({ field, showIdentity = true }: { field: ModelField; showIdentity?: boolean }) {
   const document = useTemplateDesignerStore(state => state.document);
@@ -29,8 +30,8 @@ export default function SubTableProjectionConfig({ field, showIdentity = true }:
             <Typography variant="body2" fontWeight={500}>{column.name}</Typography>
             {assignments.map(({ binding, id }) => <Stack key={`${binding.id}/${id}`} direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="caption">{traceModel?.attributes.find(attribute => attribute.id === id)?.name ?? '追溯项已失效'}</Typography>
-              <Button size="small" onClick={() => { const sources = { ...binding.sources }; delete sources[id];
-                setBindings(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id), catalog?.version); }}>移除</Button>
+              <ProjectionRemoveButton label={`移除${traceModel?.attributes.find(attribute => attribute.id === id)?.name ?? '失效追溯项'}关联`} onClick={() => { const sources = { ...binding.sources }; delete sources[id];
+                setBindings(Object.keys(sources).length ? bindings.map(item => item.id === binding.id ? { ...item, sources } : item) : bindings.filter(item => item.id !== binding.id), catalog?.version); }} />
             </Stack>)}
             <TextField select fullWidth size="small" label="关联追溯项（可选）" value="" sx={{ mt: 1 }} onChange={event => {
               if (!event.target.value) return;

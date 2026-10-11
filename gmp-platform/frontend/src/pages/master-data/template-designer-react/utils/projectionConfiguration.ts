@@ -36,25 +36,39 @@ export function projectionRequiredAttributes(modelId: string) {
   return modelId === 'production' || modelId === 'formTrace' ? [] : ['material', 'quantity'];
 }
 
-export function projectionConfigurationIssues(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {
-  if (!definition) return ['用途目录不可用'];
+export interface ProjectionConfigurationProblem { attributeId?: string; message: string }
+
+export function projectionConfigurationProblems(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel): ProjectionConfigurationProblem[] {
+  if (!definition) return [{ message: '用途已失效，请移除或重新配置' }];
   const fields = projectionSources(model, binding);
-  const issues: string[] = [];
+  const issues: ProjectionConfigurationProblem[] = [];
+  const name = (id: string) => definition.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? id;
   if (binding.tableId) {
     const table = model.fields.find(field => field.id === binding.tableId && field.type === 'subTable');
-    if (!table || table.status === 'disabled') issues.push('子表来源已失效');
+    if (!table || table.status === 'disabled') issues.push({ message: '子表来源已失效' });
   }
   for (const id of projectionRequiredAttributes(binding.modelId)) {
-    if (!binding.sources[id]) issues.push(`待配置${definition.attributes.find(attribute => attribute.id === id)?.name ?? id}`);
+    if (!binding.sources[id]) issues.push({ attributeId: id, message: `请选择“${name(id)}”的来源${binding.tableId ? '列' : '字段'}` });
   }
-  if (binding.modelId === 'production' && !binding.sources.goodQuantity && !binding.sources.ngQuantity) issues.push('待配置报工数量');
-  if (!Object.keys(binding.sources).length) issues.push('待选择来源字段');
+  if (binding.modelId === 'production' && !binding.sources.goodQuantity && !binding.sources.ngQuantity)
+    issues.push(...['goodQuantity', 'ngQuantity'].map(attributeId => ({ attributeId, message: '良品数量、不良数量至少配置一项来源' })));
+  if (!Object.keys(binding.sources).length && binding.modelId === 'formTrace') issues.push({ message: '请选择至少一个追溯项及来源字段' });
   for (const [attributeId, fieldId] of Object.entries(binding.sources)) {
     const attribute = definition.attributes.find(item => item.id === attributeId);
     const field = fields.find(item => item.id === fieldId);
-    if (!attribute || !field || !acceptsProjectionAttribute(field, attribute)) issues.push('存在失效或类型不匹配的来源');
+    if (!attribute || !field || !acceptsProjectionAttribute(field, attribute))
+      issues.push({ attributeId, message: `“${name(attributeId)}”的来源${field ? `“${field.name}”类型不匹配` : '已失效'}，请重新选择` });
+    const otherRole = Object.entries(binding.sources).find(([id, source]) => id !== attributeId && source === fieldId);
+    if (otherRole) issues.push({ attributeId, message: `“${name(attributeId)}”与“${name(otherRole[0])}”不能使用同一个来源字段` });
+    if (attribute?.type === 'number' && (model.projection?.bindings ?? []).some(other => other.id !== binding.id && other.modelId === binding.modelId
+      && (other.tableId ?? '') === (binding.tableId ?? '') && Object.entries(other.sources).some(([id, source]) => source === fieldId && definition.attributes.some(item => item.id === id && item.type === 'number'))))
+      issues.push({ attributeId, message: `“${field?.name ?? name(attributeId)}”已用于另一笔${definition.name}，请选择独立数量来源或移除重复业务` });
   }
   if ((binding.detailFieldIds ?? []).some(id => !fields.some(field => field.id === id && field.status !== 'disabled'
-    && ['text', 'number', 'singleSelect', 'multiSelect', 'datetime', 'reference'].includes(field.type)))) issues.push('存在失效的明细展示字段');
-  return [...new Set(issues)];
+    && ['text', 'number', 'singleSelect', 'multiSelect', 'datetime', 'reference'].includes(field.type)))) issues.push({ attributeId: 'detailFieldIds', message: '明细展示字段已失效，请重新选择' });
+  return issues;
+}
+
+export function projectionConfigurationIssues(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {
+  return [...new Set(projectionConfigurationProblems(model, binding, definition).map(issue => issue.message))];
 }
