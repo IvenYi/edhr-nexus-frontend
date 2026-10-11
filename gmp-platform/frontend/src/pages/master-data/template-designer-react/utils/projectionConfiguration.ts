@@ -32,6 +32,22 @@ export function projectionSourceSummary(model: ModelDesignState, binding: Projec
   return [...new Set(Object.values(binding.sources).map(id => fields.find(field => field.id === id)?.name ?? '来源字段已失效'))].join('、') || '待选择来源';
 }
 
+export function projectionBindingLabel(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {
+  const name = definition?.name ?? '已失效用途';
+  if (binding.tableId || binding.modelId === 'formTrace') return name;
+  const items = (model.projection?.bindings ?? []).filter(item => item.modelId !== 'formTrace' && !item.tableId);
+  return `${name} · 明细 ${items.findIndex(item => item.id === binding.id) + 1}`;
+}
+
+export function projectionSourceRoles(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {
+  const fields = projectionSources(model, binding);
+  return Object.entries(binding.sources).map(([id, source]) => ({
+    id,
+    role: definition?.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? '已失效角色',
+    field: fields.find(field => field.id === source)?.name ?? '来源字段已失效',
+  }));
+}
+
 export function projectionRequiredAttributes(modelId: string) {
   return modelId === 'production' || modelId === 'formTrace' ? [] : ['material', 'quantity'];
 }

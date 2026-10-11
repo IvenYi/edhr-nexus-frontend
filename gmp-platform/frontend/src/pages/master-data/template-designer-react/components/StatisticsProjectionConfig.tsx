@@ -3,16 +3,17 @@ import { Box, Button, Collapse, IconButton, MenuItem, Stack, TextField, Tooltip,
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import type { ProjectionBinding } from '../types/model';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
-import { projectionConfigurationIssues, projectionSourceSummary, useProjectionCatalog } from '../utils/projectionConfiguration';
+import { projectionBindingLabel, projectionConfigurationIssues, projectionSourceRoles, useProjectionCatalog } from '../utils/projectionConfiguration';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 
 /** One configuration describes a whole row or one business assembled from main fields. */
-export default function StatisticsProjectionConfig({ tableId }: { tableId?: string }) {
+export default function StatisticsProjectionConfig({ tableId, selectedFieldId }: { tableId?: string; selectedFieldId?: string }) {
   const document = useTemplateDesignerStore(state => state.document);
   const setBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
   const { data: catalog } = useProjectionCatalog();
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [addingAnother, setAddingAnother] = useState(false);
   if (!document) return null;
   const bindings = document.model.projection?.bindings ?? [];
   const items = bindings.filter(binding => binding.modelId !== 'formTrace' && (binding.tableId ?? '') === (tableId ?? ''));
@@ -24,30 +25,39 @@ export default function StatisticsProjectionConfig({ tableId }: { tableId?: stri
         <IconButton size="small" aria-label="业务统计配置说明"><InfoOutlined fontSize="small" /></IconButton>
       </Tooltip>
     </Stack>
-    {items.map((binding, index) => {
+    {!tableId && <Typography variant="caption" color="text.secondary">一条明细对应一组字段；有第二组物料、数量时，再新增明细。</Typography>}
+    {items.map(binding => {
       const definition = catalog?.models.find(model => model.id === binding.modelId);
       const complete = projectionConfigurationIssues(document.model, binding, definition).length === 0;
+      const label = projectionBindingLabel(document.model, binding, definition);
+      const roles = projectionSourceRoles(document.model, binding, definition);
+      const selectedRoles = roles.filter(role => binding.sources[role.id] === selectedFieldId);
       return <Box key={binding.id} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 1.5 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-          <Typography variant="body2" fontWeight={600}>{definition?.name ?? '业务用途已失效'}{!tableId && items.length > 1 ? ` · 第 ${index + 1} 笔` : ''} · {complete ? '已配齐' : '待补齐'}</Typography>
-          <ProjectionRemoveButton label={`移除${definition?.name ?? '失效用途'}${!tableId && items.length > 1 ? ` · 第 ${index + 1} 笔` : ''}配置`} onClick={() => update(bindings.filter(item => item.id !== binding.id))} />
+          <Typography variant="body2" fontWeight={600}>{label}</Typography>
+          <ProjectionRemoveButton label={`移除${label}配置`} onClick={() => update(bindings.filter(item => item.id !== binding.id))} />
         </Stack>
-        <Typography variant="caption" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{projectionSourceSummary(document.model, binding)}</Typography>
+        <Typography variant="caption" color={complete ? 'text.secondary' : 'warning.main'}>{complete ? '已配齐' : '待补齐'}</Typography>
+        {roles.length ? roles.map(role => <Typography key={role.id} variant="caption" display="block" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{role.role}：{role.field}</Typography>)
+          : <Typography variant="caption" display="block" color="text.secondary">尚未选择来源字段</Typography>}
+        {!!selectedFieldId && <Typography variant="caption" display="block" color={selectedRoles.length ? 'primary.main' : 'text.secondary'}>{selectedRoles.length ? `当前字段作为${selectedRoles.map(role => role.role).join('、')}` : '当前字段未参与这条明细'}</Typography>}
         {definition && <><Button size="small" sx={{ display: 'block', px: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{editingId === binding.id ? '收起' : '配置来源'}</Button>
           <Collapse in={editingId === binding.id} unmountOnExit><ProjectionSourceEditor binding={binding} definition={definition}
             onChange={patch => update(bindings.map(item => item.id === binding.id ? { ...item, ...patch } : item))} /></Collapse></>}
       </Box>;
     })}
-    <TextField select size="small" fullWidth label={items.length ? '再添加一项业务' : '这张表要统计什么'} value="" onChange={event => {
+    {!!tableId && items.length > 0 && <Button size="small" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={() => setAddingAnother(!addingAnother)}>{addingAnother ? '收起其他用途' : '其他统计用途…'}</Button>}
+    {(!tableId || !items.length || addingAnother) && <TextField select size="small" fullWidth label={tableId ? (items.length ? '添加其他统计用途' : '这张子表统计什么') : (items.length ? '新增一条主表明细' : '主表明细统计什么')} value="" onChange={event => {
       if (!event.target.value) return;
       const existing = tableId ? items.find(binding => binding.modelId === event.target.value) : undefined;
       if (existing) { setEditingId(existing.id); return; }
       const id = crypto.randomUUID();
       update([...bindings, { id, modelId: event.target.value, enabled: false, ...(tableId ? { tableId } : {}), sources: {} }]);
       setEditingId(id);
+      setAddingAnother(false);
     }}>
-      <MenuItem value="">请选择预设业务</MenuItem>{catalog?.models.filter(model => model.id !== 'formTrace').map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
-    </TextField>
+      <MenuItem value="">请选择预设业务</MenuItem>{catalog?.models.filter(model => model.id !== 'formTrace' && (!tableId || !items.some(item => item.modelId === model.id))).map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
+    </TextField>}
     <Typography variant="caption" color="text.secondary">配置后统一点击顶部“保存”。</Typography>
   </Stack>;
 }

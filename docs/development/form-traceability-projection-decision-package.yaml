@@ -593,6 +593,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: configuration-simplification-20261012
+        change: 用户授权按安速康全量调研简化配置；子表新增其他用途渐进展示，主表按独立明细标明角色来源和当前字段参与状态，保存失败单独列出问题并可就地修复后调用原保存流程。只改变设计器交互，不限制原有多用途数据或改变正式来源规则。
+        evidenceReferences: [docs/development/form-projection-configuration-simplification-2026-10-12.md]
       - area: configuration-feedback-20261011
         change: 同切片追加L1设计器反馈增量；移除图标常显，主表作用范围明确，顶部保存定位缺项并按角色标红。沿用现有完整性和重复数量约束，不改统计口径、公共Snackbar、数据库或运行校验。
         evidenceReferences: [docs/development/form-projection-configuration-feedback-2026-10-11.md]
@@ -1082,3 +1085,13 @@ decisionPackage:
       when: 制表人移除用途、撤销，或点击顶部保存
       then: 移除图标在未展开卡片中可用且撤销恢复映射；保存未通过时保留修改，定位区域与用途并显示具体待配置角色，修复后错误消失，公共tip和业务校验不变。
       evidenceRequirements: [聚焦组件与配置测试, 浏览器交互, 独立质量结果]
+    - id: scenario.projection-main-multiple-details
+      given: 主表有两组独立物料、批号及数量字段，子表已有一项统计用途
+      when: 新增第二条主表明细、切换字段或检查子表配置
+      then: 两条主表明细分别显示编号和角色来源，当前字段参与状态明确，新增不自动复制数量；子表其他用途按需展开且已有配置保留。
+      evidenceRequirements: [聚焦组件测试, 浏览器真实交互, 独立质量验证]
+    - id: scenario.projection-focused-save-correction
+      given: 多条主表或子表用途配置存在缺失或来源冲突
+      when: 点击保存并逐项修正
+      then: 专门的校验弹窗仅列本轮待处理项，标红对应控件，修好项保留完成反馈；补齐后重新校验并调用原保存，失败保留修改，成功关闭弹窗。
+      evidenceRequirements: [浏览器保存与重开, 聚焦校验测试, 独立质量验证]

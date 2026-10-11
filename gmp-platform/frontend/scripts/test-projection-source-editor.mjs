@@ -16,7 +16,7 @@ await build({ stdin: { contents: `
   import StatisticsProjectionConfig from './src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig';
   import FieldProjectionConfig from './src/pages/master-data/template-designer-react/components/FieldProjectionConfig';
   import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-  export { acceptsProjectionAttribute, projectionConfigurationProblems } from './src/pages/master-data/template-designer-react/utils/projectionConfiguration';
+  export { acceptsProjectionAttribute, projectionConfigurationProblems, projectionBindingLabel, projectionSourceRoles } from './src/pages/master-data/template-designer-react/utils/projectionConfiguration';
   import { useTemplateDesignerStore as store } from './src/pages/master-data/template-designer-react/store/useTemplateDesignerStore';
   export function renderEditor(model, binding, definition, showErrors = false) {
     store.getState().setDocument({ meta: {}, model, canvas: { pages: [] }, workflow: { nodes: [], edges: [], config: {} } });
@@ -35,7 +35,7 @@ await build({ stdin: { contents: `
   }
 `, resolveDir: fileURLToPath(new URL('..', import.meta.url)), loader: 'tsx' }, outfile, bundle: true, format: 'cjs', platform: 'node', mainFields: ['module', 'main'], logLevel: 'silent',
   alias: { '@': fileURLToPath(new URL('../src', import.meta.url)), '@mui/icons-material': fileURLToPath(new URL('../node_modules/@mui/icons-material/esm', import.meta.url)) } });
-const { renderEditor, renderPanel, acceptsProjectionAttribute, projectionConfigurationProblems } = createRequire(import.meta.url)(outfile);
+const { renderEditor, renderPanel, acceptsProjectionAttribute, projectionConfigurationProblems, projectionBindingLabel, projectionSourceRoles } = createRequire(import.meta.url)(outfile);
 await rm(tempDir, { recursive: true, force: true });
 
 const lot = { id: 'lot', name: '供应商批号输入', type: 'text', typeConfig: {} };
@@ -113,7 +113,7 @@ test('collapsed business cards and each trace assignment expose consistent remov
   const model = {fields: [lot], projection: {bindings: [usage]}};
   const html = renderPanel(model, {models: [consumption]}, null);
   assert.ok(html.includes('主表的业务统计'));
-  assert.ok(html.includes('aria-label="移除实际物料消耗配置"'));
+  assert.ok(html.includes('aria-label="移除实际物料消耗 · 明细 1配置"'));
   assert.ok(html.includes('DeleteOutlinedIcon'));
   assert.ok(!html.includes('移除这项用途'));
   const traceModel = {...definition, attributes: definition.attributes.slice(0, 2)};
@@ -124,6 +124,38 @@ test('collapsed business cards and each trace assignment expose consistent remov
   const traceHtml = renderPanel(model, {models: [traceModel]}, lot);
   assert.ok(traceHtml.includes('aria-label="移除供应商批号（外部）关联"'));
   assert.ok(traceHtml.includes('aria-label="移除设备编号关联"'));
+});
+
+test('main details identify each source role and selected-field participation without changing mappings', () => {
+  const first = {...usage, sources: {material: material.id, quantity: quantity.id}};
+  const secondQuantity = {...quantity, id: 'qty2', name: '第二份实际用量'};
+  const second = {...usage, id: 'use2', sources: {material: material.id, quantity: secondQuantity.id}};
+  const model = {fields: [material, quantity, secondQuantity, lot], projection: {bindings: [first, second]}};
+  const before = JSON.stringify(model);
+  assert.equal(projectionBindingLabel(model, first, consumption), '实际物料消耗 · 明细 1');
+  assert.equal(projectionBindingLabel(model, second, consumption), '实际物料消耗 · 明细 2');
+  assert.deepEqual(projectionSourceRoles(model, second, consumption), [
+    {id: 'material', role: '物料', field: '投料物料'}, {id: 'quantity', role: '数量', field: '第二份实际用量'},
+  ]);
+  const html = renderPanel(model, {models: [consumption]}, quantity);
+  assert.ok(html.includes('当前字段作为数量'));
+  assert.ok(html.includes('当前字段未参与这条明细'));
+  assert.ok(html.includes('新增一条主表明细'));
+  assert.equal(JSON.stringify(model), before);
+});
+
+test('configured subtable preserves multiple existing purposes but defers adding others', () => {
+  const first = {...usage, tableId: 'table', sources: {material: material.id, quantity: quantity.id}};
+  const scrap = {...consumption, id: 'scrap', name: '报废记录'};
+  const model = {fields: [{id: 'table', name: '清线明细', type: 'subTable', typeConfig: {columns: [material, quantity]}}],
+    projection: {bindings: [first, {...first, id: 'scrap', modelId: 'scrap'}]}};
+  const before = JSON.stringify(model);
+  const html = renderPanel(model, {models: [consumption, scrap]}, null, 'table');
+  assert.ok(html.includes('实际物料消耗'));
+  assert.ok(html.includes('报废记录'));
+  assert.ok(html.includes('其他统计用途…'));
+  assert.ok(!html.includes('role="combobox"'), 'configured table has no always-visible add-purpose selector');
+  assert.equal(JSON.stringify(model), before, 'simplifying entry points must preserve every existing mapping');
 });
 
 test('trace editor offers no additional meaning when every compatible source is already used', () => {

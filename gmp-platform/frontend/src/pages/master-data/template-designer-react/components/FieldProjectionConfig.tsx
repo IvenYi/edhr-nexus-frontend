@@ -59,7 +59,7 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
         })}
         {!statistical.length && <Typography variant="caption" color="text.secondary">本列尚未参与统计。</Typography>}
         {onEditTable && <Button size="small" variant="outlined" onClick={onEditTable}>切换到“{table?.name ?? '子表'}”配置统计</Button>}
-      </Stack> : <StatisticsProjectionConfig />}
+      </Stack> : <StatisticsProjectionConfig selectedFieldId={field.id} />}
     </Box>
   </Stack>;
 }

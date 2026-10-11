@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Box, Button, Collapse, DialogActions, DialogContent, DialogTitle, MenuItem, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { RuntimeReference } from '@/components/form-renderer/FormRuntimeField';
 import { getPreviewReferences } from '@/api/form-references';
@@ -7,15 +7,15 @@ import FormDialogSection from '@/components/FormDialogSection';
 import client from '@/api/client';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
-import { projectionConfigurationIssues, projectionSourceSummary, projectionSources, useProjectionCatalog, type ProjectionPreviewRecord } from '../utils/projectionConfiguration';
+import { projectionBindingLabel, projectionConfigurationIssues, projectionSourceSummary, projectionSources, useProjectionCatalog, type ProjectionPreviewRecord } from '../utils/projectionConfiguration';
 import { buildProjectionPreviewValues, previewSampleKey, projectionPreviewFieldIds } from '../utils/projectionPreview';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 import FieldProjectionConfig from './FieldProjectionConfig';
 import SubTableProjectionConfig from './SubTableProjectionConfig';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 
-export default function ProjectionDialog({ open, onClose, focusField, focusBindingId, validationRequested = false }: {
-  open: boolean; onClose: () => void; focusBindingId?: string | null; validationRequested?: boolean;
+export default function ProjectionDialog({ open, onClose, focusField }: {
+  open: boolean; onClose: () => void;
   focusField?: { id: string; name: string; tableId?: string } | null;
 }) {
   const document = useTemplateDesignerStore(state => state.document);
@@ -30,24 +30,12 @@ export default function ProjectionDialog({ open, onClose, focusField, focusBindi
   const [preview, setPreview] = useState<ProjectionPreviewRecord[] | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const editorRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const bindingRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const focusEditor = (id: string) => {
-    const element = editorRefs.current[id] ?? bindingRefs.current[id];
-    element?.scrollIntoView({ block: 'nearest' });
-    element?.querySelector<HTMLElement>('.Mui-error [role="combobox"], .Mui-error button, .MuiAlert-root button, button[aria-label^="移除"]')?.focus();
-  };
   useEffect(() => {
     if (!open) return;
-    setTab(0); setError(''); setPreview(null); setExpandedId(focusBindingId ?? null);
+    setTab(0); setError(''); setPreview(null); setExpandedId(null);
     setRegionId(focusField ? focusField.tableId ?? '' : null); setFieldId(focusField?.id ?? '');
-  }, [open, focusField, focusBindingId]);
+  }, [open, focusField]);
   useEffect(() => setPreview(null), [document?.model.projection]);
-  useEffect(() => {
-    if (!open || !validationRequested || !expandedId) return;
-    const frame = requestAnimationFrame(() => focusEditor(expandedId));
-    return () => cancelAnimationFrame(frame);
-  }, [open, validationRequested, expandedId]);
   if (!document) return null;
   const bindings = document.model.projection?.bindings ?? [];
   const regions = [{ id: '', name: '主表字段' }, ...document.model.fields.filter(field => field.type === 'subTable').map(field => ({ id: field.id, name: field.name }))];
@@ -60,13 +48,7 @@ export default function ProjectionDialog({ open, onClose, focusField, focusBindi
   const previewValues = buildProjectionPreviewValues(document.model, samples, rowCounts);
   const previewIds = projectionPreviewFieldIds(document.model);
   const update = (next: ProjectionBinding[]) => setBindings(next, catalog?.version);
-  const invalidBindings = catalog ? bindings.map(binding => ({ binding, issues: projectionConfigurationIssues(document.model, binding, catalog.models.find(model => model.id === binding.modelId)) }))
-    .filter(item => item.issues.length > 0) : [];
-  const bindingLabel = (binding: ProjectionBinding) => {
-    const name = catalog?.models.find(model => model.id === binding.modelId)?.name ?? '已失效用途';
-    const businesses = bindings.filter(item => item.modelId !== 'formTrace' && (item.tableId ?? '') === (binding.tableId ?? ''));
-    return name + (binding.modelId !== 'formTrace' && businesses.length > 1 ? ` · 第 ${businesses.findIndex(item => item.id === binding.id) + 1} 笔` : '');
-  };
+  const bindingLabel = (binding: ProjectionBinding) => projectionBindingLabel(document.model, binding, catalog?.models.find(model => model.id === binding.modelId));
   const run = async (action: () => Promise<void>) => {
     setError(''); setBusy(true);
     try { await action(); } catch (reason) { setError(reason instanceof Error ? reason.message : '操作失败'); } finally { setBusy(false); }
@@ -92,7 +74,7 @@ export default function ProjectionDialog({ open, onClose, focusField, focusBindi
       value={samples[key] ?? ''} onChange={event => { setPreview(null); setSamples({ ...samples, [key]: event.target.value }); }} />;
   };
   return <FormDialog open={open} onClose={() => { if (!busy) onClose(); }} maxWidth="md" fullWidth>
-    <DialogTitle>查找与统计总览</DialogTitle>
+    <DialogTitle>追溯与统计总览</DialogTitle>
     <Tabs value={tab} onChange={(_, value: number) => { setTab(value); setError(''); }} sx={{ px: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
       <Tab label="用途配置" /><Tab label="模拟预览" />
     </Tabs>
@@ -102,14 +84,7 @@ export default function ProjectionDialog({ open, onClose, focusField, focusBindi
         {isError && <Alert severity="error" action={<Button onClick={() => void refetch()}>重试</Button>}>用途目录加载失败</Alert>}
         {error && <Alert severity="error">{error}</Alert>}
         {tab === 0 ? <>
-          {validationRequested && (invalidBindings.length ? <Alert severity="error" role="alert">
-            <Typography variant="body2" fontWeight={600}>还有 {invalidBindings.length} 项用途需要修改，点击下方定位</Typography>
-            {invalidBindings.map(({ binding, issues }) => <Button key={binding.id} size="small" color="error" sx={{ display: 'block', textAlign: 'left', justifyContent: 'flex-start' }}
-              onClick={() => { if (expandedId === binding.id) focusEditor(binding.id); else setExpandedId(binding.id); }}>
-              {regions.find(region => region.id === (binding.tableId ?? ''))?.name ?? '已失效子表'} / {bindingLabel(binding)}：{issues.join('；')}
-            </Button>)}
-          </Alert> : <Alert severity="success">用途配置已补齐。关闭后点击顶部“保存”。</Alert>)}
-          {!validationRequested && <Typography variant="body2" color="text.secondary">核对全表用途；日常配置仍在画布侧栏，修改统一用顶部“保存”。</Typography>}
+          <Typography variant="body2" color="text.secondary">核对全表用途；日常配置仍在画布侧栏，修改统一用顶部“保存”。</Typography>
           {regions.map(region => {
             const items = bindings.filter(binding => (binding.tableId ?? '') === region.id);
             const trace = items.filter(binding => binding.modelId === 'formTrace');
@@ -123,7 +98,7 @@ export default function ProjectionDialog({ open, onClose, focusField, focusBindi
               {items.map(binding => {
                 const definition = catalog?.models.find(model => model.id === binding.modelId);
                 const issues = projectionConfigurationIssues(document.model, binding, definition);
-                return <Box key={binding.id} ref={element => { bindingRefs.current[binding.id] = element as HTMLDivElement | null; }} sx={{ borderTop: '1px solid', borderColor: 'divider', mt: 1.5, pt: 1.5 }}>
+                return <Box key={binding.id} sx={{ borderTop: '1px solid', borderColor: 'divider', mt: 1.5, pt: 1.5 }}>
                   <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
                     <Box sx={{ minWidth: 0 }}><Typography variant="body2" fontWeight={600}>{bindingLabel(binding)} · {issues.length ? '待补齐' : '已配齐'}</Typography>
                       <Typography variant="caption" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{projectionSourceSummary(document.model, binding)}</Typography>
@@ -134,9 +109,9 @@ export default function ProjectionDialog({ open, onClose, focusField, focusBindi
                       <ProjectionRemoveButton label={`移除${bindingLabel(binding)}配置`} onClick={() => update(bindings.filter(item => item.id !== binding.id))} />
                     </Stack>
                   </Stack>
-                  {definition && <Collapse in={expandedId === binding.id} unmountOnExit onEntered={() => { if (validationRequested) focusEditor(binding.id); }}>
-                    <Box ref={element => { editorRefs.current[binding.id] = element as HTMLDivElement | null; }} sx={{ pt: 2 }}>
-                      <ProjectionSourceEditor binding={binding} definition={definition} showErrors={validationRequested}
+                  {definition && <Collapse in={expandedId === binding.id} unmountOnExit>
+                    <Box sx={{ pt: 2 }}>
+                      <ProjectionSourceEditor binding={binding} definition={definition}
                         onChange={patch => update(bindings.map(item => item.id === binding.id ? { ...item, ...patch } : item))} />
                     </Box></Collapse>}
                 </Box>;

@@ -11,6 +11,7 @@ import MockFillDialog from './components/mock-fill/MockFillDialog';
 import ModelTab from './tabs/model/ModelTab';
 import WorkflowTab from './tabs/workflow/WorkflowTab';
 import ProjectionDialog from './components/ProjectionDialog';
+import ProjectionValidationDialog from './components/ProjectionValidationDialog';
 import { parseReactTemplateDesignerDocument, serializeTemplateDesignerDocument } from './utils/document';
 import { importTemplateToCanvasPage } from './utils/templateImport';
 import { projectionConfigurationIssues, useProjectionCatalog } from './utils/projectionConfiguration';
@@ -123,6 +124,8 @@ export default function TemplateDesignerReactShell({
         }
       }
       await persistCurrentDocument(onSave);
+      setProjectionValidationRequested(false);
+      setProjectionOpen(false);
     } catch {
       // The existing save mutation reports API errors and retains the document.
     } finally { setCheckingProjection(false); }
@@ -300,8 +303,9 @@ export default function TemplateDesignerReactShell({
           </Box>
         ) : null}
       </Box>
-      <ProjectionDialog open={projectionOpen} onClose={() => { setProjectionOpen(false); setProjectionValidationRequested(false); setProjectionFocusBindingId(null); }}
-        focusField={projectionField} focusBindingId={projectionFocusBindingId} validationRequested={projectionValidationRequested} />
+      <ProjectionDialog open={projectionOpen && !projectionValidationRequested} onClose={() => setProjectionOpen(false)} focusField={projectionField} />
+      <ProjectionValidationDialog open={projectionValidationRequested} onClose={() => { setProjectionValidationRequested(false); setProjectionOpen(false); }}
+        onSave={async () => { await handleSave(); }} saving={checkingProjection || Boolean(saving)} focusBindingId={projectionFocusBindingId} />
       <AppDialog
         open={closeConfirmOpen}
         onClose={() => setCloseConfirmOpen(false)}
