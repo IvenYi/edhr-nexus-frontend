@@ -198,23 +198,25 @@ P1 的整体实现收敛以 P0 退出证据为前提；P2 由真实的历史解�
 
 ### 由主智能体维护的试点引导
 
-主智能体在相关开发任务中主动判断试点适用性。无需试点时，在任务说明中简述理由即可，不要求普通功能额外生成计划或表格。发现有具体价值的候选时，在同一 `ontologyRoadmap` 中增加 `pilotPlan`；由智能体维护，用户不手工填写：
+当前 MVP 功能开发优先，试点全项目累计限于 1–2 个代表性业务功能，不按模块、会话、Agent 或 P0/P1 等阶段重置。主智能体先核对已有试点及证据，优先复用或补齐原功能；一个功能满足本期验证目标即可停止新增，第二个只补充不同关键能力，不凑数。普通开发保留必要知识同步和路线兼容，不输出例行试点评估或“不做试点”的说明，也不要求额外计划。
+
+只有真实功能需求存在已有证据未覆盖的关键路径、且适合在上述范围内验证时，主智能体才低频提出候选，并在同一 `ontologyRoadmap` 中增加 `pilotPlan`。计划引用已选功能及其实际证据以核对累计范围，不新增由用户维护的台账；超出范围不自动扩张，必要修复与验收仍按风险实施。以下仅为已选试点的结构示例，由智能体维护：
 
 ```yaml
 pilotPlan:
-  kind: standards-validation
+  kind: semantic-foundation
   status: candidate
-  businessScope: 一个已明确业务边界的标准映射或约束校验切片
+  businessScope: 已有表单流程版本引用与绑定功能的代表性语义验证
   relatedKnowledgeIds: []
   dependencies: []
   steps:
     - id: pilot-step-1
-      action: 核实该切片当前定义、实例样本和预期约束
+      action: 核实已有试点的当前定义、实现证据及未覆盖的目标
       exitEvidence: 能定位到已确认语义及正反例；缺口逐项列明
       status: planned
       evidence: []
-  rollback: 试点输出作为派生资产，可撤回而不改写权威业务事实
-  nextAction: 读取相关当前定义和原始样本，说明哪些约束已有依据
+  rollback: 保留原始定义及证据；撤回本次不成立的派生说明，不改写历史事实
+  nextAction: 对照已有证据确认是否只需补齐原试点，避免新增重复功能
 ```
 
 - `kind`：`semantic-foundation | relationship-query | historical-explanation | standards-validation | rule-execution`。分别对应语义基础、关系查询、历史解释、标准映射/约束验证和通用规则执行，不得混用其通过结论。
