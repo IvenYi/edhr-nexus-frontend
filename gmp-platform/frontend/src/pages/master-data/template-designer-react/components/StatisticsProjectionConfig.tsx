@@ -8,11 +8,11 @@ import ProjectionSourceEditor from './ProjectionSourceEditor';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 
 /** One configuration describes a whole row or one business assembled from main fields. */
-export default function StatisticsProjectionConfig({ tableId, initialEditingId }: { tableId?: string; initialEditingId?: string }) {
+export default function StatisticsProjectionConfig({ tableId, selectedFieldId }: { tableId?: string; selectedFieldId?: string }) {
   const document = useTemplateDesignerStore(state => state.document);
   const setBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
   const { data: catalog } = useProjectionCatalog();
-  const [editingId, setEditingId] = useState<string | null>(initialEditingId ?? null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [addingAnother, setAddingAnother] = useState(false);
   if (!document) return null;
   const bindings = document.model.projection?.bindings ?? [];
@@ -26,7 +26,7 @@ export default function StatisticsProjectionConfig({ tableId, initialEditingId }
   };
   return <Stack spacing={1.5}>
     <Stack direction="row" alignItems="center" justifyContent="space-between">
-      <Typography variant="body2" fontWeight={600}>{tableId ? '业务统计' : '主表的业务统计'}</Typography>
+      <Typography variant="body2" fontWeight={600}>{tableId ? '业务统计' : '业务统计 · 主表'}</Typography>
       <Tooltip title={`${tableId ? '为整张子表选择用途，再对应各列。每行形成一条明细。' : '这里配置主表的一笔业务，不代表当前字段已参与统计。选择用途后，配齐描述同一笔业务的字段。'}最终完成后进入正式报表。`}>
         <IconButton size="small" aria-label="业务统计配置说明"><InfoOutlined fontSize="small" /></IconButton>
       </Tooltip>
@@ -39,12 +39,15 @@ export default function StatisticsProjectionConfig({ tableId, initialEditingId }
       const complete = projectionConfigurationIssues(document.model, binding, definition).length === 0;
       const label = projectionBindingLabel(document.model, binding, definition);
       const roles = projectionSourceRoles(document.model, binding, definition);
+      const selectedRoles = Object.entries(binding.sources).filter(([, id]) => id === selectedFieldId)
+        .map(([id]) => definition?.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? '已失效角色');
       return <Box key={binding.id} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 1.5 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
           <Button size="small" color="inherit" aria-expanded={editingId === binding.id} disabled={!definition} sx={{ flex: 1, justifyContent: 'flex-start', px: 0, textAlign: 'left', minWidth: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{editingId === binding.id ? '▾ ' : '› '}{label}</Button>
           <ProjectionRemoveButton label={`移除${label}配置`} onClick={() => update(bindings.filter(item => item.id !== binding.id))} />
         </Stack>
         <Typography variant="caption" color={complete ? 'text.secondary' : 'warning.main'}>{complete ? '已配齐' : '待补齐'}</Typography>
+        {!tableId && selectedRoles.length > 0 && <Typography variant="caption" display="block" color="primary.main">当前字段作为{selectedRoles.join('、')}</Typography>}
         {editingId !== binding.id && (roles.length ? roles.map(role => <Typography key={role.id} variant="caption" display="block" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{role.role}：{role.field}</Typography>)
           : <Typography variant="caption" display="block" color="text.secondary">尚未选择来源字段</Typography>)}
         {definition && <>

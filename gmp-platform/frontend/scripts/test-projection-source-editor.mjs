@@ -112,7 +112,7 @@ test('same field cannot fill two roles inside one business and invalid optional 
 test('collapsed business cards and each trace assignment expose consistent removal icons', () => {
   const model = {fields: [lot], projection: {bindings: [usage]}};
   const html = renderPanel(model, {models: [consumption]}, null);
-  assert.ok(html.includes('主表的业务统计'));
+  assert.ok(html.includes('业务统计 · 主表'));
   assert.ok(html.includes('aria-label="移除消耗明细 1配置"'));
   assert.ok(html.includes('DeleteOutlinedIcon'));
   assert.ok(!html.includes('移除这项用途'));
@@ -139,11 +139,35 @@ test('main details identify each source role and selected-field participation wi
   ]);
   const html = renderPanel(model, {models: [consumption]}, quantity);
   assert.ok(html.includes('当前字段作为数量'));
-  assert.ok(!html.includes('消耗明细 2'), 'field view only explains records this field participates in');
+  assert.ok(html.includes('消耗明细 2'), 'field view shows the same existing main-form configurations');
+  assert.equal((html.match(/当前字段作为/g) ?? []).length, 1, 'participation is marked only on the corresponding record');
+  assert.ok(!html.includes('配置主表业务统计'));
   const main = renderPanel(model, {models: [consumption]}, null);
   assert.ok(main.includes('添加消耗明细'));
   assert.ok(!main.includes('role="combobox"'), 'same-purpose detail does not require selecting the purpose again');
   assert.equal(JSON.stringify(model), before);
+});
+
+test('main field directly offers statistical purposes without a separate configuration panel', () => {
+  const model = {fields: [material, quantity, lot], projection: {bindings: []}};
+  const before = JSON.stringify(model);
+  const html = renderPanel(model, {models: [consumption, definition]}, lot);
+  assert.ok(html.includes('关联追溯项（可选）'));
+  assert.ok(html.includes('业务统计 · 主表'));
+  assert.ok(html.includes('主表统计什么'));
+  assert.ok(!html.includes('当前字段尚未参与统计'));
+  assert.ok(!html.includes('配置主表业务统计'));
+  assert.equal(JSON.stringify(model), before, 'showing purposes must not bind the selected field');
+});
+
+test('subtable column keeps the whole-table configuration entry instead of inline main statistics', () => {
+  const model = {fields: [{id: 'table', name: '上料明细', type: 'subTable', typeConfig: {columns: [material, quantity]}}],
+    projection: {bindings: [{...usage, tableId: 'table', sources: {material: material.id, quantity: quantity.id}}]}};
+  const html = renderPanel(model, {models: [consumption]}, material, 'table');
+  assert.ok(html.includes('整张子表的业务统计'));
+  assert.ok(html.includes('本列作为物料'));
+  assert.ok(!html.includes('业务统计 · 主表'));
+  assert.ok(!html.includes('主表统计什么'));
 });
 
 test('configured subtable preserves multiple existing purposes but defers adding others', () => {
