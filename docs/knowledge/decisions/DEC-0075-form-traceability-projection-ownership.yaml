@@ -142,9 +142,18 @@ decisions:
         statement: MVP继续展示产品预设统计报表，并为二期用户基于已有正式业务事实进行报表统计设计保留扩展空间；本条在二期已有事实报表设计方向上收敛DEC-0075-21。该方向不要求客户新建业务用途或定义任意统计模型，不授权MVP提前实现报表编辑器、自由公式、任意跨事实联表或分摊规则；已有事实的指标、维度、可用聚合、视图分享权限与配置生命周期仍须在二期设计。可选明细展示列从既有字段选取的方案及日期、多选扩展仍是建议，不随本条变成已确认完整能力。
         status: specified
         visibility: internal
+      - id: DEC-0075-35
+        statement: 报工用途的工时表示投入人时，不等同于报工开始至结束之间的经过时长；报工时间分别记录报工开始时间与报工结束时间，不能以表单创建、提交、最终完成或投影处理等审计时点替代。该确认局部supersedes同切片2026-10-12报表复核中工时含义及报工时间类型尚未明确的状态；不确认自动从时间区间推算人时、乘签名人数、多人分摊、逐人工时模块、字段必填或默认值、生产日期派生及表头共享规则。这些定义为指定报工事实语义，不代表对应字段采集、合计或报表运行已经实现；真实执行归属、使用时快照、正式统计最终完成及其余未决口径保持不变。
+        status: specified
+        visibility: internal
     supersedes: []
     evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
     acceptanceScenarios:
+      - id: scenario.form-projection-person-hours-distinct-from-report-period
+        given: 一笔报工的业务开始和结束之间经过2小时，两名人员各投入2小时，表单在稍后提交并最终完成
+        when: 解释该笔报工的工时与报工时间
+        then: 投入为4人时，业务开始和结束仍为实际报工时间，不能取稍后的提交或最终完成时点替代；此例仅说明语义，不要求实现逐人工时模块，也不授权按签名人数自动计算或分摊。当前指定定义不证明运行已实现
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
       - id: scenario.form-projection-product-owned-models
         given: 产品设计包含表单配置、报表统计模型和客户实施流程
         when: 核对模型所有权与客户操作职责

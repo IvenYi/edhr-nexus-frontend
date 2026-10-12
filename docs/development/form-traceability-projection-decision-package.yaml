@@ -2,6 +2,7 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
+  # 2026-10-12后续用户确认：工时是投入人时；报工时间分为报工开始时间和报工结束时间。仅确认含义，不确认自动推算、多人分摊、必填或生产日期派生；见同日报表复核第6节。
   # 2026-10-12三类报表L2原始证据复核：列/筛选、采集、逐笔记录、工作台合计与产出回写分层；完整增量见form-projection-business-report-field-review-2026-10-12.md。只纠偏解释，不将候选日期/工时/人员与新分组写成confirmed，不改运行代码。
   # 2026-10-12用户确认侧栏按业务逐条配置、画布点选/下拉同源、消耗明细/报废明细/报工记录术语；本轮L1精简影响、成功标准和验证见form-projection-configuration-simplification-2026-10-12.md增量。沿用原来源和快照契约，无新统计口径。
   summary: 同一首次完成投影切片保留真实执行归属、主表与子表、使用时快照和产品预设报表。2026-10-10在澄清后进入运行修正：保存事务同步维护独立追溯索引，按实例与同一实际子表行匹配；系统隐藏行身份及默认值实际保存；可空批号/单位及同粒度合计；明细额外展示；侧栏字段追溯/整表统计及顶部统一保存；常用加动态查询条件及统一来源详情。正式统计仍等最终完成和投影成功。上下文自动带入、Q6错误值、无上下文登记及A12未实施，不宣称完整MVP；本轮运行与独立门禁证据单独登记。
@@ -24,6 +25,22 @@ decisionPackage:
     concepts: []
     relationships: []
     rules:
+      - id: design-rule.form-projection.report-person-hours-and-period
+        name: 报工人时与开始结束时间分开记录
+        status: specified
+        trigger: form-projection.production-record-definition
+        condition:
+          all:
+            - fact: projection.modelId
+              operator: equals
+              value: production
+        result:
+          type: define-report-time-semantics
+          workHoursMeaning: person-hours
+          reportTimeFields: [report-start-time, report-end-time]
+          elapsedTimeEqualsPersonHours: false
+          auditTimestampsReplaceReportTimes: false
+        sourceReferences: [user-confirmed-20261012-report-person-hours-and-period]
       - id: design-rule.form-projection.draft-and-unbound-context
         name: 草稿业务校验与无上下文登记边界
         status: specified
@@ -595,8 +612,11 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: report-person-hours-and-period-20261012
+        change: 用户已确认工时为人时、报工时间分别为开始和结束；从报表字段复核的待定定义中移除，仅更新设计与知识。自动计算、人数分摊、表头共享及日期派生未确认，运行代码未修改。
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - area: business-report-field-review-20261012
-        change: 核对用户六张原始截图和冠骋字段到保存链，纠正当前合计键等于完整需求及非分组字段只能下钻的解释；补齐三用途候选属性与消费者矩阵。原始列表部署配置和工时口径尚有缺口，未将推断提升为运行规则。
+        change: 核对用户六张原始截图和冠骋字段到保存链，纠正当前合计键等于完整需求及非分组字段只能下钻的解释；补齐三用途候选属性与消费者矩阵。原始列表部署配置及工时采集、自动算法、多人分摊尚有缺口；后续已确认人时定义及报工起止时间，不将其余推断提升为运行规则。
         evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - area: configuration-simplification-20261012
         change: 用户授权按安速康全量调研简化配置；子表新增其他用途渐进展示，主表按独立明细标明角色来源和当前字段参与状态，保存失败单独列出问题并可就地修复后调用原保存流程。只改变设计器交互，不限制原有多用途数据或改变正式来源规则。
