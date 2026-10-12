@@ -45,6 +45,16 @@
 
 主验证：23 项聚焦测试、verify:template-designer-react、tsc/Vite 构建通过；独立演示库主表选择报废用途直接展开空来源、点击画布选物料、移除临时配置并保存已验证。重开安速康两组物料演示仍保留原两条消耗映射，电容物料2只在第二条标注参与角色；截图 `output/inline-main-statistics-20261012/sidebar.png`（不提交输出目录）。独立质量结果 passed，23 项测试、设计器检查、首次空配置、画布与下拉、撤销/保存重开、子表及用途总览复用均通过，无 findings，详见 [本次质量报告](form-projection-inline-main-quality-2026-10-12.yaml)。独立实例未重复完整构建；本次未新增 Word 内联、多页或移动端实操，不以工程验证代替工厂用户试用。
 
+## 用途标题与补充信息增量（基于 346590b6）
+
+用户确认：主表同用途添加移到用途标题右侧，以带名称提示的加号显示；新增后展开并滚动到新记录；补充信息可以展开收起；其他统计用途改为中性折叠入口；按用途修正提示。继续 L1、同一决策包、configuration + product-core。直接影响 StatisticsProjectionConfig 和 ProjectionSourceEditor；相邻风险为收起时残留画布选取、隐藏已配置来源或校验问题、用途总览复用和子表入口。无 API、迁移、统计口径、快照、权限或审计契约变化，无业务未决项。
+
+补充信息仅组织已有属性，未增加业务字段。收起不清空配置，展示已配置属性摘要；保存校验发现补充来源有误时自动展开。报工提示为良品/不良品至少一项且单位可选；消耗/报废提示为物料和数量必配、物料批号和单位可选。任意展示列与预设补充属性仍分开：前者只用于来源详情，后者还支持现有报表精确筛选。
+
+原始实现证据：FormProjectionReportPage 的 detailRows.values / visibleAttributes / DetailSection 展示补充属性，查询条件使用 legacyAttributes；FormProjectionController 的 filters 支持 reason/category/teamText/documentNumberText，GROUP BY 不包含这些属性。因此不能解释为已经提供“按原因/班组分组报表”，也不是新增计量来源。
+
+主验证：25 项聚焦测试、设计器静态检查、tsc/Vite 构建通过；浏览器验证标题加号新增空明细并展开、补充信息展开/收起及取消画布选取。本体结果 updated，仅追加原始源码消费者证据，基线保持 0.3.24。独立质量浏览器覆盖新增定位、补充来源保留与取消选取、保存重开、生产专用提示及子表入口；原演示模板已恢复两条消耗配置。完整结果见 [质量报告](form-projection-optional-info-quality-2026-10-12.yaml)。截图为 `output/optional-info-quality-20261012/sidebar.png`、`folded.png`，不提交输出目录。本轮不涉及数据库或后端运行变更，未做全系统回归或工厂用户试用；一次页面意外刷新在重开后的完整流程中未复现，记录为环境观察，不宣称已定位原因。
+
 ## 历史验证记录（156a0d41）
 
 - `node --test scripts/test-projection-panel.mjs scripts/test-projection-source-editor.mjs scripts/test-projection-preview.mjs`：19 项通过。

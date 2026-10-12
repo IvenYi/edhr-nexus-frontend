@@ -1,5 +1,7 @@
-import { Alert, Button, Checkbox, IconButton, ListItemText, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Button, Checkbox, Collapse, IconButton, ListItemText, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import AdsClick from '@mui/icons-material/AdsClick';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 import { useEffect, useState } from 'react';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ProjectionBinding } from '../types/model';
@@ -23,8 +25,11 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
   const errorFor = (id: string) => showErrors ? problems.find(problem => problem.attributeId === id)?.message : undefined;
   const isTrace = binding.modelId === 'formTrace';
   const attributes = definition.attributes.filter(attribute => isTrace ? binding.sources[attribute.id] || attribute.id === addedTraceId
-    : showOptional || required.includes(attribute.id) || ['unit', 'materialLotText'].includes(attribute.id)
-      || (binding.modelId === 'production' && ['goodQuantity', 'ngQuantity'].includes(attribute.id)) || binding.sources[attribute.id]);
+    : required.includes(attribute.id) || ['unit', 'materialLotText'].includes(attribute.id)
+      || (binding.modelId === 'production' && ['goodQuantity', 'ngQuantity'].includes(attribute.id)));
+  const optionalAttributes = isTrace ? [] : definition.attributes.filter(attribute => !attributes.includes(attribute));
+  const optionalExpanded = showOptional || optionalAttributes.some(attribute => Boolean(errorFor(attribute.id)));
+  const configuredOptional = optionalAttributes.filter(attribute => binding.sources[attribute.id]).map(attribute => attribute.name.replace(/（.*?）/g, ''));
   if (!isTrace) {
     const order = ['material', 'quantity', 'goodQuantity', 'ngQuantity', 'unit', 'materialLotText'];
     attributes.sort((left, right) => (order.indexOf(left.id) < 0 ? order.length : order.indexOf(left.id)) - (order.indexOf(right.id) < 0 ? order.length : order.indexOf(right.id)));
@@ -40,16 +45,7 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     const next = { ...binding, sources, rowKeyFieldId: undefined };
     onChange({ sources, rowKeyFieldId: undefined, enabled: projectionConfigurationIssues(document.model, next, definition).length === 0 });
   };
-  return <Stack spacing={1.5}>
-    <Typography variant="body2" color="text.secondary">{isTrace ? '关联字段记录的信息。填报仍按原方式录入，查询时在追溯页面输入要查的值。' : binding.tableId ? '配置一次列含义，每行分别形成业务明细。' : '选择描述同一笔业务的字段；另一笔业务单独配置。'}</Typography>
-    {isTrace && traceCandidates.length > 0 && <TextField select fullWidth size="small" label="添加追溯项" value={addedTraceId}
-      error={showErrors && !Object.keys(binding.sources).length} helperText={showErrors && !Object.keys(binding.sources).length ? '选择追溯项后，再选择来源字段' : undefined}
-      onChange={event => setAddedTraceId(event.target.value)}>
-      <MenuItem value="">按需添加</MenuItem>
-      {traceCandidates.map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}
-    </TextField>}
-    {missingAttributes.map(id => <Alert key={id} severity="warning" action={<ProjectionRemoveButton label="移除失效的来源配置" onClick={() => selectSource(id, '')} />}>追溯项或业务信息已失效，原来源：{fields.find(field => field.id === binding.sources[id])?.name ?? '来源字段已失效'}</Alert>)}
-    {attributes.map(attribute => <Stack key={attribute.id} spacing={0.5}>
+  const renderSource = (attribute: ProjectionModel['attributes'][number]) => <Stack key={attribute.id} spacing={0.5}>
       <Stack direction="row" spacing={0.5} alignItems="flex-start">
       <TextField select fullWidth size="small"
       label={`${binding.modelId === 'formTrace' ? attribute.name : attribute.name.replace(/（.*?）/g, '')}${required.includes(attribute.id) ? ' *' : ''}`} value={binding.sources[attribute.id] ?? ''}
@@ -74,9 +70,25 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
       {picker?.request?.key === `${binding.id}/${attribute.id}` && <Typography role={picker.error ? 'alert' : 'status'} variant="caption" color={picker.error ? 'error.main' : 'primary.main'}>
         {picker.error || `请在表单中选择${picker.request.label}，Esc 取消`}
       </Typography>}
-    </Stack>)}
-    {!isTrace && definition.attributes.some(attribute => !attributes.includes(attribute)) &&
-      <Button size="small" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={() => setShowOptional(true)}>添加原因、分类等补充信息</Button>}
+    </Stack>;
+  return <Stack spacing={1.5}>
+    <Typography variant="body2" color="text.secondary">{isTrace ? '关联字段记录的信息。填报仍按原方式录入，查询时在追溯页面输入要查的值。' : binding.tableId ? '配置一次列含义，每行分别形成业务明细。' : '选择描述同一笔业务的字段；另一笔业务单独配置。'}</Typography>
+    {isTrace && traceCandidates.length > 0 && <TextField select fullWidth size="small" label="添加追溯项" value={addedTraceId}
+      error={showErrors && !Object.keys(binding.sources).length} helperText={showErrors && !Object.keys(binding.sources).length ? '选择追溯项后，再选择来源字段' : undefined}
+      onChange={event => setAddedTraceId(event.target.value)}>
+      <MenuItem value="">按需添加</MenuItem>
+      {traceCandidates.map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}
+    </TextField>}
+    {missingAttributes.map(id => <Alert key={id} severity="warning" action={<ProjectionRemoveButton label="移除失效的来源配置" onClick={() => selectSource(id, '')} />}>追溯项或业务信息已失效，原来源：{fields.find(field => field.id === binding.sources[id])?.name ?? '来源字段已失效'}</Alert>)}
+    {attributes.map(renderSource)}
+    {optionalAttributes.length > 0 && <Stack spacing={0.5}>
+      <Button size="small" color="inherit" aria-expanded={optionalExpanded} startIcon={optionalExpanded ? <ExpandMore /> : <ChevronRight />} sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => { picker?.cancel(binding.id); setShowOptional(!optionalExpanded); }}>补充信息（可选）</Button>
+      {!optionalExpanded && configuredOptional.length > 0 && <Typography variant="caption" color="text.secondary">已配置：{configuredOptional.join('、')}</Typography>}
+      <Collapse in={optionalExpanded} unmountOnExit><Stack spacing={1.5} sx={{ pt: 1 }}>
+        <Typography variant="caption" color="text.secondary">用于报表筛选和来源详情展示，不增加数量。</Typography>
+        {optionalAttributes.map(renderSource)}
+      </Stack></Collapse>
+    </Stack>}
     {!isTrace && <TextField select fullWidth size="small" label="明细中另外显示（可选）" value={binding.detailFieldIds ?? []}
       error={Boolean(errorFor('detailFieldIds'))} helperText={errorFor('detailFieldIds')}
       SelectProps={{ multiple: true, renderValue: value => (value as string[]).map(id => fields.find(field => field.id === id)?.name ?? '已失效').join('、') }}
@@ -85,7 +97,7 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
       {fields.filter(field => field.status !== 'disabled' && ['text', 'number', 'singleSelect', 'multiSelect', 'datetime', 'reference'].includes(field.type)).map(field =>
         <MenuItem key={field.id} value={field.id}><Checkbox size="small" checked={binding.detailFieldIds?.includes(field.id) ?? false} /><ListItemText primary={field.name} /></MenuItem>)}
     </TextField>}
-    {!isTrace && <Typography variant="caption" color="text.secondary">物料批号、单位可不填；展示列只在明细中显示，不改变合计。{binding.tableId ? '子表每行由系统自动定位。' : ''}</Typography>}
+    {!isTrace && <Typography variant="caption" color="text.secondary">{binding.modelId === 'production' ? '良品数量、不良品数量至少配置一项；单位可不填。' : '物料、数量必须配置；物料批号、单位可不填。'}展示列只在来源详情中显示，不改变合计。{binding.tableId ? '子表每行由系统自动定位。' : ''}</Typography>}
     {issues.length > 0 && !showErrors && <Alert severity="warning" sx={{ fontSize: 12 }}>{issues.join('；')}</Alert>}
   </Stack>;
 }

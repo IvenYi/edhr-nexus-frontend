@@ -548,3 +548,26 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 用户同时询问“这里是不是只有业务统计需要用到这种交互，追溯因为只选一个所以不需要”。本轮实现解释为：字段追溯从已选字段直接关联追溯项，当前字段本身就是来源，无需再选择来源字段；统计才需要把描述同一笔业务的多个角色来源对应好。该解释不产生“一字段只能关联一个追溯项”的新数量约束，也不改变已有多项关联配置。
 
 本体仅同步用户确认的界面称呼与引导范围，并在Q10保留真实客户试用的证据缺口。兼容类型复用、图标、定位高亮和事件处理是工程实现选择；实际实现、保存重开与撤销回归、独立质量结果另由本轮验收记录承担，不能以本段确认或原型证明低学习成本已验证。Q6、Q17、表头与子表共享来源、A12及二期报表边界保持原状态。
+
+## 2026-10-12 同切片：补充信息用途的原始源码复核
+
+本体复核起点为`form-traceability-projection`、HEAD `346590b6f3b13877d312bde5ae5323f9befaec9d`。本节只澄清已存在属性的消费者，不新增统计维度、规则、模型或执行契约；知识基线仍为`0.3.24`，既有成熟度不变。
+
+### 本轮确认与我方当前消费者
+
+- `user-confirmed`：用户要求“添加明细移到用途标题右侧，补充信息改成可展开收起的形式，其他统计用途也区分一下，顺便把不同用途下不准确的提示文案修正”。这是局部交互组织调整；折叠不是停用、删除或改变保存数据的操作。具体实现和验证由本轮开发记录承担。
+- `original-evidence`：`gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java`的`allowed`方法目前为正式报工提供良品数量、不良品数量、单位、责任班组和关联单据号；消耗/报废提供物料、物料批号、数量、单位、原因、分类、责任班组和关联单据号。因此报工入口使用“添加原因、分类”等统一说明不准确，不能由该说明推定报工已经支持原因分类。
+- `original-evidence`：`gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx`的`visibleAttributes`、`detailRows.values`及来源详情`DetailField`循环会展示保存的上述属性；`legacyAttributes`与动态“筛选信息”控件提供原因、分类、班组、单据号等精确筛选。后端`gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java`的统计查询明确接收这些属性过滤，并把同一过滤作用于来源明细和合计查询。
+- `original-evidence`：该Controller的`GROUP BY`包含实际生产对象、工序、物料、物料批号、单位，不包含原因、分类、班组或单据号。因此准确解释是：补充信息可用于来源明细展示及筛选，筛选后的结果继续按原粒度合计；不能宣称已经自动按原因、分类或班组分别汇总。
+- `original-evidence`：同页`hit.details`单独展示用户从本笔业务选择的额外字段快照，如备注。它与上述预设属性不是同一个查询目录：当前额外展示字段不自动成为统计筛选项或分组条件。选取原表单字段，不是让填报人员在报表中再次录入。
+
+### 冠骋对应证据与不能推广的部分
+
+以下均于本轮直接读取本机原始源码，而不是把此前研究摘要当成实现证明。后端根为`/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr`，前端根为`/Users/ivenwang/Documents/iven space/paas-main-front`。
+
+- `original-evidence`：后端`model/field/report/NotGoodReason.java:24–34`将不良原因注册为业务字段、文本映射并声明字典；`producing/entity/FormReportInfoEntity.java:32–35`保存不良原因/分类及报废原因/分类ID；`producing/entity/FormScrapRegistrationEntity.java:111–117`保存报废原因/分类ID。这证明其业务字段和数据模型含这些信息，不等于每张报表都消费全部字段。
+- `original-evidence`：前端`src/projects/page-designer/src/_kit/kit-medpro/web/edhr-se/type.ts:164–196,325–348`定义不良原因、分类、数量等明细列；同目录`components/drawer.vue:204–208`的“批次不良信息”实际引用这些列，`components/print.vue:149–155`的“不良品报废”打印区也实际引用。因此可以确认相关详情/打印有原因分类展示；这些页面证据不能扩大解释成“全部业务统计报表支持按原因分类分组”。
+- `original-evidence`：后端`workbench/biz/BizReportDataSearchBs.java:53–74`工作台消费者对查询结果累加良品、不良、报废数量和工时，没有按原因/分类分组。其存在说明不同报表消费者有不同职责，字段存在不自动证明对应汇总能力。
+- `inference`：可选补充信息的直接价值是让同一笔数量记录保留“为何发生、属于什么分类、由哪个班组记录、对应哪张单据”等解释，便于明细核对与已支持的筛选。该价值来自当前消费者；不能以冠骋字段存在为由要求所有表单配置这些信息，也不能承诺我方班组/单据号与冠骋逐项对应。当前未核实冠骋所有部署报表或所有客户配置，不将未核实范围描述为缺失或已实现。
+
+本节不关闭Q4原因分项数量、二期已有事实报表设计或其他未决统计口径；也不将这些静态源码证据当成当前UI新交互、真实运行或客户易用性验收。仅追加Markdown证据说明，没有修改结构化知识、运行代码或数据库。

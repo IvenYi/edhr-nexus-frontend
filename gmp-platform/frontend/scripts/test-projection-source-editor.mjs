@@ -179,9 +179,38 @@ test('configured subtable preserves multiple existing purposes but defers adding
   const html = renderPanel(model, {models: [consumption, scrap]}, null, 'table');
   assert.ok(html.includes('实际物料消耗'));
   assert.ok(html.includes('报废记录'));
-  assert.ok(html.includes('其他统计用途…'));
+  assert.ok(html.includes('其他统计用途'));
   assert.ok(!html.includes('role="combobox"'), 'configured table has no always-visible add-purpose selector');
   assert.equal(JSON.stringify(model), before, 'simplifying entry points must preserve every existing mapping');
+});
+
+test('optional mappings are summarized without rewriting values and invalid optional sources open for correction', () => {
+  const definition = {...consumption, attributes: [...consumption.attributes, {id: 'reason', name: '原因', type: 'text'}]};
+  const binding = {...usage, sources: {material: 'material', quantity: 'qty', reason: 'lot'}};
+  const fields = [material, quantity, lot];
+  const {html, changes} = renderEditor({fields}, binding, definition);
+  assert.ok(html.includes('补充信息（可选）'));
+  assert.ok(html.includes('已配置：原因'));
+  assert.equal((html.match(/role="combobox"/g) ?? []).length, 5, 'four primary roles and display columns; optional controls stay collapsed');
+  assert.deepEqual(changes, []);
+  const invalid = renderEditor({fields}, {...binding, sources: {...binding.sources, reason: 'removed'}}, definition, true).html;
+  assert.ok(invalid.includes('“原因”的来源已失效'));
+  assert.ok(invalid.includes('aria-expanded="true"'));
+});
+
+test('production instructions describe quantities rather than material lots, and add belongs to the purpose heading', () => {
+  const production = {id: 'production', name: '正式报工', attributes: [
+    {id: 'goodQuantity', name: '良品数量', type: 'number'}, {id: 'ngQuantity', name: '不良品数量', type: 'number'},
+    {id: 'unit', name: '单位', type: 'text'}, {id: 'teamText', name: '责任班组', type: 'text'},
+  ]};
+  const binding = {id: 'p', modelId: 'production', enabled: true, sources: {goodQuantity: 'qty'}};
+  const {html} = renderEditor({fields: [quantity]}, binding, production);
+  assert.ok(html.includes('良品数量、不良品数量至少配置一项'));
+  assert.ok(!html.includes('物料批号'));
+  assert.ok(!html.includes('添加原因、分类'));
+  const panel = renderPanel({fields: [quantity], projection: {bindings: [binding]}}, {version: 1, models: [production]});
+  assert.ok(panel.includes('aria-label="添加报工记录"'));
+  assert.ok(panel.indexOf('aria-label="添加报工记录"') < panel.indexOf('移除报工记录 1配置'));
 });
 
 test('canvas and dropdown candidates share type, region, disabled and occupied-role constraints', () => {
