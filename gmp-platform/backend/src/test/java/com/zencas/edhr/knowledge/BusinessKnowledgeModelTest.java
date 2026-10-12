@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,11 +42,11 @@ class BusinessKnowledgeModelTest {
     }
 
     @Test
-    void currentKnowledgeBaselineIsTheReleasedP0Schema() throws Exception {
+    void currentKnowledgeBaselineUsesTheTypedFactSchema() throws Exception {
         BusinessKnowledgeModel model = BusinessKnowledgeModelLoader.load();
 
-        assertThat(model.schema()).containsEntry("knowledgeModelVersion", "0.3.24")
-                .containsEntry("schemaVersion", "1.1.0");
+        assertThat(model.schema()).containsEntry("knowledgeModelVersion", "0.3.25")
+                .containsEntry("schemaVersion", "1.2.0");
     }
 
     @Test
@@ -89,6 +90,168 @@ class BusinessKnowledgeModelTest {
 
         assertValidationFails(model, "rule.form-process.binding-requires-form-and-flow",
                 "condition.operator", "is not allowed for fact");
+    }
+
+    @Test
+    void factValueTypesMustComeFromTheControlledVocabulary() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> fact = firstRecord(model, "fact");
+        fact.put("valueType", "number-ish");
+
+        assertValidationFails(model, idOf(fact), "valueType", "must be one of");
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("incompatibleFactOperands")
+    void ruleOperandsMustMatchTheirDeclaredFacts(
+            String description, String fact, String operator, Object value, String reason
+    ) throws Exception {
+        BusinessKnowledgeModel model = modelWithClause(fact, operator, value);
+
+        assertValidationFails(model, idOf(firstRecord(model, "rule")), "condition.value", reason);
+    }
+
+    private static Stream<Arguments> incompatibleFactOperands() {
+        return Stream.of(
+                Arguments.of("string is not boolean", "audit.entityType", "equals", true, "incompatible with string"),
+                Arguments.of("boolean is not text", "formBinding.required", "equals", "true", "incompatible with boolean"),
+                Arguments.of("number is not numeric text", "product.productFamilyCount", "greater-than-or-equal", "2", "incompatible with integer"),
+                Arguments.of("membership needs an array", "audit.entityType", "in", "PRODUCT", "requires an array"),
+                Arguments.of("membership checks each item", "audit.entityType", "in", List.of("PRODUCT", true), "incompatible with string"),
+                Arguments.of("enum membership is case sensitive", "productionWorkFlowVersion.status", "equals", "published", "incompatible with enum"),
+                Arguments.of("enum membership checks each item", "productionWorkFlowVersion.status", "in", List.of("DRAFT", "UNKNOWN"), "incompatible with enum"),
+                Arguments.of("presence expectation is not text", "audit.entityType", "is-present", "true", "requires boolean"),
+                Arguments.of("custom predicate expectation is boolean", "audit.entityType", "explicitly-selected", "true", "must be boolean"),
+                Arguments.of("equality does not interpret null as missing", "audit.entityType", "equals", null, "incompatible with string")
+        );
+    }
+
+    @Test
+    void numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("audit.entityType", "greater-than-or-equal", 1);
+
+        assertValidationFails(model, idOf(factByReference(model, "audit.entityType")),
+                "allowedOperators", "requires numeric valueType");
+    }
+
+    @Test
+    void stringOperatorsRejectNonStringFacts() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("formBinding.required", "contains", "true");
+
+        assertValidationFails(model, idOf(factByReference(model, "formBinding.required")),
+                "allowedOperators", "requires string valueType");
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("compatibleFactOperands")
+    void typedComparisonsPreserveNumericAndPredicateSemantics(
+            String description, String fact, String operator, Object value
+    ) throws Exception {
+        BusinessKnowledgeModel model = modelWithClause(fact, operator, value);
+
+        assertThatCode(() -> BusinessKnowledgeModelValidator.validate(model)).doesNotThrowAnyException();
+    }
+
+    private static Stream<Arguments> compatibleFactOperands() {
+        return Stream.of(
+                Arguments.of("integer compared with decimal threshold", "product.productFamilyCount", "greater-than-or-equal", new BigDecimal("1.5")),
+                Arguments.of("decimal quantity compared with fraction", "split.targetQuantity", "greater-than-or-equal", new BigDecimal("0.25")),
+                Arguments.of("string presence uses boolean expectation", "audit.entityType", "is-present", true),
+                Arguments.of("legacy null placeholder is retained", "audit.entityType", "is-present", null),
+                Arguments.of("null predicate retains input type", "product.productFamilyCount", "is-null", true),
+                Arguments.of("reference has textual identifier", "fact.form-process-binding.form-template-version-id", "equals", "template-v1"),
+                Arguments.of("reference has integer identifier", "fact.form-process-binding.form-template-version-id", "equals", 42),
+                Arguments.of("enum uses known value", "productionWorkFlowVersion.status", "equals", "PUBLISHED")
+        );
+    }
+
+    @Test
+    void explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses() throws Exception {
+        for (String reference : List.of("fact.catalog.documentbinding-pagestart", "documentBinding.pageStart")) {
+            BusinessKnowledgeModel model = modelWithClause("documentBinding.pageEnd", "greater-than-or-equal",
+                    Map.of("fact", reference));
+
+            assertThatCode(() -> BusinessKnowledgeModelValidator.validate(model)).doesNotThrowAnyException();
+        }
+    }
+
+    @Test
+    void explicitFactOperandsRejectUnknownReferences() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("documentBinding.pageEnd", "greater-than-or-equal",
+                Map.of("fact", "fact.missing-right-operand"));
+
+        assertValidationFails(model, idOf(firstRecord(model, "rule")),
+                "condition.value.fact", "does not resolve in the fact catalog");
+    }
+
+    @Test
+    void explicitFactOperandsMustHaveCompatibleTypes() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("documentBinding.pageEnd", "greater-than-or-equal",
+                Map.of("fact", "audit.entityType"));
+
+        assertValidationFails(model, idOf(firstRecord(model, "rule")),
+                "condition.value", "fact-reference type string is incompatible with integer");
+    }
+
+    @Test
+    void factNamesInStringsAreNeverImplicitlyDereferenced() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("documentBinding.pageEnd", "greater-than-or-equal",
+                "documentBinding.pageStart");
+
+        assertValidationFails(model, idOf(firstRecord(model, "rule")),
+                "condition.value", "incompatible with integer");
+    }
+
+    @Test
+    void explicitFactReferencesCannotBeUsedAsPredicateExpectations() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("audit.entityType", "is-present",
+                Map.of("fact", "audit.entityType"));
+
+        assertValidationFails(model, idOf(firstRecord(model, "rule")),
+                "condition.value", "fact-reference is not supported");
+    }
+
+    @Test
+    void factReferenceObjectsMustUseTheExactOperandShape() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("documentBinding.pageEnd", "greater-than-or-equal",
+                Map.of("fact", "documentBinding.pageStart", "fallback", 1));
+
+        assertValidationFails(model, idOf(firstRecord(model, "rule")), "condition.value", "is not one of");
+    }
+
+    @Test
+    void numericOperandsMustBeFinite() throws Exception {
+        BusinessKnowledgeModel model = modelWithClause("split.targetQuantity", "greater-than-or-equal", Double.NaN);
+
+        assertValidationFails(model, idOf(firstRecord(model, "rule")), "condition.value", "is not one of");
+    }
+
+    @Test
+    void enumFactsRequireAnExplicitNonEmptyValueSet() throws Exception {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> fact = factByReference(model, "productionWorkFlowVersion.status");
+        fact.put("enumValues", List.of());
+
+        assertValidationFails(model, idOf(fact), "enumValues", "unique non-empty enum values");
+    }
+
+    @Test
+    void aliasesCannotShadowAnotherFactIdInEitherCollectionOrder() throws Exception {
+        for (boolean reverse : List.of(false, true)) {
+            BusinessKnowledgeModel model = mutableKnowledgeModel();
+            List<Map<String, Object>> facts = records(model, "fact");
+            Map<String, Object> first = facts.getFirst();
+            Map<String, Object> last = facts.getLast();
+            Map<String, Object> owner = reverse ? last : first;
+            Map<String, Object> target = reverse ? first : last;
+            listValue(owner, "aliases").add(idOf(target));
+
+            assertThatThrownBy(() -> BusinessKnowledgeModelValidator.validate(model))
+                    .isInstanceOf(KnowledgeValidationException.class)
+                    .hasMessageContaining("duplicates fact")
+                    .hasMessageContaining(idOf(owner))
+                    .hasMessageContaining(idOf(target));
+        }
     }
 
     @Test
@@ -406,7 +569,7 @@ class BusinessKnowledgeModelTest {
         Map<String, Object> rule = firstRecord(model, "rule");
         firstConditionClause(mapValue(rule, "condition")).put("operator", "matches");
 
-        assertValidationFails(model, idOf(rule), "condition.operator", "is not allowed for fact");
+        assertValidationFails(model, idOf(rule), "condition.all[0].operator", "must be one of");
     }
 
     @Test
@@ -600,6 +763,28 @@ class BusinessKnowledgeModelTest {
 
     private static BusinessKnowledgeModel mutableKnowledgeModel() throws IOException {
         return BusinessKnowledgeModelLoader.load().deepCopy();
+    }
+
+    private static BusinessKnowledgeModel modelWithClause(String reference, String operator, Object value)
+            throws IOException {
+        BusinessKnowledgeModel model = mutableKnowledgeModel();
+        Map<String, Object> fact = factByReference(model, reference);
+        List<Object> operators = listValue(fact, "allowedOperators");
+        if (!operators.contains(operator)) {
+            operators.add(operator);
+        }
+        Map<String, Object> clause = new LinkedHashMap<>();
+        clause.put("fact", reference);
+        clause.put("operator", operator);
+        clause.put("value", value);
+        firstRecord(model, "rule").put("condition", clause);
+        return model;
+    }
+
+    private static Map<String, Object> factByReference(BusinessKnowledgeModel model, String reference) {
+        return records(model, "fact").stream()
+                .filter(fact -> reference.equals(idOf(fact)) || listValue(fact, "aliases").contains(reference))
+                .findFirst().orElseThrow();
     }
 
     private static Map<String, Object> recordType(BusinessKnowledgeModel model, String recordType) {

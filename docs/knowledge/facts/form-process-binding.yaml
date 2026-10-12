@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.24
+knowledgeModelVersion: 0.3.25
 facts:
   - id: fact.form-process-binding.form-template-version-id
     name: 表单绑定的表单模板版本引用
@@ -36,6 +36,7 @@ facts:
     name: 表单绑定的表单流程版本状态
     conceptId: concept.form-process-template-version
     valueType: enum
+    enumValues: [DRAFT, PUBLISHED]
     sourceType: database
     sourcePath: FormProcessVersion.status
     aliases: [formProcessBinding.formProcessTemplateVersion.status]
@@ -100,6 +101,7 @@ facts:
     name: 作业流程版本状态
     conceptId: concept.production-work-flow-version
     valueType: enum
+    enumValues: [DRAFT, PUBLISHED]
     sourceType: database
     sourcePath: ProductionWorkFlowVersion.status
     aliases: [productionWorkFlowVersion.status]
@@ -148,6 +150,7 @@ facts:
     name: 目标表单流程版本状态
     conceptId: concept.form-process-template-version
     valueType: enum
+    enumValues: [DRAFT, PUBLISHED]
     sourceType: database
     sourcePath: TargetFormProcessVersion.status
     aliases: [targetFormProcessVersion.status]
@@ -196,6 +199,7 @@ facts:
     name: 被引用表单流程版本状态
     conceptId: concept.form-process-version-reference
     valueType: enum
+    enumValues: [DRAFT, PUBLISHED]
     sourceType: database
     sourcePath: ReferencedFormProcessVersion.status
     aliases: [referencedFormProcessVersion.status]

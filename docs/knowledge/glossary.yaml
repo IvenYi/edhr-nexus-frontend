@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.24
+knowledgeModelVersion: 0.3.25
 terms:
   - id: term.custom-form-scope
     name: 自定义表单归属
@@ -666,6 +666,12 @@ terms:
     aliases: [变更前后快照, 审计字段快照]
     status: implemented
     visibility: internal
+  - id: term.audit-event
+    name: 审计事件
+    definition: 一次已记录操作的不可变审计记录，具有独立事件标识、受影响对象、原始动作、操作者和发生时间，并可保留变更前后快照。事件与客户页面展示的动作类别分别建模；同一“修改”类别可以对应多次不同事件，分类投影不改写原始事件与快照。
+    aliases: [数据审计事件, AuditEvent]
+    status: implemented
+    visibility: internal
   - id: term.record-correction-request
     name: 表单变更申请
     definition: 针对已完成记录发起的独立受控申请；申请提交新修订，经匹配的已发布审批流程批准后替代当前有效修订。
@@ -710,7 +716,7 @@ terms:
     visibility: internal
   - id: term.execution-custom-form
     name: 执行自定义表单
-    definition: 操作员选择已发布表单模板版本并明确是否必填后，挂载到当前生产对象当前工序的填报表单；不表示现场修改模板结构。
+    definition: 操作员在当前租户范围内选择有效表单模板的明确版本、填写添加原因并确定工序或批次归属后创建的填报表单，创建时冻结所选模板完整执行快照；工序归属绑定所选工序，批次归属在同一批次各工序共享同一个表单及份实例。可配置是否必须在归属对象完工前完成，默认开启；关闭只允许生产先完成，不豁免资料齐套、签名或审批要求。表单模板没有发布生命周期，候选和添加资格不要求 PUBLISHED；作业流程及表单流程的独立发布要求继续适用，不表示现场修改模板结构。
     aliases: [自定义填报表单]
     status: specified
     visibility: internal

@@ -1,5 +1,5 @@
-knowledgeModelVersion: 0.3.24
-schemaVersion: 1.1.0
+knowledgeModelVersion: 0.3.25
+schemaVersion: 1.2.0
 dimensions:
   status:
     definition: 知识或规则的成熟度；它不直接决定可进入哪些发布投影。
@@ -20,6 +20,7 @@ enums:
   ruleOperators: [in, unique-within, exists, is-referenceable, exists-in, belongs-to, equals, not-equals, equals-ignore-case, contains, contains-actor, starts-with, ends-with-ignore-case, is-null, is-present, greater-than-or-equal, explicitly-selected, configurable, persisted, planned]
   ruleResultTypes: [include-as-product, allow-parallel-versions, persist-version-references, persist-field-contract, persist-operation-binding, persist-form-reference-pair, persist-multiple-document-version-references, persist-page-range, persist-unique-code, persist-default-status, require-explicit-process-version, compute-rdo-version-status, omit-projection, freeze-execution-snapshot, persist-form-required-configuration, persist-flow-configuration, evaluate-condition-branches, remove-configuration, block, block-fields-and-delete, planned-form-sharing, planned-permission-control, planned-transaction-trigger, planned-production-work-trigger, planned-pre-start-validation, planned-final-output, planned-material-readiness-validation, resolve-published-production-work-flow, manage-production-work-flow-draft, write-audit-record, resolve-subject-users, create-logical-workflow-task, complete-logical-task, complete-form-instance, rebuild-query-projection, return-query-projection, notify, update-reference, allow-with-governance]
   factCatalogProfiles: [form-process-binding, core-business]
+  factValueTypes: [string, boolean, integer, decimal, enum, reference, object]
   factSourceTypes: [configuration, database, runtime-context, derived]
   factAvailabilities: [configuration, runtime, configuration-and-runtime, not-available]
   anchorTargetTypes: [concept, fact, rule, executionContract]
@@ -118,7 +119,8 @@ recordTypes:
       id: string
       name: string
       conceptId: string
-      valueType: string
+      valueType: enum:factValueTypes
+      enumValues: array<string>
       sourceType: enum:factSourceTypes
       sourcePath: string
       aliases: array<string>
@@ -232,7 +234,10 @@ conditionExpression:
   clauseFieldTypes:
     fact: string
     operator: enum:ruleOperators
-  clauseValueTypes: [string, integer, boolean, "null", array]
+  clauseValueTypes: [string, integer, decimal, boolean, "null", array, fact-reference]
+  # A string is always a literal. Cross-fact comparisons use value: {fact: <id-or-alias>}.
+  # Numeric comparisons accept integer/decimal operands without string coercion.
+  # Predicate expectation values (e.g. is-present: true) do not change the input fact type.
   semantics:
     all: 每个子表达式必须成立。
     any: 至少一个子表达式必须成立。

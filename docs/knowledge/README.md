@@ -1,6 +1,18 @@
 # eDHR 结构化业务知识基线
 
-当前知识模型版本：`knowledgeModelVersion: 0.3.24`，schema 版本：`1.1.0`。
+当前知识模型版本：`knowledgeModelVersion: 0.3.25`，schema 版本：`1.2.0`。
+
+## 本次基线与读取方式
+
+`0.3.25` 修复事实类型及比较操作数校验、审计事件与变更快照关系、自定义表单词条与 `DEC-0075` 的不同步，并提供独立 Maven 知识校验入口。类型校准、原始来源和保留的数量阈值差异见 [类型复核说明](evidence/ontology-foundation-fact-types.md)；协作者同步和投影分支集成说明见 [本体修复与分支集成](../development/ontology-foundation-repair.md)。本次版本升级不提高既有业务规则的成熟度，也不代表通用运行规则引擎或整个 P0 已验收。
+
+当前含义由受影响的现行词条、概念、关系、规则及其已确认决策共同维护。局部替代必须说明声明 ID 和适用范围；Git 时间较新、文件排序靠后、已有实现与原规则不同，都不能单独作为覆盖业务决策的依据。若实现尚未达到当前设计，保留差异与证据，不能让读取者自行从多个版本猜测业务含义。
+
+知识版本必须与具体 Git 提交一起使用：两个并行分支可能同为 `0.3.24`，却拥有不同决策及重复 ID。每次任务、专业交接和合并验证按 `AGENTS.md` 记录实际读取的契约基线及未提交的契约改动。
+
+## 历史增量记录
+
+以下保留各增量记录当时的版本和验证声明；其中“当前工作树”“保留 0.3.24”等描述属于该增量记录的时点，不覆盖本页顶部的现行基线，也不自动继承为本次验证结果。具体业务含义仍需核对声明级替代范围和现行知识资产。
 
 当前工作树增量 `DEC-0074` 确认普通按钮使用实际签署人的独立电子签名密码及有效认证，允许共享终端 A 登录、B 本人签署，不借用 A 的业务权限、不切换会话。未认证或过期只原位阻断提示并保留输入，不跳个人设置。暂仅用户名 `admin` 使用登录密码且免个人认证，不按管理员角色识别、不扩大到客户管理员、不免业务授权。新决定只局部替代旧按钮登录密码约定；`DEC-0058` 的 `SIGN_FIELD`、当前用户个人认证、图片、有效期及内容失效逻辑全部保留。新知识保持 `specified/internal` 和 0.3.24；工程推断、双身份审计实现证据、admin精确匹配差异关闭及已运行测试的时点与后续回归缺口见 `evidence/button-signature-confirmed.md`，不宣称发布或独立质量验收完成。
 
@@ -119,6 +131,33 @@
 
 除 `many-to-one` 已明确的反向语义外，其余词汇不对 target 端反向数量作额外断言。缺少已实现运行数据的关系必须用零下界，避免把配置或未来执行的可选性误写成必然存在。
 
+## 事实与操作数类型
+
+`schema 1.2.0` 将 `fact.valueType` 限定为 `string`、`boolean`、`integer`、`decimal`、`enum`、`reference`、`object`。这是业务事实的值类型，与 schema 字段描述符语言分开。`enum` 必须声明非空、无重复的 `enumValues`；匹配区分大小写。`reference` 的当前字面标识表示支持字符串和整数，目标实体是否存在仍由领域契约校验。
+
+| 表达式 | 当前正式校验要求 |
+| --- | --- |
+| `equals` / `not-equals` | 标量类型相容；枚举字面量属于枚举集合；不隐式转换字符串、布尔值或空值 |
+| `greater-than-or-equal` | 两端均为数值；`integer` 与 `decimal` 可比较，数字字符串无效 |
+| `in` | RHS 为数组，每个成员与事实类型相容 |
+| `equals-ignore-case` / `contains` / `starts-with` / `ends-with-ignore-case` | 输入事实及 RHS 均为字符串 |
+| `is-present` / `is-null` | RHS 是布尔期望；兼容既有 `null` 占位写法，不能据此把输入事实改成布尔类型 |
+| `exists` / `is-referenceable` / `contains-actor` / `explicitly-selected` / `planned` | RHS 为布尔期望；底层事实类型独立登记 |
+| `unique-within` / `exists-in` / `belongs-to` / `configurable` / `persisted` | RHS 保留有明确领域含义的非空字符串；当前只检查形状，求值语义需要专用执行契约 |
+
+所有 RHS 字符串按字面量处理，不因“看起来像字段路径”而自动解引用。不同事实之间比较必须明确写出引用，当前支持 `equals`、`not-equals` 和 `greater-than-or-equal`：
+
+```yaml
+fact: fact.catalog.documentbinding-pageend
+operator: greater-than-or-equal
+value:
+  fact: fact.catalog.documentbinding-pagestart
+```
+
+校验器解析两端事实 ID 或别名，并检查操作数类型。未知引用、不相容类型、额外对象字段及事实 ID 与别名碰撞均被拒绝。废弃规则仍保留历史表达，不纳入当前事实类型强制校准。`integer` 与小数阈值的比较不意味着整数字段允许保存小数；此处验证的是规则表达式，实际数据约束由领域实现负责。
+
+这些检查不等于规则已可执行。已有设计文本中的字符串路径、领域专用操作符、缺失值与 `null` 的运行时区别、精度和单位、权限、事务及历史规则版本，仍需在各规则进入生产执行前明确并验证；不允许从类型检查通过推导 `verified`。
+
 ## 标识规则
 
 - 术语、概念、关系、规则、证据、未决问题和执行契约分别使用稳定前缀 `term.`、`concept.`、`relation.`、`rule.`、`evidence.`、`question.` 和 `execution.`。
@@ -134,17 +173,21 @@
 
 1. 主智能体从已确认讨论生成 `decisionPackage`，区分 `confirmed`、`inferred` 和 `unresolved`，并声明本体升级阶段和退出条件。
 2. 本体建模智能体读取当前基线、schema、相关实现和历史决策，只将 `confirmed` 写入权威资产；P0 任务优先登记规则实际引用的事实和关键实现锚点。
-3. `unresolved` 非空时停止正式建模并返回 `blocked-by-question`；冲突通过新决策和 `supersedes` 解决，不静默覆盖。
+3. 有真实业务歧义时只暂停依赖该问题的建模范围并返回相应阻塞；无依赖的已确认修复可以继续。已确认的替代或有证据的建模纠错按明确范围同步现行资产并保留历史，不能将其再次当作待批准冲突；不能通过“新文件优先”静默覆盖。
 4. 状态推进必须补齐相应实现、测试和执行契约证据；缺少任一项不得标记 `verified`。P0/P1/P2/P3 阶段没有退出证据不得标记阶段完成。
 5. 修改后执行 Maven/JUnit 正式校验并进入独立质量验证；Ruby bootstrap 仅用于最小诊断。
 
 ## 正式校验
 
-Maven/JUnit 是跨平台知识模型校验的正式入口，也是质量门禁依据：
+Maven/JUnit 是跨平台知识模型校验的正式入口，也是质量门禁依据。安装 Java 21 与 Maven 后，在仓库根目录执行：
 
 ```bash
-cd gmp-platform/backend && mvn -Dtest=BusinessKnowledgeModelTest test
+mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
 ```
+
+独立模块复用后端知识测试包，使用相同的依赖管理；不编译生产模块，也不执行打印前端构建。完整后端构建仍有自己的前置依赖。本命令覆盖知识资产和校验器，不替代受影响业务功能的回归测试。
+
+知识工作流对所有 PR 检查 GitHub 合并候选并记录 base/head/tested SHA，对 `main`、`master`、`edhr-dev` 推送也执行检查。必需状态检查及目标分支保持最新的合并限制，需要在仓库 ruleset/branch protection 中配置；工作流和 `AGENTS.md` 本身不禁止直接推送或绕过合并。开启 merge queue 时还必须启用其 `merge_group` 检查事件，不能沿用过时的 PR 通过结果。
 
 ## Bootstrap 诊断
 
@@ -161,7 +204,7 @@ paths = Dir[File.join(base, "**/*.yaml")].sort
 docs = paths.to_h { |path| [path, YAML.safe_load(File.read(path), permitted_classes: [], permitted_symbols: [], aliases: false)] }
 schema_path = File.join(base, "schema.yaml")
 schema = docs.fetch(schema_path)
-raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.24" && schema.fetch("schemaVersion") == "1.1.0"
+raise "schema version" unless schema.fetch("knowledgeModelVersion") == "0.3.25" && schema.fetch("schemaVersion") == "1.2.0"
 docs.each { |path, doc| raise "knowledge version: #{path}" unless doc.fetch("knowledgeModelVersion") == schema.fetch("knowledgeModelVersion") }
 
 record_types = schema.fetch("recordTypes")
@@ -311,9 +354,11 @@ validate_condition = lambda do |expression|
     value_type = case value
                  when String then "string"
                  when Integer then "integer"
+                 when Float then value.finite? ? "decimal" : nil
                  when TrueClass, FalseClass then "boolean"
                  when NilClass then "null"
                  when Array then "array"
+                 when Hash then value.keys == ["fact"] && value["fact"].is_a?(String) && !value["fact"].strip.empty? ? "fact-reference" : nil
                  end
     raise "condition value" unless condition_schema.fetch("clauseValueTypes").include?(value_type)
   end

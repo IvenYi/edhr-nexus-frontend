@@ -1,6 +1,7 @@
 package com.zencas.edhr.knowledge;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -42,10 +43,10 @@ final class BusinessKnowledgeModelValidator {
         validateIdPrefixes(schema, structure, records);
         validateUniqueIds(records);
         validateReferences(schema, structure, records);
-        validateFactCatalog(schema, structure, records);
+        validateRules(schema, records.records("rule"));
+        validateFactCatalog(schema, records);
         validateProvenance(schema, records);
         validateEvidencePaths(model.repositoryRoot(), schema, records.records("evidence"));
-        validateRules(schema, records.records("rule"));
         validateRuleProjections(schema, records.records("rule"));
         validateExecutionContracts(schema, structure, records);
     }
@@ -488,10 +489,8 @@ final class BusinessKnowledgeModelValidator {
 
     private static void validateFactCatalog(
             Map<String, Object> schema,
-            SchemaStructure structure,
             RecordIndex records
     ) {
-        String schemaId = "docs/knowledge/schema.yaml";
         Set<String> conceptIds = ids(records.records("concept"));
         Set<String> factIds = ids(records.records("fact"));
         Set<String> ruleIds = ids(records.records("rule"));
@@ -523,13 +522,20 @@ final class BusinessKnowledgeModelValidator {
                 if (!allowedOperators.contains(operator)) {
                     throw invalid(id, "allowedOperators", "unknown operator " + operator);
                 }
+                validateOperatorInputType(fact, operator, id, "allowedOperators");
             }
-            factsByReference.put(id, fact);
-            for (String alias : aliases) {
-                Map<String, Object> previous = factsByReference.put(alias, fact);
-                if (previous != null && !id.equals(idOf(previous))) {
-                    throw invalid(id, "aliases", "duplicates fact " + idOf(previous));
+            if ("enum".equals(fact.get("valueType"))) {
+                List<String> values = stringList(fact.get("enumValues"), id, "enumValues");
+                if (values.isEmpty() || values.stream().anyMatch(String::isBlank)
+                        || !duplicates(values).isEmpty()) {
+                    throw invalid(id, "enumValues", "must contain unique non-empty enum values");
                 }
+            } else if (fact.containsKey("enumValues")) {
+                throw invalid(id, "enumValues", "is only allowed for valueType enum");
+            }
+            registerFactReference(factsByReference, id, fact);
+            for (String alias : aliases) {
+                registerFactReference(factsByReference, alias, fact);
             }
         }
 
@@ -569,50 +575,149 @@ final class BusinessKnowledgeModelValidator {
                     throw invalid(idOf(rule), "factCatalogProfile", "must be one of " + profiles);
                 }
             }
-            Map<String, Set<String>> factOperators = new LinkedHashMap<>();
-            collectConditionFacts(rule.get("condition"), factOperators, idOf(rule), "condition");
-            for (Map.Entry<String, Set<String>> entry : factOperators.entrySet()) {
-                Map<String, Object> fact = factsByReference.get(entry.getKey());
-                if (fact == null && factIds.contains(entry.getKey())) {
-                    fact = records.refs("fact").stream()
-                            .map(RecordRef::data)
-                            .filter(candidate -> entry.getKey().equals(idOf(candidate)))
-                            .findFirst()
-                            .orElse(null);
-                }
-                if (fact == null) {
-                    throw invalid(idOf(rule), "condition.fact", "reference " + entry.getKey()
-                            + " does not resolve in the fact catalog");
-                }
-                List<String> factAllowedOperators = stringList(fact.get("allowedOperators"), idOf(fact),
-                        "allowedOperators");
-                for (String operator : entry.getValue()) {
-                    if (!factAllowedOperators.contains(operator)) {
-                        throw invalid(idOf(rule), "condition.operator",
-                                "operator " + operator + " is not allowed for fact " + entry.getKey());
-                    }
-                }
-            }
+            validateFactCondition(mapValue(rule, "condition", idOf(rule)), factsByReference,
+                    idOf(rule), "condition");
         }
     }
 
-    private static void collectConditionFacts(
-            Object value,
-            Map<String, Set<String>> facts,
+    private static void registerFactReference(
+            Map<String, Map<String, Object>> facts,
+            String reference,
+            Map<String, Object> fact
+    ) {
+        if (reference.isBlank()) {
+            throw invalid(idOf(fact), "aliases", "fact references must be non-empty");
+        }
+        Map<String, Object> previous = facts.putIfAbsent(reference, fact);
+        if (previous != null && !idOf(fact).equals(idOf(previous))) {
+            throw invalid(idOf(fact), "aliases", "reference " + reference + " duplicates fact " + idOf(previous));
+        }
+    }
+
+    private static void validateFactCondition(
+            Map<String, Object> expression,
+            Map<String, Map<String, Object>> facts,
             String recordId,
             String field
     ) {
-        if (value instanceof Map<?, ?> rawMap) {
-            Map<String, Object> map = stringKeyedMap(rawMap, recordId, field);
-            if (map.containsKey("fact")) {
-                String fact = requiredString(map, "fact", recordId);
-                String operator = requiredString(map, "operator", recordId);
-                facts.computeIfAbsent(fact, ignored -> new HashSet<>()).add(operator);
+        for (String group : List.of("all", "any")) {
+            if (expression.get(group) instanceof List<?> children) {
+                for (int index = 0; index < children.size(); index++) {
+                    String childField = field + "." + group + "[" + index + "]";
+                    validateFactCondition(stringKeyedMapValue(children.get(index), recordId, childField),
+                            facts, recordId, childField);
+                }
+                return;
             }
-            map.values().forEach(child -> collectConditionFacts(child, facts, recordId, field));
-        } else if (value instanceof List<?> list) {
-            list.forEach(child -> collectConditionFacts(child, facts, recordId, field));
         }
+        if (expression.containsKey("not")) {
+            validateFactCondition(mapValue(expression, "not", recordId), facts, recordId, field + ".not");
+            return;
+        }
+        String reference = requiredString(expression, "fact", recordId);
+        Map<String, Object> fact = resolveFact(facts, reference, recordId, "condition.fact");
+        String operator = requiredString(expression, "operator", recordId);
+        if (!stringList(fact.get("allowedOperators"), idOf(fact), "allowedOperators").contains(operator)) {
+            throw invalid(recordId, "condition.operator", "operator " + operator
+                    + " is not allowed for fact " + reference);
+        }
+        validateOperatorInputType(fact, operator, recordId, field + ".operator");
+        Object value = expression.get("value");
+        String valueField = field + ".value";
+        if ("fact-reference".equals(conditionValueType(value))) {
+            if (!Set.of("equals", "not-equals", "greater-than-or-equal").contains(operator)) {
+                throw invalid(recordId, valueField, "fact-reference is not supported for operator " + operator);
+            }
+            Map<String, Object> operand = stringKeyedMapValue(value, recordId, valueField);
+            Map<String, Object> other = resolveFact(facts, requiredString(operand, "fact", recordId),
+                    recordId, valueField + ".fact");
+            String leftType = requiredString(fact, "valueType", idOf(fact));
+            String rightType = requiredString(other, "valueType", idOf(other));
+            if ((!leftType.equals(rightType) && !(isNumericType(leftType) && isNumericType(rightType)))
+                    || "object".equals(leftType)) {
+                throw invalid(recordId, valueField, "fact-reference type " + rightType
+                        + " is incompatible with " + leftType + " fact " + reference);
+            }
+            return;
+        }
+        switch (operator) {
+            case "equals", "not-equals", "greater-than-or-equal" ->
+                    validateFactLiteral(fact, value, recordId, valueField);
+            case "in" -> {
+                if (!(value instanceof List<?> values)) {
+                    throw invalid(recordId, valueField, "operator in requires an array");
+                }
+                for (int index = 0; index < values.size(); index++) {
+                    validateFactLiteral(fact, values.get(index), recordId, valueField + "[" + index + "]");
+                }
+            }
+            case "is-present", "is-null" -> {
+                // Legacy null is a predicate placeholder, not an equality comparison with null.
+                if (value != null && !(value instanceof Boolean)) {
+                    throw invalid(recordId, valueField, "presence predicate requires boolean or legacy null");
+                }
+            }
+            case "exists", "is-referenceable", "contains-actor", "explicitly-selected", "planned" -> {
+                if (!(value instanceof Boolean)) {
+                    throw invalid(recordId, valueField, "predicate expectation must be boolean");
+                }
+            }
+            case "equals-ignore-case", "contains", "starts-with", "ends-with-ignore-case" -> {
+                if (!(value instanceof String)) {
+                    throw invalid(recordId, valueField, "operator " + operator + " requires a string");
+                }
+            }
+            case "unique-within", "exists-in", "belongs-to", "configurable", "persisted" -> {
+                if (!(value instanceof String text) || text.isBlank()) {
+                    throw invalid(recordId, valueField, "operator " + operator + " requires a non-empty string");
+                }
+            }
+            default -> throw invalid(recordId, field + ".operator", "has no operand type contract: " + operator);
+        }
+    }
+
+    private static Map<String, Object> resolveFact(
+            Map<String, Map<String, Object>> facts, String reference, String recordId, String field
+    ) {
+        Map<String, Object> fact = facts.get(reference);
+        if (fact == null) {
+            throw invalid(recordId, field, "reference " + reference + " does not resolve in the fact catalog");
+        }
+        return fact;
+    }
+
+    private static void validateOperatorInputType(
+            Map<String, Object> fact, String operator, String recordId, String field
+    ) {
+        String type = requiredString(fact, "valueType", idOf(fact));
+        if ("greater-than-or-equal".equals(operator) && !isNumericType(type)) {
+            throw invalid(recordId, field, "operator " + operator + " requires numeric valueType for " + idOf(fact));
+        }
+        if (Set.of("equals-ignore-case", "contains", "starts-with", "ends-with-ignore-case").contains(operator)
+                && !"string".equals(type)) {
+            throw invalid(recordId, field, "operator " + operator + " requires string valueType for " + idOf(fact));
+        }
+    }
+
+    private static void validateFactLiteral(Map<String, Object> fact, Object value, String recordId, String field) {
+        String type = requiredString(fact, "valueType", idOf(fact));
+        String literalType = conditionValueType(value);
+        boolean compatible = switch (type) {
+            case "string", "boolean" -> type.equals(literalType);
+            case "integer", "decimal" -> isNumericType(literalType);
+            case "enum" -> "string".equals(literalType)
+                    && stringList(fact.get("enumValues"), idOf(fact), "enumValues").contains(value);
+            case "reference" -> Set.of("string", "integer").contains(literalType);
+            default -> false;
+        };
+        if (!compatible) {
+            throw invalid(recordId, field, "literal " + value + " (" + literalType + ") is incompatible with "
+                    + type + " fact " + idOf(fact));
+        }
+    }
+
+    private static boolean isNumericType(String type) {
+        return "integer".equals(type) || "decimal".equals(type);
     }
 
     private static void validateEvidencePaths(
@@ -837,11 +942,19 @@ final class BusinessKnowledgeModelValidator {
                 || value instanceof Long || value instanceof BigInteger) {
             return "integer";
         }
+        if (value instanceof BigDecimal || value instanceof Double decimal && Double.isFinite(decimal)
+                || value instanceof Float floatDecimal && Float.isFinite(floatDecimal)) {
+            return "decimal";
+        }
         if (value instanceof Boolean) {
             return "boolean";
         }
         if (value instanceof List<?>) {
             return "array";
+        }
+        if (value instanceof Map<?, ?> map && map.size() == 1
+                && map.get("fact") instanceof String reference && !reference.isBlank()) {
+            return "fact-reference";
         }
         return typeName(value);
     }

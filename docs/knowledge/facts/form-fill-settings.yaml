@@ -1,9 +1,10 @@
-knowledgeModelVersion: 0.3.24
+knowledgeModelVersion: 0.3.25
 facts:
   - id: fact.form-fill-settings.mode
     name: 表单绑定显式选择的填报方式
     conceptId: concept.form-fill-settings
     valueType: enum
+    enumValues: [直接填报, 按流程填报]
     sourceType: configuration
     sourcePath: docs/knowledge/evidence/form-fill-settings-confirmed.md
     aliases: [formFillSettings.mode]
