@@ -3,10 +3,10 @@ evidence:
   - id: evidence.form-process-field-permission-implementation
     type: code
     path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
-    description: 流程配置保存主体默认权限及绑定级字段例外配置。
+    description: 流程配置保存权限配置组默认权限及绑定级字段例外配置，组内主体共享组默认权限。
     visibility: internal
   - id: evidence.form-renderer-preview-current-input
     type: code
     path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
-    description: 当前表单预览器接收表单文档，字段权限状态输入契约待接入。
+    description: FormCanvasPreview 已接收 fieldPermissions 并传给 Word、Sheet、字段列表及文档预览分支，PreviewField 与 FieldListPreview 使用只读状态。此源码证据不证明 DEC-0034-04 的数组对象和未知字段诊断推断或版本错配端到端验收已经完成。
     visibility: internal

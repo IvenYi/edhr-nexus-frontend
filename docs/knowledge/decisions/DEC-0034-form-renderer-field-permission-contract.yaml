@@ -48,7 +48,7 @@ decisions:
         status: accepted
         severity: high
         visibility: internal
-        path: gmp-platform/frontend/src/components/form-renderer/FormCanvasPreview.tsx
-        lineHint: 1
-        summary: "provenance: original-evidence；当前预览器尚未接收字段权限状态；流程侧适配器与表单渲染器接入仍待实现。"
+        path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+        lineHint: 1019
+        summary: "provenance: original-evidence；2026-10-12 内审确认 FormCanvasPreview 已接收 fieldPermissions 并传入各渲染分支，旧的完全未接入描述不再适用。本差异保留尚未闭环的数组对象/未知 fieldId 诊断推断、版本错配及端到端验证范围；静态接入不等于全部验收通过。"
         evidenceIds: [evidence.form-renderer-preview-current-input]

@@ -14,7 +14,7 @@ rules:
     result:
       type: resolve-subject-users
       supportedSubjectTypes: [USER, DEPARTMENT, ROLE]
-      departmentScopes: [SELF, SELF_AND_DESCENDANTS]
+      departmentScopes: [SELF_ONLY, SELF_AND_CHILDREN]
       membershipSource: latest-at-call-time
       inactiveUsersExcluded: true
       deduplicateBy: userId
@@ -52,13 +52,12 @@ rules:
           value: true
         - fact: subject.departmentScopes
           operator: in
-          value: [SELF, SELF_AND_DESCENDANTS]
+          value: [SELF_ONLY, SELF_AND_CHILDREN]
     result:
       type: resolve-subject-users
       deduplicateBy: userId
       retainMatchProvenance: true
-      expansionMemoization: per-resolution-request
-    explanation: 同一解析请求中父部门含下级和子部门主体可能展开相同成员；解析器对部门树和最终用户使用请求级去重，避免重复查询或遍历导致的性能浪费，同时不合并或丢弃不同主体命中来源。
+    explanation: 同一解析请求中父部门含下级和子部门主体可能展开相同成员；解析器按各主体分别遍历部门树，汇集部门 ID 后批量查询成员，最终按 userId 去重并保留不同主体的命中来源。当前实现不含跨主体子树展开缓存，不能把结果去重解释为已避免所有重复遍历。
     evidenceIds: [evidence.identity-department-repository, evidence.identity-user-department-repository, evidence.identity-subject-resolver-contract, evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
   - id: rule.workflow.task-creation-freezes-candidate-resolution
     name: 工作流任务创建冻结候选解析快照
@@ -92,10 +91,10 @@ rules:
           operator: contains-actor
           value: true
         - fact: workflowTask.status
-          operator: equals
-          value: open
+          operator: in
+          value: [PENDING, PROCESSING]
     result:
       type: complete-logical-task
       nonCandidateBehavior: block
-    explanation: 仅任务创建时快照中的候选用户可以执行完成动作。任一候选完成后，单条逻辑任务进入终态，其他候选因任务终态自然失去处理权；非候选人不得完成。
+    explanation: 对具有非空冻结候选集合且非 unrestricted 的开放任务，仅任务创建时快照中的候选用户可以执行完成动作。开放状态对应 PENDING 或 PROCESSING；任一候选完成后，单条逻辑任务进入终态，其他候选因任务终态自然失去处理权。DEC-0033 的 unrestricted 开放范围与旧 assignee 回退分支由各自授权路径负责，不从本条推导其必须具有候选成员。
     evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.production-form-process-user-confirmed-v2, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence]

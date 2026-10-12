@@ -60,3 +60,13 @@ evidence:
     path: gmp-platform/frontend/scripts/test-form-references.mjs
     description: original-evidence；Node/esbuild 纯函数测试旧配置读取、同字段多控件同步、子表字段和嵌入字段同步以及当前行查询依赖隔离。这些测试不宣称浏览器真实交互已通过。
     visibility: internal
+  - id: evidence.form-reference-personal-filling-context
+    type: code
+    path: gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
+    description: original-evidence；references:260-262 仅接收 fieldId、keyword，并将该回调交给正式填报渲染器。 它未透传 RuntimeReference 的第三参依赖上下文，getExecutionReferences 因默认 values={} 丢失主表或当前行查询条件。 与正确传三参的 ProductionExecutionPage:181 对照，范围为个人填报入口，未执行真实页面运行。
+    visibility: internal
+  - id: evidence.form-reference-personal-review-context
+    type: code
+    path: gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx
+    description: original-evidence；references:154-156 仅转发 fieldId、keyword，运行渲染器发出的第三参依赖值未到达 getExecutionReferences。 因而个人表单审批入口的带条件引用查询缺少上下文；后端缺依赖返回空候选及保存有效性约束仍独立存在。 仅为源码核对，不表示审批页面浏览器验收。
+    visibility: internal

@@ -1,0 +1,299 @@
+{
+  "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "recordCount": 10,
+  "distinctExistingTopics": 8,
+  "scope": "Current implementation details that evidence can settle were corrected. These existing future business/full-contract topics do not require immediate answers and do not block the L1 audit.",
+  "topics": [
+    {
+      "topic": "DHR终止附加签署",
+      "ids": [
+        "question.dhr-termination-sop-extra-signature"
+      ],
+      "confirmationTrigger": "进入DHR终止的附加签署设计时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "question.dhr-termination-sop-extra-signature",
+          "sourcePath": "docs/knowledge/open-questions.yaml",
+          "scope": {
+            "reviewedAssertion": "具体企业 SOP 是否要求生产对象提前结束动作增加额外电子签名，若要求应由哪项受控配置决定？",
+            "semanticCheck": "问题的业务责任、选项与不阻断其他MVP范围已核对；无新的用户决定或充分源码政策证据可将其关闭。未来SOP/多租户/签名配置问题不阻塞本次审计。"
+          },
+          "evidenceReferenceIds": [
+            "ev-a0441a3358237e8c",
+            "ev-8b84e4dad02b4f24",
+            "ev-44379346cc314412",
+            "ev-c3ca08579e82f629"
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "管理重新分配签署",
+      "ids": [
+        "question.record-control-managerial-reassignment-signature"
+      ],
+      "confirmationTrigger": "开发管理重新分配入口时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "question.record-control-managerial-reassignment-signature",
+          "sourcePath": "docs/knowledge/open-questions.yaml",
+          "scope": {
+            "reviewedAssertion": "记录控制审批的重新分配是否必须额外完成电子签名，还是只要求专门权限、原因和不可变审计？",
+            "semanticCheck": "问题的业务责任、选项与不阻断其他MVP范围已核对；无新的用户决定或充分源码政策证据可将其关闭。未来SOP/多租户/签名配置问题不阻塞本次审计。"
+          },
+          "evidenceReferenceIds": [
+            "ev-fd3c5e1d19e7dc9f",
+            "ev-8b84e4dad02b4f24",
+            "ev-44379346cc314412",
+            "ev-c3ca08579e82f629"
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "活动表单作废资格",
+      "ids": [
+        "question.record-control-active-form-void-boundary",
+        "evidence.record-correction-void-design"
+      ],
+      "confirmationTrigger": "记录控制开始接入活动表单资格或受控关闭消费时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "question.record-control-active-form-void-boundary",
+          "sourcePath": "docs/knowledge/open-questions.yaml",
+          "scope": {
+            "reviewedAssertion": "活动中的表单记录是否允许发起作废申请，还是必须在作废入口阻断并继续原填报或审批流程？",
+            "semanticCheck": "原始设计含活动表单阻断提议，但开放问题明确尚未获得产品确认；当前申请入口无完整实施证据，不能把旧建议升为现行已确认阻断。只在开发依赖此政策时确认。"
+          },
+          "evidenceReferenceIds": [
+            "ev-0c8bcf220e369632",
+            "ev-aacb07bc69417024",
+            "ev-f4cb1a905451c026"
+          ]
+        },
+        {
+          "id": "evidence.record-correction-void-design",
+          "sourcePath": "docs/knowledge/evidence/record-correction-void-design.yaml",
+          "scope": {
+            "recordMeaningReviewed": {
+              "type": "document",
+              "path": "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+              "description": "用户确认的表单变更与作废设计收敛稿；定义独立申请、新修订、作废语义、表单流程可选时无流程提交直接完成、显式匹配已发布流程并冻结引用、受限撤回、转办、重新分配、并行审批、字段标红、审计快照及 P0 不支持终止跳过加签等范围。该文档是设计证据，不是实现证据。"
+            },
+            "semanticReview": "变更和作废为独立申请；已完成记录通过新修订变更，旧版本只读保留，作废不物理删除。申请冻结指定类型流程版本，审核期间来源资格/锁与业务状态分开；并行全同意汇合，任一退回作废未完成分支；有限撤回、转办/重指派需要原因审计。",
+            "implementationBoundary": "本文件为指定的设计规范，记录申请/修订/红标/DHR重汇总/投影冲销尚无业务实现。公共阶段一启动不等于申请链。活跃表单作废边界依既有开放问题，不把设计推断升级为确认。",
+            "recordSpecificConclusion": "该条按上述规范与实现边界核对；具体原文见 recordMeaningReviewed。",
+            "currentStatementReferences": [],
+            "maturityTreatment": "原status、sourceReviewStatus、sourceRevision和provenance均不因本次审读自动提升；reviewed只表示本条人工语义核对完成。",
+            "sourceIndexReview": {
+              "referencedPath": "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+              "sourceNature": "document",
+              "preciseSourceLocations": [
+                {
+                  "path": "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+                  "locator": "full design; revision/request boundaries; active-form void blocking:140,280,347,432 is not independently user-confirmed",
+                  "nature": "design-and-inference"
+                }
+              ],
+              "treatment": "按description的原始确认、历史边界、当前实现或测试源各自含义核对；源代码与测试断言不代表本次运行。"
+            },
+            "specificFindings": [
+              {
+                "id": "FORMS-011",
+                "scope": "支持文档把活动表单作废阻断写成收敛规则，但开放问题及跨域集成契约明确该资格未决；不能把建议提升为已确认政策。"
+              }
+            ]
+          },
+          "evidenceReferenceIds": [
+            "ev-e83e1f425aba8dd1",
+            "ev-cc8f08d7c86a4614",
+            "ev-67d721d4b7e91bda",
+            "ev-6eb12e2234fc070e",
+            "ev-198ffdca36e3d3ba",
+            "ev-ac0b097ff4bd32fc",
+            "ev-7199573b31d34dcd",
+            "ev-12dc2b708b126242",
+            "ev-e3439ea11e045c10",
+            "ev-e7447560a1176eba",
+            "ev-488937c21f3f8637",
+            "ev-b83993a127f1a1b7",
+            "ev-fe7ff5b1129ca354",
+            "ev-1c6531f8d96a85a3",
+            "ev-bbf11e9bb5269485",
+            "ev-6545df6ba7924f21"
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "WORK完整事实及快照契约",
+      "ids": [
+        "question.production-work-condition-runtime-source-snapshot-contract"
+      ],
+      "confirmationTrigger": "把受限五字段扩为完整规则事实读取/快照时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "question.production-work-condition-runtime-source-snapshot-contract",
+          "sourcePath": "docs/knowledge/open-questions.yaml",
+          "scope": {
+            "reviewedAssertion": "已确认作业条件第一版字段目录和字段类型，但运行时真实来源、取值快照方式以及目录版本与生产实例快照的绑定契约何时闭环？",
+            "semanticCheck": "已有局部取值/求值/推进源码；旧context的完全未实现表述需纠正，完整来源政策、异常与结果审计契约仍未决，不从固定工程值推造用户确认。"
+          },
+          "evidenceReferenceIds": [
+            "ev-e8dbf604eab82c7e",
+            "ev-2b84af5a94554510",
+            "ev-93251eacf747e7c7",
+            "ev-7facc957ac75ab1d"
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "WORK完整求值契约",
+      "ids": [
+        "question.production-work-condition-runtime-evaluation-contract"
+      ],
+      "confirmationTrigger": "设计通用类型/运算/缺失值/异常和可重放求值时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "question.production-work-condition-runtime-evaluation-contract",
+          "sourcePath": "docs/knowledge/open-questions.yaml",
+          "scope": {
+            "reviewedAssertion": "结构化条件 AST 的求值、执行结果、异常处理和条件节点推进契约应如何落地？",
+            "semanticCheck": "已有局部取值/求值/推进源码；旧context的完全未实现表述需纠正，完整来源政策、异常与结果审计契约仍未决，不从固定工程值推造用户确认。"
+          },
+          "evidenceReferenceIds": [
+            "ev-627ab15219ffcb6d",
+            "ev-2b84af5a94554510",
+            "ev-93251eacf747e7c7",
+            "ev-7facc957ac75ab1d"
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "WORK完整分支模型",
+      "ids": [
+        "question.production-work-condition-branch-model"
+      ],
+      "confirmationTrigger": "扩展受限首匹配/默认分支以外的业务能力时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "question.production-work-condition-branch-model",
+          "sourcePath": "docs/knowledge/open-questions.yaml",
+          "scope": {
+            "reviewedAssertion": "条件分支配置闭环后，动态出口与运行时分支结果如何绑定到实际节点和连线事件？",
+            "semanticCheck": "已有局部取值/求值/推进源码；旧context的完全未实现表述需纠正，完整来源政策、异常与结果审计契约仍未决，不从固定工程值推造用户确认。"
+          },
+          "evidenceReferenceIds": [
+            "ev-bf80bad46d9fdb6b",
+            "ev-2b84af5a94554510",
+            "ev-93251eacf747e7c7",
+            "ev-7facc957ac75ab1d"
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "多租户流程隔离",
+      "ids": [
+        "question.multi-tenant-workflow-isolation"
+      ],
+      "confirmationTrigger": "从当前单租户MVP扩展真实多租户时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "question.multi-tenant-workflow-isolation",
+          "sourcePath": "docs/knowledge/open-questions.yaml",
+          "scope": {
+            "reviewedAssertion": "启用多租户时，工作流数据和运行时操作的租户隔离契约如何统一落地？",
+            "semanticCheck": "问题的业务责任、选项与不阻断其他MVP范围已核对；无新的用户决定或充分源码政策证据可将其关闭。未来SOP/多租户/签名配置问题不阻塞本次审计。"
+          },
+          "evidenceReferenceIds": [
+            "ev-ea840abe0db0d63a",
+            "ev-8b84e4dad02b4f24",
+            "ev-44379346cc314412",
+            "ev-c3ca08579e82f629"
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "已锁定制程过期后继续拆分",
+      "ids": [
+        "DEC-0012-06",
+        "rule.production.locked-process-ignores-effective-window"
+      ],
+      "confirmationTrigger": "确认超过有效期后沿用锁定制程的长期政策时",
+      "blocksThisAudit": false,
+      "newPolicyIntroduced": false,
+      "reviewedScope": [
+        {
+          "id": "DEC-0012-06",
+          "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+          "scope": {
+            "reviewedAssertion": {
+              "statement": "provenance: inference；当前实现通过不重新应用有效期筛选的锁定制程读取策略，使过期锁定制程仍可用于历史工单继续拆分；该策略需由主开发智能体与业务确认长期保留边界。"
+            },
+            "semanticCheck": "findVersionForProduct 明确忽略有效时间；原决策把长期保留边界列为 inference 待确认，静态行为可确定但不能凭代码取消原未决政策。当前成员转移引起的归属变化由主数据域另报。"
+          },
+          "evidenceReferenceIds": [
+            "ev-2b60aef58f19e54a",
+            "ev-125c3b1da89d9149",
+            "ev-808a3c4ddf188948",
+            "ev-fab9780ee26c197b",
+            "ev-ca28cd898ae085c4"
+          ]
+        },
+        {
+          "id": "rule.production.locked-process-ignores-effective-window",
+          "sourcePath": "docs/knowledge/rules/production.yaml",
+          "scope": {
+            "reviewedAssertion": {
+              "condition": {
+                "all": [
+                  {
+                    "fact": "workOrder.processVersionId",
+                    "operator": "is-present",
+                    "value": true
+                  },
+                  {
+                    "fact": "workOrder.processVersionLocked",
+                    "operator": "equals",
+                    "value": true
+                  }
+                ]
+              },
+              "result": {
+                "type": "persist-version-references",
+                "effectiveWindowRecheck": false
+              },
+              "explanation": "工单首次拆分后锁定的制程版本继续用于后续对象拆分，即使该版本当前已过有效期；这是历史生产对象一致性的实现策略。"
+            },
+            "semanticCheck": "当前实现忽略锁定制程有效时间窗口属静态事实；DEC0012-06明确长期保留边界仍需确认，不能把该implemented标签当用户政策已定。当前产品归属/簇成员仍校验，不是无条件永久可用。"
+          },
+          "evidenceReferenceIds": [
+            "ev-3e34bdb38aa0f995",
+            "ev-125c3b1da89d9149",
+            "ev-808a3c4ddf188948",
+            "ev-fab9780ee26c197b",
+            "ev-ca28cd898ae085c4"
+          ]
+        }
+      ]
+    }
+  ]
+}

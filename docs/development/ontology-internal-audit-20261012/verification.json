@@ -1,0 +1,24 @@
+{
+  "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "scope": "Formal ontology validation and full inventory/reference integrity only. Business runtime, migrations, browser and deployment are not executed.",
+  "knowledgeModel": {
+    "outcome": "passed",
+    "command": "JAVA_HOME=/workspace/scratch/f8b75a9f3345/build-tools/jdk-21.0.12.1+1 /workspace/scratch/f8b75a9f3345/build-tools/apache-maven-3.9.9/bin/mvn --offline --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test",
+    "portableCommand": "mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test",
+    "exitCode": 0,
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "finishedAt": "2026-10-12T18:09:46+08:00",
+    "log": "knowledge-validation.log"
+  },
+  "inventoryEvidence": "audit-inventory-validation.json",
+  "independentQualityEvidence": "quality-result.yaml",
+  "notExecuted": [
+    "Business unit/integration tests",
+    "Database migration and transaction fault injection",
+    "Browser/UI acceptance",
+    "Deployment or legal/regulatory compliance acceptance"
+  ]
+}

@@ -155,7 +155,7 @@ concepts:
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research, evidence.production-form-process-user-confirmed-v4, evidence.identity-subject-selector-user-confirmed]
   - id: concept.record-control-review-template
     termId: term.record-control-review-template
     kind: business-configuration
@@ -191,7 +191,7 @@ concepts:
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed]
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-user-confirmed-v4]
   - id: concept.form-process-binding-version
     termId: term.form-process-binding-version
     kind: business-configuration
@@ -233,7 +233,7 @@ concepts:
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed]
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.identity-subject-selector-user-confirmed, evidence.identity-subject-resolver-implementation]
   - id: concept.form-process-field-permission-policy
     termId: term.form-process-field-permission-policy
     kind: business-configuration
@@ -245,7 +245,7 @@ concepts:
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed]
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-buttons-events-v2, evidence.form-approval-transfer-user-confirmed]
   - id: concept.form-process-subject
     termId: term.form-process-subject
     kind: business-configuration
@@ -323,7 +323,7 @@ concepts:
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-user-confirmed-v4]
   - id: concept.form-process-node-button-config
     termId: term.form-process-node-button-config
     kind: business-configuration
@@ -383,13 +383,23 @@ concepts:
     kind: runtime-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.production-service-test, evidence.migration-0066-production-object-planned-window]
+    evidenceIds:
+    - evidence.production-object-entity
+    - evidence.production-object-controller
+    - evidence.production-service
+    - evidence.production-service-test
+    - evidence.migration-0066-production-object-planned-window
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.execution-snapshot
     termId: term.execution-snapshot
     kind: runtime-fact
     status: specified
     visibility: internal
-    evidenceIds: [evidence.business-knowledge-model]
+    evidenceIds:
+    - evidence.business-knowledge-model
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.business-rule-runtime
     termId: term.business-rule-runtime
     kind: business-concept
@@ -432,30 +442,60 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-work-form-node-business-document-config, evidence.production-work-flow-editor-ui]
+  - id: concept.production-work-runtime-field-catalog
+    termId: term.production-work-runtime-field-catalog
+    kind: business-configuration
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-condition-rule-adapter, evidence.production-work-condition-rule-controller]
+  - id: concept.production-work-flow-edge
+    termId: term.production-work-flow-edge
+    kind: business-configuration
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
   - id: concept.production-work-condition-rule
     termId: term.production-work-condition-rule
     kind: business-configuration
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
+    evidenceIds:
+    - evidence.production-work-condition-rule-builder
+    - evidence.production-work-condition-rule-controller
+    - evidence.production-work-condition-rule-test
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.production-work-condition-node
     termId: term.production-work-condition-node
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-condition-branch-model]
+    evidenceIds:
+    - evidence.production-work-flow-editor-ui
+    - evidence.production-work-condition-branch-model
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.production-work-condition-branch
     termId: term.production-work-condition-branch
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-controller]
+    evidenceIds:
+    - evidence.production-work-condition-branch-model
+    - evidence.production-work-condition-rule-builder
+    - evidence.production-work-condition-rule-controller
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.production-work-condition-default-branch
     termId: term.production-work-condition-default-branch
     kind: business-configuration
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-flow-editor-ui]
+    evidenceIds:
+    - evidence.production-work-condition-branch-model
+    - evidence.production-work-flow-editor-ui
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.production-work-applicability-rule
     termId: term.production-work-applicability-rule
     kind: configuration-fact
@@ -467,7 +507,11 @@ concepts:
     kind: runtime-fact
     status: specified
     visibility: internal
-    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.production-work-applicability-and-runtime-decision]
+    evidenceIds:
+    - evidence.ai-transaction-runtime-architecture
+    - evidence.production-work-applicability-and-runtime-decision
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.production-work-execution-snapshot
     termId: term.production-work-execution-snapshot
     kind: runtime-fact
@@ -575,7 +619,12 @@ concepts:
     kind: runtime-fact
     status: planned
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-start-source]
+    evidenceIds:
+    - evidence.production-object-entity
+    - evidence.production-object-start-side-effects-current
+    - evidence.guancheng-batch-start-source
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: concept.production-object-dhr-view
     termId: term.production-object-dhr-view
     kind: runtime-fact
@@ -1042,7 +1091,7 @@ relations:
     cardinality: one-to-zero-or-many
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-user-confirmed-v4]
   - id: relation.form-binding-field-exception-targets-real-field
     source: concept.form-binding-field-permission-exception
     target: concept.form-template-field
@@ -1056,7 +1105,7 @@ relations:
     cardinality: many-to-one
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed-v2]
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-user-confirmed-v4]
   - id: relation.form-process-flow-version-defines-field-slots
     source: concept.form-process-template-version
     target: concept.form-process-field-slot
@@ -1112,7 +1161,7 @@ relations:
     cardinality: one-to-zero-or-many
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-form-process-user-confirmed]
+    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.identity-subject-selector-user-confirmed]
   - id: relation.form-process-participant-rule-has-field-permission-policies
     source: concept.form-process-participant-rule
     target: concept.form-process-field-permission-policy
@@ -1196,14 +1245,14 @@ relations:
     cardinality: many-to-one
     status: specified
     visibility: internal
-    evidenceIds: []
+    evidenceIds: [evidence.production-service, evidence.production-execution-snapshot-builder-source]
   - id: relation.production-batch-records-product-family
     source: concept.production-batch
     target: concept.product-family
     cardinality: one-to-zero-or-one
     status: specified
     visibility: internal
-    evidenceIds: []
+    evidenceIds: [evidence.business-knowledge-model, evidence.product-family-membership-service, evidence.production-execution-snapshot-builder-source]
   - id: relation.batch-freezes-execution-snapshot
     source: concept.production-batch
     target: concept.execution-snapshot
@@ -1318,8 +1367,8 @@ relations:
     evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-condition-rule-controller]
   - id: relation.production-work-condition-branch-uses-dynamic-outgoing-edge
     source: concept.production-work-condition-branch
-    target: concept.production-work-flow-version
-    cardinality: many-to-one
+    target: concept.production-work-flow-edge
+    cardinality: one-to-zero-or-one
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-work-condition-branch-model]
@@ -1332,8 +1381,8 @@ relations:
     evidenceIds: [evidence.production-work-condition-branch-model]
   - id: relation.production-work-condition-default-branch-uses-outgoing-edge
     source: concept.production-work-condition-default-branch
-    target: concept.production-work-flow-version
-    cardinality: many-to-one
+    target: concept.production-work-flow-edge
+    cardinality: one-to-zero-or-one
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-work-condition-branch-model]
@@ -1346,11 +1395,11 @@ relations:
     evidenceIds: [evidence.production-work-condition-branch-model]
   - id: relation.production-work-condition-rule-uses-runtime-field-catalog
     source: concept.production-work-condition-rule
-    target: concept.business-rule-runtime
+    target: concept.production-work-runtime-field-catalog
     cardinality: many-to-one
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-controller]
+    evidenceIds: [evidence.production-work-condition-rule-adapter, evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-controller]
   - id: relation.production-work-definition-has-applicability-rules
     source: concept.production-work-definition
     target: concept.production-work-applicability-rule
@@ -1549,11 +1598,11 @@ relations:
     evidenceIds: [evidence.production-batch-management-page]
   - id: relation.production-batch-management-opens-row-audit
     source: concept.production-batch-management
-    target: concept.data-audit-action-category
+    target: concept.audit-event
     cardinality: one-to-zero-or-many
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+    evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.ontology-audit-event-entity]
   - id: relation.production-object-represents-serial-number
     source: concept.production-object
     target: concept.serial-number
@@ -1576,8 +1625,8 @@ relations:
     visibility: internal
     evidenceIds: [evidence.production-object-batch-controller, evidence.production-service-batch-split]
   - id: relation.pending-list-uses-production-batch-import-template
-    source: concept.production-batch-import-template
-    target: concept.production-object-pending-list
+    source: concept.production-object-pending-list
+    target: concept.production-batch-import-template
     cardinality: one-to-zero-or-many
     status: implemented
     visibility: internal

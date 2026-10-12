@@ -78,11 +78,26 @@ decisions:
         evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
         evidenceRequirements: [绑定切换字段例外清理测试]
     implementationDiscrepancies:
-      - id: discrepancy.production-form-process-runtime-unimplemented-v2
-        status: accepted
-        severity: high
-        visibility: internal
-        path: docs/knowledge/rules/transaction-runtime.yaml
-        lineHint: 1
-        summary: "provenance: original-evidence；公共主体解析和通用工作流多候选任务已实现，但尚未闭环表单流程实例、字段权限运行时解析、退回至填报阶段及外层作业同步推进；本决策仍保持 specified/internal。"
-        evidenceIds: [evidence.production-form-process-guancheng-research, evidence.ai-transaction-runtime-architecture, evidence.workflow-task-multi-candidate-runtime-implementation]
+    - id: discrepancy.production-form-process-runtime-unimplemented-v2
+      status: accepted
+      severity: high
+      visibility: internal
+      path: docs/knowledge/rules/transaction-runtime.yaml
+      lineHint: 1
+      summary: 'provenance: original-evidence；本项记录本决策形成时的运行缺口。当前公共主体解析、多候选任务及生产表单流程的字段权限解析、退回填报和外层作业收尾已有 ExecutionAccess、ProductionExecutionEngine 与 ProductionExecutionService 源码；本配置决策仍保持 specified/internal，不据源码推断完整业务端到端或发布验收。'
+      evidenceIds:
+      - evidence.production-form-process-guancheng-research
+      - evidence.ai-transaction-runtime-architecture
+      - evidence.workflow-task-multi-candidate-runtime-implementation
+    - id: discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions
+      status: open
+      severity: medium
+      visibility: internal
+      path: gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx
+      lineHint: 129
+      summary: 'provenance: original-evidence；DEC-0023-08的绑定切换有效性按DEC-0035现行权限组键及真实fieldId解释。当前切换PROCESS版本或作业节点表单只合并引用，直接保存作业草稿仍可保留原失效权限组/字段例外；已有prune未覆盖每次切换后直接草稿保存。显式设置发布时由FormFillSettingsService.validate拒绝无效组/字段，产品制程保存也先验证，这些入口不能证明作业草稿remove-before-save已实现。本次仅据静态调用链登记，未放宽规范、修改代码或执行运行验收。'
+      evidenceIds:
+      - evidence.production-form-process-permission-default-exception-design-v2
+      - evidence.production-form-process-user-confirmed-v4
+      - evidence.production-work-flow-editor-ui
+      - evidence.production-work-template-configuration-controller

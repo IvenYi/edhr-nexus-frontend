@@ -13,7 +13,7 @@ evidence:
   - id: evidence.dhr-template-workspace-version-selection
     type: code
     path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
-    description: original-evidence；工作区查询键包含 templateId 与 selectedVersionId，打开时优先保留有效 initialVersionId，并在切换版本时清空上一版本草稿；保存调用携带 selectedVersionId。源码证明工作树实现，不证明真实浏览器交互已完成。
+    description: original-evidence；工作区查询键包括 templateId/selectedVersionId，初始显式版本存在于 versions 列表时优先保留，切换版本清空上一版本草稿，保存携带 selectedVersionId。版本列表为空时选择 effect 直接返回；列表非空且显式目标未找到时，优先保留列表中仍存在的已选版本，否则取 versions[0]，见 discrepancy.dhr-template-explicit-version-list-fallback；后端严格拒绝无效版本不消除前端静默换版风险。源码核对不等于浏览器验收。
     visibility: internal
   - id: evidence.dhr-template-composition-controller-test
     type: test

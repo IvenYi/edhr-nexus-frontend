@@ -66,5 +66,5 @@ decisions:
         visibility: internal
         path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
         lineHint: 1
-        summary: "provenance: original-evidence；本决策确认配置组的业务边界，但表单流程实例运行时尚未完成按权限组解析字段权限、按钮动作执行和事件副作用。"
+        summary: "provenance: original-evidence；本项保留权限组配置形成时的运行缺口。当前 ExecutionAccess.permissions 已按匹配组计算默认权限和绑定例外并采用只读优先，ProductionExecutionEngine 已执行生产表单按钮与签署事件，FormCanvasPreview 已消费权限投影；仍需按具体入口验证，不能从配置或共享源码推出全页面端到端及发布验收。"
         evidenceIds: [evidence.production-form-process-user-confirmed-v4, evidence.form-renderer-preview-current-input]

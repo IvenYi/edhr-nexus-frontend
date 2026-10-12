@@ -3,7 +3,7 @@ evidence:
   - id: evidence.operation-output-summary-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionOutputSummaryTest.java
-    description: original-evidence；聚焦测试源覆盖显式用途和十进制精度、普通同名字段不计入、缺映射与缺值和显式零的区别、非法值和不匹配类型、别名表单排除、多表单与子表行汇总、空子表及历史无用途字段。测试源码不单独证明命令执行通过。
+    description: original-evidence；聚焦测试源覆盖显式用途和十进制精度、普通同名字段不计入、缺映射与缺值和显式零的区别、非法值和不匹配类型、独立表单分别累计、多表单与子表行汇总、空子表及历史无用途字段。测试源码不单独证明命令执行通过。
     visibility: internal
   - id: evidence.operation-output-persistence-tests
     type: test
@@ -83,7 +83,7 @@ evidence:
   - id: evidence.production-execution-access-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
-    description: original-evidence；使用真实SubjectResolver解析用户/部门/角色；审批节点到达时冻结候选名单，已配置但解析为空不扩大为所有人。按权限组及稳定fieldId处理默认和例外，签名字段由服务写入；签署认证当前操作者账号、状态、锁定期限及PasswordEncoder密码结果，保存签署对象、动作、值快照与SHA-256，不保存凭据。引用字段按配置白名单查询并回查ID与名称，缺来源拒绝；附件验证真实文件归属当前对象。BCrypt与真实主体/持久化联动由集成测试源覆盖。
+    description: original-evidence；ExecutionAccess 使用真实主体解析，按权限组及稳定fieldId处理默认和例外，候选在节点到达冻结，已配置但解析空不放开为所有人。按DEC-0074，按钮签署认证指定实际签署人的独立签名密码并保留会话操作者双身份，仅用户名admin使用登录密码例外；SIGN_FIELD仍仅当前用户个人认证、签名密码和图片，不随按钮扩展。权限与签署值快照校验、SHA-256及无凭据保存分别保留，引用字段回查真实来源、附件核对对象归属。本次只读源码和已有断言，不声明完整认证运行回归通过。
     visibility: internal
   - id: evidence.production-execution-signature-protection-source
     type: code

@@ -1,0 +1,3630 @@
+{
+  "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "counts": {
+    "originalRecords": 2292,
+    "candidateRecords": 2313,
+    "added": 21,
+    "modified": 200,
+    "removed": 0
+  },
+  "countingRule": "Parent records include nested collections, so a child change also changes its parent hash. 200 modified records are not 200 independent defects. Added records never enter the fixed baseline denominator.",
+  "added": [
+    {
+      "id": "concept.production-work-flow-edge",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/73",
+      "beforeSha256": null,
+      "afterSha256": "a198c0a4472d8cbdb6ccedb9174da3a322962f3b44a994e8df6d3ee7551d2700",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "kind",
+        "status",
+        "termId",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "concept.production-work-runtime-field-catalog",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/72",
+      "beforeSha256": null,
+      "afterSha256": "2f3f5737ed2133fffca7d4658c1fe5e444ab7126155c6073ce74c3a767859ce2",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "kind",
+        "status",
+        "termId",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.dhr-template-explicit-version-list-fallback",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": null,
+      "afterSha256": "0567a5bcaa9aff3396334a462b009faa68084245858d843d39e98cae94527aa0",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.execution-form-plan-count-and-not-applicable-projection",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": null,
+      "afterSha256": "c2ee69ccb0501be1b675a1d7e2c536c0b4410033272cc930a720ec95d9f720b3",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": null,
+      "afterSha256": "809e471b87eca9e07c2a4da1210252868656d317f2298909c35db7e5089afcdd",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "beforeSha256": null,
+      "afterSha256": "875a766fe104cc2b432b2e2bbc608ca9f6ea8640710817b768decf6cc3e34ac9",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.form-reference-personal-entry-context-not-forwarded",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": null,
+      "afterSha256": "9c522e075fbd749a056aff84fc776c8124c61789781323bd5fbc8ca6a268a702",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.product-family-transfer-unstarted-object-context",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": null,
+      "afterSha256": "8c76d816c720b84f580cbdf3efc81a42e043e0511465893dd59ba55e41be4240",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.production-object-execution-lifecycle-audit-projection",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "beforeSha256": null,
+      "afterSha256": "76cb59e60b2efa2d63543008a0cbf8da156f792bfd7712b238d561b79bf56f0f",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.production-sn-import-template-extra-remark",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "beforeSha256": null,
+      "afterSha256": "9584f9a12ffe0d9baff420ac1fca7e2983a0143eca0f7f95cf7d92731ec8badf",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.production-work-form-completion-condition-passthrough",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": null,
+      "afterSha256": "24cec84f5b3325740139454406ef4c1a907f826ef7cab3de370a70f14227ed26",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": null,
+      "afterSha256": "f4be95b1713fd3629835da02c0a38dbff628e7968bc60ed7d96d9c36460bc5e4",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.work-order-close-audit-atomicity",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "beforeSha256": null,
+      "afterSha256": "9967cdfbdcbe0047e117934fd8936e46afdd22f7afda9d08799a70bf0b402994",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "beforeSha256": null,
+      "afterSha256": "58df8d09983b8f13e4359681c6162e2304f99fb56a9c9a419ee26d5c6bb6950b",
+      "changedFields": [
+        "evidenceIds",
+        "id",
+        "lineHint",
+        "path",
+        "severity",
+        "status",
+        "summary",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "evidence.form-fill-settings-current-mode-validation",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "sourceLocator": "/evidence/6",
+      "beforeSha256": null,
+      "afterSha256": "f60e589774afa36e200a80737e9108f32c858df16d2ce003bb9a10bf84026b31",
+      "changedFields": [
+        "description",
+        "id",
+        "path",
+        "type",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "evidence.form-reference-personal-filling-context",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/form-reference-runtime.yaml",
+      "sourceLocator": "/evidence/12",
+      "beforeSha256": null,
+      "afterSha256": "fe35882685ef802c52f62ae58cc23d2fce082021b87eb00c73746a3b8af028a7",
+      "changedFields": [
+        "description",
+        "id",
+        "path",
+        "type",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "evidence.form-reference-personal-review-context",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/form-reference-runtime.yaml",
+      "sourceLocator": "/evidence/13",
+      "beforeSha256": null,
+      "afterSha256": "df39b516743bef82d0c83150d36806c52e5c510dc4aefa37c9096313e0c07bf2",
+      "changedFields": [
+        "description",
+        "id",
+        "path",
+        "type",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "fact.form-process-binding.exception-field-exists",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/16",
+      "beforeSha256": null,
+      "afterSha256": "992958fc62109258ecd2652764b03e226b72a91aabb2a4109906d24eb232409e",
+      "changedFields": [
+        "aliases",
+        "allowedOperators",
+        "availability",
+        "capturedAt",
+        "conceptId",
+        "evidenceIds",
+        "id",
+        "name",
+        "reviewStatus",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision",
+        "sourceType",
+        "status",
+        "valueType",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "fact.form-process-binding.exception-permission-group-exists",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/15",
+      "beforeSha256": null,
+      "afterSha256": "8b63cb9edfb7d0b834ba3521116a49c6230a42f0406deb1ecc58e9e555168027",
+      "changedFields": [
+        "aliases",
+        "allowedOperators",
+        "availability",
+        "capturedAt",
+        "conceptId",
+        "evidenceIds",
+        "id",
+        "name",
+        "reviewStatus",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision",
+        "sourceType",
+        "status",
+        "valueType",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "term.production-work-flow-edge",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/80",
+      "beforeSha256": null,
+      "afterSha256": "bdf1ef6b35e602171295c3476591d4bd19fab94bb6468d1243fab3dbd9a0a69f",
+      "changedFields": [
+        "aliases",
+        "definition",
+        "id",
+        "name",
+        "status",
+        "visibility"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "term.production-work-runtime-field-catalog",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/79",
+      "beforeSha256": null,
+      "afterSha256": "e15b78243a0cc131c6c96bfd4223560dde948cb78f9d02d26d9c30a6803a3d11",
+      "changedFields": [
+        "aliases",
+        "definition",
+        "id",
+        "name",
+        "status",
+        "visibility"
+      ],
+      "findingIds": []
+    }
+  ],
+  "modified": [
+    {
+      "id": "DEC-0001",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "945f5b286fd7981f2041bc36758fb52e730d3e11c6eae5fce3cb780420bd1006",
+      "afterSha256": "913044563d0a22be26b8ecd40a414df488829bfe2a736c0c6e4a1b2ee7357a98",
+      "changedFields": [
+        "acceptanceScenarios",
+        "decisionStatements",
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "DEC-0001-03",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "beforeSha256": "90412cef5b733f6eb1aa0f24918ccb910087a8724758472aaff204f956aeca58",
+      "afterSha256": "f34048499631ad02c887b1c9b9637a8dd6c6f1d7980ab5d92365c68d90ccf1d2",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "DEC-0001-09",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/8",
+      "beforeSha256": "8d3f1a13c44de9bb34b1a59546ac8ede8020967125d0a7649943db6636256db9",
+      "afterSha256": "b6ed1b2e681413d9eaae1d2e93984686f8fcb7111e0fc8d9953c2bf4c17c8eca",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "DEC-0001-10",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/9",
+      "beforeSha256": "82f2607461bdc9e8a78783d9796f63a169b3fd93d9f5511d3cc083db2acb9cf7",
+      "afterSha256": "81a2af727fee08dec570f0c96c22aa2283f377c3878ec1a0de08e89f042498d8",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "DEC-0002",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "122d0d05e3b05319904b568c679c0411aaf9e67abe6a2f1455af57a76c35d609",
+      "afterSha256": "3b2c80ee474585069213601f44a59b2f3f68628135628927e9f3506b1dfe1895",
+      "changedFields": [
+        "context",
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004",
+        "MASTER-DIFF-001"
+      ]
+    },
+    {
+      "id": "DEC-0004",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "e24ca3d2c4a0fe340f0c275a0e1a7002ed8172ac6e726c39a5da595b14cf8fb4",
+      "afterSha256": "65adee71de7f20e3e5aa4eb3d059f6c7dd3e36015f3690a4ab8ae2bf47d7092a",
+      "changedFields": [
+        "decisionStatements"
+      ],
+      "findingIds": [
+        "ROOT-007"
+      ]
+    },
+    {
+      "id": "DEC-0004-05",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/4",
+      "beforeSha256": "703039aaf82dace056781f55be5016eecea0571bdaf984f43c26d68292b5c444",
+      "afterSha256": "39094edd906fedb8888f0691a27bff32d4f4a99f12a26114bdfc68b617b62712",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "ROOT-007"
+      ]
+    },
+    {
+      "id": "DEC-0005",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml",
+      "sourceLocator": "/decisions/1",
+      "beforeSha256": "8cf79208f5733c17e20ad12f261e41af8bdaf37085dd6adab68ef5e9a68e2e16",
+      "afterSha256": "9d53b2df74fb1393638df781fd60e739093d585eeb9b3f539b2f8974307c5530",
+      "changedFields": [
+        "acceptanceScenarios",
+        "context"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "DEC-0006",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "febd2f6a12cc3e2030e722fd889a6bd91cc0cbd4ca9fefa35e14030709971556",
+      "afterSha256": "0d6ec54047a2fc0a482d3d1c680f7bf620021c6b0a3f6614a2d317265e363073",
+      "changedFields": [
+        "acceptanceScenarios",
+        "decisionStatements"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0006-21",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/20",
+      "beforeSha256": "1be49fa20ddb4a5ac79117148f699875ce62bbb2036ce4d0cc0e426d24573731",
+      "afterSha256": "aaf331e2736ce6f3ce2aac8986e2f13075e3ef9768872321adc55bd9a6644f6a",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0006-22",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/21",
+      "beforeSha256": "3f935687d5607a292e072db6f4b33f168c192301dc81dc4c38a15700dda33fe8",
+      "afterSha256": "ad75f63a579b29f692ec1a4839a13ff3271aa371cb95087f6df477543f1b3f6e",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0007",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "343639bb173e91aa0afb18398e21f29ff4e11b4e129a23be81b363cb6c400171",
+      "afterSha256": "c50d282f8ba6a41831060d61bd97dc7a62b9ea0fe1b116c2f2d3afdf66a948a0",
+      "changedFields": [
+        "context",
+        "decisionStatements",
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0007-01",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/0",
+      "beforeSha256": "1bce5c60a1f57ee2009a05be1bfe05175adcdd12fac1733f82dbd338e747be42",
+      "afterSha256": "0961c0ae018d0a58e63e0d1a254e00fc53ae0d771529ebad299fa2e26a60632f",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0007-03",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "beforeSha256": "45893d7b5ccb0e50e426699fcec209f0b4cf02c753ee255276e12254b36da3cf",
+      "afterSha256": "4dc11b8fd7deb961e39cdfe3632b03af8736b425796e7f75583bfe30c4e893da",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0007-05",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/4",
+      "beforeSha256": "0bdd11c98501e6978ab540397c63204bfe5d0968dec32f2b26819033905a94ba",
+      "afterSha256": "d265c2ff7623cf785d9205a6a1fd5d00865bc638b0fa874059f00f71763fdca0",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0008",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "6264cca82fceea3cca67f0f715f09961f547bfa9cd55ea22b932d1c04ad2140f",
+      "afterSha256": "a6cb25f403c2262fb06a67c4d5cf015d688b306617e50c05ac9c696702680ce5",
+      "changedFields": [
+        "decisionStatements",
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0008-06",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/5",
+      "beforeSha256": "73c4bf8da9f37afa4d14c37737f9653090883a4a9b0dbe362459efbf6c564d08",
+      "afterSha256": "8374ff0880338f40d685fea7fa31290dfa3cf173484f00cf8b459ca07084c4e9",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0010",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "6181dde6ed4334255bf177ca83550805d47e56ef3bb4bac444d468b7ee0f4371",
+      "afterSha256": "2062990166c5bcb4c008459e8aea0d6af2b49dfec98c637d62a9622dd4554890",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0011",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "ef4f4e8bbe3c8a062fe64fe7d5e09f9ebf08a9b0349c0d98982601177e4f336e",
+      "afterSha256": "78487515e36feaf4dc378216028f3bd5ead77efe3a75214626baedbe3433fbb0",
+      "changedFields": [
+        "decisionStatements",
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0011-03",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "beforeSha256": "2e68953f1e49e4feb88e9fc5e3653d069354f511efad536f966e5081dc64f227",
+      "afterSha256": "8c68de1cac3912b9f52e7762afd3a526e429e8f292da407cec0abbd3a16ea8c7",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "DEC-0015",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "f0696016265ca66c0d4a27834b643276ea02898c053485dc619a9827d36148c2",
+      "afterSha256": "aa1db350b1dab1b17195e28bd9bd61714f98cc849a2dde9e0f9d1e0d513e0294",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "PROD-015"
+      ]
+    },
+    {
+      "id": "DEC-0016",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "5e0bf4bf60b6d433ee22c3f238e2dd34e13a73d037dafd811fd41c1cc199ac4a",
+      "afterSha256": "8c0e096db535e254abda6586d1b4b3ed3cdfe0b758a387c16f6adde68f2b98e7",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "PROD-019"
+      ]
+    },
+    {
+      "id": "DEC-0018",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "83e8f2b8c1d23976aec0ba2e39b2e8dbd3350a7513112acb596939a510524e67",
+      "afterSha256": "fc8f4394a50bad18c284f6ac5879f5e5f6c2a28369483b5cdec7cc3c45428925",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0019",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "44f148bdfb1f145094d79890b9a6ac4be5aafc1e62266e62ce8d1e592eec4628",
+      "afterSha256": "d47a29d5b3e77266cdea98f3e12cd0890c79e61c877e423210d3d99f1e5fe9ef",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "PROD-022"
+      ]
+    },
+    {
+      "id": "DEC-0023",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "a8ab1d8c8b07d16239f44b334358788d36714fc366463801c0622d30f5b520b2",
+      "afterSha256": "ae2ef700dedc74196758d90b6f805050cb7f7343c07d1d7d0c9978b8f12bd075",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0024",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0024-production-form-process-buttons-and-events.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "57afd9bc8abf5bbad03a8fe67043b7593599ee82853bc03e0ba861b9e01e959b",
+      "afterSha256": "2cea501b0d90d43e5bba6374b826c0045d8f54744d78bf75434c90aaed6c35f7",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0025",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "42cbfafe407e7f6f95d3070764a6916f4d3aed9327f9c6a056db6b2ebe71ac95",
+      "afterSha256": "41d058920045b5ecd9c6cb6626b9e1e609dea7eef19d8b91db1d79c7f77941b7",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0029",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "6624aa40de5d3b4e2fab0923aec1ed8ce0a25260c4ca71064d5e2829c740d87b",
+      "afterSha256": "10c2bfc92474c0a89090926d9e72ab077ee3d9f162edac82947e1231132b3395",
+      "changedFields": [
+        "decisionStatements",
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0029-04",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "beforeSha256": "1218d4bd02f1652cc277b8bb7d40e6e0d46003d9cbd58ee683057aa42d91273e",
+      "afterSha256": "cf220d9a54c9927ef1f0026ddd9992eb555b020cc29aabfabe9a540f4334b0b9",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "DEC-0031",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "768f822828a41e94c6f2059f38fde5a4f3bd197fc3e502eb62c182c4e5842c35",
+      "afterSha256": "cc23507a594b68537ecfd53d019cb44ea87d550e69cd30f602a9104d521e6de4",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0034",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "00c2ce4aef7209205cd620fc11aba70857fa6335d48d935b36db0fb16a865e4d",
+      "afterSha256": "d2204f821ad8b8371fdabcf3e33ce3cefd605ee3a01e3786a3362e8f2bc10bcd",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0035",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "b1efc1bd283cf6b77125b62c27bb268a7b21dbd53aed40463bdbfa12945dadc4",
+      "afterSha256": "b9df872f379087765595acd00c018d144788b1f82c88be0f8bb6f8a4511e8f10",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0041",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "eba0da6696bd27f8dd92ac8204ec7cae3828407ae4515632cb5334307b8988dc",
+      "afterSha256": "4b2159ec7fe774227ce63b65cdbd38521266592633f07e81130a46b19d6aa601",
+      "changedFields": [
+        "decisionStatements"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0041-04",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "beforeSha256": "1bbd4dc365b39355aef860d8de764f7859fe40e4b2d94af57e6d903a328e5974",
+      "afterSha256": "f1fcfc6534b4db56a9862ea508aae2d431210e3259d241c2b4eeaff5c7d51f11",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "DEC-0047",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "e0603aa4dc45ba094705b2ddf7b78bdb3d7bfa050e889b651cb966e1068601b2",
+      "afterSha256": "eb90f498e4efbd682c74dec5ab11f57fd36105b3450bda44ac9f67db149d18a4",
+      "changedFields": [
+        "acceptanceScenarios",
+        "context",
+        "decisionStatements",
+        "evidenceIds",
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "PROD-021",
+        "PROD-026"
+      ]
+    },
+    {
+      "id": "DEC-0047-02",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "beforeSha256": "64c6e53536b14b8a4581da5d2f31342b14ee259c41ad9f9f952026fe2c30dc32",
+      "afterSha256": "78cbe0784266b900960769d602b164def0832ad597129a48622891e0d6de6b0b",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-026"
+      ]
+    },
+    {
+      "id": "DEC-0056",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "ad65be30dff2bebf965032ac112101ed0ee4a8fef0f2a6c0f06eaa375d2410dd",
+      "afterSha256": "49015d65e0d63a44d02866cb819542597e29af6193c052607ce752e52511a187",
+      "changedFields": [
+        "decisionStatements"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "DEC-0056-04",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "beforeSha256": "368790b9488a849fb33b21b89730ba854d94fcbbfb62858c775b808eec1a0aea",
+      "afterSha256": "1a9c5d05e059e37833db939c04006a0fedd2bcf698e35b825c7666d0f0319cbb",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "DEC-0060",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "477680a65b2c194179c00428195445f000e1740bc7f15648dc34bdf89c166c3c",
+      "afterSha256": "6fd3d8b1a78a11c43c578068d8ce84e22a3b3fe5bfe01c1252d22a442ad7c7f8",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "FORMS-007"
+      ]
+    },
+    {
+      "id": "DEC-0061",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "b2d8314d56869dfed795ec162a9d22130f7a7deb9dfc7ec1c5f074e6fb3c51b9",
+      "afterSha256": "7691cdd51a3e61bcccb18a8a5bfaa79d2fb5b8b77a1e926c4eadaa6a2a972391",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "DEC-0067",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "799f155b4c898a769373588b6595cf27d26139ad4ce05007626195903003ee1a",
+      "afterSha256": "2a29a9e500278f26e3e557699522f4f82d24ec58dcfd762514489e96c60856da",
+      "changedFields": [
+        "implementationDiscrepancies"
+      ],
+      "findingIds": [
+        "FORMS-002"
+      ]
+    },
+    {
+      "id": "DEC-0075",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "sourceLocator": "/decisions/0",
+      "beforeSha256": "03b9dd88117638c084052888eeeb3aa9f4fc271c09717d9933be4c9e7156e897",
+      "afterSha256": "dd9b87e756c0b79056b10b5afffe7ea30285bb0d9411afcf34955a3d816dd32e",
+      "changedFields": [
+        "context",
+        "decisionStatements",
+        "evidenceIds",
+        "supersedes"
+      ],
+      "findingIds": [
+        "PROD-001"
+      ]
+    },
+    {
+      "id": "DEC-0075-04",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "beforeSha256": "499ee1e585486153af9884cc1e9f670413eb7e9fab3c9616d6356fb1375ff5f7",
+      "afterSha256": "a718f5ae709e4f6ae056ec64cb0f44ffb64ea87d6db5fbe6b0ac1129d735b10b",
+      "changedFields": [
+        "statement"
+      ],
+      "findingIds": [
+        "PROD-001"
+      ]
+    },
+    {
+      "id": "anchor.dhr-instance-form-evidence-query",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "sourceLocator": "/implementationAnchors/3",
+      "beforeSha256": "daffc693e8cef31012adbddd5c5ac7c421a88d28cfd6acef0c642d753dff846e",
+      "afterSha256": "b860597f0e9081b0fc126de47c70df3926b2950969446fab3d69ca90afc106f4",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "PROD-004"
+      ]
+    },
+    {
+      "id": "anchor.dhr-template-design-version-isolation",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-template-version-design-isolation.yaml",
+      "sourceLocator": "/implementationAnchors/0",
+      "beforeSha256": "c3d7c8aa96d27c8e22288b8ca929070e728f903a307a4684006fce1c12cfcc1d",
+      "afterSha256": "82561583098e4a0c4f7f70f168be4a4672a0292121e2ecee582a201b74a8f509",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "anchor.form-approval-transfer-configuration",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "sourceLocator": "/implementationAnchors/0",
+      "beforeSha256": "3fa172aa75f41233fea73f59ada2ad7f785e937ae4ce2938e5393d8d7b502124",
+      "afterSha256": "2d34122b96124e1e41753acbc54fb4567233439d712d0f16b821fc640bfef242",
+      "changedFields": [
+        "apiReferences",
+        "capturedAt",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-001"
+      ]
+    },
+    {
+      "id": "anchor.form-process-binding-controlled-upgrade",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "sourceLocator": "/implementationAnchors/4",
+      "beforeSha256": "653526992de615400f627afccc2cb3c7a577e4f92362a6ea88a55b305a672187",
+      "afterSha256": "5bc72f49e662db07cee80ff9132879ca91628510d40b2114d2e76f4c03541f87",
+      "changedFields": [
+        "apiReferences",
+        "capturedAt",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-001"
+      ]
+    },
+    {
+      "id": "anchor.form-process-binding-controller",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "sourceLocator": "/implementationAnchors/1",
+      "beforeSha256": "305be5df805cc07fe94bf97e71404e26354858655efd4662d47b5824ddace394",
+      "afterSha256": "b9fce4bf8964154df74ea37a2c0c1a30a8a404956442d8af5079947d127f336d",
+      "changedFields": [
+        "apiReferences",
+        "capturedAt",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-001"
+      ]
+    },
+    {
+      "id": "anchor.form-process-binding-delete-guard",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "sourceLocator": "/implementationAnchors/5",
+      "beforeSha256": "a2e17c7868574a7bcf851687a6c91ab2c4ad55fbf5288e077c0c7e8052b1cea8",
+      "afterSha256": "fa394afcde7203dcfca1018ce25ecefa2747b81d6c9b10a72909c6d2440c21e0",
+      "changedFields": [
+        "apiReferences",
+        "capturedAt",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-001"
+      ]
+    },
+    {
+      "id": "anchor.form-process-binding-optional-form-process",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "sourceLocator": "/implementationAnchors/2",
+      "beforeSha256": "122cbff921979b4637db18c7358006e80a3c235af9346688f470457094ac5936",
+      "afterSha256": "a5de1dff22b687cd940a3458f81bb43b4c0138fc70a002a50b15f0d67fff5614",
+      "changedFields": [
+        "apiReferences",
+        "capturedAt",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-001"
+      ]
+    },
+    {
+      "id": "anchor.form-process-binding-usage-projection",
+      "recordType": "implementationAnchor",
+      "sourcePath": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "sourceLocator": "/implementationAnchors/3",
+      "beforeSha256": "2785a4305999d5c31765fd71196e69e994c88a2ea2716c3f6028f8b1f0648ed8",
+      "afterSha256": "6c486d5cce083773d0ca4d0e761a31b98e10df62c5a415eb78982f8fb427a664",
+      "changedFields": [
+        "apiReferences",
+        "capturedAt",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-001"
+      ]
+    },
+    {
+      "id": "concept.execution-snapshot",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/64",
+      "beforeSha256": "b55e1eda9ddc2d2c3b97df4b50795f8f6e892b03562ee6326ac2d324a2222832",
+      "afterSha256": "ff9cb4383a38e38d4405b15c2ac9d063885b42ef180b400237ca6dc7bd19af7f",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "concept.form-binding-field-permission-exception",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/53",
+      "beforeSha256": "40b60f5187be54f774c0605db31e723d777d4e8aeb836c348e1a989bb927fcd2",
+      "afterSha256": "804ca12aff57417d61384b4a37bc1e64ca9dead9dde60c72ead8aab138136c6f",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "concept.form-process-operation-permission-policy",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/40",
+      "beforeSha256": "1876e6b64f2702913315e27e169875ccadc4c064e7a60c34a0bea932a2048e69",
+      "afterSha256": "7fdbdd4689acb941198fcd915e3734abd26449d8c8fbd2c4c8ce38c47af15ff6",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "concept.form-process-participant-rule",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/38",
+      "beforeSha256": "535e1293017c45face18b7dee738927a925e9afe7470f39fb35b7034a0cf8f4e",
+      "afterSha256": "156a43e4a008f16fc5d88af19bc6bb9cba71c3b781046af2b200c1e2f8880d03",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "concept.form-process-template",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/25",
+      "beforeSha256": "39769440e2c2d339ae34ec5d73b40b031316fcd8e8c4a9cc047a6d8d741b6c95",
+      "afterSha256": "6d62290361d598adcfdf842f2b44c0aec5f9fad87bfe2bbca6fa0820fadc86d8",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "concept.form-process-template-version",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/31",
+      "beforeSha256": "d908e0758ecca7be2b75b29c5d5c6b877d347dcb0ce3952dc6887f8f7a36305d",
+      "afterSha256": "d0a7d85640c90ae3d0f6367bb72393f545c11352fc85360b98245702e915364d",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "concept.production-batch",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/63",
+      "beforeSha256": "cbfb598fafd9fcceb41f6eec833aa9c18b350c8ed231ac705c1d9ec8c07b6a8a",
+      "afterSha256": "46e869c104fe8ccbea830b46236228be00adbbfcfe073e4b65ec21942219890f",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "concept.production-object-execution-detail",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/97",
+      "beforeSha256": "2a2dd075d07440b477bc4c67138c385822a3bc57e409c10658dd564516ab93e4",
+      "afterSha256": "815f7742802e7c7229af8e9e60736dfd1488ecaf64ac039da72c2b42726b3989",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "concept.production-work-condition-branch",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/76",
+      "beforeSha256": "e3a4c2048aeb8fdc13e5a7737ba7bc86a7f6ec1d9f034c56146711c8b607f2e5",
+      "afterSha256": "4a9a4d650eecf6132418942deee3afd62d587ec9ed6fc830dc17794a4994a8bc",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "concept.production-work-condition-default-branch",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/77",
+      "beforeSha256": "b100ee315a26f849cda1c872c35231d257a8b5154e038c3911f48e7554ccda5f",
+      "afterSha256": "ab0a7d67fd1a420515af48a4abf45e7dfad5f769babdf9509079c55ed845f315",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "concept.production-work-condition-node",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/75",
+      "beforeSha256": "c12187feb151427d76a87977be3ea3207b3e6c35077ec2b0fe044ed2f871e5cf",
+      "afterSha256": "ae8fd40ee938a2ab628dad22dbce7d8583c8dfbe7e832af15868340fca1c29cf",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "concept.production-work-condition-rule",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/74",
+      "beforeSha256": "4bc3ba216f65b4542d639d5ab4600a83d5abe0453d2fa3266133e9bf9b855039",
+      "afterSha256": "d7f41c5ac75fb26c1a6dd4320c105e123957525b2beb6c5df75146b5a058aab8",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "concept.production-work-instance",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/79",
+      "beforeSha256": "b0f3c6f10e86426c57bbdcc45415b47dfc7337f79e9e65911c2a510ce423b36f",
+      "afterSha256": "83e264bc84a9950dfd17b844ece17c04adfb538984c9f2ce0f071c7bfff38352",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "discrepancy.form-process-permission-group-runtime-unimplemented",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": "16a1e805edb17cb82bdb8f84c0415345a73b9ccfaa7a92dc345132d4c4be7d48",
+      "afterSha256": "2b29cc76ba00b7fe1093dda69f84cfe839dfff9f50e0b091ecebd276ba751a1d",
+      "changedFields": [
+        "summary"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "discrepancy.form-renderer-permission-state-not-integrated",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": "b9c21ebd345fdd81237613251049a7bf02f88776e099b25b25239f84f64493eb",
+      "afterSha256": "c530d6b50a4afda99c135d8d4d50d362fd3953531b3bab66ad62c85e71e24afa",
+      "changedFields": [
+        "lineHint",
+        "path",
+        "summary"
+      ],
+      "findingIds": [
+        "FORMS-005"
+      ]
+    },
+    {
+      "id": "discrepancy.product-modeling-page-sop-document-label",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": "e0121c51af85a54d23edeadf561d0ecb68c4fe025f3003b6d0f36ebd767f38a7",
+      "afterSha256": "a5fab566517cfe2bec3aa9c3d814ae0f711177d62338239f81a0a0785933f656",
+      "changedFields": [
+        "lineHint",
+        "summary"
+      ],
+      "findingIds": [
+        "MASTER-DIFF-002"
+      ]
+    },
+    {
+      "id": "discrepancy.production-batch-resplit-not-mvp",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/2",
+      "beforeSha256": "f33f45d8d87c788298b8cc5dd8a474c879aeedce0160ffe536a75f4db1017217",
+      "afterSha256": "ea885591e185cfc2ce59191a61f59f7d68938dfe61dab86454f85dc51f77de1e",
+      "changedFields": [
+        "summary"
+      ],
+      "findingIds": [
+        "PROD-011"
+      ]
+    },
+    {
+      "id": "discrepancy.production-form-process-builtin-event-runtime-unimplemented",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": "17db86a30734506e01d229e349120e5bb6948c1ce8f830a6d22a7c2b2a33e468",
+      "afterSha256": "8df0bcb4882c56850cbbe3ecbb00fb3daac1d84b20e71a10498f866efc91f4c5",
+      "changedFields": [
+        "summary"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "discrepancy.production-form-process-button-event-runtime-unimplemented",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0024-production-form-process-buttons-and-events.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": "9d56fc298a8750540656a29d4776446fe4ebfdd73be4ce407c7c7aa950400ea0",
+      "afterSha256": "9c122d8f94465dc47df4a535b1f16752ae44e4978138983ec95d999a09206b6f",
+      "changedFields": [
+        "summary"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "discrepancy.production-form-process-runtime-unimplemented-v2",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": "77c9a0f38ef816bc0306923248cffa09deb415d6b99d517c2596584357011b5d",
+      "afterSha256": "293547171c60c6d57c14b699191ee9fd48f66103087640883e5c2def8d687e55",
+      "changedFields": [
+        "summary"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "discrepancy.production-work-condition-runtime-closure",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "beforeSha256": "b34c0a33c568bad109eec98e408da1b1a93e417f7199e4725a57b17a58c9a4d5",
+      "afterSha256": "07aee67a5f8ef13ec65f3806158f1dc2163065881ad44daf6d2141bea43d70e4",
+      "changedFields": [
+        "evidenceIds",
+        "summary"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "discrepancy.production-work-runtime-and-snapshot-unimplemented",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "beforeSha256": "345d5ed46d5c898e31755072f0bd51ebc6fdc41f51c1462b8d3c29bc1181ccff",
+      "afterSha256": "2095ef642e559184dade71082bf105f835b75a7a45078b8bbde5a61d69caa3a4",
+      "changedFields": [
+        "evidenceIds",
+        "summary"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "discrepancy.subject-selector-runtime-unimplemented",
+      "recordType": "implementationDiscrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/0",
+      "beforeSha256": "65f717a0c253e618bdc9d3e4e4a8fb9490eea97c6fdb21c2e8583f89990c7f7c",
+      "afterSha256": "4ba5a617a83a1d0a8cb85742100e1d76f1d98e91b6e4836d09a694177d838959",
+      "changedFields": [
+        "summary"
+      ],
+      "findingIds": [
+        "FORMS-010"
+      ]
+    },
+    {
+      "id": "evidence.ai-transaction-runtime-architecture",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "sourceLocator": "/evidence/1",
+      "beforeSha256": "44a0023c326ce8478a55679dde84ce9bcd40b5fb45e6ead2316d5b0c12f80418",
+      "afterSha256": "bf8a1d07642624bf09735be823f130c93ce45763e6eb255172a31346ca33d6de",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "evidence.audit-controller-test",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "sourceLocator": "/evidence/27",
+      "beforeSha256": "87fcb1702ac1db02744e95fef35442981b5ea2d59a1da8cc5bf7d0c562ef6958",
+      "afterSha256": "eb3761ccb66a318f81803d4801611f345474ebbb3ab49ba0f258c5809bbfeb55",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-024"
+      ]
+    },
+    {
+      "id": "evidence.dhr-instance-integration-test",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "sourceLocator": "/evidence/10",
+      "beforeSha256": "5575a3f1bf448c9880aad7891f59708c9388dcd2a6e716326028533c2a5ec585",
+      "afterSha256": "1b568ebdbea2606f552c7eb03222d145f42207f29852831b7a8553f3b9690b0a",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-005"
+      ]
+    },
+    {
+      "id": "evidence.dhr-instance-management-page",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "sourceLocator": "/evidence/13",
+      "beforeSha256": "f90b036cebc8c80857a334f175c0d53d66be9ec68154d2fa60efede5b5a1fffd",
+      "afterSha256": "2614a9b9dab7d8f1ceb603c90b8b90c98d48b405fdf5d5242402cb24aa789080",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-004"
+      ]
+    },
+    {
+      "id": "evidence.dhr-summary-complete-evidence-migration",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceLocator": "/evidence/26",
+      "beforeSha256": "09b45cf8e86d57886dc6f31e27f398e7c485906a7d1bb18d59c4b492a3292179",
+      "afterSha256": "51c90e9159d051eff35dca110b3c611637bca8b3b95fda24c36f4ab294071f06",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-005",
+        "PROD-007"
+      ]
+    },
+    {
+      "id": "evidence.dhr-summary-order-tests",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceLocator": "/evidence/13",
+      "beforeSha256": "7daf1717dfa2d47ed7abeffbb3800bde751b7b6f62bcee93e0b885825b909991",
+      "afterSha256": "7c7d4e4e18f554220ec8c71660f26e25b90173607dfbbc1b56b59acfaf8c8ffb",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-008"
+      ]
+    },
+    {
+      "id": "evidence.dhr-template-workspace-version-selection",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-template-version-design-isolation.yaml",
+      "sourceLocator": "/evidence/2",
+      "beforeSha256": "0d68e5b94ac3221d7dc895be64af196256d87613e0833635402942322f89d766",
+      "afterSha256": "95773608bc5d8251f58bda5425973c4a591683c809d4584df57fb5fdadc0b124",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "evidence.execution-form-selector-user-decision",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/execution-form-selector.yaml",
+      "sourceLocator": "/evidence/0",
+      "beforeSha256": "16cfad2865e8b28fd6ea3125846bc1d8ac8912b47b8c565df640dbaa91903f34",
+      "afterSha256": "1d828da994ae48869bf0acf7ec06211d309d95c3e3efc8f68f49434434fa7c91",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-026"
+      ]
+    },
+    {
+      "id": "evidence.execution-form-version-creation-source",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/execution-form-selector.yaml",
+      "sourceLocator": "/evidence/2",
+      "beforeSha256": "fba411b308b1281f427505d8237a2f8ffa6e6e27a8849135292f7c9bb2e5bd93",
+      "afterSha256": "aaac9cb5af2b4222fdfc63025b673dbef263b9418f05c5ef3cf3b84763e6a64e",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-026"
+      ]
+    },
+    {
+      "id": "evidence.execution-form-version-eligibility-source",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/execution-form-selector.yaml",
+      "sourceLocator": "/evidence/1",
+      "beforeSha256": "e06bfc423643b5ae6d857f7d495c9fabb9e44146916b200754e0acf885607347",
+      "afterSha256": "6304746edb36aab36647eaa2b7565c6a9465ff035d763da89cbf3bc78e7ff031",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-026"
+      ]
+    },
+    {
+      "id": "evidence.form-process-field-permission-implementation",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/form-renderer-permission-contract.yaml",
+      "sourceLocator": "/evidence/0",
+      "beforeSha256": "b1d990704c77e4ef5a378775c8f05d5ad86793a8c58124fb9cd072c2877a2bc4",
+      "afterSha256": "6e40a9df2a83b3cc56bcd6a1561e2603ab4853d3bb51e1bf7f151fff176d54b5",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "evidence.form-renderer-preview-current-input",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/form-renderer-permission-contract.yaml",
+      "sourceLocator": "/evidence/1",
+      "beforeSha256": "aad2896bc8f8f9bd4a73b849ae857ce17a14b85ca360b6cd44aa1cdbcd8c9566",
+      "afterSha256": "057e12980cc8d83149003a84edf5063ae6c35daf110a976f3b00a44584d44368",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "FORMS-005"
+      ]
+    },
+    {
+      "id": "evidence.master-data-description-document-controller-test",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/master-data-description.yaml",
+      "sourceLocator": "/evidence/7",
+      "beforeSha256": "63edc38c0cfa7e9b59e81e4350e5d12bc025ab91573109298cf359d64d5def5a",
+      "afterSha256": "d13c7afd527543c30cf88993d4aa514a431aa08b20586968b3d6a4e0b501bca6",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "MASTER-FIX-001"
+      ]
+    },
+    {
+      "id": "evidence.master-data-workshop-shared-shell-verification",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/master-data-description.yaml",
+      "sourceLocator": "/evidence/10",
+      "beforeSha256": "094b9ce427e695ef3dff7e5501bac03a63257e8da7bf00d15ed60982799a9851",
+      "afterSha256": "808e7a98fbd0f2f4b99091be7abcd8ced91e23bc6d98bf4a485da3c254dac4f0",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "MASTER-FIX-002"
+      ]
+    },
+    {
+      "id": "evidence.operation-output-summary-tests",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceLocator": "/evidence/0",
+      "beforeSha256": "8cf3a80e705908faa48db064849feffe4e5ff48d05930ee9deea4d4f8939dcf6",
+      "afterSha256": "824a0caf32044945367cc5e4764d8bf29baf409d922564ee62d139fef4a3abe2",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-024"
+      ]
+    },
+    {
+      "id": "evidence.production-audit-annotations",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "sourceLocator": "/evidence/13",
+      "beforeSha256": "e7896a96bb4d7e3c6be5e1e8e85e560544739e44048ac59000c95b95cd41f9ae",
+      "afterSha256": "e0be59bff4dbf9f5186b5965fec1b40370b64629ed74401c26dbb5786df5f41d",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-014"
+      ]
+    },
+    {
+      "id": "evidence.production-execution-access-source",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceLocator": "/evidence/16",
+      "beforeSha256": "6292979cb312d6fe572d1d1542d2e0b5e46762357e9563b055bcdae8d620e0ff",
+      "afterSha256": "bdd5067e6f03227ce3963dc3c0febb0c0a910c4501c8eff35e9745e38a4f5cb9",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-025"
+      ]
+    },
+    {
+      "id": "evidence.production-form-process-buttons-events-v1",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production-form-process.yaml",
+      "sourceLocator": "/evidence/8",
+      "beforeSha256": "a0cf0994ced863df075f1e08ecd1d426e1e44b30e0338ee3418d2e0622767373",
+      "afterSha256": "37d3618bf4f54bc4aa632ede41d62eb5a1f5db66c3ac9da7324a9d0fe738b108",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "FORMS-006"
+      ]
+    },
+    {
+      "id": "evidence.production-service",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "sourceLocator": "/evidence/2",
+      "beforeSha256": "5169920b5355e42dd3e294d15d5cf7bfbc8076f0f84edc37a4965750a5a6682d",
+      "afterSha256": "617bfbc6e30047b4a1566d513b68601b558001de1aebce2279a5c5f6f6f9ba56",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-024"
+      ]
+    },
+    {
+      "id": "evidence.production-service-test",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "sourceLocator": "/evidence/17",
+      "beforeSha256": "5d333a2b38662711606c36037da3b28301eccee74da1329c88d0f1341e18a6e5",
+      "afterSha256": "5329ecf5910439ebad9c486c8f30a890d2c621826c3fb0de055dc70bc829066a",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-024"
+      ]
+    },
+    {
+      "id": "evidence.production-work-flow-version-draft-persistence",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "sourceLocator": "/evidence/16",
+      "beforeSha256": "1aeede0f086582dbb45f182fada6aba9d6f4661a2d3a4251756a00e0a6442b70",
+      "afterSha256": "451e83ce3e833333672c28b03661b420a664dc991c4a478b73719d45dc874c17",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "MASTER-FIX-006"
+      ]
+    },
+    {
+      "id": "evidence.production-work-form-node-business-document-config",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "sourceLocator": "/evidence/9",
+      "beforeSha256": "f9b994e0aae2bb1786acf72b5bf59fd4e9b91f531084a5b34777fee940f3e245",
+      "afterSha256": "36eb7d99187a87529373abbbe915a36eab6b0f30509a21f5237637ed8aca8be4",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "MASTER-DIFF-003"
+      ]
+    },
+    {
+      "id": "evidence.production-work-order-batch-import-template-ui",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "sourceLocator": "/evidence/38",
+      "beforeSha256": "0cdccdfc12c0dc0f5e90e1178be97cbb32f60a33a418f1f7faf650de5e3eddf9",
+      "afterSha256": "7eb629f690ca15df091cdff93430219515fedee0218a6d8e9e4a93a4cdf2f5e0",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-019"
+      ]
+    },
+    {
+      "id": "evidence.production-work-order-page-pending-list",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "sourceLocator": "/evidence/36",
+      "beforeSha256": "4fe99e99d2b45c1c42f32b02d0a7258ff7e9a58b83cb41439120ab8b44aa7171",
+      "afterSha256": "7c9ac85d62c89903c61003b71c5987b5f0e9dc5ee42e68d822b1553ee009b820",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-019"
+      ]
+    },
+    {
+      "id": "evidence.production-work-template-configuration-test",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "sourceLocator": "/evidence/15",
+      "beforeSha256": "69d933ad9fbd3216a6a53bdd9390e4ee3855276d5f6b0269152863461f9c1d2d",
+      "afterSha256": "3c5c9513fc33b5778f9e1b9f9c2a4f05783f70972564dd8466a282d10850de18",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "MASTER-FIX-006"
+      ]
+    },
+    {
+      "id": "evidence.record-correction-void-design",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/record-correction-void-design.yaml",
+      "sourceLocator": "/evidence/2",
+      "beforeSha256": "d5af19ec6b8b238f5f71d43961e56fe70c4a58eb46cd2d08908349b8dab08d7d",
+      "afterSha256": "3e097a6ea892abcefbffc5b7811ade2ec08045c0ed172e68e89a08b8e402aff1",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "FORMS-011"
+      ]
+    },
+    {
+      "id": "evidence.work-order-controller",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "sourceLocator": "/evidence/5",
+      "beforeSha256": "87fdd06f914bdc96381b3da35ab4c483717a87cecf5f740c5d7a174e036495ed",
+      "afterSha256": "32b669e802f7822a937f29b91154ee955de5172d1291c57251c9bc6cfb4e8185",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "PROD-014"
+      ]
+    },
+    {
+      "id": "evidence.workflow-task-multi-candidate-runtime-implementation",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "sourceLocator": "/evidence/13",
+      "beforeSha256": "b55d30f818434103aa560c5957bf606551e9767af66547be30795b2c3f3b1422",
+      "afterSha256": "7ec70c1d042702d46bde72183ed7fdd9a5e7bf04d25836b9851cef8421f13272",
+      "changedFields": [
+        "description"
+      ],
+      "findingIds": [
+        "FORMS-009"
+      ]
+    },
+    {
+      "id": "fact.catalog.audit-action",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/5",
+      "beforeSha256": "28eb574e1587dbd68fabbb7ed6cefcd2c569c184690cec009f6b956593263a6c",
+      "afterSha256": "bce008b16b2c6d175d0e5c35880cde84b517a1a66ed391d08fd1dc4439701129",
+      "changedFields": [
+        "capturedAt",
+        "conceptId",
+        "evidenceIds",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision",
+        "sourceType"
+      ],
+      "findingIds": [
+        "ROOT-003"
+      ]
+    },
+    {
+      "id": "fact.catalog.audit-entitytype",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/6",
+      "beforeSha256": "211a31845a29ab47ea845a951341395b29c0a631a9571a65f5130ddfa7a92c65",
+      "afterSha256": "0e994b747d4e94fc72360606cf20c7b96743477801c42be402ef0470a8bb0231",
+      "changedFields": [
+        "capturedAt",
+        "conceptId",
+        "evidenceIds",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision",
+        "sourceType"
+      ],
+      "findingIds": [
+        "ROOT-003"
+      ]
+    },
+    {
+      "id": "fact.catalog.formprocessnode-buttonevent-timing",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/42",
+      "beforeSha256": "341ea8e49fab7a1a40a0b8da40abebfc4f80fb1edbdc4984de123d2db487f5a8",
+      "afterSha256": "93459960cc97cebc8ecdaec7700e2688255a433c20479c77e49c00af54d284a6",
+      "changedFields": [
+        "allowedOperators",
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "ROOT-GAP-001"
+      ]
+    },
+    {
+      "id": "fact.catalog.productionform-currentnodeactionprojection",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/186",
+      "beforeSha256": "4853ed5298fa94ae8282c2dbba90e3d4f04ce217e5ae71e4804687d82ee9f47a",
+      "afterSha256": "131c28814fb44a213ec9653bd6aa8e07098b13795f1327770ae6ea0c7c703d11",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourceRevision",
+        "valueType"
+      ],
+      "findingIds": [
+        "ROOT-009"
+      ]
+    },
+    {
+      "id": "fact.catalog.split-quantityperbatch",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/137",
+      "beforeSha256": "5316ce7247cf095d2b0982cbeebc43da6cc5970561a06b3fcd0d6fe287308ce1",
+      "afterSha256": "ce231b2cf72a9d0bb3587328a16a8c49081051d774d8543bd443ea268a4bf842",
+      "changedFields": [
+        "allowedOperators",
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "ROOT-006"
+      ]
+    },
+    {
+      "id": "fact.catalog.split-targetquantity",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/139",
+      "beforeSha256": "1be54977f1638d4fbc358028567725ca6e77d3862f6fe8af9409261e8a6a67a3",
+      "afterSha256": "c9f1103e5fcd685006956360b97f1ce6d40d76d31fed466051ffe70a24426d7c",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "ROOT-006"
+      ]
+    },
+    {
+      "id": "fact.catalog.subject-departmentscopes",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/140",
+      "beforeSha256": "35dcd7366ea021ee08ec0a878cc44a3aba843d7b369217fecdba15acddd4c791",
+      "afterSha256": "ce6d61f1ffc342b74d52d83ccaecfef49b9e7073dd8e8e7ca103d16cf433005d",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "ROOT-005"
+      ]
+    },
+    {
+      "id": "fact.catalog.task-candidatemembership",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/145",
+      "beforeSha256": "34c56625df8936a406e314b79e87cd4be713c648d38cf280149730b09f850bdd",
+      "afterSha256": "319b3b6236678e566fab839cb60ea4456444291f2a9f1132b65d861a88540c5d",
+      "changedFields": [
+        "capturedAt",
+        "conceptId",
+        "evidenceIds",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "ROOT-005"
+      ]
+    },
+    {
+      "id": "fact.catalog.workflowtask-status",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/160",
+      "beforeSha256": "051310a63420f6876c9e946595a7d0d00e5d3064af5b8ecd673f7fc8e077a729",
+      "afterSha256": "2468b9cdf36ca3477c5f46ba67a6c0ff511c3221c81121bc8b1dce3105d4bf08",
+      "changedFields": [
+        "allowedOperators",
+        "capturedAt",
+        "conceptId",
+        "evidenceIds",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision",
+        "sourceType"
+      ],
+      "findingIds": [
+        "ROOT-005"
+      ]
+    },
+    {
+      "id": "fact.dhr-instance.form-record-dhr-item-id",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "sourceLocator": "/facts/6",
+      "beforeSha256": "a5ffd4b48755cd8c37597697468593c7747e5a80ed61e83f238683a3ab7498d8",
+      "afterSha256": "500e8fbc816592536d7155e2b053fdc9aaaaf3ff272009770dd5816d82831241",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "PROD-002"
+      ]
+    },
+    {
+      "id": "fact.dhr-template-design.explicit-version-selected",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/dhr-template-version-design-isolation.yaml",
+      "sourceLocator": "/facts/0",
+      "beforeSha256": "fe69ea3cc529bb1dd4ff0f8b850d119c3c19fabec859c52fb78a1b09b8813d22",
+      "afterSha256": "3f07d290e0168199cf543558191b457b83c00d639994ee87ad8f60e64ad017d5",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "fact.form-fill-settings.mode",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-fill-settings.yaml",
+      "sourceLocator": "/facts/0",
+      "beforeSha256": "a9a32cb9bd921323fb596905dedfa36aca74afe6fd9c3ca3f401a076c914e324",
+      "afterSha256": "d46b8591d8bc45b05e9054e9ce3950a89778a0553abf3ee597eca554800e3f98",
+      "changedFields": [
+        "availability",
+        "capturedAt",
+        "enumValues",
+        "evidenceIds",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "fact.form-process-binding.compatibility-with-target-version",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/11",
+      "beforeSha256": "ab1cc1300336046171a74646b1effdcce68228245ababb98e57e398d21df58b6",
+      "afterSha256": "5a0538b1fd8cd00037f62b6fe9a82135c1b8f4ff49f35110af9e8c363c2fdae5",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.form-process-binding.form-process-template-version-status",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/2",
+      "beforeSha256": "ce90c476e4e0812df62406b31338741aa59cbbf7e23dd3e0c55a37a565da34fe",
+      "afterSha256": "754c48f2afd9343eb823992c5a18bece5e59ab810c329d86caa0838d3e3f3315",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.form-process-definition.has-current-published-version",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/8",
+      "beforeSha256": "48b070c9ea1c14638a7a84a2e33d95ab6f99e817280c6ad9525d3c3153be31c7",
+      "afterSha256": "43541c2db1de46a3c59386514a5e7f899fc1d8eedd930c23292418596893e9a4",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.form-process-version-reference.referenced-version-is-current",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/7",
+      "beforeSha256": "b6a1c91959221fe5ffb9453d52b3cc374fd2201c0af147cc42f0d0f43d0525bc",
+      "afterSha256": "845462d8a8dedea23779a8eed5c6ceb35f154024a44688c8828b766fe4a5de5b",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.form-process-version-usage.reference-count",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/14",
+      "beforeSha256": "682281260d38e959b2e9af189de5df56bd211e83ab7ebbd0a97da0a1f4baddf6",
+      "afterSha256": "a15aed7ecbd877ac5a5de933963828076824757ccb1720ff7a5e2c43d3d2a67d",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision",
+        "sourceType"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.production-work-flow-version.status",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/6",
+      "beforeSha256": "721b558fabe02bc0caf395c3b7caa5c6db92d63fab8e523f453e009b1f3e8100",
+      "afterSha256": "2b899d950a2757723fe33e8067310d60ef5a007d0beb987853273714d2a2aaa5",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.referenced-form-process-version.is-current",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/13",
+      "beforeSha256": "08997135d63071fb85e188df0ab54490c68c080ee059aa04e14201e35a77ef2a",
+      "afterSha256": "52dd9366df1c584b0662bddf64a347c3202558e79e9c56d9bc3e182103ea7e60",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.referenced-form-process-version.status",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/12",
+      "beforeSha256": "418de55dd8682224358ea4ddc3c595390a289bd5a396150b5a371f988a838b7a",
+      "afterSha256": "673dcb58807476f781c92ad750a0035f57f94b330082104635df2e957d26ea9c",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.target-form-process-version.is-current",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/10",
+      "beforeSha256": "76d96cee275fb4821907f182416e169ffba986aa49b36a6d7579ad34bae187fc",
+      "afterSha256": "72ef74982f9efc7924692a7c5201eeabbb697e7345923166716d170bc7467e20",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "fact.target-form-process-version.status",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/form-process-binding.yaml",
+      "sourceLocator": "/facts/9",
+      "beforeSha256": "b542bd749effa9e39339000fd3dbd7ed76d97c6ec42f2e1d64b5372f3e914106",
+      "afterSha256": "9911d40bb87a74d0f750eb287bb8391fed2f5fc76210da48474bc7d570d9055e",
+      "changedFields": [
+        "capturedAt",
+        "sourceLocator",
+        "sourcePath",
+        "sourceRevision"
+      ],
+      "findingIds": [
+        "FORMS-003"
+      ]
+    },
+    {
+      "id": "question.production-work-condition-branch-model",
+      "recordType": "openQuestion",
+      "sourcePath": "docs/knowledge/open-questions.yaml",
+      "sourceLocator": "/questions/5",
+      "beforeSha256": "60c7c422939a8d482eac01c1c3fd097d71cc2db51707188f012c503a955ef619",
+      "afterSha256": "4adb8514c74d91a99108bbac715c39a53b2e028a25af222502cf0b08ab7a3504",
+      "changedFields": [
+        "context"
+      ],
+      "findingIds": [
+        "ROOT-QUESTION-001"
+      ]
+    },
+    {
+      "id": "question.production-work-condition-runtime-evaluation-contract",
+      "recordType": "openQuestion",
+      "sourcePath": "docs/knowledge/open-questions.yaml",
+      "sourceLocator": "/questions/4",
+      "beforeSha256": "cc93e4855da62c2d698e1831c531b4064f1301955d65cd8c0826caa17cc0028a",
+      "afterSha256": "75fb47361eaca1ea04b22d686f241368c88523248e3542d6bf948148cc26dfa7",
+      "changedFields": [
+        "context"
+      ],
+      "findingIds": [
+        "ROOT-QUESTION-001"
+      ]
+    },
+    {
+      "id": "question.production-work-condition-runtime-source-snapshot-contract",
+      "recordType": "openQuestion",
+      "sourcePath": "docs/knowledge/open-questions.yaml",
+      "sourceLocator": "/questions/3",
+      "beforeSha256": "cccbb6ca175a32453edcdb4bb510bf1f57d6a483d69324d1c99cd2899ed76211",
+      "afterSha256": "a0cf998b1eb869c559865cae0a073c449f13795979466a203ef28817941563cd",
+      "changedFields": [
+        "context"
+      ],
+      "findingIds": [
+        "ROOT-QUESTION-001"
+      ]
+    },
+    {
+      "id": "relation.form-binding-field-exception-overrides-subject-default",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/47",
+      "beforeSha256": "81c55ab6c38058d93619b2f26d9be235e578bbbca74be8b81755487414590fc2",
+      "afterSha256": "3b0317638bb8cf974cda5569a47cbe7ccf788cf40bfb934a7eb038d43c365b01",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "relation.form-process-binding-has-field-permission-exceptions",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/45",
+      "beforeSha256": "1b5ca0729ed8f74748d12ad44242a6b42fe5f8e04e09d146b6065147102c8bb3",
+      "afterSha256": "0ee85c05e8ee218f98da8f6627f6067e021c72e06188c938e094f842409740db",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "relation.form-process-flow-version-has-participant-rules",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/55",
+      "beforeSha256": "1242bd18681e2d467216e1bf5dfee2b642d32db09036efa1d555dc61e104c1dd",
+      "afterSha256": "6d750f0999ae4537ed12a3747b9303391bf656b62dfa658f3c7d8a431e77dca9",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "relation.pending-list-uses-production-batch-import-template",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/122",
+      "beforeSha256": "5d941bf22a8b139300d46c1ee17b6fb256c43adb58070d22d2c24d77163ad8af",
+      "afterSha256": "b9f52074422e447b193bf1b2799e27b2a36f91d882f208fb79c06aee4a77e436",
+      "changedFields": [
+        "source",
+        "target"
+      ],
+      "findingIds": [
+        "ROOT-004"
+      ]
+    },
+    {
+      "id": "relation.production-batch-management-opens-row-audit",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/118",
+      "beforeSha256": "b3de73117bb1584728a6cb64e6e5de6f2d24565ac9bcb8da3644866589ad8af8",
+      "afterSha256": "6d3c7d74c87ace3d0841677e620e3da0b3848d8f445fef7f8b05303084dadbad",
+      "changedFields": [
+        "evidenceIds",
+        "target"
+      ],
+      "findingIds": [
+        "ROOT-003"
+      ]
+    },
+    {
+      "id": "relation.production-batch-records-product",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/67",
+      "beforeSha256": "ee23f1ba571f581ec000fdb308a2e3fb3add306c0c7935b19579975cea617554",
+      "afterSha256": "273d25a7ab0c6aa83de65078b6d332c889538b8b8ffaec72d2a31293b67ec3d8",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-008"
+      ]
+    },
+    {
+      "id": "relation.production-batch-records-product-family",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/68",
+      "beforeSha256": "29faced4bb87450ceb70fd6f74eef07084d2d48cf7e05cfdbdee9302f0ff7bf6",
+      "afterSha256": "fff9f95e5f1c40d3de4144eee61be0a8de7165e610775731771a46c30fcf8841",
+      "changedFields": [
+        "evidenceIds"
+      ],
+      "findingIds": [
+        "ROOT-008"
+      ]
+    },
+    {
+      "id": "relation.production-work-condition-branch-uses-dynamic-outgoing-edge",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/85",
+      "beforeSha256": "09239efcaa876197b550d5c2d6236be6a6ddecdeed3e8f5b3c344f5ff476f660",
+      "afterSha256": "06e7041f027ab185364210d868a2816531757a0328741b81b5608726e864fa46",
+      "changedFields": [
+        "cardinality",
+        "target"
+      ],
+      "findingIds": [
+        "ROOT-004"
+      ]
+    },
+    {
+      "id": "relation.production-work-condition-default-branch-uses-outgoing-edge",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/87",
+      "beforeSha256": "0bb3f3a03f3276eb79f956bde798f6eed822bc165052d3362cc762fee3aae971",
+      "afterSha256": "37ae3c45cc72b5ff34733b8b5056d38d7a2263475a007858bee014db92b42e1d",
+      "changedFields": [
+        "cardinality",
+        "target"
+      ],
+      "findingIds": [
+        "ROOT-004"
+      ]
+    },
+    {
+      "id": "relation.production-work-condition-rule-uses-runtime-field-catalog",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/89",
+      "beforeSha256": "4941b77d73b876b93fbed19be20ef7176775ff99292d4ceb7dc4e62beaf54046",
+      "afterSha256": "ed6473dca1ecd8557c2237bf7f5dd39d91cb0a56c4b9f8a0e9385b57e17c4db0",
+      "changedFields": [
+        "evidenceIds",
+        "target"
+      ],
+      "findingIds": [
+        "ROOT-004"
+      ]
+    },
+    {
+      "id": "rule.execution-custom-form-requiredness",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/execution-form-selector.yaml",
+      "sourceLocator": "/rules/1",
+      "beforeSha256": "f7aded408554e86c9b9048b0081b0d4cf25dfe7bcc1eea78f70d691f494577d8",
+      "afterSha256": "f44a7beed8b7751e4da6fc6e4a54cf1c2ce8acc6010fb20600a92da4f2512130",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "PROD-026"
+      ]
+    },
+    {
+      "id": "rule.form-fill-explicit-mode",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/form-fill-settings.yaml",
+      "sourceLocator": "/rules/0",
+      "beforeSha256": "dcc580eda867041aae399bdf1a31e0f5925192e948d881784477ee4c09928c96",
+      "afterSha256": "3d07ff717f90f3405d7355c682160f8264dd73659045cc1a0c8e904b1785d4e6",
+      "changedFields": [
+        "condition"
+      ],
+      "findingIds": [
+        "FORMS-002"
+      ]
+    },
+    {
+      "id": "rule.form-fill-settings.direct-configuration",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/form-fill-settings.yaml",
+      "sourceLocator": "/rules/1",
+      "beforeSha256": "0a5a9b6e17705994cb4dd5b0f82dc0db667801fa0a38bb0088b6c5cdd8bc5ead",
+      "afterSha256": "e010c62c16fb05a51dd8136683832519d8dbc2e762c802142fecf805608a5daa",
+      "changedFields": [
+        "condition"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "rule.form-fill-settings.snapshot-runtime-continuity",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/form-fill-settings.yaml",
+      "sourceLocator": "/rules/3",
+      "beforeSha256": "c536e9be58f24aff01e75ae451f725c0d925b1cd973af6762220f6433e7d1adf",
+      "afterSha256": "f90c85aca334abbd2ef50cbb19ea2e3b92b97bc732b21e0897e4c43bdff829a0",
+      "changedFields": [
+        "condition"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "rule.form-fill-settings.workflow-configuration",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/form-fill-settings.yaml",
+      "sourceLocator": "/rules/2",
+      "beforeSha256": "a70d7badf02d0c84f0ac840f9547fedac7ee77419cc4f6df62862a38ac896a99",
+      "afterSha256": "9f2968527abe9ddb39f355ff1a99217fefa149b4161a471720138613ec63872b",
+      "changedFields": [
+        "condition"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "rule.form-process.approval-any-candidate",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/40",
+      "beforeSha256": "5211283f0175888637193ee4d2d72f07f76f2eeb26160952c4c1bda88f6f9a3f",
+      "afterSha256": "3ee9b0678f363f34402a04e64f8f11d299b7c63f2b6441f8d9769ac991ec5f0e",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.form-process.approval-return-to-entry",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/41",
+      "beforeSha256": "ff490a17934c1b65754957b08a3ac7f07ef882635b60efeb3f9fd4f9f2333e9c",
+      "afterSha256": "32461646a5d1cf45941e6167c460b4d6e61167c7a55f1f943b25d112682d8236",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.form-process.binding-requires-form-and-flow",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/23",
+      "beforeSha256": "753f283f88dd3099f5ba4cb8a6984ad9a55d5bc1a711aca5eb0c90230493d085",
+      "afterSha256": "9dfd80b8b71228b732748a0dbd907033392a5d3186466253547e743c236a26bf",
+      "changedFields": [
+        "condition",
+        "evidenceIds",
+        "explanation",
+        "name"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.form-process.binding-switch-cleans-invalid-field-exceptions",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/38",
+      "beforeSha256": "b9014d0fc9d42dcc99ca3db9556a3bb1d11d8da3f3626df714ba621cf729683c",
+      "afterSha256": "122d08b3e2cbc1ab3407a9448cb2b4d0f86537b5690112738fe4b4dbd1b019c3",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "MASTER-DIFF-004"
+      ]
+    },
+    {
+      "id": "rule.form-process.node-button-builtin-event-configuration-v2",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/45",
+      "beforeSha256": "8a8fd337992db81aa7ef61096c0a39085a86e0e8e1964b0d99aab9471d9bc74c",
+      "afterSha256": "fe30dc294113ec00d02807f907344e567fef25ee842e30bc46d424962a413178",
+      "changedFields": [
+        "condition",
+        "evidenceIds",
+        "explanation",
+        "name",
+        "result"
+      ],
+      "findingIds": [
+        "MASTER-FIX-008"
+      ]
+    },
+    {
+      "id": "rule.form-process.node-button-configuration-v1",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/43",
+      "beforeSha256": "86227ccd51b3e01f0ca588154aece3ba1e9cde043e1f7b2ad2a5e891a1e082fd",
+      "afterSha256": "759dcacce9318e098045fe2a6e476af5170e4d179207335ba14e9d3cc6b31f13",
+      "changedFields": [
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "MASTER-FIX-008"
+      ]
+    },
+    {
+      "id": "rule.form-process.subject-members-resolve-latest-relations",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/32",
+      "beforeSha256": "9d6e2f42b0ae3b5fa2aefdb0053450a2160b1805a2f71f6e89a9020195b352e4",
+      "afterSha256": "8cee80d1695b155cbc378df280b7b9c772a5ff82b8474d32ecdb3cce12d1a1d4",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.form-process.termination-cascades-to-outer-work",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/42",
+      "beforeSha256": "7fad588e720a0aa5cd9e3f1437f28770aabbfe66b4cc52cf448565ed1d86eb42",
+      "afterSha256": "e2e86df97487cfb5c84176da52a177102271a7c6af03b8c69a1529c6fa4c2abe",
+      "changedFields": [
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.identity.runtime-department-overlap-deduplication",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/identity.yaml",
+      "sourceLocator": "/rules/2",
+      "beforeSha256": "a9ba9bb94725642fefd1fd0f303609fed94638f2a00d0cf036a4730e7dc24ae0",
+      "afterSha256": "23c36f847d347ce9d64fd6943229d5e55803663d72a14afa86f49026c26e3efd",
+      "changedFields": [
+        "condition",
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "FORMS-004"
+      ]
+    },
+    {
+      "id": "rule.identity.runtime-subject-resolution",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/identity.yaml",
+      "sourceLocator": "/rules/0",
+      "beforeSha256": "db9d552f4cc4a020c682c8f350a05a00ea39ae06114e7d526ea223c2422e81c3",
+      "afterSha256": "e73d9f880711a07048e4e163eea989f5015253523568e678dea79941f3023448",
+      "changedFields": [
+        "result"
+      ],
+      "findingIds": [
+        "FORMS-004"
+      ]
+    },
+    {
+      "id": "rule.product-process.explicit-execution-selection",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "/rules/18",
+      "beforeSha256": "710f90d210340dc74821d0600a4f33a39d9eafb2f6dc572892d503397205c6f2",
+      "afterSha256": "99629ca63d15160dcd464b5edb5fb11bbbaf14ccac6234d4b64cf6e43db4407a",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "rule.product-process.form-button-field-permissions",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "/rules/29",
+      "beforeSha256": "7b847097de043f36bb37b6c0e0594dddfc2c3111f711613faf4e841885b58adf",
+      "afterSha256": "a5d632b25fa354eaf5bc482bc8800dbe758b0237232753f2039d409a5d1c43c4",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "rule.product-process.form-complete-before-operation",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "/rules/27",
+      "beforeSha256": "62be1f9da6c3d1ae33250a4f2e62df6a9bb52d49becfc932219b149f27751026",
+      "afterSha256": "cf6c0ddd38496790f556c9de398a4ee25873b756d03c51db8a1731699ae843a1",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "rule.product-process.form-required-configuration",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "/rules/26",
+      "beforeSha256": "c881b71a9180cb16aee94305b176987bbbe7d7f1c1963d919925a916893eedc9",
+      "afterSha256": "0994bfe1fbc28dfd96b6f9c513fc8af853ee55d84911bf5536fd7bac52a56f57",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "name"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "rule.product-process.freeze-batch-execution-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "/rules/25",
+      "beforeSha256": "9bc0ff2fa88e7c45f2bbfeebf76b14dc67f30cb955c3edc8a4e75ee58bcdd199",
+      "afterSha256": "c9f1d32aea8f05a161502a6bd86d030142bd7647ac52e3e028b411aae4af5dea",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "name"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004",
+        "MASTER-DIFF-001"
+      ]
+    },
+    {
+      "id": "rule.production-work.applicability-resolves-published-flow",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/2",
+      "beforeSha256": "366ef983f7c3184e0dc4afebce0d944299032ad90373c5b05d522548dad05144",
+      "afterSha256": "f0008fcdad715d32f43f60dbc189d47b5a2900b7ab99d0503fcda6dd4188c2c8",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production-work.condition-branches-first-match",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/17",
+      "beforeSha256": "47d62832f1be667ba73f75263ecc64d619182db7b6e916c729c0353593935e5f",
+      "afterSha256": "8c1d0341b084d6073cb472d18e004854db303a1113847b02563f921c17f02219",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production-work.condition-rule-publish-validation",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/16",
+      "beforeSha256": "b6cb26ddbc176978bd2e8790ca29939205e69ba526edba3bd56c9642709da97b",
+      "afterSha256": "2afb70f730ffe688e5f0521a2f6f2255f159071e6c95a3481825a670ba1fa81b",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "rule.production-work.flow-canvas-configuration",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/14",
+      "beforeSha256": "0ff4fc9b43d7aa1b88d3a6a4993b09e72d7b17a29786a0841341dbc0724c8cd9",
+      "afterSha256": "9475ef53ab354b6b71bbba8c925dc59cbd2c8a35f40f4ac5347e35979f8f54b0",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production-work.flow-version.draft-save-defers-publish-validation",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/11",
+      "beforeSha256": "0d36920fea62f7979b7122d9c636a86d79d26764ddc60c9ae5db6cc095047205",
+      "afterSha256": "a16e4fde9f8f9a14db2d5467a2ecc6bb144cd4c96260c3b9dff482f718746435",
+      "changedFields": [
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-006"
+      ]
+    },
+    {
+      "id": "rule.production-work.flow-version.publish-integrity-validation",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/12",
+      "beforeSha256": "d3d05a7e4813e423a15bc599e0565aae59df7ffd801f89c03f1b8509868c2a27",
+      "afterSha256": "9e9876b6419b2f7f8353fa962346d9316f32663f23a1aa6680ada77ffbf952e0",
+      "changedFields": [
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "MASTER-FIX-007"
+      ]
+    },
+    {
+      "id": "rule.production-work.form-entry-event-field-binding",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/47",
+      "beforeSha256": "817e4b1a73cb277716169f819380016f837d1501d540a9f35c8871baf307538b",
+      "afterSha256": "f058da48cde4031a8ad2342ffa86c4135b499c855ae5137253dd9e5205fc9bd7",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production-work.form-node-business-document-configuration",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/15",
+      "beforeSha256": "e95ba6d9b5e82a8a78a85c832099a2fe17961ca3e77511e5aa4098ce3fb2efa8",
+      "afterSha256": "33dd8e3f906e54d2239b46b2cc86e4b67e083e187f0bd7a971d3aa0b04d107d8",
+      "changedFields": [
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-DIFF-003"
+      ]
+    },
+    {
+      "id": "rule.production-work.form-process-reference-projection",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/48",
+      "beforeSha256": "1ec4450f508cad1f006776ef493239d11ea7e915952b6f9932180c1d15e63b28",
+      "afterSha256": "f6f5eef69ae2873a5f4abc04c33f546f1ffbd636fa395c34bb9232f49ea8743d",
+      "changedFields": [
+        "explanation"
+      ],
+      "findingIds": []
+    },
+    {
+      "id": "rule.production-work.instance-auto-matches-applicability",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/5",
+      "beforeSha256": "211eff9854735387ae0c4cff06ffa45f2850423cefd26cf7892021c54bd66b19",
+      "afterSha256": "a1122efa5106d22206d8ddd6acf1b370938b112f71f72c0488d4b80946553374",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production-work.instance-freezes-work-and-rule-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/6",
+      "beforeSha256": "03e28e9ec26ae7ee7888f093596ee1ac3fe91ea2de89c6a18580771c5cdcffe6",
+      "afterSha256": "56a66f81810f473f6f6777f1123ed6e001f0684ca048411b29601e17dc2ca234",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production-work.ordinary-node-single-outgoing-edge",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/18",
+      "beforeSha256": "62397f3fd68c4fe02b8d24f446ee9b19f81f788440b1041d87c7aec889879ba8",
+      "afterSha256": "290e9d63ca25d4e101938d3065d2eedb3fb8f662172f12c2d63535a5d8c9f528",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production-work.template-delete-when-no-applicability-rule",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/3",
+      "beforeSha256": "475c2a1b44d62ac8745cf652a07d018bfaa08853baae154c268c4839fd1d5df9",
+      "afterSha256": "95b71e0e8a836ceb34027c7489ae1ee02da06b157c4fa6b8bf79bc416264dcf9",
+      "changedFields": [
+        "explanation"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "rule.production.batch-management-execution-detail-entry",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/35",
+      "beforeSha256": "08d9dca5078cf0109326a77ba1fe405ed18934e338a8d4c5d8e8275f200a06b8",
+      "afterSha256": "c3bb86403d31946a86a0bf137a25b6d726d626f903d9bd1ee5787846532dabf1",
+      "changedFields": [
+        "evidenceIds",
+        "explanation",
+        "name",
+        "result"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "rule.production.locked-process-ignores-effective-window",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/60",
+      "beforeSha256": "b18bdb65106ac993c3f4d12527c1c3e59553a3a83a21112e4ca6a71e0f99b885",
+      "afterSha256": "66532f14b94c6d80b108df09d301e1472d73f110aa2738ded928e284b6d87653",
+      "changedFields": [
+        "explanation"
+      ],
+      "findingIds": [
+        "PROD-018"
+      ]
+    },
+    {
+      "id": "rule.production.mass-batch-quantity-distribution",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/27",
+      "beforeSha256": "cf6ea175a6e216b26f9b3d22a1736841b1489f6046be8cfce081a1f1e256153c",
+      "afterSha256": "4f968fcfb9ab14d445e65346e8da586564c45794441ee7d97ae88c6b61287fbf",
+      "changedFields": [
+        "condition",
+        "explanation"
+      ],
+      "findingIds": [
+        "PROD-012"
+      ]
+    },
+    {
+      "id": "rule.production.object-early-termination",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/48",
+      "beforeSha256": "c570613cb705a3ed129367755fd15886977f48a88b0ff328453fd71674299af8",
+      "afterSha256": "40a31e0951ba176e8bd29fba6eb95c5b42db7e68bf1f050f5faa332c9c420eb9",
+      "changedFields": [
+        "explanation",
+        "result"
+      ],
+      "findingIds": [
+        "PROD-017"
+      ]
+    },
+    {
+      "id": "rule.production.production-batch-input-quantity-required",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/22",
+      "beforeSha256": "1a9ad833fe9c211fabfa35233de49f3f7b10ddf1ad55cc3f71ac8c66a9e7bc5b",
+      "afterSha256": "a68af882bdfda2fe845af981c0993e4179a3d1bec79b59e7237bce226e4aacf6",
+      "changedFields": [
+        "condition",
+        "explanation"
+      ],
+      "findingIds": [
+        "PROD-012"
+      ]
+    },
+    {
+      "id": "rule.production.production-object-audit-change-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/58",
+      "beforeSha256": "f8a73ca4aba5ccf31eb6c7a9de9eefeb7671306195d19c5752ae0aedc71333c9",
+      "afterSha256": "fcda22fc8a78b2b64e81e27fbbc75a8b0f72d4de73bc4742fe30649e89bc555c",
+      "changedFields": [
+        "evidenceIds",
+        "explanation"
+      ],
+      "findingIds": [
+        "PROD-022"
+      ]
+    },
+    {
+      "id": "rule.production.work-order-audit-change-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/57",
+      "beforeSha256": "f11190b094761332aba16df1b40b4da2fbf60ad7af3b43ce63af419ba99ab5a3",
+      "afterSha256": "2042f2f72de04383a377c6460ad1a72dabf96d9840318f4c814e17cba9ef6579",
+      "changedFields": [
+        "explanation"
+      ],
+      "findingIds": [
+        "PROD-014"
+      ]
+    },
+    {
+      "id": "rule.workflow.task-any-candidate-completes-and-closes-siblings",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/identity.yaml",
+      "sourceLocator": "/rules/4",
+      "beforeSha256": "f93cece231230ed835ed76d7f135ef8cd8e2c957ba09d48640f90788b6015751",
+      "afterSha256": "83830d0ed4ad6d7b94960dd1a7a57e999e745f22e10b80dfc24379ccb1870d50",
+      "changedFields": [
+        "condition",
+        "explanation"
+      ],
+      "findingIds": [
+        "FORMS-008"
+      ]
+    },
+    {
+      "id": "scenario.execution-custom-form-attachment",
+      "recordType": "acceptanceScenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/0",
+      "beforeSha256": "4d3e29bb37688d4e21f6d1bad669cdabb8c2f5391b1e1c278f5ee3ade41e67e5",
+      "afterSha256": "bc1c899836d4a5e5a70933c17c15e60de07b14104d7f8f349fe548c61380dece",
+      "changedFields": [
+        "evidenceIds",
+        "given",
+        "then",
+        "when"
+      ],
+      "findingIds": [
+        "PROD-026"
+      ]
+    },
+    {
+      "id": "scenario.execution-snapshot-internal",
+      "recordType": "acceptanceScenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/10",
+      "beforeSha256": "abc844b898a2c975d04dfcbdb44735db538b0fb4d84c1de0cb2456ecd9585643",
+      "afterSha256": "832d0a1bf309c8ddd8093777b8d59129120104d9bd2360df1f5d9233b140b4e8",
+      "changedFields": [
+        "given"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "scenario.explicit-process-version-selection-internal",
+      "recordType": "acceptanceScenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/9",
+      "beforeSha256": "082caeab9083c3223fe13223fa8f8ea22b88a4a67a3abce3a98ad6d35b7e56a1",
+      "afterSha256": "f83ef586a23cfe3972cc8abcee1b38ba4b380819631d7a34f02c7a12974c7a56",
+      "changedFields": [
+        "given"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "scenario.form-required-configuration",
+      "recordType": "acceptanceScenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/8",
+      "beforeSha256": "d2222f5a95ecdd37edacd0c3b19582a67453178d78b069da390b0bf93004c4f4",
+      "afterSha256": "00d79c4e64b0616d8df05f1fdb801bfaab2fc9cddbd2b6a88d2f89df2af291a0",
+      "changedFields": [
+        "evidenceIds",
+        "then"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "scenario.planned-capabilities-internal",
+      "recordType": "acceptanceScenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/11",
+      "beforeSha256": "f3b336e87b02d12e40343cef9534deba879fd1652cdf88397e01424e7cf30dda",
+      "afterSha256": "e8a54edb66d09bfd5a6e65adfbf03de296393369ab1e66791439c7e65deb7752",
+      "changedFields": [
+        "given"
+      ],
+      "findingIds": [
+        "MASTER-FIX-004"
+      ]
+    },
+    {
+      "id": "scenario.production-work-flow-canvas-interaction",
+      "recordType": "acceptanceScenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/4",
+      "beforeSha256": "67609bc219825913f81ab8fc547397bcc2216c669f29bac3af83b36b5fa2775e",
+      "afterSha256": "0e55d50a2f4ff7069689898c19e69d987a1077f6981d1600ba6ebb3a1fbbee1e",
+      "changedFields": [
+        "evidenceIds",
+        "then"
+      ],
+      "findingIds": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "scenario.production-work-runtime-remains-unimplemented",
+      "recordType": "acceptanceScenario",
+      "sourcePath": "docs/knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml",
+      "sourceLocator": "/decisions/1/acceptanceScenarios/5",
+      "beforeSha256": "ea6fb7773301e370262279eeaf22a5bbb1bed590b9de5fb000e21626e05d3ece",
+      "afterSha256": "5dbf96fc934c7a11a1882098a2698a21e2c70bfcce5a10d17dc38748bb1e5187",
+      "changedFields": [
+        "evidenceIds",
+        "given",
+        "then"
+      ],
+      "findingIds": [
+        "MASTER-FIX-005"
+      ]
+    },
+    {
+      "id": "term.execution-snapshot",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/71",
+      "beforeSha256": "3b3153a534d59801b58139fb6d6ba0ca367b56a9a2fd5bf2389a92301908d78b",
+      "afterSha256": "bd0efd3dc26559c0c68d3067f54a132d063ca86e1a7c63c660e403c747a0c3a6",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "term.form-binding-field-permission-exception",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/58",
+      "beforeSha256": "2587227eff1f94d5b81abb5fdb20be65e87450d84a620c7b54593e32b80d5ce6",
+      "afterSha256": "7f1d9a729ceeb3428abef576c028703d4bf205eb6dd471acf27725d5c03c9289",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "term.form-process-builtin-event",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/65",
+      "beforeSha256": "0752adfb4ac873893f1b0e42482034f3ed35f9b618cd7730c0e8e64bf56d0cf9",
+      "afterSha256": "7e9a44556e43dfdca10d736801fd072a648f7376e9f14ef06fcdaf04d8b97107",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "term.form-process-operation-permission-policy",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/60",
+      "beforeSha256": "88ab60504ebcbbe07992d8049c68d1cd18ea72a7a5abd24bec7e5818647ce9bd",
+      "afterSha256": "6984aa719656dc485d9347ab4d1c757ef882bf50e608c85e3472b7c4f000fc7d",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "term.form-process-participant-rule",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/45",
+      "beforeSha256": "576bc56e7eebf38202633e8dc62e9eafd5a4c3e715ad351b31589098b3d2bd56",
+      "afterSha256": "330dce87228789ecbfa77f1e4a4328e86d046a87b53003aa9fad53eb53295e8b",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "term.form-process-subject-default-permission",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/55",
+      "beforeSha256": "000d42d85d373b7018c6d267e1acf0954f1242647cee94205e9a7964059f9d6c",
+      "afterSha256": "b0765e8de681bae245cb7a0e30b378e9d93ab3ceab9ade4a73bcfe53d1754aa7",
+      "changedFields": [
+        "aliases",
+        "name"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "term.form-process-template",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/27",
+      "beforeSha256": "74aa4f9889fe4dee3b6412299b3f0ac047e47d847312529a69edf2b1a8f7e83d",
+      "afterSha256": "7542a33d69ed3f29bb18a57a5e395d11a518f3edf66d6c5b5bfa3bd498b705d3",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "term.form-process-template-version",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/38",
+      "beforeSha256": "3b4bfc8dcb3b76d8424731e66f16cfe3ff50b54f876239bc7b7ba9ad4299d333",
+      "afterSha256": "5f4baff23ec7c8400e57db328c4d1ac534a53689d72a4fe0de8ea0a5de05e82d",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-001"
+      ]
+    },
+    {
+      "id": "term.production-batch",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/70",
+      "beforeSha256": "3f7e10778e9b94253f3db6d2fecee31719398fb035f46cf331c9b7af4a44d46f",
+      "afterSha256": "18c5f318340e7abfd9cf0b04028e864662d9601942785ebac4a9e5a1008f910f",
+      "changedFields": [
+        "aliases",
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "term.production-object-execution-detail",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/104",
+      "beforeSha256": "487a0698ae98d90582a7b6162e0177e48fa000fbddf4fa5a9d963a6c8fd7cc91",
+      "afterSha256": "df8bedc88858764b53b0dddda0a181b4c4da2ef65ffa0e1379af6bd2320fbf8b",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "term.production-work-condition-branch",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/83",
+      "beforeSha256": "60caeb3fdf503c313e9e6304a227432a8ed3cf44b2debf18e85d40c04df848ea",
+      "afterSha256": "156870c25524ed3576adc75d52e9a8f9a8c00ece23c2210ce64f575f89e7ce06",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "term.production-work-condition-default-branch",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/84",
+      "beforeSha256": "fa0dbc3685c81f44fac044eb5d215c40be0c0f0cc0086de2df2f2e0d0ebe5b62",
+      "afterSha256": "57045449b9488c79dbe1e85040957fc0d8835ec0043b3378c8c7d13db2b51e40",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "term.production-work-condition-node",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/82",
+      "beforeSha256": "ea5a07c37807fd5d4f67179f64e8d6a645719495b4f20a281294d246ba91a446",
+      "afterSha256": "e037082c170066bbff4c6710aaca33c221d1b71529bdadd5588c916610d3e616",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "term.production-work-condition-rule",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/81",
+      "beforeSha256": "38f5457ffd04b470191c9c2c4af211acea492dcb9daff3582df96e23f8a902f7",
+      "afterSha256": "6c76bc91cd3bf68f4119f702efcfcf127dd16521be9bb79488922dfa21dc25f7",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    },
+    {
+      "id": "term.production-work-instance",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/86",
+      "beforeSha256": "299f2e1d2fb51d403781fd679520558171a9ccc08f0235b2a3c122574e789037",
+      "afterSha256": "cec765eb8f8ada7899b082f8b02a772f4e3d85f7f6a67e2f948c370d8c54eee8",
+      "changedFields": [
+        "definition"
+      ],
+      "findingIds": [
+        "ROOT-002"
+      ]
+    }
+  ],
+  "removed": [],
+  "changedFiles": [
+    {
+      "path": "docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md",
+      "sha256": "ff91d019c46e4ec464bcb533014ad446345a99d0e5191764fd9ed5f315350937"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "sha256": "aa4b475d180d205b32b9cee753585264abd2029f7a7e255afde0da32f6cd4bfb"
+    },
+    {
+      "path": "docs/architecture/ontology-driven-impact-analysis-and-extension-development.md",
+      "sha256": "a5a7fdd413c3fc8d2bc55851c66ba36a1073940ad7ec30b90fd2699c553739d3"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-decision-package.yaml",
+      "sha256": "fb2e3a287b4c9f630e0c522aea4d63c5cca3e010e75bfdcdd30529eca923eb4a"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "fb9b571b3968c4bdc77d769fe1786a732201479a65a5463be6d49dc1eea8bc7d"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sha256": "0248ff08a8931569684228a82a8bc7f66b13af906a91518b1ef641e3240e73e7"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "sha256": "a7bcb797305df0306cbd5459b32d0a3c0c5afce5c0b7405fbbac7ddd8e0962d6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml",
+      "sha256": "646fef81541ebdab6f4b9bbe07389f4405c305dfcdabd2419d823612b7074eac"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml",
+      "sha256": "709e1f2555a914b7c55ce247089a7306b23769dc19fa61708e8b93956b53f52a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "sha256": "930ccdf06ceee156d8930a8b0751fc1f610404ccbb6468f806be51fbfaff7cef"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sha256": "e57aab6822c14ef3202f92582e32c974fa64d169cc1df8bb34af8d1723fa1abe"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml",
+      "sha256": "915891356f6dad63ddc1bb803579ecc722d6c13fa3d9999707f2885f0be16a25"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "sha256": "77b64943e93a524747c947c36f4034034a047d6b37e8fb884203a45c49b23a25"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "sha256": "1eec6abe20670e8f363387d18ff442993ca55be9babf39715778045a70a0292f"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "sha256": "0de195d05dd6b6afd2ec11ea07dea0d12f0add69fe3bf838b109fb07f2a5dbd3"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sha256": "78ef19fc36fbdc7d8ee611aa5ce2f4f68fd3fc30c366a5b5d99c3c83ce49f023"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+      "sha256": "d42269fb5d2c171249638244952857058943444c9f2388e0077e0ff759730ca3"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "sha256": "e58a45b922b289984e7cc9229225b67b6da9f9e1a278098265d41f8ade508f87"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "sha256": "c3046f99e1cdebf0e31c097491cf21f5b2708b1348b45625b2f3c4e869581a45"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0024-production-form-process-buttons-and-events.yaml",
+      "sha256": "d4ba07c504cf7e2199507106f568d322b46b0c74b55718135bd79ea14e237867"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml",
+      "sha256": "4a6131d0ab736337ce35ae62c4edef3eb3c45676303d197bbc81b3daa10477f5"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml",
+      "sha256": "62c405f2665e18581916fcaf900c4af4e1011fd89d54b2fc8b7fa0d9a3ad7be6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml",
+      "sha256": "b20877ce26fbb2ed622ae0633eab24a54cd7498a3a94307b4c6f80ed4afe3ddf"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml",
+      "sha256": "813ad1848494d624ce9a4071d282a2f01aa9e2e991d8392bcae77568c6524d09"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sha256": "6504a9ff86aa6718d585097b27e23ab303f06186e40a99db8f74dad2d5c4fb39"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+      "sha256": "b4bc57a3a06ca99a4b95a872403edd8aab599e8b69d01e87f16ac2c03109f328"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml",
+      "sha256": "3b7642a20d086ea70554ecd1ceed367673b6ce98701c5db879b01fe02f4febab"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml",
+      "sha256": "d42461af0f3d8673e7fdc03b24a9e8810e089c7985baec6626d02102a34f7b3d"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+      "sha256": "ef95f2eaccf63c50e6c92c11fd4612fbe35127e264437fca5e2794c29dc04656"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "sha256": "b60c0ce937bf985b80d276bc9c51a6df32e44d9f8748c4bced32ac9cd7b7b011"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "sha256": "b2dbfc44407164b2b21a7ac59a74c8e32ca2601583a3a902aa64e3ab14cb2e7d"
+    },
+    {
+      "path": "docs/knowledge/evidence/custom-form-scope-confirmed.md",
+      "sha256": "ef6449bfd3762e7849dba9781e511c40e792936ee354fb5e594516b698e74a32"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "sha256": "ec60f8062c0003842a563a5060f33df94f82016c81eb0155b5497e2e970e0d3c"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sha256": "fd50baedcacdb3aa8c37bdec87e8fd70cc104eae5388a81aad1a486d609ef564"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-template-version-design-isolation.yaml",
+      "sha256": "d25778e79ede99b26b82aef68775babfc2acac7dca6f687403dbdb70a3a22a98"
+    },
+    {
+      "path": "docs/knowledge/evidence/execution-form-selector.yaml",
+      "sha256": "8ad77f34171c894839017c93890a63b5582b612b12152ca2cf6806e9c305bdcb"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "sha256": "deb99939675eb739ed2191c014838b59af00fa084dd346b62f94d946c7639656"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-reference-runtime.yaml",
+      "sha256": "b64ffa7ad428dda7f68411d3e335d6ae410a8633736f93b4400597522a55d218"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-renderer-permission-contract.yaml",
+      "sha256": "5291710cf328cc6383004737737af13904874ec2ae0d438f2c35d2753a15569a"
+    },
+    {
+      "path": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "sha256": "3c5ab034aa140b5078fcf060c1a4b4079b5a0a713a38e5d658267b6e65b3f795"
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-description.yaml",
+      "sha256": "fd412dedf87103a516455d127fe46dcf7fa0ebb7bdb089e17c3069a0a9eaff3d"
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "sha256": "fbca5e7a95d46ccd66f17dacf27e84109ec294852be0d53d618f4364367592a9"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sha256": "9c35a0e256bc6a2272573772b43ed23ce1603d6803ffd1e14b20787145bf90f7"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process.yaml",
+      "sha256": "11a1b99a31d130067220f767a35e32a5b01ddb8ecb3d165591c1c2d9ee2676ef"
+    },
+    {
+      "path": "docs/knowledge/evidence/production.yaml",
+      "sha256": "9c9badf497d2b515e32a2cbc8944146afa8927c193277c0a45a670cca7fa996a"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-correction-void-design.yaml",
+      "sha256": "121d6637898997f4edb409d8c37b2a38b11a541deadb250303fec9e8a185d1d6"
+    },
+    {
+      "path": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "sha256": "871509d3a4f8e4a1e6a788cc6f46871a0ea0d4df76a2450f4b17aa3c835da3db"
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "sha256": "6c362f501684572623a5454ee3bc3cf7c9e86dcdc38f1eae6738f8c43fe7bd6a"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "sha256": "69cbffb887f330ca8650f68f8b7eb89d5cb9cc51c377b257e46e6e763085af25"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-template-version-design-isolation.yaml",
+      "sha256": "babd24b6588c948ad194c7e966f5c3c47fbb8f67094afd3dc715270db83bc407"
+    },
+    {
+      "path": "docs/knowledge/facts/form-fill-settings.yaml",
+      "sha256": "7c91b28c80f9aff8e05476aa4051e08a8c5617d31e10bbc38e4b3538ff57041e"
+    },
+    {
+      "path": "docs/knowledge/facts/form-process-binding.yaml",
+      "sha256": "a21dc0256d9b69230dd3540350c6422d84eae8ad9e8030f47fc13c37e35aa5bd"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "sha256": "f4cd43945cfb075b798dd6e8f14dc23222ba1053d3fb0937cffc895f850e975a"
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/form-process-binding-version-reference.md",
+      "sha256": "69083a7d74434b81010164cc4fd7b161f44dce5543d51c194399b4df508841be"
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/ontology-p0-coverage.md",
+      "sha256": "5cfd9ccc98c788a09d756f42134b23e1eaeedb508a20ba5d7563a1115ac089ba"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "sha256": "a460c89e84c6f6f40ef129772cb9c6495822f194f3b3e1d0eedfae8f51c8404b"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-template-version-design-isolation.yaml",
+      "sha256": "a50283edabe003c5c2b4f13e3b1c51aa33551ad5c78c39bf915b23984b5381df"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "sha256": "dbe05cf0178f3bc540f0e2123f874691462996997b56b93286c39d284462f134"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "sha256": "eff64dc34d0e4ecfc6182c1974a603a92eeb39e98deb86274f3d669ea0842a49"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "sha256": "fcb2127be8c36d32a9ebf02b0274bb1744d92165a0531ec4837df919e9c47ce5"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sha256": "19dd7be8c7bb4d44b8d115457627671aa6002557d4f5adddbd6b14225e694a27"
+    },
+    {
+      "path": "docs/knowledge/rules/execution-form-selector.yaml",
+      "sha256": "b958e81140b0a2b76e0d8ec2ba0d10625d6e9ec28188b7e9f7a81f1c7cfb6719"
+    },
+    {
+      "path": "docs/knowledge/rules/form-fill-settings.yaml",
+      "sha256": "566fbd5969be1e2d35cdb00d9f96db37f4608bb35d9f2a2e23e3393c257e81c3"
+    },
+    {
+      "path": "docs/knowledge/rules/identity.yaml",
+      "sha256": "36ecd3de8f1ffacd8178aeb1c5e1f3f62771b846fb711b91a6c38ebe0575694b"
+    },
+    {
+      "path": "docs/knowledge/rules/product-process.yaml",
+      "sha256": "764246e03a723bb228cfd52382d048f779b249cb81f10b875a3a2b2ed03aa3e8"
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "sha256": "dc1b84e3c66ff11cb7e1343837190aae5cc119f37a1d07b75f53c416b33475e4"
+    },
+    {
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sha256": "da7932bcdf91ef8c1a6a23c090f660a4d8e1e8f3ad33dcea006a4cccc79a2a4c"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+      "sha256": "2a92e375a5e190639ac1a176882b3fcfa00d0eb95059ef11c68324022f9ae090"
+    }
+  ],
+  "excludedFromContentManifest": "This audit report directory is checked by its own integrity and independent QA receipt; self-referential output hashes are not embedded."
+}

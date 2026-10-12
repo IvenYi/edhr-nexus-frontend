@@ -15,7 +15,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0001-03
-        statement: 后续生产执行显式选择具体产品制程版本；工单拆分批次等运行链路尚未实现，仅进入内部知识投影。
+        statement: 历史初始产品制程建模基线确认生产执行须显式选择具体制程版本，当时工单拆分链路未实现，仅进入内部知识投影。后续 DEC-0012 已确认并提供首次拆分选择、锁定与后续对象继承；不能用本历史交付边界否认该局部实现，也不据此宣称通用规则运行层完成。
         status: specified
         visibility: internal
       - id: DEC-0001-04
@@ -39,11 +39,11 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0001-09
-        statement: 批次未来按选定制程版本冻结执行快照；该运行链路尚未实现，仅进入内部知识投影。
+        statement: 历史初始基线提出批次按选定制程版本冻结执行快照，当时未实现。当前对象拆分保存 processVersionId，首次合法 START 构建并保存局部执行快照，DHR 按后续 DEC-0062 同事务创建；产品簇独立冻结与通用规则集版本依据仍有缺口，不能由历史声明或局部实现推定完整运行资格。
         status: specified
         visibility: internal
       - id: DEC-0001-10
-        statement: 表单完工前完成、表单共享、按钮字段权限、事务触发、工序开始前事务校验、最终产出和物料齐套均为内部规划，不进入客户或运行时投影。
+        statement: 在初始产品制程建模范围中，表单完工前完成、表单共享、按钮字段权限、事务触发、工序开始前事务校验、最终产出和物料齐套均以内部规划保留。后续必需表单完工门禁及绑定权限/事件已有独立决策和局部实现，应按其当前范围核对；本声明不整体撤销历史，也不把剩余规划或通用规则契约提升为可执行。
         status: planned
         visibility: internal
       - id: DEC-0001-11
@@ -121,23 +121,28 @@ decisions:
       - id: scenario.form-required-configuration
         given: 制程版本编辑器中某工序已引用 DHR 目录表单
         when: 用户设置“工序结束前完成”复选框并保存制程版本
-        then: required 配置保存到 ProductProcessOperationFormBinding，但当前不触发运行期完工阻断
-        evidenceIds: [evidence.product-process-version-editor, evidence.product-process-controller, evidence.operation-form-binding-entity]
+        then: required 配置保存到 ProductProcessOperationFormBinding；配置保存动作本身不执行完工。后续生产运行消费者通过快照中的 required 和实例完成状态执行门禁，按 DEC-0045 及对应引擎测试的实际范围另行核对
+        evidenceIds:
+        - evidence.product-process-version-editor
+        - evidence.product-process-controller
+        - evidence.operation-form-binding-entity
+        - evidence.production-execution-snapshot-builder-source
+        - evidence.production-execution-engine-source
         evidenceRequirements: [前端复选框, 控制器持久化, 绑定实体]
       - id: scenario.explicit-process-version-selection-internal
-        given: 一个产品存在多个制程版本且生产执行链路尚未实现
+        given: 初始产品制程建模范围内一个产品存在多个制程版本，当时生产执行链路尚未实现；后续 DEC-0012 切片另行评价
         when: 查询客户知识投影或运行时投影
         then: 显式选择制程版本规则不进入该投影，仅在内部知识投影可见
         evidenceIds: [evidence.business-knowledge-model]
         evidenceRequirements: [状态投影校验]
       - id: scenario.execution-snapshot-internal
-        given: 批次执行快照尚未实现
+        given: 初始产品制程建模范围内批次执行快照尚未实现；后续首次 START 的局部执行快照按独立生产执行决策评价
         when: 查询客户知识投影或运行时投影
         then: 批次冻结执行快照规则不进入该投影，仅在内部知识投影可见
         evidenceIds: [evidence.business-knowledge-model]
         evidenceRequirements: [状态投影校验]
       - id: scenario.planned-capabilities-internal
-        given: 七类后续控制能力均处于 planned 状态
+        given: 初始产品制程建模范围内列出的七类后续控制规则为 planned；后续独立实现不自动改变这些历史资产的成熟度
         when: 查询客户知识投影或运行时投影
         then: 这些规划规则均不可见且不可执行
         evidenceIds: [evidence.business-knowledge-model]
@@ -148,6 +153,6 @@ decisions:
         severity: low
         visibility: internal
         path: gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx
-        lineHint: 166
-        summary: 产品建模页面仍将通用文档列标记为“SOP 文档”，而当前绑定模型支持任意文档分类。
+        lineHint: 171
+        summary: ProductModelingPage.tsx 的 AUDIT_LABELS.documents 审计字段标签仍为“SOP 文档”，但绑定模型和文档编辑支持任意文档分类。差异具体在审计展示标签，不概括为所有通用文档选择列；本次核对后仍 open，未修改页面。
         evidenceIds: [evidence.product-modeling-page, evidence.product-process-controller, evidence.operation-document-binding-entity]

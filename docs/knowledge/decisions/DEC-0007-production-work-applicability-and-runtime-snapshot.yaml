@@ -4,10 +4,10 @@ decisions:
     title: 生产作业适用规则准入、模板删除与未来执行快照
     status: specified
     visibility: internal
-    context: 当前生产执行、作业实例运行和快照落库尚未实现。产品已确认作业模板删除只受适用规则引用阻断，适用规则配置必须以当前已发布流程为准；未来生产执行不在产品或工序配置中手工引用作业，而由适用规则自动匹配，并在作业实例创建时冻结完整执行依据。条件节点的配置层已另由 DEC-0008 确认结构化 AST 和第一版字段目录，但不改变本决策关于运行时自动匹配、实例创建和快照闭环仍未实现的边界。本决策替代 DEC-0006 中“存在已发布流程即禁止删除模板”以及仅冻结作业流程版本的旧语义；DEC-0006 其余配置、版本生命周期、审计和页面语义作为历史背景继续保留。
+    context: 初始作业配置阶段尚无生产执行、作业实例运行和快照落库；当时确认模板删除只受适用规则引用阻断，规则配置须使用当前已发布流程，生产执行按上下文自动匹配作业并冻结执行依据。后续 ExecutionSnapshotBuilder/ProductionExecutionEngine 已有 OPERATION_START 范围的匹配、嵌入作业图快照、受限条件求值和节点推进，不能再概括为全部未实现；独立作业实例、完整规则修订依据及通用事实/异常审计契约仍有缺口。本决策仅替代 DEC-0006 的“存在已发布流程即禁止删除模板”和仅冻结作业版本的旧边界，其余配置、生命周期、审计与页面语义保留。
     decisionStatements:
       - id: DEC-0007-01
-        statement: 当前生产执行尚未实现。作业模板没有任何作业适用规则时，无论是否存在草稿、历史流程或当前已发布流程，都允许在同一事务中删除作业模板及其全部流程配置；存在一条或多条作业适用规则时禁止删除。
+        statement: 作业模板没有任何适用规则时，无论是否存在草稿、历史流程或当前已发布流程，均允许同事务删除模板及全部流程配置；存在适用规则时禁止删除。初始配置阶段无生产运行的时点说明不再作为当前全系统事实；后续实例冻结仍须按自身证据验证。
         status: specified
         visibility: internal
       - id: DEC-0007-02
@@ -15,7 +15,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0007-03
-        statement: 未来生产执行根据生产上下文和作业适用规则自动匹配作业，不在产品配置或工序配置中手工引用作业模板或作业流程版本。
+        statement: 生产执行按生产上下文和作业适用规则自动匹配，不在产品或工序配置中手工引用作业模板/版本。后续首 START 已在受限 OPERATION_START 切片匹配并冻结命中规则所选字段与当前已发布作业图；其他触发及完整通用执行契约不能由此推定。
         status: specified
         visibility: internal
       - id: DEC-0007-04
@@ -23,7 +23,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0007-05
-        statement: 当前仅确认未来执行契约和快照边界，不得将作业自动匹配、作业实例创建、快照落库、节点推进或运行审计标记为已实现、已验证或对客户发布。
+        statement: 本决策初始交付只确认未来执行契约和快照边界，当时不得据配置称运行已实现。后续已有受限自动匹配、嵌入作业状态、快照落库、节点推进和生产执行审计；按对应源码及独立决策记录实际范围，不能把局部实现提升为独立作业实例或完整通用规则运行资格。
         status: specified
         visibility: internal
     supersedes: [DEC-0006]
@@ -68,8 +68,12 @@ decisions:
         visibility: internal
         path: docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md
         lineHint: 151
-        summary: 自动匹配、作业实例创建、适用规则快照和作业流程配置快照属于已确认未来执行契约；当前没有运行时、持久化或测试证据，因此结构化契约目标只保存在 specified 规则中，不进入仅接受 verified/runtime 契约的正式注册表。
-        evidenceIds: [evidence.ai-transaction-runtime-architecture]
+        summary: 初始配置阶段未实现运行闭环的历史差异保留。当前已在首次合法 START 冻结路线、工序、表单及作业已发布版本/图，并保存命中规则 id/definitionId/type/productId/familyId/operationId 等所选字段；受限作业状态嵌入生产执行。尚缺独立作业实例完整规则修订依据、通用事实及异常审计契约，正式执行注册资格仍不能从局部源码或历史状态推定。
+        evidenceIds:
+        - evidence.ai-transaction-runtime-architecture
+        - evidence.production-execution-snapshot-builder-source
+        - evidence.production-execution-service-source
+        - evidence.production-execution-engine-source
       - id: discrepancy.production-work-unpublished-selector-message
         status: open
         severity: medium

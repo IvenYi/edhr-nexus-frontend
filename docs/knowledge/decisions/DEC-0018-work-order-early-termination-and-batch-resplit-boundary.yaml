@@ -98,7 +98,7 @@ decisions:
         visibility: internal
         path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
         lineHint: 545
-        summary: "provenance: inference；建议批次管理既有对象再拆分暂不纳入当前 MVP，待业务确认后进行独立页面和接口设计。"
+        summary: 'provenance: user-confirmed；DEC-0018-04/-05 已确认既有对象再拆分不纳入当前 MVP，原“建议/待业务确认”的说法已过时。当前排除范围继续有效；将来谱系、数量和新页面/API细节仍需独立设计，不能由排除确认推定已确认全部后续规则。'
         evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
       - id: discrepancy.production-object-lineage-not-queryable
         status: accepted

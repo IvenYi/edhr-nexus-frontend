@@ -108,9 +108,9 @@ facts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema]
-    sourceRevision: 343ee1910d82b945841b0c132d2c3912a886b250
-    sourceLocator: FormInstanceRecordService 保存的 snapshotJson.form.dhrItemId
-    capturedAt: '2026-09-17'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: FormInstanceRecordService.saved 将 form 对象直接存入 form_instance_record.snapshot_json；dhrItemId 位于该 JSON 根对象，DhrInstanceService.detail 读取 record.snapshot.dhrItemId，无额外 form 包装
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.dhr-instance.form-record-copy-id
     name: 表单实例记录的份标识

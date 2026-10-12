@@ -83,15 +83,17 @@
 - `concept.audit-event` 直接对应 `AuditEvent` 的独立事件身份；`relation.audit-event-retains-change-snapshot` 改为从该事件指向快照，动作分类通过独立关系表达。分类只是展示投影，不能成为一次变更快照的所有者。
 - 自定义表单词条按 [DEC-0075-01/-02/-08](../decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml) 同步工序或批次归属、默认完工要求、添加原因、有效模板及明确版本快照。表单模板不要求 `PUBLISHED`，作业流程与表单流程的发布要求独立保留。相关概念和关系补充同一确认来源，知识仍为 `specified/internal`。
 
-## 四、尚未解决的数量阈值差异
+## 四、历史数量阈值差异及后续内审纠正
 
-以下是原基线已有、类型核对时发现的差异；本次保留阈值，不静默改变生产政策：
+以下记录较早类型核对时在原基线发现的差异，当时暂时保留阈值；后续 `7bf87c0` 全量内审已继续追代码并完成下述结构化推导纠正。表中是修复前状态，不再表示等待产品选择阈值：
 
 | 规则 | 知识条件 | 原始实现 | 影响范围 |
 |---|---|---|---|
 | `rule.production.production-batch-input-quantity-required` | `split.targetQuantity >= 1` | `WorkOrderPage.addPendingObject` 与 `ProductionService.split` 要求数量 `> 0`；SN 单独等于 1 | 在其他条件满足时，BATCH 数量 `0 < q < 1` 的代码与知识条件不同。 |
 | `rule.production.mass-batch-quantity-distribution` | `split.quantityPerBatch >= 1` | `WorkOrderPage.addPendingBatch` 按每批数量模式要求输入 `> 0`，允许小数 | 同一区间内，每批数量候选生成的代码与知识条件不同。 |
 
-[DEC-0012](../decisions/DEC-0012-production-work-order-and-production-object.yaml) 确认 SN 等于 1 与总量边界；[DEC-0014](../decisions/DEC-0014-production-batch-staged-bulk-submission.yaml) 确认按批次数／每批数量分配，未明确 BATCH 在 `(0, 1)` 区间的政策。需要产品确认“允许任意正数”还是“至少 1（但可含小数）”后，再同步规则与实现并补边界测试。此缺口不影响确认这两个事实必须支持小数，也不阻断本次结构与类型修复；它仍阻止将这两条规则认定为已经完成语义一致性或发布验证。
+[DEC-0012](../decisions/DEC-0012-production-work-order-and-production-object.yaml) 确认 SN 等于 1 与总量边界；[DEC-0014](../decisions/DEC-0014-production-batch-staged-bulk-submission.yaml) 确认按批次数／每批数量分配，没有确认 BATCH 必须 `>= 1`。2026-10-12 后续内审进一步核对 `WorkOrderPage.addPendingObject/addPendingBatch`、`ProductionService.split`、`ProductionObject.targetQuantity` 及 [0062 数据库约束](../../../gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql)：前端、BigDecimal 服务和 `CHECK(target_quantity > 0)` 一致接受正数量，数据库精度为 `DECIMAL(15,4)`。最早可见规则的中文解释同样要求“数量为正”。据此确认 `>= 1` 是将业务数量与对象个数混同的旧结构化推导错误，按用户“查清实现后修复本体”的要求将两条规则校准为 `> 0`，不建立新业务政策。批次数正整数、SN 数量等于 1、总量和存储精度约束均保留。
+
+这完成了知识条件与现行可定位逻辑的对账。本轮没有运行 `(0,1)` 的业务集成或数据库边界测试，不能因此宣称发布验收通过。
 
 其余事实的通用运行读取器、精确源码符号映射与完整发布证据也不由本次修复自动获得。校验通过只能证明本次校验器明确覆盖的结构、引用、类型和投影约束，不能证明所有自然语言规则或生产行为都已一致。

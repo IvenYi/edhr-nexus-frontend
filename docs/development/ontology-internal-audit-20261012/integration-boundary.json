@@ -1,0 +1,811 @@
+{
+  "artifactType": "integration-boundary-review",
+  "reviewedAt": "2026-10-12",
+  "role": "read-only integration boundary helper; not quality gate",
+  "repository": "IvenYi/edhr-nexus-frontend",
+  "worktree": "/workspace/scratch/f8b75a9f3345/ontology-internal-audit",
+  "contractBaseline": {
+    "sourceCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+    "contractReadCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+    "uncommittedContractPaths": []
+  },
+  "contractReadScope": "Immutable Git files at target; parent audit candidate overlays excluded.",
+  "featureBranch": {
+    "name": "form-traceability-projection",
+    "localRemoteTrackingRef": "origin/form-traceability-projection",
+    "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+    "tree": "9124f728a8cf1040da38e3acc11e2266ad3be8dc",
+    "knowledgeModelVersion": "0.3.24",
+    "schemaVersion": "1.1.0"
+  },
+  "targetBranch": {
+    "name": "edhr-dev",
+    "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+    "tree": "d6e572e3e7c7fb45e49601d70c06907719e1ecff",
+    "knowledgeModelVersion": "0.3.25",
+    "schemaVersion": "1.2.0",
+    "auditedBaselineIdCount": 2292
+  },
+  "fork": {
+    "commit": "f2710af9ea717e760fef456cad09d6304c7f4e55",
+    "tree": "705d2079a064f149cc93ff09e7340bd713ff0dcd",
+    "knowledgeModelVersion": "0.3.24",
+    "evidence": [
+      "git rev-parse --is-shallow-repository => true",
+      "Direct git merge-base TARGET FEATURE returned exit 1 because target history is shallow; this is not evidence of unrelated histories.",
+      "git cat-file -p ea5d1a65b7390c7f89964980364866583c5fd018 contains parent f2710af9ea717e760fef456cad09d6304c7f4e55",
+      "git merge-base f2710af9ea717e760fef456cad09d6304c7f4e55 156a0d4116693292f077d5a4189ae93f740c3f35 => f2710af9ea717e760fef456cad09d6304c7f4e55",
+      "Feature first post-fork commit 4c43f4ffb3e97275612896c643e76411ba252de4 has parent f2710af9ea717e760fef456cad09d6304c7f4e55; target post-fork parent chain independently recorded below."
+    ]
+  },
+  "postForkCommits": {
+    "target": [
+      {
+        "commit": "ea5d1a65b7390c7f89964980364866583c5fd018",
+        "parents": [
+          "f2710af9ea717e760fef456cad09d6304c7f4e55"
+        ],
+        "committerDate": "2026-10-09T23:51:28+08:00",
+        "subject": "feat(dhr): 支持自定义表单归属与资料齐套",
+        "gitLogVisibleParents": ""
+      },
+      {
+        "commit": "469d8d619d10c54b3d0427a3c18b3e021a080741",
+        "parents": [
+          "ea5d1a65b7390c7f89964980364866583c5fd018"
+        ],
+        "committerDate": "2026-10-12T14:28:48+08:00",
+        "subject": "fix(ontology): 校准事实类型并完善知识校验与协作契约",
+        "gitLogVisibleParents": "ea5d1a65b7390c7f89964980364866583c5fd018"
+      },
+      {
+        "commit": "db8d361c5a23e846ec0b858b4346cf8924ba5e75",
+        "parents": [
+          "ea5d1a65b7390c7f89964980364866583c5fd018",
+          "469d8d619d10c54b3d0427a3c18b3e021a080741"
+        ],
+        "committerDate": "2026-10-12T14:49:08+08:00",
+        "subject": "Merge pull request #2 from IvenYi/fix/ontology-foundation-contracts",
+        "gitLogVisibleParents": "ea5d1a65b7390c7f89964980364866583c5fd018 469d8d619d10c54b3d0427a3c18b3e021a080741"
+      },
+      {
+        "commit": "482004a2a89b098e02a513bbff5158c3cb97654c",
+        "parents": [
+          "db8d361c5a23e846ec0b858b4346cf8924ba5e75"
+        ],
+        "committerDate": "2026-10-12T16:18:27+08:00",
+        "subject": "docs(ontology): guide pilots and establish full audit inventory",
+        "gitLogVisibleParents": "db8d361c5a23e846ec0b858b4346cf8924ba5e75"
+      },
+      {
+        "commit": "5797a052be856189999f77cbc07eb7cb6c2f4ee8",
+        "parents": [
+          "482004a2a89b098e02a513bbff5158c3cb97654c"
+        ],
+        "committerDate": "2026-10-12T16:38:16+08:00",
+        "subject": "docs(ontology): prioritize MVP delivery and limit guided pilots",
+        "gitLogVisibleParents": "482004a2a89b098e02a513bbff5158c3cb97654c"
+      },
+      {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "parents": [
+          "db8d361c5a23e846ec0b858b4346cf8924ba5e75",
+          "5797a052be856189999f77cbc07eb7cb6c2f4ee8"
+        ],
+        "committerDate": "2026-10-12T16:45:03+08:00",
+        "subject": "Merge pull request #3 from IvenYi/fix/ontology-guided-audit",
+        "gitLogVisibleParents": "db8d361c5a23e846ec0b858b4346cf8924ba5e75 5797a052be856189999f77cbc07eb7cb6c2f4ee8"
+      }
+    ],
+    "feature": [
+      {
+        "commit": "4c43f4ffb3e97275612896c643e76411ba252de4",
+        "parents": [
+          "f2710af9ea717e760fef456cad09d6304c7f4e55"
+        ],
+        "committerDate": "2026-09-29T13:15:25+08:00",
+        "subject": "feat: add frozen form traceability projections and reports",
+        "gitLogVisibleParents": "f2710af9ea717e760fef456cad09d6304c7f4e55"
+      },
+      {
+        "commit": "e5c7bb76f8d07adc617195904ef89a55ee5453c2",
+        "parents": [
+          "4c43f4ffb3e97275612896c643e76411ba252de4"
+        ],
+        "committerDate": "2026-09-29T14:06:57+08:00",
+        "subject": "fix: allow scrolling frozen form designer inspector",
+        "gitLogVisibleParents": "4c43f4ffb3e97275612896c643e76411ba252de4"
+      },
+      {
+        "commit": "9d4b49f32bdef2820d93f0b0b3d021cb82ee597d",
+        "parents": [
+          "e5c7bb76f8d07adc617195904ef89a55ee5453c2"
+        ],
+        "committerDate": "2026-09-29T15:04:31+08:00",
+        "subject": "fix: freeze form projection mapping at production use",
+        "gitLogVisibleParents": "e5c7bb76f8d07adc617195904ef89a55ee5453c2"
+      },
+      {
+        "commit": "c6b82182df7fc9cb4c4400f777bd61a1897eb6ee",
+        "parents": [
+          "9d4b49f32bdef2820d93f0b0b3d021cb82ee597d"
+        ],
+        "committerDate": "2026-09-29T16:01:04+08:00",
+        "subject": "Add inline field projection configuration",
+        "gitLogVisibleParents": "9d4b49f32bdef2820d93f0b0b3d021cb82ee597d"
+      },
+      {
+        "commit": "ac1a395b31e5a93f1077abbf0b8481f99f82818a",
+        "parents": [
+          "c6b82182df7fc9cb4c4400f777bd61a1897eb6ee"
+        ],
+        "committerDate": "2026-09-29T17:24:27+08:00",
+        "subject": "Simplify projection source configuration flow",
+        "gitLogVisibleParents": "c6b82182df7fc9cb4c4400f777bd61a1897eb6ee"
+      },
+      {
+        "commit": "ca30878fc2eaab31b0278312231bf95e2d7ab0fa",
+        "parents": [
+          "ac1a395b31e5a93f1077abbf0b8481f99f82818a"
+        ],
+        "committerDate": "2026-10-05T02:47:35+08:00",
+        "subject": "Redesign projection configuration around fields and subtables",
+        "gitLogVisibleParents": "ac1a395b31e5a93f1077abbf0b8481f99f82818a"
+      },
+      {
+        "commit": "2741842f2a3baeaa91b9e50b2833cfe156cfa754",
+        "parents": [
+          "ca30878fc2eaab31b0278312231bf95e2d7ab0fa"
+        ],
+        "committerDate": "2026-10-05T16:27:02+08:00",
+        "subject": "docs: derive projection presets from original GCT sources",
+        "gitLogVisibleParents": "ca30878fc2eaab31b0278312231bf95e2d7ab0fa"
+      },
+      {
+        "commit": "87b0134a89871a3968dbd8bcb7ba00deb2c62df9",
+        "parents": [
+          "2741842f2a3baeaa91b9e50b2833cfe156cfa754"
+        ],
+        "committerDate": "2026-10-05T18:56:17+08:00",
+        "subject": "docs: review GCT designer fields and preset value sources",
+        "gitLogVisibleParents": "2741842f2a3baeaa91b9e50b2833cfe156cfa754"
+      },
+      {
+        "commit": "5c2a6a6c3bc78bf03a69da8ff8004f62c88cd199",
+        "parents": [
+          "87b0134a89871a3968dbd8bcb7ba00deb2c62df9"
+        ],
+        "committerDate": "2026-10-06T00:39:50+08:00",
+        "subject": "feat: separate form lookup and statistics canvas panel",
+        "gitLogVisibleParents": "87b0134a89871a3968dbd8bcb7ba00deb2c62df9"
+      },
+      {
+        "commit": "5dacb5859e95724e98f932544f0fd4f46c30db38",
+        "parents": [
+          "5c2a6a6c3bc78bf03a69da8ff8004f62c88cd199"
+        ],
+        "committerDate": "2026-10-07T17:28:39+08:00",
+        "subject": "feat: add configurable trace item catalog",
+        "gitLogVisibleParents": "5c2a6a6c3bc78bf03a69da8ff8004f62c88cd199"
+      },
+      {
+        "commit": "ac7c8067e2d34fbca7ac3f0bf921724aa8b59cc0",
+        "parents": [
+          "5dacb5859e95724e98f932544f0fd4f46c30db38"
+        ],
+        "committerDate": "2026-10-07T17:54:39+08:00",
+        "subject": "fix: align trace pages with query and detail UI standards",
+        "gitLogVisibleParents": "5dacb5859e95724e98f932544f0fd4f46c30db38"
+      },
+      {
+        "commit": "f2a7509f5ed30236dbb22846c1a3f9f7a5f1b410",
+        "parents": [
+          "ac7c8067e2d34fbca7ac3f0bf921724aa8b59cc0"
+        ],
+        "committerDate": "2026-10-07T20:02:53+08:00",
+        "subject": "fix: simplify projection configuration in form designer",
+        "gitLogVisibleParents": "ac7c8067e2d34fbca7ac3f0bf921724aa8b59cc0"
+      },
+      {
+        "commit": "bb613f1195be9b249f9f332dd5931ad1e66deb70",
+        "parents": [
+          "f2a7509f5ed30236dbb22846c1a3f9f7a5f1b410"
+        ],
+        "committerDate": "2026-10-07T20:33:55+08:00",
+        "subject": "fix: align detail drawers and strengthen UI guidelines",
+        "gitLogVisibleParents": "f2a7509f5ed30236dbb22846c1a3f9f7a5f1b410"
+      },
+      {
+        "commit": "b63d68ee299de9a286bf4cc1cad0d0d829e39217",
+        "parents": [
+          "bb613f1195be9b249f9f332dd5931ad1e66deb70"
+        ],
+        "committerDate": "2026-10-07T21:50:48+08:00",
+        "subject": "fix: complete production references and trace mapping in designer",
+        "gitLogVisibleParents": "bb613f1195be9b249f9f332dd5931ad1e66deb70"
+      },
+      {
+        "commit": "e0b542d897c52491d51355a130a90e0724964202",
+        "parents": [
+          "b63d68ee299de9a286bf4cc1cad0d0d829e39217"
+        ],
+        "committerDate": "2026-10-10T02:51:13+08:00",
+        "subject": "fix(projection): separate saved trace and simplify source configuration",
+        "gitLogVisibleParents": "b63d68ee299de9a286bf4cc1cad0d0d829e39217"
+      },
+      {
+        "commit": "6f54bdce9d48637aca957689c800a21fb3f81b74",
+        "parents": [
+          "e0b542d897c52491d51355a130a90e0724964202"
+        ],
+        "committerDate": "2026-10-11T15:04:22+08:00",
+        "subject": "Improve projection configuration removal and validation feedback",
+        "gitLogVisibleParents": "e0b542d897c52491d51355a130a90e0724964202"
+      },
+      {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "parents": [
+          "6f54bdce9d48637aca957689c800a21fb3f81b74"
+        ],
+        "committerDate": "2026-10-12T01:03:24+08:00",
+        "subject": "Simplify projection detail setup and save correction flow",
+        "gitLogVisibleParents": "6f54bdce9d48637aca957689c800a21fb3f81b74"
+      }
+    ]
+  },
+  "mechanicalInventoryOnly": {
+    "targetIds": 2292,
+    "featureIds": 2333,
+    "forkIds": 2244,
+    "featureOnlyVsTargetIds": [
+      "DEC-0075-09",
+      "DEC-0075-10",
+      "DEC-0075-11",
+      "DEC-0075-12",
+      "DEC-0075-13",
+      "DEC-0075-14",
+      "DEC-0075-15",
+      "DEC-0075-16",
+      "DEC-0075-17",
+      "DEC-0075-18",
+      "DEC-0075-19",
+      "DEC-0075-20",
+      "DEC-0075-21",
+      "DEC-0075-22",
+      "DEC-0075-23",
+      "DEC-0075-24",
+      "DEC-0075-25",
+      "DEC-0075-26",
+      "DEC-0075-27",
+      "DEC-0075-28",
+      "DEC-0075-29",
+      "DEC-0075-30",
+      "DEC-0075-31",
+      "DEC-0075-32",
+      "DEC-0075-33",
+      "DEC-0075-34",
+      "concept.form-production-subject-trace-item",
+      "concept.form-saved-content-trace",
+      "evidence.form-projection-clarifications-20261009",
+      "evidence.form-projection-clarifications-20261010",
+      "evidence.form-projection-reference-followup",
+      "evidence.form-projection-runtime-correction-20261010",
+      "evidence.form-traceability-projection-ownership-user-confirmed",
+      "question.form-projection-context-prefill-lifecycle",
+      "question.form-projection-cross-form-event-association",
+      "question.form-projection-customer-owned-model-capability",
+      "question.form-projection-defect-count-semantics",
+      "question.form-projection-first-phase-detailed-scope",
+      "question.form-projection-free-text-identity",
+      "question.form-projection-header-shared-fields",
+      "question.form-projection-notebook-effective-unit",
+      "question.form-projection-sidebar-mode-interaction",
+      "question.form-projection-trace-index-effective-scope",
+      "question.form-projection-trace-result-navigation",
+      "scenario.form-projection-canvas-primary-entry",
+      "scenario.form-projection-completion-retry",
+      "scenario.form-projection-context-owned-statistics-and-prefill",
+      "scenario.form-projection-cross-form-independent-metrics",
+      "scenario.form-projection-cross-form-missing-metric",
+      "scenario.form-projection-detail-conditions-same-actual-row",
+      "scenario.form-projection-draft-without-business-blocking",
+      "scenario.form-projection-final-output-and-independent-quality-quantities",
+      "scenario.form-projection-first-phase-both-source-shapes",
+      "scenario.form-projection-independent-canvas-panel",
+      "scenario.form-projection-main-conditions-ignore-hidden-groups",
+      "scenario.form-projection-mvp-history-repair-or-invalidate",
+      "scenario.form-projection-mvp-preset-reports-phase-two-custom-reports",
+      "scenario.form-projection-mvp-reusable-lookup-items",
+      "scenario.form-projection-new-lookup-item-without-bindings",
+      "scenario.form-projection-new-meaning-no-implicit-history",
+      "scenario.form-projection-new-purpose-preserves-old-snapshot",
+      "scenario.form-projection-operation-purpose-total",
+      "scenario.form-projection-optional-material-lot",
+      "scenario.form-projection-optional-scope",
+      "scenario.form-projection-optional-unit-full-grain",
+      "scenario.form-projection-phase-two-existing-fact-report",
+      "scenario.form-projection-preset-subject-is-real-owner",
+      "scenario.form-projection-product-owned-models",
+      "scenario.form-projection-replacement-preserves-evidence",
+      "scenario.form-projection-same-fact-header-detail-no-double-count",
+      "scenario.form-projection-saved-progress-search",
+      "scenario.form-projection-text-match-secondary-presentation",
+      "scenario.form-projection-text-material-match-explicit-purpose",
+      "scenario.form-projection-trace-item-terminology",
+      "scenario.form-projection-trace-only-source-search",
+      "scenario.form-projection-unbound-object-is-content-only",
+      "scenario.form-projection-use-time-snapshot",
+      "term.form-lookup-item",
+      "term.form-production-subject-trace-item",
+      "term.form-saved-content-trace"
+    ],
+    "targetOnlyVsFeatureIds": [
+      "DEC-0076",
+      "DEC-0076-01",
+      "DEC-0076-02",
+      "DEC-0076-03",
+      "DEC-0076-04",
+      "DEC-0076-05",
+      "DEC-0076-06",
+      "concept.audit-event",
+      "concept.custom-form-scope",
+      "concept.dhr-record-completeness",
+      "evidence.custom-form-scope-confirmed",
+      "evidence.custom-form-scope-source-boundary",
+      "evidence.custom-form-template-selection-boundary",
+      "evidence.ontology-audit-event-entity",
+      "evidence.ontology-foundation-fact-type-review",
+      "evidence.ontology-guided-audit-handoff",
+      "evidence.ontology-guided-pilot-confirmed",
+      "evidence.ontology-guided-pilot-policy-baseline",
+      "evidence.ontology-guided-pilot-project-contract",
+      "fact.custom-form.completion-required",
+      "fact.custom-form.has-unresolved-copies",
+      "fact.custom-form.scope",
+      "relation.audit-event-projects-action-category",
+      "rule.custom-form-batch-completion",
+      "rule.custom-form-operation-completion",
+      "rule.custom-form-record-completeness",
+      "scenario.custom-form-authorized-closure-boundary",
+      "scenario.custom-form-batch-shared-copies",
+      "scenario.custom-form-production-complete-records-pending",
+      "scenario.custom-form-resume-with-reason",
+      "scenario.custom-form-template-without-publication",
+      "scenario.ontology-legacy-audit-no-inherited-pass",
+      "scenario.ontology-legacy-audit-whole-baseline",
+      "scenario.ontology-pilot-ai-guidance",
+      "scenario.ontology-pilot-current-stage-scope",
+      "scenario.ontology-pilot-separate-validation",
+      "term.audit-event",
+      "term.custom-form-scope",
+      "term.dhr-record-completeness"
+    ],
+    "concurrentAddedIds": [
+      "DEC-0075",
+      "DEC-0075-01",
+      "DEC-0075-02",
+      "DEC-0075-03",
+      "DEC-0075-04",
+      "DEC-0075-05",
+      "DEC-0075-06",
+      "DEC-0075-07",
+      "DEC-0075-08"
+    ],
+    "sameIdDifferentMeaningCount": 9,
+    "targetChangedPathCountSinceFork": 240,
+    "featureChangedPathCountSinceFork": 142,
+    "bothBranchesChangedPaths": [
+      "docs/architecture/business-knowledge-model.md",
+      "docs/knowledge/README.md",
+      "docs/knowledge/glossary.yaml",
+      "docs/knowledge/ontology.yaml",
+      "docs/knowledge/open-questions.yaml",
+      "docs/knowledge/rules/product-process.yaml",
+      "docs/knowledge/rules/production-execution.yaml",
+      "docs/knowledge/rules/production-form-copies.yaml",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "gmp-platform/frontend/scripts/test-form-document-preview.mjs",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx",
+      "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx"
+    ],
+    "interpretation": "ID enumeration and changed-path intersections are mechanical boundary evidence, not full feature semantics review or textual merge simulation."
+  },
+  "collisions": [
+    {
+      "id": "DEC-0075",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0",
+        "recordSha256": "03b9dd88117638c084052888eeeb3aa9f4fc271c09717d9933be4c9e7156e897",
+        "meaning": "自定义表单归属、分层完工及资料齐套"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0",
+        "recordSha256": "f02f02514b4cd2fba670a146478503171a317b38c749c6ac4d96ef5f1d0399f5",
+        "meaning": "电子表单追溯与业务投影的模型所有权和配置边界"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-01",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/0",
+        "recordSha256": "0ebb9216556e7eef548b26f39d597c6850430d4c7f2c35e436ec560139b8477b",
+        "meaning": "自定义表单添加时明确归属当前工序或当前批次。工序归属绑定所选工序；批次归属在同一批次各工序共享同一个表单及份实例，不因切换工序复制记录。归属是业务事实，创建位置不改变归属。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/0",
+        "recordSha256": "84da040039c638c17d97b50e0c191cfe60da671624a09dc1605001b5ccf15d26",
+        "meaning": "各报表使用的统计模型由产品方预先定义和维护；客户负责从自身表单选择取值字段并配置对应来源，不承担从头建立统计模型的职责。配置体验以降低实施和培训成本为目标，但原型或设计文档不能作为客户已经能独立低成本配置的验证证据。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-02",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/1",
+        "recordSha256": "3c2e954fdf73418dd001bf48d15a29564ac312dfe2872d1bc8bd4ae11dc2c96b",
+        "meaning": "新增时填写添加原因，可选择是否在归属对象完工前必须完成，默认开启。工序表单开启时阻断所属工序完工；批次表单开启时只阻断批次完工，不阻断单个工序。批次校验独立于最后一道工序和线性路线假设，支持并行工序。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/1",
+        "recordSha256": "8faace1891027480de92e4441cfbe0ff6a5b043c90f5e10dfeff3ef1142c8a19",
+        "meaning": "现有试验性、零散的表单用途和投影代码可以被更合理的统一方案替换，不能以旧实现限制新设计；该授权只覆盖相关实现的统一收敛，不授权删除源表单、历史投影、签名、审计或 DHR 证据。实际历史处置须在后续实现前清点并明确。此前历史保留限制在MVP开发历史范围内已由DEC-0075-27替代，不能继续作为该范围修复迁移或作废的阻断；真实客户生产证据与未来正确数据快照不在此局部替代范围内。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-03",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/2",
+        "recordSha256": "2fe767ebf8cb80d5a827afc8f9a3d8c00f5fd29786ad84ca10b7c16c1ef3004a",
+        "meaning": "完工校验关闭仅允许先完成生产，不降低表单字段、签名、权限和流程审批要求。每份最终完成才计为完成，暂存、已提交待审均不能冒充完成；任一已创建份未闭环，资料仍为待完善。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/2",
+        "recordSha256": "3ae712c5145ffc5467110833b9abf9226b28d8454767b09357ae073dcfdcfb6c",
+        "meaning": "并非每张客户表单都需要内容追溯或业务统计配置，应按实际查询与统计需求选择用途；没有配置这类用途不改变表单记录保存、实际生产关联及既有 DHR 证据归集职责。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-04",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/3",
+        "recordSha256": "499ee1e585486153af9884cc1e9f670413eb7e9fab3c9616d6356fb1375ff5f7",
+        "meaning": "生产完成、资料齐套和 DHR 汇总审核阶段分别计算。生产已完工但仍有未闭环自定义份时保留生产完成事实并显示资料待完善；允许整理汇总草稿，禁止提交定稿、基于不完整资料批准、产品放行或正常归档。未纳入汇总目录不构成豁免；已闭环实例是否纳入仍遵守既有可选纳入政策。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/3",
+        "recordSha256": "de6e05f9195c3115906266fec29dee245d46c905bd79e8734e06eb44792a7b6a",
+        "meaning": "报废后自动扣库存等新增业务动作不纳入本次追溯投影配置范围，应另行提出业务需求并开发相应功能；不能把此类动作当作新增查询属性或展示维度自动开放。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-05",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/4",
+        "recordSha256": "411700006136eff12f9d2cf0c57cd78f5c679c6d452b3e3deb611937f1bf5556",
+        "meaning": "生产或所属工序完工后，已有未完成自定义份可经权限校验、填写原因后继续填报，不重开生产、不把已完成记录改为可编辑。审核中须先人工退回；已定稿须先重新整理形成新版本。旧版本、签名、审计与原批准结论保留，不自动追随新的来源内容。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/4",
+        "recordSha256": "f99b8fa97d113830a353e723888f5367fcf500352288b7af46395c92177384f3",
+        "meaning": "报废数量取客户明确配置为报废数量的字段，不强加申请、批准或实际处理阶段；保留具体字段来源。统计模型仍由产品方维护，不能通过字段名称猜测口径。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-06",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/5",
+        "recordSha256": "7310064d76e5e78d71aef5939166b6e831789fb2dbadfc63f2e3faafd79550ac",
+        "meaning": "授权关闭必须来自记录控制模块正式生效并可追溯的作废或不适用结论，不能以申请中、删除目录关联或前端标记代替。活动表单是否可申请作废仍由既有记录控制未决问题和该模块确认；本切片不新增豁免、作废审批或恢复已取消、已终止对象写入的入口。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/5",
+        "recordSha256": "b99c0ef56b57242d4947c6da5413c782a40f775259582976aaf2479abd3b5cc8",
+        "meaning": "正式统计按工序和用途合计并可回查逐来源明细；同工序配置为正式来源的多份记录可累加，重复记载表只配置查表用途。同批工序A报工100件、工序B报工100件不得合称批次产量200件；技术重试幂等不解决业务重复来源选择问题。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-07",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/6",
+        "recordSha256": "4eeaa7c8acfdb1af73855a8eb26a64d18e93e3c2d1b750dea1849111a6b1d2a1",
+        "meaning": "已放行后的补充须受控并评估是否重新放行；已归档原记录不可直接修改，只能关联受控补充或新版本。此处为后续运行模块的规范边界，当前不以 DHR 汇总通过代替产品放行，不宣称放行或归档运行功能已交付。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/6",
+        "recordSha256": "81385916d211057d55784ddf475a502286c3369274e5335901f27725a207e39a",
+        "meaning": "必要业务数据或配置校验失败阻止表单最终完成；完成状态与待投影事件必须同事务持久化。投影系统处理故障或延迟不撤销已完成表单，必须明确展示待处理或失败并支持可靠重试；依赖正式投影结果的下游动作须等待成功。保存、提交待审及退回不是正式统计生效事件。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    },
+    {
+      "id": "DEC-0075-08",
+      "kind": "concurrent-id-reuse-with-different-meaning",
+      "target": {
+        "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+        "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+        "locator": "/decisions/0/decisionStatements/7",
+        "recordSha256": "4b2ee4782a26e02294b57396ec0118029de1c9543e624b406c42516f21ead395",
+        "meaning": "新增自定义表单选择的是表单模板，表单模板没有发布生命周期；候选查询和添加资格均不得要求表单模板版本的 PUBLISHED 状态。保留模板有效性与租户范围校验，显式选择 versionId 并冻结所选模板的完整执行快照。数据库中遗留的版本状态字段不构成产品发布规则，本修复不迁移该字段；作业流程及表单流程的已发布版本校验继续独立适用。"
+      },
+      "feature": {
+        "commit": "156a0d4116693292f077d5a4189ae93f740c3f35",
+        "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+        "locator": "/decisions/0/decisionStatements/7",
+        "recordSha256": "1d86ac671d89ea32ffd8aef268eed7c4f5fc9c637f7a5f31e551e20eed9f080b",
+        "meaning": "生产工作台保留进行中数量并明确标为过程参考，不混入最终正式报表；既有数量用途和跨份已保存汇总仅在此边界继续解释。"
+      },
+      "disposition": "excluded-from-target-audit; reassign-incoming-decision-family-at-integration"
+    }
+  ],
+  "incomingDecisionFamily": {
+    "path": "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+    "decisionId": "DEC-0075",
+    "statementIds": [
+      "DEC-0075-01",
+      "DEC-0075-02",
+      "DEC-0075-03",
+      "DEC-0075-04",
+      "DEC-0075-05",
+      "DEC-0075-06",
+      "DEC-0075-07",
+      "DEC-0075-08",
+      "DEC-0075-09",
+      "DEC-0075-10",
+      "DEC-0075-11",
+      "DEC-0075-12",
+      "DEC-0075-13",
+      "DEC-0075-14",
+      "DEC-0075-15",
+      "DEC-0075-16",
+      "DEC-0075-17",
+      "DEC-0075-18",
+      "DEC-0075-19",
+      "DEC-0075-20",
+      "DEC-0075-21",
+      "DEC-0075-22",
+      "DEC-0075-23",
+      "DEC-0075-24",
+      "DEC-0075-25",
+      "DEC-0075-26",
+      "DEC-0075-27",
+      "DEC-0075-28",
+      "DEC-0075-29",
+      "DEC-0075-30",
+      "DEC-0075-31",
+      "DEC-0075-32",
+      "DEC-0075-33",
+      "DEC-0075-34"
+    ],
+    "referencePaths": [
+      "docs/architecture/business-knowledge-model.md",
+      "docs/architecture/form-traceability-projection-design.md",
+      "docs/development/form-lookup-catalog-2026-10-07.md",
+      "docs/development/form-lookup-catalog-quality-2026-10-07.yaml",
+      "docs/development/form-lookup-catalog-quality-final-2026-10-07.yaml",
+      "docs/development/form-projection-annotation-review-2026-10-09.md",
+      "docs/development/form-projection-annotation-review-quality-2026-10-09.yaml",
+      "docs/development/form-projection-clarifications-quality-2026-10-09.yaml",
+      "docs/development/form-projection-configuration-feedback-2026-10-11.md",
+      "docs/development/form-projection-configuration-feedback-quality-2026-10-11.yaml",
+      "docs/development/form-projection-design-clarifications-2026-10-09.md",
+      "docs/development/form-projection-designer-followup-2026-10-07.md",
+      "docs/development/form-projection-designer-followup-quality-2026-10-07.yaml",
+      "docs/development/form-projection-detail-conformance-quality-2026-10-07.yaml",
+      "docs/development/form-projection-final-design-review-2026-10-07.md",
+      "docs/development/form-projection-interaction-2026-10-05.md",
+      "docs/development/form-projection-interaction-quality-2026-10-05.yaml",
+      "docs/development/form-projection-interaction-quality-final-2026-10-05.yaml",
+      "docs/development/form-projection-panel-quality-2026-10-06.yaml",
+      "docs/development/form-projection-panel-quality-final-2026-10-06.yaml",
+      "docs/development/form-projection-preset-source-quality-2026-10-05.yaml",
+      "docs/development/form-projection-preset-source-review-2026-10-05.md",
+      "docs/development/form-projection-progress-quality-2026-10-10.yaml",
+      "docs/development/form-projection-progress-quality-final-2026-10-10.yaml",
+      "docs/development/form-projection-reference-followup-2026-10-07.md",
+      "docs/development/form-projection-reference-followup-quality-2026-10-07.yaml",
+      "docs/development/form-projection-runtime-quality-2026-10-10.yaml",
+      "docs/development/form-projection-runtime-quality-final-2026-10-10.yaml",
+      "docs/development/form-projection-runtime-quality-release-2026-10-10.yaml",
+      "docs/development/form-projection-sidebar-review-2026-10-09.md",
+      "docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml",
+      "docs/development/form-projection-ui-conformance-quality-2026-10-07.yaml",
+      "docs/development/form-traceability-projection-decision-package.yaml",
+      "docs/development/form-traceability-projection-handoff-2026-10-03.md",
+      "docs/development/form-traceability-projection-ontology-result.yaml",
+      "docs/development/form-traceability-projection-quality-initial.yaml",
+      "docs/development/form-traceability-projection-quality-result.yaml",
+      "docs/development/form-traceability-projection-quality-use-time-final.yaml",
+      "docs/development/form-traceability-projection-quality-use-time.yaml",
+      "docs/knowledge/README.md",
+      "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+      "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md",
+      "docs/knowledge/evidence/form-traceability-projection-ownership.yaml",
+      "docs/knowledge/glossary.yaml",
+      "docs/knowledge/open-questions.yaml",
+      "docs/knowledge/rules/product-process.yaml"
+    ],
+    "resolution": "Keep already merged target DEC-0075; choose an available incoming decision ID on the actual integration target, and consistently renumber the incoming decision and all 34 statement IDs, plus structured/current references. Preserve an explicit old-to-new mapping qualified by source commit. Preserve historical quotations and historical verification receipts; annotate their branch-qualified meaning instead of fabricating rewritten history.",
+    "notReserved": "No new decision number allocated in this task; DEC-0076 is already occupied by target guided-pilot/audit policy."
+  },
+  "contractDeltas": [
+    {
+      "path": "AGENTS.md",
+      "blobs": {
+        "fork": "ad3bd0c685a3e7a54b89dcb470c7b8dd939364c9",
+        "target": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+        "feature": "ad3bd0c685a3e7a54b89dcb470c7b8dd939364c9"
+      },
+      "changedOnTargetSinceFork": true,
+      "changedOnFeatureSinceFork": false,
+      "featureDiffersFromTarget": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "blobs": {
+        "fork": "2e7e18097620e602c4408b83f71404fae346f8be",
+        "target": "2e7e18097620e602c4408b83f71404fae346f8be",
+        "feature": "2e7e18097620e602c4408b83f71404fae346f8be"
+      },
+      "changedOnTargetSinceFork": false,
+      "changedOnFeatureSinceFork": false,
+      "featureDiffersFromTarget": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "blobs": {
+        "fork": "9beef94f74168203de21c209225a24dc00b42974",
+        "target": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+        "feature": "9beef94f74168203de21c209225a24dc00b42974"
+      },
+      "changedOnTargetSinceFork": true,
+      "changedOnFeatureSinceFork": false,
+      "featureDiffersFromTarget": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "blobs": {
+        "fork": "c4af281266ecb784ead93197ccc5cb2b711686cc",
+        "target": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+        "feature": "c4af281266ecb784ead93197ccc5cb2b711686cc"
+      },
+      "changedOnTargetSinceFork": true,
+      "changedOnFeatureSinceFork": false,
+      "featureDiffersFromTarget": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "blobs": {
+        "fork": "af01cf434a5c32c6b1c3ff1c9c6489c7f733e349",
+        "target": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+        "feature": "af01cf434a5c32c6b1c3ff1c9c6489c7f733e349"
+      },
+      "changedOnTargetSinceFork": true,
+      "changedOnFeatureSinceFork": false,
+      "featureDiffersFromTarget": true
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "blobs": {
+        "fork": "5bec424d534dadb8000e4122e3ef3715b1e4e5a8",
+        "target": "574d525afb8f0eaee2b0abe8a8359d9bcae87399",
+        "feature": "e9c5a248f401a189e3c4f87f18fef9e0e157b6f4"
+      },
+      "changedOnTargetSinceFork": true,
+      "changedOnFeatureSinceFork": true,
+      "featureDiffersFromTarget": true
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "blobs": {
+        "fork": "f944823a330988cdb9f03e0e371939ecb140da21",
+        "target": "99fbc47f80b8f01df6b86a56bf14c29c5e630985",
+        "feature": "199d55145f2c2e709034e1ac9a980affb5a5cdc5"
+      },
+      "changedOnTargetSinceFork": true,
+      "changedOnFeatureSinceFork": true,
+      "featureDiffersFromTarget": true
+    }
+  ],
+  "contractDeltaInterpretation": [
+    "Six of seven tracked contract paths differ. codeplzreadme.md is identical across all three snapshots.",
+    "AGENTS and role/handoff contracts on feature remain fork versions; they lack target contractBaseline, statement-level synchronization, explicit full-audit coverage, MVP 1–2 pilot cadence and merged-candidate verification additions.",
+    "docs/architecture/business-knowledge-model.md changed independently on both sides: feature added projection domain guidance; target added ontology evolution and contract requirements. Preserve both meanings with corrected IDs, rather than replacing the whole file from one side.",
+    "docs/knowledge/README.md also changed independently on both sides and needs the same preservation of each domain increment and the target audit corrections.",
+    "Target schema 1.2.0 and tools/knowledge-model module impose the newer controlled fact types, fact references and structural validation. Feature schema 1.1.0 and its older backend test command cannot prove compliance with that target entry point.",
+    "The target knowledge workflow runs for pull requests and pushes to edhr-dev/main/master, records tested commit and validates test execution. It does not by itself make direct push preventive or establish branch protection; settings were not inspected here."
+  ],
+  "projectionBoundary": {
+    "featureMeaning": "Form content lookup/trace index and business-statistics projections derived from form data/configuration, with separate final-statistics, saved-content lookup, execution-context ownership and DHR evidence boundaries.",
+    "ontologyMeaning": "Development knowledge model projections for internal/customer/runtime visibility and P1 semantic impact queries.",
+    "evidencePaths": [
+      "docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml",
+      "docs/architecture/form-traceability-projection-design.md",
+      "docs/architecture/business-knowledge-model.md",
+      "docs/knowledge/README.md"
+    ],
+    "conclusion": "Feature projection completion is not an ontology P1/full-audit completion claim; target ontology audit is not acceptance of that feature."
+  },
+  "integrationSteps": [
+    {
+      "step": 1,
+      "action": "After finishing a safe commit/checkpoint, fetch the latest edhr-dev and feature heads; merge target into the shared feature branch or form an isolated integration branch/worktree, preserving collaborators history. Re-read changed contracts and record the actual base/head/contract read commits.",
+      "commandsAreAdviceOnly": true
+    },
+    {
+      "step": 2,
+      "action": "Renumber the incoming DEC-0075 decision family with an explicit source-qualified mapping and repair all current references. Reconcile feature semantics and target audit corrections in affected knowledge, ownership/snapshot/DHR boundaries, factual types and schema; preserve historical evidence. Produce a commit containing the integration candidate.",
+      "commandsAreAdviceOnly": true
+    },
+    {
+      "step": 3,
+      "action": "Run the new knowledge validator and risk-matched feature/integration tests on the actual candidate; record target, feature and tested commit and obtain the applicable independent review. If target moved, synchronize and recheck affected areas; only then fast-forward or normal-merge the tested candidate into edhr-dev and use ordinary git push. Keep push CI as detection; no forced history rewrite.",
+      "commandsAreAdviceOnly": true
+    }
+  ],
+  "coverageDisposition": "Unmerged feature and any future integration candidate remain outside the current 2292-ID target audit denominator and semantic-completion claim.",
+  "checksActuallyPerformed": [
+    "Read fixed target AGENTS, handoff and ontology-role contract.",
+    "Inspected original Git parents, commit lists and immutable branch trees.",
+    "Enumerated schema-mapped YAML IDs and compared concurrent additions.",
+    "Read both colliding decision meanings and actual contract/schema/workflow diffs."
+  ],
+  "notPerformed": [
+    "No feature full semantic audit.",
+    "No integration merge or candidate created.",
+    "No business tests, database actions or browser validation.",
+    "No current repository edits, commits, pushes or login probing.",
+    "No live remote refresh or branch protection/settings inspection."
+  ],
+  "unresolvedBusinessQuestions": []
+}

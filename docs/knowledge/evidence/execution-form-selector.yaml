@@ -3,15 +3,15 @@ evidence:
   - id: evidence.execution-form-selector-user-decision
     type: document
     path: docs/plans/2026-09-15-execution-form-selector.yaml
-    description: user-confirmed；DEC-PACKAGE-20260915-FORM-SELECTOR 与连续用户确认沉淀当前工序三类填报、业务措辞已发布模板挂载且显式决定必填、正在填写人员按同一表单用户跨份去重。已发布不代表用户已确认status=PUBLISHED；与现有有效时间版本契约的映射已记录为question.custom-form-version-eligibility。执行中的挂载范围、单服务内存、15秒续期/45秒过期/60秒活动窗口仅为主代理工程推断，不提升为权威业务常量。本证据不证明发布、接口运行或质量门禁通过。
+    description: 原始2026-09-15计划确认三类填报来源、显式必填选择和同一表单用户跨份去重；保持历史原文。其已发布业务措辞曾有映射问题，现已由DEC-0075-08取消模板版本PUBLISHED限制，不再作为当前开放问题；归属扩展及补填由DEC-0075承接，显式结束前置由DEC-0059替代。单服务内存和15/45/60秒窗口仍仅为工程推断，不能升为业务常量。此计划不证明本轮接口运行或质量通过。
     visibility: internal
   - id: evidence.execution-form-version-eligibility-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/util/RdoVersionStatusResolver.java
-    description: original-evidence；resolve按effectiveFrom/effectiveTo计算ACTIVE或EXPIRED，isReferenceable使用ACTIVE，注释明确持久化生命周期标志不得参与。与用户已发布业务措辞的映射尚未确认，不据此自动决定自定义挂载允许范围。
+    description: original-evidence；RdoVersionStatusResolver 按 effectiveFrom/effectiveTo 提供ACTIVE/EXPIRED及可引用判断，持久化生命周期标志不参与该通用RDO判断。此证据本身不定义自定义挂载资格；DEC-0075-08已确认不要求模板版本PUBLISHED，当前ExecutionSnapshotBuilder.selectableForms/customForm按模板ACTIVE和租户选择，不能从RDO方法反推该路径新增版本有效期限制。
     visibility: internal
   - id: evidence.execution-form-version-creation-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
-    description: original-evidence；buildFormTemplateVersion记录有效时间，响应通过RdoVersionStatusResolver投影状态；当前控制器没有表单模板版本发布动作。该证据揭示严格PUBLISHED候选过滤缺少用户确认及发布操作来源，不能单靠测试手工写入PUBLISHED证明真实路径可用。
+    description: original-evidence；TemplateModelingController创建表单模板版本及有效时间，响应可使用RDO状态投影，未提供表单模板版本发布动作。DEC-0075-08 已明确不设PUBLISHED候选前提；该结论不是继续待决，也不能以测试手填PUBLISHED证明真实发布路径。本次只核对当前创建及状态职责。
     visibility: internal

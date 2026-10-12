@@ -13,7 +13,7 @@ evidence:
   - id: evidence.record-correction-void-design
     type: document
     path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
-    description: 用户确认的表单变更与作废设计收敛稿；定义独立申请、新修订、作废语义、表单流程可选时无流程提交直接完成、显式匹配已发布流程并冻结引用、受限撤回、转办、重新分配、并行审批、字段标红、审计快照及 P0 不支持终止跳过加签等范围。该文档是设计证据，不是实现证据。
+    description: 历史记录变更、作废与值修订设计来源，支持独立申请、审批、源记录保留及审计的已确认范围。其中活动表单作废入口的统一阻断只是尚待确认的子范围，须与 question.record-control-active-form-void-boundary 及跨域集成契约一起读取，不把整份设计的收敛措辞视为该资格已获确认。当前阶段一公共流程端口不证明申请入口或结果回写已实现。
     visibility: internal
   - id: evidence.record-control-review-template-required-approvers
     type: code

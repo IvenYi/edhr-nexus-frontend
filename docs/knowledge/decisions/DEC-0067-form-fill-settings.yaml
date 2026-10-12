@@ -59,4 +59,17 @@ decisions:
         then: 已冻结的新执行快照不被改写，运行继续依据该快照校验权限与签署
         evidenceIds: [evidence.form-fill-settings-confirmed]
         evidenceRequirements: [新执行快照不可变测试, 权限和签署拒绝回归]
-    implementationDiscrepancies: []
+    implementationDiscrepancies:
+    - id: discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass
+      status: open
+      severity: high
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+      lineHint: 198
+      summary: 'provenance: original-evidence；现行 DEC-0067-01/05 要求显式选择填报方式，并已撤销缺失模式推导和旧数据开放默认。 当前 WorkTemplateController.saveGraph 对 FORM 配置缺失或 null 的 fillMode 自动写入 DIRECT； validatePublishableFormProcessReferences 仅在含 fillMode 或 directFillConfig 时调用填报设置校验，旧式无模式且无流程节点仍有发布路径。 FormFillSettingsService.usesProcess 对空模式返回 false，serialize 补 DIRECT；validate 对整体 settings 为 null/missing 时返回，对缺少模式的对象则按直接模式分支解释而不要求模式必填； saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess 测试输入缺失模式并断言写入 DIRECT，说明该分支仍被测试固定。 这是已查明的未修实现差异，不能以当前兼容行为推翻最新用户确认；显式新配置的权限、签署和快照实现单独保留。 本次仅核对源码和测试断言，未修改生产行为或执行运行验收。'
+      evidenceIds:
+      - evidence.form-fill-settings-confirmed
+      - evidence.form-fill-settings-design
+      - evidence.form-fill-settings-current-mode-validation
+      - evidence.form-process-version-upgrade-controller
+      - evidence.form-process-version-upgrade-tests

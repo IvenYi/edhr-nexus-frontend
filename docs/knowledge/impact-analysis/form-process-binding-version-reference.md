@@ -27,9 +27,9 @@
 | --- | --- |
 | 事实 → 绑定保存/发布 | `anchor.form-process-binding-controller` → `WorkTemplateController.java`、`WorkTemplateEditor.tsx`、`WorkTemplateControllerTest.java` |
 | 事实 → 引用持久化 | `anchor.form-process-binding-reference-service` → `FormProcessReferenceService.java`、`WorkFormProcessReference.java`、`0072-work-form-process-references.sql`、`FormProcessReferenceServiceTest.java` |
-| 事实 → 使用情况投影 | `anchor.form-process-binding-usage-projection` → `FormProcessController.java`、`GET /api/form-processes/{id}/usage`、`FormProcessList.tsx`、`FormProcessControllerTest.java` |
-| 事实 → 受控升级 | `anchor.form-process-binding-controlled-upgrade` → `WorkTemplateController.java`、`GET /api/work-templates/{id}/flow/form-process-reference-status`、相关前端和测试 |
-| 事实 → 删除阻断 | `anchor.form-process-binding-delete-guard` → `DELETE /api/form-processes/{id}`、`FormProcessList.tsx`、删除引用测试 |
+| 事实 → 使用情况投影 | `anchor.form-process-binding-usage-projection` → `FormProcessController.java`、`GET /api/v1/workflow/form-processes/{id}/usage`、`FormProcessList.tsx`、`FormProcessControllerTest.java` |
+| 事实 → 受控升级 | `anchor.form-process-binding-controlled-upgrade` → `WorkTemplateController.java`、`GET /api/v1/workflow/work-templates/{id}/versions/{versionId}/form-process-references`、相关前端和测试 |
+| 事实 → 删除阻断 | `anchor.form-process-binding-delete-guard` → `DELETE /api/v1/workflow/form-processes/{id}`、`FormProcessList.tsx`、删除引用测试 |
 
 ## 兼容、快照与审计影响
 

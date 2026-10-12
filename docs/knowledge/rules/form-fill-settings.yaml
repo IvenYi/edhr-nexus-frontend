@@ -6,7 +6,7 @@ rules:
     visibility: internal
     trigger: form-binding.configure
     scope: work-and-operation-form-fill-settings
-    condition: {fact: fact.form-fill-settings.mode, operator: in, value: [直接填报, 按流程填报]}
+    condition: {fact: fact.form-fill-settings.mode, operator: in, value: [DIRECT, PROCESS]}
     result:
       type: persist-flow-configuration
       target: form-binding
@@ -23,7 +23,7 @@ rules:
     visibility: internal
     trigger: form-binding.configure-and-execute
     scope: work-and-operation-form-fill-settings
-    condition: {fact: fact.form-fill-settings.mode, operator: equals, value: 直接填报}
+    condition: {fact: fact.form-fill-settings.mode, operator: equals, value: DIRECT}
     result:
       type: allow-with-governance
       configurationOwner: current-form-binding
@@ -38,7 +38,7 @@ rules:
     visibility: internal
     trigger: form-binding.configure-and-execute
     scope: work-and-operation-form-fill-settings
-    condition: {fact: fact.form-fill-settings.mode, operator: equals, value: 按流程填报}
+    condition: {fact: fact.form-fill-settings.mode, operator: equals, value: PROCESS}
     result:
       type: allow-with-governance
       configurationSource: selected-published-form-process
@@ -52,7 +52,7 @@ rules:
     visibility: internal
     trigger: form-binding.publish-and-instantiate
     scope: work-and-operation-form-fill-settings
-    condition: {fact: fact.form-fill-settings.mode, operator: in, value: [直接填报, 按流程填报]}
+    condition: {fact: fact.form-fill-settings.mode, operator: in, value: [DIRECT, PROCESS]}
     result:
       type: freeze-execution-snapshot
       include: [selected-fill-mode, applicable-fill-settings]

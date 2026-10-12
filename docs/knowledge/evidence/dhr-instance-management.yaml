@@ -53,7 +53,7 @@ evidence:
   - id: evidence.dhr-instance-integration-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
-    description: original-evidence；聚焦集成测试覆盖 BATCH/SN 首次 START、无模板版本快照列时创建 DHR、DHR 完成同步、两份表单证据聚合、专门查看权限、缺失 DHR 阻断完成、并发首次 START 唯一实例以及审计失败整事务回滚。本地 surefire 报告记录 47 项测试通过、2 项跳过；该结果是 working-tree 验证，不代表已发布环境。
+    description: original-evidence；集成测试源码含 BATCH/SN 首次 START、DHR 完成同步、两份表单证据聚合、查看权限、缺失 DHR 阻断、并发唯一实例及审计失败事务回滚场景。历史 dhr-robustness-review-fix.md 所引同类 Surefire 报告总数为 47，其中 2 项跳过，不能表述为 47 项全部执行通过。本次未取得当时原报告，也未重跑这些业务集成测试；历史结果不代表本次或已发布环境验收。
     visibility: internal
   - id: evidence.dhr-instance-migration-test
     type: test
@@ -68,5 +68,5 @@ evidence:
   - id: evidence.dhr-instance-management-page
     type: code
     path: gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx
-    description: original-evidence；working-tree 页面在 /dhr-management/list 消费列表与详情 API，提供 BATCH/SN、状态和关键字筛选及只读详情抽屉；页面没有手工创建、证据拖拽、审批、发布或修改动作。
+    description: original-evidence；页面在 /dhr-management/list 消费列表与详情 API，提供 BATCH/SN、状态和关键字筛选及只读详情抽屉。第一期只读范围不覆盖后续新增入口；当前页面已有按权限发起汇总修订并打开 DhrSummaryWorkspace 的操作，其资格、版本及写入由 DEC-0063/0068 的汇总契约负责，不能再笼统称页面没有修改入口。
     visibility: internal

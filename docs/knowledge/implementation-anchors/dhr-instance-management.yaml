@@ -56,9 +56,9 @@ implementationAnchors:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema, evidence.dhr-instance-service, evidence.dhr-instance-controller, evidence.dhr-instance-integration-test, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page]
-    sourceRevision: working-tree
-    sourceLocator: DhrInstanceService.detail 按生产对象查询 PRODUCTION_EXECUTION 来源记录，按冻结 dhrItemId 归入目录项并保留每条 copyId；控制器、前端 API 与页面只提供列表和只读详情，working-tree 集成测试已覆盖两份证据聚合与权限拒绝
-    capturedAt: '2026-09-17'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: DhrInstanceService.detail 按生产对象查询 PRODUCTION_EXECUTION 来源记录，按冻结 dhrItemId 归入目录项并保留每条 copyId。此锚点覆盖列表/只读基础详情；当前页面还可按 DEC-0063/0068 发起汇总修订。所列集成测试有聚合和权限断言，本次未重跑业务测试
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: anchor.dhr-instance-query-permission
     targetId: rule.dhr-instance-query-permission

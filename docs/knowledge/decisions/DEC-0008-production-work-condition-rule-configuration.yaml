@@ -27,7 +27,7 @@ decisions:
         status: deprecated
         visibility: internal
       - id: DEC-0008-06
-        statement: 当前字段目录只完成配置层契约；运行时真实字段来源、取值时点、生产实例快照绑定、AST 求值、异常处理、节点推进和执行审计契约仍未实现，不得将相关规则标记为 verified 或投影到 runtime。
+        statement: 初始字段目录只完成配置层契约；后续已有生产执行快照、五字段受限取值、AST 求值与节点推进，并留存 conditionFacts/decisions。其中 workType/triggerType/executionStatus 使用固定工程值，完整来源政策、异常与执行结果审计及通用事实契约仍未闭环，不据此把本配置规则提升为 verified/runtime。
         status: specified
         visibility: internal
     supersedes: [DEC-0006]
@@ -66,5 +66,10 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
         lineHint: 473
-        summary: 当前实现只做条件规则配置持久化和发布前校验，没有生产上下文真实来源、条件求值、节点推进、作业实例或生产执行快照证据；相关能力继续保持 specified。
-        evidenceIds: [evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
+        summary: 初始阶段仅有持久化和发布校验的描述已由后续受限运行补充。当前 ProductionExecutionEngine 在嵌入 WORK 中完成五字段求值、首匹配/默认出口与节点推进，ExecutionSnapshotBuilder 保存对应配置；conditionFacts/decisions 留存节点依据。完整业务字段来源、异常与结果审计、独立作业实例和通用执行注册仍有缺口，保持原范围的未闭环结论，不再声称完全没有运行证据。
+        evidenceIds:
+        - evidence.production-work-condition-rule-controller
+        - evidence.production-work-condition-rule-test
+        - evidence.production-execution-snapshot-builder-source
+        - evidence.production-execution-service-source
+        - evidence.production-execution-engine-source

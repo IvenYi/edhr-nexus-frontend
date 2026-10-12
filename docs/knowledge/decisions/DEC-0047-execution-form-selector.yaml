@@ -4,14 +4,14 @@ decisions:
     title: 三类填报表单、运行时自定义挂载与正在填写人数
     status: specified
     visibility: internal
-    context: user-confirmed；用户确认重新设计生产执行的切换表单抽屉，工序配置、自定义、作业发起三类表单分别展示；自定义从已发布模板选择并由用户决定必填规则；在线人数只统计正在填写的人并按同一表单的用户去重。已发布业务措辞的技术映射尚未确认，现有版本按有效时间投影ACTIVE而非持久化PUBLISHED，具体缺口见question.custom-form-version-eligibility；此前错误的PUBLISHED权威条件已移除，不能据此宣称自定义挂载闭环。本决策增补 DEC-0045 的表单来源与展示范围，复用 DEC-0046 多份规则，不替代既有权限、签名、显式结束、产出汇总或历史快照契约。知识仅 specified/internal，不代表代码、测试或发布门禁已完成。
+    context: user-confirmed；初始确认三类来源分别展示、自定义挂载显式选择必填、正在填写人数按同一表单用户跨份去重。原“已发布模板”技术映射待决已由 DEC-0075-08 明确取消版本PUBLISHED准入，仅保留有效模板、租户及显式版本冻结；归属由 DEC-0075-01/02 扩展为工序或批次，并按归属分层校验。DEC-0059 已局部替代此处继承的显式结束前置，DEC-0075 再规定已有未完成自定义份的受控继续填报。原三类来源、独立份、必填选择和人员去重继续；历史计划保留原文及时间，知识仍 specified/internal，不表示运行验收通过。
     decisionStatements:
       - id: DEC-0047-01
         statement: 填报表单区分工序配置、自定义挂载和作业发起三种来源；相同表单模板版本不构成实例复用或隐藏依据。工序开工前可展示并切换查看冻结计划表单，但不得创建实例、显示实例份数或允许填报，并明确显示“待工序开工”；工序开工后工序配置表单创建并可填，作业表单在对应作业节点未到达时可切换查看并显示“待作业流程到达”，到达后才创建并可填；已结束而未到达的作业表单显示“不适用”。显示表单名称、编码、版本、是否必填、计划或实例份数、聚合状态和正在填写人数。
         status: specified
         visibility: internal
       - id: DEC-0047-02
-        statement: 自定义表单选择已发布模板版本挂到当前生产对象当前工序，由操作员明确选择是否必填；复用已有多份填报、显式结束和必填完工检查，未完成非必填仍保持进行中。
+        statement: 自定义挂载的显式必填选择和独立多份意图继续适用；早期当前工序及已发布版本措辞按 DEC-0075-01/02/08 局部替代为工序或批次归属、有效模板及租户校验、显式版本冻结，不要求模板版本PUBLISHED。显式结束前置由 DEC-0059 替代，非必填未闭环与完工后受控继续填报按 DEC-0075 核对，不倒退生产完成事实。
         status: specified
         visibility: internal
       - id: DEC-0047-03
@@ -19,13 +19,24 @@ decisions:
         status: specified
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.execution-form-selector-user-decision, evidence.execution-form-version-eligibility-source, evidence.execution-form-version-creation-source, evidence.production-form-copies-user-decision]
+    evidenceIds:
+    - evidence.execution-form-selector-user-decision
+    - evidence.execution-form-version-eligibility-source
+    - evidence.execution-form-version-creation-source
+    - evidence.production-form-copies-user-decision
+    - evidence.custom-form-scope-confirmed
+    - evidence.custom-form-template-selection-boundary
+    - evidence.production-form-auto-finish-confirmed
     acceptanceScenarios:
       - id: scenario.execution-custom-form-attachment
-        given: 操作员在当前生产对象工序选择已发布表单模板版本
-        when: 明确必填属性并完成挂载
-        then: 当前工序出现自定义表单及独立份，刷新仍保留该版本和必填选择，挂载审计可追溯且既有完工检查生效
-        evidenceIds: [evidence.execution-form-selector-user-decision]
+        given: 操作员在当前生产对象显式选择有效且属于当前租户的表单模板版本，不要求版本PUBLISHED，并选择工序或批次归属
+        when: 填写添加原因、明确归属及完工校验设置并完成挂载
+        then: 出现可追溯的自定义表单与独立份，刷新保留版本、归属和完工校验设置；按DEC-0075的归属分层阻断与资料齐套规则处理，批次归属跨工序共享同一份。无需旧显式结束动作，已有未完成份的完工后继续填报走受控路径
+        evidenceIds:
+        - evidence.execution-form-selector-user-decision
+        - evidence.custom-form-scope-confirmed
+        - evidence.custom-form-template-selection-boundary
+        - evidence.production-form-auto-finish-confirmed
         evidenceRequirements: [挂载API持久化与审计, 必填和非必填检查, 旧执行快照兼容]
       - id: scenario.execution-form-source-selection
         given: 当前工序有配置表单、自定义表单及作业流程表单
@@ -39,3 +50,14 @@ decisions:
         then: 计为两人且不计只读者，离开或过期的会话被排除，人数不跨对象工序表单混算
         evidenceIds: [evidence.execution-form-selector-user-decision]
         evidenceRequirements: [用户身份去重, 跨份窗口与隔离测试, 只读排除, 离开和过期测试]
+    implementationDiscrepancies:
+    - id: discrepancy.execution-form-plan-count-and-not-applicable-projection
+      status: open
+      severity: medium
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      lineHint: 350
+      summary: 'provenance: original-evidence；未实例化的计划表单在抽屉仍显示共0份；后端 formAvailabilityStatus 先以工序非IN_PROGRESS返回WAITING_OPERATION_START，使已结束而未到达的作业表单可能不能投影NOT_APPLICABLE。应维持计划/实例区别及已结束不适用规范；本次未运行UI或实际实例回归。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      evidenceIds:
+      - evidence.execution-form-selector-user-decision
+      - evidence.production-execution-service-source

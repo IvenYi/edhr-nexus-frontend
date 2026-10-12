@@ -29,4 +29,15 @@ decisions:
         then: 后端只读取 V1 目录和条目
         evidenceIds: [evidence.dhr-template-composition-controller, evidence.dhr-template-composition-controller-test]
         evidenceRequirements: [控制器单元测试]
-    implementationDiscrepancies: []
+    implementationDiscrepancies:
+    - id: discrepancy.dhr-template-explicit-version-list-fallback
+      status: open
+      severity: high
+      visibility: internal
+      path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+      lineHint: 1382
+      summary: 'provenance: original-evidence；版本列表非空且显式 versionId 未找到时，前端优先保留列表中仍存在的已选版本，否则取首个版本；列表为空时该 effect 直接返回。这可能改变显式目标的展示及编辑上下文。后端显式版本查询严格拒绝缺失，不消除前端回退差异；须保持目标版本或明确拒绝，不能静默换版。本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      evidenceIds:
+      - evidence.dhr-template-version-design-isolation-user-confirmed
+      - evidence.dhr-template-workspace-version-selection
+      - evidence.dhr-template-composition-controller

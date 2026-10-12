@@ -19,7 +19,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0029-04
-        statement: "provenance: original-evidence；当前系统真实存在 UserAccount、Department、Role 及用户-部门、用户-角色关系；不存在独立用户组、岗位实体、部门负责人字段或通用主体解析器。"
+        statement: "provenance: original-evidence；本决策形成时已存在 UserAccount、Department、Role 及用户-部门、用户-角色关系，尚无通用主体解析器；该解析器缺口现由 DEC-0030 及 SubjectResolver 的用户、部门、角色运行解析实现补充。当前仍未发现独立用户组、岗位实体或部门负责人字段；历史实现边界不否定后续解析能力。"
         status: specified
         visibility: internal
     supersedes: []
@@ -50,5 +50,5 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow
         lineHint: 1
-        summary: "provenance: original-evidence；当前流程运行时仅识别旧的 assigneeId/assigneeRole，自定义主体引用、部门范围和最新成员解析尚未闭环。"
+        summary: "provenance: original-evidence；本项保留早期仅识别 assigneeId/assigneeRole 的历史缺口。当前 SubjectResolver 已实现标准主体及部门范围解析，WorkflowEngine.resolveAssignees 在节点进入时调用解析器并保存候选快照；不据此推断全来源业务授权、发布验证或普通表单页面均已闭环。"
         evidenceIds: [evidence.identity-user-memberships]
