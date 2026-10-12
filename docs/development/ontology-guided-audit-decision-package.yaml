@@ -1,0 +1,115 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261012-ONTOLOGY-GUIDED-AUDIT
+  scope: guided-ontology-pilots-and-audit-baseline
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 482004a2a89b098e02a513bbff5158c3cb97654c
+    targetBranch: edhr-dev
+    targetCommit: db8d361c5a23e846ec0b858b4346cf8924ba5e75
+    contractReadCommit: 482004a2a89b098e02a513bbff5158c3cb97654c
+    uncommittedContractPaths:
+      - AGENTS.md
+      - docs/agents/agent-handoff-contract.md
+      - docs/agents/business-knowledge-modeler.md
+      - docs/agents/quality-verifier.md
+  summary: 将 AI 主动识别与逐步引导试点写入协作契约，补齐阶段政策和历史质量状态的同步，并明确全量存量审计范围及可追踪清单；按用户 2026-10-12 的后续确认收紧为 MVP 功能开发优先、低频触发、全项目累计 1–2 个代表性功能试点。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.guided-audit-inventory
+      statement: 以固定 Git 基线的全量 ID 清单作为存量语义审计的覆盖分母，并将盘点、语义核对、修复、运行验收分别记录。
+      rationale: 用户确认全盘审计方向；现有全量结构校验不能证明逐条语义一致，需要防止遗漏和夸大完成范围。
+      relatedIds: []
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0076-01
+      supersededStatementIds: [DEC-0038-04]
+      scope: 只替代把 P0 不引入 OWL/RDF/SHACL 解释成所有后续 P0/P1 切片禁止有明确用途的标准映射或校验试点的范围。
+      retainedScope: 保留首次 P0 0.3.16 切片当时未引入这些能力的历史；不要求全量标准输出、图数据库、自动完整依赖图或生产直接读取研发知识目录，不允许推理绕过生产执行契约。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0038-ontology-p0-foundation.yaml
+        - docs/architecture/business-knowledge-model.md
+        - docs/knowledge/evidence/ontology-guided-pilot-confirmed.md
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: agent-guided-pilots
+        change: MVP 以功能开发为主，试点全项目累计 1–2 个代表性功能，优先复用已有试点；普通功能不重复输出试点评估，有未覆盖的关键路径且符合当前范围时才低频触发引导。
+        evidenceReferences: [AGENTS.md, docs/agents/agent-handoff-contract.md]
+      - area: ontology-roadmap-alignment
+        change: 对齐 DEC-0038-04 的历史范围及当前试点政策，纠正 README 对历史质量门禁的旧描述。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0038-ontology-p0-foundation.yaml, docs/knowledge/impact-analysis/ontology-p0-coverage.md]
+      - area: legacy-knowledge-audit
+        change: 定义当前有效知识与历史替代链的全量审计覆盖和逐项结论，建立固定基线清单；清单生成不代表语义审计完成。
+        evidenceReferences: [docs/knowledge/README.md, docs/agents/business-knowledge-modeler.md]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: form-traceability-projection
+        concern: 该分支须按自身提交及实际集成候选独立审计，不能将 edhr-dev 清单覆盖率直接套用。
+        evidenceReferences: [docs/development/ontology-foundation-repair.md]
+    unaffectedAreas:
+      - area: production-runtime
+        reason: 本切片建立治理与审计入口，不启用规则求值、业务动作、数据库迁移或生产配置。
+    compatibilityAndMigration:
+      - 保持 schema 1.2.0 和知识版本 0.3.25；本次治理补正由独立 Git 提交识别，不能只用版本号继承审计结果。
+      - 不改写旧任务的契约读取记录，不提升既有知识的业务成熟度，不删除历史决策和证据。
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: knowledge-and-governance
+        scenarios: [全量知识结构校验, 新旧声明适用范围一致, 历史门禁状态一致, MVP 累计试点范围及低频触发一致, 试点引导无多余审批, 全量清单不漏 ID 且不伪造语义通过, 正式审计使用实际提交且不制造合并前禁读门禁]
+        evidenceReferences: [tools/knowledge-model/pom.xml]
+    evidenceGaps:
+      - 逐条存量语义审计尚未完成；本切片生成的清单仅确定覆盖分母及明确待审条目。
+      - 通用规则执行切片的具体业务范围、事实读取与执行环境需在实际开发时按引导流程确定并验证，不能由本次契约变更宣称完成。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有主开发、本体和质量角色及交接格式，增加必要的引导和审计边界，不新增长期角色或独立审批层。
+    ownershipBoundaries:
+      - owner: main-agent
+        responsibility: 项目与角色契约、交接、审计清单和说明、集成及验证。
+      - owner: ontology-modeler
+        responsibility: 新旧阶段决策、确认来源、当前知识说明与架构的一致性。
+  affectedFiles:
+    - path: AGENTS.md
+      changeType: update
+      reason: 主动引导试点与明确授权的全量审计任务边界。
+    - path: docs/agents
+      changeType: update
+      reason: 最小试点计划、分步引导和逐项审计结论的职责及验收。
+    - path: docs/knowledge
+      changeType: update
+      reason: 修复历史声明与当前路线对账并保存确认来源。
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      reason: 连接当前路线、试点引导和全量审计约定。
+    - path: docs/development
+      changeType: create
+      reason: 固定审计基线、覆盖清单和当前交付范围。
+  acceptanceScenarios:
+    - id: scenario.ai-guides-ontology-pilot
+      given: 用户只描述待开发功能，未指定阶段或标准工具
+      when: MVP 已有试点证据不能覆盖本次关键路径且该功能适合在累计 1–2 个代表性功能范围内验证
+      then: 主动说明必要性并给出最小步骤和验收；普通功能不输出例行试点评估，第二个功能只补充不同能力，已有授权连续推进，超出 MVP 试点范围不自动扩张。
+      evidenceRequirements: [契约逐项核对]
+    - id: scenario.ontology-roadmap-partial-replacement
+      given: 首次 P0 历史范围与当前小范围试点政策同时存在
+      when: 人或 Agent 检索新旧决策与路线
+      then: 可以确定当前适用范围及仍保留的历史和生产约束，无需用文件新旧猜测优先级。
+      evidenceRequirements: [本体声明级同步, 独立质量检查]
+    - id: scenario.ontology-audit-coverage-honesty
+      given: 已生成固定基线的全量资产清单
+      when: 报告存量审计进度
+      then: 盘点、逐条语义核对、整改与运行验收分别计数；待审、未决和证据缺口不计为一致通过。
+      evidenceRequirements: [清单覆盖核对, 审计状态检查]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 补齐治理一致性，建立符合 MVP 功能优先和累计 1–2 个代表性功能约束的 AI 试点引导，以及可追踪的全量审计入口。
+    entryCriteria: [用户认可三项后续成果并要求开发时由 AI 逐步指引, 用户后续明确 MVP 以功能开发为主且试点不宜频繁]
+    exitCriteria: [确定性遗漏补正, MVP 功能优先与低频累计试点范围进入契约, 全量清单可复核, 正式知识校验及独立质量复核通过]
+    explicitNonGoals: [全库语义审计已完成的声明, 通用规则引擎上线, 标准导出器实现, 投影分支合并, 生产数据库变更, 每个功能例行试点评估, 为凑数量新增试点或扩张 MVP 范围]
+    nextStage: P1

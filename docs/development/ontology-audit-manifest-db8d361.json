@@ -1,0 +1,1533 @@
+{
+  "inventoryFormatVersion": 1,
+  "inventoryPath": "docs/development/ontology-audit-inventory-db8d361.jsonl",
+  "baseline": {
+    "commit": "db8d361c5a23e846ec0b858b4346cf8924ba5e75",
+    "branch": "edhr-dev",
+    "knowledgeModelVersion": "0.3.25",
+    "schemaVersion": "1.2.0",
+    "readMethod": "git show <baseline commit>:<path>"
+  },
+  "scope": "固定提交 docs/knowledge 全部 schema 记录及文件；这是盘点分母，不是语义审计结论。",
+  "inventoryComplete": true,
+  "semanticAuditComplete": false,
+  "reviewed": 0,
+  "recordCounts": {
+    "total": 2276,
+    "uniqueIds": 2276,
+    "byRecordType": {
+      "acceptanceScenario": 322,
+      "concept": 120,
+      "decision": 74,
+      "decisionStatement": 444,
+      "evidence": 441,
+      "executionContract": 2,
+      "fact": 254,
+      "implementationAnchor": 56,
+      "implementationDiscrepancy": 59,
+      "openQuestion": 7,
+      "relation": 138,
+      "rule": 232,
+      "term": 127
+    },
+    "byAuditScope": {
+      "current-definition-review": 816,
+      "decision-scope-review": 518,
+      "historical-boundary-review": 35,
+      "planned-definition-review": 22,
+      "support-evidence-review": 885
+    },
+    "byReviewStatus": {
+      "pending": 2276
+    },
+    "byConclusion": {
+      "pending": 2276
+    },
+    "coreConceptRelationFactRule": 744,
+    "definitionsIncludingTermsAndExecutionContracts": 873,
+    "decisionsAndStatements": 518,
+    "supportRecords": 885
+  },
+  "fileCounts": {
+    "totalSourceFiles": 236,
+    "yamlSourceFiles": 186,
+    "markdownSourceFiles": 50,
+    "schemaAndMarkdownReviewFiles": 51,
+    "applicableContractFiles": 7
+  },
+  "sourceFiles": [
+    {
+      "path": "docs/knowledge/README.md",
+      "gitBlob": "4b3ca1c9ab7d0ab5a9e4d83d528c758daab8b0b4"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "gitBlob": "6954ea87272754bd9632a2363bf3307ccc661380"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "gitBlob": "f1ebbd666b0768ca38fb8386539f9a71327083e9"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml",
+      "gitBlob": "ada56a8745ada37be14bce7f080b1550e8380d7c"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml",
+      "gitBlob": "85c40eb2df3aefd3c84a55a9cfa93320dda4bdd8"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "gitBlob": "53a0256dab88a364a03e11652cf2e3e8fa278aa6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "gitBlob": "7542a3f647f65435bb4406d2f62ba8368f240c95"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml",
+      "gitBlob": "7b13f28c6edc75bb769f475df585827a1ad7b6fe"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+      "gitBlob": "dc63dc570bfe71bab9e05a3083d88778dea67244"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "gitBlob": "95525605984f98f96369dd0c06eb5e0fa62d397e"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "gitBlob": "3f335ee8f7f9f61a4346b06ade438cbeb1e70d0e"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "gitBlob": "fb46dca8e2721f2e4372df85a9d3cf3fa82342eb"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml",
+      "gitBlob": "6628c1fd1a0b1a0ffea5215d2cec306b0dc5cf31"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "gitBlob": "83d99233c2e7a861e4f67d92d412bf10cfdb343d"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "gitBlob": "d97c56ff98bbfb3131767864f4155c40b69eeb67"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "gitBlob": "c726b309eb9fc466c3ac5d88f6686c3785b5517e"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+      "gitBlob": "9053ff06766ded02064e23a7117a481cfc551dfe"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "gitBlob": "81f0dc694d2a2729b5b0a9c65918a5418b6c9096"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0020-production-batch-actions.yaml",
+      "gitBlob": "32645449c73f562aba880f2b2ee9641fe2798aa0"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0021-production-audit-localized-display.yaml",
+      "gitBlob": "0357ce865af563b227a6f8c3e8a475870d86c332"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0022-production-form-process-configuration.yaml",
+      "gitBlob": "e5808f40fb6de94cf688bdf5071bfaa44a4daaca"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "gitBlob": "b91f5e3dbbdb64964fcb2a9891e8acd600575981"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0024-production-form-process-buttons-and-events.yaml",
+      "gitBlob": "e0870091ab2e41adaf8df39d01081bfc868c8054"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml",
+      "gitBlob": "4bbe166eb0d04fee8c5e6dc1ab555e259e4a3e87"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0026-product-process-production-form-values.yaml",
+      "gitBlob": "503b9675310634b7f7fbebaa22e8ec331df61877"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0027-workshop-master-data.yaml",
+      "gitBlob": "0674388720b0c086cca417cb586957b3c2d1133a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0028-production-form-process-button-electronic-signature.yaml",
+      "gitBlob": "a21c342245934186a5369395f2bd8cf4b5dbea77"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml",
+      "gitBlob": "a6613c899228e34d1f7bb67ff5149515097392a6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0030-identity-runtime-subject-resolution.yaml",
+      "gitBlob": "8626ccf316fb534435969170cc224d66f2007562"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "gitBlob": "44ecdd7048163df8c7e74adc063ed5d616da37d4"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0032-single-tenant-mvp-and-future-multitenancy.yaml",
+      "gitBlob": "7e7f59b3656a4b6e0497335bb54814c8d60d5060"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "gitBlob": "41568fd27705801e7413ef0fda3f7e22c9f19951"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml",
+      "gitBlob": "a07f1d2e618a375a0b6831eb1bc66cf40a7379b8"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml",
+      "gitBlob": "70e2321d947867a7a754c3f9d9e4e0e99ab05ce2"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0036-form-process-version-reference-governance.yaml",
+      "gitBlob": "6ddabe450c31f3ffe4e0fd3c85c2b1bb06eef35a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "gitBlob": "ed84ad9836b4a36e4c0092623cdb6c19e0e78189"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0038-ontology-p0-foundation.yaml",
+      "gitBlob": "7235ac6e7be46ea6befd8903945a7d37a8d216be"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0039-record-control-parallel-review-configuration.yaml",
+      "gitBlob": "0f84b0b8718c6d588225d6dc7313ef00ea6d10a6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0040-record-control-review-template-fixed-actions.yaml",
+      "gitBlob": "ca8f32de47491dfb6db5dd1c3a713e44e0d73808"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "gitBlob": "94afb96ccec6ea5478837afe1dc2b82a6b2a4bff"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "gitBlob": "72d334eb227b62e99a01ab4ed25e97d16b7fc1c8"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0043-record-control-canonical-terminology.yaml",
+      "gitBlob": "7456d196c027850977eaf550182f5e33f97c83d6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "gitBlob": "4594f70b4c205e97fee8902fad4b8686369bf60b"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0045-production-execution-workspace.yaml",
+      "gitBlob": "e4391c91e086d3574c0d242cc001c15643be225a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0046-production-form-copies.yaml",
+      "gitBlob": "017fb1f464f95e7a711b8a518084cee4db948296"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+      "gitBlob": "c6f2e45c91d6d43164038e29d48d28fc379eed14"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml",
+      "gitBlob": "2e2f8437ad3d0500c542be05fe2d35c1a22d8fc4"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0049-material-import.yaml",
+      "gitBlob": "2ad11d8fd6ec2e52d73485a72bfc6400f1d6ce94"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0050-form-instance-number.yaml",
+      "gitBlob": "1a8c941275c3881bdc0435066b5689f1cb120658"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0051-form-instance-global-query.yaml",
+      "gitBlob": "8c1fe7c4419357b1d351e9a7ab4f13a150f53315"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0052-form-management-personal-worklists.yaml",
+      "gitBlob": "4711e06a54644415159799de489f7c4c12baed60"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "gitBlob": "9d63b9f432225acc05263e230808f6c188759f18"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0054-operation-import.yaml",
+      "gitBlob": "60e12289f99a774eb82e61dccb93fbfa3304ef56"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "gitBlob": "cfbfed1d3dc379067249aaecae6854f3359fc0e7"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml",
+      "gitBlob": "65746c24bd982fc56f4114fb1423daf764d22c4b"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0057-form-instance-business-source.yaml",
+      "gitBlob": "64544c2483e271aab39ae44db66a048762bab0f1"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0058-production-field-signature.yaml",
+      "gitBlob": "243dd56bacd8f6d8968ff20832e5b991b8ed903f"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0059-production-form-auto-finish.yaml",
+      "gitBlob": "9ab3907860a643332fa8735c4cb87ccc9eeaf647"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml",
+      "gitBlob": "da6f48289285ca8af482c69d191945fe3d37c60f"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+      "gitBlob": "bbb49931df3c2321dee916bf84a3e1d62e1d55ec"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+      "gitBlob": "da08120e9917f838a62e60a3eddbe8ca9c55f5d9"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "gitBlob": "864c6ec676bcd8b9a9351a3c7326350a6d260217"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0064-master-data-description-contract.yaml",
+      "gitBlob": "13632ff571fb5ed6e5ca87319f3453072c569cef"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml",
+      "gitBlob": "630334da7f9314523ff212ef2f3375f5ec0a718d"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0066-production-form-copy-metadata.yaml",
+      "gitBlob": "d5312275fc07ee7cd5fa89135ad5696f561bab3c"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "gitBlob": "8f1d0e54ee10a0280e96b142270e35c2c9bf191a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "gitBlob": "765e39ca545c51c8d38ffc63ee78b0f6bfe932cd"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "gitBlob": "7a4ce8bfec42c48d66c62c4b1accd41fe05d7e95"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0070-dhr-approval-menu-display.yaml",
+      "gitBlob": "fec1058f6148e765d4ddf655ce2c553d47adbe55"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0071-dhr-summary-placement-order.yaml",
+      "gitBlob": "c3907b0978ae46b9e07d8eec50f8df2fd00db3d9"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0072-dhr-summary-source-group-presentation.yaml",
+      "gitBlob": "0333630a930b1f94e74e508c392687391406883a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0073-production-execution-form-action-projection.yaml",
+      "gitBlob": "9f826a47f90894bf268394b1282a67a995683cea"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "gitBlob": "9cd069c4b2984125eca2be6ca6e1023dde26579a"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "gitBlob": "17836568377c0d745917dce05fd6758b3a22d0cd"
+    },
+    {
+      "path": "docs/knowledge/evidence/approval-display-terminology-user-confirmed.md",
+      "gitBlob": "b7b111ad0c9d66b34778fef05da43cc38115cd60"
+    },
+    {
+      "path": "docs/knowledge/evidence/approval-display-terminology.yaml",
+      "gitBlob": "078aaea767b2a4c40b3f36226216c8177f9877a4"
+    },
+    {
+      "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+      "gitBlob": "4c0433d173eafc124bf8c75abce82caf133481c4"
+    },
+    {
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "gitBlob": "42ce5ad07cea5559a6c23e04e318c0a1949ec80a"
+    },
+    {
+      "path": "docs/knowledge/evidence/custom-form-scope-confirmed.md",
+      "gitBlob": "b10909a22a79801e968f80c12afa53dec6fe2ecc"
+    },
+    {
+      "path": "docs/knowledge/evidence/custom-form-scope.yaml",
+      "gitBlob": "3b3821de9be24c97e5a2f32e38737093fe53e9b2"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-approval-menu-display-user-confirmed.md",
+      "gitBlob": "93eab0c5024862cf916971d759e387d411bae9a9"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-approval-menu-display.yaml",
+      "gitBlob": "b5f8e90984595fad3720101183939bc8a036ac35"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "gitBlob": "ea67cf1c1937ad81fb01fab487a8c215b52865b1"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-implementation.md",
+      "gitBlob": "672e0567c764d8db651d0347c82e86a0bcc4da25"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review.yaml",
+      "gitBlob": "63a95c0a827dabf39d5fb82e258d73231b5bf249"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management-user-confirmed.md",
+      "gitBlob": "d3522fbc555b7fe270dafbb02cc066d08b515072"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "gitBlob": "cb8e8d31b5532f3ed10b2d326af596a049069453"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-robustness-review-fix.md",
+      "gitBlob": "55c3b68c0f172db199397950381da50ce6c65f0e"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-robustness-review-fix.yaml",
+      "gitBlob": "86142834f31f27b56a496074769ab55f8943053e"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-compliance-assessment.md",
+      "gitBlob": "e226af9c8b5adf83555165bac6944c41d0bd2ca0"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-order-user-confirmed.md",
+      "gitBlob": "456a848c2d207413a8b86958da06c7e5fbd7a412"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-source-group-user-confirmed.md",
+      "gitBlob": "116c4ae7ebcd8016ff38b89263db2bfcddfc09e5"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "gitBlob": "2625731535c1997c9435d7c9d69497241a79854c"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "gitBlob": "a9aedf1221aea06c302b31a7b3d3c888a072522b"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md",
+      "gitBlob": "9d97ded57296c6147f66d5c1e228ebfad08a90ac"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-template-version-design-isolation.yaml",
+      "gitBlob": "ebe65158268b86ec5e2a3282be7cf84276b153d7"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+      "gitBlob": "8a218e682682377dfcee556e02576b2de169c107"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-termination-lifecycle.yaml",
+      "gitBlob": "e12e59c557738981d7d5d73b829d623bb698ba83"
+    },
+    {
+      "path": "docs/knowledge/evidence/equipment-description-confirmed.md",
+      "gitBlob": "355b0e2c82239f7fe0ec3390b59a4e1bca5856ae"
+    },
+    {
+      "path": "docs/knowledge/evidence/equipment-modeling.yaml",
+      "gitBlob": "5deebb137cf8ad36ba0c90214c70d08303509aa6"
+    },
+    {
+      "path": "docs/knowledge/evidence/execution-form-selector.yaml",
+      "gitBlob": "4fe4457641a376147b3793d57f5f8ca4730abeef"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "gitBlob": "2436d45fac8c65efd71df55376ceaea6bb4ac6f6"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "gitBlob": "3f299611d6e72bb556bdd544f78a05de1f945dc8"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings-confirmed.md",
+      "gitBlob": "b9a782f158ebd4beb2d7bad076ac0d59a7a6eac4"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "gitBlob": "cff09d0d3967cf8350892a9e2bb0570cf2454dd5"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-business-source-user-confirmed.md",
+      "gitBlob": "9a9e3e315fc5ba2fdf9e4ef95242d8c64d6bef58"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-business-source.yaml",
+      "gitBlob": "936bcd447791bf459a05d220f8abb7b3133faa44"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number-user-confirmed.md",
+      "gitBlob": "26327d1033ae9d51f922cc4429f77719b34c7aff"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number.yaml",
+      "gitBlob": "55b50561c1c42ec8650d868f7f46cb017932bb57"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-query.yaml",
+      "gitBlob": "1d0b433372b8568d27a45b1ac25fc6cd83bae7c6"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-process-version-references.yaml",
+      "gitBlob": "3f76882cf5b0871dbd08047e6c3a7601b8b6564f"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-reference-runtime-confirmed.md",
+      "gitBlob": "f2d5d1cd0b674a502caeab0c0bc1a0823010dd7f"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-reference-runtime.yaml",
+      "gitBlob": "f8c75040da183e1ea4e8e5fda6099e12a5c3c638"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-renderer-permission-contract.yaml",
+      "gitBlob": "ceb9976ed88e8e7ebf44815b08700c41e845b636"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-worklists.yaml",
+      "gitBlob": "1d04d9a1a4782327c54d9702c91e73e5695d249c"
+    },
+    {
+      "path": "docs/knowledge/evidence/guancheng-batch-lifecycle-source.md",
+      "gitBlob": "defa0900a0f339de3b3a20408d4c34beaa937c5c"
+    },
+    {
+      "path": "docs/knowledge/evidence/guancheng-sn-split-source.md",
+      "gitBlob": "3beebbc2dfc0dbbd22032840523f13805de6764c"
+    },
+    {
+      "path": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "gitBlob": "c9ee8605f0bb654be9f6cea39099d96239e71b75"
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-deletion-user-confirmed.md",
+      "gitBlob": "694a1695b45fb93141c4780f3243afabd0df74f1"
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-deletion.yaml",
+      "gitBlob": "9c3df50bd27ccf09226ed9dee1dfec76a53e2faa"
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-description.yaml",
+      "gitBlob": "9c50b5d7d2c5a7f3bcb596a55a618a7c70bda828"
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-permission-audit.yaml",
+      "gitBlob": "da2c32d366af9a5e6ca5dc258dc8dc26a3f50b19"
+    },
+    {
+      "path": "docs/knowledge/evidence/material-fields-user-confirmed.md",
+      "gitBlob": "26685a18a19f88738545077903b11f0504984901"
+    },
+    {
+      "path": "docs/knowledge/evidence/material-fields.yaml",
+      "gitBlob": "02be03e3170ee44219a509c6470ba4eebe1a8c31"
+    },
+    {
+      "path": "docs/knowledge/evidence/material-import-confirmed.md",
+      "gitBlob": "719d48e2396eeb46f251171532f215db2c26a7ab"
+    },
+    {
+      "path": "docs/knowledge/evidence/material-import.yaml",
+      "gitBlob": "6eaba9848283010cbe2cd6a927362b2c3e524350"
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "gitBlob": "abaf8c3dc83cb397553d6e15566b1524af9cfa93"
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-repair.yaml",
+      "gitBlob": "c74138fa7f9ccff10a613ea70db9c4101235ecb9"
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-impact-analysis.yaml",
+      "gitBlob": "8ac482d6574a67787a1ec948fbe87f613d21693a"
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-p0-foundation.yaml",
+      "gitBlob": "ec2f3b1dc6c799abb55248291a18c94c8c69d766"
+    },
+    {
+      "path": "docs/knowledge/evidence/operation-import-confirmed.md",
+      "gitBlob": "9abcfe0864afd8b2646cbb2f2ae4854918738455"
+    },
+    {
+      "path": "docs/knowledge/evidence/operation-import.yaml",
+      "gitBlob": "19a06db0e8625a42e60a9ff9f2b9551348814082"
+    },
+    {
+      "path": "docs/knowledge/evidence/product-process.yaml",
+      "gitBlob": "9399a6639589f2bdafa4c116e22d02c5333ed790"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution-form-action-projection-user-confirmed.md",
+      "gitBlob": "505e6569a210e12e1c3a8a5cf63ce18e1b0c6927"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution-form-action-projection.yaml",
+      "gitBlob": "f0b28c89ef800fca1d8ec338f762b2f8834f2ee0"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "gitBlob": "b67af86d31d7d29c870f2a5143fea6634a3e3230"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-field-signature-confirmed.md",
+      "gitBlob": "730959022fafb0a440e25a4625ecb3879d8935ce"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-field-signature.yaml",
+      "gitBlob": "053e63a65d7543d029470922ee11648799e5808e"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-auto-finish-confirmed.md",
+      "gitBlob": "de4a6421627d49b8875c05e89e079ea4dde97c5d"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-auto-finish.yaml",
+      "gitBlob": "582700450bc2be0a0a16ef0641e4f4266ad41503"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-copies.yaml",
+      "gitBlob": "0388fea6570fe0a6d97f2c5e6f2bb766a5b4e31e"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-copy-metadata-confirmed.md",
+      "gitBlob": "6ac1f6e5bd51e85ff2627892aaf1515282ac3e95"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-copy-metadata.yaml",
+      "gitBlob": "53bc1c30639fc9f601273199e17e3ebbb349d65c"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v1.md",
+      "gitBlob": "a3bdf1d62f94d0d0e531b91296d73a9d4aaf1646"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v2.md",
+      "gitBlob": "ac8cb91bdad7c7c5f074cb52076f06ddbd4d8903"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v3.md",
+      "gitBlob": "d1ecbf6bcfc73e9850f4ee876102c7dc66e4a159"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-permission-default-exception-design-v2.md",
+      "gitBlob": "cab973d0c88bfb18be5dddd4882ec4f26e63a81f"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-permission-default-exception-design.md",
+      "gitBlob": "62341b6b4fa48e846cb7d6721af20fc55fc5b36c"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v2.md",
+      "gitBlob": "82ed82c96512e5c56760a26874969f3ee4e487d7"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v3.md",
+      "gitBlob": "ba366d589ae4e4f1db4037b4119ab0ecea0bcf24"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v4.md",
+      "gitBlob": "5ea94caa26cc50e9c6d1dbbfb8fd4f277fbf1637"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v5.md",
+      "gitBlob": "36ee6aa28518241e7612618cd3dade2cd363aff5"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed.md",
+      "gitBlob": "1886b1072949e463672af0aa6a25863da5da2b32"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process.yaml",
+      "gitBlob": "1be0d1b74feb245947d533347065b64f51686609"
+    },
+    {
+      "path": "docs/knowledge/evidence/production.yaml",
+      "gitBlob": "b3d3b146808a2657a3281a6601163a7789394417"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md",
+      "gitBlob": "f4a9232c5278421bd1b5f534c42c9dcafcb293dc"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-terminology-user-confirmed.md",
+      "gitBlob": "afa4156d11731315ebb1eaa17fe5392de21ed1cc"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1-local-validation.md",
+      "gitBlob": "41ac675719acacff31c22f29895e734b5940ef92"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "gitBlob": "ebf2d3ddc9c735ca875a39d8cc664dfeba50b7fc"
+    },
+    {
+      "path": "docs/knowledge/evidence/record-correction-void-design.yaml",
+      "gitBlob": "2e1b41daef8b0d0c645df8cd24450b47e56508cc"
+    },
+    {
+      "path": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "gitBlob": "46e5fcd8d74e9a6873d2f788730634cbb39341a1"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-single-tenant-mvp-user-confirmed.md",
+      "gitBlob": "56e9b3fc1f27d1212499a978aaf08cc4cdc59110"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-single-tenant-mvp.yaml",
+      "gitBlob": "5413fe80e43314b9d4434a515ff52be5b1f86e07"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "gitBlob": "bfd9b4820ea8012530bf81078acedd6c36c51f53"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.yaml",
+      "gitBlob": "7d81c4a4398fdd0af143bca5224a55b92ffe7fd8"
+    },
+    {
+      "path": "docs/knowledge/evidence/workshop.yaml",
+      "gitBlob": "03eca5fcdc40b98e8f262371a8c5ed68f859ce3d"
+    },
+    {
+      "path": "docs/knowledge/execution-contracts.yaml",
+      "gitBlob": "92950c983315b3323e19389b54a11b0c87116687"
+    },
+    {
+      "path": "docs/knowledge/facts/button-signature.yaml",
+      "gitBlob": "8ba6b871d3f8378a5c944e40d7942f2f8647fe4a"
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "gitBlob": "babf85726d698b2b15b872bf5c6e1667646750b7"
+    },
+    {
+      "path": "docs/knowledge/facts/custom-form-scope.yaml",
+      "gitBlob": "cedbeb22cc02efc7057af30820aafd2b6aa01f51"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "gitBlob": "e00a1a1e07af7caca4ce3259d45d0cf1259df685"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "gitBlob": "09f6eeebf78486cdeb2f7433179751e012a50cf7"
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-template-version-design-isolation.yaml",
+      "gitBlob": "268bd41f9ec04293836c32b42f14a19a241f33f5"
+    },
+    {
+      "path": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "gitBlob": "b0d0ffefe146f7640a82463d7152f7c2604cfa48"
+    },
+    {
+      "path": "docs/knowledge/facts/form-fill-settings.yaml",
+      "gitBlob": "2a6d180332349867fabe8a41541e0c8b1ffb894c"
+    },
+    {
+      "path": "docs/knowledge/facts/form-instance-number.yaml",
+      "gitBlob": "7cf8673e2ab52d4c0dc856585bff5c12708b04e0"
+    },
+    {
+      "path": "docs/knowledge/facts/form-instance-query.yaml",
+      "gitBlob": "e823b821e6317a6e6debc55c37e157a8b47f3ab2"
+    },
+    {
+      "path": "docs/knowledge/facts/form-process-binding.yaml",
+      "gitBlob": "7e9fbd8b8655f00f1b26bccfaa1dc42f7aa9ca56"
+    },
+    {
+      "path": "docs/knowledge/facts/form-reference-runtime.yaml",
+      "gitBlob": "01d75da1b2f1c04c2a89ad2683cab04b69dde573"
+    },
+    {
+      "path": "docs/knowledge/facts/form-worklists.yaml",
+      "gitBlob": "49cedc23ca7771f4d8cff19c0e32a92f28d8aefc"
+    },
+    {
+      "path": "docs/knowledge/facts/master-data-deletion.yaml",
+      "gitBlob": "53253aa44445bc7f630939a9fa90768061b77a80"
+    },
+    {
+      "path": "docs/knowledge/facts/master-data-description.yaml",
+      "gitBlob": "86d94a84462f028ecc745f7415f546ac52e589e2"
+    },
+    {
+      "path": "docs/knowledge/facts/master-data-permission-audit.yaml",
+      "gitBlob": "026795d7f8aa1838eadf3707f7c93f65102a39ea"
+    },
+    {
+      "path": "docs/knowledge/facts/material-fields.yaml",
+      "gitBlob": "24948c66bc4695e7d3dc6f2bd55a9838f84cade5"
+    },
+    {
+      "path": "docs/knowledge/facts/material-import.yaml",
+      "gitBlob": "56fbf147c3480998cad9311491ec76618ee390fb"
+    },
+    {
+      "path": "docs/knowledge/facts/operation-import.yaml",
+      "gitBlob": "f97baea9ff2f70c0e3d29615c504e3da2ff383fe"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "gitBlob": "99b2e2c85e8894b7659a2c144eae4f1d168e57c2"
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/form-process-binding-version-reference.md",
+      "gitBlob": "97b133d68aeb78618aaa9801f9ccc990b89ff485"
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/ontology-p0-coverage.md",
+      "gitBlob": "26024f643a77253a900b6a2c0412a8bf0a5e9a43"
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md",
+      "gitBlob": "f9dfdc33a27bc2821c82396cda437c40861e87e0"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "gitBlob": "f9ef1ed80a11e1807826f2dbb45af0fe2ece153b"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "gitBlob": "05eacc18e00854d052f4cad23ecf9bfb94b36725"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary-order.yaml",
+      "gitBlob": "2c037e55427768cc8d8d645baab344874419ac2b"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary-source-group.yaml",
+      "gitBlob": "c371de808d02febc0936559da69174ee93e09557"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "gitBlob": "5588ebdb77d3b4a596c8c59a3871b0126d6d0300"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-template-version-design-isolation.yaml",
+      "gitBlob": "b2d0c72a1b08a5a595877f2d967e820240b35fa0"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "gitBlob": "3e9e626a4d54bcba8945fcaa8d26cddcf68d77ef"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-instance-number.yaml",
+      "gitBlob": "7f0bc73696ebc611628731bbe5a935da7a32e6be"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-instance-query.yaml",
+      "gitBlob": "8bb064eca3994d210efa7eda0af709f33734a34e"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "gitBlob": "1651c3e3639afab2749554bebd7c6f98eed934e0"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-worklists.yaml",
+      "gitBlob": "f99f22e1f24745a2ce23e8f9ab92a900cef42e25"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/master-data-description.yaml",
+      "gitBlob": "a79e09ba0849981a89d34a60e2ddaed654d5448f"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/master-data-permission-audit.yaml",
+      "gitBlob": "0fb7951a375fc48a60404365939e0e07c6c3b83b"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/material-fields.yaml",
+      "gitBlob": "049476f1b925ed96b45457540c68dcf9df5be842"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/material-import.yaml",
+      "gitBlob": "4ffe9201529a492136255dfed3de35de96feb3bd"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/operation-import.yaml",
+      "gitBlob": "0b68d83b7069b9b71e4fba6d2ba704d38ee9edbb"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "gitBlob": "1c84c8123c45b05af4adc50140e75eeb79e0ceea"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "gitBlob": "728ff98c927066ac697438d087e0e5f463081bbd"
+    },
+    {
+      "path": "docs/knowledge/rules/button-signature.yaml",
+      "gitBlob": "f2fd36d306f49f76db9af328e8a6eddb22bf4f5c"
+    },
+    {
+      "path": "docs/knowledge/rules/custom-form-scope.yaml",
+      "gitBlob": "b13efadaea6483c2aeb57fb27f03623108e1b17f"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-instance-management.yaml",
+      "gitBlob": "b65b7969ab3eba2474792b57f7fc2ef21fe5355c"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "gitBlob": "c2c1989649eaddaa78fcf236c92bb4619cbce832"
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-template-version-design-isolation.yaml",
+      "gitBlob": "ab103545eaeb2a33bb063eef139941ff0c9f35f7"
+    },
+    {
+      "path": "docs/knowledge/rules/equipment.yaml",
+      "gitBlob": "6b8724c655be36ff19463be716dc89d16c2d7ddb"
+    },
+    {
+      "path": "docs/knowledge/rules/execution-form-selector.yaml",
+      "gitBlob": "136eec7ebc4f2a4679d74ab4e8f4cb7d27ef1427"
+    },
+    {
+      "path": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "gitBlob": "057668f515d9caed8800d9667d5b73a67030fc6f"
+    },
+    {
+      "path": "docs/knowledge/rules/form-fill-settings.yaml",
+      "gitBlob": "eff4f85fe76989eaa228d4af3685f1979b086e1e"
+    },
+    {
+      "path": "docs/knowledge/rules/form-instance-number.yaml",
+      "gitBlob": "ac2e0c31b70beadacda643ba83f978ca7f42ee33"
+    },
+    {
+      "path": "docs/knowledge/rules/form-instance-query.yaml",
+      "gitBlob": "ccdb548b8a66ed7ccc138cbeb8084eabb7445982"
+    },
+    {
+      "path": "docs/knowledge/rules/form-reference-runtime.yaml",
+      "gitBlob": "3c7d6751bca014897faa927d59dd4f538cdd6bf9"
+    },
+    {
+      "path": "docs/knowledge/rules/form-worklists.yaml",
+      "gitBlob": "41ecc506f35923e837ff6fc629522446bc2a60b3"
+    },
+    {
+      "path": "docs/knowledge/rules/identity.yaml",
+      "gitBlob": "52aa3cbddb56f541d5327fbf75d1cfc3763300c3"
+    },
+    {
+      "path": "docs/knowledge/rules/master-data-deletion.yaml",
+      "gitBlob": "4ca220dbfc86ab79711608c228f6e88f8b3d6616"
+    },
+    {
+      "path": "docs/knowledge/rules/master-data-description.yaml",
+      "gitBlob": "99e523fff1fed4892a7fa287dddb24fadf0a1a86"
+    },
+    {
+      "path": "docs/knowledge/rules/master-data-permission-audit.yaml",
+      "gitBlob": "19f625cf148dae4a47d772fd70afd0b771f4a4f0"
+    },
+    {
+      "path": "docs/knowledge/rules/material-fields.yaml",
+      "gitBlob": "b77a7e5f55ec104474151ea7051512438c127a0c"
+    },
+    {
+      "path": "docs/knowledge/rules/material-import.yaml",
+      "gitBlob": "6bfd8bf3281824b0f116dc1f49d48582bf672679"
+    },
+    {
+      "path": "docs/knowledge/rules/operation-import.yaml",
+      "gitBlob": "1d2bc64c81f43d78700a1ba928e22a0ff76b4c40"
+    },
+    {
+      "path": "docs/knowledge/rules/product-process.yaml",
+      "gitBlob": "46cefd1b1a3a91639c2b3b41eb05c312459f79be"
+    },
+    {
+      "path": "docs/knowledge/rules/production-execution.yaml",
+      "gitBlob": "371ca37d60912a1288defbd4942f4158018e4557"
+    },
+    {
+      "path": "docs/knowledge/rules/production-field-signature.yaml",
+      "gitBlob": "61aac5a01f6f901cd6ccd37a9710bf4c6452ed6b"
+    },
+    {
+      "path": "docs/knowledge/rules/production-form-copies.yaml",
+      "gitBlob": "5442c49cd8de6d06dc88d2a4b22842d7828ccb2f"
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "gitBlob": "e987818d5bb786fcd45f0d56f65ad403f18abbf1"
+    },
+    {
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "gitBlob": "bb36ecca01a4df1d7aa987adc7c248c013d46cfd"
+    },
+    {
+      "path": "docs/knowledge/rules/workshop.yaml",
+      "gitBlob": "b03de31d67eb3f210d47686e9b26927165db16e9"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "gitBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40"
+    }
+  ],
+  "applicableContractBaseline": {
+    "commit": "db8d361c5a23e846ec0b858b4346cf8924ba5e75",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "gitBlob": "7e1a2267bb2a8cec421056f5aefcdd8280cc16fb"
+      },
+      {
+        "path": "codeplzreadme.md",
+        "gitBlob": "2e7e18097620e602c4408b83f71404fae346f8be"
+      },
+      {
+        "path": "docs/agents/agent-handoff-contract.md",
+        "gitBlob": "3a501fee7a3681dff0e51810031466a6d64db8ef"
+      },
+      {
+        "path": "docs/agents/business-knowledge-modeler.md",
+        "gitBlob": "fa5297d131a20878dcb4cd59f4915aa3316fa9b0"
+      },
+      {
+        "path": "docs/agents/quality-verifier.md",
+        "gitBlob": "98bf7851bff6b27aac070b299e4c7573870001f5"
+      },
+      {
+        "path": "docs/architecture/business-knowledge-model.md",
+        "gitBlob": "4cfd1536b323d6b5c4dfc5db2e16e34cea0b8052"
+      },
+      {
+        "path": "docs/knowledge/README.md",
+        "gitBlob": "4b3ca1c9ab7d0ab5a9e4d83d528c758daab8b0b4"
+      }
+    ],
+    "note": "这里只记录该固定提交的适用契约。任何本轮工作树治理修改须按增量另行核对，不得冒充基线内容。"
+  },
+  "schemaAndMarkdownReviewFiles": [
+    {
+      "path": "docs/knowledge/README.md",
+      "gitBlob": "4b3ca1c9ab7d0ab5a9e4d83d528c758daab8b0b4",
+      "fileType": "readme",
+      "auditScope": "document-consistency-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/approval-display-terminology-user-confirmed.md",
+      "gitBlob": "b7b111ad0c9d66b34778fef05da43cc38115cd60",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+      "gitBlob": "4c0433d173eafc124bf8c75abce82caf133481c4",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/custom-form-scope-confirmed.md",
+      "gitBlob": "b10909a22a79801e968f80c12afa53dec6fe2ecc",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-approval-menu-display-user-confirmed.md",
+      "gitBlob": "93eab0c5024862cf916971d759e387d411bae9a9",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "gitBlob": "ea67cf1c1937ad81fb01fab487a8c215b52865b1",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-implementation.md",
+      "gitBlob": "672e0567c764d8db651d0347c82e86a0bcc4da25",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management-user-confirmed.md",
+      "gitBlob": "d3522fbc555b7fe270dafbb02cc066d08b515072",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-robustness-review-fix.md",
+      "gitBlob": "55c3b68c0f172db199397950381da50ce6c65f0e",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-compliance-assessment.md",
+      "gitBlob": "e226af9c8b5adf83555165bac6944c41d0bd2ca0",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-order-user-confirmed.md",
+      "gitBlob": "456a848c2d207413a8b86958da06c7e5fbd7a412",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-source-group-user-confirmed.md",
+      "gitBlob": "116c4ae7ebcd8016ff38b89263db2bfcddfc09e5",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "gitBlob": "2625731535c1997c9435d7c9d69497241a79854c",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md",
+      "gitBlob": "9d97ded57296c6147f66d5c1e228ebfad08a90ac",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+      "gitBlob": "8a218e682682377dfcee556e02576b2de169c107",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/equipment-description-confirmed.md",
+      "gitBlob": "355b0e2c82239f7fe0ec3390b59a4e1bca5856ae",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "gitBlob": "2436d45fac8c65efd71df55376ceaea6bb4ac6f6",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings-confirmed.md",
+      "gitBlob": "b9a782f158ebd4beb2d7bad076ac0d59a7a6eac4",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-business-source-user-confirmed.md",
+      "gitBlob": "9a9e3e315fc5ba2fdf9e4ef95242d8c64d6bef58",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number-user-confirmed.md",
+      "gitBlob": "26327d1033ae9d51f922cc4429f77719b34c7aff",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/form-reference-runtime-confirmed.md",
+      "gitBlob": "f2d5d1cd0b674a502caeab0c0bc1a0823010dd7f",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/guancheng-batch-lifecycle-source.md",
+      "gitBlob": "defa0900a0f339de3b3a20408d4c34beaa937c5c",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/guancheng-sn-split-source.md",
+      "gitBlob": "3beebbc2dfc0dbbd22032840523f13805de6764c",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-deletion-user-confirmed.md",
+      "gitBlob": "694a1695b45fb93141c4780f3243afabd0df74f1",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/material-fields-user-confirmed.md",
+      "gitBlob": "26685a18a19f88738545077903b11f0504984901",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/material-import-confirmed.md",
+      "gitBlob": "719d48e2396eeb46f251171532f215db2c26a7ab",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "gitBlob": "abaf8c3dc83cb397553d6e15566b1524af9cfa93",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/operation-import-confirmed.md",
+      "gitBlob": "9abcfe0864afd8b2646cbb2f2ae4854918738455",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution-form-action-projection-user-confirmed.md",
+      "gitBlob": "505e6569a210e12e1c3a8a5cf63ce18e1b0c6927",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-field-signature-confirmed.md",
+      "gitBlob": "730959022fafb0a440e25a4625ecb3879d8935ce",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-auto-finish-confirmed.md",
+      "gitBlob": "de4a6421627d49b8875c05e89e079ea4dde97c5d",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-copy-metadata-confirmed.md",
+      "gitBlob": "6ac1f6e5bd51e85ff2627892aaf1515282ac3e95",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v1.md",
+      "gitBlob": "a3bdf1d62f94d0d0e531b91296d73a9d4aaf1646",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v2.md",
+      "gitBlob": "ac8cb91bdad7c7c5f074cb52076f06ddbd4d8903",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v3.md",
+      "gitBlob": "d1ecbf6bcfc73e9850f4ee876102c7dc66e4a159",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-permission-default-exception-design-v2.md",
+      "gitBlob": "cab973d0c88bfb18be5dddd4882ec4f26e63a81f",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-permission-default-exception-design.md",
+      "gitBlob": "62341b6b4fa48e846cb7d6721af20fc55fc5b36c",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v2.md",
+      "gitBlob": "82ed82c96512e5c56760a26874969f3ee4e487d7",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v3.md",
+      "gitBlob": "ba366d589ae4e4f1db4037b4119ab0ecea0bcf24",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v4.md",
+      "gitBlob": "5ea94caa26cc50e9c6d1dbbfb8fd4f277fbf1637",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v5.md",
+      "gitBlob": "36ee6aa28518241e7612618cd3dade2cd363aff5",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed.md",
+      "gitBlob": "1886b1072949e463672af0aa6a25863da5da2b32",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md",
+      "gitBlob": "f4a9232c5278421bd1b5f534c42c9dcafcb293dc",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-terminology-user-confirmed.md",
+      "gitBlob": "afa4156d11731315ebb1eaa17fe5392de21ed1cc",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1-local-validation.md",
+      "gitBlob": "41ac675719acacff31c22f29895e734b5940ef92",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-single-tenant-mvp-user-confirmed.md",
+      "gitBlob": "56e9b3fc1f27d1212499a978aaf08cc4cdc59110",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "gitBlob": "bfd9b4820ea8012530bf81078acedd6c36c51f53",
+      "fileType": "evidence-document",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/form-process-binding-version-reference.md",
+      "gitBlob": "97b133d68aeb78618aaa9801f9ccc990b89ff485",
+      "fileType": "impact-analysis",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/ontology-p0-coverage.md",
+      "gitBlob": "26024f643a77253a900b6a2c0412a8bf0a5e9a43",
+      "fileType": "impact-analysis",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md",
+      "gitBlob": "f9dfdc33a27bc2821c82396cda437c40861e87e0",
+      "fileType": "impact-analysis",
+      "auditScope": "support-evidence-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "gitBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "fileType": "schema",
+      "auditScope": "schema-contract-review",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "evidenceReferences": []
+    }
+  ],
+  "reviewConventions": {
+    "allowedConclusions": [
+      "pending",
+      "consistent",
+      "needs-fix",
+      "superseded",
+      "needs-decision",
+      "evidence-gap"
+    ],
+    "initialReviewStatus": "pending",
+    "sourceLocator": "JSON pointer relative to the YAML document at baseline.commit",
+    "recordSha256": "SHA-256 of the parsed record serialized as UTF-8 JSON with sorted keys, no ASCII escaping, and compact separators; includes declared nested records.",
+    "auditScopeMeaning": "仅按类型与原始状态确定初始审计方向，不证明现行有效、历史失效或业务一致。",
+    "statusBoundary": "assetStatus 和 sourceReviewStatus 保留源数据；reviewed、implemented、verified 或 deprecated 均不自动形成此次审计结论。无源状态时保持 null。",
+    "replacementBoundary": "决策级替代或父记录 deprecated 不自动决定全部子声明失效；必须按声明及适用范围核对。",
+    "fileAndRecordDenominators": "2,276 为 schema 记录分母；51 份 schema/Markdown 文件为独立文件核对范围。README 同时在适用契约列表中出现，不重复计入源文件或记录分母。",
+    "resumePolicy": "保留固定基线及已形成的逐条结果，按未完成 ID 续跑；新增提交须对新增、变更、移除及受引用决策/实现/测试影响的 ID 做增量复核，不能用重新生成覆盖旧结果。"
+  },
+  "excludedFromBaseline": [
+    {
+      "scope": "本轮 AI 引导试点、存量审计治理变更及新增 16 个知识 ID",
+      "additionalRecordCount": 16,
+      "reason": "这些变更在固定提交之后的当前功能切片形成，不属于此处 2,276 条记录或 236 个源文件。",
+      "requiresIncrementalReconciliation": true,
+      "reviewStatus": "pending",
+      "note": "本清单不对新增记录或治理修改宣告审计完成；集成时依据实际候选逐项增量对账，若数量变化也须据实更新增量范围。"
+    }
+  ],
+  "limitations": [
+    "未执行全量业务语义审计、实现行为验证或历史证据逐条复核。",
+    "本清单未将原有 reviewed 状态、历史 CI 或本轮其他切片验证继承为全量符合新契约。",
+    "JSON pointer 与内容摘要用于定位和变化检测；摘要未变不能证明关联决策、实现或测试没有影响。"
+  ],
+  "inventorySha256": "455e391ec36feda21aaacff4e802b398462a65b903590c131c40e7c8ee9c16fb"
+}
