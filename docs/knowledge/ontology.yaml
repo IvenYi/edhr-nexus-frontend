@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.24
+knowledgeModelVersion: 0.3.25
 concepts:
   - id: concept.custom-form-scope
     termId: term.custom-form-scope
@@ -624,6 +624,12 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
+  - id: concept.audit-event
+    termId: term.audit-event
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.ontology-audit-event-entity, evidence.audit-controller-action-projection, evidence.production-object-audit-snapshot-controller]
   - id: concept.record-correction-request
     termId: term.record-correction-request
     kind: business-fact
@@ -671,7 +677,7 @@ concepts:
     kind: runtime-fact
     status: specified
     visibility: internal
-    evidenceIds: [evidence.execution-form-selector-user-decision]
+    evidenceIds: [evidence.execution-form-selector-user-decision, evidence.custom-form-scope-confirmed, evidence.custom-form-template-selection-boundary]
   - id: concept.execution-active-editor
     termId: term.execution-active-editor
     kind: runtime-fact
@@ -1584,12 +1590,19 @@ relations:
     visibility: internal
     evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service]
   - id: relation.audit-event-retains-change-snapshot
-    source: concept.data-audit-action-category
+    source: concept.audit-event
     target: concept.audit-change-snapshot
     cardinality: one-to-zero-or-one
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.production-audit-localized-formatter]
+    evidenceIds: [evidence.ontology-audit-event-entity, evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.production-audit-localized-formatter]
+  - id: relation.audit-event-projects-action-category
+    source: concept.audit-event
+    target: concept.data-audit-action-category
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.audit-controller-action-projection, evidence.audit-controller-test]
   - id: relation.record-correction-request-produces-revision
     source: concept.record-correction-request
     target: concept.correction-revision
@@ -1673,4 +1686,4 @@ relations:
     cardinality: one-to-zero-or-many
     status: specified
     visibility: internal
-    evidenceIds: [evidence.execution-form-selector-user-decision]
+    evidenceIds: [evidence.execution-form-selector-user-decision, evidence.custom-form-scope-confirmed]

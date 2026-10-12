@@ -4,6 +4,19 @@
 
 下列内容是格式示例。示例 ID、版本、提交哈希和数组内容不代表真实项目结论；每次实际任务均由主智能体根据已确认的业务讨论自动生成，用户不填写决策包、结果表或知识文件。所有未发生的列表字段也必须保留并使用空列表 `[]`，不得省略。
 
+## 契约基线
+
+`decisionPackage`、`ontologyResult` 和 `qualityResult` 共用 `contractBaseline`，记录各自实际读取和核对的版本：
+
+- `sourceCommit`：本次功能分支或工作树的 HEAD，使用完整 Git 提交哈希。
+- `targetBranch`、`targetCommit`：拟集成分支及最近一次获取并核对的完整提交哈希；无跨分支集成时可与来源基线相同。
+- `contractReadCommit`：实际读取项目、角色和交接契约时采用的完整提交哈希，不能因为执行了 fetch 就填写为最新值。
+- `uncommittedContractPaths`：在上述契约提交之外，实际读取的未提交契约修改路径；没有则使用 `[]`。不得为工作树编造提交哈希，结果证据应能定位对应差异。
+
+知识版本相同不证明两分支契约、决策或内容相同。开始、恢复和集成时先核对目标契约增量，再在安全检查点重新加载适用契约，并在原交接中更新基线和受影响范围。角色发现基线变化时增量重放已确认结论，只有真实且无法消解的业务冲突才阻断依赖范围。
+
+本交接格式由主智能体和专业角色核对；`docs/knowledge/schema.yaml` 及知识 CI 不自动验证这些工作流字段、自然语言替代范围或智能体是否重读了契约。声明机器门禁时必须给出实际校验入口和证据。
+
 ## `decisionPackage`
 
 主智能体在派发本体建模任务前生成 `decisionPackage`。`confirmed` 只包含用户已确认或现有权威资产已明确规定的结论；合理推断放入 `inferred`；仍需业务判断的内容放入 `unresolved`。
@@ -13,6 +26,12 @@ decisionPackage:
   id: DEC-PACKAGE-20260808-001
   scope: product-process
   knowledgeBaselineVersion: 0.3.0
+  contractBaseline:
+    sourceCommit: "1111111111111111111111111111111111111111"
+    targetBranch: edhr-dev
+    targetCommit: "0000000000000000000000000000000000000000"
+    contractReadCommit: "0000000000000000000000000000000000000000"
+    uncommittedContractPaths: []
   summary: 为产品制程版本补充已确认的业务关系
   confirmed:
     concepts:
@@ -61,6 +80,7 @@ decisionPackage:
       relatedIds:
         - rule.process-version-explicit-selection
   unresolved: []
+  replacementScopes: []
   impactAnalysis:
     level: L1
     directImpacts:
@@ -109,10 +129,12 @@ decisionPackage:
 - `id`：本次决策包的唯一标识，不复用历史标识。
 - `scope`：本次交付的业务边界。
 - `knowledgeBaselineVersion`：生成决策包时读取的知识基线版本。
+- `contractBaseline`：来源、目标和实际读取契约的 Git 基线，格式见“契约基线”。
 - `summary`：已确认变更的简要说明。
 - `confirmed`：可以进入权威知识模型的概念、关系、规则和执行契约。
 - `inferred`：便于分析的候选推断，不得直接写成正式规则。
 - `unresolved`：必须由用户确认的问题，不得由智能体自行补全。
+- `replacementScopes`：本次需要落实的已确认声明级替代；没有则为空。记录错误按已有证据纠正，不为纠错伪造新政策。
 - `impactAnalysis`：按 L1 或 L2 深度记录直接、传递、潜在、不受影响、兼容迁移和证据缺口；它是当前证据下的影响判断，不代表自动完整依赖图。
 - `extensionStrategy`：记录配置、事务编排、标准动作、项目插件或产品内核等选定路径、依据和所有权边界。
 - `affectedFiles`：预计受影响的知识、代码、数据库、接口、界面和测试文件。
@@ -126,6 +148,7 @@ decisionPackage:
 - `executionContracts[]`：`id`、`ruleId`、`action`、`implementationReferences`、`evidenceIds`。
 - `inferred[]`：`id`、`statement`、`rationale`、`relatedIds`。
 - `unresolved[]`：`id`、`question`、`context`、`options`、`impact`。
+- `replacementScopes[]`：`decisionStatementId`、`supersededStatementIds`、`scope`、`retainedScope`、`sourceReferences`；分别定位已确认的新声明、被替代的旧声明、精确适用范围、仍保留的旧范围和确认来源。决策级 `supersedes` 不表示整份旧决策全部失效。
 - `impactAnalysis.level`：只能是 `L1` 或 `L2`；L0 不生成正式决策包影响分析。
 - `impactAnalysis.directImpacts[]`：已确认直接受影响的领域、行为和证据。
 - `impactAnalysis.transitiveImpacts[]`：通过关系、事件、调用、快照或下游读取产生的传递影响。
@@ -167,7 +190,9 @@ ontologyRoadmap:
 - `P2`：知识发布 manifest、时间版本、历史解释和审计回放。
 - `P3`：JSON-LD/RDF/OWL/SHACL 映射、标准互操作和受控推理。
 
-P1 只能在 P0 退出条件已经有验证证据后进入实现；P2 由真实的历史解释、审计回放或跨版本运行需求触发；P3 由真实的外部互操作或复杂推理需求触发。阶段目标是防止本体建设漂移，不代表所有阶段必须在同一功能切片内完成。
+P1 的整体实现收敛以 P0 退出证据为前提；P2 由真实的历史解释、审计回放或跨版本运行需求触发；P3 由真实的外部互操作或推理需求触发。有明确用途的稳定 ID 映射、JSON-LD/SHACL 小范围试点或其他后续准备可以在 P0/P1 提前实施，交接中须写明依赖、验证、所有权、回滚方式和剩余缺口，不能据此升级整个阶段状态。
+
+可执行的通用业务规则层可作为独立交付切片并行推进；生产使用前必须闭环确定性的类型/操作符/异常与执行契约，以及不可变规则、配置、目录版本和必要事实依据。最小版本保障按生产需求从 P2 提前落实；RDF/OWL 映射完成不等于运行引擎完成。阶段目标不要求同一功能切片完成所有阶段。
 
 示例中的 `inferred` 不表示可以写入权威模型。主示例的 `unresolved` 为空，因此可以在没有其他冲突时对应后文的 `ontologyResult.result: updated`。
 
@@ -181,7 +206,7 @@ P1 只能在 P0 退出条件已经有验证证据后进入实现；P2 由真实�
 
 ### 独立阻断示例
 
-以下示例独立于主示例，仅展示 `unresolved` 非空时的强制结果。此时不得更新权威知识模型，`ontologyResult.result` 必须为 `blocked-by-question`。
+以下示例独立于主示例，展示未决问题影响本次交付时的结果。默认选择规则属于依赖范围，不能写入权威模型，`ontologyResult.result` 必须为 `blocked-by-question`。无依赖的已确认知识仍可同步，但不得因此宣称包含该未决范围的整个任务完成。
 
 ```yaml
 blockingExample:
@@ -206,12 +231,24 @@ ontologyResult:
   result: updated
   baselineBefore: 0.3.0
   baselineAfter: 0.3.1
+  contractBaseline:
+    sourceCommit: "1111111111111111111111111111111111111111"
+    targetBranch: edhr-dev
+    targetCommit: "0000000000000000000000000000000000000000"
+    contractReadCommit: "0000000000000000000000000000000000000000"
+    uncommittedContractPaths: []
   reason: 已确认关系已写入知识基线
   changedArtifacts:
     - path: docs/knowledge/ontology.yaml
       changeType: update
       ids:
         - relation.product-has-process-versions
+  knowledgeSync:
+    - id: relation.product-has-process-versions
+      disposition: updated
+      scope: 当前关系明确产品可拥有多个并行制程版本
+      sourceReferences:
+        - docs/architecture/business-knowledge-model.md
   conflicts: []
   questions: []
   validationEvidence:
@@ -232,9 +269,11 @@ ontologyResult:
 
 - `baselineBefore`：角色开始工作时实际读取的知识基线版本。
 - `baselineAfter`：工作完成后的版本；未更新时与 `baselineBefore` 相同。
+- `contractBaseline`：本角色实际使用的契约和提交基线；不能直接复制未经核对的决策包值。
 - `reason`：返回该结果的具体依据；`not-applicable` 时必须说明为什么不影响业务语义。
 - `changedArtifacts`：本次实际修改的知识资产；未修改时为空。
-- `conflicts`：与现有知识或已确认决策的冲突；仅记录，不得静默覆盖。
+- `knowledgeSync`：按受影响 ID 记录当前定义的同步处置及依据；不影响知识时为空，已确认局部替代须对应 `replacementScopes`。
+- `conflicts`：无法消解的语义或适用范围冲突；记录证据和依赖范围。已明确确认的替代按其范围落实，不需要再次批准。
 - `questions`：需要用户判断的问题，必须可直接回答。
 - `validationEvidence`：结构校验、引用校验、状态投影校验及实现核对证据。
 - `roadmapProgress`：本次本体任务对应的阶段进度；包含 `stage`、`status`、`exitCriteriaEvidence` 和暂缓阶段。没有退出证据时不得把阶段标记为 `verified`。
@@ -242,6 +281,7 @@ ontologyResult:
 列表项字段：
 
 - `changedArtifacts[]`：`path`、`changeType`、`ids`。
+- `knowledgeSync[]`：`id`、`disposition`、`scope`、`sourceReferences`；`disposition` 只能是 `updated | retained | historical | deferred`。`scope` 说明更新或保留的具体含义、局部替代边界；暂缓时说明原因、依赖与交付影响，ID 重分配时保留旧到新映射。无差异且无影响的 ID 不必逐条罗列。
 - `conflicts[]`：`id`、`incomingStatement`、`existingStatement`、`evidence`、`requiredResolution`。
 - `questions[]`：`id`、`question`、`context`、`options`、`impact`；字段含义与 `unresolved[]` 一致。
 - `validationEvidence[]`：`id`、`checkType`、`command`、`outcome`、`evidence`。
@@ -280,7 +320,7 @@ questions:
 - `updated`：知识资产已更新并通过适用校验。
 - `not-applicable`：变更不影响业务语义，且 `reason` 已说明依据。
 - `blocked-by-question`：存在必须由用户确认的业务问题。
-- `conflict`：已确认输入与当前知识模型冲突，无法安全合并。
+- `conflict`：已确认输入与当前知识模型存在无法消解的语义或适用范围冲突，无法安全合并。
 
 ## `qualityResult`
 
@@ -291,6 +331,12 @@ qualityResult:
   result: passed
   baseCommit: "0000000000000000000000000000000000000000"
   headCommit: "1111111111111111111111111111111111111111"
+  contractBaseline:
+    sourceCommit: "1111111111111111111111111111111111111111"
+    targetBranch: edhr-dev
+    targetCommit: "0000000000000000000000000000000000000000"
+    contractReadCommit: "0000000000000000000000000000000000000000"
+    uncommittedContractPaths: []
   workingTreeState:
     status: clean
     includedPaths: []
@@ -316,12 +362,15 @@ qualityResult:
 
 - `baseCommit`：审查范围起点提交，使用完整 Git 哈希，不包含该提交本身。
 - `headCommit`：审查范围终点提交，使用完整 Git 哈希并包含该提交。
+- `contractBaseline`：质量角色独立核对的来源、目标和实际读取契约提交；知识版本号相同不免除契约差异核对。
 - `workingTreeState`：包含 `status`、`includedPaths`、`excludedPaths` 和 `untrackedPaths`；`status` 只能是 `clean` 或 `dirty`。若为 `dirty`，必须明确哪些工作树路径在审查范围内。
 - `knowledgeBaselineVersion`：验证需求和业务规则时实际读取的知识基线版本。
 - `checks`：执行过的审查、测试、迁移、浏览器或证据核对项及结果。
 - `findings`：可复现问题列表。
 - `residualRisks`：已验证范围之外仍需披露的风险。
 - `blockingConditions`：环境、数据或依赖阻塞；无阻塞时为空。
+
+合并验收必须在相关 `checks[].evidence` 中记录实际目标 base、功能 head 和被测试的合并候选提交；若候选含未提交内容，同时用 `workingTreeState` 与差异证据标明范围。检查合并后知识 ID、引用、类型和已确认替代的一致性；目标或功能提交更新后，重新评估影响并重跑适用检查。评估不受影响的人工结论可以说明依据后复用，旧提交的 CI 通过不能代替当前候选的必需检查。
 
 列表项字段：
 

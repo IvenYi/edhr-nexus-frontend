@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ontology-audit-event-entity
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java
+    description: original-evidence；2026-10-12 核对提交 ea5d1a65b7390c7f89964980364866583c5fd018。AuditEvent 用独立 id 记录 entityType/entityId、action、操作者、createdAt 及 contentBefore/contentAfter，持久化时计算快照摘要并阻止更新。审计事件、客户动作分类和事件快照分别建模；本次仅修正知识关系，不修改运行代码或既有审计数据。
+    visibility: internal
+  - id: evidence.ontology-foundation-fact-type-review
+    type: document
+    path: docs/knowledge/evidence/ontology-foundation-fact-types.md
+    description: original-evidence-and-existing-confirmed-definition；事实类型校准的逐项索引，区分已核对源码类型、既有规则的布尔命题和未落地的运行事实。保留原知识成熟度及可用阶段，不把类型修正解释为运行时或发布验证完成。
+    visibility: internal

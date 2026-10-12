@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.24
+knowledgeModelVersion: 0.3.25
 rules:
   - id: rule.product.source-from-material
     name: 产品来源于产品或半成品物料
@@ -380,7 +380,8 @@ rules:
                       value: 1
                     - fact: documentBinding.pageEnd
                       operator: greater-than-or-equal
-                      value: documentBinding.pageStart
+                      value:
+                        fact: fact.catalog.documentbinding-pagestart
         - all:
             - fact: documentVersion
               operator: exists

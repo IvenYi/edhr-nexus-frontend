@@ -1,36 +1,64 @@
 name: Knowledge model validation
 
 on:
+  # Knowledge evidence may reference any repository path.
   pull_request:
-    paths:
-      - 'docs/knowledge/**'
-      - 'docs/architecture/**'
-      - 'docs/agents/**'
-      - 'gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/**'
-      - 'gmp-platform/backend/pom.xml'
-      - '.github/workflows/knowledge-model.yml'
   push:
     branches: [main, master, edhr-dev]
-    paths:
-      - 'docs/knowledge/**'
-      - 'docs/architecture/**'
-      - 'docs/agents/**'
-      - 'gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/**'
-      - 'gmp-platform/backend/pom.xml'
-      - '.github/workflows/knowledge-model.yml'
+
+permissions:
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: gmp-platform/backend
     steps:
+      # On pull_request, checkout's default ref is GitHub's synthetic merged tree.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Record and verify tested revision
+        env:
+          KNOWLEDGE_EVENT_NAME: ${{ github.event_name }}
+          KNOWLEDGE_EVENT_SHA: ${{ github.sha }}
+          KNOWLEDGE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          KNOWLEDGE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          knowledge_tested_sha="$(git rev-parse HEAD)"
+          printf 'tested_commit=%s\n' "$knowledge_tested_sha"
+          test "$knowledge_tested_sha" = "$KNOWLEDGE_EVENT_SHA"
+          if [ "$KNOWLEDGE_EVENT_NAME" = pull_request ]; then
+            printf 'base_commit=%s\nhead_commit=%s\n' "$KNOWLEDGE_BASE_SHA" "$KNOWLEDGE_HEAD_SHA"
+            git merge-base --is-ancestor "$KNOWLEDGE_BASE_SHA" "$knowledge_tested_sha"
+            git merge-base --is-ancestor "$KNOWLEDGE_HEAD_SHA" "$knowledge_tested_sha"
+          fi
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
+          cache-dependency-path: tools/knowledge-model/pom.xml
       - name: Validate structured knowledge model
-        run: mvn -Dtest=BusinessKnowledgeModelTest test
+        run: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      - name: Require executed knowledge tests
+        shell: python
+        run: |
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          report = Path("tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml")
+          suite = ET.parse(report).getroot()
+          counts = {key: int(suite.get(key, "0")) for key in ("tests", "failures", "errors", "skipped")}
+          if counts["tests"] <= counts["skipped"] or counts["failures"] or counts["errors"]:
+              raise SystemExit(f"Knowledge tests did not successfully execute: {counts}")
+          print(f"Verified knowledge test report: {counts}")
+      - name: Retain knowledge test reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: knowledge-model-test-results
+          path: tools/knowledge-model/target/surefire-reports/
+          if-no-files-found: error

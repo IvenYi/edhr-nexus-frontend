@@ -1,0 +1,125 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261012-ONTOLOGY-FOUNDATION
+  scope: ontology-foundation-and-collaboration-contracts
+  knowledgeBaselineVersion: 0.3.24
+  contractBaseline:
+    sourceCommit: ea5d1a65b7390c7f89964980364866583c5fd018
+    targetBranch: edhr-dev
+    targetCommit: ea5d1a65b7390c7f89964980364866583c5fd018
+    contractReadCommit: ea5d1a65b7390c7f89964980364866583c5fd018
+    uncommittedContractPaths:
+      - AGENTS.md
+      - docs/agents/agent-handoff-contract.md
+      - docs/agents/business-knowledge-modeler.md
+      - docs/agents/quality-verifier.md
+      - docs/architecture/business-knowledge-model.md
+  summary: 修复知识校验、事实类型、审计关系和自定义表单定义，并明确多人分支协作下的契约同步与合并验证。
+  confirmed:
+    concepts: []
+    relationships:
+      - id: relation.audit-event-retains-change-snapshot
+        sourceId: concept.audit-event
+        targetId: concept.audit-change-snapshot
+        cardinality: one-to-zero-or-one
+        description: 变更快照属于一次审计事件；新增、修改等动作分类独立于具体事件。
+        sourceReferences:
+          - docs/knowledge/glossary.yaml
+          - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.knowledge-validation-isolation
+      statement: 独立 Maven 校验入口可复用现有 Java 知识测试，并解除其对打印资源和完整业务构建的依赖。
+      rationale: 当前知识 CI 在 generate-resources 阶段因缺少 vite 失败，知识测试未开始。
+      relatedIds: []
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0075-08
+      supersededStatementIds: []
+      scope: 将旧词条的表单模板 PUBLISHED 门槛纠正为有效模板、显式版本和完整执行快照；此项落实已确认纠错，未把旧错误包装为有效业务决策。
+      retainedScope: 作业流程和表单流程的独立发布校验，以及添加权限、租户、原因、完工与资料齐套要求。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+        - docs/knowledge/glossary.yaml
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: knowledge-validation
+        change: 校验事实类型、操作符及条件值，修正已有不一致并恢复可重复执行的 CI。
+        evidenceReferences:
+          - gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelValidator.java
+          - .github/workflows/knowledge-model.yml
+      - area: knowledge-semantics
+        change: 校准审计事件关系，并按 DEC-0075 同步自定义表单当前定义。
+        evidenceReferences:
+          - docs/knowledge/ontology.yaml
+          - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+      - area: collaboration-contracts
+        change: 明确受影响知识同步、契约基线、旧分支增量核对及合并结果验证。
+        evidenceReferences: [AGENTS.md, docs/agents/agent-handoff-contract.md]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: form-traceability-projection
+        concern: 并行分支的决策标识、知识基线及契约需要在合并前对齐；本切片不修改该分支业务代码。
+        evidenceReferences: []
+    unaffectedAreas: []
+    compatibilityAndMigration:
+      - 知识基线与 schema 在本修复中统一升级；旧分支集成时重放语义变化并运行合并结果校验。
+    snapshotImpacts: []
+    auditImpacts:
+      - 只修正知识关系；不改写生产审计事件、快照或数据库。
+    permissionImpacts: []
+    testImpacts:
+      - scope: knowledge
+        scenarios: [类型不匹配拒绝, 事实引用比较, 标识冲突拒绝, 现有知识基线校验, 当前定义一致性, 合并候选验证]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelTest.java]
+    evidenceGaps:
+      - 两个批次数量规则的 >=1 与原始实现 >0 在 (0,1) 区间存在既有政策差异；本切片只修正 decimal 类型，保持阈值并明确记录，后续须产品确认后另行修复。
+      - 未审计或合并投影分支完整业务实现；其 DEC-0075 标识碰撞需在独立集成范围按来源归属修复。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 本次修复属于共享知识基础设施及工程协作契约，不引入客户分支判断或生产规则执行能力。
+    ownershipBoundaries:
+      - owner: main-agent
+        responsibility: 校验器、测试、CI、项目与角色契约、集成及修复说明。
+      - owner: ontology-modeler
+        responsibility: 核对并修正词典、本体及事实类型，保留确认来源与历史。
+  affectedFiles:
+    - path: docs/knowledge
+      changeType: update
+      reason: 修正类型与当前定义，并统一知识基线。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge
+      changeType: update
+      reason: 实施正式语义类型校验及回归验证。
+    - path: .github/workflows/knowledge-model.yml
+      changeType: update
+      reason: 修复构建入口并验证 PR 的合并结果。
+    - path: AGENTS.md
+      changeType: update
+      reason: 明确协作契约基线与知识同步责任。
+    - path: docs/agents
+      changeType: update
+      reason: 补齐对应角色职责与交接结果。
+  acceptanceScenarios:
+    - id: scenario.ontology-fact-type-rejection
+      given: 事实声明为 boolean 或 integer
+      when: 规则使用不兼容的操作符、字面量或事实引用
+      then: 正式校验失败，并指出规则、条件路径、事实和期望类型。
+      evidenceRequirements: [Java 参数化负向测试, 完整知识基线校验]
+    - id: scenario.ontology-current-definition-sync
+      given: DEC-0075 已确认自定义表单归属与模板选择资格
+      when: 查询当前词典和关系
+      then: 当前定义一致，历史和其他流程发布要求不被覆盖。
+      evidenceRequirements: [本体核对, 定向回归测试]
+    - id: scenario.ontology-merged-branch-validation
+      given: 协作者分支基于旧契约或含独立知识增量
+      when: 准备合入目标分支
+      then: 核对契约差异并对合并候选执行当前知识校验；旧的通过记录不代替本次结果。
+      evidenceRequirements: [契约一致性审查, CI 合并候选日志]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 关闭已确认的知识基础缺陷，并使协作者在分支集成时采用一致的契约和验证依据。
+    entryCriteria: [用户已要求修复四项评审问题并调整本体契约]
+    exitCriteria: [正式知识测试通过, 本体同步完成, 独立质量核对通过]
+    explicitNonGoals: [通用运行规则引擎, RDF 或 OWL 运行平台, 投影业务分支合并, 生产数据库变更]
+    nextStage: P1
