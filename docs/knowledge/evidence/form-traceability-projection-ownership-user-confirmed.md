@@ -571,3 +571,51 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 - `inference`：可选补充信息的直接价值是让同一笔数量记录保留“为何发生、属于什么分类、由哪个班组记录、对应哪张单据”等解释，便于明细核对与已支持的筛选。该价值来自当前消费者；不能以冠骋字段存在为由要求所有表单配置这些信息，也不能承诺我方班组/单据号与冠骋逐项对应。当前未核实冠骋所有部署报表或所有客户配置，不将未核实范围描述为缺失或已实现。
 
 本节不关闭Q4原因分项数量、二期已有事实报表设计或其他未决统计口径；也不将这些静态源码证据当成当前UI新交互、真实运行或客户易用性验收。仅追加Markdown证据说明，没有修改结构化知识、运行代码或数据库。
+
+## 2026-10-12 同切片：报表字段与聚合层次的纠偏复核
+
+本体读取基线为 `0.3.24`，我方源码起点为 `8f5ddb06`。复用 `DEC-PACKAGE-20260929-FORM-PROJECTION`；本节是外部原始实现证据和客户解释纠偏，不新增正式统计规则，不调整任何运行代码或数据库。Q4、不明确的工时口径和报表最终方案不因本轮调查获得默认答案。
+
+### 用户输入与解释纠偏
+
+- `user-confirmed`：用户要求重新完整核对冠骋报工、报废、消耗三张报表，指出报废原因/分类需要在列表行展示，报工用途尚缺工时和报工时间；补充六张冠骋截图作为展示列和查询条件的原始页面证据。该要求确认的是调研与纠偏范围，不等于已经确认每张报表新增哪些分组、所有字段必填、工时算法或报工人分摊方式。
+- `original-evidence`（用户原始截图）：报工列表显示工时/h、报工人、生产日期；报废列表显示报废分类、报废原因、创建人、创建时间，查询区域也包含分类/原因；消耗列表显示物料批次、消耗数量、修改人、修改时间。截图能证明部署界面的列/条件，不能单独证明其底层 `GROUP BY`、去重键、聚合时机或与本机源码版本完全一致。
+- `inference`（纠正此前过度解释）：我方当前 Controller 的 `GROUP BY` 只能证明当前实现粒度，不能作为三张预设报表需求已经完成论证的证据。字段未参与某种合计，不代表该字段只能放在下钻弹窗。逐笔记录列表本身可以展示原因、分类、人员、业务日期；分组合计则不能用某一笔的属性冒充整组属性。必须分别描述原始业务记录列表、写入或产出回写聚合、工作台统计和用户查询汇总。
+
+### 冠骋原始报工字段到记录的链路
+
+以下路径中的 `B/` 代表 `/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/`；`R/` 代表同工程 `src/main/resources/com/gct/apaas/liquibase/suit/edhr/`；`F/` 代表 `/Users/ivenwang/Documents/iven space/paas-main-front/`。均为本轮直接读取的 `original-evidence`。
+
+| 信息 | 原始字段与数据类型 | 采集、消费者与边界 |
+| --- | --- | --- |
+| 良品数、不良品数、报废数 | `FormReportInfoEntity.java:26–28` 为 `BigDecimal` | `B/bizProcess/service/OnlineFormDataCatchService.java:148–156,238–286` 从主表或子表业务字段取值；不等同于我方已确认的最终产出语义。 |
+| 开始时间、完工时间 | `B/model/field/report/ReportStartTime.java:16–22`、`ReportEndTime.java:16–22` 注册 `DATE_TIME`；实体为 `LocalDateTime` | `OnlineFormDataCatchService.java:157–174,299–314` 从各自表单字段解析，不能用投影任务创建时间替代。 |
+| 生产日期 | `B/model/field/report/ProductionDate.java:15–21` 注册 `DATE`；实体为 `LocalDate` | `OnlineFormDataCatchService.java:175–183,323–330` 从主/子表来源解析；`handleDate` 在112/331行另取系统当天。两者不是同一事实。 |
+| 工时 | `B/model/field/report/WorkHours.java:19–28` 注册 `DECIMAL`；`B/model/handler/structure/WorkHoursFieldStructureHandler.java:15–17` 配置精度1 | `OnlineFormDataCatchService.java:184–186,283–286` 直接读取显式工时字段；此路径未按开始/结束自动计算。截图标题为“工时/h”，但源码不足以证明这是人数乘持续时间的“人时”，也未证明停机扣除、跨班或多人分摊算法。 |
+| 报工人 | `B/model/field/report/Reporter.java:30–39` 注册文本映射的业务引用；`F/src/projects/online-form/src/views/designer/constants/index.ts:104–118` 映射为签名控件 | `OnlineFormDataCatchService.java:200–210,288–297` 解析签名数组，保存原值、拼接姓名，并按 `historyId` 查签名历史取得用户ID。不能简化成任意文本、默认当前登录人或创建人。签名组件支持多签并不代表工时/数量可按每名签署人重复累计。 |
+| 不良原因/分类、报废原因/分类 | `FormReportInfoEntity.java:32–35` 是四个独立ID字段 | 主表 `OnlineFormDataCatchService.java:187–198` 分别取值；子表239–251行分别发现类型，315–322行实际设置不良原因/分类。仅看到字段定义不能保证所有子表分支同样写全。 |
+| 工单、批次/SN、产品、工序 | `FormReportInfoEntity.java:23–25,40–61` | `OnlineFormDataCatchService.java:112–146,331–371` 有上下文继承及表单工序覆盖行为；这些属于竞品实现，不能覆盖我方真实执行上下文归属约束。 |
+
+原始持久化进一步证实这些是独立事实：`R/modeling/product/changelog-form_report_info.xml:7–38` 为数量、工时、开始/完成时间、原因分类和审计字段建列；`R/upgrade/303/changelog-form_report_info_303.xml:5–15` 增加生产日期、报工人原值及姓名；`R/upgrade/5211/changelog-form_report_info_5211.xml:264–275` 增加报工用户ID。原始报表实体元数据将工时及生产日期 `required_` 设为0（前者 `changelog-form_report_info.xml:678–694`，后者303升级文件18–24）；这是报表存储模型声明，不能推出每份客户表单都可省略，也不能作为我方必填策略确认。
+
+### 原始记录、产出回写和工作台合计不是同一层
+
+1. **报工记录写入**：`B/bizProcess/service/OnlineFormDataCatchService.java:375–385` 按表单实例删除旧报工数据后，直接批量保存生成的主/子表记录。`B/service/ProductNumDataService.java:203–261` 虽定义按“工序节点＋批次”或“工序节点＋SN”聚合、并把日期/原因等取首条的 `aggregateEntities`，但本轮对整个 `src` 搜索仅发现定义及前一文件380行的**已注释调用**。不得把该方法描述成三张截图当前运行的查询分组算法。
+2. **最终产出回写**：`B/bizProcess/listener/OnlineFormButtonEventListener.java:299–305,329–333` 调用采集后调用 `updateOutPutQty`。该方法位于 `ProductNumDataService.java:128–159`，按指定批次与最终产出工序查询报工、累计良品数、更新批次产出，再汇总所属工单的批次产出。这是产出回写路径，不是截图“报工记录”列表查询。其 `goodQty` 取值不能替代我方 DEC-0075-13 已确认的配置产出语义。
+3. **另一汇总方法**：同文件 `catchDataFormForm:39–105` 会生成批次/工序报工汇总及关联汇总ID，但本轮搜索 `src` 未发现调用者；不得宣称本机运行必经此方法。
+4. **工作台合计**：`B/workbench/biz/BizReportDataSearchBs.java:45–49` 先按系统当天 `handleDate` 与当前修改人筛选，53–72行把良品、不良、报废、工时累加为一个结果；没有按原因/分类分组。这只能解释该工作台消费者，不是三张独立报表的查询证据。
+5. **可复用生产数据汇总服务**：`B/transaction/biz/FormReportSummaryBs.java:30–42` 在报工模型注册 `biz_summary_search`，把请求体过滤条件传给上述 `getFormDataRes`，仍返回单个累加结果，不是按维度产生多行的 `GROUP BY`。尚无该服务就是截图主列表数据源的证据；也不能把工作台的“今日＋当前修改人”固定条件套到这个接收外部筛选的入口。
+
+### 报废来源及字典语义
+
+- `B/bizProcess/service/OnlineFormDataCatchService.java:464–480` 提取报废物料、物料批号、数量、报废原因、报废分类；499–530行对子表各行分别提取，560–584行附加归属/来源信息。587–590行按表单实例替换后直接批量保存，本段没有按原因、分类或批次聚合。
+- `B/model/field/report/ScrapReason.java:27–35`、`ScrapGroup.java:27–35` 声明需要字典的引用；`B/model/handler/structure/ScrapReasonFieldStructureHandler.java:15–18` 与 `ScrapGroupFieldStructureHandler.java:15–18` 分别绑定 `SCRAP_REASON`、`SCRAP_GROUP`。这证明原因和分类是受控业务含义，不是任意备注的同义词；但我方选用哪些字典、是否支持自由文本、是否级联仍需产品方案明确。
+- `R/modeling/product/changelog-form_scrap_registration.xml:7–41` 将报废数量、批号、原因ID、分类ID、来源表单与创建/修改信息保存为独立列。原因分类显示在逐笔列表时不会要求先把它们加入所有总量报表的分组键。
+
+### 候选修正与证据缺口（不得当成已确认规则）
+
+- 应先明确三张预设报表的记录列表列、筛选条件、数量/工时指标，再单独定义汇总视图；原因、分类是报废业务属性，生产日期、报工人、工时是报工的重要候选事实，不能用通用“补充信息”和额外展示列代替缺失的类型化采集能力。
+- 工时需确认含义（投入人时、经过时长或其他口径）、单位、来源、是否允许单独采集及多人情况下的计量规则；未确认前不从开始/完成时间自动推算，也不按签名人数复制数量/工时。
+- 生产日期、业务开始/结束、填报/提交/最终完成及审计创建/修改时间分别保存各自含义；用户口中的“报工时间”需要在实现前明确对应哪一种，而不能取一个系统时间充当全部。
+- 本轮查明采集链和模型结构；三张截图部署页面的实际低代码配置/接口、查询排序/过滤及是否二次聚合，需结合主调研继续核对。源码方法存在、控件注册、原始截图与部署配置不可互相替代。
+- 未重新定义不良件数与缺陷次数、报废与不良扣减、跨表同事件关联、表头共享、Q6、A12或二期客户报表设计；未给任何能力新增 `verified` 状态。
