@@ -7,6 +7,78 @@ import static org.assertj.core.api.Assertions.*;
 
 class FormProjectionInterpreterTest {
     private final ObjectMapper mapper = new ObjectMapper();
+    private ObjectNode reportModel() throws Exception {
+        return (ObjectNode) mapper.readTree("""
+          {"fields":[{"id":"qty","type":"number"},{"id":"hours","type":"number"},
+            {"id":"start","type":"datetime","typeConfig":{"mode":"datetime"}},
+            {"id":"end","type":"datetime","typeConfig":{"mode":"datetime"}},
+            {"id":"date","type":"datetime","typeConfig":{"mode":"date"}},
+            {"id":"person","type":"reference","typeConfig":{"sourceType":"user"}}],
+           "projection":{"version":"form-projection-v1","bindings":[{"id":"report","enabled":true,"modelId":"production",
+           "sources":{"goodQuantity":"qty","workHours":"hours","reportStartTime":"start","reportEndTime":"end","productionDate":"date","reporter":"person"}}]}}
+          """);
+    }
+    @Test void personHoursAreExplicitAndIndependentOfPeriodDateAndReporter() throws Exception {
+        var values = (ObjectNode) mapper.readTree("""
+          {"qty":10,"hours":3.5,"start":"2026-10-12T23:00","end":"2026-10-13T01:00","date":"2026-10-11",
+           "person":{"id":"7","sourceType":"user","code":"worker7","name":"员工七"}}
+          """);
+        var attrs = FormProjectionInterpreter.preview(reportModel(), values).get(0).path("attributes");
+        assertThat(attrs.path("workHours").decimalValue()).isEqualByComparingTo("3.5");
+        assertThat(attrs.path("productionDate").asText()).isEqualTo("2026-10-11");
+        assertThat(attrs.path("reporterId").asText()).isEqualTo("7");
+        assertThat(attrs.path("reporterLabel").asText()).isEqualTo("员工七");
+        values.put("end", "2026-10-14T01:00");
+        assertThat(FormProjectionInterpreter.preview(reportModel(), values).get(0).path("attributes").path("workHours")).isEqualTo(attrs.path("workHours"));
+        values.remove("hours");
+        assertThat(FormProjectionInterpreter.preview(reportModel(), values).get(0).path("attributes").has("workHours")).isFalse();
+        assertThat(FormProjectionInterpreter.preview(reportModel(), mapper.createObjectNode().put("qty", 1)).get(0).path("attributes").size()).isEqualTo(1);
+        values.put("hours", -1);
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(reportModel(), values)).hasMessageContaining("投入工时");
+        values.put("hours", "3.5");
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(reportModel(), values)).hasMessageContaining("非负数字");
+    }
+    @Test void reportTemporalRolesRejectWrongFieldTypesInvalidDatesAndReversedPeriod() throws Exception {
+        var model = reportModel();
+        ((ObjectNode) model.path("fields").get(2).path("typeConfig")).put("mode", "time");
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("包含日期");
+        ((ObjectNode) model.path("fields").get(2).path("typeConfig")).put("mode", "datetime");
+        var values = mapper.createObjectNode().put("qty", 1).put("date", "2026-02-30");
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("生产日期格式");
+        values.remove("date"); values.put("start", "2026-10-13T10:00").put("end", "2026-10-13T09:00");
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("结束时间不能早于");
+    }
+    @Test void subtableHoursRemainPerRowAndCannotBorrowHeaderHours() throws Exception {
+        var model = reportModel();
+        var columns = model.path("fields").deepCopy();
+        var fields = model.putArray("fields"); fields.addObject().put("id", "headerHours").put("type", "number");
+        fields.addObject().put("id", "rows").put("type", "subTable").putObject("typeConfig").set("columns", columns);
+        var binding = (ObjectNode) model.path("projection").path("bindings").get(0); binding.put("tableId", "rows");
+        var records = FormProjectionInterpreter.preview(model, mapper.readTree("""
+          {"headerHours":99,"rows":[{"__rowId":"a","qty":10,"hours":1.5},{"__rowId":"b","qty":20,"hours":2}]}
+          """));
+        assertThat(records).hasSize(2);
+        assertThat(records.get(0).path("attributes").path("workHours").decimalValue()).isEqualByComparingTo("1.5");
+        assertThat(records.get(1).path("attributes").path("workHours").decimalValue()).isEqualByComparingTo("2");
+        ((ObjectNode) binding.path("sources")).put("workHours", "headerHours");
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("同一明细组");
+    }
+    @Test void scrapDictionaryRolesKeepCodesAndLabelsWithoutChangingQuantity() throws Exception {
+        var model = mapper.readTree("""
+          {"fields":[{"id":"mat","type":"reference","typeConfig":{"sourceType":"material"}},{"id":"qty","type":"number"},
+            {"id":"why","type":"reference","typeConfig":{"sourceType":"dictionary"}},
+            {"id":"kind","type":"singleSelect","typeConfig":{"options":[{"value":"appearance","label":"外观"}]}}],
+           "projection":{"version":"form-projection-v1","bindings":[{"id":"s","enabled":true,"modelId":"scrap",
+            "sources":{"material":"mat","quantity":"qty","reason":"why","category":"kind"}}]}}
+          """);
+        var attrs = FormProjectionInterpreter.preview(model, mapper.readTree("""
+          {"mat":{"id":"1","name":"螺丝"},"qty":2,"why":{"id":"9","sourceType":"dictionary","code":"scratch","name":"划伤"},"kind":"appearance"}
+          """)).get(0).path("attributes");
+        assertThat(attrs.path("reason").asText()).isEqualTo("scratch");
+        assertThat(attrs.path("reasonLabel").asText()).isEqualTo("划伤");
+        assertThat(attrs.path("categoryLabel").asText()).isEqualTo("外观");
+        assertThat(attrs.path("quantity").asInt()).isEqualTo(2);
+    }
     private ObjectNode model() throws Exception {
         return (ObjectNode) mapper.readTree("""
           {"fields":[{"id":"lot1","type":"text"},{"id":"team1","type":"text"},

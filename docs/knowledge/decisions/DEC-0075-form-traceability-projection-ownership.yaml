@@ -143,16 +143,16 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0075-35
-        statement: 报工用途的工时表示投入人时，不等同于报工开始至结束之间的经过时长；报工时间分别记录报工开始时间与报工结束时间，不能以表单创建、提交、最终完成或投影处理等审计时点替代。该确认局部supersedes同切片2026-10-12报表复核中工时含义及报工时间类型尚未明确的状态；不确认自动从时间区间推算人时、乘签名人数、多人分摊、逐人工时模块、字段必填或默认值、生产日期派生及表头共享规则。这些定义为指定报工事实语义，不代表对应字段采集、合计或报表运行已经实现；真实执行归属、使用时快照、正式统计最终完成及其余未决口径保持不变。
-        status: specified
+        statement: 报工用途的工时表示投入人时，绑定由用户填写的数字字段；系统读取该值，不根据报工起止时间、人数或签名计算工时。报工开始时间与报工结束时间分别记录业务起止，生产日期独立记录，不以表单创建、提交、最终完成或投影处理等审计时点替代，也不将创建人当作报工人。该确认局部supersedes同切片2026-10-12报表复核中人时来源或自动算法尚待决定的解释，旧解释直接改写；不引入逐人工时、多人分摊、生产日期派生及表头共享规则。字段可选性与报工人先支持单人引用或文本属于当前最小实现选择，不伪称用户已确认。2026-10-13手填人时及独立时间/报工人来源链、专用逐笔报表已实现并完成主智能体基础验证，本条局部标implemented/internal，独立质量验收未完成、不标verified；真实执行归属、使用时快照、正式统计最终完成及其余未决口径保持不变。
+        status: implemented
         visibility: internal
     supersedes: []
     evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
     acceptanceScenarios:
       - id: scenario.form-projection-person-hours-distinct-from-report-period
-        given: 一笔报工的业务开始和结束之间经过2小时，两名人员各投入2小时，表单在稍后提交并最终完成
-        when: 解释该笔报工的工时与报工时间
-        then: 投入为4人时，业务开始和结束仍为实际报工时间，不能取稍后的提交或最终完成时点替代；此例仅说明语义，不要求实现逐人工时模块，也不授权按签名人数自动计算或分摊。当前指定定义不证明运行已实现
+        given: 一笔报工的业务开始和结束之间经过2小时，填报人在所绑定数字字段中填写4人时，表单在稍后提交并最终完成
+        when: 读取该笔报工的工时、业务时间与报工人来源
+        then: 工时读取填写的4人时，不根据2小时区间或人员及签名数重算；业务起止与生产日期读取各自来源，不取审计时点替代，创建人不冒充报工人。此例不要求逐人工时模块或自动分摊；当前指定定义不证明运行已验证
         evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
       - id: scenario.form-projection-product-owned-models
         given: 产品设计包含表单配置、报表统计模型和客户实施流程

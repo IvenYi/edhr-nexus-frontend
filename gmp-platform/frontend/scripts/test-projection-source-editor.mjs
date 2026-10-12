@@ -55,6 +55,27 @@ test('trace source editor shows its assigned meaning without expanding unrelated
   assert.deepEqual(changes, [], 'rendering must not rewrite existing mappings');
 });
 
+test('report roles accept only compatible temporal and person sources, with manually supplied hours', () => {
+  const date = {id: 'date', type: 'datetime', typeConfig: {mode: 'date'}};
+  const period = {...date, typeConfig: {mode: 'datetime'}};
+  assert.equal(acceptsProjectionAttribute(date, {id: 'productionDate', type: 'date'}), true);
+  assert.equal(acceptsProjectionAttribute(period, {id: 'productionDate', type: 'date'}), false);
+  assert.equal(acceptsProjectionAttribute(period, {id: 'reportStartTime', type: 'datetime'}), true);
+  assert.equal(acceptsProjectionAttribute({...date, typeConfig: {mode: 'time'}}, {id: 'reportStartTime', type: 'datetime'}), false);
+  const reporter = {id: 'reporter', type: 'text', referenceSources: ['user']};
+  assert.equal(acceptsProjectionAttribute({type: 'reference', typeConfig: {sourceType: 'user'}}, reporter), true);
+  assert.equal(acceptsProjectionAttribute({type: 'reference', typeConfig: {sourceType: 'equipment'}}, reporter), false);
+  const hours = {id: 'workHours', name: '投入工时（人时）', type: 'number'};
+  const qty = {id: 'goodQuantity', name: '良品数量', type: 'number'};
+  const fields = [{id: 'n', name: '数量', type: 'number', typeConfig: {}}, {id: 'h', name: '人时', type: 'number', typeConfig: {}}];
+  const binding = {id: 'p', modelId: 'production', sources: {goodQuantity: 'n', workHours: 'h'}};
+  const {html} = renderEditor({fields}, binding, {id: 'production', attributes: [qty, hours, {id: 'productionDate', name: '生产日期', type: 'date'}]});
+  assert.ok(html.includes('投入工时（人时）'));
+  assert.ok(html.includes('由填报人员填写，不自动计算'));
+  assert.ok(html.includes('报工信息（可选）'));
+  assert.equal(acceptsProjectionAttribute(date, hours), false);
+});
+
 test('a removed trace definition keeps its original source visible and removable', () => {
   const { html, changes } = renderEditor(model, { id: 'trace', modelId: 'formTrace', enabled: false, sources: { removedMeaning: 'lot' } }, definition);
   assert.ok(html.includes('追溯项或业务信息已失效'));

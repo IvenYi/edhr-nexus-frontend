@@ -18,18 +18,18 @@ import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template
 import type { ModelField } from '@/pages/master-data/template-designer-react/types/model';
 import { useAuthStore } from '@/stores/authStore';
 import { useFormLookupItems } from '@/api/formLookupCatalog';
+import { businessAttributeNames, businessFilters, businessRecordColumns, businessRecordValues, businessTotalColumns, isReportDateFilter, reportAttributeValue } from './projectionReportColumns';
 
 const base = '/reports/form-projections';
 const models = [['formTrace', '表单追溯'], ['production', '报工记录'], ['scrap', '报废记录'], ['consumption', '消耗记录']];
 const legacyAttributes = [['materialLotText', '物料批号'], ['serialNumberText', '序列号'], ['equipmentText', '设备编号'], ['teamText', '责任班组'], ['documentNumberText', '单据号'], ['category', '分类'], ['reason', '原因'], ['unit', '单位']];
-const legacyAttributeNames: Record<string, string> = Object.fromEntries([...legacyAttributes, ['material', '物料'], ['quantity', '数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量']]);
+const legacyAttributeNames: Record<string, string> = { ...Object.fromEntries([...legacyAttributes, ['material', '物料'], ['quantity', '数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量']]), ...businessAttributeNames };
 interface Hit { rowKey: string; rowIndex?: number; tableId?: string; bindingId: string; attributes: Record<string, unknown>; sources: Record<string, string>; details?: { fieldId: string; name: string; value: unknown }[] }
-interface RecordRow extends Hit { id: string; instanceId: string; batchId?: string; status?: string; savedStage?: string; instanceNo: string; objectNo: string; operationName: string; revision: number; hits?: Hit[]; lookupItems?: Record<string, { name: string }>; createdBy?: string; createdAt?: string; updatedBy?: string; updatedAt?: string }
+interface RecordRow extends Hit { id: string; instanceId: string; batchId?: string; context?: Record<string, unknown>; status?: string; savedStage?: string; instanceNo: string; objectNo: string; operationName: string; revision: number; hits?: Hit[]; lookupItems?: Record<string, { name: string }>; createdBy?: string; createdAt?: string; updatedBy?: string; updatedAt?: string }
 interface Result { total: number; records: RecordRow[]; totals: Record<string, unknown>[]; totalsTruncated: boolean }
 interface Source { form: { name: string; version: string; versionId: string; model: string; canvas: string; fields: ModelField[] }; values: Record<string, unknown> }
 interface Column { id: string; label: string; width: number }
 const detailColumns: Column[] = [['instanceNo', '来源表单'], ['objectNo', '所属生产对象'], ['operationName', '工序'], ['statusLabel', '表单状态'], ['relation', '关联说明'], ['location', '命中位置'], ['values', '取值'], ['createdBy', '创建人'], ['createdAt', '创建时间'], ['updatedBy', '更新人'], ['updatedAt', '更新时间']].map(([id, label]) => ({ id, label, width: id === 'values' ? 360 : 180 }));
-const totalColumns: Column[] = [['objectNo', '生产对象'], ['operationName', '工序'], ['materialName', '物料'], ['materialLot', '物料批号'], ['unit', '单位'], ['quantity', '数量'], ['goodQuantity', '良品'], ['ngQuantity', '不良'], ['recordCount', '明细数']].map(([id, label]) => ({ id, label, width: ['objectNo', 'operationName', 'materialName'].includes(id) ? 180 : 120 }));
 const display = (value: unknown): string => value == null ? '—' : Array.isArray(value) ? value.map(display).join('、') : typeof value === 'object' ? String((value as { name?: string }).name ?? '') : String(value);
 const panel = { border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', minHeight: 0, overflow: 'hidden' };
 const hitsOf = (row: RecordRow): Hit[] => row.hits?.length ? row.hits : [row];
@@ -37,7 +37,7 @@ const sourceName = (key: string, definitions?: RecordRow['lookupItems']) => defi
 const locationName = (hit: Hit) => hit.tableId ? (hit.rowIndex != null ? `子表第 ${hit.rowIndex + 1} 行` : '子表明细') : '主表字段';
 const statusName = (status?: string, savedStage?: string) => ({ APPROVAL: '审批中', FILLING_AND_APPROVAL: '填报／审批中', FILLING: '填报中', COMPLETED: '已完成' }[savedStage ?? ''] ?? { DRAFT: '草稿', ACTIVE: '填报中', PENDING_REVIEW: '审批中', COMPLETED: '已完成' }[status ?? ''] ?? status ?? '已完成');
 const unitName = (code: unknown, label: unknown) => !code ? '单位未填写' : label && label !== code ? `${label}（${code}）` : String(code);
-const visibleAttributes = (hit: Hit) => Object.entries(hit.attributes).filter(([key]) => key !== 'unitLabel').map(([key, value]) => [key, key === 'unit' ? unitName(value, hit.attributes.unitLabel) : value] as const);
+const visibleAttributes = (hit: Hit) => Object.entries(hit.attributes).filter(([key]) => !['unitLabel', 'unitId', 'reasonLabel', 'reasonId', 'categoryLabel', 'categoryId', 'reporterLabel', 'reporterId'].includes(key)).map(([key, value]) => [key, key === 'unit' ? unitName(value, hit.attributes.unitLabel) : reportAttributeValue(hit.attributes, key)] as const);
 function ProductionObjectInput({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   const options = useQuery({ queryKey: ['projection-production-object-options', value], queryFn: async () =>
     (await client.get(`${base}/production-object-options`, { params: { keyword: value } })).data.data as { id: string; code: string; name: string; type: string }[] });
@@ -90,7 +90,8 @@ export default function FormProjectionReportPage() {
   const canRetry = useAuthStore(state => state.hasPermission('system.edit'));
   const canDhr = useAuthStore(state => state.hasPermission('dhr.instances.view'));
   const [modelId, setModelId] = useState('formTrace');
-  const attributes = modelId === 'formTrace' ? (lookupItems.data ?? []).map(item => [item.id, item.name]) : legacyAttributes;
+  const attributes = modelId === 'formTrace' ? (lookupItems.data ?? []).map(item => [item.id, item.name]) : businessFilters(modelId);
+  const primaryFilter = modelId === 'formTrace' ? 'materialLotText' : 'workOrderNo';
   const [value, setValue] = useState('');
   const [conditions, setConditions] = useState<{ id: string; itemId: string; value: string }[]>([]);
   const [objectNo, setObjectNo] = useState('');
@@ -119,9 +120,9 @@ export default function FormProjectionReportPage() {
   const sourceAttributeName = (key: string) => sourceName(key, selected?.lookupItems);
   const search = () => {
     const filters: Record<string, string> = {};
-    if (value.trim()) filters.materialLotText = value.trim();
+    if (value.trim()) filters[primaryFilter] = value.trim();
     for (const condition of conditions) {
-      if (!condition.itemId && condition.value.trim()) { setError('请为新增条件选择追溯项'); return; }
+      if (!condition.itemId && condition.value.trim()) { setError('请为新增条件选择查询项'); return; }
       if (condition.itemId && condition.value.trim()) filters[condition.itemId] = condition.value.trim();
     }
     setError(''); setRequest({ ...request, modelId, filters, objectNo, operationName, page: 0 });
@@ -141,22 +142,23 @@ export default function FormProjectionReportPage() {
     <Box component="form" onSubmit={event => { event.preventDefault(); search(); }} sx={formListQueryPanelSx}>
       <Box sx={formListQueryGridSx}>
         <ProductionObjectInput label="所属生产批次/SN" value={objectNo} onChange={setObjectNo} />
-        <TextField size="small" label="物料批号" value={value} onChange={event => setValue(event.target.value)} sx={formListFieldSx} />
+        <TextField size="small" label={modelId === 'formTrace' ? '物料批号' : '工单编号'} value={value} onChange={event => setValue(event.target.value)} sx={formListFieldSx} />
         {expanded ? <TextField size="small" label="工序名称" value={operationName} onChange={event => setOperationName(event.target.value)} sx={formListFieldSx} /> : actions}
         <Collapse in={expanded} unmountOnExit sx={{ gridColumn: '1 / -1' }}><Box sx={{ ...formListQueryGridSx, pt: 1.5, borderTop: '1px solid #ebeef5' }}>
           {conditions.map(condition => <Box key={condition.id} sx={{ gridColumn: '1 / -1', ...formListQueryGridSx }}>
             <TextField select size="small" label={modelId === 'formTrace' ? '追溯项' : '筛选信息'} value={condition.itemId} sx={formListFieldSx}
               onChange={event => setConditions(conditions.map(item => item.id === condition.id ? { ...item, itemId: event.target.value, value: '' } : item))}>
-              <MenuItem value="">请选择</MenuItem>{attributes.filter(([id]) => id !== 'materialLotText' && !conditions.some(item => item.id !== condition.id && item.itemId === id)).map(([id, name]) => <MenuItem key={id} value={id}>{name}</MenuItem>)}
+              <MenuItem value="">请选择</MenuItem>{attributes.filter(([id]) => id !== primaryFilter && !conditions.some(item => item.id !== condition.id && item.itemId === id)).map(([id, name]) => <MenuItem key={id} value={id}>{name}</MenuItem>)}
             </TextField>
             {condition.itemId === 'lookup_production_batch' ? <ProductionObjectInput label="记录中的生产批次/SN" value={condition.value}
               onChange={text => setConditions(conditions.map(item => item.id === condition.id ? { ...item, value: text } : item))} />
-              : <TextField size="small" label="精确匹配值" value={condition.value} sx={formListFieldSx} disabled={!condition.itemId}
+              : <TextField size="small" type={isReportDateFilter(condition.itemId) ? 'date' : 'text'} InputLabelProps={isReportDateFilter(condition.itemId) ? { shrink: true } : undefined}
+                label={isReportDateFilter(condition.itemId) ? attributes.find(([id]) => id === condition.itemId)?.[1] : '精确匹配值'} value={condition.value} sx={formListFieldSx} disabled={!condition.itemId}
                 onChange={event => setConditions(conditions.map(item => item.id === condition.id ? { ...item, value: event.target.value } : item))} />}
             <Button sx={{ justifySelf: 'start' }} onClick={() => setConditions(conditions.filter(item => item.id !== condition.id))}>移除条件</Button>
           </Box>)}
           <Button sx={{ justifySelf: 'start' }} disabled={conditions.length >= attributes.length - 1} onClick={() => setConditions([...conditions, { id: crypto.randomUUID(), itemId: '', value: '' }])}>添加查询条件</Button>
-          <Typography variant="caption" color="text.secondary" sx={{ gridColumn: '1 / -1' }}>条件同时满足；子表条件须命中同一行。所属对象由生产执行确定，内容中的编号不改变DHR归属。</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ gridColumn: '1 / -1' }}>{modelId === 'formTrace' ? '条件同时满足；子表条件须命中同一行。所属对象由生产执行确定，内容中的编号不改变DHR归属。' : '条件同时筛选同一笔业务记录；合计也只包含筛选后的记录。名称或编号精确匹配，日期范围包含首尾两天。'}</Typography>
         </Box></Collapse>
         {expanded && <Box sx={{ gridColumn: '1 / -1' }}>{actions}</Box>}
       </Box>
@@ -170,15 +172,15 @@ export default function FormProjectionReportPage() {
       {canRetry && status.data!.some(item => item.status === 'FAILED') && <TextField size="small" label="重试原因" value={retryReason} onChange={event => setRetryReason(event.target.value)} />}
     </Alert>}
     <Box sx={{ ...panel, flexShrink: 0 }}><Tabs value={modelId} onChange={(_, id: string) => { setModelId(id); setView(0); reset(id); }} variant="scrollable">{models.map(([id, name]) => <Tab key={id} value={id} label={name} />)}</Tabs></Box>
-    {modelId !== 'formTrace' && <Tabs value={view} onChange={(_, next: number) => setView(next)}><Tab label="来源明细" /><Tab label="按工序／用途合计" /></Tabs>}
+    {modelId !== 'formTrace' && <Tabs value={view} onChange={(_, next: number) => setView(next)}><Tab label="业务记录" /><Tab label="按生产对象／工序合计" /></Tabs>}
     {view === 1 && data.data?.totalsTruncated && <Alert severity="warning">分组超过200个，请缩小查询范围；当前仅显示前200组。</Alert>}
-    {view === 0 ? <ProjectionTable key="detail" preference="detail" description={modelId === 'formTrace' ? '查询已保存内容，包含草稿、填报中、审批中和已完成；未保存输入不可查。' : undefined} columns={detailColumns} rows={detailRows} loading={data.isFetching} failed={data.isError} onSource={index => { setSelected(data.data!.records[index]); setDetailTab(0); setDhrs(null); setError(''); }} footer={<FormListPagination totalElements={data.data?.total ?? 0} totalPages={Math.ceil((data.data?.total ?? 0) / request.size)} page={request.page} pageSize={request.size} onPageChange={page => setRequest({ ...request, page })} onPageSizeChange={size => setRequest({ ...request, size, page: 0 })} />} />
-      : <ProjectionTable key="total" preference="total" columns={totalColumns} rows={(data.data?.totals ?? []).map(row => ({ ...row, unit: unitName(row.unit, row.unitLabel) }))} loading={data.isFetching} failed={data.isError} footer={<Typography variant="body2" color="text.secondary" sx={{ p: 2, borderTop: '1px solid #e4e7ed' }}>共 {data.data?.totals.length ?? 0} 组（最多200组，请使用查询条件缩小范围）</Typography>} />}
+    {view === 0 ? <ProjectionTable key={`detail-${modelId}`} preference={`detail-${modelId}`} description={modelId === 'formTrace' ? '查询已保存内容，包含草稿、填报中、审批中和已完成；未保存输入不可查。' : '一行代表一笔业务记录；点击查看额外展示字段及来源表单。未记录的业务信息显示为“—”。'} columns={modelId === 'formTrace' ? detailColumns : businessRecordColumns(modelId)} rows={modelId === 'formTrace' ? detailRows : detailRows.map(businessRecordValues)} loading={data.isFetching} failed={data.isError} onSource={index => { setSelected(data.data!.records[index]); setDetailTab(0); setDhrs(null); setError(''); }} footer={<FormListPagination totalElements={data.data?.total ?? 0} totalPages={Math.ceil((data.data?.total ?? 0) / request.size)} page={request.page} pageSize={request.size} onPageChange={page => setRequest({ ...request, page })} onPageSizeChange={size => setRequest({ ...request, size, page: 0 })} />} />
+      : <ProjectionTable key={`total-${modelId}`} preference={`total-${modelId}`} columns={businessTotalColumns(modelId)} rows={(data.data?.totals ?? []).map(row => ({ ...row, unit: unitName(row.unit, row.unitLabel) }))} loading={data.isFetching} failed={data.isError} description={modelId === 'production' ? '按所属生产对象、工序和单位合计。人时只累加用户填写值；未填人时不作为0，也不按时间推算。' : '按所属生产对象、工序、物料、物料批号和单位合计；原因分类不作为分组，合计不代表某一种原因。'} footer={<Typography variant="body2" color="text.secondary" sx={{ p: 2, borderTop: '1px solid #e4e7ed' }}>共 {data.data?.totals.length ?? 0} 组（最多200组，请使用查询条件缩小范围）</Typography>} />}
     <DetailDrawer open={Boolean(selected)} onClose={() => setSelected(null)} label="来源详情" tab={detailTab} onTabChange={setDetailTab}>
         {detailTab === 0 ? <>
           <Alert severity="info">{selected?.batchId ? '正式统计读取最终完成的冻结值。' : '追溯读取最近一次成功保存的内容。'} DHR 沿实际生产归属查询，内容提及其他对象不会改变归属。</Alert>
           <DetailSection title="生产来源"><DetailField label="来源表单">{selected?.instanceNo}</DetailField><DetailField label="所属生产批次/SN">{selected?.objectNo}</DetailField><DetailField label="工序">{selected?.operationName}</DetailField><DetailField label="表单状态">{stageBadge(statusName(selected?.status, selected?.savedStage))}</DetailField></DetailSection>
-          {selected && hitsOf(selected).map((hit, index) => <DetailSection key={`${hit.bindingId}/${hit.rowKey}/${index}`} title={`命中 ${index + 1} · ${locationName(hit)}`}>
+          {selected && hitsOf(selected).map((hit, index) => <DetailSection key={`${hit.bindingId}/${hit.rowKey}/${index}`} title={`${selected.batchId ? '业务记录' : `命中 ${index + 1}`} · ${locationName(hit)}`}>
             {visibleAttributes(hit).map(([key, item]) => <DetailField key={key} label={sourceAttributeName(key)}>{display(item)}</DetailField>)}
             {hit.details?.map(detail => <DetailField key={detail.fieldId} label={detail.name}>{Array.isArray(detail.value) ? detail.value.map(display).join('、') : display(detail.value)}</DetailField>)}
           </DetailSection>)}

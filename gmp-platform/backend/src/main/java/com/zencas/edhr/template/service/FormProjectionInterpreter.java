@@ -27,12 +27,19 @@ public final class FormProjectionInterpreter {
         ATTRIBUTES.put("quantity", "数量");
         ATTRIBUTES.put("goodQuantity", "良品数量");
         ATTRIBUTES.put("ngQuantity", "不良品数量");
+        ATTRIBUTES.put("workHours", "投入工时（人时）");
+        ATTRIBUTES.put("reportStartTime", "报工开始时间");
+        ATTRIBUTES.put("reportEndTime", "报工结束时间");
+        ATTRIBUTES.put("productionDate", "生产日期");
+        ATTRIBUTES.put("reporter", "报工人");
         ATTRIBUTES.put("unit", "单位");
         ATTRIBUTES.put("reason", "原因");
         ATTRIBUTES.put("category", "分类");
     }
     private static final Map<String, String> MODELS = Map.of("formTrace", "按内容查找表单", "production", "正式报工", "scrap", "报废记录", "consumption", "实际物料消耗");
-    private static final Set<String> NUMBERS = Set.of("quantity", "goodQuantity", "ngQuantity");
+    private static final Set<String> NUMBERS = Set.of("quantity", "goodQuantity", "ngQuantity", "workHours");
+    private static final Set<String> TIMES = Set.of("reportStartTime", "reportEndTime");
+    private static final Set<String> DICTIONARIES = Set.of("unit", "reason", "category");
     // Stable preset meanings, independent of display names or administrator-created text items.
     public static java.util.List<String> referenceSources(String attributeId) {
         return switch (attributeId) {
@@ -49,7 +56,7 @@ public final class FormProjectionInterpreter {
     private static Set<String> allowed(String model) {
         return switch (model) {
             case "formTrace" -> Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText");
-            case "production" -> Set.of("goodQuantity", "ngQuantity", "unit", "teamText", "documentNumberText");
+            case "production" -> Set.of("goodQuantity", "ngQuantity", "workHours", "reportStartTime", "reportEndTime", "productionDate", "reporter", "unit", "teamText", "documentNumberText");
             case "scrap", "consumption" -> Set.of("material", "materialLotText", "quantity", "unit", "reason", "category", "teamText", "documentNumberText");
             default -> throw invalid("不支持的统计模型");
         };
@@ -62,8 +69,14 @@ public final class FormProjectionInterpreter {
         for (String id : java.util.List.of("formTrace", "production", "scrap", "consumption")) {
             ObjectNode model = models.addObject().put("id", id).put("name", MODELS.get(id)).put("version", VERSION);
             ArrayNode attributes = model.putArray("attributes");
-            ATTRIBUTES.forEach((key, name) -> { if (allowed(id).contains(key)) attributes.addObject().put("id", key).put("name", name)
-                    .put("type", NUMBERS.contains(key) ? "number" : "material".equals(key) ? "reference" : "text"); });
+            ATTRIBUTES.forEach((key, name) -> {
+                if (!allowed(id).contains(key)) return;
+                ObjectNode attribute = attributes.addObject().put("id", key).put("name", name)
+                        .put("type", NUMBERS.contains(key) ? "number" : TIMES.contains(key) ? "datetime"
+                                : "productionDate".equals(key) ? "date" : "material".equals(key) ? "reference" : "text");
+                if (DICTIONARIES.contains(key)) attribute.putArray("referenceSources").add("dictionary");
+                if ("reporter".equals(key)) attribute.putArray("referenceSources").add("user");
+            });
         }
         result.put("notice", "正式记录按工序和用途合计。重复记载表只配置查表用途；文本批号不自动建立实体关系。");
         return result;
@@ -119,13 +132,19 @@ public final class FormProjectionInterpreter {
                 if (!entry.getValue().isTextual() || !sourceIds.add(entry.getValue().asText())) throw invalid("同一用途不能重复映射同一字段");
                 JsonNode source = field(fields, entry.getValue().asText());
                 if (NUMBERS.contains(entry.getKey())) {
-                    if (!"number".equals(source.path("type").asText())) throw invalid("数量来源必须是数字字段");
+                    if (!"number".equals(source.path("type").asText())) throw invalid(ATTRIBUTES.get(entry.getKey()) + "来源必须是数字字段");
                     if (!quantitySources.add(modelId + "/" + tableId + "/" + entry.getValue().asText()))
                         throw invalid("同一数量来源不能重复配置为同一用途的正式记录");
                 } else if ("material".equals(entry.getKey())) {
                     if (!"reference".equals(source.path("type").asText()) || !"material".equals(source.path("typeConfig").path("sourceType").asText()))
                         throw invalid("物料来源必须是物料主数据引用字段");
-                } else if ("unit".equals(entry.getKey()) && "reference".equals(source.path("type").asText())
+                } else if (TIMES.contains(entry.getKey()) || "productionDate".equals(entry.getKey())) {
+                    String mode = "productionDate".equals(entry.getKey()) ? "date" : "datetime";
+                    if (!"datetime".equals(source.path("type").asText()) || !mode.equals(source.path("typeConfig").path("mode").asText("datetime")))
+                        throw invalid(ATTRIBUTES.get(entry.getKey()) + ("date".equals(mode) ? "请选择日期字段" : "请选择包含日期的日期时间字段"));
+                } else if ("reporter".equals(entry.getKey()) && "reference".equals(source.path("type").asText())) {
+                    if (!"user".equals(source.path("typeConfig").path("sourceType").asText())) throw invalid("报工人请选择人员引用或文本字段");
+                } else if (DICTIONARIES.contains(entry.getKey()) && "reference".equals(source.path("type").asText())
                         && "dictionary".equals(source.path("typeConfig").path("sourceType").asText())) {
                     // Dictionary values are frozen unit codes, not conversion rules.
                 } else if ("formTrace".equals(modelId) && "reference".equals(source.path("type").asText())) {
@@ -183,8 +202,11 @@ public final class FormProjectionInterpreter {
             JsonNode raw = values.path(fieldId);
             String key = source.getKey();
             if (NUMBERS.contains(key)) {
-                if (!raw.isNumber() || raw.decimalValue().signum() < 0) throw invalid("数量必须填写非负数字：" + fieldId);
-                attributes.put(key, raw.decimalValue());
+                // Optional person-hours are supplied by the user, never derived from the period or people.
+                if (!("workHours".equals(key) && (raw.isMissingNode() || raw.isNull() || raw.isTextual() && raw.asText().isBlank()))) {
+                    if (!raw.isNumber() || raw.decimalValue().signum() < 0) throw invalid(ATTRIBUTES.get(key) + "必须填写非负数字：" + fieldId);
+                    attributes.put(key, raw.decimalValue());
+                }
             } else if ("material".equals(key)) {
                 if (!raw.isObject() || !raw.path("id").asText().matches("[1-9][0-9]*") || raw.path("name").asText().isBlank())
                     throw invalid("请选择物料主数据：" + fieldId);
@@ -194,17 +216,28 @@ public final class FormProjectionInterpreter {
                 String value = "reference".equals(sourceField.path("type").asText())
                         ? referenceCode(sourceField, raw) : scalarValue(raw);
                 if (!value.isBlank()) {
+                    if (TIMES.contains(key) || "productionDate".equals(key)) {
+                        try {
+                            value = TIMES.contains(key) ? java.time.LocalDateTime.parse(value).toString() : java.time.LocalDate.parse(value).toString();
+                        } catch (java.time.format.DateTimeParseException ex) { throw invalid(ATTRIBUTES.get(key) + "格式不正确：" + fieldId); }
+                    }
                     attributes.put(key, value);
-                    if ("unit".equals(key)) {
-                        if ("reference".equals(sourceField.path("type").asText())) attributes.put("unitLabel", raw.path("name").asText(value));
+                    if (DICTIONARIES.contains(key) || "reporter".equals(key)) {
+                        if ("reference".equals(sourceField.path("type").asText())) {
+                            attributes.put(key + "Label", raw.path("name").asText(value));
+                            attributes.put(key + "Id", raw.path("id").asText());
+                        }
                         else if ("singleSelect".equals(sourceField.path("type").asText()) && sourceField.path("typeConfig").path("options").isArray())
                             for (JsonNode option : sourceField.path("typeConfig").path("options"))
-                                if (value.equals(option.path("value").asText())) { attributes.put("unitLabel", option.path("label").asText(value)); break; }
+                                if (value.equals(option.path("value").asText())) { attributes.put(key + "Label", option.path("label").asText(value)); break; }
                     }
                 }
             }
             locations.put(key, fieldId);
         });
+        if (attributes.has("reportStartTime") && attributes.has("reportEndTime")
+                && java.time.LocalDateTime.parse(attributes.path("reportEndTime").asText()).isBefore(java.time.LocalDateTime.parse(attributes.path("reportStartTime").asText())))
+            throw invalid("报工结束时间不能早于开始时间");
         ArrayNode details = record.putArray("details");
         for (JsonNode detailId : binding.path("detailFieldIds")) {
             JsonNode detailField = field(fields, detailId.asText());

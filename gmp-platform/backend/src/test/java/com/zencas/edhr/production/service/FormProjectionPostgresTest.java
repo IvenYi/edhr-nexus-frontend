@@ -56,6 +56,50 @@ class FormProjectionPostgresTest {
     }
     private long batchId() { return jdbc.queryForObject("SELECT id FROM form_projection_batch", Long.class); }
 
+    @Test void reportBusinessFieldsSurviveCompletionAndFiltersApplyToRecordsAndTotals() throws Exception {
+        var form = form();
+        var fields = (com.fasterxml.jackson.databind.node.ArrayNode) form.path("fields");
+        fields.addObject().put("id", "hours").put("type", "number");
+        fields.addObject().put("id", "date").put("type", "datetime").putObject("typeConfig").put("mode", "date");
+        fields.addObject().put("id", "person").put("type", "reference").putObject("typeConfig").put("sourceType", "user");
+        fields.addObject().put("id", "start").put("type", "datetime");
+        fields.addObject().put("id", "end").put("type", "datetime");
+        ((ObjectNode) form.path("projection").path("bindings").get(0).path("sources"))
+                .put("workHours", "hours").put("productionDate", "date").put("reporter", "person").put("reportStartTime", "start").put("reportEndTime", "end");
+        var values = values().put("hours", 3.5).put("date", "2026-10-12").put("start", "2026-10-12T23:00").put("end", "2026-10-13T01:00");
+        values.putObject("person").put("id", "7").put("sourceType", "user").put("code", "worker7").put("name", "员工七");
+        var context = mapper.createObjectNode().put("workOrderNo", "WO-FROZEN").put("productCode", "P-FROZEN").put("productName", "原产品名");
+        jdbc.update("UPDATE form_instance_record SET created_at='2026-10-13 12:00',created_by='creator'");
+        tx.executeWithoutResult(status -> projection.completed(1, "default", form, values, context, "a"));
+        values.put("hours", 999); context.put("productName", "后改名称");
+        tx.executeWithoutResult(status -> projection.process(batchId()));
+        var filters = java.util.Map.of("workOrderNo", "WO-FROZEN", "productCode", "P-FROZEN", "reporter", "员工七", "productionDateFrom", "2026-10-12", "productionDateTo", "2026-10-12");
+        var result = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, filters, 0, 20, null, null)).getData();
+        assertThat(result.path("total").asInt()).isEqualTo(1);
+        assertThat(result.path("records").get(0).path("attributes").path("workHours").decimalValue()).isEqualByComparingTo("3.5");
+        assertThat(result.path("totals").get(0).path("workHours").decimalValue()).isEqualByComparingTo("3.5");
+        assertThat(result.path("records").get(0).path("context").path("productName").asText()).isEqualTo("原产品名");
+        for (var miss : java.util.List.of(java.util.Map.of("reporter", "creator"), java.util.Map.of("productionDateFrom", "2026-10-13"), java.util.Map.of("createdDateTo", "2026-10-12"))) {
+            var empty = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, miss, 0, 20, null, null)).getData();
+            assertThat(empty.path("total").asInt()).isZero(); assertThat(empty.path("totals")).isEmpty();
+        }
+        assertThatThrownBy(() -> reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, java.util.Map.of("productionDateFrom", "2026-02-30"), 0, 20, null, null))).hasMessageContaining("有效日期");
+        assertThatThrownBy(() -> reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, java.util.Map.of("productionDateFrom", "2026-10-13", "productionDateTo", "2026-10-12"), 0, 20, null, null))).hasMessageContaining("结束日期");
+    }
+
+    @Test void scrapCauseLabelsFilterWholeRecordsWithoutChangingGrouping() throws Exception {
+        enqueue(form()); tx.executeWithoutResult(status -> projection.process(batchId()));
+        jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'scrap1','form','scrap','{\"material\":{\"id\":\"1\",\"code\":\"M-1\",\"name\":\"螺丝\"},\"quantity\":2,\"reason\":\"scratch\",\"reasonLabel\":\"划伤\",\"category\":\"appearance\",\"categoryLabel\":\"外观\"}','{}','')", batchId());
+        jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'scrap2','form','scrap','{\"material\":{\"id\":\"1\",\"code\":\"M-1\",\"name\":\"螺丝\"},\"quantity\":3,\"reason\":\"dirty\",\"reasonLabel\":\"污染\",\"category\":\"appearance\",\"categoryLabel\":\"外观\"}','{}','')", batchId());
+        var all = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("scrap", null, null, java.util.Map.of("materialCode", "M-1", "category", "外观"), 0, 20, null, null)).getData();
+        assertThat(all.path("records")).hasSize(2); assertThat(all.path("totals")).hasSize(1);
+        assertThat(all.path("totals").get(0).path("quantity").asInt()).isEqualTo(5);
+        assertThat(all.path("totals").get(0).has("reason")).isFalse();
+        var filtered = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("scrap", null, null, java.util.Map.of("reason", "划伤"), 0, 20, null, null)).getData();
+        assertThat(filtered.path("records")).hasSize(1);
+        assertThat(filtered.path("totals").get(0).path("quantity").asInt()).isEqualTo(2);
+    }
+
     @Test void editingTemplateAfterFirstUseDoesNotChangeThatExecutionSnapshot() throws Exception {
         jdbc.execute("CREATE TABLE form_template(id BIGINT PRIMARY KEY,tenant_id text,name text,code text,category_name text,status text)");
         jdbc.execute("CREATE TABLE form_template_version(id BIGINT PRIMARY KEY,template_id bigint,tenant_id text,version_label text,status text,model_design_json text,canvas_design_json text)");

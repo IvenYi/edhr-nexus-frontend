@@ -68,9 +68,36 @@ public class FormProjectionController {
         if (query.objectNo() != null && !query.objectNo().isBlank()) { where.append(" AND f.object_no=?"); args.add(query.objectNo().trim()); }
         if (query.operationName() != null && !query.operationName().isBlank()) { where.append(" AND f.operation_name=?"); args.add(query.operationName().trim()); }
         if (query.filters() != null) for (var filter : query.filters().entrySet()) {
-            if (!Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText", "unit", "reason", "category").contains(filter.getKey())
-                    || filter.getValue() == null || filter.getValue().isBlank() || filter.getValue().length() > 512) throw invalid("筛选属性或值不受支持");
-            where.append(" AND r.attributes ->> ? = ?"); args.add(filter.getKey()); args.add(filter.getValue().trim());
+            String key = filter.getKey();
+            if (filter.getValue() == null || filter.getValue().isBlank() || filter.getValue().length() > 512) throw invalid("筛选属性或值不受支持");
+            String value = filter.getValue().trim();
+            if (Set.of("workOrderNo", "productCode", "productName").contains(key)) {
+                where.append(" AND b.source_json->'context'->> ? = ?"); args.add(key); args.add(value);
+            } else if (Set.of("materialCode", "materialName").contains(key)) {
+                where.append(" AND r.attributes->'material'->> ? = ?"); args.add("materialCode".equals(key) ? "code" : "name"); args.add(value);
+            } else if (Set.of("productionDateFrom", "productionDateTo", "createdDateFrom", "createdDateTo", "updatedDateFrom", "updatedDateTo").contains(key)) {
+                java.time.LocalDate date;
+                try { date = java.time.LocalDate.parse(value); } catch (java.time.format.DateTimeParseException ex) { throw invalid("请选择有效日期"); }
+                if (key.startsWith("productionDate")) {
+                    if (!"production".equals(query.modelId())) throw invalid("生产日期仅用于报工记录");
+                    where.append(" AND (r.attributes->>'productionDate')::date ").append(key.endsWith("From") ? ">= ?" : "<= ?");
+                    args.add(java.sql.Date.valueOf(date));
+                } else {
+                    where.append(key.startsWith("created") ? " AND f.created_at " : " AND f.updated_at ")
+                            .append(key.endsWith("From") ? ">= ?" : "< ?");
+                    args.add(java.sql.Timestamp.valueOf((key.endsWith("From") ? date : date.plusDays(1)).atStartOfDay()));
+                }
+            } else if (Set.of("createdBy", "updatedBy").contains(key)) {
+                where.append("createdBy".equals(key) ? " AND f.created_by=?" : " AND f.updated_by=?"); args.add(value);
+            } else if (Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText", "unit", "reason", "category", "reporter").contains(key)) {
+                if ("reporter".equals(key) && !"production".equals(query.modelId())) throw invalid("报工人仅用于报工记录");
+                where.append(" AND (r.attributes ->> ? = ? OR r.attributes ->> ? = ?)");
+                args.add(key); args.add(value); args.add(key + "Label"); args.add(value);
+            } else throw invalid("筛选属性不受支持");
+        }
+        if (query.filters() != null) for (String prefix : List.of("productionDate", "createdDate", "updatedDate")) {
+            String start = query.filters().get(prefix + "From"), end = query.filters().get(prefix + "To");
+            if (start != null && end != null && java.time.LocalDate.parse(start.trim()).isAfter(java.time.LocalDate.parse(end.trim()))) throw invalid("查询结束日期不能早于开始日期");
         }
         String from = " FROM form_projection_record r JOIN form_projection_batch b ON b.id=r.batch_id JOIN form_instance_record f ON f.id=b.form_instance_id";
         ObjectNode result = mapper.createObjectNode();
@@ -94,10 +121,11 @@ public class FormProjectionController {
             record.set("details", parse(rs.getString("details")));
             record.set("hits", parse(rs.getString("hits")));
             record.set("lookupItems", rs.getString("lookup_items") == null ? mapper.createObjectNode() : parse(rs.getString("lookup_items")));
+            JsonNode frozen = parse(rs.getString("frozen_source"));
+            record.set("context", frozen.path("context"));
             String tableId = rs.getString("table_id");
             if (tableId != null && !tableId.isBlank()) {
                 record.put("tableId", tableId);
-                JsonNode frozen = parse(rs.getString("frozen_source"));
                 String keyField = "__rowId";
                 for (JsonNode binding : frozen.path("model").path("projection").path("bindings")) {
                     if (binding.path("id").asText().equals(rs.getString("binding_id")) && binding.hasNonNull("rowKeyFieldId")) {
@@ -124,6 +152,7 @@ public class FormProjectionController {
                 string_agg(DISTINCT nullif(r.attributes->>'unitLabel',''),' / ') AS "unitLabel",
                 sum((r.attributes->>'quantity')::numeric) AS quantity,
                 sum((r.attributes->>'goodQuantity')::numeric) AS "goodQuantity",
+                sum((r.attributes->>'workHours')::numeric) AS "workHours",
                 sum((r.attributes->>'ngQuantity')::numeric) AS "ngQuantity",count(*) AS "recordCount"
                 """ + from + where + " GROUP BY f.object_id,f.object_no,f.operation_id,f.operation_name,r.attributes->'material'->>'id',r.attributes->'material'->>'name',r.attributes->>'materialLotText',r.attributes->>'unit' ORDER BY f.object_id,f.operation_id LIMIT 201", args.toArray())));
         result.put("totalsTruncated", result.path("totals").size() > 200);

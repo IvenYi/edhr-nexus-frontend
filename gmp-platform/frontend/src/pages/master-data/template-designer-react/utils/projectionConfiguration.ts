@@ -15,6 +15,8 @@ export function useProjectionCatalog() {
 export function acceptsProjectionAttribute(field: ModelField, attribute: ProjectionAttribute) {
   if (field.status === 'disabled') return false;
   if (attribute.type === 'number') return field.type === 'number';
+  if (attribute.type === 'date' || attribute.type === 'datetime') return field.type === 'datetime'
+    && (field.typeConfig.mode ?? 'datetime') === attribute.type;
   if (attribute.type === 'reference') return field.type === 'reference' && field.typeConfig.sourceType === 'material';
   if (field.type === 'reference') return (attribute.id === 'unit' && field.typeConfig.sourceType === 'dictionary')
     || (attribute.referenceSources?.includes(String(field.typeConfig.sourceType)) ?? false);

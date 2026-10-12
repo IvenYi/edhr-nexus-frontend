@@ -26,12 +26,12 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
   const isTrace = binding.modelId === 'formTrace';
   const attributes = definition.attributes.filter(attribute => isTrace ? binding.sources[attribute.id] || attribute.id === addedTraceId
     : required.includes(attribute.id) || ['unit', 'materialLotText'].includes(attribute.id)
-      || (binding.modelId === 'production' && ['goodQuantity', 'ngQuantity'].includes(attribute.id)));
+      || (binding.modelId === 'production' && ['goodQuantity', 'ngQuantity', 'workHours'].includes(attribute.id)));
   const optionalAttributes = isTrace ? [] : definition.attributes.filter(attribute => !attributes.includes(attribute));
   const optionalExpanded = showOptional || optionalAttributes.some(attribute => Boolean(errorFor(attribute.id)));
   const configuredOptional = optionalAttributes.filter(attribute => binding.sources[attribute.id]).map(attribute => attribute.name.replace(/（.*?）/g, ''));
   if (!isTrace) {
-    const order = ['material', 'quantity', 'goodQuantity', 'ngQuantity', 'unit', 'materialLotText'];
+    const order = ['material', 'quantity', 'goodQuantity', 'ngQuantity', 'workHours', 'unit', 'materialLotText'];
     attributes.sort((left, right) => (order.indexOf(left.id) < 0 ? order.length : order.indexOf(left.id)) - (order.indexOf(right.id) < 0 ? order.length : order.indexOf(right.id)));
   }
   const missingAttributes = Object.keys(binding.sources).filter(id => !definition.attributes.some(attribute => attribute.id === id));
@@ -48,8 +48,8 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
   const renderSource = (attribute: ProjectionModel['attributes'][number]) => <Stack key={attribute.id} spacing={0.5}>
       <Stack direction="row" spacing={0.5} alignItems="flex-start">
       <TextField select fullWidth size="small"
-      label={`${binding.modelId === 'formTrace' ? attribute.name : attribute.name.replace(/（.*?）/g, '')}${required.includes(attribute.id) ? ' *' : ''}`} value={binding.sources[attribute.id] ?? ''}
-      error={Boolean(errorFor(attribute.id))} helperText={errorFor(attribute.id)}
+      label={`${isTrace || attribute.id === 'workHours' ? attribute.name : attribute.name.replace(/（.*?）/g, '')}${required.includes(attribute.id) ? ' *' : ''}`} value={binding.sources[attribute.id] ?? ''}
+      error={Boolean(errorFor(attribute.id))} helperText={errorFor(attribute.id) || (attribute.id === 'workHours' ? '选数字字段，由填报人员填写，不自动计算。' : undefined)}
       onChange={event => selectSource(attribute.id, event.target.value)}>
       <MenuItem value="">请选择来源{binding.tableId ? '列' : '字段'}</MenuItem>
       {!!binding.sources[attribute.id] && !fields.some(field => field.id === binding.sources[attribute.id] && acceptsProjectionAttribute(field, attribute)) &&
@@ -82,10 +82,10 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     {missingAttributes.map(id => <Alert key={id} severity="warning" action={<ProjectionRemoveButton label="移除失效的来源配置" onClick={() => selectSource(id, '')} />}>追溯项或业务信息已失效，原来源：{fields.find(field => field.id === binding.sources[id])?.name ?? '来源字段已失效'}</Alert>)}
     {attributes.map(renderSource)}
     {optionalAttributes.length > 0 && <Stack spacing={0.5}>
-      <Button size="small" color="inherit" aria-expanded={optionalExpanded} startIcon={optionalExpanded ? <ExpandMore /> : <ChevronRight />} sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => { picker?.cancel(binding.id); setShowOptional(!optionalExpanded); }}>补充信息（可选）</Button>
+      <Button size="small" color="inherit" aria-expanded={optionalExpanded} startIcon={optionalExpanded ? <ExpandMore /> : <ChevronRight />} sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => { picker?.cancel(binding.id); setShowOptional(!optionalExpanded); }}>{binding.modelId === 'production' ? '报工信息（可选）' : binding.modelId === 'scrap' ? '报废信息（可选）' : '补充信息（可选）'}</Button>
       {!optionalExpanded && configuredOptional.length > 0 && <Typography variant="caption" color="text.secondary">已配置：{configuredOptional.join('、')}</Typography>}
       <Collapse in={optionalExpanded} unmountOnExit><Stack spacing={1.5} sx={{ pt: 1 }}>
-        <Typography variant="caption" color="text.secondary">用于报表筛选和来源详情展示，不增加数量。</Typography>
+        <Typography variant="caption" color="text.secondary">{binding.modelId === 'production' ? '记录实际报工日期、起止时间与人员，不用系统时间或创建人代替。' : '原因、分类可在业务记录中查看和筛选，不改变数量。'}</Typography>
         {optionalAttributes.map(renderSource)}
       </Stack></Collapse>
     </Stack>}
