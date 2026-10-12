@@ -2,12 +2,11 @@ import { Alert, Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip, Ty
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
-import { acceptsProjectionAttribute, useProjectionCatalog } from '../utils/projectionConfiguration';
-import StatisticsProjectionConfig from './StatisticsProjectionConfig';
+import { acceptsProjectionAttribute, projectionBindingLabel, useProjectionCatalog } from '../utils/projectionConfiguration';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 
-export default function FieldProjectionConfig({ field, tableId, showIdentity = true, onEditTable }: {
-  field: ModelField; tableId?: string; showIdentity?: boolean; onEditTable?: () => void;
+export default function FieldProjectionConfig({ field, tableId, showIdentity = true, onEditTable, onEditMain }: {
+  field: ModelField; tableId?: string; showIdentity?: boolean; onEditTable?: () => void; onEditMain?: (bindingId?: string) => void;
 }) {
   const document = useTemplateDesignerStore(state => state.document);
   const setBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
@@ -59,7 +58,18 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
         })}
         {!statistical.length && <Typography variant="caption" color="text.secondary">本列尚未参与统计。</Typography>}
         {onEditTable && <Button size="small" variant="outlined" onClick={onEditTable}>切换到“{table?.name ?? '子表'}”配置统计</Button>}
-      </Stack> : <StatisticsProjectionConfig selectedFieldId={field.id} />}
+      </Stack> : <Stack spacing={1}>
+        <Typography variant="body2" fontWeight={600}>业务统计</Typography>
+        {statistical.map(binding => {
+          const definition = catalog?.models.find(model => model.id === binding.modelId);
+          const roles = Object.entries(binding.sources).filter(([, id]) => id === field.id)
+            .map(([id]) => definition?.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? '已失效角色');
+          return <Box key={binding.id}><Typography variant="body2">{projectionBindingLabel(document.model, binding, definition)}：当前字段作为{roles.join('、')}</Typography>
+            {onEditMain && <Button size="small" sx={{ px: 0 }} onClick={() => onEditMain(binding.id)}>编辑这条{binding.modelId === 'production' ? '记录' : '明细'}</Button>}</Box>;
+        })}
+        {!statistical.length && <Typography variant="caption" color="text.secondary">当前字段尚未参与统计。</Typography>}
+        {onEditMain && <Button size="small" variant="outlined" onClick={() => onEditMain()}>配置主表业务统计</Button>}
+      </Stack>}
     </Box>
   </Stack>;
 }

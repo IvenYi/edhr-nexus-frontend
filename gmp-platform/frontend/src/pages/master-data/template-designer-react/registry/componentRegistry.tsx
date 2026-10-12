@@ -662,6 +662,7 @@ function FieldPreviewRenderer({
         type="button"
         data-canvas-word-table-field-placeholder="true"
         data-word-table-field-node-id={node.id}
+        data-projection-field-id={node.bindings?.fieldId}
         contentEditable={false}
         draggable={false}
         tabIndex={0}

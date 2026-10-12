@@ -35,8 +35,17 @@ export function projectionSourceSummary(model: ModelDesignState, binding: Projec
 export function projectionBindingLabel(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {
   const name = definition?.name ?? '已失效用途';
   if (binding.tableId || binding.modelId === 'formTrace') return name;
-  const items = (model.projection?.bindings ?? []).filter(item => item.modelId !== 'formTrace' && !item.tableId);
-  return `${name} · 明细 ${items.findIndex(item => item.id === binding.id) + 1}`;
+  const items = (model.projection?.bindings ?? []).filter(item => item.modelId === binding.modelId && !item.tableId);
+  return `${projectionDetailName(binding.modelId)} ${items.findIndex(item => item.id === binding.id) + 1}`;
+}
+
+export function projectionDetailName(modelId: string) {
+  return ({ consumption: '消耗明细', scrap: '报废明细', production: '报工记录' } as Record<string, string>)[modelId] ?? '业务明细';
+}
+
+export function projectionSourceCandidates(model: ModelDesignState, binding: ProjectionBinding, attribute: ProjectionAttribute) {
+  return projectionSources(model, binding).filter(field => acceptsProjectionAttribute(field, attribute)
+    && !Object.entries(binding.sources).some(([id, source]) => id !== attribute.id && source === field.id));
 }
 
 export function projectionSourceRoles(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {

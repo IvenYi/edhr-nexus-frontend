@@ -12,6 +12,7 @@ import CanvasSheetWorkspace from '../../components/canvas/CanvasSheetWorkspace';
 import { WordTableCellStyleProvider } from '../../components/canvas/WordTableCellStyleContext';
 import DesignerInspector from '../../components/DesignerInspector';
 import ProjectionInspector from '../../components/ProjectionInspector';
+import ProjectionCanvasPicker from '../../components/ProjectionCanvasPicker';
 import DesignerSidebar from '../../components/DesignerSidebar';
 import ComponentLibrary from '../../components/ComponentLibrary';
 import { useTemplateDesignerStore } from '../../store/useTemplateDesignerStore';
@@ -73,7 +74,7 @@ export default function CanvasTab() {
   }, [activePanelMaxWidth, activePanelMinWidth, isResizingSidebar]);
 
   return (
-    <WordTableCellStyleProvider>
+    <WordTableCellStyleProvider><ProjectionCanvasPicker>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}>
       <CanvasDesignerToolbar />
       <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
@@ -171,9 +172,9 @@ export default function CanvasTab() {
             />
           </Box>
         ) : null}
-        <CanvasSheetWorkspace />
+        <Box data-projection-canvas="true" sx={{ display: 'flex', flex: 1, minWidth: 0, minHeight: 0 }}><CanvasSheetWorkspace /></Box>
       </Box>
       </Box>
-    </WordTableCellStyleProvider>
+    </ProjectionCanvasPicker></WordTableCellStyleProvider>
   );
 }

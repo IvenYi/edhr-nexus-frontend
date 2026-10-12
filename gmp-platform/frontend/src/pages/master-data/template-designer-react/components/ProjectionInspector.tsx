@@ -1,13 +1,18 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField } from '../types/model';
 import type { CanvasNode } from '../types/canvas';
 import FieldProjectionConfig from './FieldProjectionConfig';
 import SubTableProjectionConfig from './SubTableProjectionConfig';
+import StatisticsProjectionConfig from './StatisticsProjectionConfig';
 
 export default function ProjectionInspector() {
   const document = useTemplateDesignerStore(state => state.document);
   const selectedNode = useTemplateDesignerStore(state => state.getSelectedNode());
+  const [mainStatistics, setMainStatistics] = useState(false);
+  const [editingId, setEditingId] = useState<string>();
+  useEffect(() => { setMainStatistics(false); setEditingId(undefined); }, [selectedNode?.id]);
   const fieldId = selectedNode?.bindings?.fieldId;
   const table = document?.model.fields.find(field => field.type === 'subTable'
     && (field.id === selectedNode?.bindings?.subTableId
@@ -28,7 +33,7 @@ export default function ProjectionInspector() {
     const node = find(page?.nodes ?? []);
     if (node) { const store = useTemplateDesignerStore.getState(); store.setSelectedNodeId(node.id); store.selectSubTableGroup(node.id); store.setActiveCanvasRail('projection'); }
   };
-  const context = field?.type === 'subTable' ? `当前子表：${field.name}`
+  const context = mainStatistics ? '配置范围：主表' : field?.type === 'subTable' ? `当前子表：${field.name}`
     : field && table ? `当前子表列：${table.name} / ${field.name}`
       : field ? `当前字段：${field.name}` : '选择配置来源';
 
@@ -37,10 +42,12 @@ export default function ProjectionInspector() {
       <Typography variant="body2" fontWeight={600} sx={{ overflowWrap: 'anywhere' }}>{context}</Typography>
     </Box>
     <Stack data-projection-panel-content="true" spacing={2} sx={{ p: 2, flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden' }}>
-      {!field ? <Typography variant="body2" color="text.secondary">在画布中选择字段或子表，配置查找与统计用途。子表可一次设置各列的用途。</Typography>
+      {mainStatistics ? <><Button size="small" sx={{ alignSelf: 'flex-start' }} onClick={() => setMainStatistics(false)}>返回字段用途</Button><StatisticsProjectionConfig initialEditingId={editingId} /></>
+        : !field ? <><Typography variant="body2" color="text.secondary">在画布中选择字段或子表配置用途。</Typography><Button variant="outlined" size="small" onClick={() => setMainStatistics(true)}>配置主表业务统计</Button></>
         : !supported ? <Typography variant="body2" color="text.secondary">当前字段类型暂不支持查找与统计配置。请选择文本、数值、单选、引用字段或子表。</Typography>
           : field.type === 'subTable' ? <SubTableProjectionConfig key={field.id} field={field} showIdentity={false} />
-            : <FieldProjectionConfig key={field.id} field={field} tableId={table?.id} showIdentity={false} onEditTable={table ? editTable : undefined} />}
+            : <FieldProjectionConfig key={field.id} field={field} tableId={table?.id} showIdentity={false} onEditTable={table ? editTable : undefined}
+              onEditMain={id => { setEditingId(id); setMainStatistics(true); }} />}
     </Stack>
   </Box>;
 }

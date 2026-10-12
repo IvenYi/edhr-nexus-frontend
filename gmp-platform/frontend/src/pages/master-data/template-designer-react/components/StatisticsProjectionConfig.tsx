@@ -3,21 +3,27 @@ import { Box, Button, Collapse, IconButton, MenuItem, Stack, TextField, Tooltip,
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import type { ProjectionBinding } from '../types/model';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
-import { projectionBindingLabel, projectionConfigurationIssues, projectionSourceRoles, useProjectionCatalog } from '../utils/projectionConfiguration';
+import { projectionBindingLabel, projectionConfigurationIssues, projectionDetailName, projectionSourceRoles, useProjectionCatalog } from '../utils/projectionConfiguration';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 
 /** One configuration describes a whole row or one business assembled from main fields. */
-export default function StatisticsProjectionConfig({ tableId, selectedFieldId }: { tableId?: string; selectedFieldId?: string }) {
+export default function StatisticsProjectionConfig({ tableId, initialEditingId }: { tableId?: string; initialEditingId?: string }) {
   const document = useTemplateDesignerStore(state => state.document);
   const setBindings = useTemplateDesignerStore(state => state.setProjectionBindings);
   const { data: catalog } = useProjectionCatalog();
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(initialEditingId ?? null);
   const [addingAnother, setAddingAnother] = useState(false);
   if (!document) return null;
   const bindings = document.model.projection?.bindings ?? [];
   const items = bindings.filter(binding => binding.modelId !== 'formTrace' && (binding.tableId ?? '') === (tableId ?? ''));
   const update = (next: ProjectionBinding[]) => setBindings(next, catalog?.version);
+  const modelIds = [...new Set(items.map(binding => binding.modelId))];
+  const add = (modelId: string) => {
+    const id = crypto.randomUUID();
+    update([...bindings, { id, modelId, enabled: false, ...(tableId ? { tableId } : {}), sources: {} }]);
+    setEditingId(id); setAddingAnother(false);
+  };
   return <Stack spacing={1.5}>
     <Stack direction="row" alignItems="center" justifyContent="space-between">
       <Typography variant="body2" fontWeight={600}>{tableId ? '业务统计' : '主表的业务统计'}</Typography>
@@ -25,38 +31,37 @@ export default function StatisticsProjectionConfig({ tableId, selectedFieldId }:
         <IconButton size="small" aria-label="业务统计配置说明"><InfoOutlined fontSize="small" /></IconButton>
       </Tooltip>
     </Stack>
-    {!tableId && <Typography variant="caption" color="text.secondary">一条明细对应一组字段；有第二组物料、数量时，再新增明细。</Typography>}
-    {items.map(binding => {
+    {!tableId && <Typography variant="caption" color="text.secondary">把描述同一笔业务的字段对应起来。</Typography>}
+    {modelIds.map(modelId => <Stack spacing={1} key={modelId}>
+      {!tableId && <Typography variant="body2" fontWeight={600}>{catalog?.models.find(model => model.id === modelId)?.name ?? '已失效用途'}</Typography>}
+    {items.filter(binding => binding.modelId === modelId).map(binding => {
       const definition = catalog?.models.find(model => model.id === binding.modelId);
       const complete = projectionConfigurationIssues(document.model, binding, definition).length === 0;
       const label = projectionBindingLabel(document.model, binding, definition);
       const roles = projectionSourceRoles(document.model, binding, definition);
-      const selectedRoles = roles.filter(role => binding.sources[role.id] === selectedFieldId);
       return <Box key={binding.id} sx={{ border: '1px solid #e4e7ed', borderRadius: 1, p: 1.5 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-          <Typography variant="body2" fontWeight={600}>{label}</Typography>
+          <Button size="small" color="inherit" aria-expanded={editingId === binding.id} disabled={!definition} sx={{ flex: 1, justifyContent: 'flex-start', px: 0, textAlign: 'left', minWidth: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{editingId === binding.id ? '▾ ' : '› '}{label}</Button>
           <ProjectionRemoveButton label={`移除${label}配置`} onClick={() => update(bindings.filter(item => item.id !== binding.id))} />
         </Stack>
         <Typography variant="caption" color={complete ? 'text.secondary' : 'warning.main'}>{complete ? '已配齐' : '待补齐'}</Typography>
-        {roles.length ? roles.map(role => <Typography key={role.id} variant="caption" display="block" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{role.role}：{role.field}</Typography>)
-          : <Typography variant="caption" display="block" color="text.secondary">尚未选择来源字段</Typography>}
-        {!!selectedFieldId && <Typography variant="caption" display="block" color={selectedRoles.length ? 'primary.main' : 'text.secondary'}>{selectedRoles.length ? `当前字段作为${selectedRoles.map(role => role.role).join('、')}` : '当前字段未参与这条明细'}</Typography>}
-        {definition && <><Button size="small" sx={{ display: 'block', px: 0 }} onClick={() => setEditingId(editingId === binding.id ? null : binding.id)}>{editingId === binding.id ? '收起' : '配置来源'}</Button>
+        {editingId !== binding.id && (roles.length ? roles.map(role => <Typography key={role.id} variant="caption" display="block" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{role.role}：{role.field}</Typography>)
+          : <Typography variant="caption" display="block" color="text.secondary">尚未选择来源字段</Typography>)}
+        {definition && <>
           <Collapse in={editingId === binding.id} unmountOnExit><ProjectionSourceEditor binding={binding} definition={definition}
             onChange={patch => update(bindings.map(item => item.id === binding.id ? { ...item, ...patch } : item))} /></Collapse></>}
       </Box>;
     })}
-    {!!tableId && items.length > 0 && <Button size="small" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={() => setAddingAnother(!addingAnother)}>{addingAnother ? '收起其他用途' : '其他统计用途…'}</Button>}
-    {(!tableId || !items.length || addingAnother) && <TextField select size="small" fullWidth label={tableId ? (items.length ? '添加其他统计用途' : '这张子表统计什么') : (items.length ? '新增一条主表明细' : '主表明细统计什么')} value="" onChange={event => {
+    {!tableId && <Button size="small" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={() => add(modelId)}>＋ 添加{projectionDetailName(modelId)}</Button>}
+    </Stack>)}
+    {items.length > 0 && <Button size="small" sx={{ alignSelf: 'flex-start', px: 0 }} onClick={() => setAddingAnother(!addingAnother)}>{addingAnother ? '收起其他用途' : '其他统计用途…'}</Button>}
+    {(!items.length || addingAnother) && <TextField select size="small" fullWidth label={tableId ? (items.length ? '添加其他统计用途' : '这张子表统计什么') : '主表统计什么'} value="" onChange={event => {
       if (!event.target.value) return;
       const existing = tableId ? items.find(binding => binding.modelId === event.target.value) : undefined;
       if (existing) { setEditingId(existing.id); return; }
-      const id = crypto.randomUUID();
-      update([...bindings, { id, modelId: event.target.value, enabled: false, ...(tableId ? { tableId } : {}), sources: {} }]);
-      setEditingId(id);
-      setAddingAnother(false);
+      add(event.target.value);
     }}>
-      <MenuItem value="">请选择预设业务</MenuItem>{catalog?.models.filter(model => model.id !== 'formTrace' && (!tableId || !items.some(item => item.modelId === model.id))).map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
+      <MenuItem value="">请选择预设业务</MenuItem>{catalog?.models.filter(model => model.id !== 'formTrace' && !modelIds.includes(model.id)).map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
     </TextField>}
     <Typography variant="caption" color="text.secondary">配置后统一点击顶部“保存”。</Typography>
   </Stack>;

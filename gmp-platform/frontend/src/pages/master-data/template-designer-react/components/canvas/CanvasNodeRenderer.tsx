@@ -295,6 +295,7 @@ export default function CanvasNodeRenderer({
       <Box
         key={node.id}
         data-canvas-node="true"
+        data-projection-field-id={node.bindings?.fieldId}
         tabIndex={absolute ? -1 : undefined}
         onPointerDown={(event) => {
           if (

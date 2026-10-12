@@ -16,7 +16,7 @@ await build({ stdin: { contents: `
   import StatisticsProjectionConfig from './src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig';
   import FieldProjectionConfig from './src/pages/master-data/template-designer-react/components/FieldProjectionConfig';
   import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-  export { acceptsProjectionAttribute, projectionConfigurationProblems, projectionBindingLabel, projectionSourceRoles } from './src/pages/master-data/template-designer-react/utils/projectionConfiguration';
+  export { acceptsProjectionAttribute, projectionConfigurationProblems, projectionBindingLabel, projectionSourceRoles, projectionSourceCandidates } from './src/pages/master-data/template-designer-react/utils/projectionConfiguration';
   import { useTemplateDesignerStore as store } from './src/pages/master-data/template-designer-react/store/useTemplateDesignerStore';
   export function renderEditor(model, binding, definition, showErrors = false) {
     store.getState().setDocument({ meta: {}, model, canvas: { pages: [] }, workflow: { nodes: [], edges: [], config: {} } });
@@ -35,7 +35,7 @@ await build({ stdin: { contents: `
   }
 `, resolveDir: fileURLToPath(new URL('..', import.meta.url)), loader: 'tsx' }, outfile, bundle: true, format: 'cjs', platform: 'node', mainFields: ['module', 'main'], logLevel: 'silent',
   alias: { '@': fileURLToPath(new URL('../src', import.meta.url)), '@mui/icons-material': fileURLToPath(new URL('../node_modules/@mui/icons-material/esm', import.meta.url)) } });
-const { renderEditor, renderPanel, acceptsProjectionAttribute, projectionConfigurationProblems, projectionBindingLabel, projectionSourceRoles } = createRequire(import.meta.url)(outfile);
+const { renderEditor, renderPanel, acceptsProjectionAttribute, projectionConfigurationProblems, projectionBindingLabel, projectionSourceRoles, projectionSourceCandidates } = createRequire(import.meta.url)(outfile);
 await rm(tempDir, { recursive: true, force: true });
 
 const lot = { id: 'lot', name: '供应商批号输入', type: 'text', typeConfig: {} };
@@ -113,7 +113,7 @@ test('collapsed business cards and each trace assignment expose consistent remov
   const model = {fields: [lot], projection: {bindings: [usage]}};
   const html = renderPanel(model, {models: [consumption]}, null);
   assert.ok(html.includes('主表的业务统计'));
-  assert.ok(html.includes('aria-label="移除实际物料消耗 · 明细 1配置"'));
+  assert.ok(html.includes('aria-label="移除消耗明细 1配置"'));
   assert.ok(html.includes('DeleteOutlinedIcon'));
   assert.ok(!html.includes('移除这项用途'));
   const traceModel = {...definition, attributes: definition.attributes.slice(0, 2)};
@@ -132,15 +132,17 @@ test('main details identify each source role and selected-field participation wi
   const second = {...usage, id: 'use2', sources: {material: material.id, quantity: secondQuantity.id}};
   const model = {fields: [material, quantity, secondQuantity, lot], projection: {bindings: [first, second]}};
   const before = JSON.stringify(model);
-  assert.equal(projectionBindingLabel(model, first, consumption), '实际物料消耗 · 明细 1');
-  assert.equal(projectionBindingLabel(model, second, consumption), '实际物料消耗 · 明细 2');
+  assert.equal(projectionBindingLabel(model, first, consumption), '消耗明细 1');
+  assert.equal(projectionBindingLabel(model, second, consumption), '消耗明细 2');
   assert.deepEqual(projectionSourceRoles(model, second, consumption), [
     {id: 'material', role: '物料', field: '投料物料'}, {id: 'quantity', role: '数量', field: '第二份实际用量'},
   ]);
   const html = renderPanel(model, {models: [consumption]}, quantity);
   assert.ok(html.includes('当前字段作为数量'));
-  assert.ok(html.includes('当前字段未参与这条明细'));
-  assert.ok(html.includes('新增一条主表明细'));
+  assert.ok(!html.includes('消耗明细 2'), 'field view only explains records this field participates in');
+  const main = renderPanel(model, {models: [consumption]}, null);
+  assert.ok(main.includes('添加消耗明细'));
+  assert.ok(!main.includes('role="combobox"'), 'same-purpose detail does not require selecting the purpose again');
   assert.equal(JSON.stringify(model), before);
 });
 
@@ -156,6 +158,26 @@ test('configured subtable preserves multiple existing purposes but defers adding
   assert.ok(html.includes('其他统计用途…'));
   assert.ok(!html.includes('role="combobox"'), 'configured table has no always-visible add-purpose selector');
   assert.equal(JSON.stringify(model), before, 'simplifying entry points must preserve every existing mapping');
+});
+
+test('canvas and dropdown candidates share type, region, disabled and occupied-role constraints', () => {
+  const local = {fields: [material, quantity, lot, {...quantity, id:'disabled', status:'disabled'},
+    {id:'table', type:'subTable', typeConfig:{columns:[{...quantity,id:'column'}]}}]};
+  const quantityAttribute = consumption.attributes.find(item => item.id === 'quantity');
+  assert.deepEqual(projectionSourceCandidates(local, usage, quantityAttribute).map(f=>f.id), [quantity.id]);
+  assert.deepEqual(projectionSourceCandidates(local, {...usage, sources:{other:quantity.id}}, quantityAttribute), []);
+  assert.deepEqual(projectionSourceCandidates(local, {...usage, tableId:'table'}, quantityAttribute).map(f=>f.id), ['column']);
+  assert.deepEqual(projectionSourceCandidates(local, usage, consumption.attributes.find(item=>item.id==='material')).map(f=>f.id), [material.id]);
+});
+
+test('business-specific labels count records within each business without changing identities', () => {
+  const a={...usage,id:'a'}, b={...usage,id:'b',modelId:'scrap'}, c={...usage,id:'c',modelId:'production'}, d={...usage,id:'d'};
+  const model={fields:[],projection:{bindings:[a,b,c,d]}};
+  assert.equal(projectionBindingLabel(model,a,consumption),'消耗明细 1');
+  assert.equal(projectionBindingLabel(model,b,{id:'scrap',name:'报废记录'}),'报废明细 1');
+  assert.equal(projectionBindingLabel(model,c,{id:'production',name:'正式报工'}),'报工记录 1');
+  assert.equal(projectionBindingLabel(model,d,consumption),'消耗明细 2');
+  assert.deepEqual(model.projection.bindings.map(item=>item.id),['a','b','c','d']);
 });
 
 test('trace editor offers no additional meaning when every compatible source is already used', () => {
