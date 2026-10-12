@@ -1,0 +1,84 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0076
+    title: AI 引导本体试点与全量存量知识审计边界
+    status: specified
+    visibility: internal
+    context: >-
+      provenance: user-confirmed / original-evidence；2026-10-12 用户认可确定性遗漏修复、全量存量知识语义对账及稳定领域通用规则层验证三个后续成果，并要求实际开发试点时由 AI 逐步指引。
+      已合入的 PR #2 架构与契约允许有明确用途的 P0/P1 标准映射或 SHACL 小范围试点，本决策补齐该当前政策与 DEC-0038-04 的声明级对齐。
+      用户确认的是目标、引导责任与审计范围，不是认定某个运行试点已经完成；本轮只补齐治理、当前说明和审计入口，保持知识 0.3.25 / schema 1.2.0，以具体 Git 提交区分增量，不提升历史业务资产成熟度。
+    decisionStatements:
+      - id: DEC-0076-01
+        statement: >-
+          provenance: original-evidence；仅替代 DEC-0038-04 被解释为所有后续 P0/P1 切片禁止有明确用途的标准映射或校验试点的范围。语义稳定且具有具体用途的切片可在 P0/P1 提前实施稳定 ID 到 IRI 的映射、JSON-LD/RDF 导出或 SHACL 校验试点，并说明依赖缺口、所有权、回滚和验证范围。
+          保留首次 P0 0.3.16 切片未引入这些能力的历史，以及不要求全量标准输出、图数据库、自动完整代码依赖图或生产直接读取研发知识目录的边界；受控推理继续由真实需求驱动，不得绕过权限、版本、审计和确定性执行契约。DEC-0038 其他声明不因决策级 supersedes 导航而整体失效。
+        status: specified
+        visibility: internal
+      - id: DEC-0076-02
+        statement: >-
+          provenance: user-confirmed；相关功能开发中由主智能体主动核对路线与事实成熟度，说明是否适合试点、它解决的具体问题和最小实施步骤，并随实际进展给出下一步及验证结果。用户无需先判断阶段、选择标准工具或填写试点交接表；普通功能不必强制变成试点。
+          已授权范围由智能体连续推进，不逐步骤重复请求批准；真实业务歧义、会改变产品取舍或新增重大交付范围时才向用户确认，未决问题只阻断依赖范围。
+        status: specified
+        visibility: internal
+      - id: DEC-0076-03
+        statement: >-
+          provenance: implementation-constraint；试点计划区分语义基础、关系查询、历史解释、标准映射与 SHACL 数据校验、通用规则执行的目标，可以在同一业务切片组合，但分别记录进入依据、退出条件和证据。语义目录覆盖或标准校验通过不证明通用执行完成，稳定领域已有实现也不自动证明新规则求值器正确。
+          运行试点按既有契约闭环真实事实来源及取值时点、类型和操作符、自定义谓词、缺失及异常结果、动作适配、权限、事务、审计、适用幂等与失败处理，并在生产使用前冻结规则、事实目录、执行契约、配置版本及必要执行依据。
+        status: specified
+        visibility: internal
+      - id: DEC-0076-04
+        statement: >-
+          provenance: user-confirmed；明确授权的全量存量知识审计覆盖固定目标 Git 基线下全部当前术语、概念、关系、事实、规则，以及支撑它们的决策、证据、实现锚点、执行契约、未决问题、验收场景和实现差异。没有 ID 的 Markdown 证据与说明按文件登记核对。按域分批执行只改变顺序，不缩小覆盖分母。
+          对当前资产核对新契约要求、已确认含义、源码与适用测试证据、状态和投影、当前替代范围及路线依赖；对历史和废弃资产核对适用时点、来源与替代链，不强行改写成现行定义，不补造历史审计。尚未合入的功能分支按自身提交及实际集成候选单独核对，不能套用目标分支结论。
+        status: specified
+        visibility: internal
+      - id: DEC-0076-05
+        statement: >-
+          provenance: implementation-constraint；全量清单只建立盘点覆盖，逐项语义审计需保留资产 ID、来源提交、已读契约基线、核对依据、结论、处置和验证证据。待审、已核对一致、明确错误待修复、被替代的历史范围、业务未决和证据不足必须能够区分；结构检查、语义核对、修复闭环和运行验收分别计数。
+          尚未核对的记录不得计入语义通过；已说明的未决或证据缺口可以证明完成了该项审查，但不能计入契约一致通过。目标内容变化后增量核对受影响 ID，不用相同 knowledgeModelVersion 或旧 CI 结果替代新候选验证。该全量任务与普通功能默认增量审计边界并存，不要求每次开发重审全库。
+        status: specified
+        visibility: internal
+      - id: DEC-0076-06
+        statement: >-
+          provenance: original-evidence；DEC-0038 中 discrepancy.ontology-p0-independent-quality-gate 已为 resolved，历史 P0 覆盖报告亦说明该次质量门禁已关闭。当前 README 同步这一历史事实，不再将其写成待关闭；逐事实精确来源、当前全库语义对账和后续切片验证仍按各自证据判断。历史通过既不撤销，也不继承为本次或未来范围的通过。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0038]
+    evidenceIds:
+      - evidence.ontology-guided-pilot-confirmed
+      - evidence.ontology-guided-pilot-policy-baseline
+      - evidence.ontology-guided-pilot-project-contract
+      - evidence.ontology-guided-audit-handoff
+      - evidence.ontology-p0-coverage-review
+    acceptanceScenarios:
+      - id: scenario.ontology-pilot-current-stage-scope
+        given: 人或智能体同时读取 DEC-0038-04、当前架构与新决策
+        when: 判断一个有明确用途的 P0/P1 标准映射或校验候选
+        then: 可以定位 DEC-0076-01 的部分替代范围及仍保留的历史和执行约束，不把旧决策整体废弃，也不因增加格式宣称阶段完成
+        evidenceIds: [evidence.ontology-guided-pilot-policy-baseline, evidence.ontology-guided-pilot-confirmed]
+        evidenceRequirements: [声明级同步核对, 独立质量检查]
+      - id: scenario.ontology-pilot-ai-guidance
+        given: 用户描述待开发功能但未选择本体阶段或标准工具
+        when: 主智能体判断该功能是否适合作为试点
+        then: 主动说明依据、最小步骤、缺口和验收；按授权范围连续实施和反馈进展，只有实际业务歧义或重大范围变化才请求用户判断
+        evidenceIds: [evidence.ontology-guided-pilot-confirmed, evidence.ontology-guided-pilot-project-contract]
+        evidenceRequirements: [任务计划与过程记录, 对应切片的验证结果]
+      - id: scenario.ontology-pilot-separate-validation
+        given: 一个切片完成事实语义梳理或标准数据校验
+        when: 报告该试点进度
+        then: 只报告相应目标的证据，不把结果扩大为通用规则执行或整个阶段已完成；生产试点的运行与版本要求仍独立适用
+        evidenceIds: [evidence.ontology-guided-pilot-policy-baseline, evidence.ontology-guided-audit-handoff]
+        evidenceRequirements: [试点进入与退出条件逐项核对]
+      - id: scenario.ontology-legacy-audit-whole-baseline
+        given: 用户明确要求对历史知识进行全盘审计
+        when: 按业务域分批检查固定目标提交的知识资产
+        then: 全部范围保留在覆盖清单，逐项关联证据与结论，历史和废弃资产按其适用范围核对，未合入分支不冒充已覆盖
+        evidenceIds: [evidence.ontology-guided-pilot-confirmed, evidence.ontology-guided-audit-handoff]
+        evidenceRequirements: [固定基线清单, 逐项语义核对及处置记录]
+      - id: scenario.ontology-legacy-audit-no-inherited-pass
+        given: 已有历史 P0 门禁通过和新生成的全量盘点清单
+        when: 汇报当前知识是否符合新契约
+        then: 历史门禁状态准确保留；清单不算语义审计完成，待审、未决与证据不足不算一致通过，新候选按实际范围验证
+        evidenceIds: [evidence.ontology-p0-coverage-review, evidence.ontology-guided-audit-handoff]
+        evidenceRequirements: [README 历史状态核对, 审计覆盖与结论分类核对]

@@ -1,0 +1,22 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.ontology-guided-pilot-confirmed
+    type: document
+    path: docs/knowledge/evidence/ontology-guided-pilot-confirmed.md
+    description: user-confirmed；2026-10-12 会话原话确认开发试点应由 AI 逐步指引，并认可确定性遗漏修复、全量存量知识语义对账和稳定领域运行路径验证三个成果；不证明这些执行成果已经完成。
+    visibility: internal
+  - id: evidence.ontology-guided-pilot-policy-baseline
+    type: document
+    path: docs/architecture/business-knowledge-model.md
+    description: original-evidence；db8d361c5a23e846ec0b858b4346cf8924ba5e75 基线的实施顺序已允许 P0/P1 按用途提前进行小范围标准映射与 SHACL 校验，并保留生产执行契约和最小版本保障；本轮补充与 DEC-0076 的当前范围导航。
+    visibility: internal
+  - id: evidence.ontology-guided-pilot-project-contract
+    type: document
+    path: AGENTS.md
+    description: original-evidence；本轮工作树中主智能体承担试点适用性判断、分步计划、连续执行和进度说明；只有真实业务歧义或重大范围变化才请求用户判断。契约文字不证明具体试点已执行。
+    visibility: internal
+  - id: evidence.ontology-guided-audit-handoff
+    type: document
+    path: docs/agents/agent-handoff-contract.md
+    description: original-evidence；本轮交接约定固定 Git 与契约基线、试点步骤和全量审计覆盖及逐项结论，明确结构盘点、语义核对、修复闭环与运行验证的证据边界；不将相同知识版本或历史质量结果视为新候选已通过。
+    visibility: internal

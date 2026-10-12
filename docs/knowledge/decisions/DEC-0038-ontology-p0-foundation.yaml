@@ -4,7 +4,10 @@ decisions:
     title: 本体 P0 事实目录与实现证据基线发布
     status: implemented
     visibility: internal
-    context: "provenance: original-evidence；本次升级将事实目录、实现锚点、最小 provenance、正式校验、CI 门禁和表单流程版本引用首个稳定领域试点纳入知识模型 0.3.16。它是研发影响分析基础，不是自动完整代码依赖图，也不表示运行时已经直接加载知识目录。"
+    context: >-
+      provenance: original-evidence；本次升级将事实目录、实现锚点、最小 provenance、正式校验、CI 门禁和表单流程版本引用首个稳定领域试点纳入知识模型 0.3.16。它是研发影响分析基础，不是自动完整代码依赖图，也不表示运行时已经直接加载知识目录。
+      2026-10-12 范围同步：以下原声明保留首次 P0 切片的历史事实与实施边界，DEC-0038-04 不再解释为对所有后续 P0/P1 切片中的标准映射或 SHACL 校验试点全面禁止；当前有明确用途的小范围映射或校验试点适用 DEC-0076-01。
+      该部分替代不使本决策整体失效：首次切片未引入这些能力的历史、不要求图数据库或自动完整代码依赖图、生产不直接加载研发知识目录及其余声明继续按各自范围保留。历史独立质量门禁的 resolved 仅属于当时的验证范围，不能继承为当前全库语义或运行验收。
     decisionStatements:
       - id: DEC-0038-01
         statement: "provenance: implementation-constraint；知识模型 0.3.16 的 schema 1.1.0 正式支持 facts、implementationAnchors 及其 sourceRevision、sourceLocator、capturedAt、reviewStatus provenance 字段。"
@@ -32,6 +35,7 @@ decisions:
       - evidence.ontology-p0-validation-workflow
       - evidence.ontology-impact-analysis-form-process-binding
       - evidence.ontology-p0-coverage-review
+      - evidence.ontology-guided-pilot-confirmed
     acceptanceScenarios:
       - id: scenario.ontology-p0-version-consistency
         given: 仓库中存在知识模型 schema 和多个知识资产
