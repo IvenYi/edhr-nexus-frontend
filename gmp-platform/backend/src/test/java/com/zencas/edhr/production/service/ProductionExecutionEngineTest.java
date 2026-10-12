@@ -118,6 +118,37 @@ class ProductionExecutionEngineTest {
         verify(access).sign(anyString(), anyString(), eq("SUBMIT"), any(), eq(signer));
     }
 
+    @Test void activeButtonSignatureFillsActualSignerAndAllowsReporterProjection() throws Exception {
+        var snapshot = withForm();
+        var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);
+        ((com.fasterxml.jackson.databind.node.ArrayNode) form.path("fields")).addObject().put("id", "signed").put("name", "报工签名").put("type", "signature");
+        form.set("entryNode", tree("""
+            {"id":"entry","data":{"kind":"START","config":{"buttonEvents":[
+              {"id":"sign","event":"BEFORE","action":"SUBMIT","builtin":"FILL_SIGN_FIELD","signatureMethod":"ACCOUNT_PASSWORD","enabled":true}]}}}
+            """));
+        form.putObject("binding").putObject("eventBindings").putObject("entry:sign").put("fieldId", "signed");
+        form.set("projection", tree("""
+            {"version":"form-projection-v1","bindings":[{"id":"report","modelId":"production","enabled":true,
+             "sources":{"goodQuantity":"temperature","reporter":"signed"}}]}
+            """));
+        var signer = new ExecutionAccess.ButtonSigner("2", "实际报工人", "worker2", "SIGNATURE_PASSWORD", "901");
+        when(access.authenticateButtonSigner("worker2", "secret")).thenReturn(signer);
+        when(access.sign(anyString(), anyString(), eq("SUBMIT"), any(), eq(signer))).thenReturn("123");
+        var state = engine.initialState(snapshot); engine.start(snapshot, state, "a", "1");
+        engine.formAction(snapshot, state, "a", "f", "SUBMIT", tree("{\"temperature\":25}"), null, "worker2", "secret", "1");
+        var formState = state.at("/operations/a/forms/f");
+        assertThat(formState.path("status").asText()).isEqualTo("COMPLETED");
+        var signed = formState.path("values").path("signed");
+        assertThat(signed.path("signerId").asText()).isEqualTo("2");
+        assertThat(signed.path("signerName").asText()).isEqualTo("实际报工人");
+        assertThat(signed.path("signatureId").asText()).isEqualTo("123");
+        var projected = com.zencas.edhr.template.service.FormProjectionInterpreter.preview(form, formState.path("values")).get(0).path("attributes");
+        assertThat(projected.path("reporterId").asText()).isEqualTo("2");
+        assertThat(projected.path("goodQuantity").asInt()).isEqualTo(25);
+        verify(access).authenticateButtonSigner("worker2", "secret");
+        verify(access).canAct(any(), any(), any(), eq("2"));
+    }
+
     @Test void disabledDirectSignatureEventIsNotExecuted() throws Exception {
         var snapshot = withForm();
         var form = (ObjectNode) snapshot.path("operations").get(0).path("forms").get(0);

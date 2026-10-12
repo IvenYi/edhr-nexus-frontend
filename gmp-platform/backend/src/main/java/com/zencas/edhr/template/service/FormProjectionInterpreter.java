@@ -142,8 +142,9 @@ public final class FormProjectionInterpreter {
                     String mode = "productionDate".equals(entry.getKey()) ? "date" : "datetime";
                     if (!"datetime".equals(source.path("type").asText()) || !mode.equals(source.path("typeConfig").path("mode").asText("datetime")))
                         throw invalid(ATTRIBUTES.get(entry.getKey()) + ("date".equals(mode) ? "请选择日期字段" : "请选择包含日期的日期时间字段"));
-                } else if ("reporter".equals(entry.getKey()) && "reference".equals(source.path("type").asText())) {
-                    if (!"user".equals(source.path("typeConfig").path("sourceType").asText())) throw invalid("报工人请选择人员引用或文本字段");
+                } else if ("reporter".equals(entry.getKey())) {
+                    if (!"signature".equals(source.path("type").asText()) && !("reference".equals(source.path("type").asText())
+                            && "user".equals(source.path("typeConfig").path("sourceType").asText()))) throw invalid("报工人请选择人员引用或签名字段");
                 } else if (DICTIONARIES.contains(entry.getKey()) && "reference".equals(source.path("type").asText())
                         && "dictionary".equals(source.path("typeConfig").path("sourceType").asText())) {
                     // Dictionary values are frozen unit codes, not conversion rules.
@@ -211,6 +212,15 @@ public final class FormProjectionInterpreter {
                 if (!raw.isObject() || !raw.path("id").asText().matches("[1-9][0-9]*") || raw.path("name").asText().isBlank())
                     throw invalid("请选择物料主数据：" + fieldId);
                 attributes.set(key, raw.deepCopy());
+            } else if ("reporter".equals(key) && "signature".equals(field(fields, fieldId).path("type").asText())) {
+                if (!raw.isMissingNode() && !raw.isNull() && !(raw.isTextual() && raw.asText().isBlank())) {
+                    if (!raw.isObject() || !"signature".equals(raw.path("type").asText())
+                            || !raw.path("signerId").asText().matches("[1-9][0-9]*") || raw.path("signerName").asText().isBlank()
+                            || !raw.path("signatureId").asText().matches("[1-9][0-9]*")) throw invalid("报工人来源缺少有效签署人信息：" + fieldId);
+                    attributes.put(key, raw.path("signerId").asText());
+                    attributes.put(key + "Id", raw.path("signerId").asText());
+                    attributes.put(key + "Label", raw.path("signerName").asText());
+                }
             } else {
                 JsonNode sourceField = field(fields, fieldId);
                 String value = "reference".equals(sourceField.path("type").asText())

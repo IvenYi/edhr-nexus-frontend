@@ -49,7 +49,7 @@ def field(id, name, type, config=None):
 fields = [field('good1', '第一笔良品数', 'number'), field('hours1', '第一笔投入人时', 'number'),
           field('good2', '第二笔良品数', 'number'), field('hours2', '第二笔投入人时', 'number'),
           field('start', '报工开始时间', 'datetime', {'mode': 'datetime'}), field('end', '报工结束时间', 'datetime', {'mode': 'datetime'}),
-          field('date', '生产日期', 'datetime', {'mode': 'date'}), field('reporter', '报工人', 'text')]
+          field('date', '生产日期', 'datetime', {'mode': 'date'}), field('reporter', '报工人', 'reference', {'sourceType': 'user'})]
 columns = [field('mat', '报废物料', 'reference', {'sourceType': 'material'}), field('qty', '报废数量', 'number'),
            field('cause', '报废原因', 'singleSelect', {'options': [{'value': 'scratch', 'label': '划伤'}, {'value': 'dirty', 'label': '污染'}]}),
            field('kind', '报废分类', 'text'), field('note', '现场说明', 'text')]
@@ -109,7 +109,8 @@ def query(model_id, filters=None):
 
 
 action('START')
-values = {'good1': 10, 'hours1': 3.5, 'good2': 20, 'start': '2026-10-12T23:00', 'end': '2026-10-13T01:00', 'date': '2026-10-12', 'reporter': '虚构操作员',
+values = {'good1': 10, 'hours1': 3.5, 'good2': 20, 'start': '2026-10-12T23:00', 'end': '2026-10-13T01:00', 'date': '2026-10-12',
+          'reporter': {'id': '1', 'sourceType': 'user', 'code': 'admin', 'name': '管理员'},
           'scraps': [{'mat': {'id': '1053002', 'name': '虚构螺丝', 'code': CODE + '-M', 'sourceType': 'material'}, 'qty': 2, 'cause': 'scratch', 'kind': '外观', 'note': '边缘划伤'},
                      {'mat': {'id': '1053002', 'name': '虚构螺丝', 'code': CODE + '-M', 'sourceType': 'material'}, 'qty': 3, 'cause': 'dirty', 'kind': '外观', 'note': '表面污染'}]}
 action('SAVE', values)
@@ -127,7 +128,7 @@ else:
 assert report['totals'][0]['goodQuantity'] == 30 and report['totals'][0]['workHours'] == 3.5
 assert sum('workHours' in row['attributes'] for row in report['records']) == 1
 assert query('production', {'productionDateFrom': '2026-10-13'})['total'] == 0
-assert query('production', {'productionDateTo': '2026-10-12', 'reporter': '虚构操作员', 'workOrderNo': CODE + '-WO'})['total'] == 2
+assert query('production', {'productionDateTo': '2026-10-12', 'reporter': '管理员', 'workOrderNo': CODE + '-WO'})['total'] == 2
 assert query('scrap')['totals'][0]['quantity'] == 5
 assert query('scrap', {'reason': '划伤'})['totals'][0]['quantity'] == 2
 assert {row['details'][0]['value'] for row in query('scrap')['records']} == {'边缘划伤', '表面污染'}

@@ -48,6 +48,45 @@ class FormProjectionInterpreterTest {
         values.remove("date"); values.put("start", "2026-10-13T10:00").put("end", "2026-10-13T09:00");
         assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("结束时间不能早于");
     }
+    @Test void reporterAcceptsOnlyUserReferenceOrSignatureAndUsesActualSigner() throws Exception {
+        var model = reportModel();
+        var person = (ObjectNode) model.path("fields").get(5);
+        person.put("type", "text");
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("人员引用或签名");
+        person.put("type", "singleSelect");
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("人员引用或签名");
+        person.put("type", "reference").putObject("typeConfig").put("sourceType", "equipment");
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("人员引用或签名");
+        person.put("type", "signature"); person.remove("typeConfig");
+        var values = mapper.createObjectNode().put("qty", 10).put("hours", 3.5);
+        values.putObject("person").put("type", "signature").put("signatureId", "123").put("signerId", "7").put("signerName", "员工七");
+        var attrs = FormProjectionInterpreter.preview(model, values).get(0).path("attributes");
+        assertThat(attrs.path("reporterId").asText()).isEqualTo("7");
+        assertThat(attrs.path("reporterLabel").asText()).isEqualTo("员工七");
+        assertThat(attrs.path("workHours").decimalValue()).isEqualByComparingTo("3.5");
+        values.put("person", "员工七");
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("有效签署人");
+        values.putObject("person").put("type", "signature").put("signerId", "7").put("signerName", "员工七");
+        assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("有效签署人");
+        values.put("person", "");
+        assertThat(FormProjectionInterpreter.preview(model, values).get(0).path("attributes").has("reporter")).isFalse();
+        values.putNull("person");
+        assertThat(FormProjectionInterpreter.preview(model, values).get(0).path("attributes").has("reporter")).isFalse();
+    }
+    @Test void subtableSignatureReportersStayWithTheirOwnRows() throws Exception {
+        var model = reportModel();
+        ((ObjectNode) model.path("fields").get(5)).put("type", "signature");
+        var columns = model.path("fields").deepCopy();
+        model.putArray("fields").addObject().put("id", "rows").put("type", "subTable").putObject("typeConfig").set("columns", columns);
+        ((ObjectNode) model.path("projection").path("bindings").get(0)).put("tableId", "rows");
+        var records = FormProjectionInterpreter.preview(model, mapper.readTree("""
+          {"rows":[{"__rowId":"a","qty":10,"person":{"type":"signature","signatureId":"101","signerId":"7","signerName":"员工七"}},
+                   {"__rowId":"b","qty":20,"person":{"type":"signature","signatureId":"102","signerId":"8","signerName":"员工八"}}]}
+          """));
+        assertThat(records.get(0).path("attributes").path("reporterId").asText()).isEqualTo("7");
+        assertThat(records.get(1).path("attributes").path("reporterId").asText()).isEqualTo("8");
+        assertThat(records.get(0).path("sources").path("reporter").asText()).isEqualTo("person");
+    }
     @Test void subtableHoursRemainPerRowAndCannotBorrowHeaderHours() throws Exception {
         var model = reportModel();
         var columns = model.path("fields").deepCopy();

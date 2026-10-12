@@ -1,5 +1,10 @@
 knowledgeModelVersion: 0.3.24
 evidence:
+  - id: evidence.form-projection-report-source-visibility-and-reporter-20261013
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: user-confirmed；2026-10-13同切片最新原话要求报表使用的来源直接呈现在展开配置内、静态说明移tip、人时helper删除，报工人候选仅人员引用或签名。支持DEC-0075-36，局部替代此前文本报工人与可选业务来源默认折叠的工程选择。具体校验保持可见，展示不改变必填性、统计粒度或真实归属；签名只读保存的实际签署人身份与名称，不改变认证/权限/流程，也不按签名人数计量。追加original-evidence为字段签署与按钮签署的两条现有路径及后者旧文本回填缺陷、结构化回填修复；不能将只核对SIGN_FIELD当成全部签名报工人链已验收。原话、截图定位、当前源码事实及未验收边界分开记录，不证明客户易用性或整体MVP通过。
+    visibility: internal
   - id: evidence.form-traceability-projection-ownership-user-confirmed
     type: document
     path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md

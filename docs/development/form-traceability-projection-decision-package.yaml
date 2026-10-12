@@ -2,10 +2,10 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
-  # 2026-10-13手填人时与字段链、三类专用逐笔报表已实现，基础测试和真实API证据见报表复核第8节；局部implemented/internal，独立QA尚待，不标verified。可选性、单人来源与严格日期类型仍是inferred工程选择。
+  # 2026-10-13手填人时与字段链、三类专用逐笔报表已实现，基础测试和真实API证据见报表复核第8节，该切片独立QA已通过；来源展示与签名报工人修正的全新独立复验见第9节。局部implemented/internal，不标整体verified。可选性、单人来源与严格日期类型仍是inferred工程选择。
   # 2026-10-12原始证据复核区分列表、采集、工作台合计与产出回写；竞品部署列表精确分组仍有证据缺口，不阻断我方当前字段和专用列表切片，也不作为新增分组依据。
   # 2026-10-12用户确认侧栏按业务逐条配置、画布点选/下拉同源、消耗明细/报废明细/报工记录术语；本轮L1精简影响、成功标准和验证见form-projection-configuration-simplification-2026-10-12.md增量。沿用原来源和快照契约，无新统计口径。
-  summary: 同一首次完成投影切片保留真实执行归属、主表与子表、使用时快照和产品预设报表。2026-10-10运行修正覆盖保存后独立追溯、同实例与同实际行匹配、隐藏行身份、默认值持久化、可空批号/单位、明细额外展示及统一配置查询。2026-10-13已实现数字字段手填人时、独立报工时间/报工人来源、原因分类字典快照、三类专用逐笔列/过滤与原分组人时合计。正式统计仍等最终完成和投影成功；基础测试及主智能体真实API验证见报表复核第8节，独立QA尚待，不标verified。上下文自动带入、Q6错误值、无上下文登记及A12仍不在本轮，不宣称完整MVP。
+  summary: 同一首次完成投影切片保留真实执行归属、主表与子表、使用时快照和产品预设报表。2026-10-10运行修正覆盖保存后独立追溯、同实例与同实际行匹配、隐藏行身份、默认值持久化、可空批号/单位、明细额外展示及统一配置查询。2026-10-13已实现数字字段手填人时、独立报工时间/报工人来源、原因分类字典快照、三类专用逐笔列/过滤与原分组人时合计。正式统计仍等最终完成和投影成功；基础及独立验证见报表复核第8节，来源展示及签名报工人修正的全新独立QA已passed，见第9节，不标整体verified。上下文自动带入、Q6错误值、无上下文登记及A12仍不在本轮，不宣称完整MVP。
   # 2026-10-05预置项复核时管理员目录尚未实现；从冠骋原始字段与消费者提炼候选，见form-projection-preset-source-review-2026-10-05.md。该历史增量不修改运行目录、统计默认、数据库或未决问题；10-07当前实现以目录切片记录为准。
   # 同日整体补查：直接核对冠骋前端设计器8种追溯/21种业务字段和后端41种注册声明，补字典选项/取值来源/动作分层；候选非运行默认，未新增字段类型、统计规则或Q17答案。
   # 同日追加：查找与追溯、业务统计是并列可选任务，可仅其一/两者/都不配；部分字段可配置生产上下文自动带入。统计归属独立来自实际执行上下文。Q15-Q17保留独立索引时机、结果页面及字段带入生命周期，当前formTrace完成路径不替未来需求定版。
@@ -25,6 +25,25 @@ decisionPackage:
     concepts: []
     relationships: []
     rules:
+      - id: design-rule.form-projection.report-field-visibility-and-reporter
+        name: 业务报表字段默认展示与报工人来源
+        status: specified
+        trigger: form-projection.configure-report-sources
+        condition:
+          all:
+            - fact: projection.modelId
+              operator: in
+              value: [production, scrap, consumption]
+        result:
+          type: constrain-source-configuration
+          reportFieldSourcesCollapsedByDefault: false
+          requirednessChangedByVisibility: false
+          staticHelpPresentation: tooltip
+          workHoursHelperParagraph: false
+          reporterSourceTypes: [user-reference, signature]
+          signatureReporterValue: actual-signer-identity
+          signatureAuthenticationChanged: false
+        sourceReferences: [user-confirmed-20261013-report-source-visibility-and-reporter]
       - id: design-rule.form-projection.report-person-hours-and-period
         name: 报工人时与开始结束时间分开记录
         status: implemented
@@ -545,7 +564,7 @@ decisionPackage:
     executionContracts: []
   inferred:
     - id: inference.form-projection.business-report-field-implementation-20261013
-      statement: 在已授权开发范围新增可选workHours、reportStartTime、reportEndTime、productionDate、reporter来源；工时只接受数字来源，业务时间使用严格日期类型，报工人先支持单人用户引用或文本。reason/category适配字典标识与显示快照，三类业务使用专用逐笔列与过滤。保留已有合计分组，并合计明确保存的人时；不将新字段可选或单人限制伪称用户确认。
+      statement: 在已授权开发范围新增可选workHours、reportStartTime、reportEndTime、productionDate、reporter来源；工时只接受数字来源，业务时间使用严格日期类型。报工人来源现由2026-10-13追加确认收紧为人员引用或签名，不再沿用文本工程选择。reason/category适配字典标识与显示快照，三类业务使用专用逐笔列与过滤。保留已有合计分组，并合计明确保存的人时；不将新字段可选或单人限制伪称用户确认。
       rationale: 复用现有来源、attributes/details、完成投影和报表契约，以最小工程范围补齐已识别消费者需求；不新增自动工时、多人绩效、原因分配、库存、产出回写或自定义报表平台。
       relatedIds: [DEC-0075-35, docs/development/form-projection-business-report-field-review-2026-10-12.md]
     - id: inference.form-projection.clarified-runtime-correction-20261010
@@ -621,8 +640,11 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: report-source-sidebar-20261013-followup
+        change: 业务报表字段默认展示；说明移至对应tip、人时说明删除；报工人前后端只接受人员引用或签名，签名读实际签署人。独立QA发现现用FILL_SIGN_FIELD按钮回填文本不能作为报工人，现修正为已认证签署人及已保存signatureId结构，与SIGN_FIELD路径一致。
+        evidenceReferences: [user-confirmed-20261013-report-source-visibility-and-reporter, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
       - area: business-report-fields-implementation-20261013
-        change: 已实现三类逐笔报表、专用列与过滤，数字手填人时、独立报工起止及生产日期、报工人来源和原因分类字典快照适配；模板候选、来源类型校验、正式事实与查询同步修改。原分组增加人时合计，无自动工时算法；基础测试及主智能体真实API验证已完成，独立QA尚待，详细证据见报表复核第8节。
+        change: 已实现三类逐笔报表、专用列与过滤，数字手填人时、独立报工起止及生产日期、报工人来源和原因分类字典快照适配；模板候选、来源类型校验、正式事实与查询同步修改。原分组增加人时合计，无自动工时算法；基础及独立QA已通过，详细证据见报表复核第8节，后续来源及签名修正的全新独立复验见第9节。
         evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - area: business-report-field-review-20261012
         change: 核对用户六张原始截图和冠骋字段到保存链，纠正当前合计键等于完整需求及非分组字段只能下钻的解释；补齐三用途属性与消费者矩阵。原始列表部署配置仍有缺口；我方人时已明确为用户数字字段填写、不计算，报工起止分别采集，不将竞品未查明分组或算法提升为规则。
@@ -676,6 +698,9 @@ decisionPackage:
         change: 记录用户确认的用途投影、数量来源、独立质量统计与未实现边界，尚未闭环能力保持planned/internal。
         evidenceReferences: [docs/knowledge/README.md]
     transitiveImpacts:
+      - area: reporter-projection-and-query
+        change: 签名来源只投影签署人身份和名称快照，逐笔列表与人员筛选沿既有reporter属性，不推算人时或改变签署权限。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]
       - area: typed-business-facts-and-consumers-20261013
         change: 主表与子表共用类型化角色、来源校验和快照解释；逐笔列、筛选、详情与既有合计读取同一正式事实。空缺新增值不使用0、今天、创建人填补，也不让筛选后的人时与未筛选数量混合。
         evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
@@ -709,8 +734,10 @@ decisionPackage:
         evidenceReferences: []
     unaffectedAreas:
       - area: production-signature-and-dhr-lifecycle
-        reason: 不修改签署身份、生产完成条件、DHR归集和冻结成员；不自动创建DHR、不做库存动作。
+        reason: 不修改签署认证、权限、生产完成条件、DHR归集和冻结成员；按钮签署只修正已认证身份的签名字段回填结构，不自动创建DHR、不做库存动作。
     compatibilityAndMigration:
+      - area: reporter-source-constraint-20261013
+        requirement: 无数据库结构迁移。旧文本报工人映射不得静默转换为人员或签名；编辑来源时标明不匹配，MVP演示数据可修复或作废。已完成快照不被新模板配置重写。
       - area: new-report-role-values-20261013
         requirement: 优先复用既有attributes/details；本次新增可选角色的旧缺失值保持未记录，不伪造人时、生产日期或报工人。MVP旧开发数据允许修复或作废，但未来正确来源快照不重解释；是否需要结构迁移按实际实现记录，不预称已执行。
       - area: mvp-development-history-policy
@@ -722,14 +749,14 @@ decisionPackage:
         requirement: 原非开发数据库保持隔离，功能使用独立edhr_form_projection及虚构数据；本功能MVP开发历史允许修复迁移或作废，取消对旧试验数据一律不转换的限制，未来正确数据使用快照继续有效。
     snapshotImpacts:
       - area: typed-report-role-snapshots-20261013
-        requirement: 新角色的配置随使用冻结，正式完成时保存实际来源值；字典及人员标识和显示值保留快照。查询不读取最新模板或当前字典名称替换历史事实，不根据起止重算已保存人时。
+        requirement: 新角色的配置随使用冻结，正式完成时保存实际来源值；字典及人员标识和显示值保留快照。字段签署与按钮签署均保存实际签署人标识、姓名和签名证据ID，报工人引用此结构；查询不读取最新模板或当前字典名称替换历史事实，不根据起止重算已保存人时。
       - area: future-query-catalog-binding
         requirement: 来源映射继续在使用时进入快照，结果读取当时名称/类型/修订号；当前实现曾对无目录快照旧来源沿v1解释，该旧MVP格式兼容不是未来要求。旧开发数据按新策略处理，未来正确实例不被最新目录/模板静默重解释；完整目录生命周期仍待设计。
       - area: future-projection
         requirement: 首次执行或后续挂接表单时冻结当时配置及目录版本；最终值与生产上下文、来源回查读取投影批次快照，不读取最新模板替代。
     auditImpacts:
       - area: business-time-and-reporter-20261013
-        requirement: 报工开始、结束、生产日期和报工人是业务来源，审计创建/修改身份与时点继续真实记录、准确命名；不从当前用户或提交时间补业务事实，不改变签名或最终完成时机。
+        requirement: 报工开始、结束、生产日期和报工人是业务来源，审计创建/修改身份与时点继续真实记录、准确命名；不从当前用户或提交时间补业务事实，不改变签署认证、签名证据创建或最终完成时机。FILL_SIGN_FIELD回填复用已有access.sign返回的证据ID及authenticateButtonSigner返回的实际签署人，不把会话操作者替代成签署人。
       - area: future-query-catalog-management
         requirement: 新增与显示信息编辑记录FORM_LOOKUP_ITEM审计，与目录写入同事务；并发修订号防止覆盖。不提供改变含义/类型或删除定义的接口，完整停用生命周期仍另行收敛。
       - area: future-projection
@@ -742,8 +769,11 @@ decisionPackage:
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: report-source-sidebar-and-signature-reporter
+        scenarios: [默认业务字段可见, tip与校验分离, 人员引用及签名候选, 拒绝文本及其他引用, 字段签署人与按钮实际签署人投影, 签名按钮完成与报表过滤, 无图片签名对象展示, 保存重开, 主表子表相邻回归]
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
       - scope: business-report-fields-20261013
-        scenarios: [数字来源人时与起止差值无关, 日期与日期时间来源兼容及无效值校验, 新增字段缺失不补0或审计值, 单人引用或文本报工人与创建人区分, 原因分类字典显示快照及过滤, 主表多笔与子表逐行不串值, 保存重开及使用快照稳定, 最终完成前不产生统计, 专用逐笔列与过滤一致, 原有分组及空单位隔离且人时合计, 统一UI与必要真实交互, 既有权限边界]
+        scenarios: [数字来源人时与起止差值无关, 日期与日期时间来源兼容及无效值校验, 新增字段缺失不补0或审计值, 人员引用或签名报工人与创建人区分, 原因分类字典显示快照及过滤, 主表多笔与子表逐行不串值, 保存重开及使用快照稳定, 最终完成前不产生统计, 专用逐笔列与过滤一致, 原有分组及空单位隔离且人时合计, 统一UI与必要真实交互, 既有权限边界]
         evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
       - scope: configuration-feedback-20261011
         scenarios: [多项追溯与多统计用途的原始源码核对, 未展开即可移除与撤销, 缺项与重复数量定位, 对应来源标红和修复后消失, 顶部保存与重开, 公共tip不变, 构建与浏览器核验]

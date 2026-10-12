@@ -87,6 +87,24 @@ class FormProjectionPostgresTest {
         assertThatThrownBy(() -> reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, java.util.Map.of("productionDateFrom", "2026-10-13", "productionDateTo", "2026-10-12"), 0, 20, null, null))).hasMessageContaining("结束日期");
     }
 
+    @Test void signatureReporterIsFrozenAndQueryableWithoutChangingQuantities() throws Exception {
+        var form = form();
+        ((com.fasterxml.jackson.databind.node.ArrayNode) form.path("fields")).addObject().put("id", "person").put("type", "signature");
+        ((ObjectNode) form.path("projection").path("bindings").get(0).path("sources")).put("reporter", "person");
+        var values = values();
+        values.putObject("person").put("type", "signature").put("signatureId", "123").put("signerId", "7").put("signerName", "员工七");
+        tx.executeWithoutResult(status -> projection.completed(1, "default", form, values, mapper.createObjectNode(), "a"));
+        ((ObjectNode) values.path("person")).put("signerName", "后来改名");
+        tx.executeWithoutResult(status -> projection.process(batchId()));
+        var result = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, java.util.Map.of("reporter", "员工七"), 0, 20, null, null)).getData();
+        assertThat(result.path("total").asInt()).isEqualTo(1);
+        assertThat(result.path("records").get(0).path("attributes").path("reporterId").asText()).isEqualTo("7");
+        assertThat(result.path("totals").get(0).path("goodQuantity").asInt()).isEqualTo(100);
+        var empty = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, java.util.Map.of("reporter", "后来改名"), 0, 20, null, null)).getData();
+        assertThat(empty.path("total").asInt()).isZero();
+        assertThat(empty.path("totals")).isEmpty();
+    }
+
     @Test void scrapCauseLabelsFilterWholeRecordsWithoutChangingGrouping() throws Exception {
         enqueue(form()); tx.executeWithoutResult(status -> projection.process(batchId()));
         jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'scrap1','form','scrap','{\"material\":{\"id\":\"1\",\"code\":\"M-1\",\"name\":\"螺丝\"},\"quantity\":2,\"reason\":\"scratch\",\"reasonLabel\":\"划伤\",\"category\":\"appearance\",\"categoryLabel\":\"外观\"}','{}','')", batchId());

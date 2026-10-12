@@ -62,6 +62,8 @@ export default function ProjectionDialog({ open, onClose, focusField }: {
   };
   const renderSample = (field: ModelField, tableId: string, rowIndex: number) => {
     const key = previewSampleKey(tableId, rowIndex, field.id);
+    if (field.type === 'signature') return <TextField key={key} size="small" fullWidth label={field.name}
+      disabled value="正式签署后取签署人" />;
     if (field.type === 'reference') {
       const row = tableId ? (previewValues[tableId] as Record<string, unknown>[])[rowIndex] : previewValues;
       return <RuntimeReference key={key} field={field} disabled={false} runtime={{

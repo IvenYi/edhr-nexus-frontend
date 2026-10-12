@@ -308,7 +308,8 @@ public class ProductionExecutionEngine {
                 {
                     JsonNode field = find(form.path("fields"), fieldId);
                     if (!"signature".equals(field.path("type").asText())) throw invalid("签名绑定不是签名字段");
-                    merged.put(fieldId, actionOperator + " · " + LocalDateTime.now() + " · " + signature);
+                    merged.putObject(fieldId).put("type", "signature").put("signatureId", signature)
+                            .put("signerId", signer.id()).put("signerName", signer.name()).put("signedAt", LocalDateTime.now().withNano(0).toString());
                 }
             }
         }

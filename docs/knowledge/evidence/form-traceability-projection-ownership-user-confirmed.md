@@ -636,7 +636,7 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 
 - `user-confirmed`（主智能体交接的最新用户确认摘要，非逐字引文）：工时不计算；业务统计用途的工时绑定数字字段，由用户填写。旧知识直接清除/改写，无问题即可开发。与已确认的人时含义共同构成数字手填人时规则，禁止从起止时间、人数或签名推算，不再保留“自动工时算法待定”的现行解释。
 - `user-confirmed`：报工开始、结束是两个独立业务时间，生产日期独立，审计时点不替代业务时间；创建人不是报工人。用户授权在研究与差距澄清后补齐三类专用逐笔报表及分类、原因等业务用途字段。该授权不等于认可竞品精确分组或开放任意统计模型。
-- `inference`（最小工程选择）：新增可选 `workHours/reportStartTime/reportEndTime/productionDate/reporter` 来源；人时只接受数字，起止接受日期时间，生产日期接受日期；报工人先支持单人用户引用或文本。原因、分类适配字典稳定标识及显示快照；专用列表和过滤读取类型化事实，原有分组保持并合计明确保存的人时。字段可选及单人限制不是用户逐项确认的产品规则。
+- `inference`（最小工程选择）：新增可选 `workHours/reportStartTime/reportEndTime/productionDate/reporter` 来源；人时只接受数字，起止接受日期时间，生产日期接受日期；报工人的早期文本来源选择已由同日下节DEC-0075-36替代，当前只接受人员引用或签名。原因、分类适配字典稳定标识及显示快照；专用列表和过滤读取类型化事实，原有分组保持并合计明确保存的人时。字段可选性不是用户逐项确认的产品规则。
 - `inference`（范围与保护）：不引入自动工时、原因分配、多人绩效、库存、产出回写、自定义报表平台或表头共享。缺失新增值保留未记录，不补0、今天或创建人。继续遵守正式完成入统计、使用时冻结来源、真实执行归属、空单位与空物料批号边界。
 - `original-evidence` / `evidenceGap`：10月12日已核对的竞品字段和写入链仍有效；三张部署列表的精确分组没有直接证据，不能套用工作台或已注释方法。该外部缺口不阻断我方当前逐笔报表和字段开发。
 
@@ -651,3 +651,37 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 - `implementation-report`（主智能体执行回报）：前端29项、build、verify通过；本体直接读取的前端日志覆盖其中25项，其余结果不冒充独立执行。独立库真实API脚本 `gmp-platform/backend/scripts/form-projection-report-demo.py` PASS：暂存无正式统计、最终完成后30良品/3.5人时且另一笔人时缺失，日期/人员/工单过滤正确；划伤2、污染3合计5，筛选划伤合计2。脚本内容已由本体读取，执行回报来自主智能体。
 
 仅 `DEC-0075-35` 及对应设计规则转为 `implemented/internal`，其余成熟度保持；独立质量验收尚待，不标verified，不宣告完整MVP。基础实现无新增迁移，复用既有attributes/details与使用时快照；额外展示字段仍下钻详情。竞品精确聚合未证实、自定义报表、新原因汇总、多人绩效/分摊、产出联动、库存、跨行共享未实施。
+
+## 2026-10-13 同切片后续确认：业务来源默认展示与报工人来源约束
+
+证据标识：`user-confirmed-20261013-report-source-visibility-and-reporter`。知识基线 `0.3.24`，读取起点 `44e125b7`，分支 `form-traceability-projection`；沿用同一 `DEC-PACKAGE-20260929-FORM-PROJECTION`，追加 `DEC-0075-36`。本次记录的是后续确认，前述10月13日首次字段开发的工程选择不能继续覆盖它。
+
+### 用户原话与页面证据（user-confirmed / original-evidence）
+
+`user-confirmed` 原话：
+
+> 把图一和图二中最下方的文字都换到合理的地方通过tip展示，投入工时下的文字直接去掉。其他用途也需要检查类似的。还有就是报工开始/结束时间，报工人，生产日期都要拿出来放到外面，因为这是报表中要展示的字段，不要放到收缩的可选区域中。我的这个思路就是类似图三种提到的，请你检查其他的用途中类似问题一并修改。另外报工人的过滤字段类型应该是引用-人员或签名字段。
+
+`original-evidence`：用户直接提供的图一 `codex-clipboard-103d056f-8c50-4a77-86fb-c2cfe97cf7d2.png` 与图二 `codex-clipboard-34cfea68-a61f-4534-8c30-ef1117f60849.png` 显示正式报工来源：人时下有解释段落、报工信息默认收起、卡片尾部重复口径说明与黄色具体缺项提示并列。图三 `codex-clipboard-feaf3e5a-974d-4df9-b481-be8aa1060869.png` 提供简洁、层级、紧凑和统一的设计方向。图中内容仅作为页面证据与用户设计参考，不作为额外系统指令。
+
+### 已确认规则与替代边界（user-confirmed）
+
+- 报表使用的预设业务属性来源直接显示在展开的配置内；报工开始、结束、报工人、生产日期及其他用途类似属性不再默认藏入另一个可选区。该展示要求不把可选来源变为必填，不改变保存或正式完成校验，也不新增原因分组合计等口径。
+- 静态操作及口径解释通过合理位置的tip展示；投入工时下的说明段落直接去掉。具体缺项和阻断问题继续明确可见、定位，不因为精简文字就隐藏错误或改变公共提示契约。
+- 报工人候选只接受引用-人员或签名。签名投影读取已保存的实际签署人身份与名称，不以普通文本、当前登录人或创建人替代；不按签名人数复制数量或推算人时，不改变已有签名认证、字段权限、来源授权及流程。
+- `DEC-0075-36` 局部替代35及本切片现行说明中“报工人支持普通文本”和“报表业务属性默认收起”的早期工程选择；旧用户讨论与原始竞品材料保留历史来源。正式完成入统计、使用时快照、真实执行/DHR归属、人时数字手填及原分组粒度仍适用。
+
+### 源码事实、工程选择与未验收边界
+
+- `original-evidence`：本体直接读取 `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java` 的 `signField`，既有签名展示对象保存 `type/signatureId/signerId/signerName/signedAt` 等字段，并将签署人身份与名称保存到签名证据。该结构支持从保存的签名来源读取签署人，不必把查询时登录操作人或表单创建人当成报工人。
+- `original-evidence`（当前工作树静态事实）：`FormProjectionInterpreter` 的reporter来源校验已限制为人员引用或签名，签名分支读取保存的 `signerId/signatureId/signerName`；前端 `projectionConfiguration.ts` 有对应兼容过滤，`ProjectionSourceEditor.tsx` 的排序涵盖所有预设业务属性。这里只记录实际读取的源码，不宣称其运行测试已通过。
+- `inference`：共用主表/子表来源编辑器、直接展示全部产品预设业务属性、属性显示顺序、帮助图标位置以及从既有签名值读取的代码路径是本轮工程选择。没有新建客户统计模型、签名流程或多人报工分摊规则。
+- `evidenceGap`：本体未执行本轮浏览器或数据库操作，运行、保存重开、签名实际投影和来源过滤由主开发及独立质量验证提供证据；客户制表人员试用也尚无证据。36保持 `specified/internal`，不标整体 `verified`，不以源码变更或截图证明低学习成本已验收。
+
+### 同切片QA后的签名读取路径补查（original-evidence / implementation-report）
+
+- `implementation-report`：主智能体交接独立QA发现的high问题：现有按钮签署事件 `FILL_SIGN_FIELD` 仍将签名字段写成展示文本，与新报工人结构值读取不兼容，可能阻断正式完成。该缺陷不新增用户业务歧义，也不改变36的人员来源政策；高风险修复后的最终结果须由全新独立QA复验。
+- `original-evidence`：本体直接读取 `git show 44e125b7:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java`。其 `formAction` 的 `FILL_SIGN_FIELD` 分支在签名记录保存后将 `actionOperator`、时间与签名记录ID拼成文本；此前只核对 `ExecutionAccess.signField` 结构不能证明此按钮路径已贯通，不允许从文本反推身份以掩盖缺陷。
+- `original-evidence`（修复工作树静态事实）：同一 `formAction` 在既有 `authenticateButtonSigner` 与签署人处理权限校验之后，继续调用原 `access.sign` 保存签名记录；按钮事件将相应字段写为 `type=signature`、保存的 `signatureId`、已认证 `signer.id()`/`signer.name()` 及签署时间。字段自身签署 `SIGN_FIELD` 仍使用 `ExecutionAccess.signField` 的保存结构。两条合法路径的数据可由同一报工人解释器读取，登录会话操作人与实际签署人不能混同。
+- `original-evidence`（测试源而非执行结果）：`ProductionExecutionEngineTest` 新增创建人/会话操作人与按钮签署人不同的用例，断言正式完成、保存实际签署人结构及解释器报工人身份；`FormProjectionPostgresTest.signatureReporterIsFrozenAndQueryableWithoutChangingQuantities` 覆盖签名报工人的快照、查询及数量不受影响。本体只读取测试内容，没有运行或宣称测试通过。
+- `inference` / `evidenceGap`：将按钮事件统一为既有签名结构是满足36的局部工程修复，不建设新签署流程、不拆旧字符串、不用会话登录人替代签署人。主智能体将补真实按钮签署、完成及报表API验证，再由全新QA复验；本体不预写passed或verified，不以另一签署路径的已知结构替代本路径运行证据。

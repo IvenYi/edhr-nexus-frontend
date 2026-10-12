@@ -65,14 +65,20 @@ test('report roles accept only compatible temporal and person sources, with manu
   const reporter = {id: 'reporter', type: 'text', referenceSources: ['user']};
   assert.equal(acceptsProjectionAttribute({type: 'reference', typeConfig: {sourceType: 'user'}}, reporter), true);
   assert.equal(acceptsProjectionAttribute({type: 'reference', typeConfig: {sourceType: 'equipment'}}, reporter), false);
+  assert.equal(acceptsProjectionAttribute({type: 'signature'}, reporter), true);
+  assert.equal(acceptsProjectionAttribute({type: 'text'}, reporter), false);
+  assert.equal(acceptsProjectionAttribute({type: 'singleSelect'}, reporter), false);
+  assert.equal(acceptsProjectionAttribute({type: 'signature', status: 'disabled'}, reporter), false);
   const hours = {id: 'workHours', name: '投入工时（人时）', type: 'number'};
   const qty = {id: 'goodQuantity', name: '良品数量', type: 'number'};
   const fields = [{id: 'n', name: '数量', type: 'number', typeConfig: {}}, {id: 'h', name: '人时', type: 'number', typeConfig: {}}];
   const binding = {id: 'p', modelId: 'production', sources: {goodQuantity: 'n', workHours: 'h'}};
   const {html} = renderEditor({fields}, binding, {id: 'production', attributes: [qty, hours, {id: 'productionDate', name: '生产日期', type: 'date'}]});
   assert.ok(html.includes('投入工时（人时）'));
-  assert.ok(html.includes('由填报人员填写，不自动计算'));
-  assert.ok(html.includes('报工信息（可选）'));
+  assert.ok(!html.includes('由填报人员填写，不自动计算'));
+  assert.ok(!html.includes('报工信息（可选）'));
+  assert.ok(html.includes('生产日期'));
+  assert.equal((html.match(/role="combobox"/g) ?? []).length, 4, 'all report roles and the detail selector are visible');
   assert.equal(acceptsProjectionAttribute(date, hours), false);
 });
 
@@ -205,18 +211,18 @@ test('configured subtable preserves multiple existing purposes but defers adding
   assert.equal(JSON.stringify(model), before, 'simplifying entry points must preserve every existing mapping');
 });
 
-test('optional mappings are summarized without rewriting values and invalid optional sources open for correction', () => {
+test('report fields are visible without expanding optional settings and preserve existing mappings', () => {
   const definition = {...consumption, attributes: [...consumption.attributes, {id: 'reason', name: '原因', type: 'text'}]};
   const binding = {...usage, sources: {material: 'material', quantity: 'qty', reason: 'lot'}};
   const fields = [material, quantity, lot];
   const {html, changes} = renderEditor({fields}, binding, definition);
-  assert.ok(html.includes('补充信息（可选）'));
-  assert.ok(html.includes('已配置：原因'));
-  assert.equal((html.match(/role="combobox"/g) ?? []).length, 5, 'four primary roles and display columns; optional controls stay collapsed');
+  assert.ok(!html.includes('补充信息（可选）'));
+  assert.ok(html.includes('原因'));
+  assert.equal((html.match(/role="combobox"/g) ?? []).length, 6, 'all five report roles and display columns are visible');
   assert.deepEqual(changes, []);
   const invalid = renderEditor({fields}, {...binding, sources: {...binding.sources, reason: 'removed'}}, definition, true).html;
   assert.ok(invalid.includes('“原因”的来源已失效'));
-  assert.ok(invalid.includes('aria-expanded="true"'));
+  assert.ok(invalid.includes('aria-invalid="true"'));
 });
 
 test('production instructions describe quantities rather than material lots, and add belongs to the purpose heading', () => {
@@ -226,7 +232,9 @@ test('production instructions describe quantities rather than material lots, and
   ]};
   const binding = {id: 'p', modelId: 'production', enabled: true, sources: {goodQuantity: 'qty'}};
   const {html} = renderEditor({fields: [quantity]}, binding, production);
-  assert.ok(html.includes('良品数量、不良品数量至少配置一项'));
+  assert.ok(html.includes('aria-label="来源配置说明"'));
+  assert.ok(html.includes('aria-label="明细展示字段说明"'));
+  assert.ok(!html.includes('单位可不填'));
   assert.ok(!html.includes('物料批号'));
   assert.ok(!html.includes('添加原因、分类'));
   const panel = renderPanel({fields: [quantity], projection: {bindings: [binding]}}, {version: 1, models: [production]});

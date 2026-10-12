@@ -143,12 +143,26 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0075-35
-        statement: 报工用途的工时表示投入人时，绑定由用户填写的数字字段；系统读取该值，不根据报工起止时间、人数或签名计算工时。报工开始时间与报工结束时间分别记录业务起止，生产日期独立记录，不以表单创建、提交、最终完成或投影处理等审计时点替代，也不将创建人当作报工人。该确认局部supersedes同切片2026-10-12报表复核中人时来源或自动算法尚待决定的解释，旧解释直接改写；不引入逐人工时、多人分摊、生产日期派生及表头共享规则。字段可选性与报工人先支持单人引用或文本属于当前最小实现选择，不伪称用户已确认。2026-10-13手填人时及独立时间/报工人来源链、专用逐笔报表已实现并完成主智能体基础验证，本条局部标implemented/internal，独立质量验收未完成、不标verified；真实执行归属、使用时快照、正式统计最终完成及其余未决口径保持不变。
+        statement: 报工用途的工时表示投入人时，绑定由用户填写的数字字段；系统读取该值，不根据报工起止时间、人数或签名计算工时。报工开始时间与报工结束时间分别记录业务起止，生产日期独立记录，不以表单创建、提交、最终完成或投影处理等审计时点替代，也不将创建人当作报工人。该确认局部supersedes同切片2026-10-12报表复核中人时来源或自动算法尚待决定的解释，旧解释直接改写；不引入逐人工时、多人分摊、生产日期派生及表头共享规则。字段可选性属于最小实现选择；报工人候选不再接受普通文本，依DEC-0075-36只接受人员引用或签名。2026-10-13手填人时及独立时间/报工人来源链、专用逐笔报表已实现并完成主智能体基础验证，本条局部标implemented/internal，不标verified；真实执行归属、使用时快照、正式统计最终完成及其余未决口径保持不变。
         status: implemented
         visibility: internal
+      - id: DEC-0075-36
+        statement: 在现有画布统计侧栏中，预设业务报表展示的来源字段默认直接呈现在展开的业务配置内，不放入另一个默认收起的可选区；正式报工的开始时间、结束时间、报工人、生产日期及其他用途的同类报表属性均适用。展示层级不改变字段是否必填、保存校验或统计分组。静态操作与口径说明移至对应tip，投入工时下的解释段落直接删除；具体缺项、错误来源及其他阻断问题仍须明确可见并定位，不只藏在tip。报工人来源只接受引用-人员或签名，签名来源读取已保存的实际签署人身份及名称，不以文本、查询时当前登录人或创建人替代，不按签名人数扩展或重复计量数量和人时。本条局部supersedes DEC-0075-35及同切片现行说明中允许文本报工人与报表业务来源默认折叠的最小工程选择；不改变签名认证、来源权限、字段权限、原流程、使用时快照、最终完成入统计及真实执行/DHR归属。共用来源编辑器、字段顺序及签名值的具体读取路径属于工程选择；字段签署SIGN_FIELD与按钮事件FILL_SIGN_FIELD两条既有合法路径均保留已认证实际签署人的身份、名称及签名记录标识，不拆解历史展示文本猜身份。后者的结构化回填是本轮缺陷修复，不是新签署流程或新业务授权。本条当前specified/internal，不宣称实现验收或客户低学习成本已经验证。
+        status: specified
+        visibility: internal
     supersedes: []
-    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013]
     acceptanceScenarios:
+      - id: scenario.form-projection-report-sources-directly-visible
+        given: 制表人员在主表或子表业务用途的侧栏展开一笔报工、报废或消耗配置
+        when: 对应业务报表存在时间、人员、原因、分类等预设展示属性的来源配置
+        then: 报表属性直接呈现在该配置内，不再另展开可选区；静态说明通过对应tip查看，人时下无解释段落，具体缺项校验仍可见。显示在外不把可选字段变成必填，也不改变额外展示列或合计粒度；此例为验收要求，不证明客户试用已完成
+        evidenceIds: [evidence.form-projection-report-source-visibility-and-reporter-20261013]
+      - id: scenario.form-projection-reporter-from-user-or-signature
+        given: 表单包含普通文本、人员引用、其他对象引用和保存了实际签署人信息的签名字段，创建人与签署人不同，签名可由字段签署或既有按钮签署事件回填
+        when: 制表人员选择报工人来源并在正式业务记录中读取该值
+        then: 候选仅包含人员引用及签名；文本与其他对象引用不作为报工人来源。两种合法签署路径均保存实际签署人身份、名称及签名记录标识，报工人从该保存值读取，不用创建人替代，不改变签名认证或将工时按签名人数计算；此例不证明运行验证已经完成
+        evidenceIds: [evidence.form-projection-report-source-visibility-and-reporter-20261013]
       - id: scenario.form-projection-person-hours-distinct-from-report-period
         given: 一笔报工的业务开始和结束之间经过2小时，填报人在所绑定数字字段中填写4人时，表单在稍后提交并最终完成
         when: 读取该笔报工的工时、业务时间与报工人来源
