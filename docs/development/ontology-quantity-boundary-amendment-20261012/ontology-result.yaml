@@ -1,0 +1,129 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+    targetBranch: edhr-dev
+    targetCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    contractReadCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+    uncommittedContractPaths:
+      - docs/knowledge/README.md
+  reason: 已按 DEC-PACKAGE-20261012-QUANTITY-BOUNDARY-AMENDMENT 完成授权的来源资格补正：两个争议组合规则撤为 deprecated/internal 历史表达，condition/result 保持 0d46558 原样；恢复明确待决问题，同步词条、说明与证据入口。启动时读取 0d46558 契约，交付前重新读取本次已修改的知识 README 及统一交接契约，现将实际读取的未提交 README 叠加路径记录在 contractBaseline；不反填为启动前已读取。该交付只恢复准确的未决边界，不选择正式数量下限；问题仅阻塞未来依赖该下限的业务调整。角色已完成 YAML、引用、状态投影、精确保留及静态原始来源核对，正式 Maven/JUnit 和独立质量门禁由主智能体收尾，不在本结果中冒称已运行。
+  changedArtifacts:
+    - path: docs/knowledge/rules/production.yaml
+      changeType: update
+      ids:
+        - rule.production.production-batch-input-quantity-required
+        - rule.production.mass-batch-quantity-distribution
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids:
+        - term.batch
+    - path: docs/knowledge/open-questions.yaml
+      changeType: update
+      ids:
+        - question.production-batch-quantity-lower-bound
+    - path: docs/knowledge/evidence/ontology-foundation-fact-types.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml
+      changeType: create
+      ids:
+        - evidence.production-batch-quantity-policy-boundary
+  knowledgeSync:
+    - id: rule.production.production-batch-input-quantity-required
+      disposition: historical
+      scope: 撤回未经充分确认的数量下限组合规则的当前规范资格，保留历史 AST/result；不取消 DEC-0014-03/-09 的必填及 DEC-0012-03 的 SN=1、总量约束，不授权放宽现有校验。
+      sourceReferences:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml
+        - docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    - id: rule.production.mass-batch-quantity-distribution
+      disposition: historical
+      scope: 撤回未经充分确认的每批数量下限组合规则的当前规范资格，历史 AST/result 保留；DEC-0014-12 和 scenario.production-batch-fixed-quantity-distribution 的按 Q 生成、末批余数及总量要求不变。
+      sourceReferences:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    - id: term.batch
+      disposition: updated
+      scope: 保留 BATCH 身份与工单计划范围，分开当前 >0 实现与尚未确认的正式下限，避免词条单独成为政策依据。
+      sourceReferences:
+        - docs/knowledge/open-questions.yaml
+        - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    - id: question.production-batch-quantity-lower-bound
+      disposition: deferred
+      scope: 新登记实际未决的 0<q<1 业务资格及末批余数依赖；只在未来需要确定或改变下限时阻塞相应开发，本次恢复待决记录交付不依赖该政策选择。
+      sourceReferences:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml
+        - docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    - id: evidence.production-batch-quantity-policy-boundary
+      disposition: updated
+      scope: 新增证据索引，分开 original-evidence、existing-confirmed-definition、inference 和本次用户授权范围，不把恢复待决认作选择阈值。
+      sourceReferences:
+        - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    - id: fact.catalog.split-targetquantity
+      disposition: retained
+      scope: decimal 类型、原始实现来源、>0 静态校验定位及来源提交按 0d46558 字节级保留；这些来源不被提升为用户确认的下限政策。
+      sourceReferences:
+        - docs/knowledge/facts/core-business.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+        - gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql
+    - id: fact.catalog.split-quantityperbatch
+      disposition: retained
+      scope: decimal 类型、页面数量模式与当前校验定位按 0d46558 字节级保留，与整数批次数分开。
+      sourceReferences:
+        - docs/knowledge/facts/core-business.yaml
+        - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.quantity-amendment-yaml
+      checkType: schema
+      command: python -（实际执行的 PyYAML 内联审查程序，带重复 YAML 键拒绝；检查结果见 ontology-checks.json）
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json
+        - 189 个知识 YAML 均可解析、无重复键，版本均为 0.3.25；新增开放问题和证据包含 schema 要求字段。此项不是正式 Maven schema 门禁的替代。
+    - id: validation.quantity-amendment-references
+      checkType: reference
+      command: python -（同次内联审查按 schema collectionTypes/nestedCollectionTypes 遍历全量 ID 并核对 evidenceIds）
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json
+        - 2315 个 ID 唯一且全部证据引用可解析；新问题及证据 ID 唯一，两个历史规则引用新的补正证据。
+    - id: validation.quantity-amendment-status-preservation
+      checkType: status-transition
+      command: python -（同次内联审查对比 git show 0d46558234a933a020430ccf6c6a064ecfa05687 的原始规则和保留文件）；git diff --check
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json
+        - production.yaml 仅两个规则发生 name/status/explanation/evidenceIds 改动；其 condition/result 与 0d46558 完全一致。
+        - 原词表仅 term.batch 的 definition 改动；原有开放问题顺序与内容保留。DEC-0012/0014、整个 core-business 事实文件、schema 和相关页面/服务/SQL 字节级不变；gmp-platform 与 tools 没有差异；git diff --check 通过。
+    - id: validation.quantity-amendment-projections
+      checkType: projection
+      command: python -（同次内联审查读取 schema.projectionRules 的 customer/runtime 状态与可见性条件）
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json
+        - 两个争议组合规则均为 deprecated/internal，不满足 customer 或 runtime 投影资格；未引入新的现行阈值规则、假事实或占位操作符。
+    - id: validation.quantity-amendment-original-evidence
+      checkType: evidence-path
+      command: sed -n '460,540p' gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx；sed -n '38,92p' gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java；sed -n '12,32p' gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql
+      outcome: passed
+      evidence:
+        - WorkOrderPage 手动添加拒绝 targetQuantity<=0；批量添加拒绝 input<=0，数量输入 step:any；导入同样拒绝非正数量。
+        - ProductionService.split 拒绝 null 或 signum()<=0，并独立验证 SN=1 与非取消对象总量；0062 的 target_quantity 为 DECIMAL(15,4) 并 CHECK >0。
+        - 新 evidence.production-batch-quantity-policy-boundary 的文档路径存在。以上仅为静态实现核对，不是小数边界业务运行验证。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

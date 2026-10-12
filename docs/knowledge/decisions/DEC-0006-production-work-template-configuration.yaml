@@ -87,11 +87,11 @@ decisions:
         status: deprecated
         visibility: internal
       - id: DEC-0006-21
-        statement: 作业流程画布首版的新增入口只提供表单填写和条件分支两类节点；历史上的满足/否则固定结构及兼容出口已由 DEC-0011 的有序 conditionBranches 与唯一 conditionDefaultBranch 模型取代。草稿用户可通过节点方向快捷入口选择节点，系统自动创建节点并连接到来源节点；也可拖动节点、从连接点手动连线。节点移动支持网格吸附和拖动时对齐辅助线；一键整理只改变草稿节点位置并标记为待保存，不改变节点、连线或节点配置等业务关系。已发布版本只读；运行期条件求值仍未实现。
+        statement: 作业流程画布首版的新增入口只提供表单填写和条件分支两类节点；历史上的满足/否则固定结构及兼容出口已由 DEC-0011 的有序 conditionBranches 与唯一 conditionDefaultBranch 模型取代。草稿用户可通过节点方向快捷入口选择节点，系统自动创建节点并连接到来源节点；也可拖动节点、从连接点手动连线。节点移动支持网格吸附和拖动时对齐辅助线；一键整理只改变草稿节点位置并标记为待保存，不改变节点、连线或节点配置等业务关系。已发布版本只读；该初始配置切片当时未实现运行期求值；后续受限 WORK 求值与节点推进按 DEC-0045 及当前生产执行源码单独核对，不据此提高本历史声明成熟度。
         status: deprecated
         visibility: internal
       - id: DEC-0006-22
-        statement: 第一版流程不支持普通节点并行出口或并行执行。开始节点和普通作业节点最多一个 outgoing edge，第二条普通出口不合法。条件节点的分支数量和出口模型已由 DEC-0011 确认；当前规范只使用有序 conditionBranches 与唯一 conditionDefaultBranch，不保留满足/否则固定出口兼容语义。该普通节点配置保存约束须由前后端同步实施；生产运行时条件求值仍不可用。
+        statement: 第一版流程不支持普通节点并行出口或并行执行。开始节点和普通作业节点最多一个 outgoing edge，第二条普通出口不合法。条件节点的分支数量和出口模型已由 DEC-0011 确认；当前规范只使用有序 conditionBranches 与唯一 conditionDefaultBranch，不保留满足/否则固定出口兼容语义。该普通节点配置保存约束须由前后端同步实施；该声明保留初始普通节点配置约束；后续已有受限 WORK 条件求值和顺序推进，普通节点并行执行仍未支持，通用执行契约另行建设。
         status: specified
         visibility: internal
     supersedes: []
@@ -124,8 +124,10 @@ decisions:
       - id: scenario.production-work-flow-canvas-interaction
         given: 用户正在编辑一个作业流程草稿
         when: 用户使用方向快捷入口、手动连接、节点拖动或一键整理布局
-        then: 快捷入口自动创建所选表单填写或条件分支节点并生成连线；条件分支保留满足和不满足两个出口；手动连接建立连线；拖动按网格吸附并在对齐时显示辅助线；一键整理只调整节点位置并将草稿标记为待保存
-        evidenceIds: [evidence.production-work-flow-editor-ui]
+        then: 快捷入口自动创建所选表单填写或条件分支节点并生成连线；早期固定满足/不满足出口已由 DEC-0011 局部替代，当前使用有序 conditionBranches 和唯一 conditionDefaultBranch 动态出口。手动连接建立连线，拖动按网格吸附并显示对齐辅助线；一键整理只调整节点位置并将草稿标记待保存，不改变业务关系
+        evidenceIds:
+        - evidence.production-work-flow-editor-ui
+        - evidence.production-work-condition-branch-model
         evidenceRequirements: [流程画布视觉验证, 快捷创建交互验证, 未保存行为验证]
       - id: scenario.production-work-flow-edge-cardinality
         given: 用户正在编辑第一版作业流程草稿

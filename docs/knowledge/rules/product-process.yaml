@@ -422,8 +422,10 @@ rules:
     result:
       type: require-explicit-process-version
       target: production-batch
-    explanation: 已确认的生产规则是创建生产对象时必须显式选择产品或产品簇的具体制程版本；工单/批次选择、持久化和运行期消费尚未实现，因此该规则仅作为内部指定规则保留。
-    evidenceIds: [evidence.business-knowledge-model]
+    explanation: 该 specified/internal 记录保留初始显式选择意图。当前 DEC-0012 及 ProductionService.split/requireProcessVersion 要求工单首次拆分选择可用的产品或产品簇制程版本并锁定；后续对象继承同一引用，不要求每次重复选择。对象已保存 processVersionId，首次 START 消费该引用。此局部实现不表示本历史规则已经注册为通用执行契约。
+    evidenceIds:
+    - evidence.business-knowledge-model
+    - evidence.production-service
   - id: rule.product-process.available-version-window
     name: 制程版本可用性严格沿用 RdoVersionStatusResolver
     status: implemented
@@ -552,7 +554,7 @@ rules:
     explanation: 产品成员转移必须在事务中执行并二次确认，不填写转移原因，同时记录产品、旧产品簇和新产品簇审计。
     evidenceIds: [evidence.product-family-membership-service, evidence.process-modeling-controller, evidence.product-family-membership-service-test, evidence.process-modeling-controller-test]
   - id: rule.product-process.freeze-batch-execution-snapshot
-    name: 生产对象创建时保存产品簇和制程配置快照
+    name: 生产对象保存制程引用并在开工冻结配置与产品簇依据
     status: specified
     visibility: internal
     trigger: production-batch.execution-start
@@ -569,10 +571,13 @@ rules:
       type: freeze-execution-snapshot
       source: selected-product-process-version
       fields: [productId, productFamilyId, selectedProductProcessVersionId, configurationSnapshot]
-    explanation: 未来创建的生产对象需要保存产品、产品簇、所选版本和配置快照；生产快照落库尚未实现。
-    evidenceIds: []
+    explanation: 规范要求保存产品、产品簇、所选制程和配置依据。当前对象创建保存 processVersionId，首次合法 START 才冻结局部执行配置；快照包含匹配作业规则的所选字段、当前已发布作业版本和图，并非完全没有规则快照。但尚未保存独立 productFamilyId，首次 START 仍读取当前成员关系，见 discrepancy.product-family-transfer-unstarted-object-context。result.fields 是应满足的冻结要求，不能作为所有字段已持久化的证据；本记录保持 specified/internal，通用规则集版本依据另行建设。
+    evidenceIds:
+    - evidence.production-service
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.product-family-membership-service
   - id: rule.product-process.form-required-configuration
-    name: 工序表单完工要求仅作为配置保存
+    name: 工序表单完工要求的配置保存
     status: implemented
     visibility: internal
     trigger: product-process.operation-form-binding.save
@@ -589,8 +594,13 @@ rules:
       type: persist-form-required-configuration
       field: required
       defaultWhenNull: true
-    explanation: 产品制程版本编辑器显示“工序结束前完成”复选框，后端将其保存到 ProductProcessOperationFormBinding.required；当前这是配置能力，不产生工序运行阻断。
-    evidenceIds: [evidence.product-process-version-editor, evidence.product-process-controller, evidence.operation-form-binding-entity]
+    explanation: 产品制程版本编辑器显示“工序结束前完成”复选框，后端保存 ProductProcessOperationFormBinding.required。此配置保存动作不直接推进或阻断生产；当前生产执行通过冻结配置中的 required 与实例完成状态在 completionIssues/complete 执行工序完工门禁。配置证据与该运行消费者分别核对，不再笼统称无运行阻断。
+    evidenceIds:
+    - evidence.product-process-version-editor
+    - evidence.product-process-controller
+    - evidence.operation-form-binding-entity
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: rule.product-process.form-complete-before-operation
     name: 必填表单未完成时阻断工序完工
     status: planned
@@ -608,8 +618,13 @@ rules:
     result:
       type: block
       reason: required-form-not-completed
-    explanation: 当 required 配置为 true 且表单实例状态不是 completed 时，未来应阻断工序完工；当前没有运行期执行契约或阻断实现。
-    evidenceIds: [evidence.business-knowledge-model, evidence.operation-form-binding-entity]
+    explanation: 本 planned/internal 记录保留初始门禁意图及当时成熟度。当前 ProductionExecutionEngine.completionIssues/complete 已按冻结 required 和实际表单状态阻断未完成的必需工序表单；多份、作业和自定义表单的范围按 DEC-0045、DEC-0047、DEC-0075 等现行独立规则核对，不能用旧单状态表达替代。源码及既有测试断言不等于本次运行验收，也不表示本历史规则已具备通用执行注册资格。
+    evidenceIds:
+    - evidence.business-knowledge-model
+    - evidence.operation-form-binding-entity
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
+    - evidence.production-execution-engine-tests
   - id: rule.product-process.form-sharing
     name: 表单共享
     status: planned
@@ -638,8 +653,11 @@ rules:
           value: true
     result:
       type: planned-permission-control
-    explanation: 表单按钮和字段权限仅为内部规划，具体权限模型尚未进入实现或客户投影。
-    evidenceIds: [evidence.business-knowledge-model]
+    explanation: 本 planned/internal 记录描述初始产品制程建模范围。后续表单流程权限组、绑定字段例外和按钮配置已有独立决策；直接/按流程填报设置按 DEC-0067，执行权限按 DEC-0045 及相关引擎实现核对。不能再泛称权限模型完全未实现，也不根据局部实现自动提高本历史规则或通用规则层的成熟度。
+    evidenceIds:
+    - evidence.business-knowledge-model
+    - evidence.form-fill-settings-confirmed
+    - evidence.production-execution-engine-source
   - id: rule.product-process.transaction-trigger
     name: 工序事务触发
     status: planned

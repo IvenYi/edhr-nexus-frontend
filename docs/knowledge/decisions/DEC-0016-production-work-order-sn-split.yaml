@@ -51,11 +51,22 @@ decisions:
         then: 生成 N 个数量为 1 的 SN 候选对象并进入待提交清单，不按 BATCH 的均分余数规则分配
         evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
     implementationDiscrepancies:
-      - id: discrepancy.guancheng-sn-runtime-unavailable
-        status: accepted
-        severity: low
-        visibility: internal
-        path: docs/knowledge/evidence/guancheng-sn-split-source.md
-        lineHint: 15
-        summary: 冠骋运行页面登录态不可得，编号生成与完整导入交互仅以原始源码线索记录，未作为本项目已确认规则。
-        evidenceIds: [evidence.guancheng-sn-split-source]
+    - id: discrepancy.guancheng-sn-runtime-unavailable
+      status: accepted
+      severity: low
+      visibility: internal
+      path: docs/knowledge/evidence/guancheng-sn-split-source.md
+      lineHint: 15
+      summary: 冠骋运行页面登录态不可得，编号生成与完整导入交互仅以原始源码线索记录，未作为本项目已确认规则。
+      evidenceIds:
+      - evidence.guancheng-sn-split-source
+    - id: discrepancy.production-sn-import-template-extra-remark
+      status: open
+      severity: medium
+      visibility: internal
+      path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      lineHint: 565
+      summary: 'provenance: original-evidence；用户确认 SN 导入模板只包含编号和计划起止三列，但当前下载模板另有备注第四列，导入解析也接收备注；数量仍隐含为1。确认规则与当前功能应并列记录，不把额外列写成已确认规则。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      evidenceIds:
+      - evidence.production-work-order-page-pending-list
+      - evidence.production-work-order-batch-import-template-ui

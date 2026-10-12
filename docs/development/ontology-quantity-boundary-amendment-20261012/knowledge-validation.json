@@ -1,0 +1,23 @@
+{
+  "outcome": "passed",
+  "command": [
+    "/workspace/scratch/f8b75a9f3345/build-tools/apache-maven-3.9.9/bin/mvn",
+    "--offline",
+    "--batch-mode",
+    "--no-transfer-progress",
+    "--file",
+    "tools/knowledge-model/pom.xml",
+    "clean",
+    "test"
+  ],
+  "javaHome": "/workspace/scratch/f8b75a9f3345/build-tools/jdk-21.0.12.1+1",
+  "baseCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "candidate": "baseCommit plus the current quantity-boundary amendment working tree; source changes recorded in amendment.json",
+  "tests": 89,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "durationSeconds": "7.892",
+  "log": "knowledge-validation.log",
+  "scope": "Official knowledge model validation only; no product runtime, browser or database tests."
+}

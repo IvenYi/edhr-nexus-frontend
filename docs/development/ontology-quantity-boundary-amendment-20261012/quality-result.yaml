@@ -1,0 +1,150 @@
+qualityResult:
+  result: passed
+  baseCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+  headCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+  contractBaseline:
+    sourceCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+    targetBranch: edhr-dev
+    targetCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    contractReadCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+    uncommittedContractPaths:
+      - docs/knowledge/README.md
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/ontology-internal-audit-20261012/README.md
+      - docs/development/ontology-quantity-boundary-amendment-20261012/README.md
+      - docs/development/ontology-quantity-boundary-amendment-20261012/amendment-validation.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/amendment.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml
+      - docs/development/ontology-quantity-boundary-amendment-20261012/historical-verification.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log
+      - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-result.yaml
+      - docs/development/ontology-quantity-boundary-amendment-20261012/verify_amendment.py
+      - docs/knowledge/README.md
+      - docs/knowledge/evidence/ontology-foundation-fact-types.md
+      - docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/open-questions.yaml
+      - docs/knowledge/rules/production.yaml
+    excludedPaths: []
+    untrackedPaths:
+      - docs/development/ontology-quantity-boundary-amendment-20261012/README.md
+      - docs/development/ontology-quantity-boundary-amendment-20261012/amendment-validation.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/amendment.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml
+      - docs/development/ontology-quantity-boundary-amendment-20261012/historical-verification.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log
+      - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json
+      - docs/development/ontology-quantity-boundary-amendment-20261012/ontology-result.yaml
+      - docs/development/ontology-quantity-boundary-amendment-20261012/verify_amendment.py
+      - docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.quantity-amendment-contract-and-scope
+      required: true
+      category: requirements
+      description: 独立核对 L1 授权、实际 Git 和契约基线、验收范围及交接字段；此任务只纠正过度确认，不选择数量下限。
+      method: inspection
+      command: 读取 AGENTS.md、质量角色、统一交接契约、架构及当前知识入口；git rev-parse HEAD origin/edhr-dev；git merge-base --is-ancestor 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50 0d46558234a933a020430ccf6c6a064ecfa05687
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/quality-checks.json
+        - 实际 HEAD 为 0d46558234a933a020430ccf6c6a064ecfa05687，origin/edhr-dev 为 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50，后者是前者的祖先和直接父提交；当前审查候选为该 HEAD 加 includedPaths 的未提交载荷，未编造候选提交哈希。
+        - 实际读取 0d46558 契约与 docs/knowledge/README.md 的本次叠加内容；决策包和本体回执均记录该叠加路径。17 份载荷逐文件 SHA256 已固定，包括被 *.log 忽略但必须随提交交付的原始验证日志。
+        - decisionPackage.unresolved 与 ontologyResult.questions 的空列表对应本次交付阻塞项；数量问题在 scope、evidenceGaps、knowledgeSync 和正式开放问题中明确保留，不被解释为所有业务歧义已解决。
+    - id: check.quantity-amendment-source-qualification
+      required: true
+      category: ontology
+      description: 对照原始 DEC-0012/0014、词条、页面、服务、实体和 SQL，核对实现事实、规范依据、推断及待决问题。
+      method: inspection
+      command: 读取 DEC-0012/0014 全文；sed -n '440,568p' gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx；sed -n '28,116p' gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java；读取 ProductionObject.java、0062 迁移及相关规则和事实。
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/quality-checks.json
+        - WorkOrderPage 手动、每批数量与导入路径拒绝非正数量；ProductionService.split 拒绝 null 或 signum()<=0，另行校验 SN=1 和总量。实体和 SQL 的目标数量为 DECIMAL(15,4)，SQL CHECK 要求 >0。这些均仅作为静态实现证据。
+        - DEC-0012-03、DEC-0014-03/-09/-12 及对应验收保留必填、SN=1、按 Q 分配、末批余数和总量；没有发现足以选定 0<q<1 资格的明确确认。新问题只提供 >0 与 >=1 两项，并明确后一选择对末批余数的依赖，没有擅自新增单位配置或处理余数的政策。
+        - 新词条、规则说明、证据、README 与交接均撤回“由当前代码足以确认新下限”的判断，未反向认定旧 >=1 正确，也未宣称执行了小数边界业务测试。
+    - id: check.quantity-amendment-withdrawal-and-retained-boundaries
+      required: true
+      category: ontology
+      description: 精确核对两个组合规则的历史资格与不受影响的已确认约束。
+      method: command
+      command: PYTHONDONTWRITEBYTECODE=1 python /workspace/scratch/f8b75a9f3345/build-tools/quantity-amendment-quality/check_payload.py
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/quality-checks.json
+        - 恰好两个组合规则从 implemented 改为 deprecated/internal，仅 name、status、explanation、evidenceIds 改动；condition/result 与 0d46558 完全一致，原证据全部保留，新证据可解析。
+        - 两条规则不满足当前 schema 的 customer/runtime 状态和可见性资格。弃用在本次只撤回组合表达的规范资格，当前代码不读取本修订作为运行变更；数量必填及按 Q 分配继续由原 DEC 声明与场景承载，邻接批次数、SN 和总量规则未变。
+        - 整个 core-business 事实目录、DEC-0012/0014、schema、全部生产代码和测试均无差异；未添加生效的 >=1 或 >0 替代规则、虚构事实、操作符、版本或试点。
+    - id: check.quantity-amendment-inventory-and-history
+      required: true
+      category: audit
+      description: 独立枚举当前和固定提交资产，核对原账本不变、修订摘要和统计边界。
+      method: command
+      command: PYTHONDONTWRITEBYTECODE=1 python /workspace/scratch/f8b75a9f3345/build-tools/quantity-amendment-quality/check_payload.py
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/quality-checks.json
+        - 独立解析 189 份 YAML，无重复键或 ID，2315 个 ID 的 evidenceIds 均可解析；相对初次提交仅修改两规则及 term.batch 三个 ID，新增问题与证据两个 ID，删除零个，知识文件变化六份；整个 PR 相对目标基线为修改 201、新增 23、删除零个。
+        - 原审计 23 份非 README 文件与初次提交逐字节一致，包含账本、统计、哈希、验证器及回执；原 README 只增加一个导航段，标题和原正文逐字节保留。原始 2292 个 ID 的纠正视图只把两条规则由 needs-fix 移入 needs-decision，计数为 197/1759/118/206/12，未计入新增 ID。
+        - 独立核对 amendment.json 的原始及当前记录哈希、文件哈希、sourcePath、sourceLocator 和 changedFields；没有仅依赖新验证器的退出码。12 个已登记实现差异均保持 open，原开放问题全部保留；八个原跟进主题加数量主题为九个，不冒充全仓问题总数。
+    - id: check.quantity-amendment-fixed-verifier
+      required: true
+      category: regression
+      description: 审读固定补正验证器及其引用的历史盘点函数，实际执行并比对保存结果。
+      method: command
+      command: PYTHONDONTWRITEBYTECODE=1 python docs/development/ontology-quantity-boundary-amendment-20261012/verify_amendment.py
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/quality-checks.json
+        - docs/development/ontology-quantity-boundary-amendment-20261012/amendment-validation.json
+        - 命令退出码为 0，输出与保存结果完全一致。验证器绑定初次提交与固定补正，不承担未来产品回归或最终政策确认；未改写历史脚本以适配当前树。
+        - 主智能体提供的 historical-verification.json 明确只在独立 0d46558 历史工作树核对初次快照；本质量角色没有重复冒称运行该历史验证，也未让其通过覆盖当前数量规范结论。
+    - id: check.quantity-amendment-official-knowledge-test-evidence
+      required: true
+      category: unit
+      description: 核对本次已完成的正式知识 clean test 原始日志、实际 Surefire XML 和模块入口。
+      method: inspection
+      command: 读取 tools/knowledge-model/pom.xml、knowledge-validation.json、knowledge-validation.log；使用 Python ElementTree 读取 tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/quality-checks.json
+        - docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.json
+        - docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log
+        - 日志含 clean 步骤和 BUILD SUCCESS；实际 JUnit suite 与 89 个 testcase 一致，失败 0、错误 0、跳过 0，耗时 7.892 秒，Java 版本 21.0.12.1，运行目录对应本工作树；XML 摘要与 SHA256 写入检查证据。
+        - 正式 Maven/JUnit 由主智能体在同一冻结知识载荷上运行，本质量角色独立核对原始证据，没有重复运行或声称自己执行 Maven。模块仅包含知识测试，不编译生产模块，不等同于业务、浏览器或数据库验收。
+    - id: check.quantity-amendment-delivery-links
+      required: true
+      category: documentation
+      description: 核对当前入口、新增报告、本体回执引用与验证说明的可追踪性及声明边界。
+      method: command
+      command: PYTHONDONTWRITEBYTECODE=1 python /workspace/scratch/f8b75a9f3345/build-tools/quantity-amendment-quality/check_payload.py；git diff --check
+      outcome: passed
+      evidence:
+        - docs/development/ontology-quantity-boundary-amendment-20261012/quality-checks.json
+        - 新增和修改范围内的 Markdown 链接及 ontologyResult.knowledgeSync.sourceReferences 均可定位；git diff --check 通过。quality-result.yaml 的最终回执由本质量实例完成后复制入库，未使用占位通过结果。
+        - 17 份实际审查载荷逐文件哈希包含被 Git ignore 忽略的 knowledge-validation.log；本回执及 quality-checks.json 自身不计入被审查载荷，避免循环自校验。推送前应显式纳入日志并保持其他载荷哈希一致。
+        - 文档区分本次知识补正、历史审计、正式知识测试和未来生产修复，P0 保持 in-progress，未自动开启或完成试点，也未宣称当前远端 CI 已通过。
+  findings: []
+  residualRisks:
+    - id: risk.quantity-policy-still-deferred
+      description: BATCH 数量下限与不足 1 的末批余数政策仍未获得明确业务确认。
+      impact: 后续需要确定或改变该下限的规则、页面、批量生成、导入、服务和存储边界必须先澄清，不能直接恢复任一阈值为正式准入规范。
+      mitigation: 按 question.production-batch-quantity-lower-bound 在依赖功能中确认，并同步知识、实现和边界验证；不阻塞本次恢复待决记录。
+    - id: risk.preexisting-remediation-not-closed
+      description: 原审计登记的 12 个实现差异、八个既有待决主题和其他证据缺口继续存在，本次未执行整体生产修复。
+      impact: 本次质量通过仅覆盖数量来源资格补正，不能用于声称历史问题全部修复或生产发布验收完成。
+      mitigation: 由主智能体和 Codex 按受影响功能及已确认规范逐项修复、同步知识并执行适用的独立验证。
+    - id: risk.publication-and-merge-candidate-pending
+      description: 本质量实例验证的是 0d46558 加冻结未提交载荷，未执行推送、合并或远端 CI 验收。
+      impact: 目标、功能分支或文件变化可能使本地证据不再覆盖实际集成候选。
+      mitigation: 主智能体复制本回执和检查证据，核对载荷哈希，以预期 HEAD 租约更新同一 PR，并检查新提交对应的实际 base/head/merge candidate 及正式 CI；不沿用初次提交的 CI。
+    - id: risk.historical-record-consumption
+      description: deprecated/internal 历史记录仍能被内部查询读取，现有 schema 没有独立的未决规则状态。
+      impact: 忽略 status 的未来消费者可能误用历史 condition/result；本次知识测试不证明尚未建设的通用运行层已遵守该边界。
+      mitigation: 当前记录、词表、开放问题和证据明确历史资格；后续规则查询或执行开发按状态与投影契约过滤，并验证对应消费路径。
+  blockingConditions: []

@@ -68,7 +68,7 @@ evidence:
   - id: evidence.dhr-summary-order-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryServiceTest.java
-    description: original-evidence；working-tree 测试源码覆盖锚点归属与排序值校验；前端浏览器脚本覆盖同模板多实例插入、重开与移出。仅核对测试存在，未据此声称通过。
+    description: original-evidence；测试源码覆盖锚点归属与排序值校验；当前前端目录浏览器脚本可定位双视图、保存重开、拖拽位置、排序及重命名断言，未定位取消自定义位置后恢复默认位置的业务断言。本次只核对源码，不声明测试运行通过。
     visibility: internal
   - id: evidence.dhr-summary-source-group-user-confirmed
     type: document
@@ -133,7 +133,7 @@ evidence:
   - id: evidence.dhr-summary-complete-evidence-migration
     type: database
     path: gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql
-    description: original-evidence；0102 历史迁移源码增加草稿来源范围摘要及冻结核查/附件快照，同时曾引入 evidence_model_version。该列是旧实现标记，不定义当前业务模型；DEC-0063-09 要求转换或清理错误旧汇总并统一审批/导出，version_no 保留正常修订。本机0104执行日志及只读查询已复核，模型列已删除；用户再次核查/正式提交未做，本切片独立质量验证已通过。
+    description: original-evidence；0102 历史迁移源码增加 source_scope_hash、check_result_snapshot，并曾引入 evidence_model_version；attachment_snapshot 由 0103-dhr-controlled-attachments.sql 增加。DEC-0063-09 后续要求转换或清理错误旧汇总，version_no 保留正常修订。原记录所称本机 0104 日志、查询和独立质量通过属于当时验证，本次未取得原现场报告，不能继承为本次迁移通过。
     visibility: internal
   - id: evidence.dhr-summary-attachment-migration
     type: database

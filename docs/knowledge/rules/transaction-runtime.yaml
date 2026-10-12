@@ -60,8 +60,15 @@ rules:
       applicabilityRulePriorityOrder: [EXCEPTION, SCOPED, GLOBAL]
       userMayProvidePriority: false
       customerMaySeePriority: false
-    explanation: 作业适用规则应用于作业模板，而不由用户手工选择流程版本；后续生产对象创建时，适用规则先按 ruleType 派生的固定优先级 EXCEPTION、SCOPED、GLOBAL 判定，再解析该作业模板当前已发布的流程版本并冻结该版本引用。草稿和历史流程版本不作为适用规则的可选目标。优先级不是用户可输入、修改或选择的字段，也不在客户页面展示。该 specified 规则定义配置和未来运行解析语义，不表示当前生产执行、运行时解析或快照落库已经完成。
-    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.business-knowledge-model, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+    explanation: 适用规则引用作业模板，由系统按 EXCEPTION、SCOPED、GLOBAL 的固定优先级匹配，并解析模板当前已发布流程；草稿和历史流程不作为适用目标，优先级不供用户输入或展示。当前 ExecutionSnapshotBuilder 在首次合法 START 的受限 OPERATION_START 范围完成匹配和冻结，保存所选规则字段与已发布版本/图；完整独立作业实例及通用执行契约仍待建设。本记录保持原 specified，不能用初始未来时否认局部实现，也不由源码存在推定本轮运行通过。
+    evidenceIds:
+    - evidence.ai-transaction-runtime-architecture
+    - evidence.business-knowledge-model
+    - evidence.production-work-template-configuration-controller
+    - evidence.production-work-template-configuration-test
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-service-source
+    - evidence.production-execution-engine-source
   - id: rule.production-work.template-delete-when-no-applicability-rule
     name: 无适用规则时允许删除作业模板
     status: implemented
@@ -78,7 +85,7 @@ rules:
       reason: production-work-template-has-applicability-rule
       allowedWhen: productionWorkApplicabilityRule.count == 0
       versionsDoNotAffectDecision: true
-    explanation: 当前生产执行尚未实现。删除作业模板时只检查该模板是否存在任何作业适用规则；存在一条或多条规则即禁止删除，无论模板是否存在草稿、历史流程或当前已发布流程。没有任何作业适用规则时，允许在同一事务中删除作业模板及其全部流程配置。该规则替代仅因存在已发布流程而禁止删除父作业模板的历史语义。
+    explanation: 本条约束配置删除入口；当前受限生产执行已有独立实现，不改变这里按适用规则引用进行的删除判定。删除作业模板时只检查该模板是否存在任何作业适用规则；存在一条或多条规则即禁止删除，无论模板是否存在草稿、历史流程或当前已发布流程。没有任何作业适用规则时，允许在同一事务中删除作业模板及其全部流程配置。该规则替代仅因存在已发布流程而禁止删除父作业模板的历史语义。
     evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
   - id: rule.production-work.applicability-requires-current-published-flow
     name: 作业适用规则只允许配置当前已发布流程作业
@@ -126,8 +133,13 @@ rules:
       contractInputs: [productionObject, productId, productFamilyId, operationId, effectiveApplicabilityRules]
       contractOutputs: [matchedApplicabilityRule, selectedProductionWorkDefinition, currentPublishedFlowVersion]
       deterministic: true
-    explanation: 未来生产执行创建作业实例时，系统根据生产对象、产品、产品簇、工序等运行上下文自动匹配作业适用规则，并按 EXCEPTION、SCOPED、GLOBAL 的固定顺序解析；产品配置或工序配置不手工引用作业模板或流程版本。只有命中的规则所指向作业模板当前已发布流程版本才可进入实例创建。当前生产执行和运行时解析尚未实现。
-    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.business-knowledge-model]
+    explanation: 未来生产执行创建作业实例时，系统根据生产对象、产品、产品簇、工序等运行上下文自动匹配作业适用规则，并按 EXCEPTION、SCOPED、GLOBAL 的固定顺序解析；产品配置或工序配置不手工引用作业模板或流程版本。只有命中的规则所指向作业模板当前已发布流程版本才可进入实例创建。当前首次 START 的受限生产执行已进行WORK自动匹配并冻结选中规则字段与当前已发布图；result.contractTarget描述通用目标接口，不代表同名独立handler或完整注册已存在。
+    evidenceIds:
+    - evidence.ai-transaction-runtime-architecture
+    - evidence.business-knowledge-model
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-service-source
+    - evidence.production-execution-engine-source
   - id: rule.production-work.instance-freezes-work-and-rule-snapshot
     name: 创建作业实例时冻结作业与适用规则执行快照
     status: specified
@@ -154,8 +166,13 @@ rules:
       applicabilityRuleSnapshotSource: matched-production-work-applicability-rule
       flowConfigurationSnapshotSource: current-published-production-work-flow-version
       immutableAfterCreate: true
-    explanation: 创建作业实例时必须同时冻结作业模板引用、创建时的当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照。后续修改或发布作业模板、适用规则或流程版本不得改变既有作业实例的执行依据。当前生产作业实例、快照落库和运行时推进尚未实现。
-    evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.business-knowledge-model]
+    explanation: 创建作业实例时必须同时冻结作业模板引用、创建时的当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照。后续修改或发布作业模板、适用规则或流程版本不得改变既有作业实例的执行依据。当前已有嵌入生产执行的作业状态，首次START冻结已发布版本/nodes/edges及匹配规则所选字段并据此推进；独立作业实例完整规则修订上下文和通用执行注册仍未闭环。此result列的是目标契约，不能把局部实现当全部目标已验收。
+    evidenceIds:
+    - evidence.ai-transaction-runtime-architecture
+    - evidence.business-knowledge-model
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-service-source
+    - evidence.production-execution-engine-source
   - id: rule.production-work.template-configuration-audited
     name: 作业模板配置变更需要审计
     status: implemented
@@ -259,7 +276,7 @@ rules:
       skips: [required-form-version, graph-connectivity]
       retainsBasicDataIntegrityChecks: true
       validationFeedbackPersistence: transient-only
-    explanation: 草稿保存是配置过程中的中间持久化动作，允许表单填写节点暂未选择生效表单版本，也允许节点尚未从开始节点连通到结束节点；保存仍可执行节点、连线和数据格式等基础完整性检查。表单必填配置和全图连通性属于发布门禁，不得在每次草稿保存时阻断用户继续配置。当前前端保存入口仍需移除发布校验调用，后端现有保存路径仅覆盖基础边界和普通节点出口校验，因此本规则保持 specified。
+    explanation: 草稿保存允许表单填写节点暂未选择生效表单版本，也允许未形成完整开始至结束连通图；保存仍执行节点、连线和数据格式的基础完整性检查。当前 WorkTemplateEditor.saveDraft 直接保存，完整 validatePublish 只在发布入口调用，后端保存执行边界和普通节点出口校验。WorkTemplateControllerTest 已有不完整草稿可保存的断言，不能再写成前端仍待移除发布校验。保持本记录原 specified 成熟度；真实数据库回读与保存异常回滚未由本次静态审读证明。
     evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-flow-version-draft-persistence]
   - id: rule.production-work.flow-version.publish-integrity-validation
     name: 作业流程版本发布完整性校验
@@ -284,10 +301,14 @@ rules:
             operator: is-referenceable
             value: true
           resolver: RdoVersionStatusResolver
-          statusSource: [effectiveFrom, effectiveTo]
+          statusSource:
+          - effectiveFrom
+          - effectiveTo
           persistedStatusParticipates: false
         graph:
-          exactlyOneBoundaryNode: [START, END]
+          exactlyOneBoundaryNode:
+          - START
+          - END
           edgeNodeReferencesMustExist: true
           selfEdgesForbidden: true
           duplicateOutgoingEdgesForbidden: true
@@ -296,13 +317,13 @@ rules:
           everyNonEndNodeRequiresOutgoingEdge: true
           everyNodeMustBeReachableFromStart: true
           everyNodeMustReachEnd: true
-        conditionBranchCompleteness: pending-condition-runtime-contract
+        conditionBranchCompleteness: every-condition-and-default-branch-requires-one-outgoing-edge-at-publish
       failureFeedback:
         invalidNodeBorder: red
         nodeMessage: true
         persistence: transient-only
       onSuccess: publish-current-draft-as-read-only
-    explanation: 发布是把流程草稿变成对外可用且只读的配置边界。发布前必须校验所有表单填写节点引用当前生效时间窗内的表单版本，并校验节点引用、边界节点、自连线、重复出口、普通节点单出口及从开始到结束的全图连通性；孤立节点、缺少必填引用、不存在或未处于生效时间窗的表单版本都会阻断发布。表单版本的用户可见生效状态由统一 RDO 生效时间窗计算，持久化 status 不参与该引用判断。校验失败时将对应节点以红色边框和提示反馈给用户，但反馈状态不写入节点配置、流程语义 AST 或流程图业务快照。条件节点的分支数量和每个分支是否必须连出仍由条件运行时契约决定，本规则不擅自固化该未决语义。当前前后端实现已覆盖本决策定义的发布门禁，真实生产运行时仍不在本次范围内。
+    explanation: 发布将草稿变为对外可用且只读配置：表单版本按 RDO 生效时间窗校验，持久化 status 不参与该引用判断；校验节点引用、开始/结束边界、自连线、重复出口、普通节点单出口及全图连通。DEC-0011 及 validatePublishableConditionRules 已要求每个条件分支和唯一默认分支在发布时各有一条出口，不再把这一配置完整性要求写成等待完整运行契约。草稿可保留未连出的分支；失败反馈只用于节点红框及消息，不写入业务 AST/快照。现有代码和测试源码范围已核对，本次未运行数据库或生产场景。
     evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test, evidence.rdo-version-status-resolver, evidence.template-modeling-rdo-status-projection, evidence.form-template-version-persisted-status-default, evidence.product-process-owner-service]
   - id: rule.rdo.version-effective-status
     name: RDO 版本状态与引用资格按有效时间窗计算
@@ -336,33 +357,68 @@ rules:
           value: DRAFT
     result:
       type: persist-flow-configuration
-      boundaryNodes: [START, END]
-      configurableNodeTypes: [FORM, CONDITION]
-      legacyReadableNodeTypes: [NOTIFICATION, CONFIRMATION]
+      boundaryNodes:
+      - START
+      - END
+      configurableNodeTypes:
+      - FORM
+      - CONDITION
+      legacyReadableNodeTypes:
+      - NOTIFICATION
+      - CONFIRMATION
       formReferenceSource: form-template-modeling
       conditionBranchHandles: dynamic-condition-branches-and-default
       conditionBranchStructure: ordered-condition-branches-with-default
       conditionRuleBuilder:
         status: implemented
         astShape: semantic-condition-expression
-        groupOperators: [all, any, not]
+        groupOperators:
+        - all
+        - any
+        - not
         recursiveGroups: true
-        supports: [condition-group-editing, add-remove-condition, type-validation, summary, read-only-display]
+        supports:
+        - condition-group-editing
+        - add-remove-condition
+        - type-validation
+        - summary
+        - read-only-display
         fieldCatalog: work-runtime-fields-v1
-        fields: [workType, triggerType, sourceType, sourceNumber, executionStatus]
-        fieldTypes: [string, string, string, string, string]
-        operators: [equals, not-equals, contains, starts-with, in, is-present, is-null]
+        fields:
+        - workType
+        - triggerType
+        - sourceType
+        - sourceNumber
+        - executionStatus
+        fieldTypes:
+        - string
+        - string
+        - string
+        - string
+        - string
+        operators:
+        - equals
+        - not-equals
+        - contains
+        - starts-with
+        - in
+        - is-present
+        - is-null
         multiValueOperator: in
         multiValueValueType: array
         fieldSnapshotPersisted: true
         businessValidation: publish-time
-        conditionEvaluation: unavailable
+        conditionEvaluation: limited-production-execution-slice
       runtimeExecution:
-        status: unavailable
+        status: partial
+        scope: production-execution-embedded-WORK
+        genericExecutionContract: pending
         freeTextIsSoleFact: forbidden
       draftInteractions:
         directionQuickAdd: true
-        quickAddNodeTypes: [FORM, CONDITION]
+        quickAddNodeTypes:
+        - FORM
+        - CONDITION
         quickAddCreatesEdge: true
         manualConnection: true
         conditionNodeInput: unified-entry-only
@@ -378,11 +434,18 @@ rules:
         gridSnap: true
         alignmentGuides: true
         autoLayout: true
-        autoLayoutChanges: [node-position]
+        autoLayoutChanges:
+        - node-position
         autoLayoutMarksDraftDirty: true
       runtimeExecutionIncluded: false
-    explanation: 作业流程草稿画布自动提供不可删除的开始和结束边界节点；新建的临时或首次持久化草稿默认不在两个边界节点之间创建连线，用户需通过快捷添加或手动连接建立流程关系。首版新增入口支持表单填写和条件分支节点，并在右侧面板编辑节点定义；条件节点由有序 conditionBranches 和唯一 conditionDefaultBranch 组成，每个条件分支及否则分支各自拥有最多一条出口。条件节点只通过统一入口接收入边，条件分支和否则分支出口只能作为连接源，不能作为连接目标；节点配置面板不负责新增节点，节点新增统一通过画布快捷交互完成。作业流程及条件分支以纵向配置为主，具体间距和避免覆盖属于实现层推断。表单节点引用现有表单建模数据。条件规则构建器已完成递归条件组交互和 all/any/not/clause 语义 AST，支持条件增删、类型校验、摘要和只读展示；作业适配器第一版开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段，目录版本为 work-runtime-fields-v1，支持 equals、not-equals、contains、starts-with、in、is-present、is-null，in 使用数组值。条件节点确认后保存 AST、字段目录版本和字段快照；后端已实现配置层发布前校验 AST 结构、字段白名单、目录版本、字段快照、条件分支完整性和动态出口。该配置证据不表示运行时真实来源、条件求值、节点推进、生产执行或实例快照已实现；现有自由文本 conditionExpression 不得作为唯一事实来源。方向快捷入口会自动创建节点和连线，用户也可以从连接点手动连线；节点移动支持网格吸附并在拖动时显示对齐辅助线；一键整理只改变草稿节点位置并标记为待保存，不改变流程业务关系。草稿节点、连线和节点配置的保存请求及发布门禁已由控制器测试覆盖；真实数据库重新读取和保存异常回滚仍缺少独立集成测试，不能据此扩大为生产执行能力。已有消息通知和人工确认节点仅保留兼容读取和配置能力。消息发送、人工确认任务派发、条件求值和流程推进不属于当前配置实现，不得视为已具备生产执行能力。
-    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test, evidence.production-work-flow-version-draft-persistence]
+    explanation: 作业流程草稿画布自动提供不可删除的开始和结束边界节点；新建的临时或首次持久化草稿默认不在两个边界节点之间创建连线，用户需通过快捷添加或手动连接建立流程关系。首版新增入口支持表单填写和条件分支节点，并在右侧面板编辑节点定义；条件节点由有序 conditionBranches 和唯一 conditionDefaultBranch 组成，每个条件分支及否则分支各自拥有最多一条出口。条件节点只通过统一入口接收入边，条件分支和否则分支出口只能作为连接源，不能作为连接目标；节点配置面板不负责新增节点，节点新增统一通过画布快捷交互完成。作业流程及条件分支以纵向配置为主，具体间距和避免覆盖属于实现层推断。表单节点引用现有表单建模数据。条件规则构建器已完成递归条件组交互和 all/any/not/clause 语义 AST，支持条件增删、类型校验、摘要和只读展示；作业适配器第一版开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段，目录版本为 work-runtime-fields-v1，支持 equals、not-equals、contains、starts-with、in、is-present、is-null，in 使用数组值。条件节点确认后保存 AST、字段目录版本和字段快照；后端已实现配置层发布前校验 AST 结构、字段白名单、目录版本、字段快照、条件分支完整性和动态出口。该配置证据本身不证明生产运行；后续 ProductionExecutionEngine 已有嵌入 WORK 的受限五字段求值、顺序分支和节点推进，ExecutionSnapshotBuilder 已冻结对应已发布版本及图，但完整业务事实来源、异常/结果审计及通用执行契约仍须补齐；现有自由文本 conditionExpression 不得作为唯一事实来源。方向快捷入口会自动创建节点和连线，用户也可以从连接点手动连线；节点移动支持网格吸附并在拖动时显示对齐辅助线；一键整理只改变草稿节点位置并标记为待保存，不改变流程业务关系。草稿节点、连线和节点配置的保存请求及发布门禁已由控制器测试覆盖；真实数据库重新读取和保存异常回滚仍缺少独立集成测试，不能据此扩大为生产执行能力。已有消息通知和人工确认节点仅保留兼容读取和配置能力。消息发送和人工确认任务派发不由本配置切片证明；现有条件求值和流程推进按后续受限生产执行范围记录，不能扩大为通用引擎。
+    evidenceIds:
+    - evidence.production-work-flow-editor-ui
+    - evidence.production-work-template-configuration-controller
+    - evidence.production-work-template-configuration-test
+    - evidence.production-work-flow-version-draft-persistence
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: rule.production-work.form-node-business-document-configuration
     name: 作业流程表单填写节点使用业务单据称谓且不支持完成条件配置
     status: implemented
@@ -404,7 +467,7 @@ rules:
       displayLabel: 业务单据
       referenceField: formTemplateVersionId
       databaseMigration: none
-    explanation: 表单填写节点在作业流程配置面板中将客户可见引用称谓统一为“业务单据”，但内部引用契约仍使用 formTemplateVersionId 并继续指向既有表单模板版本。完成条件配置不再属于当前节点配置契约；前期研发阶段不考虑历史数据兼容，系统不读取、不迁移、不清理历史 completionCondition 字段，后续草稿保存也不写入该字段。本规则只约束作业模板配置契约，不改变表单主数据模块的“表单模板”技术术语或生产运行时能力，本次不新增数据库迁移。
+    explanation: 当前配置面板使用“业务单据”，内部仍通过 formTemplateVersionId 引用表单模板版本。DEC-0010-02 明确不支持 completionCondition 且后续保存不应写入该字段；没有专门配置入口或语义读取器，并不证明保存会移除它。当前 normalizeFlowGraph 保留非 CONDITION 节点原 config，persistentFlowGraph 只移除 UI 瞬态属性，后端 saveGraph 序列化输入节点，因而旧/注入字段仍可能被草稿透传保存，见 discrepancy.production-work-form-completion-condition-passthrough。规范保留，本次登记差异，不新增迁移或修改生产逻辑。
     evidenceIds: [evidence.production-work-form-node-business-document-config, evidence.production-work-flow-editor-ui, evidence.production-work-flow-version-draft-persistence]
   - id: rule.production-work.condition-rule-publish-validation
     name: 作业条件规则发布前校验
@@ -440,8 +503,14 @@ rules:
       dynamicOutgoingEdges: condition-node-branches-and-default
       maximumOutgoingEdgesPerBranch: 1
       rejects: [empty-branches, missing-default-branch, malformed-ast, unknown-field, unknown-operator, unregistered-catalog, missing-field-snapshot, multiple-edges-per-branch, legacy-config-conditionRule, legacy-branch-rule, legacy-condition-true-exit, legacy-condition-false-exit]
-    explanation: 用户已确认条件节点使用多个有序 conditionBranches 和唯一 conditionDefaultBranch。配置层只接受每个条件分支的 conditionRule、字段目录版本、字段快照和动态出口，并拒绝旧字段及固定出口；旧结构不属于当前输入和兼容契约。该规则仍不证明运行时真实来源、条件求值、节点推进、作业实例或生产快照已实现。
-    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
+    explanation: 用户已确认多个有序 conditionBranches 和唯一 conditionDefaultBranch；发布层要求每个条件分支有合法 conditionRule、字段目录和字段快照，各分支具备唯一出口，并拒绝旧结构及固定出口。此发布配置规则与当前受限 WORK 求值分开：后续已有五字段取值、条件求值、节点推进及嵌入快照，但完整来源和运行执行契约仍未闭环。本次仅核对源码与已有测试断言。
+    evidenceIds:
+    - evidence.production-work-condition-branch-model
+    - evidence.production-work-condition-rule-builder
+    - evidence.production-work-condition-rule-controller
+    - evidence.production-work-condition-rule-test
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: rule.production-work.condition-branches-first-match
     name: 作业条件分支按顺序命中首个满足分支
     status: specified
@@ -461,9 +530,12 @@ rules:
       branchOrder: array-order
       selection: first-satisfied-condition-branch
       fallback: conditionDefaultBranch
-      executionStatus: unresolved
-    explanation: 运行时应按已发布条件分支数组顺序求值并选择第一个满足分支；全部不满足时选择唯一否则分支。字段真实来源、求值器、异常处理、实例快照和节点推进尚未闭环，因此不得进入 verified/runtime。
-    evidenceIds: [evidence.production-work-condition-branch-model]
+      executionStatus: limited-production-execution-slice
+    explanation: 当前 ProductionExecutionEngine.conditionOutlet 已按冻结的条件分支数组求值，选择第一个满足分支，否则选择默认分支，再推进节点，并留存节点 conditionFacts/decisions。现有取值为五个受限字段，其中 workType=WORK、triggerType=OPERATION_START、executionStatus=RUNNING 为固定工程值，sourceType/sourceNumber 来自生产对象上下文；不能据此认定完整业务来源政策、异常和结果审计契约已确认或通用运行注册完成。保留 specified/internal，源码核对不等于本次业务测试通过。
+    evidenceIds:
+    - evidence.production-work-condition-branch-model
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: rule.production-work.ordinary-node-single-outgoing-edge
     name: 作业流程首版普通节点单一出口约束
     status: specified
@@ -482,17 +554,25 @@ rules:
       type: persist-flow-configuration
       parallelExecution: unavailable
       outgoingEdgeRules:
-        appliesTo: [START, ordinary-work-node]
-        excludes: [CONDITION]
+        appliesTo:
+        - START
+        - ordinary-work-node
+        excludes:
+        - CONDITION
         maximumOutgoingEdges: 1
         duplicateOrAdditionalEdge: forbidden
       conditionNodeBranchModel: conditionBranches-with-default-branch
       conditionBranchOutgoingEdgeLimit: 1
       conditionDefaultOutgoingEdgeLimit: 1
-      runtimeConditionEvaluation: unavailable
+      runtimeConditionEvaluation: limited-production-execution-slice
       runtimeParallelExecution: unavailable
-    explanation: 第一版流程不支持普通节点并行出口或并行执行；开始节点和普通作业节点最多只能有一条 outgoing edge，第二条普通出口不合法。条件节点允许多个动态分支出口，但每个条件分支和否则分支最多一条线。配置层统一使用新模型，旧字段和固定出口不属于当前契约；生产运行时条件求值与并行执行能力仍不可用。
-    evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
+    explanation: 首版普通节点与 START 最多一条出口，第二条普通出口不合法；条件节点允许多个动态分支，但每个条件和默认分支最多一条线。配置按 DEC-0011 的新模型核对；生产执行已有受限 WORK 条件求值和顺序节点推进，普通节点并行执行仍未支持。配置门禁、受限运行和通用规则执行成熟度分别记录。
+    evidenceIds:
+    - evidence.production-work-flow-editor-ui
+    - evidence.production-work-template-configuration-controller
+    - evidence.production-work-template-configuration-test
+    - evidence.production-execution-snapshot-builder-source
+    - evidence.production-execution-engine-source
   - id: rule.production-work.applicability-always-effective
     name: 作业适用规则保存即有效
     status: implemented
@@ -571,13 +651,17 @@ rules:
     evidenceIds: [evidence.business-knowledge-model, evidence.production-work-applicability-dialog-ui, evidence.production-work-flow-preview-ui]
   - id: rule.form-process.binding-requires-form-and-flow
     factCatalogProfile: form-process-binding
-    name: 表单流程绑定必须同时引用流程和表单版本
+    name: 按流程填报绑定必须同时引用流程和表单版本
     status: specified
     visibility: internal
     trigger: form-process.binding.publish
     scope: form-process-configuration
     condition:
-      any:
+      all:
+      - fact: formFillSettings.mode
+        operator: equals
+        value: PROCESS
+      - any:
         - fact: formProcessBinding.formTemplateVersionId
           operator: is-null
           value: true
@@ -587,8 +671,13 @@ rules:
     result:
       type: block
       reason: form-process-binding-reference-required
-    explanation: 表单填报节点的绑定版本必须同时引用一个表单模板版本和一个表单流程模板版本；绑定版本是作业节点固定引用的唯一配置单元。当前规则属于配置发布校验，尚未实现运行时实例创建。
-    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-buttons-events-v2]
+    explanation: 本成对引用门禁适用于 DEC-0067 显式 PROCESS 模式：必须有具体表单模板版本及已发布表单流程版本。DIRECT 模式不要求流程引用，但仍执行自身权限、按钮、签署和表单版本校验；不能以无流程跳过所有设置。后续已有冻结和表单运行实现，其完整验证按对应证据核对，本次不提升原 specified 成熟度。
+    evidenceIds:
+    - evidence.production-form-process-user-confirmed-v2
+    - evidence.production-form-process-buttons-events-v2
+    - evidence.form-fill-settings-confirmed
+    - evidence.form-fill-settings-design
+    - evidence.form-fill-settings-current-mode-validation
   - id: rule.form-process.binding-mapping-required
     name: 表单流程绑定发布前校验字段槽位映射
     status: deprecated
@@ -763,8 +852,12 @@ rules:
       resolveAt: node-arrival
       entryPermissionCheckAt: user-access
       publishedSnapshot: false
-    explanation: 部门和角色主体不在流程发布或业务启动时固定成员快照。审批节点到达时按最新关系解析候选人，填报权限在用户访问时按最新关系判断；当前实现尚未完成运行时解析。
-    evidenceIds: [evidence.identity-user-memberships, evidence.identity-subject-selector-user-confirmed]
+    explanation: 部门和角色不在流程发布时固定成员。当前SubjectResolver读取组织/角色关系；审批节点进入时冻结解析候选供后续处理，填报资格在访问/动作校验时解析当前关系，两个时点不可混用。已有冻结及普通权限实现，泛工作流转办原来源留存差异另记，不再泛称运行时解析未实现。
+    evidenceIds:
+    - evidence.identity-user-memberships
+    - evidence.identity-subject-selector-user-confirmed
+    - evidence.identity-subject-resolver-implementation
+    - evidence.production-execution-access-source
   - id: rule.form-process.entry-subject-optional-open-scope
     name: 未配置填报主体时所有已认证用户可填报
     status: specified
@@ -887,23 +980,26 @@ rules:
       target: formProcessBinding.fieldPermissionExceptions
       retainWhen:
         all:
-          - fact: exception.fieldId.existsInSelectedFormTemplateVersion
-            operator: equals
-            value: true
-          - fact: exception.subject.existsInSelectedFormProcessVersion
-            operator: equals
-            value: true
+        - fact: exception.fieldId.existsInSelectedFormTemplateVersion
+          operator: equals
+          value: true
+        - fact: exception.permissionGroup.existsInSelectedFormProcessVersion
+          operator: equals
+          value: true
       removeWhen:
         any:
-          - fact: exception.fieldId.existsInSelectedFormTemplateVersion
-            operator: equals
-            value: false
-          - fact: exception.subject.existsInSelectedFormProcessVersion
-            operator: equals
-            value: false
+        - fact: exception.fieldId.existsInSelectedFormTemplateVersion
+          operator: equals
+          value: false
+        - fact: exception.permissionGroup.existsInSelectedFormProcessVersion
+          operator: equals
+          value: false
       invalidExceptionAction: remove-before-save
-    explanation: 表单或表单流程版本切换后，原绑定中的字段例外不一定仍然有效。保存新绑定前必须按新表单的真实 fieldId 和新流程主体重新筛选，清理失效例外，避免旧字段权限泄漏到新绑定；仍有效的例外继续保留。
-    evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
+    explanation: 换表单/流程后按新表单真实fieldId与现行权限组身份筛选绑定例外，组内主体成员变化不使例外变成逐人配置。权限组键为start:<permissionGroupRules.id>、start:open或approval:<node.id>；有效例外保留。DEC-0023-08的切换有效性要求与本规则remove-before-save目标继续，但当前作业草稿切换后直接保存仍可带旧失效组/字段，见 discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions。发布校验和产品制程保存验证存在，不能证明每次作业草稿切换均已清理。
+    evidenceIds:
+    - evidence.production-form-process-permission-default-exception-design-v2
+    - evidence.production-form-process-user-confirmed-v4
+    - evidence.form-fill-settings-current-mode-validation
   - id: rule.form-process.published-version-reference-fixed
     factCatalogProfile: form-process-binding
     name: 表单流程发布版本引用固定
@@ -938,8 +1034,12 @@ rules:
       type: planned-production-work-trigger
       completionStrategy: first-completed-candidate
       sequentialApproval: false
-    explanation: 审批节点解析出多个候选人时，任一候选人完成即可完成该审批节点；需要按顺序逐个审批时，应配置多个审批节点，不在单个节点内隐含顺序会签。当前审批任务运行时尚未实现。
-    evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
+    explanation: 单审批节点有多个候选人时，任一有权候选完成该节点；需要逐个顺序审批时配置多个节点。当前普通生产表单引擎已按节点冻结候选校验并推进，泛WorkflowEngine也使用单逻辑任务与候选快照；两条路径分别核对。源码及原测试断言存在不代表本次并发或事务验收，保持本记录原指定成熟度。
+    evidenceIds:
+    - evidence.production-form-process-user-confirmed
+    - evidence.production-form-process-guancheng-research
+    - evidence.production-execution-engine-source
+    - evidence.workflow-task-multi-candidate-runtime-implementation
   - id: rule.form-process.approval-return-to-entry
     name: 审批退回固定回到填报阶段
     status: specified
@@ -955,8 +1055,10 @@ rules:
       type: planned-production-work-trigger
       targetStage: ENTRY
       arbitraryHistoricalTarget: false
-    explanation: 第一版审批退回不提供任意历史节点选择，统一返回填报阶段供现场人员修正并重新提交；当前仅保存配置和未来运行契约。
-    evidenceIds: [evidence.production-form-process-user-confirmed]
+    explanation: 首版退回固定回填报阶段，不允许选择任意历史节点。ProductionExecutionEngine 的 RETURN 分支已按原流程重置填报入口及待处理状态，保留既有表单份和数据的当前规则另行核对；不再只称未来配置契约。本次仅核对静态实现，未重跑退回业务场景。
+    evidenceIds:
+    - evidence.production-form-process-user-confirmed
+    - evidence.production-execution-engine-source
   - id: rule.form-process.termination-cascades-to-outer-work
     name: 表单流程终止同步终止外层作业流程
     status: specified
@@ -972,7 +1074,7 @@ rules:
       type: planned-production-work-trigger
       outerProcessResult: TERMINATED
       synchronous: true
-    explanation: 表单流程与外层作业流程是同步等待关系；表单流程终止后必须向外层返回终止结果并同步终止外层作业流程。当前生产作业运行时尚未实现，规则不得标记为 verified 或 runtime。
+    explanation: 表单流程终止向等待它的外层作业返回终止并级联的目标约束保留。当前普通表单按钮白名单排除 TERMINATE，该终止链没有完整实现证据；后续已有其他WORK匹配、推进和表单运行，不能据此泛称整个生产作业运行不存在，也不能将其他完成/退回路径当作终止链已实现。
     evidenceIds: [evidence.production-form-process-user-confirmed, evidence.production-form-process-guancheng-research]
   - id: rule.form-process.node-button-configuration-v1
     name: 表单流程节点按钮配置白名单
@@ -991,14 +1093,38 @@ rules:
     result:
       type: persist-flow-configuration
       target: formProcessNode.buttons
-      persists: [visible, label, action, parameters]
-      electronicSignatureActions: [SAVE, SUBMIT, APPROVE, RETURN]
-      signatureEvent: {builtin: FILL_SIGN_FIELD, event: BEFORE, signatureMethod: ACCOUNT_PASSWORD}
-      transfer: {nodeKind: APPROVAL, reasonRequired: true, opinionRequiredConfigurable: false, electronicSignatureConfigurable: false}
-      forbiddenActions: [ADD_SIGN, REJECT, DENY, DISAPPROVE, TERMINATE, WITHDRAW]
+      persists:
+      - visible
+      - label
+      - action
+      - parameters
+      electronicSignatureActions:
+      - SAVE
+      - SUBMIT
+      - APPROVE
+      - RETURN
+      signatureEvent:
+        builtinOptions:
+        - NONE
+        - FILL_SIGN_FIELD
+        event: BEFORE
+        signatureMethod: ACCOUNT_PASSWORD
+        fieldBindingRequiredFor: FILL_SIGN_FIELD
+      transfer:
+        nodeKind: APPROVAL
+        reasonRequired: true
+        opinionRequiredConfigurable: false
+        electronicSignatureConfigurable: false
+      forbiddenActions:
+      - ADD_SIGN
+      - REJECT
+      - DENY
+      - DISAPPROVE
+      - TERMINATE
+      - WITHDRAW
       approvalOpinionRequiredConfigurable: true
       publishedVersionEditable: false
-    explanation: 开始节点支持保存和提交，审批节点支持审批、退回和转办；按钮可保存显隐、显示名称和样式。电子签名事件仅关联保存、提交、审批或退回；转办原因由系统固定必填，不配置审批意见必填或签名字段事件。配置持久化已经实现；各动作的运行时成熟度仍以对应规则和证据为准。
+    explanation: 开始节点支持保存和提交，审批节点支持审批、退回和转办；按钮可保存显隐、显示名称和样式。电子签名事件仅关联保存、提交、审批或退回；转办原因由系统固定必填，不配置审批意见必填或签名字段事件。配置持久化已经实现；各动作的运行时成熟度仍以对应规则和证据为准。 签署后填充字段为可选：NONE不绑定签名字段，FILL_SIGN_FIELD才要求目标字段。ACCOUNT_PASSWORD是保留枚举，普通按钮实际使用DEC-0074独立签名密码及指定签署人，不从枚举推回登录密码政策。
     evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.form-approval-transfer-user-confirmed, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-tests]
   - id: rule.form-process.node-button-event-configuration-v1
     name: 表单流程节点按钮事件配置
@@ -1024,33 +1150,51 @@ rules:
     explanation: 历史规则曾允许事件保存可选处理器标识，已由 rule.form-process.node-button-builtin-event-configuration-v2 替代；旧字段仅用于历史配置读取，不参与新版本发布。
     evidenceIds: [evidence.production-form-process-buttons-events-v1]
   - id: rule.form-process.node-button-builtin-event-configuration-v2
-    name: 表单流程节点内置事件配置
+    name: 填充签名字段的按钮内置签署事件配置
     status: specified
     visibility: internal
     trigger: form-process.node-button-event.configure
     scope: form-process-configuration
     condition:
       all:
-        - fact: formProcessNode.buttonEvent.timing
-          operator: in
-          value: [BEFORE, AFTER]
-        - fact: formProcessNode.buttonEvent.action
-          operator: in
-          value: [SAVE, SUBMIT, APPROVE, RETURN]
-        - fact: formProcessNode.buttonEvent.builtin
-          operator: in
-          value: [FILL_SIGN_FIELD]
+      - fact: formProcessNode.buttonEvent.timing
+        operator: equals
+        value: BEFORE
+      - fact: formProcessNode.buttonEvent.action
+        operator: in
+        value:
+        - SAVE
+        - SUBMIT
+        - APPROVE
+        - RETURN
+      - fact: formProcessNode.buttonEvent.builtin
+        operator: in
+        value:
+        - FILL_SIGN_FIELD
     result:
       type: persist-flow-configuration
       target: formProcessNode.buttonEvents
-      persists: [timing, action, builtin, signatureMethod]
+      persists:
+      - timing
+      - action
+      - builtin
+      - signatureMethod
       perButton: true
-      builtinEventWhitelist: [FILL_SIGN_FIELD]
-      forbiddenFields: [handlerId, processorId, processingMarker]
-      runtimeExecution: unavailable
+      builtinEventWhitelist:
+      - FILL_SIGN_FIELD
+      forbiddenFields:
+      - handlerId
+      - processorId
+      - processingMarker
+      runtimeExecution: existing-consumer-with-separate-verification
       publishedVersionEditable: false
-    explanation: 当前第一版签署事件按节点内具体按钮独立保存，固定使用执行前时机、关联标准动作和受控内置事件类型；不同按钮可以声明不同事件并在绑定阶段使用不同签名字段。不提供单独的启用勾选，不需要事件时直接删除该按钮事件配置。DEC-0074 局部替代旧账户登录密码约定：普通按钮使用实际签署人的独立签名密码，仅用户名 admin 暂用登录密码例外；ACCOUNT_PASSWORD 仅保留为既有配置枚举，不据此推导登录密码认证。处理标识等技术字段不属于用户配置项；本配置规则不证明新认证、事件执行或审计副作用已完成验证，SIGN_FIELD 不受影响。
-    evidenceIds: [evidence.production-form-process-buttons-events-v3, evidence.production-form-process-user-confirmed-v4, evidence.button-signature-confirmed, evidence.button-signature-decision-package]
+    explanation: 本条只定义需要FILL_SIGN_FIELD的按钮签署子集；签署后不填字段的NONE配置由节点按钮总规则承接，不应被本条白名单排除。当前第一版签署事件按节点内具体按钮独立保存，固定使用执行前时机、关联标准动作和受控内置事件类型；不同按钮可以声明不同事件并在绑定阶段使用不同签名字段。不提供单独的启用勾选，不需要事件时直接删除该按钮事件配置。DEC-0074 局部替代旧账户登录密码约定：普通按钮使用实际签署人的独立签名密码，仅用户名 admin 暂用登录密码例外；ACCOUNT_PASSWORD 仅保留为既有配置枚举，不据此推导登录密码认证。处理标识等技术字段不属于用户配置项；本配置规则不证明新认证、事件执行或审计副作用已完成验证，SIGN_FIELD 不受影响。 当前已有受限签署消费者，原配置切片不承诺运行验收，不能据此断言消费者不存在。
+    evidenceIds:
+    - evidence.production-form-process-buttons-events-v3
+    - evidence.production-form-process-user-confirmed-v4
+    - evidence.button-signature-confirmed
+    - evidence.button-signature-decision-package
+    - evidence.production-execution-access-source
   - id: rule.form-process.node-button-event-empty-projection
     name: 未配置按钮事件时隐藏节点事件区域
     status: specified
@@ -1103,8 +1247,11 @@ rules:
       bindingScoped: true
       processVersionWriteBack: false
       invalidBindingAction: block
-    explanation: 作业流程表单填写节点必须先绑定一个已发布表单流程版本和具体表单模板版本，再把流程版本中声明的 FILL_SIGN_FIELD 事件绑定到所选表单真实存在的稳定 fieldId。字段绑定属于当前作业节点，不回写可复用表单流程版本；目标字段必须是签名类型字段，普通文本等非签名字段不能作为填充目标。当前仅定义配置与校验，不代表运行时签名写入已实现。
-    evidenceIds: [evidence.production-form-process-buttons-events-v2]
+    explanation: 显式 PROCESS 模式中，作业表单节点把所选已发布流程的 FILL_SIGN_FIELD 事件映射到当前表单真实且稳定的签名 fieldId；普通文本不可作目标，绑定只属于当前节点，不回写复用流程。DIRECT 的绑定按DEC-0067独立设置。已有签署消费者及服务端字段写入，不能再笼统称无运行实现；实际按钮认证遵循DEC-0074，SIGN_FIELD保持独立协议。本次静态核对不表示全部权限/签署/审计验收通过。
+    evidenceIds:
+    - evidence.production-form-process-buttons-events-v2
+    - evidence.production-execution-access-source
+    - evidence.form-fill-settings-confirmed
   - id: rule.production-work.form-process-reference-projection
     name: 作业流程保存时重建表单流程版本引用投影
     status: implemented
@@ -1122,7 +1269,7 @@ rules:
       sourceOfTruth: productionWorkFlowVersion.nodesJson
       rebuildScopes: [save-graph, create-inherited-draft, publish, copy-published-to-draft]
       deleteWithOwner: production-work.flow-version.delete
-    explanation: 作业流程图中的表单填报节点配置仍是表单流程版本引用的事实来源。系统保存作业流程图、创建继承草稿、发布或复制已发布版本时，在同一事务内重建该作业版本的引用使用投影，用于后续影响分析；投影不得由用户手工维护，也不能反向改写流程图配置。
+    explanation: 作业流程图中的表单填报节点配置仍是表单流程版本引用的事实来源。系统保存作业流程图、创建继承草稿、发布或复制已发布版本时，在同一事务内重建该作业版本的引用使用投影，用于后续影响分析；投影不得由用户手工维护，也不能反向改写流程图配置。 当前FormProcessReferenceService.rebuildForWorkVersion按已存formProcessVersionId构建引用，包括DIRECT中休眠的流程配置，用于使用分析和删除保护；formProcessReferenceStatuses仅对当前PROCESS生效配置提示。存储引用与运行生效引用含义不同，未确认仅活动模式才能计删除保护，不能自行缩小。
     evidenceIds: [evidence.production-form-process-user-confirmed-v5, evidence.form-process-version-reference-implementation, evidence.form-process-version-reference-migration, evidence.form-process-version-reference-tests]
   - id: rule.form-process.version-usage-analysis
     factCatalogProfile: form-process-binding

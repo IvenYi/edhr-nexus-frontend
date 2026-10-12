@@ -1,0 +1,1818 @@
+{
+  "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "scope": "Explicit analyst dispositions; original baseline outcomes stay unchanged. Knowledge correction and business implementation status are separate.",
+  "findings": [
+    {
+      "findingId": "ROOT-001",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "term.form-process-template",
+        "term.form-process-template-version",
+        "term.form-process-participant-rule",
+        "term.form-process-subject-default-permission",
+        "term.form-binding-field-permission-exception",
+        "term.form-process-operation-permission-policy",
+        "term.form-process-builtin-event",
+        "concept.form-process-template",
+        "concept.form-process-template-version",
+        "concept.form-process-participant-rule",
+        "concept.form-process-operation-permission-policy",
+        "concept.form-binding-field-permission-exception",
+        "relation.form-process-flow-version-has-participant-rules",
+        "relation.form-process-binding-has-field-permission-exceptions",
+        "relation.form-binding-field-exception-overrides-subject-default"
+      ],
+      "changedExistingIds": [
+        "concept.form-binding-field-permission-exception",
+        "concept.form-process-operation-permission-policy",
+        "concept.form-process-participant-rule",
+        "concept.form-process-template",
+        "concept.form-process-template-version",
+        "relation.form-binding-field-exception-overrides-subject-default",
+        "relation.form-process-binding-has-field-permission-exceptions",
+        "relation.form-process-flow-version-has-participant-rules",
+        "term.form-binding-field-permission-exception",
+        "term.form-process-builtin-event",
+        "term.form-process-operation-permission-policy",
+        "term.form-process-participant-rule",
+        "term.form-process-subject-default-permission",
+        "term.form-process-template",
+        "term.form-process-template-version"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "共用词条仍使用旧主体来源、逐主体默认权限、旧操作范围或内置事件关系，未准确投影现行确认。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/glossary.yaml",
+        "docs/knowledge/ontology.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-002",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "term.production-batch",
+        "term.execution-snapshot",
+        "term.production-work-instance",
+        "term.production-object-execution-detail",
+        "term.production-work-condition-rule",
+        "term.production-work-condition-node",
+        "term.production-work-condition-branch",
+        "term.production-work-condition-default-branch",
+        "concept.production-batch",
+        "concept.execution-snapshot",
+        "concept.production-work-instance",
+        "concept.production-object-execution-detail",
+        "concept.production-work-condition-rule",
+        "concept.production-work-condition-node",
+        "concept.production-work-condition-branch",
+        "concept.production-work-condition-default-branch"
+      ],
+      "changedExistingIds": [
+        "concept.execution-snapshot",
+        "concept.production-batch",
+        "concept.production-object-execution-detail",
+        "concept.production-work-condition-branch",
+        "concept.production-work-condition-default-branch",
+        "concept.production-work-condition-node",
+        "concept.production-work-condition-rule",
+        "concept.production-work-instance",
+        "term.execution-snapshot",
+        "term.production-batch",
+        "term.production-object-execution-detail",
+        "term.production-work-condition-branch",
+        "term.production-work-condition-default-branch",
+        "term.production-work-condition-node",
+        "term.production-work-condition-rule",
+        "term.production-work-instance"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "生产批次别名混入SN；执行快照、作业内嵌运行与条件求值仍被笼统描述为未实现。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/glossary.yaml",
+        "docs/knowledge/ontology.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-003",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "fact.catalog.audit-action",
+        "fact.catalog.audit-entitytype",
+        "relation.production-batch-management-opens-row-audit"
+      ],
+      "changedExistingIds": [
+        "fact.catalog.audit-action",
+        "fact.catalog.audit-entitytype",
+        "relation.production-batch-management-opens-row-audit"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "审计动作/实体类型事实定位到了无对应字段的业务服务，批次审计关系误指动作分类。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/facts/core-business.yaml",
+        "docs/knowledge/ontology.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-004",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "relation.pending-list-uses-production-batch-import-template",
+        "relation.production-work-condition-rule-uses-runtime-field-catalog",
+        "relation.production-work-condition-branch-uses-dynamic-outgoing-edge",
+        "relation.production-work-condition-default-branch-uses-outgoing-edge"
+      ],
+      "changedExistingIds": [
+        "relation.pending-list-uses-production-batch-import-template",
+        "relation.production-work-condition-branch-uses-dynamic-outgoing-edge",
+        "relation.production-work-condition-default-branch-uses-outgoing-edge",
+        "relation.production-work-condition-rule-uses-runtime-field-catalog"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "待提交清单使用导入模板的关系方向颠倒；条件字段目录与规则引擎混同，条件出口连线与流程版本混同。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/ontology.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-005",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "fact.catalog.subject-departmentscopes",
+        "fact.catalog.task-candidatemembership",
+        "fact.catalog.workflowtask-status"
+      ],
+      "changedExistingIds": [
+        "fact.catalog.subject-departmentscopes",
+        "fact.catalog.task-candidatemembership",
+        "fact.catalog.workflowtask-status"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "任务状态与冻结候选事实错定位身份解析器；部门范围别名未指明真实枚举和逐主体含义。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/facts/core-business.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-006",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "fact.catalog.split-targetquantity",
+        "fact.catalog.split-quantityperbatch"
+      ],
+      "changedExistingIds": [
+        "fact.catalog.split-quantityperbatch",
+        "fact.catalog.split-targetquantity"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "BATCH数量的结构化>=1推导与一贯正数量业务逻辑相反；两个decimal事实须定位数量来源并支持等价>0表达。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/facts/core-business.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-007",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "DEC-0004",
+        "DEC-0004-05"
+      ],
+      "changedExistingIds": [
+        "DEC-0004",
+        "DEC-0004-05"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "现行影响分析声明残留已弃用的生产事务编排术语。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-009",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "fact.catalog.productionform-currentnodeactionprojection"
+      ],
+      "changedExistingIds": [
+        "fact.catalog.productionform-currentnodeactionprojection"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "当前节点动作投影事实声明string，但实际formControls返回含buttons、权限及节点上下文的ObjectNode；事实范围须与规则返回字段一致。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/facts/core-business.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-008",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "relation.production-batch-records-product",
+        "relation.production-batch-records-product-family"
+      ],
+      "changedExistingIds": [
+        "relation.production-batch-records-product",
+        "relation.production-batch-records-product-family"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "批次产品/产品簇关系缺少证据链接；簇冻结与成员转移仍须结合具体实现差异，不能自动当成已冻结。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/ontology.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-GAP-001",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "discrepancy.ontology-p0-coarse-fact-locators",
+        "fact.catalog.authenticateduser-present",
+        "fact.catalog.batch-generatecount",
+        "fact.catalog.batch-itemspresent",
+        "fact.catalog.capability-phase",
+        "fact.catalog.currentrevision-exists",
+        "fact.catalog.dhrtemplateitem",
+        "fact.catalog.dhrtemplateitem-directory-versionid",
+        "fact.catalog.dhrtemplateitem-formtemplateversionid",
+        "fact.catalog.dhrtemplateversion",
+        "fact.catalog.documentbinding-pageend",
+        "fact.catalog.documentbinding-pagestart",
+        "fact.catalog.documentfile-mimetype",
+        "fact.catalog.documentfile-originalname",
+        "fact.catalog.documentversion",
+        "fact.catalog.earlytermination-reasonpresent",
+        "fact.catalog.formbinding-required",
+        "fact.catalog.forminstance-formprocessversionid",
+        "fact.catalog.forminstance-status",
+        "fact.catalog.forminstance-submissionvalidation-passed",
+        "fact.catalog.formprocess-status",
+        "fact.catalog.formprocessapproval-candidatecount",
+        "fact.catalog.formprocessapproval-returnrequested",
+        "fact.catalog.formprocessapproval-subjectconfigurationpresent",
+        "fact.catalog.formprocessbinding-eventbinding-eventid",
+        "fact.catalog.formprocessbinding-eventbinding-field-type",
+        "fact.catalog.formprocessbinding-eventbinding-fieldid",
+        "fact.catalog.formprocessbinding-fieldpermissionexception-exists",
+        "fact.catalog.formprocessbinding-versionchanged",
+        "fact.catalog.formprocessbuttonconfigurationrequested",
+        "fact.catalog.formprocessentry-subjectconfigurationpresent",
+        "fact.catalog.formprocessinstance-status",
+        "fact.catalog.formprocessnode-button-action",
+        "fact.catalog.formprocessnode-buttonevent-action",
+        "fact.catalog.formprocessnode-buttonevent-builtin",
+        "fact.catalog.formprocessnode-buttonevent-exists",
+        "fact.catalog.formprocessnode-buttonevent-timing",
+        "fact.catalog.formprocessnode-type",
+        "fact.catalog.formprocesspermissiongroup-defaultpermission",
+        "fact.catalog.formprocesspermissiongroup-subjectconfigurationpresent",
+        "fact.catalog.formtemplateversion",
+        "fact.catalog.importedbatch-batchnopresent",
+        "fact.catalog.importedbatch-quantitypositive",
+        "fact.catalog.importedsn-snnumberpresent",
+        "fact.catalog.intervention-type",
+        "fact.catalog.material-typename",
+        "fact.catalog.operation-finaloutput",
+        "fact.catalog.operation-formpermissions",
+        "fact.catalog.operation-formsharing",
+        "fact.catalog.operation-materialreadiness",
+        "fact.catalog.operation-prestarttransactionvalidation",
+        "fact.catalog.operation-transactiontrigger",
+        "fact.catalog.operationbinding-documentbindings-documentversionid",
+        "fact.catalog.operationbinding-formbindings-formtemplateversionid",
+        "fact.catalog.operationbinding-routenodekey",
+        "fact.catalog.process-productionform",
+        "fact.catalog.process-productionmode",
+        "fact.catalog.processversion-effectivestatus",
+        "fact.catalog.processversion-productionform",
+        "fact.catalog.processversion-productionmode",
+        "fact.catalog.product-availableprocessversioncount",
+        "fact.catalog.product-currentproductfamily",
+        "fact.catalog.product-hasavailableprocessversion",
+        "fact.catalog.product-newproductfamily",
+        "fact.catalog.product-productfamilycount",
+        "fact.catalog.productfamily-availableprocessversioncount",
+        "fact.catalog.productfamily-code",
+        "fact.catalog.productfamily-hasavailableprocessversion",
+        "fact.catalog.productfamily-legacystatus",
+        "fact.catalog.productfamily-membercount",
+        "fact.catalog.productfamily-processversioncount",
+        "fact.catalog.productfamilytransfer-confirmation",
+        "fact.catalog.productfamilytransfer-reason",
+        "fact.catalog.productprocess-ownerid",
+        "fact.catalog.productprocess-ownertype",
+        "fact.catalog.productprocessversion-isnewrecord",
+        "fact.catalog.productprocessversion-productionform",
+        "fact.catalog.productprocessversion-versionlabel",
+        "fact.catalog.productionbatch-listcontext",
+        "fact.catalog.productionbatch-product",
+        "fact.catalog.productionbatch-productprocessversion",
+        "fact.catalog.productionbatch-productprocessversion-ownertype",
+        "fact.catalog.productionform",
+        "fact.catalog.productionobject-allassociatedobjectsterminal",
+        "fact.catalog.productionobject-hasparentorchildren",
+        "fact.catalog.productionobject-inputmode",
+        "fact.catalog.productionobject-objectnoalreadyused",
+        "fact.catalog.productionobject-objecttype",
+        "fact.catalog.productionobject-plannedtimerangevalid",
+        "fact.catalog.productionobject-routehasnocurrentoperation",
+        "fact.catalog.productionobject-status",
+        "fact.catalog.productionobject-statustransition",
+        "fact.catalog.productionworkapplicabilityrule-count",
+        "fact.catalog.productionworkapplicabilityrule-definitionid",
+        "fact.catalog.productionworkapplicabilityrule-isapplicable",
+        "fact.catalog.productionworkapplicabilityrule-listrequested",
+        "fact.catalog.productionworkapplicabilityrule-matchcontext",
+        "fact.catalog.productionworkapplicabilityrule-persisted",
+        "fact.catalog.productionworkchange-subject",
+        "fact.catalog.productionworkconditionnode-conditionbranches",
+        "fact.catalog.productionworkconditionnode-published",
+        "fact.catalog.productionworkdefinition-auditeventcount",
+        "fact.catalog.productionworkdefinition-haspublishedflowversion",
+        "fact.catalog.productionworkdefinition-persisted",
+        "fact.catalog.productionworkdefinition-selected",
+        "fact.catalog.productionworkdefinition-type",
+        "fact.catalog.productionworkflowgraph-isfirstreleaseflow",
+        "fact.catalog.productionworkflownode-kind",
+        "fact.catalog.productionworkflowversion-containsconditionrule",
+        "fact.catalog.productionworkflowversion-deleterequested",
+        "fact.catalog.productionworkflowversion-nodes",
+        "fact.catalog.productionworkflowversion-publishrequested",
+        "fact.catalog.productionworkflowversion-saverequested",
+        "fact.catalog.productionworkmatch-matched",
+        "fact.catalog.rdoversion-effectivewindow",
+        "fact.catalog.request-status",
+        "fact.catalog.requestedaction",
+        "fact.catalog.routeversion",
+        "fact.catalog.runtimedecision-source",
+        "fact.catalog.selectedprocessversion-ownertype",
+        "fact.catalog.sourcerecord-completed",
+        "fact.catalog.sourcerecord-currentrevisionexists",
+        "fact.catalog.split-batchcount",
+        "fact.catalog.split-processversionresolved",
+        "fact.catalog.split-requestedprocessversionid",
+        "fact.catalog.subject-references",
+        "fact.catalog.subject-resolution-completed",
+        "fact.catalog.subject-type",
+        "fact.catalog.subjectselector-opened",
+        "fact.catalog.voidrequest-approved",
+        "fact.catalog.workorder-existingobjectformsmatchrequestedform",
+        "fact.catalog.workorder-objecttargetquantitywithinplannedquantity",
+        "fact.catalog.workorder-ordernopresent",
+        "fact.catalog.workorder-plannedquantitypositive",
+        "fact.catalog.workorder-plannedtimerangevalid",
+        "fact.catalog.workorder-processversionid",
+        "fact.catalog.workorder-processversionlocked",
+        "fact.catalog.workorder-productselected",
+        "fact.catalog.workorder-productionobjectcount",
+        "fact.catalog.workflow-allbranchesapproved",
+        "fact.catalog.workflow-parallelbranchesexist",
+        "fact.catalog.workflowtemplate-category",
+        "fact.catalog.reviewtemplate-configurablefillpermissionrequested",
+        "fact.catalog.workshop-changepersisted",
+        "fact.catalog.workshop-codeduplicatewithintenant",
+        "fact.catalog.workshop-referencecount",
+        "fact.catalog.workshop-status",
+        "fact.catalog.workshop-statusprovided",
+        "fact.catalog.equipment-purchasedateisfuture",
+        "fact.catalog.execution-operationselected",
+        "fact.catalog.attachment-requiredness",
+        "fact.catalog.user-activelyediting",
+        "fact.catalog.form-reportingopen",
+        "fact.catalog.form-hasincompletecopies",
+        "fact.catalog.form-required",
+        "fact.catalog.form-reportingrequirementsmet",
+        "fact.catalog.form-hasoutputpurposefields",
+        "fact.catalog.operation-hasquantitypurposefields",
+        "fact.catalog.productionobject-exists",
+        "fact.catalog.operation-completionconditionssatisfied"
+      ],
+      "changedExistingIds": [
+        "fact.catalog.formprocessnode-buttonevent-timing"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": [
+        "docs/knowledge/facts/core-business.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-GAP-002",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "execution.master-data-description-field-contract",
+        "execution.production-object-audit-snapshot"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "ROOT-GAP-003",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "discrepancy.ontology-p0-independent-quality-gate",
+        "anchor.core.record-control-workflow-integration"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "ROOT-QUESTION-001",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "question.dhr-termination-sop-extra-signature",
+        "question.record-control-managerial-reassignment-signature",
+        "question.record-control-active-form-void-boundary",
+        "question.production-work-condition-runtime-source-snapshot-contract",
+        "question.production-work-condition-runtime-evaluation-contract",
+        "question.production-work-condition-branch-model",
+        "question.multi-tenant-workflow-isolation"
+      ],
+      "changedExistingIds": [
+        "question.production-work-condition-branch-model",
+        "question.production-work-condition-runtime-evaluation-contract",
+        "question.production-work-condition-runtime-source-snapshot-contract"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "scope-clarified-existing-policy-deferred",
+      "knowledgeResolution": "已查明的当前代码行为和现行/历史范围已经分开；没有将规划推断提升为已确认政策。",
+      "remainingWork": "既有业务/完整运行契约问题在依赖功能开发时确认，不阻碍本次 L1 审计及确定性知识修复。",
+      "evidenceFiles": [
+        "docs/knowledge/open-questions.yaml"
+      ]
+    },
+    {
+      "findingId": "ROOT-DOC-001",
+      "domain": "foundation",
+      "baselineAffectedIds": [
+        "evidence.ontology-impact-analysis-architecture",
+        "evidence.ontology-impact-analysis-form-process-binding",
+        "evidence.ontology-p0-coverage-review"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "共同架构和历史导航需校准来源记录所有权、当前受限快照与条件运行、车间迁移、API及历史ID。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md",
+        "docs/architecture/business-knowledge-model.md",
+        "docs/architecture/ontology-driven-impact-analysis-and-extension-development.md",
+        "docs/knowledge/README.md",
+        "docs/knowledge/impact-analysis/ontology-p0-coverage.md"
+      ]
+    },
+    {
+      "findingId": "FORMS-001",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "anchor.form-process-binding-controller",
+        "anchor.form-process-binding-optional-form-process",
+        "anchor.form-process-binding-usage-projection",
+        "anchor.form-process-binding-controlled-upgrade",
+        "anchor.form-process-binding-delete-guard",
+        "anchor.form-approval-transfer-configuration"
+      ],
+      "changedExistingIds": [
+        "anchor.form-approval-transfer-configuration",
+        "anchor.form-process-binding-controlled-upgrade",
+        "anchor.form-process-binding-controller",
+        "anchor.form-process-binding-delete-guard",
+        "anchor.form-process-binding-optional-form-process",
+        "anchor.form-process-binding-usage-projection"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "纠正真实完整 API 前缀：/api/v1/workflow/work-templates 与 /api/v1/workflow/form-processes。作业保存 PUT /{id}/versions/{versionId}/graph，发布 POST /{id}/versions/{versionId}/publish，引用状态 GET /{id}/versions/{versionId}/form-process-references；表单流程 GET /{id}/usage 和 DELETE /{id}。同步当前导航，历史原始证据保留。 普通表单转办配置锚点保存API是 PUT /api/v1/workflow/form-processes/{id}/versions/{versionId}/graph。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/impact-analysis/form-process-binding-version-reference.md",
+        "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+        "docs/knowledge/implementation-anchors/form-process-binding.yaml"
+      ],
+      "relatedDocumentation": [
+        "docs/knowledge/impact-analysis/form-process-binding-version-reference.md"
+      ]
+    },
+    {
+      "findingId": "FORMS-002",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "DEC-0067",
+        "DEC-0067-01",
+        "DEC-0067-05",
+        "scenario.form-fill-settings-mvp-no-legacy-compatibility",
+        "rule.form-fill-explicit-mode"
+      ],
+      "changedExistingIds": [
+        "DEC-0067",
+        "rule.form-fill-explicit-mode"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；现行 DEC-0067-01/05 要求显式选择填报方式，并已撤销缺失模式推导和旧数据开放默认。 当前 WorkTemplateController.saveGraph 对 FORM 配置缺失或 null 的 fillMode 自动写入 DIRECT； validatePublishableFormProcessReferences 仅在含 fillMode 或 directFillConfig 时调用填报设置校验，旧式无模式且无流程节点仍有发布路径。 FormFillSettingsService.usesProcess 对空模式返回 false，serialize 补 DIRECT；validate 对整体 settings 为 null/missing 时返回，对缺少模式的对象则按直接模式分支解释而不要求模式必填； saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess 测试输入缺失模式并断言写入 DIRECT，说明该分支仍被测试固定。 这是已查明的未修实现差异，不能以当前兼容行为推翻最新用户确认；显式新配置的权限、签署和快照实现单独保留。 本次仅核对源码和测试断言，未修改生产行为或执行运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+        "docs/knowledge/rules/form-fill-settings.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-003",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "fact.form-process-binding.form-process-template-version-status",
+        "fact.production-work-flow-version.status",
+        "fact.form-process-version-reference.referenced-version-is-current",
+        "fact.form-process-definition.has-current-published-version",
+        "fact.target-form-process-version.status",
+        "fact.target-form-process-version.is-current",
+        "fact.form-process-binding.compatibility-with-target-version",
+        "fact.referenced-form-process-version.status",
+        "fact.referenced-form-process-version.is-current",
+        "fact.form-process-version-usage.reference-count"
+      ],
+      "changedExistingIds": [
+        "fact.form-process-binding.compatibility-with-target-version",
+        "fact.form-process-binding.form-process-template-version-status",
+        "fact.form-process-definition.has-current-published-version",
+        "fact.form-process-version-reference.referenced-version-is-current",
+        "fact.form-process-version-usage.reference-count",
+        "fact.production-work-flow-version.status",
+        "fact.referenced-form-process-version.is-current",
+        "fact.referenced-form-process-version.status",
+        "fact.target-form-process-version.is-current",
+        "fact.target-form-process-version.status"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "用真实WorkflowDefinitionVersion.status/isCurrent及控制器局部派生定位；引用数保留按目标版本的语义，指向usage分组统计而非虚构实体方法；不把别名当作实现符号。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/facts/form-process-binding.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-004",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "rule.identity.runtime-subject-resolution",
+        "rule.identity.runtime-department-overlap-deduplication"
+      ],
+      "changedExistingIds": [
+        "rule.identity.runtime-department-overlap-deduplication",
+        "rule.identity.runtime-subject-resolution"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "统一事实取值和规则操作数/结果为真实枚举，保留部门本级/含全部后代的已确认业务含义。 删除未实现的 expansionMemoization 断言，明确关系查询批量化、最终用户去重和每次树遍历防重复的实际边界；DEC0030只要求结果去重与来源保留，不要求该缓存实现。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/rules/identity.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-005",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "discrepancy.form-renderer-permission-state-not-integrated",
+        "evidence.form-renderer-preview-current-input"
+      ],
+      "changedExistingIds": [
+        "discrepancy.form-renderer-permission-state-not-integrated",
+        "evidence.form-renderer-preview-current-input"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "纠正路径及已集成范围；数组对象及未知ID诊断仍属inference，版本错配与端到端缺口分开，不扩张成熟度。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml",
+        "docs/knowledge/evidence/form-renderer-permission-contract.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-006",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "evidence.production-form-process-buttons-events-v1"
+      ],
+      "changedExistingIds": [
+        "evidence.production-form-process-buttons-events-v1"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "索引恢复历史原文对应含义并指明后续局部替代，不改写历史确认MD。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/production-form-process.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-007",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "DEC-0060",
+        "DEC-0060-01",
+        "scenario.form-reference-query-context",
+        "rule.form-reference-runtime"
+      ],
+      "changedExistingIds": [
+        "DEC-0060"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.form-reference-personal-entry-context-not-forwarded"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；DEC-0060-01 与 scenario.form-reference-query-context 要求正式填报按主表及当前子表行依赖查询。 FormRuntimeField.RuntimeReference 已调用 references(fieldId, keyword, dependencies)，ProductionExecutionPage 也正确透传第三参； 但 FormFillingPage:260-262 和 FormReviewPage:154-156 的回调仅接收并转发前两参， getExecutionReferences 的 values 因而使用默认空对象。FormReferenceLookup.query 对必需条件依赖缺失追加 AND 1=0， 所以这两个个人入口的条件引用查询会丢失上下文并出现空候选。无条件引用、正确透传的生产执行入口与后端正式保存约束须分别评价。 保留已确认引用行为，登记当前两个页面接线缺口；共享组件和纯函数测试不能证明这两个页面已经贯通。 本次未运行浏览器或服务端测试，尚未修复入口。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-008",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "rule.workflow.task-any-candidate-completes-and-closes-siblings"
+      ],
+      "changedExistingIds": [
+        "rule.workflow.task-any-candidate-completes-and-closes-siblings"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "保留处理权与终态业务意图，规则操作数改真实PENDING/PROCESSING或显式登记open规范化映射；共享fact.catalog.workflowtask-status与task-candidatemembership应定位WorkflowTask/WorkflowEngine，配置候选分支与unrestricted开放分支及legacy assignee回退分开。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/rules/identity.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-009",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "evidence.workflow-task-multi-candidate-runtime-implementation"
+      ],
+      "changedExistingIds": [
+        "evidence.workflow-task-multi-candidate-runtime-implementation"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；DEC-0031-04 将创建时的候选解析快照与来源作为任务审计依据，并要求组织关系变化不改写已有任务候选。 当前泛 WorkflowEngine 创建任务时保存 candidateSnapshot.userIds 与 sources；普通组织变化不触发该任务重算。 但 transferTask 在同一任务上以 singleUserSnapshot(newAssigneeId) 替换整个 candidateSnapshot，原 userIds 与主体命中 sources 不再保留在此任务快照中； transferKeepsOneLogicalTaskAndUpdatesTargetSnapshot 测试明确断言单人目标快照。转办日志记录前后处理人，不足以替代完整原始主体来源快照。 因而原代码证据对“完成、转办和终止均保留解析来源快照”的概括过宽，需要缩限为创建及普通处理范围并登记转办来源留存缺口； 不据此把 DEC-0031 的组织关系冻结规范改为自动重算。普通生产表单 ProductionExecutionEngine.transferForm 另存 transferAssignees 并保留 approvers，属于不同路径。 本次仅查明并登记差异，未修改泛工作流或普通表单转办逻辑，也未执行运行测试。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+        "docs/knowledge/evidence/identity-subject-selector.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-010",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "DEC-0029-04",
+        "discrepancy.subject-selector-runtime-unimplemented",
+        "discrepancy.production-form-process-runtime-unimplemented-v2",
+        "discrepancy.production-form-process-button-event-runtime-unimplemented",
+        "discrepancy.production-form-process-builtin-event-runtime-unimplemented",
+        "discrepancy.form-process-permission-group-runtime-unimplemented",
+        "DEC-0041-04",
+        "DEC-0056-04"
+      ],
+      "changedExistingIds": [
+        "DEC-0029-04",
+        "DEC-0041-04",
+        "DEC-0056-04",
+        "discrepancy.form-process-permission-group-runtime-unimplemented",
+        "discrepancy.production-form-process-builtin-event-runtime-unimplemented",
+        "discrepancy.production-form-process-button-event-runtime-unimplemented",
+        "discrepancy.production-form-process-runtime-unimplemented-v2",
+        "discrepancy.subject-selector-runtime-unimplemented"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "保留原始历史解释，明确当前对应已实现部分与仍缺部分；配置/源码实现不宣称运行部署，记录控制申请实体、真实性校验、来源锁、结果消费仍未闭环。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+        "docs/knowledge/decisions/DEC-0024-production-form-process-buttons-and-events.yaml",
+        "docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml",
+        "docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml",
+        "docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml",
+        "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+        "docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml"
+      ]
+    },
+    {
+      "findingId": "FORMS-011",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "evidence.record-correction-void-design"
+      ],
+      "changedExistingIds": [
+        "evidence.record-correction-void-design"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "scope-clarified-existing-policy-deferred",
+      "knowledgeResolution": "已查明的当前代码行为和现行/历史范围已经分开；没有将规划推断提升为已确认政策。",
+      "remainingWork": "既有业务/完整运行契约问题在依赖功能开发时确认，不阻碍本次 L1 审计及确定性知识修复。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/record-correction-void-design.yaml",
+        "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md"
+      ]
+    },
+    {
+      "findingId": "FORMS-012",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "evidence.button-signature-test-run-record",
+        "discrepancy.button-signature-implementation-verification-pending",
+        "evidence.form-instance-query-integration-test",
+        "evidence.form-instance-query-migration-test",
+        "evidence.form-instance-business-source-integration-test",
+        "evidence.form-instance-business-source-migration-test",
+        "evidence.form-worklists-integration-test",
+        "evidence.form-worklists-migration-test",
+        "evidence.record-control-workflow-stage1-migration",
+        "evidence.record-control-workflow-stage1-local-validation",
+        "discrepancy.record-control-stage1-permission-and-concurrency-verification-pending"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/button-signature-confirmed.md",
+        "docs/knowledge/evidence/form-reference-runtime-confirmed.md",
+        "docs/knowledge/evidence/record-control-workflow-stage1-local-validation.md"
+      ],
+      "relatedDocumentation": [
+        "docs/knowledge/evidence/button-signature-confirmed.md",
+        "docs/knowledge/evidence/form-reference-runtime-confirmed.md",
+        "docs/knowledge/evidence/record-control-workflow-stage1-local-validation.md"
+      ]
+    },
+    {
+      "findingId": "FORMS-013",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "evidence.production-form-process-guancheng-research"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "FORMS-014",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "DEC-0034-04",
+        "scenario.form-renderer-version-mismatch"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "FORMS-015",
+      "domain": "forms",
+      "baselineAffectedIds": [
+        "scenario.identity-runtime-invalid-subject"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "MASTER-GAP-001",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "evidence.material-import-confirmed"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "MASTER-FIX-001",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "evidence.master-data-description-document-controller-test",
+        "scenario.master-data-description-and-version-description",
+        "anchor.master-data-description-field-contract",
+        "rule.master-data.single-description-field-contract"
+      ],
+      "changedExistingIds": [
+        "evidence.master-data-description-document-controller-test"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "主智能体收窄证据描述并保留相关验证缺口；不得据现有测试声称完整字段契约验证，业务代码不在本次改动范围。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/master-data-description.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-FIX-002",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "evidence.master-data-workshop-shared-shell-verification",
+        "scenario.workshop-shared-shell"
+      ],
+      "changedExistingIds": [
+        "evidence.master-data-workshop-shared-shell-verification"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "将索引收窄为真实菜单/字段/引用/权限/迁移token检查；共享壳及几何验收继续保留缺口。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/master-data-description.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-FIX-003",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "evidence.workshop-master-data-architecture"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "主智能体把旧site结构写为初始历史结构、0070文件中0061 changeset已提供转租户迁移；部署执行状态另验。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/architecture/business-knowledge-model.md"
+      ]
+    },
+    {
+      "findingId": "MASTER-FIX-004",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "DEC-0001",
+        "DEC-0001-03",
+        "DEC-0001-09",
+        "DEC-0001-10",
+        "DEC-0002",
+        "scenario.form-required-configuration",
+        "scenario.explicit-process-version-selection-internal",
+        "scenario.execution-snapshot-internal",
+        "scenario.planned-capabilities-internal",
+        "evidence.business-knowledge-model",
+        "rule.product-process.explicit-execution-selection",
+        "rule.product-process.freeze-batch-execution-snapshot",
+        "rule.product-process.form-required-configuration",
+        "rule.product-process.form-complete-before-operation",
+        "rule.product-process.form-button-field-permissions"
+      ],
+      "changedExistingIds": [
+        "DEC-0001",
+        "DEC-0001-03",
+        "DEC-0001-09",
+        "DEC-0001-10",
+        "DEC-0002",
+        "rule.product-process.explicit-execution-selection",
+        "rule.product-process.form-button-field-permissions",
+        "rule.product-process.form-complete-before-operation",
+        "rule.product-process.form-required-configuration",
+        "rule.product-process.freeze-batch-execution-snapshot",
+        "scenario.execution-snapshot-internal",
+        "scenario.explicit-process-version-selection-internal",
+        "scenario.form-required-configuration",
+        "scenario.planned-capabilities-internal"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "按master-remediation.md逐条添加历史适用范围/现行承接证据，保留其他有效建模内容和原maturity；不擅将通用规则执行层标为完成。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+        "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+        "docs/knowledge/rules/product-process.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-DIFF-001",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "DEC-0002",
+        "DEC-0002-10",
+        "scenario.product-family-transfer",
+        "scenario.production-object-snapshot",
+        "rule.product-family.member-transfer-future-only",
+        "rule.product-process.freeze-batch-execution-snapshot"
+      ],
+      "changedExistingIds": [
+        "DEC-0002",
+        "rule.product-process.freeze-batch-execution-snapshot"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.product-family-transfer-unstarted-object-context"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；DEC-0002-10 确认成员转移只影响未来创建的生产对象，但当前拆分仅保存 processVersionId，首次 START 从当前 product_family_member 读取产品簇用于作业匹配，未冻结独立产品簇上下文；转移前已创建但未开工的对象可能改用新簇作业。另已锁定产品簇制程的工单继续拆分通过 findVersionForProduct 重查当前成员关系，转移后可能被拒绝。现有成员转移测试只覆盖关系和三方审计，缺少该跨时点边界验证。已确认政策保留；本次仅据完整静态调用链登记差异，未修改业务代码或执行运行测试。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+        "docs/knowledge/rules/product-process.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-DIFF-002",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "discrepancy.product-modeling-page-sop-document-label"
+      ],
+      "changedExistingIds": [
+        "discrepancy.product-modeling-page-sop-document-label"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "existing-implementation-gap-retained",
+      "knowledgeResolution": "核对后保留既有 open 差异；定位错误已按实际位置收窄。",
+      "remainingWork": "后续功能修复需对实际候选进行适用验证。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-FIX-005",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "DEC-0005",
+        "scenario.production-work-runtime-remains-unimplemented",
+        "evidence.ai-transaction-runtime-architecture",
+        "rule.production-work.applicability-resolves-published-flow",
+        "rule.production-work.template-delete-when-no-applicability-rule",
+        "rule.production-work.instance-auto-matches-applicability",
+        "rule.production-work.instance-freezes-work-and-rule-snapshot",
+        "rule.production-work.flow-canvas-configuration",
+        "rule.production-work.condition-branches-first-match",
+        "rule.production-work.ordinary-node-single-outgoing-edge",
+        "rule.form-process.binding-requires-form-and-flow",
+        "rule.form-process.subject-members-resolve-latest-relations",
+        "rule.form-process.approval-any-candidate",
+        "rule.form-process.approval-return-to-entry",
+        "rule.form-process.termination-cascades-to-outer-work",
+        "rule.production-work.form-entry-event-field-binding"
+      ],
+      "changedExistingIds": [
+        "DEC-0005",
+        "evidence.ai-transaction-runtime-architecture",
+        "rule.form-process.approval-any-candidate",
+        "rule.form-process.approval-return-to-entry",
+        "rule.form-process.binding-requires-form-and-flow",
+        "rule.form-process.subject-members-resolve-latest-relations",
+        "rule.form-process.termination-cascades-to-outer-work",
+        "rule.production-work.applicability-resolves-published-flow",
+        "rule.production-work.condition-branches-first-match",
+        "rule.production-work.flow-canvas-configuration",
+        "rule.production-work.form-entry-event-field-binding",
+        "rule.production-work.instance-auto-matches-applicability",
+        "rule.production-work.instance-freezes-work-and-rule-snapshot",
+        "rule.production-work.ordinary-node-single-outgoing-edge",
+        "rule.production-work.template-delete-when-no-applicability-rule",
+        "scenario.production-work-runtime-remains-unimplemented"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "保留原指定成熟度和历史切片；加入具体后续局部消费者与通用规则/事实目录/handler执行契约边界，不笼统改成已完成。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml",
+        "docs/knowledge/evidence/transaction-runtime.yaml",
+        "docs/knowledge/rules/transaction-runtime.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-FIX-006",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "evidence.production-work-template-configuration-test",
+        "evidence.production-work-flow-version-draft-persistence",
+        "rule.production-work.flow-version.draft-save-defers-publish-validation"
+      ],
+      "changedExistingIds": [
+        "evidence.production-work-flow-version-draft-persistence",
+        "evidence.production-work-template-configuration-test",
+        "rule.production-work.flow-version.draft-save-defers-publish-validation"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "按实际断言补覆盖范围：1006无表单无连线save，536/559发布动态分支及缺出口拒绝；仍保留Mockito非真实DB重读/异常回滚边界。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/transaction-runtime.yaml",
+        "docs/knowledge/rules/transaction-runtime.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-FIX-007",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "rule.production-work.flow-version.publish-integrity-validation"
+      ],
+      "changedExistingIds": [
+        "rule.production-work.flow-version.publish-integrity-validation"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "将conditionBranchCompleteness改为已确认有序分支/唯一默认/每分支出口完整性，保留运行字段/求值完整契约未验证边界。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/rules/transaction-runtime.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-FIX-008",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "rule.form-process.node-button-configuration-v1",
+        "rule.form-process.node-button-builtin-event-configuration-v2"
+      ],
+      "changedExistingIds": [
+        "rule.form-process.node-button-builtin-event-configuration-v2",
+        "rule.form-process.node-button-configuration-v1"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "BEFORE/AFTER条件改仅BEFORE；签署允许不填字段，FILL_SIGN_FIELD只代表显式选择填充。ACCOUNT_PASSWORD保留配置枚举而非登录密码语义。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/rules/transaction-runtime.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-GAP-002",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "evidence.crown-transaction-module-research"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "MASTER-DIFF-003",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "evidence.production-work-form-node-business-document-config",
+        "rule.production-work.form-node-business-document-configuration"
+      ],
+      "changedExistingIds": [
+        "evidence.production-work-form-node-business-document-config",
+        "rule.production-work.form-node-business-document-configuration"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.production-work-form-completion-condition-passthrough"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；DEC-0010-02 要求后续节点保存不写入 completionCondition。当前非 CONDITION 节点 normalizeFlowGraph 保留原 config，persistentFlowGraph 只移除 selected/dragging，后端 WorkTemplateController.saveGraph 序列化输入 nodes；因此载入或直接提供含该字段的 FORM 节点后仍可能在草稿保存中透传。无配置入口、无业务语义读取器不等于字段不落库。确认规范保留，未增加兼容政策；本次只记录查明差异，未修改代码或运行持久化测试。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+        "docs/knowledge/evidence/transaction-runtime.yaml",
+        "docs/knowledge/rules/transaction-runtime.yaml"
+      ]
+    },
+    {
+      "findingId": "MASTER-DIFF-004",
+      "domain": "master",
+      "baselineAffectedIds": [
+        "rule.form-process.binding-switch-cleans-invalid-field-exceptions"
+      ],
+      "changedExistingIds": [
+        "rule.form-process.binding-switch-cleans-invalid-field-exceptions"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；DEC-0023-08的绑定切换有效性按DEC-0035现行权限组键及真实fieldId解释。当前切换PROCESS版本或作业节点表单只合并引用，直接保存作业草稿仍可保留原失效权限组/字段例外；已有prune未覆盖每次切换后直接草稿保存。显式设置发布时由FormFillSettingsService.validate拒绝无效组/字段，产品制程保存也先验证，这些入口不能证明作业草稿remove-before-save已实现。本次仅据静态调用链登记，未放宽规范、修改代码或执行运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+        "docs/knowledge/rules/transaction-runtime.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-001",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0075",
+        "DEC-0075-04"
+      ],
+      "changedExistingIds": [
+        "DEC-0075",
+        "DEC-0075-04"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "删除 DEC-0075.context / DEC-0075-04 中把已存在自定义表单是否纳入 DHR 当操作员选项的现行口吻；挂载是否必填独立于实际证据应入汇总。历史确认原文加后续替代边界。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-002",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "fact.dhr-instance.form-record-dhr-item-id"
+      ],
+      "changedExistingIds": [
+        "fact.dhr-instance.form-record-dhr-item-id"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "fact.dhr-instance.form-record-dhr-item-id 的 sourceLocator 改为 snapshotJson.dhrItemId；不改原始记录结构。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/facts/dhr-instance-management.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-003",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0061",
+        "DEC-0061-02",
+        "fact.dhr-template-design.explicit-version-selected",
+        "anchor.dhr-template-design-version-isolation",
+        "rule.dhr-template-design-version-isolation"
+      ],
+      "changedExistingIds": [
+        "DEC-0061",
+        "anchor.dhr-template-design-version-isolation",
+        "fact.dhr-template-design.explicit-version-selected"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.dhr-template-explicit-version-list-fallback"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；版本列表非空且显式 versionId 未找到时，前端优先保留列表中仍存在的已选版本，否则取首个版本；列表为空时该 effect 直接返回。这可能改变显式目标的展示及编辑上下文。后端显式版本查询严格拒绝缺失，不消除前端回退差异；须保持目标版本或明确拒绝，不能静默换版。本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+        "docs/knowledge/facts/dhr-template-version-design-isolation.yaml",
+        "docs/knowledge/implementation-anchors/dhr-template-version-design-isolation.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-004",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "evidence.dhr-instance-management-page",
+        "anchor.dhr-instance-form-evidence-query"
+      ],
+      "changedExistingIds": [
+        "anchor.dhr-instance-form-evidence-query",
+        "evidence.dhr-instance-management-page"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "将 evidence 和 anchor 的全量只读描述限定为原归档查看路径，补记当前有初始修订时的受控汇总修订入口；不声称原始表单记录可回写。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/dhr-instance-management.yaml",
+        "docs/knowledge/implementation-anchors/dhr-instance-management.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-005",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "discrepancy.dhr-summary-legacy-conversion-validation",
+        "evidence.dhr-instance-integration-test",
+        "evidence.dhr-instance-migration-test",
+        "evidence.dhr-robustness-review-fix-test-report-observation",
+        "evidence.dhr-summary-source-group-test",
+        "evidence.dhr-summary-source-group-backend-test",
+        "evidence.dhr-summary-complete-evidence-migration",
+        "evidence.dhr-summary-current-model-migration",
+        "evidence.dhr-summary-current-model-migration-tests",
+        "evidence.production-field-signature-original-runtime-boundary",
+        "fact.dhr-summary.version-frozen",
+        "fact.dhr-summary.archive-display-name"
+      ],
+      "changedExistingIds": [
+        "evidence.dhr-instance-integration-test",
+        "evidence.dhr-summary-complete-evidence-migration"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/dhr-instance-management.yaml",
+        "docs/knowledge/evidence/dhr-summary.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-006",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "discrepancy.dhr-review-effective-source-integration"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "PROD-007",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "evidence.dhr-summary-complete-evidence-migration"
+      ],
+      "changedExistingIds": [
+        "evidence.dhr-summary-complete-evidence-migration"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "evidence.dhr-summary-complete-evidence-migration 只描述0102实际变更，附件快照关联0103。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/dhr-summary.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-008",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "evidence.dhr-summary-order-tests"
+      ],
+      "changedExistingIds": [
+        "evidence.dhr-summary-order-tests"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "收窄 evidence.dhr-summary-order-tests 的实际覆盖文案；没有执行本脚本，也不把源码覆盖认作当前运行通过。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/dhr-summary.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-009",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "evidence.dhr-summary-compliance-assessment"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "PROD-010",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0006-21",
+        "DEC-0006-22",
+        "scenario.production-work-flow-canvas-interaction",
+        "DEC-0007",
+        "DEC-0007-01",
+        "DEC-0007-03",
+        "DEC-0007-05",
+        "discrepancy.production-work-runtime-and-snapshot-unimplemented",
+        "DEC-0008-06",
+        "discrepancy.production-work-condition-runtime-closure",
+        "DEC-0011-03",
+        "rule.production.batch-management-execution-detail-entry"
+      ],
+      "changedExistingIds": [
+        "DEC-0006-21",
+        "DEC-0006-22",
+        "DEC-0007",
+        "DEC-0007-01",
+        "DEC-0007-03",
+        "DEC-0007-05",
+        "DEC-0008-06",
+        "DEC-0011-03",
+        "discrepancy.production-work-condition-runtime-closure",
+        "discrepancy.production-work-runtime-and-snapshot-unimplemented",
+        "rule.production.batch-management-execution-detail-entry",
+        "scenario.production-work-flow-canvas-interaction"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "按具体声明加历史时点：当前实现 OPERATION_START 切片、五个 string 事实、七运算符、首匹配/否则、阻断未知来源；命中规则冻结 id/definitionId/type/productId/familyId/operationId。仍缺独立作业实例完整规则修订上下文与通用事实/异常审计契约。DEC-0011动态分支替代早期固定满足/不满足，不能整份替代或升级成熟度。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+        "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+        "docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml",
+        "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+        "docs/knowledge/rules/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-011",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "discrepancy.production-batch-resplit-not-mvp"
+      ],
+      "changedExistingIds": [
+        "discrepancy.production-batch-resplit-not-mvp"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "将 discrepancy.production-batch-resplit-not-mvp 的旧 inference/待确认标作已由同决策用户确认校准；MVP不纳入仍有效，后续谱系细节不因此被确认。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-012",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "rule.production.production-batch-input-quantity-required",
+        "rule.production.mass-batch-quantity-distribution"
+      ],
+      "changedExistingIds": [
+        "rule.production.mass-batch-quantity-distribution",
+        "rule.production.production-batch-input-quantity-required"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "将 rule.production.production-batch-input-quantity-required.condition.all 的 split.targetQuantity 及 rule.production.mass-batch-quantity-distribution.condition.all 的 split.quantityPerBatch 以现 schema1.2.0 支持的 condition.all 中 greater-than-or-equal:0 与 not-equals:0 合取表达 >0。root 同步两核心事实。最早可追同次UI即>0，DEC未确认>=1；属数量/个数推导混淆，不再当用户待决。批次数、SN个数>=1及SN数量=1不动，0<q<1真实运行回归未执行。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/rules/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-013",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "scenario.production-work-condition-canonical-configuration"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [
+        "discrepancy.production-work-legacy-condition-save-publish-asymmetry"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；草稿 saveGraph 校验边界/连线及 branch.rule，但 top-level conditionRule 等旧字段只在发布时由 hasLegacyConditionConfiguration 拒绝；canonical branches 与旧顶层字段并存仍可保存，尚未满足“保存或发布均拒绝”的验收。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-014",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "evidence.work-order-controller",
+        "evidence.production-audit-annotations",
+        "rule.production.work-order-audit-change-snapshot"
+      ],
+      "changedExistingIds": [
+        "evidence.production-audit-annotations",
+        "evidence.work-order-controller",
+        "rule.production.work-order-audit-change-snapshot"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "rule.production.work-order-audit-change-snapshot 的旧未实现末句与 evidence.work-order-controller/evidence.production-audit-annotations 的 @Auditable 四动作说法改为当前显式业务快照。不要把历史空快照回填或 close 失败原子性当已验证。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/production.yaml",
+        "docs/knowledge/rules/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-015",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0015",
+        "DEC-0015-02"
+      ],
+      "changedExistingIds": [
+        "DEC-0015"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.work-order-close-audit-atomicity"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；工单 close 控制器未声明事务，调用事务服务 closeOrder 返回后再发布真实差量审计；服务提交与审计失败可能分离。创建、编辑和取消有控制器事务。须明确关闭动作与审计原子边界，当前仅静态发现，尚未执行故障回滚验证。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-016",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "discrepancy.production-execution-form-action-projection-legacy-fallback"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "existing-implementation-gap-retained",
+      "knowledgeResolution": "核对后保留既有 open 差异；定位错误已按实际位置收窄。",
+      "remainingWork": "后续功能修复需对实际候选进行适用验证。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "PROD-017",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "rule.production.object-early-termination"
+      ],
+      "changedExistingIds": [
+        "rule.production.object-early-termination"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "rule.production.object-early-termination.result.sideEffects 移除当前实现属性 close-active-production-transactions / cascade-close-active-child-objects，另在历史或未来边界说明；explanation 已正确限定，结构化结果须同步。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/rules/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-018",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0012-06",
+        "rule.production.locked-process-ignores-effective-window"
+      ],
+      "changedExistingIds": [
+        "rule.production.locked-process-ignores-effective-window"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "scope-clarified-existing-policy-deferred",
+      "knowledgeResolution": "已查明的当前代码行为和现行/历史范围已经分开；没有将规划推断提升为已确认政策。",
+      "remainingWork": "既有业务/完整运行契约问题在依赖功能开发时确认，不阻碍本次 L1 审计及确定性知识修复。",
+      "evidenceFiles": [
+        "docs/knowledge/rules/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-019",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0016",
+        "DEC-0016-04",
+        "scenario.sn-import-staged",
+        "evidence.production-work-order-page-pending-list",
+        "evidence.production-work-order-batch-import-template-ui",
+        "rule.production.sn-import-required-fields"
+      ],
+      "changedExistingIds": [
+        "DEC-0016",
+        "evidence.production-work-order-batch-import-template-ui",
+        "evidence.production-work-order-page-pending-list"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.production-sn-import-template-extra-remark"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；用户确认 SN 导入模板只包含编号和计划起止三列，但当前下载模板另有备注第四列，导入解析也接收备注；数量仍隐含为1。确认规则与当前功能应并列记录，不把额外列写成已确认规则。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+        "docs/knowledge/evidence/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-020",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "discrepancy.guancheng-sn-runtime-unavailable",
+        "evidence.guancheng-sn-split-source",
+        "evidence.guancheng-batch-lifecycle-source",
+        "evidence.guancheng-batch-start-source",
+        "evidence.guancheng-batch-close-source",
+        "evidence.guancheng-batch-remove-source",
+        "evidence.guancheng-batch-split-source",
+        "evidence.guancheng-batch-complete-source"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "evidence-gap-documented",
+      "knowledgeResolution": "保留明确的证据缺口；目录粗粒度、二手历史材料或测试源码均不能代替原始运行/完整适配证据。",
+      "remainingWork": "按原发现的具体来源及边界补证；本次没有伪造历史回执、补跑业务验收或批量提升成熟度。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "PROD-021",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0047",
+        "DEC-0047-01",
+        "scenario.execution-form-source-selection",
+        "evidence.production-execution-service-source"
+      ],
+      "changedExistingIds": [
+        "DEC-0047"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.execution-form-plan-count-and-not-applicable-projection"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；未实例化的计划表单在抽屉仍显示共0份；后端 formAvailabilityStatus 先以工序非IN_PROGRESS返回WAITING_OPERATION_START，使已结束而未到达的作业表单可能不能投影NOT_APPLICABLE。应维持计划/实例区别及已结束不适用规范；本次未运行UI或实际实例回归。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-022",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0019",
+        "DEC-0019-04",
+        "scenario.production-object-update-audit-diff",
+        "rule.production.production-object-audit-change-snapshot"
+      ],
+      "changedExistingIds": [
+        "DEC-0019",
+        "rule.production.production-object-audit-change-snapshot"
+      ],
+      "newDiscrepancyIds": [
+        "discrepancy.production-object-execution-lifecycle-audit-projection"
+      ],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-reconciled-implementation-gap-open",
+      "knowledgeResolution": "已按完整调用与保存路径校准来源描述，并保留原确认规范；新增 open 实现差异。适用关联事实、证据或历史范围一并修正。",
+      "remainingWork": "provenance: original-evidence；合法首次START及最终COMPLETE由生产执行服务写PRODUCTION_EXECUTION审计，分别为首条CREATE及后续UPDATE，包含执行状态快照；不另写PRODUCTION_OBJECT UPDATE，批次详情又只查询PRODUCTION_OBJECT。现有对象生命周期UPDATE规范与对象页可见审计尚有投影差异，不能解释为完全无审计。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+        "docs/knowledge/rules/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-023",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "discrepancy.production-work-unpublished-selector-message",
+        "discrepancy.production-work-template-delete-fallback-message"
+      ],
+      "changedExistingIds": [],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "existing-implementation-gap-retained",
+      "knowledgeResolution": "核对后保留既有 open 差异；定位错误已按实际位置收窄。",
+      "remainingWork": "后续功能修复需对实际候选进行适用验证。",
+      "evidenceFiles": []
+    },
+    {
+      "findingId": "PROD-024",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "evidence.operation-output-summary-tests",
+        "evidence.production-service",
+        "evidence.production-service-test",
+        "evidence.audit-controller-test"
+      ],
+      "changedExistingIds": [
+        "evidence.audit-controller-test",
+        "evidence.operation-output-summary-tests",
+        "evidence.production-service",
+        "evidence.production-service-test"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "四处最小纠错：evidence.production-service 编号唯一改为租户内；evidence.production-service-test 产品/簇解析改为 mock 解析返回下的拆分行为，真实 resolver 由其自身证据负责；evidence.audit-controller-test 只列实际断言工单归一化；evidence.operation-output-summary-tests 删除“别名表单排除”并描述独立表单分别累计。无需为修正文案扩张业务测试。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/production-execution.yaml",
+        "docs/knowledge/evidence/production.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-025",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "evidence.production-execution-access-source"
+      ],
+      "changedExistingIds": [
+        "evidence.production-execution-access-source"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "evidence.production-execution-access-source 区分 DEC-0074 按钮签署认证指定账号并保留会话操作员、内部 admin 登录密码例外，以及 SIGN_FIELD 当前用户个人电子签名密码与图片。认证差异不可从按钮传播到字段；保留权限/快照/无凭据原则。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/evidence/production-execution.yaml"
+      ]
+    },
+    {
+      "findingId": "PROD-026",
+      "domain": "production",
+      "baselineAffectedIds": [
+        "DEC-0047",
+        "DEC-0047-02",
+        "scenario.execution-custom-form-attachment",
+        "evidence.execution-form-selector-user-decision",
+        "evidence.execution-form-version-eligibility-source",
+        "evidence.execution-form-version-creation-source",
+        "rule.execution-custom-form-requiredness"
+      ],
+      "changedExistingIds": [
+        "DEC-0047",
+        "DEC-0047-02",
+        "evidence.execution-form-selector-user-decision",
+        "evidence.execution-form-version-creation-source",
+        "evidence.execution-form-version-eligibility-source",
+        "rule.execution-custom-form-requiredness",
+        "scenario.execution-custom-form-attachment"
+      ],
+      "newDiscrepancyIds": [],
+      "businessCodeChanged": false,
+      "runtimeValidationPerformed": false,
+      "disposition": "knowledge-correction-completed",
+      "knowledgeResolution": "DEC-0047.context/02、相关旧场景与 rule.execution-custom-form-requiredness 按声明标历史：已发布资格映射不再是当前待决；当前由 DEC-0075 取消发布限制并明确归属/补填。DEC-0059只替代显式结束，三类来源、独立实例、显式必填和人数去重仍有效。二手计划继续保留历史时点，不整份删除或提升成熟度。",
+      "remainingWork": "本项知识纠错已纳入候选；不因此增加任何业务运行通过或阶段退出声明。",
+      "evidenceFiles": [
+        "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+        "docs/knowledge/evidence/execution-form-selector.yaml",
+        "docs/knowledge/rules/execution-form-selector.yaml"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261012-ONTOLOGY-INTERNAL-AUDIT
+  scope: edhr-dev@7bf87c00a4a1158d6fbb4085eb9fb632918bcb50 全量知识内审；按 ID 核对当前定义、历史适用与原始实现证据，保留未合并分支的独立边界。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    targetBranch: edhr-dev
+    targetCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    contractReadCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    uncommittedContractPaths:
+    - docs/architecture/business-knowledge-model.md
+    - docs/knowledge/README.md
+  summary: 'PR #3 合并后全量内审。用户进一步要求冲突先追查代码业务逻辑：已确定记录错误直接修正；代码违反明确确认规范时登记实现差异，不把代码缺陷改写成业务规则；只将最终仍无法确定的既有业务/完整契约问题留待依赖功能确认。本次完成 2292 ID
+    与 52 无 ID 文件审阅，修订 200 既有记录、新增 21 记录，不启动新试点或修改生产运行逻辑。'
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes:
+  - decisionStatementId: DEC-0075-08
+    supersededStatementIds:
+    - DEC-0047-02
+    scope: 仅自定义选择资格，取消模板版本 PUBLISHED 限制。
+    retainedScope: 模板有效性、租户范围、显式版本与执行快照保留；作业/表单流程发布校验保持独立。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+    - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+  - decisionStatementId: DEC-0075-01
+    supersededStatementIds:
+    - DEC-0047-02
+    scope: 自定义表单允许工序或批次归属，当前工序挂载不再是唯一范围。
+    retainedScope: 三类来源、独立份和真实人数去重继续适用；完工前必填由 DEC-0075-02 按归属解释。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+    - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+  - decisionStatementId: DEC-0059-01
+    supersededStatementIds:
+    - DEC-0047-02
+    - DEC-0046-02
+    - DEC-0046-04
+    scope: 仅取消普通表单独立显式结束动作；作业表单按 DEC-0059-03 全份最终完成自动推进。
+    retainedScope: 多份独立保存提交、必填检查、审批最终完成与后续节点独立条件保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0046-production-form-copies.yaml
+    - docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+    - docs/knowledge/decisions/DEC-0059-production-form-auto-finish.yaml
+  - decisionStatementId: DEC-0035-01
+    supersededStatementIds:
+    - DEC-0023-01
+    - DEC-0023-02
+    scope: 填报阶段按权限配置组统一默认权限，不再逐主体配置；审批节点组由 DEC-0035-02 指定。
+    retainedScope: 模板与具体表单解耦、用户/部门/角色维度、发布版本冻结保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+    - docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml
+  - decisionStatementId: DEC-0035-03
+    supersededStatementIds:
+    - DEC-0023-03
+    - DEC-0023-04
+    - DEC-0023-08
+    scope: 字段例外及切换有效性使用当前权限组键解释旧主体措辞。
+    retainedScope: 真实稳定 fieldId、当前绑定隔离、失效例外清理或阻止保存继续有效。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+    - docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml
+  - decisionStatementId: DEC-0028-03
+    supersededStatementIds:
+    - DEC-0025-02
+    scope: 当前签署为 BEFORE；填充字段可选 NONE/FILL_SIGN_FIELD。
+    retainedScope: 只有 FILL_SIGN_FIELD 才要求绑定签名类型 fieldId；声明与绑定分离；按钮认证承接 DEC-0074，字段签名保持独立。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml
+    - docs/knowledge/decisions/DEC-0028-production-form-process-button-electronic-signature.yaml
+  impactAnalysis:
+    level: L1
+    directImpacts:
+    - area: knowledge-internal-audit
+      change: 保留 db8d361 固定清单，补充合并基线增量；逐 ID 对账定义、决策、来源和实现边界，并纠正有明确依据的记录错误。
+      evidenceReferences:
+      - docs/development/ontology-guided-audit.md
+      - docs/agents/agent-handoff-contract.md
+    transitiveImpacts: []
+    potentialImpacts:
+    - area: unmerged-projection-branch
+      concern: 固定投影分支与目标存在 9 个同 ID 异义碰撞；入站决策整体 34 条声明须分配新 ID，并对实际候选重新核对；详见本轮 integration-boundary.json。
+      evidenceReferences:
+      - docs/development/ontology-foundation-repair.md
+    unaffectedAreas:
+    - area: ontology-pilot-implementation
+      reason: 本次是存量知识内审；不新增标准工具、规则运行引擎或试点功能，不改变现有功能开发节奏。
+    compatibilityAndMigration:
+    - 原始盘点与历史声明不改写，审计结论以 ID 和实际提交定位；已确认记录错误与业务政策变更分别处理。
+    - 保留当前稳定 ID、旧基线与原始证据；确定性记录纠错和声明级局部替代分开；不批量升级状态，不变更 schema 1.2.0 或知识版本 0.3.25。
+    - 本次没有新增标准工具或试点；MVP 全项目累计 1–2 个代表性功能，在真实开发时按现契约引导。
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+    - scope: knowledge-model-and-audit-evidence
+      scenarios:
+      - 固定基线增量覆盖
+      - 逐项结论可追踪
+      - 历史适用范围核对
+      - 语义修复对应确认来源
+      - 独立质量复核
+      evidenceReferences:
+      - tools/knowledge-model/pom.xml
+    evidenceGaps:
+    - 代码和测试的存在不等于本次运行验证；运行检查按实际执行范围单独记录。
+  extensionStrategy:
+    selectedPaths:
+    - product-core
+    rationale: 沿用当前知识资产及审计交接格式，主智能体整合修复，本体角色核对语义，质量角色独立复核。
+    ownershipBoundaries:
+    - owner: main-agent
+      responsibility: 固定基线、全量进度、审计记录、确定性修复整合、验证及可审核 PR。
+    - owner: ontology-modeler
+      responsibility: 分域逐项语义与来源核对；不修改生产运行逻辑，不把歧义推断为规则。
+  affectedFiles:
+  - path: docs/knowledge
+    changeType: update
+    reason: 200 既有记录修订与 21 新记录；固定基线全量审计另账。
+  - path: docs/architecture
+    changeType: update
+    reason: 校准源记录所有权、已有受限运行与历史架构阶段。
+  - path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
+    changeType: update
+    reason: 保留活动表单作废的既有未决边界，不把建议提升为确认。
+  - path: docs/development/ontology-internal-audit-20261012
+    changeType: create
+    reason: 完整清单、逐项语义审阅、候选处置、分支边界及独立质量证据。
+  - path: gmp-platform
+    changeType: read-only
+    reason: 核对源码、调用/保存路径及测试断言；未修改或执行业务测试。
+  acceptanceScenarios:
+  - id: scenario.internal-audit-exact-baseline
+    given: PR
+    when: 开始本次内审
+    then: 按实际合并提交枚举全量与增量，保留原始清单，未审项目不标记一致。
+    evidenceRequirements:
+    - Git 基线和摘要
+    - 逐 ID 对账结果
+  - id: scenario.internal-audit-semantic-findings
+    given: 定义、决策、历史证据和实现可能存在差异
+    when: 逐项核对并修复
+    then: 明确已确认错误、局部替代、待决业务与证据缺口；只修复依据充分的内容并保留复核证据。
+    evidenceRequirements:
+    - 具体 ID 与源码定位
+    - 修复差异
+    - 独立质量结论
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 建立存量知识在新契约下的可追踪语义结论，修复确定性错误，公开剩余决策与证据缺口。
+    entryCriteria:
+    - 'PR #3 已合并'
+    - 用户明确要求继续内审
+    exitCriteria:
+    - 固定 2292 ID / 239 文件基线及 52 无 ID 文件全部审阅
+    - 69 发现组逐项处置；记录错误与 open 功能差异分开
+    - 89 项正式本体校验、全量证据完整性与独立 L1 质量复核
+    explicitNonGoals:
+    - 新试点实施
+    - 生产规则引擎上线
+    - 改写未确认业务政策
+    - 未合并分支自动合并
+    - 将结构校验等同运行验收
+    nextStage: P1

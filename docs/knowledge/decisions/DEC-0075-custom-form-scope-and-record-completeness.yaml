@@ -4,12 +4,7 @@ decisions:
     title: 自定义表单归属、分层完工及资料齐套
     status: specified
     visibility: internal
-    context: >-
-      user-confirmed；用户确认自定义表单支持当前工序和当前批次两种归属，并于 2026-09-24 授权恢复本功能 L2 门禁实施。
-      本决策仅局部替代 DEC-0059 的所有普通表单随工序收尾及自定义未完成份补填延期边界；
-      为 DEC-0068 的创建新实例补录增加继续填写已有未完成自定义份的独立路径，不允许改写已完成实例。
-      保留 DEC-0062 的生产完工事实、DEC-0063/0072 的逐实例可选纳入政策和 DEC-0068 的不可变版本、人工退回及记录控制所有权。
-      实现进行中；运行验证范围止于现有生产执行、DHR 汇总和审核链路。放行、正常归档及记录控制授权关闭衔接仅登记规范，不声称已有运行入口。
+    context: user-confirmed；用户确认自定义表单支持当前工序和当前批次两种归属，并于 2026-09-24 授权恢复本功能 L2 门禁实施。 本决策仅局部替代 DEC-0059 的所有普通表单随工序收尾及自定义未完成份补填延期边界； 为 DEC-0068 的创建新实例补录增加继续填写已有未完成自定义份的独立路径，不允许改写已完成实例。 保留 DEC-0062 的生产完工事实、DEC-0063/0072 的全部实际证据自动归集政策和 DEC-0068 的不可变版本、人工退回及记录控制所有权。 2026-10-12 内审纠正此处沿用旧版“可选纳入”的错误引用；依据 DEC-0063-02/04/05 与 DEC-0072-01/03，目录编排只决定展示位置，不决定证据是否纳入。本次不重写 2026-09-24 原始确认记录。 实现进行中；运行验证范围止于现有生产执行、DHR 汇总和审核链路。放行、正常归档及记录控制授权关闭衔接仅登记规范，不声称已有运行入口。 DEC-0047-02及其自定义挂载场景中仅限当前工序、已发布资格待决的旧范围由本决策01/02/08替代，其他三类来源、多份独立和人数去重继续。
     decisionStatements:
       - id: DEC-0075-01
         statement: 自定义表单添加时明确归属当前工序或当前批次。工序归属绑定所选工序；批次归属在同一批次各工序共享同一个表单及份实例，不因切换工序复制记录。归属是业务事实，创建位置不改变归属。
@@ -24,7 +19,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0075-04
-        statement: 生产完成、资料齐套和 DHR 汇总审核阶段分别计算。生产已完工但仍有未闭环自定义份时保留生产完成事实并显示资料待完善；允许整理汇总草稿，禁止提交定稿、基于不完整资料批准、产品放行或正常归档。未纳入汇总目录不构成豁免；已闭环实例是否纳入仍遵守既有可选纳入政策。
+        statement: 生产完成、资料齐套和 DHR 汇总审核阶段分别计算。生产已完工但仍有未闭环自定义份时保留生产完成事实并显示资料待完善；允许整理汇总草稿，禁止提交定稿、基于不完整资料批准、产品放行或正常归档。全部实际实例自动归入证据范围并保留真实状态；目录编排只改变展示，不能通过不整理目录或取消自定义位置豁免资料齐套及提交核查。
         status: specified
         visibility: internal
       - id: DEC-0075-05
@@ -43,8 +38,11 @@ decisions:
         statement: 新增自定义表单选择的是表单模板，表单模板没有发布生命周期；候选查询和添加资格均不得要求表单模板版本的 PUBLISHED 状态。保留模板有效性与租户范围校验，显式选择 versionId 并冻结所选模板的完整执行快照。数据库中遗留的版本状态字段不构成产品发布规则，本修复不迁移该字段；作业流程及表单流程的已发布版本校验继续独立适用。
         status: specified
         visibility: internal
-    supersedes: [DEC-0059, DEC-0068]
-    evidenceIds: [evidence.custom-form-scope-confirmed, evidence.custom-form-scope-source-boundary, evidence.custom-form-template-selection-boundary]
+    supersedes:
+    - DEC-0059
+    - DEC-0068
+    - DEC-0047
+    evidenceIds: [evidence.custom-form-scope-confirmed, evidence.custom-form-scope-source-boundary, evidence.custom-form-template-selection-boundary, evidence.dhr-summary-user-confirmed, evidence.dhr-summary-source-group-user-confirmed]
     acceptanceScenarios:
       - id: scenario.custom-form-template-without-publication
         given: 当前租户存在有效表单模板，所选版本的遗留状态值不是 PUBLISHED

@@ -59,7 +59,7 @@ decisions:
     title: Codex 协作交付与生产作业运行边界
     status: specified
     visibility: internal
-    context: eDHR 以标准化产品内核支持团队使用 Codex 进行项目二开和高度定制。Codex 是产品外部的开发与交付工具；团队通过仓库化协作契约、知识基线、业务决策、decisionPackage 和 Git 版本化资产保持多人理解与交付质量一致。产品内仍由业务知识本体、结构化规则、生产作业编排和受控动作处理器共同实现生产运行；当前仅记录架构与运行边界，尚无已验证运行引擎或执行契约。
+    context: eDHR 以标准化产品内核支持团队使用 Codex 进行项目二开和高度定制。Codex 是产品外部的开发与交付工具；团队通过仓库化协作契约、知识基线、业务决策、decisionPackage 和 Git 版本化资产保持多人理解与交付质量一致。产品内仍由业务知识本体、结构化规则、生产作业编排和受控动作处理器共同实现生产运行；本决策初始交付记录术语骨架、目标架构及通用运行边界；后续已有嵌入生产执行的局部WORK匹配、冻结、条件求值及推进，应按独立决策与源码评价，不能将原骨架时点泛化为当前完全无运行能力；通用执行契约和整阶段完成仍无对应验收。
     decisionStatements:
       - id: DEC-0005-01
         statement: 业务规则运行引擎只读取已发布且具备执行契约的结构化规则，对业务事件和事实进行确定性判断并返回允许、阻断或触发结果。
@@ -139,8 +139,11 @@ decisions:
         evidenceIds: []
         evidenceRequirements: [Liquibase 迁移测试, API 路由测试, 前端路由测试, 权限回归测试]
       - id: scenario.production-work-runtime-remains-unimplemented
-        given: 作业定义骨架已归一为 WORK
+        given: DEC-0005 当次作业定义术语骨架已归一为 WORK，仅评估该历史切片与通用运行契约
         when: 评估当前可交付能力
-        then: 不得将作业实例运行、步骤推进、动作处理器、生产快照或审计标记为已完成或已验证
-        evidenceIds: []
+        then: 不能从该术语骨架或目标架构推定实例运行、节点推进、通用处理器、生产快照或审计已经完成；后续局部WORK实现按其独立决策、原始源码和实际验证范围评价，不被本历史场景一并否认
+        evidenceIds:
+        - evidence.production-execution-snapshot-builder-source
+        - evidence.production-execution-service-source
+        - evidence.production-execution-engine-source
         evidenceRequirements: [后续作业运行端到端测试, 执行契约注册和验证证据]

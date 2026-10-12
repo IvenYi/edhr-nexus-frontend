@@ -1,0 +1,7 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.production-batch-quantity-policy-boundary
+    type: document
+    path: docs/knowledge/evidence/ontology-foundation-fact-types.md
+    description: 2026-10-12 PR 4 数量下限补正的来源资格说明，见第四节。original-evidence 仅证明页面、ProductionService.split 和数据库按 > 0 校验及两个事实为 decimal；existing-confirmed-definition 保留 DEC-0012-03、DEC-0014-03/-09/-12 的必填、SN=1、分配及末批余数和总量要求；inference 为旧 >= 1 可能混同数量与对象个数；user-confirmed 仅为在同一 PR 撤回过度确认并恢复待决，未选择 > 0 或 >= 1。两条组合规则撤为 deprecated/internal 历史表达，question.production-batch-quantity-lower-bound 保留后续业务决定。原审计候选 0d46558234a933a020430ccf6c6a064ecfa05687 及其固定账本不改写，本次未修改运行代码或执行小数边界业务测试。
+    visibility: internal

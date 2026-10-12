@@ -4,16 +4,16 @@ implementationAnchors:
     targetId: rule.form-process.node-button-configuration-v1
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java, gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx]
-    apiReferences: ["POST /api/form-processes/{id}/versions/{versionId}/graph"]
+    apiReferences: ["PUT /api/v1/workflow/form-processes/{id}/versions/{versionId}/graph"]
     databaseReferences: []
     uiReferences: [gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx, gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/FormProcessControllerTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-tests]
-    sourceRevision: working-tree
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
     sourceLocator: 普通表单流程审批按钮TRANSFER白名单、原因固定及签名事件排除
-    capturedAt: '2026-09-17'
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: anchor.form-approval-transfer-runtime
     targetId: rule.form-approval-transfer

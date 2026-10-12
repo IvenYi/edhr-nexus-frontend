@@ -50,11 +50,25 @@ decisions:
         evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract]
         evidenceRequirements: [快照持久化测试, 关系变化回归测试]
     implementationDiscrepancies:
-      - id: discrepancy.workflow-task-multi-candidate-runtime-unimplemented
-        status: resolved
-        severity: high
-        visibility: internal
-        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
-        lineHint: 110
-        summary: "provenance: original-evidence；单逻辑任务候选快照、任务完成授权、创建时解析来源保存、未解析主体记录及非候选人阻断已实现；仍需发布级数据库并发和迁移验证。"
-        evidenceIds: [evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration]
+    - id: discrepancy.workflow-task-multi-candidate-runtime-unimplemented
+      status: resolved
+      severity: high
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+      lineHint: 110
+      summary: 'provenance: original-evidence；单逻辑任务候选快照、任务完成授权、创建时解析来源保存、未解析主体记录及非候选人阻断已实现；仍需发布级数据库并发和迁移验证。'
+      evidenceIds:
+      - evidence.workflow-task-multi-candidate-runtime-implementation
+      - evidence.workflow-task-candidate-persistence
+      - evidence.workflow-task-candidate-migration
+    - id: discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot
+      status: open
+      severity: medium
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+      lineHint: 656
+      summary: 'provenance: original-evidence；DEC-0031-04 将创建时的候选解析快照与来源作为任务审计依据，并要求组织关系变化不改写已有任务候选。 当前泛 WorkflowEngine 创建任务时保存 candidateSnapshot.userIds 与 sources；普通组织变化不触发该任务重算。 但 transferTask 在同一任务上以 singleUserSnapshot(newAssigneeId) 替换整个 candidateSnapshot，原 userIds 与主体命中 sources 不再保留在此任务快照中； transferKeepsOneLogicalTaskAndUpdatesTargetSnapshot 测试明确断言单人目标快照。转办日志记录前后处理人，不足以替代完整原始主体来源快照。 因而原代码证据对“完成、转办和终止均保留解析来源快照”的概括过宽，需要缩限为创建及普通处理范围并登记转办来源留存缺口； 不据此把 DEC-0031 的组织关系冻结规范改为自动重算。普通生产表单 ProductionExecutionEngine.transferForm 另存 transferAssignees 并保留 approvers，属于不同路径。 本次仅查明并登记差异，未修改泛工作流或普通表单转办逻辑，也未执行运行测试。'
+      evidenceIds:
+      - evidence.workflow-task-multi-candidate-runtime-implementation
+      - evidence.workflow-task-multi-candidate-user-confirmed
+      - evidence.workflow-task-candidate-persistence

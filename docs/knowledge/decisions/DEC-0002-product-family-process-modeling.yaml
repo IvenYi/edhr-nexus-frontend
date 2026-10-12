@@ -4,7 +4,7 @@ decisions:
     title: 产品簇制程模型与生产版本解析
     status: specified
     visibility: internal
-    context: 产品簇复用产品现有的制程根、制程版本、工序表单和文档绑定模型；制程解析服务已实现产品版本优先、产品簇兜底和严格有效期。工单/批次创建及快照落库尚未实现。
+    context: 产品簇复用产品现有的制程根、制程版本、工序表单和文档绑定模型；制程解析服务已实现产品版本优先、产品簇兜底和严格有效期。初始建模时工单/批次创建及快照落库尚未实现；后续 DEC-0012 提供对象创建及制程锁定，生产执行首次合法 START 提供局部配置快照。产品簇身份冻结、转移只影响未来对象的要求与当前实现差异由 discrepancy.product-family-transfer-unstarted-object-context 记录，不能把该缺口隐去或将转移政策反向改为代码现状。
     decisionStatements:
       - id: DEC-0002-01
         statement: 产品簇可包含多个半成品或产成品产品。
@@ -128,3 +128,17 @@ decisions:
         when: 用户打开产品簇详情的数据审计
         then: 审计显示对应制程版本和工序配置的变更前后快照；技术 id 不展示，嵌套制程版本 status 作为版本状态保留
         evidenceIds: [evidence.product-process-owner-service, evidence.product-process-owner-service-test, evidence.product-family-modeling-page]
+    implementationDiscrepancies:
+    - id: discrepancy.product-family-transfer-unstarted-object-context
+      status: open
+      severity: medium
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      lineHint: 71
+      summary: 'provenance: original-evidence；DEC-0002-10 确认成员转移只影响未来创建的生产对象，但当前拆分仅保存 processVersionId，首次 START 从当前 product_family_member 读取产品簇用于作业匹配，未冻结独立产品簇上下文；转移前已创建但未开工的对象可能改用新簇作业。另已锁定产品簇制程的工单继续拆分通过 findVersionForProduct 重查当前成员关系，转移后可能被拒绝。现有成员转移测试只覆盖关系和三方审计，缺少该跨时点边界验证。已确认政策保留；本次仅据完整静态调用链登记差异，未修改业务代码或执行运行测试。'
+      evidenceIds:
+      - evidence.product-family-membership-service
+      - evidence.product-family-membership-service-test
+      - evidence.product-process-resolution-service
+      - evidence.production-service
+      - evidence.production-execution-snapshot-builder-source

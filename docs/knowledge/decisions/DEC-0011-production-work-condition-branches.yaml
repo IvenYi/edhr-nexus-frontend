@@ -15,7 +15,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0011-03
-        statement: 条件节点按 conditionBranches 数组顺序求值，命中第一个满足的条件分支；没有条件分支满足时选择唯一否则默认分支。该语义已确认，但运行时求值器尚未实现。
+        statement: 条件节点按 conditionBranches 数组顺序求值，命中第一个满足分支，否则选择唯一默认分支。此语义已确认；后续 ProductionExecutionEngine 已在受限 WORK 范围实现求值和推进，完整来源政策、异常与结果审计及通用执行契约仍须补齐。本次源码核对不提高本记录成熟度或代表业务运行通过。
         status: specified
         visibility: internal
       - id: DEC-0011-04
@@ -81,3 +81,15 @@ decisions:
         then: 运行时选择第一个满足分支，否则选择唯一否则分支并推进对应出口；当前版本不声称该场景已实现
         evidenceIds: []
         evidenceRequirements: [真实字段来源集成测试, 首个命中求值测试, 默认分支回退测试, 实例快照和推进测试, 执行审计测试]
+    implementationDiscrepancies:
+    - id: discrepancy.production-work-legacy-condition-save-publish-asymmetry
+      status: open
+      severity: medium
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+      lineHint: 183
+      summary: 'provenance: original-evidence；草稿 saveGraph 校验边界/连线及 branch.rule，但 top-level conditionRule 等旧字段只在发布时由 hasLegacyConditionConfiguration 拒绝；canonical branches 与旧顶层字段并存仍可保存，尚未满足“保存或发布均拒绝”的验收。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      evidenceIds:
+      - evidence.production-work-condition-branch-model
+      - evidence.production-work-template-configuration-controller
+      - evidence.production-work-condition-rule-controller

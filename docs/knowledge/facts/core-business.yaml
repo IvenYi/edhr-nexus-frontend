@@ -82,35 +82,35 @@ facts:
     reviewStatus: reviewed
   - id: fact.catalog.audit-action
     name: "规则事实 audit.action"
-    conceptId: concept.audit-change-snapshot
+    conceptId: concept.audit-event
     valueType: string
-    sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java
     aliases: ["audit.action"]
     availability: configuration-and-runtime
     allowedOperators: [in]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-service]
-    sourceRevision: working-tree
-    sourceLocator: "audit.action"
-    capturedAt: '2026-09-13'
+    evidenceIds: [evidence.ontology-audit-event-entity]
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: AuditEvent.action（持久化原始审计字段；不等同于列表动作分类投影）
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.catalog.audit-entitytype
     name: "规则事实 audit.entityType"
-    conceptId: concept.audit-change-snapshot
+    conceptId: concept.audit-event
     valueType: string
-    sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java
     aliases: ["audit.entityType"]
     availability: configuration-and-runtime
     allowedOperators: [equals, in]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-process-resolution-service]
-    sourceRevision: working-tree
-    sourceLocator: "audit.entityType"
-    capturedAt: '2026-09-13'
+    evidenceIds: [evidence.ontology-audit-event-entity]
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: AuditEvent.entityType（持久化原始审计字段；不等同于列表动作分类投影）
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.catalog.authenticateduser-present
     name: "规则事实 authenticatedUser.present"
@@ -677,16 +677,18 @@ facts:
     conceptId: concept.production-work
     valueType: string
     sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormNodeConfiguration.java
     aliases: ["formProcessNode.buttonEvent.timing"]
     availability: not-available
-    allowedOperators: [in]
+    allowedOperators:
+    - in
+    - equals
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-work-template-configuration-controller]
-    sourceRevision: working-tree
-    sourceLocator: "formProcessNode.buttonEvent.timing"
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: FormNodeConfiguration.validateButtonConfiguration 读取 buttonEvents[].event 为 phase；timing 是知识层时机别名。配置内置签署或 signatureMethod 时必须 BEFORE；空事件配置校验另行，不把历史 AFTER 当成当前内置签署时机
+    capturedAt: '2026-10-12'
     reviewStatus: unreviewed
   - id: fact.catalog.formprocessnode-type
     name: "规则事实 formProcessNode.type"
@@ -2197,16 +2199,16 @@ facts:
     conceptId: concept.production-batch
     valueType: decimal
     sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourcePath: "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx"
     aliases: ["split.quantityPerBatch"]
     availability: configuration-and-runtime
-    allowedOperators: [greater-than-or-equal]
+    allowedOperators: [greater-than-or-equal, not-equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
-    sourceRevision: working-tree
-    sourceLocator: "split.quantityPerBatch"
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "WorkOrderPage.addPendingBatch 的 batchAddType=quantity 分支：input>0、step:any，以每批量生成目标数量，提交进入 ProductionService.splitBatch/split；不等同于批次数"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.catalog.split-requestedprocessversionid
     name: "规则事实 split.requestedProcessVersionId"
@@ -2236,25 +2238,25 @@ facts:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
-    sourceRevision: working-tree
-    sourceLocator: "split.targetQuantity"
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "ProductionService.split 的 BigDecimal targetQuantity 参数：signum()>0，SN另要求等于1；production_object.target_quantity为DECIMAL(15,4)并CHECK >0"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.catalog.subject-departmentscopes
     name: "规则事实 subject.departmentScopes"
     conceptId: concept.identity-runtime-subject-resolution
     valueType: string
     sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/dto/SubjectReference.java
     aliases: ["subject.departmentScopes"]
     availability: configuration-and-runtime
     allowedOperators: [in]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.identity-subject-resolver-implementation]
-    sourceRevision: working-tree
-    sourceLocator: "subject.departmentScopes"
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: SubjectReference.effectiveDepartmentScope() / DepartmentScope：SELF_ONLY 或 SELF_AND_CHILDREN；既有复数别名表示逐主体范围，不声称已有通用集合事实装配器
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.catalog.subject-references
     name: "规则事实 subject.references"
@@ -2322,19 +2324,19 @@ facts:
     reviewStatus: unreviewed
   - id: fact.catalog.task-candidatemembership
     name: "规则事实 task.candidateMembership"
-    conceptId: concept.identity-runtime-subject-resolution
+    conceptId: concept.workflow-task-resolution-snapshot
     valueType: string
     sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java
     aliases: ["task.candidateMembership"]
     availability: configuration-and-runtime
     allowedOperators: [contains-actor]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.identity-subject-resolver-implementation]
-    sourceRevision: working-tree
-    sourceLocator: "task.candidateMembership"
-    capturedAt: '2026-09-13'
+    evidenceIds: [evidence.workflow-task-candidate-persistence, evidence.workflow-task-multi-candidate-runtime-implementation]
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: WorkflowTask.candidateSnapshot 为序列化 JSON 字符串；WorkflowEngine.parseCandidateIds 读取 userIds，contains-actor 需解析该冻结集合。本事实仅定位非 unrestricted 且候选非空分支，不以 SubjectResolver 当前成员重算，也不概括旧 assignee 回退
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.catalog.voidrequest-approved
     name: "规则事实 voidRequest.approved"
@@ -2562,19 +2564,19 @@ facts:
     reviewStatus: unreviewed
   - id: fact.catalog.workflowtask-status
     name: "规则事实 workflowTask.status"
-    conceptId: concept.identity-runtime-subject-resolution
+    conceptId: concept.workflow-task
     valueType: string
-    sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java"
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java
     aliases: ["workflowTask.status"]
     availability: configuration-and-runtime
-    allowedOperators: [equals]
+    allowedOperators: [equals, in]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.identity-subject-resolver-implementation]
-    sourceRevision: working-tree
-    sourceLocator: "workflowTask.status"
-    capturedAt: '2026-09-13'
+    evidenceIds: [evidence.workflow-task-candidate-persistence, evidence.workflow-task-multi-candidate-runtime-implementation]
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: WorkflowTask.status；WorkflowEngine.completeTask 只接受 PENDING/PROCESSING，open 不是持久化状态
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.catalog.workflowtemplate-category
     name: "规则事实 workflowTemplate.category"
@@ -2979,7 +2981,7 @@ facts:
   - id: fact.catalog.productionform-currentnodeactionprojection
     name: "规则事实 productionForm.currentNodeActionProjection"
     conceptId: concept.production-form-copy
-    valueType: string
+    valueType: object
     sourceType: derived
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java"
     aliases: ["productionForm.currentNodeActionProjection"]
@@ -2988,7 +2990,7 @@ facts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-execution-form-action-projection-user-confirmed, evidence.production-execution-form-action-projection-source, evidence.production-execution-form-action-projection-page-source]
-    sourceRevision: working-tree
-    sourceLocator: "ProductionExecutionEngine.formControls result.buttons / ProductionExecutionPage controls.buttons"
-    capturedAt: '2026-09-22'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: ProductionExecutionEngine.formControls 返回的完整 ObjectNode：nodeId/nodeName/nodeKind/buttons/permissions/signaturePermissions；ProductionExecutionPage 读取 controls.buttons。事实表示动作投影对象，不把其中 buttons 数组或整个对象误写成 string，也不声称已注册通用事实装配器
+    capturedAt: '2026-10-12'
     reviewStatus: unreviewed

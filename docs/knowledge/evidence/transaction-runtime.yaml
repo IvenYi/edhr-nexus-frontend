@@ -8,7 +8,7 @@ evidence:
   - id: evidence.ai-transaction-runtime-architecture
     type: document
     path: docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md
-    description: 生产作业运行架构定义本体、规则引擎、作业编排、动作处理器、项目插件、发布门禁和生产快照的目标职责与边界；它是架构和规划证据，不能作为作业运行时、执行契约、实例推进、快照或审计已经完成的实现证据。关于产品外部的 Codex 协作交付流程，以 DEC-0005 和本知识基线的修正定义为准，不将其解释为产品内 AI 交付工作台。
+    description: 生产作业运行架构定义本体、规则引擎、作业编排、动作处理器、项目插件、发布门禁和生产快照的目标职责与边界；它是架构和规划证据，不能作为作业运行时、执行契约、实例推进、快照或审计已经完成的实现证据。关于产品外部的 Codex 协作交付流程，以 DEC-0005 和本知识基线的修正定义为准，不将其解释为产品内 AI 交付工作台。 本体内审已将§5.5的完全未实现表述限定为原架构切片；当前受限生产执行另有原始源码，目标架构本身仍不构成实现或运行通过证据。
     visibility: internal
   - id: evidence.crown-transaction-module-research
     type: document
@@ -48,7 +48,7 @@ evidence:
   - id: evidence.production-work-form-node-business-document-config
     type: code
     path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
-    description: 作业流程表单填写节点配置面板将引用字段展示为“业务单据”，提示和选择器文案同步使用业务单据称谓；节点内部仍保存 formTemplateVersionId。当前 WorkTemplateEditor.tsx 的节点配置模型和 normalizeFlowGraph 不包含 completionCondition 清理逻辑，因此该字段不属于当前配置契约，代码不读取、不迁移、不清理历史字段，也不在后续保存投影中写入该字段。本证据只证明当前配置代码边界，不证明历史数据已被迁移或清理；本次不新增数据库迁移，且不改变表单模板技术术语或生产运行时能力。
+    description: original-evidence；WorkTemplateEditor 的表单节点引用展示为“业务单据”，内部仍保存 formTemplateVersionId；没有 completionCondition 配置项或语义消费者。normalizeFlowGraph 对非 CONDITION 节点保留原 config，persistentFlowGraph 不过滤该字段，后端 saveGraph 继续序列化节点，所以不能据“没有清理逻辑”声称后续保存绝不会写入 completionCondition。该未修差异已登记；本次静态核对不表示历史数据迁移、清理或业务运行验收。
     visibility: internal
   - id: evidence.production-work-condition-rule-builder
     type: code
@@ -78,12 +78,12 @@ evidence:
   - id: evidence.production-work-template-configuration-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
-    description: 作业模板控制器测试覆盖适用规则仅面向 WORK 定义及其 ruleType 优先级派生，并覆盖创建模板不落流程版本、首次创建空连线 V1 草稿、单草稿限制、发布后继承草稿、历史版本覆盖草稿、发布版本和草稿版本均拒绝单独删除、无适用规则时删除含已发布流程历史或未发布草稿的模板、有适用规则时阻断删除、删除时记录模板和流程版本 DELETE 审计、草稿图保存、无当前已发布流程时拒绝创建或更新适用规则、普通节点双出口保存阻断。固定 condition-true/condition-false 仅用于非规范输入回归样例，不代表该模型继续被支持；不覆盖 conditionBranches 多分支持久化、动态出口发布校验、生产运行时解析、作业实例创建或快照冻结。
+    description: original-evidence；WorkTemplateControllerTest覆盖WORK配置隔离、适用规则、模板/版本生命周期、图边界与普通节点单出口、审计仓储调用，并已有动态条件分支保存调用、完整分支发布及缺出口拒绝断言；savesAnIncompleteDraftWithoutPublishValidation允许无表单引用/无连线草稿保存。上述为Mockito测试源码，不证明真实数据库重新读取、保存异常回滚或生产实例运行。本次未运行该业务测试类。
     visibility: internal
   - id: evidence.production-work-flow-version-draft-persistence
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
-    description: 当前控制器测试覆盖编辑中 DRAFT 流程图保存后写回节点、连线并调用版本仓储保存，同时记录流程版本 UPDATE 审计；边界校验失败时不调用版本保存。该测试尚未覆盖“草稿保存跳过表单必填和全图连通性校验”的目标场景，也不覆盖真实数据库重新读取、保存异常回滚的集成测试，更不证明生产运行时或实例快照已实现。
+    description: original-evidence；WorkTemplateControllerTest 覆盖草稿节点/连线写回、仓储保存、UPDATE 审计及边界失败不保存，并有 savesAnIncompleteDraftWithoutPublishValidation 断言不完整草稿不受发布完整性门禁阻断。现有控制器测试仍不能证明真实数据库重新读取、保存异常事务回滚或生产运行；本次只读取测试源码，没有执行这些业务测试。
     visibility: internal
   - id: evidence.production-work-template-configuration-migration
     type: database

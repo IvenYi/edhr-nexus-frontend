@@ -1,0 +1,407 @@
+qualityResult:
+  result: passed
+  baseCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+  headCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+  contractBaseline:
+    sourceCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    targetBranch: edhr-dev
+    targetCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    contractReadCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    uncommittedContractPaths:
+    - docs/architecture/business-knowledge-model.md
+    - docs/knowledge/README.md
+  workingTreeState:
+    status: dirty
+    includedPaths:
+    - docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md
+    - docs/architecture/business-knowledge-model.md
+    - docs/architecture/ontology-driven-impact-analysis-and-extension-development.md
+    - docs/development/ontology-internal-audit-20261012/README.md
+    - docs/development/ontology-internal-audit-20261012/audit-inventory-validation.json
+    - docs/development/ontology-internal-audit-20261012/baseline.json
+    - docs/development/ontology-internal-audit-20261012/candidate-changes.json
+    - docs/development/ontology-internal-audit-20261012/deferred-questions.json
+    - docs/development/ontology-internal-audit-20261012/evidence-index.jsonl
+    - docs/development/ontology-internal-audit-20261012/files-without-ids.jsonl
+    - docs/development/ontology-internal-audit-20261012/findings.json
+    - docs/development/ontology-internal-audit-20261012/integration-boundary.json
+    - docs/development/ontology-internal-audit-20261012/integration-boundary.md
+    - docs/development/ontology-internal-audit-20261012/knowledge-validation.log
+    - docs/development/ontology-internal-audit-20261012/ontology-result.yaml
+    - docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json
+    - docs/development/ontology-internal-audit-20261012/production-historical-materials.json
+    - docs/development/ontology-internal-audit-20261012/records-forms.jsonl
+    - docs/development/ontology-internal-audit-20261012/records-foundation.jsonl
+    - docs/development/ontology-internal-audit-20261012/records-master.jsonl
+    - docs/development/ontology-internal-audit-20261012/records-production.jsonl
+    - docs/development/ontology-internal-audit-20261012/remediation.json
+    - docs/development/ontology-internal-audit-20261012/verification.json
+    - docs/development/ontology-internal-audit-20261012/verify_audit.py
+    - docs/development/ontology-internal-audit-decision-package.yaml
+    - docs/knowledge/README.md
+    - docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - docs/knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml
+    - docs/knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml
+    - docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml
+    - docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+    - docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml
+    - docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml
+    - docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml
+    - docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml
+    - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+    - docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml
+    - docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml
+    - docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+    - docs/knowledge/decisions/DEC-0024-production-form-process-buttons-and-events.yaml
+    - docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml
+    - docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml
+    - docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml
+    - docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml
+    - docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+    - docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml
+    - docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml
+    - docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml
+    - docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml
+    - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+    - docs/knowledge/evidence/custom-form-scope-confirmed.md
+    - docs/knowledge/evidence/dhr-instance-management.yaml
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - docs/knowledge/evidence/dhr-template-version-design-isolation.yaml
+    - docs/knowledge/evidence/execution-form-selector.yaml
+    - docs/knowledge/evidence/form-fill-settings.yaml
+    - docs/knowledge/evidence/form-reference-runtime.yaml
+    - docs/knowledge/evidence/form-renderer-permission-contract.yaml
+    - docs/knowledge/evidence/identity-subject-selector.yaml
+    - docs/knowledge/evidence/master-data-description.yaml
+    - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    - docs/knowledge/evidence/production-execution.yaml
+    - docs/knowledge/evidence/production-form-process.yaml
+    - docs/knowledge/evidence/production.yaml
+    - docs/knowledge/evidence/record-correction-void-design.yaml
+    - docs/knowledge/evidence/transaction-runtime.yaml
+    - docs/knowledge/facts/core-business.yaml
+    - docs/knowledge/facts/dhr-instance-management.yaml
+    - docs/knowledge/facts/dhr-template-version-design-isolation.yaml
+    - docs/knowledge/facts/form-fill-settings.yaml
+    - docs/knowledge/facts/form-process-binding.yaml
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/impact-analysis/form-process-binding-version-reference.md
+    - docs/knowledge/impact-analysis/ontology-p0-coverage.md
+    - docs/knowledge/implementation-anchors/dhr-instance-management.yaml
+    - docs/knowledge/implementation-anchors/dhr-template-version-design-isolation.yaml
+    - docs/knowledge/implementation-anchors/form-approval-transfer.yaml
+    - docs/knowledge/implementation-anchors/form-process-binding.yaml
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/rules/execution-form-selector.yaml
+    - docs/knowledge/rules/form-fill-settings.yaml
+    - docs/knowledge/rules/identity.yaml
+    - docs/knowledge/rules/product-process.yaml
+    - docs/knowledge/rules/production.yaml
+    - docs/knowledge/rules/transaction-runtime.yaml
+    - docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.audit-scope-and-independent-contract-read
+    required: true
+    category: requirements
+    description: 独立审查 L1 全量知识审计与文档纠错候选；验证者未参与知识、业务代码或测试修复。结果不表示生产功能、数据库事务、浏览器或本体阶段验收通过。
+    method: inspection
+    command: Read AGENTS.md, codeplzreadme.md and the five ontology/quality contracts; git rev-parse HEAD; GitHub GET git/ref/heads/edhr-dev
+    outcome: passed
+    evidence:
+    - 2026-10-12T10:17:03Z 独立查询 https://api.github.com/repos/IvenYi/edhr-nexus-frontend/git/ref/heads/edhr-dev，目标仍为 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50；本地 HEAD/source 同一提交。没有虚构候选提交；当前
+      90 份变更全部暂存，工作树相对于 HEAD 为 dirty。
+    - 已独立读取七份契约；初始审计读取时无 overlay 的历史 baseline 保留。此次质量角色读取了 architecture 与 knowledge README 两处真实 overlay，不能照抄初始空列表。
+    - Actual candidate SHA256 AGENTS.md = 13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc; uncommitted=False
+    - Actual candidate SHA256 codeplzreadme.md = 7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2; uncommitted=False
+    - Actual candidate SHA256 docs/agents/agent-handoff-contract.md = 3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12; uncommitted=False
+    - Actual candidate SHA256 docs/agents/business-knowledge-modeler.md = 9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae; uncommitted=False
+    - Actual candidate SHA256 docs/agents/quality-verifier.md = 6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f; uncommitted=False
+    - Actual candidate SHA256 docs/architecture/business-knowledge-model.md = aa4b475d180d205b32b9cee753585264abd2029f7a7e255afde0da32f6cd4bfb; uncommitted=True
+    - Actual candidate SHA256 docs/knowledge/README.md = fb9b571b3968c4bdc77d769fe1786a732201479a65a5463be6d49dc1eea8bc7d; uncommitted=True
+    - 'docs/development/ontology-internal-audit-20261012/baseline.json: initialContractRead 与 contracts 逐项实际摘要匹配；schema 1.2.0、knowledge 0.3.25 未更改。'
+  - id: check.fixed-inventory-completeness-and-source-identity
+    required: true
+    category: ontology
+    description: 穷尽核对固定来源记录、ID 类型、JSON 指针、原记录摘要、文件清单和审阅状态；分域语义结论由账本记录，独立质量采用针对风险的语义抽查，不以自动完整性检查推导语义通过。
+    method: command
+    command: python /workspace/scratch/f8b75a9f3345/build-tools/internal-audit/ontology-audit-quality-inspection.py; python docs/development/ontology-internal-audit-20261012/verify_audit.py
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/quality-inspection.json: 独立直接枚举 Git 基线，239 份知识文件、2292 唯一 ID；2292 reviewed、0 pending；52 无 ID 文件精确覆盖。'
+    - 'docs/development/ontology-internal-audit-20261012/quality-integrity-validation.json: 独立再次执行仓库验收脚本，退出 0；3374 条证据索引引用、69 发现组与 2292 原始记录身份均匹配。'
+    - 原基线结论保持 consistent=1759、needs-fix=199、superseded=118、evidence-gap=206、needs-decision=10；候选修复另账，未把 needs-fix 历史改写为一致。
+    - 无 ID 文件结论保持 consistent=33、needs-fix=7、evidence-gap=10、superseded=2。
+    - 'docs/development/ontology-audit-inventory-db8d361.jsonl: SHA256 455e391ec36feda21aaacff4e802b398462a65b903590c131c40e7c8ee9c16fb，旧 2276 ID 清单未覆盖；db8d361→7bf 增量与当前全量分别保留。'
+  - id: check.candidate-record-delta-and-maturity
+    required: true
+    category: ontology
+    description: 候选 ID 增量、修改与原始审计分母独立计算；现有成熟度、可见性及类型不因本次审读而升级。
+    method: command
+    command: Independent schema-driven enumeration of baseline and candidate YAML; compare canonical records, IDs and metadata
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/candidate-changes.json: 原始 2292 → 候选 2313；新增 21、修改既有记录 200、删除 0。200 包含子记录变化引起的父记录摘要变化，不是 200 个独立功能修复。'
+    - 新增记录为 2 term、2 concept、2 fact、3 evidence、12 implementationDiscrepancy；新增 21 不混入 2292 审计分母。
+    - 'docs/development/ontology-internal-audit-20261012/quality-inspection.json: existingMaturityChanges=[]、existingVisibilityChanges=[]；新增 12 个 implementationDiscrepancy 均保留 open。'
+    - 239 份候选知识文件的 SHA256 内容摘要（按 path 排序的 path/sha256 对象列表，UTF-8 JSON、sort_keys=True、separators=(",",":")）= 9db3627a40a98ae86cadda79c373d03e829524468d05af03fd63803d7e93cb81
+  - id: check.code-backed-knowledge-corrections
+    required: true
+    category: ontology
+    description: 对关键知识纠错逐项独立阅读原始实现与调用/保存路径，确认记录反映实际代码而非仅凭名称推断；未执行这些业务代码。
+    method: inspection
+    command: Read candidate diffs and source methods named in the evidence below
+    outcome: passed
+    evidence:
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java: split，BigDecimal targetQuantity>0、SN=1、总量约束；gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx:
+      addPendingObject/addPendingBatch，数量与批数整数约束分别解释；知识 AST >=0 且 !=0 与 >0 等价。'
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java: USER/DEPARTMENT/ROLE 与 SELF_ONLY/SELF_AND_CHILDREN、每主体部门树 visited、最终用户去重及来源聚合；gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java:
+      transfer 替换 candidateSnapshot，与普通表单转办路径区分。'
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java: conditionOutlet、evaluateCondition，五字段受限读取、固定 WORK/OPERATION_START/RUNNING、首匹配与默认分支、持久化
+      conditionDecisions/sourceHandle；已有受限运行不等于通用规则完整契约。'
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java: build，已冻结路线/表单/选择规则字段；对象首次启动读取当前产品簇成员，创建未启动对象的产品簇转移差异不能写成全量不可变上下文已实现。'
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java: saveGraph、conditionHandlesForNode 与发布校验；草稿允许未连完整出口，分支 rule 禁止与 top-level legacy
+      条件的保存/发布校验范围不同。'
+    - 'gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx: persistentFlowGraph、normalizeFlowGraph；非 CONDITION 的未知 config 字段会保留，completionCondition 未被 UI 消费不等于旧值不会持久化。'
+    - 'gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx 与 WorkTemplateEditor.tsx: 切换绑定后的旧异常键并无全路径自动清理；FormFillSettingsService 的具体保存校验路径分别记录。'
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java 与 frontend/src/pages/production/ExecutionFormSelector.tsx: 没有份实例时的 WAITING_OPERATION_START/NOT_APPLICABLE
+      分支及列表份数投影分开；不能把计划数写成已创建实例数。'
+    - 'docs/development/ontology-internal-audit-20261012/records-foundation.jsonl, records-forms.jsonl, records-master.jsonl, records-production.jsonl: 每条原始审阅含范围和可定位来源；以上为独立风险抽查的核心样本，不声称逐条重做全部业务运行验收。'
+  - id: check.normative-requirements-and-open-implementation-gaps
+    required: true
+    category: audit
+    description: 明确规范与现有代码缺口分别保留；已有生产缺陷不通过篡改本体规范被关闭，也不把这次文档审计伪称生产缺陷修复。
+    method: inspection
+    command: Inspect 12 new discrepancies and independently follow the critical source paths; auxiliary independent verifier reviewed four high-risk descriptions
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json: 12 新增差异均 open，4 high/8 medium；knowledge-reconciled-implementation-gap-open 不等于功能完成。'
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java: saveGraph 默认 DIRECT，发布校验与 FormFillSettingsService 校验路径范围不同；discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass
+      保持 open。'
+    - 'gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx、FormReviewPage.tsx: 引用组件产生第三个 dependencies 参数但个人入口回调未转发；生产入口有转发，不能泛化为所有引用失效。discrepancy.form-reference-personal-entry-context-not-forwarded
+      保持 open。'
+    - gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx:1379–1396：非空版本列表时依次使用存在的显式目标、仍存在的已选版本、首项；空列表先返回。四处知识说明已按完整分支纠正，discrepancy.dhr-template-explicit-version-list-fallback
+      仍 open。
+    - 'gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java: close 无控制器事务，而 ProductionService.close 的事务调用先返回再写审计；create/update/cancel 的边界不能外推到
+      close，discrepancy.work-order-close-audit-atomicity 保持 open。'
+    - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx 查询 PRODUCTION_OBJECT；ProductionExecutionService 生命周期更新写 PRODUCTION_EXECUTION 事件，已有事件不等于对象页已覆盖。
+    - 本次生产源码、生产测试与知识校验器源码均没有修改；以上 pre-existing 实现差异是报告必须披露的剩余工作，不作为已修复的本次质量 finding。
+  - id: check.partial-supersession-history-and-existing-questions
+    required: true
+    category: requirements
+    description: 当前有效意义与历史局部替代界限可追踪；不把旧决策整份废止，也不将未来政策直接从当前代码推定为用户确认。
+    method: inspection
+    command: Read decisionPackage.replacementScopes, related decisions, ontologyResult.knowledgeSync and deferred-questions.json
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-decision-package.yaml: 六组 replacementScopes 使用声明 ID，分别保留被替代范围、仍有效范围和来源；自定义 PUBLISHED 限制、归属范围、表单结束动作、权限组和签署配置边界分开。'
+    - 'docs/development/ontology-internal-audit-20261012/ontology-result.yaml: 575 条 knowledgeSync，无重复 ID；updated=221、deferred=209、historical=117、retained=28；每项 disposition/范围/来源字段完整且文件存在。'
+    - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml 与 DEC-0047-execution-form-selector.yaml：取消自定义选择资格的发布限制，不取消显式版本、租户、快照或独立发布校验。
+    - 'docs/knowledge/open-questions.yaml 与 docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md: 活动表单作废资格保持既有未决，设计建议没有升级为正式阻断规则。'
+    - 'docs/development/ontology-internal-audit-20261012/deferred-questions.json: 10 条 needs-decision 原始记录映射到 8 个既有主题；不是 10 个新问题，不要求现在回答，不阻碍此 L1 文档切片；已能由源码确定的事实已先修正文案。'
+    - 历史测试报告的执行数字、源码位置与当前运行结果分开，历史或外部材料缺口保持 evidence-gap；有测试源或绿色结构门禁不提升运行证据成熟度。
+  - id: check.final-artifact-cross-references-and-handoff
+    required: true
+    category: documentation
+    description: 最终 README、发现、整改、ontologyResult 和 decisionPackage 的数字、语义边界与源引用一致；所有整改状态有可定位的修复或保留理由。
+    method: inspection
+    command: Parse final YAML/JSON receipts; check knowledgeSync/repair file references and Markdown links; reverify QF-AUDIT-001 through QF-AUDIT-004
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/README.md: 准确区分全量完成审阅、原基线结论、候选知识纠错与仍开放的功能/证据问题；没有宣称所有历史知识已具备完整运行证明。'
+    - 'docs/development/ontology-internal-audit-20261012/remediation.json: 69 组逐项处置；38 knowledge-correction-completed、12 knowledge-reconciled-implementation-gap-open、3 existing-implementation-gap-retained、13
+      evidence-gap-documented、3 scope-clarified-existing-policy-deferred。'
+    - ROOT-DOC-001 五个实际 Markdown 修复路径、MASTER-FIX-003 的 business-knowledge-model.md、FORMS-011 的设计文档均已补入 evidenceFiles，逐一确认文件存在且相对 HEAD 有真实差异。
+    - 所有 knowledgeSync.sourceReferences、remediation.evidenceFiles 与既有 Markdown 文档链接均存在；唯一生成后由主智能体原样落库的链接是本 quality-result.yaml。quality-inspection.json 和 quality-integrity-validation.json
+      是同一独立验证的追加回执，不变更审计分母。
+    - 最终 ontologyResult 枚举/required 字段有效，result=updated、冲突/当前阻塞问题为空；reason 明确保留 12 新功能差异、206 证据缺口与 8 既有主题。
+  - id: check.final-formal-knowledge-validation-receipt
+    required: true
+    category: ontology
+    description: 核对主智能体实际执行的最终正式 Maven clean test 与原始日志，确认同一知识候选的适用门禁完成；质量角色未把核对日志写成自行执行 Maven。
+    method: inspection
+    command: Inspect verification.json, original knowledge-validation.log and matching scratch knowledge-validation-final.log
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/verification.json: JAVA_HOME=/workspace/scratch/f8b75a9f3345/build-tools/jdk-21.0.12.1+1 /workspace/scratch/f8b75a9f3345/build-tools/apache-maven-3.9.9/bin/mvn
+      --offline --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test；主智能体实际退出 0。'
+    - 'docs/development/ontology-internal-audit-20261012/knowledge-validation.log: 2026-10-12T18:09:46+08:00，Tests run 89, Failures 0, Errors 0, Skipped 0，BUILD SUCCESS；原始日志 SHA256 e428794549f1e2ef73d1461c791a7923f6146fe979e3bb5426620addacb25a8d。'
+    - 独立比较 repository knowledge-validation.log 与 scratch knowledge-validation-final.log 字节摘要相同；校验器、测试与 schema 未改，日志之后 239 知识文件内容摘要保持 9db3627a40a98ae86cadda79c373d03e829524468d05af03fd63803d7e93cb81。
+    - 此项仅是正式知识模型校验；业务单元/集成、数据库迁移/故障注入、UI/浏览器、部署均未执行。
+  - id: check.staged-format-and-original-log-preservation
+    required: true
+    category: documentation
+    description: 最终暂存文档格式无错误；原始执行日志保留 Maven 自带空白行而不清洗回执。
+    method: command
+    command: git diff --cached --check -- . ':(exclude)docs/development/ontology-internal-audit-20261012/knowledge-validation.log'
+    outcome: passed
+    evidence:
+    - 命令退出 0。原始 knowledge-validation.log 中正常的 [INFO] 空白行有尾随空格，该日志单独按原始字节 SHA256 验证；不声称全路径 diff --check 为零。
+    - git diff --name-only 为空；90 份已纳入候选文件全部暂存，git ls-files --others --exclude-standard 为空；没有生产源码或测试变更。
+  - id: check.mvp-roadmap-and-pilot-boundary
+    required: true
+    category: requirements
+    description: 保持功能优先的 MVP 路线与累计少量 AI 引导试点约束；本轮内审不启动新试点，也不宣称通用规则层已建成。
+    method: inspection
+    command: Read current architecture/knowledge contracts, final report and ontologyResult.roadmapProgress
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/ontology-result.yaml: stage=P0、status=in-progress、exitCriteriaEvidence=[]、deferredStages=[P1,P2,P3]；没有无证据阶段退出。'
+    - 'docs/architecture/business-knowledge-model.md 与 docs/knowledge/README.md: MVP 全项目累计 1–2 个代表性功能，在真实功能开发时按用途开展引导；本次 pilot=0，没有新增 JSON-LD/SHACL 工具或生产规则引擎。'
+    - 当前稳定 ID、事实/关系/规则/执行契约分层与声明级替代支持后续演进，但没有承诺通用规则层或跨标准迁移零成本。
+  - id: check.unmerged-branch-and-collaboration-boundary
+    required: true
+    category: integration
+    description: 本轮只核对未合并投影分支的集成风险与契约/ID 边界；没有把目标分支的审计结论扩展到旧分支功能。
+    method: inspection
+    command: Review fixed-commit integration-boundary.json and integration-boundary.md against recorded branch ancestry and ID mapping
+    outcome: passed
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/integration-boundary.json: target=7bf87c00a4a1158d6fbb4085eb9fb632918bcb50；projection=156a0d4116693292f077d5a4189ae93f740c3f35；fork=f2710af9ea717e760fef456cad09d6304c7f4e55。'
+    - 9 个同 ID 异义碰撞是 DEC-0075 与其 01..08；入站决策共有 34 条声明，后续必须整体重分配该族 ID 并更新引用，不能只修这 9 个碰撞；目标 DEC-0076 已被占用，没有提前指定冲突号码。
+    - 'docs/development/ontology-internal-audit-20261012/integration-boundary.md: 旧分支/协作者应同步实际目标契约并验证实际合并候选；旧提交的绿色 CI 不替代新候选检查。未执行合并、未改写旧分支历史，未声称服务器分支保护已经启用。'
+  - id: check.exact-reviewed-candidate-content
+    required: true
+    category: documentation
+    description: 锁定本次独立结论对应的 90 份候选内容；追加质量回执不回填原始审计分母，不造成自引用内容摘要。
+    method: command
+    command: SHA256 every included path; hash the sorted path/sha256 manifest; compare candidate-changes.json and final report file hashes
+    outcome: passed
+    evidence:
+    - 90 份 includedPaths 内容指纹 SHA256 = 14249adaca5f91861d68b12585392777ad778a8d323de0c8972185b86ce2992f。算法：每文件读取原始字节 SHA256，按 path 排序 [{path,sha256}]，json.dumps(ensure_ascii=False,sort_keys=True,separators=(",",":"))
+      的 UTF-8 字节再计算 SHA256。
+    - 本回执及两个 quality-*.json 独立输出生成于这 90 份内容验证之后，由主智能体原样追加并核对发布身份。它们不在自身被审内容指纹内；原候选任何字节变化均需重新评估。
+    - docs/development/ontology-internal-audit-decision-package.yaml SHA256 = fb2e3a287b4c9f630e0c522aea4d63c5cca3e010e75bfdcdd30529eca923eb4a
+    - docs/development/ontology-internal-audit-20261012/README.md SHA256 = a6aac3037984d2e25c6f4c73406b5ad3b1c981b342389d093718bb68ff847c5d
+    - docs/development/ontology-internal-audit-20261012/audit-inventory-validation.json SHA256 = 987eb18b4cb266a3868d288ceb668e268387bc2845196ce07a5e7f31c5ea07cb
+    - docs/development/ontology-internal-audit-20261012/baseline.json SHA256 = 2d23adae57a2205ba57dedfaf1464828f1a530b83c0c8e2aac690ab2ef951bc7
+    - docs/development/ontology-internal-audit-20261012/candidate-changes.json SHA256 = 5c5215d0e6661ff74b02d9c436c1b4c884846d9d4c3ff0c7c3e41b71e668d9d8
+    - docs/development/ontology-internal-audit-20261012/deferred-questions.json SHA256 = 87195124366554a5df8d11988612c287afbf646a5786ed3a461adce49946c9ec
+    - docs/development/ontology-internal-audit-20261012/evidence-index.jsonl SHA256 = 16f45db6349b813dbbfb48d42bc52cf02a55a5c21f5adfa64ff181176eae4468
+    - docs/development/ontology-internal-audit-20261012/files-without-ids.jsonl SHA256 = 6439cb32ed9d837e7dd20319b3252666e9808e18fb62cb4f0239889c0eed3bc1
+    - docs/development/ontology-internal-audit-20261012/findings.json SHA256 = b1fdc029c4bf3206607176760b3f1984937a580f28f815e36244a9c27617480d
+    - docs/development/ontology-internal-audit-20261012/integration-boundary.json SHA256 = 348a7b63e760a152e51a5ff214e2e7075958a285cc6ce594264ffcc1d83bbe9a
+    - docs/development/ontology-internal-audit-20261012/integration-boundary.md SHA256 = f4cd7a94aa7c08f1bb1ec209deccc9f6368e54e62c280d232a0a05e58d68df12
+    - docs/development/ontology-internal-audit-20261012/knowledge-validation.log SHA256 = e428794549f1e2ef73d1461c791a7923f6146fe979e3bb5426620addacb25a8d
+    - docs/development/ontology-internal-audit-20261012/ontology-result.yaml SHA256 = b694ce4e01337b617439b55e1c222cdc684a87d6b968fbce77c146663dfbe42c
+    - docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json SHA256 = d2013461372575c9e311f4438874c72b42a7460932ef450da3ce7b48636e8016
+    - docs/development/ontology-internal-audit-20261012/production-historical-materials.json SHA256 = bb148579db823f1cd69e256585f7225c37e6ef0e5fe2f87abd963fda9eabbb21
+    - docs/development/ontology-internal-audit-20261012/records-forms.jsonl SHA256 = a13cde8c843dea1c2624d4f8ace4657e08591a43b092fbcb96530e1d62d14723
+    - docs/development/ontology-internal-audit-20261012/records-foundation.jsonl SHA256 = ff8c637f3ff65964793e27530c1d7542a7a7867db43860bf725332843491a435
+    - docs/development/ontology-internal-audit-20261012/records-master.jsonl SHA256 = fd7bdb35c176436c2fb46504f77ee703971574b0bac8f0312f9a75a805900377
+    - docs/development/ontology-internal-audit-20261012/records-production.jsonl SHA256 = a3afa34f73ef60f8d35fffcd062e4ebf190ed72936fd230954728d1f53c9634a
+    - docs/development/ontology-internal-audit-20261012/remediation.json SHA256 = ad44e32873c4c26f0aa725ed739ae9f6608a21e1166fb1fe9ddfcc360d518064
+    - docs/development/ontology-internal-audit-20261012/verification.json SHA256 = ba8fa9c82b28bd944238ffcf267c5b292fbd2db11f4c5aa055c6cbdca66f5d7a
+    - docs/development/ontology-internal-audit-20261012/verify_audit.py SHA256 = f983fac33fa13dd1cd0ccc30d8028beb8245fa7589f014545c5778331e1f9d66
+    - docs/development/ontology-internal-audit-20261012/quality-inspection.json SHA256 = 52751c49817060eac89c9beba7a1b0c65e9a9641fd8352dd599d9b56df5cf361
+    - docs/development/ontology-internal-audit-20261012/quality-integrity-validation.json SHA256 = 987eb18b4cb266a3868d288ceb668e268387bc2845196ce07a5e7f31c5ea07cb
+  findings:
+  - id: QF-AUDIT-001
+    severity: medium
+    scope: 知识导航引用
+    summary: README 把表单引用运行时知识错误指向 DEC-0056，正确来源应为 DEC-0060。
+    reproductionSteps:
+    - 读取修复前 docs/knowledge/README.md 的当前基线补充段落。
+    - 对照 DEC-0056 approval-display-terminology 与 DEC-0060 form-reference-runtime 的标题和正文。
+    expectedResult: 导航应指向表单引用运行时决策，不把审批显示术语作为其来源。
+    actualResult: 初审导航引用为 DEC-0056；主智能体修复后已为 DEC-0060，独立重新核对通过。
+    evidence:
+    - 'docs/knowledge/README.md: 当前基线补充 DEC-0060 段落'
+    - docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: document
+      reference: docs/knowledge/README.md; SHA256 fb9b571b3968c4bdc77d769fe1786a732201479a65a5463be6d49dc1eea8bc7d
+    - type: document
+      reference: docs/development/ontology-internal-audit-20261012/quality-inspection.json
+  - id: QF-AUDIT-002
+    severity: medium
+    scope: DHR 显式版本失配差异描述
+    summary: 四处知识说明把缺失显式版本的回退简化为直接首项，遗漏保留仍存在已选版本及空列表返回。
+    reproductionSteps:
+    - 读取 DhrTemplateWorkspaceDialog.tsx:1379–1396 的 useEffect。
+    - 与 DEC-0061 discrepancy、fact、implementationAnchor 和 evidence 的描述逐项比较。
+    expectedResult: 知识须写清非空列表、存在显式目标、仍存在已选版本、首项的完整顺序；差异仍是开放的显式版本约束缺口。
+    actualResult: 原说明遗漏中间保留分支；主智能体已修四处文本，独立本角色与辅助验证者均复核源码分支一致，未把生产缺口关闭。
+    evidence:
+    - gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx:1379–1396
+    - docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: document
+      reference: docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml; Git blob 0f7f23dab674525fa1a3b29671f882ac2a03318b
+    - type: document
+      reference: docs/knowledge/facts/dhr-template-version-design-isolation.yaml; Git blob e07f47b5e78b9f5f54be88c27a4ee139685dd7d1
+    - type: document
+      reference: docs/knowledge/implementation-anchors/dhr-template-version-design-isolation.yaml; Git blob c10d51077f7050f9f1e1b2e7e33e573aae72daa4
+    - type: document
+      reference: docs/knowledge/evidence/dhr-template-version-design-isolation.yaml; Git blob df2a76ea761ee311bbb8400ba312129a2958a6ea
+    - type: document
+      reference: docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json
+  - id: QF-AUDIT-003
+    severity: medium
+    scope: 表单审计账本原始来源路径
+    summary: 两条表单审阅记录含不存在的 FormDocumentPreview 来源路径，影响证据追踪。
+    reproductionSteps:
+    - 检查 forms ledger 中 DEC-0034-04 与 scenario.form-renderer-version-mismatch 的来源引用。
+    - 核对基线 Git 对象，components/form-renderer/FormDocumentPreview.tsx 不存在；实际文件位于 master-data/template-designer-react/components/form-preview。
+    expectedResult: 保存真实可定位源路径，并保留测试/运行覆盖证据仍不足的结论。
+    actualResult: 原附加来源路径无效；主智能体修正并添加纠错注记，独立完整性检查确认零缺失路径，两条原始 evidence-gap 未被抹除。
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/records-forms.jsonl: DEC-0034-04 / scenario.form-renderer-version-mismatch'
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: document
+      reference: docs/development/ontology-internal-audit-20261012/records-forms.jsonl
+    - type: document
+      reference: docs/development/ontology-internal-audit-20261012/evidence-index.jsonl
+    - type: document
+      reference: docs/development/ontology-internal-audit-20261012/quality-integrity-validation.json
+  - id: QF-AUDIT-004
+    severity: medium
+    scope: 无 ID 文档整改的定位证据
+    summary: 两组仅 Markdown 的修复被标记完成但 evidenceFiles 为空，难以从整改清单直接定位修复。
+    reproductionSteps:
+    - 读取 remediation.json 的 ROOT-DOC-001 与 MASTER-FIX-003。
+    - 对比 Markdown 实际差异，确认 changedExistingIds 为空是无 ID 文档特点，但不能省略实际修复文件引用。
+    expectedResult: 完成的知识整改应提供真实文件路径；无 ID 修复不应为了填充列表伪造知识 ID。
+    actualResult: 原 evidenceFiles 为空；现已补齐 ROOT-DOC-001 的五个 Markdown 路径与 MASTER-FIX-003 的 architecture 路径，并补 FORMS-011 的设计文档；全部文件存在且有实际差异。
+    evidence:
+    - 'docs/development/ontology-internal-audit-20261012/remediation.json: ROOT-DOC-001 / MASTER-FIX-003 / FORMS-011'
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: document
+      reference: docs/development/ontology-internal-audit-20261012/remediation.json; SHA256 ad44e32873c4c26f0aa725ed739ae9f6608a21e1166fb1fe9ddfcc360d518064
+    - type: document
+      reference: docs/architecture/business-knowledge-model.md
+    - type: document
+      reference: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
+  residualRisks:
+  - id: risk.open-production-implementation-gaps
+    description: 12 新增实现差异（含 4 high）以及其他既有差异仍开放；此次通过仅评价知识审计与纠错交付。
+    impact: 不能把 passed 用作功能修复、业务回归或生产发布批准。
+    mitigation: 沿 open-implementation-discrepancies.json 与既有 discrepancy ID 在具体功能修复时建立独立实现/验收切片，保留规范、负向场景与修复证据。
+  - id: risk.historical-and-runtime-evidence-gaps
+    description: 206 条原始记录仍有证据缺口；此轮仅静态核对业务来源并实际执行知识校验和清单完整性检查。
+    impact: 历史验证记录、测试源码和当前知识成熟度不能替代当前运行、数据库、审计失败原子性或浏览器验收。
+    mitigation: 依具体功能风险逐项补原始定位与必要运行证据；本次不把 reviewed 或结构 passed 自动升级为 verified。
+  - id: risk.existing-deferred-topics
+    description: 10 条 needs-decision 记录映射 8 个既有未来业务/完整契约主题，当前文档切片无需新用户决定。
+    impact: 后续依赖活动表单作废、完整规则求值/快照、额外签署、多租户或锁定制程长期政策的功能不能未经确认直接实现为规范。
+    mitigation: 使用 deferred-questions.json 的逐主题触发条件，在真正依赖的功能开发时确认；本次已可由代码确定的记录错误已先处理。
+  - id: risk.unmerged-projection-and-publishing-identity
+    description: 旧投影分支功能尚未合并和按新候选审计；本回执是固定 7bf 基线加 90 份内容的工作树结论。
+    impact: 旧分支的契约或 ID 碰撞及目标后续变化可能引入新的语义/实现风险；本回执不能自动覆盖任何未来合并。
+    mitigation: 主智能体追加质量收尾文件时核对原 90 份内容及目标提交不变；任何新合并按 integration-boundary.md 核对实际候选、重分配整个入站决策 ID 家族并执行适用门禁。
+  - id: risk.future-rule-layer-and-pilot-validation
+    description: P0 仍 in-progress，本轮 pilot=0，尚未运行通用业务规则层完整开发试点。
+    impact: 不能由当前文档一致性推导 P1/P2/P3 已完成或迁移成本为零。
+    mitigation: 保持 MVP 功能优先，在实际开发中选全项目累计 1–2 个代表性功能验证事实读取、求值、业务动作、依据与测试证据的完整对应。
+  blockingConditions: []

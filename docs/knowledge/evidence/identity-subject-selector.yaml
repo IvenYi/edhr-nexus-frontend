@@ -68,7 +68,7 @@ evidence:
   - id: evidence.workflow-task-multi-candidate-runtime-implementation
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
-    description: 工作流运行时在节点进入时解析主体并创建一个逻辑任务及去重后的候选快照；完成、转办和终止按逻辑任务状态处理，并保留解析来源快照。
+    description: original-evidence；工作流在节点进入时解析主体，创建一个逻辑任务并保存去重候选及全部命中来源；普通组织关系变化不改写该任务快照。 完成与终止按任务状态处理。泛 transferTask 会在同一任务上将 candidateSnapshot 替换为目标用户的单人快照，原始来源未在该字段继续保留； 此差异由 discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot 单独记录，不能用普通生产表单转办的保留实现证明泛工作流来源留存。
     visibility: internal
   - id: evidence.workflow-task-candidate-persistence
     type: code

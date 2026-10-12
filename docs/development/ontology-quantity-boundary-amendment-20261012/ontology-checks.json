@@ -1,0 +1,35 @@
+{
+  "result": "passed",
+  "baseCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "checks": [
+    "all-knowledge-yaml-parse-and-duplicate-key-rejection",
+    "all-knowledge-id-uniqueness-and-evidence-reference-resolution",
+    "exact-two-rule-withdrawal-and-unchanged-historical-condition-result",
+    "deprecated-internal-excluded-from-customer-runtime-projections",
+    "term-batch-only-definition-corrected",
+    "one-new-deferred-question-existing-questions-unchanged",
+    "new-evidence-path-resolves",
+    "facts-decisions-schema-runtime-and-tests-preserved",
+    "git-diff-check"
+  ],
+  "yamlFilesParsed": 189,
+  "knowledgeIds": 2315,
+  "changedRuleIds": [
+    "rule.production.mass-batch-quantity-distribution",
+    "rule.production.production-batch-input-quantity-required"
+  ],
+  "newQuestionId": "question.production-batch-quantity-lower-bound",
+  "preservedFiles": [
+    "docs/knowledge/facts/core-business.yaml",
+    "docs/knowledge/schema.yaml",
+    "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+    "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+    "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+    "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql"
+  ],
+  "limitations": [
+    "No Maven/JUnit execution by this role; main and independent quality run formal gates.",
+    "No business threshold chosen and no production decimal-boundary tests executed."
+  ]
+}

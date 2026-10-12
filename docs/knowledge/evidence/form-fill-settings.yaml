@@ -30,3 +30,8 @@ evidence:
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
     description: original-evidence；2026-09-22 建模起点工序表单查询与作业 binding/flow 冻结路径，定位生产消费入口；新填报模式、权限与签署冻结仍待实现和测试核对。
     visibility: internal
+  - id: evidence.form-fill-settings-current-mode-validation
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
+    description: original-evidence；usesProcess 对缺失模式返回 false，serialize 补 DIRECT；validate 对整体 null/missing 设置返回，对无模式对象按直接模式解释且不要求模式必填； 这与 DEC-0067 最新显式模式及撤销兼容确认存在未修差异。directNode、activeBinding 和实际新配置校验另有直接填报实现。 仅为本次源码核对，不表示运行验证或兼容政策获得确认。
+    visibility: internal

@@ -11,7 +11,7 @@ implementationAnchors:
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-template-version-design-isolation-user-confirmed, evidence.dhr-template-composition-controller, evidence.dhr-template-workspace-version-selection, evidence.dhr-template-composition-controller-test, evidence.dhr-template-workspace-static-regression]
-    sourceRevision: working-tree
-    sourceLocator: DhrTemplateWorkspaceDialog 将明确初始版本优先写入 selectedVersionId；前后端 composition API 均以 templateId/versionId 组合定位和保存
-    capturedAt: '2026-09-18'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: DhrTemplateWorkspaceDialog:1380–1396 版本列表为空时 effect 返回；非空时优先选存在于列表的 initialVersionId，显式目标缺失则保留列表中仍存在的 selectedVersionId，否则取 versions[0]；composition 查询和保存读取该 selectedVersionId。后端 findVersion 严格校验显式模板/版本组合，前端列表缺失回退另由 discrepancy.dhr-template-explicit-version-list-fallback 记录，不据锚点存在声称端到端严格隔离已经完成
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed

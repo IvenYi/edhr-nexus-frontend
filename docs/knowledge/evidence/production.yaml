@@ -13,7 +13,7 @@ evidence:
   - id: evidence.production-service
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
-    description: original-evidence；生产服务实现工单拆分、批量拆分、制程解析与首次锁定、BATCH/SN 生产形态及数量校验、生产对象编号全局唯一校验、对象计划时间校验、对象开工/完成/取消和工单关闭；CREATED 与 IN_PROCESS 工单均可拆分，拆分时仅聚合非 CANCELLED 对象的 targetQuantity，取消对象不占用工单可拆数量；SN 生产对象目标数量固定为 1，同一工单不得混用 BATCH/SN；不存在独立发布步骤；已锁定制程通过 findVersionForProduct 继续解析，不重新应用有效期筛选。split/splitBatch 只保存 CREATED 生产对象和制程引用，不创建 DHR；首次合法 START 另由 ProductionExecutionService 接入 DHR 创建。
+    description: original-evidence；生产服务实现工单拆分、批量拆分、制程解析与首次锁定、BATCH/SN 生产形态及数量校验、生产对象编号租户内唯一校验、对象计划时间校验、对象开工/完成/取消和工单关闭；CREATED 与 IN_PROCESS 工单均可拆分，拆分时仅聚合非 CANCELLED 对象的 targetQuantity，取消对象不占用工单可拆数量；SN 生产对象目标数量固定为 1，同一工单不得混用 BATCH/SN；不存在独立发布步骤；已锁定制程通过 findVersionForProduct 继续解析，不重新应用有效期筛选。split/splitBatch 只保存 CREATED 生产对象和制程引用，不创建 DHR；首次合法 START 另由 ProductionExecutionService 接入 DHR 创建。 锁定版本仍校验当前产品/簇归属；成员转移的跨时点差异单独记录，不将忽略时间窗解释为忽略所有归属约束。
     visibility: internal
   - id: evidence.production-object-status-machine
     type: code
@@ -28,7 +28,7 @@ evidence:
   - id: evidence.work-order-controller
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
-    description: 工单列表、创建、编辑、取消和关闭接口；创建、编辑、取消和关闭方法带有 WORK_ORDER 审计注解，创建后无需发布即可拆分生产对象。
+    description: original-evidence；WorkOrderController 提供工单创建、编辑、取消和关闭入口，并通过 workOrderSnapshot/writeAudit/writeChangedAudit 显式保存真实业务前后快照，没有以 @Auditable 注解承担这四个动作的快照写入。创建/编辑/取消有外层事务；关闭的服务提交与控制器审计边界差异另见 discrepancy.work-order-close-audit-atomicity。本次未执行业务或回滚测试。
     visibility: internal
   - id: evidence.production-object-controller
     type: code
@@ -68,7 +68,7 @@ evidence:
   - id: evidence.production-audit-annotations
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
-    description: 工单控制器上的 @Auditable 注解定义 WORK_ORDER 的实体类型、动作、生产准备菜单和功能名称，覆盖创建、编辑、取消和关闭；生命周期动作统一使用 UPDATE 投影。
+    description: original-evidence；稳定ID保留历史名称，但当前工单审计由 WorkOrderController 显式业务快照写入，不能归因于 @Auditable。通用 AuditAspect 的元数据能力与该实际前后快照来源分开；关闭事务边界另记 open 差异，不从注解存在或历史通过推定审计原子性。
     visibility: internal
   - id: evidence.production-object-audit-annotations
     type: code
@@ -88,7 +88,7 @@ evidence:
   - id: evidence.production-service-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java
-    description: 生产服务聚焦测试覆盖制程锁定、产品/产品簇解析、BATCH/SN 数量约束、CREATED 与 IN_PROCESS 工单拆分、对象生命周期和工单状态联动；其中验证生产对象提前结束后对象进入 EARLY_TERMINATED，并在关联对象全部终态时将 IN_PROCESS 工单自动汇总为 EARLY_TERMINATED，或在其余对象完成/取消后汇总为 COMPLETED；另验证计划数量为 10 的工单在未开工对象 10 取消后可按已锁定制程重新拆分替代对象 10。批量拆分事务与导入列名解析尚未有独立自动化测试。
+    description: 生产服务聚焦测试覆盖制程锁定、mock解析返回条件下的拆分行为、BATCH/SN 数量约束、CREATED 与 IN_PROCESS 工单拆分、对象生命周期和工单状态联动；其中验证生产对象提前结束后对象进入 EARLY_TERMINATED，并在关联对象全部终态时将 IN_PROCESS 工单自动汇总为 EARLY_TERMINATED，或在其余对象完成/取消后汇总为 COMPLETED；另验证计划数量为 10 的工单在未开工对象 10 取消后可按已锁定制程重新拆分替代对象 10。批量拆分事务与导入列名解析尚未有独立自动化测试。 prepareSplit 模拟PRODUCT解析结果，不能证明真实产品簇解析和转移后的冻结边界；真实resolver由其自身证据负责。本次只读取断言，没有重新运行业务测试。
     visibility: internal
   - id: evidence.guancheng-sn-split-source
     type: document
@@ -138,7 +138,7 @@ evidence:
   - id: evidence.audit-controller-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/AuditControllerTest.java
-    description: 数据审计控制器测试覆盖动作标签、生产工单及生产对象动作归一化和审计列表投影边界。
+    description: original-evidence；审计控制器测试含动作标签与列表投影，projectsProductionAuditActionsToCreateOrUpdate实际返回并断言前两条工单事件；虽构造第三条生产对象数据，未对它作该测试的查询和归一化断言，不能概括该方法已覆盖对象动作。本次只核对测试源码。
     visibility: internal
   - id: evidence.production-audit-snapshot-gap
     type: code
@@ -183,7 +183,7 @@ evidence:
   - id: evidence.production-work-order-page-pending-list
     type: code
     path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
-    description: 生产对象弹窗以 pendingObjects 保存手动添加、按拆分数量批量生成和 CSV/XLS/XLSX 导入的待提交清单，提交按钮才调用 splitProductionObjectsBatch；BATCH 导入模板字段为批次号和数量（必填）、计划开始时间、计划结束时间和备注（可选），SN 导入模板只包含 SN 编号、计划开始时间和计划结束时间，SN 数量由形态隐含为 1；量产 BATCH 批量添加支持按批次数平均分配（最后一批承接余数）及按每批数量生成（最后一批承接不足一整批的余数），SN 形态按每个对象 1 个单位生成。已拆分批次表仅展示编号、制程、数量、结果和状态，不承载操作列，后续操作归批次列表。
+    description: 生产对象弹窗以 pendingObjects 保存手动添加、按拆分数量批量生成和 CSV/XLS/XLSX 导入的待提交清单，提交按钮才调用 splitProductionObjectsBatch；BATCH 导入模板字段为批次号和数量（必填）、计划开始时间、计划结束时间和备注（可选），SN 导入模板只包含 SN 编号、计划开始时间和计划结束时间，SN 数量由形态隐含为 1；量产 BATCH 批量添加支持按批次数平均分配（最后一批承接余数）及按每批数量生成（最后一批承接不足一整批的余数），SN 形态按每个对象 1 个单位生成。已拆分批次表仅展示编号、制程、数量、结果和状态，不承载操作列，后续操作归批次列表。 2026-10-12 源码复核：SN下载模板实际含编号、计划开始、计划结束、备注四列，解析也接受备注；这与DEC-0016-04确认三列存在 discrepancy.production-sn-import-template-extra-remark，不能用当前实现撤销确认。SN每件数量仍隐含为1；本次未运行导入验收。
     visibility: internal
   - id: evidence.production-work-order-process-lock-preview-ui
     type: code
@@ -193,7 +193,7 @@ evidence:
   - id: evidence.production-work-order-batch-import-template-ui
     type: code
     path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
-    description: 生产对象导入区域在标题旁提供“选择文件”按钮，Info hover 承载导入说明；BATCH 下载模板包含批次号、数量、计划开始时间、计划结束时间和备注五列，SN 下载模板只包含 SN 编号、计划开始时间和计划结束时间三列；文件选择器接受 CSV、XLS、XLSX。
+    description: 生产对象导入区域在标题旁提供“选择文件”按钮，Info hover 承载导入说明；BATCH 下载模板包含批次号、数量、计划开始时间、计划结束时间和备注五列，SN 下载模板只包含 SN 编号、计划开始时间和计划结束时间三列；文件选择器接受 CSV、XLS、XLSX。 2026-10-12 源码复核：SN下载模板实际含编号、计划开始、计划结束、备注四列，解析也接受备注；这与DEC-0016-04确认三列存在 discrepancy.production-sn-import-template-extra-remark，不能用当前实现撤销确认。SN每件数量仍隐含为1；本次未运行导入验收。
     visibility: internal
   - id: evidence.production-object-start-side-effects-current
     type: code

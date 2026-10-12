@@ -43,7 +43,7 @@ evidence:
   - id: evidence.production-form-process-buttons-events-v1
     type: document
     path: docs/knowledge/evidence/production-form-process-buttons-events-v1.md
-    description: 用户确认的表单流程节点按钮与节点事件第一版配置范围；按钮仅保存可见状态、标准动作及参数，签署事件仅保存动作前账户密码签名及受控内置事件，不证明 eDHR 运行时已实现动作或事件执行。
+    description: 历史第一版原始确认包含按钮 visible/enabled、BEFORE/AFTER 事件与可选处理器；后续 DEC-0025 对事件作局部简化、DEC-0028 引入按钮电子签名，当前按钮认证再按 DEC-0074 的替代范围解释。此索引不把后续方案倒写为第一版，也不证明运行时已实现。
     visibility: internal
   - id: evidence.production-form-process-buttons-events-v2
     type: document

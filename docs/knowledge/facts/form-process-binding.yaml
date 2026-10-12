@@ -38,16 +38,16 @@ facts:
     valueType: enum
     enumValues: [DRAFT, PUBLISHED]
     sourceType: database
-    sourcePath: FormProcessVersion.status
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
     aliases: [formProcessBinding.formProcessTemplateVersion.status]
     availability: configuration-and-runtime
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-upgrade-controller]
-    sourceRevision: working-tree
-    sourceLocator: FormProcessVersion.status
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "WorkTemplateController.formProcessReferenceStatuses: referencedVersion.getStatus() -> FormProcessReferenceStatus.formProcessVersionStatus (631-695,1345-1359)"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.production-work-form-entry.form-template-version-id
     name: 作业流程表单填写节点的表单模板版本引用
@@ -103,48 +103,48 @@ facts:
     valueType: enum
     enumValues: [DRAFT, PUBLISHED]
     sourceType: database
-    sourcePath: ProductionWorkFlowVersion.status
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
     aliases: [productionWorkFlowVersion.status]
     availability: configuration-and-runtime
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-work-flow-editor-ui, evidence.production-work-template-configuration-controller]
-    sourceRevision: working-tree
-    sourceLocator: ProductionWorkFlowVersion.status
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "WorkflowDefinitionVersion.status; WorkTemplateController.requireWorkVersion / requireDraftVersion 的 WORK 类型版本上下文 (实体19-20)"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.form-process-version-reference.referenced-version-is-current
     name: 作业流程引用的表单流程版本是否为当前版本
     conceptId: concept.form-process-version-reference
     valueType: boolean
     sourceType: derived
-    sourcePath: FormProcessReferenceService.referencedVersionIsCurrent
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
     aliases: [formProcessVersionReference.referencedVersionIsCurrent]
     availability: configuration
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
-    sourceRevision: working-tree
-    sourceLocator: FormProcessReferenceService.referencedVersionIsCurrent
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "referencedVersion.getIsCurrent() -> FormProcessReferenceStatus.formProcessVersionIsCurrent (685,1353)"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.form-process-definition.has-current-published-version
     name: 表单流程定义是否存在当前发布版本
     conceptId: concept.form-process-template
     valueType: boolean
     sourceType: derived
-    sourcePath: FormProcessController.hasCurrentPublishedVersion
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
     aliases: [formProcessDefinition.hasCurrentPublishedVersion]
     availability: configuration
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-optional-binding-controller]
-    sourceRevision: working-tree
-    sourceLocator: FormProcessController.hasCurrentPublishedVersion
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "latestVersion = versionRepository.findByDefinitionIdAndIsCurrentTrue(processDefinition.getId()).filter(PUBLISHED).orElse(null); latestVersion != null (652-665); 局部推导，非独立事实装配API"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.target-form-process-version.status
     name: 目标表单流程版本状态
@@ -152,48 +152,48 @@ facts:
     valueType: enum
     enumValues: [DRAFT, PUBLISHED]
     sourceType: database
-    sourcePath: TargetFormProcessVersion.status
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
     aliases: [targetFormProcessVersion.status]
     availability: configuration
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-reference-implementation]
-    sourceRevision: working-tree
-    sourceLocator: TargetFormProcessVersion.status
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "WorkTemplateController.formProcessReferenceStatuses latestVersion; 目标为该定义当前发布版本，通过PUBLISHED filter约束 (652-657)"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.target-form-process-version.is-current
     name: 目标表单流程版本是否为当前版本
     conceptId: concept.form-process-template-version
     valueType: boolean
     sourceType: derived
-    sourcePath: FormProcessController.currentPublishedVersionId
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
     aliases: [targetFormProcessVersion.isCurrent]
     availability: configuration
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
-    sourceRevision: working-tree
-    sourceLocator: FormProcessController.currentPublishedVersionId
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "WorkTemplateController.formProcessReferenceStatuses latestVersion 由 findByDefinitionIdAndIsCurrentTrue 获取，目标是当前发布版本 (652-657); 布尔值不是版本ID"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.form-process-binding.compatibility-with-target-version
     name: 表单流程绑定配置与目标版本是否兼容
     conceptId: concept.form-process-binding-version
     valueType: boolean
     sourceType: derived
-    sourcePath: WorkTemplateController.validateFormProcessVersionCompatibility
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
     aliases: [formProcessBinding.compatibilityWithTargetVersion]
     availability: configuration
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-upgrade-controller, evidence.form-process-version-upgrade-tests]
-    sourceRevision: working-tree
-    sourceLocator: WorkTemplateController.validateFormProcessVersionCompatibility
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "outdated 分支调用 validateFormProcessFieldPermissions(node, latestVersion.getNodesJson())；失败追加 upgradeBlockers；仅该当前目标的字段/事件兼容性局部推导，非独立通用兼容性函数 (670-675,790-844)"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.referenced-form-process-version.status
     name: 被引用表单流程版本状态
@@ -201,46 +201,87 @@ facts:
     valueType: enum
     enumValues: [DRAFT, PUBLISHED]
     sourceType: database
-    sourcePath: ReferencedFormProcessVersion.status
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
     aliases: [referencedFormProcessVersion.status]
     availability: configuration
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-usage-controller]
-    sourceRevision: working-tree
-    sourceLocator: ReferencedFormProcessVersion.status
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "WorkTemplateController.formProcessReferenceStatuses referencedVersion.getStatus(); FormProcessController.usage processVersion.getStatus (684; usage154-174)"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.referenced-form-process-version.is-current
     name: 被引用表单流程版本是否为当前版本
     conceptId: concept.form-process-version-reference
     valueType: boolean
     sourceType: derived
-    sourcePath: FormProcessReferenceService.isCurrent
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
     aliases: [referencedFormProcessVersion.isCurrent]
     availability: configuration
     allowedOperators: [equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-upgrade-tests]
-    sourceRevision: working-tree
-    sourceLocator: FormProcessReferenceService.isCurrent
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "WorkTemplateController.formProcessReferenceStatuses referencedVersion.getIsCurrent(); FormProcessController.usage processVersion.getIsCurrent (685; usage154-174)"
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: fact.form-process-version-usage.reference-count
     name: 表单流程版本引用数量
     conceptId: concept.form-process-version-usage-projection
     valueType: integer
-    sourceType: database
-    sourcePath: WorkFormProcessReference.countByFormProcessVersionId
+    sourceType: derived
+    sourcePath: gmp-platform/frontend/src/pages/workflow-center/FormProcessList.tsx
     aliases: [formProcessVersionUsageProjection.referenceCount]
     availability: configuration
     allowedOperators: [greater-than-or-equal, equals]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-process-delete-reference-guard, evidence.form-process-delete-reference-guard-test]
-    sourceRevision: working-tree
-    sourceLocator: WorkFormProcessReference.countByFormProcessVersionId
-    capturedAt: '2026-09-13'
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: "FormProcessList.tsx FormProcessUsageContent: groups 按 item.formProcessVersionId 分组，将 group.rows.length 显示为表单填报节点引用数 (338-395); 来源 FormProcessController.usage / FormProcessReferenceService.listUsage；无数据库count方法"
+    capturedAt: '2026-10-12'
+    reviewStatus: reviewed
+  - id: fact.form-process-binding.exception-permission-group-exists
+    name: 字段例外引用的权限组在所选流程中存在
+    conceptId: concept.form-binding-field-permission-exception
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/frontend/src/components/form-fill-settings/FormFieldPermissions.tsx
+    aliases:
+    - exception.permissionGroup.existsInSelectedFormProcessVersion
+    - exception.subject.existsInSelectedFormProcessVersion
+    availability: configuration
+    allowedOperators:
+    - equals
+    status: specified
+    visibility: internal
+    evidenceIds:
+    - evidence.production-form-process-user-confirmed-v4
+    - evidence.form-fill-settings-design
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: processPermissionSubjects构造start:<permissionGroupRules.id>、start:open、approval:<node.id>；pruneFieldPermissions按当前键集合保留条目。旧subject别名仅兼容知识引用，表示权限组键存在，不表示组内单个用户/部门/角色成员存在
+    capturedAt: '2026-10-12'
+    reviewStatus: reviewed
+  - id: fact.form-process-binding.exception-field-exists
+    name: 字段例外的真实fieldId在所选表单版本中存在
+    conceptId: concept.form-binding-field-permission-exception
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/frontend/src/components/form-fill-settings/FormFieldPermissions.tsx
+    aliases:
+    - exception.fieldId.existsInSelectedFormTemplateVersion
+    availability: configuration
+    allowedOperators:
+    - equals
+    status: specified
+    visibility: internal
+    evidenceIds:
+    - evidence.production-form-process-user-confirmed-v4
+    - evidence.form-fill-settings-design
+    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    sourceLocator: pruneFieldPermissions用当前字段id集合筛选editableFieldIds/readOnlyFieldIds；此事实仅表示字段存在，不证明切换版本后每次保存都调用prune
+    capturedAt: '2026-10-12'
     reviewStatus: reviewed

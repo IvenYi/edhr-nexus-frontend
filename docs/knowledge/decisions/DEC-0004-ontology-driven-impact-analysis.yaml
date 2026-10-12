@@ -23,7 +23,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0004-05
-        statement: 需求交付应按业务边界选择配置、事务编排、标准动作、项目插件或产品内核开发，并将必要代码集中在明确领域模块和稳定扩展点中。
+        statement: 需求交付应按业务边界选择配置、作业编排、标准动作、项目插件或产品内核开发，并将必要代码集中在明确领域模块和稳定扩展点中。这里的作业编排沿用现行生产作业术语，不指代数据库或框架事务。
         status: specified
         visibility: internal
       - id: DEC-0004-06

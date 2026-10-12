@@ -1,0 +1,62 @@
+{
+  "outcome": "passed",
+  "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "reviewedIds": 2292,
+  "knowledgeFiles": 239,
+  "reviewedFilesWithoutIds": 52,
+  "pending": 0,
+  "baselineConclusions": {
+    "needs-fix": 199,
+    "consistent": 1759,
+    "superseded": 118,
+    "evidence-gap": 206,
+    "needs-decision": 10
+  },
+  "domainConclusions": {
+    "foundation": {
+      "needs-fix": 51,
+      "consistent": 390,
+      "superseded": 26,
+      "evidence-gap": 164,
+      "needs-decision": 7
+    },
+    "forms": {
+      "superseded": 48,
+      "consistent": 396,
+      "needs-fix": 40,
+      "evidence-gap": 15,
+      "needs-decision": 1
+    },
+    "master": {
+      "needs-fix": 49,
+      "consistent": 354,
+      "superseded": 20,
+      "evidence-gap": 6
+    },
+    "production": {
+      "consistent": 619,
+      "superseded": 24,
+      "needs-fix": 59,
+      "needs-decision": 2,
+      "evidence-gap": 21
+    }
+  },
+  "fileConclusions": {
+    "needs-fix": 7,
+    "consistent": 33,
+    "evidence-gap": 10,
+    "superseded": 2
+  },
+  "findingGroups": 69,
+  "evidenceReferences": 3374,
+  "candidateCounts": {
+    "originalRecords": 2292,
+    "candidateRecords": 2313,
+    "added": 21,
+    "modified": 200,
+    "removed": 0
+  },
+  "scope": "Inventory, source identity, reference integrity, and candidate content only; semantic review is recorded separately. No business runtime tests.",
+  "verifiedHistoricalCandidate": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "recheckScope": "在独立固定工作树重跑历史审计完整性脚本；原语义结论的后续数量补正由 amendment.json 提供，不由此通过自动撤销。"
+}

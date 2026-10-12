@@ -64,5 +64,5 @@ decisions:
         visibility: internal
         path: docs/knowledge/rules/transaction-runtime.yaml
         lineHint: 1
-        summary: "provenance: original-evidence；当前 eDHR 尚未实现表单流程实例、按钮动作处理器、按钮事件触发、处理器调用或对应运行时审计；本决策仅描述配置层。"
+        summary: "provenance: original-evidence；本项保留早期按钮动作和事件运行未实现的历史记录。当前 ProductionExecutionEngine.formActionInternal 与 ProductionExecutionService.act 已处理生产表单保存、提交、审批、退回及签署证据和事务审计。旧自定义 handler 方案已由 DEC-0025-03 移除，不能作为当前待实现要求；本配置决策不单独证明完整页面或发布验收。"
         evidenceIds: [evidence.production-form-process-buttons-events-v1, evidence.ai-transaction-runtime-architecture]

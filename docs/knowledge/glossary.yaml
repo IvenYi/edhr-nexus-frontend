@@ -164,7 +164,7 @@ terms:
     visibility: internal
   - id: term.form-process-template
     name: 表单流程模板
-    definition: 可复用的表单流程结构定义，不绑定具体表单；包含填报阶段、审批节点、结束流转、可选的主体来源规则及主体的默认字段权限。未配置填报或审批主体时，操作范围默认为当前单租户内所有已认证用户。流程模板不定义具体表单字段。
+    definition: 可复用的表单流程结构定义，不绑定具体表单；包含填报阶段、审批节点、结束流转及权限配置组。填报阶段可有多个组，审批节点对应一个组；组内主体共享默认字段权限，主体来源第一版为用户、部门和角色。未配置填报或审批主体时，由业务调用方按当前单租户内已认证用户的开放范围授权，不展开全量用户。流程模板不定义具体表单字段。
     aliases: [表单流程定义, 表单审批流程模板]
     status: specified
     visibility: internal
@@ -230,7 +230,7 @@ terms:
     visibility: internal
   - id: term.form-process-template-version
     name: 表单流程模板版本
-    definition: 表单流程模板的受控配置版本，保存流程节点、连线、可选的填报或审批主体来源规则及每个主体的默认权限；未发布版本不得作为作业节点绑定目标，发布后版本内容固定。主体未配置时不展开全量用户，按开放操作范围处理。
+    definition: 表单流程模板的受控配置版本，保存流程节点、连线及填报或审批权限配置组；组内多个主体共享组默认权限。未发布版本不得作为按流程填报的绑定目标，发布后版本内容固定。主体未配置时不展开全量用户，由业务调用方按开放操作范围处理。
     aliases: [表单流程版本]
     status: specified
     visibility: internal
@@ -272,7 +272,7 @@ terms:
     visibility: internal
   - id: term.form-process-participant-rule
     name: 表单流程参与者规则
-    definition: 表单流程审批节点解析处理人的规则，支持固定用户、部门负责人、角色或用户组、业务责任人等来源。
+    definition: 表单流程审批节点通过标准主体引用解析处理人的规则；第一版支持用户、部门和角色，部门可限定本级或包含下级。部门负责人、用户组及业务责任人不属于已确认的第一版主体来源；到达节点时解析并冻结候选范围。
     aliases: [审批人规则, 审批参与者规则]
     status: specified
     visibility: internal
@@ -331,9 +331,9 @@ terms:
     status: specified
     visibility: internal
   - id: term.form-process-subject-default-permission
-    name: 主体默认字段权限
+    name: 权限组默认字段权限
     definition: 表单流程权限配置组设置的统一字段权限，第一版只有全部可编辑和全部只读两种选择；填报组内多个主体或审批节点内多个主体共享该默认权限，未配置字段例外时直接作为组内主体的字段权限。
-    aliases: [默认权限, 主体默认权限]
+    aliases: [默认权限, 主体默认权限, 主体默认字段权限]
     status: specified
     visibility: internal
   - id: term.form-process-permission-group
@@ -350,7 +350,7 @@ terms:
     visibility: internal
   - id: term.form-binding-field-permission-exception
     name: 表单绑定字段例外权限
-    definition: 在作业流程表单填写节点绑定具体表单模板版本后，针对该表单真实字段将主体默认权限改为编辑或只读的配置；每个绑定独立保存，未配置例外时继承主体默认权限。
+    definition: 在作业流程表单填写节点绑定具体表单模板版本后，针对该表单真实字段覆盖权限配置组默认权限的编辑或只读配置；例外按权限组和稳定 fieldId 保存，每个绑定独立，未配置例外时继承组默认权限。
     aliases: [字段例外权限, 表单字段权限例外]
     status: specified
     visibility: internal
@@ -362,7 +362,7 @@ terms:
     visibility: internal
   - id: term.form-process-operation-permission-policy
     name: 表单流程操作权限策略
-    definition: 针对表单流程主体授予保存、提交、审批、退回、终止等流程动作的配置策略；它不承载具体字段权限，字段默认权限和例外权限由主体及绑定配置分别决定。
+    definition: 表单流程填报阶段及审批节点的标准操作配置；当前动作包括保存、提交、审批、退回和审批转办，具体可用动作由节点类型、处理权及任务状态决定。它不承载具体字段权限，字段默认权限和例外权限由权限配置组及绑定配置分别决定；不据此开放其他终止动作。
     aliases: [操作权限规则, 表单操作权限]
     status: specified
     visibility: internal
@@ -392,7 +392,7 @@ terms:
     visibility: internal
   - id: term.form-process-builtin-event
     name: 表单流程内置事件
-    definition: 表单流程节点事件可选择的产品内置标准事件；第一版仅支持“填充签名字段”（FILL_SIGN_FIELD），事件声明保存在可复用表单流程版本中，不包含处理标识等技术字段。
+    definition: "表单按钮签署事件可选择的受控内置附加动作。当前可选 FILL_SIGN_FIELD，用于签署成功后填充当前绑定的签名字段；未选择填充时 builtin=NONE，签署本身仍按 BEFORE 事件与认证配置执行。签署事件不等于必须填充字段，认证口径遵循 DEC-0074，不支持自定义 handler。"
     aliases: [内置事件, 填充签名字段事件]
     status: specified
     visibility: internal
@@ -422,13 +422,13 @@ terms:
     visibility: internal
   - id: term.production-batch
     name: 生产批次
-    definition: 工单拆分形成的生产对象在 BATCH 生产形态下的业务称谓；对象保存工单、产品制程版本、对象编号、目标数量、计划起止时间、备注及独立的良品、NG 和报废数量，并规划复用 CREATED、IN_PROGRESS、COMPLETED、EARLY_TERMINATED、CANCELLED 生命周期。完整制程执行快照仍属于后续能力。
-    aliases: [生产对象, 批次, SN, 工单批次]
+    definition: 工单拆分形成的生产对象在 BATCH 生产形态下的业务称谓；对象保存工单、产品制程版本、对象编号、目标数量、计划起止时间、备注及独立的良品、NG 和报废数量，采用 CREATED、IN_PROGRESS、COMPLETED、EARLY_TERMINATED、CANCELLED 生命周期。当前首次合法 START 已生成受限生产执行快照及 DHR 上下文；完整通用规则执行依据仍按后续契约建设。
+    aliases: [批次, 工单批次]
     status: specified
     visibility: internal
   - id: term.execution-snapshot
     name: 执行快照
-    definition: 未来生产对象或作业实例创建时保存的版本化执行依据。制程执行快照冻结产品、产品簇、所选制程版本及其配置；作业执行快照冻结作业模板、已发布作业流程版本、命中的作业适用规则快照和作业流程配置快照，用于保证后续配置变更不改写历史执行语义。
+    definition: 生产执行使用的版本化依据，用于防止后续配置变更改写历史执行语义。当前生产对象首次合法 START 时，ExecutionSnapshotBuilder 将所选制程、路线、工序表单和文档、匹配作业及其已发布流程和命中规则写入 production_execution.snapshot_json；DHR 同事务另存上下文和目录快照。产品簇参与当前匹配，不等于已有独立冻结的产品簇上下文字段；通用事实、规则版本和求值依据的完整冻结仍待后续执行契约落实。
     aliases: [制程执行快照, 批次执行快照, 作业执行快照]
     status: specified
     visibility: internal
@@ -474,27 +474,39 @@ terms:
     aliases: [业务单据引用, 表单填写节点业务单据]
     status: specified
     visibility: internal
+  - id: term.production-work-runtime-field-catalog
+    name: 作业条件字段目录
+    definition: 作业条件配置适配器提供的版本化字段与运算符目录。当前 workConditionAdapter 的 work-runtime-fields-v1 包含 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段；分支保存目录版本及字段显示快照。该目录是配置契约，不是规则引擎，也不等同于某次运行的事实值快照；真实取值与执行依据按对应运行契约分别核对。
+    aliases: [作业运行字段目录]
+    status: implemented
+    visibility: internal
+  - id: term.production-work-flow-edge
+    name: 作业流程连线
+    definition: 保存于作业流程版本图中的连线，使用 source、target 关联具体节点，并以 sourceHandle 对应条件分支或否则出口。当前每个条件出口最多连接一条向后续节点的线；草稿可以尚未连接，发布须通过出口完整性校验。连线与拥有它的流程版本分别建模。
+    aliases: [作业流程边, 作业条件出口连线]
+    status: implemented
+    visibility: internal
   - id: term.production-work-condition-rule
     name: 作业条件规则
-    definition: 条件分支通过公用条件规则构建器配置的结构化条件表达式，使用 all、any、not 分组和 clause 条件节点表达且、或、非及嵌套条件。第一版作业适配器开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 运行上下文字段，目录版本为 work-runtime-fields-v1，支持 equals、not-equals、contains、starts-with、in、is-present、is-null；in 的值为数组。每个条件分支独立保存 conditionRule、字段目录版本和字段显示快照，条件节点另有唯一 conditionDefaultBranch。当前仅有配置层 AST 和分支模型校验证据，运行时真实来源、求值、节点推进和实例快照绑定仍未实现。
+    definition: 条件分支通过公用构建器配置的结构化表达式，使用 all、any、not 组合条件。第一版目录 work-runtime-fields-v1 开放 workType、triggerType、sourceType、sourceNumber、executionStatus 五个 string 字段，支持 equals、not-equals、contains、starts-with、in、is-present、is-null；in 的值为数组。每个分支保存 conditionRule、目录版本和字段显示快照，节点另有唯一默认分支。当前 ProductionExecutionEngine 已有受限取值、求值及推进实现；固定工程值、完整来源和执行审计契约仍按 open-questions 核对，不能等同于通用规则层已验收。
     aliases: [条件规则, 条件规则 AST, 作业条件 AST]
     status: implemented
     visibility: internal
   - id: term.production-work-condition-node
     name: 作业条件节点
-    definition: 作业流程中根据有序条件分支选择后续出口的节点配置；包含一个或多个条件分支以及唯一的否则默认分支。画布配置以纵向主流程展开，条件节点通过统一入口接收入边，分支出口只允许向后续流程节点出边。它描述流程配置语义，不代表运行时求值或节点推进已实现。
+    definition: 作业流程中根据有序条件分支选择后续出口的节点配置；包含一个或多个条件分支以及唯一否则分支。画布以纵向主流程展开，统一入口接收入边，分支出口只向后续节点出边。当前受限 WORK 运行已有按分支求值和推进实现；配置语义与完整运行契约及验收仍分别核对。
     aliases: [条件节点, 条件分支节点]
     status: specified
     visibility: internal
   - id: term.production-work-condition-branch
     name: 作业条件分支
-    definition: 条件节点中按数组顺序排列的单个条件分支；每个分支独立保存结构化条件 AST、字段目录版本和字段显示快照，按纵向主流程展示，并拥有最多一条只能向后续流程节点输出的动态出口。出口支持画布快捷添加后续节点并自动连线；运行时应按顺序命中第一个满足分支，当前求值尚未实现。纵向间距和避免节点覆盖属于配置交互层推断。
+    definition: 条件节点中按数组顺序排列的单个分支；独立保存条件 AST、字段目录版本和字段显示快照，拥有最多一条向后续节点输出的动态出口，支持画布快捷添加并连线。当前受限 WORK 运行已按顺序选择首个满足分支；完整取值政策、结果事件和审计契约仍待核对。纵向间距和避免覆盖属于配置交互层推断。
     aliases: [条件分支]
     status: specified
     visibility: internal
   - id: term.production-work-condition-default-branch
     name: 作业条件默认分支
-    definition: 条件节点唯一的否则分支；它不属于条件规则组、不保存条件 AST，在所有条件分支均未满足时作为后续出口。它与条件分支一样只能向后续流程节点输出，支持画布快捷添加；当前运行时回退和节点推进尚未实现。
+    definition: 条件节点唯一的否则分支；不属于条件规则组、不保存条件 AST，在全部条件分支均未满足时作为后续出口，只向后续节点输出并支持画布快捷添加。当前受限 WORK 运行已有默认出口及推进代码；完整结果和异常审计契约仍待后续功能验证。
     aliases: [否则分支, 默认出口]
     status: specified
     visibility: internal
@@ -506,7 +518,7 @@ terms:
     visibility: internal
   - id: term.production-work-instance
     name: 作业实例
-    definition: 未来生产执行根据生产上下文和作业适用规则自动匹配后创建的运行对象。实例创建时冻结作业模板、已发布作业流程版本、命中的适用规则快照和作业流程配置快照，并基于冻结内容推进；当前尚未实现。
+    definition: 根据生产上下文和作业适用规则匹配后推进的作业运行对象。当前受限生产执行已在 production_execution 的快照及状态中保存匹配作业、已发布流程和命中规则；独立作业实例模型及其完整生命周期仍属后续设计，不能由现有内嵌状态推定全部完成。
     aliases: [生产作业实例, 作业运行实例]
     status: specified
     visibility: internal
@@ -602,7 +614,7 @@ terms:
     visibility: internal
   - id: term.batch
     name: 批次
-    definition: 生产形态为 BATCH 的生产对象；其目标数量为大于零的数量值，可在工单计划数量范围内拆分。
+    definition: 生产形态为 BATCH 的生产对象，可在工单计划数量范围内拆分。当前页面、服务及数据库按目标数量 > 0 校验；这是实现事实，不足以确认 0 < q < 1 的正式业务资格。原结构化规则 >= 1 与正数量表述的差异由 question.production-batch-quantity-lower-bound 待决，不能从本词条选择下限；数量必填、总量边界和已确认的分配及末批余数要求继续适用。
     aliases: [生产批次]
     status: implemented
     visibility: internal
@@ -614,7 +626,7 @@ terms:
     visibility: internal
   - id: term.production-object-execution-detail
     name: 生产对象执行详情
-    definition: 从批次管理进入的生产对象执行上下文入口，用于查看生产执行阶段的工序、事务和执行记录；当前生产执行模块尚未实现，批次页面只能保留明确的待开放入口，不得伪造执行数据。
+    definition: 从批次管理进入的生产对象执行上下文入口，用于查看生产执行阶段的工序、事务和执行记录。生产工作台已有受限执行实现；本词条专指批次管理的执行详情入口，其开放情况须单独核验，不得将占位入口表示为已有完整执行详情或伪造执行数据。
     aliases: [批次执行详情, 执行记录]
     status: planned
     visibility: internal

@@ -70,5 +70,5 @@ decisions:
         visibility: internal
         path: docs/knowledge/rules/transaction-runtime.yaml
         lineHint: 1
-        summary: "provenance: original-evidence；当前 eDHR 尚未实现表单流程实例、按钮动作执行、FILL_SIGN_FIELD 事件触发、签名字段写入或对应运行时审计；本决策仅描述配置和发布校验层。"
+        summary: "provenance: original-evidence；本项保留早期 FILL_SIGN_FIELD 执行和审计未实现的历史边界。当前 ExecutionAccess 与 ProductionExecutionEngine 已有签署验证、签名记录、绑定字段写入和动作阻断，ProductionExecutionService 在原事务保存审计；认证口径遵循 DEC-0074，配置层记录不据此升级为完整运行或发布验收。"
         evidenceIds: [evidence.production-form-process-buttons-events-v2, evidence.ai-transaction-runtime-architecture]

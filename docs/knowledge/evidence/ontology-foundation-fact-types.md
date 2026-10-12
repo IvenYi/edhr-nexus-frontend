@@ -83,15 +83,25 @@
 - `concept.audit-event` 直接对应 `AuditEvent` 的独立事件身份；`relation.audit-event-retains-change-snapshot` 改为从该事件指向快照，动作分类通过独立关系表达。分类只是展示投影，不能成为一次变更快照的所有者。
 - 自定义表单词条按 [DEC-0075-01/-02/-08](../decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml) 同步工序或批次归属、默认完工要求、添加原因、有效模板及明确版本快照。表单模板不要求 `PUBLISHED`，作业流程与表单流程的发布要求独立保留。相关概念和关系补充同一确认来源，知识仍为 `specified/internal`。
 
-## 四、尚未解决的数量阈值差异
+## 四、数量下限的实现证据与待决边界
 
-以下是原基线已有、类型核对时发现的差异；本次保留阈值，不静默改变生产政策：
+2026-10-12 补正：原类型核对已发现下表差异，并将 `0 < q < 1` 的业务资格留待确认。随后固定 `7bf87c00a4a1158d6fbb4085eb9fb632918bcb50` 的全量内审在候选 `0d46558234a933a020430ccf6c6a064ecfa05687` 中，把两条结构化阈值从 `>= 1` 改为 `> 0`，并将其表述为不需要业务决定的推导纠错。该结论的确定程度超过了证据范围，本次明确撤回；以下实现事实和原始来源继续保留。
 
 | 规则 | 知识条件 | 原始实现 | 影响范围 |
 |---|---|---|---|
 | `rule.production.production-batch-input-quantity-required` | `split.targetQuantity >= 1` | `WorkOrderPage.addPendingObject` 与 `ProductionService.split` 要求数量 `> 0`；SN 单独等于 1 | 在其他条件满足时，BATCH 数量 `0 < q < 1` 的代码与知识条件不同。 |
 | `rule.production.mass-batch-quantity-distribution` | `split.quantityPerBatch >= 1` | `WorkOrderPage.addPendingBatch` 按每批数量模式要求输入 `> 0`，允许小数 | 同一区间内，每批数量候选生成的代码与知识条件不同。 |
 
-[DEC-0012](../decisions/DEC-0012-production-work-order-and-production-object.yaml) 确认 SN 等于 1 与总量边界；[DEC-0014](../decisions/DEC-0014-production-batch-staged-bulk-submission.yaml) 确认按批次数／每批数量分配，未明确 BATCH 在 `(0, 1)` 区间的政策。需要产品确认“允许任意正数”还是“至少 1（但可含小数）”后，再同步规则与实现并补边界测试。此缺口不影响确认这两个事实必须支持小数，也不阻断本次结构与类型修复；它仍阻止将这两条规则认定为已经完成语义一致性或发布验证。
+[DEC-0012](../decisions/DEC-0012-production-work-order-and-production-object.yaml) 的 `DEC-0012-03` 确认 SN 等于 1 与总量边界；[DEC-0014](../decisions/DEC-0014-production-batch-staged-bulk-submission.yaml) 的 `DEC-0014-03/-09/-12` 确认数量必填、按批次数／每批数量分配及末批承接余数。这些声明没有明确确认 BATCH 必须 `>= 1`，也没有充分确认 `0 < q < 1` 的业务资格，原声明及验收场景保持不变。
+
+**原始实现证据：**`WorkOrderPage.addPendingObject/addPendingBatch` 的页面校验、`ProductionService.split` 的 `BigDecimal.signum()` 检查，以及 [0062 数据库约束](../../../gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql) 的 `CHECK(target_quantity > 0)` 按正数量处理；存储精度为 `DECIMAL(15,4)`。这些证据支持保留两个事实的 `decimal` 类型、实际来源与现有校验定位；它们不单独授权把该下限写成产品政策。
+
+**保留为推断：**较早词条及规则中文解释中的正数量表述，与上述实现共同支持“旧 `>= 1` 可能混同数量与对象个数”的判断。但这仍不足以作为无需用户确认的规范纠错，也不能反向认定旧 `>= 1` 一定正确。用户此前要求先核对代码，不等于授权代码覆盖业务决定。
+
+**本次已授权的纠正：**用户要求在同一 PR 修复上述过度确认，未选择数量下限。两条组合规则因此改为 `deprecated/internal`；`0d46558` 中的条件与结果原样保留作历史追溯，不构成当前准入依据。现有 schema 没有未决规则状态，且要求保留非空条件与结果，因此不删除条件形成更宽的生效规则，也不发明事实或谓词占位。`deprecated` 在这里撤回的是未经充分确认的组合表达，不取消数量必填和已确认的分配能力；当前代码、SN 数量等于 1、整数批次数、总量和存储边界均未改动。
+
+**仍待业务决定：**[question.production-batch-quantity-lower-bound](../open-questions.yaml) 登记 `> 0` 与 `>= 1` 两种候选政策及其依据。后续在依赖数量下限的开发中澄清，并同时考虑已经确认的末批余数；不能擅自丢弃、补足余数或把阈值待决解释为取消校验。本次恢复待决记录已在授权范围内，不等待用户立即选择下限。未运行 `(0,1)` 的业务集成或数据库边界测试，不宣称该政策已确认、对应代码已修复或发布验收通过。
+
+原审计清单及当时结论保留在固定候选历史中；本次修订记录、逐 ID 处置和实际验证单列于[数量下限补正](../../development/ontology-quantity-boundary-amendment-20261012/README.md)，不得用新代码状态改写原审计摘要或让历史完整性脚本充当未来回归门禁。
 
 其余事实的通用运行读取器、精确源码符号映射与完整发布证据也不由本次修复自动获得。校验通过只能证明本次校验器明确覆盖的结构、引用、类型和投影约束，不能证明所有自然语言规则或生产行为都已一致。

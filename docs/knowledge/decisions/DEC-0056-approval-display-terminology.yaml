@@ -19,7 +19,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0056-04
-        statement: "provenance: evidence-boundary；当前 DHR 审批运行时页面和任务没有实现证据，因此本决策只约束未来客户展示投影，不把 DHR 审批能力标记为已实现。"
+        statement: "provenance: evidence-boundary；本展示术语决策形成时尚无 DHR 审批运行页面和任务的本次实现证据。当前已有 DhrReviewService、DhrReviewPage 及任务调用源码，实际能力与验证范围由对应 DHR 决策和证据说明；本术语决策本身只约束客户展示，不独自证明运行或发布验收。"
         status: specified
         visibility: internal
     supersedes: []

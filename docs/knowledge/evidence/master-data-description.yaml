@@ -38,7 +38,7 @@ evidence:
   - id: evidence.master-data-description-document-controller-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java
-    description: 文档主记录和文档版本控制器聚焦测试入口，用于核对 description/versionDescription 的创建、更新和校验契约。
+    description: 文档控制器测试源码覆盖分类、初始版本创建、重复与生效窗及引用删除等校验，创建用例传入初始版本说明。当前没有 description/versionDescription 更新、清空、回读或审计字段值断言，不能据此宣称完整说明字段契约已验证；本次内审只核对测试源码。
     visibility: internal
   - id: evidence.master-data-workshop-shared-shell-guidelines
     type: document
@@ -53,5 +53,5 @@ evidence:
   - id: evidence.master-data-workshop-shared-shell-verification
     type: test
     path: gmp-platform/frontend/scripts/verify-workshop-management.mjs
-    description: 车间页面聚焦验证脚本，覆盖列表、列调整、统一表单壳及车间字段契约的静态检查入口。
+    description: 车间页面聚焦静态脚本，检查菜单、四字段、引用锁码、权限、审计和 0070 迁移相关标记。脚本不包含 ListTableShell、列调整、统一表单壳或几何断言；这些组件可在页面源码定位，但相应运行和视觉验收仍需独立证据。
     visibility: internal

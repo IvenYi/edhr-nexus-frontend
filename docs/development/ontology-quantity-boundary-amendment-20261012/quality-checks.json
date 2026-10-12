@@ -1,0 +1,540 @@
+{
+  "result": "passed",
+  "reviewedAtUtc": "2026-10-12T11:59:49.341505+00:00",
+  "reviewer": "quantity_amendment_quality; independent read-only quality-verifier",
+  "baseCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "headCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "targetCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "candidate": "HEAD plus the 17 reviewed payload files; this is not a published or merged candidate",
+  "contractBaseline": {
+    "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+    "contractReadCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "uncommittedContractPaths": [
+      "docs/knowledge/README.md"
+    ]
+  },
+  "contractReads": [
+    {
+      "path": "AGENTS.md",
+      "initialSha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "actualSha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "uncommittedOverlay": false
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "initialSha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "actualSha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "uncommittedOverlay": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "initialSha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "actualSha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "uncommittedOverlay": false
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "initialSha256": "aa4b475d180d205b32b9cee753585264abd2029f7a7e255afde0da32f6cd4bfb",
+      "actualSha256": "aa4b475d180d205b32b9cee753585264abd2029f7a7e255afde0da32f6cd4bfb",
+      "uncommittedOverlay": false
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "initialSha256": "fb9b571b3968c4bdc77d769fe1786a732201479a65a5463be6d49dc1eea8bc7d",
+      "actualSha256": "656080652c52dcb65d20405ac79a1fb392fc0a04cc2dd2c32b6980167813533d",
+      "uncommittedOverlay": true
+    }
+  ],
+  "workingTreeState": {
+    "status": "dirty",
+    "includedPaths": [
+      "docs/development/ontology-internal-audit-20261012/README.md",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/amendment-validation.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/amendment.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/historical-verification.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-result.yaml",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/verify_amendment.py",
+      "docs/knowledge/README.md",
+      "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+      "docs/knowledge/glossary.yaml",
+      "docs/knowledge/open-questions.yaml",
+      "docs/knowledge/rules/production.yaml"
+    ],
+    "excludedPaths": [],
+    "untrackedPaths": [
+      "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/amendment-validation.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/amendment.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/historical-verification.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-result.yaml",
+      "docs/development/ontology-quantity-boundary-amendment-20261012/verify_amendment.py",
+      "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml"
+    ]
+  },
+  "ignoredButReviewedAndRequiredForPublication": [
+    "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log"
+  ],
+  "payload": [
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/README.md",
+      "sha256": "4890feed33bc68c774f4d76a9f9921478cebc3f85678cc985e8e0984e3f58188",
+      "bytes": 16385
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "sha256": "1640a03a7911e378e7069b20f722a0557ff2cf3a1cbc4b1b173186f92ce71992",
+      "bytes": 5694
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/amendment-validation.json",
+      "sha256": "c183c868b02d8494fd31548cd365d154339eba83976c0e3b480f17f123705950",
+      "bytes": 787
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/amendment.json",
+      "sha256": "fe31d09cec6d233d441a2750fd24d88035c1189dafcc66ef00a764ff39e5df82",
+      "bytes": 7359
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml",
+      "sha256": "fe8329b097df8a5bf58bc77563faa9c9a0ce806541a3ec318deaded791a41e51",
+      "bytes": 7065
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/historical-verification.json",
+      "sha256": "6d78db8d78214c6bc6896fe68e1e77c22a8a784c7fdc04f4589d42f1919b8e4b",
+      "bytes": 1654
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.json",
+      "sha256": "9609ce8448134415065de485ee7f5c0ebdee3377dca2a496e66587bc294c91e7",
+      "bytes": 766
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log",
+      "sha256": "65084cbe6e207571750c56420b39e62950b08e0adae3b551767fb741305e4c30",
+      "bytes": 2486
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json",
+      "sha256": "46f1e02797eb50c08b2850a2aacc2ab6e21978ab420cd676b78dd378143195dd",
+      "bytes": 1628
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-result.yaml",
+      "sha256": "da076d16ffbea4f11392d9b50b72aa954610d0f89a806c915d9e6ca08e37006f",
+      "bytes": 8991
+    },
+    {
+      "path": "docs/development/ontology-quantity-boundary-amendment-20261012/verify_amendment.py",
+      "sha256": "8f98676587f5ac7cba4918527c92d564008dd6f46483766b85f94698bf3dceb6",
+      "bytes": 7420
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "656080652c52dcb65d20405ac79a1fb392fc0a04cc2dd2c32b6980167813533d",
+      "bytes": 54715
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "sha256": "7a5e93ccfbacbf748819e940b095471ed4d92495379a213e02e9fa3113fe09d8",
+      "bytes": 18913
+    },
+    {
+      "path": "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+      "sha256": "5e9e29928c5716831d09f61db339b1a539af81c07f66b66c9dd3d080bac38ccd",
+      "bytes": 983
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "sha256": "bbb611f564076133d6fd57e2a6a6c581062910a43d419b2d702e35c5d6f2654b",
+      "bytes": 58802
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sha256": "5142a4198bf4893d4038f69573836bc2722d89358e68176b26f07ad701cad657",
+      "bytes": 9485
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "sha256": "e9b2989392b5c78d72f2bf8e599abb83b5010b8d45abdcbc621d4597afe99b38",
+      "bytes": 66005
+    }
+  ],
+  "payloadHashScope": "Exact reviewed changes and deliverable evidence before adding this independent receipt; excludes quality-checks.json and quality-result.yaml to avoid self-hashing.",
+  "independentInventory": {
+    "yamlFiles": 189,
+    "ids": 2315,
+    "modifiedRelativeInitial": [
+      "rule.production.mass-batch-quantity-distribution",
+      "rule.production.production-batch-input-quantity-required",
+      "term.batch"
+    ],
+    "addedRelativeInitial": [
+      "evidence.production-batch-quantity-policy-boundary",
+      "question.production-batch-quantity-lower-bound"
+    ],
+    "removedRelativeInitial": [],
+    "wholePrModified": 201,
+    "wholePrAdded": 23,
+    "correctedBaselineConclusions": {
+      "superseded": 118,
+      "consistent": 1759,
+      "needs-fix": 197,
+      "evidence-gap": 206,
+      "needs-decision": 12
+    }
+  },
+  "projectionEligibility": {
+    "rule.production.mass-batch-quantity-distribution": {
+      "customer": false,
+      "runtime": false
+    },
+    "rule.production.production-batch-input-quantity-required": {
+      "customer": false,
+      "runtime": false
+    }
+  },
+  "historicalAuditFilesPreserved": [
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/audit-inventory-validation.json",
+      "sha256": "987eb18b4cb266a3868d288ceb668e268387bc2845196ce07a5e7f31c5ea07cb"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/baseline.json",
+      "sha256": "2d23adae57a2205ba57dedfaf1464828f1a530b83c0c8e2aac690ab2ef951bc7"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/candidate-changes.json",
+      "sha256": "5c5215d0e6661ff74b02d9c436c1b4c884846d9d4c3ff0c7c3e41b71e668d9d8"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/deferred-questions.json",
+      "sha256": "87195124366554a5df8d11988612c287afbf646a5786ed3a461adce49946c9ec"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/evidence-index.jsonl",
+      "sha256": "16f45db6349b813dbbfb48d42bc52cf02a55a5c21f5adfa64ff181176eae4468"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/files-without-ids.jsonl",
+      "sha256": "6439cb32ed9d837e7dd20319b3252666e9808e18fb62cb4f0239889c0eed3bc1"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/findings.json",
+      "sha256": "b1fdc029c4bf3206607176760b3f1984937a580f28f815e36244a9c27617480d"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/integration-boundary.json",
+      "sha256": "348a7b63e760a152e51a5ff214e2e7075958a285cc6ce594264ffcc1d83bbe9a"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/integration-boundary.md",
+      "sha256": "f4cd7a94aa7c08f1bb1ec209deccc9f6368e54e62c280d232a0a05e58d68df12"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/knowledge-validation.log",
+      "sha256": "e428794549f1e2ef73d1461c791a7923f6146fe979e3bb5426620addacb25a8d"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/ontology-result.yaml",
+      "sha256": "b694ce4e01337b617439b55e1c222cdc684a87d6b968fbce77c146663dfbe42c"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sha256": "d2013461372575c9e311f4438874c72b42a7460932ef450da3ce7b48636e8016"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/production-historical-materials.json",
+      "sha256": "bb148579db823f1cd69e256585f7225c37e6ef0e5fe2f87abd963fda9eabbb21"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/quality-inspection.json",
+      "sha256": "52751c49817060eac89c9beba7a1b0c65e9a9641fd8352dd599d9b56df5cf361"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/quality-integrity-validation.json",
+      "sha256": "987eb18b4cb266a3868d288ceb668e268387bc2845196ce07a5e7f31c5ea07cb"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/quality-result.yaml",
+      "sha256": "0ff798b461ebe38085bc71703601a1c77473d2e16fc29b03d8634068c6af8fac"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/records-forms.jsonl",
+      "sha256": "a13cde8c843dea1c2624d4f8ace4657e08591a43b092fbcb96530e1d62d14723"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/records-foundation.jsonl",
+      "sha256": "ff8c637f3ff65964793e27530c1d7542a7a7867db43860bf725332843491a435"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/records-master.jsonl",
+      "sha256": "fd7bdb35c176436c2fb46504f77ee703971574b0bac8f0312f9a75a805900377"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/records-production.jsonl",
+      "sha256": "a3afa34f73ef60f8d35fffcd062e4ebf190ed72936fd230954728d1f53c9634a"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/remediation.json",
+      "sha256": "ad44e32873c4c26f0aa725ed739ae9f6608a21e1166fb1fe9ddfcc360d518064"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/verification.json",
+      "sha256": "ba8fa9c82b28bd944238ffcf267c5b292fbd2db11f4c5aa055c6cbdca66f5d7a"
+    },
+    {
+      "path": "docs/development/ontology-internal-audit-20261012/verify_audit.py",
+      "sha256": "f983fac33fa13dd1cd0ccc30d8028beb8245fa7589f014545c5778331e1f9d66"
+    }
+  ],
+  "historicalReadme": "One navigation banner only; original heading and body preserved byte-for-byte.",
+  "preservedSourceFiles": [
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "sha256": "6c362f501684572623a5454ee3bc3cf7c9e86dcdc38f1eae6738f8c43fe7bd6a"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "sha256": "fb9c31b7fe521c624a9de32581631e67abb435a8ada2104f4cb9da976892211c"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sha256": "9d81deffe206c1b68c8199d711c776c1496032aa963733f09cbea6e727084a06"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+      "sha256": "3d2603d01402cfbc236f460510c1c419e9eb58bf4ad136adf8f0e3d483a693d4"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+      "sha256": "2550b1ac9b6ecb68b2333b624436f6ca3384003a8a7fbdd6a20284b445ea7fb4"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/ProductionObject.java",
+      "sha256": "5d430e06e3ab665c616c0f4bb41b73607357bfe48583dc594d12a88bae101675"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "sha256": "a713225a7a7dab4c7f519a5ee3de41658b1220c073d5669bd523e9be92bb7355"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java",
+      "sha256": "d19af34317644458e805c443891c96b6bdc4dcdc4b58c611a7f4822461b95dd4"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelValidator.java",
+      "sha256": "f317add62a8e5e98e9c292f0e9a73145b3701251189b0d7b2136e8da5a85eae0"
+    },
+    {
+      "path": "tools/knowledge-model/pom.xml",
+      "sha256": "5a167cb50c29dcc7e6ade7082155c882650c8a8bd16f61d37aa49eee1a201209"
+    }
+  ],
+  "existingOpenImplementationDiscrepanciesRetained": [
+    "discrepancy.dhr-template-explicit-version-list-fallback",
+    "discrepancy.execution-form-plan-count-and-not-applicable-projection",
+    "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass",
+    "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions",
+    "discrepancy.form-reference-personal-entry-context-not-forwarded",
+    "discrepancy.product-family-transfer-unstarted-object-context",
+    "discrepancy.production-object-execution-lifecycle-audit-projection",
+    "discrepancy.production-sn-import-template-extra-remark",
+    "discrepancy.production-work-form-completion-condition-passthrough",
+    "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+    "discrepancy.work-order-close-audit-atomicity",
+    "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot"
+  ],
+  "existingOpenQuestionRecordsUnchanged": [
+    "question.dhr-termination-sop-extra-signature",
+    "question.record-control-managerial-reassignment-signature",
+    "question.record-control-active-form-void-boundary",
+    "question.production-work-condition-runtime-source-snapshot-contract",
+    "question.production-work-condition-runtime-evaluation-contract",
+    "question.production-work-condition-branch-model",
+    "question.multi-tenant-workflow-isolation"
+  ],
+  "deferredTopicCountScope": "8 original audit follow-up topics + restored quantity policy topic = 9; not the full repository question count.",
+  "resolvedNewMarkdownLinks": [
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "decision-package.yaml",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/decision-package.yaml"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "../../knowledge/evidence/ontology-foundation-fact-types.md",
+      "resolvedPath": "docs/knowledge/evidence/ontology-foundation-fact-types.md"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "../ontology-internal-audit-20261012/README.md",
+      "resolvedPath": "docs/development/ontology-internal-audit-20261012/README.md"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "historical-verification.json",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/historical-verification.json"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "amendment.json",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/amendment.json"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "ontology-result.yaml",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-result.yaml"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "ontology-checks.json",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/ontology-checks.json"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "amendment-validation.json",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/amendment-validation.json"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "knowledge-validation.json",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.json"
+    },
+    {
+      "source": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "target": "knowledge-validation.log",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log"
+    },
+    {
+      "source": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "target": "../decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "resolvedPath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+    },
+    {
+      "source": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "target": "../decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "resolvedPath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+    },
+    {
+      "source": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "target": "../../../gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "resolvedPath": "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql"
+    },
+    {
+      "source": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "target": "../open-questions.yaml",
+      "resolvedPath": "docs/knowledge/open-questions.yaml"
+    },
+    {
+      "source": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "target": "../../development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md"
+    },
+    {
+      "source": "docs/development/ontology-internal-audit-20261012/README.md",
+      "target": "../ontology-quantity-boundary-amendment-20261012/README.md",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md"
+    },
+    {
+      "source": "docs/knowledge/README.md",
+      "target": "evidence/ontology-foundation-fact-types.md",
+      "resolvedPath": "docs/knowledge/evidence/ontology-foundation-fact-types.md"
+    },
+    {
+      "source": "docs/knowledge/README.md",
+      "target": "../development/ontology-foundation-repair.md",
+      "resolvedPath": "docs/development/ontology-foundation-repair.md"
+    },
+    {
+      "source": "docs/knowledge/README.md",
+      "target": "../development/ontology-quantity-boundary-amendment-20261012/README.md",
+      "resolvedPath": "docs/development/ontology-quantity-boundary-amendment-20261012/README.md"
+    }
+  ],
+  "handoffReview": "L1 source-qualification correction only. Empty unresolved/questions are delivery blockers; the quantity question remains expressly deferred, not resolved. No new pilot or policy is approved.",
+  "amendmentVerifier": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python docs/development/ontology-quantity-boundary-amendment-20261012/verify_amendment.py",
+    "exitCode": 0,
+    "result": {
+      "outcome": "passed",
+      "initialAuditCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+      "scope": "Fixed amendment identity, withdrawn rule eligibility, preserved sources and audit history; no business runtime validation.",
+      "amendmentCounts": {
+        "modified": 3,
+        "added": 2,
+        "removed": 0
+      },
+      "completePrKnowledgeCounts": {
+        "original": 2292,
+        "candidate": 2315,
+        "modified": 201,
+        "added": 23,
+        "removed": 0
+      },
+      "unchangedHistoricalAuditFiles": 23,
+      "historicalReportBodyPreserved": true,
+      "correctedBaselineConclusions": {
+        "needs-fix": 197,
+        "consistent": 1759,
+        "superseded": 118,
+        "evidence-gap": 206,
+        "needs-decision": 12
+      },
+      "quantityPolicyResolved": false
+    },
+    "review": "Read verifier and its inventory helper; independently checked manifest before/after hashes, locators, exact field deltas and history, not only its passing exit code."
+  },
+  "formalKnowledgeGateEvidenceReview": {
+    "rerunByQuality": false,
+    "reason": "Inspect existing completed clean-test log and actual JUnit report for the frozen knowledge payload; no concrete remaining risk required redundant Maven execution.",
+    "originalCommand": [
+      "/workspace/scratch/f8b75a9f3345/build-tools/apache-maven-3.9.9/bin/mvn",
+      "--offline",
+      "--batch-mode",
+      "--no-transfer-progress",
+      "--file",
+      "tools/knowledge-model/pom.xml",
+      "clean",
+      "test"
+    ],
+    "logPath": "docs/development/ontology-quantity-boundary-amendment-20261012/knowledge-validation.log",
+    "junitReportPath": "tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+    "junitReportSha256": "24d1f36e27a75a2e1015342be7b3df85edf07505062dade3d7e05fae3d6395cf",
+    "javaVersion": "21.0.12.1",
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "testcaseCount": 89,
+    "suiteTimeSeconds": "7.892"
+  },
+  "publicationChecks": {
+    "performedByQuality": false,
+    "requiredNext": "Root must publish the frozen payload using the expected-head lease and inspect fresh CI for the actual base/head/merge candidate. This receipt does not claim remote CI or merge acceptance."
+  },
+  "limitations": [
+    "No business decimal-boundary, browser, database, or full backend tests executed by this review.",
+    "No business threshold selected; current code behavior and normative eligibility remain distinct.",
+    "Existing 12 implementation differences, 8 former deferred themes and other evidence gaps are not fixed or closed by this amendment.",
+    "Deprecated internal records remain readable as historical evidence; future consumers must honor their status."
+  ]
+}

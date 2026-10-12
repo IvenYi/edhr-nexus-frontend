@@ -52,11 +52,25 @@ decisions:
         then: 选择恢复空值；无值时下拉框保持空白且不显示额外占位选项
         evidenceIds: [evidence.production-process-selector-clearable]
     implementationDiscrepancies:
-      - id: discrepancy.work-order-audit-snapshot-missing
-        status: resolved
-        severity: high
-        visibility: internal
-        path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java
-        lineHint: 37
-        summary: 原工单审计快照缺口已由 WorkOrderController 显式构造真实业务字段前后快照修复；AuditAspect 继续仅负责通用元数据审计。
-        evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect]
+    - id: discrepancy.work-order-audit-snapshot-missing
+      status: resolved
+      severity: high
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/audit/AuditAspect.java
+      lineHint: 37
+      summary: 原工单审计快照缺口已由 WorkOrderController 显式构造真实业务字段前后快照修复；AuditAspect 继续仅负责通用元数据审计。
+      evidenceIds:
+      - evidence.work-order-audit-snapshot-controller
+      - evidence.work-order-audit-snapshot-controller-test
+      - evidence.audit-aspect
+    - id: discrepancy.work-order-close-audit-atomicity
+      status: open
+      severity: high
+      visibility: internal
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+      lineHint: 110
+      summary: 'provenance: original-evidence；工单 close 控制器未声明事务，调用事务服务 closeOrder 返回后再发布真实差量审计；服务提交与审计失败可能分离。创建、编辑和取消有控制器事务。须明确关闭动作与审计原子边界，当前仅静态发现，尚未执行故障回滚验证。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      evidenceIds:
+      - evidence.work-order-controller
+      - evidence.work-order-audit-snapshot-controller
+      - evidence.production-service

@@ -23,12 +23,21 @@ rules:
     condition: {fact: attachment.requiredness, operator: explicitly-selected, value: true}
     result:
       type: freeze-execution-snapshot
-      target: currentObject.currentOperation.customForms
+      target: selectedProductionObjectScope
       source: selectedTemplateVersion
       preserveExistingSnapshot: true
       requirednessSource: operatorExplicitSelection
-    explanation: user-confirmed；用户表达从已发布模板选择自定义表单并挂到当前生产对象当前工序，是否必填由用户自己决定。本规则仅确定必填选择、快照追溯和多份规则复用，不定义模板版本准入谓词；已发布一词与现有按有效时间计算的ACTIVE或持久化PUBLISHED标志的映射尚待question.custom-form-version-eligibility确认，不能将任一技术映射视为已确认规则。挂载保留模板版本与必填选择的追溯；必填所有已创建份完成，非必填未完成经告知后保留进行中。具体事务锁、工序可挂载状态以及存储结构属于当前实现策略，不新增权威业务前提。
-    evidenceIds: [evidence.execution-form-selector-user-decision, evidence.execution-form-version-eligibility-source, evidence.production-form-copies-user-decision]
+      scopeValues:
+      - OPERATION
+      - BATCH
+    explanation: user-confirmed；挂载时显式选择完工校验设置并冻结所选模板版本。早期限定当前工序和已发布资格的措辞由 DEC-0075-01/02/08 局部替代：归属可为OPERATION或BATCH，候选仅按有效模板及租户范围校验，不以模板版本PUBLISHED筛选。result.target是所选业务归属，不伪装成具体数据库字段。工序归属只阻断所属工序，批次归属只阻断批次完工；关闭完工校验不免除表单权限、签署、最终审批和资料齐套。多份独立事实继续，显式结束由DEC-0059替代，生产完工后已有未完成自定义份按DEC-0075受控继续填报。本次未修改运行行为或执行场景测试。
+    evidenceIds:
+    - evidence.execution-form-selector-user-decision
+    - evidence.execution-form-version-eligibility-source
+    - evidence.production-form-copies-user-decision
+    - evidence.custom-form-scope-confirmed
+    - evidence.custom-form-template-selection-boundary
+    - evidence.production-form-auto-finish-confirmed
   - id: rule.execution-active-editor-count
     name: 同一表单正在填写人员去重
     status: specified

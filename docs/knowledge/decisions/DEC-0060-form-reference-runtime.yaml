@@ -41,4 +41,17 @@ decisions:
         then: 按当前授权和引用有效性契约拒绝操作，失败不留下部分业务状态或审计变更
         evidenceIds: [evidence.form-reference-user-confirmed, evidence.form-reference-runtime-design]
         evidenceRequirements: [权限接口测试, 无效引用与事务回滚测试]
-    implementationDiscrepancies: []
+    implementationDiscrepancies:
+    - id: discrepancy.form-reference-personal-entry-context-not-forwarded
+      status: open
+      severity: high
+      visibility: internal
+      path: gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
+      lineHint: 260
+      summary: 'provenance: original-evidence；DEC-0060-01 与 scenario.form-reference-query-context 要求正式填报按主表及当前子表行依赖查询。 FormRuntimeField.RuntimeReference 已调用 references(fieldId, keyword, dependencies)，ProductionExecutionPage 也正确透传第三参； 但 FormFillingPage:260-262 和 FormReviewPage:154-156 的回调仅接收并转发前两参， getExecutionReferences 的 values 因而使用默认空对象。FormReferenceLookup.query 对必需条件依赖缺失追加 AND 1=0， 所以这两个个人入口的条件引用查询会丢失上下文并出现空候选。无条件引用、正确透传的生产执行入口与后端正式保存约束须分别评价。 保留已确认引用行为，登记当前两个页面接线缺口；共享组件和纯函数测试不能证明这两个页面已经贯通。 本次未运行浏览器或服务端测试，尚未修复入口。'
+      evidenceIds:
+      - evidence.form-reference-user-confirmed
+      - evidence.form-reference-runtime-control
+      - evidence.form-reference-lookup-implementation
+      - evidence.form-reference-personal-filling-context
+      - evidence.form-reference-personal-review-context
