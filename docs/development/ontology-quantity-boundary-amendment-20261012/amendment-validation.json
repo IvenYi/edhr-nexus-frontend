@@ -1,0 +1,28 @@
+{
+  "outcome": "passed",
+  "initialAuditCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "scope": "Fixed amendment identity, withdrawn rule eligibility, preserved sources and audit history; no business runtime validation.",
+  "amendmentCounts": {
+    "modified": 3,
+    "added": 2,
+    "removed": 0
+  },
+  "completePrKnowledgeCounts": {
+    "original": 2292,
+    "candidate": 2315,
+    "modified": 201,
+    "added": 23,
+    "removed": 0
+  },
+  "unchangedHistoricalAuditFiles": 23,
+  "historicalReportBodyPreserved": true,
+  "correctedBaselineConclusions": {
+    "needs-fix": 197,
+    "consistent": 1759,
+    "superseded": 118,
+    "evidence-gap": 206,
+    "needs-decision": 12
+  },
+  "quantityPolicyResolved": false
+}

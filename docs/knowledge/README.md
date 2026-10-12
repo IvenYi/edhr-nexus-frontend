@@ -4,7 +4,9 @@
 
 ## 本次基线与读取方式
 
-`0.3.25` 修复事实类型及比较操作数校验、审计事件与变更快照关系、自定义表单词条与 `DEC-0075` 的不同步，并提供独立 Maven 知识校验入口。历史类型校准、原始来源及本次已查明的正数量纠正见 [类型复核说明](evidence/ontology-foundation-fact-types.md)；协作者同步和投影分支集成说明见 [本体修复与分支集成](../development/ontology-foundation-repair.md)。本次版本升级不提高既有业务规则的成熟度，也不代表通用运行规则引擎或整个 P0 已验收。
+`0.3.25` 修复事实类型及比较操作数校验、审计事件与变更快照关系、自定义表单词条与 `DEC-0075` 的不同步，并提供独立 Maven 知识校验入口。历史类型校准、原始来源，以及 BATCH 数量下限的实现证据与待决边界见 [类型复核说明](evidence/ontology-foundation-fact-types.md)；协作者同步和投影分支集成说明见 [本体修复与分支集成](../development/ontology-foundation-repair.md)。本次版本升级不提高既有业务规则的成熟度，也不代表通用运行规则引擎或整个 P0 已验收。
+
+2026-10-12 数量下限补正撤回原审计候选中“把两条 `>= 1` 改为 `> 0` 已构成确定纠错”的判断。`rule.production.production-batch-input-quantity-required` 与 `rule.production.mass-batch-quantity-distribution` 现为 `deprecated/internal` 历史表达，保留原条件和结果，不再作为当前准入依据；正式下限由 `question.production-batch-quantity-lower-bound` 待决。数量必填、按 Q 分配及末批余数、SN=1、整数批次数和总量约束继续保留，实际代码与 decimal 类型事实未改动。原审计的逐项清单和统计属于固定历史结果，本次纠正与新验证见[数量下限补正](../development/ontology-quantity-boundary-amendment-20261012/README.md)。知识版本仍为 `0.3.25 / schema 1.2.0`；来源及实际契约读取提交为 `0d46558234a933a020430ccf6c6a064ecfa05687`，目标为 `edhr-dev@7bf87c00a4a1158d6fbb4085eb9fb632918bcb50`，具体 `contractBaseline` 随该补正交接记录保存。
 
 当前含义由受影响的现行词条、概念、关系、规则及其已确认决策共同维护。局部替代必须说明声明 ID 和适用范围；Git 时间较新、文件排序靠后、已有实现与原规则不同，都不能单独作为覆盖业务决策的依据。若实现尚未达到当前设计，保留差异与证据，不能让读取者自行从多个版本猜测业务含义。
 

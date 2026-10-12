@@ -1,0 +1,111 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261012-QUANTITY-BOUNDARY-AMENDMENT
+  scope: PR 4 的知识来源资格补正；撤回两个未经充分确认的 BATCH 数量下限组合规则的当前规范资格，登记待决范围。此次不选择数量下限，也不交付对应业务代码修复。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+    targetBranch: edhr-dev
+    targetCommit: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
+    contractReadCommit: 0d46558234a933a020430ccf6c6a064ecfa05687
+    uncommittedContractPaths:
+    - docs/knowledge/README.md
+  summary: 用户于 2026-10-12 明确要求在当前 PR 修复已指出的过度确认问题；授权范围为恢复待决边界，未确认 >0 或 >=1。保留现行实现事实，按现有 schema 将两个争议组合规则撤为 deprecated/internal 历史记录；原 condition/result 保留用于追溯，不构成当前准入规则。已确认必填、分配及余数、SN=1、批次数整数和总量要求保留。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+  - id: inference.batch-quantity-threshold-normalization
+    statement: 旧 >=1 可能是数量与对象个数混同；原词表、规则自然语言和当前实现支持 >0，但未充分证明 BATCH 在 0<q<1 的正式业务资格。
+    rationale: 原 DEC-0012/0014 未明确该下限，较早类型复核已将此区间列为待确认。此次只纠正来源资格，不将推断写入现行规则。
+    relatedIds:
+    - rule.production.production-batch-input-quantity-required
+    - rule.production.mass-batch-quantity-distribution
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L1
+    directImpacts:
+    - area: quantity-policy-knowledge
+      change: 精确撤回两个争议组合规则的规范资格，保留历史 AST，增加一个数量下限开放问题，并同步当前词表及证据入口。
+      evidenceReferences:
+      - docs/knowledge/rules/production.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/open-questions.yaml
+      - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    transitiveImpacts: []
+    potentialImpacts:
+    - area: future-quantity-repair
+      concern: 后续决定或改动 BATCH 在 0<q<1 的准入时，需先确认下限，再检查手动添加、批量生成、导入、服务和存储边界。此业务决定不属于本次恢复待决的交付范围。
+      evidenceReferences:
+      - docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml
+      - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+    unaffectedAreas:
+    - area: production-runtime
+      reason: 不修改生产代码、测试、接口、迁移、实际配置或运行快照，不改变现有数量校验。
+    - area: other-audit-findings
+      reason: 12 个已登记实现差异及其他既有待决主题继续保持各自状态，本补正不把它们标为已修复。
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+    - scope: knowledge-and-amendment-integrity
+      scenarios: [现有正式知识测试, 两规则退出当前规范资格, 开放问题及引用可解析, 确认约束与实现事实保留, 历史审计数据保持原样, 修订增量和独立验收可定位]
+      evidenceReferences:
+      - tools/knowledge-model/pom.xml
+      - docs/development/ontology-internal-audit-20261012/verify_audit.py
+    evidenceGaps:
+    - BATCH 最小数量正式政策及 0<q<1 的业务边界测试仍待后续确认和验证；本次只交付该缺口的准确建模，不把它算成已决。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有知识与投影状态机制中纠正来源资格，不新增 schema、谓词、运行引擎、单位配置或审批流程。
+    ownershipBoundaries:
+    - owner: business-knowledge-modeler
+      responsibility: 更新受影响的 docs/knowledge 资产并返回本体结果。
+    - owner: main-agent
+      responsibility: 追加审计补正说明、验证实际增量并更新同一 PR。
+    - owner: quality-verifier
+      responsibility: 独立核对知识资格、保留范围及验证证据，不参与修复。
+  affectedFiles:
+  - path: docs/knowledge/rules/production.yaml
+    changeType: update
+    reason: 两个组合规则转为历史记录，保留原始 AST 与结果。
+  - path: docs/knowledge/glossary.yaml
+    changeType: update
+    reason: 区分 term.batch 的当前实现描述与未确认的下限政策。
+  - path: docs/knowledge/open-questions.yaml
+    changeType: update
+    reason: 登记 BATCH 数量下限及触发边界。
+  - path: docs/knowledge/evidence/ontology-foundation-fact-types.md
+    changeType: update
+    reason: 更正过强来源判断，保留原始依据与纠错历史。
+  - path: docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml
+    changeType: create
+    reason: 为待决问题和历史组合规则建立可解析的补正证据索引。
+  - path: docs/knowledge/README.md
+    changeType: update
+    reason: 当前入口不再把数量下限称为已确定纠错。
+  - path: docs/development/ontology-internal-audit-20261012/README.md
+    changeType: update
+    reason: 增加补正导航，正文统计与历史审计账本仍按原提交理解。
+  - path: docs/development/ontology-quantity-boundary-amendment-20261012
+    changeType: create
+    reason: 保存本次修订依据、逐 ID 处置和新的验证结果。
+  acceptanceScenarios:
+  - id: scenario.quantity-amendment-withdraws-unconfirmed-eligibility
+    given: 0d46558 的两个 implemented 组合规则把 >0 写成当前规范，而下限证据不足
+    when: 读取本次补正后的规则、词表和开放问题
+    then: 两规则为 deprecated/internal，历史 AST 与结果保持原样且不能作为当前准入依据；数量下限明确待决，没有另建生效的 >=1 或 >0 替代规则。
+    evidenceRequirements: [结构差异核对, 状态投影检查, 独立语义复核]
+  - id: scenario.quantity-amendment-retains-confirmed-boundaries
+    given: DEC-0012/0014 及现行实现分别提供已确认业务范围和实际校验行为
+    when: 完成知识资格补正
+    then: 原已确认声明与相关服务、页面、SQL、数量事实条目不变；必填、余数分配、SN=1、整数批次数及总量约束继续保留。
+    evidenceRequirements: [精确文件及 ID 差异, 原始决策和源码定位]
+  - id: scenario.quantity-amendment-preserves-audit-history
+    given: 初次审计在 0d46558 留存 2292 个原始 ID 及当次候选结论
+    when: 在同一 PR 增加此次补正
+    then: 原账本、内容摘要和质量回执保留；数量结论的纠正用独立修订记录与当前入口明确说明，旧脚本只验证其历史候选。
+    evidenceRequirements: [固定历史快照验证, 当前增量验证, 新独立质量结果]

@@ -428,8 +428,8 @@ rules:
     explanation: 批次导入模板 canonical 字段为批次号和数量（必填）、计划开始时间、计划结束时间和备注（可选）；支持 CSV、XLS、XLSX，上传后校验字段、时间顺序及总量边界并进入待提交清单。
     evidenceIds: [evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-page-pending-list, evidence.work-orders-api]
   - id: rule.production.production-batch-input-quantity-required
-    name: 生产批次数量输入必填
-    status: implemented
+    name: 历史表达：生产批次数量输入与未确认下限
+    status: deprecated
     visibility: internal
     trigger: production-object.prepare
     scope: production-batch
@@ -445,8 +445,8 @@ rules:
       type: persist-version-references
       requiredFields: [quantity]
       target: production-object-pending-list
-    explanation: 手动添加和批量添加中的 BATCH 数量必填；只有数量为正、满足存储精度且未超过剩余计划数量时，候选批次才可加入待提交清单。2026-10-12 内审按既有页面、ProductionService.split 及数据库 target_quantity > 0 约束，将误写的 >= 1 校准为 > 0；这是数量与个数混同的结构化推导纠错，不是新增业务政策。SN 数量等于 1 与批次数为正整数的独立约束保留；本轮未运行小数边界集成测试。
-    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-service]
+    explanation: 本记录仅保留 0d46558234a933a020430ccf6c6a064ecfa05687 中 condition/result 的历史表达。该次内审将旧 >= 1 改为 > 0 并认定无需业务确认，证据不足；2026-10-12 补正撤回这一组合规则的当前规范资格，具体下限由 question.production-batch-quantity-lower-bound 待决。代码实际校验 > 0 不等于已经确认 0 < q < 1 的业务资格，也不能把旧 >= 1 自动恢复为现行要求。deprecated 只撤回未充分确认的组合表达，不取消 DEC-0014-03/-09 的数量必填、不放宽既有校验、不取消 DEC-0012-03 的 SN=1 与总量约束；整数批次数及存储边界继续分别适用。本次未运行小数边界业务测试。
+    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-service, evidence.production-batch-quantity-policy-boundary]
   - id: rule.production.production-object-pending-before-submit
     name: 生产对象先进入待提交清单
     status: implemented
@@ -521,8 +521,8 @@ rules:
     explanation: 量产且 BATCH 形态的批量添加“按批次数”模式中，用户输入的拆分数量表示批次数；当前可分配数量除以批次数得到前 N-1 批数量，最后一批承接余数。
     evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
   - id: rule.production.mass-batch-quantity-distribution
-    name: 量产批次按每批数量生成
-    status: implemented
+    name: 历史表达：量产批次按每批数量生成与未确认下限
+    status: deprecated
     visibility: internal
     trigger: production-object.prepare
     scope: production-batch
@@ -545,8 +545,8 @@ rules:
       target: production-object-pending-list
       distribution: fixed-quantity-with-final-remainder
       generatedCount: ceil(availableRemaining / quantityPerBatch)
-    explanation: 量产且 BATCH 形态的批量添加“按每批数量”模式中，每批目标数量按现有实现接受正小数；系统据此生成批次，最后一个批次承接余数，不超出可分配数量。2026-10-12 内审将旧 >= 1 推导校准为页面与后端既有的 > 0；此数量不同于正整数批次数，仍受数据库 DECIMAL(15,4) 及总量约束，本轮未运行小数边界集成测试。
-    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
+    explanation: 本记录仅保留 0d46558234a933a020430ccf6c6a064ecfa05687 中 condition/result 的历史表达。该次内审依据当前实现把每批数量下限从 >= 1 改为 > 0，尚无充分来源确认 0 < q < 1 的业务资格；2026-10-12 补正将这一组合规则撤为 deprecated/internal，下限由 question.production-batch-quantity-lower-bound 待决。DEC-0014-12 及 scenario.production-batch-fixed-quantity-distribution 中按 Q 生成、末批承接余数和总量边界继续有效；撤回本表达不取消该功能，也不授权放宽现有代码。若后续选择至少为 1，须同时明确不足 1 的末批余数边界，不得擅自丢弃或补足余数。实际 decimal 类型、DECIMAL(15,4) 存储和 > 0 校验作为实现证据保留，本次未运行小数边界业务测试。
+    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service, evidence.production-batch-quantity-policy-boundary]
   - id: rule.production.sn-bulk-count-creates-unit-objects
     name: SN 批量添加按拆分数量生成单件对象
     status: implemented

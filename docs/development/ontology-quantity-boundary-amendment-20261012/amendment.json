@@ -1,0 +1,160 @@
+{
+  "initialAuditCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "auditedCommit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+  "scope": "同一 PR 的来源资格补正；不作最终数量下限决定，不改变生产实现。初始审计账本及哈希保留，以本文件提供后续纠正视图。",
+  "authorization": {
+    "source": "2026-10-12 用户本轮指令",
+    "instruction": "好的，那么在此pr中修复吧，然后后续我还是要和codex配合完成整体的本体知识+代码的修复的对吧？",
+    "interpretation": "确认在 PR 4 修复已说明的过度确认，未选择 >0 或 >=1 数量政策。"
+  },
+  "baselineConclusionCorrections": [
+    {
+      "id": "rule.production.production-batch-input-quantity-required",
+      "sourceFindingIds": [
+        "PROD-012",
+        "ROOT-006"
+      ],
+      "previousConclusion": "needs-fix",
+      "correctedConclusion": "needs-decision",
+      "scope": "仅数量下限规范资格；代码 >0 及 decimal 来源事实已查明，但 (0,1) 资格仍缺明确确认。原 baseline-error-confirmed／无需产品确认处置不再有效。",
+      "currentDisposition": "历史组合规则 deprecated/internal，condition/result 保留；不建立生效替代阈值。",
+      "sourceReferences": [
+        "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+        "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+        "docs/knowledge/evidence/ontology-foundation-fact-types.md"
+      ]
+    },
+    {
+      "id": "rule.production.mass-batch-quantity-distribution",
+      "sourceFindingIds": [
+        "PROD-012",
+        "ROOT-006"
+      ],
+      "previousConclusion": "needs-fix",
+      "correctedConclusion": "needs-decision",
+      "scope": "仅数量下限规范资格；代码 >0 及 decimal 来源事实已查明，但 (0,1) 资格仍缺明确确认。原 baseline-error-confirmed／无需产品确认处置不再有效。",
+      "currentDisposition": "历史组合规则 deprecated/internal，condition/result 保留；不建立生效替代阈值。",
+      "sourceReferences": [
+        "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+        "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+        "docs/knowledge/evidence/ontology-foundation-fact-types.md"
+      ]
+    }
+  ],
+  "correctedBaselineConclusions": {
+    "needs-fix": 197,
+    "consistent": 1759,
+    "superseded": 118,
+    "evidence-gap": 206,
+    "needs-decision": 12
+  },
+  "countingBoundary": "对原 2292 个 ID 的后续纠正视图，只调整两个组合规则的下限结论；term.batch 增加边界说明，其批次身份与正数量必要条件不因本修订判为错误。新增问题和证据不计入原始覆盖分母。",
+  "currentUnresolvedScope": {
+    "questionId": "question.production-batch-quantity-lower-bound",
+    "policyResolved": false,
+    "confirmationTrigger": "后续需要确定或改变 BATCH 的数量下限或相关入口校验时",
+    "retainedExistingAuditTopics": 8,
+    "followUpTopicsIncludingRestoredQuantityBoundary": 9,
+    "countsDoNotDescribeAllRepositoryOpenQuestions": true
+  },
+  "preservedScopes": [
+    "原 quantity decimal 事实、真实源码与SQL定位",
+    "DEC-0012/0014 的全部已确认声明及验收",
+    "数量必填、SN=1、正整数批次数、总量与末批余数",
+    "全部生产代码、接口、数据库迁移、业务测试、schema 和知识版本",
+    "12 个既有 open 实现差异及原 8 个待决主题",
+    "初始审计全部账本、统计、证据索引和质量回执；原报告只增补当前修订导航"
+  ],
+  "recordDelta": {
+    "modified": [
+      {
+        "id": "rule.production.mass-batch-quantity-distribution",
+        "recordType": "rule",
+        "sourcePath": "docs/knowledge/rules/production.yaml",
+        "sourceLocator": "/rules/27",
+        "beforeSha256": "4f968fcfb9ab14d445e65346e8da586564c45794441ee7d97ae88c6b61287fbf",
+        "afterSha256": "0f4ea7c3cb1a7f8208b3e7b5c8cfb6d761fecfebc18c7e8a49e37491d5e36cea",
+        "changedFields": [
+          "evidenceIds",
+          "explanation",
+          "name",
+          "status"
+        ]
+      },
+      {
+        "id": "rule.production.production-batch-input-quantity-required",
+        "recordType": "rule",
+        "sourcePath": "docs/knowledge/rules/production.yaml",
+        "sourceLocator": "/rules/22",
+        "beforeSha256": "a68af882bdfda2fe845af981c0993e4179a3d1bec79b59e7237bce226e4aacf6",
+        "afterSha256": "2a8240f99af13621ba9afa2a7eba632b3d80109537099d4975c889aa7c875b02",
+        "changedFields": [
+          "evidenceIds",
+          "explanation",
+          "name",
+          "status"
+        ]
+      },
+      {
+        "id": "term.batch",
+        "recordType": "term",
+        "sourcePath": "docs/knowledge/glossary.yaml",
+        "sourceLocator": "/terms/102",
+        "beforeSha256": "a0b4f7ecd4511eabc93da0be0af220e1c96c0d262de418fc07d2c3b1c734e3b2",
+        "afterSha256": "0baf877d1daadc73a889b1851134fa3bd7f0ca6249fc88f6612bfc2cd81a9e3c",
+        "changedFields": [
+          "definition"
+        ]
+      }
+    ],
+    "added": [
+      {
+        "id": "evidence.production-batch-quantity-policy-boundary",
+        "recordType": "evidence",
+        "sourcePath": "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+        "sourceLocator": "/evidence/0",
+        "afterSha256": "06dfb1c53d36e5c1222b7cc196222737f843c90ec7f1c25187c2f3b12380121f"
+      },
+      {
+        "id": "question.production-batch-quantity-lower-bound",
+        "recordType": "openQuestion",
+        "sourcePath": "docs/knowledge/open-questions.yaml",
+        "sourceLocator": "/questions/0",
+        "afterSha256": "b15fd85092695f91dedcb3c34feeb5a82710b7077eea1e864482646a6d467e14"
+      }
+    ],
+    "removed": []
+  },
+  "knowledgeFileDelta": [
+    {
+      "path": "docs/knowledge/README.md",
+      "beforeSha256": "fb9b571b3968c4bdc77d769fe1786a732201479a65a5463be6d49dc1eea8bc7d",
+      "sha256": "656080652c52dcb65d20405ac79a1fb392fc0a04cc2dd2c32b6980167813533d"
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "beforeSha256": "fbca5e7a95d46ccd66f17dacf27e84109ec294852be0d53d618f4364367592a9",
+      "sha256": "7a5e93ccfbacbf748819e940b095471ed4d92495379a213e02e9fa3113fe09d8"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+      "beforeSha256": null,
+      "sha256": "5e9e29928c5716831d09f61db339b1a539af81c07f66b66c9dd3d080bac38ccd"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "beforeSha256": "f4cd43945cfb075b798dd6e8f14dc23222ba1053d3fb0937cffc895f850e975a",
+      "sha256": "bbb611f564076133d6fd57e2a6a6c581062910a43d419b2d702e35c5d6f2654b"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "beforeSha256": "19dd7be8c7bb4d44b8d115457627671aa6002557d4f5adddbd6b14225e694a27",
+      "sha256": "5142a4198bf4893d4038f69573836bc2722d89358e68176b26f07ad701cad657"
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "beforeSha256": "dc1b84e3c66ff11cb7e1343837190aae5cc119f37a1d07b75f53c416b33475e4",
+      "sha256": "e9b2989392b5c78d72f2bf8e599abb83b5010b8d45abdcbc621d4597afe99b38"
+    }
+  ]
+}

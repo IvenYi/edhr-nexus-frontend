@@ -614,7 +614,7 @@ terms:
     visibility: internal
   - id: term.batch
     name: 批次
-    definition: 生产形态为 BATCH 的生产对象；其目标数量为大于零的数量值，可在工单计划数量范围内拆分。
+    definition: 生产形态为 BATCH 的生产对象，可在工单计划数量范围内拆分。当前页面、服务及数据库按目标数量 > 0 校验；这是实现事实，不足以确认 0 < q < 1 的正式业务资格。原结构化规则 >= 1 与正数量表述的差异由 question.production-batch-quantity-lower-bound 待决，不能从本词条选择下限；数量必填、总量边界和已确认的分配及末批余数要求继续适用。
     aliases: [生产批次]
     status: implemented
     visibility: internal
