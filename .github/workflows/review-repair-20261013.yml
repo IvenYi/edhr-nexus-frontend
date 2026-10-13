@@ -1,0 +1,40 @@
+name: Isolated review repair 20261013
+on:
+  push:
+    branches: [fix/review-batch-01-20261013]
+permissions:
+  contents: read
+jobs:
+  source-and-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Export tracked source for review
+        run: |
+          git archive --format=tar.gz --output=review-source.tar.gz HEAD gmp-platform/frontend docs/knowledge docs/development docs/agents docs/architecture/business-knowledge-model.md AGENTS.md codeplzreadme.md
+          git ls-files '*AGENTS.md' '*codeplzreadme.md' > review-instructions.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: review-source
+          path: |
+            review-source.tar.gz
+            review-instructions.txt
+          retention-days: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: gmp-platform/frontend/package-lock.json
+      - name: Install locked frontend dependencies
+        working-directory: gmp-platform/frontend
+        run: npm ci --no-audit --no-fund
+      - name: Export dependency environment
+        run: tar -czf review-dependencies.tar.gz -C gmp-platform/frontend node_modules
+      - uses: actions/upload-artifact@v4
+        with:
+          name: review-dependencies
+          path: review-dependencies.tar.gz
+          retention-days: 2
