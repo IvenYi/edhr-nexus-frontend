@@ -2,6 +2,7 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
+  # 2026-10-14 report-query-ui 为同切片L1：严格复用表单列表查询和作业模板页签规范；反向预置项按既有builtin标记驱动，自定义项通过添加查询条件。仅前端展示与条件组织，不改变后端/API/匹配/权限/快照/迁移；整体impactAnalysis保留既有L2历史范围。
   # 当前directional-trace-runtime-20261013沿DEC-0075-39原位修正并实施，L2。固定业务条件、两向含义、DHR跨表单组合及完整DHR命中表单/字段定位已明确；具体字段/页签/去重计数仍inferred。陈旧错误现行知识直接改写，不新增DEC40，不把我方范围冒充竞品GET范围。沿P0维护、不新运行fact/schema，不复用前次调研或实现门禁。
   # 当前增量report-pages-source-20261013为L2：四独立菜单页面与原表单详情已确认；逐笔列表、撤下二级合计入口及stable rowKey定位为工程inferred。沿同包维护影响与验收，不复用此前切片QA。
   # 2026-10-13手填人时与字段链、三类专用逐笔报表已实现，基础测试和真实API证据见报表复核第8节，该切片独立QA已通过；来源展示与签名报工人修正的全新独立复验见第9节。局部implemented/internal，不标整体verified。可选性、单人来源与严格日期类型仍是inferred工程选择。
@@ -61,6 +62,10 @@ decisionPackage:
           unsavedInputsQueryable: false
           reverseBasis: explicitly-bound-saved-field-values
           dynamicCustomReverseItems: true
+          reverseDefaultItemsSource: existing-catalog-builtin-flag
+          reverseCustomItemsEntry: add-query-condition
+          queryLayoutReference: existing-form-instance-list
+          directionTabsStyleReference: existing-work-template-list
           addDhrTraceReportWithSameDirections: true
           formConditionScope: same-form-and-actual-subtable-row
           dhrConditionScope: same-actual-dhr
@@ -70,7 +75,7 @@ decisionPackage:
           locateActualSubtableRow: true
           contentHitCreatesOwnership: false
           savedProgressAndFrozenEvidenceBoundaryChanged: false
-        sourceReferences: [user-confirmed-20261013-form-dhr-directions, user-confirmed-20261013-dhr-cross-form-condition-reply, user-confirmed-20261013-dhr-detail-fields-and-in-place-correction, DEC-0075-29, DEC-0075-33, DEC-0075-39]
+        sourceReferences: [user-confirmed-20261013-form-dhr-directions, user-confirmed-20261013-dhr-cross-form-condition-reply, user-confirmed-20261013-dhr-detail-fields-and-in-place-correction, user-confirmed-20261014-report-query-layout, DEC-0075-29, DEC-0075-33, DEC-0075-39]
       - id: design-rule.form-projection.independent-report-pages-direct-source
         name: 独立记录页面直接查看来源原表单
         status: specified
@@ -648,8 +653,8 @@ decisionPackage:
     executionContracts: []
   inferred:
     - id: inference.form-projection.form-dhr-query-presentation-20261013
-      statement: 工程选择业务常用条件固定外显、已有低频条件进入固定更多筛选，不要求选字段；表单/DHR使用两个页签并默认正向，反向增加命中摘要。DHR每实例去重一行并显示命中表单数，复用同一客户追溯目录及实际支持的值控件。完整DHR命中表单及对应字段/实际行定位已是用户需求，查询、数量、标记与详情须同一授权来源；正向无内容条件不伪造字段高亮，当前与冻结版本不混用。
-      rationale: 固定条件、两向、动态自定义项、组合范围和完整DHR命中定位已明确；具体条件、控件、默认方向及去重/计数是主智能体工程选择。冠骋固定数组及目录/实例标记仅支持参考，GET核心及精确字段路径缺失；历史版本反向和A12另定，运行实现须独立验证。
+      statement: 工程选择业务常用固定条件外显、已有低频固定属性进入展开区域，不要求选字段；反向真实归属属性也放展开区域，保留属性筛选与内容匹配两种依据；表单/DHR默认正向，反向增加命中摘要。预置反向条件按现有builtin标记外显、其余自定义项通过添加查询条件及复用既有查询/页签样式已是2026-10-14用户要求。DHR每实例去重一行并显示命中表单数，复用同一客户追溯目录及实际支持的值控件。完整DHR命中表单及对应字段/实际行定位已是用户需求，查询、数量、标记与详情须同一授权来源；正向无内容条件不伪造字段高亮，当前与冻结版本不混用。
+      rationale: 固定条件、两向、动态自定义项、组合范围和完整DHR命中定位已明确；正向及业务具体条件、值控件、默认方向、归属属性折叠及去重/计数是主智能体工程选择，不将其列为本次新增业务规则。冠骋固定数组及目录/实例标记仅支持参考，GET核心及精确字段路径缺失；历史版本反向和A12另定，运行实现须独立验证。
       relatedIds: [DEC-0075-39, evidence.form-and-dhr-trace-query-20261013, docs/development/form-and-dhr-trace-query-review-2026-10-13.md]
     - id: inference.form-projection.record-pages-and-stable-source-highlight-20261013
       statement: 本轮三业务记录页按每个独立fact逐笔展示，不合并多次登记；撤下业务记录/合计二级页签，保留已有合计API、键和计算而不新增汇总入口。详情直接用只读来源预览；主表按命中fieldId，子表按稳定rowKey在当前显示的来源快照中解析实际行并高亮，不按同值或陈旧rowIndex猜测，身份不存在或重复时不高亮。旧菜单归一化为四独立路径，旧URL重定向，保持原权限且不迁移业务数据。
@@ -732,6 +737,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: report-query-ui-20261014
+        change: 本轮L1严格复用表单列表查询与作业模板页签样式；表单/DHR反向按现有目录builtin标记展示预置条件，自定义项通过添加查询条件，业务报表保持固定条件。不改变后端/API/匹配/权限/快照/目录标记或迁移，主开发仅修改共享查询面板和业务报表前端。
+        evidenceReferences: [gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx, gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx, gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx, gmp-platform/frontend/src/api/formLookupCatalog.ts, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - area: directional-trace-runtime-20261013
         change: 实施产品固定业务筛选、表单正反向及DHR两向查询；正向覆盖支持来源内有权且满足条件的已保存实际实例，无追溯绑定不排除。DHR条件可由不同真实关联表单贡献，表单仍同实例/实际行；完整DHR详情标记命中表单及对应字段/实际行。当前错误知识原位改写，不新增旁路DEC，实际实现验证另记不提前验收。
         evidenceReferences: [docs/development/form-and-dhr-trace-query-review-2026-10-13.md, docs/development/directional-trace-runtime-2026-10-14.md, gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/TraceReportController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java]
@@ -902,6 +910,9 @@ decisionPackage:
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: report-query-ui-20261014
+        scenarios: [前端目标构建, 作业模板页签样式一致, 默认预置项来自builtin标记, 自定义项添加不与默认重复, 控件同列等宽及窄屏布局, 展开收起保留填写值, 查询重置方向切换行为, 业务页固定条件与目录隔离, 本轮知识结构及引用核对]
+        evidenceReferences: [gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - scope: directional-trace-runtime-20261013
         scenarios: [业务固定条件及目录故障隔离, 无内容绑定的正向已保存实例可查, 模板及未保存输入不可查, 自定义反向项显式绑定及类型兼容, 内容提及其他对象不改归属, 表单同实例同实际行, DHR跨表单条件贡献但不造业务明细, 多命中去重及分页总数, 完整DHR保留其他证据并标记命中表单字段实际行, 当前冻结终止来源一致, 列表条件与详情标记一致, 无权DHR或表单不能贡献或泄漏计数, A12历史范围不提前开放]
         evidenceReferences: [docs/development/form-and-dhr-trace-query-review-2026-10-13.md, docs/development/directional-trace-runtime-2026-10-14.md, docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/TraceReportAuthorizationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java]
@@ -998,7 +1009,7 @@ decisionPackage:
       reason: 产品固定筛选白名单和准确命名的日期范围，独立于客户追溯目录。
     - path: gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx
       changeType: create
-      reason: 表单/DHR两向共用简单查询面板，正向固定属性、反向动态自定义项。
+      reason: 表单/DHR两向共用查询面板；本轮L1复用既有查询与作业模板页签样式，反向默认按builtin标记展示，动态自定义项同列对齐，查询语义不变。
     - path: gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx
       changeType: create
       reason: 独立DHR追溯菜单页面，真实DHR列表打开完整目录并定位命中表单。
@@ -1019,7 +1030,7 @@ decisionPackage:
       reason: 本轮原始固定条件、表单/DHR两向、用户DHR组合范围及未来查询展示和验收设计；主智能体维护，本体只读取。
     - path: gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
       changeType: update
-      reason: 本轮按路由固定用途并直接展示来源原表单，业务列表逐笔且撤下合计二级入口。
+      reason: 本轮按路由固定用途并直接展示来源原表单，业务列表逐笔且撤下合计二级入口；2026-10-14 L1仅整理固定查询布局，复用表单列表操作规范。
     - path: gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts
       changeType: create
       reason: 本轮从显示快照按稳定rowKey解析目标实际行，不按相同值或陈旧索引高亮。
@@ -1231,6 +1242,11 @@ decisionPackage:
       changeType: read-only
       reason: 核对现有元数据查询与来源权限。
   acceptanceScenarios:
+    - id: scenario.report-query-ui-catalog-defaults
+      given: 同一目录含预置与自定义项，表单及DHR采用共享查询面板，业务报表使用固定条件
+      when: 查看反向默认条件，添加自定义条件，展开收起属性，查询重置并切换方向
+      then: 预置条件按builtin=true驱动而非写死三个ID，自定义候选不与默认项重复；布局和操作复用表单列表，页签复用作业模板。隐藏已填值不丢失，查询请求保持既有属性/内容边界，业务报表不读取追溯目录；不改变匹配、权限、快照或目录属性。须由本轮前端与浏览器证据验证，不使用历史QA代替。
+      evidenceRequirements: [user-confirmed-20261014-report-query-layout, 前端目标构建, 默认动态条件及展开重置切换浏览器操作, 本轮知识校验, 本轮独立质量]
     - id: scenario.fixed-business-query-without-trace-catalog
       given: 三业务记录已有合法事实属性，来源未关联内容追溯项
       when: 查询人使用对应报表产品固定条件

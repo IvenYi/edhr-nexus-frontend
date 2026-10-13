@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Collapse, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
-import { ExpandLess, ExpandMore, InfoOutlined, Search, TuneRounded, ViewColumnRounded, VisibilityOutlined } from '@mui/icons-material';
+import { ExpandMore, InfoOutlined, RestartAlt, Search, TuneRounded, ViewColumnRounded, VisibilityOutlined } from '@mui/icons-material';
 import DetailDrawer from '@/components/DetailDrawer';
 import StatusBadge from '@/components/StatusBadge';
 import client from '@/api/client';
@@ -11,7 +11,7 @@ import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableS
 import ListColumnSettingsPopover, { getCurrentUserPreferenceStorageKey, loadListColumnSettings, reorderListColumns } from '@/components/ListColumnSettingsPopover';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyActionSx } from '@/components/listTableStyles';
-import { formListFieldSx, formListQueryGridSx, formListQueryPanelSx, FormListPagination } from '@/pages/form-management/formManagementListStyles';
+import { formListFieldSx, formListFilterActionsSx, formListQueryGridSx, formListQueryPanelSx, FormListPagination } from '@/pages/form-management/formManagementListStyles';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import type { ModelField } from '@/pages/master-data/template-designer-react/types/model';
@@ -22,6 +22,7 @@ import type { PROJECTION_REPORT_PAGES } from '@/utils/menuManagement';
 import TraceQueryPanel, { initialTraceRequest, ProductionObjectInput } from './TraceQueryPanel';
 
 const base = '/reports/form-projections';
+const queryGridSx = { ...formListQueryGridSx, gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))' } };
 const legacyAttributes = [['materialLotText', '物料批号'], ['serialNumberText', '序列号'], ['equipmentText', '设备编号'], ['teamText', '责任班组'], ['documentNumberText', '单据号'], ['category', '分类'], ['reason', '原因'], ['unit', '单位']];
 const legacyAttributeNames: Record<string, string> = { ...Object.fromEntries([...legacyAttributes, ['material', '物料'], ['quantity', '数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量']]), ...businessAttributeNames };
 interface Hit { rowKey: string; rowIndex?: number; tableId?: string; bindingId: string; attributes: Record<string, unknown>; sources: Record<string, string>; details?: { fieldId: string; name: string; value: unknown }[] }
@@ -132,22 +133,26 @@ export default function FormProjectionReportPage({ modelId }: { modelId: Exclude
     setRequest({ ...request, modelId: model, filters: {}, objectNo: '', operationName: '', page: 0 });
     setQueryRevision(current => current + 1);
   };
-  const actions = <Stack direction="row" spacing={1} justifyContent="flex-end"><Button endIcon={expanded ? <ExpandLess /> : <ExpandMore />} onClick={() => setExpanded(!expanded)}>{expanded ? '收起筛选' : '更多筛选'}</Button><Button variant="outlined" sx={{ width: 80, height: 40, flexShrink: 0 }} onClick={() => reset()}>重置</Button><Button variant="contained" type="submit" startIcon={<Search />} sx={{ width: 80, height: 40, px: 1, flexShrink: 0, whiteSpace: 'nowrap' }}>查询</Button></Stack>;
+  const actions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ ...formListFilterActionsSx, gridColumn: expanded ? '1 / -1' : { xs: '1 / -1', lg: 'auto' } }}>
+    <Button size="small" variant="outlined" startIcon={<RestartAlt />} onClick={() => reset()} sx={{ height: 40, width: 80, minWidth: 80 }}>重置</Button>
+    <Button size="small" variant="contained" type="submit" startIcon={<Search />} sx={{ height: 40, width: 80, minWidth: 80 }}>查询</Button>
+    <Button size="small" variant="text" endIcon={<ExpandMore sx={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }} />} onClick={() => setExpanded(!expanded)} aria-expanded={expanded} sx={{ height: 40, minWidth: 72, px: 1, color: '#1890ff', '&:hover': { bgcolor: '#f5faff' } }}>{expanded ? '收起' : '展开'}</Button>
+  </Stack>;
   const detailRows = (data.data?.records ?? []).map(row => ({ ...row.context, ...row, statusLabel: statusName(row.status, row.savedStage),
     relation: traceRequest.filters.lookup_production_batch && traceRequest.filters.lookup_production_batch !== row.objectNo ? '内容命中；归属仍为本行生产对象' : '实际归属记录',
     location: [...new Set(hitsOf(row).map(locationName))].join('；'), values: hitsOf(row).map(hit => visibleAttributes(hit).map(([key, item]) => `${sourceName(key, row.lookupItems)}：${display(item)}`).join('；')).join(' / ') }));
   return <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 1.5 }}>
     {trace ? <TraceQueryPanel size={traceRequest.size} onSearch={next => { setTraceRequest(next); setSelected(null); setQueryRevision(current => current + 1); }} /> : <Box component="form" onSubmit={event => { event.preventDefault(); search(); }} sx={formListQueryPanelSx}>
-      <Box sx={formListQueryGridSx}>
+      <Box sx={queryGridSx}>
         <ProductionObjectInput label="所属生产批次/SN" value={objectNo} onChange={setObjectNo} />
-        <TextField size="small" label="工单编号" value={fixedFilters.workOrderNo ?? ''} onChange={event => setFixedFilters({ ...fixedFilters, workOrderNo: event.target.value })} sx={formListFieldSx} />
-        <TextField size="small" label="工序名称" value={operationName} onChange={event => setOperationName(event.target.value)} sx={formListFieldSx} />
-        <Collapse in={expanded} unmountOnExit sx={{ gridColumn: '1 / -1' }}><Box sx={{ ...formListQueryGridSx, pt: 1.5, borderTop: '1px solid #ebeef5' }}>
-          {attributes.filter(([id]) => id !== 'workOrderNo').map(([id, label]) => <TextField key={id} size="small" label={label}
+        <TextField fullWidth size="small" label="工单编号" placeholder="请输入工单编号" value={fixedFilters.workOrderNo ?? ''} onChange={event => setFixedFilters({ ...fixedFilters, workOrderNo: event.target.value })} sx={formListFieldSx} />
+        {expanded ? <TextField fullWidth size="small" label="工序名称" placeholder="请输入工序名称" value={operationName} onChange={event => setOperationName(event.target.value)} sx={formListFieldSx} /> : actions}
+        <Collapse in={expanded} timeout={180} unmountOnExit sx={{ gridColumn: '1 / -1' }}><Box sx={queryGridSx}>
+          {attributes.filter(([id]) => id !== 'workOrderNo').map(([id, label]) => <TextField key={id} fullWidth size="small" label={label} placeholder="请输入"
             type={isReportDateFilter(id) ? 'date' : 'text'} InputLabelProps={isReportDateFilter(id) ? { shrink: true } : undefined}
             value={fixedFilters[id] ?? ''} sx={formListFieldSx} onChange={event => setFixedFilters({ ...fixedFilters, [id]: event.target.value })} />)}
         </Box></Collapse>
-        <Box sx={{ gridColumn: '1 / -1' }}>{actions}</Box>
+        {expanded ? actions : null}
       </Box>
     </Box>}
     {(data.isError || !trace && status.isError || error) && <Alert severity="error">{error || (data.error instanceof Error ? data.error.message : '报表或处理状态读取失败，请重试。')}</Alert>}

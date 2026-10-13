@@ -3,7 +3,7 @@ evidence:
   - id: evidence.form-and-dhr-trace-query-20261013
     type: document
     path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
-    description: 2026-10-13同包L2当前规则及10-14跨日实现核对，原位支持DEC-0075-39。user-confirmed为固定业务条件、正向真实属性/反向绑定保存值、自定义反向项、DHR各自组合范围及完整DHR命中表单与对应字段；用户关于竞品精确字段展示的判断不升级为原始证据。正向支持来源内有权且满足条件的已保存实际实例，模板及未保存输入不可查；竞品GET核心缺失不能证明其全部实例/状态覆盖。original-evidence为本体重新读取冠骋固定数组、目录/实例taggedMap及平台依赖，和本项目新增TraceReportController、DhrTraceReportService、固定白名单、完整目录字段/行高亮源码；强制EXISTS是修正前差距。具体字段/页签默认/去重计数仍inference，内容不创建归属，不照搬笛卡尔积、AUTO_CONNECT、漏映射或权限关闭。读取主开发本轮追溯surefire报告17项全通过与本体实际执行BKM59项全通过分别登记；浏览器及独立质量另记。当前生产保存证据与摘要核验的终止快照同源、不切换任意冻结汇总版本，39局部implemented/internal，不标verified、不改变基线或客户投影，冻结历史反向/A12不连带开放。用户原话及Git历史保留，错误现行知识直接改写，不新建替代DEC，不以旧门禁替本轮。
+    description: 2026-10-13同包L2当前规则及10-14跨日实现核对，原位支持DEC-0075-39。user-confirmed为固定业务条件、正向真实属性/反向绑定保存值、自定义反向项、DHR各自组合范围及完整DHR命中表单与对应字段；用户关于竞品精确字段展示的判断不升级为原始证据。正向支持来源内有权且满足条件的已保存实际实例，模板及未保存输入不可查；竞品GET核心缺失不能证明其全部实例/状态覆盖。original-evidence为本体重新读取冠骋固定数组、目录/实例taggedMap及平台依赖，和本项目新增TraceReportController、DhrTraceReportService、固定白名单、完整目录字段/行高亮源码；强制EXISTS是修正前差距。2026-10-14同切片L1查询展示确认：报表查询严格复用表单列表既有查询规范，两向页签样式与作业模板一致；表单及DHR反向默认条件由现有目录builtin=true标记驱动，其余自定义项进入添加查询条件，不再写死三个项目。该要求不改变目录标记或清单、受支持值类型、匹配粒度、权限、快照和业务固定条件边界；真实归属属性保留于展开区是工程选择，不将内容项与真实属性混同。具体正向/业务字段、默认向和去重计数仍inference，内容不创建归属，不照搬笛卡尔积、AUTO_CONNECT、漏映射或权限关闭。读取主开发本轮追溯surefire报告17项全通过与本体实际执行BKM59项全通过分别登记；浏览器及独立质量另记。当前生产保存证据与摘要核验的终止快照同源、不切换任意冻结汇总版本，39局部implemented/internal，不标verified、不改变基线或客户投影，冻结历史反向/A12不连带开放。用户原话及Git历史保留，错误现行知识直接改写，不新建替代DEC，不以旧门禁替本轮。
     visibility: internal
   - id: evidence.form-projection-report-pages-source-20261013
     type: document
