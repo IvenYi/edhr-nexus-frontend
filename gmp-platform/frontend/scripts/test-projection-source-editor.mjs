@@ -78,7 +78,7 @@ test('report roles accept only compatible temporal and person sources, with manu
   assert.ok(!html.includes('由填报人员填写，不自动计算'));
   assert.ok(!html.includes('报工信息（可选）'));
   assert.ok(!html.includes('生产日期'));
-  assert.ok(html.includes('更多字段'));
+  assert.ok(html.includes('更多业务字段'));
   assert.equal((html.match(/role="combobox"/g) ?? []).length, 2, 'configured hours stay visible while the unconfigured date is collapsed');
   assert.equal(acceptsProjectionAttribute(date, hours), false);
 });
@@ -219,7 +219,7 @@ test('configured report fields stay visible while empty optional fields are coll
   const {html, changes} = renderEditor({fields}, binding, definition);
   assert.ok(!html.includes('补充信息（可选）'));
   assert.ok(html.includes('原因'));
-  assert.ok(html.includes('更多字段'));
+  assert.ok(html.includes('更多业务字段'));
   assert.ok(html.includes('aria-expanded="false"'));
   assert.ok(!html.includes('物料批号'));
   assert.equal((html.match(/role="combobox"/g) ?? []).length, 3, 'required sources and the configured reason are visible');
@@ -304,7 +304,7 @@ test('whole-table statistics keeps optional sources collapsed without a manual r
   assert.ok(!html.includes('启用此用途'));
   assert.ok(!html.includes('待配置'));
   assert.ok(!html.includes('明细中另外显示'));
-  assert.ok(html.includes('更多字段'));
+  assert.ok(html.includes('更多业务字段'));
   assert.equal((html.match(/role="combobox"/g) ?? []).length, 2);
   assert.deepEqual(changes, []);
   assert.equal(acceptsProjectionAttribute({ type: 'reference', typeConfig: { sourceType: 'dictionary' } }, { id: 'unit', type: 'text' }), true);

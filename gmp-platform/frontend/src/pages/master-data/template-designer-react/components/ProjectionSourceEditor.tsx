@@ -90,7 +90,7 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     {visibleAttributes.map(renderSource)}
     {moreAttributes.length > 0 && <>
       <Button size="small" color="inherit" aria-expanded={moreExpanded} startIcon={moreExpanded ? <ExpandMore /> : <ChevronRight />}
-        sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => { picker?.cancel(binding.id); setMoreExpanded(!moreExpanded); }}>更多字段</Button>
+        sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => { picker?.cancel(binding.id); setMoreExpanded(!moreExpanded); }}>更多业务字段</Button>
       <Collapse in={moreExpanded} unmountOnExit><Stack spacing={1.5}>{moreAttributes.map(renderSource)}</Stack></Collapse>
     </>}
     {detailProblem && <Alert severity="warning" action={<ProjectionRemoveButton label="移除失效的补充展示配置" onClick={() => {

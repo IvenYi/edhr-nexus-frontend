@@ -80,7 +80,7 @@ export default function StatisticsProjectionConfig({ tableId, selectedFieldId }:
     })}
     </Stack></Collapse>
     </Stack>)}
-    {items.length > 0 && <Button size="small" color="inherit" aria-expanded={addingAnother} startIcon={addingAnother ? <ExpandMore /> : <ChevronRight />} sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => setAddingAnother(!addingAnother)}>其他统计用途</Button>}
+    {items.length > 0 && <Button size="small" color="inherit" aria-expanded={addingAnother} startIcon={addingAnother ? <ExpandMore /> : <ChevronRight />} sx={{ alignSelf: 'flex-start', justifyContent: 'flex-start', px: 0, minWidth: 0, color: 'text.secondary' }} onClick={() => setAddingAnother(!addingAnother)}>其他统计用途</Button>}
     {(!items.length || addingAnother) && <TextField select size="small" fullWidth label={tableId ? (items.length ? '添加其他统计用途' : '这张子表统计什么') : '主表统计什么'} value="" onChange={event => {
       if (!event.target.value) return;
       const existing = tableId ? items.find(binding => binding.modelId === event.target.value) : undefined;
