@@ -24,6 +24,7 @@ const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInstanceListPage'));
 const FormProjectionReportPage = lazy(() => import('@/pages/reports/FormProjectionReportPage'));
+const DhrTraceReportPage = lazy(() => import('@/pages/reports/DhrTraceReportPage'));
 const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPage'));
 const FormReviewPage = lazy(() => import('@/pages/form-management/FormReviewPage'));
 const DhrManagementPage = lazy(() => import('@/pages/dhr-management/DhrManagementPage'));
@@ -107,7 +108,7 @@ const AppRouter = () => {
           <Route path="review" element={<Suspense fallback={<Loading />}><FormReviewPage /></Suspense>} />
         </Route>
         <Route path="reports/form-projections" element={<Navigate to="/reports/form-trace" replace />} />
-        {PROJECTION_REPORT_PAGES.map(page => <Route key={page.path} path={page.path.slice(1)} element={<Suspense fallback={<Loading />}><FormProjectionReportPage key={page.modelId} modelId={page.modelId} /></Suspense>} />)}
+        {PROJECTION_REPORT_PAGES.map(page => <Route key={page.path} path={page.path.slice(1)} element={<Suspense fallback={<Loading />}>{page.modelId === 'dhrTrace' ? <DhrTraceReportPage /> : <FormProjectionReportPage key={page.modelId} modelId={page.modelId} />}</Suspense>} />)}
         <Route path="dhr-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />
           <Route path="summary" element={<Suspense fallback={<Loading />}><DhrSummaryPage /></Suspense>} />

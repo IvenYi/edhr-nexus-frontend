@@ -6,9 +6,9 @@ export interface FormLookupItem {
   createdBy: string | null; createdAt: string; updatedBy: string | null; updatedAt: string;
 }
 export const formLookupCatalogKey = ['form-lookup-items'];
-export function useFormLookupItems() {
+export function useFormLookupItems(enabled = true) {
   return useQuery({ queryKey: formLookupCatalogKey, queryFn: async () =>
-    (await client.get('/form-lookup-items')).data.data as FormLookupItem[], staleTime: 0 });
+    (await client.get('/form-lookup-items')).data.data as FormLookupItem[], staleTime: 0, enabled });
 }
 export async function saveFormLookupItem(values: { name: string; description: string }, item?: FormLookupItem) {
   return item ? client.put(`/form-lookup-items/${item.id}`, { ...values, revision: item.revision })

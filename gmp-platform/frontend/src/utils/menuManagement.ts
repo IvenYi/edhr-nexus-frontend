@@ -8,6 +8,7 @@ export const MAX_MENU_CHILDREN_DEPTH = 2;
 
 export const PROJECTION_REPORT_PAGES = [
   { modelId: 'formTrace', label: '表单追溯', path: '/reports/form-trace' },
+  { modelId: 'dhrTrace', label: 'DHR追溯', path: '/reports/dhr-trace' },
   { modelId: 'production', label: '报工记录', path: '/reports/production-records' },
   { modelId: 'scrap', label: '报废记录', path: '/reports/scrap-records' },
   { modelId: 'consumption', label: '消耗记录', path: '/reports/consumption-records' },

@@ -31,7 +31,7 @@ class FormProjectionPostgresTest {
         admin.execute("CREATE SCHEMA " + schema);
         var ds = new DriverManagerDataSource(url + "?currentSchema=" + schema, user, password);
         jdbc = new JdbcTemplate(ds); tx = new TransactionTemplate(new DataSourceTransactionManager(ds));
-        jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id text default 'default',instance_no text,object_id bigint default 1,object_no text default 'B1',operation_id text default 'a',operation_name text default 'A',created_by text,created_at timestamp,updated_by text,updated_at timestamp,snapshot_json text default '{}',values_json text default '{}',status text default 'ACTIVE',template_name text,template_version text)");
+        jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id text default 'default',source_type text default 'PRODUCTION_EXECUTION',work_order_no text,instance_no text,object_id bigint default 1,object_no text default 'B1',operation_id text default 'a',operation_name text default 'A',created_by text,created_at timestamp,updated_by text,updated_at timestamp,snapshot_json text default '{}',values_json text default '{}',status text default 'ACTIVE',template_name text,template_version text)");
         jdbc.update("INSERT INTO form_instance_record(id) VALUES(1)");
         try (var connection = ds.getConnection()) {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0107-form-projection-runtime.sql"));

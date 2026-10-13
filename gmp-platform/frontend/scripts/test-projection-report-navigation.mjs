@@ -15,7 +15,7 @@ sandbox.exports = sandbox.module.exports;
 vm.runInNewContext(result.outputFiles[0].text, sandbox);
 const { PROJECTION_REPORT_PAGES, normalizeManagedSidebarModules, inferPermissionCode, isProjectionReportPath } = sandbox.module.exports;
 
-test('legacy saved menus normalize to four separate reports without duplicating pages or losing custom reports', () => {
+test('legacy saved menus normalize to independent reports including DHR trace without duplicating pages or losing custom reports', () => {
   const input = [{ id: 'records', label: '记录', menus: [{ label: '报表', children: [{ label: '追溯与统计', path: '/reports/form-projections' }, { label: '客户报表', path: '/reports/custom' }] }] }];
   const once = normalizeManagedSidebarModules(input);
   const twice = normalizeManagedSidebarModules(once);
@@ -26,8 +26,8 @@ test('legacy saved menus normalize to four separate reports without duplicating 
   for (const page of PROJECTION_REPORT_PAGES) assert.equal(children.filter(child => child.path === page.path && child.label === page.label).length, 1);
 });
 
-test('all four pages and the legacy URL remain within the report permission boundary', () => {
-  assert.equal(PROJECTION_REPORT_PAGES.length, 4);
+test('all five pages and the legacy URL remain within the report permission boundary', () => {
+  assert.equal(PROJECTION_REPORT_PAGES.length, 5);
   for (const path of [...PROJECTION_REPORT_PAGES.map(page => page.path), '/reports/form-projections']) {
     assert.equal(inferPermissionCode(path), 'form-instances.view');
     assert.equal(isProjectionReportPath(path), true);

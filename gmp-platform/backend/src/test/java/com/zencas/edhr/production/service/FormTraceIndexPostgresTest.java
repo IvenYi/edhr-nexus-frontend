@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.production.controller.FormProjectionController;
+import com.zencas.edhr.production.controller.TraceReportController;
 import com.zencas.edhr.template.service.FormLookupCatalogService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,6 +106,26 @@ class FormTraceIndexPostgresTest {
 
     private ObjectNode query(Map<String, String> filters) {
         return reports.query(new FormProjectionController.Query("formTrace", null, null, filters, 0, 20, null, null)).getData();
+    }
+
+    @Test void forwardTraceFindsUnboundSavedInstancesAndUsesRealFrozenContext() throws Exception {
+        var plain = form(); plain.remove("projection");
+        save(plain, values(), "DRAFT");
+        jdbc.execute("CREATE TABLE production_execution(object_id bigint PRIMARY KEY,snapshot_json text)");
+        jdbc.update("INSERT INTO production_execution VALUES(100,?)", "{\"context\":{\"productCode\":\"P1\",\"productName\":\"产品1\"}}");
+        var catalog = mock(FormLookupCatalogService.class);
+        var trace = new TraceReportController(jdbc, mapper, catalog, mock(DhrTraceReportService.class));
+        var request = new TraceReportController.Query("FORWARD", Map.of("objectNo", "B-OWNER", "workOrderNo", "WO1", "productCode", "P1", "status", "DRAFT"), Map.of(), 0, 20);
+        var found = trace.forms(request).getData();
+        assertThat(found.path("total").asInt()).isEqualTo(1);
+        assertThat(found.at("/records/0/hits")).isEmpty();
+        assertThat(found.at("/records/0/context/productCode").asText()).isEqualTo("P1");
+        assertThat(trace.forms(new TraceReportController.Query("FORWARD", Map.of("objectNo", "B-CONTENT"), Map.of(), 0, 20)).getData().path("total").asInt()).isZero();
+        assertThat(trace.forms(new TraceReportController.Query("REVERSE", Map.of(), Map.of(), 0, 20)).getData().path("total").asInt()).isZero();
+        verifyNoInteractions(catalog, projection);
+        assertThatThrownBy(() -> trace.forms(new TraceReportController.Query("FORWARD", Map.of("materialLotText", "L1"), Map.of(), 0, 20))).hasMessageContaining("不受支持");
+        assertThatThrownBy(() -> trace.forms(new TraceReportController.Query("FORWARD", Map.of("createdDateFrom", "2026-10-15", "createdDateTo", "2026-10-10"), Map.of(), 0, 20))).hasMessageContaining("不能早于");
+        assertThatThrownBy(() -> trace.forms(new TraceReportController.Query("FORWARD", Map.of(), Map.of("equipmentText", "E1"), 0, 20))).hasMessageContaining("不使用内容");
     }
 
     @Test void savedDraftIsImmediatelyTraceableAndReplacementDoesNotGenerateStatistics() throws Exception {

@@ -59,4 +59,11 @@ class FormProjectionAuthorizationTest {
         assertThatThrownBy(() -> reports.instanceDhr(1)).isInstanceOf(AccessDeniedException.class);
         verifyNoInteractions(jdbc);
     }
+    @Test @WithMockUser(authorities = {"form-instances.view", "production.execution"})
+    void businessFiltersRejectLookupItemsAndRolesFromOtherModelsBeforeReadingData() {
+        for (String key : java.util.List.of("lookup_external_lot", "equipmentText", "materialCode", "category"))
+            assertThatThrownBy(() -> reports.query(new FormProjectionController.Query("production", null, null, Map.of(key, "value"), 0, 20, null, null))).hasMessageContaining("不适用于此业务报表");
+        assertThatThrownBy(() -> reports.query(new FormProjectionController.Query("scrap", null, null, Map.of("reporter", "value"), 0, 20, null, null))).hasMessageContaining("不适用于此业务报表");
+        verifyNoInteractions(jdbc);
+    }
 }

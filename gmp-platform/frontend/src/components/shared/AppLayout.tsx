@@ -228,6 +228,7 @@ function getLayoutPermissionCode(path: string): string | undefined {
 function getLayoutPermissionCodes(path: string): string[] {
   const code = getLayoutPermissionCode(path);
   if (!code) return [];
+  if (path === '/reports/dhr-trace') return [code, 'production.execution', 'dhr.instances.view'];
   if (isPathSegmentMatch(path, '/form-management') || isProjectionReportPath(path)) return [code, 'production.execution'];
   return [code];
 }

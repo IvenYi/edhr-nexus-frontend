@@ -768,15 +768,19 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 
 `validation-evidence`（本体实际执行）：`gmp-platform/backend`下 `mvn -Dtest=BusinessKnowledgeModelTest test`，59项、0失败/错误/跳过，`BUILD SUCCESS`；日志 `/tmp/edhr-report-pages-source-knowledge-20261013.log`。全部知识YAML及同包共184份解析通过，本轮5个测试范围证据路径存在，目标文档`git diff --check`通过。该结果只支持知识结构、引用和投影边界，不替代本轮产品运行或独立质量门禁。
 
-## 2026-10-13 固定业务筛选及表单、DHR正反向设计
+## 2026-10-13 固定业务筛选及表单、DHR正反向当前规则
 
-本轮沿`DEC-PACKAGE-20260929-FORM-PROJECTION`，源码基点`c38aa03d`，知识基线`0.3.24`，执行级别L2设计/调研。新增`DEC-0075-39`为`specified/internal`；没有运行代码、迁移或生产数据修改，没有新运行fact或schema。完整研究由主智能体维护：[查询复核](../../development/form-and-dhr-trace-query-review-2026-10-13.md)。该报告用于定位原始资料，以下仅把本体实际重新读取的内容列为本轮`original-evidence`；旧实现门禁与前一轮只读边界解释不能替代本轮设计验收。
+沿`DEC-PACKAGE-20260929-FORM-PROJECTION`，基线`0.3.24`，执行级别L2。`DEC-0075-39`当前规则直接纠正错误现行表述，不另建DEC或以追加补丁保留错误默认。下方源码基点`c38aa03d`和知识检查属于前次设计/调研的历史核对；2026-10-14跨日实现核对及本轮验证登记在本节，不用旧结果代替。本体仅改知识资产，不改运行代码、迁移或生产数据，不新建运行fact/schema；39局部为`implemented/internal`，未标`verified`。研究由主智能体维护：[查询复核](../../development/form-and-dhr-trace-query-review-2026-10-13.md)，仅用于索引原始资料，不把二手报告提升为原始证据。
 
 ### 用户确认与设计建议
 
-`user-confirmed`（主智能体从本轮用户讨论及异步回复交接）：业务报表查询采用产品预定义固定条件，参考冠骋，不要求逐条选字段添加条件。表单正向按真实关联工单、产品、生产对象等属性查表；反向按表单填写且明确绑定追溯项的值查表，并支持动态自定义追溯项。新增DHR追溯采用相同两向含义。最新异步回复明确：多个反向条件在同一DHR范围分别满足即可，允许不同真实关联表单贡献；表单反向仍同表单/同实际子表行。此处为确认内容的归纳，不伪造未取得的逐字问答原文。
+`user-confirmed`：业务报表采用产品预定义固定条件，不逐条选字段添加条件；表单正向按真实关联属性、反向按显式绑定的保存值及自定义追溯项；DHR采用相同两向含义。异步回复明确多个反向条件在同一DHR内满足即可，允许不同真实关联表单贡献；表单反向仍同实例/同实际子表行。
 
-`inference`：具体业务/正向固定条件清单、两个页签与默认正向、低频固定更多筛选、每个DHR去重一行与命中表单数、完整目录中标记贡献实例及回查原表单、共享追溯目录和值控件、无内容条件正向不造高亮、列表和详情同一授权证据依据，是本轮设计建议，未转成用户逐字确认或运行默认。条件类型不能超出当前实际支持能力，现有文本目录不能仅凭页面方案宣称日期/多选操作符已经实现。
+最新注释原话：“这个和追溯项没关系吗？冠骋的正向追溯也是这样的吗？列表里的数据是只要有表单就能查到吗？”属于澄清问题，不伪称用户确认竞品的全部范围。我方当前规则为：支持来源内有权且满足筛选条件的已保存实际实例可正向查，未绑追溯用途不排除；未使用模板不是实例，未保存输入和无权记录不可查，不外推为全部业务域。
+
+另一条最新原话：“对，交互也可以参考冠骋，冠骋是打开了dhr详情，然后会标记出命中的表单与对应的字段”。我方**完整DHR详情标记命中表单及对应字段/实际行**是明确需求，保留其他关联证据供核对；用户对冠骋字段高亮的判断仍需原始证据。用户授权：“没其他问题了的话就可以进行开发与修正了。记得把陈旧的本体知识删除用新的确认的替换，这不是迭代知识而是之前做的是错的。”因此错误现行知识直接改写，原话及历史事实证据保留，运行验收不由业务确认代替。
+
+`inference`：具体业务/正向固定条件清单、两个页签与默认正向、低频固定更多筛选、DHR去重一行及命中表单数、共享目录与值控件是工程选择，不转成用户逐字确认。完整DHR的命中实例及字段定位已属明确要求；不伪造正向内容命中、查询与详情保持同一授权来源是该需求的实现边界。条件类型不能超出实际支持能力，文本目录不能仅凭页面方案宣称日期/多选已经实现。
 
 ### 本体直接复核的原始证据
 
@@ -786,6 +790,9 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 | --- | --- |
 | F/`src/projects/web-render/src/views/edhr-application/render/document-tracked/index.vue:4–14`及`trace.vue:94–113,172–192` | 两向页面和页面固定条件数组；动态候选值不等于客户动态增加追溯项 |
 | F/`src/projects/web-render/src/views/edhr-application/render/edhr-tracked/trace.vue:220–259,299–332` | 结果为DHR实例；详情打开整体DHR视图并取得目录、表单实例标记，不以表单列表代替DHR列表 |
+| F/`src/projects/web-render/src/views/edhr-application/render/document-tracked/trace.vue:147,299–314`及`src/projects/online-form/src/views/integration/apaas_ebr/utils/instance-status/useInstanceStatus.ts:75–82` | 正向列表初始化即请求实例，不要求先配置内容项；表单状态使用`edhrDocumentTracked`的`UNFILLED/STASH/RUNNING/COMPLETED/ABANDON/IN_AUDIT`，不能套DHR汇总状态，也不证明GET全部状态覆盖 |
+| F/`src/projects/online-form/src/views/integration/apaas_ebr/ebr-view/components/catalog-tree-menu.vue:22,235–244`、`instance-area.vue:44,203–209`和`hooks/useApaasEbr.ts:107–139` | `taggedMap`只标目录/实例；通用弹层可接收`_gct_nocode_trace_values_`，但上述DHR追溯入口未传该字段值或实际行参数，不由通用能力推定该入口精确定位已经实现 |
+| B/`src/main/java/com/gct/apaas/edhr/edhr/biz/SummaryFormInstListSearchBs.java:15,321–340`、`pom.xml:26–34`与`.flattened-pom.xml:15–25` | 本地业务后端存在，核心反向查询请求及服务来自平台依赖`gct-apaas-bed-controller`；业务适配器调用`reverseTracePageList`不等于四个GET平台实现原码可得，不把平台证据缺口写成整个后端缺失 |
 | F/`src/locales/lang/zh-CN/sys/pageDesigner.ts:425` | `related_lot_no`原中文是“关联批次”，不能仅凭字段名改称物料批号；我方物料批号查询示例仍是我方需求 |
 | B/`src/main/java/com/gct/apaas/edhr/notebook/FormTraceManager.java:162–163,195,225–276` | 值集合笛卡尔积和AUTO_CONNECT与我方同实际行、真实归属规则不同；递归子表收集不证明我方粒度 |
 | B/`src/main/java/com/gct/apaas/edhr/edhr/biz/EdhrReverseTraceBs.java:35–42,79–81` | 详情标记映射缺少页面填报人、关联批次及订单号条件，未知项跳过，不证明列表和标记同源完整 |
@@ -804,12 +811,29 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 
 未找到客户动态追溯目录不能证明竞品永不支持，只能说当前原始证据没有证明；我方自定义反向项来自用户需求。
 
-本项目`original-evidence`：`FormProjectionReportPage.tsx:92`和`projectionReportColumns.ts:20–25`按模型区分客户目录与产品业务字段，业务筛选无需绑定追溯项。`FormProjectionController.java:53–61`查内容索引，`:63–102`按正式record/context及审计属性过滤，`:196–217`按实际生产对象关系回查DHR。共用页面仍无条件读取客户目录并显示目录错误提示，属于交互遗留耦合。`FormTraceIndexService.java:103–115`即使无内容条件也要求存在`form_trace_value`，因此未配追溯用途表单被排除，不能称完整正向已实现。独立DHR内容反向未实现。
+本轮重新读取上表补充文件的SHA256：`useInstanceStatus.ts`=`4ded4c26c0371c61881385b808fbd837c77aa2a2611c3b7a42940b44c6dc6349`，`catalog-tree-menu.vue`=`99e01e41d3ad9cec141cbd7f44e37db8c4ab92eb7e9cbe7a7e44955f9df068d6`，`instance-area.vue`=`ee9bd494e101c0fab7a6d467633ec722d9a9917f070322add9994a7bac78513d`，`hooks/useApaasEbr.ts`=`ed4379c1785c3c0ed7301ed1d6b178fae1b675928c29a1d84f697a3a251f92ed`，`SummaryFormInstListSearchBs.java`=`070cbb8a17af785e98a6c95cd8176c48b9f6af1176eec65f820cd1bd8b925867`，`pom.xml`=`76e8e516be20f42452f511f523960d831cac63d92b7d235c97b2d9a7bd086f8c`，`.flattened-pom.xml`=`76a4fad00285aa40161815b58d0224ec2f164835e8c5774cf80f1c2f9fed9bd2`。只定位本地材料，不证明部署与平台GET范围。
+
+本项目`original-evidence`（修正前基点`c38aa03d`）：`FormProjectionReportPage.tsx:92`与`projectionReportColumns.ts:20–25`区分客户目录及产品业务字段，业务筛选无需绑定追溯项。`FormProjectionController.java:53–61`查内容索引，`:63–102`查正式record/context及审计属性，`:196–217`沿实际生产对象关系回查DHR。无条件请求客户目录并显示其失败提示是当时交互遗留耦合；`FormTraceIndexService.java:103–115`强制存在`form_trace_value`会排除未绑用途表单。这些是修正前差距，不能作为当前业务规则或继续称为未修复实现；最新实现核对如下。
+
+### 2026-10-14同包实现核对与本轮知识验证
+
+以下`original-evidence`由本体直接读取`2d159c2454280a2415946ea2d457c335983ed3ce`上的本轮未提交工作树，核对日期2026-10-14、知识基线0.3.24；Git基点本身不包含尚未提交的运行修正。源码定位与主开发运行报告[本轮运行修正](../../development/directional-trace-runtime-2026-10-14.md)交叉核对，日期跨日不另建功能包，不把主开发报告当成本体执行结果：
+
+- `TraceReportController.java`提供`/api/v1/reports/trace/forms/query`、`dhrs/query`及`dhrs/{id}/detail`；正向固定属性与反向目录条件分别验证，正向不读取目录。查询和详情读取在`REPEATABLE_READ`事务，表单沿`form-instances.view`与`production.execution`，DHR再要求`dhr.instances.view`；新增只读入口不改变写授权。
+- `FormTraceIndexService.query`在正向不强制内容索引存在，限定已保存`form_instance_record`的`PRODUCTION_EXECUTION`来源及`default`租户，按真实实例属性和执行上下文筛选；反向继续显式绑定及同实例/实际行规则，不将内容编号当归属。`TraceReportFilters`仅接受产品固定白名单，创建日期范围不代替生产日期。
+- `DhrTraceReportService`正向直接查询真实DHR属性；反向按实际关联表单索引缩小候选，再由同一`DhrInstanceService.detail`依据核对全部条件后计算总数及分页。多个条件可以由不同实际表单贡献，只保留一条DHR结果；详情保留全部目录、作业和补充证据，并返回每个命中实例的字段、值、tableId及rowKey。当前默认`CURRENT_SAVED`；提前终止沿既有摘要校验后的终止快照显示`TERMINATION_SNAPSHOT`，不跳到任意冻结汇总版本。
+- `DhrTraceReportPage.tsx`独立菜单页面复用`TraceQueryPanel`，正向固定条件，反向动态自定义项；三业务页在`FormProjectionReportPage.tsx`固定业务筛选，不请求追溯目录。`DhrEvidenceViewer`保留完整目录，`DhrWorkspaceNavigation`标记命中实例，详情调用`sourceHighlight`定位对应字段/实际行，源表单只读。表单在查询后再保存不继续使用旧命中高亮；DHR详情重核当前条件，不满足时明确提示重新查询。
+
+`original-evidence`（测试源码及实际报告核对，**测试由主开发执行**）：本体读取本轮surefire报告，`TraceReportAuthorizationTest`3项、`FormTraceIndexPostgresTest`8项、`FormTraceIndexServiceTest`3项、`DhrTraceReportPostgresTest`3项均0失败/错误/跳过；报告位于`gmp-platform/backend/target/surefire-reports/`，主开发日志为`/tmp/trace-runtime-tests-final.log`。测试覆盖无绑定的已保存实例正向、真实上下文不按内容归属、保存过程与正式统计分离、同实例/实际行、跨表单同DHR、保留未命中表单、正向无伪造内容命中、当前/终止同源、租户、额外DHR权限、固定属性不接受追溯项及分页去重。终止服务测试用既有详情读取器替身核对查询与详情一致；完整摘要校验仍来自既有`DhrInstanceService.detail`源码及其原有验证，不能宣称该用例本身端到端覆盖真实摘要校验。
+
+`validation-evidence`（**本体实际执行**）：在`gmp-platform/backend`运行`mvn -Dtest=BusinessKnowledgeModelTest test`，59项，0失败/错误/跳过，`BUILD SUCCESS`；最终日志`/tmp/edhr-directional-trace-runtime-knowledge-final-20261014.log`。本轮184份知识与同包YAML解析、2355个唯一标识、3195个证据引用、445个证据文件及10个当前运行资产路径、`git diff --check`通过；不将其他旧决策的历史代码锚点误当当前文件。只支持知识结构、引用和投影边界；浏览器交互、基础构建与独立质量门禁由主开发及质量记录，不能由本体静态读取代替。
+
+39局部状态为`implemented/internal`，不标`verified`、不进入客户或运行知识投影。当前实际范围仍是支持来源内已保存的生产实例与真实DHR；A12历史/作废修订、冻结汇总版本反向、目录日期/多选及无上下文登记流程不随本轮开放。大规模DHR候选读取的性能尚无生产样本证据，本轮不承诺吞吐量；其他未决规则及P0以外阶段保留。
 
 ### 边界与未来验收
 
 同DHR跨表单满足查询条件只说明该DHR内存在各项真实关联证据，不证明这些值组成同一物料/设备业务明细。内容提及外部或另一生产编号不自动认领归属。保存后过程查询、正式完成事实、使用时配置、来源权限和冻结证据继续适用；当前、冻结与终止来源的查询/展示必须明确同一依据，冻结版本反向及A12仍保留分期。不得从新增入口推定OCR、任意全文、历史反向或多租户已经实现。
 
-知识验收覆盖confirmed/inferred区分、真实关系、表单与DHR组合范围、当前未实现差距及证据缺口。未来运行验收应覆盖：未绑定用途的正向表单、内容提及其他对象、同值不同实际行、同DHR多份贡献、跨表单条件但不造事实、分页去重与计数、当前/冻结/终止来源一致、无权DHR及表单不能贡献/泄漏数量、列表条件与标记一致。本轮知识校验不代替这些测试；Q16只收敛本轮入口组织，其他跨报表导航及历史/A12仍未关闭。
+知识验收覆盖confirmed/inferred区分、真实关系、各自组合范围、精确字段定位、直接纠正旧知识及证据缺口。运行验收须覆盖：未绑定用途的正向已保存实例、模板/未保存输入排除、内容提及其他对象、同值不同实际行、同DHR多份贡献、跨表单条件但不造事实、分页去重与计数、完整DHR保留其他证据并标记命中表单及对应字段/实际行、当前/冻结/终止来源一致、无权DHR及表单不能贡献/泄漏数量、列表条件与标记一致。知识校验不替代这些检查；Q16保留其余跨报表导航及历史/A12。
 
-`validation-evidence`（本体本轮实际执行）：在`gmp-platform/backend`执行`mvn -Dtest=BusinessKnowledgeModelTest test`，59项、0失败/错误/跳过，`BUILD SUCCESS`，日志`/tmp/edhr-form-dhr-trace-query-knowledge-20261013.log`。全部知识YAML及同包共184份解析通过；`DEC-0075-39`唯一、`specified/internal`、新证据ID和路径存在、当前测试范围2个证据路径及研究报告存在，`git diff --check`通过。没有执行产品浏览器、运行API或数据库验证，专业质量结果须由主智能体另外取得。
+`validation-evidence`（前次设计/调研已执行的历史结果，不替本轮运行门禁）：在`gmp-platform/backend`执行`mvn -Dtest=BusinessKnowledgeModelTest test`，59项、0失败/错误/跳过，`BUILD SUCCESS`，日志`/tmp/edhr-form-dhr-trace-query-knowledge-20261013.log`。184份知识YAML及同包解析、39唯一性与证据路径、`git diff --check`通过；当时未执行浏览器、运行API或数据库验证。本轮修正后的知识与运行验证结果另记。

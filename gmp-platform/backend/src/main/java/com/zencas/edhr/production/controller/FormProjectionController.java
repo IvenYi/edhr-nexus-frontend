@@ -69,6 +69,9 @@ public class FormProjectionController {
         if (query.operationName() != null && !query.operationName().isBlank()) { where.append(" AND f.operation_name=?"); args.add(query.operationName().trim()); }
         if (query.filters() != null) for (var filter : query.filters().entrySet()) {
             String key = filter.getKey();
+            boolean common = Set.of("workOrderNo", "productCode", "productName", "unit", "teamText", "documentNumberText", "createdBy", "updatedBy", "createdDateFrom", "createdDateTo", "updatedDateFrom", "updatedDateTo").contains(key);
+            boolean specific = ("production".equals(query.modelId()) ? Set.of("reporter", "productionDateFrom", "productionDateTo") : Set.of("materialCode", "materialName", "materialLotText", "category", "reason")).contains(key);
+            if (!common && !specific) throw invalid("筛选属性不适用于此业务报表");
             if (filter.getValue() == null || filter.getValue().isBlank() || filter.getValue().length() > 512) throw invalid("筛选属性或值不受支持");
             String value = filter.getValue().trim();
             if (Set.of("workOrderNo", "productCode", "productName").contains(key)) {
@@ -89,7 +92,7 @@ public class FormProjectionController {
                 }
             } else if (Set.of("createdBy", "updatedBy").contains(key)) {
                 where.append("createdBy".equals(key) ? " AND f.created_by=?" : " AND f.updated_by=?"); args.add(value);
-            } else if (Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText", "unit", "reason", "category", "reporter").contains(key)) {
+            } else if (Set.of("materialLotText", "teamText", "documentNumberText", "unit", "reason", "category", "reporter").contains(key)) {
                 if ("reporter".equals(key) && !"production".equals(query.modelId())) throw invalid("报工人仅用于报工记录");
                 where.append(" AND (r.attributes ->> ? = ? OR r.attributes ->> ? = ?)");
                 args.add(key); args.add(value); args.add(key + "Label"); args.add(value);

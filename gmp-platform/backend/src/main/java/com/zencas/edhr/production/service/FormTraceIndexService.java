@@ -103,18 +103,39 @@ public class FormTraceIndexService {
 
     public ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
                             Map<String, String> filters, int page, int size) {
+        return query(objectId, operationId, objectNo, operationName, filters, page, size, true, Map.of(), false);
+    }
+
+    public ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
+                            Map<String, String> filters, int page, int size, boolean reverse, Map<String, String> properties) {
+        return query(objectId, operationId, objectNo, operationName, filters, page, size, reverse, properties, true);
+    }
+
+    private ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
+                            Map<String, String> filters, int page, int size, boolean reverse, Map<String, String> properties, boolean includeContext) {
         Map<String, String> selected = filters == null ? Map.of() : filters;
-        StringBuilder where = new StringBuilder(" WHERE f.tenant_id='default'");
+        StringBuilder where = new StringBuilder(" WHERE f.tenant_id='default' AND f.source_type='PRODUCTION_EXECUTION'");
         List<Object> args = new ArrayList<>();
         if (objectId != null) { where.append(" AND f.object_id=?"); args.add(objectId); }
         if (operationId != null && !operationId.isBlank()) { where.append(" AND f.operation_id=?"); args.add(operationId); }
         if (objectNo != null && !objectNo.isBlank()) { where.append(" AND f.object_no=?"); args.add(objectNo.trim()); }
         if (operationName != null && !operationName.isBlank()) { where.append(" AND f.operation_name=?"); args.add(operationName.trim()); }
-        where.append(" AND EXISTS(SELECT 1 FROM form_trace_value a WHERE a.form_instance_id=f.id AND a.tenant_id=f.tenant_id");
-        appendSameRowConditions(where, args, selected, "a");
-        where.append(')');
+        String from = " FROM form_instance_record f";
+        if (includeContext) {
+            from += " LEFT JOIN production_execution e ON e.object_id=f.object_id";
+            TraceReportFilters.append(where, args, properties, Map.ofEntries(
+                    Map.entry("instanceNo", "f.instance_no"), Map.entry("templateName", "f.template_name"),
+                    Map.entry("workOrderNo", "f.work_order_no"), Map.entry("status", "CASE WHEN f.status='DRAFT' THEN 'DRAFT' ELSE COALESCE(f.saved_stage,CASE WHEN f.status='ACTIVE' THEN 'FILLING' ELSE f.status END) END"),
+                    Map.entry("productCode", "e.snapshot_json::jsonb->'context'->>'productCode'"),
+                    Map.entry("productName", "e.snapshot_json::jsonb->'context'->>'productName'"),
+                    Map.entry("createdBy", "f.created_by"), Map.entry("createdAt", "f.created_at")));
+        }
+        if (reverse) {
+            where.append(" AND EXISTS(SELECT 1 FROM form_trace_value a WHERE a.form_instance_id=f.id AND a.tenant_id=f.tenant_id");
+            appendSameRowConditions(where, args, selected, "a"); where.append(')');
+        }
         ObjectNode result = mapper.createObjectNode();
-        result.put("total", jdbc.queryForObject("SELECT count(*) FROM form_instance_record f" + where, Long.class, args.toArray()));
+        result.put("total", jdbc.queryForObject("SELECT count(*)" + from + where, Long.class, args.toArray()));
 
         StringBuilder hits = new StringBuilder("SELECT jsonb_agg(jsonb_build_object('bindingId','trace','rowKey',v.row_key,'tableId',v.table_id,'rowIndex',v.row_index,");
         hits.append("'attributes',jsonb_build_object(v.item_id,v.value_text),'sources',jsonb_build_object(v.item_id,v.field_id),")
@@ -132,22 +153,26 @@ public class FormTraceIndexService {
             appendSameRowConditions(hits, hitArgs, selected, "v");
             hits.append("))");
         }
+        if (!reverse) { hits = new StringBuilder("SELECT '[]'::jsonb"); hitArgs.clear(); }
         List<Object> pageArgs = new ArrayList<>(hitArgs); pageArgs.addAll(args);
         pageArgs.add(size); pageArgs.add((long) page * size);
+        String productSelect = includeContext ? ",e.snapshot_json::jsonb->'context' AS production_context" : ",NULL AS production_context";
         result.set("records", mapper.valueToTree(jdbc.query("""
                 SELECT f.*,f.snapshot_json::jsonb->'projection'->'lookupItems' AS lookup_items,
-                (""" + hits + ") AS hits FROM form_instance_record f" + where + " ORDER BY f.updated_at DESC,f.id DESC LIMIT ? OFFSET ?", (rs, index) -> {
+                (""" + hits + ") AS hits" + productSelect + from + where + " ORDER BY f.updated_at DESC,f.id DESC LIMIT ? OFFSET ?", (rs, index) -> {
             ObjectNode record = mapper.createObjectNode().put("id", rs.getString("id")).put("instanceId", rs.getString("id"))
                     .put("instanceNo", rs.getString("instance_no")).put("status", rs.getString("status"))
                     .put("savedStage", rs.getString("saved_stage"))
                     .put("objectId", rs.getString("object_id")).put("objectNo", rs.getString("object_no"))
                     .put("operationId", rs.getString("operation_id")).put("operationName", rs.getString("operation_name"))
+                    .put("workOrderNo", rs.getString("work_order_no")).put("templateName", rs.getString("template_name"))
                     .put("createdBy", rs.getString("created_by")).put("createdAt", rs.getString("created_at"))
                     .put("updatedBy", rs.getString("updated_by")).put("updatedAt", rs.getString("updated_at"))
                     .put("bindingId", "trace").put("rowKey", "form").put("revision", 0);
             record.putNull("batchId"); record.putObject("attributes"); record.putObject("sources");
             record.set("hits", parse(rs.getString("hits")));
             record.set("lookupItems", rs.getString("lookup_items") == null ? mapper.createObjectNode() : parse(rs.getString("lookup_items")));
+            record.set("context", rs.getString("production_context") == null ? mapper.createObjectNode() : parse(rs.getString("production_context")));
             record.putObject("sourceMetadata").put("instanceId", rs.getString("id")).put("status", rs.getString("status"))
                     .put("savedStage", rs.getString("saved_stage"))
                     .put("savedAt", rs.getString("updated_at")).put("templateName", rs.getString("template_name"))
