@@ -83,6 +83,7 @@ import type {
   TemplateDesignerDocument,
 } from "./template-designer-react/types";
 import { getRdoVersionStatusMeta } from "@/utils/rdoVersionStatus";
+import { resolveDhrWorkspaceVersion } from './dhrWorkspaceVersion';
 
 interface DirectoryNode extends DhrDirectoryRecord {
   children: DirectoryNode[];
@@ -1189,20 +1190,27 @@ function FormReferencePreviewDrawer({ reference, onClose }: { reference: Selecte
   );
 }
 
-export default function DhrTemplateWorkspaceDialog({
-  open,
-  template,
-  initialVersionId,
-  onClose,
-}: {
+interface DhrTemplateWorkspaceProps {
   open: boolean;
   template: TemplateModelingRecord | null;
   initialVersionId?: string | number | null;
   onClose: () => void;
-}) {
+}
+
+export default function DhrTemplateWorkspaceDialog(props: DhrTemplateWorkspaceProps) {
+  // A new target must not inherit another template/version's staged edits.
+  return <DhrTemplateWorkspace key={JSON.stringify([props.open, props.template?.id, props.initialVersionId ?? null])} {...props} />;
+}
+
+function DhrTemplateWorkspace({
+  open,
+  template,
+  initialVersionId,
+  onClose,
+}: DhrTemplateWorkspaceProps) {
   const queryClient = useQueryClient();
   const templateId = template?.id;
-  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
+  const [preferredVersionId, setPreferredVersionId] = useState<string | null>(
     null,
   );
   const [selectedDirectoryId, setSelectedDirectoryId] = useState<string | null>(
@@ -1260,6 +1268,9 @@ export default function DhrTemplateWorkspaceDialog({
     queryFn: async () =>
       (await getDhrFormTemplateOptions(templateId!)).data.data,
   });
+  const versions = workspaceQuery.isSuccess ? workspaceQuery.data?.versions : undefined;
+  const versionSelection = resolveDhrWorkspaceVersion(versions, initialVersionId, preferredVersionId);
+  const selectedVersionId = versionSelection.versionId;
   const compositionQuery = useQuery({
     queryKey: ["dhr-template-composition", templateId, selectedVersionId],
     enabled: open && Boolean(templateId) && Boolean(selectedVersionId),
@@ -1268,16 +1279,16 @@ export default function DhrTemplateWorkspaceDialog({
         .data,
   });
 
-  const versions = workspaceQuery.data?.versions ?? [];
   const selectedVersion =
-    versions.find((version) => version.id === selectedVersionId) ??
-    compositionQuery.data?.version ??
+    versions?.find((version) => String(version.id) === selectedVersionId) ??
     null;
   const compositionRevision = compositionQuery.data
     ? `${compositionQuery.data.version.id}:${compositionQuery.dataUpdatedAt}`
     : "";
-  const directories = compositionDraft?.directories ?? [];
-  const items = compositionDraft?.items ?? [];
+  const draftMatchesVersion = Boolean(selectedVersionId && compositionDraft &&
+    String(compositionDraft.version.id) === selectedVersionId);
+  const directories = draftMatchesVersion ? compositionDraft!.directories : [];
+  const items = draftMatchesVersion ? compositionDraft!.items : [];
   const selectedDirectory =
     directories.find((directory) => directory.id === selectedDirectoryId) ??
     null;
@@ -1291,7 +1302,8 @@ export default function DhrTemplateWorkspaceDialog({
     () => filterDirectoryTree(directoryTree, directorySearch),
     [directorySearch, directoryTree],
   );
-  const editable = Boolean(selectedVersion);
+  const editable = open && Boolean(selectedVersion) && draftMatchesVersion &&
+    compositionQuery.isSuccess && String(compositionQuery.data.version.id) === selectedVersionId;
   const selectedTreeNode = selectedEvidence
     ? { kind: "form" as const, id: selectedEvidence.id }
     : selectedDirectory
@@ -1364,12 +1376,12 @@ export default function DhrTemplateWorkspaceDialog({
 
   useEffect(() => {
     if (!open) {
-      setSelectedVersionId(null);
+      setPreferredVersionId(null);
       setSelectedDirectoryId(null);
       setSelectedEvidenceId(null);
       return;
     }
-    setSelectedVersionId(
+    setPreferredVersionId(
       initialVersionId == null ? null : String(initialVersionId),
     );
     setSelectedDirectoryId(null);
@@ -1378,33 +1390,17 @@ export default function DhrTemplateWorkspaceDialog({
 
   useEffect(() => {
     if (!open) return;
-    if (versions.length === 0) return;
-    const requestedVersionId =
-      initialVersionId == null ? null : String(initialVersionId);
-    const requestedVersionExists = requestedVersionId !== null &&
-      versions.some((version) => String(version.id) === requestedVersionId);
-    const selectedVersionExists = selectedVersionId !== null &&
-      versions.some((version) => String(version.id) === selectedVersionId);
-    const nextVersionId = requestedVersionExists
-      ? requestedVersionId
-      : selectedVersionExists
-        ? selectedVersionId
-        : String(versions[0]?.id ?? '');
-
-    if (nextVersionId && nextVersionId !== selectedVersionId) {
-      setSelectedVersionId(nextVersionId);
-    }
-  }, [initialVersionId, open, selectedVersionId, versions]);
+    if (selectedVersionId) setPreferredVersionId(selectedVersionId);
+  }, [open, selectedVersionId]);
 
   useEffect(() => {
-    if (!selectedVersionId) return;
     setSelectedDirectoryId(null);
     setSelectedEvidenceId(null);
     setBaseComposition(null);
     setCompositionDraft(null);
     setAppliedCompositionRevision("");
     setHasChanges(false);
-  }, [selectedVersionId]);
+  }, [selectedVersionId, templateId]);
 
   useEffect(() => {
     if (
@@ -1432,7 +1428,8 @@ export default function DhrTemplateWorkspaceDialog({
   });
 
   useEffect(() => {
-    if (!compositionQuery.data) return;
+    if (!selectedVersionId || !compositionQuery.isSuccess ||
+        String(compositionQuery.data.version.id) !== selectedVersionId) return;
     if (
       hasChanges ||
       (appliedCompositionRevision === compositionRevision && compositionDraft)
@@ -1447,8 +1444,10 @@ export default function DhrTemplateWorkspaceDialog({
     appliedCompositionRevision,
     compositionDraft,
     compositionQuery.data,
+    compositionQuery.isSuccess,
     compositionRevision,
     hasChanges,
+    selectedVersionId,
   ]);
 
   useEffect(() => {
@@ -1764,6 +1763,8 @@ export default function DhrTemplateWorkspaceDialog({
     mutationFn: async () => {
       if (!templateId || !selectedVersionId || !compositionDraft)
         throw new Error("批记录设计上下文缺失");
+      if (!editable || String(compositionDraft.version.id) !== selectedVersionId)
+        throw new Error("目标版本不可用或草稿版本不匹配，请关闭后重新打开");
       const draftDirectoryMap = new Map(
         compositionDraft.directories.map((directory) => [
           directory.id,
@@ -1859,6 +1860,15 @@ export default function DhrTemplateWorkspaceDialog({
           </Tooltip>
         </Box>
 
+        {workspaceQuery.isError ? (
+          <Alert severity="error">无法加载批记录版本，请关闭后重试。</Alert>
+        ) : versionSelection.status === 'missing' ? (
+          <Alert severity="error">指定的批记录版本不存在或已不可用，已停止加载和保存。请关闭并重新选择版本。</Alert>
+        ) : versionSelection.status === 'empty' ? (
+          <Alert severity="warning">当前模板暂无可用版本。</Alert>
+        ) : compositionQuery.isError ? (
+          <Alert severity="error">无法加载该版本的批记录设计，请关闭后重试。</Alert>
+        ) : null}
         <Box sx={{ bgcolor: "#fff", borderBottom: "1px solid #e4e7ed" }}>
           <Stack
             direction="row"
@@ -2095,7 +2105,7 @@ export default function DhrTemplateWorkspaceDialog({
               />
             </Stack>
             <Box sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
-              {compositionQuery.isLoading || !compositionDraft ? (
+              {workspaceQuery.isLoading || (selectedVersionId && compositionQuery.isLoading) ? (
                 <Box
                   sx={{ display: "grid", placeItems: "center", height: "100%" }}
                 >

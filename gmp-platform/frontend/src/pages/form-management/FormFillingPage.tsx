@@ -257,8 +257,8 @@ function FormWorklistFillDialog({ identity, onClose, onChanged }: { identity: Fo
     try { return await uploadExecutionFile(identity.productionObjectId, file); }
     finally { setBusy(false); }
   };
-  const references = (fieldId: string, keyword: string) => identity
-    ? getExecutionReferences(identity.productionObjectId, identity.operationId, identity.formId, fieldId, keyword)
+  const references = (fieldId: string, keyword: string, dependencies: ExecutionValues) => identity
+    ? getExecutionReferences(identity.productionObjectId, identity.operationId, identity.formId, fieldId, keyword, dependencies)
     : Promise.resolve([]);
   const runAction = async (button: ExecutionButton, signature?: { account: string; password: string; opinion: string }) => {
     if (!identity || !detail || busy) return;

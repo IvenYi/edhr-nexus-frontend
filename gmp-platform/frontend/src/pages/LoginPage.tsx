@@ -7,6 +7,7 @@ import {
   Visibility, LockOutlined, PersonOutline,
 } from '@mui/icons-material';
 import client from '@/api/client';
+import { clearSessionQueryCache } from '@/utils/queryClient';
 import { DEFAULT_SYSTEM_BRANDING, useSystemBranding } from '@/hooks/useSystemBranding';
 import {
   DEFAULT_IDLE_LOGOUT_MINUTES,
@@ -81,6 +82,7 @@ export default function LoginPage() {
       const res = await client.post('/auth/login', { username, password });
       const loginData = res.data.data as Record<string, unknown>;
       const { token, user } = loginData as { token: string; user: unknown };
+      clearSessionQueryCache();
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       storeSessionPolicy(loginData);

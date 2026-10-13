@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { clearAuthStorage } from '@/utils/sessionPolicy';
+import { clearSessionQueryCache } from '@/utils/queryClient';
 
 interface User {
   id: number;
@@ -23,6 +24,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   token: localStorage.getItem('token'),
   isAuthenticated: !!localStorage.getItem('token'),
   login: (token, user) => {
+    clearSessionQueryCache();
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
     set({ token, user, isAuthenticated: true });

@@ -1,3 +1,5 @@
+import { clearSessionQueryCache } from './queryClient';
+
 export const SESSION_STORAGE_KEYS = {
   sessionStartedAt: 'sessionStartedAt',
   lastActivityAt: 'lastActivityAt',
@@ -20,6 +22,7 @@ export function removeSessionPolicyStorage() {
 }
 
 export function clearAuthStorage() {
+  clearSessionQueryCache();
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   removeSessionPolicyStorage();

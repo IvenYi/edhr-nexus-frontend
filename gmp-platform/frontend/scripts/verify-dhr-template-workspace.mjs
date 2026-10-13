@@ -63,10 +63,10 @@ mustInclude(apiContent, 'evidenceCount?: number', 'batch-record child rows shoul
 mustInclude(packageJson.scripts.dev, '--config vite.config.ts', 'development server should load the source Vite proxy configuration');
 mustNotInclude(workspaceContent, 'variant="filled"', 'workspace feedback must use the system Alert appearance');
 
-mustInclude(workspaceContent, 'if (versions.length === 0) return;', 'an explicitly selected DHR version must survive the initial workspace query');
-mustInclude(workspaceContent, 'const requestedVersionId =', 'workspace version selection should normalize the explicit design target');
-mustInclude(workspaceContent, 'const requestedVersionExists = requestedVersionId !== null', 'an explicit valid version must take precedence over the default version');
-mustInclude(workspaceContent, 'requestedVersionExists\n      ? requestedVersionId', 'a cached workspace must not replace the requested version with the newest version');
+mustInclude(workspaceContent, 'resolveDhrWorkspaceVersion(versions, initialVersionId, preferredVersionId)', 'resolve the exact target before enabling composition queries');
+mustInclude(workspaceContent, "versionSelection.status === 'missing'", 'an absent explicit version must show an error instead of selecting another version');
+mustInclude(workspaceContent, 'String(compositionDraft.version.id) !== selectedVersionId', 'saving must reject a draft belonging to another version');
+mustInclude(workspaceContent, 'const selectedVersionId = versionSelection.versionId;', 'read and write APIs must use the same validated target');
 mustInclude(workspaceContent, 'setCompositionDraft(null);', 'switching versions must clear any prior version composition while the selected version loads');
 mustInclude(workspaceContent, 'DhrContentTree', 'DHR workspace should present directories and referenced forms in one tree');
 mustInclude(workspaceContent, 'FormCanvasPreview', 'selecting a referenced form should render its read-only preview');
