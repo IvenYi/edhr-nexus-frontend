@@ -6,6 +6,7 @@ import { test } from 'node:test';
 import vm from 'node:vm';
 import { build } from 'esbuild';
 import ts from 'typescript';
+import { QueryClient, QueryObserver } from '@tanstack/react-query';
 
 const root = resolve(import.meta.dirname, '..');
 const require = createRequire(import.meta.url);
@@ -192,7 +193,7 @@ test('F-003: resolution distinguishes pending, missing, empty, explicit and defa
 
 // Render the actual workspace function with hook/API boundaries, before effects.
 // This catches the dangerous frame where old state exists after a target changes.
-function workspaceHarness({ versions = [{ id: 'B', version: 'B' }], requested = 'A', draftId = 'B', status = 'success' } = {}) {
+function workspaceHarness({ versions = [{ id: 'B', version: 'B' }], requested = 'A', draftId = 'B', status = 'success', workspaceFlags = {}, draftDirectories = [] } = {}) {
   const path = 'src/pages/master-data/DhrTemplateWorkspaceDialog.tsx';
   const text = read(path);
   const source = ts.createSourceFile(path, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -203,16 +204,19 @@ function workspaceHarness({ versions = [{ id: 'B', version: 'B' }], requested = 
     if (bindings && ts.isNamedImports(bindings)) for (const item of bindings.elements) globals[item.name.text] = () => ({});
   }
   const queries = [], mutations = [], saves = [];
-  const composition = (id) => ({ version: { id, version: id }, directories: [], items: [] });
+  const effects = [], stateUpdates = new Map();
+  const composition = (id) => ({ version: { id, version: id }, directories: draftDirectories, items: [] });
   Object.assign(globals, {
     resolveDhrWorkspaceVersion,
-    __state: (name, initial) => [name === 'compositionDraft' ? composition(draftId) : name === 'hasChanges' ? true : typeof initial === 'function' ? initial() : initial, () => {}],
-    useMemo: (fn) => fn(), useEffect: () => {}, useRecordLocationAction: () => {},
+    __state: (name, initial) => [name === 'compositionDraft' ? composition(draftId) : name === 'hasChanges' ? true : typeof initial === 'function' ? initial() : initial, (value) => stateUpdates.set(name, value)],
+    useMemo: (fn) => fn(), useEffect: (callback, dependencies) => effects.push({ callback, dependencies }), useRecordLocationAction: () => {},
     useQueryClient: () => ({ invalidateQueries: async () => {} }),
     useQuery: (options) => {
       queries.push(options);
       const workspace = options.queryKey[0] === 'dhr-template-workspace';
       return { isSuccess: workspace ? status === 'success' : true, isLoading: workspace && status === 'pending', isError: workspace && status === 'error', dataUpdatedAt: 1,
+        isFetchedAfterMount: status !== 'pending', isFetching: status === 'pending',
+        ...(workspace ? workspaceFlags : {}),
         data: workspace ? { versions } : options.queryKey[0] === 'dhr-template-composition' ? composition(options.queryKey[2]) : [] };
     },
     useMutation: (options) => { mutations.push(options); return { isPending: false, mutate() {} }; },
@@ -242,7 +246,7 @@ function workspaceHarness({ versions = [{ id: 'B', version: 'B' }], requested = 
   vm.runInNewContext(code, { module, exports: module.exports, require, console, ...globals });
   const props = { open: true, template: { id: 'template' }, initialVersionId: requested, onClose() {} };
   const tree = module.exports.DhrTemplateWorkspace(props);
-  return { queries, mutations, saves, tree, wrapper: module.exports.default, props };
+  return { queries, mutations, saves, tree, effects, stateUpdates, wrapper: module.exports.default, props };
 }
 
 test('F-003: missing target never reads a fallback and refuses saving an old draft', async () => {
@@ -283,4 +287,110 @@ test('F-003: target changes and close/reopen create a distinct workspace state b
   assert.notEqual(wrapper({ ...props, initialVersionId: 'B' }).key, key);
   assert.notEqual(wrapper({ ...props, open: false }).key, key);
   assert.equal(wrapper({ ...props }).key, key);
+});
+
+function renderedText(node) {
+  if (node == null || typeof node === 'boolean') return '';
+  if (Array.isArray(node)) return node.map(renderedText).join(' ');
+  return typeof node === 'object' ? renderedText(node.props?.children) : String(node);
+}
+
+function runChangedEffects(previous, next) {
+  assert.equal(previous.effects.length, next.effects.length);
+  next.effects.forEach((effect, index) => {
+    const before = previous.effects[index].dependencies;
+    if (!before || !effect.dependencies || effect.dependencies.some((value, i) => !Object.is(value, before[i]))) effect.callback();
+  });
+}
+
+test('F-003 recovery: a fresh workspace cache still revalidates on opening', async () => {
+  const client = new QueryClient({ defaultOptions: { queries: { staleTime: 30000, retry: false, gcTime: Infinity } } });
+  const options = workspaceHarness().queries.find((query) => query.queryKey?.[0] === 'dhr-template-workspace');
+  client.setQueryData(options.queryKey, { versions: [{ id: 'B' }] });
+  let release, calls = 0;
+  const observer = new QueryObserver(client, { ...options, queryFn: () => { calls += 1; return new Promise((done) => { release = done; }); } });
+  const unsubscribe = observer.subscribe(() => {});
+  try {
+    assert.equal(calls, 1, 'opening must fetch even within the 30-second freshness window');
+    const latest = { versions: [{ id: 'A' }, { id: 'B' }] };
+    release(latest);
+    await new Promise(setImmediate);
+    assert.deepEqual(observer.getCurrentResult().data, latest);
+  } finally { unsubscribe(); client.clear(); }
+});
+
+test('F-003 recovery: missing cached target is checking, not confirmed missing, until revalidation finishes', async () => {
+  const checking = workspaceHarness({ workspaceFlags: { isFetchedAfterMount: false, isFetching: true } });
+  assert.match(renderedText(checking.tree), /正在重新核实/);
+  assert.doesNotMatch(renderedText(checking.tree), /未找到所选|不存在或已不可用/);
+  assert.equal(checking.queries.find((q) => q.queryKey?.[0] === 'dhr-template-composition').enabled, false);
+  await assert.rejects(checking.mutations[0].mutationFn());
+  const missing = workspaceHarness();
+  assert.match(renderedText(missing.tree), /未找到所选批记录版本/);
+  await assert.rejects(missing.mutations[0].mutationFn());
+});
+
+test('F-003 recovery: background error and retry preserve the dirty target and close confirmation', async () => {
+  const options = { requested: 'B', draftId: 'B', draftDirectories: [{ id: 'directory', name: 'unsaved', sortOrder: 10 }] };
+  const before = workspaceHarness(options);
+  const failed = workspaceHarness({ ...options, status: 'error' });
+  runChangedEffects(before, failed);
+  assert.equal(failed.stateUpdates.has('compositionDraft'), false, 'a query error must not reset the draft');
+  assert.notEqual(failed.stateUpdates.get('hasChanges'), false, 'a query error must not clear the dirty flag');
+  assert.match(renderedText(failed.tree), /当前草稿已保留/);
+  failed.tree.props.onClose();
+  assert.equal(failed.stateUpdates.get('discardConfirm'), true);
+  await assert.rejects(failed.mutations[0].mutationFn());
+  const recovered = workspaceHarness(options);
+  runChangedEffects(failed, recovered);
+  assert.equal(recovered.stateUpdates.has('compositionDraft'), false, 'retry must not overwrite dirty content');
+  await recovered.mutations[0].mutationFn();
+  assert.equal(recovered.saves[0][1], 'B');
+  assert.equal(recovered.saves[0][2].directories[0].name, 'unsaved');
+});
+
+test('F-003 recovery: saves wait for revalidation, but expired existing targets remain editable', async () => {
+  for (const workspaceFlags of [{ isFetchedAfterMount: false }, { isFetching: true }]) {
+    const waiting = workspaceHarness({ requested: 'B', workspaceFlags });
+    await assert.rejects(waiting.mutations[0].mutationFn());
+    assert.equal(waiting.saves.length, 0);
+  }
+  const expired = workspaceHarness({ requested: 'B', versions: [{ id: 'newer', status: 'ACTIVE' }, { id: 'B', status: 'EXPIRED' }] });
+  await expired.mutations[0].mutationFn();
+  assert.equal(expired.saves[0][1], 'B');
+});
+
+test('F-003 recovery: version creation/copy/edit invalidates only its owning workspace', async () => {
+  const client = new QueryClient();
+  const globals = { queryClient: client, useMutation: (options) => options, showMessage() {},
+    config: { queryKey: 'list', auditQueryKey: 'audit' }, defaultEffectiveFromValue: () => '',
+  };
+  for (const name of ['setDhrVersionDialog', 'setDhrVersionLabel', 'setDhrVersionCode', 'setDhrVersionOfflineVersion', 'setDhrVersionDescription', 'setDhrVersionEffectiveFrom', 'setDhrVersionEffectiveTo']) globals[name] = () => {};
+  const mutation = pageCallback('src/pages/master-data/TemplateModelingPage.tsx', 'saveDhrVersionMutation', globals);
+  try {
+    for (const mode of ['create', 'copy', 'edit']) {
+      client.setQueryData(['dhr-template-workspace', 'T'], { versions: [] });
+      client.setQueryData(['dhr-template-workspace', 'other'], { versions: [] });
+      await mutation.onSuccess(undefined, { row: { id: 'T' }, mode });
+      assert.equal(client.getQueryState(['dhr-template-workspace', 'T']).isInvalidated, true, mode);
+      assert.equal(client.getQueryState(['dhr-template-workspace', 'other']).isInvalidated, false, mode);
+    }
+  } finally { client.clear(); }
+});
+
+test('F-003 recovery: deleting a DHR version invalidates its workspace, not form-template caches', async () => {
+  const client = new QueryClient();
+  const globals = { queryClient: client, useMutation: (options) => options, showMessage() {}, setDeleteVersionTarget() {},
+    pageKey: 'batchRecordTemplates', config: { queryKey: 'list', auditQueryKey: 'audit', categoryQueryKey: 'categories' },
+  };
+  const mutation = pageCallback('src/pages/master-data/TemplateModelingPage.tsx', 'deleteVersionMutation', globals);
+  try {
+    client.setQueryData(['dhr-template-workspace', 'T'], { versions: [] });
+    await mutation.onSuccess(undefined, { row: { id: 'T' } });
+    assert.equal(client.getQueryState(['dhr-template-workspace', 'T']).isInvalidated, true);
+    client.setQueryData(['dhr-template-workspace', 'T'], { versions: [] });
+    globals.pageKey = 'formTemplates';
+    await mutation.onSuccess(undefined, { row: { id: 'T' } });
+    assert.equal(client.getQueryState(['dhr-template-workspace', 'T']).isInvalidated, false);
+  } finally { client.clear(); }
 });
