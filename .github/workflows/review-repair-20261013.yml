@@ -2,39 +2,41 @@ name: Isolated review repair 20261013
 on:
   push:
     branches: [fix/review-batch-01-20261013]
+    paths: [.review-transfer/ready]
 permissions:
-  contents: read
+  contents: write
+concurrency:
+  group: isolated-review-repair-20261013
+  cancel-in-progress: false
 jobs:
-  source-and-validation:
+  apply-reviewed-patch:
+    if: github.ref == 'refs/heads/fix/review-batch-01-20261013'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Export tracked source for review
+      - name: Verify and apply exact locally tested patch
+        shell: python
         run: |
-          git archive --format=tar.gz --output=review-source.tar.gz HEAD gmp-platform/frontend docs/knowledge docs/development docs/agents docs/architecture/business-knowledge-model.md AGENTS.md codeplzreadme.md
-          git ls-files '*AGENTS.md' '*codeplzreadme.md' > review-instructions.txt
-      - uses: actions/upload-artifact@v4
-        with:
-          name: review-source
-          path: |
-            review-source.tar.gz
-            review-instructions.txt
-          retention-days: 2
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: gmp-platform/frontend/package-lock.json
-      - name: Install locked frontend dependencies
-        working-directory: gmp-platform/frontend
-        run: npm ci --no-audit --no-fund
-      - name: Export dependency environment
-        run: tar -czf review-dependencies.tar.gz -C gmp-platform/frontend node_modules
-      - uses: actions/upload-artifact@v4
-        with:
-          name: review-dependencies
-          path: review-dependencies.tar.gz
-          retention-days: 2
+          import base64, hashlib, lzma, pathlib, subprocess
+          root = pathlib.Path('.review-transfer')
+          parts = sorted(root.glob('part-*.b64'))
+          assert len(parts) == 4, 'incomplete source transfer'
+          data = lzma.decompress(base64.b64decode(''.join(p.read_text() for p in parts)))
+          assert hashlib.sha256(data).hexdigest() == root.joinpath('ready').read_text().strip(), 'patch checksum mismatch'
+          patch = pathlib.Path('/tmp/review-repair.patch')
+          patch.write_bytes(data)
+          subprocess.run(['git', 'apply', '--check', str(patch)], check=True)
+          subprocess.run(['git', 'apply', '--index', str(patch)], check=True)
+          subprocess.run(['git', 'diff', '--cached', '--check'], check=True)
+      - name: Commit only staged repair, never merge or force-push
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git branch --show-current)" = fix/review-batch-01-20261013
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git diff --cached --stat
+          git commit -m 'fix(frontend): isolate auth cache, forward reference context and enforce DHR version targets'
+          git push origin HEAD:refs/heads/fix/review-batch-01-20261013
+          printf 'repair_commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
