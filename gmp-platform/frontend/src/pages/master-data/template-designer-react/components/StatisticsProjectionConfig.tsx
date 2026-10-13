@@ -17,6 +17,7 @@ export default function StatisticsProjectionConfig({ tableId, selectedFieldId }:
   const { data: catalog } = useProjectionCatalog();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [addingAnother, setAddingAnother] = useState(false);
+  const [collapsedModels, setCollapsedModels] = useState<string[]>([]);
   const addedRecord = useRef<HTMLDivElement | null>(null);
   const pendingScroll = useRef(false);
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function StatisticsProjectionConfig({ tableId, selectedFieldId }:
     const id = crypto.randomUUID();
     pendingScroll.current = true;
     update([...bindings, { id, modelId, enabled: false, ...(tableId ? { tableId } : {}), sources: {} }]);
+    setCollapsedModels(current => current.filter(id => id !== modelId));
     setEditingId(id); setAddingAnother(false);
   };
   return <Stack spacing={1.5}>
@@ -46,9 +48,15 @@ export default function StatisticsProjectionConfig({ tableId, selectedFieldId }:
     {!tableId && <Typography variant="caption" color="text.secondary">把描述同一笔业务的字段对应起来。</Typography>}
     {modelIds.map(modelId => <Stack spacing={1} key={modelId}>
       {!tableId && <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="body2" fontWeight={600}>{catalog?.models.find(model => model.id === modelId)?.name ?? '已失效用途'}</Typography>
+        <Button size="small" color="inherit" aria-expanded={!collapsedModels.includes(modelId)}
+          startIcon={collapsedModels.includes(modelId) ? <ChevronRight /> : <ExpandMore />}
+          sx={{ flex: 1, justifyContent: 'flex-start', px: 0, minWidth: 0, fontWeight: 600 }}
+          onClick={() => setCollapsedModels(current => current.includes(modelId) ? current.filter(id => id !== modelId) : [...current, modelId])}>
+          {catalog?.models.find(model => model.id === modelId)?.name ?? '已失效用途'}
+        </Button>
         <Tooltip title={`添加${projectionDetailName(modelId)}`}><IconButton size="small" color="primary" aria-label={`添加${projectionDetailName(modelId)}`} onClick={() => add(modelId)}><Add fontSize="small" /></IconButton></Tooltip>
       </Stack>}
+    <Collapse in={!!tableId || !collapsedModels.includes(modelId)} unmountOnExit><Stack spacing={1}>
     {items.filter(binding => binding.modelId === modelId).map(binding => {
       const definition = catalog?.models.find(model => model.id === binding.modelId);
       const complete = projectionConfigurationIssues(document.model, binding, definition).length === 0;
@@ -70,6 +78,7 @@ export default function StatisticsProjectionConfig({ tableId, selectedFieldId }:
             onChange={patch => update(bindings.map(item => item.id === binding.id ? { ...item, ...patch } : item))} /></Collapse></>}
       </Box>;
     })}
+    </Stack></Collapse>
     </Stack>)}
     {items.length > 0 && <Button size="small" color="inherit" aria-expanded={addingAnother} startIcon={addingAnother ? <ExpandMore /> : <ChevronRight />} sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => setAddingAnother(!addingAnother)}>其他统计用途</Button>}
     {(!items.length || addingAnother) && <TextField select size="small" fullWidth label={tableId ? (items.length ? '添加其他统计用途' : '这张子表统计什么') : '主表统计什么'} value="" onChange={event => {

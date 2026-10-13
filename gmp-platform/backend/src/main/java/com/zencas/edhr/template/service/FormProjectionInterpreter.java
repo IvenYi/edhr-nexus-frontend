@@ -36,7 +36,7 @@ public final class FormProjectionInterpreter {
         ATTRIBUTES.put("reason", "原因");
         ATTRIBUTES.put("category", "分类");
     }
-    private static final Map<String, String> MODELS = Map.of("formTrace", "按内容查找表单", "production", "正式报工", "scrap", "报废记录", "consumption", "实际物料消耗");
+    private static final Map<String, String> MODELS = Map.of("formTrace", "按内容查找表单", "production", "生产报工", "scrap", "报废记录", "consumption", "实际物料消耗");
     private static final Set<String> NUMBERS = Set.of("quantity", "goodQuantity", "ngQuantity", "workHours");
     private static final Set<String> TIMES = Set.of("reportStartTime", "reportEndTime");
     private static final Set<String> DICTIONARIES = Set.of("unit", "reason", "category");
@@ -117,7 +117,7 @@ public final class FormProjectionInterpreter {
             if (!sources.isObject() || sources.isEmpty()) throw invalid("请至少选择一个查询属性及来源字段");
             if (!"formTrace".equals(modelId)) {
                 if ("production".equals(modelId)) {
-                    if (!sources.hasNonNull("goodQuantity") && !sources.hasNonNull("ngQuantity")) throw invalid("请配置正式报工数量来源");
+                    if (!sources.hasNonNull("goodQuantity") && !sources.hasNonNull("ngQuantity")) throw invalid("请配置生产报工数量来源");
                 } else if (!sources.hasNonNull("quantity") || !sources.hasNonNull("material"))
                     throw invalid("请配置物料及数量来源");
             }

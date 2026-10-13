@@ -1,6 +1,8 @@
-import { Alert, Checkbox, IconButton, ListItemText, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Button, Collapse, IconButton, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import AdsClick from '@mui/icons-material/AdsClick';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 import { useEffect, useState } from 'react';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ProjectionBinding } from '../types/model';
@@ -13,13 +15,15 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
 }) {
   const document = useTemplateDesignerStore(state => state.document);
   const [addedTraceId, setAddedTraceId] = useState('');
+  const [moreExpanded, setMoreExpanded] = useState(false);
   const picker = useProjectionCanvasPicker();
   useEffect(() => () => picker?.cancel(binding.id), [binding.id]);
   if (!document) return null;
   const fields = projectionSources(document.model, binding);
   const required = projectionRequiredAttributes(binding.modelId);
-  const issues = projectionConfigurationIssues(document.model, binding, definition);
   const problems = projectionConfigurationProblems(document.model, binding, definition);
+  const detailProblem = problems.find(problem => problem.attributeId === 'detailFieldIds');
+  const issues = projectionConfigurationIssues(document.model, binding, definition).filter(issue => issue !== detailProblem?.message);
   const errorFor = (id: string) => showErrors ? problems.find(problem => problem.attributeId === id)?.message : undefined;
   const isTrace = binding.modelId === 'formTrace';
   const attributes = definition.attributes.filter(attribute => !isTrace || binding.sources[attribute.id] || attribute.id === addedTraceId);
@@ -27,6 +31,10 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     const order = ['material', 'quantity', 'goodQuantity', 'ngQuantity', 'workHours', 'unit', 'materialLotText', 'reportStartTime', 'reportEndTime', 'productionDate', 'reporter', 'category', 'reason', 'teamText', 'documentNumberText'];
     attributes.sort((left, right) => (order.indexOf(left.id) < 0 ? order.length : order.indexOf(left.id)) - (order.indexOf(right.id) < 0 ? order.length : order.indexOf(right.id)));
   }
+  const visibleAttributes = attributes.filter(attribute => isTrace || required.includes(attribute.id)
+    || binding.modelId === 'production' && ['goodQuantity', 'ngQuantity'].includes(attribute.id)
+    || binding.sources[attribute.id] || errorFor(attribute.id));
+  const moreAttributes = attributes.filter(attribute => !visibleAttributes.includes(attribute));
   const missingAttributes = Object.keys(binding.sources).filter(id => !definition.attributes.some(attribute => attribute.id === id));
   const traceCandidates = definition.attributes.filter(attribute => !binding.sources[attribute.id]
     && fields.some(field => acceptsProjectionAttribute(field, attribute) && !Object.values(binding.sources).includes(field.id)));
@@ -79,15 +87,16 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
       {traceCandidates.map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}
     </TextField>}
     {missingAttributes.map(id => <Alert key={id} severity="warning" action={<ProjectionRemoveButton label="移除失效的来源配置" onClick={() => selectSource(id, '')} />}>追溯项或业务信息已失效，原来源：{fields.find(field => field.id === binding.sources[id])?.name ?? '来源字段已失效'}</Alert>)}
-    {attributes.map(renderSource)}
-    {!isTrace && <Stack direction="row" spacing={0.5} alignItems="flex-start"><TextField select fullWidth size="small" label="明细中另外显示（可选）" value={binding.detailFieldIds ?? []}
-      error={Boolean(errorFor('detailFieldIds'))} helperText={errorFor('detailFieldIds')}
-      SelectProps={{ multiple: true, renderValue: value => (value as string[]).map(id => fields.find(field => field.id === id)?.name ?? '已失效').join('、') }}
-      onChange={event => { const detailFieldIds = typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value;
-        const next = { ...binding, detailFieldIds, rowKeyFieldId: undefined }; onChange({ detailFieldIds, rowKeyFieldId: undefined, enabled: projectionConfigurationIssues(document.model, next, definition).length === 0 }); }}>
-      {fields.filter(field => field.status !== 'disabled' && ['text', 'number', 'singleSelect', 'multiSelect', 'datetime', 'reference'].includes(field.type)).map(field =>
-        <MenuItem key={field.id} value={field.id}><Checkbox size="small" checked={binding.detailFieldIds?.includes(field.id) ?? false} /><ListItemText primary={field.name} /></MenuItem>)}
-    </TextField><Tooltip title="额外展示字段只在来源详情中显示，不参与分组或合计。"><IconButton size="small" aria-label="明细展示字段说明"><InfoOutlined fontSize="small" /></IconButton></Tooltip></Stack>}
+    {visibleAttributes.map(renderSource)}
+    {moreAttributes.length > 0 && <>
+      <Button size="small" color="inherit" aria-expanded={moreExpanded} startIcon={moreExpanded ? <ExpandMore /> : <ChevronRight />}
+        sx={{ alignSelf: 'flex-start', color: 'text.secondary' }} onClick={() => { picker?.cancel(binding.id); setMoreExpanded(!moreExpanded); }}>更多字段</Button>
+      <Collapse in={moreExpanded} unmountOnExit><Stack spacing={1.5}>{moreAttributes.map(renderSource)}</Stack></Collapse>
+    </>}
+    {detailProblem && <Alert severity="warning" action={<ProjectionRemoveButton label="移除失效的补充展示配置" onClick={() => {
+      const detailFieldIds = (binding.detailFieldIds ?? []).filter(id => !projectionConfigurationProblems(document.model, { ...binding, detailFieldIds: [id] }, definition).some(problem => problem.attributeId === 'detailFieldIds'));
+      const next = { ...binding, detailFieldIds }; onChange({ detailFieldIds, enabled: projectionConfigurationIssues(document.model, next, definition).length === 0 });
+    }} />}>{detailProblem.message.replace('请重新选择', '请移除失效的配置')}</Alert>}
     {issues.length > 0 && !showErrors && <Alert severity="warning" sx={{ fontSize: 12 }}>{issues.join('；')}</Alert>}
   </Stack>;
 }

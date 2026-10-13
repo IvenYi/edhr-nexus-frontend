@@ -147,16 +147,35 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0075-36
-        statement: 在现有画布统计侧栏中，预设业务报表展示的来源字段默认直接呈现在展开的业务配置内，不放入另一个默认收起的可选区；正式报工的开始时间、结束时间、报工人、生产日期及其他用途的同类报表属性均适用。展示层级不改变字段是否必填、保存校验或统计分组。静态操作与口径说明移至对应tip，投入工时下的解释段落直接删除；具体缺项、错误来源及其他阻断问题仍须明确可见并定位，不只藏在tip。报工人来源只接受引用-人员或签名，签名来源读取已保存的实际签署人身份及名称，不以文本、查询时当前登录人或创建人替代，不按签名人数扩展或重复计量数量和人时。本条局部supersedes DEC-0075-35及同切片现行说明中允许文本报工人与报表业务来源默认折叠的最小工程选择；不改变签名认证、来源权限、字段权限、原流程、使用时快照、最终完成入统计及真实执行/DHR归属。共用来源编辑器、字段顺序及签名值的具体读取路径属于工程选择；字段签署SIGN_FIELD与按钮事件FILL_SIGN_FIELD两条既有合法路径均保留已认证实际签署人的身份、名称及签名记录标识，不拆解历史展示文本猜身份。后者的结构化回填是本轮缺陷修复，不是新签署流程或新业务授权。本条当前specified/internal，不宣称实现验收或客户低学习成本已经验证。
+        statement: 在现有画布统计侧栏中，预设业务报表展示的来源字段默认直接呈现在展开的业务配置内，不放入另一个默认收起的可选区；正式报工的开始时间、结束时间、报工人、生产日期及其他用途的同类报表属性均适用。展示层级不改变字段是否必填、保存校验或统计分组。静态操作与口径说明移至对应tip，投入工时下的解释段落直接删除；具体缺项、错误来源及其他阻断问题仍须明确可见并定位，不只藏在tip。报工人来源只接受引用-人员或签名，签名来源读取已保存的实际签署人身份及名称，不以文本、查询时当前登录人或创建人替代，不按签名人数扩展或重复计量数量和人时。本条局部supersedes DEC-0075-35及同切片现行说明中允许文本报工人与报表业务来源默认折叠的最小工程选择；不改变签名认证、来源权限、字段权限、原流程、使用时快照、最终完成入统计及真实执行/DHR归属。共用来源编辑器、字段顺序及签名值的具体读取路径属于工程选择；字段签署SIGN_FIELD与按钮事件FILL_SIGN_FIELD两条既有合法路径均保留已认证实际签署人的身份、名称及签名记录标识，不拆解历史展示文本猜身份。后者的结构化回填是本轮缺陷修复，不是新签署流程或新业务授权。同日后续DEC-0075-37已局部替代本条所有未配置可选来源也默认外显的展示要求，已配置、必需及错误来源仍外显，人员身份和tip要求继续适用。本条当前specified/internal，不宣称实现验收或客户低学习成本已经验证。
+        status: specified
+        visibility: internal
+      - id: DEC-0075-37
+        statement: 业务统计配置采用用户明确选择的已配置外显、未配置可选来源收起方式；必需来源和报工良品/不良数量二选一的两个来源常显，具体错误来源也须直接可见并可修复。未配置可选来源在更多字段内选择，选配后直接显示，下次重开依据保存配置外显，不因上次收起隐藏已配置结果。主表业务用途组标题统一可展开收起，新增同一用途的记录打开该组并展开新记录；记录仍称消耗明细、报废明细或报工记录。用户要求撤下各业务用途的明细中另外显示入口；只撤配置入口、不自动清除已有保存映射或正式事实，失效旧展示映射以具体问题及明确移除操作处理，后两项是保护数据及可修复性的工程选择。用户提出生产报工称呼，主智能体采纳为production显示名，模型ID不变；正式表示最终完成后的统计生效阶段，不再充当业务用途名。本条在未配置可选来源的展示范围内局部supersedes DEC-0075-36及现行额外展示选择入口的工程方案，保留36人员引用/签名约束、实际签署人身份与tip要求。不改变来源必填性、字段自身约束、统计粒度、单位、人时手填、最终完成边界、真实生产/DHR归属、追溯交互或既有快照，不新增统计模型。本条specified/internal，不以层级调整宣称客户低学习成本或整体功能已验证。
         status: specified
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013]
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013]
     acceptanceScenarios:
+      - id: scenario.form-projection-configured-sources-visible-and-empty-optional-collapsed
+        given: 制表人在主表或子表展开报工、报废或消耗来源配置，部分可选来源已保存，其他尚未配置
+        when: 打开或重新打开配置，并在更多字段中选择一个可选来源
+        then: 必需来源、报工数量二选一及已配置或出错来源直接显示；未配置可选来源收在更多字段，选配后外显且保存重开后仍外显。未配可选项不因此变成必填，具体错误不只藏在tip；此为验收要求，不证明客户试用已完成
+        evidenceIds: [evidence.form-projection-compact-statistics-sidebar-20261013]
+      - id: scenario.form-projection-purpose-group-collapse-and-add-record
+        given: 主表存在生产报工、报废或消耗用途组，组内有一笔或多笔记录配置
+        when: 点击用途标题收起，再新增同用途的记录
+        then: 标题统一支持展开收起，新增时打开该用途组并展开新记录，来源下拉与主动画布选取仍可用；production显示名为生产报工而稳定模型ID及最终完成才正式统计边界不变
+        evidenceIds: [evidence.form-projection-compact-statistics-sidebar-20261013]
+      - id: scenario.form-projection-extra-display-entry-removed-without-data-loss
+        given: 三类业务配置可能已有保存的补充展示映射，其中一条引用的来源已失效
+        when: 打开配置并处理具体保存校验问题
+        then: 不提供明细中另外显示选择入口，不自动清空有效旧映射或改写已有事实；失效映射的具体问题直接显示，并有明确移除动作，不留下无法修复的隐藏阻塞。此为本轮工程保护验收要求，不增加二期自定义报表能力
+        evidenceIds: [evidence.form-projection-compact-statistics-sidebar-20261013]
       - id: scenario.form-projection-report-sources-directly-visible
         given: 制表人员在主表或子表业务用途的侧栏展开一笔报工、报废或消耗配置
         when: 对应业务报表存在时间、人员、原因、分类等预设展示属性的来源配置
-        then: 报表属性直接呈现在该配置内，不再另展开可选区；静态说明通过对应tip查看，人时下无解释段落，具体缺项校验仍可见。显示在外不把可选字段变成必填，也不改变额外展示列或合计粒度；此例为验收要求，不证明客户试用已完成
+        then: 按36确认时要求报表属性直接呈现；同日后续37收敛为已配置、必需及错误来源外显，未配置可选来源进更多字段，现行展示按37处理。静态说明通过对应tip查看，人时下无解释段落，具体校验仍可见；展示不增加必填性或改变合计粒度，客户试用仍未由此证明
         evidenceIds: [evidence.form-projection-report-source-visibility-and-reporter-20261013]
       - id: scenario.form-projection-reporter-from-user-or-signature
         given: 表单包含普通文本、人员引用、其他对象引用和保存了实际签署人信息的签名字段，创建人与签署人不同，签名可由字段签署或既有按钮签署事件回填

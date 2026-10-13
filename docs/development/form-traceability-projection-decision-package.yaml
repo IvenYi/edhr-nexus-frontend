@@ -25,8 +25,28 @@ decisionPackage:
     concepts: []
     relationships: []
     rules:
+      - id: design-rule.form-projection.compact-statistics-sidebar
+        name: 生产报工命名与业务用途渐进配置
+        status: specified
+        trigger: form-projection.configure-statistics
+        condition:
+          all:
+            - fact: projection.modelId
+              operator: in
+              value: [production, scrap, consumption]
+        result:
+          type: organize-source-configuration
+          productionPurposeName: 生产报工
+          purposeGroupCollapsible: true
+          configuredOptionalSourcesVisible: true
+          unconfiguredOptionalSourcesCollapsed: true
+          requiredAndAlternativeQuantitySourcesVisible: true
+          invalidSourcesVisible: true
+          extraDisplayFieldSelectorVisible: false
+          persistedMappingsAutomaticallyCleared: false
+        sourceReferences: [user-confirmed-20261013-compact-statistics-sidebar]
       - id: design-rule.form-projection.report-field-visibility-and-reporter
-        name: 业务报表字段默认展示与报工人来源
+        name: 业务报表来源说明与报工人类型
         status: specified
         trigger: form-projection.configure-report-sources
         condition:
@@ -36,14 +56,13 @@ decisionPackage:
               value: [production, scrap, consumption]
         result:
           type: constrain-source-configuration
-          reportFieldSourcesCollapsedByDefault: false
           requirednessChangedByVisibility: false
           staticHelpPresentation: tooltip
           workHoursHelperParagraph: false
           reporterSourceTypes: [user-reference, signature]
           signatureReporterValue: actual-signer-identity
           signatureAuthenticationChanged: false
-        sourceReferences: [user-confirmed-20261013-report-source-visibility-and-reporter]
+        sourceReferences: [user-confirmed-20261013-report-source-visibility-and-reporter, user-confirmed-20261013-compact-statistics-sidebar]
       - id: design-rule.form-projection.report-person-hours-and-period
         name: 报工人时与开始结束时间分开记录
         status: implemented
@@ -640,6 +659,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: compact-statistics-sidebar-20261013
+        change: L1侧栏交互增量；production显示名改生产报工，不改模型ID或正式完成规则。主表三用途标题均可收起，新增时自动展开；必需/数量二选一及已配来源直接显示，未配可选来源在更多字段内，失效来源仍可修复。移除额外展示字段选择入口，已有配置不自动清除，失效旧展示配置提供明确移除操作。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
       - area: report-source-sidebar-20261013-followup
         change: 业务报表字段默认展示；说明移至对应tip、人时说明删除；报工人前后端只接受人员引用或签名，签名读实际签署人。独立QA发现现用FILL_SIGN_FIELD按钮回填文本不能作为报工人，现修正为已认证签署人及已保存signatureId结构，与SIGN_FIELD路径一致。
         evidenceReferences: [user-confirmed-20261013-report-source-visibility-and-reporter, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
@@ -769,6 +791,9 @@ decisionPackage:
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: compact-statistics-sidebar-20261013
+        scenarios: [用途标题展开收起及新增自动展开, 已配置来源保存重开外显, 未配置可选来源折叠及选择后外显, 必填与数量二选一常显, 错误来源定位修复, 旧展示来源保留与失效时可移除, 三用途主表子表共享交互, 生产报工目录名称]
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
       - scope: report-source-sidebar-and-signature-reporter
         scenarios: [默认业务字段可见, tip与校验分离, 人员引用及签名候选, 拒绝文本及其他引用, 字段签署人与按钮实际签署人投影, 签名按钮完成与报表过滤, 无图片签名对象展示, 保存重开, 主表子表相邻回归]
         evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]

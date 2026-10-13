@@ -77,8 +77,9 @@ test('report roles accept only compatible temporal and person sources, with manu
   assert.ok(html.includes('投入工时（人时）'));
   assert.ok(!html.includes('由填报人员填写，不自动计算'));
   assert.ok(!html.includes('报工信息（可选）'));
-  assert.ok(html.includes('生产日期'));
-  assert.equal((html.match(/role="combobox"/g) ?? []).length, 4, 'all report roles and the detail selector are visible');
+  assert.ok(!html.includes('生产日期'));
+  assert.ok(html.includes('更多字段'));
+  assert.equal((html.match(/role="combobox"/g) ?? []).length, 2, 'configured hours stay visible while the unconfigured date is collapsed');
   assert.equal(acceptsProjectionAttribute(date, hours), false);
 });
 
@@ -211,14 +212,17 @@ test('configured subtable preserves multiple existing purposes but defers adding
   assert.equal(JSON.stringify(model), before, 'simplifying entry points must preserve every existing mapping');
 });
 
-test('report fields are visible without expanding optional settings and preserve existing mappings', () => {
+test('configured report fields stay visible while empty optional fields are collapsed, preserving mappings', () => {
   const definition = {...consumption, attributes: [...consumption.attributes, {id: 'reason', name: '原因', type: 'text'}]};
   const binding = {...usage, sources: {material: 'material', quantity: 'qty', reason: 'lot'}};
   const fields = [material, quantity, lot];
   const {html, changes} = renderEditor({fields}, binding, definition);
   assert.ok(!html.includes('补充信息（可选）'));
   assert.ok(html.includes('原因'));
-  assert.equal((html.match(/role="combobox"/g) ?? []).length, 6, 'all five report roles and display columns are visible');
+  assert.ok(html.includes('更多字段'));
+  assert.ok(html.includes('aria-expanded="false"'));
+  assert.ok(!html.includes('物料批号'));
+  assert.equal((html.match(/role="combobox"/g) ?? []).length, 3, 'required sources and the configured reason are visible');
   assert.deepEqual(changes, []);
   const invalid = renderEditor({fields}, {...binding, sources: {...binding.sources, reason: 'removed'}}, definition, true).html;
   assert.ok(invalid.includes('“原因”的来源已失效'));
@@ -226,19 +230,22 @@ test('report fields are visible without expanding optional settings and preserve
 });
 
 test('production instructions describe quantities rather than material lots, and add belongs to the purpose heading', () => {
-  const production = {id: 'production', name: '正式报工', attributes: [
+  const production = {id: 'production', name: '生产报工', attributes: [
     {id: 'goodQuantity', name: '良品数量', type: 'number'}, {id: 'ngQuantity', name: '不良品数量', type: 'number'},
     {id: 'unit', name: '单位', type: 'text'}, {id: 'teamText', name: '责任班组', type: 'text'},
   ]};
   const binding = {id: 'p', modelId: 'production', enabled: true, sources: {goodQuantity: 'qty'}};
   const {html} = renderEditor({fields: [quantity]}, binding, production);
   assert.ok(html.includes('aria-label="来源配置说明"'));
-  assert.ok(html.includes('aria-label="明细展示字段说明"'));
+  assert.ok(!html.includes('明细中另外显示'));
+  assert.ok(!html.includes('明细展示字段说明'));
+  assert.equal((html.match(/role="combobox"/g) ?? []).length, 2, 'both alternative quantity sources remain visible');
   assert.ok(!html.includes('单位可不填'));
   assert.ok(!html.includes('物料批号'));
   assert.ok(!html.includes('添加原因、分类'));
   const panel = renderPanel({fields: [quantity], projection: {bindings: [binding]}}, {version: 1, models: [production]});
   assert.ok(panel.includes('aria-label="添加报工记录"'));
+  assert.match(panel, /aria-expanded="true"[^>]*>[\s\S]*?生产报工/);
   assert.ok(panel.indexOf('aria-label="添加报工记录"') < panel.indexOf('移除报工记录 1配置'));
 });
 
@@ -257,7 +264,7 @@ test('business-specific labels count records within each business without changi
   const model={fields:[],projection:{bindings:[a,b,c,d]}};
   assert.equal(projectionBindingLabel(model,a,consumption),'消耗明细 1');
   assert.equal(projectionBindingLabel(model,b,{id:'scrap',name:'报废记录'}),'报废明细 1');
-  assert.equal(projectionBindingLabel(model,c,{id:'production',name:'正式报工'}),'报工记录 1');
+  assert.equal(projectionBindingLabel(model,c,{id:'production',name:'生产报工'}),'报工记录 1');
   assert.equal(projectionBindingLabel(model,d,consumption),'消耗明细 2');
   assert.deepEqual(model.projection.bindings.map(item=>item.id),['a','b','c','d']);
 });
@@ -284,7 +291,7 @@ test('trace accepts compatible native sources while statistics and unrelated mea
   assert.deepEqual(changes, []);
 });
 
-test('whole-table statistics needs no manual row identity or enable action and exposes optional display columns', () => {
+test('whole-table statistics keeps optional sources collapsed without a manual row identity or extra display selector', () => {
   const columns = [lot, { id: 'qty', name: '实际用量', type: 'number', typeConfig: {} },
     { id: 'material', name: '物料', type: 'reference', typeConfig: { sourceType: 'material' } }];
   const definition = { id: 'consumption', name: '实际物料消耗', attributes: [
@@ -296,7 +303,26 @@ test('whole-table statistics needs no manual row identity or enable action and e
   assert.ok(!html.includes('每行唯一字段'));
   assert.ok(!html.includes('启用此用途'));
   assert.ok(!html.includes('待配置'));
-  assert.ok(html.includes('明细中另外显示（可选）'));
+  assert.ok(!html.includes('明细中另外显示'));
+  assert.ok(html.includes('更多字段'));
+  assert.equal((html.match(/role="combobox"/g) ?? []).length, 2);
   assert.deepEqual(changes, []);
   assert.equal(acceptsProjectionAttribute({ type: 'reference', typeConfig: { sourceType: 'dictionary' } }, { id: 'unit', type: 'text' }), true);
+});
+
+test('removing the extra display selector preserves valid saved columns and keeps invalid ones explicitly repairable', () => {
+  const fields = [material, quantity, lot];
+  const binding = {...usage, sources: {material: material.id, quantity: quantity.id}, detailFieldIds: [lot.id]};
+  const before = JSON.stringify(binding);
+  const valid = renderEditor({fields}, binding, consumption);
+  assert.ok(!valid.html.includes('明细中另外显示'));
+  assert.ok(!valid.html.includes('移除失效的补充展示配置'));
+  assert.deepEqual(valid.changes, []);
+  assert.equal(JSON.stringify(binding), before);
+  for (const showErrors of [false, true]) {
+    const invalid = renderEditor({fields}, {...binding, detailFieldIds: ['deleted']}, consumption, showErrors);
+    assert.ok(invalid.html.includes('aria-label="移除失效的补充展示配置"'));
+    assert.ok(invalid.html.includes('请移除失效的配置'));
+    assert.deepEqual(invalid.changes, [], 'a stale mapping needs an explicit user action');
+  }
 });
