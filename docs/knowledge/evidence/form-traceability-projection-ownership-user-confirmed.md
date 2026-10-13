@@ -767,3 +767,49 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 `evidenceGaps`：冠骋部署列表metadata/requestSQL和详情buttonparams不可得，不能宣称完全复制其分组或稳定单行高亮；本体未执行本轮运行API、浏览器交互或数据库验证，主开发和独立质量须分别提供证据。客户制表人员试用仍未进行。38保持 `specified/internal`，无新增运行规则、事实或执行契约；Q16只收敛本轮入口与来源定位，其余跨报表组织、失效历史/A12、Q4/Q6/Q17及无上下文独立登记不连带闭环。
 
 `validation-evidence`（本体实际执行）：`gmp-platform/backend`下 `mvn -Dtest=BusinessKnowledgeModelTest test`，59项、0失败/错误/跳过，`BUILD SUCCESS`；日志 `/tmp/edhr-report-pages-source-knowledge-20261013.log`。全部知识YAML及同包共184份解析通过，本轮5个测试范围证据路径存在，目标文档`git diff --check`通过。该结果只支持知识结构、引用和投影边界，不替代本轮产品运行或独立质量门禁。
+
+## 2026-10-13 固定业务筛选及表单、DHR正反向设计
+
+本轮沿`DEC-PACKAGE-20260929-FORM-PROJECTION`，源码基点`c38aa03d`，知识基线`0.3.24`，执行级别L2设计/调研。新增`DEC-0075-39`为`specified/internal`；没有运行代码、迁移或生产数据修改，没有新运行fact或schema。完整研究由主智能体维护：[查询复核](../../development/form-and-dhr-trace-query-review-2026-10-13.md)。该报告用于定位原始资料，以下仅把本体实际重新读取的内容列为本轮`original-evidence`；旧实现门禁与前一轮只读边界解释不能替代本轮设计验收。
+
+### 用户确认与设计建议
+
+`user-confirmed`（主智能体从本轮用户讨论及异步回复交接）：业务报表查询采用产品预定义固定条件，参考冠骋，不要求逐条选字段添加条件。表单正向按真实关联工单、产品、生产对象等属性查表；反向按表单填写且明确绑定追溯项的值查表，并支持动态自定义追溯项。新增DHR追溯采用相同两向含义。最新异步回复明确：多个反向条件在同一DHR范围分别满足即可，允许不同真实关联表单贡献；表单反向仍同表单/同实际子表行。此处为确认内容的归纳，不伪造未取得的逐字问答原文。
+
+`inference`：具体业务/正向固定条件清单、两个页签与默认正向、低频固定更多筛选、每个DHR去重一行与命中表单数、完整目录中标记贡献实例及回查原表单、共享追溯目录和值控件、无内容条件正向不造高亮、列表和详情同一授权证据依据，是本轮设计建议，未转成用户逐字确认或运行默认。条件类型不能超出当前实际支持能力，现有文本目录不能仅凭页面方案宣称日期/多选操作符已经实现。
+
+### 本体直接复核的原始证据
+
+前端F=`/Users/ivenwang/Documents/iven space/paas-main-front/`；后端B=`/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/`。外部副本无可确认Git版本，也未取得部署请求或GET核心平台实现，指纹只定位本地读取材料，不证明全部部署行为。
+
+| 原始位置 | 本次实际核对 |
+| --- | --- |
+| F/`src/projects/web-render/src/views/edhr-application/render/document-tracked/index.vue:4–14`及`trace.vue:94–113,172–192` | 两向页面和页面固定条件数组；动态候选值不等于客户动态增加追溯项 |
+| F/`src/projects/web-render/src/views/edhr-application/render/edhr-tracked/trace.vue:220–259,299–332` | 结果为DHR实例；详情打开整体DHR视图并取得目录、表单实例标记，不以表单列表代替DHR列表 |
+| F/`src/locales/lang/zh-CN/sys/pageDesigner.ts:425` | `related_lot_no`原中文是“关联批次”，不能仅凭字段名改称物料批号；我方物料批号查询示例仍是我方需求 |
+| B/`src/main/java/com/gct/apaas/edhr/notebook/FormTraceManager.java:162–163,195,225–276` | 值集合笛卡尔积和AUTO_CONNECT与我方同实际行、真实归属规则不同；递归子表收集不证明我方粒度 |
+| B/`src/main/java/com/gct/apaas/edhr/edhr/biz/EdhrReverseTraceBs.java:35–42,79–81` | 详情标记映射缺少页面填报人、关联批次及订单号条件，未知项跳过，不证明列表和标记同源完整 |
+| B/`src/main/java/com/gct/apaas/edhr/nopermission/constant/QueryControlConst.java:13–18` | 可见路径关闭dataRule和fieldPermission，不把名称中的权限检查当有效隔离证明，也不照搬这组设置 |
+
+使用`shasum -a 256`实际读取的六份文件指纹如下；表单页面`index.vue`已直接读取，但不在此次指纹清单内。
+
+| 文件 | SHA256 |
+| --- | --- |
+| F/表单追溯`document-tracked/trace.vue` | `e353a139b9139a8d4fc403d767d2d8402b72653246052078ddfaf24ae94ec8a5` |
+| F/DHR追溯`edhr-tracked/trace.vue` | `06e31b5c2f504ea873b26e50b74b59c9a187d8989cd62acbcd151e25cb185bfb` |
+| F/`src/locales/lang/zh-CN/sys/pageDesigner.ts` | `db0697405d98bebcac2f1c2220e1780b9825ab2fdc31892ad3b8327c530c4c17` |
+| B/`FormTraceManager.java` | `acd8dd55cf721aa1a8ed3d9889b4ed5826b4401e6e35151ac734c093a4a6b405` |
+| B/`EdhrReverseTraceBs.java` | `a9d25e0296e3c291c8663a59f4be06320755b4861cdbffdf88d7d2402dd20e58` |
+| B/`QueryControlConst.java` | `7907ded3ae7d811e18239ced59c40bf7ad39ec034f16ddff9c9d701151394577` |
+
+未找到客户动态追溯目录不能证明竞品永不支持，只能说当前原始证据没有证明；我方自定义反向项来自用户需求。
+
+本项目`original-evidence`：`FormProjectionReportPage.tsx:92`和`projectionReportColumns.ts:20–25`按模型区分客户目录与产品业务字段，业务筛选无需绑定追溯项。`FormProjectionController.java:53–61`查内容索引，`:63–102`按正式record/context及审计属性过滤，`:196–217`按实际生产对象关系回查DHR。共用页面仍无条件读取客户目录并显示目录错误提示，属于交互遗留耦合。`FormTraceIndexService.java:103–115`即使无内容条件也要求存在`form_trace_value`，因此未配追溯用途表单被排除，不能称完整正向已实现。独立DHR内容反向未实现。
+
+### 边界与未来验收
+
+同DHR跨表单满足查询条件只说明该DHR内存在各项真实关联证据，不证明这些值组成同一物料/设备业务明细。内容提及外部或另一生产编号不自动认领归属。保存后过程查询、正式完成事实、使用时配置、来源权限和冻结证据继续适用；当前、冻结与终止来源的查询/展示必须明确同一依据，冻结版本反向及A12仍保留分期。不得从新增入口推定OCR、任意全文、历史反向或多租户已经实现。
+
+知识验收覆盖confirmed/inferred区分、真实关系、表单与DHR组合范围、当前未实现差距及证据缺口。未来运行验收应覆盖：未绑定用途的正向表单、内容提及其他对象、同值不同实际行、同DHR多份贡献、跨表单条件但不造事实、分页去重与计数、当前/冻结/终止来源一致、无权DHR及表单不能贡献/泄漏数量、列表条件与标记一致。本轮知识校验不代替这些测试；Q16只收敛本轮入口组织，其他跨报表导航及历史/A12仍未关闭。
+
+`validation-evidence`（本体本轮实际执行）：在`gmp-platform/backend`执行`mvn -Dtest=BusinessKnowledgeModelTest test`，59项、0失败/错误/跳过，`BUILD SUCCESS`，日志`/tmp/edhr-form-dhr-trace-query-knowledge-20261013.log`。全部知识YAML及同包共184份解析通过；`DEC-0075-39`唯一、`specified/internal`、新证据ID和路径存在、当前测试范围2个证据路径及研究报告存在，`git diff --check`通过。没有执行产品浏览器、运行API或数据库验证，专业质量结果须由主智能体另外取得。

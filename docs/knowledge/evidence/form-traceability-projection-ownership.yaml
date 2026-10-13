@@ -1,5 +1,10 @@
 knowledgeModelVersion: 0.3.24
 evidence:
+  - id: evidence.form-and-dhr-trace-query-20261013
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: 2026-10-13同包L2设计/调研增量，支持DEC-0075-39。user-confirmed为三业务报表固定条件、表单正向真实属性/反向绑定填写值、自定义反向项及新增DHR同理，异步明确DHR多个条件可由同DHR内不同真实关联表单贡献；表单仍同实例/同实际行。original-evidence为本体再次读取冠骋两向页面固定数组、DHR实例列与目录/表单标记、中文related_lot_no关联批次标签，以及本项目业务目录分支、FormTraceIndex强制EXISTS和真实DHR回查链。具体字段、两个页签及默认正向、去重一行/命中数、完整目录标记、共享控件与同源详情为inference。动态自定义目录是我方需求，非竞品已证明能力；GET平台核心及部署请求缺失，笛卡尔组合、AUTO_CONNECT、漏映射和NoPermission关闭规则不能照搬。本轮没有运行修改或业务验收，不关闭历史反向/A12，不将现有索引称为完整正向或DHR反向已实现。
+    visibility: internal
   - id: evidence.form-projection-report-pages-source-20261013
     type: document
     path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md

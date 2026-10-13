@@ -158,9 +158,28 @@ decisions:
         statement: 表单追溯、报工记录、报废记录和消耗记录分别提供独立菜单与页面，不要求查询人先进入共用页面再切换业务用途。详情直接展示有权限的来源原表单，并定位和高亮命中字段或相应实际子表行，仍可核对真实执行归属及按原权限回查实际DHR关系。追溯读取最近成功保存内容，正式业务记录读取其最终完成时冻结来源，不用最新模板或当前字段值替换历史证据。本条在四类页面入口及直接来源定位范围内局部supersedes DEC-0075-17/20中结果页面组织尚未确认的解释，Q16只保留其余跨报表组织与历史视图；不改保存后过程可查、最终完成正式统计、真实生产/DHR归属、签名、授权或快照。用户认为冠骋消耗可能是流水并要求核对属于调研判断，原始采集链支持逐笔来源，但部署列表配置与详情参数仍缺失；本轮逐笔业务列表、撤下业务记录/合计二级页签及按稳定rowKey在显示快照中定位属于主智能体工程选择，不提升为独立用户业务确认，不证明完整复制冠骋或运行验收通过。已有按工序用途合计的计算/API保留，不因撤下页面入口而废弃DEC-0075-06/32。
         status: specified
         visibility: internal
+      - id: DEC-0075-39
+        statement: 报工、报废和消耗报表使用产品预定义的固定业务筛选条件，参考冠骋，不要求查询人逐条选择筛选字段再添加条件；业务条件读取正式业务属性、真实上下文及准确命名的审计信息，不依赖来源字段另配追溯用途。表单追溯区分正向与反向：正向沿真实关联工单、产品、生产对象等属性查表，不能因未配置内容追溯用途排除有权读取的已保存表单；反向按明确绑定追溯项的已保存填写值查表，支持客户维护的自定义追溯项动态选择。新增DHR追溯报表采用相同两向含义，反向命中只沿真实表单证据关系找到DHR，不按内容编号认领归属。DHR多个反向条件在同一DHR范围内分别满足即可，允许不同真实关联表单贡献命中；表单反向仍按同一表单主表及同一实际子表行匹配，不从跨表单DHR匹配推定一笔跨行或跨表单业务事实。本条收敛DEC-0075-17/20/38和Q16的查询入口及正反向组织，不替代DEC-0075-29的表单粒度，不改变保存后过程可查、最终完成正式事实、真实归属、来源权限和冻结证据。具体条件清单、两个页签与默认正向、DHR去重一行及命中表单数、完整目录中标记贡献实例、共享目录/控件和列表详情同源为inferred设计建议。冠骋本地原始前端使用固定条件数组；动态自定义目录是我方确认需求，不伪称竞品已实现。关联批次标签不等于物料批号，其笛卡尔组合、AUTO_CONNECT、漏映射条件及关闭数据/字段规则的路径不能作为我方规则；GET核心与部署请求缺失。当前表单索引仍强制EXISTS已绑定内容，不能称完整正向已实现，DHR反向未实现；本轮仅设计/调研，specified/internal，历史版本反向及A12仍另定。
+        status: specified
+        visibility: internal
     supersedes: []
-    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013, evidence.form-projection-report-pages-source-20261013]
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013, evidence.form-projection-report-pages-source-20261013, evidence.form-and-dhr-trace-query-20261013]
     acceptanceScenarios:
+      - id: scenario.form-projection-fixed-business-report-filters
+        given: 正式业务记录已保存物料、原因、人员等合法业务属性，来源字段未关联内容追溯项
+        when: 查询人按对应报表的产品固定筛选条件查询
+        then: 读取业务事实及真实上下文，不要求添加追溯项或先选择筛选字段；业务页不依赖客户追溯项目录。本轮只确认设计，具体条件清单与控件由实现方案定义
+        evidenceIds: [evidence.form-and-dhr-trace-query-20261013]
+      - id: scenario.form-projection-forward-trace-without-content-binding
+        given: 有权读取的已保存表单真实关联工单、产品和生产对象，但没有配置任何内容追溯用途
+        when: 按真实关联属性进行表单正向查询
+        then: 不因缺少内容索引排除该表单；字段内容提及另一对象不改变真实归属，未保存输入不参与。现有强制EXISTS路径尚未实现本例
+        evidenceIds: [evidence.form-and-dhr-trace-query-20261013]
+      - id: scenario.form-projection-form-and-dhr-reverse-condition-scope
+        given: 同一DHR内一份实际关联表单记录物料批号，另一份实际关联表单记录设备号，双方均有明确追溯绑定和读取权限
+        when: 按物料批号和设备号同时进行DHR反向查询，或改为表单反向查询
+        then: DHR范围允许两份表单分别满足条件且须保留各自贡献来源，不证明两者属于同笔业务；表单范围仍须同一表单及适用的同一实际子表行满足，不能跨表单或跨行拼接。本轮确认规则但未实现DHR反向
+        evidenceIds: [evidence.form-and-dhr-trace-query-20261013]
       - id: scenario.form-projection-independent-report-pages-direct-source
         given: 查询人有实例查看及生产来源权限，追溯、报工、报废和消耗各有授权记录
         when: 从对应独立菜单打开页面并查看一条记录详情
