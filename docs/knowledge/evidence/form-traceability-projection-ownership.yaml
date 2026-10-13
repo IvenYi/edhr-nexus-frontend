@@ -1,5 +1,10 @@
 knowledgeModelVersion: 0.3.24
 evidence:
+  - id: evidence.form-projection-report-pages-source-20261013
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: 2026-10-13同包report-pages-source增量；user-confirmed为表单追溯/报工/报废/消耗独立菜单页面、详情直接看原表单并定位字段或实际子表行。original-evidence为再次读取冠骋三用途逐笔采集、单formInstId、仅注释的aggregateEntities调用、独立sum consumer以及通用trace values和按值includes高亮；五份原始文件定位及SHA256见文末。本体直接查看本轮32ac详情图，两行原表单可见而无指定行高亮；六张列表截图由主智能体及只读研究实例查看回报，不能与本体再次逐张查看混同。流水列表、移除记录/合计页签、旧菜单归一化及稳定rowKey定位是inference工程选择，用户关于消耗流水的判断和核对请求不确认完整分组。部署metadata/requestSQL与详情buttonparams缺失，不能宣称完全复制竞品或稳定单行高亮。保存后追溯/最终完成统计、冻结来源、真实context/DHR、原权限及只读签名边界保留；本轮知识specified/internal，不用旧QA冒充新运行验收。
+    visibility: internal
   - id: evidence.form-projection-compact-statistics-sidebar-20261013
     type: document
     path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md

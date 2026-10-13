@@ -4,6 +4,7 @@ import { Box, CircularProgress } from '@mui/material';
 import LoginPage from '@/pages/LoginPage';
 import AppLayout from '@/components/shared/AppLayout';
 import NotFoundPage from '@/pages/NotFoundPage';
+import { PROJECTION_REPORT_PAGES } from '@/utils/menuManagement';
 
 const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage'));
 const PersonalSettingsPage = lazy(() => import('@/pages/account/PersonalSettingsPage'));
@@ -105,7 +106,8 @@ const AppRouter = () => {
           <Route path="filling" element={<Suspense fallback={<Loading />}><FormFillingPage /></Suspense>} />
           <Route path="review" element={<Suspense fallback={<Loading />}><FormReviewPage /></Suspense>} />
         </Route>
-        <Route path="reports/form-projections" element={<Suspense fallback={<Loading />}><FormProjectionReportPage /></Suspense>} />
+        <Route path="reports/form-projections" element={<Navigate to="/reports/form-trace" replace />} />
+        {PROJECTION_REPORT_PAGES.map(page => <Route key={page.path} path={page.path.slice(1)} element={<Suspense fallback={<Loading />}><FormProjectionReportPage key={page.modelId} modelId={page.modelId} /></Suspense>} />)}
         <Route path="dhr-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />
           <Route path="summary" element={<Suspense fallback={<Loading />}><DhrSummaryPage /></Suspense>} />

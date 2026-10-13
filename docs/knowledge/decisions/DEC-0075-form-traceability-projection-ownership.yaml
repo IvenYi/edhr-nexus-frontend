@@ -4,7 +4,7 @@ decisions:
     title: 电子表单追溯与业务投影的模型所有权和配置边界
     status: specified
     visibility: internal
-    context: user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认，2026-09-30确认最终产出与独立质量统计口径，2026-10-03补录画布优先、低成本二开、跨表单指标汇总、查找追溯与业务统计并列可选、真实上下文统计归属及部分字段自动带入目标。2026-10-09的27–29收敛MVP开发历史处理、预置生产批次/SN的所属主体含义及组合查询匹配粒度；局部替代范围以各声明明确的supersedes文字为准，旧证据原文保留。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择、具体交互、跨表单同事件关联方式、独立检索索引时机与结果页面、上下文带入生命周期及 AI 不冒充用户业务决定。
+    context: user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认，2026-09-30确认最终产出与独立质量统计口径，2026-10-03补录画布优先、低成本二开、跨表单指标汇总、查找追溯与业务统计并列可选、真实上下文统计归属及部分字段自动带入目标。2026-10-09的27–29收敛MVP开发历史处理、预置生产批次/SN的所属主体含义及组合查询匹配粒度；局部替代范围以各声明明确的supersedes文字为准，旧证据原文保留。2026-10-13的38确认四类独立菜单页面、详情直接查看来源原表单及字段/实际行定位，收敛Q16对应导航范围；逐笔流水和撤下合计入口仍是主智能体工程选择，未定跨报表组织继续保留。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择、未确认交互、跨表单同事件关联方式、未定检索历史及结果导航、上下文带入生命周期及 AI 不冒充用户业务决定。
     decisionStatements:
       - id: DEC-0075-01
         statement: 各报表使用的统计模型由产品方预先定义和维护；客户负责从自身表单选择取值字段并配置对应来源，不承担从头建立统计模型的职责。配置体验以降低实施和培训成本为目标，但原型或设计文档不能作为客户已经能独立低成本配置的验证证据。
@@ -154,9 +154,33 @@ decisions:
         statement: 业务统计配置采用用户明确选择的已配置外显、未配置可选来源收起方式；必需来源和报工良品/不良数量二选一的两个来源常显，具体错误来源也须直接可见并可修复。未配置可选来源在更多字段内选择，选配后直接显示，下次重开依据保存配置外显，不因上次收起隐藏已配置结果。主表业务用途组标题统一可展开收起，新增同一用途的记录打开该组并展开新记录；记录仍称消耗明细、报废明细或报工记录。用户要求撤下各业务用途的明细中另外显示入口；只撤配置入口、不自动清除已有保存映射或正式事实，失效旧展示映射以具体问题及明确移除操作处理，后两项是保护数据及可修复性的工程选择。用户提出生产报工称呼，主智能体采纳为production显示名，模型ID不变；正式表示最终完成后的统计生效阶段，不再充当业务用途名。本条在未配置可选来源的展示范围内局部supersedes DEC-0075-36及现行额外展示选择入口的工程方案，保留36人员引用/签名约束、实际签署人身份与tip要求。不改变来源必填性、字段自身约束、统计粒度、单位、人时手填、最终完成边界、真实生产/DHR归属、追溯交互或既有快照，不新增统计模型。本条specified/internal，不以层级调整宣称客户低学习成本或整体功能已验证。
         status: specified
         visibility: internal
+      - id: DEC-0075-38
+        statement: 表单追溯、报工记录、报废记录和消耗记录分别提供独立菜单与页面，不要求查询人先进入共用页面再切换业务用途。详情直接展示有权限的来源原表单，并定位和高亮命中字段或相应实际子表行，仍可核对真实执行归属及按原权限回查实际DHR关系。追溯读取最近成功保存内容，正式业务记录读取其最终完成时冻结来源，不用最新模板或当前字段值替换历史证据。本条在四类页面入口及直接来源定位范围内局部supersedes DEC-0075-17/20中结果页面组织尚未确认的解释，Q16只保留其余跨报表组织与历史视图；不改保存后过程可查、最终完成正式统计、真实生产/DHR归属、签名、授权或快照。用户认为冠骋消耗可能是流水并要求核对属于调研判断，原始采集链支持逐笔来源，但部署列表配置与详情参数仍缺失；本轮逐笔业务列表、撤下业务记录/合计二级页签及按稳定rowKey在显示快照中定位属于主智能体工程选择，不提升为独立用户业务确认，不证明完整复制冠骋或运行验收通过。已有按工序用途合计的计算/API保留，不因撤下页面入口而废弃DEC-0075-06/32。
+        status: specified
+        visibility: internal
     supersedes: []
-    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013]
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013, evidence.form-projection-report-pages-source-20261013]
     acceptanceScenarios:
+      - id: scenario.form-projection-independent-report-pages-direct-source
+        given: 查询人有实例查看及生产来源权限，追溯、报工、报废和消耗各有授权记录
+        when: 从对应独立菜单打开页面并查看一条记录详情
+        then: 页面保持对应用途及查询状态，详情直接显示来源原表单并保留真实归属；过程追溯读取最近已保存内容，业务记录读取最终完成冻结快照，原DHR回查额外权限仍适用。此为本轮已确认验收要求，不是运行结果
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
+      - id: scenario.form-projection-stable-row-source-highlight
+        given: 同一子表两行具有相同物料和数量而稳定行身份不同，来源命中其中一行且显示快照顺序可能已调整
+        when: 打开来源原表单并解析命中定位
+        then: 工程实现必须按显示快照中的稳定rowKey定位该实际行，不能按相同值或陈旧rowIndex高亮另一行；行身份不存在或重复时不猜测高亮，不改写源值或触发签名、保存等写动作
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
+      - id: scenario.form-projection-record-pages-do-not-merge-facts
+        given: 同物料、批号、单位、工序有两笔独立正式消耗事实，且可能来自同一表单的两个实际行
+        when: 在本轮消耗记录页面查询并分别打开来源
+        then: 按本轮工程选择显示两条独立事实，各自保留来源与实际行；不把一笔来源冒充多笔合计。三业务页面撤下记录/合计二级页签，已有合计API、键和计算继续保留且不新增汇总入口；此例不证明冠骋部署列表的实际SQL或稳定行高亮机制
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
+      - id: scenario.form-projection-report-menu-normalization-permissions
+        given: 用户可能保存过旧共用报表菜单或直接访问旧URL，且权限组合不同
+        when: 归一化菜单并反复加载，或访问新的四条路径与来源详情
+        then: 本轮工程选择将旧菜单和URL导向有效独立入口，归一化幂等且不复制菜单；来源仍同时要求form-instances.view与production.execution，DHR回查仍另需dhr.instances.view，不开放新写权限，不进行数据迁移
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
       - id: scenario.form-projection-configured-sources-visible-and-empty-optional-collapsed
         given: 制表人在主表或子表展开报工、报废或消耗来源配置，部分可选来源已保存，其他尚未配置
         when: 打开或重新打开配置，并在更多字段中选择一个可选来源

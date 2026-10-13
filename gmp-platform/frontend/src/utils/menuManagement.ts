@@ -6,6 +6,14 @@ export const MENU_MANAGEMENT_STORAGE_KEY = 'edhr:managed-sidebar-modules';
 export const MENU_MANAGEMENT_EVENT = 'edhr:managed-sidebar-modules-change';
 export const MAX_MENU_CHILDREN_DEPTH = 2;
 
+export const PROJECTION_REPORT_PAGES = [
+  { modelId: 'formTrace', label: '表单追溯', path: '/reports/form-trace' },
+  { modelId: 'production', label: '报工记录', path: '/reports/production-records' },
+  { modelId: 'scrap', label: '报废记录', path: '/reports/scrap-records' },
+  { modelId: 'consumption', label: '消耗记录', path: '/reports/consumption-records' },
+] as const;
+export const isProjectionReportPath = (path: string) => path === '/reports/form-projections' || PROJECTION_REPORT_PAGES.some(page => page.path === path);
+
 function cloneSidebarModules(modules: SidebarModule[]): SidebarModule[] {
   return JSON.parse(JSON.stringify(modules)) as SidebarModule[];
 }
@@ -105,7 +113,7 @@ const REQUIRED_RECORDS_MODULE: SidebarModule = {
   id: 'records',
   label: '记录',
   icon: 'FactCheck',
-  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU, { label: '报表', icon: 'FactCheck', children: [{ label: '追溯与统计', path: '/reports/form-projections' }] }],
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU, { label: '报表', icon: 'FactCheck', children: PROJECTION_REPORT_PAGES.map(({ label, path }) => ({ label, path })) }],
 };
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
@@ -402,8 +410,8 @@ function ensureRequiredRecordsModule(modules: SidebarModule[]) {
   const requiredMenus = cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus;
   const requiredReport = requiredMenus.find((menu) => menu.label === '报表');
   if (reportMenu && requiredReport) {
-    requiredReport.children = [...(reportMenu.children ?? []).filter((child) => child.path !== '/reports/form-projections'), ...(requiredReport.children ?? [])];
-    if (reportMenu.path && reportMenu.path !== '/reports/form-projections') recordsModule.menus.push(reportMenu);
+    requiredReport.children = [...(reportMenu.children ?? []).filter((child) => !isProjectionReportPath(child.path)), ...(requiredReport.children ?? [])];
+    if (reportMenu.path && !isProjectionReportPath(reportMenu.path)) recordsModule.menus.push(reportMenu);
   }
   recordsModule.menus.unshift(...requiredMenus);
 }
@@ -522,7 +530,7 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/production/batches') return 'production.batches';
   if (path === '/production/execution') return 'production.execution';
   if (path === '/form-management/list') return 'form-instances.view';
-  if (path === '/reports/form-projections') return 'form-instances.view';
+  if (isProjectionReportPath(path)) return 'form-instances.view';
   if (path === '/form-management/filling') return 'form-management.filling';
   if (path === '/form-management/review') return 'form-management.review';
   if (path === '/dhr-management/list') return 'dhr.instances.view';

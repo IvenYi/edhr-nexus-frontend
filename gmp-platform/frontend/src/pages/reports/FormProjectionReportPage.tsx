@@ -1,27 +1,27 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, Collapse, DialogContent, DialogTitle, IconButton, MenuItem, Stack, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Tooltip, Typography } from '@mui/material';
-import { ExpandLess, ExpandMore, InfoOutlined, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Autocomplete, Box, Button, Collapse, IconButton, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { ExpandLess, ExpandMore, InfoOutlined, Search, TuneRounded, ViewColumnRounded, VisibilityOutlined } from '@mui/icons-material';
 import DetailDrawer from '@/components/DetailDrawer';
 import StatusBadge from '@/components/StatusBadge';
 import client from '@/api/client';
-import AppDialog from '@/components/AppDialog';
 import FormDialogSection from '@/components/FormDialogSection';
 import TableStateCell from '@/components/TableStateCell';
 import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import ListColumnSettingsPopover, { getCurrentUserPreferenceStorageKey, loadListColumnSettings, reorderListColumns } from '@/components/ListColumnSettingsPopover';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
-import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx } from '@/components/listTableStyles';
+import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyActionSx } from '@/components/listTableStyles';
 import { formListFieldSx, formListQueryGridSx, formListQueryPanelSx, FormListPagination } from '@/pages/form-management/formManagementListStyles';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import type { ModelField } from '@/pages/master-data/template-designer-react/types/model';
 import { useAuthStore } from '@/stores/authStore';
 import { useFormLookupItems } from '@/api/formLookupCatalog';
-import { businessAttributeNames, businessFilters, businessRecordColumns, businessRecordValues, businessTotalColumns, isReportDateFilter, reportAttributeValue } from './projectionReportColumns';
+import { businessAttributeNames, businessFilters, businessRecordColumns, businessRecordValues, isReportDateFilter, reportAttributeValue } from './projectionReportColumns';
+import { sourceHighlight } from './projectionSourceHighlight';
+import type { PROJECTION_REPORT_PAGES } from '@/utils/menuManagement';
 
 const base = '/reports/form-projections';
-const models = [['formTrace', '表单追溯'], ['production', '报工记录'], ['scrap', '报废记录'], ['consumption', '消耗记录']];
 const legacyAttributes = [['materialLotText', '物料批号'], ['serialNumberText', '序列号'], ['equipmentText', '设备编号'], ['teamText', '责任班组'], ['documentNumberText', '单据号'], ['category', '分类'], ['reason', '原因'], ['unit', '单位']];
 const legacyAttributeNames: Record<string, string> = { ...Object.fromEntries([...legacyAttributes, ['material', '物料'], ['quantity', '数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量']]), ...businessAttributeNames };
 interface Hit { rowKey: string; rowIndex?: number; tableId?: string; bindingId: string; attributes: Record<string, unknown>; sources: Record<string, string>; details?: { fieldId: string; name: string; value: unknown }[] }
@@ -62,7 +62,7 @@ function ProjectionTable({ columns, rows, preference, loading, failed, onSource,
   const { getColumnWidth, getResizeHandleProps } = usePersistedListColumnWidths(columns, `projection-${preference}-widths-`);
   useEffect(() => { try { localStorage.setItem(storageKey, JSON.stringify(settings)); } catch { /* Optional preferences. */ } }, [settings, storageKey]);
   const visible = settings.order.filter(id => !settings.hidden.includes(id)).map(id => columns.find(column => column.id === id)!).filter(Boolean);
-  const layout = visible.map(column => ({ id: column.id, width: getColumnWidth(column) }));
+  const layout = [...visible.map(column => ({ id: column.id, width: getColumnWidth(column) })), ...(onSource ? [{ id: 'actions', width: 100 }] : [])];
   const stateText = loading ? '加载中…' : failed ? '数据读取失败，请重新查询' : !rows.length ? '暂无数据' : '';
   return <Box sx={{ ...panel, display: 'flex', flexDirection: 'column', flex: 1 }}>
     <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ height: 48, flexShrink: 0, px: 2, borderBottom: '1px solid #e4e7ed' }}>
@@ -72,11 +72,11 @@ function ProjectionTable({ columns, rows, preference, loading, failed, onSource,
     </Stack>
     <ListTableShell minTableWidth={layout.reduce((sum, column) => sum + column.width, 0)} sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
       {tableWidth => {
-        const widths = resolveListColumnWidths(layout, tableWidth, visible[0]?.id ?? '');
+        const widths = resolveListColumnWidths(layout, tableWidth, visible[0]?.id ?? '', ['actions']);
         return <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, height: stateText ? '100%' : 'auto' }}>
           <colgroup>{layout.map(column => <col key={column.id} style={{ width: widths[column.id] }} />)}</colgroup>
-          <TableHead><TableRow>{visible.map(column => <TableCell key={column.id} sx={{ ...listTableHeaderCellSx, width: widths[column.id], position: 'sticky' }}>{column.label}<Box aria-label={`调整${column.label}列宽`} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /></TableCell>)}</TableRow></TableHead>
-          <TableBody sx={{ height: stateText ? '100%' : 'auto' }}>{stateText ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={layout.length} sx={{ height: '100%', color: '#909399' }}>{stateText}</TableStateCell></TableRow> : rows.map((row, index) => <TableRow key={String(row.id ?? index)} hover onClick={onSource ? () => onSource(index) : undefined} tabIndex={onSource ? 0 : undefined} onKeyDown={event => { if (onSource && event.target === event.currentTarget && ['Enter', ' '].includes(event.key)) { event.preventDefault(); onSource(index); } }} sx={{ cursor: onSource ? 'pointer' : undefined }}>{visible.map(column => <TableCell key={column.id} title={display(row[column.id])} sx={{ ...listTableBodyCellSx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{column.id === 'statusLabel' ? stageBadge(display(row[column.id])) : display(row[column.id])}</TableCell>)}</TableRow>)}</TableBody>
+          <TableHead><TableRow>{visible.map(column => <TableCell key={column.id} sx={{ ...listTableHeaderCellSx, width: widths[column.id], position: 'sticky' }}>{column.label}<Box aria-label={`调整${column.label}列宽`} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /></TableCell>)}{onSource && <TableCell align="center" sx={{ ...listTableHeaderCellSx, ...listTableStickyActionSx(100, 'head') }}>操作</TableCell>}</TableRow></TableHead>
+          <TableBody sx={{ height: stateText ? '100%' : 'auto' }}>{stateText ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={layout.length} sx={{ height: '100%', color: '#909399' }}>{stateText}</TableStateCell></TableRow> : rows.map((row, index) => <TableRow key={String(row.id ?? index)} hover onClick={onSource ? () => onSource(index) : undefined} tabIndex={onSource ? 0 : undefined} onKeyDown={event => { if (onSource && event.target === event.currentTarget && ['Enter', ' '].includes(event.key)) { event.preventDefault(); onSource(index); } }} sx={{ cursor: onSource ? 'pointer' : undefined }}>{visible.map(column => <TableCell key={column.id} title={display(row[column.id])} sx={{ ...listTableBodyCellSx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{column.id === 'statusLabel' ? stageBadge(display(row[column.id])) : display(row[column.id])}</TableCell>)}{onSource && <TableCell align="center" sx={{ ...listTableBodyCellSx, ...listTableStickyActionSx(100, 'body') }}><Tooltip title="查看来源表单"><IconButton size="small" aria-label="查看来源表单" onClick={event => { event.stopPropagation(); onSource(index); }}><VisibilityOutlined fontSize="small" /></IconButton></Tooltip></TableCell>}</TableRow>)}</TableBody>
         </Table>;
       }}
     </ListTableShell>
@@ -85,11 +85,10 @@ function ProjectionTable({ columns, rows, preference, loading, failed, onSource,
   </Box>;
 }
 
-export default function FormProjectionReportPage() {
+export default function FormProjectionReportPage({ modelId }: { modelId: typeof PROJECTION_REPORT_PAGES[number]['modelId'] }) {
   const lookupItems = useFormLookupItems();
   const canRetry = useAuthStore(state => state.hasPermission('system.edit'));
   const canDhr = useAuthStore(state => state.hasPermission('dhr.instances.view'));
-  const [modelId, setModelId] = useState('formTrace');
   const attributes = modelId === 'formTrace' ? (lookupItems.data ?? []).map(item => [item.id, item.name]) : businessFilters(modelId);
   const primaryFilter = modelId === 'formTrace' ? 'materialLotText' : 'workOrderNo';
   const [value, setValue] = useState('');
@@ -98,11 +97,11 @@ export default function FormProjectionReportPage() {
   const [operationName, setOperationName] = useState('');
   const [expanded, setExpanded] = useState(false);
   const [queryRevision, setQueryRevision] = useState(0);
-  const [view, setView] = useState(0);
-  const [request, setRequest] = useState({ modelId: 'formTrace', filters: {} as Record<string, string>, objectNo: '', operationName: '', page: 0, size: 20 });
+  const [request, setRequest] = useState({ modelId, filters: {} as Record<string, string>, objectNo: '', operationName: '', page: 0, size: 20 });
   const [selected, setSelected] = useState<RecordRow | null>(null);
   const [detailTab, setDetailTab] = useState(0);
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [sourceLocated, setSourceLocated] = useState<boolean | null>(null);
   const [error, setError] = useState('');
   const [retryReason, setRetryReason] = useState('');
   const [dhrs, setDhrs] = useState<{ id: string; dhrNo: string; status: string }[] | null>(null);
@@ -117,6 +116,17 @@ export default function FormProjectionReportPage() {
     result.model.fields = form.fields;
     return result;
   }, [source.data]);
+  const highlight = useMemo(() => sourceHighlight(selected ? hitsOf(selected) : [], source.data?.values ?? {}, document?.model.projection?.bindings), [selected, source.data, document]);
+  useEffect(() => {
+    setSourceLocated(null);
+    if (!selected || detailTab !== 0 || !document) return;
+    const frame = requestAnimationFrame(() => {
+      const target = previewRef.current?.querySelector('[data-form-preview-highlighted="true"]');
+      setSourceLocated(Boolean(target));
+      target?.scrollIntoView({ block: 'center', inline: 'nearest' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [selected, document, detailTab]);
   const sourceAttributeName = (key: string) => sourceName(key, selected?.lookupItems);
   const search = () => {
     const filters: Record<string, string> = {};
@@ -158,33 +168,33 @@ export default function FormProjectionReportPage() {
             <Button sx={{ justifySelf: 'start' }} onClick={() => setConditions(conditions.filter(item => item.id !== condition.id))}>移除条件</Button>
           </Box>)}
           <Button sx={{ justifySelf: 'start' }} disabled={conditions.length >= attributes.length - 1} onClick={() => setConditions([...conditions, { id: crypto.randomUUID(), itemId: '', value: '' }])}>添加查询条件</Button>
-          <Typography variant="caption" color="text.secondary" sx={{ gridColumn: '1 / -1' }}>{modelId === 'formTrace' ? '条件同时满足；子表条件须命中同一行。所属对象由生产执行确定，内容中的编号不改变DHR归属。' : '条件同时筛选同一笔业务记录；合计也只包含筛选后的记录。名称或编号精确匹配，日期范围包含首尾两天。'}</Typography>
+          <Typography variant="caption" color="text.secondary" sx={{ gridColumn: '1 / -1' }}>{modelId === 'formTrace' ? '条件同时满足；子表条件须命中同一行。所属对象由生产执行确定，内容中的编号不改变DHR归属。' : '条件同时筛选同一笔业务记录。名称或编号精确匹配，日期范围包含首尾两天。'}</Typography>
         </Box></Collapse>
         {expanded && <Box sx={{ gridColumn: '1 / -1' }}>{actions}</Box>}
       </Box>
     </Box>
     {lookupItems.isError && <Alert severity="error" action={<Button onClick={() => void lookupItems.refetch()}>重试</Button>}>追溯项目录读取失败，新增条件暂不可用。</Alert>}
     {(data.isError || status.isError || error) && <Alert severity="error">{error || '报表或处理状态读取失败，请检查权限后重试。'}</Alert>}
-    {modelId !== 'formTrace' && Boolean(status.data?.length) && <Alert severity="warning">有 {status.data!.length} 个投影待处理或失败（最多显示100个），当前合计可能不完整。
+    {modelId !== 'formTrace' && Boolean(status.data?.length) && <Alert severity="warning">有 {status.data!.length} 份表单的报表记录待生成或生成失败（最多显示100份），当前记录可能不完整。
       {status.data!.map(item => <Stack key={item.id} direction="row" alignItems="center"><Typography variant="body2">{item.instanceNo} · {item.status === 'PENDING' ? '待处理' : item.errorMessage}</Typography>{item.status === 'FAILED' && canRetry && <Button size="small" onClick={async () => {
         try { await client.post(`${base}/${item.id}/retry`, { reason: retryReason }); setError(''); void status.refetch(); void data.refetch(); } catch (reason) { setError(reason instanceof Error ? reason.message : '重试失败'); }
       }}>重试</Button>}</Stack>)}
       {canRetry && status.data!.some(item => item.status === 'FAILED') && <TextField size="small" label="重试原因" value={retryReason} onChange={event => setRetryReason(event.target.value)} />}
     </Alert>}
-    <Box sx={{ ...panel, flexShrink: 0 }}><Tabs value={modelId} onChange={(_, id: string) => { setModelId(id); setView(0); reset(id); }} variant="scrollable">{models.map(([id, name]) => <Tab key={id} value={id} label={name} />)}</Tabs></Box>
-    {modelId !== 'formTrace' && <Tabs value={view} onChange={(_, next: number) => setView(next)}><Tab label="业务记录" /><Tab label="按生产对象／工序合计" /></Tabs>}
-    {view === 1 && data.data?.totalsTruncated && <Alert severity="warning">分组超过200个，请缩小查询范围；当前仅显示前200组。</Alert>}
-    {view === 0 ? <ProjectionTable key={`detail-${modelId}`} preference={`detail-${modelId}`} description={modelId === 'formTrace' ? '查询已保存内容，包含草稿、填报中、审批中和已完成；未保存输入不可查。' : '一行代表一笔业务记录；点击查看额外展示字段及来源表单。未记录的业务信息显示为“—”。'} columns={modelId === 'formTrace' ? detailColumns : businessRecordColumns(modelId)} rows={modelId === 'formTrace' ? detailRows : detailRows.map(businessRecordValues)} loading={data.isFetching} failed={data.isError} onSource={index => { setSelected(data.data!.records[index]); setDetailTab(0); setDhrs(null); setError(''); }} footer={<FormListPagination totalElements={data.data?.total ?? 0} totalPages={Math.ceil((data.data?.total ?? 0) / request.size)} page={request.page} pageSize={request.size} onPageChange={page => setRequest({ ...request, page })} onPageSizeChange={size => setRequest({ ...request, size, page: 0 })} />} />
-      : <ProjectionTable key={`total-${modelId}`} preference={`total-${modelId}`} columns={businessTotalColumns(modelId)} rows={(data.data?.totals ?? []).map(row => ({ ...row, unit: unitName(row.unit, row.unitLabel) }))} loading={data.isFetching} failed={data.isError} description={modelId === 'production' ? '按所属生产对象、工序和单位合计。人时只累加用户填写值；未填人时不作为0，也不按时间推算。' : '按所属生产对象、工序、物料、物料批号和单位合计；原因分类不作为分组，合计不代表某一种原因。'} footer={<Typography variant="body2" color="text.secondary" sx={{ p: 2, borderTop: '1px solid #e4e7ed' }}>共 {data.data?.totals.length ?? 0} 组（最多200组，请使用查询条件缩小范围）</Typography>} />}
-    <DetailDrawer open={Boolean(selected)} onClose={() => setSelected(null)} label="来源详情" tab={detailTab} onTabChange={setDetailTab}>
+    <ProjectionTable key={`detail-${modelId}`} preference={`detail-${modelId}`} description={modelId === 'formTrace' ? '查询已保存内容，包含草稿、填报中、审批中和已完成；未保存输入不可查。' : '一行是一笔业务记录，不合并多次填报；点击查看来源表单。'} columns={modelId === 'formTrace' ? detailColumns : businessRecordColumns(modelId)} rows={modelId === 'formTrace' ? detailRows : detailRows.map(businessRecordValues)} loading={data.isFetching} failed={data.isError} onSource={index => { setSelected(data.data!.records[index]); setDetailTab(0); setDhrs(null); setError(''); }} footer={<FormListPagination totalElements={data.data?.total ?? 0} totalPages={Math.ceil((data.data?.total ?? 0) / request.size)} page={request.page} pageSize={request.size} onPageChange={page => setRequest({ ...request, page })} onPageSizeChange={size => setRequest({ ...request, size, page: 0 })} />} />
+    <DetailDrawer open={Boolean(selected)} onClose={() => setSelected(null)} label="来源详情" tab={detailTab} onTabChange={setDetailTab} width={1040}>
         {detailTab === 0 ? <>
-          <Alert severity="info">{selected?.batchId ? '正式统计读取最终完成的冻结值。' : '追溯读取最近一次成功保存的内容。'} DHR 沿实际生产归属查询，内容提及其他对象不会改变归属。</Alert>
           <DetailSection title="生产来源"><DetailField label="来源表单">{selected?.instanceNo}</DetailField><DetailField label="所属生产批次/SN">{selected?.objectNo}</DetailField><DetailField label="工序">{selected?.operationName}</DetailField><DetailField label="表单状态">{stageBadge(statusName(selected?.status, selected?.savedStage))}</DetailField></DetailSection>
-          {selected && hitsOf(selected).map((hit, index) => <DetailSection key={`${hit.bindingId}/${hit.rowKey}/${index}`} title={`${selected.batchId ? '业务记录' : `命中 ${index + 1}`} · ${locationName(hit)}`}>
+          <Box>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 1.5, borderBottom: '1px solid #e4e7ed' }}><Typography variant="subtitle2">{source.data?.form.name ?? '来源表单'}{sourceLocated && ` · ${[...(highlight.hasMainFields ? ['主表字段'] : []), ...highlight.rows.map(row => `子表第 ${row.rowIndex + 1} 行`)].join('；')}`}</Typography><Tooltip title={selected?.batchId ? '读取最终完成时的表单快照，蓝色突出本笔业务的来源。' : '读取最近保存的内容，蓝色突出命中字段或子表行；内容编号不改变实际生产归属。'}><IconButton size="small" aria-label="来源说明"><InfoOutlined fontSize="small" /></IconButton></Tooltip></Stack>
+            {source.isLoading && <Typography sx={{ p: 3 }} color="text.secondary">来源表单加载中…</Typography>}
+            {sourceLocated === false && <Alert severity="info">当前来源版式中无法定位命中位置，可展开下方取值核对原记录。</Alert>}
+            <Box ref={previewRef} sx={{ display: 'flex', minHeight: 0, height: '65vh', overflow: 'hidden' }}>{document && source.data && <FormCanvasPreview key={selected?.id} document={document} fullPage interaction={{ isFieldHighlighted: highlight.isFieldHighlighted }} runtime={{ values: source.data.values, disabled: true, onChange: () => {} }} />}</Box>
+          </Box>
+          {selected && <Accordion disableGutters elevation={0} sx={{ '&::before': { display: 'none' } }}><AccordionSummary expandIcon={<ExpandMore fontSize="small" />}><Typography variant="body2">{selected.batchId ? '本笔业务取值' : '命中内容'}</Typography></AccordionSummary><AccordionDetails>{hitsOf(selected).map((hit, index) => <DetailSection key={`${hit.bindingId}/${hit.rowKey}/${index}`} title={`${selected.batchId ? '业务记录' : `命中 ${index + 1}`} · ${locationName(hit)}`}>
             {visibleAttributes(hit).map(([key, item]) => <DetailField key={key} label={sourceAttributeName(key)}>{display(item)}</DetailField>)}
             {hit.details?.map(detail => <DetailField key={detail.fieldId} label={detail.name}>{Array.isArray(detail.value) ? detail.value.map(display).join('、') : display(detail.value)}</DetailField>)}
-          </DetailSection>)}
-          <Button variant="outlined" disabled={!document} onClick={() => setPreviewOpen(true)}>预览来源表单</Button>
+          </DetailSection>)}</AccordionDetails></Accordion>}
           {canDhr && <Button onClick={async () => { try { setDhrs((await client.get(`${sourcePath}/dhr`)).data.data); } catch (reason) { setError(reason instanceof Error ? reason.message : 'DHR查询失败'); } }}>查看实际关联 DHR</Button>}
           {dhrs && <Typography variant="body2">{dhrs.length ? dhrs.map(dhr => `${dhr.dhrNo} · ${dhr.status}`).join('；') : '该来源没有实际关联的DHR。'}</Typography>}
         </> : <>
@@ -197,6 +207,5 @@ export default function FormProjectionReportPage() {
         </>}
         {error && <Alert severity="error">{error}</Alert>}{source.isError && <Alert severity="error">来源快照读取失败</Alert>}
     </DetailDrawer>
-    <AppDialog open={previewOpen && Boolean(selected)} onClose={() => setPreviewOpen(false)} fullScreen><DialogTitle>来源表单 · {selected?.instanceNo}{selected?.batchId ? ` · 修订 ${selected.revision}` : ' · 最近保存内容'}</DialogTitle><DialogContent dividers sx={{ bgcolor: '#f7f9fc' }}>{document && source.data && <FormCanvasPreview document={document} fullPage runtime={{ values: source.data.values, disabled: true, onChange: () => {} }} />}</DialogContent></AppDialog>
   </Box>;
 }

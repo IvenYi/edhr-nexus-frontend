@@ -3,12 +3,12 @@ import { Box, Drawer, IconButton, Stack, Tab, Tabs, Tooltip, Typography } from '
 import Close from '@mui/icons-material/Close';
 
 /** Shared shell for list-row information and audit details. */
-export default function DetailDrawer({ open, onClose, label, tab, onTabChange, children, footer }: {
+export default function DetailDrawer({ open, onClose, label, tab, onTabChange, children, footer, width = 560 }: {
   open: boolean; onClose: () => void; label: string; tab: number;
-  onTabChange: (tab: number) => void; children: ReactNode; footer?: ReactNode;
+  onTabChange: (tab: number) => void; children: ReactNode; footer?: ReactNode; width?: number;
 }) {
   return <Drawer anchor="right" open={open} onClose={onClose} sx={{ zIndex: theme => theme.zIndex.drawer + 3 }}
-    PaperProps={{ role: 'dialog', 'aria-label': label, sx: { width: { xs: '100vw', sm: 560 }, maxWidth: '100vw', height: '100vh', bgcolor: '#f7f9fc', overflow: 'hidden' } }}>
+    PaperProps={{ role: 'dialog', 'aria-label': label, sx: { width: { xs: '100vw', sm: width }, maxWidth: '100vw', height: '100vh', bgcolor: '#f7f9fc', overflow: 'hidden' } }}>
     <Box sx={{ px: 2, pt: 2, flexShrink: 0 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
         <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#303133' }}>信息查看</Typography>

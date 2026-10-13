@@ -25,7 +25,17 @@ const sandbox = { module: { exports: {} }, require: specifier => {
 sandbox.exports = sandbox.module.exports;
 vm.runInNewContext(result.outputFiles[0].text, sandbox);
 const { default: FormDocumentPreview, bindFormPreviewField } = sandbox.module.exports;
-const render = (document, runtime, fieldPermissions) => renderToStaticMarkup(createElement(FormDocumentPreview, { document, runtime, fieldPermissions }));
+const render = (document, runtime, fieldPermissions, interaction) => renderToStaticMarkup(createElement(FormDocumentPreview, { document, runtime, fieldPermissions, interaction }));
+
+test('readonly source preview highlights only the selected actual row, including its other columns', () => {
+  const html = render(fixedTableDocument('dynamic'), { values: { 'inspection-table': [{ quantity: 100, result: 'pass' }, { quantity: 50, result: 'pass' }] }, disabled: true, onChange() { throw Error('source preview cannot write'); } }, undefined,
+    { isFieldHighlighted: (_field, table, index) => table === 'inspection-table' && index === 1 });
+  assert.equal((html.match(/data-form-preview-row="1" data-form-preview-highlighted="true"/g) ?? []).length, 2);
+  assert.doesNotMatch(html, /data-form-preview-row="0" data-form-preview-highlighted="true"/);
+  assert.doesNotMatch(html, /data-mock-fill-sub-table-add-row|data-mock-fill-sub-table-remove-row/);
+  assert.match(html, /value="100"/);
+  assert.match(html, /value="50"/);
+});
 
 test('execution uses the same initial subtable row, serial, placeholders and frame as template preview', () => {
   const document = fixedTableDocument('dynamic');

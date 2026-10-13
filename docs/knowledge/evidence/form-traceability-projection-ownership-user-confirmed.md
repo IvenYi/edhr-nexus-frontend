@@ -715,3 +715,55 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 - `original-evidence`（本体直接读取当前工作树）：`ProjectionSourceEditor.tsx` 将来源划分为必需、报工数量二选一、已配或错误外显以及未配可选的“更多字段”；折叠内选配后该来源进入外显区。额外展示选择器已撤下，具体失效展示映射通过 `detailProblem` 提示并可明确移除，其余映射不被自动清空。
 - `original-evidence`（本体直接读取当前工作树）：`StatisticsProjectionConfig.tsx` 的 `collapsedModels` 控制主表用途组，`add` 打开相应用途组并展开新增记录；子表配置继续既有整表入口。`FormProjectionInterpreter.java` 的production目录显示名及对应数量校验提示使用“生产报工”，稳定ID仍为production，没有新增模型或统计生效状态。
 - `evidenceGap`：以上是源码核对，不是本体执行浏览器、保存重开或运行测试的结果。聚焦测试、构建、真实交互及独立质量由主开发和质量角色记录；客户制表人员试用仍无证据。新37保持 `specified/internal`，不将本轮源码或静态截图升级为整功能 `verified`，不关闭Q4、Q6、Q17、A12及其他不相关开放问题。
+
+## 2026-10-13 同切片增量：独立记录页面与直接来源原表单
+
+范围标识：`report-pages-source-20261013`；用户确认证据标识：`user-confirmed-20261013-report-pages-source`。复用 `DEC-PACKAGE-20260929-FORM-PROJECTION` 与 `DEC-0075`，追加38；知识基线保持 `0.3.24`，本体读取起点为 `24023785c76b8799e2d83c756406211b430e69ed`。本轮为L2，主智能体承担运行实现与验证，本体只同步知识及核对原始来源。此前第8/9节的报表字段和签名QA不代替本轮验收。
+
+### 用户原话（user-confirmed）
+
+由主智能体转交本轮准确原文：
+
+> 好的，我们现在再来调整报表，首先我想像参考图的冠骋一样，报表是拆开的，形成每个菜单页面，而不是在一个页面里用tab来查看，其次我需要你给我解释一下为何会有业务记录和按xxx合计的选项？报表不就是应该按照上面我们所说的维度（这里也可以看一下我们产品和冠骋的源码）来统计展示的吗？然后点击查看详情（如图三）可以查看到原始的业务记录的表单，并且最好的话可以高亮命中，展示改行明细。
+
+异步回复准确原文：
+
+> 冠骋是消耗记录报表，是流水，不汇总的吧？你要不先调研一下？他做的我觉的可能是你说的选项1这种
+
+第一段确认独立菜单页面及直接查看原表单的方向，并要求解释既有合计入口；后段关于竞品流水是用户判断和进一步核对请求，**不是独立确认本产品默认合计口径或竞品部署SQL**。主智能体核对原始材料后已说明证据边界并采用逐笔业务列表、移除二级合计入口；该采纳记录为下文 `inference` 工程决策。
+
+### 原始页面与源码（original-evidence）
+
+- 本体本轮直接查看详情原图 `/var/folders/sv/f_vzczh51y9cqbtqhfnvwmyw0000gn/T/codex-clipboard-32ac0955-c5f2-456d-a125-59a256544137.png`：左侧“消耗记录”选中，右侧“表单详情”直接显示“物料消耗”原表单，两实际行分别为M001与M003，并有“实例操作日志”“表单打印”入口。**该图未见指定行高亮，不能作为稳定单行定位的运行证据**；这些外部日志/打印入口也不自动成为我方本轮新增范围。
+- 六张列表原图路径仍见[报表复核第2节](../../development/form-projection-business-report-field-review-2026-10-12.md#2-原始截图查询条件与展示列)。主智能体与本轮只读研究实例再次查看回报列表列/条件及独立入口；本体未再次逐张查看，不能把其回报声称为本体独立截图验证。截图不能证明同属性多次登记是否合并或部署版本等同本地源码。
+- 本体本轮直接读取 `B/bizProcess/service/OnlineFormDataCatchService.java:254–385`：子表循环创建报工实体，每笔带单一 `formInstId` 和业务字段；375–385按来源表单替换保存，380的 `aggregateEntities` 调用已注释。`506–590`报废同样逐行实体并带单来源表单；`638–727`消耗每行生成UUID、带单 `formInstId` 后批量保存。它们支持**逐笔采集及来源回查**，不直接证明部署列表查询没有再聚合。
+- 本体本轮直接读取 `B/service/ProductNumDataService.java:203–261`，并搜索整个原始 `src` 的 `aggregateEntities(`：只发现该方法声明及采集服务380的注释调用。方法存在不能成为活跃报表分组依据。`B/transaction/biz/FormReportSummaryBs.java:30–42`注册独立 `biz_summary_search` 并调用合计消费者，不能与列表查询混为一谈。
+- 本体本轮直接读取 `F/src/projects/online-form/src/views/integration/apaas_ebr/hooks/useApaasEbr.ts:47–90`：通用只读表单抽屉在有 `selfId` 和 `_gct_nocode_trace_values_` 时传入实例定位，EXCEL/WORD共用参数。`F/src/projects/online-form/src/views/render/__components__/_field_/trace/component/trace-render.vue:121–123`以 `contentHighlight[Trace]?.includes(value)`判断高亮；这支持按值高亮机制，**不能证明报表详情传入稳定rowKey或只高亮单一实际业务行**。
+
+其中 `B/` 为 `/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/`，`F/` 为 `/Users/ivenwang/Documents/iven space/paas-main-front/`。本轮采集日期2026-10-13，SHA256如下；原始副本仍无已知可复核部署版本，不能借文件指纹宣称部署一致。
+
+| 原始文件（相对B或F） | SHA256 |
+| --- | --- |
+| B/bizProcess/service/OnlineFormDataCatchService.java | `d457a6d1c731789618e21975db57eb40ed7100792f7f12c457111dc129177cee` |
+| B/service/ProductNumDataService.java | `624b0c513dae3dc8542db599770630518bb2576222dca04339780393d83c2196` |
+| B/transaction/biz/FormReportSummaryBs.java | `9dd9475e4132abe82214c146857dfaa6cb76441a4b11d114cce416ef8175b74b` |
+| F/src/projects/online-form/src/views/integration/apaas_ebr/hooks/useApaasEbr.ts | `ed4379c1785c3c0ed7301ed1d6b178fae1b675928c29a1d84f697a3a251f92ed` |
+| F/src/projects/online-form/src/views/render/__components__/_field_/trace/component/trace-render.vue | `afa42623e2f09e78874975d0cca2c4576c4b5c499ae90e396b91f9e962a477fd` |
+
+### 本轮产品范围与工程选择
+
+- `user-confirmed`：表单追溯、报工记录、报废记录、消耗记录分别提供菜单页面；打开详情直接查看来源原表单，并定位/高亮字段或实际子表行。真实归属、保存后追溯/最终完成统计、冻结来源及原授权沿既有确认，独立页面不生成另一套业务事实。
+- `inference`：主智能体依据现有独立fact模型与原始逐笔采集采用三业务页逐笔展示，移除“业务记录/按xxx合计”二级页签；既有合计API、键和计算保留，不新开汇总入口。此工程选择局部替代此前报表复核5.3节“预设汇总作为第二视图”的页面建议，不废弃DEC-0075-06/32的合计语义。
+- `inference`：来源定位由报告页按稳定rowKey在**实际显示的来源快照**解析子表行，不能按同值或陈旧rowIndex猜测。主表按fieldId；子表identity不存在或重复时不给出推测高亮，不要求客户配置唯一列，不修改源值、签名或来源关系。
+- `inference`：四新路径和旧菜单幂等归一化、旧URL重定向由产品通用前端实现；共享预览只增加只读展示钩子。没有schema/业务数据迁移，没有新统计模型、库存、产出回写或跨表单事件关联。
+- `secondary-reference`：此前研究报告、摘要及既有知识证据仅用于寻找原始材料。本轮结论已回到上述五份原始代码和详情图核对；旧记录中的未知完整分组不会自动变为本轮事实。
+
+### 本项目边界、缺口与验收要求
+
+`original-evidence`（本体本轮直接读取）：`FormProjectionController`类级授权仍为 `form-instances.view` 加 `production.execution`；`source(batchId)`读完成批次的冻结 `source_json`，`instanceSource(instanceId)`读实例冻结模板及最新保存 `values_json`；两条DHR回查方法额外要求 `dhr.instances.view`。本轮前端菜单路径与共享 `projectionSourceHighlight.ts`是当前工作树实现证据，不能单凭静态阅读标为运行已通过。
+
+验收至少覆盖：四独立菜单与旧URL/已保存菜单幂等归一化、权限组合；三业务两笔同物料同值记录不合并且各自可回查；主字段及实际行高亮、显示快照重排、缺失/重复identity不误高亮；过程最近保存与正式最终冻结来源分离；真实浏览器从列表直接看原表单；只读字段/子表/签名不触发写动作；实际context与DHR回查额外权限。要求记录在同包和DEC-0075场景中，不表示上述测试已由本体执行。
+
+`evidenceGaps`：冠骋部署列表metadata/requestSQL和详情buttonparams不可得，不能宣称完全复制其分组或稳定单行高亮；本体未执行本轮运行API、浏览器交互或数据库验证，主开发和独立质量须分别提供证据。客户制表人员试用仍未进行。38保持 `specified/internal`，无新增运行规则、事实或执行契约；Q16只收敛本轮入口与来源定位，其余跨报表组织、失效历史/A12、Q4/Q6/Q17及无上下文独立登记不连带闭环。
+
+`validation-evidence`（本体实际执行）：`gmp-platform/backend`下 `mvn -Dtest=BusinessKnowledgeModelTest test`，59项、0失败/错误/跳过，`BUILD SUCCESS`；日志 `/tmp/edhr-report-pages-source-knowledge-20261013.log`。全部知识YAML及同包共184份解析通过，本轮5个测试范围证据路径存在，目标文档`git diff --check`通过。该结果只支持知识结构、引用和投影边界，不替代本轮产品运行或独立质量门禁。

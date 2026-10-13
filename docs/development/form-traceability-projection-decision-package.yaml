@@ -2,10 +2,11 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
+  # 当前增量report-pages-source-20261013为L2：四独立菜单页面与原表单详情已确认；逐笔列表、撤下二级合计入口及stable rowKey定位为工程inferred。沿同包维护影响与验收，不复用此前切片QA。
   # 2026-10-13手填人时与字段链、三类专用逐笔报表已实现，基础测试和真实API证据见报表复核第8节，该切片独立QA已通过；来源展示与签名报工人修正的全新独立复验见第9节。局部implemented/internal，不标整体verified。可选性、单人来源与严格日期类型仍是inferred工程选择。
   # 2026-10-12原始证据复核区分列表、采集、工作台合计与产出回写；竞品部署列表精确分组仍有证据缺口，不阻断我方当前字段和专用列表切片，也不作为新增分组依据。
   # 2026-10-12用户确认侧栏按业务逐条配置、画布点选/下拉同源、消耗明细/报废明细/报工记录术语；本轮L1精简影响、成功标准和验证见form-projection-configuration-simplification-2026-10-12.md增量。沿用原来源和快照契约，无新统计口径。
-  summary: 同一首次完成投影切片保留真实执行归属、主表与子表、使用时快照和产品预设报表。2026-10-10运行修正覆盖保存后独立追溯、同实例与同实际行匹配、隐藏行身份、默认值持久化、可空批号/单位、明细额外展示及统一配置查询。2026-10-13已实现数字字段手填人时、独立报工时间/报工人来源、原因分类字典快照、三类专用逐笔列/过滤与原分组人时合计。正式统计仍等最终完成和投影成功；基础及独立验证见报表复核第8节，来源展示及签名报工人修正的全新独立QA已passed，见第9节，不标整体verified。上下文自动带入、Q6错误值、无上下文登记及A12仍不在本轮，不宣称完整MVP。
+  summary: 同一首次完成投影切片保留真实执行归属、主表与子表、使用时快照和产品预设报表。2026-10-13本轮report-pages-source确认表单追溯、报工、报废和消耗独立菜单页面，详情直接看来源原表单并定位字段或实际行。主智能体选择业务记录逐笔展示、撤下记录/合计二级页签而保留既有合计API与键、按显示快照中的stable rowKey安全定位；这些是inferred工程选择，竞品原始逐笔采集与通用按值高亮不证明部署列表SQL或稳定行定位。保存后过程追溯与最终完成成功投影的正式统计、真实context/DHR、冻结来源和原权限保持。此前数字手填人时、专用字段/过滤及签名来源修正的第8/9节QA只覆盖各自范围，不能替本轮独立验收；本轮新知识specified/internal，不标整体verified。上下文自动带入、Q6错误值、无上下文登记及A12仍不在本轮，不宣称完整MVP。
   # 2026-10-05预置项复核时管理员目录尚未实现；从冠骋原始字段与消费者提炼候选，见form-projection-preset-source-review-2026-10-05.md。该历史增量不修改运行目录、统计默认、数据库或未决问题；10-07当前实现以目录切片记录为准。
   # 同日整体补查：直接核对冠骋前端设计器8种追溯/21种业务字段和后端41种注册声明，补字典选项/取值来源/动作分层；候选非运行默认，未新增字段类型、统计规则或Q17答案。
   # 同日追加：查找与追溯、业务统计是并列可选任务，可仅其一/两者/都不配；部分字段可配置生产上下文自动带入。统计归属独立来自实际执行上下文。Q15-Q17保留独立索引时机、结果页面及字段带入生命周期，当前formTrace完成路径不替未来需求定版。
@@ -25,6 +26,25 @@ decisionPackage:
     concepts: []
     relationships: []
     rules:
+      - id: design-rule.form-projection.independent-report-pages-direct-source
+        name: 独立记录页面直接查看来源原表单
+        status: specified
+        trigger: form-projection.report-navigation-and-source-view
+        condition:
+          all:
+            - fact: report.modelId
+              operator: in
+              value: [formTrace, production, scrap, consumption]
+        result:
+          type: organize-authorized-source-view
+          independentMenuPages: [表单追溯, 报工记录, 报废记录, 消耗记录]
+          detailDefault: original-source-form
+          locateMatchedFieldOrActualSubtableRow: true
+          traceSource: latest-successfully-saved-content
+          businessSource: final-completion-frozen-snapshot
+          preserveActualContextDhrAndAuthorization: true
+          grantsSourceWritePermission: false
+        sourceReferences: [user-confirmed-20261013-report-pages-source, DEC-0075-33, DEC-0075-38]
       - id: design-rule.form-projection.compact-statistics-sidebar
         name: 生产报工命名与业务用途渐进配置
         status: specified
@@ -582,8 +602,12 @@ decisionPackage:
         sourceReferences: [DEC-0075-22, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
     executionContracts: []
   inferred:
+    - id: inference.form-projection.record-pages-and-stable-source-highlight-20261013
+      statement: 本轮三业务记录页按每个独立fact逐笔展示，不合并多次登记；撤下业务记录/合计二级页签，保留已有合计API、键和计算而不新增汇总入口。详情直接用只读来源预览；主表按命中fieldId，子表按稳定rowKey在当前显示的来源快照中解析实际行并高亮，不按同值或陈旧rowIndex猜测，身份不存在或重复时不高亮。旧菜单归一化为四独立路径，旧URL重定向，保持原权限且不迁移业务数据。
+      rationale: 用户明确独立菜单与原表单定位；异步认为消耗可能是流水并要求源码核对。原始三用途采集支持逐笔来源，aggregateEntities只见注释调用，sum consumer不是列表证据；通用trace-render按值includes也不是稳定单行定位证明。以上是主智能体在授权范围内采纳的最小工程选择，不独立提升为用户口径确认或完整复制冠骋。
+      relatedIds: [DEC-0075-38, evidence.form-projection-report-pages-source-20261013]
     - id: inference.form-projection.business-report-field-implementation-20261013
-      statement: 在已授权开发范围新增可选workHours、reportStartTime、reportEndTime、productionDate、reporter来源；工时只接受数字来源，业务时间使用严格日期类型。报工人来源现由2026-10-13追加确认收紧为人员引用或签名，不再沿用文本工程选择。reason/category适配字典标识与显示快照，三类业务使用专用逐笔列与过滤。保留已有合计分组，并合计明确保存的人时；不将新字段可选或单人限制伪称用户确认。
+      statement: 在已授权开发范围新增可选workHours、reportStartTime、reportEndTime、productionDate、reporter来源；工时只接受数字来源，业务时间使用严格日期类型。报工人来源现由2026-10-13追加确认收紧为人员引用或签名，不再沿用文本工程选择。reason/category适配字典标识与显示快照，三类业务使用专用逐笔列与过滤。保留已有合计分组，并合计明确保存的人时；本轮report-pages-source撤下二级合计页面入口，不删除此计算。不将新字段可选或单人限制伪称用户确认。
       rationale: 复用现有来源、attributes/details、完成投影和报表契约，以最小工程范围补齐已识别消费者需求；不新增自动工时、多人绩效、原因分配、库存、产出回写或自定义报表平台。
       relatedIds: [DEC-0075-35, docs/development/form-projection-business-report-field-review-2026-10-12.md]
     - id: inference.form-projection.clarified-runtime-correction-20261010
@@ -635,8 +659,8 @@ decisionPackage:
       rationale: 跨表单同报表行方向已确认，但同次事件的跨表单关联仍待定；报表汇总不改写原始记录或正式业务事实。
       relatedIds: [DEC-0075-16]
     - id: inference.form-projection.trace-and-business-shared-foundation
-      statement: 建议共享画布点选、配置快照和来源定位基础；查找索引检索字段值，业务投影形成有明确语义/粒度的事实，两类用途不要求同一生效时机。
-      rationale: 两类任务并列且独立已确认，保存后最新草稿/进行中内容可查也已确认；索引存储方案、失效历史/A12视图和结果导航仍待设计。当前完成链路是源码事实，不能替代新过程查询契约。
+      statement: 建议共享画布点选、配置快照和来源定位基础；查找索引检索字段值，业务投影形成有明确语义/粒度的事实，两类用途不要求同一生效时机。本轮独立四菜单与直接来源定位已由DEC-0075-38确认，其余跨报表组织仍待设计。
+      rationale: 两类任务并列且独立已确认，保存后最新草稿/进行中内容可查也已确认；失效历史/A12视图和未定跨报表导航继续保留。当前完成链路是源码事实，不能替代新过程查询契约。
       relatedIds: [DEC-0075-17, DEC-0075-33]
     - id: inference.form-projection.context-prefill-source-orthogonal-to-use
       statement: 建议画布点字段分别设置取值来源（手填/当前生产上下文等）和数据用途，自动带入不是第三种报表用途；身份显示字段只读或受控修改，语义兼容时同字段复用带入与用途配置。
@@ -659,6 +683,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: report-pages-source-20261013
+        change: 四类独立菜单/路由页面代替共用页面切换用途；列表查询保持各自模型，三业务记录按独立fact逐笔，不开放新的汇总入口。详情直接显示来源原表单并定位主字段或实际子表行。菜单归一化、记录页和共享只读高亮的实现由主智能体完成，本条不提前宣称运行验证通过。
+        evidenceReferences: [gmp-platform/frontend/src/utils/menuManagement.ts, gmp-platform/frontend/src/router/index.tsx, gmp-platform/frontend/src/components/shared/AppLayout.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - area: compact-statistics-sidebar-20261013
         change: L1侧栏交互增量；production显示名改生产报工，不改模型ID或正式完成规则。主表三用途标题均可收起，新增时自动展开；必需/数量二选一及已配来源直接显示，未配可选来源在更多字段内，失效来源仍可修复。移除额外展示字段选择入口，已有配置不自动清除，失效旧展示配置提供明确移除操作。
         evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
@@ -720,6 +747,9 @@ decisionPackage:
         change: 记录用户确认的用途投影、数量来源、独立质量统计与未实现边界，尚未闭环能力保持planned/internal。
         evidenceReferences: [docs/knowledge/README.md]
     transitiveImpacts:
+      - area: report-menu-preferences-and-shared-readonly-preview
+        change: 用户保存的旧共用菜单需要幂等归一化，旧URL导向有效入口；共用画布预览增加展示高亮，回归只读字段、子表及签名禁写。来源定位必须从所显示的最近保存/最终冻结快照解析稳定rowKey，不将列表行位置当来源行身份。
+        evidenceReferences: [gmp-platform/frontend/src/utils/menuManagement.ts, gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx, gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts]
       - area: reporter-projection-and-query
         change: 签名来源只投影签署人身份和名称快照，逐笔列表与人员筛选沿既有reporter属性，不推算人时或改变签署权限。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]
@@ -736,6 +766,9 @@ decisionPackage:
         change: 模板可编辑，生产使用时快照、完成事件及报表读取共用稳定映射契约；普通未配置模板保持原路径。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
     potentialImpacts:
+      - area: competitor-deployed-report-and-detail-metadata
+        concern: 冠骋部署列表metadata/requestSQL及详情buttonparams不可得；原始采集链、六张列表图、原表单详情图和通用trace values不能证明完整运行分组或精确稳定单行高亮，不用该缺口扩大我方统计/身份范围。
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - area: report-grain-and-person-hours-20261013
         concern: 表头工时向多行复制、多人归属和原因分项可能重复计量，均不在当前切片自动展开；Q4及表头共享保持未决。数字源与日期源的类型收紧需回归已有用途，字典显示不得丢失快照或把ID误当名称。
         evidenceReferences: [docs/knowledge/open-questions.yaml, docs/development/form-projection-business-report-field-review-2026-10-12.md]
@@ -755,9 +788,13 @@ decisionPackage:
         concern: 选项展示顺序是开发者反馈下的初步设计，尚未有客户制表人员试用或实际使用频率数据。
         evidenceReferences: []
     unaffectedAreas:
+      - area: report-record-semantics-and-execution
+        reason: 只拆入口及来源只读呈现，不修改解释器、完成状态、保存后追溯时机、最终完成统计、业务fact身份、单位/合计键、真实生产context或DHR成员关系；不删除原合计API或计算。
       - area: production-signature-and-dhr-lifecycle
         reason: 不修改签署认证、权限、生产完成条件、DHR归集和冻结成员；按钮签署只修正已认证身份的签名字段回填结构，不自动创建DHR、不做库存动作。
     compatibilityAndMigration:
+      - area: report-pages-menu-and-legacy-url-20261013
+        requirement: 新路径为/reports/form-trace、/reports/production-records、/reports/scrap-records、/reports/consumption-records；已保存旧/reports/form-projections菜单幂等归一化，旧URL重定向。无schema或业务数据迁移，不改写记录、配置或冻结快照；只撤下合计UI入口而不破坏已有API与键。
       - area: reporter-source-constraint-20261013
         requirement: 无数据库结构迁移。旧文本报工人映射不得静默转换为人员或签名；编辑来源时标明不匹配，MVP演示数据可修复或作废。已完成快照不被新模板配置重写。
       - area: new-report-role-values-20261013
@@ -770,6 +807,8 @@ decisionPackage:
       - area: future-experimental-code-replacement
         requirement: 原非开发数据库保持隔离，功能使用独立edhr_form_projection及虚构数据；本功能MVP开发历史允许修复迁移或作废，取消对旧试验数据一律不转换的限制，未来正确数据使用快照继续有效。
     snapshotImpacts:
+      - area: report-direct-source-highlight-20261013
+        requirement: 过程追溯来源继续读取最近成功保存内容，正式业务继续读取完成投影批次冻结source_json；稳定rowKey只在该显示快照解析。缺失/重复identity不按值或陈旧rowIndex替代，也不要求用户配置额外唯一列；不写入源表单或回填历史。
       - area: typed-report-role-snapshots-20261013
         requirement: 新角色的配置随使用冻结，正式完成时保存实际来源值；字典及人员标识和显示值保留快照。字段签署与按钮签署均保存实际签署人标识、姓名和签名证据ID，报工人引用此结构；查询不读取最新模板或当前字典名称替换历史事实，不根据起止重算已保存人时。
       - area: future-query-catalog-binding
@@ -777,6 +816,8 @@ decisionPackage:
       - area: future-projection
         requirement: 首次执行或后续挂接表单时冻结当时配置及目录版本；最终值与生产上下文、来源回查读取投影批次快照，不读取最新模板替代。
     auditImpacts:
+      - area: report-direct-source-readonly-20261013
+        requirement: 来源查看和高亮不创建新写动作或新审计语义；保留已有端点日志及授权读取链。查询时不修改源值、签名、完成事件、重试审计或DHR归属，既有投影重试仍沿原权限和原因校验。
       - area: business-time-and-reporter-20261013
         requirement: 报工开始、结束、生产日期和报工人是业务来源，审计创建/修改身份与时点继续真实记录、准确命名；不从当前用户或提交时间补业务事实，不改变签署认证、签名证据创建或最终完成时机。FILL_SIGN_FIELD回填复用已有access.sign返回的证据ID及authenticateButtonSigner返回的实际签署人，不把会话操作者替代成签署人。
       - area: future-query-catalog-management
@@ -784,6 +825,8 @@ decisionPackage:
       - area: future-projection
         requirement: 模板保存沿既有审计，生产执行保存快照并审计；投影重试需审计，批次保留来源。专属投影发布审计退出；变更作废运行模块未闭环。
     permissionImpacts:
+      - area: independent-report-page-authorization-20261013
+        requirement: 四菜单与路由、查询和source继续同时要求form-instances.view与production.execution；DHR回查另需dhr.instances.view，原重试还需system.edit。独立菜单或交互高亮不授予填写、签署、附件写入或业务编辑权限。
       - area: future-query-catalog
         requirement: 当前目录管理使用system.edit；目录候选允许模板设计权限或已有报表读取资格，均不赋予相互操作权限。记录查询继续原有来源权限，不用目录管理权限读取来源；细粒度只读查询授权另行完善。
       - area: future-report
@@ -791,6 +834,9 @@ decisionPackage:
       - area: template-projection-configuration
         requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
     testImpacts:
+      - scope: report-pages-source-20261013
+        scenarios: [四独立菜单路由与旧URL重定向, 已保存菜单幂等归一化且权限组合隔离, 三业务逐笔不合并同物料两事实, 原合计API与键保留, 主字段与实际子表行来源定位, 重排行身份定位且同值不误高亮, 缺失或重复identity不猜测高亮, 最近保存与最终冻结来源隔离, 真实浏览器从列表直接看原表单, 只读字段子表与签名不触发写入, 实际context和DHR回查额外权限]
+        evidenceReferences: [gmp-platform/frontend/scripts/verify-menu-management.mjs, gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts, gmp-platform/frontend/scripts/test-signature-display.mjs, gmp-platform/frontend/scripts/test-projection-report.mjs, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
       - scope: compact-statistics-sidebar-20261013
         scenarios: [用途标题展开收起及新增自动展开, 已配置来源保存重开外显, 未配置可选来源折叠及选择后外显, 必填与数量二选一常显, 错误来源定位修复, 旧展示来源保留与失效时可移除, 三用途主表子表共享交互, 生产报工目录名称]
         evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
@@ -837,12 +883,12 @@ decisionPackage:
         scenarios: [普通字段及整子表入口, 查找与统计并列且可独立选择, 主表同笔来源引导, 子表列映射逐行生效, 配置草稿与启用, 保存重开与撤销, 总览及侧栏共用配置, 多行预览不串行不写入模板, 左侧滚动, 窄屏布局]
         evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx, gmp-platform/frontend/scripts/test-projection-preview.mjs]
     evidenceGaps:
-      - 2026-10-13实现、聚焦测试与主智能体真实API验证已登记报表复核第8节，独立质量验收尚待，未标verified。冠骋部署列表精确分组仍未证实；不阻断当前手填人时与专用逐笔报表，也不授权新原因分项、多人绩效、跨行共享、库存、产出联动或自定义报表。
+      - 本轮report-pages-source实现与独立质量需单独收尾，不复用报表复核第8/9节已通过的旧QA。冠骋部署列表metadata/requestSQL及详情buttonparams仍缺失，不能证明完整分组或稳定单行高亮；原始采集支持逐笔工程选择，不阻断本轮入口与来源查看，也不授权原因分项、多人绩效、跨行共享、库存、产出联动或自定义报表。
       - 同日设计器整体补查未运行冠骋UI或外部SDK，关联批次完整业务语义、当前租户字典及所有联动校验未证明。前端入口有套件/版本/表单模式条件；字段或字典声明不证明业务动作、生产带入生命周期、公式或运行统计已闭环。
       - 2026-10-05冠骋预置项研究为本机原始源码静态复核，外部SDK与可运行页面未获得；未确认完整检验报表消费链路。枚举与候选名单不代表本项目运行能力，不将未核对的运算、唯一性、索引状态和库存动作提升为规则。
       - Q14已确认首期两种来源形态，并于2026-10-05收敛MVP查找目录链路和预设统计报表、自定义报表二期；具体交互、阶段出口及其余运行契约仍待定，不把范围确认等同Q9-Q17全部闭环。用户对安速康表单子表常见性的观察是用户反馈，不是本轮原始样本统计。
       - 当前目录切片复用产品既有文本精确及同记录匹配，新增与显示信息维护不证明完整生命周期已定版。更多类型/操作符、停用删除及跨记录条件需后续设计；新含义对无冻结绑定旧实例的补充覆盖明确二期。自定义报表二期的指标组合/权限/布局细则及客户自建模型Q13没有定版。
-      - Q15保存/暂存后可查询已保存草稿、填报中和审批中已于2026-10-10确认；剩余失效/终止与历史视图另行设计。Q16相关记录证据与报表结果页、Q17自动带入取值时点/刷新/覆盖及多设备策略仍未定版；缺上下文提示与手填系统对象不自动归DHR的分支已确认。命中保留类型/字段来源/实例位置，同字符串不同类型不混查，所有相关限已有权限。
+      - Q15保存/暂存后可查询已保存草稿、填报中和审批中已于2026-10-10确认；剩余失效/终止与历史视图另行设计。Q16四类独立菜单与直接原表单字段/实际行定位已于2026-10-13确认，只保留其余跨报表组织与历史入口；Q17自动带入取值时点/刷新/覆盖及多设备策略仍未定版。缺上下文提示与手填系统对象不自动归DHR的分支已确认；同字符串不同类型不混查，所有相关限已有权限。
       - formTrace已独立于正式完成事实，保存后可查且按真实节点展示阶段；失效/终止历史未覆盖。字段自动带入见Q17，不能把普通默认值或执行context当带入闭环。
       - 2026-10-03曾新增Q9-Q14六项未来待定；其后Q14首期范围与Q10同一画布独立侧栏入口已分别收敛，其余表头共享、跨表单关联、稳定行标识、客户自建模型及未确认交互细节仍以open-questions为准，不将未回复建议写成确认。
       - 隐藏UUID已落地并在保存、重开、重排和签署聚焦测试中验证，新保存模板不保留客户行键要求；重试和独立质量证据收尾登记。表头共享给子表统计及同事实总数加明细去重仍未实现。
@@ -853,7 +899,7 @@ decisionPackage:
       - 配置项实际使用频率及新手理解成本缺少客户试用证据；当前渐进式顺序不能宣称为已验证最优流程。
   extensionStrategy:
     selectedPaths: [product-core, configuration, transaction-orchestration]
-    rationale: 产品内核维护统计模型与查询能力，客户配置合法来源并在支持类型内维护查找项；投影事件与结果由内核持久化。MVP读预设报表，二期报表复用同一事实与来源，具体扩展接口仍待设计。
+    rationale: 产品内核维护统计模型与查询能力，客户配置合法来源并在支持类型内维护查找项；投影事件与结果由内核持久化。本轮report-pages-source只使用product-core（前端独立记录页及共享只读视觉钩子）与configuration（既有菜单持久化归一化），不改既有transaction-orchestration执行链；不加入客户条件分支。MVP读预设记录页，已有合计API保留，二期报表复用同一事实与来源，具体扩展接口仍待设计。
     ownershipBoundaries:
       - owner: template-module
         responsibility: 字段与分组身份、模板版本及可编辑配置入口；不新增专属发布锁。
@@ -862,9 +908,35 @@ decisionPackage:
       - owner: production-and-work-runtime
         responsibility: 首次执行或后续挂接时校验并保存配置快照、真实执行上下文、最终完成事件与来源权限。
       - owner: report-and-dhr
-        responsibility: 授权查询及沿实际证据关系导航，MVP预设统计展示与二期报表扩展边界；不改写来源记录或决定生产归属。
+        responsibility: 授权查询及沿实际证据关系导航，本轮四独立记录页与原表单只读定位；共享预览只提供视觉钩子，报告页负责按来源稳定身份解析高亮。MVP预设记录展示与二期报表扩展边界，不改写来源记录或决定生产归属。
+      - owner: frontend-menu-configuration
+        responsibility: 本轮四菜单路径及已保存旧菜单的幂等归一化，保留原权限与旧URL有效导向；不迁移业务数据或扩展后端统计。
   # affectedFiles保留历史实现及后续计划；2026-10-07增量为查找目录、动态候选、显式绑定快照和既有完成查询，不改统计口径。
   affectedFiles:
+    - path: gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      changeType: update
+      reason: 本轮按路由固定用途并直接展示来源原表单，业务列表逐笔且撤下合计二级入口。
+    - path: gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts
+      changeType: create
+      reason: 本轮从显示快照按稳定rowKey解析目标实际行，不按相同值或陈旧索引高亮。
+    - path: gmp-platform/frontend/src/utils/menuManagement.ts
+      changeType: update
+      reason: 本轮四独立菜单及持久化旧菜单幂等归一化，沿原权限。
+    - path: gmp-platform/frontend/src/router/index.tsx
+      changeType: update
+      reason: 本轮独立路由与旧共用URL重定向。
+    - path: gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      changeType: update
+      reason: 本轮报表菜单沿既有查看和生产来源权限显示。
+    - path: gmp-platform/frontend/src/components/DetailDrawer.tsx
+      changeType: update
+      reason: 本轮来源详情所需布局复用共享抽屉，不扩展写权限。
+    - path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+      changeType: update
+      reason: 本轮共享只读画布来源高亮，并保持签名禁写。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx
+      changeType: update
+      reason: 本轮只读文档预览提供字段/实际行展示高亮，回归签名及子表。
     - path: docs/development/form-projection-configuration-feedback-2026-10-11.md
       changeType: create
       reason: 本轮用户解释、最小影响及反馈验收证据。
@@ -1055,6 +1127,21 @@ decisionPackage:
       changeType: read-only
       reason: 核对现有元数据查询与来源权限。
   acceptanceScenarios:
+    - id: scenario.report-pages-source-independent-navigation
+      given: 用户有原报表权限，旧菜单配置可能含共用追溯与统计入口
+      when: 打开菜单，分别进入表单追溯、报工、报废和消耗，再重载或访问旧URL
+      then: 四入口分别进入固定用途页面，已保存菜单归一化幂等且旧URL有效；无权限组合不能靠新路径扩大可见范围。
+      evidenceRequirements: [菜单与路由聚焦测试, 权限组合核对, 真实浏览器导航, 本轮独立质量验收]
+    - id: scenario.report-pages-source-two-identical-material-facts
+      given: 同一来源表单两实际行保存同物料和相同数量但具有不同稳定rowKey，最终完成后分别形成独立消耗fact
+      when: 查询消耗记录并打开第二笔详情
+      then: 显示两条独立记录且直接打开原表单，只定位第二个真实行；不按同值合并或误高亮第一行，不提供记录/合计二级切换，已有合计API和键不删除。
+      evidenceRequirements: [逐笔记录及来源rowKey聚焦测试, 显示快照重排与缺失重复identity测试, 真实来源详情浏览器核对, 本轮独立质量验收]
+    - id: scenario.report-pages-source-snapshot-and-readonly
+      given: 过程追溯命中最新已保存内容，业务记录具有最终冻结来源，原表单包含签名及子表
+      when: 从两类记录直接打开来源，检查字段/行定位并尝试只读控件
+      then: 各自读取正确来源，实例模板和context不被当前配置重解释；无签名、保存或子表修改写动作，实际DHR关系及额外回查权限保持。
+      evidenceRequirements: [来源端点与快照静态核对, 只读签名/预览聚焦回归, 真实浏览器直接来源查看, 本轮独立质量验收]
     - id: scenario.saved-progress-trace-before-completion
       given: 有权限的填报人暂存了包含追溯来源值但尚未完整的表单
       when: 查询人员在暂存成功后查询该已保存值
