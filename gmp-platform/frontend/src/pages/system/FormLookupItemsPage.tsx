@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Add, EditOutlined, ExpandMore, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import { Add, Delete, EditOutlined, ExpandMore, LinkOutlined, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import DetailDrawer from '@/components/DetailDrawer';
 import FormDialog from '@/components/FormDialog';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import { useSnackbar } from '@/components/SnackbarProvider';
+import FormLookupBindingsDialog from './FormLookupBindingsDialog';
 import FormDialogSection from '@/components/FormDialogSection';
 import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import TableStateCell from '@/components/TableStateCell';
@@ -12,7 +15,7 @@ import ListColumnSettingsPopover, { getCurrentUserPreferenceStorageKey, loadList
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyActionSx } from '@/components/listTableStyles';
 import { formListFieldSx, formListQueryGridSx, formListQueryPanelSx, FormListPagination } from '@/pages/form-management/formManagementListStyles';
-import { formLookupCatalogKey, saveFormLookupItem, useFormLookupItems, type FormLookupItem } from '@/api/formLookupCatalog';
+import { deleteFormLookupItem, formLookupCatalogKey, saveFormLookupItem, useFormLookupItems, type FormLookupItem } from '@/api/formLookupCatalog';
 import { useAuthStore } from '@/stores/authStore';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
 import type { PageResult } from '@/types/common';
@@ -38,6 +41,8 @@ function DetailField({ label, children }: { label: string; children: ReactNode }
 
 export default function FormLookupItemsPage() {
   const canEdit = useAuthStore(state => state.hasPermission('system.edit'));
+  const canManageBindings = useAuthStore(state => state.hasPermission('master-data.form-templates'));
+  const { showMessage } = useSnackbar();
   const catalog = useFormLookupItems();
   const queryClient = useQueryClient();
   const [keyword, setKeyword] = useState('');
@@ -47,6 +52,8 @@ export default function FormLookupItemsPage() {
   const [opened, setOpened] = useState(false);
   const [editing, setEditing] = useState<FormLookupItem>();
   const [selected, setSelected] = useState<FormLookupItem>();
+  const [bindingItem, setBindingItem] = useState<FormLookupItem>();
+  const [deleteTarget, setDeleteTarget] = useState<FormLookupItem>();
   const [detailTab, setDetailTab] = useState(0);
   const [auditPage, setAuditPage] = useState(0);
   const [auditSize, setAuditSize] = useState(20);
@@ -71,10 +78,15 @@ export default function FormLookupItemsPage() {
     await Promise.all([queryClient.invalidateQueries({ queryKey: formLookupCatalogKey }), queryClient.invalidateQueries({ queryKey: ['form-projection-catalog'] })]);
   } });
   const edit = (item?: FormLookupItem) => { setEditing(item); setName(item?.name ?? ''); setDescription(item?.description ?? ''); setType(item?.type ?? 'text'); save.reset(); setOpened(true); };
+  const remove = useMutation({ mutationFn: deleteFormLookupItem, onSuccess: async () => {
+    setDeleteTarget(undefined); setSelected(undefined);
+    await Promise.all([queryClient.invalidateQueries({ queryKey: formLookupCatalogKey }), queryClient.invalidateQueries({ queryKey: ['form-projection-catalog'] })]);
+    showMessage('追溯项已删除', 'success');
+  }, onError: error => { setDeleteTarget(undefined); showMessage(error instanceof Error ? error.message : '删除失败，请重试', 'error'); } });
   const openDetail = (item: FormLookupItem) => { setSelected(item); setDetailTab(0); setAuditPage(0); };
   const rows = (catalog.data ?? []).filter(item => `${item.name} ${item.description}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
   const visible = settings.order.filter(id => !settings.hidden.includes(id)).map(id => columns.find(column => column.id === id)!).filter(Boolean);
-  const layout = [...visible.map(column => ({ id: column.id, width: getColumnWidth(column) })), { id: 'actions', width: 64 }];
+  const layout = [...visible.map(column => ({ id: column.id, width: getColumnWidth(column) })), { id: 'actions', width: 128 }];
   const stateText = catalog.isPending ? '加载中…' : catalog.isError ? '目录读取失败，请重试' : rows.length ? '' : '暂无数据';
   if (!canEdit) return <Alert severity="error">当前账号没有追溯项管理权限。</Alert>;
   return <Box sx={{ height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
@@ -97,10 +109,13 @@ export default function FormLookupItemsPage() {
         const widths = resolveListColumnWidths(layout, tableWidth, visible[0]?.id ?? '', ['actions']);
         return <Table stickyHeader size="small" sx={{ tableLayout: 'fixed', width: tableWidth, height: stateText ? '100%' : 'auto' }}>
           <colgroup>{layout.map(column => <col key={column.id} style={{ width: widths[column.id] }} />)}</colgroup>
-          <TableHead><TableRow>{visible.map(column => <TableCell key={column.id} sx={{ ...listTableHeaderCellSx, position: 'sticky' }}>{column.label}<Box aria-label={`调整${column.label}列宽`} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /></TableCell>)}<TableCell align="center" sx={{ ...listTableHeaderCellSx, ...listTableStickyActionSx(64, 'head') }}>操作</TableCell></TableRow></TableHead>
+          <TableHead><TableRow>{visible.map(column => <TableCell key={column.id} sx={{ ...listTableHeaderCellSx, position: 'sticky' }}>{column.label}<Box aria-label={`调整${column.label}列宽`} sx={listColumnResizeHandleSx} {...getResizeHandleProps(column)} /></TableCell>)}<TableCell align="center" sx={{ ...listTableHeaderCellSx, ...listTableStickyActionSx(128, 'head') }}>操作</TableCell></TableRow></TableHead>
           <TableBody sx={{ height: stateText ? '100%' : 'auto' }}>{stateText ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={layout.length} sx={{ height: '100%' }}>{stateText}</TableStateCell></TableRow> : rows.slice(page * size, (page + 1) * size).map(item => <TableRow key={item.id} hover onClick={() => openDetail(item)} tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && ['Enter', ' '].includes(event.key)) { event.preventDefault(); openDetail(item); } }} sx={{ cursor: 'pointer' }}>
             {visible.map(column => <TableCell key={column.id} title={valueOf(item, column.id)} sx={{ ...listTableBodyCellSx, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{valueOf(item, column.id)}</TableCell>)}
-            <TableCell align="center" sx={{ ...listTableBodyCellSx, ...listTableStickyActionSx(64, 'body') }}><Tooltip title="编辑显示信息"><IconButton size="small" aria-label={`编辑${item.name}`} onClick={event => { event.stopPropagation(); edit(item); }}><EditOutlined fontSize="small" /></IconButton></Tooltip></TableCell>
+            <TableCell align="center" sx={{ ...listTableBodyCellSx, ...listTableStickyActionSx(128, 'body') }}><Tooltip title="编辑显示信息"><IconButton size="small" aria-label={`编辑${item.name}`} onClick={event => { event.stopPropagation(); edit(item); }}><EditOutlined fontSize="small" /></IconButton></Tooltip>
+              {canManageBindings && <Tooltip title="关联配置"><IconButton size="small" aria-label={`查看${item.name}关联配置`} onClick={event => { event.stopPropagation(); setBindingItem(item); }}><LinkOutlined fontSize="small" /></IconButton></Tooltip>}
+              {!item.builtin && <Tooltip title="删除"><IconButton size="small" color="error" aria-label={`删除${item.name}`} disabled={remove.isPending} onClick={event => { event.stopPropagation(); setDeleteTarget(item); }}><Delete fontSize="small" /></IconButton></Tooltip>}
+            </TableCell>
           </TableRow>)}</TableBody>
         </Table>;
       }}</ListTableShell>
@@ -122,6 +137,9 @@ export default function FormLookupItemsPage() {
         </DialogContent>
         <DialogActions><Button onClick={() => setOpened(false)} disabled={save.isPending}>取消</Button><Button type="submit" variant="contained" disabled={save.isPending || !name.trim()}>保存</Button></DialogActions>
     </FormDialog>
+    <ConfirmDialog open={Boolean(deleteTarget)} title="删除追溯项" message={`确定删除“${deleteTarget?.name ?? ''}”吗？存在表单配置关联时需先解除；历史填报内容保留。`} destructive confirmText="删除" loading={remove.isPending}
+      onCancel={() => setDeleteTarget(undefined)} onConfirm={() => { if (deleteTarget) remove.mutate(deleteTarget); }} />
+    {bindingItem && <FormLookupBindingsDialog key={bindingItem.id} item={bindingItem} onClose={() => setBindingItem(undefined)} />}
     <DetailDrawer open={Boolean(selected)} onClose={() => setSelected(undefined)} label="追溯项详情" tab={detailTab} onTabChange={setDetailTab}
       footer={detailTab === 1 && <FormListPagination totalElements={audit.data?.totalElements ?? 0} totalPages={audit.data?.totalPages ?? 0} page={auditPage} pageSize={auditSize} onPageChange={setAuditPage} onPageSizeChange={next => { setAuditSize(next); setAuditPage(0); }} />}>
       {detailTab === 0 ? <>{selected && <>

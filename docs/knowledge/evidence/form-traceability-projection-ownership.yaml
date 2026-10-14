@@ -1,5 +1,10 @@
 knowledgeModelVersion: 0.3.24
 evidence:
+  - id: evidence.form-projection-custom-trace-crud-20261014
+    type: document
+    path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    description: user-confirmed；2026-10-14用户指出追溯项管理不应全目录禁止删除，只有预置不可删、自定义项应支持CRUD；异步答复采用先解除现有表单配置再允许删除、历史填报内容保留；追加要求操作列打开弹窗看到所有表单配置项并支持全选或勾选解除，随后要求预览看清字段在表单中的具体位置。支持同DEC的41，原位修正自定义删除整体延期的遗漏。original-evidence为本体重读现存TemplateModelingController保存事务与权限、FormTemplateVersion版本锁、新FormLookupCatalogService关联扫描/解除/删除及原实例索引与DHR快照读取源码，追加直接核对FormLookupBindingPreview和列表逐项预览调用。现存各版本sources扫描而非lookupItems、预置映射可解除、删除项退出新候选、并发锁及system.edit与模板权限共同校验属于inference工程选择；预览平铺不分组、指定当前模板版本版式只读高亮、返回保留勾选及异常明确提示同为工程选择，不从缺少频率数据推定真实多处配置很少，不把源码复用当作权限验证通过。历史内容、实际归属及业务统计不改变，目录删除不是A12作废；知识specified/internal、基线0.3.24，实际CRUD/预览/并发/审计/浏览器和独立质量须取本轮证据，前次QA及追加预览前知识测试不代替。
+    visibility: internal
   - id: evidence.form-projection-typed-trace-catalog-20261014
     type: document
     path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md

@@ -35,6 +35,10 @@ class FormLookupCatalogAuthorizationTest {
         assertThat(controller.list().getData()).isEmpty();
         assertThatThrownBy(() -> controller.create(request)).isInstanceOf(AccessDeniedException.class);
         assertThatThrownBy(() -> controller.update("lookup_test", request)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> controller.delete("lookup_test", 1)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> controller.bindings("lookup_test")).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> controller.unlink("lookup_test", List.of())).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> controller.preview("lookup_test", 1, "trace", "field")).isInstanceOf(AccessDeniedException.class);
         verify(catalog).list(); verifyNoMoreInteractions(catalog);
     }
     @Test @WithMockUser(authorities = {"form-instances.view", "production.execution"})
@@ -42,6 +46,7 @@ class FormLookupCatalogAuthorizationTest {
         when(catalog.list()).thenReturn(List.of());
         assertThat(controller.list().getData()).isEmpty();
         assertThatThrownBy(() -> controller.create(request)).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> controller.delete("lookup_test", 1)).isInstanceOf(AccessDeniedException.class);
         verify(catalog).list(); verifyNoMoreInteractions(catalog);
     }
     @Test @WithMockUser(authorities = "form-instances.view")
@@ -51,7 +56,19 @@ class FormLookupCatalogAuthorizationTest {
     }
     @Test @WithMockUser(authorities = "system.edit")
     void administratorCanMaintainDefinitionsWithoutSourceAccess() {
-        controller.create(request); controller.update("lookup_test", request);
-        verify(catalog).create(request); verify(catalog).update("lookup_test", request);
+        controller.create(request); controller.update("lookup_test", request); controller.delete("lookup_test", 1);
+        assertThatThrownBy(() -> controller.bindings("lookup_test")).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> controller.unlink("lookup_test", List.of())).isInstanceOf(AccessDeniedException.class);
+        assertThatThrownBy(() -> controller.preview("lookup_test", 1, "trace", "field")).isInstanceOf(AccessDeniedException.class);
+        verify(catalog).create(request); verify(catalog).update("lookup_test", request); verify(catalog).delete("lookup_test", 1);
+    }
+    @Test @WithMockUser(authorities = {"system.edit", "master-data.form-templates"})
+    void administratorWithTemplatePermissionCanReadAndUnlinkConfigurations() {
+        when(catalog.bindings("lookup_test")).thenReturn(List.of());
+        assertThat(controller.bindings("lookup_test").getData()).isEmpty();
+        controller.unlink("lookup_test", List.of());
+        controller.preview("lookup_test", 1, "trace", "field");
+        verify(catalog).bindings("lookup_test"); verify(catalog).unlink("lookup_test", List.of());
+        verify(catalog).preview("lookup_test", 1, "trace", "field");
     }
 }

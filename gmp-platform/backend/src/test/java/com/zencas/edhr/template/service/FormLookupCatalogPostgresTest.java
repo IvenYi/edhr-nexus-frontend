@@ -19,6 +19,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutionException;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -43,6 +48,9 @@ class FormLookupCatalogPostgresTest {
         var ds = new DriverManagerDataSource(url + "?currentSchema=" + schema, user, password);
         jdbc = new JdbcTemplate(ds); tx = new TransactionTemplate(new DataSourceTransactionManager(ds));
         jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id text default 'default',instance_no text,object_id bigint default 1,object_no text default 'B1',operation_id text default 'a',operation_name text default 'A',created_by text,created_at timestamp,updated_by text,updated_at timestamp,snapshot_json text default '{}',values_json text default '{}',status text default 'ACTIVE',template_name text,template_version text)");
+        jdbc.execute("CREATE TABLE form_template(id BIGINT PRIMARY KEY,tenant_id text default 'default',name text)");
+        jdbc.execute("CREATE TABLE form_template_version(id BIGINT PRIMARY KEY,template_id bigint,tenant_id text default 'default',version_label text,model_design_json text,canvas_design_json text default '{}',workflow_design_json text default '{}',lock_version bigint default 0,updated_by text,updated_at timestamp)");
+        jdbc.update("INSERT INTO form_template(id,name) VALUES(10,'虚构检测表')");
         jdbc.update("INSERT INTO form_instance_record(id,instance_no) VALUES(1,'NEW'),(2,'OLD')");
         try (var connection = ds.getConnection()) {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0107-form-projection-runtime.sql"));
@@ -103,6 +111,135 @@ class FormLookupCatalogPostgresTest {
                         "lookup_material_code", "lookup_product_code", "lookup_supplier_lot", "lookup_order_number");
         assertThat(catalog.list()).noneMatch(item -> item.id().equals("serialNumberText") || item.id().equals("lookup_related_batch"));
         assertThatThrownBy(() -> catalog.prepareDesign(form("serialNumberText").toString())).hasMessageContaining("已退出目录");
+    }
+
+    private void design(long versionId, ObjectNode root) {
+        jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json) VALUES(?,10,?,?)", versionId, "V" + versionId, root.toString());
+    }
+    private java.util.List<FormLookupCatalogService.BindingSelection> selections(java.util.List<FormLookupCatalogService.Binding> rows) {
+        return rows.stream().map(row -> new FormLookupCatalogService.BindingSelection(Long.parseLong(row.versionId()), row.revision(), row.bindingId(), row.fieldId())).toList();
+    }
+
+    @Test void customDeletionProtectsPresetsRevisionsAndHistoricalEvidence() {
+        var item = create();
+        var preset = catalog.list().stream().filter(FormLookupCatalogService.Item::builtin).findFirst().orElseThrow();
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.delete(preset.id(), preset.revision()))).hasMessageContaining("预置");
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.delete(item.id(), item.revision() + 1))).hasMessageContaining("已被修改");
+        ObjectNode frozen = (ObjectNode) catalog.withLookupSnapshot(form(item.id()));
+        save(1, frozen);
+        tx.executeWithoutResult(status -> catalog.delete(item.id(), item.revision()));
+        assertThat(catalog.contains(item.id())).isFalse();
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM form_instance_record WHERE id=1", String.class)).isEqualTo(frozen.toString());
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_trace_value WHERE item_id=?", Integer.class, item.id())).isEqualTo(1);
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.delete(item.id(), item.revision()))).hasMessageContaining("不存在");
+        ArgumentCaptor<AuditEvent> audit = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(audits, times(2)).save(audit.capture());
+        assertThat(audit.getValue().getAction()).isEqualTo("DELETE");
+        assertThat(audit.getValue().getContentBefore()).contains(item.id());
+        assertThat(audit.getValue().getContentAfter()).isNull();
+    }
+
+    @Test void mainSubtableAndAllVersionsCanBeSelectivelyUnlinkedWithoutChangingOtherBusiness() {
+        var item = create();
+        ObjectNode main = form(item.id());
+        ((ObjectNode) main.at("/projection/bindings/0/sources")).put("materialLotText", "other");
+        main.withArray("fields").addObject().put("id", "other").put("type", "text").put("name", "其他编号");
+        main.withArray("fields").addObject().put("id", "qty").put("type", "number").put("name", "用量");
+        ((com.fasterxml.jackson.databind.node.ArrayNode) main.at("/projection/bindings")).addObject().put("id", "stats").put("modelId", "production").put("enabled", true).putObject("sources").put("goodQuantity", "qty");
+        design(20, main);
+        ObjectNode tableModel = form(item.id());
+        ((ObjectNode) tableModel.at("/projection/bindings/0")).put("tableId", "details").put("enabled", false);
+        var tableFields = mapper.createArrayNode();
+        var columns = mapper.createArrayNode(); columns.addObject().put("id", "number").put("name", "锅次列").put("type", "text");
+        tableFields.addObject().put("id", "details").put("name", "检验明细").put("type", "subTable").putObject("typeConfig").set("columns", columns);
+        tableModel.set("fields", tableFields);
+        ObjectNode wrapper = mapper.createObjectNode().put("format", "kept"); wrapper.set("payload", tableModel);
+        design(21, wrapper);
+        var rows = catalog.bindings(item.id());
+        assertThat(rows).hasSize(2).extracting(FormLookupCatalogService.Binding::location).containsExactly("主表", "子表 · 检验明细");
+        assertThat(catalog.preview(item.id(), 20, "trace", "number").modelDesignJson()).contains(item.id(), "goodQuantity");
+        assertThat(catalog.preview(item.id(), 21, "trace", "number").modelDesignJson()).contains("锅次列");
+        assertThatThrownBy(() -> catalog.preview(item.id(), 21, "trace", "other")).hasMessageContaining("配置已变化");
+        assertThatThrownBy(() -> catalog.preview(item.id(), 21, "trace", "")).hasMessageContaining("选择无效");
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.delete(item.id(), item.revision()))).hasMessageContaining("关联配置");
+        tx.executeWithoutResult(status -> catalog.unlink(item.id(), selections(rows.subList(0, 1))));
+        assertThat(catalog.bindings(item.id())).hasSize(1);
+        assertThatThrownBy(() -> catalog.preview(item.id(), 20, "trace", "number")).hasMessageContaining("配置已变化");
+        var saved = jdbc.queryForObject("SELECT model_design_json FROM form_template_version WHERE id=20", String.class);
+        assertThat(saved).contains("materialLotText", "stats", "goodQuantity").doesNotContain(item.id());
+        assertThat(jdbc.queryForObject("SELECT canvas_design_json FROM form_template_version WHERE id=20", String.class)).isEqualTo("{}");
+        tx.executeWithoutResult(status -> catalog.unlink(item.id(), selections(catalog.bindings(item.id()))));
+        assertThat(catalog.bindings(item.id())).isEmpty();
+        assertThat(jdbc.queryForObject("SELECT model_design_json FROM form_template_version WHERE id=21", String.class)).contains("kept", "锅次列").doesNotContain(item.id());
+        tx.executeWithoutResult(status -> catalog.delete(item.id(), item.revision()));
+        assertThat(catalog.contains(item.id())).isFalse();
+        ArgumentCaptor<AuditEvent> audit = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(audits, times(4)).save(audit.capture());
+        assertThat(audit.getAllValues()).filteredOn(event -> "FORM_TEMPLATE_VERSION".equals(event.getEntityType())).hasSize(2)
+                .allSatisfy(event -> assertThat(event.getContentBefore()).contains("modelDesignJson", item.id()));
+    }
+
+    @Test void staleBatchSelectionRollsBackEveryVersionAndMetadataAloneDoesNotBlockDeletion() {
+        var item = create(); design(20, form(item.id())); design(21, form(item.id()));
+        var rows = catalog.bindings(item.id());
+        jdbc.update("UPDATE form_template_version SET lock_version=1 WHERE id=21");
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), selections(rows)))).hasMessageContaining("配置已变化");
+        assertThat(catalog.bindings(item.id())).hasSize(2);
+        assertThat(jdbc.queryForObject("SELECT lock_version FROM form_template_version WHERE id=20", Long.class)).isZero();
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), java.util.List.of()))).hasMessageContaining("请勾选");
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), java.util.List.of(new FormLookupCatalogService.BindingSelection(20, 0, "trace", ""))))).hasMessageContaining("选择无效");
+        var repeated = selections(catalog.bindings(item.id()).subList(0, 1));
+        assertThatThrownBy(() -> tx.executeWithoutResult(status -> catalog.unlink(item.id(), java.util.List.of(repeated.getFirst(), repeated.getFirst())))).hasMessageContaining("重复");
+        tx.executeWithoutResult(status -> catalog.unlink(item.id(), selections(catalog.bindings(item.id()))));
+        jdbc.update("UPDATE form_template_version SET model_design_json=? WHERE id=20", "{\"projection\":{\"lookupItems\":{\"" + item.id() + "\":{\"name\":\"旧元数据\"}}}}");
+        assertThat(catalog.bindings(item.id())).isEmpty();
+        tx.executeWithoutResult(status -> catalog.delete(item.id(), item.revision()));
+    }
+
+    private static void await(CountDownLatch latch) {
+        try { if (!latch.await(5, TimeUnit.SECONDS)) throw new IllegalStateException("Transaction coordination timed out"); }
+        catch (InterruptedException ex) { Thread.currentThread().interrupt(); throw new IllegalStateException(ex); }
+    }
+
+    @Test void committedNewBindingBlocksConcurrentDeletion() throws Exception {
+        var item = create();
+        var pool = Executors.newFixedThreadPool(2);
+        var prepared = new CountDownLatch(1); var release = new CountDownLatch(1); var deleting = new CountDownLatch(1);
+        try {
+            var save = pool.submit(() -> tx.executeWithoutResult(status -> {
+                String json = catalog.prepareDesign(form(item.id()).toString());
+                prepared.countDown(); await(release);
+                jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json) VALUES(20,10,'V1',?)", json);
+            }));
+            await(prepared);
+            var delete = pool.submit(() -> { deleting.countDown(); tx.executeWithoutResult(status -> catalog.delete(item.id(), item.revision())); });
+            await(deleting);
+            assertThatThrownBy(() -> delete.get(150, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
+            release.countDown(); save.get(5, TimeUnit.SECONDS);
+            assertThatThrownBy(() -> delete.get(5, TimeUnit.SECONDS)).isInstanceOf(ExecutionException.class).hasCauseInstanceOf(com.zencas.edhr.common.exception.BusinessException.class)
+                    .cause().hasMessageContaining("关联配置");
+            assertThat(catalog.contains(item.id())).isTrue();
+            assertThat(catalog.bindings(item.id())).hasSize(1);
+        } finally { release.countDown(); pool.shutdownNow(); }
+    }
+
+    @Test void committedDeletionRejectsConcurrentNewBinding() throws Exception {
+        var item = create();
+        var pool = Executors.newFixedThreadPool(2);
+        var deleted = new CountDownLatch(1); var release = new CountDownLatch(1); var saving = new CountDownLatch(1);
+        try {
+            var delete = pool.submit(() -> tx.executeWithoutResult(status -> {
+                catalog.delete(item.id(), item.revision()); deleted.countDown(); await(release);
+            }));
+            await(deleted);
+            var save = pool.submit(() -> { saving.countDown(); return tx.execute(status -> catalog.prepareDesign(form(item.id()).toString())); });
+            await(saving);
+            assertThatThrownBy(() -> save.get(150, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
+            release.countDown(); delete.get(5, TimeUnit.SECONDS);
+            assertThatThrownBy(() -> save.get(5, TimeUnit.SECONDS)).isInstanceOf(ExecutionException.class).hasCauseInstanceOf(com.zencas.edhr.common.exception.BusinessException.class)
+                    .cause().hasMessageContaining("不存在");
+            assertThat(catalog.contains(item.id())).isFalse();
+        } finally { release.countDown(); pool.shutdownNow(); }
     }
 
     @Test void typedItemsFreezeTypesAndOnlyAcceptMatchingFieldSources() throws Exception {

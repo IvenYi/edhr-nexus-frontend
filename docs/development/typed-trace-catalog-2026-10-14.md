@@ -50,3 +50,29 @@ qualityResult:
 ```
 
 上述质量结果覆盖提交前工作区，不用相同HEAD冒充代码未变。实际样例准备不证明完整模板发布/签署/审计修订流程；未执行全系统回归或生产规模性能测试。日期时间、数字范围、多选、自定义引用兼容/删除生命周期及A12历史视图明确暂缓。
+
+## 同日自定义项CRUD与配置解除
+
+本轮追加用户确认：预置不能删除，自定义项应有CRUD；已被表单配置使用时先解除配置再允许删除，历史填报内容保留。操作列提供关联配置弹窗，查看所有表单配置项，支持全选或逐项勾选解除。此确认取代前轮“未新增自定义删除流程”的交付范围，本轮仍L2，起点0e05ebda。本轮门禁另行执行，不能复用上节结果。
+
+最小实现及成功标准：目录仅自定义显示删除，服务端仍拒绝预置/陈旧版本/未解除配置；关联清单定位模板、版本、主表字段或子表列，可批量移除选定的对应追溯来源；其他追溯项、统计用途和画布保持。按实际sources判断引用，不以残留lookupItems误判；现存各版本均列入，不以持久status或生失效日期静默缩小清单，实际实例和DHR快照不列为待解绑配置。此范围与现有模板版本仍可编辑的原始源码一致，版本范围及行锁为inference工程选择。
+
+扩展路径继续configuration与product-core，主开发拥有目录事务、模板来源解除、控制器/API和页面，本体拥有知识记录。直接影响目录删除、关联读取/批量解除、后端校验与两个候选缓存更新；传递影响是模板model_design_json、版本锁与更新审计。兼容迁移不增加schema，不级联删除实例/索引或改写运行/冻结快照；删除后目录不再提供该项作为新查询条件，历史原表单和DHR内容仍可查看。正式统计、真实归属、日期数字匹配、八项清单与三默认不变。删除与模板新增来源共享目录锁，批量解除按模板版本和锁版本核对，避免部分更新或覆盖刚保存配置。使用system.edit删除目录，关联读写同时要求master-data.form-templates，沿原模板设计授权与审计。
+
+验证覆盖预置保护、自定义未使用/被使用/解除后删除、历史证据保留、全选与部分解除、子表及多版本、别项/统计/画布保真、陈旧版本及事务回滚、并发新增来源与删除、权限和审计、真实弹窗选择与缓存刷新。大规模关联清单性能、完整多人协作与A12历史视图不在本轮；已打开的设计器若之后主动重新添加仍存在的项，沿原保存行为处理，不把数据库乐观锁宣称为完整客户端协作协议。
+
+本轮主开发6个聚焦后端类57项通过（目录PostgreSQL19、目录权限5、追溯权限3、解释器18、表单索引PostgreSQL8、DHR PostgreSQL4），目录样例数量角色名修正后19项单独复跑也通过；本轮BusinessKnowledgeModelTest59项通过，无跳过。前端31项聚焦测试与最终构建通过。日志/tmp/trace-crud-tests-final.log、/tmp/trace-crud-catalog-retest.log、/tmp/trace-crud-knowledge-tests.log、/tmp/trace-crud-front-tests.log、/tmp/trace-crud-build.log。
+
+真实浏览器创建“虚构解除校验20261014”，通过模板API新建“虚构追溯解除验证表”V1/V2，每个版本主表两处、子表一处，共6关联，另含生产报工数量来源。未解除时删除返回400及明确提示；弹窗只选V1主表锅次A后返回200、剩5项；全选其余5项解除后无关联，再删除返回200、目录行立即消失。两个版本的4个字段、画布和goodQuantity统计来源保留，未替换实际实例/DHR冻结证据。截图output/playwright/trace-crud-bindings-selected.png。浏览器运行使用8088/3000独立开发库，错误夹具请求路径/数量角色已改正，不当作产品缺陷；完整模板发布/签署流程不在本轮验收。
+
+本体trace_crud_ontology_20261014已返回updated，基线0.3.24，8份知识/架构资产、184份YAML、bootstrap及本轮59项正式知识报告核对通过。本轮独立质量尚待新实例结果，前轮typed目录门禁不代本轮CRUD。
+
+同切片用户追加预览定位：每条关联提供预览入口，查看实际表单版式及字段位置。先平铺逐条，不增加表单分组；没有客户使用频率数据，不把虚构重复样例当常见业务的统计证据。预览使用独立受控接口（system.edit与master-data.form-templates同时要求），返回所选当前模板版本的model/canvas，并先核对version/binding/field确属此项；通过现有AppDialog/FormCanvasPreview按fieldId+tableId定位，字段和子表列只读高亮，返回保留勾选。关联已变化或未放置版式不伪定位。既有通用模板GET未带同样方法权限，属于原有相邻风险，本轮不借它宣称权限已证实，也不扩大为通用权限重构。
+
+仅补两份新QA虚构版本的canvas用于预览测试，3处追溯来源与数量统计未修改，lockVersion从1递增为2；QA须重新读取画布基线，不把测试布局准备解释为产品业务修改。新增预览API及前后端源码定向24项测试/构建已通过，日志/tmp/trace-crud-preview-tests-final.log与/tmp/trace-crud-preview-build-final.log；独立质量最终范围须包含预览增量。
+
+主开发实际预览显示仅main_a主表字段高亮，子表预览仅lot/details高亮，返回父弹窗保留已勾选项true；截图output/playwright/trace-crud-binding-preview-main.png、trace-crud-binding-preview-table.png。24项预览及CRUD测试包含空标识拒绝、解除后陈旧预览拒绝、两类权限与当前归属验证。追加预览后的新59项知识测试通过（time2.222，无失败/跳过），本体实例已返回最终updated。删除及字段解除的实际审计读取证实DELETE有前值无后值，模板解除UPDATE保留前后modelDesignJson和操作者。全系统回归、旧通用GET权限重构、生产规模清单性能仍未覆盖。
+
+本轮最终ontologyResult.result=updated，预览追加后的基线仍0.3.24。独立trace_crud_quality_20261014已返回完整qualityResult.result=passed，findings/blockingConditions为空；baseCommit/headCommit均0e05ebda441acafd966869578b29963adac9798b，审查该起点之外已暂存的18个本轮代码/测试/知识路径，含两个新增TSX，排除output目录。独立最终7类后端116项（57功能+59知识）、31前端和构建通过，最后决策包写入后新知识59项也独立通过；日志/tmp/trace-crud-quality-tests-final.log、/tmp/trace-crud-quality-knowledge-final.log、/tmp/trace-crud-quality-front-final.log、/tmp/trace-crud-quality-build-final.log。
+
+独立浏览器验证6→5→0→DELETE200、陈旧选择400与刷新、预置无删除、主/子表精确只读定位、返回保留勾选及1024布局。未放置字段通过只读响应替身验证明确提示，没有改数据库。QA夹具两版本的fields/canvas/workflow/统计来源完全保持，实例/执行/DHR/汇总/索引前后哈希一致；3笔模板解除UPDATE与1笔目录DELETE审计正确。证据/tmp/trace-crud-quality-baseline-db.txt、/tmp/trace-crud-quality-after-db.txt、/tmp/trace-crud-quality-audit.txt以及output/playwright/trace-crud-quality-preview-main.png、trace-crud-quality-preview-column.png、trace-crud-quality-1024.png。质量实例未修复代码或数据，仅按授权在专用虚构夹具验证CRUD，自己的浏览器已关闭；不把这些检查宣称为全系统或通用GET权限验收。历史目录入口/A12与生产规模性能、完整多人设计器协作保持暂缓范围。

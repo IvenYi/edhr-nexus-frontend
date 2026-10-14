@@ -2,6 +2,7 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
+  # 当前custom-trace-crud-20261014同切片L2：自定义先解绑配置再删，操作列弹窗全选/逐项解除及每条只读版式预览/字段定位；实例与DHR冻结不改。门禁覆盖本轮追加预览，不复用typed目录结果。
   # 当前typed-trace-catalog-20261014为同切片L2：8项预置/3项默认，其他预置固定折叠；自定义text/number/date，日期闭区间与数字精确；自定义引用延后。本轮目录、索引、快照解释、查询、迁移、UI及独立验证，不沿用历史门禁。
   # 2026-10-14 report-query-ui 为同切片L1：严格复用表单列表查询和作业模板页签规范；反向预置项按既有builtin标记驱动，自定义项通过添加查询条件。仅前端展示与条件组织，不改变后端/API/匹配/权限/快照/迁移；整体impactAnalysis保留既有L2历史范围。
   # 2026-10-13 directional-trace-runtime沿DEC-0075-39原位修正并实施，L2。固定业务条件、两向含义、DHR跨表单组合及完整DHR命中表单/字段定位已明确；具体字段/页签/去重计数仍inferred。该历史切片不新增替代DEC、不把我方范围冒充竞品GET范围；本轮目录与类型确认见DEC-0075-40。
@@ -29,6 +30,23 @@ decisionPackage:
     concepts: []
     relationships: []
     rules:
+      - id: design-rule.form-projection.custom-trace-delete
+        name: 自定义追溯项删除与配置解除
+        status: implemented
+        trigger: trace-catalog.delete-or-unlink
+        condition:
+          all:
+            - fact: report.modelId
+              operator: equals
+              value: formTrace
+        result:
+          type: manage-trace-item-associations
+          builtinDeletion: prohibited
+          customDeletion: only-without-template-bindings
+          bindingManagement: selectable-or-select-all-in-dialog
+          bindingPreview: read-only-template-layout-with-field-location
+          retainedInstanceEvidence: unchanged
+        sourceReferences: [user-confirmed-20261014-custom-trace-crud]
       - id: design-rule.form-projection.typed-trace-catalog
         name: 精简预置与有类型的自定义追溯
         status: implemented
@@ -759,6 +777,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: custom-trace-crud-20261014
+        change: 自定义项删除需解除现存表单配置；操作列弹窗提供全选或逐项解除，每条可通过专用双权限API预览当前配置版式并按fieldId/tableId定位。目录锁与模板版本锁协调删除和保存，独立保留实例/DHR证据；无schema迁移。本轮L2权限/审计/并发/实际交互门禁不复用前轮。
+        evidenceReferences: [docs/development/typed-trace-catalog-2026-10-14.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormLookupCatalogController.java, gmp-platform/frontend/src/pages/system/FormLookupBindingsDialog.tsx, gmp-platform/frontend/src/pages/system/FormLookupBindingPreview.tsx]
       - area: typed-trace-catalog-20261014
         change: 8项预置、3项默认及固定展开；自定义日期/数字创建、字段兼容与冻结类型、保存索引、表单/DHR类型化匹配及命中。新增0112迁移允许类型并撤旧4项，不机械改绑SN，不改写实例证据。
         evidenceReferences: [docs/development/typed-trace-catalog-2026-10-14.md, gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java, gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx]
