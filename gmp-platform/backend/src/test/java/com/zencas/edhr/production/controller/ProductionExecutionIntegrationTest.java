@@ -1379,6 +1379,10 @@ class ProductionExecutionIntegrationTest {
     }
 
     @Test void globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory() throws Exception {
+        // queryAuth signs reader #2; the authenticated subject must also exist in the identity store.
+        assertThat(jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) "
+                + "SELECT 2,tenant_id,'reader','读者',?,'ACTIVE' FROM user_account WHERE id=1",
+                passwords.encode("reader-fixture-only"))).isEqualTo(1);
         seedSignedWork();
         action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
         action(101, "SAVE", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
@@ -1392,6 +1396,25 @@ class ProductionExecutionIntegrationTest {
         mvc.perform(queryAuth(post("/api/v1/production/execution/101/actions").contentType("application/json")
             .content("{\"action\":\"APPROVE\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}")))
             .andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record WHERE id=1", String.class)).isEqualTo("ACTIVE");
+    }
+
+    @Test void missingQueryPrincipalCannotAdvanceApprovalOrChangePersistedEvidence() throws Exception {
+        // Deliberately do not persist reader #2: a valid test token is not an identity-store record.
+        seedSignedWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+        String stateBefore = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        String snapshotBefore = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        int auditsBefore = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+        mvc.perform(queryAuth(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"SUBMIT\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{\"temperature\":23}}")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("无法确定当前用户的主体解析范围"));
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(2L);
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(stateBefore);
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(snapshotBefore);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(auditsBefore);
         assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record WHERE id=1", String.class)).isEqualTo("ACTIVE");
     }
 
