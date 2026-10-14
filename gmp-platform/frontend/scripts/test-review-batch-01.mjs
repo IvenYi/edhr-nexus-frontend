@@ -18,13 +18,14 @@ async function load(source, globals = {}) {
     absWorkingDir: root,
     stdin: { contents: source, resolveDir: root, loader: 'ts' },
     bundle: true, write: false, platform: 'node', format: 'cjs', packages: 'external',
+    define: { 'import.meta.hot': 'undefined' },
     plugins: [{ name: 'no-ui-notifications', setup(plugin) {
       plugin.onResolve({ filter: /deletionProtection$/ }, () => ({ path: 'notification', namespace: 'test' }));
       plugin.onLoad({ filter: /.*/, namespace: 'test' }, () => ({ contents: 'export const showDeletionProtection = () => {};' }));
     } }],
   });
   const module = { exports: {} };
-  vm.runInNewContext(output.outputFiles[0].text, { module, exports: module.exports, require, console, ...globals });
+  vm.runInNewContext(output.outputFiles[0].text, { module, exports: module.exports, require, console, Event, ...globals });
   return module.exports;
 }
 
@@ -35,7 +36,7 @@ function authEnvironment() {
     setItem: (key, value) => storage.set(key, String(value)),
     removeItem: (key) => storage.delete(key),
   };
-  const window = { location: { href: '' } };
+  const window = Object.assign(new EventTarget(), { location: { href: '' } });
   return { storage, localStorage, window };
 }
 
@@ -100,19 +101,22 @@ test('F-001: LoginPage clears stale cache before installing the successful ident
   const auth = await loadAuth();
   auth.queryClient.setQueryData(['personal'], 'A');
   const navigations = [];
+  const setItem = auth.localStorage.setItem;
+  auth.localStorage.setItem = (key, value) => {
+    assert.equal(auth.queryClient.getQueryCache().getAll().length, 0);
+    setItem(key, value);
+  };
   const submit = pageCallback('src/pages/LoginPage.tsx', 'handleSubmit', {
     username: 'B', password: 'test-only',
     client: { post: async () => ({ data: { data: { token: 'B-token', user: { id: 2 } } } }) },
     setError: () => {}, setLoading: () => {},
-    clearSessionQueryCache: auth.clearSessionQueryCache,
-    localStorage: { ...auth.localStorage, setItem(key, value) {
-      assert.equal(auth.queryClient.getQueryCache().getAll().length, 0);
-      auth.localStorage.setItem(key, value);
-    } },
+    useAuthStore: auth.useAuthStore,
+    clearSessionQueryCache: auth.clearSessionQueryCache, localStorage: auth.localStorage,
     storeSessionPolicy: () => {}, navigate: (...args) => navigations.push(args),
   });
   await submit({ preventDefault() {} });
   assert.equal(auth.localStorage.getItem('token'), 'B-token');
+  assert.equal(auth.useAuthStore.getState().user?.id, 2);
   assert.equal(navigations[0][0], '/');
 });
 
@@ -130,14 +134,131 @@ test('F-001: old HTTP successes and old 401 responses cannot affect the new sess
   assert.equal((await unauthorized).code, 'ERR_CANCELED');
   assert.equal(auth.localStorage.getItem('token'), 'B-token');
   assert.equal(auth.window.location.href, '');
+  assert.equal(auth.useAuthStore.getState().user.id, 2);
   // A current-session 401 must still log out.
   const current = auth.client.get('/current-authorization').catch((error) => error);
   await new Promise(setImmediate);
   pending[2].reject({ config: pending[2].config, response: { status: 401, data: {} } });
   await current;
   assert.equal(auth.localStorage.getItem('token'), null);
+  assert.equal(auth.useAuthStore.getState().user, null);
   assert.equal(auth.window.location.href, '/login');
 });
+
+test('HOME-IDENTITY: A to B to A updates memory and announces the installed identity', async () => {
+  const auth = await loadAuth();
+  const observed = [];
+  auth.window.addEventListener(auth.AUTH_USER_CHANGE_EVENT, () => {
+    observed.push([auth.useAuthStore.getState().user?.id, JSON.parse(auth.localStorage.getItem('user')).id]);
+  });
+  for (const id of [1, 2, 1]) {
+    auth.useAuthStore.getState().login(`token-${id}`, { id, username: `user-${id}`, permissions: [] });
+    assert.equal(auth.useAuthStore.getState().user.id, id);
+    assert.equal(auth.useAuthStore.getState().token, `token-${id}`);
+  }
+  assert.deepEqual(observed, [[1, 1], [2, 2], [1, 1]]);
+});
+
+test('HOME-IDENTITY: shared clear path removes memory identity as well as storage', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, permissions: ['old'] });
+  auth.clearAuthStorage();
+  assert.equal(auth.useAuthStore.getState().user, null);
+  assert.equal(auth.useAuthStore.getState().token, null);
+  assert.equal(auth.useAuthStore.getState().isAuthenticated, false);
+  assert.equal(auth.useAuthStore.getState().hasPermission('old'), false);
+});
+
+test('HOME-IDENTITY: string Snowflake identities survive login and same-session refresh exactly', async () => {
+  const auth = await loadAuth();
+  // These neighboring IDs collide if they are coerced to JavaScript Number.
+  for (const id of ['9007199254740993', '9007199254740992', '9007199254740993']) {
+    auth.useAuthStore.getState().login(`test-token-${id}`, { id, permissions: [] });
+    const key = ['tasks', 'done', id, 1];
+    auth.queryClient.setQueryData(key, { ownerId: id });
+    assert.equal(auth.useAuthStore.getState().user.id, id);
+    assert.equal(JSON.parse(auth.localStorage.getItem('user')).id, id);
+    auth.localStorage.setItem('user', JSON.stringify({ id, displayName: 'refreshed', permissions: [] }));
+    auth.window.dispatchEvent(new Event(auth.AUTH_USER_CHANGE_EVENT));
+    assert.equal(auth.useAuthStore.getState().user.id, id);
+    assert.deepEqual(auth.queryClient.getQueryData(key), { ownerId: id });
+  }
+  auth.clearAuthStorage();
+});
+
+test('HOME-IDENTITY: profile refresh uses the existing event without clearing session work', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, displayName: 'old', permissions: [] });
+  auth.queryClient.setQueryData(['work'], { draft: 'keep' });
+  const generation = auth.getSessionGeneration();
+  auth.localStorage.setItem('user', JSON.stringify({ id: 1, displayName: 'new', permissions: ['read'] }));
+  auth.window.dispatchEvent(new Event(auth.AUTH_USER_CHANGE_EVENT));
+  assert.equal(auth.useAuthStore.getState().user.displayName, 'new');
+  assert.equal(auth.useAuthStore.getState().hasPermission('read'), true);
+  assert.equal(auth.localStorage.getItem('token'), 'A-token');
+  assert.equal(auth.getSessionGeneration(), generation);
+  assert.deepEqual(auth.queryClient.getQueryData(['work']), { draft: 'keep' });
+  auth.clearAuthStorage();
+});
+
+test('HOME-IDENTITY: malformed display cache cannot preserve the previous identity', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, permissions: [] });
+  auth.localStorage.setItem('user', '{broken');
+  assert.doesNotThrow(() => auth.window.dispatchEvent(new Event(auth.AUTH_USER_CHANGE_EVENT)));
+  assert.equal(auth.useAuthStore.getState().user, null);
+  assert.equal(auth.useAuthStore.getState().token, 'A-token');
+  auth.clearAuthStorage();
+});
+
+test('HOME-IDENTITY: failed LoginPage authentication does not install a requested user', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, permissions: [] });
+  const errors = [], navigations = [];
+  const submit = pageCallback('src/pages/LoginPage.tsx', 'handleSubmit', {
+    username: 'B', password: 'test-only',
+    client: { post: async () => { throw new Error('denied'); } },
+    setError: (value) => errors.push(value), setLoading() {}, useAuthStore: auth.useAuthStore,
+    storeSessionPolicy() {}, navigate: (...args) => navigations.push(args),
+  });
+  await submit({ preventDefault() {} });
+  assert.equal(auth.useAuthStore.getState().user.id, 1);
+  assert.equal(auth.localStorage.getItem('token'), 'A-token');
+  assert.equal(navigations.length, 0);
+  assert.equal(errors.length, 2);
+  auth.clearAuthStorage();
+});
+
+for (const securityFlag of ['forcePasswordChange', 'forceSignatureVerification']) {
+  test(`HOME-IDENTITY: ${securityFlag} sends the new session to account security`, async () => {
+    const auth = await loadAuth();
+    auth.useAuthStore.getState().login('A-token', { id: 1, permissions: ['old'] });
+    auth.queryClient.setQueryData(['personal'], 'A-only');
+    const payload = { token: 'B-token', user: { id: 2, permissions: ['new'] }, [securityFlag]: true };
+    const policies = [], navigations = [], errors = [];
+    const submit = pageCallback('src/pages/LoginPage.tsx', 'handleSubmit', {
+      username: 'B', password: 'test-only',
+      client: { post: async (path, data) => {
+        assert.equal(path, '/auth/login');
+        assert.deepEqual(plain(data), { username: 'B', password: 'test-only' });
+        return { data: { data: payload } };
+      } },
+      setError: (value) => errors.push(value), setLoading() {}, useAuthStore: auth.useAuthStore,
+      storeSessionPolicy: (value) => policies.push(value),
+      navigate: (...args) => navigations.push(args),
+    });
+    await submit({ preventDefault() {} });
+    assert.deepEqual(errors, ['']);
+    assert.equal(auth.useAuthStore.getState().user.id, 2);
+    assert.equal(auth.useAuthStore.getState().token, 'B-token');
+    assert.equal(auth.useAuthStore.getState().hasPermission('old'), false);
+    assert.equal(auth.useAuthStore.getState().hasPermission('new'), true);
+    assert.equal(auth.queryClient.getQueryData(['personal']), undefined);
+    assert.deepEqual(policies, [payload]);
+    assert.deepEqual(plain(navigations), [['/account/settings', { replace: true }]]);
+    auth.clearAuthStorage();
+  });
+}
 
 test('F-001: same-session requests and signature verification preserve cached work', async () => {
   const auth = await loadAuth();
@@ -294,6 +415,22 @@ function renderedText(node) {
   if (Array.isArray(node)) return node.map(renderedText).join(' ');
   return typeof node === 'object' ? renderedText(node.props?.children) : String(node);
 }
+
+test('F-003 defensive boundary: empty versions without an explicit target is not loading or empty design', async () => {
+  const empty = workspaceHarness({ requested: null, versions: [] });
+  assert.match(renderedText(empty.tree), /当前模板没有版本/);
+  assert.doesNotMatch(renderedText(empty.tree), /未找到所选|正在重新核实/);
+  assert.equal(empty.queries.find((q) => q.queryKey?.[0] === 'dhr-template-composition').enabled, false);
+  await assert.rejects(empty.mutations[0].mutationFn());
+  assert.equal(empty.saves.length, 0);
+  const checking = workspaceHarness({ requested: null, versions: [], workspaceFlags: { isFetchedAfterMount: false, isFetching: true } });
+  assert.match(renderedText(checking.tree), /正在重新核实/);
+  assert.doesNotMatch(renderedText(checking.tree), /当前模板没有版本/);
+  const emptyDesign = workspaceHarness({ requested: 'B', draftId: 'B', draftDirectories: [] });
+  await emptyDesign.mutations[0].mutationFn();
+  assert.equal(emptyDesign.saves[0][1], 'B');
+  assert.deepEqual(plain(emptyDesign.saves[0][2].directories), []);
+});
 
 function runChangedEffects(previous, next) {
   assert.equal(previous.effects.length, next.effects.length);

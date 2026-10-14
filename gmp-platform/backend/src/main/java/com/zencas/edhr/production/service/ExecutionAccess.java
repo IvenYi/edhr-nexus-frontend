@@ -83,8 +83,21 @@ public class ExecutionAccess {
             catch (Exception e) { throw invalid("表单主体配置无法解析"); }
         }
         Set<String> result = new LinkedHashSet<>();
-        subjects.resolve(0L, refs).users().forEach(user -> result.add(user.userId().toString()));
+        subjects.resolve(subjectTenantId(), refs).users().forEach(user -> result.add(user.userId().toString()));
         return result;
+    }
+
+    private Long subjectTenantId() {
+        // Reuse the authenticated operator's stored scope, not a configured subject or signer.
+        String operator = AuditContext.getOperatorId();
+        if (operator == null || operator.isBlank()) throw invalid("请先登录后解析表单主体");
+        try {
+            return users.findById(Long.valueOf(operator))
+                    .map(UserAccount::getTenantId)
+                    .orElseThrow(() -> invalid("无法确定当前用户的主体解析范围"));
+        } catch (NumberFormatException error) {
+            throw invalid("当前登录用户标识无效");
+        }
     }
 
     public void captureApprovers(JsonNode node, ObjectNode formState) {

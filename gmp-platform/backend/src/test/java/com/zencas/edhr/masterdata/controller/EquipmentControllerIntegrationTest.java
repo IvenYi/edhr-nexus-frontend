@@ -177,6 +177,44 @@ class EquipmentControllerIntegrationTest {
     }
 
     @Test
+    void responseTimestampsExactlyMatchPersistedPrecisionAfterCreateAndUpdate() throws Exception {
+        JsonNode type = create("/types", typeBody("PRECISION-T", "时间精度类型", "-1"));
+        JsonNode equipment = create("", equipmentBody("PRECISION-E", "时间精度设备", type.path("id").asText()));
+        for (JsonNode created : List.of(type, equipment)) {
+            boolean isType = created == type;
+            String path = isType ? "/types" : "";
+            String table = isType ? "equipment_type" : "equipment";
+            for (String column : List.of("created_at", "updated_at")) {
+                assertThat(jdbc.queryForObject("SELECT datetime_precision FROM information_schema.columns "
+                        + "WHERE LOWER(table_schema)='public' AND LOWER(table_name)=? AND LOWER(column_name)=?",
+                        Integer.class, table, column)).isEqualTo(6);
+            }
+            assertTimestampsMatchStoredRow(path, table, created);
+            var body = isType ? typeBody("PRECISION-T", "时间精度类型更新", "-1")
+                    : equipmentBody("PRECISION-E", "时间精度设备更新", type.path("id").asText());
+            JsonNode updated = mapper.readTree(mvc.perform(authorized(put(URL + path + "/" + created.path("id").asText()))
+                    .contentType("application/json").content(mapper.writeValueAsString(body)))
+                    .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+            assertThat(updated.path("createdAt").asText()).isEqualTo(created.path("createdAt").asText());
+            assertTimestampsMatchStoredRow(path, table, updated);
+        }
+    }
+
+    private void assertTimestampsMatchStoredRow(String path, String table, JsonNode response) throws Exception {
+        String id = response.path("id").asText();
+        JsonNode reloaded = mapper.readTree(mvc.perform(authorized(get(URL + path + "/" + id)))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()).path("data");
+        for (String field : List.of("createdAt", "updatedAt")) {
+            var expected = java.time.LocalDateTime.parse(response.path(field).asText());
+            assertThat(expected.getNano() % 1_000).isZero();
+            assertThat(reloaded.path(field).asText()).isEqualTo(response.path(field).asText());
+            String column = "createdAt".equals(field) ? "created_at" : "updated_at";
+            assertThat(jdbc.queryForObject("SELECT " + column + " FROM " + table + " WHERE id=?",
+                    java.sql.Timestamp.class, Long.valueOf(id)).toLocalDateTime()).isEqualTo(expected);
+        }
+    }
+
+    @Test
     void purchaseDateAllowsTodayPastAndEmptyButRejectsFutureWithoutWrites() throws Exception {
         String type = create("/types", typeBody("DATE-T", "采购日期设备类型", "-1")).path("id").asText();
         var today = java.time.LocalDate.now();

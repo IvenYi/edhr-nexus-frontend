@@ -177,7 +177,10 @@ class ExecutionFormCopiesTest {
         assertThat(current(state).at("/works/w/status").asText()).isEqualTo("RUNNING");
         assertThat(engine.canManageCopies(form(snapshot), current(state), "user")).isFalse();
         var beforeRetry = state.deepCopy();
-        assertThatThrownBy(() -> save(snapshot, state, "f:copy:2", "SUBMIT", 12)).hasMessageContaining("无权");
+        // Completed copies have no SUBMIT button; the action-state guard rejects before canAct.
+        assertThatThrownBy(() -> save(snapshot, state, "f:copy:2", "SUBMIT", 12))
+                .isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class)
+                .hasMessageContaining("当前表单节点不允许该动作");
         assertThat(state).isEqualTo(beforeRetry);
         assertThatThrownBy(() -> engine.complete(snapshot, state, "op", "user")).hasMessageContaining("复核作业");
         engine.confirm(snapshot, state, "op", "w", "check", "user");

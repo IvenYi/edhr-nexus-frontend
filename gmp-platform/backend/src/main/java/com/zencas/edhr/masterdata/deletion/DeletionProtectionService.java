@@ -18,8 +18,12 @@ public class DeletionProtectionService {
     private final ObjectMapper mapper;
 
     private record Row(String table, JsonNode data) {
-        String id() { return data.path("id").asText(); }
+        String id() { return data.path(idColumn(table)).asText(); }
         String key() { return table + ":" + id(); }
+    }
+
+    private static String idColumn(String table) {
+        return table.equals("production_execution") ? "object_id" : "id";
     }
 
     /** Called inside the deletion transaction. Locks stay held through the original delete and audit. */
@@ -100,13 +104,14 @@ public class DeletionProtectionService {
         args.put("tenant", first(parent, "tenant_id").isBlank() ? "default" : text(parent, "tenant_id"));
         String predicate = relation.parentField().equals("id") ? relation.column() + " = :value"
                 : "lower(trim(" + relation.column() + ")) = lower(trim(:value)) AND COALESCE(to_jsonb(r)->>'tenant_id', 'default') = :tenant";
+        if (!relation.predicate().isBlank()) predicate = relation.predicate();
         return jdbc.query("SELECT to_jsonb(r)::text FROM " + relation.child() + " r WHERE " + predicate
-                        + (relation.filter().isBlank() ? "" : " AND " + relation.filter()) + " ORDER BY r.id",
+                        + (relation.filter().isBlank() ? "" : " AND " + relation.filter()) + " ORDER BY r." + idColumn(relation.child()),
                 args, (rs, n) -> new Row(relation.child(), parse(rs.getString(1))));
     }
 
     private Row row(String table, long id, boolean lock) {
-        List<Row> rows = jdbc.query("SELECT to_jsonb(r)::text FROM " + table + " r WHERE id = :id" + (lock ? " FOR UPDATE" : ""),
+        List<Row> rows = jdbc.query("SELECT to_jsonb(r)::text FROM " + table + " r WHERE " + idColumn(table) + " = :id" + (lock ? " FOR UPDATE" : ""),
                 Map.of("id", id), (rs, n) -> new Row(table, parse(rs.getString(1))));
         return rows.isEmpty() ? null : rows.getFirst();
     }
@@ -117,6 +122,10 @@ public class DeletionProtectionService {
     }
 
     private boolean sameTenant(Row row) {
+        if (row.table().equals("production_execution")) {
+            Row owner = displayParent(row);
+            return owner != null && sameTenant(owner);
+        }
         if (row.table().equals("workshop")) return !row.data().hasNonNull("tenant_id") || row.data().path("tenant_id").asLong() == 1L;
         return !row.data().hasNonNull("tenant_id") || "default".equals(text(row, "tenant_id"));
     }
@@ -235,7 +244,7 @@ public class DeletionProtectionService {
             case "document_version" -> { field = "document_id"; table = "sop_document"; }
             case "form_template_version" -> { field = "template_id"; table = "form_template"; }
             case "production_object" -> { field = "work_order_id"; table = "work_order"; }
-            case "form_instance_record" -> { field = "object_id"; table = "production_object"; }
+            case "form_instance_record", "production_execution" -> { field = "object_id"; table = "production_object"; }
             case "deletion_form_reference" -> {
                 field = row.data().hasNonNull("object_id") ? "object_id" : "workflow_version_id";
                 table = row.data().hasNonNull("object_id") ? "production_object" : "workflow_definition_version";
@@ -249,7 +258,7 @@ public class DeletionProtectionService {
 
     private String destination(Row row) {
         if (row.table().equals("production_object") && "SN".equals(text(row, "object_type"))) return "/production/work-orders";
-        if (row.table().equals("deletion_form_reference") && row.data().hasNonNull("object_id")) {
+        if (Set.of("deletion_form_reference", "production_execution").contains(row.table()) && row.data().hasNonNull("object_id")) {
             Row object = displayParent(row);
             return object == null ? "/production/batches" : destination(object);
         }

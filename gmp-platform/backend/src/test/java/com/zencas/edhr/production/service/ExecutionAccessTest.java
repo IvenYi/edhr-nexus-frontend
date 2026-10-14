@@ -99,13 +99,15 @@ class ExecutionAccessTest {
     }
 
     @Test void capturesApprovalCandidatesOnceAndDoesNotOpenAnUnresolvedRestrictedGroup() throws Exception {
+        AuditContext.setOperator("1", "操作员");
+        when(users.findById(1L)).thenReturn(Optional.of(UserAccount.builder().id(1L).tenantId(1L).build()));
         var node = mapper.readTree("""
             {"id":"a","data":{"kind":"APPROVAL","config":{"approverSubjects":[{"type":"ROLE","id":"7"}]}}}
             """);
         ObjectNode state = mapper.createObjectNode();
-        when(subjects.resolve(eq(0L), anyCollection())).thenReturn(new SubjectResolution(List.of(new ResolvedSubjectUser(1L, Set.of())), Set.of()));
+        when(subjects.resolve(eq(1L), anyCollection())).thenReturn(new SubjectResolution(List.of(new ResolvedSubjectUser(1L, Set.of())), Set.of()));
         access.captureApprovers(node, state);
-        when(subjects.resolve(eq(0L), anyCollection())).thenReturn(new SubjectResolution(List.of(), Set.of()));
+        when(subjects.resolve(eq(1L), anyCollection())).thenReturn(new SubjectResolution(List.of(), Set.of()));
         access.captureApprovers(node, state);
         assertThat(access.canAct(mapper.createObjectNode(), node, state, "1")).isTrue();
         assertThat(access.canAct(mapper.createObjectNode(), node, state, "2")).isFalse();
@@ -136,6 +138,8 @@ class ExecutionAccessTest {
     }
 
     @Test void stableFieldOverridesAndReadOnlyConflictWin() throws Exception {
+        AuditContext.setOperator("1", "操作员");
+        when(users.findById(1L)).thenReturn(Optional.of(UserAccount.builder().id(1L).tenantId(1L).build()));
         var node = mapper.readTree("""
             {"id":"s","data":{"kind":"START","config":{"permissionGroupRules":[
               {"id":"g1","subjects":[{"type":"USER","id":"1"}],"defaultPermission":"EDIT"},
@@ -145,7 +149,7 @@ class ExecutionAccessTest {
             {"fields":[{"id":"f","type":"text"},{"id":"sig","type":"signature"}],
              "binding":{"fieldPermissions":{"start:g2":{"editableFieldIds":["f"]},"start:g1":{"readOnlyFieldIds":["f"]}}}}
             """);
-        when(subjects.resolve(eq(0L), anyCollection())).thenReturn(new SubjectResolution(List.of(new ResolvedSubjectUser(1L, Set.of())), Set.of()));
+        when(subjects.resolve(eq(1L), anyCollection())).thenReturn(new SubjectResolution(List.of(new ResolvedSubjectUser(1L, Set.of())), Set.of()));
         var permissions = access.permissions(form, node, mapper.createObjectNode(), "1");
         assertThat(permissions.path("f").asText()).isEqualTo("READ_ONLY");
         assertThat(permissions.path("sig").asText()).isEqualTo("READ_ONLY");

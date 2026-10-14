@@ -24,7 +24,7 @@ interface Task {
 const taskNames: Record<string, string> = { TODO: '待办任务', APPROVAL: '审批任务', FORM: '表单任务' };
 const actionNames: Record<string, string> = { APPROVE: '通过', REJECT: '退回', TRANSFER: '转办', SUBMIT: '提交' };
 
-export default function DashboardTaskList({ kind, assigneeId }: { kind: 'todo' | 'done'; assigneeId?: number }) {
+export default function DashboardTaskList({ kind, assigneeId }: { kind: 'todo' | 'done'; assigneeId?: string | number }) {
   const [page, setPage] = useState(1);
   const isTodo = kind === 'todo';
   const { data, isLoading, isError, isFetching, refetch } = useQuery<Task[]>({
