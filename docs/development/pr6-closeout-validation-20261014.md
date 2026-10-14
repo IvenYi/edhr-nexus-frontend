@@ -41,11 +41,11 @@
 
 - 一次真实失败登录 HTTP 401，跳转后登录页稳定，store/storage 没有安装身份、token 或权限。
 - 正常 UI 退出 HTTP 200 后，存储、内存身份、权限、query/mutation 清理。
-- 本人资料 UI 保存 HTTP 200 后身份展示同步；session generation 和既有 roles-all、REVIEW_PENDING、REVIEW_DONE 查询的数据散列及 dataUpdatedAt 保留。不是仅凭昵称判断查询保持。
+- 本人资料 UI 保存 HTTP 200 后身份展示同步；session generation 和既有 roles-all、REVIEW_PENDING、REVIEW_DONE 查询的 queryHash（查询键）、dataUpdatedAt 及 hasData 状态保留。没有计算数据内容散列，也没有声称验证编辑中草稿；不是仅凭昵称判断查询保持。
 - 真实首登 forcePasswordChange=true 跳到个人安全设置，并经本人 UI 完成改密。forceSignatureVerification=false，故整项双分支真实安全跳转仍缺签名分支证据；两个函数测试不能填作真实 UI 通过。
 - 同一页面 A→B→A 正常登录，三次真实 `/auth/me` HTTP 200 的身份与 store 匹配。每次 REVIEW_DONE 请求暂停发送时实际显示“正在加载审批任务…”且无业务行，随后原样继续真实上游响应。两用户返回均为空列表，因此只有身份/等待窗口子证据，没有双已办正样本；GATE-03 三个完整检查仍 blocked。
 
-运行时生产源码与原 e02 完全一致，本轮变化仅在测试及本文；相同产品字节的运行证据可按该边界使用，不能说服务在后来生成的 Git SHA 上重新部署过。旧 generation 指定晚 200、旧有效会话晚 401 和合法当前 401 未制造；未读取或交付密码、token 或 Cookie。
+运行时生产源码与原 e02 完全一致，本轮变化仅在测试及本文；相同产品字节的运行证据可按该边界使用，不能说服务在后来生成的 Git SHA 上重新部署过。旧 generation 指定晚 200、旧有效会话晚 401 和合法当前 401 未制造；正常认证仅使用合成 QA 凭据，未输出或交付密码、token 或 Cookie。
 
 ## 合并门禁与合理限制
 
