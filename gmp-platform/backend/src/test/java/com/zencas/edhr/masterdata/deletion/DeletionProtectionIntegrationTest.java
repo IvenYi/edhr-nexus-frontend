@@ -57,7 +57,37 @@ class DeletionProtectionIntegrationTest {
     }
 
     private void order(long id, long productId) {
-        jdbc.update("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status) VALUES (?,'default',?,?,1,'CREATED')", id, "DELETE-QA-ORDER-" + id, productId);
+        jdbc.update(workOrderInsertSql(), id, "DELETE-QA-ORDER-" + id, productId);
+    }
+
+    private String workOrderInsertSql() {
+        boolean legacyQuantity = Boolean.TRUE.equals(jdbc.queryForObject(
+            "SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='work_order' AND column_name='quantity')",
+            Boolean.class));
+        return "INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity"
+            + (legacyQuantity ? ",quantity" : "") + ",status) VALUES (?,'default',?,?,1"
+            + (legacyQuantity ? ",1" : "") + ",'CREATED')";
+    }
+
+    @Test void legacyQuantityFixtureStillExercisesDeletionProtection() throws Exception {
+        // 0060a retains this legacy column and 0069 only relaxes the old code constraint.
+        jdbc.execute("ALTER TABLE work_order ADD COLUMN IF NOT EXISTS quantity NUMERIC(15,4) NOT NULL DEFAULT 1");
+        jdbc.execute("ALTER TABLE work_order ALTER COLUMN quantity DROP DEFAULT");
+        material(-87501);
+        order(-87502, -87501);
+        long audits = jdbc.queryForObject("SELECT count(*) FROM audit_event", Long.class);
+
+        assertThat(jdbc.queryForObject("SELECT quantity FROM work_order WHERE id=-87502", java.math.BigDecimal.class))
+            .isEqualByComparingTo("1");
+        mvc.perform(get("/api/v1/master-data/deletion-check/material/-87501")
+            .header("Authorization", auth("master-data.materials", "production.work-orders")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.allowed").value(false));
+        mvc.perform(delete("/api/v1/master-data/process-modeling/materials/-87501")
+            .header("Authorization", auth("master-data.materials", "production.work-orders")))
+            .andExpect(status().isConflict());
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM material WHERE id=-87501", Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM work_order WHERE id=-87502", Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event", Long.class)).isEqualTo(audits);
     }
 
     @Test void precheckReturnsReferencesWithoutDeletingOrWritingAudit() throws Exception {
@@ -330,6 +360,7 @@ class DeletionProtectionIntegrationTest {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED)
     void databaseForeignKeyPreventsConcurrentReferenceAfterDelete() throws Exception {
         material(-86901);
+        String insertOrder = workOrderInsertSql();
         try (var deleting = DriverManager.getConnection(System.getProperty("deletion.test.url"), "edhr", "");
              var writer = DriverManager.getConnection(System.getProperty("deletion.test.url"), "edhr", "");
              var executor = java.util.concurrent.Executors.newSingleThreadExecutor()) {
@@ -338,8 +369,11 @@ class DeletionProtectionIntegrationTest {
             var started = new java.util.concurrent.CountDownLatch(1);
             var future = executor.submit(() -> {
                 started.countDown();
-                try (var sql = writer.createStatement()) {
-                    sql.execute("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status) VALUES (-86902,'default','DELETE-QA-RACE',-86901,1,'CREATED')");
+                try (var sql = writer.prepareStatement(insertOrder)) {
+                    sql.setLong(1, -86902);
+                    sql.setString(2, "DELETE-QA-RACE");
+                    sql.setLong(3, -86901);
+                    sql.executeUpdate();
                     return "inserted";
                 } catch (java.sql.SQLException ex) { return ex.getSQLState(); }
             });

@@ -212,6 +212,37 @@ test('HOME-IDENTITY: failed LoginPage authentication does not install a requeste
   auth.clearAuthStorage();
 });
 
+for (const securityFlag of ['forcePasswordChange', 'forceSignatureVerification']) {
+  test(`HOME-IDENTITY: ${securityFlag} sends the new session to account security`, async () => {
+    const auth = await loadAuth();
+    auth.useAuthStore.getState().login('A-token', { id: 1, permissions: ['old'] });
+    auth.queryClient.setQueryData(['personal'], 'A-only');
+    const payload = { token: 'B-token', user: { id: 2, permissions: ['new'] }, [securityFlag]: true };
+    const policies = [], navigations = [], errors = [];
+    const submit = pageCallback('src/pages/LoginPage.tsx', 'handleSubmit', {
+      username: 'B', password: 'test-only',
+      client: { post: async (path, data) => {
+        assert.equal(path, '/auth/login');
+        assert.deepEqual(plain(data), { username: 'B', password: 'test-only' });
+        return { data: { data: payload } };
+      } },
+      setError: (value) => errors.push(value), setLoading() {}, useAuthStore: auth.useAuthStore,
+      storeSessionPolicy: (value) => policies.push(value),
+      navigate: (...args) => navigations.push(args),
+    });
+    await submit({ preventDefault() {} });
+    assert.deepEqual(errors, ['']);
+    assert.equal(auth.useAuthStore.getState().user.id, 2);
+    assert.equal(auth.useAuthStore.getState().token, 'B-token');
+    assert.equal(auth.useAuthStore.getState().hasPermission('old'), false);
+    assert.equal(auth.useAuthStore.getState().hasPermission('new'), true);
+    assert.equal(auth.queryClient.getQueryData(['personal']), undefined);
+    assert.deepEqual(policies, [payload]);
+    assert.deepEqual(plain(navigations), [['/account/settings', { replace: true }]]);
+    auth.clearAuthStorage();
+  });
+}
+
 test('F-001: same-session requests and signature verification preserve cached work', async () => {
   const auth = await loadAuth();
   auth.queryClient.setQueryData(['personal'], 'A');
