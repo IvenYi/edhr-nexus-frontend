@@ -64,10 +64,13 @@ class FormTraceIndexPostgresTest {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0109-saved-form-trace-index.sql"));
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0111-form-instance-saved-stage.sql"));
         }
+        jdbc.execute("ALTER TABLE form_trace_value ADD COLUMN value_type text NOT NULL DEFAULT 'text'");
         projection = mock(FormProjectionService.class);
         records = new FormInstanceRecordService(jdbc, mapper, projection);
         var catalog = mock(FormLookupCatalogService.class);
         when(catalog.contains(anyString())).thenAnswer(invocation -> java.util.Set.of("materialLotText", "teamText", "equipmentText", "lookup_production_batch").contains(invocation.getArgument(0)));
+        when(catalog.list()).thenReturn(java.util.stream.Stream.of("materialLotText", "teamText", "equipmentText", "lookup_production_batch")
+                .map(id -> new FormLookupCatalogService.Item(id, id, "", "text", true, 1, null, null, null, null)).toList());
         reports = new FormProjectionController(jdbc, mapper, mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class), catalog);
     }
 

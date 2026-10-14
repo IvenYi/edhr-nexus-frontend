@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Add, EditOutlined, ExpandMore, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, DialogActions, DialogContent, DialogTitle, IconButton, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, DialogActions, DialogContent, DialogTitle, IconButton, MenuItem, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material';
 import DetailDrawer from '@/components/DetailDrawer';
 import FormDialog from '@/components/FormDialog';
 import FormDialogSection from '@/components/FormDialogSection';
@@ -24,7 +24,8 @@ const columns = [
   { id: 'updatedBy', label: '更新人', width: 140 }, { id: 'updatedAt', label: '更新时间', width: 180 },
 ];
 const panel = { border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', minHeight: 0, overflow: 'hidden' };
-const valueOf = (item: FormLookupItem, key: string) => key === 'type' ? '文本精确匹配' : key === 'builtin' ? item.builtin ? '内置' : '自定义' : key.endsWith('At') ? String(item[key as keyof FormLookupItem] ?? '—').replace('T', ' ').slice(0, 19) : String(item[key as keyof FormLookupItem] ?? '—');
+const typeNames = { text: '文本精确匹配', number: '数字精确匹配', date: '日期范围查询' };
+const valueOf = (item: FormLookupItem, key: string) => key === 'type' ? typeNames[item.type] : key === 'builtin' ? item.builtin ? '内置' : '自定义' : key.endsWith('At') ? String(item[key as keyof FormLookupItem] ?? '—').replace('T', ' ').slice(0, 19) : String(item[key as keyof FormLookupItem] ?? '—');
 const auditDisplay = (value: unknown) => {
   try {
     const item = typeof value === 'string' ? JSON.parse(value) : value;
@@ -51,6 +52,7 @@ export default function FormLookupItemsPage() {
   const [auditSize, setAuditSize] = useState(20);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [type, setType] = useState<FormLookupItem['type']>('text');
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const storageKey = useMemo(() => getCurrentUserPreferenceStorageKey('form-lookup-items-columns-'), []);
   const [settings, setSettings] = useState(() => loadListColumnSettings(storageKey, columns, 1));
@@ -64,11 +66,11 @@ export default function FormLookupItemsPage() {
     },
   });
   useEffect(() => { try { localStorage.setItem(storageKey, JSON.stringify(settings)); } catch { /* Optional preferences. */ } }, [settings, storageKey]);
-  const save = useMutation({ mutationFn: () => saveFormLookupItem({ name, description }, editing), onSuccess: async () => {
+  const save = useMutation({ mutationFn: () => saveFormLookupItem({ name, description, type }, editing), onSuccess: async () => {
     setOpened(false); setSelected(undefined);
     await Promise.all([queryClient.invalidateQueries({ queryKey: formLookupCatalogKey }), queryClient.invalidateQueries({ queryKey: ['form-projection-catalog'] })]);
   } });
-  const edit = (item?: FormLookupItem) => { setEditing(item); setName(item?.name ?? ''); setDescription(item?.description ?? ''); save.reset(); setOpened(true); };
+  const edit = (item?: FormLookupItem) => { setEditing(item); setName(item?.name ?? ''); setDescription(item?.description ?? ''); setType(item?.type ?? 'text'); save.reset(); setOpened(true); };
   const openDetail = (item: FormLookupItem) => { setSelected(item); setDetailTab(0); setAuditPage(0); };
   const rows = (catalog.data ?? []).filter(item => `${item.name} ${item.description}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
   const visible = settings.order.filter(id => !settings.hidden.includes(id)).map(id => columns.find(column => column.id === id)!).filter(Boolean);
@@ -110,9 +112,12 @@ export default function FormLookupItemsPage() {
         <DialogContent dividers>
           <FormDialogSection title="基本信息"><FormDialogFieldGrid hasTrailingFullRow>
             <TextField required autoFocus fullWidth size="small" label="追溯项名称" value={name} inputProps={{ maxLength: 80 }} onChange={event => setName(event.target.value)} placeholder="例如：灭菌锅次" />
+            <TextField required fullWidth select size="small" label="查询方式" value={type} disabled={Boolean(editing)} onChange={event => setType(event.target.value as FormLookupItem['type'])}>
+              {Object.entries(typeNames).map(([value, label]) => <MenuItem key={value} value={value}>{label}</MenuItem>)}
+            </TextField>
             <TextField fullWidth size="small" label="描述" value={description} multiline minRows={2} inputProps={{ maxLength: 512 }} onChange={event => setDescription(event.target.value)} placeholder="说明业务含义与填写示例" sx={{ gridColumn: { sm: '1 / -1' } }} />
           </FormDialogFieldGrid></FormDialogSection>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>文本精确匹配，可关联文本字段或单选列。业务含义不同请新建追溯项，编辑显示信息不会改变已有绑定。</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>{type === 'text' ? '关联文本字段或单选列。' : type === 'number' ? '关联数字字段，按数值精确查询。' : '关联日期字段，按起止日期范围查询。'}查询方式创建后不可修改；预置追溯项不可删除。</Typography>
           {save.isError && <Alert severity="error" sx={{ mt: 1.5 }}>{save.error instanceof Error ? save.error.message : '保存失败，请重试'}</Alert>}
         </DialogContent>
         <DialogActions><Button onClick={() => setOpened(false)} disabled={save.isPending}>取消</Button><Button type="submit" variant="contained" disabled={save.isPending || !name.trim()}>保存</Button></DialogActions>

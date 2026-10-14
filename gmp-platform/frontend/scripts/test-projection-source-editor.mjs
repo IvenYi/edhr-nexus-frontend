@@ -291,6 +291,24 @@ test('trace accepts compatible native sources while statistics and unrelated mea
   assert.deepEqual(changes, []);
 });
 
+test('typed custom trace meanings offer only matching number or date sources', () => {
+  const reading = {id: 'reading', name: '实测温度', type: 'number', typeConfig: {}};
+  const day = {id: 'day', name: '检验日期', type: 'datetime', typeConfig: {mode: 'date'}};
+  const period = {...day, id: 'period', typeConfig: {mode: 'datetime'}};
+  const attributes = [
+    {id: 'lookup_reading', name: '检测值', type: 'number'},
+    {id: 'lookup_day', name: '检测日期', type: 'date'},
+  ];
+  const local = {groups: [], fields: [reading, day, period, lot]};
+  const binding = {id: 'trace', modelId: 'formTrace', enabled: true, sources: {}};
+  assert.deepEqual(projectionSourceCandidates(local, binding, attributes[0]).map(field => field.id), ['reading']);
+  assert.deepEqual(projectionSourceCandidates(local, binding, attributes[1]).map(field => field.id), ['day']);
+  assert.equal(acceptsProjectionAttribute({type: 'reference', typeConfig: {sourceType: 'serialNumber'}}, {id: 'lookup_custom', type: 'text'}), false);
+  const html = renderPanel(local, {models: [{id: 'formTrace', name: '追溯', attributes}]}, day);
+  assert.ok(html.includes('关联追溯项'));
+  assert.ok(!html.includes('暂无适合此字段类型的追溯项'));
+});
+
 test('whole-table statistics keeps optional sources collapsed without a manual row identity or extra display selector', () => {
   const columns = [lot, { id: 'qty', name: '实际用量', type: 'number', typeConfig: {} },
     { id: 'material', name: '物料', type: 'reference', typeConfig: { sourceType: 'material' } }];

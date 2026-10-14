@@ -239,3 +239,5 @@ databaseChangeLog:
       file: db/changelog/0110-projection-detail-display.sql
   - include:
       file: db/changelog/0111-form-instance-saved-stage.sql
+  - include:
+      file: db/changelog/0112-typed-trace-catalog.sql

@@ -20,6 +20,10 @@ public class DhrTraceReportService {
     private final DhrInstanceService dhrs;
 
     public ObjectNode query(boolean reverse, Map<String, String> properties, Map<String, String> filters, int page, int size) {
+        return query(reverse, properties, TraceCondition.textFilters(filters), page, size);
+    }
+
+    public ObjectNode query(boolean reverse, Map<String, String> properties, List<TraceCondition> filters, int page, int size) {
         StringBuilder where = new StringBuilder(" WHERE d.tenant_id='default'");
         List<Object> args = new ArrayList<>();
         TraceReportFilters.append(where, args, properties, Map.ofEntries(
@@ -39,10 +43,10 @@ public class DhrTraceReportService {
             where.append("EXISTS(SELECT 1 FROM form_instance_record f JOIN form_trace_value v ON v.form_instance_id=f.id AND v.tenant_id=f.tenant_id WHERE f.tenant_id=d.tenant_id AND f.source_type='PRODUCTION_EXECUTION' AND f.object_id=d.production_object_id)");
         } else {
             boolean first = true;
-            for (var filter : filters.entrySet()) {
+            for (var filter : filters) {
                 if (!first) where.append(" AND "); first = false;
-                where.append("EXISTS(SELECT 1 FROM form_instance_record f JOIN form_trace_value v ON v.form_instance_id=f.id AND v.tenant_id=f.tenant_id WHERE f.tenant_id=d.tenant_id AND f.source_type='PRODUCTION_EXECUTION' AND f.object_id=d.production_object_id AND v.item_id=? AND v.value_text=?)");
-                args.add(filter.getKey()); args.add(filter.getValue().trim());
+                where.append("EXISTS(SELECT 1 FROM form_instance_record f JOIN form_trace_value v ON v.form_instance_id=f.id AND v.tenant_id=f.tenant_id WHERE f.tenant_id=d.tenant_id AND f.source_type='PRODUCTION_EXECUTION' AND f.object_id=d.production_object_id AND ");
+                filter.appendSql(where, args, "v"); where.append(')');
             }
         }
         where.append("))");
@@ -62,6 +66,10 @@ public class DhrTraceReportService {
     }
 
     public ObjectNode detail(long id, boolean reverse, Map<String, String> filters) {
+        return detail(id, reverse, TraceCondition.textFilters(filters));
+    }
+
+    public ObjectNode detail(long id, boolean reverse, List<TraceCondition> filters) {
         ObjectNode result = dhrs.detail(id);
         ArrayNode hits = reverse ? matches(result, filters) : mapper.createArrayNode();
         result.set("traceHits", hits == null ? mapper.createArrayNode() : hits);
@@ -73,12 +81,16 @@ public class DhrTraceReportService {
 
     /** DHR AND is across actual member instances; it is not a joined business event or a same-row assertion. */
     ArrayNode matches(JsonNode detail, Map<String, String> filters) {
+        return matches(detail, TraceCondition.textFilters(filters));
+    }
+
+    ArrayNode matches(JsonNode detail, List<TraceCondition> filters) {
         ArrayNode result = mapper.createArrayNode();
-        Map<String, Boolean> satisfied = new LinkedHashMap<>(); filters.keySet().forEach(key -> satisfied.put(key, false));
+        Map<String, Boolean> satisfied = new LinkedHashMap<>(); filters.forEach(condition -> satisfied.put(condition.itemId(), false));
         for (String origin : List.of("directory", "work", "custom")) for (JsonNode record : detail.path("recordsByOrigin").path(origin)) {
             ArrayNode fields = mapper.createArrayNode();
             for (var value : FormTraceIndexService.extract(record.path("snapshot"), record.path("fieldValues"))) {
-                if (!filters.isEmpty() && !value.text().equals(filters.getOrDefault(value.itemId(), "").trim())) continue;
+                if (!filters.isEmpty() && filters.stream().noneMatch(condition -> condition.matches(value))) continue;
                 satisfied.put(value.itemId(), true);
                 ObjectNode hit = fields.addObject().put("bindingId", "trace").put("tableId", value.tableId())
                         .put("rowKey", value.rowKey()).put("rowIndex", value.rowIndex());

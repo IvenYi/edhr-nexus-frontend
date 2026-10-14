@@ -32,7 +32,9 @@ public class FormLookupCatalogService {
 
     public record Item(String id, String name, String description, String type, boolean builtin,
                        long revision, String createdBy, String createdAt, String updatedBy, String updatedAt) {}
-    public record WriteRequest(String name, String description, Long revision) {}
+    public record WriteRequest(String name, String description, Long revision, String type) {
+        public WriteRequest(String name, String description, Long revision) { this(name, description, revision, null); }
+    }
 
     public List<Item> list() {
         return jdbc.query("SELECT * FROM form_lookup_item WHERE tenant_id='default' ORDER BY builtin DESC,created_at,id",
@@ -61,9 +63,11 @@ public class FormLookupCatalogService {
         String id = "lookup_" + ids.nextId();
         String name = name(request.name());
         String description = description(request.description());
+        String type = request.type() == null ? "text" : request.type();
+        if (!FormLookupValue.TYPES.contains(type)) throw invalid("请选择文本、数字或日期类型");
         try {
-            jdbc.update("INSERT INTO form_lookup_item(id,name,description,created_by,updated_by) VALUES (?,?,?,?,?)",
-                    id, name, description, AuditContext.getOperatorName(), AuditContext.getOperatorName());
+            jdbc.update("INSERT INTO form_lookup_item(id,name,description,value_type,created_by,updated_by) VALUES (?,?,?,?,?,?)",
+                    id, name, description, type, AuditContext.getOperatorName(), AuditContext.getOperatorName());
         } catch (DuplicateKeyException ex) { throw invalid("追溯项名称已存在，请使用已有项或填写不同含义的名称"); }
         Item saved = item(id);
         audit(id, "CREATE", null, saved);
@@ -73,6 +77,7 @@ public class FormLookupCatalogService {
     @Transactional
     public Item update(String id, WriteRequest request) {
         Item before = item(id);
+        if (request.type() != null && !request.type().equals(before.type())) throw invalid("追溯项类型创建后不可修改，请新建不同含义的追溯项");
         if (request.revision() == null) throw invalid("缺少追溯项版本，请刷新后重试");
         int changed;
         try {
@@ -101,7 +106,7 @@ public class FormLookupCatalogService {
         var available = list();
         for (String key : keys) {
             Item item = available.stream().filter(candidate -> candidate.id().equals(key)).findFirst()
-                    .orElseThrow(() -> invalid("追溯项不存在，请重新选择：" + key));
+                    .orElseThrow(() -> invalid("追溯项不存在或已退出目录，请按字段含义重新选择：" + key));
             definitions.putObject(key).put("name", item.name()).put("type", item.type()).put("revision", item.revision())
                     .set("referenceSources", mapper.valueToTree(FormProjectionInterpreter.referenceSources(key)));
         }

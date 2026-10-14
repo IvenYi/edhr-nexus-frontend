@@ -50,7 +50,10 @@ class FormLookupCatalogPostgresTest {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0109-saved-form-trace-index.sql"));
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0110-projection-detail-display.sql"));
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0111-form-instance-saved-stage.sql"));
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0112-typed-trace-catalog.sql"));
         }
+        jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN source_type text NOT NULL DEFAULT 'PRODUCTION_EXECUTION'");
+        jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN work_order_no text");
         audits = mock(AuditEventRepository.class);
         var ids = mock(SnowflakeIdGenerator.class);
         AtomicLong sequence = new AtomicLong(100);
@@ -92,6 +95,64 @@ class FormLookupCatalogPostgresTest {
         verify(audits).save(audit.capture());
         assertThat(audit.getValue().getEntityType()).isEqualTo("FORM_LOOKUP_ITEM");
         assertThat(audit.getValue().getContentAfter()).contains(item.id(), "灭菌锅次");
+    }
+
+    @Test void migrationKeepsEightDistinctPresetsAndRetiresAmbiguousMvpDefinitions() {
+        assertThat(catalog.list()).filteredOn(FormLookupCatalogService.Item::builtin).extracting(FormLookupCatalogService.Item::id)
+                .containsExactlyInAnyOrder("materialLotText", "equipmentText", "lookup_production_batch", "lookup_work_order",
+                        "lookup_material_code", "lookup_product_code", "lookup_supplier_lot", "lookup_order_number");
+        assertThat(catalog.list()).noneMatch(item -> item.id().equals("serialNumberText") || item.id().equals("lookup_related_batch"));
+        assertThatThrownBy(() -> catalog.prepareDesign(form("serialNumberText").toString())).hasMessageContaining("已退出目录");
+    }
+
+    @Test void typedItemsFreezeTypesAndOnlyAcceptMatchingFieldSources() throws Exception {
+        var number = tx.execute(status -> catalog.create(new FormLookupCatalogService.WriteRequest("实测温度", "", null, "number")));
+        var date = tx.execute(status -> catalog.create(new FormLookupCatalogService.WriteRequest("检验日期", "", null, "date")));
+        ObjectNode model = form(number.id());
+        ((ObjectNode) model.path("fields").get(0)).put("type", "number");
+        var fields = (com.fasterxml.jackson.databind.node.ArrayNode) model.path("fields");
+        fields.addObject().put("id", "day").put("name", "检验日期").put("type", "datetime").putObject("typeConfig").put("mode", "date");
+        ((ObjectNode) model.at("/projection/bindings/0/sources")).put(date.id(), "day");
+        var prepared = mapper.readTree(catalog.prepareDesign(model.toString()));
+        assertThat(prepared.at("/projection/lookupItems/" + number.id() + "/type").asText()).isEqualTo("number");
+        assertThat(prepared.at("/projection/lookupItems/" + date.id() + "/type").asText()).isEqualTo("date");
+        assertThat(FormProjectionInterpreter.preview(prepared, mapper.readTree("{\"number\":-2.50,\"day\":\"2026-10-14\"}")).get(0).path("attributes").path(number.id()).asText()).isEqualTo("-2.5");
+        assertThatThrownBy(() -> catalog.update(number.id(), new FormLookupCatalogService.WriteRequest(number.name(), "", number.revision(), "text"))).hasMessageContaining("不可修改");
+        assertThatThrownBy(() -> catalog.prepareDesign(form(number.id()).toString())).hasMessageContaining("数字字段");
+        ((ObjectNode) model.path("fields").get(1).path("typeConfig")).put("mode", "datetime");
+        assertThatThrownBy(() -> catalog.prepareDesign(model.toString())).hasMessageContaining("日期字段");
+        assertThatThrownBy(() -> catalog.create(new FormLookupCatalogService.WriteRequest("错误类型", "", null, "reference"))).hasMessageContaining("文本、数字或日期");
+        ArgumentCaptor<AuditEvent> audit = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(audits, times(2)).save(audit.capture());
+        assertThat(audit.getAllValues().get(0).getContentAfter()).contains("\"type\":\"number\"");
+    }
+
+    @Test void typedSavedValuesQuerySameActualRowWithNumericNormalizationAndDateBounds() throws Exception {
+        var number = tx.execute(status -> catalog.create(new FormLookupCatalogService.WriteRequest("检测值", "", null, "number")));
+        var date = tx.execute(status -> catalog.create(new FormLookupCatalogService.WriteRequest("检测日期", "", null, "date")));
+        ObjectNode model = (ObjectNode) mapper.readTree("""
+                {"fields":[{"id":"details","type":"subTable","typeConfig":{"columns":[
+                 {"id":"reading","type":"number"},{"id":"day","type":"datetime","typeConfig":{"mode":"date"}}]}}],
+                 "projection":{"version":"form-projection-v1","bindings":[{"id":"trace","modelId":"formTrace","enabled":true,"tableId":"details","sources":{}}]}}
+                """);
+        ((ObjectNode) model.at("/projection/bindings/0/sources")).put(number.id(), "reading").put(date.id(), "day");
+        model = (ObjectNode) mapper.readTree(catalog.prepareDesign(model.toString()));
+        save(1, model, (ObjectNode) mapper.readTree("""
+                {"details":[{"__rowId":"first","reading":5.00,"day":"2026-10-10"},
+                {"__rowId":"second","reading":7,"day":"2026-10-11"},
+                {"__rowId":"draft","reading":"bad","day":"2026-02-30"}]}
+                """));
+        var conditions = com.zencas.edhr.production.service.TraceCondition.parse(Map.of(number.id(), "5.0"),
+                Map.of(date.id(), new com.zencas.edhr.production.service.TraceCondition.DateRange("2026-10-10", "2026-10-10")), catalog.list());
+        var found = trace.query(null, null, null, null, conditions, 0, 20);
+        assertThat(found.path("total").asInt()).isEqualTo(1);
+        assertThat(found.at("/records/0/hits").findValuesAsText("rowKey")).containsOnly("first");
+        assertThat(found.at("/records/0/hits").findValuesAsText("rowIndex")).containsOnly("0");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_trace_value WHERE row_key='draft'", Integer.class)).isZero();
+        assertThat(query(number.id(), "5.00").path("total").asInt()).isEqualTo(1);
+        var cross = com.zencas.edhr.production.service.TraceCondition.parse(Map.of(number.id(), "5"),
+                Map.of(date.id(), new com.zencas.edhr.production.service.TraceCondition.DateRange("2026-10-11", null)), catalog.list());
+        assertThat(trace.query(null, null, null, null, cross, 0, 20).path("total").asInt()).isZero();
     }
 
     @Test void duplicateNamesConcurrencyAndAuditFailureDoNotOverwriteDefinitions() {

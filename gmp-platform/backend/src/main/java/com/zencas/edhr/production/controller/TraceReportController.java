@@ -7,6 +7,7 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.production.service.DhrTraceReportService;
 import com.zencas.edhr.production.service.FormTraceIndexService;
+import com.zencas.edhr.production.service.TraceCondition;
 import com.zencas.edhr.template.service.FormLookupCatalogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,45 +26,50 @@ public class TraceReportController {
     private final ObjectMapper mapper;
     private final FormLookupCatalogService catalog;
     private final DhrTraceReportService dhrs;
-    public record Query(String direction, Map<String, String> properties, Map<String, String> filters, int page, int size) {}
+    public record Query(String direction, Map<String, String> properties, Map<String, String> filters, int page, int size,
+                        Map<String, TraceCondition.DateRange> dateRanges) {
+        public Query(String direction, Map<String, String> properties, Map<String, String> filters, int page, int size) {
+            this(direction, properties, filters, page, size, null);
+        }
+    }
 
     @PostMapping("/forms/query")
     @Transactional(readOnly = true, isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public ApiResponse<ObjectNode> forms(@RequestBody Query query) {
-        validate(query);
+        var conditions = validate(query);
         Map<String, String> properties = query.properties() == null ? Map.of() : query.properties();
         var fixed = new java.util.LinkedHashMap<>(properties);
         String objectNo = fixed.remove("objectNo"), operationName = fixed.remove("operationName");
         return ApiResponse.success(new FormTraceIndexService(jdbc, mapper).query(null, null, objectNo, operationName,
-                filters(query), query.page(), query.size(), reverse(query), fixed));
+                conditions, query.page(), query.size(), reverse(query), fixed));
     }
 
     @PostMapping("/dhrs/query")
     @PreAuthorize("hasAuthority('form-instances.view') and hasAuthority('production.execution') and hasAuthority('dhr.instances.view')")
     @Transactional(readOnly = true, isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public ApiResponse<ObjectNode> dhrs(@RequestBody Query query) {
-        validate(query);
-        return ApiResponse.success(dhrs.query(reverse(query), query.properties() == null ? Map.of() : query.properties(), filters(query), query.page(), query.size()));
+        var conditions = validate(query);
+        return ApiResponse.success(dhrs.query(reverse(query), query.properties() == null ? Map.of() : query.properties(), conditions, query.page(), query.size()));
     }
 
     @PostMapping("/dhrs/{id}/detail")
     @PreAuthorize("hasAuthority('form-instances.view') and hasAuthority('production.execution') and hasAuthority('dhr.instances.view')")
     @Transactional(readOnly = true, isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public ApiResponse<ObjectNode> detail(@PathVariable long id, @RequestBody Query query) {
-        validate(query); return ApiResponse.success(dhrs.detail(id, reverse(query), filters(query)));
+        var conditions = validate(query); return ApiResponse.success(dhrs.detail(id, reverse(query), conditions));
     }
 
     private static boolean reverse(Query query) { return "REVERSE".equals(query.direction()); }
     private static Map<String, String> filters(Query query) { return query.filters() == null ? Map.of() : query.filters(); }
-    private void validate(Query query) {
+    private java.util.List<TraceCondition> validate(Query query) {
         if (!Set.of("FORWARD", "REVERSE").contains(query.direction() == null ? "" : query.direction())
                 || query.page() < 0 || query.size() < 1 || query.size() > 200) throw invalid("请选择追溯方向及合法页码");
-        if (!reverse(query) && !filters(query).isEmpty()) throw invalid("正向追溯不使用内容追溯条件");
+        if (!reverse(query) && (!filters(query).isEmpty() || query.dateRanges() != null && !query.dateRanges().isEmpty()))
+            throw invalid("正向追溯不使用内容追溯条件");
         if (query.properties() != null) for (String value : query.properties().values())
             if (value == null || value.isBlank() || value.length() > 512) throw invalid("筛选值不能为空或超过512字");
-        for (var filter : filters(query).entrySet())
-            if (!catalog.contains(filter.getKey()) || filter.getValue() == null || filter.getValue().isBlank() || filter.getValue().length() > 512)
-                throw invalid("筛选追溯项或值不受支持");
+        if (filters(query).isEmpty() && (query.dateRanges() == null || query.dateRanges().isEmpty())) return java.util.List.of();
+        return TraceCondition.parse(filters(query), query.dateRanges(), catalog.list());
     }
     private static BusinessException invalid(String message) { return new BusinessException(ErrorCode.GENERAL_001, message); }
 }

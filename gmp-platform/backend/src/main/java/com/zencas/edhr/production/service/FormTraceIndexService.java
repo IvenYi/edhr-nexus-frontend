@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.template.service.FormProjectionInterpreter;
+import com.zencas.edhr.template.service.FormLookupValue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -20,19 +21,24 @@ public class FormTraceIndexService {
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
 
-    record Value(String itemId, String fieldId, String fieldName, String tableId, String rowKey, int rowIndex, String text) {}
+    record Value(String itemId, String fieldId, String fieldName, String tableId, String rowKey, int rowIndex, String text, String type) {
+        Value(String itemId, String fieldId, String fieldName, String tableId, String rowKey, int rowIndex, String text) {
+            this(itemId, fieldId, fieldName, tableId, rowKey, rowIndex, text, "text");
+        }
+    }
 
     public void refresh(long instanceId, String tenantId, JsonNode form, JsonNode values) {
         List<Value> entries = extract(form, values);
         jdbc.update("DELETE FROM form_trace_value WHERE tenant_id=? AND form_instance_id=?", tenantId, instanceId);
         jdbc.batchUpdate("""
-                INSERT INTO form_trace_value(tenant_id,form_instance_id,item_id,field_id,field_name,table_id,row_key,row_index,value_text)
-                VALUES(?,?,?,?,?,?,?,?,?)
+                INSERT INTO form_trace_value(tenant_id,form_instance_id,item_id,field_id,field_name,table_id,row_key,row_index,value_text,value_type)
+                VALUES(?,?,?,?,?,?,?,?,?,?)
                 """, entries, 200, (statement, value) -> {
             statement.setString(1, tenantId); statement.setLong(2, instanceId);
             statement.setString(3, value.itemId()); statement.setString(4, value.fieldId());
             statement.setString(5, value.fieldName()); statement.setString(6, value.tableId());
             statement.setString(7, value.rowKey()); statement.setInt(8, value.rowIndex()); statement.setString(9, value.text());
+            statement.setString(10, value.type());
         });
     }
 
@@ -79,8 +85,16 @@ public class FormTraceIndexService {
 
     private static void add(Map<List<String>, Value> result, JsonNode items, String item, JsonNode field, String table, String rowKey, int rowIndex, JsonNode raw) {
         String type = field.path("type").asText();
+        String valueType = items.path(item).path("type").asText("text");
         String value;
-        if ("reference".equals(type)) {
+        if ("number".equals(valueType)) {
+            if (!"number".equals(type) || !raw.isNumber()) return;
+            value = FormLookupValue.number(raw.asText());
+        } else if ("date".equals(valueType)) {
+            if (!"datetime".equals(type) || !"date".equals(field.path("typeConfig").path("mode").asText()) || !raw.isTextual()) return;
+            value = FormLookupValue.date(raw.asText());
+        } else if (!"text".equals(valueType)) return;
+        else if ("reference".equals(type)) {
             if (!raw.isObject() || raw.path("id").asLong() <= 0 || !raw.path("code").isTextual()) return;
             String sourceType = field.path("typeConfig").path("sourceType").asText();
             if (!sourceType.equals(raw.path("sourceType").asText())) return;
@@ -95,25 +109,35 @@ public class FormTraceIndexService {
             if (!("text".equals(type) || "singleSelect".equals(type)) || !raw.isTextual()) return;
             value = raw.asText();
         }
+        if (value == null) return;
         value = value.trim();
         if (value.isEmpty() || value.length() > 512) return;
-        Value entry = new Value(item, field.path("id").asText(), field.path("name").asText(field.path("id").asText()), table, rowKey, rowIndex, value);
+        Value entry = new Value(item, field.path("id").asText(), field.path("name").asText(field.path("id").asText()), table, rowKey, rowIndex, value, valueType);
         result.put(List.of(table, rowKey, item, entry.fieldId()), entry);
     }
 
     public ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
                             Map<String, String> filters, int page, int size) {
-        return query(objectId, operationId, objectNo, operationName, filters, page, size, true, Map.of(), false);
+        return query(objectId, operationId, objectNo, operationName, TraceCondition.textFilters(filters), page, size, true, Map.of(), false);
     }
 
     public ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
                             Map<String, String> filters, int page, int size, boolean reverse, Map<String, String> properties) {
+        return query(objectId, operationId, objectNo, operationName, TraceCondition.textFilters(filters), page, size, reverse, properties, true);
+    }
+
+    public ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
+                            List<TraceCondition> filters, int page, int size) {
+        return query(objectId, operationId, objectNo, operationName, filters, page, size, true, Map.of(), false);
+    }
+
+    public ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
+                            List<TraceCondition> filters, int page, int size, boolean reverse, Map<String, String> properties) {
         return query(objectId, operationId, objectNo, operationName, filters, page, size, reverse, properties, true);
     }
 
     private ObjectNode query(Long objectId, String operationId, String objectNo, String operationName,
-                            Map<String, String> filters, int page, int size, boolean reverse, Map<String, String> properties, boolean includeContext) {
-        Map<String, String> selected = filters == null ? Map.of() : filters;
+                            List<TraceCondition> selected, int page, int size, boolean reverse, Map<String, String> properties, boolean includeContext) {
         StringBuilder where = new StringBuilder(" WHERE f.tenant_id='default' AND f.source_type='PRODUCTION_EXECUTION'");
         List<Object> args = new ArrayList<>();
         if (objectId != null) { where.append(" AND f.object_id=?"); args.add(objectId); }
@@ -145,9 +169,9 @@ public class FormTraceIndexService {
         if (!selected.isEmpty()) {
             hits.append(" AND (");
             boolean first = true;
-            for (var filter : selected.entrySet()) {
+            for (var filter : selected) {
                 if (!first) hits.append(" OR ");
-                hits.append("(v.item_id=? AND v.value_text=?)"); hitArgs.add(filter.getKey()); hitArgs.add(filter.getValue().trim()); first = false;
+                hits.append('('); filter.appendSql(hits, hitArgs, "v"); hits.append(')'); first = false;
             }
             hits.append(") AND (v.table_id='' OR (TRUE");
             appendSameRowConditions(hits, hitArgs, selected, "v");
@@ -184,12 +208,13 @@ public class FormTraceIndexService {
     }
 
     // A main-field condition can match anywhere on the same form. All detail conditions must share this actual row.
-    private static void appendSameRowConditions(StringBuilder sql, List<Object> args, Map<String, String> filters, String anchor) {
-        for (var filter : filters.entrySet()) {
+    private static void appendSameRowConditions(StringBuilder sql, List<Object> args, List<TraceCondition> filters, String anchor) {
+        for (var filter : filters) {
             sql.append(" AND EXISTS(SELECT 1 FROM form_trace_value c WHERE c.form_instance_id=f.id AND c.tenant_id=f.tenant_id")
-                    .append(" AND c.item_id=? AND c.value_text=? AND (c.table_id='' OR (c.table_id=")
+                    .append(" AND ");
+            filter.appendSql(sql, args, "c");
+            sql.append(" AND (c.table_id='' OR (c.table_id=")
                     .append(anchor).append(".table_id AND c.row_key=").append(anchor).append(".row_key)))");
-            args.add(filter.getKey()); args.add(filter.getValue().trim());
         }
     }
 

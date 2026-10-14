@@ -126,12 +126,18 @@ public final class FormProjectionInterpreter {
             while (entries.hasNext()) {
                 var entry = entries.next();
                 boolean lookup = "formTrace".equals(modelId) && entry.getKey().matches("lookup_[A-Za-z0-9_-]{1,56}")
-                        && "text".equals(configuration.path("lookupItems").path(entry.getKey()).path("type").asText())
+                        && FormLookupValue.TYPES.contains(configuration.path("lookupItems").path(entry.getKey()).path("type").asText())
                         && !configuration.path("lookupItems").path(entry.getKey()).path("name").asText().isBlank();
                 if (!allowed(modelId).contains(entry.getKey()) && !lookup) throw invalid("不支持的查询属性：" + entry.getKey());
                 if (!entry.getValue().isTextual() || !sourceIds.add(entry.getValue().asText())) throw invalid("同一用途不能重复映射同一字段");
                 JsonNode source = field(fields, entry.getValue().asText());
-                if (NUMBERS.contains(entry.getKey())) {
+                String lookupType = "formTrace".equals(modelId) ? configuration.path("lookupItems").path(entry.getKey()).path("type").asText("text") : "";
+                if ("number".equals(lookupType)) {
+                    if (!"number".equals(source.path("type").asText())) throw invalid("数字追溯项请选择数字字段");
+                } else if ("date".equals(lookupType)) {
+                    if (!"datetime".equals(source.path("type").asText()) || !"date".equals(source.path("typeConfig").path("mode").asText()))
+                        throw invalid("日期追溯项请选择日期字段");
+                } else if (NUMBERS.contains(entry.getKey())) {
                     if (!"number".equals(source.path("type").asText())) throw invalid(ATTRIBUTES.get(entry.getKey()) + "来源必须是数字字段");
                     if (!quantitySources.add(modelId + "/" + tableId + "/" + entry.getValue().asText()))
                         throw invalid("同一数量来源不能重复配置为同一用途的正式记录");
@@ -223,9 +229,22 @@ public final class FormProjectionInterpreter {
                 }
             } else {
                 JsonNode sourceField = field(fields, fieldId);
-                String value = "reference".equals(sourceField.path("type").asText())
-                        ? referenceCode(sourceField, raw) : scalarValue(raw);
+                String value;
+                if ("formTrace".equals(binding.path("modelId").asText()) && "number".equals(sourceField.path("type").asText())) {
+                    if (raw.isMissingNode() || raw.isNull() || raw.isTextual() && raw.asText().isBlank()) value = "";
+                    else {
+                        value = raw.isNumber() ? FormLookupValue.number(raw.asText()) : null;
+                        if (value == null) throw invalid("追溯数字格式不正确：" + fieldId);
+                    }
+                } else value = "reference".equals(sourceField.path("type").asText()) ? referenceCode(sourceField, raw) : scalarValue(raw);
                 if (!value.isBlank()) {
+                    if ("formTrace".equals(binding.path("modelId").asText())) {
+                        if ("datetime".equals(sourceField.path("type").asText())) {
+                            String date = FormLookupValue.date(value);
+                            if (date == null) throw invalid("追溯日期格式不正确：" + fieldId);
+                            value = date;
+                        }
+                    }
                     if (TIMES.contains(key) || "productionDate".equals(key)) {
                         try {
                             value = TIMES.contains(key) ? java.time.LocalDateTime.parse(value).toString() : java.time.LocalDate.parse(value).toString();

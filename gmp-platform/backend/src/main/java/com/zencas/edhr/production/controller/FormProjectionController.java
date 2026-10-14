@@ -18,6 +18,7 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.template.service.FormLookupCatalogService;
 import com.zencas.edhr.production.service.FormTraceIndexService;
+import com.zencas.edhr.production.service.TraceCondition;
 
 @RestController
 @RequestMapping("/api/v1/reports/form-projections")
@@ -52,13 +53,10 @@ public class FormProjectionController {
             throw invalid("请选择可用报表及合法页码");
         boolean trace = "formTrace".equals(query.modelId());
         if (trace) {
-            if (query.filters() != null) for (var filter : query.filters().entrySet()) {
-                if (!lookupCatalog.contains(filter.getKey()) || filter.getValue() == null
-                        || filter.getValue().isBlank() || filter.getValue().length() > 512)
-                    throw invalid("筛选追溯项或值不受支持");
-            }
+            var conditions = query.filters() == null || query.filters().isEmpty() ? List.<TraceCondition>of()
+                    : TraceCondition.parse(query.filters(), Map.of(), lookupCatalog.list());
             return ApiResponse.success(new FormTraceIndexService(jdbc, mapper).query(query.objectId(), query.operationId(),
-                    query.objectNo(), query.operationName(), query.filters(), query.page(), query.size()));
+                    query.objectNo(), query.operationName(), conditions, query.page(), query.size()));
         }
         StringBuilder where = new StringBuilder(" WHERE b.tenant_id='default' AND b.status='SUCCEEDED'");
         List<Object> args = new ArrayList<>();

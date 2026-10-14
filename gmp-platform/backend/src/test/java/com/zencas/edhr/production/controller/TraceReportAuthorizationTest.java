@@ -52,9 +52,9 @@ class TraceReportAuthorizationTest {
     }
     @Test @WithMockUser(authorities = {"form-instances.view", "production.execution", "dhr.instances.view"})
     void authorizedForwardQueryDoesNotNeedLookupCatalog() {
-        when(dhrs.query(false, Map.of(), Map.of(), 0, 20)).thenReturn(new ObjectMapper().createObjectNode());
+        when(dhrs.query(false, Map.of(), java.util.List.of(), 0, 20)).thenReturn(new ObjectMapper().createObjectNode());
         reports.dhrs(query); verifyNoInteractions(catalog);
-        assertThatThrownBy(() -> reports.dhrs(new TraceReportController.Query("REVERSE", Map.of(), Map.of("unknown", "value"), 0, 20))).hasMessageContaining("不受支持");
+        assertThatThrownBy(() -> reports.dhrs(new TraceReportController.Query("REVERSE", Map.of(), Map.of("unknown", "value"), 0, 20))).hasMessageContaining("筛选追溯项");
         assertThatThrownBy(() -> reports.dhrs(new TraceReportController.Query("FORWARD", Map.of(), Map.of(), -1, 201))).hasMessageContaining("合法页码");
     }
 }

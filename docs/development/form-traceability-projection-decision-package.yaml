@@ -2,13 +2,14 @@ decisionPackage:
   id: DEC-PACKAGE-20260929-FORM-PROJECTION
   scope: form-traceability-projection-implementation
   knowledgeBaselineVersion: 0.3.24
+  # 当前typed-trace-catalog-20261014为同切片L2：8项预置/3项默认，其他预置固定折叠；自定义text/number/date，日期闭区间与数字精确；自定义引用延后。本轮目录、索引、快照解释、查询、迁移、UI及独立验证，不沿用历史门禁。
   # 2026-10-14 report-query-ui 为同切片L1：严格复用表单列表查询和作业模板页签规范；反向预置项按既有builtin标记驱动，自定义项通过添加查询条件。仅前端展示与条件组织，不改变后端/API/匹配/权限/快照/迁移；整体impactAnalysis保留既有L2历史范围。
-  # 当前directional-trace-runtime-20261013沿DEC-0075-39原位修正并实施，L2。固定业务条件、两向含义、DHR跨表单组合及完整DHR命中表单/字段定位已明确；具体字段/页签/去重计数仍inferred。陈旧错误现行知识直接改写，不新增DEC40，不把我方范围冒充竞品GET范围。沿P0维护、不新运行fact/schema，不复用前次调研或实现门禁。
+  # 2026-10-13 directional-trace-runtime沿DEC-0075-39原位修正并实施，L2。固定业务条件、两向含义、DHR跨表单组合及完整DHR命中表单/字段定位已明确；具体字段/页签/去重计数仍inferred。该历史切片不新增替代DEC、不把我方范围冒充竞品GET范围；本轮目录与类型确认见DEC-0075-40。
   # 当前增量report-pages-source-20261013为L2：四独立菜单页面与原表单详情已确认；逐笔列表、撤下二级合计入口及stable rowKey定位为工程inferred。沿同包维护影响与验收，不复用此前切片QA。
   # 2026-10-13手填人时与字段链、三类专用逐笔报表已实现，基础测试和真实API证据见报表复核第8节，该切片独立QA已通过；来源展示与签名报工人修正的全新独立复验见第9节。局部implemented/internal，不标整体verified。可选性、单人来源与严格日期类型仍是inferred工程选择。
   # 2026-10-12原始证据复核区分列表、采集、工作台合计与产出回写；竞品部署列表精确分组仍有证据缺口，不阻断我方当前字段和专用列表切片，也不作为新增分组依据。
   # 2026-10-12用户确认侧栏按业务逐条配置、画布点选/下拉同源、消耗明细/报废明细/报工记录术语；本轮L1精简影响、成功标准和验证见form-projection-configuration-simplification-2026-10-12.md增量。沿用原来源和快照契约，无新统计口径。
-  summary: 当前同切片directional-trace-runtime-20261013原位纠正并实施DEC-0075-39：三业务固定条件与追溯目录独立；表单正向查支持来源内有权且满足条件的已保存实际实例，不因未绑内容追溯用途排除，模板/未保存输入不可查。反向查显式绑定保存值及自定义项；DHR多条件同DHR满足即可，可由不同真实关联表单贡献，表单仍同实例/实际行。完整DHR详情标记命中表单及对应字段/实际行，保留其他证据；内容不创建归属。具体字段、两页签/默认方向及去重计数仍inferred。错误现行知识直接改写，不以新增DEC堆补丁，用户原话和Git历史保留。冠骋固定数组、关联批次中文标签及目录/实例标记为原始证据，动态自定义与精确字段定位为我方需求；GET核心缺失不能证明其全部实例/状态范围，不照搬笛卡尔积、AUTO_CONNECT、漏映射或关闭权限规则。10-14跨日实现及基础测试支持39局部implemented/internal，当前生产保存证据与摘要核验终止快照同源、不切换任意冻结汇总版本；本体BKM59项全通过。运行及独立质量另记不标verified，前次门禁不代本轮；保存后过程可查、最终完成正式事实、真实归属、快照与原权限不变，历史反向/A12、Q6/Q17及无上下文登记仍保留。
+  summary: 当前typed-trace-catalog-20261014沿同包实施DEC-0075-40，执行L2。保留生产批次/SN、物料批号、工单号、设备编号、物料编码、产品编码、供应商批号和客户订单号八项预置，前三项默认显示，其余五项是展开区固定条件；预置不能删除且不进入添加条件候选，自定义项通过动态条件选择。自定义支持文本、数字和日期；数字精确值、日期范围由相应控件承接，自定义引用兼容延期。闭区间/单边日期、十进制规范、类型不可变及旧MVP撤项提示为工程inferred；不机械合并组件SN或重写历史归属。目录、冻结类型、保存索引、表单/DHR类型匹配、0112迁移及UI已实现，主开发聚焦测试和实际暂存查询证据见typed-trace-catalog-2026-10-14.md，本轮独立质量另记，不能复用历史门禁或标整体verified。DEC-0075-39的固定业务条件、正向真实属性、反向绑定保存值、同表单/实际行与同DHR各自粒度、来源高亮、原权限与使用时快照保持；内容不创建归属，正式业务统计仍等最终完成。本轮不新增运行fact/schema或自定义统计模型，历史反向/A12、Q6/Q17及无上下文登记未决边界保持。
   # 2026-10-05预置项复核时管理员目录尚未实现；从冠骋原始字段与消费者提炼候选，见form-projection-preset-source-review-2026-10-05.md。该历史增量不修改运行目录、统计默认、数据库或未决问题；10-07当前实现以目录切片记录为准。
   # 同日整体补查：直接核对冠骋前端设计器8种追溯/21种业务字段和后端41种注册声明，补字典选项/取值来源/动作分层；候选非运行默认，未新增字段类型、统计规则或Q17答案。
   # 同日追加：查找与追溯、业务统计是并列可选任务，可仅其一/两者/都不配；部分字段可配置生产上下文自动带入。统计归属独立来自实际执行上下文。Q15-Q17保留独立索引时机、结果页面及字段带入生命周期，当前formTrace完成路径不替未来需求定版。
@@ -28,6 +29,27 @@ decisionPackage:
     concepts: []
     relationships: []
     rules:
+      - id: design-rule.form-projection.typed-trace-catalog
+        name: 精简预置与有类型的自定义追溯
+        status: implemented
+        trigger: trace-catalog-and-query.configure
+        condition:
+          all:
+            - fact: report.modelId
+              operator: equals
+              value: formTrace
+        result:
+          type: typed-trace-catalog
+          presetItems: [lookup_production_batch, materialLotText, equipmentText, lookup_material_code, lookup_work_order, lookup_product_code, lookup_supplier_lot, lookup_order_number]
+          defaultItems: [lookup_production_batch, materialLotText, lookup_work_order]
+          otherPresets: fixed-collapsed-fields
+          presetDeletion: prohibited
+          customQueryEntry: custom-items-only
+          customTypes: [text, number, date]
+          numberQuery: exact-numeric-value
+          dateQuery: date-range
+          customReferenceCompatibility: deferred
+        sourceReferences: [user-confirmed-20261014-typed-trace-catalog, DEC-0075-40]
       - id: design-rule.form-projection.fixed-business-report-filters
         name: 业务报表产品固定筛选独立于追溯目录
         status: implemented
@@ -737,6 +759,9 @@ decisionPackage:
   impactAnalysis:
     level: L2
     directImpacts:
+      - area: typed-trace-catalog-20261014
+        change: 8项预置、3项默认及固定展开；自定义日期/数字创建、字段兼容与冻结类型、保存索引、表单/DHR类型化匹配及命中。新增0112迁移允许类型并撤旧4项，不机械改绑SN，不改写实例证据。
+        evidenceReferences: [docs/development/typed-trace-catalog-2026-10-14.md, gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java, gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx]
       - area: report-query-ui-20261014
         change: 本轮L1严格复用表单列表查询与作业模板页签样式；表单/DHR反向按现有目录builtin标记展示预置条件，自定义项通过添加查询条件，业务报表保持固定条件。不改变后端/API/匹配/权限/快照/目录标记或迁移，主开发仅修改共享查询面板和业务报表前端。
         evidenceReferences: [gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx, gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx, gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx, gmp-platform/frontend/src/api/formLookupCatalog.ts, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]

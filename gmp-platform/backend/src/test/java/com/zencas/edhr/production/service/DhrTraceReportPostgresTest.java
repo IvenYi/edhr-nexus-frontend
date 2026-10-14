@@ -34,7 +34,7 @@ class DhrTraceReportPostgresTest {
         jdbc = new JdbcTemplate(new DriverManagerDataSource(url + "?currentSchema=" + schema, user, password));
         jdbc.execute("CREATE TABLE dhr_instance(id bigint PRIMARY KEY,tenant_id text,production_object_id bigint,dhr_no text,object_no text,object_type text,work_order_no text,product_code text,product_name text,status text,summary_status text,created_by text,created_at timestamp)");
         jdbc.execute("CREATE TABLE form_instance_record(id bigint PRIMARY KEY,tenant_id text,object_id bigint,source_type text,snapshot_json text,values_json text)");
-        jdbc.execute("CREATE TABLE form_trace_value(tenant_id text,form_instance_id bigint,item_id text,field_id text,field_name text,table_id text,row_key text,row_index int,value_text text)");
+        jdbc.execute("CREATE TABLE form_trace_value(tenant_id text,form_instance_id bigint,item_id text,field_id text,field_name text,table_id text,row_key text,row_index int,value_text text,value_type text NOT NULL DEFAULT 'text')");
         jdbc.update("INSERT INTO dhr_instance VALUES(1,'default',100,'DHR1','OWNER1','BATCH','WO1','P1','产品1','IN_PROGRESS','NOT_STARTED','人员1','2026-10-10'),(2,'default',200,'DHR2','OWNER2','SN','WO1','P1','产品1','COMPLETED','FORMALIZED','人员2','2026-10-11'),(3,'default',300,'DHR3','OWNER3','BATCH','WO2','P2','产品2','EARLY_TERMINATED','NOT_STARTED','人员1','2026-10-12'),(4,'other',400,'PRIVATE','OTHER','SN','WO1','P1','产品1','IN_PROGRESS','NOT_STARTED','人员1','2026-10-10')");
         reader = mock(DhrInstanceService.class);
         when(reader.header(anyLong())).thenAnswer(call -> mapper.createObjectNode().put("id", call.<Long>getArgument(0).toString()));
@@ -117,5 +117,30 @@ class DhrTraceReportPostgresTest {
         assertThat(reverse.at("/records/0/id").asText()).isEqualTo("1");
         assertThat(reverse.at("/records/0/hitFormCount").asInt()).isEqualTo(2);
         assertThatThrownBy(() -> reports.query(false, Map.of("materialLotText", "M001"), Map.of(), 0, 20)).hasMessageContaining("不受支持");
+    }
+
+    @Test void typedCrossFormAndTerminatedMatchesUseTheSameNumericAndDatePredicates() {
+        ObjectNode numeric = form("lookup_reading"), dated = form("lookup_day");
+        ((ObjectNode) numeric.at("/fields/0")).put("type", "number");
+        numeric.withObject("/projection/lookupItems/lookup_reading").put("type", "number");
+        ((ObjectNode) dated.at("/fields/0")).put("type", "datetime").putObject("typeConfig").put("mode", "date");
+        dated.withObject("/projection/lookupItems/lookup_day").put("type", "date");
+        for (long owner : List.of(100L, 300L)) {
+            long id = owner + 1;
+            var reading = mapper.createObjectNode().put("value", new java.math.BigDecimal("1.00"));
+            var day = mapper.createObjectNode().put("value", "2026-10-14");
+            jdbc.update("INSERT INTO form_instance_record VALUES(?,'default',?,'PRODUCTION_EXECUTION',?,?)", id, owner, numeric.toString(), reading.toString());
+            jdbc.update("INSERT INTO form_instance_record VALUES(?,'default',?,'PRODUCTION_EXECUTION',?,?)", id + 1, owner, dated.toString(), day.toString());
+            new FormTraceIndexService(jdbc, mapper).refresh(id, "default", numeric, reading);
+            new FormTraceIndexService(jdbc, mapper).refresh(id + 1, "default", dated, day);
+        }
+        terminated = reader.detail(3L).deepCopy().put("status", "EARLY_TERMINATED").put("terminationSnapshotAvailable", true);
+        new FormTraceIndexService(jdbc, mapper).refresh(302, "default", dated, mapper.createObjectNode().put("value", "2026-10-15"));
+        var filters = List.of(new TraceCondition("lookup_reading", "number", "1", null, null), new TraceCondition("lookup_day", "date", null, "2026-10-14", "2026-10-14"));
+        var result = reports.query(true, Map.of(), filters, 0, 20);
+        assertThat(result.path("total").asInt()).isEqualTo(2);
+        assertThat(result.path("records").findValuesAsText("hitFormCount")).containsOnly("2");
+        assertThat(reports.detail(3, true, filters).path("traceConditionsSatisfied").asBoolean()).isTrue();
+        assertThat(reports.detail(3, true, List.of(new TraceCondition("lookup_day", "date", null, "2026-10-15", null))).path("traceConditionsSatisfied").asBoolean()).isFalse();
     }
 }

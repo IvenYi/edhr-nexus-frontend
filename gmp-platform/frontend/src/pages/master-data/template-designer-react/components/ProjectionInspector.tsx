@@ -16,7 +16,7 @@ export default function ProjectionInspector() {
   const field = (selectedNode?.type === 'sub-table' ? table : undefined) ?? document?.model.fields.find(item => item.id === fieldId)
     ?? (table?.typeConfig.columns as ModelField[] | undefined)?.find(column => column.id === fieldId)
     ?? selectedNode?.bindings?.subTableField;
-  const supported = field && ['text', 'number', 'singleSelect', 'subTable', 'reference'].includes(field.type);
+  const supported = field && ['text', 'number', 'datetime', 'singleSelect', 'subTable', 'reference'].includes(field.type);
   const editTable = () => {
     if (!table || !document) return;
     const find = (nodes: CanvasNode[]): CanvasNode | undefined => {
