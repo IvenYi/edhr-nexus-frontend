@@ -1,11 +1,13 @@
 import axios from 'axios';
 import type { ApiResponse } from '@/types/common';
 import { clearAuthStorage } from '@/utils/sessionPolicy';
+import { getSessionGeneration } from '@/utils/queryClient';
 import { showDeletionProtection } from './deletionProtection';
 
 declare module 'axios' {
   export interface AxiosRequestConfig {
     skipAuthRedirect?: boolean;
+    authSessionGeneration?: number;
   }
 }
 
@@ -20,18 +22,23 @@ const client = axios.create({
 // Request interceptor: attach JWT token
 client.interceptors.request.use(
   (config) => {
+    config.authSessionGeneration = getSessionGeneration();
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => { throw error; },
+  { synchronous: true },
 );
 
 // Response interceptor: unwrap ApiResponse, handle 401
 client.interceptors.response.use(
   (response) => {
+    if (response.config.authSessionGeneration !== getSessionGeneration()) {
+      return Promise.reject(new axios.CanceledError('登录会话已切换，请重新操作'));
+    }
     if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
       return response;
     }
@@ -42,6 +49,10 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (error.config?.authSessionGeneration !== undefined &&
+        error.config.authSessionGeneration !== getSessionGeneration()) {
+      return Promise.reject(new axios.CanceledError('登录会话已切换，请重新操作'));
+    }
     if (error.response?.status === 409) showDeletionProtection(error.response?.data?.data);
     const apiMessage = (error.response?.data as Partial<ApiResponse<unknown>> | undefined)?.message;
     if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {

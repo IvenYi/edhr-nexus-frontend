@@ -1,3 +1,7 @@
+import { clearSessionQueryCache } from './queryClient';
+
+export const AUTH_USER_CHANGE_EVENT = 'edhr:auth-user-change';
+
 export const SESSION_STORAGE_KEYS = {
   sessionStartedAt: 'sessionStartedAt',
   lastActivityAt: 'lastActivityAt',
@@ -20,7 +24,9 @@ export function removeSessionPolicyStorage() {
 }
 
 export function clearAuthStorage() {
+  clearSessionQueryCache();
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   removeSessionPolicyStorage();
+  window.dispatchEvent(new Event(AUTH_USER_CHANGE_EVENT));
 }

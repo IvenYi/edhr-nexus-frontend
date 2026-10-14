@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -124,7 +125,7 @@ public class EquipmentController {
     @PostMapping("/types")
     @Transactional
     public ApiResponse<TypeResponse> createType(@RequestBody TypeRequest request) {
-        var type = EquipmentType.builder().id(idGenerator.nextId()).tenantId(TENANT).createdBy(currentOperatorName()).createdAt(LocalDateTime.now()).build();
+        var type = EquipmentType.builder().id(idGenerator.nextId()).tenantId(TENANT).createdBy(currentOperatorName()).createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)).build();
         fillType(type, request);
         typeRepository.save(type);
         audit("EQUIPMENT_TYPE", type.getId(), "CREATE", Map.of(), typeSnapshot(type));
@@ -183,7 +184,7 @@ public class EquipmentController {
     @PostMapping
     @Transactional
     public ApiResponse<EquipmentResponse> create(@RequestBody EquipmentRequest request) {
-        var equipment = Equipment.builder().id(idGenerator.nextId()).createdBy(currentOperatorName()).createdAt(LocalDateTime.now()).build();
+        var equipment = Equipment.builder().id(idGenerator.nextId()).createdBy(currentOperatorName()).createdAt(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)).build();
         fillEquipment(equipment, request);
         equipmentRepository.save(equipment);
         audit("EQUIPMENT", equipment.getId(), "CREATE", Map.of(), equipmentSnapshot(equipment));
@@ -221,7 +222,7 @@ public class EquipmentController {
         type.setDescription(text(request.description(), "描述", 512, false));
         type.setCategoryId(category.getId());
         type.setUpdatedBy(currentOperatorName());
-        type.setUpdatedAt(LocalDateTime.now());
+        type.setUpdatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS));
     }
 
     private void fillEquipment(Equipment equipment, EquipmentRequest request) {
@@ -245,7 +246,7 @@ public class EquipmentController {
         equipment.setEquipmentTypeId(type.getId());
         equipment.setStatus(status);
         equipment.setUpdatedBy(currentOperatorName());
-        equipment.setUpdatedAt(LocalDateTime.now());
+        equipment.setUpdatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS));
     }
 
     private EquipmentCategory requireCategory(Long id) {

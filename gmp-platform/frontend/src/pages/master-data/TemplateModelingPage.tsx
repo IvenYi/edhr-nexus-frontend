@@ -938,9 +938,12 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
     mutationFn: (target: { row: TemplateModelingRecord; version: TemplateVersionRecord }) => pageKey === 'batchRecordTemplates'
       ? deleteDhrTemplateVersion(target.row.id, target.version.id)
       : deleteFormTemplateVersion(target.row.id, target.version.id),
-    onSuccess: async () => {
+    onSuccess: async (_, target) => {
       setDeleteVersionTarget(null);
       showMessage('版本删除成功', 'success');
+      if (pageKey === 'batchRecordTemplates') {
+        await queryClient.invalidateQueries({ queryKey: ['dhr-template-workspace', target.row.id] });
+      }
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.categoryQueryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
@@ -971,6 +974,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       setDhrVersionDescription('');
       setDhrVersionEffectiveFrom(defaultEffectiveFromValue());
       setDhrVersionEffectiveTo('');
+      await queryClient.invalidateQueries({ queryKey: ['dhr-template-workspace', target.row.id] });
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] });
       await queryClient.invalidateQueries({ queryKey: [config.auditQueryKey] });
     },

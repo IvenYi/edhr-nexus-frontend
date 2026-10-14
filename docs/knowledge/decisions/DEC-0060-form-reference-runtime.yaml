@@ -48,7 +48,7 @@ decisions:
       visibility: internal
       path: gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
       lineHint: 260
-      summary: 'provenance: original-evidence；DEC-0060-01 与 scenario.form-reference-query-context 要求正式填报按主表及当前子表行依赖查询。 FormRuntimeField.RuntimeReference 已调用 references(fieldId, keyword, dependencies)，ProductionExecutionPage 也正确透传第三参； 但 FormFillingPage:260-262 和 FormReviewPage:154-156 的回调仅接收并转发前两参， getExecutionReferences 的 values 因而使用默认空对象。FormReferenceLookup.query 对必需条件依赖缺失追加 AND 1=0， 所以这两个个人入口的条件引用查询会丢失上下文并出现空候选。无条件引用、正确透传的生产执行入口与后端正式保存约束须分别评价。 保留已确认引用行为，登记当前两个页面接线缺口；共享组件和纯函数测试不能证明这两个页面已经贯通。 本次未运行浏览器或服务端测试，尚未修复入口。'
+      summary: 'provenance: original-evidence；cb863ad83e2aca20caf86f0e78602120e8b4727f 审计确认两个个人入口未转发 RuntimeReference 的 dependencies，导致必需条件缺失时后端 AND 1=0 返回空候选。2026-10-13 在 fix/review-batch-01-20261013 修复 FormFillingPage:260-262 和 FormReviewPage:154-156，按原 DEC-0060-01 转发第三参数，不替换为整张表 values，不改来源授权、冻结配置或保存验证。新增测试直接执行两个页面实际回调，覆盖主表、不同子表行、清空依赖和无 identity；反向恢复漏传后测试按预期失败。实现修复与本体规则保持一致，因真实浏览器/后端联调及独立质量门禁尚未完成，差异暂保留 open，不将局部回归等同完整验收。详见 docs/development/code-review-repair-20261013.md。'
       evidenceIds:
       - evidence.form-reference-user-confirmed
       - evidence.form-reference-runtime-control

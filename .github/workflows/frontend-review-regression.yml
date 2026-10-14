@@ -1,0 +1,56 @@
+name: Frontend review regression
+on:
+  pull_request:
+    paths:
+      - 'gmp-platform/frontend/**'
+      - '.github/workflows/frontend-review-regression.yml'
+  push:
+    branches: [edhr-dev]
+    paths:
+      - 'gmp-platform/frontend/**'
+      - '.github/workflows/frontend-review-regression.yml'
+permissions:
+  contents: read
+jobs:
+  frontend-review-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record actual tested revision
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          mkdir -p /tmp/review-results
+          printf 'tested_commit=%s\nbase_commit=%s\nhead_commit=%s\n' "$(git rev-parse HEAD)" "$BASE_SHA" "$HEAD_SHA" | tee /tmp/review-results/revision.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: gmp-platform/frontend/package-lock.json
+      - name: Install locked dependencies
+        working-directory: gmp-platform/frontend
+        run: npm ci --no-audit --no-fund
+      - name: Verify repaired paths and adjacent behavior
+        working-directory: gmp-platform/frontend
+        run: |
+          set -euo pipefail
+          npm run test:review-batch-01 | tee /tmp/review-results/focused-tests.log
+          node --test scripts/test-form-references.mjs scripts/test-form-document-preview.mjs scripts/test-button-signature.mjs scripts/test-generic-ui.mjs scripts/test-dhr-workspace-navigation.mjs | tee /tmp/review-results/adjacent-tests.log
+          npm run verify:dhr-template-workspace | tee /tmp/review-results/dhr-static.log
+      - name: Type-check and build frontend
+        working-directory: gmp-platform/frontend
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/review-results/build.log
+      - name: Retain regression evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-review-regression-results
+          path: /tmp/review-results/
+          retention-days: 7
+          if-no-files-found: error

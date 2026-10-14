@@ -7,6 +7,7 @@ import {
   Visibility, LockOutlined, PersonOutline,
 } from '@mui/icons-material';
 import client from '@/api/client';
+import { useAuthStore, type User } from '@/stores/authStore';
 import { DEFAULT_SYSTEM_BRANDING, useSystemBranding } from '@/hooks/useSystemBranding';
 import {
   DEFAULT_IDLE_LOGOUT_MINUTES,
@@ -80,9 +81,8 @@ export default function LoginPage() {
     try {
       const res = await client.post('/auth/login', { username, password });
       const loginData = res.data.data as Record<string, unknown>;
-      const { token, user } = loginData as { token: string; user: unknown };
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      const { token, user } = loginData as { token: string; user: User };
+      useAuthStore.getState().login(token, user);
       storeSessionPolicy(loginData);
       const requiresSecurityAction = Boolean(loginData.forcePasswordChange || loginData.forceSignatureVerification);
       navigate(requiresSecurityAction ? '/account/settings' : '/', { replace: true });

@@ -1,5 +1,6 @@
 package com.zencas.edhr.identity.controller;
 
+import com.zencas.edhr.common.config.JacksonConfig;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
@@ -131,6 +132,56 @@ class AuthControllerTest {
         assertThat(userPayload.get("permissions")).isEqualTo(List.of("system"));
         assertThat(userPayload.get("roleNames")).isEqualTo(List.of("系统管理员"));
         verify(jwtTokenProvider).generateToken("1", "admin", "系统管理员", 480, List.of("system"));
+    }
+
+    @Test
+    void loginMeAndProfileResponsesSerializeSnowflakeUserIdAsExactString() throws Exception {
+        long userId = 385762229210103809L;
+        String exactUserId = String.valueOf(userId);
+        UserAccount user = UserAccount.builder()
+                .id(userId)
+                .username("qa.snowflake")
+                .passwordHash("hash")
+                .displayName("质量用户")
+                .status("ACTIVE")
+                .build();
+        AuthController.LoginRequest loginRequest = new AuthController.LoginRequest();
+        loginRequest.setUsername("qa.snowflake");
+        loginRequest.setPassword("123456");
+        when(userAccountRepository.findByUsername("qa.snowflake")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
+        when(userRoleRepository.findByUserId(userId)).thenReturn(List.of());
+        when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
+        when(jwtTokenProvider.generateToken(exactUserId, "qa.snowflake", "质量用户", 480, List.of()))
+                .thenReturn("compact-token");
+        var mapper = new JacksonConfig().objectMapper();
+
+        var loginResponse = controller.login(loginRequest, new MockHttpServletRequest());
+        var loginJson = mapper.readTree(mapper.writeValueAsString(loginResponse));
+        var loginId = loginJson.at("/data/user/id");
+        assertThat(loginId.isTextual()).as("login user ID JSON type").isTrue();
+        assertThat(loginId.textValue()).isEqualTo(exactUserId);
+        assertThat(loginJson.at("/data/token").textValue()).isEqualTo("compact-token");
+        verify(jwtTokenProvider).generateToken(exactUserId, "qa.snowflake", "质量用户", 480, List.of());
+
+        var meResponse = controller.me(exactUserId);
+        var meId = mapper.readTree(mapper.writeValueAsString(meResponse)).at("/data/id");
+        assertThat(meId.isTextual()).as("current user ID JSON type").isTrue();
+        assertThat(meId.textValue()).isEqualTo(exactUserId);
+
+        AuthController.ProfileUpdateRequest profileRequest = new AuthController.ProfileUpdateRequest();
+        profileRequest.setDisplayName("质量用户更新");
+        var profileResponse = controller.updateProfile(exactUserId, profileRequest, new MockHttpServletRequest());
+        var profileJson = mapper.readTree(mapper.writeValueAsString(profileResponse));
+        var profileId = profileJson.at("/data/id");
+        assertThat(profileId.isTextual()).as("updated profile user ID JSON type").isTrue();
+        assertThat(profileId.textValue()).isEqualTo(exactUserId);
+        assertThat(profileJson.at("/data/displayName").textValue()).isEqualTo("质量用户更新");
+        ArgumentCaptor<AuditEvent> auditCaptor = ArgumentCaptor.forClass(AuditEvent.class);
+        verify(auditEventRepository).save(auditCaptor.capture());
+        assertThat(auditCaptor.getValue().getEntityId()).isEqualTo(exactUserId);
+        assertThat(auditCaptor.getValue().getOperatorId()).isEqualTo(exactUserId);
     }
 
     @Test

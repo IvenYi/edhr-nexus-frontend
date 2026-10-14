@@ -1,4 +1,5 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
@@ -7,16 +8,6 @@ import AppRouter from './router';
 import DeletionProtectionDialog from './components/DeletionProtectionDialog';
 import RecordLocationHighlight from './components/RecordLocationHighlight';
 import { listTableHeaderCellStyle } from './components/listTableStyles';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30000,
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 
 const theme = createTheme({
   palette: {

@@ -35,8 +35,8 @@ decisions:
       severity: high
       visibility: internal
       path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
-      lineHint: 1382
-      summary: 'provenance: original-evidence；版本列表非空且显式 versionId 未找到时，前端优先保留列表中仍存在的已选版本，否则取首个版本；列表为空时该 effect 直接返回。这可能改变显式目标的展示及编辑上下文。后端显式版本查询严格拒绝缺失，不消除前端回退差异；须保持目标版本或明确拒绝，不能静默换版。本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      lineHint: 1272
+      summary: 'provenance: original-evidence；cb863ad83e2aca20caf86f0e78602120e8b4727f 审计确认显式 versionId 缺失时可能静默回退。2026-10-13 在 fix/review-batch-01-20261013 按原 DEC-0061-02 修复：在查询前同步解析目标，缺失时不读其他版本且阻断保存；草稿与响应须匹配目标版本，templateId/initialVersionId/open 变化隔离工作区本地状态。新增纯函数及实际工作区 hook/API 边界测试覆盖缺失、空列表、加载/错误、显式选择、读写目标和草稿不匹配；重新引入回退后测试按预期失败。不改变复制规则、后端事务或历史实例快照；真实浏览器及独立质量门禁仍待完成，差异暂保留 open。详见 docs/development/code-review-repair-20261013.md。'
       evidenceIds:
       - evidence.dhr-template-version-design-isolation-user-confirmed
       - evidence.dhr-template-workspace-version-selection
