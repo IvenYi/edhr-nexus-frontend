@@ -743,13 +743,28 @@ public class AuthController {
     }
 
     private PDType0Font loadAuthorizationNoticeFont(PDDocument document) throws IOException {
-        for (String fontPath : PDF_FONT_CANDIDATES) {
-            Path path = Path.of(fontPath);
-            if (Files.exists(path)) {
-                return PDType0Font.load(document, path.toFile());
+        String configured = System.getProperty("edhr.authorization-notice.font");
+        if (!StringUtils.hasText(configured)) configured = System.getenv("EDHR_AUTHORIZATION_NOTICE_FONT");
+        return loadAuthorizationNoticeFont(document, configured);
+    }
+
+    private static PDType0Font loadAuthorizationNoticeFont(PDDocument document, String configured) throws IOException {
+        // Explicit deployment configuration must not silently fall back to an unrelated font.
+        List<String> candidates = StringUtils.hasText(configured) ? List.of(configured.trim()) : PDF_FONT_CANDIDATES;
+        IOException failure = null;
+        for (String fontPath : candidates) {
+            try {
+                Path path = Path.of(fontPath);
+                if (!path.isAbsolute() || !Files.isRegularFile(path) || !Files.isReadable(path)) continue;
+                PDType0Font font = PDType0Font.load(document, path.toFile());
+                font.encode("电子签名授权通知书");
+                return font;
+            } catch (IOException | IllegalArgumentException error) {
+                failure = new IOException("授权通知书中文字体无法读取或不支持所需字符", error);
             }
         }
-        throw new IOException("缺少授权通知书 PDF 中文字体");
+        throw new IOException("缺少授权通知书 PDF 中文字体；请将 EDHR_AUTHORIZATION_NOTICE_FONT 或 "
+                + "-Dedhr.authorization-notice.font 设置为可读、可嵌入的中文 TrueType 字体绝对路径", failure);
     }
 
     private void drawCenteredText(PDPageContentStream content, PDType0Font font, float fontSize, Color color, float y, String text) throws IOException {
