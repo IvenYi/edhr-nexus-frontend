@@ -3,7 +3,7 @@ import { AUTH_USER_CHANGE_EVENT, clearAuthStorage } from '@/utils/sessionPolicy'
 import { clearSessionQueryCache } from '@/utils/queryClient';
 
 export interface User {
-  id: number;
+  id: string | number; // Fresh Snowflake IDs are strings; retain legacy cached numeric IDs.
   username: string;
   displayName: string;
   email: string;

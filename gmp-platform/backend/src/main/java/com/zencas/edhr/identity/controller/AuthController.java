@@ -154,7 +154,7 @@ public class AuthController {
         recordLoginEvent(user, "LOGIN", "PASSWORD", servletRequest);
 
         Map<String, Object> userMap = new LinkedHashMap<>();
-        userMap.put("id", user.getId());
+        userMap.put("id", idToString(user.getId()));
         userMap.put("username", user.getUsername());
         userMap.put("displayName", user.getDisplayName());
         userMap.put("email", user.getEmail());
@@ -200,7 +200,7 @@ public class AuthController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.IDN_002));
 
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("id", user.getId());
+        result.put("id", idToString(user.getId()));
         result.put("username", user.getUsername());
         result.put("displayName", user.getDisplayName());
         result.put("email", user.getEmail());

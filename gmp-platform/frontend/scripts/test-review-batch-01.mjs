@@ -169,6 +169,23 @@ test('HOME-IDENTITY: shared clear path removes memory identity as well as storag
   assert.equal(auth.useAuthStore.getState().hasPermission('old'), false);
 });
 
+test('HOME-IDENTITY: string Snowflake identities survive login and same-session refresh exactly', async () => {
+  const auth = await loadAuth();
+  // These neighboring IDs collide if they are coerced to JavaScript Number.
+  for (const id of ['9007199254740993', '9007199254740992', '9007199254740993']) {
+    auth.useAuthStore.getState().login(`test-token-${id}`, { id, permissions: [] });
+    const key = ['tasks', 'done', id, 1];
+    auth.queryClient.setQueryData(key, { ownerId: id });
+    assert.equal(auth.useAuthStore.getState().user.id, id);
+    assert.equal(JSON.parse(auth.localStorage.getItem('user')).id, id);
+    auth.localStorage.setItem('user', JSON.stringify({ id, displayName: 'refreshed', permissions: [] }));
+    auth.window.dispatchEvent(new Event(auth.AUTH_USER_CHANGE_EVENT));
+    assert.equal(auth.useAuthStore.getState().user.id, id);
+    assert.deepEqual(auth.queryClient.getQueryData(key), { ownerId: id });
+  }
+  auth.clearAuthStorage();
+});
+
 test('HOME-IDENTITY: profile refresh uses the existing event without clearing session work', async () => {
   const auth = await loadAuth();
   auth.useAuthStore.getState().login('A-token', { id: 1, displayName: 'old', permissions: [] });
