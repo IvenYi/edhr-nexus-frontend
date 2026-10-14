@@ -57,7 +57,7 @@ class DeletionProtectionIntegrationTest {
     }
 
     private void order(long id, long productId) {
-        jdbc.update("INSERT INTO work_order(id,tenant_id,order_no,product_id,quantity,planned_quantity,status) VALUES (?,'default',?,?,1,1,'CREATED')", id, "DELETE-QA-ORDER-" + id, productId);
+        jdbc.update("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status) VALUES (?,'default',?,?,1,'CREATED')", id, "DELETE-QA-ORDER-" + id, productId);
     }
 
     @Test void precheckReturnsReferencesWithoutDeletingOrWritingAudit() throws Exception {
@@ -207,6 +207,96 @@ class DeletionProtectionIntegrationTest {
         }
     }
 
+    @Test void legacyUnitDoesNotInventAWorkOrderUnitIdReference() throws Exception {
+        material(-87401); order(-87402, -87401);
+        jdbc.update("INSERT INTO unit_of_measure(id,code,name) VALUES (-87414,'DELETE-QA-UNIT','无关联单位')");
+        String permissions = auth("system.dictionaries");
+        mvc.perform(get("/api/v1/master-data/deletion-check/unit_of_measure/-87414").header("Authorization", permissions))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.allowed").value(true));
+        mvc.perform(delete("/api/v1/master-data/units/-87414").header("Authorization", permissions))
+            .andExpect(status().isOk());
+        entityManager.flush();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM unit_of_measure WHERE id=-87414", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM work_order WHERE id=-87402", Integer.class)).isEqualTo(1);
+    }
+
+    private void executionFixture(String snapshot) {
+        material(-87401); order(-87402, -87401);
+        jdbc.update("INSERT INTO route(id,tenant_id,code,name) VALUES (-87410,'default','DELETE-QA-FROZEN-ROUTE','快照路线')");
+        jdbc.update("INSERT INTO route_version(id,tenant_id,route_id,version,version_status,code) VALUES (-87411,'default',-87410,'V1.0','DRAFT','DELETE-QA-FROZEN-RV')");
+        jdbc.update("INSERT INTO dhr_template(id,tenant_id,code,name) VALUES (-87412,'default','DELETE-QA-FROZEN-DHR','快照批记录模板')");
+        jdbc.update("INSERT INTO dhr_template_version(id,dhr_template_id,version_number,version_label) VALUES (-87413,-87412,1,'V1.0')");
+        jdbc.update("INSERT INTO product_process(id,tenant_id,owner_type,owner_id) VALUES (-87403,'default','PRODUCT',-87401)");
+        jdbc.update("INSERT INTO product_process_version(id,tenant_id,product_process_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id) VALUES (-87404,'default',-87403,'V1.0','量产','BATCH',-87411,-87413)");
+        jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity) VALUES (-87405,'default',-87402,'DELETE-QA-FROZEN','BATCH',-87404,1)");
+        jdbc.update("INSERT INTO production_execution(object_id,snapshot_json,state_json,started_at,updated_at) VALUES (-87405,?,'{}',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", snapshot);
+    }
+
+    @Test void frozenOperationIdsProtectDeletionForNumericAndStringHistory() throws Exception {
+        jdbc.update("INSERT INTO operation(id,tenant_id,code,name) VALUES (-87406,'default','DELETE-QA-FROZEN-OP','快照工序')");
+        executionFixture("{\"operations\":[]}");
+        String permissions = auth("master-data.operations", "production.batches");
+        mvc.perform(get("/api/v1/master-data/deletion-check/operation/-87406").header("Authorization", permissions))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.allowed").value(true));
+        for (String operationId : List.of("-87406", "\"-87406\"")) {
+            jdbc.update("UPDATE production_execution SET snapshot_json=? WHERE object_id=-87405",
+                "{\"version\":null,\"operations\":[{\"id\":\"node-key\",\"operationId\":" + operationId + "}]}");
+            mvc.perform(get("/api/v1/master-data/deletion-check/operation/-87406").header("Authorization", permissions))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.allowed").value(false))
+                .andExpect(jsonPath("$.data.impact.groups[0].dataType").value("RETAINED"))
+                .andExpect(jsonPath("$.data.impact.groups[0].records[0].context").value(org.hamcrest.Matchers.containsString("DELETE-QA-FROZEN")));
+            mvc.perform(delete("/api/v1/master-data/operations/-87406").header("Authorization", permissions))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.data.kind").value("DELETION_BLOCKED"));
+        }
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM operation WHERE id=-87406", Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM production_execution WHERE object_id=-87405", Integer.class)).isEqualTo(1);
+    }
+
+    @Test void executionNodeKeysAndMissingOperationIdsDoNotCreateFalseReferences() throws Exception {
+        jdbc.update("INSERT INTO operation(id,tenant_id,code,name) VALUES (-87406,'default','DELETE-QA-UNREFERENCED-OP','无引用工序')");
+        executionFixture("{}");
+        String permissions = auth("master-data.operations", "production.batches");
+        for (String snapshot : List.of("{}", "{\"operations\":null}",
+                "{\"operations\":[{\"id\":\"-87406\"},{\"operationId\":null},{\"operationId\":-87407}]}")) {
+            jdbc.update("UPDATE production_execution SET snapshot_json=? WHERE object_id=-87405", snapshot);
+            mvc.perform(get("/api/v1/master-data/deletion-check/operation/-87406").header("Authorization", permissions))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.allowed").value(true));
+        }
+        mvc.perform(delete("/api/v1/master-data/operations/-87406").header("Authorization", permissions))
+            .andExpect(status().isOk());
+        entityManager.flush();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM operation WHERE id=-87406", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM production_execution WHERE object_id=-87405", Integer.class)).isEqualTo(1);
+    }
+
+    @Test void frozenOperationDetailsRespectOwnerTenantAndModulePermission() throws Exception {
+        jdbc.update("INSERT INTO operation(id,tenant_id,code,name) VALUES (-87406,'default','DELETE-QA-PRIVATE-OP','受保护工序')");
+        executionFixture("{\"operations\":[{\"operationId\":-87406}]}");
+        mvc.perform(get("/api/v1/master-data/deletion-check/operation/-87406").header("Authorization", auth("master-data.operations")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.allowed").value(false))
+            .andExpect(jsonPath("$.data.impact.groups[0].restricted").value(true))
+            .andExpect(jsonPath("$.data.impact.groups[0].records").isEmpty());
+        jdbc.update("UPDATE production_object SET tenant_id='other-tenant' WHERE id=-87405");
+        mvc.perform(get("/api/v1/master-data/deletion-check/operation/-87406").header("Authorization", auth("master-data.operations", "production.batches")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.allowed").value(false))
+            .andExpect(jsonPath("$.data.impact.groups[0].restricted").value(true))
+            .andExpect(jsonPath("$.data.impact.groups[0].records").isEmpty());
+    }
+
+    @Test void savedFormRecordsProtectTemplatesWithoutLiveExecutionReferences() throws Exception {
+        executionFixture("{}");
+        jdbc.update("INSERT INTO form_template(id,tenant_id,code,name) VALUES (-87407,'default','DELETE-QA-SAVED-FORM','已保存表单')");
+        jdbc.update("INSERT INTO form_template_version(id,template_id,version_number,status) VALUES (87408,-87407,1,'DRAFT')");
+        jdbc.update("INSERT INTO form_instance_record(id,tenant_id,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,snapshot_json,values_json,status,updated_at,source_type) VALUES (-87409,'default','DELETE-QA-SAVED',-87405,'node-key','form-key','copy-key',-87407,87408,'{}','{}','ACTIVE',CURRENT_TIMESTAMP,'PRODUCTION_EXECUTION')");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM deletion_form_reference WHERE form_template_version_id=87408", Integer.class)).isZero();
+        String permissions = auth("master-data.form-templates", "form-instances.view", "production.execution");
+        for (String path : List.of("form-templates/-87407", "form-templates/-87407/versions/87408")) {
+            mvc.perform(delete("/api/v1/master-data/template-modeling/" + path).header("Authorization", permissions))
+                .andExpect(status().isConflict()).andExpect(jsonPath("$.data.groups[0].dataType").value("RETAINED"));
+        }
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_instance_record WHERE id=-87409", Integer.class)).isEqualTo(1);
+    }
+
     @Test void orphanedRouteNodesAreSeparateFromBusinessRelationsWithoutChangingProtection() throws Exception {
         jdbc.update("INSERT INTO operation(id,tenant_id,code,name) VALUES (-87301,'default','QA-TYPE-OP','装配')");
         jdbc.update("INSERT INTO route(id,tenant_id,code,name) VALUES (-87302,'default','QA-TYPE-ROUTE','现存路线')");
@@ -249,7 +339,7 @@ class DeletionProtectionIntegrationTest {
             var future = executor.submit(() -> {
                 started.countDown();
                 try (var sql = writer.createStatement()) {
-                    sql.execute("INSERT INTO work_order(id,tenant_id,code,order_no,product_id,quantity,planned_quantity,status) VALUES (-86902,'default','DELETE-QA-RACE','DELETE-QA-RACE',-86901,1,1,'CREATED')");
+                    sql.execute("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status) VALUES (-86902,'default','DELETE-QA-RACE',-86901,1,'CREATED')");
                     return "inserted";
                 } catch (java.sql.SQLException ex) { return ex.getSQLState(); }
             });
