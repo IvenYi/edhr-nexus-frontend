@@ -81,6 +81,7 @@ class ProductionExecutionIntegrationTest {
     @Autowired SignatureRepository signatures;
     @Autowired org.springframework.transaction.PlatformTransactionManager transactions;
     @Autowired ProductionService production;
+    @Autowired ExecutionSnapshotBuilder snapshotBuilder;
     @MockBean DepartmentRepository departments;
     @MockBean RoleRepository roles;
     @MockBean UserDepartmentRepository userDepartments;
@@ -510,6 +511,64 @@ class ProductionExecutionIntegrationTest {
 
         assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("IN_PROGRESS");
         assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(6);
+    }
+
+    // H2 does not provide PostgreSQL's database-wide MVCC snapshot at REPEATABLE_READ.
+    @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "execution.test.driver", matches = "org\\.postgresql\\.Driver")
+    @Test void firstStartFreezesOneCommittedConfigurationDuringProcessRebinding() throws Exception {
+        // Both configurations are valid; the writer mirrors updateVersion's atomic parent/child replacement.
+        jdbc.update("INSERT INTO route VALUES(13,'新路线','R02')");
+        jdbc.update("INSERT INTO route_version VALUES(13,13,'V2')");
+        jdbc.update("INSERT INTO route_node VALUES(21,13,'a',21,'O03','新装配','OPERATION','{}',1),(22,13,'b',22,'O04','新检验','OPERATION','{}',2)");
+        jdbc.update("INSERT INTO route_relation VALUES(2,13,'a','b','SEQUENTIAL',NULL,1)");
+        jdbc.update("INSERT INTO dhr_template VALUES(14,'新生产记录','D02')");
+        jdbc.update("INSERT INTO dhr_template_version VALUES(14,14,'V2')");
+        jdbc.update("INSERT INTO dhr_directory VALUES(140,14,'新记录',NULL,1)");
+        jdbc.update("INSERT INTO form_template(id,name,code,category_name) VALUES(15,'新装配记录','F02','生产记录')");
+        jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json,canvas_design_json) SELECT 15,15,'V2',model_design_json,canvas_design_json FROM form_template_version WHERE id=5");
+        jdbc.update("INSERT INTO dhr_template_item VALUES(150,140,15,15,'新装配记录',1,true)");
+        JdbcTemplate snapshotJdbc = spy(jdbc);
+        var intercepted = new java.util.concurrent.atomic.AtomicBoolean();
+        try (var pool = Executors.newSingleThreadExecutor()) {
+            doAnswer(invocation -> {
+                invocation.callRealMethod();
+                if (((String) invocation.getArgument(0)).contains("FROM product_process_version p")
+                        && intercepted.compareAndSet(false, true)) {
+                    pool.submit(() -> {
+                        var writer = new org.springframework.transaction.support.TransactionTemplate(transactions);
+                        writer.executeWithoutResult(status -> {
+                            jdbc.update("UPDATE product_process_version SET route_version_id=13,dhr_template_version_id=14 WHERE id=2");
+                            jdbc.update("DELETE FROM product_process_operation_form_binding WHERE product_process_operation_binding_id IN (11,12)");
+                            jdbc.update("DELETE FROM product_process_operation_binding WHERE product_process_version_id=2");
+                            jdbc.update("INSERT INTO product_process_operation_binding(id,product_process_version_id,route_node_key) VALUES(111,2,'a'),(112,2,'b')");
+                            jdbc.update("INSERT INTO product_process_operation_form_binding VALUES(151,111,15,150,true,1,'{\"fillMode\":\"DIRECT\"}')");
+                        });
+                        // A later composition save removes the now-unreferenced item from the old DHR version.
+                        writer.executeWithoutResult(status -> jdbc.update("DELETE FROM dhr_template_item WHERE id=50"));
+                    }).get(5, TimeUnit.SECONDS);
+                }
+                return null;
+            }).when(snapshotJdbc).query(anyString(), any(org.springframework.jdbc.core.RowCallbackHandler.class), any(Object[].class));
+            org.springframework.test.util.ReflectionTestUtils.setField(snapshotBuilder, "jdbc", snapshotJdbc);
+            try { action(101, "START", 0, "a", Map.of()).andExpect(status().isOk()); }
+            finally { org.springframework.test.util.ReflectionTestUtils.setField(snapshotBuilder, "jdbc", jdbc); }
+        }
+        assertThat(intercepted).isTrue();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_template_item WHERE id=50", Integer.class)).isZero();
+        JsonNode frozen = mapper.readTree(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class));
+        assertThat(frozen.path("context").path("routeVersionId").asText()).isEqualTo("3");
+        assertThat(frozen.path("context").path("dhrTemplateVersionId").asText()).isEqualTo("4");
+        assertThat(frozen.path("operations").get(0).path("forms").get(0).path("versionId").asText()).isEqualTo("5");
+        assertThat(frozen.path("operations").get(0).path("forms").get(0).path("dhrItemId").asText()).isEqualTo("50");
+        JsonNode directory = mapper.readTree(jdbc.queryForObject("SELECT directory_snapshot FROM dhr_instance WHERE production_object_id=101", String.class));
+        assertThat(directory.path("directories").get(0).path("items").get(0).path("id").asText()).isEqualTo("50");
+        action(102, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        JsonNode next = mapper.readTree(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=102", String.class));
+        assertThat(next.path("context").path("routeVersionId").asText()).isEqualTo("13");
+        assertThat(next.path("context").path("dhrTemplateVersionId").asText()).isEqualTo("14");
+        assertThat(next.path("operations").get(0).path("forms").get(0).path("versionId").asText()).isEqualTo("15");
+        assertThat(next.path("operations").get(0).path("forms").get(0).path("dhrItemId").asText()).isEqualTo("150");
+        assertThat(mapper.readTree(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class))).isEqualTo(frozen);
     }
 
     @Test void concurrentStartCreatesOneExecutionAndOneDhr() throws Exception {
