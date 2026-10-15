@@ -1,0 +1,134 @@
+qualityResult:
+  result: passed
+  baseCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+  headCommit: ddc7c2bd6b29de942ee10f5c02ff31457fe08eb7
+  contractBaseline:
+    sourceCommit: ddc7c2bd6b29de942ee10f5c02ff31457fe08eb7
+    targetBranch: edhr-dev
+    targetCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+    contractReadCommit: ddc7c2bd6b29de942ee10f5c02ff31457fe08eb7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: [docs/development/projection-dev-integration-2026-10-15-quality.yaml]
+    excludedPaths: [gmp-platform/frontend/node_modules, output/]
+    untrackedPaths: [docs/development/projection-dev-integration-2026-10-15-quality.yaml, gmp-platform/frontend/node_modules, output/]
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: final-recheck.actual-candidate-and-contract
+      required: true
+      category: documentation
+      description: 全新且未参与修复的质量实例读取当前契约，独立核对目标、来源、实际合并及最终候选。
+      method: command
+      command: git rev-parse HEAD; git merge-base --is-ancestor; git diff 3aeb28f5..ddc7c2bd; Python逐字比较目标契约和当前文件
+      outcome: passed
+      evidence:
+        - 本实例实际读取ddc7c2bd6b29de942ee10f5c02ff31457fe08eb7中的AGENTS、编码准则、交接和质量角色、知识README/open-questions、集成决策包、报告及本体结果；并非把fetch当作契约重读。
+        - AGENTS.md、codeplzreadme.md、docs/agents/agent-handoff-contract.md、quality-verifier.md及business-knowledge-modeler.md内容与目标3977329d13c4c74bd862e21abac4ae982e5b8f83逐字一致，未提交契约路径为空。
+        - 实际合并提交3aeb28f5c85409c04a3612dd9514198bbfd089f1包含目标3977329d13c4c74bd862e21abac4ae982e5b8f83和投影eedc24721d8d5137b29840575867422577386141；两者均为最终ddc7候选祖先。
+        - 3aeb至ddc7仅修改集成报告10行，修复后端复现命令的运行目录及settings说明，没有业务、测试、知识或契约变化。
+    - id: final-recheck.unchanged-tested-content
+      required: true
+      category: regression
+      description: 用Git内容哈希核对前两独立实例的运行与语义证据仍适用于最终候选，不以旧分支验收替代合并验收。
+      method: command
+      command: git rev-parse 3aeb28f5:path ddc7c2bd:path; git diff --check 3977329d..ddc7c2bd
+      outcome: passed
+      evidence:
+        - 3aeb与ddc7的gmp-platform树均为d12e9f95bc8d4695e21b3cc54d08a4ad8bf9a4c8。
+        - 两提交docs/knowledge树均为60f0e2b840184e424b3667aa0f2c30cf77f0e079，docs/agents树均为54f1ab0d39a7970ae2970df101556d0ebb7c9102。
+        - 两提交tools/knowledge-model树均为0f8a252434058b79b835190a00b1b819e7468b8b，AGENTS.md blob均为8e62c2aee54a78468861bb01cfad4d7f77b11665。
+        - git diff --check退出码0。当前工作树除本质量结果外无跟踪修改，node_modules符号链接及output本机证据均排除交付。
+        - 本报告记录实际被审查的ddc7；后续只提交本审查报告时，业务及知识代码树仍不变，报告自提交不会被伪称为已经运行测试的提交。
+    - id: final-recheck.maven-reproduction-fix
+      required: true
+      category: documentation
+      description: 独立复验唯一修正项，确认报告提供的backend工作目录能够解析模块Maven设置。
+      method: command
+      command: cd gmp-platform/backend && JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -N validate -DskipTests
+      outcome: passed
+      evidence:
+        - 直接读取backend/.mvn/maven.config，实际参数为--settings及.mvn/settings.xml；该设置文件存在且可读。
+        - 从backend目录执行上述命令退出码0、BUILD SUCCESS；独立知识模块仍按根目录mvn -f tools/knowledge-model/pom.xml运行。
+        - 本实例仅复验Maven设置解析，没有把validate声明为重新执行后端整套测试；后端实际运行结果由下一检查核对。
+    - id: final-recheck.formal-knowledge-entry
+      required: true
+      category: ontology
+      description: 在最终ddc7候选上重新执行正式知识校验入口。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 本实例实际执行89项，0失败、0错误、0跳过，BUILD SUCCESS，退出码0；读取基线0.3.25/schema1.2.0。
+        - output/projection-dev-integration-2026-10-15/final-recheck-knowledge.log
+        - tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+        - 自动结构、引用及类型校验不替代逐条自然语言语义或全系统运行验收。
+    - id: final-recheck.knowledge-final-result
+      required: true
+      category: ontology
+      description: 核对前一独立知识实例的结构化最终结果及其实际证据，复核本轮ID和政策保留边界。
+      method: inspection
+      command: 读取knowledge-quality-result.yaml、ontologyResult及集成证据；Python比较目标文件和41项声明后缀
+      outcome: passed
+      evidence:
+        - output/projection-dev-integration-2026-10-15/knowledge-quality-result.yaml最终result为passed，base3977329d、head完整ddc7，findings为空、blockingConditions为空，不以运行中进度替代结果。
+        - 本实例独立核对目标DEC-0075自定义表单、DEC-0076治理、production.yaml及schema.yaml与目标内容完全相同；源投影41项声明后缀按序映射DEC-0077，无同ID不同含义覆盖。
+        - 知识实例独立读取41条声明、replacementScopes/knowledgeSync、当前词条概念及源码来源，核对配置快照、保存内容索引、正式来源、真实DHR成员及权限边界；其89项正式检查有实际日志支持。
+        - 本体结果为updated，baselineBefore/After均0.3.25，conflicts/questions为空；两个object事实和三个实现锚点保留实际源码出处及implemented/internal边界，没有提升整个P0或全部业务政策成熟度。
+        - 最终产出rule.product-process.final-output仍planned/internal；TODO分别标记user-confirmed、original-evidence、secondary-reference、inference和unresolved，未把建议变成确认或把调研登记当作数量联动交付。
+        - 本次人工语义范围为投影增量与实际集成接缝，未套用目标历史2292个ID的全量内审覆盖率，也没有补造历史契约读取或验收。
+    - id: final-recheck.runtime-final-result
+      required: true
+      category: integration
+      description: 核对另一独立运行质量实例已完成的最终结果、实际测试覆盖和唯一低风险文档问题的解决。
+      method: inspection
+      command: 读取runtime-quality-result.yaml和backend/frontend原始运行日志，并核对后端类级结果与前端汇总
+      outcome: passed
+      evidence:
+        - output/projection-dev-integration-2026-10-15/runtime-quality-result.yaml最终result为passed，base3977329d、head完整ddc7，blockingConditions为空；唯一low文档问题已resolved，修复提交为ddc7，本全新实例已独立复验。
+        - 独立backend日志确有21类258项中256项执行通过、0失败错误，2项仅条件开启的浏览器夹具跳过；四类真实PostgreSQL47项通过，含Projection13、TraceIndex8、DHRTrace4、LookupCatalog22。
+        - 其余实际覆盖生产执行、批次共享自定义表单与资料齐套、实际主体与签署、到期JWT、来源权限、DHR汇总及审批等相邻范围；未通过跳过功能断言或降低测试取得通过。
+        - 独立frontend日志确有134项通过、0失败跳过，覆盖投影侧栏、来源与报表导航、主/子表数字值、表单选择、文档只读及签名；本实例未冒称自身重跑这134项。
+        - 独立浏览器结果记录真实3017至8097会话：正向保持，反向默认三项、展开六项及日期、自定义添加入口默认隐藏、更多条件在重置左侧；1200x733展开后结果表头内容及分页仍可见，无控制台错误。对应两张截图存在于output/playwright。
+        - output/projection-dev-integration-2026-10-15/runtime-quality-backend.log
+        - output/projection-dev-integration-2026-10-15/runtime-quality-frontend.log
+    - id: final-recheck.delivery-evidence-and-scope
+      required: true
+      category: requirements
+      description: 核对主验证、两独立结果与用户要求匹配，同时保留未执行及未来遗漏项边界。
+      method: inspection
+      command: 阅读集成决策包、报告、TODO及frontend-build/isolated-backend日志，对照两个独立质量最终结果
+      outcome: passed
+      evidence:
+        - L2决策包涵盖直接、传递、潜在、兼容迁移、快照、审计、权限、测试及证据缺口，采用configuration/product-core，角色所有权清楚。
+        - 主报告如实区分自身248项后端执行和2条件夹具跳过、206项前端、真实初始化和浏览器证据；没有把前两实例或历史分支的结果冒称自身全部执行。
+        - 本实例直接检查frontend-build.log中TypeScript/Vite成功，以及isolated-backend.log中Liquibase Run143/Total143；这是证据复核，并非本实例重新构建或再次建库。
+        - 关联配置实际读取1项、预览主表字段DOM命中1、全选解除至0及统计绑定保留由主真实交互取证；运行实例以22项LookupCatalogPostgres和前端回归独立覆盖邻接，未假称再次浏览器执行破坏性解绑。历史内容保留由真实PostgreSQL用例覆盖。
+        - 未重跑安速康从拆批到DHR的整个流程，不重启/迁移8087，不回写旧模拟数量；最终产出、A12、其余带入生命周期和历史反向视图保持各自边界。
+  findings:
+    - id: QF-FINAL-DOC-001
+      severity: low
+      scope: docs/development/projection-dev-integration-2026-10-15.md
+      summary: 前一运行质量实例发现的后端复现命令目录问题已修正，本全新实例复验通过。
+      reproductionSteps:
+        - 原报告从仓库根目录用mvn -f gmp-platform/backend/pom.xml启动后端检查，模块配置以相对路径引用.mvn/settings.xml。
+        - 对照ddc7修复后的命令，进入gmp-platform/backend，以Java21运行Maven。
+      expectedResult: 报告命令可以正确读取后端模块设置并启动相应检查。
+      actualResult: 修正后backend目录mvn -N validate退出码0、BUILD SUCCESS；前一实际backend测试日志也为成功。
+      evidence: [gmp-platform/backend/.mvn/maven.config, docs/development/projection-dev-integration-2026-10-15.md, output/projection-dev-integration-2026-10-15/runtime-quality-result.yaml]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: ddc7c2bd6b29de942ee10f5c02ff31457fe08eb7
+        - type: command
+          reference: final-recheck.maven-reproduction-fix，backend目录Maven validate退出码0
+  residualRisks:
+    - id: residual.final-recheck.runtime-boundary
+      description: 本实例重新执行知识入口及Maven设置解析；运行集成、PostgreSQL、前端和浏览器由前两独立实例与主证据组合核对，未重新运行整个安速康生产到DHR流程。
+      impact: passed仅针对本次实际合并和契约对齐，不证明最终产出数量链或所有生产组合已完成。
+      mitigation: 最终产出继续按TODO澄清依赖并独立L2实现验收，真实正确快照及旧模拟不被本次集成改写。
+    - id: residual.final-recheck.remote-enforcement
+      description: 未核验GitHub必需状态检查、分支保护或ruleset，本机输出与截图未提交。
+      impact: 本地质量通过不证明远端已启用强制门禁，也不宣称全部历史知识一致或整个P0验收完成。
+      mitigation: 提交本结构化结论并如实披露边界；后续只新增报告的提交保留被审查ddc7和不变代码树哈希，避免伪造自提交已测试。
+  blockingConditions: []
