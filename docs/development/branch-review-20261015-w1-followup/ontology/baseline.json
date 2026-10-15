@@ -1,0 +1,249 @@
+{
+  "domainReadCommit": "3cfff38c1c1996cff841708e97c9f012e41eaed2",
+  "mergedTargetCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "targetBranch": "edhr-dev",
+  "currentHeadObservedButNotUsedAsReadBaseline": "6379bf105127b05a65695992b008b55c142264f9",
+  "knowledgeBaselineVersion": "0.3.25",
+  "definitionCountInherited": 2486,
+  "contractReadCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "contractReuse": "Actual initial full contract reading537; safe-checkpoint diff/blob comparison found no increment through domain read3cfff or merged target6379. No claim fetch or local branch switch reread contracts.",
+  "uncommittedContractPaths": [],
+  "registeredScopedPaths": 38,
+  "sourceBlobChecks": [
+    {
+      "path": "AGENTS.md",
+      "readBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "mergedTargetBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "unchanged": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "readBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "mergedTargetBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "unchanged": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "readBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "mergedTargetBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "unchanged": true
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "readBlob": "d16bda6e01b4662a048214fc868d410d4a0ac1ed",
+      "mergedTargetBlob": "d16bda6e01b4662a048214fc868d410d4a0ac1ed",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "readBlob": "ca0833a2c1f2544091b5f74b3de4eda88342ea37",
+      "mergedTargetBlob": "ca0833a2c1f2544091b5f74b3de4eda88342ea37",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+      "readBlob": "da08120e9917f838a62e60a3eddbe8ca9c55f5d9",
+      "mergedTargetBlob": "da08120e9917f838a62e60a3eddbe8ca9c55f5d9",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "readBlob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "mergedTargetBlob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "readBlob": "7a4ce8bfec42c48d66c62c4b1accd41fe05d7e95",
+      "mergedTargetBlob": "7a4ce8bfec42c48d66c62c4b1accd41fe05d7e95",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management-user-confirmed.md",
+      "readBlob": "d3522fbc555b7fe270dafbb02cc066d08b515072",
+      "mergedTargetBlob": "d3522fbc555b7fe270dafbb02cc066d08b515072",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "readBlob": "2625731535c1997c9435d7c9d69497241a79854c",
+      "mergedTargetBlob": "2625731535c1997c9435d7c9d69497241a79854c",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+      "readBlob": "8a218e682682377dfcee556e02576b2de169c107",
+      "mergedTargetBlob": "8a218e682682377dfcee556e02576b2de169c107",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "readBlob": "fa78971507385cb7baaab02d8b198faa57f47552",
+      "mergedTargetBlob": "fa78971507385cb7baaab02d8b198faa57f47552",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "readBlob": "a4875067d85c2bbe7acab1081d73bb4fec887cf1",
+      "mergedTargetBlob": "a4875067d85c2bbe7acab1081d73bb4fec887cf1",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "readBlob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "mergedTargetBlob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-instance-management.yaml",
+      "readBlob": "b65b7969ab3eba2474792b57f7fc2ef21fe5355c",
+      "mergedTargetBlob": "b65b7969ab3eba2474792b57f7fc2ef21fe5355c",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "readBlob": "c2c1989649eaddaa78fcf236c92bb4619cbce832",
+      "mergedTargetBlob": "c2c1989649eaddaa78fcf236c92bb4619cbce832",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "readBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "mergedTargetBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/scripts/test-dhr-model-migration.mjs",
+      "readBlob": "947cecc2633488054059439dbab6cf3291cc77b0",
+      "mergedTargetBlob": "947cecc2633488054059439dbab6cf3291cc77b0",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "readBlob": "b5ea4f01221407c6adce28e3de55451b1663310c",
+      "mergedTargetBlob": "b5ea4f01221407c6adce28e3de55451b1663310c",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java",
+      "readBlob": "048d7c0fb045827b41f167d6f9b4776f00325e34",
+      "mergedTargetBlob": "048d7c0fb045827b41f167d6f9b4776f00325e34",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "readBlob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "mergedTargetBlob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFillingService.java",
+      "readBlob": "c81df6e4133201cc5f889401504fd4d9600dbe47",
+      "mergedTargetBlob": "c81df6e4133201cc5f889401504fd4d9600dbe47",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java",
+      "readBlob": "47de8c5801e86d5b1433f26521546066a2db4099",
+      "mergedTargetBlob": "47de8c5801e86d5b1433f26521546066a2db4099",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "readBlob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "mergedTargetBlob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "readBlob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "mergedTargetBlob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "readBlob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "mergedTargetBlob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "readBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "mergedTargetBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "readBlob": "8c5bbc16e977ccac438aa0cc3d574d940da8d4a3",
+      "mergedTargetBlob": "8c5bbc16e977ccac438aa0cc3d574d940da8d4a3",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+      "readBlob": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+      "mergedTargetBlob": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "readBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+      "mergedTargetBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "readBlob": "ecb7f18d139a4f7fcedb2fe6a797bf7e7fd65eef",
+      "mergedTargetBlob": "ecb7f18d139a4f7fcedb2fe6a797bf7e7fd65eef",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelValidator.java",
+      "readBlob": "b18130e8e8527c5e71e10be21b728cddd365b08f",
+      "mergedTargetBlob": "b18130e8e8527c5e71e10be21b728cddd365b08f",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "readBlob": "2a1019c1e68fd1bf20bed6b0e95bdfda81755867",
+      "mergedTargetBlob": "2a1019c1e68fd1bf20bed6b0e95bdfda81755867",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+      "readBlob": "5148f3414118a4c36664910d0334388c949961ba",
+      "mergedTargetBlob": "5148f3414118a4c36664910d0334388c949961ba",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java",
+      "readBlob": "9f0b25e2535dda7ed93f02d76a17a23f9aaa1d88",
+      "mergedTargetBlob": "9f0b25e2535dda7ed93f02d76a17a23f9aaa1d88",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java",
+      "readBlob": "9a0578268c0b47f23ebac329c1e25aac4dbaaf5a",
+      "mergedTargetBlob": "9a0578268c0b47f23ebac329c1e25aac4dbaaf5a",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/dhr-instances.ts",
+      "readBlob": "3011ee18c9d9c982bf0719e9437ced9210cfdced",
+      "mergedTargetBlob": "3011ee18c9d9c982bf0719e9437ced9210cfdced",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "readBlob": "66d93cb530da46ea90149d2a415bef8ed2023937",
+      "mergedTargetBlob": "66d93cb530da46ea90149d2a415bef8ed2023937",
+      "unchanged": true
+    }
+  ],
+  "repositoryModifiedByThisInstance": false,
+  "runtimeExecutedByThisInstance": false,
+  "mainInstanceOwnsWorkspaceRepair": true,
+  "sourceCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "targetCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "currentHeadAtFinalHandoff": "6379bf105127b05a65695992b008b55c142264f9",
+  "workspaceStableAtFinalHandoff": true
+}

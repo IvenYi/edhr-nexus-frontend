@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "sourceTree": "c7f2d5f68fd8e3f5a6cd811a4147fd390fd62643",
+  "reviewBranch": "audit/edhr-dev-w1-followup-20261015",
+  "previousTargetCommit": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "firstTrancheDeliveryCommit": "427df1ef5b39327da711206009eb2e63071aff49",
+  "fullTrackedPaths": 1474,
+  "knowledgeDefinitions": 2486,
+  "knowledgeVersion": "0.3.25",
+  "wholeAuditComplete": false,
+  "scope": "W1 followup in progress, source review + main-run focused tests; not a new whole-slice quality acceptance",
+  "newArtifactsOutsideFixedBaseline": true,
+  "contractReadCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "uncommittedContractPaths": [],
+  "contractBlobs": {
+    "AGENTS.md": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+    "codeplzreadme.md": "2e7e18097620e602c4408b83f71404fae346f8be",
+    "docs/agents/agent-handoff-contract.md": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+    "docs/agents/business-knowledge-modeler.md": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+    "docs/agents/quality-verifier.md": "581e647c37daebeb9dd3d6397ae53e30e7822fb3"
+  },
+  "contractBlobRecheckAt": "6379bf105127b05a65695992b008b55c142264f9",
+  "partialContractRereadBeforeMerge": {
+    "commit": "3cfff38c1c1996cff841708e97c9f012e41eaed2",
+    "paths": [
+      "AGENTS.md",
+      "codeplzreadme.md"
+    ]
+  }
+}
