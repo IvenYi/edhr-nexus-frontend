@@ -28,8 +28,8 @@
 
 ## 本批判断
 
-第一条 DHR 创建—冻结—历史读取链见 [dhr-lifecycle-map.md](dhr-lifecycle-map.md)，未证实该已读链上的新代码偏差，仍有明确未覆盖环节。已证实的高优先级问题是关闭工单的审计/状态提交不原子，代码提交 `292dd898`；仅增加控制器事务边界，不改可关闭状态、权限、业务校验或数量规则。
+第一条 DHR 创建—冻结—历史读取链见 [dhr-lifecycle-map.md](dhr-lifecycle-map.md)，未证实该已读链上的新代码偏差，仍有明确未覆盖环节。已证实的高优先级问题是关闭工单的审计/状态提交不原子，首轮代码提交 `292dd898` 增加事务。独立质量随后实际复现到该候选的 JPA 陈旧实体并发重复关闭，详见 [原始失败报告](evidence/independent-first-failed/quality-result.yaml)；最终修复增加锁前读取，先获取行锁再建立 before 快照，保留服务状态校验。不改可关闭状态、权限、业务校验或数量规则。
 
-修复前 4 例中 2 例失败；修复后 55 例全部通过，测试及证据边界见 [validation.md](validation.md)。本批独立质量结果另存 `quality-result.yaml`，该结果只裁定本批交付，不是 W1–W7 完成或全分支可发布的证明。
+首轮 4 例中 2 例失败，修复后 55 例通过仍未覆盖 JPA 缓存并发。最终回归升级为真实 WorkOrder 实体、Spring Data JPA 仓储、Hibernate/JpaTransactionManager/H2，并增加双请求用例；其余仓储仍为替身，审计写实际同事务 SQL。完整红绿和适用范围见 [validation.md](validation.md)。本批独立质量结果另存 `quality-result.yaml`，该结果只裁定本批交付，不是 W1–W7 完成或全分支可发布的证明。
 
 下一步按 [NEXT.md](NEXT.md) 连续推进。全量审查继续进行，目前没有需要用户新增决定的业务问题；已存 open questions 不用重复询问，也不会擅自补政策。

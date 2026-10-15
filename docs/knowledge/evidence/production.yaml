@@ -163,7 +163,7 @@ evidence:
   - id: evidence.work-order-close-audit-atomicity-test
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java
-    description: original-evidence；2026-10-15 关闭工单原子性四例回归使用真实 Spring WorkOrderController/ProductionService 事务代理和 H2 JDBC，repository 为测试适配替身。覆盖审计保存失败、审计 JSON 序列化失败时状态及审计整体回滚，合法关闭的真实前后状态/操作者同提交，以及非法状态无写入。主侧修复前四例为2失败/0错误，增加控制器 REQUIRED 事务后四例及相邻回归共55项通过、0失败/错误/跳过；命令、原始证据及候选版本见 docs/development/branch-review-20261015/validation.md。该证据不证明真实HTTP、JPA、PostgreSQL或最终独立质量验收，不提升知识为verified/runtime。
+    description: original-evidence；2026-10-15 首轮四例与相邻55项通过是 Spring/H2 JDBC 和仓储适配替身的历史结果，未覆盖 JPA 一级缓存并发；随后独立 failed 的 QF-W1-001 证明先普通读 before 再加锁可导致重复关闭及双审计。当前五例升级为真实 WorkOrder 实体、Spring Data JPA 仓储、Hibernate、JpaTransactionManager 和私有 H2，实际 Controller/Service/状态机不变；其他仓储为替身，AuditEventRepository 替身写同事务实际 test_audit SQL。覆盖审计保存和序列化失败回滚、成功关闭准确前后状态/操作者同提交、非法状态无写，以及双线程关闭仅一次成功和一条审计。新五例在锁前修复前为5项/1失败/0错误，入口先锁再构造快照后五例及相邻合计56项通过、0失败/错误/跳过，不与旧55相加。2秒暂停及10秒锁等待仅为私有测试库设置，生产锁参数未改。命令、实际候选、首轮 failed 和 close-jpa-red/green-case-index.json 见 docs/development/branch-review-20261015/validation.md；不证明 HTTP、真实 AuditEvent JPA、PostgreSQL或最终独立质量，不提升为verified/runtime。
     visibility: internal
   - id: evidence.production-process-selector-clearable
     type: code

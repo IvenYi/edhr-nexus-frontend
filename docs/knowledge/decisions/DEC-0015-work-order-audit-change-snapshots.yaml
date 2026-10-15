@@ -69,7 +69,7 @@ decisions:
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
       lineHint: 112
-      summary: 'provenance: original-evidence；2026-10-15 已确认并修复关闭状态与审计分离提交：WorkOrderController.close 增加与创建、编辑和取消一致的 REQUIRED 事务边界，使真实 ProductionService.closeOrder 的状态变更、审计序列化和审计保存同事务成功或回滚，不改变权限、状态机或真实差量快照语义。新增四例主侧回归在修复前为 2 失败/0 错误，审计保存或序列化失败后状态仍被提交为 CLOSED；修复后四例及相邻回归共 55 项执行通过、0 失败/错误/跳过。该回归使用真实 Spring 控制器/服务事务代理及 H2 JDBC，repository 为测试适配替身，不是 HTTP、真实 JPA 或 PostgreSQL 验收。具体证据见本轮分支审查 validation.md；未参与修复的新实例仍须对最终候选独立验收，主侧通过不冒充独立质量结果。'
+      summary: 'provenance: original-evidence；2026-10-15 首次修复给 WorkOrderController.close 增加 REQUIRED 事务，使关闭状态、审计序列化及保存整体回滚；旧四例及相邻55项通过仅为当轮 Spring/H2 JDBC 与仓储适配替身的历史证据。独立验证随后以真实 JPA 查出 QF-W1-001：先普通读取 before 再锁查询会复用一级缓存旧 COMPLETED，允许并发重复关闭与双审计。当前修复在同一外层事务先调用既有 findByTenantIdAndIdForUpdate，再构造真实 before 快照和执行 closeOrder，不改变权限、状态机或差量审计政策。升级后的五例使用真实 WorkOrder 实体、Spring Data JPA 仓储、Hibernate、JpaTransactionManager 与私有 H2；其他仓储为替身，审计替身写同事务实际 SQL。新并发例在锁前修复前为5项/1失败/0错误，修复后五例及相邻回归合计56项通过、0失败/错误/跳过；不与旧55相加。人为暂停2秒和10秒锁等待仅属隔离测试库设置，生产锁参数未改。原独立 failed 及红绿索引保留于本轮分支审查 validation.md；不是 HTTP、实际 AuditEvent JPA 或 PostgreSQL 验收，最终候选仍须由未参与修复的全新质量实例复核。'
       evidenceIds:
       - evidence.work-order-controller
       - evidence.work-order-audit-snapshot-controller

@@ -3,7 +3,7 @@ decisionPackage:
   scope: 整体审查首批盘点及DHR链映射、关闭工单审计原子性确定性整改
   knowledgeBaselineVersion: 0.3.25
   contractBaseline:
-    sourceCommit: aad4cfe9445a82658c1113de73c9c3561af566d5
+    sourceCommit: 4e7fd37500157b4fd055e8a54fe8105f1bf03ae2
     targetBranch: edhr-dev
     targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
     contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
@@ -26,15 +26,15 @@ decisionPackage:
     level: L2
     directImpacts:
       - area: work-order-close
-        change: 外层事务覆盖状态更新、响应快照和审计保存；失败回滚。
+        change: 外层事务覆盖状态与审计，先锁再读before防止同JPA上下文陈旧状态并发重复关闭。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java]
     transitiveImpacts:
       - area: production-service-and-audit
         change: 既有REQUIRED服务事务加入控制器事务，锁持有至审计完成。
         evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java]
     potentialImpacts:
-      - area: stale-before-snapshot-under-concurrent-actions
-        concern: before读取在服务行锁前，独立并发审查仍待进行；本批未新增状态边或并发保证。
+      - area: adjacent-cancel-and-edit-concurrency
+        concern: 邻接路径同类缓存与锁顺序仍需W3单独核对，不能用本批关闭回归替代。
         evidenceReferences: [NEXT.md]
     unaffectedAreas:
       - area: lifecycle-permissions-quantity-dhr-ui
@@ -54,22 +54,22 @@ decisionPackage:
         evidenceReferences: [validation.md]
     testImpacts:
       - scope: regression
-        scenarios: [新增4例真实Spring/H2事务，相邻生产与DHR共55例通过，最终独立质量另报]
+        scenarios: [首轮55例历史通过，JPA双关闭独立失败证据，升级真实JPA的五例及相邻回归，最终全新实例验收]
         evidenceReferences: [validation.md]
-    evidenceGaps: [真实JPA/PostgreSQL/HTTP与并发全矩阵未执行，全分支W1到W7尚未完成]
+    evidenceGaps: [真实PostgreSQL和HTTP未执行，除关闭竞争外并发全矩阵未执行，全分支W1到W7尚未完成]
   extensionStrategy:
     selectedPaths: [transaction-orchestration]
     rationale: 保持同控制器create/update/cancel的现有事务编排，不引入通用大模块重构。
     ownershipBoundaries:
       - owner: work-order-controller
-        responsibility: 单个用户动作及其审计的提交边界；生产领域仍校验状态。
+        responsibility: 关闭入口先持同一工单行锁再建before快照，整个动作与审计同事务；生产领域仍校验状态。
   affectedFiles:
     - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
       changeType: update
-      reason: close事务边界
+      reason: close事务及快照前行锁边界
     - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java
-      changeType: add
-      reason: 四例可失败的原子性回归
+      changeType: create
+      reason: 原四例升级真实JPA并新增双请求关闭竞争回归
     - path: docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml
       changeType: update
       reason: 仅该实现差异处置及新证据引用
@@ -86,4 +86,9 @@ decisionPackage:
       given: 合法COMPLETED或非法CREATED工单
       when: 请求关闭
       then: 合法时CLOSED与精确前后审计同提交；非法时拒绝且无写入
-      evidenceRequirements: [新增四例及相邻回归，实际未参与修复实例的最终质量结果]
+      evidenceRequirements: [新增五例及相邻回归，实际未参与修复实例的最终质量结果]
+    - id: scenario.audit-close-concurrent-once
+      given: 两个独立事务同时关闭同一个COMPLETED工单
+      when: 第一个请求读取before时第二个请求尝试关闭
+      then: 第二个请求等行锁释放后按真实CLOSED拒绝，只有一条COMPLETED到CLOSED审计
+      evidenceRequirements: [真实Hibernate与SpringDataJPA及两个线程，修复前失败与修复后通过]
