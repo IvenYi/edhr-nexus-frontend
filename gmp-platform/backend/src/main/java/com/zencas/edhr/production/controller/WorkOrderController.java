@@ -109,6 +109,7 @@ public class WorkOrderController {
 
     @PostMapping("/{id}/close")
     @PreAuthorize("hasAuthority('production.work-orders')")
+    @Transactional
     public ApiResponse<WorkOrderResponse> close(@PathVariable Long id) {
         WorkOrder beforeOrder = requireOrder(id);
         Map<String, Object> before = workOrderSnapshot(toResponse(beforeOrder));
