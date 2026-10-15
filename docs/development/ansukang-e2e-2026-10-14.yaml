@@ -1,0 +1,98 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261014-ANSUKANG-E2E
+  scope: ansukang-simulated-production-dhr-reports
+  knowledgeBaselineVersion: 0.3.24
+  summary: 通过安速康原始表单模板导入，配置追溯及业务统计，验证批次拆分、生产执行、DHR与各报表完整链路，保留模拟结果供用户确认。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.ansukang-e2e-isolated-data
+      statement: 使用明确标识的独立模拟工单、批次及配置，不混入客户原有生产记录。
+      rationale: 用户要求模拟流程并在完成后确认，需要可辨识及可复核的结果。
+      relatedIds: []
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: simulation-configuration
+        change: 新增模拟表单模板、制程、工单与拆分批次，经现有业务操作形成实例。
+        evidenceReferences: [docs/knowledge/rules/production-execution.yaml]
+      - area: business-source-validation
+        change: 修复统计用途的关联单据号、班组来源被误按已退出追溯目录锁定的问题，只对formTrace来源采集目录快照。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java]
+      - area: execution-number-transport
+        change: 执行表单数字控件的编辑文本在保存或提交时按数字字段定义序列化为JSON数字，覆盖主表与子表；空值及非法值交由既有后端校验。
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/executionFormValues.ts]
+    transitiveImpacts:
+      - area: trace-business-reports-dhr
+        change: 保存值进入追溯，最终完成进入业务报表，真实关联表单进入DHR汇总。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0075-form-traceability-projection-ownership.yaml]
+    potentialImpacts:
+      - area: import-runtime
+        concern: 原始表单导入保真、字段类型、执行及汇总链路可能暴露缺陷，发现后仅修复当前验收所需范围。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: existing-customer-data
+        reason: 不改动既有客户工单、批次或表单实例。
+    compatibilityAndMigration:
+      - area: existing-form-values
+        change: 不批量改写历史值、配置或快照；数字序列化只应用于后续执行保存和提交。
+    snapshotImpacts:
+      - area: simulation-execution
+        change: 模拟生产按现有冻结契约形成配置及表单快照。
+    auditImpacts:
+      - area: simulation-actions
+        change: 通过既有业务操作记录配置、拆分、执行及汇总审计，不直接写数据库伪造状态。
+    permissionImpacts:
+      - area: test-operator
+        change: 使用现有admin调试账号及DEC-0074提交按钮签名例外，以登录密码签署；不扩展SIGN_FIELD认证例外，不修改其他账号。
+    testImpacts:
+      - scope: full-flow
+        scenarios: [原始模板导入, 用途配置, 批次拆分, 生产执行, 表单完成, DHR汇总, 三业务报表, 表单与DHR正反向追溯, 来源定位]
+        evidenceReferences: [output/ansukang-e2e-2026-10-14, output/playwright]
+    evidenceGaps:
+      - 三张原表及简化路线仅验证系统链路；未提供的客户完整工艺、签核矩阵及真实生产数据不补全为事实。
+  extensionStrategy:
+    selectedPaths: [configuration, standard-action, product-core]
+    rationale: 用现有配置和业务动作完成流程；修复追溯目录耦合及数字传输两处产品缺陷，不引入客户分支或新业务规则。
+    ownershipBoundaries:
+      - owner: main-agent
+        responsibility: 模拟配置、真实页面操作、证据整理及必要缺陷修复。
+      - owner: ontology-agent
+        responsibility: 原始表单及既有业务语义核对，不实现运行逻辑。
+      - owner: quality-agent
+        responsibility: 收尾独立验证模拟结果与证据链。
+  affectedFiles:
+    - path: docs/development/ansukang-e2e-2026-10-14.yaml
+      changeType: create
+      reason: 本轮统一决策与验收范围。
+    - path: docs/development/ansukang-e2e-2026-10-14.md
+      changeType: create
+      reason: 用户确认入口、模拟对象、运行证据及明确范围。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+      changeType: update
+      reason: 目录快照只依赖追溯来源。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java
+      changeType: update
+      reason: 业务来源与退出追溯目录的独立性回归。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java
+      changeType: update
+      reason: 聚焦数据库测试夹具补齐现有追溯日期迁移与真实目录，保持场景原断言。
+    - path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      changeType: update
+      reason: 执行保存和提交前按字段定义序列化数字。
+    - path: gmp-platform/frontend/src/pages/production/executionFormValues.ts
+      changeType: create
+      reason: 局部数字传输转换，保留原编辑值及字段身份。
+    - path: gmp-platform/frontend/scripts/test-execution-form-values.mjs
+      changeType: create
+      reason: 主表子表数字、引用身份和非法值保留的回归。
+  acceptanceScenarios:
+    - id: scenario.ansukang-e2e-production-dhr
+      given: 原始表单已通过模板导入并配置追溯和业务统计。
+      when: 模拟工单拆分形成批次，执行并完成关联表单，汇总DHR。
+      then: DHR包含真实关联表单，数量与人员日期等业务字段进入各自逐笔报表，正反向查询及详情命中与原始保存值一致。
+      evidenceRequirements: [原始文件与导入记录, 真实页面截图, 对象与实例标识, API和审计核对, 独立质量结果]

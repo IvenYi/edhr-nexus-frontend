@@ -25,6 +25,7 @@ export default function TraceQueryPanel({ dhr = false, size, onSearch }: { dhr?:
   const [direction, setDirection] = useState<TraceRequest['direction']>('FORWARD');
   const [properties, setProperties] = useState<Record<string, string>>({});
   const [filters, setFilters] = useState<Record<string, string>>({});
+  const [builtinDateRanges, setBuiltinDateRanges] = useState<TraceRequest['dateRanges']>({});
   const [conditions, setConditions] = useState<{ id: string; itemId: string; value: string; from: string; to: string }[]>([]);
   const [expanded, setExpanded] = useState(false);
   const [error, setError] = useState('');
@@ -44,22 +45,32 @@ export default function TraceQueryPanel({ dhr = false, size, onSearch }: { dhr?:
     summaryStatus: [['NOT_STARTED', '未汇总'], ['DRAFT', '汇总中'], ['PENDING_REVIEW', '待审核'], ['FORMALIZED', '已定版']],
   };
   const nonempty = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([, value]) => value.trim()).map(([key, value]) => [key, value.trim()]));
+  const additionalCount = otherBuiltinItems.filter(item => item.type === 'date'
+    ? builtinDateRanges[item.id]?.from || builtinDateRanges[item.id]?.to : filters[item.id]?.trim()).length
+    + conditions.filter(condition => condition.itemId && (condition.value.trim() || condition.from || condition.to)).length;
+  const invalid = (message: string) => { setError(message); setExpanded(true); };
   const submit = () => {
     const content = nonempty(filters);
     const dateRanges: TraceRequest['dateRanges'] = {};
+    for (const item of builtinItems.filter(item => item.type === 'date')) {
+      const range = builtinDateRanges[item.id];
+      if (!range?.from && !range?.to) continue;
+      if (range.from && range.to && range.from > range.to) { invalid(`“${item.name}”的结束日期不能早于开始日期`); return; }
+      dateRanges[item.id] = { from: range.from || undefined, to: range.to || undefined };
+    }
     for (const condition of conditions) {
       const item = customItems.find(item => item.id === condition.itemId);
-      if (!item) { setError('请选择追溯项，或移除空条件'); return; }
+      if (!item) { invalid('请选择追溯项，或移除空条件'); return; }
       if (item.type === 'date') {
-        if (!condition.from && !condition.to) { setError(`请填写“${item.name}”的起止日期，或移除空条件`); return; }
-        if (condition.from && condition.to && condition.from > condition.to) { setError(`“${item.name}”的结束日期不能早于开始日期`); return; }
+        if (!condition.from && !condition.to) { invalid(`请填写“${item.name}”的起止日期，或移除空条件`); return; }
+        if (condition.from && condition.to && condition.from > condition.to) { invalid(`“${item.name}”的结束日期不能早于开始日期`); return; }
         dateRanges[item.id] = { from: condition.from || undefined, to: condition.to || undefined };
       } else {
-        if (!condition.value.trim()) { setError(`请填写“${item.name}”的查询值，或移除空条件`); return; }
+        if (!condition.value.trim()) { invalid(`请填写“${item.name}”的查询值，或移除空条件`); return; }
         content[item.id] = condition.value.trim();
       }
     }
-    setError(''); onSearch({ direction, properties: nonempty(properties), filters: direction === 'REVERSE' ? content : {}, dateRanges: direction === 'REVERSE' ? dateRanges : {}, page: 0, size });
+    setError(''); onSearch({ direction, properties: direction === 'FORWARD' ? nonempty(properties) : {}, filters: direction === 'REVERSE' ? content : {}, dateRanges: direction === 'REVERSE' ? dateRanges : {}, page: 0, size });
   };
   const lookup = (id: string, label: string, value: string, change: (value: string) => void) => id === 'lookup_production_batch'
     ? <ProductionObjectInput label={label} value={value} onChange={change} />
@@ -70,22 +81,42 @@ export default function TraceQueryPanel({ dhr = false, size, onSearch }: { dhr?:
       value={properties[id] ?? ''} onChange={event => setProperties({ ...properties, [id]: event.target.value })} sx={formListFieldSx}>
       {options[id] && [<MenuItem key="all" value="">全部</MenuItem>, ...options[id].map(([value, name]) => <MenuItem key={value} value={value}>{name}</MenuItem>)]}
     </TextField>;
-  const builtin = (item: typeof items[number]) => <Box key={item.id}>{lookup(item.id, `记录中的${item.name}`, filters[item.id] ?? '', value => setFilters({ ...filters, [item.id]: value }))}</Box>;
-  const actions = <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end" sx={{ ...formListFilterActionsSx, gridColumn: expanded || direction === 'REVERSE' ? '1 / -1' : { xs: '1 / -1', lg: 'auto' } }}>
-    <Button size="small" variant="outlined" startIcon={<RestartAlt />} onClick={() => { setProperties({}); setFilters({}); setConditions([]); setError(''); onSearch({ ...initialTraceRequest, direction, size }); }} sx={{ height: 40, width: 80, minWidth: 80 }}>重置</Button>
+  const builtin = (item: typeof items[number]) => item.type === 'date'
+    ? <Box key={item.id} sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 1 }}>
+      {(['from', 'to'] as const).map(bound => <TextField key={bound} fullWidth size="small" type="date" label={`${item.name}${bound === 'from' ? '自' : '至'}`} InputLabelProps={{ shrink: true }} sx={formListFieldSx}
+        value={builtinDateRanges[item.id]?.[bound] ?? ''} onChange={event => setBuiltinDateRanges({ ...builtinDateRanges, [item.id]: { ...builtinDateRanges[item.id], [bound]: event.target.value } })} />)}
+    </Box>
+    : <Box key={item.id}>{lookup(item.id, item.name, filters[item.id] ?? '', value => setFilters({ ...filters, [item.id]: value }))}</Box>;
+  const actions = <Stack direction="row" spacing={direction === 'FORWARD' ? 1.5 : 1} alignItems="center" justifyContent={direction === 'FORWARD' ? 'flex-end' : undefined} sx={direction === 'FORWARD' ? { ...formListFilterActionsSx, gridColumn: expanded ? '1 / -1' : { xs: '1 / -1', lg: 'auto' } } : undefined}>
+    <Button size="small" variant="outlined" startIcon={<RestartAlt />} onClick={() => { setProperties({}); setFilters({}); setBuiltinDateRanges({}); setConditions([]); setError(''); onSearch({ ...initialTraceRequest, direction, size }); }} sx={{ height: 40, width: 80, minWidth: 80 }}>重置</Button>
     <Button size="small" variant="contained" type="submit" startIcon={<Search />} sx={{ height: 40, width: 80, minWidth: 80 }}>查询</Button>
-    <Button size="small" variant="text" endIcon={<ExpandMore sx={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }} />} onClick={() => setExpanded(!expanded)} aria-expanded={expanded} sx={{ height: 40, minWidth: 72, px: 1, color: '#1890ff', '&:hover': { bgcolor: '#f5faff' } }}>{expanded ? '收起' : '展开'}</Button>
+    {direction === 'FORWARD' && <Button size="small" variant="text" endIcon={<ExpandMore sx={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }} />} onClick={() => setExpanded(!expanded)} aria-expanded={expanded} sx={{ height: 40, minWidth: 72, px: 1, color: '#1890ff', '&:hover': { bgcolor: '#f5faff' } }}>{expanded ? '收起' : '展开'}</Button>}
   </Stack>;
   return <Box sx={{ ...formListQueryPanelSx, p: 0, flexShrink: 0 }}>
     <Stack direction="row" alignItems="center" sx={{ borderBottom: '1px solid #ebeef5' }}><Tabs value={direction} aria-label="追溯方向" onChange={(_, next: TraceRequest['direction']) => {
-      setDirection(next); setProperties({}); setFilters({}); setConditions([]); setError(''); onSearch({ ...initialTraceRequest, direction: next, size });
+      setDirection(next); setProperties({}); setFilters({}); setBuiltinDateRanges({}); setConditions([]); setError(''); onSearch({ ...initialTraceRequest, direction: next, size });
     }} sx={{ flex: 1, px: 2, minHeight: 48 }}><Tab value="FORWARD" label="正向追溯" /><Tab value="REVERSE" label="反向追溯" /></Tabs>
       <Tooltip title={direction === 'FORWARD' ? '按真实关联的工单、产品、生产对象等属性查找；无需配置字段追溯用途。' : dhr ? '按已保存的绑定内容查找。各条件可出现在同一DHR的不同表单中，命中不改变真实归属。' : '按已保存的绑定内容查找。条件在同一表单满足，子表条件须在同一实际行满足。'}><IconButton size="small" sx={{ mr: 2 }} aria-label="追溯方向说明"><InfoOutlined fontSize="small" /></IconButton></Tooltip>
     </Stack>
-    <Box component="form" onSubmit={event => { event.preventDefault(); submit(); }} sx={{ p: 2 }}>
+    {direction === 'FORWARD' ? <Box component="form" onSubmit={event => { event.preventDefault(); submit(); }} sx={{ p: 2 }}>
       <Box sx={queryGridSx}>
-        {direction === 'FORWARD' ? <>{property('objectNo', '所属生产批次/SN')}{property('workOrderNo', '所属工单编号')}{expanded ? property('productCode', '产品编码') : actions}</> : defaultItems.map(builtin)}
-        {direction === 'REVERSE' && <>
+        {property('objectNo', '所属生产批次/SN')}{property('workOrderNo', '所属工单编号')}{expanded ? property('productCode', '产品编码') : actions}
+        <Collapse in={expanded} timeout={180} unmountOnExit sx={{ gridColumn: '1 / -1' }}><Box sx={queryGridSx}>
+          {fixed.filter(([id]) => id !== 'productCode').map(([id, label]) => property(id, label))}
+        </Box></Collapse>
+        {expanded ? actions : null}
+      </Box>
+      {error && <Alert severity="error" sx={{ mt: 1 }}>{error}</Alert>}
+    </Box> : <Box component="form" onSubmit={event => { event.preventDefault(); submit(); }}>
+      <Box sx={{ p: 2 }}>
+      <Box sx={queryGridSx}>
+        {defaultItems.map(builtin)}
+      </Box>
+      </Box>
+      {(error || direction === 'REVERSE' && catalog.isError) && <Alert severity="error" sx={{ mx: 2.5, mb: 2 }}>{error || '追溯项目录读取失败，请重试。'}{catalog.isError && <Button onClick={() => void catalog.refetch()}>重试</Button>}</Alert>}
+      <Collapse in={expanded} timeout={180} unmountOnExit id="trace-additional-conditions">
+        <Stack spacing={1.5} sx={{ px: 2, pb: 1.5 }}>
+          <Box sx={queryGridSx}>{otherBuiltinItems.map(builtin)}</Box>
           {conditions.map(condition => <Box key={condition.id} sx={{ ...queryGridSx, gridColumn: '1 / -1', gridTemplateColumns: { xs: 'minmax(0, 1fr) 30px', sm: 'repeat(2, minmax(0, 1fr)) 30px', lg: customItems.find(item => item.id === condition.itemId)?.type === 'date' ? 'repeat(3, minmax(0, 1fr)) 30px' : 'repeat(3, minmax(0, 1fr))' } }}>
             <TextField fullWidth select size="small" label="追溯项" value={condition.itemId} sx={{ ...formListFieldSx, gridColumn: { xs: '1 / -1', sm: customItems.find(item => item.id === condition.itemId)?.type === 'date' ? '1 / -1' : 'auto', lg: 'auto' } }} onChange={event => setConditions(conditions.map(item => item.id === condition.id ? { ...item, itemId: event.target.value, value: '', from: '', to: '' } : item))}>
               <MenuItem value="">请选择</MenuItem>{customItems.filter(item => !conditions.some(other => other.id !== condition.id && other.itemId === item.id)).map(item => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}
@@ -95,15 +126,15 @@ export default function TraceQueryPanel({ dhr = false, size, onSearch }: { dhr?:
             </> : <TextField fullWidth size="small" type={customItems.find(item => item.id === condition.itemId)?.type === 'number' ? 'number' : 'text'} inputProps={{ step: 'any' }} label="精确匹配值" placeholder="请输入" sx={formListFieldSx} value={condition.value} onChange={event => setConditions(conditions.map(item => item.id === condition.id ? { ...item, value: event.target.value } : item))} />}
             <Tooltip title="移除条件"><IconButton size="small" aria-label="移除条件" sx={{ justifySelf: 'start' }} onClick={() => setConditions(conditions.filter(item => item.id !== condition.id))}><DeleteOutline fontSize="small" /></IconButton></Tooltip>
           </Box>)}
-          <Button size="small" startIcon={<Add />} disabled={catalog.isError || conditions.length >= customItems.length} sx={{ justifySelf: 'start', gridColumn: '1 / -1' }} onClick={() => setConditions([...conditions, { id: crypto.randomUUID(), itemId: '', value: '', from: '', to: '' }])}>添加查询条件</Button>
-        </>}
-        <Collapse in={expanded} timeout={180} unmountOnExit sx={{ gridColumn: '1 / -1' }}><Box sx={queryGridSx}>
-          {direction === 'REVERSE' && <>{otherBuiltinItems.map(builtin)}{property('objectNo', '所属生产批次/SN')}{property('workOrderNo', '所属工单编号')}</>}
-          {fixed.filter(([id]) => direction === 'REVERSE' || id !== 'productCode').map(([id, label]) => property(id, label))}
-        </Box></Collapse>
-        {expanded || direction === 'REVERSE' ? actions : null}
-      </Box>
-      {(error || direction === 'REVERSE' && catalog.isError) && <Alert severity="error" sx={{ mt: 1 }}>{error || '追溯项目录读取失败，请重试。'}{catalog.isError && <Button onClick={() => void catalog.refetch()}>重试</Button>}</Alert>}
-    </Box>
+          <Button size="small" startIcon={<Add />} disabled={catalog.isError || conditions.length >= customItems.length} sx={{ alignSelf: 'flex-start' }} onClick={() => setConditions([...conditions, { id: crypto.randomUUID(), itemId: '', value: '', from: '', to: '' }])}>添加查询条件</Button>
+        </Stack>
+      </Collapse>
+      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ px: { xs: 2, md: 2.5 }, py: 1.5, borderTop: '1px solid', borderColor: 'divider', gap: 1, flexWrap: 'wrap' }}>
+        <Button size="small" variant="text" endIcon={<ExpandMore sx={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease', '@media (prefers-reduced-motion: reduce)': { transition: 'none' } }} />} onClick={() => setExpanded(!expanded)} aria-expanded={expanded} aria-controls="trace-additional-conditions" sx={{ height: 40 }}>
+          {expanded ? '收起条件' : '更多条件'}{additionalCount > 0 ? `（${additionalCount}）` : ''}
+        </Button>
+        {actions}
+      </Stack>
+    </Box>}
   </Box>;
 }

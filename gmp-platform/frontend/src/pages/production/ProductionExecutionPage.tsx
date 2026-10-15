@@ -16,6 +16,7 @@ import { getFilePagePreviewBlob } from '@/api/files';
 import { getFormTemplates } from '@/api/template-modeling';
 import './ProductionExecutionPage.css';
 import { executionRouteLinks } from './executionRouteLinks';
+import { executionFormValues } from './executionFormValues';
 import ExecutionQuickPanel, { type ExecutionPanelId } from './ExecutionQuickPanel';
 import ExecutionOperationDrawer from './ExecutionOperationDrawer';
 import ExecutionCopyDrawer from './ExecutionCopyDrawer';
@@ -327,7 +328,8 @@ export default function ProductionExecutionPage() {
     if (!view || !context || busyRef.current) return false;
     busyRef.current = true; setBusy(true); setError(''); setNotice('');
     try {
-      const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId });
+      const next = await executeProduction(context.objectId, { ...command,
+        ...(command.values && form ? { values: executionFormValues(form.fields, command.values) } : {}), revision: view.revision, operationId });
       if (command.action === 'UPDATE_FORM_COPY_REMARK') setView(next);
       else receive(next);
       setSigning(null); setAccount(''); setPassword(''); setOpinion('');

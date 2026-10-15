@@ -59,6 +59,7 @@ class FormLookupCatalogPostgresTest {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0110-projection-detail-display.sql"));
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0111-form-instance-saved-stage.sql"));
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0112-typed-trace-catalog.sql"));
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0113-trace-date-preset.sql"));
         }
         jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN source_type text NOT NULL DEFAULT 'PRODUCTION_EXECUTION'");
         jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN work_order_no text");
@@ -105,12 +106,68 @@ class FormLookupCatalogPostgresTest {
         assertThat(audit.getValue().getContentAfter()).contains(item.id(), "灭菌锅次");
     }
 
-    @Test void migrationKeepsEightDistinctPresetsAndRetiresAmbiguousMvpDefinitions() {
+    @Test void migrationKeepsNineDistinctPresetsAndRetiresAmbiguousMvpDefinitions() {
         assertThat(catalog.list()).filteredOn(FormLookupCatalogService.Item::builtin).extracting(FormLookupCatalogService.Item::id)
                 .containsExactlyInAnyOrder("materialLotText", "equipmentText", "lookup_production_batch", "lookup_work_order",
-                        "lookup_material_code", "lookup_product_code", "lookup_supplier_lot", "lookup_order_number");
+                        "lookup_material_code", "lookup_product_code", "lookup_supplier_lot", "lookup_order_number", "lookup_trace_date");
         assertThat(catalog.list()).noneMatch(item -> item.id().equals("serialNumberText") || item.id().equals("lookup_related_batch"));
         assertThatThrownBy(() -> catalog.prepareDesign(form("serialNumberText").toString())).hasMessageContaining("已退出目录");
+    }
+
+    @Test void businessSourcesDoNotDependOnRetiredTraceCatalogItems() throws Exception {
+        ObjectNode model = mapper.createObjectNode();
+        var fields = model.putArray("fields");
+        fields.addObject().put("id", "quantity").put("type", "number");
+        fields.addObject().put("id", "document").put("type", "text");
+        fields.addObject().put("id", "team").put("type", "text");
+        model.putObject("projection").put("version", FormProjectionInterpreter.VERSION).putArray("bindings")
+                .addObject().put("id", "production").put("enabled", true).put("modelId", "production")
+                .putObject("sources").put("goodQuantity", "quantity").put("documentNumberText", "document").put("teamText", "team");
+        var prepared = mapper.readTree(catalog.prepareDesign(model.toString()));
+        assertThat(prepared.path("projection").path("bindings").get(0).path("sources")).isEqualTo(model.path("projection").path("bindings").get(0).path("sources"));
+        assertThat(prepared.path("projection").has("lookupItems")).isFalse();
+    }
+
+    @Test void traceDatePresetIsProtectedTypedAndOnlyQueriesExplicitlyBoundDates() throws Exception {
+        var preset = catalog.list().stream().filter(item -> item.id().equals("lookup_trace_date")).findFirst().orElseThrow();
+        assertThat(preset.type()).isEqualTo("date");
+        assertThat(preset.builtin()).isTrue();
+        assertThatThrownBy(() -> tx.execute(status -> { catalog.delete(preset.id(), preset.revision()); return null; })).hasMessageContaining("预置追溯项不可删除");
+        assertThatThrownBy(() -> catalog.prepareDesign(form(preset.id()).toString())).hasMessageContaining("日期字段");
+
+        ObjectNode model = form(preset.id());
+        ((ObjectNode) model.path("fields").get(0)).put("type", "datetime").putObject("typeConfig").put("mode", "date");
+        model = (ObjectNode) mapper.readTree(catalog.prepareDesign(model.toString()));
+        save(1, model, mapper.createObjectNode().put("number", "2026-10-14"));
+        save(2, model, mapper.createObjectNode());
+        jdbc.update("UPDATE form_instance_record SET created_at='2026-10-14 12:00:00' WHERE id=2");
+        var exact = com.zencas.edhr.production.service.TraceCondition.parse(Map.of(),
+                Map.of(preset.id(), new com.zencas.edhr.production.service.TraceCondition.DateRange("2026-10-14", "2026-10-14")), catalog.list());
+        var found = trace.query(null, null, null, null, exact, 0, 20);
+        assertThat(found.path("total").asInt()).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_trace_value WHERE form_instance_id=2 AND item_id='lookup_trace_date'", Integer.class)).isZero();
+        var after = com.zencas.edhr.production.service.TraceCondition.parse(Map.of(),
+                Map.of(preset.id(), new com.zencas.edhr.production.service.TraceCondition.DateRange("2026-10-15", null)), catalog.list());
+        assertThat(trace.query(null, null, null, null, after, 0, 20).path("total").asInt()).isZero();
+    }
+
+    @Test void traceDateUpgradeAndReplayPreserveExistingCustomDatesAndSavedEvidence() throws Exception {
+        jdbc.update("DELETE FROM form_lookup_item WHERE id='lookup_trace_date'");
+        var custom = tx.execute(status -> catalog.create(new FormLookupCatalogService.WriteRequest("原有生产日期", "原有自定义项", null, "date")));
+        ObjectNode model = form(custom.id());
+        ((ObjectNode) model.path("fields").get(0)).put("type", "datetime").putObject("typeConfig").put("mode", "date");
+        model = (ObjectNode) mapper.readTree(catalog.prepareDesign(model.toString()));
+        save(1, model, mapper.createObjectNode().put("number", "2026-10-14"));
+        var records = jdbc.queryForList("SELECT * FROM form_instance_record ORDER BY id");
+        var evidence = jdbc.queryForList("SELECT * FROM form_trace_value");
+        var existing = catalog.list();
+        try (var connection = jdbc.getDataSource().getConnection()) {
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0113-trace-date-preset.sql"));
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0113-trace-date-preset.sql"));
+        }
+        assertThat(catalog.list()).containsAll(existing).hasSize(existing.size() + 1);
+        assertThat(jdbc.queryForList("SELECT * FROM form_instance_record ORDER BY id")).isEqualTo(records);
+        assertThat(jdbc.queryForList("SELECT * FROM form_trace_value")).isEqualTo(evidence);
     }
 
     private void design(long versionId, ObjectNode root) {

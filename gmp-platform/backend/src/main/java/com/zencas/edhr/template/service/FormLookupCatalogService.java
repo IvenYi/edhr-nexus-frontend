@@ -224,6 +224,7 @@ public class FormLookupCatalogService {
     private JsonNode withLookupSnapshot(JsonNode model, boolean lock) {
         Set<String> keys = new LinkedHashSet<>();
         for (JsonNode binding : model.path("projection").path("bindings")) {
+            if (!"formTrace".equals(binding.path("modelId").asText())) continue;
             binding.path("sources").fieldNames().forEachRemaining(key -> {
                 if (key.startsWith("lookup_") || LEGACY_LOOKUP_IDS.contains(key)) keys.add(key);
             });

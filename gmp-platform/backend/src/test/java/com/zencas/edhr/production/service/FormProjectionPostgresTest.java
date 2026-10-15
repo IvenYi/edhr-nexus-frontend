@@ -39,6 +39,8 @@ class FormProjectionPostgresTest {
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0109-saved-form-trace-index.sql"));
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0110-projection-detail-display.sql"));
             ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0111-form-instance-saved-stage.sql"));
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0112-typed-trace-catalog.sql"));
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0113-trace-date-preset.sql"));
         }
         projection = new FormProjectionService(jdbc, mapper);
     }
@@ -198,9 +200,9 @@ class FormProjectionPostgresTest {
         assertThat(jdbc.queryForObject("SELECT attributes->>'documentNumberText' FROM form_projection_record", String.class)).isEqualTo("L1");
     }
     private com.zencas.edhr.production.controller.FormProjectionController reports() {
-        var catalog = org.mockito.Mockito.mock(com.zencas.edhr.template.service.FormLookupCatalogService.class);
-        org.mockito.Mockito.when(catalog.contains(org.mockito.ArgumentMatchers.anyString())).thenAnswer(invocation ->
-                java.util.Set.of("materialLotText", "teamText").contains(invocation.getArgument(0)));
+        var catalog = new com.zencas.edhr.template.service.FormLookupCatalogService(jdbc, mapper,
+                org.mockito.Mockito.mock(com.zencas.edhr.common.util.SnowflakeIdGenerator.class),
+                org.mockito.Mockito.mock(com.zencas.edhr.compliance.repository.AuditEventRepository.class));
         return new com.zencas.edhr.production.controller.FormProjectionController(jdbc, mapper,
                 org.mockito.Mockito.mock(com.zencas.edhr.compliance.repository.AuditEventRepository.class),
                 org.mockito.Mockito.mock(com.zencas.edhr.common.util.SnowflakeIdGenerator.class),
@@ -216,12 +218,12 @@ class FormProjectionPostgresTest {
         assertThat(reports().query(query).getData().path("total").asInt()).isEqualTo(1);
         tx.executeWithoutResult(status -> projection.process(batchId()));
         assertThat(reports().query(query).getData().path("total").asInt()).isEqualTo(1);
-        jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'other','form','formTrace','{\"materialLotText\":\"L2\",\"teamText\":\"B\"}','{}','')", batchId());
+        jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'other','form','formTrace','{\"materialLotText\":\"L2\",\"equipmentText\":\"E01\"}','{}','')", batchId());
         var all = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("formTrace", null, null, java.util.Map.of(), 0, 1, null, null)).getData();
         assertThat(all.path("total").asInt()).isEqualTo(1);
         assertThat(all.path("records")).hasSize(1);
         assertThat(all.path("records").get(0).path("hits")).hasSize(1);
-        var mismatch = new com.zencas.edhr.production.controller.FormProjectionController.Query("formTrace", null, null, java.util.Map.of("materialLotText", "L1", "teamText", "B"), 0, 20, null, null);
+        var mismatch = new com.zencas.edhr.production.controller.FormProjectionController.Query("formTrace", null, null, java.util.Map.of("materialLotText", "L1", "equipmentText", "E01"), 0, 20, null, null);
         assertThat(reports().query(mismatch).getData().path("total").asInt()).isZero();
         jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'scrap','form','scrap','{\"category\":\"外观\",\"quantity\":1,\"unit\":\"件\"}','{}','')", batchId());
         var category = new com.zencas.edhr.production.controller.FormProjectionController.Query("formTrace", null, null, java.util.Map.of("category", "外观"), 0, 20, null, null);
