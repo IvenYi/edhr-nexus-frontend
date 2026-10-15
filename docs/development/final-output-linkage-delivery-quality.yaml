@@ -1,0 +1,126 @@
+qualityResult:
+  result: passed
+  baseCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+  headCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+  contractBaseline:
+    sourceCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    targetBranch: edhr-dev
+    targetCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    contractReadCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/startup-commands.md
+      - docs/development/final-output-linkage-2026-10-15.md
+      - docs/development/final-output-linkage-delivery-quality.yaml
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths: [docs/development/final-output-linkage-delivery-quality.yaml]
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.delivery.commit-and-tested-candidate
+      required: true
+      category: regression
+      description: 提交推送后的代码与最终独立质量已测工作树保持一致。
+      method: command
+      command: git rev-parse及branch/status；37个代码测试迁移路径的暂存/提交/运行工作树SHA256逐一比较
+      outcome: passed
+      evidence:
+        - 主目录/Users/ivenwang/Documents/edhr-nexus当前分支edhr-dev，HEAD与origin/edhr-dev均为537bb2402227bfe6369c44c2b1b4686481c50f27。
+        - /tmp/final-output-delivery-code-manifest.json记录提交前37个代码/测试/迁移blob；提交HEAD及主目录运行源码全部一致，无源码在前轮最终测试后修改。
+        - 源码校验重用final-output-linkage-quality-final.yaml的134项后端/40项前端/89项知识/构建证据，因字节一致且无业务新规则不重复跑全套；本轮另做真实运行环境冒烟。
+        - source提交已由主智能体推送；本报告生成时后续启动与交付文档尚未形成新提交，不为未提交文档编造hash。
+    - id: check.delivery.contract-and-package
+      required: true
+      category: ontology
+      description: 重读适用契约并核对同一L2功能包及其业务边界。
+      method: inspection
+      command: 读取AGENTS/codeplzreadme/统一交接/quality角色、决策包/本体结果/最终质量；比较4b236d7d与537bb240的契约差异
+      outcome: passed
+      evidence:
+        - 四份适用契约相对4b236d7d没有变化；实际读取契约提交仍记录4b236d7d，不能用新功能提交伪称契约更新。
+        - 继续相同DEC0078/impactAnalysis/extensionStrategy；新端口选择和交付文档不修改产出、单位、旧实例或生命周期业务规则。
+        - 原本体updated及最终独立质量passed保持各自历史范围，不改写前轮报告冒充本轮3000/8081运行证据。
+    - id: check.delivery.commit-hygiene
+      required: true
+      category: documentation
+      description: 独立检查57个待提交文件，排除运行产物与敏感资产。
+      method: command
+      command: git diff --cached --name-only/check；候选路径与私钥/令牌模式检查；提交后git status
+      outcome: passed
+      evidence:
+        - 功能暂存57路径，其中37代码/测试/迁移；output、node_modules、日志、环境文件、备份和上传目录未纳入提交，私钥及访问令牌模式未命中。
+        - 首次暂存检查发现两个新报告EOF空行，主智能体仅删除该空行后重新暂存，git diff --cached --check通过；无业务或测试变更。
+        - 提交后主目录仅既有output目录和本轮文档收尾改动，不覆盖用户未跟踪输出。
+    - id: check.delivery.canonical-runtime
+      required: true
+      category: integration
+      description: 按用户最新要求统一3000前端和8081后端，撤销旧端口计划。
+      method: command
+      command: lsof只读端口检查、读取启动日志和后端进程cwd
+      outcome: passed
+      evidence:
+        - 3000由node PID7893监听；8081由java PID7857监听；3007/8087/3017/8097均无监听。
+        - /tmp/edhr-dev-8081.log显示dev profile，Tomcat8081，Liquibase Run0/Previously144；进程cwd为主目录gmp-platform/backend。
+        - /tmp/edhr-dev-3000.log显示Vite3000；经3000的真实鉴权业务API响应证明代理可到8081。
+        - 用户最新明确要求3000/8081；原先返回3007/8087的计划已撤销，不能作为本轮最终环境。
+    - id: check.delivery.original-database-and-migration
+      required: true
+      category: database
+      description: 原安速康数据、执行快照及DHR保留，0114不自动补配置或产出。
+      method: query
+      command: 对edhr_form_projection:5432执行只读SQL，比较重启前后5类业务表整行聚合digest，查询databasechangelog/最终标记/预置数量
+      outcome: passed
+      evidence:
+        - /tmp/final-output-delivery-original-before.jsonl与original-after.jsonl中ASK工单1、批次2、表单6、DHR2、执行2的计数和整行digest全部一致。
+        - 0114-final-output-operation为EXECUTED；当前原库final_output=true为0，预置追溯项仍9个，没有自动推断末道或补算历史。
+        - 主侧原库备份edhr_form_projection-before-0114.dump已只读确认存在且615498字节；位于仓库外/Users/ivenwang/Documents/edhr-nexus-backups/2026-10-15-final-output/，不提交。
+        - 本实例未修改业务数据、迁移、配置或执行快照；登录与查询可能产生正常系统访问日志，不是生产数据修复。
+    - id: check.delivery.proxy-api-smoke
+      required: true
+      category: api
+      description: 经3000代理独立验证原批次、工单、DHR、预置项与三业务报表。
+      method: query
+      command: 使用用户授权本机调试账号正常登录3000后，只读GET和报表查询POST；urllib明确对localhost禁用宿主HTTP代理
+      outcome: passed
+      evidence:
+        - /tmp/final-output-delivery-api-smoke.json仅保存脱敏业务响应摘要，不保存密码或token。
+        - ASK A/B批次均COMPLETED，output.status=LEGACY且quantity=null；工单output.status=NO_DATA且quantity=null，符合不补旧实例。
+        - 两份原DHR仍为DHR-20261015-000008/000009，summaryStatus=FORMALIZED、displayStatus=FINALIZED。
+        - 原工单报工2条、良品97/不良3；报废2条合计3；消耗4条合计200；九项预置可读。
+        - 未把隔离库的18/9/27虚构产出样本搬到当前原库；该样本仍只是前轮功能验证证据。
+    - id: check.delivery.browser-smoke
+      required: true
+      category: e2e
+      description: 实际3000页面登录、查询旧批次及打开冻结DHR。
+      method: browser
+      command: Cua独立Chrome临时标签页，3000正常登录并只读查询批次、查看A批DHR
+      outcome: passed
+      evidence:
+        - 3000批次列表按ASK-E2E-20261014筛选返回两批次，均显示已完成及累计产出“— 未配置（历史）”。
+        - 从A批查看DHR打开冻结V1，显示DHR-20261015-000008已正式化，3份表单/3份已完成/0附件，三张原始模拟表仍在导航中。
+        - 实际截图可读末道清洁原表的ASK工单/批次、良品58、不良2及操作员签名；未重新填报、签署、定稿或放行。
+        - 原IAB表面在本轮不可用后按文档检查浏览器库存，改用可用Chrome独立临时标签；用户既有标签未改动，验证后临时标签已关闭。
+    - id: check.delivery.local-startup-docs-and-files
+      required: true
+      category: documentation
+      description: 收尾文档匹配实际端口、数据库和文件配置，明确附件核验边界。
+      method: inspection
+      command: 阅读startup-commands.md新增4.3及交付报告差异、application配置和实际进程cwd；只读文件目录及file_object查询
+      outcome: passed
+      evidence:
+        - 启动说明明确主目录edhr-dev、3000/8081和PG5432，显式保持edhr_form_projection及FILE_UPLOAD_DIR=./uploads-projection，前端代理8081。
+        - 实际原库file_object为0，主目录backend下uploads-projection目录不存在；没有现存上传文件可作字节保留验收。配置路径保持一致，不声称检查过不存在的附件。
+        - 已导入原始表单及填写数据在数据库和冻结DHR中可读；此处不把模板导入等同于上传附件证据。
+        - 交付报告保留开发时3017/8097作为历史验证环境，并将当前入口改为3000；源码未随文档收尾改变。
+  findings: []
+  residualRisks:
+    - id: risk.delivery.previous-feature-boundaries
+      description: 前轮已记录的规模性能、SN算法、A12修订作废数量、DHR导出和原安速康整套重跑暂缓边界保持。
+      impact: 本轮运行冒烟不扩大为全系统、生产发布或这些延期功能验收。
+      mitigation: 后续按各自确认和风险验证实施；不追算旧实例。
+    - id: risk.delivery.documentation-followup-commit
+      description: 本报告针对537bb240功能提交及列明文档工作树；启动和交付报告将在本报告后另行提交。
+      impact: 不把尚未发生的文档推送写成已完成，也不声称远端CI强制门禁已验证。
+      mitigation: 主智能体提交文档后核对仅文档差异和远端hash；若源码/契约变化，重新评估对应验证。
+  blockingConditions: []

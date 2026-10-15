@@ -6,6 +6,8 @@
 - 后端工程：`gmp-platform/backend`
 - 容器编排：`gmp-platform/docker-compose.yml`
 
+本机当前统一环境为 `edhr-dev` 的 `3000/8081`，沿用既有模拟数据库；实际启动命令见第4.3节，避免误连到另一个开发库。
+
 ## 1. 环境要求
 
 ### 前端
@@ -151,6 +153,32 @@ lsof -nP -iTCP:3000 -sTCP:LISTEN
 ```
 
 不要通过 `--port 3002` 或其他端口临时启动前端。
+
+### 4.3 本机当前统一环境（2026-10-15）
+
+投影分支已合入 `edhr-dev`，主目录 `/Users/ivenwang/Documents/edhr-nexus` 后续使用该分支。前端统一 `3000`、后端统一 `8081`、PostgreSQL 服务端口仍为 `5432`；不再运行原 `3007/8087` 或本轮隔离验收的 `3017/8097`。
+
+为保留已导入表单及安速康模拟，本机继续使用现有数据库 `edhr_form_projection`，文件目录配置沿用后端目录下的 `uploads-projection`，仅通过启动参数覆盖默认数据源/文件目录。本次核对时该库无 `file_object` 记录，磁盘上也无既有上传目录，因而不声称核验过实际附件内容。数据库名称不表示当前仍使用投影分支；不将其替换为另一个 `edhr_dev` 库，也不移动或补算历史记录。仓库通用默认配置仍为第3节的 `edhr_dev`。
+
+本机后端开发启动：
+
+```bash
+cd /Users/ivenwang/Documents/edhr-nexus/gmp-platform/backend
+export JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home
+export PATH="$JAVA_HOME/bin:$PATH"
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection \
+FILE_UPLOAD_DIR=./uploads-projection \
+OCR_PADDLE_ENABLED=false \
+mvn spring-boot:run
+```
+
+已打包后也可在同一目录使用相同环境变量运行 `java -jar target/edhr-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev`。前端在主目录的 `gmp-platform/frontend` 执行：
+
+```bash
+VITE_API_PROXY_TARGET=http://localhost:8081 npm run dev -- --port 3000 --strictPort
+```
+
+开始或恢复开发时先检查本地改动，再获取并核对 `origin/edhr-dev` 和契约增量；只在工作区允许时快进或安全合并，不用强制重置覆盖协作者改动。后端代码或迁移更新后重新构建启动，前端依赖变化时同步依赖；Git 分支更新本身不会替换已运行的后端进程。
 
 ## 5. 构建命令
 
