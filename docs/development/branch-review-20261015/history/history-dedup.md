@@ -71,4 +71,3 @@
 - No Maven/CI/Actions/browser/DB/new data execution
 - No business policy change, history restoration, merge or deployment
 - Work-order close lead is pending root-owned atomicity validation
-
