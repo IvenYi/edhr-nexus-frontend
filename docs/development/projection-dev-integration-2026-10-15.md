@@ -32,9 +32,15 @@
 后端重现命令（Java21）：
 
 ```sh
-PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test \
-mvn -f gmp-platform/backend/pom.xml -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ExecutionAccessTest,ExecutionSubjectScopeTest,ProductionExecutionFormValuesTest,FormInstanceRecordStageTest,FormTraceIndexServiceTest,TraceConditionTest,FormProjectionInterpreterTest,FormProjectionAuthorizationTest,TraceReportAuthorizationTest,FormLookupCatalogAuthorizationTest,TemplateProjectionAuthorizationTest,TemplateModelingControllerTest,FormReferenceLookupTest,FormProjectionPostgresTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormLookupCatalogPostgresTest test
+(
+  cd gmp-platform/backend
+  JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home \
+  PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test \
+  mvn -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ExecutionAccessTest,ExecutionSubjectScopeTest,ProductionExecutionFormValuesTest,FormInstanceRecordStageTest,FormTraceIndexServiceTest,TraceConditionTest,FormProjectionInterpreterTest,FormProjectionAuthorizationTest,TraceReportAuthorizationTest,FormLookupCatalogAuthorizationTest,TemplateProjectionAuthorizationTest,TemplateModelingControllerTest,FormReferenceLookupTest,FormProjectionPostgresTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormLookupCatalogPostgresTest test
+)
 ```
+
+须从backend目录运行，以正确解析该模块 `.mvn/maven.config` 引用的 `.mvn/settings.xml`；不能直接在根目录把上述命令改成 `mvn -f gmp-platform/backend/pom.xml`。独立知识入口没有这项目录依赖。
 
 本机原始日志与截图在该集成工作树的 `output/projection-dev-integration-2026-10-15/`、`output/playwright/projection-dev-*.png`，未提交测试数据、运行输出或图片。验收不继承旧分支的历史 `passed`；本轮独立质量检查以实际合并候选为范围，结构化结果另由质量角色记录。远端CI、必需检查与分支保护设置未在本轮核验，不声称已强制启用。
 
